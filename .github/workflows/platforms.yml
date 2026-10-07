@@ -181,6 +181,7 @@ jobs:
           fi
 
       - name: Redemption client login, gameplay smoke and logout (Trainer, GM Admin)
+        timeout-minutes: 30
         run: |
           mkdir -p e2e
           KEEP_RUNNING=1 tools/smoke_server.sh e2e/server.log
@@ -298,6 +299,7 @@ jobs:
           if not exist server\config.lua exit /b 1
 
       - name: Start-PokeVerse-Test.bat, then the packaged client in game (Trainer, GM Admin)
+        timeout-minutes: 30
         run: |
           set +e
           pkg=/c/PokeVerse-Test
@@ -569,6 +571,7 @@ jobs:
           tools/setup_dev_db.sh
 
       - name: Redemption client login, gameplay smoke, two-account market test and logout (Trainer, GM Admin)
+        timeout-minutes: 30
         if: matrix.type == 'release'
         run: |
           mkdir -p e2e
