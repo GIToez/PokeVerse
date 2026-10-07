@@ -49,15 +49,17 @@ The Pokémon tests run at 3325,806,6, just outside the starting temple, because 
 | Chat | **PASS**: own line echoed; Help and Wiki Chat channel messages received | NOT TESTED | **PASS** |
 | Inventory | **PASS**: equipment slots received | NOT TESTED | **PASS** |
 | Pokémon bar (display) | **PASS**: GM Admin shows `poke1=Charmander` | NOT TESTED | **PASS** |
-| Summon and switch from the bar | PENDING: the CI run for commit 345b3c058 (see below) | NOT TESTED | **PASS** (local; CI pending the same commit) |
-| Move bar, using a move, cooldown | PENDING (same run) | NOT TESTED | **PASS** (local: Scratch/Tackle hit a Rattata, cooldown overlay shown) |
+| Summon from the bar | **PASS**: `SUMMON OK creature=Charmander level=15` (run 37631181970) | NOT TESTED | **PASS**: same, run 37631181970; local |
+| Switch from the bar | PENDING: CI gives GM Admin a second Pokémon from commit 926237076 | NOT TESTED | **PASS** (local) |
+| Move bar | **PASS**: 4 moves for Charmander (run 37631181970) | NOT TESTED | **PASS** (run 37631181970; local) |
+| Using a move, cooldown, damage | **PASS**: Scratch hit a GM-spawned Rattata (100% → 79%), server cooldown 6 s, cooldown overlay shown (run 37631181970) | NOT TESTED | **PASS**: Rattata 100% → 72% (run 37631181970); local |
 | Pokémon Info, Pokédex, EVs, vitamins | BLOCKED: modules not ported (`LEGACY_ASSET_DEPENDENCY_MAP.md`) | BLOCKED | BLOCKED |
 | Containers | NOT TESTED | NOT TESTED | NOT TESTED |
 | Battle Pass, Shop, Market | BLOCKED: modules not ported | BLOCKED | BLOCKED |
 | Settings persistence | NOT TESTED | NOT TESTED | NOT TESTED |
 | Touch controls / UI scaling | n/a | NOT TESTED | n/a |
 
-A previous move-test run in CI (commit e22dd9c25) failed on Linux because the move was used inside the temple's protection zone. The fix is in `tools/redemption_smoke_rc.lua` (commit 345b3c058). This section is updated when that run finishes.
+Two earlier CI runs (e22dd9c25 and cab8e69b2) failed the move step on Windows and Linux with "Your Pokemon can't use moves while you're in the protection zone": the move was used inside the starting temple. Since 345b3c058 the smoke teleports to 3325,806,6 first, and run 37631181970 passed every job.
 
 ### Legacy reference client (`client/`, OTClient 0.6.6 fork), for comparison
 
@@ -80,16 +82,16 @@ A previous move-test run in CI (commit e22dd9c25) failed on Linux because the mo
 | Save/load | **PASS**: `/i` items saved on logout (0 → 2 apples in `player_items`) | **PASS** |
 | Restart persistence | **PASS**: items still there after `/shutdown` and a restart (run 37625226771) | **PASS** |
 | Clean shutdown | **PASS**: GM `/shutdown`: world saved, ports closed, process exits | **PASS**: GM `/shutdown` and `kill -QUIT` |
-| Pokémon gameplay | **PASS** for summon/switch/moves once the pending run passes; Pokémon bar data **PASS** | **PASS** (Redemption smoke and legacy harness) |
+| Pokémon gameplay | **PASS**: Pokémon bar data, summon, move bar, move use, cooldown and damage (run 37631181970) | **PASS** (Redemption smoke and legacy harness) |
 
 ## Completion status (Phase 3)
 
 | Target | Status | Reason |
 |---|---|---|
-| Windows client | PARTIAL | Builds, packages, logs in, renders, walks, chats and shows the Pokémon bar against a Windows server in CI. Summon/moves pending one CI run. Not hands-on tested on a real Windows desktop with a GPU. Most PokeVerse modules are not ported yet. |
+| Windows client | PARTIAL | Builds, packages, logs in, renders, walks, chats, shows the Pokémon bar, summons, and uses a move with its cooldown against a Windows server in CI. Not hands-on tested on a real Windows desktop with a GPU. Most PokeVerse modules are not ported yet. |
 | Windows server | PASS | Build, startup, login, admin commands, save/load, restart persistence and clean shutdown all pass in CI. |
 | Android client | PARTIAL | The APK builds in CI. It has never been installed or run (no device). |
-| Linux client | PARTIAL | Same coverage as Windows, plus summon/switch/moves locally. Most PokeVerse modules are not ported yet. |
+| Linux client | PARTIAL | Same coverage as Windows in CI, plus switching locally. Most PokeVerse modules are not ported yet. |
 | Linux server | PASS | |
 
 This table is updated as results arrive. The final values are reported in the Phase 3 final report.
