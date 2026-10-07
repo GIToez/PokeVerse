@@ -490,6 +490,153 @@ local function inspectGame()
         end, 1500)
     end
 
+    -- Kill tasks (ext opcode 58): the list comes from /taskrank. Accept Rattata through the window,
+    -- check that a second task and an early collect are refused, and leave it active so the move
+    -- test's kill can count; taskFinish reports the kills and cancels it.
+    local TASK_ID = 'rattata'
+    local function pressTask(id, buttonId)
+        local entry = modules.game_task.getEntry(id)
+        local button = entry and entry.buttons and entry.buttons:getChildById(buttonId)
+        if button then button.onClick() end
+        return button ~= nil
+    end
+
+    local function taskTests(nextStep)
+        local tasks = modules.game_task
+        if not tasks then
+            report('MODULE game_task missing')
+            return nextStep()
+        end
+        report('MODULE game_task button=%s', tostring(modules.game_mainpanel.getButton('taskButton') ~= nil))
+        tasks.toggle()
+        scheduleEvent(function()
+            local state = tasks.getState()
+            if state.doing then
+                report('TASK RESET cancelling %s', state.doing.id)
+                pressTask(state.doing.id, 'cancelButtonWidget')
+            end
+            scheduleEvent(function()
+                tasks.hideAlert()
+                state = tasks.getState()
+                report('TASK OPEN %s visible=%s tasks=%d points=%s doing=%s', state.visible and state.tasks > 0 and not state.doing and 'OK' or 'FAILED',
+                    tostring(state.visible), state.tasks, state.points, tostring(state.doing and state.doing.id))
+                if not pressTask(TASK_ID, 'acceptButtonWidget') then
+                    report('TASK ACCEPT FAILED no %s entry', TASK_ID)
+                    tasks.hide()
+                    return nextStep()
+                end
+                scheduleEvent(function()
+                    state = tasks.getState()
+                    local widget = tasks.getEntry(TASK_ID):getChildById('SlotOutfit'):getFirstChild()
+                    local creature = widget and widget.getCreature and widget:getCreature()
+                    local outfit = creature and creature:getOutfit().type
+                    report('TASK SPRITE %s outfit=%s widget=%s', outfit == 370 and 'OK' or 'FAILED', tostring(outfit),
+                        widget and widget:getClassName() or '-')
+                    report('TASK ACCEPT %s doing=%s kills=%s/%s alert=%s', state.doing and state.doing.id == TASK_ID and
+                        state.alert == '[PegueiUmaMissao]' and 'OK' or 'FAILED', tostring(state.doing and state.doing.id),
+                        tostring(state.doing and state.doing.kills), tostring(state.doing and state.doing.count), tostring(state.alert))
+                    tasks.hideAlert()
+                    lastCancel = nil
+                    pressTask('caterpie', 'acceptButtonWidget')
+                    scheduleEvent(function()
+                        state = tasks.getState()
+                        report('TASK SECOND %s doing=%s reply=%s', lastCancel and lastCancel:find('already doing') and
+                            state.doing and state.doing.id == TASK_ID and 'REFUSED' or 'FAILED', tostring(state.doing and state.doing.id),
+                            tostring(lastCancel))
+                        pressTask(TASK_ID, 'doneButtonWidget')
+                        scheduleEvent(function()
+                            state = tasks.getState()
+                            report('TASK EARLY COLLECT %s alert=%s doing=%s', state.alert == '[TaskNaoCompleta]' and state.doing and
+                                'REFUSED' or 'FAILED', tostring(state.alert), tostring(state.doing and state.doing.id))
+                            tasks.hideAlert()
+                            report('TASK LIST SHOWN')
+                            scheduleEvent(function()
+                                tasks.hide()
+                                report('TASK CLOSE %s', tasks.isVisible() and 'FAILED' or 'OK')
+                                nextStep()
+                            end, tonumber(os.getenv('PV_TASK_HOLD_MS') or '100'))
+                        end, 1000)
+                    end, 1000)
+                end, 1000)
+            end, 1000)
+        end, 1500)
+    end
+
+    local function findWild(name)
+        local here, best = player:getPosition(), nil
+        local function dist(c) local p = c:getPosition() return math.max(math.abs(p.x - here.x), math.abs(p.y - here.y)) end
+        for _, creature in ipairs(g_map.getSpectators(here, false)) do
+            if creature:getName() == name and not creature:isLocalPlayerSummon() and not creature:isDead() and
+                (not best or dist(creature) < dist(best)) then
+                best = creature
+            end
+        end
+        return best
+    end
+
+    -- The summon keeps attacking the move test's Rattata so the kill reaches the task.
+    local function finishWild(name, nextStep)
+        local target = findSummon() and findWild(name)
+        if not target then
+            report('TASK KILL SKIPPED summon=%s', tostring(findSummon() ~= nil))
+            return nextStep()
+        end
+        g_game.attack(target)
+        local targetId = target:getId()
+        local function alive()
+            local creature = g_map.getCreatureById(targetId)
+            return creature and not creature:isDead() and creature:getHealthPercent() > 0
+        end
+        local waited = 0
+        local function poll()
+            if alive() and waited < 15000 then
+                if not g_game.isAttacking() then g_game.attack(g_map.getCreatureById(targetId)) end
+                waited = waited + 500
+                local window = modules.game_pokemoves and modules.game_pokemoves.pokemonMovesWindow
+                if window and waited % 1500 == 0 then
+                    for _, child in ipairs(window:getChildren()) do
+                        if child:getStyleName() == 'MoveItem' then
+                            child:onMouseRelease(child:getPosition(), MouseLeftButton)
+                            break
+                        end
+                    end
+                end
+                return scheduleEvent(poll, 500)
+            end
+            g_game.cancelAttack()
+            local creature = g_map.getCreatureById(targetId)
+            report('TASK KILL %s waited=%d health=%s', alive() and 'ALIVE' or 'DEFEATED', waited,
+                tostring(creature and creature:getHealthPercent()))
+            nextStep()
+        end
+        scheduleEvent(poll, 500)
+    end
+
+    local taskProgress
+    local function taskFinish(nextStep)
+        local tasks = modules.game_task
+        if not tasks then return nextStep() end
+        finishWild('Rattata', function() taskProgress(nextStep) end)
+    end
+
+    taskProgress = function(nextStep)
+        local tasks = modules.game_task
+        tasks.toggle()
+        scheduleEvent(function()
+            local state = tasks.getState()
+            report('TASK PROGRESS doing=%s kills=%s/%s', tostring(state.doing and state.doing.id),
+                tostring(state.doing and state.doing.kills), tostring(state.doing and state.doing.count))
+            pressTask(TASK_ID, 'cancelButtonWidget')
+            scheduleEvent(function()
+                state = tasks.getState()
+                report('TASK CANCEL %s alert=%s doing=%s', state.alert == '[MissaoAbandonada]' and not state.doing and 'OK' or 'FAILED',
+                    tostring(state.alert), tostring(state.doing and state.doing.id))
+                tasks.hide()
+                nextStep()
+            end, 1000)
+        end, 1500)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -519,8 +666,12 @@ local function inspectGame()
                 tmTests(function()
                     statusBarTests(function()
                         passTests(function()
-                            pokemonTests(function()
-                                scheduleEvent(function() g_game.safeLogout() end, 1500)
+                            taskTests(function()
+                                pokemonTests(function()
+                                    taskFinish(function()
+                                        scheduleEvent(function() g_game.safeLogout() end, 1500)
+                                    end)
+                                end)
                             end)
                         end)
                     end)
