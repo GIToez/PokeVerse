@@ -1,0 +1,13 @@
+Module
+  name: game_pokemonInfo
+  description: PokeVerse Pokemon Info (IVs, EVs, Base Stats, Friendship) over extended opcode 63
+  author: Ryukiimaru and Walox, Redemption port by PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ pokemonInfo ]
+  @onLoad: init()
+  @onUnload: terminate()
