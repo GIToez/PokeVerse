@@ -4,7 +4,8 @@
 # otclientrc.lua, so the shipped dist never contains test code.
 # Usage: tools/smoke_redemption_login.sh [LOGFILE]
 # Env: PV_ACCOUNT PV_PASSWORD PV_CHARACTER (default player/player/Trainer), PV_HOST, PV_LOGIN_PORT,
-#      PV_TIMEOUT_MS, DIST (default dist/client-redemption), DISPLAY (Xvfb :99 is started if unset).
+#      PV_TIMEOUT_MS, DIST (default dist/client-redemption), DISPLAY (Xvfb :99 is started if unset),
+#      SCREENSHOT (PNG path, captured once the map has loaded).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -29,7 +30,16 @@ fi
 
 export HOME="$RUN/home"
 mkdir -p "$HOME"
-( cd "$RUN" && timeout 120 "./$EXE" ) > "$LOG" 2>&1 || true
+( cd "$RUN" && timeout 120 "./$EXE" ) > "$LOG" 2>&1 &
+CLIENT_PID=$!
+if [ -n "${SCREENSHOT:-}" ]; then
+    for _ in $(seq 240); do
+        grep -aq '\[pv-smoke\] MAP tiles=' "$LOG" 2>/dev/null && { sleep 0.3; import -window root "$SCREENSHOT" || true; break; }
+        kill -0 "$CLIENT_PID" 2>/dev/null || break
+        sleep 0.5
+    done
+fi
+wait "$CLIENT_PID" || true
 
 fail() { echo "FAIL: $1" >&2; grep -a '\[pv-smoke\]\|ERROR\|rror' "$LOG" | tail -30 >&2; exit 1; }
 need() { grep -aq -- "$1" "$LOG" || fail "$2"; }

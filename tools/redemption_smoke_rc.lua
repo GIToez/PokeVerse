@@ -20,7 +20,21 @@ local function posString(pos)
     return pos and string.format('%d,%d,%d', pos.x, pos.y, pos.z) or 'nil'
 end
 
+-- First launch shows a language picker over the game window, and the login window stays
+-- open because this script logs in without it; dismiss both.
+local function closeLocalePicker()
+    local picker = g_ui.getRootWidget():recursiveGetChildById('localesWindow')
+    if picker then
+        picker:destroy()
+        report('LOCALE PICKER CLOSED')
+    end
+    if EnterGame then
+        EnterGame.hide()
+    end
+end
+
 local function inspectGame()
+    closeLocalePicker()
     local player = g_game.getLocalPlayer()
     local pos = player:getPosition()
     report('POSITION %s', posString(pos))
@@ -110,6 +124,7 @@ end
 connect(g_game, handlers)
 
 local function login()
+    report('LOCALE %s', modules.client_locales.getCurrentLocale().name)
     g_game.setClientVersion(854)
     g_game.setProtocolVersion(g_game.getClientProtocolVersion(854))
     g_game.chooseRsa(host)
