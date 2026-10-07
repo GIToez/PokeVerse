@@ -38,7 +38,7 @@ Everything here sits behind `GamePokeVerse`, which is enabled at version 854 onl
 
 ## Gameplay and modules
 
-Ported so far: `game_pokebar` and `game_pokemoves`. The other PokeVerse Lua modules (`client/runtime-data/modules/game_*`) are not ported yet. Redemption shows its own upstream UI, so a feature whose server data arrives but has no window is PARTIAL: the protocol works, the UI does not.
+Phase 3C ported the main PokeVerse windows (`REDEMPTION_MODULE_AUDIT.md` lists every legacy module and its fate). A feature whose server data arrives but has no window is PARTIAL: the protocol works, the UI does not. Rows below quote local Linux smoke lines from 2026-10-07. CI runs the same script on Windows against the Windows server and on Linux (`PLATFORM_COMPATIBILITY.md`).
 
 | Feature | Legacy (harness) | Redemption | Status | Notes |
 |---|---|---|---|---|
@@ -47,23 +47,32 @@ Ported so far: `game_pokebar` and `game_pokemoves`. The other PokeVerse Lua modu
 | Walking | PASS | PASS | PASS | One step and the position is confirmed by the server |
 | Chat (say, server messages, NPC speech) | PASS | PASS | PASS | Own line echoed; Wiki Chat, Professor Oak and server broadcasts received |
 | Inventory | PASS | PASS | PASS | Slots and item ids match the server |
-| Containers / pokébag | PASS | NOT TESTED | NOT TESTED | Parsing is ported; no container was opened |
+| Containers / pokébag | PASS | PASS | PASS | The craft and market tests open the backpack, read counts and drag items from it (`MARKET MAKE OFFER OK slots=1 wool=8->6`) |
 | Logout | PASS | PASS | PASS | Clean logout; the server saves |
 | Pokémon bar display (`game_pokebar`) | PASS | PASS | PASS | One portrait per carried ball, built from `onPokemonBarAdd`: icon, name, level, types and health label. `MODULE game_pokebar visible=true portraits=2 poke46=Charmander,poke47=Bulbasaur`. Screenshot: `redemption-linux-pokebar-summon.png` |
 | Summon and switch from the bar (`/cp`) | PASS | PASS | PASS | Clicking a portrait summons that Pokémon, and clicking a second one swaps it (`SUMMON OK creature=Charmander level=15`, `SWITCH OK creature=Bulbasaur level=10`). The active portrait expands and shows its health. Windows and Linux CI (run 37631181970): `SUMMON OK creature=Charmander level=15`; `SWITCH OK creature=Bulbasaur level=15` (run 37635170266) |
 | Move bar (`game_pokemoves`) | PASS | PASS | PASS | Fills with the summoned Pokémon's moves (`moves=5 Tackle,Bite,Bubble,Water Gun,Protect` for Squirtle). Screenshot: `redemption-linux-movebar.png` |
 | Use a move from the bar, with its cooldown | PASS | PASS | PASS | Clicking Tackle with a spawned Rattata targeted: the server reports damage and the Rattata's health falls (`health=96->92`). The cooldown overlay appears (`cooldown=1 overlay=true`) and survives the move-list rebuild the server sends right after each move. Windows CI against the Windows server (run 37631181970): `MOVE OK move=Scratch cooldown=6 overlay=true … health=100->79`; Linux CI `health=100->72` |
-| Recall by using the ball | PASS | NOT TESTED | NOT TESTED | `/cp` on the active Pokémon re-summons it, as in the legacy client; recall goes through using the ball, which the smoke does not do yet |
-| Pokémon Info, EVs, vitamins, friendship, held items | PASS | BLOCKED | BLOCKED | These are extended-opcode modules (`EXTENDED_OPCODE_MAP.md`) that are not ported |
-| Pokédex | PASS | BLOCKED | BLOCKED | The 0xFF Pokédex packets are parsed; no window |
-| Battle Pass, calendar, dungeons, crafting, tasks | PASS / PARTIAL | BLOCKED | BLOCKED | Module port pending |
-| Shop, Market | PARTIAL | BLOCKED | BLOCKED | Module port pending. Redemption's own Tibia store and market are not PokeVerse features |
+| Recall and summon again | PASS | PASS | PASS | `RECALL OK`, `RESUMMON OK creature=Rattata` |
+| HUD (trainer health, Pokémon energy and level) | PASS | PASS | PASS | `HUD trainer=185/185 energy=0/5200 pokemonLevel=100(1%) summon=Rattata health=66%` |
+| Pokémon Info and EVs | PASS | PASS | PASS | `INFO OPEN OK`, `EV ALLOCATE OK hp=17->18 points=483->482`, `EV FORGED REJECTED`, `EV PERSIST OK` after recall and summon. Vitamins, friendship gain and held-item changes are shown but NOT TESTED |
+| Pokédex | PASS | PASS | PASS | `DEX LOGIN STATUS OK entries=386`, `DEX OPEN OK`, `DEX INFO OK id=4 name=Charmander type1=Fire moves=8` |
+| TM chooser | NOT TESTED | PASS | PASS | `TM WINDOW OK moves=3`, `TM CONFIRM OK`, `TM FORGED REJECTED` |
+| Status condition bar | NOT TESTED | PARTIAL | PARTIAL | Add, remove and clear work with injected 0xFF signals; conditions from a real battle NOT TESTED |
+| Achievements | PASS | PASS | PASS | `ACHIEVEMENTS OK entries=149 completed=2` |
+| Battle Pass | PASS | PASS | PASS | `PASS OPEN OK … missions=27`, `PASS FORGED COLLECT IGNORED`, `PASS BUY REFUSED` (season ended). Collecting a real reward NOT TESTED |
+| Tasks and kill popup | PARTIAL | PASS | PASS | `TASK ACCEPT OK`, `TASK PROGRESS doing=rattata kills=1/40`, `POKEKILL POPUP OK text=Rattata 1/40`, `TASK CANCEL OK`. Completing a 40-kill task NOT TESTED |
+| Crafting | PARTIAL | PASS | PASS | `CRAFT CREATE OK wool=6->5`, `CRAFT COLLECT OK cloth=14->15`, refusals for missing materials and forged quantities |
+| Diamond shop | PARTIAL | PASS | PASS | `SHOP BUY OK diamonds=15->10`, `SHOP FORGED OFFER REFUSED`, `SHOP RATE LIMIT OK`, `SHOP INSUFFICIENT REFUSED`. PokeCoin pages still depend on the unregistered `/shoppokecoin` (`KNOWN_ISSUES.md` #3) |
+| Player market | PARTIAL | PASS | PASS | `tools/smoke_market.sh`, two accounts: list, buy, sell, cancel, offer, accept, history, forged requests refused, 16 database checks. Refuse and the physical market tile NOT TESTED |
+| Auto loot strip | NOT TESTED | PASS | PASS | `LOOT LIST OK visible=true icons=2 items=12830x1,11076x1` |
+| Daily reward calendar, dungeons, depot lock, doll and badge cases, slot machine, tips, houses, poll | see `FEATURE_TEST_MATRIX.md` | BLOCKED | BLOCKED | Not ported (`REDEMPTION_MODULE_AUDIT.md`) |
 | Combat (summon attacks a wild Pokémon) | PARTIAL | PASS | PASS | See the move rows above; the wild Pokémon also attacks the summon |
 | Catching | NOT TESTED | NOT TESTED | NOT TESTED | — |
 | Settings persistence | NOT TESTED | NOT TESTED | NOT TESTED | Settings live under `pokeverse/` (compact name) |
 
 ## Next steps (in order)
 
-1. Done: the Pokémon bar and the move bar.
-2. Port the extended-opcode modules (Pokémon Info, Pokédex, Battle Pass, calendar, dungeons, crafting, tasks, shop, market), using the opcode ids in `EXTENDED_OPCODE_MAP.md`.
-3. Extend `redemption_smoke_rc.lua` the way the legacy runtime harness does, one module at a time, so each row above is decided by a run rather than by inspection.
+1. Done: the Pokémon bar, the move bar, and the Phase 3C modules above.
+2. Port the remaining modules in the order given in `REDEMPTION_MODULE_AUDIT.md` (calendar and dungeons first), each with a smoke step.
+3. Hands-on play on a Windows desktop (`WINDOWS_HANDS_ON_TESTING.md`) and a first Android device run (`ANDROID_RUNTIME_TESTING.md`).
