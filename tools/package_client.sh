@@ -33,6 +33,9 @@ fi
 if find -L "$DIST" -type d -name game_bot -print -quit | grep -q .; then
     fail "bot module (game_bot) found in $DIST"
 fi
+if grep -Rlq --include='*.lua' '\[pv-smoke\]' "$DIST" 2>/dev/null; then
+    fail "smoke-test script (tools/redemption_smoke_rc.lua) found in $DIST: $(grep -Rl --include='*.lua' '\[pv-smoke\]' "$DIST" | head -1)"
+fi
 
 mkdir -p "$(dirname "$OUT")"
 tar -C "$(dirname "$DIST")" -czhf "$OUT" --exclude='*.log' "$(basename "$DIST")"

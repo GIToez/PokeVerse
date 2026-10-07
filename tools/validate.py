@@ -258,6 +258,8 @@ REGRESSIONS = [
      r"Localization::t\(account\.language, g_config\.getString\(ConfigManager::MOTD\)\)", "i18n: character-list MOTD not localized"),
     ("tools/protocol_smoke.sh",
      r"MSYS2_ARG_CONV_EXCL=\* ", "Windows smoke: MSYS2 rewrites GM commands into paths"),
+    ("tools/package_client.sh",
+     r"\\\[pv-smoke\\\]", "packaging: Redemption smoke-test otclientrc.lua not refused"),
 ]
 
 
