@@ -52,6 +52,7 @@ SYSTEM_DLLS=' kernel32 user32 gdi32 gdiplus advapi32 shell32 shlwapi ole32 oleau
  dbghelp uxtheme dwmapi hid winhttp wininet wldap32 normaliz rpcrt4 userenv psapi ntdll powrprof xinput1_4 xinput9_1_0
  dinput8 dsound avrt mmdevapi ksuser msvcrt ucrtbase wtsapi32 msimg32 d3d9 d3d11 d3d12 dxgi shcore wintrust netapi32
  mpr usp10 dxva2 mf mfplat mfreadwrite propsys '
+SYSTEM_DLLS=" $(printf '%s' "$SYSTEM_DLLS" | tr -s '\n\t ' '   ') "
 if [ "$CHECK_IMPORTS" = 1 ]; then
     command -v objdump > /dev/null || bad "--check-imports needs objdump (binutils)"
     for bin in "$PKG"/client/*.exe "$PKG"/client/*.dll "$PKG"/server/*.exe "$PKG"/server/*.dll; do
