@@ -672,6 +672,27 @@ local BaseTypes = {
   ["speed"] = {itemId = 35544},
 }
 
+-- The upgrade list comes from the client: keep only known stats with positive integer amounts, merge
+-- repeated stats, and drop a stat whose total would pass the cap.
+local function sanitizeUpgradeTab(tab, current, cap)
+  local merged, order = {}, {}
+  if type(tab) ~= "table" then return {} end
+  for _, entry in pairs(tab) do
+    local value = type(entry) == "table" and tonumber(entry.value)
+    if value and value > 0 and value == math.floor(value) and type(entry.id) == "string" and current[entry.id] then
+      if not merged[entry.id] then order[#order + 1] = entry.id end
+      merged[entry.id] = (merged[entry.id] or 0) + value
+    end
+  end
+  local result = {}
+  for _, id in ipairs(order) do
+    if current[id] + merged[id] <= cap then
+      result[#result + 1] = {id = id, value = merged[id]}
+    end
+  end
+  return result
+end
+
 function upgradeBase(cid, tab)
   local ball = getPlayerBall(cid)
   if not isItem(ball) then return end
@@ -683,6 +704,11 @@ function upgradeBase(cid, tab)
     spdef = getBallPokemonBaseSPDEF(ball.uid),
     speed = getBallPokemonBaseSPD(ball.uid),
   }
+  tab = sanitizeUpgradeTab(tab, base, 150)
+  if #tab == 0 then return end
+  for _, b in ipairs(tab) do
+    if not BaseTypes[b.id] then return end
+  end
   for _, b in pairs(tab) do
     if base[b.id] then
       local value = base[b.id]
@@ -729,6 +755,8 @@ function upgradeEv(cid, tab)
     spdef = getBallPokemonEVSPDEF(ball.uid),
     speed = getBallPokemonEVSPD(ball.uid),
   }
+  tab = sanitizeUpgradeTab(tab, evs, 250)
+  if #tab == 0 then return end
   local spendingReq = 0
   for _, ev in pairs(tab) do
     if evs[ev.id] then
