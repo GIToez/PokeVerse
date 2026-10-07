@@ -8,6 +8,8 @@ local host = os.getenv('PV_HOST') or '127.0.0.1'
 local port = tonumber(os.getenv('PV_LOGIN_PORT') or '7564')
 -- Walkable tile outside the starting temple's protection zone (checked against the map).
 local MOVE_TEST_POSITION = os.getenv('PV_MOVE_TEST_POSITION') or '3325,806,6'
+-- Last known tile of the wild Rattata the summon fights; its corpse is used by the auto loot test.
+local wildDeathPos
 
 local function report(fmt, ...)
     g_logger.info('[pv-smoke] ' .. string.format(fmt, ...))
@@ -147,11 +149,13 @@ local function inspectGame()
             end
             if target then
                 g_game.attack(target)
+                wildDeathPos = target:getPosition()
             end
             local healthBefore = target and target:getHealthPercent() or -1
             -- The first move may be melee (Tackle, Scratch), so let the summon reach the target.
             local waited = 0
             local function useWhenAdjacent()
+                wildDeathPos = target and target:getPosition() or wildDeathPos
                 local summon = findSummon()
                 if target and summon and distance(summon:getPosition(), target:getPosition()) > 1 and waited < 6000 then
                     waited = waited + 250
@@ -582,6 +586,7 @@ local function inspectGame()
             return nextStep()
         end
         g_game.attack(target)
+        wildDeathPos = target:getPosition()
         local targetId = target:getId()
         local function alive()
             local creature = g_map.getCreatureById(targetId)
@@ -589,6 +594,8 @@ local function inspectGame()
         end
         local waited = 0
         local function poll()
+            local creature = g_map.getCreatureById(targetId)
+            wildDeathPos = creature and creature:getPosition() or wildDeathPos
             if alive() and waited < 15000 then
                 if not g_game.isAttacking() then g_game.attack(g_map.getCreatureById(targetId)) end
                 waited = waited + 500
@@ -605,18 +612,83 @@ local function inspectGame()
             end
             g_game.cancelAttack()
             local creature = g_map.getCreatureById(targetId)
-            report('TASK KILL %s waited=%d health=%s', alive() and 'ALIVE' or 'DEFEATED', waited,
-                tostring(creature and creature:getHealthPercent()))
+            report('TASK KILL %s waited=%d health=%s at=%s', alive() and 'ALIVE' or 'DEFEATED', waited,
+                tostring(creature and creature:getHealthPercent()),
+                wildDeathPos and (wildDeathPos.x .. ',' .. wildDeathPos.y .. ',' .. wildDeathPos.z) or 'nil')
             nextStep()
         end
         scheduleEvent(poll, 500)
+    end
+
+    -- Auto loot (0xFF LootList): with /autoloot on, using the Rattata's corpse moves its loot to the
+    -- backpack and the server lists it above the map. A Rattata drops nothing about 60% of the time;
+    -- then the corpse just opens empty and the check is skipped. /autoloot is saved, so it is
+    -- toggled back to the character's original setting.
+    local lootReply, wildLoot
+    connect(g_game, { onTextMessage = function(mode, text)
+        if text:find('^Auto Loot ') or text == 'Loot collected.' or text:find('^Loot not collected') then lootReply = text end
+        if text:find('^Loot of a Rattata: ') then wildLoot = text end
+    end })
+    local function setAutoLoot(on, nextStep, flipped)
+        lootReply = nil
+        g_game.talk('/autoloot')
+        scheduleEvent(function()
+            local isOn = lootReply == 'Auto Loot ON!'
+            if isOn == on then return nextStep(flipped or 0) end
+            if (flipped or 0) >= 1 then return nextStep(-1) end
+            setAutoLoot(on, nextStep, (flipped or 0) + 1)
+        end, 700)
+    end
+    local function lootTest(nextStep)
+        local loot = modules.game_lootlist
+        if not loot or not wildDeathPos then
+            report('LOOT SKIPPED module=%s corpse=%s', tostring(loot ~= nil), tostring(wildDeathPos ~= nil))
+            return nextStep()
+        end
+        -- A second toggle is needed only when auto loot was already on.
+        setAutoLoot(true, function(extra)
+            local wasOn = extra == 1
+            local tile = g_map.getTile(wildDeathPos)
+            local corpse = tile and tile:getTopUseThing()
+            if not corpse or not corpse:isContainer() then
+                report('LOOT SKIPPED corpse=%s at=%d,%d,%d', tostring(corpse and corpse:getId()), wildDeathPos.x, wildDeathPos.y, wildDeathPos.z)
+                if wasOn then return nextStep() end
+                return setAutoLoot(false, function() nextStep() end)
+            end
+            lootReply = nil
+            g_game.use(corpse)
+            scheduleEvent(function()
+                local state = loot.getState()
+                if lootReply == 'Loot collected.' then
+                    local items = {}
+                    for id, count in pairs(state.last or {}) do table.insert(items, id .. 'x' .. count) end
+                    report('LOOT LIST %s visible=%s icons=%d items=%s', state.visible and state.icons > 0 and #items > 0 and 'OK' or 'FAILED',
+                        tostring(state.visible), state.icons, table.concat(items, ','))
+                elseif wildLoot == 'Loot of a Rattata: nothing.' then
+                    report('LOOT EMPTY reply=%s icons=%d', tostring(lootReply), state.icons)
+                else
+                    report('LOOT LIST FAILED reply=%s drop=%s icons=%d', tostring(lootReply), tostring(wildLoot), state.icons)
+                end
+                for _, container in pairs(g_game.getContainers()) do
+                    if container:getContainerItem() and container:getContainerItem():getId() == corpse:getId() then g_game.close(container) end
+                end
+                if wasOn then
+                    report('LOOT RESTORED autoloot=true')
+                    return nextStep()
+                end
+                setAutoLoot(false, function(result)
+                    report('LOOT RESTORED autoloot=%s', result >= 0 and 'false' or 'UNKNOWN')
+                    nextStep()
+                end)
+            end, 1500)
+        end)
     end
 
     local taskProgress
     local function taskFinish(nextStep)
         local tasks = modules.game_task
         if not tasks then return nextStep() end
-        finishWild('Rattata', function() taskProgress(nextStep) end)
+        finishWild('Rattata', function() taskProgress(function() lootTest(nextStep) end) end)
     end
 
     taskProgress = function(nextStep)
@@ -1173,12 +1245,7 @@ local function login()
     end
     report('THINGS LOADED dat=%x spr=%x', g_things.getDatSignature(), g_sprites.getSprSignature())
 
-    local protocol = ProtocolLogin.create()
-    protocol.onLoginError = function(_, message)
-        report('LOGIN ERROR %s', message)
-        finish(1)
-    end
-    protocol.onCharacterList = function(_, characters, accountInfo)
+    local function onCharacterList(_, characters, accountInfo)
         report('CHARLIST count=%d premDays=%d poll=%s', #characters, accountInfo.premDays,
             tostring(accountInfo.pollAvailable))
         local chosen
@@ -1196,7 +1263,32 @@ local function login()
         end
         g_game.loginWorld(account, password, chosen.worldName, chosen.worldIp, chosen.worldPort, chosen.name, '', '', '')
     end
-    protocol:login(host, port, account, password, '', false)
+
+    -- Now and then the login server never answers the first login (KNOWN_ISSUES.md), so retry twice.
+    local gotList, attempt, protocol = false, 0, nil
+    local function tryLogin()
+        attempt = attempt + 1
+        if protocol then
+            protocol.onLoginError, protocol.onCharacterList = nil, nil
+            protocol:cancelLogin()
+        end
+        protocol = ProtocolLogin.create()
+        protocol.onLoginError = function(_, message)
+            report('LOGIN ERROR %s', message)
+            finish(1)
+        end
+        protocol.onCharacterList = function(...)
+            gotList = true
+            onCharacterList(...)
+        end
+        protocol:login(host, port, account, password, '', false)
+        scheduleEvent(function()
+            if gotList or attempt >= 3 then return end
+            report('LOGIN RETRY attempt=%d no character list after 15 s', attempt)
+            tryLogin()
+        end, 15000)
+    end
+    tryLogin()
 end
 
 scheduleEvent(login, 1000)
