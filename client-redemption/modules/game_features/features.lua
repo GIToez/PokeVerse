@@ -57,6 +57,16 @@ controller:registerEvents(g_game, {
             g_game.enableFeature(GameCreatureEmblems)
         end
 
+        -- PokeVerse server (protocol 854); docs/REDEMPTION_PROTOCOL_COMPATIBILITY.md section 9.
+        if version == 854 then
+            g_game.enableFeature(GameMagicEffectU16)
+            g_game.enableFeature(GameCreatureIcons)
+            g_game.enableFeature(GameSpritesU32)
+            g_game.enableFeature(GameSpritesAlphaChannel)
+            g_game.enableFeature(GameCountU16)
+            g_game.enableFeature(GamePokeVerse)
+        end
+
         if version >= 860 then
             g_game.enableFeature(GameAttackSeq)
         end

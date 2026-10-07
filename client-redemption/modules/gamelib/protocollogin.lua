@@ -41,6 +41,10 @@ function ProtocolLogin:sendLoginPacket()
 
     msg:addU16(g_game.getProtocolVersion())
 
+    if g_game.getFeature(GamePokeVerse) then
+        msg:addU8(self:getPokeVerseLanguageId())
+    end
+
     if g_game.getFeature(GameClientVersion) then
         msg:addU32(g_game.getClientVersion())
     end
@@ -147,6 +151,15 @@ function ProtocolLogin:sendLoginPacket()
     self:recv()
 end
 
+-- Server LocalizationLang_t: 0 English, 1 Portuguese, 2 Spanish.
+local POKEVERSE_LANGUAGE_IDS = { en = 0, pt = 1, es = 2 }
+
+function ProtocolLogin:getPokeVerseLanguageId()
+    local locale = modules.client_locales and modules.client_locales.getCurrentLocale()
+    local name = locale and locale.name or 'en'
+    return POKEVERSE_LANGUAGE_IDS[name:sub(1, 2)] or 0
+end
+
 function ProtocolLogin:onConnect()
     self.gotConnection = true
     self:connectCallback()
@@ -242,6 +255,24 @@ function ProtocolLogin:parseCharacterList(msg)
                 character.previewState = msg:getU8()
             end
 
+            if g_game.getFeature(GamePokeVerse) then
+                character.level = msg:getU16()
+                character.vocation = msg:getU8()
+                character.outfit = {
+                    type = msg:getU16(),
+                    head = msg:getU8(),
+                    body = msg:getU8(),
+                    legs = msg:getU8(),
+                    feet = msg:getU8(),
+                    addons = msg:getU8()
+                }
+                character.pokemonTeam = {}
+                local teamSize = msg:getU8()
+                for j = 1, teamSize do
+                    character.pokemonTeam[j] = { lookType = msg:getU16(), name = msg:getString() }
+                end
+            end
+
             characters[i] = character
         end
     end
@@ -259,6 +290,10 @@ function ProtocolLogin:parseCharacterList(msg)
         account.status = AccountStatus.Ok
         account.premDays = msg:getU16()
         account.subStatus = account.premDays > 0 and SubscriptionStatus.Premium or SubscriptionStatus.Free
+    end
+
+    if g_game.getFeature(GamePokeVerse) then
+        account.pollAvailable = msg:getU8() ~= 0
     end
 
     signalcall(self.onCharacterList, self, characters, account)

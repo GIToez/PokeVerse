@@ -4,7 +4,8 @@ game
   typing-icon: /images/game/console/typing
   
   map
-    viewport: 8 6
+    # PokeVerse server map window is 32x28 tiles (server/source/map.h).
+    viewport: 15 13
     extended-view-ui: false
     max-z: 15
     sea-floor: 7
