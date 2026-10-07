@@ -28,7 +28,9 @@ mkdir -p "$PROFILE"
 grep -qs '^locale:' "$PROFILE/config.otml" || echo "locale: en" >> "$PROFILE/config.otml"
 
 cd "${CLIENT_DIR:-$ROOT/dist/client}"
-./pokeverse-client > "$CLIENT_LOG" 2>&1 &
+EXE=$(ls pokeverse-client* 2>/dev/null | head -1)
+[ -n "$EXE" ] || { echo "FAIL: no pokeverse-client* executable in $PWD" >&2; exit 1; }
+"./$EXE" > "$CLIENT_LOG" 2>&1 &
 client=$!
 # KEEP_CLIENT=1 leaves the client running in the game after a PASS (used by runtime_test.sh).
 trap '[ "${KEEP_CLIENT:-0}" = 1 ] && [ "${passed:-0}" = 1 ] || kill $client 2>/dev/null || true' EXIT

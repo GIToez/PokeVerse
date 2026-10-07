@@ -12,6 +12,11 @@ if(BOT_PROTECTION)
 else(BOT_PROTECTION)
     message(STATUS "Bot protection: OFF")
 endif(BOT_PROTECTION)
+if(BOT_PROTECTION AND BUILD_VARIANT STREQUAL "harness")
+    message(FATAL_ERROR "BUILD_VARIANT=harness requires BOT_PROTECTION=OFF")
+elseif(NOT BOT_PROTECTION AND NOT BUILD_VARIANT STREQUAL "harness")
+    message(FATAL_ERROR "BOT_PROTECTION=OFF is only allowed with BUILD_VARIANT=harness")
+endif()
 
 set(client_SOURCES ${client_SOURCES}
     # client

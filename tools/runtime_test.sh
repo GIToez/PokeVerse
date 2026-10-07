@@ -5,7 +5,7 @@
 # (see tools/runtime-harness/pv_harness/pv_harness.lua), screenshots every step and
 # collects the [PVH] log lines. The harness is removed again afterwards.
 # Uses the dist/client-harness build (VARIANT=harness tools/build_client.sh), which has
-# OTClient bot protection off so Lua can issue game actions.
+# OTClient bot protection off so Lua can issue game actions. Refuses any other variant.
 # Usage: tools/runtime_test.sh [out-dir] [server-log]   (needs DISPLAY and xdotool)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -16,12 +16,15 @@ MODULE_DIR="$USER_DIR/pv_harness"
 STEP_FILE="$USER_DIR/harness_step.txt"
 : "${DISPLAY:?set DISPLAY (for example run under xvfb-run)}"
 
+HARNESS_CLIENT="${CLIENT_DIR:-$ROOT/dist/client-harness}"
+[ "$(cat "$HARNESS_CLIENT/VARIANT" 2>/dev/null)" = harness ] || {
+    echo "FAIL: $HARNESS_CLIENT is not a harness build (VARIANT=harness tools/build_client.sh)" >&2; exit 1; }
 mkdir -p "$OUT" "$USER_DIR"
 rm -rf "$MODULE_DIR" "$STEP_FILE"
 cp -r "$ROOT/tools/runtime-harness/pv_harness" "$MODULE_DIR"
 cleanup() {
     # The client ignores SIGTERM.
-    pkill -9 -f "client-harness/pokeverse-client|^./pokeverse-client" 2>/dev/null || true
+    pkill -9 -f "^./pokeverse-client-harness" 2>/dev/null || true
     rm -rf "$MODULE_DIR" "$STEP_FILE"
 }
 trap cleanup EXIT
@@ -35,7 +38,7 @@ $MYSQL pokeverse -e "DELETE FROM player_items WHERE (pid >= 101 OR pid = 8)
 
 server_lines_before=$(wc -l < "$SERVER_LOG")
 PV_HARNESS=1 KEEP_CLIENT=1 CLIENT_LOG="$OUT/client.log" SHOT="$OUT/00-login.png" \
-    CLIENT_DIR="${CLIENT_DIR:-$ROOT/dist/client-harness}" \
+    CLIENT_DIR="$HARNESS_CLIENT" \
     "$ROOT/tools/smoke_login.sh" "${ACCOUNT:-admin}" "${PASSWORD:-admin}" "${CHARACTER:-GM Admin}" "$SERVER_LOG"
 
 last=""

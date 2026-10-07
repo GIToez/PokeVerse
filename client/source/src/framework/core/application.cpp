@@ -94,6 +94,10 @@ void Application::init(std::vector<std::string>& args)
     if(startupOptions.length() > 0)
         g_logger.info(stdext::format("Startup options: %s", startupOptions));
 
+#ifdef POKEVERSE_HARNESS_BUILD
+    g_logger.warning("HARNESS BUILD - test automation enabled, bot protection disabled. NOT FOR DISTRIBUTION.");
+#endif
+
     m_startupOptions = startupOptions;
 
     // initialize configs

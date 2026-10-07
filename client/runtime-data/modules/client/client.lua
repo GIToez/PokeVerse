@@ -86,6 +86,10 @@ function init()
   -- g_window.setTitle(g_app.getName())
   g_window.setIcon('/images/clienticon')
 
+  if g_app.getBuildVariant and g_app.getBuildVariant() == 'harness' then
+    showHarnessBanner()
+  end
+
   -- poll resize events
   g_window.poll()
 
@@ -94,6 +98,24 @@ function init()
     g_settings.set('uuid', g_crypt.getMachineUUID())
     g_settings.save()
   end
+end
+
+-- Harness builds (docs/CLIENT_VARIANTS.md) must be recognisable on every screenshot.
+function showHarnessBanner()
+  local banner = g_ui.createWidget('UIWidget', rootWidget)
+  banner:setId('harnessBanner')
+  banner:setText('HARNESS BUILD - TEST AUTOMATION ENABLED - NOT FOR DISTRIBUTION')
+  banner:setColor('#ffffff')
+  banner:setBackgroundColor('#b00000cc')
+  banner:setTextAlign(AlignCenter)
+  banner:setHeight(16)
+  banner:setPhantom(true)
+  banner:setFocusable(false)
+  banner:addAnchor(AnchorTop, 'parent', AnchorTop)
+  banner:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+  banner:addAnchor(AnchorRight, 'parent', AnchorRight)
+  connect(g_game, { onGameStart = function() banner:raise() end })
+  connect(rootWidget, { onChildFocusChange = function() banner:raise() end })
 end
 
 function terminate()

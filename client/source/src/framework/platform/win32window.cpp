@@ -830,8 +830,13 @@ void WIN32Window::restoreMouseCursor()
     }
 }
 
-void WIN32Window::setTitle(const std::string& title)
+void WIN32Window::setTitle(const std::string& baseTitle)
 {
+#ifdef POKEVERSE_HARNESS_BUILD
+    std::string title = "[HARNESS - NOT FOR DISTRIBUTION] " + baseTitle;
+#else
+    const std::string& title = baseTitle;
+#endif
     SetWindowTextW(m_window, stdext::latin1_to_utf16(title).c_str());
 }
 

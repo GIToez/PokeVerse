@@ -927,8 +927,13 @@ int X11Window::internalLoadMouseCursor(const ImagePtr& image, const Point& hotSp
     return m_cursors.size()-1;
 }
 
-void X11Window::setTitle(const std::string& title)
+void X11Window::setTitle(const std::string& baseTitle)
 {
+#ifdef POKEVERSE_HARNESS_BUILD
+    std::string title = "[HARNESS - NOT FOR DISTRIBUTION] " + baseTitle;
+#else
+    const std::string& title = baseTitle;
+#endif
     XStoreName(m_display, m_window, title.c_str());
     XSetIconName(m_display, m_window, title.c_str());
 }

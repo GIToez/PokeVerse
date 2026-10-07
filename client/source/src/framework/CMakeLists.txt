@@ -198,6 +198,18 @@ add_definitions(-D"BUILD_COMMIT=\\\"${BUILD_COMMIT}\\\"")
 message(STATUS "Build revision: ${BUILD_REVISION}")
 add_definitions(-D"BUILD_REVISION=\\\"${BUILD_REVISION}\\\"")
 
+# PokeVerse client variant (docs/CLIENT_VARIANTS.md). Only "production" may be packaged.
+set(BUILD_VARIANT "production" CACHE STRING "Client variant: production, debug or harness")
+set_property(CACHE BUILD_VARIANT PROPERTY STRINGS production debug harness)
+if(NOT BUILD_VARIANT MATCHES "^(production|debug|harness)$")
+    message(FATAL_ERROR "BUILD_VARIANT must be production, debug or harness (got '${BUILD_VARIANT}')")
+endif()
+message(STATUS "Build variant: ${BUILD_VARIANT}")
+add_definitions(-D"BUILD_VARIANT=\\\"${BUILD_VARIANT}\\\"")
+if(BUILD_VARIANT STREQUAL "harness")
+    add_definitions(-DPOKEVERSE_HARNESS_BUILD)
+endif()
+
 # find boost
 set(REQUIRED_BOOST_COMPONENTS system thread filesystem chrono)
 if(WIN32)

@@ -80,6 +80,8 @@ The PSoul systems layer (`lib/ps/systems/0NN-*.lua`) is the core of the gameplay
 | Assets | `data/things/Tibia.dat` + `Tibia.spr` (262 MB) + `Tibia.otml`/`Tibia.otfi` (extended, transparency), 1,879 images, 472 OGG sounds, 30 fonts, 28 shaders, 60 particles |
 | Modules | 69 directories (plus an IDE `.project/` folder). See `CLIENT_UI.md` / `UI_AUDIT.md`. |
 
+**Phase 3:** `client/` is the **legacy reference client**, the parity reference for the Redemption client in `client-redemption/`. It stays in place (see `CLIENT_VARIANTS.md`).
+
 ### Client load order (`client/runtime-data/init.lua`)
 
 1. Anti-tamper file check (aborts on injector artifacts).

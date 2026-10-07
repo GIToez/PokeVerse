@@ -101,6 +101,7 @@ public:
     std::string getBuildRevision() { return BUILD_REVISION; }
     std::string getBuildCommit() { return BUILD_COMMIT; }
     std::string getBuildType() { return BUILD_TYPE; }
+    std::string getBuildVariant() { return BUILD_VARIANT; }
     std::string getBuildArch() { return BUILD_ARCH; }
     std::string getOs();
     std::string getStartupOptions() { return m_startupOptions; }
