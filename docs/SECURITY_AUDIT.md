@@ -138,6 +138,7 @@ Phase 2 built and ran the server and client from source. It fixed or disabled th
 | 11 | Open | `opcode.lua` still trusts the `json.decode` results |
 | 15 | **Fixed** | `protocollogin.cpp`: the 0xFC (create account) and 0xFD (create character) handlers compile only with `__ACCOUNT_CREATION__`, which is not defined. Otherwise the server disconnects with "Account creation is disabled on this server." The client's `poke_create` window still exists but cannot create anything. |
 | — | **Fixed** (new finding) | `talkactions.xml`: the staff-only `/i` (create any item) line was commented out and replaced by a copy without `access`, so any player could create items. It is restored to `access="4"`. `/teste` (server-wide broadcast) is now `access="4"`. `/profission` (runs `learnWork(cid, 1)`) is left open: it is the only way to start the profession system. |
+| — | **Fixed** (Phase 3 finding) | `showbuywindowhouse`, which the legacy client's `game_houseowner` says whenever it opens the buy window of an unowned house, ran `teste.lua` with no access check, so any player could broadcast the test message to everyone. The word now runs `showBuyWindowHouse.lua`, which only consumes it. Guarded in `validate.py regressions`. |
 | — | **Fixed** (new finding) | Market `DELETE` queries concatenated `item_index` twice (for example `item_index = 33` instead of `3`), so they deleted the wrong row or none (`data/lib/game_market.lua`) |
 
 **Why not JSON.** The original request was to replace `loadstring` with JSON.

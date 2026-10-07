@@ -340,6 +340,17 @@ Not in the table, but player-facing: the bilingual broadcasts in `lib/ps/events/
 
 ## 5. Recommended order of work
 
+**Done in Phase 3:**
+- Step 1: house and `/evolve` descriptions; `/SendPass35` and `/SendPass50` usage; the `protocollogin.cpp` errors; the legacy client `init.lua` fatal message.
+  - `shutdown.lua` now sends one English format string per player, localized through `__L` and three new `pt_br.loc` keys. This also fixes "We will back" and the UTF-8 Portuguese line that latin-1 clients showed as mojibake.
+- Step 2, config: `motd` and `loginMessage` are English, with `pt_br.loc` entries.
+  - The character-list MOTD is now passed through `Localization::t` with the account language. Verified: language 0 gets the English MOTD and language 1 the Portuguese one.
+  - The `config.lua` blessing comments are translated.
+- The `/teste` broadcast text is English.
+- Loader fix: `pt_br.loc` is CRLF, and on Linux every Portuguese value used to keep the `\r`, while Windows text-mode streams dropped it. The loader now strips it on every platform.
+
+Everything below is still open.
+
 1. **Canonical admin/operator text** (small, no compatibility risk):
    - `talkactions.xml` house descriptions and the `/evolve` description.
    - `pass35/50.lua` usage text.
