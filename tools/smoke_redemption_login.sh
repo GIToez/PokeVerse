@@ -67,7 +67,10 @@ screenshot() {
 # Windows, where a GUI executable's stdout may not reach the pipe.
 client_log() { cat "$RUN/stdout.log" "$RUN"/*.log 2>/dev/null | grep -a '' || true; }
 
-( cd "$RUN" && exec "./$EXE" ) > "$RUN/stdout.log" 2>&1 &
+# Every run gets its own empty settings dir (otherwise the client reuses
+# %APPDATA%\<org>\<app> on Windows across runs).
+mkdir -p "$RUN/userdir"
+( cd "$RUN" && exec "./$EXE" --user-dir=userdir ) > "$RUN/stdout.log" 2>&1 &
 CLIENT_PID=$!
 shot_taken=0
 deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))
@@ -83,8 +86,10 @@ kill "$CLIENT_PID" 2>/dev/null || true
 # A client stuck in its shutdown can ignore SIGTERM, and wait would then block forever.
 for _ in 1 2 3 4 5 6 7 8 9 10; do kill -0 "$CLIENT_PID" 2>/dev/null || break; sleep 0.5; done
 kill -9 "$CLIENT_PID" 2>/dev/null || true
-wait "$CLIENT_PID" 2>/dev/null || true
+client_status=0
+wait "$CLIENT_PID" 2>/dev/null || client_status=$?
 cp "$RUN/stdout.log" "$LOG"
+echo "[pv-smoke-harness] client exit status $client_status" >> "$LOG"
 for f in "$RUN"/*.log; do [ "$f" = "$RUN/stdout.log" ] || { echo "== $(basename "$f")"; cat "$f"; } >> "$LOG"; done
 
 fail() { echo "FAIL: $1" >&2; grep -a '\[pv-smoke\]\|ERROR\|rror' "$LOG" | tail -30 >&2; exit 1; }
