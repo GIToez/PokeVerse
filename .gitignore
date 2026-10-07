@@ -2,20 +2,9 @@
 .downloads/
 _import/
 
-# --- Design sources (2.5 GB of PSD/PSB; several files exceed GitHub's 100 MB limit) ---
-assets/design-psd/
-*.psd
-*.psb
-
-# --- Client sprite file (262 MB, exceeds GitHub's 100 MB limit; distribute separately or via Git LFS) ---
-client/data/things/Tibia.spr
-
-# --- Prebuilt Windows binaries (see docs/BINARY_INVENTORY.md; kept on disk, not in Git) ---
-*.exe
-*.dll
-*.a
-*.lib
-client/libtest.def
+# --- Large assets are stored with Git LFS (see .gitattributes and .lfsconfig) ---
+# Tibia.spr and the PSD/PSB design files are committed through LFS.
+# Prebuilt Windows binaries are committed as regular files (see docs/BINARY_INVENTORY.md).
 
 # --- Compiler output ---
 *.o
@@ -36,10 +25,6 @@ server/logs/
 *.dmp
 server/settings.sav
 server/forgottenserver.map
-
-# --- Generated updater files (produced by the hash tool, fetched from the update server) ---
-client/data/hash.xml
-client/data/hash.xmlfile
 
 # --- Backups and temporary files ---
 *.bak
