@@ -80,6 +80,9 @@ while kill -0 "$CLIENT_PID" 2>/dev/null && [ "$SECONDS" -lt "$deadline" ]; do
 done
 kill "$CLIENT_PID" 2>/dev/null || true
 [ "$WINDOWS" = 1 ] && taskkill //F //IM "$EXE" > /dev/null 2>&1 || true
+# A client stuck in its shutdown can ignore SIGTERM, and wait would then block forever.
+for _ in 1 2 3 4 5 6 7 8 9 10; do kill -0 "$CLIENT_PID" 2>/dev/null || break; sleep 0.5; done
+kill -9 "$CLIENT_PID" 2>/dev/null || true
 wait "$CLIENT_PID" 2>/dev/null || true
 cp "$RUN/stdout.log" "$LOG"
 for f in "$RUN"/*.log; do [ "$f" = "$RUN/stdout.log" ] || { echo "== $(basename "$f")"; cat "$f"; } >> "$LOG"; done
