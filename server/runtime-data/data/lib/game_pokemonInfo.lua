@@ -916,6 +916,14 @@ function sendPokemonInfo(cid)
   info.friendship.reqMoney = getFriendshipMoneyReq(info.friendship.level+1)
   info.friendship.reqDiamonds = getFriendshipDiamondsReq(info.friendship.level+1)
   info.tickets = {base = getPlayerItemCount(cid, 35553), evs = getPlayerItemCount(cid, 35552)}
+  local held = getBallHeld(ball.uid)
+  local ability = getBallPokemonSpecialAbility(ball.uid)
+  info.extra = {
+    boost = getBallPokemonExtraPoints(ball.uid),
+    heldItem = held and PokemonHeldItem.getHeldName(held, ball.uid) or "",
+    heldLevel = held and getBallHeldLevel(ball.uid) or 0,
+    ability = ability ~= POKEMON_SPECIAL_ABILITY_IDS.NONE and getPokemonSpecialAbilityName(ability) or "",
+  }
   info.protocol = "Info"
   doSendPlayerExtendedOpcode(cid, GameServerOpcodes.PokemonInfo, json.encode(info))
 end
