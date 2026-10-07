@@ -1,0 +1,13 @@
+Module
+  name: game_pass
+  description: PokeVerse Battle Pass (season rewards and missions over extended opcode 61)
+  author: Ryukiimaru, Redemption port by PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ pass ]
+  @onLoad: init()
+  @onUnload: terminate()
