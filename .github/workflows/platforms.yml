@@ -568,7 +568,7 @@ jobs:
           sudo systemctl start mariadb
           tools/setup_dev_db.sh
 
-      - name: Redemption client login, gameplay smoke and logout (Trainer, GM Admin)
+      - name: Redemption client login, gameplay smoke, two-account market test and logout (Trainer, GM Admin)
         if: matrix.type == 'release'
         run: |
           mkdir -p e2e
@@ -581,6 +581,7 @@ jobs:
           python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/cb Charmander, 15, 10" --say "/cb Bulbasaur, 15, 10" || status=1
           PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" PV_EXPECT_POKEBAR=1 SCREENSHOT_AT="WALK OK" SCREENSHOT=e2e/linux-ingame-gm.png \
             tools/smoke_redemption_login.sh e2e/client-gm.log || status=1
+          tools/smoke_market.sh e2e || status=1
           pkill -9 -f pokeverse-server || true
           exit $status
 
