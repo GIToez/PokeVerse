@@ -19,6 +19,7 @@ These are open issues carried into Phase 3 and issues found during it. Phase 3 f
 | 15 | **Most PokeVerse modules are not ported to Redemption.** The protocol, login, map, movement, chat, inventory, the Pokémon bar and the move bar work. Pokémon Info, Pokédex, Battle Pass, shop, market and the other windows do not exist yet. | Redemption client | Those features have no UI | Yes, for Redemption parity | Open | `REDEMPTION_PARITY_MATRIX.md` |
 | 16 | **Redemption login art is upstream's.** The medieval background, the knight icon, and the Discord/YouTube links in the top bar are OTClient's. | Redemption branding | Not PokeVerse art | No | MANUAL REVIEW (needs PokeVerse art) | `POKEVERSE_REBRAND_AUDIT.md` §2.2 |
 | 17 | **Legacy move bar never reacted to open/close.** `game_pokemoves` connects `onPokemonMovesOpen`/`onPokemonMovesClose`, but the legacy C++ raises `onMoveBarOpen`/`onMoveBarClose`, so the bar only appeared with a new move list and stayed up after a recall. Also, the server rebuilds the move list after most moves, which wiped the legacy cooldown overlay. | Legacy client | Stale move bar; cooldown countdown lost | No | Fixed in the Redemption port only (it connects the raised names and keeps cooldowns across rebuilds); the legacy client is the parity reference and is left as is | `client-redemption/modules/game_pokemoves/pokemoves.lua` |
+
 ## Fixed in Phase 3
 
 | Issue | Fix |
