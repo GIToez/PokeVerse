@@ -712,6 +712,19 @@ locale = {
     ["Extra clan perks:\nRank 1: Zen outfit #1\nRank 4: Shorter Teleport and Blink cooldowns\nRank 5: Zen outfit #2"] = "Vantagens extras do clã:\nRank 1: Outfit Zen #1\nRank 4: Menor intervalo no uso das habilidades Teleport e Blink\nRank 5: Outfit Zen #2",
     ["You can change the colours of this outfit"] = "Você consegue alterar a cor dessa roupa",
     ["You cannot change the colours of this outfit"] = "Você não consegue alterar a cor dessa roupa",
+    ["Seller"] = "Vendedor",
+    ["Unit price"] = "Preço Unitário",
+    ["Time"] = "Tempo",
+    ["Offer"] = "Oferta",
+    ["Expired"] = "Expirado",
+    ["Display offers"] = "Ver ofertas",
+    ["Send message to %s"] = "Enviar mensagem para %s",
+    ["Fee"] = "Taxa",
+    ["Total"] = "Total",
+    ["Page: %d / %d"] = "Página: %d / %d",
+    ["See"] = "Ver",
+    ["invalid"] = "inválido",
+    ["Set a price:"] = "Estipular um Valor:",
   }
 }
 
