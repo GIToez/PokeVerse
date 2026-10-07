@@ -1,0 +1,28 @@
+LootCountLabel < UILabel
+  font: verdana-11px-antialised
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+LootItem < Item
+  size: 48 48
+  virtual: true
+  border-width: 0
+  padding: 0
+  margin: 1 0 0 1
+  image-source: ~
+  $hover:
+    border-color: white
+    border-width: 1
+
+HeadlessWindow
+  id: lootList
+  focusable: false
+  draggable: false
+  phantom: true
+  image-color: #ffffffee
+  size: 42 64
+  margin-top: 5
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter
+  anchors.top: gameMapPanel.top
+  image-source: ~
