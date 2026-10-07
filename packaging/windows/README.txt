@@ -1,12 +1,13 @@
-PokeVerse - Windows local test package
-======================================
+PokeVerse - Windows development package
+========================================
 
 This folder runs a complete PokeVerse game on one Windows PC: the server
-(PokeVerseServer.exe), its MariaDB database, and the Redemption client
-(PokeVerse.exe). The server only listens on 127.0.0.1, so nobody else can
-connect to it.
+(server\pokeverse-server.exe), its MariaDB database, and the Redemption
+client (client\pokeverse-client.exe). Everything was built by GitHub Actions
+from the PokeVerse source; nothing needs to be compiled or installed except
+MariaDB. The server only listens on 127.0.0.1, so nobody else can connect.
 
-FOR LOCAL TESTING ONLY. The optional development accounts below have public
+DEVELOPMENT ONLY. The optional development accounts below have public
 passwords. Never open the server or the database to a network.
 
 
@@ -19,22 +20,24 @@ What you need
   service enabled, port 3306. Write down the root password you choose.
 * About 1 GB of free disk space.
 
-Nothing else: no Visual C++ redistributable, no Python, no Git.
+Nothing else: no Visual Studio, Visual C++ redistributable, MSYS2, CMake,
+Python or Git. Every DLL the server needs is in server\.
 
 
 Folder layout
 -------------
-  Setup-PokeVerse-Database.bat   create or upgrade the database (run first)
-  Reset-PokeVerse-Database.bat   DELETE the database and build it again
-  Start-PokeVerse-Server.bat     run the server in a console window
-  Start-PokeVerse-Client.bat     run the client
-  Start-PokeVerse-Test.bat       check the database, start the server, wait, start the client
-  client\                        PokeVerse.exe and the game data
-  server\                        PokeVerseServer.exe, its DLLs, data and config.example.lua
-  database\                      schema, migrations and the development seed
-  scripts\                       PowerShell helper used by the .bat files
+  Setup Database.bat               create or upgrade the database (run first)
+  Start Server.bat                 run the server in a console window
+  Start Client.bat                 run the client
+  Start Server and Client.bat      check the database, start the server, wait, start the client
+  Reset Development Database.bat   DELETE the database and build it again (asks first)
+  client\                          pokeverse-client.exe and the game data
+  server\                          pokeverse-server.exe, its DLLs, data, map and config.lua
+  database\                        schema, migrations and the development seed
+  scripts\                         PowerShell helper used by the .bat files
+  VERSION.txt                      the commit and build this package came from
 
-You can put this folder anywhere, for example C:\PokeVerse-Test\. Paths with
+You can put this folder anywhere, for example C:\PokeVerse\. Paths with
 spaces work. Do not move single files out of it.
 
 
@@ -42,7 +45,7 @@ Step 1 - database (once)
 ------------------------
 1. Make sure the MariaDB service is running (Services -> MariaDB, or the
    MariaDB installer's "Start service" option).
-2. Double-click Setup-PokeVerse-Database.bat and answer the questions.
+2. Double-click "Setup Database.bat" and answer the questions.
    Enter accepts the default in [brackets]:
      MariaDB host                  127.0.0.1
      MariaDB port                  3306
@@ -54,29 +57,31 @@ Step 1 - database (once)
      development accounts          Yes
 3. The script finds mariadb.exe (PATH, then C:\Program Files\MariaDB*\bin and
    the usual XAMPP/WAMP/Laragon folders; set POKEVERSE_MYSQL=<full path to
-   mariadb.exe> to choose one), creates the database, imports the schema,
-   applies every migration, creates the database user, writes
-   server\config.lua and checks that every table the server needs exists.
+   mariadb.exe> to choose one), checks that MariaDB answers, creates the
+   database if it is missing, imports the schema, applies every migration in
+   order, creates or updates the database user, writes server\config.lua and
+   checks that every table the server needs exists.
 4. It ends with "Database setup: SUCCESS". Any SQL error stops it with
    "FAILED" and the MariaDB error message; nothing is ignored.
 
 Running it again is safe: an existing database keeps its data and only gets
-missing migrations and seeds.
+missing migrations and seeds. It never deletes anything.
 
 
 Step 2 - play
 -------------
-Double-click Start-PokeVerse-Test.bat. It
+Double-click "Start Server and Client.bat". It
   1. checks the database with the settings in server\config.lua,
   2. opens a "PokeVerse Server" window and waits until the server accepts
      logins (loading takes about one to three minutes),
-  3. starts PokeVerse.exe.
+  3. starts the client.
 It does not log in, type or click anything for you.
 
-Or run the two parts yourself: Start-PokeVerse-Server.bat, wait for
-"server Online!", then Start-PokeVerse-Client.bat.
+Or run the two parts yourself: "Start Server.bat", wait for
+"server Online!", then "Start Client.bat".
 
-In the client, log in to the 127.0.0.1 server with:
+The client connects to the local server (127.0.0.1, login port 7564)
+without any editing. Log in with:
 
   account   password   character   role
   player    player     Trainer     normal player
@@ -92,14 +97,15 @@ to receive a level 15 Charmander (the full list is /commands).
 
 Step 3 - stop
 -------------
-As GM Admin say /shutdown (saves everything), or close the "PokeVerse Server"
-window. The server window shows the exit code before it closes.
+As GM Admin say /shutdown, or press Ctrl+C in the "PokeVerse Server" window,
+or close it: all three save players and the map before the server exits.
+The window shows the exit code.
 
 
 Starting over
 -------------
-Reset-PokeVerse-Database.bat deletes the database (you must type its name to
-confirm) and runs the setup again. Stop the server first.
+"Reset Development Database.bat" deletes the database (you must type its
+name to confirm) and runs the setup again. Stop the server first.
 
 
 What to test
@@ -121,8 +127,8 @@ Troubleshooting
     Wrong administrator password. Run the setup again.
 "Can't connect to server on '127.0.0.1'"
     The MariaDB service is not running, or it uses another port.
-"The database is not ready" in Start-PokeVerse-Test.bat
-    Run Setup-PokeVerse-Database.bat; it lists the missing tables.
+"The database is not ready" in "Start Server and Client.bat"
+    Run "Setup Database.bat"; it lists the missing tables.
 "port 7564 is in use"
     Another PokeVerse server is still running. Close its window.
 The server window closes or shows an error during loading
@@ -132,4 +138,4 @@ The server window closes or shows an error during loading
 The client window is black or does not open
     Update the graphics driver. Do not copy opengl32.dll into client\.
 Windows SmartScreen blocks a .bat or .exe
-    The test build is not signed. Choose "More info" -> "Run anyway".
+    The development build is not code-signed. Choose "More info" -> "Run anyway".

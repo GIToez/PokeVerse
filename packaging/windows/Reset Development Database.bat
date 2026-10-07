@@ -6,7 +6,7 @@ cd /d "%~dp0"
 echo ==================================================================
 echo  WARNING: this DELETES the PokeVerse database and everything in it:
 echo  every account, character, Pokemon, item, house and market offer.
-echo  Stop PokeVerseServer.exe before you continue.
+echo  Stop the PokeVerse server before you continue.
 echo ==================================================================
 echo.
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\PokeVerse-Tools.ps1" -Action Reset %*

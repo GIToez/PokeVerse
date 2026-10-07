@@ -22,7 +22,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
 LOG="${1:-/tmp/redemption-smoke.log}"
-EXE=$(cd "$DIST" && ls pokeverse-client pokeverse-client.exe pokeverse-client-debug pokeverse-client-debug.exe PokeVerse.exe 2>/dev/null | head -1 || true)
+EXE=$(cd "$DIST" && ls pokeverse-client pokeverse-client.exe pokeverse-client-debug pokeverse-client-debug.exe 2>/dev/null | head -1 || true)
 [ -n "$EXE" ] || { echo "no client in $DIST; run tools/stage_redemption.sh" >&2; exit 1; }
 [ -f "$DIST/data/things/854/Tibia.spr" ] || { echo "no 854 assets in $DIST (git lfs pull, then restage)" >&2; exit 1; }
 case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) WINDOWS=1 ;; *) WINDOWS=0 ;; esac

@@ -1,6 +1,6 @@
 <#
 PokeVerse Windows test package helper. The .bat files in the package root call this script;
-it is not meant to be run by hand (see README-WINDOWS-TESTING.txt).
+it is not meant to be run by hand (see README.txt).
 
   -Action Setup       create/upgrade the database, create the server's database user,
                       write server\config.lua, then verify
@@ -158,7 +158,7 @@ function Get-Inputs([bool]$NeedAdmin) {
     }
     $s.Database = Get-Setting $Database 'POKEVERSE_DB_NAME' 'Database name' 'pokeverse'
     Assert-Name $s.Database 'Database name'
-    $s.AppUser = Get-Setting $AppUser 'POKEVERSE_DB_USER' 'Database user for PokeVerseServer.exe' 'pokeverse'
+    $s.AppUser = Get-Setting $AppUser 'POKEVERSE_DB_USER' 'Database user for the server' 'pokeverse'
     Assert-Name $s.AppUser 'Database user'
     $s.AppPassword = Get-Secret $AppPassword 'POKEVERSE_DB_PASSWORD' "Password for database user $($s.AppUser) (local testing default: pokeverse-dev)" 'pokeverse-dev'
     $seed = Get-Setting $DevSeed 'POKEVERSE_DB_DEVSEED' 'Install DEVELOPMENT accounts player/player and admin/admin? (Yes/No)' 'Yes'
@@ -197,7 +197,7 @@ function Write-ServerConfig([hashtable]$S) {
 
 function Read-ServerConfig {
     if (-not (Test-Path -LiteralPath $ConfigFile)) {
-        throw "server\config.lua does not exist yet. Run Setup-PokeVerse-Database.bat first."
+        throw "server\config.lua is missing. Extract the whole package again, then run Setup Database.bat."
     }
     $text = [IO.File]::ReadAllText($ConfigFile, $Latin1)
     $get = {
@@ -221,7 +221,7 @@ function Test-Database([hashtable]$Conn, [string]$Db) {
     $missing = @($required | Where-Object { -not $have.ContainsKey($_.ToLowerInvariant()) })
     if ($missing.Count -gt 0) {
         throw ("Database $Db is missing $($missing.Count) of $($required.Count) required tables: " + ($missing -join ', ') +
-            "`nRun Setup-PokeVerse-Database.bat (or Reset-PokeVerse-Database.bat for a clean database).")
+            "`nRun Setup Database.bat (or Reset Development Database.bat for a clean database).")
     }
     Write-Ok "$($required.Count) tables the server needs are present ($($have.Count) tables in total)"
     $counts = (Invoke-Sql -Conn $Conn -Db $Db -What 'counting accounts' -Sql 'SELECT (SELECT COUNT(*) FROM accounts), (SELECT COUNT(*) FROM players);').Trim() -split '\s+'
@@ -245,7 +245,7 @@ function Invoke-Setup([hashtable]$S, [bool]$DropFirst) {
     }
     $exists = (Invoke-Sql -Conn $admin -What 'checking for the database' -Sql ("SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = " + (ConvertTo-SqlString $db) + ";")).Trim()
     if ($exists -eq '1') {
-        Write-Step "Database $db exists: applying migrations and seeds only (Reset-PokeVerse-Database.bat rebuilds it)"
+        Write-Step "Database $db exists: applying migrations and seeds only (Reset Development Database.bat rebuilds it)"
     }
     else {
         Write-Step "Creating database $db"
@@ -261,7 +261,7 @@ function Invoke-Setup([hashtable]$S, [bool]$DropFirst) {
         Write-Ok 'schema imported'
     }
 
-    Write-Step "Creating database user $($S.AppUser) for PokeVerseServer.exe"
+    Write-Step "Creating or updating database user $($S.AppUser) for the server"
     $hosts = @('localhost', '127.0.0.1')
     if ($S.Host -notin @('localhost', '127.0.0.1', '::1')) { $hosts = @('%') }
     $pw = ConvertTo-SqlString $S.AppPassword
@@ -312,7 +312,7 @@ try {
             $script:Mysql = Find-MysqlClient
             Invoke-Setup (Get-Inputs $true) $false
             Write-Host ''
-            Write-Ok 'Database setup finished. Next: Start-PokeVerse-Test.bat (or Start-PokeVerse-Server.bat).'
+            Write-Ok 'Database setup finished. Next: Start Server and Client.bat (or Start Server.bat, then Start Client.bat).'
         }
         'Reset' {
             $script:Mysql = Find-MysqlClient
@@ -340,10 +340,10 @@ try {
             while ($true) {
                 if (Test-PortOpen $Port) { Write-Ok "server is accepting connections on port $Port"; break }
                 $elapsed = ((Get-Date) - $start).TotalSeconds
-                if (Get-Process -Name 'PokeVerseServer' -ErrorAction SilentlyContinue) { $seen = $true }
+                if (Get-Process -Name 'pokeverse-server' -ErrorAction SilentlyContinue) { $seen = $true }
                 elseif ($elapsed -gt 15) {
-                    if ($seen) { throw 'PokeVerseServer.exe stopped during startup; read the server window for the reason.' }
-                    throw 'PokeVerseServer.exe is not running; read the server window for the reason.'
+                    if ($seen) { throw 'pokeverse-server.exe stopped during startup; read the server window for the reason.' }
+                    throw 'pokeverse-server.exe is not running; read the server window for the reason.'
                 }
                 if ($elapsed -gt $TimeoutSeconds) { throw "server did not open port $Port within $TimeoutSeconds s" }
                 if ([int]$elapsed % 15 -eq 0) { Write-Host ("  still loading ({0:N0} s)..." -f $elapsed) }

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Assemble the Windows local test package (docs/BUILD_WINDOWS.md, README-WINDOWS-TESTING.txt):
-#   <out>/client/    PokeVerse.exe + Redemption runtime files + PokeVerse 854 SPR/DAT
-#   <out>/server/    PokeVerseServer.exe + MinGW DLLs + data + config.example.lua
+# Assemble the Windows development package PokeVerse-Windows-Dev (docs/DOWNLOAD_AND_RUN.md):
+#   <out>/client/    pokeverse-client.exe + Redemption runtime files + PokeVerse 854 SPR/DAT
+#   <out>/server/    pokeverse-server.exe + MinGW DLLs + data + config.lua (+ config.example.lua)
 #   <out>/database/  schema, migrations, development seed, required-tables.txt
-#   <out>/*.bat, scripts/, README-WINDOWS-TESTING.txt (from packaging/windows)
+#   <out>/*.bat, scripts/, README.txt (from packaging/windows), VERSION.txt
 # then runs tools/validate_windows_package.sh on the result.
 # Inputs: a staged Release client (tools/stage_redemption.sh release, Windows build) and a
 # Windows server build (tools/build_server.sh in MSYS2 UCRT64).
@@ -12,7 +12,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CLIENT="${1:-$ROOT/dist/client-redemption}"
 SERVER="${2:-$ROOT/dist/server}"
-OUT="${3:-$ROOT/dist/windows/PokeVerse-Windows-Test}"
+OUT="${3:-$ROOT/dist/windows/PokeVerse-Windows-Dev}"
+VERSION="${POKEVERSE_VERSION:-dev}"
 TEMPLATES="$ROOT/packaging/windows"
 RUNTIME="$ROOT/server/runtime-data"
 
@@ -35,10 +36,9 @@ MESA='opengl32.dll libgallium_wgl.dll libglapi.dll dxil.dll'
 (cd "$CLIENT" && find . -mindepth 1 -maxdepth 1) | while read -r entry; do
     name="${entry#./}"
     case " $MESA " in *" $name "*) continue ;; esac
-    case "$name" in *.log|pokeverse-client.exe|otclientrc.lua) continue ;; esac
+    case "$name" in *.log|otclientrc.lua) continue ;; esac
     cp -a "$CLIENT/$name" "$OUT/client/$name"
 done
-cp "$CLIENT/pokeverse-client.exe" "$OUT/client/PokeVerse.exe"
 cp "$ROOT/client-redemption/otclientrc.lua" "$OUT/client/otclientrc.lua"
 find "$OUT/client" -name '*.log' -delete
 # Upstream modules carry reference server sources (game_paperdolls/server/*.cpp); a test package ships none.
@@ -60,12 +60,12 @@ STRIP="${STRIP:-}"
 if [ -z "$STRIP" ]; then
     for s in x86_64-w64-mingw32-strip strip; do command -v "$s" > /dev/null && { STRIP=$s; break; }; done
 fi
-cp "$SERVER/pokeverse-server.exe" "$OUT/server/PokeVerseServer.exe"
-if [ -n "$STRIP" ] && "$STRIP" --strip-debug "$OUT/server/PokeVerseServer.exe" 2>/dev/null; then
-    echo "Stripped debug info from PokeVerseServer.exe with $STRIP"
+cp "$SERVER/pokeverse-server.exe" "$OUT/server/pokeverse-server.exe"
+if [ -n "$STRIP" ] && "$STRIP" --strip-debug "$OUT/server/pokeverse-server.exe" 2>/dev/null; then
+    echo "Stripped debug info from pokeverse-server.exe with $STRIP"
 else
-    cp "$SERVER/pokeverse-server.exe" "$OUT/server/PokeVerseServer.exe"
-    echo "WARNING: PokeVerseServer.exe keeps its debug info (no PE-capable strip)" >&2
+    cp "$SERVER/pokeverse-server.exe" "$OUT/server/pokeverse-server.exe"
+    echo "WARNING: pokeverse-server.exe keeps its debug info (no PE-capable strip)" >&2
 fi
 : > "$OUT/server/required-dlls.txt.tmp"
 for dll in "$SERVER"/*.dll; do
@@ -78,13 +78,14 @@ rm "$OUT/server/required-dlls.txt.tmp"
 tar -C "$RUNTIME" --exclude='*.bak' --exclude='.idea' --exclude='.gitkeep' --exclude='*.log' -cf - data | tar -C "$OUT/server" -xf -
 cp "$RUNTIME/pt_br.loc" "$RUNTIME/json.lua" "$OUT/server/"
 {
-    printf -- '-- PokeVerse server configuration for the Windows local test package.\r\n'
-    printf -- '-- Start-PokeVerse-Server.bat copies this file to config.lua when config.lua is missing;\r\n'
-    printf -- '-- Setup-PokeVerse-Database.bat writes the database settings (sql*) into config.lua.\r\n'
+    printf -- '-- PokeVerse server configuration for the Windows development package.\r\n'
+    printf -- '-- "Setup Database.bat" writes the database settings (sql*) into config.lua;\r\n'
+    printf -- '-- config.example.lua keeps the defaults it starts from.\r\n'
     printf -- '-- DEVELOPMENT ONLY: the server listens on 127.0.0.1; never expose it to a network.\r\n\r\n'
     sed 's/^\(\s*sqlHost\s*=\s*\)"localhost"/\1"127.0.0.1"/' "$RUNTIME/config.lua"
 } > "$OUT/server/config.example.lua"
 grep -q 'sqlHost = "127.0.0.1"' "$OUT/server/config.example.lua" || fail "could not set sqlHost in config.example.lua"
+cp "$OUT/server/config.example.lua" "$OUT/server/config.lua"
 
 # Database
 cp "$ROOT/database/pokeaventuras.sql" "$OUT/database/schema/"
@@ -92,20 +93,21 @@ cp "$ROOT"/database/migrations/*.sql "$OUT/database/migrations/"
 cp "$ROOT/database/seeds/dev_accounts.sql" "$OUT/database/seeds/"
 {
     printf '# Tables the server code uses (tools/check_db_tables.py --print-required).\r\n'
-    printf '# Setup and Start-PokeVerse-Test.bat fail when one is missing.\r\n'
+    printf '# "Setup Database.bat" and "Start Server.bat" fail when one is missing.\r\n'
     python3 "$ROOT/tools/check_db_tables.py" --print-required | to_crlf
 } > "$OUT/database/required-tables.txt"
 
 # Launchers and instructions (CRLF for cmd.exe and Notepad)
-for f in "$TEMPLATES"/*.bat "$TEMPLATES"/README-WINDOWS-TESTING.txt; do crlf "$f" "$OUT/$(basename "$f")"; done
+for f in "$TEMPLATES"/*.bat "$TEMPLATES"/README.txt; do crlf "$f" "$OUT/$(basename "$f")"; done
 crlf "$TEMPLATES/scripts/PokeVerse-Tools.ps1" "$OUT/scripts/PokeVerse-Tools.ps1"
 {
-    printf 'PokeVerse Windows local test package\r\n'
+    printf 'PokeVerse Windows development package\r\n'
+    printf 'version  %s\r\n' "$VERSION"
     printf 'commit   %s\r\n' "$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo unknown)"
     printf 'built    %s\r\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     printf 'client   Redemption (client-redemption), Release, VARIANT=production\r\n'
     printf 'server   TFS 0.3.6 PokeVerse (server/source), MinGW-w64 UCRT64\r\n'
 } > "$OUT/VERSION.txt"
 
-"$ROOT/tools/validate_windows_package.sh" "$OUT"
-echo "Windows test package: $OUT ($(du -sh "$OUT" | cut -f1))"
+"$ROOT/tools/validate_windows_package.sh" --check-imports "$OUT"
+echo "Windows development package: $OUT ($(du -sh "$OUT" | cut -f1))"

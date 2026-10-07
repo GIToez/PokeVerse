@@ -1,5 +1,5 @@
 @echo off
-rem Build PokeVerseServer from server\source with MSYS2 UCRT64 (MinGW-w64 GCC), exactly like CI:
+rem Build pokeverse-server.exe from server\source with MSYS2 UCRT64 (MinGW-w64 GCC), exactly like CI:
 rem tools/build_server.sh, output in dist\server\ (docs\BUILD_SERVER_WINDOWS.md).
 rem Needs MSYS2 with the packages listed in docs\BUILD_SERVER_WINDOWS.md.
 rem   MSYS2_ROOT   MSYS2 install folder (default C:\msys64)

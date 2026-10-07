@@ -2,7 +2,7 @@
 rem Build everything for Windows and assemble the local test package:
 rem   1. Release client (Build-PokeVerse-Client-Windows.bat release)
 rem   2. Server (Build-PokeVerse-Server-Windows.bat)
-rem   3. dist\windows\PokeVerse-Windows-Test\ (tools/package_windows.sh, which also validates it)
+rem   3. dist\windows\PokeVerse-Windows-Dev\ (tools/package_windows.sh, which also validates it)
 rem Same requirements and environment variables as the two build scripts, plus Git LFS
 rem for client\runtime-data\data\things\Tibia.spr. Stops at the first failure with its exit code.
 setlocal
@@ -38,6 +38,6 @@ if errorlevel 1 (
     exit /b 1
 )
 echo.
-echo Windows test package ready: %CD%\dist\windows\PokeVerse-Windows-Test
-echo Copy that folder anywhere and follow its README-WINDOWS-TESTING.txt.
+echo Windows development package ready: %CD%\dist\windows\PokeVerse-Windows-Dev
+echo Copy that folder anywhere and follow its README.txt.
 exit /b 0

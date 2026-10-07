@@ -1,16 +1,16 @@
 @echo off
-rem Start PokeVerseServer.exe in this console. The window stays open and shows the exit code.
+rem Start server\pokeverse-server.exe in this console. The window stays open and shows the exit code.
 setlocal EnableDelayedExpansion
 title PokeVerse Server
 cd /d "%~dp0server" || goto :nofolder
 
 set "MISSING="
-if not exist "PokeVerseServer.exe" set "MISSING=!MISSING! PokeVerseServer.exe"
+if not exist "pokeverse-server.exe" set "MISSING=!MISSING! pokeverse-server.exe"
 if not exist "required-dlls.txt" set "MISSING=!MISSING! required-dlls.txt"
 if exist "required-dlls.txt" (
     for /f "usebackq delims=" %%D in ("required-dlls.txt") do if not exist "%%D" set "MISSING=!MISSING! %%D"
 )
-for %%F in (data\world\map.otbm data\items\items.otb data\XML\vocations.xml pt_br.loc config.example.lua) do (
+for %%F in (config.lua data\world\map.otbm data\items\items.otb data\XML\vocations.xml pt_br.loc) do (
     if not exist "%%F" set "MISSING=!MISSING! %%F"
 )
 if defined MISSING (
@@ -20,12 +20,16 @@ if defined MISSING (
     goto :end
 )
 
-if not exist "config.lua" (
-    copy /y "config.example.lua" "config.lua" >nul || (set "CODE=3" & goto :end)
-    echo Created server\config.lua from config.example.lua.
-    echo Run Setup-PokeVerse-Database.bat first if you have not set up the database.
-)
 for %%L in (logs logs\server logs\chat logs\bots logs\talkactions) do if not exist "%%L" mkdir "%%L"
+
+if not defined POKEVERSE_SKIP_DB_CHECK (
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\PokeVerse-Tools.ps1" -Action Verify
+    if errorlevel 1 (
+        echo ERROR: the database in server\config.lua is not ready. Run "Setup Database.bat" first.
+        set "CODE=5"
+        goto :end
+    )
+)
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\PokeVerse-Tools.ps1" -Action PortFree -Port 7564
 if errorlevel 1 (
@@ -34,14 +38,14 @@ if errorlevel 1 (
     goto :end
 )
 
-echo Starting PokeVerseServer.exe in %CD%
+echo Starting pokeverse-server.exe in %CD%
 echo Loading takes a while. The server is ready when it prints "server Online!".
-echo Stop it with /shutdown as GM Admin in game, or close this window.
+echo Stop it with /shutdown as GM Admin in game, Ctrl+C, or by closing this window (all of them save first).
 echo.
-PokeVerseServer.exe
+pokeverse-server.exe
 set "CODE=%ERRORLEVEL%"
 echo.
-echo PokeVerseServer.exe exited with code %CODE%.
+echo pokeverse-server.exe exited with code %CODE%.
 if not "%CODE%"=="0" echo Read the lines above for the reason, and the files in server\logs.
 goto :end
 
