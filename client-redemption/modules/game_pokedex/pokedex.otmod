@@ -1,0 +1,13 @@
+Module
+  name: game_pokedex
+  description: PokeVerse Pokedex (status grid, details, moves, type effectiveness)
+  author: PSoul, Redemption port by PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ pokedex ]
+  @onLoad: onInit()
+  @onUnload: onTerminate()
