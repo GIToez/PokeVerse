@@ -13,6 +13,9 @@
 #      that Pokemon, its moves must fill the move bar, and a move used on a spawned Rattata must
 #      come back with a cooldown; Pokemon Info must open, spend one EV point, refuse a forged
 #      upgrade and keep the EVs after recall and summon).
+#      Every character with a Pokedex must get the status list at login, open the Pokedex window
+#      from the main panel and see a known entry's details (PV_DEX_HOLD_MS keeps it open longer,
+#      PV_DEX_TAB=1|2|3 shows the Information, Moves or Types tab).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -105,6 +108,16 @@ if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
         need '\[pv-smoke\] RESUMMON OK' "the recalled Pokemon was not summoned again"
         need '\[pv-smoke\] EV PERSIST OK' "spent EVs were lost after recall and summon"
     fi
+fi
+need '\[pv-smoke\] MODULE game_pokedex button=true' "Pokedex button missing from the main panel"
+if ! grep -aq '\[pv-smoke\] DEX SKIPPED' "$LOG"; then
+    need '\[pv-smoke\] POKEVERSE onPokedexStatus ' "the Pokedex status list was not sent"
+    need '\[pv-smoke\] DEX LOGIN STATUS OK' "the Pokedex status list did not arrive at login"
+    need '\[pv-smoke\] DEX OPEN OK visible=true' "using the Pokedex did not open the Pokedex window"
+    if ! grep -aq '\[pv-smoke\] DEX INFO SKIPPED' "$LOG"; then
+        need '\[pv-smoke\] DEX INFO OK' "clicking a known Pokedex entry did not show its details"
+    fi
+    need '\[pv-smoke\] DEX CLOSE OK' "the Pokedex window did not close"
 fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"

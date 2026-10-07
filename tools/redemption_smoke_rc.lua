@@ -288,6 +288,63 @@ local function inspectGame()
         end, 1500)
     end
 
+    -- Pokedex (0xFF sub-opcodes 10/11/17): the status grid arrives at login, the main panel button
+    -- uses the Pokedex on the player (the server answers with the status list and opens the window),
+    -- and clicking a known entry asks for /dexview and gets that Pokemon's details.
+    local dexInfo
+    connect(g_game, { onPokedexInfo = function(id, details, moves, effectiveness, families)
+        dexInfo = { id = id, details = details, moves = moves, effectiveness = effectiveness, families = families }
+    end })
+    local function pokedexTests(nextStep)
+        local dex = modules.game_pokedex
+        if not dex then
+            report('MODULE game_pokedex missing')
+            return nextStep()
+        end
+        report('MODULE game_pokedex button=%s', tostring(modules.game_mainpanel.getButton('pokedexButton') ~= nil))
+        if not player:getInventoryItem(InventorySlotLeft) then
+            report('DEX SKIPPED no Pokedex in the Pokedex slot')
+            return nextStep()
+        end
+        report('DEX LOGIN STATUS %s entries=%d', dex.getEntryCount() > 0 and 'OK' or 'FAILED', dex.getEntryCount())
+        dex.toggle()
+        scheduleEvent(function()
+            local entries = dex.getEntryCount()
+            report('DEX OPEN %s visible=%s entries=%d', dex.isVisible() and entries > 0 and 'OK' or 'FAILED',
+                tostring(dex.isVisible()), entries)
+            local known
+            for _, child in ipairs(dex.panel:getChildren()) do
+                local status = dex.getStatus(tonumber(child:getId()))
+                if status and status ~= 0 then known = child break end
+            end
+            if not known then
+                report('DEX INFO SKIPPED no known entry')
+                dex.hide()
+                report('DEX CLOSE %s', dex.isVisible() and 'FAILED' or 'OK')
+                return nextStep()
+            end
+            dexInfo = nil
+            known:onMouseRelease(known:getPosition(), MouseLeftButton)
+            if os.getenv('PV_DEX_TAB') then
+                dex.selectTab(tonumber(os.getenv('PV_DEX_TAB')))
+            end
+            scheduleEvent(function()
+                local window = dex.pokedexWindow
+                local name = window:recursiveGetChildById('pokeName'):getText()
+                local type1 = window:recursiveGetChildById('pokeType1'):getTooltip()
+                local moveRows = dex.getMoveRowCount()
+                report('DEX INFO %s id=%s name=%s type1=%s moves=%d families=%s',
+                    dexInfo and tonumber(dexInfo.id) == tonumber(known:getId()) and 'OK' or 'FAILED',
+                    tostring(dexInfo and dexInfo.id), name, type1, moveRows, tostring(dexInfo and dexInfo.families))
+                scheduleEvent(function()
+                    dex.hide()
+                    report('DEX CLOSE %s', dex.isVisible() and 'FAILED' or 'OK')
+                    nextStep()
+                end, tonumber(os.getenv('PV_DEX_HOLD_MS') or '300'))
+            end, 1500)
+        end, 1500)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -312,8 +369,10 @@ local function inspectGame()
 
     -- The move test spawns a hostile Pokemon, so walking comes first and the Pokemon tests last.
     tryWalk(function()
-        pokemonTests(function()
-            scheduleEvent(function() g_game.safeLogout() end, 1500)
+        pokedexTests(function()
+            pokemonTests(function()
+                scheduleEvent(function() g_game.safeLogout() end, 1500)
+            end)
         end)
     end)
 end
