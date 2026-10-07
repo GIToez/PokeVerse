@@ -59,6 +59,8 @@ CI checks both directions: the production build packages, and the harness build 
 
 The Redemption client (`client-redemption/`) uses the same three variant names and output pattern: `build/client-redemption/<type>`, staged to `dist/client-redemption` and `dist/client-redemption-harness`. The same packaging guard applies. See `BUILD_REDEMPTION.md`.
 
+Redemption's automated test is `tools/smoke_redemption_login.sh`. It needs no harness build: it runs a throwaway copy of the production dist with `tools/redemption_smoke_rc.lua` as `otclientrc.lua`, and deletes the copy afterwards. That script logs in on its own and sends GM commands, so the packaging guard also refuses any dist that contains a Lua file with its `[pv-smoke]` marker (checked by `tools/validate.py regressions`).
+
 ## Reference client location
 
 The current PokeVerse client, `client/source` plus `client/runtime-data` (OTClient 0.6.6 fork), is the **legacy reference client**. It is the parity reference for Redemption and is kept unmodified except for bug fixes. It is not moved to `legacy-reference/`: moving it again would add another ~11,000 renames on top of Phase 2 (`PHASE_2_DIFF_AUDIT.md`). Its location is documented here and in `ARCHITECTURE.md` instead.
