@@ -146,6 +146,15 @@ public:
     bool isPassable() const { return m_passable; }
     bool isWalking() { return m_walking; }
 
+    // PokeVerse creature fields (sent after `unpassable`).
+    void setPokeVerseInfo(bool localPlayerSummon, bool attackable, uint8_t firstType, uint8_t secondType, uint16_t level, uint32_t experience);
+    bool isLocalPlayerSummon() const { return m_localPlayerSummon; }
+    bool isAttackable() const { return m_attackable; }
+    uint8_t getFirstType() const { return m_firstType; }
+    uint8_t getSecondType() const { return m_secondType; }
+    uint16_t getPokeLevel() const { return m_pokeLevel; }
+    uint32_t getPokeExperience() const { return m_pokeExperience; }
+
     bool isRemoved() { return m_removed; }
     bool isRemoved() const { return m_removed; }
     const Position& getOldPosition() const { return m_oldPosition; }
@@ -357,6 +366,12 @@ private:
 
     bool m_shieldBlink{ false };
     bool m_passable{ false };
+    bool m_localPlayerSummon{ false };
+    bool m_attackable{ true };
+    uint8_t m_firstType{ 0 };
+    uint8_t m_secondType{ 0 };
+    uint16_t m_pokeLevel{ 0 };
+    uint32_t m_pokeExperience{ 0 };
     bool m_allowAppearWalk{ false };
     bool m_showTimedSquare{ false };
     bool m_showStaticSquare{ false };

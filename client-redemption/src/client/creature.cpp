@@ -1020,6 +1020,18 @@ void Creature::setSkull(const uint8_t v) { if (m_skull != v) callLuaField("onSku
 void Creature::setShield(const uint8_t v) { if (m_shield != v) callLuaField("onShieldChange", m_shield = v); }
 void Creature::setEmblem(const uint8_t v) { if (m_emblem != v) callLuaField("onEmblemChange", m_emblem = v); }
 
+void Creature::setPokeVerseInfo(const bool localPlayerSummon, const bool attackable, const uint8_t firstType, const uint8_t secondType, const uint16_t level, const uint32_t experience)
+{
+    m_localPlayerSummon = localPlayerSummon;
+    m_attackable = attackable;
+    m_firstType = firstType;
+    m_secondType = secondType;
+    m_pokeLevel = level;
+    m_pokeExperience = experience;
+    // Same Lua event as the legacy client, so its modules keep working.
+    callLuaField("onSetNewInfo", firstType, secondType, level, experience);
+}
+
 void Creature::setTypeTexture(const std::string& filename) { m_typeTexture = g_textures.getTexture(filename); }
 void Creature::setIconTexture(const std::string& filename) { m_iconTexture = g_textures.getTexture(filename); }
 void Creature::setIconsTexture(const std::string& filename, const Rect& clip, const uint16_t count)

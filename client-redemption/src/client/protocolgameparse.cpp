@@ -47,6 +47,27 @@
 #include <fmt/format.h>
 #include <framework/util/stats.h>
 
+namespace
+{
+    // The PokeVerse server follows inventory and container items (not map, trade or
+    // container-header items) with the held Pokemon: string name, then u32 level and
+    // u32 gender unless the name is "none".
+    void readPokeVerseItemInfo(const InputMessagePtr& msg, const ItemPtr& item)
+    {
+        if (!g_game.getFeature(Otc::GamePokeVerse))
+            return;
+
+        const auto& name = msg->getString();
+        uint32_t level = 0, gender = 0;
+        if (name != "none") {
+            level = msg->getU32();
+            gender = msg->getU32();
+        }
+        if (item)
+            item->setPokemon(name, level, gender);
+    }
+}
+
 void ProtocolGame::parseMessage(const InputMessagePtr& msg)
 {
     int opcode = -1;
@@ -739,6 +760,10 @@ void ProtocolGame::parseLogin(const InputMessagePtr& msg) const
     bool canReportBugs = false;
     if (!g_game.getFeature(Otc::GameDynamicBugReporter)) {
         canReportBugs = msg->getU8() > 0;
+    }
+
+    if (g_game.getFeature(Otc::GamePokeVerse)) {
+        g_lua.callGlobalField("g_game", "onLightHour", msg->getU16());
     }
 
     if (g_game.getClientVersion() >= 1054) {
@@ -1612,7 +1637,9 @@ void ProtocolGame::parseOpenContainer(const InputMessagePtr& msg)
     items.reserve(itemCount);
 
     for (auto i = 0; i < itemCount; i++) {
-        items.push_back(getItem(msg));
+        const auto& item = getItem(msg);
+        readPokeVerseItemInfo(msg, item);
+        items.push_back(item);
     }
 
     if (g_game.getFeature(Otc::GameContainerFilter)) {
@@ -1643,6 +1670,7 @@ void ProtocolGame::parseContainerAddItem(const InputMessagePtr& msg)
     const uint8_t containerId = msg->getU8();
     const uint16_t slot = g_game.getFeature(Otc::GameContainerPagination) ? msg->getU16() : 0;
     const auto& item = getItem(msg);
+    readPokeVerseItemInfo(msg, item);
 
     g_game.processContainerAddItem(containerId, item, slot);
 }
@@ -1652,6 +1680,7 @@ void ProtocolGame::parseContainerUpdateItem(const InputMessagePtr& msg)
     const uint8_t containerId = msg->getU8();
     const uint16_t slot = g_game.getFeature(Otc::GameContainerPagination) ? msg->getU16() : msg->getU8();
     const auto& item = getItem(msg);
+    readPokeVerseItemInfo(msg, item);
 
     g_game.processContainerUpdateItem(containerId, slot, item);
 }
@@ -1788,6 +1817,7 @@ void ProtocolGame::parseAddInventoryItem(const InputMessagePtr& msg)
 {
     const uint8_t slot = msg->getU8();
     const auto& item = getItem(msg);
+    readPokeVerseItemInfo(msg, item);
 
     g_game.processInventoryChange(slot, item);
 }
@@ -2927,7 +2957,7 @@ void ProtocolGame::parseTalk(const InputMessagePtr& msg)
 
 void ProtocolGame::parseChannelList(const InputMessagePtr& msg)
 {
-    const uint8_t channelListSize = msg->getU8();
+    const uint16_t channelListSize = g_game.getFeature(Otc::GamePokeVerse) ? msg->getU16() : msg->getU8();
     std::vector<std::tuple<uint16_t, std::string>> channelList;
 
     for (auto i = 0; i < channelListSize; ++i) {
@@ -4236,6 +4266,20 @@ CreaturePtr ProtocolGame::getCreature(const InputMessagePtr& msg, int type) cons
             unpass = static_cast<bool>(msg->getU8());
         }
 
+        bool pokeVerseInfo = false, localPlayerSummon = false, attackable = true;
+        uint8_t firstType = 0, secondType = 0;
+        uint16_t pokeLevel = 0;
+        uint32_t pokeExperience = 0;
+        if (g_game.getFeature(Otc::GamePokeVerse)) {
+            pokeVerseInfo = true;
+            localPlayerSummon = static_cast<bool>(msg->getU8());
+            attackable = static_cast<bool>(msg->getU8());
+            firstType = msg->getU8();
+            secondType = msg->getU8();
+            pokeLevel = msg->getU16();
+            pokeExperience = msg->getU32();
+        }
+
         if (g_game.getFeature(Otc::GameCreaturePaperdoll)) {
             uint8_t size = msg->getU8();
             for (uint8_t i = 0; i < size; ++i) {
@@ -4268,6 +4312,9 @@ CreaturePtr ProtocolGame::getCreature(const InputMessagePtr& msg, int type) cons
             creature->setPassable(!unpass);
             creature->setLight(light);
             creature->setMasterId(masterId);
+            if (pokeVerseInfo) {
+                creature->setPokeVerseInfo(localPlayerSummon, attackable, firstType, secondType, pokeLevel, pokeExperience);
+            }
             creature->setShader(shader);
             creature->clearTemporaryAttachedEffects();
             std::unordered_set<uint16_t> currentAttachedEffectIds;

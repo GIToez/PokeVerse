@@ -666,6 +666,8 @@ namespace Otc
         GameTaskboard = 134,
         GameProficiency = 135,
         GameTacticsWithoutFightMode = 136,
+        // PokeVerse server (PSoul TFS 0.3.6, protocol 854) wire extensions; docs/REDEMPTION_PROTOCOL_COMPATIBILITY.md.
+        GamePokeVerse = 137,
         LastGameFeature
     };
 

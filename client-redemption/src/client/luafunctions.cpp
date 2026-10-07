@@ -643,6 +643,12 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<Creature>("getSpeed", &Creature::getSpeed);
     g_lua.bindClassMemberFunction<Creature>("getBaseSpeed", &Creature::getBaseSpeed);
     g_lua.bindClassMemberFunction<Creature>("getSkull", &Creature::getSkull);
+    g_lua.bindClassMemberFunction<Creature>("isLocalPlayerSummon", &Creature::isLocalPlayerSummon);
+    g_lua.bindClassMemberFunction<Creature>("isAttackable", &Creature::isAttackable);
+    g_lua.bindClassMemberFunction<Creature>("getFirstType", &Creature::getFirstType);
+    g_lua.bindClassMemberFunction<Creature>("getSecondType", &Creature::getSecondType);
+    g_lua.bindClassMemberFunction<Creature>("getPokeLevel", &Creature::getPokeLevel);
+    g_lua.bindClassMemberFunction<Creature>("getPokeExperience", &Creature::getPokeExperience);
     g_lua.bindClassMemberFunction<Creature>("getShield", &Creature::getShield);
     g_lua.bindClassMemberFunction<Creature>("getEmblem", &Creature::getEmblem);
     g_lua.bindClassMemberFunction<Creature>("getType", &Creature::getType);
@@ -829,6 +835,9 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<Item>("getDurationTime", &Item::getDurationTime);
     g_lua.bindClassMemberFunction<Item>("getTier", &Item::getTier);
     g_lua.bindClassMemberFunction<Item>("getCharges", &Item::getCharges);
+    g_lua.bindClassMemberFunction<Item>("getPokeName", &Item::getPokeName);
+    g_lua.bindClassMemberFunction<Item>("getPokeLevel", &Item::getPokeLevel);
+    g_lua.bindClassMemberFunction<Item>("getPokeGender", &Item::getPokeGender);
 
     g_lua.bindClassMemberFunction<Item>("isStackable", &Item::isStackable);
     g_lua.bindClassMemberFunction<Item>("isMarketable", &Item::isMarketable);

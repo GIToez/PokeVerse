@@ -86,6 +86,11 @@ public:
     void setColor(const Color& c) { if (m_color != c) m_color = c; }
     void setPosition(const Position& position, uint8_t stackPos = 0) override;
     void setTooltip(const std::string& str) { m_tooltip = str; }
+    // PokeVerse: the Pokemon held by a ball item ("none" for every other item).
+    void setPokemon(const std::string& name, const uint32_t level, const uint32_t gender) { m_pokeName = name; m_pokeLevel = level; m_pokeGender = gender; }
+    const std::string& getPokeName() const { return m_pokeName; }
+    uint32_t getPokeLevel() const { return m_pokeLevel; }
+    uint32_t getPokeGender() const { return m_pokeGender; }
     void setDurationTime(uint32_t duration);
     void setDecaying(bool decaying);
     void setCharges(const uint32_t charges) { m_charges = charges; }
@@ -175,6 +180,9 @@ private:
     void internalDraw(int animationPhase, const Point& dest, const Color& color, bool drawThings, bool replaceColorShader, LightView* lightView = nullptr);
 
     uint16_t m_countOrSubType{ 0 };
+    std::string m_pokeName{ "none" };
+    uint32_t m_pokeLevel{ 0 };
+    uint32_t m_pokeGender{ 0 };
     uint32_t m_duration{ 0 };
     int64_t m_durationEnd{ 0 };
     bool m_decaying{ false };

@@ -52,6 +52,10 @@ void ProtocolGame::onConnect()
     if (g_game.getFeature(Otc::GameProtocolChecksum))
         enableChecksum();
 
+    // The PokeVerse server never sends extended opcode 0, the usual "extended opcodes on" signal.
+    if (g_game.getFeature(Otc::GamePokeVerse))
+        m_enableSendExtendedOpcode = true;
+
     if (!g_game.getFeature(Otc::GameChallengeOnLogin))
         sendLoginPacket(0, 0);
 
