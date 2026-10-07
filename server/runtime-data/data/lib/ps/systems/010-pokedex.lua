@@ -543,7 +543,11 @@ function doPokedexItemView(pid, pokemonName, detailed--[[ = false]], itemId, pok
 end
 
 function doPokedexStatusSend(pid)
-  local pokemonMax = DEX_BY_ITEMID[getPlayerPokedex(pid).itemid].pokemonIdMax
+  local dex = DEX_BY_ITEMID[getPlayerPokedex(pid).itemid]
+  if (not dex) then -- no Pokedex in the Pokedex slot
+    return
+  end
+  local pokemonMax = dex.pokemonIdMax
 
   local status = {}
   for i, pokemonName in pairs(pokemonNamesWithoutShiny) do
@@ -617,6 +621,7 @@ function onCreatureUsePokedex(cid, item, fromPosition, itemEx, toPosition)
   if (getSamePosition(playerPosition, toPosition)) then
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ORANGE, string.format(__L(cid, "Pokedex status: [%s/%s]."), getPlayerTotalDexedPokemons(cid), POKEMON_NUMBER))
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ORANGE, string.format(__L(cid, "You've already caught %s Pokemon species, totaling %s caughts."), getPlayerIndividualCaughts(cid), getPlayerCaughts(cid)))
+    doPokedexStatusSend(cid)
     doPlayerSendPokedexOpen(cid)
 
     if (DEX_BY_ITEMID[item.itemid or getPlayerPokedex(cid).itemid].showTime) then

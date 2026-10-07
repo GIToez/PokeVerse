@@ -1059,7 +1059,7 @@ function doPlayerSendWindowsData(cid, sendMoves)
         end
     end
 
-    -- doPokedexStatusSend(cid)
+    doPokedexStatusSend(cid)
 
     if (#balls > 0) then
         doPlayerSendPokemonSkillContainerOpen(cid)
