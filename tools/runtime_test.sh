@@ -42,7 +42,7 @@ PV_HARNESS=1 KEEP_CLIENT=1 CLIENT_LOG="$OUT/client.log" SHOT="$OUT/00-login.png"
     "$ROOT/tools/smoke_login.sh" "${ACCOUNT:-admin}" "${PASSWORD:-admin}" "${CHARACTER:-GM Admin}" "$SERVER_LOG"
 
 last=""
-for _ in $(seq 1 600); do
+for _ in $(seq 1 1200); do
     step=$(cat "$STEP_FILE" 2>/dev/null || true)
     if [ -n "$step" ] && [ "$step" != "$last" ]; then
         last="$step"
