@@ -445,10 +445,11 @@ void ProtocolGame::onConnect()
 		TRACK_MESSAGE(output);
 		enableChecksum();
 
+		m_challengeTimestamp = random_range(0, 0xFFFF);
+		m_challengeRandom = random_range(0, 0xFF);
 		output->AddByte(0x1F);
-		output->AddU16(random_range(0, 0xFFFF));
-		output->AddU16(0x00);
-		output->AddByte(random_range(0, 0xFF));
+		output->AddU32(m_challengeTimestamp);
+		output->AddByte(m_challengeRandom);
 
 		OutputMessagePool::getInstance()->send(output);
 	}
@@ -487,7 +488,14 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 	bool gamemaster = msg.GetByte();
 	std::string name = msg.GetString(), character = msg.GetString(), password = msg.GetString();
 
-	msg.SkipBytes(6); //841- wtf?
+	uint32_t challengeTimestamp = msg.GetU32();
+	uint8_t challengeRandom = msg.GetByte();
+	if(challengeTimestamp != m_challengeTimestamp || challengeRandom != m_challengeRandom)
+	{
+		std::cout << "[Warning - ProtocolGame::parseFirstPacket] login challenge mismatch from " << convertIPAddress(getConnection()->getIP()) << std::endl;
+		getConnection()->close();
+		return false;
+	}
 	// if(version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX)
 	// {
 		// disconnectClient(0x14, CLIENT_VERSION_STRING);
