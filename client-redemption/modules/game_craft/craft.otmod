@@ -1,0 +1,12 @@
+Module
+  name: game_craft
+  description: Profession crafting window (ext opcode 103)
+  author: PokeVerse
+  website: https://github.com/GIToez/PokeVerse
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  dependencies: [ game_interface ]
+  scripts: [ craft ]
+  @onLoad: init()
+  @onUnload: terminate()
