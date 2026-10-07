@@ -1,0 +1,12 @@
+Module
+  name: game_task
+  description: Kill tasks window (ext opcode 58)
+  author: PokeVerse
+  website: https://github.com/GIToez/PokeVerse
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  dependencies: [ game_interface ]
+  scripts: [ task ]
+  @onLoad: init()
+  @onUnload: terminate()

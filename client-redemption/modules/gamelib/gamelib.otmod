@@ -16,6 +16,7 @@ Module
     dofile 'pokemon_infos'
     dofile 'moves'
     dofile 'types'
+    dofile 'pokekill'
     dofile 'position'
     dofile 'game'
 
