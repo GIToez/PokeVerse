@@ -1,0 +1,13 @@
+Module
+  name: game_pokemoves
+  description: PokeVerse move bar (moves of the active Pokemon, fed by the 0xFF MoveBar sub-opcodes)
+  author: PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ pokemoves ]
+  @onLoad: init()
+  @onUnload: terminate()

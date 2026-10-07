@@ -13,6 +13,7 @@ Module
     dofile 'pokeverse'
     dofile 'pokemon'
     dofile 'pokemon_infos'
+    dofile 'moves'
     dofile 'position'
     dofile 'game'
 
