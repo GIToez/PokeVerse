@@ -1,0 +1,95 @@
+TmMoveItem < Item
+  size: 36 36
+  virtual: true
+  margin: 0
+
+TmChooseWindow < MainWindow
+  !text: tr('Technical Machine')
+  size: 420 150
+  @onEscape: modules.game_tmchoose.cancel()
+
+  Label
+    id: description
+    !text: tr('Select the move that will be replaced by the Technical Machine:')
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-align: center
+    text-wrap: true
+    text-auto-resize: true
+
+  Panel
+    id: moves
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: description.bottom
+    anchors.bottom: cancelButton.top
+    margin: 6 0 6 0
+    layout:
+      type: grid
+      cell-size: 36 36
+      flow: true
+      cell-spacing: 2
+
+  Button
+    id: cancelButton
+    !text: tr('Cancel')
+    width: 70
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    @onClick: modules.game_tmchoose.cancel()
+
+TmConfirmWindow < MainWindow
+  !text: tr('Technical Machine')
+  size: 260 150
+  @onEscape: modules.game_tmchoose.onCancel()
+  @onEnter: modules.game_tmchoose.onConfirm()
+
+  Label
+    id: description
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-align: center
+    text-wrap: true
+    text-auto-resize: true
+
+  TmMoveItem
+    id: newMove
+    anchors.top: description.bottom
+    anchors.right: arrow.left
+    margin-top: 6
+    margin-right: 12
+
+  Label
+    id: arrow
+    text: <-
+    font: sans-bold-16px
+    anchors.top: description.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 16
+    text-auto-resize: true
+
+  TmMoveItem
+    id: oldMove
+    anchors.top: description.bottom
+    anchors.left: arrow.right
+    margin-top: 6
+    margin-left: 12
+
+  Button
+    id: okButton
+    !text: tr('Ok')
+    width: 70
+    anchors.bottom: parent.bottom
+    anchors.right: cancelButton.left
+    margin-right: 6
+    @onClick: modules.game_tmchoose.onConfirm()
+
+  Button
+    id: cancelButton
+    !text: tr('Cancel')
+    width: 70
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    @onClick: modules.game_tmchoose.onCancel()

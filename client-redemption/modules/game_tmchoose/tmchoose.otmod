@@ -1,0 +1,13 @@
+Module
+  name: game_tmchoose
+  description: PokeVerse Technical Machine move chooser (0xFF sub-opcode 13, answered with /tc)
+  author: PSoul, Redemption port by PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ tmchoose ]
+  @onLoad: onInit()
+  @onUnload: onTerminate()
