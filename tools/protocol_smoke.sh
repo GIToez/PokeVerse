@@ -13,10 +13,14 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LOGDIR="${1:-/tmp/protocol-smoke}"
 MYSQL="${MYSQL:-mysql -upokeverse -ppokeverse-dev}"
 PYTHON="${PYTHON:-python3}"
-PV="$PYTHON $ROOT/tools/protocol_client.py"
 # MSYS2 rewrites arguments that look like POSIX paths ("/i 35547,2" -> "C:/msys64/i 35547,2")
-# when it starts a native Windows program, which turns GM commands into plain chat.
-export MSYS2_ARG_CONV_EXCL='*'
+# when it starts a native Windows program, which turns GM commands into plain chat. So the
+# client gets no argument conversion, and a native path to its script.
+if command -v cygpath > /dev/null; then
+    PV="env MSYS2_ARG_CONV_EXCL=* $PYTHON $(cygpath -m "$ROOT/tools/protocol_client.py")"
+else
+    PV="$PYTHON $ROOT/tools/protocol_client.py"
+fi
 APPLE=35547
 mkdir -p "$LOGDIR"
 
