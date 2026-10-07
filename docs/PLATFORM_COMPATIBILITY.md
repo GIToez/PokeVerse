@@ -50,7 +50,7 @@ The Pokémon tests run at 3325,806,6, just outside the starting temple, because 
 | Inventory | **PASS**: equipment slots received | NOT TESTED | **PASS** |
 | Pokémon bar (display) | **PASS**: GM Admin shows `poke1=Charmander` | NOT TESTED | **PASS** |
 | Summon from the bar | **PASS**: `SUMMON OK creature=Charmander level=15` (run 37631181970) | NOT TESTED | **PASS**: same, run 37631181970; local |
-| Switch from the bar | PENDING: CI gives GM Admin a second Pokémon from commit 926237076 | NOT TESTED | **PASS** (local) |
+| Switch from the bar | **PASS**: `SWITCH OK creature=Bulbasaur level=15` (run 37635170266) | NOT TESTED | **PASS**: same, run 37635170266; local |
 | Move bar | **PASS**: 4 moves for Charmander (run 37631181970) | NOT TESTED | **PASS** (run 37631181970; local) |
 | Using a move, cooldown, damage | **PASS**: Scratch hit a GM-spawned Rattata (100% → 79%), server cooldown 6 s, cooldown overlay shown (run 37631181970) | NOT TESTED | **PASS**: Rattata 100% → 72% (run 37631181970); local |
 | Pokémon Info, Pokédex, EVs, vitamins | BLOCKED: modules not ported (`LEGACY_ASSET_DEPENDENCY_MAP.md`) | BLOCKED | BLOCKED |
@@ -88,10 +88,10 @@ Two earlier CI runs (e22dd9c25 and cab8e69b2) failed the move step on Windows an
 
 | Target | Status | Reason |
 |---|---|---|
-| Windows client | PARTIAL | Builds, packages, logs in, renders, walks, chats, shows the Pokémon bar, summons, and uses a move with its cooldown against a Windows server in CI. Not hands-on tested on a real Windows desktop with a GPU. Most PokeVerse modules are not ported yet. |
+| Windows client | PARTIAL | Builds, packages, logs in, renders, walks, chats, shows the Pokémon bar, summons, switches, and uses a move with its cooldown against a Windows server in CI. Not hands-on tested on a real Windows desktop with a GPU. Most PokeVerse modules are not ported yet. |
 | Windows server | PASS | Build, startup, login, admin commands, save/load, restart persistence and clean shutdown all pass in CI. |
 | Android client | PARTIAL | The APK builds in CI. It has never been installed or run (no device). |
-| Linux client | PARTIAL | Same coverage as Windows in CI, plus switching locally. Most PokeVerse modules are not ported yet. |
+| Linux client | PARTIAL | Same coverage as Windows in CI. Most PokeVerse modules are not ported yet. |
 | Linux server | PASS | |
 
 This table is updated as results arrive. The final values are reported in the Phase 3 final report.

@@ -8,10 +8,10 @@ All evidence follows source → build → dist → test. The original Windows bi
 
 | Target | Status | Evidence | What is missing |
 |---|---|---|---|
-| Windows client | **PARTIAL** | Redemption Release and Debug build with MSVC; packaging validation; launch with software OpenGL. The CI end-to-end job logs Trainer and GM Admin in to a Windows-built server: map, walking, chat, inventory, Pokémon bar, summon, move bar, a move with its server cooldown and damage (run 37631181970). | Hands-on play on a Windows desktop with a GPU. Switching is checked from the next CI run. Most PokeVerse modules are not ported. |
+| Windows client | **PARTIAL** | Redemption Release and Debug build with MSVC; packaging validation; launch with software OpenGL. The CI end-to-end job logs Trainer and GM Admin in to a Windows-built server: map, walking, chat, inventory, Pokémon bar, summon, switch, move bar, a move with its server cooldown and damage (runs 37631181970, 37635170266). | Hands-on play on a Windows desktop with a GPU. Most PokeVerse modules are not ported. |
 | Windows server | **PASS** | MinGW-w64 build; startup log identical to Linux; login, wrong password refused, admin commands, save on logout, persistence across `/shutdown` and restart (run 37625226771); serves the Redemption end-to-end job. | — |
 | Android client | **PARTIAL** | arm64-v8a APK builds in CI with the PokeVerse assets (runs 37625227955, 37631181970). | Never installed or run: no device or emulator is available. |
-| Linux client | **PARTIAL** | Same CI coverage as Windows under Xvfb against a Linux server, plus switching locally. | Most PokeVerse modules are not ported. |
+| Linux client | **PARTIAL** | Same CI coverage as Windows under Xvfb against a Linux server, with the same steps passing (run 37635170266). | Most PokeVerse modules are not ported. |
 | Linux server | **PASS** | Build, startup, protocol smoke, Redemption smoke, legacy runtime harness, restart persistence, clean shutdown. | — |
 
 Details: `PLATFORM_COMPATIBILITY.md`. A Linux pass is never used in place of a Windows result.
