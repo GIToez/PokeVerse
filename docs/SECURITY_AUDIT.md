@@ -119,3 +119,28 @@ The staff-prefix check `tmp.substr(0, 4) == "god " && tmp.substr(0, 3) == "cm " 
 - Moved the nested `server/source/.git` out of the tree (`_import/source-server.git`, ignored).
 - Excluded logs, crash reports and state files that contain personal paths.
 - Did **not** modify any gameplay code.
+
+## Phase 2 status (remediation)
+
+Phase 2 built and ran the server and client from source. It fixed or disabled the findings below. "Open" means still present and not needed for local development play.
+
+| # | Status | What changed |
+|---|---|---|
+| 1 | **Fixed** (see the note on JSON below) | Market, craft, Battle Pass, calendar and task modules decode payloads with `table.fromLiteral` (`modules/corelib/table.lua`), a data-only parser. It accepts only string, number, boolean, `nil`, `inf` and `nan` literals and nested tables (`[k]=v`, `name=v` and positional fields, depth ≤ 100). Identifiers, function calls and any other code are rejected. The server's `table.val_to_str` (`data/lib/012-table.lua`) now escapes strings with `%q`. It previously left backslashes unescaped, so player text such as market item names could close the literal early. `tools/validate.py` fails the build if any client module calls `loadstring` again. The developer terminal (`client_terminal`), which runs locally typed commands, is exempt. |
+| 2 | **Disabled** | The WinINet updater (`download.cpp`) compiles only with `-DLEGACY_UPDATER=ON`, which is Windows-only and OFF by default. Without it, the updater reports "up to date, 0 files". |
+| 3 | **Disabled** | `admin.xml`: `enabled="0"`, `onlylocalhost="1"`, empty password. The admin protocol is also not compiled (`__REMOTE_CONTROL__` is not defined). |
+| 4 | Open | String-built SQL remains (Lua). Values that reach the market and dungeon queries come from the server's own tables or are numbers, but the Lua does not escape them consistently. Review before any public deployment. |
+| 5 | **Fixed** | The dump's GOD and Canibal accounts (SHA-1 of `123456`) are blocked with an unusable password by `database/migrations/001_phase2_baseline.sql`. They could not be deleted because of `NO ACTION` foreign keys. The development accounts in `database/seeds/dev_accounts.sql` (`player`/`player`, `admin`/`admin`) are **DEVELOPMENT ONLY**. The server binds to 127.0.0.1. |
+| 6 | Open | Passwords are still unsalted SHA-1, as the TFS 0.3.6 protocol and the existing accounts require. The `server_config` encryption marker now matches (SHA-1). |
+| 10 | Open | Client-version check still commented out |
+| 11 | Open | `opcode.lua` still trusts the `json.decode` results |
+| 15 | **Fixed** | `protocollogin.cpp`: the 0xFC (create account) and 0xFD (create character) handlers compile only with `__ACCOUNT_CREATION__`, which is not defined. Otherwise the server disconnects with "Account creation is disabled on this server." The client's `poke_create` window still exists but cannot create anything. |
+| — | **Fixed** (new finding) | `talkactions.xml`: `/i` (create any item) was registered twice, once without `access`, so any player could create items. It is restored to `access="4"`. `/teste` (server-wide broadcast) is now `access="4"`. `/profission` (runs `learnWork(cid, 1)`) is left open: it is the only way to start the profession system. |
+| — | **Fixed** (new finding) | Market `DELETE` queries concatenated `item_index` twice (for example `item_index = 33` instead of `3`), so they deleted the wrong row or none (`data/lib/game_market.lua`) |
+
+**Why not JSON.** The original request was to replace `loadstring` with JSON.
+
+- The server serializes these payloads with `table.tostring`, and they include sparse arrays and tables that mix array and key fields.
+- The bundled rxi `json.encode` raises an error on such tables, so switching to JSON would have meant restructuring every sender on the server and every reader on the client.
+- `table.fromLiteral` reads the existing format unchanged and executes nothing.
+- Moving to JSON is still a reasonable later cleanup.
