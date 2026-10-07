@@ -10,7 +10,11 @@ TIMEOUT="${TIMEOUT:-300}"
 
 "$ROOT/tools/run_server.sh" > "$LOG" 2>&1 &
 server=$!
-stop() { kill -INT "$server" 2>/dev/null && wait "$server" 2>/dev/null || true; }
+# MSYS2 cannot deliver signals to the native Windows server process.
+case "$(uname -s)" in
+    MINGW*|MSYS*) stop() { taskkill //F //IM pokeverse-server.exe > /dev/null 2>&1 || true; wait "$server" 2>/dev/null || true; } ;;
+    *) stop() { kill -INT "$server" 2>/dev/null && wait "$server" 2>/dev/null || true; } ;;
+esac
 [ "${KEEP_RUNNING:-0}" = 1 ] || trap stop EXIT
 
 for _ in $(seq 1 "$TIMEOUT"); do

@@ -239,6 +239,33 @@ void runfileHandler(void)
 }
 #endif
 
+#if defined(WINDOWS) && defined(__CONSOLE__)
+// Windows has no SIGTERM/SIGQUIT; Ctrl+C, Ctrl+Break and closing the console do what
+// SIGQUIT does on Linux (save players and map, then shut down).
+BOOL WINAPI consoleCtrlHandler(DWORD type)
+{
+	switch(type)
+	{
+		case CTRL_C_EVENT:
+		case CTRL_BREAK_EVENT:
+		case CTRL_CLOSE_EVENT:
+		case CTRL_SHUTDOWN_EVENT:
+			std::cout << "> Shutdown requested from the console, saving..." << std::endl;
+			Dispatcher::getInstance().addTask(createTask(
+				boost::bind(&Game::setGameState, &g_game, GAME_STATE_SHUTDOWN)));
+			// Windows terminates the process when this handler returns for close/shutdown events.
+			if(type == CTRL_CLOSE_EVENT || type == CTRL_SHUTDOWN_EVENT)
+				Sleep(10000);
+			return TRUE;
+
+		default:
+			break;
+	}
+
+	return FALSE;
+}
+
+#endif
 void allocationHandler()
 {
 	puts("Allocation failed, server out of memory!\nDecrease size of your map or compile in a 64-bit mode.");
@@ -325,6 +352,9 @@ void serverMain(void* param)
     sigaction(SIGFPE, &s, NULL);   // floating-point exception
     sigaction(SIGABRT, &s, NULL);  // process aborted (asserts)
     #endif
+	#endif
+	#if defined(WINDOWS) && defined(__CONSOLE__)
+	SetConsoleCtrlHandler(consoleCtrlHandler, TRUE);
 	#endif
 
 	Dispatcher::getInstance().addTask(createTask(boost::bind(otserv,

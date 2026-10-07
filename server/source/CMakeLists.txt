@@ -24,12 +24,20 @@ target_compile_definitions(pokeverse-server PRIVATE
   __ROOT_PERMISSION__ _THREAD_SAFE _REENTRANT)
 target_compile_options(pokeverse-server PRIVATE -fpermissive -Wno-deprecated-declarations)
 
-find_package(Boost REQUIRED COMPONENTS system filesystem thread regex)
+find_package(Boost REQUIRED COMPONENTS filesystem thread)
+# Boost.System (1.89+) and Boost.Regex are header-only in newer Boost and may ship no library.
+set(BOOST_OPTIONAL_LIBS)
+foreach(component system regex)
+  find_package(Boost QUIET COMPONENTS ${component})
+  if(TARGET Boost::${component})
+    list(APPEND BOOST_OPTIONAL_LIBS Boost::${component})
+  endif()
+endforeach()
 find_package(LibXml2 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LUA REQUIRED lua5.1)
+pkg_search_module(LUA REQUIRED lua5.1 lua-5.1 lua51)
 pkg_check_modules(MARIADB REQUIRED libmariadb)
 pkg_check_modules(SQLITE REQUIRED sqlite3)
 find_library(GMP_LIBRARY gmp REQUIRED)
@@ -37,7 +45,7 @@ find_library(GMP_LIBRARY gmp REQUIRED)
 target_include_directories(pokeverse-server PRIVATE
   ${LUA_INCLUDE_DIRS} ${MARIADB_INCLUDE_DIRS} ${SQLITE_INCLUDE_DIRS})
 target_link_libraries(pokeverse-server PRIVATE
-  Boost::system Boost::filesystem Boost::thread Boost::regex
+  Boost::filesystem Boost::thread ${BOOST_OPTIONAL_LIBS}
   LibXml2::LibXml2 OpenSSL::Crypto Threads::Threads
   ${LUA_LIBRARIES} ${MARIADB_LIBRARIES} ${SQLITE_LIBRARIES} ${GMP_LIBRARY})
 target_link_directories(pokeverse-server PRIVATE
