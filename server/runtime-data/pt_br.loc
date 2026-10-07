@@ -6935,3 +6935,25 @@ You collected %dx %s.@Você coletou %dx %s.
 You advanced in %s from level %d to level %d.@Você avançou em %s do nível %d para o nível %d.
 You advanced in %s to level %d.@Você avançou em %s para o nível %d.
 Your purchase could not be delivered (no room?). Your diamonds were refunded.@Sua compra não pôde ser entregue (sem espaço?). Seus diamantes foram devolvidos.
+Only items inside your backpack can be offered.@Apenas itens dentro da sua mochila podem ser oferecidos.
+Set a price greater than zero.@Defina um valor maior que zero.
+This offer does not exist.@Esta oferta não existe.
+This item only accepts offers.@Este item só aceita ofertas.
+This does not belong to you.@Isso não pertence a você.
+Invalid market item.@Item de mercado inválido.
+Item not found.@Item não encontrado.
+This listing has expired.@O tempo expirou.
+Invalid price.@Preço inválido.
+You reached the maximum number of items you can offer.@Você atingiu o limite máximo de itens a oferecer.
+You already made an offer for this item.@Você já fez uma oferta para este item.
+You cannot buy your own item.@Você não pode comprar seu próprio item.
+You cannot make an offer on your own item.@Você não pode dar uma oferta em seu próprio item.
+You cannot offer this unique item.@Você não pode oferecer este item único.
+You cannot sell this item.@Você não pode vender este item.
+You cannot sell this unique item.@Você não pode vender este item único.
+You do not have the selected amount of items.@Você não possui a quantidade de itens selecionada.
+You do not have enough money for the market fee.@Você não possui o dinheiro da taxa.
+You do not have that many items.@Você não tem tantos itens.
+This item is already listed.@Este item já está anunciado.
+The item could not be listed. Your fee was refunded.@O item não pôde ser anunciado. Sua taxa foi devolvida.
+Your offer was sent. Wait for the seller to review it.@Sua oferta foi feita, espere até que o vendedor avalie.

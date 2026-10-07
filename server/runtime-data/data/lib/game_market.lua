@@ -173,6 +173,22 @@ function getPokeMarketDescription(itemId, uid, pokemonFRIENDSHIP, pokemonFRIENDS
     return description
   end
 
+MARKET_LOG_FILE = "market.log"
+MARKET_MAX_PRICE = 99999999
+MARKET_MAX_COUNT = 100000
+
+function isMarketCode(code)
+  return type(code) == "string" and code:match("^Mkt%d+$") ~= nil
+end
+
+function isMarketInteger(value, min, max)
+  return type(value) == "number" and value == math.floor(value) and value >= min and value <= max
+end
+
+function marketLog(cid, action, detail)
+  doWriteLogFile((LOGS_DIR or "logs/") .. MARKET_LOG_FILE, string.format("%s (guid %d) %s %s", getCreatureName(cid), getPlayerGUID(cid), action, detail))
+end
+
 function nearOnMarket(cid)
   local lastMarketPosition = getPlayerStorageValue(cid, playersStorages.marketPos)
   local pos = {x = 0,y = 0,z = 0,stackpos = 0}
@@ -219,7 +235,7 @@ function doRefreshMarketItems()
             local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..item_code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
             local mysql = db.getResult(query)
             if mysql:getID() == -1 then
-              doPlayerPopupFYI(cid, "Item de mercado inválido")
+              print("[Market] missing offer row for " .. item_code)
               return false
             end
             local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -229,7 +245,7 @@ function doRefreshMarketItems()
               db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..item_code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
             end
             if not checkHistoric and offer_item.state == OFFERPOSTED then 
-			  setMarketHistoric(offer_item.playeroffer_id, "Sua oferta foi recusada para o "..market_item.item_name..".")
+			  setMarketHistoric(offer_item.playeroffer_id, "Your offer was declined for "..market_item.item_name..".")
 			  checkHistoric = true
 			end
 		  end
@@ -404,12 +420,13 @@ end
 function sendMarketBuyItems(cid, category, page, focus, order, searchstring)
   if not nearOnMarket(cid) then return sendMarketClose(cid) end
   if not order then order = "timeasc" end
+  page = math.max(1, math.floor(tonumber(page) or 1))
   local send_market_items = {}
   local qnt_per_page = 15
   for item_code, itemInfo in pairs(market_items) do
     if itemInfo.time - os.time() > 0 then
       if (category == "Todos" or getItemCategory(itemInfo.itemid) == category) then
-        if not searchstring or (string.find(string.lower(itemInfo.item_name), string.lower(searchstring)) or string.find(string.lower(itemInfo.playerseller_name), string.lower(searchstring))) then
+        if not searchstring or (string.find(string.lower(itemInfo.item_name), string.lower(searchstring), 1, true) or string.find(string.lower(itemInfo.playerseller_name), string.lower(searchstring), 1, true)) then
           local market_item = {
             item_code         = itemInfo.item_code,
             playerseller_name = itemInfo.playerseller_name,
@@ -485,15 +502,15 @@ function checkMarketCanSellItem(cid, container_index, slot_index)
     item = getContainerItemByIndex(cid, container_index - 64, slot_index) or item
   end
   if item.itemid == 0 then
-    return doPlayerPopupFYI(cid, "Item não encontrado")
+    return doPlayerPopupFYI(cid, __L(cid, "Item not found."))
   elseif isBlockItem(item.itemid) then -- block item
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   elseif isContainer(item.uid) and getContainerSize(item.uid) > 0 then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   elseif getItemInfo(item.itemid).worth > 0 then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item.")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   elseif not getItemInfo(item.itemid).movable then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item.")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   end
   local itemInfo = {item_code = "", itemid = item.itemid, count = item.type, spriteId = getItemInfo(item.itemid).clientId}
   if not isItemStackable(item.itemid) then
@@ -576,9 +593,12 @@ function doMarketAcceptOffer(cid, code, playeroffer_id)
   if not nearOnMarket(cid) then return sendMarketClose(cid) end
   local market_item = market_items[code]
   if not market_item then return end
+  if market_item.playerseller_id ~= getPlayerGUID(cid) then
+    return doPlayerPopupFYI(cid, __L(cid, "This does not belong to you."))
+  end
   local offers = market_item.offers[playeroffer_id]
   if not offers then
-    return doPlayerPopupFYI(cid, "Esta oferta não existe")
+    return doPlayerPopupFYI(cid, __L(cid, "This offer does not exist."))
   end
   local playeroffer_name
   for num, offer_item in ipairs(offers) do
@@ -586,7 +606,7 @@ function doMarketAcceptOffer(cid, code, playeroffer_id)
       local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
       local mysql = db.getResult(query)
       if mysql:getID() == -1 then
-        doPlayerPopupFYI(cid, "Item de mercado inválido")
+        doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
         return false
       end
       local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -602,7 +622,7 @@ function doMarketAcceptOffer(cid, code, playeroffer_id)
   local query = ("SELECT `attributes` FROM `market_items` WHERE `item_code` = '"..code.."' AND `playerseller_id`  = "..market_item.playerseller_id)
   local mysql = db.getResult(query)
   if mysql:getID() == -1 then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   end
   local item = doCreateItemEx(market_item.itemid, market_item.count)
@@ -611,16 +631,17 @@ function doMarketAcceptOffer(cid, code, playeroffer_id)
   if addItem(playeroffer_name, market_item.itemid, item) then
 	db.executeQuery("DELETE FROM `market_items` WHERE `item_code` = '"..code.."'")
   end
-  setMarketHistoric(getPlayerGUID(cid), "Você aceitou uma oferta para "..market_item.item_name..".", cid)
-  setMarketHistoric(playeroffer_id, "Sua oferta foi aceita para o "..market_item.item_name..".")
+  marketLog(cid, "accept", string.format("code=%s from_guid=%d", code, playeroffer_id))
+  setMarketHistoric(getPlayerGUID(cid), "You accepted an offer for "..market_item.item_name..".", cid)
+  setMarketHistoric(playeroffer_id, "Your offer was accepted for "..market_item.item_name..".")
   for _playeroffer_id, _offers in pairs(market_item.offers) do
     local checkHistoric = false
     for num, offer_item in ipairs(_offers) do
-      if offer_item.state == OFFERPOSTED or offer_item == OFFERUNDERCONSTRUCTION then
+      if offer_item.state == OFFERPOSTED or offer_item.state == OFFERUNDERCONSTRUCTION then
         local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
         local mysql = db.getResult(query)
         if mysql:getID() == -1 then
-          doPlayerPopupFYI(cid, "Item de mercado inválido")
+          doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
           return false
         end
         local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -629,7 +650,7 @@ function doMarketAcceptOffer(cid, code, playeroffer_id)
 		if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
 		  db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
           if not checkHistoric and offer_item.state == OFFERPOSTED then 
-			setMarketHistoric(_playeroffer_id, "Sua oferta foi recusada para o "..market_item.item_name..".")
+			setMarketHistoric(_playeroffer_id, "Your offer was declined for "..market_item.item_name..".")
 		  end
 		  checkHistoric = true
 		end
@@ -646,9 +667,12 @@ function doMarketRefuseOffer(cid, code, playeroffer_id)
   if not nearOnMarket(cid) then return sendMarketClose(cid) end
   local market_item = market_items[code]
   if not market_item then return end
+  if market_item.playerseller_id ~= getPlayerGUID(cid) then
+    return doPlayerPopupFYI(cid, __L(cid, "This does not belong to you."))
+  end
   local offers = market_item.offers[playeroffer_id]
   if not offers then
-    return doPlayerPopupFYI(cid, "Esta oferta não existe")
+    return doPlayerPopupFYI(cid, __L(cid, "This offer does not exist."))
   end
   local checkHistoric = false
   for num, offer_item in ipairs(offers) do
@@ -656,7 +680,7 @@ function doMarketRefuseOffer(cid, code, playeroffer_id)
       local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
       local mysql = db.getResult(query)
       if mysql:getID() == -1 then
-        doPlayerPopupFYI(cid, "Item de mercado inválido")
+        doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
         return false
       end
       local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -665,7 +689,7 @@ function doMarketRefuseOffer(cid, code, playeroffer_id)
       if addItem(getPlayerNameByGUID(playeroffer_id), offer_item.itemid, offerItem) then
         db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index.." AND  `playeroffer_id` = "..offer_item.playeroffer_id)
         if not checkHistoric then 
-          setMarketHistoric(playeroffer_id, "Sua oferta foi recusada para o "..market_item.item_name..".")
+          setMarketHistoric(playeroffer_id, "Your offer was declined for "..market_item.item_name..".")
           checkHistoric = true
 	    end
 	  end
@@ -682,14 +706,14 @@ function doMarketRemoveOffer(cid, code)
   if not market_item then return end
   local offers = market_item.offers[getPlayerGUID(cid)]
   if not offers then
-    return doPlayerPopupFYI(cid, "Esta oferta não existe")
+    return doPlayerPopupFYI(cid, __L(cid, "This offer does not exist."))
   end
   for num, offer_item in ipairs(offers) do
     if offer_item.state == OFFERPOSTED then
       local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
       local mysql = db.getResult(query)
       if mysql:getID() == -1 then
-        doPlayerPopupFYI(cid, "Item de mercado inválido")
+        doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
         return false
       end
       local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -706,36 +730,48 @@ function doMarketRemoveOffer(cid, code)
 end
 
 function getMarketFee(price)
-  return math.max(1, price / 1000)
+  return math.max(1, math.floor(price / 1000))
 end
 
 function doMarketSellItem(cid, code, itemId, count, onlyoffer, price)
   if not nearOnMarket(cid) then return sendMarketClose(cid) end
-  if not code or code == "" or code == 'nil' or code == nil then code = generateCode() end
-  if itemId == 0 then return doPlayerPopupFYI(cid, "Item não encontrado") end
-  if price < 0 or price > 99999999 then return doPlayerPopupFYI(cid, "Preço inválido") end
-  if onlyoffer < 0 or onlyoffer > 1 then onlyoffer = 0 end
-  local item = isItemStackable(itemId) and getPlayerItemByIdInMarket(cid, itemId) or getPlayerItemByCode(cid, code)
-  if not item then return doPlayerPopupFYI(cid, "Item não encontrado") end
-  if isItemUnique(item.uid) then return doPlayerPopupFYI(cid, "Você não pode vender este item unico") end
-  if isContainer(item.uid) and getContainerSize(item.uid) > 0 then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+  if not isMarketInteger(itemId, 1, 0xFFFF) then return doPlayerPopupFYI(cid, __L(cid, "Item not found.")) end
+  if not isMarketInteger(price, 0, MARKET_MAX_PRICE) then return doPlayerPopupFYI(cid, __L(cid, "Invalid price.")) end
+  if onlyoffer ~= 1 then onlyoffer = 0 end
+  local stackable = isItemStackable(itemId)
+  if not isMarketInteger(count, 1, stackable and MARKET_MAX_COUNT or 1) then
+    return doPlayerPopupFYI(cid, __L(cid, "You do not have that many items."))
+  end
+  local item
+  if stackable then
+    code = generateCode()
+    item = getPlayerItemByIdInMarket(cid, itemId)
+  elseif isMarketCode(code) then
+    item = getPlayerItemByCode(cid, code)
+  end
+  if not item or item.itemid ~= itemId then return doPlayerPopupFYI(cid, __L(cid, "Item not found.")) end
+  if market_items[code] then return doPlayerPopupFYI(cid, __L(cid, "This item is already listed.")) end
+  if isItemUnique(item.uid, cid) then return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this unique item.")) end
+  if isBlockItem(item.itemid) then
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
+  elseif isContainer(item.uid) and getContainerSize(item.uid) > 0 then
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   elseif getItemInfo(item.itemid).worth > 0 then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   elseif not getItemInfo(item.itemid).movable then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   end
   if onlyoffer == 0 and price == 0 then
-    return doPlayerPopupFYI(cid, "Defina um valor maior que zero")
+    return doPlayerPopupFYI(cid, __L(cid, "Set a price greater than zero."))
   end
   price = onlyoffer == 1 and 0 or price
   if getPlayerItemCount(cid, item.itemid) < count then
-    return doPlayerPopupFYI(cid, "Você não tem tantos itens")
+    return doPlayerPopupFYI(cid, __L(cid, "You do not have that many items."))
   end
-  if getPlayerMoney(cid) < getMarketFee(price * count) then
-    return doPlayerPopupFYI(cid, "Você não possui o dinheiro da taxa")
+  local fee = getMarketFee(price * count)
+  if getPlayerMoney(cid) < fee or not doPlayerRemoveMoney(cid, fee) then
+    return doPlayerPopupFYI(cid, __L(cid, "You do not have enough money for the market fee."))
   end
-  doPlayerRemoveMoney(cid, getMarketFee(price * count))
   local market_item = {
     item_code = code, playerseller_id = getPlayerGUID(cid), playerseller_name = getCreatureName(cid), 
     onlyoffer = onlyoffer, spriteId = getItemInfo(item.itemid).clientId, itemid = item.itemid, count = count, price = price,
@@ -745,12 +781,26 @@ function doMarketSellItem(cid, code, itemId, count, onlyoffer, price)
   market_item.description = getPokeMarketDescription(market_item.itemid, item.uid)
   market_item.item_name = getMarketItemName(market_item.itemid, item.uid)
   market_item.poke_info = getMarketPokeInfo(market_item.itemid, item.uid)
-  -- local values = "'"..code.."', "..market_item.playerseller_id..", '"..market_item.playerseller_name.."', "..onlyoffer..", "..item.itemid..", "..count..", "..price..", '"..json.encode(market_item.attributes).."', "..market_item.time..")"
-  local values = "'"..code.."', "..market_item.playerseller_id..", '"..market_item.playerseller_name.."', "..onlyoffer..", "..item.itemid..", "..count..", "..price..", "..market_item.attributes..", "..market_item.time..")"
-  if db.executeQuery("INSERT INTO `market_items` (`item_code`, `playerseller_id`, `playerseller_name`, `onlyoffer`, `itemid`, `count`, `price`, `attributes`, `time`) VALUES ( "..values) then
-    if isItemStackable(itemId) then doPlayerRemoveItem(cid, item.itemid, count) else doRemoveItem(cid, item.uid, count) end
-	market_items[code] = market_item
+  local values = db.escapeString(code)..", "..market_item.playerseller_id..", "..db.escapeString(market_item.playerseller_name)..", "..onlyoffer..", "..item.itemid..", "..count..", "..price..", "..market_item.attributes..", "..market_item.time..")"
+  if not db.executeQuery("INSERT INTO `market_items` (`item_code`, `playerseller_id`, `playerseller_name`, `onlyoffer`, `itemid`, `count`, `price`, `attributes`, `time`) VALUES ( "..values) then
+    doPlayerAddMoney(cid, fee)
+    marketLog(cid, "list-failed", string.format("code=%s itemid=%d count=%d reason=insert", code, item.itemid, count))
+    return doPlayerPopupFYI(cid, __L(cid, "The item could not be listed. Your fee was refunded."))
   end
+  local removed
+  if stackable then
+    removed = doPlayerRemoveItem(cid, item.itemid, count)
+  else
+    removed = doRemoveItem(item.uid, 1)
+  end
+  if not removed then
+    db.executeQuery("DELETE FROM `market_items` WHERE `item_code` = "..db.escapeString(code))
+    doPlayerAddMoney(cid, fee)
+    marketLog(cid, "list-failed", string.format("code=%s itemid=%d count=%d reason=remove", code, item.itemid, count))
+    return doPlayerPopupFYI(cid, __L(cid, "The item could not be listed. Your fee was refunded."))
+  end
+  market_items[code] = market_item
+  marketLog(cid, "list", string.format("code=%s itemid=%d count=%d price=%d onlyoffer=%d fee=%d", code, item.itemid, count, price, onlyoffer, fee))
   sendMarketBuyItems(cid, "Todos", 1, 0)
   sendMarketSellItems(cid)
   doPlayerSave(cid)
@@ -758,53 +808,60 @@ end
 
 function doMarketBuyItem(cid, code, buy_count)
   if not nearOnMarket(cid) then return sendMarketClose(cid) end
-  if not buy_count or buy_count < 1 then buy_count = 1 end		
+  buy_count = buy_count or 1
+  if not isMarketInteger(buy_count, 1, MARKET_MAX_COUNT) then
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
+    return false
+  end
   if getPlayerFreeSlots(cid) < 0 then
-    doPlayerSendCancel(cid, "Sua mochila está cheia")
+    doPlayerSendCancel(cid, __L(cid, "Your backpack is full."))
     return false
   end
   local market_item = market_items[code]
   if not market_item then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   end
   if market_item.onlyoffer == 1 then
-    doPlayerPopupFYI(cid, "Este item só aceita ofertas")
+    doPlayerPopupFYI(cid, __L(cid, "This item only accepts offers."))
 	return false
   end
   if getPlayerFreeCap(cid) < getItemInfo(market_item.itemid).weight then
-    doPlayerPopupFYI(cid, "Sua mochila está com capacidade máxima")
+    doPlayerPopupFYI(cid, __L(cid, "You do not have enough capacity."))
     return false
   elseif market_item.playerseller_id == getPlayerGUID(cid) then
-    doPlayerPopupFYI(cid, "Você não pode comprar seu próprio item")
+    doPlayerPopupFYI(cid, __L(cid, "You cannot buy your own item."))
     return false
   elseif buy_count > market_item.count then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   elseif market_item.time - os.time() < 1 then
-    doPlayerPopupFYI(cid, "O tempo expirou")
+    doPlayerPopupFYI(cid, __L(cid, "This listing has expired."))
     return false
   elseif market_item.count < 1 then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   elseif getPlayerMoney(cid) < (market_item.price * buy_count) then
-    doPlayerPopupFYI(cid, "Você não tem dinheiro suficiente")
+    doPlayerPopupFYI(cid, __L(cid, "You do not have enough money."))
     return false
   end
   local query = ("SELECT `attributes` FROM `market_items` WHERE `item_code` = '"..code.."' AND `playerseller_id`  = "..market_item.playerseller_id)
   local mysql = db.getResult(query)
   if mysql:getID() == -1 then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   end
   local item = doCreateItemEx(market_item.itemid, market_item.count)
   doItemLoadAttributes(item, 'attributes', mysql:getID())
   doItemSetCount(item, buy_count)
+  local total = market_item.price * buy_count
+  if not doPlayerRemoveMoney(cid, total) then
+    doPlayerPopupFYI(cid, __L(cid, "You do not have enough money."))
+    return false
+  end
   if addItem(getCreatureName(cid), market_item.itemid, item) then
-	local sellerItem = market_item.playerseller_name
-	local CountPriceValue = market_item.price * buy_count
-	addMoney(sellerItem, market_item.price * buy_count)
-	doPlayerRemoveMoney(cid, market_item.price * buy_count)
+	addMoney(market_item.playerseller_name, total)
+	marketLog(cid, "buy", string.format("code=%s itemid=%d count=%d total=%d seller_guid=%d", code, market_item.itemid, buy_count, total, market_item.playerseller_id))
 	if buy_count == market_item.count then
 	  db.executeQuery("DELETE FROM `market_items` WHERE `item_code` = '"..code.."'")
       for playeroffer_id, offers in pairs(market_item.offers) do
@@ -813,7 +870,7 @@ function doMarketBuyItem(cid, code, buy_count)
           local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
           local mysql = db.getResult(query)
           if mysql:getID() == -1 then
-            doPlayerPopupFYI(cid, "Item de mercado inválido")
+            doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
             return false
           end
 		  local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -823,7 +880,7 @@ function doMarketBuyItem(cid, code, buy_count)
             if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
               -- db.executeQuery("UPDATE `market_offers` set `state` = "..OFFERDECLINED.." WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index)
               if not checkHistoric then 
-      	        setMarketHistoric(playeroffer_id, "Sua oferta foi recusada para o "..market_item.item_name..".")
+      	        setMarketHistoric(playeroffer_id, "Your offer was declined for "..market_item.item_name..".")
       	      end
       	      checkHistoric = true
       	    end
@@ -839,9 +896,14 @@ function doMarketBuyItem(cid, code, buy_count)
 	  db.executeQuery("UPDATE `market_items` SET `count` = `count` - ".. buy_count .." WHERE `item_code` = '"..code.."'")
 	  market_item.count = market_item.count - buy_count
 	end
-	setMarketHistoric(getPlayerGUID(cid), "Você comprou "..buy_count.." "..market_item.item_name..".", cid)
-	setMarketHistoric(market_item.playerseller_id, "Você vendeu "..buy_count.." "..market_item.item_name..".")
+	setMarketHistoric(getPlayerGUID(cid), "You bought "..buy_count.." "..market_item.item_name..".", cid)
+	setMarketHistoric(market_item.playerseller_id, "You sold "..buy_count.." "..market_item.item_name..".")
 	sendMarketBuyItems(cid, "Todos", 1, 0)
+  else
+    doPlayerAddMoney(cid, total)
+    marketLog(cid, "buy-failed", string.format("code=%s count=%d total=%d reason=delivery", code, buy_count, total))
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
+    return false
   end
   return true
 end
@@ -849,25 +911,25 @@ end
 function doMarketRemoveItem(cid, code)
   if not nearOnMarket(cid) then return sendMarketClose(cid) end
   if getPlayerFreeSlots(cid) < 0 then
-    doPlayerSendCancel(cid, "Sua mochila está cheia")
+    doPlayerSendCancel(cid, __L(cid, "Your backpack is full."))
     return false
   end
   local market_item = market_items[code]
   if not market_item then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   end
   if market_item.playerseller_id ~= getPlayerGUID(cid) then
-    doPlayerPopupFYI(cid, "Isso não pertence a você")
+    doPlayerPopupFYI(cid, __L(cid, "This does not belong to you."))
     return false
   elseif getPlayerFreeCap(cid) < getItemInfo(market_item.itemid).weight then
-    doPlayerSendCancel(cid, "Sua mochila está com capacidade máxima")
+    doPlayerSendCancel(cid, __L(cid, "You do not have enough capacity."))
     return false
   end
   local query = ("SELECT `attributes` FROM `market_items` WHERE `item_code` = '"..code.."' AND `playerseller_id`  = "..market_item.playerseller_id)
   local mysql = db.getResult(query)
   if mysql:getID() == -1 then
-    doPlayerPopupFYI(cid, "Item de mercado inválido")
+    doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
     return false
   end
   local item = doCreateItemEx(market_item.itemid, market_item.count)
@@ -881,7 +943,7 @@ function doMarketRemoveItem(cid, code)
         local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
         local mysql = db.getResult(query)
         if mysql:getID() == -1 then
-          doPlayerPopupFYI(cid, "Item de mercado inválido")
+          doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
           return false
         end
         local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -895,7 +957,7 @@ function doMarketRemoveItem(cid, code)
           if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
             -- db.executeQuery("UPDATE `market_offers` set `state` = "..OFFERDECLINED.." WHERE `item_code` = '"..code.."' AND `item_index` = "..offer_item.item_index)
             if not checkHistoric then 
-      	      setMarketHistoric(playeroffer_id, "Sua oferta foi recusada para o "..market_item.item_name..".")
+      	      setMarketHistoric(playeroffer_id, "Your offer was declined for "..market_item.item_name..".")
       	    end
       	    checkHistoric = true
 		  end
@@ -918,7 +980,7 @@ function doMarketPostOffer(cid, code)
     offer_item.state = OFFERPOSTED
 	db.executeQuery("UPDATE `market_offers` set `state` = "..OFFERPOSTED.." WHERE `item_code` = '"..code.."' AND `item_index` = "..offer_item.item_index)
   end
-  doPlayerPopupFYI(cid, 'Sua oferta foi feita, espere até que o vendedor avalie')
+  doPlayerPopupFYI(cid, __L(cid, "Your offer was sent. Wait for the seller to review it."))
   sendMarketBuyItems(cid, "Todos", 1, 0)
   sendMarketOffers(cid)
 end
@@ -933,7 +995,7 @@ function doMarketCancelMakeOffer(cid, code)
       local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
       local mysql = db.getResult(query)
       if mysql:getID() == -1 then
-        doPlayerPopupFYI(cid, "Item de mercado inválido")
+        doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
         return false
       end
       local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -954,32 +1016,33 @@ function doMarketMakeOffer(cid, code, container_index, slot_index, count)
   if container_index >= 64 and container_index <= 80 then
     item = getContainerItemByIndex(cid, container_index - 64, slot_index) or item
   else
-    return doPlayerPopupFYI(cid, "Apenas itens dentro da sua mochila")
+    return doPlayerPopupFYI(cid, __L(cid, "Only items inside your backpack can be offered."))
   end
   if item.itemid == 0 then
-    return doPlayerPopupFYI(cid, "Item não encontrado")
+    return doPlayerPopupFYI(cid, __L(cid, "Item not found."))
   elseif isContainer(item.uid) and getContainerSize(item.uid) > 0 then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   elseif not getItemInfo(item.itemid).movable then
-    return doPlayerPopupFYI(cid, "Você não pode vender este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot sell this item."))
   end
-  if isItemUnique(item.uid) then return doPlayerPopupFYI(cid, "Você não pode oferecer este item unico") end
-  if getPlayerItemCount(cid, item.itemid) < count then
-    return doPlayerPopupFYI(cid, "Você não possui a quantidade de itens selecionada")
+  if isItemUnique(item.uid, cid) then return doPlayerPopupFYI(cid, __L(cid, "You cannot offer this unique item.")) end
+  local maxCount = isItemStackable(item.itemid) and math.max(1, item.type) or 1
+  if not isMarketInteger(count, 1, maxCount) then
+    return doPlayerPopupFYI(cid, __L(cid, "You do not have the selected amount of items."))
   end
   local current_market_item = market_items[code]
   if not current_market_item then 
-    return doPlayerPopupFYI(cid, "Item não encontrado")
+    return doPlayerPopupFYI(cid, __L(cid, "Item not found."))
   end
   if current_market_item.playerseller_id == getPlayerGUID(cid) then
-    return doPlayerPopupFYI(cid, "Você não pode dar uma oferta em seu próprio item")
+    return doPlayerPopupFYI(cid, __L(cid, "You cannot make an offer on your own item."))
   end
   local current_offers = current_market_item.offers[getPlayerGUID(cid)]
   if current_offers and current_offers[1].state ~= OFFERUNDERCONSTRUCTION then
-    return doPlayerPopupFYI(cid, "Você já fez uma oferta para este item")
+    return doPlayerPopupFYI(cid, __L(cid, "You already made an offer for this item."))
   end
   if current_offers and #current_offers >= 8 then
-    return doPlayerPopupFYI(cid, "Você atingiu o limite máximo de itens a oferecer")
+    return doPlayerPopupFYI(cid, __L(cid, "You reached the maximum number of items you can offer."))
   end
   local offer_item = {
     item_code         = code,
@@ -994,12 +1057,17 @@ function doMarketMakeOffer(cid, code, container_index, slot_index, count)
   }
   offer_item.description = getPokeMarketDescription(offer_item.itemid, item.uid)
   offer_item.poke_info = getMarketPokeInfo(item.itemid, item.uid)
-  local values = "'"..offer_item.item_code.."', "..offer_item.itemid..", "..offer_item.count..", "..offer_item.item_index..", "..offer_item.playeroffer_id..", '"..offer_item.playeroffer_name.."', "..offer_item.attributes..")"
-  if db.executeQuery("INSERT INTO `market_offers` (`item_code`, `itemid`, `count`, `item_index`, `playeroffer_id`, `playeroffer_name`, `attributes`) VALUES ( "..values) then
-    doRemoveItem(cid, item.uid, count)
-	if not current_market_item.offers[offer_item.playeroffer_id] then current_market_item.offers[offer_item.playeroffer_id] = {} end
-	current_market_item.offers[offer_item.playeroffer_id][#current_market_item.offers[offer_item.playeroffer_id]+1] = offer_item
+  local values = "'"..offer_item.item_code.."', "..offer_item.itemid..", "..offer_item.count..", "..offer_item.item_index..", "..offer_item.playeroffer_id..", "..db.escapeString(offer_item.playeroffer_name)..", "..offer_item.attributes..")"
+  if not db.executeQuery("INSERT INTO `market_offers` (`item_code`, `itemid`, `count`, `item_index`, `playeroffer_id`, `playeroffer_name`, `attributes`) VALUES ( "..values) then
+    return doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
   end
+  if not doRemoveItem(item.uid, count) then
+    db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = "..db.escapeString(code).." AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
+    return doPlayerPopupFYI(cid, __L(cid, "Item not found."))
+  end
+  marketLog(cid, "offer", string.format("code=%s itemid=%d count=%d", code, offer_item.itemid, count))
+  if not current_market_item.offers[offer_item.playeroffer_id] then current_market_item.offers[offer_item.playeroffer_id] = {} end
+  current_market_item.offers[offer_item.playeroffer_id][#current_market_item.offers[offer_item.playeroffer_id]+1] = offer_item
   local protocol = Protocol_create("marketbuymakeoffer")
   Protocol_add(protocol, {count = count, spriteId = offer_item.spriteId, description = offer_item.description, poke_info = offer_item.poke_info})
   doSendPlayerExtendedOpcode(cid, GameServerOpcodes.Market, table.tostring(protocol))
@@ -1036,7 +1104,7 @@ function cancelMakeOfferOnLogout(cid)
         local query = ("SELECT `attributes` FROM `market_offers` WHERE `item_code` = '"..code.."' AND `playeroffer_id`  = "..offer_item.playeroffer_id.." AND `item_index` = "..offer_item.item_index)
         local mysql = db.getResult(query)
         if mysql:getID() == -1 then
-          doPlayerPopupFYI(cid, "Market item invalid.")
+          doPlayerPopupFYI(cid, __L(cid, "Invalid market item."))
           return false
         end
         local offerItem = doCreateItemEx(offer_item.itemid, offer_item.count)
@@ -1084,8 +1152,7 @@ function addMoney(name, money)
 end
 
 function addItem(name, itemId, item)
-  doPlayerSendMarketMailByName(name, item, 40)
-  return true
+  return doPlayerSendMarketMailByName(name, item, 40) == true
 end
 
 function getItemCategory(itemid)
@@ -1177,7 +1244,7 @@ function getPlayerItemByCode(cid, item_code)
   return getItemInContainerByCode(getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK).uid, item_code) 
 end
 
-function isItemUnique(uid)
+function isItemUnique(uid, cid)
   if getItemAttribute(uid, ballsAttributes.uniqueFromTm) and getItemAttribute(uid, ballsAttributes.uniqueFromTm) == 1 then return true end 
   if getItemAttribute(uid, ballsAttributes.uniqueFromTmSlot1) and getItemAttribute(uid, ballsAttributes.uniqueFromTmSlot1) == 1 then return true end 
   if getItemAttribute(uid, ballsAttributes.uniqueFromTmSlot2) and getItemAttribute(uid, ballsAttributes.uniqueFromTmSlot2) == 1 then return true end 
