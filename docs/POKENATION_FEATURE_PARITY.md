@@ -283,7 +283,7 @@ Two facts affect many rows:
   - Item packets carry Pokémon name, level and gender; creature packets carry types, level and EXP.
   - Guardian and passive-retaliation logic in `monster.cpp`; item stacks up to 10,000.
   - New Lua bindings (`getContainerItems`, `doItemSetCount`, `doPlayerSendMarketMailByName`).
-  - Verse has **none** of Nation's fixes: `combat.cpp` and `localization.cpp` are byte-identical to the original, the login challenge is skipped, and the shutdown bug (BUG-72) is still in `server.cpp`.
+  - Verse has **none** of Nation's fixes: `combat.cpp` and `localization.cpp` are byte-identical to the original, the login challenge is skipped, and the shutdown bug (BUG-72) was still in `server.cpp` (fixed in Phase 3 with PokeVerse's own change; `KNOWN_ISSUES.md`).
 - PSoul C++ subsystems in both: TV/cast channels (`TVChannel`, `/tvlist`), autoloot (`Player::autoLoot`), party duels (`partyduel.cpp`), PvP/survive arenas (`pvparena.cpp`), tournaments (`tournament.cpp`, `iotournament.cpp`), polls (`polls.cpp`, `iopoll.cpp`), datalog (`iodatalog.cpp`), player statistics (`ioplayerstatistics.cpp`), guilds (`ioguild.cpp`), houses and localization. The bank is NPC Lua in both. **Guild war exists in neither** (only a `znote_guild_wars` website table in Verse's dump).
 - Extended opcodes: Verse dispatches every client→server opcode in Lua (`creaturescripts/scripts/opcode.lua`: 41, 61, 62, 63, 64, 103), with opcode 10 (dash) in C++. Nation handles 0/1 in C++ (`extendedopcodes.h`) and has no Lua dispatcher.
 

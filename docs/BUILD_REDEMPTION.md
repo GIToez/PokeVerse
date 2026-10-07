@@ -1,6 +1,6 @@
 # Building OTClient Redemption (`client-redemption/`)
 
-This document covers how to build the **unmodified** upstream Redemption client (`REDEMPTION_BASELINE.md`) on each target platform. Platform priority is Windows, then Android, then Linux (`PLATFORM_COMPATIBILITY.md`). The PokeVerse-specific changes are made on top of this clean build.
+This document covers how to build the Redemption client on each target platform. The build steps are those of the unmodified upstream client (`REDEMPTION_BASELINE.md`). Platform priority is Windows, then Android, then Linux (`PLATFORM_COMPATIBILITY.md`). The PokeVerse-specific changes are made on top of this clean build.
 
 Build products never go inside `client-redemption/`. They go to `build/client-redemption/<type>/`, and staged runnable copies go to `dist/client-redemption*/`. Both directories are git-ignored.
 
@@ -118,6 +118,23 @@ cmake --build build/client-redemption/release -j"$(nproc)"
 | Launch (Xvfb/VM display) | **PASS** | The window "OTClient - Redemption" opens and shows the upstream language selector. Only error: "Unable to open audio device" (no sound card). |
 | Packaging | **PASS** | `tools/package_client.sh dist/client-redemption`: 87 MB tarball |
 
+## Running against the PokeVerse server
+
+The PokeVerse changes in `client-redemption/` are listed in `REDEMPTION_PROTOCOL_COMPATIBILITY.md` §11 and `REDEMPTION_PARITY_MATRIX.md`. They are separate commits on top of the upstream subtree; see the upstream delta with `git diff 96f1e0f32 -- client-redemption/`.
+
+- **Assets.** `tools/stage_redemption.sh` puts `client/runtime-data/data/things/Tibia.{dat,spr}` into `dist/client-redemption*/data/things/854/`, as hard links where possible. Nothing is renumbered or converted. `Tibia.spr` is a 275 MB Git LFS object; without `git lfs pull` the stage warns and contains no game assets. Upstream's asset download (`Services.clientAssets`) is disabled in `init.lua`.
+- **Server.** `init.lua` lists `127.0.0.1`, port 7564, protocol 854. At 854 `modules/game_features/features.lua` enables the PokeVerse feature set, including `GamePokeVerse`.
+- **Names.** The window title is "PokeVerse". User settings and the log file use the compact name `pokeverse` (for example `~/.local/share/pokeverse/` on Linux, `%APPDATA%\pokeverse\` on Windows; exact paths come from PhysFS). The user script is still `otclientrc.lua`, because upstream packaging ships that name.
+- **Smoke test.** With a server running (`KEEP_RUNNING=1 tools/smoke_server.sh`):
+
+```bash
+tools/smoke_redemption_login.sh /tmp/redemption-smoke.log                    # player / Trainer
+PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" \
+  SCREENSHOT=/tmp/gm.png tools/smoke_redemption_login.sh /tmp/gm.log
+```
+
+  It runs a throwaway copy of the dist with `tools/redemption_smoke_rc.lua` as the user script, so `dist/` never contains test code. It works under Xvfb on Linux and under Git Bash or MSYS2 on Windows; there it needs an OpenGL driver, for example the Mesa llvmpipe DLLs that CI drops next to the executable. CI runs it on both platforms: `platforms.yml` → `windows-e2e` (Windows client and Windows server) and the Linux Release job.
+
 ## Common errors
 
 | Symptom | Cause / fix |
@@ -129,4 +146,6 @@ cmake --build build/client-redemption/release -j"$(nproc)"
 | Windows: `v145 toolset not found` | Use Visual Studio 2026 or override `VCPKG_PLATFORM_TOOLSET` |
 | Windows: link takes very long | Pass `-DOPTIONS_ENABLE_IPO=OFF`, as upstream CI does |
 | `Unable to open audio device` | Harmless on machines without a sound device |
+| "Things are not loaded, please put spr and dat in things/854/" | `Tibia.spr` is an LFS pointer: `git lfs pull`, then restage |
+| `Unhandled opcode 0xFF` | `modules/gamelib/pokeverse.lua` is not loaded (check `gamelib.otmod`) |
 | First build is slow | vcpkg builds every dependency from source. Keep `VCPKG_DEFAULT_BINARY_CACHE`; CI caches it. |

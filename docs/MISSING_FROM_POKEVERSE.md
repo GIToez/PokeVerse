@@ -41,7 +41,7 @@ Importance: **High** means it affects core play or safety. **Medium** means it i
 | BUG-01 combat fix (consented fights under `no-pvp`) | Medium | `combat.cpp` unpatched | `worldType = "pvp"` (the workaround Nation verified) | PORT LATER FROM POKENATION |
 | BUG-05 GM energy reporting | Low | Not applicable: every Verse move costs 0 energy | — | NOT NEEDED |
 | BUG-68 login-challenge check | High (security) | The challenge is skipped in `protocolgame.cpp` | None | PORT LATER FROM POKENATION |
-| BUG-72 shutdown bug (`server.cpp`) | Medium | Present | None | PORT LATER FROM POKENATION |
+| BUG-72 shutdown bug (`server.cpp`) | Medium | Fixed in Phase 3 (written for PokeVerse, not copied: `running` is set before `io_context::run()`) | `tools/protocol_smoke.sh` (`/shutdown` closes the ports, the world is saved) | DONE |
 | Boost.Asio port (`connection.*`, `server.*`) | Medium | Verse compiles against Boost 1.83 with minimal fixes (`BUILD_BASELINE.md`) | Minimal fixes | KEEP POKEVERSE VERSION for now; INVESTIGATE if network issues appear |
 | C++ extended-opcode dispatcher (`extendedopcodes.h`) | Low | Verse dispatches in Lua (`creaturescripts/scripts/opcode.lua`) | Lua dispatcher | KEEP POKEVERSE VERSION |
 | Nation client fixes (TM chooser listener leak BUG-57, U16 counts BUG-59/60, jump assertion BUG-75) | Medium | Verse's client has the legacy behavior | — | PORT LATER FROM POKENATION. The wire formats differ (see the parity doc), so port per fix, not per file. |
