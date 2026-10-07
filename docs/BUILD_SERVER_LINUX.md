@@ -73,6 +73,7 @@ The server reaches `>> Cristal server Online!` in about 60 seconds. It listens o
 | `kill -TERM <pid>` | Shuts down services without the full save path |
 | Ctrl+C (SIGINT) | Immediate exit (no handler). `smoke_server.sh` uses this, because the smoke test saves nothing. |
 | `kill -HUP <pid>` | Save without stopping |
+| GM `/shutdown` | **Clean shutdown**: saves, closes the ports and exits. This is what `tools/protocol_smoke.sh` uses, and it works the same on Windows. |
 
 ## Verified on Linux (2026-10-07)
 
@@ -83,7 +84,8 @@ The server reaches `>> Cristal server Online!` in about 60 seconds. It listens o
 | Startup smoke | PASS. Only the documented "Outdated MySQL" warning appears. |
 | Database connection, map, NPC and script load | PASS (part of startup) |
 | Player login and gameplay | PASS: login smoke plus the full runtime harness (`FEATURE_TEST_MATRIX.md`) |
-| Persistence across restart | PARTIAL. After a server restart, GM Admin logged in with "Your last visit was ... on 10:18:40", which was the session before the restart, and first-login achievements were not re-awarded. Item and Pokémon state across a restart has not been checked: the harness resets the inventory on each run. |
+| Persistence across restart | **PASS** (`tools/protocol_smoke.sh`, local). A GM `/i` is saved on logout, the server shuts down with `/shutdown` and restarts, and the items are still there after the restart and after the next login and save. |
+| Redemption client against the Linux server | **PASS**. Covered: login, map, walking, chat, inventory, Pokémon bar, summon and switch, move bar, a move with its cooldown. Tested locally and in CI (`platforms.yml` → `linux-client` release job); see `REDEMPTION_PARITY_MATRIX.md`. |
 | CI regression | `validate.yml` (build, startup, login) |
 
 ## Known Linux issues

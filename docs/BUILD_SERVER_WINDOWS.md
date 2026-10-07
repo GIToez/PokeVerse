@@ -118,7 +118,11 @@ Windows has no SIGTERM or SIGQUIT. Phase 3 adds a console control handler (`cons
 |---|---|
 | Source build (RelWithDebInfo) | **PASS**: CI run 37612035643, 2026-10-07 |
 | Startup smoke (MariaDB 10.11) | **PASS**. The startup log matches the Linux log line for line (config, RSA, SQL, items, monsters, map 5879x3541, spawns, houses, NPCs, all script systems, "Cristal server Online!"). The only warning is the harmless "Outdated MySQL" one. |
+| Protocol runtime test (`tools/protocol_smoke.sh`) | **PASS**: CI run 37625226771. In order: the character list and a refused wrong password; player login and logout; the GM `/i` command saved on logout (0 → 2 apples in `player_items`); a clean `/shutdown` (world saved, ports closed, process exits); a restart, with the items still there after the restart and after the next login and save. |
+| Redemption client against the Windows server | See `PLATFORM_COMPATIBILITY.md`. `platforms.yml` → `windows-e2e` runs the Release client on the same runner. |
 | Debug build | NOT TESTED (`BUILD_TYPE=Debug`) |
-| Clean shutdown (Ctrl+C) | NOT TESTED in CI: a native console control event cannot be sent from the CI shell |
+| Clean shutdown (Ctrl+C) | NOT TESTED in CI: a native console control event cannot be sent from the CI shell. `/shutdown` is tested (row above). |
 
-See `PLATFORM_COMPATIBILITY.md` (Server matrix → Windows) for the current results. Build and startup are covered by CI (`.github/workflows/windows-server.yml`). Player login, gameplay, save and load, restart persistence and admin commands against a Windows server need a client session and are recorded there as they are tested.
+`tools/protocol_smoke.sh` runs unchanged on Linux and in MSYS2. Under MSYS2 it disables MSYS argument conversion for the Python protocol client. Otherwise a GM command such as `/i 35547,2` reaches the native Python as `C:/msys64/i 35547,2` and is spoken as plain chat.
+
+See `PLATFORM_COMPATIBILITY.md` (Server matrix → Windows) for the current results.
