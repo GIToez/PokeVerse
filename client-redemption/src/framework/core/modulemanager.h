@@ -23,6 +23,8 @@
 #pragma once
 #include "declarations.h"
 
+#include <set>
+
  // @bindsingleton g_modules
 class ModuleManager
 {
@@ -42,6 +44,12 @@ public:
     void enableAutoReload();
     bool isAutoReloadEnabled() const { return m_reloadEnable; }
 
+    // A disabled module never loads: not by autoload, ensureModuleLoaded, load-later lists or as a
+    // dependency (Module::load returns true without running it). Survives rediscovery.
+    void setModuleDisabled(const std::string& moduleName, bool disabled);
+    bool isModuleDisabled(const std::string& moduleName) const { return m_disabledModules.contains(moduleName); }
+    std::vector<std::string> getDisabledModules() const { return { m_disabledModules.begin(), m_disabledModules.end() }; }
+
 protected:
     void updateModuleLoadOrder(const ModulePtr& module);
 
@@ -51,6 +59,7 @@ private:
     std::deque<ModulePtr> m_modules;
     std::multimap<int, ModulePtr> m_autoLoadModules;
     ModulePtr m_currentModule;
+    std::set<std::string> m_disabledModules;
 
     bool m_reloadEnable{ false };
 };

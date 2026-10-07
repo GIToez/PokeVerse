@@ -83,6 +83,29 @@ if ENABLE_SERVERS then
     }
 end
 
+-- buildProfile "production" keeps developer tools unloaded; "development" (or the environment variable
+-- POKEVERSE_PROFILE=development) loads them. disabledModules lists Redemption modules that the PokeVerse
+-- 8.54 server does not support; they stay on disk and are skipped by every load path
+-- (g_modules.setModuleDisabled). Classification: docs/REDEMPTION_MODULE_AUDIT.md.
+PokeVerseConfig = {
+    buildProfile = os.getenv("POKEVERSE_PROFILE") or "production",
+    disabledModules = {
+        -- CipSoft store: opcodes 0xFA / 0xFB are the PokeVerse server's poll request / vote
+        "game_store",
+        -- stock Tibia market (0xF4-0xF9, not handled by the server) and the opcode 201 coin shop (no server
+        -- handler); the PokeVerse market and shop ports replace them
+        "game_market", "game_shop",
+        -- Tibia 10.x-15.x systems without a PokeVerse server side
+        "game_prey", "game_imbuing", "game_imbuementtracker", "game_forge", "game_wheel", "game_cyclopedia",
+        "game_highscore", "game_stash", "game_quickloot", "game_rewardwall", "game_blessing", "game_taskboard",
+        "game_tutorial", "game_inspect", "game_proficiency", "game_analyser", "game_lootsplitter",
+        "game_paperdolls", "game_playermount", "game_unjustifiedpoints", "game_spelllist",
+        -- bundled bot (automation is not allowed) and its button window
+        "game_bot", "game_buttons"
+    },
+    developerModules = { "client_debug_info", "client_terminal", "dev_otui", "game_htmlsample", "game_soundDebug" }
+}
+
 g_app.setName("PokeVerse");
 g_app.setCompactName("pokeverse");
 g_app.setOrganizationName("pokeverse");
@@ -134,6 +157,17 @@ g_resources.searchAndAddPackages('/', '.otpkg', true)
 g_configs.loadSettings('/config.otml')
 
 g_modules.discoverModules()
+
+for _, name in ipairs(PokeVerseConfig.disabledModules) do
+    g_modules.setModuleDisabled(name, true)
+end
+if PokeVerseConfig.buildProfile ~= "development" then
+    for _, name in ipairs(PokeVerseConfig.developerModules) do
+        g_modules.setModuleDisabled(name, true)
+    end
+end
+g_logger.info(("PokeVerse build profile '%s', %d module(s) disabled"):format(PokeVerseConfig.buildProfile,
+    #g_modules.getDisabledModules()))
 
 -- libraries modules 0-99
 g_modules.autoLoadModules(99)
