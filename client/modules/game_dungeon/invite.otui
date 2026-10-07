@@ -1,0 +1,58 @@
+UIWindow
+  id: inviteWindow
+  size: 336 182
+  image-source: images/invite/background_invite
+  anchors.centerIn: parent
+  visible: false
+
+  TextEdit
+    id: edit
+    size: 205 20
+    image-source: ~
+    color: white
+    font: damas
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 101
+    margin-left: 15
+  UIWidget
+    id: textDialog
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 83
+    font: damas
+    text-auto-resize: true
+    !text: tr('Digite o nome do jogador')
+  UIWidget
+    id: label
+    size: 180 20
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    visible: false
+  UIButton
+    id: confirm
+    size: 99 24
+    image-source: images/invite/enviar
+    anchors.top: edit.bottom
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 65
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: cancel
+    size: 99 24
+    image-source: images/invite/cancelar
+    anchors.top: edit.bottom
+    anchors.left: confirm.right
+    margin-top: 20
+    margin-left: 10
+    @onClick: function(self) self:getParent():hide() end
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7

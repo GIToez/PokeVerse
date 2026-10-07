@@ -1,0 +1,106 @@
+HouseData < UILabel
+  font: verdana-11px-monochrome
+  anchors.left: parent.left
+  anchors.top: prev.bottom
+  color: #dddddd
+  margin-top: 11
+  height: 20
+  text-auto-resize: true
+
+MainWindow
+  id: lookWindow
+  image-source: images/ownerhouse
+  size: 439 201
+  @onEnter: onCloseInformation()
+  @onEscape: onCloseInformation()
+
+  Panel
+    id: full_content
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    
+    Panel
+      id: left_image
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      size: 140 140
+
+    Panel
+      id: right_content
+      image-source: ~
+      anchors.top: parent.top
+      anchors.left: left_image.right
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 10
+
+      Label
+        id: house_map_name
+        font: sans-bold-16px
+        anchors.top: parent.top
+        anchors.right: parent.right
+        text-align: center
+        color: #abaaaa
+        margin-top: 5
+        margin-right: 125
+        margin-bottom: 5
+      
+      Label
+        id: data_content
+        anchors.top: prev.bottom
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+        Panel
+          id: info_panel
+          margin-top: 35
+          margin-left: 155
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.bottom: parent.bottom
+          anchors.right: parent.right
+          text-align: right
+          width: 150
+          
+          HouseData
+            id: house_owner
+            anchors.top: parent.top
+
+          HouseData
+            id: town_name
+
+          HouseData
+            id: house_size
+
+          HouseData
+            id: house_price
+      
+
+      UIButton
+        id: closed_button
+        size: 20 21
+        image-source: images/close
+        anchors.right: parent.right
+        anchors.top: parent.top
+        margin-right: 6
+        margin-top: 1
+        @onClick: onCloseInformation()
+        opacity: 0.8
+        $hover:
+          opacity: 1.0
+        
+        $pressed:
+          opacity: 0.9
+      
+      UIButton
+        id: buyhousebutton
+        !text: tr("Buy this house")
+        anchors.right: parent.right
+        anchors.bottom: prev.top
+        margin: 10
+        visible: false
+        @onClick: sendBuyHouse()

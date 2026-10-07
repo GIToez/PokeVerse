@@ -1,0 +1,10 @@
+TextList < UIScrollArea
+  layout: verticalBox
+  padding: 1
+  auto-focus: none
+
+HorizontalList < UIScrollArea
+  layout: horizontalBox
+
+VerticalList < UIScrollArea
+  layout: verticalBox

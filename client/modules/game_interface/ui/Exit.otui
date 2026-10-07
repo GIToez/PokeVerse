@@ -1,0 +1,42 @@
+MainWindow
+  id: ForceLogout
+  focusable: true
+  size: 304 119
+  image-source: images/background_exit
+  @onEscape: modules.game_interface.hideExitwindow()
+
+  UIWidget
+    id: Text
+    size: 243 34
+    image-source: images/text_exit
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 12
+
+  UIButton
+    id: yesButton
+    size: 99 24
+    image-source: images/button_sim
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-right: 55
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+  UIButton
+    id: noButton
+    size: 99 24
+    image-source: images/button_nao
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_interface.hideExitwindow()
+    margin-left: 55
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7

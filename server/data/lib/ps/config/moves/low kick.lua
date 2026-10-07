@@ -1,0 +1,20 @@
+MOVES["Low Kick"] = {
+    description = "Low Kick deals damage and has no secondary effect.",
+    makeContact = true,
+    category = MOVE_CATEGORY.PHYSICAL,
+    clientIconId = 11736,
+    iconId = 13362,
+    dType = DAMAGE_TYPE_FIGHTING,
+    functionName = "LowKick",
+    type = SKILLS_TYPES.TARGET,
+    -- requiredEnergy = 80,
+    requiredEnergy = 0,
+    requiredLevel = 45,
+    damage = 80,
+    damageType = ELEMENT_FIGHT,
+    effect = EFFECT_KICK,
+    projectile = nil,
+    maxDistance = 1,
+    cooldownTime = 12,
+    cooldownStorage = 15044
+}

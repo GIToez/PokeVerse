@@ -1,0 +1,210 @@
+SellPanel < MarketPanel
+  id: sellPanel
+
+  Panel
+    id: panelToSell
+    size: 603 110
+    image-source: images/background_sell
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 40
+    margin-left: 3
+    margin-right: 5
+    padding: 10
+
+    UIItem
+      id: itemToSell
+      anchors.top: parent.top
+      anchors.left: parent.left
+      size: 32 32
+      margin-top: 10
+      margin-left: 10
+      font: verdana-11px-rounded
+      image-source: /images/ui/item
+      virtual: true
+
+      UIWidget
+        id: poke
+        size: 32 32
+        phantom: true
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        margin-left: -2
+        margin-bottom: 0
+    
+      UIWidget
+        id: level
+        height: 11
+        font: verdana-9px-bold-colored
+        phantom: true
+        anchors.top: parent.top
+        anchors.left: parent.left
+        margin-top: -3
+    
+      UIWidget
+        id: sex
+        size: 11 11
+        phantom: true
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+    
+      UIWidget
+        id: shiny
+        size: 11 11
+        phantom: true
+        anchors.top: sex.top
+        anchors.left: sex.left
+        margin-top: -12
+
+    UIWidget
+      id: name
+      font: damas
+      anchors.top: itemToSell.top
+      anchors.left: itemToSell.right
+      margin-left: 5
+      text-auto-resize: true
+
+    UIWidget
+      id: totalValue
+      font: damas
+      anchors.top: itemToSell.bottom
+      anchors.left: itemToSell.left
+      margin-top: 10
+      text-auto-resize: true
+
+    UIWidget
+      id: feeValue
+      font: damas
+      anchors.top: totalValue.bottom
+      anchors.left: itemToSell.left
+      margin-top: 3
+      color: #ffdf7f
+      text-auto-resize: true
+
+    UIWidget
+      id: totalAndFeeValue
+      font: damas
+      anchors.top: feeValue.bottom
+      anchors.left: itemToSell.left
+      margin-top: 3
+      color: #7fffee
+      text-auto-resize: true
+
+    HorizontalScrollBar
+      id: itemToSellCount
+      anchors.right: parent.right
+      anchors.top: parent.top
+      margin-top: 17
+      margin-right: -10
+      width: 215
+      height: 13
+      enabled: false
+
+    Label
+      anchors.right: prev.left
+      anchors.top: parent.top
+      margin-right: 10
+      margin-top: 3
+
+    TextEdit
+      id: textEditSellPrice
+      size: 171 25
+      enabled: false
+      font: damas
+      image-source: images/search
+      text-offset: 5 5
+      text-align: left
+      color: white
+      anchors.top: prev.bottom
+      anchors.right: parent.right
+      margin-top: 20
+      @onTextChange: modules.game_market.onSellPriceTextChange()
+
+    UIWidget
+      size: 25 25
+      image-source: images/money_icon
+      anchors.right: prev.left
+      anchors.top: prev.top
+      margin-right: -2
+      margin-top: 0
+
+    CircleCheckBox
+      id: checkBoxOnlyOffers
+      anchors.right: prev.left 
+      anchors.top: prev.top
+      margin-right: 10
+      margin-top: 3
+      @onCheckChange: self:getParent():getChildById('textEditSellPrice'):setEnabled(self:isChecked()) ResetValueItemSell()
+
+    Label
+      font: damas
+      !text: tr("Estipular um Valor:")
+      anchors.right: prev.left 
+      anchors.top: prev.top
+      margin-top: 4
+      margin-right: 3
+
+    UIButton
+      id: sellButton
+      size: 67 19
+      image-source: images/buttons/vender_mini
+      anchors.right: parent.right
+      anchors.top: prev.bottom
+      margin-top: 12
+      margin-right: 20
+      color: #cccccc
+      enabled: false
+      $disabled:
+        color: #dfdfdf88
+        opacity: 0.8
+      @onClick: doPlaceItemForSale()
+      opacity: 0.9
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.8
+
+    UIButton
+      size: 67 19
+      image-source: images/buttons/selecionar_mini
+      anchors.right: prev.left
+      anchors.top: prev.top
+      margin-right: 5
+      color: #cccccc
+      @onClick: selectItemToSell()
+      opacity: 0.9
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.8
+
+  MarketTable
+    id: panelTable
+    image-source: ~
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0
+    margin-bottom: 5
+
+  TableData
+    id: panelTableData         
+    anchors.bottom: panelTable.bottom
+    anchors.left: panelTable.left
+    anchors.right: panelTable.right
+    vertical-scrollbar: sellersTableScrollBar
+    margin-top: 22
+    margin-right: 20
+
+  VerticalScrollBar
+    id: sellersTableScrollBar
+    anchors.top: panelTable.top
+    anchors.bottom: panelTable.bottom
+    anchors.right: panelTable.right
+    step: 28
+    margin-top: 8
+    margin-bottom: -12
+    opacity: 0.5
+    pixels-scroll: true

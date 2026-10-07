@@ -1,0 +1,15 @@
+Module
+  name: client_entergame
+  description: Manages enter game and character list windows
+  author: edubart
+  website: www.otclient.info
+
+  @onLoad: |
+    dofile 'entergame'
+    dofile 'characterlist'
+    EnterGame.init()
+    CharacterList.init()
+
+  @onUnload: |
+    EnterGame.terminate()
+    CharacterList.terminate()

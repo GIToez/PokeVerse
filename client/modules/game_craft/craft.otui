@@ -1,0 +1,544 @@
+SpeedUpWindow < UIWindow
+  id: speedUpWindow
+  size: 591 144
+  anchors.centerIn: parent
+  image-source: images/interface/window_acelerar
+  @onEscape: self:hide()
+  @onEnter: speedUpItem()
+
+  UIWidget
+    id: text
+    font: verdana-11px-rounded
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+    margin-left: 1
+    margin-right: 10
+    margin-bottom: 10
+
+  UIButton
+    id: confirm
+    size: 101 29
+    image-source: images/interface/acelerar_dust
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 186
+    @onClick: speedUpItem()
+    
+    $hover:
+      size: 104 32
+    
+    $pressed:
+      size: 103 31
+
+  UIButton
+    id: cancel
+    size: 101 29
+    image-source: images/interface/cancelar_dust
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 20
+    margin-right: 190
+    @onClick: self:getParent():hide()
+    
+    $hover:
+      size: 104 32
+    
+    $pressed:
+      size: 103 31
+
+CreateWindow < UIWindow
+  id: createWindow
+  size: 340 304
+  anchors.centerIn: parent
+  &save: true
+  image-source: images/interface/window_fabricar
+  font: verdana-11px-rounded
+  @onEscape: self:hide()
+
+  ProfissionItemIvi
+    id: item
+    size: 45 45
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 30
+    margin-left: 20
+    virtual: true
+  UIWidget
+    id: name
+    anchors.top: item.top
+    anchors.left: item.right
+    font: terminus-14px-bold
+    margin-top: 15
+    margin-left: 10
+    text-auto-resize: true
+  UIWidget
+    id: label
+    anchors.top: item.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 17
+    font: lucida-11px-rounded
+    !text: tr('Required Materials')
+  UIWidget
+    id: recipe
+    size: 302 74
+    anchors.top: label.bottom
+    anchors.left: label.left
+    margin-top: 5
+    layout:
+      type: grid
+      cell-size: 36 36
+      num-columns: 8
+      num-lines: 2
+      cell-spacing: 2
+
+  UIWidget
+    id: labelTotal
+    height: 50
+    anchors.top: recipe.bottom
+    anchors.left: recipe.left
+    anchors.right: parent.right
+    margin-top: 9
+    text-align: topLeft
+    font: lucida-11px-rounded
+    text-wrap: true
+    text: "Total de unidades: 1\nTempo total: 1"
+
+  ProfissionHorizontalScrollBar
+    id: qntScrollBar
+    color: white
+    anchors.top: labelTotal.bottom
+    anchors.left: recipe.left
+    anchors.right: recipe.right
+    margin-top: -1
+    step: 1
+    minimum: 1
+    maximum: 100
+    show-value: true
+    @onValueChange: refreshCreateWindow()
+
+  UIButton
+    id: create
+    size: 115 33
+    image-source: images/interface/criar
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 14
+    margin-left: 40
+    @onClick: doCreateItem()
+    
+    $hover:
+      size: 118 36
+    
+    $pressed:
+      size: 117 35
+
+  UIButton
+    id: cancel
+    size: 115 33
+    image-source: images/interface/fechar_fab
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 14
+    margin-right: 41
+    @onClick: self:getParent():hide()
+    
+    $hover:
+      size: 118 36
+    
+    $pressed:
+      size: 117 35
+
+CraftItemWidget < UIWidget
+  size: 607 101
+  anchors.top: parent.top
+  anchors.left: parent.left
+  anchors.right: parent.right
+  image-source: images/interface/window_craft
+
+  $!first:
+    anchors.top: prev.bottom
+    margin-top: 1
+
+  ProfissionProgressBar
+    id: progressBar
+    visible: false
+    height: 3
+    anchors.left: progressIcon.right
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    background-color: #2dabf9
+    opacity: 0.5
+    color: white
+    margin-bottom: 89
+    margin-left: -40
+    margin-right: 16
+  UIButton
+    size: 85 87
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 7
+    margin-left: 35
+    image-source: images/interface/slots
+
+  ProfissionItemIvi
+    id: item
+    size: 40 40
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 54
+    virtual: true
+  UIWidget
+    id: name
+    anchors.top: parent.top
+    anchors.left: item.right
+    font: terminus-14px-bold
+    margin-top: 20
+    margin-left: 30
+  Label
+    id: timedesc
+    width: 100
+    anchors.top: parent.top
+    anchors.left: name.right
+    font: terminus-14px-bold
+    color: white
+    margin-top: 20
+    margin-left: 8
+  UIWidget
+    id: desc
+    size: 337 50
+    anchors.top: name.bottom
+    anchors.left: item.right
+    margin-top: 6
+    margin-left: 33
+    text-align: topLeft
+    text-wrap: true
+    font: terminus-10px
+  UIWidget
+    id: progressIcon
+    size: 77 78
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    opacity: 0.8
+    margin-bottom: 14
+    margin-left: 37
+    image-source: images/progressIconAnimated
+  UIWidget
+    id: progressLabelwindow
+    size: 29 29
+    image-source: images/interface/collect_icon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 68
+    margin-left: -1
+    visible: false
+    opacity: 0.8
+    $hover:
+      opacity: 1
+  UIWidget
+    id: clockWindow
+    size: 29 29
+    image-source: images/interface/time_icon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 35
+    margin-left: -1
+    opacity: 0.8
+    $hover:
+      opacity: 1
+  UIWidget
+    id: levelWindow
+    size: 29 29
+    image-source: images/interface/level_icon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 2
+    margin-left: -1
+    opacity: 0.8
+    $hover:
+      opacity: 1
+  UIWidget
+    id: progressLabel
+    width: 100
+    font: verdana-11px-rounded
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 119
+    margin-right: 5
+    color: white
+    visible: false
+  UIWidget
+    id: level
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 39
+    margin-left: 32
+    text-align: topLeft
+    font: verdana-11px-rounded
+  UIWidget
+    id: recipe
+    height: 70
+    anchors.top: item.top
+    anchors.left: item.left
+    anchors.right: parent.right
+    margin-top: -11
+    margin-left: 402
+    layout:
+      type: grid
+      cell-size: 30 30
+      num-columns: 4
+      num-lines: 2
+      cell-spacing: 2
+WorkImagem < UIWidget
+  id: workImagem
+  size: 313 575
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 15
+  margin-top: 17
+WorkImagempress < UIWidget
+  id: WorkImagempress
+  size: 313 575
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 15
+  margin-top: 17
+
+WorkLabel < UIWidget
+  id: workLabel
+  size: 200 14
+  anchors.left: workImagem.left
+  anchors.bottom: parent.bottom
+  !text: tr('Habilidade')
+  margin-bottom: 97
+  margin-left: 30
+  font: lucida-11px-rounded
+  text-align: left
+WorkNivel < Label
+  id: workNivel
+  size: 100 100
+  color: white
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+  margin-bottom: 55
+  margin-left: 222
+  text-align: center
+  font: lucida-11px-rounded
+workpercent < Label
+  id: workpercent
+  size: 100 100
+  color: white
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+  margin-bottom: 34
+  margin-left: 122
+  text-align: center
+  font: terminus-10px
+
+WorkExpBar < ProfissionProgressBar
+  id: expBar
+  size: 270 32
+  background-color: #005189
+  anchors.bottom: parent.bottom
+  anchors.left: workImagem.left
+  margin-bottom: 68
+  margin-left: 25
+
+//lista de itens
+CraftListPanel < ScrollablePanel
+  id: craftListPanel
+  size: 594 400
+  anchors.right: parent.right
+  anchors.top: parent.top
+  margin-right: 52
+  margin-top: 120
+  vertical-scrollbar: craftListScrollBar
+
+CraftListScrollBar < VerticalScrollBar
+  id: craftListScrollBar
+  anchors.top: craftListPanel.top
+  anchors.bottom: craftListPanel.bottom
+  anchors.left: craftListPanel.right
+  margin-top: 10
+  opacity: 0.7
+  margin-left: 10
+  step: 48
+  pixels-scroll: true
+
+CraftItemCollect < UIButton
+  id: craftItemCollect
+  font: verdana-11px-rounded
+  @onClick: collectItemCraft()
+  size: 102 38
+  image-source: images/interface/coletar
+  anchors.bottom: parent.bottom
+  anchors.right: craftItemCreate.left
+  margin-bottom: 55
+  margin-right: 5
+
+  $hover:
+    size: 105 41
+  
+  $pressed:
+    size: 104 40
+
+SpeedUpCraft < UIButton
+  id: speedUpCraft
+  font: verdana-11px-rounded
+  @onClick: showSpeedUp()
+  size: 142 39
+  image-source: images/interface/acelerar
+  anchors.bottom: parent.bottom
+  anchors.right: craftItemCreate.left
+  margin-bottom: 55
+  margin-right: 5
+
+  $hover:
+    size: 145 41
+  
+  $pressed:
+    size: 144 40
+
+CraftItemCreate < UIButton
+  id: craftItemCreate
+  size: 134 39
+  image-source: images/interface/fabricar
+  font: verdana-11px-rounded
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+  margin-bottom: 55
+  margin-right: 30
+  @onClick: showCreateWindow()
+
+  $hover:
+    size: 137 41
+  
+  $pressed:
+    size: 136 40
+
+ButtonClose < UIButton
+  id: close
+  image-source: images/close
+  size: 20 21
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+  opacity: 0.8
+  margin-bottom: 10
+  margin-right: 50
+  @onClick: hide()
+  $hover:
+    opacity: 1.0
+  
+  $pressed:
+    opacity: 0.9
+
+RankWidget < UIWidget
+  size: 99 26
+  anchors.top: parent.top
+  anchors.left: parent.left
+  image-clip: 0 0 99 26
+  text-offset: 1 1000000
+  @onClick: getServerItems(self:getId())
+
+  $!first:
+    anchors.left: prev.right
+    image-clip: 0 26 99 26
+    text-offset: 1 1000000
+
+  $hover !disabled:
+    image-clip: 0 78 99 26
+    text-offset: 1 1000000
+
+  $pressed:
+    image-clip: 0 26 99 26
+    text-offset: 1 1000000
+
+  $disabled:
+    image-clip: 0 52 99 26
+    text-offset: 1 1000000
+
+  $focus:
+    image-clip: 0 0 99 26
+    text-offset: 1 1000000
+
+WorkName < UIWidget
+  id: workName
+  size: 336 31
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-left: 500
+  margin-top: 33
+
+RankPanel < UIWidget
+  id: rankPanel
+  size: 620 32
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-left: 250
+  margin-top: 79
+  RankWidget
+    id: F
+    !text: tr('Rank')..' F'
+    image-source: images/ranks_button/E
+    phantom: true
+    visible: false
+  RankWidget
+    id: E
+    !text: tr('Rank')..' E'
+    image-source: images/ranks_button/E
+  RankWidget
+    id: D
+    !text: tr('Rank')..' D'
+    image-source: images/ranks_button/D
+    margin-left: 5
+  RankWidget
+    id: C
+    !text: tr('Rank')..' C'
+    image-source: images/ranks_button/C
+    margin-left: 5
+  RankWidget
+    id: B
+    !text: tr('Rank')..' B'
+    image-source: images/ranks_button/B
+    margin-left: 5
+  RankWidget
+    id: A
+    !text: tr('Rank')..' A'
+    image-source: images/ranks_button/A
+    margin-left: 5
+  RankWidget
+    id: S
+    !text: tr('Rank')..' S'
+    image-source: images/ranks_button/S
+    margin-left: 5
+UIWindow
+  id: craftWindow
+  size: 991 639
+  anchors.centerIn: parent
+  &save: true
+  image-source: images/interface/background
+  text-align: top
+  text-offset: 100000 7
+  padding: 0
+  font: verdana-11px-rounded
+  @onEscape: hide()
+
+  WorkName
+  WorkImagem
+  WorkExpBar
+  WorkImagempress
+  WorkLabel
+  workpercent
+  WorkNivel
+  RankPanel
+  CraftListPanel
+  CraftListScrollBar
+  CraftItemCollect
+  CraftItemCreate
+  SpeedUpCraft
+  ButtonClose

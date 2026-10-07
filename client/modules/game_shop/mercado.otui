@@ -1,0 +1,1374 @@
+TitleProdutos < UIButton
+  id: TitleProdutos
+  size: 64 24
+  image-source: images/mercado/title/produtos
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 29
+  margin-left: 30
+TitleCidade < UIButton
+  id: TitleCidade
+  size: 130 24
+  visible: false
+  image-source: images/mercado/title/cidade
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 29
+  margin-left: 30
+TitleVip < UIButton
+  id: TitleVip
+  size: 72 24
+  image-source: images/mercado/title/pacotesvip
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 29
+  margin-right: 175
+VoltarButton < UIWidget
+  id: voltarMercado
+  size: 81 23
+  @onClick: CityClose()
+  opacity: 0.9
+  visible: false
+  image-source: images/mercado/cidade/voltar
+  anchors.right: parent.right
+  anchors.top: parent.top
+  margin-top: 28
+  margin-right: 14
+  $hover:
+    opacity: 1
+  $pressed:
+    opacity: 0.8
+//lista de Cidades
+CityListPanel < ScrollablePanel
+  id: CityListPanel
+  visible: false
+  size: 710 434
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 25
+  margin-top: 60
+  vertical-scrollbar: CityListScrollBar
+
+CityListScrollBar < VerticalScrollBar
+  id: CityListScrollBar
+  visible: false
+  anchors.top: CityListPanel.top
+  anchors.bottom: CityListPanel.bottom
+  anchors.left: CityListPanel.right
+  margin-right: 60
+  margin-top: -12
+  margin-bottom: -10
+  opacity: 0.7
+  step: 48
+  pixels-scroll: true
+
+CityWindow1 < UIWidget
+  id: CityWindow1
+  size: 720 126
+  anchors.left: parent.left
+  anchors.top: parent.top
+CityWindow2 < UIWidget
+  id: CityWindow2
+  size: 720 126
+  anchors.left: parent.left
+  anchors.top: CityWindow1.bottom
+  margin-top: 20
+CityWindow3 < UIWidget
+  id: CityWindow3
+  size: 720 126
+  anchors.left: parent.left
+  anchors.top: CityWindow2.bottom
+  margin-top: 20
+CityWindow4 < UIWidget
+  id: CityWindow4
+  size: 720 126
+  anchors.left: parent.left
+  anchors.top: CityWindow3.bottom
+  margin-top: 20
+
+Pallet < UIWidget
+  id: Pallet
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-right: 1
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/Pallet
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Pallet()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Viridian < UIWidget
+  id: Viridian
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: Pallet.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 8
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/viridian
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Viridian()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Pewter < UIWidget
+  id: Pewter
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: Viridian.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 8
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/pewter
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Pewter()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Cerulean < UIWidget
+  id: Cerulean
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-right: 1
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/cerulean
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Cerulean()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Vermilion < UIWidget
+  id: Vermilion
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: Cerulean.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 8
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/vermilion
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Vermilion()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Lavender < UIWidget
+  id: Lavender
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: Vermilion.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 8
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/lavender
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Lavender()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Celadon < UIWidget
+  id: Celadon
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-right: 1
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/celadon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Celadon()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Fuchsia < UIWidget
+  id: Fuchsia
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: Celadon.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 8
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/fuchsia
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Fuchsia()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Saffron < UIWidget
+  id: Saffron
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: Fuchsia.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 8
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/saffron
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Saffron()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Cinnabar < UIWidget
+  id: Cinnabar
+  size: 230 126
+  image-source: images/mercado/cidade/background
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-right: 1
+  UIWidget
+    id: DayVip
+    size: 162 32
+    image-source: images/mercado/cidade/text/cinnabar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 68
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/cidade/value
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/item/city2
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Cinnabar()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+//lista de itens
+ItemListPanel < ScrollablePanel
+  id: ItemListPanel
+  size: 450 434
+  //background-color: white
+  //opacity: 0.5
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 25
+  margin-top: 60
+  vertical-scrollbar: ItemListScrollBar
+
+ItemListScrollBar < VerticalScrollBar
+  id: ItemListScrollBar
+  anchors.top: ItemListPanel.top
+  anchors.bottom: ItemListPanel.bottom
+  anchors.left: ItemListPanel.right
+  margin-top: -12
+  margin-bottom: -10
+  opacity: 0.7
+  margin-left: 10
+  step: 48
+  pixels-scroll: true
+
+VipListPanel < UIWidget
+  id: VipListPanel
+  size: 230 434
+  anchors.right: parent.right
+  anchors.top: parent.top
+  margin-top: 60
+  margin-right: 17
+
+Vip30 < UIWidget
+  id: Vip30
+  size: 230 126
+  image-source: images/mercado/vip/background
+  anchors.right: parent.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-right: 1
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/vip/value/30
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/mercado/vip/item/30
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIWidget
+    id: DayVip
+    size: 92 15
+    image-source: images/mercado/vip/text/30
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 58
+    margin-left: 68
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Vip30()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Vip60 < UIWidget
+  id: Vip60
+  size: 230 126
+  image-source: images/mercado/vip/background
+  anchors.right: parent.right
+  anchors.top: Vip30.bottom
+  margin-top: 15
+  margin-right: 1
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/vip/value/60
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/mercado/vip/item/60
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIWidget
+    id: DayVip
+    size: 92 15
+    image-source: images/mercado/vip/text/60
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 58
+    margin-left: 68
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Vip60()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+Vip90 < UIWidget
+  id: Vip90
+  size: 230 126
+  image-source: images/mercado/vip/background
+  anchors.right: parent.right
+  anchors.top: Vip60.bottom
+  margin-top: 15
+  margin-right: 1
+
+  UIWidget
+    id: ValueVip
+    size: 76 33
+    image-source: images/mercado/vip/value/90
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 1
+    margin-right: 1
+
+  UIWidget
+    id: IconVip
+    size: 71 72
+    image-source: images/mercado/vip/item/90
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 28
+    margin-left: 1
+  UIWidget
+    id: DayVip
+    size: 92 15
+    image-source: images/mercado/vip/text/90
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 58
+    margin-left: 68
+  UIButton
+    id: Comprar
+    size: 95 27
+    @onClick: Vip90()
+    opacity: 0.9
+    image-source: images/mercado/vip/comprar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 13
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+PratileiraWindow1 < UIWidget
+  id: PratileiraWindow1
+  size: 450 151
+  anchors.left: parent.left
+  anchors.top: parent.top
+PratileiraWindow2 < UIWidget
+  id: PratileiraWindow2
+  size: 450 151
+  anchors.left: parent.left
+  anchors.top: PratileiraWindow1.bottom
+  margin-top: 8
+PratileiraWindow3 < UIWidget
+  id: PratileiraWindow3
+  size: 450 151
+  anchors.left: parent.left
+  anchors.top: PratileiraWindow2.bottom
+  margin-top: 8
+//PRIMEIRA TABELA
+WindowItem1 < UIWidget
+  id: WindowItem1
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 1
+  margin-left: 1
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/ditto
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    size: 58 58
+    !tooltip: tr('O Ditto pode transformar-se em qualquer Pokémon comum.\nNo entetanto. ele perde 25 por cento de seu poder original\nNenhum requesito de nivel, você apenas precisa do nivel do Pokémon copiado.')
+    image-source: images/mercado/itens/ditto
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: Ditto()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem2 < UIWidget
+  id: WindowItem2
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem1.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/150
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 10
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/300
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/shinyditto
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    size: 58 58
+    !tooltip: tr('Obrigatório: Ditto - level 100.\n\nO Ditto pode transformar-se em qualquer Pokémon.\nNo entetanto. ele perde 15 por cento de seu poder original\n(cada shiny tem sua porcentagem única).\nNenhum requesito de nivel, você apenas precisa do nivel do Pokémon copiado.')
+    image-source: images/mercado/itens/shinyditto
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: ShinyDitto()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem3 < UIWidget
+  id: WindowItem3
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem2.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/2
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/4
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/bless
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    !tooltip: tr('Diminui a experiência perdida na próxima\nmorte para 30 por cento.')
+    image-source: images/mercado/itens/bless
+    size: 58 58
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    //@onClick: Bless()
+    @onClick: NaoDisponivelWindow()
+    image-source: images/promocao/buttons/comprar_pratileira _off
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem4 < UIWidget
+  id: WindowItem4
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem3.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/5
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/10
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/blessplus
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    !tooltip: tr('Diminui a experiência perdida na próxima\nmorte para 8 por cento.')
+    image-source: images/mercado/itens/blessplus
+    size: 58 58
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    //@onClick: BlessPlus()
+    @onClick: NaoDisponivelWindow()
+    image-source: images/promocao/buttons/comprar_pratileira _off
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+//PRIMEIRA TABELA
+//SEGUNDA TABELA
+
+WindowItem5 < UIWidget
+  id: WindowItem5
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 1
+  margin-left: 1
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/8
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/16
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/blessultra
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    size: 58 58
+    !tooltip: tr('Diminui a experiência perdida na próxima morte para 3 por cento.')
+    image-source: images/mercado/itens/blessultra
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    //@onClick: BlessUltra()
+    @onClick: NaoDisponivelWindow()
+    image-source: images/promocao/buttons/comprar_pratileira _off
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem6 < UIWidget
+  id: WindowItem6
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem5.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/particle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    size: 58 58
+    !tooltip: tr('Seu Pokémon deve ter pelo menos nivel 30 para suportar a força dessas auras.')
+    image-source: images/mercado/itens/particle
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: NaoDisponivelWindow()
+    image-source: images/promocao/buttons/comprar_pratileira _off
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem7 < UIWidget
+  id: WindowItem7
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem6.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/5
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/10
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/sexo
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    !tooltip: tr('Troque o gênero do seu personagem.')
+    image-source: images/mercado/itens/sexo
+    size: 58 58
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: genero()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem8 < UIWidget
+  id: WindowItem8
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem7.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/25
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/50
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    !tooltip: tr('Troque o nome do seu personagem.')
+    image-source: images/mercado/itens/name
+    size: 58 58
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: name()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+//PRIMEIRA TABELA
+//TERCEIRA TABELA
+
+WindowItem9 < UIWidget
+  id: WindowItem9
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 1
+  margin-left: 1
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/100
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 10
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/200
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/resetprofission
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    size: 58 58
+    !tooltip: tr('Troque sua profissão.')
+    image-source: images/mercado/itens/resetprofission
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: Profission()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowItem11 < UIWidget
+  id: WindowItem11
+  size: 108 151
+  image-source: images/mercado/background/mono
+  anchors.top: parent.top
+  anchors.left: WindowItem9.right
+  margin-top: 1
+  margin-left: 6
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    image-source: images/count/diamond/5
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 14
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    image-source: images/count/gold_coin/10
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+    margin-left: -5
+
+  UIWidget
+    id: NameItem
+    size: 104 19
+    image-source: images/mercado/texto/stamina
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 2
+  UIWidget
+    id: SlotItemPratileira
+    !tooltip: tr('Recuperar 10 horas de sua estâmina.')
+    image-source: images/mercado/itens/stamina
+    size: 58 58
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 21
+    margin-left: 25
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: Stamina()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+//TERCEIRA TABELA
+
+Panel
+  TitleProdutos
+  TitleVip
+  TitleCidade
+  VipListPanel
+    Vip30
+    Vip60
+    Vip90
+  ItemListPanel
+    PratileiraWindow1
+      WindowItem1
+      WindowItem2
+      WindowItem3
+      WindowItem4
+    PratileiraWindow2
+      WindowItem5
+      WindowItem6
+      WindowItem7
+      WindowItem8
+    PratileiraWindow3
+      WindowItem9
+      WindowItem11
+  ItemListScrollBar
+  VoltarButton
+  CityListPanel
+    CityWindow1
+      Pallet
+      Viridian
+      Pewter
+    CityWindow2
+      Cerulean
+      Vermilion
+      Lavender
+    CityWindow3
+      Celadon
+      Fuchsia
+      Saffron
+    CityWindow4
+      Cinnabar
+  CityListScrollBar

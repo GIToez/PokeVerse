@@ -1,0 +1,46 @@
+PokedexEffectSection < ScrollableFlatPanel
+  image-source: ~
+  margin-left: 1
+
+PokedexTypeBox < ScrollableFlatPanel
+  image-source: ~
+  layout:
+    type: grid
+    cell-size: 25 25
+    flow: true
+    cell-spacing: 0
+
+PokedexTypeImage < UIWidget
+
+HeadlessWindow
+  image-source: ~
+  focusable: false
+  size: 500 660
+
+  UIButton
+    size: 336 31
+    image-source: images/tipos
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 2
+    margin-left: 48
+
+  ScrollableFlatPanel
+    id: content
+    image-source: ~
+    margin-top: 45
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: textScroll.left
+    anchors.bottom: parent.bottom
+    vertical-scrollbar: textScroll
+
+  VerticalScrollBar
+    id: textScroll
+    image-source: ~
+    margin-top: 40
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    step: 16
+    pixels-scroll: true

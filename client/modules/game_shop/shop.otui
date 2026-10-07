@@ -1,0 +1,341 @@
+WindowSelectBuy < UIWindow
+  id: WindowSelectBuy
+  size: 336 244
+  visible: false
+  image-source: images/buywindow/window_select
+  anchors.centerIn: parent
+  @onEscape: self:hide()
+
+  UIWidget
+    id: Text
+    size: 336 53
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 65
+
+  UIWidget
+    id: Diamond
+    size: 48 18
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 155
+    margin-right: 110
+  UIWidget
+    id: PokeCoin
+    size: 48 18
+    anchors.top: Diamond.bottom
+    anchors.left: Diamond.left
+    margin-top: 12
+  UIWidget
+    id: SlotItemBuy
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 54
+    margin-left: 90
+  UIWidget
+    id: SlotOutfitBuy
+    size: 64 64
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 44
+    margin-left: 90
+  UIWidget
+    id: SlotAddonBuy
+    size: 106 125
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 77
+  UIButton
+    id: DiamondButton
+    size: 106 31
+    image-source: images/buywindow/diamond_button
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 30
+    margin-left: 62
+    opacity: 0.8
+    $hover:
+      size: 106 31
+      opacity: 1
+    $pressed:
+      size: 106 31
+      opacity: 0.7
+  UIButton
+    id: PokeCoinButton
+    size: 106 31
+    image-source: images/buywindow/pokecoin_button
+    anchors.bottom: DiamondButton.bottom
+    anchors.left: DiamondButton.right
+    margin-left: 10
+    opacity: 0.8
+    $hover:
+      size: 106 31
+      opacity: 1
+    $pressed:
+      size: 106 31
+      opacity: 0.7
+WindowSelected < UIWindow
+  id: WindowSelected
+  size: 336 244
+  visible: false
+  image-source: images/buywindow/window_selected
+  anchors.centerIn: parent
+  @onEscape: self:hide()
+
+  UIWidget
+    id: Text
+    size: 336 53
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 65
+
+  UIWidget
+    id: price
+    size: 48 18
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 140
+    margin-right: 110
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 54
+    margin-left: 90
+  UIWidget
+    id: SlotOutfit
+    size: 64 64
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 44
+    margin-left: 90
+  UIWidget
+    id: SlotAddonBuy
+    size: 106 125
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 77
+  UIButton
+    id: Comprar
+    size: 99 24
+    image-source: images/buywindow/comprar
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 30
+    margin-left: 62
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: Cancelar
+    size: 99 24
+    @onClick: hideMiniWindow() cleartab()
+    image-source: images/buywindow/cancelar
+    anchors.bottom: Comprar.bottom
+    anchors.left: Comprar.right
+    margin-left: 10
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowSelectedName < UIWindow
+  id: WindowSelectedName
+  size: 336 278
+  visible: false
+  image-source: images/alert/background_name
+  anchors.centerIn: parent
+  @onEscape: self:hide()
+
+  UIWidget
+    id: Text
+    size: 336 51
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 43
+
+  UIWidget
+    id: price
+    size: 48 18
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 175
+    margin-right: 110
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 54
+    margin-left: 90
+  TextEdit
+    id: search
+    size: 207 20
+    image-source: ~
+    color: white
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 100
+    margin-left: 80
+  UIButton
+    id: Enviar
+    size: 99 24
+    image-source: images/alert/enviar
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 18
+    margin-left: 62
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: Cancelar
+    size: 99 24
+    @onClick: hideMiniWindow() cleartab()
+    image-source: images/buywindow/cancelar
+    anchors.bottom: Enviar.bottom
+    anchors.left: Enviar.right
+    margin-left: 10
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowAlert < UIWindow
+  id: WindowAlert
+  size: 336 126
+  visible: false
+  image-source: images/alert/background
+  anchors.centerIn: parent
+  @onEscape: self:hide()
+
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    image-source: images/alert/alert
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -4
+    margin-left: 126
+  UIWidget
+    id: desc
+    size: 336 39
+    image-source: images/alert/texto/sem_diamante
+    opacity: 0.8
+    anchors.top: SlotItem.top
+    anchors.left: parent.left
+    margin-top: 54
+    margin-left: 1
+    text-align: center
+    text-wrap: true
+  UIButton
+    id: Cancelar
+    size: 99 24
+    image-source: images/alert/fechar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 11
+    margin-right: 118
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+DiamondRent < Label
+  id: diamondrent
+  size: 100 100
+  color: white
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+  margin-bottom: 55
+  margin-left: 1
+  text-align: center
+  font: lucida-11px-rounded
+PokeCoinRent < Label
+  id: pokecoinrent
+  size: 100 100
+  color: white
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+  margin-bottom: 1
+  margin-left: 1
+  text-align: center
+  font: lucida-11px-rounded
+MainWindow
+  id: shopWindow
+  padding: 0
+  size: 937 547
+  image-source: images/interface/background
+  @onEscape: modules.game_shop.hide()
+
+  ShopTabBarVertical
+    id: shopTabBar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: closeButton.top
+    margin-top: 230
+    margin-left: 12
+
+  Panel
+    id: shopTabContent
+    anchors.top: parent.top
+    anchors.left: shopTabBar.right
+    anchors.right: parent.right
+    anchors.bottom: closeButton.top
+  Label
+    id: diamondvalue
+    !text: tr('0')
+    size: 80 20
+    text-align: center
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 102
+    margin-left: 54
+    font: lucida-11px-rounded
+  Label
+    id: pokecoinvalue
+    !text: tr('0')
+    size: 80 20
+    text-align: center
+    anchors.top: diamondvalue.top
+    anchors.left: diamondvalue.left
+    margin-top: 36
+    font: lucida-11px-rounded
+
+  UIWidget
+    id: BackgroundBlack
+    size: 937 547
+    visible: false
+    image-source: images/interface/background_black
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.left: parent.left
+  WindowAlert
+  WindowSelectBuy
+  WindowSelected
+  PokeCoinRent
+  DiamondRent
+  WindowSelectedName
+
+  UIButton
+    id: closeButton
+    image-source: images/interface/close
+    size: 20 21
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 12
+    margin-right: 25
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9

@@ -1,0 +1,64 @@
+# --- Import staging (never commit the original archive or raw extraction) ---
+.downloads/
+_import/
+
+# --- Design sources (2.5 GB of PSD/PSB; several files exceed GitHub's 100 MB limit) ---
+assets/design-psd/
+*.psd
+*.psb
+
+# --- Client sprite file (262 MB, exceeds GitHub's 100 MB limit; distribute separately or via Git LFS) ---
+client/data/things/Tibia.spr
+
+# --- Prebuilt Windows binaries (see docs/BINARY_INVENTORY.md; kept on disk, not in Git) ---
+*.exe
+*.dll
+*.a
+*.lib
+client/libtest.def
+
+# --- Compiler output ---
+*.o
+*.obj
+*.pdb
+*.ilk
+*.res
+server-src/dev-cpp/obj/
+server-src/project/obj/
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+
+# --- Logs, crash dumps, runtime state ---
+*.log
+server/logs/
+*.dmp
+server/settings.sav
+server/forgottenserver.map
+
+# --- Generated updater files (produced by the hash tool, fetched from the update server) ---
+client/data/hash.xml
+client/data/hash.xmlfile
+
+# --- Backups and temporary files ---
+*.bak
+*.tmp
+*~
+*.swp
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# --- Editor / IDE metadata from the original developers ---
+.idea/
+.vscode/
+*.layout
+client/modules/.project/
+*.sublime-workspace
+
+# --- Secrets (never commit real credentials) ---
+*.pem
+*.key
+rsakey.private
+.env

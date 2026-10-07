@@ -1,0 +1,13 @@
+Module
+  name: game_pokekill
+  description: mostra o log de task kill
+  author: Walox
+  website: www.pokecenter.com.br
+
+  autoload: true
+  autoload-priority: 99998
+
+  scripts: [ pokekill ]
+  sandboxed: true
+  @onLoad: init()
+  @onUnload: terminate()

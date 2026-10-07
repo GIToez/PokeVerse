@@ -1,0 +1,83 @@
+UIMedicament < UIWidget
+  size: 70 20
+  anchors.top: timer.bottom
+  margin-top: 5
+  UIWidget
+    id: icon
+    size: 20 20
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: label
+    size: 50 20
+    font: damas
+    !text: tr('45')
+    anchors.top: parent.top
+    anchors.left: icon.right
+UIPokemon < UIWidget
+  size: 70 20
+  anchors.top: timer.bottom
+  margin-top: 5
+  UIWidget
+    id: icon
+    size: 20 20
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: label
+    size: 200 20
+    font: damas
+    !text: tr('Derrote o Pokémon chefe')
+    anchors.top: parent.top
+    anchors.left: icon.right
+
+UIWindow
+  id: informationWindow
+  size: 422 95
+  image-source: images/dz_rush/background
+  anchors.horizontalCenter: parent.horizontalCenter
+  anchors.top: parent.top
+  margin-top: 10
+  visible: false
+  draggable: false
+
+  UIWidget
+    id: timer
+    size: 180 42
+    !text: tr('00:00:00')
+    font: sans-bold-16px
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 15
+    margin-left: 60
+  UIMedicament
+    id: revive
+    !tooltip: tr('Revives restantes')
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 25
+    margin-right: 5
+    font: damas
+  UIMedicament
+    id: potion
+    !tooltip: tr('Potions restantes')
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 25
+    margin-right: 50
+    font: damas
+  UIPokemon
+    id: pokemon
+    font: damas
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-left: -45
+    margin-top: 70
+
+  UIWidget
+    id: PokeImageInfo
+    size: 60 58
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 3
+    margin-left: 4

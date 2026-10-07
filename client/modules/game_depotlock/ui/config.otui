@@ -1,0 +1,73 @@
+UIWidget
+  id: Background
+  padding: 0
+  focusable: true
+  size: 207 185
+  image-source: images/config/background
+  anchors.centerIn: parent
+
+  UIButton
+    id: newpass
+    size: 86 30
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 80
+    margin-left: 14
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: changepass
+    size: 86 30
+    anchors.top: parent.top
+    anchors.left: newpass.right
+    margin-top: 80
+    margin-left: 8
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: removepass
+    size: 86 30
+    anchors.top: newpass.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    margin-left: 14
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: lock
+    size: 86 30
+    anchors.top: newpass.bottom
+    anchors.left: newpass.right
+    margin-top: 8
+    margin-left: 8
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: close
+    size: 10 11
+    image-source: images/buttons/close
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: 80
+    @onClick: hideConfig()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8

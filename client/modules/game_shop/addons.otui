@@ -1,0 +1,6615 @@
+SelectButton < UIButton
+  size: 116 30
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  $pressed:
+    opacity: 0.8
+TitleNormal < UIButton
+  id: TitleNormal
+  size: 124 26
+  image-source: images/addons/title/normal
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 70
+  margin-left: 35
+TitleShiny < UIButton
+  id: TitleShiny
+  size: 111 26
+  image-source: images/addons/title/shiny
+  anchors.top: parent.top
+  anchors.left: parent.left
+  visible: false
+  margin-top: 70
+  margin-left: 35
+
+//lista de addons normais
+NormalListPanel < ScrollablePanel
+  id: NormalListPanel
+  visible: true
+  size: 705 395
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 32
+  margin-top: 100
+  vertical-scrollbar: NormalListScrollBar
+
+NormalListScrollBar < VerticalScrollBar
+  id: NormalListScrollBar
+  visible: true
+  anchors.top: NormalListPanel.top
+  anchors.bottom: NormalListPanel.bottom
+  anchors.left: NormalListPanel.right
+  margin-right: 60
+  margin-top: -12
+  margin-bottom: -10
+  opacity: 0.7
+  step: 48
+  pixels-scroll: true
+
+//lista de addons shinys
+ShinyListPanel < ScrollablePanel
+  id: ShinyListPanel
+  visible: false
+  size: 705 395
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 32
+  margin-top: 100
+  vertical-scrollbar: ShinyListScrollBar
+
+ShinyListScrollBar < VerticalScrollBar
+  id: ShinyListScrollBar
+  visible: false
+  anchors.top: ShinyListPanel.top
+  anchors.bottom: ShinyListPanel.bottom
+  anchors.left: ShinyListPanel.right
+  margin-right: 60
+  margin-top: -12
+  margin-bottom: -10
+  opacity: 0.7
+  step: 48
+  pixels-scroll: true
+
+//Paineis Normais
+PainelNormal1 < UIWidget
+  id: PainelNormal1
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+PainelNormal2 < UIWidget
+  id: PainelNormal2
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal1.bottom
+  margin-top: 7
+PainelNormal3 < UIWidget
+  id: PainelNormal3
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal2.bottom
+  margin-top: 7
+PainelNormal4 < UIWidget
+  id: PainelNormal4
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal3.bottom
+  margin-top: 7
+PainelNormal5 < UIWidget
+  id: PainelNormal5
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal4.bottom
+  margin-top: 7
+PainelNormal6 < UIWidget
+  id: PainelNormal6
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal5.bottom
+  margin-top: 7
+PainelNormal7 < UIWidget
+  id: PainelNormal7
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal6.bottom
+  margin-top: 7
+PainelNormal8 < UIWidget
+  id: PainelNormal8
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelNormal7.bottom
+  margin-top: 7
+
+ancient < UIWidget
+  id: ancient
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/ancient
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/ancient
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: ancient()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+armorcore < UIWidget
+  id: armorcore
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: ancient.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/armor core
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/armorcore
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: armorcore()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+battlearmor < UIWidget
+  id: battlearmor
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: armorcore.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/battle armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/battlearmor
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: battlearmor()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+bearcostume < UIWidget
+  id: bearcostume
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: battlearmor.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/bear costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/bearcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: bearcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+blackadamcostume < UIWidget
+  id: blackadamcostume
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: bearcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/black adam costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/blackadamcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: blackadamcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+blueflamesmage < UIWidget
+  id: blueflamesmage
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: blackadamcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/blue flames mage
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/blueflamesmage
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: blueflamesmage()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+cowboycostume < UIWidget
+  id: cowboycostume
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cowboy costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cowboycostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/8
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/16
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cowboycostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cyborgarmor < UIWidget
+  id: cyborgarmor
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: cowboycostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cyborgarmor1 < UIWidget
+  id: cyborgarmor1
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: cyborgarmor.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cyborgarmor2 < UIWidget
+  id: cyborgarmor2
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: cyborgarmor1.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor3
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor3()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cyborgarmor3 < UIWidget
+  id: cyborgarmor3
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: cyborgarmor2.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor4
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor4()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cyborgarmor4 < UIWidget
+  id: cyborgarmor4
+  size: 106 194
+  image-source: images/addons/background/fighting
+  anchors.left: cyborgarmor3.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor5
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor5()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+cyborgarmor5 < UIWidget
+  id: cyborgarmor5
+  size: 106 194
+  image-source: images/addons/background/fighting
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor6
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor6()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+deathunicorn < UIWidget
+  id: deathunicorn
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: cyborgarmor5.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/death unicorn
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/deathunicorn
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: deathunicorn()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+death < UIWidget
+  id: death
+  size: 106 194
+  image-source: images/addons/background/ground
+  anchors.left: deathunicorn.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/death
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/death
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: death()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+definitelynotmagikarp < UIWidget
+  id: definitelynotmagikarp
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: death.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/definitely not magikarp
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/definitelynotmagikarp
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: definitelynotmagikarp()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+djcostume < UIWidget
+  id: djcostume
+  size: 106 194
+  image-source: images/addons/background/ghost
+  anchors.left: definitelynotmagikarp.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/dj costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/djcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: djcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+firemage < UIWidget
+  id: firemage
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: djcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/fire mage
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/firemage
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: firemage()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+flintstone < UIWidget
+  id: flintstone
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/flintstone
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/flinstone
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: flinstone()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+genius < UIWidget
+  id: genius
+  size: 106 194
+  image-source: images/addons/background/fighting
+  anchors.left: flintstone.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/genius
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/genius
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: genius()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+guard < UIWidget
+  id: guard
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: genius.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/guard
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/guard
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: guard()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+guardianarmor < UIWidget
+  id: guardianarmor
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: guard.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/guardian armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/guardianarmor
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: guardianarmor()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+icebearcostume < UIWidget
+  id: icebearcostume
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: guardianarmor.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/ice bear costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/icebearcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: icebearcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+lancesclothes < UIWidget
+  id: lancesclothes
+  size: 106 194
+  image-source: images/addons/background/dragon
+  anchors.left: icebearcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/lances clothes
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/lancesclothes
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: lancesclothes()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+leonciocostume < UIWidget
+  id: leonciocostume
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/leoncio costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/leonciocostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: leonciocostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+malevolacostume < UIWidget
+  id: malevolacostume
+  size: 106 194
+  image-source: images/addons/background/ice
+  anchors.left: leonciocostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/malevola costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/malevolacostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: malevolacostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+mariocostume < UIWidget
+  id: mariocostume
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: malevolacostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/mario costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/mariocostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: mariocostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+metalarmor < UIWidget
+  id: metalarmor
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: mariocostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/metal armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/metalarmor
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: metalarmor()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+peakyblinderscostume < UIWidget
+  id: peakyblinderscostume
+  size: 106 194
+  image-source: images/addons/background/psychic
+  anchors.left: metalarmor.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/peaky blinders costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/peakyblinderscostume1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: peakyblinderscostume1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+peakyblinderscostume1 < UIWidget
+  id: peakyblinderscostume1
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: peakyblinderscostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/peaky blinders costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/peakyblinderscostume2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: peakyblinderscostume2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+pegasuscostume < UIWidget
+  id: pegasuscostume
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/pegasus costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/pegasuscostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: pegasuscostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+robotunicorn < UIWidget
+  id: robotunicorn
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: pegasuscostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/robot unicorn
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/robotunicorn
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: robotunicorn()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+rockstar < UIWidget
+  id: rockstar
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: robotunicorn.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/rockstar
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/rockstar
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: rockstar()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+serpentarmor < UIWidget
+  id: serpentarmor
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: rockstar.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/serpent armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/serpentarmor
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/25
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/50
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: NaoDisponivelWindow()
+    image-source: images/promocao/buttons/comprar_pratileira_off
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+shazamcostume < UIWidget
+  id: shazamcostume
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: serpentarmor.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/shazam costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/shazamcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shazamcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+thorcostume < UIWidget
+  id: thorcostume
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: shazamcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/thor costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/thorcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: thorcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+tropicalcostume < UIWidget
+  id: tropicalcostume
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/tropical costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/tropicalcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: tropicalcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+wordchampionrobe < UIWidget
+  id: wordchampionrobe
+  size: 106 194
+  image-source: images/addons/background/fighting
+  anchors.left: tropicalcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/word champion robe
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/wordchampionrobe
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: wordchampionrobe()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+yakuzacostume < UIWidget
+  id: yakuzacostume
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: wordchampionrobe.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/yakuza costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/yakuzacostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: yakuzacostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+adventurouspirate < UIWidget
+  id: adventurouspirate
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: yakuzacostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/adventurous pirate
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/adventurouspirate
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: adventurouspirate()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+wonderwoman < UIWidget
+  id: wonderwoman
+  size: 106 194
+  image-source: images/addons/background/poison
+  anchors.left: adventurouspirate.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/wonder woman
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/wonderwoman
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: wonderwoman()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+ryujincostume < UIWidget
+  id: ryujincostume
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: wonderwoman.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/ryujin costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/ryujincostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/25
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/50
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: ryujincostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+girlpower < UIWidget
+  id: girlpower
+  size: 106 194
+  image-source: images/addons/background/fairy
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/girl power
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/girlpower
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: girlpower()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+pufferfishcostume < UIWidget
+  id: pufferfishcostume
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: girlpower.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/puffer fish costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/pufferfishcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: pufferfishcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+happyoctopuscostume < UIWidget
+  id: happyoctopuscostume
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: pufferfishcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/happy octopus costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/happyoctopuscostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: happyoctopuscostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+octopuscostume < UIWidget
+  id: octopuscostume
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: happyoctopuscostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/octopus costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/octopuscostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: octopuscostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+flashcostume < UIWidget
+  id: flashcostume
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: octopuscostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/flash costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/flashcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: flashcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cyborgarmor6 < UIWidget
+  id: cyborgarmor6
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: flashcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/normal/cyborgarmor7
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cyborgarmor7()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+//Paineis Shinys
+PainelShiny1 < UIWidget
+  id: PainelShiny1
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+PainelShiny2 < UIWidget
+  id: PainelShiny2
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny1.bottom
+  margin-top: 7
+PainelShiny3 < UIWidget
+  id: PainelShiny3
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny2.bottom
+  margin-top: 7
+PainelShiny4 < UIWidget
+  id: PainelShiny4
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny3.bottom
+  margin-top: 7
+PainelShiny5 < UIWidget
+  id: PainelShiny5
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny4.bottom
+  margin-top: 7
+PainelShiny6 < UIWidget
+  id: PainelShiny6
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny5.bottom
+  margin-top: 7
+PainelShiny7 < UIWidget
+  id: PainelShiny7
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny6.bottom
+  margin-top: 7
+PainelShiny8 < UIWidget
+  id: PainelShiny8
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny7.bottom
+  margin-top: 7
+PainelShiny9 < UIWidget
+  id: PainelShiny9
+  size: 720 194
+  anchors.left: parent.left
+  anchors.top: PainelShiny8.bottom
+  margin-top: 7
+
+millenniuminspiration < UIWidget
+  id: millenniuminspiration
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/millennium inspiration
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/millenniuminspiration
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: millenniuminspiration()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+supremedeity < UIWidget
+  id: supremedeity
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: millenniuminspiration.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/supreme deity
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/supremedeity
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: supremedeity()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+blackraven < UIWidget
+  id: blackraven
+  size: 106 194
+  image-source: images/addons/background/fly
+  anchors.left: supremedeity.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/black raven
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/blackraven
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: blackraven()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+diamondfury < UIWidget
+  id: diamondfury
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: blackraven.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/diamond fury
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/diamondfury
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: diamondfury()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+aldebarancostume < UIWidget
+  id: aldebarancostume
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: diamondfury.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/aldebaran costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/aldebarancostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: aldebarancostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+babykurama < UIWidget
+  id: babykurama
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: aldebarancostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/baby kurama
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/babykurama
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: babykurama()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+shinycyborgarmor1 < UIWidget
+  id: shinycyborgarmor1
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinycyborgarmor1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycyborgarmor1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+shinycyborgarmor2 < UIWidget
+  id: shinycyborgarmor2
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: shinycyborgarmor1.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinycyborgarmor2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycyborgarmor2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+shinycyborgarmor3 < UIWidget
+  id: shinycyborgarmor3
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: shinycyborgarmor2.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinycyborgarmor3
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycyborgarmor3()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+shinycyborgarmor4 < UIWidget
+  id: shinycyborgarmor4
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: shinycyborgarmor3.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinycyborgarmor4
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycyborgarmor4()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+shinycyborgarmor5 < UIWidget
+  id: shinycyborgarmor5
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: shinycyborgarmor4.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinycyborgarmor5
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycyborgarmor5()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+shinycyborgarmor6 < UIWidget
+  id: shinycyborgarmor6
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: shinycyborgarmor5.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cyborg armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinycyborgarmor6
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycyborgarmor6()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+deathcostume < UIWidget
+  id: deathcostume
+  size: 106 194
+  image-source: images/addons/background/ground
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/death costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/deathcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: deathcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+demoncostume < UIWidget
+  id: demoncostume
+  size: 106 194
+  image-source: images/addons/background/ground
+  anchors.left: deathcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/demon costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/demoncostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: demoncostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+angelcostume < UIWidget
+  id: angelcostume
+  size: 106 194
+  image-source: images/addons/background/ground
+  anchors.left: demoncostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/angel costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/angelcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: angelcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+jigsawcostume < UIWidget
+  id: jigsawcostume
+  size: 106 194
+  image-source: images/addons/background/psychic
+  anchors.left: angelcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/jigsaw costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/jigsawcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: jigsawcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+jokercostume < UIWidget
+  id: jokercostume
+  size: 106 194
+  image-source: images/addons/background/psychic
+  anchors.left: jigsawcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/joker costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/jokercostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: jokercostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+thornarmor < UIWidget
+  id: thornarmor
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: jokercostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/thorn armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/thornarmor
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: thornarmor()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+metalarmor1 < UIWidget
+  id: metalarmor1
+  size: 106 194
+  image-source: images/addons/background/poison
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/metal armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinymetalarmor1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinymetalarmor1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+metalarmor2 < UIWidget
+  id: metalarmor2
+  size: 106 194
+  image-source: images/addons/background/fly
+  anchors.left: metalarmor1.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/metal armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinymetalarmor2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinymetalarmor2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+metalarmor3 < UIWidget
+  id: metalarmor3
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: metalarmor2.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/metal armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinymetalarmor3
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinymetalarmor3()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+metalarmor4 < UIWidget
+  id: metalarmor4
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: metalarmor3.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/metal armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinymetalarmor4
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinymetalarmor4()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+metalarmor5 < UIWidget
+  id: metalarmor5
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: metalarmor4.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/metal armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/shinymetalarmor5
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinymetalarmor5()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+terminator < UIWidget
+  id: terminator
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: metalarmor5.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/terminator
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/terminator
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: terminator()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+reggaecostume < UIWidget
+  id: reggaecostume
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/reggae costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/reggaecostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: reggaecostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+matlachines < UIWidget
+  id: matlachines
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: reggaecostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/matlachines
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/matlachines
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: matlachines()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+vampirecostume1 < UIWidget
+  id: vampirecostume1
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: matlachines.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/vampire costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/vampirecostume1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: vampirecostume1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+vampirecostume2 < UIWidget
+  id: vampirecostume2
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: vampirecostume1.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/vampire costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/vampirecostume2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: vampirecostume2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+witchcostume1 < UIWidget
+  id: witchcostume1
+  size: 106 194
+  image-source: images/addons/background/water
+  anchors.left: vampirecostume2.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/witch costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/witchcostume1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: witchcostume1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+paniccostume < UIWidget
+  id: paniccostume
+  size: 106 194
+  image-source: images/addons/background/psychic
+  anchors.left: witchcostume1.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/panic costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/paniccostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: paniccostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+werewolfcostume < UIWidget
+  id: werewolfcostume
+  size: 106 194
+  image-source: images/addons/background/poison
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/werewolf costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/werewolfcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: werewolfcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+zombiecostume < UIWidget
+  id: zombiecostume
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: werewolfcostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/zombie costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/zombiecostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/8
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/16
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: zombiecostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+deathskull < UIWidget
+  id: deathskull
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: zombiecostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/death skull
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/deathskull
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: deathskull()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+alphawerewolf < UIWidget
+  id: alphawerewolf
+  size: 106 194
+  image-source: images/addons/background/electric
+  anchors.left: deathskull.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/alpha werewolf costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/alphawerewolfcostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: alphawerewolfcostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+jasoncostume < UIWidget
+  id: jasoncostume
+  size: 106 194
+  image-source: images/addons/background/fighting
+  anchors.left: alphawerewolf.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/jason costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/jasoncostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: jasoncostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+batmancostume < UIWidget
+  id: batmancostume
+  size: 106 194
+  image-source: images/addons/background/fighting
+  anchors.left: jasoncostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/batman costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/batmancostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: batmancostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+shinycowboycostume < UIWidget
+  id: shinycowboycostume
+  size: 106 194
+  image-source: images/addons/background/psychic
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cowboy costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/cowboycostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: shinycowboycostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+bonearmor < UIWidget
+  id: bonearmor
+  size: 106 194
+  image-source: images/addons/background/psychic
+  anchors.left: shinycowboycostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/bone armor
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/bonearmor
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: bonearmor()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+anbumask < UIWidget
+  id: anbumask
+  size: 106 194
+  image-source: images/addons/background/grass
+  anchors.left: bonearmor.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/anbu mask
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/anbumask
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: anbumask()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+witchcostume2 < UIWidget
+  id: witchcostume2
+  size: 106 194
+  image-source: images/addons/background/ice
+  anchors.left: anbumask.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/witch costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/witchcostume2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: witchcostume2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+bridecostume < UIWidget
+  id: bridecostume
+  size: 106 194
+  image-source: images/addons/background/ice
+  anchors.left: witchcostume2.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/bride costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/bridecostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/24
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: bridecostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+bearcoat < UIWidget
+  id: bearcoat
+  size: 106 194
+  image-source: images/addons/background/normal
+  anchors.left: bridecostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/bear coat
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/bearcoat
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/10
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/20
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: bearcoat()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+enjoyingsummer1 < UIWidget
+  id: enjoyingsummer1
+  size: 106 194
+  image-source: images/addons/background/fly
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/enjoying summer
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/enjoyingsummer1
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/34
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: enjoyingsummer1()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+enjoyingsummer2 < UIWidget
+  id: enjoyingsummer2
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: enjoyingsummer1.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/enjoying summer
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/enjoyingsummer2
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/34
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: enjoyingsummer2()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+moonfairy < UIWidget
+  id: moonfairy
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: enjoyingsummer2.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/moon fairy
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/moonfairy
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: moonfairy()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+kyubimoncostume < UIWidget
+  id: kyubimoncostume
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: moonfairy.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/kyubimon costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/kyubimoncostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: kyubimoncostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+ahriatari < UIWidget
+  id: ahriatari
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: kyubimoncostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/ahri atari
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/ahriatari
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: ahriatari()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+kuramaasura < UIWidget
+  id: kuramaasura
+  size: 106 194
+  image-source: images/addons/background/fire
+  anchors.left: ahriatari.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/kurama asura
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/kuramaasura
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/20
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/40
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: kuramaasura()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+
+greymoncostume < UIWidget
+  id: greymoncostume
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 5
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/greymon costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/greymoncostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: greymoncostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+cavegladiator < UIWidget
+  id: cavegladiator
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: greymoncostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/cave gladiator
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/cavegladiator
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: cavegladiator()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+gabumoncostume < UIWidget
+  id: gabumoncostume
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: cavegladiator.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/gabumon costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/gabumoncostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: gabumoncostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+dreggmancostume < UIWidget
+  id: dreggmancostume
+  size: 106 194
+  image-source: images/addons/background/rock
+  anchors.left: gabumoncostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/dreggman costume
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/dreggmancostume
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    //!tooltip: tr('Você consegue alterar a cor dessa roupa')
+    !tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color_off
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: dreggmancostume()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+killercloak < UIWidget
+  id: killercloak
+  size: 106 194
+  image-source: images/addons/background/bug
+  anchors.left: dreggmancostume.right
+  anchors.top: parent.top
+  margin-top: 1
+  margin-left: 12
+  UIWidget
+    id: Name
+    size: 106 27
+    image-source: images/addons/name/killer cloak
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: SlotRoupa
+    size: 106 125
+    image-source: images/addons/outfit/shiny/killercloak
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  UIWidget
+    id: DiamondIcon
+    size: 48 18
+    image-source: images/count/diamond/15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 42
+    margin-left: 14
+  UIWidget
+    id: PokeCoinIcon
+    size: 48 18
+    image-source: images/count/gold_coin/30
+    anchors.bottom: parent.bottom
+    anchors.left: DiamondIcon.right
+    margin-bottom: 42
+    margin-left: -5
+
+  UIWidget
+    id: ColorIcon
+    !tooltip: tr('Você consegue alterar a cor dessa roupa')
+    //!tooltip: tr('Você não consegue alterar a cor dessa roupa')
+    image-source: images/roupas/color
+    size: 12 12
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+  UIButton
+    id: Comprar
+    size: 81 23
+    @onClick: killercloak()
+    image-source: images/promocao/buttons/comprar_pratileira
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+Panel
+  SelectButton
+    id: Normal
+    @onClick: normalSelect()
+    image-source: images/addons/buttons/normal_selected
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 30
+    margin-left: 30
+  SelectButton
+    id: Shiny
+    @onClick: shinySelect()
+    image-source: images/addons/buttons/shiny
+    anchors.top: parent.top
+    anchors.left: Normal.right
+    margin-top: 30
+    margin-left: 7
+
+  TitleNormal
+  TitleShiny
+  NormalListPanel
+    PainelNormal1
+      ancient
+      armorcore
+      battlearmor
+      bearcostume
+      blackadamcostume
+      blueflamesmage
+    PainelNormal2
+      cowboycostume
+      cyborgarmor
+      cyborgarmor1
+      cyborgarmor2
+      cyborgarmor3
+      cyborgarmor4
+    PainelNormal3
+      cyborgarmor5
+      deathunicorn
+      death
+      definitelynotmagikarp
+      djcostume
+      firemage
+    PainelNormal4
+      flintstone
+      genius
+      guard
+      guardianarmor
+      icebearcostume
+      lancesclothes
+    PainelNormal5
+      leonciocostume
+      malevolacostume
+      mariocostume
+      metalarmor
+      peakyblinderscostume
+      peakyblinderscostume1
+    PainelNormal6
+      pegasuscostume
+      robotunicorn
+      rockstar
+      serpentarmor
+      shazamcostume
+      thorcostume
+    PainelNormal7
+      tropicalcostume
+      wordchampionrobe
+      yakuzacostume
+      adventurouspirate
+      wonderwoman
+      ryujincostume
+    PainelNormal8
+      girlpower
+      pufferfishcostume
+      happyoctopuscostume
+      octopuscostume
+      flashcostume
+      cyborgarmor6
+  NormalListScrollBar
+  ShinyListPanel
+    PainelShiny1
+      millenniuminspiration
+      supremedeity
+      blackraven
+      diamondfury
+      aldebarancostume
+      babykurama
+    PainelShiny2
+      shinycyborgarmor1
+      shinycyborgarmor2
+      shinycyborgarmor3
+      shinycyborgarmor4
+      shinycyborgarmor5
+      shinycyborgarmor6
+    PainelShiny3
+      deathcostume
+      demoncostume
+      angelcostume
+      jigsawcostume
+      jokercostume
+      thornarmor
+    PainelShiny4
+      metalarmor1
+      metalarmor2
+      metalarmor3
+      metalarmor4
+      metalarmor5
+      terminator
+    PainelShiny5
+      reggaecostume
+      matlachines
+      vampirecostume1
+      vampirecostume2
+      witchcostume1
+      paniccostume
+    PainelShiny6
+      werewolfcostume
+      zombiecostume
+      deathskull
+      alphawerewolf
+      jasoncostume
+      batmancostume
+    PainelShiny7
+      shinycowboycostume
+      bonearmor
+      anbumask
+      witchcostume2
+      bridecostume
+      bearcoat
+    PainelShiny8
+      enjoyingsummer1
+      enjoyingsummer2
+      moonfairy
+      kyubimoncostume
+      ahriatari
+      kuramaasura
+    PainelShiny9
+      greymoncostume
+      cavegladiator
+      gabumoncostume
+      dreggmancostume
+      killercloak
+  ShinyListScrollBar

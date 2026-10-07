@@ -1,0 +1,174 @@
+WindowConfig < UIWidget
+  size: 217 51
+  visible: false
+  image-source: images/horizontalBar
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 2
+
+WindowEvents < UIWidget
+  size: 51 199
+  visible: false
+  image-source: images/verticalBar
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+
+shop < UIButton
+  size: 46 45
+  opacity: 1
+  @onClick: g_game.talk('/ShopOpen')
+  image-source: /images/topbuttons/shop
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+
+  $hover:
+    size: 46 45
+    opacity: 1
+    image-source: /images/topbuttons/shop_animated
+  
+  $pressed:
+    size: 46 45
+    opacity: 0.9
+    image-source: /images/topbuttons/shop_animated
+
+ButtonBars < UIWidget
+  id: ButtonBars
+  size: 52 52
+  opacity: 0.9
+  @onClick: ShowButtons()
+  //background-color: black
+  image-source: images/open
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 33
+  margin-left: 33
+
+  $hover:
+    opacity: 1
+  
+  $pressed:
+    opacity: 0.8
+
+ItensSlot < UIButton
+  size: 32 32
+  opacity: 0.8
+  anchors.top: parent.top
+  anchors.right: parent.right
+
+  $hover:
+    size: 37 37
+    opacity: 1
+  
+  $pressed:
+    size: 37 37
+    opacity: 0.9
+
+HeadlessWindow
+  id: timeWindow
+  size: 259 267
+  image-source: ~
+  anchors.top: parent.top
+  anchors.left: parent.left
+  focusable: false
+  draggable: false
+  phantom: true
+
+  ButtonBars
+
+  WindowConfig
+    id: WindowConfig
+    ItensSlot
+      id: tutorial_button
+      image-source: /images/topbuttons/tutorial
+      margin-top: 11
+      margin-right: 142
+      @onClick: modules.game_tutorial.doShowTutorialWindow()
+    ItensSlot
+      id: hotkeys_button
+      image-source: /images/topbuttons/hotkeys
+      margin-top: 10
+      margin-right: 107
+      @onClick: modules.game_hotkeys.show()
+    ItensSlot
+      id: login_button
+      image-source: /images/topbuttons/login
+      margin-top: 10
+      margin-right: 73
+      @onClick: modules.client_entergame.EnterGame.openWindow()
+    ItensSlot
+      id: options_button
+      image-source: /images/topbuttons/options
+      margin-top: 10
+      margin-right: 41
+      @onClick: modules.client_options.show()
+    ItensSlot
+      id: logout_button
+      image-source: /images/topbuttons/logout
+      margin-top: 10
+      margin-right: 7
+      @onClick: modules.game_interface.tryLogout()
+
+  WindowEvents
+    id: WindowEvents
+    shop
+      id: shop_button
+      margin-bottom: 5
+      margin-left: 3
+
+    ItensSlot
+      id: battlepass_button
+      image-source: /images/topbuttons/trainer_pass
+      margin-top: 22
+      margin-right: 9
+      @onClick: g_game.talk('/passopen') modules.game_pass.toggle()
+    ItensSlot
+      id: dailyReward_button
+      image-source: /images/topbuttons/daily_reward
+      margin-top: 65
+      margin-right: 9
+      @onClick: g_game.talk('/dailysigninopen') modules.game_calendar.toggle()
+    ItensSlot
+      id: hourDaily_button
+      image-source: /images/topbuttons/hour_daily
+      margin-top: 105
+      margin-right: 10
+      //@onClick: modules.game_tutorial.doShowTutorialWindow()
+
+
+  UIWidget
+    id: timeImage
+    size: 79 78
+    image-source: images/days/night
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: -5
+    margin-left: -5
+    focusable: false
+    draggable: false
+    phantom: true
+
+  UILabel
+    id: timeLabel
+    height: 24
+    text-align: center
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 44
+    margin-left: 8
+    focusable: false
+    draggable: false
+    phantom: true
+
+  Label
+    id: location
+    !text: ''
+    font: terminus-10px
+    color: #FFFFFF
+    //text-align: center
+    background-color: alpha
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    text-offset: 2 0
+    text-auto-resize: true
+    margin-top: 3

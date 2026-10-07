@@ -1,0 +1,36 @@
+BroadcastNotification < Panel
+  size: 523 194
+  phantom: true
+  visible: false
+  focusable: false
+  image-source: images/broadcast/window
+  image-color: #ffffff
+  image-border: 15
+
+  Label
+    id: text
+    phantom: true
+    text-align: left
+    text-auto-resize: true
+    font: verdana-11px-rounded
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 46
+    margin-right: 10
+    margin-top: 5
+
+  UIButton
+    id: icon
+    size: 32 32
+    phantom: true
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: 13
+
+BroadcastNotification
+  id: broadcast
+  height: 55
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 110

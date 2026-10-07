@@ -1,0 +1,27 @@
+POKEMON["Normal Dummy"] = {
+    pTypes = { ELEMENT_NORMAL },
+    dexStorage = 0,
+    hp = 100,
+    speed = 100,
+
+    atk = 0,
+    def = 10000000,
+    spAtk = 0,
+    spDef = 0,
+    energy = 10000,
+    chance = 800,
+    portrait = 0,
+    dexPortrait = 0,
+    fastcallPortrait = 0,
+    catchStorage = 0,
+    evolutions = {},
+    description = "",
+    skills = {"Synthesis", 40},
+    abilities = {},
+    eggGroup = {},
+    eggId = 13978,
+    eggChance = 20,
+    specialAbilities = {},
+    learnableTms = {},
+    eggMoves = {}
+}

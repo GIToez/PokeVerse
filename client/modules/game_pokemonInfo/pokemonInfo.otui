@@ -1,0 +1,1565 @@
+ShortcutButton < UIButton
+  size: 30 30
+  anchors.top: parent.top
+  anchors.left: parent.left
+  @onClick: modules.game_pokemonInfo.togglePanel(self:getId())
+  opacity: 0.8
+  $hover:
+    opacity: 1
+  $pressed:
+    opacity: 0.7
+
+  $!first:
+    anchors.left: prev.right
+    margin-left: 5
+InfoPanel < UIWidget
+  anchors.top: parent.top
+  anchors.left: mainPanel.right
+  size: 457 428
+  phantom: true
+  visible: false
+FriendshipItemPanel < UIWidget
+  size: 80 65
+  anchors.top: level.bottom
+  margin-top: 18
+  margin-left: 0
+  @onClick: modules.game_pokemonInfo.doAddFriendshipXp(self:getId())
+  opacity: 0.8
+  $hover:
+    opacity: 1
+  $pressed:
+    opacity: 0.7
+
+  UIWidget
+    id: item
+    size: 30 30
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    virtual: true
+    phantom: true
+  UIWidget
+    id: name
+    height: 11
+    anchors.top: item.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1
+    font: lucida-11px-rounded
+    phantom: true
+  UIWidget
+    id: friendshipLabel
+    height: 11
+    anchors.bottom: parent.bottom
+    anchors.top: parent.top
+    margin-top: 30
+    font: lucida-11px-rounded
+    color: green
+    phantom: true
+FriendshipSubPanel < UIWidget
+  size: 177 55
+  image-source: images/bonus_base
+
+  UIWidget
+    id: icon
+    size: 36 35
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 10
+  UIWidget
+    id: name
+    height: 12
+    anchors.top: parent.top
+    anchors.left: icon.right
+    anchors.right: parent.right
+    margin-top: 10
+    margin-left: 6
+    text-align: left
+  UIWidget
+    id: percent
+    height: 9
+    anchors.top: name.bottom
+    anchors.left: name.left
+    margin-top: 8
+    margin-left: 0
+    text-align: left
+    font: lucida-11px-rounded
+    color: green
+  UIWidget
+    id: percentTotal
+    height: 9
+    anchors.top: name.bottom
+    anchors.left: percent.right
+    anchors.right: parent.right
+    margin-left: 2
+IVEVWidget < UIWidget
+  size: 392 22
+  anchors.top: prev.bottom
+  anchors.left: prev.left
+  margin-top: 15
+  UIWidget
+    id: icon
+    size: 22 22
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: name
+    size: 55 14
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: icon.right
+    font: lucida-11px-rounded
+    text-align: left
+  ProgressBar
+    id: progressBar
+    size: 216 13
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: name.right
+    background-color: #227a16
+    margin-left: 2
+    margin-right: 5
+  UIWidget
+    id: progressBarIMG
+    size: 220 18
+    image-source: images/progressbarstats
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: name.right
+  UIWidget
+    id: value
+    size: 220 18
+    font: verdana-9px-bold-white
+    color: #c8c8c8
+    anchors.top: progressBar.top
+    anchors.left: progressBar.left
+    margin-top: -3
+    phantom: true
+  UIWidget
+    id: add1
+    size: 33 16
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: progressBar.right
+    margin-left: 7
+    image-source: images/buttons/add_1
+    @onClick: modules.game_pokemonInfo.addToUpgradeInfo(self:getParent():getParent():getId(), self:getParent():getId(), 1)
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIWidget
+    id: add5
+    size: 33 16
+    anchors.top: add1.top
+    anchors.left: add1.right
+    margin-left: 2
+    image-source: images/buttons/add_5
+    @onClick: modules.game_pokemonInfo.addToUpgradeInfo(self:getParent():getParent():getId(), self:getParent():getId(), 5)
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIWidget
+    id: spendingPoints
+    size: 33 16
+    anchors.top: add1.top
+    anchors.left: add5.right
+    margin-left: 2
+    color: green
+    font: lucida-11px-rounded
+StatWidget < UIWidget
+
+BaseStone < UIWidget
+  size: 49 49
+  anchors.top: speed.bottom
+  anchors.left: parent.left
+  margin-top: 15
+  margin-left: 50
+  image-source: images/stone
+  UIWidget
+    id: icon
+    anchors.fill: parent
+    phantom: true
+  UIWidget
+    id: count
+    size: 30 9
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 5
+    color: #ff0808
+    text-align: left
+    font: lucida-11px-rounded
+    text: 100
+BasePanel < InfoPanel
+  id: base
+  visible: true
+
+  UIWidget
+    id: nameLabel
+    size: 336 31
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 36
+    image-source: images/title/base
+  UIWidget
+    id: baseTicketPanel
+    size: 70 24
+    anchors.top: nameLabel.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    margin-left: 35
+    image-source: images/base_tickets
+    UIWidget
+      id: points
+      size: 33 16
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 4
+      font: lucida-11px-rounded
+      margin-left: 32
+  IVEVWidget
+    id: hp
+    margin-top: 8
+  IVEVWidget
+    id: atk
+    anchors.top: hp.bottom
+    margin-top: 6
+  IVEVWidget
+    id: def
+    anchors.top: atk.bottom
+    margin-top: 6
+  IVEVWidget
+    id: spatk
+    anchors.top: def.bottom
+    margin-top: 6
+  IVEVWidget
+    id: spdef
+    anchors.top: spatk.bottom
+    margin-top: 6
+  IVEVWidget
+    id: speed
+    anchors.top: spdef.bottom
+    margin-top: 6
+  BaseStone
+    id: hpstone
+    margin-top: 30
+    margin-left: 42
+  UIWidget
+    id: hpstoneText
+    size: 48 22
+    image-source: images/text/hpstoneText
+    anchors.bottom: hpstone.bottom
+    anchors.left: hpstone.left
+    margin-bottom: -23
+  BaseStone
+    id: atkstone
+    anchors.top: hpstone.top
+    anchors.left: hpstone.right
+    margin-top: 0
+    margin-left: 14
+  UIWidget
+    id: atkstoneText
+    size: 50 22
+    image-source: images/text/atkstoneText
+    anchors.bottom: atkstone.bottom
+    anchors.left: atkstone.left
+    margin-bottom: -23
+  BaseStone
+    id: defstone
+    anchors.top: atkstone.top
+    anchors.left: atkstone.right
+    margin-top: 0
+    margin-left: 14
+  UIWidget
+    id: defstoneText
+    size: 49 22
+    image-source: images/text/defstoneText
+    anchors.bottom: defstone.bottom
+    anchors.left: defstone.left
+    margin-bottom: -23
+  BaseStone
+    id: spatkstone
+    anchors.top: atkstone.top
+    anchors.left: defstone.right
+    margin-top: 0
+    margin-left: 14
+  UIWidget
+    id: spatkstoneText
+    size: 59 22
+    image-source: images/text/spatkstoneText
+    anchors.bottom: spatkstone.bottom
+    anchors.left: spatkstone.left
+    margin-bottom: -23
+    margin-left: -5
+  BaseStone
+    id: spdefstone
+    anchors.top: atkstone.top
+    anchors.left: spatkstone.right
+    margin-top: 0
+    margin-left: 14
+  UIWidget
+    id: spdefstoneText
+    size: 58 22
+    image-source: images/text/spdefstoneText
+    anchors.bottom: spdefstone.bottom
+    anchors.left: spdefstone.left
+    margin-bottom: -23
+    margin-left: -4
+  BaseStone
+    id: speedstone
+    anchors.top: atkstone.top
+    anchors.left: spdefstone.right
+    margin-top: 0
+    margin-left: 14
+  UIWidget
+    id: speedstoneText
+    size: 57 22
+    image-source: images/text/speedstoneText
+    anchors.bottom: speedstone.bottom
+    anchors.left: speedstone.left
+    margin-bottom: -23
+    margin-left: -3
+  UIButton
+    id: confirm
+    size: 77 22
+    anchors.top: speedstone.bottom
+    anchors.left: parent.left
+    margin-top: 40
+    margin-left: 136
+    image-source: images/buttons/confirm
+    @onClick: modules.game_pokemonInfo.doUpgradeInfo(self:getParent():getId())
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: cancel
+    size: 77 22
+    anchors.top: confirm.top
+    anchors.left: confirm.right
+    margin-top: 0
+    margin-left: 20
+    image-source: images/buttons/cancel
+    @onClick: modules.game_pokemonInfo.resetInfo()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIWidget
+    id: separator
+    size: 200 2
+    anchors.top: parent.top
+    anchors.left: confirm.left
+    anchors.right: cancel.right
+    margin-top: 280
+    image-source: images/separator
+  UIWidget
+    id: attribute_reset
+    size: 19 18
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 83
+    margin-left: 108
+    image-source: images/buttons/reset
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+IVEVPanel < InfoPanel
+  id: ivev
+
+  UIWidget
+    id: nameLabel
+    size: 336 31
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 36
+    image-source: images/title/iv
+  UIWidget
+    id: evTicketPanel
+    size: 70 24
+    anchors.top: nameLabel.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    margin-left: 35
+    image-source: images/ev_tickets
+    UIWidget
+      id: points
+      size: 33 16
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 4
+      font: lucida-11px-rounded
+      margin-left: 32
+  UIWidget
+    id: evPointsPanel
+    size: 300 24
+    anchors.top: nameLabel.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    margin-left: 35
+    &spendingPoints: 0
+    UIWidget
+      id: points
+      size: 70 24
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-source: images/ev_points
+      margin-left: 100
+      margin-top: -1
+      font: lucida-11px-rounded
+      UIWidget
+        id: value
+        anchors.top: parent.top
+        anchors.right: parent.right
+        margin-top: 3
+        margin-left: 20
+        font: lucida-11px-rounded
+    UIWidget
+      id: spendingPoints
+      size: 70 15
+      anchors.top: parent.top
+      anchors.left: points.left
+      margin-top: 4
+      margin-left: 72
+      color: red
+      text-align: left
+      font: lucida-11px-rounded
+  IVEVWidget
+    id: hp
+    margin-top: 8
+  IVEVWidget
+    id: atk
+    anchors.top: hp.bottom
+    margin-top: 6
+  IVEVWidget
+    id: def
+    anchors.top: atk.bottom
+    margin-top: 6
+  IVEVWidget
+    id: spatk
+    anchors.top: def.bottom
+    margin-top: 6
+  IVEVWidget
+    id: spdef
+    anchors.top: spatk.bottom
+    margin-top: 6
+  IVEVWidget
+    id: speed
+    anchors.top: spdef.bottom
+    margin-top: 6
+  UIButton
+    id: confirm
+    size: 77 22
+    anchors.top: speed.bottom
+    anchors.left: parent.left
+    margin-top: 95
+    margin-left: 150
+    image-source: images/buttons/confirm
+    @onClick: modules.game_pokemonInfo.doUpgradeInfo(self:getParent():getId())
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: cancel
+    size: 77 22
+    anchors.top: confirm.top
+    anchors.left: confirm.right
+    margin-top: 0
+    margin-left: 20
+    image-source: images/buttons/cancel
+    @onClick: modules.game_pokemonInfo.resetInfo()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIWidget
+    id: evTotalName
+    size: 336 22
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 280
+    margin-left: 60
+    image-source: images/title/ev_total
+  UIWidget
+    id: evTotalLabel
+    height: 11
+    anchors.top: evTotalName.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 12
+    text: Total EV
+  ProgressBar
+    id: progressBar
+    size: 215 15
+    anchors.top: evTotalLabel.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    background-color: #c26b00
+    margin-top: 3
+    margin-left: 3
+  UIWidget
+    id: progressBarIMG
+    size: 220 22
+    image-source: images/progressbarstats
+    anchors.top: progressBar.top
+    anchors.left: progressBar.left
+    margin-top: -3
+    margin-left: -2
+  UIWidget
+    id: progressBarValue
+    size: 220 18
+    margin-top: -1
+    color: #c8c8c8
+    font: verdana-9px-bold-white
+    anchors.top: progressBar.top
+    anchors.left: progressBar.left
+  UIWidget
+    id: ev_reset
+    size: 19 18
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 83
+    margin-left: 108
+    image-source: images/buttons/reset
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+FriendshipPanel < InfoPanel
+  id: friendship
+
+  UIWidget
+    id: nameLabel
+    size: 336 31
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 36
+    image-source: images/title/friendship
+  FriendshipSubPanel
+    id: lootLucky
+    anchors.top: nameLabel.bottom
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 35
+  FriendshipSubPanel
+    id: shinyCharm
+    anchors.top: lootLucky.top
+    anchors.left: lootLucky.right
+    margin-top: 0
+    margin-left: 28
+  FriendshipSubPanel
+    id: criticalChance
+    anchors.top: lootLucky.bottom
+    anchors.left: parent.left
+    margin-top: 12
+    margin-left: 35
+  FriendshipSubPanel
+    id: energyRegen
+    anchors.top: lootLucky.bottom
+    anchors.left: lootLucky.right
+    margin-top: 12
+    margin-left: 28
+  UIWidget
+    id: level
+    size: 43 44
+    anchors.top: criticalChance.bottom
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 21
+    font: lucida-11px-rounded
+    image-source: images/level_base
+  ProgressBar
+    id: progressBar
+    size: 339 15
+    anchors.top: level.top
+    anchors.left: level.right
+    background-color: #7a7616
+    font: verdana-9px-bold-white
+    color: #c8c8c8
+    margin-top: 17
+    margin-left: 5
+  UIWidget
+    id: progressBarIMG
+    size: 343 18
+    image-source: images/progressbar_big
+    anchors.left: progressBar.left
+    anchors.top: progressBar.top
+    margin-top: -1
+    margin-left: -2
+  FriendshipItemPanel
+    id: mint
+    anchors.left: parent.left
+    margin-left: 7
+  UIWidget
+    id: mentaTxt
+    size: 69 30
+    image-source: images/text/friendship/menta
+    anchors.top: mint.top
+    anchors.left: mint.left
+    margin-top: 30
+    margin-left: 5
+  FriendshipItemPanel
+    id: banana
+    anchors.left: mint.right
+    margin-left: 5
+  UIWidget
+    id: bananaTxt
+    size: 79 30
+    image-source: images/text/friendship/banana
+    anchors.top: banana.top
+    anchors.left: banana.left
+    margin-top: 30
+    margin-left: 0
+  FriendshipItemPanel
+    id: apple
+    anchors.left: banana.right
+    margin-left: 5
+  UIWidget
+    id: maca
+    size: 77 30
+    image-source: images/text/friendship/maca
+    anchors.top: apple.top
+    anchors.left: apple.left
+    margin-top: 30
+    margin-left: 2
+  FriendshipItemPanel
+    id: grape
+    anchors.left: apple.right
+    margin-left: 5
+  UIWidget
+    id: uva
+    size: 78 30
+    image-source: images/text/friendship/uva
+    anchors.top: grape.top
+    anchors.left: grape.left
+    margin-top: 30
+    margin-left: 1
+  FriendshipItemPanel
+    id: cupNoodle
+    anchors.left: grape.right
+    margin-left: 5
+  UIWidget
+    id: cupnoodleTxt
+    size: 85 31
+    image-source: images/text/friendship/cupnoodle
+    anchors.top: cupNoodle.top
+    anchors.left: cupNoodle.left
+    margin-top: 30
+    margin-left: 0
+  UIWidget
+    id: moneyImage
+    size: 32 32
+    anchors.top: mint.bottom
+    anchors.left: parent.left
+    margin-top: -5
+    margin-left: 5
+    image-source: images/money
+  UIWidget
+    id: moneyLabel
+    size: 300 13
+    anchors.top: moneyImage.top
+    anchors.left: moneyImage.right
+    margin-top: 7
+    margin-left: 6
+    font: lucida-11px-rounded
+    text-align: left
+    !text: tr('Gold required for level-up:')..13500
+  NewCheckBox2
+    id: diamondCheckBox
+    size: 23 23
+    anchors.top: moneyLabel.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    margin-left: 8
+  UIWidget
+    id: diamondLabel
+    size: 211 13
+    anchors.top: diamondCheckBox.top
+    anchors.left: diamondCheckBox.right
+    margin-top: 8
+    margin-left: 9
+    font: lucida-11px-rounded
+    text-auto-resize: true
+    !text: tr('Use diamonds to make up')
+  UIWidget
+    id: diamondImage
+    size: 32 32
+    anchors.top: diamondCheckBox.top
+    anchors.left: diamondLabel.right
+    margin-top: -3
+    margin-left: 4
+    image-source: images/diamond
+  UIWidget
+    id: diamondValueLabel
+    height: 13
+    anchors.top: diamondCheckBox.top
+    anchors.left: diamondImage.right
+    margin-top: 8
+    margin-left: 5
+    font: lucida-11px-rounded
+    text-auto-resize: true
+    text: 13
+    color: #ff8c00
+  UIButton
+    id: upgrade
+    size: 132 38
+    anchors.top: moneyImage.top
+    anchors.right: parent.right
+    margin-top: 10
+    margin-right: 20
+    image-source: images/buttons/upgrade
+    @onClick: modules.game_pokemonInfo.upgradeFriendshipLevel()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+MainPanel < UIWidget
+  id: mainPanel
+  size: 281 375
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 20
+  margin-left: 15
+  phantom: true
+  UIWidget
+    id: pokemonName
+    size: 210 20
+    anchors.top: parent.top
+    anchors.left: parent.left
+    text-align: left
+    font: sans-bold-16px
+    margin-top: 30
+    margin-left: 40
+    $on:
+      color: #ffffff
+  UIWidget
+    id: pokedexId
+    size: 40 13
+    text-align: left
+    font: verdana-11px-monochrome
+    anchors.top: pokemonName.bottom
+    anchors.left: pokemonName.left
+    color: #858585
+    margin-top: 3
+    margin-left: 2
+  UIWidget
+    id: ball
+    size: 118 118
+    image-source: images/ball
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 53
+    margin-left: 70
+  UIWidget
+    id: pokemon
+    size: 118 118
+    anchors.top: ball.top
+    anchors.left: ball.left
+  UIWidget
+    id: firstType
+    size: 24 24
+    anchors.top: pokemonName.top
+    anchors.right: parent.right
+    margin-right: 4
+  UIWidget
+    id: secondType
+    size: 24 24
+    anchors.top: firstType.bottom
+    anchors.right: firstType.right
+    margin-top: 4
+  UIWidget
+    id: natureIcon
+    size: 14 14
+    Pading: 0
+    image-source: images/natureInfo
+    anchors.top: nature.top
+    anchors.left: nature.right
+    margin-left: 5
+  UIWidget
+    id: gender
+    size: 51 11
+    anchors.top: secondType.bottom
+    anchors.right: ball.right
+    margin-top: 17
+    margin-right: -72
+    text-align: left
+    font: lucida-11px-rounded
+  UIWidget
+    id: genderBaseIcon
+    size: 17 17
+    image-source: images/stat_icons/sex
+    anchors.top: gender.top
+    anchors.left: gender.left
+    margin-left: -18
+    margin-top: -5
+  UIWidget
+    id: genderIcon
+    size: 11 11
+    anchors.top: gender.top
+    anchors.left: gender.right
+    margin-top: 1
+    margin-left: 5
+  UIWidget
+    id: nature
+    size: 51 11
+    //background-color: black
+    anchors.top: gender.bottom
+    anchors.right: ball.right
+    margin-top: 9
+    text-align: left
+    margin-right: -68
+    font: lucida-11px-rounded
+  UIWidget
+    id: natureBaseIcon
+    size: 17 17
+    image-source: images/stat_icons/nature
+    anchors.top: nature.top
+    anchors.left: nature.left
+    margin-left: -18
+    margin-top: -5
+  StatWidget
+    id: hp
+    size: 100 14
+    anchors.top: pokemon.bottom
+    anchors.left: parent.left
+    margin-top: 33
+    margin-left: 15
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: atk
+    size: 131 14
+    anchors.top: hp.bottom
+    anchors.left: hp.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 31 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: def
+    size: 131 14
+    anchors.top: atk.bottom
+    anchors.left: hp.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 30 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: spatk
+    size: 131 14
+    anchors.top: def.bottom
+    anchors.left: hp.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 51 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: spdef
+    size: 131 14
+    anchors.top: spatk.bottom
+    anchors.left: hp.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 51 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: speed
+    size: 131 14
+    anchors.top: spdef.bottom
+    anchors.left: hp.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 45 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  UIWidget
+    id: ivImage
+    size: 18 10
+    anchors.top: pokemon.bottom
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 166
+    image-source: images/ivs
+  UIWidget
+    id: baseImage
+    size: 17 10
+    anchors.top: pokemon.bottom
+    anchors.left: parent.left
+    margin-top: 20
+    margin-left: 22
+    image-source: images/base
+  StatWidget
+    id: ivhp
+    size: 131 14
+    anchors.top: ivImage.bottom
+    anchors.left: ivImage.left
+    margin-top: 4
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: ivatk
+    size: 131 14
+    anchors.top: ivhp.bottom
+    anchors.left: ivImage.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 30 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: ivdef
+    size: 131 14
+    anchors.top: ivatk.bottom
+    anchors.left: ivImage.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 30 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: ivspatk
+    size: 131 14
+    anchors.top: ivdef.bottom
+    anchors.left: ivImage.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 51 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: ivspdef
+    size: 131 14
+    anchors.top: ivspatk.bottom
+    anchors.left: ivImage.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 51 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: ivspeed
+    size: 131 14
+    anchors.top: ivspdef.bottom
+    anchors.left: ivImage.left
+    margin-top: 6
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 45 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: ivTotal
+    size: 131 14
+    anchors.top: speed.bottom
+    anchors.left: speed.left
+    margin-top: 20
+    margin-left: 155
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: baseTotal
+    size: 131 14
+    anchors.top: speed.bottom
+    anchors.left: speed.left
+    margin-top: 20
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 37 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 20 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: terminus-10px
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: terminus-10px
+      text-align: left
+      margin-left: 1
+      color: green
+  StatWidget
+    id: perfection
+    size: 131 14
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 135
+    margin-left: 182
+    //opacity: 0
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 1 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 80 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: lucida-11px-rounded
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      text-align: left
+      margin-left: 1
+      font: lucida-11px-rounded
+      color: green
+  StatWidget
+    id: friendship
+    size: 131 14
+    anchors.top: perfection.bottom
+    anchors.left: perfection.left
+    margin-top: 5
+    margin-left: -10
+    //opacity: 0
+    UIWidget
+      id: icon
+      size: 17 17
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -2
+    UIWidget
+      id: name
+      size: 1 14
+      anchors.top: parent.top
+      anchors.left: icon.right
+      text-align: left
+      font: lucida-11px-rounded
+    UIWidget
+      id: value
+      size: 80 14
+      anchors.top: parent.top
+      anchors.left: name.right
+      text-align: left
+      margin-left: 5
+      font: lucida-11px-rounded
+    UIWidget
+      id: bonus
+      size: 60 14
+      anchors.top: parent.top
+      anchors.left: value.right
+      font: lucida-11px-rounded
+      text-align: left
+      margin-left: 1
+      color: green
+CloseButton < UIButton
+  id: closeButton
+  size: 20 21
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+  margin-bottom: 12
+  margin-right: 51
+  image-source: images/close
+  @onClick: modules.game_pokemonInfo.hide()
+MainSeparator < UIWidget
+  id: mainSeparator
+  size: 281 2
+  anchors.top: mainPanel.bottom
+  anchors.left: parent.left
+  margin-top: -15
+  margin-left: 15
+  image-source: images/separator
+
+MainButtons < UIWidget
+  id: mainShortcuts
+  size: 105 30
+  anchors.top: mainSeparator.bottom
+  anchors.left: parent.left
+  margin-top: 2
+  margin-left: 90
+  ShortcutButton
+    id: base
+    image-source: images/buttons/base
+  ShortcutButton
+    id: ivev
+    image-source: images/buttons/iv_ev
+  ShortcutButton
+    id: friendship
+    image-source: images/buttons/friendship
+BlackWindow < UIWidget
+  id: blackWindow
+  size: 752 448
+  image-source: images/black_background
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 5
+  margin-left: 7
+  opacity: 0.5
+  visible: false
+ResetWindow < UIWidget
+  id: resetWindow
+  size: 336 126
+  image-source: images/AlertWindow/Window
+  anchors.centerIn: parent
+  margin-top: -10
+  visible: false
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    image-source: images/AlertWindow/icon/base
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -4
+    margin-left: 126
+  UIWidget
+    id: text
+    size: 336 39
+    image-source: images/AlertWindow/text/reset_base
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 45
+  UIButton
+    id: reiniciar
+    size: 99 24
+    image-source: images/AlertWindow/reiniciar
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 15
+    margin-left: 65
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: Cancelar
+    size: 99 24
+    image-source: images/AlertWindow/cancelar
+    anchors.bottom: parent.bottom
+    anchors.left: reiniciar.right
+    margin-bottom: 15
+    margin-left: 10
+    @onClick: doHideAlertWindow()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+AlertWindow < UIWidget
+  id: alertWindow
+  size: 336 126
+  image-source: images/AlertWindow/Window
+  anchors.centerIn: parent
+  margin-top: -10
+  visible: false
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -4
+    margin-left: 126
+  UIWidget
+    id: text
+    size: 336 39
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 45
+  UIButton
+    id: fechar
+    size: 99 24
+    image-source: images/AlertWindow/fechar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: 35
+    @onClick: doHideMessageWindow()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+UIWindow
+  size: 767 492
+  anchors.centerIn: parent
+  image-source: images/background
+
+  MainPanel
+  MainSeparator
+  MainButtons
+  CloseButton
+  BasePanel
+  IVEVPanel
+  FriendshipPanel
+  BlackWindow
+  ResetWindow
+  AlertWindow

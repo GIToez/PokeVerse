@@ -1,0 +1,27 @@
+Particle
+  name: background_particle
+
+  duration: 2.5
+  min-position-radius: 0
+  max-position-radius: 960
+  velocity: 150
+  min-velocity-angle: 30
+  max-velocity-angle: 30
+  colors: #FFFFFF00 #FF9000 #00900000
+  colors-stops: 0 0.75 1
+  size: 25 25
+  texture: /particles/particles/particle2
+  composition-mode: normal
+
+Effect
+  name: background-effect
+  description: Effect for background in the background module
+
+  System
+    position: 0 0
+
+    Emitter
+      position: 0 0
+      burst-rate: 100
+      burst-count: 1
+      particle-type: background_particle

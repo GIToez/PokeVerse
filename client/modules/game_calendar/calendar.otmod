@@ -1,0 +1,9 @@
+Module
+  name: game_calendar
+  description: Gerencia o calendario
+  author: Ryukiimaru and walox
+  website: https://www.facebook.com/systemyart/
+  sandboxed: true
+  scripts: [ calendar, chest_effect ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Daily Beverly" script="Daily.catch.Beverly.lua" walkinterval="350000" floorchange="0" speed="0">
+<health now="150" max="150"/> <!-- FACIL -->
+<look type="2616" head="76" body="113" legs="0" feet="0"/>
+</npc>

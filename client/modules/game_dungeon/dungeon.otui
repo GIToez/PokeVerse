@@ -1,0 +1,730 @@
+RankingWidget < UIWidget
+  size: 709 76
+  image-source: images/ranking_character
+
+  UICreature
+    id: outfit
+    size: 36 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 22
+    margin-left: 25
+
+  UIWidget
+    id: levelIcon
+    size: 15 16
+    image-source: images/level_icon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 22
+    margin-left: 331
+  UIWidget
+    id: clan
+    size: 30 30
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 453
+  UIWidget
+    id: rankingIcon
+    size: 20 19
+    image-source: images/clock
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 47
+    margin-left: 450
+
+  UIWidget
+    id: name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 32
+    margin-left: 100
+    color: #aaa9a9
+    font: sans-bold-16px
+    text-auto-resize: true
+  UIWidget
+    id: level
+    anchors.top: levelIcon.bottom
+    anchors.left: levelIcon.left
+    margin-top: 5
+    margin-left: -7
+    font: sans-bold-16px
+    color: #aaa9a9
+    text-auto-resize: true
+  UIWidget
+    id: claName
+    anchors.top: clan.top
+    anchors.left: clan.right
+    margin-top: 9
+    margin-left: 5
+    font: sans-bold-16px
+    color: #aaa9a9
+    text-auto-resize: true
+  UIWidget
+    id: time
+    anchors.top: rankingIcon.top
+    anchors.left: rankingIcon.right
+    margin-top: 1
+    margin-left: 5
+    font: sans-bold-16px
+    color: #aaa9a9
+    text-auto-resize: true
+  UIWidget
+    id: star
+    size: 50 50
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 20
+    margin-bottom: 10
+    visible: false
+
+RankingPanel < UIWindow
+  id: rankingWindow
+  size: 930 516
+  image-source: images/search_background
+  anchors.centerIn: parent
+  draggable: false
+  visible: false
+
+  UIWidget
+    id: DgImage
+    size: 66 69
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 35
+  UIWidget
+    id: map
+    text-auto-resize: true
+    font: sans-bold-16px
+    anchors.top: DgImage.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
+  UIWidget
+    id: diff
+    text-auto-resize: true
+    anchors.top: map.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 5
+    font: damas
+  UIButton
+    id: close
+    size: 81 23
+    image-source: images/voltar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 50
+    margin-left: 110
+    @onClick: self:getParent():hide()
+    opacity: 0.7
+    $hover:
+      opacity: 0.8
+    $pressed:
+      opacity: 0.6
+  UIScrollArea
+    size: 709 324
+    layout:
+      type: grid
+      cell-size: 709 76
+      num-columns: 1
+      num-lines: 10
+      cell-spacing: 5
+    id: panel
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    margin-top: 160
+    vertical-scrollbar: scrollbar
+  VerticalScrollBar
+    id: scrollbar
+    size: 15 290
+    visible: false
+    anchors.top: panel.top
+    anchors.bottom: panel.bottom
+    anchors.left: panel.right
+    margin-top: -13
+    margin-bottom: -13
+    margin-left: 5
+
+SearchPanel < UIWidget
+  id: searchPanel
+  size: 930 516
+  image-source: images/search_background
+  anchors.fill: parent
+  visible: false
+
+  UIWidget
+    id: name
+    height: 20
+    font: sans-bold-16px-rounded
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 50
+    margin-left: 50
+  UIScrollArea
+    layout: horizontalBox
+    id: playersIcon
+    size: 35 37
+    anchors.top: name.bottom
+    anchors.left: parent.left
+    margin-left: 45
+  UIWidget
+    id: experience
+    anchors.top: playersIcon.bottom
+    anchors.left: parent.left
+    margin-top: 2
+    margin-left: 45
+    font: damas
+    text-auto-resize: true
+  UIWidget
+    id: experience2
+    anchors.top: experience.top
+    anchors.left: experience.right
+    color: #eee000
+    font: damas
+    text-auto-resize: true
+  UIWidget
+    id: experience3
+    anchors.top: experience2.top
+    anchors.left: experience2.right
+    margin-left: 5
+    font: damas
+    text-auto-resize: true
+  UIWidget
+    id: items
+    anchors.top: experience.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 45
+  UIWidget
+    id: items2
+    anchors.top: items.bottom
+    anchors.left: parent.left
+    margin-top: 1
+    margin-left: 45
+  UIWidget
+    id: timer
+    size: 180 20
+    font: damas
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 165
+  UIWidget
+    id: timerCount
+    height: 20
+    font: sans-bold-16px-rounded
+    !text: tr('00:00:00')
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.horizontalCenter: parent.horizontalCenter
+  UIWidget
+    id: whiteCube
+    size: 200 150
+    image-source: images/white_cube
+    anchors.top: parent.top
+    anchors.centerIn: parent
+  UIWidget
+    id: cancel
+    size: 99 24
+    image-source: images/cancelar
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.horizontalCenter: parent.horizontalCenter
+    @onClick: modules.game_dungeon.cancelQueue()
+    margin-top: 75
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+  UIScrollArea
+    layout: horizontalBox
+    id: playersOutfit
+    height: 46
+    anchors.top: cancel.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 20
+    margin-left: 11
+
+MemberWidget < UIWidget
+  size: 300 64
+
+  UICreature
+    id: outfit
+    size: 36 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 25
+    margin-left: 20
+
+  UIWidget
+    id: nameIcon
+    size: 20 19
+    image-source: images/name_icon
+    anchors.top: name.top
+    anchors.left: name.left
+    margin-top: -1
+    margin-left: -25
+  UIWidget
+    id: levelIcon
+    size: 15 16
+    image-source: images/level_icon
+    anchors.top: nameIcon.top
+    anchors.left: name.left
+    margin-top: 22
+    margin-left: -22
+  UIWidget
+    id: clan
+    size: 17 17
+    anchors.top: levelIcon.top
+    anchors.left: name.left
+    margin-top: 15
+    margin-left: -22
+
+  UIWidget
+    id: name
+    anchors.top: parent.top
+    anchors.left: outfit.right
+    margin-top: 10
+    margin-left: 40
+    font: sans-bold-16px
+    text-auto-resize: true
+  UIWidget
+    id: level
+    anchors.top: name.bottom
+    anchors.left: outfit.right
+    margin-top: 8
+    margin-left: 40
+    font: damas
+    color: #aaa9a9
+    text-auto-resize: true
+  UIWidget
+    id: claName
+    anchors.top: level.bottom
+    anchors.left: outfit.right
+    margin-top: 3
+    margin-left: 40
+    font: damas
+    color: #aaa9a9
+    text-auto-resize: true
+  UIWidget
+    id: leader
+    size: 24 20
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 10
+    margin-bottom: 2
+    visible: false
+
+PlayerIcon < UIWidget
+  size: 15 34
+  image-source: images/player
+PlayerIconDZS < UIWidget
+  size: 17 34
+  image-source: images/player
+
+DWLightHover < UIWidget
+  id: lighthover
+  size: 460 85
+  image-source: images/none
+  anchors.top: parent.top
+  anchors.left: parent.left
+  phantom: true
+DWBorder < UIWidget
+  id: border
+  size: 460 85
+  anchors.top: parent.top
+  anchors.left: parent.left
+  phantom: true
+
+DWRewards < UIWidget
+  id: rewards
+  size: 460 85
+  anchors.top: parent.top
+  anchors.left: parent.left
+  visible: false
+  UIWidget
+    size: 460 85
+    image-source: images/black_hover
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: back
+    size: 36 74
+    image-source: images/return
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 2
+    margin-left: 2
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+  UIWidget
+    id: chest
+    size: 12 12
+    anchors.top: name.top
+    anchors.right: name.left
+    margin-right: 2
+    image-source: images/chest
+  UIWidget
+    id: name
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
+    font: damas
+    text-auto-resize: true
+    !text: tr('Recompensas Possíveis')
+  UIWidget
+    id: experience
+    anchors.top: name.bottom
+    anchors.left: name.left
+    margin-left: 22
+    margin-top: 2
+    font: damas
+    text-auto-resize: true
+  UIWidget
+    id: experience2
+    anchors.top: experience.top
+    anchors.left: experience.right
+    margin-left: 2
+    color: #eee000
+    font: damas
+    text-auto-resize: true
+  UIWidget
+    id: experience3
+    anchors.top: experience2.top
+    anchors.left: experience2.right
+    margin-left: 5
+    font: damas
+    text-auto-resize: true
+  UIWidget
+    id: experienceIcon
+    size: 11 11
+    image-source: images/xp_star
+    anchors.top: experience3.top
+    anchors.left: experience3.right
+    margin-left: 4
+    margin-top: -1
+    font: damas
+  UIWidget
+    id: items
+    anchors.top: experience.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+  UIWidget
+    id: items2
+    anchors.top: items.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1
+
+DWPanel < UIWidget
+  id: panel
+  size: 460 85
+  anchors.top: parent.top
+  anchors.left: parent.left
+  UIWidget
+    id: PictureDG
+    size: 460 85
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UIWidget
+    id: ProgressBackground
+    size: 72 16
+    image-source: images/progressbar_fundo
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 55
+    margin-left: 30
+  UIProgressBar
+    id: roomsProgressBar
+    size: 66 12
+    background-color: #6797fb
+    image-source: images/progressbar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 57
+    margin-left: 33
+  UIWidget
+    id: ProgressBorder
+    size: 72 16
+    image-source: images/progressbar_border
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 55
+    margin-left: 30
+  UIWidget
+    id: name
+    height: 20
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 30
+    font: sans-bold-16px
+    text-align: left
+    text-auto-resize: true
+  UIButton
+    id: favoritesButton
+    size: 18 18
+    anchors.top: name.top
+    anchors.left: name.right
+    margin-left: 5
+    image-source: images/favorite_button
+    image-clip: 0 0 18 18
+    @onClick: modules.game_dungeon.onFavorite(self)
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+  UIButton
+    id: rewardsButton
+    size: 17 17
+    anchors.top: name.top
+    anchors.left: favoritesButton.right
+    margin-top: 2
+    margin-left: 5
+    image-source: images/chest
+    @onClick: modules.game_dungeon.showRewards(self)
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+  UIButton
+    id: rankingButton
+    size: 17 17
+    anchors.top: name.top
+    anchors.left: rewardsButton.right
+    margin-top: 2
+    margin-left: 5
+    image-source: images/ranking
+    @onClick: modules.game_dungeon.getRanking(self)
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+  UIScrollArea
+    layout: horizontalBox
+    id: playersIcon
+    height: 17
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 32
+    margin-left: 30
+  UIWidget
+    id: roomsText
+    anchors.top: roomsProgressBar.top
+    anchors.left: roomsProgressBar.right
+    margin-left: 8
+    font: damas
+    color: #a0a0a0
+    text-auto-resize: true
+  UIWidget
+    id: playersText
+    anchors.top: playersIcon.top
+    anchors.left: playersIcon.right
+    margin-top: 6
+    margin-left: 2
+    font: damas
+    text-auto-resize: true
+
+DungeonWidget < UIWidget
+  size: 460 85
+  margin-top: 5
+  DWPanel
+  DWRewards
+  DWLightHover
+  DWBorder
+KeyWidget < UIWidget
+  size: 70 40
+
+  UIWidget
+    id: image
+    size: 32 32
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+  UIWidget
+    id: count
+    size: 40 30
+    font: damas
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.right: parent.right
+
+DifficultyButton < UIWidget
+  size: 87 60
+  anchors.top: parent.top
+  anchors.left: parent.left
+  opacity: 0.5
+  @onClick: modules.game_dungeon.requestMaps(tonumber(self:getId()))
+
+  $!first:
+    anchors.left: prev.right
+
+  UIWidget
+    id: level
+    size: 120 20
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+    font: damas
+    phantom: true
+  UIWidget
+    id: name
+    size: 120 20
+    anchors.top: level.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+    font: damas
+    phantom: true
+  UIWidget
+    id: separator
+    size: 60 2
+    anchors.top: name.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    background-color: white
+    visible: false
+    phantom: true
+DungeonPanel  < UIWidget
+  id: dungeonPanel
+  size: 930 477
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 24
+  UIScrollArea
+    layout: verticalBox
+    id: dungeonList
+    size: 460 290
+    //background-color: black
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 131
+    margin-left: 86
+    vertical-scrollbar: scrollbar
+  VerticalScrollBar
+    id: scrollbar
+    size: 15 290
+    anchors.top: dungeonList.top
+    anchors.left: dungeonList.right
+    margin-top: -8
+    margin-left: 24
+  UIScrollArea
+    layout: horizontalBox
+    id: keysPanel
+    size: 340 40
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-left: 30
+    margin-bottom: 5
+    KeyWidget
+      id: 1
+    KeyWidget
+      id: 2
+    KeyWidget
+      id: 3
+    KeyWidget
+      id: 4
+  UIWidget
+    id: teamPanel
+    size: 250 393
+    image-source: images/team_background
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 13
+    margin-right: 39
+    UIScrollArea
+      layout: verticalBox
+      id: members
+      size: 250 200
+      anchors.top: parent.top
+      anchors.left: parent.left
+    UIWidget
+      id: createTeam
+      size: 250 97
+      image-source: images/create_team
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      @onClick: modules.game_dungeon.createTeam()
+      opacity: 0.7
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.8
+    UIWidget
+      id: invitePlayer
+      size: 250 97
+      image-source: images/convidar_team
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      visible: false
+      @onClick: modules.game_dungeon.showInvitePlayer({invite = true})
+      opacity: 0.7
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.8
+  UIWidget
+    id: play
+    size: 250 44
+    image-source: images/play
+    anchors.top: teamPanel.bottom
+    anchors.right: teamPanel.right
+    margin-top: 10
+    @onClick: modules.game_dungeon.play() SearchingTime()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+  UIWidget
+    id: leaveTeam
+    size: 49 32
+    image-source: images/leave_pt
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 35
+    margin-right: 288
+    visible: false
+    @onClick: modules.game_dungeon.leaveTeam()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+DifficultyPanel < UIWidget
+  id: difficultyPanel
+  size: 400 60
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 96
+  margin-left: 100
+  DifficultyButton
+    id: 1
+  DifficultyButton
+    id: 2
+  DifficultyButton
+    id: 3
+  DifficultyButton
+    id: 4
+  DifficultyButton
+    id: 5
+Title < UIWidget
+  id: Title
+  size: 336 32
+  image-source: images/title
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 49
+  margin-left: 148
+
+UIWindow
+  id: dungeon
+  size: 930 516
+  image-source: images/background
+  anchors.centerIn: parent
+  draggable: true
+
+  DungeonPanel
+  DifficultyPanel
+  Title
+  RankingPanel
+  SearchPanel

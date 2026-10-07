@@ -1,0 +1,20 @@
+MOVES["Nightmare"] = {
+    description = "The sleeping opponent loses HP during 5 turns.",
+    makeIndirectDamage = true,
+    category = MOVE_CATEGORY.STATUS,
+    clientIconId = 12114,
+    iconId = 0,
+    dType = DAMAGE_TYPE_GHOST,
+    functionName = "Nightmare",
+    type = SKILLS_TYPES.TARGET,
+    -- requiredEnergy = 100
+    requiredEnergy = 0,
+    requiredLevel = 60,
+    damage = 60,
+    damageType = ELEMENT_GHOST,
+    effect = EFFECT_SHADOW_MINICLOUD_TWO,
+    projectile = nil,
+    maxDistance = 1,
+    cooldownTime = 60,
+    cooldownStorage = 15212
+}

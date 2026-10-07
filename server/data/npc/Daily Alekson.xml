@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Daily Alekson" script="Daily.catch.Alekson.lua" walkinterval="350000" floorchange="0" speed="0">
+<health now="150" max="150"/> <!-- NORMAL -->
+<look type="2618" head="21" body="130" legs="127" feet="114"/>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Daily Dalkon" script="daily.dalkon.lua" walkinterval="350000" floorchange="0" speed="0">
+<health now="150" max="150"/> <!-- FACIL -->
+<look type="2615" head="91" body="114" legs="86" feet="0"/>
+</npc>

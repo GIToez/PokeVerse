@@ -1,0 +1,99 @@
+HouseData < UILabel
+  font: sans-bold-16px
+  anchors.left: parent.left
+  anchors.top: prev.bottom
+  color: #abaaaa
+  margin-top: 6
+  height: 20
+  text-auto-resize: true
+
+MainWindow
+  id: lookWindow
+  !text: tr('House Information')
+  size: 530 180
+  @onEnter: onCloseInformation()
+  @onEscape: onCloseInformation()
+
+  Panel
+    id: full_content
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    
+    Panel
+      id: left_image
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      size: 140 140
+
+    Panel
+      id: right_content
+      image-source: /images/ui/panel_lightflat
+      anchors.top: parent.top
+      anchors.left: left_image.right
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 10
+
+      Label
+        id: house_map_name
+        font: sans-bold-16px
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.left: parent.left
+        text-align: center
+        color: #abaaaa
+        margin-top: 5
+        margin-bottom: 5
+      
+      Label
+        id: data_content
+        anchors.top: prev.bottom
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        border: 1 #242424
+        margin: 5
+
+        Panel
+          id: info_panel
+          margin-top: 2
+          margin-left: 4
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.bottom: parent.bottom
+          anchors.right: parent.right
+          width: 150
+          
+          HouseData
+            id: house_owner
+            anchors.top: parent.top
+
+          HouseData
+            id: town_name
+
+          HouseData
+            id: house_size
+
+          HouseData
+            id: house_price
+      
+
+      Button
+        id: closed_button
+        !text: tr("Close")
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin: 10
+        @onClick: onCloseInformation()
+      
+      Button
+        id: buyhousebutton
+        !text: tr("Buy this house")
+        anchors.right: parent.right
+        anchors.bottom: prev.top
+        margin: 10
+        visible: false
+        @onClick: sendBuyHouse()

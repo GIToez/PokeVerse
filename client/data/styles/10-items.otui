@@ -1,0 +1,69 @@
+Item < UIItem
+  size: 34 34
+  padding: 1
+  image-source: /images/ui/item
+  font: lucida-11px-rounded
+  border-color: white
+  color: white
+
+  $disabled:
+    color: #646464
+ProfissionItemIvi < UIItem
+  size: 30 30
+  padding: 0
+  image-source: ~
+  opacity: 0.9
+  font: lucida-11px-rounded
+  border-color: white
+  color: white
+
+  $disabled:
+    color: #646464
+  $hover:
+    opacity: 1.0
+RewardsDg < UIItem
+  size: 12 12
+  padding: 0
+  image-source: ~
+  opacity: 0.9
+  font: lucida-11px-rounded
+  border-color: white
+  color: white
+
+  $disabled:
+    color: #646464
+  $hover:
+    opacity: 1.0
+
+ItemSlot < UIItem
+  size: 37 37
+  padding: 1
+  image-source: /images/ui/item_2
+  font: lucida-11px-rounded
+  border-color: black
+  color: white
+  opacity: 0.9
+
+  $disabled:
+    color: #646464
+  $hover:
+    opacity: 1.0
+ItemProfission < UIItem
+  size: 34 34
+  padding: 1
+  image-source: /images/ui/slotitem_profission
+  font: lucida-11px-rounded
+  border-color: white
+  color: white
+
+  $disabled:
+    color: #646464
+ItemMarket < UIItem
+  size: 34 34
+  padding: 1
+  text-offset: 5000 5000
+  image-source: /images/ui/item
+  font: lucida-11px-rounded
+
+  $disabled:
+    color: #646464

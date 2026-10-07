@@ -1,0 +1,187 @@
+InventoryItem < ItemSlot
+  margin: 3
+
+HeadSlot < InventoryItem
+  id: slot1
+  image-source: /images/game/slots/head
+  &position: {x=65535, y=1, z=0}
+  margin-top: 3
+  margin-left: 114
+
+BodySlot < InventoryItem
+  id: slot4
+  image-source: /images/game/slots/body
+  &position: {x=65535, y=4, z=0}
+
+LegSlot < InventoryItem
+  id: slot7
+  image-source: /images/game/slots/legs
+  &position: {x=65535, y=7, z=0}
+
+FeetSlot < InventoryItem
+  id: slot8
+  image-source: ~
+  &position: {x=65535, y=8, z=0}
+
+NeckSlot < InventoryItem
+  id: slot2
+  image-source: /images/game/slots/neck
+  &position: {x=65535, y=2, z=0}
+
+LeftSlot < InventoryItem
+  id: slot6
+  image-source: /images/game/slots/left-hand
+  &position: {x=65535, y=6, z=0}
+
+FingerSlot < InventoryItem
+  id: slot9
+  image-source: ~
+  &position: {x=65535, y=9, z=0}
+
+BackSlot < InventoryItem
+  id: slot3
+  image-source: /images/game/slots/back
+  &position: {x=65535, y=3, z=0}
+
+RightSlot < InventoryItem
+  id: slot5
+  image-source: /images/game/slots/right-hand
+  &position: {x=65535, y=5, z=0}
+
+AmmoSlot < InventoryItem
+  id: slot10
+  image-source: /images/game/slots/ammo
+  &position: {x=65535, y=10, z=0}
+
+PurseButton < Button
+  id: purseButton
+  size: 26 26
+  !tooltip: tr('Open purse')
+  icon-source: /images/game/slots/purse
+  icon-size: 24 24
+  icon-offset: 1 1
+
+MiniWindow
+  id: inventoryWindow
+  !text: tr('Inventory')
+  font: lucida-11px-rounded
+  icon: /images/topbuttons/inventory
+  height: 109
+  @onClose: modules.game_inventory.onMiniWindowClose()
+  &save: true
+
+  UIButton
+    @onClick: g_game.talk('$stackemoney$')
+    anchors.top: minimizeButton.top
+    anchors.right: minimizeButton.left
+    margin-right: 3
+    size: 10 16
+    opacity: 0.8
+    image-source: /images/game/slots/money
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.7
+
+  UIButton
+    @onClick: g_game.talk('/love')
+    //@onClick: modules.game_bottommenu.show()
+    anchors.top: minimizeButton.top
+    anchors.right: minimizeButton.left
+    margin-right: 14
+    margin-top: 2
+    size: 15 13
+    opacity: 0.8
+    image-source: /images/game/slots/love
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.7
+
+  UIButton
+    image-source: /images/game/slots/feet
+    size: 34 34
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 63
+    margin-left: 6
+
+  UIButton
+    image-source: /images/game/slots/finger
+    size: 34 34
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 63
+    margin-left: 41
+
+  MiniWindowContents
+    FingerSlot
+      anchors.top: slot8.top
+      anchors.left: slot8.right
+
+    FeetSlot
+      //pokeball slot
+      anchors.top: slot7.bottom
+      anchors.left: parent.left
+      margin-top: 5
+
+    RightSlot
+      //badge slot
+      image-source: ~
+      visible: false
+      anchors.top: parent.top
+      anchors.left: slot7.right
+
+    BodySlot
+      //poke team slot
+      image-source: ~
+      visible: false
+      anchors.top: parent.top
+      anchors.right: slot1.left
+
+    //NeckSlot
+      //anchors.top: slot1.top
+      //anchors.right: slot1.left
+      //margin-top: 10
+      //margin-right: 5
+
+    AmmoSlot
+      //slot mochila
+      image-source: /images/game/slots/feet
+      anchors.top: slot8.top
+      anchors.right: slot1.left
+      margin-top: 1
+
+    HeadSlot
+      //slot order
+      image-source: ~
+      anchors.top: slot8.top
+      anchors.left: parent.left
+      margin-top: 1
+
+    //BackSlot
+      //anchors.top: slot1.top
+      //anchors.left: slot1.right
+      //margin-top: 10
+      //margin-left: 5
+
+    LegSlot
+      //slot portrait
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    LeftSlot
+      //slot pokedex
+      image-source: ~
+      anchors.top: slot8.top
+      anchors.right: parent.right
+      margin-top: 1
+
+    PurseButton
+      margin-top: 3
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: prev.horizontalCenter

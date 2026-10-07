@@ -1,0 +1,37 @@
+UIWidget
+  id: Background
+  padding: 0
+  focusable: true
+  size: 284 106
+  image-source: images/alert/background
+  anchors.centerIn: parent
+
+  UIWidget
+    id: SlotItem
+    size: 70 70
+    image-source: ~
+    anchors.bottom: parent.bottom
+    anchors.centerIn: parent
+    margin-bottom: 20
+  UIWidget
+    id: desc
+    size: 282 33
+    image-source: ~
+    opacity: 0.8
+    anchors.top: SlotItem.top
+    anchors.centerIn: parent
+    margin-top: 6
+
+  UIButton
+    id: close
+    size: 84 20
+    image-source: images/alert/fechar
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: 32
+    @onClick: hideAlertWindow()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8

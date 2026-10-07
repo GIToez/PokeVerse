@@ -1,0 +1,446 @@
+WeekWidget < UIWidget
+  size: 62 24
+  anchors.top: parent.top
+  anchors.left: parent.left
+  image-source: images/flat_day
+  text-align: center
+  image-border: 2
+  font: verdana-11px-rounded
+
+RewardWidget < UIWidget
+  id: rewardWidge
+  size: 477 141
+  image-source: images/background_rewards
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-left: 17
+  margin-top: 16
+
+  UIWidget
+    id: blackBar
+    size: 246 18
+    image-source: images/bars/background
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 15
+    margin-bottom: 30
+  UIWidget
+    id: bar5
+    size: 21 5
+    visible: false
+    image-source: images/bars/b5
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 240
+    margin-bottom: 37
+  UIWidget
+    id: bar10
+    size: 28 18
+    visible: false
+    image-source: images/bars/b10
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 212
+    margin-bottom: 30
+  UIWidget
+    id: bar15
+    size: 20 7
+    visible: false
+    image-source: images/bars/b15
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 192
+    margin-bottom: 36
+  UIWidget
+    id: bar20
+    size: 31 18
+    visible: false
+    image-source: images/bars/b20
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 161
+    margin-bottom: 30
+  UIWidget
+    id: bar25
+    size: 17 7
+    visible: false
+    image-source: images/bars/b25
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 144
+    margin-bottom: 36
+  UIWidget
+    id: bar30
+    size: 31 18
+    visible: false
+    image-source: images/bars/b30
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 113
+    margin-bottom: 30
+  UIWidget
+    id: bar35
+    size: 18 7
+    visible: false
+    image-source: images/bars/b35
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 95
+    margin-bottom: 36
+  UIWidget
+    id: bar40
+    size: 31 18
+    visible: false
+    image-source: images/bars/b40
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 64
+    margin-bottom: 30
+  UIWidget
+    id: bar45
+    size: 17 7
+    visible: false
+    image-source: images/bars/b45
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 47
+    margin-bottom: 36
+  UIWidget
+    id: bar50
+    size: 32 18
+    visible: false
+    image-source: images/bars/b50
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 15
+    margin-bottom: 30
+
+  UIWidget
+    id: closednormalChest
+    size: 36 32
+    image-source: images/baus/normal/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 207
+    margin-bottom: 57
+  UIWidget
+    id: closedsilverChest
+    size: 39 33
+    image-source: images/baus/silver/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 157
+    margin-bottom: 57
+  UIWidget
+    id: closedgoldChest
+    size: 37 33
+    image-source: images/baus/gold/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 109
+    margin-bottom: 57
+  UIWidget
+    id: closeddiamondChest
+    size: 38 33
+    image-source: images/baus/diamond/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 59
+    margin-bottom: 57
+  UIWidget
+    id: closedemeraldChest
+    size: 38 33
+    image-source: images/baus/emerald/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 10
+    margin-bottom: 57
+
+  UIWidget
+    id: normalChest
+    size: 36 32
+    visible: false
+    image-source: images/baus/normal/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 207
+    margin-bottom: 57
+    @onClick: NormalChestOpen()
+    //$hover:
+    //  image-source: images/baus/normal/2
+  UIWidget
+    id: silverChest
+    size: 39 33
+    visible: false
+    image-source: images/baus/silver/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 157
+    margin-bottom: 57
+    @onClick: SilverChestOpen()
+    //$hover:
+    //  image-source: images/baus/silver/2
+  UIWidget
+    id: goldChest
+    size: 37 33
+    visible: false
+    image-source: images/baus/gold/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 109
+    margin-bottom: 57
+    @onClick: GoldChestOpen()
+    //$hover:
+    //  image-source: images/baus/gold/2
+  UIWidget
+    id: diamondChest
+    size: 38 33
+    visible: false
+    image-source: images/baus/diamond/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 59
+    margin-bottom: 57
+    @onClick: DiamondChestOpen()
+    //$hover:
+    //  image-source: images/baus/diamond/2
+  UIWidget
+    id: emeraldChest
+    size: 38 33
+    visible: false
+    image-source: images/baus/emerald/1
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 10
+    margin-bottom: 57
+    @onClick: EmeraldChestOpen()
+    //$hover:
+    //  image-source: images/baus/emerald/2
+
+DayWidget < UIWidget
+  size: 62 55
+  anchors.top: parent.top
+  anchors.left: parent.left
+  image-source: images/slot
+
+  UIWidget
+    id: name
+    size: 62 55
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    text-offset: 42 -30
+    font: verdana-11px-rounded
+    virtual: true
+    phantom: true
+
+  UIItem
+    id: item
+    size: 32 32
+    //background-color: white
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    font: verdana-11px-rounded
+    margin-right: 15
+    margin-bottom: 5
+    phantom: true
+
+  UIWidget
+    id: mask
+    size: 62 55
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    font: verdana-11px-rounded
+    visible: false
+    phantom: true
+
+DRShopWidget < UIWidget
+  size: 157 70
+  image-source: images/tbutton
+  image-clip: 0 0 7 7
+  image-border: 3
+  font: verdana-11px-rounded
+
+  $hover !on:
+    image-clip: 14 0 7 7
+
+  UIItem
+    id: item
+    virtual: true
+    size: 32 32
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: 10
+    phantom: true
+  UIWidget
+    id: name
+    anchors.top: parent.top
+    anchors.left: item.right
+    margin-left: 5
+    margin-top: 10
+    font: verdana-11px-rounded
+    phantom: true
+  UIWidget
+    id: price
+    anchors.bottom: parent.bottom
+    anchors.left: item.right
+    margin-left: 5
+    margin-bottom: 10
+    font: verdana-11px-rounded
+    phantom: true
+  UIButton
+    id: buy
+    size: 42 35
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 2
+    !tooltip: tr("Comprar")
+    image-source: images/buy
+    image-clip: 0 0 50 50
+
+    $hover !on:
+      image-clip: 50 0 50 50
+    $pressed !on:
+      image-clip: 100 0 50 50
+
+ShopPanel < ScrollablePanel
+  id: shopPanel
+  size: 334 292
+  anchors.top: calendarButton.bottom
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 10
+  visible: false
+  vertical-scrollbar: shopScrollBar
+  layout:
+    type: grid
+    cell-size: 157 70
+    cell-spacing: 1
+    num-columns: 2
+
+ShopScrollBar < VerticalScrollBar
+  id: shopScrollBar
+  width: 15
+  anchors.top: shopPanel.top
+  anchors.bottom: shopPanel.bottom
+  anchors.right: shopPanel.right
+  margin: 3
+  step: 48
+  pixels-scroll: true
+  visible: false
+
+MonthPanel < UIWidget
+  id: monthPanel
+  size: 475 400
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 160
+
+  UIWidget
+    id: month
+    height: 20
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    text-auto-resize: true
+    font: sans-bold-16px-rounded
+
+  UIWidget
+    id: prevMonth
+    size: 27 24
+    image-source: images/anterior
+    anchors.top: parent.top
+    anchors.left: parent.left
+    @onClick: requestCalendar(-1)
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  UIWidget
+    id: nextMonth
+    size: 28 24
+    image-source: images/next
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: requestCalendar(1)
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  UIWidget
+    id: days
+    size: 475 370
+    anchors.top: month.bottom
+    margin-top: 10
+    anchors.horizontalCenter: parent.horizontalCenter
+
+CalendarButton < Button
+  id: calendarButton
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 0
+  margin-left: 0
+  !text: tr("Calendar")
+  @onClick: showCalendar()
+
+ShopButton < Button
+  id: shopButton
+  anchors.top: parent.top
+  anchors.left: calendarButton.right
+  margin-top: 0
+  margin-left: 0
+  !text: tr("Shop")
+  @onClick: showShop()
+
+DRPoints < UIWidget
+  id: points
+  size: 60 20
+  anchors.top: parent.top
+  anchors.right: close.left
+  font: verdana-11px-rounded
+  margin-right: 3
+  image-source: images/points
+  image-clip: 0 0 7 7
+  image-border: 3
+  !tooltip: tr("Points")
+
+  $hover !on:
+    image-clip: 7 0 7 7
+
+CloseButton < UIWidget
+  id: close
+  size: 20 21
+  image-source: images/close
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+  margin-right: 246
+  margin-bottom: 12
+  @onClick: self:getParent():hide()
+  opacity: 0.8
+  $hover:
+    opacity: 1.0
+  $pressed:
+    opacity: 0.9
+
+UIWindow
+  id: calendar
+  size: 511 612
+  anchors.centerIn: parent
+  image-source: images/background
+  padding: 0
+  draggable: true
+  save: true
+  focusable: true
+
+  //CalendarButton
+  //ShopButton
+  //DRPoints
+  CloseButton
+  MonthPanel
+  RewardWidget
+  ShopPanel
+  ShopScrollBar

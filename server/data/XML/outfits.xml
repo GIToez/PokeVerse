@@ -1,0 +1,730 @@
+<?xml version="1.0"?>
+<outfits>
+	<outfit id="1" access="5" premium="yes">
+		<list gender="0-3" lookType="535" name="Gamemaster"/>
+	</outfit>
+	
+	<outfit id="2">
+		<list gender="0" lookType="611" name="Trainer"/>
+		<list gender="1" lookType="612" name="Trainer"/>
+	</outfit>
+	
+	<outfit id="3" premium="yes" default="1">
+		<list gender="0" lookType="613" name="Elite Trainer"/>
+		<list gender="1" lookType="614" name="Elite Trainer"/>
+	</outfit>
+	
+	<outfit id="4" premium="yes" default="0">
+		<list gender="0" lookType="615" name="Adventurer"/>
+		<list gender="1" lookType="616" name="Adventurer"/>
+	</outfit>
+	
+	<outfit id="5" premium="yes" default="0">
+		<list gender="0" lookType="617" name="Academy"/>
+		<list gender="1" lookType="618" name="Academy"/>
+	</outfit>
+	
+	<outfit id="6" premium="yes" default="0">
+		<list gender="0" lookType="621" name="Social"/>
+		<list gender="1" lookType="622" name="Social"/>
+	</outfit>
+	
+	<outfit id="7" premium="yes" default="0">
+		<list gender="0" lookType="623" name="Jamaica"/>
+		<list gender="1" lookType="624" name="Jamaica"/>
+	</outfit>
+	
+	<outfit id="8" premium="yes" default="0">
+		<list gender="0" lookType="625" name="Punk"/>
+		<list gender="1" lookType="626" name="Punk"/>
+	</outfit>
+	
+	<outfit id="9" premium="no" default="1">
+		<list gender="0" lookType="627" name="Fisher"/>
+		<list gender="1" lookType="628" name="Fisher"/>
+	</outfit>
+
+	<outfit id="10" premium="yes" default="0">
+		<list gender="0" lookType="629" name="Hiker"/>
+		<list gender="1" lookType="630" name="Hiker"/>
+	</outfit>
+	
+	<outfit id="11" premium="yes" default="0">
+		<list gender="0" lookType="631" name="Mercenary"/>
+		<list gender="1" lookType="632" name="Mercenary"/>
+	</outfit>
+	
+	<outfit id="12" premium="yes" default="0">
+		<list gender="0" lookType="633" name="Rapper"/>
+		<list gender="1" lookType="634" name="Rapper"/>
+	</outfit>
+	
+	<outfit id="13" premium="yes" default="0" addons="3">
+		<list gender="0" lookType="635" name="Oriental"/>
+		<list gender="1" lookType="636" name="Oriental"/>
+	</outfit>
+	
+	<outfit id="14" premium="yes" default="0">
+		<list gender="0" lookType="637" name="Rocket"/>
+		<list gender="1" lookType="638" name="Rocket"/>
+	</outfit>
+	<!-- HALLOWEEN -->
+	<outfit id="15" premium="no" default="0">
+		<list gender="0" lookType="886" name="Skull"/>
+		<list gender="1" lookType="887" name="Frankenstein"/>
+	</outfit>
+	<outfit id="16" premium="no" default="0">
+		<list gender="0" lookType="888" name="Witch"/>
+		<list gender="1" lookType="889" name="Mummy"/>
+	</outfit>
+	<!-- CHRISTMAS -->
+	<outfit id="17" premium="no" default="0">
+		<list gender="0" lookType="891" name="Christmas #1"/>
+		<list gender="1" lookType="892" name="Christmas #1"/>
+	</outfit>
+	<outfit id="18" premium="no" default="0">
+		<list gender="0" lookType="893" name="Christmas #2"/>
+		<list gender="1" lookType="894" name="Christmas #2"/>
+	</outfit>
+	<!-- MASTERY -->
+	<outfit id="19" premium="no" default="0">
+		<list gender="0" lookType="906" name="Blaze #1"/>
+		<list gender="1" lookType="907" name="Blaze #1"/>
+	</outfit>
+	<outfit id="20" premium="no" default="0">
+		<list gender="0" lookType="908" name="Hurricane #1"/>
+		<list gender="1" lookType="909" name="Hurricane #1"/>
+	</outfit>
+	<outfit id="21" premium="no" default="0">
+		<list gender="0" lookType="910" name="Voltagic #1"/>
+		<list gender="1" lookType="911" name="Voltagic #1"/>
+	</outfit>
+	<outfit id="22" premium="no" default="0">
+		<list gender="0" lookType="912" name="Spectrum #1"/>
+		<list gender="1" lookType="913" name="Spectrum #1"/>
+	</outfit>
+	<outfit id="23" premium="no" default="0">
+		<list gender="0" lookType="914" name="Vital #1"/>
+		<list gender="1" lookType="915" name="Vital #1"/>
+	</outfit>
+	<outfit id="24" premium="no" default="0">
+		<list gender="0" lookType="916" name="Gaia #1"/>
+		<list gender="1" lookType="917" name="Gaia #1"/>
+	</outfit>
+	<outfit id="25" premium="no" default="0">
+		<list gender="0" lookType="918" name="Avalanche #1"/>
+		<list gender="1" lookType="919" name="Avalanche #1"/>
+	</outfit>
+	<outfit id="26" premium="no" default="0">
+		<list gender="0" lookType="920" name="Heremit #1"/>
+		<list gender="1" lookType="921" name="Heremit #1"/>
+	</outfit>
+	<outfit id="27" premium="no" default="0">
+		<list gender="0" lookType="922" name="Zen #1"/>
+		<list gender="1" lookType="923" name="Zen #1"/>
+	</outfit>
+	<outfit id="28" premium="no" default="0">
+		<list gender="0" lookType="924" name="Blaze #2"/>
+		<list gender="1" lookType="925" name="Blaze #2"/>
+	</outfit>
+	<outfit id="29" premium="no" default="0">
+		<list gender="0" lookType="926" name="Hurricane #2"/>
+		<list gender="1" lookType="927" name="Hurricane #2"/>
+	</outfit>
+	<outfit id="30" premium="no" default="0">
+		<list gender="0" lookType="928" name="Voltagic #2"/>
+		<list gender="1" lookType="929" name="Voltagic #2"/>
+	</outfit>
+	<outfit id="31" premium="no" default="0">
+		<list gender="0" lookType="930" name="Spectrum #2"/>
+		<list gender="1" lookType="931" name="Spectrum #2"/>
+	</outfit>
+	<outfit id="32" premium="no" default="0">
+		<list gender="0" lookType="932" name="Vital #2"/>
+		<list gender="1" lookType="933" name="Vital #2"/>
+	</outfit>
+	<outfit id="33" premium="no" default="0">
+		<list gender="0" lookType="934" name="Gaia #2"/>
+		<list gender="1" lookType="935" name="Gaia #2"/>
+	</outfit>
+	<outfit id="34" premium="no" default="0">
+		<list gender="0" lookType="936" name="Avalanche #2"/>
+		<list gender="1" lookType="937" name="Avalanche #2"/>
+	</outfit>
+	<outfit id="35" premium="no" default="0">
+		<list gender="0" lookType="938" name="Heremit #2"/>
+		<list gender="1" lookType="939" name="Heremit #2"/>
+	</outfit>
+	<outfit id="36" premium="no" default="0">
+		<list gender="0" lookType="940" name="Zen #2"/>
+		<list gender="1" lookType="941" name="Zen #2"/>
+	</outfit>
+
+	<outfit id="37" premium="no" default="0">
+		<list gender="0" lookType="1184" name="Catcher"/>
+		<list gender="1" lookType="1185" name="Catcher"/>
+	</outfit>
+	<outfit id="38" premium="no" default="0">
+		<list gender="0" lookType="1213" name="Naughty Devil"/>
+		<list gender="1" lookType="1214" name="Skeleton"/>
+	</outfit>
+	<outfit id="39" premium="no" default="0">
+		<list gender="0" lookType="1215" name="Dark Witch"/>
+		<list gender="1" lookType="1216" name="Vampire"/>
+	</outfit>
+	<outfit id="40" premium="no" default="0">
+		<list gender="0" lookType="1200" name="Master Trainer"/>
+		<list gender="1" lookType="1201" name="Master Trainer"/>
+	</outfit>
+	<outfit id="41" premium="no" default="0">
+		<list gender="0" lookType="1223" name="Christmas #3"/>
+		<list gender="1" lookType="1224" name="Christmas #3"/>
+	</outfit>
+	<outfit id="42" premium="no" default="0">
+		<list gender="0-3" lookType="1250" name="Poke Maniac"/>
+	</outfit>
+	<outfit id="43" premium="no" default="0">
+		<list gender="0" lookType="1251" name="Easter #1"/>
+		<list gender="1" lookType="1252" name="Easter #1"/>
+	</outfit>
+	<outfit id="44" premium="no" default="0">
+		<list gender="0" lookType="1180" name="Researcher"/>
+		<list gender="1" lookType="1181" name="Researcher"/>
+	</outfit>
+	<outfit id="45" premium="no" default="0">
+		<list gender="0" lookType="1194" name="Hunter"/>
+		<list gender="1" lookType="1195" name="Hunter"/>
+	</outfit>
+	<outfit id="46" premium="no" default="0">
+		<list gender="0" lookType="1294" name="Phantomaniac"/>
+		<list gender="1" lookType="1294" name="Phantomaniac"/>
+	</outfit>
+	<outfit id="47" premium="no" default="0">
+		<list gender="0" lookType="1296" name="Halloween Monster"/>
+		<list gender="1" lookType="1295" name="Halloween Monster"/>
+	</outfit>
+	<outfit id="48" premium="no" default="0">
+		<list gender="0" lookType="1192" name="Champion"/>
+		<list gender="1" lookType="1193" name="Champion"/>
+	</outfit>
+	<outfit id="49" premium="no" default="0">
+		<list gender="0" lookType="1202" name="Ranger"/>
+		<list gender="1" lookType="1203" name="Ranger"/>
+	</outfit>
+	<outfit id="50" premium="no" default="0">
+		<list gender="0-3" lookType="1370" name="Shiny Poke Maniac"/>
+	</outfit>
+	<outfit id="51" premium="no" default="1" quest="7065">
+		<list gender="0" lookType="1302" name="Epic"/>
+		<list gender="1" lookType="1303" name="Epic"/>
+	</outfit>
+	<outfit id="52" premium="no" default="0">
+		<list gender="0" lookType="1322" name="Explorer"/>
+		<list gender="1" lookType="1321" name="Explorer"/>
+	</outfit>
+	<outfit id="53" premium="no" default="0">
+		<list gender="0" lookType="1380" name="Business"/>
+		<list gender="1" lookType="1381" name="Business"/>
+	</outfit>
+	<outfit id="54" premium="no" default="0">
+		<list gender="0" lookType="1382" name="Bounty Researcher"/>
+		<list gender="1" lookType="1383" name="Bounty Researcher"/>
+	</outfit>
+	<outfit id="55" premium="no" default="0">
+		<list gender="0" lookType="1384" name="Rider"/>
+		<list gender="1" lookType="1385" name="Rider"/>
+	</outfit>
+	<outfit id="56" premium="no" default="0">
+		<list gender="0" lookType="1386" name="Wak Lady"/>
+		<list gender="1" lookType="1387" name="Wak Lord"/>
+	</outfit>
+	<outfit id="57" premium="no" default="0">
+		<list gender="0" lookType="1388" name="Halloween #6"/>
+		<list gender="1" lookType="1389" name="Halloween #6"/>
+	</outfit>
+	<outfit id="58" premium="no" default="0">
+		<list gender="0" lookType="1390" name="Halloween #7"/>
+		<list gender="1" lookType="1391" name="Halloween #7"/>
+	</outfit>
+	<outfit id="59" premium="no" default="0">
+		<list gender="0" lookType="1404" name="Santa Grinch"/>
+		<list gender="1" lookType="1404" name="Santa Grinch"/>
+	</outfit>
+	<outfit id="60" premium="no" default="0">
+		<list gender="0" lookType="1428" name="Elfin"/>
+		<list gender="1" lookType="1428" name="Elfin"/>
+	</outfit>
+	<outfit id="61" premium="no" default="0">
+		<list gender="0" lookType="1405" name="Helper Grinch"/>
+		<list gender="1" lookType="1405" name="Helper Grinch"/>
+	</outfit>
+	<outfit id="62" premium="no" default="0">
+		<list gender="0" lookType="1703" name="Super Hero"/>
+		<list gender="1" lookType="1704" name="Super Hero"/>
+	</outfit>
+	<!-- HALLOWEEN -->
+	<outfit id="63" premium="no" default="0">
+		<list gender="0" lookType="1705" name="DarkBlood"/>
+		<list gender="1" lookType="1706" name="DarkBlood"/>
+	</outfit>
+	<outfit id="64" premium="no" default="0">
+		<list gender="0" lookType="1707" name="Pirate #1"/>
+		<list gender="1" lookType="1708" name="Pirate #1"/>
+	</outfit>
+	<outfit id="65" premium="no" default="0">
+		<list gender="0" lookType="1709" name="Pirate #2"/>
+		<list gender="1" lookType="1710" name="Pirate #2"/>
+	</outfit>
+	<outfit id="66" premium="no" default="0">
+		<list gender="0" lookType="1735" name="Defender"/>
+		<list gender="1" lookType="1736" name="Defender"/>
+	</outfit>
+	<outfit id="67" premium="no" default="0">
+		<list gender="0" lookType="1737" name="Pirate #3"/>
+		<list gender="1" lookType="1738" name="Pirate #3"/>
+	</outfit>
+	<outfit id="68" premium="no" default="0">
+		<list gender="0" lookType="1739" name="Pirate #4"/>
+		<list gender="1" lookType="1740" name="Pirate #4"/>
+	</outfit>
+
+	<outfit id="69" premium="no" default="0">
+		<list gender="0" lookType="1138" name="Blaze #3"/>
+		<list gender="1" lookType="1132" name="Blaze #3"/>
+	</outfit>
+	<outfit id="70" premium="no" default="0">
+		<list gender="0" lookType="1139" name="Hurricane #3"/>
+		<list gender="1" lookType="1131" name="Hurricane #3"/>
+	</outfit>
+	<outfit id="71" premium="no" default="0">
+		<list gender="0" lookType="1143" name="Voltagic #3"/>
+		<list gender="1" lookType="1128" name="Voltagic #3"/>
+	</outfit>
+	<outfit id="72" premium="no" default="0">
+		<list gender="0" lookType="1136" name="Spectrum #3"/>
+		<list gender="1" lookType="1135" name="Spectrum #3"/>
+	</outfit>
+	<outfit id="73" premium="no" default="0">
+		<list gender="0" lookType="1137" name="Vital #3"/>
+		<list gender="1" lookType="2538" name="Vital #3"/>
+	</outfit>
+	<outfit id="74" premium="no" default="0">
+		<list gender="0" lookType="1140" name="Gaia #3"/>
+		<list gender="1" lookType="1130" name="Gaia #3"/>
+	</outfit>
+	<outfit id="75" premium="no" default="0">
+		<list gender="0" lookType="1144" name="Avalanche #3"/>
+		<list gender="1" lookType="1129" name="Avalanche #3"/>
+	</outfit>
+	<outfit id="76" premium="no" default="0">
+		<list gender="0" lookType="1142" name="Heremit #3"/>
+		<list gender="1" lookType="1134" name="Heremit #3"/>
+	</outfit>
+	<outfit id="77" premium="no" default="0">
+		<list gender="0" lookType="1141" name="Zen #3"/>
+		<list gender="1" lookType="1133" name="Zen #3"/>
+	</outfit>
+	<outfit id="78" premium="no" default="0">
+		<list gender="0" lookType="2560" name="Azurill Costume"/>
+		<list gender="1" lookType="2554" name="Blastoise Costume"/>
+	</outfit>
+	<outfit id="79" premium="no" default="0">
+		<list gender="0" lookType="2553" name="Pikachu Costume"/>
+		<list gender="1" lookType="2548" name="Charizard Costume"/>
+	</outfit>
+<!-- LOJA POKECENTER -->
+
+	<!-- Homem = 1, Mulher = 0, Todos = 0-3 -->
+	<outfit id="80" quest="8066">
+		<list gender="1" lookType="540" name="Ash ketchum"/>
+	</outfit>
+	<outfit id="81" quest="8067">
+		<list gender="1" lookType="2622" name="Brock"/>
+	</outfit>
+	<outfit id="82" quest="8068">
+		<list gender="1" lookType="2623" name="Steven stone"/>
+	</outfit>
+	<outfit id="83" quest="8069">
+		<list gender="1" lookType="2624" name="ritchie"/>
+	</outfit>
+	<outfit id="84" quest="8070">
+		<list gender="1" lookType="2625" name="Tracey sketchit"/>
+	</outfit>
+	<outfit id="85" quest="8071">
+		<list gender="1" lookType="548" name="Bruno"/>
+	</outfit>
+	<outfit id="86" quest="8072">
+		<list gender="1" lookType="551" name="James"/>
+	</outfit>
+	<outfit id="87" quest="8073">
+		<list gender="1" lookType="2627" name="Butch"/>
+	</outfit>
+	<outfit id="88" quest="8074">
+		<list gender="1" lookType="2628" name="Lycanroc cosplay"/>
+	</outfit>
+	<outfit id="89" quest="8075">
+		<list gender="1" lookType="2683" name="Jolteon cosplay"/>
+	</outfit>
+	<outfit id="90" quest="8076">
+		<list gender="1" lookType="2630" name="Vaporeon cosplay"/>
+	</outfit>
+	<outfit id="91" quest="8077">
+		<list gender="1" lookType="2672" name="Umbreon cosplay"/>
+	</outfit>
+	<outfit id="92" quest="8078">
+		<list gender="1" lookType="2684" name="Luxray cosplay"/>
+	</outfit>
+	<outfit id="93" quest="8079">
+		<list gender="1" lookType="2555" name="Venusaur cosplay"/>
+	</outfit>
+	<outfit id="94" quest="8080">
+		<list gender="1" lookType="2554" name="Blastoise cosplay"/>
+	</outfit>
+	<outfit id="95" quest="8081">
+		<list gender="1" lookType="2548" name="Charizard cosplay"/>
+	</outfit>
+	<outfit id="96" quest="8082">
+		<list gender="1" lookType="2556" name="Gengar cosplay"/>
+	</outfit>
+	<outfit id="97" quest="8083">
+		<list gender="1" lookType="2682" name="Demon slayer"/>
+	</outfit>
+	<outfit id="98" quest="8084">
+		<list gender="1" lookType="2677" name="Blue exorcist"/>
+	</outfit>
+	<outfit id="99" quest="8085">
+		<list gender="1" lookType="1308" name="Homem de ferro"/>
+	</outfit>
+	<outfit id="100" quest="8086">
+		<list gender="1" lookType="1307" name="Tony stark"/>
+	</outfit>
+	<outfit id="101" quest="8087">
+		<list gender="1" lookType="2674" name="Rei do norte"/>
+	</outfit>
+	<outfit id="102" quest="8088">
+		<list gender="1" lookType="2681" name="Coringa"/>
+	</outfit>
+	<outfit id="103" quest="8089">
+		<list gender="1" lookType="2670" name="Deadpool"/>
+	</outfit>
+	<outfit id="104" quest="8090">
+		<list gender="1" lookType="3731" name="A forma"/>
+	</outfit>
+	<outfit id="105" quest="8091">
+		<list gender="1" lookType="2663" name="Bruxo"/>
+	</outfit>
+	<outfit id="106" quest="8092">
+		<list gender="1" lookType="2539" name="Cirurgião da morte"/>
+	</outfit>
+	<outfit id="107" quest="8093">
+		<list gender="1" lookType="1306" name="Cozinheiro"/>
+	</outfit>
+	<outfit id="108" quest="8094">
+		<list gender="1" lookType="2581" name="Donquixote doflamin"/>
+	</outfit>
+	<outfit id="109" quest="8095">
+		<list gender="1" lookType="1189" name="Fantasy"/>
+	</outfit>
+	<outfit id="110" quest="8096">
+		<list gender="1" lookType="2678" name="Chef jacquin"/>
+	</outfit>
+	<outfit id="111" quest="8097">
+		<list gender="1" lookType="2679" name="Debonair jacquin"/>
+	</outfit>
+	<outfit id="112" quest="8098">
+		<list gender="1" lookType="2680" name="Gangster jacquin"/>
+	</outfit>
+	<outfit id="113" quest="8099">
+		<list gender="1" lookType="2669" name="Doutor"/>
+	</outfit>
+	<outfit id="114" quest="8100">
+		<list gender="1" lookType="2667" name="Guitarrista"/>
+	</outfit>
+	<outfit id="115" quest="8101">
+		<list gender="1" lookType="1209" name="Inquilino"/>
+	</outfit>
+	<outfit id="116" quest="8102">
+		<list gender="1" lookType="1327" name="Halloween"/>
+	</outfit>
+	<outfit id="117" quest="8103">
+		<list gender="1" lookType="2648" name="Jigsaw"/>
+	</outfit>
+	<outfit id="118" quest="8104">
+		<list gender="1" lookType="2649" name="Jigsaw triciclo"/>
+	</outfit>
+	<outfit id="119" quest="8105">
+		<list gender="1" lookType="2671" name="Lado escuro"/>
+	</outfit>
+	<outfit id="120" quest="8106">
+		<list gender="1" lookType="1391" name="Palhaço"/>
+	</outfit>
+	<outfit id="121" quest="8107">
+		<list gender="1" lookType="1389" name="Panico"/>
+	</outfit>
+	<outfit id="122" quest="8108">
+		<list gender="1" lookType="2664" name="Ninja mascarado"/>
+	</outfit>
+	<outfit id="123" quest="8109">
+		<list gender="1" lookType="2686" name="Tutankhamoak"/>
+	</outfit>
+	<outfit id="124" quest="8110">
+		<list gender="1" lookType="2639" name="Ordem lugia aprendiz"/>
+	</outfit>
+	<outfit id="125" quest="8111">
+		<list gender="1" lookType="2641" name="Ordem lugia guardião"/>
+	</outfit>
+	<outfit id="126" quest="8112">
+		<list gender="1" lookType="2635" name="Treinador campeão"/>
+	</outfit>
+	<outfit id="127" quest="8113">
+		<list gender="1" lookType="2636" name="Treinador campeão"/>
+	</outfit>
+	<outfit id="128" quest="8114">
+		<list gender="1" lookType="2642" name="Modelo"/>
+	</outfit>
+	<outfit id="129" quest="8115">
+		<list gender="1" lookType="2657" name="Motociclista"/>
+	</outfit>
+	<outfit id="130" quest="8116">
+		<list gender="1" lookType="2658" name="Motociclista"/>
+	</outfit>
+	<outfit id="131" quest="8117">
+		<list gender="1" lookType="2660" name="Motociclista"/>
+	</outfit>
+	<outfit id="132" quest="8118">
+		<list gender="1" lookType="2659" name="Motociclista"/>
+	</outfit>
+	<outfit id="133" quest="8119">
+		<list gender="1" lookType="2632" name="Padre"/>
+	</outfit>
+	<outfit id="134" quest="8120">
+		<list gender="1" lookType="1321" name="Aventureiro"/>
+	</outfit>
+	<outfit id="135" quest="8121">
+		<list gender="1" lookType="2644" name="Barman"/>
+	</outfit>
+	<outfit id="136" quest="8122">
+		<list gender="1" lookType="2549" name="Chefe"/>
+	</outfit>
+	<outfit id="137" quest="8123">
+		<list gender="1" lookType="1197" name="Fraternidade"/>
+	</outfit>
+	<outfit id="138" quest="8124">
+		<list gender="1" lookType="2551" name="Hacker"/>
+	</outfit>
+	<outfit id="139" quest="8125">
+		<list gender="1" lookType="2544" name="Hippie"/>
+	</outfit>
+	<outfit id="140" quest="8126">
+		<list gender="1" lookType="2547" name="Mestre de karate"/>
+	</outfit>
+	<outfit id="141" quest="8127">
+		<list gender="1" lookType="2541" name="Karate"/>
+	</outfit>
+	<outfit id="142" quest="8128">
+		<list gender="1" lookType="2577" name="Lutador de rua"/>
+	</outfit>
+	<outfit id="143" quest="8129">
+		<list gender="1" lookType="1314" name="Mecanico"/>
+	</outfit>
+	<outfit id="144" quest="8130">
+		<list gender="1" lookType="2653" name="Páscoa de ouro"/>
+	</outfit>
+	<outfit id="145" quest="8131">
+		<list gender="1" lookType="2666" name="Pokemaster"/>
+	</outfit>
+	<outfit id="146" quest="8132">
+		<list gender="1" lookType="2685" name="Treinador"/>
+	</outfit>
+	<outfit id="147" quest="8133">
+		<list gender="1" lookType="2638" name="Treinador especial"/>
+	</outfit>
+	<outfit id="148" quest="8134">
+		<list gender="1" lookType="2647" name="Treinador fitness"/>
+	</outfit>
+	<outfit id="149" quest="8135">
+		<list gender="1" lookType="2650" name="Vampiro"/>
+	</outfit>
+	<outfit id="150" quest="8136">
+		<list gender="1" lookType="2654" name="Viajante"/>
+	</outfit>
+	<outfit id="151" quest="8137">
+		<list gender="1" lookType="1358" name="Vingança"/>
+	</outfit>
+
+	<!-- FEMININO -->
+	<outfit id="152" quest="8138">
+		<list gender="0" lookType="542" name="Misty"/>
+	</outfit>
+	<outfit id="153" quest="8139">
+		<list gender="0" lookType="559" name="Oficial jenny"/>
+	</outfit>
+	<outfit id="154" quest="8140">
+		<list gender="0" lookType="550" name="Jessie"/>
+	</outfit>
+	<outfit id="155" quest="8141">
+		<list gender="0" lookType="2626" name="Cassidy"/>
+	</outfit>
+	<outfit id="156" quest="8142">
+		<list gender="0" lookType="2687" name="Harley quinn"/>
+	</outfit>
+	<outfit id="157" quest="8143">
+		<list gender="0" lookType="2553" name="Pikachu cosplay"/>
+	</outfit>
+	<outfit id="158" quest="8144">
+		<list gender="0" lookType="2560" name="Azumarill cosplay"/>
+	</outfit>
+	<outfit id="159" quest="8145">
+		<list gender="0" lookType="2631" name="Flareon cosplay"/>
+	</outfit>
+	<outfit id="160" quest="8146">
+		<list gender="0" lookType="2690" name="Glaceon cosplay"/>
+	</outfit>
+	<outfit id="161" quest="8147">
+		<list gender="0" lookType="2563" name="Meowth cosplay"/>
+	</outfit>
+	<outfit id="162" quest="8148">
+		<list gender="0" lookType="2629" name="Persian cosplay"/>
+	</outfit>
+	<outfit id="163" quest="8149">
+		<list gender="0" lookType="2691" name="Ninetales cosplay"/>
+	</outfit>
+	<outfit id="164" quest="8150">
+		<list gender="0" lookType="2693" name="Princesa das fadas"/>
+	</outfit>
+	<outfit id="165" quest="8151">
+		<list gender="0" lookType="2694" name="Rainha das fadas"/>
+	</outfit>
+	<outfit id="166" quest="8152">
+		<list gender="0" lookType="2673" name="Sylveon cosplay"/>
+	</outfit>
+	<outfit id="167" quest="8153">
+		<list gender="0" lookType="2543" name="Melody"/>
+	</outfit>
+	<outfit id="168" quest="8154">
+		<list gender="0" lookType="2692" name="Oni nezuko"/>
+	</outfit>
+	<outfit id="169" quest="8155">
+		<list gender="0" lookType="2651" name="Raposa de nove caldas"/>
+	</outfit>
+	<outfit id="170" quest="8156">
+		<list gender="0" lookType="1210" name="Adolescente"/>
+	</outfit>
+	<outfit id="171" quest="8157">
+		<list gender="0" lookType="2688" name="Cleopatra"/>
+	</outfit>
+	<outfit id="172" quest="8158">
+		<list gender="0" lookType="2661" name="Cynthia"/>
+	</outfit>
+	<outfit id="173" quest="8159">
+		<list gender="0" lookType="2583" name="Ensolarado"/>
+	</outfit>
+	<outfit id="174" quest="8160">
+		<list gender="0" lookType="1188" name="Fantasy"/>
+	</outfit>
+	<outfit id="175" quest="8161">
+		<list gender="0" lookType="2542" name="Lutadora oriental"/>
+	</outfit>
+	<outfit id="176" quest="8162">
+		<list gender="0" lookType="2662" name="Bruxa"/>
+	</outfit>
+	<outfit id="177" quest="8163">
+		<list gender="0" lookType="1213" name="Capetinha"/>
+	</outfit>
+	<outfit id="178" quest="8164">
+		<list gender="0" lookType="1326" name="Fantasma"/>
+	</outfit>
+	<outfit id="179" quest="8165">
+		<list gender="0" lookType="2695" name="Garota super-vilã"/>
+	</outfit>
+	<outfit id="180" quest="8166">
+		<list gender="0" lookType="2675" name="Mãe dos dragões"/>
+	</outfit>
+	<outfit id="181" quest="8167">
+		<list gender="0" lookType="2675" name="Ordem lugia aprendiz"/>
+	</outfit>
+	<outfit id="182" quest="8168">
+		<list gender="0" lookType="1388" name="Assassina"/>
+	</outfit>
+	<outfit id="183" quest="8169">
+		<list gender="0" lookType="2645" name="Atriz"/>
+	</outfit>
+	<outfit id="184" quest="8170">
+		<list gender="0" lookType="2634" name="Bella florida"/>
+	</outfit>
+	<outfit id="185" quest="8171">
+		<list gender="0" lookType="1251" name="Coelhinha"/>
+	</outfit>
+	<outfit id="186" quest="8172">
+		<list gender="0" lookType="2689" name="Exploradora"/>
+	</outfit>
+	<outfit id="187" quest="8173">
+		<list gender="0" lookType="1194" name="Fraternidade"/>
+	</outfit>
+	<outfit id="188" quest="8174">
+		<list gender="0" lookType="2633" name="Garota possuida"/>
+	</outfit>
+	<outfit id="189" quest="8175">
+		<list gender="0" lookType="2552" name="Longcape"/>
+	</outfit>
+	<outfit id="190" quest="8176">
+		<list gender="0" lookType="1313" name="Mecanica"/>
+	</outfit>
+	<outfit id="191" quest="8177">
+		<list gender="0" lookType="2643" name="Modelo"/>
+	</outfit>
+	<outfit id="192" quest="8178">
+		<list gender="0" lookType="1390" name="Morceguinha"/>
+	</outfit>
+	<outfit id="193" quest="8179">
+		<list gender="0" lookType="2652" name="Páscoa de ouro"/>
+	</outfit>
+	<outfit id="194" quest="8180">
+		<list gender="0" lookType="2578" name="Princesa"/>
+	</outfit>
+	<outfit id="195" quest="8181">
+		<list gender="0" lookType="2580" name="Menida da escola"/>
+	</outfit>
+	<outfit id="196" quest="8182">
+		<list gender="0" lookType="2656" name="Motociclista"/>
+	</outfit>
+	<outfit id="197" quest="8183">
+		<list gender="0" lookType="2668" name="Playmate"/>
+	</outfit>
+	<outfit id="198" quest="8184">
+		<list gender="0" lookType="2665" name="Pokemaster"/>
+	</outfit>
+	<outfit id="199" quest="8185">
+		<list gender="0" lookType="2646" name="Popstar"/>
+	</outfit>
+	<outfit id="200" quest="8186">
+		<list gender="0" lookType="2582" name="Top de biquini"/>
+	</outfit>
+	<outfit id="201" quest="8187">
+		<list gender="0" lookType="2676" name="Treinadora"/>
+	</outfit>
+	<outfit id="202" quest="8188">
+		<list gender="0" lookType="2637" name="Treinadora especial"/>
+	</outfit>
+	<outfit id="203" quest="8189">
+		<list gender="0" lookType="1198" name="Treinadora fitness"/>
+	</outfit>
+	<outfit id="204" quest="8190">
+		<list gender="0" lookType="2557" name="Vaqueira"/>
+	</outfit>
+	<outfit id="205" quest="8191">
+		<list gender="0" lookType="2655" name="Viajante"/>
+	</outfit>
+	<outfit id="206" quest="8192">
+		<list gender="0" lookType="2540" name="Senhora pirata"/>
+	</outfit>
+	<outfit id="207" quest="8193">
+		<list gender="0" lookType="2579" name="Rua"/>
+	</outfit>
+	<outfit id="208" quest="8194">
+		<list gender="0-3" lookType="2584" name="Hot-Dog"/>
+	</outfit>
+
+	<!-- Homem = 1, Mulher = 0, Todos = 0-3 -->
+<!-- LOJA POKECENTER -->
+</outfits>

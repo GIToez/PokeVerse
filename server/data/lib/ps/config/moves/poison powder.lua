@@ -1,0 +1,20 @@
+MOVES["Poison Powder"] = {
+    description = "Poison Powder poisons the target.",
+    category = MOVE_CATEGORY.STATUS,
+    clientIconId = 11798,
+    iconId = 13424,
+    dType = DAMAGE_TYPE_POISON,
+    functionName = "PoisonPowder",
+    type = SKILLS_TYPES.AREA,
+    -- requiredEnergy = 30,
+    requiredEnergy = 0,
+    requiredLevel = 10,
+    damage = 0,
+    damageType = ELEMENT_POISON,
+    effect = EFFECT_POISON_GAS_FOUR,
+    areaEffect = EFFECT_PURPLE_POWDER,
+    areaName = "bigArea",
+    area = bigArea,
+    cooldownTime = 20,
+    cooldownStorage = 15107
+}

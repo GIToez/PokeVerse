@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Normal Dummy" nameDescription="an Dummy" race="blood" experience="0" speed="0" manacost="0" minLevel="1000" maxLevel="1000" sex="2">
+	<look type="2589" head="0" body="0" legs="0" feet="0" corpse="0"/>
+	<health now="990000" max="990000"/>
+	<type first="1"/>
+	<strategy attack="0" defense="100"/>
+	<flags>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag hostile="0"/>
+		<flag illusionable="1"/>
+		<flag convinceable="1"/>
+		<flag pushable="1"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="0"/>
+		<flag targetdistance="1"/>
+		<flag staticattack="0"/>
+		<flag runonhealth="999999"/>
+	</flags>
+	<attacks>
+		<attack name="Moves" interval="500"/>
+		<attack name="Berries" inverval="60000" chance="1" target="1"/>
+	</attacks>
+	<defenses armor="0" defense="100">
+	<defense name="healing" interval="1800000" chance="100000" min="990000" max="990000"/>
+	</defenses>
+	<elements>
+	</elements>
+</monster>

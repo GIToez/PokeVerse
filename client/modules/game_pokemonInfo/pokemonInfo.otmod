@@ -1,0 +1,9 @@
+Module
+  name: game_pokemonInfo
+  description: Veja as informações de seu pokemon.
+  author: Ryukiimaru and Walox
+  website: https://www.facebook.com/systemyart
+  sandboxed: true
+  scripts: [ pokemonInfo ]
+  @onLoad: init()
+  @onUnload: terminate()

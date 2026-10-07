@@ -1,0 +1,442 @@
+TitleClas < UIButton
+  id: TitleClas
+  size: 101 26
+  image-source: images/clas/title/clas
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 29
+  margin-left: 30
+
+//lista de depositos
+ClasListPanel < ScrollablePanel
+  id: ClasListPanel
+  size: 710 400
+  //background-color: black
+  anchors.left: parent.left
+  anchors.bottom: parent.bottom
+  margin-left: 25
+  margin-bottom: 50
+  horizontal-scrollbar: ClasListScrollBar
+
+ClasListScrollBar < HorizontalScrollBar
+  id: ClasListScrollBar
+  anchors.top: ClasListPanel.top
+  anchors.bottom: ClasListPanel.bottom
+  anchors.left: ClasListPanel.left
+  anchors.right: ClasListPanel.right
+  margin-right: -14
+  margin-left: -13
+  margin-top: 385
+  margin-bottom: 1
+  opacity: 0.7
+  step: 48
+  pixels-scroll: true
+
+PanelGaia < UIWidget
+  id: PanelGaia
+  size: 151 362
+  image-source: images/clas/background/gaia
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 3
+  @onClick: doShowGaia()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/gaia
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Gaia #1\nRank 4: Todos alimentos com regeneração de HP maiores e Energy maiores\nRank 5: Outfit Gaia #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelAvalanche < UIWidget
+  id: PanelAvalanche
+  size: 151 362
+  image-source: images/clas/background/avalanche
+  anchors.left: PanelGaia.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowAvalanche()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/avalanche
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Avalanche #1\nRank 4: Velocidade extra no Surf e Dive,\n	Todos os moves do tipo Ice que infrigem dano com chance de deixar\no oponente com o status Freeze\nRank 5: Outfit Avalanche #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelSpectrum < UIWidget
+  id: PanelSpectrum
+  size: 151 362
+  image-source: images/clas/background/spectrum
+  anchors.left: PanelAvalanche.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowSpectrum()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/spectrum
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Spectrum #1\nRank 4: Status Poison com (100 Por Cento) a mais de dano\nRank 5: Outfit Spectrum #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelHeremit < UIWidget
+  id: PanelHeremit
+  size: 151 362
+  image-source: images/clas/background/heremit
+  anchors.left: PanelSpectrum.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowHeremit()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/heremit
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Heremit #1\nRank 4: Status Low Accuracy com 5 segundos a mais de duração\nRank 5: Outfit Heremit #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelZen < UIWidget
+  id: PanelZen
+  size: 151 362
+  image-source: images/clas/background/zen
+  anchors.left: PanelHeremit.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowZen()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/zen
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Zen #1\nRank 4: Menor intervalo no uso das habilidades Teleport e Blink\nRank 5: Outfit Zen #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelVoltagic < UIWidget
+  id: PanelVoltagic
+  size: 151 362
+  image-source: images/clas/background/voltagic
+  anchors.left: PanelZen.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowVoltagic()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/voltagic
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Voltagic #1\nRank 4: Maior regeneração de energia passiva(sem o uso de comida),\nStatus Paralyze com 3 segundos a mais de duração\nRank 5: Outfit Voltagic #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelBlaze < UIWidget
+  id: PanelBlaze
+  size: 151 362
+  image-source: images/clas/background/blaze
+  anchors.left: PanelVoltagic.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowBlaze()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/blaze
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Blaze #1\nRank 4: Status Burn com (100 Por Cento) a mais de dano\nRank 5: Outfit Blaze #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelHurricane < UIWidget
+  id: PanelHurricane
+  size: 151 362
+  image-source: images/clas/background/hurricane
+  anchors.left: PanelBlaze.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowHurricane()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/hurricane
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Hurricane #1\nRank 4: Velocidade extra no Fly,\nUso da habilidade Find sem custo de energia,\nChance de evasão em moves. (Chance de escapar de algum golpe)\nRank 5: Outfit Hurricane #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+PanelVital < UIWidget
+  id: PanelVital
+  size: 151 362
+  image-source: images/clas/background/vital
+  anchors.left: PanelHurricane.right
+  anchors.top: parent.top
+  margin-top: 5
+  margin-left: 5
+  @onClick: doShowVital()
+  opacity: 0.9
+  $hover:
+    opacity: 1
+  UIButton
+    size: 38 38
+    image-source: images/clas/icons/vital
+    !tooltip: tr('Vantagens extras do clã:\nRank 1: Outfit Vital #1\nRank 4: Velocidade extra no Ride, Moves que funcionam\ncomo buffs com 3 segundos a mais de duração\nRank 5: Outfit Vital #2')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 1
+    margin-right: 1
+    opacity: 0.7
+    $hover:
+      opacity: 1
+
+PanelSelectedClas < UIWidget
+  id: PanelSelectedClas
+  size: 720 470
+  padding: 0
+  visible: false
+  anchors.left: parent.left
+  anchors.bottom: parent.bottom
+  margin-left: 22
+  margin-bottom: 17
+  UIWidget
+    id: Background
+    size: 137 322
+    image-source: images/clas/background/selected/gaia
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 60
+    margin-left: 70
+  UIWidget
+    id: BigWindow
+    size: 386 124
+    image-source: images/clas/BigWindow
+    anchors.top: Background.top
+    anchors.left: Background.right
+    margin-top: 35
+    margin-left: 25
+    UIWidget
+      id: Text_desc
+      size: 386 58
+      image-source: images/clas/texts/gaia
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 15
+    UIWidget
+      id: Desc_Types
+      size: 99 16
+      image-source: images/clas/texts/type_dominance
+      anchors.top: Text_desc.bottom
+      anchors.centerIn: parent
+      margin-top: 15
+
+    UIWidget
+      id: Type_Solo
+      size: 20 21
+      visible: false
+      anchors.top: Desc_Types.bottom
+      anchors.centerIn: parent
+      margin-top: 37
+      opacity: 0.8
+      $hover:
+        opacity: 1
+    UIWidget
+      id: Type_First
+      size: 20 21
+      visible: false
+      anchors.top: Desc_Types.bottom
+      anchors.centerIn: parent
+      margin-top: 37
+      margin-left: -10
+      opacity: 0.8
+      $hover:
+        opacity: 1
+    UIWidget
+      id: Type_Second
+      size: 20 21
+      visible: false
+      anchors.top: Type_First.top
+      anchors.left: Type_First.right
+      margin-left: 5
+      opacity: 0.8
+      $hover:
+        opacity: 1
+
+  UIWidget
+    id: SmallWindow_First
+    size: 180 150
+    image-source: images/clas/SmallWindow
+    anchors.bottom: Background.bottom
+    anchors.left: Background.right
+    margin-bottom: 1
+    margin-left: 32
+    $hover:
+      image-source: images/clas/SmallWindow_hover
+    $pressed:
+      image-source: images/clas/SmallWindow_presed
+    UIWidget
+      id: Cla_icon
+      size: 38 38
+      phantom: true
+      image-source: images/clas/icons/gaia
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: -40
+    UIWidget
+      id: Cla_RankName
+      size: 179 15
+      phantom: true
+      image-source: images/clas/texts/rank_5/gaia
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: -7
+    UIWidget
+      id: Cla_Bonus
+      size: 94 26
+      phantom: true
+      image-source: images/clas/texts/bonus_20
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: 17
+    UIWidget
+      id: Cla_Value
+      size: 42 22
+      phantom: true
+      image-source: images/clas/80
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: 50
+
+  UIWidget
+    id: SmallWindow_Second
+    size: 180 150
+    image-source: images/clas/SmallWindow
+    anchors.bottom: Background.bottom
+    anchors.left: SmallWindow_First.right
+    margin-bottom: 1
+    margin-left: 10
+    $hover:
+      image-source: images/clas/SmallWindow_hover
+    $pressed:
+      image-source: images/clas/SmallWindow_presed
+    UIWidget
+      id: Cla_icon
+      size: 38 38
+      phantom: true
+      image-source: images/clas/icons/gaia
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: -40
+    UIWidget
+      id: Cla_RankName
+      size: 179 15
+      phantom: true
+      image-source: images/clas/texts/rank_1/gaia
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: -7
+    UIWidget
+      id: Cla_Bonus
+      size: 94 26
+      phantom: true
+      image-source: images/clas/texts/bonus_1
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: 17
+    UIWidget
+      id: Cla_Value
+      size: 42 22
+      phantom: true
+      image-source: images/clas/60
+      anchors.top: parent.top
+      anchors.centerIn: parent
+      margin-top: 50
+
+  UIButton
+    id: Voltar
+    size: 99 28
+    image-source: images/clas/voltar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 50
+    margin-right: 110
+    @onClick: doReturnSelection()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+  UIWidget
+    id: Title
+    size: 351 36
+    image-source: images/clas/background/title/gaia
+    anchors.top: BigWindow.top
+    anchors.left: BigWindow.left
+    margin-top: -37
+    margin-left: 17
+
+Panel
+  PanelSelectedClas
+  TitleClas
+  ClasListPanel
+    PanelGaia
+    PanelAvalanche
+    PanelSpectrum
+    PanelHeremit
+    PanelZen
+    PanelVoltagic
+    PanelBlaze
+    PanelHurricane
+    PanelVital
+  ClasListScrollBar

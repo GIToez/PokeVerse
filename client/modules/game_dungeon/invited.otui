@@ -1,0 +1,51 @@
+UIWindow
+  id: invitedWindow
+  size: 336 182
+  image-source: images/invite/invited_background
+  anchors.centerIn: parent
+  visible: false
+
+  UIWidget
+    id: label_Name
+    font: damas
+    !text: tr('Alpha Chanel')
+    color: #ffde00
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 100
+  UIWidget
+    id: label_bottom
+    font: damas
+    !text: tr(' está te convidando para um grupo de Dungeons')
+    text-auto-resize: true
+    anchors.top: label_Name.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 17
+  UIButton
+    id: confirm
+    size: 99 24
+    image-source: images/invite/aceitar
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 15
+    margin-left: 65
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: cancel
+    size: 99 24
+    image-source: images/invite/cancelar
+    anchors.bottom: parent.bottom
+    anchors.left: confirm.right
+    margin-bottom: 15
+    margin-left: 10
+    @onClick: function(self) self:getParent():hide() end
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7

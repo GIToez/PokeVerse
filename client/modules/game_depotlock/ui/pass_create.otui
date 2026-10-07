@@ -1,0 +1,94 @@
+Title < UIButton
+
+UIWidget
+  id: Background
+  padding: 0
+  focusable: true
+  size: 207 298
+  image-source: images/background_create_pass
+  anchors.centerIn: parent
+
+  PasswordTextEdit
+    id: newpass
+    size: 5 15
+    image-source: ~
+    color: #cdcdcd
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 102
+    margin-left: 38
+    margin-right: 17
+  PasswordTextEdit
+    id: repeatpass
+    size: 5 15
+    image-source: ~
+    color: #cdcdcd
+    anchors.top: newpass.bottom
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 24
+    margin-left: 38
+    margin-right: 17
+
+  DepotComboBox
+    id: securytext
+    !text: tr('Senha de segurança')
+    size: 181 22
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 13
+    margin-top: 177
+
+  CircleCheckBox
+    id: terms
+    !tooltip: tr('Concordo com os termos de responsabilidade')
+    anchors.left: securytext.left
+    anchors.top: parent.top
+    @onCheckChange: self:getParent():getChildById('send'):setEnabled(self:isChecked())
+    margin-top: 207
+  UIWidget
+    id: termstext
+    size: 117 26
+    image-clip: 0 0 117 26
+    image-source: images/text_terms
+    anchors.left: securytext.left
+    anchors.top: parent.top
+    margin-top: 206
+    margin-left: 40
+    @onClick: showTerms()
+
+    $hover:
+      image-clip: 0 26 117 26
+
+  UIButton
+    id: send
+    size: 181 22
+    image-source: images/buttons/criar_senha
+    anchors.top: SenhaAtual.top
+    anchors.centerIn: parent
+    enabled: false
+    margin-top: 105
+    image-color: #ffffff
+    @onClick: SetNewPassword()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+    $disabled:
+      image-color: #8b8b8b
+
+  UIButton
+    id: close
+    size: 10 11
+    image-source: images/buttons/close
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: 138
+    @onClick: hideDepotPass()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8

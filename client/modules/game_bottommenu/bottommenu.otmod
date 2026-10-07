@@ -1,0 +1,13 @@
+Module
+  name: game_bottommenu
+  description: menu de opções.
+  author: Walox
+  website: www.pokecenter.com.br
+
+  autoload: true
+  autoload-priority: 99998
+
+  scripts: [ bottommenu ]
+  sandboxed: true
+  @onLoad: init()
+  @onUnload: terminate()
