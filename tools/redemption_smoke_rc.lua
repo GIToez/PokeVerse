@@ -99,6 +99,16 @@ connect(g_game, {
     end
 })
 
+local pokeVerseSignals = { 'onPokemonMoves', 'onMoveBarOpen', 'onMoveBarClose', 'onPokemonBarAdd', 'onPokemonBarOpen',
+    'onPokemonBarClose', 'onPokedexStatus', 'onStatusBarClear', 'onDollCaseStatus', 'onTip', 'onLootList' }
+local handlers = {}
+for _, name in ipairs(pokeVerseSignals) do
+    handlers[name] = function(...)
+        report('POKEVERSE %s args=%d', name, select('#', ...))
+    end
+end
+connect(g_game, handlers)
+
 local function login()
     g_game.setClientVersion(854)
     g_game.setProtocolVersion(g_game.getClientProtocolVersion(854))

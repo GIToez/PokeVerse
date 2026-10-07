@@ -37,11 +37,12 @@ need '\[pv-smoke\] THINGS LOADED' "854 SPR/DAT did not load"
 need '\[pv-smoke\] CHARLIST count=' "no character list"
 need "\[pv-smoke\] CHARACTER name=${PV_CHARACTER:-Trainer} " "character ${PV_CHARACTER:-Trainer} missing from the list"
 need '\[pv-smoke\] GAME START' "did not enter the game"
+need '\[pv-smoke\] POKEVERSE ' "no PokeVerse 0xFF sub-protocol signal parsed"
 need '\[pv-smoke\] MAP tiles=[1-9]' "no map tiles received"
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"
-if grep -aE 'Unhandled opcode|parse message exception|invalid checksum|unable to load' "$LOG" >&2; then
+if grep -aE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|LUA ERROR|lua_pcall' "$LOG" >&2; then
     fail "protocol errors in the client log"
 fi
 grep -a '\[pv-smoke\]' "$LOG"
