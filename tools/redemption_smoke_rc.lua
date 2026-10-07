@@ -452,6 +452,44 @@ local function inspectGame()
         end, 1200)
     end
 
+    -- Battle Pass (ext opcode 61): /pass fills the window from the server. The bundled season
+    -- ended in 2021, so buying must be refused and a forged collect must grant nothing.
+    local function passTests(nextStep)
+        local pass = modules.game_pass
+        if not pass then
+            report('MODULE game_pass missing')
+            return nextStep()
+        end
+        local root = g_ui.getRootWidget()
+        report('MODULE game_pass button=%s', tostring(root:recursiveGetChildById('passButton') ~= nil))
+        pass.open()
+        scheduleEvent(function()
+            local state = pass.getState()
+            report('PASS OPEN %s visible=%s level=%d/%d premium=%s vipRewards=%d premiumRewards=%d daysLeft="%s" missions=%d',
+                state.visible and state.vipRewards > 0 and 'OK' or 'FAILED', tostring(state.visible), state.level,
+                state.maxLevel, tostring(state.premium), state.vipRewards, state.premiumRewards, state.daysLeft,
+                state.missions)
+            scheduleEvent(function()
+                local protocol = g_game.getProtocolGame()
+                lastCancel = nil
+                protocol:sendExtendedOpcode(61, (state.level + 1) .. '#Collect#1')
+                protocol:sendExtendedOpcode(61, 'x#Collect#')
+                scheduleEvent(function()
+                    report('PASS FORGED COLLECT %s reply=%s', lastCancel and 'FAILED' or 'IGNORED', tostring(lastCancel))
+                    lastCancel = nil
+                    protocol:sendExtendedOpcode(61, 'BuyPass50')
+                    scheduleEvent(function()
+                        report('PASS BUY %s reply=%s', lastCancel and lastCancel:find('season has ended') and 'REFUSED' or 'FAILED',
+                            tostring(lastCancel))
+                        pass.open()
+                        report('PASS CLOSE %s', pass.getState().visible and 'FAILED' or 'OK')
+                        nextStep()
+                    end, 1000)
+                end, 1000)
+            end, tonumber(os.getenv('PV_PASS_HOLD_MS') or '100'))
+        end, 1500)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -480,8 +518,10 @@ local function inspectGame()
             achievementTests(function()
                 tmTests(function()
                     statusBarTests(function()
-                        pokemonTests(function()
-                            scheduleEvent(function() g_game.safeLogout() end, 1500)
+                        passTests(function()
+                            pokemonTests(function()
+                                scheduleEvent(function() g_game.safeLogout() end, 1500)
+                            end)
                         end)
                     end)
                 end)
