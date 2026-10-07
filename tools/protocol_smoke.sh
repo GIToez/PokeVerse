@@ -68,6 +68,7 @@ for _ in $(seq 1 10); do
     sleep 1
 done
 if [ "$after" -ne $((before + 2)) ]; then
+    sql "SELECT name, group_id FROM players WHERE name = 'GM Admin'" >&2
     sql "SELECT i.pid, i.sid, i.itemtype, i.count FROM player_items i JOIN players p ON p.id = i.player_id
          WHERE p.name = 'GM Admin'" >&2
     fail "GM /i: expected $((before + 2)) apples saved, database has $after"
