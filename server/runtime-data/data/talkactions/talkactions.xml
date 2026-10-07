@@ -161,7 +161,7 @@
 	<talkaction words="subdonoeqwxv;!subhouse" filter="word-spaced" event="function" value="houseSubOwnerList" description="Edit the house sub-owner list."/>
 	<talkaction words="abandonarweqn;!leavehouse" filter="word-spaced" event="script" value="leavehouse.lua" description="Leave (abandon) your current house."/>
 
-	<talkaction words="showbuywindowhouse" event="script" value="../../lib/ps/events/talkactions/teste.lua"/>
+	<talkaction words="showbuywindowhouse" event="script" value="../../lib/ps/events/talkactions/showBuyWindowHouse.lua"/>
 	<!-- Guilds -->
 	<!-- <talkaction words="!createguild" event="function" value="guildCreate"/> -->
 	<talkaction words="!joinguild;/joinguild" event="function" value="guildJoin" description="Accept a guild invite."/>
