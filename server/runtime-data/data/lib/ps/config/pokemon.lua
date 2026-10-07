@@ -1439,6 +1439,13 @@ function getPokemonCatchStorage(pokemonName)
     return POKEMONS[pokemonName].catchStorage
 end
 
+function getPokemonDexStorage(pokemonName)
+    if (not POKEMONS[pokemonName]) then
+        log(LOG_TYPES.ERROR, "getPokemonDexStorage - Unknown poke name.", pokemonName)
+    end
+    return POKEMONS[pokemonName].dexStorage
+end
+
 function getPokemonSpecialAbilities(pokemonName)
     if (not POKEMONS[pokemonName]) then
         log(LOG_TYPES.ERROR, "getPokemonSpecialAbilities - Unknown poke name.", pokemonName)

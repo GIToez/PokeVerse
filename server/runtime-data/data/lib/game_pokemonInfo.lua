@@ -823,6 +823,8 @@ end
 function sendPokemonInfo(cid)
   local ball = getPlayerBall(cid)
   if not isItem(ball) then return end
+  local summon = getPlayerPokemons(cid)[1]
+  if not summon or not isCreature(summon) then return end
 		
   local info = {}
   info.main = {
@@ -867,7 +869,7 @@ function sendPokemonInfo(cid)
     points = getBallPokemonEvPoints(ball.uid)
   }
   info.total = {
-    hp = math.floor(getCreatureMaxHealth(getPlayerPokemons(cid)[1])),
+    hp = math.floor(getCreatureMaxHealth(summon)),
     atk = math.floor(getPokemonAtkByBall(ball.uid, info.main.name, info.main.level)),
     def = math.floor(getPokemonDefByBall(ball.uid, info.main.name, info.main.level)),
     spatk = math.floor(getPokemonSpAtkByBall(ball.uid, info.main.name, info.main.level)),
