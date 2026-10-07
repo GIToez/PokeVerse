@@ -2,9 +2,13 @@ name: Validate
 
 on:
   push:
-    branches: [main, "cursor/**"]
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   static:
