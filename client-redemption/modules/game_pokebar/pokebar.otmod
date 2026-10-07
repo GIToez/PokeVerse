@@ -1,0 +1,13 @@
+Module
+  name: game_pokebar
+  description: PokeVerse Pokemon bar (belt portraits fed by the 0xFF PokemonBar sub-opcodes)
+  author: PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ pokebar ]
+  @onLoad: init()
+  @onUnload: terminate()
