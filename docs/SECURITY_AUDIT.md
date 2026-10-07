@@ -1,5 +1,7 @@
 # Security Audit (static, pre-execution)
 
+> Phase 2 remediation status is at the end of this document.
+
 **Scope:** the full PokeJornadas package imported into PokeVerse (client, client source, server, server source, SQL dump, updater tool, design files).
 **Method:** static inspection only. **No executable, script, launcher, patcher or updater from the package was run.** Windows PE files were inspected with `pefile` (import tables and exports) and `strings`. Text files were searched with `grep`.
 
@@ -135,7 +137,7 @@ Phase 2 built and ran the server and client from source. It fixed or disabled th
 | 10 | Open | Client-version check still commented out |
 | 11 | Open | `opcode.lua` still trusts the `json.decode` results |
 | 15 | **Fixed** | `protocollogin.cpp`: the 0xFC (create account) and 0xFD (create character) handlers compile only with `__ACCOUNT_CREATION__`, which is not defined. Otherwise the server disconnects with "Account creation is disabled on this server." The client's `poke_create` window still exists but cannot create anything. |
-| — | **Fixed** (new finding) | `talkactions.xml`: `/i` (create any item) was registered twice, once without `access`, so any player could create items. It is restored to `access="4"`. `/teste` (server-wide broadcast) is now `access="4"`. `/profission` (runs `learnWork(cid, 1)`) is left open: it is the only way to start the profession system. |
+| — | **Fixed** (new finding) | `talkactions.xml`: the staff-only `/i` (create any item) line was commented out and replaced by a copy without `access`, so any player could create items. It is restored to `access="4"`. `/teste` (server-wide broadcast) is now `access="4"`. `/profission` (runs `learnWork(cid, 1)`) is left open: it is the only way to start the profession system. |
 | — | **Fixed** (new finding) | Market `DELETE` queries concatenated `item_index` twice (for example `item_index = 33` instead of `3`), so they deleted the wrong row or none (`data/lib/game_market.lua`) |
 
 **Why not JSON.** The original request was to replace `loadstring` with JSON.
