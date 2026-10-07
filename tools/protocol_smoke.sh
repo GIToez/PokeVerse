@@ -62,6 +62,25 @@ pass "login server: character list"
 { $PV charlist player wrong-password || true; } | grep -q "LOGIN ERROR" || fail "wrong password was accepted"
 pass "login server: wrong password refused"
 
+lang_before=$(sql "SELECT lang_id FROM accounts WHERE name = 'player'")
+$PV charlist player player --lang 99 | grep -q "^Trainer	" || fail "login with language byte 99 failed"
+[ "$(sql "SELECT lang_id FROM accounts WHERE name = 'player'")" = "$lang_before" ] ||
+    fail "language byte 99 was stored in accounts.lang_id"
+pass "login server: out-of-range language byte is ignored"
+
+sql "UPDATE accounts SET lang_id = 7 WHERE name = 'player'"
+lang_ok=1
+$PV charlist player player | grep -q "^Trainer	" || lang_ok=0
+[ "$lang_ok" = 1 ] && { $PV enter player player Trainer --say "hello" --stay 1 > /dev/null || lang_ok=0; }
+sql "UPDATE accounts SET lang_id = $lang_before WHERE name = 'player'"
+[ "$lang_ok" = 1 ] || fail "an account with lang_id 7 in the database could not log in and play"
+pass "an out-of-range lang_id stored in the database falls back to English"
+
+{ $PV enter player player Trainer --bad-challenge --stay 0 || true; } | grep -q "^ENTERED" &&
+    fail "a wrong login challenge was accepted"
+grep -q "login challenge mismatch" "$LOGDIR/server-1.log" || fail "server did not log the challenge mismatch"
+pass "game server: wrong login challenge refused"
+
 $PV enter player player Trainer --stay 2 || fail "Trainer could not enter the game"
 grep -q "Trainer has logged in." "$LOGDIR/server-1.log" || fail "server did not log Trainer in"
 grep -q "Trainer has logged out." "$LOGDIR/server-1.log" || fail "server did not log Trainer out"

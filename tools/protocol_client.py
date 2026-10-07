@@ -181,15 +181,18 @@ def charlist(host, port, account, password, lang=0):
 
 
 class GameSession:
-    def __init__(self, host, port, account, password, character, gamemaster=False):
+    def __init__(self, host, port, account, password, character, gamemaster=False, bad_challenge=False):
         self.conn = Connection(host, port)
         challenge = self.conn.recv()
         if not challenge or challenge[0] != 0x1F:
             raise ValueError(f"expected login challenge 0x1F, got {challenge[:1].hex()}")
         key = new_key()
+        echo = challenge[1:6]
+        if bad_challenge:
+            echo = bytes([echo[0] ^ 0xFF]) + echo[1:]
         self.conn.send(struct.pack("<BHH", 0x0A, OS_OTCLIENT_LINUX, PROTOCOL_VERSION)
                        + rsa_block(struct.pack("<4IB", *key, int(gamemaster)), pstr(account),
-                                   pstr(character), pstr(password), challenge[1:6]))
+                                   pstr(character), pstr(password), echo))
         self.conn.key = key
         # PSoul 0xFF packets (for example for GM characters) can arrive before the login success.
         seen = []
@@ -237,18 +240,21 @@ def main():
     p = sub.add_parser("charlist")
     p.add_argument("account")
     p.add_argument("password")
+    p.add_argument("--lang", type=int, default=0, help="language byte sent with the login")
     p = sub.add_parser("enter")
     p.add_argument("account")
     p.add_argument("password")
     p.add_argument("character")
     p.add_argument("--say", action="append", default=[])
     p.add_argument("--stay", type=float, default=2.0)
+    p.add_argument("--bad-challenge", action="store_true", help="echo a wrong login challenge")
     args = parser.parse_args()
 
     host = os.environ.get("PV_HOST", "127.0.0.1")
     try:
         if args.cmd == "charlist":
-            result = charlist(host, int(os.environ.get("PV_LOGIN_PORT", 7564)), args.account, args.password)
+            result = charlist(host, int(os.environ.get("PV_LOGIN_PORT", 7564)), args.account, args.password,
+                              args.lang)
             if result["error"]:
                 print("LOGIN ERROR: " + result["error"])
                 return 1
@@ -257,7 +263,8 @@ def main():
                       f"\t{len(char['pokemons'])} pokemon")
             return 0
         session = GameSession(host, int(os.environ.get("PV_GAME_PORT", 8548)),
-                              args.account, args.password, args.character)
+                              args.account, args.password, args.character,
+                              bad_challenge=args.bad_challenge)
         print(f"ENTERED {args.character} (player id {session.player_id})", flush=True)
         show = lambda text: print("TEXT " + text.replace("\n", " "), flush=True)
         session.pump(1)
