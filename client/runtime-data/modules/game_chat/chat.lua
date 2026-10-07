@@ -160,7 +160,7 @@ function init()
 	g_keyboard.bindKeyPress('Tab', function() consoleTabBar:selectNextTab() end, chatWindow)
 	g_keyboard.bindKeyPress('Shift+Tab', function() consoleTabBar:selectPrevTab() end, chatWindow)
 	g_keyboard.bindKeyDown('Enter', sendCurrentMessage, chatWindow)
-	g_keyboard.bindKeyPress('Ctrl+A', function() consoleTextEdit:clearText() end, consolePanel)
+	g_keyboard.bindKeyPress('Ctrl+A', function() textEdit:clearText() end, chatWindow)
 
 	g_keyboard.bindKeyDown('Ctrl+O', g_game.requestChannels)
 	g_keyboard.bindKeyDown('Ctrl+E', removeCurrentTab)
