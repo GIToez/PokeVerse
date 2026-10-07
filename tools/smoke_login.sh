@@ -5,6 +5,8 @@
 # Needs an X display (DISPLAY, e.g. Xvfb) and xdotool. Saves a screenshot when
 # ImageMagick's `import` is available.
 # Usage: tools/smoke_login.sh [account] [password] [character] [server-log]
+# Environment: SHOT (screenshot path), CLIENT_LOG (client output), KEEP_CLIENT=1,
+# CLIENT_DIR (default dist/client).
 # Run it with the character logged out; a reconnect to an online character
 # does not print a new "has logged in" line on the server.
 set -euo pipefail
@@ -14,15 +16,22 @@ PASSWORD="${2:-player}"
 CHARACTER="${3:-Trainer}"
 SERVER_LOG="${4:-/tmp/server-run.log}"
 SHOT="${SHOT:-/tmp/smoke_login.png}"
+CLIENT_LOG="${CLIENT_LOG:-/tmp/smoke_client.log}"
 : "${DISPLAY:?set DISPLAY (for example run under xvfb-run)}"
 
 [ -f "$SERVER_LOG" ] || { echo "FAIL: server log $SERVER_LOG not found" >&2; exit 1; }
 before=$(grep -c "$CHARACTER has logged in" "$SERVER_LOG" || true)
 
-cd "$ROOT/dist/client"
-./pokeverse-client > /tmp/smoke_client.log 2>&1 &
+# A fresh profile opens a language picker over the login form; preselect English.
+PROFILE="$HOME/.Pokecenter"
+mkdir -p "$PROFILE"
+grep -qs '^locale:' "$PROFILE/config.otml" || echo "locale: en" >> "$PROFILE/config.otml"
+
+cd "${CLIENT_DIR:-$ROOT/dist/client}"
+./pokeverse-client > "$CLIENT_LOG" 2>&1 &
 client=$!
-trap 'kill $client 2>/dev/null || true' EXIT
+# KEEP_CLIENT=1 leaves the client running in the game after a PASS (used by runtime_test.sh).
+trap '[ "${KEEP_CLIENT:-0}" = 1 ] && [ "${passed:-0}" = 1 ] || kill $client 2>/dev/null || true' EXIT
 
 window=""
 for _ in $(seq 1 60); do
@@ -51,6 +60,7 @@ for _ in $(seq 1 30); do
         sleep 5
         command -v import > /dev/null && import -window root "$SHOT" || true
         now=$(grep -c "$CHARACTER has logged in" "$SERVER_LOG" || true)
+        passed=1
         echo "PASS: $CHARACTER entered the game (server log logins: $before -> $now, screenshot: $SHOT)"
         exit 0
     fi
