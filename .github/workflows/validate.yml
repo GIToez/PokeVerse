@@ -71,6 +71,12 @@ jobs:
           sleep 3
           tools/smoke_login.sh player player Trainer /tmp/server-run.log
 
+      - name: Protocol runtime test (login, GM command, save, clean shutdown, restart persistence)
+        run: |
+          pkill -9 -f dist/server/pokeverse-server || true
+          sleep 2
+          tools/protocol_smoke.sh /tmp/protocol-smoke
+
       - name: Upload logs and screenshot
         if: always()
         uses: actions/upload-artifact@v4
@@ -80,3 +86,4 @@ jobs:
             /tmp/server-run.log
             /tmp/smoke_client.log
             /tmp/smoke_login.png
+            /tmp/protocol-smoke/
