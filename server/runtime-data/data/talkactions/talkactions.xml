@@ -2,26 +2,41 @@
 <talkactions>
 	<!-- Task Mod -->
 	<talkaction words="/depotpass;!depotpass" event="script" value="deposito/depot_passworld.lua" />
-	<talkaction words="/dprelease" event="script" value="deposito/depot_release.lua" />
-	<talkaction words="/dpconfig" event="script" value="deposito/depot_show.lua" />
+	<talkaction words="/depotunlock" event="script" value="deposito/depot_release.lua" />
+	<talkaction words="/dprelease" event="script" value="deposito/depot_release.lua" hidden="yes"/> <!-- deprecated alias of /depotunlock -->
+	<talkaction words="/depotconfig" event="script" value="deposito/depot_show.lua" />
+	<talkaction words="/dpconfig" event="script" value="deposito/depot_show.lua" hidden="yes"/> <!-- deprecated alias of /depotconfig -->
 	
 	<talkaction words="/task" event="script" value="task_mod/taskModule.lua" />
-	<talkaction words="/parseRank" event="script" value="task_mod/parseRank.lua" />
-	<talkaction words="/buyrank" event="script" value="task_mod/buyRank.lua" />
-	<talkaction words="/showtaskrank" event="script" value="task_mod/showtask.lua" />
+	<talkaction words="/taskrank" event="script" value="task_mod/parseRank.lua" />
+	<talkaction words="/parseRank" event="script" value="task_mod/parseRank.lua" hidden="yes"/> <!-- deprecated alias of /taskrank -->
+	<talkaction words="/taskbuyrank" event="script" value="task_mod/buyRank.lua" />
+	<talkaction words="/buyrank" event="script" value="task_mod/buyRank.lua" hidden="yes"/> <!-- deprecated alias of /taskbuyrank -->
+	<talkaction words="/taskstatus" event="script" value="task_mod/showtask.lua" />
+	<talkaction words="/showtaskrank" event="script" value="task_mod/showtask.lua" hidden="yes"/> <!-- deprecated alias of /taskstatus -->
 	<!-- Others -->
-	<talkaction words="/BuyMasteryRank" event="script" value="shop/masteryBuy.lua"/>
-	<talkaction words="/namediamond" event="script" value="shop/namediamond.lua"/>
-	<talkaction words="/namepokecoin" event="script" value="shop/namepokecoin.lua"/>
-	<talkaction words="/shopdiamond" event="script" value="shop/shop.lua"/>	
-	<talkaction words="/ShopOpen" event="script" value="shop/open.lua"/>	
-	<talkaction words="/dailysigninopen" event="script" value="dailyopen.lua"/>	
-	<talkaction words="/passopen" event="script" value="passopen.lua"/>	
-	<talkaction words="/pokeivev" event="script" value="pokeivev.lua"/>
+	<talkaction words="/buymastery" event="script" value="shop/masteryBuy.lua"/>
+	<talkaction words="/BuyMasteryRank" event="script" value="shop/masteryBuy.lua" hidden="yes"/> <!-- deprecated alias of /buymastery -->
+	<talkaction words="/renamediamond" event="script" value="shop/namediamond.lua"/>
+	<talkaction words="/namediamond" event="script" value="shop/namediamond.lua" hidden="yes"/> <!-- deprecated alias of /renamediamond -->
+	<talkaction words="/renamepokecoin" event="script" value="shop/namepokecoin.lua"/>
+	<talkaction words="/namepokecoin" event="script" value="shop/namepokecoin.lua" hidden="yes"/> <!-- deprecated alias of /renamepokecoin -->
+	<talkaction words="/shopbuy" event="script" value="shop/shop.lua"/>	
+	<talkaction words="/shopdiamond" event="script" value="shop/shop.lua" hidden="yes"/> <!-- deprecated alias of /shopbuy -->
+	<talkaction words="/shopopen" event="script" value="shop/open.lua"/>	
+	<talkaction words="/ShopOpen" event="script" value="shop/open.lua" hidden="yes"/> <!-- deprecated alias of /shopopen -->
+	<talkaction words="/dailyreward" event="script" value="dailyopen.lua"/>	
+	<talkaction words="/dailysigninopen" event="script" value="dailyopen.lua" hidden="yes"/> <!-- deprecated alias of /dailyreward -->
+	<talkaction words="/pass" event="script" value="passopen.lua"/>	
+	<talkaction words="/passopen" event="script" value="passopen.lua" hidden="yes"/> <!-- deprecated alias of /pass -->
+	<talkaction words="/pokemoninfo" event="script" value="pokeivev.lua"/>
+	<talkaction words="/pokeivev" event="script" value="pokeivev.lua" hidden="yes"/> <!-- deprecated alias of /pokemoninfo -->
 
 	
-	<talkaction words="/SendPass35" event="script" value="pass/pass35.lua"/>	
-	<talkaction words="/SendPass50" event="script" value="pass/pass50.lua"/>	
+	<talkaction words="/giftpass35" event="script" value="pass/pass35.lua"/>	
+	<talkaction words="/SendPass35" event="script" value="pass/pass35.lua" hidden="yes"/> <!-- deprecated alias of /giftpass35 -->
+	<talkaction words="/giftpass50" event="script" value="pass/pass50.lua"/>	
+	<talkaction words="/SendPass50" event="script" value="pass/pass50.lua" hidden="yes"/> <!-- deprecated alias of /giftpass50 -->
 	
 	<talkaction words="/profission" event="script" value="../../lib/ps/profission/testeprofission.lua" />
 	<talkaction words="/addon" event="script" value="../../lib/ps/events/talkactions/pokemonAddon.lua" description="Show Pokemon addons." />
@@ -32,7 +47,8 @@
 	<talkaction words="/help;/command;/commands;/comando;/comandos" hidden="yes" event="script" value="../../lib/ps/events/talkactions/commands.lua" />
 	<talkaction words="/megusta;/trollface;/yaomingface;/pokerface;/foreveralone" event="script" value="../../lib/ps/events/talkactions/memes.lua" description="Show a meme."/>
 	<talkaction words="/autoloot" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/autoLoot.lua" description="Automatic loot from corpses."/>
-	<talkaction words="/dv" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/dexView.lua"/>
+	<talkaction words="/dexview" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/dexView.lua"/>
+	<talkaction words="/dv" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/dexView.lua"/> <!-- deprecated alias of /dexview -->
 	<talkaction words="/exp" event="script" value="../../lib/ps/events/talkactions/pokemonExperience.lua" description="Show information about your Pokemon experience." />
 	<talkaction words="/held" event="script" value="../../lib/ps/events/talkactions/heldExperience.lua" description="Show information about your Pokemon Held item experience." />
 	<talkaction words="/love" event="script" value="../../lib/ps/events/talkactions/love.lua" description="Show a love emoticon."/>
@@ -60,8 +76,10 @@
 	<talkaction words="/tvunban" event="script" value="../../lib/ps/events/talkactions/tv/unban.lua" description="Unban a viewer when broadcasting."/>
 	<talkaction words="/tvpassword" event="script" value="../../lib/ps/events/talkactions/tv/password.lua" description="Create a required password to watch the channel."/>
 	<!-- Guild -->
-	<talkaction words="/list" event="script" value="../../lib/ps/events/talkactions/guildList.lua" description="Show online guild members."/>
-	<talkaction words="/setrank" event="script" value="../../lib/ps/events/talkactions/guildRank.lua" description="Change a guild member rank."/>
+	<talkaction words="/guildlist" event="script" value="../../lib/ps/events/talkactions/guildList.lua" description="Show online guild members."/>
+	<talkaction words="/list" event="script" value="../../lib/ps/events/talkactions/guildList.lua" hidden="yes"/> <!-- deprecated alias of /guildlist -->
+	<talkaction words="/guildrank" event="script" value="../../lib/ps/events/talkactions/guildRank.lua" description="Change a guild member rank."/>
+	<talkaction words="/setrank" event="script" value="../../lib/ps/events/talkactions/guildRank.lua" hidden="yes"/> <!-- deprecated alias of /guildrank -->
 	<!--
 	<talkaction words="/tvbanlist" event="script" value="../../lib/ps/events/talkactions/tv/banlist.lua"/>
 	-->
@@ -75,7 +93,8 @@
 	<talkaction log="yes" words="/guardian" event="script" value="../../lib/ps/events/talkactions/guardianTime.lua"/>
 	<talkaction log="yes" words="/teste" access="4" event="script" value="../../lib/ps/events/talkactions/teste.lua"/>
 	<talkaction log="yes" words="/addskill" access="5" event="function" value="addSkill"/>
-	<talkaction log="yes" words="/attr" access="5" event="function" value="thingProporties"/>
+	<talkaction log="yes" words="/attribute" access="5" event="function" value="thingProporties"/>
+	<talkaction log="yes" words="/attr" access="5" event="function" value="thingProporties" hidden="yes"/> <!-- deprecated alias of /attribute -->
 	<talkaction log="yes" words="/serverdiag" access="5" event="function" value="diagnostics"/>
 	<talkaction log="yes" words="/closeserver" access="5" event="script" value="closeopen.lua"/>
 	<talkaction log="yes" words="/openserver" access="5" event="script" value="closeopen.lua"/>
@@ -83,36 +102,50 @@
 	<talkaction log="yes" words="/shutdown" access="5" event="script" value="shutdown.lua"/>
 	<talkaction log="yes" words="/mode" access="5" event="script" value="mode.lua"/>
 	<talkaction log="yes" words="/createnpc" access="5" event="script" value="createNpc.lua"/>
-	<talkaction log="yes" words="/cb" access="5" event="script" value="pokemon.lua"/>
-	<talkaction log="yes" words="/s" access="5" event="script" value="summon.lua"/>
-	<talkaction log="yes" words="/n" access="5" event="script" value="creature.lua"/>
-	<talkaction log="yes" words="/m" access="5" event="script" value="creature.lua" description="Summon monster."/>
+	<talkaction log="yes" words="/givepokemon" access="5" event="script" value="pokemon.lua"/>
+	<talkaction log="yes" words="/cb" access="5" event="script" value="pokemon.lua" hidden="yes"/> <!-- deprecated alias of /givepokemon -->
+	<talkaction log="yes" words="/summon" access="5" event="script" value="summon.lua"/>
+	<talkaction log="yes" words="/s" access="5" event="script" value="summon.lua" hidden="yes"/> <!-- deprecated alias of /summon -->
+	<talkaction log="yes" words="/npc" access="5" event="script" value="creature.lua"/>
+	<talkaction log="yes" words="/n" access="5" event="script" value="creature.lua" hidden="yes"/> <!-- deprecated alias of /npc -->
+	<talkaction log="yes" words="/monster" access="5" event="script" value="creature.lua" description="Summon monster."/>
+	<talkaction log="yes" words="/m" access="5" event="script" value="creature.lua" hidden="yes"/> <!-- deprecated alias of /monster -->
 	<talkaction log="yes" words="/reload" access="5" event="script" value="reload.lua"/>
 	<talkaction log="yes" words="/raid" access="5" event="script" value="raid.lua"/>
 	<talkaction log="yes" words="/r" access="5" event="script" value="remove.lua" description="Remove thing."/>
 	<talkaction log="yes" words="/addoutfit" access="5" event="script" value="../../lib/ps/events/talkactions/addOutfit.lua" description="Add outfit to player."/>
-	<talkaction log="yes" words="/sendplayeruniqueitem" access="5" event="script" value="../../lib/ps/events/talkactions/sendPlayerUniqueItem.lua" description="Send an unique item to player."/>
+	<talkaction log="yes" words="/giveitemdepot" access="5" event="script" value="../../lib/ps/events/talkactions/sendPlayerUniqueItem.lua" description="Send an unique item to player."/>
+	<talkaction log="yes" words="/sendplayeruniqueitem" access="5" event="script" value="../../lib/ps/events/talkactions/sendPlayerUniqueItem.lua" hidden="yes"/> <!-- deprecated alias of /giveitemdepot -->
 
 	<!-- Community Managers -->
-	<talkaction log="yes" words="/newtype" access="4" event="script" value="newtype.lua"/>
+	<talkaction log="yes" words="/looktype" access="4" event="script" value="newtype.lua"/>
+	<talkaction log="yes" words="/newtype" access="4" event="script" value="newtype.lua" hidden="yes"/> <!-- deprecated alias of /looktype -->
 	<talkaction log="yes" words="/owner" access="4" event="script" value="owner.lua"/>
 	<talkaction log="yes" words="/storage" access="4" event="script" value="storage.lua"/>
 	<talkaction log="yes" words="/config" access="4" event="script" value="configinfo.lua"/>
 	<talkaction log="yes" words="/i" access="4" event="script" value="createitem.lua"/>
-	<talkaction access="4" words="/z" event="script" value="magiceffect.lua" description="Show magic effects."/>
-	<talkaction access="4" words="/x" event="script" value="animationeffect.lua" description="Show projectiles."/>
-	<talkaction access="4" words="/y" event="script" value="animatedtext.lua" description="Show animated texts."/>
-	<talkaction log="yes" words="/bc" access="4" event="script" value="broadcastclass.lua"/>
-	<talkaction log="yes" access="4" words="/mkick" event="script" value="masskick.lua"/>
+	<talkaction access="4" words="/effect" event="script" value="magiceffect.lua" description="Show magic effects."/>
+	<talkaction access="4" words="/z" event="script" value="magiceffect.lua" hidden="yes"/> <!-- deprecated alias of /effect -->
+	<talkaction access="4" words="/projectile" event="script" value="animationeffect.lua" description="Show projectiles."/>
+	<talkaction access="4" words="/x" event="script" value="animationeffect.lua" hidden="yes"/> <!-- deprecated alias of /projectile -->
+	<talkaction access="4" words="/animtext" event="script" value="animatedtext.lua" description="Show animated texts."/>
+	<talkaction access="4" words="/y" event="script" value="animatedtext.lua" hidden="yes"/> <!-- deprecated alias of /animtext -->
+	<talkaction log="yes" words="/broadcastclass" access="4" event="script" value="broadcastclass.lua"/>
+	<talkaction log="yes" words="/bc" access="4" event="script" value="broadcastclass.lua" hidden="yes"/> <!-- deprecated alias of /broadcastclass -->
+	<talkaction log="yes" access="4" words="/masskick" event="script" value="masskick.lua"/>
+	<talkaction log="yes" access="4" words="/mkick" event="script" value="masskick.lua" hidden="yes"/> <!-- deprecated alias of /masskick -->
 
 	<!-- Gamemasters -->
 	<talkaction log="yes" words="/ghost" access="3" event="function" value="ghost" description="Invisible."/>
 	<talkaction log="yes" words="/squelch" access="3" event="script" value="gamemaster.lua" description="Ignore private messages."/>
-	<talkaction log="yes" words="/cliport" access="3" event="script" value="gamemaster.lua" description="Map click teleport."/>
-	<talkaction log="yes" words="/t" access="3" event="script" value="teleportmaster.lua"/>
+	<talkaction log="yes" words="/clickteleport" access="3" event="script" value="gamemaster.lua" description="Map click teleport."/>
+	<talkaction log="yes" words="/cliport" access="3" event="script" value="gamemaster.lua" hidden="yes"/> <!-- deprecated alias of /clickteleport -->
+	<talkaction log="yes" words="/temple" access="3" event="script" value="teleportmaster.lua"/>
+	<talkaction log="yes" words="/t" access="3" event="script" value="teleportmaster.lua" hidden="yes"/> <!-- deprecated alias of /temple -->
 	<talkaction log="yes" words="/c" access="3" event="script" value="teleporthere.lua"/>
 	<talkaction log="yes" words="/goto" access="3" event="script" value="teleportto.lua"/>
-	<talkaction log="yes" words="/a" access="3" event="script" value="teleporttiles.lua"/>
+	<talkaction log="yes" words="/step" access="3" event="script" value="teleporttiles.lua"/>
+	<talkaction log="yes" words="/a" access="3" event="script" value="teleporttiles.lua" hidden="yes"/> <!-- deprecated alias of /step -->
 	<talkaction log="yes" words="/kick" access="3" event="script" value="kick.lua"/>
 	<talkaction log="yes" words="/send" access="3" event="script" value="teleportsend.lua"/>
 	<talkaction log="yes" words="/unban" access="3" event="script" value="unban.lua"/>
@@ -122,20 +155,25 @@
 	<talkaction log="yes" words="/save" access="3" event="script" value="save.lua"/>
 	<talkaction log="yes" words="/clean" access="3" event="script" value="clean.lua"/>
 	<talkaction log="yes" words="/reports" access="3" event="script" value="reports.lua"/>
-	<talkaction log="yes" access="3" words="/wp" event="script" value="waypoints.lua"/>
+	<talkaction log="yes" access="3" words="/waypoint" event="script" value="waypoints.lua"/>
+	<talkaction log="yes" access="3" words="/wp" event="script" value="waypoints.lua" hidden="yes"/> <!-- deprecated alias of /waypoint -->
 	<talkaction access="3" words="/online" event="script" value="online.lua"/>
-	<talkaction log="yes" words="/info" access="3" event="script" value="playerinfo.lua"/>
-	<talkaction log="yes" access="3" words="/b" event="script" value="broadcast.lua" description="Broadcast message. (Name visible)"/>
+	<talkaction log="yes" words="/playerinfo" access="3" event="script" value="playerinfo.lua"/>
+	<talkaction log="yes" words="/info" access="3" event="script" value="playerinfo.lua" hidden="yes"/> <!-- deprecated alias of /playerinfo -->
+	<talkaction log="yes" access="3" words="/broadcast" event="script" value="broadcast.lua" description="Broadcast message. (Name visible)"/>
+	<talkaction log="yes" access="3" words="/b" event="script" value="broadcast.lua" hidden="yes"/> <!-- deprecated alias of /broadcast -->
 	<talkaction log="yes" access="3" words="/gmcheck" event="script" value="../../lib/ps/events/talkactions/gmCheck.lua" description="Check players"/>
 
 	<!-- Senior Tutors -->
 	<talkaction log="yes" words="/notations" access="2" event="script" value="notations.lua"/>
-	<talkaction log="yes" words="/gethouse" access="2" event="script" value="gethouse.lua"/>
+	<talkaction log="yes" words="/playerhouse" access="2" event="script" value="gethouse.lua"/>
+	<talkaction log="yes" words="/gethouse" access="2" event="script" value="gethouse.lua" hidden="yes"/> <!-- deprecated alias of /playerhouse -->
 	<talkaction log="yes" words="/mc" access="2" event="script" value="multicheck.lua"/>
 	<talkaction log="yes" words="/baninfo" access="2" event="function" value="banishmentInfo"/>
 	
 	<!-- Tutors -->
-	<talkaction log="yes" words="/chatban" access="1" event="script" value="../../lib/ps/events/talkactions/chatBan.lua"/>
+	<talkaction log="yes" words="/mute" access="1" event="script" value="../../lib/ps/events/talkactions/chatBan.lua"/>
+	<talkaction log="yes" words="/chatban" access="1" event="script" value="../../lib/ps/events/talkactions/chatBan.lua" hidden="yes"/> <!-- deprecated alias of /mute -->
 
 	<!-- Players -->
 	<talkaction words="/autoTrade" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/trade.lua" description="Automatic yell offerts on trade channel."/>
