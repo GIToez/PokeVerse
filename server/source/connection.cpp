@@ -40,7 +40,7 @@ uint32_t Connection::connectionCount = 0;
 #endif
 
 Connection_ptr ConnectionManager::createConnection(boost::asio::ip::tcp::socket* socket,
-	boost::asio::io_service& io_service, ServicePort_ptr servicer)
+	boost::asio::io_context& io_service, ServicePort_ptr servicer)
 {
 	#ifdef __DEBUG_NET_DETAIL__
 	std::cout << "Creating new Connection" << std::endl;
@@ -292,7 +292,7 @@ void Connection::deleteConnection()
 	assert(!m_refCount);
 	try
 	{
-		m_service.dispatch(boost::bind(&Connection::onStop, this));
+		boost::asio::dispatch(m_service, boost::bind(&Connection::onStop, this));
 	}
 	catch(boost::system::system_error& e)
 	{
@@ -524,7 +524,7 @@ uint32_t Connection::getIP() const
 	boost::system::error_code error;
 	const boost::asio::ip::tcp::endpoint ip = m_socket->remote_endpoint(error);
 	if(!error)
-		return htonl(ip.address().to_v4().to_ulong());
+		return htonl(ip.address().to_v4().to_uint());
 
 	PRINT_ASIO_ERROR("Getting remote ip");
 	return 0;

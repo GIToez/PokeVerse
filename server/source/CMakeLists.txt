@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 project(pokeverse-server CXX)
 
-# Reproduces the original Dev-C++ build (dev-cpp/Makefile.win) on Linux.
-# __EXCEPTION_TRACER__ is MinGW-only and is not enabled.
+# Reproduces the original Dev-C++ build (dev-cpp/Makefile.win). One codebase for Linux (GCC)
+# and Windows (MinGW-w64 / MSYS2 UCRT64); see docs/BUILD_SERVER_LINUX.md and
+# docs/BUILD_SERVER_WINDOWS.md. __EXCEPTION_TRACER__ is not enabled.
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
@@ -39,3 +40,13 @@ target_link_libraries(pokeverse-server PRIVATE
   Boost::system Boost::filesystem Boost::thread Boost::regex
   LibXml2::LibXml2 OpenSSL::Crypto Threads::Threads
   ${LUA_LIBRARIES} ${MARIADB_LIBRARIES} ${SQLITE_LIBRARIES} ${GMP_LIBRARY})
+target_link_directories(pokeverse-server PRIVATE
+  ${LUA_LIBRARY_DIRS} ${MARIADB_LIBRARY_DIRS} ${SQLITE_LIBRARY_DIRS})
+
+# Fail the build on Boost APIs that newer Boost (1.87+, as shipped by MSYS2) has removed.
+target_compile_definitions(pokeverse-server PRIVATE BOOST_ASIO_NO_DEPRECATED BOOST_FILESYSTEM_NO_DEPRECATED)
+
+if(WIN32)
+  target_compile_definitions(pokeverse-server PRIVATE WIN32_LEAN_AND_MEAN)
+  target_link_libraries(pokeverse-server PRIVATE ws2_32 mswsock)
+endif()

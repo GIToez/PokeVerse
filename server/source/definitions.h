@@ -110,8 +110,9 @@
 //Windows Vista	0x0600
 //Windows Seven 0x0601
 
-#define _WIN32_WINNT 0x0501
-#define _WIN64_WINNT 0x0501
+//Boost.Asio 1.87+ and current mingw-w64 need Windows 7 or newer.
+#define _WIN32_WINNT 0x0601
+#define _WIN64_WINNT 0x0601
 
 #ifndef __GNUC__
 	#ifndef NOMINMAX
