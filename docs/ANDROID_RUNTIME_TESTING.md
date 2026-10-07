@@ -8,8 +8,8 @@ Android uses the same game protocol as the desktop clients, so the PokeVerse ser
 
 - An ARM64 Android phone or tablet (Android 8.0 or newer), with USB debugging enabled. Alternatively, an emulator with an `arm64-v8a` system image: on Apple Silicon or an ARM64 host it runs natively; on x86_64 hosts the image needs ARM translation (Android 11+ Google APIs images).
 - `adb` from the Android SDK platform-tools.
-- The APK from the CI artifact `pokeverse-client-android-arm64`, or a local build (`BUILD_REDEMPTION.md`, "Android ARM64").
-- A PokeVerse server on the same private network: the Windows test package (`README-WINDOWS-TESTING.txt`) or a Linux server (`BUILD_SERVER_LINUX.md`).
+- `PokeVerse-Android-arm64.apk` from the CI artifact `PokeVerse-Android-arm64` or a GitHub Release (`DOWNLOAD_AND_RUN.md`), or a local build (`BUILD_REDEMPTION.md`, "Android ARM64"). `adb` is optional: opening the APK on the phone installs it too.
+- A PokeVerse server on the same private network: the Windows or Linux development package (`DOWNLOAD_AND_RUN.md`).
 
 ## Point the server at your network (DEVELOPMENT ONLY)
 
@@ -26,6 +26,7 @@ The development server listens on 127.0.0.1 and tells clients to connect to 127.
    The login server now listens on that address, and the character list sends it as the world address.
 3. Allow inbound TCP 7564 (login) and 8548 (game) from the private network in the PC firewall.
 4. Restart the server.
+5. On the phone's login screen, type the same address in the server field (the Android build shows an editable server address and port; the desktop builds connect to 127.0.0.1 without one). Keep port 7564.
 
 The development accounts have public passwords. Only do this on a private network you control, never on a public or shared one, and switch `ip` back to `127.0.0.1` afterwards.
 
@@ -35,7 +36,7 @@ For an emulator on the same PC, the host is `10.0.2.2` from inside the emulator.
 
 ```bash
 adb devices                      # the phone must be listed as "device"
-adb install -r pokeverse-client-android-arm64.apk
+adb install -r PokeVerse-Android-arm64.apk
 adb logcat -c
 adb logcat | grep -i -E "otclient|pokeverse|lua|fatal" > android-logcat.txt
 ```

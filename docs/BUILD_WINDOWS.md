@@ -1,12 +1,12 @@
 # Building PokeVerse on Windows
 
-This is how to build the Windows client (`PokeVerse.exe`), the Windows server (`PokeVerseServer.exe`) and the local test package (`dist\windows\PokeVerse-Windows-Test\`) on one Windows PC. The steps and versions are the ones CI runs (`.github/workflows/platforms.yml`, `windows-server.yml`).
+This is how to build the Windows client (`pokeverse-client.exe`), the Windows server (`pokeverse-server.exe`) and the development package (`dist\windows\PokeVerse-Windows-Dev\`) on one Windows PC. The steps and versions are the ones CI runs (`.github/workflows/platforms.yml`, `windows-server.yml`).
 
 Details live in two other files:
 - `BUILD_REDEMPTION.md`: client presets, triplets and the other platforms.
 - `BUILD_SERVER_WINDOWS.md`: the server toolchain, database and runtime.
 
-To only play or test, take the `PokeVerse-Windows-Test` CI artifact and follow its `README-WINDOWS-TESTING.txt`. You do not need to build anything.
+To only play or test, download `PokeVerse-Windows-Dev.zip` from CI or a GitHub Release and follow `DOWNLOAD_AND_RUN.md`. You do not need to build anything.
 
 ## Versions
 
@@ -59,7 +59,7 @@ All three scripts are in `tools\windows\`, run from any `cmd` window, and stop a
 |---|---|---|
 | `Build-PokeVerse-Client-Windows.bat [release\|debug]` | Loads the MSVC x64 environment (vswhere + vcvars64) unless `cl.exe` is already on `PATH`, then runs `tools/build_redemption.sh` and `tools/stage_redemption.sh` in Git Bash | `dist\client-redemption\pokeverse-client.exe` (Release) or `dist\client-redemption-debug\` |
 | `Build-PokeVerse-Server-Windows.bat` | Runs `tools/build_server.sh` in the MSYS2 UCRT64 shell | `dist\server\` |
-| `Build-PokeVerse-Windows.bat` | Both of the above, then `tools/package_windows.sh`, which assembles and validates the test package | `dist\windows\PokeVerse-Windows-Test\` |
+| `Build-PokeVerse-Windows.bat` | Both of the above, then `tools/package_windows.sh`, which assembles and validates the development package | `dist\windows\PokeVerse-Windows-Dev\` |
 
 Environment variables: `VCPKG_ROOT` (required for the client), `GIT_BASH` (default `%ProgramFiles%\Git\bin\bash.exe`), `MSYS2_ROOT` (default `C:\msys64`), `BUILD_TYPE` for the server (`RelWithDebInfo` by default, or `Release`/`Debug`).
 
@@ -67,7 +67,7 @@ The first client build compiles every vcpkg dependency and takes the longest; la
 
 ## What the package contains
 
-`tools/package_windows.sh` renames the client to `PokeVerse.exe` and the server to `PokeVerseServer.exe`, adds the 854 SPR/DAT, the server's MinGW DLLs (listed in `server\required-dlls.txt`), the database schema, migrations and the development seed, the `.bat` launchers and `README-WINDOWS-TESTING.txt`.
+`tools/package_windows.sh` copies the client (`client\pokeverse-client.exe`) and the server (`server\pokeverse-server.exe`, with `config.lua` set to the local development database), adds the 854 SPR/DAT, the server's MinGW DLLs (listed in `server\required-dlls.txt`), the database schema, migrations and the development seed, the `.bat` launchers and `README.txt`. `tools/validate_windows_package.sh --check-imports` then checks that every DLL an executable imports is shipped or part of Windows.
 
 `tools/validate_windows_package.sh` then refuses the package if it finds any of these:
 - harness or debug builds, the smoke `otclientrc.lua` or auto-login code;
@@ -89,7 +89,7 @@ The first client build compiles every vcpkg dependency and takes the longest; la
   ```
 
   The smoke copies the client to a temporary folder with a test `otclientrc.lua`; the dist itself never contains test code. On a headless machine it needs an OpenGL driver (CI copies Mesa llvmpipe DLLs into the temporary copy only).
-- **Package**: follow `README-WINDOWS-TESTING.txt`, then the checklist in `WINDOWS_HANDS_ON_TESTING.md`.
+- **Package**: follow `README.txt`, then the checklist in `WINDOWS_HANDS_ON_TESTING.md`.
 
 ## Common errors
 

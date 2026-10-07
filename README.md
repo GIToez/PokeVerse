@@ -6,6 +6,10 @@ PokeVerse is an independent Pokémon MMORPG project currently based on the PokeJ
 
 **Goals:** modernize the engine and client, improve the UI, and expand the gameplay systems, while keeping the strengths of the PokeJornadas base (its custom interface, Pokémon enhancement systems, dungeons, battle pass and market).
 
+## Download and run
+
+Every green run of the [Platforms workflow](https://github.com/GIToez/PokeVerse/actions/workflows/platforms.yml) publishes ready-to-run development builds as artifacts: `PokeVerse-Windows-Dev`, `PokeVerse-Linux-Dev` and `PokeVerse-Android-arm64`. Version tags (`v*`) attach them to [GitHub Releases](https://github.com/GIToez/PokeVerse/releases). No compiler or build tools are needed to test; see [docs/DOWNLOAD_AND_RUN.md](docs/DOWNLOAD_AND_RUN.md).
+
 ## Status
 
 **Phase 1 (import and audit) is complete. Nothing has been built or run yet.**

@@ -77,7 +77,7 @@ OTCLIENT_ANDROID_ABIS=arm64-v8a ./build_luajit_android.sh
 cd android && OTCLIENT_ANDROID_ABIS=arm64-v8a ./gradlew :app:assembleRelease
 ```
 
-The output is `client-redemption/android/app/build/outputs/apk/release/*.apk` (CI artifact `pokeverse-client-android-arm64`). The Android build writes `luajit-src/`, `android/app/libs` and `android/app/build` inside `client-redemption/`. These are upstream's Gradle conventions. `android/app/libs` and `build/` are ignored by upstream's `.gitignore`; the root `.gitignore` adds `luajit-src/` and the generated `data.zip`.
+The output is `client-redemption/android/app/build/outputs/apk/release/*.apk` (CI artifact `PokeVerse-Android-arm64` with `PokeVerse-Android-arm64.apk`, checked by `tools/validate_android_apk.sh`). The Android build writes `luajit-src/`, `android/app/libs` and `android/app/build` inside `client-redemption/`. These are upstream's Gradle conventions. `android/app/libs` and `build/` are ignored by upstream's `.gitignore`; the root `.gitignore` adds `luajit-src/` and the generated `data.zip` and `data_stamp.txt`.
 
 Android uses the same game protocol as the desktop clients. There is no separate gameplay protocol.
 

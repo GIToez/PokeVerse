@@ -4,9 +4,9 @@ A checklist for a person playing the Windows test package on a real Windows 10/1
 
 ## Before you start
 
-1. Download the `PokeVerse-Windows-Test` artifact from the latest green "Platforms" run, or build it (`BUILD_WINDOWS.md`).
+1. Download `PokeVerse-Windows-Dev.zip` (the `PokeVerse-Windows-Dev` artifact of the latest green "Platforms" run, or a GitHub Release; see `DOWNLOAD_AND_RUN.md`), or build it (`BUILD_WINDOWS.md`).
 2. Extract it to a folder such as `C:\PokeVerse-Test\`.
-3. Follow `README-WINDOWS-TESTING.txt` in that folder: install MariaDB 10.11, run `Setup-PokeVerse-Database.bat` with development accounts, then `Start-PokeVerse-Test.bat`.
+3. Follow `README.txt` in that folder: install MariaDB 10.11, run `Setup Database.bat` with development accounts, then `Start Server and Client.bat`.
 4. Record the Windows version (`winver`), the GPU and its driver version.
 
 Mark every row **PASS**, **FAIL** or **NOT TESTED**, with a note. For each FAIL, attach a screenshot (Win+Shift+S) and the logs:
@@ -20,9 +20,9 @@ The development accounts are `player`/`player` (Trainer) and `admin`/`admin` (GM
 
 | # | Check | Expected | Result |
 |---|---|---|---|
-| 1.1 | `Setup-PokeVerse-Database.bat`, first run | Ends with "Database setup: SUCCESS" | |
-| 1.2 | `Setup-PokeVerse-Database.bat`, second run | SUCCESS, data kept | |
-| 1.3 | `Start-PokeVerse-Test.bat` | Server window reaches "server Online!", then the client opens | |
+| 1.1 | `Setup Database.bat`, first run | Ends with "Database setup: SUCCESS" | |
+| 1.2 | `Setup Database.bat`, second run | SUCCESS, data kept | |
+| 1.3 | `Start Server and Client.bat` | Server window reaches "server Online!", then the client opens | |
 | 1.4 | SmartScreen / antivirus | Note any prompt (the build is unsigned) | |
 | 1.5 | Folder with spaces in its path (e.g. `C:\PokeVerse Test\`) | Everything above still works | |
 
@@ -98,7 +98,7 @@ Run two clients, or log in one after the other. GM Admin opens the market anywhe
 |---|---|---|---|
 | 7.1 | GM `/shutdown` | Server saves and its window closes with exit code 0 | |
 | 7.2 | Close the server window with X instead | Saves before exiting | |
-| 7.3 | `Reset-PokeVerse-Database.bat` | Asks for the database name, rebuilds it | |
+| 7.3 | `Reset Development Database.bat` | Asks for the database name, rebuilds it | |
 
 ## Reporting
 
