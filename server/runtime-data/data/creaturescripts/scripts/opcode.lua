@@ -99,7 +99,7 @@ function onExtendedOpcode(cid, opcode, buffer)
 	--market
   elseif opcode == GameServerOpcodes.Market then
     if string.find(buffer, '###MARKETALL###') then
-      doRefreshMarketItems()
+      doRefreshMarketItems(true)
       sendMarketBuyItems(cid, "Todos", 1, 1)
       sendMarketSellItems(cid)
       sendMarketOffers(cid)

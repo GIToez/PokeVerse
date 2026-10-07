@@ -191,6 +191,7 @@ end
 
 function nearOnMarket(cid)
   local lastMarketPosition = getPlayerStorageValue(cid, playersStorages.marketPos)
+  if type(lastMarketPosition) ~= "string" then return false end
   local pos = {x = 0,y = 0,z = 0,stackpos = 0}
   local explode = string.explode(lastMarketPosition, ',')
   for s=1, #explode do
@@ -224,7 +225,8 @@ function refreshMarketOnClient(cid)
   sendMarketHistoric(cid)
 end
 
-function doRefreshMarketItems()
+-- Each script interface has its own Lua state and its own market_items copy; force reloads it from the database.
+function doRefreshMarketItems(force)
   local refresh = false
   for item_code, market_item in pairs(market_items) do
     if market_item.time-os.time() < 0 then
@@ -254,7 +256,7 @@ function doRefreshMarketItems()
       end
 	end
   end
-  if refresh then getMarketItems() end
+  if refresh or force then getMarketItems() end
 end
 
 function setMarketHistoric(guid, negotiation, cid)
