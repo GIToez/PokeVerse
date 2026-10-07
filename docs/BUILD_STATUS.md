@@ -1,6 +1,21 @@
 # Build Status
 
-**Nothing has been built or run yet.** This document lists what build inputs exist and what is missing, based only on reading the files.
+## Current status (Phase 3)
+
+Everything below is built from source in this repository; the shipped binaries are not used.
+
+| Component | Linux | Windows | Android | Details |
+|---|---|---|---|---|
+| Server (`server/source/`) | **PASS** (GCC, CMake; `tools/build_server.sh`) | **PASS** (MSYS2 UCRT64 / MinGW-w64, CI `windows-server.yml`) | n/a | `BUILD_SERVER_LINUX.md`, `BUILD_SERVER_WINDOWS.md` |
+| Redemption client (`client-redemption/`) | **PASS** Release and Debug | **PASS** Release and Debug (MSVC) | **PASS** arm64-v8a APK | `BUILD_REDEMPTION.md`, CI `platforms.yml` |
+| Legacy client (`client/source/`) | **PASS** (production, debug, harness variants) | NOT TESTED | n/a | `CLIENT_VARIANTS.md` |
+| Database | **PASS** (`tools/setup_dev_db.sh`, MariaDB) | **PASS** (CI, MariaDB 10.11) | n/a | `DATABASE.md` |
+
+Runtime results per platform are in `PLATFORM_COMPATIBILITY.md`.
+
+## Phase 1 snapshot (historical)
+
+The rest of this document is the Phase 1 inventory, written before anything was built. It lists what build inputs exist and what was missing, based only on reading the files.
 
 | Component | Source | Build system(s) | Toolchain implied | Third-party deps shipped? | Status |
 |---|---|---|---|---|---|
