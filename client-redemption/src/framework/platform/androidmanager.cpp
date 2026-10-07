@@ -27,6 +27,11 @@
 #include <framework/core/resourcemanager.h>
 #include <framework/sound/soundmanager.h>
 
+#include <filesystem>
+#include <fstream>
+#include <iterator>
+#include <system_error>
+
 AndroidManager g_androidManager;
 
 AndroidManager::~AndroidManager() {
@@ -116,10 +121,25 @@ void AndroidManager::setClipboardText(const std::string& text) {
 
 void AndroidManager::unZipAssetData() {
     std::string destFolder = getAppBaseDir() + "/game_data/";
+    const std::string stampPath = destFolder + ".data_stamp";
+
+    // data_stamp.txt identifies the data.zip inside this APK. When an updated APK carries a
+    // different stamp, the old game_data is replaced; user settings live outside game_data.
+    std::string assetStamp;
+    if (AAsset* stampAsset = AAssetManager_open(m_app->activity->assetManager, "data_stamp.txt", AASSET_MODE_BUFFER)) {
+        assetStamp.assign(static_cast<const char*>(AAsset_getBuffer(stampAsset)), AAsset_getLength(stampAsset));
+        AAsset_close(stampAsset);
+    }
 
     const std::filesystem::path initLua { destFolder + "init.lua" };
     if (std::filesystem::exists(initLua)) {
-        return;
+        std::ifstream stampIn(stampPath, std::ios::binary);
+        const std::string installedStamp { std::istreambuf_iterator<char>(stampIn), std::istreambuf_iterator<char>() };
+        if (assetStamp.empty() || installedStamp == assetStamp) {
+            return;
+        }
+        std::error_code ec;
+        std::filesystem::remove_all(destFolder, ec);
     }
 
     AAsset* dataAsset = AAssetManager_open(
@@ -141,6 +161,10 @@ void AndroidManager::unZipAssetData() {
 
     AAsset_close(dataAsset);
     free(dataContent);
+
+    if (!assetStamp.empty()) {
+        std::ofstream(stampPath, std::ios::binary) << assetStamp;
+    }
 }
 
 std::string AndroidManager::getAppBaseDir() {

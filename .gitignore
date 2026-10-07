@@ -16,6 +16,7 @@ CMakeFiles/
 # --- Redemption Android build inputs generated in the source tree (docs/BUILD_REDEMPTION.md) ---
 client-redemption/luajit-src/
 client-redemption/android/app/src/main/assets/data.zip
+client-redemption/android/app/src/main/assets/data_stamp.txt
 
 # --- Compiler output and native binaries anywhere else ---
 *.exe

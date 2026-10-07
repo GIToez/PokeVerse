@@ -16,11 +16,13 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.github.otclient"
+        // Development builds install as their own app; staging/production get their own ids later.
+        applicationId = System.getenv("POKEVERSE_ANDROID_APP_ID") ?: "com.pokeverse.client.dev"
         minSdk = 21
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        // CI passes the run number so each build installs over the previous one.
+        versionCode = (System.getenv("POKEVERSE_VERSION_CODE") ?: "1").toInt()
+        versionName = System.getenv("POKEVERSE_VERSION_NAME") ?: "0.0.0-dev"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
