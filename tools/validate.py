@@ -8,6 +8,8 @@ Checks:
              (case-sensitive, as on Linux)
   modules    client .otmod dependencies name existing modules and listed scripts exist
   payloads   no client module evaluates server payloads with loadstring
+  codec      server table.tostring payloads round-trip through client table.fromLiteral,
+             and code-bearing input is rejected (tools/test_payload_codec.lua)
   db         every table referenced by server SQL exists in the dump + migrations
 
 Usage: tools/validate.py [check ...]   (default: all checks). Exit status 1 on any failure.
@@ -197,6 +199,19 @@ def check_payloads():
     return errors
 
 
+def check_codec():
+    lua = shutil.which("lua5.1") or shutil.which("lua")
+    if not lua:
+        return ["lua5.1 not found (apt install lua5.1)"]
+    res = subprocess.run([lua, os.path.join("tools", "test_payload_codec.lua")],
+                         cwd=ROOT, capture_output=True, text=True)
+    out = (res.stdout + res.stderr).strip().splitlines()
+    if res.returncode == 0:
+        print("  codec: " + (out[-1] if out else "ok"))
+        return []
+    return out or ["test_payload_codec.lua failed"]
+
+
 def check_db():
     res = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "check_db_tables.py")],
                          capture_output=True, text=True)
@@ -211,6 +226,7 @@ CHECKS = {
     "scripts": check_scripts,
     "modules": check_modules,
     "payloads": check_payloads,
+    "codec": check_codec,
     "db": check_db,
 }
 
