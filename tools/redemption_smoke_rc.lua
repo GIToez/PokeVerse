@@ -60,14 +60,31 @@ local function inspectGame()
         end
     end
 
+    local function findCreature(match)
+        for _, tile in ipairs(g_map.getTiles(player:getPosition().z)) do
+            for _, creature in ipairs(tile:getCreatures()) do
+                if match(creature) then
+                    return creature
+                end
+            end
+        end
+    end
+    local function findSummon()
+        return findCreature(function(creature) return creature:isLocalPlayerSummon() end)
+    end
+
     local pokebar = modules.game_pokebar and modules.game_pokebar.pokemonBar
-    local firstPortrait
+    -- Portraits of Pokemon that can be summoned (fainted ones say FNT).
+    local ready = {}
     if pokebar then
         local portraits = {}
         for _, child in ipairs(pokebar:getChildren()) do
             if child:getStyleName() == 'BeltItem' then
-                firstPortrait = firstPortrait or child
-                table.insert(portraits, child:getId() .. '=' .. child:getChildById('PokeName'):getText())
+                local health = child:getChildById(child:getId() .. 'label'):getText()
+                if health ~= 'FNT' then
+                    table.insert(ready, child)
+                end
+                table.insert(portraits, child:getId() .. '=' .. child:getChildById('PokeName'):getText() .. '(' .. health .. ')')
             end
         end
         report('MODULE game_pokebar visible=%s portraits=%d %s', tostring(pokebar:isVisible()), #portraits,
@@ -76,27 +93,89 @@ local function inspectGame()
         report('MODULE game_pokebar missing')
     end
 
-    local function findSummon()
-        for _, tile in ipairs(g_map.getTiles(player:getPosition().z)) do
-            for _, creature in ipairs(tile:getCreatures()) do
-                if creature:isLocalPlayerSummon() then
-                    return creature
-                end
+    -- Click portraits the way a player does; the module sends /cp <slot>. With a Pokemon already out,
+    -- the server recalls it and summons the clicked one 1.5 s later.
+    local function clickPortrait(portrait, label, nextStep)
+        local id = portrait:getId()
+        local name = portrait:getChildById('PokeName'):getText()
+        portrait:onMouseRelease(portrait:getPosition(), MouseLeftButton)
+        scheduleEvent(function()
+            local summon = findSummon()
+            local current = pokebar:getChildById(id)
+            report('%s %s creature=%s level=%d health=%s', label, summon and summon:getName() == name and 'OK' or 'FAILED',
+                summon and summon:getName() or '-', summon and summon:getPokeLevel() or 0,
+                current and current:getChildById(id .. 'label'):getText() or '-')
+            nextStep()
+        end, 3000)
+    end
+
+    local lastCooldown = {}
+    connect(g_game, { onPokemonMoveCooldown = function(itemId, cooldown) lastCooldown[itemId] = cooldown end })
+
+    -- The move bar fills for the summoned Pokemon. Moves need a target, so a GM spawns a wild one
+    -- (/m needs access 5). Clicking a move says "m<slot>"; the server answers with its cooldown.
+    local function useMove(nextStep)
+        local window = modules.game_pokemoves and modules.game_pokemoves.pokemonMovesWindow
+        if not window then
+            report('MODULE game_pokemoves missing')
+            return nextStep()
+        end
+        local icons, names = {}, {}
+        for _, child in ipairs(window:getChildren()) do
+            if child:getStyleName() == 'MoveItem' then
+                table.insert(icons, child)
+                table.insert(names, child:getTooltip())
             end
         end
+        report('MODULE game_pokemoves visible=%s moves=%d %s', tostring(window:isVisible()), #icons, table.concat(names, ','))
+        if #icons == 0 then
+            return nextStep()
+        end
+        g_game.talk('/m Rattata')
+        scheduleEvent(function()
+            local target = findCreature(function(creature)
+                return creature:getName() == 'Rattata' and not creature:isLocalPlayerSummon()
+            end)
+            if target then
+                g_game.attack(target)
+            end
+            local healthBefore = target and target:getHealthPercent() or -1
+            local icon = icons[1]
+            local id, name, moveIcon = icon:getId(), icon:getTooltip(), icon:getItemId()
+            icon:onMouseRelease(icon:getPosition(), MouseLeftButton)
+            scheduleEvent(function()
+                -- The server usually rebuilds the bar after a move, so look the icon up again.
+                local current = window:getChildById(id)
+                report('MOVE %s move=%s cooldown=%s overlay=%s target=%s health=%d->%d',
+                    lastCooldown[moveIcon] and 'OK' or 'NONE', name, tostring(lastCooldown[moveIcon]),
+                    tostring(current and current:getChildById(id .. 'cooldown') ~= nil), target and target:getName() or '-',
+                    healthBefore, target and target:getHealthPercent() or -1)
+                g_game.cancelAttack()
+                nextStep()
+            end, 600)
+        end, 1000)
     end
-    local function portraitHealth(portrait)
-        return portrait:getChildById(portrait:getId() .. 'label'):getText()
+
+    local function pokemonTests(nextStep)
+        if not ready[1] then
+            return nextStep()
+        end
+        clickPortrait(ready[1], 'SUMMON', function()
+            if ready[2] then
+                clickPortrait(ready[2], 'SWITCH', function() useMove(nextStep) end)
+            else
+                useMove(nextStep)
+            end
+        end)
     end
 
     local directions = { South, North, East, West }
     local step = 0
-    local function tryWalk()
+    local function tryWalk(nextStep)
         step = step + 1
         if step > #directions then
             report('WALK FAILED')
-            g_game.safeLogout()
-            return
+            return nextStep()
         end
         local before = player:getPosition()
         g_game.walk(directions[step])
@@ -105,45 +184,18 @@ local function inspectGame()
             if after.x ~= before.x or after.y ~= before.y then
                 report('WALK OK %s -> %s', posString(before), posString(after))
                 g_game.talk('PokeVerse Redemption smoke')
-                scheduleEvent(function() g_game.safeLogout() end, 1500)
+                nextStep()
             else
-                tryWalk()
+                tryWalk(nextStep)
             end
         end, 1500)
     end
 
-    if not firstPortrait then
-        tryWalk()
-        return
-    end
-    -- Click portraits the way a player does; the module sends /cp <slot>. With a Pokemon already out,
-    -- the server recalls it and summons the clicked one 1.5 s later.
-    local function clickAndReport(portrait, label, nextStep)
-        local id = portrait:getId()
-        local name = portrait:getChildById('PokeName'):getText()
-        portrait:onMouseRelease(portrait:getPosition(), MouseLeftButton)
-        scheduleEvent(function()
-            local summon = findSummon()
-            local current = pokebar:getChildById(id)
-            local ok = summon and summon:getName() == name
-            report('%s %s creature=%s level=%d health=%s', label, ok and 'OK' or 'FAILED', summon and summon:getName() or '-',
-                summon and summon:getPokeLevel() or 0, current and portraitHealth(current) or '-')
-            nextStep()
-        end, 3000)
-    end
-    local secondPortrait
-    for _, child in ipairs(pokebar:getChildren()) do
-        if child:getStyleName() == 'BeltItem' and child ~= firstPortrait then
-            secondPortrait = child
-            break
-        end
-    end
-    clickAndReport(firstPortrait, 'SUMMON', function()
-        if secondPortrait then
-            clickAndReport(secondPortrait, 'SWITCH', tryWalk)
-        else
-            tryWalk()
-        end
+    -- The move test spawns a hostile Pokemon, so walking comes first and the Pokemon tests last.
+    tryWalk(function()
+        pokemonTests(function()
+            scheduleEvent(function() g_game.safeLogout() end, 1500)
+        end)
     end)
 end
 
@@ -176,11 +228,17 @@ connect(g_game, {
 })
 
 local pokeVerseSignals = { 'onPokemonMoves', 'onMoveBarOpen', 'onMoveBarClose', 'onPokemonBarAdd', 'onPokemonBarOpen',
-    'onPokemonBarClose', 'onPokedexStatus', 'onStatusBarClear', 'onDollCaseStatus', 'onTip', 'onLootList' }
+    'onPokemonBarClose', 'onPokemonMoveCooldown', 'onPokedexStatus', 'onStatusBarClear', 'onDollCaseStatus', 'onTip',
+    'onLootList' }
 local handlers = {}
 for _, name in ipairs(pokeVerseSignals) do
     handlers[name] = function(...)
-        report('POKEVERSE %s args=%d', name, select('#', ...))
+        local values = {}
+        for i = 1, select('#', ...) do
+            local value = select(i, ...)
+            table.insert(values, type(value) == 'table' and ('{' .. table.concat(value, ',') .. '}') or tostring(value))
+        end
+        report('POKEVERSE %s args=%d %s', name, #values, table.concat(values, ' '))
     end
 end
 connect(g_game, handlers)

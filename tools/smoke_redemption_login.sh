@@ -8,8 +8,9 @@
 #      PV_TIMEOUT_MS, DIST (default dist/client-redemption), DISPLAY (Linux; Xvfb is started if
 #      the display is not running), SCREENSHOT (PNG path, captured once the map has loaded, or at
 #      the first smoke line starting with SCREENSHOT_AT),
-#      PV_EXPECT_POKEBAR=1 (the character carries Pokemon: the bar must show a portrait, and clicking it
-#      must summon that Pokemon).
+#      PV_EXPECT_POKEBAR=1 (a GM with Pokemon: the bar must show a portrait, clicking it must summon
+#      that Pokemon, its moves must fill the move bar, and a move used on a spawned Rattata must
+#      come back with a cooldown).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -91,6 +92,8 @@ if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
     if grep -aq '\[pv-smoke\] SWITCH ' "$LOG"; then
         need '\[pv-smoke\] SWITCH OK' "clicking a second portrait did not switch the summoned Pokemon"
     fi
+    need '\[pv-smoke\] MODULE game_pokemoves visible=true moves=[1-9]' "move bar empty for the summoned Pokemon"
+    need '\[pv-smoke\] MOVE OK' "using a move from the move bar got no cooldown from the server"
 fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
