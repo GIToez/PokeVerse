@@ -725,6 +725,8 @@ locale = {
     ["See"] = "Ver",
     ["invalid"] = "inválido",
     ["Set a price:"] = "Estipular um Valor:",
+    ["Hunt the Pokemon"] = "Cace o Pokémon",
+    ["Hunting mission"] = "Missão de caça",
   }
 }
 
