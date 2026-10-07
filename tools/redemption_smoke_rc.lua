@@ -276,6 +276,12 @@ local function inspectGame()
         scheduleEvent(function()
             report('TEST POSITION %s', posString(player:getPosition()))
             clickPortrait(ready[1], 'SUMMON', function()
+                -- PokeVerse reuses the Tibia stats: mana is the summon's energy and magic level its level.
+                local summon = findSummon()
+                report('HUD trainer=%d/%d energy=%d/%d pokemonLevel=%d(%d%%) summon=%s health=%d%% skull=%d shield=%d',
+                    player:getHealth(), player:getMaxHealth(), player:getMana(), player:getMaxMana(),
+                    player:getMagicLevel(), player:getMagicLevelPercent(), summon and summon:getName() or '-',
+                    summon and summon:getHealthPercent() or -1, player:getSkull(), player:getShield())
                 local summoned = ready[2] or ready[1]
                 -- Pokemon Info runs before the move test, which spawns a hostile Pokemon.
                 local afterSwitch = function() pokemonInfoTests(summoned, function() useMove(nextStep) end) end

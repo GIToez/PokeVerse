@@ -97,6 +97,7 @@ if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
     if grep -aq '\[pv-smoke\] SWITCH ' "$LOG"; then
         need '\[pv-smoke\] SWITCH OK' "clicking a second portrait did not switch the summoned Pokemon"
     fi
+    need '\[pv-smoke\] HUD trainer=[1-9][0-9]*/[1-9][0-9]* energy=[0-9]*/[1-9][0-9]* pokemonLevel=[1-9]' "the HUD stats (trainer health, Pokemon energy and level) were not received"
     need '\[pv-smoke\] MODULE game_pokemoves visible=true moves=[1-9]' "move bar empty for the summoned Pokemon"
     need '\[pv-smoke\] MOVE OK' "using a move from the move bar got no cooldown from the server"
     need '\[pv-smoke\] MODULE game_pokemonInfo button=true' "Pokemon Info button missing from the main panel"
