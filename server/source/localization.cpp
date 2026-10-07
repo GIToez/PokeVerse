@@ -337,14 +337,13 @@ Localization::~Localization()
 
 std::string Localization::t(LocalizationLang_t lang, std::string localString)
 {
-    if (lang != LANG_EN_US) {
-        try {
-            if ((*languages[lang]).count(localString)) {
-                //return (*languages[lang])[PARSE_STRINGS_REVERSE[localString]];
-                return (*languages[lang])[localString];
-            }
-        }
-        catch(...) {}
+    // languages[] only has entries for the translated languages; operator[] would
+    // insert a null map for any other id.
+    std::map<LocalizationLang_t, LocalizationMap*>::iterator it = languages.find(lang);
+    if (lang != LANG_EN_US && it != languages.end() && it->second) {
+        LocalizationMap::iterator str = it->second->find(localString);
+        if (str != it->second->end())
+            return str->second;
     }
     return localString;
 }

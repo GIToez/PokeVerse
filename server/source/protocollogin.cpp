@@ -367,6 +367,9 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		return false;
 	}
 	
+	if (lang > LANG_LAST)
+		lang = -1;
+
 	if (lang != -1 && lang != account.language) {
 	    account.language = (LocalizationLang_t)lang;
 	    IOLoginData::getInstance()->setAccountLanguage(account.number, (LocalizationLang_t)lang);

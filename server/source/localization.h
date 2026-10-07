@@ -26,6 +26,11 @@ enum LocalizationLang_t
      LANG_LAST = LANG_ES_ES
 };
 
+inline LocalizationLang_t sanitizeLanguage(int32_t lang)
+{
+	return (lang >= LANG_EN_US && lang <= LANG_LAST) ? (LocalizationLang_t)lang : LANG_EN_US;
+}
+
 /*enum LocalizationString_t
 {
 	__L_NOTPOSSIBLE,

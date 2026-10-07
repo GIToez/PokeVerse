@@ -14251,6 +14251,11 @@ int32_t LuaScriptInterface::luaSetPlayerLanguage(lua_State* L)
         return 1;
     }
 
+    if (language > LANG_LAST) {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
     player->setLanguage((LocalizationLang_t)language);
     lua_pushboolean(L, true);
     return 1;
