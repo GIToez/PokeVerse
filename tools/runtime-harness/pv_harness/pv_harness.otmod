@@ -1,0 +1,11 @@
+Module
+  name: pv_harness
+  description: PokeVerse runtime test driver (development only; installed by tools/runtime_test.sh)
+  author: PokeVerse
+  website: ~
+  sandboxed: true
+  autoload: true
+  autoload-priority: 5000
+  scripts: [ pv_harness ]
+  @onLoad: init()
+  @onUnload: terminate()
