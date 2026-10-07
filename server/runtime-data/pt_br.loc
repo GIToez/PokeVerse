@@ -6921,3 +6921,16 @@ You finished the %s task and gained %d experience points.@Você terminou a missão
 The %s task was cancelled.@Missão de %s cancelada.
 Congratulations, you found %s.@Parabéns, você achou %s.
 Congratulations, you completed your task. Collect your reward in the Tasks window.@Parabéns, você completou sua missão. Colete sua recompensa na janela de Missões.
+You do not have a profession.@Você não tem profissão.
+There are no items for this rank.@Nenhum item para esta classificação.
+There is no item with this ID.@Nenhum item com este ID.
+Your profession level is too low to craft this item.@Nível insuficiente para criar este item.
+You do not have the required materials.@Você não tem os materiais necessários.
+Missing: %s.@Faltam: %s.
+You do not have enough diamond dust.@Você não possui diamond dust suficiente.
+Crafting sped up!@Acelerado!
+There is nothing to collect.@Nenhum item para coletar.
+Please wait, nothing is ready to collect yet.@Aguarde, não há itens para coletar.
+You collected %dx %s.@Você coletou %dx %s.
+You advanced in %s from level %d to level %d.@Você avançou em %s do nível %d para o nível %d.
+You advanced in %s to level %d.@Você avançou em %s para o nível %d.
