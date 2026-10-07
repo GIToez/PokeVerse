@@ -455,7 +455,7 @@ local cfg = config[param]
 	if not result then
 		SHOP.refund(cid, cfg.cost)
 		SHOP.log(cid, param, cfg.cost, "refunded")
-		doPlayerSendCancel(cid, __L "Your purchase could not be delivered (no room?). Your diamonds were refunded.")
+		doPlayerSendCancel(cid, __L(cid, "Your purchase could not be delivered (no room?). Your diamonds were refunded."))
 		reply("noactive")
 		doSendShopRent(cid)
 		return true
