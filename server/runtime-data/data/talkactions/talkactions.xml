@@ -73,7 +73,7 @@
 	
 	<!-- Gods -->
 	<talkaction log="yes" words="/guardian" event="script" value="../../lib/ps/events/talkactions/guardianTime.lua"/>
-	<talkaction log="yes" words="/teste" event="script" value="../../lib/ps/events/talkactions/teste.lua"/>
+	<talkaction log="yes" words="/teste" access="4" event="script" value="../../lib/ps/events/talkactions/teste.lua"/>
 	<talkaction log="yes" words="/addskill" access="5" event="function" value="addSkill"/>
 	<talkaction log="yes" words="/attr" access="5" event="function" value="thingProporties"/>
 	<talkaction log="yes" words="/serverdiag" access="5" event="function" value="diagnostics"/>
@@ -98,8 +98,7 @@
 	<talkaction log="yes" words="/owner" access="4" event="script" value="owner.lua"/>
 	<talkaction log="yes" words="/storage" access="4" event="script" value="storage.lua"/>
 	<talkaction log="yes" words="/config" access="4" event="script" value="configinfo.lua"/>
-	<!-- <talkaction log="yes" words="/i" access="4" event="script" value="createitem.lua"/> -->
-	<talkaction log="yes" words="/i" event="script" value="createitem.lua"/>
+	<talkaction log="yes" words="/i" access="4" event="script" value="createitem.lua"/>
 	<talkaction access="4" words="/z" event="script" value="magiceffect.lua" description="Show magic effects."/>
 	<talkaction access="4" words="/x" event="script" value="animationeffect.lua" description="Show projectiles."/>
 	<talkaction access="4" words="/y" event="script" value="animatedtext.lua" description="Show animated texts."/>
