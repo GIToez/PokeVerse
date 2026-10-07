@@ -2,7 +2,7 @@
 # End-to-end login smoke test with the source-built client (dist/client) against a
 # running source-built server: log in as the seeded development account, pick the
 # first character and check that the server reports it entering the game.
-# Needs an X display (DISPLAY, e.g. Xvfb) and xdotool. Saves a screenshot when
+# Needs an X display (DISPLAY, e.g. Xvfb), xdotool and xwininfo (x11-utils). Saves a screenshot when
 # ImageMagick's `import` is available.
 # Usage: tools/smoke_login.sh [account] [password] [character] [server-log]
 # Environment: SHOT (screenshot path), CLIENT_LOG (client output), KEEP_CLIENT=1,
@@ -42,17 +42,24 @@ done
 [ -n "$window" ] || { echo "FAIL: client window did not appear" >&2; exit 1; }
 sleep 8
 xdotool windowactivate --sync "$window" 2>/dev/null || xdotool windowfocus --sync "$window"
-eval "$(xdotool getwindowgeometry --shell "$window")"
-# Account field of the enter-game window, relative to the 800x600 client area.
-xdotool mousemove $((X + 173)) $((Y + 254)) click 1
+# Client-area origin. Under a window manager `xdotool getwindowgeometry` reports a
+# position offset by the frame decorations; xwininfo's absolute origin does not.
+X=$(xwininfo -id "$window" | awk '/Absolute upper-left X/ {print $NF}')
+Y=$(xwininfo -id "$window" | awk '/Absolute upper-left Y/ {print $NF}')
+# Account and password inputs of the enter-game window, relative to the 800x600 client
+# area. Click each one: without a window manager keyboard focus follows the pointer.
+xdotool mousemove $((X + 178)) $((Y + 281)) click 1
 sleep 0.5
+xdotool key ctrl+a BackSpace
 xdotool type --delay 50 "$ACCOUNT"
-xdotool key Tab
+xdotool mousemove $((X + 178)) $((Y + 363)) click 1
+sleep 0.5
+xdotool key ctrl+a BackSpace
 xdotool type --delay 50 "$PASSWORD"
 xdotool key Return
 sleep 5
 # "Selecionar" button of the character list (first character is preselected).
-xdotool mousemove $((X + 467)) $((Y + 471)) click 1
+xdotool mousemove $((X + 470)) $((Y + 499)) click 1
 
 # The client titles its window "... | Jogador: <name>" once the character is in the game.
 for _ in $(seq 1 30); do

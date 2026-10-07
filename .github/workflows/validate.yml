@@ -37,7 +37,7 @@ jobs:
             libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-regex-dev \
             libxml2-dev libssl-dev liblua5.1-0-dev lua5.1 libmariadb-dev libmariadb-dev-compat libsqlite3-dev libgmp-dev \
             libphysfs-dev zlib1g-dev libglew-dev libgl1-mesa-dev libopenal-dev libvorbis-dev libogg-dev \
-            mariadb-server xvfb xdotool imagemagick
+            mariadb-server xvfb xdotool x11-utils imagemagick
 
       - name: Build server
         run: tools/build_server.sh
