@@ -249,6 +249,15 @@ REGRESSIONS = [
      r"-name game_bot", "packaging: Redemption bot module not refused"),
     ("tools/stage_redemption.sh",
      r'rm -rf "\$DIST/mods/game_bot"', "staging: Redemption bot module shipped"),
+    ("server/runtime-data/data/talkactions/talkactions.xml",
+     r'words="showbuywindowhouse" event="script" value="\.\./\.\./lib/ps/events/talkactions/showBuyWindowHouse\.lua"',
+     "houses: looking at an unowned house broadcasts a test message to every player"),
+    ("server/source/localization.cpp",
+     r"line\[line\.size\(\) - 1\] == '\\r'", "localization: pt_br.loc values keep a trailing CR on Linux"),
+    ("server/source/protocollogin.cpp",
+     r"Localization::t\(account\.language, g_config\.getString\(ConfigManager::MOTD\)\)", "i18n: character-list MOTD not localized"),
+    ("tools/protocol_smoke.sh",
+     r"MSYS2_ARG_CONV_EXCL='\*'", "Windows smoke: MSYS2 rewrites GM commands into paths"),
 ]
 
 
