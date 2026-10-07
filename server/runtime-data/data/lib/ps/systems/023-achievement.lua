@@ -1153,7 +1153,11 @@ SECRET_ACHIEVEMENTS[ACHIEVEMENT_IDS.HALLOWEEN_WON_SATOSHI] = true
 function getPlayerAchievement(cid, achievId)
     local r = db.getResult(string.concat("SELECT 1 FROM `player_achievements` PA WHERE `PA`.`player_id`='",
             getPlayerGUID(cid), "' AND `PA`.`key`='", achievId, "' LIMIT 1;"))
-	return r:getID() ~= -1
+	if (r:getID() == -1) then
+		return false
+	end
+	r:free()
+	return true
 end
 
 function doPlayerAchievementCheck(cid, achievId, var)

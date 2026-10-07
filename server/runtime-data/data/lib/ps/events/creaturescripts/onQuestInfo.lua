@@ -6,8 +6,9 @@ function onQuestInfo(cid, questId)
     if (questId == QUEST_IDS.ACHIEVEMENTS) then
         local t = {}
         for _, achiev in pairs(ACHIEVEMENT_IDS) do
-            if (not getAchievementSecret(achiev) or getPlayerAchievement(cid, achiev)) then
-                t[#t + 1] = getAchievementName(cid, achiev)
+            local earned = getPlayerAchievement(cid, achiev)
+            if (not getAchievementSecret(achiev) or earned) then
+                t[#t + 1] = getAchievementName(cid, achiev) .. (earned and __L(cid, " (completed)") or "")
                 t[#t + 1] = __L(cid, getAchievementDescription(achiev))
             end
         end
