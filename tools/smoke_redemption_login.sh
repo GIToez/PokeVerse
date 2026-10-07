@@ -121,6 +121,10 @@ if ! grep -aq '\[pv-smoke\] DEX SKIPPED' "$LOG"; then
 fi
 need '\[pv-smoke\] QUESTLOG OK' "the quest log did not arrive (the server crashed on it before the Quest::getName fix)"
 need '\[pv-smoke\] ACHIEVEMENTS OK entries=[1-9]' "the Achievements quest line was empty"
+need '\[pv-smoke\] TM WINDOW OK moves=3' "the TM chooser did not show the Pokemon's moves"
+need '\[pv-smoke\] TM CONFIRM OK' "choosing a move did not open the TM confirmation"
+need '\[pv-smoke\] TM BACK OK' "cancelling the TM confirmation did not go back to the move list"
+need '\[pv-smoke\] TM FORGED REJECTED closed=true' "the server accepted /tc without a TM in use"
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"

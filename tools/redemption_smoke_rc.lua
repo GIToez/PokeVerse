@@ -386,6 +386,39 @@ local function inspectGame()
         end, 1500)
     end
 
+    -- TM chooser: the window is driven by a locally injected 0xFF 0x0D signal (Mega Punch over Tackle,
+    -- Ember, Scratch). Confirming says /tc; with no TM actually used the server must refuse it.
+    local lastCancel
+    connect(g_game, { onTextMessage = function(mode, text) lastCancel = text end })
+    local function tmTests(nextStep)
+        local tm = modules.game_tmchoose
+        if not tm then
+            report('MODULE game_tmchoose missing')
+            return nextStep()
+        end
+        signalcall(g_game.onTmChoose, 12026, { 11749, 11695, 11726 })
+        local state = tm.getState()
+        report('TM WINDOW %s moves=%d', state.choose and state.moves == 3 and 'OK' or 'FAILED', state.moves)
+        tm.choose(2)
+        state = tm.getState()
+        report('TM CONFIRM %s chosen=%s', state.confirm and not state.choose and state.chosen == 11695 and 'OK' or 'FAILED',
+            tostring(state.chosen))
+        scheduleEvent(function()
+            tm.onCancel()
+            state = tm.getState()
+            report('TM BACK %s', state.choose and not state.confirm and 'OK' or 'FAILED')
+            tm.choose(1)
+            lastCancel = nil
+            tm.onConfirm()
+            scheduleEvent(function()
+                state = tm.getState()
+                report('TM FORGED %s closed=%s reply=%s', lastCancel and 'REJECTED' or 'NOREPLY',
+                    tostring(not state.choose and not state.confirm), tostring(lastCancel))
+                nextStep()
+            end, 1000)
+        end, tonumber(os.getenv('PV_TM_HOLD_MS') or '100'))
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -412,8 +445,10 @@ local function inspectGame()
     tryWalk(function()
         pokedexTests(function()
             achievementTests(function()
-                pokemonTests(function()
-                    scheduleEvent(function() g_game.safeLogout() end, 1500)
+                tmTests(function()
+                    pokemonTests(function()
+                        scheduleEvent(function() g_game.safeLogout() end, 1500)
+                    end)
                 end)
             end)
         end)
