@@ -9,6 +9,7 @@ Statuses: **PASS**, **PARTIAL**, **FAIL**, **NOT TESTED**, **BLOCKED**. A row is
 - `tools/smoke_redemption_login.sh` runs the staged client, never the shipped dist, with `tools/redemption_smoke_rc.lua` as its user script.
   - It logs in through the real `ProtocolLogin` and `ProtocolGame` code paths.
   - It then checks the character list, game start, map tiles, a parsed PokeVerse 0xFF signal, a step, a chat line and logout.
+  - With `PV_EXPECT_POKEBAR=1` (GM Admin) it also requires a Pokémon bar portrait and a summon by clicking it. CI first gives GM Admin a Charmander with `/cb`.
   - It fails on any `Unhandled opcode`, parse exception, checksum error, unknown 0xFF sub-opcode or Lua error in the client log.
 - Local Linux runs against the Linux server pass for `player`/Trainer and `admin`/GM Admin.
   - Screenshots: `redemption-linux-ingame-trainer.png`, `redemption-linux-ingame-gm.png`.
@@ -37,7 +38,7 @@ Everything here sits behind `GamePokeVerse`, which is enabled at version 854 onl
 
 ## Gameplay and modules
 
-None of the PokeVerse Lua modules (`client/runtime-data/modules/game_*`) are ported yet. Redemption shows its own upstream UI, so a feature whose server data arrives but has no window is PARTIAL: the protocol works, the UI does not.
+Ported so far: `game_pokebar`. The other PokeVerse Lua modules (`client/runtime-data/modules/game_*`) are not ported yet. Redemption shows its own upstream UI, so a feature whose server data arrives but has no window is PARTIAL: the protocol works, the UI does not.
 
 | Feature | Legacy (harness) | Redemption | Status | Notes |
 |---|---|---|---|---|
@@ -48,9 +49,10 @@ None of the PokeVerse Lua modules (`client/runtime-data/modules/game_*`) are por
 | Inventory | PASS | PASS | PASS | Slots and item ids match the server |
 | Containers / pokébag | PASS | NOT TESTED | NOT TESTED | Parsing is ported; no container was opened |
 | Logout | PASS | PASS | PASS | Clean logout; the server saves |
-| Pokémon bar (summon list) | PASS | PARTIAL | PARTIAL | `onPokemonBarAdd` arrives; no `game_pokemonbar` port |
+| Pokémon bar display (`game_pokebar`) | PASS | PASS | PASS | One portrait per carried ball, built from `onPokemonBarAdd`: icon, name, level, types and health label. `MODULE game_pokebar visible=true portraits=2 poke46=Charmander,poke47=Bulbasaur`. Screenshot: `redemption-linux-pokebar-summon.png` |
+| Summon and switch from the bar (`/cp`) | PASS | PASS | PASS | Clicking a portrait summons that Pokémon, and clicking a second one swaps it (`SUMMON OK creature=Charmander level=15`, `SWITCH OK creature=Bulbasaur level=10`). The active portrait expands and shows its health |
 | Move bar | PASS | PARTIAL | PARTIAL | `onPokemonMoves` arrives; no UI |
-| Summon / recall | PASS | NOT TESTED | NOT TESTED | Needs the pokébar module or a scripted ball use |
+| Recall by using the ball | PASS | NOT TESTED | NOT TESTED | `/cp` on the active Pokémon re-summons it, as in the legacy client; recall goes through using the ball, which the smoke does not do yet |
 | Pokémon Info, EVs, vitamins, friendship, held items | PASS | BLOCKED | BLOCKED | These are extended-opcode modules (`EXTENDED_OPCODE_MAP.md`) that are not ported |
 | Pokédex | PASS | BLOCKED | BLOCKED | The 0xFF Pokédex packets are parsed; no window |
 | Battle Pass, calendar, dungeons, crafting, tasks | PASS / PARTIAL | BLOCKED | BLOCKED | Module port pending |
@@ -60,6 +62,6 @@ None of the PokeVerse Lua modules (`client/runtime-data/modules/game_*`) are por
 
 ## Next steps (in order)
 
-1. Port the pokébar and move-bar modules onto the 0xFF signals, then exercise summon and recall through them.
+1. Port the move-bar module onto the 0xFF signals and use a move from it. (The Pokémon bar is done.)
 2. Port the extended-opcode modules (Pokémon Info, Pokédex, Battle Pass, calendar, dungeons, crafting, tasks, shop, market), using the opcode ids in `EXTENDED_OPCODE_MAP.md`.
 3. Extend `redemption_smoke_rc.lua` the way the legacy runtime harness does, one module at a time, so each row above is decided by a run rather than by inspection.
