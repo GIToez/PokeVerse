@@ -37,7 +37,7 @@ trap '[ "${KEEP_CLIENT:-0}" = 1 ] && [ "${passed:-0}" = 1 ] || kill $client 2>/d
 
 window=""
 for _ in $(seq 1 60); do
-    window=$(xdotool search --name "Jornadas" 2>/dev/null | head -1 || true)
+    window=$(xdotool search --name "PokeVerse" 2>/dev/null | head -1 || true)
     [ -n "$window" ] && break
     sleep 1
 done

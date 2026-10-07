@@ -35,7 +35,7 @@ end
 function hide()
   background:hide()
   local name = g_game.getCharacterName()
-  g_window.setTitle("Pokémon Jornadas | Jogador: "..name)
+  g_window.setTitle("PokeVerse | Jogador: "..name)
   
   modules.game_bottommenu.show()
   removeEvent(myLoopEventId1)

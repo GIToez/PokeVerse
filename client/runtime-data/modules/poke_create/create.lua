@@ -219,7 +219,7 @@ function onRecv(protocol, msg)
 end
 
 function regras()
-    g_platform.openUrl("pokezring.net/regras.php")
+    g_platform.openUrl("TODO - POKEVERSE URL REQUIRED")
   return true
 end
 

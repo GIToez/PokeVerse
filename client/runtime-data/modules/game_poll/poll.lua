@@ -35,7 +35,7 @@ function onPollNotification()
         g_game.requestPollWindow()
         pollIcon:hide()
     end
-    pollIcon:setTooltip(tr("PSoul Poll"))
+    pollIcon:setTooltip(tr("PokeVerse Poll"))
 end
 
 function onOnline()

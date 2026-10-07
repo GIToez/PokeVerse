@@ -83,7 +83,8 @@ int main(int argc, const char* argv[])
     std::vector<std::string> args(argv, argv + argc);
 
     // setup application name and version
-    g_app.setName("Pokecenter");
+    g_app.setName("PokeVerse");
+    // Names the user settings directory (~/.Pokecenter); renaming it orphans existing settings.
     g_app.setCompactName("Pokecenter");
     g_app.setVersion(VERSION);
     g_app.setCode(1, ENCRYPTIONKEY_NUMERIC_FIRST);

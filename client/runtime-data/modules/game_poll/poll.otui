@@ -28,7 +28,7 @@ PollCheckBox < CheckBox
 
 PollWindow < MainWindow
   id: pollWindow
-  !text: tr('PSoul Poll')
+  !text: tr('PokeVerse Poll')
   size: 580 400
 
   Label
