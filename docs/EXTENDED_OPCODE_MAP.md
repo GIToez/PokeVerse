@@ -4,10 +4,10 @@ Static audit of every custom client/server channel in the imported PokeJornadas 
 
 Paths are relative to the PokeVerse repository root:
 
-- Client Lua: `client/modules/...`
-- Server Lua: `server/data/...`
-- Server C++: `server-src/...`
-- Client C++: `client-src/src/...`
+- Client Lua: `client/runtime-data/modules/...`
+- Server Lua: `server/runtime-data/data/...`
+- Server C++: `server/source/...`
+- Client C++: `client/source/src/...`
 
 PokeJornadas uses **four** client/server channels:
 
@@ -20,18 +20,18 @@ PokeJornadas uses **four** client/server channels:
 
 | Side | File | Notes |
 |---|---|---|
-| Server receive | `server-src/protocolgame.cpp` `ProtocolGame::parseExtendedOpcode` | Reads `u8 opcode` and `string buffer`, then schedules `Game::parsePlayerExtendedOpcode`. |
-| Server dispatch | `server-src/game.cpp` `Game::parsePlayerExtendedOpcode` | Opcode `10` (dash walking) is handled **in C++**. Everything else goes to the Lua `extendedopcode` creature events. |
-| Server Lua handler | `server/data/creaturescripts/scripts/opcode.lua` (`onExtendedOpcode`), registered as `onOpcode` in `creaturescripts.xml` and in `login.lua` | A single dispatcher for every client→server opcode. |
-| Server send | `server-src/protocolgame.cpp` `ProtocolGame::sendExtendedOpcode` and Lua `doSendPlayerExtendedOpcode(cid, opcode, buffer)` (`server-src/luascript.cpp`) | Only sent to OTClient users (`isUsingOtclient`). |
-| Client receive | `client-src/src/client/protocolgameparse.cpp` `parseExtendedOpcode` | Opcode `0` enables extended opcodes and `2` is ping-back (both in C++). Everything else goes to Lua `ProtocolGame:onExtendedOpcode`. |
-| Client dispatch | `client/modules/gamelib/protocolgame.lua` | `ProtocolGame.registerExtendedOpcode(id, cb)`: one callback per opcode, range 0–255. |
+| Server receive | `server/source/protocolgame.cpp` `ProtocolGame::parseExtendedOpcode` | Reads `u8 opcode` and `string buffer`, then schedules `Game::parsePlayerExtendedOpcode`. |
+| Server dispatch | `server/source/game.cpp` `Game::parsePlayerExtendedOpcode` | Opcode `10` (dash walking) is handled **in C++**. Everything else goes to the Lua `extendedopcode` creature events. |
+| Server Lua handler | `server/runtime-data/data/creaturescripts/scripts/opcode.lua` (`onExtendedOpcode`), registered as `onOpcode` in `creaturescripts.xml` and in `login.lua` | A single dispatcher for every client→server opcode. |
+| Server send | `server/source/protocolgame.cpp` `ProtocolGame::sendExtendedOpcode` and Lua `doSendPlayerExtendedOpcode(cid, opcode, buffer)` (`server/source/luascript.cpp`) | Only sent to OTClient users (`isUsingOtclient`). |
+| Client receive | `client/source/src/client/protocolgameparse.cpp` `parseExtendedOpcode` | Opcode `0` enables extended opcodes and `2` is ping-back (both in C++). Everything else goes to Lua `ProtocolGame:onExtendedOpcode`. |
+| Client dispatch | `client/runtime-data/modules/gamelib/protocolgame.lua` | `ProtocolGame.registerExtendedOpcode(id, cb)`: one callback per opcode, range 0–255. |
 | Client send | `protocolGame:sendExtendedOpcode(id, string)` | |
-| Shared constants | `client/modules/gamelib/const.lua` (`ExtendedIds`), `client/modules/gamelib/protocol.lua` (`GameServerOpcodes`), `server/data/lib/ps/others/constants.lua` (`EXTENDED_IDS`), `server/data/lib/000-constant.lua` (`GameServerOpcodes`) | The client defines `TaskModule=58`, `PokeKill=59` and `DepotLock=60` inside its *raw protocol* `GameServerOpcodes` table, but uses them as ExtendedOpcode IDs. |
+| Shared constants | `client/runtime-data/modules/gamelib/const.lua` (`ExtendedIds`), `client/runtime-data/modules/gamelib/protocol.lua` (`GameServerOpcodes`), `server/runtime-data/data/lib/ps/others/constants.lua` (`EXTENDED_IDS`), `server/runtime-data/data/lib/000-constant.lua` (`GameServerOpcodes`) | The client defines `TaskModule=58`, `PokeKill=59` and `DepotLock=60` inside its *raw protocol* `GameServerOpcodes` table, but uses them as ExtendedOpcode IDs. |
 
 Payload encodings in use:
 
-- **JSON**, via `json.encode` / `json.decode` (`server/json.lua`, `server/data/lib/json.lua`, and the client corelib).
+- **JSON**, via `json.encode` / `json.decode` (`server/runtime-data/json.lua`, `server/runtime-data/data/lib/json.lua`, and the client corelib).
 - **Lua table literal**: the server uses `table.tostring(t)` and the client runs `loadstring("return " .. buffer)()`. **This is remote code execution by design.** See `SECURITY_AUDIT.md`.
 - **Ad-hoc strings** with markers such as `###MARKETBUYITEM###,ItemCode:...` or `level#Collect#type`.
 
@@ -78,7 +78,7 @@ Direction: C→S is client to server, S→C is server to client.
 
 ## PSoul binary sub-protocol (server → client, opcode `0xFF`)
 
-Defined in `client-src/src/client/protocolcodes.h` (`GameServerPSoulOpcodes`). The client parses these in `protocolgameparse.cpp` and the server builds them in `server-src/protocolgame.cpp`. Each one is forwarded to a Lua global `g_game.<callback>`.
+Defined in `client/source/src/client/protocolcodes.h` (`GameServerPSoulOpcodes`). The client parses these in `protocolgameparse.cpp` and the server builds them in `server/source/protocolgame.cpp`. Each one is forwarded to a Lua global `g_game.<callback>`.
 
 | Sub-opcode | Name | Server C++ sender | Client Lua callback | Client module |
 |---|---|---|---|---|
@@ -113,7 +113,7 @@ Client→server custom raw opcodes: `0xFA` (`ClientRequestPollWindow`, server `p
 
 ## Talkaction pseudo-protocol (client → server via chat)
 
-Many custom UIs send commands as hidden chat messages (`g_game.talk(...)`) that the server handles with talkactions in `server/data/talkactions/`.
+Many custom UIs send commands as hidden chat messages (`g_game.talk(...)`) that the server handles with talkactions in `server/runtime-data/data/talkactions/`.
 
 | Client module | Words sent | Purpose |
 |---|---|---|

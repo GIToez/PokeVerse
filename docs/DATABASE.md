@@ -4,10 +4,10 @@
 
 | Item | Value |
 |---|---|
-| File | `database/pokeaventuras.sql` (originally `pokeaventuras (1).sql` at the archive root). Byte-identical copy: `server/poketibia.sql` |
+| File | `database/pokeaventuras.sql` (originally `pokeaventuras (1).sql` at the archive root). Byte-identical copy: `server/runtime-data/poketibia.sql` |
 | Size | 223,588 bytes |
 | Producer | phpMyAdmin 5.0.1, MariaDB 10.4.11, PHP 7.4.3, dumped 2020-08-01 |
-| Internal DB name | `poketibia` (but `server/config.lua` expects `sqlDatabase = "pokeaventuras"`) |
+| Internal DB name | `poketibia` (but `server/runtime-data/config.lua` expects `sqlDatabase = "pokeaventuras"`) |
 | Engine | MySQL/MariaDB. Mostly InnoDB, some MyISAM (`daycare_*`, `loyalty_ranks`, `paypal_items`). SQLite is compiled into the server (`__USE_SQLITE__`), but no SQLite schema is shipped. |
 | Tables | **141** |
 | Schema version | `server_config.db_version = 23`, `encryption = 3` (SHA-1) |
@@ -38,16 +38,16 @@
 ### Market / trading
 | Table | Purpose |
 |---|---|
-| `market_offers` | Stock Tibia 9.44-style table (`id, player_id, sale, itemtype, amount, created, anonymous, price`). **Incompatible:** `server/data/lib/game_market.lua` queries a custom `market_offers` with `item_code`, `playeroffer_id`, `item_index`, `attributes` columns, none of which exist in the dump. |
+| `market_offers` | Stock Tibia 9.44-style table (`id, player_id, sale, itemtype, amount, created, anonymous, price`). **Incompatible:** `server/runtime-data/data/lib/game_market.lua` queries a custom `market_offers` with `item_code`, `playeroffer_id`, `item_index`, `attributes` columns, none of which exist in the dump. |
 | `market_history` | Stock Tibia 9.44-style table. Not referenced by any server Lua or C++. |
 | **`market_items`** | **Missing.** The custom market's listings table. `game_market.lua` inserts `item_code, playerseller_id, playerseller_name, onlyoffer, itemid, count, price, attributes, time` and joins it with `players`. |
 | `pokemon_market` | Pokémon market listings (`pokemon_name, level, extrapoints, sex, specialability, ball_id, attributes, value, pokemon_eggmove`) |
 | `poketrader_offerts`, `poketrader_bids` | Auction ("PokéTrader") with min bid and deadline |
 | `datalog_pokemon_market`, `datalog_poketrader_boughts` | Logs |
-| **`market_historic`** | **Missing.** Used by `server/data/lib/game_market.lua` (per-player JSON history). |
+| **`market_historic`** | **Missing.** Used by `server/runtime-data/data/lib/game_market.lua` (per-player JSON history). |
 
 ### Dungeons
-- **`dungeon_ranking`** is **missing**. It is used by `server/data/lib/game_dungeon.lua` (`ranking` JSON, `diff`, `mapId`). Dungeon progress otherwise uses storages.
+- **`dungeon_ranking`** is **missing**. It is used by `server/runtime-data/data/lib/game_dungeon.lua` (`ranking` JSON, `diff`, `mapId`). Dungeon progress otherwise uses storages.
 
 ### Battle pass, daily rewards, tasks, achievements
 - No dedicated tables. These systems use `player_storage` / `account_storage` / `global_storage` (see `FEATURES.md`). `datalog_*` tables log some of the results.

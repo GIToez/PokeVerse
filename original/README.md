@@ -1,6 +1,6 @@
 # original/
 
-A full copy of the original extracted PokeJornadas package is **not** kept here, because it would add about 3 GB, mostly duplicating `client/`, `server/`, `server-src/`, `client-src/` and `database/`.
+A full copy of the original extracted PokeJornadas package is **not** kept here, because it would add about 3 GB, mostly duplicating `client/runtime-data/`, `server/runtime-data/`, `server/source/`, `client/source/` and `database/`.
 
 Instead:
 

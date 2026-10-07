@@ -2,7 +2,7 @@
 
 This document lists the gameplay systems found in the PokeJornadas base and explains how each one is put together. **Everything here comes from reading the code. Nothing has been run.** The status of each feature is tracked in [FEATURE_AUDIT.md](FEATURE_AUDIT.md). The messages between client and server are listed in [EXTENDED_OPCODE_MAP.md](EXTENDED_OPCODE_MAP.md).
 
-Path conventions: `ps/` means `server/data/lib/ps/`, `lib/` means `server/data/lib/`, and `modules/` means `client/modules/`.
+Path conventions: `ps/` means `server/runtime-data/data/lib/ps/`, `lib/` means `server/runtime-data/data/lib/`, and `modules/` means `client/runtime-data/modules/`.
 
 ## How Pokémon are stored
 
@@ -93,7 +93,7 @@ Safari Zone (`016`), fishing (`043`), headbutt trees (`036`), berries and mining
 
 - In-client account and character creation (`modules/poke_create`, custom login packets `0xFC`/`0xFD`). The player picks a starter (Charmander, Bulbasaur or Squirtle), sex, town and world. See **SECURITY_AUDIT.md finding 15**.
 - Gameplay tutorial popups (`game_guide`, opcodes 8/9) and a separate tutorial book (`game_tutorial`).
-- Portuguese localization in C++ (`server/pt_br.loc`) and client locales.
+- Portuguese localization in C++ (`server/runtime-data/pt_br.loc`) and client locales.
 
 ## Logging
 

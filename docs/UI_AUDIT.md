@@ -1,6 +1,6 @@
 # UI Audit
 
-One row per client UI in `client/modules/`. **Nothing has been run**, so statuses come from reading the code; see [FEATURE_AUDIT.md](FEATURE_AUDIT.md) for what the statuses mean. Lua and OTUI are file counts. Assets is the number of PNG/JPG images inside the module folder (shared images live in `client/data/images`). Rows marked **★** are part of what makes the PokeJornadas UI distinctive (see [CLIENT_UI.md](CLIENT_UI.md)).
+One row per client UI in `client/runtime-data/modules/`. **Nothing has been run**, so statuses come from reading the code; see [FEATURE_AUDIT.md](FEATURE_AUDIT.md) for what the statuses mean. Lua and OTUI are file counts. Assets is the number of PNG/JPG images inside the module folder (shared images live in `client/runtime-data/data/images`). Rows marked **★** are part of what makes the PokeJornadas UI distinctive (see [CLIENT_UI.md](CLIENT_UI.md)).
 
 ## Custom PokeJornadas / PSoul UIs
 

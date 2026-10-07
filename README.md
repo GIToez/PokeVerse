@@ -12,29 +12,31 @@ PokeVerse is an independent Pokémon MMORPG project currently based on the PokeJ
 
 | Component | Folder | Base | Source? | Notes |
 |---|---|---|---|---|
-| Game client | `client/` | OTClient 0.6.6 fork (PSoul/PokeCenter → PokeJornadas) | Lua/OTUI modules: yes | 69 modules. Prebuilt binaries committed; `Tibia.spr` via Git LFS. |
-| Client source | `client-src/` | edubart/otclient 0.6.6 (C++) | Yes | Includes custom updater, PSoul protocol and asset encryption. Third-party deps not included. |
-| Game server | `server/` | TFS 0.3.6 fork (`PS.exe`) | Lua/XML: yes | `data/lib/ps` PSoul framework, map, monsters, NPCs |
-| Server source | `server-src/` | The Forgotten Server 0.3.6 (C++) | Yes | Dev-C++/MinGW, Lua 5.1, MySQL/SQLite |
+| Game client | `client/runtime-data/` | OTClient 0.6.6 fork (PSoul/PokeCenter → PokeJornadas) | Lua/OTUI modules: yes | 69 modules. `Tibia.spr` via Git LFS. |
+| Client source | `client/source/` | edubart/otclient 0.6.6 (C++) | Yes | Includes custom updater, PSoul protocol and asset encryption. Third-party deps not included. |
+| Game server | `server/runtime-data/` | TFS 0.3.6 fork (`PS.exe`) | Lua/XML: yes | `data/lib/ps` PSoul framework, map, monsters, NPCs |
+| Server source | `server/source/` | The Forgotten Server 0.3.6 (C++) | Yes | Dev-C++/MinGW, Lua 5.1, MySQL/SQLite |
 | Database | `database/` | MariaDB 10.4 dump | — | 141 tables. A few tables used by scripts are missing. |
-| Updater hash tool | `tools/updater-hash/` | — | **No** (binary only) | `Hash.exe` committed as shipped |
+| Updater hash tool | `tools/updater-hash/` | — | **No** (binary only) | `Hash.exe` kept locally in `original/binaries/` |
 | Website | — | Znote AAC implied by the schema | **Not included** | |
 
 ## Repository layout
 
 ```
 PokeVerse/
-├── client/            Windows client folder (init.lua, modules/, data/)
-├── client-src/        OTClient C++ source (CMake, vc12)
-├── server/            Windows server folder (config.lua, data/, pt_br.loc)
-├── server-src/        TFS 0.3.6-based C++ source (Dev-C++, autotools)
-├── database/          SQL dump
-├── tools/
-│   ├── import/        Script to re-download and verify the original package
-│   └── updater-hash/  Original hash-list generator (original binary)
-├── assets/            Reserved for PokeVerse source assets (see assets/README.md)
-├── original/          Manifest of the original archive layout (path, size, SHA-256)
-└── docs/              Audit documentation
+├── client/
+│   ├── source/        OTClient C++ source (CMake)
+│   └── runtime-data/  init.lua, modules/, data/ (Tibia.dat, Tibia.spr via LFS, images, sounds…)
+├── server/
+│   ├── source/        TFS 0.3.6-based C++ source (CMake for Linux; original Dev-C++/autotools files kept)
+│   └── runtime-data/  config.lua, data/ (scripts, XML, map, spawns, houses), pt_br.loc
+├── database/          Original SQL dump + migrations/
+├── build/             Compiler output (generated, ignored)
+├── dist/              Runnable packages (generated, ignored)
+├── tools/             Build, run, import-verification and validation scripts
+├── assets/            Reserved for PokeVerse source assets
+├── original/          Manifest of the original archive; binaries/ (local only, ignored)
+└── docs/              Audit and verification documentation
 ```
 
 ## Documentation
@@ -50,19 +52,19 @@ PokeVerse/
 | [docs/DATABASE.md](docs/DATABASE.md) | Schema, custom tables, missing tables |
 | [docs/BUILD_STATUS.md](docs/BUILD_STATUS.md) | Build systems and dependencies |
 | [docs/SECURITY_AUDIT.md](docs/SECURITY_AUDIT.md) | Static security findings. **Read before running anything.** |
-| [docs/BINARY_INVENTORY.md](docs/BINARY_INVENTORY.md) | Every binary, and whether it is committed |
+| [docs/ORIGINAL_BINARY_INVENTORY.md](docs/ORIGINAL_BINARY_INVENTORY.md) | The original binaries (kept locally, never run) |
 | [docs/ORIGINAL_STRUCTURE.md](docs/ORIGINAL_STRUCTURE.md) | How the original archive was laid out and mapped into this repo |
 
 ## Cloning
 
-The repository uses [Git LFS](https://git-lfs.com) for `client/data/things/Tibia.spr` (262 MB). Install Git LFS before cloning:
+The repository uses [Git LFS](https://git-lfs.com) for `client/runtime-data/data/things/Tibia.spr` (262 MB). Install Git LFS before cloning:
 
 ```bash
 git lfs install
 git clone https://github.com/GIToez/PokeVerse.git
 ```
 
-A normal clone downloads everything needed to run the client and server, including `Tibia.spr` and the prebuilt Windows binaries.
+A normal clone downloads everything needed to run the client and server, including `Tibia.spr`. The client and server are built from source (see [docs/BUILD_BASELINE.md](docs/BUILD_BASELINE.md)); the original Windows binaries are not in Git (see [docs/ORIGINAL_BINARY_INVENTORY.md](docs/ORIGINAL_BINARY_INVENTORY.md)).
 
 Left out: compiler output, logs, IDE metadata, files containing personal paths, and the original Photoshop design sources (see [assets/README.md](assets/README.md)). The original archive can be re-downloaded and verified with `tools/import/fetch-pokejornadas.sh` and `original/MANIFEST.sha256.tsv`.
 
@@ -72,6 +74,6 @@ Do not run the shipped executables on a personal machine. The client runs Lua co
 
 ## Licensing
 
-- The server is derived from The Forgotten Server 0.3.6, which is **GPLv3** (`server-src/doc/LICENSE`).
-- The client is derived from OTClient, which is **MIT**. The license file is missing from `client-src/`.
+- The server is derived from The Forgotten Server 0.3.6, which is **GPLv3** (`server/source/doc/LICENSE`).
+- The client is derived from OTClient, which is **MIT**. The license file is missing from `client/source/`.
 - Pokémon and all related names are trademarks of Nintendo, Game Freak and The Pokémon Company. The game art, sprites and maps come from the PokeJornadas/PSoul community, and their provenance and licensing are **unknown**.

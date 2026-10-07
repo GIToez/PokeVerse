@@ -15,12 +15,12 @@ edubart/otclient 0.6.6 (MIT)
           → PokeJornadas client (custom UI modules, built-in updater, asset encryption)
 ```
 
-Branding found in the code: **PokeCenter** (`config.lua` `ownerName`, client app name, NPC text), **PSoul** (`resources.h` outdated-client message, `psoul.net`), **PokeJornadas** (`client/init.lua` error message), **Nordic SOUL** (`settings.sav` path), and the database name **poketibia** / **pokeaventuras**.
+Branding found in the code: **PokeCenter** (`config.lua` `ownerName`, client app name, NPC text), **PSoul** (`resources.h` outdated-client message, `psoul.net`), **PokeJornadas** (`client/runtime-data/init.lua` error message), **Nordic SOUL** (`settings.sav` path), and the database name **poketibia** / **pokeaventuras**.
 
 ## Components
 
 ```
-            ┌──────────────────────────── client/ (Windows, OTClient 0.6.6 fork) ───────────────────────────┐
+            ┌──────────────────────────── client/runtime-data/ (Windows, OTClient 0.6.6 fork) ───────────────────────────┐
             │ otclient.exe (x86, gcc 4.8.1, OpenGL ES 2 via ANGLE: libEGL/libGLESv2, d3dx9_43)               │
             │ init.lua → modules/ (69 Lua/OTUI modules) + data/ (things, images, sounds, styles, fonts)      │
             └───────────────┬───────────────────────────────────────────────────────────────┬──────────────┘
@@ -28,8 +28,8 @@ Branding found in the code: **PokeCenter** (`config.lua` `ownerName`, client app
                             │ + ExtendedOpcode 0x32 (JSON / Lua-table / marker strings)     ▼
                             │ + PSoul sub-protocol 0xFF                               update web server
                             │ + hidden talkactions                                    (not included)
-            ┌───────────────▼────────── server/ (Windows, TFS 0.3.6 fork, PS.exe) ───────────────────────┐
-            │ C++ engine (server-src/)  ── Lua 5.1 scripting ── data/ (lib/ps systems, XML, map)        │
+            ┌───────────────▼────────── server/runtime-data/ (Windows, TFS 0.3.6 fork, PS.exe) ───────────────────────┐
+            │ C++ engine (server/source/)  ── Lua 5.1 scripting ── data/ (lib/ps systems, XML, map)        │
             └───────────────┬────────────────────────────────────────────────────────────────────────────┘
                             │ MySQL (libmysql) or SQLite
             ┌───────────────▼───────────────┐            ┌─────────────────────────────────────────────┐
@@ -42,17 +42,17 @@ Branding found in the code: **PokeCenter** (`config.lua` `ownerName`, client app
 
 | Item | Finding |
 |---|---|
-| Engine | The Forgotten Server **0.3.6 "Crying Damson"** (`server-src/doc/README`, `doc/CHANGELOG`), heavily customized |
+| Engine | The Forgotten Server **0.3.6 "Crying Damson"** (`server/source/doc/README`, `doc/CHANGELOG`), heavily customized |
 | Protocol | Tibia 8.6-era layout. `CLIENT_VERSION_MIN 312` / `MAX 1343` (custom numbering, `resources.h`). The version check in `ProtocolGame::login` is commented out. |
 | Language / build | C++03/early C++11. **Dev-C++ / MinGW** (`dev-cpp/Makefile.win`, `TheForgottenServer.dev`, `project/PO.dev`), plus Code::Blocks project (`TheForgottenServer.cbp`) and autotools (`configure.ac`, `Makefile.am`, `autogen.sh`) |
 | Defines | `__USE_MYSQL__ __USE_SQLITE__ __ENABLE_SERVER_DIAGNOSTIC__ __EXCEPTION_TRACER__ __EMERGENCY_SAVE__ __CONSOLE__` |
 | Libraries | boost (system, regex, filesystem, thread; `make gcc fixes boost 140/` patches suggest **Boost 1.40**), GMP, **Lua 5.1**, libmysql, SQLite3, libxml2, OpenSSL (libeay32), ws2_32 |
-| Output | `PS.exe` (x86 Windows console). The shipped binary is identical to `server-src/dev-cpp/PS.exe`. |
+| Output | `PS.exe` (x86 Windows console). The shipped binary is identical to `original/binaries/server-source/dev-cpp/PS.exe`. |
 | Custom C++ (non-stock TFS) | `partyduel.*` (duels), `pvparena.*`, `tournament.*` + `iotournament.*`, `polls.*` + `iopoll.*`, `localization.*` (multi-language, `pt_br.loc`), `iodatalog.*` (datalog tables), `ioplayerstatistics.*`, Pokémon-specific Lua functions in `luascript.cpp` (13k+ lines), PSoul sub-protocol senders in `protocolgame.cpp`, dash walking, OTClient ExtendedOpcode support |
 | Database | MySQL/MariaDB (`sqlType = "mysql"`, `sqlDatabase = "pokeaventuras"`). The dump's internal name is `poketibia`. |
 | Ports | login/admin/status `7564`, game `8548` (`config.lua`) |
 
-### Server data layout (`server/data/`)
+### Server data layout (`server/runtime-data/data/`)
 
 | Folder | Content |
 |---|---|
@@ -71,16 +71,16 @@ The PSoul systems layer (`lib/ps/systems/0NN-*.lua`) is the core of the gameplay
 
 | Item | Finding |
 |---|---|
-| Base | **edubart/otclient 0.6.6** (`client-src/CMakeLists.txt`, crash report `app version: 0.6.6`) |
+| Base | **edubart/otclient 0.6.6** (`client/source/CMakeLists.txt`, crash report `app version: 0.6.6`) |
 | App name | `Pokecenter` (crash report) |
 | Binary | `otclient.exe` x86, gcc 4.8.1, built Oct 1 2021 (crash report), OpenGL ES 2.0 through ANGLE (`libEGL.dll`, `libGLESv2.dll`, `d3dx9_43.dll`) |
 | Lua | 5.1 (`lua5.1.dll`) |
-| Custom C++ | Built-in updater (`client/download.cpp`, `Game::Updater*`, `framework/net/protocolhttp.*`), PSoul `0xFF` sub-protocol parser, `.spr`/`.dat` decryption (`decryptSPR`/`decryptDAT`), custom health/exp bar (`creature.cpp` loads `data/images/new_bar.png`), `uisprite`, `uiprogressrect`, poll window opcodes |
-| Source completeness | `client-src/` contains `src/framework`, `src/client`, `src/main.cpp`, CMake and VS2013 (`vc12/`) projects. Every file referenced by CMake is present except the optional `graphics/dx/painterdx9.*` (DirectX option is off by default). Not included: third-party dependencies, `LICENSE`/`README`/`AUTHORS`, `otclientrc.lua`. |
+| Custom C++ | Built-in updater (`client/runtime-data/download.cpp`, `Game::Updater*`, `framework/net/protocolhttp.*`), PSoul `0xFF` sub-protocol parser, `.spr`/`.dat` decryption (`decryptSPR`/`decryptDAT`), custom health/exp bar (`creature.cpp` loads `data/images/new_bar.png`), `uisprite`, `uiprogressrect`, poll window opcodes |
+| Source completeness | `client/source/` contains `src/framework`, `src/client`, `src/main.cpp`, CMake and VS2013 (`vc12/`) projects. Every file referenced by CMake is present except the optional `graphics/dx/painterdx9.*` (DirectX option is off by default). Not included: third-party dependencies, `LICENSE`/`README`/`AUTHORS`, `otclientrc.lua`. |
 | Assets | `data/things/Tibia.dat` + `Tibia.spr` (262 MB) + `Tibia.otml`/`Tibia.otfi` (extended, transparency), 1,879 images, 472 OGG sounds, 30 fonts, 28 shaders, 60 particles |
 | Modules | 69 directories (plus an IDE `.project/` folder). See `CLIENT_UI.md` / `UI_AUDIT.md`. |
 
-### Client load order (`client/init.lua`)
+### Client load order (`client/runtime-data/init.lua`)
 
 1. Anti-tamper file check (aborts on injector artifacts).
 2. Add `data/` and `modules/` to search paths, load `*.otpkg`, `config.otml`.
@@ -88,8 +88,8 @@ The PSoul systems layer (`lib/ps/systems/0NN-*.lua`) is the core of the gameplay
 
 ## Updater
 
-- **In-client updater:** `client/modules/game_updater` and C++ `Game::UpdaterXmlClient/UpdaterVerificClient/UpdaterClient`. It downloads `data/hash.xml` and changed files over HTTP from `http://localhost/otclient/`.
-- **Hash generator:** `tools/updater-hash/Tools/Release/Hash.exe` (binary only, no source). It produces `hash.xml` (`<hashings><hashing name="…" hash="MD5"/>`).
+- **In-client updater:** `client/runtime-data/modules/game_updater` and C++ `Game::UpdaterXmlClient/UpdaterVerificClient/UpdaterClient`. It downloads `data/hash.xml` and changed files over HTTP from `http://localhost/otclient/`.
+- **Hash generator:** `original/binaries/updater-hash/Tools/Release/Hash.exe` (binary only, no source). It produces `hash.xml` (`<hashings><hashing name="…" hash="MD5"/>`).
 - The server-side update host is not included.
 
 ## Website

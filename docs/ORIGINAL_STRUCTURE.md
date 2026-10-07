@@ -17,12 +17,12 @@
 | Entry | Date | Size | Contents | Maps to |
 |---|---|---|---|---|
 | `Atualizando Cliente.zip` | 2022-03-13 | 97 KB | `Atualizando Cliente/Tools/Release/Hash.exe` + empty `OTClientHash/` | `tools/updater-hash/` |
-| `Cliente.zip` | 2022-03-13 | 190.9 MB (427 MB unpacked) | `Cliente/`: Windows client | `client/` |
-| `otclient src.zip` | 2022-03-13 | 0.76 MB | `otclient/`: client C++ source | `client-src/` |
+| `Cliente.zip` | 2022-03-13 | 190.9 MB (427 MB unpacked) | `Cliente/`: Windows client | `client/runtime-data/` |
+| `otclient src.zip` | 2022-03-13 | 0.76 MB | `otclient/`: client C++ source | `client/source/` |
 | `pokeaventuras (1).sql` | 2020-08-01 | 224 KB | MariaDB dump | `database/pokeaventuras.sql` |
 | `PSDS.zip` | 2022-03-13 | 776.6 MB (2.5 GB unpacked) | `PSDS/`: Photoshop design sources | Not kept |
-| `Servidor.zip` | 2022-03-13 | 26.1 MB (85 MB unpacked) | `Servidor/`: Windows server | `server/` |
-| `Source Server.zip` | 2022-03-13 | 10.3 MB (43 MB unpacked) | `Source Server/`: server C++ source (with a `.git`) | `server-src/` |
+| `Servidor.zip` | 2022-03-13 | 26.1 MB (85 MB unpacked) | `Servidor/`: Windows server | `server/runtime-data/` |
+| `Source Server.zip` | 2022-03-13 | 10.3 MB (43 MB unpacked) | `Source Server/`: server C++ source (with a `.git`) | `server/source/` |
 
 Each zip wraps a single folder of the same name (for example `Cliente.zip → Cliente/…`). That wrapper level was dropped when mapping into PokeVerse.
 
@@ -30,9 +30,9 @@ Each zip wraps a single folder of the same name (for example `Cliente.zip → Cl
 
 - The original layout was **sensible**: one folder per component. So the mapping is a **1:1 rename** of each component folder. **No files were moved within a component.**
 - `Source Server/.git` (a single commit, "iniciando projeto", remote `bitbucket.org/romulo_junges/pokespace-source.git`) was moved out to `_import/source-server.git` (ignored) so it does not become an embedded repository.
-- `Source Server/.gitignore` (`*/*`, `!*.cpp`, `!*.h`) was deleted from `server-src/`. It would have hidden `doc/`, `mods/` and the build project files from Git. The original copy is still in `_import/extracted` and in the manifest.
-- `server/poketibia.sql` is byte-identical to the root SQL file. Both are kept; Git stores the content once.
-- The only content change: `server/data/XML/admin.xml` `loginpassword` was redacted to `CHANGE_ME`.
+- `Source Server/.gitignore` (`*/*`, `!*.cpp`, `!*.h`) was deleted from `server/source/`. It would have hidden `doc/`, `mods/` and the build project files from Git. The original copy is still in `_import/extracted` and in the manifest.
+- `server/runtime-data/poketibia.sql` is byte-identical to the root SQL file. Both are kept; Git stores the content once.
+- The only content change: `server/runtime-data/data/XML/admin.xml` `loginpassword` was redacted to `CHANGE_ME`.
 - A full copy under `original/` was **not** made, because it would duplicate about 3 GB. Instead, `original/MANIFEST.sha256.tsv` lists **every file of the original extraction** (11,934 files): original path, size and SHA-256. Use it to verify a re-extraction.
 
 ## Original tree (directories to depth 4, with file counts and sizes)
@@ -62,7 +62,7 @@ Cliente/Cliente/                             (6,134 files, 407.7 MB)
     game_tmchoose game_tutorial game_updater game_viplist poke_create
 otclient src/otclient/                       (368 files, 2.4 MB)
   CMakeLists.txt
-  src/  main.cpp otcicon.*  client/(84)  framework/(267: core graphics input luaengine net otml
+  src/  main.cpp otcicon.*  client/runtime-data/(84)  framework/(267: core graphics input luaengine net otml
         platform sound sql stdext ui util xml cmake)
   tools/ gimp-bitmap-generator katepart-syntax lua-binding-generator
   vc12/  otclient.sln .vcxproj .filters
@@ -96,10 +96,10 @@ pokeaventuras (1).sql
 
 | Original path | PokeVerse path | In Git? |
 |---|---|---|
-| `Cliente/Cliente/` | `client/` | Yes (`Tibia.spr` via Git LFS), except `crashreport.log`, `modules/.project/`, `Thumbs.db` |
-| `otclient src/otclient/` | `client-src/` | Yes, except `.vscode/` |
-| `Servidor/Servidor/` | `server/` | Yes, except `logs/`, `settings.sav`, `forgottenserver.map`, `data/.idea/`, `*.bak` |
-| `Source Server/Source Server/` | `server-src/` | Yes, except `*.o`, `dev-cpp/obj/`, `*.res`, `*.layout`. The `.git/` was moved out. |
+| `Cliente/Cliente/` | `client/runtime-data/` | Yes (`Tibia.spr` via Git LFS), except `crashreport.log`, `modules/.project/`, `Thumbs.db` |
+| `otclient src/otclient/` | `client/source/` | Yes, except `.vscode/` |
+| `Servidor/Servidor/` | `server/runtime-data/` | Yes, except `logs/`, `settings.sav`, `forgottenserver.map`, `data/.idea/`, `*.bak` |
+| `Source Server/Source Server/` | `server/source/` | Yes, except `*.o`, `dev-cpp/obj/`, `*.res`, `*.layout`. The `.git/` was moved out. |
 | `pokeaventuras (1).sql` | `database/pokeaventuras.sql` | Yes |
 | `Atualizando Cliente/Atualizando Cliente/` | `tools/updater-hash/` | Yes (`Hash.exe` plus a README) |
 | `PSDS/PSDS/` | — | No. Dropped from the project (2.6 GB, not needed). See `assets/README.md`. |

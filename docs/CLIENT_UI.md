@@ -1,10 +1,10 @@
 # Client UI
 
-The client is an OTClient 0.6.6 fork (app name "Pokecenter") with 69 Lua/OTUI modules in `client/modules/`. This document describes how the interface is put together and what makes the PokeJornadas UI different from stock OTClient. The status of each UI is tracked in [UI_AUDIT.md](UI_AUDIT.md).
+The client is an OTClient 0.6.6 fork (app name "Pokecenter") with 69 Lua/OTUI modules in `client/runtime-data/modules/`. This document describes how the interface is put together and what makes the PokeJornadas UI different from stock OTClient. The status of each UI is tracked in [UI_AUDIT.md](UI_AUDIT.md).
 
 ## Loading
 
-- `client/init.lua` runs an anti-tamper check, sets up resources and loads the `client*` modules plus `corelib` and `gamelib`.
+- `client/runtime-data/init.lua` runs an anti-tamper check, sets up resources and loads the `client*` modules plus `corelib` and `gamelib`.
 - `game_interface/interface.otmod` loads 53 game modules through `load-later` (54 entries, because `game_market` is listed twice).
 - `game_bottommenu`, `game_craft`, `game_depotlock`, `game_guide`, `game_house*`, `game_market`, `game_pokekill` and `game_updater` also set `autoload: true`.
 - **Not loaded by anything:** `client_serverlist`, `game_console` (replaced by `game_chat`), `game_environment` (ambient sound).

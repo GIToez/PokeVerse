@@ -2,33 +2,38 @@
 .downloads/
 _import/
 
-# --- Large assets ---
-# Tibia.spr is stored with Git LFS (see .gitattributes).
-# Prebuilt Windows binaries are committed as regular files (see docs/BINARY_INVENTORY.md).
-# The PSD/PSB design sources were dropped from the project; keep them out if restored locally.
-assets/design-psd/
-*.psd
-*.psb
+# --- Original PokeJornadas binaries, kept locally for forensic reference only ---
+# See docs/ORIGINAL_BINARY_INVENTORY.md. Never run them for testing.
+original/binaries/
 
-# --- Compiler output ---
+# --- Generated output (reproducible; safe to delete) ---
+build/
+dist/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+
+# --- Compiler output and native binaries anywhere else ---
+*.exe
+*.dll
 *.o
 *.obj
 *.pdb
 *.ilk
 *.res
-server-src/dev-cpp/obj/
-server-src/project/obj/
-build/
-cmake-build-*/
-CMakeCache.txt
-CMakeFiles/
+*.lib
+*.a
+__pycache__/
+
+# --- Design sources (dropped from the project; available in Git history and the original archive) ---
+assets/design-psd/
 
 # --- Logs, crash dumps, runtime state ---
 *.log
-server/logs/
+server/runtime-data/logs/
 *.dmp
-server/settings.sav
-server/forgottenserver.map
+server/runtime-data/settings.sav
+server/runtime-data/forgottenserver.map
 
 # --- Backups and temporary files ---
 *.bak
@@ -43,7 +48,7 @@ desktop.ini
 .idea/
 .vscode/
 *.layout
-client/modules/.project/
+client/runtime-data/modules/.project/
 *.sublime-workspace
 
 # --- Secrets (never commit real credentials) ---
