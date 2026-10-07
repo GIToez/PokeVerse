@@ -30,7 +30,7 @@ function onKill(cid, target, lastHit)
          PokeName = _taskname,
          PokeInfo = {
          	PokeSprite = _taskname,
-         	KillCount = kills + 1 .. " de " .. _tasktable.count,
+         	KillCount = kills + 1 .. "/" .. _tasktable.count,
          },
       }
 	  doSendPlayerExtendedOpcode(cid, GameServerOpcodes.PokeKill, json.encode(response))
