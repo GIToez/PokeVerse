@@ -24,7 +24,7 @@ EXE=$(cd "$DIST" && ls pokeverse-client pokeverse-client.exe pokeverse-client-de
 [ -n "$EXE" ] || { echo "no client in $DIST; run tools/stage_redemption.sh" >&2; exit 1; }
 [ -f "$DIST/data/things/854/Tibia.spr" ] || { echo "no 854 assets in $DIST (git lfs pull, then restage)" >&2; exit 1; }
 case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) WINDOWS=1 ;; *) WINDOWS=0 ;; esac
-export PV_TIMEOUT_MS="${PV_TIMEOUT_MS:-120000}"
+export PV_TIMEOUT_MS="${PV_TIMEOUT_MS:-180000}"
 
 RUN=$(mktemp -d "${TMPDIR:-/tmp}/redemption-smoke.XXXXXX")
 cleanup() {
@@ -143,6 +143,15 @@ need '\[pv-smoke\] TASK SECOND REFUSED' "the server let a second task start whil
 need '\[pv-smoke\] TASK EARLY COLLECT REFUSED' "collecting an unfinished task was not refused"
 need '\[pv-smoke\] TASK CLOSE OK' "the Tasks window did not close"
 need '\[pv-smoke\] TASK CANCEL OK' "cancelling the active task did not clear it"
+need '\[pv-smoke\] MODULE game_craft loaded=true' "Crafting module not loaded"
+if [ "${PV_ACCOUNT:-player}" = admin ]; then
+    need '\[pv-smoke\] CRAFT OPEN OK' "the crafting window did not open with the workshop's recipes"
+    need '\[pv-smoke\] CRAFT MISSING REFUSED' "crafting without materials was not refused with the missing-materials message"
+    need '\[pv-smoke\] CRAFT FORGED QUANTITY REJECTED' "the server queued a forged fractional or negative craft quantity"
+    need '\[pv-smoke\] CRAFT CREATE OK' "crafting did not consume the material and queue the item"
+    need '\[pv-smoke\] CRAFT COLLECT OK' "collecting the finished craft did not grant the item"
+    need '\[pv-smoke\] CRAFT CLOSE OK' "the crafting window did not close"
+fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"

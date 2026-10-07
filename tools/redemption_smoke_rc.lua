@@ -637,6 +637,111 @@ local function inspectGame()
         end, 1500)
     end
 
+    -- Crafting (ext opcode 103), GM only: /learnwork grants the Stylist profession and /craftopen
+    -- sends what using a rank E crafting table sends. Ball of wool -> Cloth takes 5 s per unit, so the test checks the missing-materials refusal, forged quantities,
+    -- material consumption, the timer and the collected item.
+    local fyi
+    connect(g_game, { onLoginAdvice = function(message) fyi = message end })
+    local function closeInfoBoxes()
+        for _, child in ipairs(g_ui.getRootWidget():getChildren()) do
+            if child.title and child.title:getText() == tr('For Your Information') then child:destroy() end
+        end
+    end
+
+    local function countItem(clientId)
+        local total = 0
+        for slot = InventorySlotFirst, InventorySlotLast do
+            local item = player:getInventoryItem(slot)
+            if item and item:getId() == clientId then total = total + item:getCount() end
+        end
+        for _, container in pairs(g_game.getContainers()) do
+            for _, item in ipairs(container:getItems()) do
+                if item:getId() == clientId then total = total + item:getCount() end
+            end
+        end
+        return total
+    end
+
+    local function craftTests(nextStep)
+        local craft = modules.game_craft
+        if not craft then
+            report('MODULE game_craft missing')
+            return nextStep()
+        end
+        report('MODULE game_craft loaded=true')
+        if account ~= 'admin' then
+            report('CRAFT SKIPPED needs GM commands')
+            return nextStep()
+        end
+        g_game.talk('/learnwork')
+        g_game.talk('/craftopen E')
+        -- PokeVerse characters keep their bag in the ammo slot; slot 5 holds the badge case.
+        if not next(g_game.getContainers()) then
+            for slot = InventorySlotLast, InventorySlotFirst, -1 do
+                local bag = player:getInventoryItem(slot)
+                if bag and bag:isContainer() then
+                    g_game.open(bag)
+                    break
+                end
+            end
+        end
+        scheduleEvent(function()
+            local state = craft.getState()
+            report('CRAFT OPEN %s visible=%s work=%s level=%d rank=%s items=%d', state.visible and state.items > 0 and
+                state.work and 'OK' or 'FAILED', tostring(state.visible), tostring(state.work), state.level,
+                tostring(state.rank), state.items)
+            if not state.visible or not craft.selectItem(1) then
+                craft.hide()
+                return nextStep()
+            end
+            state = craft.getState()
+            local woolId, clothId = state.recipe[1][1], state.itemid
+            local queued = state.queued
+            fyi = nil
+            craft.createItem(100)
+            scheduleEvent(function()
+                state = craft.getState()
+                report('CRAFT MISSING %s queued=%d reply=%s', fyi and fyi:find('required materials') and state.queued == queued and
+                    'REFUSED' or 'FAILED', state.queued, tostring(fyi and fyi:gsub('\n', ' ')))
+                closeInfoBoxes()
+                g_game.getProtocolGame():sendExtendedOpcode(103, '###CRAFT###,RANKE,ID1,QNT0.5')
+                g_game.getProtocolGame():sendExtendedOpcode(103, '###CRAFT###,RANKE,ID1,QNT-3')
+                g_game.talk('/i 12129,1')
+                scheduleEvent(function()
+                    state = craft.getState()
+                    report('CRAFT FORGED QUANTITY %s queued=%d', state.queued == queued and 'REJECTED' or 'ACCEPTED', state.queued)
+                    local woolBefore, clothBefore = countItem(woolId), countItem(clothId)
+                    craft.showCreateWindow()
+                    craft.doCreateItem()
+                    scheduleEvent(function()
+                        state = craft.getState()
+                        local woolAfter = countItem(woolId)
+                        report('CRAFT CREATE %s queued=%d timeLeft=%d wool=%d->%d', state.queued == math.max(0, queued) + 1 and
+                            woolAfter == woolBefore - 1 and 'OK' or 'FAILED', state.queued, state.timeLeft, woolBefore, woolAfter)
+                        scheduleEvent(function()
+                            state = craft.getState()
+                            lastCancel = nil
+                            craft.collectItemCraft()
+                            scheduleEvent(function()
+                                local clothAfter = countItem(clothId)
+                                state = craft.getState()
+                                report('CRAFT COLLECT %s collectable=%d cloth=%d->%d queued=%d reply=%s', clothAfter == clothBefore + 1 and
+                                    'OK' or 'FAILED', state.collectable, clothBefore, clothAfter, state.queued, tostring(lastCancel))
+                                report('CRAFT WINDOW SHOWN')
+                                scheduleEvent(function()
+                                    craft.hide()
+                                    closeInfoBoxes()
+                                    report('CRAFT CLOSE %s', craft.getState().visible and 'FAILED' or 'OK')
+                                    nextStep()
+                                end, tonumber(os.getenv('PV_CRAFT_HOLD_MS') or '100'))
+                            end, 1500)
+                        end, 6000)
+                    end, 1500)
+                end, 1500)
+            end, 1500)
+        end, 2000)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -667,9 +772,11 @@ local function inspectGame()
                     statusBarTests(function()
                         passTests(function()
                             taskTests(function()
-                                pokemonTests(function()
-                                    taskFinish(function()
-                                        scheduleEvent(function() g_game.safeLogout() end, 1500)
+                                craftTests(function()
+                                    pokemonTests(function()
+                                        taskFinish(function()
+                                            scheduleEvent(function() g_game.safeLogout() end, 1500)
+                                        end)
                                     end)
                                 end)
                             end)
