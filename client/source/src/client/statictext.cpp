@@ -141,6 +141,7 @@ void StaticText::compose()
         text += g_lua.popString();
         m_color = Color(239, 239, 0);
     } else if(m_mode == Otc::MessageMonsterSay || m_mode == Otc::MessageMonsterYell || m_mode == Otc::MessageSpell || m_mode == Otc::MessageBarkLow || m_mode == Otc::MessageBarkLoud) {
+        g_lua.pop();
         m_color = Color(254, 101, 0);
     } else if(m_mode == Otc::MessageNpcFrom) {
         text += m_name;
@@ -149,6 +150,7 @@ void StaticText::compose()
         text += g_lua.popString();
         m_color = Color(95, 247, 247);
     } else {
+        g_lua.pop();
         g_logger.warning(stdext::format("Unknown speak type: %d", m_mode));
     }
 

@@ -58,7 +58,7 @@ function onContainerOpen(container, previousContainer)
     end
 
     local containerWindow
-    if previousContainer then
+    if previousContainer and previousContainer.window then
         containerWindow = previousContainer.window
         previousContainer.window = nil
         previousContainer.itemsPanel = nil
