@@ -92,5 +92,5 @@ need '\[pv-smoke\] EXIT 0' "client reported failure"
 if grep -aE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|pokebar: no Pokemon for icon item|LUA ERROR|lua_pcall' "$LOG" >&2; then
     fail "protocol errors in the client log"
 fi
-grep -a '\[pv-smoke\]' "$LOG" | sort -u
+grep -a '\[pv-smoke\]' "$LOG" | LC_ALL=C sort -u
 echo "Redemption login smoke: PASS"
