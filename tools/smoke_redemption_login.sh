@@ -5,7 +5,8 @@
 # (Git Bash / MSYS2; the client needs an OpenGL driver, e.g. Mesa llvmpipe DLLs in DIST).
 # Usage: tools/smoke_redemption_login.sh [LOGFILE]
 # Env: PV_ACCOUNT PV_PASSWORD PV_CHARACTER (default player/player/Trainer), PV_HOST, PV_LOGIN_PORT,
-#      PV_TIMEOUT_MS, DIST (default dist/client-redemption), DISPLAY (Linux; Xvfb is started if
+#      PV_TIMEOUT_MS, DIST (default dist/client-redemption; the client folder of the Windows test
+#      package works too), DISPLAY (Linux; Xvfb is started if
 #      the display is not running), SCREENSHOT (PNG path, captured once the map has loaded, or at
 #      the first smoke line starting with SCREENSHOT_AT),
 #      PV_EXPECT_POKEBAR=1 (a GM with Pokemon: the bar must show a portrait, clicking it must summon
@@ -15,7 +16,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
 LOG="${1:-/tmp/redemption-smoke.log}"
-EXE=$(cd "$DIST" && ls pokeverse-client pokeverse-client.exe pokeverse-client-debug pokeverse-client-debug.exe 2>/dev/null | head -1 || true)
+EXE=$(cd "$DIST" && ls pokeverse-client pokeverse-client.exe pokeverse-client-debug pokeverse-client-debug.exe PokeVerse.exe 2>/dev/null | head -1 || true)
 [ -n "$EXE" ] || { echo "no client in $DIST; run tools/stage_redemption.sh" >&2; exit 1; }
 [ -f "$DIST/data/things/854/Tibia.spr" ] || { echo "no 854 assets in $DIST (git lfs pull, then restage)" >&2; exit 1; }
 case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) WINDOWS=1 ;; *) WINDOWS=0 ;; esac

@@ -1,1 +1,7 @@
 client/runtime-data/data/things/Tibia.spr filter=lfs diff=lfs merge=lfs -text
+
+# Windows launchers and instructions must reach cmd.exe and Notepad with CRLF line endings.
+packaging/windows/*.bat text eol=crlf
+packaging/windows/*.txt text eol=crlf
+packaging/windows/scripts/*.ps1 text eol=crlf
+tools/windows/*.bat text eol=crlf

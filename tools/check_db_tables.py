@@ -76,7 +76,13 @@ def main():
     parser.add_argument("--database", help="live database name to inspect")
     parser.add_argument("--mysql", default="mariadb", help="client command, e.g. 'mariadb -upokeverse -p...'")
     parser.add_argument("--sql", action="append", help="SQL file with CREATE TABLE statements")
+    parser.add_argument("--print-required", action="store_true",
+                        help="print the tables active server code needs, one per line, and exit")
     args = parser.parse_args()
+    if args.print_required:
+        for name in sorted({n.lower() for n in referenced_tables() if n not in KNOWN_UNUSED}):
+            print(name)
+        return 0
     if not args.database and not args.sql:
         args.sql = [str(ROOT / "database/pokeaventuras.sql")] + [
             str(p) for p in sorted((ROOT / "database/migrations").glob("*.sql"))]
