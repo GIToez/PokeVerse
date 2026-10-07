@@ -409,10 +409,20 @@ function updatePassMission(cid, num, progress)
   end
 end
 
+function isPassSeasonOver()
+  local cdt = os.date('*t')
+  return os.time{year=cdt.year, month=cdt.month, day=cdt.day, hour=cdt.hour} > os.time{year=Pass.endDate.year, month=Pass.endDate.month, day=Pass.endDate.day, hour=Pass.endDate.hour}
+end
+
+local function refuseEndedSeason(cid)
+  if not isPassSeasonOver() then return false end
+  doPlayerSendCancel(cid, __L(cid, "This Battle Pass season has ended."))
+  return true
+end
+
 function addPassStars(cid, stars)
   checkPassVersion(cid)
-  local cdt = os.date('*t')
-  if os.time{year=cdt.year, month=cdt.month, day=cdt.day, hour=cdt.hour} > os.time{year=Pass.endDate.year, month=Pass.endDate.month, day=Pass.endDate.day, hour=Pass.endDate.hour} then print("Notime") return false end
+  if isPassSeasonOver() then return false end
   local passLevel = getPassLevel(cid)
   local oldLevel = passLevel
   if passLevel >= #Pass.items then
@@ -466,8 +476,9 @@ end
 end
 
 function buyPass35(cid)
-if hasPassPremium(cid) then return end
+if hasPassPremium(cid) or refuseEndedSeason(cid) then return end
 if getPlayerItemCount(cid, 34524) >= 35 then
+   if not doPlayerRemoveItem(cid, 34524, 35) then return end
    setPlayerStorageValue(cid, PassPremiumStorage, 1) -- adiciona o pass
 
    local sps = getThingPosWithDebug(cid)
@@ -475,8 +486,6 @@ if getPlayerItemCount(cid, 34524) >= 35 then
    sps.y = sps.y+1
    doSendMagicEffect(sps, 896)
    doSendMagicEffect(getCreaturePosition(cid), 1144)
-
-   doPlayerRemoveItem(cid, 34524, 35)
 
    local protocol = Protocol_create('Pass35Buyed')
    doSendPlayerExtendedOpcode(cid, Pass.opcode, table.tostring(protocol))
@@ -490,11 +499,12 @@ elseif getPlayerItemCount(cid, 34524) < 35 then
 end
 
 function buyPass50(cid)
-if hasPassPremium(cid) then return end
+if hasPassPremium(cid) or refuseEndedSeason(cid) then return end
 if getPlayerItemCount(cid, 34524) >= 50 then
-   local PokeCoin = getPlayerStorageValue(cid, 414141)
+   if not doPlayerRemoveItem(cid, 34524, 50) then return end
+   local PokeCoin = math.max(0, getPlayerStorageValue(cid, 414141))
    setPlayerStorageValue(cid, PassPremiumStorage, 1) -- adiciona o pass
-   if not addPassStars(cid, 50) then return end -- adicionar 5 leveis
+   addPassStars(cid, 50) -- adicionar 5 leveis (capped at the last level)
    setPlayerStorageValue(cid, 414141, PokeCoin+20)  -- adicionar 20 PokeCoins
 
    local sps = getThingPosWithDebug(cid)
@@ -502,8 +512,6 @@ if getPlayerItemCount(cid, 34524) >= 50 then
    sps.y = sps.y+1
    doSendMagicEffect(sps, 896)
    doSendMagicEffect(getCreaturePosition(cid), 1144)
-
-   doPlayerRemoveItem(cid, 34524, 50)
 
    local protocol = Protocol_create('Pass50Buyed')
    doSendPlayerExtendedOpcode(cid, Pass.opcode, table.tostring(protocol))
@@ -517,6 +525,7 @@ elseif getPlayerItemCount(cid, 34524) < 50 then
 end
 
 function collectPassReward(cid, level, passType)
+  if not level or not passType then return end
   if level <= 0 or level > #Pass.items then return end
   if passType < PassFirst or passType > PassPremium then return end
   checkPassVersion(cid)
