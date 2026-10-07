@@ -185,6 +185,8 @@ jobs:
           KEEP_RUNNING=1 tools/smoke_server.sh e2e/server.log
           status=0
           SCREENSHOT=e2e/windows-ingame-trainer.png tools/smoke_redemption_login.sh e2e/client-trainer.log || status=1
+          # A fresh database gives GM Admin no Pokemon; the Pokemon bar check needs one.
+          env MSYS2_ARG_CONV_EXCL='*' python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/cb Charmander, 15, 10" || status=1
           PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" PV_EXPECT_POKEBAR=1 SCREENSHOT=e2e/windows-ingame-gm.png \
             tools/smoke_redemption_login.sh e2e/client-gm.log || status=1
           taskkill //F //IM pokeverse-server.exe > /dev/null 2>&1 || true
@@ -438,6 +440,8 @@ jobs:
           export DISPLAY=:99
           status=0
           SCREENSHOT=e2e/linux-ingame-trainer.png tools/smoke_redemption_login.sh e2e/client-trainer.log || status=1
+          # A fresh database gives GM Admin no Pokemon; the Pokemon bar check needs one.
+          python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/cb Charmander, 15, 10" || status=1
           PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" PV_EXPECT_POKEBAR=1 SCREENSHOT=e2e/linux-ingame-gm.png \
             tools/smoke_redemption_login.sh e2e/client-gm.log || status=1
           pkill -9 -f pokeverse-server || true
