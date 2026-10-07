@@ -30,9 +30,15 @@ Access levels come from `server/runtime-data/data/XML/groups.xml`:
 ## Naming policy for the "Proposed canonical English name" column
 
 - Use lowercase, full English words.
-- Keep every current word as a **deprecated alias** registered on the same entry, so that client modules, the runtime harness (`tools/runtime-harness/pv_harness/pv_harness.lua`) and players' habits keep working.
+- Keep every current word as a **deprecated alias**, so that client modules, the runtime harness (`tools/runtime-harness/pv_harness/pv_harness.lua`) and players' habits keep working.
 - "—" means the current name is already acceptable.
 - Words the client sends automatically are marked **(client)** and must not be removed.
+
+**Done in Phase 3.** Every row with a single proposed name (38 commands) now uses it as its canonical word in `talkactions.xml`. Each old word is a separate entry directly below it, marked `<!-- deprecated alias of /new -->`, with the same script, access and log settings plus `hidden="yes"`. A separate entry is used instead of a `;` alias because `/commands` lists every registered word, and a `;` alias cannot be hidden on its own. Scripts receive the word that was typed; the two scripts that branch on it (`gamemaster.lua` and `creature.lua`, by the second character) give the same result for the new names.
+
+Not renamed: `/profission` (the access change needs a decision), `/teste` (marked for removal), `/commands` (already English) and every row marked "—".
+
+Verified on the Linux server with `tools/protocol_client.py`: old and new words give identical replies (`/guildlist`/`/list`, `/pokemoninfo`/`/pokeivev`) and are matched and logged identically for GM commands (`/monster`/`/m`, `/givepokemon`/`/cb`, `/broadcast`/`/b`, `/looktype`/`/newtype`, `/playerinfo`/`/info`, `/attribute`/`/attr`, `/temple`/`/t`). The server starts with no duplicate-word warnings. `tools/validate.py commands` checks that every alias runs the same script with the same access as its canonical word, is hidden, and that every word the client or harness sends is still registered.
 
 ## Player commands (access 0: Player)
 
@@ -198,17 +204,17 @@ Script files in `talkactions/scripts/` with no XML entry (dead code): `commands.
 ## Issues to fix alongside any renaming
 
 1. **Security:**
-   - `showbuywindowhouse` (access 0) broadcasts a test notification to every player.
+   - `showbuywindowhouse` (access 0) broadcasts a test notification to every player. **Fixed in Phase 3** (now a no-op script).
    - `/profission` (access 0) grants a profession through a debug script.
    - `/guardian` has no access attribute; this is fine if it is meant as a player command.
 2. **Case sensitivity:**
    - `/ShopOpen`, `/BuyMasteryRank`, `/SendPass35`, `/SendPass50` and `/parseRank` only work with exact case. Add `case-sensitive="no"` or lowercase canonical names.
    - `/cb` needs the exact `POKEMONS` key case.
    - `/lang` needs a lowercase argument.
-3. **Wrong help or usage text:**
+3. **Wrong help or usage text** (all three **fixed in Phase 3**):
    - `/evolve` description.
    - `pass35/50.lua` usage message: it lists three arguments, but the command takes only a player name.
    - Portuguese descriptions on the seven house commands.
 4. **Script bugs:** `/unban` (undefined `ip`), `/clean` (`tile,true` branch), `/storage` (message shows the param), `/config` (`value` used before it is defined).
 5. **`word-spaced` house commands:** parameters probably never parse (UNVERIFIED).
-6. **Renaming rule:** keep every old word as an alias in the same `words="…"` list. The harness uses `/cb`, `/pokeivev`, `/i`, `/m`, `/passopen`, `/dailysigninopen` and `/ShopOpen`. Client modules send `/task`, `/parseRank`, `/buyrank`, `/showtaskrank`, `/BuyMasteryRank`, `/name*`, `/shopdiamond`, `/ShopOpen`, `/dailysigninopen`, `/passopen`, `/pokeivev`, `/SendPass*`, `/dpconfig`, `/dprelease`, `/depotpass`, `/sd`, `/cp`, `/pd`, `/tc`, `/dv`, the house words, `$stackemoney$` and `showbuywindowhouse`.
+6. **Renaming rule:** keep every old word registered, as a hidden entry marked `<!-- deprecated alias of … -->` (see the naming policy). The harness uses `/cb`, `/pokeivev`, `/i`, `/m`, `/passopen`, `/dailysigninopen` and `/ShopOpen`. Client modules send `/task`, `/parseRank`, `/buyrank`, `/showtaskrank`, `/BuyMasteryRank`, `/name*`, `/shopdiamond`, `/ShopOpen`, `/dailysigninopen`, `/passopen`, `/pokeivev`, `/SendPass*`, `/dpconfig`, `/dprelease`, `/depotpass`, `/sd`, `/cp`, `/pd`, `/tc`, `/dv`, the house words, `$stackemoney$` and `showbuywindowhouse`.
