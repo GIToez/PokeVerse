@@ -1,0 +1,12 @@
+Module
+  name: game_pokeshop
+  description: PokeVerse diamond shop (ext opcode 27)
+  author: wave
+  website: www.pokeaveuturas.info
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  dependencies: [ game_interface ]
+  scripts: [ shop, slide, addons, clas, decoracoes, mercado, promocao, roupas ]
+  @onLoad: init()
+  @onUnload: terminate()

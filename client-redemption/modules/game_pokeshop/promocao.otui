@@ -1,0 +1,616 @@
+WindowPratileira1 < UIWidget
+  id: WindowPratileira1
+  size: 106 195
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+  margin-bottom: 40
+  margin-left: 31
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 12
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 77 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 1
+  UIWidget
+    id: SlotItemPratileira
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 36
+    margin-left: 11
+  UIWidget
+    id: Star
+    size: 11 11
+    visible: false
+    image-source: images/promocao/pratileira/star
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 14
+  UIWidget
+    id: Sex1
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 4
+  UIWidget
+    id: Sex2
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 16
+    margin-right: 4
+  UIButton
+    id: Comprar
+    size: 81 23
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowPratileira2 < UIWidget
+  id: WindowPratileira2
+  size: 106 195
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.left: WindowPratileira1.right
+  margin-bottom: 40
+  margin-left: 15
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 12
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 77 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 1
+  UIWidget
+    id: SlotItemPratileira
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 36
+    margin-left: 11
+  UIWidget
+    id: Star
+    size: 11 11
+    visible: false
+    image-source: images/promocao/pratileira/star
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 14
+  UIWidget
+    id: Sex1
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 4
+  UIWidget
+    id: Sex2
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 16
+    margin-right: 4
+  UIButton
+    id: Comprar
+    size: 81 23
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowPratileira3 < UIWidget
+  id: WindowPratileira3
+  size: 106 195
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.left: WindowPratileira2.right
+  margin-bottom: 40
+  margin-left: 15
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 12
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 77 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 1
+  UIWidget
+    id: SlotItemPratileira
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 36
+    margin-left: 11
+  UIWidget
+    id: Star
+    size: 11 11
+    visible: false
+    image-source: images/promocao/pratileira/star
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 14
+  UIWidget
+    id: Sex1
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 4
+  UIWidget
+    id: Sex2
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 16
+    margin-right: 4
+  UIButton
+    id: Comprar
+    size: 81 23
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowPratileira4 < UIWidget
+  id: WindowPratileira4
+  size: 106 195
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.left: WindowPratileira3.right
+  margin-bottom: 40
+  margin-left: 15
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 12
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 77 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 1
+  UIWidget
+    id: SlotItemPratileira
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 36
+    margin-left: 11
+  UIWidget
+    id: Star
+    size: 11 11
+    visible: false
+    image-source: images/promocao/pratileira/star
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 14
+  UIWidget
+    id: Sex1
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 4
+  UIWidget
+    id: Sex2
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 16
+    margin-right: 4
+  UIButton
+    id: Comprar
+    size: 81 23
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowPratileira5 < UIWidget
+  id: WindowPratileira5
+  size: 106 195
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.left: WindowPratileira4.right
+  margin-bottom: 40
+  margin-left: 15
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 12
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 77 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 1
+  UIWidget
+    id: SlotItemPratileira
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 36
+    margin-left: 11
+  UIWidget
+    id: Star
+    size: 11 11
+    visible: false
+    image-source: images/promocao/pratileira/star
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 14
+  UIWidget
+    id: Sex1
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 4
+  UIWidget
+    id: Sex2
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 16
+    margin-right: 4
+  UIButton
+    id: Comprar
+    size: 81 23
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+WindowPratileira6 < UIWidget
+  id: WindowPratileira6
+  size: 106 195
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.left: WindowPratileira5.right
+  margin-bottom: 40
+  margin-left: 15
+
+  UIWidget
+    id: Diamond
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 40
+    margin-left: 12
+  UIWidget
+    id: PokeCoin
+    size: 47 17
+    anchors.bottom: parent.bottom
+    anchors.left: Diamond.right
+    margin-bottom: 40
+
+  UIWidget
+    id: NameItem
+    size: 77 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 1
+  UIWidget
+    id: SlotItemPratileira
+    size: 84 84
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 36
+    margin-left: 11
+  UIWidget
+    id: Star
+    size: 11 11
+    visible: false
+    image-source: images/promocao/pratileira/star
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 14
+  UIWidget
+    id: Sex1
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 4
+  UIWidget
+    id: Sex2
+    size: 7 11
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 16
+    margin-right: 4
+  UIButton
+    id: Comprar
+    size: 81 23
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 8
+    margin-left: 13
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+PromoButtonRelampago < UIButton
+  id: PromoButtonRelampago
+  size: 190 97
+  image-source: images/promocao/promocao_relampago
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 34
+  margin-right: 19
+PromoButtonVip < UIButton
+  id: PromoButtonVip
+  size: 190 97
+  image-source: images/promocao/promocao_vip
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 135
+  margin-right: 19
+
+TitleFeitoPraVoce < UIButton
+  id: TitleFeitoPraVoce
+  size: 99 26
+  image-source: images/promocao/title/feito_para_voce
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 245
+  margin-left: 32
+LeftButton < UIButton
+  id: LeftButton
+  size: 27 24
+  image-source: images/promocao/buttons/left
+  anchors.bottom: TitleFeitoPraVoce.bottom
+  anchors.left: TitleFeitoPraVoce.left
+  margin-bottom: -2
+  margin-left: 639
+  opacity: 1
+  $hover:
+    image-source: images/promocao/buttons/left_hover
+    opacity: 1
+  $pressed:
+    image-source: images/promocao/buttons/left_hover
+    opacity: 0.7
+RightButton < UIButton
+  id: RightButton
+  size: 27 24
+  image-source: images/promocao/buttons/right
+  anchors.bottom: LeftButton.bottom
+  anchors.left: LeftButton.left
+  margin-left: 35
+  opacity: 1
+  $hover:
+    image-source: images/promocao/buttons/right_hover
+    opacity: 1
+  $pressed:
+    image-source: images/promocao/buttons/right_hover
+    opacity: 0.7
+
+SlideBackground < UIButton
+  id: SlideBackground
+  size: 510 199
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 34
+  margin-left: 29
+
+Text < UIButton
+  id: textwindow
+  size: 473 25
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 32
+  margin-left: 17
+SlotBox < UIButton
+  id: SlotBox
+  size: 84 84
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 43
+  margin-left: 66
+SlotItem < UIButton
+  id: SlotItem
+  size: 84 84
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 43
+  margin-left: 66
+
+ButtonBuy < UIButton
+  id: ButtonBuy
+  size: 113 28
+  visible: false
+  image-source: images/promocao/slide/comprar
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 67
+  margin-left: 23
+  opacity: 0.8
+  $hover:
+    opacity: 1
+  $pressed:
+    opacity: 0.7
+
+BallSlide1 < UIButton
+  id: BallSlide1
+  @onClick: slide1()
+  size: 17 17
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 5
+  margin-left: 190
+BallSlide2 < UIButton
+  id: BallSlide2
+  @onClick: slide2()
+  size: 17 17
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 5
+  margin-left: 214
+BallSlide3 < UIButton
+  id: BallSlide3
+  @onClick: slide3()
+  size: 17 17
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 5
+  margin-left: 238
+BallSlide4 < UIButton
+  id: BallSlide4
+  @onClick: slide4()
+  size: 17 17
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 5
+  margin-left: 262
+BallSlide5 < UIButton
+  id: BallSlide5
+  @onClick: slide5()
+  size: 17 17
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 5
+  margin-left: 286
+BallSlide6 < UIButton
+  id: BallSlide6
+  @onClick: slide6()
+  size: 17 17
+  anchors.bottom: SlideBackground.bottom
+  anchors.left: SlideBackground.left
+  margin-bottom: 5
+  margin-left: 310
+
+Panel
+  SlideBackground
+  PromoButtonRelampago
+  PromoButtonVip
+  BallSlide1
+  BallSlide2
+  BallSlide3
+  BallSlide4
+  BallSlide5
+  BallSlide6
+  ButtonBuy
+  Text
+  SlotBox
+  SlotItem
+  TitleFeitoPraVoce
+  LeftButton
+  RightButton
+  WindowPratileira1
+  WindowPratileira2
+  WindowPratileira3
+  WindowPratileira4
+  WindowPratileira5
+  WindowPratileira6

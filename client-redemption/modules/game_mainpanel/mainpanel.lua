@@ -183,6 +183,8 @@ end
 function toggleStore()
     if g_game.getFeature(GameIngameStore) and modules.game_store then
         modules.game_store.toggle() -- cipsoft packets
+    elseif modules.game_pokeshop then
+        modules.game_pokeshop.toggle() -- PokeVerse diamond shop
     elseif modules.game_shop then
         modules.game_shop.toggle() -- custom
     end
