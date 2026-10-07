@@ -721,7 +721,7 @@ class Game
 		int32_t lastMotdId;
 		uint32_t playersRecord;
 		uint32_t checkLightEvent, checkCreatureEvent, checkDecayEvent, saveEvent;
-		bool globalSaveMessage[2];
+		bool globalSaveMessage[3];
 
 		RefreshTiles refreshTiles;
 		Trash trash;
