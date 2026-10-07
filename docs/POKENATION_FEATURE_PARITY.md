@@ -58,7 +58,7 @@ Two facts affect many rows:
 | Cooldowns | CONFIRMED WORKING (P2-06) `sys/007-cooldown.lua` | APPEARS IMPLEMENTED `sys/007` | Yes | — | NOT TESTED | No | Day-of-year clock (BUG-34) is shared |
 | TMs | CONFIRMED WORKING (P2-16) `sys/018`, `cl/game_tmchoose` | APPEARS IMPLEMENTED `sys/018`, `cl/game_tmchoose` | Yes | — | NOT TESTED | No | Nation's new client fixes the listener leak (BUG-57); Verse keeps it |
 | Held items | CONFIRMED WORKING (P2-17) `sys/046-heldItem.lua` | APPEARS IMPLEMENTED `sys/046` | Yes | — | NOT TESTED | No | BUG-28 is shared |
-| Vitamins | CONFIRMED WORKING (P2-18) `sys/040-vitamin.lua` | APPEARS IMPLEMENTED `sys/040` | Yes | — | NOT TESTED | No | |
+| Vitamins | CONFIRMED WORKING (P2-18) `sys/040-vitamin.lua` | CONFIRMED WORKING (Zinc, harness) `sys/040` | Yes | Phase 2 Zinc description fix only | PASS (Zinc); the other 7 NOT TESTED | No | Full audit: `MISSING_FROM_POKEVERSE.md` → VITAMIN_AUDIT |
 | Special / passive abilities | APPEARS IMPLEMENTED `sys/017`, `sys/039` | APPEARS IMPLEMENTED `sys/017`, `sys/039` | Yes | — | NOT TESTED | No | |
 | Field abilities (overall) | CONFIRMED WORKING for Ride and Fly (P2-20/21); others APPEARS IMPLEMENTED `fn/abilities.lua` | APPEARS IMPLEMENTED `fn/abilities.lua` | Modified | Scyther speed entry added, a dead headbutt block removed, one extra ability area in `ev/actions/abilities.lua` | NOT TESTED | No | |
 | Pokémon addons | PARTIAL (P2-22) `sys/038-pokemonAddon.lua` | APPEARS IMPLEMENTED `sys/038` | Modified | About 100 new addons (ids 262–360) and extra addon item ranges in `actions.xml` | NOT TESTED | No | Better in Verse (content) |

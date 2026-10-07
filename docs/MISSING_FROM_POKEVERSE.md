@@ -61,3 +61,36 @@ These are not Nation features, but they belong on the same work list.
 | Friendship bonuses (crit, loot luck, shiny charm, energy regen) | Medium | Written but never read by game code | INVESTIGATE (a design decision; not fixed in Phase 2, which avoids rebalancing) |
 | IV/EV/nature/base stats other than HP | Medium | Only HP values affect stats | INVESTIGATE (same reason) |
 | Graphical market, EV spending | High | Fixed in Phase 2 (tables, DELETEs, `evspendingPoints`). See the runtime results. | KEEP POKEVERSE VERSION |
+
+## VITAMIN_AUDIT
+
+Phase 3 audit of the vitamin system against PokeNation. Nothing was changed; this section records the current behaviour so later phases do not redesign it by accident.
+
+**Verdict: PRESENT IN BOTH, same system.** Verse uses `server/runtime-data/data/lib/ps/systems/040-vitamin.lua`, the same `sys/040` module as Nation (`POKENATION_FEATURE_PARITY.md`, Moves and development). The only Verse-side difference found is the Phase 2 Zinc description fix. Recommendation: **KEEP POKEVERSE VERSION**. The Nation vitamin import is future work and is not part of Phase 3.
+
+| Vitamin | Item ID | Stat | Value at 1 / 2 / 3 applies | Max applies |
+|---|---|---|---|---|
+| HP Up | 23452 | Max HP | +5% / +8% / +10% | 3 |
+| Protein | 23456 | Attack | +5% / +8% / +10% | 3 |
+| Iron | 23453 | Defense | +5% / +8% / +10% | 3 |
+| Calcium | 23450 | Special Attack | +5% / +8% / +10% | 3 |
+| Zinc | 23457 | Special Defense | +5% / +8% / +10% | 3 |
+| Carbos | 23451 | Speed | +10% / +16% / +20% | 3 |
+| PP Up | 23455 | Max Energy | +5% / +8% / +10% | 3 |
+| PP Max | 23454 | Max Energy | +10% | 1 |
+
+Rules (`Vitamin.onUse`):
+
+- The target must be a ball holding a Pokémon, and no Pokémon may be out of its ball.
+- The vitamin and the ball must both be in the player's containers ("You must pick up this item first."). The source comment notes this check does not prove the player is carrying the item.
+- A ball accepts at most 10 vitamins in total and 3 of each kind (PP Max: 1).
+- Level gate: the next vitamin needs Pokémon level ≥ (vitamins already applied) × 10. The first vitamin has no level requirement; the tenth needs level 90.
+- The value is looked up by apply count, not summed: three Zinc give +10%, not +23%.
+- Applied on summon by `Vitamin.onPokemonCall`, which calls `setMonsterVarPokeStat`. The C++ side (`Monster::setVarPokeStat`) adds the modifier to a 1.0 multiplier, so different vitamins stack, and PP Up and PP Max stack on Max Energy.
+- `Vitamin.doResetBall` clears all counts. `Vitamin.getBallDescription` lists them in the ball description.
+- Player messages go through `__L(cid, ...)`, except the "Pokemon out of the ball" and "pick up this item first" messages, which are hard-coded English.
+
+Notes for later phases (not fixed, to avoid rebalancing):
+
+- Every Verse move costs 0 energy (BUG-05 above), so PP Up and PP Max have no gameplay effect today.
+- Runtime coverage: only Zinc was exercised (harness PASS, `FEATURE_TEST_MATRIX.md`). The other seven share the same code path but are NOT TESTED.
