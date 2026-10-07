@@ -1,0 +1,38 @@
+StatusCooldownLabel < UILabel
+  font: verdana-11px-antialised
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+  anchors.centerIn: parent
+
+StatusItem < Item
+  size: 48 48
+  virtual: true
+  border-width: 0
+  padding: 0
+  margin: 1 0 0 1
+  image-source: ~
+  $hover:
+    border-color: white
+    border-width: 1
+
+  ProgressRect
+    id: progressRect
+    anchors.fill: parent
+    margin: -1
+    phantom: true
+    percent: 100
+    background-color: #000000bb
+
+    StatusCooldownLabel
+      id: cooldown
+
+UIWidget
+  id: statusbar
+  focusable: false
+  phantom: true
+  size: 42 42
+  anchors.top: gameMapPanel.top
+  anchors.right: gameMapPanel.right
+  margin-right: 200
+  margin-top: 40

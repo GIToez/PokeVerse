@@ -1,0 +1,13 @@
+Module
+  name: game_statusbar
+  description: PokeVerse Pokemon status condition bar (0xFF sub-opcodes 14/15/16)
+  author: PSoul, Redemption port by PokeVerse
+  website: TODO - POKEVERSE URL REQUIRED
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ statusbar ]
+  @onLoad: onInit()
+  @onUnload: onTerminate()
