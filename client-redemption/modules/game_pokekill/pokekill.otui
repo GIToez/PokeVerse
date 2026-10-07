@@ -1,0 +1,50 @@
+KillPanel < UIWidget
+  size: 224 62
+  visible: false
+  image-source: images/background
+  anchors.left: parent.left
+
+  Label
+    id: taskName
+    size: 140 15
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 15
+    margin-left: 77
+    color: #ffff99
+
+  Label
+    id: pokeName
+    size: 140 15
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 15
+    margin-left: 80
+    color: #d7d7d7
+
+  UICreature
+    id: pokeImage
+    size: 32 32
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 15
+    margin-left: 20
+
+UIWidget
+  id: pokekillWindow
+  size: 224 129
+  anchors.horizontalCenter: parent.horizontalCenter
+  anchors.verticalCenter: parent.verticalCenter
+  margin-top: -180
+  focusable: false
+  phantom: true
+
+  KillPanel
+    id: moduleKill
+    anchors.top: parent.top
+
+  KillPanel
+    id: npcKill
+    anchors.top: prev.bottom
+    margin-top: 5

@@ -1,0 +1,12 @@
+Module
+  name: game_pokekill
+  description: Kill task progress popup (ext opcode 59)
+  author: PokeVerse
+  website: https://github.com/GIToez/PokeVerse
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  dependencies: [ game_interface ]
+  scripts: [ pokekill ]
+  @onLoad: init()
+  @onUnload: terminate()
