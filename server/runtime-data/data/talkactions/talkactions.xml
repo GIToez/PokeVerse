@@ -95,6 +95,7 @@
 	<talkaction log="yes" words="/teste" access="4" event="script" value="../../lib/ps/events/talkactions/teste.lua"/>
 	<talkaction log="yes" words="/learnwork" access="5" event="script" value="../../lib/ps/profission/testeprofission.lua"/> <!-- development: grants the Stylist profession so crafting can be tested -->
 	<talkaction log="yes" words="/craftopen" access="5" event="script" value="craftopen.lua"/> <!-- development: opens the crafting window like a crafting table -->
+	<talkaction log="yes" words="/marketopen" access="5" event="script" value="marketopen.lua"/> <!-- development: opens the market at the player position and reloads listings from the database -->
 	<talkaction log="yes" words="/addskill" access="5" event="function" value="addSkill"/>
 	<talkaction log="yes" words="/attribute" access="5" event="function" value="thingProporties"/>
 	<talkaction log="yes" words="/attr" access="5" event="function" value="thingProporties" hidden="yes"/> <!-- deprecated alias of /attribute -->
