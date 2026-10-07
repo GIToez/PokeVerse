@@ -35,14 +35,14 @@ function prepareShutdown(minutes)
 	end
 
 	if(minutes == 1) then
-		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minuto para atualização, por favor faça logout agora! Voltaremos em 10 minutos. Mais informações em: http://forum.psoul.net/announcements/")
-		doBroadcastMessage("Server is going down in " .. minutes .. " minute to update, please log out now! We will back in 10 minutes. More information on: http://forum.psoul.net/announcements/")
+		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minuto para atualização, por favor faça logout agora! Voltaremos em 10 minutos. Mais informações em: TODO - POKEVERSE URL REQUIRED")
+		doBroadcastMessage("Server is going down in " .. minutes .. " minute to update, please log out now! We will back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED")
 	elseif(minutes <= 3) then
-		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minutos para atualização, por favor faça logout! Voltaremos em 10 minutos. Mais informações em: http://forum.psoul.net/announcements/")
-		doBroadcastMessage("Server is going down in " .. minutes .. " minutes to update, please log out. We will back in 10 minutes. More information on: http://forum.psoul.net/announcements/")
+		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minutos para atualização, por favor faça logout! Voltaremos em 10 minutos. Mais informações em: TODO - POKEVERSE URL REQUIRED")
+		doBroadcastMessage("Server is going down in " .. minutes .. " minutes to update, please log out. We will back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED")
 	else
-		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minutos para atualização. Voltaremos em 10 minutos. Mais informações em: http://forum.psoul.net/announcements/")
-		doBroadcastMessage("Server is going down in " .. minutes .. " minutes to update. We will back in 10 minutes. More information on: http://forum.psoul.net/announcements/")
+		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minutos para atualização. Voltaremos em 10 minutos. Mais informações em: TODO - POKEVERSE URL REQUIRED")
+		doBroadcastMessage("Server is going down in " .. minutes .. " minutes to update. We will back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED")
 	end
 
 	shutdownEvent = addEvent(prepareShutdown, 60000, minutes - 1)

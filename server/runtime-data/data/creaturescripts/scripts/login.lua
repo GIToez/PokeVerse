@@ -67,14 +67,14 @@ function onLogin(cid)
 				doPlayerAddLevel(cid, 4)
 				--setPlayerGotStarterPokemon(cid, true)
 			else
-				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "This is your first login on Pokenordic! Welcome! Remember that if you need help you can use the Help Channel (CTRL + O) and also our tutorials section")
+				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "This is your first login on PokeVerse! Welcome! Remember that if you need help you can use the Help Channel (CTRL + O) and also our tutorials section")
 				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You're in the Beginner Island, a place made for inexperienced players, please watch this tutorial before start playing.")
 				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_RED, "You are not required to stay on this island. Anytime you want to leave, go to Professor Tommy and talk about 'skip beginner island', even though you are no pokemon he will give you one.")
 			end
 			
 			--doPlayerAddTownMarks(cid, getTownName(getPlayerTown(cid)))
 			--doPlayerSendTip(cid, TIP_IDS.WELCOME)
-			doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Hello %s! Welcome to PSoul, a MMORPG loyal in the Pokemon series. You are boarding a world filled with many adventures and discoveries."), getCreatureName(cid)))
+			doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Hello %s! Welcome to PokeVerse, a MMORPG loyal in the Pokemon series. You are boarding a world filled with many adventures and discoveries."), getCreatureName(cid)))
 			doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "keyboard")
 			--addEvent(function(cid)
 				--if (isCreature(cid)) then

@@ -81,7 +81,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         talkState[talkUser] = TALKSTATE_RECOVER_ASK
 
     elseif (msgcontains(msg, 'fix') or msgcontains(msg, 'corrigir')) then
-        selfSay("Yes, I can fix an Egg Move lost due to PSoul update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the currently generated. Do you want to do that?", cid)
+        selfSay("Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the currently generated. Do you want to do that?", cid)
         talkState[talkUser] = TALKSTATE_FIX_ASK
 
     elseif (talkState[talkUser] == TALKSTATE_RECOVER_ASK) then

@@ -82,7 +82,7 @@ function onJoinChannel(cid, channel, users)
     if (channel == CHANNEL_HELP) then
         addEvent(function(cid)
             if (isCreature(cid)) then
-                doPlayerSendChannelMessage(cid, "", "Procurando ajuda? Acesse nosso site: http://www.pokenordic.com/blogCategories/1-tutorials / Looking for help? Access our site: http://www.pokenordic.com/blogCategories/1-tutorials", TALKTYPE_CHANNEL_RN, channel)
+                doPlayerSendChannelMessage(cid, "", "Procurando ajuda? Acesse nosso site: TODO - POKEVERSE URL REQUIRED / Looking for help? Access our site: TODO - POKEVERSE URL REQUIRED", TALKTYPE_CHANNEL_RN, channel)
                 doPlayerSendChannelMessage(cid, "", "Digite /commands para visualizar os comandos. / Type /commands to view the commands.", TALKTYPE_CHANNEL_RN, channel)
                 doPlayerSendChannelMessage(cid, "", "Antes de perguntar, pesquise no canal Wiki Chat! / Before asking, take a look at the Wiki Chat!", TALKTYPE_CHANNEL_RN, channel)
                 --

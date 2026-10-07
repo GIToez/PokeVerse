@@ -96,12 +96,12 @@
 	retryTimeout = 5 * 1000
 	loginTimeout = 60 * 1000
 	maxPlayers = 600
-	motd = "Sejá bem vindo ao PokeCenter - MMORPG"
+	motd = "Sejá bem vindo ao PokeVerse - MMORPG"
 	displayOnOrOffAtCharlist = false
 	onePlayerOnlinePerAccount = true
 	allowClones = false
 	serverName = "Cristal"
-	loginMessage = "Bem-vindo ao PokeCenter, torne-se um mestre pokémon. Passe por todas as missões, conclua as quest's e explore nossas cidades. "
+	loginMessage = "Bem-vindo ao PokeVerse, torne-se um mestre pokémon. Passe por todas as missões, conclua as quest's e explore nossas cidades. "
 	statusTimeout = 5 * 60 * 1000
 	replaceKickOnLogin = true
 	forceSlowConnectionsToDisconnect = false
@@ -313,9 +313,9 @@
 	teleportPlayerSummons = true
 
 	-- Status
-	ownerName = "PokeCenter"
-	ownerEmail = "contact@pokecenter.net"
-	url = "http://www.pokecenter.net/"
+	ownerName = "PokeVerse"
+	ownerEmail = "TODO - POKEVERSE URL REQUIRED"
+	url = "TODO - POKEVERSE URL REQUIRED"
 	location = "EUA"
 	displayGamemastersWithOnlineCommand = false
 
