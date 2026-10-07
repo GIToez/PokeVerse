@@ -1,0 +1,342 @@
+name: Platforms
+
+# Cross-platform builds for the PokeVerse server and the Redemption client
+# (docs/PLATFORM_COMPATIBILITY.md). Priority: Windows, then Android, then Linux.
+# A green build here is build evidence only. Gameplay results are recorded separately.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: platforms-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-server:
+    name: Windows server (MSYS2 UCRT64) - build, startup smoke
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-lua51
+            mingw-w64-ucrt-x86_64-libmariadbclient
+            mingw-w64-ucrt-x86_64-sqlite3
+            mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-python
+
+      - name: Toolchain versions
+        run: gcc --version | head -1; cmake --version | head -1; pacman -Q mingw-w64-ucrt-x86_64-boost mingw-w64-ucrt-x86_64-libmariadbclient mingw-w64-ucrt-x86_64-lua51
+
+      - name: Build server
+        run: tools/build_server.sh
+
+      - name: Upload Windows server build
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokeverse-server-windows-x64
+          path: dist/server/
+
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          distribution: mariadb
+          mysql-version: "10.11"
+          root-password: root
+
+      - name: Create development database
+        run: |
+          MYSQL="mysql -uroot -proot -h127.0.0.1" tools/setup_dev_db.sh
+          mysql -uroot -proot -h127.0.0.1 -e "CREATE USER IF NOT EXISTS 'pokeverse'@'127.0.0.1' IDENTIFIED BY 'pokeverse-dev'; GRANT ALL ON pokeverse.* TO 'pokeverse'@'127.0.0.1';"
+
+      - name: Server startup smoke
+        run: tools/smoke_server.sh /tmp/server-run.log
+
+      - name: Upload server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-server-log
+          path: ${{ runner.temp }}/msys64/tmp/server-run.log
+          if-no-files-found: ignore
+
+  windows-client:
+    name: Windows Redemption client (${{ matrix.type }})
+    runs-on: windows-2025-vs2026
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [release, debug]
+    env:
+      VCPKG_ROOT: ${{ github.workspace }}\vcpkg
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-archives
+      EXTRA_CMAKE_ARGS: -DOPTIONS_ENABLE_IPO=OFF -DOTCLIENT_BUILD_TESTS=OFF
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bootstrap vcpkg at the Redemption baseline
+        run: |
+          baseline=$(python -c "import json; print(json.load(open('client-redemption/vcpkg.json'))['builtin-baseline'])")
+          git clone https://github.com/microsoft/vcpkg.git vcpkg
+          git -C vcpkg checkout "$baseline"
+          ./vcpkg/bootstrap-vcpkg.bat -disableMetrics
+          mkdir -p vcpkg-archives
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: vcpkg-archives
+          key: vcpkg-windows-${{ matrix.type }}-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
+          restore-keys: vcpkg-windows-${{ matrix.type }}-
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Build Redemption
+        run: tools/build_redemption.sh ${{ matrix.type }}
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-archives
+          key: vcpkg-windows-${{ matrix.type }}-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
+
+      - name: Stage client
+        run: tools/stage_redemption.sh ${{ matrix.type }}
+
+      - name: Packaging validation
+        run: |
+          if [ "${{ matrix.type }}" = release ]; then
+            tools/package_client.sh dist/client-redemption dist/packages/pokeverse-client-windows-x64.tar.gz
+            VARIANT=harness tools/package_client.sh dist/client-redemption /tmp/x.tgz && { echo "guard did not refuse VARIANT=harness"; exit 1; } || true
+          else
+            tools/package_client.sh dist/client-redemption-debug /tmp/x.tgz && { echo "debug build was packaged"; exit 1; } || true
+          fi
+
+      - name: Launch test (software OpenGL)
+        id: launch
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $dir = if ("${{ matrix.type }}" -eq "release") { "dist/client-redemption" } else { "dist/client-redemption-debug" }
+          $exe = Get-ChildItem "$dir/pokeverse-client*.exe" | Select-Object -First 1
+          Invoke-WebRequest "https://github.com/pal1000/mesa-dist-win/releases/download/24.3.4/mesa3d-24.3.4-release-msvc.7z" -OutFile mesa.7z
+          7z e mesa.7z "x64/opengl32.dll" "x64/libgallium_wgl.dll" "x64/libglapi.dll" "x64/dxil.dll" -o"$dir" -y | Out-Null
+          $p = Start-Process -FilePath $exe.FullName -WorkingDirectory $dir -PassThru
+          Start-Sleep -Seconds 40
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+          $bmp.Save("launch-${{ matrix.type }}.png")
+          if ($p.HasExited) { Write-Error "client exited with code $($p.ExitCode)"; exit 1 }
+          Write-Host "client running after 40 s (pid $($p.Id))"
+          Stop-Process -Id $p.Id -Force
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pokeverse-client-windows-x64-${{ matrix.type }}
+          path: |
+            dist/client-redemption*/
+            dist/packages/
+            launch-${{ matrix.type }}.png
+
+  android-client:
+    name: Android Redemption client (arm64-v8a APK)
+    runs-on: ubuntu-24.04
+    env:
+      JAVA_VERSION: "17"
+      NDK_VERSION: "29.0.13599879"
+      CMAKE_VERSION: "3.22.1"
+      COMPILE_SDK: "36"
+      BUILD_TOOLS_VERSION: "36.0.0"
+      OTCLIENT_ANDROID_ABIS: "arm64-v8a"
+      LUAJIT_COMMIT: "d0e88930ddde28ff662503f9f20facf34f7265aa"
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-archives
+    defaults:
+      run:
+        working-directory: client-redemption
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install host and Android SDK packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl g++-multilib gcc-multilib ninja-build pkg-config python3 unzip zip
+          sdk_root="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          sdkmanager --sdk_root="$sdk_root" --install "platforms;android-${COMPILE_SDK}" \
+            "build-tools;${BUILD_TOOLS_VERSION}" "ndk;${NDK_VERSION}" "cmake;${CMAKE_VERSION}"
+          {
+            echo "ANDROID_HOME=$sdk_root"
+            echo "ANDROID_SDK_ROOT=$sdk_root"
+            echo "ANDROID_NDK_HOME=$sdk_root/ndk/${NDK_VERSION}"
+            echo "ANDROID_NDK_ROOT=$sdk_root/ndk/${NDK_VERSION}"
+          } >> "$GITHUB_ENV"
+
+      - name: Bootstrap vcpkg at the Redemption baseline
+        run: |
+          baseline=$(python3 -c "import json; print(json.load(open('vcpkg.json'))['builtin-baseline'])")
+          git clone https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          git -C "$VCPKG_ROOT" checkout "$baseline"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          mkdir -p "$VCPKG_DEFAULT_BINARY_CACHE"
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: vcpkg-archives
+          key: vcpkg-android-arm64-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
+          restore-keys: vcpkg-android-arm64-
+
+      - name: Build LuaJIT for Android
+        run: |
+          git clone https://github.com/LuaJIT/LuaJIT.git luajit-src
+          git -C luajit-src checkout "$LUAJIT_COMMIT"
+          chmod +x build_luajit_android.sh
+          ./build_luajit_android.sh
+
+      - name: Pack game assets into data.zip
+        run: |
+          mkdir -p android/app/src/main/assets
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          out = Path('android/app/src/main/assets/data.zip')
+          with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
+              for root in ('data', 'mods', 'modules'):
+                  for p in sorted(Path(root).rglob('*')):
+                      if p.is_file():
+                          z.write(p, p.as_posix())
+              for f in ('init.lua', 'otclientrc.lua', 'cacert.pem', 'config.ini'):
+                  if Path(f).exists():
+                      z.write(f, f)
+          print(f'{out}: {out.stat().st_size} bytes')
+          PY
+
+      - name: Build APK
+        working-directory: client-redemption/android
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-archives
+          key: vcpkg-android-arm64-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
+
+      - name: List APKs
+        run: find android/app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pokeverse-client-android-arm64
+          path: client-redemption/android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+  linux-client:
+    name: Linux Redemption client (${{ matrix.type }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [release, debug]
+    env:
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-archives
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf autoconf-archive automake ccache gcc-14 g++-14 \
+            libgl1-mesa-dev libglu1-mesa-dev libltdl-dev libtool libtool-bin libx11-dev libxcursor-dev \
+            libxi-dev libxinerama-dev libxrandr-dev linux-libc-dev make ninja-build perl pkg-config \
+            xvfb xdotool imagemagick
+
+      - name: Bootstrap vcpkg at the Redemption baseline
+        run: |
+          baseline=$(python3 -c "import json; print(json.load(open('client-redemption/vcpkg.json'))['builtin-baseline'])")
+          git clone https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          git -C "$VCPKG_ROOT" checkout "$baseline"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          mkdir -p "$VCPKG_DEFAULT_BINARY_CACHE"
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: vcpkg-archives
+          key: vcpkg-linux-${{ matrix.type }}-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
+          restore-keys: vcpkg-linux-${{ matrix.type }}-
+
+      - name: Build Redemption
+        run: tools/build_redemption.sh ${{ matrix.type }}
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-archives
+          key: vcpkg-linux-${{ matrix.type }}-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
+
+      - name: Unit tests (debug)
+        if: matrix.type == 'debug'
+        run: ctest --test-dir build/client-redemption/debug --output-on-failure
+
+      - name: Stage, packaging validation, launch test
+        run: |
+          tools/stage_redemption.sh ${{ matrix.type }}
+          dir=dist/client-redemption; [ "${{ matrix.type }}" = debug ] && dir=dist/client-redemption-debug
+          if [ "${{ matrix.type }}" = release ]; then
+            tools/package_client.sh "$dir" dist/packages/pokeverse-client-linux-x64.tar.gz
+          elif tools/package_client.sh "$dir" /tmp/x.tgz; then
+            echo "debug build was packaged"; exit 1
+          fi
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1280x1024x24 &
+          sleep 3
+          (cd "$dir" && ./pokeverse-client* > /tmp/redemption.log 2>&1 &)
+          for _ in $(seq 1 60); do xdotool search --name "OTClient" > /dev/null 2>&1 && break; sleep 1; done
+          sleep 10
+          import -window root launch-${{ matrix.type }}.png
+          xdotool search --name "OTClient" > /dev/null
+          pkill -9 -f pokeverse-client || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pokeverse-client-linux-x64-${{ matrix.type }}
+          path: |
+            dist/packages/
+            launch-${{ matrix.type }}.png
+            /tmp/redemption.log
+          if-no-files-found: ignore

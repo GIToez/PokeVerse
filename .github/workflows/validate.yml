@@ -45,6 +45,17 @@ jobs:
       - name: Build client
         run: tools/build_client.sh
 
+      - name: Harness guard (docs/CLIENT_VARIANTS.md)
+        run: |
+          tools/package_client.sh dist/client /tmp/pokeverse-client.tar.gz
+          for var in VARIANT=harness BOT_PROTECTION_DISABLED=1 TEST_AUTOMATION_ENABLED=1; do
+            if env "$var" tools/package_client.sh dist/client /tmp/x.tgz; then echo "packaged with $var"; exit 1; fi
+          done
+          if cmake -S client/source -B /tmp/guard -DBOT_PROTECTION=OFF -DBUILD_VARIANT=production > /tmp/guard.log 2>&1; then
+            echo "CMake accepted BOT_PROTECTION=OFF for production"; exit 1
+          fi
+          grep -q "only allowed with BUILD_VARIANT=harness" /tmp/guard.log
+
       - name: Create development database
         run: |
           sudo systemctl start mariadb
