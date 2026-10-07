@@ -61,4 +61,4 @@ See `KNOWN_ISSUES.md` for details and status.
 - Container slot reuse crash.
 - Chat `Ctrl+A`.
 
-The harness (`tools/runtime_test.sh`) exercises the first four. Phase 3 adds static regression checks for all five (`tools/check_phase2_regressions.py`).
+The harness (`tools/runtime_test.sh`) exercises the first four. Phase 3 adds a static regression check for all five: `tools/validate.py regressions`, which CI runs.

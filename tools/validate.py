@@ -2,6 +2,7 @@
 """Static validation of the PokeVerse source tree (no server, client or database needed).
 
 Checks:
+  regressions  Phase 2 fixes and the harness guard are still in place
   lua        every .lua file under server/ and client/ runtime-data compiles (luac5.1 -p)
   xml        every server data XML is well-formed
   scripts    script files referenced by the server registries, monsters.xml and NPC XMLs exist
@@ -220,7 +221,39 @@ def check_db():
     return [] if res.returncode == 0 else out.splitlines()
 
 
+# (file, regex that must match, what regresses without it). Runtime coverage: tools/runtime_test.sh.
+REGRESSIONS = [
+    ("server/runtime-data/data/lib/ps/config/pokemon.lua",
+     r"function\s+getPokemonDexStorage\s*\(", "Pokedex: getPokemonDexStorage undefined"),
+    ("client/source/src/client/statictext.cpp",
+     r"MessageBarkLoud\)\s*\{\s*g_lua\.pop\(\);", "speech bubbles: Lua stack leak in StaticText::compose (monster/spell)"),
+    ("client/source/src/client/statictext.cpp",
+     r"\}\s*else\s*\{\s*g_lua\.pop\(\);\s*g_logger\.warning", "speech bubbles: Lua stack leak in StaticText::compose (unknown mode)"),
+    ("server/runtime-data/data/lib/game_pokemonInfo.lua",
+     r"if not summon or not isCreature\(summon\) then", "Pokemon Info errors when the Pokemon is in its ball"),
+    ("client/runtime-data/modules/game_containers/containers.lua",
+     r"if previousContainer and previousContainer\.window then", "container slot reuse crash"),
+    ("client/runtime-data/modules/game_chat/chat.lua",
+     r"bindKeyPress\('Ctrl\+A', function\(\) textEdit:clearText\(\) end, chatWindow\)", "chat Ctrl+A"),
+    ("client/source/src/client/CMakeLists.txt",
+     r"BOT_PROTECTION=OFF is only allowed with BUILD_VARIANT=harness", "harness guard: bot protection off outside harness"),
+    ("tools/package_client.sh",
+     r"TEST_AUTOMATION_ENABLED", "harness guard: packaging check"),
+]
+
+
+def check_regressions():
+    errors = []
+    for path, pattern, what in REGRESSIONS:
+        with open(os.path.join(ROOT, path), encoding="latin-1") as f:
+            if not re.search(pattern, f.read()):
+                errors.append(f"{path}: {what}")
+    print(f"  regressions: {len(REGRESSIONS) - len(errors)}/{len(REGRESSIONS)} guarded fixes present")
+    return errors
+
+
 CHECKS = {
+    "regressions": check_regressions,
     "lua": check_lua,
     "xml": check_xml,
     "scripts": check_scripts,
