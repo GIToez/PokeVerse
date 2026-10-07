@@ -19,6 +19,8 @@
 #define __SERVER__
 #include "otsystem.h"
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/asio/steady_timer.hpp>
+#include <chrono>
 
 class ServiceBase;
 typedef boost::shared_ptr<ServiceBase> Service_ptr;
@@ -111,7 +113,7 @@ class ServiceManager : boost::noncopyable
 		void die() {m_io_service.stop();}
 
 		boost::asio::io_context m_io_service;
-		boost::asio::deadline_timer deathTimer;
+		boost::asio::steady_timer deathTimer;
 		bool running;
 
 		typedef std::map<uint16_t, ServicePort_ptr> AcceptorsMap;

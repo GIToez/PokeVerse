@@ -1,0 +1,78 @@
+name: Windows server
+
+# PokeVerse server on Windows x64 (primary server platform): MinGW-w64 build from the
+# same source as Linux, then a startup smoke test against MariaDB (docs/BUILD_SERVER_WINDOWS.md).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: windows-server-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-server:
+    name: Windows server (MSYS2 UCRT64) - build, startup smoke
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-lua51
+            mingw-w64-ucrt-x86_64-libmariadbclient
+            mingw-w64-ucrt-x86_64-sqlite3
+            mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-python
+
+      - name: Toolchain versions
+        run: gcc --version | head -1; cmake --version | head -1; pacman -Q mingw-w64-ucrt-x86_64-boost mingw-w64-ucrt-x86_64-libmariadbclient mingw-w64-ucrt-x86_64-lua51
+
+      - name: Build server
+        run: tools/build_server.sh
+
+      - name: Upload Windows server build
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokeverse-server-windows-x64
+          path: dist/server/
+
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          distribution: mariadb
+          mysql-version: "10.11"
+          root-password: root
+
+      - name: Create development database
+        run: |
+          MYSQL="mysql -uroot -proot -h127.0.0.1" tools/setup_dev_db.sh
+          mysql -uroot -proot -h127.0.0.1 -e "CREATE USER IF NOT EXISTS 'pokeverse'@'127.0.0.1' IDENTIFIED BY 'pokeverse-dev'; GRANT ALL ON pokeverse.* TO 'pokeverse'@'127.0.0.1';"
+
+      - name: Server startup smoke
+        run: tools/smoke_server.sh /tmp/server-run.log
+
+      - name: Upload server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-server-log
+          path: ${{ runner.temp }}/msys64/tmp/server-run.log
+          if-no-files-found: ignore
+

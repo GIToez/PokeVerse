@@ -21,6 +21,8 @@
 
 #include "networkmessage.h"
 #include <boost/utility.hpp>
+#include <boost/asio/steady_timer.hpp>
+#include <chrono>
 #include <boost/enable_shared_from_this.hpp>
 
 class OutputMessage;
@@ -168,7 +170,7 @@ class Connection : public boost::enable_shared_from_this<Connection>, boost::non
 		Protocol* m_protocol;
 
 		boost::asio::ip::tcp::socket* m_socket;
-		boost::asio::deadline_timer m_readTimer, m_writeTimer;
+		boost::asio::steady_timer m_readTimer, m_writeTimer;
 
 		boost::asio::io_context& m_service;
 		ServicePort_ptr m_servicePort;
