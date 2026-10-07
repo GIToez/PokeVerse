@@ -12,13 +12,13 @@ PokeVerse is an independent Pokémon MMORPG project currently based on the PokeJ
 
 | Component | Folder | Base | Source? | Notes |
 |---|---|---|---|---|
-| Game client | `client/` | OTClient 0.6.6 fork (PSoul/PokeCenter → PokeJornadas) | Lua/OTUI modules: yes | 69 modules. Binaries and `Tibia.spr` are not in Git. |
+| Game client | `client/` | OTClient 0.6.6 fork (PSoul/PokeCenter → PokeJornadas) | Lua/OTUI modules: yes | 69 modules. Prebuilt binaries committed; `Tibia.spr` via Git LFS. |
 | Client source | `client-src/` | edubart/otclient 0.6.6 (C++) | Yes | Includes custom updater, PSoul protocol and asset encryption. Third-party deps not included. |
 | Game server | `server/` | TFS 0.3.6 fork (`PS.exe`) | Lua/XML: yes | `data/lib/ps` PSoul framework, map, monsters, NPCs |
 | Server source | `server-src/` | The Forgotten Server 0.3.6 (C++) | Yes | Dev-C++/MinGW, Lua 5.1, MySQL/SQLite |
 | Database | `database/` | MariaDB 10.4 dump | — | 141 tables. A few tables used by scripts are missing. |
-| Updater hash tool | `tools/updater-hash/` | — | **No** (binary only) | Not in Git |
-| Design sources | `assets/design-psd/` | Photoshop | — | 2.5 GB, **not in Git** |
+| Updater hash tool | `tools/updater-hash/` | — | **No** (binary only) | `Hash.exe` committed as shipped |
+| Design sources | `assets/design-psd/` | Photoshop | — | 2.6 GB, Git LFS (not downloaded by default) |
 | Website | — | Znote AAC implied by the schema | **Not included** | |
 
 ## Repository layout
@@ -32,8 +32,8 @@ PokeVerse/
 ├── database/          SQL dump
 ├── tools/
 │   ├── import/        Script to re-download and verify the original package
-│   └── updater-hash/  Original hash-list generator (binary not committed)
-├── assets/            Design sources (PSD not committed; see assets/README.md)
+│   └── updater-hash/  Original hash-list generator (original binary)
+├── assets/            Design sources (PSD/PSB in Git LFS; see assets/README.md)
 ├── original/          Manifest of the original archive layout (path, size, SHA-256)
 └── docs/              Audit documentation
 ```
@@ -54,15 +54,18 @@ PokeVerse/
 | [docs/BINARY_INVENTORY.md](docs/BINARY_INVENTORY.md) | Every binary, and whether it is committed |
 | [docs/ORIGINAL_STRUCTURE.md](docs/ORIGINAL_STRUCTURE.md) | How the original archive was laid out and mapped into this repo |
 
-## Getting the files that are not in Git
+## Cloning
 
-The original archive, the Windows binaries, `client/data/things/Tibia.spr` (262 MB) and the PSD design files are not committed. To recreate them locally:
+The repository uses [Git LFS](https://git-lfs.com) for `client/data/things/Tibia.spr` (262 MB) and the PSD/PSB design sources (2.6 GB). Install Git LFS before cloning:
 
 ```bash
-tools/import/fetch-pokejornadas.sh   # downloads, verifies SHA-256, extracts to _import/
+git lfs install
+git clone https://github.com/GIToez/PokeVerse.git
 ```
 
-Then copy the binaries, `Tibia.spr` and `PSDS/` into place, following `docs/ORIGINAL_STRUCTURE.md`. Verify the results against `original/MANIFEST.sha256.tsv`.
+A normal clone downloads everything needed to run the client and server, including `Tibia.spr` and the prebuilt Windows binaries. The design sources are skipped by default (see `.lfsconfig`) to save LFS bandwidth. To get them, follow [assets/README.md](assets/README.md).
+
+Only compiler output, logs, IDE metadata and files containing personal paths are left out. The original archive can be re-downloaded and verified with `tools/import/fetch-pokejornadas.sh` and `original/MANIFEST.sha256.tsv`.
 
 ## Safety
 

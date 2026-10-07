@@ -15,8 +15,8 @@ Severity levels: **High** (fix before any public deployment), **Medium** (fix be
 | 4 | SQL queries built by string concatenation (JSON blobs, names, and client-supplied values) | **Medium/High** | `server/data/lib/game_market.lua`, `game_dungeon.lua`, `lib/ps/functions/others.lua`, `globalevents/scripts/gesior-shop-system.lua`, and many others |
 | 5 | The SQL dump seeds a `GOD` account (group 1, player group 6) whose SHA-1 password hash is the well-known hash of `123456`; a second account uses the same hash | **Medium** | `database/pokeaventuras.sql` (identical copy at `server/poketibia.sql`) |
 | 6 | Passwords stored as unsalted SHA-1 | **Medium** | `server/config.lua` (`encryptionType = "sha1"`) |
-| 7 | Server ships `iidking-v2.01.exe`, a PE import-table patcher used to inject DLLs into executables | **Medium** (provenance) | `server/iidking-v2.01.exe` (not committed) |
-| 8 | Client ships `ex.dll` (lua-ex: `os.spawn`, `CreateProcessA`, env/dir functions). Nothing in the package loads it. | **Low/Medium** | `client/ex.dll` (not committed) |
+| 7 | Server ships `iidking-v2.01.exe`, a PE import-table patcher used to inject DLLs into executables | **Medium** (provenance) | `server/iidking-v2.01.exe` (committed as shipped; do not run) |
+| 8 | Client ships `ex.dll` (lua-ex: `os.spawn`, `CreateProcessA`, env/dir functions). Nothing in the package loads it. | **Low/Medium** | `client/ex.dll` (committed as shipped) |
 | 9 | Client anti-tamper check refuses to start if `LanEngine.dll`, `opengl32.dll`, `d3dcompiler_4x.dll`, `LanEngine.key` or `engine.spr` exist (anti-bot / anti-injection heuristic) | Info | `client/init.lua` |
 | 10 | Server's client-version check is commented out in `ProtocolGame::login` | Low | `server-src/protocolgame.cpp` (around line 489) |
 | 11 | Server's ExtendedOpcode handler (`opcode.lua`) does not check `json.decode` results or parameter types | Medium | `server/data/creaturescripts/scripts/opcode.lua` |
@@ -72,7 +72,7 @@ db.executeQuery("INSERT INTO `dungeon_ranking` (`ranking`, `diff`, `mapId`) VALU
 | File | What it is | Imports of note | Assessment |
 |---|---|---|---|
 | `server/iidking-v2.01.exe` | IIDKing 2.01, a PE Import Table patcher (adds DLL imports to an EXE) | `ShellExecuteA`, `LoadLibraryA` | Not needed to run the server. Likely used to inject a DLL into `PS.exe` or `otclient.exe` at some point. Do not run. Do not redistribute. |
-| `server/Large Address Aware.exe` | .NET utility that sets the LAA PE flag | `mscoree.dll` | Not needed. Do not commit. |
+| `server/Large Address Aware.exe` | .NET utility that sets the LAA PE flag | `mscoree.dll` | Not needed. Committed as shipped; candidate for removal. |
 | `client/ex.dll` | lua-ex 5.1 extension (`luaopen_ex`: `spawn`, `sleep`, `dirent`, `setenv`, ...) | `CreateProcessA`, `CreatePipe` | Not imported by `otclient.exe` and not `require`d by any module. Leftover. Remove. |
 | `client/libtest.a`, `client/libtest.def` | MinGW import library exporting `Test(void*)` | — | Build leftover. |
 

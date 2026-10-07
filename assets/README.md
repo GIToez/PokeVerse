@@ -1,12 +1,16 @@
 # assets/
 
-## design-psd/ (not committed)
+## design-psd/ (Git LFS)
 
-These are the Photoshop sources for the PokeJornadas interface, from the original `PSDS.zip`: 36 files, 2.5 GB. Several files are larger than GitHub's 100 MB per-file limit (`NEW INTERFACE.psd` 649 MB, `PASSE DO TREINADOR.psd` 570 MB, `LOJA.psd` 396 MB, `POKE STATUS.psd` 142 MB, `MARKET.psd` 101 MB). The whole folder is therefore ignored by Git.
+These are the Photoshop sources for the PokeJornadas interface, from the original `PSDS.zip`: 36 files, 2.6 GB. Several files are larger than GitHub's 100 MB per-file limit (`NEW INTERFACE.psd` 649 MB, `PASSE DO TREINADOR.psd` 570 MB, `LOJA.psd` 396 MB, `POKE STATUS.psd` 142 MB, `MARKET.psd` 101 MB), so every `.psd`/`.psb` is stored with **Git LFS** (see `.gitattributes`).
 
-To restore it locally, run `tools/import/fetch-pokejornadas.sh` and copy `_import/extracted/PSDS/PSDS/` to `assets/design-psd/`.
+To keep clones fast and within GitHub's free LFS bandwidth (10 GiB per month), `.lfsconfig` excludes this folder from automatic LFS downloads. A normal clone gets small pointer files here instead of the real PSDs. To download them:
 
-Options for sharing these later: Git LFS (it would need about 2.5 GB of LFS storage and bandwidth), a separate design-assets repository with LFS, or external storage (Drive, S3, release assets).
+```bash
+git lfs pull --include="assets/design-psd/**" --exclude=""
+```
+
+To download only one file, pass its path to `--include`, for example `--include="assets/design-psd/LOJA.psd"`.
 
 | File | Size | Covers |
 |---|---|---|

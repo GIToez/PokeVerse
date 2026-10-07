@@ -20,7 +20,7 @@
 | `Cliente.zip` | 2022-03-13 | 190.9 MB (427 MB unpacked) | `Cliente/`: Windows client | `client/` |
 | `otclient src.zip` | 2022-03-13 | 0.76 MB | `otclient/`: client C++ source | `client-src/` |
 | `pokeaventuras (1).sql` | 2020-08-01 | 224 KB | MariaDB dump | `database/pokeaventuras.sql` |
-| `PSDS.zip` | 2022-03-13 | 776.6 MB (2.5 GB unpacked) | `PSDS/`: Photoshop design sources | `assets/design-psd/` (ignored) |
+| `PSDS.zip` | 2022-03-13 | 776.6 MB (2.5 GB unpacked) | `PSDS/`: Photoshop design sources | `assets/design-psd/` (Git LFS) |
 | `Servidor.zip` | 2022-03-13 | 26.1 MB (85 MB unpacked) | `Servidor/`: Windows server | `server/` |
 | `Source Server.zip` | 2022-03-13 | 10.3 MB (43 MB unpacked) | `Source Server/`: server C++ source (with a `.git`) | `server-src/` |
 
@@ -96,10 +96,10 @@ pokeaventuras (1).sql
 
 | Original path | PokeVerse path | In Git? |
 |---|---|---|
-| `Cliente/Cliente/` | `client/` | Yes, except `*.exe`, `*.dll`, `libtest.*`, `crashreport.log`, `data/hash.xml*`, `data/things/Tibia.spr`, `modules/.project/` |
+| `Cliente/Cliente/` | `client/` | Yes (`Tibia.spr` via Git LFS), except `crashreport.log`, `modules/.project/`, `Thumbs.db` |
 | `otclient src/otclient/` | `client-src/` | Yes, except `.vscode/` |
-| `Servidor/Servidor/` | `server/` | Yes, except `*.exe`, `*.dll`, `logs/`, `settings.sav`, `forgottenserver.map`, `data/.idea/`, `*.bak` |
-| `Source Server/Source Server/` | `server-src/` | Yes, except `*.o`, `dev-cpp/obj/`, `*.exe`, `*.res`, `*.layout`. The `.git/` was moved out. |
+| `Servidor/Servidor/` | `server/` | Yes, except `logs/`, `settings.sav`, `forgottenserver.map`, `data/.idea/`, `*.bak` |
+| `Source Server/Source Server/` | `server-src/` | Yes, except `*.o`, `dev-cpp/obj/`, `*.res`, `*.layout`. The `.git/` was moved out. |
 | `pokeaventuras (1).sql` | `database/pokeaventuras.sql` | Yes |
-| `Atualizando Cliente/Atualizando Cliente/` | `tools/updater-hash/` | Only its README (`Hash.exe` excluded) |
-| `PSDS/PSDS/` | `assets/design-psd/` | No (2.5 GB). See `assets/README.md`. |
+| `Atualizando Cliente/Atualizando Cliente/` | `tools/updater-hash/` | Yes (`Hash.exe` plus a README) |
+| `PSDS/PSDS/` | `assets/design-psd/` | Yes, via Git LFS (2.6 GB, not downloaded by default). See `assets/README.md`. |
