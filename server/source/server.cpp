@@ -213,11 +213,11 @@ Protocol* ServicePort::makeProtocol(bool checksum, NetworkMessage& msg) const
 void ServiceManager::run()
 {
 	assert(!running);
+	// stop() is a no-op unless this is set before run() blocks.
+	running = true;
 	try
 	{
 		m_io_service.run();
-		if(!running)
-			running = true;
 	}
 	catch(boost::system::system_error& e)
 	{
