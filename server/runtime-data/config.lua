@@ -114,9 +114,10 @@
 	sqlType = "mysql"
 	sqlHost = "localhost"
 	sqlPort = 3306
-	sqlUser = "root"
-	sqlPass = ""
-	sqlDatabase = "pokeaventuras"
+	-- DEVELOPMENT ONLY: local MariaDB created by tools/setup_dev_db.sh.
+	sqlUser = "pokeverse"
+	sqlPass = "pokeverse-dev"
+	sqlDatabase = "pokeverse"
 	sqlFile = ""
 	sqlKeepAlive = 0
 	mysqlReadTimeout = 10
