@@ -60,6 +60,20 @@ local function inspectGame()
         end
     end
 
+    local pokebar = modules.game_pokebar and modules.game_pokebar.pokemonBar
+    if pokebar then
+        local portraits = {}
+        for _, child in ipairs(pokebar:getChildren()) do
+            if child:getStyleName() == 'BeltItem' then
+                table.insert(portraits, child:getId() .. '=' .. child:getChildById('PokeName'):getText())
+            end
+        end
+        report('MODULE game_pokebar visible=%s portraits=%d %s', tostring(pokebar:isVisible()), #portraits,
+            table.concat(portraits, ','))
+    else
+        report('MODULE game_pokebar missing')
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk()

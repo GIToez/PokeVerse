@@ -6,7 +6,8 @@
 # Usage: tools/smoke_redemption_login.sh [LOGFILE]
 # Env: PV_ACCOUNT PV_PASSWORD PV_CHARACTER (default player/player/Trainer), PV_HOST, PV_LOGIN_PORT,
 #      PV_TIMEOUT_MS, DIST (default dist/client-redemption), DISPLAY (Linux; Xvfb is started if
-#      the display is not running), SCREENSHOT (PNG path, captured once the map has loaded).
+#      the display is not running), SCREENSHOT (PNG path, captured once the map has loaded),
+#      PV_EXPECT_POKEBAR=1 (the character carries Pokemon, so the bar must show a portrait).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -81,10 +82,14 @@ need "\[pv-smoke\] CHARACTER name=${PV_CHARACTER:-Trainer} " "character ${PV_CHA
 need '\[pv-smoke\] GAME START' "did not enter the game"
 need '\[pv-smoke\] POKEVERSE ' "no PokeVerse 0xFF sub-protocol signal parsed"
 need '\[pv-smoke\] MAP tiles=[1-9]' "no map tiles received"
+need '\[pv-smoke\] MODULE game_pokebar visible=' "game_pokebar module not loaded"
+if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
+    need '\[pv-smoke\] MODULE game_pokebar visible=true portraits=[1-9]' "Pokemon bar shows no portrait"
+fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"
-if grep -aE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|LUA ERROR|lua_pcall' "$LOG" >&2; then
+if grep -aE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|pokebar: no Pokemon for icon item|LUA ERROR|lua_pcall' "$LOG" >&2; then
     fail "protocol errors in the client log"
 fi
 grep -a '\[pv-smoke\]' "$LOG" | sort -u
