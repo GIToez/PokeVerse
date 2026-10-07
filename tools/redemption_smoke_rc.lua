@@ -419,6 +419,33 @@ local function inspectGame()
         end, tonumber(os.getenv('PV_TM_HOLD_MS') or '100'))
     end
 
+    -- Status condition bar: icons come from the server during battle; here the 0xFF 0x0E/0x0F/0x10
+    -- signals are injected so the icon, countdown, removal and clear are checked on every run.
+    local function statusBarTests(nextStep)
+        local bar = modules.game_statusbar
+        if not bar then
+            report('MODULE game_statusbar missing')
+            return nextStep()
+        end
+        signalcall(g_game.onStatusBarAdd, 16715, 5)
+        signalcall(g_game.onStatusBarAdd, 16719, 30)
+        signalcall(g_game.onStatusBarAdd, 16715, 8)
+        scheduleEvent(function()
+            local state = bar.getState()
+            report('STATUSBAR ADD %s visible=%s icons=%s', #state.icons == 2 and 'OK' or 'FAILED', tostring(state.visible),
+                table.concat(state.icons, ','))
+            scheduleEvent(function()
+                signalcall(g_game.onStatusBarRemove, 16719)
+                state = bar.getState()
+                report('STATUSBAR REMOVE %s icons=%s', #state.icons == 1 and 'OK' or 'FAILED', table.concat(state.icons, ','))
+                signalcall(g_game.onStatusBarClear)
+                state = bar.getState()
+                report('STATUSBAR CLEAR %s icons=%d', #state.icons == 0 and 'OK' or 'FAILED', #state.icons)
+                nextStep()
+            end, tonumber(os.getenv('PV_STATUS_HOLD_MS') or '100'))
+        end, 1200)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -446,8 +473,10 @@ local function inspectGame()
         pokedexTests(function()
             achievementTests(function()
                 tmTests(function()
-                    pokemonTests(function()
-                        scheduleEvent(function() g_game.safeLogout() end, 1500)
+                    statusBarTests(function()
+                        pokemonTests(function()
+                            scheduleEvent(function() g_game.safeLogout() end, 1500)
+                        end)
                     end)
                 end)
             end)
@@ -484,7 +513,8 @@ connect(g_game, {
 })
 
 local pokeVerseSignals = { 'onPokemonMoves', 'onMoveBarOpen', 'onMoveBarClose', 'onPokemonBarAdd', 'onPokemonBarOpen',
-    'onPokemonBarClose', 'onPokemonMoveCooldown', 'onPokedexStatus', 'onStatusBarClear', 'onDollCaseStatus', 'onTip',
+    'onPokemonBarClose', 'onPokemonMoveCooldown', 'onPokedexStatus', 'onStatusBarClear', 'onStatusBarAdd',
+    'onStatusBarRemove', 'onTmChoose', 'onPokedexOpen', 'onDollCaseStatus', 'onTip',
     'onLootList' }
 local handlers = {}
 for _, name in ipairs(pokeVerseSignals) do
