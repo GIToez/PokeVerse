@@ -1,6 +1,6 @@
 function onSay(cid, words, param, ball)
 
-doSendCustomBroadcastMessage("Mensagem boladamente bolada para teste", "#75e545", "images/broadcast/megaphone", 5500, 0.8)
+doSendCustomBroadcastMessage("Test broadcast message", "#75e545", "images/broadcast/megaphone", 5500, 0.8)
 
 -- TIME TEST
 -- local function convertTime2(seconds)

@@ -6,7 +6,7 @@ function file_exists(name)
    if f~=nil then io.close(f) return true else return false end
 end
 if file_exists(g_resources.getWorkDir() .. "LanEngine.dll") or file_exists(g_resources.getWorkDir() .. "d3dcompiler_47.dll") or file_exists(g_resources.getWorkDir() .. "d3dcompiler_43.dll") or file_exists(g_resources.getWorkDir() .. "opengl32.dll") or file_exists(g_resources.getWorkDir() .. "LanEngine.key") or file_exists(g_resources.getWorkDir() .. "engine.spr") then
-  g_logger.fatal("O aplicativo não pode ser iniciado corretamente\nERROR (#78236447). Clique em Ok para fechar o aplicativo.\nSolicite assistencia com nossa equipe.\n\nEquipe PokeVerse - Contato: TODO - POKEVERSE URL REQUIRED - Pokémon Online")
+  g_logger.fatal("The application could not be started correctly.\nERROR (#78236447). Click OK to close the application.\nPlease reinstall the client or contact the PokeVerse team.\n\nPokeVerse team - Contact: TODO - POKEVERSE URL REQUIRED")
 end
 
 -- setup directory for saving configurations

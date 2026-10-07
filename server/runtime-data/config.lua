@@ -96,12 +96,12 @@
 	retryTimeout = 5 * 1000
 	loginTimeout = 60 * 1000
 	maxPlayers = 600
-	motd = "Sejá bem vindo ao PokeVerse - MMORPG"
+	motd = "Welcome to PokeVerse - MMORPG"
 	displayOnOrOffAtCharlist = false
 	onePlayerOnlinePerAccount = true
 	allowClones = false
 	serverName = "Cristal"
-	loginMessage = "Bem-vindo ao PokeVerse, torne-se um mestre pokémon. Passe por todas as missões, conclua as quest's e explore nossas cidades. "
+	loginMessage = "Welcome to PokeVerse! Become a Pokemon master: complete the missions and quests, and explore our cities."
 	statusTimeout = 5 * 60 * 1000
 	replaceKickOnLogin = true
 	forceSlowConnectionsToDisconnect = false
@@ -235,8 +235,8 @@
 	premiumForPromotion = true
 
     -- bless
-    -- NOTA: blessingReduction * refere-se à perda de itens / recipientes.
-    -- eachBlessReduction é o quanto cada bênção reduz a perda de experiência / magia / habilidades.
+    -- NOTE: blessingReduction* refers to item/container loss.
+    -- eachBlessReduction is how much each blessing reduces experience/magic/skill loss.
 	blessingOnlyPremium = false
 	blessingReductionBase = 30
 	blessingReductionDecreament = 5

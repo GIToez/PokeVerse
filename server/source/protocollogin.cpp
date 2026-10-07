@@ -33,6 +33,7 @@
 
 #include "configmanager.h"
 #include "game.h"
+#include "localization.h"
 
 #include "polls.h"
 
@@ -164,7 +165,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		{
 			//std::cout << "[Warning - Game::loadExperienceStages] Cannot load stages file." << std::endl;
 			//std::cout << getLastXMLError() << std::endl;
-			disconnectClient(0x0A, "Erro CreateAcc.xml report ao adm.");
+			disconnectClient(0x0A, "Server error: CreateAcc.xml could not be loaded. Please report this to an administrator.");
 			return false;
 		}
 
@@ -173,7 +174,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		{
 			//std::cout << "[Error - Game::loadExperienceStages] Malformed stages file" << std::endl;
 			xmlFreeDoc(doc);
-			disconnectClient(0x0A, "Erro town report ao adm.");
+			disconnectClient(0x0A, "Server error: invalid town configuration in CreateAcc.xml. Please report this to an administrator.");
 			return false;
 		}
 		int32_t intValue;
@@ -416,7 +417,8 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		output->AddByte(0x14);
 
 		char motd[1300];
-		sprintf(motd, "%d\n%s", g_game.getMotdId(), g_config.getString(ConfigManager::MOTD).c_str());
+		sprintf(motd, "%d\n%s", g_game.getMotdId(),
+			Localization::t(account.language, g_config.getString(ConfigManager::MOTD)).c_str());
 		output->AddString(motd);
 
 		uint32_t serverIp = serverIps[0].first;

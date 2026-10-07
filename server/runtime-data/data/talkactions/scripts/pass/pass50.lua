@@ -9,7 +9,7 @@ end
 
 function onSay(cid, words, param, channel)
    if(param == '') then
-       doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Comando precisa de parametros: nomedoplayer, iddoitem, quantidade.")
+       doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Usage: " .. words .. " <player name>")
        return true
    end
 

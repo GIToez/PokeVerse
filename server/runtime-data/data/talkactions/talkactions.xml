@@ -25,7 +25,7 @@
 	
 	<talkaction words="/profission" event="script" value="../../lib/ps/profission/testeprofission.lua" />
 	<talkaction words="/addon" event="script" value="../../lib/ps/events/talkactions/pokemonAddon.lua" description="Show Pokemon addons." />
-	<talkaction words="/evolve" event="script" value="../../lib/ps/events/talkactions/evolve.lua" description="Show Pokemon addons." />
+	<talkaction words="/evolve" event="script" value="../../lib/ps/events/talkactions/evolve.lua" description="Evolve your active Pokemon." />
 	<talkaction words="/cupom;/coupon" event="script" value="../../lib/ps/events/talkactions/coupon.lua" description="Uses a coupon." />
 	<talkaction words="/afk" event="script" value="../../lib/ps/events/talkactions/afk.lua" description="Set AFK state." />
 	<talkaction words="/time" event="script" value="../../lib/ps/events/talkactions/time.lua" description="Show game time." />
@@ -153,13 +153,13 @@
 -->
 
 	<!-- Houses -->
-	<talkaction words="buyhouseewqnml;!buyhouse" filter="word-spaced" event="function" value="houseBuy" description="Compre uma casa se estiver na frente dela. "/>
-	<talkaction words="fsellhousedwq;!sellhouse" filter="word-spaced" event="function" value="houseSell" description="Vender casa propria atual. "/>
-	<talkaction words="chutarrrase;!kickhouse" filter="word-spaced" event="function" value="houseKick" description="Chute a si mesmo ou a alguem de casa. "/>
-	<talkaction words="portassdawt;!doorhouse" filter="word-spaced" event="function" value="houseDoorList" description="Liste os jogadores que podem abrir a porta."/>
-	<talkaction words="hospedeseeq;!invitehouse" filter="word-spaced" event="function" value="houseGuestList" description="Lista de hospedes da casa."/>
-	<talkaction words="subdonoeqwxv;!subhouse" filter="word-spaced" event="function" value="houseSubOwnerList" description="Lista de proprietarios de casas. "/>
-	<talkaction words="abandonarweqn;!leavehouse" filter="word-spaced" event="script" value="leavehouse.lua" description="Abandone a casa atual. "/>
+	<talkaction words="buyhouseewqnml;!buyhouse" filter="word-spaced" event="function" value="houseBuy" description="Buy the house you are standing in front of."/>
+	<talkaction words="fsellhousedwq;!sellhouse" filter="word-spaced" event="function" value="houseSell" description="Sell your current house."/>
+	<talkaction words="chutarrrase;!kickhouse" filter="word-spaced" event="function" value="houseKick" description="Kick yourself or another player out of the house."/>
+	<talkaction words="portassdawt;!doorhouse" filter="word-spaced" event="function" value="houseDoorList" description="List the players allowed to open this door."/>
+	<talkaction words="hospedeseeq;!invitehouse" filter="word-spaced" event="function" value="houseGuestList" description="Edit the house guest list."/>
+	<talkaction words="subdonoeqwxv;!subhouse" filter="word-spaced" event="function" value="houseSubOwnerList" description="Edit the house sub-owner list."/>
+	<talkaction words="abandonarweqn;!leavehouse" filter="word-spaced" event="script" value="leavehouse.lua" description="Leave (abandon) your current house."/>
 
 	<talkaction words="showbuywindowhouse" event="script" value="../../lib/ps/events/talkactions/teste.lua"/>
 	<!-- Guilds -->

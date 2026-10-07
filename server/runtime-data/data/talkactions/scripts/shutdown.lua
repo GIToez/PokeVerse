@@ -1,5 +1,12 @@
 local shutdownEvent = 0
 
+-- English keys of pt_br.loc; players get them in their own language.
+local SHUTDOWN_MESSAGES = {
+	oneMinute = "Server is going down in %d minute for an update, please log out now! We will be back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED",
+	fewMinutes = "Server is going down in %d minutes for an update, please log out. We will be back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED",
+	minutes = "Server is going down in %d minutes for an update. We will be back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED",
+}
+
 function onSay(cid, words, param, channel)
 	if(param == '') then
 		doSetGameState(GAMESTATE_SHUTDOWN)
@@ -34,16 +41,18 @@ function prepareShutdown(minutes)
 		return false
 	end
 
+	local text
 	if(minutes == 1) then
-		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minuto para atualização, por favor faça logout agora! Voltaremos em 10 minutos. Mais informações em: TODO - POKEVERSE URL REQUIRED")
-		doBroadcastMessage("Server is going down in " .. minutes .. " minute to update, please log out now! We will back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED")
+		text = SHUTDOWN_MESSAGES.oneMinute
 	elseif(minutes <= 3) then
-		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minutos para atualização, por favor faça logout! Voltaremos em 10 minutos. Mais informações em: TODO - POKEVERSE URL REQUIRED")
-		doBroadcastMessage("Server is going down in " .. minutes .. " minutes to update, please log out. We will back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED")
+		text = SHUTDOWN_MESSAGES.fewMinutes
 	else
-		doBroadcastMessage("O servidor vai cair em " .. minutes .. " minutos para atualização. Voltaremos em 10 minutos. Mais informações em: TODO - POKEVERSE URL REQUIRED")
-		doBroadcastMessage("Server is going down in " .. minutes .. " minutes to update. We will back in 10 minutes. More information on: TODO - POKEVERSE URL REQUIRED")
+		text = SHUTDOWN_MESSAGES.minutes
 	end
+	for _, pid in ipairs(getPlayersOnline()) do
+		doPlayerSendTextMessage(pid, MESSAGE_STATUS_WARNING, string.format(__L(pid, text), minutes))
+	end
+	log(LOG_TYPES.INFO, "> Broadcasted message: \"" .. string.format(text, minutes) .. "\".")
 
 	shutdownEvent = addEvent(prepareShutdown, 60000, minutes - 1)
 	return true
