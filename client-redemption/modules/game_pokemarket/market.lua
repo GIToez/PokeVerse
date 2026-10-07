@@ -125,6 +125,21 @@ local function addMarketRow(tbl, data, height)
   return row
 end
 
+-- Redemption applies a table's *-style properties on a later event; set them before adding the header.
+local function setupTable(tbl, tableData, header)
+  tbl:setRowStyle('TableRow', true)
+  tbl:setColumnStyle('PanelTableColumn', true)
+  tbl:setHeaderRowStyle('PanelTableHeaderRow')
+  tbl:setHeaderColumnStyle('PanelTableHeaderColumn')
+  tbl:setTableData(tableData)
+  tbl:addHeader(header)
+  addEvent(function()
+    for colId, col in ipairs(tbl.headerColumns or {}) do
+      if header[colId] then col:setWidth(header[colId].width) end
+    end
+  end)
+end
+
 local function send(text)
   local protocolGame = g_game.getProtocolGame()
   if protocolGame then
@@ -162,8 +177,7 @@ function init()
   marketBuyComboBox.onOptionChange = refreshBuyItems
   buyPanelTable = marketBuyPanel:getChildById('panelTable')
   buyPanelTableData = marketBuyPanel:getChildById('panelTableData')
-  buyPanelTable:setTableData(buyPanelTableData)
-  buyPanelTable:addHeader(buyHeader)
+  setupTable(buyPanelTable, buyPanelTableData, buyHeader)
   buyPanelTable.onSelectionChange = function(tbl, selectedRow)
     if not selectedRow then return end
     toggleBuyButtons(true)
@@ -193,18 +207,15 @@ function init()
   sellButton         = panelToSell:getChildById('sellButton')
   sellPanelTable     = marketSellPanel:getChildById('panelTable')
   sellPanelTableData = marketSellPanel:getChildById('panelTableData')
-  sellPanelTable:setTableData(sellPanelTableData)
-  sellPanelTable:addHeader(sellHeader)
+  setupTable(sellPanelTable, sellPanelTableData, sellHeader)
 
   offerPanelTable1     = marketOfferPanel:getChildById('panelTable1')
   offerPanelTableData1 = marketOfferPanel:getChildById('panelTableData1')
-  offerPanelTable1:setTableData(offerPanelTableData1)
-  offerPanelTable1:addHeader(offerHeader1)
+  setupTable(offerPanelTable1, offerPanelTableData1, offerHeader1)
 
   offerPanelTable2     = marketOfferPanel:getChildById('panelTable2')
   offerPanelTableData2 = marketOfferPanel:getChildById('panelTableData2')
-  offerPanelTable2:setTableData(offerPanelTableData2)
-  offerPanelTable2:addHeader(offerHeader2)
+  setupTable(offerPanelTable2, offerPanelTableData2, offerHeader2)
 
   offerToMeWindow = g_ui.createWidget('OfferToMeWindow', rootPanel)
   myCurrentOfferWindow = g_ui.createWidget('MyCurrentOfferWindow', rootPanel)
@@ -237,6 +248,10 @@ function terminate()
   makeOfferWindow:destroy()
   offerToMeWindow:destroy()
   myCurrentOfferWindow:destroy()
+end
+
+function getOfferCountWindow()
+  return offerCountWindow
 end
 
 function destroyOfferCountWindow()
@@ -709,7 +724,7 @@ function onMarketMessage(protocol, opcode, buffer)
           self:focus()
         end
       end
-      table.insert(lastState.buy, {item_code = itemInfo.item_code, itemid = itemInfo.itemid, name = itemInfo.item_name, seller = itemInfo.playerseller_name, count = itemInfo.count, price = itemInfo.price, onlyoffer = itemInfo.onlyoffer})
+      table.insert(lastState.buy, {item_code = itemInfo.item_code, itemid = itemInfo.itemid, spriteId = itemInfo.spriteId, name = itemInfo.item_name, seller = itemInfo.playerseller_name, count = itemInfo.count, price = itemInfo.price, onlyoffer = itemInfo.onlyoffer})
     end
     marketBuyPanel:getChildById('buyListPages'):getChildById('labelPages'):setText(tr('Page: %d / %d', currentPage or 1, maxPage or 1))
     if focus == 1 then changeMarketPanel(marketBuyPanel, marketWindow:getChildById('buyTabButton')) end
