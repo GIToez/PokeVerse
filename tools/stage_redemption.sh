@@ -28,5 +28,16 @@ done
 # Upstream ships a bot (vBot); PokeVerse builds must not.
 rm -rf "$DIST/mods/game_bot"
 sed -i '/^ *- game_bot *$/d' "$DIST/mods/client_mods/mods.otmod"
+# The PokeVerse 854 assets live once in the legacy client tree (Tibia.spr is Git LFS).
+# CI checkouts skip LFS, so a pointer file only produces a warning and an asset-less stage.
+THINGS="$ROOT/client/runtime-data/data/things"
+if [ "$(head -c 7 "$THINGS/Tibia.spr")" = "version" ]; then
+    echo "WARNING: $THINGS/Tibia.spr is a Git LFS pointer (run git lfs pull); staged without game assets" >&2
+else
+    mkdir -p "$DIST/data/things/854"
+    for f in Tibia.dat Tibia.spr; do
+        ln -f "$THINGS/$f" "$DIST/data/things/854/$f" 2>/dev/null || cp "$THINGS/$f" "$DIST/data/things/854/$f"
+    done
+fi
 echo "$VARIANT" > "$DIST/VARIANT"
 echo "Staged $DIST/$NAME${EXE#otclient} ($VARIANT)"
