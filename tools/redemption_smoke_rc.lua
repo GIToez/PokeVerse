@@ -821,6 +821,249 @@ local function inspectGame()
         end, 1500)
     end
 
+    -- Player market (ext opcode 64). tools/smoke_market.sh seeds two Trainer listings in the database and
+    -- runs the GM with PV_MARKET=buyer (buy one, list and cancel an item, offer on the other) and then the
+    -- Trainer with PV_MARKET=seller (accept that offer). Without it the GM only opens the market with
+    -- /marketopen, and a Trainer who is away from any market is refused.
+    local marketMode = os.getenv('PV_MARKET') or ''
+    local seedBuy, seedOffer = os.getenv('PV_MARKET_SEED_BUY') or '', os.getenv('PV_MARKET_SEED_OFFER') or ''
+    local function containerCounts()
+        local counts = {}
+        for _, container in pairs(g_game.getContainers()) do
+            for _, item in ipairs(container:getItems()) do
+                counts[item:getId()] = (counts[item:getId()] or 0) + item:getCount()
+            end
+        end
+        return counts
+    end
+    local function findContainerItem(clientId)
+        for _, container in pairs(g_game.getContainers()) do
+            for _, item in ipairs(container:getItems()) do
+                if item:getId() == clientId then return item end
+            end
+        end
+    end
+    local function findListing(list, code)
+        for _, entry in ipairs(list or {}) do
+            if entry.item_code == code then return entry end
+        end
+    end
+    local function marketSend(text)
+        g_game.getProtocolGame():sendExtendedOpcode(64, text)
+    end
+
+    local function marketBuyerTests(market, close)
+        local rootPanel = modules.game_interface.getRootPanel()
+        local marketWindow = rootPanel:getChildById('marketWndow')
+        local state = market.getState()
+        local listing, offerListing = findListing(state.buy, seedBuy), findListing(state.buy, seedOffer)
+        report('MARKET LIST %s buy=%s offer=%s', listing and offerListing and listing.count == 3 and 'OK' or 'FAILED',
+            tostring(listing and listing.count), tostring(offerListing and offerListing.onlyoffer))
+        if not listing or not offerListing then return close() end
+        local woolId = listing.spriteId
+        fyi = nil
+        marketSend('###MARKETBUYITEM###,ItemCode:' .. seedBuy .. ',Count:0.5')
+        marketSend('###MARKETBUYITEM###,ItemCode:' .. seedBuy .. ',Count:99')
+        marketSend("###MARKETSELLITEM###,ItemCode:Mkt1' OR '1'='1,ItemId:2160,Count:1,Price:5,OnlyOffer:1")
+        marketSend('###MARKETSELLITEM###,ItemCode:,ItemId:12129,Count:1.5,Price:5,OnlyOffer:1')
+        marketSend('###MARKETSELLITEM###,ItemCode:,ItemId:12129,Count:1,Price:0.5,OnlyOffer:1')
+        marketSend('###MARKETACCEPTOFFER###,ItemCode:' .. seedOffer .. ',PlayerOfferId:1')
+        market.refreshBuyItems()
+        market.refreshSellItems()
+        local before = containerCounts()
+        g_game.talk('/i 2152,100')
+        g_game.talk('/i 12129,5')
+        scheduleEvent(function()
+            state = market.getState()
+            local after = findListing(state.buy, seedBuy)
+            report('MARKET FORGED BUY %s count=%s', after and after.count == 3 and 'REFUSED' or 'FAILED', tostring(after and after.count))
+            report('MARKET FORGED SELL %s listings=%d', #state.sell == 0 and 'REFUSED' or 'FAILED', #state.sell)
+            report('MARKET FORGED ACCEPT %s reply=%s', fyi and fyi:find('does not belong', 1, true) and 'REFUSED' or 'FAILED',
+                tostring(fyi))
+            closeInfoBoxes()
+            local counts, goldId = containerCounts(), nil
+            for id, count in pairs(counts) do
+                if id ~= woolId and count - (before[id] or 0) == 100 then goldId = id end
+            end
+            local gold = goldId and counts[goldId] or 0
+            market.selectBuyRowByCode(seedBuy)
+            market.showBuyNowWindow()
+            local buyNow = rootPanel:getChildById('buyNowWindow')
+            buyNow:getChildById('countScrollBar'):setValue(1)
+            buyNow:getChildById('buttonOk').onClick()
+            scheduleEvent(function()
+                state = market.getState()
+                after = findListing(state.buy, seedBuy)
+                local goldAfter = goldId and containerCounts()[goldId] or 0
+                report('MARKET BUY %s count=3->%s gold=%d->%d', after and after.count == 2 and goldAfter == gold - listing.price and
+                    'OK' or 'FAILED', tostring(after and after.count), gold, goldAfter)
+                local wool = findContainerItem(woolId)
+                local woolBefore = containerCounts()[woolId] or 0
+                if not wool then
+                    report('MARKET SELL FAILED no wool in the backpack')
+                    return close()
+                end
+                market.changeMarketPanel(marketWindow:getChildById('sellPanel'), marketWindow:getChildById('sellTabButton'))
+                market.checkCanSell(wool:getPosition())
+                scheduleEvent(function()
+                    state = market.getState()
+                    local panel = marketWindow:getChildById('sellPanel'):getChildById('panelToSell')
+                    panel:getChildById('checkBoxOnlyOffers'):setChecked(true)
+                    panel:getChildById('textEditSellPrice'):setText('7')
+                    panel:getChildById('itemToSellCount'):setValue(2)
+                    panel:getChildById('sellButton').onClick()
+                    scheduleEvent(function()
+                        state = market.getState()
+                        local own = state.sell[1]
+                        local woolAfter = containerCounts()[woolId] or 0
+                        report('MARKET SELL %s checked=%s listed=%s count=%s price=%s wool=%d->%d', state.checked and own and own.itemid == 12129 and
+                            own.count == 2 and own.price == 7 and woolAfter == woolBefore - 2 and 'OK' or 'FAILED',
+                            tostring(state.checked and state.checked.itemid), tostring(own and own.item_code), tostring(own and own.count),
+                            tostring(own and own.price), woolBefore, woolAfter)
+                        if own then market.cancelSellItem(own.item_code) end
+                        scheduleEvent(function()
+                            state = market.getState()
+                            report('MARKET CANCEL %s listings=%d', own and #state.sell == 0 and 'OK' or 'FAILED', #state.sell)
+                            market.changeMarketPanel(marketWindow:getChildById('buyPanel'), marketWindow:getChildById('buyTabButton'))
+                            market.selectBuyRowByCode(seedOffer)
+                            market.showMakeOfferWindow()
+                            local offerWindow = rootPanel:getChildById('makeOfferWindow')
+                            local slot = offerWindow:getChildById('offersList'):getChildById('item1')
+                            wool = findContainerItem(woolId)
+                            woolBefore = containerCounts()[woolId] or 0
+                            local woolPos = wool and wool:getPosition()
+                            if wool and wool:getCount() > 1 then
+                                slot.onDrop(slot, { currentDragThing = wool }, slot:getPosition())
+                                local countWindow = market.getOfferCountWindow()
+                                if countWindow then
+                                    countWindow:getChildById('countScrollBar'):setValue(2)
+                                    countWindow:getChildById('buttonOk').onClick()
+                                end
+                            end
+                            scheduleEvent(function()
+                                state = market.getState()
+                                woolAfter = containerCounts()[woolId] or 0
+                                report('MARKET MAKE OFFER %s slots=%d wool=%d->%d', state.makeOfferSlots == 1 and woolAfter == woolBefore - 2 and
+                                    'OK' or 'FAILED', state.makeOfferSlots, woolBefore, woolAfter)
+                                fyi = nil
+                                if woolPos then
+                                    marketSend('###MARKETBUYMAKEOFFER###,ItemCode:' .. seedOffer .. ',Count:999,X:65535,Y:' .. woolPos.y ..
+                                        ',Z:' .. woolPos.z)
+                                end
+                                scheduleEvent(function()
+                                    state = market.getState()
+                                    report('MARKET FORGED OFFER %s slots=%d reply=%s', state.makeOfferSlots == 1 and fyi and
+                                        fyi:find('selected amount', 1, true) and 'REFUSED' or 'FAILED', state.makeOfferSlots, tostring(fyi))
+                                    closeInfoBoxes()
+                                    market.doPostOffer()
+                                    scheduleEvent(function()
+                                        state = market.getState()
+                                        closeInfoBoxes()
+                                        local mine = findListing(state.myOffers, seedOffer)
+                                        report('MARKET OFFER %s posted=%s items=%s', mine and mine.items == 1 and 'OK' or 'FAILED',
+                                            tostring(mine ~= nil), tostring(mine and mine.items))
+                                        local latest = state.historic[1] or ''
+                                        report('MARKET HISTORY %s latest=%s', latest:find('You bought 1 ', 1, true) and 'OK' or 'FAILED', latest)
+                                        market.changeMarketPanel(marketWindow:getChildById('offerPanel'), marketWindow:getChildById('offerTabButton'))
+                                        report('MARKET WINDOW SHOWN')
+                                        scheduleEvent(close, tonumber(os.getenv('PV_MARKET_HOLD_MS') or '100'))
+                                    end, 2000)
+                                end, 1500)
+                            end, 1500)
+                        end, 1500)
+                    end, 2000)
+                end, 1500)
+            end, 2000)
+        end, 2000)
+    end
+
+    local function marketSellerTests(market, close)
+        local rootPanel = modules.game_interface.getRootPanel()
+        local marketWindow = rootPanel:getChildById('marketWndow')
+        market.refreshAllMarket()
+        scheduleEvent(function()
+            local state = market.getState()
+            report('MARKET OPEN %s visible=%s listings=%d', state.visible and 'OK' or 'FAILED', tostring(state.visible), #state.buy)
+            local own = findListing(state.sell, seedBuy)
+            report('MARKET OWN LISTINGS %s count=%s', own and own.count == 2 and 'OK' or 'FAILED', tostring(own and own.count))
+            local withOffer = findListing(state.withOffers, seedOffer)
+            report('MARKET OFFERS TO ME %s offers=%s', withOffer and withOffer.offers == 1 and 'OK' or 'FAILED',
+                tostring(withOffer and withOffer.offers))
+            if not withOffer then return close() end
+            market.changeMarketPanel(marketWindow:getChildById('offerPanel'), marketWindow:getChildById('offerTabButton'))
+            local rows = marketWindow:getChildById('offerPanel'):getChildById('panelTableData1')
+            for _, row in ipairs(rows:getChildren()) do
+                if row.item_code == seedOffer then
+                    row:getChildByIndex(6):getChildById('see').onClick()
+                end
+            end
+            local offersToMe = rootPanel:getChildById('offerToMeWindow')
+            local offer = offersToMe:getChildById('offersList'):getChildByIndex(1)
+            report('MARKET OFFER WINDOW %s visible=%s from=%s', offersToMe:isVisible() and offer and 'OK' or 'FAILED',
+                tostring(offersToMe:isVisible()), tostring(offer and offer:getText()))
+            report('MARKET WINDOW SHOWN')
+            scheduleEvent(function()
+                if offer then
+                    offer.onClick()
+                    offersToMe:getChildById('accept').onClick()
+                end
+                scheduleEvent(function()
+                    state = market.getState()
+                    local latest = state.historic[1] or ''
+                    report('MARKET ACCEPT %s offers=%d listed=%s', not findListing(state.withOffers, seedOffer) and
+                        not findListing(state.sell, seedOffer) and 'OK' or 'FAILED', #state.withOffers,
+                        tostring(findListing(state.sell, seedOffer) ~= nil))
+                    report('MARKET HISTORY %s latest=%s', latest:find('You accepted an offer', 1, true) and 'OK' or 'FAILED', latest)
+                    close()
+                end, 2000)
+            end, tonumber(os.getenv('PV_MARKET_HOLD_MS') or '100'))
+        end, 2000)
+    end
+
+    local function marketTests(nextStep)
+        local market = modules.game_pokemarket
+        if not market then
+            report('MODULE game_pokemarket missing')
+            return nextStep()
+        end
+        report('MODULE game_pokemarket loaded=true')
+        local function close()
+            market.hide()
+            closeInfoBoxes()
+            report('MARKET CLOSE %s', market.getState().visible and 'FAILED' or 'OK')
+            nextStep()
+        end
+        if marketMode == 'seller' then
+            return marketSellerTests(market, close)
+        end
+        if account ~= 'admin' then
+            market.refreshAllMarket()
+            return scheduleEvent(function()
+                report('MARKET AWAY %s visible=%s', market.getState().visible and 'FAILED' or 'REFUSED',
+                    tostring(market.getState().visible))
+                close()
+            end, 1500)
+        end
+        if not next(g_game.getContainers()) then
+            for slot = InventorySlotLast, InventorySlotFirst, -1 do
+                local bag = player:getInventoryItem(slot)
+                if bag and bag:isContainer() then
+                    g_game.open(bag)
+                    break
+                end
+            end
+        end
+        g_game.talk('/marketopen')
+        scheduleEvent(function()
+            local state = market.getState()
+            report('MARKET OPEN %s visible=%s listings=%d', state.visible and 'OK' or 'FAILED', tostring(state.visible), #state.buy)
+            if marketMode == 'buyer' then
+                return marketBuyerTests(market, close)
+            end
+            close()
+        end, 2000)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -851,13 +1094,13 @@ local function inspectGame()
                     statusBarTests(function()
                         passTests(function()
                             taskTests(function()
-                                craftTests(function() shopTests(function()
+                                craftTests(function() shopTests(function() marketTests(function()
                                     pokemonTests(function()
                                         taskFinish(function()
                                             scheduleEvent(function() g_game.safeLogout() end, 1500)
                                         end)
                                     end)
-                                end) end)
+                                end) end) end)
                             end)
                         end)
                     end)
