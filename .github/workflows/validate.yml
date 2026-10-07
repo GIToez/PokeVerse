@@ -1,0 +1,67 @@
+name: Validate
+
+on:
+  push:
+    branches: [main, "cursor/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  static:
+    name: Static checks
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends lua5.1
+      - run: python3 tools/validate.py
+
+  build-and-smoke:
+    name: Build server + client, startup and login smoke
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true  # client/runtime-data/data/things/Tibia.spr
+
+      - name: Install build and runtime dependencies
+        run: |
+          sudo systemctl stop mysql || true
+          sudo apt-get purge -y 'mysql-*' || true
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake pkg-config \
+            libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-regex-dev \
+            libxml2-dev libssl-dev liblua5.1-0-dev lua5.1 libmariadb-dev libsqlite3-dev libgmp-dev \
+            libphysfs-dev zlib1g-dev libglew-dev libgl1-mesa-dev libopenal-dev libvorbis-dev libogg-dev \
+            mariadb-server xvfb xdotool imagemagick
+
+      - name: Build server
+        run: tools/build_server.sh
+
+      - name: Build client
+        run: tools/build_client.sh
+
+      - name: Create development database
+        run: |
+          sudo systemctl start mariadb
+          tools/setup_dev_db.sh
+
+      - name: Server startup smoke
+        run: KEEP_RUNNING=1 tools/smoke_server.sh /tmp/server-run.log
+
+      - name: Client login smoke
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 3
+          tools/smoke_login.sh player player Trainer /tmp/server-run.log
+
+      - name: Upload logs and screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-logs
+          path: |
+            /tmp/server-run.log
+            /tmp/smoke_client.log
+            /tmp/smoke_login.png
