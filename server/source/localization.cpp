@@ -295,6 +295,9 @@ void LoadLocalizations()
     std::ifstream input("pt_br.loc");
     
     for (std::string line; getline(input, line);) {
+        // pt_br.loc is CRLF; only Windows text-mode streams drop the '\r' by themselves.
+        if (!line.empty() && line[line.size() - 1] == '\r')
+            line.erase(line.size() - 1);
         std::istringstream ss(line);
         std::string token;
         
