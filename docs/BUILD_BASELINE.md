@@ -46,7 +46,20 @@ tools/run_server.sh          # runs dist/server/pokeverse-server from server/run
 - **Tests.**
   - `tools/validate.py` runs the static checks.
   - `tools/smoke_server.sh` is the startup smoke test.
-  - `tools/smoke_login.sh` is the end-to-end login test. It needs an X display; use Xvfb in CI.
+  - `tools/smoke_login.sh` is the end-to-end login test. It needs an X display (Xvfb in CI), `xdotool` and `xwininfo` (`x11-utils`).
+  - `tools/runtime_test.sh` is the scripted gameplay test (see below).
+
+## Runtime test harness (test-only client)
+
+```bash
+VARIANT=harness tools/build_client.sh            # build/client-harness -> dist/client-harness
+DISPLAY=:1 tools/runtime_test.sh /tmp/runtime-harness /tmp/server-run.log
+```
+
+- The harness client is the same source built with `-DBOT_PROTECTION=OFF`. OTClient bot protection cancels game actions issued from Lua outside a real input event, which would block a scripted test. **Never ship this variant.**
+- `runtime_test.sh` resets GM Admin's carried items in the development database, installs `tools/runtime-harness/pv_harness` into the client's user directory (`~/.Pokecenter`), logs in as `admin`/`GM Admin` and lets the module drive each system. It saves `harness.log` (every extended-opcode payload sent and received, server text messages, and the windows each step opened), `server.log`, `client-errors.log` and one screenshot per step.
+- The module is active only when `PV_HARNESS=1`. The script removes it again afterwards.
+- `RelWithDebInfo` (the default build type) keeps `assert()` enabled in this project; only `Release` defines `NDEBUG`. The harness found a Lua stack leak that way (`StaticText::compose`) that a Release build would have silently tolerated.
 
 ## Server: source changes needed to build
 
@@ -79,6 +92,7 @@ These are minimal fixes for APIs removed since Boost 1.40 and MinGW GCC 3/4, plu
 | `graphics/apngloader.cpp` | Pass `z_stream` by reference | zlib ≥ 1.2.9 rejects copied streams. Every PNG decoded as noise. |
 | `sound/soundmanager.cpp` | Skip preload/play when there is no audio device | Assertion crash on headless or audio-less machines |
 | `core/resourcemanager.cpp/.h` | `resolvePathCase()` falls back to a case-insensitive per-component lookup on non-Windows | Module and asset paths were authored on case-insensitive Windows |
+| `client/statictext.cpp` | Pop the `tr` global in the branches that do not call it | Lua stack leak on every monster/Pokémon speech; aborted assert-enabled builds |
 
 Client build flags (in `tools/build_client.sh`): `-DLUAJIT=OFF -DUSE_STATIC_LIBS=OFF -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON -DCMAKE_INSTALL_RPATH='$ORIGIN'`.
 

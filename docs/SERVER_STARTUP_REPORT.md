@@ -34,6 +34,10 @@ Classes:
 | 7 | `data/npc/Soya.xml` references a missing `scripts/loot.lua` | **STALE CONTENT** | A stock TFS shop NPC that is never spawned (absent from `world/map-spawn.xml`). | Left in place. `tools/validate.py` allowlists it. |
 | 8 | Client side: `modules/game_dungeon/favorites.lua` is JSON, not Lua, and the client rewrites it at runtime | **STALE CONTENT** / hygiene | The dungeon module stores favorites with `io.open` in its own folder. With the `dist/client` symlinks, this writes into `client/runtime-data`. | Left as is; allowlisted in the Lua syntax check |
 | 9 | Client side: `ERROR: unable to open audio device` (ALSA) | **SAFE WARNING** | No sound card on headless or CI machines | The client now skips sound when no device exists. It used to crash. |
+| 10 | `[Error] Unable to save log file` (first seen in CI, on a fresh clone) | **BLOCKING** for the smoke test | `logs/` is git-ignored, so a fresh clone has no `logs/server`, `logs/chat`, `logs/bots` or `logs/talkactions` | **Fixed:** `tools/run_server.sh` creates them before starting |
+| 11 | On shutdown: `UPDATE houses SET ... warnings = 2520515808 ... Out of range value for column 'warnings'` | **FUNCTIONAL BUG** (minor) | The engine writes an uninitialized house `warnings` counter for an unowned house when it saves the map; MySQL rejects the value | Open. The startup and gameplay paths are unaffected. Only that house row fails to save on shutdown. |
+| 12 | Client side: `ERROR: reach max zoom in` with a stack trace, three times while the game interface opens | **SAFE WARNING** | `gameinterface.lua` asks the map widget to zoom past its limit on every start | Left as is |
+| 13 | Client side: `CAST ERROR ... to type 'TPoint<int>'` twice at startup | **SAFE WARNING** | An OTUI style passes a string where a point is expected; the value falls back to the default | Left as is |
 
 ## Login and gameplay entry
 
