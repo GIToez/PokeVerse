@@ -55,32 +55,28 @@ local ENABLE_SERVERS = true
 
 Servers_init = {}
 
+-- PokeVerse server profiles. Development packages use "development" (the local server from
+-- server/runtime-data/config.lua). Staging and production entries are added here once those servers
+-- exist; POKEVERSE_SERVER_PROFILE selects a profile without editing this file.
+local POKEVERSE_SERVER_PROFILES = {
+    development = {
+        ["127.0.0.1"] = { port = 7564, protocol = 854, httpLogin = false },
+    },
+}
+
 if ENABLE_SERVERS then
-
-    ---
-    -- List of servers and their configuration parameters.
-    -- Each entry defines port, protocol, and authentication options.
-    -- @table Servers_init
-    --
-    Servers_init = {
-
-        -- Local login server
-        ---
-        -- Configuration for local login server.
-        -- @class table
-        -- @name local_login
-        -- @field port Port used for HTTP connection
-        -- @field protocol Protocol identifier used by the application
-        -- @field httpLogin Enables HTTP-based login on the server
-        -- @field useAuthenticator Enables additional authentication layer
-        --
-        -- PokeVerse development server (server/runtime-data/config.lua loginPort).
-        ["127.0.0.1"] = {
-            port = 7564,
-            protocol = 854,
-            httpLogin = false
-        }
-    }
+    local profileName = os.getenv("POKEVERSE_SERVER_PROFILE") or "development"
+    local profile = POKEVERSE_SERVER_PROFILES[profileName] or POKEVERSE_SERVER_PROFILES.development
+    for host, values in pairs(profile) do
+        Servers_init[host] = values
+    end
+    -- On a phone, 127.0.0.1 is the phone itself. A second entry (10.0.2.2 is the host PC as seen from
+    -- the Android emulator) makes the login screen show an editable server address and port, so a
+    -- tester can type the address of the PC running the server (docs/DOWNLOAD_AND_RUN.md).
+    local first = next(Servers_init)
+    if g_platform.isMobile() and first and next(Servers_init, first) == nil then
+        Servers_init["10.0.2.2"] = { port = 7564, protocol = 854, httpLogin = false }
+    end
 end
 
 -- buildProfile "production" keeps developer tools unloaded; "development" (or the environment variable
