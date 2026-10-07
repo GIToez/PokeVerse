@@ -239,6 +239,8 @@ REGRESSIONS = [
      r"BOT_PROTECTION=OFF is only allowed with BUILD_VARIANT=harness", "harness guard: bot protection off outside harness"),
     ("tools/package_client.sh",
      r"TEST_AUTOMATION_ENABLED", "harness guard: packaging check"),
+    ("server/source/server.cpp",
+     r"running = true;\s*try\s*\{\s*m_io_service\.run\(\);", "shutdown: server process never exits (ServiceManager::stop no-op)"),
     ("tools/package_client.sh",
      r"-name game_bot", "packaging: Redemption bot module not refused"),
     ("tools/stage_redemption.sh",
