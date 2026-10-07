@@ -96,7 +96,7 @@ function giveWorkExp(cid, work, exp)
   setPlayerStorageValue(cid, WORKINFO.exp, experience)
   if prevLevel ~= level then
     setPlayerStorageValue(cid, WORKINFO.st, level)
-    doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Você avançou em "..WORKINFO.name.." do nivel "..prevLevel.." para o nivel "..(level).."")
+    doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, string.format(__L(cid, "You advanced in %s from level %d to level %d."), WORKINFO.name, prevLevel, level))
   end
   CRAFT.sendInfo(cid)
 end 
@@ -136,5 +136,5 @@ function doPlayerAddWorkNivel(cid, work, additionLevels)
   local realLevel = getPlayerStorageValue(cid, WORKINFO.st)
   setPlayerStorageValue(cid, WORKINFO.st, realLevel + additionLevels)
   setPlayerStorageValue(cid, WORKINFO.exp, getWorkExpNeeded(cid, work, WORKINFO.init))
-  doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Você avançou em "..WORK.name.." para o nivel "..(realLevel + additionLevels).."")
+  doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, string.format(__L(cid, "You advanced in %s to level %d."), WORK.name, realLevel + additionLevels))
 end
