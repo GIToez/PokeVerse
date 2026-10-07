@@ -324,8 +324,48 @@ def check_brand():
     return errors
 
 
+TALKACTIONS = "server/runtime-data/data/talkactions/talkactions.xml"
+# Words that client modules and the runtime harness send (docs/COMMAND_REFERENCE.md section 6).
+# Renamed commands must keep them as deprecated aliases.
+CLIENT_WORDS = ["/cb", "/pokeivev", "/i", "/m", "/passopen", "/dailysigninopen", "/ShopOpen", "/task", "/parseRank",
+                "/buyrank", "/showtaskrank", "/BuyMasteryRank", "/namediamond", "/namepokecoin", "/shopdiamond",
+                "/SendPass35", "/SendPass50", "/dpconfig", "/dprelease", "/depotpass", "/sd", "/cp", "/pd", "/tc", "/dv",
+                "showbuywindowhouse"]
+ALIAS_RE = re.compile(r'<talkaction\b([^>]*)/>\s*<!-- deprecated alias of (\S+) -->')
+
+
+def check_commands():
+    errors = []
+    text = open(os.path.join(ROOT, TALKACTIONS), encoding="latin-1").read()
+    text = re.sub(r"<!--(?! deprecated alias of ).*?-->", "", text, flags=re.S)
+    entries = {}
+    for m in re.finditer(r"<talkaction\b([^>]*)/>", text):
+        attrs = dict(re.findall(r'([\w-]+)="([^"]*)"', m.group(1)))
+        for word in attrs.get("words", "").split(attrs.get("separator", ";")):
+            word = word.strip()
+            if word in entries:
+                errors.append(f"{TALKACTIONS}: {word} registered twice")
+            entries[word] = attrs
+    aliases = ALIAS_RE.findall(text)
+    for raw, canonical in aliases:
+        attrs = dict(re.findall(r'([\w-]+)="([^"]*)"', raw))
+        target = entries.get(canonical)
+        if not target:
+            errors.append(f"{TALKACTIONS}: {attrs.get('words')} is an alias of unregistered {canonical}")
+        elif any(attrs.get(k) != target.get(k) for k in ("event", "value", "access", "log")):
+            errors.append(f"{TALKACTIONS}: {attrs.get('words')} does not run the same script/access as {canonical}")
+        if attrs.get("hidden") != "yes":
+            errors.append(f"{TALKACTIONS}: deprecated alias {attrs.get('words')} is listed by /commands")
+    for word in CLIENT_WORDS:
+        if word not in entries:
+            errors.append(f"{TALKACTIONS}: {word} is sent by the client or harness but no longer registered")
+    print(f"  commands: {len(entries)} words, {len(aliases)} deprecated aliases, {len(CLIENT_WORDS)} client words")
+    return errors
+
+
 CHECKS = {
     "regressions": check_regressions,
+    "commands": check_commands,
     "brand": check_brand,
     "lua": check_lua,
     "xml": check_xml,
