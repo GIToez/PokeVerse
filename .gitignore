@@ -2,9 +2,13 @@
 .downloads/
 _import/
 
-# --- Large assets are stored with Git LFS (see .gitattributes and .lfsconfig) ---
-# Tibia.spr and the PSD/PSB design files are committed through LFS.
+# --- Large assets ---
+# Tibia.spr is stored with Git LFS (see .gitattributes).
 # Prebuilt Windows binaries are committed as regular files (see docs/BINARY_INVENTORY.md).
+# The PSD/PSB design sources were dropped from the project; keep them out if restored locally.
+assets/design-psd/
+*.psd
+*.psb
 
 # --- Compiler output ---
 *.o

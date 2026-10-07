@@ -18,7 +18,6 @@ PokeVerse is an independent Pokémon MMORPG project currently based on the PokeJ
 | Server source | `server-src/` | The Forgotten Server 0.3.6 (C++) | Yes | Dev-C++/MinGW, Lua 5.1, MySQL/SQLite |
 | Database | `database/` | MariaDB 10.4 dump | — | 141 tables. A few tables used by scripts are missing. |
 | Updater hash tool | `tools/updater-hash/` | — | **No** (binary only) | `Hash.exe` committed as shipped |
-| Design sources | `assets/design-psd/` | Photoshop | — | 2.6 GB, Git LFS (not downloaded by default) |
 | Website | — | Znote AAC implied by the schema | **Not included** | |
 
 ## Repository layout
@@ -33,7 +32,7 @@ PokeVerse/
 ├── tools/
 │   ├── import/        Script to re-download and verify the original package
 │   └── updater-hash/  Original hash-list generator (original binary)
-├── assets/            Design sources (PSD/PSB in Git LFS; see assets/README.md)
+├── assets/            Reserved for PokeVerse source assets (see assets/README.md)
 ├── original/          Manifest of the original archive layout (path, size, SHA-256)
 └── docs/              Audit documentation
 ```
@@ -56,16 +55,16 @@ PokeVerse/
 
 ## Cloning
 
-The repository uses [Git LFS](https://git-lfs.com) for `client/data/things/Tibia.spr` (262 MB) and the PSD/PSB design sources (2.6 GB). Install Git LFS before cloning:
+The repository uses [Git LFS](https://git-lfs.com) for `client/data/things/Tibia.spr` (262 MB). Install Git LFS before cloning:
 
 ```bash
 git lfs install
 git clone https://github.com/GIToez/PokeVerse.git
 ```
 
-A normal clone downloads everything needed to run the client and server, including `Tibia.spr` and the prebuilt Windows binaries. The design sources are skipped by default (see `.lfsconfig`) to save LFS bandwidth. To get them, follow [assets/README.md](assets/README.md).
+A normal clone downloads everything needed to run the client and server, including `Tibia.spr` and the prebuilt Windows binaries.
 
-Only compiler output, logs, IDE metadata and files containing personal paths are left out. The original archive can be re-downloaded and verified with `tools/import/fetch-pokejornadas.sh` and `original/MANIFEST.sha256.tsv`.
+Left out: compiler output, logs, IDE metadata, files containing personal paths, and the original Photoshop design sources (see [assets/README.md](assets/README.md)). The original archive can be re-downloaded and verified with `tools/import/fetch-pokejornadas.sh` and `original/MANIFEST.sha256.tsv`.
 
 ## Safety
 

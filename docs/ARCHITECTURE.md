@@ -98,4 +98,4 @@ The PSoul systems layer (`lib/ps/systems/0NN-*.lua`) is the core of the gameplay
 
 ## Design assets
 
-`assets/design-psd/` (Git LFS, not downloaded by default) holds 36 design files (2.6 GB): the source art for the new interface, battle pass ("PASSE DO TREINADOR"), shop ("LOJA"), market, dungeons, professions, depot lock, Pokémon status, Pokédex, entergame, houses ("CASA"), portraits and more.
+The original package's `PSDS/` folder (36 design files, 2.6 GB, **not kept in this repository**) holds: the source art for the new interface, battle pass ("PASSE DO TREINADOR"), shop ("LOJA"), market, dungeons, professions, depot lock, Pokémon status, Pokédex, entergame, houses ("CASA"), portraits and more.

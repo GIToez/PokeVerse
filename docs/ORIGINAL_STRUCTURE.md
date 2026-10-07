@@ -20,7 +20,7 @@
 | `Cliente.zip` | 2022-03-13 | 190.9 MB (427 MB unpacked) | `Cliente/`: Windows client | `client/` |
 | `otclient src.zip` | 2022-03-13 | 0.76 MB | `otclient/`: client C++ source | `client-src/` |
 | `pokeaventuras (1).sql` | 2020-08-01 | 224 KB | MariaDB dump | `database/pokeaventuras.sql` |
-| `PSDS.zip` | 2022-03-13 | 776.6 MB (2.5 GB unpacked) | `PSDS/`: Photoshop design sources | `assets/design-psd/` (Git LFS) |
+| `PSDS.zip` | 2022-03-13 | 776.6 MB (2.5 GB unpacked) | `PSDS/`: Photoshop design sources | Not kept |
 | `Servidor.zip` | 2022-03-13 | 26.1 MB (85 MB unpacked) | `Servidor/`: Windows server | `server/` |
 | `Source Server.zip` | 2022-03-13 | 10.3 MB (43 MB unpacked) | `Source Server/`: server C++ source (with a `.git`) | `server-src/` |
 
@@ -102,4 +102,4 @@ pokeaventuras (1).sql
 | `Source Server/Source Server/` | `server-src/` | Yes, except `*.o`, `dev-cpp/obj/`, `*.res`, `*.layout`. The `.git/` was moved out. |
 | `pokeaventuras (1).sql` | `database/pokeaventuras.sql` | Yes |
 | `Atualizando Cliente/Atualizando Cliente/` | `tools/updater-hash/` | Yes (`Hash.exe` plus a README) |
-| `PSDS/PSDS/` | `assets/design-psd/` | Yes, via Git LFS (2.6 GB, not downloaded by default). See `assets/README.md`. |
+| `PSDS/PSDS/` | — | No. Dropped from the project (2.6 GB, not needed). See `assets/README.md`. |

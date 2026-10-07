@@ -33,7 +33,7 @@ The client is an OTClient 0.6.6 fork (app name "Pokecenter") with 69 Lua/OTUI mo
 | **Pokédex, doll case, badge case, trainer cards** | `game_pokedex`, `game_dollcase`, `game_badgecase`, `data/images/trainerCards` | Collection windows. |
 | **Fonts** | `data/fonts/damas.otfont`, `damage-font.otfont` | Custom title font and damage numbers. |
 | **Asset encryption** | C++ `decryptSPR` / `decryptDAT` | `Tibia.spr` (169,214 sprites) and `Tibia.dat` are encrypted. The client source can decrypt them. |
-| **Design sources** | `assets/design-psd/` (Git LFS) | NEW INTERFACE, PASSE DO TREINADOR, LOJA, POKE STATUS, MARKET and others. See `assets/README.md`. |
+| **Design sources** | Original package only (not in this repository) | NEW INTERFACE, PASSE DO TREINADOR, LOJA, POKE STATUS, MARKET and others. See `assets/README.md`. |
 
 ## Client-side C++ additions that the UI depends on
 

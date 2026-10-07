@@ -1,6 +1,6 @@
 # Binary Inventory
 
-Every non-text, non-media file in the import, classified. **Nothing was deleted.** Everything needed to run the client and server is committed: the prebuilt binaries as regular Git files, and `Tibia.spr` plus the PSD/PSB design sources through **Git LFS** (`.gitattributes`). The only files left out are compiler output, logs, IDE state and files that contain personal paths. Those stay on disk, are ignored through `.gitignore`, and can be restored from the original archive (`tools/import/fetch-pokejornadas.sh`, verified with `original/MANIFEST.sha256.tsv`).
+Every non-text, non-media file in the import, classified. **Nothing was deleted.** Everything needed to run the client and server is committed: the prebuilt binaries as regular Git files, and `Tibia.spr` through **Git LFS** (`.gitattributes`). The PSD/PSB design sources were dropped from the project. The only files left out are compiler output, logs, IDE state and files that contain personal paths. Those stay on disk, are ignored through `.gitignore`, and can be restored from the original archive (`tools/import/fetch-pokejornadas.sh`, verified with `original/MANIFEST.sha256.tsv`).
 
 Column meanings:
 
@@ -70,12 +70,12 @@ Column meanings:
 |---|---|---|---|---|
 | `Tools/Release/Hash.exe` | Only for publishing client updates | No | **No** | Committed. Rewrite if it needs changes. |
 
-## Design sources (`assets/design-psd/`)
+## Design sources (original `PSDS/`, not in the repository)
 
 | File | Required | Rebuildable | Source Available | Commit Recommendation |
 |---|---|---|---|---|
-| 33 `.psd`, 2 `.psb` (2.6 GB) | No (the exported PNGs are already in `client/`) | — | They *are* the sources | **Committed via Git LFS.** `.lfsconfig` excludes them from default LFS downloads; see `assets/README.md`. |
-| `ENTERGAME.png` (1.1 MB) | No | — | — | Committed (regular Git) |
+| 33 `.psd`, 2 `.psb` (2.6 GB) | No (the exported PNGs are already in `client/`) | — | They *are* the sources | **Removed.** Not needed; available from the original package (see `assets/README.md`). |
+| `ENTERGAME.png` (1.1 MB) | No | — | — | Removed with the PSDs |
 
 ## Media (committed)
 
@@ -88,6 +88,7 @@ Column meanings:
 ## Summary
 
 - Committed as regular Git files: all 26 shipped `.exe`/`.dll`/`.a`/`.def` files and the updater hash list (about 33 MB).
-- Committed through Git LFS: `Tibia.spr` (262.5 MB) and 35 PSD/PSB files (2.6 GB), 36 LFS objects in total.
+- Committed through Git LFS: `Tibia.spr` (262.5 MB).
+- Removed: the 36 design-source files (2.6 GB). They are still in the original archive.
 - Not committed: 109 object/resource files, 260 log files, `settings.sav`, `forgottenserver.map`, IDE metadata, two `.bak` files and `Thumbs.db`.
 - No file was deleted. Everything remains in the working tree and in the original archive.
