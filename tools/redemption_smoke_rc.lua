@@ -742,6 +742,85 @@ local function inspectGame()
         end, 2000)
     end
 
+    -- Diamond shop (ext opcode 27). Prices live on the server; the client only names the offer, so the
+    -- test sends forged offer names, an offer that was never implemented, a PokeCoin purchase, a purchase
+    -- through the window, an immediate repeat (rate limit) and a delayed repeat. Purchases need GM /i.
+    local function shopTests(nextStep)
+        local shop = modules.game_pokeshop
+        if not shop then
+            report('MODULE game_pokeshop missing')
+            return nextStep()
+        end
+        report('MODULE game_pokeshop loaded=true')
+        shop.toggle()
+        scheduleEvent(function()
+            local state = shop.getState()
+            report('SHOP OPEN %s visible=%s reply=%s diamonds=%s', state.visible and state.reply == 'OpenShop' and
+                state.diamonds and 'OK' or 'FAILED', tostring(state.visible), tostring(state.reply), tostring(state.diamonds))
+            local start = state.diamonds or 0
+            g_game.talk('/shopbuy stamina,0')
+            g_game.talk('/shoppokecoin stamina')
+            scheduleEvent(function()
+                state = shop.getState()
+                report('SHOP FORGED OFFER %s reply=%s diamonds=%s', state.reply == 'noactive' and (state.diamonds or 0) == start and
+                    'REFUSED' or 'FAILED', tostring(state.reply), tostring(state.diamonds))
+                shop.hideMiniWindow()
+                if account ~= 'admin' then
+                    g_game.talk('/shopbuy shinyditto')
+                    return scheduleEvent(function()
+                        state = shop.getState()
+                        report('SHOP INSUFFICIENT %s reply=%s', state.reply == 'nodiamond' and 'REFUSED' or 'FAILED', tostring(state.reply))
+                        report('SHOP PURCHASE SKIPPED needs GM commands')
+                        shop.hide()
+                        report('SHOP CLOSE %s', shop.getState().visible and 'FAILED' or 'OK')
+                        nextStep()
+                    end, 1500)
+                end
+                g_game.talk('/i 34524,10')
+                g_game.talk('/shopopen')
+                scheduleEvent(function()
+                    g_game.talk('/shopbuy bless')
+                    scheduleEvent(function()
+                        state = shop.getState()
+                        local before = state.diamonds or 0
+                        report('SHOP UNAVAILABLE %s reply=%s diamonds=%s', state.reply == 'noactive' and before >= start + 10 and
+                            'REFUSED' or 'FAILED', tostring(state.reply), tostring(state.diamonds))
+                        shop.hideMiniWindow()
+                        shop.Stamina()
+                        local selectBuy = shop.getState().selectBuy
+                        shop.shopWindow:getChildById('WindowSelectBuy'):getChildById('DiamondButton').onClick()
+                        local confirm = shop.getState().confirm
+                        shop.shopWindow:getChildById('WindowSelected'):getChildById('Comprar').onClick()
+                        g_game.talk('/shopbuy stamina')
+                        scheduleEvent(function()
+                            state = shop.getState()
+                            report('SHOP BUY %s price=%s confirm=%s reply=%s diamonds=%d->%s alert=%s', selectBuy and confirm and
+                                state.reply == 'purchased' and state.diamonds == before - 5 and 'OK' or 'FAILED', tostring(selectBuy),
+                                tostring(confirm), tostring(state.reply), before, tostring(state.diamonds), tostring(state.alert))
+                            report('SHOP RATE LIMIT %s diamonds=%s', state.diamonds == before - 5 and 'OK' or 'FAILED', tostring(state.diamonds))
+                            report('SHOP WINDOW SHOWN')
+                            local afterBuy = state.diamonds
+                            scheduleEvent(function()
+                                shop.hideMiniWindow()
+                                scheduleEvent(function()
+                                    g_game.talk('/shopbuy stamina')
+                                    scheduleEvent(function()
+                                        state = shop.getState()
+                                        report('SHOP REPEAT %s reply=%s diamonds=%s', state.reply == 'purchased' and state.diamonds ==
+                                            afterBuy - 5 and 'OK' or 'FAILED', tostring(state.reply), tostring(state.diamonds))
+                                        shop.hide()
+                                        report('SHOP CLOSE %s', shop.getState().visible and 'FAILED' or 'OK')
+                                        nextStep()
+                                    end, 1500)
+                                end, 2500)
+                            end, tonumber(os.getenv('PV_SHOP_HOLD_MS') or '100'))
+                        end, 1500)
+                    end, 1500)
+                end, 1000)
+            end, 1500)
+        end, 1500)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -772,13 +851,13 @@ local function inspectGame()
                     statusBarTests(function()
                         passTests(function()
                             taskTests(function()
-                                craftTests(function()
+                                craftTests(function() shopTests(function()
                                     pokemonTests(function()
                                         taskFinish(function()
                                             scheduleEvent(function() g_game.safeLogout() end, 1500)
                                         end)
                                     end)
-                                end)
+                                end) end)
                             end)
                         end)
                     end)

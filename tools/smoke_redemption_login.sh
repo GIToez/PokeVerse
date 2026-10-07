@@ -152,6 +152,18 @@ if [ "${PV_ACCOUNT:-player}" = admin ]; then
     need '\[pv-smoke\] CRAFT COLLECT OK' "collecting the finished craft did not grant the item"
     need '\[pv-smoke\] CRAFT CLOSE OK' "the crafting window did not close"
 fi
+need '\[pv-smoke\] MODULE game_pokeshop loaded=true' "Diamond shop module not loaded"
+need '\[pv-smoke\] SHOP OPEN OK' "/shopopen did not open the shop with the server balance"
+need '\[pv-smoke\] SHOP FORGED OFFER REFUSED' "a forged offer name or PokeCoin purchase was not refused"
+need '\[pv-smoke\] SHOP CLOSE OK' "the shop window did not close"
+if [ "${PV_ACCOUNT:-player}" = admin ]; then
+    need '\[pv-smoke\] SHOP UNAVAILABLE REFUSED' "an offer without a reward took diamonds"
+    need '\[pv-smoke\] SHOP BUY OK' "buying through the shop window did not debit the server price"
+    need '\[pv-smoke\] SHOP RATE LIMIT OK' "an immediate second purchase was not rate limited"
+    need '\[pv-smoke\] SHOP REPEAT OK' "a purchase after the cooldown was refused"
+else
+    need '\[pv-smoke\] SHOP INSUFFICIENT REFUSED' "buying without enough diamonds was not refused"
+fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"
