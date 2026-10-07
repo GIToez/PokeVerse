@@ -345,6 +345,47 @@ local function inspectGame()
         end, 1500)
     end
 
+    -- Achievements are quest 15 of the quest log (server onQuestInfo fills it from player_achievements).
+    local ACHIEVEMENTS_QUEST_ID = 15
+    local questLog, questLines = nil, {}
+    connect(g_game, {
+        onQuestLog = function(list) questLog = list end,
+        onQuestLine = function(questId, missions) questLines[questId] = missions end })
+    local function achievementTests(nextStep)
+        local quests = modules.game_questlog
+        if not quests then
+            report('MODULE game_questlog missing')
+            return nextStep()
+        end
+        quests.show()
+        scheduleEvent(function()
+            local found
+            for _, quest in ipairs(questLog or {}) do
+                if quest[1] == ACHIEVEMENTS_QUEST_ID then found = quest end
+            end
+            report('QUESTLOG %s quests=%d achievements=%s', questLog and 'OK' or 'FAILED', questLog and #questLog or -1,
+                found and tostring(found[2]) or '-')
+            if not found then
+                quests.questLogController:close()
+                return nextStep()
+            end
+            g_game.requestQuestLine(ACHIEVEMENTS_QUEST_ID)
+            scheduleEvent(function()
+                local missions = questLines[ACHIEVEMENTS_QUEST_ID]
+                local completed = 0
+                for _, mission in ipairs(missions or {}) do
+                    if tostring(mission[1]):find(' %(complet') then completed = completed + 1 end
+                end
+                report('ACHIEVEMENTS %s entries=%d completed=%d first=%s', missions and #missions > 0 and 'OK' or 'FAILED',
+                    missions and #missions or -1, completed, missions and missions[1] and tostring(missions[1][1]) or '-')
+                scheduleEvent(function()
+                    quests.questLogController:close()
+                    nextStep()
+                end, tonumber(os.getenv('PV_QUEST_HOLD_MS') or '300'))
+            end, 1500)
+        end, 1500)
+    end
+
     local directions = { South, North, East, West }
     local step = 0
     local function tryWalk(nextStep)
@@ -370,8 +411,10 @@ local function inspectGame()
     -- The move test spawns a hostile Pokemon, so walking comes first and the Pokemon tests last.
     tryWalk(function()
         pokedexTests(function()
-            pokemonTests(function()
-                scheduleEvent(function() g_game.safeLogout() end, 1500)
+            achievementTests(function()
+                pokemonTests(function()
+                    scheduleEvent(function() g_game.safeLogout() end, 1500)
+                end)
             end)
         end)
     end)
