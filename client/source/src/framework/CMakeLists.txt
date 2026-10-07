@@ -223,7 +223,17 @@ endif()
 message(STATUS "LuaJIT: " ${LUAJIT})
 
 find_package(PhysFS REQUIRED)
-find_package(WININET REQUIRED)
+# The legacy updater downloads and overwrites client files over plain HTTP
+# without signature checks; it is Windows-only and disabled by default.
+option(LEGACY_UPDATER "Build the legacy WinINet HTTP auto-updater (unsafe)" OFF)
+if(LEGACY_UPDATER)
+    if(NOT WIN32)
+        message(FATAL_ERROR "LEGACY_UPDATER requires Windows (WinINet)")
+    endif()
+    find_package(WININET REQUIRED)
+    set(framework_DEFINITIONS ${framework_DEFINITIONS} -DLEGACY_UPDATER)
+endif()
+message(STATUS "Legacy updater: ${LEGACY_UPDATER}")
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 

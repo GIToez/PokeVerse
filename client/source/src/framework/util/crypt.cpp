@@ -307,48 +307,63 @@ std::string Crypt::sha512Encode(const std::string& decoded_string, bool upperCas
 
 void Crypt::rsaGenerateKey(int bits, int e)
 {
-    RSA *rsa = RSA_generate_key(bits, e, nullptr, nullptr);
+    RSA *rsa = RSA_new();
+    BIGNUM *bne = BN_new();
+    BN_set_word(bne, e);
+    RSA_generate_key_ex(rsa, bits, bne, nullptr);
+    const BIGNUM *n, *be, *d, *p, *q;
+    RSA_get0_key(rsa, &n, &be, &d);
+    RSA_get0_factors(rsa, &p, &q);
     g_logger.info(stdext::format("%d bits (%d bytes) RSA key generated", bits, bits / 8));
-    g_logger.info(std::string("p = ") + BN_bn2dec(m_rsa->p));
-    g_logger.info(std::string("q = ") + BN_bn2dec(m_rsa->q));
-    g_logger.info(std::string("d = ") + BN_bn2dec(m_rsa->d));
-    g_logger.info(std::string("n = ") + BN_bn2dec(m_rsa->n));
-    g_logger.info(std::string("e = ") + BN_bn2dec(m_rsa->e));
+    g_logger.info(std::string("p = ") + BN_bn2dec(p));
+    g_logger.info(std::string("q = ") + BN_bn2dec(q));
+    g_logger.info(std::string("d = ") + BN_bn2dec(d));
+    g_logger.info(std::string("n = ") + BN_bn2dec(n));
+    g_logger.info(std::string("e = ") + BN_bn2dec(be));
+    BN_free(bne);
     RSA_free(rsa);
 }
 
 void Crypt::rsaSetPublicKey(const std::string& n, const std::string& e)
 {
-    BN_dec2bn(&m_rsa->n, n.c_str());
-    BN_dec2bn(&m_rsa->e, e.c_str());
-
-    // clear rsa cache
-    if(m_rsa->_method_mod_n) { BN_MONT_CTX_free(m_rsa->_method_mod_n); m_rsa->_method_mod_n = NULL; }
+    BIGNUM *bn = nullptr, *be = nullptr;
+    BN_dec2bn(&bn, n.c_str());
+    BN_dec2bn(&be, e.c_str());
+    RSA_set0_key(m_rsa, bn, be, nullptr);
 }
 
 void Crypt::rsaSetPrivateKey(const std::string& p, const std::string& q, const std::string& d)
 {
-    BN_dec2bn(&m_rsa->p, p.c_str());
-    BN_dec2bn(&m_rsa->q, q.c_str());
-    BN_dec2bn(&m_rsa->d, d.c_str());
-
-    // clear rsa cache
-    if(m_rsa->_method_mod_p) { BN_MONT_CTX_free(m_rsa->_method_mod_p); m_rsa->_method_mod_p = NULL; }
-    if(m_rsa->_method_mod_q) { BN_MONT_CTX_free(m_rsa->_method_mod_q); m_rsa->_method_mod_q = NULL; }
+    BIGNUM *bp = nullptr, *bq = nullptr, *bd = nullptr;
+    BN_dec2bn(&bp, p.c_str());
+    BN_dec2bn(&bq, q.c_str());
+    BN_dec2bn(&bd, d.c_str());
+    RSA_set0_key(m_rsa, nullptr, nullptr, bd);
+    RSA_set0_factors(m_rsa, bp, bq);
 }
 
 bool Crypt::rsaCheckKey()
 {
     // only used by server, that sets both public and private
     if(RSA_check_key(m_rsa)) {
+        const BIGNUM *d, *p, *q;
+        RSA_get0_key(m_rsa, nullptr, nullptr, &d);
+        RSA_get0_factors(m_rsa, &p, &q);
+
         BN_CTX *ctx = BN_CTX_new();
-        BN_CTX_start(ctx);
-
-        BIGNUM *r1 = BN_CTX_get(ctx), *r2 = BN_CTX_get(ctx);
-        BN_mod(m_rsa->dmp1, m_rsa->d, r1, ctx);
-        BN_mod(m_rsa->dmq1, m_rsa->d, r2, ctx);
-
-        BN_mod_inverse(m_rsa->iqmp, m_rsa->q, m_rsa->p, ctx);
+        BIGNUM *one = BN_new(), *p1 = BN_new(), *q1 = BN_new();
+        BIGNUM *dmp1 = BN_new(), *dmq1 = BN_new(), *iqmp = BN_new();
+        BN_one(one);
+        BN_sub(p1, p, one);
+        BN_sub(q1, q, one);
+        BN_mod(dmp1, d, p1, ctx);
+        BN_mod(dmq1, d, q1, ctx);
+        BN_mod_inverse(iqmp, q, p, ctx);
+        RSA_set0_crt_params(m_rsa, dmp1, dmq1, iqmp);
+        BN_free(one);
+        BN_free(p1);
+        BN_free(q1);
+        BN_CTX_free(ctx);
         return true;
     }
     else {

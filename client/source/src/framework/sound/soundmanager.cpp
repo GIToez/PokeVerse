@@ -148,6 +148,9 @@ void SoundManager::setAudioEnabled(bool enable)
 
 void SoundManager::preload(std::string filename)
 {
+    if(!m_device || !m_context)
+        return;
+
     filename = resolveSoundFile(filename);
 
     auto it = m_buffers.find(filename);
@@ -168,7 +171,7 @@ void SoundManager::preload(std::string filename)
 
 SoundSourcePtr SoundManager::play(std::string filename, float fadetime, float gain)
 {
-    if(!m_audioEnabled)
+    if(!isAudioEnabled())
         return nullptr;
 
     ensureContext();

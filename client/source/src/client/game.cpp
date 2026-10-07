@@ -34,7 +34,9 @@
 #include "luavaluecasts.h"
 #include "protocolgame.h"
 #include "protocolcodes.h"
+#ifdef LEGACY_UPDATER
 #include "download.h"
+#endif
 #include <thread>
 
 Game g_game;
@@ -58,6 +60,7 @@ Game::Game()
     m_safeFight = true;
 }
 
+#ifdef LEGACY_UPDATER
 void Game::UpdaterCreateFilesThread()
 {
     Download::createFilesDown();
@@ -192,6 +195,28 @@ void Game::UpdaterClient()
     po.detach();
     hashsUpdate.clear();
 }
+
+#else
+// Without the legacy updater the updater module sees a finished check with
+// zero outdated files and proceeds straight to the login window.
+static int16_t s_updateProgress = 100;
+static int16_t s_progressFiles = 0;
+static bool s_cancelUpdater = false;
+
+void Game::UpdaterCreateFilesThread() {}
+int16_t Game::UpdaterCreateFiles() { return 0; }
+void Game::UpdaterClientThread(std::string) {}
+int16_t Game::getUpdateProgress() { return s_updateProgress; }
+void Game::setUpdateProgress(int16_t num) { s_updateProgress = num; }
+bool Game::getCancelUpdaterOtc() { return s_cancelUpdater; }
+void Game::setCancelUpdaterOtc(bool cancel) { s_cancelUpdater = cancel; }
+int16_t Game::getProgressFiles() { return s_progressFiles; }
+void Game::setProgressFiles(int16_t num) { s_progressFiles = num; }
+void Game::UpdaterXmlClient() { s_updateProgress = 100; }
+uint16_t Game::UpdaterVerificClient() { hashsUpdate.clear(); return 0; }
+void Game::DownProgress(std::list<std::string>) {}
+void Game::UpdaterClient() { hashsUpdate.clear(); }
+#endif
 
 void Game::init()
 {

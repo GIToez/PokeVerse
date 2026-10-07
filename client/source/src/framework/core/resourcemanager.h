@@ -68,6 +68,7 @@ public:
     std::vector<std::string> getDirectoryFiles(const std::string& path, bool filenameOnly, bool recursive);
 
     std::string resolvePath(const std::string& path);
+    std::string resolvePathCase(const std::string& path);
     std::string getRealDir(const std::string& path);
     std::string getRealPath(const std::string& path);
     std::string getBaseDir();

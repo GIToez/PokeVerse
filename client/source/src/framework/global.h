@@ -101,6 +101,8 @@
     static bool IsDebuggerPresent() {
         return AmIBeingDebugged();
     }
+#elif !defined(WIN32)
+    static inline bool IsDebuggerPresent() { return false; }
 #endif
 
 #endif

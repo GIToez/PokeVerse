@@ -28,6 +28,9 @@
 #include <framework/platform/platform.h>
 
 #include <physfs.h>
+#ifndef WIN32
+#include <strings.h>
+#endif
 
 ResourceManager g_resources;
 
@@ -316,7 +319,40 @@ std::string ResourceManager::resolvePath(const std::string& path)
     if(!(stdext::starts_with(fullPath, "/")))
         g_logger.traceWarning(stdext::format("the following file path is not fully resolved: %s", path));
     stdext::replace_all(fullPath, "//", "/");
+#ifndef WIN32
+    if(!PHYSFS_exists(fullPath.c_str()))
+        fullPath = resolvePathCase(fullPath);
+#endif
     return fullPath;
+}
+
+// The client data was authored on Windows, where lookups ignore case; match
+// each missing path component case-insensitively against the search path.
+std::string ResourceManager::resolvePathCase(const std::string& path)
+{
+    std::vector<std::string> parts = stdext::split(path, "/");
+    std::string current;
+    for(const std::string& part : parts) {
+        if(part.empty())
+            continue;
+        std::string candidate = current + "/" + part;
+        if(!PHYSFS_exists(candidate.c_str())) {
+            bool found = false;
+            char **rc = PHYSFS_enumerateFiles(current.empty() ? "/" : current.c_str());
+            for(char **i = rc; *i != NULL; i++) {
+                if(strcasecmp(*i, part.c_str()) == 0) {
+                    candidate = current + "/" + *i;
+                    found = true;
+                    break;
+                }
+            }
+            PHYSFS_freeList(rc);
+            if(!found)
+                return path;
+        }
+        current = candidate;
+    }
+    return current.empty() ? path : current;
 }
 
 std::string ResourceManager::getRealDir(const std::string& path)

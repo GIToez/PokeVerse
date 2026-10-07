@@ -13,6 +13,12 @@ option(FRAMEWORK_GRAPHICS "Use GRAPHICS " ON)
 option(FRAMEWORK_XML "Use XML " ON)
 option(FRAMEWORK_NET "Use NET " ON)
 option(FRAMEWORK_SQL "Use SQL" OFF)
+# The imported modules/ and data/ are plaintext; enabling this XOR-decodes every
+# Lua/OTML file with a key read from modules/gamelib/info.
+option(CLIENT_ENCRYPTION "Decrypt Lua/OTML client files at load time" OFF)
+if(CLIENT_ENCRYPTION)
+    add_definitions(-DCLIENT_ENCRYPTION)
+endif()
 
 include(src/framework/CMakeLists.txt)
 include(src/client/CMakeLists.txt)

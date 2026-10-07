@@ -28,8 +28,6 @@ set(client_SOURCES ${client_SOURCES}
     ${CMAKE_CURRENT_LIST_DIR}/container.h
     ${CMAKE_CURRENT_LIST_DIR}/creature.cpp
     ${CMAKE_CURRENT_LIST_DIR}/creature.h
-	${CMAKE_CURRENT_LIST_DIR}/download.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/download.h
     ${CMAKE_CURRENT_LIST_DIR}/declarations.h
     ${CMAKE_CURRENT_LIST_DIR}/effect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/effect.h
@@ -108,6 +106,13 @@ set(client_SOURCES ${client_SOURCES}
     # util
     ${CMAKE_CURRENT_LIST_DIR}/position.h
 )
+
+if(LEGACY_UPDATER)
+    set(client_SOURCES ${client_SOURCES}
+        ${CMAKE_CURRENT_LIST_DIR}/download.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/download.h
+    )
+endif()
 
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/luafunctions.cpp
                             PROPERTIES LANGUAGE CXX COMPILE_FLAGS "-g0 -Os")
