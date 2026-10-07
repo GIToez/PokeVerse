@@ -258,8 +258,62 @@ def check_regressions():
     return errors
 
 
+CENTER_RE = re.compile(rb"pok(?:e|\xe9|\xc3\xa9)mon[ _]?cent(?:er|re)|centro[ _]pok(?:e|\xe9|\xc3\xa9)mon|nurse[ _]?joy", re.I)
+# The in-game Pokemon Center (building, Nurse Joy, heal/depot text) is a gameplay term and must
+# survive the PokeVerse rebrand (docs/POKEVERSE_REBRAND_AUDIT.md section 3). Counts at Phase 3.
+CENTER_MINIMUM = {
+    "client/runtime-data": {"pokemon center": 1096, "centro pokemon": 78, "nurse joy": 6},
+    "server/runtime-data": {"pokemon center": 76, "centro pokemon": 27, "nurse joy": 73},
+}
+MISBRAND_RE = re.compile(rb"pokeverse[ _]?cent(?:er|re)|centro[ _]pokeverse|nurse[ _]pokeverse|pokeverse[ _]joy", re.I)
+OLD_BRAND_RE = re.compile(rb"psoul\.net|pokecenter\.(?:com|net)|pokenordic|pokezring", re.I)
+BINARY_EXT = (".png", ".jpg", ".spr", ".dat", ".otbm", ".otb", ".ogg", ".wav", ".dll", ".exe", ".ttf", ".ico", ".zip")
+
+
+def tracked(*paths):
+    out = subprocess.run(["git", "ls-files", "-z", *paths], cwd=ROOT, capture_output=True).stdout
+    return [p for p in out.decode("utf-8", "replace").split("\0") if p and not p.endswith(BINARY_EXT)]
+
+
+def check_brand():
+    errors = []
+    counts = {area: dict.fromkeys(mins, 0) for area, mins in CENTER_MINIMUM.items()}
+    for path in tracked("client", "server", "client-redemption/modules", "client-redemption/data", "tools"):
+        try:
+            with open(os.path.join(ROOT, path), "rb") as f:
+                data = f.read()
+        except OSError:
+            continue
+        if path != "tools/validate.py" and MISBRAND_RE.search(data):
+            errors.append(f"{path}: the Pokemon Center was renamed ({MISBRAND_RE.search(data).group().decode('latin-1')})")
+        area = "/".join(path.split("/")[:2])
+        if area in counts:
+            for m in CENTER_RE.finditer(data):
+                key = re.sub(rb"[ _]", b" ", m.group().lower()).replace(b"\xc3\xa9", b"e").replace(b"\xe9", b"e")
+                key = "nurse joy" if key == b"nursejoy" else key.decode()
+                counts[area][key] += 1
+        if path.startswith(("client/runtime-data", "server/runtime-data", "server/source")) and not path.endswith(".otmod"):
+            for line in data.splitlines():
+                if OLD_BRAND_RE.search(line) and not line.lstrip().startswith(b"--"):
+                    errors.append(f"{path}: old project URL in user-facing text: {line.strip()[:100].decode('latin-1')}")
+    for area, mins in CENTER_MINIMUM.items():
+        for key, minimum in mins.items():
+            if counts[area][key] < minimum:
+                errors.append(f"{area}: '{key}' occurs {counts[area][key]} times, expected at least {minimum}")
+    nurse = os.path.join(ROOT, "server/runtime-data/data/npc/Nurse Joy.xml")
+    if not os.path.exists(nurse) or b'name="Nurse Joy"' not in open(nurse, "rb").read():
+        errors.append("server/runtime-data/data/npc/Nurse Joy.xml: Nurse Joy NPC missing")
+    spawns = open(os.path.join(ROOT, "server/runtime-data/data/world/map-spawn.xml"), "rb").read().count(b'name="Nurse Joy"')
+    if spawns < 60:
+        errors.append(f"map-spawn.xml: {spawns} Nurse Joy spawns, expected 60")
+    summary = ", ".join(f"{a.split('/')[0]} {k} {v}" for a, c in counts.items() for k, v in c.items())
+    print(f"  brand: {summary}; Nurse Joy spawns {spawns}")
+    return errors
+
+
 CHECKS = {
     "regressions": check_regressions,
+    "brand": check_brand,
     "lua": check_lua,
     "xml": check_xml,
     "scripts": check_scripts,
