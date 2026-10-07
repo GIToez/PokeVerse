@@ -18,6 +18,10 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends lua5.1
       - run: python3 tools/validate.py
+      - name: Windows package guard self-test and PowerShell syntax
+        run: |
+          tools/test_windows_package_guard.sh
+          pwsh -NoProfile -Command '$e = $null; [void][System.Management.Automation.Language.Parser]::ParseFile("packaging/windows/scripts/PokeVerse-Tools.ps1", [ref]$null, [ref]$e); if ($e) { $e; exit 1 }; "PokeVerse-Tools.ps1 parses"'
 
   build-and-smoke:
     name: Build server + client, startup and login smoke
@@ -60,6 +64,11 @@ jobs:
         run: |
           sudo systemctl start mariadb
           tools/setup_dev_db.sh
+
+      - name: Windows package database script (PokeVerse-Tools.ps1 with PowerShell 7 and MariaDB)
+        run: |
+          sudo mariadb -e "CREATE USER IF NOT EXISTS 'pvadmin'@'127.0.0.1' IDENTIFIED BY 'pv-ci-admin'; GRANT ALL ON *.* TO 'pvadmin'@'127.0.0.1' WITH GRANT OPTION;"
+          PV_DB_ADMIN_USER=pvadmin PV_DB_ADMIN_PASSWORD=pv-ci-admin tools/test_windows_db_script.sh
 
       - name: Server startup smoke
         run: KEEP_RUNNING=1 tools/smoke_server.sh /tmp/server-run.log

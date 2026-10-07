@@ -51,8 +51,9 @@ jobs:
         with:
           arch: x64
 
-      - name: Build Redemption
-        run: tools/build_redemption.sh ${{ matrix.type }}
+      - name: Build Redemption with tools\windows\Build-PokeVerse-Client-Windows.bat
+        shell: cmd
+        run: call tools\windows\Build-PokeVerse-Client-Windows.bat ${{ matrix.type }}
 
       - uses: actions/cache/save@v4
         if: always()
@@ -196,6 +197,142 @@ jobs:
         if: always()
         with:
           name: windows-e2e
+          path: e2e/
+          if-no-files-found: ignore
+
+  # The tester-facing Windows package (README-WINDOWS-TESTING.txt): built with the Windows
+  # build helper, assembled and validated, then copied to C:\PokeVerse-Test (outside the
+  # checkout) and driven only through its own .bat files, like a tester would.
+  windows-package:
+    name: Windows test package (build, validate, standalone run)
+    needs: windows-client
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      POKEVERSE_NO_PAUSE: "1"
+      POKEVERSE_NONINTERACTIVE: "1"
+      POKEVERSE_DB_ADMIN_USER: root
+      POKEVERSE_DB_ADMIN_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tibia.spr LFS object id
+        id: spr
+        shell: bash
+        run: echo "oid=$(sed -n 's/^oid sha256://p' client/runtime-data/data/things/Tibia.spr)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: spr-cache
+        with:
+          path: client/runtime-data/data/things/Tibia.spr
+          key: tibia-spr-${{ steps.spr.outputs.oid }}
+          enableCrossOsArchive: true
+
+      - name: Fetch Tibia.spr from Git LFS (cache miss only)
+        if: steps.spr-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: git lfs pull --include client/runtime-data/data/things/Tibia.spr
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: pokeverse-client-windows-x64-release
+
+      - uses: msys2/setup-msys2@v2
+        id: msys2
+        with:
+          msystem: UCRT64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-lua51
+            mingw-w64-ucrt-x86_64-libmariadbclient
+            mingw-w64-ucrt-x86_64-sqlite3
+            mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-python
+
+      - name: Build server with tools\windows\Build-PokeVerse-Server-Windows.bat
+        shell: cmd
+        env:
+          MSYS2_ROOT: ${{ steps.msys2.outputs.msys2-location }}
+        run: call tools\windows\Build-PokeVerse-Server-Windows.bat
+
+      - name: Assemble and validate the package
+        run: |
+          tools/package_windows.sh dist/client-redemption dist/server dist/windows/PokeVerse-Windows-Test
+          tools/test_windows_package_guard.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Windows-Test
+          path: dist/windows/
+          if-no-files-found: error
+
+      - name: Copy the package outside the repository (C:\PokeVerse-Test)
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse dist\windows\PokeVerse-Windows-Test C:\PokeVerse-Test
+          Get-ChildItem C:\PokeVerse-Test | Format-Table Name, Length
+
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          distribution: mariadb
+          mysql-version: "10.11"
+          root-password: root
+
+      - name: Setup-PokeVerse-Database.bat (fresh, then again), Reset-PokeVerse-Database.bat
+        shell: cmd
+        working-directory: C:\PokeVerse-Test
+        run: |
+          call Setup-PokeVerse-Database.bat || exit /b 1
+          call Setup-PokeVerse-Database.bat || exit /b 1
+          call Reset-PokeVerse-Database.bat -Force || exit /b 1
+          if not exist server\config.lua exit /b 1
+
+      - name: Start-PokeVerse-Test.bat, then the packaged client in game (Trainer, GM Admin)
+        run: |
+          set +e
+          pkg=/c/PokeVerse-Test
+          mkdir -p e2e
+          # The runner has no GPU: Mesa software OpenGL goes into this test copy only (never into the package).
+          curl -fsSL -o mesa.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.4/mesa3d-24.3.4-release-msvc.7z
+          7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll x64/libglapi.dll x64/dxil.dll -o"$(cygpath -w $pkg/client)" -y > /dev/null
+          status=0
+          # Output to a file, not a pipe: the server and client windows it starts must not hold the pipe open.
+          (cd "$pkg" && env MSYS2_ARG_CONV_EXCL='*' cmd.exe /d /c Start-PokeVerse-Test.bat) > e2e/start-test.log 2>&1 || status=1
+          cat e2e/start-test.log
+          [ "$status" = 0 ] || echo "FAIL: Start-PokeVerse-Test.bat exited non-zero"
+          sleep 30
+          tasklist | grep -i "PokeVerseServer.exe" || { echo "FAIL: PokeVerseServer.exe not running"; status=1; }
+          tasklist | grep -i "PokeVerse.exe" || { echo "FAIL: PokeVerse.exe not running 30 s after Start-PokeVerse-Test.bat"; status=1; }
+          powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms, System.Drawing;
+            \$b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds; \$bmp = New-Object System.Drawing.Bitmap \$b.Width, \$b.Height;
+            [System.Drawing.Graphics]::FromImage(\$bmp).CopyFromScreen(\$b.Location, [System.Drawing.Point]::Empty, \$b.Size);
+            \$bmp.Save('$(cygpath -w "$PWD/e2e/package-launch.png")')" || true
+          taskkill //F //IM PokeVerse.exe > /dev/null 2>&1 || true
+          export DIST="$pkg/client"
+          SCREENSHOT=e2e/package-ingame-trainer.png tools/smoke_redemption_login.sh e2e/package-client-trainer.log || status=1
+          env MSYS2_ARG_CONV_EXCL='*' python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/cb Charmander, 15, 10" --say "/cb Bulbasaur, 15, 10" || status=1
+          PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" PV_EXPECT_POKEBAR=1 SCREENSHOT_AT="WALK OK" SCREENSHOT=e2e/package-ingame-gm.png \
+            tools/smoke_redemption_login.sh e2e/package-client-gm.log || status=1
+          env MSYS2_ARG_CONV_EXCL='*' python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/shutdown" --stay 1 || true
+          for _ in $(seq 1 60); do tasklist | grep -qi PokeVerseServer.exe || break; sleep 1; done
+          tasklist | grep -qi PokeVerseServer.exe && { echo "FAIL: server still running after /shutdown"; taskkill //F //IM PokeVerseServer.exe; status=1; }
+          cp -r "$pkg/server/logs" e2e/server-logs 2>/dev/null || true
+          exit $status
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-package-test
           path: e2e/
           if-no-files-found: ignore
 
