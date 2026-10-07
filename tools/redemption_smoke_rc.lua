@@ -6,6 +6,8 @@ local password = os.getenv('PV_PASSWORD') or 'player'
 local character = os.getenv('PV_CHARACTER') or 'Trainer'
 local host = os.getenv('PV_HOST') or '127.0.0.1'
 local port = tonumber(os.getenv('PV_LOGIN_PORT') or '7564')
+-- Walkable tile outside the starting temple's protection zone (checked against the map).
+local MOVE_TEST_POSITION = os.getenv('PV_MOVE_TEST_POSITION') or '3325,806,6'
 
 local function report(fmt, ...)
     g_logger.info('[pv-smoke] ' .. string.format(fmt, ...))
@@ -131,28 +133,53 @@ local function inspectGame()
         if #icons == 0 then
             return nextStep()
         end
+        local function distance(a, b)
+            return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
+        end
         g_game.talk('/m Rattata')
         scheduleEvent(function()
-            local target = findCreature(function(creature)
-                return creature:getName() == 'Rattata' and not creature:isLocalPlayerSummon()
-            end)
+            local here, target = player:getPosition(), nil
+            for _, creature in ipairs(g_map.getSpectators(here, false)) do
+                if creature:getName() == 'Rattata' and not creature:isLocalPlayerSummon() and
+                    (not target or distance(creature:getPosition(), here) < distance(target:getPosition(), here)) then
+                    target = creature
+                end
+            end
             if target then
                 g_game.attack(target)
             end
             local healthBefore = target and target:getHealthPercent() or -1
-            local icon = icons[1]
-            local id, name, moveIcon = icon:getId(), icon:getTooltip(), icon:getItemId()
-            icon:onMouseRelease(icon:getPosition(), MouseLeftButton)
-            scheduleEvent(function()
-                -- The server usually rebuilds the bar after a move, so look the icon up again.
-                local current = window:getChildById(id)
-                report('MOVE %s move=%s cooldown=%s overlay=%s target=%s health=%d->%d',
-                    lastCooldown[moveIcon] and 'OK' or 'NONE', name, tostring(lastCooldown[moveIcon]),
-                    tostring(current and current:getChildById(id .. 'cooldown') ~= nil), target and target:getName() or '-',
-                    healthBefore, target and target:getHealthPercent() or -1)
-                g_game.cancelAttack()
-                nextStep()
-            end, 600)
+            -- The first move may be melee (Tackle, Scratch), so let the summon reach the target.
+            local waited = 0
+            local function useWhenAdjacent()
+                local summon = findSummon()
+                if target and summon and distance(summon:getPosition(), target:getPosition()) > 1 and waited < 6000 then
+                    waited = waited + 250
+                    return scheduleEvent(useWhenAdjacent, 250)
+                end
+                local icon
+                for _, child in ipairs(window:getChildren()) do
+                    if child:getStyleName() == 'MoveItem' then icon = child break end
+                end
+                if not icon then
+                    report('MOVE NONE move bar emptied before the move was used')
+                    return nextStep()
+                end
+                local id, name, moveIcon = icon:getId(), icon:getTooltip(), icon:getItemId()
+                icon:onMouseRelease(icon:getPosition(), MouseLeftButton)
+                scheduleEvent(function()
+                    -- The server usually rebuilds the bar after a move, so look the icon up again.
+                    local current = window:getChildById(id)
+                    report('MOVE %s move=%s cooldown=%s overlay=%s target=%s@%s health=%d->%d summon=%s waited=%d',
+                        lastCooldown[moveIcon] and 'OK' or 'NONE', name, tostring(lastCooldown[moveIcon]),
+                        tostring(current and current:getChildById(id .. 'cooldown') ~= nil), target and target:getName() or '-',
+                        posString(target and target:getPosition()), healthBefore, target and target:getHealthPercent() or -1,
+                        posString(summon and summon:getPosition()), waited)
+                    g_game.cancelAttack()
+                    nextStep()
+                end, 600)
+            end
+            useWhenAdjacent()
         end, 1000)
     end
 
@@ -160,13 +187,19 @@ local function inspectGame()
         if not ready[1] then
             return nextStep()
         end
-        clickPortrait(ready[1], 'SUMMON', function()
-            if ready[2] then
-                clickPortrait(ready[2], 'SWITCH', function() useMove(nextStep) end)
-            else
-                useMove(nextStep)
-            end
-        end)
+        -- The development characters start in a temple, and moves are refused in a protection
+        -- zone. A summon stays behind when its trainer teleports, so move before summoning.
+        g_game.talk('/goto ' .. MOVE_TEST_POSITION)
+        scheduleEvent(function()
+            report('TEST POSITION %s', posString(player:getPosition()))
+            clickPortrait(ready[1], 'SUMMON', function()
+                if ready[2] then
+                    clickPortrait(ready[2], 'SWITCH', function() useMove(nextStep) end)
+                else
+                    useMove(nextStep)
+                end
+            end)
+        end, 1500)
     end
 
     local directions = { South, North, East, West }
