@@ -406,7 +406,6 @@ English stays canonical, Portuguese stays available, and the first-run language 
 | Where | What | Fix |
 |---|---|---|
 | Market images (`game_pokemarket/images/`, also legacy `game_market`) | `comprar`, `comprar_mini`, `vender`, `vender_mini`, `ofertar`, `ofertas`, `historico`, `aceitar`, `recusar`, `fechar_oferts`, `cancelar`, `ver`, `mercado_text`, `ofertsforyou`, `youoferts`: text baked into the art | Redraw the buttons blank and put `tr()` labels on them (art task, `KNOWN_ISSUES.md` #20) |
-| Server task names and kill alerts | Task ids such as `rattata` are fine. NPC-task popups are not sent by any script | — |
 | Historic market rows | Rows written before Phase 3C | Leave; they age out |
 | Modules not yet ported (`REDEMPTION_MODULE_AUDIT.md`) | Their legacy strings | Translate while porting |
 
