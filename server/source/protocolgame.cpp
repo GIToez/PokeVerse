@@ -292,8 +292,13 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 		player->setOperatingSystem(operatingSystem);
 		player->setClientVersion(version);
 		player->setLanguage(IOLoginData::getInstance()->getAccountLanguage(id));
+		// placeCreature can flush the login packets to the client, and parsePacket runs on the
+		// network thread: accept from here so early client packets queue behind this task
+		// instead of being dropped.
+		m_acceptPackets = true;
 		if(!g_game.placeCreature(player, player->getLoginPosition(), false, true) && !g_game.placeCreature(player, player->getMasterPosition(), false, true))
 		{
+			m_acceptPackets = false;
 			disconnectClient(0x14, "Temple position is wrong. Contact with the administration.");
 			return false;
 
@@ -307,8 +312,6 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 		player->lastLoad = OTSYS_TIME();
 		player->lastLogin = std::max(time(NULL), player->lastLogin + 1);
 		IODatalog::getInstance()->logLogin(player->getGUID(), player->getLastLogin(), player->getIP());
-
-		m_acceptPackets = true;
 		return true;
 	}
 	else if(_player->client)
@@ -396,6 +399,7 @@ bool ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem,
 	player->isConnecting = false;
 
 	player->client = this;
+	m_acceptPackets = true;
 	player->sendCreatureAppear(player);
 
 	player->setOperatingSystem(operatingSystem);
@@ -410,7 +414,6 @@ bool ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem,
         g_chat.deleteChannel(player, tv->getId());
     }
 
-	m_acceptPackets = true;	
 	g_creatureEvents->playerKickLogin(player);
 	
 	return true;
