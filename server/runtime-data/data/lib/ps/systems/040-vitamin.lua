@@ -95,7 +95,7 @@ VITAMINS[VITAMIN_IDS.ZINC] = {
                 VITAMINS[VITAMIN_IDS.ZINC].values[1])
     end,
     getDescription = function(count)
-        return string.concat("+", (VITAMINS[VITAMIN_IDS.CALCIUM].values[count] or VITAMINS[VITAMIN_IDS.CALCIUM].values[1]) * 100,
+        return string.concat("+", (VITAMINS[VITAMIN_IDS.ZINC].values[count] or VITAMINS[VITAMIN_IDS.ZINC].values[1]) * 100,
             "% Special Defense")
     end
 }

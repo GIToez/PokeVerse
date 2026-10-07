@@ -627,14 +627,14 @@ function doMarketAcceptOffer(cid, code, playeroffer_id)
         doItemLoadAttributes(offerItem, 'attributes', mysql:getID())
         doItemSetCount(offerItem, offer_item.count)
 		if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
-		  db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
+		  db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
           if not checkHistoric and offer_item.state == OFFERPOSTED then 
 			setMarketHistoric(_playeroffer_id, "Sua oferta foi recusada para o "..market_item.item_name..".")
 		  end
 		  checkHistoric = true
 		end
       else
-	    db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
+	    db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
       end
 	end
   end
@@ -829,7 +829,7 @@ function doMarketBuyItem(cid, code, buy_count)
       	    end
           elseif offer_item.state == OFFERUNDERCONSTRUCTION then
             if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
-              db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
+              db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..offer_item.item_code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
             end
           end
         end
@@ -889,7 +889,7 @@ function doMarketRemoveItem(cid, code)
         doItemSetCount(offerItem, offer_item.count)
 		if offer_item.state == OFFERUNDERCONSTRUCTION then
           if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
-            db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..code.."' AND `item_index` = "..offer_item.item_index..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
+            db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
           end
 		elseif offer_item.state == OFFERPOSTED then
           if addItem(getPlayerNameByGUID(offer_item.playeroffer_id), offer_item.itemid, offerItem) then
@@ -940,7 +940,7 @@ function doMarketCancelMakeOffer(cid, code)
       doItemLoadAttributes(offerItem, 'attributes', mysql:getID())
       doItemSetCount(offerItem, offer_item.count)
 	  if addItem(getCreatureName(cid), offer_item.itemid, offerItem) then
-		db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..code.."' AND `item_index` = "..offer_item.item_index..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
+		db.executeQuery("DELETE FROM `market_offers` WHERE `item_code` = '"..code.."' AND `item_index` = "..offer_item.item_index.." AND `playeroffer_id` = "..offer_item.playeroffer_id)
 	  end
     end
   end

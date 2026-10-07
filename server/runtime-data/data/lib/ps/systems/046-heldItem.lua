@@ -86,7 +86,7 @@ HELDS[HELD_IDS.DRAGON_FANG] = {
     values = {5, 7, 10, 13, 15, 18, 20},
     onApply = function(cid, level, ballUid)
         setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.DRAGON_FANG].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_FIRE)
+        setPokemonHeldMovePowerType(cid, ELEMENT_DRAGON)
     end,
     getDescription = function(uid)
         local level = getBallHeldLevel(uid)

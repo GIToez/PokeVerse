@@ -615,7 +615,6 @@ function upgradeFriendshipLevel(cid, useDiamonds)
   end
   if not useDiamonds then
     if getPlayerMoney(cid) < getFriendshipMoneyReq(level+1) then
-	  doPlayerRemoveMoney(cid, getFriendshipMoneyReq(level+1))
 		local info = {Reset = {code = "SemDinheiro"}, protocol = "Info"}
 		doSendPlayerExtendedOpcode(cid, GameServerOpcodes.PokemonInfo, json.encode(info))
       return

@@ -87,6 +87,7 @@ ballsAttributes = {
     evspdef = base + 84,
     evspd = base + 85,
     evpoints = base + 86,
+    evspendingPoints = base + 86, -- same slot as evpoints
     nature = base + 87,
 
     friendshipLevel = base + 88,
@@ -1844,7 +1845,7 @@ end
 
 function setBallPokemonExtraPoints(uid, extraPoints)
     doItemSetAttribute(uid, ballsAttributes.extraPoints,
-        (tonumber(extraPoints) <= (POKEMON_LEVEL_MAX + 10) and extraPoints or (POKEMON_LEVEL_MAX + 10)))
+        (tonumber(extraPoints) <= POKEMON_EXTRA_POINT_MAX and extraPoints or POKEMON_EXTRA_POINT_MAX))
 end
 
 function setBallStatsPoisonDamage(uid, damage)
