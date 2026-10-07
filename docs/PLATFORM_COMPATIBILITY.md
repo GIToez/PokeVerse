@@ -53,9 +53,20 @@ The Pokémon tests run at 3325,806,6, just outside the starting temple, because 
 | Switch from the bar | **PASS**: `SWITCH OK creature=Bulbasaur level=15` (run 37635170266) | NOT TESTED | **PASS**: same, run 37635170266; local |
 | Move bar | **PASS**: 4 moves for Charmander (run 37631181970) | NOT TESTED | **PASS** (run 37631181970; local) |
 | Using a move, cooldown, damage | **PASS**: Scratch hit a GM-spawned Rattata (100% → 79%), server cooldown 6 s, cooldown overlay shown (run 37631181970) | NOT TESTED | **PASS**: Rattata 100% → 72% (run 37631181970); local |
-| Pokémon Info, Pokédex, EVs, vitamins | BLOCKED: modules not ported (`LEGACY_ASSET_DEPENDENCY_MAP.md`) | BLOCKED | BLOCKED |
-| Containers | NOT TESTED | NOT TESTED | NOT TESTED |
-| Battle Pass, Shop, Market | BLOCKED: modules not ported | BLOCKED | BLOCKED |
+| Pokémon Info, EV allocation and persistence | **PASS**: `INFO OPEN OK`, `EV ALLOCATE OK`, `EV FORGED REJECTED`, `EV PERSIST OK` (run 37654195191) | NOT TESTED | **PASS** (CI run 37665182290; local) |
+| Pokédex (login status list, open, close) | **PASS**: `DEX LOGIN STATUS OK`, `DEX OPEN OK` (run 37654195191). `DEX INFO` was skipped in that run | NOT TESTED | **PASS**: including `DEX INFO OK` locally |
+| Status bar (0xFF 14/15/16) | **PASS** (run 37654195191; the signals are injected by the test) | NOT TESTED | **PASS** |
+| TM chooser | **PASS**: `TM WINDOW OK`, `TM CONFIRM OK`, `TM FORGED REJECTED` (run 37654195191) | NOT TESTED | **PASS** |
+| Achievements (quest log tab) | **PASS**: `ACHIEVEMENTS OK` (run 37654195191) | NOT TESTED | **PASS** |
+| HUD (trainer health, Pokémon energy and level) | NOT TESTED: added after the last green Windows run | NOT TESTED | **PASS** (CI run 37665182290; local) |
+| Battle Pass | NOT TESTED (same reason) | NOT TESTED | **PASS**: open, forged collect ignored, buy refused because the season has ended (CI run 37665182290) |
+| Tasks and kill popup | NOT TESTED (same reason) | NOT TESTED | **PASS**: accept, refusals, cancel in CI run 37665182290; kill progress and `POKEKILL POPUP OK` locally only |
+| Crafting | NOT TESTED (same reason) | NOT TESTED | **PASS** (CI run 37665182290, GM) |
+| Diamond shop | NOT TESTED (same reason) | NOT TESTED | **PASS**: forged offer refused, buy, rate limit, insufficient balance (CI run 37665182290) |
+| Player market (two accounts) | NOT TESTED (same reason) | NOT TESTED | **PASS** locally (`tools/smoke_market.sh`, 2026-10-07). Added to CI, not yet run there |
+| Loot strip (auto loot) | NOT TESTED (same reason) | NOT TESTED | **PASS** locally only |
+| Containers | NOT TESTED | NOT TESTED | **PASS**: the craft and market tests move items out of the backpack |
+| Calendar, dungeons, doll/badge case, other unported modules | BLOCKED: not ported (`REDEMPTION_MODULE_AUDIT.md`) | BLOCKED | BLOCKED |
 | Settings persistence | NOT TESTED | NOT TESTED | NOT TESTED |
 | Touch controls / UI scaling | n/a | NOT TESTED | n/a |
 
@@ -84,14 +95,25 @@ Two earlier CI runs (e22dd9c25 and cab8e69b2) failed the move step on Windows an
 | Clean shutdown | **PASS**: GM `/shutdown`: world saved, ports closed, process exits | **PASS**: GM `/shutdown` and `kill -QUIT` |
 | Pokémon gameplay | **PASS**: Pokémon bar data, summon, move bar, move use, cooldown and damage (run 37631181970) | **PASS** (Redemption smoke and legacy harness) |
 
-## Completion status (Phase 3)
+## Windows end-to-end status (Phase 3C)
+
+The Windows end-to-end job last passed on f2c224fe0 (run 37654195191), which covered everything up to achievements. It has failed on every run since 6f9f33d77 (run 37657786372). The causes so far:
+
+| Runs | Cause | Fix |
+|---|---|---|
+| 37657786372 and later | The task-kill check and a market baseline bug in the test | Fixed in the smoke (`KNOWN_ISSUES.md`, "Fixed in Phase 3C") |
+| 37665182290 and later | The GM run directly after the Trainer run logs "854 SPR/DAT did not load", with an empty `client-gm.log` | Suspected cause: settings left in the shared Windows user folder (`%APPDATA%`) by the previous run. Since 82b03e936 every run passes `--user-dir` with an empty folder of its own, and the harness logs the client's exit status. Not yet confirmed in CI |
+
+The Windows test package job failed on a CRLF check in its own guard self-test; that is fixed (`tools/test_windows_package_guard.sh`), and it is also waiting for a CI run.
+
+Platforms run 37669387609 has been stuck in the Linux release job since 19:02 UTC. The workflow does not cancel in-progress runs, so every newer Platforms run waits behind it and is cancelled when a newer one queues. The steps now have 30-minute timeouts and the harness force-kills a client that ignores SIGTERM, but the stuck run itself has to be cancelled by someone with write access to the repository. Otherwise GitHub stops it at its 6-hour limit.
+
+## Completion status (Phase 3C)
 
 | Target | Status | Reason |
 |---|---|---|
-| Windows client | PARTIAL | Builds, packages, logs in, renders, walks, chats, shows the Pokémon bar, summons, switches, and uses a move with its cooldown against a Windows server in CI. Not hands-on tested on a real Windows desktop with a GPU. Most PokeVerse modules are not ported yet. |
-| Windows server | PASS | Build, startup, login, admin commands, save/load, restart persistence and clean shutdown all pass in CI. |
-| Android client | PARTIAL | The APK builds in CI. It has never been installed or run (no device). |
-| Linux client | PARTIAL | Same coverage as Windows in CI. Most PokeVerse modules are not ported yet. |
+| Windows client | PARTIAL | Builds and packages in CI. End-to-end in CI passed through Pokémon Info, Pokédex, status bar, TM chooser and achievements (run 37654195191). The modules added after that (HUD, Battle Pass, tasks, crafting, shop, market, loot) have not passed on Windows yet. Not hands-on tested on a Windows desktop with a GPU. |
+| Windows server | PASS | Build, startup, login, admin commands, save/load, restart persistence and clean shutdown pass in CI (`windows-server.yml`). |
+| Android client | PARTIAL | The APK builds in CI. It has never been installed or run (no device); `ANDROID_RUNTIME_TESTING.md` is the checklist. |
+| Linux client | PARTIAL | Every ported module passes locally; CI passed through the shop (run 37665182290). Some PokeVerse modules are not ported. |
 | Linux server | PASS | |
-
-This table is updated as results arrive. The final values are reported in the Phase 3 final report.
