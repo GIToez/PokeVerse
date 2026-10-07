@@ -1,4 +1,5 @@
 function onSay(cid, words, param)
+   if not TABLE_RANK_LEVEL[param] then return true end
    if getPlayerStorageValue(cid, STORAGE_TASK.RANK)+1 == TABLE_RANK_LEVEL[param][2] then
       if getPlayerStorageValue(cid, STORAGE_TASK.POINTS) >= TABLE_RANK_LEVEL[param].points then
          if getPlayerLevel(cid) >= TABLE_RANK_LEVEL[param][1][1] then

@@ -12,7 +12,7 @@ function onKill(cid, target, lastHit)
   -- Achievement de matar bosses (configurar em lib/task_kill.lua) 
   local achiev = TABLE_ACHIEVEMENT_BOSS[_creature_name]
   if achiev then
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, 'Parabéns você achou o Pokémon ditto.')
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, string.format(__L(cid, 'Congratulations, you found %s.'), getCreatureName(target)))
   end
 
   -- Sistema de Tasks de Monstros
@@ -36,7 +36,7 @@ function onKill(cid, target, lastHit)
 	  doSendPlayerExtendedOpcode(cid, GameServerOpcodes.PokeKill, json.encode(response))
 	  
       if kills + 1 == _tasktable.count then
-      doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, 'Parabéns você completou sua missão, colete sua recompensa no painel de missões.')
+      doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, __L(cid, 'Congratulations, you completed your task. Collect your reward in the Tasks window.'))
 	  end
       
     end
