@@ -83,9 +83,9 @@ if ENABLE_SERVERS then
     }
 end
 
-g_app.setName("OTClient - Redemption");
-g_app.setCompactName("otclient");
-g_app.setOrganizationName("otcr");
+g_app.setName("PokeVerse");
+g_app.setCompactName("pokeverse");
+g_app.setOrganizationName("pokeverse");
 
 g_app.hasUpdater = function()
     return (Services.updater and Services.updater ~= "" and g_modules.getModule("updater"))
@@ -158,7 +158,8 @@ local function loadModules()
     g_modules.autoLoadModules(9999)
     g_modules.ensureModuleLoaded('client_mods')
 
-    local script = '/' .. g_app.getCompactName() .. 'rc.lua'
+    -- Fixed name: upstream packaging (Dockerfiles, Android and Emscripten builds) ships otclientrc.lua.
+    local script = '/otclientrc.lua'
 
     if g_resources.fileExists(script) then
         dofile(script)

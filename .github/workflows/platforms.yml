@@ -392,10 +392,10 @@ jobs:
           Xvfb :99 -screen 0 1280x1024x24 &
           sleep 3
           (cd "$dir" && ./pokeverse-client* > /tmp/redemption.log 2>&1 &)
-          for _ in $(seq 1 60); do xdotool search --name "OTClient" > /dev/null 2>&1 && break; sleep 1; done
+          for _ in $(seq 1 60); do xdotool search --name "PokeVerse" > /dev/null 2>&1 && break; sleep 1; done
           sleep 10
           import -window root launch-${{ matrix.type }}.png
-          xdotool search --name "OTClient" > /dev/null
+          xdotool search --name "PokeVerse" > /dev/null
           pkill -9 -f pokeverse-client || true
 
       # End-to-end against the Linux server (release only): same smoke as windows-e2e.

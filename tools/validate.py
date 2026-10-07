@@ -243,6 +243,8 @@ REGRESSIONS = [
      r"running = true;\s*try\s*\{\s*m_io_service\.run\(\);", "shutdown: server process never exits (ServiceManager::stop no-op)"),
     ("server/source/protocolgame.cpp",
      r"m_acceptPackets = true;\s*if\(!g_game\.placeCreature", "login: client packets dropped until after placeCreature and the login DB write"),
+    ("client-redemption/init.lua",
+     r'g_app\.setName\("PokeVerse"\)', "brand: Redemption window title is not PokeVerse"),
     ("tools/package_client.sh",
      r"-name game_bot", "packaging: Redemption bot module not refused"),
     ("tools/stage_redemption.sh",

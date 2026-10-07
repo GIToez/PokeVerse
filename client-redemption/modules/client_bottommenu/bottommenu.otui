@@ -47,7 +47,7 @@ Panel
     text-auto-resize: true
     color: #c0c0c0ff
     margin-bottom: 110
-    text: OTClient Redemption
+    text: PokeVerse
     ttf-font: martel
     ttf-font-size: 90
     stroke: 2 black
