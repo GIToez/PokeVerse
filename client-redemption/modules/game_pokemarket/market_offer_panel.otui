@@ -1,0 +1,325 @@
+MyCurrentOfferWindow < MainWindow
+  id: myCurrentOfferWindow
+  size: 400 200
+  image-source: images/background_offert_list
+  visible: false
+  @onEscape: show()
+
+  Item
+    id: offerItem
+    size: 40 40
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: -60
+
+    UIWidget
+      id: poke
+      size: 32 32
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      margin-left: -2
+      margin-bottom: 0
+  
+    UIWidget
+      id: level
+      height: 11
+      font: verdana-9px-bold-colored
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -3
+  
+    UIWidget
+      id: sex
+      size: 11 11
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+  
+    UIWidget
+      id: shiny
+      size: 11 11
+      phantom: true
+      anchors.top: sex.top
+      anchors.left: sex.left
+      margin-top: -12
+  
+  Label
+    id: offerItemName
+    size: 300 20
+    anchors.left: offerItem.right
+    anchors.top: offerItem.top
+    margin-top: 45
+    margin-left: -173
+    text-align: center
+    font: damas
+
+  HorizontalList
+    id: offersList
+    size: 350 40
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: close.top
+    margin-bottom: 13
+    margin-top: 50
+
+    ItemToOfferList
+      id: item1
+    ItemToOfferList
+      id: item2
+    ItemToOfferList
+      id: item3
+    ItemToOfferList
+      id: item4
+    ItemToOfferList
+      id: item5
+    ItemToOfferList
+      id: item6
+    ItemToOfferList
+      id: item7
+    ItemToOfferList
+      id: item8
+
+  UIButton
+    id: close
+    size: 99 24
+    image-source: images/buttons/fechar_oferts
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    @onClick: show()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+OfferToMeWindow < MainWindow
+  id: offerToMeWindow
+  anchors.centerIn: parent
+  size: 401 314
+  image-source: images/background_offert_list
+  visible: false
+  @onClose: show()
+  @onEscape: show()
+
+  Item
+    id: offerItem
+    size: 40 40
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: -120
+
+    UIWidget
+      id: poke
+      size: 32 32
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      margin-left: -2
+      margin-bottom: 0
+  
+    UIWidget
+      id: level
+      height: 11
+      font: verdana-9px-bold-colored
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -3
+  
+    UIWidget
+      id: sex
+      size: 11 11
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+  
+    UIWidget
+      id: shiny
+      size: 11 11
+      phantom: true
+      anchors.top: sex.top
+      anchors.left: sex.left
+      margin-top: -12
+
+  Label
+    id: offerItemName
+    size: 300 20
+    anchors.left: offerItem.left
+    anchors.top: offerItem.bottom
+    margin-top: 5
+    margin-left: -135
+    text-align: center
+    font: damas
+
+  VerticalList
+    id: offersList
+    anchors.fill: parent
+    anchors.bottom: close.top
+    margin-bottom: 13
+    margin-top: 70
+    margin-right: 13
+    font: damas
+    vertical-scrollbar: offersListScrollBar
+
+  VerticalScrollBar
+    id: offersListScrollBar
+    width: 13
+    anchors.left: offersList.right
+    anchors.top: offersList.top
+    anchors.bottom: offersList.bottom
+    margin-left: 8
+    margin-top: -15
+    margin-bottom: -15
+    opacity: 0.5
+
+  UIButton
+    id: accept
+    size: 99 24
+    image-source: images/buttons/aceitar
+    anchors.right: refuse.left
+    anchors.bottom: parent.bottom
+    margin-right: 5
+    @onClick: marketAcceptOffer()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: refuse
+    size: 99 24
+    image-source: images/buttons/recusar
+    anchors.right: close.left
+    anchors.bottom: parent.bottom
+    margin-right: 5
+    @onClick: marketRefuseOffer()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: close
+    size: 99 24
+    image-source: images/buttons/fechar_oferts
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: show()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+OfferPanel < MarketPanel
+  id: offerPanel
+
+  UIWidget
+    id: offersforyou
+    size: 168 13
+    image-source: ~
+    font: verdana-11px-rounded
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+
+  UIWidget
+    size: 170 15
+    image-source: images/ofertsforyou
+    font: verdana-11px-rounded
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: offersforyou.top
+    margin-top: 50
+
+  CheckBox
+    id: checkBoxOnlyOffers
+    anchors.right: parent.right 
+    anchors.top: parent.top
+    margin-right: 10
+    visible: false
+  
+  Label
+    id: Onlyoffers
+    !text: tr("Only offers:")
+    anchors.right: checkBoxOnlyOffers.left 
+    anchors.top: prev.top
+    margin-right: 3
+    margin-top: 30
+    font: verdana-11px-rounded
+    visible: false
+
+  MarketTable
+    //background-color: yellow
+    id: panelTable1
+    height: 140
+    anchors.top: Onlyoffers.bottom  
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 1
+    margin: 5
+
+  TableData
+    id: panelTableData1         
+    anchors.bottom: panelTable1.bottom
+    anchors.left: panelTable1.left
+    anchors.right: panelTable1.right
+    vertical-scrollbar: offersTableScrollBar
+    margin-right: 20
+    margin-top: 16
+
+  VerticalScrollBar
+    id: offersTableScrollBar
+    anchors.top: panelTable1.top
+    anchors.bottom: panelTable1.bottom
+    anchors.right: panelTable1.right
+    step: 28
+    margin-top: 8
+    margin-bottom: -12
+    opacity: 0.5
+    pixels-scroll: true
+
+  Label
+    id: youroffers
+    font: verdana-11px-rounded
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: panelTable1.bottom
+    margin-top: 5
+
+  UIWidget
+    size: 170 15
+    image-source: images/youoferts
+    font: verdana-11px-rounded
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: youroffers.top
+    margin-top: 20
+
+  MarketTable
+    id: panelTable2
+    height: 140
+    anchors.top: youroffers.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin: 5
+
+  TableData
+    id: panelTableData2
+    anchors.bottom: panelTable2.bottom
+    anchors.left: panelTable2.left
+    anchors.right: panelTable2.right
+    vertical-scrollbar: offersTableScrollBar2
+    margin-right: 20
+    margin-top: 16
+
+  VerticalScrollBar
+    id: offersTableScrollBar2
+    anchors.top: panelTable2.top
+    anchors.bottom: panelTable2.bottom
+    anchors.right: panelTable2.right
+    step: 28
+    margin-top: 8
+    margin-bottom: -12
+    opacity: 0.5
+    pixels-scroll: true

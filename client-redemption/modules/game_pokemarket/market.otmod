@@ -1,0 +1,12 @@
+Module
+  name: game_pokemarket
+  description: PokeVerse player market (ext opcode 64)
+  author: Ryukiimaru and Walox
+  website: https://www.facebook.com/systemyart
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1000
+  dependencies: [ game_interface ]
+  scripts: [ market ]
+  @onLoad: init()
+  @onUnload: terminate()
