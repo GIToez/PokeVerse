@@ -103,6 +103,7 @@ if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
     need '\[pv-smoke\] MODULE game_pokemoves visible=true moves=[1-9]' "move bar empty for the summoned Pokemon"
     need '\[pv-smoke\] MOVE OK' "using a move from the move bar got no cooldown from the server"
     need '\[pv-smoke\] TASK PROGRESS doing=rattata kills=[1-9]' "defeating a Rattata did not count towards the active task"
+    need '\[pv-smoke\] POKEKILL POPUP OK' "the task kill popup (ext opcode 59) did not show the new kill count"
     need '\[pv-smoke\] MODULE game_pokemonInfo button=true' "Pokemon Info button missing from the main panel"
     need '\[pv-smoke\] INFO OPEN OK visible=true' "Pokemon Info did not open with the server's data"
     if ! grep -aq '\[pv-smoke\] EV SKIPPED' "$LOG"; then

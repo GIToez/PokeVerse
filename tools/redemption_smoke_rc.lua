@@ -626,6 +626,13 @@ local function inspectGame()
             local state = tasks.getState()
             report('TASK PROGRESS doing=%s kills=%s/%s', tostring(state.doing and state.doing.id),
                 tostring(state.doing and state.doing.kills), tostring(state.doing and state.doing.count))
+            if modules.game_pokekill then
+                local kill = modules.game_pokekill.getState()
+                local expected = state.doing and (tostring(state.doing.kills) .. '/' .. tostring(state.doing.count))
+                report('POKEKILL POPUP %s visible=%s panel=%s text=%s %s', kill.visible and kill.last and kill.last.count == expected and
+                    'OK' or 'FAILED', tostring(kill.visible), tostring(kill.last and kill.last.panel),
+                    tostring(kill.last and kill.last.name), tostring(kill.last and kill.last.count))
+            end
             pressTask(TASK_ID, 'cancelButtonWidget')
             scheduleEvent(function()
                 state = tasks.getState()
