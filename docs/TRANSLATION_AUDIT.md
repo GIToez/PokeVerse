@@ -347,6 +347,8 @@ Not in the table, but player-facing: the bilingual broadcasts in `lib/ps/events/
   - The character-list MOTD is now passed through `Localization::t` with the account language. Verified: language 0 gets the English MOTD and language 1 the Portuguese one.
   - The `config.lua` blessing comments are translated.
 - The `/teste` broadcast text is English.
+- Help channel: the three "Portuguese / English" join messages in `onJoinChannel.lua` are now single English strings through `__L`, with `pt_br.loc` entries. Verified with the Redemption client smoke (language 0 gets English). The Wiki Chat greeting stays bilingual because it asks the player to pick a language.
+- Commands: 38 commands have English canonical names, with every old word kept as a hidden deprecated alias (`COMMAND_REFERENCE.md`).
 - Loader fix: `pt_br.loc` is CRLF, and on Linux every Portuguese value used to keep the `\r`, while Windows text-mode streams dropped it. The loader now strips it on every platform.
 
 Everything below is still open.
