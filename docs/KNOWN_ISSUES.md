@@ -16,7 +16,6 @@ These are open issues carried into Phase 3 and issues found during it. Phase 3 f
 | 10 | **The outdated-client message points at `http://www.psoul.net`** (`CLIENT_VERSION_STRING`) | Server branding | Wrong URL shown to outdated clients | No | Rebrand item → "TODO - POKEVERSE URL REQUIRED" | `resources.h` |
 | 11 | `WARNING: attempt to destroy widget 'missionPanel' two times` | Legacy client | Harmless log noise when the Battle Pass window closes | No | Open | Harness `client-errors.log` |
 | 12 | `ERROR: reach max zoom in`, `CAST ERROR ... TPoint<int>` | Legacy client | Harmless startup log noise | No | Open | `SERVER_STARTUP_REPORT.md` rows 12 and 13 |
-
 ## Fixed in Phase 3
 
 | Issue | Fix |
@@ -24,4 +23,5 @@ These are open issues carried into Phase 3 and issues found during it. Phase 3 f
 | The server didn't build with Boost 1.87+ (removed `io_service`, `deadline_timer`, `address_v4::from_string`, `io_context::dispatch`, `to_ulong`) | Ported to `io_context`, `steady_timer`, `make_address_v4`, `boost::asio::post`/`dispatch` and `to_uint`. Deprecated Boost APIs are now compile errors on every platform. |
 | The server didn't build on Windows (`MAXUINT32` macro clash, XP-era `_WIN32_WINNT`, missing Winsock libraries) | `tools.cpp` rename, `_WIN32_WINNT=0x0601`, link `ws2_32`/`mswsock` |
 | The Windows server had no clean shutdown | Console control handler: Ctrl+C or closing the console saves and shuts down |
+| The staged Redemption package shipped upstream's bot (`mods/game_bot`, vBot 4.8), found in the Windows Release artifact of Platforms run 37609336370 | `tools/stage_redemption.sh` drops `game_bot` and its `client_mods` load entry (the `client-redemption/` subtree stays unmodified). `tools/package_client.sh` refuses any `game_bot` directory, and `validate.py regressions` guards both. |
 | Harness builds could be packaged by mistake | Separate variants plus the packaging guard (`CLIENT_VARIANTS.md`) |

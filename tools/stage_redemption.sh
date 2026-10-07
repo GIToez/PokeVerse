@@ -25,5 +25,8 @@ find "$BIN" -maxdepth 1 -name '*.dll' -exec cp {} "$DIST/" \;
 for entry in data modules mods init.lua otclientrc.lua config.ini cacert.pem LICENSE AUTHORS; do
     if [ -e "$SRC/$entry" ]; then cp -a "$SRC/$entry" "$DIST/$entry"; fi
 done
+# Upstream ships a bot (vBot); PokeVerse builds must not.
+rm -rf "$DIST/mods/game_bot"
+sed -i '/^ *- game_bot *$/d' "$DIST/mods/client_mods/mods.otmod"
 echo "$VARIANT" > "$DIST/VARIANT"
 echo "Staged $DIST/$NAME${EXE#otclient} ($VARIANT)"

@@ -30,6 +30,9 @@ done
 if find -L "$DIST" -path '*pv_harness*' -print -quit | grep -q .; then
     fail "test harness module found in $DIST"
 fi
+if find -L "$DIST" -type d -name game_bot -print -quit | grep -q .; then
+    fail "bot module (game_bot) found in $DIST"
+fi
 
 mkdir -p "$(dirname "$OUT")"
 tar -C "$(dirname "$DIST")" -czhf "$OUT" --exclude='*.log' "$(basename "$DIST")"

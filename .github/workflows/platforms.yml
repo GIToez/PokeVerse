@@ -171,11 +171,20 @@ jobs:
           from pathlib import Path
           import zipfile
           out = Path('android/app/src/main/assets/data.zip')
+          # Same exclusion as tools/stage_redemption.sh: no upstream bot in PokeVerse builds.
+          bot = Path('mods/game_bot')
+          loader = Path('mods/client_mods/mods.otmod')
           with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
               for root in ('data', 'mods', 'modules'):
                   for p in sorted(Path(root).rglob('*')):
-                      if p.is_file():
+                      if not p.is_file() or p == bot or bot in p.parents:
+                          continue
+                      if p == loader:
+                          lines = [l for l in p.read_text().splitlines(True) if l.strip() != '- game_bot']
+                          z.writestr(p.as_posix(), ''.join(lines))
+                      else:
                           z.write(p, p.as_posix())
+              assert not any(n.startswith('mods/game_bot/') for n in z.namelist())
               for f in ('init.lua', 'otclientrc.lua', 'cacert.pem', 'config.ini'):
                   if Path(f).exists():
                       z.write(f, f)

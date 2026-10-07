@@ -239,6 +239,10 @@ REGRESSIONS = [
      r"BOT_PROTECTION=OFF is only allowed with BUILD_VARIANT=harness", "harness guard: bot protection off outside harness"),
     ("tools/package_client.sh",
      r"TEST_AUTOMATION_ENABLED", "harness guard: packaging check"),
+    ("tools/package_client.sh",
+     r"-name game_bot", "packaging: Redemption bot module not refused"),
+    ("tools/stage_redemption.sh",
+     r'rm -rf "\$DIST/mods/game_bot"', "staging: Redemption bot module shipped"),
 ]
 
 
