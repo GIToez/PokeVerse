@@ -27,16 +27,17 @@ if [ -f "$PKG/client/data/things/854/Tibia.spr" ]; then
 fi
 if [ -f "$PKG/server/required-dlls.txt" ]; then
     while IFS= read -r dll; do
-        dll="${dll%$'\r'}"; [ -n "$dll" ] || continue
+        dll="${dll//$'\r'/}"; [ -n "$dll" ] || continue
         [ -f "$PKG/server/$dll" ] || bad "server/required-dlls.txt lists $dll, which is missing"
     done < "$PKG/server/required-dlls.txt"
 fi
 for exe in "$PKG"/client/*.exe; do [ "$(basename "$exe")" = PokeVerse.exe ] || bad "extra client executable $(basename "$exe")"; done
 for exe in "$PKG"/server/*.exe; do [ "$(basename "$exe")" = PokeVerseServer.exe ] || bad "extra server executable $(basename "$exe")"; done
-for f in "$PKG"/*.bat "$PKG/README-WINDOWS-TESTING.txt"; do
+for f in "$PKG"/*.bat "$PKG/README-WINDOWS-TESTING.txt" "$PKG/server/required-dlls.txt" "$PKG/database/required-tables.txt"; do
     [ -f "$f" ] || continue
     # Count bytes: grep on Windows strips the CR before matching unless given -U.
     [ "$(tr -cd '\r' < "$f" | wc -c)" -gt 0 ] || bad "$(basename "$f") does not have CRLF line endings"
+    [ "$(tr -cd '\r' < "$f" | wc -c)" -eq "$(tr -cd '\n' < "$f" | wc -c)" ] || bad "$(basename "$f") has stray carriage returns (CR CR LF)"
 done
 
 # Forbidden files

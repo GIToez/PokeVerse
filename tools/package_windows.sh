@@ -17,8 +17,10 @@ TEMPLATES="$ROOT/packaging/windows"
 RUNTIME="$ROOT/server/runtime-data"
 
 fail() { echo "PACKAGING REFUSED: $*" >&2; exit 1; }
-# perl, not sed: MSYS2 tools may drop or add carriage returns in text mode.
-crlf() { perl -pe 's/\r*\n/\r\n/' "$1" > "$2"; }
+# perl in binary mode, not sed: MSYS2 tools and Windows perl may drop or add
+# carriage returns in text mode.
+to_crlf() { perl -e 'binmode STDIN; binmode STDOUT; local $/; $_ = <STDIN>; s/\r*\n/\r\n/g; print'; }
+crlf() { to_crlf < "$1" > "$2"; }
 
 [ -f "$CLIENT/pokeverse-client.exe" ] || fail "no $CLIENT/pokeverse-client.exe (Windows Release client, tools/stage_redemption.sh release)"
 [ "$(cat "$CLIENT/VARIANT" 2>/dev/null)" = production ] || fail "$CLIENT/VARIANT is not production"
@@ -71,7 +73,7 @@ for dll in "$SERVER"/*.dll; do
     cp "$dll" "$OUT/server/"
     basename "$dll" >> "$OUT/server/required-dlls.txt.tmp"
 done
-LC_ALL=C sort "$OUT/server/required-dlls.txt.tmp" | perl -pe 's/\r*\n/\r\n/' > "$OUT/server/required-dlls.txt"
+LC_ALL=C sort "$OUT/server/required-dlls.txt.tmp" | to_crlf > "$OUT/server/required-dlls.txt"
 rm "$OUT/server/required-dlls.txt.tmp"
 tar -C "$RUNTIME" --exclude='*.bak' --exclude='.idea' --exclude='.gitkeep' --exclude='*.log' -cf - data | tar -C "$OUT/server" -xf -
 cp "$RUNTIME/pt_br.loc" "$RUNTIME/json.lua" "$OUT/server/"
@@ -91,7 +93,7 @@ cp "$ROOT/database/seeds/dev_accounts.sql" "$OUT/database/seeds/"
 {
     printf '# Tables the server code uses (tools/check_db_tables.py --print-required).\r\n'
     printf '# Setup and Start-PokeVerse-Test.bat fail when one is missing.\r\n'
-    python3 "$ROOT/tools/check_db_tables.py" --print-required | perl -pe 's/\r*\n/\r\n/'
+    python3 "$ROOT/tools/check_db_tables.py" --print-required | to_crlf
 } > "$OUT/database/required-tables.txt"
 
 # Launchers and instructions (CRLF for cmd.exe and Notepad)
