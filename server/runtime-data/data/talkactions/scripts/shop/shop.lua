@@ -400,95 +400,70 @@ local config = {
 } 
 
 local cfg = config[param]
-	if not cfg then return false end
-	
-	local ItemName = getItemNameById(cfg.add)
-
-	if getPlayerItemCount(cid, 34524) >= cfg.cost then
-		if cfg.style == "vip" then
-			doPlayerAddPremiumDays(cid, cfg.add)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "pokemon" then
-			if cfg.add == "Ditto" then
-				param = string.explode(param, ",")
-				local ball = doCreatePokemonBall(cid, "x-gold", "Ditto", 1, nil, nil, 1, nil, nil, 99999999999, nil, getPokemonRandomSpecialAbility("Ditto"))
-				if (param[4] and getPokemonSkillCategory(param[4])) then
-					setBallEggMove(ball, 2, param[4])
-					doBallUpdateDescription(ball)
-				end
-				local response = {value = "purchased"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-			elseif cfg.add == "Shiny Ditto" then
-				param = string.explode(param, ",")
-				local ball = doCreatePokemonBall(cid, "x-gold", "Shiny Ditto", 1, nil, nil, 1, nil, nil, 99999999999, nil, getPokemonRandomSpecialAbility("Shiny Ditto"))
-				if (param[4] and getPokemonSkillCategory(param[4])) then
-					setBallEggMove(ball, 2, param[4])
-					doBallUpdateDescription(ball)
-				end		
-				local response = {value = "purchased"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-			end
-		elseif cfg.style == "sex" then
-			    doPlayerSetSex(cid, (getPlayerSex(cid) == 0 and 1 or 0))
-				local response = {value = "sexbuy"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "bless" then
-			if cfg.add == "30" then	
-
-				local response = {value = "purchased"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-			elseif cfg.add == "8" then
-
-				local response = {value = "purchased"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-			elseif cfg.add == "3" then
-
-				local response = {value = "purchased"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-			end
-		elseif cfg.style == "city" then
-				doPlayerSetTown(cid, cfg.town)
-				local response = {value = "purchased"}
-				doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "item" then
-			doPlayerAddItem(cid, cfg.add, cfg.count)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "outfit" then
-			doPlayerAddItem(cid, cfg.outfitID, 1)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "addons" then
-			doPlayerAddItem(cid, cfg.AddonID, 1)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "deposito" then
-			doPlayerAddItem(cid, 2557, 1) -- martelin
-			doPlayerAddItem(cid, cfg.DepotID, 1)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "decoracao" then
-			doPlayerAddItem(cid, 2557, 1) -- martelin
-			doPlayerAddItem(cid, cfg.DecoracaoID, 1)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		elseif cfg.style == "cortina" then
-			doPlayerAddItem(cid, cfg.CortinaID, 1)
-			local response = {value = "purchased"}
-			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-		end
-		doPlayerRemoveItem(cid, 34524, cfg.cost)
-		doSendMagicEffect(getCreaturePosition(cid), 1143)
-		doSendShopRent(cid)
-	else
-	doSendMagicEffect(getCreaturePosition(cid), 1142)
-    local response = {value = "nodiamond"}
-    doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
-	
-	doSendShopRent(cid)
+	if not cfg then
+		SHOP.log(cid, param, 0, "unknown offer")
+		doSendPlayerExtendedOpcode(cid, 27, json.encode({value = "noactive"}))
 		return true
 	end
-	
-return true
+
+	local function reply(value)
+		doSendPlayerExtendedOpcode(cid, 27, json.encode({value = value}))
+	end
+
+	-- Offers whose reward was never implemented are refused instead of taking diamonds for nothing.
+	local grant
+	if cfg.style == "vip" then
+		grant = function() doPlayerAddPremiumDays(cid, cfg.add) return "purchased" end
+	elseif cfg.style == "pokemon" then
+		grant = function()
+			local ball = doCreatePokemonBall(cid, "x-gold", cfg.add, 1, nil, nil, 1, nil, nil, 99999999999, nil, getPokemonRandomSpecialAbility(cfg.add))
+			return ball and "purchased"
+		end
+	elseif cfg.style == "sex" then
+		grant = function() doPlayerSetSex(cid, (getPlayerSex(cid) == 0 and 1 or 0)) return "sexbuy" end
+	elseif cfg.style == "city" then
+		grant = function() doPlayerSetTown(cid, cfg.town) return "purchased" end
+	elseif cfg.style == "item" then
+		grant = function() return SHOP.addItems(cid, {{cfg.add, cfg.count}}) and "purchased" end
+	elseif cfg.style == "outfit" or cfg.style == "addons" or cfg.style == "cortina" then
+		local itemid = cfg.outfitID or cfg.AddonID or cfg.CortinaID
+		grant = function() return SHOP.addItems(cid, {{itemid, 1}}) and "purchased" end
+	elseif cfg.style == "deposito" or cfg.style == "decoracao" then
+		grant = function() return SHOP.addItems(cid, {{2557, 1}, {cfg.DepotID or cfg.DecoracaoID, 1}}) and "purchased" end -- 2557: hammer
+	end
+
+	if not grant then
+		SHOP.log(cid, param, cfg.cost, "unavailable")
+		reply("noactive")
+		return true
+	end
+
+	if SHOP.throttle(cid) then
+		SHOP.log(cid, param, cfg.cost, "throttled")
+		return true
+	end
+
+	if not SHOP.debit(cid, cfg.cost) then
+		SHOP.log(cid, param, cfg.cost, "insufficient")
+		doSendMagicEffect(getCreaturePosition(cid), 1142)
+		reply("nodiamond")
+		doSendShopRent(cid)
+		return true
+	end
+
+	local result = grant()
+	if not result then
+		SHOP.refund(cid, cfg.cost)
+		SHOP.log(cid, param, cfg.cost, "refunded")
+		doPlayerSendCancel(cid, __L "Your purchase could not be delivered (no room?). Your diamonds were refunded.")
+		reply("noactive")
+		doSendShopRent(cid)
+		return true
+	end
+
+	SHOP.log(cid, param, cfg.cost, "purchased")
+	reply(result)
+	doSendMagicEffect(getCreaturePosition(cid), 1143)
+	doSendShopRent(cid)
+	return true
 end

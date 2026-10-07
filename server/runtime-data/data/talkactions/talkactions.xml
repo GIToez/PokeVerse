@@ -24,6 +24,7 @@
 	<talkaction words="/shopbuy" event="script" value="shop/shop.lua"/>	
 	<talkaction words="/shopdiamond" event="script" value="shop/shop.lua" hidden="yes"/> <!-- deprecated alias of /shopbuy -->
 	<talkaction words="/shopopen" event="script" value="shop/open.lua"/>	
+	<talkaction words="/shoppokecoin" event="script" value="shop/pokecoin.lua" hidden="yes"/> <!-- PokeCoin prices exist only in the client; refused -->
 	<talkaction words="/ShopOpen" event="script" value="shop/open.lua" hidden="yes"/> <!-- deprecated alias of /shopopen -->
 	<talkaction words="/dailyreward" event="script" value="dailyopen.lua"/>	
 	<talkaction words="/dailysigninopen" event="script" value="dailyopen.lua" hidden="yes"/> <!-- deprecated alias of /dailyreward -->

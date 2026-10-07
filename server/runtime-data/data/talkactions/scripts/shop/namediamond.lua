@@ -24,6 +24,9 @@ function onSay(cid, words, param, channel)
  
 	if(param == '') then
 		return doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Command param required.")
+	elseif SHOP.throttle(cid) then
+		SHOP.log(cid, "rename", config.item.count, "throttled")
+		return true
 	elseif(getPlayerGUIDByName(t[1], true) ~= nil) then -- nome ja em uso
 		local response = {value = "NameComand",text = {str = "notifi/jaemuso",},}
 		doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
@@ -104,7 +107,13 @@ function onSay(cid, words, param, channel)
 	local oldName, guid = getCreatureName(cid), getPlayerGUID(cid)
 	t[1] = paramTemp
 
-	doPlayerRemoveItem(cid, config.item.Id, config.item.count)
+	if not SHOP.debit(cid, config.item.count) then
+		SHOP.log(cid, "rename", config.item.count, "insufficient")
+		doSendPlayerExtendedOpcode(cid, 27, json.encode({value = "NameComand", text = {str = "error/nodiamond"}}))
+		doSendShopRent(cid)
+		return true
+	end
+	SHOP.log(cid, "rename " .. oldName .. " -> " .. t[1], config.item.count, "purchased")
 	if(pcall(doPlayerChangeName, guid, oldName, t[1]) ~= true) then
 		db.executeQuery("INSERT INTO `player_namelocks` (`player_id`, `name`, `new_name`, `date`) VALUES (" .. guid .. ", " .. db.escapeString(oldName) .. ", " .. db.escapeString(t[1]) .. ", " .. os.time() .. ");")
 		db.executeQuery("UPDATE `players` SET `name` = " .. db.escapeString(t[1]) .. " WHERE `id` = " .. guid .. "" .. limit .. "")

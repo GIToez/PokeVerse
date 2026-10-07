@@ -114,7 +114,11 @@ local config = {
 }
 
 	local cfg = config[param]
-	if not cfg then return false end
+	if not cfg then return true end
+	if SHOP.throttle(cid) then
+		SHOP.log(cid, param, cfg.cost, "throttled")
+		return true
+	end
 	
 	local ItemName = getItemNameById(cfg.add)
 	
@@ -134,6 +138,13 @@ local config = {
 			return true
 		end
 	
+		if not SHOP.debit(cid, cfg.cost) then
+			SHOP.log(cid, param, cfg.cost, "insufficient")
+			doSendPlayerExtendedOpcode(cid, 27, json.encode({value = "nodiamond"}))
+			doSendShopRent(cid)
+			return true
+		end
+
 		if mastery then
             doPlayerMasteryReset(cid, mastery)
         end
@@ -157,7 +168,7 @@ local config = {
 			doSendPlayerExtendedOpcode(cid, 27, json.encode(response))
 		end
 
-		doPlayerRemoveItem(cid, 34524, cfg.cost)
+		SHOP.log(cid, param, cfg.cost, "purchased")
 		doSendMagicEffect(getCreaturePosition(cid), 1143)
 		doSendShopRent(cid)
 	else
