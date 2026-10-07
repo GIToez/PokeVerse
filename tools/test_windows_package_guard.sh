@@ -19,7 +19,8 @@ printf 'MZ fake server' > "$BASE/server/PokeVerseServer.exe"
 echo dll > "$BASE/server/lua51.dll"
 printf 'lua51.dll\r\n' > "$BASE/server/required-dlls.txt"
 for f in config.example.lua pt_br.loc data/world/map.otbm data/items/items.otb; do echo x > "$BASE/server/$f"; done
-for f in schema/pokeaventuras.sql migrations/001.sql seeds/dev_accounts.sql required-tables.txt; do echo x > "$BASE/database/$f"; done
+for f in schema/pokeaventuras.sql migrations/001.sql seeds/dev_accounts.sql; do echo x > "$BASE/database/$f"; done
+printf 'accounts\r\n' > "$BASE/database/required-tables.txt"
 for f in "$ROOT"/packaging/windows/*.bat "$ROOT/packaging/windows/README-WINDOWS-TESTING.txt"; do
     sed 's/\r*$/\r/' "$f" > "$BASE/$(basename "$f")"
 done
