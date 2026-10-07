@@ -90,7 +90,7 @@ function (protocol, opcode, buffer)
          end
          return true
       end                          
-      loadstring("__newBuffer = ".. buffer)()    
+      __newBuffer = table.fromLiteral(buffer)    
       if __newBuffer["[unlockRank]"] then 
          if not TaskWidget.Widgets.unlockRankWindow then
             TaskWidget.Widgets.unlockRankWindow = g_ui.createWidget('UnlockTaskWindow', rootWidget)  

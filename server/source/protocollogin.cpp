@@ -100,6 +100,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	enableXTEAEncryption();
 	setXTEAKey(key);
 
+#ifdef __ACCOUNT_CREATION__
 	if(version == 0xFC)
 	{
 		std::string name = msg.GetString(), password = msg.GetString(), characterName = msg.GetString();
@@ -296,6 +297,15 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	        	
 		return false;
     }
+#else
+	// In-client account (0xFC) and character (0xFD) creation are disabled: 0xFD needs no
+	// password and the staff-name check never matches. Use seeded accounts instead.
+	if(version == 0xFC || version == 0xFD)
+	{
+		disconnectClient(0x0A, "Account creation is disabled on this server.");
+		return false;
+	}
+#endif
 
 	std::string name = msg.GetString(), password = msg.GetString();
 	if(name.empty())

@@ -152,7 +152,7 @@ end
 function getPass(protocol, opcode, buffer)
   -- print(protocol, opcode, buffer)
   -- local receive = json.decode(buffer)
-  local receive = loadstring("return ".. buffer)()
+  local receive = table.fromLiteral(buffer)
   if receive[3] == 'Pass' then
     HasPremium = Protocol_read(receive)
     PassLevel = Protocol_read(receive)

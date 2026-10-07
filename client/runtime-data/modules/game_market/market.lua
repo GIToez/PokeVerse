@@ -499,7 +499,7 @@ function onMarketMessage(protocol, opcode, buffer)
   -- print("recebeu")
   local player = g_game.getLocalPlayer()
   if not player then return end
-  local receive = loadstring("return ".. buffer)()
+  local receive = table.fromLiteral(buffer)
   local protocolGame = g_game.getProtocolGame()
   if receive[3] == "refreshall" then
     -- print("recebeu: refreshall")

@@ -87,7 +87,7 @@ end
 function parseDailyReward(protocol, opcode, buffer)
   local player = g_game.getLocalPlayer()
   if not player then return end
-  local receive = loadstring("return ".. buffer)()
+  local receive = table.fromLiteral(buffer)
   if receive[3] == "rewards" then
     local tab = Protocol_read(receive)
 	-- Calendar:getChildById("points"):setText(tab.points) -- Quantidade de Pontos

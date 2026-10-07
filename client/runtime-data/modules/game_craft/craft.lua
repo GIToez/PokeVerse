@@ -188,7 +188,7 @@ local RANKS = {["F"] = 5, ["E"] = 5, ["D"] = 4, ["C"] = 3, ["B"] = 2, ["A"] = 1,
 function getCraft(protocol, opcode, buffer)
   local player = g_game.getLocalPlayer()
   if not player then return end
-  local receive = loadstring("return ".. buffer)()
+  local receive = table.fromLiteral(buffer)
   if receive[3] == 'work' then
     local workName = Protocol_read(receive)
     WorkNivel = tonumber(Protocol_read(receive))

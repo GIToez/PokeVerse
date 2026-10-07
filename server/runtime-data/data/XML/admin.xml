@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<otadmin enabled="1">
-	<security onlylocalhost="0" maxconnections="2" loginrequired="1" loginpassword="CHANGE_ME"/>
+<!-- Remote admin is not compiled in (no __REMOTE_CONTROL__) and stays disabled here. -->
+<otadmin enabled="0">
+	<security onlylocalhost="1" maxconnections="1" loginrequired="1" loginpassword=""/>
 	<encryption required="0">
 		<!-- key type="RSA1024XTEA" file="rsakey.private"/ -->
 	</encryption>
