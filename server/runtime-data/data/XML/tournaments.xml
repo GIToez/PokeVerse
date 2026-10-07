@@ -151,24 +151,25 @@
 </tournaments>
 <!--
 name: Tournament name
-capacity: Capacidade dos jogadores, deve ser par e superior a 0 
-interval: Semanas para o próximo torneio 
-hour: Hora 
-day: Dia da semana (0 = domingo ... 6 = sábado 
-minlevel: Minimum pokemon level
-maxlevel: Maximum pokemon level
-inscriptionPrice: O preço para entrar 
-gainScore: Os jogadores que ganham batalhas receberão esta quantidade de pontuação do torneio
-habilitado: se está funcionando ou não 
+capacity: Number of players; must be even and greater than 0
+interval: Weeks until the next tournament
+hour: Hour of the day it starts
+days: Days of the week, separated by ';' (0 = Sunday ... 6 = Saturday); day: a single day
+minLevel: Minimum Pokemon level
+maxLevel: Maximum Pokemon level
+minTrainerLevel: Minimum trainer level (optional)
+inscriptionPrice: Entry price
+gainScore: Tournament score a player gets for each battle won
+enabled: 1 if the tournament runs, 0 if not
 
-securePosition: Onde os jogadores vão esperar até o início do torneio. 
-exitPosition: Onde os jogadores serão telepotados após vencer / perder uma batalha no torneio. 
+securePosition: Where players wait until the tournament starts.
+exitPosition: Where players are teleported after winning or losing a tournament battle.
 
-[Recompensa]
-itemid: ID do item
-contagem: contagem
-motivo: Quando receberá - 0 (vencer a batalha), 1 (derrotar a batalha), 2 (vencer o torneio)
-único: se o item é único ou não 
+[reward]
+itemid: Item ID
+count: Item count
+reason: When it is given - 0 (battle won), 1 (battle lost), 2 (tournament won)
+unique: 1 if the item is unique, 0 if not
 
 
 
