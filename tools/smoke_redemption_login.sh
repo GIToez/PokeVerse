@@ -16,6 +16,8 @@
 #      Every character with a Pokedex must get the status list at login, open the Pokedex window
 #      from the main panel and see a known entry's details (PV_DEX_HOLD_MS keeps it open longer,
 #      PV_DEX_TAB=1|2|3 shows the Information, Moves or Types tab).
+#      PV_MARKET=buyer|seller with PV_MARKET_SEED_BUY and PV_MARKET_SEED_OFFER runs the two-account
+#      market test; tools/smoke_market.sh sets these and checks the database.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -65,7 +67,7 @@ screenshot() {
 # Windows, where a GUI executable's stdout may not reach the pipe.
 client_log() { cat "$RUN/stdout.log" "$RUN"/*.log 2>/dev/null | grep -a '' || true; }
 
-( cd "$RUN" && "./$EXE" ) > "$RUN/stdout.log" 2>&1 &
+( cd "$RUN" && exec "./$EXE" ) > "$RUN/stdout.log" 2>&1 &
 CLIENT_PID=$!
 shot_taken=0
 deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))
@@ -163,6 +165,15 @@ if [ "${PV_ACCOUNT:-player}" = admin ]; then
     need '\[pv-smoke\] SHOP REPEAT OK' "a purchase after the cooldown was refused"
 else
     need '\[pv-smoke\] SHOP INSUFFICIENT REFUSED' "buying without enough diamonds was not refused"
+fi
+need '\[pv-smoke\] MODULE game_pokemarket loaded=true' "Market module not loaded"
+need '\[pv-smoke\] MARKET CLOSE OK' "the market window did not close"
+if [ -z "${PV_MARKET:-}" ]; then
+    if [ "${PV_ACCOUNT:-player}" = admin ]; then
+        need '\[pv-smoke\] MARKET OPEN OK' "/marketopen did not open the market"
+    else
+        need '\[pv-smoke\] MARKET AWAY REFUSED' "the market opened for a player away from any market"
+    fi
 fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
