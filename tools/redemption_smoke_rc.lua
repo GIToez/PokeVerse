@@ -61,10 +61,12 @@ local function inspectGame()
     end
 
     local pokebar = modules.game_pokebar and modules.game_pokebar.pokemonBar
+    local firstPortrait
     if pokebar then
         local portraits = {}
         for _, child in ipairs(pokebar:getChildren()) do
             if child:getStyleName() == 'BeltItem' then
+                firstPortrait = firstPortrait or child
                 table.insert(portraits, child:getId() .. '=' .. child:getChildById('PokeName'):getText())
             end
         end
@@ -72,6 +74,19 @@ local function inspectGame()
             table.concat(portraits, ','))
     else
         report('MODULE game_pokebar missing')
+    end
+
+    local function findSummon()
+        for _, tile in ipairs(g_map.getTiles(player:getPosition().z)) do
+            for _, creature in ipairs(tile:getCreatures()) do
+                if creature:isLocalPlayerSummon() then
+                    return creature
+                end
+            end
+        end
+    end
+    local function portraitHealth(portrait)
+        return portrait:getChildById(portrait:getId() .. 'label'):getText()
     end
 
     local directions = { South, North, East, West }
@@ -96,7 +111,40 @@ local function inspectGame()
             end
         end, 1500)
     end
-    tryWalk()
+
+    if not firstPortrait then
+        tryWalk()
+        return
+    end
+    -- Click portraits the way a player does; the module sends /cp <slot>. With a Pokemon already out,
+    -- the server recalls it and summons the clicked one 1.5 s later.
+    local function clickAndReport(portrait, label, nextStep)
+        local id = portrait:getId()
+        local name = portrait:getChildById('PokeName'):getText()
+        portrait:onMouseRelease(portrait:getPosition(), MouseLeftButton)
+        scheduleEvent(function()
+            local summon = findSummon()
+            local current = pokebar:getChildById(id)
+            local ok = summon and summon:getName() == name
+            report('%s %s creature=%s level=%d health=%s', label, ok and 'OK' or 'FAILED', summon and summon:getName() or '-',
+                summon and summon:getPokeLevel() or 0, current and portraitHealth(current) or '-')
+            nextStep()
+        end, 3000)
+    end
+    local secondPortrait
+    for _, child in ipairs(pokebar:getChildren()) do
+        if child:getStyleName() == 'BeltItem' and child ~= firstPortrait then
+            secondPortrait = child
+            break
+        end
+    end
+    clickAndReport(firstPortrait, 'SUMMON', function()
+        if secondPortrait then
+            clickAndReport(secondPortrait, 'SWITCH', tryWalk)
+        else
+            tryWalk()
+        end
+    end)
 end
 
 connect(g_game, {

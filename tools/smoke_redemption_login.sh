@@ -6,8 +6,10 @@
 # Usage: tools/smoke_redemption_login.sh [LOGFILE]
 # Env: PV_ACCOUNT PV_PASSWORD PV_CHARACTER (default player/player/Trainer), PV_HOST, PV_LOGIN_PORT,
 #      PV_TIMEOUT_MS, DIST (default dist/client-redemption), DISPLAY (Linux; Xvfb is started if
-#      the display is not running), SCREENSHOT (PNG path, captured once the map has loaded),
-#      PV_EXPECT_POKEBAR=1 (the character carries Pokemon, so the bar must show a portrait).
+#      the display is not running), SCREENSHOT (PNG path, captured once the map has loaded, or at
+#      the first smoke line starting with SCREENSHOT_AT),
+#      PV_EXPECT_POKEBAR=1 (the character carries Pokemon: the bar must show a portrait, and clicking it
+#      must summon that Pokemon).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -62,7 +64,7 @@ CLIENT_PID=$!
 shot_taken=0
 deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))
 while kill -0 "$CLIENT_PID" 2>/dev/null && [ "$SECONDS" -lt "$deadline" ]; do
-    if [ -n "${SCREENSHOT:-}" ] && [ "$shot_taken" = 0 ] && client_log | grep -aq '\[pv-smoke\] MAP tiles='; then
+    if [ -n "${SCREENSHOT:-}" ] && [ "$shot_taken" = 0 ] && client_log | grep -aq "\[pv-smoke\] ${SCREENSHOT_AT:-MAP tiles=}"; then
         sleep 0.3; screenshot "$SCREENSHOT"; shot_taken=1
     fi
     client_log | grep -aq '\[pv-smoke\] EXIT ' && sleep 2 && break
@@ -85,6 +87,10 @@ need '\[pv-smoke\] MAP tiles=[1-9]' "no map tiles received"
 need '\[pv-smoke\] MODULE game_pokebar visible=' "game_pokebar module not loaded"
 if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
     need '\[pv-smoke\] MODULE game_pokebar visible=true portraits=[1-9]' "Pokemon bar shows no portrait"
+    need '\[pv-smoke\] SUMMON OK' "clicking a Pokemon bar portrait did not summon that Pokemon"
+    if grep -aq '\[pv-smoke\] SWITCH ' "$LOG"; then
+        need '\[pv-smoke\] SWITCH OK' "clicking a second portrait did not switch the summoned Pokemon"
+    fi
 fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
