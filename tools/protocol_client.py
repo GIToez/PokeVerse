@@ -15,6 +15,7 @@ Environment: PV_HOST (127.0.0.1), PV_LOGIN_PORT (7564), PV_GAME_PORT (8548).
 import argparse
 import os
 import random
+import select
 import socket
 import struct
 import sys
@@ -207,20 +208,19 @@ class GameSession:
     def say(self, text):
         self.conn.send(struct.pack("<BB", 0x96, SPEAK_SAY) + pstr(text))
 
-    def pump(self, seconds):
-        """Read and discard server packets, answering pings, for `seconds`."""
+    def pump(self, seconds, on_text=None):
+        """Read server packets for `seconds`, answering pings. The text of packets that start
+        with a text message (0xB4) is passed to on_text."""
         end = time.time() + seconds
-        self.conn.sock.settimeout(0.5)
-        try:
-            while time.time() < end:
-                try:
-                    packet = self.conn.recv()
-                except socket.timeout:
-                    continue
-                if packet[:1] == b"\x1E":
-                    self.conn.send(b"\x1E")
-        finally:
-            self.conn.sock.settimeout(15)
+        while time.time() < end:
+            ready, _, _ = select.select([self.conn.sock], [], [], min(0.5, max(0, end - time.time())))
+            if not ready:
+                continue
+            packet = self.conn.recv()
+            if packet[:1] == b"\x1E":
+                self.conn.send(b"\x1E")
+            elif on_text and packet[:1] == b"\xB4" and len(packet) > 3:
+                on_text(Reader(packet[2:]).string())
 
     def logout(self):
         self.conn.send(b"\x14")
@@ -258,14 +258,15 @@ def main():
             return 0
         session = GameSession(host, int(os.environ.get("PV_GAME_PORT", 8548)),
                               args.account, args.password, args.character)
-        print(f"ENTERED {args.character} (player id {session.player_id})")
+        print(f"ENTERED {args.character} (player id {session.player_id})", flush=True)
+        show = lambda text: print("TEXT " + text.replace("\n", " "), flush=True)
         session.pump(1)
         for text in args.say:
             session.say(text)
-            session.pump(1)
-        session.pump(args.stay)
+            session.pump(1, show)
+        session.pump(args.stay, show)
         session.logout()
-        print(f"LOGGED OUT {args.character}")
+        print(f"LOGGED OUT {args.character}", flush=True)
         return 0
     except (OSError, ValueError, PermissionError) as exc:
         print(f"FAIL: {type(exc).__name__}: {exc}")

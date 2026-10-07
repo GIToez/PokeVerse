@@ -62,9 +62,16 @@ pass "game server: player login and logout"
 
 before=$(apples)
 $PV enter admin admin "GM Admin" --say "/i $APPLE,2" --stay 2 || fail "GM Admin could not enter the game"
-sleep 1
-after=$(apples)
-[ "$after" -eq $((before + 2)) ] || fail "GM /i: expected $((before + 2)) apples saved, database has $after"
+for _ in $(seq 1 10); do
+    after=$(apples)
+    [ "$after" -eq $((before + 2)) ] && break
+    sleep 1
+done
+if [ "$after" -ne $((before + 2)) ]; then
+    sql "SELECT i.pid, i.sid, i.itemtype, i.count FROM player_items i JOIN players p ON p.id = i.player_id
+         WHERE p.name = 'GM Admin'" >&2
+    fail "GM /i: expected $((before + 2)) apples saved, database has $after"
+fi
 pass "admin command /i, and save on logout ($before -> $after apples)"
 
 shutdown_server "$LOGDIR/server-1.log"
