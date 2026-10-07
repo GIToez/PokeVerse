@@ -183,6 +183,89 @@ local function inspectGame()
         end, 1000)
     end
 
+    -- Pokemon Info (ext opcode 63): the main panel button asks the server (/pokemoninfo), which sends the
+    -- data and opens the window. Spend one EV point, try a forged negative upgrade, then check that the
+    -- values survive a recall and a new summon.
+    local function infoSummary(info)
+        local evs, extra = info.evs or {}, info.extra or {}
+        return string.format('name=%s level=%s evhp=%s points=%s ivhp=%s basehp=%s friendship=%s boost=%s held=%s ability=%s',
+            tostring(info.main and info.main.name), tostring(info.main and info.main.level), tostring(evs.hp),
+            tostring(evs.points), tostring(info.ivs and info.ivs.hp), tostring(info.base and info.base.hp),
+            tostring(info.friendship and info.friendship.level), tostring(extra.boost), tostring(extra.heldItem),
+            tostring(extra.ability))
+    end
+
+    local function pokemonInfoTests(portrait, nextStep)
+        local info = modules.game_pokemonInfo
+        if not info then
+            report('MODULE game_pokemonInfo missing')
+            return nextStep()
+        end
+        local button = modules.game_mainpanel.getButton('pokemonInfoButton')
+        report('MODULE game_pokemonInfo button=%s', tostring(button ~= nil))
+        local function openInfo(label, after)
+            info.LastInfo = nil
+            if info.isVisible() then info.hide() end
+            info.toggle()
+            scheduleEvent(function()
+                local last = info.LastInfo
+                report('INFO %s %s visible=%s %s', label, last and last.main and 'OK' or 'FAILED',
+                    tostring(info.isVisible()), last and infoSummary(last) or '-')
+                after(last)
+            end, 1500)
+        end
+        openInfo('OPEN', function(before)
+            if not before or not before.evs then
+                return nextStep()
+            end
+            local hp, points = before.evs.hp, before.evs.points
+            if points < 1 or hp >= 250 then
+                report('EV SKIPPED points=%d hp=%d', points, hp)
+                return nextStep()
+            end
+            info.togglePanel('ivev')
+            info.addToUpgradeInfo('ivev', 'hp', 1)
+            info.doUpgradeInfo('ivev')
+            scheduleEvent(function()
+                local after = info.LastInfo
+                local ok = after and after.evs and after.evs.hp == hp + 1 and after.evs.points == points - 1
+                report('EV ALLOCATE %s hp=%d->%s points=%d->%s', ok and 'OK' or 'FAILED', hp,
+                    tostring(after and after.evs and after.evs.hp), points, tostring(after and after.evs and after.evs.points))
+                info.sendUpgrade('ivev', { { id = 'hp', value = -50 }, { id = 'atk', value = 200 }, { id = 'atk', value = 200 } })
+                scheduleEvent(function()
+                    openInfo('FORGED', function(forged)
+                        local same = forged and forged.evs and forged.evs.hp == hp + 1 and forged.evs.points == points - 1 and
+                            forged.evs.atk == before.evs.atk
+                        report('EV FORGED %s hp=%s atk=%s points=%s', same and 'REJECTED' or (forged and forged.evs and 'ACCEPTED' or 'NODATA'),
+                            tostring(forged and forged.evs and forged.evs.hp), tostring(forged and forged.evs and forged.evs.atk),
+                            tostring(forged and forged.evs and forged.evs.points))
+                        info.hide()
+                        -- Clicking the summoned Pokemon's portrait recalls it, and the server summons it
+                        -- again about 1.5 s later.
+                        portrait = pokebar:getChildById(portrait:getId()) or portrait
+                        local name = portrait:getChildById('PokeName'):getText()
+                        portrait:onMouseRelease(portrait:getPosition(), MouseLeftButton)
+                        scheduleEvent(function()
+                            report('RECALL %s', findSummon() and 'FAILED' or 'OK')
+                        end, 700)
+                        scheduleEvent(function()
+                            local summon = findSummon()
+                            report('RESUMMON %s creature=%s', summon and summon:getName() == name and 'OK' or 'FAILED',
+                                summon and summon:getName() or '-')
+                            openInfo('RESUMMON', function(again)
+                                local kept = again and again.evs and again.evs.hp == hp + 1 and again.evs.points == points - 1
+                                report('EV PERSIST %s hp=%s points=%s', kept and 'OK' or 'FAILED',
+                                    tostring(again and again.evs and again.evs.hp), tostring(again and again.evs and again.evs.points))
+                                info.hide()
+                                nextStep()
+                            end)
+                        end, 3500)
+                    end)
+                end, 1000)
+            end, 1500)
+        end)
+    end
+
     local function pokemonTests(nextStep)
         if not ready[1] then
             return nextStep()
@@ -193,10 +276,13 @@ local function inspectGame()
         scheduleEvent(function()
             report('TEST POSITION %s', posString(player:getPosition()))
             clickPortrait(ready[1], 'SUMMON', function()
+                local summoned = ready[2] or ready[1]
+                -- Pokemon Info runs before the move test, which spawns a hostile Pokemon.
+                local afterSwitch = function() pokemonInfoTests(summoned, function() useMove(nextStep) end) end
                 if ready[2] then
-                    clickPortrait(ready[2], 'SWITCH', function() useMove(nextStep) end)
+                    clickPortrait(ready[2], 'SWITCH', afterSwitch)
                 else
-                    useMove(nextStep)
+                    afterSwitch()
                 end
             end)
         end, 1500)

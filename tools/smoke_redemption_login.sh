@@ -11,7 +11,8 @@
 #      the first smoke line starting with SCREENSHOT_AT),
 #      PV_EXPECT_POKEBAR=1 (a GM with Pokemon: the bar must show a portrait, clicking it must summon
 #      that Pokemon, its moves must fill the move bar, and a move used on a spawned Rattata must
-#      come back with a cooldown).
+#      come back with a cooldown; Pokemon Info must open, spend one EV point, refuse a forged
+#      upgrade and keep the EVs after recall and summon).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist/client-redemption}"
@@ -20,7 +21,7 @@ EXE=$(cd "$DIST" && ls pokeverse-client pokeverse-client.exe pokeverse-client-de
 [ -n "$EXE" ] || { echo "no client in $DIST; run tools/stage_redemption.sh" >&2; exit 1; }
 [ -f "$DIST/data/things/854/Tibia.spr" ] || { echo "no 854 assets in $DIST (git lfs pull, then restage)" >&2; exit 1; }
 case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) WINDOWS=1 ;; *) WINDOWS=0 ;; esac
-export PV_TIMEOUT_MS="${PV_TIMEOUT_MS:-90000}"
+export PV_TIMEOUT_MS="${PV_TIMEOUT_MS:-120000}"
 
 RUN=$(mktemp -d "${TMPDIR:-/tmp}/redemption-smoke.XXXXXX")
 cleanup() {
@@ -95,6 +96,15 @@ if [ "${PV_EXPECT_POKEBAR:-0}" = 1 ]; then
     fi
     need '\[pv-smoke\] MODULE game_pokemoves visible=true moves=[1-9]' "move bar empty for the summoned Pokemon"
     need '\[pv-smoke\] MOVE OK' "using a move from the move bar got no cooldown from the server"
+    need '\[pv-smoke\] MODULE game_pokemonInfo button=true' "Pokemon Info button missing from the main panel"
+    need '\[pv-smoke\] INFO OPEN OK visible=true' "Pokemon Info did not open with the server's data"
+    if ! grep -aq '\[pv-smoke\] EV SKIPPED' "$LOG"; then
+        need '\[pv-smoke\] EV ALLOCATE OK' "spending an EV point was not applied by the server"
+        need '\[pv-smoke\] EV FORGED REJECTED' "the server accepted a forged EV upgrade"
+        need '\[pv-smoke\] RECALL OK' "clicking the summoned Pokemon's portrait did not recall it"
+        need '\[pv-smoke\] RESUMMON OK' "the recalled Pokemon was not summoned again"
+        need '\[pv-smoke\] EV PERSIST OK' "spent EVs were lost after recall and summon"
+    fi
 fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
