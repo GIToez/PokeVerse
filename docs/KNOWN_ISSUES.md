@@ -37,6 +37,11 @@ These are open issues carried into Phase 3 and issues found during it. Phase 3 f
 | The task kill count was sent as "1 de 40" (Portuguese) | Sent as "1/40" |
 | The smoke harness's `timeout` killed the wrapper shell and left the client running | The client is started with `exec` |
 | The Windows package guard self-test wrote `required-tables.txt` with LF, which the validator now refuses | Written with CRLF |
+| Any login with a language byte of 3 or more was stored in `accounts.lang_id`, and the next translated message dereferenced a missing table: a crash any client could trigger (PokeNation BUG-08) | The login byte is ignored when out of range, stored values fall back to English, `Localization::t` uses `find`, and `setPlayerLanguage` refuses unknown ids. `tools/protocol_smoke.sh` checks byte 99 and a stored `lang_id = 7` |
+| The game server skipped the echoed login challenge (`SkipBytes(6)`), so any value was accepted (PokeNation BUG-68) | The challenge is kept per connection and compared; a mismatch is logged and closes the connection. The bytes on the wire are unchanged; the Redemption, legacy and Python clients still log in. `tools/protocol_smoke.sh` checks a forged echo |
+| The Windows smoke reused the real `%APPDATA%` settings folder across runs | Each run passes `--user-dir` with an empty folder of its own and logs the client's exit status |
+
+PokeNation BUG-75 (the client assert `delay >= 0` after a jump move) does not apply to PokeVerse. The Redemption client computes the jump with `std::max<double>`, and 300 jumps on its Debug build (asserts active) did not trip it. The legacy client has the `std::max<int>` form, but its RelWithDebInfo build gets `-DNDEBUG` from CMake's default flags, so the assert is compiled out and a negative delay runs at the next poll, as in the original release.
 
 ## Fixed in Phase 3
 

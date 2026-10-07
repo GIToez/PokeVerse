@@ -160,7 +160,7 @@ Two facts affect many rows:
 | Doll case | APPEARS IMPLEMENTED `sys/041`, `cl/game_dollcase` | APPEARS IMPLEMENTED same | Yes | — | NOT TESTED | No | |
 | Clothes / addons | APPEARS IMPLEMENTED `ev/actions/clotheShowcase.lua`, `clothesKit.lua`; 80 outfits | APPEARS IMPLEMENTED; 209 outfits in `XML/outfits.xml`, clothes shop items 34601–34730 (`actions/scripts/shop/roupas_loja.lua`) | Modified | Many new outfits and a clothes shop | NOT TESTED | No | Better in Verse (content) |
 | Statistics / datalog | CONFIRMED WORKING (passive, §2.16) `sys/025`, `src/iodatalog.cpp` | APPEARS IMPLEMENTED same | Yes | — | NOT TESTED | No | `datalog_ping` is missing from Verse's dump (Nation's schema has it) |
-| Localization | CONFIRMED WORKING (S-02…S-05, C-05; BUG-08/09 fixed) `src/localization.cpp`, ext. opcode 1 | PARTIAL: login language byte unvalidated (`source/protocollogin.cpp:86-89`, BUG-08 unfixed); opcode 1 has no handler; `/lang` works | Yes | — | NOT TESTED | No | Better in Nation |
+| Localization | CONFIRMED WORKING (S-02…S-05, C-05; BUG-08/09 fixed) `src/localization.cpp`, ext. opcode 1 | PARTIAL: login language byte validated since Phase 3C (BUG-08); opcode 1 has no handler; `/lang` works | Yes | — | NOT TESTED | No | Better in Nation |
 | Tips / tutorial | APPEARS IMPLEMENTED `cl/game_tips`, `cl/game_guide`, `cl/game_tutorial` | APPEARS IMPLEMENTED same modules | Yes | — | NOT TESTED | No | |
 
 ## 7. Seasonal and events
@@ -283,7 +283,7 @@ Two facts affect many rows:
   - Item packets carry Pokémon name, level and gender; creature packets carry types, level and EXP.
   - Guardian and passive-retaliation logic in `monster.cpp`; item stacks up to 10,000.
   - New Lua bindings (`getContainerItems`, `doItemSetCount`, `doPlayerSendMarketMailByName`).
-  - Verse has **none** of Nation's fixes: `combat.cpp` and `localization.cpp` are byte-identical to the original, the login challenge is skipped, and the shutdown bug (BUG-72) was still in `server.cpp` (fixed in Phase 3 with PokeVerse's own change; `KNOWN_ISSUES.md`).
+  - Verse has **none** of Nation's fixes: `combat.cpp` and `localization.cpp` are byte-identical to the original, the login challenge was skipped (BUG-68 and BUG-08 are fixed in Phase 3C with PokeVerse's own changes), and the shutdown bug (BUG-72) was still in `server.cpp` (fixed in Phase 3 with PokeVerse's own change; `KNOWN_ISSUES.md`).
 - PSoul C++ subsystems in both: TV/cast channels (`TVChannel`, `/tvlist`), autoloot (`Player::autoLoot`), party duels (`partyduel.cpp`), PvP/survive arenas (`pvparena.cpp`), tournaments (`tournament.cpp`, `iotournament.cpp`), polls (`polls.cpp`, `iopoll.cpp`), datalog (`iodatalog.cpp`), player statistics (`ioplayerstatistics.cpp`), guilds (`ioguild.cpp`), houses and localization. The bank is NPC Lua in both. **Guild war exists in neither** (only a `znote_guild_wars` website table in Verse's dump).
 - Extended opcodes: Verse dispatches every client→server opcode in Lua (`creaturescripts/scripts/opcode.lua`: 41, 61, 62, 63, 64, 103), with opcode 10 (dash) in C++. Nation handles 0/1 in C++ (`extendedopcodes.h`) and has no Lua dispatcher.
 

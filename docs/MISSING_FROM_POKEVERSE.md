@@ -32,7 +32,7 @@ Importance: **High** means it affects core play or safety. **Medium** means it i
 | Old disabled task system | Low | Unloaded in both | `057-Module_Kill.lua` tasks plus daily kill/catch | KEEP POKEVERSE VERSION |
 | `/house …` commands | Low | Renamed to `!buyhouse`/`!sellhouse`, with house UI modules | Graphical house windows | KEEP POKEVERSE VERSION. The owner panel (opcode 200) has no server sender: REBUILD that panel. |
 | Fishing cast range (4 tiles) | Low | Range check removed | Unlimited cast | INVESTIGATE (a design choice or an exploit) |
-| Localization login validation and extended opcode 1 handler | Medium | The language byte is not validated (BUG-08); opcode 1 has no handler | `/lang` works | PORT LATER FROM POKENATION (small, self-contained fix) |
+| Localization login validation and extended opcode 1 handler | Medium | Opcode 1 has no handler. The language byte is validated since Phase 3C (BUG-08, PokeVerse's own change; `KNOWN_ISSUES.md`) | `/lang` works | Opcode 1: PORT LATER FROM POKENATION |
 
 ## Engine fixes Nation has and Verse lacks
 
@@ -40,11 +40,11 @@ Importance: **High** means it affects core play or safety. **Medium** means it i
 |---|---|---|---|---|
 | BUG-01 combat fix (consented fights under `no-pvp`) | Medium | `combat.cpp` unpatched | `worldType = "pvp"` (the workaround Nation verified) | PORT LATER FROM POKENATION |
 | BUG-05 GM energy reporting | Low | Not applicable: every Verse move costs 0 energy | — | NOT NEEDED |
-| BUG-68 login-challenge check | High (security) | The challenge is skipped in `protocolgame.cpp` | None | PORT LATER FROM POKENATION |
+| BUG-68 login-challenge check | High (security) | Fixed in Phase 3C: the echoed challenge is compared (`protocolgame.cpp`), checked by `tools/protocol_smoke.sh` | — | DONE |
 | BUG-72 shutdown bug (`server.cpp`) | Medium | Fixed in Phase 3 (written for PokeVerse, not copied: `running` is set before `io_context::run()`) | `tools/protocol_smoke.sh` (`/shutdown` closes the ports, the world is saved) | DONE |
 | Boost.Asio port (`connection.*`, `server.*`) | Medium | Verse compiles against Boost 1.83 with minimal fixes (`BUILD_BASELINE.md`) | Minimal fixes | KEEP POKEVERSE VERSION for now; INVESTIGATE if network issues appear |
 | C++ extended-opcode dispatcher (`extendedopcodes.h`) | Low | Verse dispatches in Lua (`creaturescripts/scripts/opcode.lua`) | Lua dispatcher | KEEP POKEVERSE VERSION |
-| Nation client fixes (TM chooser listener leak BUG-57, U16 counts BUG-59/60, jump assertion BUG-75) | Medium | Verse's client has the legacy behavior | — | PORT LATER FROM POKENATION. The wire formats differ (see the parity doc), so port per fix, not per file. |
+| Nation client fixes (TM chooser listener leak BUG-57, U16 counts BUG-59/60, jump assertion BUG-75) | Medium | The Redemption client has BUG-57 fixed (`game_tmchoose` disconnects on terminate) and reads the U16 counts in `gamelib/pokeverse.lua`. BUG-75 does not apply (`KNOWN_ISSUES.md`). The legacy client keeps its original behaviour as the parity reference | — | DONE for Redemption |
 | New OTClient Redemption client (`client-pokenation/`) | Medium | Verse keeps its own OTClient 0.6.6 fork | Verse client, now building on Linux | KEEP POKEVERSE VERSION. Porting the client means reconciling the Verse Pokébar, item and creature packet fields first. |
 | SQL schema directory (`schemas/`), including `datalog_ping` | Low | Verse uses its dump plus `database/migrations/` | Migrations | KEEP POKEVERSE VERSION. `datalog_ping` is only used by commented-out C++. |
 
