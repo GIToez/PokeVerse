@@ -35,7 +35,8 @@ for exe in "$PKG"/client/*.exe; do [ "$(basename "$exe")" = PokeVerse.exe ] || b
 for exe in "$PKG"/server/*.exe; do [ "$(basename "$exe")" = PokeVerseServer.exe ] || bad "extra server executable $(basename "$exe")"; done
 for f in "$PKG"/*.bat "$PKG/README-WINDOWS-TESTING.txt"; do
     [ -f "$f" ] || continue
-    grep -q $'\r$' "$f" || bad "$(basename "$f") does not have CRLF line endings"
+    # Count bytes: grep on Windows strips the CR before matching unless given -U.
+    [ "$(tr -cd '\r' < "$f" | wc -c)" -gt 0 ] || bad "$(basename "$f") does not have CRLF line endings"
 done
 
 # Forbidden files
