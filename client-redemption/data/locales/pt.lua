@@ -607,6 +607,10 @@ locale = {
     ["Dark"] = "Trevas",
     ["Fairy"] = "Fada",
     ["Physical"] = "Físico",
+    -- game_tmchoose
+    ["Technical Machine"] = "Máquina Técnica",
+    ["Select the move that will be replaced by the Technical Machine:"] = "Selecione a habilidade que será substituída pela Máquina Técnica:",
+    ["Replace %s with %s?"] = "Substituir %s por %s?",
   }
 }
 
