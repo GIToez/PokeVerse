@@ -52,7 +52,8 @@ target_link_directories(pokeverse-server PRIVATE
   ${LUA_LIBRARY_DIRS} ${MARIADB_LIBRARY_DIRS} ${SQLITE_LIBRARY_DIRS})
 
 # Fail the build on Boost APIs that newer Boost (1.87+, as shipped by MSYS2) has removed.
-target_compile_definitions(pokeverse-server PRIVATE BOOST_ASIO_NO_DEPRECATED BOOST_FILESYSTEM_NO_DEPRECATED)
+target_compile_definitions(pokeverse-server PRIVATE BOOST_ASIO_NO_DEPRECATED BOOST_FILESYSTEM_NO_DEPRECATED
+  BOOST_BIND_GLOBAL_PLACEHOLDERS)
 
 if(WIN32)
   target_compile_definitions(pokeverse-server PRIVATE WIN32_LEAN_AND_MEAN)

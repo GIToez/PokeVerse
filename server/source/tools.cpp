@@ -377,9 +377,9 @@ bool hasBitSet(uint32_t flag, uint32_t flags)
 //safely adds incr to x, checking for overflow
 bool safeIncrUint32_t(uint32_t& x, uint32_t incr)
 {
-     const static uint32_t MAXUINT32 = std::numeric_limits<uint32_t>::max();
+     const static uint32_t maxUint32 = std::numeric_limits<uint32_t>::max();
      
-     if(MAXUINT32 - incr >= x) {
+     if(maxUint32 - incr >= x) {
          x += incr;
          return true;
      }
