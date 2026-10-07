@@ -77,3 +77,9 @@ CREATE TABLE IF NOT EXISTS `dungeon_ranking` (
 -- Development accounts live in database/seeds/.
 UPDATE `accounts` SET `password` = '!', `blocked` = 1
   WHERE `name` IN ('GOD', 'Canibal') AND `password` = '7c4a8d09ca3762af61e59520943dc26494f8941b';
+
+-- server_config says SHA-256 (3) but every stored password is a 40-character SHA-1 digest
+-- and config.lua uses encryptionType = "sha1"; record SHA-1 (2) so startup stops warning.
+UPDATE `server_config` SET `value` = '2'
+  WHERE `config` = 'encryption' AND `value` = '3'
+    AND NOT EXISTS (SELECT 1 FROM `accounts` WHERE `password` <> '!' AND LENGTH(`password`) <> 40);

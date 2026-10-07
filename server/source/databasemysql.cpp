@@ -47,6 +47,8 @@ DatabaseMySQL::DatabaseMySQL()
 	if(writeTimeout)
 		mysql_options(&m_handle, MYSQL_OPT_WRITE_TIMEOUT, (const char*)&writeTimeout);
 
+	// Tables and scripts are latin1; newer client libraries default to utf8mb4.
+	mysql_options(&m_handle, MYSQL_SET_CHARSET_NAME, "latin1");
 	connect();
 	if(mysql_get_client_version() <= 50019)
 	{
