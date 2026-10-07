@@ -101,6 +101,102 @@ jobs:
             dist/packages/
             launch-${{ matrix.type }}.png
 
+  # Windows Redemption client against the Windows server, both built from this commit:
+  # login, character list, enter game, map, 0xFF sub-protocol, walk, talk, logout.
+  windows-e2e:
+    name: Windows end-to-end (Redemption client + Windows server)
+    needs: windows-client
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tibia.spr LFS object id
+        id: spr
+        shell: bash
+        run: echo "oid=$(sed -n 's/^oid sha256://p' client/runtime-data/data/things/Tibia.spr)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: spr-cache
+        with:
+          path: client/runtime-data/data/things/Tibia.spr
+          key: tibia-spr-${{ steps.spr.outputs.oid }}
+          enableCrossOsArchive: true
+
+      - name: Fetch Tibia.spr from Git LFS (cache miss only)
+        if: steps.spr-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: git lfs pull --include client/runtime-data/data/things/Tibia.spr
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: pokeverse-client-windows-x64-release
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-libxml2
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-lua51
+            mingw-w64-ucrt-x86_64-libmariadbclient
+            mingw-w64-ucrt-x86_64-sqlite3
+            mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-python
+
+      - name: Build server
+        run: tools/build_server.sh
+
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          distribution: mariadb
+          mysql-version: "10.11"
+          root-password: root
+
+      - name: Create development database
+        run: |
+          MYSQL="mysql -uroot -proot -h127.0.0.1" tools/setup_dev_db.sh
+          mysql -uroot -proot -h127.0.0.1 -e "CREATE USER IF NOT EXISTS 'pokeverse'@'127.0.0.1' IDENTIFIED BY 'pokeverse-dev'; GRANT ALL ON pokeverse.* TO 'pokeverse'@'127.0.0.1';"
+
+      - name: Add game assets and software OpenGL to the client
+        run: |
+          dir=dist/client-redemption
+          ls "$dir"/pokeverse-client.exe
+          mkdir -p "$dir/data/things/854"
+          cp client/runtime-data/data/things/Tibia.dat client/runtime-data/data/things/Tibia.spr "$dir/data/things/854/"
+          [ "$(head -c 7 "$dir/data/things/854/Tibia.spr")" != version ] || { echo "Tibia.spr is an LFS pointer"; exit 1; }
+          if [ ! -f "$dir/opengl32.dll" ]; then
+            curl -fsSL -o mesa.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.4/mesa3d-24.3.4-release-msvc.7z
+            7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll x64/libglapi.dll x64/dxil.dll -o"$dir" -y > /dev/null
+          fi
+
+      - name: Redemption client login, gameplay smoke and logout (Trainer, GM Admin)
+        run: |
+          mkdir -p e2e
+          KEEP_RUNNING=1 tools/smoke_server.sh e2e/server.log
+          status=0
+          SCREENSHOT=e2e/windows-ingame-trainer.png tools/smoke_redemption_login.sh e2e/client-trainer.log || status=1
+          PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" SCREENSHOT=e2e/windows-ingame-gm.png \
+            tools/smoke_redemption_login.sh e2e/client-gm.log || status=1
+          taskkill //F //IM pokeverse-server.exe > /dev/null 2>&1 || true
+          exit $status
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-e2e
+          path: e2e/
+          if-no-files-found: ignore
+
   android-client:
     name: Android Redemption client (arm64-v8a APK)
     runs-on: ubuntu-24.04
@@ -164,6 +260,23 @@ jobs:
           chmod +x build_luajit_android.sh
           ./build_luajit_android.sh
 
+      - name: Tibia.spr LFS object id
+        id: spr
+        working-directory: .
+        run: echo "oid=$(sed -n 's/^oid sha256://p' client/runtime-data/data/things/Tibia.spr)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: spr-cache
+        with:
+          path: client/runtime-data/data/things/Tibia.spr
+          key: tibia-spr-${{ steps.spr.outputs.oid }}
+          enableCrossOsArchive: true
+
+      - name: Fetch Tibia.spr from Git LFS (cache miss only)
+        if: steps.spr-cache.outputs.cache-hit != 'true'
+        working-directory: .
+        run: git lfs pull --include client/runtime-data/data/things/Tibia.spr
+
       - name: Pack game assets into data.zip
         run: |
           mkdir -p android/app/src/main/assets
@@ -188,6 +301,12 @@ jobs:
               for f in ('init.lua', 'otclientrc.lua', 'cacert.pem', 'config.ini'):
                   if Path(f).exists():
                       z.write(f, f)
+              # PokeVerse 854 SPR/DAT, staged like tools/stage_redemption.sh does.
+              things = Path('../client/runtime-data/data/things')
+              for f in ('Tibia.dat', 'Tibia.spr'):
+                  with open(things / f, 'rb') as fh:
+                      assert fh.read(7) != b'version', f'{f} is a Git LFS pointer'
+                  z.write(things / f, f'data/things/854/{f}')
           print(f'{out}: {out.stat().st_size} bytes')
           PY
 
@@ -279,6 +398,51 @@ jobs:
           xdotool search --name "OTClient" > /dev/null
           pkill -9 -f pokeverse-client || true
 
+      # End-to-end against the Linux server (release only): same smoke as windows-e2e.
+      - name: Tibia.spr LFS object id
+        if: matrix.type == 'release'
+        id: spr
+        run: echo "oid=$(sed -n 's/^oid sha256://p' client/runtime-data/data/things/Tibia.spr)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        if: matrix.type == 'release'
+        id: spr-cache
+        with:
+          path: client/runtime-data/data/things/Tibia.spr
+          key: tibia-spr-${{ steps.spr.outputs.oid }}
+          enableCrossOsArchive: true
+
+      - name: Fetch Tibia.spr from Git LFS (cache miss only)
+        if: matrix.type == 'release' && steps.spr-cache.outputs.cache-hit != 'true'
+        run: git lfs pull --include client/runtime-data/data/things/Tibia.spr
+
+      - name: Build server and create the development database
+        if: matrix.type == 'release'
+        run: |
+          sudo systemctl stop mysql || true
+          sudo apt-get purge -y 'mysql-*' || true
+          sudo apt-get install -y --no-install-recommends cmake \
+            libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-regex-dev \
+            libxml2-dev libssl-dev liblua5.1-0-dev lua5.1 libmariadb-dev libmariadb-dev-compat libsqlite3-dev libgmp-dev \
+            mariadb-server
+          tools/build_server.sh
+          sudo systemctl start mariadb
+          tools/setup_dev_db.sh
+
+      - name: Redemption client login, gameplay smoke and logout (Trainer, GM Admin)
+        if: matrix.type == 'release'
+        run: |
+          mkdir -p e2e
+          tools/stage_redemption.sh release
+          KEEP_RUNNING=1 tools/smoke_server.sh e2e/server.log
+          export DISPLAY=:99
+          status=0
+          SCREENSHOT=e2e/linux-ingame-trainer.png tools/smoke_redemption_login.sh e2e/client-trainer.log || status=1
+          PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" SCREENSHOT=e2e/linux-ingame-gm.png \
+            tools/smoke_redemption_login.sh e2e/client-gm.log || status=1
+          pkill -9 -f pokeverse-server || true
+          exit $status
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -287,4 +451,5 @@ jobs:
             dist/packages/
             launch-${{ matrix.type }}.png
             /tmp/redemption.log
+            e2e/
           if-no-files-found: ignore
