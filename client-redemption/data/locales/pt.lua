@@ -643,6 +643,9 @@ locale = {
     ["Stockpile Charge 1"] = "Acúmulo 1",
     ["Stockpile Charge 2"] = "Acúmulo 2",
     ["Stockpile Charge 3"] = "Acúmulo 3",
+    ["Battle Pass"] = "Passe de Batalha",
+    ["%d days"] = "%d dias",
+    ["1 day"] = "1 dia",
   }
 }
 
