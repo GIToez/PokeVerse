@@ -11,6 +11,7 @@ Module
     dofile 'protocollogin'
     dofile 'protocolgame'
     dofile 'pokeverse'
+    dofile 'pokeverse_protocol'
     dofile 'pokemon'
     dofile 'pokemon_infos'
     dofile 'moves'
