@@ -18,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends lua5.1
       - run: python3 tools/validate.py
+      - name: Linux package scripts (bash syntax)
+        run: for f in packaging/linux/*.sh tools/package_linux.sh tools/validate_linux_package.sh tools/test_linux_package.sh tools/validate_android_apk.sh; do bash -n "$f" || exit 1; done
       - name: Windows package guard self-test and PowerShell syntax
         run: |
           tools/test_windows_package_guard.sh

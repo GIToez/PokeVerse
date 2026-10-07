@@ -1,14 +1,29 @@
 name: Platforms
 
-# Cross-platform builds for the Redemption client (the Windows server is in windows-server.yml)
-# (docs/PLATFORM_COMPATIBILITY.md). Priority: Windows, then Android, then Linux.
-# A green build here is build evidence only. Gameplay results are recorded separately.
+# Builds, validates and packages every supported target from source (docs/DOWNLOAD_AND_RUN.md):
+#   PokeVerse-Windows-Dev     Windows x64 server + Redemption client  (windows-package)
+#   PokeVerse-Linux-Dev       Linux x64 server + Redemption client    (linux-client, release leg)
+#   PokeVerse-Android-arm64   Android ARM64 Redemption client APK     (android-client)
+# Each package is validated before it is uploaded as a run artifact, then run end to end.
+# A v* tag also publishes the three files to the GitHub Release of that tag (release job).
+# The packages use the "development" profile (local server at 127.0.0.1, development database
+# defaults); staging/production profiles become additional package jobs or matrix entries.
+# The Windows server alone is also built and protocol-tested in windows-server.yml.
 
 on:
   push:
     branches: [main]
+    tags: ["v*"]
+    paths-ignore: ["docs/**", "**/*.md"]
   pull_request:
+    paths-ignore: ["docs/**", "**/*.md"]
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  POKEVERSE_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || format('dev-{0}', github.run_number) }}
 
 # Redemption builds are long (vcpkg); queue new runs instead of cancelling a running one.
 concurrency:
@@ -19,6 +34,7 @@ jobs:
   windows-client:
     name: Windows Redemption client (${{ matrix.type }})
     runs-on: windows-2025-vs2026
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
@@ -108,6 +124,7 @@ jobs:
     name: Windows end-to-end (Redemption client + Windows server)
     needs: windows-client
     runs-on: windows-2025
+    timeout-minutes: 90
     defaults:
       run:
         shell: msys2 {0}
@@ -201,13 +218,15 @@ jobs:
           path: e2e/
           if-no-files-found: ignore
 
-  # The tester-facing Windows package (README-WINDOWS-TESTING.txt): built with the Windows
-  # build helper, assembled and validated, then copied to C:\PokeVerse-Test (outside the
-  # checkout) and driven only through its own .bat files, like a tester would.
+  # PokeVerse-Windows-Dev (packaging/windows/README.txt): server built with the Windows build
+  # helper, assembled with the Release client, validated (files, DLL imports, LFS assets) and
+  # uploaded, then copied to "C:\PokeVerse Dev" (outside the checkout, a path with a space) and
+  # driven only through its own .bat files, like a tester would.
   windows-package:
-    name: Windows test package (build, validate, standalone run)
+    name: Windows package PokeVerse-Windows-Dev (build, validate, upload, standalone run)
     needs: windows-client
     runs-on: windows-2025
+    timeout-minutes: 90
     defaults:
       run:
         shell: msys2 {0}
@@ -266,22 +285,23 @@ jobs:
           MSYS2_ROOT: ${{ steps.msys2.outputs.msys2-location }}
         run: call tools\windows\Build-PokeVerse-Server-Windows.bat
 
-      - name: Assemble and validate the package
+      - name: Assemble and validate PokeVerse-Windows-Dev
         run: |
-          tools/package_windows.sh dist/client-redemption dist/server dist/windows/PokeVerse-Windows-Test
+          tools/package_windows.sh dist/client-redemption dist/server dist/windows/PokeVerse-Windows-Dev
           tools/test_windows_package_guard.sh
 
+      # Downloads as PokeVerse-Windows-Dev.zip with the PokeVerse-Windows-Dev folder inside.
       - uses: actions/upload-artifact@v4
         with:
-          name: PokeVerse-Windows-Test
+          name: PokeVerse-Windows-Dev
           path: dist/windows/
           if-no-files-found: error
 
-      - name: Copy the package outside the repository (C:\PokeVerse-Test)
+      - name: Copy the package outside the repository (C:\PokeVerse Dev)
         shell: pwsh
         run: |
-          Copy-Item -Recurse dist\windows\PokeVerse-Windows-Test C:\PokeVerse-Test
-          Get-ChildItem C:\PokeVerse-Test | Format-Table Name, Length
+          Copy-Item -Recurse dist\windows\PokeVerse-Windows-Dev "C:\PokeVerse Dev"
+          Get-ChildItem "C:\PokeVerse Dev" | Format-Table Name, Length
 
       - uses: shogo82148/actions-setup-mysql@v1
         with:
@@ -289,45 +309,45 @@ jobs:
           mysql-version: "10.11"
           root-password: root
 
-      - name: Setup-PokeVerse-Database.bat (fresh, then again), Reset-PokeVerse-Database.bat
+      - name: Setup Database.bat (fresh, then again), Reset Development Database.bat
         shell: cmd
-        working-directory: C:\PokeVerse-Test
+        working-directory: C:\PokeVerse Dev
         run: |
-          call Setup-PokeVerse-Database.bat || exit /b 1
-          call Setup-PokeVerse-Database.bat || exit /b 1
-          call Reset-PokeVerse-Database.bat -Force || exit /b 1
+          call "Setup Database.bat" || exit /b 1
+          call "Setup Database.bat" || exit /b 1
+          call "Reset Development Database.bat" -Force || exit /b 1
           if not exist server\config.lua exit /b 1
 
-      - name: Start-PokeVerse-Test.bat, then the packaged client in game (Trainer, GM Admin)
+      - name: Start Server and Client.bat, then the packaged client in game (Trainer, GM Admin)
         timeout-minutes: 30
         run: |
           set +e
-          pkg=/c/PokeVerse-Test
+          pkg="/c/PokeVerse Dev"
           mkdir -p e2e
           # The runner has no GPU: Mesa software OpenGL goes into this test copy only (never into the package).
           curl -fsSL -o mesa.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.4/mesa3d-24.3.4-release-msvc.7z
           7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll x64/libglapi.dll x64/dxil.dll -o"$(cygpath -w $pkg/client)" -y > /dev/null
           status=0
           # Output to a file, not a pipe: the server and client windows it starts must not hold the pipe open.
-          (cd "$pkg" && env MSYS2_ARG_CONV_EXCL='*' cmd.exe /d /c Start-PokeVerse-Test.bat) > e2e/start-test.log 2>&1 || status=1
+          (cd "$pkg" && env MSYS2_ARG_CONV_EXCL='*' cmd.exe /d /c "Start Server and Client.bat") > e2e/start-test.log 2>&1 || status=1
           cat e2e/start-test.log
-          [ "$status" = 0 ] || echo "FAIL: Start-PokeVerse-Test.bat exited non-zero"
+          [ "$status" = 0 ] || echo "FAIL: Start Server and Client.bat exited non-zero"
           sleep 30
-          tasklist | grep -i "PokeVerseServer.exe" || { echo "FAIL: PokeVerseServer.exe not running"; status=1; }
-          tasklist | grep -i "PokeVerse.exe" || { echo "FAIL: PokeVerse.exe not running 30 s after Start-PokeVerse-Test.bat"; status=1; }
+          tasklist | grep -i "pokeverse-server.exe" || { echo "FAIL: pokeverse-server.exe not running"; status=1; }
+          tasklist | grep -i "pokeverse-client.exe" || { echo "FAIL: pokeverse-client.exe not running 30 s after Start Server and Client.bat"; status=1; }
           powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms, System.Drawing;
             \$b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds; \$bmp = New-Object System.Drawing.Bitmap \$b.Width, \$b.Height;
             [System.Drawing.Graphics]::FromImage(\$bmp).CopyFromScreen(\$b.Location, [System.Drawing.Point]::Empty, \$b.Size);
             \$bmp.Save('$(cygpath -w "$PWD/e2e/package-launch.png")')" || true
-          taskkill //F //IM PokeVerse.exe > /dev/null 2>&1 || true
+          taskkill //F //IM pokeverse-client.exe > /dev/null 2>&1 || true
           export DIST="$pkg/client"
           SCREENSHOT=e2e/package-ingame-trainer.png tools/smoke_redemption_login.sh e2e/package-client-trainer.log || status=1
           env MSYS2_ARG_CONV_EXCL='*' python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/cb Charmander, 15, 10" --say "/cb Bulbasaur, 15, 10" || status=1
           PV_ACCOUNT=admin PV_PASSWORD=admin PV_CHARACTER="GM Admin" PV_EXPECT_POKEBAR=1 SCREENSHOT_AT="WALK OK" SCREENSHOT=e2e/package-ingame-gm.png \
             tools/smoke_redemption_login.sh e2e/package-client-gm.log || status=1
           env MSYS2_ARG_CONV_EXCL='*' python3 tools/protocol_client.py enter admin admin "GM Admin" --say "/shutdown" --stay 1 || true
-          for _ in $(seq 1 60); do tasklist | grep -qi PokeVerseServer.exe || break; sleep 1; done
-          tasklist | grep -qi PokeVerseServer.exe && { echo "FAIL: server still running after /shutdown"; taskkill //F //IM PokeVerseServer.exe; status=1; }
+          for _ in $(seq 1 60); do tasklist | grep -qi pokeverse-server.exe || break; sleep 1; done
+          tasklist | grep -qi pokeverse-server.exe && { echo "FAIL: server still running after /shutdown"; taskkill //F //IM pokeverse-server.exe; status=1; }
           cp -r "$pkg/server/logs" e2e/server-logs 2>/dev/null || true
           exit $status
 
@@ -338,9 +358,14 @@ jobs:
           path: e2e/
           if-no-files-found: ignore
 
+  # PokeVerse-Android-arm64.apk: signed for development installs with the repository secret
+  # POKEVERSE_ANDROID_DEV_KEYSTORE_BASE64 (+ _PASSWORD, _ALIAS) when it is set, so each build
+  # installs over the previous one; otherwise with a debug key generated on the runner (a new
+  # key each run: uninstall the previous build before installing). No key is ever committed.
   android-client:
     name: Android Redemption client (arm64-v8a APK)
     runs-on: ubuntu-24.04
+    timeout-minutes: 150
     env:
       JAVA_VERSION: "17"
       NDK_VERSION: "29.0.13599879"
@@ -361,6 +386,10 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
+          cache: gradle
+          cache-dependency-path: |
+            client-redemption/android/**/*.gradle*
+            client-redemption/android/**/gradle-wrapper.properties
 
       - uses: android-actions/setup-android@v3
         with:
@@ -423,7 +452,7 @@ jobs:
           mkdir -p android/app/src/main/assets
           python3 - <<'PY'
           from pathlib import Path
-          import zipfile
+          import os, zipfile
           out = Path('android/app/src/main/assets/data.zip')
           # Same exclusion as tools/stage_redemption.sh: no upstream bot in PokeVerse builds.
           bot = Path('mods/game_bot')
@@ -449,13 +478,39 @@ jobs:
                       assert fh.read(7) != b'version', f'{f} is a Git LFS pointer'
                   z.write(things / f, f'data/things/854/{f}')
           print(f'{out}: {out.stat().st_size} bytes')
+          # A different stamp makes an updated APK replace the game data unpacked by the previous one.
+          Path('android/app/src/main/assets/data_stamp.txt').write_text(f"{os.environ['GITHUB_SHA']}-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}")
           PY
+
+      - name: Development signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.POKEVERSE_ANDROID_DEV_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.POKEVERSE_ANDROID_DEV_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.POKEVERSE_ANDROID_DEV_KEY_ALIAS }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/pokeverse-dev.keystore"
+            {
+              echo "RELEASE_KEYSTORE=$RUNNER_TEMP/pokeverse-dev.keystore"
+              echo "RELEASE_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+              echo "RELEASE_KEY_PASSWORD=$KEYSTORE_PASSWORD"
+              echo "RELEASE_KEY_ALIAS=${KEY_ALIAS:-pokeverse-dev}"
+            } >> "$GITHUB_ENV"
+            echo "Signing with the repository development key"
+          else
+            echo "::notice::POKEVERSE_ANDROID_DEV_KEYSTORE_BASE64 is not set: the APK is signed with a per-run debug key. Uninstall the previous PokeVerse build before installing this one."
+          fi
 
       - name: Build APK
         working-directory: client-redemption/android
+        env:
+          POKEVERSE_VERSION_CODE: ${{ github.run_number }}
+          POKEVERSE_VERSION_NAME: ${{ env.POKEVERSE_VERSION }}
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleRelease --no-daemon --stacktrace
+          # One retry: dl.google.com downloads (aapt2) occasionally fail on the runners.
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace ||
+            { echo "::warning::Gradle failed; retrying once"; sleep 30; ./gradlew :app:assembleRelease --no-daemon --stacktrace; }
 
       - uses: actions/cache/save@v4
         if: always()
@@ -463,18 +518,29 @@ jobs:
           path: vcpkg-archives
           key: vcpkg-android-arm64-${{ hashFiles('client-redemption/vcpkg.json') }}-${{ github.run_id }}
 
-      - name: List APKs
-        run: find android/app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
+      - name: Validate and name PokeVerse-Android-arm64.apk
+        working-directory: .
+        run: |
+          apks=(client-redemption/android/app/build/outputs/apk/release/*.apk)
+          [ ${#apks[@]} = 1 ] && [ -f "${apks[0]}" ] || { echo "expected exactly one release APK: ${apks[*]}"; exit 1; }
+          mkdir -p dist/android
+          cp "${apks[0]}" dist/android/PokeVerse-Android-arm64.apk
+          tools/validate_android_apk.sh dist/android/PokeVerse-Android-arm64.apk
+          "$(ls -1 "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)" dump badging dist/android/PokeVerse-Android-arm64.apk | head -3
 
+      # Downloads as PokeVerse-Android-arm64.zip with PokeVerse-Android-arm64.apk inside.
       - uses: actions/upload-artifact@v4
         with:
-          name: pokeverse-client-android-arm64
-          path: client-redemption/android/app/build/outputs/apk/release/*.apk
+          name: PokeVerse-Android-arm64
+          path: dist/android/PokeVerse-Android-arm64.apk
           if-no-files-found: error
 
+  # Release leg: also the Linux server, the PokeVerse-Linux-Dev package (validated and uploaded
+  # before the runtime tests), the repository end-to-end smoke and the package end-to-end test.
   linux-client:
     name: Linux Redemption client (${{ matrix.type }})
     runs-on: ubuntu-24.04
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
@@ -570,6 +636,22 @@ jobs:
           sudo systemctl start mariadb
           tools/setup_dev_db.sh
 
+      - name: Assemble and validate PokeVerse-Linux-Dev.tar.gz
+        if: matrix.type == 'release'
+        run: |
+          tools/stage_redemption.sh release
+          tools/package_linux.sh dist/client-redemption dist/server dist/linux
+
+      # Downloads as PokeVerse-Linux-Dev.zip with PokeVerse-Linux-Dev.tar.gz inside (the tarball
+      # keeps the executable bits, which artifact zips do not).
+      - uses: actions/upload-artifact@v4
+        if: matrix.type == 'release'
+        with:
+          name: PokeVerse-Linux-Dev
+          path: dist/linux/PokeVerse-Linux-Dev.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+
       - name: Redemption client login, gameplay smoke, two-account market test and logout (Trainer, GM Admin)
         timeout-minutes: 30
         if: matrix.type == 'release'
@@ -588,6 +670,14 @@ jobs:
           pkill -9 -f pokeverse-server || true
           exit $status
 
+      - name: Package end-to-end test (extract outside the checkout, setup-database.sh, start-server.sh, packaged client in game, clean stop)
+        if: matrix.type == 'release'
+        timeout-minutes: 30
+        run: |
+          pkill -9 -f pokeverse-server || true
+          sleep 2
+          DISPLAY=:99 tools/test_linux_package.sh dist/linux/PokeVerse-Linux-Dev.tar.gz "$PWD/e2e/package"
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -598,3 +688,52 @@ jobs:
             /tmp/redemption.log
             e2e/
           if-no-files-found: ignore
+
+  # v* tags: attach the validated packages of this run to the GitHub Release of the tag
+  # (created when missing). Only runs when every build, validation and end-to-end job passed.
+  release:
+    name: GitHub Release (v* tags)
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+    needs: [windows-client, windows-e2e, windows-package, android-client, linux-client]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: PokeVerse-Windows-Dev
+          path: artifacts/windows
+      - uses: actions/download-artifact@v4
+        with:
+          name: PokeVerse-Linux-Dev
+          path: artifacts/linux
+      - uses: actions/download-artifact@v4
+        with:
+          name: PokeVerse-Android-arm64
+          path: artifacts/android
+
+      - name: Name the release assets
+        run: |
+          v="$GITHUB_REF_NAME"
+          mkdir -p release
+          [ -f artifacts/windows/PokeVerse-Windows-Dev/server/pokeverse-server.exe ] || { echo "Windows package incomplete"; exit 1; }
+          (cd artifacts/windows && zip -qr -9 "../../release/PokeVerse-Windows-Dev-$v.zip" PokeVerse-Windows-Dev)
+          cp artifacts/linux/PokeVerse-Linux-Dev.tar.gz "release/PokeVerse-Linux-Dev-$v.tar.gz"
+          cp artifacts/android/PokeVerse-Android-arm64.apk "release/PokeVerse-Android-arm64-$v.apk"
+          (cd release && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt)
+          ls -la release
+
+      - name: Publish to the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          v="$GITHUB_REF_NAME"
+          notes="PokeVerse $v development build from ${GITHUB_SHA::12} (workflow run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID).
+          How to run: docs/DOWNLOAD_AND_RUN.md. DEVELOPMENT ONLY: local server at 127.0.0.1, development database defaults."
+          if gh release view "$v" > /dev/null 2>&1; then
+            gh release upload "$v" release/* --clobber
+          else
+            gh release create "$v" release/* --title "PokeVerse $v (development build)" --notes "$notes" --prerelease --verify-tag
+          fi
