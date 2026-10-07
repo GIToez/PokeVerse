@@ -387,3 +387,27 @@ Everything below is still open.
 9. **SQL dump comments:** regenerate the dump with an English generator. Translate the `server_motd` seed rows.
 
 Never rename the KEEP - COMPATIBILITY tokens in 3.11 unless the client and server change in the same release.
+
+---
+
+## 6. Phase 3C status (Redemption client)
+
+English stays canonical, Portuguese stays available, and the first-run language picker is kept (the smoke closes it: `LOCALE PICKER CLOSED`).
+
+**Client.** Every module ported to Redemption uses English `tr()` keys, and Portuguese lives in `client-redemption/data/locales/pt.lua` (cp1252, 715 entries). That covers Pokémon Info, Pokédex, TM chooser, status conditions, Battle Pass, tasks, the kill popup, crafting, the shop tooltips and the market. Protocol values that the server reads stay as they were (KEEP - COMPATIBILITY). For example, the market category combo shows "All" but still sends `Todos`, and task alerts such as `[PegueiUmaMissao]` are matched, not displayed.
+
+**Server.**
+- `game_market.lua`: every popup goes through `__L(cid, ...)` with English text, and 22 new `pt_br.loc` entries. New history lines are stored in English ("You bought …", "You sold …", "You accepted an offer for …", "Your offer was accepted for …", "Your offer was declined for …"). Lines written before Phase 3C stay in Portuguese in `market_historic`.
+- The task kill count is sent as `1/40` instead of `1 de 40`.
+- The shop refund message passes `cid` to `__L`, so it is localized.
+
+**Still Portuguese for English players:**
+
+| Where | What | Fix |
+|---|---|---|
+| Market images (`game_pokemarket/images/`, also legacy `game_market`) | `comprar`, `comprar_mini`, `vender`, `vender_mini`, `ofertar`, `ofertas`, `historico`, `aceitar`, `recusar`, `fechar_oferts`, `cancelar`, `ver`, `mercado_text`, `ofertsforyou`, `youoferts`: text baked into the art | Redraw the buttons blank and put `tr()` labels on them (art task, `KNOWN_ISSUES.md` #20) |
+| Server task names and kill alerts | Task ids such as `rattata` are fine. NPC-task popups are not sent by any script | — |
+| Historic market rows | Rows written before Phase 3C | Leave; they age out |
+| Modules not yet ported (`REDEMPTION_MODULE_AUDIT.md`) | Their legacy strings | Translate while porting |
+
+**Verified at runtime** (English locale, `tools/smoke_redemption_login.sh`): `MARKET FORGED ACCEPT REFUSED reply=This does not belong to you.`, `MARKET HISTORY OK latest=7/10/2026 - You bought 1 ball of wool.`, `TASK SECOND REFUSED reply=You are already doing a task. Finish or cancel it first.`, `CRAFT MISSING REFUSED reply=You do not have the required materials. Missing: 95 ball of wool.`, `POKEKILL POPUP OK … text=Rattata 1/40`. The Portuguese side is checked by `pt.lua` and `pt_br.loc` parsing, not by a Portuguese-locale run (NOT TESTED).

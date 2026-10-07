@@ -141,6 +141,19 @@ Phase 2 built and ran the server and client from source. It fixed or disabled th
 | — | **Fixed** (Phase 3 finding) | `showbuywindowhouse`, which the legacy client's `game_houseowner` says whenever it opens the buy window of an unowned house, ran `teste.lua` with no access check, so any player could broadcast the test message to everyone. The word now runs `showBuyWindowHouse.lua`, which only consumes it. Guarded in `validate.py regressions`. |
 | — | **Fixed** (new finding) | Market `DELETE` queries concatenated `item_index` twice (for example `item_index = 33` instead of `3`), so they deleted the wrong row or none (`data/lib/game_market.lua`) |
 
+## Phase 3C: diamond shop and player market
+
+Both are server-authoritative after these changes. The client sends only an offer id, an item code or a count, and every price comes from the server's tables. Each refusal below is exercised by a forged request in `tools/redemption_smoke_rc.lua`.
+
+| Area | Finding | Status |
+|---|---|---|
+| Shop (ext opcode 27) | Items were granted before the diamonds were taken, and a failed delivery kept the diamonds | **Fixed**: debit first, refund a failed delivery, per-player rate limit, purchase log (`be289f73a`). Smoke: `SHOP FORGED OFFER REFUSED`, `SHOP UNAVAILABLE REFUSED`, `SHOP RATE LIMIT OK`, `SHOP INSUFFICIENT REFUSED` |
+| Market sell | Fractional, negative or huge counts and prices were accepted. The item code from the client went into SQL unquoted. A listed item was removed after the row was written, with no check, so a failed removal left a free listing | **Fixed**: integer and range checks (price ≤ 99,999,999, count ≤ 100,000), the code must match `^Mkt%d+$` and the item in the slot, codes and names go through `db.escapeString`, the fee is debited and refunded if the insert or the item removal fails. Smoke: `MARKET FORGED SELL REFUSED` (quote injection, count 1.5, price 0.5) |
+| Market buy | The item was mailed and the seller paid before the buyer's money was taken, and that debit was never checked | **Fixed**: the buyer is charged first (checked), the seller is paid only after delivery, and the buyer is refunded if delivery fails. Smoke: `MARKET FORGED BUY REFUSED` (counts 0.5 and 99) |
+| Market offers | Any player could accept or refuse an offer on someone else's listing. An offer could name more items than the bidder holds. `OFFERUNDERCONSTRUCTION` was compared against the offer table instead of its state | **Fixed**: accept and refuse require the listing's seller, the offer count is limited to the stack, and the state check is corrected. Smoke: `MARKET FORGED ACCEPT REFUSED reply=This does not belong to you.`, `MARKET FORGED OFFER REFUSED` |
+| Market audit | No record of trades | **Fixed**: `logs/market.log` records list, buy, failed buy, offer and accept. `tools/smoke_market.sh` checks the lines |
+| Market (open) | TFS 0.3.6 gives each script interface its own Lua state, so the creature-script copy of `market_items` (which serves the window) never saw rows written by another state or by hand | **Fixed** for opening: `###MARKETALL###` reloads from the database. `cancelMakeOfferOnLogout` still runs in the action state with its own copy (`KNOWN_ISSUES.md`) |
+
 **Why not JSON.** The original request was to replace `loadstring` with JSON.
 
 - The server serializes these payloads with `table.tostring`, and they include sparse arrays and tables that mix array and key fields.
