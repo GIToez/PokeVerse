@@ -14,6 +14,9 @@ LOGDIR="${1:-/tmp/protocol-smoke}"
 MYSQL="${MYSQL:-mysql -upokeverse -ppokeverse-dev}"
 PYTHON="${PYTHON:-python3}"
 PV="$PYTHON $ROOT/tools/protocol_client.py"
+# MSYS2 rewrites arguments that look like POSIX paths ("/i 35547,2" -> "C:/msys64/i 35547,2")
+# when it starts a native Windows program, which turns GM commands into plain chat.
+export MSYS2_ARG_CONV_EXCL='*'
 APPLE=35547
 mkdir -p "$LOGDIR"
 
