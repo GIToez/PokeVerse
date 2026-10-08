@@ -36,6 +36,9 @@ cleanup() {
 }
 trap cleanup EXIT
 cp -al "$DIST/." "$RUN/" 2>/dev/null || cp -a "$DIST/." "$RUN/"
+# Log files must not be hard links into DIST: the client would write into DIST's copy, and the
+# next run would start with this run's "[pv-smoke] EXIT" line already in its log.
+rm -f "$RUN"/*.log
 rm -f "$RUN/otclientrc.lua"
 cp "$ROOT/tools/redemption_smoke_rc.lua" "$RUN/otclientrc.lua"
 
@@ -75,30 +78,11 @@ if [ "$WINDOWS" = 1 ]; then
     taskkill //F //IM "$EXE" > /dev/null 2>&1 || true
     for _ in $(seq 1 30); do tasklist //FI "IMAGENAME eq $EXE" 2>/dev/null | grep -qi "$EXE" || break; sleep 1; done
 fi
-start_client() {
-    ( cd "$RUN" && exec "./$EXE" --user-dir=userdir ) > "$RUN/stdout.log" 2>&1 &
-    CLIENT_PID=$!
-    started=$SECONDS
-}
-start_client
-retried=0
+( cd "$RUN" && exec "./$EXE" --user-dir=userdir ) > "$RUN/stdout.log" 2>&1 &
+CLIENT_PID=$!
 shot_taken=0
 deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))
-while [ "$SECONDS" -lt "$deadline" ]; do
-    if ! kill -0 "$CLIENT_PID" 2>/dev/null; then
-        # The Windows runners (software OpenGL) occasionally lose a client within seconds of its
-        # start, before it logs anything. Retry that case once; any later exit is a real result.
-        if [ "$retried" = 0 ] && [ $((SECONDS - started)) -lt 30 ] && ! client_log | grep -aq '\[pv-smoke\]'; then
-            early_status=0; wait "$CLIENT_PID" 2>/dev/null || early_status=$?
-            echo "[pv-smoke-harness] client exited $((SECONDS - started)) s after start with status $early_status and no output; retrying once" | tee "$RUN/retry.txt" >&2
-            rm -f "$RUN"/*.log
-            retried=1
-            start_client
-            deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))
-            continue
-        fi
-        break
-    fi
+while kill -0 "$CLIENT_PID" 2>/dev/null && [ "$SECONDS" -lt "$deadline" ]; do
     if [ -n "${SCREENSHOT:-}" ] && [ "$shot_taken" = 0 ] && client_log | grep -aq "\[pv-smoke\] ${SCREENSHOT_AT:-MAP tiles=}"; then
         sleep 0.3; screenshot "$SCREENSHOT"; shot_taken=1
     fi
@@ -113,7 +97,6 @@ kill -9 "$CLIENT_PID" 2>/dev/null || true
 client_status=0
 wait "$CLIENT_PID" 2>/dev/null || client_status=$?
 cp "$RUN/stdout.log" "$LOG"
-[ -f "$RUN/retry.txt" ] && cat "$RUN/retry.txt" >> "$LOG"
 echo "[pv-smoke-harness] client exit status $client_status" >> "$LOG"
 for f in "$RUN"/*.log; do [ "$f" = "$RUN/stdout.log" ] || { echo "== $(basename "$f")"; cat "$f"; } >> "$LOG"; done
 
