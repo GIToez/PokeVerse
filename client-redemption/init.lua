@@ -143,6 +143,22 @@ g_html.addGlobalStyle('/data/styles/custom.css')
 -- try to add mods path too
 g_resources.addSearchPath(g_resources.getWorkDir() .. 'mods', true)
 
+g_logger.info("Work directory: " .. g_resources.getWorkDir())
+-- A folder that has the scripts but not the images (a partial copy or extraction, or a client started
+-- from the wrong folder) would otherwise start with hundreds of texture errors and an unusable UI.
+local missingImages = {}
+for _, file in ipairs({ '/images/background.png', '/images/clienticon.png',
+    '/data/images/game/healthcircle/bottom_empty.png', '/game_pokedex/images/background.png' }) do
+    if not g_resources.fileExists(file) then
+        table.insert(missingImages, file)
+    end
+end
+if #missingImages > 0 then
+    g_logger.fatal(("The client folder %s has no images (missing %s). Run pokeverse-client.exe from the " ..
+        "client folder of a complete PokeVerse package (Start Client.bat), or extract the package again.")
+        :format(g_resources.getWorkDir(), table.concat(missingImages, ', ')))
+end
+
 -- setup directory for saving configurations
 g_resources.setupUserWriteDir(('%s/'):format(g_app.getCompactName()))
 
