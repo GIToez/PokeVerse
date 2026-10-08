@@ -32,7 +32,10 @@ if 'assets/data.zip' in names:
     entries = {i.filename: i for i in data.infolist()}
     for required in ('init.lua', 'modules/client/client.otmod', 'modules/gamelib/pokeverse.lua',
                      'modules/game_pokebar/pokebar.otmod', 'modules/game_pokemoves/pokemoves.otmod',
-                     'modules/client_entergame/entergame.lua', 'data/things/854/Tibia.dat', 'data/things/854/Tibia.spr'):
+                     'modules/client_entergame/entergame.lua', 'data/things/854/Tibia.dat', 'data/things/854/Tibia.spr',
+                     # the images init.lua checks at startup
+                     'data/images/background.png', 'data/images/clienticon.png',
+                     'data/images/game/healthcircle/bottom_empty.png', 'modules/game_pokedex/images/background.png'):
         if required not in entries:
             problems.append(f'data.zip is missing {required}')
     for asset, minimum in (('data/things/854/Tibia.spr', 1_000_000), ('data/things/854/Tibia.dat', 100_000)):

@@ -39,6 +39,8 @@ If Windows SmartScreen warns about the file, choose *More info* and then *Run an
 
 `Reset Development Database.bat` deletes the database and builds it again; it asks you to type the database name first. The folder's `README.txt` has the details and a troubleshooting list.
 
+Always start the client with `Start Client.bat` (or `client\pokeverse-client.exe`) from the extracted package, not an `.exe` from a source checkout, a build folder or the original PokeJornadas files. The client checks at startup that its images are there; if they are not, it stops with "The client folder ... has no images" and names the folder it was started from. The `Work directory` line in `client\pokeverse.log` shows the same. The upstream self-updater, which started a different `pokeverse*.exe` found next to the client and deleted the others, is disabled.
+
 ## Linux
 
 You need 64-bit Linux with glibc 2.38 or newer (Ubuntu 24.04 or newer, Debian 13, Fedora 39 or newer), a desktop session with a graphics driver, and MariaDB.

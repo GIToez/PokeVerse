@@ -139,3 +139,8 @@ The client window is black or does not open
     Update the graphics driver. Do not copy opengl32.dll into client\.
 Windows SmartScreen blocks a .bat or .exe
     The development build is not code-signed. Choose "More info" -> "Run anyway".
+"The client folder ... has no images"
+    The client was started from a folder without data\images, for example a
+    partial copy or a source checkout. Use Start Client.bat in a completely
+    extracted package. client\pokeverse.log names the folder the client used
+    on its "Work directory" line.

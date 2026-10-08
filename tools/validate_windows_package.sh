@@ -27,6 +27,10 @@ for f in client/pokeverse-client.exe client/VARIANT client/init.lua client/modul
     [ -e "$PKG/$f" ] || bad "missing $f"
 done
 ls "$PKG"/database/migrations/*.sql > /dev/null 2>&1 || bad "no database/migrations/*.sql"
+if [ -d "$PKG/client" ]; then
+    image_problems=$("$(dirname "$0")/check_client_images.sh" "$PKG/client") || true
+    [ -z "$image_problems" ] || bad "client images: $(echo "$image_problems" | wc -l) problem(s), first: $(echo "$image_problems" | head -3 | tr '\n' ';')"
+fi
 [ "$(cat "$PKG/client/VARIANT" 2>/dev/null)" = production ] || bad "client/VARIANT is not 'production'"
 if [ -f "$PKG/client/data/things/854/Tibia.spr" ]; then
     [ "$(head -c 7 "$PKG/client/data/things/854/Tibia.spr" | tr -d '\0')" != version ] || bad "client Tibia.spr is a Git LFS pointer"

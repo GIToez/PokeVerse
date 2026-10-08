@@ -20,6 +20,10 @@ for f in client/pokeverse-client client/VARIANT client/init.lua client/modules/c
     [ -e "$PKG/$f" ] || bad "missing $f"
 done
 ls "$PKG"/database/migrations/*.sql > /dev/null 2>&1 || bad "no database/migrations/*.sql"
+if [ -d "$PKG/client" ]; then
+    image_problems=$("$(dirname "$0")/check_client_images.sh" "$PKG/client") || true
+    [ -z "$image_problems" ] || bad "client images: $(echo "$image_problems" | wc -l) problem(s), first: $(echo "$image_problems" | head -3 | tr '\n' ';')"
+fi
 for f in client/pokeverse-client server/pokeverse-server setup-database.sh start-server.sh start-client.sh; do
     [ ! -e "$PKG/$f" ] || [ -x "$PKG/$f" ] || bad "$f is not executable"
 done

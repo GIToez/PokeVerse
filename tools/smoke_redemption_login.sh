@@ -199,7 +199,7 @@ fi
 need '\[pv-smoke\] WALK OK' "walking did not move the player"
 need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"
-if grep -aE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|pokebar: no Pokemon for icon item|LUA ERROR|lua_pcall' "$LOG" >&2; then
+if grep -aiE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|pokebar: no Pokemon for icon item|LUA ERROR|lua_pcall' "$LOG" >&2; then
     fail "protocol errors in the client log"
 fi
 grep -a '\[pv-smoke\]' "$LOG" | LC_ALL=C sort -u
