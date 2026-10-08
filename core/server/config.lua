@@ -85,7 +85,7 @@
 
 	-- Connection config
 	worldId = 1
-	ip = "127.0.0.1"--"191.179.192.219"--"khjyr.servegame.com"
+	ip = "127.0.0.1"
 	bindOnlyConfiguredIpAddress = true
 	loginPort = 7564
 	gamePort = 8548
@@ -95,12 +95,12 @@
 	retryTimeout = 5 * 1000
 	loginTimeout = 60 * 1000
 	maxPlayers = 100
-	motd = "Sej� bem vindo ao Pokemon Genesis World, Treinador(a)"
+	motd = "Welcome to PokeVerse!"
 	displayOnOrOffAtCharlist = false
 	onePlayerOnlinePerAccount = true
 	allowClones = false
-	serverName = "Cristal"
-	loginMessage = "Bem-vindo ao Genesis World, torne-se um mestre pok�mon. Passe por todas as miss�es, conclua as quest's e explore nossas cidades. "
+	serverName = "PokeVerse"
+	loginMessage = "Welcome to PokeVerse! Train your Pokemon, complete quests and explore every city."
 	statusTimeout = 5 * 60 * 1000
 	replaceKickOnLogin = true
 	forceSlowConnectionsToDisconnect = false
@@ -111,11 +111,11 @@
 	-- NOTE: sqlFile is used only by sqlite database, and sqlKeepAlive by mysql database.
 	-- To disable sqlKeepAlive such as mysqlReadTimeout use 0 value.
 	sqlType = "mysql"
-	sqlHost = "localhost"
-	sqlPort = 3306
-	sqlUser = "root"
-	sqlPass = ""
-	sqlDatabase = "genesis"
+	sqlHost = "127.0.0.1"
+	sqlPort = 3307
+	sqlUser = "pokeverse"
+	sqlPass = "pokeverse"
+	sqlDatabase = "pokeverse"
 	sqlFile = ""
 	sqlKeepAlive = 0
 	mysqlReadTimeout = 10
