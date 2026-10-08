@@ -8,7 +8,13 @@ local motdButton
 local enterGameButton
 local clientBox
 local protocolLogin
+local protocolAccount
+local createAccountWindow
 local motdEnabled = true
+
+local SERVER_HOST = '127.0.0.1'
+local SERVER_PORT = 7564
+local PROTOCOL_VERSION = 854
 
 -- private functions
 local function onError(protocol, message, errorCode)
@@ -138,6 +144,14 @@ function EnterGame.terminate()
     protocolLogin:cancelLogin()
     protocolLogin = nil
   end
+  if protocolAccount then
+    protocolAccount:cancel()
+    protocolAccount = nil
+  end
+  if createAccountWindow then
+    createAccountWindow:destroy()
+    createAccountWindow = nil
+  end
   EnterGame = nil
 end
 
@@ -185,13 +199,108 @@ function EnterGame.clearAccountFields(keepAccount)
   g_settings.remove('password')
 end
 
+local function prepareProtocol()
+  G.host = SERVER_HOST
+  G.port = SERVER_PORT
+  local clientVersions = g_game.getSupportedClients(PROTOCOL_VERSION)
+  g_game.chooseRsa(G.host)
+  g_game.setProtocolVersion(PROTOCOL_VERSION)
+  if #clientVersions > 0 then
+    g_game.setClientVersion(clientVersions[#clientVersions])
+  end
+end
+
 function EnterGame.doLogin()
-  G.account = enterGame:getChildById('accountNameTextEdit'):getText()
-  G.password = enterGame:getChildById('accountPasswordTextEdit'):getText()
-  G.host = '127.0.0.1'
-  G.port = 7564
-  local protocolVersion = 854
-  local clientVersions = g_game.getSupportedClients(protocolVersion)
+  EnterGame.loginAccount(enterGame:getChildById('accountNameTextEdit'):getText(),
+                         enterGame:getChildById('accountPasswordTextEdit'):getText())
+end
+
+-- Sends one account service request (see gamelib/protocolaccount.lua) behind a wait box.
+-- onDone(success, message) gets message = nil when the player cancels.
+function EnterGame.accountRequest(request, onDone)
+  if protocolAccount then return end
+  prepareProtocol()
+
+  local waitBox = displayCancelBox(tr('Please wait'), tr('Contacting the server...'))
+  protocolAccount = ProtocolAccount.create()
+  protocolAccount.onResult = function(protocol, success, message)
+    protocolAccount = nil
+    if waitBox then
+      waitBox:destroy()
+      waitBox = nil
+    end
+    onDone(success, message)
+  end
+  connect(waitBox, { onCancel = function()
+                                  waitBox = nil
+                                  if protocolAccount then
+                                    protocolAccount:cancel()
+                                    protocolAccount = nil
+                                  end
+                                  onDone(false, nil)
+                                end })
+  protocolAccount:request(SERVER_HOST, SERVER_PORT, request)
+end
+
+function EnterGame.showCreateAccount()
+  if not createAccountWindow then
+    createAccountWindow = g_ui.displayUI('createaccount')
+  end
+  EnterGame.hide()
+  createAccountWindow:show()
+  createAccountWindow:raise()
+  createAccountWindow:focus()
+  createAccountWindow:getChildById('accountNameTextEdit'):focus()
+end
+
+function EnterGame.hideCreateAccount()
+  if createAccountWindow then
+    createAccountWindow:destroy()
+    createAccountWindow = nil
+  end
+  EnterGame.show()
+end
+
+function EnterGame.doCreateAccount()
+  local account = createAccountWindow:getChildById('accountNameTextEdit'):getText():trim():lower()
+  local password = createAccountWindow:getChildById('passwordTextEdit'):getText()
+  local repeated = createAccountWindow:getChildById('passwordRepeatTextEdit'):getText()
+
+  local function retry(title, message)
+    local errorBox = displayErrorBox(title, message)
+    connect(errorBox, { onOk = EnterGame.showCreateAccount })
+  end
+
+  createAccountWindow:hide()
+  if password ~= repeated then
+    retry(tr('Create Account'), tr('The passwords do not match.'))
+    return
+  end
+
+  EnterGame.accountRequest({ action = AccountRequestCreateAccount, account = account, password = password },
+    function(success, message)
+      if not message then
+        EnterGame.showCreateAccount()
+      elseif not success then
+        retry(tr('Create Account'), message)
+      else
+        createAccountWindow:destroy()
+        createAccountWindow = nil
+        local infoBox = displayInfoBox(tr('Create Account'), message)
+        connect(infoBox, { onOk = function()
+                                    EnterGame.show()
+                                    enterGame:getChildById('accountNameTextEdit'):setText(account)
+                                    enterGame:getChildById('accountPasswordTextEdit'):setText(password)
+                                    enterGame:getChildById('accountPasswordTextEdit'):focus()
+                                  end })
+      end
+    end)
+end
+
+function EnterGame.loginAccount(account, password)
+  G.account = account
+  G.password = password
+  prepareProtocol()
   EnterGame.hide()
 
   if g_game.isOnline() then
@@ -215,12 +324,6 @@ function EnterGame.doLogin()
                                   protocolLogin:cancelLogin()
                                   EnterGame.show()
                                 end })
-
-  g_game.chooseRsa(G.host)
-  g_game.setProtocolVersion(protocolVersion)
-  if #clientVersions > 0 then
-    g_game.setClientVersion(clientVersions[#clientVersions])
-  end
 
   if modules.game_things.isLoaded() then
     protocolLogin:login(G.host, G.port, G.account, G.password)

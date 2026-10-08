@@ -1,0 +1,67 @@
+MainWindow
+  id: createCharacterWindow
+  !text: tr('New Character')
+  size: 300 196
+  @onEnter: CharacterList.doCreateCharacter()
+  @onEscape: CharacterList.hideCreateCharacter()
+
+  MenuLabel
+    !text: tr('Character name')
+    anchors.left: parent.left
+    anchors.top: parent.top
+    text-auto-resize: true
+
+  TextEdit
+    id: nameTextEdit
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 2
+    max-length: 20
+
+  MenuLabel
+    !text: tr('Sex')
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 8
+    text-auto-resize: true
+
+  ComboBox
+    id: sexComboBox
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 2
+
+  Label
+    !text: tr('4 to 20 letters, starting with a capital letter.')
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 8
+    text-wrap: true
+    text-auto-resize: true
+    color: #aaaaaa
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: next.top
+    margin-bottom: 8
+
+  Button
+    id: cancelButton
+    !text: tr('Cancel')
+    width: 64
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: CharacterList.hideCreateCharacter()
+
+  Button
+    id: createButton
+    !text: tr('Create')
+    width: 64
+    anchors.right: prev.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    @onClick: CharacterList.doCreateCharacter()

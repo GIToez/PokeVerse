@@ -66,17 +66,12 @@ EnterGameWindow
     margin-top: 11
 
   EnterGameButton
+    id: createAccountButton
     !text: tr('Create Account')
     anchors.left: parent.left
-    anchors.top: separator.bottom
-    @onClick: g_platform.openUrl("http://pokenordic.com/accounts/create")
-    margin-top: 8
-
-  EnterGameButton
-    !text: tr('Forgot Password?')
     anchors.right: parent.right
-    anchors.top: separator.top
-    @onClick: g_platform.openUrl("http://pokenordic.com/accounts/lostAccount")
+    anchors.top: separator.bottom
+    @onClick: EnterGame.showCreateAccount()
     margin-top: 8
 
   UIWidget

@@ -4,11 +4,19 @@
 --   CALL pokeverse_create_character('account name', 'Character Name', sex);   -- sex: 0 female, 1 male
 --   CALL pokeverse_set_group('Character Name', group_id);                     -- see data/XML/groups.xml
 --
+-- pokeverse_add_character(account id, name, sex) inserts a character and its starting kit
+-- without any checks or result rows. The game server's account service (create character
+-- from the client) validates the input itself and then calls it.
+--
 -- New characters use the same start values as config.lua (newPlayer* settings):
--- Beginner Island (town 10) at 4711, 678, 7 next to Professor Tommy, level 1, vocation 1 (Trainer), world 1.
+-- Tutorial (town 34) at 5000, 806, 6, the bedroom where Red's guided tutorial starts (Professor Oak's
+-- starter Pokemon, first battle, PokeMart, then Red lets the player pick a starting city).
+-- Level 1, vocation 1 (Trainer), world 1; login.lua raises level 1 characters outside town 10 to level 5
+-- on their first login.
 
 DROP PROCEDURE IF EXISTS `pokeverse_create_account`;
 DROP PROCEDURE IF EXISTS `pokeverse_create_character`;
+DROP PROCEDURE IF EXISTS `pokeverse_add_character`;
 DROP PROCEDURE IF EXISTS `pokeverse_set_group`;
 
 DELIMITER //
@@ -26,10 +34,42 @@ BEGIN
   SELECT CONCAT('Account created: ', p_name) AS `result`;
 END //
 
+CREATE PROCEDURE `pokeverse_add_character`(IN p_account_id INT, IN p_name VARCHAR(255), IN p_sex TINYINT)
+BEGIN
+  DECLARE v_player INT;
+  INSERT INTO `players` (`name`, `world_id`, `group_id`, `account_id`, `level`, `vocation`, `health`, `healthmax`,
+      `experience`, `looktype`, `town_id`, `posx`, `posy`, `posz`, `conditions`, `cap`, `sex`, `description`)
+    VALUES (p_name, 1, 1, p_account_id, 1, 1, 150, 150,
+      0, IF(p_sex = 0, 611, 612), 34, 5000, 806, 6, '', 400, p_sex, '');
+  SET v_player = LAST_INSERT_ID();
+  -- Starting kit; Professor Oak adds the starter Pokemon and the main items (doPlayerAddMainItems).
+  -- Slot ids follow PLAYER_SLOT_* in data/lib/ps/others/constants.lua; the bag goes to slot 10
+  -- because the client hides the regular backpack slot 3 (used for the duel icon).
+  -- pid = slot id for equipped items, or the sid of the parent container. Container items are
+  -- shown lowest sid first.
+  INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES
+    (v_player, 1, 101, 13206, 1, ''),   -- order icon (off)
+    (v_player, 2, 102, 13204, 1, ''),   -- evolve icon, used by the client's "Evolve" menu entry
+    (v_player, 3, 103, 13016, 1, ''),   -- duel icon, written to for duels with bets
+    (v_player, 5, 104, 12280, 1, ''),   -- Kanto badge case
+    (v_player, 6, 105, 12281, 1, ''),   -- Kanto Pokedex
+    (v_player, 10, 106, 12282, 1, ''),  -- simple pokebag
+    (v_player, 106, 107, 13820, 20, ''), -- starter cookies
+    -- Empty badge slots; gym leaders transform them into badges (001-npcBattle.lua). A full
+    -- case also keeps new items from being placed in it instead of the bag.
+    (v_player, 104, 108, 12214, 1, ''), -- Boulder
+    (v_player, 104, 109, 12216, 1, ''), -- Cascade
+    (v_player, 104, 110, 12218, 1, ''), -- Thunder
+    (v_player, 104, 111, 12220, 1, ''), -- Rainbow
+    (v_player, 104, 112, 12222, 1, ''), -- Soul
+    (v_player, 104, 113, 12224, 1, ''), -- Marsh
+    (v_player, 104, 114, 12226, 1, ''), -- Volcano
+    (v_player, 104, 115, 12228, 1, ''); -- Earth
+END //
+
 CREATE PROCEDURE `pokeverse_create_character`(IN p_account VARCHAR(32), IN p_name VARCHAR(255), IN p_sex TINYINT)
 BEGIN
   DECLARE v_account INT;
-  DECLARE v_player INT;
   SELECT `id` INTO v_account FROM `accounts` WHERE `name` = p_account LIMIT 1;
   IF v_account IS NULL THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Account not found.';
@@ -43,20 +83,7 @@ BEGIN
   IF p_sex NOT IN (0, 1) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sex must be 0 (female) or 1 (male).';
   END IF;
-  INSERT INTO `players` (`name`, `world_id`, `group_id`, `account_id`, `level`, `vocation`, `health`, `healthmax`,
-      `experience`, `looktype`, `town_id`, `posx`, `posy`, `posz`, `conditions`, `cap`, `sex`, `description`)
-    VALUES (p_name, 1, 1, v_account, 1, 1, 150, 150,
-      0, IF(p_sex = 0, 611, 612), 10, 4711, 678, 7, '', 400, p_sex, '');
-  SET v_player = LAST_INSERT_ID();
-  -- Beginner Island starting kit, as expected by data/npc/scripts/professorTommy.lua.
-  -- login.lua takes the island items away from level 1 characters outside town 10.
-  -- Slot ids: 6 = left hand (Pokedex), 3 = backpack.
-  INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES
-    (v_player, 6, 101, 12281, 1, ''),   -- Kanto Pokedex
-    (v_player, 3, 102, 13499, 1, ''),   -- locked backpack
-    (v_player, 102, 103, 13492, 1, ''), -- empty soul ball
-    (v_player, 102, 104, 13497, 1, ''), -- special small stone
-    (v_player, 102, 105, 13820, 20, ''); -- starter cookies
+  CALL pokeverse_add_character(v_account, p_name, p_sex);
   SELECT CONCAT('Character created: ', p_name) AS `result`;
 END //
 

@@ -722,6 +722,49 @@ function doPlayerAddMainItems(cid)
     setItemUniqueOwner(doPlayerAddItem(cid, 12292, 1, false), cid) -- 1x Old Fishing Rood
 end
 
+-- Equipped starting items that scripts may add; the order, evolve and duel icons cannot be moved into
+-- their slots from Lua, so they come from the character's database rows (pokeverse_add_character).
+-- Badge slots are listed in reverse because adding to a container puts each item first.
+local STARTING_KIT = {
+    {slot = PLAYER_SLOT_BACKPACK, itemId = 12282, contents = {{13820, 20}}}, -- simple pokebag, starter cookies
+    {slot = PLAYER_SLOT_POKEDEX, itemId = 12281}, -- pokedex
+    {slot = PLAYER_SLOT_BADGES, itemId = 12280, -- badge case with the empty Kanto badge slots
+        contents = {{12228, 1}, {12226, 1}, {12224, 1}, {12222, 1}, {12220, 1}, {12218, 1}, {12216, 1}, {12214, 1}}},
+}
+local EVOLVE_ICON = 13204
+
+local function doPlayerEquipSlot(cid, uid, slot)
+    doMovePlayerItem(cid, uid, {x = 65535, y = slot, z = 0})
+end
+
+-- The client hides CONST_SLOT_BACKPACK, so a bag there is invisible to the player.
+function doPlayerFixBagSlot(cid)
+    local bag = getPlayerSlotItem(cid, CONST_SLOT_BACKPACK)
+    if (bag.uid ~= 0 and isContainer(bag.uid) and getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK).uid == 0) then
+        doPlayerEquipSlot(cid, bag.uid, PLAYER_SLOT_BACKPACK)
+    end
+end
+
+function doPlayerEnsureStartingKit(cid)
+    doPlayerFixBagSlot(cid)
+    for _, kit in ipairs(STARTING_KIT) do
+        if (getPlayerSlotItem(cid, kit.slot).uid == 0) then
+            local uid = doPlayerAddItem(cid, kit.itemId, 1, false)
+            if (uid) then
+                doPlayerEquipSlot(cid, uid, kit.slot)
+                for _, content in ipairs(kit.contents or {}) do
+                    doAddContainerItem(uid, content[1], content[2])
+                end
+            end
+        end
+    end
+
+    -- The client's "Evolve" menu entry uses this item, wherever it is.
+    if (getPlayerItemCount(cid, EVOLVE_ICON) == 0) then
+        doPlayerAddItem(cid, EVOLVE_ICON, 1, false)
+    end
+end
+
 function getPlayerFirstPokemon(cid)
     local dbResult = db.getResult("SELECT `firstpokemon`  FROM `players` WHERE `id` = '" .. getPlayerGUID(cid) .. " LIMIT 1';")
     local firstPokemonId = dbResult:getDataInt('firstpokemon')

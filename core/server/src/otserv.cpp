@@ -38,6 +38,7 @@
 #include "textlogger.h"
 
 #include "protocollogin.h"
+#include "protocolaccount.h"
 #include "protocolgame.h"
 #include "protocolold.h"
 #include "status.h"
@@ -887,6 +888,7 @@ ServiceManager* services)
 	{
 		services->add<ProtocolLogin>(g_config.getNumber(ConfigManager::LOGIN_PORT));
 		services->add<ProtocolOldLogin>(g_config.getNumber(ConfigManager::LOGIN_PORT));
+		services->add<ProtocolAccount>(g_config.getNumber(ConfigManager::LOGIN_PORT));
 	}
 
 	services->add<ProtocolGame>(g_config.getNumber(ConfigManager::GAME_PORT));
