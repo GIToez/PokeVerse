@@ -434,7 +434,7 @@ void Creature::updateJump()
         auto self = static_self_cast<Creature>();
         g_dispatcher.scheduleEvent([self] {
             self->updateJump();
-        }, nextT - m_jumpTimer.ticksElapsed());
+        }, std::max<int>(0, nextT - m_jumpTimer.ticksElapsed()));
     }
     else
         m_jumpOffset = PointF(0, 0);

@@ -31,7 +31,7 @@
 class UILayout : public LuaObject
 {
 public:
-    UILayout(UIWidgetPtr parentWidget) : m_parentWidget(parentWidget) { m_updateDisabled = 0; }
+    UILayout(UIWidgetPtr parentWidget);
 
     void update();
     void updateLater();
