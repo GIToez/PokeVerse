@@ -206,12 +206,20 @@ def enter_game(args, host, port):
             raise ProtocolError("placed in the wait list")
         if op == 0x0A:
             player_id = struct.unpack_from("<I", data, 1)[0]
-            return conn, player_id
+            # 0x0A id(4) beat(2) canReportBugs(1) lightHour(2, OTClient only),
+            # then optional 0x0B violation flags (20 bytes), then 0x64 map description.
+            position = None
+            i = 10
+            if len(data) > i and data[i] == 0x0B:
+                i += 21
+            if len(data) >= i + 6 and data[i] == 0x64:
+                position = struct.unpack_from("<HHB", data, i + 1)
+            return conn, player_id, position
     raise ProtocolError("timed out waiting for game login")
 
 
 def drain(conn, seconds):
-    """Reads server packets for a while; returns all opcodes seen as the first byte."""
+    """Reads server packets for a while and returns them."""
     seen = []
     conn.sock.settimeout(0.5)
     end = time.time() + seconds
@@ -219,7 +227,7 @@ def drain(conn, seconds):
         try:
             data = conn.recv()
             if data:
-                seen.append(data[0])
+                seen.append(data)
         except socket.timeout:
             continue
         except ProtocolError:
@@ -236,6 +244,7 @@ def main():
     ap.add_argument("--character", required=True)
     ap.add_argument("--walk", default="east,east,west,west")
     ap.add_argument("--timeout", type=float, default=30)
+    ap.add_argument("--step-delay", type=float, default=1.5, help="seconds to wait after each step")
     ap.add_argument("--expect-login-failure", action="store_true",
                     help="succeed only if the login server refuses the credentials")
     args = ap.parse_args()
@@ -263,25 +272,37 @@ def main():
         return 1
 
     try:
-        conn, player_id = enter_game(args, host, port)
+        conn, player_id, position = enter_game(args, host, port)
     except ProtocolError as e:
         print("FAIL: " + str(e))
         return 1
-    print("Entered game as %s (creature id %d)." % (args.character, player_id))
+    print("Entered game as %s (creature id %d) at %s." % (args.character, player_id, position))
 
     try:
         drain(conn, 3)
         moves = 0
         for step in [s.strip() for s in args.walk.split(",") if s.strip()]:
             conn.send(bytes([WALK_OPCODES[step]]))
-            seen = drain(conn, 1.2)
-            if 0xB5 in seen:  # cancel walk
-                print("  walk %-5s -> blocked by server" % step)
-            elif 0x6D in seen:  # creature move
+            packets = drain(conn, args.step_delay)
+            moved_to = None
+            if position:
+                marker = b"\x6d" + struct.pack("<HHB", *position)
+                for data in packets:
+                    i = data.find(marker)
+                    if i >= 0 and len(data) >= i + 12:
+                        moved_to = struct.unpack_from("<HHB", data, i + 7)
+                        break
+            elif any(d[0] == 0x6D for d in packets):
+                moved_to = "unknown"
+            if moved_to:
                 moves += 1
-                print("  walk %-5s -> moved" % step)
+                print("  walk %-5s -> moved to %s" % (step, moved_to))
+                if position:
+                    position = moved_to
+            elif any(d[0] == 0xB5 for d in packets):
+                print("  walk %-5s -> blocked by server" % step)
             else:
-                print("  walk %-5s -> no response" % step)
+                print("  walk %-5s -> no move seen" % step)
         conn.send(b"\x14")  # logout
         drain(conn, 2)
     finally:
