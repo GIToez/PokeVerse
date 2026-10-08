@@ -171,6 +171,12 @@ def login(args):
                     name, world = msg.string(), msg.string()
                     ip, port = msg.u32(), msg.u16()
                     characters.append((name, world, socket.inet_ntoa(struct.pack("<I", ip)), port))
+                    # OTClient extras: level, vocation, outfit (type, 4 colors, addons), Pokemon team.
+                    msg.u16(), msg.u8(), msg.u16()
+                    for _ in range(5):
+                        msg.u8()
+                    for _ in range(msg.u8()):
+                        msg.u16(), msg.string()
                 break
             else:
                 raise ProtocolError("unexpected login opcode 0x%02X" % op)
@@ -235,6 +241,36 @@ def drain(conn, seconds):
     return seen
 
 
+def parse_quest_log(data):
+    msg = Reader(data[1:])
+    quests = []
+    for _ in range(msg.u16()):
+        quests.append((msg.u16(), msg.string(), msg.u8()))
+    return quests
+
+
+def check_quest_log(conn):
+    """Opens the quest log and every quest in it, like clicking through the client's quest window."""
+    conn.send(b"\xF0")
+    packets = drain(conn, 3)
+    log = [d[d.index(b"\xF0"):] for d in packets if d and d[0] == 0xF0]
+    if not log:
+        raise ProtocolError("no quest log reply (did the server crash?)")
+    quests = parse_quest_log(log[0])
+    print("  quest log: %d quest(s): %s" % (len(quests), ", ".join(q[1] for q in quests[:5])))
+    for quest_id, name, _ in quests:
+        header = b"\xF1" + struct.pack("<H", quest_id)
+        conn.send(header)
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            # The server may batch the reply after other messages in the same packet.
+            if any(header in d for d in drain(conn, 0.5)):
+                break
+        else:
+            raise ProtocolError("no reply for quest %d %r (did the server crash?)" % (quest_id, name))
+    print("  opened all %d quest(s)" % len(quests))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--host", default="127.0.0.1")
@@ -245,6 +281,8 @@ def main():
     ap.add_argument("--walk", default="east,east,west,west")
     ap.add_argument("--timeout", type=float, default=30)
     ap.add_argument("--step-delay", type=float, default=1.5, help="seconds to wait after each step")
+    ap.add_argument("--quest-log", action="store_true", help="also open the quest log and every quest in it")
+    ap.add_argument("--say", action="append", default=[], help="say this in the default channel (repeatable)")
     ap.add_argument("--expect-login-failure", action="store_true",
                     help="succeed only if the login server refuses the credentials")
     args = ap.parse_args()
@@ -280,6 +318,16 @@ def main():
 
     try:
         drain(conn, 3)
+        if args.quest_log:
+            try:
+                check_quest_log(conn)
+            except ProtocolError as e:
+                print("FAIL: " + str(e))
+                return 1
+        for text in args.say:
+            conn.send(b"\x96\x01" + pstr(text))  # say, talk type 1 (default channel)
+            drain(conn, 1)
+            print("  said %r" % text)
         moves = 0
         for step in [s.strip() for s in args.walk.split(",") if s.strip()]:
             conn.send(bytes([WALK_OPCODES[step]]))

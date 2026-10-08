@@ -13,9 +13,15 @@ db="mariadb --no-defaults --protocol=tcp -h127.0.0.1 -P3307"
 server_pid=""
 db_pid=""
 
+stop_process() {
+  kill "$1" 2>/dev/null || return 0
+  for _ in $(seq 30); do kill -0 "$1" 2>/dev/null || return 0; sleep 1; done
+  kill -9 "$1" 2>/dev/null || true
+}
+
 cleanup() {
-  [ -n "$server_pid" ] && kill "$server_pid" 2>/dev/null && wait "$server_pid" 2>/dev/null || true
-  [ -n "$db_pid" ] && kill "$db_pid" 2>/dev/null && wait "$db_pid" 2>/dev/null || true
+  [ -n "$server_pid" ] && stop_process "$server_pid"
+  [ -n "$db_pid" ] && stop_process "$db_pid"
   if [ "${KEEP_WORK:-0}" != 1 ]; then rm -rf "$work"; else echo "Work directory kept: $work"; fi
 }
 trap cleanup EXIT
@@ -42,7 +48,10 @@ for f in "$root/core/server/schemas/pokeverse-extensions.sql" "$root/core/databa
          "$root/core/database/30-account-tools.sql" "$root/core/database/40-dev-seed.sql"; do
   $db -upokeverse -ppokeverse pokeverse < "$f" >/dev/null
 done
-$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('newuser', 'secret'); CALL pokeverse_create_character('newuser', 'New Trainer', 0);"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('newuser', 'secret'); CALL pokeverse_create_character('newuser', 'New Trainer', 0); CALL pokeverse_create_character('newuser', 'Bag Trainer', 1);"
+echo "Bag Trainer gets the old item layout (bag in the hidden slot 3, no duel icon) to test the login repair"
+$db -upokeverse -ppokeverse pokeverse -e "DELETE i FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'Bag Trainer' AND i.pid = 3;
+  UPDATE player_items i JOIN players p ON p.id = i.player_id SET i.pid = 3 WHERE p.name = 'Bag Trainer' AND i.pid = 10;"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -64,20 +73,37 @@ grep -q "Global address: 127.0.0.1" "$work/server.log" || { echo "FAIL: server i
 step "Protocol tests"
 python3 "$root/scripts/protocol-test.py" --account test --password wrong --character Trainer --expect-login-failure
 python3 "$root/scripts/protocol-test.py" --account test --password test --character Trainer --walk east,east,south,west
-python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk west,north
-python3 "$root/scripts/protocol-test.py" --account newuser --password secret --character "New Trainer" --walk east,south
+python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk west,north --say "/i 12157, 100"
+python3 "$root/scripts/protocol-test.py" --account newuser --password secret --character "New Trainer" --walk east,south --quest-log
+python3 "$root/scripts/protocol-test.py" --account newuser --password secret --character "Bag Trainer" --walk east,south
 sleep 3
 
 step "Database checks"
 $db -upokeverse -ppokeverse pokeverse -e "SELECT name, level, posx, posy, posz, lastlogin > 0 AS has_logged_in, online FROM players WHERE id > 1"
-moved=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM players WHERE name IN ('Trainer','Admin','New Trainer') AND lastlogin > 0 AND NOT (posx = 4711 AND posy = 678)")
+moved=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM players WHERE name IN ('Trainer','Admin','New Trainer') AND lastlogin > 0 AND NOT (posx = 5000 AND posy = 806)")
 [ "$moved" = 3 ] || { echo "FAIL: expected 3 characters saved at a new position, got $moved"; exit 1; }
 dex=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'New Trainer' AND i.pid = 6 AND i.itemtype = 12281")
 [ "$dex" = 1 ] || { echo "FAIL: New Trainer lost the Pokedex"; exit 1; }
-island=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(p.town_id, ',', p.level, ',',
-  (SELECT COUNT(*) FROM player_items i WHERE i.player_id = p.id AND i.itemtype IN (13499, 13492, 13497, 13820)))
-  FROM players p WHERE p.name = 'New Trainer'")
-[ "$island" = "10,1,4" ] || { echo "FAIL: New Trainer should stay on Beginner Island (town 10, level 1) with the island kit, got $island"; exit 1; }
+start=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(p.town_id, ',', p.level) FROM players p WHERE p.name = 'New Trainer'")
+[ "$start" = "34,5" ] || { echo "FAIL: New Trainer should be in the tutorial (town 34) at level 5, got $start"; exit 1; }
+item_query() {
+  $db -upokeverse -ppokeverse -N pokeverse -e "SELECT $2 FROM player_items i JOIN players p ON p.id = i.player_id
+    LEFT JOIN player_items c ON c.player_id = i.player_id AND c.sid = i.pid WHERE p.name = '$1' $3"
+}
+equipped() { item_query "$1" "GROUP_CONCAT(CONCAT(i.pid, ':', i.itemtype) ORDER BY i.pid SEPARATOR ' ')" "AND i.pid <= 10"; }
+inside() { item_query "$1" "COUNT(*)" "AND c.pid = $2 AND i.itemtype IN ($3)"; }
+kit=$(equipped "New Trainer")
+echo "New Trainer equipped: $kit"
+[ "$kit" = "1:13206 2:13204 3:13016 5:12280 6:12281 10:12282" ] || { echo "FAIL: New Trainer starting kit is wrong"; exit 1; }
+[ "$(inside "New Trainer" 5 "12214,12216,12218,12220,12222,12224,12226,12228")" = 8 ] || { echo "FAIL: badge case should hold the 8 badge slots"; exit 1; }
+[ "$(inside "New Trainer" 10 13820)" = 1 ] || { echo "FAIL: starter cookies are not in the bag"; exit 1; }
+[ "$(inside "Admin" 10 12157)" = 1 ] || { echo "FAIL: items created for Admin did not go into the bag"; item_query Admin "i.pid, i.sid, i.itemtype, i.count" ""; exit 1; }
+kit=$(equipped "Bag Trainer")
+echo "Bag Trainer equipped after login: $kit"
+case " $kit " in *" 10:12282 "*) ;; *) echo "FAIL: Bag Trainer's bag was not moved to slot 10"; exit 1;; esac
+
+step "Account service tests"
+python3 "$root/scripts/account-test.py"
 
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true
