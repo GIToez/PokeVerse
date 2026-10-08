@@ -39,6 +39,7 @@ Game g_game;
 Game::Game()
 {
     m_protocolVersion = 0;
+    m_logoutRequestTime = 0;
     m_clientCustomOs = -1;
     m_clientVersion = 0;
     m_online = false;
@@ -116,8 +117,13 @@ void Game::processConnectionError(const boost::system::error_code& ec)
 {
     // connection errors only have meaning if we still have a protocol
     if(m_protocolGame) {
-        // eof = end of file, a clean disconnect
-        if(ec != asio::error::eof)
+        // eof = end of file, a clean disconnect. The category is also matched by name because
+        // builds with shared Boost libraries can have more than one asio.misc category object.
+        bool eof = ec == asio::error::eof
+            || (ec.value() == asio::error::eof && std::string(ec.category().name()) == "asio.misc");
+        // The server closes the connection after a logout, which some systems report as a reset.
+        bool loggingOut = m_logoutRequestTime > 0 && g_clock.millis() - m_logoutRequestTime < 5000;
+        if(!eof && !loggingOut)
             g_lua.callGlobalField("g_game", "onConnectionError", ec.message(), ec.value());
 
         processDisconnect();
@@ -536,6 +542,7 @@ void Game::loginWorld(const std::string& account, const std::string& password, c
 
     // reset the new game state
     resetGameStates();
+    m_logoutRequestTime = 0;
 
     m_localPlayer = LocalPlayerPtr(new LocalPlayer);
     m_localPlayer->setName(characterName);
@@ -560,6 +567,7 @@ void Game::forceLogout()
     if(!isOnline())
         return;
 
+    m_logoutRequestTime = g_clock.millis();
     m_protocolGame->sendLogout();
     processDisconnect();
 }
@@ -569,6 +577,7 @@ void Game::safeLogout()
     if(!isOnline())
         return;
 
+    m_logoutRequestTime = g_clock.millis();
     m_protocolGame->sendLogout();
 }
 

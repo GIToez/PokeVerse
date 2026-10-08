@@ -355,6 +355,7 @@ private:
     ScheduledEventPtr m_walkEvent;
     ScheduledEventPtr m_checkConnectionEvent;
     bool m_connectionFailWarned;
+    ticks_t m_logoutRequestTime;
     int m_protocolVersion;
     int m_clientVersion;
     std::string m_clientSignature;
