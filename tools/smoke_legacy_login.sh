@@ -87,7 +87,7 @@ client_log() { cat "$RUN/stdout.log" "$CLIENT_LOG" 2>/dev/null | grep -a '' || t
 count() { [ -n "$SERVER_LOG" ] || { echo 0; return; }; grep -ac "${PV_CHARACTER:-Trainer} has logged $1" "$SERVER_LOG" || true; }
 logins_before=$(count in); logouts_before=$(count out)
 launched=$(date +%s%3N)
-( cd "$RUN" && exec "./$EXE" ) > "$RUN/stdout.log" 2>&1 &
+( cd "$RUN" && { [ ! -d lib ] || export LD_LIBRARY_PATH="$RUN/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"; } && exec "./$EXE" ) > "$RUN/stdout.log" 2>&1 &
 CLIENT_PID=$!
 shot=0 memory="" game_ms=""
 deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))

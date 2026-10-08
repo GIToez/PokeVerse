@@ -18,6 +18,7 @@
 #      PV_DEX_TAB=1|2|3 shows the Information, Moves or Types tab).
 #      METRICS (file: time from launch to the game, memory when the map has loaded, FPS, error counts),
 #      PV_WINDOW_SIZE=WIDTHxHEIGHT (window size, for screenshots comparable with the legacy client),
+#      MESA_DIR (Windows: a folder of Mesa llvmpipe DLLs copied into the throwaway copy only),
 #      PV_MARKET=buyer|seller with PV_MARKET_SEED_BUY and PV_MARKET_SEED_OFFER runs the two-account
 #      market test; tools/smoke_market.sh sets these and checks the database.
 set -euo pipefail
@@ -43,6 +44,8 @@ cp -al "$DIST/." "$RUN/" 2>/dev/null || cp -a "$DIST/." "$RUN/"
 rm -f "$RUN"/*.log
 rm -f "$RUN/otclientrc.lua"
 cp "$ROOT/tools/redemption_smoke_rc.lua" "$RUN/otclientrc.lua"
+# Software OpenGL for GPU-less Windows runners goes into the throwaway copy, never into DIST.
+if [ -n "${MESA_DIR:-}" ]; then cp "$MESA_DIR"/*.dll "$RUN/"; fi
 
 if [ "$WINDOWS" = 0 ]; then
     export DISPLAY="${DISPLAY:-:99}"
