@@ -1,0 +1,11 @@
+# Large binary assets (GitHub rejects files over 100 MB)
+*.spr  filter=lfs diff=lfs merge=lfs -text
+*.otbm filter=lfs diff=lfs merge=lfs -text
+*.sdf  filter=lfs diff=lfs merge=lfs -text
+
+# Reference projects are stored byte-for-byte; never convert line endings.
+references/** -text
+
+# Windows batch files must keep CRLF line endings.
+*.bat text eol=crlf
+*.cmd text eol=crlf
