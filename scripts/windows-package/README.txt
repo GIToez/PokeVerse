@@ -64,6 +64,16 @@ Host 127.0.0.1, port 3307, database "pokeverse", user "pokeverse", password "pok
 The MariaDB "root" user has no password and only accepts connections from this
 computer. These are development settings; never expose this database or server.
 
+Discord (optional)
+------------------
+The server can talk to the PokeVerse Discord bot (a separate download). This is
+off by default. To turn it on, extract the PokeVerse-Discord-Dev-Windows package
+(for example to C:\PokeVerse\discord) and run its configure-discord-dev.bat. Give
+it this folder; it creates server-windows\config.local.lua with a shared secret.
+Restart the server, then run start-discord-dev.bat. The server window then shows
+">> Discord bridge listening on 127.0.0.1:7199". Delete config.local.lua to turn
+it off again. Never share config.local.lua: it contains the secret.
+
 Troubleshooting
 ---------------
 - "The database did not start": see database\data\mariadb.err. Another program
