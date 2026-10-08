@@ -23,7 +23,11 @@
 #ifdef __MYSQL_ALT_INCLUDE__
 #include "errmsg.h"
 #else
+#ifdef __MYSQL_ALT_INCLUDE__
+#include <errmsg.h>
+#else
 #include <mysql/errmsg.h>
+#endif
 #endif
 #include <iostream>
 

@@ -27,7 +27,7 @@ add_executable(pokeverse-server ${SERVER_SOURCES})
 
 # Same feature set as the original Windows build (dev-cpp/Makefile.win).
 target_compile_definitions(pokeverse-server PRIVATE
-  __USE_MYSQL__ __USE_SQLITE__ __ENABLE_SERVER_DIAGNOSTIC__ __EMERGENCY_SAVE__
+  __USE_MYSQL__ __MYSQL_ALT_INCLUDE__ __USE_SQLITE__ __ENABLE_SERVER_DIAGNOSTIC__ __EMERGENCY_SAVE__
   BOOST_BIND_GLOBAL_PLACEHOLDERS BOOST_ALLOW_DEPRECATED_HEADERS BOOST_TIMER_ENABLE_DEPRECATED)
 if(WIN32)
   target_compile_definitions(pokeverse-server PRIVATE __CONSOLE__ WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0601)
