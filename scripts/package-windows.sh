@@ -55,7 +55,7 @@ tmp=$(mktemp -d)
 unzip -q "$mariadb_zip" -d "$tmp"
 src=$(echo "$tmp"/mariadb-*-winx64)
 mkdir -p "$db/mariadb/bin"
-for f in mariadbd.exe server.dll mariadb.exe mariadb-admin.exe mariadb-dump.exe mariadb-install-db.exe; do
+for f in mariadbd.exe mysqld.exe server.dll mariadb.exe mariadb-admin.exe mariadb-dump.exe mariadb-install-db.exe; do
   cp "$src/bin/$f" "$db/mariadb/bin/"
 done
 cp "$src"/bin/*.dll "$db/mariadb/bin/"
