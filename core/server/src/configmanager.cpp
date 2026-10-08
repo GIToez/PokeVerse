@@ -49,6 +49,25 @@ bool ConfigManager::load()
 		return false;
 	}
 
+	// Optional machine-local overrides (e.g. secrets), kept out of version control:
+	// "config.lua" -> "config.local.lua", loaded into the same state after the main file.
+	std::string localFile = m_confString[CONFIG_FILE];
+	if(localFile.size() > 4 && localFile.compare(localFile.size() - 4, 4, ".lua") == 0)
+	{
+		localFile.insert(localFile.size() - 4, ".local");
+		if(FILE* f = fopen(localFile.c_str(), "r"))
+		{
+			fclose(f);
+			if(luaL_dofile(L, localFile.c_str()))
+			{
+				std::cout << "[Error - ConfigManager::load] " << localFile << ": " << lua_tostring(L, -1) << std::endl;
+				lua_close(L);
+				L = NULL;
+				return false;
+			}
+		}
+	}
+
 	//parse config
 	if(!m_loaded) //info that must be loaded one time (unless we reset the modules involved)
 	{
@@ -306,6 +325,12 @@ bool ConfigManager::load()
 	m_confBool[LOG_MAP_ITEMS] = getGlobalBool("logMapItems", false);
 	m_confNumber[TOURNAMENT_WEEK_DAY_CHECK] = getGlobalNumber("tournamentWeekDayCheck", 0);
 	m_confNumber[TOURNAMENT_WEEK_WINNER_STORAGE] = getGlobalNumber("tournamentWeekWinnerStorage", 7065);
+	m_confBool[DISCORD_BRIDGE_ENABLED] = getGlobalBool("discordBridgeEnabled", false);
+	m_confBool[DISCORD_BRIDGE_ALLOW_REMOTE] = getGlobalBool("discordBridgeAllowRemote", false);
+	m_confString[DISCORD_BRIDGE_HOST] = getGlobalString("discordBridgeHost", "127.0.0.1");
+	m_confString[DISCORD_BRIDGE_SECRET] = getGlobalString("discordBridgeSecret", "");
+	m_confNumber[DISCORD_BRIDGE_PORT] = getGlobalNumber("discordBridgePort", 7199);
+	m_confNumber[DISCORD_BRIDGE_QUEUE_SIZE] = getGlobalNumber("discordBridgeQueueSize", 2000);
 
 	m_loaded = true;
 	return true;

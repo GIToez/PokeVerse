@@ -52,6 +52,7 @@
 #include "status.h"
 #include "game.h"
 #include "chat.h"
+#include "discordbridge.h"
 
 extern Game g_game;
 extern Monsters g_monsters;
@@ -2003,6 +2004,18 @@ void LuaScriptInterface::registerFunctions()
 
 	//getWorldUpTime()
 	lua_register(m_luaState, "getWorldUpTime", LuaScriptInterface::luaGetWorldUpTime);
+
+	//doDiscordBridgeEmit(payloadJson)
+	lua_register(m_luaState, "doDiscordBridgeEmit", LuaScriptInterface::luaDoDiscordBridgeEmit);
+
+	//doDiscordBridgeSend(messageJson)
+	lua_register(m_luaState, "doDiscordBridgeSend", LuaScriptInterface::luaDoDiscordBridgeSend);
+
+	//getDiscordBridgeMessages([max = 50])
+	lua_register(m_luaState, "getDiscordBridgeMessages", LuaScriptInterface::luaGetDiscordBridgeMessages);
+
+	//getDiscordBridgeInfo()
+	lua_register(m_luaState, "getDiscordBridgeInfo", LuaScriptInterface::luaGetDiscordBridgeInfo);
 
 	//getGuildId(guildName)
 	lua_register(m_luaState, "getGuildId", LuaScriptInterface::luaGetGuildId);
@@ -6080,6 +6093,57 @@ int32_t LuaScriptInterface::luaGetWorldUpTime(lua_State* L)
 		uptime = status->getUptime();
 
 	lua_pushnumber(L, uptime);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoDiscordBridgeEmit(lua_State* L)
+{
+	//doDiscordBridgeEmit(payloadJson)
+	lua_pushboolean(L, DiscordBridge::getInstance()->emitEvent(popString(L)));
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoDiscordBridgeSend(lua_State* L)
+{
+	//doDiscordBridgeSend(messageJson)
+	lua_pushboolean(L, DiscordBridge::getInstance()->sendMessage(popString(L)));
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetDiscordBridgeMessages(lua_State* L)
+{
+	//getDiscordBridgeMessages([max = 50])
+	uint32_t max = 50;
+	if(lua_gettop(L) > 0)
+		max = std::max((uint32_t)1, (uint32_t)popNumber(L));
+
+	StringVec messages = DiscordBridge::getInstance()->takeIncoming(max);
+	lua_newtable(L);
+	for(uint32_t i = 0; i < messages.size(); ++i)
+	{
+		lua_pushnumber(L, i + 1);
+		lua_pushstring(L, messages[i].c_str());
+		pushTable(L);
+	}
+
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetDiscordBridgeInfo(lua_State* L)
+{
+	//getDiscordBridgeInfo()
+	DiscordBridge* bridge = DiscordBridge::getInstance();
+	DiscordBridgeStats stats = bridge->getStats();
+	lua_newtable(L);
+	setFieldBool(L, "enabled", bridge->isEnabled());
+	setFieldBool(L, "connected", bridge->isConnected());
+	setField(L, "bootId", bridge->getBootId());
+	setFieldFloat(L, "queued", (double)stats.queued);
+	setFieldFloat(L, "sent", (double)stats.sent);
+	setFieldFloat(L, "dropped", (double)stats.dropped);
+	setFieldFloat(L, "received", (double)stats.received);
+	setFieldFloat(L, "rejected", (double)stats.rejected);
+	setFieldFloat(L, "connections", (double)stats.connections);
 	return 1;
 }
 

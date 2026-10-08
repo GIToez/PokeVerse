@@ -41,6 +41,7 @@
 #include "protocolgame.h"
 #include "protocolold.h"
 #include "status.h"
+#include "discordbridge.h"
 #ifdef __REMOTE_CONTROL__
 #include "admin.h"
 #endif
@@ -844,6 +845,7 @@ ServiceManager* services)
 	#if defined(WINDOWS) && !defined(__CONSOLE__)
 	SendMessage(GUI::getInstance()->m_statusBar, WM_SETTEXT, 0, (LPARAM)">> Initializing game state and registering services...");
 	#endif
+	DiscordBridge::getInstance()->start();
 	g_game.setGameState(GAME_STATE_INIT);
 
 	std::string ip = g_config.getString(ConfigManager::IP);

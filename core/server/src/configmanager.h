@@ -59,6 +59,8 @@ class ConfigManager
 			PREFIX_CHANNEL_LOGS,
 			CORES_USED,
 			MAILBOX_DISABLED_TOWNS,
+			DISCORD_BRIDGE_HOST,
+			DISCORD_BRIDGE_SECRET,
 			LAST_STRING_CONFIG /* this must be the last one */
 		};
 
@@ -168,6 +170,8 @@ class ConfigManager
 			MINIMUM_LEVEL_TO_POLL_VOTE,
 			TOURNAMENT_WEEK_DAY_CHECK,
 			TOURNAMENT_WEEK_WINNER_STORAGE,
+			DISCORD_BRIDGE_PORT,
+			DISCORD_BRIDGE_QUEUE_SIZE,
 			LAST_NUMBER_CONFIG /* this must be the last one */
 		};
 
@@ -278,6 +282,8 @@ class ConfigManager
 			DISCONNECT_AT_EXIT,
 			MARKET_PREMIUM,
 			LOG_MAP_ITEMS,
+			DISCORD_BRIDGE_ENABLED,
+			DISCORD_BRIDGE_ALLOW_REMOTE,
 			LAST_BOOL_CONFIG /* this must be the last one */
 		};
 

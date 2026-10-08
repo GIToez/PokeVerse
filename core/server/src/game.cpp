@@ -57,6 +57,7 @@
 #include "group.h"
 
 #include "tools.h"
+#include "discordbridge.h"
 
 #ifdef __EXCEPTION_TRACER__
 #include "exception.h"
@@ -183,6 +184,10 @@ void Game::setGameState(GameState_t newState)
 	if(gameState != newState)
 	{
 		gameState = newState;
+		static const char* stateNames[] = {"", "startup", "init", "normal", "maintain", "closed", "closing", "shutdown"};
+		std::ostringstream event;
+		event << "{\"kind\":\"server_state\",\"state\":\"" << stateNames[newState] << "\",\"players\":" << getPlayersOnline() << "}";
+		DiscordBridge::getInstance()->emitEvent(event.str());
 		switch(newState)
 		{
 			case GAME_STATE_INIT:
@@ -2376,6 +2381,11 @@ bool Game::playerBroadcastMessage(Player* player, SpeakClasses type, const std::
 
 	//TODO: event handling - onCreatureSay
 	std::cout << "> " << player->getName() << " broadcasted: \"" << text << "\"." << std::endl;
+
+	std::ostringstream event;
+	event << "{\"kind\":\"broadcast\",\"source\":\"gm\",\"author\":\"" << DiscordBridge::escapeJson(player->getName())
+		<< "\",\"text\":\"" << DiscordBridge::escapeJson(text) << "\"}";
+	DiscordBridge::getInstance()->emitEvent(event.str());
 	return true;
 }
 
@@ -6602,6 +6612,11 @@ bool Game::reloadInfo(ReloadInfo_t reload, uint32_t playerId/* = 0*/)
 
 void Game::prepareGlobalSave()
 {
+	int32_t minutesLeft = !globalSaveMessage[0] ? 5 : (!globalSaveMessage[1] ? 3 : (!globalSaveMessage[2] ? 1 : 0));
+	std::ostringstream event;
+	event << "{\"kind\":\"restart_warning\",\"reason\":\"global_save\",\"minutes\":" << minutesLeft
+		<< ",\"shutdown\":" << (g_config.getBool(ConfigManager::SHUTDOWN_AT_GLOBALSAVE) ? "true" : "false") << "}";
+	DiscordBridge::getInstance()->emitEvent(event.str());
 	if(!globalSaveMessage[0])
 	{
 		setGameState(GAME_STATE_CLOSING);
@@ -6666,6 +6681,7 @@ void Game::globalSave()
 
 void Game::shutdown()
 {
+	DiscordBridge::getInstance()->stop();
     std::cout << "Preparing";
     if (g_config.getBool(ConfigManager::LOG_MAP_ITEMS)) {
         logMapItems();

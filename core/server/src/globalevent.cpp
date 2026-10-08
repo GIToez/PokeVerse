@@ -163,6 +163,7 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type)
 		case GLOBAL_EVENT_STARTUP:
 		case GLOBAL_EVENT_SHUTDOWN:
 		case GLOBAL_EVENT_RECORD:
+		case GLOBAL_EVENT_DISCORD_BRIDGE:
 		{
 			GlobalEventMap retMap;
 			for(GlobalEventMap::iterator it = serverMap.begin(); it != serverMap.end(); ++it)
@@ -208,6 +209,8 @@ bool GlobalEvent::configureEvent(xmlNodePtr p)
 			m_eventType = GLOBAL_EVENT_SHUTDOWN;
 		else if(tmpStrValue == "record" || tmpStrValue == "playersrecord")
 			m_eventType = GLOBAL_EVENT_RECORD;
+		else if(tmpStrValue == "discordbridge")
+			m_eventType = GLOBAL_EVENT_DISCORD_BRIDGE;
 		else
 		{
 			std::cout << "[Error - GlobalEvent::configureEvent] No valid type \"" << strValue << "\" for globalevent with name " << m_name << std::endl;
@@ -255,6 +258,8 @@ std::string GlobalEvent::getScriptEventName() const
 			return "onRecord";
 		case GLOBAL_EVENT_TIMER:
 			return "onTimer";
+		case GLOBAL_EVENT_DISCORD_BRIDGE:
+			return "onDiscordBridge";
 		default:
 			return "onThink";
 	}

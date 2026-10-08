@@ -1,3 +1,7 @@
 # Local build output
 /build/
 /dist/
+
+# Machine-local server config overrides (may contain secrets)
+config.local.lua
+__pycache__/

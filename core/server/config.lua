@@ -338,3 +338,15 @@
 	disconnectAtExit = true
 	defaultTownId = 3 -- Cerulean
 	logMapItems = false
+
+	-- Discord bridge (PokeVerse-Discord companion bot), see docs/discord-bridge.md.
+	-- Disabled by default. The secret must be at least 16 characters and must be the
+	-- same value configured in the bot. Put real secrets in config.local.lua (next to
+	-- this file, never committed) instead of editing them here.
+	-- NOTE: discordBridgeAllowRemote = false keeps the bridge on loopback addresses only.
+	discordBridgeEnabled = false
+	discordBridgeHost = "127.0.0.1"
+	discordBridgePort = 7199
+	discordBridgeSecret = ""
+	discordBridgeQueueSize = 2000
+	discordBridgeAllowRemote = false
