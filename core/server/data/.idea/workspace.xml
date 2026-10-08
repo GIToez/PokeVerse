@@ -1,0 +1,1573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a8c77b9a-2fe5-4152-9e44-c03b4d21b658" name="Default" comment="" />
+    <ignored path="PSoul Server.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="PSoul Server" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="003-quest.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/ps/config/003-quest.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2635">
+              <caret line="155" column="20" lean-forward="false" selection-start-line="155" selection-start-column="6" selection-end-line="155" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="quest_professorOak.lua" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/npc/scripts/quest_professorOak.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="71" column="74" lean-forward="false" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>construct</find>
+      <find>furin</find>
+      <find>allLearn</find>
+      <find>softboi</find>
+      <find>arcanine</find>
+      <find>aggron</find>
+      <find>TALK_STATES.</find>
+      <find>ball</find>
+      <find>SURPRISE_BAG_ITEMIDS</find>
+      <find>SURPRISE_BAG_REWARDS</find>
+      <find>, count</find>
+      <find>lettersOptionsMessage</find>
+      <find>unique</find>
+      <find>doStartEvent</find>
+      <find>centerx=&quot;(\d+)&quot; centery=&quot;(\d+)&quot; centerz=&quot;(\d+)&quot;</find>
+      <find>doCenarionTransformation</find>
+      <find>\{ x = (\d+), y = (\d+), z = (\d+) \}</find>
+      <find>27935</find>
+      <find>* 5</find>
+      <find>clothes</find>
+      <find>29885</find>
+      <find>29886</find>
+      <find>SHINYFEEBAS</find>
+      <find>getCreatureOut</find>
+      <find>anniver</find>
+      <find>29985</find>
+      <find>morganite</find>
+      <find>24699</find>
+      <find>professor oak&quot;</find>
+      <find>red</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>[guid]</replace>
+      <replace>randomTicketMax</replace>
+      <replace>GameplayTutorial</replace>
+      <replace>OUTFIT_FLY_SHINY</replace>
+      <replace>OUTFIT_RIDE_SHINY</replace>
+      <replace>OUTFIT_SURF_SHINY</replace>
+      <replace>OUTFIT_DIVE_SHINY</replace>
+      <replace>+ 380})</replace>
+      <replace>[&quot;Shiny</replace>
+      <replace>function(cid, item, position, lastPosition, fromPosition, toPosition, actor)</replace>
+      <replace>Pokemon</replace>
+      <replace>{x = 5020, y = 788, z = 7}</replace>
+      <replace>getPlayerGUID</replace>
+      <replace>, y=</replace>
+      <replace>, z=</replace>
+      <replace>treecko</replace>
+      <replace>torchic</replace>
+      <replace>mudkip</replace>
+      <replace>uid</replace>
+      <replace>PokemonAddon.IDS</replace>
+      <replace>[&quot;Alakazam&quot;] = { lookType = 2198 }</replace>
+      <replace>lookType = 0</replace>
+      <replace>outfitCondition</replace>
+      <replace>fly =</replace>
+      <replace>outfitCondition =</replace>
+      <replace>T, unique = true},</replace>
+      <replace>addon</replace>
+      <replace>PokemonAddon</replace>
+      <replace>ultimate blaze clothes kit</replace>
+      <replace>* 5, count</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>E:\PSoul\Project\Server\Bin\data\lib\ps\events\spells\scripts</dir>
+      <dir>E:\PSoul\Project\Server\Bin\data\lib\ps\config\pokemon</dir>
+      <dir>E:\PSoul\Project\Server\Bin\data\npc</dir>
+    </dirStrings>
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/lib/ps/events/creaturescripts/onTournamentStart.lua" />
+        <option value="$PROJECT_DIR$/npc/scripts/quest_professorOak.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/systems/008-conditions.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/selfdestruct.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/bide.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/heal pulse.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/counter.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/roost.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/ingrain.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/moves/punishment.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/talkactions/coupon.lua" />
+        <option value="$PROJECT_DIR$/XML/quests.xml" />
+        <option value="$PROJECT_DIR$/lib/ps/events/spells/scripts/Detect.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/spells/scripts/Close Combat.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/actions/abilities.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/creaturescripts/onLogout.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/systems/056-pokemonAddon.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/functions/others.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/creaturescripts/onCustomOutfit.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/actions/pokemonAddon.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/talkactions/pokemonAddon.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/functions/player.lua" />
+        <option value="$PROJECT_DIR$/npc/scripts/shop_mastery.lua" />
+        <option value="$PROJECT_DIR$/npc/scripts/casinoMerchant.lua" />
+        <option value="$PROJECT_DIR$/XML/outfits.xml" />
+        <option value="$PROJECT_DIR$/npc/scripts/shop_frontierIsland.lua" />
+        <option value="$PROJECT_DIR$/npc/scripts/soulTrade.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/systems/002-quest.lua" />
+        <option value="$PROJECT_DIR$/npc/scripts/tournament.lua" />
+        <option value="$PROJECT_DIR$/actions/scripts/other/doors.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/actions/quests/aerodactylOilFlask.lua" />
+        <option value="$PROJECT_DIR$/movements/scripts/tiles.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/systems/038-pokemonAddon.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/pokemon.lua" />
+        <option value="$PROJECT_DIR$/actions/scripts/other/furniturebeds.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/systems/018-technicalMachine.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/others/constants.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/config/balls.lua" />
+        <option value="$PROJECT_DIR$/movements/movements.xml" />
+        <option value="$PROJECT_DIR$/npc/scripts/shop_ballPaint.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/creaturescripts/onKill.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/creaturescripts/onSpawn.lua" />
+        <option value="$PROJECT_DIR$/raids/events/anniversary.xml" />
+        <option value="$PROJECT_DIR$/actions/actions.xml" />
+        <option value="$PROJECT_DIR$/lib/ps/events/actions/clothesKit.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/others/outfits.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/events/spells/scripts/Double Team.lua" />
+        <option value="$PROJECT_DIR$/globalevents/scripts/start.lua" />
+        <option value="$PROJECT_DIR$/items/items.xml" />
+        <option value="$PROJECT_DIR$/npc/scripts/event_anniversary.lua" />
+        <option value="$PROJECT_DIR$/lib/ps/systems/048-anniversaryEvent.lua" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1096" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Android &gt; Lint &gt; Correctness</id>
+          </State>
+          <State>
+            <id>Android &gt; Lint &gt; Performance</id>
+          </State>
+          <State>
+            <id>Android &gt; Lint &gt; Security</id>
+          </State>
+          <State>
+            <id>Android Lint for Kotlin</id>
+          </State>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>Code style issuesJava</id>
+          </State>
+          <State>
+            <id>CodeSpring CoreSpring</id>
+          </State>
+          <State>
+            <id>Error handlingJava</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript</id>
+          </State>
+          <State>
+            <id>Groovy</id>
+          </State>
+          <State>
+            <id>J2ME issuesJava</id>
+          </State>
+          <State>
+            <id>JSP Inspections</id>
+          </State>
+          <State>
+            <id>JUnit issuesJava</id>
+          </State>
+          <State>
+            <id>Java</id>
+          </State>
+          <State>
+            <id>Java language level issuesJava</id>
+          </State>
+          <State>
+            <id>Java language level migration aidsJava</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+          <State>
+            <id>JavaScript function metricsJavaScript</id>
+          </State>
+          <State>
+            <id>Memory issuesJava</id>
+          </State>
+          <State>
+            <id>Naming ConventionsGroovy</id>
+          </State>
+          <State>
+            <id>Naming conventionsJava</id>
+          </State>
+          <State>
+            <id>Naming conventionsJavaScript</id>
+          </State>
+          <State>
+            <id>Performance issuesJava</id>
+          </State>
+          <State>
+            <id>Probable bugsCSS</id>
+          </State>
+          <State>
+            <id>Probable bugsJava</id>
+          </State>
+          <State>
+            <id>Resource management issuesJava</id>
+          </State>
+          <State>
+            <id>Spring</id>
+          </State>
+          <State>
+            <id>Spring CoreSpring</id>
+          </State>
+          <State>
+            <id>TestNGJava</id>
+          </State>
+          <State>
+            <id>Threading issuesJava</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="SearchEverywhereHistoryKey" value="professo&#9;FILE&#9;file://G:/Backup/Projetos/PSoul_2017-10-14/PSoul/Project/Server/Bin/data/npc/scripts/quest_professorOak.lua&#10;003&#9;FILE&#9;file://G:/Backup/Projetos/PSoul_2017-10-14/PSoul/Project/Server/Bin/data/lib/ps/config/003-quest.lua&#10;items.xml&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/items/items.xml&#10;start&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/globalevents/scripts/start.lua&#10;addon&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/systems/038-pokemonAddon.lua&#10;double team&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/events/spells/scripts/Double Team.lua&#10;outfits&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/others/outfits.lua&#10;clothes&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/events/actions/clothesKit.lua&#10;actions&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/actions/actions.xml&#10;start.&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/globalevents/scripts/start.lua&#10;anniversar&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/raids/scripts/anniversary.lua&#10;anniver&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/events/globalevents/anniversary.lua&#10;anniversa&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/events/creaturescripts/events/anniversary_onDeath.lua&#10;cons&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/actions/scripts/other/constructionkits.lua&#10;shoppa&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/shop_ballPaint.lua&#10;movemen&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/movements/movements.xml&#10;balls&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/balls.lua&#10;tech&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/systems/018-technicalMachine.lua&#10;bed&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/actions/scripts/other/furniturebeds.lua&#10;constru&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/actions/scripts/other/constructionkits.lua&#10;kecleon&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/pokemon/kecleon.lua&#10;pokemon&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/pokemon.lua&#10;fullin&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/events/actions/eggIncubator/fullIncubator.lua&#10;tiles&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/movements/scripts/tiles.lua&#10;event_an&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/event_anniversary.lua&#10;tournament&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/tournament.lua&#10;002&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/systems/002-quest.lua&#10;soul&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/soulTrade.lua&#10;professoroak&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/quest_professorOak.lua&#10;tourna&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/tournament.lua&#10;paint&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/shop_ballPaint.lua&#10;movement&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/movements/movements.xml&#10;ac&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/actions/actions.xml&#10;outfi&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/XML/outfits.xml&#10;cloth&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/events/actions/clothesKit.lua&#10;richard&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/Richard.xml&#10;frontier&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/shop_frontierIsland.lua&#10;casino&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/casinoMerchant.lua&#10;mastery&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/mastery_heremit.lua&#10;SOUL&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/soulTrade.lua&#10;gardevoi&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/_pokemon/gardevoir.lua&#10;scyther&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/_pokemon/scyther.lua&#10;scyth&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/actions/scripts/tools/scythe.lua&#10;omastar&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/pokemon/omastar.lua&#10;crobat&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/_pokemon/crobat.lua&#10;venusaur&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/_pokemon/venusaur.lua&#10;tangela&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/_pokemon/tangela.lua&#10;xatu&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/_pokemon/xatu.lua&#10;ranger&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/lib/ps/config/001-rangerClub.lua&#10;rangerclub&#9;FILE&#9;file://E:/PSoul/Project/Server/Bin/data/npc/scripts/rangerClub.lua" />
+    <property name="js-jscs-nodeInterpreter" value="C:\Program Files (x86)\nodejs\node.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="js.eslint.eslintPackage" value="" />
+    <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\PSoul\Project\Server\Bin\data\lib\ps\events\actions" />
+      <recent name="E:\PSoul\Project\Server\Bin\data\npc" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="ALTERNATE_INTERPRETER" value="false" />
+      <envs />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <Java />
+      <Profilers>
+        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
+        <option name="GAPID_ENABLED" value="false" />
+        <option name="GAPID_DISABLE_PCS" value="false" />
+        <option name="SUPPORT_LIB_ENABLED" value="true" />
+        <option name="INSTRUMENTATION_ENABLED" value="true" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="EXTRA_OPTIONS" value="" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <Java />
+      <Profilers>
+        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
+        <option name="GAPID_ENABLED" value="false" />
+        <option name="GAPID_DISABLE_PCS" value="false" />
+        <option name="SUPPORT_LIB_ENABLED" value="true" />
+        <option name="INSTRUMENTATION_ENABLED" value="true" />
+      </Profilers>
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Cold Fusion runner description" factoryName="Cold Fusion" custom_browser="" web_path="">
+      <method />
+    </configuration>
+    <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="myFilePath" />
+      <option name="GLUE" />
+      <option name="myNameFilter" />
+      <option name="myGeneratedName" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="NexusOne" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="0" />
+      <option name="fullScreenWidth" value="0" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="0" />
+      <option name="screenHeight" value="0" />
+      <option name="screenWidth" value="0" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <method />
+    </configuration>
+    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" appDescriptorForEmulator="Android" class_name="" emulatorAdlOptions="" method_name="" package_name="" scope="Class">
+      <option name="BCName" value="" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="moduleName" value="" />
+      <option name="trusted" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
+      <setting name="vmparams" value="" />
+      <setting name="cmdLine" value="run-app" />
+      <setting name="passParentEnv" value="true" />
+      <setting name="launchBrowser" value="true" />
+      <setting name="launchBrowserUrl" value="" />
+      <setting name="depsClasspath" value="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Java Scratch" factoryName="Java Scratch">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="SCRATCH_FILE_ID" value="0" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="data" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="filePath" />
+      <option name="vmParameters" />
+      <option name="alternativeJrePath" />
+      <option name="programParameters" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" />
+      <option name="isAlternativeJrePathEnabled" value="false" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="osgi.bnd.run" factoryName="Run Launcher">
+      <method />
+    </configuration>
+    <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <Java />
+      <Profilers>
+        <option name="GAPID_DISABLE_PCS" value="false" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a8c77b9a-2fe5-4152-9e44-c03b4d21b658" name="Default" comment="" />
+      <created>1481799021407</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1481799021407</updated>
+      <workItem from="1481799022748" duration="1955000" />
+      <workItem from="1481883438585" duration="656000" />
+      <workItem from="1482141014585" duration="1560000" />
+      <workItem from="1482144072305" duration="282000" />
+      <workItem from="1482150463097" duration="5000" />
+      <workItem from="1482399797020" duration="293000" />
+      <workItem from="1482400452270" duration="11000" />
+      <workItem from="1482527209395" duration="82000" />
+      <workItem from="1482707906319" duration="717000" />
+      <workItem from="1482753018349" duration="5503000" />
+      <workItem from="1482831822295" duration="26000" />
+      <workItem from="1482834090228" duration="4973000" />
+      <workItem from="1482857771322" duration="823000" />
+      <workItem from="1482967878210" duration="1384000" />
+      <workItem from="1483094796436" duration="1461000" />
+      <workItem from="1483350223810" duration="1448000" />
+      <workItem from="1483438683388" duration="2809000" />
+      <workItem from="1483525740096" duration="1409000" />
+      <workItem from="1483527571354" duration="472000" />
+      <workItem from="1483611953953" duration="1629000" />
+      <workItem from="1483698523207" duration="1647000" />
+      <workItem from="1483910579123" duration="80000" />
+      <workItem from="1483953553143" duration="2739000" />
+      <workItem from="1483958479949" duration="1362000" />
+      <workItem from="1484044237651" duration="792000" />
+      <workItem from="1484301140691" duration="1703000" />
+      <workItem from="1484401196972" duration="240000" />
+      <workItem from="1484560753136" duration="20000" />
+      <workItem from="1484733527806" duration="831000" />
+      <workItem from="1484820264520" duration="1976000" />
+      <workItem from="1484904596961" duration="1289000" />
+      <workItem from="1485252523136" duration="13000" />
+      <workItem from="1485254302547" duration="2196000" />
+      <workItem from="1485258855681" duration="25000" />
+      <workItem from="1485337840038" duration="3982000" />
+      <workItem from="1485426354520" duration="3823000" />
+      <workItem from="1485435866114" duration="26000" />
+      <workItem from="1485511560678" duration="2941000" />
+      <workItem from="1485770051379" duration="4357000" />
+      <workItem from="1485944485351" duration="2097000" />
+      <workItem from="1486028477659" duration="3705000" />
+      <workItem from="1486117826191" duration="1797000" />
+      <workItem from="1486374828405" duration="660000" />
+      <workItem from="1486462876620" duration="4656000" />
+      <workItem from="1486467788231" duration="1000" />
+      <workItem from="1486548987658" duration="4244000" />
+      <workItem from="1486567966158" duration="45000" />
+      <workItem from="1486636922360" duration="4472000" />
+      <workItem from="1486743960555" duration="3227000" />
+      <workItem from="1486747357912" duration="5561000" />
+      <workItem from="1486755160056" duration="624000" />
+      <workItem from="1486755885919" duration="6092000" />
+      <workItem from="1486980393308" duration="1869000" />
+      <workItem from="1486987789759" duration="332000" />
+      <workItem from="1487068865579" duration="9183000" />
+      <workItem from="1487088777895" duration="260000" />
+      <workItem from="1487089246241" duration="1909000" />
+      <workItem from="1487110583613" duration="955000" />
+      <workItem from="1487152147403" duration="2926000" />
+      <workItem from="1487189800192" duration="8000" />
+      <workItem from="1487189904996" duration="2659000" />
+      <workItem from="1487330017670" duration="2598000" />
+      <workItem from="1487365485308" duration="2182000" />
+      <workItem from="1487591153264" duration="158000" />
+      <workItem from="1487591382111" duration="2443000" />
+      <workItem from="1487594691656" duration="13000" />
+      <workItem from="1487595947755" duration="14000" />
+      <workItem from="1487678059701" duration="271000" />
+      <workItem from="1487711227516" duration="71000" />
+      <workItem from="1487764467991" duration="3247000" />
+      <workItem from="1487776367345" duration="64000" />
+      <workItem from="1487796245542" duration="25000" />
+      <workItem from="1488372806868" duration="1145000" />
+      <workItem from="1488477694969" duration="3518000" />
+      <workItem from="1488498653618" duration="24000" />
+      <workItem from="1488794133563" duration="1228000" />
+      <workItem from="1489061966111" duration="389000" />
+      <workItem from="1489116890612" duration="3655000" />
+      <workItem from="1489249691580" duration="3119000" />
+      <workItem from="1489254464128" duration="821000" />
+      <workItem from="1489359763466" duration="699000" />
+      <workItem from="1489576235582" duration="4843000" />
+      <workItem from="1489699789768" duration="3577000" />
+      <workItem from="1489777898896" duration="6367000" />
+      <workItem from="1490357697766" duration="81000" />
+      <workItem from="1490362241405" duration="1513000" />
+      <workItem from="1490363894736" duration="2789000" />
+      <workItem from="1490448662313" duration="51000" />
+      <workItem from="1490696550580" duration="3355000" />
+      <workItem from="1490960162473" duration="971000" />
+      <workItem from="1490961193952" duration="1303000" />
+      <workItem from="1491218116709" duration="3777000" />
+      <workItem from="1491303055144" duration="3891000" />
+      <workItem from="1491390282986" duration="6600000" />
+      <workItem from="1491475159620" duration="1767000" />
+      <workItem from="1491562963119" duration="1748000" />
+      <workItem from="1491821344897" duration="3073000" />
+      <workItem from="1491908984717" duration="5754000" />
+      <workItem from="1491995486314" duration="739000" />
+      <workItem from="1492431805909" duration="3827000" />
+      <workItem from="1492524262099" duration="4528000" />
+      <workItem from="1492535860315" duration="99000" />
+      <workItem from="1492555446712" duration="185000" />
+      <workItem from="1492559983060" duration="2290000" />
+      <workItem from="1492603180189" duration="3347000" />
+      <workItem from="1492692687888" duration="8214000" />
+      <workItem from="1492708454739" duration="1416000" />
+      <workItem from="1492739034767" duration="3733000" />
+      <workItem from="1492778651207" duration="4364000" />
+      <workItem from="1492794756480" duration="3169000" />
+      <workItem from="1493119340662" duration="3496000" />
+      <workItem from="1493205839158" duration="3889000" />
+      <workItem from="1493249516447" duration="5047000" />
+      <workItem from="1493293835136" duration="5201000" />
+      <workItem from="1493378631333" duration="6299000" />
+      <workItem from="1493386043468" duration="26000" />
+      <workItem from="1493386101952" duration="436000" />
+      <workItem from="1493387188160" duration="1971000" />
+      <workItem from="1493399999398" duration="203000" />
+      <workItem from="1493406557152" duration="219000" />
+      <workItem from="1493407972310" duration="733000" />
+      <workItem from="1493415817702" duration="119000" />
+      <workItem from="1493728733307" duration="1487000" />
+      <workItem from="1493811421042" duration="4023000" />
+      <workItem from="1493898065994" duration="3805000" />
+      <workItem from="1493981121356" duration="2770000" />
+      <workItem from="1494027505213" duration="1333000" />
+      <workItem from="1494355674344" duration="672000" />
+      <workItem from="1494426573544" duration="1842000" />
+      <workItem from="1494845124816" duration="2952000" />
+      <workItem from="1494849421199" duration="1469000" />
+      <workItem from="1495112967584" duration="1062000" />
+      <workItem from="1495196286174" duration="3274000" />
+      <workItem from="1495217393275" duration="2093000" />
+      <workItem from="1495226666356" duration="424000" />
+      <workItem from="1495227187673" duration="1060000" />
+      <workItem from="1495229393271" duration="19000" />
+      <workItem from="1495456996122" duration="2594000" />
+      <workItem from="1495538861243" duration="7688000" />
+      <workItem from="1495569047911" duration="11000" />
+      <workItem from="1496148186570" duration="1540000" />
+      <workItem from="1496231501471" duration="2952000" />
+      <workItem from="1496255715972" duration="4849000" />
+      <workItem from="1496269053057" duration="6248000" />
+      <workItem from="1496317455880" duration="2735000" />
+      <workItem from="1496447074754" duration="1867000" />
+      <workItem from="1496495990220" duration="755000" />
+      <workItem from="1496663560908" duration="3424000" />
+      <workItem from="1496667809687" duration="13000" />
+      <workItem from="1496749638302" duration="2725000" />
+      <workItem from="1496840668389" duration="458000" />
+      <workItem from="1497007184192" duration="3371000" />
+      <workItem from="1497039988730" duration="204000" />
+      <workItem from="1497267383757" duration="3460000" />
+      <workItem from="1497299381886" duration="23000" />
+      <workItem from="1497299870570" duration="160000" />
+      <workItem from="1497303357129" duration="29000" />
+      <workItem from="1497354229259" duration="700000" />
+      <workItem from="1497355444316" duration="980000" />
+      <workItem from="1497385734942" duration="24000" />
+      <workItem from="1497459713298" duration="2910000" />
+      <workItem from="1497465573070" duration="642000" />
+      <workItem from="1497466451066" duration="3355000" />
+      <workItem from="1497525029206" duration="7491000" />
+      <workItem from="1497547252617" duration="8000" />
+      <workItem from="1497549865655" duration="9000" />
+      <workItem from="1497572740283" duration="581000" />
+      <workItem from="1497621126486" duration="3528000" />
+      <workItem from="1497644288691" duration="268000" />
+      <workItem from="1497644585102" duration="60000" />
+      <workItem from="1497651357336" duration="75000" />
+      <workItem from="1497651905957" duration="51000" />
+      <workItem from="1497807704396" duration="187000" />
+      <workItem from="1497874084513" duration="1736000" />
+      <workItem from="1497911669404" duration="66000" />
+      <workItem from="1497922069721" duration="282000" />
+      <workItem from="1497959951096" duration="4245000" />
+      <workItem from="1497983727204" duration="15000" />
+      <workItem from="1498046706105" duration="466000" />
+      <workItem from="1498047348631" duration="685000" />
+      <workItem from="1498050274472" duration="611000" />
+      <workItem from="1498078820483" duration="876000" />
+      <workItem from="1498085716663" duration="1619000" />
+      <workItem from="1498137470463" duration="1384000" />
+      <workItem from="1498218989556" duration="270000" />
+      <workItem from="1498475455740" duration="6978000" />
+      <workItem from="1498513472044" duration="921000" />
+      <workItem from="1498515518224" duration="1086000" />
+      <workItem from="1498565838963" duration="1195000" />
+      <workItem from="1498650707207" duration="3016000" />
+      <workItem from="1498689430613" duration="2449000" />
+      <workItem from="1498828202396" duration="4000" />
+      <workItem from="1498833669031" duration="20000" />
+      <workItem from="1499084728940" duration="598000" />
+      <workItem from="1499089680873" duration="19000" />
+      <workItem from="1499199503141" duration="244000" />
+      <workItem from="1499210753173" duration="206000" />
+      <workItem from="1499259055884" duration="1752000" />
+      <workItem from="1499264154886" duration="18000" />
+      <workItem from="1499427376913" duration="1313000" />
+      <workItem from="1499432325499" duration="93000" />
+      <workItem from="1499687565516" duration="2268000" />
+      <workItem from="1499695839985" duration="4000" />
+      <workItem from="1499810626896" duration="1000" />
+      <workItem from="1499861272342" duration="597000" />
+      <workItem from="1499863873101" duration="2514000" />
+      <workItem from="1499896099622" duration="599000" />
+      <workItem from="1499898836247" duration="729000" />
+      <workItem from="1499944469400" duration="2681000" />
+      <workItem from="1499950931733" duration="40000" />
+      <workItem from="1499958207782" duration="12000" />
+      <workItem from="1499980084254" duration="9001000" />
+      <workItem from="1500027613883" duration="413000" />
+      <workItem from="1500028052973" duration="1353000" />
+      <workItem from="1500031128430" duration="5932000" />
+      <workItem from="1500061033680" duration="7621000" />
+      <workItem from="1500070367360" duration="2827000" />
+      <workItem from="1500075676702" duration="601000" />
+      <workItem from="1500158133444" duration="263000" />
+      <workItem from="1500292502924" duration="648000" />
+      <workItem from="1500294107444" duration="62000" />
+      <workItem from="1500295956031" duration="23000" />
+      <workItem from="1500590375960" duration="54000" />
+      <workItem from="1500635747011" duration="394000" />
+      <workItem from="1500639039676" duration="32000" />
+      <workItem from="1500649067306" duration="85000" />
+      <workItem from="1500896211075" duration="1339000" />
+      <workItem from="1500999946056" duration="598000" />
+      <workItem from="1501159328166" duration="621000" />
+      <workItem from="1501160398101" duration="92000" />
+      <workItem from="1501246402158" duration="70000" />
+      <workItem from="1501251365079" duration="246000" />
+      <workItem from="1501252021339" duration="11000" />
+      <workItem from="1501465485620" duration="99000" />
+      <workItem from="1501500801688" duration="59000" />
+      <workItem from="1501527905637" duration="83000" />
+      <workItem from="1501716929761" duration="393000" />
+      <workItem from="1502147042497" duration="206000" />
+      <workItem from="1502232850389" duration="131000" />
+      <workItem from="1502235802459" duration="102000" />
+      <workItem from="1502236115538" duration="306000" />
+      <workItem from="1502282097139" duration="66000" />
+      <workItem from="1502283443902" duration="4535000" />
+      <workItem from="1502290723650" duration="709000" />
+      <workItem from="1502399993691" duration="1712000" />
+      <workItem from="1502452185657" duration="4767000" />
+      <workItem from="1502464307024" duration="8000" />
+      <workItem from="1502552194950" duration="1352000" />
+      <workItem from="1502706712184" duration="681000" />
+      <workItem from="1502708738197" duration="1122000" />
+      <workItem from="1502710089060" duration="1781000" />
+      <workItem from="1502713408585" duration="1062000" />
+      <workItem from="1502793443246" duration="271000" />
+      <workItem from="1502800325141" duration="299000" />
+      <workItem from="1502838523184" duration="1023000" />
+      <workItem from="1502879592647" duration="18000" />
+      <workItem from="1502881845027" duration="129000" />
+      <workItem from="1502882946080" duration="778000" />
+      <workItem from="1502886300977" duration="1347000" />
+      <workItem from="1502889632149" duration="122000" />
+      <workItem from="1502967318495" duration="11000" />
+      <workItem from="1502969154164" duration="1552000" />
+      <workItem from="1502971214430" duration="2440000" />
+      <workItem from="1502975857163" duration="723000" />
+      <workItem from="1502983524031" duration="8000" />
+      <workItem from="1503053560821" duration="5516000" />
+      <workItem from="1503060516922" duration="5000" />
+      <workItem from="1503082516150" duration="655000" />
+      <workItem from="1503083637958" duration="1349000" />
+      <workItem from="1503092509942" duration="2266000" />
+      <workItem from="1503249760501" duration="42000" />
+      <workItem from="1503314900018" duration="4951000" />
+      <workItem from="1503400083752" duration="382000" />
+      <workItem from="1503425163288" duration="7000" />
+      <workItem from="1503438430134" duration="22000" />
+      <workItem from="1503484991515" duration="3982000" />
+      <workItem from="1503490844346" duration="1240000" />
+      <workItem from="1503492304075" duration="25000" />
+      <workItem from="1503594172915" duration="104000" />
+      <workItem from="1503594609757" duration="41000" />
+      <workItem from="1503661188951" duration="1455000" />
+      <workItem from="1503960341377" duration="6000" />
+      <workItem from="1504050857529" duration="822000" />
+      <workItem from="1504091341551" duration="701000" />
+      <workItem from="1504185023952" duration="71000" />
+      <workItem from="1504187285247" duration="156000" />
+      <workItem from="1504215039943" duration="621000" />
+      <workItem from="1504219212597" duration="6000" />
+      <workItem from="1504524533290" duration="8000" />
+      <workItem from="1504525757931" duration="3159000" />
+      <workItem from="1504531444714" duration="11000" />
+      <workItem from="1504614672279" duration="2392000" />
+      <workItem from="1504653645390" duration="96000" />
+      <workItem from="1504698881957" duration="63000" />
+      <workItem from="1504699606245" duration="619000" />
+      <workItem from="1504740299433" duration="25000" />
+      <workItem from="1504870102828" duration="1068000" />
+      <workItem from="1505129253724" duration="18000" />
+      <workItem from="1505131423643" duration="1656000" />
+      <workItem from="1505216399702" duration="626000" />
+      <workItem from="1505298605739" duration="1637000" />
+      <workItem from="1505392236620" duration="2111000" />
+      <workItem from="1505471352336" duration="3079000" />
+      <workItem from="1505480268557" duration="20000" />
+      <workItem from="1505731623205" duration="587000" />
+      <workItem from="1505732633169" duration="5328000" />
+      <workItem from="1505769299752" duration="5809000" />
+      <workItem from="1505817838471" duration="7028000" />
+      <workItem from="1505859727362" duration="300000" />
+      <workItem from="1505861200909" duration="1803000" />
+      <workItem from="1505904963691" duration="6514000" />
+      <workItem from="1505992423620" duration="734000" />
+      <workItem from="1506031192286" duration="7506000" />
+      <workItem from="1506078063103" duration="2417000" />
+      <workItem from="1506121162990" duration="33000" />
+      <workItem from="1506126158677" duration="142000" />
+      <workItem from="1506338380572" duration="1253000" />
+      <workItem from="1506342138715" duration="20055000" />
+      <workItem from="1506427582084" duration="3186000" />
+      <workItem from="1506464104146" duration="191000" />
+      <workItem from="1506466010395" duration="493000" />
+      <workItem from="1506467573485" duration="598000" />
+      <workItem from="1506470523932" duration="567000" />
+      <workItem from="1506541077096" duration="430000" />
+      <workItem from="1506541769521" duration="1677000" />
+      <workItem from="1506600128046" duration="487000" />
+      <workItem from="1506601239689" duration="410000" />
+      <workItem from="1506686642063" duration="50000" />
+      <workItem from="1506726404724" duration="331000" />
+      <workItem from="1506968817886" duration="1136000" />
+      <workItem from="1506970686094" duration="18000" />
+      <workItem from="1506972066086" duration="1362000" />
+      <workItem from="1506977974215" duration="5000" />
+      <workItem from="1506982009328" duration="1808000" />
+      <workItem from="1506985305478" duration="1632000" />
+      <workItem from="1507035998944" duration="10000" />
+      <workItem from="1507036022180" duration="850000" />
+      <workItem from="1507062333734" duration="599000" />
+      <workItem from="1507115401965" duration="3269000" />
+      <workItem from="1507148673654" duration="1600000" />
+      <workItem from="1507309891635" duration="87000" />
+      <workItem from="1507310151839" duration="1731000" />
+      <workItem from="1507333381328" duration="4333000" />
+      <workItem from="1507379115476" duration="808000" />
+      <workItem from="1507481915297" duration="2906000" />
+      <workItem from="1507629871845" duration="1658000" />
+      <workItem from="1507833503794" duration="493000" />
+      <workItem from="1507994228198" duration="310000" />
+      <workItem from="1524508522351" duration="282000" />
+      <workItem from="1525294105333" duration="601000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="586009000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32135308" sideWeight="0.5052083" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1875" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Log4jMonitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="combo" />
+      <window_info id="Dynamic Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50845665" sideWeight="0.49479166" order="7" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32135308" sideWeight="0.5052083" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="combo" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Dynamic Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Log4jMonitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1875" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50845665" sideWeight="0.49479166" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="processedProjectFiles" value="true" />
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="3" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/_pokemon/crobat.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/pokemon/omastar.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/001-rangerClub.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-46155">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/actions/scripts/tools/scythe.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/_pokemon/scyther.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/_pokemon/gardevoir.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/systems/035-referral.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2363">
+          <caret line="139" column="3" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="139" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/mastery_heremit.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1642">
+          <caret line="158" column="56" lean-forward="true" selection-start-line="158" selection-start-column="56" selection-end-line="158" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/casinoMerchant.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2346">
+          <caret line="138" column="29" lean-forward="false" selection-start-line="138" selection-start-column="29" selection-end-line="141" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/Richard.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/shop_mastery.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4369">
+          <caret line="257" column="87" lean-forward="false" selection-start-line="257" selection-start-column="87" selection-end-line="257" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/systems/014-mastery.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="32" lean-forward="false" selection-start-line="34" selection-start-column="32" selection-end-line="34" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/shop_frontierIsland.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="97" column="16" lean-forward="false" selection-start-line="97" selection-start-column="16" selection-end-line="97" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/soulTrade.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="46" lean-forward="false" selection-start-line="21" selection-start-column="46" selection-end-line="21" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/systems/002-quest.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/tournament.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="424" column="208" lean-forward="false" selection-start-line="424" selection-start-column="208" selection-end-line="424" selection-end-column="208" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/movements/scripts/tiles.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="297" column="44" lean-forward="false" selection-start-line="297" selection-start-column="44" selection-end-line="297" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/actions/scripts/other/doors.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="145">
+          <caret line="109" column="18" lean-forward="false" selection-start-line="109" selection-start-column="18" selection-end-line="109" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/actions/quests/aerodactylOilFlask.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="145">
+          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/monster/Pokemons/kecleon.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/pokemon/kecleon.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="17" lean-forward="false" selection-start-line="18" selection-start-column="12" selection-end-line="18" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/actions/eggIncubator/fullIncubator.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="42" lean-forward="false" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/talkactions/scripts/createitem.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/systems/018-technicalMachine.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="427">
+          <caret line="253" column="23" lean-forward="false" selection-start-line="253" selection-start-column="23" selection-end-line="253" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/pokemon.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="884">
+          <caret line="1257" column="24" lean-forward="false" selection-start-line="1257" selection-start-column="24" selection-end-line="1257" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/actions/scripts/other/furniturebeds.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="38" column="10" lean-forward="true" selection-start-line="38" selection-start-column="10" selection-end-line="38" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/others/constants.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="799">
+          <caret line="328" column="19" lean-forward="false" selection-start-line="328" selection-start-column="19" selection-end-line="328" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/movements/movements.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="1160" lean-forward="false" selection-start-line="5" selection-start-column="1160" selection-end-line="5" selection-end-column="1160" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/shop_ballPaint.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="149" column="24" lean-forward="false" selection-start-line="149" selection-start-column="24" selection-end-line="149" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/actions/scripts/other/constructionkits.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="38" lean-forward="false" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/balls.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1054">
+          <caret line="62" column="37" lean-forward="false" selection-start-line="62" selection-start-column="37" selection-end-line="62" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/creaturescripts/onKill.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="12" lean-forward="false" selection-start-line="8" selection-start-column="12" selection-end-line="8" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/creaturescripts/onSpawn.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="4" lean-forward="false" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/XML/outfits.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="331" column="39" lean-forward="false" selection-start-line="331" selection-start-column="35" selection-end-line="331" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/actions/clothesKit.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="52" column="10" lean-forward="false" selection-start-line="52" selection-start-column="10" selection-end-line="52" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/actions/actions.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="30" column="151" lean-forward="false" selection-start-line="30" selection-start-column="151" selection-end-line="30" selection-end-column="151" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/creaturescripts/events/anniversary_onDeath.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/raids/events/anniversary.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="884">
+          <caret line="80" column="69" lean-forward="false" selection-start-line="80" selection-start-column="69" selection-end-line="80" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/raids/scripts/anniversary.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="14" lean-forward="false" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/globalevents/anniversary.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="14" lean-forward="false" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/actions/carpenterHammer.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="27" column="20" lean-forward="false" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/Timothy Kelvin.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="25" lean-forward="false" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/globalevents/scripts/start.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="158" column="15" lean-forward="false" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/events/spells/scripts/Double Team.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="47" column="48" lean-forward="false" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/others/outfits.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="637" column="61" lean-forward="false" selection-start-line="637" selection-start-column="61" selection-end-line="637" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/event_anniversary.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="96" column="45" lean-forward="false" selection-start-line="96" selection-start-column="45" selection-end-line="96" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/systems/038-pokemonAddon.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="2200" column="50" lean-forward="true" selection-start-line="2200" selection-start-column="50" selection-end-line="2200" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/items/items.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="26711" column="51" lean-forward="false" selection-start-line="26711" selection-start-column="45" selection-end-line="26711" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/systems/048-anniversaryEvent.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="48" column="79" lean-forward="false" selection-start-line="48" selection-start-column="79" selection-end-line="48" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ps/config/003-quest.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2635">
+          <caret line="155" column="20" lean-forward="false" selection-start-line="155" selection-start-column="6" selection-end-line="155" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/npc/scripts/quest_professorOak.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="71" column="74" lean-forward="false" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
