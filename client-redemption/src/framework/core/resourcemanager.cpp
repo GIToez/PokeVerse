@@ -1173,121 +1173,16 @@ void ResourceManager::updateFiles(const std::set<std::string>& files) {
     addSearchPath(getWorkDir(), true);
 }
 
+// The upstream self-updater wrote a downloaded executable next to the client (updateExecutable) and, on the
+// next start, launched the newest executable whose name shared the client's prefix and deleted the others
+// (launchCorrect). Neither the download nor the launched file was verified, so PokeVerse keeps both disabled
+// until the updater is redesigned with signed releases.
 void ResourceManager::updateExecutable(std::string fileName)
 {
-#if defined(ANDROID) || defined(FREE_VERSION)
-    g_logger.fatal("Executable cannot be updated on android or in free version");
-#else
-    if (fileName.size() <= 2) {
-        g_logger.fatal("Invalid executable name");
-    }
-
-    if (fileName[0] == '/')
-        fileName = fileName.substr(1);
-
-    const auto dFile = g_http.getFile(fileName);
-    if (!dFile)
-        g_logger.fatal("Cannot find executable: {} in downloads", fileName);
-
-    const auto& oldWriteDir = getWriteDir();
-    setWriteDir(getWorkDir());
-    const std::filesystem::path path(m_binaryPath);
-    const auto newBinary = path.stem().string() + "-" + std::to_string(time(nullptr)) + path.extension().string();
-    g_logger.info("Updating binary file: {}", newBinary);
-    PHYSFS_file* file = PHYSFS_openWrite(newBinary.c_str());
-    if (!file) {
-        return g_logger.fatal(
-            "Can't open {} for writing: {}",
-            newBinary,
-            PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode())
-        );
-    }
-
-    PHYSFS_writeBytes(file, dFile->response.data(), dFile->response.size());
-    PHYSFS_close(file);
-    setWriteDir(oldWriteDir);
-
-#endif
+    g_logger.error("Executable update refused for '{}': the self-updater is disabled in PokeVerse", fileName);
 }
 
-bool ResourceManager::launchCorrect(const std::vector<std::string>& args) { // curently works only on windows
-#if (defined(ANDROID) || defined(FREE_VERSION))
-    return false;
-#else
-    const auto normalizeName = [](std::string name) {
-        const auto dash = name.find('-');
-        if (dash != std::string::npos) {
-            name = name.substr(0, dash);
-        }
-        stdext::tolower(name);
-        return name;
-    };
-
-    auto fileName2 = normalizeName(m_binaryPath.stem().string());
-
-    const std::filesystem::path path(m_binaryPath.parent_path());
-    std::error_code ec;
-    if (path.empty() || !std::filesystem::exists(path, ec) || ec) {
-        return false;
-    }
-
-    auto lastWrite = last_write_time(m_binaryPath, ec);
-    std::filesystem::path binary = m_binaryPath;
-    for (auto it = std::filesystem::directory_iterator(path, ec);
-         !ec && it != std::filesystem::directory_iterator();
-         ++it) {
-        const auto& entry = *it;
-        if (is_directory(entry.path()))
-            continue;
-
-        auto fileName1 = normalizeName(entry.path().stem().string());
-        if (fileName1 != fileName2)
-            continue;
-
-        if (entry.path().extension() == m_binaryPath.extension()) {
-            std::error_code _ec;
-            auto writeTime = last_write_time(entry.path(), _ec);
-            if (!_ec && writeTime > lastWrite) {
-                lastWrite = writeTime;
-                binary = entry.path();
-            }
-        }
-    }
-
-    if (ec) {
-        return false;
-    }
-
-    for (auto it = std::filesystem::directory_iterator(path, ec);
-         !ec && it != std::filesystem::directory_iterator();
-         ++it) { // remove old
-        const auto& entry = *it;
-        if (is_directory(entry.path()))
-            continue;
-
-        auto fileName1 = normalizeName(entry.path().stem().string());
-        if (fileName1 != fileName2)
-            continue;
-
-        if (entry.path().extension() == m_binaryPath.extension()) {
-            if (binary == entry.path())
-                continue;
-            std::error_code _ec;
-            std::filesystem::remove(entry.path(), _ec);
-        }
-    }
-
-    if (ec) {
-        return false;
-    }
-
-    if (binary == m_binaryPath)
-        return false;
-
-    g_platform.spawnProcess(binary.string(), args);
-    return true;
-#endif
-}
+bool ResourceManager::launchCorrect(const std::vector<std::string>& /*args*/) { return false; }
 
 std::string ResourceManager::createArchive(const std::unordered_map<std::string, std::string>& /*files*/) { return ""; }
 
