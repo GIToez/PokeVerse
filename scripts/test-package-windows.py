@@ -92,11 +92,31 @@ def read(path):
         return ""
 
 
+def run_client(client_dir, env, logs, tag):
+    client_log = os.path.join(os.environ.get("USERPROFILE", ""), "pokeverse.log")
+    if os.path.exists(client_log):
+        os.remove(client_log)
+    client = subprocess.Popen([os.path.join(client_dir, "pokeverse-client.exe")], cwd=client_dir, env=env)
+    wait_for(lambda: "Loaded module 'game_interface'" in read(client_log) or client.poll() is not None, 90)
+    time.sleep(5)
+    alive = client.poll() is None
+    text = read(client_log)
+    if os.path.exists(client_log):
+        shutil.copy(client_log, os.path.join(logs, f"client-{tag}.log"))
+    print(text[-4000:])
+    if alive:
+        client.kill()
+    loaded = "Loaded module 'client_entergame'" in text and "Loaded module 'game_interface'" in text
+    print(f"[{tag}] modules loaded: {loaded}; running after start-up: {alive}; exit code: {client.poll()}")
+    return loaded and alive
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("package")
     parser.add_argument("--logs", default=None, help="folder to copy logs into")
     parser.add_argument("--skip-client", action="store_true")
+    parser.add_argument("--mesa", default=None, help="folder with Mesa opengl32.dll for runners without a GPU driver")
     opts = parser.parse_args()
     pkg = os.path.abspath(opts.package)
     logs = os.path.abspath(opts.logs or os.path.join(pkg, "..", "test-logs"))
@@ -170,26 +190,23 @@ def main():
             fail("database errors in the server log")
 
         if not opts.skip_client:
-            step("Client smoke test")
+            step("Client smoke test (as shipped)")
             client_dir = os.path.join(pkg, "client-legacy-windows")
-            client_log = os.path.join(os.environ.get("USERPROFILE", ""), "pokeverse.log")
-            if os.path.exists(client_log):
-                os.remove(client_log)
-            client = subprocess.Popen([os.path.join(client_dir, "pokeverse-client.exe")], cwd=client_dir, env=clean_env())
-            wait_for(lambda: "Loaded module 'game_interface'" in read(client_log) or client.poll() is not None, 90)
-            time.sleep(5)
-            alive = client.poll() is None
-            text = read(client_log)
-            if os.path.exists(client_log):
-                shutil.copy(client_log, logs)
-            print(text[-6000:])
-            if alive:
-                client.kill()
-            if "Loaded module 'client_entergame'" not in text or "Loaded module 'game_interface'" not in text:
-                fail(f"client did not load its modules (exit code {client.poll()})")
-            if not alive:
-                fail(f"client exited with code {client.returncode}")
-            print("Client started and loaded its modules.")
+            ok, how = run_client(client_dir, clean_env(), logs, "as-shipped"), "as shipped"
+            if not ok and opts.mesa:
+                # CI runners have no OpenGL 2.0 driver; retry a copy of the client with Mesa's software renderer.
+                step("Client smoke test (copy with Mesa software OpenGL, CI only)")
+                mesa_dir = os.path.join(pkg, "..", "client-mesa-test")
+                shutil.rmtree(mesa_dir, ignore_errors=True)
+                shutil.copytree(client_dir, mesa_dir)
+                for f in os.listdir(opts.mesa):
+                    shutil.copy(os.path.join(opts.mesa, f), mesa_dir)
+                env = clean_env()
+                env["GALLIUM_DRIVER"] = "llvmpipe"
+                ok, how = run_client(mesa_dir, env, logs, "mesa"), "with Mesa software OpenGL"
+            if not ok:
+                fail("the client did not start and load its modules")
+            print(f"Client started and loaded its modules ({how}).")
 
         print("\nPASS: package database setup, account creation, server start, login, "
               "character list, game login, movement and client start verified.")

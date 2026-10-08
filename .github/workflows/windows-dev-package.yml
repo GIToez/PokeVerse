@@ -75,6 +75,19 @@ jobs:
       - name: Assemble package
         run: scripts/package-windows.sh build/server build/client mariadb.zip dist
 
+      - name: Collect Mesa software OpenGL for the CI client test (not shipped)
+        run: |
+          pacman -S --needed --noconfirm mingw-w64-x86_64-mesa
+          mkdir -p ci-mesa
+          cp /mingw64/bin/opengl32.dll /mingw64/bin/libgallium_wgl.dll ci-mesa/
+          ldd ci-mesa/*.dll | awk '{print $3}' | grep -i '^/mingw64/' | sort -u | xargs -r cp -n -t ci-mesa/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-mesa
+          path: ci-mesa/
+          retention-days: 3
+
       - uses: actions/upload-artifact@v4
         with:
           name: PokeVerse-Windows-Dev
@@ -99,11 +112,16 @@ jobs:
           name: PokeVerse-Windows-Dev
           path: ${{ runner.temp }}\download
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: ci-mesa
+          path: ${{ runner.temp }}\ci-mesa
+
       - name: Run end-to-end test from the extracted package
         shell: pwsh
         run: |
           $pkg = Join-Path $env:RUNNER_TEMP "download\PokeVerse-Windows-Dev"
-          python repo\scripts\test-package-windows.py $pkg --logs (Join-Path $env:RUNNER_TEMP "test-logs")
+          python repo\scripts\test-package-windows.py $pkg --logs (Join-Path $env:RUNNER_TEMP "test-logs") --mesa (Join-Path $env:RUNNER_TEMP "ci-mesa")
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - uses: actions/upload-artifact@v4
