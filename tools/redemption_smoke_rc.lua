@@ -596,7 +596,7 @@ local function inspectGame()
         local function poll()
             local creature = g_map.getCreatureById(targetId)
             wildDeathPos = creature and creature:getPosition() or wildDeathPos
-            if alive() and waited < 15000 then
+            if alive() and waited < 30000 then
                 if not g_game.isAttacking() then g_game.attack(g_map.getCreatureById(targetId)) end
                 waited = waited + 500
                 local window = modules.game_pokemoves and modules.game_pokemoves.pokemonMovesWindow
