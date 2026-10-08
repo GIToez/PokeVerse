@@ -73,6 +73,26 @@ local function inspectGame()
             report('INVENTORY slot=%d id=%d count=%d pokeName=%s', slot, item:getId(), item:getCount(), item:getPokeName())
         end
     end
+    for _, creature in ipairs(g_map.getSpectators(player:getPosition(), false)) do
+        report('LOOK name=%s lookType=%d', creature:getName(), creature:getOutfit().type or 0)
+    end
+    -- Same keys as tools/legacy-smoke/pv_legacy_smoke/pv_legacy_smoke.lua, Redemption module names.
+    local features = {}
+    for _, f in ipairs({
+        { 'login', 'client_entergame' }, { 'map', 'game_interface' }, { 'minimap', 'game_minimap' },
+        { 'pokebar', 'game_pokebar' }, { 'moves', 'game_pokemoves' }, { 'inventory', 'game_inventory' },
+        { 'containers', 'game_containers' }, { 'pokedex', 'game_pokedex' }, { 'pokemon_info', 'game_pokemonInfo' },
+        { 'npc_trade', 'game_npctrade' }, { 'shop', 'game_pokeshop' }, { 'market', 'game_pokemarket' },
+        { 'chat', 'game_console' }, { 'battle_list', 'game_battle' }, { 'hotkeys', 'game_hotkeys' },
+        { 'outfit', 'game_outfit' }, { 'questlog', 'game_questlog' }, { 'task', 'game_task' },
+        { 'battle_pass', 'game_pass' }, { 'craft', 'game_craft' }, { 'tm_choose', 'game_tmchoose' },
+        { 'statusbar', 'game_statusbar' }, { 'pokekill', 'game_pokekill' }, { 'effects', 'game_attachedeffects' },
+    }) do
+        local module = g_modules.getModule(f[2])
+        table.insert(features, string.format('%s=%s:%s', f[1], f[2], tostring(module ~= nil and module:isLoaded())))
+    end
+    report('FEATURES %s', table.concat(features, ' '))
+    report('AUDIO engine=%s', g_sounds and 'OpenAL' or 'none')
 
     local function findCreature(match)
         for _, tile in ipairs(g_map.getTiles(player:getPosition().z)) do

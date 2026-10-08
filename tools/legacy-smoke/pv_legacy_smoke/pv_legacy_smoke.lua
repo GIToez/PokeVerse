@@ -12,6 +12,20 @@ local character = os.getenv('PV_CHARACTER') or 'Trainer'
 local inGameMs = tonumber(os.getenv('PV_IN_GAME_MS') or '') or 15000
 local events = {}
 local started = g_clock.millis()
+local texts, talks = 0, 0
+
+-- The feature each comparison row is about and the module that provides it in this client
+-- (tools/redemption_smoke_rc.lua has the same keys with the Redemption module names).
+local FEATURES = {
+  { 'login', 'client_entergame' }, { 'map', 'game_interface' }, { 'minimap', 'game_minimap' },
+  { 'pokebar', 'game_pokebar' }, { 'moves', 'game_pokemoves' }, { 'inventory', 'game_inventory' },
+  { 'containers', 'game_containers' }, { 'pokedex', 'game_pokedex' }, { 'pokemon_info', 'game_pokemonInfo' },
+  { 'npc_trade', 'game_npctrade' }, { 'shop', 'game_shop' }, { 'market', 'game_market' },
+  { 'chat', 'game_chat' }, { 'battle_list', 'game_battle' }, { 'hotkeys', 'game_hotkeys' },
+  { 'outfit', 'game_outfit' }, { 'questlog', 'game_questlog' }, { 'task', 'game_task' },
+  { 'battle_pass', 'game_pass' }, { 'craft', 'game_craft' }, { 'tm_choose', 'game_tmchoose' },
+  { 'statusbar', 'game_statusbar' }, { 'pokekill', 'game_pokekill' }, { 'effects', 'game_effects' },
+}
 
 local function log(fmt, ...)
   g_logger.info('[pv-smoke] ' .. string.format(fmt, ...))
@@ -96,6 +110,21 @@ local function report()
   local bar = modules.game_pokebar and modules.game_pokebar.pokemonBar
   log('MODULE game_pokebar loaded=%s visible=%s', tostring(modules.game_pokebar ~= nil),
       tostring(bar ~= nil and bar:isVisible()))
+  for slot = 1, 10 do
+    local item = player and player:getInventoryItem(slot)
+    if item then log('INVENTORY slot=%d id=%d count=%d', slot, item:getId(), item:getCount()) end
+  end
+  for _, creature in ipairs(pos and g_map.getSpectators(pos, false) or {}) do
+    log('LOOK name=%s lookType=%d', creature:getName(), creature:getOutfit().type or 0)
+  end
+  local features = {}
+  for _, f in ipairs(FEATURES) do
+    local module = g_modules.getModule(f[2])
+    table.insert(features, string.format('%s=%s:%s', f[1], f[2], tostring(module ~= nil and module:isLoaded())))
+  end
+  log('FEATURES %s', table.concat(features, ' '))
+  log('CHAT received texts=%d talks=%d', texts, talks)
+  log('AUDIO engine=%s', g_sounds and 'OpenAL' or 'none')
   log('WINDOWS %s', visibleWindows())
   log('FPS foreground=%d background=%d', g_app.getForegroundPaneFps(), g_app.getBackgroundPaneFps())
   log('SCREENSHOT')
@@ -116,8 +145,11 @@ local function onGameEnd()
   log('GAME END')
 end
 
+local function onTextMessage() texts = texts + 1 end
+local function onTalk() talks = talks + 1 end
+
 function init()
-  connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
+  connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd, onTextMessage = onTextMessage, onTalk = onTalk })
   log('LOADED account=%s character=%s', account, character)
   applyWindowSize()
   later(1000, function() login(0) end)
@@ -128,6 +160,6 @@ function init()
 end
 
 function terminate()
-  disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
+  disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd, onTextMessage = onTextMessage, onTalk = onTalk })
   for _, event in ipairs(events) do removeEvent(event) end
 end

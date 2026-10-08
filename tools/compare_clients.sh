@@ -46,6 +46,7 @@ else
 fi
 
 value() { grep -a "^$2=" "$OUT/$1-metrics.txt" 2>/dev/null | head -1 | cut -d= -f2-; }
+smoke() { grep -a '\[pv-smoke\] ' "$OUT/$1.log" 2>/dev/null | sed 's/.*\[pv-smoke\] //' | tr -d '\r' | awk '!seen[$0]++'; }
 {
     echo "# Client comparison run"
     echo
@@ -60,6 +61,32 @@ value() { grep -a "^$2=" "$OUT/$1-metrics.txt" 2>/dev/null | head -1 | cut -d= -
     echo
     echo "Screenshots: legacy.png and redemption.png (in the game at the login position, map loaded)."
     echo "FPS under software OpenGL measures the CPU renderer, not a real GPU."
+    echo
+    echo "## What each client showed for the same character on the same server"
+    echo
+    echo "| Feature | Legacy module (loaded) | Redemption module (loaded) |"
+    echo "|---|---|---|"
+    lf=$(smoke legacy | sed -n 's/^FEATURES //p' | head -1 | tr ' ' '\n')
+    rf=$(smoke redemption | sed -n 's/^FEATURES //p' | head -1 | tr ' ' '\n')
+    for key in $(printf '%s\n' "$lf" "$rf" | cut -d= -f1 | awk 'NF && !seen[$0]++'); do
+        l=$(printf '%s\n' "$lf" | sed -n "s/^$key=//p"); r=$(printf '%s\n' "$rf" | sed -n "s/^$key=//p")
+        echo "| $key | ${l:-not reported} | ${r:-not reported} |"
+    done
+    echo
+    li=$(smoke legacy | sed -n 's/^INVENTORY \(slot=[0-9]* id=[0-9]* count=[0-9]*\).*/\1/p' | sort)
+    ri=$(smoke redemption | sed -n 's/^INVENTORY \(slot=[0-9]* id=[0-9]* count=[0-9]*\).*/\1/p' | sort)
+    echo "Inventory slots: legacy $(printf '%s' "$li" | grep -c .), Redemption $(printf '%s' "$ri" | grep -c .); $( [ -n "$li" ] && [ "$li" = "$ri" ] && echo "identical items" || echo "DIFFERENT")."
+    printf '%s\n' "$li" | sed 's/^/    legacy      /'
+    printf '%s\n' "$ri" | sed 's/^/    redemption  /'
+    ll=$(smoke legacy | sed -n 's/^LOOK //p' | sort -u); rl=$(smoke redemption | sed -n 's/^LOOK //p' | sort -u)
+    echo
+    echo "Creatures on screen with their outfit (lookType): $( [ -n "$ll" ] && [ "$ll" = "$rl" ] && echo "identical in both clients" || echo "DIFFERENT")."
+    printf '%s\n' "$ll" | sed 's/^/    legacy      /'
+    printf '%s\n' "$rl" | sed 's/^/    redemption  /'
+    echo
+    echo "Server messages received: legacy $(smoke legacy | sed -n 's/^CHAT received //p' | head -1);" \
+        "Redemption texts=$(smoke redemption | grep -c '^TEXT ') talks=$(smoke redemption | grep -c '^TALK ')."
+    echo "Audio engine: legacy $(smoke legacy | sed -n 's/^AUDIO engine=//p' | head -1), Redemption $(smoke redemption | sed -n 's/^AUDIO engine=//p' | head -1) (no audio device on CI: playback is not verified)."
 } > "$OUT/summary.md"
 cat "$OUT/summary.md"
 exit $status
