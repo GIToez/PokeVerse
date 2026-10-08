@@ -11,13 +11,59 @@ no removal of existing working features.
 | Folder structure | Done |
 | Import original project into `references/` | Done |
 | Initial source audit | Done (below) |
-| Copy sources into `core/` | Not started |
-| English standardization | Not started |
-| Build server from source (Windows) | Not started |
-| Build legacy client from source (Windows) | Not started |
-| Local database setup and accounts | Not started |
-| `setup.bat`, `start-server.bat`, `start-client.bat` | Not started |
-| Verify login, character creation, in-game movement | Not started |
+| Copy sources into `core/` | Done |
+| Build server from source | Done: Linux (GCC 13, Boost 1.83) and Windows (MSYS2 MinGW-w64, GCC 15, Boost 1.92) |
+| Build legacy client from source | Done: Linux and Windows |
+| Local database setup and accounts | Done: `core/database/`, reconstructed PSoul tables |
+| Windows package and `.bat` files | Done: `PokeVerse-Windows-Dev` CI artifact, see [windows-dev-package.md](windows-dev-package.md) |
+| PSoul to PokeVerse rename, English backend | Done (see notes below) |
+| Verify login, character creation, in-game movement | Done: protocol tests on Linux and Windows CI, real client by hand on Linux |
+
+## What was changed to build with current toolchains
+
+- **Boost.Asio:** `io_service` to `io_context`, `post`/`dispatch` free functions,
+  `make_address_v4`, `to_uint`, resolver results instead of `query`/`iterator`,
+  `steady_timer` instead of `deadline_timer` (no longer in Boost 1.92's `asio.hpp`).
+- **OpenSSL 1.1/3 (client):** the RSA key is set through `RSA_set0_*`/`RSA_get0_*` and
+  cipher contexts come from `EVP_CIPHER_CTX_new`, instead of reading struct internals.
+- **Compiler fixes:** removed `std::tr1`, explicit casts for timer durations, an array
+  initializer in `talkaction.cpp`, `NULL` instead of `false` for a pointer return, a
+  misnamed `getLength()` call in `point.h` (GCC 15 checks template bodies), and the
+  `UILayout` constructor moved out of line.
+- **Runtime fixes:** APNG decoding passes its `z_stream` by reference (modern zlib
+  rejects copies, which made animated images blank); a negative jump-animation delay is
+  clamped to 0.
+- **Client assets:** the source decrypts `.lua/.png/.otui/.spr/.dat` files with a built-in
+  AES key, but the shipped data is plain text. Decryption is now behind the CMake option
+  `ENCRYPTED_ASSETS` (default `OFF`).
+- **Server includes:** MariaDB headers come from the pkg-config include path
+  (`__MYSQL_ALT_INCLUDE__`).
+
+## Rename and English standardization
+
+- Player-facing texts, identifiers (`GameServerPokeVerse*` protocol enums), app name,
+  executables (`pokeverse-server`, `pokeverse-client`), the database (`pokeverse`) and
+  the matching `pt_br.loc` translation keys say PokeVerse.
+- Kept on purpose: the anniversary-event items "PSoul letter P/S/O/U/L", "PSoul token" and
+  "PSoul backpack" (their sprites spell the old name and the event matches on the names);
+  "Deepsoul Stone" (an in-game item); the Portuguese command aliases `/cupom`,
+  `/comando`, `/comandos` (English aliases already exist).
+- File, folder and command names were already English. Remaining Portuguese code
+  comments were translated. Portuguese/Spanish player texts and translations are kept.
+
+## Known issues (existing, not fixed in Phase 1)
+
+- The NPC Soya references a missing `loot.lua` (Soya is not placed on the map).
+- Tournaments 2 and 3 are commented out in XML, but `tournament.lua` still queries them
+  ("Npc interface" errors in the server log).
+- The server prints "Outdated MySQL server detected"; it is only a version-string check.
+- `duelMessage.otui` and `lootList.otui` are referenced with different capitalisation
+  than the files; this only fails on case-sensitive file systems (Linux), not Windows.
+- Some in-game texts and buttons still link to the old websites (psoul.net, pokenordic);
+  a PokeVerse website is out of scope for Phase 1.
+- The PokeVerse table extensions (`pokeverse-extensions.sql`) and the starting kit for new
+  characters were reconstructed from the server source, because the archive has no
+  game database dump.
 
 ## Initial audit of `references/Projeto/`
 

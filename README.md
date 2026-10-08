@@ -18,6 +18,13 @@ Source code lives in `core/`; compiled output lives in `builds/`. The two are ne
 See [`docs/project-structure.md`](docs/project-structure.md) for details and
 [`docs/phase1-plan.md`](docs/phase1-plan.md) for the current roadmap.
 
+## Play locally on Windows
+
+Download the **PokeVerse-Windows-Dev** artifact from the latest successful
+**Windows dev package** run in the Actions tab, extract it, run `Setup Database.bat`,
+then `Start Server and Client.bat`. Log in with `test` / `test`.
+See [`docs/windows-dev-package.md`](docs/windows-dev-package.md).
+
 ## Cloning
 
 Some assets are larger than 100 MB and are stored with [Git LFS](https://git-lfs.com/).
