@@ -229,6 +229,7 @@ end
 
 function WikiChat.KeywordHandler:greet(cid)
     self:sendMessage(cid, WikiChat.Greets)
+    self.lastNode[cid] = self:getRoot().children[1] -- Only one language (English): start inside its menu
 end
 
 WikiChat.handler = WikiChat.KeywordHandler:new()
