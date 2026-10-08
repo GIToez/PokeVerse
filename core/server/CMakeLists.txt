@@ -20,7 +20,7 @@ pkg_search_module(MARIADB REQUIRED libmariadb mariadb)
 file(GLOB SERVER_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 list(FILTER SERVER_SOURCES EXCLUDE REGEX "/(databaseodbc|databasepgsql|protocolhttp)\\.cpp$")
 if(WIN32)
-  list(APPEND SERVER_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/TheForgottenServer_private.rc)
+  list(APPEND SERVER_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/pokeverse-server.rc)
 endif()
 
 add_executable(pokeverse-server ${SERVER_SOURCES})

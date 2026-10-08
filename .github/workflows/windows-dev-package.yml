@@ -55,6 +55,7 @@ jobs:
           cmake --build build/server
 
       - name: Build client
+        if: ${{ !cancelled() }}
         run: |
           cmake -S core/client-legacy -B build/client -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_STATIC_LIBS=OFF \
             -DBUILD_COMMIT=${GITHUB_SHA::7} -DBUILD_REVISION=${GITHUB_RUN_NUMBER}
