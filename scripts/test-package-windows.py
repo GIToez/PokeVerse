@@ -45,10 +45,16 @@ def clean_env():
     return env
 
 
+def cmd_line(bat, *args):
+    # A plain string is passed to CreateProcess unchanged; a list would get its quotes
+    # escaped as \" by subprocess, which cmd.exe does not understand.
+    inner = f'call "{bat}"' + "".join(f' "{a}"' for a in args)
+    return f'cmd.exe /d /c "{inner}"'
+
+
 def run_bat(pkg, name, *args, check=True):
-    cmd = f'call "{os.path.join(pkg, name)}"' + "".join(f' "{a}"' for a in args)
     print(f"> {name} {' '.join(args)}", flush=True)
-    result = subprocess.run(["cmd.exe", "/d", "/c", cmd], cwd=pkg, env=clean_env(),
+    result = subprocess.run(cmd_line(os.path.join(pkg, name), *args), cwd=pkg, env=clean_env(),
                             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                             text=True, errors="replace")
     print(result.stdout, flush=True)
@@ -156,7 +162,7 @@ def main():
         step("Start Server.bat")
         server_log = os.path.join(logs, "server-console.log")
         log_file = open(server_log, "w")
-        server = subprocess.Popen(["cmd.exe", "/d", "/c", f'call "{os.path.join(pkg, "Start Server.bat")}"'],
+        server = subprocess.Popen(cmd_line(os.path.join(pkg, "Start Server.bat")),
                                   cwd=pkg, env=clean_env(), stdin=subprocess.DEVNULL,
                                   stdout=log_file, stderr=subprocess.STDOUT)
         online = wait_for(lambda: "server Online!" in read(server_log) or server.poll() is not None, 300)
