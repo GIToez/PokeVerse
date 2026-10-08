@@ -20,7 +20,10 @@ fi
 mkdir -p logs/server logs/chat logs/bots logs/talkactions
 
 port_open() { (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null; }
-config_value() { sed -n -E "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*\"?([^\"]*)\"?.*/\1/p" config.lua | head -1; }
+# config.lua comes with CRLF line endings; a CR left in the port would make the in-use check pass.
+config_value() {
+    tr -d '\r' < config.lua | sed -n -E "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*(\"([^\"]*)\"|([^[:space:]\"]*)).*/\2\3/p" | head -1
+}
 login_port=$(config_value loginPort); login_port="${login_port:-7564}"
 if port_open "$login_port"; then
     echo "ERROR: port $login_port is in use. Is another PokeVerse server already running?" >&2
