@@ -28,6 +28,10 @@ for f in "$ROOT"/packaging/windows/*.bat "$ROOT/packaging/windows/README.txt"; d
     sed 's/\r*$/\r/' "$f" > "$BASE/$(basename "$f")"
 done
 cp "$ROOT/packaging/windows/scripts/PokeVerse-Tools.ps1" "$BASE/scripts/"
+(cd "$ROOT/client-redemption" && find data modules mods -type f -name '*.png' ! -path 'mods/game_bot/*') | while IFS= read -r f; do
+    mkdir -p "$BASE/client/$(dirname "$f")"
+    printf '\x89PNG\r\n\x1a\n' > "$BASE/client/$f"
+done
 
 "$ROOT/tools/validate_windows_package.sh" "$BASE" > /dev/null || { echo "FAIL: clean fake package refused"; "$ROOT/tools/validate_windows_package.sh" "$BASE"; exit 1; }
 
@@ -59,6 +63,8 @@ cases=(
     "missing server config|rm server/config.lua"
     "missing PokeVerse module|rm -r client/modules/game_pokebar"
     "log file|echo x > client/pokeverse.log"
+    "missing client image|rm client/data/images/background.png"
+    "LFS pointer image|echo 'version https://git-lfs.github.com/spec/v1' > client/data/images/clienticon.png"
 )
 failures=0
 for c in "${cases[@]}"; do
