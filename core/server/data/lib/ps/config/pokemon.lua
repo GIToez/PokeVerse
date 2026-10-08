@@ -1267,6 +1267,15 @@ for name, pokemon in pairs(POKEMONS) do
     end
 end
 
+-- Read-only access for the Discord bridge (/pokemon lookups). Callers must not modify the result.
+function getPokemonDefinition(pokemonName)
+    return POKEMONS[pokemonName]
+end
+
+function getPokemonPreEvolution(pokemonName)
+    return EVOLVE_FROM[pokemonName]
+end
+
 -- Get
 function getPokemonTypes(cid, pokemonName)
     if (cid) then

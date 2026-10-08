@@ -1195,3 +1195,8 @@ end
 function getAchievementSecret(achievId)
     return SECRET_ACHIEVEMENTS[achievId]
 end
+
+-- Untranslated achievement name (used by the Discord bridge).
+function getAchievementBaseName(achievId)
+    return ACHIEVEMENT_NAMES[achievId]
+end

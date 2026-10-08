@@ -9,6 +9,7 @@ function onSay(cid, words, param, channel)
 	if(param:lower() == "stop") then
 		stopEvent(shutdownEvent)
 		shutdownEvent = 0
+		DiscordBridge.onRestartWarning("shutdown_cancelled", nil, false)
 		return true
 	elseif(param:lower() == "kill") then
 		os.exit()
@@ -29,6 +30,7 @@ function onSay(cid, words, param, channel)
 end
 
 function prepareShutdown(minutes)
+	DiscordBridge.onRestartWarning("shutdown", math.max(minutes, 0), true)
 	if(minutes <= 0) then
 		doSetGameState(GAMESTATE_SHUTDOWN)
 		return false

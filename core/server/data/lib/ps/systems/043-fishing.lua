@@ -317,6 +317,7 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
                 if (pos) then
                     doTeleportThing(pokemonFished, pos)
                     doSendMagicEffect(pos, EFFECT_SPLASH)
+                    DiscordBridge.onSpawn(pokemonFished, "fishing")
                     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "You hooked %s!"), getMonsterInfo(fishName).description))
                     doSendMagicEffect(currentPosition, EFFECT_EMOTION_EXCLAMATION)
                     addEvent(doRemoveCreature, 3 * 60 * 1000, pokemonFished, true, false) -- remove creature after 3 min, force remove and don't show error

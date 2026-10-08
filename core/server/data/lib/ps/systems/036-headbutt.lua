@@ -185,6 +185,7 @@ local function checkHeadbutt(cid, itemEx, toPosition, ticks)
                     log(LOG_TYPES.WARNING, "Headbutted Shiny [2]", getCreatureName(cid), pokemonName, SHINY_CHANCE)
                 end
                 local pokemon = doSummonCreature(pokemonName, getCreaturePosition(cid))
+                DiscordBridge.onSpawn(pokemon, "headbutt")
 
                 addEvent(doRemoveCreature, 3 * 60 * 1000, pokemon, true, false) -- remove creature after 2 min, force remove and dont show error
                 setMonsterUniqueTarget(pokemon, master)

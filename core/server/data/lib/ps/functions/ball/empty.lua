@@ -99,7 +99,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
     end
 
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
-    doCreatePokemonBall(cid, newBall, pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, getSafariZone(cid), nil,
+    local ballUid = doCreatePokemonBall(cid, newBall, pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, getSafariZone(cid), nil,
         nil, pokemonSpecialAbilitie, nil, nil, nil, nil, nil, getPlayerTown(cid) ~= TOWN_IDS.TUTORIAL_ISLAND)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
 
@@ -109,6 +109,8 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
 
     onCaughtPokemon(cid, {name = pokemonName, level = pokemonLevel}, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
+    DiscordBridge.onCatch(cid, {name = pokemonName, level = pokemonLevel, sex = pokemonSex,
+        ball = ballsNames[newBall] or newBall, ballUid = ballUid, extraPoints = 0, safari = getSafariZone(cid) and true or false})
 end
 
 function catchPokemonWithSafariBall(cid, position, pokemonName, newBall, pokemonSex, pokemonLevel,
@@ -118,7 +120,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
     end
 
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
-    doCreatePokemonBall(cid, "safari", pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, true, nil, nil, pokemonSpecialAbilitie)
+    local ballUid = doCreatePokemonBall(cid, "safari", pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, true, nil, nil, pokemonSpecialAbilitie)
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
 	if (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) < PLAYER_SKILL_CATCHING_MAX) then
 		doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(PLAYER_SKILL_CATCHING_MAX / (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) + 1)))
@@ -126,6 +128,8 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
 
     onCaughtPokemon(cid, {name = pokemonName, level = pokemonLevel}, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
+    DiscordBridge.onCatch(cid, {name = pokemonName, level = pokemonLevel, sex = pokemonSex,
+        ball = "safari", ballUid = ballUid, extraPoints = 0, safari = true})
 end
 
 local function catchPokemonWithSoulBall(cid, position, pokemonName, newBall, pokemonSex,
@@ -135,7 +139,7 @@ pokemonSpecialAbilitie, wastedBallsMsg)
     end
 
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s."), getSexDescription(pokemonSex), pokemonName))
-    doCreatePokemonBall(cid, "soul", pokemonName, 8, pokemonSex, nil, 0, cid, false, nil, nil, pokemonSpecialAbilitie)
+    local ballUid = doCreatePokemonBall(cid, "soul", pokemonName, 8, pokemonSex, nil, 0, cid, false, nil, nil, pokemonSpecialAbilitie)
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Now you need to talk with Professor Tommy to start your journey, speak about 'journey'.")
 	doTeleportThing(cid, {x = 4711, y = 678, z = 7}, false)
 	doPlayerRemoveItem(cid, 13497, getPlayerItemCount(cid, 13497)) -- Removing special small stones
@@ -150,6 +154,8 @@ pokemonSpecialAbilitie, wastedBallsMsg)
 
     onCaughtPokemon(cid, {name = pokemonName, level = 8}, 1)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
+    DiscordBridge.onCatch(cid, {name = pokemonName, level = 8, sex = pokemonSex, ball = "soul", ballUid = ballUid,
+        extraPoints = 0, safari = false})
 end
 
 local function dropCorpseItems(corpse)

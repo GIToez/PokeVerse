@@ -2274,6 +2274,9 @@ function doCreateMonster(name, pos, displayError, shinyChance)
     local m = origDoCreateMonster(name, pos, displayError)
     if (isMonster(m)) then
         setMonsterSpecialAbility(m, getPokemonRandomSpecialAbility(getCreatureName(m)))
+        if (DiscordBridge) then
+            DiscordBridge.onSpawn(m, "script")
+        end
     end
     return m
 end

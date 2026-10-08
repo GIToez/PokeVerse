@@ -3,6 +3,8 @@ function onSay(cid, words, param, channel)
 		return true
 	end
 
-	doPlayerBroadcastMessage(cid, param)
+	if(doPlayerBroadcastMessage(cid, param)) then
+		DiscordBridge.onBroadcast("gm", getCreatureName(cid), param)
+	end
 	return true
 end

@@ -2,6 +2,7 @@
 <globalevents>
 	<globalevent name="serverstart" type="start" event="script" value="start.lua"/>
 	<globalevent name="playersrecord" type="record" event="script" value="record.lua"/>
+	<globalevent name="discordBridge" type="discordbridge" event="script" value="../../lib/ps/events/globalevents/discordBridge.lua"/>
 	
 	<globalevent name="Gameplay Tutorial Rattata" interval="15" event="script" value="../../lib/ps/events/globalevents/gameplayTutorialRattata.lua"/>
 	

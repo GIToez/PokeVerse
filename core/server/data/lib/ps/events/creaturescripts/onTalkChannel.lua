@@ -10,5 +10,6 @@ function onTalkChannel(cid, channelId, message)
         return false -- Hide player message
     end
 
+    DiscordBridge.onTalkChannel(cid, channelId, message)
     return true
 end

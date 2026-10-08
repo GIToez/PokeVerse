@@ -9,4 +9,5 @@ function onMonsterSpawn(cid)
     setMonsterSpecialAbility(cid, getPokemonRandomSpecialAbility(getCreatureName(cid)))
     setWildPokemonEvolvable(cid, getRandom(0, 3) == 1)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_TELEPORT_DOWN)
+    DiscordBridge.onSpawn(cid, "spawn")
 end

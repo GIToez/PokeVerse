@@ -7,8 +7,11 @@ function onSay(cid, words, param, channel)
 	local t = string.explode(param, " ", 1)
 	if(not t[2]) then
 		doBroadcastMessage(t[1])
+		DiscordBridge.onBroadcast("staff", nil, t[1])
 	elseif(not doBroadcastMessage(t[2], MESSAGE_TYPES[t[1]])) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Bad message color type.")
+	else
+		DiscordBridge.onBroadcast("staff", nil, t[2])
 	end
 
 	return true

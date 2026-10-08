@@ -21,7 +21,7 @@
 	<!-- <channel id="6" name="RL-Chat" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/> -->
 	<channel id="9" name="Help" logged="yes" muted="10" conditionId="3" conditionMessage="You may only place one question in 10 seconds." talkEvent="1"/>
 	<channel id="8" name="Game-Chat[PT-BR]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/>
-	<channel id="7" name="Game-Chat[EN-US]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/>
+	<channel id="7" name="Game-Chat[EN-US]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel." talkEvent="1"/>
 	<channel id="10" name="Game-Chat[ESP]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/>
 	<!-- <channel id="11" name="Game-Chat[PL]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/> -->
 	<!-- <channel id="12" name="Game-Chat[ALL]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/> -->
