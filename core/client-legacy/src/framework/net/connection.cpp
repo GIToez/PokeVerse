@@ -98,7 +98,7 @@ void Connection::connect(const std::string& host, uint16 port, const std::functi
     m_resolver.async_resolve(host, stdext::unsafe_cast<std::string>(port), std::bind(&Connection::onResolve, asConnection(), std::placeholders::_1, std::placeholders::_2));
 
     m_readTimer.cancel();
-    m_readTimer.expires_from_now(boost::posix_time::seconds((long)READ_TIMEOUT));
+    m_readTimer.expires_after(std::chrono::seconds((long)READ_TIMEOUT));
     m_readTimer.async_wait(std::bind(&Connection::onTimeout, asConnection(), std::placeholders::_1));
 }
 
@@ -107,7 +107,7 @@ void Connection::internal_connect(const asio::ip::tcp::endpoint& endpoint)
     m_socket.async_connect(endpoint, std::bind(&Connection::onConnect, asConnection(), std::placeholders::_1));
 
     m_readTimer.cancel();
-    m_readTimer.expires_from_now(boost::posix_time::seconds((long)READ_TIMEOUT));
+    m_readTimer.expires_after(std::chrono::seconds((long)READ_TIMEOUT));
     m_readTimer.async_wait(std::bind(&Connection::onTimeout, asConnection(), std::placeholders::_1));
 }
 
@@ -125,7 +125,7 @@ void Connection::write(uint8* buffer, size_t size)
             m_outputStream = std::shared_ptr<asio::streambuf>(new asio::streambuf);
 
         m_delayedWriteTimer.cancel();
-        m_delayedWriteTimer.expires_from_now(boost::posix_time::milliseconds(0));
+        m_delayedWriteTimer.expires_after(std::chrono::milliseconds(0));
         m_delayedWriteTimer.async_wait(std::bind(&Connection::onCanWrite, asConnection(), std::placeholders::_1));
     }
 
@@ -147,7 +147,7 @@ void Connection::internal_write()
                       std::bind(&Connection::onWrite, asConnection(), std::placeholders::_1, std::placeholders::_2, outputStream));
 
     m_writeTimer.cancel();
-    m_writeTimer.expires_from_now(boost::posix_time::seconds((long)WRITE_TIMEOUT));
+    m_writeTimer.expires_after(std::chrono::seconds((long)WRITE_TIMEOUT));
     m_writeTimer.async_wait(std::bind(&Connection::onTimeout, asConnection(), std::placeholders::_1));
 }
 
@@ -163,7 +163,7 @@ void Connection::read(uint16 bytes, const RecvCallback& callback)
                      std::bind(&Connection::onRecv, asConnection(), std::placeholders::_1, std::placeholders::_2));
 
     m_readTimer.cancel();
-    m_readTimer.expires_from_now(boost::posix_time::seconds((long)READ_TIMEOUT));
+    m_readTimer.expires_after(std::chrono::seconds((long)READ_TIMEOUT));
     m_readTimer.async_wait(std::bind(&Connection::onTimeout, asConnection(), std::placeholders::_1));
 }
 
@@ -180,7 +180,7 @@ void Connection::read_until(const std::string& what, const RecvCallback& callbac
                            std::bind(&Connection::onRecv, asConnection(), std::placeholders::_1, std::placeholders::_2));
 
     m_readTimer.cancel();
-    m_readTimer.expires_from_now(boost::posix_time::seconds((long)READ_TIMEOUT));
+    m_readTimer.expires_after(std::chrono::seconds((long)READ_TIMEOUT));
     m_readTimer.async_wait(std::bind(&Connection::onTimeout, asConnection(), std::placeholders::_1));
 }
 
@@ -195,7 +195,7 @@ void Connection::read_some(const RecvCallback& callback)
                              std::bind(&Connection::onRecv, asConnection(), std::placeholders::_1, std::placeholders::_2));
 
     m_readTimer.cancel();
-    m_readTimer.expires_from_now(boost::posix_time::seconds((long)READ_TIMEOUT));
+    m_readTimer.expires_after(std::chrono::seconds((long)READ_TIMEOUT));
     m_readTimer.async_wait(std::bind(&Connection::onTimeout, asConnection(), std::placeholders::_1));
 }
 
