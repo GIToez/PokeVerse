@@ -9,6 +9,10 @@ local errorBox
 local waitingWindow
 local updateWaitEvent
 local resendWaitEvent
+local createCharacterWindow
+
+-- Opened by the Donate button: the PokeVerse Discord server invite (https://discord.gg/...).
+local DONATE_URL = ''
 
 -- private functions
 local function tryLogin(charInfo, tries)
@@ -155,6 +159,11 @@ function CharacterList.terminate()
     characterList = nil
     charactersWindow:destroy()
     charactersWindow = nil
+  end
+
+  if createCharacterWindow then
+    createCharacterWindow:destroy()
+    createCharacterWindow = nil
   end
 
   if loadBox then
@@ -313,6 +322,103 @@ function CharacterList.doLogin()
   else
     displayErrorBox(tr('Error'), tr('You must select a character to login!'))
   end
+end
+
+-- Logs in again to get the updated character list, focusing focusName if given.
+local function refreshCharacters(focusName)
+  if focusName then
+    g_settings.set('last-used-character', focusName)
+  end
+  EnterGame.loginAccount(G.account, G.password)
+end
+
+local function showAfterBox(box, callback)
+  connect(box, { onOk = callback })
+end
+
+function CharacterList.showCreateCharacter()
+  if not createCharacterWindow then
+    createCharacterWindow = g_ui.displayUI('createcharacter')
+    local sexComboBox = createCharacterWindow:getChildById('sexComboBox')
+    sexComboBox:addOption(tr('Male'), 1)
+    sexComboBox:addOption(tr('Female'), 0)
+  end
+  charactersWindow:hide()
+  createCharacterWindow:show()
+  createCharacterWindow:raise()
+  createCharacterWindow:focus()
+  createCharacterWindow:getChildById('nameTextEdit'):focus()
+end
+
+function CharacterList.hideCreateCharacter()
+  if createCharacterWindow then
+    createCharacterWindow:destroy()
+    createCharacterWindow = nil
+  end
+  CharacterList.show()
+end
+
+function CharacterList.doCreateCharacter()
+  local name = createCharacterWindow:getChildById('nameTextEdit'):getText():trim()
+  local sex = createCharacterWindow:getChildById('sexComboBox'):getCurrentOption().data
+  createCharacterWindow:hide()
+
+  EnterGame.accountRequest({ action = AccountRequestCreateCharacter, account = G.account, password = G.password,
+                             name = name, sex = sex },
+    function(success, message)
+      if not message then
+        CharacterList.showCreateCharacter()
+      elseif not success then
+        showAfterBox(displayErrorBox(tr('New Character'), message), CharacterList.showCreateCharacter)
+      else
+        createCharacterWindow:destroy()
+        createCharacterWindow = nil
+        showAfterBox(displayInfoBox(tr('New Character'), message), function() refreshCharacters(name) end)
+      end
+    end)
+end
+
+function CharacterList.deleteCharacter()
+  local selected = characterList:getFocusedChild()
+  if not selected then
+    displayErrorBox(tr('Error'), tr('You must select a character to delete!'))
+    return
+  end
+
+  local name = selected.characterName
+  local confirmBox
+  local function cancel()
+    confirmBox:destroy()
+    CharacterList.show()
+  end
+  local function confirm()
+    confirmBox:destroy()
+    EnterGame.accountRequest({ action = AccountRequestDeleteCharacter, account = G.account, password = G.password,
+                               name = name },
+      function(success, message)
+        if not message then
+          CharacterList.show()
+        elseif not success then
+          showAfterBox(displayErrorBox(tr('Delete Character'), message), CharacterList.show)
+        else
+          showAfterBox(displayInfoBox(tr('Delete Character'), message), function() refreshCharacters() end)
+        end
+      end)
+  end
+
+  charactersWindow:hide()
+  confirmBox = displayGeneralBox(tr('Delete Character'),
+    tr('Do you really want to delete %s?\nThis cannot be undone.', name),
+    { { text = tr('Yes'), callback = confirm }, { text = tr('No'), callback = cancel }, anchor = AnchorHorizontalCenter },
+    nil, cancel)
+end
+
+function CharacterList.openDonate()
+  if DONATE_URL == '' then
+    displayInfoBox(tr('Donate'), tr('Donations are handled on the PokeVerse Discord server.'))
+    return
+  end
+  g_platform.openUrl(DONATE_URL)
 end
 
 function CharacterList.destroyLoadBox()

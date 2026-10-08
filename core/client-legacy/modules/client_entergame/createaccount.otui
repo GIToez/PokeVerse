@@ -1,0 +1,83 @@
+MainWindow
+  id: createAccountWindow
+  !text: tr('Create Account')
+  size: 300 262
+  @onEnter: EnterGame.doCreateAccount()
+  @onEscape: EnterGame.hideCreateAccount()
+
+  MenuLabel
+    !text: tr('Account name')
+    anchors.left: parent.left
+    anchors.top: parent.top
+    text-auto-resize: true
+
+  TextEdit
+    id: accountNameTextEdit
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 2
+    max-length: 25
+
+  MenuLabel
+    !text: tr('Password')
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 8
+    text-auto-resize: true
+
+  PasswordTextEdit
+    id: passwordTextEdit
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 2
+    max-length: 29
+
+  MenuLabel
+    !text: tr('Repeat password')
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 8
+    text-auto-resize: true
+
+  PasswordTextEdit
+    id: passwordRepeatTextEdit
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 2
+    max-length: 29
+
+  Label
+    !text: tr('Account name: 3 to 25 letters and numbers.\nPassword: 6 to 29 characters.')
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 8
+    text-wrap: true
+    text-auto-resize: true
+    color: #aaaaaa
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: next.top
+    margin-bottom: 8
+
+  Button
+    id: cancelButton
+    !text: tr('Cancel')
+    width: 64
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: EnterGame.hideCreateAccount()
+
+  Button
+    id: createButton
+    !text: tr('Create')
+    width: 64
+    anchors.right: prev.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    @onClick: EnterGame.doCreateAccount()

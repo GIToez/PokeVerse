@@ -28,6 +28,11 @@ First start
 
    Server address and port are already set to 127.0.0.1 and 7564.
 
+   To make your own account, click "Create Account" on the login window. After
+   logging in, use "New Character" and "Delete Character" in the character list.
+   New characters start in the tutorial: follow Red's hints and get your first
+   Pokemon from Professor Oak.
+
 If Windows shows "Windows protected your PC", choose "More info" then "Run anyway".
 If the Windows firewall asks about pokeverse-server.exe or mariadbd.exe, you can
 choose "Cancel": both only listen on 127.0.0.1 and do not need firewall access.

@@ -219,14 +219,24 @@ MainWindow
     !text: tr('New Character')
     anchors.left: parent.left
     anchors.bottom: parent.bottom
-    width: 128
-    @onClick: g_platform.openUrl("http://www.psoul.net/players/createCharacter")
+    width: 110
+    @onClick: CharacterList.showCreateCharacter()
+
+  Button
+    id: buttonDeleteCharacter
+    !text: tr('Delete Character')
+    anchors.left: buttonNewCharacter.right
+    anchors.bottom: parent.bottom
+    width: 110
+    margin-left: 10
+    @onClick: CharacterList.deleteCharacter()
 
   Button
     id: buttonDonate
     !text: tr('Donate')
-    anchors.left: buttonNewCharacter.right
+    !tooltip: tr('Opens the PokeVerse Discord server')
+    anchors.left: buttonDeleteCharacter.right
     anchors.bottom: parent.bottom
-    width: 128
+    width: 110
     margin-left: 10
-    @onClick: g_platform.openUrl("http://www.psoul.net/accounts/donate")
+    @onClick: CharacterList.openDonate()
