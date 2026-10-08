@@ -1666,7 +1666,7 @@ function doUpdatePokemonEggMovesList()
                 local remove = false
 
                 if (not getPokemonSkillExists(move)) then
-                    --print(string.concat(move, " doesn't exists on PSoul, removing from list."))
+                    --print(string.concat(move, " doesn't exists on PokeVerse, removing from list."))
                     remove = true
                 else
                     local makeHeal = getPokemonSkillMakeHeal(move)

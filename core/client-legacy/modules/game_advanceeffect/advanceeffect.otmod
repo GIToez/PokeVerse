@@ -1,7 +1,7 @@
 Module
   name: game_advanceeffect
   description: Advance Effect
-  author: PSoul
+  author: PokeVerse
   website: Unk
   sandboxed: true
   scripts: [ advanceeffect ]

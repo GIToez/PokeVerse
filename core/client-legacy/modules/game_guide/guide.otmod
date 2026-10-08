@@ -1,7 +1,7 @@
 Module
   name: game_guide
   description: Game Guide
-  author: PSoul
+  author: PokeVerse
   sandboxed: true
   scripts: [guide]
   autoload-priority: 1001

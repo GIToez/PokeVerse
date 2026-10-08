@@ -1508,7 +1508,7 @@ void Player::onCreatureDisappear(const Creature* creature, bool isLogout)
     if(isLogout)
 		loginPosition = getPosition();
 		
-	/* This isnt need at PSoul ## http://otland.net/project.php?issueid=2360
+	/* This isnt need at PokeVerse ## http://otland.net/project.php?issueid=2360
     Item* item = NULL;
     for (int32_t slot = SLOT_FIRST; slot < SLOT_LAST; ++slot) {
 	    if (!(item = getInventoryItem((slots_t)slot))) {

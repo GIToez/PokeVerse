@@ -1,7 +1,7 @@
 Module
   name: game_time
   description: Time
-  author: PSoul
+  author: PokeVerse
   website: Unk
   sandboxed: true
   scripts: [ time ]

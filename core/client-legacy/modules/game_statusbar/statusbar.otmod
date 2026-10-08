@@ -1,7 +1,7 @@
 Module
   name: game_statusbar
   description: Status Bar
-  author: PSoul
+  author: PokeVerse
   website: Unk
   sandboxed: true
   scripts: [ statusbar ]

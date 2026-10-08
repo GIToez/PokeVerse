@@ -1,7 +1,7 @@
 Module
   name: game_pokebar
   description: Poke Bar
-  author: PSoul
+  author: PokeVerse
   website: Unk
   sandboxed: true
   scripts: [ pokebar ]

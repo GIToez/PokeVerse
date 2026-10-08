@@ -1,7 +1,7 @@
 -- Constants
 local UPDATE_INTERVAL = 1
 local TIME_DELTA = 1440 * UPDATE_INTERVAL / 3600
-local PSOUL_MINUTE_PER_SECOND = 2.5
+local POKEVERSE_MINUTE_PER_SECOND = 2.5
 
 local LIGHT_STATES = {}
 LIGHT_STATES.DAY = 0
@@ -104,7 +104,7 @@ function onInit()
         onOnline()
     end
 
-    event = cycleEvent(increaseMinute, PSOUL_MINUTE_PER_SECOND * 1000)
+    event = cycleEvent(increaseMinute, POKEVERSE_MINUTE_PER_SECOND * 1000)
 end
 
 function onTerminate()

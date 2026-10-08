@@ -273,7 +273,7 @@ class Player : public Creature, public Cylinder
 		}
 		
 		int16_t getLastDepotId() const {
-			return 0; // PSoul uses global depot
+			return 0; // PokeVerse uses global depot
 		}
 
 		virtual bool isGhost() const {return hasCondition(CONDITION_GAMEMASTER, GAMEMASTER_INVISIBLE) || hasFlag(PlayerFlag_CannotBeSeen);}

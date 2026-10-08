@@ -96,10 +96,10 @@ NPCS["Carlton"] = function(cid, type, msg)
     end
 end
 
--- Pokémon Helper
+-- Pokemon Helper
 NPCS["Cletis"] = function(cid, type, msg)
     if (msgcontains(msg, 'tm')) then
-        npcHandler:sayStory(string.createStory("The TM (Technical Machine) are able to teach your Pokemon a new move that he did not learn normally. All you need to do is find a TM like this one besides me and use it at the Pokemon Poke Ball. After that, you will choose a move to replace by the TM move. Again remembering that the PSoul follows in fact the official data of Pokemon universe, and therefore this system also has some rules."), cid)
+        npcHandler:sayStory(string.createStory("The TM (Technical Machine) are able to teach your Pokemon a new move that he did not learn normally. All you need to do is find a TM like this one besides me and use it at the Pokemon Poke Ball. After that, you will choose a move to replace by the TM move. Again remembering that the PokeVerse follows in fact the official data of Pokemon universe, and therefore this system also has some rules."), cid)
 
     elseif (msgcontains(msg, 'vitamin') or msgcontains(msg, 'vitamina')) then
         npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defese and Speed. Each Pokemon has a limit to Stat that can be modified by vitamins. Each Pokemon has a limit of 10 total vitamins and a 3 per vitamin. To learn more, visit the Help and Wiki Chat channels."), cid)
@@ -112,7 +112,7 @@ end
 -- Berry Helper
 NPCS["Tracy"] = function(cid, type, msg)
     if (msgcontains(msg, 'berries')) then
-        npcHandler:sayStory(string.createStory("Berries are plants that any trainer can have at home. They are of different species and with different effects. There is a cooldown between each use, even in tournament battles! To plant a Berry, you need some tools like these behind me and use on a fertile land, normally found in homes or rental locations. You find these spaces by PSoul world. The tools are also found within shop NPCs in the cities."), cid)
+        npcHandler:sayStory(string.createStory("Berries are plants that any trainer can have at home. They are of different species and with different effects. There is a cooldown between each use, even in tournament battles! To plant a Berry, you need some tools like these behind me and use on a fertile land, normally found in homes or rental locations. You find these spaces by PokeVerse world. The tools are also found within shop NPCs in the cities."), cid)
 
     else
         selfSay("Looking to know about {BERRIES}?", cid)
@@ -135,7 +135,7 @@ end
 -- Soul Coin Trader
 NPCS["Jimi"] = function(cid, type, msg)
     if (msgcontains(msg, 'soul')) then
-        npcHandler:sayStory(string.createStory("These are the game virtual currency. With them you can make your Premium Account account to have access to various locations on the map and also the full use of your Pokemon. They are not required to play, but if you want a total experience for the game be sure to have them. You can buy directly from other players or by donating to the project through the official site. It is a symbolic way to keep PSoul online and your enjoyment. There are several uses for it, so if you want to see more detail visit the Wiki Chat or Game Help channels."), cid)
+        npcHandler:sayStory(string.createStory("These are the game virtual currency. With them you can make your Premium Account account to have access to various locations on the map and also the full use of your Pokemon. They are not required to play, but if you want a total experience for the game be sure to have them. You can buy directly from other players or by donating to the project through the official site. It is a symbolic way to keep PokeVerse online and your enjoyment. There are several uses for it, so if you want to see more detail visit the Wiki Chat or Game Help channels."), cid)
 
     else
         selfSay("Do you know what is a {SOUL COIN}?", cid)

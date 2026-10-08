@@ -148,37 +148,37 @@ namespace Proto {
         GameServerMarketBrowse              = 249, // 944
         GameServerShowModalDialog           = 250,  // 960
 
-        GameServerPSoul                     = 255
+        GameServerPokeVerse                     = 255
     };
 
-    enum GameServerPSoulOpcodes : uint8
+    enum GameServerPokeVerseOpcodes : uint8
     {
-        GameServerPSoulMoveBarUpdate        = 1,
-        GameServerPSoulMoveBarClose         = 2,
-        GameServerPSoulMoveBarOpen          = 3,
-        GameServerPSoulPokemonBarAdd        = 4,
-        GameServerPSoulPokemonBarRemove     = 5,
-        GameServerPSoulPokemonBarUpdate     = 6,
-        GameServerPSoulPokemonBarOpen       = 7,
-        GameServerPSoulPokemonBarClose      = 8,
-        GameServerPSoulMoveCooldown         = 9,
-        GameServerPSoulPokedexStatus        = 10,
-        GameServerPSoulPokedexOpen          = 11,
-        GameServerPSoulPokedexUpdate        = 12,
-        GameServerPSoulTmChoose             = 13,
-        GameServerPSoulStatusBarAdd         = 14,
-        GameServerPSoulStatusBarRemove      = 15,
-        GameServerPSoulStatusBarClear       = 16,
-        GameServerPSoulPokedexInfo          = 17,
-        GameServerPSoulCreatureJump         = 18,
-        GameServerPSoulCreatureEffect       = 19,
-        GameServerPSoulDollCaseStatus       = 20,
-        GameServerPSoulDollCaseUpdate       = 21,
-        GameServerPSoulSlotMachine          = 22,
-        GameServerPSoulTip                  = 23,
-        GameServerPSoulPollWindow           = 24,
-        GameServerPSoulPokemonLevelUp       = 25,
-        GameServerPSoulLootList             = 26
+        GameServerPokeVerseMoveBarUpdate        = 1,
+        GameServerPokeVerseMoveBarClose         = 2,
+        GameServerPokeVerseMoveBarOpen          = 3,
+        GameServerPokeVersePokemonBarAdd        = 4,
+        GameServerPokeVersePokemonBarRemove     = 5,
+        GameServerPokeVersePokemonBarUpdate     = 6,
+        GameServerPokeVersePokemonBarOpen       = 7,
+        GameServerPokeVersePokemonBarClose      = 8,
+        GameServerPokeVerseMoveCooldown         = 9,
+        GameServerPokeVersePokedexStatus        = 10,
+        GameServerPokeVersePokedexOpen          = 11,
+        GameServerPokeVersePokedexUpdate        = 12,
+        GameServerPokeVerseTmChoose             = 13,
+        GameServerPokeVerseStatusBarAdd         = 14,
+        GameServerPokeVerseStatusBarRemove      = 15,
+        GameServerPokeVerseStatusBarClear       = 16,
+        GameServerPokeVersePokedexInfo          = 17,
+        GameServerPokeVerseCreatureJump         = 18,
+        GameServerPokeVerseCreatureEffect       = 19,
+        GameServerPokeVerseDollCaseStatus       = 20,
+        GameServerPokeVerseDollCaseUpdate       = 21,
+        GameServerPokeVerseSlotMachine          = 22,
+        GameServerPokeVerseTip                  = 23,
+        GameServerPokeVersePollWindow           = 24,
+        GameServerPokeVersePokemonLevelUp       = 25,
+        GameServerPokeVerseLootList             = 26
     };
 
     enum ClientOpcodes : uint8

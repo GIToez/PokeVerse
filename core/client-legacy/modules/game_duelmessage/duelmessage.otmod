@@ -1,7 +1,7 @@
 Module
   name: game_duelmessage
   description: Duel Message
-  author: PSoul
+  author: PokeVerse
   website: Unk
   sandboxed: true
   scripts: [ duelmessage ]

@@ -24,7 +24,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     if (msgcontains(msg, 'market') or msgcontains(msg, 'mercado')) then
         if (not getPlayerUsingOtClient(cid)) then
-            selfSay("Unfortunately your client version has no support to the Market system. Try to use the 'beta' version of PSoul client!", cid)
+            selfSay("Unfortunately your client version has no support to the Market system. Try to use the 'beta' version of PokeVerse client!", cid)
             return true
         end
 

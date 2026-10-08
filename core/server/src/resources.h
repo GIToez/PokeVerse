@@ -78,7 +78,7 @@
 
 #define CLIENT_VERSION_MIN 312
 #define CLIENT_VERSION_MAX 312
-#define CLIENT_VERSION_STRING "Your client is outdated, please visit http://www.psoul.net and download the latest client."
+#define CLIENT_VERSION_STRING "Your client is outdated, please download the latest PokeVerse client."
 
 #define STATUS_SERVER_NAME "Unknown"
 #define STATUS_SERVER_VERSION "Unknown"

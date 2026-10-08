@@ -59,121 +59,121 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
                 msg->setReadPos(readPos); // restore read pos
 
             switch(opcode) {
-            case Proto::GameServerPSoul : {
+            case Proto::GameServerPokeVerse : {
                 subOpcode = msg->getU8();
                 switch (subOpcode) {
-                    case Proto::GameServerPSoulMoveBarUpdate : {
+                    case Proto::GameServerPokeVerseMoveBarUpdate : {
                         parseMoveBarUpdate(msg);
                         break;
 
                     }
-                    case Proto::GameServerPSoulMoveBarClose : {
+                    case Proto::GameServerPokeVerseMoveBarClose : {
                         parseMoveBarClose(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulMoveBarOpen : {
+                    case Proto::GameServerPokeVerseMoveBarOpen : {
                         parseMoveBarOpen(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokemonBarAdd : {
+                    case Proto::GameServerPokeVersePokemonBarAdd : {
                         parsePokemonBarAdd(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokemonBarRemove : {
+                    case Proto::GameServerPokeVersePokemonBarRemove : {
                         parsePokemonBarRemove(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokemonBarUpdate : {
+                    case Proto::GameServerPokeVersePokemonBarUpdate : {
                         parsePokemonBarUpdate(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokemonBarOpen : {
+                    case Proto::GameServerPokeVersePokemonBarOpen : {
                         parsePokemonBarOpen(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokemonBarClose : {
+                    case Proto::GameServerPokeVersePokemonBarClose : {
                         parsePokemonBarClose(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulMoveCooldown : {
+                    case Proto::GameServerPokeVerseMoveCooldown : {
                         parseMoveCooldown(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokedexStatus : {
+                    case Proto::GameServerPokeVersePokedexStatus : {
                         parsePokedexStatus(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokedexOpen : {
+                    case Proto::GameServerPokeVersePokedexOpen : {
                         parsePokedexOpen(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulPokedexUpdate : {
+                    case Proto::GameServerPokeVersePokedexUpdate : {
                         parsePokedexUpdate(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulTmChoose : {
+                    case Proto::GameServerPokeVerseTmChoose : {
                         parseTmChoose(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulStatusBarAdd : {
+                    case Proto::GameServerPokeVerseStatusBarAdd : {
                         parseStatusBarAdd(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulStatusBarRemove : {
+                    case Proto::GameServerPokeVerseStatusBarRemove : {
                         parseStatusBarRemove(msg);
                         break;
                     }
-                    case Proto::GameServerPSoulStatusBarClear : {
+                    case Proto::GameServerPokeVerseStatusBarClear : {
                         parseStatusBarClear(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulPokedexInfo : {
+                    case Proto::GameServerPokeVersePokedexInfo : {
                         parsePokedexInfo(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulCreatureJump : {
+                    case Proto::GameServerPokeVerseCreatureJump : {
                         parseCreatureJump(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulCreatureEffect : {
+                    case Proto::GameServerPokeVerseCreatureEffect : {
                         parseCreatureEffect(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulDollCaseStatus : {
+                    case Proto::GameServerPokeVerseDollCaseStatus : {
                         parseDollCaseStatus(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulDollCaseUpdate : {
+                    case Proto::GameServerPokeVerseDollCaseUpdate : {
                         parseDollCaseUpdate(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulSlotMachine : {
+                    case Proto::GameServerPokeVerseSlotMachine : {
                         parseSlotMachine(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulTip : {
+                    case Proto::GameServerPokeVerseTip : {
                         parseTip(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulPollWindow : {
+                    case Proto::GameServerPokeVersePollWindow : {
                         parsePollWindow(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulPokemonLevelUp : {
+                    case Proto::GameServerPokeVersePokemonLevelUp : {
                         parsePokemonLevelUp(msg);
                         break;
                     }
 
-                    case Proto::GameServerPSoulLootList : {
+                    case Proto::GameServerPokeVerseLootList : {
                         parseLootList(msg);
                         break;
                     }

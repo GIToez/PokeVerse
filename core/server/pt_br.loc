@@ -1813,7 +1813,7 @@ Hello! How may I help you?@Olá! Como posso ajudá-lo?
 Hello! How may I help you? Want to {paint} your pokeballs?@Olá! Como posso ajudá-lo? Quer {pintar} suas Pokebolas?
 Hello! I'm George Carter, an archeologist. I'm in Pewter to do {research} and excavations!@Olá! Estou George Carter, um arqueólogo. Estou em Pewter fazer {pesquisa} e escavações!
 Hello! I'm William Rock. I'm doing some digging in search of {fossils}.@Olá! Estou William Rock. Estou fazendo algumas escavações em busca de {fósseis}.
-Hello! Is enjoying the anniversary of PSoul? I am here to exchange 'PSoul' letters for a {gift}.@Olá! Está curtindo o aniversário da PSoul? Estou aqui para trocar as letras 'PSoul' por um {presente}.
+Hello! Is enjoying the anniversary of PokeVerse? I am here to exchange 'PSoul' letters for a {gift}.@Olá! Está curtindo o aniversário da PokeVerse? Estou aqui para trocar as letras 'PSoul' por um {presente}.
 Hello! What you know about {berries}? They have an amazing rejuvenating power.@Olá! O que você sabe sobre {berries}? Eles têm um poder de rejuvenescimento incrível.
 Hello! You already know our {daycare}? We handle all types of {Pokemon}. If you have a Pokemon here you can see his {status}, otherwise you can {leave} a Pokemon here.@Olá! Você já conhece o nosso {daycare}? Trabalhamos com todos os tipos de {Pokemon}. Se você tem um Pokemon aqui você pode ver o seu {status}, caso contrário, você pode {deixar} um Pokemon aqui.
 Hello! {Finally}! Good to see you.@Olá! {Finalmente}! Bom te ver.
@@ -1827,7 +1827,7 @@ Hello, type 'account' to create an account or type 'recover' to recover an accou
 Hello, type 'account' to manage your account and if you want to start over then type 'cancel'.@Olá, escreva 'conta' para gerenciar sua conta e se você quiser começar de novo em seguida, digite 'cancelar'.
 Hello, welcome to Cerulean central trains! Tell your destiny! If you don't know where to flow, say {travel}.@Olá, bem-vindos a estação central de trens de Cerulean! Informe o seu destino! Se você não sabe para onde ir diga {viagem}.
 Hello, welcome to Pewter central trains! Tell your destiny! If you don't know where to flow, say {travel}.@Olá, bem-vindo a estação central de trens de Pewter! Informe o seu destino! Se você não sabe para onde ir diga {viagem}.
-Hello, welcome to the PSoul Pokemon world! Here will be guided within your first game steps. Some dialogs will contain blue words, you just need to repeat them to {CONTINUE} the dialogue. [You can {skip} this tutorial whenever you want.]@Olá, bem-vindo ao mundo Pokemon de PSoul! Aqui você será guiado a dar seus primeiro passo dentro do jogo. Algumas caixas de diálogo irão conter palavras azuis, você só precisa repeti-los para {continuar} o diálogo. [Você pode {pular} este tutorial sempre que quiser.]
+Hello, welcome to the PokeVerse Pokemon world! Here will be guided within your first game steps. Some dialogs will contain blue words, you just need to repeat them to {CONTINUE} the dialogue. [You can {skip} this tutorial whenever you want.]@Olá, bem-vindo ao mundo Pokemon de PokeVerse! Aqui você será guiado a dar seus primeiro passo dentro do jogo. Algumas caixas de diálogo irão conter palavras azuis, você só precisa repeti-los para {continuar} o diálogo. [Você pode {pular} este tutorial sempre que quiser.]
 Hello, you made your preparations correct? I need your help again. Are you prepared to travel to the Orange Archipelago?@Olá, você fez a sua preparação? Preciso de sua ajuda novamente. Você está preparado para viajar para o Arquipélago Laranja?
 Hello... you found my {letters}?@Olá ... você encontrou das minhas {cartas}?
 Hello.@Olá.
@@ -4343,7 +4343,7 @@ This is so fun!@Isto é tão divertido!
 This is the last step, collect a total of 151 Pokemon information with your pokedex and then back to me.@Esta é a última etapa, recolha um total de informações de 151 Pokemons com sua pokedex e depois volte para mim.
 This is the last task, its a very important step for the my research. Do you want to help me?@Esta é a última tarefa, é um passo muito importante para a minha pesquisa. Você quer me ajudar?
 this is the limit per day.@este é o limite por dia.
-This is your first login on PSoul! Welcome! Remember that if you need help you can use the Help Channel (CTRL + O) and also our tutorials section http://forum.psoul.net/tutorials/@Este é o seu primeiro login no PSoul! Bem-vindo! Lembre-se que se você precisar de ajuda, você pode usar o Canal de Ajuda (CTRL + O) e também a nossa seção de tutoriais http://forum.psoul.net/tutorials/
+This is your first login on PokeVerse! Welcome! Remember that if you need help you can use the Help Channel (CTRL + O) and also our tutorials section http://forum.psoul.net/tutorials/@Este é o seu primeiro login no PokeVerse! Bem-vindo! Lembre-se que se você precisar de ajuda, você pode usar o Canal de Ajuda (CTRL + O) e também a nossa seção de tutoriais http://forum.psoul.net/tutorials/
 This item is already being traded.@Este item já está sendo negociado.
 This machine will be able to use again in %s.@Esta máquina vai estar disponível para uso novamente em %s.
 This mission is done.@Missão concluída.
@@ -4557,7 +4557,7 @@ Unable to perform action.@Não é possível executar a ação.
 Undercover@Secreto
 Unfortunately not.@Infelizmente não.
 Unfortunately not. Maybe later...@Infelizmente não. Talvez mais tarde...
-Unfortunately your client version has no support to the Market system. Try to use the 'beta' version of PSoul client!@Infelizmente sua versão de cliente não tem suporte para o sistema de mercado. Tente utilizar a versão 'beta' do cliente PSoul!
+Unfortunately your client version has no support to the Market system. Try to use the 'beta' version of PokeVerse client!@Infelizmente sua versão de cliente não tem suporte para o sistema de mercado. Tente utilizar a versão 'beta' do cliente PokeVerse!
 Uni-Duni-Te@Uni-Duni-Te
 Universal Translator v0.3 beta - in the testing phase. This machine is subject to errors, use with caution!@Universal Translator v0.3 beta - em fase de testes. Esta máquina está sujeita a erros, use com cuidado!
 unknown@desconhecido
@@ -4719,7 +4719,7 @@ Welcome to the Ranger Club! You can view the {task} list, try your {promotion} i
 Welcome to the Spectrum Mastery! Here you can exchange your spectrum tokens into rewards. Type {options} to see.@Bem-vindo a Mastery Spectrum! Aqui você pode trocar suas spectrum tokens em recompensas. Escreva {opções} para ver.
 Welcome to the Vital Mastery! Here you can exchange your vital tokens into rewards. Type {options} to see.@Bem-vindo a Mastery Vital! Aqui você pode trocar suas vital tokens em recompensas. Escreva {opções} para ver.
 Welcome to the Voltagic Mastery! Here you can exchange your voltagic tokens into rewards. Type {options} to see.@Bem-vindo a Mastery Voltagic! Aqui você pode trocar suas voltagic tokens em recompensas. Escreva {opções} para ver.
-Welcome to the world of PSoul! You are about to start your journey\nin a fun and mysterious world inhabited by Pokemon!\n\nThe first sites listed to start training your Pokemon is through\nthe sewers of cities or near rivers fishing with a fishing rod\nthat is in your backpack.\n\nFor heal your Pokemon, approach the Nurse Joy and say 'hi'.\nWhile in battle you can use health potions!\n\nYou can visit http://www.psoul.net/blogCategories/1-tutorials to find guides!\nFeel free to also get help in the 'Help' or 'Game-Chat' channels\nusing the shortcut Ctrl + O.\n\nGood luck on your journey!\n@Bem-vindo ao mundo de PSoul! Você está prestes a iniciar a sua viagem\nem um divertido e misterioso mundo habitado por Pokemon!\n\n O primeiro lugar para começar a treinar seu Pokemon é através\ndos esgotos de cidades ou perto de rios para pescar com uma vara de pesca\nque está na sua mochila.\n\nPara curar seu Pokemon, fale com a Enfermeira Joy, diga 'oi'.\ nDurante a batalha você pode usar poções de saúde!\n\n Você pode visitar http://www.psoul.net/blogCategories/1-tutorials para encontrar guias!\nsinta-se livre para entrar nos canais 'Help' ou 'Game-Chat'\nUsando o atalho Ctrl + O.\n\nBoa sorte em sua jornada!\n
+Welcome to the world of PokeVerse! You are about to start your journey\nin a fun and mysterious world inhabited by Pokemon!\n\nThe first sites listed to start training your Pokemon is through\nthe sewers of cities or near rivers fishing with a fishing rod\nthat is in your backpack.\n\nFor heal your Pokemon, approach the Nurse Joy and say 'hi'.\nWhile in battle you can use health potions!\n\nYou can visit http://www.psoul.net/blogCategories/1-tutorials to find guides!\nFeel free to also get help in the 'Help' or 'Game-Chat' channels\nusing the shortcut Ctrl + O.\n\nGood luck on your journey!\n@Bem-vindo ao mundo de PokeVerse! Você está prestes a iniciar a sua viagem\nem um divertido e misterioso mundo habitado por Pokemon!\n\n O primeiro lugar para começar a treinar seu Pokemon é através\ndos esgotos de cidades ou perto de rios para pescar com uma vara de pesca\nque está na sua mochila.\n\nPara curar seu Pokemon, fale com a Enfermeira Joy, diga 'oi'.\ nDurante a batalha você pode usar poções de saúde!\n\n Você pode visitar http://www.psoul.net/blogCategories/1-tutorials para encontrar guias!\nsinta-se livre para entrar nos canais 'Help' ou 'Game-Chat'\nUsando o atalho Ctrl + O.\n\nBoa sorte em sua jornada!\n
 Welcome to the Zen Mastery! Here you can exchange your zen tokens into rewards. Type {options} to see.@Bem-vindo a Mastery Zen! Aqui você pode trocar suas zen tokens em recompensas. Escreva {opções} para ver.
 Welcome to the {Safari} Zone center, how I can help you?@Bem-vindo ao centro do {Safari} Zone, como posso ajudá-lo?
 Welcome to Trovitopolis Island! I can {mark} on your map the locations of the island.@Bem-vindo ao Ilha Trovitopolis! Eu posso {marcar} em seu mapa os locais da ilha.
@@ -5739,7 +5739,7 @@ Before you complete this mission you need to call your Pokemon back.@Antes de co
 night@noite
 sunset@pôr do sol
 sunrise@nascer do sol
-Welcome to PSoul! Stay tuned, Professor Oak is looking for experienced trainer to help him!@Bem-vindo ao PSoul! Fique ligado, o Professor Oak está procurando por treinadores experientes para ajudá-lo!
+Welcome to PokeVerse! Stay tuned, Professor Oak is looking for experienced trainer to help him!@Bem-vindo ao PokeVerse! Fique ligado, o Professor Oak está procurando por treinadores experientes para ajudá-lo!
 my house@minha casa
 my guild house@a casa da minha guilda
 You cannot enter in the tournament room while you are carrying Pokemon!@Você não pode entrar na sala do torneio enquanto estiver carregando Pokemons!
@@ -6644,7 +6644,7 @@ A unique attack that varies in type depending on the Pokemon using it.@Um ataque
 Pluck does damage and has no secondary effect.@Pluck inflinge dano e não tem nenhum efeito secundário.
 Your Pokemon doesn't have an Egg Move!@O seu Pokemon não possui um Movimento de Ovo!
 Your Pokemon is not eligible to be fixed.@O seu Pokemon não está elegível para ser corrigido.
-Yes, I can fix an Egg Move lost due to PSoul update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the currently generated. Do you want to do that?@Sim, eu posso consertar um Movimento de Ovo perdido devido a atualizações do PSoul. Neste caso, você vai gerar um novo Movimento de Ovo se seu Pokemon não pode utilizar o atual. Você quer isso?
+Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the currently generated. Do you want to do that?@Sim, eu posso consertar um Movimento de Ovo perdido devido a atualizações do PokeVerse. Neste caso, você vai gerar um novo Movimento de Ovo se seu Pokemon não pode utilizar o atual. Você quer isso?
 Dragon Claw inflicts damage and has no secondary effect.@Dragon Claw inflinge dano e não tem efeito secundário.
 Force Palm inflicts damage and has a 30% chance of paralyzing the target.@Force Palm inflinge dano e tem 30% de chance de causar paralisia no alvo.
 Waterfall does damage and has a 20% chance of causing the target to flinch.@Waterfall causa dano e tem 20% de chance de causar o efeito flinch no alvo.
@@ -6867,7 +6867,7 @@ You want to exchange %s tokens for a %s?@Você quer trocar %s tokens por um %s?
 You completed %s of hunting and received your reward.@Você completou %s de caçada e recebeu sua recompensa.
  contains: @ contém: 
 Sorry, you cannot leave right now.@Você não pode sair neste momento.
-Hello %s! Welcome to PSoul, a MMORPG loyal in the Pokemon series. You are boarding a world filled with many adventures and discoveries.@Olá %s! Seja bem-vindo ao PSoul, um MMORPG fidelizado na série Pokemon. Você está prestes a embarcar em um mundo repleto de muitas aventuras e descobertas.
+Hello %s! Welcome to PokeVerse, a MMORPG loyal in the Pokemon series. You are boarding a world filled with many adventures and discoveries.@Olá %s! Seja bem-vindo ao PokeVerse, um MMORPG fidelizado na série Pokemon. Você está prestes a embarcar em um mundo repleto de muitas aventuras e descobertas.
 My name is Red and I will be your guide on these first steps in the Pokemon world. Now exit your room and look for the exit of the house.@Me chamo Red e serei o seu guia nestes primeiros passos no mundo Pokemon. Agora saia do seu quarto e procure a saída da casa.
 Very well! Now go to the lab of Prof. Oak to acquire your first Pokemon.@Muito bem! Agora vá até o laboratório do Prof. Oak para adquirir seu primeiro Pokemon.
 Hello %s, welcome to my lab! My name is Oak, I'm a researcher fascinated by the Pokemon world... I see that your big day has arrived, are you ready to receive your first Pokemon?@Olá %s, seja bem-vindo ao meu laboratório! Me chamo Oak, sou um pesquisador fascinado pelo mundo Pokemon... Vejo que chegou seu grande dia, está pronto para receber seu primeiro Pokemon?

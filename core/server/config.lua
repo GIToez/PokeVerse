@@ -311,7 +311,7 @@
 	teleportPlayerSummons = true
 
 	-- Status
-	ownerName = "PSoul"
+	ownerName = "PokeVerse"
 	ownerEmail = "contact@psoul.net"
 	url = "http://www.psoul.net/"
 	location = "EUA"
@@ -328,7 +328,7 @@
 	errorLogName = ""
 	truncateLogsOnStartup = false
 
-	-- PSoul
+	-- PokeVerse
 	shinyAppearChance = 8192
 	deathLossExperience = false
 	deathProtection = 20 -- Death loss experience after this level
