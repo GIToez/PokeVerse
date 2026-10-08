@@ -413,6 +413,8 @@ void serverMain(void* param)
 		GUI::getInstance()->m_connections = true;
 		#endif
 		servicer.run();
+		Dispatcher::getInstance().join();
+		Scheduler::getInstance().join();
 	}
 	else
 	{

@@ -31,7 +31,7 @@ Dispatcher::Dispatcher()
 {
 	m_taskList.clear();
 	Dispatcher::m_threadState = Dispatcher::STATE_RUNNING;
-	boost::thread(boost::bind(&Dispatcher::dispatcherThread, (void*)this));
+	m_thread = boost::thread(boost::bind(&Dispatcher::dispatcherThread, (void*)this));
 }
 
 void Dispatcher::dispatcherThread(void* p)
@@ -140,4 +140,13 @@ void Dispatcher::shutdown()
 
 	flush();
 	m_taskLock.unlock();
+	m_taskSignal.notify_one();
+}
+
+// Called by main() once the services stopped: the process must not destroy the globals
+// (g_game, the map) while the dispatcher still finishes the task that ran Game::shutdown.
+void Dispatcher::join()
+{
+	if(m_thread.joinable() && m_thread.get_id() != boost::this_thread::get_id())
+		m_thread.timed_join(boost::posix_time::seconds(30));
 }

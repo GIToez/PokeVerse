@@ -73,6 +73,7 @@ class Scheduler
 
 		void stop();
 		void shutdown();
+		void join();
 
 		static void schedulerThread(void* p);
 
@@ -92,6 +93,7 @@ class Scheduler
 		boost::condition_variable m_eventSignal;
 
 		std::priority_queue<SchedulerTask*, std::vector<SchedulerTask*>, lessTask > m_eventList;
+		boost::thread m_thread;
 		static SchedulerState m_threadState;
 };
 #endif

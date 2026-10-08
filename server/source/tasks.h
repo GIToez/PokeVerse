@@ -70,6 +70,7 @@ class Dispatcher
 
 		void stop();
 		void shutdown();
+		void join();
 
 		static void dispatcherThread(void* p);
 
@@ -88,6 +89,7 @@ class Dispatcher
 		boost::condition_variable m_taskSignal;
 
 		std::list<Task*> m_taskList;
+		boost::thread m_thread;
 		static DispatcherState m_threadState;
 };
 #endif
