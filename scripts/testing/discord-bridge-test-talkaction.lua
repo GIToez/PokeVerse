@@ -8,6 +8,11 @@
 --   /bridgetest spawn <monster>  creates a wild monster through doCreateMonster
 
 local function isFree(cid, pos)
+    -- getTileInfo logs an error for positions without a tile.
+    local ground = getTileThingByPos({x = pos.x, y = pos.y, z = pos.z, stackpos = 0})
+    if (not ground or ground.itemid == 0) then
+        return false
+    end
     local info = getTileInfo(pos)
     return info and not info.protection and not info.house and doTileQueryAdd(cid, pos) == RETURNVALUE_NOERROR
 end
