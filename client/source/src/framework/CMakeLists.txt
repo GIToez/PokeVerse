@@ -162,6 +162,11 @@ if(WIN32)
 else()
     set(CPP2011_FLAGS "-std=c++0x")
 endif()
+# Recent Boost releases (MSYS2 ships them) no longer build as C++11.
+set(CXX_STD_FLAG "" CACHE STRING "Override the C++ standard flag, e.g. -std=gnu++17")
+if(CXX_STD_FLAG)
+    set(CPP2011_FLAGS "${CXX_STD_FLAG}")
+endif()
 
 # gcc compile flags
 set(WARNS_FLAGS "-Wall -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result")
@@ -218,7 +223,12 @@ if(WIN32)
 endif()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_LIBS ${USE_STATIC_LIBS})
-find_package(Boost 1.48.0 COMPONENTS ${REQUIRED_BOOST_COMPONENTS} REQUIRED)
+find_package(Boost 1.48.0 COMPONENTS ${REQUIRED_BOOST_COMPONENTS} QUIET)
+if(NOT Boost_FOUND)
+    # Boost.System is header-only since 1.69 and has no library at all since 1.89.
+    list(REMOVE_ITEM REQUIRED_BOOST_COMPONENTS system)
+    find_package(Boost 1.69.0 COMPONENTS ${REQUIRED_BOOST_COMPONENTS} REQUIRED)
+endif()
 
 #find lua
 if(LUAJIT)
