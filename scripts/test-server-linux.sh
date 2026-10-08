@@ -94,10 +94,14 @@ sleep 3
 
 step "Database checks"
 $db -upokeverse -ppokeverse pokeverse -e "SELECT name, level, posx, posy, posz, lastlogin > 0 AS has_logged_in, online FROM players WHERE id > 1"
-moved=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM players WHERE name IN ('Trainer','Admin','New Trainer') AND lastlogin > 0 AND NOT (posx = 3307 AND posy = 300)")
+moved=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM players WHERE name IN ('Trainer','Admin','New Trainer') AND lastlogin > 0 AND NOT (posx = 4711 AND posy = 678)")
 [ "$moved" = 3 ] || { echo "FAIL: expected 3 characters saved at a new position, got $moved"; exit 1; }
 dex=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'New Trainer' AND i.pid = 6 AND i.itemtype = 12281")
 [ "$dex" = 1 ] || { echo "FAIL: New Trainer lost the Pokedex"; exit 1; }
+island=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(p.town_id, ',', p.level, ',',
+  (SELECT COUNT(*) FROM player_items i WHERE i.player_id = p.id AND i.itemtype IN (13499, 13492, 13497, 13820)))
+  FROM players p WHERE p.name = 'New Trainer'")
+[ "$island" = "10,1,4" ] || { echo "FAIL: New Trainer should stay on Beginner Island (town 10, level 1) with the island kit, got $island"; exit 1; }
 
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true

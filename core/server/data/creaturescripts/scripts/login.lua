@@ -37,9 +37,6 @@ function onLogin(cid)
 			doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
 			str = string.format(__L(cid, "Your last visit was %s ago, on %s."), table.concat(string.timediff(os.time() - lastLogin, cid)), os.date("%a %b %d %X %Y", lastLogin))
 		else
-			--if (not getPlayerUsingOtClient(cid)) then
-			--	doPlayerPopupFYI(cid, "Bem vindo ao mundo de PokeVerse! Voc est prestes a iniciar sua\njornada em um divertido e misterioso mundo habitado por Pokemons!\n\nOs primeiros locais indicados para iniciar o treinamento do seus\nPokemons  atravs dos bueiros das cidades ou pescando prximo a\nrios com a vara de pesca que est em sua mochila.\n\nPara curar seus Pokemons, aproxime-se da Nurse Joy e diga 'hi'.\nEnquanto em batalhas voc pode utilizar poes de vida!\n\nVoc pode visitar o endereo http://www.psoul.net/blogCategories/1-tutorials para buscar guias!\n\nSinta-se  vontade para buscar ajuda tambm no canal 'Help' ou\n'Game-Chat', atravs do atalho Ctrl + O.\n\nBoa sorte em sua jornada!\n")
-			--end
 			--doPlayerPopupFYI(cid, "Welcome to the world of PokeVerse! You are about to start your journey\nin a fun and mysterious world inhabited by Pokemon!\n\nThe first sites listed to start training your Pokemon is through\nthe sewers of cities or near rivers fishing with a fishing rod\nthat is in your backpack.\n\nFor heal your Pokemon, approach the Nurse Joy and say 'hi'.\nWhile in battle you can use health potions!\n\nYou can visit http://www.psoul.net/blogCategories/1-tutorials to find guides!\nFeel free to also get help in the 'Help' or 'Game-Chat' channels\nusing the shortcut Ctrl + O.\n\nGood luck on your journey!\n")
 			
 			--str = str .. " Please choose your outfit."
@@ -59,8 +56,8 @@ function onLogin(cid)
 				doPlayerAddLevel(cid, 4)
 				--setPlayerGotStarterPokemon(cid, true)
 			else
-				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "This is your first login on Pokenordic! Welcome! Remember that if you need help you can use the Help Channel (CTRL + O) and also our tutorials section")
-				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You're in the Beginner Island, a place made for inexperienced players, please watch this tutorial before start playing.")
+				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "This is your first login on PokeVerse! Welcome! Remember that if you need help you can use the Help and Wiki Chat channels (Ctrl + O).")
+				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You are on the Beginner Island, a place made for new players. Talk to Professor Tommy to start your journey.")
 				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_RED, "You are not required to stay on this island. Anytime you want to leave, go to Professor Tommy and talk about 'skip beginner island', even though you are no pokemon he will give you one.")
 			end
 			
