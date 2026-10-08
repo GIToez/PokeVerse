@@ -19,10 +19,10 @@ set /p "SEX=Sex - 0 female, 1 male [1]: "
 
 :validate
 if "%SEX%"=="" set "SEX=1"
-echo(%ACCOUNT%| findstr /r /x "[A-Za-z0-9][A-Za-z0-9]*" >nul || (echo Invalid account name. & goto :failed)
-echo(%PASSWORD%| findstr /r /x "[A-Za-z0-9_.@#][A-Za-z0-9_.@#]*" >nul || (echo Invalid password. & goto :failed)
-echo(%CHARACTER%| findstr /r /x "[A-Za-z][A-Za-z ]*" >nul || (echo Invalid character name. & goto :failed)
-echo(%SEX%| findstr /r /x "[01]" >nul || (echo Sex must be 0 or 1. & goto :failed)
+echo(%ACCOUNT%| findstr /r /x /c:"[A-Za-z0-9][A-Za-z0-9]*" >nul || (echo Invalid account name. & goto :failed)
+echo(%PASSWORD%| findstr /r /x /c:"[A-Za-z0-9_.@#][A-Za-z0-9_.@#]*" >nul || (echo Invalid password. & goto :failed)
+echo(%CHARACTER%| findstr /r /x /c:"[A-Za-z][A-Za-z ]*" >nul || (echo Invalid character name. & goto :failed)
+echo(%SEX%| findstr /r /x /c:"[01]" >nul || (echo Sex must be 0 or 1. & goto :failed)
 
 call "%~dp0tools\start-database.bat" || goto :failed
 "%PV_DB%" %PV_DB_ARGS% -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('%ACCOUNT%', '%PASSWORD%'); CALL pokeverse_create_character('%ACCOUNT%', '%CHARACTER%', %SEX%);" || goto :failed
