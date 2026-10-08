@@ -16,7 +16,7 @@ for f in client/pokeverse-client client/VARIANT client/init.lua client/modules/c
          server/pokeverse-server server/config.lua server/pt_br.loc server/json.lua \
          server/data/world/map.otbm server/data/items/items.otb server/data/XML/vocations.xml \
          database/schema/pokeaventuras.sql database/seeds/dev_accounts.sql database/required-tables.txt \
-         setup-database.sh start-server.sh start-client.sh README.txt VERSION.txt; do
+         setup-database.sh start-server.sh stop-server.sh start-client.sh README.txt VERSION.txt; do
     [ -e "$PKG/$f" ] || bad "missing $f"
 done
 ls "$PKG"/database/migrations/*.sql > /dev/null 2>&1 || bad "no database/migrations/*.sql"
@@ -24,7 +24,7 @@ if [ -d "$PKG/client" ]; then
     image_problems=$("$(dirname "$0")/check_client_images.sh" "$PKG/client") || true
     [ -z "$image_problems" ] || bad "client images: $(echo "$image_problems" | wc -l) problem(s), first: $(echo "$image_problems" | head -3 | tr '\n' ';')"
 fi
-for f in client/pokeverse-client server/pokeverse-server setup-database.sh start-server.sh start-client.sh; do
+for f in client/pokeverse-client server/pokeverse-server setup-database.sh start-server.sh stop-server.sh start-client.sh; do
     [ ! -e "$PKG/$f" ] || [ -x "$PKG/$f" ] || bad "$f is not executable"
 done
 for f in client/pokeverse-client server/pokeverse-server; do
@@ -57,7 +57,7 @@ if [ -x "$PKG/client/pokeverse-client" ]; then
     unresolved=$(ldd "$PKG/client/pokeverse-client" 2>&1 | grep 'not found' || true)
     [ -z "$unresolved" ] || bad "client libraries not found: $(echo "$unresolved" | awk '{print $1}' | tr '\n' ' ')"
 fi
-for f in setup-database.sh start-server.sh start-client.sh; do
+for f in setup-database.sh start-server.sh stop-server.sh start-client.sh; do
     [ -f "$PKG/$f" ] && ! bash -n "$PKG/$f" 2>/dev/null && bad "$f has a shell syntax error"
 done
 
@@ -69,7 +69,7 @@ done < <(find "$PKG" \( -iname '*harness*' -o -iname '*smoke_rc*' -o -iname '*-d
     -o -iname 'protocol_client*' -o -iname '*.log' -o -iname '*.bak' -o -iname '*.exe' -o -iname '*.dll' \) -print)
 while IFS= read -r path; do
     bad "unexpected shell script ${path#"$PKG"/}"
-done < <(find "$PKG" -name '*.sh' ! -path "$PKG/setup-database.sh" ! -path "$PKG/start-server.sh" ! -path "$PKG/start-client.sh" -print)
+done < <(find "$PKG" -name '*.sh' ! -path "$PKG/setup-database.sh" ! -path "$PKG/start-server.sh" ! -path "$PKG/stop-server.sh" ! -path "$PKG/start-client.sh" -print)
 while IFS= read -r path; do
     bad "forbidden directory ${path#"$PKG"/}"
 done < <(find "$PKG" -type d \( -name game_bot -o -name .github -o -name .git -o -name CMakeFiles \) -print)

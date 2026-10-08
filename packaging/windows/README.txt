@@ -97,9 +97,9 @@ to receive a level 15 Charmander (the full list is /commands).
 
 Step 3 - stop
 -------------
-As GM Admin say /shutdown, or press Ctrl+C in the "PokeVerse Server" window,
-or close it: all three save players and the map before the server exits.
-The window shows the exit code.
+As GM Admin say /shutdown, press Ctrl+C in the "PokeVerse Server" window,
+close it, or double-click "Stop Server.bat": all of them save players and the
+map before the server exits. The window shows the exit code.
 
 
 Starting over

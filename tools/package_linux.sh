@@ -82,7 +82,7 @@ cp "$ROOT/database/seeds/dev_accounts.sql" "$OUT/database/seeds/"
 } > "$OUT/database/required-tables.txt"
 
 # Launchers and instructions
-for f in setup-database.sh start-server.sh start-client.sh; do install -m 0755 "$TEMPLATES/$f" "$OUT/$f"; done
+for f in setup-database.sh start-server.sh stop-server.sh start-client.sh; do install -m 0755 "$TEMPLATES/$f" "$OUT/$f"; done
 install -m 0644 "$TEMPLATES/README.txt" "$OUT/README.txt"
 glibc=$(objdump -T "$OUT/server/pokeverse-server" "$OUT/client/pokeverse-client" "$OUT"/server/lib/*.so* 2>/dev/null |
     grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1)

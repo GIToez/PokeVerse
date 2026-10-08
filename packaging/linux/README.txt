@@ -83,8 +83,9 @@ A new GM Admin has no Pokemon. In game, as GM Admin, say for example:
 
 Step 3 - stop
 -------------
-Press Ctrl+C in the server terminal, or say /shutdown as GM Admin. Both save
-players and the map before the server exits.
+Press Ctrl+C in the server terminal, run ./stop-server.sh from another
+terminal, or say /shutdown as GM Admin. All of them save players and the map
+before the server exits.
 
 
 Logs

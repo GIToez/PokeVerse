@@ -8,6 +8,8 @@ it is not meant to be run by hand (see README.txt).
   -Action Verify      connect with the credentials in server\config.lua and check every table
   -Action WaitServer  wait until the server accepts connections on -Port
   -Action PortFree    exit 1 when something already listens on -Port
+  -Action Stop        send Ctrl+C to the running pokeverse-server.exe (it saves, then exits) and
+                      wait up to -TimeoutSeconds for it to finish
 
 Every value can come from a parameter, a POKEVERSE_DB_* environment variable, or a prompt.
 -NonInteractive (or POKEVERSE_NONINTERACTIVE=1) never prompts and uses the defaults.
@@ -15,7 +17,7 @@ Any SQL error stops the script with exit code 1.
 #>
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('Setup', 'Reset', 'Verify', 'WaitServer', 'PortFree')]
+    [ValidateSet('Setup', 'Reset', 'Verify', 'WaitServer', 'PortFree', 'Stop')]
     [string]$Action,
     [string]$DbHost,
     [string]$DbPort,
@@ -294,6 +296,46 @@ function Invoke-Setup([hashtable]$S, [bool]$DropFirst) {
     Test-Database @{ Host = $S.Host; Port = $S.Port; User = $S.AppUser; Password = $S.AppPassword } $db
 }
 
+# The server handles Ctrl+C like SIGQUIT on Linux: save players and the map, then exit. A process
+# can only send Ctrl+C to a console it is attached to, so a hidden helper process (its console is
+# thrown away) attaches to the server's console, ignores the event itself and sends it.
+function Stop-Server([int]$Timeout) {
+    $procs = @(Get-Process -Name 'pokeverse-server' -ErrorAction SilentlyContinue)
+    if ($procs.Count -eq 0) { Write-Ok 'No PokeVerse server is running.'; return }
+    $helper = @'
+param([uint32]$ServerId)
+Add-Type -Namespace PokeVerse -Name ConsoleCtrl -MemberDefinition @"
+[DllImport("kernel32.dll", SetLastError = true)] public static extern bool AttachConsole(uint processId);
+[DllImport("kernel32.dll", SetLastError = true)] public static extern bool FreeConsole();
+[DllImport("kernel32.dll", SetLastError = true)] public static extern bool SetConsoleCtrlHandler(System.IntPtr handler, bool add);
+[DllImport("kernel32.dll", SetLastError = true)] public static extern bool GenerateConsoleCtrlEvent(uint ctrlEvent, uint processGroupId);
+"@
+[PokeVerse.ConsoleCtrl]::FreeConsole() | Out-Null
+if (-not [PokeVerse.ConsoleCtrl]::AttachConsole($ServerId)) { exit 2 }
+[PokeVerse.ConsoleCtrl]::SetConsoleCtrlHandler([IntPtr]::Zero, $true) | Out-Null
+if (-not [PokeVerse.ConsoleCtrl]::GenerateConsoleCtrlEvent(0, 0)) { exit 3 }
+Start-Sleep -Milliseconds 500
+exit 0
+'@
+    $helperFile = Join-Path ([IO.Path]::GetTempPath()) ("pokeverse-stop-{0}.ps1" -f [Guid]::NewGuid())
+    [IO.File]::WriteAllText($helperFile, $helper)
+    try {
+        foreach ($p in $procs) {
+            Write-Step "Stopping pokeverse-server.exe (process $($p.Id)); it saves first"
+            $h = Start-Process -FilePath 'powershell.exe' -WindowStyle Hidden -Wait -PassThru -ArgumentList @(
+                '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$helperFile`"", '-ServerId', $p.Id)
+            if ($h.ExitCode -ne 0) {
+                throw "could not send Ctrl+C to process $($p.Id) (helper exit code $($h.ExitCode)); press Ctrl+C in the server window instead"
+            }
+        }
+    }
+    finally { Remove-Item -LiteralPath $helperFile -Force -ErrorAction SilentlyContinue }
+    foreach ($p in $procs) {
+        if (-not $p.WaitForExit($Timeout * 1000)) { throw "pokeverse-server.exe did not exit within $Timeout s" }
+    }
+    Write-Ok 'The server saved and stopped. Its window may ask "Terminate batch job (Y/N)?"; answer N or close it.'
+}
+
 function Test-PortOpen([int]$P) {
     $client = New-Object Net.Sockets.TcpClient
     try {
@@ -312,7 +354,10 @@ try {
             $script:Mysql = Find-MysqlClient
             Invoke-Setup (Get-Inputs $true) $false
             Write-Host ''
-            Write-Ok 'Database setup finished. Next: Start Server and Client.bat (or Start Server.bat, then Start Client.bat).'
+            if (Test-Path -LiteralPath (Join-Path $Root 'Start Server and Client.bat')) {
+                Write-Ok 'Database setup finished. Next: Start Server and Client.bat (or Start Server.bat, then Start Client.bat).'
+            }
+            else { Write-Ok 'Database setup finished. Next: Start Server.bat, then start a client.' }
         }
         'Reset' {
             $script:Mysql = Find-MysqlClient
@@ -353,6 +398,7 @@ try {
         'PortFree' {
             if (Test-PortOpen $Port) { Write-Host "Port $Port is already in use (is a PokeVerse server already running?)" -ForegroundColor Yellow; exit 1 }
         }
+        'Stop' { Stop-Server $TimeoutSeconds }
     }
     exit 0
 }

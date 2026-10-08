@@ -164,4 +164,8 @@ counts=$(app_sql "$DB" -e "SELECT (SELECT COUNT(*) FROM accounts), (SELECT COUNT
 ok "$(cut -f1 <<< "$counts") accounts, $(cut -f2 <<< "$counts") characters"
 
 echo
-echo "Database setup: SUCCESS. Next: ./start-server.sh, then ./start-client.sh"
+if [ -x "$HERE/start-client.sh" ]; then
+    echo "Database setup: SUCCESS. Next: ./start-server.sh, then ./start-client.sh"
+else
+    echo "Database setup: SUCCESS. Next: ./start-server.sh, then start a client."
+fi
