@@ -190,12 +190,15 @@ std::string ResourceManager::readFileContents(const std::string& fileName)
     PHYSFS_read(file, (void*)&buffer[0], 1, fileSize);
     PHYSFS_close(file);
 
+#ifdef ENCRYPTED_ASSETS
     if (isFileType(fileName, "lua") || isFileType(fileName, "png") || isFileType(fileName, "otmod") ||
         isFileType(fileName, "otfont") || isFileType(fileName, "otps") || isFileType(fileName, "otui") ||
         isFileType(fileName, "ogg") || isFileType(fileName, "frag") || isFileType(fileName, "spr") ||
         isFileType(fileName, "dat")) {
         return g_crypt.aesDecrypt(buffer);
     }
+
+#endif
 
     return buffer;
 }

@@ -31,6 +31,7 @@
 #endif
 
 #include <execinfo.h>
+#include <signal.h>
 #include <ucontext.h>
 
 #define MAX_BACKTRACE_DEPTH 128

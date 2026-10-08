@@ -149,6 +149,7 @@ else()
     set(USE_STATIC_LIBS OFF)
     set(USE_LIBCPP ON)
 endif()
+option(ENCRYPTED_ASSETS "Decrypt lua/png/otui/spr/dat files with the built-in AES key (the shipped PSoul data is plain text)" OFF)
 set(BUILD_COMMIT "devel" CACHE "Git commit string (intended for releases)" STRING)
 set(BUILD_REVISION "0" CACHE "Git revision string (intended for releases)" STRING)
 
@@ -158,9 +159,9 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(WIN32)
-    set(CPP2011_FLAGS "-std=gnu++0x")
+    set(CPP2011_FLAGS "-std=gnu++14")
 else()
-    set(CPP2011_FLAGS "-std=c++0x")
+    set(CPP2011_FLAGS "-std=c++14")
 endif()
 
 # gcc compile flags
@@ -190,6 +191,11 @@ if(USE_STATIC_LIBS)
 else()
     message(STATUS "Link to static libraries: OFF")
 endif()
+
+if(ENCRYPTED_ASSETS)
+    set(framework_DEFINITIONS ${framework_DEFINITIONS} -DENCRYPTED_ASSETS)
+endif()
+message(STATUS "Encrypted assets: ${ENCRYPTED_ASSETS}")
 
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 add_definitions(-D"BUILD_TYPE=\\\"${CMAKE_BUILD_TYPE}\\\"")
