@@ -18,6 +18,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -54,10 +55,18 @@ def cmd_line(bat, *args):
 
 def run_bat(pkg, name, *args, check=True):
     print(f"> {name} {' '.join(args)}", flush=True)
-    result = subprocess.run(cmd_line(os.path.join(pkg, name), *args), cwd=pkg, env=clean_env(),
-                            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                            text=True, errors="replace")
-    print(result.stdout, flush=True)
+    # Output goes to a file, not a pipe: the database started by the script inherits the
+    # handle and would keep a pipe open forever.
+    with tempfile.TemporaryFile() as out:
+        try:
+            result = subprocess.run(cmd_line(os.path.join(pkg, name), *args), cwd=pkg, env=clean_env(),
+                                    stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT, timeout=600)
+        except subprocess.TimeoutExpired:
+            out.seek(0)
+            print(out.read().decode("latin-1"), flush=True)
+            fail(f"{name} did not finish within 10 minutes")
+        out.seek(0)
+        print(out.read().decode("latin-1"), flush=True)
     if check and result.returncode != 0:
         fail(f"{name} exited with code {result.returncode}")
     return result
@@ -68,7 +77,7 @@ def sql(pkg, query):
     result = subprocess.run([mariadb, "--no-defaults", "--protocol=tcp", "-h127.0.0.1", "-P3307",
                              "-upokeverse", "-ppokeverse", "-N", "-B", "pokeverse", "-e", query],
                             env=clean_env(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                            text=True, errors="replace")
+                            text=True, errors="replace", timeout=120)
     if result.returncode != 0:
         fail(f"query failed: {query}\n{result.stdout}")
     return result.stdout.strip()
@@ -77,7 +86,7 @@ def sql(pkg, query):
 def protocol_test(*args):
     cmd = [sys.executable, os.path.join(HERE, "protocol-test.py"), *args]
     print("> protocol-test.py " + " ".join(args), flush=True)
-    if subprocess.run(cmd).returncode != 0:
+    if subprocess.run(cmd, timeout=180).returncode != 0:
         fail("protocol test failed: " + " ".join(args))
 
 
