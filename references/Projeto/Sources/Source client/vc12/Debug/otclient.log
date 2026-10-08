@@ -1,0 +1,611 @@
+﻿Build started 15/10/2016 10:38:46.
+     1>Project "E:\otclient_psoul\vc12\otclient.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IE:\otclient_psoul\src /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _CRT_SECURE_NO_WARNINGS /D _WIN32_WINNT=0x0501 /D BOT_PROTECTION /D CLIENT /D CRASH_HANDLER /D FW_GRAPHICS /D FW_NET /D FW_SOUND /D FW_XML /D "BUILD_TYPE=\"RelWithDebInfo\"" /D "BUILD_COMMIT=\"devel\"" /D "BUILD_REVISION=\"0\"" /D "VERSION=\"0.6.3\"" /D "BUILD_REVISION=\\\"0\\\"" /D "VERSION=\\\"0.6.3\\\"" /D _SCL_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\Win32\src\..\src\client\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\client\animatedtext.cpp ..\src\client\client.cpp ..\src\client\container.cpp ..\src\client\creature.cpp ..\src\client\creatures.cpp ..\src\client\effect.cpp ..\src\client\game.cpp ..\src\client\houses.cpp ..\src\client\item.cpp ..\src\client\itemtype.cpp ..\src\client\lightview.cpp ..\src\client\localplayer.cpp ..\src\client\luafunctions.cpp ..\src\client\luavaluecasts.cpp ..\src\client\map.cpp ..\src\client\mapio.cpp ..\src\client\mapview.cpp ..\src\client\minimap.cpp ..\src\client\missile.cpp ..\src\client\outfit.cpp ..\src\client\player.cpp ..\src\client\protocolcodes.cpp ..\src\client\protocolgame.cpp ..\src\client\protocolgameparse.cpp ..\src\client\protocolgamesend.cpp ..\src\client\shadermanager.cpp ..\src\client\spritemanager.cpp ..\src\client\statictext.cpp ..\src\client\thing.cpp ..\src\client\thingtype.cpp ..\src\client\thingtypemanager.cpp ..\src\client\tile.cpp ..\src\client\towns.cpp ..\src\client\uicreature.cpp ..\src\client\uiitem.cpp ..\src\client\uimap.cpp ..\src\client\uimapanchorlayout.cpp ..\src\client\uiminimap.cpp ..\src\client\uiprogressrect.cpp ..\src\client\uisprite.cpp
+         uisprite.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         uiprogressrect.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         uiminimap.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         uimapanchorlayout.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         uimap.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         uiitem.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         uicreature.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         towns.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         tile.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         thingtypemanager.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         thingtype.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         thing.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         statictext.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         spritemanager.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         shadermanager.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         protocolgamesend.cpp
+         Unknown compiler version - please run the configure tests and report the results
+     1>e:\otclient_psoul\src\framework\core\application.h(58): error C2001: newline in constant
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(32): error C2504: 'Application' : base class undefined
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(70): error C2071: 'Application::g_app' : illegal storage class
+     1>e:\otclient_psoul\src\framework\platform\platform.h(51): error C2071: 'Application::g_platform' : illegal storage class
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\uuid\uuid.hpp(57): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\uuid\uuid.hpp(57): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\uuid\uuid.hpp(209): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\uuid\uuid.hpp(209): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\e_os2.h(62): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\e_os2.h(62): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\stack.h(63): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\stack.h(63): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\safestack.h(125): error C2146: syntax error : missing ';' before identifier 'stack'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\safestack.h(125): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\safestack.h(132): error C2146: syntax error : missing ';' before identifier 'stack'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\safestack.h(132): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\crypto.h(142): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\crypto.h(142): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\bio.h(80): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\bio.h(80): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\bn.h(136): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\bn.h(136): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\asn1.h(83): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\asn1.h(83): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\objects.h(976): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\objects.h(976): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\evp.h(122): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\openssl\evp.h(122): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>e:\otclient_psoul\src\framework\util\crypt.h(80): error C3083: 'uuids': the symbol to the left of a '::' must be a type
+     1>e:\otclient_psoul\src\framework\util\crypt.h(80): error C2039: 'uuid' : is not a member of 'boost'
+     1>e:\otclient_psoul\src\framework\util\crypt.h(80): error C2146: syntax error : missing ';' before identifier 'm_machineUUID'
+     1>e:\otclient_psoul\src\framework\util\crypt.h(80): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>e:\otclient_psoul\src\framework\util\crypt.h(87): error C2071: 'Application::g_crypt' : illegal storage class
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(31): error C3254: 'Application' : class contains explicit override 'send' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(31): error C2838: 'send' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(39): error C3254: 'Application' : class contains explicit override 'sendExtendedOpcode' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(39): error C2838: 'sendExtendedOpcode' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(52): error C3254: 'Application' : class contains explicit override 'sendLoginPacket' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(52): error C2838: 'sendLoginPacket' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(115): error C3254: 'Application' : class contains explicit override 'sendEnterGame' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(115): error C2838: 'sendEnterGame' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(122): error C3254: 'Application' : class contains explicit override 'sendLogout' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(122): error C2838: 'sendLogout' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(129): error C3254: 'Application' : class contains explicit override 'sendPing' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(129): error C2838: 'sendPing' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(140): error C3254: 'Application' : class contains explicit override 'sendPingBack' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(140): error C2838: 'sendPingBack' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(147): error C3254: 'Application' : class contains explicit override 'sendAutoWalk' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(147): error C2838: 'sendAutoWalk' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(188): error C3254: 'Application' : class contains explicit override 'sendWalkNorth' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(188): error C2838: 'sendWalkNorth' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(195): error C3254: 'Application' : class contains explicit override 'sendWalkEast' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(195): error C2838: 'sendWalkEast' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(202): error C3254: 'Application' : class contains explicit override 'sendWalkSouth' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(202): error C2838: 'sendWalkSouth' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(209): error C3254: 'Application' : class contains explicit override 'sendWalkWest' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(209): error C2838: 'sendWalkWest' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(216): error C3254: 'Application' : class contains explicit override 'sendStop' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(216): error C2838: 'sendStop' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(223): error C3254: 'Application' : class contains explicit override 'sendWalkNorthEast' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(223): error C2838: 'sendWalkNorthEast' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(230): error C3254: 'Application' : class contains explicit override 'sendWalkSouthEast' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(230): error C2838: 'sendWalkSouthEast' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(237): error C3254: 'Application' : class contains explicit override 'sendWalkSouthWest' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(237): error C2838: 'sendWalkSouthWest' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(244): error C3254: 'Application' : class contains explicit override 'sendWalkNorthWest' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(244): error C2838: 'sendWalkNorthWest' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(251): error C3254: 'Application' : class contains explicit override 'sendTurnNorth' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(251): error C2838: 'sendTurnNorth' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(258): error C3254: 'Application' : class contains explicit override 'sendTurnEast' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(258): error C2838: 'sendTurnEast' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(265): error C3254: 'Application' : class contains explicit override 'sendTurnSouth' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(265): error C2838: 'sendTurnSouth' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(272): error C3254: 'Application' : class contains explicit override 'sendTurnWest' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(272): error C2838: 'sendTurnWest' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(279): error C3254: 'Application' : class contains explicit override 'sendEquipItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(279): error C2838: 'sendEquipItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(288): error C3254: 'Application' : class contains explicit override 'sendMove' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(288): error C2838: 'sendMove' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(300): error C3254: 'Application' : class contains explicit override 'sendInspectNpcTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(300): error C2838: 'sendInspectNpcTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(309): error C3254: 'Application' : class contains explicit override 'sendBuyItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(309): error C2838: 'sendBuyItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(321): error C3254: 'Application' : class contains explicit override 'sendSellItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(321): error C2838: 'sendSellItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(335): error C3254: 'Application' : class contains explicit override 'sendCloseNpcTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(335): error C2838: 'sendCloseNpcTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(342): error C3254: 'Application' : class contains explicit override 'sendRequestTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(342): error C2838: 'sendRequestTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(353): error C3254: 'Application' : class contains explicit override 'sendInspectTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(353): error C2838: 'sendInspectTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(362): error C3254: 'Application' : class contains explicit override 'sendAcceptTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(362): error C2838: 'sendAcceptTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(369): error C3254: 'Application' : class contains explicit override 'sendRejectTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(369): error C2838: 'sendRejectTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(376): error C3254: 'Application' : class contains explicit override 'sendUseItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(376): error C2838: 'sendUseItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(387): error C3254: 'Application' : class contains explicit override 'sendUseItemWith' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(387): error C2838: 'sendUseItemWith' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(400): error C3254: 'Application' : class contains explicit override 'sendUseOnCreature' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(400): error C2838: 'sendUseOnCreature' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(411): error C3254: 'Application' : class contains explicit override 'sendRotateItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(411): error C2838: 'sendRotateItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(421): error C3254: 'Application' : class contains explicit override 'sendCloseContainer' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\protocolgamesend.cpp(421): fatal error C1003: error count exceeds 100; stopping compilation
+         protocolgameparse.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         protocolgame.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         protocolcodes.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         player.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         Generating Code...
+         Compiling...
+         outfit.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         missile.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         minimap.cpp
+         Unknown compiler version - please run the configure tests and report the results
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\zconf.h(447): fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+         mapview.cpp
+         Unknown compiler version - please run the configure tests and report the results
+     1>e:\otclient_psoul\src\framework\core\application.h(58): error C2001: newline in constant
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(32): error C2504: 'Application' : base class undefined
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(70): error C2071: 'Application::g_app' : illegal storage class
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocbuf(15): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocbuf(15): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocmes(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocmes(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\locale(20): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\locale(20): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\assert.h(32): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\assert.h(32): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\filesystem\path_traits.hpp(35): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\filesystem\path_traits.hpp(35): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\interoperable.hpp(17): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\interoperable.hpp(18): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\iterator.hpp(77): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\iterator.hpp(77): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_traits.hpp(11): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_traits.hpp(11): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\arg_fwd.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\arg_fwd.hpp(21): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\yes_no.hpp(23): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\yes_no.hpp(23): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\assert.hpp(62): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\assert.hpp(62): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\arg.hpp(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\arg.hpp(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(16): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(16): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(28): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(28): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(32): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(32): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(41): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(41): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(45): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(45): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(54): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(54): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(58): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(58): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(67): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(67): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(71): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(71): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(80): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(80): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(84): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(84): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(93): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(93): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(97): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(97): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_categories.hpp(24): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_categories.hpp(24): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\indirect_traits.hpp(33): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\indirect_traits.hpp(33): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(34): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(34): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(36): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(36): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\enable_if.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\enable_if.hpp(22): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\type_traits\remove_const.hpp(29): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\type_traits\remove_const.hpp(29): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\always.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\always.hpp(21): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_fwd.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_fwd.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\type_wrapper.hpp(20): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\type_wrapper.hpp(20): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_apply.hpp(20): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_apply.hpp(20): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_wrap.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_wrap.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind_fwd.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind_fwd.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\next_prior.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\next_prior.hpp(21): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\protect.hpp(23): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\protect.hpp(23): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind.hpp(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind.hpp(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(23): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(23): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(33): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(33): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_type.hpp(19): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_type.hpp(19): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\quote.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\quote.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\full_lambda.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\full_lambda.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_facade.hpp(39): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_facade.hpp(40): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\io_fwd.hpp(15): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\io_fwd.hpp(16): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\io_fwd.hpp(16): fatal error C1003: error count exceeds 100; stopping compilation
+         mapio.cpp
+         Unknown compiler version - please run the configure tests and report the results
+     1>e:\otclient_psoul\src\framework\core\application.h(58): error C2001: newline in constant
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(32): error C2504: 'Application' : base class undefined
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(70): error C2071: 'Application::g_app' : illegal storage class
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\queue(14): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\queue(14): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\queue(453): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\queue(453): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>e:\otclient_psoul\src\framework\core\eventdispatcher.h(46): error C2039: 'priority_queue' : is not a member of 'std'
+     1>e:\otclient_psoul\src\framework\core\eventdispatcher.h(46): error C2143: syntax error : missing ';' before '<'
+     1>e:\otclient_psoul\src\framework\core\eventdispatcher.h(46): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>e:\otclient_psoul\src\framework\core\eventdispatcher.h(46): error C2238: unexpected token(s) preceding ';'
+     1>e:\otclient_psoul\src\framework\core\eventdispatcher.h(49): error C2071: 'Application::g_dispatcher' : illegal storage class
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocbuf(15): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocbuf(15): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocmes(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\xlocmes(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\locale(20): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\locale(20): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\assert.h(32): error C2059: syntax error : 'string'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\assert.h(32): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\filesystem\path_traits.hpp(35): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\filesystem\path_traits.hpp(35): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\interoperable.hpp(17): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\interoperable.hpp(18): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\iterator.hpp(77): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\iterator.hpp(77): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_traits.hpp(11): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_traits.hpp(11): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\arg_fwd.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\arg_fwd.hpp(21): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\yes_no.hpp(23): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\yes_no.hpp(23): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\assert.hpp(62): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\assert.hpp(62): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\arg.hpp(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\arg.hpp(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(16): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(16): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(28): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(28): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(32): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(32): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(41): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(41): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(45): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(45): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(54): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(54): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(58): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(58): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(67): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(67): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(71): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(71): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(80): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(80): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(84): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(84): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(93): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(93): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(97): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\placeholders.hpp(97): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_categories.hpp(24): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\iterator_categories.hpp(24): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\indirect_traits.hpp(33): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\detail\indirect_traits.hpp(33): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(34): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(34): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(36): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\facade_iterator_category.hpp(36): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\enable_if.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\iterator\detail\enable_if.hpp(22): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\type_traits\remove_const.hpp(29): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\type_traits\remove_const.hpp(29): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\always.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\always.hpp(21): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_fwd.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_fwd.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\type_wrapper.hpp(20): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\type_wrapper.hpp(20): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_apply.hpp(20): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_apply.hpp(20): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_wrap.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\apply_wrap.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind_fwd.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind_fwd.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\next_prior.hpp(21): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\next_prior.hpp(21): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\protect.hpp(23): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\protect.hpp(23): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind.hpp(13): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\bind.hpp(13): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(23): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(23): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(33): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\void.hpp(33): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_type.hpp(19): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\has_type.hpp(19): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\quote.hpp(12): error C2059: syntax error : 'namespace'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\quote.hpp(12): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\boost\mpl\aux_\preprocessed\plain\quote.hpp(12): fatal error C1003: error count exceeds 100; stopping compilation
+         map.cpp
+         Unknown compiler version - please run the configure tests and report the results
+     1>e:\otclient_psoul\src\framework\core\application.h(58): error C2001: newline in constant
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(32): error C2504: 'Application' : base class undefined
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(70): error C2071: 'Application::g_app' : illegal storage class
+     1>e:\otclient_psoul\src\client\map.cpp(37): error C2838: 'm_nulltile' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(40): error C3254: 'Application' : class contains explicit override 'init' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(40): error C2838: 'init' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(46): error C3254: 'Application' : class contains explicit override 'terminate' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(46): error C2838: 'terminate' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(46): error C2535: 'void Application::terminate(void)' : member function already defined or declared
+                 e:\otclient_psoul\src\framework\core\application.h(38) : see declaration of 'Application::terminate'
+     1>e:\otclient_psoul\src\client\map.cpp(51): error C3254: 'Application' : class contains explicit override 'addMapView' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(51): error C2838: 'addMapView' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(56): error C3254: 'Application' : class contains explicit override 'removeMapView' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(56): error C2838: 'removeMapView' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(63): error C3254: 'Application' : class contains explicit override 'notificateTileUpdate' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(63): error C2838: 'notificateTileUpdate' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(76): error C3254: 'Application' : class contains explicit override 'clean' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(76): error C2838: 'clean' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(91): error C3254: 'Application' : class contains explicit override 'cleanDynamicThings' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(91): error C2838: 'cleanDynamicThings' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(105): error C3254: 'Application' : class contains explicit override 'cleanTexts' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(105): error C2838: 'cleanTexts' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(111): error C3254: 'Application' : class contains explicit override 'addThing' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(111): error C2838: 'addThing' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(175): error C3254: 'Application' : class contains explicit override 'getThing' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(175): error C2838: 'getThing' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(182): error C3254: 'Application' : class contains explicit override 'removeThing' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(182): error C2838: 'removeThing' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(217): error C3254: 'Application' : class contains explicit override 'removeThingByPos' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(217): error C2838: 'removeThingByPos' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(224): error C3254: 'Application' : class contains explicit override 'colorizeThing' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(224): error C2838: 'colorizeThing' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(242): error C3254: 'Application' : class contains explicit override 'removeThingColor' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(242): error C2838: 'removeThingColor' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(260): error C3254: 'Application' : class contains explicit override 'getStaticText' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(260): error C2838: 'getStaticText' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(270): error C3254: 'Application' : class contains explicit override 'createTile' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(270): error C2838: 'createTile' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(296): error C3254: 'Application' : class contains explicit override 'createTileEx' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(296): error C2838: 'createTileEx' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(299): error C3254: 'Application' : class contains explicit override 'getOrCreateTile' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(299): error C2838: 'getOrCreateTile' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(315): error C3254: 'Application' : class contains explicit override 'getTile' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(315): error C2838: 'getTile' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(325): error C3254: 'Application' : class contains explicit override 'getTiles' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(325): error C2838: 'getTiles' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(355): error C3254: 'Application' : class contains explicit override 'cleanTile' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(355): error C2838: 'cleanTile' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(379): error C3254: 'Application' : class contains explicit override 'setShowZone' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(379): error C2838: 'setShowZone' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(387): error C3254: 'Application' : class contains explicit override 'setShowZones' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(387): error C2838: 'setShowZones' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(401): error C3254: 'Application' : class contains explicit override 'setForceShowAnimations' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(401): error C2838: 'setForceShowAnimations' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(410): error C3254: 'Application' : class contains explicit override 'isForcingAnimations' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(410): error C2838: 'isForcingAnimations' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(415): error C3254: 'Application' : class contains explicit override 'isShowingAnimations' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(415): error C2838: 'isShowingAnimations' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(420): error C3254: 'Application' : class contains explicit override 'setShowAnimations' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(420): error C2838: 'setShowAnimations' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(429): error C3254: 'Application' : class contains explicit override 'beginGhostMode' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(429): error C2838: 'beginGhostMode' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(434): error C3254: 'Application' : class contains explicit override 'endGhostMode' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(434): error C2838: 'endGhostMode' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(439): error C3254: 'Application' : class contains explicit override 'findItemsById' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(439): error C2838: 'findItemsById' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(463): error C3254: 'Application' : class contains explicit override 'addCreature' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(463): error C2838: 'addCreature' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(468): error C3254: 'Application' : class contains explicit override 'getCreatureById' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(468): error C2838: 'getCreatureById' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(476): error C3254: 'Application' : class contains explicit override 'removeCreatureById' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(476): error C2838: 'removeCreatureById' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(486): error C3254: 'Application' : class contains explicit override 'removeUnawareThings' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(486): error C2838: 'removeUnawareThings' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(505): error C3254: 'Application' : class contains explicit override 'setCentralPosition' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(505): error C2838: 'setCentralPosition' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(540): error C3254: 'Application' : class contains explicit override 'getSightSpectators' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(540): error C2838: 'getSightSpectators' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(545): error C3254: 'Application' : class contains explicit override 'getSpectators' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(545): error C2838: 'getSpectators' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(550): error C3254: 'Application' : class contains explicit override 'getSpectatorsInRange' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(550): error C2838: 'getSpectatorsInRange' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(555): error C3254: 'Application' : class contains explicit override 'getSpectatorsInRangeEx' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(555): error C2838: 'getSpectatorsInRangeEx' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(586): error C3254: 'Application' : class contains explicit override 'isLookPossible' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(586): error C2838: 'isLookPossible' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(592): error C3254: 'Application' : class contains explicit override 'isCovered' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(592): error C2838: 'isCovered' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(605): error C3254: 'Application' : class contains explicit override 'isCompletelyCovered' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(605): error C2838: 'isCompletelyCovered' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(630): error C3254: 'Application' : class contains explicit override 'isAwareOfPosition' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(630): error C2838: 'isAwareOfPosition' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(654): error C3254: 'Application' : class contains explicit override 'setAwareRange' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(654): error C2838: 'setAwareRange' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(660): error C3254: 'Application' : class contains explicit override 'resetAwareRange' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(660): error C2838: 'resetAwareRange' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(670): error C3254: 'Application' : class contains explicit override 'getFirstAwareFloor' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(670): error C2838: 'getFirstAwareFloor' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(678): error C3254: 'Application' : class contains explicit override 'getLastAwareFloor' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(678): error C2838: 'getLastAwareFloor' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(686): error C3254: 'Application' : class contains explicit override 'findPath' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\map.cpp(686): error C2838: 'findPath' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\map.cpp(686): fatal error C1003: error count exceeds 100; stopping compilation
+         luavaluecasts.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         luafunctions.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         localplayer.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         lightview.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         itemtype.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         item.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         houses.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         game.cpp
+         Unknown compiler version - please run the configure tests and report the results
+     1>e:\otclient_psoul\src\framework\core\application.h(58): error C2001: newline in constant
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(32): error C2504: 'Application' : base class undefined
+     1>e:\otclient_psoul\src\framework\core\graphicalapplication.h(70): error C2071: 'Application::g_app' : illegal storage class
+     1>e:\otclient_psoul\src\client\game.cpp(40): error C3254: 'Application' : class contains explicit override '{ctor}' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(40): error C2838: '{ctor}' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(40): error C2535: 'Application::Application(void)' : member function already defined or declared
+                 e:\otclient_psoul\src\framework\core\application.h(33) : see declaration of 'Application::Application'
+     1>e:\otclient_psoul\src\client\game.cpp(59): error C3254: 'Application' : class contains explicit override 'init' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(59): error C2838: 'init' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(64): error C3254: 'Application' : class contains explicit override 'terminate' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(64): error C2838: 'terminate' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(64): error C2535: 'void Application::terminate(void)' : member function already defined or declared
+                 e:\otclient_psoul\src\framework\core\application.h(38) : see declaration of 'Application::terminate'
+     1>e:\otclient_psoul\src\client\game.cpp(70): error C3254: 'Application' : class contains explicit override 'resetGameStates' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(70): error C2838: 'resetGameStates' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(116): error C3254: 'Application' : class contains explicit override 'processConnectionError' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(116): error C2838: 'processConnectionError' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(128): error C3254: 'Application' : class contains explicit override 'processDisconnect' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(128): error C2838: 'processDisconnect' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(139): error C3254: 'Application' : class contains explicit override 'processUpdateNeeded' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(139): error C2838: 'processUpdateNeeded' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(144): error C3254: 'Application' : class contains explicit override 'processLoginError' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(144): error C2838: 'processLoginError' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(149): error C3254: 'Application' : class contains explicit override 'processLoginAdvice' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(149): error C2838: 'processLoginAdvice' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(154): error C3254: 'Application' : class contains explicit override 'processLoginWait' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(154): error C2838: 'processLoginWait' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(159): error C3254: 'Application' : class contains explicit override 'processLogin' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(159): error C2838: 'processLogin' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(164): error C3254: 'Application' : class contains explicit override 'processPendingGame' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(164): error C2838: 'processPendingGame' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(171): error C3254: 'Application' : class contains explicit override 'processEnterGame' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(171): error C2838: 'processEnterGame' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(177): error C3254: 'Application' : class contains explicit override 'processGameStart' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(177): error C2838: 'processGameStart' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(206): error C3254: 'Application' : class contains explicit override 'processGameEnd' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(206): error C2838: 'processGameEnd' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(226): error C3254: 'Application' : class contains explicit override 'processDeath' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(226): error C2838: 'processDeath' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(234): error C3254: 'Application' : class contains explicit override 'processGMActions' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(234): error C2838: 'processGMActions' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(240): error C3254: 'Application' : class contains explicit override 'processPlayerHelpers' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(240): error C2838: 'processPlayerHelpers' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(245): error C3254: 'Application' : class contains explicit override 'processPlayerModes' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(245): error C2838: 'processPlayerModes' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(258): error C3254: 'Application' : class contains explicit override 'processPing' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(258): error C2838: 'processPing' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(266): error C3254: 'Application' : class contains explicit override 'processPingBack' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(266): error C2838: 'processPingBack' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(282): error C3254: 'Application' : class contains explicit override 'processTextMessage' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(282): error C2838: 'processTextMessage' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(287): error C3254: 'Application' : class contains explicit override 'processTalk' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(287): error C2838: 'processTalk' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(292): error C3254: 'Application' : class contains explicit override 'processOpenContainer' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(292): error C2838: 'processOpenContainer' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(308): error C3254: 'Application' : class contains explicit override 'processCloseContainer' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(308): error C2838: 'processCloseContainer' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(320): error C3254: 'Application' : class contains explicit override 'processContainerAddItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(320): error C2838: 'processContainerAddItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(331): error C3254: 'Application' : class contains explicit override 'processContainerUpdateItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(331): error C2838: 'processContainerUpdateItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(342): error C3254: 'Application' : class contains explicit override 'processContainerRemoveItem' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(342): error C2838: 'processContainerRemoveItem' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(353): error C3254: 'Application' : class contains explicit override 'processInventoryChange' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(353): error C2838: 'processInventoryChange' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(361): error C3254: 'Application' : class contains explicit override 'processChannelList' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(361): error C2838: 'processChannelList' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(366): error C3254: 'Application' : class contains explicit override 'processOpenChannel' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(366): error C2838: 'processOpenChannel' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(371): error C3254: 'Application' : class contains explicit override 'processOpenPrivateChannel' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(371): error C2838: 'processOpenPrivateChannel' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(376): error C3254: 'Application' : class contains explicit override 'processOpenOwnPrivateChannel' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(376): error C2838: 'processOpenOwnPrivateChannel' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(381): error C3254: 'Application' : class contains explicit override 'processCloseChannel' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(381): error C2838: 'processCloseChannel' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(386): error C3254: 'Application' : class contains explicit override 'processRuleViolationChannel' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(386): error C2838: 'processRuleViolationChannel' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(391): error C3254: 'Application' : class contains explicit override 'processRuleViolationRemove' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(391): error C2838: 'processRuleViolationRemove' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(396): error C3254: 'Application' : class contains explicit override 'processRuleViolationCancel' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(396): error C2838: 'processRuleViolationCancel' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(401): error C3254: 'Application' : class contains explicit override 'processRuleViolationLock' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(401): error C2838: 'processRuleViolationLock' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(406): error C3254: 'Application' : class contains explicit override 'processVipAdd' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(406): error C2838: 'processVipAdd' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(412): error C3254: 'Application' : class contains explicit override 'processVipStateChange' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(412): error C2838: 'processVipStateChange' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(418): error C3254: 'Application' : class contains explicit override 'processTutorialHint' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(418): error C2838: 'processTutorialHint' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(423): error C3254: 'Application' : class contains explicit override 'processAddAutomapFlag' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(423): error C2838: 'processAddAutomapFlag' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(428): error C3254: 'Application' : class contains explicit override 'processRemoveAutomapFlag' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(428): error C2838: 'processRemoveAutomapFlag' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(434): error C3254: 'Application' : class contains explicit override 'processOpenOutfitWindow' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(434): error C2838: 'processOpenOutfitWindow' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(464): error C3254: 'Application' : class contains explicit override 'processOpenNpcTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(464): error C2838: 'processOpenNpcTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(469): error C3254: 'Application' : class contains explicit override 'processPlayerGoods' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(469): error C2838: 'processPlayerGoods' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(474): error C3254: 'Application' : class contains explicit override 'processCloseNpcTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(474): error C2838: 'processCloseNpcTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(479): error C3254: 'Application' : class contains explicit override 'processOwnTrade' but does not derive from an interface that contains the function declaration
+     1>e:\otclient_psoul\src\client\game.cpp(479): error C2838: 'processOwnTrade' : illegal qualified name in member declaration
+     1>e:\otclient_psoul\src\client\game.cpp(479): fatal error C1003: error count exceeds 100; stopping compilation
+         effect.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         creatures.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         creature.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         container.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         client.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         animatedtext.cpp
+         Unknown compiler version - please run the configure tests and report the results
+         Generating Code...
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\functional(229): fatal error C1128: number of sections exceeded object file format limit : compile with /bigobj
+     1>Done Building Project "E:\otclient_psoul\vc12\otclient.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:03:15.38
