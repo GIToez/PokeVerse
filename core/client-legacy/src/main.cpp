@@ -30,8 +30,8 @@ int main(int argc, const char* argv[])
     std::vector<std::string> args(argv, argv + argc);
 
     // setup application name and version
-    g_app.setName("PSoul");
-    g_app.setCompactName("psoul");
+    g_app.setName("PokeVerse");
+    g_app.setCompactName("pokeverse");
     g_app.setVersion(VERSION);
 
     // initialize application framework and otclient

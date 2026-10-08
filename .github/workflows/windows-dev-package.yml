@@ -1,0 +1,134 @@
+name: Windows dev package
+
+on:
+  push:
+    branches: [main, "cursor/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MARIADB_VERSION: 11.4.8
+
+jobs:
+  build:
+    name: Build server and client (Windows, MSYS2)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            unzip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-lua51
+            mingw-w64-x86_64-gmp
+            mingw-w64-x86_64-sqlite3
+            mingw-w64-x86_64-libmariadbclient
+            mingw-w64-x86_64-libxml2
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-physfs
+            mingw-w64-x86_64-glew
+            mingw-w64-x86_64-openal
+            mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-libvorbis
+
+      - name: Build server
+        run: |
+          cmake -S core/server -B build/server -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/server
+
+      - name: Build client
+        run: |
+          cmake -S core/client-legacy -B build/client -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_STATIC_LIBS=OFF \
+            -DBUILD_COMMIT=${GITHUB_SHA::7} -DBUILD_REVISION=${GITHUB_RUN_NUMBER}
+          cmake --build build/client
+
+      - name: Cache MariaDB
+        uses: actions/cache@v4
+        with:
+          path: mariadb.zip
+          key: mariadb-${{ env.MARIADB_VERSION }}-winx64
+
+      - name: Download MariaDB
+        run: |
+          [ -f mariadb.zip ] || curl -fsSL -o mariadb.zip \
+            "https://archive.mariadb.org/mariadb-${MARIADB_VERSION}/winx64-packages/mariadb-${MARIADB_VERSION}-winx64.zip"
+
+      - name: Assemble package
+        run: scripts/package-windows.sh build/server build/client mariadb.zip dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Windows-Dev
+          path: dist/
+          if-no-files-found: error
+          compression-level: 9
+
+  test-package:
+    name: Test package on a clean Windows runner
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Get test scripts only
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: PokeVerse-Windows-Dev
+          path: ${{ runner.temp }}\download
+
+      - name: Run end-to-end test from the extracted package
+        shell: pwsh
+        run: |
+          $pkg = Join-Path $env:RUNNER_TEMP "download\PokeVerse-Windows-Dev"
+          python repo\scripts\test-package-windows.py $pkg --logs (Join-Path $env:RUNNER_TEMP "test-logs")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-logs-windows
+          path: ${{ runner.temp }}\test-logs
+
+  test-server-linux:
+    name: Server test (Linux)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake ninja-build g++ pkg-config \
+            libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-regex-dev \
+            liblua5.1-0-dev libgmp-dev libsqlite3-dev libmariadb-dev libxml2-dev libssl-dev \
+            mariadb-server
+          sudo systemctl stop mariadb || true
+      - name: Build server
+        run: |
+          cmake -S core/server -B build/server -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/server
+      - name: Test
+        run: scripts/test-server-linux.sh build/server/pokeverse-server

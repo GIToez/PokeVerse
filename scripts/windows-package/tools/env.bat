@@ -1,0 +1,10 @@
+@rem Shared paths and settings for the PokeVerse development scripts.
+for %%I in ("%~dp0..") do set "PV_ROOT=%%~fI"
+set "PV_DB_BIN=%PV_ROOT%\database\mariadb\bin"
+set "PV_DB_DATA=%PV_ROOT%\database\data"
+set "PV_DB_SQL=%PV_ROOT%\database\sql"
+set "PV_DB_PORT=3307"
+set "PV_DB=%PV_DB_BIN%\mariadb.exe"
+set "PV_DB_ARGS=--no-defaults --protocol=tcp -h127.0.0.1 -P%PV_DB_PORT%"
+set "PV_SERVER=%PV_ROOT%\server-windows"
+set "PV_CLIENT=%PV_ROOT%\client-legacy-windows"
