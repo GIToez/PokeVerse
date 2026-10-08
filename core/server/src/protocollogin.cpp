@@ -195,10 +195,11 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 
 	//Remove premium days
 	IOLoginData::getInstance()->removePremium(account);
-	if(!g_config.getBool(ConfigManager::ACCOUNT_MANAGER) && !account.charList.size())
+	// OTClient gets an empty character list so the player can create a character from the client.
+	if(!g_config.getBool(ConfigManager::ACCOUNT_MANAGER) && !account.charList.size()
+		&& (operatingSystem < CLIENTOS_OTCLIENT_WINDOWS || operatingSystem > CLIENTOS_OTCLIENT_MAC))
 	{
-		disconnectClient(0x0A, std::string("This account does not contain any character yet.\nCreate a new character on the "
-			+ g_config.getString(ConfigManager::SERVER_NAME) + " website at " + g_config.getString(ConfigManager::URL) + ".").c_str());
+		disconnectClient(0x0A, "This account does not contain any character yet.\nCreate a new character from the game client.");
 		return false;
 	}
 
