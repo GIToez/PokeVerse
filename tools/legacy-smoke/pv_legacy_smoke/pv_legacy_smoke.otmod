@@ -1,0 +1,11 @@
+Module
+  name: pv_legacy_smoke
+  description: PokeVerse legacy client login smoke (test only; installed by tools/smoke_legacy_login.sh)
+  author: PokeVerse
+  website: ~
+  sandboxed: true
+  autoload: true
+  autoload-priority: 5000
+  scripts: [ pv_legacy_smoke ]
+  @onLoad: init()
+  @onUnload: terminate()

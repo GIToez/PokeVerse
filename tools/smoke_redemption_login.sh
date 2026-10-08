@@ -16,6 +16,8 @@
 #      Every character with a Pokedex must get the status list at login, open the Pokedex window
 #      from the main panel and see a known entry's details (PV_DEX_HOLD_MS keeps it open longer,
 #      PV_DEX_TAB=1|2|3 shows the Information, Moves or Types tab).
+#      METRICS (file: time from launch to the game, memory when the map has loaded, FPS, error counts),
+#      PV_WINDOW_SIZE=WIDTHxHEIGHT (window size, for screenshots comparable with the legacy client),
 #      PV_MARKET=buyer|seller with PV_MARKET_SEED_BUY and PV_MARKET_SEED_OFFER runs the two-account
 #      market test; tools/smoke_market.sh sets these and checks the database.
 set -euo pipefail
@@ -78,13 +80,26 @@ if [ "$WINDOWS" = 1 ]; then
     taskkill //F //IM "$EXE" > /dev/null 2>&1 || true
     for _ in $(seq 1 30); do tasklist //FI "IMAGENAME eq $EXE" 2>/dev/null | grep -qi "$EXE" || break; sleep 1; done
 fi
+memory_kb() {
+    if [ "$WINDOWS" = 1 ]; then
+        powershell -NoProfile -Command "(Get-Process -Name '${EXE%.exe}' -ErrorAction SilentlyContinue | Select-Object -First 1).WorkingSet64 / 1024" 2>/dev/null | tr -d '\r' | cut -d. -f1
+    else
+        awk '/^VmRSS/ {print $2}' "/proc/$CLIENT_PID/status" 2>/dev/null
+    fi
+}
+launched=$(date +%s%3N)
 ( cd "$RUN" && exec "./$EXE" --user-dir=userdir ) > "$RUN/stdout.log" 2>&1 &
 CLIENT_PID=$!
-shot_taken=0
+shot_taken=0 game_ms="" memory=""
 deadline=$((SECONDS + PV_TIMEOUT_MS / 1000 + 30))
 while kill -0 "$CLIENT_PID" 2>/dev/null && [ "$SECONDS" -lt "$deadline" ]; do
-    if [ -n "${SCREENSHOT:-}" ] && [ "$shot_taken" = 0 ] && client_log | grep -aq "\[pv-smoke\] ${SCREENSHOT_AT:-MAP tiles=}"; then
-        sleep 0.3; screenshot "$SCREENSHOT"; shot_taken=1
+    if [ -z "$game_ms" ] && client_log | grep -aq '\[pv-smoke\] GAME START'; then
+        game_ms=$(( $(date +%s%3N) - launched ))
+    fi
+    if [ "$shot_taken" = 0 ] && client_log | grep -aq "\[pv-smoke\] ${SCREENSHOT_AT:-MAP tiles=}"; then
+        memory=$(memory_kb || true)
+        [ -n "${SCREENSHOT:-}" ] && { sleep 0.3; screenshot "$SCREENSHOT"; }
+        shot_taken=1
     fi
     client_log | grep -aq '\[pv-smoke\] EXIT ' && sleep 2 && break
     sleep 0.5
@@ -201,6 +216,17 @@ need '\[pv-smoke\] GAME END' "did not log out"
 need '\[pv-smoke\] EXIT 0' "client reported failure"
 if grep -aiE 'Unhandled opcode|parse message exception|invalid checksum|unable to load|unknown 0xFF sub-opcode|pokebar: no Pokemon for icon item|LUA ERROR|lua_pcall' "$LOG" >&2; then
     fail "protocol errors in the client log"
+fi
+if [ -n "${METRICS:-}" ]; then
+    {
+        echo "client=redemption"
+        echo "launch_to_game_ms=${game_ms:-unknown}"
+        echo "memory_kb=${memory:-unknown}"
+        grep -a '\[pv-smoke\] FPS [0-9]' "$LOG" | head -1 | sed 's/.*FPS \([0-9]*\).*/fps=\1/'
+        echo "texture_errors=$(grep -aci 'unable to load texture\|unable to load image' "$LOG" || true)"
+        echo "lua_errors=$(grep -aciE 'lua error|lua_pcall|attempt to (index|call|compare|perform|concatenate)' "$LOG" || true)"
+        echo "error_lines=$(grep -aci '\berror\b' "$LOG" || true)"
+    } > "$METRICS"
 fi
 grep -a '\[pv-smoke\]' "$LOG" | LC_ALL=C sort -u
 echo "Redemption login smoke: PASS"

@@ -15,6 +15,15 @@ local function report(fmt, ...)
     g_logger.info('[pv-smoke] ' .. string.format(fmt, ...))
 end
 
+-- PV_WINDOW_SIZE=WIDTHxHEIGHT gives both clients the same window for comparison screenshots.
+local function applyWindowSize()
+    local w, h = (os.getenv('PV_WINDOW_SIZE') or ''):match('^(%d+)x(%d+)$')
+    if w then
+        g_window.resize({ width = tonumber(w), height = tonumber(h) })
+        g_window.move({ x = 0, y = 0 })
+    end
+end
+
 local function finish(code)
     report('EXIT %d', code)
     scheduleEvent(function() g_app.exit() end, 500)
@@ -56,6 +65,7 @@ local function inspectGame()
         end
     end
     report('MAP tiles=%d creatures=%d', tiles, creatures)
+    report('FPS %d', g_app.getFps())
 
     for slot = InventorySlotFirst, InventorySlotLast do
         local item = player:getInventoryItem(slot)
@@ -1291,6 +1301,7 @@ local function login()
     tryLogin()
 end
 
+applyWindowSize()
 scheduleEvent(login, 1000)
 scheduleEvent(function()
     report('TIMEOUT')
