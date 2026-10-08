@@ -2888,7 +2888,7 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature, const Position& 
     else // We can't see him, so we might as well get rid of him
     {
         //removeKnownCreature(creature->getID());
-        //std::cout << "ATENCAO - known esta no fim da lista" << std::endl;
+        //std::cout << "WARNING - known creature is at the end of the list" << std::endl;
         ///sendRemoveCreature(creature, pos, stackpos);
         sendAddCreature(creature, pos, stackpos);
     }    

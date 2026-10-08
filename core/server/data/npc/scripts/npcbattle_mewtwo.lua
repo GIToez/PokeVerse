@@ -438,7 +438,7 @@ npcBattleFinal:setOnEnd(function(cid, playerWin, npc)
             doSendMagicEffect(getCreaturePosition(mewId), EFFECT_TELEPORT_FRAME)
             doRemoveCreature(mewId)
             doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "Use the master ball now!")
-            -- todo Quando o Mewtwo cair o quest log do jogador será atualizado: É agora, eu tenho que usar o protótipo da Master Ball no Mewtwo.
+            -- todo When Mewtwo falls, update the player's quest log: "It's now, I have to use the Master Ball prototype on Mewtwo."
           end,
           delay = 80000
         },

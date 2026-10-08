@@ -26,9 +26,9 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
-    -- Verificações - Ball habilitada, intervalo aguardado / Confirma
-    -- Mostra os Egg Moves possíveis / Confirma
-    -- Gera um da lista, atualiza a lista da Ball, se não há mais moves desabilita a ball / Confirma
+    -- Checks - ball enabled, waiting interval elapsed / Confirm
+    -- Shows the possible Egg Moves / Confirm
+    -- Generates one from the list and updates the ball's list; disables the ball when no moves are left / Confirm
     -- Se aceito, atualiza o Egg Move, desabilita a ball / Finaliza
 
     if (msgcontains(msg, 'regenerate')) then

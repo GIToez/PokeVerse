@@ -16,13 +16,13 @@ function onSay(cid, words, param, channel)
     local coupon = { id = r:getDataInt("id"), type = r:getDataInt("type"), reward = r:getDataInt("reward"), expires = r:getDataInt("expires") }
     r:free()
 
-    -- verificar se cupom já expirou
+    -- check whether the coupon has expired
     if (coupon.expires <= os.time()) then
         doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, __L(cid, "This coupon has been expired."))
         return true
     end
 
-    -- verificar se conta já utilizou o cupom
+    -- check whether the account has already used the coupon
     r = db.getResult(string.concat("SELECT 1 FROM `coupon_uses` WHERE `coupon_id`='", coupon.id, "' AND `account_id`='", getPlayerAccountId(cid), "' LIMIT 1;"))
     if (r:getID() ~= EMPTY_RESULT) then
         doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, __L(cid, "Your account already uses this coupon."))

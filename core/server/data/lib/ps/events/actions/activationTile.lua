@@ -236,7 +236,7 @@ ACTIONS[220] = function(cid, item, fromPosition, itemEx, toPosition)
     return true
 end
 
--- Chave encima da mesa - Main 7
+-- Key on top of the table - Main 7
 ACTIONS[221] = function(cid, item, fromPosition, itemEx, toPosition)
     local storage = 8518
     if (getCreatureStorage(cid, storage) ~= QUEST_STATUS.STARTED) then
@@ -252,7 +252,7 @@ ACTIONS[221] = function(cid, item, fromPosition, itemEx, toPosition)
         doSendMagicEffect(tmpPos, EFFECT_TELEPORT_DOWN)
     end
 
-    -- add chave
+    -- add key
     doPlayerSafeAddItem(cid, 25053, 1, true, true)
     doSendMagicEffect(toPosition, EFFECT_SPARK)
     return true
@@ -407,7 +407,7 @@ ACTIONS[225] = function(cid, item, fromPosition, itemEx, toPosition)
     if (getCreatureStorage(cid, storage) ~= QUEST_STATUS.FINISHED) then
         doPlayerSafeAddItem(cid, 27426, 1, true, true)
         doCreatureSetStorage(cid, storage, QUEST_STATUS.FINISHED)
-    elseif (getPlayerDefeatedNPC(cid, 9703)) then -- Pode ser que o jogador tenha pego a master ball mas ainda não vencido o Giovanni aqui.
+    elseif (getPlayerDefeatedNPC(cid, 9703)) then -- The player may have taken the master ball without having beaten Giovanni here yet.
         return false
     end
 
