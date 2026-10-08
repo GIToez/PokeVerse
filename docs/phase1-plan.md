@@ -17,7 +17,7 @@ no removal of existing working features.
 | Local database setup and accounts | Done: `core/database/`, reconstructed PSoul tables |
 | Windows package and `.bat` files | Done: `PokeVerse-Windows-Dev` CI artifact, see [windows-dev-package.md](windows-dev-package.md) |
 | PSoul to PokeVerse rename, English backend | Done (see notes below) |
-| Verify login, character creation, in-game movement | Done: protocol tests on Linux and Windows CI, real client by hand on Linux |
+| Verify login, character creation, in-game movement | Done: protocol tests against the extracted package on a clean Windows runner and on Linux; real client by hand on Linux (login, character list, in game, walking, saved position) |
 
 ## What was changed to build with current toolchains
 
@@ -52,6 +52,13 @@ no removal of existing working features.
   comments were translated. Portuguese/Spanish player texts and translations are kept.
 
 ## Known issues (existing, not fixed in Phase 1)
+
+- **Real Windows client GUI not yet driven end to end in CI.** GitHub's Windows runners
+  have no GPU driver. The shipped client exits there (heap corruption, `0xC0000374`) right
+  after reporting a 1024x1024 texture limit, i.e. on Windows' built-in OpenGL 1.1 fallback.
+  With Mesa software OpenGL it starts and stays running, but the keyboard-driven login
+  could not be confirmed on the runner. The same client source logs in and walks on Linux.
+  Needs a check on a real Windows PC with a graphics driver.
 
 - The NPC Soya references a missing `loot.lua` (Soya is not placed on the map).
 - Tournaments 2 and 3 are commented out in XML, but `tournament.lua` still queries them
