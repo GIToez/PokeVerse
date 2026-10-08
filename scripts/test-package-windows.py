@@ -229,13 +229,18 @@ def main():
         step("Database checks")
         print(sql(pkg, "SELECT name, level, posx, posy, posz, lastlogin > 0, online FROM players WHERE id > 1"))
         moved = sql(pkg, "SELECT COUNT(*) FROM players WHERE name IN ('Trainer', 'Admin', 'New Trainer') "
-                         "AND lastlogin > 0 AND NOT (posx = 3307 AND posy = 300)")
+                         "AND lastlogin > 0 AND NOT (posx = 4711 AND posy = 678)")
         if moved != "3":
             fail(f"expected 3 characters saved at a new position, got {moved}")
         dex = sql(pkg, "SELECT COUNT(*) FROM player_items i JOIN players p ON p.id = i.player_id "
                        "WHERE p.name = 'New Trainer' AND i.pid = 6 AND i.itemtype = 12281")
         if dex != "1":
             fail("New Trainer has no Pokedex")
+        island = sql(pkg, "SELECT CONCAT(p.town_id, ',', p.level, ',', (SELECT COUNT(*) FROM player_items i "
+                          "WHERE i.player_id = p.id AND i.itemtype IN (13499, 13492, 13497, 13820))) "
+                          "FROM players p WHERE p.name = 'New Trainer'")
+        if island != "10,1,4":
+            fail(f"New Trainer should stay on Beginner Island (town 10, level 1) with the island kit, got {island}")
         if "MYSQL ERROR" in read(server_log):
             fail("database errors in the server log")
 

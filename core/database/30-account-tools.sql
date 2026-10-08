@@ -5,7 +5,7 @@
 --   CALL pokeverse_set_group('Character Name', group_id);                     -- see data/XML/groups.xml
 --
 -- New characters use the same start values as config.lua (newPlayer* settings):
--- town 3 at 3307, 300, 7, level 1, vocation 1 (Trainer), world 1.
+-- Beginner Island (town 10) at 4711, 678, 7 next to Professor Tommy, level 1, vocation 1 (Trainer), world 1.
 
 DROP PROCEDURE IF EXISTS `pokeverse_create_account`;
 DROP PROCEDURE IF EXISTS `pokeverse_create_character`;
@@ -46,11 +46,11 @@ BEGIN
   INSERT INTO `players` (`name`, `world_id`, `group_id`, `account_id`, `level`, `vocation`, `health`, `healthmax`,
       `experience`, `looktype`, `town_id`, `posx`, `posy`, `posz`, `conditions`, `cap`, `sex`, `description`)
     VALUES (p_name, 1, 1, v_account, 1, 1, 150, 150,
-      0, IF(p_sex = 0, 611, 612), 3, 3307, 300, 7, '', 400, p_sex, '');
+      0, IF(p_sex = 0, 611, 612), 10, 4711, 678, 7, '', 400, p_sex, '');
   SET v_player = LAST_INSERT_ID();
-  -- Starting kit. The original website template is not available; these items are
-  -- what data/creaturescripts/scripts/login.lua and npc/scripts/professorTommy.lua
-  -- expect a new character to carry. Slot ids: 6 = left hand (Pokedex), 3 = backpack.
+  -- Beginner Island starting kit, as expected by data/npc/scripts/professorTommy.lua.
+  -- login.lua takes the island items away from level 1 characters outside town 10.
+  -- Slot ids: 6 = left hand (Pokedex), 3 = backpack.
   INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES
     (v_player, 6, 101, 12281, 1, ''),   -- Kanto Pokedex
     (v_player, 3, 102, 13499, 1, ''),   -- locked backpack
