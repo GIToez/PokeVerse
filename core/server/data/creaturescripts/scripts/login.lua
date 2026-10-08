@@ -34,6 +34,7 @@ function onLogin(cid)
 
         local lastLogin, str = getPlayerLastLoginSaved(cid), loginMessage
 		if (lastLogin > 0) then
+			doPlayerFixBagSlot(cid)
 			doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
 			str = string.format(__L(cid, "Your last visit was %s ago, on %s."), table.concat(string.timediff(os.time() - lastLogin, cid)), os.date("%a %b %d %X %Y", lastLogin))
 		else
@@ -41,6 +42,7 @@ function onLogin(cid)
 			
 			--str = str .. " Please choose your outfit."
 			--doPlayerSendOutfitWindow(cid)
+			doPlayerEnsureStartingKit(cid)
 			-- Give start items
 			if (getPlayerTown(cid) ~= 10 and getPlayerLevel(cid) == 1) then -- Isnt starting at beginner island
 				local lockedBackpack = getPlayerItemById(cid, true, 13499)
