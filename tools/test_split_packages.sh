@@ -40,6 +40,9 @@ if [ "$OS" = windows ]; then
         local win; win=$(cygpath -w "$2")
         powershell -NoProfile -Command "\$p = Get-Process -Name '${1%.exe}' -ErrorAction SilentlyContinue | Where-Object { \$_.Path -eq '$win\\$1' }; if (\$p) { exit 0 } else { exit 1 }"
     }
+    # Polls: without a GPU a client may stop at its OpenGL check; the launcher test only needs
+    # to see that exactly this executable was started from this folder.
+    wait_running() { for _ in $(seq 1 20); do exe_running "$@" && return 0; sleep 1; done; return 1; }
 else
     BASE="$(mktemp -d /tmp/pokeverse-split.XXXXXX)/PokeVerse Split Test"
     mkdir -p "$BASE"
@@ -112,18 +115,16 @@ fi
 # 4. Launchers start exactly the packaged executables
 if [ "$OS" = windows ]; then
     bat "$BASE" "Start Both Clients.bat" > "$LOGDIR/both.log" 2>&1 || { cat "$LOGDIR/both.log"; fail "Start Both Clients.bat failed with a running server"; }
-    sleep 15
-    exe_running pokeverse-legacy-client.exe "$LEGACY_DIR/legacy-client" || fail "Start Both Clients.bat: legacy-client\\pokeverse-legacy-client.exe is not running"
-    exe_running pokeverse-client.exe "$REDEMPTION_DIR/redemption-client" || fail "Start Both Clients.bat: redemption-client\\pokeverse-client.exe is not running"
+    wait_running pokeverse-legacy-client.exe "$LEGACY_DIR/legacy-client" || fail "Start Both Clients.bat: legacy-client\\pokeverse-legacy-client.exe is not running"
+    wait_running pokeverse-client.exe "$REDEMPTION_DIR/redemption-client" || fail "Start Both Clients.bat: redemption-client\\pokeverse-client.exe is not running"
     powershell -NoProfile -Command "Get-Process -Name pokeverse-* | Format-Table Id, Path -AutoSize" | tee "$LOGDIR/launched.txt"
     taskkill //F //IM pokeverse-legacy-client.exe > /dev/null 2>&1; taskkill //F //IM pokeverse-client.exe > /dev/null 2>&1
     sleep 3
     pass "Start Both Clients.bat starts legacy-client\\pokeverse-legacy-client.exe and redemption-client\\pokeverse-client.exe"
     for which in Legacy Redemption; do
         bat "$BASE" "Start $which Client.bat" > "$LOGDIR/start-$which.log" 2>&1 || { cat "$LOGDIR/start-$which.log"; fail "Start $which Client.bat failed"; }
-        sleep 10
-        if [ "$which" = Legacy ]; then exe_running pokeverse-legacy-client.exe "$LEGACY_DIR/legacy-client" || fail "Start Legacy Client.bat did not start the legacy client"
-        else exe_running pokeverse-client.exe "$REDEMPTION_DIR/redemption-client" || fail "Start Redemption Client.bat did not start the Redemption client"; fi
+        if [ "$which" = Legacy ]; then wait_running pokeverse-legacy-client.exe "$LEGACY_DIR/legacy-client" || fail "Start Legacy Client.bat did not start the legacy client"
+        else wait_running pokeverse-client.exe "$REDEMPTION_DIR/redemption-client" || fail "Start Redemption Client.bat did not start the Redemption client"; fi
         taskkill //F //IM pokeverse-legacy-client.exe > /dev/null 2>&1; taskkill //F //IM pokeverse-client.exe > /dev/null 2>&1
         sleep 3
         pass "Start $which Client.bat starts its own client"

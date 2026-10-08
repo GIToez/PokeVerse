@@ -4,8 +4,15 @@ name: Platforms
 #   PokeVerse-Windows-Dev     Windows x64 server + Redemption client  (windows-package)
 #   PokeVerse-Linux-Dev       Linux x64 server + Redemption client    (linux-client, release leg)
 #   PokeVerse-Android-arm64   Android ARM64 Redemption client APK     (android-client)
+# and the separate packages for comparing the two clients against one server
+# (docs/CLIENT_COMPARISON.md):
+#   PokeVerse-Server-Windows, PokeVerse-Redemption-Windows, PokeVerse-Legacy-Windows,
+#   PokeVerse-Client-Comparison-Windows                                (windows-package)
+#   PokeVerse-Server-Linux, PokeVerse-Redemption-Linux, PokeVerse-Legacy-Linux  (linux-client)
+#   PokeVerse-Redemption-Android-arm64 (the same APK, named by client)  (android-client)
+#   PokeVerse-Client-Comparison-Results-Windows/-Linux: screenshots, metrics, logs of the run
 # Each package is validated before it is uploaded as a run artifact, then run end to end.
-# A v* tag also publishes the three files to the GitHub Release of that tag (release job).
+# A v* tag also publishes the packages to the GitHub Release of that tag (release job).
 # The packages use the "development" profile (local server at 127.0.0.1, development database
 # defaults); staging/production profiles become additional package jobs or matrix entries.
 # The Windows server alone is also built and protocol-tested in windows-server.yml.
@@ -218,15 +225,112 @@ jobs:
           path: e2e/
           if-no-files-found: ignore
 
+  # Legacy client (client/source, OTClient 0.6.6 fork) for Windows, compiled from source with
+  # MSYS2 UCRT64 GCC (docs/BUILD_LEGACY_WINDOWS.md); never the imported PokeJornadas binaries.
+  # Production variant: bot protection on, legacy WinINet updater compiled out.
+  windows-legacy-client:
+    name: Windows legacy client (MSYS2 UCRT64, client/source)
+    runs-on: windows-2025
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tibia.spr LFS object id
+        id: spr
+        shell: bash
+        run: echo "oid=$(sed -n 's/^oid sha256://p' client/runtime-data/data/things/Tibia.spr)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: spr-cache
+        with:
+          path: client/runtime-data/data/things/Tibia.spr
+          key: tibia-spr-${{ steps.spr.outputs.oid }}
+          enableCrossOsArchive: true
+
+      - name: Fetch Tibia.spr from Git LFS (cache miss only)
+        if: steps.spr-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: git lfs pull --include client/runtime-data/data/things/Tibia.spr
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-ccache
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-lua51
+            mingw-w64-ucrt-x86_64-physfs
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-zlib
+            mingw-w64-ucrt-x86_64-glew
+            mingw-w64-ucrt-x86_64-openal
+            mingw-w64-ucrt-x86_64-libvorbis
+            mingw-w64-ucrt-x86_64-libogg
+            mingw-w64-ucrt-x86_64-binutils
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: .ccache
+          key: ccache-legacy-windows-${{ github.run_id }}
+          restore-keys: ccache-legacy-windows-
+
+      - name: Build the legacy client (tools/build_client.sh, production)
+        run: |
+          ccache -M 2G > /dev/null
+          tools/build_client.sh
+          ccache -s | head -12
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .ccache
+          key: ccache-legacy-windows-${{ github.run_id }}
+
+      - name: Check the build is the legacy client and loads only shipped or Windows DLLs
+        run: |
+          d=dist/client
+          ls -la "$d"/*.exe "$d"/*.dll
+          [ "$(cat "$d/VARIANT")" = production ] || { echo "VARIANT is not production"; exit 1; }
+          grep -aq Pokecenter "$d/pokeverse-client.exe" "$d/libotc_framework.dll" || { echo "no Pokecenter marker: not the legacy client"; exit 1; }
+          grep -aq Redemption "$d/pokeverse-client.exe" && { echo "Redemption marker in the legacy build"; exit 1; } || true
+          objdump -p "$d/pokeverse-client.exe" "$d/libotc_framework.dll" | grep -i "DLL Name" | sort -u
+          objdump -p "$d/libotc_framework.dll" | grep -qi "DLL Name: wininet.dll" && { echo "the legacy updater (WinINet) is compiled in"; exit 1; } || true
+          [ "$(head -c 7 "$d/data/things/Tibia.spr")" != version ] || { echo "Tibia.spr is an LFS pointer"; exit 1; }
+
+      # Build output for the packaging job; testers download PokeVerse-Legacy-Windows instead.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pokeverse-legacy-client-windows-x64-build
+          path: dist/client/
+          if-no-files-found: error
+          retention-days: 7
+
   # PokeVerse-Windows-Dev (packaging/windows/README.txt): server built with the Windows build
   # helper, assembled with the Release client, validated (files, DLL imports, LFS assets) and
   # uploaded, then copied to "C:\PokeVerse Dev" (outside the checkout, a path with a space) and
   # driven only through its own .bat files, like a tester would.
+  # The same job derives the separate packages from it (tools/package_split.sh) with the legacy
+  # client build: PokeVerse-Server-Windows, PokeVerse-Redemption-Windows, PokeVerse-Legacy-Windows
+  # and PokeVerse-Client-Comparison-Windows, validated, guard-tested and uploaded, then run end
+  # to end from "C:\PokeVerse Comparison Test": both clients in game against one server.
   windows-package:
-    name: Windows package PokeVerse-Windows-Dev (build, validate, upload, standalone run)
-    needs: windows-client
+    name: Windows packages (PokeVerse-Windows-Dev, Server, Redemption, Legacy, Comparison)
+    needs: [windows-client, windows-legacy-client]
     runs-on: windows-2025
-    timeout-minutes: 90
+    timeout-minutes: 150
     defaults:
       run:
         shell: msys2 {0}
@@ -259,6 +363,11 @@ jobs:
         with:
           name: pokeverse-client-windows-x64-release
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: pokeverse-legacy-client-windows-x64-build
+          path: dist/legacy-client-windows
+
       - uses: msys2/setup-msys2@v2
         id: msys2
         with:
@@ -278,6 +387,7 @@ jobs:
             mingw-w64-ucrt-x86_64-sqlite3
             mingw-w64-ucrt-x86_64-gmp
             mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-binutils
 
       - name: Build server with tools\windows\Build-PokeVerse-Server-Windows.bat
         shell: cmd
@@ -295,6 +405,33 @@ jobs:
         with:
           name: PokeVerse-Windows-Dev
           path: dist/windows/
+          if-no-files-found: error
+
+      - name: Assemble, validate and guard-test the separate packages
+        run: |
+          CHECK_IMPORTS=1 tools/package_split.sh windows dist/windows/PokeVerse-Windows-Dev dist/legacy-client-windows dist/split
+          tools/test_split_package_guard.sh windows dist/split
+
+      # Each downloads as <name>.zip with the package contents at the top (Extract All makes the folder).
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Server-Windows
+          path: dist/split/PokeVerse-Server-Windows/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Redemption-Windows
+          path: dist/split/PokeVerse-Redemption-Windows/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Legacy-Windows
+          path: dist/split/PokeVerse-Legacy-Windows/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Client-Comparison-Windows
+          path: dist/split/PokeVerse-Client-Comparison-Windows/
           if-no-files-found: error
 
       - name: Copy the package outside the repository (C:\PokeVerse Dev)
@@ -350,6 +487,22 @@ jobs:
           tasklist | grep -qi pokeverse-server.exe && { echo "FAIL: server still running after /shutdown"; taskkill //F //IM pokeverse-server.exe; status=1; }
           cp -r "$pkg/server/logs" e2e/server-logs 2>/dev/null || true
           exit $status
+
+      # The comparison package (identical parts to the separate packages) driven through its own
+      # .bat files from a path with spaces; Mesa only in the throwaway copies of the client run.
+      - name: Separate packages end to end (setup, one server, launchers, both clients in game, Stop Server.bat)
+        timeout-minutes: 40
+        run: |
+          mkdir -p mesa
+          7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll x64/libglapi.dll x64/dxil.dll -o"$(cygpath -w "$PWD/mesa")" -y > /dev/null
+          MESA_DIR="$PWD/mesa" tools/test_split_packages.sh windows dist/split "$PWD/e2e/split"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PokeVerse-Client-Comparison-Results-Windows
+          path: e2e/split/
+          if-no-files-found: ignore
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -535,6 +688,19 @@ jobs:
           path: dist/android/PokeVerse-Android-arm64.apk
           if-no-files-found: error
 
+      # The same APK under the name that says which client it is (the legacy client has no
+      # Android target: docs/CLIENT_COMPARISON.md).
+      - name: Name PokeVerse-Redemption-Android-arm64.apk
+        working-directory: .
+        run: |
+          mkdir -p dist/android-redemption
+          cp dist/android/PokeVerse-Android-arm64.apk dist/android-redemption/PokeVerse-Redemption-Android-arm64.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Redemption-Android-arm64
+          path: dist/android-redemption/PokeVerse-Redemption-Android-arm64.apk
+          if-no-files-found: error
+
   # Release leg: also the Linux server, the PokeVerse-Linux-Dev package (validated and uploaded
   # before the runtime tests), the repository end-to-end smoke and the package end-to-end test.
   linux-client:
@@ -636,6 +802,14 @@ jobs:
           sudo systemctl start mariadb
           tools/setup_dev_db.sh
 
+      - name: Build the legacy client (client/source, production)
+        if: matrix.type == 'release'
+        run: |
+          sudo apt-get install -y --no-install-recommends liblua5.1-0-dev libphysfs-dev zlib1g-dev libglew-dev \
+            libopenal-dev libvorbis-dev libogg-dev libboost-chrono-dev
+          tools/build_client.sh
+          grep -aq Pokecenter dist/client/pokeverse-client || { echo "no Pokecenter marker: not the legacy client"; exit 1; }
+
       - name: Assemble and validate PokeVerse-Linux-Dev.tar.gz
         if: matrix.type == 'release'
         run: |
@@ -649,6 +823,35 @@ jobs:
         with:
           name: PokeVerse-Linux-Dev
           path: dist/linux/PokeVerse-Linux-Dev.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Assemble, validate and guard-test the separate Linux packages
+        if: matrix.type == 'release'
+        run: |
+          tools/package_split.sh linux dist/linux/PokeVerse-Linux-Dev dist/client dist/split
+          tools/test_split_package_guard.sh linux dist/split
+
+      # Each downloads as <name>.zip with <name>.tar.gz inside (the tarball keeps the executable bits).
+      - uses: actions/upload-artifact@v4
+        if: matrix.type == 'release'
+        with:
+          name: PokeVerse-Server-Linux
+          path: dist/split/PokeVerse-Server-Linux.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        if: matrix.type == 'release'
+        with:
+          name: PokeVerse-Redemption-Linux
+          path: dist/split/PokeVerse-Redemption-Linux.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        if: matrix.type == 'release'
+        with:
+          name: PokeVerse-Legacy-Linux
+          path: dist/split/PokeVerse-Legacy-Linux.tar.gz
           if-no-files-found: error
           compression-level: 0
 
@@ -678,6 +881,18 @@ jobs:
           sleep 2
           DISPLAY=:99 tools/test_linux_package.sh dist/linux/PokeVerse-Linux-Dev.tar.gz "$PWD/e2e/package"
 
+      - name: Separate packages end to end (extract side by side, setup, one server, launchers, both clients in game, stop-server.sh)
+        if: matrix.type == 'release'
+        timeout-minutes: 30
+        run: DISPLAY=:99 tools/test_split_packages.sh linux dist/split "$PWD/e2e/split"
+
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.type == 'release'
+        with:
+          name: PokeVerse-Client-Comparison-Results-Linux
+          path: e2e/split/
+          if-no-files-found: ignore
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -694,7 +909,7 @@ jobs:
   release:
     name: GitHub Release (v* tags)
     if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
-    needs: [windows-client, windows-e2e, windows-package, android-client, linux-client]
+    needs: [windows-client, windows-legacy-client, windows-e2e, windows-package, android-client, linux-client]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -712,6 +927,15 @@ jobs:
         with:
           name: PokeVerse-Android-arm64
           path: artifacts/android
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: PokeVerse-*-Windows
+          path: artifacts/split-windows
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: PokeVerse-*-Linux
+          path: artifacts/split-linux
+          merge-multiple: true
 
       - name: Name the release assets
         run: |
@@ -721,6 +945,15 @@ jobs:
           (cd artifacts/windows && zip -qr -9 "../../release/PokeVerse-Windows-Dev-$v.zip" PokeVerse-Windows-Dev)
           cp artifacts/linux/PokeVerse-Linux-Dev.tar.gz "release/PokeVerse-Linux-Dev-$v.tar.gz"
           cp artifacts/android/PokeVerse-Android-arm64.apk "release/PokeVerse-Android-arm64-$v.apk"
+          cp artifacts/android/PokeVerse-Android-arm64.apk "release/PokeVerse-Redemption-Android-arm64-$v.apk"
+          for name in Server Redemption Legacy Client-Comparison; do
+            d="artifacts/split-windows/PokeVerse-$name-Windows"
+            [ -f "$d/VERSION.txt" ] || { echo "PokeVerse-$name-Windows missing"; exit 1; }
+            (cd "$d" && zip -qr -9 "$GITHUB_WORKSPACE/release/PokeVerse-$name-Windows-$v.zip" .)
+          done
+          for name in Server Redemption Legacy; do
+            cp "artifacts/split-linux/PokeVerse-$name-Linux.tar.gz" "release/PokeVerse-$name-Linux-$v.tar.gz"
+          done
           (cd release && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt)
           ls -la release
 
