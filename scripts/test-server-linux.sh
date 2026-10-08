@@ -14,7 +14,12 @@ server_pid=""
 db_pid=""
 
 cleanup() {
-  [ -n "$server_pid" ] && kill "$server_pid" 2>/dev/null && wait "$server_pid" 2>/dev/null || true
+  if [ -n "$server_pid" ]; then
+    kill -INT "$server_pid" 2>/dev/null || true
+    for _ in $(seq 30); do kill -0 "$server_pid" 2>/dev/null || break; sleep 1; done
+    kill -9 "$server_pid" 2>/dev/null || true
+    wait "$server_pid" 2>/dev/null || true
+  fi
   [ -n "$db_pid" ] && kill "$db_pid" 2>/dev/null && wait "$db_pid" 2>/dev/null || true
   if [ "${KEEP_WORK:-0}" != 1 ]; then rm -rf "$work"; else echo "Work directory kept: $work"; fi
 }
@@ -43,6 +48,8 @@ for f in "$root/core/server/schemas/pokeverse-extensions.sql" "$root/core/databa
   $db -upokeverse -ppokeverse pokeverse < "$f" >/dev/null
 done
 $db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('newuser', 'secret'); CALL pokeverse_create_character('newuser', 'New Trainer', 0);"
+# Characters used only by the Discord bridge test (each logs in once per run).
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6);"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -50,6 +57,16 @@ step "Starting the server"
 mkdir -p "$work/server/logs/server" "$work/server/logs/chat" "$work/server/logs/bots"
 cp -r "$root/core/server/data" "$root/core/server/config.lua" "$root/core/server/pt_br.loc" "$work/server/"
 cp "$binary" "$work/server/"
+# Discord bridge enabled through the machine-local override file, plus the test-only
+# /bridgetest talkaction (scripts/testing/) used to drive real catches and spawns.
+bridge_secret="ci-bridge-secret-$(date +%s)-$RANDOM"
+cat > "$work/server/config.local.lua" <<LUA
+discordBridgeEnabled = true
+discordBridgeSecret = "$bridge_secret"
+LUA
+cp "$root/scripts/testing/discord-bridge-test-talkaction.lua" "$work/server/data/talkactions/scripts/bridgetest.lua"
+sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value="bridgetest.lua"/>\n</talkactions>#' \
+  "$work/server/data/talkactions/talkactions.xml"
 (cd "$work/server" && exec "./$(basename "$binary")" >"$work/server.log" 2>&1) &
 server_pid=$!
 for _ in $(seq 180); do
@@ -60,12 +77,19 @@ done
 grep -q "server Online!" "$work/server.log" || { tail -50 "$work/server.log"; echo "FAIL: server did not start"; exit 1; }
 grep -E "Global address|Local ports|server Online" "$work/server.log"
 grep -q "Global address: 127.0.0.1" "$work/server.log" || { echo "FAIL: server is not bound to 127.0.0.1"; exit 1; }
+grep -q "Discord bridge listening on 127.0.0.1:7199" "$work/server.log" || { echo "FAIL: Discord bridge did not start"; exit 1; }
 
 step "Protocol tests"
 python3 "$root/scripts/protocol-test.py" --account test --password wrong --character Trainer --expect-login-failure
 python3 "$root/scripts/protocol-test.py" --account test --password test --character Trainer --walk east,east,south,west
 python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk west,north
 python3 "$root/scripts/protocol-test.py" --account newuser --password secret --character "New Trainer" --walk east,south
+sleep 3
+
+step "Discord bridge tests"
+python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --catch-test \
+  --listener "bridgetrainer:secret:Bridge Trainer" --speaker "bridgestaff:secret:Bridge Staff" --staff-character "Bridge Staff"
+lua5.1 "$root/scripts/test-lua-json.lua"
 sleep 3
 
 step "Database checks"
@@ -83,4 +107,4 @@ step "Stopping the server"
 kill -INT "$server_pid"
 for _ in $(seq 60); do kill -0 "$server_pid" 2>/dev/null || break; sleep 1; done
 server_pid=""
-echo "PASS: database setup, server start, login, character creation, game login and movement verified."
+echo "PASS: database setup, server start, login, character creation, game login, movement and Discord bridge verified."
