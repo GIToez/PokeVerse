@@ -68,5 +68,10 @@ rm -rf "$tmp"
 echo "== Scripts"
 cp -r "$root/scripts/windows-package/." "$out/"
 
+if find "$out" -name config.local.lua | grep -q .; then
+  echo "config.local.lua found in the package (it holds machine-local secrets); refusing to package." >&2
+  exit 1
+fi
+
 echo "Package ready: $out"
 du -sh "$out" "$srv" "$cli" "$db"

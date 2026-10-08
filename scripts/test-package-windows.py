@@ -186,6 +186,8 @@ def main():
     for big in [r"server-windows\data\world\map.otbm", r"client-legacy-windows\data\things\data.spr"]:
         if os.path.getsize(os.path.join(pkg, big)) < 1_000_000:
             fail(f"{big} looks like a Git LFS pointer, not the real file")
+    if os.path.exists(os.path.join(pkg, "server-windows", "config.local.lua")):
+        fail("the package must not contain server-windows\\config.local.lua")
 
     server = None
     try:
@@ -218,6 +220,8 @@ def main():
             fail("server did not come online")
         if "Global address: 127.0.0.1" not in text:
             fail("server is not bound to 127.0.0.1")
+        if "Discord bridge disabled" not in text:
+            fail("the Discord bridge must be disabled in the shipped package")
 
         step("Protocol tests")
         protocol_test("--account", "test", "--password", "wrong", "--character", "Trainer", "--expect-login-failure")
