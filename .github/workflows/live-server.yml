@@ -194,7 +194,7 @@ jobs:
           path: rehearsal-logs/
 
   live:
-    name: "OVH: ${{ inputs.action || 'deploy' }}"
+    name: Run on the OVH server
     needs: [build-server, build-bot, rehearsal]
     if: >-
       always() && (
