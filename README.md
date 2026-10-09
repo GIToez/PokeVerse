@@ -25,6 +25,12 @@ Download the **PokeVerse-Windows-Dev** artifact from the latest successful
 then `Start Server and Client.bat`. Log in with `test` / `test`.
 See [`docs/windows-dev-package.md`](docs/windows-dev-package.md).
 
+## Live server
+
+The live server runs on OVHcloud (Ubuntu 24.04) and is deployed by the **Live server**
+workflow. Players use the **PokeVerse-Windows-Live** artifact, which connects to it.
+See [`docs/live-server.md`](docs/live-server.md).
+
 ## Cloning
 
 Some assets are larger than 100 MB and are stored with [Git LFS](https://git-lfs.com/).

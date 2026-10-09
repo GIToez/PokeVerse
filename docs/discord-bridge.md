@@ -32,6 +32,9 @@ All settings (defaults in `config.lua`):
 On startup the server prints either `>> Discord bridge listening on 127.0.0.1:7199 ...` or
 the reason it is disabled.
 
+On the live server, `bootstrap-ovh.sh` enables the bridge with a random secret and the
+workflow gives the same secret to the production bot. See [`live-server.md`](live-server.md).
+
 ## Design
 
 - `src/discordbridge.cpp`: TCP listener on its own thread and `io_context`. Game code only
@@ -83,7 +86,7 @@ detect restarts and de-duplicate deliveries.
 | `event.kind` | Source | Fields |
 | --- | --- | --- |
 | `server_state` | `Game::setGameState` | `state` (`init`, `normal`, `maintain`, `closed`, `closing`, `shutdown`), `players` |
-| `restart_warning` | `Game::prepareGlobalSave`, `/shutdown` | `reason` (`global_save`, `shutdown`, `shutdown_cancelled`), `minutes` (absent when cancelled), `shutdown` |
+| `restart_warning` | `Game::prepareGlobalSave`, `/shutdown`, `/restart` and the daily restart | `reason` (`global_save`, `shutdown`, `shutdown_cancelled`), `minutes` (absent when cancelled), `shutdown` |
 | `broadcast` | `/b`, client broadcast (`Game::playerBroadcastMessage`), `/bc` | `source` (`gm`, `staff`), `author` (GM name for `gm`), `text` |
 | `chat` | `onTalkChannel` on Game-Chat[EN-US] (channel 7) | `channelId`, `author`, `level`, `text` |
 | `catch` | `catchPokemon`, `catchPokemonWithSafariBall`, `catchPokemonWithSoulBall` after the ball was created | `trainer`, `species`, `baseSpecies`, `dexNumber`, `level`, `sex`, `shiny`, `legendary`, `extraPoints`, `ball`, `safari` |
