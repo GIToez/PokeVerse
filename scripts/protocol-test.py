@@ -271,6 +271,22 @@ def check_quest_log(conn):
     print("  opened all %d quest(s)" % len(quests))
 
 
+FLOOD_MESSAGE = "Too many connections attempts"
+FLOOD_WAIT = 65  # loginTimeout in config.lua is 60 seconds
+
+
+def flood_retry(action):
+    """Runs action(); if the server's login flood protection refused it, waits once and retries."""
+    try:
+        return action()
+    except ProtocolError as e:
+        if FLOOD_MESSAGE not in str(e):
+            raise
+        print("  login flood protection active (%s); retrying in %ds" % (e, FLOOD_WAIT), flush=True)
+        time.sleep(FLOOD_WAIT)
+        return action()
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--host", default="127.0.0.1")
@@ -295,7 +311,7 @@ def main():
     args = ap.parse_args()
 
     try:
-        characters = login(args)
+        characters = flood_retry(lambda: login(args))
     except ProtocolError as e:
         if args.expect_login_failure:
             print("OK: login refused as expected (%s)" % e)
@@ -317,7 +333,7 @@ def main():
         return 1
 
     try:
-        conn, player_id, position = enter_game(args, args.connect_host or host, port)
+        conn, player_id, position = flood_retry(lambda: enter_game(args, args.connect_host or host, port))
     except ProtocolError as e:
         print("FAIL: " + str(e))
         return 1

@@ -30,6 +30,15 @@ TUTORIAL_START = (5000, 806, 6)
 
 def request(args, action, account, password, name=None, sex=None):
     """Sends one account request and returns (success, message)."""
+    success, message = _request(args, action, account, password, name, sex)
+    if not success and pt.FLOOD_MESSAGE in message:
+        print("  login flood protection active; retrying in %ds" % pt.FLOOD_WAIT, flush=True)
+        time.sleep(pt.FLOOD_WAIT)
+        success, message = _request(args, action, account, password, name, sex)
+    return success, message
+
+
+def _request(args, action, account, password, name, sex):
     conn = pt.Connection(args.host, args.login_port, args.timeout)
     try:
         key = pt.new_xtea_key()
@@ -66,7 +75,7 @@ class Checker:
 def character_list(args, account, password):
     login_args = argparse.Namespace(host=args.host, login_port=args.login_port, timeout=args.timeout,
                                     account=account, password=password)
-    return {c[0]: (c[2], c[3]) for c in pt.login(login_args)}
+    return {c[0]: (c[2], c[3]) for c in pt.flood_retry(lambda: pt.login(login_args))}
 
 
 def main():
@@ -106,7 +115,7 @@ def main():
         print("OK: %s is in the character list" % character)
 
         game_args = argparse.Namespace(timeout=args.timeout, account=account, password=password, character=character)
-        conn, _, position = pt.enter_game(game_args, *characters[character])
+        conn, _, position = pt.flood_retry(lambda: pt.enter_game(game_args, *characters[character]))
         try:
             conn.send(b"\x14")  # logout
             pt.drain(conn, 2)
