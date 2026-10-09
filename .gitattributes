@@ -9,3 +9,5 @@ references/** -text
 # Windows batch files must keep CRLF line endings.
 *.bat text eol=crlf
 *.cmd text eol=crlf
+references/**/*.bat -text
+references/**/*.cmd -text

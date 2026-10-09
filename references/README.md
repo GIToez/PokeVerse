@@ -20,10 +20,26 @@ and six `.gitignore` files (235 files in total).
 | `Projeto/Sources/Source client/` | Client C++ source (OTClient based), CMake and Visual Studio 2013 (`vc12/`) projects. |
 | `Projeto/RME - PSoul/` | Remere's Map Editor (binary and source) plus game-design documents (Portuguese). |
 
+## otclient-redemption/ — OTClient Redemption (upstream source)
+
+Reference for the future Redemption clients (Windows, Linux, Android, web). Not built or
+used by PokeVerse yet; client work happens in `core/client-redemption/`.
+
+| | |
+| --- | --- |
+| Source | <https://github.com/opentibiabr/otclient>, branch `main` |
+| Commit | `53c3878a1c5119c78e148adb32def53fea3c53f2` (2026-10-08, "fix: blue squares edge screen and lighting (#1838)") |
+| Git tree | `d5c63e8c93175669866adb6cca946d9beab320bc` (identical to the upstream commit's tree) |
+| Files | 3,607 (everything in the upstream repository; only its `.git/` folder is left out) |
+| License | MIT (`otclient-redemption/LICENSE`) |
+
+The folder keeps upstream's own `.gitattributes`, `.gitignore` and `.github/` files as they
+are; GitHub only runs workflows from the repository root, so its workflows never run here.
+
 ### Verifying integrity
 
 `MANIFEST.sha256` lists the SHA-256 of every file as extracted from the original
-archive. Run:
+archive; `otclient-redemption/` is checked against the upstream Git tree above. Run:
 
 ```bash
 scripts/verify-references.sh

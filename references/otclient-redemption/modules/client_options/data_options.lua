@@ -1,0 +1,1173 @@
+local ownBattleSubChannelsSaved = nil
+local otherPlayersSubChannelsSaved = nil
+local consoleMessagesSubChannelsSaved = nil
+
+return {
+    vsync                             = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_window.setVerticalSync(value)
+        end
+    },
+    showFps                           = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            modules.client_topmenu.setFpsVisible(value)
+        end
+    },
+    showPing                          = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            modules.client_topmenu.setPingVisible(value)
+        end
+    },
+    fullscreen                        = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_window.setFullscreen(value)
+        end
+    },
+    classicControl                    = {
+        value = g_platform.isMobile() and true or false,
+        action = function(value, options, controller, panels, extraWidgets)
+            -- Update the mouseControlMode based on this option
+            -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
+            local mouseControlMode = 0
+            if value == true then
+                mouseControlMode = 1 -- Classic Controls
+            elseif options.smartLeftClick.value == true then
+                mouseControlMode = 2 -- Left Smart-Click
+            else
+                mouseControlMode = 0 -- Regular Controls
+            end
+            
+            -- Update the value in options table first
+            options.mouseControlMode.value = mouseControlMode
+            
+            -- Then update settings
+            g_settings.set('mouseControlMode', mouseControlMode)
+            
+            -- Update loot control visibility (only visible for Classic Controls)
+            local lootControlModeCombobox = panels.generalPanel:recursiveGetChildById('lootControlMode')
+            if lootControlModeCombobox then
+                lootControlModeCombobox:setVisible(mouseControlMode == 1)
+            end
+            
+            -- Update the combobox UI
+            local mouseControlModeCombobox = panels.generalPanel:recursiveGetChildById('mouseControlMode')
+            if mouseControlModeCombobox then
+                mouseControlModeCombobox:setCurrentOption(mouseControlMode, true)
+            end
+        end
+    },
+    smartLeftClick                    = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            -- Update the mouseControlMode based on this option
+            -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
+            local mouseControlMode = 0
+            if options.classicControl.value == true then
+                mouseControlMode = 1 -- Classic Controls
+            elseif value == true then
+                mouseControlMode = 2 -- Left Smart-Click
+            else
+                mouseControlMode = 0 -- Regular Controls
+            end
+            
+            -- Update the value in options table first
+            options.mouseControlMode.value = mouseControlMode
+            
+            -- Then update settings
+            g_settings.set('mouseControlMode', mouseControlMode)
+            
+            -- Update loot control visibility (only visible for Classic Controls)
+            local lootControlModeCombobox = panels.generalPanel:recursiveGetChildById('lootControlMode')
+            if lootControlModeCombobox then
+                lootControlModeCombobox:setVisible(mouseControlMode == 1)
+            end
+            
+            -- Update the combobox UI
+            local mouseControlModeCombobox = panels.generalPanel:recursiveGetChildById('mouseControlMode')
+            if mouseControlModeCombobox then
+                mouseControlModeCombobox:setCurrentOption(mouseControlMode, true)
+            end
+        end
+    },
+    mouseControlMode                  = {
+        value = 0, -- Default to "Regular Controls"
+        action = function(value, options, controller, panels, extraWidgets)
+            -- Update the underlying options values first
+            -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
+            if value == 0 then
+                options.classicControl.value = false
+                options.smartLeftClick.value = false
+                g_settings.set('classicControl', false)
+                g_settings.set('smartLeftClick', false)
+            elseif value == 1 then
+                options.classicControl.value = true
+                options.smartLeftClick.value = false
+                g_settings.set('classicControl', true)
+                g_settings.set('smartLeftClick', false)
+            elseif value == 2 then
+                options.classicControl.value = false
+                options.smartLeftClick.value = true
+                g_settings.set('classicControl', false)
+                g_settings.set('smartLeftClick', true)
+            end
+            
+            -- Schedule UI updates to ensure they happen after value updates
+            scheduleEvent(function()
+                -- Update the mouseControlMode combobox
+                local mouseControlModeCombobox = panels.generalPanel:recursiveGetChildById('mouseControlMode')
+                if mouseControlModeCombobox then
+                    -- Force the combobox to select the right option
+                    for i = 0, 2 do
+                        if i == value then
+                            mouseControlModeCombobox:setCurrentOptionByData(i)
+                            break
+                        end
+                    end
+                end
+                
+                -- Update loot control mode visibility (only visible for Classic Controls)
+                local lootControlModeCombobox = panels.generalPanel:recursiveGetChildById('lootControlMode')
+                if lootControlModeCombobox then
+                    lootControlModeCombobox:setVisible(value == 1)
+                end
+            end, 50)
+        end
+    },
+    lootControlMode                   = {
+        value = 0, -- Default to "Loot: Right"
+        action = function(value, options, controller, panels, extraWidgets)
+            -- We need a small delay to ensure the UI updates correctly
+            scheduleEvent(function()
+                -- Update the lootControlMode combobox - get it fresh each time
+                local lootControlModeCombobox = panels.generalPanel:recursiveGetChildById('lootControlMode')
+                if lootControlModeCombobox then
+                    -- Force the combobox to select the right option
+                    for i = 0, 2 do
+                        if i == value then
+                            lootControlModeCombobox:setCurrentOptionByData(i)
+                            break
+                        end
+                    end
+                end
+            end, 50)
+        end
+    },
+    returnDisablesChat                = false,
+    smartWalk                         = false,
+    autoChaseOverride                 = true,
+    talkOnRightClick                  = false,
+    moveStack                         = false,
+    showStatusMessagesInConsole       = true,
+    showEventMessagesInConsole        = true,
+    showInfoMessagesInConsole         = true,
+    showTimestampsInConsole           = true,
+    showLevelsInConsole               = true,
+    showPrivateMessagesInConsole      = true,
+    showOthersStatusMessagesInConsole = false,
+    showPrivateMessagesOnScreen       = true,
+    showLootMessagesOnScreen          = true,
+    showHighlightedUnderline          = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            local settings = g_settings.getNode('game_console') or {}
+            settings.showHighlightedUnderline = value
+            g_settings.setNode('game_console', settings)
+            if modules and modules.game_console and modules.game_console.setShowHighlightedUnderline then
+                modules.game_console.setShowHighlightedUnderline(value)
+            end
+        end
+    },
+    consoleMaxLines                   = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.interfaceConsole:recursiveGetChildById('consoleMaxLines'):setText(tr('Chat scrollback: %d lines',
+                value))
+            if modules and modules.game_console and modules.game_console.setMaxLines then
+                modules.game_console.setMaxLines(value)
+            end
+        end
+    },
+    showOutfitsOnList                 = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            CharacterList.updateCharactersAppearances(value)
+        end
+    },
+    openMaximized                     = false,
+    backgroundFrameRate               = {
+        value = 501,
+        action = function(value, options, controller, panels, extraWidgets)
+            local text, v = value, value
+            if value <= 0 or value >= 501 then
+                text = 'max'
+                v = 0
+            end
+
+            panels.graphicsPanel:recursiveGetChildById('backgroundFrameRate'):setText(tr('Game framerate limit: %s', text))
+            g_app.setMaxFps(v)
+        end
+    },
+    -- Kept only so g_sounds.setAudioEnabled has a persisted default at client startup;
+    -- muting/unmuting at runtime is handled by the master volume slider (see soundMaster below).
+    enableAudio                       = true,
+    enableLights                      = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setDrawLights(value and options.ambientLight.value < 100)
+            panels.graphicsEffectsPanel:recursiveGetChildById('ambientLight'):setEnabled(value)
+        end
+    },
+    limitVisibleDimension             = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setLimitVisibleDimension(value)
+        end
+    },
+    floatingEffect                    = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_map.setFloatingEffect(value)
+        end
+    },
+    ambientLight                      = {
+        value = 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('ambientLight'):setText(string.format(
+                'Ambient light: %s%%', value))
+            panels.gameMapPanel:setMinimumAmbientLight(value / 100)
+            panels.gameMapPanel:setDrawLights(options.enableLights.value)
+        end
+    },
+    displayNames                      = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setDrawNames(value)
+
+            if g_gameConfig.isDrawingInformationByWidget() then
+                modules.game_creatureinformation.toggleInformation()
+            end
+        end
+    },
+    displayHealth                     = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setDrawHealthBars(value)
+
+            if g_gameConfig.isDrawingInformationByWidget() then
+                modules.game_creatureinformation.toggleInformation()
+            end
+        end
+    },
+    displayMana                       = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setDrawManaBar(value)
+
+            if g_gameConfig.isDrawingInformationByWidget() then
+                modules.game_creatureinformation.toggleInformation()
+            end
+        end
+    },
+    displayHarmony                     = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setDrawHarmony(value)
+        end
+    },
+    displayText                       = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_app.setDrawTexts(value)
+        end
+    },
+    walkTurnDelay                     = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.generalPanel:recursiveGetChildById('walkTurnDelay'):setText(string.format(
+                'Walk delay after turn: %sms',
+                value))
+        end
+    },
+    walkTeleportDelay                 = {
+        value = 50,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.generalPanel:recursiveGetChildById('walkTeleportDelay'):setText(string.format(
+                'Walk delay after teleport: %sms',
+                value))
+        end
+    },
+    walkStairsDelay                   = {
+        value = 50,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.generalPanel:recursiveGetChildById('walkStairsDelay'):setText(string.format(
+                'Walk delay after floor change: %sms',
+                value))
+        end
+    },
+    hotkeyDelay                       = {
+        value = 70,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.generalPanel:recursiveGetChildById('hotkeyDelay'):setText(string.format('Hotkey delay: %sms', value))
+        end
+    },
+    crosshair                         = {
+        value = 'default',
+        action = function(value, options, controller, panels, extraWidgets)
+            local crossPath = '/images/game/crosshair/'
+            local newValue = value
+            if newValue == 'disabled' then
+                newValue = nil
+            end
+
+            panels.gameMapPanel:setCrosshairTexture(newValue and crossPath .. newValue or nil)
+            panels.interface:recursiveGetChildById('crosshair'):setCurrentOptionByData(newValue, true)
+        end
+    },
+    nativeCursor = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            if value then
+                -- Disable animated cursor when native cursor is enabled
+                if options.showAnimatedCursor.value then
+                    options.showAnimatedCursor.value = false
+                    g_settings.set('showAnimatedCursor', false)
+                    panels.gameMapPanel:setCursorAnimations(false)
+                    -- Update the UI checkbox
+                    local widget = panels.interface:recursiveGetChildById('showAnimatedCursor')
+                    if widget then
+                        widget:setChecked(false)
+                    end
+                end
+                -- Set native cursor mode flag
+                g_mouse.setUseNativeCursor(true)
+                -- Push cursor to mark as changed (prevents game from overriding)
+                g_mouse.pushCursor('window')
+                -- Then restore to native Windows cursor
+                g_window.restoreMouseCursor()
+            else
+                g_mouse.setUseNativeCursor(false)
+                g_mouse.popCursor('window')
+            end
+        end
+    },
+    enableHighlightMouseTarget        = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setDrawHighlightTarget(value)
+        end
+    },
+    showAnimatedCursor = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            if value then
+                -- Disable native cursor when animated cursor is enabled
+                if options.nativeCursor.value then
+                    options.nativeCursor.value = false
+                    g_settings.set('nativeCursor', false)
+                    g_mouse.popCursor('window')
+                    -- Update the UI checkbox
+                    local widget = panels.interface:recursiveGetChildById('nativeCursor')
+                    if widget then
+                        widget:setChecked(false)
+                    end
+                end
+            end
+            panels.gameMapPanel:setCursorAnimations(value)
+        end
+    },
+    showDragIcon        = {
+        value = true,
+    },
+    antialiasingMode                  = {
+        value = 1,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setAntiAliasingMode(value)
+            panels.graphicsPanel:recursiveGetChildById('antialiasingMode'):setCurrentOptionByData(value, true)
+        end
+    },
+    shadowFloorIntensity              = {
+        value = 30,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('shadowFloorIntensity'):setText(string.format(
+                'Shadow floor Intensity: %s%%', value))
+            panels.gameMapPanel:setShadowFloorIntensity(1 - (value / 100))
+        end
+    },
+    optimizeFps                       = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_app.optimize(value)
+        end
+    },
+    forceEffectOptimization           = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_app.forceEffectOptimization(value)
+        end
+    },
+    drawEffectOnTop                   = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_app.setDrawEffectOnTop(value)
+        end
+    },
+    floorViewMode                     = {
+        value = 1,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.gameMapPanel:setFloorViewMode(value)
+            panels.graphicsEffectsPanel:recursiveGetChildById('floorViewMode'):setCurrentOptionByData(value, true)
+
+            local fadeMode = value == 1
+            panels.graphicsEffectsPanel:recursiveGetChildById('floorFading'):setEnabled(fadeMode)
+        end
+    },
+    floorFading                       = {
+        value = 500,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('floorFading'):setText(string.format('Floor Fading: %s ms',
+                value))
+            panels.gameMapPanel:setFloorFading(tonumber(value))
+        end
+    },
+    asyncTxtLoading                   = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            if g_game.isUsingProtobuf() then
+                value = true
+            elseif g_app.isEncrypted() then
+                local asyncWidget = panels.graphicsPanel:recursiveGetChildById('asyncTxtLoading')
+                asyncWidget:setEnabled(false)
+                asyncWidget:setChecked(false)
+                return
+            end
+
+            g_app.setLoadingAsyncTexture(value)
+        end
+    },
+    hudScale                          = {
+        event = nil,
+        value = g_platform.isMobile() and 2 or 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            value = value / 2
+
+            if options.hudScale.event ~= nil then
+                removeEvent(options.hudScale.event)
+            end
+
+            options.hudScale.event = scheduleEvent(function()
+                g_app.setHUDScale(math.max(value + 0.5, 1))
+                options.hudScale.event = nil
+            end, 250)
+
+            local hudWidget = panels.interfaceHUD:recursiveGetChildById('hudScale')
+            hudWidget:setText(string.format('HUD Scale: %sx', math.max(value + 0.5, 1)))
+        end
+    },
+    creatureInformationScale          = {
+        value = g_platform.isMobile() and 2 or 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            if value == 0 then
+                value = g_window.getDisplayDensity() - 0.5
+            else
+                value = value / 2
+            end
+            g_app.setCreatureInformationScale(math.max(value + 0.5, 1))
+            panels.interfaceHUD:recursiveGetChildById('creatureInformationScale'):setText(string.format(
+                'Creature Information Scale: %sx', math.max(value + 0.5, 1)))
+        end
+    },
+    staticTextScale                   = {
+        value = g_platform.isMobile() and 2 or 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            if value == 0 then
+                value = g_window.getDisplayDensity() - 0.5
+            else
+                value = value / 2
+            end
+            g_app.setStaticTextScale(math.max(value + 0.5, 1))
+            panels.interfaceHUD:recursiveGetChildById('staticTextScale'):setText(string.format('Message Scale: %sx',
+                math.max(value + 0.5, 1)))
+        end
+    },
+    animatedTextScale                 = {
+        value = g_platform.isMobile() and 2 or 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            if value == 0 then
+                value = g_window.getDisplayDensity() - 0.5
+            else
+                value = value / 2
+            end
+            g_app.setAnimatedTextScale(math.max(value + 0.5, 1))
+            panels.interfaceHUD:recursiveGetChildById('animatedTextScale'):setText(
+                tr('Animated Message Scale: %sx', math.max(value + 0.5, 1)))
+        end
+    },
+    -- The side panel options are the single source of truth for the left/right
+    -- columns: game_interface.setSidePanelVisible() applies the visibility,
+    -- relocates the parked mini windows and refreshes the top bar arrows.
+    showLeftExtraPanel                = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            if not modules.game_interface then
+                return
+            end
+            modules.game_interface.setSidePanelVisible(modules.game_interface.getLeftExtraPanel(), value)
+        end
+    },
+    showLeftPanel                     = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            if not modules.game_interface then
+                return
+            end
+            modules.game_interface.setSidePanelVisible(modules.game_interface.getLeftPanel(), value)
+        end
+    },
+    showRightExtraPanel               = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            if not modules.game_interface then
+                return
+            end
+            modules.game_interface.setSidePanelVisible(modules.game_interface.getRightExtraPanel(), value)
+        end
+    },
+    showSpellGroupCooldowns           = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            modules.game_cooldown.setSpellGroupCooldownsVisible(value)
+        end
+    },
+    dontStretchShrink                 = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            addEvent(function()
+                modules.game_interface.updateStretchShrink()
+            end)
+        end
+    },
+    setEffectAlphaScroll              = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_client.setEffectAlpha(value / 100)
+            panels.graphicsEffectsPanel:recursiveGetChildById('setEffectAlphaScroll'):setText(tr('Opacity Effect: %s%%',
+                value))
+        end
+    },
+    setMissileAlphaScroll             = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            g_client.setMissileAlpha(value / 100)
+            panels.graphicsEffectsPanel:recursiveGetChildById('setMissileAlphaScroll'):setText(tr(
+                'Opacity Missile: %s%%', value))
+        end
+    },
+    distFromCenScrollbar              = {
+        value = 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            local bar = modules.game_healthcircle.optionPanel:recursiveGetChildById('distFromCenScrollbar')
+            if bar then
+                bar:setText(tr('Distance: %s', bar:recursiveGetChildById('valueBar'):getValue()))
+                modules.game_healthcircle.setDistanceFromCenter(bar:recursiveGetChildById('valueBar'):getValue())
+            end
+        end
+    },
+    opacityScrollbar                  = {
+        value = 0,
+        action = function(value, options, controller, panels, extraWidgets)
+            local bar = modules.game_healthcircle.optionPanel:recursiveGetChildById('opacityScrollbar')
+            if bar then
+                bar:setText(tr('Opacity: %s', bar:recursiveGetChildById('valueBar'):getValue() / 100))
+                modules.game_healthcircle.setCircleOpacity(bar:recursiveGetChildById('valueBar'):getValue() / 100)
+            end
+        end
+    },
+    profile                           = {
+        value = 1,
+    },
+    rightJoystick                     = {
+        value = false,
+        action = function(value, options, controller, panels, extraWidgets)
+            if not g_platform.isMobile() then return end
+            if value == true then
+                modules.game_shortcuts.getPanel():breakAnchors()
+                modules.game_shortcuts.getPanel():addAnchor(AnchorBottom, "parent", AnchorBottom)
+                modules.game_shortcuts.getPanel():addAnchor(AnchorLeft, "parent", AnchorLeft)
+
+                modules.game_joystick.getPanel():breakAnchors()
+                modules.game_joystick.getPanel():addAnchor(AnchorBottom, "parent", AnchorBottom)
+                modules.game_joystick.getPanel():addAnchor(AnchorRight, "parent", AnchorRight)
+            else
+                modules.game_joystick.getPanel():breakAnchors()
+                modules.game_joystick.getPanel():addAnchor(AnchorBottom, "parent", AnchorBottom)
+                modules.game_joystick.getPanel():addAnchor(AnchorLeft, "parent", AnchorLeft)
+
+                modules.game_shortcuts.getPanel():breakAnchors()
+                modules.game_shortcuts.getPanel():addAnchor(AnchorBottom, "parent", AnchorBottom)
+                modules.game_shortcuts.getPanel():addAnchor(AnchorRight, "parent", AnchorRight)
+            end
+        end
+    },
+    showExpiryInInvetory              = {
+        value = true,
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            if options.showExpiryInContainers.event ~= nil then
+                removeEvent(options.showExpiryInInvetory.event)
+            end
+            options.showExpiryInInvetory.event = scheduleEvent(function()
+                modules.game_inventory.reloadInventory()
+                options.showExpiryInInvetory.event = nil
+            end, 100)
+        end
+    },
+    showExpiryInContainers            = {
+        value = true,
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            if options.showExpiryInContainers.event ~= nil then
+                removeEvent(options.showExpiryInContainers.event)
+            end
+            options.showExpiryInContainers.event = scheduleEvent(function()
+                modules.game_containers.reloadContainers()
+                options.showExpiryInContainers.event = nil
+            end, 100)
+        end
+    },
+    showExpiryOnUnusedItems           = true,
+    framesRarity                      = {
+        value = 'frames',
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            local newValue = value
+            if newValue == 'None' then
+                newValue = nil
+            end
+            panels.interface:recursiveGetChildById('frames'):setCurrentOptionByData(newValue, true)
+            if options.framesRarity.event ~= nil then
+                removeEvent(options.framesRarity.event)
+            end
+            options.framesRarity.event = scheduleEvent(function()
+                modules.game_containers.reloadContainers()
+                options.framesRarity.event = nil
+            end, 100)
+        end
+    },
+    autoSwitchPreset                  = false,
+    listKeybindsPanel                 = {
+        action = function(value, options, controller, panels, extraWidgets)
+            listKeybindsComboBox(value)
+        end
+    },
+    -- Sound routing is handled by C++ SoundManager (protocol + filters).
+     battleSoundOwnBattlesubChannelsSpells              = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            local panel = panels.battleSoundsPanel:recursiveGetChildById("panelOwnBattleSubChannels")
+            if value then
+                panel:enable()
+                if ownBattleSubChannelsSaved then
+                    setOption('battleSoundOwnBattleSubChannelsAttack', ownBattleSubChannelsSaved.attack, true)
+                    setOption('battleSoundOwnBattleSoundSubChannelsHealing', ownBattleSubChannelsSaved.healing, true)
+                    setOption('battleSoundOwnBattleSoundSubChannelsSupport', ownBattleSubChannelsSaved.support, true)
+                    ownBattleSubChannelsSaved = nil
+                end
+            else
+                ownBattleSubChannelsSaved = {
+                    attack = getOption('battleSoundOwnBattleSubChannelsAttack'),
+                    healing = getOption('battleSoundOwnBattleSoundSubChannelsHealing'),
+                    support = getOption('battleSoundOwnBattleSoundSubChannelsSupport')
+                }
+                setOption('battleSoundOwnBattleSubChannelsAttack', false, true)
+                setOption('battleSoundOwnBattleSoundSubChannelsHealing', false, true)
+                setOption('battleSoundOwnBattleSoundSubChannelsSupport', false, true)
+                panel:disable()
+            end
+        end
+    },
+    battleSoundOwnBattleSubChannelsAttack = true,
+    battleSoundOwnBattleSoundSubChannelsHealing = true,
+    battleSoundOwnBattleSoundSubChannelsSupport = true,
+    battleSoundOwnBattleSoundSubChannelsWeapons = true,
+    battleSoundOtherPlayersSubChannelsSpells              = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            local panel = panels.battleSoundsPanel:recursiveGetChildById("panelOtherPlayersSubChannels")
+            if value then
+                panel:enable()
+                if otherPlayersSubChannelsSaved then
+                    setOption('battleSoundOtherPlayersSubChannelsAttack', otherPlayersSubChannelsSaved.attack, true)
+                    setOption('battleSoundOtherPlayersSubChannelsHealing', otherPlayersSubChannelsSaved.healing, true)
+                    setOption('battleSoundOtherPlayersSubChannelsSupport', otherPlayersSubChannelsSaved.support, true)
+                    otherPlayersSubChannelsSaved = nil
+                end
+            else
+                otherPlayersSubChannelsSaved = {
+                    attack = getOption('battleSoundOtherPlayersSubChannelsAttack'),
+                    healing = getOption('battleSoundOtherPlayersSubChannelsHealing'),
+                    support = getOption('battleSoundOtherPlayersSubChannelsSupport')
+                }
+                setOption('battleSoundOtherPlayersSubChannelsAttack', false, true)
+                setOption('battleSoundOtherPlayersSubChannelsHealing', false, true)
+                setOption('battleSoundOtherPlayersSubChannelsSupport', false, true)
+                panel:disable()
+            end
+        end
+    },
+    battleSoundOtherPlayersSubChannelsAttack = true,
+    battleSoundOtherPlayersSubChannelsHealing = true,
+    battleSoundOtherPlayersSubChannelsSupport = true,
+    battleSoundOtherPlayersSubChannelsWeapons = true,
+    battleSoundCreatureSubChannelsNoises = true,
+    battleSoundCreatureSubChannelsNoisesDeath = true,
+    battleSoundCreatureSubChannelsAttacksAndSpells = true,
+    soundAnthem = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            if modules.client and modules.client.reloadMusic then
+                modules.client.reloadMusic()
+            end
+        end
+    },
+    soundFoodAndBeverages = true,
+    soundMoveItem = true,
+    soundUIsubChannelsInteractions = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            if not g_sounds then
+                return
+            end
+
+            local uiChannel = g_sounds.getChannel(SoundChannels.SoundUI)
+            if not uiChannel then
+                return
+            end
+
+            uiChannel:setEnabled(value)
+        end
+    },
+    soundUIsubChannelsJoinLeaveParty = true,
+    soundUIsubChannelsVipLoginLogout = true,
+    soundNotificationUIInteractions = true,
+    soundNotificationConsoleMessages = {
+        value = true,
+        action = function(value, options, controller, panels, extraWidgets)
+            local panel = panels.iuSoundPanel:recursiveGetChildById("soundNotification")
+            if not panel then
+                return
+            end
+
+            if value then
+                panel:enable()
+                if consoleMessagesSubChannelsSaved then
+                    setOption('soundNotificationsubChannelsParty', consoleMessagesSubChannelsSaved.party, true)
+                    setOption('soundNotificationsubChannelsGuild', consoleMessagesSubChannelsSaved.guild, true)
+                    setOption('soundNotificationsubChannelsLocalChat', consoleMessagesSubChannelsSaved.localChat, true)
+                    setOption('soundNotificationsubChannelsPrivateMessages', consoleMessagesSubChannelsSaved.privateMessages, true)
+                    setOption('soundNotificationsubChannelsNPC', consoleMessagesSubChannelsSaved.npc, true)
+                    setOption('soundNotificationsubChannelsGlobal', consoleMessagesSubChannelsSaved.global, true)
+                    setOption('soundNotificationsubChannelsTeamFinder', consoleMessagesSubChannelsSaved.teamFinder, true)
+                    setOption('soundNotificationsubChannelsRaidAnnouncements', consoleMessagesSubChannelsSaved.raidAnnouncements, true)
+                    setOption('soundNotificationsubChannelsSystemAnnouncements', consoleMessagesSubChannelsSaved.systemAnnouncements, true)
+                    consoleMessagesSubChannelsSaved = nil
+                end
+            else
+                consoleMessagesSubChannelsSaved = {
+                    party = getOption('soundNotificationsubChannelsParty'),
+                    guild = getOption('soundNotificationsubChannelsGuild'),
+                    localChat = getOption('soundNotificationsubChannelsLocalChat'),
+                    privateMessages = getOption('soundNotificationsubChannelsPrivateMessages'),
+                    npc = getOption('soundNotificationsubChannelsNPC'),
+                    global = getOption('soundNotificationsubChannelsGlobal'),
+                    teamFinder = getOption('soundNotificationsubChannelsTeamFinder'),
+                    raidAnnouncements = getOption('soundNotificationsubChannelsRaidAnnouncements'),
+                    systemAnnouncements = getOption('soundNotificationsubChannelsSystemAnnouncements')
+                }
+                setOption('soundNotificationsubChannelsParty', false, true)
+                setOption('soundNotificationsubChannelsGuild', false, true)
+                setOption('soundNotificationsubChannelsLocalChat', false, true)
+                setOption('soundNotificationsubChannelsPrivateMessages', false, true)
+                setOption('soundNotificationsubChannelsNPC', false, true)
+                setOption('soundNotificationsubChannelsGlobal', false, true)
+                setOption('soundNotificationsubChannelsTeamFinder', false, true)
+                setOption('soundNotificationsubChannelsRaidAnnouncements', false, true)
+                setOption('soundNotificationsubChannelsSystemAnnouncements', false, true)
+                panel:disable()
+            end
+        end
+    },
+    soundNotificationsubChannelsParty = true,
+    soundNotificationsubChannelsGuild = true,
+    soundNotificationsubChannelsLocalChat = true,
+    soundNotificationsubChannelsPrivateMessages = true,
+    soundNotificationsubChannelsNPC = true,
+    soundNotificationsubChannelsGlobal = true,
+    soundNotificationsubChannelsTeamFinder = true,
+    soundNotificationsubChannelsRaidAnnouncements = true,
+    soundNotificationsubChannelsSystemAnnouncements = true,
+    battleSoundOwnBattle = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.battleSoundsPanel:recursiveGetChildById('battleSoundOwnBattle'):setText(tr(
+                'Own Battle Sounds: %d %%', value))
+        end
+    },
+    battleSoundOtherPlayers = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.battleSoundsPanel:recursiveGetChildById('battleSoundOtherPlayers'):setText(tr(
+                'Others Players: %d %%', value))
+        end
+    },
+    battleSoundCreature = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.battleSoundsPanel:recursiveGetChildById('battleSoundCreature'):setText(tr('Creature: %d %%', value))
+        end
+    },
+    soundUI = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.iuSoundPanel:recursiveGetChildById('soundUI'):setText(tr('UI Volume: %d %%', value))
+            if not g_sounds then
+                return
+            end
+
+            local uiChannel = g_sounds.getChannel(SoundChannels.SoundUI)
+            if not uiChannel then
+                return
+            end
+
+            local masterVolume = (options.soundMaster.value or 100) / 100
+            uiChannel:setGain(value / 100 * masterVolume)
+        end
+    },
+    soundDevice = {
+        value = '(auto-select)',
+        action = function(value, options, controller, panels, extraWidgets)
+            if not g_sounds or not g_sounds.setAudioDevice then
+                return
+            end
+            g_sounds.setAudioDevice(value)
+            local soundDeviceCombobox = panels.soundPanel:recursiveGetChildById('soundDevice')
+            if soundDeviceCombobox then
+                soundDeviceCombobox:setCurrentOptionByData(value, true)
+            end
+        end
+    },
+    soundMaster = {
+        value = 25,
+        aux = true,
+        lastVolume = 25,
+        action = function(value, options, controller, panels, extraWidgets)
+            if not g_sounds then
+                return
+            end
+            local soundMasterWidget = panels.soundPanel:recursiveGetChildById('soundMaster')
+            soundMasterWidget:setText(string.format('Master Volume: %d %%', value))
+            local channelVolumes = {
+                Music = options.soundMusic.value,
+                Ambient = options.soundAmbience.value,
+                Item = options.soundItems.value,
+                Event = options.soundEventVolume.value,
+                SoundUI = options.soundUI.value,
+            }
+            for channelName, channelId in pairs(SoundChannels) do
+                local channel = g_sounds.getChannel(channelId)
+                if channel then
+                    local channelVolume = channelVolumes[channelName] or 100
+                    channel:setGain(channelVolume / 100 * value / 100)
+                end
+            end
+            local shouldDisable = value <= 1
+            local hasChanged = shouldDisable ~= (options.soundMaster.aux or false)
+            if not hasChanged then
+                return
+            end
+            options.soundMaster.aux = shouldDisable
+            if shouldDisable then
+                g_sounds.setAudioEnabled(false)
+                extraWidgets.audioButton:setIcon('/images/topbuttons/button_mute_pressed')
+            else
+                g_sounds.setAudioEnabled(true)
+                extraWidgets.audioButton:setIcon('/images/topbuttons/button_mute_up')
+            end
+            local function togglePanel(panel)
+                if not panel then
+                    return
+                end
+                local infoPanel = panel:recursiveGetChildById('info')
+                local children = panel:getChildren()
+                for _, widget in ipairs(children) do
+                    if widget:getStyle().__class ~= "UILabel" then
+                        widget:setEnabled(not shouldDisable)
+                    end
+                end
+                infoPanel:setVisible(shouldDisable)
+                infoPanel:setHeight(shouldDisable and 30 or 0)
+            end
+            togglePanel(panels.battleSoundsPanel)
+            togglePanel(panels.iuSoundPanel)
+        end
+        },
+    soundMusic = {
+        value = 100,
+        aux = true,
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.soundPanel:recursiveGetChildById('soundMusic'):setText(tr('Music Volume: %d %%', value))
+            if not g_sounds then
+                return
+            end
+            local musicChannel = g_sounds.getChannel(SoundChannels.Music)
+            if musicChannel then
+                local masterVolume = (options.soundMaster.value or 100) / 100
+                musicChannel:setGain(value / 100 * masterVolume)
+            end
+            local shouldBeDisabled = value <= 1
+            if shouldBeDisabled ~= (not options.soundMusic.aux) then
+                options.soundMusic.aux = not shouldBeDisabled
+                if options.soundMusic.event ~= nil then
+                    removeEvent(options.soundMusic.event)
+                end
+                options.soundMusic.event = scheduleEvent(function()
+                    if shouldBeDisabled then
+                        local channel = g_sounds.getChannel(SoundChannels.Music)
+                        if channel then
+                            channel:setEnabled(false)
+                        end
+                    else
+                        local channel = g_sounds.getChannel(SoundChannels.Music)
+                        if channel then
+                            channel:setEnabled(true)
+                        end
+                    end
+                end, 100)  
+            end
+        end
+    },
+    soundAmbience = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.soundPanel:recursiveGetChildById('soundAmbience'):setText(tr('Ambience Volume: %d %%', value))
+            if g_sounds then
+                local channel = g_sounds.getChannel(SoundChannels.Ambient)
+                if channel then
+                    local masterVolume = (options.soundMaster.value or 100) / 100
+                    channel:setGain(value / 100 * masterVolume)
+                end
+            end
+        end
+    },
+    soundItems = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.soundPanel:recursiveGetChildById('soundItems'):setText(tr('Item Volume: %d %%', value))
+            if g_sounds then
+                local channel = g_sounds.getChannel(SoundChannels.Item)
+                if channel then
+                    local masterVolume = (options.soundMaster.value or 100) / 100
+                    channel:setGain(value / 100 * masterVolume)
+                end
+            end
+        end
+    },
+    soundEventVolume = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.soundPanel:recursiveGetChildById('soundEventVolume'):setText(tr('Event Volume: %d %%', value))
+            if g_sounds then
+                local channel = g_sounds.getChannel(SoundChannels.Event)
+                if channel then
+                    local masterVolume = (options.soundMaster.value or 100) / 100
+                    channel:setGain(value / 100 * masterVolume)
+                end
+            end
+        end
+    },
+    graphicalCooldown = {
+        value = true,
+        action = function(value)
+            modules.game_actionbar.toggleCooldownOption()
+        end,
+    },
+    cooldownSecond = {
+        value = true,
+        action = function(value)
+            modules.game_actionbar.toggleCooldownOption()
+        end,
+    },
+    actionBarShowBottom1 = {
+        value = true,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar13") or false
+            modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
+        end,
+    },
+    actionBarShowBottom2 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar13") or false
+            modules.game_actionbar.configureActionBar('actionBarShowBottom2', allBox and value)
+        end,
+    },
+    actionBarShowBottom3 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar13") or false
+            modules.game_actionbar.configureActionBar('actionBarShowBottom3', allBox and value)
+        end,
+    },
+    actionBarShowLeft1 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar46") or false
+            modules.game_actionbar.configureActionBar('actionBarShowLeft1', allBox and value)
+        end,
+    },
+    actionBarShowLeft2 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar46") or false
+            modules.game_actionbar.configureActionBar('actionBarShowLeft2', allBox and value)
+        end,
+    },
+    actionBarShowLeft3 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar46") or false
+            modules.game_actionbar.configureActionBar('actionBarShowLeft3', allBox and value)
+        end,
+    },
+    actionBarShowRight1 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar79") or false
+            modules.game_actionbar.configureActionBar('actionBarShowRight1', allBox and value)
+            return true
+        end,
+    },
+    actionBarShowRight2 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar79") or false
+            modules.game_actionbar.configureActionBar('actionBarShowRight2', allBox and value)
+        end,
+    },
+    actionBarShowRight3 = {
+        value = false,
+        action = function(value)
+            local allBox = modules.client_options.getOption("allActionBar79") or false
+            modules.game_actionbar.configureActionBar('actionBarShowRight3', allBox and value)
+        end,
+    },
+    allActionBar46 = {
+        value = false,
+        action = function(value)
+            local huds = {"actionBarShowLeft1", "actionBarShowLeft2", "actionBarShowLeft3"}
+            for _, actionBar in pairs(huds) do
+                local hud =  panels.actionbars:recursiveGetChildById(actionBar)
+                if value then
+                    hud:enable()
+                else
+                    hud:disable()
+                end
+                modules.game_actionbar.configureActionBar(actionBar, (value and hud:isChecked()))
+            end
+        end,
+    },
+    allActionBar13 = {
+        value = true,
+        action = function(value)
+            local huds = {"actionBarShowBottom1", "actionBarShowBottom2", "actionBarShowBottom3"}
+            for _, actionBar in pairs(huds) do
+                local hud =  panels.actionbars:recursiveGetChildById(actionBar)
+                if value then
+                    hud:enable()
+                else
+                    hud:disable()
+                end
+                modules.game_actionbar.configureActionBar(actionBar, (value and hud:isChecked()))
+            end
+        end,
+    },
+    allActionBar79 = {
+        value = false,
+        action = function(value)
+            local huds = {"actionBarShowRight1", "actionBarShowRight2", "actionBarShowRight3"}
+            for _, actionBar in pairs(huds) do
+                local hud = panels.actionbars:recursiveGetChildById(actionBar)
+                if value then
+                    hud:enable()
+                else
+                    hud:disable()
+                end
+                modules.game_actionbar.configureActionBar(actionBar, (value and hud:isChecked()))
+            end
+        end,
+    },
+    actionTooltip = {
+        value = true,
+        action = function(value)
+            modules.game_actionbar.updateVisibleOptions('tooltip', value)
+        end,
+    },
+    showSpellParameters = {
+        value = true,
+        action = function(value)
+            modules.game_actionbar.updateVisibleOptions('parameter', value)
+        end,
+    },
+    showHKObjectsBars = {
+        value = true,
+        action = function(value)
+            modules.game_actionbar.updateVisibleOptions('amount', value)
+        end,
+    },
+    showAssignedHKButton = {
+        value = true,
+        action = function(value)
+            modules.game_actionbar.updateVisibleOptions('hotkey', value)
+        end,
+    },
+    actionBarBottomLocked = false,
+    actionBarLeftLocked = false,
+    actionBarRightLocked = false,
+    setOwnSpellEffectAlphaScroll = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('setOwnSpellEffectAlphaScroll'):setText(string.format('Own Spells Effect: %s %%',
+                value))
+            g_client.setOwnSpellEffectAlpha(value / 100)
+        end
+    },
+    setOtherPlayerSpellEffectAlphaScroll = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('setOtherPlayerSpellEffectAlphaScroll'):setText(string.format('Other Player Spells Effect: %s %%',
+                value))
+           g_client.setOtherPlayerSpellEffectAlpha(value / 100)
+        end
+    },
+    setCreatureSpellEffectAlphaScroll = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('setCreatureSpellEffectAlphaScroll'):setText(string.format('Creature Spells Effect: %s %%',
+                value))
+            g_client.setCreatureSpellEffectAlpha(value / 100)
+        end
+    },
+    setBossAreaCreatureEffectAlphaScroll = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.graphicsEffectsPanel:recursiveGetChildById('setBossAreaCreatureEffectAlphaScroll'):setText(string.format('Boss Area Creature Effect: %s %%',
+                value))
+           g_client.setBossAreaCreatureEffectAlpha(value / 100)
+        end
+    },
+    showInfoBanner = true,
+}
