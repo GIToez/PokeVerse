@@ -44,9 +44,6 @@ on:
       group:
         description: "set-group: 1 player, 2 tutor, 3 senior tutor, 4 gamemaster, 5 community manager, 6 god"
         required: false
-      discord_bot_ref:
-        description: "deploy/discord-deploy: PokeVerse-Discord branch or tag (default: variable DISCORD_BOT_REF)"
-        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
@@ -59,6 +56,33 @@ env:
   NEEDS_PACKAGES: ${{ github.event_name != 'workflow_dispatch' || contains(fromJSON('["verify","deploy","discord-deploy"]'), inputs.action) }}
 
 jobs:
+  settings:
+    name: Check GitHub settings (repository level, offline)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    env:
+      PV_HOST: ${{ vars.OVH_HOST || '40.160.145.24' }}
+      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || '22' }}
+      PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+      PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
+      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
+      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || 'true' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE }}
+      DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID }}
+      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID }}
+      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS }}
+      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: true
+      - name: Check (secrets stored only in the production environment show as missing here)
+        run: scripts/live/check-settings.sh
+
   build-server:
     name: Build Linux live server
     runs-on: ubuntu-24.04
@@ -117,7 +141,7 @@ jobs:
         if: env.NEEDS_PACKAGES == 'true'
         with:
           repository: GIToez/PokeVerse-Discord
-          ref: ${{ inputs.discord_bot_ref || vars.DISCORD_BOT_REF || 'cursor/discord-bot-ef3d' }}
+          ref: main
           path: bot
 
       - uses: actions/setup-node@v4
@@ -211,11 +235,11 @@ jobs:
     timeout-minutes: 60
     env:
       ACTION: ${{ inputs.action || 'deploy' }}
-      PV_HOST: ${{ vars.OVH_HOST }}
+      PV_HOST: ${{ vars.OVH_HOST || '40.160.145.24' }}
       PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || '22' }}
       PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
-      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST }}
+      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
       PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || 'true' }}
       PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || '06:00' }}
       PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE }}
@@ -239,6 +263,9 @@ jobs:
         with:
           sparse-checkout: scripts
           sparse-checkout-cone-mode: true
+
+      - name: Check GitHub secrets and variables
+        run: scripts/live/check-settings.sh
 
       - uses: actions/download-artifact@v4
         if: env.NEEDS_PACKAGES == 'true'
