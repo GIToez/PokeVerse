@@ -42,7 +42,8 @@ services (no root access, no password login).
 Settings > Environments > New environment: `production`. Optionally add yourself as a
 required reviewer so every live action waits for your approval.
 
-Settings > Secrets and variables > Actions:
+Settings > Secrets and variables > Actions (anything listed as a variable also works as a
+secret; secrets are hidden in the logs):
 
 | Kind | Name | Value |
 | --- | --- | --- |

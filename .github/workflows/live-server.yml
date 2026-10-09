@@ -62,19 +62,19 @@ jobs:
     runs-on: ubuntu-24.04
     continue-on-error: true
     env:
-      PV_HOST: ${{ vars.OVH_HOST || '40.160.145.24' }}
-      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || '22' }}
+      PV_HOST: ${{ vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
+      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || secrets.OVH_SSH_PORT || '22' }}
       PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
-      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
-      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || 'true' }}
-      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || '06:00' }}
-      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE }}
+      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
+      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE || secrets.LIVE_TIMEZONE }}
       DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID }}
-      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID }}
-      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS }}
-      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS }}
+      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID || secrets.DISCORD_APPLICATION_ID }}
+      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID || secrets.DISCORD_GUILD_ID }}
+      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS || secrets.DISCORD_ADMIN_USER_IDS }}
+      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS || secrets.DISCORD_ADMIN_ROLE_IDS }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -235,23 +235,23 @@ jobs:
     timeout-minutes: 60
     env:
       ACTION: ${{ inputs.action || 'deploy' }}
-      PV_HOST: ${{ vars.OVH_HOST || '40.160.145.24' }}
-      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || '22' }}
+      PV_HOST: ${{ vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
+      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || secrets.OVH_SSH_PORT || '22' }}
       PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
-      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
-      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || 'true' }}
-      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || '06:00' }}
-      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE }}
+      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
+      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE || secrets.LIVE_TIMEZONE }}
       PV_WARNING_MINUTES: ${{ inputs.warning_minutes || '5' }}
       PV_BACKUP: ${{ inputs.backup }}
       PV_CHARACTER: ${{ inputs.character }}
       PV_GROUP: ${{ inputs.group }}
       DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID }}
-      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID }}
-      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS }}
-      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS }}
+      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID || secrets.DISCORD_APPLICATION_ID }}
+      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID || secrets.DISCORD_GUILD_ID }}
+      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS || secrets.DISCORD_ADMIN_USER_IDS }}
+      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS || secrets.DISCORD_ADMIN_ROLE_IDS }}
     steps:
       - name: Check restore confirmation
         if: env.ACTION == 'restore' && inputs.confirm != 'RESTORE'

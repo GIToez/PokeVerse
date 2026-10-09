@@ -97,7 +97,7 @@ jobs:
 
       - name: Assemble live client package
         env:
-          LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
+          LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
         run: scripts/package-windows-live-client.sh build/client "$LIVE_HOST" dist-live
 
       - uses: actions/upload-artifact@v4
