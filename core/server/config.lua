@@ -350,3 +350,10 @@
 	discordBridgeSecret = ""
 	discordBridgeQueueSize = 2000
 	discordBridgeAllowRemote = false
+
+	-- Daily game server restart with in-game warnings (30, 15, 10, 5 and 1 minutes, then 30 and
+	-- 10 seconds). Players, Pokemon, items and the world are saved before the server stops;
+	-- systemd starts it again (live server only, see docs/live-server.md). The time is the
+	-- server's local time (24-hour HH:MM). Staff can change or cancel it in game with /restart.
+	dailyRestartEnabled = false
+	dailyRestartTime = "06:00"

@@ -3,6 +3,8 @@
 	<globalevent name="serverstart" type="start" event="script" value="start.lua"/>
 	<globalevent name="playersrecord" type="record" event="script" value="record.lua"/>
 	<globalevent name="discordBridge" type="discordbridge" event="script" value="../../lib/ps/events/globalevents/discordBridge.lua"/>
+	<!-- interval 0 = every second; schedule and warnings in data/lib/ps/systems/057-serverRestart.lua -->
+	<globalevent name="serverRestart" interval="0" event="script" value="serverRestart.lua"/>
 	
 	<globalevent name="Gameplay Tutorial Rattata" interval="15" event="script" value="../../lib/ps/events/globalevents/gameplayTutorialRattata.lua"/>
 	
