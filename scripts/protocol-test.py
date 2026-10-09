@@ -271,7 +271,7 @@ def check_quest_log(conn):
     print("  opened all %d quest(s)" % len(quests))
 
 
-FLOOD_MESSAGE = "Too many connections attempts"
+FLOOD_MESSAGE = "attempts from your IP address"  # login, game and account flood protection
 FLOOD_WAIT = 65  # loginTimeout in config.lua is 60 seconds
 
 
