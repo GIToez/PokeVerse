@@ -198,18 +198,20 @@ local warned = {at = nil, below = math.huge}
 local started = false
 
 function ServerRestart.onThink()
-    readRequest()
     local now = os.time()
-    local at, reason = ServerRestart.getScheduled()
-
     if (not started) then
         started = true
-        -- A restart that was due while the server was down already happened.
-        if (at and at <= now) then
+        -- A restart that was due while the server was down already happened, and an update
+        -- restart belonged to the release this server just replaced.
+        local at, reason = ServerRestart.getScheduled()
+        if (at and (at <= now or reason == REASON_UPDATE)) then
             doSetStorage(KEY_AT, 0)
-            at = nil
+            print("> Restart: dropped the restart left over from the previous run")
         end
     end
+
+    readRequest()
+    local at, reason = ServerRestart.getScheduled()
 
     if (not at) then
         local daily = ServerRestart.getDaily()
