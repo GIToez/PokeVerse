@@ -1,0 +1,41 @@
+# PokeVerse game server. Installed by scripts/live/bootstrap-ovh.sh.
+#
+# "systemctl stop/restart" sends SIGTERM: the server saves every player (Pokemon, items),
+# houses, the map and global storage, then exits. The daily restart and /restart shut the
+# server down the same way from inside the game, and Restart=always starts it again.
+# Crashes (after the emergency save) are restarted the same way.
+[Unit]
+Description=PokeVerse game server
+After=network-online.target mariadb.service
+Wants=network-online.target mariadb.service
+StartLimitIntervalSec=600
+StartLimitBurst=10
+
+[Service]
+Type=simple
+User=pokeverse
+Group=pokeverse
+WorkingDirectory=/opt/pokeverse/current
+# TZ=Area/City for the daily restart time; written by deployments (GitHub variable LIVE_TIMEZONE).
+EnvironmentFile=-/opt/pokeverse/shared/server.env
+ExecStart=/opt/pokeverse/current/pokeverse-server
+StandardInput=null
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=180
+LimitNOFILE=65536
+SyslogIdentifier=pokeverse-server
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/opt/pokeverse
+
+[Install]
+WantedBy=multi-user.target

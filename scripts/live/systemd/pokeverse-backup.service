@@ -1,0 +1,14 @@
+# Daily database backup of the PokeVerse live server (see pokeverse-backup.timer).
+[Unit]
+Description=PokeVerse database backup
+After=mariadb.service
+Wants=mariadb.service
+ConditionPathExists=/opt/pokeverse/current/tools/pokeverse-ctl
+
+[Service]
+Type=oneshot
+User=pokeverse
+Group=pokeverse
+ExecStart=/opt/pokeverse/current/tools/pokeverse-ctl backup daily
+Nice=10
+IOSchedulingClass=idle

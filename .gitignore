@@ -1,6 +1,9 @@
 # Local build output
 /build/
 /dist/
+/dist-live/
+/builds/live/server-linux/pokeverse-server-linux/
+/builds/live/server-linux/pokeverse-server-linux.tar.gz
 
 # Machine-local server config overrides (may contain secrets)
 config.local.lua

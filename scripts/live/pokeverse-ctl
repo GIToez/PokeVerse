@@ -1,0 +1,684 @@
+#!/usr/bin/env bash
+# PokeVerse live server control. Runs on the live server as the "pokeverse" user; GitHub
+# Actions calls it over SSH through scripts/live/deploy.sh. Every server release ships its
+# own copy in tools/, so a deployment always runs the version that matches its files.
+#
+#   pokeverse-ctl verify [release]           preflight checks (nothing is changed)
+#   pokeverse-ctl backup [label]             verified database backup, prints its path
+#   pokeverse-ctl check-backup [--exact] <file>  test-restore a backup into a scratch database
+#   pokeverse-ctl deploy <release> [warning minutes]  backup, install, switch, start, health check,
+#                                            automatic rollback if the health check fails
+#   pokeverse-ctl rollback [warning minutes] switch back to the previous release
+#   pokeverse-ctl restart [warning minutes]  restart the game server (players are warned and saved)
+#   pokeverse-ctl health                     login, character list, movement, persistence and
+#                                            character creation checks against the running server
+#   pokeverse-ctl status                     releases, services, players online, backups, disk
+#   pokeverse-ctl configure key=value ...    host=, daily_restart=true|false, daily_time=HH:MM, timezone=
+#   pokeverse-ctl set-group <character> <group id>
+#   pokeverse-ctl restore <backup file> --yes  replace the database with a backup (safety backup first)
+#   pokeverse-ctl logs                       last lines of the game server log
+#   pokeverse-ctl discord-deploy <release>   install the Discord bot (settings on stdin, KEY=VALUE)
+#   pokeverse-ctl discord <check-config|check-bridge|setup|invite|status|logs>
+set -euo pipefail
+umask 027
+
+PV_HOME=${PV_HOME:-/opt/pokeverse}
+SHARED=$PV_HOME/shared
+RELEASES=$PV_HOME/releases
+BACKUPS=$PV_HOME/backups
+CURRENT=$PV_HOME/current
+CONFIG=$SHARED/config.local.lua
+SERVER_ENV=$SHARED/server.env
+HEALTH_ENV=$SHARED/health.env
+HEALTH_POSITION=$SHARED/health-position
+RESTART_REQUEST=$SHARED/restart-request
+MYCNF=$PV_HOME/.my.cnf
+DB_NAME=pokeverse
+CHECK_DB=${DB_NAME}_restore_check
+SERVICE=pokeverse-server.service
+BOT_SERVICE=pokeverse-discord.service
+BOT_HOME=$PV_HOME/discord
+REQUIRED_BOOTSTRAP=1
+KEEP_RELEASES=5
+KEEP_DAILY_BACKUPS=14
+KEEP_OTHER_BACKUPS=20
+HEALTH_ACCOUNT=pvhealthcheck
+HEALTH_CHARACTER="Health Monitor"
+TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+log() { echo "[$(date -u +%H:%M:%S)] $*"; }
+die() { echo "ERROR: $*" >&2; exit 1; }
+db() { mariadb --defaults-file="$MYCNF" "$DB_NAME" "$@"; }
+dbq() { db -N -B -e "$1"; }
+svc() { sudo -n /usr/bin/systemctl "$1" "$2"; }
+server_active() { systemctl is-active --quiet "$SERVICE"; }
+current_release() { [ -L "$CURRENT" ] && basename "$(readlink "$CURRENT")" || true; }
+previous_release() { cat "$SHARED/previous-release" 2>/dev/null || true; }
+valid_id() { [[ "$1" =~ ^[A-Za-z0-9._-]+$ ]] || die "invalid release id: $1"; }
+config_value() { sed -n "s/^$1 = \"\\([^\"]*\\)\".*/\\1/p" "$CONFIG" | tail -1; }
+
+# ---------------------------------------------------------------------------------------
+# verify
+
+cmd_verify() {
+  local release=${1:-} failed=0
+  ok() { echo "  OK    $*"; }
+  bad() { echo "  FAIL  $*"; failed=1; }
+  warn() { echo "  WARN  $*"; }
+
+  echo "Preflight checks on $(hostname) ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+  [ "$(id -un)" = pokeverse ] && ok "running as pokeverse" || bad "must run as the pokeverse user (is $(id -un))"
+  local bv
+  bv=$(cat "$SHARED/bootstrap-version" 2>/dev/null || echo 0)
+  if [ "$bv" -ge "$REQUIRED_BOOTSTRAP" ]; then ok "bootstrap version $bv"; else bad "bootstrap-ovh.sh has not been run (or is outdated: $bv < $REQUIRED_BOOTSTRAP)"; fi
+
+  for unit in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer; do
+    if [ ! -f "/etc/systemd/system/$unit" ]; then
+      bad "$unit is not installed (run bootstrap-ovh.sh)"
+    elif [ -n "$release" ] && ! cmp -s "/etc/systemd/system/$unit" "$RELEASES/$release/tools/systemd/$unit"; then
+      warn "$unit differs from this release; re-run bootstrap-ovh.sh to update it"
+    fi
+  done
+  if sudo -n -l /usr/bin/systemctl restart "$SERVICE" >/dev/null 2>&1; then ok "may control $SERVICE"; else bad "sudo rule for $SERVICE missing (run bootstrap-ovh.sh)"; fi
+
+  if systemctl is-active --quiet mariadb; then ok "MariaDB running"; else bad "MariaDB is not running"; fi
+  if db -e "SELECT 1" >/dev/null 2>&1; then
+    ok "database login works"
+    local bind
+    bind=$(dbq "SELECT @@bind_address" 2>/dev/null || echo unknown)
+    case "$bind" in 127.0.0.1|localhost|::1) ok "MariaDB only listens on $bind" ;; *) bad "MariaDB listens on '$bind'; it must be 127.0.0.1" ;; esac
+    local tables
+    tables=$(dbq "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME'")
+    if [ "$tables" = 0 ]; then
+      ok "database is empty (first installation will create the schema)"
+    elif [ "$(dbq "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name IN ('accounts', 'players', 'player_items')")" = 3 ]; then
+      ok "database has $tables tables, $(dbq "SELECT COUNT(*) FROM accounts") accounts, $(dbq "SELECT COUNT(*) FROM players") characters"
+    else
+      bad "database '$DB_NAME' has $tables tables but no PokeVerse schema; refusing to touch it"
+    fi
+  else
+    bad "cannot log in to the database with $MYCNF"
+  fi
+
+  if [ -f "$CONFIG" ]; then
+    [ "$(stat -c %a "$CONFIG")" = 600 ] && ok "config.local.lua is private (600)" || bad "config.local.lua must have mode 600"
+    [ -n "$(config_value sqlPass)" ] && ok "database password configured" || bad "sqlPass missing in config.local.lua"
+    local secret
+    secret=$(config_value discordBridgeSecret)
+    [ "${#secret}" -ge 16 ] && ok "Discord bridge secret configured" || bad "discordBridgeSecret missing or shorter than 16 characters"
+  else
+    bad "$CONFIG is missing (run bootstrap-ovh.sh)"
+  fi
+  if grep -q "^-- BEGIN DEPLOYMENT SETTINGS" "$CONFIG" 2>/dev/null; then
+    local host
+    host=$(config_value ip)
+    [ -n "$host" ] && ok "players connect to $host" || warn "public address not configured yet (set by the first deployment)"
+  else
+    bad "config.local.lua has no deployment settings block"
+  fi
+
+  local free_mb
+  free_mb=$(df -Pm "$PV_HOME" | awk 'NR == 2 {print $4}')
+  if [ "$free_mb" -ge 2048 ]; then ok "${free_mb} MB free disk space"; else bad "only ${free_mb} MB free disk space (need 2048 MB)"; fi
+
+  if [ -n "$release" ]; then
+    local dir=$RELEASES/$release
+    if [ ! -x "$dir/pokeverse-server" ]; then
+      bad "release $release is not uploaded"
+    else
+      local missing
+      missing=$(ldd "$dir/pokeverse-server" | grep "not found" || true)
+      [ -z "$missing" ] && ok "release $release: all libraries present" || bad "release $release is missing libraries: $missing"
+      [ -f "$dir/data/world/map.otbm" ] && [ "$(stat -c %s "$dir/data/world/map.otbm")" -gt 1000000 ] \
+        && ok "release $release: world map present" || bad "release $release: data/world/map.otbm missing (Git LFS?)"
+    fi
+  fi
+
+  local cur
+  cur=$(current_release)
+  if [ -n "$cur" ]; then
+    echo "  INFO  current release: $cur, server $(systemctl is-active "$SERVICE" || true)"
+  else
+    echo "  INFO  no release installed yet"
+  fi
+  [ "$failed" = 0 ] && echo "Preflight checks passed." || echo "Preflight checks FAILED."
+  return "$failed"
+}
+
+# ---------------------------------------------------------------------------------------
+# backups
+
+prune_backups() {
+  local keep pattern
+  for pattern in daily other; do
+    if [ "$pattern" = daily ]; then
+      keep=$KEEP_DAILY_BACKUPS
+      mapfile -t files < <(ls -1t "$BACKUPS"/pokeverse-*-daily.sql.gz 2>/dev/null || true)
+    else
+      keep=$KEEP_OTHER_BACKUPS
+      mapfile -t files < <(ls -1t "$BACKUPS"/pokeverse-*.sql.gz 2>/dev/null | grep -v -- '-daily\.sql\.gz$' || true)
+    fi
+    local i
+    for ((i = keep; i < ${#files[@]}; i++)); do rm -f -- "${files[$i]}"; done
+  done
+}
+
+cmd_backup() {
+  local label=${1:-manual}
+  [[ "$label" =~ ^[A-Za-z0-9._-]+$ ]] || die "invalid backup label: $label"
+  mkdir -p "$BACKUPS"
+  chmod 700 "$BACKUPS"
+  local db_mb free_mb
+  db_mb=$(dbq "SELECT COALESCE(CEIL(SUM(data_length + index_length) / 1048576), 0) FROM information_schema.tables WHERE table_schema = '$DB_NAME'")
+  free_mb=$(df -Pm "$BACKUPS" | awk 'NR == 2 {print $4}')
+  [ "$free_mb" -gt $((db_mb * 2 + 512)) ] || die "not enough disk space for a backup (${free_mb} MB free, database ${db_mb} MB)"
+
+  local name file tmp
+  name="pokeverse-$(date -u +%Y%m%d-%H%M%S)-$label.sql.gz"
+  file=$BACKUPS/$name
+  tmp=$BACKUPS/.$name.partial
+  log "Backing up the database to $file" >&2
+  # Stored procedures are not included; 30-account-tools.sql recreates them on every install.
+  if ! mariadb-dump --defaults-file="$MYCNF" --single-transaction --quick --hex-blob --triggers \
+      --no-tablespaces "$DB_NAME" | gzip -6 > "$tmp"; then
+    rm -f "$tmp"
+    die "mariadb-dump failed"
+  fi
+  gzip -t "$tmp" || { rm -f "$tmp"; die "backup is not a valid gzip file"; }
+  zcat "$tmp" | tail -n 1 | grep -q "^-- Dump completed" || { rm -f "$tmp"; die "backup is incomplete"; }
+  chmod 600 "$tmp"
+  mv "$tmp" "$file"
+  prune_backups
+  log "Backup complete: $(du -h "$file" | cut -f1)" >&2
+  echo "$file"
+}
+
+KEY_TABLES="accounts players player_items player_storage player_depotitems houses global_storage"
+
+drop_check_db() { mariadb --defaults-file="$MYCNF" -e "DROP DATABASE IF EXISTS \`$CHECK_DB\`" >/dev/null 2>&1 || true; }
+
+# Functions written as "name() ( ... )" run in a subshell: callers can handle their failure,
+# because "die" only ends the subshell. Bash ignores "set -e" inside functions that are called
+# from an if/||, so every step in them checks its result explicitly.
+cmd_check_backup() (
+  exact=0
+  if [ "${1:-}" = --exact ]; then exact=1; shift; fi
+  file=${1:?backup file}
+  [ -f "$file" ] || file=$BACKUPS/$file
+  [ -f "$file" ] || die "backup not found: $1"
+  log "Test-restoring $(basename "$file") into the scratch database $CHECK_DB"
+  trap drop_check_db EXIT
+  mariadb --defaults-file="$MYCNF" -e "DROP DATABASE IF EXISTS \`$CHECK_DB\`; CREATE DATABASE \`$CHECK_DB\` CHARACTER SET latin1 COLLATE latin1_swedish_ci" \
+    || die "cannot create the scratch database"
+  zcat "$file" | mariadb --defaults-file="$MYCNF" "$CHECK_DB" || die "the backup could not be restored"
+
+  live_tables=$(dbq "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME' ORDER BY 1" | tr '\n' ' ') \
+    || die "cannot read the live tables"
+  restored_tables=$(dbq "SELECT table_name FROM information_schema.tables WHERE table_schema = '$CHECK_DB' ORDER BY 1" | tr '\n' ' ') \
+    || die "cannot read the restored tables"
+  [ "$live_tables" = "$restored_tables" ] || die "the restored backup has different tables than the live database"
+  failed=0
+  for t in $KEY_TABLES; do
+    case " $live_tables " in *" $t "*) ;; *) continue ;; esac
+    live=$(dbq "SELECT COUNT(*) FROM \`$t\`") || die "cannot count $t"
+    restored=$(dbq "SELECT COUNT(*) FROM \`$CHECK_DB\`.\`$t\`") || die "cannot count the restored $t"
+    if [ "$exact" = 1 ] && [ "$live" != "$restored" ]; then
+      echo "  $t: live $live, backup $restored  <- MISMATCH"; failed=1
+    elif [ "$live" -gt 0 ] && [ "$restored" = 0 ]; then
+      echo "  $t: live $live, backup $restored  <- EMPTY"; failed=1
+    else
+      echo "  $t: live $live, backup $restored"
+    fi
+  done
+  [ "$failed" = 0 ] || die "backup verification failed"
+  log "Backup verified ($(echo "$restored_tables" | wc -w) tables)"
+)
+
+# ---------------------------------------------------------------------------------------
+# install / activate / start / stop
+
+apply_sql() (
+  dir=$1
+  tables=$(dbq "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME'") || die "cannot read the database"
+  if [ "$tables" = 0 ]; then
+    # 01-base-schema.sql drops and recreates the base tables, so it only ever runs on an
+    # empty database.
+    log "Empty database: creating the schema"
+    db < "$dir/sql/01-base-schema.sql" || die "creating the schema failed"
+  else
+    accounts=$(dbq "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name = 'accounts'") \
+      || die "cannot read the database"
+    [ "$accounts" = 1 ] || die "database has tables but no accounts table; refusing to change it"
+  fi
+  # Idempotent: adds missing tables/columns and default rows, recreates stored procedures.
+  # Never drops or overwrites player data.
+  for f in 10-pokeverse-extensions.sql 20-world-defaults.sql 30-account-tools.sql; do
+    log "Applying $f"
+    db < "$dir/sql/$f" || die "$f failed"
+  done
+)
+
+ensure_health_account() (
+  if [ ! -f "$HEALTH_ENV" ]; then
+    pw=$(openssl rand -hex 16) || die "openssl failed"
+    exists=$(dbq "SELECT COUNT(*) FROM accounts WHERE name = '$HEALTH_ACCOUNT'") || die "cannot read accounts"
+    if [ "$exists" = 0 ]; then
+      dbq "CALL pokeverse_create_account('$HEALTH_ACCOUNT', '$pw')" >/dev/null || die "cannot create the health check account"
+    else
+      dbq "UPDATE accounts SET password = SHA2('$pw', 256) WHERE name = '$HEALTH_ACCOUNT'" || die "cannot reset the health check account"
+    fi
+    (umask 077; printf 'HEALTH_PASSWORD=%s\n' "$pw" > "$HEALTH_ENV") || die "cannot write $HEALTH_ENV"
+    log "Created the health check account '$HEALTH_ACCOUNT'"
+  fi
+  exists=$(dbq "SELECT COUNT(*) FROM players WHERE name = '$HEALTH_CHARACTER'") || die "cannot read players"
+  if [ "$exists" = 0 ]; then
+    dbq "CALL pokeverse_create_character('$HEALTH_ACCOUNT', '$HEALTH_CHARACTER', 1)" >/dev/null \
+      || die "cannot create the health check character"
+    rm -f "$HEALTH_POSITION"
+    log "Created the health check character '$HEALTH_CHARACTER'"
+  fi
+)
+
+install_release() (
+  id=$1
+  dir=$RELEASES/$1
+  [ -x "$dir/pokeverse-server" ] || die "release $id is not uploaded"
+  ln -sfn "$CONFIG" "$dir/config.local.lua" || die "cannot link config.local.lua"
+  rm -rf "$dir/logs" && ln -sfn "$SHARED/logs" "$dir/logs" || die "cannot link the log folder"
+  apply_sql "$dir" || exit 1
+  ensure_health_account || exit 1
+)
+
+activate() {
+  local id=$1 cur
+  cur=$(current_release)
+  if [ -n "$cur" ] && [ "$cur" != "$id" ]; then echo "$cur" > "$SHARED/previous-release"; fi
+  ln -sfn "releases/$id" "$PV_HOME/current.new"
+  mv -Tf "$PV_HOME/current.new" "$CURRENT"
+  log "Active release: $id"
+}
+
+players_online() { dbq "SELECT COUNT(*) FROM players WHERE online = 1" 2>/dev/null || echo 0; }
+
+# Stops the game server. With warning minutes and players online, the in-game countdown
+# (057-serverRestart.lua) warns them first. SIGTERM saves everything before the exit.
+stop_server() {
+  local minutes=${1:-0}
+  server_active || { rm -f "$RESTART_REQUEST"; return 0; }
+  if [ "$minutes" -gt 0 ] && [ "$(players_online)" -gt 0 ]; then
+    local at=$(( $(date +%s) + minutes * 60 ))
+    echo "$at" > "$RESTART_REQUEST"
+    log "$(players_online) player(s) online: warning them, stopping at $(date -d "@$at" '+%H:%M:%S')"
+    while [ "$(date +%s)" -lt $((at - 2)) ]; do
+      server_active || break
+      if [ "$(players_online)" = 0 ]; then log "Everyone logged out"; break; fi
+      sleep 5
+    done
+  fi
+  log "Stopping the game server (saving players, Pokemon, items and the world)"
+  svc stop "$SERVICE" || die "could not stop the game server"
+  rm -f "$RESTART_REQUEST"
+  [ "$(players_online)" = 0 ] || log "WARNING: players are still marked online after the stop"
+}
+
+start_server() {
+  log "Starting the game server"
+  svc start "$SERVICE" || log "WARNING: systemctl start failed"
+}
+
+# ---------------------------------------------------------------------------------------
+# health
+
+wait_for_port() {
+  local port=$1 timeout=$2 start
+  start=$(date +%s)
+  until (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null; do
+    server_active || [ "$(systemctl show -p ActiveState --value "$SERVICE")" = activating ] \
+      || { log "the game server is not running"; return 1; }
+    [ $(( $(date +%s) - start )) -lt "$timeout" ] || { log "port $port did not open within ${timeout}s"; return 1; }
+    sleep 2
+  done
+}
+
+cmd_health() (
+  timeout=${HEALTH_TIMEOUT:-420}
+  [ -f "$HEALTH_ENV" ] || die "no health check account yet (deploy first)"
+  # shellcheck disable=SC1090
+  . "$HEALTH_ENV"
+  log "Health check: waiting for the game server to load the world"
+  restarts_before=$(systemctl show -p NRestarts --value "$SERVICE")
+  wait_for_port 7564 "$timeout" && wait_for_port 8548 "$timeout" || return 1
+  sleep 3
+  server_active || { log "the game server stopped right after starting"; return 1; }
+
+  args=(--account "$HEALTH_ACCOUNT" --password "$HEALTH_PASSWORD" --character "$HEALTH_CHARACTER"
+        --walk east,west --game-host 127.0.0.1)
+  if [ -s "$HEALTH_POSITION" ]; then args+=(--expect-position "$(cat "$HEALTH_POSITION")"); fi
+  for attempt in 1 2 3; do
+    if out=$(python3 "$TOOLS/protocol-test.py" "${args[@]}" 2>&1); then break; fi
+    echo "$out" | sed 's/^/  /'
+    if echo "$out" | grep -q "expected the saved position"; then log "persistence check failed"; return 1; fi
+    [ "$attempt" = 3 ] && { log "login/movement check failed"; return 1; }
+    sleep 10
+  done
+  echo "$out" | sed 's/^/  /'
+  pos=$(echo "$out" | sed -n 's/^POSITION //p' | tail -1)
+  [ -n "$pos" ] && echo "$pos" > "$HEALTH_POSITION"
+
+  if ! out=$(python3 "$TOOLS/account-test.py" --account "$HEALTH_ACCOUNT" --password "$HEALTH_PASSWORD" 2>&1); then
+    echo "$out" | sed 's/^/  /'
+    log "character creation check failed"
+    return 1
+  fi
+  echo "$out" | sed 's/^/  /'
+
+  if [ "$(systemctl show -p NRestarts --value "$SERVICE")" != "$restarts_before" ] || ! server_active; then
+    log "the game server restarted during the health check (crash?)"
+    return 1
+  fi
+  log "HEALTHY: login, character list, game login, movement, saved position and character creation verified"
+)
+
+# ---------------------------------------------------------------------------------------
+# deploy / rollback / restart
+
+show_server_log() {
+  echo "----- last game server log lines -----"
+  sudo -n /usr/bin/journalctl -u "$SERVICE" -n 300 --no-pager | tail -n 60 || true
+  echo "--------------------------------------"
+}
+
+prune_releases() {
+  local cur prev keep=0 dir
+  cur=$(current_release)
+  prev=$(previous_release)
+  for dir in $(ls -1td "$RELEASES"/*/ 2>/dev/null); do
+    dir=${dir%/}
+    local id
+    id=$(basename "$dir")
+    if [ "$id" = "$cur" ] || [ "$id" = "$prev" ]; then continue; fi
+    keep=$((keep + 1))
+    [ "$keep" -le "$KEEP_RELEASES" ] || rm -rf -- "$dir"
+  done
+}
+
+cmd_deploy() {
+  local id=${1:?release id} minutes=${2:-0}
+  valid_id "$id"
+  trap '' HUP
+  log "Deploying release $id"
+  cmd_verify "$id" || die "preflight checks failed; nothing was changed"
+
+  local prev prev_prev
+  prev=$(current_release)
+  prev_prev=$(previous_release)
+  if [ "$prev" = "$id" ]; then die "release $id is already active"; fi
+
+  stop_server "$minutes"
+  local backup
+  if ! backup=$(cmd_backup "predeploy-$id") || ! cmd_check_backup --exact "$backup"; then
+    [ -n "$prev" ] && start_server
+    die "the backup failed; the deployment was cancelled and the old release keeps running"
+  fi
+
+  if ! install_release "$id"; then
+    log "Installing the release failed"
+    [ -n "$prev" ] && start_server
+    die "deployment failed before switching releases (database backup: $backup)"
+  fi
+  activate "$id"
+  start_server
+  if cmd_health; then
+    prune_releases
+    log "Deployment of $id succeeded"
+    return 0
+  fi
+
+  show_server_log
+  if [ -z "$prev" ]; then
+    svc stop "$SERVICE" || true
+    die "the first release failed its health check; the server was stopped"
+  fi
+  log "Health check failed: rolling back to $prev (the database is unchanged except for additive schema updates; backup: $backup)"
+  svc stop "$SERVICE" || true
+  activate "$prev"
+  # A later manual rollback must not go back to the failed release.
+  if [ -n "$prev_prev" ]; then echo "$prev_prev" > "$SHARED/previous-release"; else rm -f "$SHARED/previous-release"; fi
+  echo "$id" > "$SHARED/failed-release"
+  start_server
+  if cmd_health; then
+    die "deployment of $id failed; rolled back to $prev, which is healthy"
+  fi
+  show_server_log
+  die "deployment of $id failed AND the rollback to $prev is not healthy; check the server"
+}
+
+cmd_rollback() {
+  local minutes=${1:-0} prev cur
+  prev=$(previous_release)
+  cur=$(current_release)
+  [ -n "$prev" ] && [ -d "$RELEASES/$prev" ] || die "no previous release to roll back to"
+  log "Rolling back from $cur to $prev"
+  stop_server "$minutes"
+  cmd_backup "rollback-$prev" >/dev/null
+  activate "$prev"
+  start_server
+  cmd_health || { show_server_log; die "release $prev is not healthy after the rollback"; }
+  log "Rollback to $prev succeeded"
+}
+
+cmd_restart() {
+  local minutes=${1:-0}
+  stop_server "$minutes"
+  start_server
+  cmd_health || { show_server_log; die "the game server is not healthy after the restart"; }
+}
+
+cmd_restore() {
+  local file=${1:?backup file}
+  [ "${2:-}" = --yes ] || die "restoring replaces the live database; add --yes to confirm"
+  [ -f "$file" ] || file=$BACKUPS/$file
+  [ -f "$file" ] || die "backup not found: $1"
+  [ -n "$(current_release)" ] || die "no release installed"
+  cmd_check_backup "$file"
+  stop_server 0
+  local safety
+  safety=$(cmd_backup before-restore)
+  log "Safety backup of the current database: $safety"
+  log "Restoring $(basename "$file")"
+  zcat "$file" | db || die "restore failed; the safety backup is $safety"
+  apply_sql "$CURRENT"
+  rm -f "$HEALTH_POSITION"
+  ensure_health_account
+  start_server
+  cmd_health || { show_server_log; die "the game server is not healthy after the restore"; }
+  log "Restore complete"
+}
+
+# ---------------------------------------------------------------------------------------
+# settings
+
+set_managed_block() {
+  local block=$1 tmp
+  tmp=$(mktemp "$SHARED/.config.XXXXXX")
+  PV_BLOCK=$block awk '
+    /^-- BEGIN DEPLOYMENT SETTINGS/ { print; printf "%s", ENVIRON["PV_BLOCK"]; skip = 1; next }
+    /^-- END DEPLOYMENT SETTINGS/ { skip = 0 }
+    !skip { print }' "$CONFIG" > "$tmp"
+  chmod 600 "$tmp"
+  mv "$tmp" "$CONFIG"
+}
+
+cmd_configure() {
+  local host="" daily_restart=true daily_time=06:00 timezone="" kv
+  for kv in "$@"; do
+    case "$kv" in
+      host=*) host=${kv#host=} ;;
+      daily_restart=*) daily_restart=${kv#daily_restart=} ;;
+      daily_time=*) daily_time=${kv#daily_time=} ;;
+      timezone=*) timezone=${kv#timezone=} ;;
+      *) die "unknown setting: $kv" ;;
+    esac
+  done
+  [[ "$host" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || die "invalid public host: '$host' (IP address or domain name)"
+  [[ "$daily_restart" =~ ^(true|false)$ ]] || die "daily_restart must be true or false"
+  [[ "$daily_time" =~ ^([01][0-9]|2[0-3]):[0-5][0-9]$ ]] || die "daily_time must be HH:MM (24-hour), got '$daily_time'"
+  if [ -n "$timezone" ]; then
+    [[ "$timezone" =~ ^[A-Za-z0-9_+/-]+$ ]] && [ -f "/usr/share/zoneinfo/$timezone" ] || die "unknown timezone: $timezone"
+  fi
+  set_managed_block "ip = \"$host\"
+bindOnlyConfiguredIpAddress = false
+dailyRestartEnabled = $daily_restart
+dailyRestartTime = \"$daily_time\"
+restartRequestFile = \"$RESTART_REQUEST\"
+"
+  if [ -n "$timezone" ]; then
+    printf 'TZ=%s\n' "$timezone" > "$SERVER_ENV"
+  else
+    rm -f "$SERVER_ENV"
+  fi
+  log "Settings: public address $host, daily restart $daily_restart at $daily_time ${timezone:-server time ($(date +%Z))}"
+}
+
+cmd_set_group() {
+  local name=${1:?character name} group=${2:?group id}
+  [[ "$name" =~ ^[A-Za-z][A-Za-z\ ]{1,28}[A-Za-z]$ ]] || die "invalid character name"
+  [[ "$group" =~ ^[1-6]$ ]] || die "group must be 1 (player) to 6 (god), see data/XML/groups.xml"
+  [ "$(dbq "SELECT COUNT(*) FROM players WHERE name = '$name'")" = 1 ] || die "character '$name' not found"
+  [ "$(dbq "SELECT online FROM players WHERE name = '$name'")" = 0 ] || die "'$name' is online; log out first (the server would overwrite the change)"
+  dbq "CALL pokeverse_set_group('$name', $group)"
+  log "'$name' is now in group $group"
+}
+
+# ---------------------------------------------------------------------------------------
+# status
+
+cmd_status() {
+  echo "Current release:  $(current_release)"
+  echo "Previous release: $(previous_release)"
+  [ -f "$SHARED/failed-release" ] && echo "Last failed:      $(cat "$SHARED/failed-release")"
+  echo "Game server:      $(systemctl is-active "$SERVICE" || true) (restarts: $(systemctl show -p NRestarts --value "$SERVICE"), since $(systemctl show -p ActiveEnterTimestamp --value "$SERVICE"))"
+  echo "Discord bot:      $(systemctl is-active "$BOT_SERVICE" || true), release $(basename "$(readlink "$BOT_HOME/current" 2>/dev/null)" 2>/dev/null || echo none)"
+  echo "Players online:   $(players_online)"
+  echo "Public address:   $(config_value ip)"
+  echo "Daily restart:    $(sed -n 's/^dailyRestartEnabled = //p' "$CONFIG" | tail -1) at $(config_value dailyRestartTime) $(cat "$SERVER_ENV" 2>/dev/null || date +%Z)"
+  echo "Disk free:        $(df -Ph "$PV_HOME" | awk 'NR == 2 {print $4}')"
+  echo "Backups:"
+  ls -1t "$BACKUPS"/*.sql.gz 2>/dev/null | head -n 5 | while read -r f; do echo "  $(basename "$f")  $(du -h "$f" | cut -f1)"; done
+  echo "Releases:"
+  ls -1t "$RELEASES" 2>/dev/null | head -n 8 | sed 's/^/  /'
+}
+
+# ---------------------------------------------------------------------------------------
+# Discord bot
+
+BOT_KEYS="DISCORD_TOKEN DISCORD_APPLICATION_ID DISCORD_GUILD_ID DISCORD_ADMIN_USER_IDS DISCORD_ADMIN_ROLE_IDS"
+
+set_env_value() {
+  local file=$1 key=$2 value=$3 tmp
+  tmp=$(mktemp "$(dirname "$file")/.env.XXXXXX")
+  PV_KEY=$key PV_VALUE=$value awk '
+    BEGIN { key = ENVIRON["PV_KEY"]; value = ENVIRON["PV_VALUE"]; done = 0 }
+    index($0, key "=") == 1 { print key "=" value; done = 1; next }
+    { print }
+    END { if (!done) print key "=" value }' "$file" > "$tmp"
+  chmod 600 "$tmp"
+  mv "$tmp" "$file"
+}
+
+bot_run() { (cd "$BOT_HOME/current" && ./start-discord.sh "$@"); }
+
+cmd_discord_deploy() {
+  local id=${1:?release id}
+  valid_id "$id"
+  local dir=$BOT_HOME/releases/$id env=$BOT_HOME/shared/.env.production
+  [ -x "$dir/start-discord.sh" ] || die "bot release $id is not uploaded"
+  server_active || die "the game server must be running (the bot is checked against its bridge)"
+
+  [ -f "$env" ] || { cp "$dir/.env.production.example" "$env"; chmod 600 "$env"; }
+  local line key value
+  while IFS= read -r line; do
+    [ -n "$line" ] || continue
+    key=${line%%=*}
+    value=${line#*=}
+    case " $BOT_KEYS " in *" $key "*) ;; *) die "unexpected bot setting: $key" ;; esac
+    [[ "$value" != *$'\n'* ]] || die "invalid value for $key"
+    set_env_value "$env" "$key" "$value"
+  done
+  set_env_value "$env" POKEVERSE_PROFILE production
+  set_env_value "$env" POKEVERSE_CONFIRM_PRODUCTION yes
+  set_env_value "$env" BRIDGE_HOST 127.0.0.1
+  set_env_value "$env" BRIDGE_PORT 7199
+  set_env_value "$env" BRIDGE_SECRET "$(config_value discordBridgeSecret)"
+
+  ln -sfn "$env" "$dir/.env.production"
+  rm -rf "$dir/data" "$dir/logs"
+  ln -sfn "$BOT_HOME/shared/data" "$dir/data"
+  ln -sfn "$BOT_HOME/shared/logs" "$dir/logs"
+
+  log "Checking the bot configuration"
+  (cd "$dir" && ./start-discord.sh check-config) || die "the bot configuration is invalid; the bot was not changed"
+  log "Checking the connection to the game bridge"
+  (cd "$dir" && ./start-discord.sh check-bridge) || die "the bot cannot reach the game bridge; the bot was not changed"
+
+  local prev=""
+  [ -L "$BOT_HOME/current" ] && prev=$(basename "$(readlink "$BOT_HOME/current")")
+  ln -sfn "releases/$id" "$BOT_HOME/current.new"
+  mv -Tf "$BOT_HOME/current.new" "$BOT_HOME/current"
+  sudo -n /usr/bin/systemctl enable "$BOT_SERVICE" >/dev/null 2>&1 || true
+  svc restart "$BOT_SERVICE"
+  log "Waiting 30 seconds to see that the bot stays up"
+  local restarts
+  restarts=$(systemctl show -p NRestarts --value "$BOT_SERVICE")
+  sleep 30
+  if systemctl is-active --quiet "$BOT_SERVICE" && [ "$(systemctl show -p NRestarts --value "$BOT_SERVICE")" = "$restarts" ]; then
+    log "Discord bot $id is running"
+    local dirs
+    dirs=$(ls -1td "$BOT_HOME"/releases/*/ 2>/dev/null | tail -n +$((KEEP_RELEASES + 1)) || true)
+    for d in $dirs; do [ "$(basename "$d")" = "$prev" ] || rm -rf -- "$d"; done
+    server_active || die "the game server stopped while the bot was deployed"
+    return 0
+  fi
+  sudo -n /usr/bin/journalctl -u "$BOT_SERVICE" -n 300 --no-pager | tail -n 30 || true
+  if [ -n "$prev" ] && [ "$prev" != "$id" ]; then
+    ln -sfn "releases/$prev" "$BOT_HOME/current.new"
+    mv -Tf "$BOT_HOME/current.new" "$BOT_HOME/current"
+    svc restart "$BOT_SERVICE"
+    die "the new bot did not stay up; went back to $prev (the game server is not affected)"
+  fi
+  svc stop "$BOT_SERVICE" || true
+  sudo -n /usr/bin/systemctl disable "$BOT_SERVICE" >/dev/null 2>&1 || true
+  die "the bot did not stay up and was stopped (the game server is not affected)"
+}
+
+cmd_discord() {
+  local what=${1:-status}
+  case "$what" in
+    check-config|check-bridge|setup|invite) bot_run "$what" ;;
+    status) systemctl status "$BOT_SERVICE" --no-pager -n 0 || true ;;
+    logs) sudo -n /usr/bin/journalctl -u "$BOT_SERVICE" -n 300 --no-pager ;;
+    *) die "unknown discord command: $what" ;;
+  esac
+}
+
+# ---------------------------------------------------------------------------------------
+
+command=${1:-}
+shift || true
+case "$command" in
+  verify) cmd_verify "$@" ;;
+  backup) cmd_backup "$@" ;;
+  check-backup) cmd_check_backup "$@" ;;
+  deploy) cmd_deploy "$@" ;;
+  rollback) cmd_rollback "$@" ;;
+  restart) cmd_restart "$@" ;;
+  health) cmd_health ;;
+  status) cmd_status ;;
+  configure) cmd_configure "$@" ;;
+  set-group) cmd_set_group "$@" ;;
+  restore) cmd_restore "$@" ;;
+  logs) show_server_log ;;
+  discord-deploy) cmd_discord_deploy "$@" ;;
+  discord) cmd_discord "$@" ;;
+  *) sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+esac
