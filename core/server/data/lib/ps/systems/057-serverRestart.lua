@@ -240,7 +240,7 @@ function ServerRestart.onThink()
                 warned.below = seconds
             end
         end
-        ServerRestart.announce(remaining, reason)
+        ServerRestart.announce(warned.below - remaining < 3 and warned.below or remaining, reason)
         return true
     end
 
