@@ -224,6 +224,14 @@ def enter_game(args, host, port):
     raise ProtocolError("timed out waiting for game login")
 
 
+def show_server_message(data):
+    if data and data[0] == 0xB4:  # text message: type, text
+        try:
+            print("  server message: " + Reader(data[2:]).string(), flush=True)
+        except (IndexError, struct.error):
+            pass
+
+
 def drain(conn, seconds):
     """Reads server packets for a while and returns them."""
     seen = []
@@ -233,6 +241,7 @@ def drain(conn, seconds):
         try:
             data = conn.recv()
             if data:
+                show_server_message(data)
                 seen.append(data)
         except socket.timeout:
             continue
@@ -415,11 +424,7 @@ def stay_online(conn, seconds):
             return True
         if data and data[0] == 0x1E:
             conn.send(b"\x1E")
-        elif data and data[0] == 0xB4:  # text message: type, text
-            try:
-                print("  server message: " + Reader(data[2:]).string(), flush=True)
-            except (IndexError, struct.error):
-                pass
+        show_server_message(data)
     return False
 
 
