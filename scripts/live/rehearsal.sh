@@ -34,6 +34,10 @@ wait_restarted() {
 [ "$(hostname)" != "vps-2582abd3" ] || { echo "Refusing to run on the live server." >&2; exit 1; }
 
 step "SSH server and deploy key"
+# Like OVH's Ubuntu image: the host name resolves to 127.0.1.1.
+grep -q "^127\.0\.1\.1[[:space:]].*\b$(hostname)\b" /etc/hosts \
+  || echo "127.0.1.1 $(hostname)" | sudo tee -a /etc/hosts >/dev/null
+getent hosts "$(hostname)"
 sudo apt-get install -y -q --no-install-recommends openssh-server >/dev/null
 sudo systemctl start ssh
 ssh-keygen -q -t ed25519 -N "" -C rehearsal -f "$work/key"

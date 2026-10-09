@@ -847,7 +847,8 @@ ServiceManager* services)
 
 	std::string ip = g_config.getString(ConfigManager::IP);
 	std::cout << "> Global address: " << ip << std::endl;
-	serverIps.push_back(std::make_pair(LOCALHOST, 0xFFFFFFFF));
+	// Client addresses are compared in network byte order; LOCALHOST is in host order.
+	serverIps.push_back(std::make_pair(htonl(LOCALHOST), 0xFFFFFFFF));
 
 	char hostName[128];
 	hostent* host = NULL;
