@@ -82,8 +82,19 @@ remote_ctl() {
 
 check_ssh() {
   step "SSH connection to $target (port $PV_SSH_PORT)"
-  local who
-  who=$(remote 'echo "$(id -un)@$(hostname)"') || fail "SSH login failed. Check OVH_HOST, OVH_SSH_PORT, the deploy key and that bootstrap-ovh.sh ran on the server."
+  local who err
+  if ! who=$(remote 'echo "$(id -un)@$(hostname)"' 2> "$work/ssh.err"); then
+    err=$(cat "$work/ssh.err")
+    echo "$err"
+    case "$err" in
+      *"Permission denied"*)
+        fail "The server is reachable and its host key matches, but it does not accept the deploy key (fingerprint $(ssh-keygen -lf "$work/key" | awk '{print $2}')). Run bootstrap-ovh.sh on the server with the .pub file of this key (docs/live-server.md, step 2)." ;;
+      *"Host key verification failed"*|*"REMOTE HOST IDENTIFICATION"*)
+        fail "The server's host key does not match OVH_SSH_HOST_KEY. If the server was reinstalled, run bootstrap-ovh.sh again and update the secret." ;;
+      *)
+        fail "SSH connection failed. Check OVH_HOST, OVH_SSH_PORT and the OVH firewall." ;;
+    esac
+  fi
   echo "Connected as $who; host key matches OVH_SSH_HOST_KEY"
   endstep
 }
