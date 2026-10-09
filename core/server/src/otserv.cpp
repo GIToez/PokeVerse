@@ -207,13 +207,9 @@ void signalHandler(int32_t sig)
 			break;
 
 		case SIGQUIT:
-			Dispatcher::getInstance().addTask(createTask(
-				boost::bind(&Game::setGameState, &g_game, GAME_STATE_SHUTDOWN)));
-			break;
-
 		case SIGTERM:
 			Dispatcher::getInstance().addTask(createTask(
-				boost::bind(&Game::shutdown, &g_game)));
+				boost::bind(&Game::setGameState, &g_game, GAME_STATE_SHUTDOWN)));
 			break;
         #ifdef __EMERGENCY_SAVE__
 		case SIGILL:
@@ -312,7 +308,7 @@ void serverMain(void* param)
 	signal(SIGUSR2, signalHandler); //open server
 	signal(SIGCONT, signalHandler); //reload all
 	signal(SIGQUIT, signalHandler); //save & shutdown
-	signal(SIGTERM, signalHandler); //shutdown
+	signal(SIGTERM, signalHandler); //save & shutdown
 	#ifdef __EMERGENCY_SAVE__
 	// PS - for emergency save
 	struct sigaction s;

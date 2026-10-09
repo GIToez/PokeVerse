@@ -213,11 +213,10 @@ Protocol* ServicePort::makeProtocol(bool checksum, NetworkMessage& msg) const
 void ServiceManager::run()
 {
 	assert(!running);
+	running = true;
 	try
 	{
 		m_io_service.run();
-		if(!running)
-			running = true;
 	}
 	catch(boost::system::system_error& e)
 	{
@@ -245,7 +244,12 @@ void ServiceManager::stop()
 
 	m_acceptors.clear();
 	OutputMessagePool::getInstance()->stop();
+	// stop() runs on the dispatcher thread; the timer may only be touched by the network thread.
+	boost::asio::post(m_io_service, boost::bind(&ServiceManager::scheduleDeath, this));
+}
 
+void ServiceManager::scheduleDeath()
+{
 	deathTimer.expires_after(std::chrono::seconds(3));
 	deathTimer.async_wait(boost::bind(&ServiceManager::die, this));
 }

@@ -108,6 +108,7 @@ class ServiceManager : boost::noncopyable
 		std::list<uint16_t> getPorts() const;
 
 	protected:
+		void scheduleDeath();
 		void die() {m_io_service.stop();}
 
 		boost::asio::io_context m_io_service;
