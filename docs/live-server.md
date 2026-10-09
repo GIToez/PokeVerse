@@ -49,7 +49,7 @@ Settings > Secrets and variables > Actions:
 | Secret | `OVH_SSH_PRIVATE_KEY` | the whole contents of the `pokeverse-deploy` file |
 | Secret | `OVH_SSH_HOST_KEY` | printed at the end of step 2 (`ssh-ed25519 AAAA...`) |
 | Secret | `DISCORD_BOT_TOKEN` | token of the **production** bot application |
-| Variable | `OVH_HOST` | server IP address, e.g. `40.160.145.24` |
+| Variable | `OVH_HOST` | optional, server IP address (default `40.160.145.24`, the current OVH server) |
 | Variable | `LIVE_TIMEZONE` | e.g. `America/Los_Angeles` (server clock for the daily restart) |
 | Variable | `LIVE_DAILY_RESTART_TIME` | optional, `HH:MM`, default `06:00` |
 | Variable | `LIVE_DAILY_RESTART` | optional, `false` turns the daily restart off |
@@ -57,7 +57,6 @@ Settings > Secrets and variables > Actions:
 | Variable | `OVH_SSH_PORT` | optional, if SSH is not on port 22 |
 | Variable | `DISCORD_APPLICATION_ID`, `DISCORD_GUILD_ID` | production bot application and server IDs |
 | Variable | `DISCORD_ADMIN_USER_IDS`, `DISCORD_ADMIN_ROLE_IDS` | comma-separated IDs allowed to use admin commands |
-| Variable | `DISCORD_BOT_REF` | optional, PokeVerse-Discord branch or tag to deploy |
 | Variable | `LIVE_AUTO_DEPLOY` | optional, `true` deploys every push to `main` after a successful rehearsal |
 
 Use a separate Discord application for production. Never run the development bot with the
@@ -81,7 +80,12 @@ Actions > **Live server** > Run workflow:
    The character must be offline.
 
 Then download the **PokeVerse-Windows-Live** artifact from the latest "Windows dev package"
-run (it appears once `OVH_HOST` is set) and log in.
+run and log in.
+
+Every live action first checks the secrets and variables and shows the result in the run
+summary: which are set, whether the keys are valid (with their fingerprints), and whether
+the bot token matches the application ID. Values are never printed. Pushes to `main` run the
+same check offline (no connection to the server), for repository-level settings only.
 
 ## Workflow actions
 
@@ -97,6 +101,9 @@ run (it appears once `OVH_HOST` is set) and log in.
 | `set-group` | Set a character's staff group (`character`, `group`). |
 | `discord-setup` | Register the bot's slash commands. |
 | `status`, `logs` | Releases, services, backups, and the last log lines. |
+
+The production bot is always built from the `main` branch of
+[PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord).
 
 Every push and pull request builds both packages and runs the rehearsal, which installs
 everything on a fresh Ubuntu 24.04 machine and tests login, character creation, movement,
