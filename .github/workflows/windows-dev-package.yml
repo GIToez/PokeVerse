@@ -95,6 +95,20 @@ jobs:
           if-no-files-found: error
           compression-level: 9
 
+      - name: Assemble live client package
+        if: vars.LIVE_SERVER_HOST != '' || vars.OVH_HOST != ''
+        env:
+          LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST }}
+        run: scripts/package-windows-live-client.sh build/client "$LIVE_HOST" dist-live
+
+      - uses: actions/upload-artifact@v4
+        if: vars.LIVE_SERVER_HOST != '' || vars.OVH_HOST != ''
+        with:
+          name: PokeVerse-Windows-Live
+          path: dist-live/
+          if-no-files-found: error
+          compression-level: 9
+
   test-package:
     name: Test package on a clean Windows runner
     needs: build
