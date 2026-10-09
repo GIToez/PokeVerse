@@ -17,6 +17,29 @@ report() { # status name detail
 }
 is_set() { [ -n "${!1:-}" ]; }
 
+# Why an OpenSSH private key cannot be read, without revealing anything about it.
+diagnose_key() {
+  local file=$1 body cipher
+  if grep -q '^[[:space:]]\+[A-Za-z0-9+/=-]' "$file" || grep -q '[[:space:]]$' "$file"; then
+    echo "lines start or end with spaces (copied from a formatted view?); paste the file exactly as Notepad shows it"
+    return
+  fi
+  body=$(sed -n '/-----BEGIN/,/-----END/{/-----/d;p}' "$file" | tr -d '\n')
+  if ! printf '%s' "$body" | base64 -d > "$file.bin" 2>/dev/null; then
+    echo "damaged: some characters changed or are missing; paste the whole file again"
+  elif [ "$(head -c 14 "$file.bin")" != "openssh-key-v1" ]; then
+    echo "not an OpenSSH key (old PEM or other format); create it again with ssh-keygen -t ed25519"
+  else
+    cipher=$(tail -c +16 "$file.bin" | head -c 4 | od -An -tu1 | awk '{print $1*16777216 + $2*65536 + $3*256 + $4}')
+    cipher=$(tail -c +20 "$file.bin" | head -c "$cipher")
+    if [ "$cipher" != none ]; then
+      echo "the key has a passphrase; GitHub cannot type it. Create a new key and press Enter twice (no passphrase)"
+    else
+      echo "incomplete: part of the key is missing; paste the whole file again"
+    fi
+  fi
+}
+
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
@@ -37,7 +60,7 @@ else
   elif ! grep -q -- '-----END .*PRIVATE KEY-----' "$work/key"; then
     report FAIL OVH_SSH_PRIVATE_KEY "the -----END OPENSSH PRIVATE KEY----- line is missing; paste the whole file"
   elif ! ssh-keygen -y -P '' -f "$work/key" > "$work/key.pub" 2>/dev/null; then
-    report FAIL OVH_SSH_PRIVATE_KEY "cannot be read: incomplete, or it has a passphrase (create it again and press Enter twice)"
+    report FAIL OVH_SSH_PRIVATE_KEY "$(diagnose_key "$work/key")"
   else
     report OK OVH_SSH_PRIVATE_KEY "$(ssh-keygen -lf "$work/key.pub" | awk '{print $1, $2, $NF}')"
   fi
