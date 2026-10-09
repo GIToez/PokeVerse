@@ -14,15 +14,15 @@ PokeVerse/
 │   │   ├── client-legacy-windows/
 │   │   ├── client-redemption-windows/
 │   │   ├── database/
-│   │   └── setup.bat / start-server.bat / start-client.bat   (planned)
+│   │   └── Setup Database.bat, Start Server and Client.bat, ...
 │   └── live/                   Release packages
 │       ├── server-linux/
 │       ├── client-legacy-windows/
 │       ├── client-legacy-linux/
-│       ├── client-legacy-android/
 │       ├── client-redemption-windows/
 │       ├── client-redemption-linux/
-│       └── client-redemption-android/
+│       ├── client-redemption-android/
+│       └── client-redemption-web/
 ├── docs/                       English documentation
 └── scripts/                    Build and setup automation
 ```

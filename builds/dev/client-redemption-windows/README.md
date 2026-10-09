@@ -1,3 +1,4 @@
 # builds/dev/client-redemption-windows/
 
-Populated during Phase 1. See `builds/dev/README.md`.
+Redemption client for Windows, connecting to the local server. Not built yet (Phase 3).
+See `builds/dev/README.md`.

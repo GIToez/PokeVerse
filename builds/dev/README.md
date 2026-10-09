@@ -10,7 +10,7 @@ committed to git. See [`docs/windows-dev-package.md`](../../docs/windows-dev-pac
 | --- | --- |
 | `server-windows/` | Compiled server (`pokeverse-server.exe`), DLLs, `data/`, `config.lua`. |
 | `client-legacy-windows/` | Compiled legacy client (`pokeverse-client.exe`), DLLs, `data/`, `modules/`. |
-| `client-redemption-windows/` | Redemption client (later phase). |
+| `client-redemption-windows/` | Redemption client for Windows (Phase 3; the dev package will then contain both clients). |
 | `database/` | Portable MariaDB (`mariadb/`), setup SQL (`sql/`), and the database itself (`data/`). |
 | `Setup Database.bat` | Creates or updates the local database. |
 | `Start Server and Client.bat` | Starts database, server and client. |

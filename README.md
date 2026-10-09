@@ -9,7 +9,7 @@ PokeVerse is being rebuilt from a clean, organized foundation, starting from the
 | `references/` | Original reference projects. Read-only; copy from here, never edit in place. |
 | `core/` | Our working source code: server, legacy client, Redemption client. |
 | `builds/dev/` | Ready-to-run Windows development environment (localhost only). |
-| `builds/live/` | Release packages: Linux server and Windows/Linux/Android clients. |
+| `builds/live/` | Release packages: Linux server, legacy clients (Windows/Linux), Redemption clients (Windows/Linux/Android/web). |
 | `docs/` | Project documentation (English). |
 | `scripts/` | Build and setup automation. |
 
