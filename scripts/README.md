@@ -16,6 +16,7 @@ Build and setup automation.
 | `live/` | Live server (OVH) tooling. See [`docs/live-server.md`](../docs/live-server.md). |
 | `live/bootstrap-ovh.sh` | One-time server setup (run once as root on the server). |
 | `live/package-linux-server.sh` | Assembles the Linux live server package. |
+| `live/check-settings.sh` | Checks the workflow's GitHub secrets and variables without printing them. |
 | `live/deploy.sh` | Runs a workflow action against the server over SSH (GitHub Actions side). |
 | `live/pokeverse-ctl` | Server-side tool: deploy, health check, backup, restore, rollback, settings. |
 | `live/rehearsal.sh` | CI only: full deployment rehearsal on a disposable Ubuntu 24.04 runner. |
