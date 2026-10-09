@@ -26,8 +26,16 @@ if ! is_set PV_SSH_KEY; then
 else
   printf '%s\n' "$PV_SSH_KEY" | tr -d '\r' > "$work/key"
   chmod 600 "$work/key"
-  if ! grep -q -- '-----BEGIN .*PRIVATE KEY-----' "$work/key"; then
-    report FAIL OVH_SSH_PRIVATE_KEY "not a private key: use the file WITHOUT .pub, including the BEGIN/END lines"
+  if grep -q '^PuTTY-User-Key-File' "$work/key"; then
+    report FAIL OVH_SSH_PRIVATE_KEY "PuTTY .ppk format: in PuTTYgen use Conversions > Export OpenSSH key, and paste that file"
+  elif grep -Eq '^[[:space:]]*(ssh-|ecdsa-)' "$work/key"; then
+    report FAIL OVH_SSH_PRIVATE_KEY "this is the PUBLIC key (.pub); paste the pokeverse-deploy file without .pub"
+  elif ! grep -q -- '-----BEGIN .*PRIVATE KEY-----' "$work/key"; then
+    report FAIL OVH_SSH_PRIVATE_KEY "the -----BEGIN OPENSSH PRIVATE KEY----- line is missing; paste the whole file"
+  elif [ "$(grep -c . "$work/key")" -lt 3 ]; then
+    report FAIL OVH_SSH_PRIVATE_KEY "the line breaks are missing; paste the file exactly as it is (open it in Notepad)"
+  elif ! grep -q -- '-----END .*PRIVATE KEY-----' "$work/key"; then
+    report FAIL OVH_SSH_PRIVATE_KEY "the -----END OPENSSH PRIVATE KEY----- line is missing; paste the whole file"
   elif ! ssh-keygen -y -P '' -f "$work/key" > "$work/key.pub" 2>/dev/null; then
     report FAIL OVH_SSH_PRIVATE_KEY "cannot be read: incomplete, or it has a passphrase (create it again and press Enter twice)"
   else
