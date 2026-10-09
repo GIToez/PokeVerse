@@ -1,0 +1,265 @@
+name: Live server
+
+# Builds the Linux live server and the production Discord bot, rehearses the full OVH
+# deployment on a disposable Ubuntu 24.04 runner, and (only when started by hand, or on a
+# push to main with the variable LIVE_AUTO_DEPLOY=true) runs the chosen action on OVH.
+# Setup: docs/live-server.md
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do on the OVH server
+        type: choice
+        default: verify
+        options:
+          - verify
+          - deploy
+          - status
+          - restart
+          - rollback
+          - backup
+          - restore
+          - set-group
+          - discord-deploy
+          - discord-setup
+          - logs
+      warning_minutes:
+        description: "deploy/restart: minutes of in-game warning when players are online"
+        type: choice
+        default: "5"
+        options: ["5", "0", "1", "10", "15", "30"]
+      backup:
+        description: "restore: backup file name (see the backup or status action output)"
+        required: false
+      confirm:
+        description: "restore: type RESTORE to confirm"
+        required: false
+      character:
+        description: "set-group: character name (must be offline)"
+        required: false
+      group:
+        description: "set-group: 1 player, 2 tutor, 3 senior tutor, 4 gamemaster, 5 community manager, 6 god"
+        required: false
+      discord_bot_ref:
+        description: "deploy/discord-deploy: PokeVerse-Discord branch or tag (default: variable DISCORD_BOT_REF)"
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+permissions:
+  contents: read
+
+env:
+  NEEDS_PACKAGES: ${{ github.event_name != 'workflow_dispatch' || contains(fromJSON('["verify","deploy","discord-deploy"]'), inputs.action) }}
+
+jobs:
+  build-server:
+    name: Build Linux live server
+    runs-on: ubuntu-24.04
+    outputs:
+      release: ${{ steps.release.outputs.id }}
+    steps:
+      - name: Skip (action needs no package)
+        if: env.NEEDS_PACKAGES != 'true'
+        run: echo "No package needed for this action."
+
+      - uses: actions/checkout@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          lfs: true
+
+      - name: Install build dependencies
+        if: env.NEEDS_PACKAGES == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake ninja-build g++ pkg-config \
+            libboost-system-dev libboost-filesystem-dev libboost-thread-dev libboost-regex-dev \
+            liblua5.1-0-dev libgmp-dev libsqlite3-dev libmariadb-dev libxml2-dev libssl-dev
+
+      - name: Build server
+        if: env.NEEDS_PACKAGES == 'true'
+        run: |
+          cmake -S core/server -B build/server -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/server
+
+      - name: Package
+        id: release
+        if: env.NEEDS_PACKAGES == 'true'
+        run: |
+          id="$(date -u +%Y%m%d-%H%M%S)-${GITHUB_SHA::7}"
+          scripts/live/package-linux-server.sh build/server builds/live/server-linux "$id"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          echo "Server release: $id" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          name: PokeVerse-Server-Linux-Live
+          path: builds/live/server-linux/pokeverse-server-linux.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+
+  build-bot:
+    name: Build production Discord bot
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Skip (action needs no package)
+        if: env.NEEDS_PACKAGES != 'true'
+        run: echo "No package needed for this action."
+
+      - uses: actions/checkout@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          repository: GIToez/PokeVerse-Discord
+          ref: ${{ inputs.discord_bot_ref || vars.DISCORD_BOT_REF || 'cursor/discord-bot-ef3d' }}
+          path: bot
+
+      - uses: actions/setup-node@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          node-version: 22
+
+      - name: Build and package
+        if: env.NEEDS_PACKAGES == 'true'
+        working-directory: bot
+        run: |
+          npm ci
+          npm run package:linux
+          release="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
+          mkdir -p ../bot-package
+          cp builds/production/pokeverse-discord-linux-x64.tar.gz ../bot-package/
+          echo "$release" > ../bot-package/bot-release.txt
+          echo "Discord bot release: $release ($(git rev-parse --abbrev-ref HEAD 2>/dev/null || true))" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          name: PokeVerse-Discord-Linux-Live
+          path: bot-package/
+          if-no-files-found: error
+          compression-level: 0
+
+  rehearsal:
+    name: Deployment rehearsal (Ubuntu 24.04)
+    needs: [build-server, build-bot]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - name: Skip (action needs no package)
+        if: env.NEEDS_PACKAGES != 'true'
+        run: echo "No rehearsal needed for this action."
+
+      - uses: actions/checkout@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/download-artifact@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          name: PokeVerse-Server-Linux-Live
+          path: packages
+
+      - uses: actions/download-artifact@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          name: PokeVerse-Discord-Linux-Live
+          path: packages
+
+      - name: Rehearse install, restarts, update, rollback, backup and restore
+        if: env.NEEDS_PACKAGES == 'true'
+        run: |
+          scripts/live/rehearsal.sh packages/pokeverse-server-linux.tar.gz \
+            packages/pokeverse-discord-linux-x64.tar.gz "$(cat packages/bot-release.txt)"
+
+      - name: Collect logs
+        if: failure() && env.NEEDS_PACKAGES == 'true'
+        run: |
+          mkdir -p rehearsal-logs
+          sudo journalctl -u pokeverse-server.service -u pokeverse-discord.service --no-pager > rehearsal-logs/journal.txt || true
+          sudo cp -r /opt/pokeverse/shared/logs rehearsal-logs/server-logs 2>/dev/null || true
+          sudo chown -R "$USER" rehearsal-logs
+
+      - uses: actions/upload-artifact@v4
+        if: failure() && env.NEEDS_PACKAGES == 'true'
+        with:
+          name: rehearsal-logs
+          path: rehearsal-logs/
+
+  live:
+    name: "OVH: ${{ inputs.action || 'deploy' }}"
+    needs: [build-server, build-bot, rehearsal]
+    if: >-
+      always() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (!contains(fromJSON('["verify","deploy","discord-deploy"]'), inputs.action) ||
+            needs.rehearsal.result == 'success')) ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+          vars.LIVE_AUTO_DEPLOY == 'true' && needs.rehearsal.result == 'success'))
+    runs-on: ubuntu-24.04
+    environment: production
+    concurrency:
+      group: live-server-ovh
+      cancel-in-progress: false
+    timeout-minutes: 60
+    env:
+      ACTION: ${{ inputs.action || 'deploy' }}
+      PV_HOST: ${{ vars.OVH_HOST }}
+      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || '22' }}
+      PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+      PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
+      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST }}
+      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || 'true' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE }}
+      PV_WARNING_MINUTES: ${{ inputs.warning_minutes || '5' }}
+      PV_BACKUP: ${{ inputs.backup }}
+      PV_CHARACTER: ${{ inputs.character }}
+      PV_GROUP: ${{ inputs.group }}
+      DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID }}
+      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID }}
+      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS }}
+      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS }}
+    steps:
+      - name: Check restore confirmation
+        if: env.ACTION == 'restore' && inputs.confirm != 'RESTORE'
+        run: |
+          echo "::error::Restore replaces the live database. Type RESTORE in the confirm field."
+          exit 1
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/download-artifact@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          name: PokeVerse-Server-Linux-Live
+          path: packages
+
+      - uses: actions/download-artifact@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          name: PokeVerse-Discord-Linux-Live
+          path: packages
+
+      - name: Run ${{ env.ACTION }}
+        run: |
+          if [ -f packages/pokeverse-server-linux.tar.gz ]; then
+            export PV_SERVER_PACKAGE=$PWD/packages/pokeverse-server-linux.tar.gz
+          fi
+          if [ -f packages/pokeverse-discord-linux-x64.tar.gz ]; then
+            export PV_BOT_PACKAGE=$PWD/packages/pokeverse-discord-linux-x64.tar.gz
+            PV_BOT_RELEASE=$(cat packages/bot-release.txt)
+            export PV_BOT_RELEASE
+          fi
+          scripts/live/deploy.sh "$ACTION"
