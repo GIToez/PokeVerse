@@ -584,14 +584,31 @@ CREATE TABLE IF NOT EXISTS `datalog_ping` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- One row per logout; the next login fills the row whose on_login_count is still NULL.
 CREATE TABLE IF NOT EXISTS `datalog_player_items` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `player_id` INT UNSIGNED NOT NULL,
-  `on_login_count` INT NOT NULL DEFAULT 0,
-  `on_login_date` BIGINT NOT NULL DEFAULT 0,
+  `on_login_count` INT NULL DEFAULT NULL,
+  `on_login_date` BIGINT NULL DEFAULT NULL,
   `on_logout_count` INT NOT NULL DEFAULT 0,
   `on_logout_date` BIGINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`player_id`)
+  PRIMARY KEY (`id`),
+  KEY `player_id` (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Databases created before the table had an `id` column allowed only one row per player,
+-- so every logout after the first one failed with a duplicate key.
+SET @pv_sql := IF((SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE()
+    AND table_name = 'datalog_player_items' AND column_name = 'id') = 0,
+  'ALTER TABLE `datalog_player_items` DROP PRIMARY KEY,
+     ADD COLUMN `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST,
+     ADD KEY `player_id` (`player_id`),
+     MODIFY `on_login_count` INT NULL DEFAULT NULL,
+     MODIFY `on_login_date` BIGINT NULL DEFAULT NULL',
+  'DO 0');
+PREPARE pv_stmt FROM @pv_sql;
+EXECUTE pv_stmt;
+DEALLOCATE PREPARE pv_stmt;
 
 CREATE TABLE IF NOT EXISTS `datalog_player_ups` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
