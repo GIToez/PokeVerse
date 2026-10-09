@@ -285,6 +285,13 @@ def main():
     ap.add_argument("--say", action="append", default=[], help="say this in the default channel (repeatable)")
     ap.add_argument("--expect-login-failure", action="store_true",
                     help="succeed only if the login server refuses the credentials")
+    ap.add_argument("--game-host", default="127.0.0.1",
+                    help="game server address the character list must announce ('any' accepts every address)")
+    ap.add_argument("--connect-host", help="connect to this address instead of the announced game server address")
+    ap.add_argument("--expect-position", help="x,y,z the character must enter the game at (saved position)")
+    ap.add_argument("--stay-online", type=float, default=0,
+                    help="after walking, stay in game up to this many seconds and succeed only if the "
+                         "server disconnects the character (server shutdown or restart)")
     args = ap.parse_args()
 
     try:
@@ -305,16 +312,23 @@ def main():
         print("FAIL: character %r not in the character list" % args.character)
         return 1
     _, _, host, port = match[0]
-    if host != "127.0.0.1":
-        print("FAIL: game server address is %s, expected 127.0.0.1" % host)
+    if args.game_host != "any" and host != args.game_host:
+        print("FAIL: game server address is %s, expected %s" % (host, args.game_host))
         return 1
 
     try:
-        conn, player_id, position = enter_game(args, host, port)
+        conn, player_id, position = enter_game(args, args.connect_host or host, port)
     except ProtocolError as e:
         print("FAIL: " + str(e))
         return 1
     print("Entered game as %s (creature id %d) at %s." % (args.character, player_id, position))
+    if args.expect_position:
+        expected = tuple(int(v) for v in args.expect_position.split(","))
+        if position != expected:
+            conn.close()
+            print("FAIL: entered the game at %s, expected the saved position %s" % (position, expected))
+            return 1
+        print("  saved position %s verified" % (expected,))
 
     try:
         drain(conn, 3)
@@ -351,8 +365,17 @@ def main():
                 print("  walk %-5s -> blocked by server" % step)
             else:
                 print("  walk %-5s -> no move seen" % step)
-        conn.send(b"\x14")  # logout
-        drain(conn, 2)
+        if position:
+            print("POSITION %d,%d,%d" % tuple(position))
+        if args.stay_online:
+            print("  staying online until the server disconnects (max %ds)" % args.stay_online)
+            if not stay_online(conn, args.stay_online):
+                print("FAIL: the server did not disconnect the character within %ds" % args.stay_online)
+                return 1
+            print("  disconnected by the server")
+        else:
+            conn.send(b"\x14")  # logout
+            drain(conn, 2)
     finally:
         conn.close()
 
@@ -361,6 +384,27 @@ def main():
         return 1
     print("OK: login, character list, game login and %d movement step(s) verified." % moves)
     return 0
+
+
+def stay_online(conn, seconds):
+    """Answers pings until the server closes the connection. Returns False on timeout."""
+    conn.sock.settimeout(1)
+    end = time.time() + seconds
+    while time.time() < end:
+        try:
+            data = conn.recv()
+        except socket.timeout:
+            continue
+        except (ProtocolError, OSError):
+            return True
+        if data and data[0] == 0x1E:
+            conn.send(b"\x1E")
+        elif data and data[0] == 0xB4:  # text message: type, text
+            try:
+                print("  server message: " + Reader(data[2:]).string(), flush=True)
+            except (IndexError, struct.error):
+                pass
+    return False
 
 
 if __name__ == "__main__":

@@ -74,17 +74,23 @@ def main():
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--login-port", type=int, default=7564)
     ap.add_argument("--timeout", type=float, default=30)
+    ap.add_argument("--account", help="use this existing account instead of creating a new one (live health check)")
+    ap.add_argument("--password", help="password of --account")
     args = ap.parse_args()
+    if bool(args.account) != bool(args.password):
+        ap.error("--account and --password go together")
 
     suffix = "".join(random.choice(string.ascii_lowercase) for _ in range(6))
-    account, password = "acct" + suffix, "secret" + suffix
+    account, password = args.account or "acct" + suffix, args.password or "secret" + suffix
     character = "Tester " + suffix.capitalize()
     c = Checker()
 
     try:
-        c.expect("create account", request(args, ACTION_CREATE_ACCOUNT, account, password), True)
-        c.expect("create duplicate account", request(args, ACTION_CREATE_ACCOUNT, account, password), False)
-        c.expect("create account with short password", request(args, ACTION_CREATE_ACCOUNT, "x" + account, "abc"), False)
+        if not args.account:
+            c.expect("create account", request(args, ACTION_CREATE_ACCOUNT, account, password), True)
+            c.expect("create duplicate account", request(args, ACTION_CREATE_ACCOUNT, account, password), False)
+            c.expect("create account with short password",
+                     request(args, ACTION_CREATE_ACCOUNT, "x" + account, "abc"), False)
         c.expect("create character with wrong password",
                  request(args, ACTION_CREATE_CHARACTER, account, "wrong" + password, character, 1), False)
         c.expect("create character with invalid name",
