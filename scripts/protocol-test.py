@@ -103,6 +103,7 @@ class Connection:
     def __init__(self, host, port, timeout):
         self.sock = socket.create_connection((host, port), timeout=timeout)
         self.key = None
+        self.pending = b""  # kept across socket timeouts so a packet split by one stays intact
 
     def close(self):
         try:
@@ -110,14 +111,12 @@ class Connection:
         except OSError:
             pass
 
-    def _recv_exact(self, n):
-        buf = b""
-        while len(buf) < n:
-            chunk = self.sock.recv(n - len(buf))
+    def _fill(self, n):
+        while len(self.pending) < n:
+            chunk = self.sock.recv(65536)
             if not chunk:
                 raise ProtocolError("connection closed by server")
-            buf += chunk
-        return buf
+            self.pending += chunk
 
     def send_first(self, payload):
         framed = struct.pack("<I", adler32(payload)) + payload
@@ -131,8 +130,10 @@ class Connection:
         self.sock.sendall(struct.pack("<H", len(framed)) + framed)
 
     def recv(self):
-        size = struct.unpack("<H", self._recv_exact(2))[0]
-        data = self._recv_exact(size)
+        self._fill(2)
+        size = struct.unpack_from("<H", self.pending)[0]
+        self._fill(2 + size)
+        data, self.pending = self.pending[2:2 + size], self.pending[2 + size:]
         checksum, body = struct.unpack_from("<I", data)[0], data[4:]
         if checksum != adler32(body):
             raise ProtocolError("bad checksum from server")
