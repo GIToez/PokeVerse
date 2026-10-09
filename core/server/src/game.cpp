@@ -59,6 +59,10 @@
 #include "tools.h"
 #include "discordbridge.h"
 
+#ifndef WINDOWS
+#include <unistd.h>
+#endif
+
 #ifdef __EXCEPTION_TRACER__
 #include "exception.h"
 #endif
@@ -6696,6 +6700,14 @@ void Game::shutdown()
 	std::cout << " server";
 	cleanup();
 	std::cout << "- done." << std::endl;
+#ifndef WINDOWS
+	// Everything is saved by now. Tearing down the network and the global objects can crash
+	// while kicked players' connections are still closing, so leave without it.
+	std::cout.flush();
+	std::cerr.flush();
+	fflush(NULL);
+	_exit(EXIT_SUCCESS);
+#endif
 	if(services)
 		services->stop();
 #if defined(WINDOWS) && !defined(__CONSOLE__)

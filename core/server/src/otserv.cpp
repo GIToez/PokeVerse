@@ -217,7 +217,9 @@ void signalHandler(int32_t sig)
         case SIGFPE:
         case SIGABRT:
 		{
-		    g_game.emergencySave();
+			// During shutdown everything was already saved and the world is being torn down.
+			if(g_game.getGameState() != GAME_STATE_SHUTDOWN)
+				g_game.emergencySave();
 			//continue with the segmentation fault to catch core dumpe (http://www.alexonlinux.com/how-to-handle-sigsegv-but-also-generate-core-dump)
 			signal(sig, SIG_DFL);
 			kill(getpid(), sig);
