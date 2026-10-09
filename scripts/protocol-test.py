@@ -261,9 +261,13 @@ def parse_quest_log(data):
 
 def check_quest_log(conn):
     """Opens the quest log and every quest in it, like clicking through the client's quest window."""
-    conn.send(b"\xF0")
-    packets = drain(conn, 3)
-    log = [d[d.index(b"\xF0"):] for d in packets if d and d[0] == 0xF0]
+    log = []
+    for _ in range(3):
+        # A reply batched behind other messages cannot be parsed safely; ask again instead.
+        conn.send(b"\xF0")
+        log = [d for d in drain(conn, 3) if d and d[0] == 0xF0]
+        if log:
+            break
     if not log:
         raise ProtocolError("no quest log reply (did the server crash?)")
     quests = parse_quest_log(log[0])
