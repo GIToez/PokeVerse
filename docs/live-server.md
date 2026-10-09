@@ -48,6 +48,7 @@ secret; secrets are hidden in the logs):
 | Kind | Name | Value |
 | --- | --- | --- |
 | Secret | `OVH_SSH_PRIVATE_KEY` | the whole contents of the `pokeverse-deploy` file |
+| Secret | `OVH_SSH_KEY_PASSPHRASE` | only if the deploy key has a passphrase |
 | Secret | `OVH_SSH_HOST_KEY` | printed at the end of step 2 (`ssh-ed25519 AAAA...`) |
 | Secret | `DISCORD_BOT_TOKEN` | token of the **production** bot application |
 | Variable | `OVH_HOST` | optional, server IP address (default `40.160.145.24`, the current OVH server) |

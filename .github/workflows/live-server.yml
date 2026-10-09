@@ -65,6 +65,7 @@ jobs:
       PV_HOST: ${{ vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
       PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || secrets.OVH_SSH_PORT || '22' }}
       PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+      PV_SSH_KEY_PASSPHRASE: ${{ secrets.OVH_SSH_KEY_PASSPHRASE }}
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
       PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
       PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
@@ -238,6 +239,7 @@ jobs:
       PV_HOST: ${{ vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
       PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || secrets.OVH_SSH_PORT || '22' }}
       PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+      PV_SSH_KEY_PASSPHRASE: ${{ secrets.OVH_SSH_KEY_PASSPHRASE }}
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
       PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
       PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}

@@ -12,6 +12,7 @@
 #   PV_SSH_PORT        SSH port (default 22)
 #   PV_SSH_USER        SSH user (default pokeverse)
 #   PV_SSH_KEY         private deploy key (GitHub secret OVH_SSH_PRIVATE_KEY)
+#   PV_SSH_KEY_PASSPHRASE  its passphrase, if it has one (GitHub secret OVH_SSH_KEY_PASSPHRASE)
 #   PV_SSH_HOST_KEY    server host key "ssh-ed25519 AAAA..." (GitHub secret OVH_SSH_HOST_KEY)
 #   PV_SERVER_PACKAGE  pokeverse-server-linux.tar.gz (verify, deploy)
 #   PV_BOT_PACKAGE     pokeverse-discord-linux-x64.tar.gz (deploy, discord-deploy; optional)
@@ -51,7 +52,12 @@ trap 'rm -rf "$work"' EXIT
 [ -n "${PV_SSH_HOST_KEY:-}" ] || fail "the secret OVH_SSH_HOST_KEY is not set (bootstrap-ovh.sh prints it)"
 printf '%s\n' "$PV_SSH_KEY" | tr -d '\r' > "$work/key"
 chmod 600 "$work/key"
-ssh-keygen -y -f "$work/key" >/dev/null 2>&1 || fail "OVH_SSH_PRIVATE_KEY is not a valid private key without passphrase"
+if [ -n "${PV_SSH_KEY_PASSPHRASE:-}" ]; then
+  # Unlocks the temporary copy only; it is deleted when this script exits.
+  ssh-keygen -p -P "$PV_SSH_KEY_PASSPHRASE" -N "" -f "$work/key" >/dev/null 2>&1 \
+    || fail "OVH_SSH_KEY_PASSPHRASE does not unlock OVH_SSH_PRIVATE_KEY"
+fi
+ssh-keygen -y -P "" -f "$work/key" >/dev/null 2>&1 || fail "OVH_SSH_PRIVATE_KEY cannot be read (passphrase? set OVH_SSH_KEY_PASSPHRASE)"
 host_key=$(printf '%s' "$PV_SSH_HOST_KEY" | tr -d '\r' | awk '{for (i = 1; i < NF; i++) if ($i ~ /^(ssh-|ecdsa-)/) {print $i, $(i + 1); exit}}')
 [ -n "$host_key" ] || fail "OVH_SSH_HOST_KEY must look like: ssh-ed25519 AAAA..."
 {

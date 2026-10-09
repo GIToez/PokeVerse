@@ -33,7 +33,7 @@ diagnose_key() {
     cipher=$(tail -c +16 "$file.bin" | head -c 4 | od -An -tu1 | awk '{print $1*16777216 + $2*65536 + $3*256 + $4}')
     cipher=$(tail -c +20 "$file.bin" | head -c "$cipher")
     if [ "$cipher" != none ]; then
-      echo "the key has a passphrase; GitHub cannot type it. Create a new key and press Enter twice (no passphrase)"
+      echo "the key has a passphrase: add it as the secret OVH_SSH_KEY_PASSPHRASE (or remove it: ssh-keygen -p -f pokeverse-deploy)"
     else
       echo "incomplete: part of the key is missing; paste the whole file again"
     fi
@@ -49,6 +49,14 @@ if ! is_set PV_SSH_KEY; then
 else
   printf '%s\n' "$PV_SSH_KEY" | tr -d '\r' > "$work/key"
   chmod 600 "$work/key"
+  unlocked=""
+  if is_set PV_SSH_KEY_PASSPHRASE && grep -q -- '-----BEGIN .*PRIVATE KEY-----' "$work/key"; then
+    if ssh-keygen -p -P "$PV_SSH_KEY_PASSPHRASE" -N "" -f "$work/key" >/dev/null 2>&1; then
+      unlocked=" (unlocked with OVH_SSH_KEY_PASSPHRASE)"
+    else
+      report FAIL OVH_SSH_KEY_PASSPHRASE "does not unlock OVH_SSH_PRIVATE_KEY (wrong passphrase, or the key has none)"
+    fi
+  fi
   if grep -q '^PuTTY-User-Key-File' "$work/key"; then
     report FAIL OVH_SSH_PRIVATE_KEY "PuTTY .ppk format: in PuTTYgen use Conversions > Export OpenSSH key, and paste that file"
   elif grep -Eq '^[[:space:]]*(ssh-|ecdsa-)' "$work/key"; then
@@ -62,7 +70,7 @@ else
   elif ! ssh-keygen -y -P '' -f "$work/key" > "$work/key.pub" 2>/dev/null; then
     report FAIL OVH_SSH_PRIVATE_KEY "$(diagnose_key "$work/key")"
   else
-    report OK OVH_SSH_PRIVATE_KEY "$(ssh-keygen -lf "$work/key.pub" | awk '{print $1, $2, $NF}')"
+    report OK OVH_SSH_PRIVATE_KEY "$(ssh-keygen -lf "$work/key.pub" | awk '{print $1, $2, $NF}')$unlocked"
   fi
 fi
 
