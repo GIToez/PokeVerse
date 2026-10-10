@@ -11,7 +11,7 @@ DiscordBridge = {}
 
 local CONFIG = {
     -- Public channel relayed to Discord (data/XML/channels.xml, needs talkEvent="1").
-    chatChannelId = 7, -- Game-Chat[EN-US]
+    chatChannelId = 7, -- Global EN
     chatSpeakClass = TALKTYPE_CHANNEL_Y,
     chatAuthorPrefix = "[Discord] ",
     chatAuthorMaxLength = 24,

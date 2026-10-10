@@ -23,12 +23,12 @@
 	-->
 
 <!-- NORMAL EXP -->
-		<stage minlevel="1" maxlevel="10" multiplier="5.25"/>
-		<stage minlevel="11" maxlevel="15" multiplier="4.5"/>
-		<stage minlevel="16" maxlevel="20" multiplier="3.0"/>
-		<stage minlevel="21" maxlevel="30" multiplier="2.25"/>
-		<stage minlevel="31" maxlevel="50" multiplier="1.5"/>
-		<stage minlevel="51" maxlevel="70" multiplier="0.75"/>
+		<stage minlevel="1" maxlevel="10" multiplier="3.0"/>
+		<stage minlevel="11" maxlevel="15" multiplier="2.5"/>
+		<stage minlevel="16" maxlevel="20" multiplier="2.0"/>
+		<stage minlevel="21" maxlevel="30" multiplier="1.5"/>
+		<stage minlevel="31" maxlevel="50" multiplier="1.0"/>
+		<stage minlevel="51" maxlevel="70" multiplier="0.65"/>
 		<stage minlevel="71" maxlevel="100" multiplier="0.375"/>
 		<stage minlevel="101" multiplier="0.225"/>
 		<!--

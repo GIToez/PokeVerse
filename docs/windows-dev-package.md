@@ -20,6 +20,14 @@ No compilers or installers are needed. Everything listens on 127.0.0.1 only.
 More accounts: `Create Account.bat`, or interactively with the same file. The package's
 `README.txt` explains every script, folder and common problems.
 
+## Redemption client against the local server
+
+The **Client release** workflow also uploads **PokeVerse-Windows-Client-Local**: the Redemption
+client (modern layout) pointed at 127.0.0.1:7564, without the updater. Download it from the
+same pull request, extract it next to the dev package, start the server with `Start Server.bat`
+and run `otclient.exe` from the extracted folder. The legacy client in the dev package works
+against the same server at the same time.
+
 ## How it is built
 
 The workflow `.github/workflows/windows-dev-package.yml` has three jobs:

@@ -5,6 +5,8 @@
 	<globalevent name="discordBridge" type="discordbridge" event="script" value="../../lib/ps/events/globalevents/discordBridge.lua"/>
 	<!-- interval 0 = every second; schedule and warnings in data/lib/ps/systems/057-serverRestart.lua -->
 	<globalevent name="serverRestart" interval="0" event="script" value="serverRestart.lua"/>
+	<!-- interval 0 = every second; ends /doubleexp events, see data/lib/ps/systems/058-serverExpEvent.lua -->
+	<globalevent name="serverExpEvent" interval="0" event="script" value="serverExpEvent.lua"/>
 	
 	<globalevent name="Gameplay Tutorial Rattata" interval="15" event="script" value="../../lib/ps/events/globalevents/gameplayTutorialRattata.lua"/>
 	

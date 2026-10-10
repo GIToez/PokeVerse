@@ -72,6 +72,9 @@ local ballsAttributes = {
     addonLookBody = base + 71,
     addonLookLegs = base + 72,
     addonLookFeet = base + 73,
+    pokemonIvs = base + 74, -- "hp,atk,def,spAtk,spDef,speed", see systems/059-pokemonStats.lua
+    pokemonEvs = base + 75,
+    pokemonNature = base + 76,
 }
 
 local SKETCH_MOVES_DELIMITER = ";"
@@ -1623,10 +1626,15 @@ balls = {
         projectile = PROJECTILE_BLUEBALL,
         effects = { use = EFFECT_BLUEBALL_USE }
     },
-    --["master"] = {
-    --	charged = 12187, discharged = 12188, empty = 12185, inUse = 12186,
-    --	projectile = projectiles.masterball, effects = {use = effects.masterballUse, catch = effects.masterballCatch, catchMiss = effects.masterballCatchMiss}
-    --}
+    ["master"] = { -- catches every Pokemon it can be used on (emptyBall); 12185-12188 are the dark purple ball
+        guaranteedCatch = true,
+        charged = 12190,
+        discharged = 12191,
+        empty = 30136,
+        inUse = 12189,
+        projectile = PROJECTILE_MASTERBALL,
+        effects = { use = EFFECT_MASTERBALL_USE, catch = EFFECT_MASTERBALL_CATCH_OK, catchMiss = EFFECT_MASTERBALL_CATCHFAIL }
+    }
 }
 
 ballsNames = {}
@@ -1762,6 +1770,18 @@ end
 
 function getBallPokemonExtraPoints(uid)
     return getItemAttribute(uid, ballsAttributes.extraPoints) or 0
+end
+
+function getBallPokemonIvsString(uid)
+    return getItemAttribute(uid, ballsAttributes.pokemonIvs)
+end
+
+function getBallPokemonEvsString(uid)
+    return getItemAttribute(uid, ballsAttributes.pokemonEvs)
+end
+
+function getBallPokemonNatureId(uid)
+    return getItemAttribute(uid, ballsAttributes.pokemonNature)
 end
 
 function getBallStatsPoisonDamage(uid)
@@ -1907,6 +1927,18 @@ function setBallPokemonExtraPoints(uid, extraPoints)
         (tonumber(extraPoints) <= (POKEMON_LEVEL_MAX + 10) and extraPoints or (POKEMON_LEVEL_MAX + 10)))
 end
 
+function setBallPokemonIvsString(uid, ivs)
+    doItemSetAttribute(uid, ballsAttributes.pokemonIvs, ivs)
+end
+
+function setBallPokemonEvsString(uid, evs)
+    doItemSetAttribute(uid, ballsAttributes.pokemonEvs, evs)
+end
+
+function setBallPokemonNatureId(uid, natureId)
+    doItemSetAttribute(uid, ballsAttributes.pokemonNature, natureId)
+end
+
 function setBallStatsPoisonDamage(uid, damage)
     doItemSetAttribute(uid, ballsAttributes.statsPoisonDamage, damage)
 end
@@ -2047,6 +2079,8 @@ pokemonExtraPoints)
         msg[#msg + 1] = "."
     end
 
+    msg[#msg + 1] = PokemonStats.getBallDescription(uid)
+
     doItemSetSpecialDescription(uid, table.concat(msg))
 end
 
@@ -2139,6 +2173,8 @@ tm2, tm2Slot, ballSeal, depotable, attributesBlob, beforeDepotFunction, hideMess
                 setItemUniqueOwner(ball, pokemonOwner)
             end
         end
+
+        PokemonStats.ensureBall(ball)
 
         doBallUpdateDescription(ball, pokemonSex, pokemonName, pokemonNickname, pokemonLevel,
             pokemonExtraPoints)

@@ -106,6 +106,7 @@ local function doPlayerLeavePokemonOnDaycare(cid, ball, trainTime)
 
 	return false
 	]]
+    PokemonStats.ensureBall(ball.uid)
     local query = string.concat(
         "INSERT INTO daycare_male (player_id, date, ball_id, max_training_minutes, pokemon_name, pokemon_level, attributes) VALUES (",
          getPlayerGUID(cid), ",",

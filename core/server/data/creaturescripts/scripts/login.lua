@@ -85,14 +85,15 @@ function onLogin(cid)
 			registerCreatureEvent(cid, "gameplayTutorial_onKill")
 		end
 		
-		if (getPlayerLevel(cid) < 30) then
-			addEvent(function(cid)
-				if (isCreature(cid)) then
+		addEvent(function(cid)
+			if (isCreature(cid)) then
+				if (getPlayerLevel(cid) < 30) then
 					doPlayerOpenChannel(cid, CHANNEL_WIKI_CHAT)
-					doPlayerOpenChannel(cid, CHANNEL_HELP)
 				end
-			end, 500, cid)
-		end
+				doPlayerOpenChannel(cid, CHANNEL_HELP)
+				doPlayerOpenChannel(cid, getPlayerGameChatChannel(cid))
+			end
+		end, 500, cid)
 
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, "If you need some help use the Help and the Wiki Chat channels.")
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
@@ -143,6 +144,7 @@ function onLogin(cid)
         end
 
         doExtraExpRateCheck(cid)
+        ServerExpEvent.onLogin(cid)
         doExtraLootRateCheck(cid)
         doExtraCatchRateCheck(cid)
         doExtraEggRateCheck(cid)
@@ -156,6 +158,7 @@ function onLogin(cid)
         end
 
         doPlayerCheckTms(cid) -- TODO: Remove it after TS or no
+        PokemonStats.onLogin(cid)
 
         if (checkFirstAchievment) then
             addEvent(function(cid)
