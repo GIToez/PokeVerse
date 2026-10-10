@@ -1,0 +1,30 @@
+diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap.lua
+--- a/modules/game_minimap/minimap.lua
++++ b/modules/game_minimap/minimap.lua
+@@ -131,6 +131,7 @@
+     end
+ 
+     self.ui.minimapBorder.minimap:load()
++    PokeverseMap.load(self.ui.minimapBorder.minimap)
+ end
+ 
+ function mapController:onGameEnd()
+@@ -200,6 +201,7 @@
+     oldPos = minimapWidget:getCameraPosition()
+     minimapWidget:setZoom(zoom)
+     minimapWidget:setCameraPosition(pos)
++    PokeverseMap.setFullMapView(minimapWidget.fullMapView)
+ end
+ 
+ function upLayer()
+diff -ruN pristine/modules/game_minimap/minimap.otmod modules/game_minimap/minimap.otmod
+--- a/modules/game_minimap/minimap.otmod
++++ b/modules/game_minimap/minimap.otmod
+@@ -4,6 +4,6 @@
+   author: edubart, BeniS
+   website: https://github.com/edubart/otclient
+   sandboxed: true
+-  scripts: [ minimap ]
++  scripts: [ minimap, pokeverse ]
+   @onLoad: mapController:init()
+   @onUnload: mapController:terminate()

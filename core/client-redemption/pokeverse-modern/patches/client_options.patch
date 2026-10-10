@@ -1,7 +1,22 @@
 diff -ruN pristine/modules/client_options/data_options.lua modules/client_options/data_options.lua
 --- a/modules/client_options/data_options.lua
 +++ b/modules/client_options/data_options.lua
-@@ -194,7 +194,9 @@
+@@ -158,6 +158,14 @@
+     },
+     returnDisablesChat                = false,
+     smartWalk                         = false,
++    dashWalk                          = {
++        value = false,
++        action = function(value, options, controller, panels, extraWidgets)
++            if g_game.isOnline() then
++                g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, value and '1' or '0')
++            end
++        end
++    },
+     autoChaseOverride                 = true,
+     talkOnRightClick                  = false,
+     moveStack                         = false,
+@@ -194,7 +202,9 @@
      showOutfitsOnList                 = {
          value = true,
          action = function(value, options, controller, panels, extraWidgets)
@@ -12,3 +27,70 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          end
      },
      openMaximized                     = false,
+@@ -1170,4 +1180,12 @@
+         end
+     },
+     showInfoBanner = true,
++    displayMapGuides                  = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_minimap and modules.game_minimap.setGuidesDisplay then
++                modules.game_minimap.setGuidesDisplay(value)
++            end
++        end
++    },
+ }
+diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
+--- a/modules/client_options/options.lua
++++ b/modules/client_options/options.lua
+@@ -522,6 +522,7 @@
+ end
+ 
+ function controller:onGameStart()
++    g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, getOption('dashWalk') and '1' or '0')
+     if g_settings.getBoolean("autoSwitchPreset") then
+         local name = g_game.getCharacterName()
+         if Keybind.selectPreset(name) then
+diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/client_options/styles/controls/general.otui
+--- a/modules/client_options/styles/controls/general.otui
++++ b/modules/client_options/styles/controls/general.otui
+@@ -129,6 +129,18 @@
+       height: 22
+ 
+       OptionCheckBox
++        id: dashWalk
++        !text: tr('Enable dash walking')
++        !tooltip: tr('Will boost your walk on high speed characters')
++
++    SmallReversedQtPanel
++      anchors.left: parent.left
++      anchors.right: parent.right
++      anchors.top: prev.bottom
++      margin-top: 7
++      height: 22
++
++      OptionCheckBox
+         id: openMaximized
+         !text: tr('Open containers maximized')
+ 
+diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
+--- a/modules/client_options/styles/interface/interface.otui
++++ b/modules/client_options/styles/interface/interface.otui
+@@ -53,6 +53,17 @@
+     margin-top: 7
+     height: 22
+ 
++    OptionCheckBoxMarked
++      id: displayMapGuides
++      !text: tr('Show guide marks on the minimap')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
+     $mobile:
+       height: 0
+       margin-top: 0
