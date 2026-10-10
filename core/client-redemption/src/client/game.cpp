@@ -1796,6 +1796,15 @@ Otc::OperatingSystem_t Game::getOs()
     if (m_clientCustomOs > Otc::CLIENTOS_NONE)
         return m_clientCustomOs;
 
+    // The PokeVerse server (OTServ 0.6) numbers OTClient on Windows 10 and on Linux 11.
+    if (getFeature(Otc::GamePokeVerse)) {
+        if (g_app.getOs() == "windows")
+            return static_cast<Otc::OperatingSystem_t>(10);
+        if (g_app.getOs() == "mac")
+            return Otc::CLIENTOS_OTCLIENT_MAC;
+        return static_cast<Otc::OperatingSystem_t>(11);
+    }
+
     if (g_app.getOs() == "windows")
         return Otc::CLIENTOS_OTCLIENT_WINDOWS;
 

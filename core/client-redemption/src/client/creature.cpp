@@ -171,6 +171,30 @@ void Creature::draw(const Rect& destRect, const uint8_t size, const bool center)
     g_drawPool.releaseFrameBuffer(out);
 }
 
+// PokeVerse: outfit widgets as the original client drew them. The outfit is drawn into a two
+// tile buffer and the bottom right part of it (the creature's exact size, or 48x48 pixels for
+// fixed size widgets) is scaled into the widget.
+void Creature::drawOutfitPokeVerse(const Rect& destRect, const bool resize)
+{
+    if (!canDraw())
+        return;
+
+    const int baseSprite = g_gameConfig.getSpriteSize();
+    const int fbSize = 2 * baseSprite;
+
+    g_drawPool.bindFrameBuffer(fbSize); {
+        const Point p = Point(fbSize - baseSprite) + getDisplacement();
+        internalDraw(p);
+        if (isMarked())           internalDraw(p, getMarkedColor());
+        else if (isHighlighted()) internalDraw(p, getHighlightColor());
+    }
+
+    const int srcSize = resize ? getExactSize() : fbSize * 3 / 4;
+    Rect src(0, 0, srcSize, srcSize);
+    src.moveBottomRight(Point(fbSize - 1, fbSize - 1));
+    g_drawPool.releaseFrameBuffer(destRect, src);
+}
+
 void Creature::drawInformation(const MapPosInfo& mapRect, const Point& dest, const int drawFlags)
 {
     static constexpr Color

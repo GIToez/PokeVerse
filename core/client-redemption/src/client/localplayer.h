@@ -204,6 +204,24 @@ private:
     uint16_t m_blessings{ Otc::BlessingNone };
     uint8_t m_blessVisualState{ 0 };
 
+    enum ReceivedStat : uint8_t
+    {
+        StatHealth, StatFreeCapacity, StatTotalCapacity, StatExperience, StatLevel, StatMana,
+        StatMagicLevel, StatBaseMagicLevel, StatSoul, StatStamina, StatRegenerationTime,
+        StatOfflineTrainingTime, StatSkills = 16, StatBaseSkills = 40
+    };
+
+    // The first value of each stat reaches Lua even when it is 0, as in the legacy engine
+    // (which started the stats at -1): the PokeVerse modules only fill their labels then.
+    bool isFirstUpdate(const uint8_t stat)
+    {
+        const uint64_t bit = uint64_t{ 1 } << stat;
+        const bool first = !(m_receivedStats & bit);
+        m_receivedStats |= bit;
+        return first;
+    }
+
+    uint64_t m_receivedStats{ 0 };
     uint32_t m_freeCapacity{ 0 };
     uint32_t m_totalCapacity{ 0 };
     uint32_t m_baseCapacity{ 0 };

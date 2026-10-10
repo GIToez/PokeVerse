@@ -1179,6 +1179,8 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<UICreature>("setCreature", &UICreature::setCreature);
     g_lua.bindClassMemberFunction<UICreature>("setOutfit", &UICreature::setOutfit);
     g_lua.bindClassMemberFunction<UICreature>("setCreatureSize", &UICreature::setCreatureSize);
+    g_lua.bindClassMemberFunction<UICreature>("setFixedCreatureSize", &UICreature::setFixedCreatureSize);
+    g_lua.bindClassMemberFunction<UICreature>("isFixedCreatureSize", &UICreature::isFixedCreatureSize);
     g_lua.bindClassMemberFunction<UICreature>("getCreature", &UICreature::getCreature);
     g_lua.bindClassMemberFunction<UICreature>("getCreatureSize", &UICreature::getCreatureSize);
     // note: check function

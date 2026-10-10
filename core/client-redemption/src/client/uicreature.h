@@ -40,6 +40,8 @@ public:
 
     void setCenter(const bool v) { m_center = v; }
     bool isCentered() { return m_center; }
+    void setFixedCreatureSize(const bool fixed) { m_fixedCreatureSize = fixed; }
+    bool isFixedCreatureSize() { return m_fixedCreatureSize; }
 
     void setShader(std::string_view name) override;
     bool hasShader() override;
@@ -58,4 +60,5 @@ protected:
     Otc::Direction m_direction{ Otc::South };
     Outfit m_outfit;
     bool m_center{ true };
+    bool m_fixedCreatureSize{ false };
 };

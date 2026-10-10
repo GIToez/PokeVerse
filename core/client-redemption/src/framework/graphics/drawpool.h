@@ -205,6 +205,7 @@ private:
     void bindFrameBuffer(const Size& size, const Color& color = Color::white);
     void releaseFrameBuffer(const Rect& dest);
     void releaseFrameBuffer(const Rect& dest, uint8_t flipDirection);
+    void releaseFrameBuffer(const Rect& dest, const Rect& src);
 
     void setFPS(const uint16_t fps) { m_refreshDelay = 1000 / fps; }
 

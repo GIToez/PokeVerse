@@ -497,6 +497,21 @@ void DrawPool::releaseFrameBuffer(const Rect& dest, uint8_t flipDirection)
     --m_bindedFramebuffers;
 }
 
+void DrawPool::releaseFrameBuffer(const Rect& dest, const Rect& src)
+{
+    backState();
+
+    addAction([this, dest, src, frameIndex = m_bindedFramebuffers, drawState = getCurrentState()] {
+        const auto& frame = getTemporaryFrameBuffer(frameIndex);
+        frame->release();
+        drawState.execute(this);
+        frame->draw(dest, src);
+    });
+
+    if (hasFrameBuffer() && !dest.isNull()) m_hashCtrl.put(dest.hash());
+    --m_bindedFramebuffers;
+}
+
 const FrameBufferPtr& DrawPool::getTemporaryFrameBuffer(const uint8_t index) {
     if (index < m_temporaryFramebuffers.size()) {
         return m_temporaryFramebuffers[index];

@@ -278,7 +278,7 @@ void LocalPlayer::setSkill(const Otc::Skill skillId, const uint16_t level, const
     const uint16_t oldLevel = skill.level;
     const uint16_t oldLevelPercent = skill.levelPercent;
 
-    if (level == oldLevel && levelPercent == oldLevelPercent)
+    if (!isFirstUpdate(StatSkills + skillId) && level == oldLevel && levelPercent == oldLevelPercent)
         return;
 
     skill.level = level;
@@ -295,7 +295,7 @@ void LocalPlayer::setBaseSkill(const Otc::Skill skill, const uint16_t baseLevel)
     }
 
     const uint16_t oldBaseLevel = m_skills[skill].baseLevel;
-    if (baseLevel == oldBaseLevel)
+    if (!isFirstUpdate(StatBaseSkills + skill) && baseLevel == oldBaseLevel)
         return;
 
     m_skills[skill].baseLevel = baseLevel;
@@ -305,7 +305,7 @@ void LocalPlayer::setBaseSkill(const Otc::Skill skill, const uint16_t baseLevel)
 
 void LocalPlayer::setHealth(const uint32_t health, const uint32_t maxHealth)
 {
-    if (m_health != health || m_maxHealth != maxHealth) {
+    if (isFirstUpdate(StatHealth) || m_health != health || m_maxHealth != maxHealth) {
         const uint32_t oldHealth = m_health;
         const uint32_t oldMaxHealth = m_maxHealth;
         m_health = health;
@@ -323,7 +323,7 @@ void LocalPlayer::setHealth(const uint32_t health, const uint32_t maxHealth)
 
 void LocalPlayer::setFreeCapacity(const uint32_t freeCapacity)
 {
-    if (m_freeCapacity == freeCapacity)
+    if (!isFirstUpdate(StatFreeCapacity) && m_freeCapacity == freeCapacity)
         return;
 
     const uint32_t oldFreeCapacity = m_freeCapacity;
@@ -334,7 +334,7 @@ void LocalPlayer::setFreeCapacity(const uint32_t freeCapacity)
 
 void LocalPlayer::setTotalCapacity(const uint32_t totalCapacity)
 {
-    if (m_totalCapacity == totalCapacity)
+    if (!isFirstUpdate(StatTotalCapacity) && m_totalCapacity == totalCapacity)
         return;
 
     const uint32_t oldTotalCapacity = m_totalCapacity;
@@ -354,7 +354,7 @@ void LocalPlayer::setBaseCapacity(const uint32_t baseCapacity)
 
 void LocalPlayer::setExperience(const uint64_t experience)
 {
-    if (m_experience == experience)
+    if (!isFirstUpdate(StatExperience) && m_experience == experience)
         return;
 
     const uint64_t oldExperience = m_experience;
@@ -365,7 +365,7 @@ void LocalPlayer::setExperience(const uint64_t experience)
 
 void LocalPlayer::setLevel(const uint16_t level, const uint16_t levelPercent)
 {
-    if (m_level == level && m_levelPercent == levelPercent)
+    if (!isFirstUpdate(StatLevel) && m_level == level && m_levelPercent == levelPercent)
         return;
 
     const uint16_t oldLevel = m_level;
@@ -384,7 +384,7 @@ uint16_t LocalPlayer::getLevelPercent()
 
 void LocalPlayer::setMana(const uint32_t mana, const uint32_t maxMana)
 {
-    if (m_mana == mana && m_maxMana == maxMana)
+    if (!isFirstUpdate(StatMana) && m_mana == mana && m_maxMana == maxMana)
         return;
 
     const uint32_t oldMana = m_mana;
@@ -410,7 +410,7 @@ void LocalPlayer::setManaShield(const uint32_t manaShield, const uint32_t maxMan
 
 void LocalPlayer::setMagicLevel(const uint16_t magicLevel, const uint16_t magicLevelPercent)
 {
-    if (m_magicLevel == magicLevel && m_magicLevelPercent == magicLevelPercent)
+    if (!isFirstUpdate(StatMagicLevel) && m_magicLevel == magicLevel && m_magicLevelPercent == magicLevelPercent)
         return;
 
     const uint16_t oldMagicLevel = m_magicLevel;
@@ -424,7 +424,7 @@ void LocalPlayer::setMagicLevel(const uint16_t magicLevel, const uint16_t magicL
 
 void LocalPlayer::setBaseMagicLevel(const uint16_t baseMagicLevel)
 {
-    if (m_baseMagicLevel == baseMagicLevel)
+    if (!isFirstUpdate(StatBaseMagicLevel) && m_baseMagicLevel == baseMagicLevel)
         return;
 
     const uint16_t oldBaseMagicLevel = m_baseMagicLevel;
@@ -435,7 +435,7 @@ void LocalPlayer::setBaseMagicLevel(const uint16_t baseMagicLevel)
 
 void LocalPlayer::setSoul(const uint8_t soul)
 {
-    if (m_soul == soul)
+    if (!isFirstUpdate(StatSoul) && m_soul == soul)
         return;
 
     const uint8_t oldSoul = m_soul;
@@ -446,7 +446,7 @@ void LocalPlayer::setSoul(const uint8_t soul)
 
 void LocalPlayer::setStamina(const uint16_t stamina)
 {
-    if (m_stamina == stamina)
+    if (!isFirstUpdate(StatStamina) && m_stamina == stamina)
         return;
 
     const uint16_t oldStamina = m_stamina;
@@ -553,7 +553,7 @@ void LocalPlayer::setPremium(const bool premium)
 
 void LocalPlayer::setRegenerationTime(const uint16_t regenerationTime)
 {
-    if (m_regenerationTime == regenerationTime)
+    if (!isFirstUpdate(StatRegenerationTime) && m_regenerationTime == regenerationTime)
         return;
 
     const uint16_t oldRegenerationTime = m_regenerationTime;
@@ -564,7 +564,7 @@ void LocalPlayer::setRegenerationTime(const uint16_t regenerationTime)
 
 void LocalPlayer::setOfflineTrainingTime(const uint16_t offlineTrainingTime)
 {
-    if (m_offlineTrainingTime == offlineTrainingTime)
+    if (!isFirstUpdate(StatOfflineTrainingTime) && m_offlineTrainingTime == offlineTrainingTime)
         return;
 
     const uint16_t oldOfflineTrainingTime = m_offlineTrainingTime;

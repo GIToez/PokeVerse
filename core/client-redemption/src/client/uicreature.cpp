@@ -23,6 +23,7 @@
 #include "uicreature.h"
 
 #include "creature.h"
+#include "game.h"
 #include "framework/otml/otmlnode.h"
 
 void UICreature::drawSelf(const DrawPoolType drawPane)
@@ -38,7 +39,10 @@ void UICreature::drawSelf(const DrawPoolType drawPane)
         }
 
         m_creature->setMarked(m_imageColor);
-        m_creature->draw(getPaddingRect(), m_creatureSize, m_center);
+        if (g_game.getFeature(Otc::GamePokeVerse))
+            m_creature->drawOutfitPokeVerse(getPaddingRect(), !m_fixedCreatureSize);
+        else
+            m_creature->draw(getPaddingRect(), m_creatureSize, m_center);
     }
 }
 
@@ -84,6 +88,8 @@ void UICreature::onStyleApply(const std::string_view styleName, const OTMLNodePt
     for (const auto& node : styleNode->children()) {
         if (node->tag() == "creature-center") {
             m_center = node->value<bool>();
+        } else if (node->tag() == "fixed-creature-size") {
+            m_fixedCreatureSize = node->value<bool>();
         } else if (node->tag() == "creature-size") {
             setCreatureSize(node->value<int>());
         } else if (node->tag() == "outfit-id") {
