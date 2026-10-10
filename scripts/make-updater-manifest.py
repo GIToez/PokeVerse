@@ -4,7 +4,7 @@
     scripts/make-updater-manifest.py --package <client dir> --os windows|linux|android
         --site <site dir> --files-url <url of <site>/files> --version <tag>
         [--binary otclient.exe] [--release-dir <dir> --release-url <url>]
-        [--max-size 95000000]
+        [--max-size 95000000] [--skip <path>]...
 
 Writes <site>/<os>.json and copies every package file into <site>/files/<path>, the
 layout modules/updater/updater.lua expects. Files over --max-size (the Pages limit is
@@ -53,7 +53,10 @@ def main():
     p.add_argument("--release-dir", default="")
     p.add_argument("--release-url", default="")
     p.add_argument("--max-size", type=int, default=95_000_000)
+    p.add_argument("--skip", action="append", default=[],
+                   help="package path left out of the manifest, e.g. a binary the platform cannot replace")
     args = p.parse_args()
+    skip = {s.strip("/") for s in args.skip}
 
     package = os.path.abspath(args.package)
     site = os.path.abspath(args.site)
@@ -88,7 +91,7 @@ def main():
         for name in sorted(names):
             src = os.path.join(root, name)
             rel = os.path.relpath(src, package).replace(os.sep, "/")
-            if rel == binary:
+            if rel == binary or rel in skip:
                 continue
             manifest["files"]["/" + rel] = crc32(src)
             publish(rel, src)
