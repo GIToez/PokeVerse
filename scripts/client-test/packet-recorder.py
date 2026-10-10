@@ -227,7 +227,9 @@ def load(path):
 
 
 def diff(args):
-    a, b = load(args.a), load(args.b)
+    ignored = tuple("game %s" % opcode.lower() for opcode in args.ignore)
+    a, b = ([line for line in load(path) if not (ignored and line.startswith(ignored))]
+            for path in (args.a, args.b))
     lines = list(difflib.unified_diff(a, b, args.a, args.b, lineterm=""))
     text = "\n".join(lines) + "\n" if lines else "identical (%d packets)\n" % len(a)
     if args.report:
@@ -251,6 +253,8 @@ def main():
     d.add_argument("a")
     d.add_argument("b")
     d.add_argument("--report")
+    d.add_argument("--ignore", action="append", default=[], metavar="OPCODE",
+                   help="leave out game packets with this opcode (hex), may repeat")
     args = parser.parse_args()
     if args.command == "record":
         record(args)

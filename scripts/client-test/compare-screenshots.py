@@ -2,12 +2,17 @@
 """Compares Redemption client screenshots with the legacy client's.
 
     compare-screenshots.py <legacy dir> <redemption dir> <report dir> [--tolerance N] [--max-diff P]
+                           [--side-by-side]
 
 Each PNG in the legacy dir is compared with the PNG of the same name in the redemption
 dir. A pixel differs when any channel differs by more than --tolerance (default 24).
 A screenshot passes when at most --max-diff percent of its pixels differ (default 1.0).
 Writes report.md, report.json and a diff image per screenshot (differing pixels in red).
 Exits 1 if any screenshot fails or is missing.
+
+With --side-by-side the clients are expected to look different (the modern layout): each
+pair is saved as <name>-side.png, legacy on the left and Redemption on the right, the
+differing pixels are only reported, and only a missing screenshot fails.
 """
 import argparse
 import json
@@ -15,7 +20,20 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
+
+
+def side_by_side(legacy_path, redemption_path, out_path):
+    a = Image.open(legacy_path).convert("RGB")
+    b = Image.open(redemption_path).convert("RGB")
+    gap, header = 8, 24
+    out = Image.new("RGB", (a.width + gap + b.width, max(a.height, b.height) + header), (32, 32, 32))
+    out.paste(a, (0, header))
+    out.paste(b, (a.width + gap, header))
+    draw = ImageDraw.Draw(out)
+    draw.text((8, 6), "Legacy", fill=(255, 255, 255))
+    draw.text((a.width + gap + 8, 6), "Redemption", fill=(255, 255, 255))
+    out.save(out_path)
 
 
 def compare(legacy_path, redemption_path, diff_path, tolerance):
@@ -41,6 +59,7 @@ def main():
     parser.add_argument("report")
     parser.add_argument("--tolerance", type=int, default=24)
     parser.add_argument("--max-diff", type=float, default=1.0)
+    parser.add_argument("--side-by-side", action="store_true")
     args = parser.parse_args()
 
     legacy, redemption, report = Path(args.legacy), Path(args.redemption), Path(args.report)
@@ -52,13 +71,17 @@ def main():
             results[shot.stem] = {"error": "missing in the Redemption run"}
         else:
             results[shot.stem] = compare(shot, other, report / f"{shot.stem}-diff.png", args.tolerance)
+            if args.side_by_side:
+                side_by_side(shot, other, report / f"{shot.stem}-side.png")
         r = results[shot.stem]
-        r["pass"] = bool("error" not in r and r["diff_percent"] <= args.max_diff)
+        r["pass"] = bool("error" not in r and (args.side_by_side or r["diff_percent"] <= args.max_diff))
     for shot in sorted(redemption.glob("*.png")):
         if not (legacy / shot.name).exists():
             results[shot.stem] = {"error": "missing in the legacy run", "pass": False}
 
-    lines = [f"# Screenshot parity (tolerance {args.tolerance}, max {args.max_diff}% of pixels)", "",
+    title = ("Screenshots side by side (differences reported, not checked)" if args.side_by_side
+             else f"Screenshot parity (tolerance {args.tolerance}, max {args.max_diff}% of pixels)")
+    lines = [f"# {title}", "",
              "| Screenshot | Result | Differing pixels | Mean delta |", "| --- | --- | --- | --- |"]
     for name, r in sorted(results.items()):
         status = "pass" if r["pass"] else "FAIL"

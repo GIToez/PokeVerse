@@ -16,6 +16,11 @@
 --   SELFTEST DONE <passed> <failed>
 --
 -- config.lua (written by run-parity.sh) sets SELFTEST = { account, password, character }.
+--
+-- On the modern Redemption layout (Redemption's own modules) some windows open with other
+-- shortcuts or buttons, and the minimap and inventory are part of the main panel instead
+-- of windows (their steps only take the screenshot); the session is otherwise the same,
+-- so the packets can be compared.
 
 local SHOT_DELAY = 2500
 local INPUT_DELAY = 1000
@@ -81,9 +86,20 @@ local function rootChild(id)
   return rootWidget:recursiveGetChildById(id)
 end
 
+-- The first widget with this id that is shown (with all its parents). Some ids exist
+-- twice, for example a hidden copy of a button in the other layout.
+local function findVisible(id, widget)
+  for _, child in ipairs((widget or rootWidget):getChildren()) do
+    if child:isVisible() then
+      if child:getId() == id then return child end
+      local found = findVisible(id, child)
+      if found then return found end
+    end
+  end
+end
+
 local function visible(id)
-  local w = rootChild(id)
-  return w ~= nil and w:isVisible()
+  return findVisible(id) ~= nil
 end
 
 local function findByText(widget, text)
@@ -209,13 +225,14 @@ local function keyWindow(name, id, keys)
 end
 
 local function clickButton(id, done)
-  local button = rootChild(id)
-  if not button then error('no widget ' .. id) end
+  local button = findVisible(id)
+  if not button then error('no visible widget ' .. id) end
   clickAt(center(button), 1, done)
 end
 
 function init()
   local cfg = SELFTEST or {}
+  local modern = modules.game_mainpanel ~= nil
 
   step('login screen', function(done)
     waitFor(function() return visible('accountNameTextEdit') end, 15000, function(ok)
@@ -229,7 +246,13 @@ function init()
     rootChild('accountPasswordTextEdit'):setText(cfg.password)
     EnterGame.doLogin()
     -- New accounts get the message of the day first; Enter closes it.
-    local function motd() return findByText(rootWidget, tr('Message of the day')) end
+    -- only top-level windows: Redemption's top bar has a button with the same text
+    local function motd()
+      for _, child in ipairs(rootWidget:getChildren()) do
+        local title = type(child.title) == 'userdata' and child.title or child
+        if child:isVisible() and title:getText() == tr('Message of the day') then return child end
+      end
+    end
     waitFor(function() return motd() or visible('characters') end, 15000, function(ok)
       if not ok then return done(false, 'character list not shown') end
       local function charlist()
@@ -244,7 +267,7 @@ function init()
   end)
 
   step('game login', function(done)
-    local list = rootChild('characters')
+    local list = findVisible('characters')
     local found = false
     for _, child in ipairs(list:getChildren()) do
       if child.characterName == cfg.character then
@@ -307,19 +330,41 @@ function init()
     end)
   end)
 
-  keyWindow('skills', 'skillWindow', 'ctrl+s')
+  keyWindow('skills', 'skillWindow', modern and 'alt+s' or 'ctrl+s')
   keyWindow('battle', 'battleWindow', 'ctrl+b')
   keyWindow('viplist', 'vipWindow', 'ctrl+p')
-  keyWindow('minimap', 'minimapWindow', 'ctrl+m')
-  keyWindow('inventory', 'inventoryWindow', 'ctrl+i')
+  for _, name in ipairs({ 'minimap', 'inventory' }) do
+    if modern then
+      step('window ' .. name, function(done) shot('window-' .. name, function() done(true) end) end)
+    else
+      keyWindow(name, name .. 'Window', name == 'minimap' and 'ctrl+m' or 'ctrl+i')
+    end
+  end
   keyWindow('hotkeys', 'hotkeysWindow', 'ctrl+k')
   windowStep('options', function() return visible('optionsWindow') end,
-    function(done) clickButton('optionsButton', done) end,
+    function(done)
+      if modern and not findVisible('optionsButton') then
+        modules.client_options.show()
+        return after(INPUT_DELAY, done)
+      end
+      clickButton('optionsButton', done)
+    end,
     function(done) key('Escape', done) end)
-  windowStep('questlog', function() return visible('questLogWindow') end,
+  local function questLogShown()
+    if modern then
+      local ui = modules.game_questlog.questLogController.ui
+      return ui ~= nil and ui:isVisible()
+    end
+    return visible('questLogWindow')
+  end
+  windowStep('questlog', questLogShown,
     function(done) clickButton('questLogButton', done) end,
     function(done) key('Escape', done) end)
-  windowStep('outfit', function() return modules.game_outfit.outfitWindow ~= nil end,
+  local function outfitShown()
+    if modern then return findByText(rootWidget, 'Customise Character') ~= nil end
+    return modules.game_outfit.outfitWindow ~= nil
+  end
+  windowStep('outfit', outfitShown,
     function(done)
       local map = modules.game_interface.getMapPanel()
       -- classic controls (the default): Ctrl + right click opens the menu
