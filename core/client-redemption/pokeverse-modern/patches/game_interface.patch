@@ -44,3 +44,16 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function setupViewMode(mode)
+diff -ruN pristine/modules/game_interface/widgets/statsbar.lua modules/game_interface/widgets/statsbar.lua
+--- a/modules/game_interface/widgets/statsbar.lua
++++ b/modules/game_interface/widgets/statsbar.lua
+@@ -68,7 +68,8 @@
+     }
+ }
+ 
+-local DEFAULT_DIMENSION = "compact"
++-- PokeVerse: hidden by default, game_pokehud shows level, health and party instead
++local DEFAULT_DIMENSION = "hide"
+ local DEFAULT_PLACEMENT = "top"
+ 
+ local isWarriorVocation = false
