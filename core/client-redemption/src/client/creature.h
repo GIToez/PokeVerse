@@ -55,6 +55,7 @@ public:
     void internalDraw(Point dest, const Color& color = Color::white);
     void drawInformation(const MapPosInfo& mapRect, const Point& dest, int drawFlags);
     void drawInformationPokeVerse(const MapPosInfo& mapRect, const Point& dest, int drawFlags);
+    void drawPlatePokeVerse(const MapPosInfo& mapRect, const Point& dest, int drawFlags);
 
     void setId(const uint32_t id) override { m_id = id; }
     void setMasterId(const uint32_t id) { m_masterId = id; }
@@ -91,6 +92,13 @@ public:
     bool isLocalPlayerSummon() const { return m_localPlayerSummon; }
     bool isAttackable() const { return m_attackable; }
     bool isGhost() const { return m_ghost; }
+
+    // name plates: the modern layout turns them on, classic keeps the legacy name and bar
+    static void setDrawPlates(bool enabled);
+    static bool isDrawingPlates() { return s_drawPlates; }
+    // 0 none, 1 registered in the Pokedex, 2 caught
+    static void setPlateSpeciesIcon(const std::string& species, uint8_t icon);
+    static void clearPlateSpeciesIcons();
 
     void onStartAttachEffect(const AttachedEffectPtr& effect) override;
     void onDispatcherAttachEffect(const AttachedEffectPtr& effect) override;
@@ -314,6 +322,11 @@ private:
     EventPtr m_disappearEvent;
 
     CachedText m_name;
+    inline static bool s_drawPlates{ false };
+
+    CachedText m_plateName;
+    CachedText m_plateLevel;
+    std::string m_plateSpecies;
     std::string m_nameShader;
     CachedStep m_stepCache;
 

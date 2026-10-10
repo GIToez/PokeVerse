@@ -95,8 +95,16 @@ void DrawPoolManager::draw()
         g_painter->setResolution(m_size, m_transformMatrix);
     }
 
+    const bool lightBelow = m_lightBelowCreatureInformation;
     for (int8_t i = -1; ++i < static_cast<uint8_t>(DrawPoolType::LAST);) {
-        drawPool(static_cast<DrawPoolType>(i));
+        auto type = static_cast<DrawPoolType>(i);
+        if (lightBelow) {
+            if (type == DrawPoolType::CREATURE_INFORMATION)
+                type = DrawPoolType::LIGHT;
+            else if (type == DrawPoolType::LIGHT)
+                type = DrawPoolType::CREATURE_INFORMATION;
+        }
+        drawPool(type);
     }
 }
 

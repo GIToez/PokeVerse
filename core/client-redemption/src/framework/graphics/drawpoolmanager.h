@@ -32,6 +32,9 @@ public:
     DrawPool* get(const DrawPoolType type) const { return m_pools[static_cast<uint8_t>(type)]; }
 
     void select(DrawPoolType type);
+    // lights normally tint creature names and bars; with this set they are drawn on top of the light instead
+    void setLightBelowCreatureInformation(const bool enabled) { m_lightBelowCreatureInformation = enabled; }
+
     void preDraw(const DrawPoolType type, const std::function<void()>& f) { preDraw(type, f, nullptr, {}, {}, Color::alpha); }
     void preDraw(const DrawPoolType type, const std::function<void()>& f, const Rect& dest, const Rect& src, const Color& colorClear = Color::alpha) { preDraw(type, f, nullptr, dest, src, colorClear); }
     void preDraw(DrawPoolType type, const std::function<void()>& f, const std::function<void()>& beforeRelease, const Rect& dest, const Rect& src, const Color& colorClear = Color::alpha);
@@ -139,6 +142,7 @@ private:
     Matrix3 m_transformMatrix;
 
     uint16_t m_spriteSize{ 32 };
+    std::atomic_bool m_lightBelowCreatureInformation{ false };
 
     friend class GraphicalApplication;
 };
