@@ -71,7 +71,7 @@ function onLogout(cid, forceLogout)
         local pokemon = getPlayerPokemon(cid)
         if (isCreature(pokemon)) then
             local ball = getPlayerBall(cid)
-            if (isItem(ball)) then
+            if (isItem(ball) and ballsNames[ball.itemid]) then
                 setBallPokemonLastHp(ball.uid, getCreatureHealth(pokemon))
                 doTransformItem(ball.uid, balls[ballsNames[ball.itemid]].charged)
                 setBallPokemonEnergy(ball.uid, getPlayerMana(cid))
