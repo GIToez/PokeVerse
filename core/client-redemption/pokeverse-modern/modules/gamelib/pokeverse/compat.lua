@@ -10,6 +10,10 @@ PLAYER_SKILL_CATCHING = 5
 PLAYER_SKILL_FISHING = 6
 
 GameMesssageLevel = 46
+GamePokeVerse = 138
+
+-- the login packet carries the legacy client's picture signature
+PIC_SIGNATURE = 0x52de78da
 
 -- the server's NPC icons 5 to 7 are PokeVerse icons, not Redemption's traveler and hireling
 NpcIconStar = 5

@@ -113,6 +113,9 @@ else
     mkdir -p "$out/data/$(dirname "$f")"
     if [ "$link" = 1 ]; then ln "$legacy/data/$f" "$out/data/$f"; else cp "$legacy/data/$f" "$out/data/$f"; fi
   done
+  # the PokeVerse translations (moves, places, windows) install on top of Redemption's
+  mkdir -p "$out/data/locales/pokeverse"
+  copy_tree "$legacy/data/locales" "$out/data/locales/pokeverse"
   for f in "${legacy_data_wins[@]}"; do
     (cd "$legacy/data" && find "$f" -type f) | while read -r g; do
       mkdir -p "$out/data/$(dirname "$g")"

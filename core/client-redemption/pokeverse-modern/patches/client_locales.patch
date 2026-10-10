@@ -1,7 +1,26 @@
 diff -ruN pristine/modules/client_locales/locales.lua modules/client_locales/locales.lua
 --- a/modules/client_locales/locales.lua
 +++ b/modules/client_locales/locales.lua
-@@ -137,6 +137,11 @@
+@@ -6,6 +6,10 @@
+ local currentLocale
+ 
+ function sendLocale(localeName)
++    -- the PokeVerse server takes the locale from the login packet only
++    if g_game.getFeature(GamePokeVerse) then
++        return false
++    end
+     local protocolGame = g_game.getProtocolGame()
+     if protocolGame then
+         protocolGame:sendExtendedOpcode(ExtendedIds.Locale, localeName)
+@@ -70,6 +74,7 @@
+     installedLocales = {}
+ 
+     installLocales('/locales')
++    installLocales('/locales/pokeverse')
+ 
+     local userLocaleName = g_settings.get('locale', 'false')
+     if userLocaleName ~= 'false' and setLocale(userLocaleName) then
+@@ -137,6 +142,11 @@
          error('Unable to install locale.')
      end
  
