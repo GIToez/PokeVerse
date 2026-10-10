@@ -34,7 +34,7 @@ function doPlayerRemoveStoredItems(cid)
     local r = db.getResult("SELECT `item_type`, `attributes` FROM `player_stored_items` WHERE `player_id` = " .. getPlayerGUID(cid) .. ";")
     if (r:getID() ~= -1) then
         repeat
-            local ball = doCreatePokemonBall(cid, r:getDataInt('item_type'), nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, true, { column = 'attributes', result = r:getID() }, function(ball) doBallHeal(cid, { uid = ball }) end)
+            local ball = doCreatePokemonBall(cid, r:getDataInt('item_type'), nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, true, { column = 'attributes', result = r:getID() }, function(ball) doBallHeal(cid, getThing(ball)) end)
 
             if (not ball) then
                 log(LOG_TYPES.ERROR, "doPlayerRemoveStoredItems - Can't create ball.", getCreatureName(cid), r:getDataInt('item_type'), r:getDataString('attributes'))
