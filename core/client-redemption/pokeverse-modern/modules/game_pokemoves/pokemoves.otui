@@ -1,0 +1,51 @@
+MoveSlot < UIWidget
+  size: 40 40
+  image-source: /modules/game_pokehud/images/slot
+  image-border: 6
+  $hover:
+    image-source: /modules/game_pokehud/images/slot-hover
+
+  UIItem
+    id: icon
+    size: 32 32
+    virtual: true
+    phantom: true
+    anchors.centerIn: parent
+
+  ProgressRect
+    id: cooldown
+    size: 32 32
+    phantom: true
+    visible: false
+    percent: 100
+    background-color: #0a1420c0
+    anchors.centerIn: parent
+
+  Label
+    id: timer
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+    visible: false
+    anchors.centerIn: parent
+
+  Label
+    id: key
+    font: verdana-11px-antialised
+    color: #d8e4e4
+    text-auto-resize: true
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-left: 3
+
+UIWindow
+  id: movesWindow
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  padding: 6
+  focusable: false
+  anchors.bottom: gameMapPanel.bottom
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter
+  margin-bottom: 44

@@ -214,7 +214,7 @@ jobs:
           RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          scripts/build-android-client.sh --host "$LIVE_HOST" --updater "$PAGES_URL/updater/" \
+          scripts/build-android-client.sh --classic --host "$LIVE_HOST" --updater "$PAGES_URL/updater/" \
             bin-android/PokeVerse-Android.apk
 
       # saved even when the build fails, so the libraries built so far are not lost
@@ -267,10 +267,10 @@ jobs:
         run: |
           chmod +x bin-linux/otclient
           updater="$PAGES_URL/updater/"
-          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/windows bin-windows/*
-          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/linux bin-linux/otclient
+          scripts/assemble-redemption-client.sh --classic --host "$LIVE_HOST" --updater "$updater" pkg/windows bin-windows/*
+          scripts/assemble-redemption-client.sh --classic --host "$LIVE_HOST" --updater "$updater" pkg/linux bin-linux/otclient
           # what the APK unpacks on first start; the engine itself comes with the APK
-          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/android
+          scripts/assemble-redemption-client.sh --classic --host "$LIVE_HOST" --updater "$updater" pkg/android
 
       - name: Updater site
         env:

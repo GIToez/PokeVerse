@@ -1,0 +1,310 @@
+diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
+--- a/modules/game_battle/battle.lua
++++ b/modules/game_battle/battle.lua
+@@ -250,7 +250,7 @@
+     instance:updateTitle()
+     
+     local hideButtons = {}
+-    local options = { 'hidePlayers', 'hideNPCs', 'hideMonsters', 'hideSkulls', 'hideParty', 'hideKnights', 'hidePaladins', 'hideDruids', 'hideSorcerers', 'hideMonks', 'hideSummons', 'hideMembersOwnGuild' }
++    local options = { 'hidePlayers', 'hideNPCs', 'hideMonsters', 'hideParty' }
+     for i, v in ipairs(options) do
+         hideButtons[v] = newWindow:recursiveGetChildById(v)
+         if hideButtons[v] then
+@@ -370,8 +370,8 @@
+     -- Set initial scrollbar position for new instances (filters visible by default)
+     local scrollbar = newWindow:getChildById('miniwindowScrollBar')
+     if scrollbar then
+-        -- Header (16px) + filterPanel height (46px) + spacing panel (18px) + separator (2px)
+-        scrollbar:setMarginTop(82) -- 16 + 46 + 18 + 2 = 82
++        -- Header (16px) + filterPanel height (22px) + spacing panel (18px) + separator (2px)
++        scrollbar:setMarginTop(58) -- 16 + 22 + 18 + 2 = 58
+     end
+     
+     if g_game.isOnline() then
+@@ -1478,6 +1478,8 @@
+     -- Setup keybind
+     Keybind.new("Windows", "Show/hide battle list", "Ctrl+B", "")
+     Keybind.bind("Windows", "Show/hide battle list", {{ type = KEY_DOWN, callback = toggle }})
++    Keybind.new("Battle List", "Attack next target", "Tab", "")
++    Keybind.bind("Battle List", "Attack next target", {{ type = KEY_PRESS, callback = function() attackNext() end }})
+ 
+     -- Setup scrollbar - use default MiniWindow behavior
+     local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
+@@ -1497,13 +1499,13 @@
+         -- Set initial scrollbar position when filters are visible
+         local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
+         if scrollbar then
+-            -- Header (16px) + filterPanel height (46px) + spacing panel (18px) + separator (2px) + margin (6px)
+-            scrollbar:setMarginTop(88) -- 16 + 46 + 18 + 2 + 6 = 88
++            -- Header (16px) + filterPanel height (22px) + spacing panel (18px) + separator (2px) + margin (6px)
++            scrollbar:setMarginTop(64) -- 16 + 22 + 18 + 2 + 6 = 64
+         end
+     end
+ 
+     -- Setup filter buttons
+-    local options = { 'hidePlayers', 'hideNPCs', 'hideMonsters', 'hideSkulls', 'hideParty', 'hideKnights', 'hidePaladins', 'hideDruids', 'hideSorcerers', 'hideMonks', 'hideSummons', 'hideMembersOwnGuild' }
++    local options = { 'hidePlayers', 'hideNPCs', 'hideMonsters', 'hideParty' }
+     for i, v in ipairs(options) do
+         hideButtons[v] = battleWindow:recursiveGetChildById(v)
+     end
+@@ -2001,7 +2003,7 @@
+     local children = mainInstance.panel:getChildren()
+ 
+     for _, battleButton in pairs(mainInstance.panel:getChildren()) do
+-        if battleButton:isVisible() then
++        if battleButton:isVisible() and battleButton.creature and battleButton.creature:isAttackable() then
+             -- select visible first child
+             if not firstElement then
+                 firstElement = battleButton
+@@ -2609,6 +2611,7 @@
+     toggleFilterButton = nil
+ 
+     Keybind.delete("Windows", "Show/hide battle list")
++    Keybind.delete("Battle List", "Attack next target")
+ 
+     disconnect(g_game, {
+         onAttackingCreatureChange = onAttack,
+diff -ruN pristine/modules/game_battle/battle.otui modules/game_battle/battle.otui
+--- a/modules/game_battle/battle.otui
++++ b/modules/game_battle/battle.otui
+@@ -1,149 +1,32 @@
+ BattleIcon < UIButton
+   size: 20 20
+-  image-source: /images/options/button_empty
++  image-rect: 0 0 20 20
+   image-clip: 0 0 20 20
+-  image-border: 3
+   checkable: true
+ 
+-  $pressed:
+-    image-clip: 20 0 20 20
+-
+-  $on:
+-    image-clip: 20 0 20 20
++  $hover !checked:
++    image-clip: 0 40 20 20
+ 
+   $checked:
+-    image-clip: 20 0 20 20
+-
+-  $active:
+-    image-clip: 20 0 20 20
++    image-clip: 0 20 20 20
+ 
+-  $hover !disabled:
+-    image-color: #ffffffcc
++  $hover checked:
++    image-clip: 0 60 20 20
+ 
+   $disabled:
+     image-color: #ffffff88
+ 
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-
+ BattlePlayers < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-players
++  image-source: /images/game/battle/battle_players
+ 
+ BattleNPCs < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-npc
++  image-source: /images/game/battle/battle_npcs
+ 
+ BattleMonsters < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-monster
+-
+-BattleSkulls < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-skull
++  image-source: /images/game/battle/battle_monsters
+ 
+ BattleParty < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-party
+-
+-BattleKnights < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-knight
+-
+-BattlePaladins < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-paladin
+-
+-BattleDruids < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-druid
+-
+-BattleSorcerers < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-sorcerer
+-
+-BattleMonks < BattleIcon
+-  @onSetup: |
+-    if g_game.getFeature(GameVocationMonk) then
+-      self:setVisible(true)
+-    else
+-      self:setVisible(false)
+-    end
+-  
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-monk
+-
+-BattleSummons < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-summon
+-
+-BattleMembersOwnGuild < BattleIcon
+-  UIWidget
+-    id: iconWidget
+-    anchors.centerIn: parent
+-    image-color: white
+-    focusable: false
+-    phantom: true
+-    image-source: /images/game/battle/icon-battlelist-own-guild
++  image-source: /images/game/battle/battle_party
+ 
+ MiniWindow
+   id: battleWindow
+@@ -181,49 +64,19 @@
+     margin-top: 20
+     anchors.top: parent.top
+     anchors.horizontalCenter: parent.horizontalCenter
+-    height: 46
+-    width: 130
++    height: 22
++    width: 95
+     layout:
+       type: grid
+       flow: true
+-      cell-spacing: 2
+-      num-columns: 6
++      cell-spacing: 5
++      num-columns: 4
+       cell-size: 20 20
+       fit-children: false
+ 
+     BattlePlayers
+       id: hidePlayers
+-      !tooltip: tr('Hide players')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattleKnights
+-      id: hideKnights
+-      !tooltip: tr('Hide knights')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattlePaladins
+-      id: hidePaladins
+-      !tooltip: tr('Hide paladins')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattleDruids
+-      id: hideDruids
+-      !tooltip: tr('Hide druids')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattleSorcerers
+-      id: hideSorcerers
+-      !tooltip: tr('Hide sorcerers')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattleMonks
+-      id: hideMonks
+-      !tooltip: tr('Hide monks')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattleSummons
+-      id: hideSummons
+-      !tooltip: tr('Hide summons')
++      !tooltip: tr('Hide trainers')
+       @onClick: modules.game_battle.onFilterButtonClick(self)
+ 
+     BattleNPCs
+@@ -233,12 +86,7 @@
+ 
+     BattleMonsters
+       id: hideMonsters
+-      !tooltip: tr('Hide monsters')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+-    BattleSkulls
+-      id: hideSkulls
+-      !tooltip: tr('Hide non-skull players')
++      !tooltip: tr('Hide Pokemon')
+       @onClick: modules.game_battle.onFilterButtonClick(self)
+ 
+     BattleParty
+@@ -246,11 +94,6 @@
+       !tooltip: tr('Hide party members')
+       @onClick: modules.game_battle.onFilterButtonClick(self)
+ 
+-    BattleMembersOwnGuild
+-      id: hideMembersOwnGuild
+-      !tooltip: tr('Hide own guild members')
+-      @onClick: modules.game_battle.onFilterButtonClick(self)
+-
+   Panel
+     height: 18
+     anchors.top: filterPanel.bottom

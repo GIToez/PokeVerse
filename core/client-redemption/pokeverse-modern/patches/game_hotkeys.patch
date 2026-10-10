@@ -1,0 +1,175 @@
+diff -ruN pristine/modules/game_hotkeys/hotkeys_manager.lua modules/game_hotkeys/hotkeys_manager.lua
+--- a/modules/game_hotkeys/hotkeys_manager.lua
++++ b/modules/game_hotkeys/hotkeys_manager.lua
+@@ -3,6 +3,7 @@
+ HOTKEY_MANAGER_USEONTARGET = 2
+ HOTKEY_MANAGER_USEWITH = 3
+ HOTKEY_MANAGER_USEATCURSOR = 4
++HOTKEY_MANAGER_USEONPOKEMON = 5
+ 
+ HOTKEY_ACTION_TOGGLE_WASD = 1
+ HOTKEY_ACTION_ATTACK_NEXT = 2
+@@ -30,6 +31,7 @@
+     itemUseSelf = '#00FF00',
+     itemUseTarget = '#FF0000',
+     itemUseWith = '#F5B325',
++    itemUsePokemon = '#F66B25',
+     action = '#F97ACD'
+ }
+ 
+@@ -51,6 +53,7 @@
+ useOnTarget = nil
+ useWith = nil
+ useAtCursor = nil
++useOnPokemon = nil
+ defaultComboKeys = nil
+ perServer = true
+ perCharacter = true
+@@ -91,12 +94,14 @@
+     useOnTarget = hotkeysWindow:getChildById('useOnTarget')
+     useWith = hotkeysWindow:getChildById('useWith')
+     useAtCursor = hotkeysWindow:getChildById('useAtCursor')
++    useOnPokemon = hotkeysWindow:getChildById('useOnPokemon')
+ 
+     useRadioGroup = UIRadioGroup.create()
+     useRadioGroup:addWidget(useOnSelf)
+     useRadioGroup:addWidget(useOnTarget)
+     useRadioGroup:addWidget(useWith)
+     useRadioGroup:addWidget(useAtCursor)
++    useRadioGroup:addWidget(useOnPokemon)
+     useRadioGroup.onSelectionChange = function(self, selected)
+         onChangeUseType(selected)
+     end
+@@ -162,6 +167,7 @@
+     useOnTarget = nil
+     useWith = nil
+     useAtCursor = nil
++    useOnPokemon = nil
+     currentHotkeys = nil
+     hotkeysWindowButton = nil
+ end
+@@ -646,6 +652,27 @@
+             item = tmpItem
+         end
+         modules.game_interface.startUseWith(item)
++    elseif action == HOTKEY_MANAGER_USEONPOKEMON then
++        local pos = g_game.getLocalPlayer():getPosition()
++        if not pos then
++            return
++        end
++        local item
++        if g_game.getClientVersion() < 780 or subType then
++            item = g_game.findPlayerItem(itemId, subType or -1)
++            if not item then
++                return
++            end
++        end
++        for _, creature in ipairs(g_map.getSpectators(pos, false)) do
++            if creature:isLocalPlayerSummon() then
++                if item then
++                    g_game.useWith(item, creature)
++                else
++                    g_game.useInventoryItemWith(itemId, creature)
++                end
++            end
++        end
+     elseif action == HOTKEY_MANAGER_USEATCURSOR then
+         local useThing = get_use_thing_under_cursor()
+         if not useThing then
+@@ -688,6 +715,9 @@
+     elseif hotkeyLabel.useType == HOTKEY_MANAGER_USEATCURSOR then
+         hotkeyLabel:setText(tr('%s: (use object at cursor position)', hotkeyLabel.keyCombo))
+         hotkeyLabel:setColor(HotkeyColors.itemUseWith)
++    elseif hotkeyLabel.useType == HOTKEY_MANAGER_USEONPOKEMON then
++        hotkeyLabel:setText(tr('%s: (use object on Pokemon)', hotkeyLabel.keyCombo))
++        hotkeyLabel:setColor(HotkeyColors.itemUsePokemon)
+     elseif hotkeyLabel.itemId ~= nil then
+         hotkeyLabel:setText(tr('%s: (use object)', hotkeyLabel.keyCombo))
+         hotkeyLabel:setColor(HotkeyColors.itemUse)
+@@ -737,6 +767,7 @@
+                 useOnTarget:enable()
+                 useWith:enable()
+                 useAtCursor:enable()
++                useOnPokemon:enable()
+                 if currentHotkeyLabel.useType == HOTKEY_MANAGER_USEONSELF then
+                     useRadioGroup:selectWidget(useOnSelf)
+                 elseif currentHotkeyLabel.useType == HOTKEY_MANAGER_USEONTARGET then
+@@ -745,12 +776,15 @@
+                     useRadioGroup:selectWidget(useWith)
+                 elseif currentHotkeyLabel.useType == HOTKEY_MANAGER_USEATCURSOR then
+                     useRadioGroup:selectWidget(useAtCursor)
++                elseif currentHotkeyLabel.useType == HOTKEY_MANAGER_USEONPOKEMON then
++                    useRadioGroup:selectWidget(useOnPokemon)
+                 end
+             else
+                 useOnSelf:disable()
+                 useOnTarget:disable()
+                 useWith:disable()
+                 useAtCursor:disable()
++                useOnPokemon:disable()
+                 useRadioGroup:clearSelected()
+             end
+         elseif currentHotkeyLabel.action then
+@@ -768,6 +802,7 @@
+             useOnTarget:disable()
+             useWith:disable()
+             useAtCursor:disable()
++            useOnPokemon:disable()
+             useRadioGroup:clearSelected()
+             selectObjectButton:disable()
+             clearObjectButton:disable()
+@@ -780,6 +815,7 @@
+             useOnTarget:disable()
+             useWith:disable()
+             useAtCursor:disable()
++            useOnPokemon:disable()
+             useRadioGroup:clearSelected()
+             hotkeyText:enable()
+             hotkeyText:focus()
+@@ -808,6 +844,7 @@
+         useOnTarget:disable()
+         useWith:disable()
+         useAtCursor:disable()
++        useOnPokemon:disable()
+         hotkeyText:clearText()
+         useRadioGroup:clearSelected()
+         sendAutomatically:setChecked(false)
+@@ -870,6 +907,8 @@
+         currentHotkeyLabel.useType = HOTKEY_MANAGER_USEWITH
+     elseif useTypeWidget == useAtCursor then
+         currentHotkeyLabel.useType = HOTKEY_MANAGER_USEATCURSOR
++    elseif useTypeWidget == useOnPokemon then
++        currentHotkeyLabel.useType = HOTKEY_MANAGER_USEONPOKEMON
+     else
+         currentHotkeyLabel.useType = HOTKEY_MANAGER_USE
+     end
+diff -ruN pristine/modules/game_hotkeys/hotkeys_manager.otui modules/game_hotkeys/hotkeys_manager.otui
+--- a/modules/game_hotkeys/hotkeys_manager.otui
++++ b/modules/game_hotkeys/hotkeys_manager.otui
+@@ -11,7 +11,7 @@
+ MainWindow
+   id: hotkeysWindow
+   !text: tr('Hotkeys')
+-  size: 340 470
++  size: 340 490
+ 
+   @onEnter: modules.game_hotkeys.ok()
+   @onEscape: modules.game_hotkeys.cancel()
+@@ -181,6 +181,17 @@
+     width: 128
+     enabled: false
+     anchors.left: prev.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    checked: false
++    margin-top: 2
++
++  ButtonBox
++    id: useOnPokemon
++    !text: tr('Use on Pokemon')
++    width: 128
++    enabled: false
++    anchors.left: prev.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
+     checked: false

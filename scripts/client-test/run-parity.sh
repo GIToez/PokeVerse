@@ -4,7 +4,8 @@
 # recorder, and compares what they sent and what they showed.
 #
 #   scripts/client-test/run-parity.sh --legacy-build <dir> --redemption <otclient binary> \
-#       --server <pokeverse-server binary> --out <dir> [--only legacy|redemption]
+#       --server <pokeverse-server binary> --out <dir> [--only legacy|redemption] \
+#       [--layout classic|modern]
 #
 # <dir> for --legacy-build is a CMake build of core/client-legacy. Uses $DISPLAY when
 # set, otherwise starts Xvfb on :99 (Mesa software rendering). Needs mariadb, ffmpeg,
@@ -13,11 +14,16 @@
 # Results in <out>: <client>/client.log, <client>/packets.log, <client>/shots/*.png,
 # packets.diff, screenshots/report.md and summary.txt. Exit code 0 means every self-test
 # step passed on both clients, the packet logs are identical and the screenshots match.
+#
+# --layout picks the Redemption package layout (scripts/assemble-redemption-client.sh).
+# classic (default) must look the same as legacy. modern is Redemption's own interface:
+# the packets must still be identical (stop packets aside, see below), and the
+# screenshots are saved side by side.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/../.." && pwd)
 tests=$root/scripts/client-test
-legacy_build="" redemption="" server="" out="" only=""
+legacy_build="" redemption="" server="" out="" only="" layout=classic
 while [ $# -gt 0 ]; do
   case "$1" in
     --legacy-build) legacy_build=$(realpath "$2"); shift 2 ;;
@@ -25,10 +31,20 @@ while [ $# -gt 0 ]; do
     --server) server=$(realpath "$2"); shift 2 ;;
     --out) out=$(realpath -m "$2"); shift 2 ;;
     --only) only=$2; shift 2 ;;
-    *) sed -n '2,15p' "$0" >&2; exit 1 ;;
+    --layout) layout=$2; shift 2 ;;
+    *) sed -n '2,21p' "$0" >&2; exit 1 ;;
   esac
 done
-[ -n "$legacy_build" ] && [ -n "$redemption" ] && [ -n "$server" ] && [ -n "$out" ] || { sed -n '2,15p' "$0" >&2; exit 1; }
+[ -n "$legacy_build" ] && [ -n "$redemption" ] && [ -n "$server" ] && [ -n "$out" ] || { sed -n '2,21p' "$0" >&2; exit 1; }
+case "$layout" in
+  classic) layout_opts=(--classic) shots_opts=() packet_opts=() ;;
+  modern)
+    layout_opts=() shots_opts=(--side-by-side)
+    # Redemption's Escape keybind does not fire when a window takes the Escape itself,
+    # so closing a window does not also send a stop (0xbe) as the legacy client does.
+    packet_opts=(--ignore be) ;;
+  *) echo "unknown layout: $layout" >&2; exit 1 ;;
+esac
 
 LOGIN_PROXY=17564
 GAME_PROXY=18548
@@ -55,7 +71,7 @@ export LIBGL_ALWAYS_SOFTWARE=1
 "$tests/server.sh" start "$server" "$out/server"
 
 "$root/scripts/assemble-legacy-linux-client.sh" --link --test --port "$LOGIN_PROXY" "$out/legacy/client" "$legacy_build"
-"$root/scripts/assemble-redemption-client.sh" --link --test --port "$LOGIN_PROXY" "$out/redemption/client" "$redemption"
+"$root/scripts/assemble-redemption-client.sh" "${layout_opts[@]}" --link --test --port "$LOGIN_PROXY" "$out/redemption/client" "$redemption"
 for c in legacy redemption; do
   cat > "$out/$c/client/modules/client_selftest/config.lua" <<'EOF'
 SELFTEST = { account = 'selftest', password = 'selftest', character = 'Self Test' }
@@ -158,9 +174,9 @@ status=0
   done
   echo "== packets"
   python3 "$tests/packet-recorder.py" diff "$out/legacy/packets.log" "$out/redemption/packets.log" \
-    --report "$out/packets.diff" | head -60 || status=1
+    --report "$out/packets.diff" "${packet_opts[@]}" | head -60 || status=1
   echo "== screenshots"
-  python3 "$tests/compare-screenshots.py" "$out/legacy/shots" "$out/redemption/shots" "$out/screenshots" || status=1
+  python3 "$tests/compare-screenshots.py" "$out/legacy/shots" "$out/redemption/shots" "$out/screenshots" "${shots_opts[@]}" || status=1
 } > "$out/summary.txt" 2>&1
 cat "$out/summary.txt"
 echo "parity: $([ "$status" = 0 ] && echo PASS || echo FAIL) (details in $out)"

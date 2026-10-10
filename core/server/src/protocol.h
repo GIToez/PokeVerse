@@ -48,6 +48,8 @@ class Protocol : boost::noncopyable
 
 		void onRecvMessage(NetworkMessage& msg);
 		void onSendMessage(OutputMessage_ptr msg);
+		// last chance to append packets before the message is sealed; may run on a network thread
+		virtual void onSealMessage(OutputMessage_ptr msg) {}
 
 		virtual void parsePacket(NetworkMessage& msg) {}
 		uint32_t getIP() const;

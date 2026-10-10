@@ -60,6 +60,10 @@ Creature::Creature() :m_type(Proto::CreatureTypeUnknown)
     g_stats.addCreature();
     m_name.setFont(g_gameConfig.getCreatureNameFont());
     m_name.setAlign(Fw::AlignTopCenter);
+    m_plateName.setFont(g_gameConfig.getCreatureNameFont());
+    m_plateName.setAlign(Fw::AlignTopLeft);
+    m_plateLevel.setFont(g_gameConfig.getCreatureNameFont());
+    m_plateLevel.setAlign(Fw::AlignTopLeft);
     if (g_gameConfig.drawTyping())
         m_typingIconTexture = g_textures.getTexture(g_gameConfig.getTypingIcon());
 }
@@ -1421,6 +1425,22 @@ void Creature::setName(const std::string_view name) {
 
     const auto& oldName = m_name.getText();
     m_name.setText(name);
+
+    // the server names Pokemon "Name [level]"
+    std::string_view plateName = name;
+    std::string level;
+    if (const auto open = name.rfind(" ["); open != std::string_view::npos && name.size() > open + 3 && name.back() == ']') {
+        const auto digits = name.substr(open + 2, name.size() - open - 3);
+        if (std::all_of(digits.begin(), digits.end(), [](const char c) { return c >= '0' && c <= '9'; })) {
+            plateName = name.substr(0, open);
+            level = "Lv." + std::string(digits);
+        }
+    }
+    m_plateName.setText(plateName);
+    m_plateLevel.setText(level);
+    m_plateSpecies = std::string(plateName);
+    stdext::tolower(m_plateSpecies);
+
     callLuaField("onChangeName", name, oldName);
 }
 
@@ -1553,6 +1573,11 @@ void Creature::drawInformationPokeVerse(const MapPosInfo& mapRect, const Point& 
     if (isGhost())
         return;
 
+    if (s_drawPlates) {
+        drawPlatePokeVerse(mapRect, dest, drawFlags);
+        return;
+    }
+
     const auto& parentRect = mapRect.rect;
     const int displacementY = getDisplacementY();
     const auto& creatureOffset = Point(16 - getDisplacementX(), -displacementY - 2) + getDrawOffset();
@@ -1626,6 +1651,248 @@ void Creature::drawInformationPokeVerse(const MapPosInfo& mapRect, const Point& 
         g_drawPool.addTexturedPos(m_emblemTexture, backgroundRect.x() + 13.5 + 12, backgroundRect.y() + 16);
     if (m_icon != Otc::NpcIconNone && m_iconTexture)
         g_drawPool.addTexturedPos(m_iconTexture, backgroundRect.x() + 13.5 + 12 + margin, backgroundRect.y() + 5);
+
+    g_drawPool.resetDrawOrder();
+    g_drawPool.select(DrawPoolType::MAP);
+}
+
+namespace
+{
+    std::unordered_map<std::string, uint8_t> s_plateSpeciesIcons;
+    std::unordered_map<uint32_t, uint32_t> s_plateOwners;
+
+    enum class PlateStatus : uint8_t { NEUTRAL, PARTY, HOSTILE };
+
+    // a trainer's standing with you; their Pokemon share it
+    PlateStatus trainerPlateStatus(const CreaturePtr& trainer)
+    {
+        const uint8_t shield = trainer->getShield();
+        if (!trainer->isLocalPlayer()) {
+            // a Pokemon's skull is its gender, so only a trainer's skull marks a fight
+            const uint8_t skull = trainer->getSkull();
+            if ((skull != Otc::SkullNone && skull != Otc::SkullGreen) || trainer->isAttackable())
+                return PlateStatus::HOSTILE;
+            // the server is a no-PvP world: a duel only shows in the opponent's Pokemon being attackable
+            for (const auto& [creatureId, ownerId] : s_plateOwners) {
+                if (ownerId != trainer->getId())
+                    continue;
+                if (const auto& pokemon = g_map.getCreatureById(creatureId); pokemon && pokemon->isAttackable())
+                    return PlateStatus::HOSTILE;
+            }
+        }
+        return shield >= Otc::ShieldBlue && shield != Otc::ShieldGray ? PlateStatus::PARTY : PlateStatus::NEUTRAL;
+    }
+
+    struct PlateColors
+    {
+        Color light;
+        Color dark;
+    };
+
+    constexpr PlateColors PLATE_GREEN{ Color(110, 226, 150), Color(52, 170, 96) };
+    constexpr PlateColors PLATE_BLUE{ Color(120, 186, 245), Color(60, 126, 205) };
+    constexpr PlateColors PLATE_YELLOW{ Color(240, 220, 100), Color(200, 170, 40) };
+    constexpr PlateColors PLATE_RED{ Color(240, 110, 110), Color(190, 50, 60) };
+    constexpr PlateColors PLATE_SILVER{ Color(215, 222, 226), Color(150, 160, 168) };
+    constexpr PlateColors PLATE_GRAY{ Color(120, 120, 120), Color(90, 90, 90) };
+
+    void drawPlateFrame(const Rect& r, const Color& fill, const Color& border)
+    {
+        // a 1px border with the corner pixels left out reads as rounded at this size
+        g_drawPool.addFilledRect(Rect(r.left() + 1, r.top() + 1, r.width() - 2, r.height() - 2), fill);
+        g_drawPool.addFilledRect(Rect(r.left() + 2, r.top(), r.width() - 4, 1), border);
+        g_drawPool.addFilledRect(Rect(r.left() + 2, r.bottom(), r.width() - 4, 1), border);
+        g_drawPool.addFilledRect(Rect(r.left(), r.top() + 2, 1, r.height() - 4), border);
+        g_drawPool.addFilledRect(Rect(r.right(), r.top() + 2, 1, r.height() - 4), border);
+        g_drawPool.addFilledRect(Rect(r.left() + 1, r.top() + 1, 1, 1), border);
+        g_drawPool.addFilledRect(Rect(r.right() - 1, r.top() + 1, 1, 1), border);
+        g_drawPool.addFilledRect(Rect(r.left() + 1, r.bottom() - 1, 1, 1), border);
+        g_drawPool.addFilledRect(Rect(r.right() - 1, r.bottom() - 1, 1, 1), border);
+    }
+
+    void drawPlateBar(const Rect& r, const double percent, const PlateColors& colors)
+    {
+        g_drawPool.addFilledRect(r, Color(6, 9, 9, 240));
+        const int width = static_cast<int>(std::round((r.width() - 2) * std::clamp(percent, 0.0, 100.0) / 100.0));
+        if (width <= 0)
+            return;
+        const Rect fill(r.left() + 1, r.top() + 1, width, r.height() - 2);
+        g_drawPool.addFilledRect(fill, colors.dark);
+        g_drawPool.addFilledRect(Rect(fill.left(), fill.top(), fill.width(), std::max(1, fill.height() / 2)), colors.light);
+    }
+}
+
+void Creature::setPlateSpeciesIcon(const std::string& species, const uint8_t icon)
+{
+    auto key = species;
+    stdext::tolower(key);
+    if (icon == 0)
+        s_plateSpeciesIcons.erase(key);
+    else
+        s_plateSpeciesIcons[key] = icon;
+}
+
+void Creature::clearPlateSpeciesIcons() { s_plateSpeciesIcons.clear(); }
+
+void Creature::setPlateOwner(const uint32_t creatureId, const uint32_t ownerId) { s_plateOwners[creatureId] = ownerId; }
+
+void Creature::clearPlateOwners() { s_plateOwners.clear(); }
+
+void Creature::setDrawPlates(const bool enabled)
+{
+    s_drawPlates = enabled;
+    // grouping merges every draw of one colour or texture, so a plate's name would land above
+    // the plates drawn after it; plates need their draws kept in order
+    if (auto* pool = g_drawPool.get(DrawPoolType::CREATURE_INFORMATION))
+        pool->agroup(!enabled);
+    // the plate colours carry meaning (party blue, PvP red), so night and indoor light must not tint them
+    g_drawPool.setLightBelowCreatureInformation(enabled);
+}
+
+void Creature::drawPlatePokeVerse(const MapPosInfo& mapRect, const Point& dest, const int drawFlags)
+{
+    static constexpr Color
+        PLATE_FILL(14, 22, 24, 205),
+        PLATE_BORDER(70, 92, 92, 230),
+        PARTY_FILL(24, 66, 132, 230),
+        PARTY_BORDER(120, 182, 255, 255),
+        HOSTILE_FILL(112, 22, 30, 230),
+        HOSTILE_BORDER(255, 104, 104, 255),
+        NAME_COLOR(235, 240, 240),
+        LEVEL_COLOR(200, 214, 214),
+        NPC_COLOR(0x66, 0xcc, 0xff),
+        GRAY_COLOR(150, 150, 150),
+        EXPERIENCE_COLOR(0x66, 0xcc, 0xff);
+    static constexpr int PADDING = 4, GAP = 6, MIN_WIDTH = 60, MIN_BARE_WIDTH = 48, BAR_HEIGHT = 5, ICON_SPACE = 10;
+
+    static TexturePtr dexTexture = g_textures.getTexture("/modules/game_pokehud/images/plate-dex");
+    static TexturePtr caughtTexture = g_textures.getTexture("/modules/game_pokehud/images/plate-caught");
+
+    const auto& parentRect = mapRect.rect;
+    const int displacementY = getDisplacementY();
+    const auto& creatureOffset = Point(16 - getDisplacementX(), -displacementY - 2) + getDrawOffset();
+
+    Point p = dest - mapRect.drawOffset;
+    p += (creatureOffset - Point(std::round(m_jumpOffset.x), std::round(m_jumpOffset.y))) * mapRect.scaleFactor;
+    p.x *= mapRect.horizontalStretchFactor;
+    p.y *= mapRect.verticalStretchFactor;
+    p.y -= getExactSize() / 2 + (-displacementY - 2);
+    p += parentRect.topLeft();
+
+    const auto& tile = getTile();
+    const bool useGray = tile && tile->isCovered(mapRect.firstVisibleFloor);
+    const bool hideNpcInfo = isNpc() && g_game.getFeature(Otc::GameHideNpcNames);
+    const bool drawBar = (drawFlags & Otc::DrawBars) && !hideNpcInfo;
+    const bool drawName = (drawFlags & Otc::DrawNames) != 0;
+    const bool drawExperience = (drawFlags & Otc::DrawExperienceBars) && (isLocalPlayer() || isLocalPlayerSummon());
+    if (!drawBar && !drawName)
+        return;
+
+    // every trainer gets a plate, which sets them apart from NPCs, and a trainer's Pokemon wears the
+    // trainer's plate; wild Pokemon get only the name, the bar and the Pokedex mark
+    CreaturePtr trainer;
+    if (isPlayer())
+        trainer = static_self_cast<Creature>();
+    else if (isLocalPlayerSummon())
+        trainer = g_game.getLocalPlayer();
+    else if (const auto it = s_plateOwners.find(m_id); it != s_plateOwners.end())
+        trainer = g_map.getCreatureById(it->second);
+    const bool owned = isLocalPlayerSummon() || s_plateOwners.contains(m_id);
+    const bool framed = isPlayer() || owned;
+    const PlateStatus status = trainer ? trainerPlateStatus(trainer) : PlateStatus::NEUTRAL;
+    const bool wild = isMonster() && !owned;
+
+    // a trainer's health is always green and your Pokemon's blue, as on the HUD; the plate shows the standing
+    PlateColors bar = PLATE_SILVER;
+    if (useGray)
+        bar = PLATE_GRAY;
+    else if (isLocalPlayerSummon())
+        bar = PLATE_BLUE;
+    else if (framed)
+        bar = PLATE_GREEN;
+    else if (wild && m_attackable)
+        bar = m_healthPercent > 60 ? PLATE_GREEN : (m_healthPercent > 30 ? PLATE_YELLOW : PLATE_RED);
+
+    uint8_t speciesIcon = 0;
+    if (wild && m_attackable) {
+        if (const auto it = s_plateSpeciesIcons.find(m_plateSpecies); it != s_plateSpeciesIcons.end())
+            speciesIcon = it->second;
+    }
+    const TexturePtr& iconTexture = speciesIcon == 2 ? caughtTexture : (speciesIcon == 1 ? dexTexture : nullptr);
+
+    const Size nameSize = m_plateName.getTextSize();
+    const Size levelSize = m_plateLevel.hasText() ? m_plateLevel.getTextSize() : Size(0, 0);
+    const int textHeight = std::max(nameSize.height(), 10);
+    const int contentWidth = nameSize.width() + (levelSize.width() > 0 ? GAP + levelSize.width() : 0);
+    const int width = std::max(contentWidth + 2 * PADDING, framed ? MIN_WIDTH : MIN_BARE_WIDTH);
+
+    int height = 2 + textHeight;
+    if (drawBar)
+        height += BAR_HEIGHT + 1;
+    if (drawExperience)
+        height += 3;
+    height += 2;
+
+    Rect plate(p.x - width / 2, p.y + 6 - height, width, height);
+    plate.bind(parentRect);
+
+    g_drawPool.select(DrawPoolType::CREATURE_INFORMATION);
+    // framed plates sit above the bare labels around them
+    g_drawPool.setDrawOrder(framed ? DrawOrder::SECOND : DrawOrder::FIRST);
+    if (framed) {
+        // a party (you included, while you are in one) gets a blue plate, a PvP or duel opponent a red one
+        if (status == PlateStatus::HOSTILE && !useGray)
+            drawPlateFrame(plate, HOSTILE_FILL, HOSTILE_BORDER);
+        else if (status == PlateStatus::PARTY && !useGray)
+            drawPlateFrame(plate, PARTY_FILL, PARTY_BORDER);
+        else
+            drawPlateFrame(plate, PLATE_FILL, PLATE_BORDER);
+    }
+
+    const int barTop = plate.top() + 1 + textHeight;
+    if (drawBar) {
+        int barLeft = plate.left() + PADDING;
+        if (iconTexture && iconTexture->getWidth() > 1) {
+            g_drawPool.addTexturedPos(iconTexture, barLeft, barTop + BAR_HEIGHT / 2 - iconTexture->getHeight() / 2);
+            barLeft += ICON_SPACE;
+        }
+        drawPlateBar(Rect(barLeft, barTop, plate.right() - PADDING - barLeft + 1, BAR_HEIGHT), m_healthPercent, bar);
+    }
+
+    if (drawExperience) {
+        if (const auto& player = g_game.getLocalPlayer()) {
+            // the server sends the active Pokemon's experience as the magic level percent
+            const double percent = isLocalPlayer() ? player->getLevelPercent() : player->getMagicLevelPercent();
+            const int expTop = barTop + (drawBar ? BAR_HEIGHT + 1 : 0);
+            const Rect expRect(plate.left() + PADDING, expTop, plate.width() - 2 * PADDING, 2);
+            g_drawPool.addFilledRect(expRect, Color(6, 9, 9, 240));
+            g_drawPool.addFilledRect(Rect(expRect.left(), expRect.top(), static_cast<int>(expRect.width() * percent / 100.0), 2), EXPERIENCE_COLOR);
+        }
+    }
+
+    if (drawName) {
+        const Color nameColor = useGray ? GRAY_COLOR : (isNpc() && g_game.getFeature(Otc::GameBlueNpcNameColor) ? NPC_COLOR : NAME_COLOR);
+        m_plateName.draw(Rect(plate.left() + PADDING, plate.top() + 1, nameSize), nameColor);
+        if (levelSize.width() > 0)
+            m_plateLevel.draw(Rect(plate.right() - PADDING - levelSize.width() + 1, plate.top() + 1, levelSize), useGray ? GRAY_COLOR : LEVEL_COLOR);
+    }
+
+    int iconX = plate.right() + 3;
+    const int iconY = plate.top() + 1;
+    if (m_skull != Otc::SkullNone && m_skullTexture) {
+        g_drawPool.addTexturedPos(m_skullTexture, iconX, iconY);
+        iconX += m_skullTexture->getWidth() + 1;
+    }
+    if (m_shield != Otc::ShieldNone && m_shieldTexture && m_showShieldTexture) {
+        g_drawPool.addTexturedPos(m_shieldTexture, iconX, iconY);
+        iconX += m_shieldTexture->getWidth() + 1;
+    }
+    if (m_emblem != Otc::EmblemNone && m_emblemTexture) {
+        g_drawPool.addTexturedPos(m_emblemTexture, iconX, iconY);
+        iconX += m_emblemTexture->getWidth() + 1;
+    }
+    if (m_icon != Otc::NpcIconNone && m_iconTexture)
+        g_drawPool.addTexturedPos(m_iconTexture, iconX, iconY);
 
     g_drawPool.resetDrawOrder();
     g_drawPool.select(DrawPoolType::MAP);

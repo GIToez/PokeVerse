@@ -1,0 +1,17 @@
+diff -ruN pristine/modules/game_healthcircle/game_healthcircle.lua modules/game_healthcircle/game_healthcircle.lua
+--- a/modules/game_healthcircle/game_healthcircle.lua
++++ b/modules/game_healthcircle/game_healthcircle.lua
+@@ -752,11 +752,12 @@
+ 
+     statsBarMenuLoaded = true
+ 
++    -- PokeVerse: 'hide' like the stats bar, game_pokehud replaces it
+     -- fall back to the same defaults as the stats bar itself, otherwise an
+     -- empty/unknown setting would silently select the first option ('hide')
+     local storedDimension = g_settings.getString('statsbar_dimension')
+     local storedPlacement = g_settings.getString('statsbar_placement')
+-    chooseStatsBarDimension:setCurrentOptionByData(storedDimension ~= "" and storedDimension or 'compact', true)
++    chooseStatsBarDimension:setCurrentOptionByData(storedDimension ~= "" and storedDimension or 'hide', true)
+     chooseStatsBarPlacement:setCurrentOptionByData(storedPlacement ~= "" and storedPlacement or 'top', true)
+ 
+     -- Set values

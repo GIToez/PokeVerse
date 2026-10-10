@@ -1,0 +1,128 @@
+diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interface/gameinterface.lua
+--- a/modules/game_interface/gameinterface.lua
++++ b/modules/game_interface/gameinterface.lua
+@@ -249,7 +249,8 @@
+     Keybind.bind("Misc", "Logout", {
+         {
+             type = KEY_PRESS,
+-            callback = function() tryLogout(false) end,
++            -- PokeVerse asks first, as the legacy client did
++            callback = function() tryLogout(true) end,
+         }
+     }, gameRootPanel)
+ 
+@@ -322,6 +323,8 @@
+     modules.client_background.hide()
+     gameRootPanel:show()
+     gameRootPanel:focus()
++    -- hidden PokeVerse windows (the poll) can hold the focus and swallow the chat input
++    getBottomPanel():focus()
+     gameMapPanel:followCreature(g_game.getLocalPlayer())
+ 
+     updateStretchShrink()
+@@ -335,9 +338,13 @@
+     end
+ 
+     setupViewMode(0)
++    -- PokeVerse: the full-screen view (panels over the map) unless the player picked another
++    local viewMode = g_settings.getNumber('pokeverseViewMode', 2)
+     if g_platform.isMobile() or g_gameConfig.isExtendedViewUI() then
+-        setupViewMode(1)
+-        setupViewMode(2)
++        viewMode = 2
++    end
++    for mode = 1, viewMode do
++        setupViewMode(mode)
+     end
+ 
+     addEvent(function()
+@@ -819,6 +826,14 @@
+                     g_game.partyLeave()
+                 end)
+             end
++
++            -- using the duel item on yourself leaves the duel
++            menu:addOption(tr('Cancel Duel'), function()
++                local item = localPlayer:getInventoryItem(InventorySlotBack)
++                if item then
++                    g_game.useWith(item, creatureThing)
++                end
++            end)
+         else
+             local localPosition = localPlayer:getPosition()
+             if not classic and not mobile then
+@@ -920,6 +935,14 @@
+                         end)
+                     end
+                 end
++
++                -- PokeVerse duels: the duel item sits in the hidden back slot and is used on the other trainer
++                menu:addOption(tr('Invite/Accept to Duel'), function()
++                    local item = localPlayer:getInventoryItem(InventorySlotBack)
++                    if item then
++                        g_game.useWith(item, creatureThing)
++                    end
++                end)
+             end
+         end
+ 
+@@ -1791,6 +1814,7 @@
+ 
+ function nextViewMode()
+     setupViewMode((currentViewMode + 1) % 3)
++    g_settings.set('pokeverseViewMode', currentViewMode)
+ end
+ 
+ function setupViewMode(mode)
+@@ -1942,6 +1966,8 @@
+     end
+ end
+ 
++FLOATING_PANEL_OPACITY = 0.85
++
+ function applyExtendedViewLayout(extendedView)
+     if extendedView == isExtendedViewActive then return end
+     isExtendedViewActive = extendedView
+@@ -1973,6 +1999,18 @@
+         gameMainRightPanel:setImageColor('alpha')
+         gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
+         gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
++        if not g_platform.isMobile() then
++            -- PokeVerse: a small chat in the bottom-left corner, more of the map stays free
++            gameBottomPanel:breakAnchors()
++            gameBottomPanel:addAnchor(AnchorLeft, 'parent', AnchorLeft)
++            gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
++            gameBottomPanel:setSize({ width = math.min(480, math.floor(gameRootPanel:getWidth() * 0.4)), height = 170 })
++        end
++        -- PokeVerse: the panels over the map are see-through
++        for _, panel in ipairs({ gameBottomPanel, gameLeftPanel, gameRightPanel }) do
++            panel:setOpacity(FLOATING_PANEL_OPACITY)
++        end
++        bottomSplitter:setVisible(false)
+         gameLeftActionPanel:setImageSource(nil)
+         gameRightActionPanel:setImageSource(nil)
+         gameLeftActionPanel:setBorderWidthRight(0)
+@@ -1993,6 +2031,10 @@
+ 
+         -- Reset bottom panel
+         gameBottomPanel:setDraggable(false)
++        for _, panel in ipairs({ gameBottomPanel, gameLeftPanel, gameRightPanel }) do
++            panel:setOpacity(1)
++        end
++        bottomSplitter:setVisible(true)
+ 
+         -- Set anchors
+         if not g_platform.isMobile() then
+diff -ruN pristine/modules/game_interface/widgets/statsbar.lua modules/game_interface/widgets/statsbar.lua
+--- a/modules/game_interface/widgets/statsbar.lua
++++ b/modules/game_interface/widgets/statsbar.lua
+@@ -68,7 +68,8 @@
+     }
+ }
+ 
+-local DEFAULT_DIMENSION = "compact"
++-- PokeVerse: hidden by default, game_pokehud shows level, health and party instead
++local DEFAULT_DIMENSION = "hide"
+ local DEFAULT_PLACEMENT = "top"
+ 
+ local isWarriorVocation = false

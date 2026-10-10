@@ -1,0 +1,204 @@
+diff -ruN pristine/modules/client_options/data_options.lua modules/client_options/data_options.lua
+--- a/modules/client_options/data_options.lua
++++ b/modules/client_options/data_options.lua
+@@ -28,7 +28,7 @@
+         end
+     },
+     classicControl                    = {
+-        value = g_platform.isMobile() and true or false,
++        value = true, -- the legacy PokeVerse default on every platform
+         action = function(value, options, controller, panels, extraWidgets)
+             -- Update the mouseControlMode based on this option
+             -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
+@@ -94,7 +94,7 @@
+         end
+     },
+     mouseControlMode                  = {
+-        value = 0, -- Default to "Regular Controls"
++        value = 1, -- PokeVerse: Classic Controls, matching classicControl
+         action = function(value, options, controller, panels, extraWidgets)
+             -- Update the underlying options values first
+             -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
+@@ -156,8 +156,16 @@
+             end, 50)
+         end
+     },
+-    returnDisablesChat                = false,
++    returnDisablesChat                = true, -- the legacy PokeVerse chat: Enter opens a one-message chat in WASD mode
+     smartWalk                         = false,
++    dashWalk                          = {
++        value = false,
++        action = function(value, options, controller, panels, extraWidgets)
++            if g_game.isOnline() then
++                g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, value and '1' or '0')
++            end
++        end
++    },
+     autoChaseOverride                 = true,
+     talkOnRightClick                  = false,
+     moveStack                         = false,
+@@ -194,7 +202,9 @@
+     showOutfitsOnList                 = {
+         value = true,
+         action = function(value, options, controller, panels, extraWidgets)
+-            CharacterList.updateCharactersAppearances(value)
++            if CharacterList and CharacterList.updateCharactersAppearances then
++                CharacterList.updateCharactersAppearances(value)
++            end
+         end
+     },
+     openMaximized                     = false,
+@@ -519,7 +529,8 @@
+         end
+     },
+     showLeftPanel                     = {
+-        value = true,
++        -- PokeVerse: one side panel, on the right, as in the legacy client
++        value = false,
+         action = function(value, options, controller, panels, extraWidgets)
+             if not modules.game_interface then
+                 return
+@@ -1002,7 +1013,8 @@
+         end,
+     },
+     actionBarShowBottom1 = {
+-        value = true,
++        -- PokeVerse: the action bar is for player spells, which trainers do not have
++        value = false,
+         action = function(value)
+             local allBox = modules.client_options.getOption("allActionBar13") or false
+             modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
+@@ -1170,4 +1182,12 @@
+         end
+     },
+     showInfoBanner = true,
++    displayMapGuides                  = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_minimap and modules.game_minimap.setGuidesDisplay then
++                modules.game_minimap.setGuidesDisplay(value)
++            end
++        end
++    },
+ }
+diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
+--- a/modules/client_options/options.lua
++++ b/modules/client_options/options.lua
+@@ -293,6 +293,47 @@
+ 
+     setupComboBox()
+ 
++    -- Settings saved by a build without the PokeVerse defaults keep Redemption's Tibia layout
++    -- (action bars, left panel); put those back to the PokeVerse defaults once
++    if g_settings.getNumber('pokeverseLayoutVersion', 0) < 1 then
++        for _, k in ipairs({ 'classicControl', 'smartLeftClick', 'mouseControlMode', 'returnDisablesChat', 'showLeftPanel' }) do
++            local value = options[k]
++            if type(value) == 'table' then
++                value = value.value
++            end
++            if value ~= nil then
++                g_settings.set(k, value)
++            end
++        end
++        -- the action bars read their visibility from settings/clientoptions.json before these options
++        local actionBarKeys = {}
++        for _, side in ipairs({ 'Bottom', 'Left', 'Right' }) do
++            for i = 1, 3 do
++                local k = 'actionBarShow' .. side .. i
++                actionBarKeys[#actionBarKeys + 1] = k
++                g_settings.set(k, false)
++            end
++        end
++        local actionBar = modules.game_actionbar
++        if actionBar and actionBar.ApiJson then
++            for n, k in ipairs(actionBarKeys) do
++                actionBar.ApiJson.setBarVisibility(n, k, false)
++            end
++            actionBar.ApiJson.saveData()
++        else
++            local file = '/settings/clientoptions.json'
++            if g_resources.fileExists(file) then
++                local ok, data = pcall(function() return json.decode(g_resources.readFileContents(file)) end)
++                if ok and type(data) == 'table' and data.actionBarVisibility then
++                    data.actionBarVisibility = nil
++                    g_resources.writeFileContents(file, json.encode(data))
++                end
++            end
++        end
++        g_settings.set('pokeverseLayoutVersion', 1)
++        g_settings.save()
++    end
++
+     -- load options
+     for k, obj in pairs(options) do
+         -- an option may either be a bare value or a table with an 'action'
+@@ -522,6 +563,7 @@
+ end
+ 
+ function controller:onGameStart()
++    g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, getOption('dashWalk') and '1' or '0')
+     if g_settings.getBoolean("autoSwitchPreset") then
+         local name = g_game.getCharacterName()
+         if Keybind.selectPreset(name) then
+@@ -930,13 +972,17 @@
+     end
+ end
+ 
++local panelNameCount = 0
++
++-- tostring(userdata) has no "0x" on Windows, so names come from a counter rather than the address
+ function getPanelName(panel)
+     for name, p in pairs(panels) do
+         if p == panel then
+             return name
+         end
+     end
+-    return "panel_" .. tostring(panel):match("userdata: 0x(%x+)")
++    panelNameCount = panelNameCount + 1
++    return "panel_" .. panelNameCount
+ end
+ 
+ function addSubcategoryToCategory(categoryText, newSubcategory)
+diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/client_options/styles/controls/general.otui
+--- a/modules/client_options/styles/controls/general.otui
++++ b/modules/client_options/styles/controls/general.otui
+@@ -129,6 +129,18 @@
+       height: 22
+ 
+       OptionCheckBox
++        id: dashWalk
++        !text: tr('Enable dash walking')
++        !tooltip: tr('Will boost your walk on high speed characters')
++
++    SmallReversedQtPanel
++      anchors.left: parent.left
++      anchors.right: parent.right
++      anchors.top: prev.bottom
++      margin-top: 7
++      height: 22
++
++      OptionCheckBox
+         id: openMaximized
+         !text: tr('Open containers maximized')
+ 
+diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
+--- a/modules/client_options/styles/interface/interface.otui
++++ b/modules/client_options/styles/interface/interface.otui
+@@ -53,6 +53,17 @@
+     margin-top: 7
+     height: 22
+ 
++    OptionCheckBoxMarked
++      id: displayMapGuides
++      !text: tr('Show guide marks on the minimap')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
+     $mobile:
+       height: 0
+       margin-top: 0

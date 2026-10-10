@@ -305,7 +305,8 @@ void DrawPool::release() {
     }
 
     for (auto& objs : m_objects) {
-        if (m_objectsDraw[0].size() < objs.size())
+        // swapping into a non-empty list would put this order's objects before the earlier orders'
+        if (m_objectsDraw[0].empty())
             m_objectsDraw[0].swap(objs);
 
         bool addFirst = true;

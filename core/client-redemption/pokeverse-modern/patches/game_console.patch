@@ -1,0 +1,165 @@
+diff -ruN pristine/modules/game_console/console.lua modules/game_console/console.lua
+--- a/modules/game_console/console.lua
++++ b/modules/game_console/console.lua
+@@ -266,13 +266,13 @@
+ 
+     -- tibia like hotkeys
+     local gameRootPanel = modules.game_interface.getRootPanel()
+-    Keybind.new("Chat Channel", "Next Channel", "Tab", "")
++    Keybind.new("Chat Channel", "Next Channel", "Ctrl+Tab", "")
+     Keybind.bind("Chat Channel", "Next Channel", {
+         {
+           type = KEY_PRESS,
+           callback = function() consoleTabBar:selectNextTab() end,
+         }
+-      }, consolePanel)
++      }, gameRootPanel)
+ 
+     Keybind.new("Chat Channel", "Previous Channel", "Shift+Tab", "")
+     Keybind.bind("Chat Channel", "Previous Channel", {
+@@ -280,7 +280,7 @@
+           type = KEY_PRESS,
+           callback = function() consoleTabBar:selectPrevTab() end,
+         }
+-    }, consolePanel)
++    }, gameRootPanel)
+     Keybind.new("Chat", "Send current chat line", { [CHAT_MODE.ON] = "Enter", [CHAT_MODE.OFF] = "" }, "")
+     Keybind.bind("Chat", "Send current chat line", {
+         {
+@@ -592,16 +592,15 @@
+     local player = g_game.getLocalPlayer()
+     local message = consoleTextEdit:getText()
+     if tab == defaultTab or tab == serverTab then
+-        consolePanel:getChildById('closeChannelButton'):disable()
+         if player then
+             player:setTyping(message ~= "")
+         end
+     else
+-        consolePanel:getChildById('closeChannelButton'):enable()
+         if player then
+             player:setTyping(false)
+         end
+     end
++    consolePanel:getChildById('closeChannelButton'):setEnabled(not isPermanentTab(tab))
+ 
+     if tab.isOnRedMessage then
+         tab:setColor('#dfdfdfff')
+@@ -829,12 +828,17 @@
+     return tab
+ end
+ 
++-- Local Chat, Server Log and NPCs are always open
++function isPermanentTab(tab)
++    return tab == defaultTab or tab == serverTab or (tab ~= nil and tab.npcChat and tab:getText() == 'NPCs')
++end
++
+ function removeTab(tab)
+     if type(tab) == 'string' then
+         tab = consoleTabBar:getTab(tab)
+     end
+ 
+-    if tab == defaultTab or tab == serverTab then
++    if not tab or isPermanentTab(tab) then
+         return
+     end
+ 
+@@ -1459,7 +1463,7 @@
+         menu:addSeparator()
+     end
+ 
+-    if tab ~= defaultTab and tab ~= serverTab then
++    if not isPermanentTab(tab) then
+         menu:addOption(tr('Close'), function()
+             removeTab(channelName)
+         end)
+@@ -2337,7 +2341,33 @@
+     end
+ end
+ 
++-- Tabs created while the bar had no width yet were pushed into its overflow lists out of order, which left Local Chat
++-- hidden behind channels the server opens at login. Local Chat, Server Log and NPCs go first, so later tabs are added
++-- after them.
++local function resetTabOrder()
++    local npcTab = consoleTabBar:getTab('NPCs')
++    if not npcTab then
++        npcTab = addTab('NPCs', false)
++        npcTab.npcChat = true
++    end
++
++    local ordered = { defaultTab, serverTab, npcTab }
++    for _, list in ipairs({ consoleTabBar.preTabs, consoleTabBar.tabs, consoleTabBar.postTabs }) do
++        for _, tab in ipairs(list) do
++            if not table.find(ordered, tab) then
++                ordered[#ordered + 1] = tab
++            end
++        end
++    end
++    for _, tab in ipairs(ordered) do
++        tab:setVisible(false)
++    end
++    consoleTabBar.preTabs, consoleTabBar.tabs, consoleTabBar.postTabs = {}, {}, ordered
++    consoleTabBar.onGeometryChange()
++end
++
+ function consoleController:onGameStart()
++    resetTabOrder()
+     consoleTabBar:selectTab(defaultTab)
+ 
+     local clientVersion = g_game.getClientVersion()
+diff -ruN pristine/modules/game_console/console.otui modules/game_console/console.otui
+--- a/modules/game_console/console.otui
++++ b/modules/game_console/console.otui
+@@ -154,9 +154,10 @@
+     margin-bottom: 4
+ 
+ ConsoleTabBarButton < UIButton
+-  size: 96 18
++  size: 78 18
+   image-source: /images/ui/console_button
+   image-clip: 0 18 96 18
++  image-border: 3
+   color: #7f7f7fff
+   text-offset: 0 -1
+   font: verdana-11px-rounded
+@@ -164,9 +165,9 @@
+   anchors.left: parent.left
+   padding: 5
+   tab-spacing: 0
+-  padding-left: 20
+-  padding-right: 20
+-  &tabWidth: 95
++  padding-left: 6
++  padding-right: 6
++  &tabWidth: 78
+ 
+   $checked:
+     image-clip: 0 0 96 18
+@@ -241,8 +242,8 @@
+     id: consoleTabBar
+     anchors.left: parent.left
+     anchors.bottom: consoleContentPanel.top
+-    anchors.right: closeChannelButton.left
+-    margin-right: 20
++    anchors.right: extendedViewDraggable.left
++    margin-right: 19
+     margin-left: 18
+     margin-bottom: -7
+     tab-spacing: 2
+@@ -256,7 +257,7 @@
+     anchors.top: consoleTabBar.top
+     size: 18 18
+     enabled: false
+-    &dynamicNavigation: 96
++    &dynamicNavigation: 78
+ 
+     $disabled:
+       image-clip: 36 0 18 18
+@@ -276,7 +277,7 @@
+     margin-right: 1
+     size: 0 18
+     enabled: false
+-    &dynamicNavigation: 96
++    &dynamicNavigation: 78
+ 
+     $disabled:
+       image-clip: 36 0 18 18

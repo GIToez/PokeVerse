@@ -1,0 +1,148 @@
+diff -ruN pristine/modules/game_skills/skills.otui modules/game_skills/skills.otui
+--- a/modules/game_skills/skills.otui
++++ b/modules/game_skills/skills.otui
+@@ -157,21 +157,21 @@
+       id: mana
+       height: 15
+       SkillNameLabel
+-        !text: tr('Mana')
++        !text: tr('Pokemon Energy')
+       SkillValueLabel
+ 
+     SkillButton
+       id: soul
+       height: 15
+       SkillNameLabel
+-        !text: tr('Soul Points')
++        !text: tr('Respect')
+       SkillValueLabel
+ 
+     SkillButton
+       id: capacity
+       height: 15
+       SkillNameLabel
+-        !text: tr('Capacity')
++        !text: tr('Free Ball Slots')
+       SkillValueLabel
+ 
+     SkillButton
+@@ -209,10 +209,10 @@
+     SkillButton
+       id: magiclevel
+       SkillNameLabel
+-        !text: tr('Magic Level')
++        !text: tr('Pokemon Level')
+       SkillValueLabel
+       ImageSkill
+-        image-source: /images/icons/icon_magic
++        image-source: /images/icons/poke
+         image-size: 9 9
+       SkillPercentPanel
+         background-color: red
+@@ -220,61 +220,43 @@
+     SkillButton
+       id: skillId0
+       SkillNameLabel
+-        !text: tr('Fist Fighting')
++        !text: tr('Duel Win')
+       SkillValueLabel
+-      ImageSkill
+-        image-source: /images/icons/icon_fist
+-        image-size: 9 9
+       SkillPercentPanel
+ 
+     SkillButton
+       id: skillId1
+       SkillNameLabel
+-        !text: tr('Club Fighting')
++        !text: tr('Duel Loss')
+       SkillValueLabel
+-      ImageSkill
+-        image-source: /images/icons/icon_club
+-        image-size: 9 9
+       SkillPercentPanel
+ 
+     SkillButton
+       id: skillId2
+       SkillNameLabel
+-        !text: tr('Sword Fighting')
++        !text: tr('Battle Win')
+       SkillValueLabel
+-      ImageSkill
+-        image-source: /images/icons/icon_sword
+-        image-size: 9 9
+       SkillPercentPanel
+ 
+     SkillButton
+       id: skillId3
+       SkillNameLabel
+-        !text: tr('Axe Fighting')
++        !text: tr('Battle Loss')
+       SkillValueLabel
+-      ImageSkill
+-        image-source: /images/icons/icon_axe
+-        image-size: 9 9
+       SkillPercentPanel
+ 
+     SkillButton
+       id: skillId4
+       SkillNameLabel
+-        !text: tr('Distance Fighting')
++        !text: tr('Headbutting')
+       SkillValueLabel
+-      ImageSkill
+-        image-source: /images/icons/icon_distance
+-        image-size: 9 9
+       SkillPercentPanel
+ 
+     SkillButton
+       id: skillId5
+       SkillNameLabel
+-        !text: tr('Shielding')
++        !text: tr('Catching')
+       SkillValueLabel
+-      ImageSkill
+-        image-source: /images/icons/icon_shielding
+-        image-size: 9 9
+       SkillPercentPanel
+ 
+     SkillButton
+@@ -664,31 +646,31 @@
+ 
+   SkillsSubMenuOption
+     id: showMagic
+-    !text: tr('Magic')
++    !text: tr('Pokemon Level')
+ 
+   SkillsSubMenuOption
+     id: showFist
+-    !text: tr('Fist')
++    !text: tr('Duel Win')
+ 
+   SkillsSubMenuOption
+     id: showClub
+-    !text: tr('Club')
++    !text: tr('Duel Loss')
+ 
+   SkillsSubMenuOption
+     id: showSword
+-    !text: tr('Sword')
++    !text: tr('Battle Win')
+ 
+   SkillsSubMenuOption
+     id: showAxe
+-    !text: tr('Axe')
++    !text: tr('Battle Loss')
+ 
+   SkillsSubMenuOption
+     id: showDistance
+-    !text: tr('Distance')
++    !text: tr('Headbutting')
+   
+   SkillsSubMenuOption
+     id: showShielding
+-    !text: tr('Shielding')
++    !text: tr('Catching')
+ 
+   SkillsSubMenuOption
+     id: showFishing
