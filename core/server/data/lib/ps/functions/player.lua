@@ -431,26 +431,8 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
         PokemonHeldItem.onGainExperience(player, pokemon, ball, expAmount)
 
         if (currentLevel < POKEMON_LEVEL_MAX or currentExtraPoints < maxExtraPoints) then
-            if (multiplier) then -- Pokemon Exp Stage
-                if (currentLevel <= 10) then
-                    expAmount = expAmount * 42
-                elseif (currentLevel <= 15) then
-                    expAmount = expAmount * 30
-                elseif (currentLevel <= 20) then
-                    expAmount = expAmount * 16
-                elseif (currentLevel <= 25) then
-                    expAmount = expAmount * 9
-                elseif (currentLevel <= 30) then
-                    expAmount = expAmount * 5
-                elseif (currentLevel <= 50) then
-                    expAmount = expAmount * 3
-                elseif (currentLevel <= 70) then
-                    expAmount = expAmount * 2
-                else
-                    expAmount = expAmount * 1.5
-                end
-
-                expAmount = expAmount * 1.25
+            if (multiplier) then -- Kill experience: stage (config/experience.lua), then personal bonus
+                expAmount = expAmount * getPokemonExpStageRate(currentLevel) * POKEMON_EXP_RATE
                 expAmount = expAmount + math.floor(expAmount * getPlayerExtraExpRate(player))
             end
 
