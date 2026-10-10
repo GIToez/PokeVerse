@@ -21,6 +21,7 @@ function onSay(cid, words, param, channel)
 	end
 
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, getCreatureName(pid) .. " has been kicked.")
+	doSetDiscordLogoutReason(pid, "kick")
 	doRemoveCreature(pid)
 	return true
 end

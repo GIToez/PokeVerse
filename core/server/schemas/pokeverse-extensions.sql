@@ -697,3 +697,25 @@ CREATE TABLE IF NOT EXISTS `datalog_slot_machine` (
   `gain` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ---------------------------------------------------------------------------
+-- Discord account links (PokeVerse-Discord bot, docs/discord-bridge.md)
+-- ---------------------------------------------------------------------------
+-- One row per linked game account; the game server is the only writer. The Discord user ID
+-- is a snowflake stored as text so it never loses precision. `main_player_id` is the
+-- character used as the Discord nickname; NULL means "not chosen", and the bridge then uses
+-- the account's first-created character (lowest `players`.`id`).
+-- Rollback: DROP TABLE `discord_account_links`; no other table refers to it and no existing
+-- table was changed.
+CREATE TABLE IF NOT EXISTS `discord_account_links` (
+  `account_id` INT NOT NULL,
+  `discord_user_id` VARCHAR(20) NOT NULL,
+  `main_player_id` INT NULL DEFAULT NULL,
+  `linked_at` BIGINT UNSIGNED NOT NULL,
+  `updated_at` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`account_id`),
+  UNIQUE KEY `discord_user_id` (`discord_user_id`),
+  KEY `main_player_id` (`main_player_id`),
+  CONSTRAINT `discord_account_links_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `discord_account_links_main` FOREIGN KEY (`main_player_id`) REFERENCES `players` (`id`) ON DELETE SET NULL
+) ENGINE = InnoDB;
