@@ -6,6 +6,7 @@ function onSay(cid, words, param)
 	end
 
 	setPlayerLanguage(cid, LANG_CODES[langCode])
+	doPlayerOpenChannel(cid, getPlayerGameChatChannel(cid))
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your language has been update to %s!"), langCode))
 	return true
 end
