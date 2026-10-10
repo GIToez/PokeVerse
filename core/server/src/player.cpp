@@ -3986,9 +3986,10 @@ bool Player::rateExperience(double& gainExp, bool fromMonster)
 	if(!fromMonster)
 		return true;
 
-	// PS: personal bonuses (extraExpRate, e.g. 0.15 from the XP Boost Potion) are a percentage of the stage
+	// PS: personal bonuses (extraExpRate, e.g. 0.15 from the XP Boost Potion) are a percentage of the stage,
+	// then the server-wide experience event multiplies the result
 	gainExp *= rates[SKILL__LEVEL] * g_game.getExperienceStage(level,
-		vocation->getExperienceMultiplier()) * (1.0 + extraExpRate);
+		vocation->getExperienceMultiplier()) * (1.0 + extraExpRate) * g_game.getExperienceEventMultiplier();
 	if(!hasFlag(PlayerFlag_HasInfiniteStamina))
 	{
 		int32_t minutes = getStaminaMinutes();
