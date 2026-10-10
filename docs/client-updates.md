@@ -47,12 +47,9 @@ If GitHub cannot be reached, the client shows an error and starts normally after
 
 ## Platform notes
 
-- **Windows:** the executable updates itself. The new one is written next to the old one
-  with a timestamp (`otclient-<time>.exe`), the client starts the newest one, and older
-  copies are removed.
-- **Linux:** data and module updates work the same, but the executable cannot replace itself
-  while running, so it is left out of the Linux manifest. When the engine itself changes,
-  Linux players download the new tarball.
+- **Windows and Linux:** the executable updates itself under the same name, so shortcuts
+  keep working. The running file is renamed to `otclient.exe.old` (`otclient.old` on Linux),
+  the new one is written in its place, and the old copy is deleted on a later start.
 - **Android:** not covered yet; it comes with the Android build.
 
 ## Rolling back
@@ -66,7 +63,7 @@ numbers, so they download the reverted files like any other update.
 scripts/assemble-redemption-client.sh --updater http://127.0.0.1:8099/ /tmp/upd/v1 core/client-redemption/otclient
 python3 scripts/make-updater-manifest.py --package <newer package> --os linux --site /tmp/upd/site \
   --files-url http://127.0.0.1:8099/files --version test --release-dir /tmp/upd/site/release \
-  --release-url http://127.0.0.1:8099/release --skip otclient
+  --release-url http://127.0.0.1:8099/release --binary otclient
 ```
 
 Serve `/tmp/upd/site` over HTTP/1.1 (the client's HTTP library does not accept HTTP/1.0

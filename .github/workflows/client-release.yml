@@ -180,8 +180,7 @@ jobs:
           common=(--site site/updater --files-url "$PAGES_URL/updater/files" --version "$TAG"
                   --release-dir release --release-url "$release_url")
           python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary otclient.exe "${common[@]}"
-          # Linux cannot relaunch a replaced binary; engine updates there need a new download
-          python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --skip otclient "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary otclient "${common[@]}"
           cat > site/index.html <<EOF
           <!doctype html><meta charset="utf-8"><title>PokeVerse client</title>
           <h1>PokeVerse client</h1>
