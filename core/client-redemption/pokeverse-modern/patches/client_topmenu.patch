@@ -1,0 +1,21 @@
+diff -ruN pristine/modules/client_topmenu/topmenu.lua modules/client_topmenu/topmenu.lua
+--- a/modules/client_topmenu/topmenu.lua
++++ b/modules/client_topmenu/topmenu.lua
+@@ -35,7 +35,7 @@
+ -- private functions
+ local function addButton(id, description, icon, callback, panel, toggle, front)
+     local class
+-    if toggle then
++    if toggle or icon then
+         class = 'MainToggleButton'
+     else
+         class = 'Button'
+@@ -52,7 +52,7 @@
+     end
+     button:setId(id)
+     button:setTooltip(description)
+-    if toggle then
++    if toggle or icon then
+         button:setIcon(resolvepath(icon, 3))
+     else
+         button:setText(description)
