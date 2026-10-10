@@ -55,7 +55,7 @@ export LIBGL_ALWAYS_SOFTWARE=1
 "$tests/server.sh" start "$server" "$out/server"
 
 "$root/scripts/assemble-legacy-linux-client.sh" --link --test --port "$LOGIN_PROXY" "$out/legacy/client" "$legacy_build"
-"$root/scripts/assemble-redemption-client.sh" --link --test --port "$LOGIN_PROXY" "$out/redemption/client" "$redemption"
+"$root/scripts/assemble-redemption-client.sh" --classic --link --test --port "$LOGIN_PROXY" "$out/redemption/client" "$redemption"
 for c in legacy redemption; do
   cat > "$out/$c/client/modules/client_selftest/config.lua" <<'EOF'
 SELFTEST = { account = 'selftest', password = 'selftest', character = 'Self Test' }
