@@ -9,6 +9,21 @@ local SLOT_SIZE = 40
 
 local orientation = HORIZONTAL
 
+local MOVE_COUNT = 12
+local KEYBIND_CATEGORY = 'Pokemon'
+local ORDER_ACTION = 'Order'
+
+local function moveAction(index)
+    return 'Use move ' .. index
+end
+
+-- F1-F12 in both chat modes, and with the chat off (WASD) also the number row: 1-9, 0 for move 10
+local function moveKeys(index)
+    local number = index <= 10 and tostring(index % 10) or ''
+    return { [CHAT_MODE.ON] = 'F' .. index, [CHAT_MODE.OFF] = 'F' .. index },
+        { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = number }
+end
+
 local function slots()
     local list = {}
     for _, child in ipairs(pokemonMovesWindow:getChildren()) do
@@ -120,6 +135,40 @@ function onPokemonMoveCooldown(itemId, cooldown)
     end
 end
 
+local function useMove(index)
+    if g_game.isOnline() and pokemonMovesWindow:getChildById('move' .. index) then
+        g_game.talkChannel(MessageModes.Say, 0, 'm' .. index)
+    end
+end
+
+-- the order icon the server keeps in the head slot; using it starts the crosshair like a click on it
+local function useOrder()
+    local player = g_game.isOnline() and g_game.getLocalPlayer()
+    local item = player and player:getInventoryItem(InventorySlotHead)
+    if item then
+        modules.game_interface.startUseWith(item)
+    end
+end
+
+local function bindKeys()
+    for index = 1, MOVE_COUNT do
+        local primary, secondary = moveKeys(index)
+        Keybind.new(KEYBIND_CATEGORY, moveAction(index), primary, secondary)
+        Keybind.bind(KEYBIND_CATEGORY, moveAction(index), {
+            { type = KEY_DOWN, callback = function() useMove(index) end }
+        })
+    end
+    Keybind.new(KEYBIND_CATEGORY, ORDER_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'R' }, '')
+    Keybind.bind(KEYBIND_CATEGORY, ORDER_ACTION, { { type = KEY_DOWN, callback = useOrder } })
+end
+
+local function unbindKeys()
+    for index = 1, MOVE_COUNT do
+        Keybind.delete(KEYBIND_CATEGORY, moveAction(index))
+    end
+    Keybind.delete(KEYBIND_CATEGORY, ORDER_ACTION)
+end
+
 local function delegateDrag(slot)
     slot:setDraggable(true)
     slot.onDragEnter = function(self, mousePos)
@@ -161,7 +210,7 @@ function onPokemonMoves(iconItemId, moves)
             if g_keyboard.isShiftPressed() then
                 g_game.talkChannel(MessageModes.Say, 0, '/sd ' .. v)
             else
-                g_game.talkChannel(MessageModes.Say, 0, 'm' .. k)
+                useMove(k)
             end
             return true
         end
@@ -223,6 +272,7 @@ function onInit()
 
     applyOrientation()
     pokemonMovesWindow:hide()
+    bindKeys()
     if g_game.isOnline() then
         onOnline()
     end
@@ -240,6 +290,7 @@ function onTerminate()
     for _, slot in ipairs(slots()) do
         stopCooldown(slot)
     end
+    unbindKeys()
     savePosition()
     pokemonMovesWindow:destroy()
 end

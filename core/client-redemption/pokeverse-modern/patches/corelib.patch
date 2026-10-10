@@ -1,3 +1,33 @@
+diff -ruN pristine/modules/corelib/keybind.lua modules/corelib/keybind.lua
+--- a/modules/corelib/keybind.lua
++++ b/modules/corelib/keybind.lua
+@@ -49,13 +49,21 @@
+ function Keybind.init()
+   connect(g_game, { onGameStart = Keybind.online, onGameEnd = Keybind.offline })
+ 
+-  Keybind.presets = g_settings.getList("controls-presets")
++  -- PokeVerse: one "Trainer" preset instead of Redemption's Tibia vocations, also for settings saved with them
++  local vocations = { Druid = true, Knight = true, Paladin = true, Sorcerer = true, Monk = true }
++  Keybind.presets = {}
++  for _, preset in ipairs(g_settings.getList("controls-presets")) do
++    if not vocations[preset] then
++      table.insert(Keybind.presets, preset)
++    end
++  end
+ 
+   if #Keybind.presets == 0 then
+-    Keybind.presets = { "Druid", "Knight", "Paladin", "Sorcerer", "Monk" }
+-    Keybind.currentPreset = "Druid"
+-  else
+-    Keybind.currentPreset = g_settings.getValue("controls-preset-current")
++    Keybind.presets = { "Trainer" }
++  end
++  Keybind.currentPreset = g_settings.getValue("controls-preset-current")
++  if not table.find(Keybind.presets, Keybind.currentPreset) then
++    Keybind.currentPreset = Keybind.presets[1]
+   end
+ 
+   for index, preset in ipairs(Keybind.presets) do
 diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
 --- a/modules/corelib/keyboard.lua
 +++ b/modules/corelib/keyboard.lua
