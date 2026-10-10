@@ -20,6 +20,7 @@
 		<talkaction words="/pd" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/pokemonDescription.lua"/>
 		<talkaction words="/tc" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/tmChoose.lua"/>
 		<talkaction words="/d1;/d2" event="script" value="../../lib/ps/events/talkactions/transformMemory.lua" description="Order your Pokemon to transform into the corresponding memory slot."/>
+		<talkaction words="/expevent" event="script" value="../../lib/ps/events/talkactions/expEvent.lua" description="Show the running experience event." />
 		<talkaction words="/boss" event="script" value="../../lib/ps/events/talkactions/bossRewardCheck.lua" description="Show remaining time to be able to receive another World Boss reward." />		
 		<talkaction words="/lang" event="script" value="../../lib/ps/events/talkactions/setLanguage.lua" description="Set current game language." />		
 		<!-- Skills -->
@@ -57,6 +58,7 @@
 	<talkaction log="yes" words="/promote;/demote" access="5" event="script" value="promote.lua"/>
 	<talkaction log="yes" words="/shutdown" access="5" event="script" value="shutdown.lua"/>
 	<talkaction log="yes" words="/restart" access="3" event="script" value="restart.lua"/>
+	<talkaction log="yes" words="/doubleexp" access="5" event="script" value="doubleexp.lua"/>
 	<talkaction log="yes" words="/mode" access="5" event="script" value="mode.lua"/>
 	<talkaction log="yes" words="/createnpc" access="5" event="script" value="createNpc.lua"/>
 	<talkaction log="yes" words="/mypokemon" access="5" event="script" value="pokemon.lua"/>

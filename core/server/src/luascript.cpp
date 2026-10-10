@@ -2428,6 +2428,12 @@ void LuaScriptInterface::registerFunctions()
 	//getExperienceStage(level)
 	lua_register(m_luaState, "getExperienceStage", LuaScriptInterface::luaGetExperienceStage);
 
+	//getExperienceEventMultiplier()
+	lua_register(m_luaState, "getExperienceEventMultiplier", LuaScriptInterface::luaGetExperienceEventMultiplier);
+
+	//setExperienceEventMultiplier(multiplier)
+	lua_register(m_luaState, "setExperienceEventMultiplier", LuaScriptInterface::luaSetExperienceEventMultiplier);
+
 	//getDataDir()
 	lua_register(m_luaState, "getDataDir", LuaScriptInterface::luaGetDataDir);
 
@@ -11533,6 +11539,25 @@ int32_t LuaScriptInterface::luaGetExperienceStage(lua_State* L)
 		divider = popFloatNumber(L);
 
 	lua_pushnumber(L, g_game.getExperienceStage(popNumber(L), divider));
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetExperienceEventMultiplier(lua_State* L)
+{
+	//getExperienceEventMultiplier()
+	lua_pushnumber(L, g_game.getExperienceEventMultiplier());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetExperienceEventMultiplier(lua_State* L)
+{
+	//setExperienceEventMultiplier(multiplier)
+	double multiplier = popFloatNumber(L);
+	if(multiplier < 1.0)
+		multiplier = 1.0;
+
+	g_game.setExperienceEventMultiplier(multiplier);
+	lua_pushboolean(L, true);
 	return 1;
 }
 
