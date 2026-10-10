@@ -37,6 +37,7 @@
 #include <filesystem>
 #endif
 
+#include <fstream>
 #include <lzma.h>
 #ifdef FRAMEWORK_HAVE_LIBARCHIVE
 #include <archive.h>
@@ -1189,9 +1190,31 @@ void ResourceManager::updateExecutable(std::string fileName)
     if (!dFile)
         g_logger.fatal("Cannot find executable: {} in downloads", fileName);
 
+    const std::filesystem::path path(m_binaryPath);
+
+    // Keep the executable name stable so shortcuts survive updates: a running
+    // executable can be renamed on Windows and Linux, but not overwritten.
+    const auto oldBinary = std::filesystem::path(path.string() + ".old");
+    std::error_code ec;
+    std::filesystem::remove(oldBinary, ec);
+    ec.clear();
+    std::filesystem::rename(path, oldBinary, ec);
+    if (!ec) {
+        std::ofstream out(path, std::ios::binary | std::ios::trunc);
+        out.write(dFile->response.data(), static_cast<std::streamsize>(dFile->response.size()));
+        out.close();
+        if (out) {
+            std::filesystem::permissions(path, std::filesystem::status(oldBinary, ec).permissions(), ec);
+            g_logger.info("Updated binary file: {}", path.string());
+            return;
+        }
+        std::filesystem::remove(path, ec);
+        std::filesystem::rename(oldBinary, path, ec);
+        g_logger.error("Can't write {}, falling back to a side-by-side binary", path.string());
+    }
+
     const auto& oldWriteDir = getWriteDir();
     setWriteDir(getWorkDir());
-    const std::filesystem::path path(m_binaryPath);
     const auto newBinary = path.stem().string() + "-" + std::to_string(time(nullptr)) + path.extension().string();
     g_logger.info("Updating binary file: {}", newBinary);
     PHYSFS_file* file = PHYSFS_openWrite(newBinary.c_str());
@@ -1227,6 +1250,8 @@ bool ResourceManager::launchCorrect(const std::vector<std::string>& args) { // c
 
     const std::filesystem::path path(m_binaryPath.parent_path());
     std::error_code ec;
+    std::filesystem::remove(std::filesystem::path(m_binaryPath.string() + ".old"), ec);
+    ec.clear();
     if (path.empty() || !std::filesystem::exists(path, ec) || ec) {
         return false;
     }
