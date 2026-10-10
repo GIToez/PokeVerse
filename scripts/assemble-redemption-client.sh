@@ -74,7 +74,7 @@ legacy_gamelib=(pokemon moves items types)
 legacy_protocol=(protocollogin protocolaccount)
 # PokeVerse artwork that replaces Redemption's file of the same name
 legacy_data_wins=(images/background.png images/clienticon.png images/game/slots images/game/npcicons
-  images/game/combatmodes)
+  images/game/combatmodes images/game/skulls)
 
 copy_tree() { # <from> <to>: hard links with --link, otherwise a copy; existing files are kept
   if [ "$link" = 1 ]; then cp -al --update=none "$1/." "$2/"; else cp -a --update=none "$1/." "$2/"; fi
