@@ -1,0 +1,12 @@
+Module
+  name: game_features
+  description: PokeVerse 8.54 game features for the Redemption engine
+  author: PokeVerse
+  reloadable: false
+  sandboxed: true
+  autoload: true
+  autoload-priority: 20
+  dependencies: [ corelib, gamelib ]
+  scripts: [features]
+  @onLoad: init()
+  @onUnload: terminate()
