@@ -19,6 +19,8 @@ Module
     dofile 'keyboard'
     dofile 'mouse'
     dofile 'net'
+    dofile 'json'
+    dofile 'http'
 
     dofiles 'classes'
     dofiles 'ui'

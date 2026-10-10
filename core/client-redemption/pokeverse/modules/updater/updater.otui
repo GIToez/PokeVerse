@@ -1,0 +1,44 @@
+MainWindow
+  id: updaterWindow
+  draggable: false
+  !text: tr('Updater')
+  width: 350
+
+  layout:
+    type: verticalBox
+    fit-children: true
+      
+  Label
+    id: status
+    !text: tr('Checking for updates')
+    text-align: center
+
+  ProgressBar
+    id: mainProgress
+    height: 15
+    background-color: #4444ff
+    margin-bottom: 5
+    margin-top: 5
+
+  Label
+    id: downloadStatus
+    text-align: center
+    text-auto-resize: true
+    text-wrap: true
+    visible: false
+
+  ProgressBar
+    id: downloadProgress
+    height: 15
+    background-color: #4444ff
+    margin-bottom: 5
+    margin-top: 5
+    visible: false
+          
+  Button
+    margin-top: 5
+    margin-left: 90
+    margin-right: 90
+    !text: tr('Cancel')
+    @onClick: Updater.abort()
+
