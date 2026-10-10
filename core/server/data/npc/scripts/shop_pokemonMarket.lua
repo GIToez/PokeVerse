@@ -19,6 +19,7 @@ local OFFERTS_PER_PAGE = 15
 local MAXIMUM_OFFERTS_PER_POKEMON = 100
 
 local function doPlayerLeavePokemonOnMarket(cid, ball, value)
+    PokemonStats.ensureBall(ball.uid)
     local query = string.concat(
         "INSERT INTO pokemon_market (player_id, date, pokemon_name, pokemon_level, pokemon_extrapoints, pokemon_sex, pokemon_specialability, ball_id, attributes, value, pokemon_eggmove) VALUES (",
         getPlayerGUID(cid), ",",
