@@ -105,7 +105,6 @@ void PlatformWindow::processKeyDown(Fw::Key keyCode)
 #else
     if (keyCode == Fw::KeyCtrl) {
         m_inputEvent.keyboardModifiers |= Fw::KeyboardCtrlModifier;
-        m_inputEvent.keyboardModifiers |= Fw::KeyboardPrimaryModifier;
         return;
     }
     if (keyCode == Fw::KeyAlt) {
@@ -164,7 +163,6 @@ void PlatformWindow::processKeyUp(Fw::Key keyCode)
 #else
     if (keyCode == Fw::KeyCtrl) {
         m_inputEvent.keyboardModifiers &= ~Fw::KeyboardCtrlModifier;
-        m_inputEvent.keyboardModifiers &= ~Fw::KeyboardPrimaryModifier;
         return;
     }
     if (keyCode == Fw::KeyAlt) {

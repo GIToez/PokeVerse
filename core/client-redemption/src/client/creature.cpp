@@ -60,7 +60,8 @@ Creature::Creature() :m_type(Proto::CreatureTypeUnknown)
     g_stats.addCreature();
     m_name.setFont(g_gameConfig.getCreatureNameFont());
     m_name.setAlign(Fw::AlignTopCenter);
-    m_typingIconTexture = g_textures.getTexture(g_gameConfig.getTypingIcon());
+    if (g_gameConfig.drawTyping())
+        m_typingIconTexture = g_textures.getTexture(g_gameConfig.getTypingIcon());
 }
 
 Creature::~Creature() {

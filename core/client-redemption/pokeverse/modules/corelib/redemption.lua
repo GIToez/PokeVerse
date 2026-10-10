@@ -1,6 +1,16 @@
 -- Legacy engine APIs used by the PokeVerse modules, mapped onto the Redemption engine.
 -- Every entry is listed in docs/phase3-redemption.md.
 
+-- Redemption rejects protocol versions above this (its own gamelib sets it from its client list).
+g_gameConfig.setLastSupportedVersion(854)
+
+-- Redemption added LogTrace = 0 in front of the log levels.
+LogDebug = 1
+LogInfo = 2
+LogWarning = 3
+LogError = 4
+LogFatal = 5
+
 -- Redemption has a single OpenGL 2 painter with shaders always on.
 g_graphics.isPainterEngineAvailable = function(engine) return engine == 2 end
 g_graphics.getPainterEngine = function() return 2 end

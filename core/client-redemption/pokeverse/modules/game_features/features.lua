@@ -12,6 +12,25 @@ GameTileAddThingWithStackpos = GameTileAddThingWithStackpos or 124
 GameMapCache = GameMapCache or 125
 GamePokeVerse = GamePokeVerse or 138
 
+-- Redemption added MessageMana = 41 to Otc::MessageMode, so the modes after it moved up by one.
+MessageModes.Mana = 41
+MessageModes.BeyondLast = 42
+MessageModes.MonsterYell = 43
+MessageModes.MonsterSay = 44
+MessageModes.Red = 45
+MessageModes.Blue = 46
+MessageModes.RVRChannel = 47
+MessageModes.RVRAnswer = 48
+MessageModes.RVRContinue = 49
+MessageModes.Last = 57
+
+-- The legacy entergame picks the newest client version from this list (1041 in the
+-- legacy gamelib). The legacy engine only used it to name the things files, but
+-- Redemption parses packets and the DAT by client version, so it must be 854.
+function g_game.getSupportedClients()
+  return { 854 }
+end
+
 function init()
   connect(g_game, { onClientVersionChange = setup })
   if g_game.getClientVersion() ~= 0 then

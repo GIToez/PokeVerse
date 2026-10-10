@@ -288,12 +288,14 @@ namespace Fw
         KeyboardPrimaryModifier = 16
     };
 
+    // Outside macOS, Ctrl alone is the primary modifier and Ctrl is reported as
+    // KeyboardCtrlModifier only: the PokeVerse modules compare modifier values exactly.
     inline bool isPrimaryModifierOnly(const int modifiers)
     {
 #if defined(__APPLE__)
         const int primaryMask = KeyboardPrimaryModifier;
 #else
-        const int primaryMask = KeyboardPrimaryModifier | KeyboardCtrlModifier;
+        const int primaryMask = KeyboardCtrlModifier;
 #endif
         return (modifiers & primaryMask) == primaryMask &&
                (modifiers & ~primaryMask) == 0;
@@ -304,7 +306,7 @@ namespace Fw
 #if defined(__APPLE__)
         const int primaryMask = KeyboardPrimaryModifier;
 #else
-        const int primaryMask = KeyboardPrimaryModifier | KeyboardCtrlModifier;
+        const int primaryMask = KeyboardCtrlModifier;
 #endif
         const int requiredMask = primaryMask | KeyboardShiftModifier;
         return (modifiers & requiredMask) == requiredMask &&

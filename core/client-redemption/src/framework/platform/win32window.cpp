@@ -604,10 +604,8 @@ Fw::Key WIN32Window::retranslateVirtualKey(const WPARAM wParam, const LPARAM lPa
 LRESULT WIN32Window::windowProc(const HWND hWnd, const uint32_t uMsg, const WPARAM wParam, const LPARAM lParam)
 {
     m_inputEvent.keyboardModifiers = 0;
-    if (IsKeyDown(VK_CONTROL)) {
+    if (IsKeyDown(VK_CONTROL))
         m_inputEvent.keyboardModifiers |= Fw::KeyboardCtrlModifier;
-        m_inputEvent.keyboardModifiers |= Fw::KeyboardPrimaryModifier;
-    }
     if (IsKeyDown(VK_SHIFT))
         m_inputEvent.keyboardModifiers |= Fw::KeyboardShiftModifier;
 #if defined(__APPLE__)
