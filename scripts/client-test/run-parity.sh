@@ -76,7 +76,9 @@ act() {
       timeout 20 xdotool windowfocus --sync "$window" type --delay 40 "$arg" || echo "TYPE failed" >&2 ;;
     CLICK)
       read -r x y button modifier <<<"$arg"
-      timeout 10 xdotool mousemove --window "$window" --sync "$x" "$y" \
+      # --sync waits for the pointer to move, so it must not already be on the target
+      timeout 10 xdotool mousemove --window "$window" --sync "$((x + 1))" "$((y + 1))" \
+        mousemove --window "$window" --sync "$x" "$y" \
         ${modifier:+keydown $modifier} click "$button" ${modifier:+keyup $modifier} || echo "CLICK $arg failed" >&2 ;;
   esac
 }
