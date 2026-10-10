@@ -1,0 +1,39 @@
+diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/inventory.otui
+--- a/modules/game_inventory/inventory.otui
++++ b/modules/game_inventory/inventory.otui
+@@ -344,7 +344,7 @@
+       margin-top: 3
+ 
+       Label
+-        !text: tr('Soul')
++        !text: tr('Respect')
+         text.align: center
+         font: cipsoftFont
+         anchors.horizontalCenter: parent.horizontalCenter
+@@ -373,7 +373,7 @@
+       margin-top: 3
+ 
+       Label
+-        !text: tr('Cap')
++        !text: tr('Balls')
+         text.align: center
+         font: cipsoftFont
+         anchors.horizontalCenter: parent.horizontalCenter
+@@ -421,7 +421,7 @@
+       size: 30 44
+ 
+       Label
+-        !text: tr('Cap')
++        !text: tr('Balls')
+         text.align: center
+         font: cipsoftFont
+         anchors.horizontalCenter: parent.horizontalCenter
+@@ -441,7 +441,7 @@
+         color: #c0c0c0ff
+ 
+       Label
+-        !text: tr('Soul')
++        !text: tr('Respect')
+         text.align: center
+         font: cipsoftFont
+         anchors.horizontalCenter: parent.horizontalCenter
