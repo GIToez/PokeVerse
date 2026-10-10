@@ -43,6 +43,7 @@ local function doSendTradeInformation(cid, target, targetItem)
         msg[#msg + 1] = Vitamin.getBallDescription(ball.uid)
         msg[#msg + 1] = "\nHeld: "
         msg[#msg + 1] = PokemonHeldItem.getBallDescription(ball.uid)
+        msg[#msg + 1] = PokemonStats.getBallDescription(ball.uid)
         msg[#msg + 1] = "\n\n"
     end
 
