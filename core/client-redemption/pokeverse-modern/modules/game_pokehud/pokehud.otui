@@ -1,0 +1,204 @@
+HudPanel < UIWidget
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  phantom: true
+
+HudTrack < UIWidget
+  image-source: /modules/game_pokehud/images/track
+  image-border-left: 4
+  image-border-right: 4
+  height: 10
+
+  UIWidget
+    id: fill
+    image-border-left: 4
+    image-border-right: 4
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    phantom: true
+
+  Label
+    id: text
+    font: Verdana Bold-11px-outline
+    color: #ffffff
+    text-align: center
+    anchors.fill: parent
+    phantom: true
+
+HudText < Label
+  font: Verdana Bold-11px
+  color: #e8ecec
+  text-auto-resize: true
+  phantom: true
+
+HudBall < UIWidget
+  image-source: /modules/game_pokehud/images/ball-empty
+  size: 14 14
+  margin-left: 3
+
+HudCoin < UIWidget
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  height: 22
+  padding-left: 6
+  padding-right: 10
+
+  UIItem
+    id: icon
+    size: 16 16
+    virtual: true
+    phantom: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  HudText
+    id: amount
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+
+UIWidget
+  id: pokeHud
+  size: 500 126
+  phantom: true
+  focusable: false
+
+  HudPanel
+    id: experiencePanel
+    size: 340 22
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+
+    HudText
+      id: level
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 12
+
+    HudTrack
+      id: experience
+      height: 6
+      anchors.left: level.right
+      anchors.right: experienceText.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+      margin-right: 10
+      phantom: false
+
+    HudText
+      id: experienceText
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 12
+
+  HudPanel
+    id: mainPanel
+    size: 500 46
+    anchors.top: experiencePanel.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 5
+
+    HudText
+      id: trainerName
+      anchors.left: parent.left
+      anchors.top: parent.top
+      margin-left: 14
+      margin-top: 5
+
+    UIWidget
+      id: heart
+      image-source: /modules/game_pokehud/images/heart
+      size: 12 11
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      margin-left: 14
+      margin-bottom: 8
+      phantom: true
+
+    HudTrack
+      id: health
+      height: 13
+      anchors.left: heart.right
+      anchors.right: parent.horizontalCenter
+      anchors.verticalCenter: heart.verticalCenter
+      margin-left: 6
+      margin-right: 44
+      phantom: false
+
+    HudText
+      id: pokemonName
+      anchors.right: parent.right
+      anchors.top: parent.top
+      margin-right: 14
+      margin-top: 5
+
+    HudTrack
+      id: pokemonHealth
+      height: 13
+      anchors.left: parent.horizontalCenter
+      anchors.right: parent.right
+      anchors.verticalCenter: heart.verticalCenter
+      margin-left: 44
+      margin-right: 14
+      phantom: false
+
+  UIWidget
+    id: conditions
+    height: 12
+    anchors.top: mainPanel.bottom
+    anchors.left: mainPanel.left
+    anchors.right: portrait.left
+    margin-top: 4
+    margin-left: 14
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 2
+
+  UIWidget
+    id: portrait
+    image-source: /modules/game_pokehud/images/portrait-disc
+    size: 66 66
+    anchors.horizontalCenter: mainPanel.horizontalCenter
+    anchors.verticalCenter: mainPanel.verticalCenter
+
+    UICreature
+      id: creature
+      size: 50 50
+      anchors.centerIn: parent
+      phantom: true
+
+    UIWidget
+      id: ring
+      image-source: /modules/game_pokehud/images/portrait-ring
+      anchors.fill: parent
+      phantom: true
+
+  UIWidget
+    id: party
+    size: 102 16
+    anchors.top: portrait.bottom
+    anchors.horizontalCenter: portrait.horizontalCenter
+    margin-top: 3
+    phantom: true
+
+  UIWidget
+    id: coins
+    height: 22
+    anchors.top: mainPanel.bottom
+    anchors.right: mainPanel.right
+    margin-top: 4
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 6
+      fit-children: true
+
+    HudCoin
+      id: soulCoins
+      !tooltip: tr('Soul coins you are carrying')
+
+    HudCoin
+      id: dollars
+      !tooltip: tr('Dollars you are carrying')

@@ -39,6 +39,7 @@ Module
     - game_creatureinformation
     - game_pokemoves
     - game_pokebar
+    - game_pokehud
     - game_pokedex
     - game_tmchoose
     - game_statusbar
