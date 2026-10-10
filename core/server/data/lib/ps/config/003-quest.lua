@@ -201,7 +201,7 @@ QUESTS_CONFIG = {
             finishPosition = {x = 5020, y = 788, z = 7},
             onStart = function(cid)
                 doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "004-sewer")
-                doPlayerSafeAddItem(cid, Flashlight.ITEM_ID, 1, true)
+                Flashlight.give(cid)
             end,
 --            onEnd = function(cid) doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "004-sewer") end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 12115, count = 5 } },
