@@ -1,0 +1,10 @@
+Module
+  name: game_guide
+  description: Game Guide
+  author: PokeVerse
+  sandboxed: true
+  scripts: [guide, modern]
+  autoload-priority: 1001
+  autoload: true
+  @onLoad: onInit()
+  @onUnload: onTerminate()
