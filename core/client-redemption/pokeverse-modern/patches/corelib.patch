@@ -1,0 +1,32 @@
+diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsbar.lua
+--- a/modules/corelib/ui/uistatsbar.lua
++++ b/modules/corelib/ui/uistatsbar.lua
+@@ -107,7 +107,7 @@
+ end
+ 
+ function UIStatsBar:setValue(value, total)
+-    if not (value) or not (total) or total == 0 or not (self.statsType) or not (self.statsSize) or not (self.statsOrientation) then
++    if not (value) or not (total) or not (self.statsType) or not (self.statsSize) or not (self.statsOrientation) then
+         return
+     end
+ 
+@@ -117,15 +117,16 @@
+ 
+     -- Bar dimension
+     if self.statsOrientation == 'horizontal' then
+-        self.bar:setWidth(((self:getWidth() - 2) * value) / total)
++        self.bar:setWidth(total > 0 and ((self:getWidth() - 2) * value) / total or 0)
+     elseif self.statsOrientation == 'vertical' then
+-        self.bar:setHeight(((self:getHeight() - 2) * value) / total)
++        self.bar:setHeight(total > 0 and ((self:getHeight() - 2) * value) / total or 0)
+     else
+         return
+     end
+ 
+     -- Bar color
+-    local percent = (value * 100) / total
++    -- PokeVerse trainers have no energy until a Pokemon is out (0/0)
++    local percent = total > 0 and (value * 100) / total or 0
+     if self.statsType == 'health' then
+         if percent >= 100 then
+             self.bar:setImageSource('/images/bars/' ..
