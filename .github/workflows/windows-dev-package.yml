@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    name: Build server and client (Windows, MSYS2)
+    name: Build server (Windows, MSYS2)
     runs-on: windows-latest
     defaults:
       run:
@@ -43,23 +43,11 @@ jobs:
             mingw-w64-x86_64-libxml2
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-zlib
-            mingw-w64-x86_64-physfs
-            mingw-w64-x86_64-glew
-            mingw-w64-x86_64-openal
-            mingw-w64-x86_64-libogg
-            mingw-w64-x86_64-libvorbis
 
       - name: Build server
         run: |
           cmake -S core/server -B build/server -G Ninja -DCMAKE_BUILD_TYPE=Release
           cmake --build build/server
-
-      - name: Build client
-        if: ${{ !cancelled() }}
-        run: |
-          cmake -S core/client-legacy -B build/client -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_STATIC_LIBS=OFF \
-            -DBUILD_COMMIT=${GITHUB_SHA::7} -DBUILD_REVISION=${GITHUB_RUN_NUMBER}
-          cmake --build build/client
 
       - name: Cache MariaDB
         uses: actions/cache@v4
@@ -73,7 +61,7 @@ jobs:
             "https://archive.mariadb.org/mariadb-${MARIADB_VERSION}/winx64-packages/mariadb-${MARIADB_VERSION}-winx64.zip"
 
       - name: Assemble package
-        run: scripts/package-windows.sh build/server build/client mariadb.zip dist
+        run: scripts/package-windows.sh build/server mariadb.zip dist
 
       - name: Collect Mesa software OpenGL for the CI client test (not shipped)
         run: |
@@ -92,18 +80,6 @@ jobs:
         with:
           name: PokeVerse-Windows-Dev
           path: dist/
-          if-no-files-found: error
-          compression-level: 9
-
-      - name: Assemble live client package
-        env:
-          LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
-        run: scripts/package-windows-live-client.sh build/client "$LIVE_HOST" dist-live
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: PokeVerse-Windows-Live
-          path: dist-live/
           if-no-files-found: error
           compression-level: 9
 

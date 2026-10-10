@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Assembles the PokeVerse Windows development package.
-# Runs in an MSYS2 MINGW64 shell after the server and client are built.
+# Runs in an MSYS2 MINGW64 shell after the server is built.
 #
-#   scripts/package-windows.sh <server build dir> <client build dir> <mariadb winx64 zip> <output dir>
+#   scripts/package-windows.sh <server build dir> <mariadb winx64 zip> <output dir>
 #
-# The package is written to <output dir>/PokeVerse-Windows-Dev/.
+# The package is written to <output dir>/PokeVerse-Windows-Dev/. The game client
+# (client-windows/, the Redemption client) is added afterwards by the workflow's dev-client job.
 set -euo pipefail
 
 server_build=$(realpath "$1")
-client_build=$(realpath "$2")
-mariadb_zip=$(realpath "$3")
-out=$(realpath -m "$4")/PokeVerse-Windows-Dev
+mariadb_zip=$(realpath "$2")
+out=$(realpath -m "$3")/PokeVerse-Windows-Dev
 root=$(cd "$(dirname "$0")/.." && pwd)
 
 rm -rf "$out"
@@ -30,17 +30,6 @@ mkdir -p "$srv/logs/server" "$srv/logs/chat" "$srv/logs/bots"
 cp "$server_build/pokeverse-server.exe" "$srv/"
 copy_dlls "$srv" "$srv/pokeverse-server.exe"
 cp -r "$root/core/server/data" "$root/core/server/config.lua" "$root/core/server/pt_br.loc" "$srv/"
-
-echo "== Client"
-cli="$out/client-legacy-windows"
-mkdir -p "$cli"
-cp "$client_build/pokeverse-client.exe" "$cli/"
-if [ -f "$client_build/libotc_framework.dll" ]; then
-  cp "$client_build/libotc_framework.dll" "$cli/"
-fi
-copy_dlls "$cli" "$cli"/*.exe "$cli"/*.dll
-cp -r "$root/core/client-legacy/data" "$root/core/client-legacy/modules" "$root/core/client-legacy/init.lua" \
-      "$root/core/client-legacy/LICENSE" "$cli/"
 
 echo "== Database"
 db="$out/database"
@@ -74,4 +63,4 @@ if find "$out" -name config.local.lua | grep -q .; then
 fi
 
 echo "Package ready: $out"
-du -sh "$out" "$srv" "$cli" "$db"
+du -sh "$out" "$srv" "$db"

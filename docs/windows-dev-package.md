@@ -1,7 +1,8 @@
 # Windows development package
 
 `PokeVerse-Windows-Dev` contains everything needed to run PokeVerse on one Windows PC:
-the compiled server, the compiled legacy client, a portable MariaDB and batch files.
+the compiled server, the Redemption client (`client-windows\otclient.exe`), a portable MariaDB
+and batch files.
 No compilers or installers are needed. Everything listens on 127.0.0.1 only.
 
 ## Download
@@ -20,21 +21,18 @@ No compilers or installers are needed. Everything listens on 127.0.0.1 only.
 More accounts: `Create Account.bat`, or interactively with the same file. The package's
 `README.txt` explains every script, folder and common problems.
 
-## Redemption client against the local server
-
-The **Client release** workflow also uploads **PokeVerse-Windows-Client-Local**: the Redemption
-client (modern layout) pointed at 127.0.0.1:7564, without the updater. Download it from the
-same pull request, extract it next to the dev package, start the server with `Start Server.bat`
-and run `otclient.exe` from the extracted folder. The legacy client in the dev package works
-against the same server at the same time.
+The client is the same Redemption build players get (modern layout), pointed at
+127.0.0.1:7564 and without the updater. Its log is `%APPDATA%\pokeverse\pokeverse\pokeverse.log`.
 
 ## How it is built
 
-The workflow `.github/workflows/windows-dev-package.yml` has three jobs:
+The workflow `.github/workflows/windows-dev-package.yml` has these jobs:
 
 | Job | What it does |
 | --- | --- |
-| Build server and client (Windows, MSYS2) | Builds `core/server` and `core/client-legacy` with MSYS2 MinGW-w64 (64-bit), downloads MariaDB 11.4 (Windows zip), and runs `scripts/package-windows.sh`, which copies the executables with their DLLs, game data, SQL files and `scripts/windows-package/`. |
+| Build server (Windows, MSYS2) | Builds `core/server` with MSYS2 MinGW-w64 (64-bit), downloads MariaDB 11.4 (Windows zip), and runs `scripts/package-windows.sh`, which copies the server with its DLLs, game data, SQL files and `scripts/windows-package/`. |
+| Build Redemption client (Windows) | Builds `core/client-redemption` with MSVC and vcpkg (same cache as the Client release workflow). |
+| Add the Redemption client to the dev package | Runs `scripts/assemble-redemption-client.sh --host 127.0.0.1` into `client-windows\` of the package. |
 | Test package on a clean Windows runner | Downloads the artifact on a fresh runner without MSYS2 and runs `scripts/test-package-windows.py` with `PATH` limited to Windows system folders: database setup (twice), `Create Account.bat`, `Start Server.bat`, protocol tests (wrong password refused, login, character list, game login, walking), database checks (positions saved, starting items) and a client start-up check. GitHub runners have no OpenGL 2.0 driver, so if the shipped client cannot start, a copy of it is retried with Mesa's software OpenGL (CI only; Mesa is not shipped). |
 | Server test (Linux) | Builds the server on Ubuntu and runs `scripts/test-server-linux.sh`. |
 
@@ -57,10 +55,13 @@ Windows, in an MSYS2 MINGW64 shell with the packages listed in the workflow:
 
 ```bash
 cmake -S core/server -B build/server -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build build/server
-cmake -S core/client-legacy -B build/client -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_STATIC_LIBS=OFF && cmake --build build/client
 curl -fsSL -o mariadb.zip https://archive.mariadb.org/mariadb-11.4.8/winx64-packages/mariadb-11.4.8-winx64.zip
-scripts/package-windows.sh build/server build/client mariadb.zip dist
+scripts/package-windows.sh build/server mariadb.zip dist
 ```
+
+Then build the Redemption client (`cmake --preset windows-release` in `core/client-redemption`,
+MSVC with vcpkg) and run
+`scripts/assemble-redemption-client.sh --host 127.0.0.1 dist/PokeVerse-Windows-Dev/client-windows <otclient.exe and DLLs>`.
 
 Linux (server test): build `core/server` the same way, then
 `scripts/test-server-linux.sh build/server/pokeverse-server`.

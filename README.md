@@ -7,9 +7,9 @@ PokeVerse is being rebuilt from a clean, organized foundation, starting from the
 | Folder | Purpose |
 | --- | --- |
 | `references/` | Original reference projects. Read-only; copy from here, never edit in place. |
-| `core/` | Our working source code: server, legacy client, Redemption client. |
+| `core/` | Our working source code: server, Redemption client, and the legacy client (no longer updated; its data and PokeVerse modules are the source the Redemption client is assembled from). |
 | `builds/dev/` | Ready-to-run Windows development environment (localhost only). |
-| `builds/live/` | Release packages: Linux server, legacy clients (Windows/Linux), Redemption clients (Windows/Linux/Android/web). |
+| `builds/live/` | Release packages: Linux server, Redemption clients (Windows/Linux/Android/web). |
 | `docs/` | Project documentation (English). |
 | `scripts/` | Build and setup automation. |
 
@@ -28,14 +28,14 @@ See [`docs/windows-dev-package.md`](docs/windows-dev-package.md).
 ## Live server
 
 The live server runs on OVHcloud (Ubuntu 24.04) and is deployed by the **Live server**
-workflow. Players use the **PokeVerse-Windows-Live** artifact, which connects to it.
+workflow. Players use the Redemption client from the **Client release** workflow, which connects to it.
 See [`docs/live-server.md`](docs/live-server.md).
 
 ## Redemption client
 
 The new client runs PokeVerse on the OTClient Redemption engine, for Windows, Linux and
-Android, and updates itself from GitHub so players install it only once. The legacy client
-stays available until the new one covers everything.
+Android, and updates itself from GitHub so players install it only once. It is the only
+client that gets updates; the legacy client is no longer built or shipped.
 See [`docs/phase3-redemption.md`](docs/phase3-redemption.md) and
 [`docs/client-updates.md`](docs/client-updates.md).
 

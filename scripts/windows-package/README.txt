@@ -43,7 +43,6 @@ Setup Database.bat           Creates or updates the local database.
 Start Server and Client.bat  Starts database, server and client.
 Start Server.bat             Starts database and server only.
 Start Client.bat             Starts the client only (the server must be running).
-Start Legacy Client.bat      Starts the previous client instead.
 Create Account.bat           Creates a new account with one character.
                              Interactive, or: "Create Account.bat" name password "Character Name" [0 female / 1 male]
 Stop Database.bat            Stops the database. Stop the server first.
@@ -58,7 +57,6 @@ Folders
 server-windows\          Game server (pokeverse-server.exe), its data and config.lua.
                          Server logs are in server-windows\logs\.
 client-windows\          Game client (otclient.exe) and its data.
-client-legacy-windows\   Previous game client (pokeverse-client.exe), kept for comparison.
 database\mariadb\        Portable MariaDB server (port 3307, 127.0.0.1 only).
 database\sql\            Database setup scripts.
 database\data\           Your database (created by "Setup Database.bat").

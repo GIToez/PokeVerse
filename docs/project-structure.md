@@ -6,19 +6,16 @@ PokeVerse/
 │   └── Projeto/                Original PSoul project (see references/README.md)
 ├── core/                       Our primary source code
 │   ├── server/
-│   ├── client-legacy/
+│   ├── client-legacy/          No longer updated; data and modules the Redemption client is assembled from
 │   └── client-redemption/
 ├── builds/                     Compiled, runnable packages
 │   ├── dev/                    Windows local development (localhost only)
 │   │   ├── server-windows/
-│   │   ├── client-legacy-windows/
-│   │   ├── client-redemption-windows/
+│   │   ├── client-windows/     Redemption client
 │   │   ├── database/
 │   │   └── Setup Database.bat, Start Server and Client.bat, ...
 │   └── live/                   Release packages
 │       ├── server-linux/
-│       ├── client-legacy-windows/
-│       ├── client-legacy-linux/
 │       ├── client-redemption-windows/
 │       ├── client-redemption-linux/
 │       ├── client-redemption-android/

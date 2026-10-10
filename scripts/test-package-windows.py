@@ -9,7 +9,7 @@ Windows system folders so nothing from a compiler or developer tool is picked up
   3. Start Server.bat, wait for "server Online!"
   4. protocol-test.py: wrong password refused, login, character list, game login, movement
   5. Database checks: positions saved, starting items present
-  6. Client smoke test: pokeverse-client.exe starts and loads its modules
+  6. Client smoke test: otclient.exe in client-windows (the Redemption client) starts and loads its modules
 
 Usage: test-package-windows.py <package dir> [--logs <dir>]
 """
@@ -116,10 +116,11 @@ def send_keys(keys):
 
 
 def run_client(client_dir, env, logs, tag, pkg):
-    client_log = os.path.join(os.environ.get("USERPROFILE", ""), "pokeverse.log")
+    # the Redemption client logs to its user folder: %APPDATA%\pokeverse\pokeverse\
+    client_log = os.path.join(os.environ.get("APPDATA", ""), "pokeverse", "pokeverse", "pokeverse.log")
     if os.path.exists(client_log):
         os.remove(client_log)
-    client = subprocess.Popen([os.path.join(client_dir, "pokeverse-client.exe")], cwd=client_dir, env=env)
+    client = subprocess.Popen([os.path.join(client_dir, "otclient.exe")], cwd=client_dir, env=env)
     time.sleep(25)
     alive = client.poll() is None
     text = read(client_log)
@@ -174,17 +175,16 @@ def main():
 
     step("Package contents")
     for rel in ["README.txt", "Setup Database.bat", "Start Server.bat", "Start Client.bat",
-                "Start Server and Client.bat", "Start Legacy Client.bat", "Create Account.bat", "Stop Database.bat",
+                "Start Server and Client.bat", "Create Account.bat", "Stop Database.bat",
                 r"server-windows\pokeverse-server.exe", r"server-windows\config.lua",
-                r"server-windows\data\world\map.otbm", r"client-legacy-windows\pokeverse-client.exe",
-                r"client-legacy-windows\init.lua", r"client-legacy-windows\data\things\data.spr",
-                r"client-windows\otclient.exe", r"client-windows\init.lua",
+                r"server-windows\data\world\map.otbm", r"client-windows\otclient.exe",
+                r"client-windows\init.lua", r"client-windows\data\things\data.spr",
                 r"database\mariadb\bin\mariadbd.exe", r"database\sql\01-base-schema.sql"]:
         path = os.path.join(pkg, rel)
         if not os.path.isfile(path):
             fail(f"missing {rel}")
         print(f"ok  {rel}  ({os.path.getsize(path)} bytes)")
-    for big in [r"server-windows\data\world\map.otbm", r"client-legacy-windows\data\things\data.spr"]:
+    for big in [r"server-windows\data\world\map.otbm", r"client-windows\data\things\data.spr"]:
         if os.path.getsize(os.path.join(pkg, big)) < 1_000_000:
             fail(f"{big} looks like a Git LFS pointer, not the real file")
     if os.path.exists(os.path.join(pkg, "server-windows", "config.local.lua")):
@@ -256,7 +256,7 @@ def main():
 
         if not opts.skip_client:
             step("Client smoke test (as shipped)")
-            client_dir = os.path.join(pkg, "client-legacy-windows")
+            client_dir = os.path.join(pkg, "client-windows")
             ok, how = run_client(client_dir, clean_env(), logs, "as-shipped", pkg), "as shipped"
             if not ok and opts.mesa:
                 # CI runners have no OpenGL 2.0 driver; retry a copy of the client with Mesa's software renderer.
