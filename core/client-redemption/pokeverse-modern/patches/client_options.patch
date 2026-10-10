@@ -39,7 +39,27 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          end
      },
      openMaximized                     = false,
-@@ -1170,4 +1180,12 @@
+@@ -519,7 +529,8 @@
+         end
+     },
+     showLeftPanel                     = {
+-        value = true,
++        -- PokeVerse: one side panel, on the right, as in the legacy client
++        value = false,
+         action = function(value, options, controller, panels, extraWidgets)
+             if not modules.game_interface then
+                 return
+@@ -1002,7 +1013,8 @@
+         end,
+     },
+     actionBarShowBottom1 = {
+-        value = true,
++        -- PokeVerse: the action bar is for player spells, which trainers do not have
++        value = false,
+         action = function(value)
+             local allBox = modules.client_options.getOption("allActionBar13") or false
+             modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
+@@ -1170,4 +1182,12 @@
          end
      },
      showInfoBanner = true,
