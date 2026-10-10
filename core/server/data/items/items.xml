@@ -35803,6 +35803,10 @@
 	</item>
 
     <item fromid="30133" toid="30135" name="morganite tapestry" />
+	<item id="30136" article="an" name="empty master ball">
+		<attribute key="description" value="Catches any wild Pokemon it can be used on, without fail." />
+		<attribute key="weight" value="090" />
+	</item>
 	
 	<item id="30001" name="water" />
 	<item id="30002" name="blood" />

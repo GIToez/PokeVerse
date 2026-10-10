@@ -228,7 +228,8 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
 					doSendDistanceShoot(playerPosition, toPosition, balls[ballName].projectile)
 					doCreatureSay(cid, string.format(__L(cid, "%s ball, go!"), ballName:gsub("^%l", string.upper)), TALKTYPE_SAY)
 
-					if (getCatchChance(cid, pokemonName, item.itemid, pokemonLevel) <= getBallCatchRate(ballName)) then
+					if (balls[ballName].guaranteedCatch or
+                            getCatchChance(cid, pokemonName, item.itemid, pokemonLevel) <= getBallCatchRate(ballName)) then
                         doSendMagicEffect(toPosition, balls[ballName].effects.catch)
 						addEvent(catchPokemon, 5500, cid, toPosition, pokemonName, balls[ballName].charged,
                             pokemonSex, pokemonLevel, pokemonSpecialAbility,
