@@ -107,6 +107,7 @@ end
 ExtendedIds.GameplayTutorialText = 8
 ExtendedIds.GameplayTutorialImage = 9
 ExtendedIds.DashWalking = 10
+ExtendedIds.SummonOwner = 11
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v
