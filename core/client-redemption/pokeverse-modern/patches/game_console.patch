@@ -1,0 +1,12 @@
+diff -ruN pristine/modules/game_console/console.lua modules/game_console/console.lua
+--- a/modules/game_console/console.lua
++++ b/modules/game_console/console.lua
+@@ -266,7 +266,7 @@
+ 
+     -- tibia like hotkeys
+     local gameRootPanel = modules.game_interface.getRootPanel()
+-    Keybind.new("Chat Channel", "Next Channel", "Tab", "")
++    Keybind.new("Chat Channel", "Next Channel", "Ctrl+Tab", "")
+     Keybind.bind("Chat Channel", "Next Channel", {
+         {
+           type = KEY_PRESS,
