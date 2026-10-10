@@ -499,6 +499,8 @@ void Application::registerLuaFunctions()
     // FontManager
     g_lua.registerSingletonClass("g_fonts");
     g_lua.bindSingletonFunction("g_fonts", "clearFonts", &FontManager::clearFonts, &g_fonts);
+    g_lua.bindSingletonFunction("g_fonts", "setLegacyFonts", &FontManager::setLegacyFonts, &g_fonts);
+    g_lua.bindSingletonFunction("g_fonts", "isLegacyFonts", &FontManager::isLegacyFonts, &g_fonts);
     g_lua.bindSingletonFunction("g_fonts", "importFont",
         static_cast<bool (FontManager::*)(const std::string&)>(&FontManager::importFont), &g_fonts);
     g_lua.bindSingletonFunction("g_fonts", "importFontWithSize",

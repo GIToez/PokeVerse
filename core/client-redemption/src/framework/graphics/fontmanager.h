@@ -45,10 +45,16 @@ public:
     void setDefaultFont(const BitmapFontPtr& font) { m_defaultFont = font; }
     void setDefaultWidgetFont(const BitmapFontPtr& font) { m_defaultWidgetFont = font; }
 
+    // Legacy otfont semantics: y-offset moves the glyphs instead of only growing the text box,
+    // and &nbsp; is as wide as a space. Set before the fonts are imported.
+    void setLegacyFonts(const bool legacy) { m_legacyFonts = legacy; }
+    bool isLegacyFonts() const { return m_legacyFonts; }
+
 private:
     std::vector<BitmapFontPtr> m_fonts;
     BitmapFontPtr m_defaultFont;
     BitmapFontPtr m_defaultWidgetFont;
+    bool m_legacyFonts{ false };
 };
 
 extern FontManager g_fonts;

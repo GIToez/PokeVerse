@@ -23,6 +23,7 @@
 #include "bitmapfont.h"
 
 #include "drawpoolmanager.h"
+#include "fontmanager.h"
 #include "image.h"
 #include "painter.h"
 #include "texture.h"
@@ -60,6 +61,8 @@ void BitmapFont::load(const OTMLNodePtr& fontNode)
     }
 
     m_glyphsSize[32].setWidth(spaceWidth);
+    if (g_fonts.isLegacyFonts())
+        m_glyphsSize[160].setWidth(spaceWidth);
     m_glyphsSize[127].setWidth(1);
     m_glyphsSize[static_cast<uint8_t>('\n')] = { 1, m_glyphHeight };
 
@@ -309,8 +312,10 @@ void BitmapFont::calculateGlyphsPositions(std::string_view text,
     int maxLineWidth = 0;
     int lines = 0;
 
+    const bool legacy = g_fonts.isLegacyFonts();
+
     if (textBoxSize && textLength == 0) {
-        textBoxSize->resize(0, m_glyphHeight + m_yOffset);
+        textBoxSize->resize(0, legacy ? m_glyphHeight : m_glyphHeight + m_yOffset);
         return;
     }
 
@@ -348,7 +353,7 @@ void BitmapFont::calculateGlyphsPositions(std::string_view text,
         }
     }
 
-    Point vpos(0, 0);
+    Point vpos(0, legacy ? m_yOffset : 0);
     lines = 0;
 
     for (int i = 0; i < textLength; ++i) {
@@ -377,7 +382,7 @@ void BitmapFont::calculateGlyphsPositions(std::string_view text,
 
     if (textBoxSize) {
         textBoxSize->setWidth(maxLineWidth);
-        textBoxSize->setHeight(vpos.y + m_glyphHeight + m_yOffset);
+        textBoxSize->setHeight(vpos.y + m_glyphHeight + (legacy ? 0 : m_yOffset));
     }
 }
 

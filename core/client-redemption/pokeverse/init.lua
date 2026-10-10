@@ -13,6 +13,7 @@ g_app.setOrganizationName("pokeverse")
 -- the legacy interface is laid out in physical pixels; Redemption would scale it by the display DPI
 g_app.setHUDScale(1)
 g_ui.setLegacyTextOffset(true)
+g_fonts.setLegacyFonts(true)
 
 g_app.hasUpdater = function()
   return Services.updater and Services.updater ~= "" and g_modules.getModule("updater") ~= nil
