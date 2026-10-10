@@ -425,7 +425,8 @@ def stay_online(conn, seconds):
             data = conn.recv()
         except socket.timeout:
             continue
-        except (ProtocolError, OSError):
+        except (ProtocolError, OSError) as e:
+            print("  connection ended: %s" % e)
             return True
         if data and data[0] == 0x1E:
             conn.send(b"\x1E")
