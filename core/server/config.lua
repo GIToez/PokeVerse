@@ -350,6 +350,12 @@
 	discordBridgeSecret = ""
 	discordBridgeQueueSize = 2000
 	discordBridgeAllowRemote = false
+	-- Admin-only login/logout events for the bot's private #player-activity channel.
+	-- discordBridgeSessionIps = false leaves IP addresses out of those events.
+	discordBridgePlayerSessions = true
+	discordBridgeSessionIps = true
+	-- Discord account linking (!discord link in game, /link in Discord).
+	discordBridgeAccountLinking = true
 
 	-- Daily game server restart with in-game warnings (30, 15, 10, 5 and 1 minutes, then 30 and
 	-- 10 seconds). Players, Pokemon, items and the world are saved before the server stops;

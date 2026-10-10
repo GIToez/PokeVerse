@@ -55,6 +55,7 @@ class ProtocolGame : public Protocol
 			protocolGameCount++;
 #endif
 			player = NULL;
+			m_logoutRequested = false;
 			tvOwner = NULL;
 			tvChannel = NULL;
 			m_eventConnect = 0;
@@ -85,6 +86,8 @@ class ProtocolGame : public Protocol
 		bool login(const std::string& name, uint32_t id, const std::string& password,
 			OperatingSystem_t operatingSystem, uint16_t version, bool gamemaster);
 		bool logout(bool displayEffect, bool forceLogout);
+		// Logout requested by the client (packet 0x14).
+		bool requestLogout();
 
 		void setPlayer(Player* p);
 		void setTVOwner(Player* newTVOwner);
@@ -418,6 +421,7 @@ class ProtocolGame : public Protocol
 
 		friend class Player;
 		Player* player;
+		bool m_logoutRequested;
 		Player* tvOwner;
 		TVChannel* tvChannel;
 

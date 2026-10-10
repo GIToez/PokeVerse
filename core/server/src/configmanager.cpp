@@ -327,10 +327,14 @@ bool ConfigManager::load()
 	m_confNumber[TOURNAMENT_WEEK_WINNER_STORAGE] = getGlobalNumber("tournamentWeekWinnerStorage", 7065);
 	m_confBool[DISCORD_BRIDGE_ENABLED] = getGlobalBool("discordBridgeEnabled", false);
 	m_confBool[DISCORD_BRIDGE_ALLOW_REMOTE] = getGlobalBool("discordBridgeAllowRemote", false);
+	m_confBool[DISCORD_BRIDGE_PLAYER_SESSIONS] = getGlobalBool("discordBridgePlayerSessions", true);
+	m_confBool[DISCORD_BRIDGE_SESSION_IPS] = getGlobalBool("discordBridgeSessionIps", true);
+	m_confBool[DISCORD_BRIDGE_ACCOUNT_LINKING] = getGlobalBool("discordBridgeAccountLinking", true);
 	m_confString[DISCORD_BRIDGE_HOST] = getGlobalString("discordBridgeHost", "127.0.0.1");
 	m_confString[DISCORD_BRIDGE_SECRET] = getGlobalString("discordBridgeSecret", "");
 	m_confNumber[DISCORD_BRIDGE_PORT] = getGlobalNumber("discordBridgePort", 7199);
 	m_confNumber[DISCORD_BRIDGE_QUEUE_SIZE] = getGlobalNumber("discordBridgeQueueSize", 2000);
+	m_confNumber[DISCORD_BRIDGE_LINK_CODE_LIFETIME] = getGlobalNumber("discordBridgeLinkCodeLifetime", 600);
 
 	m_loaded = true;
 	return true;

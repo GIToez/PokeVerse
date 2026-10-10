@@ -30,6 +30,7 @@
 
 #define DISCORD_BRIDGE_PROTOCOL_VERSION 1
 
+class Player;
 class DiscordBridgeSession;
 typedef boost::shared_ptr<DiscordBridgeSession> DiscordBridgeSession_ptr;
 
@@ -43,6 +44,13 @@ struct DiscordBridgeStats
 class DiscordBridge
 {
 	public:
+		struct Attempts
+		{
+			Attempts(): count(0), windowStart(0) {}
+			uint32_t count;
+			time_t windowStart;
+		};
+
 		virtual ~DiscordBridge() {}
 		static DiscordBridge* getInstance()
 		{
@@ -69,6 +77,23 @@ class DiscordBridge
 		// Escapes a Latin-1 game string for a JSON string literal (bytes >= 0x80 become \u00XX).
 		static std::string escapeJson(const std::string& text);
 
+		// Player sessions, dispatcher thread. A session starts once the login scripts accepted
+		// the player and ends when the player is removed from the world; both emit an
+		// admin-scoped event. Only the first logout reason set for a session is kept.
+		void onPlayerLogin(Player* player);
+		void onPlayerRemoved(Player* player);
+		void setLogoutReason(Player* player, const std::string& reason);
+		std::string getSessionId(uint32_t playerGuid) const;
+
+		// One-time Discord link codes, dispatcher thread. Codes live only in memory as SHA-256
+		// hashes, expire after 10 minutes and are consumed on first use. An empty result or 0
+		// means failure; error then holds a short reason code.
+		std::string createLinkCode(uint32_t accountId, std::string& error);
+		uint32_t consumeLinkCode(const std::string& code, const std::string& discordUserId, std::string& error);
+		void revokeLinkCodes(uint32_t accountId);
+		// Dispatcher thread. Tells the bot that a linked account created or deleted a character.
+		void onAccountCharactersChanged(uint32_t accountId, const std::string& change, const std::string& name);
+
 		// Network thread only.
 		boost::asio::io_context& getIoContext() {return m_io;}
 		bool verifyAuth(const std::string& nonce, const std::string& hexMac) const;
@@ -79,7 +104,7 @@ class DiscordBridge
 
 	private:
 		DiscordBridge(): m_enabled(false), m_connected(false), m_running(false), m_dispatchPending(false),
-			m_maxQueue(2000), m_maxIncoming(500), m_sequence(0),
+			m_maxQueue(2000), m_maxIncoming(500), m_sequence(0), m_sessionSequence(0), m_linkCodeLifetime(600),
 			m_acceptor(m_io), m_work(boost::asio::make_work_guard(m_io)) {}
 
 		void networkThread();
@@ -97,6 +122,26 @@ class DiscordBridge
 		boost::mutex m_lock;
 		std::deque<std::string> m_events, m_direct, m_incoming;
 		DiscordBridgeStats m_stats;
+
+		struct PlayerSession
+		{
+			std::string id, reason;
+			time_t loginTime;
+		};
+		std::map<uint32_t, PlayerSession> m_playerSessions;
+		uint64_t m_sessionSequence;
+
+		struct LinkCode
+		{
+			uint32_t accountId;
+			time_t expires;
+		};
+		std::map<std::string, LinkCode> m_linkCodes;
+		std::map<uint32_t, std::deque<time_t> > m_codeRequests;
+		std::map<std::string, Attempts> m_redeemFailures;
+		Attempts m_globalRedeemFailures;
+		time_t m_linkCodeLifetime;
+		void pruneLinkCodes(time_t now);
 
 		boost::asio::io_context m_io;
 		boost::asio::ip::tcp::acceptor m_acceptor;

@@ -31,6 +31,7 @@
 
 #include "configmanager.h"
 #include "game.h"
+#include "discordbridge.h"
 
 extern ConfigManager g_config;
 extern Game g_game;
@@ -252,6 +253,7 @@ std::string ProtocolAccount::createCharacter(uint32_t accountId, std::string nam
 		return "The character could not be created, please try again.";
 
 	success = true;
+	DiscordBridge::getInstance()->onAccountCharactersChanged(accountId, "created", name);
 	return "Your character " + name + " has been created. Log in to start the tutorial.";
 }
 
@@ -262,6 +264,7 @@ std::string ProtocolAccount::deleteCharacter(uint32_t accountId, const std::stri
 	{
 		case DELETE_SUCCESS:
 			success = true;
+			DiscordBridge::getInstance()->onAccountCharactersChanged(accountId, "deleted", name);
 			return "The character " + name + " has been deleted.";
 		case DELETE_ONLINE:
 			return "You cannot delete a character that is online.";

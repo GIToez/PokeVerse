@@ -153,6 +153,9 @@ void DiscordBridge::start()
 		return;
 	}
 
+	int32_t lifetime = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_LINK_CODE_LIFETIME);
+	m_linkCodeLifetime = lifetime > 0 ? lifetime : 600;
+
 	int32_t queueSize = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_QUEUE_SIZE);
 	m_maxQueue = queueSize > 0 ? queueSize : 2000;
 
@@ -379,7 +382,18 @@ void DiscordBridge::onAuthenticated(DiscordBridgeSession_ptr session)
 
 	std::ostringstream welcome;
 	welcome << "{\"type\":\"welcome\",\"protocol\":" << DISCORD_BRIDGE_PROTOCOL_VERSION << ",\"bootId\":\"" << m_bootId
-		<< "\",\"serverName\":\"" << escapeJson(g_config.getString(ConfigManager::SERVER_NAME)) << "\",\"queued\":" << queued << "}";
+		<< "\",\"serverName\":\"" << escapeJson(g_config.getString(ConfigManager::SERVER_NAME)) << "\",\"queued\":" << queued
+		<< ",\"features\":[";
+	bool first = true;
+	if(g_config.getBool(ConfigManager::DISCORD_BRIDGE_PLAYER_SESSIONS))
+	{
+		welcome << "\"playerSessions\"";
+		first = false;
+	}
+	if(g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING))
+		welcome << (first ? "" : ",") << "\"accountLinking\"";
+
+	welcome << "]}";
 	session->send(welcome.str());
 	std::cout << "> Discord bot connected to the bridge (" << queued << " queued events)." << std::endl;
 	flush();
@@ -610,4 +624,190 @@ void DiscordBridgeSession::onTimer(const boost::system::error_code& error)
 
 	m_timer.expires_after(boost::asio::chrono::seconds(5));
 	m_timer.async_wait(boost::bind(&DiscordBridgeSession::onTimer, shared_from_this(), boost::asio::placeholders::error));
+}
+
+namespace
+{
+	const time_t LINK_CODE_MIN_INTERVAL = 30;
+	const size_t LINK_CODE_MAX_PER_HOUR = 5;
+	const uint32_t REDEEM_MAX_FAILURES_PER_USER = 5;
+	const time_t REDEEM_USER_WINDOW = 15 * 60;
+	const uint32_t REDEEM_MAX_FAILURES_GLOBAL = 50;
+	const time_t REDEEM_GLOBAL_WINDOW = 10 * 60;
+	// Crockford base32: no I, L, O or U, so codes are easy to read and type.
+	const char LINK_CODE_ALPHABET[] = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+	const size_t LINK_CODE_LENGTH = 8;
+
+	std::string sha256Hex(const std::string& text)
+	{
+		unsigned char digest[EVP_MAX_MD_SIZE];
+		unsigned int length = 0;
+		if(EVP_Digest(text.data(), text.size(), digest, &length, EVP_sha256(), NULL) != 1)
+			return "";
+
+		return toHex(digest, length);
+	}
+
+	// Uppercase, without separators; O/I/L typed by mistake count as 0/1/1.
+	std::string normalizeLinkCode(const std::string& code)
+	{
+		std::string out;
+		for(size_t i = 0; i < code.size() && out.size() <= LINK_CODE_LENGTH; ++i)
+		{
+			char c = (char)toupper((unsigned char)code[i]);
+			if(c == '-' || c == ' ')
+				continue;
+			if(c == 'O')
+				c = '0';
+			else if(c == 'I' || c == 'L')
+				c = '1';
+			if(!strchr(LINK_CODE_ALPHABET, c) || c == '\0')
+				return "";
+			out += c;
+		}
+
+		return out.size() == LINK_CODE_LENGTH ? out : "";
+	}
+
+	bool attemptsExceeded(DiscordBridge::Attempts& attempts, time_t now, time_t window, uint32_t max)
+	{
+		if(now - attempts.windowStart >= window)
+		{
+			attempts.count = 0;
+			attempts.windowStart = now;
+		}
+
+		return attempts.count >= max;
+	}
+}
+
+void DiscordBridge::pruneLinkCodes(time_t now)
+{
+	for(std::map<std::string, LinkCode>::iterator it = m_linkCodes.begin(); it != m_linkCodes.end();)
+	{
+		// Expired codes are kept for one more lifetime so redeeming them reports "expired".
+		if(it->second.expires + m_linkCodeLifetime <= now)
+			m_linkCodes.erase(it++);
+		else
+			++it;
+	}
+
+	for(std::map<uint32_t, std::deque<time_t> >::iterator it = m_codeRequests.begin(); it != m_codeRequests.end();)
+	{
+		while(!it->second.empty() && now - it->second.front() >= 3600)
+			it->second.pop_front();
+
+		if(it->second.empty())
+			m_codeRequests.erase(it++);
+		else
+			++it;
+	}
+
+	for(std::map<std::string, Attempts>::iterator it = m_redeemFailures.begin(); it != m_redeemFailures.end();)
+	{
+		if(now - it->second.windowStart >= REDEEM_USER_WINDOW)
+			m_redeemFailures.erase(it++);
+		else
+			++it;
+	}
+}
+
+std::string DiscordBridge::createLinkCode(uint32_t accountId, std::string& error)
+{
+	time_t now = time(NULL);
+	pruneLinkCodes(now);
+	if(!g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING))
+	{
+		error = "disabled";
+		return "";
+	}
+
+	if(!accountId)
+	{
+		error = "invalid_account";
+		return "";
+	}
+
+	std::deque<time_t>& requests = m_codeRequests[accountId];
+	if((!requests.empty() && now - requests.back() < LINK_CODE_MIN_INTERVAL) || requests.size() >= LINK_CODE_MAX_PER_HOUR)
+	{
+		error = "rate_limited";
+		return "";
+	}
+
+	unsigned char random[LINK_CODE_LENGTH * 5 / 8];
+	if(RAND_bytes(random, sizeof(random)) != 1)
+	{
+		error = "internal";
+		return "";
+	}
+
+	std::string code;
+	uint64_t bits = 0;
+	for(size_t i = 0; i < sizeof(random); ++i)
+		bits = (bits << 8) | random[i];
+
+	for(size_t i = 0; i < LINK_CODE_LENGTH; ++i)
+		code += LINK_CODE_ALPHABET[(bits >> (5 * (LINK_CODE_LENGTH - 1 - i))) & 0x1F];
+
+	revokeLinkCodes(accountId);
+	LinkCode entry;
+	entry.accountId = accountId;
+	entry.expires = now + m_linkCodeLifetime;
+	m_linkCodes[sha256Hex(code)] = entry;
+	requests.push_back(now);
+	OPENSSL_cleanse(random, sizeof(random));
+	return code.substr(0, 4) + "-" + code.substr(4);
+}
+
+uint32_t DiscordBridge::consumeLinkCode(const std::string& code, const std::string& discordUserId, std::string& error)
+{
+	time_t now = time(NULL);
+	pruneLinkCodes(now);
+	if(!g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING))
+	{
+		error = "disabled";
+		return 0;
+	}
+
+	Attempts& userFailures = m_redeemFailures[discordUserId];
+	if(attemptsExceeded(userFailures, now, REDEEM_USER_WINDOW, REDEEM_MAX_FAILURES_PER_USER)
+		|| attemptsExceeded(m_globalRedeemFailures, now, REDEEM_GLOBAL_WINDOW, REDEEM_MAX_FAILURES_GLOBAL))
+	{
+		error = "locked";
+		return 0;
+	}
+
+	std::string normalized = normalizeLinkCode(code);
+	std::map<std::string, LinkCode>::iterator it = normalized.empty() ? m_linkCodes.end() : m_linkCodes.find(sha256Hex(normalized));
+	if(it == m_linkCodes.end())
+	{
+		++userFailures.count;
+		++m_globalRedeemFailures.count;
+		error = "invalid_code";
+		return 0;
+	}
+
+	uint32_t accountId = it->second.accountId;
+	bool expired = it->second.expires <= now;
+	m_linkCodes.erase(it);
+	if(expired)
+	{
+		error = "expired";
+		return 0;
+	}
+
+	m_redeemFailures.erase(discordUserId);
+	return accountId;
+}
+
+void DiscordBridge::revokeLinkCodes(uint32_t accountId)
+{
+	for(std::map<std::string, LinkCode>::iterator it = m_linkCodes.begin(); it != m_linkCodes.end();)
+	{
+		if(it->second.accountId == accountId)
+			m_linkCodes.erase(it++);
+		else
+			++it;
+	}
 }

@@ -37,6 +37,7 @@
 
 #include "configmanager.h"
 #include "game.h"
+#include "discordbridge.h"
 #include "chat.h"
 
 #include "waitlist.h"
@@ -1859,6 +1860,7 @@ void Player::onThink(uint32_t interval)
             }
             if (g_config.getBool(ConfigManager::DISCONNECT_AT_EXIT) &&
                     !isConnecting && !hasCondition(CONDITION_INVULNERABLE) && getDisconnectAtExit()) {
+                DiscordBridge::getInstance()->setLogoutReason(this, "connection_lost");
                 g_creatureEvents->playerLogout(this, true);
                 g_game.removeCreature(this, true);
             }
@@ -1867,6 +1869,7 @@ void Player::onThink(uint32_t interval)
 
 	if((timeNow - lastPong) >= (getDisconnectAtExit() ? 60000 : 600000) && canLogout(true))
 	{
+		DiscordBridge::getInstance()->setLogoutReason(this, "timeout");
 		if(client)
 			client->logout(true, true);
 		else if(g_creatureEvents->playerLogout(this, true))
@@ -2332,6 +2335,7 @@ bool Player::onDeath()
     
     if (!WaitingList::getInstance()->canLogin(this)) { 
         removeConditions(CONDITIONEND_DEATH);
+        DiscordBridge::getInstance()->setLogoutReason(this, "death");
         g_game.removeCreature(this, false);
         kickPlayer(false, true);
     } else {
@@ -2463,6 +2467,7 @@ bool Player::onDeath()
 		sendSkills();
 
 		//PS sendReLoginWindow();
+		DiscordBridge::getInstance()->setLogoutReason(this, "death");
 		g_game.removeCreature(this, false);
 		this->kickPlayer(false, true);
 	}
@@ -2473,6 +2478,7 @@ bool Player::onDeath()
 		{
 			loginPosition = masterPosition;
 			//PS sendReLoginWindow();
+			DiscordBridge::getInstance()->setLogoutReason(this, "death");
 			g_game.removeCreature(this, false);
 			this->kickPlayer(false, true);		
 		}
@@ -3893,6 +3899,8 @@ void Player::onPlacedCreature()
 	//scripting event - onLogin
 	if(!g_creatureEvents->playerLogin(this))
 		kickPlayer(true, true);
+	else
+		DiscordBridge::getInstance()->onPlayerLogin(this);
 }
 
 void Player::onAttackedCreatureDrain(Creature* target, int32_t points)

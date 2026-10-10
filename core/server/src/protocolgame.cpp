@@ -46,6 +46,7 @@
 #include "chat.h"
 #include "configmanager.h"
 #include "game.h"
+#include "discordbridge.h"
 
 #include "combat.h"
 
@@ -376,7 +377,19 @@ bool ProtocolGame::logout(bool displayEffect, bool forceLogout)
 	if(Connection_ptr connection = getConnection())
 		connection->close();
 
+	if(m_logoutRequested)
+		DiscordBridge::getInstance()->setLogoutReason(player, "logout");
+
 	return g_game.removeCreature(player);
+}
+
+bool ProtocolGame::requestLogout()
+{
+	//dispatcher thread
+	m_logoutRequested = true;
+	bool result = logout(true, false);
+	m_logoutRequested = false;
+	return result;
 }
 
 bool ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem, uint16_t version)
@@ -1235,7 +1248,7 @@ uint32_t ProtocolGame::getCreatureID(const Creature* creature)
 //********************** Parse methods *******************************//
 void ProtocolGame::parseLogout(NetworkMessage& msg)
 {
-	Dispatcher::getInstance().addTask(createTask(boost::bind(&ProtocolGame::logout, this, true, false)));
+	Dispatcher::getInstance().addTask(createTask(boost::bind(&ProtocolGame::requestLogout, this)));
 }
 
 void ProtocolGame::parseCreatePrivateChannel(NetworkMessage& msg)
