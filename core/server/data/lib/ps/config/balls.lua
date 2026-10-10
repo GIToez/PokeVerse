@@ -1623,10 +1623,15 @@ balls = {
         projectile = PROJECTILE_BLUEBALL,
         effects = { use = EFFECT_BLUEBALL_USE }
     },
-    --["master"] = {
-    --	charged = 12187, discharged = 12188, empty = 12185, inUse = 12186,
-    --	projectile = projectiles.masterball, effects = {use = effects.masterballUse, catch = effects.masterballCatch, catchMiss = effects.masterballCatchMiss}
-    --}
+    ["master"] = { -- catches every Pokemon it can be used on (emptyBall); 12185-12188 are the dark purple ball
+        guaranteedCatch = true,
+        charged = 12190,
+        discharged = 12191,
+        empty = 30136,
+        inUse = 12189,
+        projectile = PROJECTILE_MASTERBALL,
+        effects = { use = EFFECT_MASTERBALL_USE, catch = EFFECT_MASTERBALL_CATCH_OK, catchMiss = EFFECT_MASTERBALL_CATCHFAIL }
+    }
 }
 
 ballsNames = {}

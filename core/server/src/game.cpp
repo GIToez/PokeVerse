@@ -85,6 +85,7 @@ Game::Game()
 	worldType = WORLD_TYPE_PVP;
 	map = NULL;
 	playersRecord = lastStageLevel = 0;
+	experienceEventMultiplier = 1.0;
 	for(int32_t i = 0; i < 3; i++)
 		globalSaveMessage[i] = false;
 

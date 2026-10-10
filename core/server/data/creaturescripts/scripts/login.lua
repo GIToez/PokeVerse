@@ -143,6 +143,7 @@ function onLogin(cid)
         end
 
         doExtraExpRateCheck(cid)
+        ServerExpEvent.onLogin(cid)
         doExtraLootRateCheck(cid)
         doExtraCatchRateCheck(cid)
         doExtraEggRateCheck(cid)
