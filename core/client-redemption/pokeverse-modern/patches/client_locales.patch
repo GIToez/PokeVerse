@@ -1,0 +1,15 @@
+diff -ruN pristine/modules/client_locales/locales.lua modules/client_locales/locales.lua
+--- a/modules/client_locales/locales.lua
++++ b/modules/client_locales/locales.lua
+@@ -137,6 +137,11 @@
+         error('Unable to install locale.')
+     end
+ 
++    -- The PokeVerse server reads this id from the login packet (0 English, 1 Portuguese, 2 other)
++    if locale.id == nil then
++        locale.id = ({ en = 0, pt = 1 })[locale.name] or 2
++    end
++
+     if _G.allowedLocales and not _G.allowedLocales[locale.name] then
+         return
+     end

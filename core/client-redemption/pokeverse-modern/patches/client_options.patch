@@ -1,0 +1,14 @@
+diff -ruN pristine/modules/client_options/data_options.lua modules/client_options/data_options.lua
+--- a/modules/client_options/data_options.lua
++++ b/modules/client_options/data_options.lua
+@@ -194,7 +194,9 @@
+     showOutfitsOnList                 = {
+         value = true,
+         action = function(value, options, controller, panels, extraWidgets)
+-            CharacterList.updateCharactersAppearances(value)
++            if CharacterList and CharacterList.updateCharactersAppearances then
++                CharacterList.updateCharactersAppearances(value)
++            end
+         end
+     },
+     openMaximized                     = false,
