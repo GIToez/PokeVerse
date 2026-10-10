@@ -60,6 +60,27 @@ for c in legacy redemption; do
   cat > "$out/$c/client/modules/client_selftest/config.lua" <<'EOF'
 SELFTEST = { account = 'selftest', password = 'selftest', character = 'Self Test' }
 EOF
+  # Animated PNGs (the login background, Pokemon pictures...) loop forever, so the
+  # screenshots would catch the two clients at different frames. Both get the last
+  # frame as a still image. The data folder is hard-linked to the repository: each file
+  # is replaced, never written into.
+  python3 - "$out/$c/client/data/images" <<'EOF'
+import os, sys
+from PIL import Image
+for root, _, names in os.walk(sys.argv[1]):
+    for name in names:
+        if not name.lower().endswith(".png"):
+            continue
+        path = os.path.join(root, name)
+        with Image.open(path) as im:
+            frames = getattr(im, "n_frames", 1)
+            if frames < 2:
+                continue
+            im.seek(frames - 1)
+            still = im.convert("RGBA")
+        os.remove(path)
+        still.save(path)
+EOF
 done
 
 # Carries out one request from the self-test: "SELFTEST <action> <arguments>".
