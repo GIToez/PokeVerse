@@ -69,11 +69,13 @@ jobs:
           echo "VCPKG_COMMIT=$(python3 -c 'import json;print(json.load(open("vcpkg.json"))["builtin-baseline"])')" >> "$GITHUB_ENV"
           mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
 
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
         with:
           path: vcpkg-cache
-          key: vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}
-          restore-keys: vcpkg-linux-
+          key: vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+          restore-keys: |
+            vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-
+            vcpkg-linux-
 
       - uses: lukka/run-vcpkg@v11
         with:
@@ -87,6 +89,13 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/bin-linux"
           cp build/linux-release/bin/otclient "$GITHUB_WORKSPACE/bin-linux/"
           strip "$GITHUB_WORKSPACE/bin-linux/otclient"
+
+      # saved even when the build fails, so the libraries built so far are not lost
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-cache
+          key: vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -110,11 +119,13 @@ jobs:
           "VCPKG_COMMIT=$($json.'builtin-baseline')" | Out-File -FilePath $env:GITHUB_ENV -Append
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\vcpkg-cache" | Out-Null
 
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
         with:
           path: vcpkg-cache
-          key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}
-          restore-keys: vcpkg-windows-
+          key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+          restore-keys: |
+            vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-
+            vcpkg-windows-
 
       - uses: ilammy/msvc-dev-cmd@v1
 
@@ -133,6 +144,13 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\bin-windows" | Out-Null
           Copy-Item build\windows-release\bin\*.exe "$env:GITHUB_WORKSPACE\bin-windows\"
           Get-ChildItem build\windows-release\bin\*.dll -ErrorAction SilentlyContinue | Copy-Item -Destination "$env:GITHUB_WORKSPACE\bin-windows\"
+
+      # saved even when the build fails, so the libraries built so far are not lost
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-cache
+          key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -165,11 +183,13 @@ jobs:
           echo "VCPKG_COMMIT=$(python3 -c 'import json;print(json.load(open("core/client-redemption/vcpkg.json"))["builtin-baseline"])')" >> "$GITHUB_ENV"
           mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
 
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
         with:
           path: vcpkg-cache
-          key: vcpkg-android-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}
-          restore-keys: vcpkg-android-
+          key: vcpkg-android-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+          restore-keys: |
+            vcpkg-android-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-
+            vcpkg-android-
 
       - uses: lukka/run-vcpkg@v11
         with:
@@ -196,6 +216,13 @@ jobs:
         run: |
           scripts/build-android-client.sh --host "$LIVE_HOST" --updater "$PAGES_URL/updater/" \
             bin-android/PokeVerse-Android.apk
+
+      # saved even when the build fails, so the libraries built so far are not lost
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-cache
+          key: vcpkg-android-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
 
       - uses: actions/upload-artifact@v4
         with:
