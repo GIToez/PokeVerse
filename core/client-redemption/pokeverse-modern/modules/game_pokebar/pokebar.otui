@@ -1,0 +1,37 @@
+QuickCallSlot < UIWidget
+  size: 42 56
+  image-source: /modules/game_pokehud/images/slot
+  image-border: 6
+  $hover:
+    image-source: /modules/game_pokehud/images/slot-hover
+  $on:
+    image-source: /modules/game_pokehud/images/slot-active
+
+  UIItem
+    id: portrait
+    size: 36 36
+    virtual: true
+    phantom: true
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 3
+
+  Label
+    id: health
+    font: verdana-11px-antialised
+    color: #4cdc8c
+    text-auto-resize: true
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: 3
+
+UIWindow
+  id: pokebar
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  padding: 6
+  focusable: false
+  anchors.left: gameMapPanel.left
+  anchors.verticalCenter: gameMapPanel.verticalCenter
+  margin-left: 12
