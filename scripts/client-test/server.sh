@@ -3,7 +3,7 @@
 #
 #   scripts/client-test/server.sh start <pokeverse-server binary> <work dir>
 #   scripts/client-test/server.sh stop <work dir>
-#   scripts/client-test/server.sh reset <work dir>    # put the test characters back at the start
+#   scripts/client-test/server.sh reset <work dir>    # restore the database as it was after setup
 #
 # MariaDB listens on 127.0.0.1:3307 and the server on the ports from core/server/config.lua
 # (login 7564, game 8548). Test accounts: test/test (Trainer), admin/admin (Admin, GM) and
@@ -18,10 +18,6 @@ wait_for() {
   return 1
 }
 
-reset_characters() {
-  $db -upokeverse -ppokeverse pokeverse -e "UPDATE players p JOIN selftest_start s ON s.id = p.id
-    SET p.posx = s.posx, p.posy = s.posy, p.posz = s.posz, p.direction = s.direction"
-}
 
 case "${1:-}" in
   start)
@@ -43,8 +39,9 @@ case "${1:-}" in
       $db -upokeverse -ppokeverse pokeverse < "$f"
     done
     $db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('selftest', 'selftest');
-      CALL pokeverse_create_character('selftest', 'Self Test', 0);
-      CREATE TABLE selftest_start AS SELECT id, posx, posy, posz, direction FROM players;"
+      CALL pokeverse_create_character('selftest', 'Self Test', 0);"
+    # every session starts from this state (first login of each character included)
+    mariadb-dump --no-defaults --protocol=tcp -h127.0.0.1 -P3307 -upokeverse -ppokeverse pokeverse > "$work/initial.sql"
 
     mkdir -p "$work/server/logs/server" "$work/server/logs/chat" "$work/server/logs/bots"
     cp -r "$root/core/server/data" "$root/core/server/config.lua" "$root/core/server/pt_br.loc" "$work/server/"
@@ -75,7 +72,8 @@ case "${1:-}" in
       [ "$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM players WHERE online = 1")" = 0 ] && break
       sleep 1
     done
-    reset_characters
+    work=$(realpath -m "$2")
+    $db -upokeverse -ppokeverse pokeverse < "$work/initial.sql"
     ;;
   *)
     sed -n '2,10p' "$0" >&2
