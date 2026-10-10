@@ -1,3 +1,63 @@
+diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
+--- a/modules/corelib/keyboard.lua
++++ b/modules/corelib/keyboard.lua
+@@ -7,6 +7,12 @@
+     return isMacOS, not isMacOS
+ end
+ 
++-- The PokeVerse engine reports Ctrl as KeyboardCtrlModifier only outside macOS
++local function primaryModifier()
++    local isMacOS = getPlatformFlags()
++    return isMacOS and KeyboardPrimaryModifier or KeyboardCtrlModifier
++end
++
+ local function resolveKeyAlias(desc)
+     if not desc then
+         return nil
+@@ -358,7 +364,7 @@
+     if (g_platform.isMobile()) then
+         return false
+     else
+-        return bit.band(g_window.getKeyboardModifiers(), KeyboardPrimaryModifier) ~= 0
++        return bit.band(g_window.getKeyboardModifiers(), primaryModifier()) ~= 0
+     end
+ end
+ 
+@@ -366,7 +372,7 @@
+     if (g_platform.isMobile()) then
+         return false
+     else
+-        return bit.band(g_window.getKeyboardModifiers(), KeyboardPrimaryModifier) ~= 0
++        return bit.band(g_window.getKeyboardModifiers(), primaryModifier()) ~= 0
+     end
+ end
+ 
+@@ -411,7 +417,7 @@
+     if primaryIsCtrl then
+         return bit.bor(KeyboardPrimaryModifier, KeyboardCtrlModifier)
+     end
+-    return KeyboardPrimaryModifier
++    return primaryModifier()
+ end
+ 
+ function g_keyboard.isPrimaryModifierOnly(keyboardModifiers)
+@@ -419,14 +425,14 @@
+         return false
+     end
+     local allowedMask = primaryAllowedMask()
+-    return hasOnlyModifiers(keyboardModifiers, KeyboardPrimaryModifier, allowedMask)
++    return hasOnlyModifiers(keyboardModifiers, primaryModifier(), allowedMask)
+ end
+ 
+ function g_keyboard.isPrimaryShiftModifierOnly(keyboardModifiers)
+     if (g_platform.isMobile()) then
+         return false
+     end
+-    local requiredMask = bit.bor(KeyboardPrimaryModifier, KeyboardShiftModifier)
++    local requiredMask = bit.bor(primaryModifier(), KeyboardShiftModifier)
+     local allowedMask = requiredMask
+     local _, primaryIsCtrl = getPlatformFlags()
+     if primaryIsCtrl then
 diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsbar.lua
 --- a/modules/corelib/ui/uistatsbar.lua
 +++ b/modules/corelib/ui/uistatsbar.lua
