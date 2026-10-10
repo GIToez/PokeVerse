@@ -3,10 +3,14 @@
 # so the Redemption client runs them on the same interpreter as the legacy client.
 include(FetchContent)
 
+set(LUA51_EXTRACT_OPTIONS "")
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+  set(LUA51_EXTRACT_OPTIONS DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+endif()
 FetchContent_Declare(lua51
   URL https://www.lua.org/ftp/lua-5.1.5.tar.gz
   URL_HASH SHA256=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
-  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+  ${LUA51_EXTRACT_OPTIONS}
 )
 FetchContent_MakeAvailable(lua51)
 
