@@ -174,10 +174,11 @@ def main():
 
     step("Package contents")
     for rel in ["README.txt", "Setup Database.bat", "Start Server.bat", "Start Client.bat",
-                "Start Server and Client.bat", "Create Account.bat", "Stop Database.bat",
+                "Start Server and Client.bat", "Start Legacy Client.bat", "Create Account.bat", "Stop Database.bat",
                 r"server-windows\pokeverse-server.exe", r"server-windows\config.lua",
                 r"server-windows\data\world\map.otbm", r"client-legacy-windows\pokeverse-client.exe",
                 r"client-legacy-windows\init.lua", r"client-legacy-windows\data\things\data.spr",
+                r"client-windows\otclient.exe", r"client-windows\init.lua",
                 r"database\mariadb\bin\mariadbd.exe", r"database\sql\01-base-schema.sql"]:
         path = os.path.join(pkg, rel)
         if not os.path.isfile(path):

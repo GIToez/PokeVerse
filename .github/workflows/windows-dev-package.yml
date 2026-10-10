@@ -107,9 +107,97 @@ jobs:
           if-no-files-found: error
           compression-level: 9
 
+  redemption-windows:
+    name: Build Redemption client (Windows)
+    runs-on: windows-2025-vs2026
+    env:
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
+    defaults:
+      run:
+        working-directory: core/client-redemption
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: vcpkg baseline
+        shell: pwsh
+        run: |
+          $json = Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          "VCPKG_COMMIT=$($json.'builtin-baseline')" | Out-File -FilePath $env:GITHUB_ENV -Append
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\vcpkg-cache" | Out-Null
+
+      # same cache key as the Client release workflow, so both reuse the built libraries
+      - uses: actions/cache/restore@v4
+        with:
+          path: vcpkg-cache
+          key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+          restore-keys: |
+            vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-
+            vcpkg-windows-
+
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+
+      - name: Build
+        shell: pwsh
+        run: |
+          cmake --preset windows-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_IPO=OFF -DOPTIONS_ENABLE_SCCACHE=OFF `
+            "-DBUILD_COMMIT=$($env:GITHUB_SHA.Substring(0,7))" "-DBUILD_REVISION=$env:GITHUB_RUN_NUMBER"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build --preset windows-release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\bin-windows" | Out-Null
+          Copy-Item build\windows-release\bin\*.exe "$env:GITHUB_WORKSPACE\bin-windows\"
+          Get-ChildItem build\windows-release\bin\*.dll -ErrorAction SilentlyContinue | Copy-Item -Destination "$env:GITHUB_WORKSPACE\bin-windows\"
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: vcpkg-cache
+          key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: redemption-windows-bin
+          path: bin-windows/
+          if-no-files-found: error
+
+  dev-client:
+    name: Add the Redemption client to the dev package
+    needs: [build, redemption-windows]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: PokeVerse-Windows-Dev
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: redemption-windows-bin
+          path: bin-windows
+
+      # modern layout, 127.0.0.1:7564, no updater
+      - name: Assemble
+        run: scripts/assemble-redemption-client.sh --host 127.0.0.1 dist/PokeVerse-Windows-Dev/client-windows bin-windows/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeVerse-Windows-Dev
+          path: dist/
+          if-no-files-found: error
+          compression-level: 9
+          overwrite: true
+
   test-package:
     name: Test package on a clean Windows runner
-    needs: build
+    needs: dev-client
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
