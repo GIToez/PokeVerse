@@ -64,20 +64,34 @@ def portrait(out, size=66):
     save(im, out, 'portrait-ring')
 
 
-def ball(out, name, top, bottom, band=(16, 16, 16), button=(240, 240, 240)):
-    n = 14
+def ball(out, name, top, bottom, band=(16, 16, 16), button=(240, 240, 240), n=14):
     im = canvas(n, n)
     d = ImageDraw.Draw(im)
     s = im.width - 1
+    k = SCALE * n / 14
     d.ellipse((0, 0, s, s), fill=band + (255,))
-    inset = SCALE
+    inset = max(k, SCALE * 0.75)
     d.pieslice((inset, inset, s - inset, s - inset), 180, 360, fill=top + (255,))
     d.pieslice((inset, inset, s - inset, s - inset), 0, 180, fill=bottom + (255,))
-    d.rectangle((0, s / 2 - SCALE * 0.8, s, s / 2 + SCALE * 0.8), fill=band + (255,))
-    c, r = s / 2, 2.6 * SCALE
+    d.rectangle((0, s / 2 - k * 0.8, s, s / 2 + k * 0.8), fill=band + (255,))
+    c, r = s / 2, 2.6 * k
     d.ellipse((c - r, c - r, c + r, c + r), fill=band + (255,))
-    r = 1.6 * SCALE
+    r = 1.6 * k
     d.ellipse((c - r, c - r, c + r, c + r), fill=button + (255,))
+    save(im, out, name)
+
+
+def mini_dex(out, name, n=9):
+    """The name plate's "registered in your Pokedex" mark: a tiny red Pokedex."""
+    im = canvas(n, n)
+    d = ImageDraw.Draw(im)
+    s = SCALE
+    w = im.width - 1
+    d.rounded_rectangle((s, 0, w - s, w), 1.5 * s, fill=(16, 16, 16, 255))
+    d.rounded_rectangle((2 * s, s, w - 2 * s, w - s), s, fill=(214, 48, 52, 255))
+    c, r = w / 2, 1.5 * s
+    d.ellipse((c - r, 2 * s, c + r, 2 * s + 2 * r), fill=(120, 205, 255, 255))
+    d.rectangle((3 * s, w - 3.2 * s, w - 3 * s, w - 2.2 * s), fill=(40, 22, 22, 255))
     save(im, out, name)
 
 
@@ -108,6 +122,8 @@ def main():
     rounded(out, 'slot', 16, 16, 6, (12, 18, 19, 210), (70, 92, 92, 220))
     rounded(out, 'slot-hover', 16, 16, 6, (30, 42, 43, 220), (150, 176, 176, 240))
     rounded(out, 'slot-active', 16, 16, 6, (40, 36, 18, 220), GOLD)
+    ball(out, 'plate-caught', (222, 44, 52), (240, 240, 240), n=9)
+    mini_dex(out, 'plate-dex')
 
 
 if __name__ == '__main__':

@@ -3,6 +3,6 @@ Module
   description: PokeVerse HUD: level, health, portrait, party and money at the top of the map
   author: PokeVerse
   sandboxed: true
-  scripts: [ wallet, pokehud ]
+  scripts: [ wallet, nameplates, pokehud ]
   @onLoad: init()
   @onUnload: terminate()

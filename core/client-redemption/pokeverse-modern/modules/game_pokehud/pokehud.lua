@@ -275,6 +275,7 @@ function init()
         onPokemonBarClose = onPokemonBarClose
     })
     Wallet.init(onWalletChange)
+    Nameplates.init()
 
     hud:hide()
     if g_game.isOnline() then
@@ -303,6 +304,7 @@ function terminate()
         onPokemonBarClose = onPokemonBarClose
     })
     Wallet.terminate()
+    Nameplates.terminate()
     removeEvent(summonEvent)
     hud:destroy()
     hud = nil
