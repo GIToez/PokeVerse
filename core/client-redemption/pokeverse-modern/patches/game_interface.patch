@@ -44,6 +44,45 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function setupViewMode(mode)
+@@ -1942,6 +1950,8 @@
+     end
+ end
+ 
++FLOATING_PANEL_OPACITY = 0.85
++
+ function applyExtendedViewLayout(extendedView)
+     if extendedView == isExtendedViewActive then return end
+     isExtendedViewActive = extendedView
+@@ -1973,6 +1983,18 @@
+         gameMainRightPanel:setImageColor('alpha')
+         gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
+         gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
++        if not g_platform.isMobile() then
++            -- PokeVerse: a small chat in the bottom-left corner, more of the map stays free
++            gameBottomPanel:breakAnchors()
++            gameBottomPanel:addAnchor(AnchorLeft, 'parent', AnchorLeft)
++            gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
++            gameBottomPanel:setSize({ width = math.min(480, math.floor(gameRootPanel:getWidth() * 0.4)), height = 170 })
++        end
++        -- PokeVerse: the panels over the map are see-through
++        for _, panel in ipairs({ gameBottomPanel, gameLeftPanel, gameRightPanel }) do
++            panel:setOpacity(FLOATING_PANEL_OPACITY)
++        end
++        bottomSplitter:setVisible(false)
+         gameLeftActionPanel:setImageSource(nil)
+         gameRightActionPanel:setImageSource(nil)
+         gameLeftActionPanel:setBorderWidthRight(0)
+@@ -1993,6 +2015,10 @@
+ 
+         -- Reset bottom panel
+         gameBottomPanel:setDraggable(false)
++        for _, panel in ipairs({ gameBottomPanel, gameLeftPanel, gameRightPanel }) do
++            panel:setOpacity(1)
++        end
++        bottomSplitter:setVisible(true)
+ 
+         -- Set anchors
+         if not g_platform.isMobile() then
 diff -ruN pristine/modules/game_interface/widgets/statsbar.lua modules/game_interface/widgets/statsbar.lua
 --- a/modules/game_interface/widgets/statsbar.lua
 +++ b/modules/game_interface/widgets/statsbar.lua
