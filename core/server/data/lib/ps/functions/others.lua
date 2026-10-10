@@ -12,6 +12,7 @@ function getPlayerGuidByNameEx(name)
 end
 
 function doPlayerInsertStoredItem(cid, item)
+    PokemonStats.ensureBall(item.uid)
     local query = string.concat("INSERT INTO player_stored_items (player_id, item_type, count, attributes) VALUES (",
         getPlayerGUID(cid), ",",
         item.itemid, ",",
@@ -742,6 +743,7 @@ function doPokemonCall(cid, ball)
 
         setMonsterExtraPoints(pokemon, pokemonExtraPoints)
         setMonsterLevel(pokemon, pokemonLevel) -- this need be here, to set correctly max hp
+        PokemonStats.ensureBall(ball.uid)
         Vitamin.onPokemonCall(pokemon, ball)
         PokemonHeldItem.onPokemonCall(pokemon, ball)
         PokemonAddon.onPokemonCall(pokemon, ball)

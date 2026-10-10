@@ -43,6 +43,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
         name = string.concat(getBallPokemonName(itemEx.uid), " [", getBallPokemonLevel(itemEx.uid), "]")
     end
 
+    PokemonStats.ensureBall(itemEx.uid)
     local query = string.concat(
         "INSERT INTO ball_pillars (world_id, positionx, positiony, positionz, attributes, ball_id, creature_name, creature_sex) VALUES (",
          getConfigValue("worldId"), ",",
