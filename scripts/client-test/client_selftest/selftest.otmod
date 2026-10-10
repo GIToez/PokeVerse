@@ -1,0 +1,11 @@
+Module
+  name: client_selftest
+  description: Scripted session for the client parity tests (test builds only)
+  author: PokeVerse
+  reloadable: false
+  sandboxed: true
+  autoload: true
+  autoload-priority: 1100
+  scripts: [ config, selftest ]
+  @onLoad: init()
+  @onUnload: terminate()
