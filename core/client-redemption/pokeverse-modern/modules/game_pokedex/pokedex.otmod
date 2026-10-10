@@ -1,0 +1,9 @@
+Module
+  name: game_pokedex
+  description: Pokedex
+  author: PokeVerse
+  website: Unk
+  sandboxed: true
+  scripts: [ pokedex, modern ]
+  @onLoad: onInit()
+  @onUnload: onTerminate()
