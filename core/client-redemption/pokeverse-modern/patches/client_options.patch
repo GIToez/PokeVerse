@@ -1,9 +1,21 @@
 diff -ruN pristine/modules/client_options/data_options.lua modules/client_options/data_options.lua
 --- a/modules/client_options/data_options.lua
 +++ b/modules/client_options/data_options.lua
-@@ -158,6 +158,14 @@
+@@ -28,7 +28,7 @@
+         end
      },
-     returnDisablesChat                = false,
+     classicControl                    = {
+-        value = g_platform.isMobile() and true or false,
++        value = true, -- the legacy PokeVerse default on every platform
+         action = function(value, options, controller, panels, extraWidgets)
+             -- Update the mouseControlMode based on this option
+             -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
+@@ -156,8 +156,16 @@
+             end, 50)
+         end
+     },
+-    returnDisablesChat                = false,
++    returnDisablesChat                = true, -- the legacy PokeVerse chat: Enter opens a one-message chat in WASD mode
      smartWalk                         = false,
 +    dashWalk                          = {
 +        value = false,

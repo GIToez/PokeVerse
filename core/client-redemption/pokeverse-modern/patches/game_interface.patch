@@ -1,0 +1,22 @@
+diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interface/gameinterface.lua
+--- a/modules/game_interface/gameinterface.lua
++++ b/modules/game_interface/gameinterface.lua
+@@ -249,7 +249,8 @@
+     Keybind.bind("Misc", "Logout", {
+         {
+             type = KEY_PRESS,
+-            callback = function() tryLogout(false) end,
++            -- PokeVerse asks first, as the legacy client did
++            callback = function() tryLogout(true) end,
+         }
+     }, gameRootPanel)
+ 
+@@ -322,6 +323,8 @@
+     modules.client_background.hide()
+     gameRootPanel:show()
+     gameRootPanel:focus()
++    -- hidden PokeVerse windows (the poll) can hold the focus and swallow the chat input
++    getBottomPanel():focus()
+     gameMapPanel:followCreature(g_game.getLocalPlayer())
+ 
+     updateStretchShrink()
