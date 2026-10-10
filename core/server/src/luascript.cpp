@@ -106,17 +106,20 @@ void ScriptEnviroment::reset()
 	m_realPos = Position();
 
 	m_interface = NULL;
-	for(TempItemListMap::iterator mit = m_tempItems.begin(); mit != m_tempItems.end(); ++mit)
+	// Nested events (an equip check while a script adds an item) reset their own environment first, so only the
+	// items this environment created may be freed here.
+	TempItemListMap::iterator mit = m_tempItems.find(this);
+	if(mit != m_tempItems.end())
 	{
-		ItemList itemList = mit->second;
-		for(ItemList::iterator it = itemList.begin(); it != itemList.end(); ++it)
+		for(ItemList::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
 		{
 			if((*it)->getParent() == VirtualCylinder::virtualCylinder)
 				g_game.freeThing(*it);
 		}
+
+		m_tempItems.erase(mit);
 	}
 
-	m_tempItems.clear();
 	for(DBResultMap::iterator it = m_tempResults.begin(); it != m_tempResults.end(); ++it)
 	{
 		if(it->second)
@@ -407,7 +410,7 @@ void ScriptEnviroment::addTempItem(ScriptEnviroment* env, Item* item)
 
 void ScriptEnviroment::removeTempItem(ScriptEnviroment* env, Item* item)
 {
-	ItemList itemList = m_tempItems[env];
+	ItemList& itemList = m_tempItems[env];
 	ItemList::iterator it = std::find(itemList.begin(), itemList.end(), item);
 	if(it != itemList.end())
 		itemList.erase(it);
@@ -417,7 +420,7 @@ void ScriptEnviroment::removeTempItem(Item* item)
 {
 	for(TempItemListMap::iterator mit = m_tempItems.begin(); mit != m_tempItems.end(); ++mit)
 	{
-		ItemList itemList = mit->second;
+		ItemList& itemList = mit->second;
 		ItemList::iterator it = std::find(itemList.begin(), itemList.end(), item);
 		if(it != itemList.end())
 			itemList.erase(it);
