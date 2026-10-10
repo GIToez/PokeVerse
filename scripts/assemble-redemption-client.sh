@@ -47,7 +47,7 @@ if [ -n "$port" ]; then
   [[ "$port" =~ ^[0-9]{1,5}$ ]] || { echo "invalid port: '$port'" >&2; exit 1; }
 fi
 if [ -n "$updater" ]; then
-  [[ "$updater" =~ ^https://[A-Za-z0-9./_-]+$ ]] || { echo "invalid updater URL: '$updater'" >&2; exit 1; }
+  [[ "$updater" =~ ^(https://[A-Za-z0-9./_-]+|http://(127\.0\.0\.1|localhost)(:[0-9]+)?/[A-Za-z0-9./_-]*)$ ]] || { echo "invalid updater URL: '$updater' (https, or http on localhost for tests)" >&2; exit 1; }
 fi
 
 rm -rf "$out"
