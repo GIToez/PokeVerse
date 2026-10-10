@@ -250,7 +250,40 @@ namespace Proto
         GameServerStore = 251,
         GameServerStoreOffers = 252,
         GameServerStoreTransactionHistory = 253,
-        GameServerStoreCompletePurchase = 254
+        GameServerStoreCompletePurchase = 254,
+
+        GameServerPokeVerse = 255
+    };
+
+    // PokeVerse: sub-opcodes of GameServerPokeVerse
+    enum GameServerPokeVerseOpcodes : uint8_t
+    {
+        GameServerPokeVerseMoveBarUpdate = 1,
+        GameServerPokeVerseMoveBarClose = 2,
+        GameServerPokeVerseMoveBarOpen = 3,
+        GameServerPokeVersePokemonBarAdd = 4,
+        GameServerPokeVersePokemonBarRemove = 5,
+        GameServerPokeVersePokemonBarUpdate = 6,
+        GameServerPokeVersePokemonBarOpen = 7,
+        GameServerPokeVersePokemonBarClose = 8,
+        GameServerPokeVerseMoveCooldown = 9,
+        GameServerPokeVersePokedexStatus = 10,
+        GameServerPokeVersePokedexOpen = 11,
+        GameServerPokeVersePokedexUpdate = 12,
+        GameServerPokeVerseTmChoose = 13,
+        GameServerPokeVerseStatusBarAdd = 14,
+        GameServerPokeVerseStatusBarRemove = 15,
+        GameServerPokeVerseStatusBarClear = 16,
+        GameServerPokeVersePokedexInfo = 17,
+        GameServerPokeVerseCreatureJump = 18,
+        GameServerPokeVerseCreatureEffect = 19,
+        GameServerPokeVerseDollCaseStatus = 20,
+        GameServerPokeVerseDollCaseUpdate = 21,
+        GameServerPokeVerseSlotMachine = 22,
+        GameServerPokeVerseTip = 23,
+        GameServerPokeVersePollWindow = 24,
+        GameServerPokeVersePokemonLevelUp = 25,
+        GameServerPokeVerseLootList = 26
     };
 
     enum ClientOpcodes : uint8_t
@@ -400,7 +433,11 @@ namespace Proto
         ClientRequestStoreOffers = 251,
         ClientBuyStoreOffer = 252,
         ClientOpenTransactionHistory = 253,
-        ClientRequestTransactionHistory = 254
+        ClientRequestTransactionHistory = 254,
+
+        // PokeVerse (same values as the store opcodes, which the PokeVerse server does not use)
+        ClientRequestPollWindow = 250,
+        ClientPollVote = 251
     };
 
     enum CreatureType

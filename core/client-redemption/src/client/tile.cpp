@@ -183,6 +183,11 @@ void Tile::drawCreature(const MapPosInfo& mapRect, const Point& dest, const int 
         }
     }
 
+    for (const auto& creature : std::ranges::reverse_view(m_ghostCreatures)) {
+        if (!creature->isWalking())
+            drawThing(creature, dest, flags, drawElevation, lightView);
+    }
+
     g_drawPool.setDrawOrder(DrawOrder::THIRD);
     for (const auto& creature : m_walkingCreatures) {
         // already drawn by this point
@@ -246,6 +251,8 @@ void Tile::clean()
     m_highlightThingStackPos = -1;
     while (!m_things.empty())
         removeThing(m_things.front());
+    while (!m_ghostCreatures.empty())
+        removeThing(m_ghostCreatures.front());
 
     m_tilesRedraw = nullptr;
 
@@ -320,6 +327,13 @@ void Tile::addThing(const ThingPtr& thing, int stackPos)
         return;
     }
 
+    if (stackPos == 256 && thing->isCreature()) {
+        m_ghostCreatures.emplace_back(thing->static_self_cast<Creature>());
+        thing->setPosition(m_position);
+        thing->onAppear();
+        return;
+    }
+
     const uint8_t size = m_things.size();
 
     // priority                                    854
@@ -389,6 +403,15 @@ bool Tile::removeThing(const ThingPtr thing)
 
         m_effects->erase(it);
         return true;
+    }
+
+    if (thing->isCreature() && thing->static_self_cast<Creature>()->isGhost()) {
+        const auto ghost = std::ranges::find(m_ghostCreatures, thing);
+        if (ghost != m_ghostCreatures.end()) {
+            m_ghostCreatures.erase(ghost);
+            thing->onDisappear();
+            return true;
+        }
     }
 
     const auto it = std::ranges::find(m_things, thing);
@@ -621,11 +644,21 @@ CreaturePtr Tile::getTopCreature(const bool checkAround)
     if (!hasCreatures()) return nullptr;
 
     CreaturePtr creature;
-    for (const auto& thing : m_things) {
-        if (thing->isLocalPlayer()) // return local player if there is no other creature
-            creature = thing->static_self_cast<Creature>();
-        else if (thing->isCreature())
-            return thing->static_self_cast<Creature>();
+    if (g_game.getFeature(Otc::GamePokeVerse)) {
+        // the PokeVerse server stacks the newest creature last
+        for (const auto& thing : std::ranges::reverse_view(m_things)) {
+            if (thing->isLocalPlayer())
+                creature = thing->static_self_cast<Creature>();
+            else if (thing->isCreature())
+                return thing->static_self_cast<Creature>();
+        }
+    } else {
+        for (const auto& thing : m_things) {
+            if (thing->isLocalPlayer()) // return local player if there is no other creature
+                creature = thing->static_self_cast<Creature>();
+            else if (thing->isCreature())
+                return thing->static_self_cast<Creature>();
+        }
     }
 
     if (creature)
@@ -679,8 +712,12 @@ ThingPtr Tile::getTopMultiUseThing()
     if (isEmpty())
         return nullptr;
 
-    if (const auto& topCreature = getTopCreature())
-        return topCreature;
+    // PokeVerse uses items (Poke Balls on corpses, rods on water) before creatures on the same tile
+    const bool creatureLast = g_game.getFeature(Otc::GamePokeVerse);
+    if (!creatureLast) {
+        if (const auto& topCreature = getTopCreature())
+            return topCreature;
+    }
 
     for (const auto& thing : m_things) {
         if (thing->isForceUse())
@@ -698,8 +735,13 @@ ThingPtr Tile::getTopMultiUseThing()
     }
 
     for (const auto& thing : m_things) {
-        if (!thing->isGround() && !thing->isOnTop())
+        if (!thing->isGround() && !thing->isOnTop() && (!creatureLast || !thing->isGroundBorder()))
             return thing;
+    }
+
+    if (creatureLast) {
+        if (const auto& topCreature = getTopCreature())
+            return topCreature;
     }
 
     return m_things[0];
@@ -1056,7 +1098,7 @@ bool Tile::canRender(uint32_t& flags, const Position& cameraPosition, const Awar
         if (!hasLight())
             flags &= ~Otc::DrawLights;
         if (!hasCreatures())
-            flags &= ~(Otc::DrawManaBar | Otc::DrawNames | Otc::DrawBars);
+            flags &= ~(Otc::DrawManaBar | Otc::DrawNames | Otc::DrawBars | Otc::DrawExperienceBars);
     }
 
     return flags > 0;

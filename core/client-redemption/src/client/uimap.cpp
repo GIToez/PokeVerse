@@ -123,6 +123,7 @@ void UIMap::setLimitVisibleDimension(const bool enable) { m_mapView->setLimitVis
 void UIMap::setDrawManaBar(const bool enable) { m_mapView->setDrawManaBar(enable); }
 
 void UIMap::setDrawHarmony(const bool enable) { m_mapView->setDrawHarmony(enable); }
+void UIMap::setDrawExperienceBars(const bool enable) { m_mapView->setDrawExperienceBars(enable); }
 
 void UIMap::setShader(std::string_view name, float fadein, float fadeout) { m_mapView->setShader(name, fadein, fadeout); }
 
@@ -135,6 +136,7 @@ bool UIMap::isDrawingViewportEdge() { return m_mapView->isDrawingViewportEdge();
 bool UIMap::isDrawingNames() { return m_mapView->isDrawingNames(); }
 
 bool UIMap::isDrawingHealthBars() { return m_mapView->isDrawingHealthBars(); }
+bool UIMap::isDrawingExperienceBars() { return m_mapView->isDrawingExperienceBars(); }
 
 bool UIMap::isDrawingLights() { return m_mapView->isDrawingLights(); }
 

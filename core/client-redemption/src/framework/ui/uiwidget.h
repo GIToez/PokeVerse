@@ -943,6 +943,7 @@ protected:
 
 public:
     void setImageSource(std::string_view source, bool base64);
+    void restartImageAnimation();
     void setImageClip(const Rect& clipRect) { m_imageClipRect = clipRect; updateImageCache(); }
     void setImageOffsetX(const int x) { m_imageRect.setX(x); updateImageCache(); }
     void setImageOffsetY(const int y) { m_imageRect.setY(y); updateImageCache(); }

@@ -80,7 +80,7 @@ public:
     bool isSingleDimension() { return (m_thingTypeFlag & NOT_SINGLE_DIMENSION) == 0 && m_walkingCreatures.empty(); }
     bool isLookPossible() { return (m_thingTypeFlag & BLOCK_PROJECTTILE) == 0; }
     bool isEmpty() { return m_things.empty(); }
-    bool isDrawable() { return !isEmpty() || !m_walkingCreatures.empty() || hasEffect() || hasAttachedEffects(); }
+    bool isDrawable() { return !isEmpty() || !m_walkingCreatures.empty() || !m_ghostCreatures.empty() || hasEffect() || hasAttachedEffects(); }
     bool isCovered(int8_t firstFloor);
     bool isCompletelyCovered(uint8_t firstFloor, bool resetCache);
     bool isLoading() const;
@@ -183,6 +183,7 @@ private:
 
     std::vector<CreaturePtr> m_walkingCreatures;
     std::vector<ThingPtr> m_things;
+    std::vector<CreaturePtr> m_ghostCreatures; // PokeVerse: client-side copies for effects (stack position 256)
 
     std::unique_ptr<std::vector<EffectPtr>> m_effects;
     std::unique_ptr<std::vector<TilePtr>> m_tilesRedraw;

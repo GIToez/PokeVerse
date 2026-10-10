@@ -90,6 +90,9 @@ public:
     void setDrawHarmony(const bool enable) { m_drawHarmony = enable; }
     bool isDrawingHarmony() const { return m_drawHarmony; }
 
+    void setDrawExperienceBars(const bool enable) { m_drawExperienceBars = enable; }
+    bool isDrawingExperienceBars() const { return m_drawExperienceBars; }
+
     void move(int32_t x, int32_t y);
 
     void setShader(std::string_view name, float fadein, float fadeout);
@@ -262,6 +265,7 @@ private:
     bool m_shaderSwitchDone{ true };
     bool m_drawHealthBars{ true };
     bool m_drawManaBar{ true };
+    bool m_drawExperienceBars{ true };
     bool m_drawNames{ true };
     bool m_smooth{ true };
     bool m_follow{ true };

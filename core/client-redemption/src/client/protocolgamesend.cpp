@@ -36,7 +36,8 @@
 void ProtocolGame::onSend() {}
 void ProtocolGame::sendExtendedOpcode(const uint8_t opcode, const std::string& buffer)
 {
-    if (m_enableSendExtendedOpcode) {
+    // the PokeVerse server accepts extended opcodes without the opcode 0 handshake
+    if (m_enableSendExtendedOpcode || g_game.getFeature(Otc::GamePokeVerse)) {
         const auto& msg = std::make_shared<OutputMessage>();
         msg->addU8(Proto::ClientExtendedOpcode);
         msg->addU8(opcode);
@@ -53,7 +54,8 @@ void ProtocolGame::sendLoginPacket(const uint32_t challengeTimestamp, const uint
 
     msg->addU8(Proto::ClientPendingGame);
     msg->addU16(g_game.getOs());
-    msg->addU16(g_game.getProtocolVersion());
+    // the PokeVerse server identifies its client by version 312 instead of the protocol version
+    msg->addU16(g_game.getFeature(Otc::GamePokeVerse) ? 312 : g_game.getProtocolVersion());
 
     if (g_game.getFeature(Otc::GameClientVersion))
         msg->addU32(g_game.getClientVersion());

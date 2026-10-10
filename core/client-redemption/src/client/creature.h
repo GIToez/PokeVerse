@@ -53,6 +53,7 @@ public:
 
     void internalDraw(Point dest, const Color& color = Color::white);
     void drawInformation(const MapPosInfo& mapRect, const Point& dest, int drawFlags);
+    void drawInformationPokeVerse(const MapPosInfo& mapRect, const Point& dest, int drawFlags);
 
     void setId(const uint32_t id) override { m_id = id; }
     void setMasterId(const uint32_t id) { m_masterId = id; }
@@ -79,6 +80,16 @@ public:
     void setMountShader(std::string_view name);
     void setStaticWalking(uint16_t v);
     void setIconsTexture(const std::string& filename, const Rect& clip, const uint16_t count);
+
+    // PokeVerse
+    void setOutfitColor(const Color& color, int duration);
+    void setCrosshairTexture(const std::string& filename);
+    void setLocalPlayerSummon(const bool localPlayerSummon) { m_localPlayerSummon = localPlayerSummon; }
+    void setAttackable(const bool attackable) { m_attackable = attackable; }
+    void setGhost(const bool ghost) { m_ghost = ghost; }
+    bool isLocalPlayerSummon() const { return m_localPlayerSummon; }
+    bool isAttackable() const { return m_attackable; }
+    bool isGhost() const { return m_ghost; }
 
     void onStartAttachEffect(const AttachedEffectPtr& effect) override;
     void onDispatcherAttachEffect(const AttachedEffectPtr& effect) override;
@@ -249,6 +260,7 @@ private:
     void updateShield();
     void updateWalkingTile();
     void updateWalkAnimation();
+    void updateOutfitColor(Color color, Color finalColor, Color delta, int duration);
 
     uint16_t getCurrentAnimationPhase(bool mount = false);
 
@@ -292,6 +304,7 @@ private:
     TexturePtr m_typeTexture;
     TexturePtr m_iconTexture;
     TexturePtr m_typingIconTexture;
+    TexturePtr m_crosshairTexture;
 
     EventPtr m_walkUpdateEvent;
     ScheduledEventPtr m_walkFinishAnimEvent;
@@ -316,6 +329,7 @@ private:
     Color m_timedSquareColor{ Color::white };
     Color m_staticSquareColor{ Color::white };
     Color m_informationColor{ Color::white };
+    Color m_outfitColor{ Color::white };
 
     Bounce m_bounce;
 
@@ -367,6 +381,9 @@ private:
     bool m_showShieldTexture{ true };
     bool m_typing{ false };
     bool m_isCovered{ false };
+    bool m_localPlayerSummon{ false };
+    bool m_attackable{ true };
+    bool m_ghost{ false };
 
     StaticTextPtr m_text;
 

@@ -33,6 +33,7 @@
 #include "thingtype.h"
 #include "thingtypemanager.h"
 #include "tile.h"
+#include "framework/core/clock.h"
 #include "framework/core/eventdispatcher.h"
 #include "framework/core/graphicalapplication.h"
 #include "framework/luaengine/luainterface.h"
@@ -105,7 +106,9 @@ void Game::processConnectionError(const std::error_code& ec)
     // connection errors only have meaning if we still have a protocol
     if (m_protocolGame) {
         // eof = end of file, a clean disconnect
-        if (ec != asio::error::eof)
+        // The server closes the connection after a logout, which some systems report as a reset.
+        const bool loggingOut = m_logoutRequestTime > 0 && g_clock.millis() - m_logoutRequestTime < 5000;
+        if (ec != asio::error::eof && !loggingOut)
             g_lua.callGlobalField("g_game", "onConnectionError", ec.message(), ec.value());
 
         processDisconnect();
@@ -611,6 +614,7 @@ void Game::loginWorld(const std::string_view account, const std::string_view pas
 
     // reset the new game state
     resetGameStates();
+    m_logoutRequestTime = 0;
 
     m_localPlayer = std::make_shared<LocalPlayer>();
     m_localPlayer->onCreate();
@@ -663,6 +667,7 @@ void Game::forceLogout()
     if (!isOnline())
         return;
 
+    m_logoutRequestTime = g_clock.millis();
     m_protocolGame->sendLogout();
     processDisconnect();
 }
@@ -672,6 +677,7 @@ void Game::safeLogout()
     if (!isOnline())
         return;
 
+    m_logoutRequestTime = g_clock.millis();
     m_protocolGame->sendLogout();
 }
 
@@ -2373,4 +2379,28 @@ void Game::sendWeaponProficiencyApply(const uint16_t itemId, const std::vector<u
         return;
 
     m_protocolGame->sendWeaponProficiencyApply(itemId, levels, perkPositions);
+}
+
+void Game::requestPollWindow()
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendRequestPollWindow();
+}
+
+void Game::doPollVote(const uint8_t pollVote)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendPollVote(pollVote);
+}
+
+void Game::doPollVoteText(const std::string_view text)
+{
+    if (!canPerformGameAction())
+        return;
+
+    m_protocolGame->sendPollVoteText(std::string{ text });
 }

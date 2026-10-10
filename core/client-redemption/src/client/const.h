@@ -45,8 +45,9 @@ namespace Otc
         DrawNames = 1 << 3,
         DrawManaBar = 1 << 4,
         DrawHarmony = 1 << 5,
+        DrawExperienceBars = 1 << 6, // PokeVerse
         DrawThingsAndLights = DrawThings | DrawLights,
-        DrawCreatureInfo = DrawBars | DrawNames | DrawManaBar | DrawHarmony,
+        DrawCreatureInfo = DrawBars | DrawNames | DrawManaBar | DrawHarmony | DrawExperienceBars,
     };
 
     enum DatOpts : uint8_t
@@ -264,7 +265,11 @@ namespace Otc
         NpcIconChat,
         NpcIconTrade,
         NpcIconQuest,
-        NpcIconTradeQuest
+        NpcIconTradeQuest,
+        // PokeVerse
+        NpcIconStar,
+        NpcIconBattle,
+        NpcIconSkull
     };
 
     enum PlayerStates : uint64_t
@@ -667,6 +672,9 @@ namespace Otc
         GameProficiency = 135,
         GameTacticsWithoutFightMode = 136,
         GameManaShield = 137,
+        // PokeVerse server protocol (8.54 base): opcode 255, extra login and creature fields,
+        // u16 channel list, extended opcodes without the handshake.
+        GamePokeVerse = 138,
         LastGameFeature
     };
 

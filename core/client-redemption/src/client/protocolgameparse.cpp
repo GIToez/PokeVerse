@@ -51,6 +51,7 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
 {
     int opcode = -1;
     int prevOpcode = -1;
+    int subOpcode = -1;
 
     try {
         while (!msg->eof()) {
@@ -74,6 +75,9 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
             // restore read pos
 
             switch (opcode) {
+                case Proto::GameServerPokeVerse:
+                    parsePokeVerse(msg, subOpcode);
+                    break;
                 case Proto::GameServerLoginOrPendingState:
                     if (g_game.getFeature(Otc::GameLoginPending)) {
                         parsePendingGame(msg);
@@ -696,13 +700,14 @@ void ProtocolGame::parseMessage(const InputMessagePtr& msg)
         }
 
         g_logger.error(
-            "ProtocolGame parse message exception ({} bytes, {} unread at pos {}, last opcode: 0x{:02X} ({:d}), prev opcode: 0x{:02X} ({:d}), protocol: {}): {}\n"
+            "ProtocolGame parse message exception ({} bytes, {} unread at pos {}, last opcode: 0x{:02X} ({:d}), prev opcode: 0x{:02X} ({:d}), last PokeVerse sub-opcode: {}, protocol: {}): {}\n"
             "Next unread bytes: {}\n",
             msg->getMessageSize(),
             unread,
             readPos,
             opcode, opcode,
             prevOpcode, prevOpcode,
+            subOpcode,
             g_game.getProtocolVersion(),
             e.what(),
             hexDump.str()
@@ -768,9 +773,18 @@ void ProtocolGame::parseLogin(const InputMessagePtr& msg) const
         }
     }
 
+    uint16_t lightHour = 0;
+    if (g_game.getFeature(Otc::GamePokeVerse)) {
+        lightHour = msg->getU16();
+    }
+
     m_localPlayer->setId(playerId);
     g_game.setServerBeat(serverBeat);
     g_game.setCanReportBugs(canReportBugs);
+
+    if (g_game.getFeature(Otc::GamePokeVerse)) {
+        g_lua.callGlobalField("g_game", "onLightHour", lightHour);
+    }
 
     g_game.processLogin();
 }
@@ -2927,7 +2941,7 @@ void ProtocolGame::parseTalk(const InputMessagePtr& msg)
 
 void ProtocolGame::parseChannelList(const InputMessagePtr& msg)
 {
-    const uint8_t channelListSize = msg->getU8();
+    const uint16_t channelListSize = g_game.getFeature(Otc::GamePokeVerse) ? msg->getU16() : msg->getU8();
     std::vector<std::tuple<uint16_t, std::string>> channelList;
 
     for (auto i = 0; i < channelListSize; ++i) {
@@ -4258,6 +4272,13 @@ CreaturePtr ProtocolGame::getCreature(const InputMessagePtr& msg, int type) cons
             }
         }
 
+        bool localPlayerSummon = false;
+        bool attackable = true;
+        if (g_game.getFeature(Otc::GamePokeVerse)) {
+            localPlayerSummon = static_cast<bool>(msg->getU8());
+            attackable = static_cast<bool>(msg->getU8());
+        }
+
         if (creature) {
             creature->setHealthPercent(healthPercent);
             creature->turn(direction);
@@ -4284,16 +4305,26 @@ CreaturePtr ProtocolGame::getCreature(const InputMessagePtr& msg, int type) cons
                 }
             }
 
-            if (emblem > 0) {
-                creature->setEmblem(emblem);
+            if (g_game.getFeature(Otc::GamePokeVerse)) {
+                // like the original client: a sent emblem or icon always replaces the old one, even "none"
+                if (g_game.getFeature(Otc::GameCreatureEmblems) && !known)
+                    creature->setEmblem(emblem);
+                if (g_game.getFeature(Otc::GameCreatureIcons))
+                    creature->setIcon(icon);
+                creature->setLocalPlayerSummon(localPlayerSummon);
+                creature->setAttackable(attackable);
+            } else {
+                if (emblem > 0) {
+                    creature->setEmblem(emblem);
+                }
+
+                if (icon > 0) {
+                    creature->setIcon(icon);
+                }
             }
 
             if (creatureType > 0) {
                 creature->setType(creatureType);
-            }
-
-            if (icon > 0) {
-                creature->setIcon(icon);
             }
 
             if (creature == m_localPlayer && !m_localPlayer->isKnown()) {

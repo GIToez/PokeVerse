@@ -49,12 +49,14 @@ public:
     void setLimitVisibleDimension(bool enable);
     void setDrawManaBar(bool enable);
     void setDrawHarmony(bool enable);
+    void setDrawExperienceBars(bool enable);
     void setShader(std::string_view name, float fadein, float fadeout);
     void setMinimumAmbientLight(float intensity);
     void setDrawViewportEdge(bool force);
     bool isDrawingViewportEdge();
     bool isDrawingNames();
     bool isDrawingHealthBars();
+    bool isDrawingExperienceBars();
     bool isDrawingLights();
     bool isLimitedVisibleDimension();
     bool isDrawingManaBar();

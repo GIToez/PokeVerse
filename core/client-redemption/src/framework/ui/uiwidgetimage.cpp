@@ -251,3 +251,14 @@ void UIWidget::setImageSource(const std::string_view source, const bool base64)
         setSize(size);
     }
 }
+void UIWidget::restartImageAnimation()
+{
+    if (!m_imageTexture || !m_imageTexture->isAnimatedTexture())
+        return;
+
+    if (isImageIndividualAnimation()) {
+        m_imageAnimatorTimer.restart();
+        m_currentFrame = 0;
+    } else
+        std::static_pointer_cast<AnimatedTexture>(m_imageTexture)->restart();
+}

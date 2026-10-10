@@ -116,6 +116,11 @@ public:
     void sendNewNewRuleViolation(uint8_t reason, uint8_t action, std::string_view characterName, std::string_view comment, std::string_view translation);
     void sendRequestItemInfo(uint16_t itemId, uint8_t subType, uint8_t index);
     void sendAnswerModalDialog(uint32_t dialog, uint8_t button, uint8_t choice);
+
+    // PokeVerse
+    void sendRequestPollWindow();
+    void sendPollVote(uint8_t pollVote);
+    void sendPollVoteText(const std::string& text);
     void sendBrowseField(const Position& position);
     void sendSeekInContainer(uint8_t containerId, uint16_t index);
     void sendBuyStoreOffer(const uint32_t offerId, const uint8_t action, const std::string_view& name, const uint8_t type, const std::string_view& location);
@@ -338,6 +343,29 @@ private:
     void parseModalDialog(const InputMessagePtr& msg);
     void parseExtendedOpcode(const InputMessagePtr& msg);
     void parseChangeMapAwareRange(const InputMessagePtr& msg);
+
+    // PokeVerse (opcode 255)
+    void parsePokeVerse(const InputMessagePtr& msg, int& subOpcode);
+    void parseMoveBarUpdate(const InputMessagePtr& msg);
+    void parsePokemonBarAdd(const InputMessagePtr& msg);
+    void parsePokemonBarRemove(const InputMessagePtr& msg);
+    void parsePokemonBarUpdate(const InputMessagePtr& msg);
+    void parseMoveCooldown(const InputMessagePtr& msg);
+    void parsePokedexStatus(const InputMessagePtr& msg);
+    void parsePokedexUpdate(const InputMessagePtr& msg);
+    void parseTmChoose(const InputMessagePtr& msg);
+    void parseStatusBarAdd(const InputMessagePtr& msg);
+    void parseStatusBarRemove(const InputMessagePtr& msg);
+    void parsePokedexInfo(const InputMessagePtr& msg);
+    void parseCreatureJump(const InputMessagePtr& msg);
+    void parseCreatureEffect(const InputMessagePtr& msg);
+    void parseDollCaseStatus(const InputMessagePtr& msg);
+    void parseDollCaseUpdate(const InputMessagePtr& msg);
+    void parseSlotMachine(const InputMessagePtr& msg);
+    void parseTip(const InputMessagePtr& msg);
+    void parsePollWindow(const InputMessagePtr& msg);
+    void parsePokemonLevelUp(const InputMessagePtr& msg);
+    void parseLootList(const InputMessagePtr& msg);
 
     /**
      * @brief Parses and applies the creature mark (square) received from the server.

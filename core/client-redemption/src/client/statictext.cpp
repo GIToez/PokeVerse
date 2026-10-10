@@ -22,12 +22,14 @@
 
 #include "statictext.h"
 
+#include "game.h"
 #include "gameconfig.h"
 #include "map.h"
 #include "framework/core/clock.h"
 #include "framework/core/eventdispatcher.h"
 #include "framework/core/graphicalapplication.h"
 #include "framework/graphics/fontmanager.h"
+#include "framework/luaengine/luainterface.h"
 
 StaticText::StaticText()
 {
@@ -109,6 +111,31 @@ void StaticText::scheduleUpdate()
     }, delay);
 }
 
+namespace
+{
+    std::string translateStaticTextSpeech(const std::string& text)
+    {
+        if (!g_game.getFeature(Otc::GamePokeVerse))
+            return text;
+
+        g_lua.getGlobal("tr");
+        if (!g_lua.isFunction()) {
+            g_lua.pop();
+            return text;
+        }
+
+        g_lua.pushString(text);
+        try {
+            g_lua.safeCall(1, 1);
+        } catch (const LuaException&) {
+            return text;
+        }
+
+        auto translated = g_lua.popString();
+        return translated.empty() ? text : translated;
+    }
+}
+
 void StaticText::compose()
 {
     static constexpr Color
@@ -121,22 +148,22 @@ void StaticText::compose()
 
     if (m_mode == Otc::MessageSay) {
         text += m_name;
-        text += " says:\n";
+        text += translateStaticTextSpeech(" says:\n");
         m_color = MESSAGE_COLOR1;
     } else if (m_mode == Otc::MessageWhisper) {
         text += m_name;
-        text += " whispers:\n";
+        text += translateStaticTextSpeech(" whispers:\n");
         m_color = MESSAGE_COLOR1;
     } else if (m_mode == Otc::MessageYell) {
         text += m_name;
-        text += " yells:\n";
+        text += translateStaticTextSpeech(" yells:\n");
         m_color = MESSAGE_COLOR1;
     } else if (m_mode == Otc::MessageMonsterSay || m_mode == Otc::MessageMonsterYell || m_mode == Otc::MessageSpell
                || m_mode == Otc::MessageBarkLow || m_mode == Otc::MessageBarkLoud) {
         m_color = MESSAGE_COLOR2;
     } else if (m_mode == Otc::MessageNpcFrom || m_mode == Otc::MessageNpcFromStartBlock) {
         text += m_name;
-        text += " says:\n";
+        text += translateStaticTextSpeech(" says:\n");
         m_color = MESSAGE_COLOR3;
     } else {
         g_logger.warning("Unknown speak type: {}", static_cast<uint8_t>(m_mode));

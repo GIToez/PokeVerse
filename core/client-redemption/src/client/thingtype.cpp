@@ -579,6 +579,10 @@ void ThingType::unserialize(const uint16_t clientId, const ThingCategory categor
                 attr = ThingAttrMultiUse;
         }
 
+        // the PokeVerse 8.54 data stores the market block under attribute 32
+        if (g_game.getFeature(Otc::GamePokeVerse) && g_game.getClientVersion() == 854 && attr == 32)
+            attr = ThingAttrMarket;
+
         const auto thingAttr = static_cast<ThingAttr>(attr);
         m_flags |= thingAttrToThingFlagAttr(thingAttr);
 
@@ -678,7 +682,7 @@ void ThingType::unserialize(const uint16_t clientId, const ThingCategory categor
 
         m_spritesIndex.resize(totalSpritesCount + totalSprites);
         for (int j = totalSpritesCount; j < (totalSpritesCount + totalSprites); ++j)
-            m_spritesIndex[j] = g_game.getFeature(Otc::GameSpritesU32) ? fin->getU32() : fin->getU16();
+            m_spritesIndex[j] = g_game.getFeature(Otc::GameSpritesU32) || g_game.getFeature(Otc::GamePokeVerse) ? fin->getU32() : fin->getU16();
 
         totalSpritesCount += totalSprites;
     }

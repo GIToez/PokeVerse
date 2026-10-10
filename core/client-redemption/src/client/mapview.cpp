@@ -124,12 +124,14 @@ void MapView::preLoad() {
 void MapView::drawFloor()
 {
     const auto& cameraPosition = m_posInfo.camera;
+    m_posInfo.firstVisibleFloor = m_cachedFirstVisibleFloor;
 
     uint32_t flags = Otc::DrawThings;
     if (m_drawNames) { flags |= Otc::DrawNames; }
     if (m_drawHealthBars) { flags |= Otc::DrawBars; }
     if (m_drawManaBar) { flags |= Otc::DrawManaBar; }
     if (m_drawHarmony) { flags |= Otc::DrawHarmony; }
+    if (m_drawExperienceBars) { flags |= Otc::DrawExperienceBars; }
 
     for (int_fast8_t z = m_floorMax; z >= m_floorMin; --z) {
         const float fadeLevel = getFadeLevel(z);

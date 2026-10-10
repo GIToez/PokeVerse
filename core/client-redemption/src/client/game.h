@@ -168,6 +168,10 @@ public:
     void forceLogout();
     void safeLogout();
 
+    void requestPollWindow();
+    void doPollVote(uint8_t pollVote);
+    void doPollVoteText(std::string_view text);
+
     // walk related
     bool walk(Otc::Direction direction);
     void autoWalk(const std::vector<Otc::Direction>& dirs, const Position& startPos);
@@ -539,6 +543,7 @@ private:
     stdext::timer m_pingTimer;
 
     ticks_t m_ping{ -1 };
+    ticks_t m_logoutRequestTime{ 0 };
 };
 
 extern Game g_game;

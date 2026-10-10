@@ -259,6 +259,10 @@ void Client::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_game", "forceLogout", &Game::forceLogout, &g_game);
     g_lua.bindSingletonFunction("g_game", "safeLogout", &Game::safeLogout, &g_game);
     g_lua.bindSingletonFunction("g_game", "walk", &Game::walk, &g_game);
+    g_lua.bindSingletonFunction("g_game", "dashWalk", &Game::walk, &g_game);
+    g_lua.bindSingletonFunction("g_game", "requestPollWindow", &Game::requestPollWindow, &g_game);
+    g_lua.bindSingletonFunction("g_game", "doPollVote", &Game::doPollVote, &g_game);
+    g_lua.bindSingletonFunction("g_game", "doPollVoteText", &Game::doPollVoteText, &g_game);
     g_lua.bindSingletonFunction("g_game", "autoWalk", &Game::autoWalk, &g_game);
     g_lua.bindSingletonFunction("g_game", "forceWalk", &Game::forceWalk, &g_game);
     g_lua.bindSingletonFunction("g_game", "turn", &Game::turn, &g_game);
@@ -694,6 +698,12 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<Creature>("setDisableWalkAnimation", &Creature::setDisableWalkAnimation);
     g_lua.bindClassMemberFunction<Creature>("isDisabledWalkAnimation", &Creature::isDisabledWalkAnimation);
     g_lua.bindClassMemberFunction<Creature>("isTimedSquareVisible", &Creature::isTimedSquareVisible);
+    g_lua.bindClassMemberFunction<Creature>("setOutfitColor", &Creature::setOutfitColor);
+    g_lua.bindClassMemberFunction<Creature>("setCrosshairTexture", &Creature::setCrosshairTexture);
+    g_lua.bindClassMemberFunction<Creature>("isLocalPlayerSummon", &Creature::isLocalPlayerSummon);
+    g_lua.bindClassMemberFunction<Creature>("isAttackable", &Creature::isAttackable);
+    g_lua.bindClassMemberFunction<Creature>("setGhost", &Creature::setGhost);
+    g_lua.bindClassMemberFunction<Creature>("isGhost", &Creature::isGhost);
     g_lua.bindClassMemberFunction<Creature>("getTimedSquareColor", &Creature::getTimedSquareColor);
     g_lua.bindClassMemberFunction<Creature>("isStaticSquareVisible", &Creature::isStaticSquareVisible);
     g_lua.bindClassMemberFunction<Creature>("getStaticSquareColor", &Creature::getStaticSquareColor);
@@ -1194,6 +1204,7 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<UIMap>("setFloorViewMode", &UIMap::setFloorViewMode);
     g_lua.bindClassMemberFunction<UIMap>("setDrawNames", &UIMap::setDrawNames);
     g_lua.bindClassMemberFunction<UIMap>("setDrawHealthBars", &UIMap::setDrawHealthBars);
+    g_lua.bindClassMemberFunction<UIMap>("setDrawExperienceBars", &UIMap::setDrawExperienceBars);
     g_lua.bindClassMemberFunction<UIMap>("setDrawLights", &UIMap::setDrawLights);
     g_lua.bindClassMemberFunction<UIMap>("setLimitVisibleDimension", &UIMap::setLimitVisibleDimension);
     g_lua.bindClassMemberFunction<UIMap>("setDrawManaBar", &UIMap::setDrawManaBar);
@@ -1208,6 +1219,7 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<UIMap>("setDrawViewportEdge", &UIMap::setDrawViewportEdge);
     g_lua.bindClassMemberFunction<UIMap>("isDrawingNames", &UIMap::isDrawingNames);
     g_lua.bindClassMemberFunction<UIMap>("isDrawingHealthBars", &UIMap::isDrawingHealthBars);
+    g_lua.bindClassMemberFunction<UIMap>("isDrawingExperienceBars", &UIMap::isDrawingExperienceBars);
     g_lua.bindClassMemberFunction<UIMap>("isDrawingLights", &UIMap::isDrawingLights);
     g_lua.bindClassMemberFunction<UIMap>("isLimitedVisibleDimension", &UIMap::isLimitedVisibleDimension);
     g_lua.bindClassMemberFunction<UIMap>("isDrawingManaBar", &UIMap::isDrawingManaBar);

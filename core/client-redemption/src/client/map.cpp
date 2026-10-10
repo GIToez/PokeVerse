@@ -125,7 +125,7 @@ void Map::notificateTileUpdate(const Position& pos, const ThingPtr& thing, const
         mapView->onTileUpdate(pos, thing, operation);
     }
 
-    if (thing && thing->isItem()) {
+    if (thing && thing->isItem() && (!g_game.getFeature(Otc::GamePokeVerse) || getCentralPosition().z == pos.z)) {
         g_minimap.updateTile(pos, getTile(pos));
     }
 }

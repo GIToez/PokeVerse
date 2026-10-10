@@ -93,6 +93,10 @@ void Creature::draw(const Point& dest, const bool drawThings, LightView* /*light
             g_drawPool.addBoundingRect(Rect(dest + (m_walkOffset - getDisplacement()) * g_drawPool.getScaleFactor(), Size(g_gameConfig.getSpriteSize() * g_drawPool.getScaleFactor())), m_staticSquareColor, std::max<int>(static_cast<int>(2 * g_drawPool.getScaleFactor()), 1));
         }
 
+        if (m_crosshairTexture) {
+            g_drawPool.addTexturedRect(Rect(dest + (m_walkOffset - getDisplacement()) * g_drawPool.getScaleFactor(), Size(g_gameConfig.getSpriteSize() * g_drawPool.getScaleFactor())), m_crosshairTexture);
+        }
+
         auto _dest = dest + m_walkOffset * g_drawPool.getScaleFactor();
 
         auto oldScaleFactor = g_drawPool.getScaleFactor();
@@ -174,6 +178,11 @@ void Creature::drawInformation(const MapPosInfo& mapRect, const Point& dest, con
 
     if (isHidden() || isDead() || !canBeSeen() || !(drawFlags & Otc::DrawCreatureInfo) || !mapRect.isInRange(getPosition()))
         return;
+
+    if (g_game.getFeature(Otc::GamePokeVerse)) {
+        drawInformationPokeVerse(mapRect, dest, drawFlags);
+        return;
+    }
 
     if (g_gameConfig.isDrawingInformationByWidget()) {
         if (m_widgetInformation)
@@ -391,6 +400,7 @@ void Creature::internalDraw(Point dest, const Color& color)
     }
 
     const bool replaceColorShader = color != Color::white;
+    const Color& baseColor = replaceColorShader ? color : m_outfitColor;
     if (replaceColorShader)
         g_drawPool.setShaderProgram(g_painter->getReplaceColorShader());
     else
@@ -413,7 +423,7 @@ void Creature::internalDraw(Point dest, const Color& color)
                         m_mountShader->setUniformValue(ShaderManager::MOUNT_ID_UNIFORM, m_outfit.getMount());
                     }*/);
                 }
-                mountType->draw(dest, 0, m_numPatternX, 0, 0, getCurrentAnimationPhase(true), color);
+                mountType->draw(dest, 0, m_numPatternX, 0, 0, getCurrentAnimationPhase(true), baseColor);
 
                 dest += getDisplacement() * g_drawPool.getScaleFactor();
             }
@@ -432,7 +442,7 @@ void Creature::internalDraw(Point dest, const Color& color)
                         g_drawPool.setShaderProgram(g_shaders.getShaderById(m_shaderId), true/*, shaderAction*/);
                     }
 
-                    datType->draw(dest, 0, m_numPatternX, yPattern, m_numPatternZ, animationPhase, color);
+                    datType->draw(dest, 0, m_numPatternX, yPattern, m_numPatternZ, animationPhase, baseColor);
 
                     if (m_drawOutfitColor && !replaceColorShader && getLayers() > 1) {
                         g_drawPool.setCompositionMode(CompositionMode::MULTIPLY);
@@ -485,7 +495,7 @@ void Creature::internalDraw(Point dest, const Color& color)
 
             if (!replaceColorShader && hasShader())
                 g_drawPool.setShaderProgram(g_shaders.getShaderById(m_shaderId), true/*, shaderAction*/);
-            getThingType()->draw(dest - (getDisplacement() * g_drawPool.getScaleFactor()), 0, 0, 0, 0, animationPhase, color);
+            getThingType()->draw(dest - (getDisplacement() * g_drawPool.getScaleFactor()), 0, 0, 0, 0, animationPhase, baseColor);
         }
     }
 
@@ -584,7 +594,7 @@ void Creature::updateJump()
     int nextT = 0;
     int diff = 0;
     int i = 1;
-    if (m_jumpTimer.ticksElapsed() < halfJumpDuration)
+    if (m_jumpTimer.ticksElapsed() <= halfJumpDuration)
         diff = 1;
     else if (m_jumpTimer.ticksElapsed() > halfJumpDuration)
         diff = -1;
@@ -593,7 +603,7 @@ void Creature::updateJump()
         nextT = std::round((-b + std::sqrt(std::max<double>(b * b + 4 * a * (roundHeight + diff * i), 0.0)) * diff) / (2 * a));
         ++i;
 
-        if (nextT < halfJumpDuration)
+        if (nextT <= halfJumpDuration)
             diff = 1;
         else if (nextT > halfJumpDuration)
             diff = -1;
@@ -603,7 +613,7 @@ void Creature::updateJump()
     const auto self = static_self_cast<Creature>();
     g_dispatcher.scheduleEvent([self] {
         self->updateJump();
-    }, nextT - m_jumpTimer.ticksElapsed());
+    }, std::max<int>(0, nextT - m_jumpTimer.ticksElapsed()));
 }
 
 void Creature::onPositionChange(const Position& newPos, const Position& oldPos)
@@ -807,7 +817,8 @@ void Creature::nextWalkUpdate()
 
 void Creature::updateWalk()
 {
-    const float walkTicksPerPixel = getStepDuration(true) / static_cast<float>(g_gameConfig.getSpriteSize());
+    const bool ignoreDiagonal = !(isLocalPlayer() && g_game.getFeature(Otc::GamePokeVerse));
+    const float walkTicksPerPixel = getStepDuration(ignoreDiagonal) / static_cast<float>(g_gameConfig.getSpriteSize());
 
     const int totalPixelsWalked = std::min<int>(m_walkTimer.ticksElapsed() / walkTicksPerPixel, g_gameConfig.getSpriteSize());
 
@@ -1503,4 +1514,132 @@ void Creature::setPaperdollsDirection(Otc::Direction dir) const
         if (paperdoll->m_thingType)
             paperdoll->m_direction = dir;
     }
+}
+
+// PokeVerse: the information layout of the original PokeVerse client (smaller bars, experience
+// bar for the player and the active Pokemon, icons placed after the skull and shield).
+void Creature::drawInformationPokeVerse(const MapPosInfo& mapRect, const Point& dest, const int drawFlags)
+{
+    static constexpr Color
+        GRAY_COLOR(96, 96, 96),
+        NPC_COLOR(0x66, 0xcc, 0xff),
+        EXPERIENCE_COLOR(0x66, 0xcc, 0xff);
+
+    if (isGhost())
+        return;
+
+    const auto& parentRect = mapRect.rect;
+    const int displacementY = getDisplacementY();
+    const auto& creatureOffset = Point(16 - getDisplacementX(), -displacementY - 2) + getDrawOffset();
+
+    Point p = dest - mapRect.drawOffset;
+    p += (creatureOffset - Point(std::round(m_jumpOffset.x), std::round(m_jumpOffset.y))) * mapRect.scaleFactor;
+    p.x *= mapRect.horizontalStretchFactor;
+    p.y *= mapRect.verticalStretchFactor;
+    p.y -= getExactSize() / 2 + (-displacementY - 2); // keeps names and bars above the Pokemon's head
+    p += parentRect.topLeft();
+
+    const auto& tile = getTile();
+    const bool useGray = tile && tile->isCovered(mapRect.firstVisibleFloor);
+    Color fillColor = useGray ? GRAY_COLOR : m_informationColor;
+
+    Rect backgroundRect = Rect(p.x - (13.5), p.y, 27, 4);
+    backgroundRect.bind(parentRect);
+
+    const auto& nameSize = m_name.getTextSize();
+    Rect textRect = Rect(p.x - nameSize.width() / 2.0, p.y - 12, nameSize);
+    textRect.bind(parentRect);
+
+    if (textRect.top() == parentRect.top())
+        backgroundRect.moveTop(textRect.top() + 12);
+    if (backgroundRect.bottom() == parentRect.bottom())
+        textRect.moveTop(backgroundRect.top() - 12);
+
+    Rect healthRect = backgroundRect.expanded(-1);
+    healthRect.setWidth((m_healthPercent / 100.0) * 25);
+
+    if (g_game.getFeature(Otc::GameBlueNpcNameColor) && isNpc() && m_healthPercent == 100 && !useGray)
+        fillColor = NPC_COLOR;
+
+    g_drawPool.select(DrawPoolType::CREATURE_INFORMATION);
+
+    if (drawFlags & Otc::DrawBars && (!isNpc() || !g_game.getFeature(Otc::GameHideNpcNames))) {
+        g_drawPool.addFilledRect(backgroundRect, Color::black);
+        g_drawPool.addFilledRect(healthRect, fillColor);
+    }
+
+    if (drawFlags & Otc::DrawExperienceBars && (isLocalPlayer() || isLocalPlayerSummon())) {
+        if (const auto& player = g_game.getLocalPlayer()) {
+            Rect expBackgroundRect = Rect(backgroundRect.x(), backgroundRect.y() + 5, 27, 4);
+            expBackgroundRect.bind(parentRect);
+
+            // the server sends the active Pokemon's experience as the magic level percent
+            const double percent = isLocalPlayer() ? player->getLevelPercent() : player->getMagicLevelPercent();
+            Rect expRect = expBackgroundRect.expanded(-1);
+            expRect.setWidth((percent / 100.0) * 25);
+
+            g_drawPool.addFilledRect(expBackgroundRect, Color::black);
+            g_drawPool.addFilledRect(expRect, EXPERIENCE_COLOR);
+        }
+    }
+
+    g_drawPool.setDrawOrder(DrawOrder::SECOND);
+
+    if (drawFlags & Otc::DrawNames)
+        m_name.draw(textRect, fillColor);
+
+    int margin = 0;
+    if (m_skull != Otc::SkullNone && m_skullTexture) {
+        g_drawPool.addTexturedPos(m_skullTexture, backgroundRect.x() + 13.5 + 12, backgroundRect.y() + 5);
+        margin += m_skullTexture->getWidth();
+    }
+    if (m_shield != Otc::ShieldNone && m_shieldTexture && m_showShieldTexture) {
+        g_drawPool.addTexturedPos(m_shieldTexture, backgroundRect.x() + 13.5, backgroundRect.y() + 5);
+        margin += m_shieldTexture->getWidth();
+    }
+    if (m_emblem != Otc::EmblemNone && m_emblemTexture)
+        g_drawPool.addTexturedPos(m_emblemTexture, backgroundRect.x() + 13.5 + 12, backgroundRect.y() + 16);
+    if (m_icon != Otc::NpcIconNone && m_iconTexture)
+        g_drawPool.addTexturedPos(m_iconTexture, backgroundRect.x() + 13.5 + 12 + margin, backgroundRect.y() + 5);
+
+    g_drawPool.resetDrawOrder();
+    g_drawPool.select(DrawPoolType::MAP);
+}
+
+void Creature::setOutfitColor(const Color& color, const int duration)
+{
+    if (m_outfitColorUpdateEvent) {
+        m_outfitColorUpdateEvent->cancel();
+        m_outfitColorUpdateEvent = nullptr;
+    }
+
+    if (duration > 0) {
+        const Color delta = (color - m_outfitColor) / static_cast<float>(duration);
+        m_outfitColorTimer.restart();
+        updateOutfitColor(m_outfitColor, color, delta, duration);
+    } else {
+        m_outfitColor = color;
+    }
+}
+
+void Creature::updateOutfitColor(const Color color, const Color finalColor, const Color delta, const int duration)
+{
+    if (m_outfitColorTimer.ticksElapsed() < duration) {
+        m_outfitColor = color + delta * m_outfitColorTimer.ticksElapsed();
+
+        const auto self = static_self_cast<Creature>();
+        m_outfitColorUpdateEvent = g_dispatcher.scheduleEvent([=] {
+            self->updateOutfitColor(color, finalColor, delta, duration);
+        }, 100);
+    } else {
+        m_outfitColor = finalColor;
+    }
+}
+
+void Creature::setCrosshairTexture(const std::string& filename)
+{
+    if (filename == "~")
+        m_crosshairTexture = nullptr;
+    else
+        m_crosshairTexture = g_textures.getTexture(filename);
 }

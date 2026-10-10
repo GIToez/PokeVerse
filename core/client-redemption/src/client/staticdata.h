@@ -58,6 +58,7 @@ struct MapPosInfo
     float horizontalStretchFactor;
     float verticalStretchFactor;
     float scaleFactor;
+    uint8_t firstVisibleFloor{ 0 }; // PokeVerse: names and bars of covered creatures are drawn gray
 
     bool isInRange(const Position& pos, const bool ignoreZ = false) const
     {
