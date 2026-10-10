@@ -1,0 +1,241 @@
+name: Client release
+
+# Builds the Redemption client for Windows and Linux, assembles the live packages and the
+# updater site. When started by hand with "publish", it creates a GitHub Release (large
+# files and the first-install downloads) and deploys the updater manifests and files to
+# GitHub Pages. Clients that are already installed then update themselves on start.
+# Setup: docs/client-updates.md
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - core/client-redemption/**
+      - core/client-legacy/data/**
+      - core/client-legacy/modules/**
+      - scripts/assemble-redemption-client.sh
+      - scripts/set-client-server.sh
+      - scripts/make-updater-manifest.py
+      - .github/workflows/client-release.yml
+  pull_request:
+    paths:
+      - core/client-redemption/**
+      - scripts/assemble-redemption-client.sh
+      - scripts/make-updater-manifest.py
+      - .github/workflows/client-release.yml
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the release and the update to players
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+permissions:
+  contents: read
+
+env:
+  PAGES_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+  VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
+
+jobs:
+  linux:
+    name: Build (Linux)
+    runs-on: ubuntu-24.04
+    env:
+      CC: gcc-14
+      CXX: g++-14
+    defaults:
+      run:
+        working-directory: core/client-redemption
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends autoconf autoconf-archive automake \
+            gcc-14 g++-14 libgl1-mesa-dev libglu1-mesa-dev libltdl-dev libtool libtool-bin \
+            libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev linux-libc-dev \
+            make ninja-build perl pkg-config
+
+      - name: vcpkg baseline
+        run: |
+          echo "VCPKG_COMMIT=$(python3 -c 'import json;print(json.load(open("vcpkg.json"))["builtin-baseline"])')" >> "$GITHUB_ENV"
+          mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
+
+      - uses: actions/cache@v4
+        with:
+          path: vcpkg-cache
+          key: vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}
+          restore-keys: vcpkg-linux-
+
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+
+      - name: Build
+        run: |
+          cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_IPO=OFF -DOPTIONS_ENABLE_CCACHE=OFF \
+            -DBUILD_COMMIT=${GITHUB_SHA::7} -DBUILD_REVISION=${GITHUB_RUN_NUMBER}
+          cmake --build --preset linux-release
+          mkdir -p "$GITHUB_WORKSPACE/bin-linux"
+          cp build/linux-release/bin/otclient "$GITHUB_WORKSPACE/bin-linux/"
+          strip "$GITHUB_WORKSPACE/bin-linux/otclient"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: redemption-linux-bin
+          path: bin-linux/
+          if-no-files-found: error
+
+  windows:
+    name: Build (Windows)
+    runs-on: windows-2025-vs2026
+    defaults:
+      run:
+        working-directory: core/client-redemption
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: vcpkg baseline
+        shell: pwsh
+        run: |
+          $json = Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          "VCPKG_COMMIT=$($json.'builtin-baseline')" | Out-File -FilePath $env:GITHUB_ENV -Append
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\vcpkg-cache" | Out-Null
+
+      - uses: actions/cache@v4
+        with:
+          path: vcpkg-cache
+          key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}
+          restore-keys: vcpkg-windows-
+
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+
+      - name: Build
+        shell: pwsh
+        run: |
+          cmake --preset windows-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_IPO=OFF -DOPTIONS_ENABLE_SCCACHE=OFF `
+            "-DBUILD_COMMIT=$($env:GITHUB_SHA.Substring(0,7))" "-DBUILD_REVISION=$env:GITHUB_RUN_NUMBER"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build --preset windows-release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\bin-windows" | Out-Null
+          Copy-Item build\windows-release\bin\*.exe "$env:GITHUB_WORKSPACE\bin-windows\"
+          Get-ChildItem build\windows-release\bin\*.dll -ErrorAction SilentlyContinue | Copy-Item -Destination "$env:GITHUB_WORKSPACE\bin-windows\"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: redemption-windows-bin
+          path: bin-windows/
+          if-no-files-found: error
+
+  package:
+    name: Packages and updater site
+    needs: [linux, windows]
+    runs-on: ubuntu-24.04
+    env:
+      LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: redemption-linux-bin
+          path: bin-linux
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: redemption-windows-bin
+          path: bin-windows
+
+      - name: Version
+        id: version
+        run: echo "tag=client-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Assemble live packages
+        run: |
+          chmod +x bin-linux/otclient
+          updater="$PAGES_URL/updater/"
+          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/windows bin-windows/*
+          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/linux bin-linux/otclient
+
+      - name: Updater site
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          release_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/$TAG"
+          common=(--site site/updater --files-url "$PAGES_URL/updater/files" --version "$TAG"
+                  --release-dir release --release-url "$release_url")
+          python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary otclient.exe "${common[@]}"
+          # Linux cannot relaunch a replaced binary; engine updates there need a new download
+          python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --skip otclient "${common[@]}"
+          cat > site/index.html <<EOF
+          <!doctype html><meta charset="utf-8"><title>PokeVerse client</title>
+          <h1>PokeVerse client</h1>
+          <p>Install once; the client updates itself when it starts.</p>
+          <ul>
+            <li><a href="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/PokeVerse-Windows.zip">Windows</a></li>
+            <li><a href="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/PokeVerse-Linux.tar.gz">Linux</a></li>
+          </ul>
+          EOF
+          du -sh site release
+
+      - name: First-install downloads
+        run: |
+          (cd pkg && mv windows PokeVerse && zip -qr ../release/PokeVerse-Windows.zip PokeVerse && mv PokeVerse windows)
+          (cd pkg && mv linux PokeVerse && tar -czf ../release/PokeVerse-Linux.tar.gz PokeVerse && mv PokeVerse linux)
+          ls -la release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-release
+          path: release/
+          compression-level: 0
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+  publish:
+    name: Publish release and update
+    needs: package
+    if: github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: client-release
+          path: release
+
+      # release assets first: the manifests on Pages point at them
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.package.outputs.tag }}
+        run: |
+          gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "PokeVerse client $TAG" \
+            --notes "Installed clients update themselves on start. New players: download PokeVerse-Windows.zip or PokeVerse-Linux.tar.gz."
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
