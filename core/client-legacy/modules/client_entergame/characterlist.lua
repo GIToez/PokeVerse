@@ -11,8 +11,8 @@ local updateWaitEvent
 local resendWaitEvent
 local createCharacterWindow
 
--- Opened by the Donate button: the PokeVerse Discord server invite (https://discord.gg/...).
-local DONATE_URL = ''
+-- Opened by the Donate button: the PokeVerse Discord server invite.
+local DONATE_URL = 'https://discord.gg/P88WNBB56E'
 
 -- private functions
 local function tryLogin(charInfo, tries)
