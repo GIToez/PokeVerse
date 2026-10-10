@@ -31,6 +31,14 @@ The live server runs on OVHcloud (Ubuntu 24.04) and is deployed by the **Live se
 workflow. Players use the **PokeVerse-Windows-Live** artifact, which connects to it.
 See [`docs/live-server.md`](docs/live-server.md).
 
+## Redemption client
+
+The new client runs PokeVerse on the OTClient Redemption engine, for Windows, Linux and
+Android, and updates itself from GitHub so players install it only once. The legacy client
+stays available until the new one covers everything.
+See [`docs/phase3-redemption.md`](docs/phase3-redemption.md) and
+[`docs/client-updates.md`](docs/client-updates.md).
+
 ## Cloning
 
 Some assets are larger than 100 MB and are stored with [Git LFS](https://git-lfs.com/).

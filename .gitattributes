@@ -11,3 +11,5 @@ references/** -text
 *.cmd text eol=crlf
 references/**/*.bat -text
 references/**/*.cmd -text
+core/client-redemption/**/*.bat -text
+core/client-redemption/**/*.cmd -text
