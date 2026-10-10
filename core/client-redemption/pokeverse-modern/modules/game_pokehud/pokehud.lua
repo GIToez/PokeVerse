@@ -6,6 +6,7 @@ local SOUL_COIN_ICON = 6499
 local hud
 local party = {}
 local summon
+local summonEvent
 
 local function resizeFill(track)
     local width = math.floor((track:getWidth() * (track.percent or 0)) / 100)
@@ -140,7 +141,6 @@ local function updateParty()
         if not pokemon then
             ball:setImageSource(IMAGES .. 'ball-empty')
             ball:setTooltip(nil)
-            ball.onClick = nil
         else
             local fainted = pokemon.text == 'FNT'
             ball:setImageSource(IMAGES .. (fainted and 'ball-fainted' or 'ball'))
@@ -150,9 +150,6 @@ local function updateParty()
             local name = pokemonName(pokemon.itemId)
             ball:setTooltip(pokemon.active and tr('%s (out)', name) or
                             (pokemon.text ~= '' and (name .. ' - ' .. pokemon.text) or name))
-            ball.onClick = function()
-                g_game.talkChannel(MessageModes.Say, 0, '/cp ' .. number)
-            end
         end
     end
 end
@@ -208,14 +205,33 @@ local function refresh()
     onWalletChange(Wallet.get())
 end
 
+-- the server renames a Pokemon (its level) without the client seeing it appear again
+local function findSummon()
+    local player = g_game.getLocalPlayer()
+    summon = nil
+    if player then
+        for _, creature in pairs(g_map.getSpectators(player:getPosition(), false)) do
+            if creature:isLocalPlayerSummon() then
+                summon = creature
+                break
+            end
+        end
+    end
+    updateSummon()
+end
+
 local function onGameStart()
     party = {}
     summon = nil
     hud:show()
     refresh()
+    removeEvent(summonEvent)
+    summonEvent = cycleEvent(findSummon, 1000)
 end
 
 local function onGameEnd()
+    removeEvent(summonEvent)
+    summonEvent = nil
     hud:hide()
     party = {}
     summon = nil
@@ -287,6 +303,7 @@ function terminate()
         onPokemonBarClose = onPokemonBarClose
     })
     Wallet.terminate()
+    removeEvent(summonEvent)
     hud:destroy()
     hud = nil
 end

@@ -105,6 +105,9 @@ def main():
     ball(out, 'ball-fainted', (96, 70, 72), (130, 130, 130), button=(150, 150, 150))
     ball(out, 'ball-empty', (74, 90, 94), (54, 66, 70), band=(14, 20, 22), button=(104, 120, 124))
     heart(out)
+    rounded(out, 'slot', 16, 16, 6, (12, 18, 19, 210), (70, 92, 92, 220))
+    rounded(out, 'slot-hover', 16, 16, 6, (30, 42, 43, 220), (150, 176, 176, 240))
+    rounded(out, 'slot-active', 16, 16, 6, (40, 36, 18, 220), GOLD)
 
 
 if __name__ == '__main__':
