@@ -6,7 +6,7 @@
 --     "url": "https://<pages>/updater/files",          -- base for every file below
 --     "files": { "/init.lua": "<crc32>", ... },
 --     "urls": { "/data/things/data.spr": "https://github.com/.../releases/download/..." },
---     "binary": { "file": "/otclient.exe", "checksum": "<crc32>" }
+--     "binary": { "file": "/PokeVerse.exe", "checksum": "<crc32>" }
 --   }
 --
 -- Checksums are lowercase hex CRC32 without leading zeros (g_resources.filesChecksums).

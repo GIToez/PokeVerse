@@ -56,7 +56,7 @@ Folders
 -------
 server-windows\          Game server (pokeverse-server.exe), its data and config.lua.
                          Server logs are in server-windows\logs\.
-client-windows\          Game client (otclient.exe) and its data.
+client-windows\          Game client (PokeVerse.exe) and its data.
 database\mariadb\        Portable MariaDB server (port 3307, 127.0.0.1 only).
 database\sql\            Database setup scripts.
 database\data\           Your database (created by "Setup Database.bat").

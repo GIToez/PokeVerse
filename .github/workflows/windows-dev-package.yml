@@ -126,6 +126,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\bin-windows" | Out-Null
           Copy-Item build\windows-release\bin\*.exe "$env:GITHUB_WORKSPACE\bin-windows\"
+          Rename-Item "$env:GITHUB_WORKSPACE\bin-windows\otclient.exe" PokeVerse.exe
           Get-ChildItem build\windows-release\bin\*.dll -ErrorAction SilentlyContinue | Copy-Item -Destination "$env:GITHUB_WORKSPACE\bin-windows\"
 
       - uses: actions/cache/save@v4

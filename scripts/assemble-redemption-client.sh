@@ -6,7 +6,7 @@
 # The tree is Redemption's modules and data (core/client-redemption) with the PokeVerse
 # modules and artwork from the legacy client added, and the PokeVerse adaptations
 # (core/client-redemption/pokeverse-modern) copied on top, plus the given binaries
-# (otclient, otclient.exe, DLLs...).
+# (otclient or PokeVerse.exe, DLLs...).
 #
 # With --classic the tree is the previous layout instead: the legacy modules and data with
 # the overlay core/client-redemption/pokeverse on top and no Redemption modules. The parity

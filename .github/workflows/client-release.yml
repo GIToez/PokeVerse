@@ -143,6 +143,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\bin-windows" | Out-Null
           Copy-Item build\windows-release\bin\*.exe "$env:GITHUB_WORKSPACE\bin-windows\"
+          Rename-Item "$env:GITHUB_WORKSPACE\bin-windows\otclient.exe" PokeVerse.exe
           Get-ChildItem build\windows-release\bin\*.dll -ErrorAction SilentlyContinue | Copy-Item -Destination "$env:GITHUB_WORKSPACE\bin-windows\"
 
       # saved even when the build fails, so the libraries built so far are not lost
@@ -279,7 +280,7 @@ jobs:
           release_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/$TAG"
           common=(--site site/updater --files-url "$PAGES_URL/updater/files" --version "$TAG"
                   --release-dir release --release-url "$release_url")
-          python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary otclient.exe "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
           python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary otclient "${common[@]}"
           python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}"
           cat > site/index.html <<EOF

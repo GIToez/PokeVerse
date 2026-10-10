@@ -56,7 +56,7 @@ If GitHub cannot be reached, the client shows an error and starts normally after
 ## Platform notes
 
 - **Windows and Linux:** the executable updates itself under the same name, so shortcuts
-  keep working. The running file is renamed to `otclient.exe.old` (`otclient.old` on Linux),
+  keep working. The running file is renamed to `PokeVerse.exe.old` (`otclient.old` on Linux),
   the new one is written in its place, and the old copy is deleted on a later start.
 - **Android:** the APK carries the client files as `data.zip` and unpacks them on first
   start; after that the updater keeps them current like on the other platforms. Android

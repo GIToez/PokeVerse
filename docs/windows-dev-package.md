@@ -1,7 +1,7 @@
 # Windows development package
 
 `PokeVerse-Windows-Dev` contains everything needed to run PokeVerse on one Windows PC:
-the compiled server, the Redemption client (`client-windows\otclient.exe`), a portable MariaDB
+the compiled server, the Redemption client (`client-windows\PokeVerse.exe`), a portable MariaDB
 and batch files.
 No compilers or installers are needed. Everything listens on 127.0.0.1 only.
 
@@ -61,7 +61,7 @@ scripts/package-windows.sh build/server mariadb.zip dist
 
 Then build the Redemption client (`cmake --preset windows-release` in `core/client-redemption`,
 MSVC with vcpkg) and run
-`scripts/assemble-redemption-client.sh --host 127.0.0.1 dist/PokeVerse-Windows-Dev/client-windows <otclient.exe and DLLs>`.
+`scripts/assemble-redemption-client.sh --host 127.0.0.1 dist/PokeVerse-Windows-Dev/client-windows <PokeVerse.exe (the built otclient.exe, renamed) and DLLs>`.
 
 Linux (server test): build `core/server` the same way, then
 `scripts/test-server-linux.sh build/server/pokeverse-server`.

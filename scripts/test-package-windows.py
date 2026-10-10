@@ -9,7 +9,7 @@ Windows system folders so nothing from a compiler or developer tool is picked up
   3. Start Server.bat, wait for "server Online!"
   4. protocol-test.py: wrong password refused, login, character list, game login, movement
   5. Database checks: positions saved, starting items present
-  6. Client smoke test: otclient.exe in client-windows (the Redemption client) starts and loads its modules
+  6. Client smoke test: PokeVerse.exe in client-windows (the Redemption client) starts and loads its modules
 
 Usage: test-package-windows.py <package dir> [--logs <dir>]
 """
@@ -120,7 +120,7 @@ def run_client(client_dir, env, logs, tag, pkg):
     client_log = os.path.join(os.environ.get("APPDATA", ""), "pokeverse", "pokeverse", "pokeverse.log")
     if os.path.exists(client_log):
         os.remove(client_log)
-    client = subprocess.Popen([os.path.join(client_dir, "otclient.exe")], cwd=client_dir, env=env)
+    client = subprocess.Popen([os.path.join(client_dir, "PokeVerse.exe")], cwd=client_dir, env=env)
     time.sleep(25)
     alive = client.poll() is None
     text = read(client_log)
@@ -177,7 +177,7 @@ def main():
     for rel in ["README.txt", "Setup Database.bat", "Start Server.bat", "Start Client.bat",
                 "Start Server and Client.bat", "Create Account.bat", "Stop Database.bat",
                 r"server-windows\pokeverse-server.exe", r"server-windows\config.lua",
-                r"server-windows\data\world\map.otbm", r"client-windows\otclient.exe",
+                r"server-windows\data\world\map.otbm", r"client-windows\PokeVerse.exe",
                 r"client-windows\init.lua", r"client-windows\data\things\data.spr",
                 r"database\mariadb\bin\mariadbd.exe", r"database\sql\01-base-schema.sql"]:
         path = os.path.join(pkg, rel)
