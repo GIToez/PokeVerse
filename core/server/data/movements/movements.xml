@@ -318,4 +318,6 @@
 	<movevent type="Equip" itemid="18754;18875" slot="ring" event="function" value="onEquipItem"/>
 	<movevent type="DeEquip" itemid="9956" slot="pickupable" event="function" value="onDeEquipItem"/>
 	<movevent type="DeEquip" itemid="18754;18875" slot="ring" event="function" value="onDeEquipItem"/>
+	<movevent type="Equip" itemid="13219" slot="ring" event="script" value="../../lib/ps/events/movements/flashlight.lua"/>
+	<movevent type="DeEquip" itemid="13219" slot="ring" event="script" value="../../lib/ps/events/movements/flashlight.lua"/>
 </movements>
