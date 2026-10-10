@@ -41,7 +41,8 @@ EXTENDED_IDS = {
     NEEDS_UPDATE = 7,
     GAMEPLAY_TUTORIAL_TEXT = 8,
     GAMEPLAY_TUTORIAL_IMAGE = 9,
-    DASHWALKING = 10
+    DASHWALKING = 10,
+    SUMMON_OWNER = 11 -- sent by the server's protocol code: "creatureId,ownerId" for other trainers' Pokemon
 }
 
 TOURNAMENT_TYPES = {}

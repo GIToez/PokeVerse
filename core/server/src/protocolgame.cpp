@@ -4315,7 +4315,31 @@ void ProtocolGame::AddCreature(NetworkMessage_ptr msg, const Creature* creature,
 	if (player->isUsingOtclient()) {
         msg->AddByte(creature->getMaster() == player);
         msg->AddByte(Combat::canDoCombat(player, creature) == RET_NOERROR);
+
+        const Creature* master = creature->getMaster();
+        if (!known && master && master != player && master->getPlayer()) {
+            boost::mutex::scoped_lock lock(m_summonOwnersLock);
+            m_summonOwners.push_back(std::make_pair(id, getCreatureID(master)));
+        }
     }
+}
+
+void ProtocolGame::onSealMessage(OutputMessage_ptr msg)
+{
+    boost::mutex::scoped_lock lock(m_summonOwnersLock);
+    size_t sent = 0;
+    for (; sent < m_summonOwners.size(); ++sent) {
+        std::stringstream s;
+        s << m_summonOwners[sent].first << "," << m_summonOwners[sent].second;
+        const std::string buffer = s.str();
+        if (!msg->hasSpace(4 + buffer.length()))
+            break;
+
+        msg->AddByte(0x32);
+        msg->AddByte(EXTENDED_OPCODE_SUMMON_OWNER);
+        msg->AddString(buffer);
+    }
+    m_summonOwners.erase(m_summonOwners.begin(), m_summonOwners.begin() + sent);
 }
 
 void ProtocolGame::AddPlayerStats(NetworkMessage_ptr msg)

@@ -160,6 +160,8 @@ class NetworkMessage
 		void putString(const std::string& value, bool addSize = true) {putString(value.c_str(), value.length(), addSize);}
 		void putString(const char* value, int length, bool addSize = true);
 
+		bool hasSpace(int32_t size) {return canAdd(size);}
+
 #ifdef __TRACK_NETWORK__
 		virtual void Track(std::string file, long line, std::string func) {}
 		virtual void clearTrack() {}

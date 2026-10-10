@@ -39,6 +39,10 @@ class Poll;
 struct Outfit;
 
 typedef boost::shared_ptr<NetworkMessage> NetworkMessage_ptr;
+
+// PS: extended opcodes the server sends; keep in step with EXTENDED_IDS in data/lib/ps/others/constants.lua
+static const uint8_t EXTENDED_OPCODE_SUMMON_OWNER = 11;
+
 class ProtocolGame : public Protocol
 {
 	public:
@@ -93,6 +97,12 @@ class ProtocolGame : public Protocol
 		std::list<uint32_t> removedCreatureList;
 		void checkCreatureAsKnown(uint32_t id, bool& known, uint32_t& removedKnown);
 		void removeKnownCreature(uint32_t id);
+
+		// PS: the owners of other trainers' Pokemon, told to OTClient after the packet that added them
+		// (creature descriptions sit inside map packets, so they can't be sent in between)
+		std::vector<std::pair<uint32_t, uint32_t> > m_summonOwners;
+		boost::mutex m_summonOwnersLock;
+		virtual void onSealMessage(OutputMessage_ptr msg);
 
 		bool connect(uint32_t playerId, OperatingSystem_t operatingSystem, uint16_t version);
 		void disconnect();

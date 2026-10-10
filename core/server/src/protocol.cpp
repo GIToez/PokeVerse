@@ -37,6 +37,7 @@ void Protocol::onSendMessage(OutputMessage_ptr msg)
 	#endif
 	if(!m_rawMessages)
 	{
+		onSealMessage(msg);
 		msg->writeMessageLength();
 		if(m_encryptionEnabled)
 		{
