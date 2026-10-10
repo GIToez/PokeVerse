@@ -706,6 +706,8 @@ void Client::registerLuaFunctions()
     g_lua.bindClassStaticFunction<Creature>("isDrawingPlates", &Creature::isDrawingPlates);
     g_lua.bindClassStaticFunction<Creature>("setPlateSpeciesIcon", &Creature::setPlateSpeciesIcon);
     g_lua.bindClassStaticFunction<Creature>("clearPlateSpeciesIcons", &Creature::clearPlateSpeciesIcons);
+    g_lua.bindClassStaticFunction<Creature>("setPlateOwner", &Creature::setPlateOwner);
+    g_lua.bindClassStaticFunction<Creature>("clearPlateOwners", &Creature::clearPlateOwners);
     g_lua.bindClassMemberFunction<Creature>("setGhost", &Creature::setGhost);
     g_lua.bindClassMemberFunction<Creature>("isGhost", &Creature::isGhost);
     g_lua.bindClassMemberFunction<Creature>("getTimedSquareColor", &Creature::getTimedSquareColor);

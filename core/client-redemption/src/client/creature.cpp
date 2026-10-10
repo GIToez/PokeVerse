@@ -1659,6 +1659,29 @@ void Creature::drawInformationPokeVerse(const MapPosInfo& mapRect, const Point& 
 namespace
 {
     std::unordered_map<std::string, uint8_t> s_plateSpeciesIcons;
+    std::unordered_map<uint32_t, uint32_t> s_plateOwners;
+
+    enum class PlateStatus : uint8_t { NEUTRAL, PARTY, HOSTILE };
+
+    // a trainer's standing with you; their Pokemon share it
+    PlateStatus trainerPlateStatus(const CreaturePtr& trainer)
+    {
+        const uint8_t shield = trainer->getShield();
+        if (!trainer->isLocalPlayer()) {
+            // a Pokemon's skull is its gender, so only a trainer's skull marks a fight
+            const uint8_t skull = trainer->getSkull();
+            if ((skull != Otc::SkullNone && skull != Otc::SkullGreen) || trainer->isAttackable())
+                return PlateStatus::HOSTILE;
+            // the server is a no-PvP world: a duel only shows in the opponent's Pokemon being attackable
+            for (const auto& [creatureId, ownerId] : s_plateOwners) {
+                if (ownerId != trainer->getId())
+                    continue;
+                if (const auto& pokemon = g_map.getCreatureById(creatureId); pokemon && pokemon->isAttackable())
+                    return PlateStatus::HOSTILE;
+            }
+        }
+        return shield >= Otc::ShieldBlue && shield != Otc::ShieldGray ? PlateStatus::PARTY : PlateStatus::NEUTRAL;
+    }
 
     struct PlateColors
     {
@@ -1711,6 +1734,10 @@ void Creature::setPlateSpeciesIcon(const std::string& species, const uint8_t ico
 
 void Creature::clearPlateSpeciesIcons() { s_plateSpeciesIcons.clear(); }
 
+void Creature::setPlateOwner(const uint32_t creatureId, const uint32_t ownerId) { s_plateOwners[creatureId] = ownerId; }
+
+void Creature::clearPlateOwners() { s_plateOwners.clear(); }
+
 void Creature::setDrawPlates(const bool enabled)
 {
     s_drawPlates = enabled;
@@ -1761,31 +1788,33 @@ void Creature::drawPlatePokeVerse(const MapPosInfo& mapRect, const Point& dest, 
     if (!drawBar && !drawName)
         return;
 
-    const bool party = m_shield >= Otc::ShieldBlue && m_shield != Otc::ShieldGray;
-    // a Pokemon's skull is its gender, so only a trainer's skull marks a fight (duel or PvP)
-    const bool hostile = isPlayer() && !isLocalPlayer()
-        && ((m_skull != Otc::SkullNone && m_skull != Otc::SkullGreen) || m_attackable);
+    // every trainer gets a plate, which sets them apart from NPCs, and a trainer's Pokemon wears the
+    // trainer's plate; wild Pokemon get only the name, the bar and the Pokedex mark
+    CreaturePtr trainer;
+    if (isPlayer())
+        trainer = static_self_cast<Creature>();
+    else if (isLocalPlayerSummon())
+        trainer = g_game.getLocalPlayer();
+    else if (const auto it = s_plateOwners.find(m_id); it != s_plateOwners.end())
+        trainer = g_map.getCreatureById(it->second);
+    const bool owned = isLocalPlayerSummon() || s_plateOwners.contains(m_id);
+    const bool framed = isPlayer() || owned;
+    const PlateStatus status = trainer ? trainerPlateStatus(trainer) : PlateStatus::NEUTRAL;
+    const bool wild = isMonster() && !owned;
 
+    // a trainer's health is always green and your Pokemon's blue, as on the HUD; the plate shows the standing
     PlateColors bar = PLATE_SILVER;
     if (useGray)
         bar = PLATE_GRAY;
-    else if (isLocalPlayer())
-        bar = PLATE_GREEN;
     else if (isLocalPlayerSummon())
         bar = PLATE_BLUE;
-    else if (hostile)
-        bar = PLATE_RED;
-    else if (isPlayer())
-        bar = party || m_skull == Otc::SkullGreen ? PLATE_GREEN : PLATE_SILVER;
-    else if (isMonster() && m_attackable)
+    else if (framed)
+        bar = PLATE_GREEN;
+    else if (wild && m_attackable)
         bar = m_healthPercent > 60 ? PLATE_GREEN : (m_healthPercent > 30 ? PLATE_YELLOW : PLATE_RED);
 
-    // every trainer gets a plate, which sets them apart from NPCs; Pokemon get only the name, the bar
-    // and the Pokedex mark, except your own
-    const bool framed = isPlayer() || isLocalPlayerSummon();
-
     uint8_t speciesIcon = 0;
-    if (isMonster() && m_attackable && !isLocalPlayerSummon()) {
+    if (wild && m_attackable) {
         if (const auto it = s_plateSpeciesIcons.find(m_plateSpecies); it != s_plateSpeciesIcons.end())
             speciesIcon = it->second;
     }
@@ -1812,9 +1841,9 @@ void Creature::drawPlatePokeVerse(const MapPosInfo& mapRect, const Point& dest, 
     g_drawPool.setDrawOrder(framed ? DrawOrder::SECOND : DrawOrder::FIRST);
     if (framed) {
         // a party (you included, while you are in one) gets a blue plate, a PvP or duel opponent a red one
-        if (isPlayer() && hostile && !useGray)
+        if (status == PlateStatus::HOSTILE && !useGray)
             drawPlateFrame(plate, HOSTILE_FILL, HOSTILE_BORDER);
-        else if (isPlayer() && party && !useGray)
+        else if (status == PlateStatus::PARTY && !useGray)
             drawPlateFrame(plate, PARTY_FILL, PARTY_BORDER);
         else
             drawPlateFrame(plate, PLATE_FILL, PLATE_BORDER);

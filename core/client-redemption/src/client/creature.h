@@ -99,6 +99,9 @@ public:
     // 0 none, 1 registered in the Pokedex, 2 caught
     static void setPlateSpeciesIcon(const std::string& species, uint8_t icon);
     static void clearPlateSpeciesIcons();
+    // the trainer that owns another trainer's Pokemon (the server tells us; 8.54 has no master id)
+    static void setPlateOwner(uint32_t creatureId, uint32_t ownerId);
+    static void clearPlateOwners();
 
     void onStartAttachEffect(const AttachedEffectPtr& effect) override;
     void onDispatcherAttachEffect(const AttachedEffectPtr& effect) override;
