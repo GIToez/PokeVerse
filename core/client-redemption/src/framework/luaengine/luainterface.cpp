@@ -29,6 +29,10 @@
 
 #include <framework/core/resourcemanager.h>
 
+#ifdef OTC_USE_LUA51
+int luaopen_bit32(lua_State* L);
+#endif
+
 LuaInterface g_lua;
 
 void LuaInterface::init()
@@ -789,6 +793,11 @@ void LuaInterface::createLuaState()
 
     // load lua standard libraries
     luaL_openlibs(L);
+
+#ifdef OTC_USE_LUA51
+    luaopen_bit32(L);
+    pop();
+#endif
 
 #ifdef __EMSCRIPTEN__
     luaopen_bit(L);

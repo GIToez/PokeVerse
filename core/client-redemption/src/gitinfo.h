@@ -1,3 +1,3 @@
-#define GIT_BRANCH desenv
-#define GIT_VERSION 4.x
+#define GIT_BRANCH pokeverse
+#define GIT_VERSION 3.1.2
 #define GIT_COMMITS 0

@@ -21,6 +21,7 @@
  */
 
 #include "uiwidget.h"
+#include "uimanager.h"
 #include "uitranslator.h"
 
 #include <framework/graphics/drawpoolmanager.h>
@@ -329,7 +330,10 @@ void UIWidget::drawText(const Rect& screenCoords)
         textOffset.scale(m_fontScale);
 
         auto coords = Rect(screenCoords.topLeft().scale(m_fontScale), screenCoords.bottomRight().scale(m_fontScale));
-        coords.translate(textOffset);
+        if (g_ui.isLegacyTextOffset())
+            coords = Rect(coords.topLeft() + textOffset, coords.bottomRight());
+        else
+            coords.translate(textOffset);
 
         if (hasEventListener(EVENT_TEXT_CLICK) || hasEventListener(EVENT_TEXT_HOVER))
             cacheRectToWord();

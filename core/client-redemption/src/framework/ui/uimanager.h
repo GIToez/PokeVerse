@@ -66,6 +66,8 @@ public:
     void setMouseReceiver(const UIWidgetPtr& widget) { m_mouseReceiver = widget; }
     void setKeyboardReceiver(const UIWidgetPtr& widget) { m_keyboardReceiver = widget; }
     void setDebugBoxesDrawing(const bool enabled) { m_drawDebugBoxes = enabled; }
+    // text-offset moves only the top-left corner of the text rect, as in the edubart engine
+    void setLegacyTextOffset(const bool enabled) { m_legacyTextOffset = enabled; }
     void resetMouseReceiver() { m_mouseReceiver = m_rootWidget; }
     void resetKeyboardReceiver() { m_keyboardReceiver = m_rootWidget; }
     UIWidgetPtr getMouseReceiver() { return m_mouseReceiver; }
@@ -79,6 +81,7 @@ public:
     bool isKeyboardGrabbed() { return m_keyboardReceiver != m_rootWidget; }
 
     bool isDrawingDebugBoxes() { return m_drawDebugBoxes; }
+    bool isLegacyTextOffset() const { return m_legacyTextOffset; }
 
 protected:
     void onWidgetAppear(const UIWidgetPtr& widget);
@@ -99,6 +102,7 @@ private:
     UIWidgetList m_pressedWidgets;
     bool m_hoverUpdateScheduled{ false };
     bool m_drawDebugBoxes{ false };
+    bool m_legacyTextOffset{ false };
     bool m_hoverTextUpdateScheduled{ false };
     stdext::map<std::string, OTMLNodePtr> m_styles;
     std::string m_hoveredText;
