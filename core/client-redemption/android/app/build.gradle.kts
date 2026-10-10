@@ -16,7 +16,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.github.otclient"
+        applicationId = "com.pokeverse.client"
         minSdk = 21
         targetSdk = 36
         versionCode = 1

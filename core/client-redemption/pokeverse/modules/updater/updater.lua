@@ -174,7 +174,13 @@ local function updateFiles(data)
         g_resources.updateExecutable(binary)
       end
 
-      if restart then
+      if restart and g_app.getOs() == "android" then
+        -- Android apps cannot relaunch themselves; the files are in place for the next start
+        local message = tr("Update installed. Reopen PokeVerse to finish.")
+        updaterWindow.status:setText(message)
+        local close = function() g_app.exit() end
+        displayGeneralBox(tr("Updater"), message, {{text = tr("Close"), callback = close}}, close, close)
+      elseif restart then
         g_app.restart()
       else
         if reloadModules then
