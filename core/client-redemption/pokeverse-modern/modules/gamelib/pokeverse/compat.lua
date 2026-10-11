@@ -45,6 +45,14 @@ function getVocationNameById(vocation)
   return 'trainer'
 end
 
+-- Using the evolve icon (server item 13204, kept in the hidden necklace slot) evolves the
+-- Pokemon that is out; the server checks level, stones and time of day.
+EVOLVE_ICON_ITEMID = 11595
+
+function g_game.evolvePokemon()
+  g_game.useInventoryItem(EVOLVE_ICON_ITEMID)
+end
+
 function g_game.getProtocolVersionForClient(client)
   return client
 end

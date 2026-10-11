@@ -63,9 +63,13 @@ local function switchOrientation()
     applyOrientation()
 end
 
-local function openMenu(mousePos)
+local function openMenu(mousePos, slot)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
+    if slot and slot == activeSlot then
+        menu:addOption(tr('Evolve'), g_game.evolvePokemon)
+        menu:addSeparator()
+    end
     menu:addOption(orientation == HORIZONTAL and tr('Show vertically') or tr('Show horizontally'), switchOrientation)
     menu:addOption(tr('Reset position'), resetPosition)
     menu:display(mousePos)
@@ -151,7 +155,7 @@ function onPokemonBarAdd(itemId, number, textColor, text)
     end
     slot.onMouseRelease = function(self, mousePos, button)
         if button == MouseRightButton then
-            openMenu(mousePos)
+            openMenu(mousePos, self)
             return true
         end
         local p = self.pressPosition

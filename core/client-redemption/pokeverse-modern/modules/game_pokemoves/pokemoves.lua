@@ -13,6 +13,7 @@ local MOVE_COUNT = 12
 local KEYBIND_CATEGORY = 'Pokemon'
 local ORDER_ACTION = 'Order'
 local DEX_ACTION = 'Use Pokedex on target'
+local EVOLVE_ACTION = 'Evolve Pokemon'
 
 local function moveAction(index)
     return 'Use move ' .. index
@@ -178,6 +179,8 @@ local function bindKeys()
     Keybind.bind(KEYBIND_CATEGORY, ORDER_ACTION, { { type = KEY_DOWN, callback = useOrder } })
     Keybind.new(KEYBIND_CATEGORY, DEX_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'X' }, '')
     Keybind.bind(KEYBIND_CATEGORY, DEX_ACTION, { { type = KEY_DOWN, callback = useDexOnTarget } })
+    Keybind.new(KEYBIND_CATEGORY, EVOLVE_ACTION, '', '')
+    Keybind.bind(KEYBIND_CATEGORY, EVOLVE_ACTION, { { type = KEY_DOWN, callback = g_game.evolvePokemon } })
 end
 
 local function unbindKeys()
@@ -186,6 +189,7 @@ local function unbindKeys()
     end
     Keybind.delete(KEYBIND_CATEGORY, ORDER_ACTION)
     Keybind.delete(KEYBIND_CATEGORY, DEX_ACTION)
+    Keybind.delete(KEYBIND_CATEGORY, EVOLVE_ACTION)
 end
 
 local function delegateDrag(slot)
