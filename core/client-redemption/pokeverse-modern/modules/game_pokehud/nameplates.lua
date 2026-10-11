@@ -121,6 +121,13 @@ local function onSummonOwner(protocol, opcode, buffer)
     summonOwners[creatureId] = ownerId
     Creature.setPlateOwner(creatureId, ownerId)
     refreshBattleList()
+    if modules.game_battle and modules.game_battle.refreshPartyFilter then
+        modules.game_battle.refreshPartyFilter()
+    end
+end
+
+function Nameplates.getSummonOwner(creatureId)
+    return summonOwners[creatureId]
 end
 
 local function onGameEnd()

@@ -21,7 +21,73 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      end
      
      if g_game.isOnline() then
-@@ -1478,6 +1478,8 @@
+@@ -1030,6 +1030,31 @@
+     end
+ end
+ 
++local function isPartyPlayer(creature)
++    local shield = creature:getShield()
++    return shield and (shield == ShieldYellow or
++                       shield == ShieldYellowSharedExp or
++                       shield == ShieldYellowNoSharedExp or
++                       shield == ShieldBlue or
++                       shield == ShieldBlueNoSharedExpBlink or
++                       shield == ShieldBlueSharedExp or
++                       shield == ShieldYellowNoSharedExpBlink)
++end
++
++-- party members and the Pokemon they have out
++local function isPartyCreature(creature, localPlayer)
++    if creature:isPlayer() then
++        return isPartyPlayer(creature)
++    end
++    local pokehud = modules.game_pokehud
++    local ownerId = pokehud and pokehud.Nameplates and pokehud.Nameplates.getSummonOwner(creature:getId())
++    if not ownerId or ownerId == localPlayer:getId() then
++        return false
++    end
++    local owner = g_map.getCreatureById(ownerId)
++    return owner ~= nil and owner:isPlayer() and isPartyPlayer(owner)
++end
++
+ function BattleListInstance:doCreatureFitFilters(creature)
+     if creature:isLocalPlayer() then
+         return false
+@@ -1064,16 +1089,7 @@
+                (i == 'hideNPCs' and creature:isNpc()) or
+                (i == 'hideMonsters' and creature:isMonster()) or
+                (i == 'hideSkulls' and (creature:isPlayer() and creature:getSkull() == SkullNone)) or
+-               (i == 'hideParty' and creature:isPlayer() and (function()
+-                   local shield = creature:getShield()
+-                   return shield and (shield == ShieldYellow or 
+-                                    shield == ShieldYellowSharedExp or 
+-                                    shield == ShieldYellowNoSharedExp or 
+-                                    shield == ShieldBlue or 
+-                                    shield == ShieldBlueNoSharedExpBlink or 
+-                                    shield == ShieldBlueSharedExp or 
+-                                    shield == ShieldYellowNoSharedExpBlink)
+-               end)()) or
++               (i == 'hideParty' and isPartyCreature(creature, localPlayer)) or
+                (i == 'hideKnights' and creature:isPlayer() and creature:isKnight()) or
+                (i == 'hidePaladins' and creature:isPlayer() and creature:isPaladin()) or
+                (i == 'hideDruids' and creature:isPlayer() and creature:isDruid()) or
+@@ -1359,6 +1375,7 @@
+     connect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
+     connect(Creature, {
+         onSkullChange = updateCreatureSkull,
++        onShieldChange = refreshPartyFilter,
+         onEmblemChange = updateCreatureEmblem,
+         onOutfitChange = onCreatureOutfitChange,
+         onHealthPercentChange = onCreatureHealthPercentChange,
+@@ -1384,6 +1401,7 @@
+     disconnect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
+     disconnect(Creature, {
+         onSkullChange = updateCreatureSkull,
++        onShieldChange = refreshPartyFilter,
+         onEmblemChange = updateCreatureEmblem,
+         onOutfitChange = onCreatureOutfitChange,
+         onHealthPercentChange = onCreatureHealthPercentChange,
+@@ -1478,6 +1496,8 @@
      -- Setup keybind
      Keybind.new("Windows", "Show/hide battle list", "Ctrl+B", "")
      Keybind.bind("Windows", "Show/hide battle list", {{ type = KEY_DOWN, callback = toggle }})
@@ -30,7 +96,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  
      -- Setup scrollbar - use default MiniWindow behavior
      local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
-@@ -1497,13 +1499,13 @@
+@@ -1497,13 +1517,13 @@
          -- Set initial scrollbar position when filters are visible
          local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
          if scrollbar then
@@ -47,7 +113,29 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      for i, v in ipairs(options) do
          hideButtons[v] = battleWindow:recursiveGetChildById(v)
      end
-@@ -2001,7 +2003,7 @@
+@@ -1765,6 +1785,21 @@
+     end
+ end
+ 
++local partyFilterEvent = nil
++
++function refreshPartyFilter()
++    removeEvent(partyFilterEvent)
++    partyFilterEvent = scheduleEvent(function()
++        partyFilterEvent = nil
++        for _, instance in pairs(BattleListManager.instances) do
++            local button = instance.hideButtons and instance.hideButtons.hideParty
++            if button and button:isChecked() then
++                instance:checkCreatures()
++            end
++        end
++    end, 200)
++end
++
+ function onZoomChange()
+     removeEvent(eventOnCheckCreature)
+     eventOnCheckCreature = scheduleEvent(function()
+@@ -2001,7 +2036,7 @@
      local children = mainInstance.panel:getChildren()
  
      for _, battleButton in pairs(mainInstance.panel:getChildren()) do
@@ -56,7 +144,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
              -- select visible first child
              if not firstElement then
                  firstElement = battleButton
-@@ -2609,6 +2611,7 @@
+@@ -2609,6 +2644,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")
