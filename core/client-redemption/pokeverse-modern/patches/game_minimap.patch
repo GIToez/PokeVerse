@@ -1,16 +1,42 @@
 diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap.lua
 --- a/modules/game_minimap/minimap.lua
 +++ b/modules/game_minimap/minimap.lua
-@@ -96,6 +96,8 @@
+@@ -95,7 +95,34 @@
+     end
  end
  
++-- The minimap fills the width the side panel gives it (the panel can be dragged wider) and stays square.
++local MINIMAP_SIDE_SPACE = 61
++local MINIMAP_MIN_SIZE = 115
++local lastMinimapWidth = nil
++
++local function updateMinimapSize()
++    local ui = mapController.ui
++    if not ui or ui:getWidth() == lastMinimapWidth then
++        return
++    end
++    lastMinimapWidth = ui:getWidth()
++    local size = math.max(MINIMAP_MIN_SIZE, lastMinimapWidth - MINIMAP_SIDE_SPACE)
++    ui.minimapBorder:setWidth(size)
++    ui.minimapBorder:setHeight(size - 4)
++    ui.panelHeight = size + 1
++    if not ui:isOn() then
++        ui:setHeight(size + 1)
++    end
++    if modules.game_mainpanel and modules.game_mainpanel.reloadMainPanelSizes then
++        modules.game_mainpanel.reloadMainPanelSizes()
++    end
++end
++
  function mapController:onInit()
++    connect(self.ui, { onGeometryChange = updateMinimapSize })
++    addEvent(updateMinimapSize)
 +    Keybind.new("Minimap", "Open full map", { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'M' }, '')
 +    Keybind.bind("Minimap", "Open full map", { { type = KEY_DOWN, callback = function() fullscreen() end } })
      self.ui.minimapBorder.minimap:getChildById('floorUpButton'):hide()
      self.ui.minimapBorder.minimap:getChildById('floorDownButton'):hide()
      self.ui.minimapBorder.minimap:getChildById('zoomInButton'):hide()
-@@ -131,6 +133,7 @@
+@@ -131,6 +158,7 @@
      end
  
      self.ui.minimapBorder.minimap:load()
@@ -18,7 +44,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function mapController:onGameEnd()
-@@ -145,6 +148,7 @@
+@@ -145,6 +173,7 @@
  end
  
  function mapController:onTerminate()
@@ -26,7 +52,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      if iconTopMenu then
          iconTopMenu:destroy()
          iconTopMenu = nil
-@@ -200,6 +204,7 @@
+@@ -200,6 +229,7 @@
      oldPos = minimapWidget:getCameraPosition()
      minimapWidget:setZoom(zoom)
      minimapWidget:setCameraPosition(pos)

@@ -1,7 +1,15 @@
 diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interface/gameinterface.lua
 --- a/modules/game_interface/gameinterface.lua
 +++ b/modules/game_interface/gameinterface.lua
-@@ -249,7 +249,8 @@
+@@ -172,6 +172,7 @@
+     gameBottomLockPanel = gameRootPanel:recursiveGetChildById('bottomLock')
+     gameRightLockPanel = gameRootPanel:recursiveGetChildById('rightLock')
+     gameLeftLockPanel = gameRootPanel:recursiveGetChildById('leftLock')
++    createSidePanelHandles()
+ 
+     updateSidePanelButtons()
+     applyMobileMargins()
+@@ -249,7 +250,8 @@
      Keybind.bind("Misc", "Logout", {
          {
              type = KEY_PRESS,
@@ -11,7 +19,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          }
      }, gameRootPanel)
  
-@@ -322,6 +323,8 @@
+@@ -322,6 +324,8 @@
      modules.client_background.hide()
      gameRootPanel:show()
      gameRootPanel:focus()
@@ -20,7 +28,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
      gameMapPanel:followCreature(g_game.getLocalPlayer())
  
      updateStretchShrink()
-@@ -335,9 +338,13 @@
+@@ -335,9 +339,13 @@
      end
  
      setupViewMode(0)
@@ -36,7 +44,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
      end
  
      addEvent(function()
-@@ -819,6 +826,14 @@
+@@ -819,6 +827,14 @@
                      g_game.partyLeave()
                  end)
              end
@@ -51,7 +59,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          else
              local localPosition = localPlayer:getPosition()
              if not classic and not mobile then
-@@ -920,6 +935,14 @@
+@@ -920,6 +936,14 @@
                          end)
                      end
                  end
@@ -66,15 +74,105 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
              end
          end
  
-@@ -1791,6 +1814,7 @@
+@@ -1791,6 +1815,97 @@
  
  function nextViewMode()
      setupViewMode((currentViewMode + 1) % 3)
 +    g_settings.set('pokeverseViewMode', currentViewMode)
++end
++
++-- PokeVerse: the side panels can be dragged wider by their inner edge (the minimap grows with the right one).
++local SIDE_PANEL_MIN = 176
++local SIDE_PANEL_MAX = 360
++local sidePanelHandles = {}
++
++local function sidePanelWidthKey(side)
++    return side == 'right' and 'pokeverseRightPanelWidth' or 'pokeverseLeftPanelWidth'
++end
++
++local function setSidePanelWidth(side, width)
++    width = math.floor(math.min(math.max(width, SIDE_PANEL_MIN), SIDE_PANEL_MAX))
++    if side == 'right' then
++        gameRightPanel:setWidth(width)
++        gameMainRightPanel:setWidth(width)
++    elseif gameLeftPanel:isOn() then
++        gameLeftPanel:setWidth(width)
++    end
++    return width
++end
++
++function applySidePanelWidths()
++    if g_platform.isMobile() then
++        return
++    end
++    for _, side in ipairs({ 'right', 'left' }) do
++        setSidePanelWidth(side, g_settings.getNumber(sidePanelWidthKey(side), SIDE_PANEL_MIN))
++        local handle = sidePanelHandles[side]
++        if handle then
++            handle:setVisible(side == 'right' or gameLeftPanel:isOn())
++        end
++    end
++end
++
++function createSidePanelHandles()
++    if g_platform.isMobile() then
++        return
++    end
++    for _, side in ipairs({ 'right', 'left' }) do
++        local panel = side == 'right' and gameRightPanel or gameLeftPanel
++        local handle = g_ui.createWidget('UIWidget', gameRootPanel)
++        handle:setId(side .. 'SidePanelHandle')
++        handle:setWidth(6)
++        handle:setFocusable(false)
++        handle:setTooltip(tr('Drag to resize, double-click to reset'))
++        handle:addAnchor(AnchorTop, 'parent', AnchorTop)
++        handle:addAnchor(AnchorBottom, 'parent', AnchorBottom)
++        if side == 'right' then
++            handle:addAnchor(AnchorRight, panel:getId(), AnchorLeft)
++        else
++            handle:addAnchor(AnchorLeft, panel:getId(), AnchorRight)
++        end
++        handle.onHoverChange = function(self, hovered)
++            self:setBackgroundColor(hovered and '#ffffff30' or '#00000000')
++            if hovered then
++                g_mouse.pushCursor('horizontal')
++            else
++                g_mouse.popCursor('horizontal')
++            end
++        end
++        handle.onMousePress = function(self, mousePos, button)
++            self.dragging = button == MouseLeftButton
++            return self.dragging
++        end
++        handle.onMouseMove = function(self, mousePos)
++            if not self.dragging then
++                return false
++            end
++            if side == 'right' then
++                setSidePanelWidth(side, gameRootPanel:getX() + gameRootPanel:getWidth() - mousePos.x)
++            else
++                setSidePanelWidth(side, mousePos.x - gameRootPanel:getX())
++            end
++            return true
++        end
++        handle.onMouseRelease = function(self)
++            if not self.dragging then
++                return false
++            end
++            self.dragging = false
++            g_settings.set(sidePanelWidthKey(side), panel:getWidth())
++            return true
++        end
++        handle.onDoubleClick = function(self)
++            g_settings.set(sidePanelWidthKey(side), setSidePanelWidth(side, SIDE_PANEL_MIN))
++            return true
++        end
++        sidePanelHandles[side] = handle
++    end
  end
  
  function setupViewMode(mode)
-@@ -1839,10 +1863,11 @@
+@@ -1839,10 +1954,11 @@
      elseif mode == 2 then
          local limit = limitedZoom and not g_game.isGM()
          gameMapPanel:setLimitVisibleRange(limit)
@@ -89,7 +187,15 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          })
          gameMapPanel:fill('parent')
          gameRootPanel:fill('parent')
-@@ -1942,6 +1967,8 @@
+@@ -1864,6 +1980,7 @@
+     applyMobileMargins()
+     currentViewMode = mode
+     applyExtendedViewLayout(mode == 2)
++    applySidePanelWidths()
+ end
+ 
+ function limitZoom()
+@@ -1942,6 +2059,8 @@
      end
  end
  
@@ -98,7 +204,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  function applyExtendedViewLayout(extendedView)
      if extendedView == isExtendedViewActive then return end
      isExtendedViewActive = extendedView
-@@ -1973,6 +2000,18 @@
+@@ -1973,6 +2092,18 @@
          gameMainRightPanel:setImageColor('alpha')
          gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
          gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
@@ -117,7 +223,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          gameLeftActionPanel:setImageSource(nil)
          gameRightActionPanel:setImageSource(nil)
          gameLeftActionPanel:setBorderWidthRight(0)
-@@ -1993,6 +2032,10 @@
+@@ -1993,6 +2124,10 @@
  
          -- Reset bottom panel
          gameBottomPanel:setDraggable(false)
