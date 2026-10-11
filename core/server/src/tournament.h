@@ -233,7 +233,7 @@ class Tournaments
 		bool parseTournamentNode(xmlNodePtr p);
 		bool checkWeeklyWinner();
 
-		Tournament* getTournament(uint16_t tournamentId);
+		Tournament* getTournament(uint16_t tournamentId, bool warn = true);
 		uint16_t getLastTournamentId() const {return lastTournamentId;};
 
 	private:

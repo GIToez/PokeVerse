@@ -21,8 +21,10 @@ local ENTRANCE_COUNT = {}
 local lastTournamentId = getTournamentLastId()
 if (lastTournamentId > 0) then
     for i = 1, lastTournamentId do
-        if (getTournamentInfo(i)) then
-            TOURNAMENTS[i] = getTournamentInfo(i)
+        -- ids can be missing while a tournament is commented out in XML/tournaments.xml
+        local info = getTournamentInfo(i, true)
+        if (info) then
+            TOURNAMENTS[i] = info
             TOURNAMENT_ID_BY_NAME[string.lower(TOURNAMENTS[i].name)] = i
             TOURNAMENT_NAME_BY_ID[i] = string.lower(TOURNAMENTS[i].name)
             TOURNAMENTS[i].date = TOURNAMENTS[i].date
@@ -31,25 +33,30 @@ if (lastTournamentId > 0) then
 end
 
 local function getTournamentsMessages()
-    local message, messages = "", {}
-    for i, tournament in ipairs(TOURNAMENTS) do
-        if (tournament.type == TOURNAMENT_TYPES.RANDOM) then
-            message = "Name: {" .. tournament.name .. "} - Capacity: {" ..
-                    (tournament.capacity - tournament.freeCapacity) .. "}/{" .. tournament.capacity ..
-                    "} - Type: {Random Pokemon} - Min. Trainer Level: {" .. tournament.minTrainerLevel ..
-                    "}  - Inscription Price: {" .. tournament.inscriptionPrice ..
-                    "} dollars - Date: {" .. os.date("%a %b %d %X %Y", tournament.date) .. "} (Remaing " ..
-                    table.concat(string.timediff(tournament.date - os.time())) .. ")"
+    local messages = {}
+    -- not ipairs, it stops at the first id missing from XML/tournaments.xml
+    for i = 1, lastTournamentId do
+        local tournament = TOURNAMENTS[i]
+        if (tournament) then
+            local message
+            if (tournament.type == TOURNAMENT_TYPES.RANDOM) then
+                message = "Name: {" .. tournament.name .. "} - Capacity: {" ..
+                        (tournament.capacity - tournament.freeCapacity) .. "}/{" .. tournament.capacity ..
+                        "} - Type: {Random Pokemon} - Min. Trainer Level: {" .. tournament.minTrainerLevel ..
+                        "}  - Inscription Price: {" .. tournament.inscriptionPrice ..
+                        "} dollars - Date: {" .. os.date("%a %b %d %X %Y", tournament.date) .. "} (Remaing " ..
+                        table.concat(string.timediff(tournament.date - os.time())) .. ")"
 
-        else
-            message = "Name: {" .. tournament.name .. "} - Capacity: {" ..
-                    (tournament.capacity - tournament.freeCapacity) .. "}/{" .. tournament.capacity ..
-                    "} - Min. Pokemon Level: {" .. tournament.minLevel .. "} - Max. Pokemon Level: {" ..
-                    tournament.maxLevel .. "} - Inscription Price: {" .. tournament.inscriptionPrice ..
-                    "} dollars - Date: {" .. os.date("%a %b %d %X %Y", tournament.date) .. "} (Remaing " ..
-                    table.concat(string.timediff(tournament.date - os.time())) .. ")"
+            else
+                message = "Name: {" .. tournament.name .. "} - Capacity: {" ..
+                        (tournament.capacity - tournament.freeCapacity) .. "}/{" .. tournament.capacity ..
+                        "} - Min. Pokemon Level: {" .. tournament.minLevel .. "} - Max. Pokemon Level: {" ..
+                        tournament.maxLevel .. "} - Inscription Price: {" .. tournament.inscriptionPrice ..
+                        "} dollars - Date: {" .. os.date("%a %b %d %X %Y", tournament.date) .. "} (Remaing " ..
+                        table.concat(string.timediff(tournament.date - os.time())) .. ")"
+            end
+            table.insert(messages, message)
         end
-        table.insert(messages, message)
     end
     return messages
 end
