@@ -12777,11 +12777,16 @@ int32_t LuaScriptInterface::luaSetPlayerExtraLootRate(lua_State* L)
 
 int32_t LuaScriptInterface::luaGetTournamentInfo(lua_State* L)
 {
-    //getTournamentInfo(id)
-    Tournament* tournament = Tournaments::getInstance()->getTournament(popNumber(L));
+    //getTournamentInfo(id[, quiet = false])
+    bool quiet = false;
+    if(lua_gettop(L) > 1)
+        quiet = popBoolean(L);
+
+    Tournament* tournament = Tournaments::getInstance()->getTournament(popNumber(L), !quiet);
     if(!tournament)
     {
-        errorEx(getError(LUA_ERROR_TOURNAMENT_NOT_FOUND));
+        if(!quiet)
+            errorEx(getError(LUA_ERROR_TOURNAMENT_NOT_FOUND));
         lua_pushboolean(L, false);
         return 1;
     }

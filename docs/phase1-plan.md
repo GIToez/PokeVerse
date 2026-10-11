@@ -53,19 +53,15 @@ no removal of existing working features.
 
 ## Known issues (existing, not fixed in Phase 1)
 
-- **Real Windows client GUI not yet driven end to end in CI.** GitHub's Windows runners
-  have no GPU driver. The shipped client exits there (heap corruption, `0xC0000374`) right
-  after reporting a 1024x1024 texture limit, i.e. on Windows' built-in OpenGL 1.1 fallback.
-  With Mesa software OpenGL it starts and stays running, but the keyboard-driven login
-  could not be confirmed on the runner. The same client source logs in and walks on Linux.
-  Needs a check on a real Windows PC with a graphics driver.
+- **Windows client GUI is not driven end to end in CI.** GitHub's Windows runners have no
+  GPU driver, so the client exits there (heap corruption, `0xC0000374`) on Windows' built-in
+  OpenGL 1.1 fallback. It has been played on a real Windows PC with a graphics driver.
 
-- The NPC Soya references a missing `loot.lua` (Soya is not placed on the map).
-- Tournaments 2 and 3 are commented out in XML, but `tournament.lua` still queries them
-  ("Npc interface" errors in the server log).
-- The server prints "Outdated MySQL server detected"; it is only a version-string check.
-- `duelMessage.otui` and `lootList.otui` are referenced with different capitalisation
-  than the files; this only fails on case-sensitive file systems (Linux), not Windows.
+- The NPC Soya references a missing `loot.lua`. Soya is not placed on the map, so nothing
+  loads it; she is kept for later use.
+- Tournaments 2 (Elite) and 3 (Master) are commented out in `XML/tournaments.xml` and kept
+  for later. `tournament.lua` skips missing ids quietly (`getTournamentInfo(id, true)`), so
+  uncommenting them is enough to bring them back.
 - Some in-game texts and buttons still link to the old websites (psoul.net, pokenordic);
   a PokeVerse website is out of scope for Phase 1.
 - The PokeVerse table extensions (`pokeverse-extensions.sql`) and the starting kit for new

@@ -1261,13 +1261,14 @@ bool Tournaments::checkWeeklyWinner()
     return true;
 }
 
-Tournament* Tournaments::getTournament(uint16_t tournamentId)
+Tournament* Tournaments::getTournament(uint16_t tournamentId, bool warn/* = true*/)
 {
     TournamentsMap::iterator it = tournamentsMap.find(tournamentId);
 	if(it != tournamentsMap.end())
 		return it->second;
 
-	std::cout << "[Warning - Tournaments::getTournament] Tournament " << tournamentId << " not found." << std::endl;
+	if(warn)
+		std::cout << "[Warning - Tournaments::getTournament] Tournament " << tournamentId << " not found." << std::endl;
 	return NULL;
 }
 
