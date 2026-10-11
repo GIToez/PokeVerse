@@ -48,7 +48,7 @@ public:
     const Size& getSize() const { return m_size; }
     auto getTransformMatrixId() const { return m_transformMatrixId; }
 
-    auto getAtlasRegion(Fw::TextureAtlasType type) const { return m_atlas[type]; }
+    const AtlasRegion* getAtlasRegion(Fw::TextureAtlasType type) const;
     const AtlasRegion* getAtlasRegion() const;
 
     ticks_t getTime() const { return m_time; }

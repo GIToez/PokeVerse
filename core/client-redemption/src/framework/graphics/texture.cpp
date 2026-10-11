@@ -236,9 +236,16 @@ void Texture::setupTranformMatrix()
     m_transformMatrixId = g_textures.getMatrixId(m_size, getProp(upsideDown));
 }
 
+// A region dropped from the atlas (e.g. by setSmooth) stays referenced here and can be handed to
+// another texture of the same size, so it only counts while it still holds this texture.
+const AtlasRegion* Texture::getAtlasRegion(const Fw::TextureAtlasType type) const {
+    const auto region = m_atlas[type];
+    return region && region->textureID == m_id ? region : nullptr;
+}
+
 const AtlasRegion* Texture::getAtlasRegion() const {
     if (g_drawPool.isValid() && g_drawPool.getAtlas()) {
-        if (const auto region = m_atlas[g_drawPool.getAtlas()->getType()]) {
+        if (const auto region = getAtlasRegion(g_drawPool.getAtlas()->getType())) {
             return region->isEnabled() ? region : nullptr;
         }
     }
