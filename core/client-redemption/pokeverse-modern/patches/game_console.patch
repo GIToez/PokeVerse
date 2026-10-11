@@ -63,7 +63,29 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          return
      end
  
-@@ -1459,7 +1463,7 @@
+@@ -895,11 +899,20 @@
+     return consoleTabBar:getCurrentTab()
+ end
+ 
++-- PokeVerse: channels the server opens at login (Global EN...) must not take focus from Local Chat
++local loginChannelsUntil = 0
++local resetTabOrder
++
+ function addChannel(name, id)
+     channels[id] = name
+-    local focus = not table.find(ignoredChannels, id)
++    local atLogin = g_clock.millis() <= loginChannelsUntil
++    local focus = not table.find(ignoredChannels, id) and not atLogin
+     local tab = addTab(name, focus)
+     tab.channelId = id
++    if atLogin then
++        resetTabOrder()
++        consoleTabBar:selectTab(defaultTab)
++    end
+     return tab
+ end
+ 
+@@ -1459,7 +1472,7 @@
          menu:addSeparator()
      end
  
@@ -72,21 +94,69 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          menu:addOption(tr('Close'), function()
              removeTab(channelName)
          end)
-@@ -2337,7 +2341,33 @@
+@@ -1796,6 +1809,8 @@
+     return message
+ end
+ 
++local lastOverhead = { key = nil, time = 0 }
++
+ function onTalk(name, level, mode, message, channelId, creaturePos)
+     if mode == MessageModes.GamemasterBroadcast then
+         modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
+@@ -1837,25 +1852,22 @@
+         local staticText = StaticText.create()
+         local staticMessage = message
+         if isNpcMode then
+-            local highlightedText = getHighlightedText(staticMessage, speaktype.color, "#1f9ffe")
+-
+-            local processedText = staticMessage
+-            local colorPattern = "{([^,]+),[ ]*[^}]+}"
+-            for textContent in highlightedText:gmatch(colorPattern) do
+-                local plainText = textContent:gsub("%[text%-event%](.-)%[/text%-event%]", "%1")
+-                -- remove possible no-underline marker (0x01) inserted by getHighlightedText
+-                if plainText:sub(1,1) == string.char(1) then
+-                    plainText = plainText:sub(2)
+-                end
+-                processedText = processedText:gsub("{" .. textContent .. "}", plainText)
+-            end
+-            processedText = processedText:gsub("{([^}]+)}", "%1")
+-            staticMessage = processedText
++            -- PokeVerse: never build patterns from the message, "(" in NPC text threw and dropped the console line
++            staticMessage = staticMessage:gsub("%[text%-event%](.-)%[/text%-event%]", "%1")
++            staticMessage = staticMessage:gsub("{([^}]*)}", function(content)
++                return (content:match("^([^,]*)"):gsub("^\1", ""))
++            end)
+             staticText:setColor(speaktype.color)
+         end
+ 
+-        staticText:addMessage(name, mode, staticMessage)
+-        g_map.addStaticText(staticText, creaturePos)
++        -- PokeVerse: the server repeats the greeting as a private NPC message, show it overhead only once
++        local overheadKey = name .. "\0" .. staticMessage
++        local now = g_clock.millis()
++        if not (isNpcMode and lastOverhead.key == overheadKey and now - lastOverhead.time < 1000) then
++            staticText:addMessage(name, mode, staticMessage)
++            g_map.addStaticText(staticText, creaturePos)
++        end
++        lastOverhead.key, lastOverhead.time = overheadKey, now
+     end
+ 
+     local defaultMessage = mode <= 3 and true or false
+@@ -2337,8 +2349,35 @@
      end
  end
  
 +-- Tabs created while the bar had no width yet were pushed into its overflow lists out of order, which left Local Chat
-+-- hidden behind channels the server opens at login. Local Chat, Server Log and NPCs go first, so later tabs are added
-+-- after them.
-+local function resetTabOrder()
++-- hidden behind channels the server opens at login. Local Chat, NPCs and Server Log go first, so later tabs are added
++-- after them and NPCs stays visible on a narrow console.
++function resetTabOrder()
 +    local npcTab = consoleTabBar:getTab('NPCs')
 +    if not npcTab then
 +        npcTab = addTab('NPCs', false)
 +        npcTab.npcChat = true
 +    end
 +
-+    local ordered = { defaultTab, serverTab, npcTab }
++    local ordered = { defaultTab, npcTab, serverTab }
 +    for _, list in ipairs({ consoleTabBar.preTabs, consoleTabBar.tabs, consoleTabBar.postTabs }) do
 +        for _, tab in ipairs(list) do
 +            if not table.find(ordered, tab) then
@@ -104,8 +174,10 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function consoleController:onGameStart()
 +    resetTabOrder()
      consoleTabBar:selectTab(defaultTab)
++    loginChannelsUntil = g_clock.millis() + 5000
  
      local clientVersion = g_game.getClientVersion()
+     if clientVersion < 862 then
 diff -ruN pristine/modules/game_console/console.otui modules/game_console/console.otui
 --- a/modules/game_console/console.otui
 +++ b/modules/game_console/console.otui

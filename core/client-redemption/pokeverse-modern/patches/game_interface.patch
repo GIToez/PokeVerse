@@ -126,3 +126,16 @@ diff -ruN pristine/modules/game_interface/widgets/statsbar.lua modules/game_inte
  local DEFAULT_PLACEMENT = "top"
  
  local isWarriorVocation = false
+@@ -1051,6 +1052,12 @@
+ end
+ 
+ function StatsBar.loadSettings()
++    -- PokeVerse: clients before the HUD saved 'compact' on logout, reset it once
++    if not g_settings.getBoolean('pokeverse_statsbar_hidden') then
++        setSetting('statsbar_dimension', DEFAULT_DIMENSION)
++        setSetting('pokeverse_statsbar_hidden', true)
++    end
++
+     local dimension = getSettingOrDefault('statsbar_dimension', DEFAULT_DIMENSION)
+     local placement = getSettingOrDefault('statsbar_placement', DEFAULT_PLACEMENT)
+ 
