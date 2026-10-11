@@ -310,9 +310,8 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
 			if(target->getMaster())
 			{
                 checkZones = true;
-				if(g_game.getWorldType() == WORLD_TYPE_NO_PVP && !Combat::isInPvpZone(attacker, target))
-					return RET_YOUMAYNOTATTACKTHISCREATURE;
-				else if(const Player* targetMaster = target->getTopMaster()->getPlayer())
+				// duels, arenas and NPC trainer battles are consented fights, allowed on a no-pvp world too
+				if(const Player* targetMaster = target->getTopMaster()->getPlayer())
 				{
                     if((attackerPlayer->getDueling() && attackerPlayer->isOpponentPartyDuel(targetMaster)) ||
                        (attackerPlayer->getPvpArena() && attackerPlayer->getPvpArenaTeam() != targetMaster->getPvpArenaTeam()) ||
@@ -324,8 +323,10 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
                     if(npc->getOpponent() && npc->getOpponent() == attackerPlayer)
                         return RET_NOERROR;
                 }
-                else if(const Monster* targetMaster = target->getTopMaster()->getMonster()) {
-                    return RET_NOERROR;
+                else if(target->getTopMaster()->getMonster())
+                {
+                    if(g_game.getWorldType() != WORLD_TYPE_NO_PVP || Combat::isInPvpZone(attacker, target))
+                        return RET_NOERROR;
                 }
                 return RET_YOUMAYNOTATTACKTHISCREATURE;
 			}
