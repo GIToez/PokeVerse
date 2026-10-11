@@ -120,7 +120,10 @@ equipped() { item_query "$1" "GROUP_CONCAT(CONCAT(i.pid, ':', i.itemtype) ORDER 
 inside() { item_query "$1" "COUNT(*)" "AND c.pid = $2 AND i.itemtype IN ($3)"; }
 kit=$(equipped "New Trainer")
 echo "New Trainer equipped: $kit"
-[ "$kit" = "1:13206 2:13204 3:13016 5:12280 6:12281 10:12282" ] || { echo "FAIL: New Trainer starting kit is wrong"; exit 1; }
+[ "$kit" = "1:13206 2:13204 3:13016 4:30151 5:12280 6:12281 10:12282" ] || { echo "FAIL: New Trainer starting kit is wrong"; exit 1; }
+skills=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT GROUP_CONCAT(CONCAT(s.skillid, ':', s.value) ORDER BY s.skillid SEPARATOR ' ') FROM player_skills s JOIN players p ON p.id = s.player_id WHERE p.name = 'New Trainer'")
+echo "New Trainer skills: $skills"
+[ "$skills" = "0:0 1:0 2:0 3:0 4:0 5:10 6:0" ] || { echo "FAIL: trainer skills should start at 0 (catching at 10)"; exit 1; }
 [ "$(inside "New Trainer" 5 "12214,12216,12218,12220,12222,12224,12226,12228")" = 8 ] || { echo "FAIL: badge case should hold the 8 badge slots"; exit 1; }
 [ "$(inside "New Trainer" 10 13820)" = 1 ] || { echo "FAIL: starter cookies are not in the bag"; exit 1; }
 [ "$(inside "Admin" 10 12157)" = 1 ] || { echo "FAIL: items created for Admin did not go into the bag"; item_query Admin "i.pid, i.sid, i.itemtype, i.count" ""; exit 1; }
