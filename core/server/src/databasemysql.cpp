@@ -52,7 +52,8 @@ DatabaseMySQL::DatabaseMySQL()
 		mysql_options(&m_handle, MYSQL_OPT_WRITE_TIMEOUT, (const char*)&writeTimeout);
 
 	connect();
-	if(mysql_get_client_version() <= 50019)
+	//the client version of MariaDB Connector/C is 3.x, only the server version says which server this is
+	if(m_connected && mysql_get_server_version(&m_handle) <= 50019)
 	{
 		//MySQL servers <= 5.0.19 has a bug where MYSQL_OPT_RECONNECT is (incorrectly) reset by mysql_real_connect calls
 		//See http://dev.mysql.com/doc/refman/5.0/en/mysql-options.html for more information.
