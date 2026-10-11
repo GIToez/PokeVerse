@@ -1,0 +1,66 @@
+UIWidget
+  id: environment
+  size: 520 96
+  focusable: false
+  phantom: true
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 128
+
+  UIWidget
+    id: art
+    anchors.fill: parent
+    margin: 4
+    image-source: /images/area_banner/theme_route
+    phantom: true
+
+  UIWidget
+    id: frame
+    anchors.fill: parent
+    image-source: /images/area_banner/frame
+    image-border: 8
+    phantom: true
+
+  Label
+    id: message
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 9
+    ttf-font: pixelify-sans
+    ttf-font-size: 30
+    ttf-stroke: 2 #0b1530
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  UIWidget
+    id: divider
+    anchors.top: message.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 3
+    size: 320 1
+    background-color: #ffffff99
+    phantom: true
+
+  Label
+    id: subtitle
+    anchors.top: divider.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 4
+    width: 440
+    font: verdana-11px-rounded
+    color: #e8eefc
+    text-align: center
+    text-wrap: true
+    text-auto-resize: true
+    phantom: true
+
+  UIWidget
+    id: badge
+    size: 36 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -10
+    margin-left: -12
+    image-source: /images/area_banner/badge
+    phantom: true

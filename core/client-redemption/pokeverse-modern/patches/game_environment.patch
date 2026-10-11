@@ -1,7 +1,17 @@
 diff -ruN pristine/modules/game_environment/environment.lua modules/game_environment/environment.lua
 --- a/modules/game_environment/environment.lua
 +++ b/modules/game_environment/environment.lua
-@@ -166,8 +166,35 @@
+@@ -5,9 +5,6 @@
+ 
+ local EFFECT_FILES_FOLDER = "/shaders/environment/"
+ 
+-local MESSAGE_LABEL_FADE_DURATION = 1500
+-local MESSAGE_LABEL_DURATION = 7000
+-
+ local SHADER_FADE = 0.5
+ 
+ local DATA_INDEX = {}
+@@ -166,37 +163,127 @@
  table.merge(SOUNDS, SOUNDS1)
  table.merge(SOUNDS, SOUNDS2)
  
@@ -25,11 +35,10 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +end
 +shiftedAreas = nil
 +
-+-- PokeVerse: areas of the map parts the old map does not have
++-- PokeVerse: our own areas (sounds_pokeverse.lua) win over the legacy ones and are checked on
++-- every step; area_names.lua decides how the area name banner looks
 +dofile("sounds_pokeverse.lua")
-+for _, area in ipairs(SOUNDS_POKEVERSE) do
-+    SOUNDS[#SOUNDS + 1] = area
-+end
++dofile("area_names.lua")
 +
  --local SOUNDS = loadstring("/modules/game_environment/new_sounds.lua")()--table.load("/modules/game_environment/sounds.lua")
 -local EFFECTS = table.load("/modules/game_environment/effects.lua")
@@ -38,7 +47,176 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  
  -- Vars
  local rcSoundChannel, playingSound, playingEffect, effectsEnabled, labelWindow, labelEvent, locationLabel
-@@ -345,21 +372,7 @@
++local customArea, bannerAnimation
++local bannerShownAt = {}
+ local environmentEnabled = true
+ 
+ -- Methods
+ local isInPos = Position.isIn
+ 
+-local function checkMessage(data)
+-    if (data[DATA_INDEX.MESSAGE]) then
+-        if (labelEvent) then
+-            removeEvent(labelEvent)
++local BANNER_TOP = 128
++local BANNER_SLIDE = 20
++local BANNER_FADE_IN = 400
++local BANNER_FADE_OUT = 800
++local BANNER_DURATION = 4000
++local BANNER_REPEAT_COOLDOWN = 120000
++
++local function animateBanner(duration, step, done)
++    if (bannerAnimation) then
++        removeEvent(bannerAnimation)
++    end
++    local start = g_clock.millis()
++    bannerAnimation = cycleEvent(function()
++        local t = math.min(1, (g_clock.millis() - start) / duration)
++        step(t)
++        if (t >= 1) then
++            removeEvent(bannerAnimation)
++            bannerAnimation = nil
++            if (done) then
++                done()
++            end
+         end
++    end, 16)
++end
+ 
+-        local text = tr(data[DATA_INDEX.MESSAGE])
+-        labelWindow:recursiveGetChildById('message'):setText(text)
+-        addEvent(function()
+-            labelWindow:show()
+-            g_effects.fadeIn(labelWindow, MESSAGE_LABEL_FADE_DURATION)
++local function showBanner(text)
++    local now = g_clock.millis()
++    if (AREA_BANNER.isBuilding(text) or (bannerShownAt[text] and now - bannerShownAt[text] < BANNER_REPEAT_COOLDOWN)) then
++        return
++    end
++    bannerShownAt[text] = now
++
++    if (labelEvent) then
++        removeEvent(labelEvent)
++        labelEvent = nil
++    end
++
++    labelWindow:getChildById('message'):setText(text)
++    labelWindow:getChildById('subtitle'):setText(AREA_BANNER.subtitle(text) or '')
++    labelWindow:getChildById('art'):setImageSource(AREA_BANNER.image(text))
++    labelWindow:setOpacity(0)
++    labelWindow:setMarginTop(BANNER_TOP - BANNER_SLIDE)
++    labelWindow:show()
++    labelWindow:raise()
++
++    animateBanner(BANNER_FADE_IN, function(t)
++        local eased = 1 - (1 - t) * (1 - t)
++        labelWindow:setOpacity(eased)
++        labelWindow:setMarginTop(math.floor(BANNER_TOP - BANNER_SLIDE * (1 - eased)))
++    end)
++
++    labelEvent = scheduleEvent(function()
++        labelEvent = nil
++        animateBanner(BANNER_FADE_OUT, function(t)
++            labelWindow:setOpacity(1 - t)
++        end, function()
++            labelWindow:hide()
+         end)
++    end, BANNER_FADE_IN + BANNER_DURATION)
++end
+ 
+-        labelEvent = scheduleEvent(function()
+-            g_effects.fadeOut(labelWindow, MESSAGE_LABEL_FADE_DURATION)
+-            labelEvent = scheduleEvent(function()
+-                labelWindow:hide()
+-            end, MESSAGE_LABEL_FADE_DURATION + 1)
+-        end, MESSAGE_LABEL_DURATION)
++local function hideBanner()
++    if (labelEvent) then
++        removeEvent(labelEvent)
++        labelEvent = nil
++    end
++    if (bannerAnimation) then
++        removeEvent(bannerAnimation)
++        bannerAnimation = nil
++    end
++    labelWindow:hide()
++end
+ 
++local function checkMessage(data)
++    -- inside one of our areas its name stays up, the legacy area around it stays quiet
++    if (customArea and data ~= customArea) then
++        return
++    end
++
++    if (data[DATA_INDEX.MESSAGE]) then
++        local text = tr(data[DATA_INDEX.MESSAGE])
+         modules.game_time.setLocation(text)
++        showBanner(text)
+     end
+ end
+ 
+@@ -236,7 +323,44 @@
+     playingEffect = nil
+ end
+ 
++local function findCustomArea(pos)
++    for i = 1, #SOUNDS_POKEVERSE do
++        local area = SOUNDS_POKEVERSE[i]
++        if (isInPos(pos, area.fromPos, area.toPos)) then
++            return area
++        end
++    end
++end
++
++-- Our areas with a track take over the music; areas without one only change the name.
++local function checkCustomArea(newPos)
++    local area = findCustomArea(newPos)
++    if (area == customArea) then
++        return area
++    end
++
++    local left = customArea
++    customArea = area
++    if (area) then
++        if (area[DATA_INDEX.NAME]) then
++            if (not playingSound or playingSound[DATA_INDEX.NAME] ~= area[DATA_INDEX.NAME]) then
++                playSound(area)
++            end
++            playingSound = area
++        end
++        checkMessage(area)
++    elseif (left and playingSound and playingSound ~= left) then
++        checkMessage(playingSound)
++    end
++    return area
++end
++
+ local function checkSound(newPos)
++    local custom = checkCustomArea(newPos)
++    if (custom and custom[DATA_INDEX.NAME]) then
++        return
++    end
++
+     local checkList, stop
+     if (playingSound and isInPos(newPos, playingSound.fromPos, playingSound.toPos)) then
+         if (playingSound.closePriorities) then
+@@ -322,12 +446,14 @@
+ -- Hooks
+ function onOnline()
+     stopSound()
++    customArea = nil
+ end
+ 
+ function onOffline()
+     stopSound()
+     resetEffect()
+-    labelWindow:hide()
++    customArea = nil
++    hideBanner()
+ end
+ 
+ function onPositionChange(cid, newPos, oldPos)
+@@ -345,23 +471,9 @@
  function onInit()
      rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
  
@@ -59,5 +237,16 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 -    end
 +    effectsEnabled = false
  
-     labelWindow = g_ui.loadUI('environment', modules.game_interface.getRootPanel())
+-    labelWindow = g_ui.loadUI('environment', modules.game_interface.getRootPanel())
++    labelWindow = g_ui.loadUI('environment', modules.game_interface.getMapPanel())
      labelWindow:hide()
+ 
+     connect(g_game, {
+@@ -388,5 +500,6 @@
+         onPositionChange = onPositionChange
+     })
+ 
++    hideBanner()
+     labelWindow:destroy()
+ end
+\ No newline at end of file
