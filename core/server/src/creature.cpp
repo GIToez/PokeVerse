@@ -550,7 +550,8 @@ void Creature::onCreatureMove(const Creature* creature, const Tile* newTile, con
 		setLastPosition(oldPos);
 		if(!teleport)
 		{
-			if(oldPos.z != newPos.z || (std::abs(newPos.x - oldPos.x) >= 1 && std::abs(newPos.y - oldPos.y) >= 1))
+			// diagonal steps cost the same as straight ones (the client's diagonal-walk-speed is 1)
+			if(oldPos.z != newPos.z)
 				lastStepCost = 2;
 		}
 		else
@@ -1685,11 +1686,8 @@ std::string Creature::getDescription(int32_t lookDistance, Player* player/* = NU
 	return "a creature";
 }
 
-int32_t Creature::getStepDuration(Direction dir) const
+int32_t Creature::getStepDuration(Direction) const
 {
-	if(dir == NORTHWEST || dir == NORTHEAST || dir == SOUTHWEST || dir == SOUTHEAST)
-		return getStepDuration() * 2;
-
 	return getStepDuration();
 }
 

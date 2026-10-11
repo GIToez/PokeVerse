@@ -190,8 +190,8 @@ void Tile::drawCreature(const MapPosInfo& mapRect, const Point& dest, const int 
 
     g_drawPool.setDrawOrder(DrawOrder::THIRD);
     for (const auto& creature : m_walkingCreatures) {
-        // already drawn by this point
-        if (creature->getDirection() == Otc::Direction::NorthEast || creature->getDirection() == Otc::Direction::SouthWest)
+        // already drawn by this point (Tile::draw), except for the light pass, which never goes through Tile::draw
+        if (flags != Otc::DrawLights && (creature->getDirection() == Otc::Direction::NorthEast || creature->getDirection() == Otc::Direction::SouthWest))
             if (creature->getLastStepToPosition() != getPosition())
                 continue;
 

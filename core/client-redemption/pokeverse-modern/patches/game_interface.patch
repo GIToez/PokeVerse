@@ -74,7 +74,22 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function setupViewMode(mode)
-@@ -1942,6 +1966,8 @@
+@@ -1839,10 +1863,11 @@
+     elseif mode == 2 then
+         local limit = limitedZoom and not g_game.isGM()
+         gameMapPanel:setLimitVisibleRange(limit)
+-        gameMapPanel:setZoom(11)
++        -- PokeVerse: the server sends 23x15 visible tiles (setup.otml viewport 11 7); 13 rows fill a 16:9 screen
++        gameMapPanel:setZoom(13)
+         gameMapPanel:setVisibleDimension({
+-            width = 15,
+-            height = 11
++            width = 23,
++            height = 13
+         })
+         gameMapPanel:fill('parent')
+         gameRootPanel:fill('parent')
+@@ -1942,6 +1967,8 @@
      end
  end
  
@@ -83,7 +98,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  function applyExtendedViewLayout(extendedView)
      if extendedView == isExtendedViewActive then return end
      isExtendedViewActive = extendedView
-@@ -1973,6 +1999,18 @@
+@@ -1973,6 +2000,18 @@
          gameMainRightPanel:setImageColor('alpha')
          gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
          gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
@@ -102,7 +117,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          gameLeftActionPanel:setImageSource(nil)
          gameRightActionPanel:setImageSource(nil)
          gameLeftActionPanel:setBorderWidthRight(0)
-@@ -1993,6 +2031,10 @@
+@@ -1993,6 +2032,10 @@
  
          -- Reset bottom panel
          gameBottomPanel:setDraggable(false)

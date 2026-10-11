@@ -248,6 +248,10 @@ bool UIMap::zoomOut()
     if (m_zoom + delta > m_maxZoomOut)
         return false;
 
+    // past the rows the server sends, zooming out would change nothing (see updateVisibleDimension)
+    if (m_zoom + delta > g_map.getAwareRange().top * 2 + 1)
+        return false;
+
     const auto oldZoom = m_zoom;
 
     m_zoom += 2;
@@ -354,6 +358,21 @@ void UIMap::updateVisibleDimension()
     int dimensionWidth = m_zoom * ratio;
     if (dimensionWidth % 2 == 0)
         dimensionWidth += 1;
+
+    // never show tiles the server does not send (they would stay empty): shrink to its range, keeping tiles square
+    const auto& range = g_map.getAwareRange();
+    const int maxWidth = range.left * 2 + 1;
+    const int maxHeight = range.top * 2 + 1;
+    if (dimensionWidth > maxWidth) {
+        dimensionWidth = maxWidth;
+        dimensionHeight = 2 * static_cast<int>(std::round((dimensionWidth / ratio - 1) / 2)) + 1;
+    }
+    if (dimensionHeight > maxHeight) {
+        dimensionHeight = maxHeight;
+        dimensionWidth = std::min<int>(maxWidth, 2 * static_cast<int>(std::round((dimensionHeight * ratio - 1) / 2)) + 1);
+    }
+    dimensionWidth = std::max<int>(dimensionWidth, 1);
+    dimensionHeight = std::max<int>(dimensionHeight, 1);
 
     m_mapView->setVisibleDimension(Size(dimensionWidth, dimensionHeight));
 
