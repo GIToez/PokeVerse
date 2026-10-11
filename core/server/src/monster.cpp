@@ -1509,9 +1509,30 @@ void Monster::dropLoot(Container* corpse)
             }
 		}
 		
-		if (sendEffect) {
+		if (sendEffect)
             g_game.addMagicEffect(getPosition(), 675); // EFFECT_COLOURED_EXCLAMATION
-            
+
+		// auto loot: everything goes straight to the owner, no need to open the corpse
+		if (player && player->getAutoLoot() && corpse->size() > 0) {
+			std::list<Item*> lootList;
+			bool lootCollected = true;
+			Item* item = NULL;
+			while ((item = corpse->getItem(0))) {
+				if (g_game.internalMoveItem(player, corpse, player, INDEX_WHEREEVER, item, item->getItemCount(), NULL, FLAG_NOLIMIT) != RET_NOERROR) {
+					lootCollected = false;
+					break;
+				}
+				lootList.push_back(item);
+			}
+
+			if (!lootList.empty())
+				player->sendLootList(lootList);
+			if (!lootCollected)
+				player->sendTextMessage(MSG_STATUS_WARNING, "Loot not collected! Check your backpack.");
+			return;
+		}
+
+		if (sendEffect) {
             if (player) {
                 while (listItemsToCollect.size() > 0) {
                     Item* itemToCollect = listItemsToCollect.front();

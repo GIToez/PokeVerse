@@ -27,6 +27,7 @@ class NetworkMessage;
 // First message (after the protocol id 0x0B): U16 operating system, U16 client version,
 // then one RSA block: U8 0, 4 x U32 XTEA key, U8 action, String account, String password,
 // and for ACTION_CREATE_CHARACTER: String name, U8 sex; for ACTION_DELETE_CHARACTER: String name.
+// ACTION_SERVER_STATUS needs no account; it is answered with the number of players online.
 // Reply (XTEA): U8 0x0A error or 0x0B success, String message. The connection is then closed.
 class ProtocolAccount : public Protocol
 {
@@ -35,7 +36,8 @@ class ProtocolAccount : public Protocol
 		{
 			ACTION_CREATE_ACCOUNT = 1,
 			ACTION_CREATE_CHARACTER = 2,
-			ACTION_DELETE_CHARACTER = 3
+			ACTION_DELETE_CHARACTER = 3,
+			ACTION_SERVER_STATUS = 4
 		};
 
 		virtual void onRecvFirstMessage(NetworkMessage& msg) {parseFirstPacket(msg);}

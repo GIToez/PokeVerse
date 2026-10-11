@@ -126,6 +126,12 @@ void ProtocolAccount::handleRequest(uint32_t clientIp, uint8_t action, std::stri
 		return;
 	}
 
+	if(action == ACTION_SERVER_STATUS)
+	{
+		reply(true, std::to_string(g_game.getPlayersOnline()));
+		return;
+	}
+
 	trimString(account);
 	toLowerCaseString(account);
 	bool success = false;

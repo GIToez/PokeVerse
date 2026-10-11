@@ -7755,6 +7755,11 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
         player->setIsDashWalking(buffer == "1");
         return;
     }
+
+    if (opcode == 13) { // Auto loot on kill (client option)
+        player->setAutoLoot(buffer == "1");
+        return;
+    }
     
     CreatureEventList extendedOpcodeEvents = player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE);
     for(CreatureEventList::iterator it = extendedOpcodeEvents.begin(); it != extendedOpcodeEvents.end(); ++it) {

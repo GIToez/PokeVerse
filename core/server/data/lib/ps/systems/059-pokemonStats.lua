@@ -755,9 +755,6 @@ PokemonStats.onDefeated = function(cid, ball, target)
 
     doBallUpdateDescription(ball.uid)
     PokemonStats.onBallChanged(cid, ball.uid)
-    local nickname = getBallPokemonNickname(ball.uid)
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your %s gained EVs: %s."),
-        (nickname and nickname ~= -1) and nickname or getBallPokemonName(ball.uid), describeChanges(changes)))
     return true
 end
 

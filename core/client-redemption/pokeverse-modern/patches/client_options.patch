@@ -28,7 +28,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              -- Update the underlying options values first
              -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
-@@ -156,8 +156,16 @@
+@@ -156,8 +156,24 @@
              end, 50)
          end
      },
@@ -44,10 +44,18 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +            end
 +        end
 +    },
++    autoLoot                          = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if g_game.isOnline() then
++                g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.AutoLoot, value and '1' or '0')
++            end
++        end
++    },
      autoChaseOverride                 = true,
      talkOnRightClick                  = false,
      moveStack                         = false,
-@@ -194,7 +202,9 @@
+@@ -194,7 +210,9 @@
      showOutfitsOnList                 = {
          value = true,
          action = function(value, options, controller, panels, extraWidgets)
@@ -58,7 +66,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          end
      },
      openMaximized                     = false,
-@@ -519,7 +529,8 @@
+@@ -519,7 +537,8 @@
          end
      },
      showLeftPanel                     = {
@@ -68,7 +76,16 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              if not modules.game_interface then
                  return
-@@ -1002,7 +1013,8 @@
+@@ -951,7 +970,7 @@
+         end
+     },
+     soundAmbience = {
+-        value = 100,
++        value = 5,
+         action = function(value, options, controller, panels, extraWidgets)
+             panels.soundPanel:recursiveGetChildById('soundAmbience'):setText(tr('Ambience Volume: %d %%', value))
+             if g_sounds then
+@@ -1002,7 +1021,8 @@
          end,
      },
      actionBarShowBottom1 = {
@@ -78,7 +95,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1182,12 @@
+@@ -1170,4 +1190,12 @@
          end
      },
      showInfoBanner = true,
@@ -94,7 +111,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
 +++ b/modules/client_options/options.lua
-@@ -293,6 +293,57 @@
+@@ -293,6 +293,65 @@
  
      setupComboBox()
  
@@ -148,19 +165,28 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +        g_settings.set('pokeverseLayoutVersion', 2)
 +        g_settings.save()
 +    end
++    -- the ambience was far too loud at Redemption's 100%; anyone who never changed it gets the new default
++    if layoutVersion < 3 then
++        if g_settings.getNumber('soundAmbience', 100) == 100 then
++            g_settings.set('soundAmbience', options.soundAmbience.value)
++        end
++        g_settings.set('pokeverseLayoutVersion', 3)
++        g_settings.save()
++    end
 +
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +573,7 @@
+@@ -522,6 +581,8 @@
  end
  
  function controller:onGameStart()
 +    g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, getOption('dashWalk') and '1' or '0')
++    g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.AutoLoot, getOption('autoLoot') and '1' or '0')
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -930,13 +982,17 @@
+@@ -930,13 +991,17 @@
      end
  end
  
@@ -193,13 +219,25 @@ diff -ruN pristine/modules/client_options/options.otui modules/client_options/op
 diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/client_options/styles/controls/general.otui
 --- a/modules/client_options/styles/controls/general.otui
 +++ b/modules/client_options/styles/controls/general.otui
-@@ -129,6 +129,18 @@
+@@ -129,6 +129,30 @@
        height: 22
  
        OptionCheckBox
 +        id: dashWalk
 +        !text: tr('Enable dash walking')
 +        !tooltip: tr('Will boost your walk on high speed characters')
++
++    SmallReversedQtPanel
++      anchors.left: parent.left
++      anchors.right: parent.right
++      anchors.top: prev.bottom
++      margin-top: 7
++      height: 22
++
++      OptionCheckBox
++        id: autoLoot
++        !text: tr('Auto loot')
++        !tooltip: tr('Loot from Pokemon you defeat goes straight to your bag')
 +
 +    SmallReversedQtPanel
 +      anchors.left: parent.left
