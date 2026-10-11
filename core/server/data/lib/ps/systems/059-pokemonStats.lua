@@ -398,6 +398,39 @@ PokemonStats.getHeldEvBonus = function(ballUid)
     return PokemonHeldItem.getEvBonus and PokemonHeldItem.getEvBonus(ballUid) or nil
 end
 
+-- Pomeg, Kelpsy, Qualot, Hondew, Grepa and Tamato, in stat order
+PokemonStats.EV_BERRY_FIRST_ITEMID = 30145
+PokemonStats.EV_BERRY_AMOUNT = 10
+
+PokemonStats.onUseEvBerry = function(cid, item, fromPosition, itemEx, toPosition)
+    local stat = item.itemid - PokemonStats.EV_BERRY_FIRST_ITEMID + 1
+    if (not POKEMON_STAT_NAMES[stat] or not isItem(itemEx) or not isBallWithPokemon(itemEx.uid)) then
+        doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
+        return false
+
+    elseif (fromPosition.x ~= CONTAINER_POSITION or toPosition.x ~= CONTAINER_POSITION) then
+        doPlayerSendCancel(cid, "You must pick up this item first.")
+        return false
+    end
+
+    local evs = PokemonStats.getBallEvs(itemEx.uid)
+    if (not evs or evs[stat] == 0) then
+        doPlayerSendCancel(cid, string.format("This Pokemon has no %s EVs to lose.", POKEMON_STAT_NAMES[stat]))
+        return false
+    end
+
+    local amounts = { 0, 0, 0, 0, 0, 0 }
+    amounts[stat] = -PokemonStats.EV_BERRY_AMOUNT
+    local changes = PokemonStats.addEvs(itemEx.uid, amounts)
+    doBallUpdateDescription(itemEx.uid)
+    PokemonStats.onBallChanged(cid, itemEx.uid)
+    doRemoveItem(item.uid, 1)
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your %s lost EVs: %s."),
+        getBallPokemonName(itemEx.uid), describeChanges(changes)))
+    return true
+end
+
 -- Only defeated wild Pokemon give EVs: NPC trainers' and players' Pokemon are summons
 PokemonStats.isWildPokemon = function(target)
     return isMonster(target) and not isSummon(target) and not getPokemonSummon(target)

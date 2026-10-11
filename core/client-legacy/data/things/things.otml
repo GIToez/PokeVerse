@@ -588,3 +588,31 @@ items:
     opacity:0.7
   16247:
     opacity:0.7
+  28779:
+    image: /images/items/destiny_knot
+  28780:
+    image: /images/items/everstone
+  28781:
+    image: /images/items/power_weight
+  28782:
+    image: /images/items/power_bracer
+  28783:
+    image: /images/items/power_belt
+  28784:
+    image: /images/items/power_lens
+  28785:
+    image: /images/items/power_band
+  28786:
+    image: /images/items/power_anklet
+  28787:
+    image: /images/items/pomeg_berry
+  28788:
+    image: /images/items/kelpsy_berry
+  28789:
+    image: /images/items/qualot_berry
+  28790:
+    image: /images/items/hondew_berry
+  28791:
+    image: /images/items/grepa_berry
+  28792:
+    image: /images/items/tamato_berry

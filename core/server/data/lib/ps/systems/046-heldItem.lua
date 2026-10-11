@@ -389,6 +389,52 @@ HELDS[HELD_IDS.ELEMENTAL_STONE] = {
     end
 }
 
+-- Breeding and EV training items: no levels and no move power, they only matter to EV gain and
+-- the Day Care (PokemonStats)
+HELD_IDS.DESTINY_KNOT = 20
+HELD_IDS.EVERSTONE = 21
+HELD_IDS.POWER_WEIGHT = 22
+HELD_IDS.POWER_BRACER = 23
+HELD_IDS.POWER_BELT = 24
+HELD_IDS.POWER_LENS = 25
+HELD_IDS.POWER_BAND = 26
+HELD_IDS.POWER_ANKLET = 27
+
+POWER_ITEM_EV_BONUS = 8
+
+local function addStatHeld(heldId, name, itemId, values)
+    HELDS[heldId] = {
+        name = name,
+        itemId = itemId,
+        noLevels = true,
+        onApply = function(cid, level, ballUid) end,
+        getDescription = function(uid)
+            return HELDS[heldId].summary
+        end
+    }
+    for key, value in pairs(values) do
+        HELDS[heldId][key] = value
+    end
+end
+
+addStatHeld(HELD_IDS.DESTINY_KNOT, "Destiny Knot", 30137,
+    { destinyKnot = true, summary = "Destiny Knot (passes down 5 IVs at the Day Care)" })
+addStatHeld(HELD_IDS.EVERSTONE, "Everstone", 30138,
+    { everstone = true, summary = "Everstone (passes down its Nature at the Day Care)" })
+
+local POWER_ITEMS = {
+    { HELD_IDS.POWER_WEIGHT, "Power Weight" }, { HELD_IDS.POWER_BRACER, "Power Bracer" },
+    { HELD_IDS.POWER_BELT, "Power Belt" }, { HELD_IDS.POWER_LENS, "Power Lens" },
+    { HELD_IDS.POWER_BAND, "Power Band" }, { HELD_IDS.POWER_ANKLET, "Power Anklet" }
+}
+local POWER_STAT_NAMES = { "HP", "Attack", "Defense", "Sp. Attack", "Sp. Defense", "Speed" }
+for stat, power in ipairs(POWER_ITEMS) do
+    addStatHeld(power[1], power[2], 30138 + stat, {
+        powerStat = stat,
+        summary = string.format("%s (+%d %s EVs per wild Pokemon)", power[2], POWER_ITEM_EV_BONUS, POWER_STAT_NAMES[stat])
+    })
+end
+
 local HELD_BY_ITEMID = {}
 for id, held in pairs(HELDS) do
     HELD_BY_ITEMID[held.itemId] = id
@@ -427,7 +473,7 @@ PokemonHeldItem.onGainExperience = function(player, pokemon, ball, expAmount)
     end
 
     local heldId = getBallHeld(ball.uid)
-    if (not heldId) then
+    if (not heldId or (HELDS[heldId] and HELDS[heldId].noLevels)) then
         return
     end
 
@@ -522,6 +568,36 @@ PokemonHeldItem.onUse = function(cid, item, fromPosition, itemEx, toPosition)
     return true
 end
 
+local function getBallHeldDefinition(ballUid)
+    local heldId = getBallHeld(ballUid)
+    return heldId and HELDS[heldId] or nil
+end
+
+-- { stat, amount } for a Power item, nil otherwise
+PokemonHeldItem.getEvBonus = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    if (held and held.powerStat) then
+        return { stat = held.powerStat, amount = POWER_ITEM_EV_BONUS }
+    end
+    return nil
+end
+
+-- The stat a Power item passes down at the Day Care, nil otherwise
+PokemonHeldItem.getPowerStat = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.powerStat or nil
+end
+
+PokemonHeldItem.hasDestinyKnot = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.destinyKnot or false
+end
+
+PokemonHeldItem.hasEverstone = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.everstone or false
+end
+
 PokemonHeldItem.getMovePowerModifier = function(cid, moveType)
     local continue = nil
     for slot = 1, 2 do
@@ -594,6 +670,9 @@ PokemonHeldItem.doSendPlayerExpMessage = function(cid)
 
     elseif (not getBallHeld(ball.uid)) then
         doPlayerSendCancel(cid, "Your Pokemon doesn't have a Held item.")
+
+    elseif (getBallHeldDefinition(ball.uid) and getBallHeldDefinition(ball.uid).noLevels) then
+        doPlayerSendCancel(cid, "Your Pokemon's Held item has no levels.")
 
     else
         local heldLevel = getBallHeldLevel(ball.uid)

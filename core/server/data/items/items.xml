@@ -35807,6 +35807,48 @@
 		<attribute key="description" value="Catches any wild Pokemon it can be used on, without fail." />
 		<attribute key="weight" value="090" />
 	</item>
+	<item id="30137" article="a" name="destiny knot">
+		<attribute key="description" value="When held by a Pokemon left at the Day Care, five of the parents' IVs are passed down to the Egg instead of three." />
+	</item>
+	<item id="30138" article="an" name="everstone">
+		<attribute key="description" value="When held by a Pokemon left at the Day Care, it passes its Nature down to the Egg." />
+	</item>
+	<item id="30139" article="a" name="power weight">
+		<attribute key="description" value="When held, the Pokemon gains 8 more HP EVs from every wild Pokemon it defeats. At the Day Care, it passes down its HP IV to the Egg." />
+	</item>
+	<item id="30140" article="a" name="power bracer">
+		<attribute key="description" value="When held, the Pokemon gains 8 more Attack EVs from every wild Pokemon it defeats. At the Day Care, it passes down its Attack IV to the Egg." />
+	</item>
+	<item id="30141" article="a" name="power belt">
+		<attribute key="description" value="When held, the Pokemon gains 8 more Defense EVs from every wild Pokemon it defeats. At the Day Care, it passes down its Defense IV to the Egg." />
+	</item>
+	<item id="30142" article="a" name="power lens">
+		<attribute key="description" value="When held, the Pokemon gains 8 more Sp. Attack EVs from every wild Pokemon it defeats. At the Day Care, it passes down its Sp. Attack IV to the Egg." />
+	</item>
+	<item id="30143" article="a" name="power band">
+		<attribute key="description" value="When held, the Pokemon gains 8 more Sp. Defense EVs from every wild Pokemon it defeats. At the Day Care, it passes down its Sp. Defense IV to the Egg." />
+	</item>
+	<item id="30144" article="a" name="power anklet">
+		<attribute key="description" value="When held, the Pokemon gains 8 more Speed EVs from every wild Pokemon it defeats. At the Day Care, it passes down its Speed IV to the Egg." />
+	</item>
+	<item id="30145" article="a" name="pomeg berry" plural="pomeg berries">
+		<attribute key="description" value="Use it on a Pokemon's ball to lower its HP EVs by 10." />
+	</item>
+	<item id="30146" article="a" name="kelpsy berry" plural="kelpsy berries">
+		<attribute key="description" value="Use it on a Pokemon's ball to lower its Attack EVs by 10." />
+	</item>
+	<item id="30147" article="a" name="qualot berry" plural="qualot berries">
+		<attribute key="description" value="Use it on a Pokemon's ball to lower its Defense EVs by 10." />
+	</item>
+	<item id="30148" article="a" name="hondew berry" plural="hondew berries">
+		<attribute key="description" value="Use it on a Pokemon's ball to lower its Sp. Attack EVs by 10." />
+	</item>
+	<item id="30149" article="a" name="grepa berry" plural="grepa berries">
+		<attribute key="description" value="Use it on a Pokemon's ball to lower its Sp. Defense EVs by 10." />
+	</item>
+	<item id="30150" article="a" name="tamato berry" plural="tamato berries">
+		<attribute key="description" value="Use it on a Pokemon's ball to lower its Speed EVs by 10." />
+	</item>
 	
 	<item id="30001" name="water" />
 	<item id="30002" name="blood" />
