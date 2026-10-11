@@ -5,7 +5,7 @@ UIWidget
   phantom: true
   anchors.top: parent.top
   anchors.horizontalCenter: parent.horizontalCenter
-  margin-top: 24
+  margin-top: 128
 
   UIWidget
     id: art

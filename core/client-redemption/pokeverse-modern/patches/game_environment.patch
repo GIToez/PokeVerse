@@ -58,7 +58,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 -    if (data[DATA_INDEX.MESSAGE]) then
 -        if (labelEvent) then
 -            removeEvent(labelEvent)
-+local BANNER_TOP = 24
++local BANNER_TOP = 128
 +local BANNER_SLIDE = 20
 +local BANNER_FADE_IN = 400
 +local BANNER_FADE_OUT = 800
