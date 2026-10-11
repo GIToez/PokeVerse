@@ -107,6 +107,18 @@ same check offline (no connection to the server), for repository-level settings 
 The production bot is always built from the `main` branch of
 [PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord).
 
+**Bot updates go out by themselves.** The "Discord bot auto-deploy" workflow checks
+PokeVerse-Discord `main` every 15 minutes. When it has a commit that is not live yet, it
+builds the bot and runs `discord-deploy`, which restarts only the bot. Deployed commits are
+remembered in the Actions cache (`discord-bot-deployed-<commit>`), and the Live server
+workflow records them too.
+
+- The deploy job uses the `production` environment, so each new bot version waits for the
+  environment's reviewers: one approval per merge.
+- For fully automatic bot updates, create an environment without reviewers that has the same
+  secrets, and set the variable `DISCORD_AUTODEPLOY_ENVIRONMENT` to its name.
+- Game-side changes that the bot needs still ship with a normal `deploy`.
+
 Every push and pull request builds both packages and runs the rehearsal, which installs
 everything on a fresh Ubuntu 24.04 machine and tests login, character creation, movement,
 saved positions, GM restarts with warnings, crash recovery, the daily restart, an update

@@ -1,0 +1,122 @@
+name: Discord bot auto-deploy
+
+# Deploys the production Discord bot when PokeVerse-Discord main has a commit that is not
+# live yet. The check runs every 15 minutes without the production environment; only a new
+# bot commit starts the deploy job (which waits for the environment's reviewers, if any).
+# Deployed commits are remembered as "discord-bot-deployed-<sha7>" cache entries, also written
+# by the Live server workflow when it deploys the bot. Only the bot restarts, never the game.
+# Setup: docs/live-server.md
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check PokeVerse-Discord main
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.bot.outputs.sha }}
+      commit: ${{ steps.bot.outputs.commit }}
+      deployed: ${{ steps.marker.outputs.cache-hit }}
+    steps:
+      - name: Bot main commit
+        id: bot
+        run: |
+          commit=$(git ls-remote https://github.com/GIToez/PokeVerse-Discord.git refs/heads/main | cut -f1)
+          [ -n "$commit" ] || { echo "::error::could not read PokeVerse-Discord main"; exit 1; }
+          sha=${commit::7}
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          mkdir -p .bot-deployed && echo "$sha" > .bot-deployed/sha
+
+      - name: Already deployed?
+        id: marker
+        uses: actions/cache/restore@v4
+        with:
+          path: .bot-deployed
+          key: discord-bot-deployed-${{ steps.bot.outputs.sha }}
+          lookup-only: true
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.marker.outputs.cache-hit }}" = true ]; then
+            echo "Bot ${{ steps.bot.outputs.sha }} is already live." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Bot ${{ steps.bot.outputs.sha }} is new: deploying." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  deploy:
+    name: Deploy the Discord bot
+    needs: check
+    if: needs.check.outputs.deployed != 'true'
+    runs-on: ubuntu-24.04
+    environment: ${{ vars.DISCORD_AUTODEPLOY_ENVIRONMENT || 'production' }}
+    concurrency:
+      group: live-server-ovh
+      cancel-in-progress: false
+    timeout-minutes: 30
+    env:
+      ACTION: discord-deploy
+      PV_HOST: ${{ vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
+      PV_SSH_PORT: ${{ vars.OVH_SSH_PORT || secrets.OVH_SSH_PORT || '22' }}
+      PV_SSH_KEY: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+      PV_SSH_KEY_PASSPHRASE: ${{ secrets.OVH_SSH_KEY_PASSPHRASE }}
+      PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
+      PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
+      PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE || secrets.LIVE_TIMEZONE }}
+      DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID || secrets.DISCORD_APPLICATION_ID }}
+      DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID || secrets.DISCORD_GUILD_ID }}
+      DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS || secrets.DISCORD_ADMIN_USER_IDS }}
+      DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS || secrets.DISCORD_ADMIN_ROLE_IDS }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: true
+
+      - name: Check GitHub secrets and variables
+        run: scripts/live/check-settings.sh
+
+      - uses: actions/checkout@v4
+        with:
+          repository: GIToez/PokeVerse-Discord
+          ref: ${{ needs.check.outputs.commit }}
+          path: bot
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build and package
+        working-directory: bot
+        run: |
+          npm ci
+          npm run package:linux
+          release="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
+          mkdir -p ../packages
+          cp builds/production/pokeverse-discord-linux-x64.tar.gz ../packages/
+          echo "$release" > ../packages/bot-release.txt
+          echo "Discord bot release: $release" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run discord-deploy
+        run: |
+          export PV_BOT_PACKAGE=$PWD/packages/pokeverse-discord-linux-x64.tar.gz
+          PV_BOT_RELEASE=$(cat packages/bot-release.txt)
+          export PV_BOT_RELEASE
+          scripts/live/deploy.sh discord-deploy
+
+      - name: Remember the deployed commit
+        run: mkdir -p .bot-deployed && echo "${{ needs.check.outputs.sha }}" > .bot-deployed/sha
+
+      - uses: actions/cache/save@v4
+        with:
+          path: .bot-deployed
+          key: discord-bot-deployed-${{ needs.check.outputs.sha }}
