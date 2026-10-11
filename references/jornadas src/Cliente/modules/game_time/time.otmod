@@ -1,0 +1,9 @@
+Module
+  name: game_time
+  description: Time
+  author: walox
+  website: pokejornadas.com.br
+  sandboxed: true
+  scripts: [ time ]
+  @onLoad: onInit()
+  @onUnload: onTerminate()

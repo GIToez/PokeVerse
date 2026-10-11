@@ -1,0 +1,9 @@
+Module
+  name: poke_create
+  description: createAcc
+  author: Viktor
+  website: www.otclient.info
+  sandboxed: true
+  scripts: [ create ]
+  @onLoad: init()
+  @onUnload: terminate()

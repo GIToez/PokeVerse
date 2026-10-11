@@ -1,0 +1,18 @@
+MOVES["Power-Up Punch"] = {
+    description = "Power-Up Punch does damage and raises the user's Attack by one stage.",
+    category = MOVE_CATEGORY.PHYSICAL,
+    clientIconId = 27589,
+    iconId = 0,
+    dType = DAMAGE_TYPE_FIGHTING,
+    type = SKILLS_TYPES.TARGET,
+    -- requiredEnergy = 50,
+    requiredEnergy = 0,
+    damage = 40,
+    damageType = ELEMENT_FIGHT,
+    effect = EFFECT_BIG_PUNCH,
+    projectile = PROJECTILE_GRAVEL,
+    maxDistance = 1,
+    cooldownTime = 8,
+    cooldownStorage = 15412,
+    makeContact = true,
+}

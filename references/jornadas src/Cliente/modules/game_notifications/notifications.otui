@@ -1,0 +1,59 @@
+Notification < Panel
+  size: 313 80
+  phantom: true
+  visible: false
+  focusable: false
+  image-source: images/notification
+
+  UIButton
+    id: image
+    size: 80 80
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: 5
+
+  Label
+    id: text
+    text-align: center
+    text-wrap: true
+    font: verdana-11px-rounded
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.left: image.right
+    anchors.right: parent.right
+    margin-left: -2
+    margin-top: 5
+
+  UIButton
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 0
+    margin-left: 60
+    size: 22 22
+    phantom: false
+    image-source: images/close_icon
+    image-clip: 0 0 22 22
+    @onClick: modules.game_notifications.remove_notification(self)
+
+    $hover:
+      image-clip: 0 22 22 22
+
+    $pressed:
+      image-clip: 0 44 22 22
+
+FlatPanel
+  id: notificationsPanel
+  size: 313 160
+  opacity: 0
+  phantom: true
+  focusable: false
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 50
+  margin-left: 500
+  layout:
+    type: grid
+    cell-size: 313 80
+    cell-spacing: 5
+    num-columns: 1
+    num-lines: 3

@@ -1,0 +1,8 @@
+[Error][Sat Sep 18 00:55:37 2021]: getPokemonFastcallPortraitId - Unknown poke name.
+
+[Error][Sat Sep 18 01:01:22 2021]: getPokemonSpecialAbilities - Unknown poke name.
+    Var 1 : rattata
+[Error][Sat Sep 18 01:08:59 2021]: getPokemonSpecialAbilities - Unknown poke name.
+    Var 1 : rattata
+[Error][Sat Sep 18 11:52:29 2021]: getPokemonSpecialAbilities - Unknown poke name.
+    Var 1 : AlAKAZAM

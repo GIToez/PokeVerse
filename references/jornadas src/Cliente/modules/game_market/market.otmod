@@ -1,0 +1,10 @@
+Module
+  name: game_market
+  description: Global item market system
+  author: Ryukiimaru and Walox
+  website: https://www.facebook.com/systemyart
+  sandboxed: true
+  autoload: true
+  scripts: [ market ]
+  @onLoad: init()
+  @onUnload: terminate()

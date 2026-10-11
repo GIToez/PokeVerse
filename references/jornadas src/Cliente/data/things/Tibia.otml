@@ -1,0 +1,3944 @@
+creatures: -- lados < > cima baixo
+//bulbasaur
+  352:
+    name-displacement: 0 0
+//ivysaur
+  353:
+    name-displacement: 0 0
+//venusaur
+  354:
+    name-displacement: -20 -17
+//charmander
+  355:
+    name-displacement: 2 -8
+//charmeleon
+  356:
+    name-displacement: 0 -20
+
+//charizard
+  357:
+    name-displacement: -21 -39
+//charizard FLY
+  599:
+    name-displacement: -29 -50
+
+//charizard CYBORG
+  2718:
+    name-displacement: -21 -39
+//charizard CYBORG FLY
+  2719:
+    name-displacement: -29 -50
+//Shiny charizard CYBORG
+  2770:
+    name-displacement: -21 -39
+//Shiny charizard CYBORG FLY
+  2771:
+    name-displacement: -29 -50
+
+//squirtle
+  358:
+    name-displacement: 3 1
+//squirtle SURF
+  576:
+    name-displacement: 3 10
+//squirtle DIVE
+  641:
+    name-displacement: 3 5
+//wartortle
+  359:
+    name-displacement: 0 -3
+//wartortle SURF
+  577:
+    name-displacement: 1 10
+//wartortle DIVE
+  642:
+    name-displacement: 1 5
+//blastoise
+  360:
+    name-displacement: -20 -25
+//blastoise SURF
+  578:
+    name-displacement: -19 -23
+//blastoise DIVE
+  643:
+    name-displacement: -17 -19
+//caterpie
+  361:
+    name-displacement: 1 0
+//metapod
+  362:
+    name-displacement: 1 5
+//buterfree
+  363:
+    name-displacement: -4 -15
+//weedle
+  364:
+    name-displacement: 2 5
+//kakuna
+  365:
+    name-displacement: 1 3
+//beedrill
+  366:
+    name-displacement: -8 -30
+//pidgey
+  367:
+    name-displacement: 3 7
+//pidgeotto
+  368:
+    name-displacement: -13 -8
+//pidgeot
+  369:
+    name-displacement: -33 -40
+//pidgeot FLY
+  597:
+    name-displacement: -33 -32
+//rattata
+  370:
+    name-displacement: 3 17
+//raticate
+  371:
+    name-displacement: 0 -10
+//spearow
+  372:
+    name-displacement: 0 0
+//fearow
+  373:
+    name-displacement: -31 -37
+//fearow FLY
+  598:
+    name-displacement: -35 -65
+//ekans
+  374:
+    name-displacement: 0 -17
+//arbok
+  375:
+    name-displacement: -19 -60
+//pikachu
+  376:
+    name-displacement: 5 1
+//raichu
+  377:
+    name-displacement: -2 -10
+//sandshrew
+  378:
+    name-displacement: 1 5
+//sandslash
+  379:
+    name-displacement: 1 -15
+//nidorana
+  380:
+    name-displacement: 8 5
+//nidorina
+  381:
+    name-displacement: -2 -15
+//nidoqueen
+  382:
+    name-displacement: -13 -45
+//nidorano
+  383:
+    name-displacement: 8 1
+//nidorino
+  384:
+    name-displacement: -7 -5
+//nidoking
+  385:
+    name-displacement: -23 -40
+//clefairy
+  386:
+    name-displacement: 2 8
+//clefable
+  387:
+    name-displacement: -4 -10
+//vulpix
+  388:
+    name-displacement: 3 -5
+//ninetales
+  389:
+    name-displacement: -22 -45
+//ninetales RIDE
+  571:
+    name-displacement: -22 -45
+//jigglypuff
+  390:
+    name-displacement: 1 10
+//wigglytuff
+  391:
+    name-displacement: -14 -15
+//zubat
+  392:
+    name-displacement: -1 4
+//golbat
+  393:
+    name-displacement: -24 -10
+//oddish
+  394:
+    name-displacement: 12 5
+//gloom
+  395:
+    name-displacement: 5 1
+//vileplume
+  396:
+    name-displacement: -10 -15
+//paras
+  397:
+    name-displacement: 1 1
+//parasect
+  398:
+    name-displacement: -10 -25
+//venonat
+  399:
+    name-displacement: 6 -5
+//venomoth
+  400:
+    name-displacement: -10 -25
+//diglett
+  401:
+    name-displacement: 0 10
+//dugtrio
+  402:
+    name-displacement: -5 -10
+//meowth
+  403:
+    name-displacement: 0 -5
+//persian
+  404:
+    name-displacement: 3 -30
+//psyduck
+  405:
+    name-displacement: 1 1
+//golduck
+  406:
+    name-displacement: -14 -30
+//golduck SURF
+  595:
+    name-displacement: -6 1
+//golduck DIVE
+  660:
+    name-displacement: -8 -12
+//mankey
+  407:
+    name-displacement: -1 3
+//primeape
+  408:
+    name-displacement: -32 -25
+//growlithe
+  409:
+    name-displacement: 2 -10
+//arcanine
+  410:
+    name-displacement: -9 -60
+//arcanine RIDE
+  570:
+    name-displacement: -8 -57
+//poliwag
+  411:
+    name-displacement: 1 1
+//poliwag SURF
+  579:
+    name-displacement: 12 10
+//poliwag DIVE
+  644:
+    name-displacement: 1 8
+//poliwhirl
+  412:
+    name-displacement: -5 -5
+//poliwhirl SURF
+  580:
+    name-displacement: 0 1
+//poliwhirl DIVE
+  645:
+    name-displacement: -3 1
+//poliwrath
+  413:
+    name-displacement: -18 -23
+//poliwrath SURF
+  581:
+    name-displacement: -16 -25
+//poliwrath DIVE
+  646:
+    name-displacement: -15 -15
+//abra
+  414:
+    name-displacement: 1 1
+//kadabra
+  415:
+    name-displacement: -3 -17
+//alakazam
+  416:
+    name-displacement: -1 -10
+//machop
+  417:
+    name-displacement: 7 -5
+//machoke
+  418:
+    name-displacement: -7 -35
+
+//machamp
+  419:
+    name-displacement: -18 -35
+//machamp JASON
+  2801:
+    name-displacement: -18 -35
+
+//bellsprout
+  420:
+    name-displacement: 7 5
+//weepinbell
+  421:
+    name-displacement: 3 -5
+//victreebel
+  422:
+    name-displacement: -11 -35
+//tentacool
+  423:
+    name-displacement: 1 -5
+//tentacool SURF
+  584:
+    name-displacement: 1 -10
+//tentacool DIVE
+  649:
+    name-displacement: 5 -10
+//tentacruel
+  424:
+    name-displacement: -21 -55
+//tentacruel SURF
+  585:
+    name-displacement: -23 -40
+//tentacruel DIVE
+  650:
+    name-displacement: -20 -40
+//geodude
+  425:
+    name-displacement: -10 -8
+//graveler
+  426:
+    name-displacement: -11 -22
+//golem
+  427:
+    name-displacement: -15 -30
+//ponyta
+  428:
+    name-displacement: 1 -15
+//ponyta RIDE
+  566:
+    name-displacement: 1 -25
+//rapidash
+  429:
+    name-displacement: -18 -45
+//rapidash RIDE
+  567:
+    name-displacement: -18 -45
+//slowpoke
+  430:
+    name-displacement: 4 1
+//slowbro
+  431:
+    name-displacement: -1 -20
+//magnemite
+  432:
+    name-displacement: -1 -7
+//magneton
+  433:
+    name-displacement: -5 -25
+//Farfetchd
+  434:
+    name-displacement: -1 -5
+//Farfetchd FLY
+  1145:
+    name-displacement: -3 -48
+//doduo
+  435:
+    name-displacement: -10 -15
+//doduo RIDE
+  568:
+    name-displacement: -8 -20
+//dodrio
+  436:
+    name-displacement: -9 -35
+//dodrio RIDE
+  569:
+    name-displacement: -11 -37
+//seel
+  437:
+    name-displacement: -5 -5
+//dewgong
+  438:
+    name-displacement: -13 -27
+//dewgong SURF
+  588:
+    name-displacement: -16 -35
+//dewgong DIVE
+  653:
+    name-displacement: -13 -20
+//grimer
+  439:
+    name-displacement: -5 -5
+//muk
+  440:
+    name-displacement: -20 -30
+//shellder
+  441:
+    name-displacement: 5 5
+//cloyster
+  442:
+    name-displacement: -18 -17
+//gastly
+  443:
+    name-displacement: 2 -5
+//haunter
+  444:
+    name-displacement: -1 -15
+//gengar
+  445:
+    name-displacement: -7 -18
+//gengar LEVITATE
+  1211:
+    name-displacement: -21 -20
+//onix
+  446:
+    name-displacement: -15 -100
+//onix RIDE
+  572:
+    name-displacement: -17 -90
+//drownzee
+  447:
+    name-displacement: -2 -5
+
+//hypno
+  448:
+    name-displacement: -3 -15
+//hypno PANIC
+  2796:
+    name-displacement: -3 -15
+//hypno JIGSAW COSTUME
+  2803:
+    name-displacement: -3 -15
+//hypno JOKER COSTUME
+  2804:
+    name-displacement: -3 -15
+
+//krabby
+  449:
+    name-displacement: 4 7
+//kingler
+  450:
+    name-displacement: -25 -20
+//voltorb
+  451:
+    name-displacement: 0 5
+//electrode
+  452:
+    name-displacement: 1 -5
+//Exeggcute
+  453:
+    name-displacement: -2 -5
+//Exeggutor
+  454:
+    name-displacement: -12 -35
+//cubone
+  455:
+    name-displacement: 5 2
+//marowak
+  456:
+    name-displacement: 1 -10
+//hitmonlee
+  457:
+    name-displacement: -13 -22
+//hitmonchan
+  458:
+    name-displacement: 1 -25
+//lickitung
+  459:
+    name-displacement: -10 -17
+//koffing
+  460:
+    name-displacement: -12 -20
+//weezing
+  461:
+    name-displacement: -35 -50
+//rhyhorn
+  462:
+    name-displacement: -5 -25
+//rhyhorn RIDE
+  574:
+    name-displacement: -6 -40
+//rhydon
+  463:
+    name-displacement: -12 -27
+//chansey
+  464:
+    name-displacement: -5 -13
+//tangela
+  465:
+    name-displacement: 1 0
+//kangaskhan
+  466:
+    name-displacement: -12 -30
+//horsea
+  467:
+    name-displacement: 0 4
+//seadra
+  468:
+    name-displacement: -7 -20
+//seadra SURF
+  594:
+    name-displacement: -24 -1
+//seadra DIVE
+  659:
+    name-displacement: -7 -25
+//goldeen
+  469:
+    name-displacement: 1 5
+//goldeen SURF
+  582:
+    name-displacement: -1 1
+//goldeen DIVE
+  647:
+    name-displacement: 5 1
+//seaking
+  470:
+    name-displacement: 1 7
+//seaking SURF
+  583:
+    name-displacement: 1 -3
+//seaking DIVE
+  648:
+    name-displacement: 5 1
+//staryu
+  471:
+    name-displacement: 1 -2
+//staryu SURF
+  586:
+    name-displacement: 4 13
+//staryu DIVE
+  651:
+    name-displacement: 1 -4
+//starmie
+  472:
+    name-displacement: 1 -10
+//starmie SURF
+  587:
+    name-displacement: 2 10
+//starmie DIVE
+  652:
+    name-displacement: 1 -10
+//mr. mime
+  473:
+    name-displacement: -8 -10
+//scyther
+  474:
+    name-displacement: -8 -20
+//scyther FLY
+  2620:
+    name-displacement: -8 -20
+//jynx
+  475:
+    name-displacement: -2 -15
+//electabuzz
+  476:
+    name-displacement: -7 -35
+//magmar
+  477:
+    name-displacement: -10 -40
+//pinsir
+  478:
+    name-displacement: -13 -27
+//tauros
+  479:
+    name-displacement: 1 -20
+//tauros RIDE
+  573:
+    name-displacement: 1 -40
+//magikarp
+  480:
+    name-displacement: -9 -10
+//gyarados
+  481:
+    name-displacement: -15 -85
+//gyarados SURF
+  590:
+    name-displacement: -16 -75
+//gyarados DIVE
+  655:
+    name-displacement: -15 -55
+//lapras
+  482:
+    name-displacement: -30 -50
+//lapras SURF
+  589:
+    name-displacement: -31 -45
+//lapras DIVE
+  654:
+    name-displacement: -27 -35
+//ditto
+  483:
+    name-displacement: 8 10
+//eevee
+  484:
+    name-displacement: 8 -5
+//vaporeon
+  485:
+    name-displacement: -3 -25
+//vaporeon SURF
+  593:
+    name-displacement: -3 -16
+//vaporeon DIVE
+  658:
+    name-displacement: -3 -20
+//jolteon
+  486:
+    name-displacement: 0 -15
+//flareon
+  487:
+    name-displacement: 0 -15
+//porygon
+  488:
+    name-displacement: 1 1
+//porygon FLY
+  607:
+    name-displacement: -10 -40
+//omanyte
+  489:
+    name-displacement: 1 1
+//omastar
+  490:
+    name-displacement: -7 -20
+//omastar SURF
+  591:
+    name-displacement: -1 -35
+//omastar DIVE
+  656:
+    name-displacement: -7 -30
+//kabuto
+  491:
+    name-displacement: -1 12
+//kabutops
+  492:
+    name-displacement: -15 -35
+//kabutops SURF
+  592:
+    name-displacement: -12 -10
+//kabutops DIVE
+  657:
+    name-displacement: -10 -25
+//aerodactyl
+  493:
+    name-displacement: -57 -55
+//aerodactyl FLY
+  601:
+    name-displacement: -57 -55
+
+//snorlax
+  494:
+    name-displacement: -13 -50
+//Shiny snorlax CYBORG
+  2772:
+    name-displacement: -13 -50
+//snorlax SURF
+  596:
+    name-displacement: -15 -60
+
+//articuno
+  495:
+    name-displacement: -55 -65
+//articuno FLY
+  604:
+    name-displacement: -55 -65
+//zapdos
+  496:
+    name-displacement: -55 -55
+//zapdos FLY
+  602:
+    name-displacement: -55 -55
+//moltres
+  497:
+    name-displacement: -95 -95
+//moltres FLY
+  603:
+    name-displacement: -110 -100
+//dratini
+  498:
+    name-displacement: 6 5
+//dragonair
+  499:
+    name-displacement: -12 -45
+//dragonair FLY
+  1147:
+    name-displacement: -1 -35
+//dragonite
+  500:
+    name-displacement: -23 -80
+//dragonite FLY
+  600:
+    name-displacement: -37 -55
+//mewtwo
+  501:
+    name-displacement: -1 -55
+//mewtwo FLY
+  606:
+    name-displacement: -40 -75
+//mew
+  502:
+    name-displacement: 3 -2
+//mew FLY
+  605:
+    name-displacement: -40 -75
+
+
+//POKEMONS SHINYS
+
+//bulbasaur
+  666:
+    name-displacement: 0 0
+//ivysaur
+  667:
+    name-displacement: 0 0
+//venusaur
+  668:
+    name-displacement: -20 -17
+//charmander
+  669:
+    name-displacement: 0 0
+//charmeleon
+  670:
+    name-displacement: 0 0
+//charizard
+  671:
+    name-displacement: -19 -27
+//charizard FLY
+  716:
+    name-displacement: -24 -45
+//squirtle
+  672:
+    name-displacement: 0 0
+//squirtle SURF
+  721:
+    name-displacement: 3 5
+//squirtle DIVE
+  724:
+    name-displacement: 3 5
+//wartortle
+  673:
+    name-displacement: 0 0
+//wartortle SURF
+  722:
+    name-displacement: 1 5
+//wartortle DIVE
+  725:
+    name-displacement: 1 5
+//blastoise
+  674:
+    name-displacement: -17 -19
+//blastoise SURF
+  723:
+    name-displacement: -16 -23
+//blastoise DIVE
+  726:
+    name-displacement: -17 -19
+//caterpie
+  675:
+    name-displacement: 0 0
+//metapod
+  676:
+    name-displacement: 0 0
+//buterfree
+  677:
+    name-displacement: -4 -5
+//weedle
+  678:
+    name-displacement: 0 0
+//kakuna
+  679:
+    name-displacement: 0 0
+//beedrill
+  680:
+    name-displacement: -8 -20
+//pidgey
+  681:
+    name-displacement: 0 0
+//pidgeotto
+  682:
+    name-displacement: -10 -8
+//pidgeot
+  683:
+    name-displacement: -20 -25
+//pidgeot FLY
+  717:
+    name-displacement: -27 -37
+//rattata
+  684:
+    name-displacement: 1 17
+//raticate
+  685:
+    name-displacement: -10 -8
+//spearow
+  686:
+    name-displacement: 0 0
+
+//fearow
+  687:
+    name-displacement: -30 -25
+//fearow FLY
+  718:
+    name-displacement: -29 -50
+//fearow BLACK RAVEN
+  2781:
+    name-displacement: -30 -25
+//fearow FLY BLACK RAVEN
+  2780:
+    name-displacement: -34 -60
+//fearow METAL ARMOR
+  2785:
+    name-displacement: -30 -25
+//fearow FLY METAL ARMOR
+  2786:
+    name-displacement: -34 -60
+//fearow ENJOYING SUMMER
+  2820:
+    name-displacement: -32 -70
+//fearow FLY ENJOYING SUMMER
+  2821:
+    name-displacement: -32 -100
+
+//ekans
+  688:
+    name-displacement: 0 -13
+//arbok
+  689:
+    name-displacement: -17 -46
+//pikachu
+  690:
+    name-displacement: 1 8
+//raichu
+  691:
+    name-displacement: -1 1
+//sandshrew
+  692:
+    name-displacement: 0 7
+//sandslash
+  693:
+    name-displacement: 1 -3
+//nidorana
+  694:
+    name-displacement: 2 12
+//nidorina
+  695:
+    name-displacement: -2 -8
+//nidoqueen
+  696:
+    name-displacement: -12 -33
+//nidorano
+  697:
+    name-displacement: 2 12
+//nidorino
+  698:
+    name-displacement: -7 -5
+
+//nidoking
+  699:
+    name-displacement: -20 -25
+//nidoking METAL ARMOR
+  2784:
+    name-displacement: -25 -40
+//nidoking WEREWOLF COSTUME
+  2797:
+    name-displacement: -24 -45
+//nidoking ALFA WEREWOLF COSTUME
+  2800:
+    name-displacement: -24 -45
+
+//clefairy
+  700:
+    name-displacement: 1 8
+//clefable
+  701:
+    name-displacement: -5 -5
+//vulpix
+  702:
+    name-displacement: 1 5
+
+//ninetales
+  703:
+    name-displacement: -20 -17
+//ninetales RIDE
+  720:
+    name-displacement: -20 -27
+//ninetales CYBORG
+  2776:
+    name-displacement: -22 -35
+//ninetales RIDE CYBORG
+  2777:
+    name-displacement: -22 -35
+//ninetales MOONFAIRY
+  2824:
+    name-displacement: -22 -32
+//ninetales RIDE MOONFAIRY
+  2825:
+    name-displacement: -22 -32
+//ninetales KYUBIMON COSTUME
+  2826:
+    name-displacement: -25 -32
+//ninetales RIDE KYUBIMON COSTUME
+  2827:
+    name-displacement: -25 -32
+//ninetales BABY KURAMA
+  2828:
+    name-displacement: -25 -32
+//ninetales RIDE BABY KURAMA
+  2829:
+    name-displacement: -25 -32
+//ninetales AHRI ATARI
+  2830:
+    name-displacement: -25 -32
+//ninetales RIDE AHRI ATARI
+  2831:
+    name-displacement: -25 -32
+//ninetales KURAMA ASURA
+  2832:
+    name-displacement: -25 -32
+//ninetales RIDE KURAMA ASURA
+  2833:
+    name-displacement: -25 -32
+
+//jigglypuff
+  704:
+    name-displacement: 1 13
+//wigglytuff
+  705:
+    name-displacement: -12 -5
+//zubat
+  706:
+    name-displacement: -1 4
+//golbat
+  707:
+    name-displacement: -21 -5
+//oddish
+  708:
+    name-displacement: 10 10
+//gloom
+  709:
+    name-displacement: 5 5
+
+//vileplume
+  710:
+    name-displacement: -10 -8
+//vileplume MATLACHINES
+  2782:
+    name-displacement: -17 -45
+//vileplume REGGAE
+  2783:
+    name-displacement: -10 -8
+//vileplume ZOMBIE
+  2798:
+    name-displacement: -10 -8
+
+//paras
+  711:
+    name-displacement: 1 10
+//parasect
+  712:
+    name-displacement: -10 -20
+//venonat
+  713:
+    name-displacement: 1 10
+//venomoth
+  714:
+    name-displacement: -10 -17
+//diglett
+  715:
+    name-displacement: 1 15
+//dugtrio
+  729:
+    name-displacement: 2 0
+//meowth
+  730:
+    name-displacement: 1 2
+//persian
+  731:
+    name-displacement: 2 1
+//psyduck
+  732:
+    name-displacement: 1 8
+
+//golduck
+  733:
+    name-displacement: -8 -12
+//golduck SURF
+  785:
+    name-displacement: -4 1
+//golduck DIVE
+  792:
+    name-displacement: -8 -12
+//golduck CYBORG
+  2790:
+    name-displacement: -10 -12
+//golduck SURF CYBORG
+  2791:
+    name-displacement: -4 1
+
+//mankey
+  734:
+    name-displacement: 0 7
+//primeape
+  735:
+    name-displacement: -27 -15
+//growlithe
+  736:
+    name-displacement: -1 -2
+//arcanine
+  737:
+    name-displacement: -6 -37
+//arcanine RIDE
+  779:
+    name-displacement: -7 -45
+//poliwag
+  738:
+    name-displacement: 1 8
+//poliwag SURF
+  786:
+    name-displacement: 10 8
+//poliwag DIVE
+  793:
+    name-displacement: 1 8
+//poliwhirl
+  739:
+    name-displacement: -3 1
+//poliwhirl SURF
+  787:
+    name-displacement: 0 1
+//poliwhirl DIVE
+  794:
+    name-displacement: -3 1
+//poliwrath
+  740:
+    name-displacement: -15 -15
+//poliwrath SURF
+  788:
+    name-displacement: -14 -18
+//poliwrath DIVE
+  795:
+    name-displacement: -15 -15
+//abra
+  741:
+    name-displacement: 1 4
+//kadabra
+  742:
+    name-displacement: -5 -15
+
+//alakazam
+  743:
+    name-displacement: -1 -10
+//alakazam COWBOY
+  2814:
+    name-displacement: -1 -10
+//alakazam BONE ARMOR
+  2815:
+    name-displacement: -9 -6
+
+//machop
+  744:
+    name-displacement: 5 2
+//machoke
+  745:
+    name-displacement: -7 -23
+//machamp
+  746:
+    name-displacement: -15 -27
+//bellsprout
+  747:
+    name-displacement: 5 5
+//weepinbell
+  748:
+    name-displacement: 1 -5
+//victreebel
+  749:
+    name-displacement: -11 -25
+//tentacool
+  750:
+    name-displacement: 1 -5
+//tentacool SURF
+  789:
+    name-displacement: 1 -7
+//tentacool DIVE
+  796:
+    name-displacement: 5 -10
+//tentacruel
+  751:
+    name-displacement: -20 -40
+//tentacruel SURF
+  790:
+    name-displacement: -20 -33
+//tentacruel DIVE
+  797:
+    name-displacement: -20 -40
+//geodude
+  752:
+    name-displacement: -9 1
+//graveler
+  753:
+    name-displacement: -10 -10
+
+//golem
+  754:
+    name-displacement: -13 -20
+//golem DEATH SKULL
+  2799:
+    name-displacement: -13 -20
+//golem THORN ARMOR
+  2809:
+    name-displacement: -15 -20
+//golem ENJOYING SUMMER
+  2822:
+    name-displacement: -15 -20
+
+//ponyta
+  755:
+    name-displacement: -1 -3
+//ponyta RIDE
+  780:
+    name-displacement: 1 -20
+//rapidash
+  756:
+    name-displacement: -15 -27
+//rapidash RIDE
+  781:
+    name-displacement: -15 -40
+//slowpoke
+  757:
+    name-displacement: 4 5
+//slowbro
+  758:
+    name-displacement: -1 -10
+//magnemite
+  759:
+    name-displacement: 1 -2
+
+//magneton
+  760:
+    name-displacement: -5 -13
+//magneton MILLENNIUM INSPIRATION
+  2843:
+    name-displacement: -29 -25
+
+//Farfetchd
+  761:
+    name-displacement: -1 -1
+//Farfetchd FLY
+  1146:
+    name-displacement: -2 -42
+//doduo
+  762:
+    name-displacement: -7 -9
+//doduo RIDE
+  782:
+    name-displacement: -7 -16
+
+//dodrio
+  763:
+    name-displacement: -7 -25
+//dodrio RIDE
+  783:
+    name-displacement: -10 -30
+//dodrio CYBORG
+  2778:
+    name-displacement: -15 -27
+//dodrio RIDE CYBORG
+  2779:
+    name-displacement: -13 -35
+//dodrio SUPREME DEITY
+  2844:
+    name-displacement: -40 -30
+//dodrio RIDE SUPREME DEITY
+  2845:
+    name-displacement: -40 -35
+
+//seel
+  764:
+    name-displacement: -3 1
+//dewgong
+  765:
+    name-displacement: -13 -20
+//dewgong SURF
+  791:
+    name-displacement: -13 -28
+//dewgong DIVE
+  798:
+    name-displacement: -13 -20
+//grimer
+  766:
+    name-displacement: -3 1
+//muk
+  767:
+    name-displacement: -15 -22
+//shellder
+  768:
+    name-displacement: 1 10
+//cloyster
+  769:
+    name-displacement: -18 -17
+//gastly
+  770:
+    name-displacement: 1 1
+//haunter
+  771:
+    name-displacement: 1 -2
+//gengar
+  772:
+    name-displacement: -5 -10
+//gengar LEVITATE
+  1212:
+    name-displacement: -16 -17
+
+//onix
+  773:
+    name-displacement: -15 -90
+//onix RIDE
+  784:
+    name-displacement: -15 -90
+//onix CYBORG
+  2774:
+    name-displacement: -15 -90
+//onix RIDE CYBORG
+  2775:
+    name-displacement: -15 -90
+//onix DIAMOND FURY
+  2834:
+    name-displacement: -45 -100
+//onix RIDE DIAMOND FURY
+  2835:
+    name-displacement: -45 -100
+
+//drownzee
+  774:
+    name-displacement: -2 1
+//hypno
+  775:
+    name-displacement: -3 -5
+//krabby
+  776:
+    name-displacement: -2 1
+//kingler
+  777:
+    name-displacement: -3 -5
+//voltorb
+  778:
+    name-displacement: -2 5
+//electrode
+  800:
+    name-displacement: -1 -5
+//Exeggcute
+  801:
+    name-displacement: -2 5
+
+//Exeggutor
+  802:
+    name-displacement: -8 -10
+//Exeggutor ANBU MASK
+  2816:
+    name-displacement: -11 -10
+
+//cubone
+  803:
+    name-displacement: 5 8
+
+//marowak
+  804:
+    name-displacement: 1 -2
+//marowak DEATH
+  2787:
+    name-displacement: 1 -2
+//marowak DEMON
+  2788:
+    name-displacement: 1 -2
+//marowak ANGEL
+  2789:
+    name-displacement: 1 -2
+
+//hitmonlee
+  805:
+    name-displacement: -10 -13
+
+//hitmonchan
+  806:
+    name-displacement: 2 -17
+//hitmonchan BATMAN
+  2802:
+    name-displacement: 0 -19
+
+//lickitung
+  807:
+    name-displacement: -7 -13
+//koffing
+  808:
+    name-displacement: -10 -14
+//weezing
+  809:
+    name-displacement: -28 -30
+//rhyhorn
+  810:
+    name-displacement: -5 -15
+//rhyhorn RIDE
+  858:
+    name-displacement: -5 -35
+
+//rhydon
+  811:
+    name-displacement: -10 -18
+//shiny rhydon CYBORG
+  2773:
+    name-displacement: -16 -18
+//shiny rhydon ALDEBARON
+  2836:
+    name-displacement: -26 -18
+//shiny rhydon GREYMON COSTUME
+  2837:
+    name-displacement: -15 -18
+//shiny rhydon CAVE GLADIATOR
+  2838:
+    name-displacement: -13 -20
+//shiny rhydon TERMINATOR
+  2839:
+    name-displacement: -13 -20
+//shiny rhydon GABUMON COSTUME
+  2840:
+    name-displacement: -14 -18
+//shiny rhydon DR.EGGMAN COSTUME
+  2841:
+    name-displacement: -12 -18
+
+//chansey
+  812:
+    name-displacement: -5 -7
+//tangela
+  813:
+    name-displacement: 1 5
+
+//kangaskhan
+  814:
+    name-displacement: -10 -20
+//kangaskhan BEAR COAT
+  2819:
+    name-displacement: -12 -27
+
+//horsea
+  815:
+    name-displacement: 1 7
+//seadra
+  816:
+    name-displacement: -7 -10
+//seadra SURF
+  860:
+    name-displacement: -22 -7
+//seadra DIVE
+  871:
+    name-displacement: -7 -25
+//goldeen
+  817:
+    name-displacement: 1 10
+//goldeen SURF
+  861:
+    name-displacement: -1 1
+//goldeen DIVE
+  872:
+    name-displacement: 5 1
+//seaking
+  818:
+    name-displacement: 1 7
+//seaking SURF
+  862:
+    name-displacement: 1 -3
+//seaking DIVE
+  873:
+    name-displacement: 5 1
+//staryu
+  819:
+    name-displacement: 1 -2
+//staryu SURF
+  863:
+    name-displacement: 3 7
+//staryu DIVE
+  874:
+    name-displacement: 1 -4
+//starmie
+  820:
+    name-displacement: 1 -2
+//starmie SURF
+  864:
+    name-displacement: 2 5
+//starmie DIVE
+  875:
+    name-displacement: 1 -10
+//mr. mime
+  821:
+    name-displacement: -7 -3
+//scyther
+  822:
+    name-displacement: -7 -10
+//scyther FLY
+  2621:
+    name-displacement: -7 -20
+//scyther KILLER CLOACK
+  2842:
+    name-displacement: -9 -10
+
+//jynx
+  823:
+    name-displacement: 1 -7
+//jynx BRUXA
+  2817:
+    name-displacement: 1 -7
+//jynx BRIDE
+  2818:
+    name-displacement: 1 -7
+
+//electabuzz
+  824:
+    name-displacement: -7 -23
+//magmar
+  825:
+    name-displacement: -7 -28
+//pinsir
+  826:
+    name-displacement: -10 -20
+//tauros
+  827:
+    name-displacement: 1 -20
+//tauros RIDE
+  859:
+    name-displacement: 1 -32
+//magikarp
+  828:
+    name-displacement: -5 1
+//gyarados
+  829:
+    name-displacement: -15 -55
+//gyarados SURF
+  865:
+    name-displacement: -15 -57
+//gyarados DIVE
+  876:
+    name-displacement: -15 -55
+//lapras
+  830:
+    name-displacement: -27 -35
+//lapras SURF
+  866:
+    name-displacement: -27 -37
+//lapras DIVE
+  877:
+    name-displacement: -27 -35
+//ditto
+  831:
+    name-displacement: 1 13
+//eevee
+  832:
+    name-displacement: 5 -1
+
+//vaporeon
+  833:
+    name-displacement: -3 -16
+//vaporeon SURF
+  867:
+    name-displacement: -3 -16
+//vaporeon DIVE
+  878:
+    name-displacement: -3 -20
+
+//vaporeon WITCH COSTUME
+  2794:
+    name-displacement: -10 -27
+//vaporeon SURF WITCH COSTUME
+  2795:
+    name-displacement: -10 -16
+//vaporeon METAL ARMOR
+  2807:
+    name-displacement: -5 -25
+//vaporeon SURF METAL ARMOR
+  2808:
+    name-displacement: -3 -10
+
+//jolteon
+  834:
+    name-displacement: 1 -5
+//jolteon VAMPIRE
+  2793:
+    name-displacement: 1 -5
+//jolteon METAL ARMOR
+  2806:
+    name-displacement: -2 -5
+
+//flareon
+  835:
+    name-displacement: 1 -5
+//flareon VAMPIRE
+  2792:
+    name-displacement: 1 -5
+//flareon METAL ARMOR
+  2805:
+    name-displacement: -1 -5
+
+//porygon
+  836:
+    name-displacement: 1 1
+//porygon FLY
+  851:
+    name-displacement: -8 -25
+//omanyte
+  837:
+    name-displacement: 1 1
+//omastar
+  838:
+    name-displacement: -7 -20
+//omastar SURF
+  868:
+    name-displacement: -1 -35
+//omastar DIVE
+  879:
+    name-displacement: -7 -30
+//kabuto
+  839:
+    name-displacement: 1 12
+//kabutops
+  840:
+    name-displacement: -10 -25
+//kabutops SURF
+  869:
+    name-displacement: -18 -5
+//kabutops DIVE
+  880:
+    name-displacement: -10 -25
+//aerodactyl
+  841:
+    name-displacement: -25 -25
+//aerodactyl FLY
+  852:
+    name-displacement: -26 -36
+//snorlax
+  842:
+    name-displacement: -10 -40
+//snorlax SURF
+  870:
+    name-displacement: -10 -40
+//articuno
+  843:
+    name-displacement: -47 -55
+//articuno FLY
+  853:
+    name-displacement: -47 -55
+//zapdos
+  844:
+    name-displacement: -46 -48
+//zapdos FLY
+  854:
+    name-displacement: -46 -48
+//moltres
+  845:
+    name-displacement: -80 -80
+//moltres FLY
+  603:
+    name-displacement: -80 -80
+//dratini
+  846:
+    name-displacement: 1 5
+//dragonair
+  847:
+    name-displacement: -10 -30
+//dragonair FLY
+  1148:
+    name-displacement: -1 -35
+//dragonite
+  848:
+    name-displacement: -18 -62
+//dragonite FLY
+  855:
+    name-displacement: -30 -50
+//mewtwo
+  849:
+    name-displacement: -3 -15
+//mewtwo FLY
+  856:
+    name-displacement: -13 -55
+//mew
+  850:
+    name-displacement: 1 -2
+//mew FLY
+  857:
+    name-displacement: -13 -55
+
+
+//POKEMONS SHINYS
+
+//bulbasaur
+  666:
+    name-displacement: 0 0
+//ivysaur
+  667:
+    name-displacement: 0 0
+//venusaur
+  668:
+    name-displacement: -20 -17
+//charmander
+  669:
+    name-displacement: 2 -8
+//charmeleon
+  670:
+    name-displacement: 0 -20
+
+//charizard
+  671:
+    name-displacement: -21 -39
+//charizard FLY
+  716:
+    name-displacement: -29 -50
+
+//squirtle
+  672:
+    name-displacement: 3 1
+//squirtle SURF
+  721:
+    name-displacement: 3 10
+//squirtle DIVE
+  724:
+    name-displacement: 3 5
+//wartortle
+  673:
+    name-displacement: 0 -3
+//wartortle SURF
+  722:
+    name-displacement: 1 10
+//wartortle DIVE
+  725:
+    name-displacement: 1 5
+//blastoise
+  674:
+    name-displacement: -20 -25
+//blastoise SURF
+  578:
+    name-displacement: -19 -23
+//blastoise DIVE
+  726:
+    name-displacement: -17 -19
+//caterpie
+  675:
+    name-displacement: 1 0
+//metapod
+  676:
+    name-displacement: 1 5
+//buterfree
+  677:
+    name-displacement: -4 -15
+//weedle
+  678:
+    name-displacement: 2 5
+//kakuna
+  679:
+    name-displacement: 1 3
+//beedrill
+  680:
+    name-displacement: -8 -30
+//pidgey
+  681:
+    name-displacement: 3 7
+//pidgeotto
+  682:
+    name-displacement: -13 -8
+//pidgeot
+  683:
+    name-displacement: -33 -40
+//pidgeot FLY
+  717:
+    name-displacement: -33 -32
+//rattata
+  684:
+    name-displacement: 3 17
+//raticate
+  685:
+    name-displacement: 0 -10
+//spearow
+  686:
+    name-displacement: 0 0
+//fearow
+  687:
+    name-displacement: -31 -37
+//fearow FLY
+  718:
+    name-displacement: -35 -65
+//ekans
+  688:
+    name-displacement: 0 -17
+//arbok
+  689:
+    name-displacement: -19 -60
+//pikachu
+  690:
+    name-displacement: 5 1
+//raichu
+  691:
+    name-displacement: -2 -10
+//sandshrew
+  692:
+    name-displacement: 1 5
+//sandslash
+  693:
+    name-displacement: 1 -15
+//nidorana
+  694:
+    name-displacement: 8 5
+//nidorina
+  695:
+    name-displacement: -2 -15
+//nidoqueen
+  696:
+    name-displacement: -13 -45
+//nidorano
+  697:
+    name-displacement: 8 1
+//nidorino
+  698:
+    name-displacement: -7 -5
+//nidoking
+  699:
+    name-displacement: -23 -40
+//clefairy
+  700:
+    name-displacement: 2 8
+//clefable
+  701:
+    name-displacement: -4 -10
+//vulpix
+  702:
+    name-displacement: 3 -5
+//ninetales
+  703:
+    name-displacement: -22 -45
+//ninetales RIDE
+  720:
+    name-displacement: -22 -45
+//jigglypuff
+  704:
+    name-displacement: 1 10
+//wigglytuff
+  705:
+    name-displacement: -14 -15
+//zubat
+  706:
+    name-displacement: -1 4
+//golbat
+  707:
+    name-displacement: -24 -10
+//oddish
+  708:
+    name-displacement: 12 5
+//gloom
+  709:
+    name-displacement: 5 1
+//vileplume
+  710:
+    name-displacement: -10 -15
+//paras
+  711:
+    name-displacement: 1 1
+//parasect
+  712:
+    name-displacement: -10 -25
+//venonat
+  713:
+    name-displacement: 6 -5
+//venomoth
+  714:
+    name-displacement: -10 -25
+//diglett
+  715:
+    name-displacement: 0 10
+//dugtrio
+  729:
+    name-displacement: -5 -10
+//meowth
+  730:
+    name-displacement: 0 -5
+//persian
+  731:
+    name-displacement: 3 -30
+//psyduck
+  732:
+    name-displacement: 1 1
+//golduck
+  733:
+    name-displacement: -14 -30
+//golduck SURF
+  785:
+    name-displacement: -6 1
+//golduck DIVE
+  792:
+    name-displacement: -8 -12
+//mankey
+  734:
+    name-displacement: -1 3
+//primeape
+  735:
+    name-displacement: -32 -25
+//growlithe
+  736:
+    name-displacement: 2 -10
+//arcanine
+  737:
+    name-displacement: -9 -60
+//arcanine RIDE
+  779:
+    name-displacement: -8 -57
+//poliwag
+  738:
+    name-displacement: 1 1
+//poliwag SURF
+  786:
+    name-displacement: 12 10
+//poliwag DIVE
+  793:
+    name-displacement: 1 8
+//poliwhirl
+  739:
+    name-displacement: -5 -5
+//poliwhirl SURF
+  787:
+    name-displacement: 0 1
+//poliwhirl DIVE
+  794:
+    name-displacement: -3 1
+//poliwrath
+  740:
+    name-displacement: -18 -23
+//poliwrath SURF
+  788:
+    name-displacement: -16 -25
+//poliwrath DIVE
+  795:
+    name-displacement: -15 -15
+//abra
+  741:
+    name-displacement: 1 1
+//kadabra
+  742:
+    name-displacement: -3 -17
+//alakazam
+  743:
+    name-displacement: -1 -10
+//machop
+  744:
+    name-displacement: 7 -5
+//machoke
+  745:
+    name-displacement: -7 -35
+//machamp
+  746:
+    name-displacement: -18 -35
+//bellsprout
+  747:
+    name-displacement: 7 5
+//weepinbell
+  748:
+    name-displacement: 3 -5
+//victreebel
+  749:
+    name-displacement: -11 -35
+//tentacool
+  750:
+    name-displacement: 1 -5
+//tentacool SURF
+  789:
+    name-displacement: 1 -10
+//tentacool DIVE
+  796:
+    name-displacement: 5 -10
+//tentacruel
+  751:
+    name-displacement: -21 -55
+//tentacruel SURF
+  790:
+    name-displacement: -23 -40
+//tentacruel DIVE
+  797:
+    name-displacement: -20 -40
+//geodude
+  752:
+    name-displacement: -10 -8
+//graveler
+  753:
+    name-displacement: -11 -22
+//golem
+  754:
+    name-displacement: -15 -30
+//ponyta
+  755:
+    name-displacement: 1 -15
+//ponyta RIDE
+  780:
+    name-displacement: 1 -25
+//rapidash
+  756:
+    name-displacement: -18 -45
+//rapidash RIDE
+  781:
+    name-displacement: -18 -45
+//slowpoke
+  757:
+    name-displacement: 4 1
+//slowbro
+  758:
+    name-displacement: -1 -20
+//magnemite
+  759:
+    name-displacement: -1 -7
+//magneton
+  760:
+    name-displacement: -5 -25
+//Farfetchd
+  761:
+    name-displacement: -1 -5
+//Farfetchd FLY
+  1146:
+    name-displacement: -3 -48
+//doduo
+  762:
+    name-displacement: -10 -15
+//doduo RIDE
+  782:
+    name-displacement: -8 -20
+//dodrio
+  763:
+    name-displacement: -9 -35
+//dodrio RIDE
+  783:
+    name-displacement: -11 -37
+//seel
+  764:
+    name-displacement: -5 -5
+//dewgong
+  765:
+    name-displacement: -13 -27
+//dewgong SURF
+  791:
+    name-displacement: -16 -35
+//dewgong DIVE
+  798:
+    name-displacement: -13 -20
+//grimer
+  766:
+    name-displacement: -5 -5
+//muk
+  767:
+    name-displacement: -20 -30
+//shellder
+  768:
+    name-displacement: 5 5
+//cloyster
+  769:
+    name-displacement: -18 -17
+//gastly
+  770:
+    name-displacement: 2 -5
+//haunter
+  771:
+    name-displacement: -1 -15
+//gengar
+  772:
+    name-displacement: -7 -18
+//gengar LEVITATE
+  1212:
+    name-displacement: -21 -20
+//onix
+  773:
+    name-displacement: -15 -100
+//onix RIDE
+  784:
+    name-displacement: -17 -90
+//drownzee
+  774:
+    name-displacement: -2 -5
+//hypno
+  775:
+    name-displacement: -3 -15
+//krabby
+  776:
+    name-displacement: 4 7
+//kingler
+  777:
+    name-displacement: -25 -20
+//voltorb
+  778:
+    name-displacement: 0 5
+//electrode
+  800:
+    name-displacement: 1 -5
+//Exeggcute
+  801:
+    name-displacement: -2 -5
+//Exeggutor
+  802:
+    name-displacement: -12 -35
+//cubone
+  803:
+    name-displacement: 5 2
+//marowak
+  804:
+    name-displacement: 1 -10
+//hitmonlee
+  805:
+    name-displacement: -13 -22
+//hitmonchan
+  806:
+    name-displacement: 1 -25
+//lickitung
+  807:
+    name-displacement: -10 -17
+//koffing
+  808:
+    name-displacement: -12 -20
+//weezing
+  809:
+    name-displacement: -35 -50
+//rhyhorn
+  810:
+    name-displacement: -5 -25
+//rhyhorn RIDE
+  858:
+    name-displacement: -6 -40
+//rhydon
+  811:
+    name-displacement: -12 -27
+//chansey
+  812:
+    name-displacement: -5 -13
+//tangela
+  813:
+    name-displacement: 1 0
+//kangaskhan
+  814:
+    name-displacement: -12 -30
+//horsea
+  815:
+    name-displacement: 0 4
+//seadra
+  816:
+    name-displacement: -7 -20
+//seadra SURF
+  860:
+    name-displacement: -24 -1
+//seadra DIVE
+  871:
+    name-displacement: -7 -25
+//goldeen
+  817:
+    name-displacement: 1 5
+//goldeen SURF
+  861:
+    name-displacement: -1 1
+//goldeen DIVE
+  872:
+    name-displacement: 5 1
+//seaking
+  818:
+    name-displacement: 1 7
+//seaking SURF
+  862:
+    name-displacement: 1 -3
+//seaking DIVE
+  873:
+    name-displacement: 5 1
+//staryu
+  819:
+    name-displacement: 1 -2
+//staryu SURF
+  863:
+    name-displacement: 4 13
+//staryu DIVE
+  874:
+    name-displacement: 1 -4
+//starmie
+  820:
+    name-displacement: 1 -10
+//starmie SURF
+  864:
+    name-displacement: 2 10
+//starmie DIVE
+  875:
+    name-displacement: 1 -10
+//mr. mime
+  821:
+    name-displacement: -8 -10
+//scyther
+  822:
+    name-displacement: -8 -20
+//scyther FLY
+  2621:
+    name-displacement: -8 -20
+//jynx
+  823:
+    name-displacement: -2 -15
+//electabuzz
+  824:
+    name-displacement: -7 -35
+//magmar
+  825:
+    name-displacement: -10 -40
+//pinsir
+  826:
+    name-displacement: -13 -27
+//tauros
+  827:
+    name-displacement: 1 -20
+//tauros RIDE
+  859:
+    name-displacement: 1 -40
+//magikarp
+  828:
+    name-displacement: -9 -10
+//gyarados
+  829:
+    name-displacement: -15 -85
+//gyarados SURF
+  865:
+    name-displacement: -16 -75
+//gyarados DIVE
+  876:
+    name-displacement: -15 -55
+//lapras
+  830:
+    name-displacement: -30 -50
+//lapras SURF
+  866:
+    name-displacement: -31 -45
+//lapras DIVE
+  877:
+    name-displacement: -27 -35
+//ditto
+  831:
+    name-displacement: 8 10
+//eevee
+  832:
+    name-displacement: 8 -5
+//vaporeon
+  833:
+    name-displacement: -3 -25
+//vaporeon SURF
+  867:
+    name-displacement: -3 -16
+//vaporeon DIVE
+  878:
+    name-displacement: -3 -20
+//jolteon
+  834:
+    name-displacement: 0 -15
+//flareon
+  835:
+    name-displacement: 0 -15
+//porygon
+  836:
+    name-displacement: 1 1
+//porygon FLY
+  851:
+    name-displacement: -10 -40
+//omanyte
+  837:
+    name-displacement: 1 1
+//omastar
+  838:
+    name-displacement: -7 -20
+//omastar SURF
+  868:
+    name-displacement: -1 -35
+//omastar DIVE
+  879:
+    name-displacement: -7 -30
+//kabuto
+  839:
+    name-displacement: -1 12
+//kabutops
+  840:
+    name-displacement: -15 -35
+//kabutops SURF
+  869:
+    name-displacement: -12 -10
+//kabutops DIVE
+  880:
+    name-displacement: -10 -25
+//aerodactyl
+  841:
+    name-displacement: -57 -55
+//aerodactyl FLY
+  852:
+    name-displacement: -57 -55
+//snorlax
+  842:
+    name-displacement: -13 -50
+//articuno
+  843:
+    name-displacement: -55 -65
+//articuno FLY
+  853:
+    name-displacement: -55 -65
+//zapdos
+  844:
+    name-displacement: -55 -55
+//zapdos FLY
+  854:
+    name-displacement: -55 -55
+//moltres
+  845:
+    name-displacement: -95 -95
+//moltres FLY
+  603:
+    name-displacement: -110 -100
+//dratini
+  846:
+    name-displacement: 6 5
+//dragonair
+  847:
+    name-displacement: -12 -45
+//dragonair FLY
+  1148:
+    name-displacement: -1 -35
+//dragonite
+  848:
+    name-displacement: -23 -80
+//dragonite FLY
+  855:
+    name-displacement: -37 -55
+//mewtwo
+  849:
+    name-displacement: -1 -55
+//mewtwo FLY
+  856:
+    name-displacement: -40 -75
+//mew
+  850:
+    name-displacement: 3 -2
+//mew FLY
+  857:
+    name-displacement: -40 -75
+
+//POKEMONS SHINYS
+
+//SPECIAL HABILITIES
+
+//hitmonlee KICK
+  609:
+    name-displacement: -10 -13
+//Sandshrew ROLLOUT
+  661:
+    name-displacement: 0 7
+//Sandslash ROLLOUT
+  662:
+    name-displacement: 1 -3
+//voltorb ROLLOUT
+  663:
+    name-displacement: -2 5
+//Electrode ROLLOUT
+  664:
+    name-displacement: -1 -5
+//Golem ROLLOUT
+  665:
+    name-displacement: 1 -10
+//blastoise ROLLOUT
+  942:
+    name-displacement: -25 -33
+//kabutops ROLLOUT
+  943:
+    name-displacement: -15 -25
+//omastar ROLLOUT
+  946:
+    name-displacement: 1 -15
+//ROLLOUT 1
+  948:
+    name-displacement: 1 -5
+//ROLLOUT 2
+  949:
+    name-displacement: 1 -5
+//S.hitmonlee KICK
+  883:
+    name-displacement: -10 -13
+//S.Sandshrew ROLLOUT
+  727:
+    name-displacement: 0 7
+//S.Sandslash ROLLOUT
+  728:
+    name-displacement: 1 -3
+//S.Voltorb ROLLOUT
+  799:
+    name-displacement: 1 5
+//S.Electrode ROLLOUT
+  881:
+    name-displacement: 1 -5
+//S.Golem ROLLOUT
+  882:
+    name-displacement: 1 -10
+//S.blastoise ROLLOUT
+  944:
+    name-displacement: -25 -33
+//S.kabutops ROLLOUT
+  945:
+    name-displacement: -15 -25
+//S.omastar ROLLOUT
+  947:
+    name-displacement: 1 -15
+//SPECIAL HABILITIES
+
+//ADDONS CONFIG
+  2700:
+    name-displacement: -12 -27
+  2701:
+    name-displacement: -27 -27
+  2702:
+    name-displacement: -25 -45
+  2703:
+    name-displacement: -22 -45
+  2704:
+    name-displacement: -22 -45
+  2705:
+    name-displacement: -8 -10
+  2706:
+    name-displacement: 1 -10
+  2707:
+    name-displacement: -20 -50
+  2708:
+    name-displacement: -12 -30
+
+  2709:
+    name-displacement: -21 -57
+  2710:
+    name-displacement: -20 -52
+  2711:
+    name-displacement: -23 -27
+  2712:
+    name-displacement: -27 -45
+  2713:
+    name-displacement: -11 -25
+  2714:
+    name-displacement: 1 1
+  2715:
+    name-displacement: -12 -20
+  2716:
+    name-displacement: -32 -40
+  2717:
+    name-displacement: -32 -40
+  2718:
+    name-displacement: -22 -39
+  2719:
+    name-displacement: -29 -50
+  2720:
+    name-displacement: -20 -25
+  2721:
+    name-displacement: -19 -23
+  2722:
+    name-displacement: -22 -17
+  2723:
+    name-displacement: -21 -30
+  2724:
+    name-displacement: -25 -37
+  2725:
+    name-displacement: -25 -37
+  2726:
+    name-displacement: -25 -37
+  2727:
+    name-displacement: -25 -37
+  2728:
+    name-displacement: -12 -30
+  2729:
+    name-displacement: -12 -30
+  2730:
+    name-displacement: -25 -37
+  2731:
+    name-displacement: -25 -37
+  2732:
+    name-displacement: -20 -37
+  2733:
+    name-displacement: -20 -37
+  2734:
+    name-displacement: -19 -37
+  2735:
+    name-displacement: -19 -37
+  2736:
+    name-displacement: -20 -37
+  2737:
+    name-displacement: -20 -37
+  2738:
+    name-displacement: -12 -30
+  2739:
+    name-displacement: -12 -30
+  2740:
+    name-displacement: -7 -23
+  2741:
+    name-displacement: -18 -35
+  2742:
+    name-displacement: -7 -35
+  2743:
+    name-displacement: -10 -10
+  2744:
+    name-displacement: -12 -20
+  2745:
+    name-displacement: -12 -30
+  2746:
+    name-displacement: -10 -57
+  2747:
+    name-displacement: -10 -57
+  2748:
+    name-displacement: -9 -23
+  2749:
+    name-displacement: -9 -23
+  2750:
+    name-displacement: -4 -10
+  2751:
+    name-displacement: -22 -100
+  2752:
+    name-displacement: -22 -100
+  2753:
+    name-displacement: -22 -40
+  2754:
+    name-displacement: -30 -75
+  2755:
+    name-displacement: -35 -40
+  2756:
+    name-displacement: -13 -45
+  2757:
+    name-displacement: -27 -100
+  2758:
+    name-displacement: -10 -57
+  2759:
+    name-displacement: -10 -57
+  2760:
+    name-displacement: -23 -80
+  2761:
+    name-displacement: -34 -65
+  2762:
+    name-displacement: -15 -40
+  2763:
+    name-displacement: -13 -27
+  2764:
+    name-displacement: -16 -17
+  2765:
+    name-displacement: -8 -25
+  2766:
+    name-displacement: -5 -30
+  2767:
+    name-displacement: 0 -10
+  2768:
+    name-displacement: -35 -40
+  2769:
+    name-displacement: -19 -27
+  2770:
+    name-displacement: -21 -39
+  2771:
+    name-displacement: -29 -50
+  2772:
+    name-displacement: -20 -50
+  2773:
+    name-displacement: -16 -25
+  2774:
+    name-displacement: -15 -90
+  2775:
+    name-displacement: -15 -90
+  2776:
+    name-displacement: -25 -32
+  2777:
+    name-displacement: -25 -32
+  2778:
+    name-displacement: -15 -30
+  2779:
+    name-displacement: -15 -35
+  2780:
+    name-displacement: -35 -65
+  2781:
+    name-displacement: -33 -37
+  2782:
+    name-displacement: -18 -50
+  2783:
+    name-displacement: -13 -15
+  2784:
+    name-displacement: -25 -40
+  2785:
+    name-displacement: -33 -37
+  2786:
+    name-displacement: -35 -65
+  2787:
+    name-displacement: 1 -10
+  2788:
+    name-displacement: 1 -10
+  2789:
+    name-displacement: 1 -10
+  2790:
+    name-displacement: -11 -17
+  2791:
+    name-displacement: -4 1
+  2792:
+    name-displacement: -3 -10
+  2793:
+    name-displacement: 1 -10
+  2794:
+    name-displacement: -12 -30
+  2795:
+    name-displacement: -12 -17
+  2796:
+    name-displacement: -5 -4
+  2797:
+    name-displacement: -24 -50
+  2798:
+    name-displacement: -13 -8
+  2799:
+    name-displacement: -15 -25
+  2800:
+    name-displacement: -24 -50
+  2801:
+    name-displacement: -18 -35
+  2802:
+    name-displacement: 1 -25
+  2803:
+    name-displacement: -3 -15
+  2804:
+    name-displacement: -3 -15
+  2805:
+    name-displacement: -3 -15
+  2806:
+    name-displacement: -3 -15
+  2807:
+    name-displacement: -3 -25
+  2808:
+    name-displacement: -3 -16
+  2809:
+    name-displacement: -15 -20
+  2810:
+    name-displacement: -12 -30
+  2811:
+    name-displacement: -25 -45
+  2812:
+    name-displacement: -12 -30
+  2813:
+    name-displacement: -12 -30
+  2814:
+    name-displacement: -1 -10
+  2815:
+    name-displacement: -10 -10
+  2816:
+    name-displacement: -12 -35
+  2817:
+    name-displacement: 1 -30
+  2818:
+    name-displacement: 1 -10
+  2819:
+    name-displacement: -14 -30
+  2820:
+    name-displacement: -32 -85
+  2821:
+    name-displacement: -32 -110
+  2822:
+    name-displacement: -16 -30
+  2823:
+    name-displacement: -5 -20
+  2824:
+    name-displacement: -22 -32
+  2825:
+    name-displacement: -22 -32
+  2826:
+    name-displacement: -22 -32
+  2827:
+    name-displacement: -22 -32
+  2828:
+    name-displacement: -22 -32
+  2829:
+    name-displacement: -22 -32
+  2830:
+    name-displacement: -22 -32
+  2831:
+    name-displacement: -22 -32
+  2832:
+    name-displacement: -22 -32
+  2833:
+    name-displacement: -22 -32
+  2834:
+    name-displacement: -45 -100
+  2835:
+    name-displacement: -45 -100
+  2836:
+    name-displacement: -26 -35
+  2837:
+    name-displacement: -15 -20
+  2838:
+    name-displacement: -13 -30
+  2839:
+    name-displacement: -13 -20
+  2840:
+    name-displacement: -15 -20
+  2841:
+    name-displacement: -12 -20
+  2842:
+    name-displacement: -9 -20
+  2843:
+    name-displacement: -29 -30
+  2844:
+    name-displacement: -41 -40
+  2845:
+    name-displacement: -41 -40
+
+//NPCS CONFIG
+  2612: -- Daily
+    name-displacement: -17 -8
+  2613: -- Daily
+    name-displacement: -17 -8
+  2614: -- Daily
+    name-displacement: -17 -8
+  2615: -- Daily
+    name-displacement: -17 -8
+  2616: -- Daily
+    name-displacement: -25 -10
+  2617: -- Daily
+    name-displacement: -25 -10
+  2618: -- Daily
+    name-displacement: -25 -10
+  2619: -- Daily
+    name-displacement: -17 -8
+  2846: -- market
+    name-displacement: -25 -15
+
+  2622:
+    name-displacement: -22 -12
+  2623:
+    name-displacement: -22 -12
+  2624:
+    name-displacement: -22 -12
+  2625:
+    name-displacement: -22 -12
+  2626:
+    name-displacement: -22 -12
+  2627:
+    name-displacement: -22 -12
+  2628:
+    name-displacement: -22 -12
+  2629:
+    name-displacement: -22 -12
+  2630:
+    name-displacement: -22 -12
+  2631:
+    name-displacement: -22 -12
+  2632:
+    name-displacement: -22 -12
+  2633:
+    name-displacement: -22 -12
+  2634:
+    name-displacement: -22 -12
+  2635:
+    name-displacement: -22 -12
+  2636:
+    name-displacement: -22 -12
+  2637:
+    name-displacement: -22 -12
+  2638:
+    name-displacement: -22 -12
+  2639:
+    name-displacement: -22 -12
+  2640:
+    name-displacement: -22 -12
+  2641:
+    name-displacement: -22 -12
+  2642:
+    name-displacement: -22 -12
+  2643:
+    name-displacement: -22 -12
+  2644:
+    name-displacement: -22 -12
+  2645:
+    name-displacement: -22 -12
+  2646:
+    name-displacement: -22 -12
+  2647:
+    name-displacement: -22 -12
+  2648:
+    name-displacement: -22 -12
+  2649:
+    name-displacement: -30 -30
+  2650:
+    name-displacement: -22 -12
+  2651:
+    name-displacement: -22 -12
+  2652:
+    name-displacement: -22 -12
+  2653:
+    name-displacement: -22 -12
+  2654:
+    name-displacement: -22 -12
+  2655:
+    name-displacement: -22 -12
+  2656:
+    name-displacement: -22 -12
+  2657:
+    name-displacement: -22 -12
+  2658:
+    name-displacement: -22 -12
+  2659:
+    name-displacement: -22 -12
+  2660:
+    name-displacement: -22 -12
+  2661:
+    name-displacement: -22 -12
+  2662:
+    name-displacement: -22 -12
+  2663:
+    name-displacement: -22 -12
+  2664:
+    name-displacement: -22 -12
+  2665:
+    name-displacement: -22 -12
+  2666:
+    name-displacement: -22 -12
+  2667:
+    name-displacement: -22 -12
+  2668:
+    name-displacement: -22 -12
+  2669:
+    name-displacement: -22 -12
+  2670:
+    name-displacement: -22 -12
+  2671:
+    name-displacement: -22 -12
+  2672:
+    name-displacement: -22 -12
+  2673:
+    name-displacement: -22 -12
+  2674:
+    name-displacement: -22 -12
+  2675:
+    name-displacement: -22 -12
+  2676:
+    name-displacement: -22 -12
+  2677:
+    name-displacement: -28 -12
+  2678:
+    name-displacement: -26 -12
+  2679:
+    name-displacement: -26 -12
+  2680:
+    name-displacement: -30 -18
+  2681:
+    name-displacement: -22 -12
+  2682:
+    name-displacement: -22 -12
+  2683:
+    name-displacement: -25 -12
+  2684:
+    name-displacement: -22 -12
+  2685:
+    name-displacement: -22 -12
+  2686:
+    name-displacement: -22 -12
+  2687:
+    name-displacement: -22 -12
+  2688:
+    name-displacement: -27 -12
+  2689:
+    name-displacement: -22 -12
+  2690:
+    name-displacement: -27 -12
+  2691:
+    name-displacement: -27 -12
+  2692:
+    name-displacement: -22 -12
+  2693:
+    name-displacement: -22 -12
+  2694:
+    name-displacement: -24 -18
+  2695:
+    name-displacement: -22 -12
+
+//dummy normal 1
+  2588:
+    name-displacement: -45 -50
+//dummy normal 2
+  2589:
+    name-displacement: -45 -50
+//Nurse Chansey
+  639:
+    name-displacement: -10 10
+//Nurse joy
+  560:
+    name-displacement: -16 -1
+//Nurse joy
+  1149:
+    name-displacement: -16 -1
+//Nurse joy
+  1150:
+    name-displacement: -16 -1
+//MARK
+  503:
+    name-displacement: -17 -8
+
+//Gamemaster
+  535:
+    name-displacement: -17 -8
+//Gamemaster
+  302:
+    name-displacement: -17 -8
+//Gamemaster
+  266:
+    name-displacement: -17 -8
+
+//Trainer
+  611:
+    name-displacement: -17 -8
+//Trainer
+  612:
+    name-displacement: -17 -8
+//Elite Trainer
+  613:
+    name-displacement: -17 -8
+//Elite Trainer
+  614:
+    name-displacement: -17 -8
+//Adventurer
+  615:
+    name-displacement: -17 -8
+//Adventurer
+  616:
+    name-displacement: -17 -8
+//Academy
+  617:
+    name-displacement: -17 -8
+//Academy
+  618:
+    name-displacement: -17 -8
+//praia
+  619:
+    name-displacement: -17 -8
+//praia
+  620:
+    name-displacement: -17 -8
+//Social
+  621:
+    name-displacement: -17 -8
+//Social
+  622:
+    name-displacement: -17 -8
+//Jamaica
+  623:
+    name-displacement: -17 -8
+//Jamaica
+  624:
+    name-displacement: -17 -8
+//Punk
+  625:
+    name-displacement: -17 -8
+//Punk
+  626:
+    name-displacement: -17 -8
+//Fisher
+  627:
+    name-displacement: -17 -8
+//Fisher
+  628:
+    name-displacement: -17 -8
+//Hiker
+  629:
+    name-displacement: -17 -8
+//Hiker
+  630:
+    name-displacement: -17 -8
+//Mercenary
+  631:
+    name-displacement: -17 -8
+//Mercenary
+  632:
+    name-displacement: -17 -8
+//Rapper
+  633:
+    name-displacement: -17 -8
+//Rapper
+  634:
+    name-displacement: -17 -8
+//Oriental
+  635:
+    name-displacement: -17 -8
+//Oriental
+  636:
+    name-displacement: -17 -8
+//Rocket
+  637:
+    name-displacement: -17 -8
+//Rocket
+  638:
+    name-displacement: -17 -8
+//Jassie e James
+  895:
+    name-displacement: -35 -15
+//Skull
+  886:
+    name-displacement: -17 -8
+//Frankenstein
+  887:
+    name-displacement: -17 -8
+//Witch
+  888:
+    name-displacement: -17 -8
+//Mummy
+  889:
+    name-displacement: -17 -8
+//Christmas #1
+  891:
+    name-displacement: -17 -8
+//Christmas #1
+  892:
+    name-displacement: -17 -8
+//Christmas #2
+  893:
+    name-displacement: -17 -8
+//Christmas #2
+  894:
+    name-displacement: -17 -8
+//DarkBlood
+  1705:
+    name-displacement: -17 -8
+//DarkBlood
+  1706:
+    name-displacement: -17 -8
+//Pirate #1
+  1707:
+    name-displacement: -17 -8
+//Pirate #1
+  1708:
+    name-displacement: -17 -8
+//Pirate #2
+  1709:
+    name-displacement: -17 -8
+//Pirate #2
+  1710:
+    name-displacement: -17 -8
+//Defender
+  1735:
+    name-displacement: -17 -8
+//Defender
+  1736:
+    name-displacement: -17 -8
+//Pirate #3
+  1737:
+    name-displacement: -17 -8
+//Pirate #3
+  1738:
+    name-displacement: -17 -8
+//Pirate #4
+  1739:
+    name-displacement: -17 -8
+//Pirate #4
+  1740:
+    name-displacement: -17 -8
+//Catcher
+  1184:
+    name-displacement: -17 -8
+//Catcher
+  1185:
+    name-displacement: -17 -8
+//Naughty Devil
+  1213:
+    name-displacement: -17 -8
+//Skeleton
+  1214:
+    name-displacement: -17 -8
+//Dark Witch
+  1215:
+    name-displacement: -17 -8
+//Vampire
+  1216:
+    name-displacement: -17 -8
+//Master Trainer
+  1200:
+    name-displacement: -17 -8
+//Master Trainer
+  1201:
+    name-displacement: -17 -8
+//Christmas #3
+  1223:
+    name-displacement: -17 -8
+//Christmas #3
+  1224:
+    name-displacement: -17 -8
+//Poke Maniac
+  1250:
+    name-displacement: -17 -11
+//Easter #1
+  1251:
+    name-displacement: -17 -8
+//Easter #1
+  1252:
+    name-displacement: -17 -8
+//Researcher
+  1180:
+    name-displacement: -17 -8
+//Researcher
+  1181:
+    name-displacement: -17 -8
+//Hunter
+  1194:
+    name-displacement: -17 -8
+//Hunter
+  1195:
+    name-displacement: -17 -8
+//Phantomaniac
+  1294:
+    name-displacement: -17 -10
+//Halloween Monster
+  1295:
+    name-displacement: -17 -8
+//Halloween Monster
+  1296:
+    name-displacement: -17 -8
+//Champion
+  1192:
+    name-displacement: -17 -8
+//Champion
+  1193:
+    name-displacement: -17 -8
+//Ranger
+  1202:
+    name-displacement: -17 -8
+//Ranger
+  1203:
+    name-displacement: -17 -8
+//Shiny Poke Maniac
+  1370:
+    name-displacement: -17 -11
+//Epic
+  1302:
+    name-displacement: -17 -8
+//Epic
+  1303:
+    name-displacement: -17 -8
+//Explorer
+  1321:
+    name-displacement: -17 -8
+//Explorer
+  1322:
+    name-displacement: -17 -8
+//Business
+  1380:
+    name-displacement: -17 -8
+//Business
+  1381:
+    name-displacement: -17 -8
+//Bounty Researcher
+  1382:
+    name-displacement: -17 -8
+//Bounty Researcher
+  1383:
+    name-displacement: -17 -8
+//Rider
+  1384:
+    name-displacement: -17 -8
+//Rider
+  1385:
+    name-displacement: -17 -8
+//Wak Lady
+  1386:
+    name-displacement: -17 -8
+//Wak Lady
+  1387:
+    name-displacement: -17 -8
+//Halloween #6
+  1388:
+    name-displacement: -17 -8
+//Halloween #6
+  1389:
+    name-displacement: -17 -8
+//Halloween #7
+  1390:
+    name-displacement: -17 -8
+//Halloween #7
+  1391:
+    name-displacement: -17 -10
+//Santa Grinch
+  1404:
+    name-displacement: -17 -8
+//Elfin
+  1428:
+    name-displacement: -17 -8
+//Helper Grinch
+  1405:
+    name-displacement: -17 -8
+//Super Hero
+  1703:
+    name-displacement: -24 -8
+//Super Hero
+  1704:
+    name-displacement: -24 -8
+
+
+//Blaze #1
+  906:
+    name-displacement: -17 -8
+//Blaze #1
+  907:
+    name-displacement: -17 -8
+//Hurricane #1
+  908:
+    name-displacement: -17 -8
+//Hurricane #1
+  909:
+    name-displacement: -17 -8
+//Voltagic #1
+  910:
+    name-displacement: -17 -8
+//Voltagic #1
+  911:
+    name-displacement: -17 -8
+//Spectrum #1
+  912:
+    name-displacement: -17 -8
+//Spectrum #1
+  913:
+    name-displacement: -17 -8
+//Vital #1
+  914:
+    name-displacement: -17 -8
+//Vital #1
+  915:
+    name-displacement: -17 -8
+//Gaia #1
+  916:
+    name-displacement: -17 -8
+//Gaia #1
+  917:
+    name-displacement: -17 -8
+//Avalanche #1
+  918:
+    name-displacement: -17 -8
+//Avalanche #1
+  919:
+    name-displacement: -17 -8
+//Heremit #1
+  920:
+    name-displacement: -17 -8
+//Heremit #1
+  921:
+    name-displacement: -17 -8
+//Zen #1
+  922:
+    name-displacement: -17 -8
+//Zen #1
+  923:
+    name-displacement: -17 -8
+//Blaze #2
+  924:
+    name-displacement: -17 -8
+//Blaze #2
+  925:
+    name-displacement: -17 -8
+//Hurricane #2
+  926:
+    name-displacement: -17 -8
+//Hurricane #2
+  927:
+    name-displacement: -17 -8
+//Voltagic #2
+  928:
+    name-displacement: -17 -8
+//Voltagic #2
+  929:
+    name-displacement: -17 -8
+//Spectrum #2
+  930:
+    name-displacement: -17 -8
+//Spectrum #2
+  931:
+    name-displacement: -17 -8
+//Vital #2
+  932:
+    name-displacement: -17 -8
+//Vital #2
+  933:
+    name-displacement: -17 -8
+//Gaia #2
+  934:
+    name-displacement: -17 -8
+//Gaia #2
+  935:
+    name-displacement: -17 -8
+//Avalanche #2
+  936:
+    name-displacement: -17 -8
+//Avalanche #2
+  937:
+    name-displacement: -17 -8
+//Heremit #2
+  938:
+    name-displacement: -17 -8
+//Heremit #2
+  939:
+    name-displacement: -17 -8
+//Zen #2
+  940:
+    name-displacement: -17 -8
+//Zen #2
+  941:
+    name-displacement: -17 -8
+//Blaze #3
+  1138:
+    name-displacement: -17 -8
+//Blaze #3
+  1132:
+    name-displacement: -17 -8
+//Hurricane #3
+  1139:
+    name-displacement: -17 -8
+//Hurricane #3
+  1131:
+    name-displacement: -17 -8
+//Voltagic #3
+  1143:
+    name-displacement: -17 -8
+//Voltagic #3
+  1128:
+    name-displacement: -17 -8
+//Spectrum #3
+  1136:
+    name-displacement: -17 -8
+//Spectrum #3
+  1135:
+    name-displacement: -17 -8
+//Vital #3
+  1137:
+    name-displacement: -17 -8
+//Vital #3
+  2538:
+    name-displacement: -17 -8
+//Gaia #3
+  1140:
+    name-displacement: -17 -8
+//Gaia #3
+  1130:
+    name-displacement: -17 -8
+//Avalanche #3
+  1144:
+    name-displacement: -17 -8
+//Avalanche #3
+  1129:
+    name-displacement: -17 -8
+//Heremit #3
+  1142:
+    name-displacement: -17 -8
+//Heremit #3
+  1134:
+    name-displacement: -17 -8
+//Zen #3
+  1141:
+    name-displacement: -17 -8
+//Zen #3
+  1133:
+    name-displacement: -17 -8
+
+//NPC
+  504:
+    name-displacement: -17 -8
+//NPC
+  505:
+    name-displacement: -17 -8
+//NPC
+  506:
+    name-displacement: -17 -8
+//NPC
+  507:
+    name-displacement: -17 -8
+//NPC
+  508:
+    name-displacement: -17 -8
+//NPC
+  509:
+    name-displacement: -17 -8
+//NPC
+  510:
+    name-displacement: -17 -8
+//NPC
+  511:
+    name-displacement: -17 -8
+//NPC
+  512:
+    name-displacement: -17 -8
+//NPC
+  513:
+    name-displacement: -17 -8
+//NPC
+  514:
+    name-displacement: -17 -8
+//NPC
+  515:
+    name-displacement: -17 -8
+//NPC
+  516:
+    name-displacement: -17 -8
+//NPC
+  517:
+    name-displacement: -17 -8
+//NPC
+  518:
+    name-displacement: -17 -8
+//NPC
+  519:
+    name-displacement: -17 -8
+//NPC
+  520:
+    name-displacement: -17 -8
+//NPC
+  521:
+    name-displacement: -17 -8
+//NPC
+  522:
+    name-displacement: -17 -8
+//NPC
+  523:
+    name-displacement: -17 -8
+//NPC
+  524:
+    name-displacement: -17 -8
+//NPC
+  525:
+    name-displacement: -17 -8
+//NPC
+  526:
+    name-displacement: -17 -8
+//NPC
+  527:
+    name-displacement: -17 -8
+//NPC
+  528:
+    name-displacement: -17 -8
+//NPC
+  529:
+    name-displacement: -17 -8
+//NPC
+  530:
+    name-displacement: -17 -8
+//NPC
+  531:
+    name-displacement: -17 -8
+//NPC
+  532:
+    name-displacement: -17 -8
+//NPC
+  533:
+    name-displacement: -17 -8
+//NPC
+  534:
+    name-displacement: -17 -8
+//NPC
+  535:
+    name-displacement: -17 -8
+//NPC
+  536:
+    name-displacement: -17 -8
+//NPC
+  537:
+    name-displacement: -17 -8
+//NPC
+  538:
+    name-displacement: -17 -8
+//NPC
+  539:
+    name-displacement: -17 -8
+//NPC
+  540:
+    name-displacement: -17 -8
+//NPC
+  541:
+    name-displacement: -17 -8
+//NPC
+  542:
+    name-displacement: -17 -8
+//NPC
+  543:
+    name-displacement: -17 -8
+//NPC
+  544:
+    name-displacement: -17 -8
+//NPC
+  545:
+    name-displacement: -17 -8
+//NPC
+  546:
+    name-displacement: -17 -8
+//NPC
+  547:
+    name-displacement: -17 -8
+//NPC
+  548:
+    name-displacement: -17 -8
+//NPC
+  549:
+    name-displacement: -17 -8
+//NPC
+  550:
+    name-displacement: -17 -8
+//NPC
+  551:
+    name-displacement: -17 -8
+//NPC
+  552:
+    name-displacement: -17 -8
+//NPC
+  553:
+    name-displacement: -17 -8
+//NPC
+  554:
+    name-displacement: -17 -8
+//NPC
+  555:
+    name-displacement: -17 -8
+//NPC
+  556:
+    name-displacement: -17 -8
+//NPC
+  557:
+    name-displacement: -17 -8
+//NPC
+  558:
+    name-displacement: -17 -8
+//NPC
+  559:
+    name-displacement: -17 -8
+//NPC
+  561:
+    name-displacement: -17 -8
+//NPC
+  562:
+    name-displacement: -17 -8
+//NPC
+  563:
+    name-displacement: -17 -8
+//NPC
+  564:
+    name-displacement: -17 -8
+//NPC
+  565:
+    name-displacement: -17 -8
+
+//NPCS CONFIG
+//SHOP OUTFIT
+
+//Azurill Costume
+  2560:
+    name-displacement: -29 -22
+//Blastoise Costume
+  2554:
+    name-displacement: -26 -15
+//Pikachu Costume
+  2553:
+    name-displacement: -29 -22
+//Charizard Costume
+  2548:
+    name-displacement: -26 -15
+
+//SHOP OUTFIT
+
+effects:
+  6:
+    opacity:0.9
+  7:
+    opacity:0.9
+  11:
+    opacity:0.7
+  16:
+    opacity:0.9
+  20:
+    opacity:0.7
+  21:
+    opacity:0.7
+  22:
+    opacity:0.9
+  23:
+    opacity:0.9
+  24:
+    opacity:0.9
+  25:
+    opacity:0.9
+  32:
+    opacity:0.9
+  33:
+    opacity:0.9
+  34:
+    opacity:0.9
+  35:
+    opacity:0.9
+  37:
+    opacity:0.9
+  38:
+    opacity:0.8
+  42:
+    opacity:0.8
+  44:
+    opacity:0.8
+  48:
+    opacity:0.8
+  49:
+    opacity:0.8
+  53:
+    opacity:0.7
+  54:
+    opacity:0.7
+  61:
+    opacity:0.9
+  62:
+    opacity:0.9
+  63:
+    opacity:0.9
+  64:
+    opacity:0.9
+  69:
+    opacity:0.9
+  70:
+    opacity:0.8
+  71:
+    opacity:0.7
+  72:
+    opacity:0.7
+  73:
+    opacity:0.7
+  74:
+    opacity:0.7
+  75:
+    opacity:0.7
+  76:
+    opacity:0.7
+  77:
+    opacity:0.7
+  78:
+    opacity:0.7
+  79:
+    opacity:0.7
+  80:
+    opacity:0.7
+  83:
+    opacity:0.7
+  85:
+    opacity:0.7
+  87:
+    opacity:0.7
+  90:
+    opacity:0.9
+  91:
+    opacity:0.9
+  92:
+    opacity:0.9
+  93:
+    opacity:0.9
+  94:
+    opacity:0.7
+  95:
+    opacity:0.7
+  96:
+    opacity:0.7
+  97:
+    opacity:0.7
+  99:
+    opacity:0.7
+  100:
+    opacity:0.7
+  101:
+    opacity:0.7
+  102:
+    opacity:0.7
+  103:
+    opacity:0.7
+  104:
+    opacity:0.7
+  105:
+    opacity:0.7
+  106:
+    opacity:0.7
+  107:
+    opacity:0.7
+  108:
+    opacity:0.7
+  109:
+    opacity:0.7
+  110:
+    opacity:0.7
+  111:
+    opacity:0.7
+  112:
+    opacity:0.7
+  113:
+    opacity:0.7
+  114:
+    opacity:0.7
+  115:
+    opacity:0.7
+  116:
+    opacity:0.7
+  117:
+    opacity:0.7
+  118:
+    opacity:0.7
+  120:
+    opacity:0.8
+  122:
+    opacity:0.8
+  135:
+    opacity:0.9
+  137:
+    opacity:0.7
+  139:
+    opacity:0.9
+  140:
+    opacity:0.7
+  142:
+    opacity:0.8
+  146:
+    opacity:0.7
+  147:
+    opacity:0.7
+  148:
+    opacity:0.7
+  149:
+    opacity:0.7
+  150:
+    opacity:0.7
+  151:
+    opacity:0.7
+  152:
+    opacity:0.7
+  153:
+    opacity:0.7
+  154:
+    opacity:0.7
+  155:
+    opacity:0.7
+  186:
+    opacity:0.9
+  188:
+    opacity:0.9
+  191:
+    opacity:0.9
+  194:
+    opacity:0.9
+  197:
+    opacity:0.9
+  198:
+    opacity:0.8
+  199:
+    opacity:0.7
+  204:
+    opacity:0.8
+  205:
+    opacity:0.8
+  207:
+    opacity:0.8
+  208:
+    opacity:0.8
+  209:
+    opacity:0.8
+  210:
+    opacity:0.8
+  212:
+    opacity:0.8
+  215:
+    opacity:0.9
+  218:
+    opacity:0.9
+  221:
+    opacity:0.9
+  234:
+    opacity:0.7
+  236:
+    opacity:0.7
+  240:
+    opacity:0.9
+  241:
+    opacity:0.9
+  242:
+    opacity:0.9
+  243:
+    opacity:0.9
+  244:
+    opacity:0.9
+  245:
+    opacity:0.7
+  246:
+    opacity:0.7
+  247:
+    opacity:0.9
+  249:
+    opacity:0.9
+  250:
+    opacity:0.9
+  251:
+    opacity:0.9
+  252:
+    opacity:0.7
+  253:
+    opacity:0.9
+  254:
+    opacity:0.9
+  258:
+    opacity:0.7
+  259:
+    opacity:0.9
+  260:
+    opacity:0.7
+  268:
+    opacity:0.7
+  269:
+    opacity:0.7
+  270:
+    opacity:0.8
+  271:
+    opacity:0.7
+  276:
+    opacity:0.9
+  281:
+    opacity:0.8
+  283:
+    opacity:0.8
+  284:
+    opacity:0.7
+  288:
+    opacity:0.9
+  289:
+    opacity:0.8
+  293:
+    opacity:0.9
+  296:
+    opacity:0.7
+  300:
+    opacity:0.7
+  301:
+    opacity:0.9
+  302:
+    opacity:0.7
+  304:
+    opacity:0.8
+  305:
+    opacity:0.7
+  306:
+    opacity:0.8
+  311:
+    opacity:0.9
+  313:
+    opacity:0.8
+  319:
+    opacity:0.7
+  321:
+    opacity:0.7
+  331:
+    opacity:0.7
+  332:
+    opacity:0.7
+  333:
+    opacity:0.7
+  334:
+    opacity:0.7
+  335:
+    opacity:0.7
+  336:
+    opacity:0.7
+  337:
+    opacity:0.7
+  338:
+    opacity:0.7
+  339:
+    opacity:0.7
+  340:
+    opacity:0.7
+  343:
+    opacity:0.9
+  355:
+    opacity:0.7
+  359:
+    opacity:0.7
+  439:
+    opacity:0.8
+  442:
+    opacity:0.7
+  456:
+    opacity:0.8
+  465:
+    opacity:0.8
+  491:
+    opacity:0.9
+  493:
+    opacity:0.9
+  494:
+    opacity:0.9
+  495:
+    opacity:0.9
+  499:
+    opacity:0.9
+  500:
+    opacity:0.9
+  501:
+    opacity:0.9
+  502:
+    opacity:0.9
+  514:
+    opacity:0.9
+  515:
+    opacity:0.9
+  516:
+    opacity:0.9
+  517:
+    opacity:0.9
+  521:
+    opacity:0.9
+  522:
+    opacity:0.9
+  523:
+    opacity:0.9
+  524:
+    opacity:0.9
+  525:
+    opacity:0.9
+  527:
+    opacity:0.8
+  528:
+    opacity:0.8
+  529:
+    opacity:0.8
+  530:
+    opacity:0.8
+  535:
+    opacity:0.9
+  544:
+    opacity:0.8
+  545:
+    opacity:0.8
+  546:
+    opacity:0.8
+  549:
+    opacity:0.7
+  556:
+    opacity:0.7
+  557:
+    opacity:0.7
+  558:
+    opacity:0.7
+  559:
+    opacity:0.7
+  560:
+    opacity:0.7
+  561:
+    opacity:0.7
+  567:
+    opacity:0.7
+  568:
+    opacity:0.7
+  628:
+    opacity:0.9
+  629:
+    opacity:0.9
+  630:
+    opacity:0.9
+  631:
+    opacity:0.9
+  632:
+    opacity:0.9
+  633:
+    opacity:0.9
+  634:
+    opacity:0.9
+  635:
+    opacity:0.7
+  636:
+    opacity:0.7
+  637:
+    opacity:0.7
+  638:
+    opacity:0.7
+  639:
+    opacity:0.7
+  640:
+    opacity:0.7
+  641:
+    opacity:0.7
+  642:
+    opacity:0.7
+  643:
+    opacity:0.7
+  644:
+    opacity:0.7
+  645:
+    opacity:0.7
+  646:
+    opacity:0.7
+  647:
+    opacity:0.7
+  654:
+    opacity:0.7
+  655:
+    opacity:0.7
+  657:
+    opacity:0.9
+  658:
+    opacity:0.9
+  659:
+    opacity:0.9
+  660:
+    opacity:0.9
+  666:
+    opacity:0.9
+missiles:
+  2:
+    opacity:0.7
+  3:
+    opacity:0.9
+  4:
+    opacity:0.8
+  6:
+    opacity:0.7
+  7:
+    opacity:0.9
+  14:
+    opacity:0.9
+  36:
+    opacity:0.7
+  44:
+    opacity:0.8
+  52:
+    opacity:0.7
+  62:
+    opacity:0.7
+  65:
+    opacity:0.9
+  70:
+    opacity:0.9
+  72:
+    opacity:0.9
+items:
+//trade center teleport
+  10868:
+    opacity:0
+//item nulo
+  100:
+    opacity:0
+//pvp teleport
+  33480:
+    opacity:0
+  10575:
+    opacity:0.7
+  10576:
+    opacity:0.7
+  10577:
+    opacity:0.7
+  11350:
+    opacity:0.7
+  11351:
+    opacity:0.7
+  11352:
+    opacity:0.7
+  12423:
+    opacity:0.7
+  12424:
+    opacity:0.7
+  12425:
+    opacity:0.7
+  12473:
+    opacity:0.7
+  12474:
+    opacity:0.7
+  12475:
+    opacity:0.7
+  16147:
+    opacity:0.7
+  16247:
+    opacity:0.7
+  14369:
+    opacity: 0

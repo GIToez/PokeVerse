@@ -1,0 +1,179 @@
+OutfitToList < UICreature
+  id: outfitToList
+  size: 64 64
+  fixed-creature-size: true
+  border-width: 2
+  
+OutfitList < Panel
+  id: outfitList
+  size: 212 212
+  anchors.top: parent.top
+  anchors.left: parent.left
+  layout:
+    type: grid
+    cell-size: 64 64
+    cell-spacing: 10
+    num-columns: 3
+    num-lines: 3
+
+PagePanel < UIWidget
+  id: pagePanel
+  size: 160 20
+  anchors.top: outfitList.bottom
+  anchors.left: outfitList.left
+  margin-top: 10
+  margin-left: 26
+
+  Button
+    id: firstPage
+    size: 20 20
+    anchors.top: parent.top
+    anchors.left: parent.left
+    text: <<
+    @onClick: modules.game_outfit.firstPage()
+  Button
+    id: prevPage
+    size: 20 20
+    anchors.top: parent.top
+    anchors.left: firstPage.right
+    text: <
+    @onClick: modules.game_outfit.prevPage()
+  UIWidget
+    id: page
+    size: 80 20
+    anchors.top: parent.top
+    anchors.left: prevPage.right
+    font: verdana-11px-rounded
+  Button
+    id: nextPage
+    size: 20 20
+    anchors.top: parent.top
+    anchors.left: page.right
+    text: >
+    @onClick: modules.game_outfit.nextPage()
+  Button
+    id: lastPage
+    size: 20 20
+    anchors.top: parent.top
+    anchors.left: nextPage.right
+    text: >>
+    @onClick: modules.game_outfit.lastPage()
+
+ConfirmButtom < Button
+  id: confirm
+  width: 80
+  anchors.top: pagePanel.bottom
+  anchors.left: pagePanel.left
+  margin-top: 5
+  margin-left: 40
+  !text: tr('Confirm')
+  @onClick: modules.game_outfit.accept()
+
+OutfitPanel < UIWidget
+  id: outfitPanel
+  size: 310 240
+  anchors.top: parent.top
+  anchors.right: parent.right
+
+  Button
+    id: close
+    size: 20 20
+    anchors.top: parent.top
+    anchors.right: parent.right
+    text: x
+    @onClick: modules.game_outfit.destroy()
+
+  UIWidget
+    id: name
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    font: verdana-11px-rounded
+
+  UICreature
+    id: outfit
+    size: 70 70
+    anchors.top: name.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    fixed-creature-size: true
+    margin-top: 5
+
+  Button
+    id: randomize
+    size: 20 20
+    anchors.top: outfit.top
+    anchors.left: outfit.right
+    margin-top: 25
+    margin-left: 5
+    text: 8
+    @onClick: modules.game_outfit.randomize()
+
+  UIWidget
+    id: template
+    size: 75 15
+    anchors.top: outfit.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 5
+
+    ButtonBox
+      id: head
+      size: 15 15
+      anchors.top: parent.top
+      anchors.left: parent.left
+      color: #ffffff
+      !tooltip: tr('Head')
+      text: 1
+      border-width: 1
+      checked: true
+    ButtonBox
+      id: primary
+      size: 15 15
+      anchors.top: parent.top
+      anchors.left: head.right
+      margin-left: 5
+      color: #ffffff
+      !tooltip: tr('Primary')
+      text: 2
+      border-width: 1
+    ButtonBox
+      id: secondary
+      size: 15 15
+      anchors.top: parent.top
+      anchors.left: primary.right
+      margin-left: 5
+      color: #ffffff
+      !tooltip: tr('Secondary')
+      text: 3
+      border-width: 1
+    ButtonBox
+      id: detail
+      size: 15 15
+      anchors.top: parent.top
+      anchors.left: secondary.right
+      margin-left: 5
+      color: #ffffff
+      !tooltip: tr('Detail')
+      text: 4
+      border-width: 1
+  Panel
+    id: colorBoxPanel
+    size: 300 110
+    anchors.top: template.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 5
+    layout:
+      type: grid
+      cell-size: 14 14
+      cell-spacing: 2
+      num-columns: 19
+      num-lines: 7
+
+MainWindow
+  size: 560 330
+
+  @onEnter: modules.game_outfit.accept()
+  @onEscape: modules.game_outfit.destroy()
+
+  OutfitList
+  PagePanel
+  OutfitPanel
+  ConfirmButtom

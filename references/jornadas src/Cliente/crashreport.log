@@ -1,0 +1,281 @@
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 19 2021 18:46:05
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 19 2021 18:47:09
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 19 2021 18:48:51
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 19 2021 18:54:06
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 20 2021 11:06:29
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 20 2021 11:07:06
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 20 2021 11:07:39
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 20 2021 11:08:06
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Oct 20 2021 11:08:29
+exception: Access violation (0xc0000005)
+exception address: 0x0041eec7
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000041EEC7]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000433163]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000045420B]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004784A0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    6: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478333]
+    7: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000478505]
+    8: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A7A70]
+    9: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048319C]
+    10: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x2555e0) [0x0000000000730260]
+    11: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000401250]
+    12: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004012D5]
+    13: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x00000000770F7A9E]
+    14: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x00000000770F7A6E]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Oct  1 2021
+build type: Release
+build revision: 0 (devel)
+crash date: Nov 03 2021 00:44:17
+exception: Access violation (0xc0000005)
+exception address: 0x004b1a1d
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004B1A1D]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x00000000004A5B91]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x1f823e) [0x00000000006D2EBE]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x201670) [0x00000000006DC2F0]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe [0x0000000000461FFA]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x3650b) [0x000000000051118B]
+
+== application crashed
+app name: Pokecenter
+app version: 0.6.6
+build compiler: gcc 4.8.1
+build date: Sep 28 2021
+build type: Debug
+build revision: 0 (devel)
+crash date: Nov 20 2021 06:34:37
+exception: Access violation (0xc0000005)
+exception address: 0x008db5cc
+  backtrace:
+    0: C:\Users\walox\Desktop\Cliente\otclient.exe(wglewIsSupported+0x1eb81c) [0x00000000008DB5CC]
+    1: C:\Users\walox\Desktop\Cliente\otclient.exe [0x000000000048B265]
+    2: C:\Users\walox\Desktop\Cliente\otclient.exe(wglewIsSupported+0x5fafe) [0x000000000074F8AE]
+    3: C:\Users\walox\Desktop\Cliente\otclient.exe(wglewIsSupported+0x5fbb8) [0x000000000074F968]
+    4: C:\Users\walox\Desktop\Cliente\otclient.exe(wglewIsSupported+0x72226) [0x0000000000761FD6]
+    5: C:\Users\walox\Desktop\Cliente\otclient.exe(alGetListeneriv+0x24d6e) [0x0000000000555D1E]
+    6: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0x11e) [0x0000000077627A9E]
+    7: C:\WINDOWS\SYSTEM32\ntdll.dll(RtlGetAppContainerNamedObjectPath+0xee) [0x0000000077627A6E]
+

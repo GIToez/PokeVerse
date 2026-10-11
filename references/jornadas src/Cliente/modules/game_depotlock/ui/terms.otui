@@ -1,0 +1,114 @@
+Title < UIWidget
+
+//lista de terms
+TermsListPanel < ScrollablePanel
+  id: TermsListPanel
+  size: 375 195
+  anchors.left: parent.left
+  anchors.top: parent.top
+  margin-left: 1
+  margin-top: 55
+  vertical-scrollbar: TermsListScrollBar
+
+TermsListScrollBar < VerticalScrollBar
+  id: TermsListScrollBar
+  anchors.top: TermsListPanel.top
+  anchors.bottom: TermsListPanel.bottom
+  anchors.left: TermsListPanel.right
+  margin-right: 60
+  margin-top: -12
+  margin-bottom: -10
+  opacity: 0.7
+  step: 48
+  pixels-scroll: true
+
+UIWidget
+  id: Background
+  padding: 0
+  focusable: true
+  size: 398 280
+  image-source: images/background_terms
+  anchors.centerIn: parent
+
+  Title
+    size: 222 24
+    image-source: images/title/title_terms
+    anchors.bottom: parent.bottom
+    anchors.centerIn: parent
+    margin-bottom: 105
+
+  TermsListPanel
+    UIWidget
+      id: text1
+      size: 336 139
+      image-source: images/text_terms/1
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 1
+      margin-left: 8
+    UIWidget
+      id: text2
+      size: 336 115
+      image-source: images/text_terms/2
+      anchors.top: text1.bottom
+      anchors.left: parent.left
+      margin-top: 0
+      margin-left: 8
+    UIWidget
+      id: text3
+      size: 336 36
+      image-source: images/text_terms/3
+      anchors.top: text2.bottom
+      anchors.left: parent.left
+      margin-top: -1
+      margin-left: 8
+    UIWidget
+      id: text4
+      size: 336 74
+      image-source: images/text_terms/4
+      anchors.top: text3.bottom
+      anchors.left: parent.left
+      margin-top: 1
+      margin-left: 8
+    UIWidget
+      id: text5
+      size: 336 63
+      image-source: images/text_terms/5
+      anchors.top: text4.bottom
+      anchors.left: parent.left
+      margin-top: 0
+      margin-left: 8
+    UIWidget
+      id: text6
+      size: 336 76
+      image-source: images/text_terms/6
+      anchors.top: text5.bottom
+      anchors.left: parent.left
+      margin-top: -1
+      margin-left: 8
+    UIWidget
+      id: text7
+      size: 336 65
+      image-source: images/text_terms/7
+      anchors.top: text6.bottom
+      anchors.left: parent.left
+      margin-top: -3
+      margin-left: 8
+
+  TermsListScrollBar
+
+  UIButton
+    id: close
+    size: 10 11
+    image-source: images/buttons/close
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.centerIn: parent
+    margin-top: 129
+    margin-left: 1
+    @onClick: hideTerms()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8

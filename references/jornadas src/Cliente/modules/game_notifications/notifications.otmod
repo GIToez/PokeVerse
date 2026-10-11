@@ -1,0 +1,9 @@
+Module
+  name: game_notifications
+  description: Provide player with animated notifications
+  author: reyhammer / walox
+  website: https://www.facebook.com/systemyart/
+  sandboxed: true
+  scripts: [ notifications ]
+  @onLoad: init()
+  @onUnload: terminate()

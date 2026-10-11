@@ -1,0 +1,64 @@
+CountWindow < MainWindow
+  id: countWindow
+  size: 251 119
+  image-source: stack/background
+
+  SpinBox
+    id: spinBox
+    anchors.left: parent.left
+    anchors.top: parent.top
+    opacity: 0
+    width: 1
+    height: 1
+    phantom: true
+    margin-top: 2
+    focusable: true
+
+  Item
+    id: item
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 7
+    margin-left: -4
+    focusable: false
+    virtual: true
+
+  HorizontalScrollBar
+    id: countScrollBar
+    anchors.left: prev.right
+    anchors.right: parent.right
+    anchors.top: prev.top
+    margin-left: 1
+    margin-right: -8
+    margin-top: 13
+    focusable: false
+
+  UIButton
+    id: buttonOk
+    size: 99 24
+    image-source: stack/confirmar
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-top: 7
+    margin-right: 53
+    focusable: false
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+  UIButton
+    id: buttonCancel
+    size: 99 24
+    image-source: stack/cancelar
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-top: 7
+    margin-left: 53
+    focusable: false
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7

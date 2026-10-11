@@ -1,0 +1,257 @@
+EnterGameWindow < Window
+  size: 368 717
+  image-source: images/background_entergame
+  anchors.bottom: parent.bottom
+  anchors.top: parent.top
+  anchors.left: parent.left
+
+EnterGameButton < Button
+  width: 128
+
+LogoServ < UIWidget
+  id: LogoServ
+  image-source: images/logo
+  size: 245 99
+  anchors.top: parent.top
+  anchors.right: parent.right
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: -5
+  margin-right: 6
+
+TextCharacter < UIWidget
+TextCheckBox < UIWidget
+TextCreateAccount < UIWidget
+TextRecoveryAccount < UIWidget
+
+Separator < UIWidget
+  image-source: images/separator
+  size: 336 3
+  opacity: 0.5
+  anchors.top: LogoServ.bottom
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 10
+  margin-left: -8
+
+TextEditWindow < UIWidget
+  id: TextEditWindow
+  size: 280 43
+  image-source: images/textEdit
+  anchors.top: Separator.bottom
+  anchors.horizontalCenter: parent.horizontalCenter
+  margin-top: 7
+  margin-left: -5
+
+EnterGameWindow
+  id: enterGame
+  draggable: false
+  focusable: true
+  @onEnter: EnterGame.doLogin()
+
+  MenuLabel
+    anchors.left: parent.left
+    anchors.top: parent.top
+    text-auto-resize: true
+
+  LogoServ
+  Separator
+    id: Separator
+
+  TextEditWindow
+    id: TextEditWindow1
+    margin-top: 125
+  TextCharacter
+    id: TextAccount
+    image-source: images/texts/account_text
+    size: 118 17
+    anchors.top: TextEditWindow1.top
+    anchors.left: TextEditWindow1.left
+    margin-top: -25
+    margin-left: 6
+  TextEditWindow
+    id: TextEditWindow2
+    anchors.top: TextEditWindow1.bottom
+    margin-top: 40
+  TextCharacter
+    id: TextPassword
+    image-source: images/texts/password_text
+    size: 117 18
+    anchors.top: TextEditWindow2.top
+    anchors.left: TextEditWindow2.left
+    margin-top: -25
+    margin-left: 6
+
+  PasswordTextEdit
+    id: accountNameTextEdit
+    color: white
+    image-source: ~
+    anchors.left: TextEditWindow1.left
+    anchors.right: TextEditWindow1.right
+    anchors.top: TextEditWindow1.top
+    color: white
+    margin-top: 13
+    margin-right: 40
+    margin-left: 25
+
+  MenuLabel
+    anchors.left: prev.left
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+    margin-top: 40
+    margin-left: 50
+    text-auto-resize: true
+
+  PasswordTextEdit
+    id: accountPasswordTextEdit
+    anchors.left: TextEditWindow2.left
+    anchors.right: TextEditWindow2.right
+    anchors.top: TextEditWindow2.top
+    color: white
+    image-source: ~
+    margin-top: 13
+    margin-right: 40
+    margin-left: 25
+
+  NewCheckBox
+    id: rememberAccountBox
+    !tooltip: tr('Remember account when starts client')
+    anchors.left: parent.left
+    anchors.top: TextEditWindow2.bottom
+    margin-top: 15
+    margin-left: 30
+  TextCheckBox
+    id: TextCheckBox
+    image-source: images/texts/text_checkbox
+    size: 69 8
+    anchors.top: rememberAccountBox.top
+    anchors.left: rememberAccountBox.left
+    margin-top: 13
+    margin-left: 35
+
+  UIWidget
+    //botao de enter
+    id: EnterButton
+    image-source: images/Enter
+    size: 212 61
+    anchors.left: parent.left
+    anchors.top: rememberAccountBox.bottom
+    @onClick: EnterGame.doLogin()
+    margin-top: 37
+    margin-left: 62
+
+    $hover:
+      image-source: images/Enter_hover
+      size: 212 61
+
+    $pressed:
+      image-source: images/Enter_press
+      size: 212 61
+
+  Separator
+    id: Separator2
+    anchors.top: EnterButton.bottom
+    margin-top: 30
+
+  UIWidget
+    //botao de register
+    id: CreateAccount
+    image-source: images/create_account
+    size: 127 43
+    anchors.top: EnterButton.bottom
+    anchors.right: parent.right
+    margin-top: 65
+    margin-right: 29
+    @onClick: modules.poke_create.show()
+    opacity: 0.8
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.9
+
+  TextCreateAccount
+    id: TextCreateAccount
+    image-source: images/texts/text_createAccount
+    size: 132 10
+    anchors.top: CreateAccount.top
+    anchors.left: CreateAccount.left
+    margin-top: 17
+    margin-left: -150
+
+  UIWidget
+    //botao de recovery
+    id: recoveryAccount
+    image-source: images/recovery
+    @onClick: modules.game_shop.toggle()
+    size: 127 43
+    anchors.top: EnterButton.bottom
+    anchors.right: parent.right
+    margin-top: 121
+    margin-right: 29
+    opacity: 0.8
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.9
+
+  TextRecoveryAccount
+    id: TextRecoveryAccount
+    image-source: images/texts/text_rememberAccount
+    size: 134 13
+    anchors.top: recoveryAccount.top
+    anchors.left: recoveryAccount.left
+    margin-top: 17
+    margin-left: -150
+
+  UIWidget
+    !tooltip: tr('Fechar Cliente')
+    @onClick: modules.game_interface.forceExit()
+    image-source: images/exit
+    size: 37 30
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 135
+    margin-right: 87
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.9
+
+  UIWidget
+    !tooltip: tr('Configurações')
+    @onClick: modules.client_options.show()
+    image-source: images/config
+    size: 35 37
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 130
+    margin-right: 154
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.9
+
+  UIWidget
+    !tooltip: tr('Reparar Cliente')
+    image-source: images/manutence
+    size: 40 40
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 128
+    margin-right: 220
+    @onClick: modules.game_updater.onLoad()
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.9

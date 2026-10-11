@@ -1,0 +1,209 @@
+HealthLabel < UILabel
+  font: damas
+  color: #00FF33
+  text-align: center
+
+PokeItem < Item
+  size: 36 36
+  virtual: true
+  border-width: 0
+  margin: 3
+  image-source: ~
+  $hover:
+    border-color: white
+    border-width: 1
+
+BeltItem < UIWidget
+  id: pokebackground
+  size: 227 63
+  virtual: true
+  image-source: images/none
+  @onHoverChange: modules.game_pokebar.onMoveBottomPanelHoverChange(self)
+
+  Item
+    id: portrait
+    size: 60 60
+    virtual: true
+    phantom: true
+    visible: false
+    image-source: ~
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  UIWidget
+    id: backgroundblack
+    size: 197 49
+    image-source: images/animated/f4
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 7
+
+  UIProgressBar
+    id: HPProgressBar
+    size: 57 15
+    image-source: images/progressbar
+    background-color: #52d635
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    opacity: 0.7
+    margin-bottom: 25
+    margin-left: 58
+  UIProgressBar
+    id: MPProgressBar
+    size: 51 5
+    image-source: images/progressbar
+    background-color: #0084ff
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    opacity: 0.7
+    margin-bottom: 16
+    margin-left: 55
+  UIProgressBar
+    id: XPProgressBar
+    size: 52 5
+    image-source: images/progressbar
+    background-color: #baa044
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    opacity: 0.7
+    margin-bottom: 8
+    margin-left: 49
+
+  UIWidget
+    id: backgroundborderbig
+    size: 197 49
+    image-source: images/animated/4
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 7
+    //opacity: 0.5
+  UIWidget
+    id: baseCircle
+    size: 56 56
+    image-source: images/circle/circle_base
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 3
+    margin-left: 3
+  UIWidget
+    id: baseCircleLight
+    size: 62 62
+    image-source: images/circle/light_white
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+  UIWidget
+    id: iconsBars
+    size: 13 29
+    image-source: images/icons
+    phantom: true
+    opacity: 0
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 9
+    margin-left: 62
+
+  UIWidget
+    id: hand
+    size: 23 21
+    image-source: images/selection
+    opacity: 0
+    focusable: false
+    phantom: true
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 25
+    margin-right: 70
+
+  UIWidget
+    id: pokeImage
+    size: 32 32
+    virtual: true
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 12
+    margin-left: 17
+
+  UILabel
+    id: PokeName
+    font: damas
+    opacity: 0
+    color: white
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 10
+    margin-left: 60
+    text-horizontal-auto-resize: true
+  UIWidget
+    id: pokeShiny
+    size: 11 11
+    opacity: 0
+    image-source: /images/game/npcicons/icon_star
+    anchors.top: PokeName.top
+    anchors.left: PokeName.right
+    margin-top: -1
+    margin-left: 3
+  UIWidget
+    id: pokeGender
+    size: 11 11
+    opacity: 0
+    image-source: /images/game/skulls/skull_black
+    anchors.top: PokeName.top
+    anchors.left: pokeShiny.right
+    margin-left: 0
+
+  UILabel
+    id: PokeID
+    //font: damas
+    color: #a2a2a2
+    anchors.top: PokeName.bottom
+    anchors.left: PokeName.left
+    visible: false
+    margin-top: -3
+    margin-left: 3
+    text-horizontal-auto-resize: true
+
+  UIWidget
+    id: type1
+    size: 11 11
+    anchors.top: PokeName.top
+    anchors.right: parent.right
+    margin-top: -1
+    margin-right: 113
+  UIWidget
+    id: type2
+    size: 11 11
+    anchors.top: type1.top
+    anchors.left: type1.right
+    margin-left: 2
+
+  UILabel
+    id: levelLabel
+    font: verdana-9px-bold-colored
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 4
+    margin-left: 17
+    text-horizontal-auto-resize: true
+  UILabel
+    id: health
+    color: #75eb69
+    font: verdana-9px-bold
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 24
+    margin-left: 85
+    opacity: 0
+    text-horizontal-auto-resize: true
+
+HeadlessWindow
+  id: pokebar
+  focusable: false
+  size: 227 63
+  image-source: ~
+  anchors.bottom: gameMapPanel.bottom
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter

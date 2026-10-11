@@ -1,0 +1,364 @@
+ScrollBarSlider < UIButton
+  id: sliderButton
+  anchors.centerIn: parent
+  size: 13 13
+  image-source: /images/ui/scrollbar
+  image-clip: 0 26 13 13
+  image-border: 4
+  image-color: #ffffffff
+  $hover:
+    image-clip: 13 26 13 13
+  $pressed:
+    image-clip: 26 26 13 13
+    image-color: #ffffff99
+  $disabled:
+    image-color: #ffffff66
+HorizontalScrollBarSlider < UIButton
+  id: sliderButton
+  anchors.centerIn: parent
+  size: 13 13
+  image-source: /images/ui/horizontalBars
+  image-clip: 0 26 13 13
+  image-border: 4
+  image-color: #ffffffff
+  $hover:
+    image-clip: 13 26 13 13
+  $pressed:
+    image-clip: 26 26 13 13
+    image-color: #ffffff99
+  $disabled:
+    image-color: #ffffff66
+
+GODzruScrollBarSlider < UIButton
+  id: sliderButton
+  anchors.centerIn: parent
+  size: 13 160
+  image-source: /images/game/chat/slider
+  opacity: 0.8
+  image-border-top: 5
+  image-border-bottom: 5
+  $hover:
+    opacity: 1.0
+  $pressed:
+    opacity: 1.0
+  $disabled:
+    opacity: 0.5
+
+GODzruScrollBarSlider2 < UIButton
+  id: sliderButton
+  anchors.centerIn: parent
+  size: 160 13
+  image-source: /images/game/chat/slider2
+  opacity: 0.8
+  image-border-left: 5
+  image-border-right: 5
+  $hover:
+    opacity: 1.0
+  $pressed:
+    opacity: 1.0
+  $disabled:
+    opacity: 0.5
+
+ScrollBarValueLabel < Label
+  id: valueLabel
+  anchors.fill: parent
+  color: white
+  text-align: center
+
+MarkScrollBarValueLabel < Label
+  id: valueLabel
+  anchors.fill: parent
+  color: #1d515d
+  text-align: center
+
+profissionScrollBarValueLabel < Label
+  id: valueLabel
+  font: lucida-11px-rounded
+  anchors.fill: parent
+  color: white
+  text-align: center
+
+VerticalScrollBar < UIScrollBar
+  orientation: vertical
+  width: 15
+  height: 39
+  pixels-scroll: true
+
+  UIButton
+    id: decrementButton
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    visible: false
+    size: 14 14
+    image-source: /images/ui/scrollBarnova1
+    image-clip: 15 0 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  UIButton
+    id: incrementButton
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    visible: false
+    size: 14 14
+    image-source: /images/ui/scrollBarnova1
+    image-clip: 15 15 15 15
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  ScrollBarSlider
+    margin-right: 1
+
+  ScrollBarValueLabel
+
+GODzruVerticalScrollBar < UIScrollBar
+  orientation: vertical
+  width: 15
+  height: 39
+  pixels-scroll: true
+
+  UIButton
+    id: decrementButton
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    size: 14 14
+    image-source: /images/ui/scrollBarnova1
+    image-clip: 15 0 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  UIButton
+    id: incrementButton
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    size: 14 14
+    image-source: /images/ui/scrollBarnova1
+    image-clip: 15 15 15 15
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  GODzruScrollBarSlider
+    margin-right: 1
+
+  ScrollBarValueLabel
+
+
+HorizontalScrollBar < UIScrollBar
+  orientation: horizontal
+  height: 15
+  width: 39
+  pixels-scroll: true
+
+  $disabled:
+    color: #bbbbbb88
+
+  UIButton
+    id: decrementButton
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 14 14
+    visible: false
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 0 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  UIButton
+    id: incrementButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    size: 14 14
+    visible: false
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 15 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  HorizontalScrollBarSlider
+    margin-bottom: 1
+
+  ScrollBarValueLabel
+
+GODzruHorizontalScrollBar < UIScrollBar
+  orientation: horizontal
+  height: 15
+  width: 39
+  pixels-scroll: true
+
+  $disabled:
+    color: #bbbbbb88
+
+  UIButton
+    id: decrementButton
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 14 14
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 0 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  UIButton
+    id: incrementButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    size: 14 14
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 15 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  HorizontalScrollBarSlider
+    margin-bottom: 1
+
+  ScrollBarValueLabel
+
+MarketHorizontalScrollBar < UIScrollBar
+  orientation: horizontal
+  height: 15
+  width: 39
+  pixels-scroll: true
+
+  $disabled:
+    color: #bbbbbb88
+
+  UIButton
+    id: decrementButton
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 14 14
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 0 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  UIButton
+    id: incrementButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    size: 14 14
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 15 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  HorizontalScrollBarSlider
+    margin-bottom: 1
+
+  MarkScrollBarValueLabel
+
+ProfissionHorizontalScrollBar < UIScrollBar
+  orientation: horizontal
+  height: 15
+  width: 39
+  pixels-scroll: true
+
+  $disabled:
+    color: #bbbbbb88
+
+  UIButton
+    id: decrementButton
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 14 14
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 0 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  UIButton
+    id: incrementButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    size: 14 14
+    image-source: /images/ui/scrollBarnova2
+    image-clip: 15 15 15 15
+    opacity: 0.7
+    $hover:
+      size: 15 15
+      opacity: 1.0
+    $pressed:
+      size: 13 13
+      opacity: 1.0
+    $disabled:
+      opacity: 0.5
+
+  HorizontalScrollBarSlider
+    margin-bottom: 1
+
+  profissionScrollBarValueLabel

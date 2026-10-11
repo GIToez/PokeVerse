@@ -1,0 +1,46 @@
+PokedexMoveSection < Panel
+  image-source: ~
+  margin-top: 5
+  margin-left: 5
+  height: -5
+
+HeadlessWindow
+  focusable: false
+  image-source: ~
+  size: 500 30
+
+  UIButton
+    size: 336 31
+    image-source: images/habilit
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 2
+    margin-left: 48
+
+  UIButton
+    size: 453 41
+    image-source: images/typebar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 45
+    margin-left: 1
+
+  ScrollableFlatPanel
+    id: content
+    image-source: ~
+    margin-top: 85
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: textScroll.left
+    anchors.bottom: parent.bottom
+    vertical-scrollbar: textScroll
+
+  VerticalScrollBar
+    id: textScroll
+    image-source: ~
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-top: 85
+    step: 32
+    pixels-scroll: true

@@ -1,0 +1,95 @@
+WindowModule < UIWidget
+  id: ModuloKill
+  visible: false
+  image-source: images/background
+  size: 224 62
+  anchors.top: parent.top  
+  anchors.left: parent.left
+WindowNpc < UIWidget
+  id: NpcKill
+  size: 224 62
+  visible: false
+  image-source: images/background
+  anchors.top: prev.bottom  
+  anchors.left: parent.left
+  margin-top: 5
+
+UIWidget
+  id: Background
+  size: 224 186
+  padding: 0
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+  anchors.centerIn: parent
+  margin-bottom: 180
+  focusable: false
+  draggable: false
+  phantom: true
+
+  WindowModule
+    Label
+      id: TaskName
+      size: 224 15
+      !text: tr('Tittle Task')
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 15
+      margin-left: 77
+      color: #ffff99
+
+    Label
+      id: PokeName
+      size: 224 15
+      !text: tr('Bulbasaur')
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      margin-bottom: 15
+      margin-left: 80
+      color: #d7d7d7
+    
+    UICreature
+      // Background dos botoes de cima
+      id: PokeImage
+      size: 32 32
+      background: alpha
+      focusable: false
+      draggable: false
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 15
+      margin-left: 20
+
+  WindowNpc
+    Label
+      id: TaskName
+      size: 224 15
+      !text: tr('Tittle Task')
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 15
+      margin-left: 77
+      color: #ffff99
+
+    Label
+      id: PokeName
+      size: 224 15
+      !text: tr('Bulbasaur')
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      margin-bottom: 15
+      margin-left: 80
+      color: #d7d7d7
+    
+    UICreature
+      // Background dos botoes de cima
+      id: PokeImage
+      size: 32 32
+      background: alpha
+      focusable: false
+      draggable: false
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 15
+      margin-left: 20

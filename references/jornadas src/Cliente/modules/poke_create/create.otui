@@ -1,0 +1,297 @@
+EnterGameWindow < HeadlessWindow
+  anchors.centerIn: parent
+  size: 756 413
+  margin-top: 70
+  image-source: images/background
+  padding: 0
+  draggable: false
+
+EnterGameWindow
+  id: createAcc
+  anchors.centerIn: parent
+  padding: 0
+  draggable: false
+  &save: true
+  @onEscape: hide()
+  MenuLabel
+    anchors.left: parent.left
+    anchors.top: parent.top
+    text-auto-resize: true
+
+  TextEdit
+    id: accountNameTextEdit
+    size: 309 25
+    image-source: images/textEdit
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 93
+    margin-left: 45
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+  UIWidget
+    id: IconAccountName
+    size: 25 25
+    image-source: images/icon_textEdit/login
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: 0
+    margin-left: -23
+  UIWidget
+    id: Name
+    size: 100 25
+    !text: tr('Conta')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -32
+
+  TextEdit
+    id: accountEmailTextEdit
+    size: 309 25
+    image-source: images/textEdit
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 45
+    margin-left: 45
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+  UIWidget
+    id: IconAccountName
+    size: 25 25
+    image-source: images/icon_textEdit/email
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: 0
+    margin-left: -23
+  UIWidget
+    id: Name
+    size: 100 25
+    !text: tr('E-Mail')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -32
+
+  PasswordTextEdit
+    id: accountPasswordTextEdit
+    size: 309 25
+    image-source: images/textEdit
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 45
+    margin-left: 45
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+  UIWidget
+    id: IconAccountName
+    size: 25 25
+    image-source: images/icon_textEdit/password
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: 0
+    margin-left: -23
+  UIWidget
+    id: Name
+    size: 100 25
+    !text: tr('Senha')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -32
+
+  PasswordTextEdit
+    id: accountRepeatPasswordTextEdit
+    size: 309 25
+    image-source: images/textEdit
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 45
+    margin-left: 45
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+  UIWidget
+    id: IconAccountName
+    size: 25 25
+    image-source: images/icon_textEdit/repeat_pass
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: 0
+    margin-left: -23
+  UIWidget
+    id: Name
+    size: 100 25
+    !text: tr('Repetir Senha')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -8
+
+  TextEdit
+    id: accountCharacterNameTextEdit
+    size: 309 25
+    image-source: images/textEdit
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 93
+    margin-right: 25
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+  UIWidget
+    id: IconAccountName
+    size: 25 25
+    image-source: images/icon_textEdit/personagem
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: 0
+    margin-left: -23
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Nome do Personagem')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -8
+
+  DepotComboBox
+    id: pokemon
+    !text: tr('Pokemon')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 201
+    margin-top: 185
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Pokémon')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -47
+
+  DepotComboBox
+    id: sexo
+    !text: tr('Sexo')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 24
+    margin-top: 185
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Sexo')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -60
+
+  DepotComboBox
+    id: town
+    !text: tr('Town')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 201
+    margin-top: 141
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Cidade')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -55
+
+  DepotComboBox
+    id: world
+    !text: tr('World')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 24
+    margin-top: 141
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Mundo')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -55
+
+  UIButton
+    size: 81 23
+    image-source: images/voltar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 25
+    margin-right: 19
+    opacity: 0.8
+    @onClick: hide()
+
+    $hover:
+      opacity: 1
+
+    $pressed:
+      opacity: 0.9
+
+  CircleCheckBox
+    id: checkbox
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 160
+    margin-right: 320
+    @onCheckChange: self:getParent():getChildById('RegisterAccount'):setEnabled(self:isChecked())
+
+  UIButton
+    anchors.top: checkbox.top
+    anchors.left: checkbox.right
+    image-source: images/regras
+    size: 275 17
+    margin-top: 2
+    margin-left: 10
+    image-clip: 0 0 275 17
+    @onClick: regras()
+
+    $hover:
+      image-clip: 0 17 275 17
+
+    $pressed:
+      image-clip: 0 34 275 17
+
+  UIButton
+    id: RegisterAccount
+    size: 104 23
+    enabled: false
+    image-source: images/criar_conta
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 25
+    margin-right: 105
+    opacity: 0.8
+    @onClick: doRegisterAccount()
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.9

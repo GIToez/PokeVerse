@@ -1,0 +1,9 @@
+Module
+  name: game_shop
+  description: loja do game
+  author: wave
+  website: www.pokeaveuturas.info
+  sandboxed: true
+  scripts: [ shop, slide, addons, clas, decoracoes, mercado, promocao, roupas ]
+  @onLoad: init()
+  @onUnload: terminate()

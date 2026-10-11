@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateAcc>
+	<towns>
+		<town otcId="1" townId="1"/>
+		<town otcId="2" townId="2"/>
+		<town otcId="3" townId="3"/>
+		<town otcId="4" townId="4"/>
+		<town otcId="5" townId="5"/>
+		<town otcId="6" townId="6"/>
+	</towns>
+
+	<worlds>
+	    <world otcId="0" worldId="0"/>
+	</worlds>
+</CreateAcc>

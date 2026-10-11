@@ -1,0 +1,4 @@
+[Error][Fri Aug 13 17:26:15 2021]: getPokemonSpecialAbilities - Unknown poke name.
+    Var 1 : Shiny ninetales
+[Error][Fri Aug 13 18:01:08 2021]: getPokemonFastcallPortraitId - Unknown poke name.
+

@@ -1,0 +1,13 @@
+Module
+  name: game_depotlock
+  description: sistema de segurança para o seu DP
+  author: Walox
+  website: www.pokejornadas.com.br
+
+  autoload: true
+  autoload-priority: 99998
+
+  scripts: [ depotlock, create_password, alertbox, server ]
+  sandboxed: true
+  @onLoad: init()
+  @onUnload: terminate()

@@ -1,0 +1,22 @@
+Particle
+  name: clas
+
+  duration: 1
+  colors: #00AAFF00 #00AAFFFF #00AAFFFF #00AAFF00
+  colors-stops: 0 0.25 0.75 1
+  size: 7 7
+  texture: /particles/particles/a1
+  composition-mode: normal
+
+Effect
+  name: volcanic-effect
+  description: Effect for player in the player module
+
+  System
+    position: 0 0
+
+    Emitter
+      position: 500 0
+      burst-rate: 100
+      burst-count: 1
+      particle-type: clas

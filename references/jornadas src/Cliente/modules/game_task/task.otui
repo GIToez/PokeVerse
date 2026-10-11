@@ -1,0 +1,541 @@
+RibbonLabel < UIWidget       
+  id: ribbonLabel      
+  anchors.right: parent.right
+  anchors.top: parent.top
+  image-source: images/ribbon
+  margin-top: 5
+  margin-right: 10
+  phantom: false
+
+WindowAlert < UIWindow
+  id: WindowAlert
+  size: 336 126
+  visible: false
+  image-source: images/alert/background
+  anchors.centerIn: parent
+  @onEscape: self:hide()
+
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    image-source: images/alert/alert
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -4
+    margin-left: 126
+  UIWidget
+    id: desc
+    size: 336 39
+    image-source: images/alert/texto/peguei_missao
+    opacity: 0.8
+    anchors.top: SlotItem.top
+    anchors.left: parent.left
+    margin-top: 54
+    margin-left: 1
+    text-align: center
+    text-wrap: true
+  UIButton
+    id: Cancelar
+    size: 99 24
+    image-source: images/alert/fechar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 11
+    margin-right: 118
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+UnlockTaskWindow < MainWindow
+  id: delayTaskWindow
+  anchors.centerIn: parent
+  size: 400 125
+  text-offset: 0 35
+  auto-focus: first    
+  image-source: images/window  
+  @onFocusChange: modules.game_task.onMiniWindowClose()
+
+  Label                   
+    !text: tr("To unlock this Rank you need:")  
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    
+  Label
+    id: unlockRankLevel 
+    margin-top: 5
+    width: 100
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    
+  Label                    
+    id: unlockRankPoints   
+    margin-top: 5   
+    width: 100
+    anchors.top: prev.bottom
+    anchors.left: parent.left  
+    
+  Label                      
+    id: unlockRankRank
+    margin-top: 5      
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    
+  Panel                    
+    id: unlockRankUnlock  
+    size: 93 38   
+    margin-top: 25                        
+    image-source: images/buttonmade  
+    image-clip: 0 86 93 38   
+    anchors.top: parent.top
+    phantom: false
+    anchors.horizontalCenter: parent.horizontalCenter 
+
+DelayTaskWindow < MainWindow
+  id: delayTaskWindow
+  anchors.centerIn: parent
+  size: 450 40
+  auto-focus: first
+  @onFocusChange: modules.game_task.onMiniWindowClose()
+
+  Label       
+    id: minutesLabel
+    text-align: center
+    anchors.top: parent.top
+    anchors.left: parent.left   
+    anchors.right: parent.right
+    margin-top: -14
+
+TaskOutfit < UICreature
+  id: CreatureUI 
+  size: 32 32
+  background: alpha
+  anchors.top: parent.top  
+  anchors.left: prev.right 
+  margin-left: 4
+
+TaskButton < Panel
+  size: 607 146
+  padding-left: 13
+  padding: 0
+  margin: 3     
+  phantom: true
+
+  UIWidget
+    id: BackgroudType
+    size: 607 146
+    anchors.top: parent.top
+    anchors.left: parent.left 
+
+  UIWidget
+    id: SlotOutfit
+    size: 71 71
+    image-source: images/window_list/slot
+    anchors.top: parent.top
+    anchors.left: parent.left 
+    margin-left: 20
+    margin-top: 15
+
+  UIWidget
+    id: type1
+    size: 14 15
+    anchors.top: parent.top
+    anchors.left: parent.left 
+    margin-left: 25
+    margin-top: 17
+  UIWidget
+    id: type2
+    size: 14 15
+    anchors.top: parent.top
+    anchors.left: parent.left 
+    margin-left: 15
+    margin-top: 30
+
+  Panel
+    id: CreatureUIPanel
+    height: 36
+    anchors.top: parent.top  
+    anchors.left: parent.left
+    margin-left: 37
+    margin-top: 30
+    
+    Panel     
+      anchors.top: parent.top  
+      anchors.left: parent.left
+
+  UIWidget
+    id: NamePoke
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 23
+    margin-left: 92
+    font: terminus-14px-bold
+    color: #d7d7d7
+  UIWidget
+    id: labelKill
+    anchors.top: NamePoke.top
+    anchors.left: NamePoke.right  
+    margin-left: 6
+    font: terminus-14px-bold
+    color: #d7d7d7
+  Label
+    id: TimerRefresh
+    anchors.top: labelKill.top
+    anchors.left: labelKill.right  
+    margin-left: 6
+    font: terminus-14px-bold
+    color: #d7d7d7
+  UIWidget
+    id: desc
+    size: 426 50
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 45
+    margin-left: 97
+    text-align: topLeft
+    text-wrap: true
+    font: terminus-10px
+    color: #d7d7d7
+  Label
+    id: labelReward
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 29 
+    margin-left: 55
+  Label
+    id: labelPoint
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 10
+    margin-left: 55
+  Label
+    id: labelLevel
+    anchors.top: desc.top
+    anchors.left: parent.left
+    margin-top: 23
+    margin-left: 40
+
+  ProfissionItemIvi
+    id: itemSlot1
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left 
+    margin-left: 195
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot2
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot1.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot3
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot2.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot4
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot3.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot5
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot4.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot6
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot5.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot7
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot6.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot8
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot7.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot9
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot8.right
+    margin-left: 3
+    margin-bottom: 11
+  ProfissionItemIvi
+    id: itemSlot10
+    size: 30 30
+    image-source: images/window_list/slotitem
+    anchors.bottom: parent.bottom
+    anchors.left: itemSlot9.right
+    margin-left: 3
+    margin-bottom: 11
+  
+TaskAccept < UIWidget
+  size: 77 142
+  anchors.top: parent.top  
+  anchors.right: parent.right 
+  margin-top: 3
+  margin-right: 7
+  UIButton
+    id: acceptButtonWidget
+    size: 77 142
+    anchors.top: parent.top  
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 2
+    margin-right: 0
+    image-source: images/window_list/accept_hover
+    phantom: false
+    $hover:
+      image-source: images/window_list/accept
+    
+    $pressed:
+      image-source: images/window_list/accept
+
+TaskDoneCancel < UIWidget
+  id: DoneCancel
+  size: 70 138
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 5
+  margin-right: 7
+  
+  UIButton
+    id: doneButtonWidget
+    size: 77 70
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -2
+    margin-right: 0
+    image-source: images/window_list/coletar_hover
+    phantom: false
+    $hover:
+      image-source: images/window_list/coletar
+    
+    $pressed:
+      image-source: images/window_list/coletar
+    
+  UIButton       
+    id: cancelButtonWidget
+    size: 77 70
+    anchors.top: doneButtonWidget.bottom
+    anchors.right: parent.right
+    margin-right: 0
+    image-source: images/window_list/cancelar_hover
+    phantom: false
+    $hover:
+      image-source: images/window_list/cancelar
+    
+    $pressed:
+      image-source: images/window_list/cancelar
+
+RankButton < UIButton
+  id: RankButtonLock
+  size: 152 26
+  image-clip: 0 26 152 26
+  phantom: false
+
+  $hover !disabled:
+    image-clip: 0 78 152 26
+
+  $pressed:
+    image-clip: 0 0 152 26
+
+  $disabled:
+    image-clip: 0 52 152 26
+
+  $focus:
+    image-clip: 0 0 152 26
+  
+  Panel
+    id: RankButtonLock
+    image-source: images/locked
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+TaskWindow < MainWindow
+  id: taskWindow
+  size: 991 639
+  padding: 0
+  image-source: images/background  
+
+  Label
+    id: labelPoints
+    size: 120 30
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: images/point_background
+    margin-top: 18
+    margin-left: 343
+    text-offset: 38 8
+
+  Panel             
+    id: panelBanner
+    anchors.top: parent.top     
+    anchors.left: parent.left
+    image-source: images/background_image
+    margin-left: 15
+    margin-top: 15
+  Panel             
+    id: Tittle
+    anchors.top: parent.top     
+    anchors.left: parent.left
+    image-source: images/tittle
+    margin-left: 475
+    margin-top: 33
+
+  ScrollablePanel
+    id: PanelRanks
+    size: 622 50
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-right: 24
+    margin-top: 70
+    horizontal-scrollbar: ButtontListScrollBar
+    RankButton
+      id: RankE
+      image-source: images/ranks_button/E
+      anchors.top: parent.top
+      anchors.left: parent.left
+      @onClick: modules.game_task.parseRank("E")  
+      
+    RankButton
+      id: RankD
+      image-source: images/ranks_button/D
+      anchors.top: parent.top  
+      anchors.left: prev.right    
+      margin-left: 5
+      @onClick: modules.game_task.parseRank("D")  
+
+    RankButton
+      id: RankC
+      image-source: images/ranks_button/C
+      anchors.top: parent.top  
+      anchors.left: prev.right 
+      margin-left: 5
+      @onClick: modules.game_task.parseRank("C")  
+
+    RankButton
+      id: RankB
+      image-source: images/ranks_button/B
+      anchors.top: parent.top
+      anchors.left: prev.right 
+      margin-left: 5
+      @onClick: modules.game_task.parseRank("B")  
+
+    RankButton     
+      id: RankA
+      image-source: images/ranks_button/A
+      anchors.top: parent.top
+      anchors.left: prev.right 
+      margin-left: 5
+      @onClick: modules.game_task.parseRank("A")  
+
+    RankButton      
+      id: RankS
+      image-source: images/ranks_button/S
+      anchors.top: parent.top
+      anchors.left: prev.right  
+      margin-left: 5
+      @onClick: modules.game_task.parseRank("S")  
+  HorizontalScrollBar
+    id: ButtontListScrollBar
+    anchors.bottom: PanelRanks.bottom
+    anchors.left: PanelRanks.left
+    anchors.right: PanelRanks.right
+    margin-top: 5
+    opacity: 0.7
+    margin-left: -12
+    margin-right: -12
+    step: 48
+    pixels-scroll: true  
+
+  Panel    
+    id: panelPTask
+    margin: 10
+    margin-left: 8
+    margin-top: 5         
+    margin-bottom: 50            
+    margin-right: 15
+    anchors.top: prev.bottom
+    anchors.bottom: parent.bottom
+    anchors.left: panelBanner.right  
+    anchors.right: parent.right    
+    phantom: false      
+          
+    TextList
+      id: panelPTaskList
+      border-color: alpha
+      background: alpha
+      anchors.top: parent.top  
+      anchors.left: parent.left      
+      anchors.right: parent.right    
+      anchors.bottom: parent.bottom   
+      margin: 4
+      margin-right: 17
+      focusable: true   
+      vertical-scrollbar: panelPTaskListScrollBar
+    
+    VerticalScrollBar
+      id: panelPTaskListScrollBar
+      anchors.top: panelPTaskList.top
+      anchors.bottom: panelPTaskList.bottom
+      anchors.left: panelPTaskList.right
+      margin-top: -10
+      margin-bottom: 1
+      step: 14
+      pixels-scroll: true
+
+  UIButton
+    id: closeButton
+    @onClick: modules.game_task.hide()
+    image-source: images/close
+    size: 20 21
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 12
+    margin-right: 50
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  UIWidget
+    id: BackgroundBlack
+    size: 991 639
+    visible: false
+    image-source: images/BackgroundBlack
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.left: parent.left
+  WindowAlert

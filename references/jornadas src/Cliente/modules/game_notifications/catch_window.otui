@@ -1,0 +1,146 @@
+Pokeball < UIButton
+  size: 50 25
+
+  UIButton
+    id: pokeball
+    size: 25 25
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  Label
+    id: balls_amount
+    phantom: true
+    font: lucida-11px-rounded
+    text-align: center
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-top: 6
+    margin-left: -3
+
+MainWindow
+  size: 459 249
+  visible: false
+  padding: 0
+  image-source: images/catch_window
+
+  @onEscape: modules.game_notifications.close("catchInfo")
+
+
+  UIButton
+    id: seta_icon
+    size: 24 14
+    image-source: images/seta_icon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 223
+    margin-left: 52
+
+  UIButton
+    id: poke_icon
+    !tooltip: tr('Pokémon Capturado')
+    size: 32 32
+    image-source: images/poke_icon
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 45
+    margin-left: 27
+
+  UIButton
+    id: exp_icon
+    !tooltip: tr('Experiência obtida')
+    size: 32 32
+    image-source: images/exp_icon
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 5
+    margin-left: 27
+
+  UIButton
+    id: depot_icon
+    !tooltip: tr('Seu Pokémon foi enviado para a sua mochila\nCaso você esteja utilizando 6 Pokémons ele irá para o seu depósito')
+    size: 32 26
+    image-source: images/depot_icon
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 104
+    margin-left: 82
+
+  Label
+    id: poke_label
+    text-auto-resize: true
+    anchors.top: poke_icon.top
+    anchors.left: poke_icon.right
+    margin-top: 15
+    margin-left: 6
+    font: verdana-11px-rounded
+
+  Label
+    id: exp_label
+    text-auto-resize: true
+    anchors.top: exp_icon.top
+    anchors.left: exp_icon.right
+    margin-top: 15
+    margin-left: 6
+    font: verdana-11px-rounded
+
+  UIButton
+    id: poke_image
+    size: 100 80
+    phantom: true
+    image-source: ~
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 40
+
+  UIButton
+    id: mini_poke_icon
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 5
+    margin-left: 20
+
+  Panel
+    id: balls
+    size: 400 70
+    anchors.top: poke_image.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 20
+    layout:
+      type: grid
+      cell-size: 50 17
+      cell-spacing: 5
+      num-columns: 7
+      num-lines: 3
+
+  Panel
+    id: types
+    size: 20 66
+    padding: 0
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 45
+    margin-right: 20
+    layout:
+      type: grid
+      cell-size: 20 20
+      cell-spacing: 3
+      num-columns: 1
+      num-lines: 3
+
+  UIButton
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 9
+    margin-right: 23
+    size: 83 16
+    image-source: images/fechar
+    image-clip: 0 0 83 16
+    @onClick: modules.game_notifications.close("catchInfo")
+
+    $hover:
+      image-clip: 0 16 83 16
+
+    $pressed:
+      image-clip: 0 32 83 16

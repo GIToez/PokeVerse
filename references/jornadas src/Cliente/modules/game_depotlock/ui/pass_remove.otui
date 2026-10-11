@@ -1,0 +1,49 @@
+Title < UIButton
+
+UIWidget
+  id: Background
+  padding: 0
+  focusable: true
+  size: 207 185
+  image-source: images/background_removepass
+  anchors.centerIn: parent
+
+  PasswordTextEdit
+    id: SenhaAtual
+    size: 5 15
+    image-source: ~
+    color: #cdcdcd
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-top: 102
+    margin-left: 38
+    margin-right: 17
+
+  UIButton
+    id: send
+    size: 181 22
+    image-source: images/buttons/remove_pass
+    anchors.top: SenhaAtual.top
+    anchors.centerIn: parent
+    margin-top: 47
+    @onClick: doRemovePass()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: close
+    size: 10 11
+    image-source: images/buttons/close
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: 80
+    @onClick: hideRemovePass()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8

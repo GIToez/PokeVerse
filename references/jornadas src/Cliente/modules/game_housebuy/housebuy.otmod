@@ -1,0 +1,9 @@
+Module
+  name: game_housebuy
+  description: House look module for Poketibia
+  author: Michyaraque
+  sandboxed: true
+  scripts: [housebuy]
+  autoload: true
+  @onLoad: init()
+  @onUnload: terminate()

@@ -1,0 +1,188 @@
+DexStatusItem < Item
+  size: 32 32
+  virtual: true
+  border-width: 0
+  image-source: ~
+  phantom: true
+
+DexWindow < DexMiniWindow
+  size: 767 492
+  image-source: images/background
+
+  UIButton
+    image-source: images/close
+    size: 20 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    opacity: 0.8
+    margin-top: 460
+    margin-right: 50
+    @onClick: modules.game_pokedex.hide()
+    $hover:
+      opacity: 1.0
+
+    $pressed:
+      opacity: 0.9
+
+  ResizeBorder
+    id: bottomResizeBorder
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 3
+    minimum: 48
+    maximum: 492
+    margin-left: 3
+    margin-right: 3
+
+  UIItem
+    id: dexItem
+    virtual: true
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 4
+    margin-left: 4
+
+  MiniWindowContents
+    ScrollableFlatPanel
+      id: ownDexContainer
+      image-source: ~
+      width: 460
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      margin-top: 340
+      margin-right: 20
+      margin-bottom: 40
+      padding: 2
+      layout:
+        type: grid
+        cell-size: 36 36
+        flow: true
+        cell-spacing: 1
+      vertical-scrollbar: ownDexScrollBar
+
+    VerticalScrollBar
+      id: ownDexScrollBar
+      anchors.top: ownDexContainer.top
+      anchors.bottom: ownDexContainer.bottom
+      anchors.right: ownDexContainer.right
+      margin-top: 4
+      margin-bottom: 4
+      margin-right: 0
+      step: 36
+      pixels-scroll: true
+      $!on:
+        width: 0
+
+    Panel
+      id: dexContent
+      margin-right: 6
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+    UIWidget
+      id: pokePicture
+      image-size: 100 100
+      anchors.top: dexContent.top
+      anchors.left: parent.left
+      margin-left: 92
+      margin-top: 58
+      image-source: ~
+      image-smooth: true
+
+    ScrollableFlatPanel
+      id: family
+      size: 185 120
+      anchors.top: dexContent.top
+      anchors.left: pokePicture.right
+      margin-left: -250
+      margin-top: 180
+      image-source: ~
+      layout:
+        type: grid
+        cell-size: 53 53
+        cell-spacing: 5
+        flow: true
+
+    Label
+      id: pokeName
+      !text: tr('Unknown')
+      color: #ffffff
+      anchors.top: parent.top
+      anchors.left: parent.left
+      //anchors.horizontalCenter: pokePicture.horizontalCenter
+      font: sans-bold-16px
+      text-auto-resize: true
+      background-color: alpha
+      margin-left: 50
+      margin-top: 30
+      text-offset: 2 0
+
+      $on:
+        color: #ffffff
+
+    UIWidget
+      id: pokeType1
+      image-size: 25 25
+      size: 25 25
+      opacity: 0.8
+      anchors.top: dexContent.top
+      anchors.left: dexContent.left
+      margin-left: 242
+      margin-top: 26
+      $hover:
+        opacity: 1
+
+    UIWidget
+      id: pokeType2
+      image-size: 25 25
+      size: 25 25
+      opacity: 0.8
+      anchors.top: pokeType1.bottom
+      anchors.left: dexContent.left
+      margin-top: 4
+      margin-left: 242
+      $hover:
+        opacity: 1
+
+    Label
+      id: pokeId
+      !text: '#000'
+      color: #858585
+      anchors.top: pokeType2.bottom
+      anchors.left: dexContent.left
+      font: verdana-11px-monochrome
+      text-auto-resize: true
+      background-color: alpha
+      text-offset: 2 0
+      margin-left: 50
+      margin-top: -26
+
+      $on:
+        color: #ffffff
+
+    DexTabBarVertical
+      width: 250
+      id: optionsTabBar
+      anchors.top: pokeName.bottom
+      anchors.left: dexContent.left
+      anchors.bottom: parent.bottom
+      margin-top: 255
+      margin-bottom: 45
+      margin-left: 20
+
+    Panel
+      id: optionsTabContent
+      image-source: ~
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 290
+      margin-right: 10
+      margin-top: 5
+      margin-bottom: 130

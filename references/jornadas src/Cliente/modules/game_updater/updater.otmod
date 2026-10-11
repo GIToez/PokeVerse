@@ -1,0 +1,14 @@
+Module
+  name: game_updater
+  description: updater
+  author: Gristony/Sukito/wave
+  website: ~
+  scripts: 
+    -updater
+
+  sandboxed: true
+  autoload: true
+
+  @onLoad: onLoad()
+  @onUnload: onUnload()
+  @onLogout: print(1)

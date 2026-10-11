@@ -1,0 +1,572 @@
+ItemToOfferList < ItemSlot
+  size: 40 40
+  font: damas
+
+  $!first:
+    margin-left: 4
+
+  UIWidget
+    id: poke
+    size: 40 40
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-left: -2
+    margin-bottom: 0
+
+  UIWidget
+    id: level
+    height: 11
+    font: verdana-9px-bold-colored
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -3
+
+  UIWidget
+    id: sex
+    size: 11 11
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+
+  UIWidget
+    id: shiny
+    size: 11 11
+    phantom: true
+    anchors.top: sex.top
+    anchors.left: sex.left
+    margin-top: -12
+
+OfferWidget < UIWidget
+  height: 70
+  image-source: images/transparent_window
+  image-color: #171718
+  text-align: top
+  text-offset: 0 2
+  font: damas
+
+  HorizontalList
+    id: offerList
+    anchors.fill: parent
+    margin-top: 20
+    margin-bottom: 10
+    margin-left: 4
+    margin-right: 4
+    phantom: true
+
+    ItemToOfferList
+      id: item1
+    ItemToOfferList
+      id: item2
+    ItemToOfferList
+      id: item3
+    ItemToOfferList
+      id: item4
+    ItemToOfferList
+      id: item5
+    ItemToOfferList
+      id: item6
+    ItemToOfferList
+      id: item7
+    ItemToOfferList
+      id: item8
+
+BuyOffersWindow < MainWindow
+  id: buyOffersWindow
+  size: 401 314
+  image-source: images/background_offert_list
+  anchors.centerIn: parent
+  visible: false
+  @onClose: show()
+  @onEscape: show()
+
+  Item
+    font: damas
+    id: offerItem
+    size: 40 40
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: -120
+
+    UIWidget
+      id: poke
+      size: 40 40
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      margin-left: -2
+      margin-bottom: 0
+    
+    UIWidget
+      id: level
+      height: 11
+      font: verdana-9px-bold-colored
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -3
+    
+    UIWidget
+      id: sex
+      size: 11 11
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+    
+    UIWidget
+      id: shiny
+      size: 11 11
+      phantom: true
+      anchors.top: sex.top
+      anchors.left: sex.left
+      margin-top: -12
+
+  Label
+    id: offerItemName
+    size: 300 20
+    anchors.left: offerItem.left
+    anchors.top: offerItem.bottom
+    margin-top: 5
+    margin-left: -135
+    text-align: center
+    font: damas
+
+  VerticalList
+    id: offersList
+    anchors.fill: parent
+    anchors.bottom: close.top
+    margin-bottom: 13
+    margin-top: 70
+    margin-right: 13
+    font: damas
+    vertical-scrollbar: offersListScrollBar
+
+  VerticalScrollBar
+    id: offersListScrollBar
+    width: 13
+    anchors.left: offersList.right
+    anchors.top: offersList.top
+    anchors.bottom: offersList.bottom
+    margin-left: 8
+    margin-top: -15
+    margin-bottom: -15
+    opacity: 0.5
+
+  UIButton
+    id: close
+    size: 99 24
+    image-source: images/buttons/fechar_oferts
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    @onClick: show()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+MakeOfferWindow < MainWindow
+  id: makeOfferWindow
+  size: 400 200
+  image-source: images/background_offert_list
+  visible: false
+  @onEscape: show()
+
+  Item
+    font: damas
+    id: offerItem
+    size: 40 40
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: -60
+
+    UIWidget
+      id: poke
+      size: 32 32
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+
+    UIWidget
+      id: level
+      height: 11
+      font: verdana-9px-bold-colored
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -3
+    
+    UIWidget
+      id: sex
+      size: 11 11
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+    
+    UIWidget
+      id: shiny
+      size: 11 11
+      phantom: true
+      anchors.top: sex.top
+      anchors.left: sex.left
+      margin-top: -12
+
+  Label
+    id: offerItemName
+    size: 300 20
+    anchors.left: offerItem.right
+    anchors.top: offerItem.top
+    margin-top: 45
+    margin-left: -173
+    text-align: center
+    font: damas
+
+  HorizontalList
+    id: offersList
+    size: 350 40
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: close.top
+    margin-bottom: 13
+    margin-top: 50
+
+    ItemToOfferList
+      id: item1
+    ItemToOfferList
+      id: item2
+    ItemToOfferList
+      id: item3
+    ItemToOfferList
+      id: item4
+    ItemToOfferList
+      id: item5
+    ItemToOfferList
+      id: item6
+    ItemToOfferList
+      id: item7
+    ItemToOfferList
+      id: item8
+
+  UIButton
+    id: confirm
+    size: 99 24
+    image-source: images/buttons/enviar
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-left: 82
+    @onClick: doPostOffer()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+  UIButton
+    id: close
+    size: 99 24
+    image-source: images/buttons/fechar_oferts
+    anchors.left: confirm.right
+    anchors.bottom: parent.bottom
+    margin-left: 5
+    @onClick: doCancelMakeOffer()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+BuyNowWindow < MainWindow
+  id: buyNowWindow
+  size: 250 150
+  image-source: images/background_offert_list
+  visible: false
+  @onEscape: show()
+
+  SpinBox
+    id: spinBox
+    font: damas
+    anchors.left: parent.left
+    anchors.top: parent.top
+    width: 1
+    height: 1
+    opacity: 0
+    phantom: true
+    margin-top: 2
+    focusable: true
+
+  ItemMarket
+    id: item
+    font: damas
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.centerIn: parent
+    margin-top: -45
+    focusable: false
+    virtual: true
+
+    UIWidget
+      id: poke
+      size: 32 32
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+
+    UIWidget
+      id: level
+      height: 11
+      font: verdana-9px-bold-colored
+      phantom: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -3
+    
+    UIWidget
+      id: sex
+      size: 11 11
+      phantom: true
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+    
+    UIWidget
+      id: shiny
+      size: 11 11
+      phantom: true
+      anchors.top: sex.top
+      anchors.left: sex.left
+      margin-top: -12
+
+  HorizontalScrollBar
+    id: countScrollBar
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.top
+    anchors.centerIn: parent
+    margin-left: 1
+    margin-right: 1
+    margin-top: -7
+    focusable: false
+
+  UIWidget
+    id: price
+    height: 20
+    anchors.left: countScrollBar.left
+    anchors.right: countScrollBar.right
+    anchors.top: countScrollBar.bottom
+    anchors.centerIn: parent
+    text-align: center
+    margin-left: 5
+    margin-top: 15
+    focusable: false
+
+  UIButton
+    id: buttonOk
+    size: 99 24
+    image-source: images/buttons/comprar_mini
+    anchors.left: parent.left
+    anchors.top: price.bottom
+    margin-top: 10
+    margin-left: 8
+    focusable: false
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+  UIButton
+    id: buttonCancel
+    size: 99 24
+    image-source: images/buttons/fechar_oferts
+    anchors.left: buttonOk.right
+    anchors.top: price.bottom
+    margin-top: 10
+    margin-left: 5
+    focusable: false
+    opacity: 0.9
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.8
+
+MarketButton < Button
+  height: 20
+  color: #cccccc
+  opacity: 1.0
+
+BuyPanel < MarketPanel
+  id: buyPanel
+  visible: true
+
+  DepotComboBox
+    id: comboBox
+    width: 150
+    font: damas
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-left: 410
+    margin-top: 7
+    color: #cccccc
+    image-border-left: 20
+
+  UIButton
+    size: 54 25
+    image-source: images/search_button
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-right: 6
+    margin-top: 4
+    @onClick: refreshBuyItems()
+    opacity: 0.9
+    $hover:
+      opacity: 1
+      image-source: images/search_button_hover
+    $pressed:
+      opacity: 0.8
+      image-source: images/search_button
+
+  TextEdit
+    id: buySearchTextEdit
+    size: 171 25
+    image-source: images/search
+    anchors.right: prev.left
+    anchors.top: parent.top
+    margin-top: 4
+    margin-right: -1
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+
+  MarketTable
+    id: panelTable
+    image-source: ~
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0
+    margin-bottom: 5
+
+  TableData
+    id: panelTableData
+    font: damas
+    anchors.bottom: panelTable.bottom
+    anchors.left: panelTable.left
+    anchors.right: panelTable.right
+    vertical-scrollbar: panelTableScrollBar
+    margin-top: 70
+    margin-right: 20
+    margin-bottom: 50
+  
+  VerticalScrollBar
+    id: panelTableScrollBar
+    anchors.top: panelTable.top
+    anchors.bottom: panelTable.bottom
+    anchors.right: panelTable.right
+    margin-top: 8
+    margin-bottom: 35
+    opacity: 0.5
+    step: 28
+    pixels-scroll: true
+
+  Panel
+    id: buyListPages
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 22
+    margin-bottom: 5
+    margin-right: 630
+  
+    UIButton
+      size: 25 20
+      image-source: images/arrows/1
+      anchors.right: parent.right
+      anchors.top: parent.top
+      color: #cccccc
+      margin: 0 5
+      @onClick: toPage(nil, false, true)
+      opacity: 0.8
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.7
+  
+    UIButton
+      size: 14 20
+      image-source: images/arrows/2
+      anchors.right: prev.left
+      anchors.top: parent.top
+      margin: 0 5
+      @onClick: toPage(nil, true)
+      opacity: 0.8
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.7
+  
+    Label
+      id: labelPages
+      !text: tr("Page: 1 / 1")
+      anchors.right: prev.left
+      anchors.top: parent.top
+      margin: 5 5
+      font: damas
+      text-auto-resize: true
+  
+    UIButton
+      size: 14 20
+      image-source: images/arrows/3
+      anchors.right: prev.left
+      anchors.top: parent.top
+      margin: 0 5
+      @onClick: toPage(nil, false)
+      opacity: 0.8
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.7
+  
+    UIButton
+      size: 25 20
+      image-source: images/arrows/4
+      anchors.right: prev.left
+      anchors.top: parent.top
+      margin: 0 5
+      @onClick: toPage(1)
+      opacity: 0.8
+      $hover:
+        opacity: 1
+      $pressed:
+        opacity: 0.7
+
+  UIButton
+    id: makeOfferButton
+    size: 115 33
+    image-source: images/buttons/ofertar_off
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 5
+    margin-right: 130
+    @onClick: showMakeOfferWindow()
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    $pressed:
+      opacity: 0.9
+  
+  UIButton
+    id: buyNowButton
+    size: 115 33
+    image-source: images/buttons/comprar_off
+    anchors.bottom: parent.bottom
+    anchors.left: makeOfferButton.right
+    margin-bottom: 5
+    margin-left: 5
+    @onClick: showBuyNowWindow()
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    $pressed:
+      opacity: 0.9

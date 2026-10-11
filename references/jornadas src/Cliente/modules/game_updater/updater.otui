@@ -1,0 +1,167 @@
+UpdateBar < UIProgressBar
+  size: 316 10
+  anchors.verticalCenter: parent.verticalCenter
+  anchors.left: parent.left
+  margin-left: 20
+  margin-top: 10
+  background-color: #5882FA
+  image-source: progressbar
+  focusable: false
+  draggable: false
+UpdaterProgressBar < UIImageView
+  image-size: 316 10
+  image-source: progressbar
+  anchors.verticalCenter: parent.verticalCenter
+  anchors.horizontalCenter: parent.horizontalCenter
+  anchors.left: parent.left
+  margin-left: 20
+  margin-top: 10
+  image-rect: 0 0 316 32
+  image-repeated: true
+
+  phantom: true
+  focusable: false
+
+UpdaterWindow < Window
+  id: UpdaterWindow
+  size: 368 717
+  image-source: images/background_entergame
+  padding: 0
+  draggable: false
+  anchors.bottom: parent.bottom
+  anchors.top: parent.top
+  anchors.left: parent.left
+  @onEscape: hide()
+
+  UpdateBar
+    id: UpdaterBarProgress
+
+  UpdaterProgressBar
+    id: UpdaterProgress
+
+  UIWidget
+    image-source: images/progressbar_big
+    size: 322 14
+    anchors.top: UpdaterProgress.top
+    anchors.left: UpdaterProgress.left
+    margin-top: 0
+    margin-left: -3
+
+  Label
+    id: labelM
+    size: 316 20
+    text-align: center
+    font: damas
+    !text: 'Downloading update files. Please wait.'
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: UpdaterBarProgress.top
+    margin-top: -35
+
+  UIWidget
+    id: LogoServ
+    image-source: images/logo
+    size: 245 99
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 25
+    margin-right: 6
+  UIWidget
+    image-source: images/separator
+    size: 336 3
+    opacity: 0.5
+    anchors.top: LogoServ.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
+    margin-left: -8
+
+  UIWidget
+    id: EnterButton
+    size: 70 70
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: UpdaterBarProgress.top
+    margin-top: -110
+
+  UIWidget
+    !tooltip: tr('Fechar Cliente')
+    image-source: images/exit
+    size: 37 30
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 165
+    margin-right: 103
+
+  UIWidget
+    !tooltip: tr('Configurações')
+    image-source: images/config
+    size: 35 37
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 160
+    margin-right: 170
+
+  UIWidget
+    !tooltip: tr('Reparar Cliente')
+    image-source: images/manutence
+    size: 40 40
+    opacity: 0.8
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 158
+    margin-right: 236
+
+  Separator
+    id: Separator2
+    anchors.top: EnterButton.bottom
+    margin-top: 168
+
+  UIWidget
+    //botao de register
+    id: CreateAccount
+    image-source: images/create_account
+    size: 127 43
+    anchors.top: EnterButton.bottom
+    anchors.right: parent.right
+    margin-top: 203
+    margin-right: 45
+    opacity: 0.8
+
+  TextCreateAccount
+    id: TextCreateAccount
+    image-source: images/texts/text_createAccount
+    size: 132 10
+    anchors.top: CreateAccount.top
+    anchors.left: CreateAccount.left
+    margin-top: 17
+    margin-left: -150
+
+  UIWidget
+    //botao de recovery
+    id: recoveryAccount
+    image-source: images/recovery
+    size: 127 43
+    anchors.top: EnterButton.bottom
+    anchors.right: parent.right
+    margin-top: 259
+    margin-right: 45
+    opacity: 0.8
+
+  TextRecoveryAccount
+    id: TextRecoveryAccount
+    image-source: images/texts/text_rememberAccount
+    size: 134 13
+    anchors.top: recoveryAccount.top
+    anchors.left: recoveryAccount.left
+    margin-top: 17
+    margin-left: -150
+
+  Label
+    id: UpdatePercentText
+    !text: '0%'
+    font: damas
+    anchors.centerIn: parent
+    margin-top: -4
+    text-align: center
+    text-auto-resize: true

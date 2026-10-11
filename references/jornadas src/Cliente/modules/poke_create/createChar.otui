@@ -1,0 +1,169 @@
+EnterGameWindow < HeadlessWindow
+  size: 449 413
+  image-source: images/background_character
+  margin-top: 70
+  anchors.centerIn: parent
+  padding: 0
+  draggable: false
+
+EnterGameWindow
+  id: createChar
+  anchors.centerIn: parent
+  padding: 0
+  &save: true
+
+  TextEdit
+    id: accountCharacterNameTextEdit
+    size: 309 25
+    image-source: images/textEdit
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 93
+    margin-left: 80
+    text-offset: 5 5
+    text-align: left
+    color: white
+    font: damas
+  UIWidget
+    id: IconAccountName
+    size: 25 25
+    image-source: images/icon_textEdit/login
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: 0
+    margin-left: -23
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Nome do Personagem')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -7
+
+  DepotComboBox
+    id: pokemon
+    !text: tr('Pokemon')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 235
+    margin-top: 190
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Pokémon')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -47
+
+  DepotComboBox
+    id: sexo
+    !text: tr('Sexo')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 60
+    margin-top: 190
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Sexo')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -60
+
+  DepotComboBox
+    id: town
+    !text: tr('Town')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 235
+    margin-top: 141
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Cidade')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -55
+
+  DepotComboBox
+    id: world
+    !text: tr('World')
+    size: 156 21
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-right: 60
+    margin-top: 141
+  UIWidget
+    id: Name
+    size: 150 25
+    !text: tr('Mundo')
+    font: damas
+    anchors.top: prev.top
+    anchors.left: prev.left
+    margin-top: -20
+    margin-left: -55
+
+  CircleCheckBox
+    id: checkbox
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 150
+    margin-right: 352
+    @onCheckChange: self:getParent():getChildById('RegisterReg'):setEnabled(self:isChecked())
+
+  UIButton
+    anchors.top: checkbox.top
+    anchors.left: checkbox.right
+    image-source: images/regras
+    size: 275 17
+    margin-top: 2
+    margin-left: 10
+    image-clip: 0 0 275 17
+    @onClick: regras()
+
+    $hover:
+      image-clip: 0 17 275 17
+
+    $pressed:
+      image-clip: 0 34 275 17
+
+  UIButton
+    size: 81 23
+    image-source: images/voltar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 26
+    margin-right: 65
+    @onClick: hideChar()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.9
+
+  UIButton
+    id: RegisterReg
+    size: 135 23
+    image-source: images/criar_personagem
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 26
+    margin-right: 152
+    enabled: false
+    @onClick: doRegisterChar()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.9

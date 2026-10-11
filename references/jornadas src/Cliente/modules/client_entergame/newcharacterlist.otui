@@ -1,0 +1,286 @@
+Character < Creature
+  fixed-creature-size: true
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 45
+  margin-left: 140
+  image-source: ~
+
+CharacterWidget < UIWidget
+  image-source: /images/trainerCards/trainer
+  margin: 4
+  &updateOnStates: |
+    function(self)
+      local children = self:getChildren()
+      for i=1,#children do
+        children[i]:setOn(self:isFocused())
+      end
+    end
+  @onFocusChange: self:updateOnStates()
+  @onSetup: self:updateOnStates()
+  opacity: 0.7
+
+  $focus:
+    opacity: 1.0
+
+  Label
+    id: name
+    color: #aaaaaa
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    font: sans-bold-16px-rounded
+    text-auto-resize: true
+    margin-top: 12
+    margin-left: 15
+
+    $on:
+      color: #ffffff
+
+  Label
+    visible: true
+    id: worldName
+    color: #ffffff
+    anchors.top: ClaICON.top
+    anchors.left: ClaICON.left
+    margin-left: 310
+    margin-top: 15
+    font: sans-bold-16px-rounded
+    text-auto-resize: true
+    text-align: center
+    &baseText: '%s'
+
+    $on:
+      color: #ffffff
+
+  Label
+    id: level
+    color: #ffffff
+    anchors.top: ClaICON.top
+    anchors.left: ClaICON.left
+    margin-left: 43
+    margin-top: 13
+    font: sans-bold-16px-rounded
+    text-auto-resize: true
+    text-align: center
+
+    $on:
+      color: #ffffff
+
+  UIWidget
+    //ICONE DO CLA
+    id: ClaICON
+    image-source: /images/trainerCards/clans/trainer
+    size: 40 40
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 110
+    margin-left: 10
+
+  UIWidget
+    id: pokemon1
+    color: #5C5C5C
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 19
+    image-source: ~
+    size: 50 54
+
+  UIWidget
+    id: pokemon2
+    color: #5C5C5C
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 80
+    image-source: ~
+    size: 50 54
+
+  UIWidget
+    id: pokemon3
+    color: #5C5C5C
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 145
+    image-source: ~
+    size: 50 54
+
+  UIWidget
+    id: pokemon4
+    color: #5C5C5C
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 208
+    image-source: ~
+    size: 50 54
+
+  UIWidget
+    id: pokemon5
+    color: #5C5C5C
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 271
+    image-source: ~
+    size: 50 54
+
+  UIWidget
+    id: pokemon6
+    color: #5C5C5C
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 20
+    margin-left: 335
+    image-source: ~
+    size: 50 54
+
+MainWindow
+  id: charactersWindow
+  image-source: images/background_characterlist
+  size: 881 459
+  padding: 0
+  focusable: false
+  draggable: false
+  visible: false
+  @onEnter: CharacterList.doLogin()
+  @onEscape: CharacterList.hide(true)
+  @onSetup: |
+    g_keyboard.bindKeyPress('Up', function() self:getChildById('characters'):focusPreviousChild(KeyboardFocusReason) end, self)
+    g_keyboard.bindKeyPress('Down', function() self:getChildById('characters'):focusNextChild(KeyboardFocusReason) end, self)
+
+  UIWidget
+    //ICONE DO CLA
+    id: ClaICON
+    image-source: images/time
+    size: 30 30
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 75
+    margin-left: 20
+
+  ScrollableFlatPanel
+    id: characters
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 90
+    margin-bottom: 132
+    margin-left: 18
+    margin-right: 18
+    image-source: ~
+    padding: 0
+    layout:
+      type: horizontalBox
+      cell-size: 404 224
+      flow: true
+      cell-spacing: 1
+    horizontal-scrollbar: characterListScrollBar
+    auto-focus: first
+    focusable: false
+
+  HorizontalScrollBar
+    id: characterListScrollBar
+    anchors.top: parent.top
+    anchors.bottom: characters.bottom
+    anchors.top: characters.top
+    anchors.right: parent.right
+    anchors.left: parent.left
+    margin-bottom: -17
+    margin-top: 240
+    margin-left: 25
+    margin-right: 25
+    step: 15
+    pixels-scroll: true
+
+  Label
+    id: accountStatusCaption
+    !text: tr('Account Status') .. ':'
+    anchors.left: parent.left
+    anchors.bottom: separator.top
+    margin-bottom: 20
+    margin-left: 50
+
+  Label
+    id: accountStatusLabel
+    !text: tr('Free Account')
+    anchors.left: accountStatusCaption.right
+    anchors.right: parent.right
+    anchors.bottom: separator.top
+    margin-left: 5
+    margin-bottom: 19
+    text-auto-resize: true
+
+    $on:
+      color: #FF0000
+
+  HorizontalSeparator
+    id: separator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 60
+    opacity: 0
+
+  //CheckBox
+  //  id: charAutoLoginBox
+  //  !text: tr('Auto login')
+  //  !tooltip: tr('Auto login selected character on next charlist load')
+  //  anchors.left: parent.left
+  //  anchors.right: parent.right
+  //  anchors.bottom: next.top
+  //  margin-bottom: 6
+  //  margin-left: 18
+  //  margin-right: 18
+
+  UIWidget
+    size: 27 30
+    image-source: images/new_character
+    !tooltip: tr('Novo Personagem')
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 30
+    margin-right: 15
+    @onClick: modules.poke_create.showChar()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.9
+
+  UIButton
+    id: buttonOk
+    image-source: images/selecionar
+    size: 130 37
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 305
+    margin-bottom: 11
+    opacity: 1
+    @onClick: CharacterList.doLogin()
+    $hover:
+      size: 135 42
+      opacity: 1
+    $pressed:
+      size: 135 42
+      opacity: 0.9
+
+  UIButton
+    id: buttonCancel
+    image-source: images/voltar
+    size: 130 37
+    anchors.right: buttonOk.right
+    anchors.bottom: parent.bottom
+    margin-right: 140
+    margin-bottom: 11
+    @onClick: CharacterList.hide(true)
+    opacity: 1
+    $hover:
+      size: 135 42
+      opacity: 1
+    $pressed:
+      size: 135 42
+      opacity: 0.9

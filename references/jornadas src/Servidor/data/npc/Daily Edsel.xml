@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Daily Edsel" script="Daily.catch.Edsel.lua" walkinterval="350000" floorchange="0" speed="0">
+<health now="150" max="150"/> <!-- HARD -->
+<look type="2617" head="96" body="0" legs="113" feet="0"/>
+</npc>

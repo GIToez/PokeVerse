@@ -1,0 +1,12 @@
+Module
+  name: game_dungeon
+  description: Sistema para gerenciar as dungeons do game, criação de times, e dificuldades.
+  author: Ryukiimaru
+  designer: Walox
+  website: https://www.facebook.com/systemyart
+  sandboxed: true
+  scripts: [ dungeon ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

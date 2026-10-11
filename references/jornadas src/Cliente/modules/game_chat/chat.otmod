@@ -1,0 +1,9 @@
+Module
+  name: game_chat
+  description: Chat
+  author: Dzru
+  website: pokezworld.com.br
+  sandboxed: true
+  scripts: [ chat ]
+  @onLoad: init()
+  @onUnload: terminate()

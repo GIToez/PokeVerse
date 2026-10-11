@@ -1,0 +1,57 @@
+Particle
+  name: player_particle
+
+  duration: 1
+  colors: #00AAFF00 #00AAFFFF #00AAFFFF #00AAFF00
+  colors-stops: 0 0.25 0.75 1
+  size: 7 7
+  texture: /particles/particles/particle2
+  composition-mode: normal
+
+Effect
+  name: player-effect
+  description: Effect for player in the player module
+
+  System
+    position: 0 0
+
+    Emitter
+      position: 155 0
+      burst-rate: 100
+      burst-count: 1
+      particle-type: player_particle
+
+    Emitter
+      position: -155 0
+      burst-rate: 100
+      burst-count: 1
+      particle-type: player_particle
+
+Particle
+  name: pokemon_particle
+
+  duration: 1
+  colors: #00CC0000 #00CC00FF #00CC00FF #00CC0000
+  colors-stops: 0 0.25 0.75 1
+  size: 7 7
+  texture: /particles/particles/particle2
+  composition-mode: normal
+
+Effect
+  name: pokemon-effect
+  description: Effect for pokemon in the pokemon module
+
+  System
+    position: 0 0
+
+    Emitter
+      position: 155 0
+      burst-rate: 100
+      burst-count: 1
+      particle-type: pokemon_particle
+
+    Emitter
+      position: -155 0
+      burst-rate: 100
+      burst-count: 1
+      particle-type: pokemon_particle

@@ -1,0 +1,4 @@
+[Error][Wed Sep 08 12:30:58 2021]: getPokemonSpecialAbilities - Unknown poke name.
+    Var 1 : shiny bulbasaur
+[Error][Wed Sep 08 19:50:25 2021]: SpecialAbilities::getPokemonSpecialAbilityName - Unknown Special Ability
+

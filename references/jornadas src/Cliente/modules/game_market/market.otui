@@ -1,0 +1,246 @@
+BuyTableUIItem < Item
+  anchors.horizontalCenter: parent.horizontalCenter
+  size: 32 32
+  image-source: /images/ui/item
+  virtual: true
+  font: damas
+
+  UIWidget
+    id: poke
+    size: 32 32
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-left: -2
+    margin-bottom: 0
+
+  UIWidget
+    id: level
+    height: 11
+    font: verdana-9px-bold-colored
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -3
+
+  UIWidget
+    id: sex
+    size: 11 11
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+
+  UIWidget
+    id: shiny
+    size: 11 11
+    phantom: true
+    anchors.top: sex.top
+    anchors.left: sex.left
+    margin-top: -12
+
+PanelTableColumn < TableColumn
+  font: damas
+  image-source: ~
+  text-offset: 13 0
+  color: #cccccc
+  width: 80
+  focusable: false
+
+PanelTableRow < TableRow
+  font: damas
+  focusable: false
+  color: #cccccc
+  height: 20
+  text-align: center
+
+PanelTableHeaderRow < TableHeaderRow
+  font: damas
+  focusable: false
+  color: #cccccc
+  height: 20
+  text-align: center
+  margin-top: 20
+
+PanelTableHeaderColumn < MarketTableHeaderColumn
+  font: damas
+  text-offset: 2 0
+  color: #ffffa4
+  width: 80
+  focusable: true
+
+MarketTable < Table
+  focusable: false
+  row-style: TableRow
+  column-style: PanelTableColumn
+  header-row-style: PanelTableHeaderRow
+  header-column-style: PanelTableHeaderColumn
+
+MarketBottomButton < Button
+  width: 110
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+
+MarketTabButton < UIButton
+  anchors.top: parent.top
+  anchors.left: parent.left
+  margin-top: 50
+  margin-left: 6
+  width: 90
+  image-color: #5b5b5b
+  font: verdana-11px-rounded
+
+  $first:
+    margin-left: 10
+
+  $!first:
+    anchors.left: prev.right
+
+MarketPanel < Panel
+  anchors.fill: parent
+  margin-top: 45
+  margin-bottom: 40
+  visible: false
+
+WindowAlert < UIWindow
+  id: WindowAlert
+  size: 336 126
+  //visible: false
+  image-source: images/alert/background
+  anchors.centerIn: parent
+
+  UIWidget
+    id: SlotItem
+    size: 84 84
+    image-source: images/alert/icons/alert
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -4
+    margin-left: 126
+  UIWidget
+    id: desc
+    size: 336 39
+    image-source: images/alert/texto/block_item
+    opacity: 0.8
+    anchors.top: SlotItem.top
+    anchors.left: parent.left
+    margin-top: 54
+    margin-left: 1
+    text-align: center
+    text-wrap: true
+  UIButton
+    id: Cancelar
+    size: 99 24
+    image-source: images/alert/fechar
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 11
+    margin-right: 118
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+MarketWindow < UIWindow
+  id: marketWndow
+  size: 861 504
+  image-source: images/background
+  color: #dfdfdf
+  padding-top: 25
+  padding-left: 20
+  padding-right: 20
+  padding-bottom: 12
+  anchors.centerIn: parent
+  @onEscape: hide()
+
+  MarketTabButton
+    id: buyTabButton
+    @onClick: changeMarketPanel(self:getParent():getChildById('buyPanel'), self)
+    size: 87 25
+    image-source: images/buttons/mini/comprar
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  MarketTabButton
+    id: sellTabButton
+    @onClick: changeMarketPanel(self:getParent():getChildById('sellPanel'), self)
+    size: 87 25
+    image-source: images/buttons/mini/vender
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  MarketTabButton
+    id: offerTabButton
+    @onClick: changeMarketPanel(self:getParent():getChildById('offerPanel'), self)
+    size: 87 25
+    image-source: images/buttons/mini/ofertas
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  MarketTabButton
+    id: historicTabButton
+    @onClick: changeMarketPanel(self:getParent():getChildById('historicPanel'), self)
+    size: 87 25
+    image-source: images/buttons/mini/historico
+    opacity: 0.8
+    $hover:
+      opacity: 1.0
+    
+    $pressed:
+      opacity: 0.9
+
+  UIButton
+    id: refreshButton
+    size: 21 19
+    image-source: images/reload
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 0
+    margin-right: 10
+    @onClick: refreshAllMarket()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+  UIButton
+    id: closeButton
+    size: 20 21
+    image-source: images/close
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 0
+    margin-right: 399
+    @onClick: hide()
+    opacity: 0.8
+    $hover:
+      opacity: 1
+    $pressed:
+      opacity: 0.7
+
+  UIWidget
+    id: separator
+    size: 336 31
+    image-source: images/separator
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1
+  UIWidget
+    id: text
+    size: 336 31
+    image-source: images/mercado_text
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1

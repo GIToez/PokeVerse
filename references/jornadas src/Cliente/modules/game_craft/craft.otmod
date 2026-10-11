@@ -1,0 +1,10 @@
+Module
+  name: game_craft
+  description: Shows available items to craft by profession.
+  author: Ryukiimaru
+  website: https://www.facebook.com/systemyart/
+  sandboxed: true
+  autoload: true
+  scripts: [ craft ]
+  @onLoad: init()
+  @onUnload: terminate()

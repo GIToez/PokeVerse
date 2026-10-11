@@ -1,0 +1,40 @@
+HistoricLabel < UIWidget
+  image-source: ~
+  height: 25
+  font: verdana-11px-antialised
+  text-align: left
+  font: damas
+
+HistoricPanel < MarketPanel
+  id: historicPanel
+  image-source: ~
+
+  UIWidget
+    id: title
+    size: 208 19
+    image-source: images/historico
+    anchors.bottom: parent.bottom
+    anchors.centerIn: parent
+    margin-bottom: 135
+  
+  VerticalList
+    id: historicList
+    anchors.fill: parent
+    image-source: ~
+    anchors.bottom: parent.bottom
+    margin: 7
+    margin-top: 70
+    margin-bottom: 5
+    vertical-scrollbar: historicVerticalSrollBar
+
+  VerticalScrollBar
+    image-source: ~
+    id: historicVerticalSrollBar
+    anchors.top: historicList.top
+    anchors.bottom: historicList.bottom
+    anchors.right: historicList.right
+    step: 28
+    margin-top: -13
+    margin-bottom: -13
+    opacity: 0.5
+    pixels-scroll: true

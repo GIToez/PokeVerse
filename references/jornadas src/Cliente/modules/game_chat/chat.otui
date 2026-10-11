@@ -1,0 +1,270 @@
+ConsoleLabel < UITextEdit
+  font: lucida-11px-rounded
+  height: 16
+  glyph-size: 16 16
+  y-offset: -2
+  spacing: -1 -5
+  space-width: 6
+  color: yellow
+  margin-left: 2
+  text-wrap: true
+  text-auto-resize: true
+  selection-color: #111416
+  selection-background-color: #999999
+  change-cursor-image: false
+  cursor-visible: false
+  editable: false
+
+ConsolePhantomLabel < UILabel
+  font: lucida-11px-rounded
+  height: 16
+  color: yellow
+  text-wrap: true
+  text-auto-resize: true
+  selection-color: #111416
+  selection-background-color: #999999
+
+ConsoleTabBar < MoveableTabBar
+  height: 28
+
+ConsoleTabBarPanel < MoveableTabBarPanel
+  id: consoleTab
+
+  ScrollablePanel
+    id: consoleBuffer
+    anchors.fill: parent
+    margin-right: 20
+    vertical-scrollbar: consoleScrollBar
+    layout:
+      type: verticalBox
+      align-bottom: true
+    inverted-scroll: true
+    padding: 1
+
+  VerticalScrollBar
+    id: consoleScrollBar
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-top: -15
+    margin-bottom: -15
+    step: 14
+    pixels-scroll: true
+
+ConsoleTabBarButton < MoveableTabBarButton
+  size: 20 21
+  font: lucida-11px-rounded
+  image-source: /images/game/chat/channelButtons
+  image-clip: 0 0 200 21
+  image-border: 3
+  color: #aaaaaa
+  opacity: 0.6
+
+  $hover !checked:
+    opacity: 0.9
+    image-clip: 0 0 200 21
+    color: #D8E7F0
+
+  $disabled:
+    icon-color: #888888
+
+  $checked:
+    image-clip: 0 21 200 21
+    opacity: 1.0
+    color: white
+
+UIWindow
+  id: chat
+  focusable: false
+  phantom: true
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+  size: 551 255
+  ResizeBorder
+    id: rB
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    enabled: true
+
+  ResizeBorder
+    id: rB2
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    enabled: true
+
+  ResizeBorder
+    id: rB3
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.left: parent.left
+    enabled: true
+
+  ResizeBorder
+    id: rB4
+    anchors.bottom: parent.bottom
+    anchors.top: parent.top
+    anchors.left: parent.left
+    enabled: true
+
+  UIWindow
+    id: background
+    focusable: false
+    size: 551 255
+    image-border: 10
+    image-source: /images/game/chat/Background
+    anchors.fill: parent
+    phantom: true
+
+  Panel
+    id: textLineWindow
+    focusable: false
+    image-source: /images/game/chat/txtline
+    size: 523 194
+    image-border: 4
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-top: -1
+    margin-left: 5
+    opacity: 0.6
+    phantom: true
+
+  UIWidget
+    id: lockButton
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 6
+    margin-top: 6
+    focusable: false
+    @onClick: clickLockButton()
+
+  TabChatButton
+    id: prevChannelButton
+    icon: /images/game/console/leftarrow
+    anchors.left: prev.right
+    anchors.top: parent.top
+    margin-left: 2
+    margin-top: 6
+
+  ConsoleTabBar
+    id: consoleTabBar
+    anchors.left: prev.right
+    anchors.top: parent.top
+    anchors.right: next.left
+    margin-left: 3
+    margin-top: 8
+    margin-right: 3
+    moveable: true
+    phantom: true
+
+  TabChatButton
+    id: nextChannelButton
+    icon: /images/game/console/rightarrow
+    anchors.right: next.left
+    anchors.top: parent.top
+    margin-right: 2
+    margin-top: 6
+
+  TabChatButton
+    id: closeChannelButton
+    icon: /images/game/console/closechannel
+    anchors.right: next.left
+    anchors.top: parent.top
+    enabled: false
+    margin-right: 3
+    margin-top: 6
+    @onClick: removeCurrentTab()
+
+  TabChatButton
+    id: clearChannelButton
+    icon: /images/game/console/clearchannel
+    anchors.right: next.left
+    anchors.top: parent.top
+    margin-right: 2
+    margin-top: 6
+    @onClick: |
+      local consoleTabBar = self:getParent():getChildById('consoleTabBar')
+      clearChannel(consoleTabBar)
+
+  TabChatButton
+    id: channelsButton
+    icon: /images/game/console/channels
+    anchors.right: next.left
+    anchors.top: parent.top
+    margin-right: 2
+    margin-top: 6
+    @onClick: g_game.requestChannels()
+
+  TabChatButton
+    id: ignoreButton
+    icon: /images/game/console/ignore
+    anchors.right: next.left
+    anchors.top: parent.top
+    margin-right: 2
+    margin-top: 6
+    @onClick: onClickIgnoreButton()
+
+  TabChatButton
+    id: hideChatButton
+    icon: /images/game/console/hide
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-right: 7
+    margin-top: 6
+    @onClick: toggleChat()
+
+  Panel
+    id: contentPanel
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: textEdit.top
+    margin-left: 6
+    margin-right: 6
+    margin-bottom: 4
+    margin-top: 4
+    padding: 1
+    focusable: false
+
+  UIWidget
+    id: enterBackground
+    focusable: true
+    visible: true
+    image-source: /images/game/chat/enterBackground
+    image-border: 4
+    size: 515 20
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 9
+    margin-right: 9
+
+  UITextEdit
+    id: textEdit
+    focusable: false
+    visible: false
+    font: lucida-11px-rounded
+    color: #aaaaaa
+    size: 86 18
+    text-offset: 0 3
+    padding: 3
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 9
+    margin-left: 29
+    margin-bottom: 11
+    shift-navigation: true
+    max-length: 255
+
+  TabChatButton
+    id: sayModeButton
+    icon: /images/game/console/say
+    !tooltip: tr('Adjust volume')
+    &sayMode: 2
+    size: 22 22
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-left: 6
+    margin-bottom: 8
+    @onClick: sayModeChange()

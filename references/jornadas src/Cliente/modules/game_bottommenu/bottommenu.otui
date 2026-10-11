@@ -1,0 +1,238 @@
+ItensSlot < UIWidget
+  size: 32 32
+  opacity: 0.8
+  visible: false
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+
+  $hover:
+    size: 37 37
+    opacity: 1
+  
+  $pressed:
+    size: 37 37
+    opacity: 0.9
+
+shop < UIButton
+  size: 46 45
+  opacity: 1
+  visible: false
+  @onClick: g_game.talk('/ShopOpen')
+  image-source: /images/topbuttons/shop
+  anchors.bottom: parent.bottom
+  anchors.left: parent.left
+
+  $hover:
+    size: 46 45
+    opacity: 1
+    image-source: /images/topbuttons/shop_animated
+  
+  $pressed:
+    size: 46 45
+    opacity: 0.9
+    image-source: /images/topbuttons/shop_animated
+
+UIWidget
+  size: 660 137
+  padding: 0
+  image-source: ~
+  anchors.bottom: parent.bottom
+  anchors.right: parent.right
+  focusable: false
+  draggable: false
+  phantom: true
+
+  UIWidget
+    // Background dos botoes de cima
+    id: topbackground
+    size: 187 51
+    visible: false
+    image-source: images/background_top
+    focusable: false
+    draggable: false
+    phantom: true
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 13
+    margin-right: 5
+
+  UIWidget
+    // Background dos botoes de baixo
+    id: bottombackground
+    size: 564 51
+    visible: false
+    image-source: images/background_bottom
+    focusable: false
+    draggable: false
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 15
+    margin-right: 76
+
+  UIWidget
+    // Background de tasks
+    id: taskbackground
+    size: 95 48
+    visible: false
+    image-source: images/background_tasks
+    focusable: false
+    draggable: false
+    phantom: true
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 65
+    margin-right: 350
+
+  UIWidget
+    // Botao pai
+    id: mainbutton
+    size: 70 62
+    image-source: images/button_1
+    draggable: false
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: 8
+    opacity: 0.9
+    margin-right: 2
+
+    $hover:
+      image-source: images/button_2
+      opacity: 1
+
+    $pressed:
+      image-source: images/button_2
+      opacity: 0.8
+
+
+//bot buttons
+  ItensSlot
+    id: minimap_button
+    image-source: /images/topbuttons/minimap
+    margin-bottom: 23
+    margin-right: 93
+    @onClick: modules.game_minimap.toggle()
+  ItensSlot
+    id: party_button
+    image-source: /images/topbuttons/party
+    margin-bottom: 25
+    margin-right: 235
+    //@onClick: modules.game_healthinfo.toggle()
+  ItensSlot
+    id: battle_button
+    image-source: /images/topbuttons/battle
+    margin-bottom: 23
+    margin-right: 126
+    @onClick: modules.game_battle.toggle()
+  ItensSlot
+    id: viplist_button
+    image-source: /images/topbuttons/viplist
+    margin-bottom: 23
+    margin-right: 160
+    @onClick: modules.game_viplist.toggle()
+  ItensSlot
+    id: inventory_button
+    image-source: /images/topbuttons/inventory
+    margin-bottom: 23
+    margin-right: 197
+    @onClick: modules.game_inventory.toggle()
+  ItensSlot
+    id: skills_button
+    image-source: /images/topbuttons/skills
+    margin-bottom: 23
+    margin-right: 276
+    @onClick: modules.game_skills.toggle()
+  ItensSlot
+    id: questlog_button
+    image-source: /images/topbuttons/questlog
+    margin-bottom: 21
+    margin-right: 314
+    @onClick: modules.game_questlog.g_game.requestQuestLog()
+  ItensSlot
+    id: progress_button
+    image-source: /images/topbuttons/progress
+    margin-bottom: 23
+    margin-right: 347
+    //@onClick: modules.game_combatcontrols.toggle()
+  ItensSlot
+    id: tasks_button
+    image-source: /images/topbuttons/tasks
+    margin-bottom: 23
+    margin-right: 380
+    //@onClick: modules.game_combatcontrols.toggle()
+  UIWidget
+    // Seta de tasks
+    id: setaTask
+    size: 16 11
+    visible: false
+    image-source: images/up
+    focusable: false
+    draggable: false
+    phantom: true
+    anchors.bottom: tasks_button.top
+    anchors.left: tasks_button.left
+    margin-bottom: -5
+    margin-left: 8
+  ItensSlot
+    id: brokes_info
+    image-source: /images/topbuttons/brokes_info
+    margin-bottom: 24
+    margin-right: 415
+    //@onClick: modules.game_combatcontrols.toggle()
+  ItensSlot
+    id: duel_player
+    image-source: /images/topbuttons/duel_player
+    margin-bottom: 23
+    margin-right: 448
+    @onClick: g_game.useInventoryItem(11420)
+  ItensSlot
+    id: daily_reward
+    image-source: /images/topbuttons/daily_reward
+    margin-bottom: 23
+    margin-right: 533
+    //@onClick: modules.game_combatcontrols.toggle()
+  ItensSlot
+    id: task_kill
+    image-source: /images/topbuttons/task_kill
+    margin-bottom: 70
+    margin-right: 402
+    @onClick: modules.game_task.toggle()
+  ItensSlot
+    id: task_catch
+    image-source: /images/topbuttons/task_catch
+    margin-bottom: 70
+    margin-right: 363
+    //@onClick: modules.game_combatcontrols.toggle()
+
+//top buttons
+
+  ItensSlot
+    id: pokeivs_button
+    image-source: /images/topbuttons/pokeivs
+    margin-bottom: 83
+    margin-right: 15
+    @onClick: g_game.talk('/pokeivev')
+  ItensSlot
+    id: combatcontrols_button
+    image-source: /images/topbuttons/combatcontrols
+    margin-bottom: 83
+    margin-right: 50
+    @onClick: modules.game_combatcontrols.toggle()
+  ItensSlot
+    id: pokeaddons_button
+    image-source: /images/topbuttons/pokeaddons
+    margin-bottom: 83
+    margin-right: 81
+    @onClick: g_game.talk('/addon')
+  ItensSlot
+    id: pokebar_button
+    image-source: /images/topbuttons/pokebar
+    margin-bottom: 83
+    margin-right: 114
+    @onClick: modules.game_pokebar.ButtonClick()
+  ItensSlot
+    id: healthinfo_button
+    image-source: /images/topbuttons/healthinfo
+    margin-bottom: 83
+    margin-right: 149
+    @onClick: modules.game_healthinfo.toggle()

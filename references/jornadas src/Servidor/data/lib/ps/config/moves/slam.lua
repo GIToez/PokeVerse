@@ -1,0 +1,20 @@
+MOVES["Slam"] = {
+    description = "Slam inflicts damage and has no secondary effect.",
+    makeContact = true,
+    category = MOVE_CATEGORY.PHYSICAL,
+    clientIconId = 11758,
+    iconId = 13384,
+    dType = DAMAGE_TYPE_NORMAL,
+    functionName = "Slam",
+    type = SKILLS_TYPES.TARGET,
+    -- requiredEnergy = 80,
+    requiredEnergy = 0,
+    requiredLevel = 28,
+    damage = 80,
+    damageType = ELEMENT_NORMAL,
+    effect = EFFECT_BLOW,
+    projectile = PROJECTILE_GRAVEL,
+    maxDistance = 1,
+    cooldownTime = 12,
+    cooldownStorage = 15066
+}
