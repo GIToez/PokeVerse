@@ -11,6 +11,7 @@
 	<globalevent name="Gameplay Tutorial Rattata" interval="15" event="script" value="../../lib/ps/events/globalevents/gameplayTutorialRattata.lua"/>
 	
 	<globalevent name="eeveeRespawn" interval="10800" event="script" value="../../lib/ps/events/globalevents/eeveeRespawn.lua"/>
+	<globalevent name="viridianPikachu" interval="1800" event="script" value="../../lib/ps/events/globalevents/viridianPikachu.lua"/>
 	<globalevent name="sudowoodoTree" interval="3600" event="script" value="../../lib/ps/events/globalevents/sudowoodoTree.lua"/>
 	
 	<globalevent name="globalMessages" interval="2700" event="script" value="../../lib/ps/events/globalevents/globalMessages.lua"/>
