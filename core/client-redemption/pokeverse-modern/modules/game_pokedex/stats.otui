@@ -1,0 +1,264 @@
+StatAxisLabel < Label
+  font: verdana-11px-antialised
+  color: #dfdfdf
+  text-auto-resize: true
+  phantom: true
+
+StatMark < UIWidget
+  size: 11 11
+  phantom: true
+
+StatCell < Label
+  font: verdana-11px-antialised
+  color: #dfdfdf
+  text-align: right
+  phantom: true
+
+StatRow < UIWidget
+  height: 16
+  phantom: true
+
+  StatMark
+    id: mark
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  StatCell
+    id: name
+    text-align: left
+    width: 78
+    anchors.left: mark.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    margin-left: 4
+
+  StatCell
+    id: actual
+    width: 46
+    anchors.left: name.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+
+  StatCell
+    id: iv
+    width: 40
+    anchors.left: actual.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+
+  StatCell
+    id: ev
+    width: 44
+    anchors.left: iv.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+
+  StatCell
+    id: effect
+    width: 52
+    anchors.left: ev.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+
+StatViewButton < ButtonBox
+  size: 80 21
+
+LegendSwatch < UIWidget
+  size: 10 10
+  border-width: 1
+  phantom: true
+
+LegendText < Label
+  font: verdana-11px-antialised
+  color: #b8b8b8
+  text-auto-resize: true
+  phantom: true
+
+PokemonStatsWindow < Window
+  !text: tr('Pokemon Stat Overview')
+  size: 312 506
+  @onEscape: self:hide()
+
+  UIButton
+    id: closeButton
+    size: 14 14
+    image-source: /images/ui/miniwindow_buttons
+    image-clip: 28 0 14 14
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -29
+    margin-right: -10
+    @onClick: self:getParent():hide()
+
+    $hover:
+      image-clip: 28 14 14 14
+
+    $pressed:
+      image-clip: 28 28 14 14
+
+  Label
+    id: pokemonName
+    font: verdana-11px-antialised
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  Label
+    id: natureTag
+    font: verdana-11px-antialised
+    color: #ffffff
+    background-color: #3a4a6a
+    border-width: 1
+    border-color: #6a82b0
+    text-align: center
+    height: 18
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -3
+
+  UIRadarChart
+    id: radar
+    size: 180 180
+    axis-count: 6
+    ring-count: 5
+    grid-color: #ffffff38
+    grid-width: 1
+    anchors.top: pokemonName.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 30
+
+  StatViewButton
+    id: viewIvs
+    !text: tr('IVs')
+    anchors.top: radar.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 36
+
+  StatViewButton
+    id: viewCombined
+    !text: tr('Combined')
+    anchors.top: viewIvs.top
+    anchors.right: viewIvs.left
+    margin-right: 4
+
+  StatViewButton
+    id: viewEvs
+    !text: tr('EVs')
+    anchors.top: viewIvs.top
+    anchors.left: viewIvs.right
+    margin-left: 4
+
+  StatRow
+    id: header
+    anchors.top: viewIvs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+
+  HorizontalSeparator
+    id: headerSeparator
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 1
+
+  Panel
+    id: rows
+    height: 96
+    anchors.top: headerSeparator.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 2
+    layout: verticalBox
+
+  HorizontalSeparator
+    id: rowsSeparator
+    anchors.top: rows.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 2
+
+  Label
+    id: totals
+    font: verdana-11px-antialised
+    color: #dfdfdf
+    text-align: center
+    height: 14
+    anchors.top: rowsSeparator.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+
+  Panel
+    id: legend
+    height: 14
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+    LegendSwatch
+      id: ivSwatch
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    LegendText
+      id: ivText
+      !text: tr('IV')
+      anchors.left: ivSwatch.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+
+    LegendSwatch
+      id: evSwatch
+      anchors.left: ivText.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+
+    LegendText
+      id: evText
+      !text: tr('EV')
+      anchors.left: evSwatch.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+
+    StatMark
+      id: upMark
+      image-source: /modules/game_pokedex/images/stat-up
+      anchors.left: evText.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+
+    LegendText
+      !text: tr('Raised')
+      id: upText
+      anchors.left: upMark.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+
+    StatMark
+      id: downMark
+      image-source: /modules/game_pokedex/images/stat-down
+      anchors.left: upText.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+
+    LegendText
+      id: downText
+      !text: tr('Lowered')
+      anchors.left: downMark.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+
+    StatMark
+      id: neutralMark
+      image-source: /modules/game_pokedex/images/stat-neutral
+      anchors.left: downText.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+
+    LegendText
+      !text: tr('Neutral')
+      anchors.left: neutralMark.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3

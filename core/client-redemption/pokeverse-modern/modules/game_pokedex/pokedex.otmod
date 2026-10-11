@@ -4,6 +4,6 @@ Module
   author: PokeVerse
   website: Unk
   sandboxed: true
-  scripts: [ pokedex, modern ]
+  scripts: [ pokedex, modern, stats ]
   @onLoad: onInit()
   @onUnload: onTerminate()
