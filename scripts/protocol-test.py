@@ -417,10 +417,20 @@ def main():
 
 
 def stay_online(conn, seconds):
-    """Answers pings until the server closes the connection. Returns False on timeout."""
+    """Keeps the character online until the server closes the connection. Returns False on timeout."""
     conn.sock.settimeout(1)
     end = time.time() + seconds
+    next_pong = 0
     while time.time() < end:
+        # the server drops connections silent for 30s, and its ping is often bundled behind
+        # other messages, so answer on a timer like the real client does
+        if time.time() >= next_pong:
+            try:
+                conn.send(b"\x1E")
+            except OSError as e:
+                print("  connection ended: %s" % e)
+                return True
+            next_pong = time.time() + 5
         try:
             data = conn.recv()
         except socket.timeout:
@@ -428,8 +438,6 @@ def stay_online(conn, seconds):
         except (ProtocolError, OSError) as e:
             print("  connection ended: %s" % e)
             return True
-        if data and data[0] == 0x1E:
-            conn.send(b"\x1E")
         show_server_message(data)
     return False
 
