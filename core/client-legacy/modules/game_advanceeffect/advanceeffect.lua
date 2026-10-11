@@ -180,6 +180,37 @@ local function showSkill(id, value)
     end
 end
 
+local function showMove(pokemonName, iconItemId, index)
+    local moveWindow = g_ui.createWidget('MoveAdvanceWindow', modules.game_interface.getRootPanel())
+    moveWindow:setMarginTop(moveWindow:getMarginTop() + (index - 1) * moveWindow:getHeight())
+    showTimed(moveWindow)
+    moveWindow:recursiveGetChildById('moveIcon'):setItemId(iconItemId)
+
+    local moveName = getMoveNameByIconItemId(iconItemId)
+    local parent = g_ui.createWidget('AdvanceSection', moveWindow:recursiveGetChildById('panel'))
+
+    local title = g_ui.createWidget('UILabel', parent)
+    title:setText(tr('%s learned', pokemonName))
+    title:setColor('#b6b6b6')
+    title:setTextAlign(AlignCenter)
+    title:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    title:addAnchor(AnchorRight, 'parent', AnchorRight)
+    title:addAnchor(AnchorTop, 'parent', AnchorTop)
+
+    local description = g_ui.createWidget('UILabel', parent)
+    description:setText(moveName)
+    description:setFont("sans-bold-16px")
+    description:setTextAlign(AlignCenter)
+    description:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    description:addAnchor(AnchorRight, 'parent', AnchorRight)
+    description:addAnchor(AnchorTop, 'prev', AnchorBottom)
+    description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+
+    if moveName ~= '' and modules.game_textmessage then
+        modules.game_textmessage.displayMessage(MessageModes.Status, tr('Your %s learned %s!', pokemonName, moveName))
+    end
+end
+
 local function showPokemon(id, value, newMoves)
     local skillWindow = g_ui.createWidget('PokemonAdvanceWindow', modules.game_interface.getRootPanel())
     showTimed(skillWindow)
@@ -208,36 +239,8 @@ local function showPokemon(id, value, newMoves)
     description:addAnchor(AnchorTop, 'prev', AnchorBottom)
     description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
 
-    for k, v in pairs(newMoves) do
-        local parent = g_ui.createWidget('AdvanceSection', panel)
-
-        local image = g_ui.createWidget('AdvanceMoveItem', parent)
-        image:setId(0)
-        image:setItemId(v)
-        image:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-        image:addAnchor(AnchorTop, 'parent', AnchorTop)
-        image:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-
-        local title = g_ui.createWidget('UILabel', parent)
-        title:setText(tr('%s learned', pokemonName))
-        title:setColor('#b6b6b6')
-        title:setTextAlign(AlignCenter)
-        title:addAnchor(AnchorLeft, 0, AnchorRight)
-        title:addAnchor(AnchorRight, 'parent', AnchorRight)
-        title:addAnchor(AnchorTop, 'parent', AnchorTop)
-
-        local description = g_ui.createWidget('UILabel', parent)
-        local moveName = getMoveNameByIconItemId(v)
-        description:setText(moveName)
-        if moveName ~= '' and modules.game_textmessage then
-            modules.game_textmessage.displayMessage(MessageModes.Status, tr('Your %s learned %s!', pokemonName, moveName))
-        end
-        description:setFont("sans-bold-16px")
-        description:setTextAlign(AlignCenter)
-        description:addAnchor(AnchorLeft, 0, AnchorRight)
-        description:addAnchor(AnchorRight, 'parent', AnchorRight)
-        description:addAnchor(AnchorTop, 'prev', AnchorBottom)
-        description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+    for index, iconItemId in ipairs(newMoves) do
+        showMove(pokemonName, iconItemId, index)
     end
 end
 

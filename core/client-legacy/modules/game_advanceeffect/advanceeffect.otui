@@ -98,12 +98,60 @@ AdvanceWindow < HeadlessWindow
       type: verticalBox
       num-columns: 1
 
-AdvanceMoveItem < Item
-  size: 32 32
-  border-width: 0
-  padding: 0
+MoveAdvanceWindow < HeadlessWindow
+  focusable: false
+  draggable: false
+  image-color: #ffffffee
   image-source: ~
+  size: 300 100
+  anchors.top: gameMapPanel.top
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter
+  margin-left: 4
+  margin-top: 355
   phantom: true
+  opacity: 0.8
+
+  UIWidget
+    id: bg
+    image-source: /modules/game_advanceeffect/images/newmove
+    anchors.top: parent.top
+    anchors.left: parent.left
+    opacity: 0.9
+    phantom: true
+    focusable: false
+
+  Item
+    id: moveIcon
+    size: 48 48
+    anchors.centerIn: bg
+    border-width: 0
+    padding: 0
+    image-source: ~
+    phantom: true
+    focusable: false
+
+  UILabel
+    id: advanceMessage2
+    font: sans-bold-16px
+    text-align: center
+    color: #ffd303
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
+    !text: tr('New Move!')
+    text-horizontal-auto-resize: true
+
+  FlatPanel
+    id: panel
+    image-source: ~
+    width: 180
+    anchors.top: advanceMessage2.bottom
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-top: 10
+    layout:
+      type: verticalBox
+      num-columns: 1
 
 AdvanceSection < Panel
   background-color: #22283399
