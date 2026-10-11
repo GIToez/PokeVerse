@@ -101,7 +101,7 @@ same check offline (no connection to the server), for repository-level settings 
 | `backup` | Make a backup now. |
 | `restore` | Restore a backup (`backup` = file name, `confirm` = `RESTORE`). A safety backup is made first. |
 | `set-group` | Set a character's staff group (`character`, `group`). |
-| `discord-setup` | Register the bot's slash commands. |
+| `discord-setup` | Run the bot's setup: register the slash commands and create the Discord channels and roles it needs (Admin Logs / `#player-activity`, Verified Trainer, Ace Trainer). Changes nothing else; run once after a bot update that adds channels or roles. |
 | `status`, `logs` | Releases, services, backups, and the last log lines. |
 
 The production bot is always built from the `main` branch of
