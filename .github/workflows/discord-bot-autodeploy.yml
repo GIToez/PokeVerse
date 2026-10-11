@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   check:
@@ -23,6 +24,7 @@ jobs:
       sha: ${{ steps.bot.outputs.sha }}
       commit: ${{ steps.bot.outputs.commit }}
       deployed: ${{ steps.marker.outputs.cache-hit }}
+      live-busy: ${{ steps.live.outputs.busy }}
     steps:
       - name: Bot main commit
         id: bot
@@ -42,10 +44,27 @@ jobs:
           key: discord-bot-deployed-${{ steps.bot.outputs.sha }}
           lookup-only: true
 
+      # Both workflows share the live-server-ovh concurrency group, where a newer pending job
+      # cancels the older one, so a bot deploy queued here would cancel a waiting Live deploy.
+      # The Live server deploy installs the bot too.
+      - name: Live server run active?
+        id: live
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          busy=false
+          for status in queued in_progress waiting pending requested; do
+            n=$(gh api "repos/${{ github.repository }}/actions/workflows/live-server.yml/runs?status=$status&per_page=1" --jq .total_count)
+            [ "$n" -gt 0 ] && busy=true
+          done
+          echo "busy=$busy" >> "$GITHUB_OUTPUT"
+
       - name: Summary
         run: |
           if [ "${{ steps.marker.outputs.cache-hit }}" = true ]; then
             echo "Bot ${{ steps.bot.outputs.sha }} is already live." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ steps.live.outputs.busy }}" = true ]; then
+            echo "Bot ${{ steps.bot.outputs.sha }} is new, but a Live server run is active: skipping." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "Bot ${{ steps.bot.outputs.sha }} is new: deploying." >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -53,7 +72,7 @@ jobs:
   deploy:
     name: Deploy the Discord bot
     needs: check
-    if: needs.check.outputs.deployed != 'true'
+    if: needs.check.outputs.deployed != 'true' && needs.check.outputs.live-busy != 'true'
     runs-on: ubuntu-24.04
     environment: ${{ vars.DISCORD_AUTODEPLOY_ENVIRONMENT || 'production' }}
     concurrency:
