@@ -341,9 +341,97 @@ end
 PokemonStats.onBallChanged = function(cid, ballUid)
     -- the Pokemon that is out always belongs to the ball in the ball slot
     local pokemon = getPlayerPokemon(cid)
-    if (isMonster(pokemon)) then
-        PokemonStats.applyToPokemon(pokemon, getPlayerBall(cid).uid, true)
+    local ball = getPlayerBall(cid)
+    if (isMonster(pokemon) and isItem(ball) and ball.uid == ballUid) then
+        PokemonStats.applyToPokemon(pokemon, ballUid, true)
     end
+end
+
+PokemonStats.getEvYield = function(pokemonName)
+    if (not pokemonName) then
+        return nil
+    end
+    return EV_YIELDS[pokemonName] or EV_YIELDS[(pokemonName:gsub("^[Ss]hiny ", ""))]
+end
+
+-- Adds (or with negative amounts removes) EVs within the 252 per stat and 510 total caps.
+-- Returns what really changed per stat, or nil when the ball has no Pokemon.
+PokemonStats.addEvs = function(ballUid, amounts)
+    local evs = PokemonStats.getBallEvs(ballUid)
+    if (not evs) then
+        return nil
+    end
+
+    local changes = {}
+    local total = PokemonStats.getTotal(evs)
+    for stat = 1, PokemonStats.STAT_COUNT do
+        local amount = amounts[stat] or 0
+        if (amount > 0) then
+            amount = math.min(amount, PokemonStats.EV_MAX - evs[stat], PokemonStats.EV_TOTAL_MAX - total)
+        else
+            amount = math.max(amount, -evs[stat])
+        end
+        evs[stat] = evs[stat] + amount
+        total = total + amount
+        changes[stat] = amount
+    end
+
+    PokemonStats.setBallEvs(ballUid, evs)
+    return changes
+end
+
+local function describeChanges(changes)
+    local parts = {}
+    for stat = 1, PokemonStats.STAT_COUNT do
+        if (changes[stat] ~= 0) then
+            parts[#parts + 1] = string.format("%s %s%d", POKEMON_STAT_NAMES[stat], changes[stat] > 0 and "+" or "",
+                changes[stat])
+        end
+    end
+    return table.concat(parts, ", ")
+end
+
+PokemonStats.describeChanges = describeChanges
+
+-- Extra EVs a held item adds to every defeat (Power items), by stat
+PokemonStats.getHeldEvBonus = function(ballUid)
+    return PokemonHeldItem.getEvBonus and PokemonHeldItem.getEvBonus(ballUid) or nil
+end
+
+-- Only defeated wild Pokemon give EVs: NPC trainers' and players' Pokemon are summons
+PokemonStats.isWildPokemon = function(target)
+    return isMonster(target) and not isSummon(target) and not getPokemonSummon(target)
+end
+
+-- From onGainExperience: the ball that earned experience for defeating target also earns its EV yield
+PokemonStats.onDefeated = function(cid, ball, target)
+    if (not isItem(ball) or not isBallWithPokemon(ball.uid) or getBallFromNpc(ball.uid)
+            or not PokemonStats.isWildPokemon(target)) then
+        return false
+    end
+
+    local yield = PokemonStats.getEvYield(getCreatureName(target))
+    local amounts = {}
+    for stat = 1, PokemonStats.STAT_COUNT do
+        amounts[stat] = yield and yield[stat] or 0
+    end
+
+    local bonus = PokemonStats.getHeldEvBonus(ball.uid)
+    if (bonus) then
+        amounts[bonus.stat] = amounts[bonus.stat] + bonus.amount
+    end
+
+    local changes = PokemonStats.addEvs(ball.uid, amounts)
+    if (not changes or PokemonStats.getTotal(changes) == 0) then
+        return false
+    end
+
+    doBallUpdateDescription(ball.uid)
+    PokemonStats.onBallChanged(cid, ball.uid)
+    local nickname = getBallPokemonNickname(ball.uid)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your %s gained EVs: %s."),
+        (nickname and nickname ~= -1) and nickname or getBallPokemonName(ball.uid), describeChanges(changes)))
+    return true
 end
 
 -- Balls in the ball slot and the backpack; the depot and other storage are filled when a ball is

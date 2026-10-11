@@ -155,7 +155,7 @@ class CreatureEvent : public Event
 		uint32_t executeKill(Creature* creature, Creature* target, bool lastHit);
 		uint32_t executeDeath(Creature* creature, Item* corpse, DeathList deathList);
 		uint32_t executePrepareDeath(Creature* creature, DeathList deathList);
-		uint32_t executeGainExperience(Player* player, uint32_t gainExp, Item* referenceItem);
+		uint32_t executeGainExperience(Player* player, uint32_t gainExp, Item* referenceItem, Creature* target = NULL);
 		uint32_t executeAddContainerItem(Player* player, Item* item);
 		uint32_t executeRemoveContainerItem(Player* player, Item* item);
 		uint32_t executeSpawn(Monster* monster);

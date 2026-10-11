@@ -1773,9 +1773,9 @@ uint32_t CreatureEvent::executePrepareDeath(Creature* creature, DeathList deathL
 	}
 }
 
-uint32_t CreatureEvent::executeGainExperience(Player* player, uint32_t gainExp, Item* referenceItem)
+uint32_t CreatureEvent::executeGainExperience(Player* player, uint32_t gainExp, Item* referenceItem, Creature* target)
 {
-	//onGainExperience(cid, gainExp, referenceItem)
+	//onGainExperience(cid, gainExp, referenceItem, target)
 	if(m_interface->reserveEnv())
 	{
 		ScriptEnviroment* env = m_interface->getEnv();
@@ -1787,6 +1787,7 @@ uint32_t CreatureEvent::executeGainExperience(Player* player, uint32_t gainExp, 
 			scriptstream << "local cid = " << env->addThing(player) << std::endl;
 			scriptstream << "local gainExp = " << gainExp << std::endl;
 			env->streamThing(scriptstream, "referenceItem", referenceItem, env->addThing(referenceItem));
+			scriptstream << "local target = " << (target ? env->addThing(target) : 0) << std::endl;
 
 			scriptstream << m_scriptData;
 			bool result = true;
@@ -1816,8 +1817,9 @@ uint32_t CreatureEvent::executeGainExperience(Player* player, uint32_t gainExp, 
 			lua_pushnumber(L, env->addThing(player));
 			lua_pushnumber(L, gainExp);
 			LuaScriptInterface::pushThing(L, referenceItem, env->addThing(referenceItem));
+			lua_pushnumber(L, target ? env->addThing(target) : 0);
 
-			bool result = m_interface->callFunction(3);
+			bool result = m_interface->callFunction(4);
 			m_interface->releaseEnv();
 			return result;
 		}

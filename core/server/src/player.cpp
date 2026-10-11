@@ -4009,7 +4009,7 @@ bool Player::rateExperience(double& gainExp, bool fromMonster)
 	return true;
 }
 
-void Player::onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem)
+void Player::onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem, Creature* target)
 {    
     if(party && party->isSharedExperienceEnabled() && party->isSharedExperienceActive())
 	{
@@ -4021,12 +4021,12 @@ void Player::onGainExperience(double& gainExp, bool fromMonster, bool multiplied
 	CreatureEventList expEvents = getCreatureEvents(CREATURE_EVENT_GAINEXPERIENCE);
 	for(CreatureEventList::iterator it = expEvents.begin(); it != expEvents.end(); ++it)
 	{
-		if(!(*it)->executeGainExperience(this, (uint32_t)gainExp, referenceItem))
+		if(!(*it)->executeGainExperience(this, (uint32_t)gainExp, referenceItem, target))
 		    return;
     }
 
 	if(gainExperience(gainExp, fromMonster))
-		Creature::onGainExperience(gainExp, fromMonster, true, referenceItem);
+		Creature::onGainExperience(gainExp, fromMonster, true, referenceItem, target);
 }
 
 void Player::onGainSharedExperience(double& gainExp, bool fromMonster, bool multiplied)

@@ -1384,7 +1384,7 @@ void Creature::onAttackedCreatureKilled(Creature* target, Item* referenceItem)
 		return;
 
 	double gainExp = target->getGainedExperience(this, referenceItem);
-	onGainExperience(gainExp, !target->getPlayer(), false, referenceItem);
+	onGainExperience(gainExp, !target->getPlayer(), false, referenceItem, target);
 }
 
 bool Creature::onKilledCreature(Creature* target, uint32_t& flags)
@@ -1411,13 +1411,13 @@ bool Creature::onKilledCreature(Creature* target, uint32_t& flags)
 	return ret;
 }
 
-void Creature::onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem)
+void Creature::onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem, Creature* target)
 {
 	if(gainExp <= 0)
 		return;
 
 	if(master)
-		master->onGainExperience(gainExp, fromMonster, multiplied, referenceItem);
+		master->onGainExperience(gainExp, fromMonster, multiplied, referenceItem, target);
 		
 	else
 	{

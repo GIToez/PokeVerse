@@ -24,6 +24,7 @@ dofile(PS_LIB_CONFIG_DIR .. "storages.lua")
 dofile(PS_LIB_CONFIG_DIR .. "skill.lua")
 dofile(PS_LIB_CONFIG_DIR .. "globalStorages.lua")
 dofile(PS_LIB_CONFIG_DIR .. "experience.lua")
+dofile(PS_LIB_CONFIG_DIR .. "evYields.lua")
 
 -- Functions
 	-- Balls

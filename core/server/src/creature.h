@@ -370,7 +370,7 @@ class Creature : public AutoId, virtual public Thing
 		virtual void onTargetCreatureGainHealth(Creature* target, int32_t points);
 		virtual void onAttackedCreatureKilled(Creature* target, Item* referenceItem = NULL);
 		virtual bool onKilledCreature(Creature* target, uint32_t& flags);
-		virtual void onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem);
+		virtual void onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem, Creature* target = NULL);
 		virtual void onGainSharedExperience(double& gainExp, bool fromMonster, bool multiplied);
 		virtual void onAttackedCreatureBlockHit(Creature* target, BlockType_t blockType) {}
 		virtual void onBlockHit(BlockType_t blockType) {}
