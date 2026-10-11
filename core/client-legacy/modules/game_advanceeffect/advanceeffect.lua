@@ -57,190 +57,216 @@ local SKILLS = {
     [PLAYER_SKILL_HEADBUTTING] = {image = '/images/advances/headbutting', title = tr('Headbutting')},
 }
 
+local MAX_VISIBLE = 4
+local STAGGER = 250
+local SHOW_TIME = 6000
+local FADE_IN = 300
+local FADE_OUT = 600
+local SLIDE = 12
+
+local BADGES = {
+    up = '/modules/game_advanceeffect/images/badge-up',
+    star = '/modules/game_advanceeffect/images/badge-star'
+}
+
 -- Vars
-local window, panel, lastLevel
+local column, lastLevel
 local enabled = true
 local lastSkill = {}
-local popups = {}
+local groups = {}
+local groupCount = 0
+local queue = {}
+local nextShowAt = 0
+local pumpEvent
 
 -- Methods
 function setDisplay(v)
     enabled = v
-    window:setVisible(enabled)
+    if column then
+        column:setVisible(enabled)
+    end
+end
+
+local pump
+
+local function removeGroup(group)
+    if groups[group] then
+        groups[group] = nil
+        groupCount = groupCount - 1
+    end
+    removeEvent(group.slideEvent)
+    removeEvent(group.hideEvent)
+    if not group:isDestroyed() then
+        g_effects.cancelFade(group)
+        group:destroy()
+    end
+    pump()
+end
+
+local function slideIn(group, elapsed)
+    if group:isDestroyed() then
+        return
+    end
+    local t = math.min(elapsed / FADE_IN, 1)
+    group:setOpacity(t)
+    group:setMarginTop(math.floor(SLIDE * (1 - t) + 0.5))
+    if t < 1 then
+        group.slideEvent = scheduleEvent(function()
+            slideIn(group, elapsed + 30)
+        end, 30)
+    end
+end
+
+local function fillCard(card, spec)
+    local portrait = spec.portrait or {}
+    if portrait.image then
+        local picture = card:recursiveGetChildById('picture')
+        picture:setImageSource(portrait.image)
+        if portrait.size then
+            picture:setSize({ width = portrait.size, height = portrait.size })
+        end
+        picture:show()
+    elseif portrait.outfit then
+        local creature = card:recursiveGetChildById('creature')
+        creature:setOutfit(portrait.outfit)
+        creature:show()
+    elseif portrait.item then
+        local moveIcon = card:recursiveGetChildById('moveIcon')
+        moveIcon:setItemId(portrait.item)
+        moveIcon:show()
+    end
+
+    card:getChildById('badge'):setImageSource(BADGES[spec.kind] or '')
+    card:getChildById('title'):setText(spec.title or '')
+    card:getChildById('subtitle'):setText(spec.subtitle or '')
+    card:getChildById('value'):setText(spec.value or '')
+end
+
+-- The fade-out is scheduled before the content is built, so a card can never stay on screen
+local function display(spec)
+    local group = g_ui.createWidget('AdvanceGroup', column)
+    groups[group] = true
+    groupCount = groupCount + 1
+    group:setOpacity(0)
+    group:setMarginTop(SLIDE)
+    group.hideEvent = scheduleEvent(function()
+        if group:isDestroyed() then
+            return
+        end
+        g_effects.fadeOut(group, FADE_OUT)
+        group.hideEvent = scheduleEvent(function()
+            removeGroup(group)
+        end, FADE_OUT)
+    end, FADE_IN + SHOW_TIME)
+    slideIn(group, 0)
+
+    fillCard(g_ui.createWidget('AdvanceCard', group), spec)
+    for _, row in ipairs(spec.rows or {}) do
+        local widget = g_ui.createWidget('AdvanceFeatureRow', group)
+        widget:getChildById('icon'):setImageSource(row.image)
+        widget:getChildById('title'):setText(row.title)
+        widget:getChildById('value'):setText(row.value)
+    end
+end
+
+pump = function()
+    if pumpEvent or not column or #queue == 0 or groupCount >= MAX_VISIBLE then
+        return
+    end
+    local wait = nextShowAt - g_clock.millis()
+    if wait > 0 then
+        pumpEvent = scheduleEvent(function()
+            pumpEvent = nil
+            pump()
+        end, wait)
+        return
+    end
+    nextShowAt = g_clock.millis() + STAGGER
+    display(table.remove(queue, 1))
+    pump()
+end
+
+local function pushCard(spec)
+    if not enabled then
+        return
+    end
+    table.insert(queue, spec)
+    pump()
 end
 
 local function reset()
     lastLevel = nil
     lastSkill = {}
-    for widget in pairs(popups) do
-        if not widget:isDestroyed() then
-            widget:destroy()
+    queue = {}
+    removeEvent(pumpEvent)
+    pumpEvent = nil
+    for group in pairs(groups) do
+        removeEvent(group.slideEvent)
+        removeEvent(group.hideEvent)
+        if not group:isDestroyed() then
+            g_effects.cancelFade(group)
+            group:destroy()
         end
     end
-    popups = {}
-end
-
--- Starts the fade before the content is built, so a popup can never stay on screen
-local function showTimed(widget, keep)
-    widget:show()
-    g_effects.fadeIn(widget, 2000)
-    if not keep then
-        popups[widget] = true
-    end
-    scheduleEvent(function()
-        if widget:isDestroyed() then
-            return
-        end
-        g_effects.fadeOut(widget, 3000)
-        scheduleEvent(function()
-            if widget:isDestroyed() then
-                return
-            end
-            if keep then
-                widget:hide()
-            else
-                popups[widget] = nil
-                widget:destroy()
-            end
-        end, 3000)
-    end, 9000)
+    groups = {}
+    groupCount = 0
 end
 
 local function show(value)
-    panel:destroyChildren()
-    showTimed(window, true)
-
-    window:recursiveGetChildById('advanceMessage2'):setText(tr('Level %d', value))
-
-    if (ADVANCES[value]) then
-        for k, v in pairs(ADVANCES[value]) do
-            local parent = g_ui.createWidget('AdvanceSection', panel)
-
-            local image = g_ui.createWidget('UIWidget', parent)
-            image:setId(0)
-            image:setImageSource(v.image)
-            image:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-            image:addAnchor(AnchorTop, 'parent', AnchorTop)
-            image:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-
-            local title = g_ui.createWidget('UILabel', parent)
-            title:setText(v.title)
-            --title:setFont("sans-bold-16px_cp1252")
-            title:setColor('#b6b6b6')
-            title:setTextAlign(AlignCenter)
-            title:addAnchor(AnchorLeft, 0, AnchorRight)
-            title:addAnchor(AnchorRight, 'parent', AnchorRight)
-            title:addAnchor(AnchorTop, 'parent', AnchorTop)
-
-            local description = g_ui.createWidget('UILabel', parent)
-            description:setText(v.description)
-            description:setFont("sans-bold-16px")
-            description:setTextAlign(AlignCenter)
-            description:addAnchor(AnchorLeft, 0, AnchorRight)
-            description:addAnchor(AnchorRight, 'parent', AnchorRight)
-            description:addAnchor(AnchorTop, 'prev', AnchorBottom)
-            description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-        end
+    local player = g_game.getLocalPlayer()
+    local rows = {}
+    for _, advance in ipairs(ADVANCES[value] or {}) do
+        table.insert(rows, { image = advance.image, title = advance.title, value = advance.description })
     end
+    pushCard({
+        kind = 'up',
+        portrait = player and { outfit = player:getOutfit() } or nil,
+        title = tr('Level Up!'),
+        subtitle = player and player:getName() or '',
+        value = tr('Level %d', value),
+        rows = rows
+    })
 end
 
 local function showSkill(id, value)
-    if (SKILLS[id]) then
-        local skillWindow = g_ui.createWidget('AdvanceWindow', modules.game_interface.getRootPanel())
-        local panel = skillWindow:recursiveGetChildById('panel')
-        showTimed(skillWindow)
-
-        local parent = g_ui.createWidget('AdvanceSection', panel)
-
-        local image = g_ui.createWidget('UIWidget', parent)
-        image:setId(0)
-        image:setImageSource(SKILLS[id].image)
-        image:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-        image:addAnchor(AnchorTop, 'parent', AnchorTop)
-        image:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-        image:setPhantom(true)
-
-        local title = g_ui.createWidget('UILabel', parent)
-        title:setText(SKILLS[id].title)
-        --title:setFont("sans-bold-16px_cp1252")
-        title:setColor('#b6b6b6')
-        title:setTextAlign(AlignCenter)
-        title:addAnchor(AnchorLeft, 0, AnchorRight)
-        title:addAnchor(AnchorRight, 'parent', AnchorRight)
-        title:addAnchor(AnchorTop, 'parent', AnchorTop)
-
-        local description = g_ui.createWidget('UILabel', parent)
-        description:setText(value)
-        description:setFont("sans-bold-16px")
-        description:setTextAlign(AlignCenter)
-        description:addAnchor(AnchorLeft, 0, AnchorRight)
-        description:addAnchor(AnchorRight, 'parent', AnchorRight)
-        description:addAnchor(AnchorTop, 'prev', AnchorBottom)
-        description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+    local skill = SKILLS[id]
+    if not skill then
+        return
     end
+    pushCard({
+        kind = 'up',
+        portrait = { image = skill.image, size = 34 },
+        title = tr('Skill Up!'),
+        subtitle = skill.title,
+        value = tr('Level %d', value)
+    })
 end
 
-local function showMove(pokemonName, iconItemId, index)
-    local moveWindow = g_ui.createWidget('MoveAdvanceWindow', modules.game_interface.getRootPanel())
-    moveWindow:setMarginTop(moveWindow:getMarginTop() + (index - 1) * moveWindow:getHeight())
-    showTimed(moveWindow)
-    moveWindow:recursiveGetChildById('moveIcon'):setItemId(iconItemId)
-
+local function showMove(pokemonName, iconItemId)
     local moveName = getMoveNameByIconItemId(iconItemId)
-    local parent = g_ui.createWidget('AdvanceSection', moveWindow:recursiveGetChildById('panel'))
-
-    local title = g_ui.createWidget('UILabel', parent)
-    title:setText(tr('%s learned', pokemonName))
-    title:setColor('#b6b6b6')
-    title:setTextAlign(AlignCenter)
-    title:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-    title:addAnchor(AnchorRight, 'parent', AnchorRight)
-    title:addAnchor(AnchorTop, 'parent', AnchorTop)
-
-    local description = g_ui.createWidget('UILabel', parent)
-    description:setText(moveName)
-    description:setFont("sans-bold-16px")
-    description:setTextAlign(AlignCenter)
-    description:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-    description:addAnchor(AnchorRight, 'parent', AnchorRight)
-    description:addAnchor(AnchorTop, 'prev', AnchorBottom)
-    description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-
+    pushCard({
+        kind = 'star',
+        portrait = { item = iconItemId },
+        title = tr('New Move!'),
+        subtitle = tr('%s learned', pokemonName),
+        value = moveName
+    })
     if moveName ~= '' and modules.game_textmessage then
         modules.game_textmessage.displayMessage(MessageModes.Status, tr('Your %s learned %s!', pokemonName, moveName))
     end
 end
 
 local function showPokemon(id, value, newMoves)
-    local skillWindow = g_ui.createWidget('PokemonAdvanceWindow', modules.game_interface.getRootPanel())
-    showTimed(skillWindow)
-    local panel = skillWindow:recursiveGetChildById('panel')
-    local image = skillWindow:recursiveGetChildById('pokemonIcon')
-    image:setImageSource('/images/staticPortraits/' .. id)
-
-    local parent = g_ui.createWidget('AdvanceSection', panel)
-
-    local title = g_ui.createWidget('UILabel', parent)
     local pokemonName = getPokemonNameByNumber(id) or ''
-    title:setText(pokemonName)
-    --title:setFont("sans-bold-16px_cp1252")
-    title:setColor('#b6b6b6')
-    title:setTextAlign(AlignCenter)
-    title:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-    title:addAnchor(AnchorRight, 'parent', AnchorRight)
-    title:addAnchor(AnchorTop, 'parent', AnchorTop)
-
-    local description = g_ui.createWidget('UILabel', parent)
-    description:setText(value)
-    description:setFont("sans-bold-16px")
-    description:setTextAlign(AlignCenter)
-    description:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-    description:addAnchor(AnchorRight, 'parent', AnchorRight)
-    description:addAnchor(AnchorTop, 'prev', AnchorBottom)
-    description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-
-    for index, iconItemId in ipairs(newMoves) do
-        showMove(pokemonName, iconItemId, index)
+    pushCard({
+        kind = 'up',
+        portrait = { image = '/images/staticPortraits/' .. id },
+        title = tr('Level Up!'),
+        subtitle = pokemonName,
+        value = tr('Level %d', value)
+    })
+    for _, iconItemId in ipairs(newMoves) do
+        showMove(pokemonName, iconItemId)
     end
 end
 
@@ -283,9 +309,8 @@ function onPokemonLevelUp(pokemonNumber, newLevel, newMoves)
 end
 
 function onInit()
-    window = g_ui.loadUI('advanceeffect', modules.game_interface.getRootPanel())
-    panel = window:recursiveGetChildById('panel')
-    window:hide()
+    column = g_ui.loadUI('advanceeffect', modules.game_interface.getRootPanel())
+    column:setVisible(enabled)
 
     connect(g_game, {
         onGameStart = onOnline,
@@ -317,8 +342,8 @@ function onTerminate()
 
     reset()
 
-    if (window) then
-        window:destroy()
-        window = nil
+    if (column) then
+        column:destroy()
+        column = nil
     end
 end

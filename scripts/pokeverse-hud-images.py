@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Draws the PokeVerse HUD artwork (pills, bars, portrait ring, party balls).
+"""Draws the PokeVerse HUD artwork (pills, bars, portrait ring, party balls) and,
+when a second directory is given, the level-up / new-move popup artwork.
 
-usage: pokeverse-hud-images.py <out dir>
+usage: pokeverse-hud-images.py <out dir> [<popup out dir>]
 """
+import math
 import sys
 from pathlib import Path
 
@@ -47,7 +49,7 @@ def bar_fill(out, name, top, bottom):
     save(im, out, name)
 
 
-def portrait(out, size=66):
+def portrait(out, size=66, disc='portrait-disc', ring='portrait-ring'):
     im = canvas(size, size)
     d = ImageDraw.Draw(im)
     s = im.width
@@ -55,13 +57,13 @@ def portrait(out, size=66):
         t = r / (s / 2)
         c = tuple(round(a + (b - a) * t) for a, b in zip((52, 98, 170), (24, 52, 104)))
         d.ellipse((s / 2 - r, s / 2 - r, s / 2 + r, s / 2 + r), fill=c + (255,))
-    save(im, out, 'portrait-disc')
+    save(im, out, disc)
 
     im = canvas(size, size)
     d = ImageDraw.Draw(im)
     d.ellipse((0, 0, s - 1, s - 1), outline=GOLD_DARK, width=5 * SCALE)
     d.ellipse((SCALE, SCALE, s - 1 - SCALE, s - 1 - SCALE), outline=GOLD, width=3 * SCALE)
-    save(im, out, 'portrait-ring')
+    save(im, out, ring)
 
 
 def ball(out, name, top, bottom, band=(16, 16, 16), button=(240, 240, 240), n=14):
@@ -106,9 +108,56 @@ def heart(out):
     save(im, out, 'heart')
 
 
+def popup_card(out):
+    """Level-up card background, drawn as a 9-slice (image-border: 12): panel, edge and a gold top accent."""
+    w = h = 32
+    im = canvas(w, h)
+    d = ImageDraw.Draw(im)
+    s = SCALE
+    d.rounded_rectangle((0, 0, im.width - 1, im.height - 1), 10 * s, fill=(16, 23, 24, 235),
+                        outline=PANEL_EDGE, width=s)
+    d.rounded_rectangle((10 * s, 1 * s, im.width - 1 - 10 * s, 3 * s - 1), s, fill=GOLD)
+    save(im, out, 'popup-card')
+
+
+def badge(out, name, top, bottom, symbol, n=20):
+    im = canvas(n, n)
+    d = ImageDraw.Draw(im)
+    s = im.width
+    d.ellipse((0, 0, s - 1, s - 1), fill=(10, 14, 15, 255))
+    for r in range(s // 2 - 2 * SCALE, 0, -1):
+        t = r / (s / 2 - 2 * SCALE)
+        c = tuple(round(a + (b - a) * t) for a, b in zip(top, bottom))
+        d.ellipse((s / 2 - r, s / 2 - r, s / 2 + r, s / 2 + r), fill=c + (255,))
+    white = (255, 255, 255, 255)
+    k = SCALE * n / 20
+    c = s / 2
+    if symbol == 'up':
+        d.polygon(((c, c - 6 * k), (c + 5.5 * k, c), (c + 2.2 * k, c), (c + 2.2 * k, c + 6 * k),
+                   (c - 2.2 * k, c + 6 * k), (c - 2.2 * k, c), (c - 5.5 * k, c)), fill=white)
+    else:
+        points = []
+        for i in range(10):
+            a = -math.pi / 2 + i * math.pi / 5
+            r = (6.5 if i % 2 == 0 else 2.8) * k
+            points.append((c + r * math.cos(a), c + 0.6 * k + r * math.sin(a)))
+        d.polygon(points, fill=white)
+    save(im, out, name)
+
+
+def popups(out):
+    out.mkdir(parents=True, exist_ok=True)
+    popup_card(out)
+    portrait(out, 60, 'popup-disc', 'popup-ring')
+    badge(out, 'badge-up', (120, 236, 156), (36, 150, 80), 'up')
+    badge(out, 'badge-star', (255, 214, 96), (200, 136, 20), 'star')
+
+
 def main():
     out = Path(sys.argv[1])
     out.mkdir(parents=True, exist_ok=True)
+    if len(sys.argv) > 2:
+        popups(Path(sys.argv[2]))
     rounded(out, 'panel', 24, 24, 9, PANEL, PANEL_EDGE)
     rounded(out, 'track', 12, 8, 4, TRACK)
     bar_fill(out, 'fill-health', (96, 226, 140), (44, 170, 92))

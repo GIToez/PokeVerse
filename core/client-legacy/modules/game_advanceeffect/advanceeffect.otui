@@ -1,215 +1,146 @@
-PokemonAdvanceWindow < HeadlessWindow
-  focusable: false
-  draggable: false
-  image-color: #ffffffee
-  image-source: ~
-  size: 300 300
-  anchors.top: gameMapPanel.top
-  anchors.horizontalCenter: gameMapPanel.horizontalCenter
-  //background-color: #898989bb
-  //border-color: #272727cc
-  //border-width: 1
-  margin-left: 4
-  margin-top: 250
+AdvanceGroup < UIWidget
+  width: 250
   phantom: true
-  opacity: 0.8
+  focusable: false
+  layout:
+    type: verticalBox
+    spacing: 3
+    fit-children: true
+
+AdvanceCard < UIWidget
+  size: 250 72
+  image-source: /modules/game_advanceeffect/images/popup-card
+  image-border: 12
+  phantom: true
+  focusable: false
 
   UIWidget
-    id: bg
-    image-source: /images/staticPortraits/0
-    anchors.top: parent.top
+    id: disc
+    size: 60 60
+    image-source: /modules/game_advanceeffect/images/popup-disc
     anchors.left: parent.left
-    opacity: 0.9
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 7
     phantom: true
-    focusable: false
+
+    UIWidget
+      id: picture
+      size: 50 50
+      anchors.centerIn: parent
+      phantom: true
+      visible: false
+
+    UICreature
+      id: creature
+      size: 54 54
+      anchors.centerIn: parent
+      phantom: true
+      visible: false
+
+    Item
+      id: moveIcon
+      size: 38 38
+      anchors.centerIn: parent
+      border-width: 0
+      padding: 0
+      image-source: ~
+      phantom: true
+      visible: false
+
+    UIWidget
+      id: ring
+      image-source: /modules/game_advanceeffect/images/popup-ring
+      anchors.fill: parent
+      phantom: true
 
   UIWidget
-    id: pokemonIcon
-    anchors.top: parent.top
-    anchors.left: parent.left
+    id: badge
+    size: 20 20
+    anchors.right: disc.right
+    anchors.bottom: disc.bottom
+    margin-right: -3
+    margin-bottom: -2
     phantom: true
-    focusable: false
 
   UILabel
-    id: advanceMessage2
-    font: sans-bold-16px
-    text-align: center
-    color: #ffd303
+    id: title
+    font: verdana-11px-rounded
+    color: #e2b23e
     anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 10
-    !text: tr('Level Up!')
-    text-horizontal-auto-resize: true
-
-  FlatPanel
-    id: panel
-    image-source: ~
-    width: 180
-    anchors.top: advanceMessage2.bottom
-    anchors.bottom: parent.bottom
+    anchors.left: disc.right
     anchors.right: parent.right
-    margin-top: 10
-    //margin-bottom: 4
-    //margin-left: 12
-    //padding: 2
-    layout:
-      type: verticalBox
-      num-columns: 1
-
-AdvanceWindow < HeadlessWindow
-  focusable: false
-  draggable: false
-  image-color: #ffffffee
-  image-source: ~
-  size: 300 300
-  anchors.horizontalCenter: gameMapPanel.horizontalCenter
-  anchors.top: gameMapPanel.top
-  //background-color: #898989bb
-  //border-color: #272727cc
-  //border-width: 1
-  margin-left: 4
-  margin-top: 150
-  phantom: true
-  opacity: 0.9
-
-  UILabel
-    id: advanceMessage2
-    font: sans-bold-16px
-    text-align: center
-    color: #ffd303
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 10
-    !text: tr('Skill Advance')
-    text-horizontal-auto-resize: true
-
-  FlatPanel
-    id: panel
-    image-source: ~
-    anchors.top: advanceMessage2.bottom
-    anchors.bottom: parent.bottom
-    anchors.left: parent.left
-    anchors.right: parent.right
-    margin-top: 10
-    //margin-bottom: 4
-    //margin-left: 12
-    //padding: 2
-    layout:
-      type: verticalBox
-      num-columns: 1
-
-MoveAdvanceWindow < HeadlessWindow
-  focusable: false
-  draggable: false
-  image-color: #ffffffee
-  image-source: ~
-  size: 300 100
-  anchors.top: gameMapPanel.top
-  anchors.horizontalCenter: gameMapPanel.horizontalCenter
-  margin-left: 4
-  margin-top: 355
-  phantom: true
-  opacity: 0.8
-
-  UIWidget
-    id: bg
-    image-source: /modules/game_advanceeffect/images/newmove
-    anchors.top: parent.top
-    anchors.left: parent.left
-    opacity: 0.9
+    margin-top: 11
+    margin-left: 12
+    margin-right: 10
     phantom: true
-    focusable: false
 
-  Item
-    id: moveIcon
-    size: 48 48
-    anchors.centerIn: bg
-    border-width: 0
-    padding: 0
-    image-source: ~
+  UILabel
+    id: subtitle
+    font: verdana-11px-rounded
+    color: #c3cfcf
+    anchors.top: title.bottom
+    anchors.left: title.left
+    anchors.right: title.right
+    margin-top: 1
     phantom: true
-    focusable: false
 
   UILabel
-    id: advanceMessage2
+    id: value
     font: sans-bold-16px
-    text-align: center
-    color: #ffd303
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 10
-    !text: tr('New Move!')
-    text-horizontal-auto-resize: true
-
-  FlatPanel
-    id: panel
-    image-source: ~
-    width: 180
-    anchors.top: advanceMessage2.bottom
-    anchors.bottom: parent.bottom
-    anchors.right: parent.right
-    margin-top: 10
-    layout:
-      type: verticalBox
-      num-columns: 1
-
-AdvanceSection < Panel
-  background-color: #22283399
-  border-width: 1
-  border-color: #111111
-  image-source: ~
-  margin-top: 5
-  margin-left: 5
-  height: 32
-
-HeadlessWindow
-  id: advanceWindow
-  focusable: false
-  draggable: false
-  image-color: #ffffffee
-  image-source: ~
-  size: 300 300
-  anchors.horizontalCenter: gameMapPanel.horizontalCenter
-  anchors.top: gameMapPanel.top
-  //background-color: #898989bb
-  //border-color: #272727cc
-  //border-width: 1
-  margin-left: 4
-  margin-top: 150
-  phantom: true
-  opacity: 0.9
-
-  UILabel
-    id: advanceMessage1
-    //font: sans-bold-16px_cp1252
-    text-align: center
     color: #ffffff
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    !text: tr('You\'ve Reached')
+    anchors.top: subtitle.bottom
+    anchors.left: title.left
+    anchors.right: title.right
+    margin-top: 1
+    phantom: true
+
+AdvanceFeatureRow < UIWidget
+  size: 250 42
+  image-source: /modules/game_advanceeffect/images/popup-card
+  image-border: 12
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: icon
+    size: 34 34
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 20
+    phantom: true
 
   UILabel
-    id: advanceMessage2
-    font: sans-bold-16px
-    text-align: center
-    color: #ffd303
-    anchors.top: advanceMessage1.bottom
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 10
-    !text: tr('Level 0')
-    text-horizontal-auto-resize: true
-
-  FlatPanel
-    id: panel
-    image-source: ~
-    anchors.top: advanceMessage2.bottom
-    anchors.bottom: parent.bottom
-    anchors.left: parent.left
+    id: title
+    font: verdana-11px-rounded
+    color: #e2b23e
+    !text: tr('New Feature')
+    anchors.top: parent.top
+    anchors.left: icon.right
     anchors.right: parent.right
-    margin-top: 10
-    //margin-bottom: 4
-    //margin-left: 12
-    //padding: 2
-    layout:
-      type: verticalBox
-      num-columns: 1
+    margin-top: 6
+    margin-left: 18
+    margin-right: 10
+    phantom: true
+
+  UILabel
+    id: value
+    font: verdana-11px-rounded
+    color: #ffffff
+    anchors.top: title.bottom
+    anchors.left: title.left
+    anchors.right: title.right
+    margin-top: 2
+    phantom: true
+
+UIWidget
+  id: advanceColumn
+  width: 250
+  anchors.top: gameMapPanel.verticalCenter
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter
+  margin-top: 44
+  phantom: true
+  focusable: false
+  layout:
+    type: verticalBox
+    spacing: 6
+    fit-children: true
