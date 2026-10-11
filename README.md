@@ -31,6 +31,19 @@ The live server runs on OVHcloud (Ubuntu 24.04) and is deployed by the **Live se
 workflow. Players use the Redemption client from the **Client release** workflow, which connects to it.
 See [`docs/live-server.md`](docs/live-server.md).
 
+## Shipping to live
+
+Merging into `main` builds and tests everything but changes nothing live. To ship, run
+both workflows from the Actions tab on `main`:
+
+- [ ] **Live server** → Run workflow → action **`deploy`** (in-game warning: 5 minutes, or
+  0 when nobody is online). Backs up, installs and restarts the game server, then checks it.
+- [ ] **Client release** → Run workflow → tick **Publish**. Installed clients download the
+  update on their next start; new players get it from <https://gitoez.github.io/PokeVerse/>.
+
+Run both when a change touches the server and the client (most do), so they stay in step.
+Server-only changes need only the first, client-only changes only the second.
+
 ## Redemption client
 
 The new client runs PokeVerse on the OTClient Redemption engine, for Windows, Linux and
