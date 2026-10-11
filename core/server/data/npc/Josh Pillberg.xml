@@ -5,6 +5,22 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. I can {reset} your Pokemon vitamins!"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. I can {reset} your Pokemon vitamins, and I {trade} items for EV training and breeding!"/>
+		<parameter key="shop_buyable" value="
+		destiny knot, 30137, 50000;
+		everstone, 30138, 15000;
+		power weight, 30139, 25000;
+		power bracer, 30140, 25000;
+		power belt, 30141, 25000;
+		power lens, 30142, 25000;
+		power band, 30143, 25000;
+		power anklet, 30144, 25000;
+		pomeg berry, 30145, 1500;
+		kelpsy berry, 30146, 1500;
+		qualot berry, 30147, 1500;
+		hondew berry, 30148, 1500;
+		grepa berry, 30149, 1500;
+		tamato berry, 30150, 1500
+		"/>
 	</parameters>
 </npc>

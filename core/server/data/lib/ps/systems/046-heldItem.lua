@@ -645,6 +645,10 @@ end
 
 PokemonHeldItem.doResetBall = function(ball, cid)
     local heldId = getBallHeld(ball.uid)
+    -- items without levels are only swapped, so they come back
+    if (heldId and HELDS[heldId] and HELDS[heldId].noLevels) then
+        doPlayerSafeAddItem(cid, HELDS[heldId].itemId, 1, true)
+    end
     if (heldId and heldId == HELD_IDS.ELEMENTAL_STONE) then
         local heldVariables = getBallHeldVariables(ball.uid)
         if (heldVariables and isString(heldVariables)) then
