@@ -12,6 +12,7 @@ local orientation = HORIZONTAL
 local MOVE_COUNT = 12
 local KEYBIND_CATEGORY = 'Pokemon'
 local ORDER_ACTION = 'Order'
+local DEX_ACTION = 'Use Pokedex on target'
 
 local function moveAction(index)
     return 'Use move ' .. index
@@ -150,6 +151,21 @@ local function useOrder()
     end
 end
 
+-- the Pokedex the server keeps in the left hand slot, used on the attacked (or followed) creature; without one, the crosshair
+local function useDexOnTarget()
+    local player = g_game.isOnline() and g_game.getLocalPlayer()
+    local item = player and player:getInventoryItem(InventorySlotLeft)
+    if not item then
+        return
+    end
+    local target = g_game.getAttackingCreature() or g_game.getFollowingCreature()
+    if target then
+        g_game.useWith(item, target)
+    else
+        modules.game_interface.startUseWith(item)
+    end
+end
+
 local function bindKeys()
     for index = 1, MOVE_COUNT do
         local primary, secondary = moveKeys(index)
@@ -160,6 +176,8 @@ local function bindKeys()
     end
     Keybind.new(KEYBIND_CATEGORY, ORDER_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'R' }, '')
     Keybind.bind(KEYBIND_CATEGORY, ORDER_ACTION, { { type = KEY_DOWN, callback = useOrder } })
+    Keybind.new(KEYBIND_CATEGORY, DEX_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'X' }, '')
+    Keybind.bind(KEYBIND_CATEGORY, DEX_ACTION, { { type = KEY_DOWN, callback = useDexOnTarget } })
 end
 
 local function unbindKeys()
@@ -167,6 +185,7 @@ local function unbindKeys()
         Keybind.delete(KEYBIND_CATEGORY, moveAction(index))
     end
     Keybind.delete(KEYBIND_CATEGORY, ORDER_ACTION)
+    Keybind.delete(KEYBIND_CATEGORY, DEX_ACTION)
 end
 
 local function delegateDrag(slot)

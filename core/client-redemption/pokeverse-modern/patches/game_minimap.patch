@@ -1,7 +1,16 @@
 diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap.lua
 --- a/modules/game_minimap/minimap.lua
 +++ b/modules/game_minimap/minimap.lua
-@@ -131,6 +131,7 @@
+@@ -96,6 +96,8 @@
+ end
+ 
+ function mapController:onInit()
++    Keybind.new("Minimap", "Open full map", { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'M' }, '')
++    Keybind.bind("Minimap", "Open full map", { { type = KEY_DOWN, callback = function() fullscreen() end } })
+     self.ui.minimapBorder.minimap:getChildById('floorUpButton'):hide()
+     self.ui.minimapBorder.minimap:getChildById('floorDownButton'):hide()
+     self.ui.minimapBorder.minimap:getChildById('zoomInButton'):hide()
+@@ -131,6 +133,7 @@
      end
  
      self.ui.minimapBorder.minimap:load()
@@ -9,7 +18,15 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function mapController:onGameEnd()
-@@ -200,6 +201,7 @@
+@@ -145,6 +148,7 @@
+ end
+ 
+ function mapController:onTerminate()
++    Keybind.delete("Minimap", "Open full map")
+     if iconTopMenu then
+         iconTopMenu:destroy()
+         iconTopMenu = nil
+@@ -200,6 +204,7 @@
      oldPos = minimapWidget:getCameraPosition()
      minimapWidget:setZoom(zoom)
      minimapWidget:setCameraPosition(pos)

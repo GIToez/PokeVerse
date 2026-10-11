@@ -107,6 +107,23 @@ local function updateSlot(slot, textColor, text)
     slot.health:setText(text)
 end
 
+-- the summon is out when one of the creatures around is ours; using the ball in the ball slot (the feet slot) calls it back
+local function recallPokemon()
+    local player = g_game.getLocalPlayer()
+    if not player then
+        return
+    end
+    for _, creature in ipairs(g_map.getSpectators(player:getPosition(), false)) do
+        if creature:isLocalPlayerSummon() then
+            local ball = player:getInventoryItem(InventorySlotFeet)
+            if ball then
+                g_game.use(ball)
+            end
+            return
+        end
+    end
+end
+
 local function findSlot(number)
     return pokemonBar:getChildById('poke' .. number)
 end
@@ -115,7 +132,7 @@ function onPokemonBarAdd(itemId, number, textColor, text)
     local slot = g_ui.createWidget('QuickCallSlot', pokemonBar)
     slot:setId('poke' .. number)
     slot.portrait:setItemId(itemId)
-    slot:setTooltip(getPokemonNameByIconItemId(itemId) .. '\n' .. tr('Click to call, Shift+click for details'))
+    slot:setTooltip(getPokemonNameByIconItemId(itemId) .. '\n' .. tr('Click to call, Ctrl+click to call back, Shift+click for details'))
     slot:setDraggable(true)
     slot.onDragEnter = function(self, mousePos)
         return pokemonBar:onDragEnter(mousePos)
@@ -144,6 +161,8 @@ function onPokemonBarAdd(itemId, number, textColor, text)
         end
         if g_keyboard.isShiftPressed() then
             g_game.talkChannel(MessageModes.Say, 0, '/pd ' .. number)
+        elseif g_keyboard.isCtrlPressed() then
+            recallPokemon()
         else
             g_game.talkChannel(MessageModes.Say, 0, '/cp ' .. number)
         end
