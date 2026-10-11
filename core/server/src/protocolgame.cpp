@@ -54,6 +54,7 @@
 
 #if defined(WINDOWS) && !defined(__CONSOLE__)
 #include "gui.h"
+#endif
 
 // The area sent to the client around the player: VIEW_LEFT tiles to the left, VIEW_RIGHT to the right
 // (the extra column and row are the ones the client needs while walking). The client's setup.otml viewport must match.
@@ -63,7 +64,6 @@ static const int32_t VIEW_TOP = Map::maxClientViewportY;
 static const int32_t VIEW_BOTTOM = Map::maxClientViewportY + 1;
 static const int32_t VIEW_WIDTH = VIEW_LEFT + VIEW_RIGHT + 1;
 static const int32_t VIEW_HEIGHT = VIEW_TOP + VIEW_BOTTOM + 1;
-#endif
 
 extern Game g_game;
 extern ConfigManager g_config;
