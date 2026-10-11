@@ -133,3 +133,10 @@ function string.stripAccents(str)
   return normalizedString
 end
 end
+
+-- legacy corelib, used by game_environment
+if not isTable then
+function isTable(v)
+  return type(v) == 'table'
+end
+end
