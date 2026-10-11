@@ -28,7 +28,7 @@ local function doSpell(cid, combat, var)
 end
 
 function onTargetCreature_RazorWind(cid, target)
-	addEvent(doAttack, INTERVAL, cid, target)
+	addEvent(doAttack, PokemonStats.getWindupDelay(cid, INTERVAL), cid, target)
 end
 
 local combat = createCombatObject() setCombatCallback(combat, CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature_RazorWind")

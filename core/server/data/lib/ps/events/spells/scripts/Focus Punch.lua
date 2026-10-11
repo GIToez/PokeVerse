@@ -10,7 +10,7 @@ local function doSpell(cid, target, ticks)
 		doSendMagicEffect(cidPos, EFFECT_RED_ENERGIZE)
 		doSendAnimatedText(cidPos, "CHARGE", COLOR_RED)
         if (ticks > 0) then
-			addEvent(doSpell, 500, cid, target, ticks - 1)
+			addEvent(doSpell, PokemonStats.getWindupDelay(cid, 500), cid, target, ticks - 1)
 		else
 			targetPos = getPositionAdjacent(cid, targetPos, false)
             if (targetPos) then

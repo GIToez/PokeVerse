@@ -347,6 +347,61 @@ PokemonStats.onBallChanged = function(cid, ballUid)
     end
 end
 
+-- Speed shortens a player's Pokemon's move cooldowns and wind-ups by up to these fractions, scaled by
+-- R = Speed / (Speed + SPEED_RATIO_HALF), with Speed the official stat (IVs, EVs and Nature included)
+PokemonStats.SPEED_COOLDOWN_REDUCTION = 0.15
+PokemonStats.SPEED_WINDUP_REDUCTION = 0.10
+PokemonStats.SPEED_RATIO_HALF = 150
+
+PokemonStats.getSpeedStat = function(ballUid, pokemonName, level)
+    local bases = PokemonStats.getBaseStats(pokemonName)
+    local ivs, evs = PokemonStats.getBallIvs(ballUid), PokemonStats.getBallEvs(ballUid)
+    if (not bases or not ivs or not evs) then
+        return nil
+    end
+    local stat = POKEMON_STAT.SPEED
+    return PokemonStats.officialStat(stat, bases[stat], ivs[stat], evs[stat], level,
+        PokemonStats.getNatureMultiplier(PokemonStats.getBallNatureId(ballUid), stat))
+end
+
+-- 0 for wild and NPC Pokemon: only players' Pokemon have the Speed benefits
+PokemonStats.getSpeedRatio = function(pokemon)
+    if (not isMonster(pokemon) or not isSummon(pokemon)) then
+        return 0
+    end
+    local master = getCreatureMaster(pokemon)
+    if (not isPlayer(master)) then
+        return 0
+    end
+    local ball = getPlayerBall(master)
+    if (not isItem(ball) or not isBallWithPokemon(ball.uid)) then
+        return 0
+    end
+    local speed = PokemonStats.getSpeedStat(ball.uid, getCreatureName(pokemon), getMonsterLevel(pokemon))
+    if (not speed or speed <= 0) then
+        return 0
+    end
+    return speed / (speed + PokemonStats.SPEED_RATIO_HALF)
+end
+
+-- Cooldowns are whole seconds, so the reduced time is rounded up or down at random in proportion
+-- (9.4 s is 10 s 40% of the time): on average every bit of the reduction counts
+PokemonStats.getCooldownTime = function(pokemon, seconds)
+    if (seconds <= 0) then
+        return seconds
+    end
+    local reduced = seconds * (1 - PokemonStats.SPEED_COOLDOWN_REDUCTION * PokemonStats.getSpeedRatio(pokemon))
+    local whole = math.floor(reduced)
+    if (math.random() < reduced - whole) then
+        whole = whole + 1
+    end
+    return math.max(1, whole)
+end
+
+PokemonStats.getWindupDelay = function(pokemon, milliseconds)
+    return math.floor(milliseconds * (1 - PokemonStats.SPEED_WINDUP_REDUCTION * PokemonStats.getSpeedRatio(pokemon)))
+end
+
 PokemonStats.getEvYield = function(pokemonName)
     if (not pokemonName) then
         return nil

@@ -36,7 +36,7 @@ local function doCharge(cid, ticks)
         doSendAnimatedText(cidPos, "CHARGE", COLOR_DARKPURPLE)
     
         if (ticks > 0) then
-            addEvent(doCharge, 500, cid, ticks - 1)
+            addEvent(doCharge, PokemonStats.getWindupDelay(cid, 500), cid, ticks - 1)
         else
             doSpell(cid, getCreatureLookDirection(cid), getCreaturePosition(cid), 7)
         end

@@ -18,6 +18,9 @@ local combat = createCombatObject() setCombatCallback(combat, CALLBACK_PARAM_TAR
 local condition = createConditionObject(CONDITION_INVISIBLE, INTERVAL)
 
 local function doSpell(cid)
+    if (isCreature(cid)) then
+        doRemoveCondition(cid, CONDITION_INVISIBLE)
+    end
     if (isCreature(cid) and hasTarget(cid)) then
         doCombat(cid, combat, numberToVariant(getCreatureTarget(cid)))
     end
@@ -26,6 +29,6 @@ end
 function onCastSpell(cid, var)
     doSendMagicEffect(getCreaturePosition(cid), getPokemonSkillEffect(SKILL_NAME))
     doAddCondition(cid, condition)
-    addEvent(doSpell, INTERVAL, cid)
+    addEvent(doSpell, PokemonStats.getWindupDelay(cid, INTERVAL), cid)
     return true
 end

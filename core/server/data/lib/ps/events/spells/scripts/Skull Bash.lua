@@ -9,7 +9,7 @@ end
 function onTargetCreature_SkullBash(cid, target)
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_GRAY_BUFF)
     doCreatureAddStatus(cid, CREATURE_STATUS_EXTRASPDEF, CREATURE_STATUS_VAR_LOW)
-    addEvent(doAttack, 2000, cid, target)
+    addEvent(doAttack, PokemonStats.getWindupDelay(cid, 2000), cid, target)
 end
 
 local combat = createCombatObject() setCombatCallback(combat, CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature_SkullBash")

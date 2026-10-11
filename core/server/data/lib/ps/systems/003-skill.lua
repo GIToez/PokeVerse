@@ -213,17 +213,15 @@ function doPokemonUseSkill(pokemon, skillName)
             doPokemonAddEnergy(pokemon, -getPokemonSkillRequiredEnergy(skillName))
             doAddExhaust(pokemonMaster)
 
+            local cooldown = getPokemonSkillCooldownTime(skillName)
             if (isMonster(pokemonTarget)) then
                 if (doPokemonSpecialAbilityCheck(pokemonTarget, POKEMON_SPECIAL_ABILITY_IDS.PRESSURE, nil)) then
-                    setBallSkillCooldown(pokemonMaster, pokemonMasterBall.uid, skillName, getPokemonSkillCooldownTime(skillName) * 2)
+                    cooldown = cooldown * 2
                 elseif (doPokemonSpecialAbilityCheck(pokemonTarget, POKEMON_SPECIAL_ABILITY_IDS.STALL, nil)) then
-                    setBallSkillCooldown(pokemonMaster, pokemonMasterBall.uid, skillName, getPokemonSkillCooldownTime(skillName) * 1.1)
-                else
-                    setBallSkillCooldown(pokemonMaster, pokemonMasterBall.uid, skillName)
+                    cooldown = cooldown * 1.1
                 end
-            else
-                setBallSkillCooldown(pokemonMaster, pokemonMasterBall.uid, skillName)
             end
+            setBallSkillCooldown(pokemonMaster, pokemonMasterBall.uid, skillName, PokemonStats.getCooldownTime(pokemon, cooldown))
         end
 
         setPokemonLastUsedMove(pokemon, skillName)

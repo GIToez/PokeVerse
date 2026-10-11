@@ -25,7 +25,7 @@ local function doAttack(cid, target)
 end
 
 function onTargetCreature_SkyAttack(cid, target)
-	addEvent(doAttack, INTERVAL, cid, target)
+	addEvent(doAttack, PokemonStats.getWindupDelay(cid, INTERVAL), cid, target)
 end
 
 local combat = createCombatObject() setCombatCallback(combat, CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature_SkyAttack")
