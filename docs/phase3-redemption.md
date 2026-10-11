@@ -22,7 +22,7 @@ PokeVerse (see the Phase 4 plan).
 ## Engine changes
 
 All PokeVerse behaviour in the engine is behind the `GamePokeVerse` feature, which the
-PokeVerse things loader turns on together with the 8.54 protocol (version 312, login port
+PokeVerse things loader turns on together with the 8.54 protocol (version 313, login port
 7564, game port 8548).
 
 - **Protocol:** opcode 255 with its 26 sub-opcodes, client opcodes 250 and 251 (poll),

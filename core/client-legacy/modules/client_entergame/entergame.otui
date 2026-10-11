@@ -1,6 +1,6 @@
 EnterGameWindow < Window
   !text: tr('Enter Game')
-  size: 300 218
+  size: 300 240
   opacity: 0.8
   anchors.bottom: parent.bottom
   anchors.horizontalCenter: parent.horizontalCenter
@@ -42,12 +42,23 @@ EnterGameWindow
 
   CheckBox
     id: rememberAccountBox
-    !text: tr('Remember account')
-    !tooltip: tr('Remember account when starts client')
+    !text: tr('Remember password')
+    !tooltip: tr('Remember account and password when starts client')
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: prev.bottom
     margin-top: 10
+    @onCheckChange: self:getParent():getChildById('autoLoginBox'):setEnabled(self:isChecked())
+
+  CheckBox
+    id: autoLoginBox
+    !text: tr('Auto login')
+    !tooltip: tr('Open the character list straight away when the client starts')
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 6
+    enabled: false
 
   EnterGameButton
     !text: tr('Ok')

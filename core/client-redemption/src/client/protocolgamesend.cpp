@@ -54,8 +54,8 @@ void ProtocolGame::sendLoginPacket(const uint32_t challengeTimestamp, const uint
 
     msg->addU8(Proto::ClientPendingGame);
     msg->addU16(g_game.getOs());
-    // the PokeVerse server identifies its client by version 312 instead of the protocol version
-    msg->addU16(g_game.getFeature(Otc::GamePokeVerse) ? 312 : g_game.getProtocolVersion());
+    // the PokeVerse server identifies its client by version 313 instead of the protocol version
+    msg->addU16(g_game.getFeature(Otc::GamePokeVerse) ? 313 : g_game.getProtocolVersion());
 
     if (g_game.getFeature(Otc::GameClientVersion))
         msg->addU32(g_game.getClientVersion());

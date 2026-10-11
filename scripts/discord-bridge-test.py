@@ -387,7 +387,7 @@ def main():
         ev = e and e["event"] or {}
         check("player_login event after a successful login", e is not None and ev.get("scope") == "admin"
               and ev.get("sessionId", "").startswith(boot + "-s") and ev.get("ip") == "127.0.0.1"
-              and ev.get("clientOs") == "otclient-windows" and ev.get("clientVersion") == 312
+              and ev.get("clientOs") == "otclient-windows" and ev.get("clientVersion") == 313
               and isinstance(ev.get("accountId"), int) and ev.get("level", 0) >= 1 and ev.get("playersOnline", 0) >= 1,
               str(e))
         r = b.request("admin.sessions")

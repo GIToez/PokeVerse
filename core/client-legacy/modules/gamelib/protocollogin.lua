@@ -35,7 +35,7 @@ function ProtocolLogin:sendLoginPacket()
 
   msg:addU8(ClientOpcodes.ClientEnterAccount)
   msg:addU16(g_game.getOs())
-  msg:addU16(312)
+  msg:addU16(313)
   msg:addU8(modules.client_locales.getCurrentLocale().id)
 
   if g_game.getProtocolVersion() >= 971 then

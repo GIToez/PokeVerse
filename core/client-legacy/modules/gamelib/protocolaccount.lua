@@ -6,6 +6,7 @@ ProtocolAccount = extends(Protocol, "ProtocolAccount")
 AccountRequestCreateAccount = 1
 AccountRequestCreateCharacter = 2
 AccountRequestDeleteCharacter = 3
+AccountRequestServerStatus = 4 -- answered with the number of players online
 
 local ProtocolAccountId = 0x0B
 local AccountReplySuccess = 0x0B
@@ -30,7 +31,7 @@ function ProtocolAccount:onConnect()
   local msg = OutputMessage.create()
   msg:addU8(ProtocolAccountId)
   msg:addU16(g_game.getOs())
-  msg:addU16(312)
+  msg:addU16(313)
 
   local offset = msg:getMessageSize()
   msg:addU8(0) -- first RSA byte must be 0
@@ -73,12 +74,13 @@ function ProtocolAccount:onRecv(msg)
 end
 
 function ProtocolAccount:onError(msg, code)
-  self:finish(false, translateNetworkError(code, self:isConnecting(), msg))
+  self:finish(false, translateNetworkError(code, self:isConnecting(), msg), true)
 end
 
-function ProtocolAccount:finish(success, message)
+-- networkError is true when the server could not be reached at all
+function ProtocolAccount:finish(success, message, networkError)
   if self.finished then return end
   self.finished = true
   self:disconnect()
-  signalcall(self.onResult, self, success, message)
+  signalcall(self.onResult, self, success, message, networkError == true)
 end

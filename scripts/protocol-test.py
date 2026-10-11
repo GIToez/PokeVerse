@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end protocol test for the PokeVerse server (client protocol 8.54, version 312).
+"""End-to-end protocol test for the PokeVerse server (client protocol 8.54, version 313).
 
 Logs in like the legacy client does, reads the character list, enters the game
 with a character, walks a few steps and logs out. Exit code 0 means every step
@@ -23,7 +23,7 @@ RSA_N = int(
 )
 RSA_E = 65537
 CLIENT_OS = 0x0A  # CLIENTOS_OTCLIENT_WINDOWS
-CLIENT_VERSION = 312
+CLIENT_VERSION = 313
 
 WALK_OPCODES = {"north": 0x65, "east": 0x66, "south": 0x67, "west": 0x68}
 

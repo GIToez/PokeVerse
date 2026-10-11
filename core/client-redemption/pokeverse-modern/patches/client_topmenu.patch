@@ -1,6 +1,15 @@
 diff -ruN pristine/modules/client_topmenu/topmenu.lua modules/client_topmenu/topmenu.lua
 --- a/modules/client_topmenu/topmenu.lua
 +++ b/modules/client_topmenu/topmenu.lua
+@@ -14,7 +14,7 @@
+ local pingLabel
+ local topLeftYoutubeLink
+ local topLeftDiscordLink
+-local url_discord = ""
++local url_discord = "https://discord.gg/P88WNBB56E"
+ local url_youtube = ""
+ local lastSyncValue = -1
+ local fpsEvent = nil
 @@ -35,7 +35,7 @@
  -- private functions
  local function addButton(id, description, icon, callback, panel, toggle, front)
@@ -19,3 +28,114 @@ diff -ruN pristine/modules/client_topmenu/topmenu.lua modules/client_topmenu/top
          button:setIcon(resolvepath(icon, 3))
      else
          button:setText(description)
+@@ -112,6 +112,7 @@
+ 
+     topLeftYoutubeLink = topMenu:recursiveGetChildById('youtubeIcon')
+     topLeftDiscordLink = topMenu:recursiveGetChildById('discordIcon')
++    setLinkDiscord(url_discord)
+ 
+     Keybind.new("UI", "Toggle Top Menu", "Ctrl+Shift+T", "")
+     Keybind.bind("UI", "Toggle Top Menu", {
+@@ -348,6 +349,23 @@
+ function setPlayersOnline(value)
+     topLeftOnlinePlayersLabel:setText(value .. " " .. tr('players online'))
+ end
++
++-- count is nil when the server does not report it
++function setServerStatus(online, count)
++    if not topLeftOnlinePlayersLabel then
++        return
++    end
++    if not online then
++        topLeftOnlinePlayersLabel:setText(tr('Server offline'))
++        topLeftOnlinePlayersLabel:setColor('#ff5a5a')
++    elseif count then
++        topLeftOnlinePlayersLabel:setText(tr('Online') .. ' - ' .. count .. ' ' .. tr('players online'))
++        topLeftOnlinePlayersLabel:setColor('#5aff7a')
++    else
++        topLeftOnlinePlayersLabel:setText(tr('Server online'))
++        topLeftOnlinePlayersLabel:setColor('#5aff7a')
++    end
++end
+ function setDiscordStreams(value)
+     topLeftDiscordStreamersLabel:setText(value)
+ end
+@@ -519,10 +537,8 @@
+         topMenu:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
+         modules.game_interface.getRootPanel():addAnchor(AnchorTop, 'parent', AnchorTop)
+         topMenu:setWidth(1020)
+-        topMenu.topLeftDiscord:setWidth(110)
+-        topMenu.topLeftYoutube:setWidth(100)
++        topMenu.topLeftDiscord:setWidth(40)
+         topMenu.topLeftOnlinePlayers:show()
+         topMenu.topLeftDiscord:show()
+-        topMenu.topLeftYoutube:show()
+     end
+ end
+diff -ruN pristine/modules/client_topmenu/topmenu.otui modules/client_topmenu/topmenu.otui
+--- a/modules/client_topmenu/topmenu.otui
++++ b/modules/client_topmenu/topmenu.otui
+@@ -59,7 +59,7 @@
+     id: topLeftOnlinePlayers
+     anchors.verticalCenter: parent.verticalCenter
+     anchors.horizontalCenter: parent.horizontalCenter
+-    size: 100 32
++    size: 220 32
+ 
+     Panel
+       image-source: /images/icons/icon_players
+@@ -69,18 +69,18 @@
+ 
+     Label
+       id: topLeftOnlinePlayersLabel
+-      !text: '- ' .. tr('players online')
++      !text: tr('Checking server...')
+       anchors.left: prev.right
+       margin-left: 5
+       anchors.verticalCenter: prev.verticalCenter
+-      width: 150
++      width: 200
+ 
+   UIWidget
+     id: topLeftDiscord
+     anchors.verticalCenter: parent.verticalCenter
+     anchors.left: parent.left
+     margin-left: 10
+-    size: 110 32
++    size: 40 32
+ 
+     UIWidget
+       id: discordIcon
+@@ -88,8 +88,12 @@
+       anchors.verticalCenter: parent.verticalCenter
+       anchors.left: parent.left
+       size: 30 34
++      !tooltip: tr('Join our Discord')
++      $hover:
++        opacity: 0.8
+ 
+     Panel
++      visible: false
+       image-source: /images/icons/icon_streamers
+       anchors.top: parent.top
+       anchors.left: prev.right
+@@ -99,6 +103,7 @@
+ 
+     Label
+       id: topLeftDiscordStreamersLabel
++      visible: false
+       !text: '-'
+       anchors.left: prev.right
+       margin-left: 5
+@@ -109,8 +114,9 @@
+     id: topLeftYoutube
+     anchors.verticalCenter: parent.verticalCenter
+     anchors.left: topLeftDiscord.right
+-    margin-left: 10
+-    size: 100 32
++    margin-left: 0
++    size: 0 32
++    visible: false
+ 
+     UIWidget
+       id: youtubeIcon

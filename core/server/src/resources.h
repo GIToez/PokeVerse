@@ -76,8 +76,8 @@
 	#define ID_MENU_RELOAD_ALL 237
 #endif
 
-#define CLIENT_VERSION_MIN 312
-#define CLIENT_VERSION_MAX 312
+#define CLIENT_VERSION_MIN 313
+#define CLIENT_VERSION_MAX 313
 #define CLIENT_VERSION_STRING "Your client is outdated, please download the latest PokeVerse client."
 
 #define STATUS_SERVER_NAME "Unknown"
