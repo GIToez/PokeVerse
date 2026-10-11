@@ -47,6 +47,7 @@ Module
     - game_tutorial
     - game_effects
     - game_time
+    - game_environment
     - game_dollcase
     - game_badgecase
     - game_advanceeffect
