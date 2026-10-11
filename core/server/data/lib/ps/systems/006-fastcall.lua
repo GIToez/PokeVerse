@@ -48,26 +48,3 @@ function getFastcallBall(playerUid, fastcallNumber)
 	end
 	return false
 end
-
-function getFastcallPortrait(playerUid, ballUid)
-	local fastcallContainer = getPlayerSlotItem(playerUid, CONST_SLOT_ARMOR).uid
-	local fastcallContainerSize = getContainerSize(fastcallContainer) - 1
-	local fastcallContainerPortraits = {}
-	local fastcallNumber = getFastcallNumber(ballUid)
-
-	for i = 0, fastcallContainerSize do
-		local currentFastcallPortrait = getContainerItem(fastcallContainer, i)
-		if (isItem(currentFastcallPortrait)) then
-			table.insert(fastcallContainerPortraits, currentFastcallPortrait)
-		end
-	end
-
-	for i = 1, #fastcallContainerPortraits do
-		local currentPortraitFastcallNumber = getFastcallNumber(fastcallContainerPortraits[i].uid)
-		if (fastcallNumber == currentPortraitFastcallNumber) then
-			return fastcallContainerPortraits[i].uid
-		end
-	end
-
-	return false
-end

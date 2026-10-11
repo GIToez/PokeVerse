@@ -715,6 +715,11 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 					it.maxItems = intValue;
 			}
+			else if(tmpStrValue == "containeronlyattribute")
+			{
+				if(readXMLString(itemAttributesNode, "value", strValue))
+					it.containerOnlyAttribute = strValue;
+			}
 			else if(tmpStrValue == "fluidsource")
 			{
 				if(readXMLString(itemAttributesNode, "value", strValue))

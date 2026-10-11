@@ -120,6 +120,15 @@ function getPlayerAllBallsWithPokemon(cid)
         table.insert(ballsWithPokemon, ballSlotItem)
     end
 
+    local belt = getPlayerSlotItem(cid, PLAYER_SLOT_BELT)
+    if (isItem(belt) and isContainer(belt.uid)) then
+        for _, item in ipairs(getContainerItems(belt.uid)) do
+            if (isBallWithPokemon(item.uid)) then
+                table.insert(ballsWithPokemon, item)
+            end
+        end
+    end
+
     local playerBackpack = getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK)
     if (isItem(playerBackpack) and isContainer(playerBackpack.uid)) then
         local items = getContainerItems(playerBackpack.uid)
@@ -756,6 +765,57 @@ function doPlayerFixBagSlot(cid)
     local bag = getPlayerSlotItem(cid, CONST_SLOT_BACKPACK)
     if (bag.uid ~= 0 and isContainer(bag.uid) and getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK).uid == 0) then
         doPlayerEquipSlot(cid, bag.uid, PLAYER_SLOT_BACKPACK)
+    end
+end
+
+-- The trainer belt sits in the hidden armor slot and only takes balls with a Pokemon (items.xml
+-- containerOnlyAttribute), so the team doesn't use pokebag slots.
+TRAINER_BELT_ITEMID = 30151
+
+function getPlayerBelt(cid)
+    local belt = getPlayerSlotItem(cid, PLAYER_SLOT_BELT)
+    if (belt.uid ~= 0 and belt.itemid == TRAINER_BELT_ITEMID) then
+        return belt.uid
+    end
+    return nil
+end
+
+function doPlayerAddBallToBelt(cid, ballUid)
+    local belt = getPlayerBelt(cid)
+    if (not belt) then
+        return false
+    end
+
+    local size = getContainerSize(belt)
+    if (size >= getContainerCap(belt)) then
+        return false
+    end
+
+    doMovePlayerItem(cid, ballUid, {x = 65535, y = PLAYER_SLOT_BELT, z = 0})
+    return getContainerSize(belt) > size
+end
+
+function doPlayerEnsureBelt(cid)
+    if (not getPlayerBelt(cid) and getPlayerSlotItem(cid, PLAYER_SLOT_BELT).uid == 0) then
+        local uid = doPlayerAddItem(cid, TRAINER_BELT_ITEMID, 1, false)
+        if (uid) then
+            doPlayerEquipSlot(cid, uid, PLAYER_SLOT_BELT)
+        end
+    end
+
+    local belt = getPlayerBelt(cid)
+    if (not belt) then
+        log(LOG_TYPES.ERROR, "doPlayerEnsureBelt - No trainer belt.", getCreatureName(cid))
+        return
+    end
+
+    local backpack = getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK)
+    if (isContainer(backpack.uid)) then
+        for _, item in ipairs(getContainerItems(backpack.uid, true)) do
+            if (isBallWithPokemon(item.uid) and not doPlayerAddBallToBelt(cid, item.uid)) then
+                break
+            end
+        end
     end
 end
 

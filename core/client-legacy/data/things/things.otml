@@ -616,3 +616,5 @@ items:
     image: /images/items/grepa_berry
   28792:
     image: /images/items/tamato_berry
+  28793:
+    image: /images/items/trainer_belt

@@ -169,7 +169,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.top: amulet.top
        anchors.left: helmet.right
        margin-left: 3
-@@ -285,110 +320,108 @@
+@@ -285,110 +320,109 @@
  
      MainInventoryItem
        id: sword
@@ -195,6 +195,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.top: helmet.bottom
 -      anchors.left: helmet.left
 -      margin-top: 3
++      visible: false
 +      anchors.top: sword.top
 +      anchors.left: sword.right
 +      margin-left: 3
@@ -334,7 +335,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
  
    UIWidget
      id: offPanel
-@@ -421,7 +454,7 @@
+@@ -421,7 +455,7 @@
        size: 30 44
  
        Label
@@ -343,7 +344,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
          text.align: center
          font: cipsoftFont
          anchors.horizontalCenter: parent.horizontalCenter
-@@ -441,7 +474,7 @@
+@@ -441,7 +475,7 @@
          color: #c0c0c0ff
  
        Label

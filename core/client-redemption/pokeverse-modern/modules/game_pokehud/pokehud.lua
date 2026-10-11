@@ -276,6 +276,7 @@ function init()
     })
     Wallet.init(onWalletChange)
     Nameplates.init()
+    Belt.init()
 
     hud:hide()
     if g_game.isOnline() then
@@ -305,6 +306,7 @@ function terminate()
     })
     Wallet.terminate()
     Nameplates.terminate()
+    Belt.terminate()
     removeEvent(summonEvent)
     hud:destroy()
     hud = nil

@@ -38,7 +38,9 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
             end
         end
 
-        doMovePlayerItem(cid, item.uid, {y = PLAYER_SLOT_BACKPACK, z = 0})
+        if (not doPlayerAddBallToBelt(cid, item.uid)) then
+            doMovePlayerItem(cid, item.uid, {y = PLAYER_SLOT_BACKPACK, z = 0})
+        end
     end
 
     db.executeQuery("DELETE FROM `ball_pillars` WHERE positionx='".. fromPosition.x .. "' and positiony='" ..

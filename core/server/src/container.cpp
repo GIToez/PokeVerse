@@ -342,6 +342,10 @@ ReturnValue Container::__queryAdd(int32_t index, const Thing* thing, uint32_t co
 	if(item == this)
 		return RET_THISISIMPOSSIBLE;
 
+	const std::string& onlyAttribute = Item::items[getID()].containerOnlyAttribute;
+	if(!onlyAttribute.empty() && item->getAttribute(onlyAttribute).empty())
+		return RET_NOTPOSSIBLE;
+
 	if(const Container* container = item->getContainer())
 	{
 		for(const Cylinder* cylinder = getParent(); cylinder; cylinder = cylinder->getParent())

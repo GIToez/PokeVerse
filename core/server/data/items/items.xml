@@ -35849,6 +35849,13 @@
 	<item id="30150" article="a" name="tamato berry" plural="tamato berries">
 		<attribute key="description" value="Use it on a Pokemon's ball to lower its Speed EVs by 10." />
 	</item>
+	<item id="30151" article="a" name="trainer belt">
+		<attribute key="description" value="Holds the Pokemon you carry, so they do not take room in your pokebag." />
+		<attribute key="containerSize" value="6" />
+		<attribute key="slotType" value="body" />
+		<attribute key="weight" value="0" />
+		<attribute key="containerOnlyAttribute" value="10002" />
+	</item>
 	
 	<item id="30001" name="water" />
 	<item id="30002" name="blood" />

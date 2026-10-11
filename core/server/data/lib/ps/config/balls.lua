@@ -2211,8 +2211,10 @@ tm2, tm2Slot, ballSeal, depotable, attributesBlob, beforeDepotFunction, hideMess
             end
 
         else
+            local belt = getPlayerBelt(toPlayer)
             local backpack = getPlayerSlotItem(toPlayer, PLAYER_SLOT_BACKPACK)
-            if (not isContainer(backpack.uid) or doAddContainerItemEx(backpack.uid, ball) ~= RETURNVALUE_NOERROR) then
+            if ((not belt or doAddContainerItemEx(belt, ball) ~= RETURNVALUE_NOERROR) and
+                (not isContainer(backpack.uid) or doAddContainerItemEx(backpack.uid, ball) ~= RETURNVALUE_NOERROR)) then
                 if (not depotable) then
                     return nil
                 end

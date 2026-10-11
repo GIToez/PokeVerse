@@ -153,7 +153,8 @@ class ItemType
 		uint32_t shootRange, charges, decayTime, attackSpeed, wieldInfo, minReqLevel, minReqMagicLevel,
 			worth, levelDoor, sellPrice;
 
-		std::string name, pluralName, article, description, runeSpellName, vocationString;
+		std::string name, pluralName, article, description, runeSpellName, vocationString,
+			containerOnlyAttribute; // PS: a container that only takes items with this attribute
 
 		Condition* condition;
 		Abilities abilities;
