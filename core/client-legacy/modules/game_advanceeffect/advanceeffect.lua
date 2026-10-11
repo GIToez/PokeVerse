@@ -230,7 +230,7 @@ local function showPokemon(id, value, newMoves)
         local moveName = getMoveNameByIconItemId(v)
         description:setText(moveName)
         if moveName ~= '' and modules.game_textmessage then
-            modules.game_textmessage.displayMessage(MessageModes.Look, tr('Your %s learned %s!', pokemonName, moveName))
+            modules.game_textmessage.displayMessage(MessageModes.Status, tr('Your %s learned %s!', pokemonName, moveName))
         end
         description:setFont("sans-bold-16px")
         description:setTextAlign(AlignCenter)
