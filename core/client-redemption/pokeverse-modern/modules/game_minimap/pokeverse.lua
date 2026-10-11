@@ -283,10 +283,78 @@ local function addGuides(minimap)
     end
 end
 
+-- Position readout at the bottom of the minimap (and the full map): the player's position,
+-- or the tile under the mouse while hovering the map. A click on it copies the text.
+local coordsLabel = nil
+
+local function formatPosition(pos)
+    return string.format('%d, %d, %d', pos.x, pos.y, pos.z)
+end
+
+local function showPlayerPosition()
+    if not coordsLabel then
+        return
+    end
+    local player = g_game.getLocalPlayer()
+    local pos = player and player:getPosition()
+    coordsLabel:setText(pos and formatPosition(pos) or '')
+end
+
+local function createCoordsLabel(minimap)
+    coordsLabel = g_ui.createWidget('UILabel', minimap)
+    coordsLabel:setId('coordsLabel')
+    coordsLabel:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    coordsLabel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+    coordsLabel:setMarginLeft(1)
+    coordsLabel:setMarginBottom(1)
+    coordsLabel:setFont('verdana-11px-rounded')
+    coordsLabel:setColor('#ffffff')
+    coordsLabel:setBackgroundColor('#000000aa')
+    coordsLabel:setPaddingLeft(3)
+    coordsLabel:setPaddingRight(3)
+    coordsLabel:setTextAutoResize(true)
+    coordsLabel:setPhantom(false)
+    coordsLabel:setTooltip(tr('Click to copy the position'))
+    coordsLabel.onClick = function(widget)
+        local text = widget:getText()
+        if text ~= '' then
+            g_window.setClipboardText(text)
+            modules.game_textmessage.displayStatusMessage(tr('Position copied: %s', text))
+        end
+        return true
+    end
+
+    minimap.onMouseMove = function(widget, mousePos)
+        -- the map keeps receiving moves over the label, which copies the player's position
+        if coordsLabel:containsPoint(mousePos) then
+            showPlayerPosition()
+            return false
+        end
+        local pos = widget:getTilePosition(mousePos)
+        if pos and pos.x > 0 and pos.x < 65535 then
+            coordsLabel:setText(formatPosition(pos))
+        end
+        return false
+    end
+    minimap.onHoverChange = function(widget, hovered)
+        if not hovered then
+            showPlayerPosition()
+        end
+    end
+end
+
 PokeverseMap = {}
 
 function PokeverseMap.load(minimap)
     g_minimap.loadImage('/images/map', { x = 0, y = 0, z = 7 }, 0.5)
+
+    if not coordsLabel or coordsLabel:isDestroyed() then
+        createCoordsLabel(minimap)
+    end
+    mapController:registerEvents(LocalPlayer, {
+        onPositionChange = showPlayerPosition
+    })
+    showPlayerPosition()
 
     for _, label in pairs(cityLabels) do
         label:destroy()
