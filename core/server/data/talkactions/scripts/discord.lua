@@ -1,5 +1,5 @@
 -- !discord link | status | unlink | help
--- Links the account of the speaking character to Discord (see 058-discordAccounts.lua).
+-- Links the account of the speaking character to Discord (see 061-discordAccounts.lua).
 -- Everything is sent only to the speaker; the command text is never shown to others.
 
 local UNLINK_CONFIRM_SECONDS = 60

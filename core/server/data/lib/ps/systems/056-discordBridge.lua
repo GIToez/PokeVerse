@@ -6,7 +6,7 @@
 --  * Never let a bridge failure break gameplay: every hook is wrapped in pcall and
 --    does nothing when the bridge is disabled.
 --  * Request handlers here are read-only. They never modify players, items or the database.
---    Account linking (058-discordAccounts.lua) registers its own handlers and only writes
+--    Account linking (061-discordAccounts.lua) registers its own handlers and only writes
 --    the `discord_account_links` table.
 
 DiscordBridge = {}
@@ -599,7 +599,7 @@ local HANDLERS = {
     ["bridge.config"] = handleBridgeConfig,
 }
 
--- For other bridge modules (058-discordAccounts.lua).
+-- For other bridge modules (061-discordAccounts.lua).
 function DiscordBridge.registerHandler(method, handler)
     HANDLERS[method] = handler
 end

@@ -52,7 +52,7 @@ workflow gives the same secret to the production bot. See [`live-server.md`](liv
   Every hook is wrapped in `pcall` and does nothing while the bridge is disabled.
 - `src/discordbridgesessions.cpp`: player sessions (login/logout events) and the
   character created/deleted notice for linked accounts.
-- `data/lib/ps/systems/058-discordAccounts.lua`: account linking requests. It is the only
+- `data/lib/ps/systems/061-discordAccounts.lua`: account linking requests. It is the only
   code that writes the `discord_account_links` table.
 - `data/talkactions/scripts/discord.lua`: the in-game `!discord` command.
 - `data/lib/013-json.lua`: JSON encoder/decoder for Lua 5.1.
