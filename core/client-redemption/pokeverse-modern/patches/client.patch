@@ -1,0 +1,9 @@
+diff -ruN pristine/modules/client/client.lua modules/client/client.lua
+--- a/modules/client/client.lua
++++ b/modules/client/client.lua
+@@ -1,4 +1,4 @@
+-local musicFilename = 'sounds/startup'
++local musicFilename = '/sounds/startup'
+ local musicChannel = nil
+ if g_sounds then
+     musicChannel = g_sounds.getChannel(SoundChannels.Music)
