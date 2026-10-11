@@ -1,0 +1,76 @@
+diff -ruN pristine/modules/game_npctrade/constants/trader_const.lua modules/game_npctrade/constants/trader_const.lua
+--- a/modules/game_npctrade/constants/trader_const.lua
++++ b/modules/game_npctrade/constants/trader_const.lua
+@@ -23,7 +23,7 @@
+ -- DEFAULT CURRENCY
+ -- ==============================================================================================
+ controllerNpcTrader.DEFAULT_CURRENCY_ID = 3031
+-controllerNpcTrader.DEFAULT_CURRENCY_NAME = "Gold Coin"
++controllerNpcTrader.DEFAULT_CURRENCY_NAME = "Dollars"
+ 
+ -- ==============================================================================================
+ -- DEFAULT SETTINGS
+diff -ruN pristine/modules/game_npctrade/controllers/npc_legacy_ui.lua modules/game_npctrade/controllers/npc_legacy_ui.lua
+--- a/modules/game_npctrade/controllers/npc_legacy_ui.lua
++++ b/modules/game_npctrade/controllers/npc_legacy_ui.lua
+@@ -1,6 +1,6 @@
+ local BUY = 1
+ local SELL = 2
+-local CURRENCY = 'gold'
++local CURRENCY = '$'
+ local CURRENCY_DECIMAL = false
+ local WEIGHT_UNIT = 'oz'
+ local LAST_INVENTORY = 10
+@@ -505,8 +505,8 @@
+             amount = getSellQuantityLegacy(data.ptr)
+             if amount > 0 then
+                 if data and amount > 0 then
+-                    info = info .. (not first and '\n' or '') .. amount .. ' ' .. data.name .. ' (' .. data.price *
+-                               amount .. ' gold)'
++                    info = info .. (not first and '\n' or '') .. amount .. ' ' .. data.name .. ' (' ..
++                               formatCurrency(data.price * amount) .. ')'
+ 
+                     total = total + (data.price * amount)
+                     if first then
+@@ -517,7 +517,7 @@
+         end
+     end
+     if info ~= '' then
+-        info = info .. '\nTotal: ' .. total .. ' gold'
++        info = info .. '\nTotal: ' .. formatCurrency(total)
+         sellAllButton:setTooltip(info)
+     else
+         sellAllButton:setEnabled(false)
+@@ -526,9 +526,9 @@
+ 
+ function formatCurrency(amount)
+     if CURRENCY_DECIMAL then
+-        return string.format('%.02f', amount / 100.0) .. ' ' .. CURRENCY
++        return CURRENCY .. string.format('%.02f', amount / 100.0)
+     else
+-        return amount .. ' ' .. CURRENCY
++        return CURRENCY .. amount
+     end
+ end
+ 
+diff -ruN pristine/modules/game_npctrade/templates/game_npctrader.html modules/game_npctrade/templates/game_npctrader.html
+--- a/modules/game_npctrade/templates/game_npctrader.html
++++ b/modules/game_npctrade/templates/game_npctrader.html
+@@ -151,7 +151,7 @@
+         <div class="tradeHeader flex">
+             <div class="currencySection">
+                 <label class="fontText colorGrey" text="Currency:"></label>
+-                <label class="tradeCurrencyName fontText colorWhite" text="Gold Coin"></label>
++                <label class="tradeCurrencyName fontText colorWhite" text="Dollars"></label>
+             </div>
+             <UIItem class="tradeCurrencyIcon iconBox sunkenBorder" item-id="3031" item-count="100" always-show-count="false" />
+             <div class="tradeTabs">
+@@ -207,7 +207,7 @@
+                 </div>
+ 
+                 <div class="tradeRow">
+-                    <div class="tradeFooterLabel fontText colorGrey inlineBlock">Gold:</div>
++                    <div class="tradeFooterLabel fontText colorGrey inlineBlock">Dollars:</div>
+                     <label id="playerMoneyDisplay" class="tradeFooterValue fontText colorWhite inlineBlock" text="0"></label>
+                 </div>
+             </div>
