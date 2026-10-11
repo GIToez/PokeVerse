@@ -486,6 +486,127 @@ PokemonStats.onUseEvBerry = function(cid, item, fromPosition, itemEx, toPosition
     return true
 end
 
+-- Breeding: the egg takes 3 IVs (5 with a Destiny Knot) from random parents, a parent's Power item
+-- makes its stat one of them, and a parent's Everstone passes down its Nature. The rest is random,
+-- and the hatched Pokemon starts with 0 EVs. Eggs and incubators carry the result until it hatches.
+PokemonStats.INHERITED_IVS = 3
+PokemonStats.INHERITED_IVS_DESTINY_KNOT = 5
+local EGG_IVS_ATTRIBUTE = "eggIvs"
+local EGG_NATURE_ATTRIBUTE = "eggNature"
+
+-- A parent at the Day Care is only a database row: its ball is rebuilt on a temporary item to read it
+PokemonStats.readDaycareParent = function(dbResult)
+    if (not dbResult or dbResult:getDataInt('pokemon_maxenergy') > 0) then -- older rows have no attributes
+        return nil
+    end
+
+    local uid = doCreateItemEx(dbResult:getDataInt('ball_id'))
+    if (not uid) then
+        return nil
+    end
+    doItemLoadAttributes(uid, 'attributes', dbResult:getID())
+    if (not isBallWithPokemon(uid)) then
+        return nil
+    end
+
+    return {
+        ivs = PokemonStats.getBallIvs(uid),
+        natureId = PokemonStats.getBallNatureId(uid),
+        destinyKnot = PokemonHeldItem.hasDestinyKnot(uid),
+        everstone = PokemonHeldItem.hasEverstone(uid),
+        powerStat = PokemonHeldItem.getPowerStat(uid)
+    }
+end
+
+-- Either parent may be nil (unknown); returns the egg's IVs and Nature
+PokemonStats.makeEggStats = function(mother, father)
+    local parents = {}
+    for _, parent in ipairs({ mother or false, father or false }) do
+        if (parent and parent.ivs) then
+            parents[#parents + 1] = parent
+        end
+    end
+
+    local ivs = PokemonStats.rollIvs()
+    local natureId = PokemonStats.rollNature()
+    if (#parents == 0) then
+        return ivs, natureId
+    end
+
+    local count = PokemonStats.INHERITED_IVS
+    local everstones, powers = {}, {}
+    for _, parent in ipairs(parents) do
+        if (parent.destinyKnot) then
+            count = PokemonStats.INHERITED_IVS_DESTINY_KNOT
+        end
+        if (parent.everstone and parent.natureId) then
+            everstones[#everstones + 1] = parent
+        end
+        if (parent.powerStat) then
+            powers[#powers + 1] = parent
+        end
+    end
+
+    if (#everstones > 0) then
+        natureId = everstones[math.random(1, #everstones)].natureId
+    end
+
+    local remaining = {}
+    for stat = 1, PokemonStats.STAT_COUNT do
+        remaining[stat] = stat
+    end
+
+    local function inherit(stat, parent)
+        ivs[stat] = parent.ivs[stat]
+        for i, s in ipairs(remaining) do
+            if (s == stat) then
+                table.remove(remaining, i)
+                break
+            end
+        end
+        count = count - 1
+    end
+
+    if (#powers > 0) then
+        local parent = powers[math.random(1, #powers)]
+        inherit(parent.powerStat, parent)
+    end
+
+    while (count > 0 and #remaining > 0) do
+        inherit(remaining[math.random(1, #remaining)], parents[math.random(1, #parents)])
+    end
+
+    return ivs, natureId
+end
+
+PokemonStats.setEggStats = function(uid, ivs, natureId)
+    doItemSetAttribute(uid, EGG_IVS_ATTRIBUTE, formatStats(ivs))
+    doItemSetAttribute(uid, EGG_NATURE_ATTRIBUTE, natureId)
+end
+
+PokemonStats.moveEggStats = function(fromUid, toUid)
+    local ivs, natureId = getItemAttribute(fromUid, EGG_IVS_ATTRIBUTE), getItemAttribute(fromUid, EGG_NATURE_ATTRIBUTE)
+    if (ivs and natureId) then
+        doItemSetAttribute(toUid, EGG_IVS_ATTRIBUTE, ivs)
+        doItemSetAttribute(toUid, EGG_NATURE_ATTRIBUTE, natureId)
+    end
+end
+
+-- On the new ball of a hatched Pokemon; eggs from before breeding inheritance keep their random values
+PokemonStats.applyEggStats = function(incubatorUid, ballUid)
+    local ivs = parseStats(getItemAttribute(incubatorUid, EGG_IVS_ATTRIBUTE), PokemonStats.IV_MAX)
+    local natureId = tonumber(getItemAttribute(incubatorUid, EGG_NATURE_ATTRIBUTE))
+    PokemonStats.ensureBall(ballUid)
+    if (ivs) then
+        PokemonStats.setBallIvs(ballUid, ivs)
+    end
+    if (natureId) then
+        PokemonStats.setBallNatureId(ballUid, natureId)
+    end
+    PokemonStats.setBallEvs(ballUid, { 0, 0, 0, 0, 0, 0 })
+    doBallUpdateDescription(ballUid)
+end
+
 -- Only defeated wild Pokemon give EVs: NPC trainers' and players' Pokemon are summons
 PokemonStats.isWildPokemon = function(target)
     return isMonster(target) and not isSummon(target) and not getPokemonSummon(target)

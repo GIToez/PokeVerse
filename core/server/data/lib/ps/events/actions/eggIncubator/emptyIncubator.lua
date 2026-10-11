@@ -13,8 +13,9 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 
 		else
 			local eggMove = getItemAttribute(itemEx.uid, ITEM_ATTRIBUTES.EGG_MOVE)
-            doRemoveItem(itemEx.uid) -- Remove egg
 			doTransformItem(item.uid, 14049) -- Transforming to a full pokemon incubator
+			PokemonStats.moveEggStats(itemEx.uid, item.uid)
+            doRemoveItem(itemEx.uid) -- Remove egg
 			doItemSetAttribute(item.uid, INCUBATOR_STORAGE_BORN_DATE, getCurrentTimeInSeconds() + 60 * 60)-- * 24 * 5) -- current time in seconds + 5 days in seconds
 			doItemSetAttribute(item.uid, INCUBATOR_STORAGE_POKEMON_NAME, pokemonName)
             if (eggMove) then

@@ -23,6 +23,7 @@ local function doEggHatch(cid, incubator, pokemonName, replacingSlot)
     local ball = doCreatePokemonBall(cid, "poke", pokemonName, 1, nil, nil, 10, nil, true, 9999999, nil, nil, nil,
         nil, nil, nil, nil, nil, nil,
         function(uid)
+            PokemonStats.applyEggStats(incubator.uid, uid)
             if (replacingSlot) then
                 eggMove = getItemAttribute(incubator.uid, ITEM_ATTRIBUTES.EGG_MOVE)
                 setBallEggMove(uid, replacingSlot, getItemAttribute(incubator.uid, ITEM_ATTRIBUTES.EGG_MOVE))

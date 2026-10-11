@@ -330,7 +330,10 @@ local function doPlayerAddPokemonEgg(cid, femalePokemonOnDaycare, malePokemonOnD
         plateType = TYPE_BY_PLATE_ITEMID[getPlayerDaycarePlate(cid)]
     end
 
-    if (PokemonEgg.doGenerateEggMove(doPlayerAddItem(cid, getPokemonEggId(egg), 1, true), egg, plateType)) then
+    local eggUid = doPlayerAddItem(cid, getPokemonEggId(egg), 1, true)
+    PokemonStats.setEggStats(eggUid, PokemonStats.makeEggStats(PokemonStats.readDaycareParent(femalePokemonOnDaycare),
+        PokemonStats.readDaycareParent(malePokemonOnDaycare)))
+    if (PokemonEgg.doGenerateEggMove(eggUid, egg, plateType)) then
         setPlayerDaycarePlate(cid, nil)
     end
     setPlayerLastEggTime(cid, os.time())
