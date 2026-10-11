@@ -42,7 +42,8 @@ EXTENDED_IDS = {
     GAMEPLAY_TUTORIAL_TEXT = 8,
     GAMEPLAY_TUTORIAL_IMAGE = 9,
     DASHWALKING = 10,
-    SUMMON_OWNER = 11 -- sent by the server's protocol code: "creatureId,ownerId" for other trainers' Pokemon
+    SUMMON_OWNER = 11, -- sent by the server's protocol code: "creatureId,ownerId" for other trainers' Pokemon
+    POKEMON_STATS = 12 -- JSON stat sheet of your own Pokemon after a Pokedex view (PokemonStats.getStatSheet)
 }
 
 TOURNAMENT_TYPES = {}

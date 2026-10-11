@@ -86,7 +86,7 @@ local function doPlayerWithdrawPokemonFromMarket(cid, offer, datalogSell)
 end
 
 local function getOfferts(pokemonName)
-    local r = db.getResult("SELECT `id`, `player_id`, `pokemon_name`, `pokemon_level`, `pokemon_extrapoints`, `pokemon_sex`, `pokemon_specialability`, `value`, `pokemon_eggmove` FROM `pokemon_market` WHERE `pokemon_name` = '"
+    local r = db.getResult("SELECT `id`, `player_id`, `pokemon_name`, `pokemon_level`, `pokemon_extrapoints`, `pokemon_sex`, `pokemon_specialability`, `value`, `pokemon_eggmove`, `ball_id`, `attributes` FROM `pokemon_market` WHERE `pokemon_name` = '"
             .. pokemonName .. "';")
     if r:getID() == -1 then
         return false
@@ -103,7 +103,8 @@ local function getOfferts(pokemonName)
             sex = r:getDataInt('pokemon_sex'),
             specialAbility = r:getDataInt('pokemon_specialability'),
             value = r:getDataInt('value'),
-            eggMove = r:getDataString('pokemon_eggmove')
+            eggMove = r:getDataString('pokemon_eggmove'),
+            stats = PokemonStats.getStoredSummary(r)
         }
         until not r:next()
     r:free()
@@ -112,7 +113,7 @@ local function getOfferts(pokemonName)
 end
 
 local function getPlayerOfferts(cid)
-    local r = db.getResult("SELECT `id`, `pokemon_name`, `pokemon_level`, `pokemon_extrapoints`, `pokemon_sex`, `pokemon_specialability`, `value`, `pokemon_eggmove` FROM `pokemon_market` WHERE `player_id` = '"
+    local r = db.getResult("SELECT `id`, `pokemon_name`, `pokemon_level`, `pokemon_extrapoints`, `pokemon_sex`, `pokemon_specialability`, `value`, `pokemon_eggmove`, `ball_id`, `attributes` FROM `pokemon_market` WHERE `player_id` = '"
             .. getPlayerGUID(cid) .. "';")
     if r:getID() == -1 then
         return false
@@ -128,7 +129,8 @@ local function getPlayerOfferts(cid)
             sex = r:getDataInt('pokemon_sex'),
             specialAbility = r:getDataInt('pokemon_specialability'),
             value = r:getDataInt('value'),
-            eggMove = r:getDataString('pokemon_eggmove')
+            eggMove = r:getDataString('pokemon_eggmove'),
+            stats = PokemonStats.getStoredSummary(r)
         }
         until not r:next()
     r:free()
@@ -137,7 +139,7 @@ local function getPlayerOfferts(cid)
 end
 
 local function getShinyOfferts()
-    local r = db.getResult("SELECT `id`, `player_id`, `pokemon_name`, `pokemon_level`, `pokemon_extrapoints`, `pokemon_sex`, `pokemon_specialability`, `value`, `pokemon_eggmove` FROM `pokemon_market` WHERE `pokemon_name` LIKE '%shiny%';")
+    local r = db.getResult("SELECT `id`, `player_id`, `pokemon_name`, `pokemon_level`, `pokemon_extrapoints`, `pokemon_sex`, `pokemon_specialability`, `value`, `pokemon_eggmove`, `ball_id`, `attributes` FROM `pokemon_market` WHERE `pokemon_name` LIKE '%shiny%';")
     if r:getID() == -1 then
         return false
     end
@@ -153,7 +155,8 @@ local function getShinyOfferts()
             sex = r:getDataInt('pokemon_sex'),
             specialAbility = r:getDataInt('pokemon_specialability'),
             value = r:getDataInt('value'),
-            eggMove = r:getDataString('pokemon_eggmove')
+            eggMove = r:getDataString('pokemon_eggmove'),
+            stats = PokemonStats.getStoredSummary(r)
         }
         until not r:next()
     r:free()
@@ -202,9 +205,9 @@ local function doPlayerShowOfferts(cid, offerts, includeName)
     local count = 0
     local message
     if (includeName) then
-        message = {"No | Name | Level | Extra Points | Sex | Special Ability | Egg Move | Value\n" }
+        message = {"No | Name | Level | Extra Points | Sex | Special Ability | Egg Move | Stats | Value\n" }
     else
-        message = {"No | Level | Extra Points | Sex | Special Ability | Egg Move | Value\n" }
+        message = {"No | Level | Extra Points | Sex | Special Ability | Egg Move | Stats | Value\n" }
     end
 
     for i, offert in ipairs(offerts) do
@@ -223,6 +226,8 @@ local function doPlayerShowOfferts(cid, offerts, includeName)
         message[#message + 1] = getPokemonSpecialAbilityName(offert.specialAbility)
         message[#message + 1] = " - "
         message[#message + 1] = offert.eggMove
+        message[#message + 1] = " - "
+        message[#message + 1] = offert.stats
         message[#message + 1] = " - $"
         message[#message + 1] = offert.value
         message[#message + 1] = "\n"
@@ -232,7 +237,7 @@ local function doPlayerShowOfferts(cid, offerts, includeName)
             doPlayerPopupFYI(cid, table.concat(message))
 
             if (i < #offerts) then -- If we have more offerts to show
-                message = {"No | Level | Extra Points | Sex | Special Ability | Egg Move | Value\n" }
+                message = {"No | Level | Extra Points | Sex | Special Ability | Egg Move | Stats | Value\n" }
                 count = 0
             else
                 message = nil

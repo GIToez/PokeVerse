@@ -437,6 +437,7 @@ local function getEggMovesText(pokemonName, pid)
 end
 
 local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
+  local sheet
   local details = {}
   local moves = {}
   local effectiveness = {}
@@ -459,6 +460,7 @@ local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
     if (transformMemory) then
       lines[#lines + 1] = string.format(__L(pid, "\nTransform Memory:\n%s"), transformMemory)
     end
+    sheet = PokemonStats.getStatSheet(ball.uid, pokemonName, pokemonLevel)
 
   else
     local min = getMonsterInfo(pokemonName).minLevel
@@ -468,14 +470,22 @@ local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
 
     if (pokemonBall) then
       lines[#lines + 1] = string.format(__L(pid, "\n\nVitamins:\n%s\n\nHeld:\n%s"), Vitamin.getBallDescription(pokemonBall.uid), PokemonHeldItem.getBallDescription(pokemonBall.uid))
+      sheet = PokemonStats.getStatSheet(pokemonBall.uid, getBallPokemonName(pokemonBall.uid), getBallPokemonLevel(pokemonBall.uid))
     end
+  end
+
+  lines[#lines + 1] = string.format(__L(pid, "\n\nEV Yield: %s."), PokemonStats.getEvYieldText(pokemonName))
+  if (sheet) then
+    lines[#lines + 1] = "\n\n" .. PokemonStats.getStatSheetText(sheet)
   end
 
   doPlayerSendPokedexInfo(pid, getPokemonNumberByName(pokemonName), table.concat(lines), info.skills,
     info.typeEffectiveness, getPokemonFamiliesString(pokemonName))
+  PokemonStats.sendStatSheet(pid, sheet)
 end
 
 local function doSendOldDexInfo(pid, pokemonName, detailed, info, pokemonBall)
+  local sheet
   -- DEX TEXT LINES
   local lines = {}
   if (detailed) then
@@ -495,6 +505,7 @@ local function doSendOldDexInfo(pid, pokemonName, detailed, info, pokemonBall)
     if (transformMemory) then
       lines[#lines + 1] = string.format(__L(pid, "\nTransform Memory:\n%s"), transformMemory)
     end
+    sheet = PokemonStats.getStatSheet(ball.uid, pokemonName, pokemonLevel)
     lines[#lines + 1] = __L(pid, "\nPo = Power, En = Energy, Lv = Level\nCd = Cooldown, G = Group, T = Type")
 
   else
@@ -504,8 +515,14 @@ local function doSendOldDexInfo(pid, pokemonName, detailed, info, pokemonBall)
 
     if (pokemonBall) then
       lines[#lines + 1] = string.format(__L(pid, "\n\nVitamins:\n%s\n\nHeld:\n%s"), Vitamin.getBallDescription(pokemonBall.uid), PokemonHeldItem.getBallDescription(pokemonBall.uid))
+      sheet = PokemonStats.getStatSheet(pokemonBall.uid, getBallPokemonName(pokemonBall.uid), getBallPokemonLevel(pokemonBall.uid))
     end
     lines[#lines + 1] = __L(pid, "\nPo = Power, En = Energy, Lv = Level\nCd = Cooldown, G = Group, T = Type")
+  end
+
+  lines[#lines + 1] = string.format(__L(pid, "\n\nEV Yield: %s."), PokemonStats.getEvYieldText(pokemonName))
+  if (sheet) then
+    lines[#lines + 1] = "\n\n" .. PokemonStats.getStatSheetText(sheet)
   end
 
   doShowTextDialog(pid, getPokemonPortraitId(pokemonName), table.concat(lines))

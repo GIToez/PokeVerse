@@ -402,6 +402,75 @@ PokemonStats.getWindupDelay = function(pokemon, milliseconds)
     return math.floor(milliseconds * (1 - PokemonStats.SPEED_WINDUP_REDUCTION * PokemonStats.getSpeedRatio(pokemon)))
 end
 
+-- Everything the own-Pokemon Pokedex view shows; also sent to the Redemption client as JSON
+PokemonStats.getStatSheet = function(ballUid, pokemonName, level)
+    local ivs, evs = PokemonStats.getBallIvs(ballUid), PokemonStats.getBallEvs(ballUid)
+    local natureId = PokemonStats.getBallNatureId(ballUid)
+    if (not ivs or not evs) then
+        return nil
+    end
+
+    local bases = PokemonStats.getBaseStats(pokemonName)
+    local multipliers = PokemonStats.getMultipliers(pokemonName, level, ivs, evs, natureId)
+    local nature = NATURES[natureId] or NATURES[1]
+    local sheet = {
+        name = pokemonName,
+        level = level,
+        nature = { id = natureId, name = nature.name, up = nature.up or 0, down = nature.down or 0 },
+        statNames = POKEMON_STAT_NAMES,
+        ivs = ivs,
+        evs = evs,
+        actual = {},
+        effect = {},
+        ivMax = PokemonStats.IV_MAX,
+        evMax = PokemonStats.EV_MAX,
+        evTotalMax = PokemonStats.EV_TOTAL_MAX,
+        ivTotal = PokemonStats.getTotal(ivs),
+        evTotal = PokemonStats.getTotal(evs),
+        perfectIvs = 0
+    }
+    for stat = 1, PokemonStats.STAT_COUNT do
+        if (ivs[stat] == PokemonStats.IV_MAX) then
+            sheet.perfectIvs = sheet.perfectIvs + 1
+        end
+        sheet.actual[stat] = bases and math.floor(PokemonStats.officialStat(stat, bases[stat], ivs[stat], evs[stat],
+            level, PokemonStats.getNatureMultiplier(natureId, stat)) + 0.5) or 0
+        sheet.effect[stat] = math.floor((multipliers[stat] - 1) * 100 + 0.5)
+    end
+    return sheet
+end
+
+PokemonStats.getStatSheetText = function(sheet)
+    local lines = {
+        string.format("Nature: %s", PokemonStats.getNatureDescription(sheet.nature.id)),
+        string.format("IVs: %d/%d, %d perfect", sheet.ivTotal, sheet.ivMax * PokemonStats.STAT_COUNT, sheet.perfectIvs),
+        string.format("EVs: %d/%d", sheet.evTotal, sheet.evTotalMax)
+    }
+    for stat = 1, PokemonStats.STAT_COUNT do
+        lines[#lines + 1] = string.format("%s: %d (IV %d, EV %d, %s%d%%)", POKEMON_STAT_NAMES[stat], sheet.actual[stat],
+            sheet.ivs[stat], sheet.evs[stat], sheet.effect[stat] >= 0 and "+" or "", sheet.effect[stat])
+    end
+    return table.concat(lines, "\n")
+end
+
+PokemonStats.sendStatSheet = function(cid, sheet)
+    if (sheet) then
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEMON_STATS, JSON.encode(sheet))
+    end
+end
+
+-- "1 Speed", "2 Attack, 1 Sp. Defense" or "None"
+PokemonStats.getEvYieldText = function(pokemonName)
+    local yield = PokemonStats.getEvYield(pokemonName)
+    local parts = {}
+    for stat = 1, PokemonStats.STAT_COUNT do
+        if (yield and yield[stat] > 0) then
+            parts[#parts + 1] = yield[stat] .. " " .. POKEMON_STAT_NAMES[stat]
+        end
+    end
+    return #parts > 0 and table.concat(parts, ", ") or "None"
+end
+
 PokemonStats.getEvYield = function(pokemonName)
     if (not pokemonName) then
         return nil
@@ -494,9 +563,10 @@ PokemonStats.INHERITED_IVS_DESTINY_KNOT = 5
 local EGG_IVS_ATTRIBUTE = "eggIvs"
 local EGG_NATURE_ATTRIBUTE = "eggNature"
 
--- A parent at the Day Care is only a database row: its ball is rebuilt on a temporary item to read it
-PokemonStats.readDaycareParent = function(dbResult)
-    if (not dbResult or dbResult:getDataInt('pokemon_maxenergy') > 0) then -- older rows have no attributes
+-- Pokemon at the Day Care or on the Pokemon Market are database rows (ball_id and attributes): the
+-- ball is rebuilt on a temporary item to read it. Returns the item uid, or nil.
+PokemonStats.loadStoredBall = function(dbResult)
+    if (not dbResult or dbResult:getDataInt('ball_id') == 0) then
         return nil
     end
 
@@ -505,13 +575,61 @@ PokemonStats.readDaycareParent = function(dbResult)
         return nil
     end
     doItemLoadAttributes(uid, 'attributes', dbResult:getID())
-    if (not isBallWithPokemon(uid)) then
+    return isBallWithPokemon(uid) and uid or nil
+end
+
+-- IVs, EVs and Nature as stored, without giving a ball its own first (nil when it has none yet)
+PokemonStats.readBall = function(uid)
+    local ivs = parseStats(getBallPokemonIvsString(uid), PokemonStats.IV_MAX)
+    local evs = parseStats(getBallPokemonEvsString(uid), PokemonStats.EV_MAX)
+    local natureId = tonumber(getBallPokemonNatureId(uid))
+    if (not ivs or not evs or not NATURES[natureId]) then
+        return nil
+    end
+    return ivs, evs, natureId
+end
+
+-- "Jolly | IV 142/186 (2x31) | EV 252/510" for listings
+PokemonStats.getSummary = function(uid)
+    local ivs, evs, natureId = PokemonStats.readBall(uid)
+    if (not ivs) then
+        return "not checked yet"
+    end
+
+    local perfect = 0
+    for stat = 1, PokemonStats.STAT_COUNT do
+        if (ivs[stat] == PokemonStats.IV_MAX) then
+            perfect = perfect + 1
+        end
+    end
+    return string.format("%s | IV %d/%d (%dx%d) | EV %d/%d", PokemonStats.getNatureName(natureId),
+        PokemonStats.getTotal(ivs), PokemonStats.IV_MAX * PokemonStats.STAT_COUNT, perfect, PokemonStats.IV_MAX,
+        PokemonStats.getTotal(evs), PokemonStats.EV_TOTAL_MAX)
+end
+
+PokemonStats.getStoredSummary = function(dbResult)
+    local uid = PokemonStats.loadStoredBall(dbResult)
+    return uid and PokemonStats.getSummary(uid) or "not checked yet"
+end
+
+PokemonStats.readDaycareParent = function(dbResult)
+    if (not dbResult or dbResult:getDataInt('pokemon_maxenergy') > 0) then -- older rows have no attributes
+        return nil
+    end
+
+    local uid = PokemonStats.loadStoredBall(dbResult)
+    if (not uid) then
+        return nil
+    end
+
+    local ivs, _, natureId = PokemonStats.readBall(uid)
+    if (not ivs) then
         return nil
     end
 
     return {
-        ivs = PokemonStats.getBallIvs(uid),
-        natureId = PokemonStats.getBallNatureId(uid),
+        ivs = ivs,
+        natureId = natureId,
         destinyKnot = PokemonHeldItem.hasDestinyKnot(uid),
         everstone = PokemonHeldItem.hasEverstone(uid),
         powerStat = PokemonHeldItem.getPowerStat(uid)
