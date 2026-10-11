@@ -98,6 +98,13 @@ AdvanceWindow < HeadlessWindow
       type: verticalBox
       num-columns: 1
 
+AdvanceMoveItem < Item
+  size: 32 32
+  border-width: 0
+  padding: 0
+  image-source: ~
+  phantom: true
+
 AdvanceSection < Panel
   background-color: #22283399
   border-width: 1

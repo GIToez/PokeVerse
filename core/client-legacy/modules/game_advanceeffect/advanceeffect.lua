@@ -61,6 +61,7 @@ local SKILLS = {
 local window, panel, lastLevel
 local enabled = true
 local lastSkill = {}
+local popups = {}
 
 -- Methods
 function setDisplay(v)
@@ -71,10 +72,43 @@ end
 local function reset()
     lastLevel = nil
     lastSkill = {}
+    for widget in pairs(popups) do
+        if not widget:isDestroyed() then
+            widget:destroy()
+        end
+    end
+    popups = {}
+end
+
+-- Starts the fade before the content is built, so a popup can never stay on screen
+local function showTimed(widget, keep)
+    widget:show()
+    g_effects.fadeIn(widget, 2000)
+    if not keep then
+        popups[widget] = true
+    end
+    scheduleEvent(function()
+        if widget:isDestroyed() then
+            return
+        end
+        g_effects.fadeOut(widget, 3000)
+        scheduleEvent(function()
+            if widget:isDestroyed() then
+                return
+            end
+            if keep then
+                widget:hide()
+            else
+                popups[widget] = nil
+                widget:destroy()
+            end
+        end, 3000)
+    end, 9000)
 end
 
 local function show(value)
     panel:destroyChildren()
+    showTimed(window, true)
 
     window:recursiveGetChildById('advanceMessage2'):setText(tr('Level %d', value))
 
@@ -108,21 +142,13 @@ local function show(value)
             description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
         end
     end
-
-    window:show()
-    g_effects.fadeIn(window, 2000)
-    event = scheduleEvent(function()
-        g_effects.fadeOut(window, 3000)
-        event = scheduleEvent(function()
-            window:hide()
-        end, 3000)
-    end, 9000)
 end
 
 local function showSkill(id, value)
     if (SKILLS[id]) then
         local skillWindow = g_ui.createWidget('AdvanceWindow', modules.game_interface.getRootPanel())
         local panel = skillWindow:recursiveGetChildById('panel')
+        showTimed(skillWindow)
 
         local parent = g_ui.createWidget('AdvanceSection', panel)
 
@@ -151,20 +177,12 @@ local function showSkill(id, value)
         description:addAnchor(AnchorRight, 'parent', AnchorRight)
         description:addAnchor(AnchorTop, 'prev', AnchorBottom)
         description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-
-        skillWindow:show()
-        g_effects.fadeIn(skillWindow, 2000)
-        event = scheduleEvent(function()
-            g_effects.fadeOut(skillWindow, 3000)
-            event = scheduleEvent(function()
-                skillWindow:hide()
-            end, 3000)
-        end, 9000)
     end
 end
 
 local function showPokemon(id, value, newMoves)
     local skillWindow = g_ui.createWidget('PokemonAdvanceWindow', modules.game_interface.getRootPanel())
+    showTimed(skillWindow)
     local panel = skillWindow:recursiveGetChildById('panel')
     local image = skillWindow:recursiveGetChildById('pokemonIcon')
     image:setImageSource('/images/staticPortraits/' .. id)
@@ -172,7 +190,8 @@ local function showPokemon(id, value, newMoves)
     local parent = g_ui.createWidget('AdvanceSection', panel)
 
     local title = g_ui.createWidget('UILabel', parent)
-    title:setText(getPokemonNameByNumber(id))
+    local pokemonName = getPokemonNameByNumber(id) or ''
+    title:setText(pokemonName)
     --title:setFont("sans-bold-16px_cp1252")
     title:setColor('#b6b6b6')
     title:setTextAlign(AlignCenter)
@@ -192,7 +211,7 @@ local function showPokemon(id, value, newMoves)
     for k, v in pairs(newMoves) do
         local parent = g_ui.createWidget('AdvanceSection', panel)
 
-        local image = g_ui.createWidget('MoveItem', parent)
+        local image = g_ui.createWidget('AdvanceMoveItem', parent)
         image:setId(0)
         image:setItemId(v)
         image:addAnchor(AnchorLeft, 'parent', AnchorLeft)
@@ -200,7 +219,7 @@ local function showPokemon(id, value, newMoves)
         image:addAnchor(AnchorBottom, 'parent', AnchorBottom)
 
         local title = g_ui.createWidget('UILabel', parent)
-        title:setText(tr("New Move"))
+        title:setText(tr('%s learned', pokemonName))
         title:setColor('#b6b6b6')
         title:setTextAlign(AlignCenter)
         title:addAnchor(AnchorLeft, 0, AnchorRight)
@@ -208,7 +227,11 @@ local function showPokemon(id, value, newMoves)
         title:addAnchor(AnchorTop, 'parent', AnchorTop)
 
         local description = g_ui.createWidget('UILabel', parent)
-        description:setText(getMoveNameByIconItemId(v))
+        local moveName = getMoveNameByIconItemId(v)
+        description:setText(moveName)
+        if moveName ~= '' and modules.game_textmessage then
+            modules.game_textmessage.displayMessage(MessageModes.Look, tr('Your %s learned %s!', pokemonName, moveName))
+        end
         description:setFont("sans-bold-16px")
         description:setTextAlign(AlignCenter)
         description:addAnchor(AnchorLeft, 0, AnchorRight)
@@ -216,15 +239,6 @@ local function showPokemon(id, value, newMoves)
         description:addAnchor(AnchorTop, 'prev', AnchorBottom)
         description:addAnchor(AnchorBottom, 'parent', AnchorBottom)
     end
-
-    skillWindow:show()
-    g_effects.fadeIn(skillWindow, 2000)
-    event = scheduleEvent(function()
-        g_effects.fadeOut(skillWindow, 3000)
-        event = scheduleEvent(function()
-            skillWindow:hide()
-        end, 3000)
-    end, 9000)
 end
 
 -- Hooks
