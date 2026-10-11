@@ -143,6 +143,35 @@ function getPlayerAllBallsWithPokemon(cid)
     return ballsWithPokemon
 end
 
+-- The team size limit is the carrying capacity: a ball weighs 0.90, so a capacity of 6 holds six
+-- and leaves less than 1 free, which is what sends further catches and rewards to the depot.
+PLAYER_POKEMON_CAPACITY = 6
+PLAYER_POKEMON_LIMIT = 6
+
+function doPlayerEnforcePokemonLimit(cid)
+    if (isGamemaster(cid)) then
+        return
+    end
+
+    doPlayerSetMaxCapacity(cid, PLAYER_POKEMON_CAPACITY)
+
+    local balls = getPlayerAllBallsWithPokemon(cid)
+    local moved = 0
+    for i = PLAYER_POKEMON_LIMIT + 1, #balls do
+        local ball = balls[i]
+        if (doPlayerAddDepotItem(cid, 0, ball.uid, true) or doPlayerAddDepotItem(cid, 0, ball.uid)) then
+            moved = moved + 1
+        else
+            log(LOG_TYPES.ERROR, "doPlayerEnforcePokemonLimit - Can't send to depot.", getCreatureName(cid), ball.itemid)
+        end
+    end
+
+    if (moved > 0) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid,
+            "You can carry at most six Pokemon, %d of them were teleported to the Pokemon Center."), moved))
+    end
+end
+
 -- Is
 function isPlayerOnPvpArena(cid)
     return getPlayerPvpArena(cid)

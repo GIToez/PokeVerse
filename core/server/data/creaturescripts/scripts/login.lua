@@ -95,6 +95,8 @@ function onLogin(cid)
 			end
 		end, 500, cid)
 
+		doPlayerEnforcePokemonLimit(cid)
+
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, "If you need some help use the Help and the Wiki Chat channels.")
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
 

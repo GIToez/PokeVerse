@@ -40,7 +40,7 @@ BEGIN
   INSERT INTO `players` (`name`, `world_id`, `group_id`, `account_id`, `level`, `vocation`, `health`, `healthmax`,
       `experience`, `looktype`, `town_id`, `posx`, `posy`, `posz`, `conditions`, `cap`, `sex`, `description`)
     VALUES (p_name, 1, 1, p_account_id, 1, 1, 150, 150,
-      0, IF(p_sex = 0, 611, 612), 34, 5000, 806, 6, '', 400, p_sex, '');
+      0, IF(p_sex = 0, 611, 612), 34, 5000, 806, 6, '', 6, p_sex, '');
   SET v_player = LAST_INSERT_ID();
   -- Starting kit; Professor Oak adds the starter Pokemon and the main items (doPlayerAddMainItems).
   -- Slot ids follow PLAYER_SLOT_* in data/lib/ps/others/constants.lua; the bag goes to slot 10
