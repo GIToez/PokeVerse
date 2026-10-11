@@ -225,7 +225,7 @@ function setPokemonBonusAttack(cid, value)
 end
 
 function getPokemonBonusDefense(cid)
-    local v = tonumber(getCreatureStorage(cid, pokemonsStorages.bonusAtk))
+    local v = tonumber(getCreatureStorage(cid, pokemonsStorages.bonusDef))
     return v > -1 and v or 0
 end
 
