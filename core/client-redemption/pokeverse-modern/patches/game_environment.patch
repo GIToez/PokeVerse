@@ -1,0 +1,63 @@
+diff -ruN pristine/modules/game_environment/environment.lua modules/game_environment/environment.lua
+--- a/modules/game_environment/environment.lua
++++ b/modules/game_environment/environment.lua
+@@ -166,8 +166,35 @@
+ table.merge(SOUNDS, SOUNDS1)
+ table.merge(SOUNDS, SOUNDS2)
+ 
++-- PokeVerse: the areas were made for the old map, which lies 2351 tiles further west
++local MAP_OFFSET_X = 2351
++local shiftedAreas = {}
++local function shiftArea(area)
++    if (shiftedAreas[area]) then
++        return
++    end
++    shiftedAreas[area] = true
++    area[DATA_INDEX.X] = area[DATA_INDEX.X] + MAP_OFFSET_X
++    area.fromPos.x = area.fromPos.x + MAP_OFFSET_X
++    area.toPos.x = area.toPos.x + MAP_OFFSET_X
++    for _, closeArea in ipairs(area.closePriorities or {}) do
++        shiftArea(closeArea)
++    end
++end
++for i = 1, #SOUNDS do
++    shiftArea(SOUNDS[i])
++end
++shiftedAreas = nil
++
++-- PokeVerse: areas of the map parts the old map does not have
++dofile("sounds_pokeverse.lua")
++for _, area in ipairs(SOUNDS_POKEVERSE) do
++    SOUNDS[#SOUNDS + 1] = area
++end
++
+ --local SOUNDS = loadstring("/modules/game_environment/new_sounds.lua")()--table.load("/modules/game_environment/sounds.lua")
+-local EFFECTS = table.load("/modules/game_environment/effects.lua")
++-- PokeVerse: the map effects are legacy shaders, not ported to the Redemption map shaders yet
++local EFFECTS = {}
+ 
+ -- Vars
+ local rcSoundChannel, playingSound, playingEffect, effectsEnabled, labelWindow, labelEvent, locationLabel
+@@ -345,21 +372,7 @@
+ function onInit()
+     rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
+ 
+-    if (g_graphics.canUseShaders()) then
+-        for k, v in pairs(EFFECT_FILES) do
+-            local shader = g_shaders.createMapShader(k, v.frag)
+-
+-            if (shader) then
+-                for _, texture in pairs(v.textures) do
+-                    shader:addMultiTexture(texture)
+-                end
+-            end
+-        end
+-        effectsEnabled = true
+-
+-    else
+-        effectsEnabled = false
+-    end
++    effectsEnabled = false
+ 
+     labelWindow = g_ui.loadUI('environment', modules.game_interface.getRootPanel())
+     labelWindow:hide()

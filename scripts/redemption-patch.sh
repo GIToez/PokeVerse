@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Edits the PokeVerse patch of one Redemption module.
+# Edits the PokeVerse patch of one Redemption module (or of a legacy module the package takes over).
 #
 #   scripts/redemption-patch.sh edit <module>   # build/redemption-patches/modules/<module>, patch applied
 #   scripts/redemption-patch.sh save <module>   # writes core/client-redemption/pokeverse-modern/patches/<module>.patch
@@ -14,7 +14,11 @@ work=$root/build/redemption-patches
 
 [ $# -eq 2 ] || { sed -n '2,7p' "$0" >&2; exit 1; }
 action=$1 module=$2
-[ -d "$upstream/$module" ] || { echo "no Redemption module: $module" >&2; exit 1; }
+# legacy PokeVerse modules the package takes over (assemble-redemption-client.sh legacy_modules)
+if [ ! -d "$upstream/$module" ] && [ -d "$root/core/client-legacy/modules/$module" ]; then
+  upstream=$root/core/client-legacy/modules
+fi
+[ -d "$upstream/$module" ] || { echo "no Redemption or legacy module: $module" >&2; exit 1; }
 patch=$patches/$module.patch
 
 case "$action" in
