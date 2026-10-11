@@ -329,12 +329,10 @@ local function queryRows(query, fields)
     return rows
 end
 
--- Duel results are stored as skill levels: every skill starts at level 10 and each
--- win/loss advances the matching skill by exactly one level (src/partyduel.cpp).
-local SKILL_START_LEVEL = 10
-
+-- Duel results are stored as skill levels: the skill starts at level 0 and each win/loss
+-- advances the matching skill by exactly one level (src/partyduel.cpp).
 local function duelCount(skillLevel)
-    return math.max(0, (tonumber(skillLevel) or SKILL_START_LEVEL) - SKILL_START_LEVEL)
+    return math.max(0, tonumber(skillLevel) or 0)
 end
 
 local function isHiddenGroup(groupId)

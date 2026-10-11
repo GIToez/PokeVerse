@@ -719,3 +719,27 @@ CREATE TABLE IF NOT EXISTS `discord_account_links` (
   CONSTRAINT `discord_account_links_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `discord_account_links_main` FOREIGN KEY (`main_player_id`) REFERENCES `players` (`id`) ON DELETE SET NULL
 ) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------------
+-- One-time data migrations
+-- ---------------------------------------------------------------------------
+-- Each migration runs once per database and is recorded here by name.
+CREATE TABLE IF NOT EXISTS `pokeverse_migrations` (
+  `name` VARCHAR(64) NOT NULL,
+  `applied_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`name`)
+) ENGINE = InnoDB;
+
+-- New characters start duel win/loss, battle win/loss, headbutting and fishing at 0 (catching
+-- stays at 10, getCatchChance uses it directly). Databases created before this still have the
+-- old trigger, and their characters lose the 10 they started with; levels earned above it stay.
+DROP TRIGGER IF EXISTS `oncreate_players`;
+CREATE TRIGGER `oncreate_players` AFTER INSERT ON `players` FOR EACH ROW
+  INSERT INTO `player_skills` (`player_id`, `skillid`, `value`) VALUES
+    (NEW.`id`, 0, 0), (NEW.`id`, 1, 0), (NEW.`id`, 2, 0), (NEW.`id`, 3, 0),
+    (NEW.`id`, 4, 0), (NEW.`id`, 5, 10), (NEW.`id`, 6, 0);
+
+UPDATE `player_skills` SET `value` = GREATEST(`value` - 10, 0), `count` = 0
+  WHERE `skillid` IN (0, 1, 2, 3, 4, 6)
+    AND NOT EXISTS (SELECT 1 FROM `pokeverse_migrations` WHERE `name` = 'skills-start-at-0');
+INSERT IGNORE INTO `pokeverse_migrations` (`name`) VALUES ('skills-start-at-0');

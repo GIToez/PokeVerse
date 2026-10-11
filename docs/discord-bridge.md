@@ -265,8 +265,8 @@ Trainer lookup details:
 - Only characters of this world that are not deleted. Staff characters (group access >= 1)
   are reported as not found.
 - Online characters use live values; offline characters use the saved database values.
-- `duelWins`/`duelLosses`: duel results are stored as skill levels that start at 10, so
-  the counts are `skill level - 10`.
+- `duelWins`/`duelLosses`: duel results are stored as skill levels that start at 0, so
+  the counts are the skill levels.
 - `recent` lists up to 5 achievement names, never secret achievements.
 
 ## Testing
