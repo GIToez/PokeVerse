@@ -226,11 +226,18 @@ def enter_game(args, host, port):
 
 
 def show_server_message(data):
-    if data and data[0] == 0xB4:  # text message: type, text
-        try:
-            print("  server message: " + Reader(data[2:]).string(), flush=True)
-        except (IndexError, struct.error):
-            pass
+    # The server bundles several messages into one packet and this client cannot parse every
+    # opcode, so text messages (0xB4, type, u16 length, text) are found by scanning.
+    i = data.find(b"\xB4") if data else -1
+    while i >= 0:
+        end = i
+        if i + 4 <= len(data):
+            n = struct.unpack_from("<H", data, i + 2)[0]
+            text = data[i + 4:i + 4 + n]
+            if n >= 4 and len(text) == n and all(32 <= c < 127 or c in (9, 10) or c >= 160 for c in text):
+                print("  server message: " + text.decode("latin-1"), flush=True)
+                end = i + 3 + n
+        i = data.find(b"\xB4", end + 1)
 
 
 def drain(conn, seconds):
