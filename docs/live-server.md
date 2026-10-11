@@ -101,11 +101,23 @@ same check offline (no connection to the server), for repository-level settings 
 | `backup` | Make a backup now. |
 | `restore` | Restore a backup (`backup` = file name, `confirm` = `RESTORE`). A safety backup is made first. |
 | `set-group` | Set a character's staff group (`character`, `group`). |
-| `discord-setup` | Register the bot's slash commands. |
+| `discord-setup` | Run the bot's setup: register the slash commands and create the Discord channels and roles it needs (Admin Logs / `#player-activity`, Verified Trainer, Ace Trainer). Changes nothing else; run once after a bot update that adds channels or roles. |
 | `status`, `logs` | Releases, services, backups, and the last log lines. |
 
 The production bot is always built from the `main` branch of
 [PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord).
+
+**Bot updates go out by themselves.** The "Discord bot auto-deploy" workflow checks
+PokeVerse-Discord `main` every 15 minutes. When it has a commit that is not live yet, it
+builds the bot and runs `discord-deploy`, which restarts only the bot. Deployed commits are
+remembered in the Actions cache (`discord-bot-deployed-<commit>`), and the Live server
+workflow records them too.
+
+- The deploy job uses the `production` environment, so each new bot version waits for the
+  environment's reviewers: one approval per merge.
+- For fully automatic bot updates, create an environment without reviewers that has the same
+  secrets, and set the variable `DISCORD_AUTODEPLOY_ENVIRONMENT` to its name.
+- Game-side changes that the bot needs still ship with a normal `deploy`.
 
 Every push and pull request builds both packages and runs the rehearsal, which installs
 everything on a fresh Ubuntu 24.04 machine and tests login, character creation, movement,

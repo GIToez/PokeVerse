@@ -18,6 +18,7 @@ function onSay(cid, words, param, channel)
 	local tmp = 0
 	for i, tid in ipairs(getSpectators(getCreaturePosition(cid), t[1], t[2], multifloor)) do
 		if(isPlayer(tid) and tid ~= cid and getPlayerAccess(tid) < getPlayerAccess(cid)) then
+			doSetDiscordLogoutReason(tid, "kick")
 			doRemoveCreature(tid)
 			tmp = tmp + 1
 		end

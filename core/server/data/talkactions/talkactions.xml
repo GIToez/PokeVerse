@@ -117,6 +117,7 @@
 	<talkaction log="yes" words="/chatban" access="1" event="script" value="../../lib/ps/events/talkactions/chatBan.lua"/>
 
 	<!-- Players -->
+	<talkaction words="!discord;/discord" case-sensitive="no" event="script" value="discord.lua" description="Link your account to the PokeVerse Discord server."/>
 	<talkaction words="/autoTrade" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/trade.lua" description="Automatic yell offerts on trade channel."/>
 
 <!--

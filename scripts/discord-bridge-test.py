@@ -6,6 +6,8 @@ Runs against a live server started with the bridge enabled. Uses real game clien
 
   --catch-test needs the test-only talkaction from scripts/testing/ installed as
   "/bridgetest" (scripts/test-server-linux.sh does that in its temporary copy).
+  --link-test needs an account with two characters (--linker) and a server started with
+  a short discordBridgeLinkCodeLifetime (--code-lifetime) so expiry can be checked.
 """
 import argparse
 import hashlib
@@ -13,9 +15,11 @@ import hmac
 import importlib.util
 import json
 import os
+import re
 import socket
 import struct
 import sys
+import threading
 import time
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -85,6 +89,10 @@ class Bridge:
             self.pump(0.2)
         return self.responses.pop(rid, None)
 
+    def events_of(self, kind, **fields):
+        return [e for e in self.events if e["event"]["kind"] == kind
+                and all(e["event"].get(k) == v for k, v in fields.items())]
+
     def wait_event(self, predicate, timeout):
         end = time.time() + timeout
         while time.time() < end:
@@ -104,15 +112,30 @@ class Player:
         a.character = character
         self.conn, self.id, self.pos = pt.enter_game(a, args.host, port)
         self.packets = []
+        self.lock = threading.Lock()
+        self.closed = threading.Event()
+        threading.Thread(target=self._keepalive, daemon=True).start()
+
+    def _keepalive(self):
+        # Idle test clients would otherwise be disconnected for not answering pings.
+        while not self.closed.wait(10):
+            try:
+                self.send(b"\x1e")
+            except OSError:
+                return
+
+    def send(self, payload):
+        with self.lock:
+            self.conn.send(payload)
 
     def open_channel(self, channel_id):
-        self.conn.send(struct.pack("<BH", 0x98, channel_id))
+        self.send(struct.pack("<BH", 0x98, channel_id))
 
     def say(self, text):
-        self.conn.send(struct.pack("<BB", 0x96, 1) + pt.pstr(text))
+        self.send(struct.pack("<BB", 0x96, 1) + pt.pstr(text))
 
     def say_channel(self, channel_id, text):
-        self.conn.send(struct.pack("<BBH", 0x96, 7, channel_id) + pt.pstr(text))
+        self.send(struct.pack("<BBH", 0x96, 7, channel_id) + pt.pstr(text))
 
     def collect(self, seconds):
         self.packets += pt.drain(self.conn, seconds)
@@ -120,8 +143,173 @@ class Player:
     def received(self, needle):
         return any(needle in p for p in self.packets)
 
+    def logout(self):
+        self.send(b"\x14")
+
+    def command(self, text, seconds=1.5):
+        """Says a talkaction and returns everything the server sent meanwhile, as text."""
+        start = len(self.packets)
+        self.say(text)
+        self.collect(seconds)
+        return b"\n".join(self.packets[start:]).decode("latin-1")
+
+    def link_code(self):
+        text = self.command("!discord link")
+        m = re.search(r"link code is ([0-9A-Z]{4}-[0-9A-Z]{4})", text)
+        return (m.group(1) if m else None), text
+
     def close(self):
+        self.closed.set()
         self.conn.close()
+
+
+DISCORD_A = "1234567890123456789"   # above 2^53: must survive without precision loss
+DISCORD_B = "98765432109876543210"
+DISCORD_C = "11111111111111111"
+
+
+def logout_event(b, character, timeout=15):
+    e = b.wait_event(lambda ev: ev["kind"] == "player_logout" and ev["character"] == character, timeout)
+    if e:
+        b.events.remove(e)
+    return e and e["event"]
+
+
+def link_tests(b, args, boot, listener, speaker, trainer, speaker_name):
+    account, password, first, second = args.linker.split(":", 3)
+
+    # Linking from the second character still makes the first-created character the main.
+    linker = Player(args, account, password, second)
+    linker.collect(1.5)
+    text = linker.command("!discord status")
+    check("in-game status: not linked", "is not linked" in text, text)
+    code, text = linker.link_code()
+    check("!discord link shows a code", code is not None, text)
+    again = linker.command("!discord link")
+    check("code requests are rate limited", "too recently" in again, again)
+
+    r = b.request("link.redeem", {"discordUserId": "12ab", "code": code})
+    check("link.redeem rejects invalid Discord ids", r and not r["ok"] and r["error"]["code"] == "invalid_params", str(r))
+    r = b.request("link.redeem", {"discordUserId": DISCORD_A, "code": "AAAA-AAAA"})
+    check("link.redeem rejects a wrong code", r and not r["ok"] and r["error"]["code"] == "invalid_code", str(r))
+    r = b.request("link.redeem", {"discordUserId": DISCORD_A, "code": code.lower().replace("-", " ")})
+    res = r and r.get("result") or {}
+    check("link.redeem links the account (code is case and separator insensitive)",
+          r and r["ok"] and res.get("linked") and res.get("discordUserId") == DISCORD_A
+          and res.get("main", {}).get("name") == first and res.get("characterCount") == 2
+          and isinstance(res.get("premium"), bool), str(r))
+    check("link results never contain account ids or names",
+          "accountId" not in res and account not in json.dumps(res), str(res))
+    linker.collect(1)
+    check("online character is told about the link", linker.received(b"now linked to Discord"))
+    r = b.request("link.redeem", {"discordUserId": DISCORD_B, "code": code})
+    check("a code works only once", r and not r["ok"] and r["error"]["code"] == "invalid_code", str(r))
+    r = b.request("link.redeem", {"discordUserId": DISCORD_A, "code": "BBBB-BBBB"})
+    check("a linked Discord user can't link a second account",
+          r and not r["ok"] and r["error"]["code"] == "already_linked", str(r))
+    text = linker.command("!discord link")
+    check("!discord link refuses an already linked account", "already linked" in text, text)
+    text = linker.command("!discord status")
+    check("in-game status: linked", "is linked to Discord since" in text, text)
+
+    r = b.request("link.account", {"discordUserId": DISCORD_A})
+    check("link.account", r and r["ok"] and r["result"]["linked"] and r["result"]["main"]["name"] == first
+          and r["result"]["mainChanged"] is False, str(r))
+    r = b.request("link.account", {"discordUserId": DISCORD_B})
+    check("link.account for an unlinked user", r and r["ok"] and r["result"] == {"linked": False}, str(r))
+    r = b.request("link.characters", {"discordUserId": DISCORD_A})
+    chars = r and r.get("ok") and r["result"]["characters"] or []
+    check("link.characters lists the account's characters with the main marked",
+          [c["name"] for c in chars] == [first, second] and chars[0]["main"] and not chars[1]["main"]
+          and chars[1]["online"] and all(c.get("vocation") for c in chars), str(r))
+    r = b.request("link.setMain", {"discordUserId": DISCORD_A, "character": speaker_name})
+    check("link.setMain refuses a character of another account",
+          r and not r["ok"] and r["error"]["code"] == "not_owned", str(r))
+    r = b.request("link.setMain", {"discordUserId": DISCORD_A, "character": second.upper()})
+    check("link.setMain", r and r["ok"] and r["result"]["main"]["name"] == second, str(r))
+    r = b.request("link.list", {"limit": 50})
+    check("link.list includes the link", r and r["ok"]
+          and any(x["discordUserId"] == DISCORD_A and x["main"]["name"] == second for x in r["result"]["links"]), str(r))
+
+    # Rapid reconnect to the same character keeps the session: no second login, no logout.
+    logins = len(b.events_of("player_login", character=second))
+    again = Player(args, account, password, second)
+    again.collect(2)
+    b.pump(1)
+    check("reconnect keeps the session (no extra login or logout)",
+          len(b.events_of("player_login", character=second)) == logins and not b.events_of("player_logout", character=second))
+    linker.close()
+
+    # Client logout, then a deleted main falls back to the first character.
+    again.logout()
+    ev = logout_event(b, second)
+    check("player_logout after a client logout", ev is not None and ev.get("reason") == "logout"
+          and ev.get("sessionId", "").startswith(boot + "-s") and ev.get("duration", -1) >= 0
+          and ev.get("logoutTime", 0) >= ev.get("loginTime", 1) and "ip" not in ev, str(ev))
+    again.close()
+    time.sleep(1)
+    acc = argparse.Namespace(host=args.host, login_port=args.login_port, timeout=30)
+    ok, message = account_request(acc, 3, account, password, second)
+    check("character deleted through the account service", ok, message)
+    e = b.wait_event(lambda ev: ev["kind"] == "account_characters" and ev.get("change") == "deleted", 10)
+    check("account_characters event for the linked account", e is not None
+          and e["event"]["discordUserId"] == DISCORD_A and e["event"]["character"] == second, str(e))
+    r = b.request("link.account", {"discordUserId": DISCORD_A})
+    check("deleted main falls back to the first character", r and r["ok"]
+          and r["result"]["main"]["name"] == first and r["result"]["mainChanged"] is True
+          and r["result"]["characterCount"] == 1, str(r))
+    r = b.request("link.account", {"discordUserId": DISCORD_A})
+    check("the fallback main is saved", r and r["ok"] and r["result"]["mainChanged"] is False, str(r))
+
+    # Unlinking in game needs a confirmation and tells the bot.
+    linker = Player(args, account, password, first)
+    linker.collect(1.5)
+    text = linker.command("!discord unlink")
+    check("!discord unlink asks for confirmation", "unlink confirm" in text, text)
+    check("nothing is unlinked before confirming", b.request("link.account", {"discordUserId": DISCORD_A})["result"]["linked"])
+    text = linker.command("!discord unlink confirm")
+    e = b.wait_event(lambda ev: ev["kind"] == "account_link" and ev.get("action") == "unlinked", 10)
+    check("in-game unlink emits account_link", e is not None and e["event"]["discordUserId"] == DISCORD_A
+          and e["event"]["scope"] == "account", str(e) + " " + text)
+    r = b.request("link.account", {"discordUserId": DISCORD_A})
+    check("account is unlinked", r and r["ok"] and r["result"] == {"linked": False}, str(r))
+
+    # Kick reason.
+    speaker.say("/kick " + first)
+    ev = logout_event(b, first)
+    check("player_logout reason kick", ev is not None and ev.get("reason") == "kick", str(ev))
+    linker.close()
+
+    # Unlink requested from Discord.
+    code, text = speaker.link_code()
+    r = b.request("link.redeem", {"discordUserId": DISCORD_B, "code": code})
+    check("second account links", r and r["ok"] and r["result"]["main"]["name"] == speaker_name, str(r))
+    r = b.request("link.unlink", {"discordUserId": DISCORD_B})
+    check("link.unlink", r and r["ok"] and r["result"] == {"unlinked": True}, str(r))
+    r = b.request("link.unlink", {"discordUserId": DISCORD_B})
+    check("link.unlink is idempotent", r and r["ok"] and r["result"] == {"unlinked": False}, str(r))
+    speaker.collect(1)
+    check("online character is told about the unlink", speaker.received(b"no longer linked to Discord"))
+
+    # Expiry, then brute-force lockout.
+    if args.code_lifetime:
+        code, text = listener.link_code()
+        check("code for the expiry check", code is not None, text)
+        time.sleep(args.code_lifetime + 2)
+        r = b.request("link.redeem", {"discordUserId": DISCORD_C, "code": code})
+        check("an expired code is refused", r and not r["ok"] and r["error"]["code"] == "expired", str(r))
+    codes = []
+    for i in range(6):
+        r = b.request("link.redeem", {"discordUserId": DISCORD_C, "code": "ZZZZ-ZZZ%d" % i})
+        codes.append(r and r.get("error", {}).get("code"))
+    check("repeated wrong codes lock the Discord user", codes == ["invalid_code"] * 5 + ["locked"], str(codes))
+
+
+def account_request(args, action, account, password, name):
+    spec = importlib.util.spec_from_file_location("account_test", os.path.join(here, "account-test.py"))
+    at = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(at)
+    return at.request(args, action, account, password, name)
 
 
 def main():
@@ -135,6 +323,10 @@ def main():
     ap.add_argument("--speaker", default="admin:admin:Admin",
                     help="account:password:character allowed to talk in Game-Chat (level 10+ or staff)")
     ap.add_argument("--staff-character", default="Admin", help="staff character that lookups must hide")
+    ap.add_argument("--link-test", action="store_true", help="player session and account linking checks")
+    ap.add_argument("--linker", default="bridgelink:secret:Link Alpha:Link Beta",
+                    help="account:password:first character:second character (account linking checks)")
+    ap.add_argument("--code-lifetime", type=int, default=0, help="discordBridgeLinkCodeLifetime of the server")
     args = ap.parse_args()
 
     # Authentication
@@ -147,6 +339,9 @@ def main():
 
     b = Bridge(args.host, args.bridge_port, args.secret)
     check("welcome after valid auth", b.welcome and b.welcome.get("type") == "welcome", str(b.welcome))
+    if args.link_test:
+        check("welcome lists playerSessions and accountLinking features",
+              {"playerSessions", "accountLinking"} <= set(b.welcome.get("features", [])), str(b.welcome))
     boot = b.welcome["bootId"]
     b.pump(2)
     states = [e["event"]["state"] for e in b.events if e["event"]["kind"] == "server_state"]
@@ -187,6 +382,19 @@ def main():
     # Chat in both directions with real game clients
     listener = Player(args, listener_account, listener_password, trainer)
     speaker = Player(args, speaker_account, speaker_password, speaker_name)
+    if args.link_test:
+        e = b.wait_event(lambda ev: ev["kind"] == "player_login" and ev["character"] == trainer, 10)
+        ev = e and e["event"] or {}
+        check("player_login event after a successful login", e is not None and ev.get("scope") == "admin"
+              and ev.get("sessionId", "").startswith(boot + "-s") and ev.get("ip") == "127.0.0.1"
+              and ev.get("clientOs") == "otclient-windows" and ev.get("clientVersion") == 312
+              and isinstance(ev.get("accountId"), int) and ev.get("level", 0) >= 1 and ev.get("playersOnline", 0) >= 1,
+              str(e))
+        r = b.request("admin.sessions")
+        sessions = r and r.get("ok") and r["result"]["sessions"] or []
+        check("admin.sessions lists the session without IPs",
+              any(x["sessionId"] == ev.get("sessionId") for x in sessions) and not any("ip" in x for x in sessions),
+              str(r))
     listener.open_channel(7)
     speaker.open_channel(7)
     listener.collect(1.5)
@@ -248,9 +456,16 @@ def main():
     spawn_events = [x for x in b.events if x["event"]["kind"] == "spawn" and x["event"]["source"] == "spawn"]
     print("INFO  spawn-system shiny spawns seen: %d" % len(spawn_events))
 
+    if args.link_test:
+        link_tests(b, args, boot, listener, speaker, trainer, speaker_name)
+
     # Reconnect: a second authenticated client replaces the first.
     listener.close()
     speaker.close()
+    if args.link_test:
+        ev = logout_event(b, trainer, 30)
+        check("player_logout reason connection_lost when the client disappears",
+              ev is not None and ev.get("reason") == "connection_lost", str(ev))
     b2 = Bridge(args.host, args.bridge_port, args.secret)
     check("reconnect accepted", b2.welcome and b2.welcome.get("bootId") == boot)
     r = b2.request("server.status")

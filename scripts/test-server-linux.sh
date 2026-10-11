@@ -58,7 +58,7 @@ echo "Bag Trainer gets the old item layout (bag in the hidden slot 3, no duel ic
 $db -upokeverse -ppokeverse pokeverse -e "DELETE i FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'Bag Trainer' AND i.pid = 3;
   UPDATE player_items i JOIN players p ON p.id = i.player_id SET i.pid = 3 WHERE p.name = 'Bag Trainer' AND i.pid = 10;"
 # Characters used only by the Discord bridge test (each logs in once per run).
-$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6);"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1);"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -72,6 +72,7 @@ bridge_secret="ci-bridge-secret-$(date +%s)-$RANDOM"
 cat > "$work/server/config.local.lua" <<LUA
 discordBridgeEnabled = true
 discordBridgeSecret = "$bridge_secret"
+discordBridgeLinkCodeLifetime = 8
 LUA
 cp "$root/scripts/testing/discord-bridge-test-talkaction.lua" "$work/server/data/talkactions/scripts/bridgetest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value="bridgetest.lua"/>\n</talkactions>#' \
@@ -98,7 +99,8 @@ sleep 3
 
 step "Discord bridge tests"
 python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --catch-test \
-  --listener "bridgetrainer:secret:Bridge Trainer" --speaker "bridgestaff:secret:Bridge Staff" --staff-character "Bridge Staff"
+  --listener "bridgetrainer:secret:Bridge Trainer" --speaker "bridgestaff:secret:Bridge Staff" --staff-character "Bridge Staff" \
+  --link-test --linker "bridgelink:secret:Link Alpha:Link Beta" --code-lifetime 8
 lua5.1 "$root/scripts/test-lua-json.lua"
 sleep 3
 
@@ -125,6 +127,11 @@ echo "New Trainer equipped: $kit"
 kit=$(equipped "Bag Trainer")
 echo "Bag Trainer equipped after login: $kit"
 case " $kit " in *" 10:12282 "*) ;; *) echo "FAIL: Bag Trainer's bag was not moved to slot 10"; exit 1;; esac
+
+links=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM discord_account_links")
+[ "$links" = 0 ] || { echo "FAIL: the bridge test should leave no Discord links, found $links"; exit 1; }
+deleted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT deleted FROM players WHERE name = 'Link Beta'")
+[ "$deleted" = 1 ] || { echo "FAIL: Link Beta should be soft-deleted by the bridge test"; exit 1; }
 
 step "Account service tests"
 python3 "$root/scripts/account-test.py"

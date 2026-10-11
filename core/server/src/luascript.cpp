@@ -2020,6 +2020,21 @@ void LuaScriptInterface::registerFunctions()
 	//getDiscordBridgeInfo()
 	lua_register(m_luaState, "getDiscordBridgeInfo", LuaScriptInterface::luaGetDiscordBridgeInfo);
 
+	//doCreateDiscordLinkCode(accountId)
+	lua_register(m_luaState, "doCreateDiscordLinkCode", LuaScriptInterface::luaDoCreateDiscordLinkCode);
+
+	//doConsumeDiscordLinkCode(code, discordUserId)
+	lua_register(m_luaState, "doConsumeDiscordLinkCode", LuaScriptInterface::luaDoConsumeDiscordLinkCode);
+
+	//doRevokeDiscordLinkCodes(accountId)
+	lua_register(m_luaState, "doRevokeDiscordLinkCodes", LuaScriptInterface::luaDoRevokeDiscordLinkCodes);
+
+	//doSetDiscordLogoutReason(cid, reason)
+	lua_register(m_luaState, "doSetDiscordLogoutReason", LuaScriptInterface::luaDoSetDiscordLogoutReason);
+
+	//getDiscordSessionId(guid)
+	lua_register(m_luaState, "getDiscordSessionId", LuaScriptInterface::luaGetDiscordSessionId);
+
 	//getGuildId(guildName)
 	lua_register(m_luaState, "getGuildId", LuaScriptInterface::luaGetGuildId);
 
@@ -6159,6 +6174,72 @@ int32_t LuaScriptInterface::luaGetDiscordBridgeInfo(lua_State* L)
 	setFieldFloat(L, "received", (double)stats.received);
 	setFieldFloat(L, "rejected", (double)stats.rejected);
 	setFieldFloat(L, "connections", (double)stats.connections);
+	setFieldBool(L, "accountLinking", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING));
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoCreateDiscordLinkCode(lua_State* L)
+{
+	//doCreateDiscordLinkCode(accountId)
+	//returns the code, or nil and an error code
+	std::string error;
+	std::string code = DiscordBridge::getInstance()->createLinkCode((uint32_t)popNumber(L), error);
+	if(code.empty())
+	{
+		lua_pushnil(L);
+		lua_pushstring(L, error.c_str());
+		return 2;
+	}
+
+	lua_pushstring(L, code.c_str());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoConsumeDiscordLinkCode(lua_State* L)
+{
+	//doConsumeDiscordLinkCode(code, discordUserId)
+	//returns the account id, or nil and an error code
+	std::string discordUserId = popString(L), code = popString(L), error;
+	uint32_t accountId = DiscordBridge::getInstance()->consumeLinkCode(code, discordUserId, error);
+	if(!accountId)
+	{
+		lua_pushnil(L);
+		lua_pushstring(L, error.c_str());
+		return 2;
+	}
+
+	lua_pushnumber(L, accountId);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoRevokeDiscordLinkCodes(lua_State* L)
+{
+	//doRevokeDiscordLinkCodes(accountId)
+	DiscordBridge::getInstance()->revokeLinkCodes((uint32_t)popNumber(L));
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoSetDiscordLogoutReason(lua_State* L)
+{
+	//doSetDiscordLogoutReason(cid, reason)
+	std::string reason = popString(L);
+	ScriptEnviroment* env = getEnv();
+	if(Player* player = env->getPlayerByUID(popNumber(L)))
+	{
+		DiscordBridge::getInstance()->setLogoutReason(player, reason);
+		lua_pushboolean(L, true);
+	}
+	else
+		lua_pushboolean(L, false);
+
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetDiscordSessionId(lua_State* L)
+{
+	//getDiscordSessionId(guid)
+	lua_pushstring(L, DiscordBridge::getInstance()->getSessionId((uint32_t)popNumber(L)).c_str());
 	return 1;
 }
 

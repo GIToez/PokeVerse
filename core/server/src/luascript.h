@@ -579,6 +579,11 @@ class LuaScriptInterface
 		static int32_t luaDoDiscordBridgeSend(lua_State* L);
 		static int32_t luaGetDiscordBridgeMessages(lua_State* L);
 		static int32_t luaGetDiscordBridgeInfo(lua_State* L);
+		static int32_t luaDoCreateDiscordLinkCode(lua_State* L);
+		static int32_t luaDoConsumeDiscordLinkCode(lua_State* L);
+		static int32_t luaDoRevokeDiscordLinkCodes(lua_State* L);
+		static int32_t luaDoSetDiscordLogoutReason(lua_State* L);
+		static int32_t luaGetDiscordSessionId(lua_State* L);
 		static int32_t luaGetGuildId(lua_State* L);
 		static int32_t luaGetGuildMotd(lua_State* L);
 		static int32_t luaIsPlayerPzLocked(lua_State* L);

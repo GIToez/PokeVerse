@@ -221,6 +221,7 @@ void Game::setGameState(GameState_t newState)
 				AutoList<Player>::iterator it = Player::autoList.begin();
 				while(it != Player::autoList.end()) //kick all players that are still online
 				{
+					DiscordBridge::getInstance()->setLogoutReason(it->second, "shutdown");
 					it->second->kickPlayer(true, true);
 					it = Player::autoList.begin();
 				}
@@ -241,6 +242,7 @@ void Game::setGameState(GameState_t newState)
 				{
 					if(!it->second->hasFlag(PlayerFlag_CanAlwaysLogin))
 					{
+						DiscordBridge::getInstance()->setLogoutReason(it->second, "server_closed");
 						it->second->kickPlayer(true, true);
 						it = Player::autoList.begin();
 					}
@@ -988,6 +990,8 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 
 	creature->getParent()->postRemoveNotification(NULL, creature, NULL, oldIndex, true);
 	creature->onRemovedCreature();
+	if(Player* removedPlayer = creature->getPlayer())
+		DiscordBridge::getInstance()->onPlayerRemoved(removedPlayer);
 
 	autoList.erase(creature->getID());
 	freeThing(creature);

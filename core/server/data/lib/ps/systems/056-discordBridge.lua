@@ -5,7 +5,9 @@
 -- Rules for this file:
 --  * Never let a bridge failure break gameplay: every hook is wrapped in pcall and
 --    does nothing when the bridge is disabled.
---  * Request handlers are read-only. They never modify players, items or the database.
+--  * Request handlers here are read-only. They never modify players, items or the database.
+--    Account linking (061-discordAccounts.lua) registers its own handlers and only writes
+--    the `discord_account_links` table.
 
 DiscordBridge = {}
 
@@ -315,6 +317,8 @@ local function queryRows(query, fields)
         for field, kind in pairs(fields) do
             if (kind == "string") then
                 row[field] = result.getDataString(resultId, field)
+            elseif (kind == "long") then
+                row[field] = result.getDataLong(resultId, field)
             else
                 row[field] = result.getDataInt(resultId, field)
             end
@@ -594,6 +598,18 @@ local HANDLERS = {
     ["server.status"] = handleServerStatus,
     ["bridge.config"] = handleBridgeConfig,
 }
+
+-- For other bridge modules (061-discordAccounts.lua).
+function DiscordBridge.registerHandler(method, handler)
+    HANDLERS[method] = handler
+end
+
+DiscordBridge.fail = fail
+DiscordBridge.sanitizeText = sanitizeText
+DiscordBridge.queryRows = queryRows
+DiscordBridge.queryNumber = queryNumber
+DiscordBridge.isHiddenGroup = isHiddenGroup
+DiscordBridge.safeCall = safeCall
 
 local function respond(requestId, ok, payload)
     local message = {type = "response", requestId = requestId, ok = ok}

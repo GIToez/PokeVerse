@@ -292,3 +292,18 @@ jobs:
             export PV_BOT_RELEASE
           fi
           scripts/live/deploy.sh "$ACTION"
+
+      # Tells the Discord bot auto-deploy workflow that this bot commit is live.
+      - name: Remember the deployed bot commit
+        id: bot_deployed
+        if: (env.ACTION == 'deploy' || env.ACTION == 'discord-deploy') && env.DISCORD_TOKEN != ''
+        run: |
+          sha=$(sed 's/.*-//' packages/bot-release.txt)
+          mkdir -p .bot-deployed && echo "$sha" > .bot-deployed/sha
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache/save@v4
+        if: steps.bot_deployed.outputs.sha != ''
+        with:
+          path: .bot-deployed
+          key: discord-bot-deployed-${{ steps.bot_deployed.outputs.sha }}
