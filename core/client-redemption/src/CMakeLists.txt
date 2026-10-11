@@ -446,6 +446,7 @@ set(SOURCE_FILES
         client/towns.cpp
         client/uicreature.cpp
         client/uigraph.cpp
+        client/uiradarchart.cpp
         client/uiitem.cpp
         client/uieffect.cpp
         client/uimissile.cpp

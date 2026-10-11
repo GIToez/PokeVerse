@@ -400,6 +400,7 @@
     <ClCompile Include="..\src\client\uicreature.cpp" />
     <ClCompile Include="..\src\client\uieffect.cpp" />
     <ClCompile Include="..\src\client\uigraph.cpp" />
+    <ClCompile Include="..\src\client\uiradarchart.cpp" />
     <ClCompile Include="..\src\client\uiitem.cpp" />
     <ClCompile Include="..\src\client\uimap.cpp" />
     <ClCompile Include="..\src\client\uimapanchorlayout.cpp" />
@@ -597,6 +598,7 @@
     <ClInclude Include="..\src\client\uicreature.h" />
     <ClInclude Include="..\src\client\uieffect.h" />
     <ClInclude Include="..\src\client\uigraph.h" />
+    <ClInclude Include="..\src\client\uiradarchart.h" />
     <ClInclude Include="..\src\client\uiitem.h" />
     <ClInclude Include="..\src\client\uimap.h" />
     <ClInclude Include="..\src\client\uimapanchorlayout.h" />

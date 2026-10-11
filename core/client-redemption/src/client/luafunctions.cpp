@@ -53,6 +53,7 @@
 #include "attachableobject.h"
 #include "thingtype.h"
 #include "uigraph.h"
+#include "uiradarchart.h"
 #include "uimap.h"
 #include "uimapanchorlayout.h"
 #include "uiminimap.h"
@@ -1318,6 +1319,20 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<UIGraph>("setInfoLineColor", &UIGraph::setInfoLineColor);
     g_lua.bindClassMemberFunction<UIGraph>("setTextBackground", &UIGraph::setTextBackground);
     g_lua.bindClassMemberFunction<UIGraph>("setGraphVisible", &UIGraph::setGraphVisible);
+
+    g_lua.registerClass<UIRadarChart, UIWidget>();
+    g_lua.bindClassStaticFunction<UIRadarChart>("create", [] { return std::make_shared<UIRadarChart>(); });
+    g_lua.bindClassMemberFunction<UIRadarChart>("setAxisCount", &UIRadarChart::setAxisCount);
+    g_lua.bindClassMemberFunction<UIRadarChart>("getAxisCount", &UIRadarChart::getAxisCount);
+    g_lua.bindClassMemberFunction<UIRadarChart>("setRingCount", &UIRadarChart::setRingCount);
+    g_lua.bindClassMemberFunction<UIRadarChart>("setGridColor", &UIRadarChart::setGridColor);
+    g_lua.bindClassMemberFunction<UIRadarChart>("setGridWidth", &UIRadarChart::setGridWidth);
+    g_lua.bindClassMemberFunction<UIRadarChart>("clearLayers", &UIRadarChart::clearLayers);
+    g_lua.bindClassMemberFunction<UIRadarChart>("addLayer", &UIRadarChart::addLayer);
+    g_lua.bindClassMemberFunction<UIRadarChart>("setLayerValues", &UIRadarChart::setLayerValues);
+    g_lua.bindClassMemberFunction<UIRadarChart>("setLayerVisible", &UIRadarChart::setLayerVisible);
+    g_lua.bindClassMemberFunction<UIRadarChart>("getLayerCount", &UIRadarChart::getLayerCount);
+    g_lua.bindClassMemberFunction<UIRadarChart>("getAxisPoint", &UIRadarChart::getAxisPoint);
 
     g_lua.registerClass<UIMapAnchorLayout, UIAnchorLayout>();
 }
