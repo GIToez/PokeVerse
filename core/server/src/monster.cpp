@@ -67,6 +67,7 @@ Monster::Monster(MonsterType* _mType):
 	
 	for (int32_t i = POKESTAT_FIRST; i <= POKESTAT_LAST; ++i) {
 		varPokeStats[i] = 1.0;
+		ivEvStats[i] = 1.0;
     }
 
     updateHealth();
@@ -1827,9 +1828,22 @@ void Monster::updateHealth()
 {
     health = (int32_t)(((((mType->health * 0.5 + 100) * level) + 300) *
             mType->healthRate) * g_config.getDouble(ConfigManager::RATE_MONSTER_HEALTH));
-    health = (int32_t)(health * varPokeStats[POKESTAT_MAXHEALTH]);
+    health = (int32_t)(health * varPokeStats[POKESTAT_MAXHEALTH] * ivEvStats[POKESTAT_MAXHEALTH]);
     health += (int32_t)(health / 200 * (extraPoints)); // 0.5% per point   
     healthMax = health;   
+}
+
+void Monster::setIvEvStat(pokeStats_t pokeStat, float multiplier)
+{
+    float previous = ivEvStats[pokeStat];
+    ivEvStats[pokeStat] = multiplier;
+
+    if (pokeStat == POKESTAT_MAXHEALTH) {
+        updateHealth();
+    }
+    else if (pokeStat == POKESTAT_SPEED) {
+        g_game.changeSpeed(this, (int32_t)(getBaseSpeed() * (multiplier - previous)));
+    }
 }
 
 void Monster::setVarPokeStat(pokeStats_t pokeStat, float modifier)

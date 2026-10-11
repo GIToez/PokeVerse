@@ -243,8 +243,107 @@ PokemonStats.getBallDescription = function(uid)
         describeStats(evs, PokemonStats.EV_TOTAL_MAX))
 end
 
+-- Each stat is scaled by the official stat formula divided by the same formula for an average Pokemon
+-- (IV 15, 0 EVs, neutral Nature) of the same species and level, so an average Pokemon plays as before.
+-- The weight scales the effect: 0 turns it off, 1 is the full official difference.
+IVEV_STAT_WEIGHT = 1.0
+PokemonStats.AVERAGE_IV = 15
+
+local MONSTER_STAT_BY_STAT = {
+    [POKEMON_STAT.HP] = MONSTER_POKE_STATS.MAXHEALTH,
+    [POKEMON_STAT.ATTACK] = MONSTER_POKE_STATS.ATTACK,
+    [POKEMON_STAT.DEFENSE] = MONSTER_POKE_STATS.DEFENSE,
+    [POKEMON_STAT.SPECIAL_ATTACK] = MONSTER_POKE_STATS.SPECIALATTACK,
+    [POKEMON_STAT.SPECIAL_DEFENSE] = MONSTER_POKE_STATS.SPECIALDEFENSE,
+    [POKEMON_STAT.SPEED] = MONSTER_POKE_STATS.SPEED
+}
+
+-- Monster XML speed is the official Speed plus 200
+local MONSTER_SPEED_OFFSET = 200
+
+-- Without the official rounding: at low levels it would swamp the IVs (a boosting Nature could even
+-- come out as a loss), and only the ratio between two results is used
+PokemonStats.officialStat = function(stat, base, iv, ev, level, natureMultiplier)
+    local value = (2 * base + iv + ev / 4) * level / 100
+    if (stat == POKEMON_STAT.HP) then
+        return value + level + 10
+    end
+    return (value + 5) * natureMultiplier
+end
+
+-- Official base stats: Attack to Sp. Defense from the species table, HP and Speed from the monster XML
+PokemonStats.getBaseStats = function(pokemonName)
+    local definition = getPokemonDefinition(pokemonName)
+    local info = getMonsterInfo(pokemonName)
+    if (not definition or not info) then
+        return nil
+    end
+
+    return {
+        math.max(1, info.health),
+        definition.atk,
+        definition.def,
+        definition.spAtk,
+        definition.spDef,
+        math.max(1, info.baseSpeed - MONSTER_SPEED_OFFSET)
+    }
+end
+
+PokemonStats.getMultipliers = function(pokemonName, level, ivs, evs, natureId)
+    local bases = PokemonStats.getBaseStats(pokemonName)
+    local multipliers = {}
+    for stat = 1, PokemonStats.STAT_COUNT do
+        multipliers[stat] = 1
+        if (bases) then
+            local actual = PokemonStats.officialStat(stat, bases[stat], ivs[stat], evs[stat], level,
+                PokemonStats.getNatureMultiplier(natureId, stat))
+            local average = PokemonStats.officialStat(stat, bases[stat], PokemonStats.AVERAGE_IV, 0, level, 1)
+            multipliers[stat] = 1 + IVEV_STAT_WEIGHT * (actual / average - 1)
+        end
+    end
+    return multipliers
+end
+
+PokemonStats.getBallMultipliers = function(ballUid, pokemonName, level)
+    local ivs, evs = PokemonStats.getBallIvs(ballUid), PokemonStats.getBallEvs(ballUid)
+    if (not ivs or not evs) then
+        return nil
+    end
+    return PokemonStats.getMultipliers(pokemonName or getBallPokemonName(ballUid),
+        level or getBallPokemonLevel(ballUid), ivs, evs, PokemonStats.getBallNatureId(ballUid))
+end
+
+-- Sets the summoned Pokemon's multipliers from its ball, for its current species and level. Setting the
+-- HP multiplier recalculates max HP and refills it, so keepHealth puts the HP percentage back.
+PokemonStats.applyToPokemon = function(pokemon, ballUid, keepHealth)
+    if (not isMonster(pokemon)) then
+        return false
+    end
+
+    local multipliers = PokemonStats.getBallMultipliers(ballUid, getCreatureName(pokemon), getMonsterLevel(pokemon))
+    if (not multipliers) then
+        return false
+    end
+
+    local healthPercent = getCreatureHealth(pokemon) / math.max(1, getCreatureMaxHealth(pokemon))
+    for stat = 1, PokemonStats.STAT_COUNT do
+        setMonsterIvEvStat(pokemon, MONSTER_STAT_BY_STAT[stat], multipliers[stat])
+    end
+
+    if (keepHealth) then
+        local health = math.max(1, math.ceil(getCreatureMaxHealth(pokemon) * healthPercent))
+        doCreatureAddHealth(pokemon, health - getCreatureHealth(pokemon))
+    end
+    return true
+end
+
 -- After a ball's IVs, EVs or Nature change; the Pokemon that is out picks up the new stats here
 PokemonStats.onBallChanged = function(cid, ballUid)
+    -- the Pokemon that is out always belongs to the ball in the ball slot
+    local pokemon = getPlayerPokemon(cid)
+    if (isMonster(pokemon)) then
+        PokemonStats.applyToPokemon(pokemon, getPlayerBall(cid).uid, true)
+    end
 end
 
 -- Balls in the ball slot and the backpack; the depot and other storage are filled when a ball is

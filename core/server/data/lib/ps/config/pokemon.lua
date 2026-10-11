@@ -1461,21 +1461,25 @@ end
 function getPokemonAtk(pokemon, pokemonLevel)
     return (getPokemonBaseAtk(pokemon) + getMonsterExtraSpAtk(pokemon)) * (pokemonLevel * 0.05)
             * getMonsterVarPokeStat(pokemon, MONSTER_POKE_STATS.ATTACK)
+            * getMonsterIvEvStat(pokemon, MONSTER_POKE_STATS.ATTACK)
 end
 
 function getPokemonDef(pokemon, pokemonLevel)
     return ((getPokemonBaseDef(pokemon) + getMonsterExtraSpDef(pokemon)) * (pokemonLevel * 0.05))
             * getMonsterVarPokeStat(pokemon, MONSTER_POKE_STATS.DEFENSE)
+            * getMonsterIvEvStat(pokemon, MONSTER_POKE_STATS.DEFENSE)
 end
 
 function getPokemonSpAtk(pokemon, pokemonLevel)
     return ((getPokemonBaseSpAtk(pokemon) + getMonsterExtraSpAtk(pokemon)) * (pokemonLevel * 0.05))
             * getMonsterVarPokeStat(pokemon, MONSTER_POKE_STATS.SPECIALATTACK)
+            * getMonsterIvEvStat(pokemon, MONSTER_POKE_STATS.SPECIALATTACK)
 end
 
 function getPokemonSpDef(pokemon, pokemonLevel)
     return ((getPokemonBaseSpDef(pokemon) + getMonsterExtraSpDef(pokemon)) * (pokemonLevel * 0.05))
             * getMonsterVarPokeStat(pokemon, MONSTER_POKE_STATS.SPECIALDEFENSE)
+            * getMonsterIvEvStat(pokemon, MONSTER_POKE_STATS.SPECIALDEFENSE)
 end
 
 function getPokemonBaseHealth(pokemonName)

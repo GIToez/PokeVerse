@@ -798,6 +798,8 @@ class LuaScriptInterface
         static int32_t luaDoPlayerSendCustomOutfitWindow(lua_State* L);
         static int32_t luaSetMonsterVarPokeStat(lua_State* L);
         static int32_t luaGetMonsterVarPokeStat(lua_State* L);
+        static int32_t luaSetMonsterIvEvStat(lua_State* L);
+        static int32_t luaGetMonsterIvEvStat(lua_State* L);
         static int32_t luaDoSendCreatureEffect(lua_State* L);
         static int32_t luaDoSendPlayerDollCaseStatus(lua_State* L);
         static int32_t luaDoSendPlayerDollCaseUpdate(lua_State* L);

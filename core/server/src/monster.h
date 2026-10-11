@@ -100,6 +100,10 @@ class Monster : public Creature
 		
 		float getVarPokeStat(pokeStats_t pokeStat) const {return varPokeStats[pokeStat];}
 		void setVarPokeStat(pokeStats_t pokeStat, float modifier);
+
+		// IV, EV and Nature multipliers, kept apart from the additive vitamin modifiers above
+		float getIvEvStat(pokeStats_t pokeStat) const {return ivEvStats[pokeStat];}
+		void setIvEvStat(pokeStats_t pokeStat, float multiplier);
 		
 		bool getCanWalkEverywhere() const {return canWalkEverywhere;}
 
@@ -195,6 +199,7 @@ class Monster : public Creature
 		float experienceRate;
 		
 		float varPokeStats[POKESTAT_LAST + 1];
+		float ivEvStats[POKESTAT_LAST + 1];
 
 		virtual void onCreatureEnter(Creature* creature);
 		virtual void onCreatureLeave(Creature* creature);

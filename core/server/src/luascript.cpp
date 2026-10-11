@@ -2818,6 +2818,12 @@ void LuaScriptInterface::registerFunctions()
 	//getMonsterVarPokeStat(cid, pokeStat)
 	lua_register(m_luaState, "getMonsterVarPokeStat", LuaScriptInterface::luaGetMonsterVarPokeStat);
 
+	//setMonsterIvEvStat(cid, pokeStat, multiplier)
+	lua_register(m_luaState, "setMonsterIvEvStat", LuaScriptInterface::luaSetMonsterIvEvStat);
+
+	//getMonsterIvEvStat(cid, pokeStat)
+	lua_register(m_luaState, "getMonsterIvEvStat", LuaScriptInterface::luaGetMonsterIvEvStat);
+
 	//doPlayerSendDollCaseStatus(cid, status)
 	lua_register(m_luaState, "doPlayerSendDollCaseStatus", LuaScriptInterface::luaDoSendPlayerDollCaseStatus);
 
@@ -14006,6 +14012,48 @@ int32_t LuaScriptInterface::luaSetMonsterVarPokeStat(lua_State* L)
     monster->setVarPokeStat(pokeStat, modifier);
     lua_pushboolean(L, true);
     return 1;
+}
+
+int32_t LuaScriptInterface::luaSetMonsterIvEvStat(lua_State* L)
+{
+	//setMonsterIvEvStat(cid, pokeStat, multiplier)
+	float multiplier = popFloatNumber(L);
+	int32_t pokeStat = popNumber(L);
+
+	ScriptEnviroment* env = getEnv();
+	Creature* creature = env->getCreatureByUID(popNumber(L));
+	Monster* monster = creature ? creature->getMonster() : NULL;
+	if (!monster) {
+		errorEx(getError(LUA_ERROR_MONSTER_NOT_FOUND));
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	if (pokeStat < POKESTAT_FIRST || pokeStat > POKESTAT_LAST || multiplier <= 0) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	monster->setIvEvStat((pokeStats_t)pokeStat, multiplier);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetMonsterIvEvStat(lua_State* L)
+{
+	//getMonsterIvEvStat(cid, pokeStat)
+	int32_t pokeStat = popNumber(L);
+
+	ScriptEnviroment* env = getEnv();
+	Creature* creature = env->getCreatureByUID(popNumber(L));
+	Monster* monster = creature ? creature->getMonster() : NULL;
+	if (!monster || pokeStat < POKESTAT_FIRST || pokeStat > POKESTAT_LAST) {
+		lua_pushnumber(L, 1);
+		return 1;
+	}
+
+	lua_pushnumber(L, monster->getIvEvStat((pokeStats_t)pokeStat));
+	return 1;
 }
 
 int32_t LuaScriptInterface::luaGetMonsterVarPokeStat(lua_State* L)

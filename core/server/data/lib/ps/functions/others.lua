@@ -744,6 +744,7 @@ function doPokemonCall(cid, ball)
         setMonsterExtraPoints(pokemon, pokemonExtraPoints)
         setMonsterLevel(pokemon, pokemonLevel) -- this need be here, to set correctly max hp
         PokemonStats.ensureBall(ball.uid)
+        PokemonStats.applyToPokemon(pokemon, ball.uid)
         Vitamin.onPokemonCall(pokemon, ball)
         PokemonHeldItem.onPokemonCall(pokemon, ball)
         PokemonAddon.onPokemonCall(pokemon, ball)

@@ -508,6 +508,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                     if (pokemon) then
                         setMonsterExtraPoints(pokemon, pokemonExtraPoints)
                         setMonsterLevel(pokemon, newLevel)
+                        PokemonStats.applyToPokemon(pokemon, ball.uid)
                         doCreatureAddHealth(pokemon, (getCreatureMaxHealth(pokemon) - getCreatureHealth(pokemon)))
                         setCreatureMaxMana(player, maxEnergy + POKEMON_GAIN_ENERGY * gainLevel)
                         doCreatureAddMana(player, (maxEnergy - energy) + POKEMON_GAIN_ENERGY * gainLevel)
@@ -577,6 +578,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                     if (pokemon) then
                         setMonsterExtraPoints(pokemon, pokemonExtraPoints)
                         setMonsterLevel(pokemon, currentLevel)
+                        PokemonStats.applyToPokemon(pokemon, ball.uid)
                         doCreatureAddHealth(pokemon, (getCreatureMaxHealth(pokemon) - getCreatureHealth(pokemon)))
                         setCreatureMaxMana(player, maxEnergy + POKEMON_GAIN_ENERGY * gainLevel)
                         doCreatureAddMana(player, (maxEnergy - energy) + POKEMON_GAIN_ENERGY * gainLevel)
