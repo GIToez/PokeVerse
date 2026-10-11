@@ -63,6 +63,11 @@ local SHOW_TIME = 6000
 local FADE_IN = 300
 local FADE_OUT = 600
 local SLIDE = 12
+local CARD_HEIGHT = 72
+local ROW_HEIGHT = 42
+local GROUP_SPACING = 3
+local COLUMN_SPACING = 6
+local STATUS_RESERVE = 24
 
 local BADGES = {
     up = '/modules/game_advanceeffect/images/badge-up',
@@ -75,6 +80,7 @@ local enabled = true
 local lastSkill = {}
 local groups = {}
 local groupCount = 0
+local usedHeight = 0
 local queue = {}
 local nextShowAt = 0
 local pumpEvent
@@ -93,6 +99,7 @@ local function removeGroup(group)
     if groups[group] then
         groups[group] = nil
         groupCount = groupCount - 1
+        usedHeight = usedHeight - group.stackHeight
     end
     removeEvent(group.slideEvent)
     removeEvent(group.hideEvent)
@@ -143,10 +150,26 @@ local function fillCard(card, spec)
 end
 
 -- The fade-out is scheduled before the content is built, so a card can never stay on screen
+local function stackHeight(spec)
+    return CARD_HEIGHT + #(spec.rows or {}) * (ROW_HEIGHT + GROUP_SPACING) + COLUMN_SPACING
+end
+
+-- The first card always shows; later ones wait until they fit above the status message line
+local function fits(spec)
+    if groupCount == 0 then
+        return true
+    end
+    local mapPanel = modules.game_interface.getMapPanel()
+    local bottom = mapPanel:getY() + mapPanel:getHeight() - STATUS_RESERVE
+    return column:getY() + usedHeight + stackHeight(spec) - COLUMN_SPACING <= bottom
+end
+
 local function display(spec)
     local group = g_ui.createWidget('AdvanceGroup', column)
+    group.stackHeight = stackHeight(spec)
     groups[group] = true
     groupCount = groupCount + 1
+    usedHeight = usedHeight + group.stackHeight
     group:setOpacity(0)
     group:setMarginTop(SLIDE)
     group.hideEvent = scheduleEvent(function()
@@ -170,7 +193,7 @@ local function display(spec)
 end
 
 pump = function()
-    if pumpEvent or not column or #queue == 0 or groupCount >= MAX_VISIBLE then
+    if pumpEvent or not column or #queue == 0 or groupCount >= MAX_VISIBLE or not fits(queue[1]) then
         return
     end
     local wait = nextShowAt - g_clock.millis()
@@ -210,6 +233,7 @@ local function reset()
     end
     groups = {}
     groupCount = 0
+    usedHeight = 0
 end
 
 local function show(value)
