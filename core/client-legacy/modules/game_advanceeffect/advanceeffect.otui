@@ -25,21 +25,22 @@ AdvanceCard < UIWidget
 
     UIWidget
       id: picture
-      size: 50 50
+      size: 64 64
       anchors.centerIn: parent
       phantom: true
       visible: false
 
     UICreature
       id: creature
-      size: 54 54
+      size: 50 50
       anchors.centerIn: parent
+      creature-center: true
       phantom: true
       visible: false
 
     Item
       id: moveIcon
-      size: 38 38
+      size: 34 34
       anchors.centerIn: parent
       border-width: 0
       padding: 0
