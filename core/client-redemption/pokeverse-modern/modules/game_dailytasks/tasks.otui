@@ -1,0 +1,444 @@
+TaskText < Label
+  font: verdana-11px-antialised
+  color: #dfdfdf
+  phantom: true
+
+TaskHeading < TaskText
+  font: verdana-11px-rounded
+  color: #f0d070
+  text-auto-resize: true
+
+RewardItem < UIItem
+  size: 32 32
+  virtual: true
+  margin-left: 4
+
+TaskReward < UIWidget
+  height: 32
+  layout:
+    type: horizontalBox
+    fit-children: true
+  phantom: true
+
+TaskTab < UIButton
+  size: 96 22
+  image-source: /images/ui/tabbutton_square
+  image-color: #dfdfdf
+  image-clip: 0 0 98 18
+  image-border: 3
+  color: #dfdfdf
+  font: verdana-11px-rounded
+  anchors.top: parent.top
+  $first:
+    anchors.left: parent.left
+  $!first:
+    anchors.left: prev.right
+    margin-left: 4
+  $hover !checked:
+    image-clip: 0 18 98 18
+  $checked:
+    image-clip: 0 36 98 18
+    color: #ffffff
+
+TaskRow < UIWidget
+  height: 66
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  padding: 7
+  margin-top: 5
+
+DailyTaskRow < TaskRow
+  TaskText
+    id: title
+    font: verdana-11px-rounded
+    color: #ffffff
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: claim.left
+    margin-right: 6
+
+  ProgressBar
+    id: progress
+    background-color: #3f9fd8
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: claim.left
+    margin-top: 3
+    margin-right: 6
+
+  TaskText
+    id: money
+    color: #f0d070
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 7
+
+  TaskReward
+    id: items
+    anchors.left: money.right
+    anchors.bottom: parent.bottom
+    margin-left: 6
+    margin-bottom: -4
+
+  Button
+    id: claim
+    !text: tr('Claim')
+    width: 64
+    anchors.top: parent.top
+    anchors.right: parent.right
+
+  Button
+    id: reroll
+    !text: tr('Reroll')
+    width: 64
+    anchors.top: claim.bottom
+    anchors.right: parent.right
+    margin-top: 4
+
+DifficultyPicker < UIWidget
+  height: 22
+  anchors.left: parent.left
+  anchors.right: parent.right
+
+  TaskText
+    id: label
+    !text: tr('Difficulty')
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  ComboBox
+    id: choice
+    width: 150
+    anchors.left: label.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  Button
+    id: start
+    !text: tr('Start')
+    width: 64
+    anchors.left: choice.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  TaskText
+    id: info
+    color: #a8b4b4
+    anchors.left: choice.right
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+
+PeriodicBoard < UIWidget
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 8
+
+  TaskText
+    id: resets
+    color: #a8b4b4
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+  DifficultyPicker
+    id: picker
+    anchors.top: resets.bottom
+    margin-top: 4
+
+  TaskText
+    id: pickHint
+    color: #a8b4b4
+    text-wrap: true
+    anchors.top: picker.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 56
+    margin-top: 10
+
+  UIWidget
+    id: tasks
+    anchors.top: picker.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: separator.top
+    margin-top: 2
+    layout:
+      type: verticalBox
+
+  HorizontalSeparator
+    id: separator
+    anchors.bottom: bonus.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-bottom: 4
+
+  DailyTaskRow
+    id: bonus
+    height: 60
+    anchors.bottom: rerollInfo.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-bottom: 4
+
+  TaskText
+    id: rerollInfo
+    color: #a8b4b4
+    text-wrap: true
+    height: 28
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+HuntRow < TaskRow
+  height: 60
+
+  UICreature
+    id: creature
+    size: 48 48
+    creature-center: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  TaskText
+    id: title
+    font: verdana-11px-rounded
+    color: #ffffff
+    anchors.top: parent.top
+    anchors.left: creature.right
+    anchors.right: claim.left
+    margin-left: 6
+    margin-right: 6
+
+  ProgressBar
+    id: progress
+    background-color: #3fb860
+    anchors.top: title.bottom
+    anchors.left: title.left
+    anchors.right: claim.left
+    margin-top: 3
+    margin-right: 6
+
+  TaskText
+    id: reward
+    color: #f0d070
+    anchors.left: title.left
+    anchors.right: claim.left
+    anchors.bottom: parent.bottom
+    margin-right: 6
+
+  Button
+    id: claim
+    !text: tr('Claim')
+    width: 64
+    anchors.top: parent.top
+    anchors.right: parent.right
+
+  Button
+    id: cancel
+    !text: tr('Give up')
+    width: 64
+    anchors.top: claim.bottom
+    anchors.right: parent.right
+    margin-top: 4
+
+HuntSizeButton < Button
+  width: 76
+  anchors.bottom: parent.bottom
+  $first:
+    anchors.right: parent.right
+  $!first:
+    anchors.right: prev.left
+    margin-right: 4
+
+OfferRow < TaskRow
+  height: 56
+
+  UICreature
+    id: creature
+    size: 44 44
+    creature-center: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  TaskText
+    id: title
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: creature.right
+    margin-left: 6
+
+  TaskText
+    id: levels
+    color: #a8b4b4
+    text-auto-resize: true
+    anchors.top: title.bottom
+    anchors.left: title.left
+    margin-top: 2
+
+  UIWidget
+    id: sizes
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    width: 240
+
+ShopItem < UIWidget
+  size: 74 70
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  padding: 4
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+
+  Button
+    id: buy
+    height: 20
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+HuntingBoard < UIWidget
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 8
+
+  TaskText
+    id: rank
+    color: #dfdfdf
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: points.left
+
+  TaskHeading
+    id: points
+    anchors.top: parent.top
+    anchors.right: parent.right
+
+  DifficultyPicker
+    id: picker
+    anchors.top: rank.bottom
+    margin-top: 6
+
+  TaskHeading
+    id: activeTitle
+    anchors.top: picker.bottom
+    anchors.left: parent.left
+    margin-top: 8
+
+  UIWidget
+    id: active
+    anchors.top: activeTitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 130
+    layout:
+      type: verticalBox
+
+  TaskHeading
+    id: offersTitle
+    !text: tr('Offers')
+    anchors.top: active.bottom
+    anchors.left: parent.left
+    margin-top: 6
+
+  Button
+    id: refresh
+    width: 150
+    anchors.verticalCenter: offersTitle.verticalCenter
+    anchors.right: parent.right
+
+  UIWidget
+    id: offers
+    anchors.top: offersTitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 186
+    margin-top: 2
+    layout:
+      type: verticalBox
+
+  TaskHeading
+    id: shopTitle
+    !text: tr('Hunt shop')
+    anchors.top: offers.bottom
+    anchors.left: parent.left
+    margin-top: 6
+
+  UIWidget
+    id: shop
+    anchors.top: shopTitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 4
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+TasksWindow < Window
+  !text: tr('Tasks')
+  size: 470 660
+  @onEscape: self:hide()
+
+  UIButton
+    id: closeButton
+    size: 14 14
+    image-source: /images/ui/miniwindow_buttons
+    image-clip: 28 0 14 14
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -29
+    margin-right: -10
+    @onClick: self:getParent():hide()
+
+    $hover:
+      image-clip: 28 14 14 14
+
+    $pressed:
+      image-clip: 28 28 14 14
+
+  UIWidget
+    id: tabs
+    height: 22
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+    TaskTab
+      id: daily
+      !text: tr('Daily')
+
+    TaskTab
+      id: weekly
+      !text: tr('Weekly')
+
+    TaskTab
+      id: hunting
+      !text: tr('Hunting')
+
+  PeriodicBoard
+    id: dailyBoard
+
+  PeriodicBoard
+    id: weeklyBoard
+    visible: false
+
+  HuntingBoard
+    id: huntingBoard
+    visible: false
