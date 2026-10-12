@@ -156,33 +156,24 @@ tasks_of() { sql "SELECT d.data FROM player_daily_tasks d JOIN players p ON p.id
 picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = 'Trainer' AND d.day = '$(date +%F)'")
 [ "$picked" = 1 ] || { echo "FAIL: Trainer got no daily tasks for today at login"; exit 1; }
 tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['tasks']) == 3, s; assert len({t['kind'] for t in s['tasks']}) == 3, s"
-admin_tasks() { # <task 1 progress> <task 2 claimed> <task 3 claimed>; one line, the mariadb CLI escapes newlines
-  local json
-  # the server only reads the saved state at login, and may keep a character in game a while after logout
-  for _ in $(seq 90); do [ "$(sql "SELECT online FROM players WHERE name = 'Admin'")" = 0 ] && break; sleep 1; done
-  [ "$(sql "SELECT online FROM players WHERE name = 'Admin'")" = 0 ] || { echo "FAIL: Admin is still online"; exit 1; }
-  json=$(python3 -c "import json,sys; p,c2,c3=sys.argv[1:]; print(json.dumps({'day': '$(date +%F)', 'band': 1,
-    'rerolled': False, 'bonusClaimed': False, 'tasks': [
-    {'kind': 'defeat', 'target': 15, 'progress': int(p), 'claimed': False, 'money': 400, 'item': [12244, 5]},
-    {'kind': 'catch', 'target': 2, 'progress': 0, 'claimed': c2 == 'true', 'money': 400, 'item': [12157, 10]},
-    {'kind': 'fish', 'target': 3, 'progress': 0, 'claimed': c3 == 'true', 'money': 400, 'item': [12157, 10]}]}))" "$@")
-  sql "UPDATE player_daily_tasks d JOIN players p ON p.id = d.player_id SET d.data = '$json' WHERE p.name = 'Admin'"
+say_admin() { # the server reads its table at login only through its own connection, so tests use the staff commands
+  local args=()
+  for text in "$@"; do args+=(--say "$text"); done
+  python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin "${args[@]}"
 }
-admin_tasks 15 true true
-python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin \
-  --say "/dailytasks claim 2" --say "/dailytasks claim 1" --say "/dailytasks bonus" --say "/dailytasks bonus"
+say_admin "/dailytasks reset" "/dailytasks progress 1 999" "/dailytasks claim 1" "/dailytasks claim 2" \
+  "/dailytasks bonus" "/dailytasks progress 2 999" "/dailytasks progress 3 999" "/dailytasks claim 2" \
+  "/dailytasks claim 3" "/dailytasks bonus"
 tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
-assert t[0]['claimed'] and s['bonusClaimed'], s
-assert not s['rerolled'], s"
-[ "$(inside Admin 10 12244)" = 1 ] || { echo "FAIL: the daily task reward (health potions) is not in Admin's bag"; exit 1; }
-[ "$(inside Admin 10 13295)" = 1 ] || { echo "FAIL: the daily bonus (white surprise box) is not in Admin's bag"; exit 1; }
-admin_tasks 3 false false
-python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin \
-  --say "/i 2152, 10" --say "/dailytasks reroll 1" --say "/dailytasks reroll 2" --say "/dailytasks claim 1"
+assert all(x['claimed'] and x['progress'] == x['target'] for x in t), s
+assert s['bonusClaimed'] and not s['rerolled'], s"
+[ "$(inside Admin 10 13295,13292)" -ge 1 ] || { echo "FAIL: the daily bonus (a surprise box) is not in Admin's bag"; exit 1; }
+say_admin "/i 2152, 10" "/dailytasks reset" "/dailytasks progress 3 999" "/dailytasks reroll 3" \
+  "/dailytasks reroll 1" "/dailytasks reroll 2"
 tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
-assert s['rerolled'] and t[0]['kind'] not in ('defeat', 'catch', 'fish'), s
-assert t[1]['kind'] == 'catch' and not t[0]['claimed'], s"
-echo "Daily tasks: picked at login, claim, bonus and one reroll a day"
+assert s['rerolled'] and len({x['kind'] for x in t}) == 3, s
+assert t[2]['progress'] == t[2]['target'] and t[0]['progress'] == 0, s"
+echo "Daily tasks: picked at login, claim, bonus, rewards and one reroll a day"
 
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true

@@ -292,7 +292,28 @@ function DailyTasks.reroll(cid, slot)
     return true
 end
 
--- the database is the truth between sessions (staff may edit it while the character is offline)
+-- Staff tools (/dailytasks reset, /dailytasks progress <slot> <count>). The server reads the
+-- table only through its own connection, which may not see changes made from outside while it
+-- runs, so fix a character's tasks with these instead of editing the table.
+function DailyTasks.reset(cid)
+    local state = newDay(cid)
+    cache[getPlayerGUID(cid)] = state
+    save(cid, state)
+    DailyTasks.send(cid)
+end
+
+function DailyTasks.setProgress(cid, slot, count)
+    local state = DailyTasks.get(cid)
+    local task = state.tasks[slot]
+    if (not task) then
+        return false
+    end
+    task.progress = math.max(0, math.min(count, task.target))
+    save(cid, state)
+    DailyTasks.send(cid)
+    return true
+end
+
 function DailyTasks.onLogin(cid)
     cache[getPlayerGUID(cid)] = nil
     DailyTasks.send(cid)

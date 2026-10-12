@@ -1,8 +1,16 @@
 -- Sent by the client's Daily Tasks window: "" (state), "claim <slot>", "bonus", "reroll <slot>".
+-- Gods also have "reset" (new tasks now) and "progress <slot> <count>".
+local STAFF_ACCESS = 5
+
 function onSay(cid, words, param)
-    local action, slot = (param or ""):match("^%s*(%a*)%s*(%d*)%s*$")
-    slot = tonumber(slot)
-    if (action == "claim" and slot) then
+    local action, slot, count = (param or ""):match("^%s*(%a*)%s*(%d*)%s*(%d*)%s*$")
+    slot, count = tonumber(slot), tonumber(count)
+    local staff = getPlayerAccess(cid) >= STAFF_ACCESS
+    if (staff and action == "reset") then
+        DailyTasks.reset(cid)
+    elseif (staff and action == "progress" and slot and count) then
+        DailyTasks.setProgress(cid, slot, count)
+    elseif (action == "claim" and slot) then
         DailyTasks.claim(cid, slot)
     elseif (action == "bonus") then
         DailyTasks.claimBonus(cid)
