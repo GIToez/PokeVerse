@@ -134,6 +134,25 @@ local function addMoveBox(parent, move, title)
     return box
 end
 
+local function addUnlockBox(parent, unlock, level)
+    local box = g_ui.createWidget('LevelUpMoveBox', parent)
+    box.title:setText((unlock.title or tr('New Feature')) .. ':')
+    box.moveName:setText(unlock.text or '')
+    box.icon:hide()
+    local picture = g_ui.createWidget('UIWidget', box.iconFrame)
+    picture:setSize({ width = 34, height = 34 })
+    picture:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
+    picture:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
+    picture:setImageSource(unlock.icon and ('/images/advances/' .. unlock.icon) or (IMAGES .. 'unlock'))
+    picture:setPhantom(true)
+    box.element:hide()
+    box.category:hide()
+    box.details:addAnchor(AnchorLeft, 'title', AnchorLeft)
+    box.details:setMarginLeft(0)
+    box.details:setText(tr('Unlocked at trainer level %d', unlock.level or level or 0))
+    return box
+end
+
 local function buildPokemon(parent, data)
     local banner = createBanner(parent)
     setPortrait(banner, data.number)
@@ -189,17 +208,11 @@ local function buildTrainer(parent, data)
             width = 112
         })
     end
+    local boxes = {}
     for _, unlock in ipairs(data.unlocks or {}) do
-        local text = unlock.text or ''
-        addChip(banner, {
-            icon = unlock.icon and ('/images/advances/' .. unlock.icon) or (IMAGES .. 'unlock'),
-            label = unlock.title or tr('New Feature'),
-            value = text,
-            color = '#ffd75a',
-            width = math.max(110, 34 + #text * 7)
-        })
+        table.insert(boxes, function() return addUnlockBox(parent, unlock, data.to) end)
     end
-    return banner, {}
+    return banner, boxes
 end
 
 local function buildTm(parent, data)

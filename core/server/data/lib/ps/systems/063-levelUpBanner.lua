@@ -1,6 +1,6 @@
 -- Level-up banners in the client (game_levelup), sent as JSON on EXTENDED_IDS.LEVEL_UP:
 --   {kind = "pokemon", name, number, from, to, stats = {{name, old, new}, ...}, moves = {move, ...}}
---   {kind = "trainer", name, from, to, hp = {old, new}, pokemonCap, unlocks = {{icon, title, text}, ...}}
+--   {kind = "trainer", name, from, to, hp = {old, new}, pokemonCap, unlocks = {{icon, title, text, level}, ...}}
 --   {kind = "tm", name, number, move = move}
 -- with move = {name, icon, element, category, power, energy, cooldown, description}.
 
@@ -87,7 +87,7 @@ LevelUpBanner.getUnlocks = function(cid, fromLevel, toLevel)
     local unlocks = {}
     for level = fromLevel + 1, toLevel do
         for _, unlock in ipairs(LevelUpBanner.UNLOCKS[level] or {}) do
-            unlocks[#unlocks + 1] = { icon = unlock.icon, title = __L(cid, unlock.title), text = __L(cid, unlock.text) }
+            unlocks[#unlocks + 1] = { icon = unlock.icon, title = __L(cid, unlock.title), text = __L(cid, unlock.text), level = level }
         end
     end
     return unlocks
