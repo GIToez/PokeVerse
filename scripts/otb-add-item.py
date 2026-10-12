@@ -2,8 +2,10 @@
 """Appends a server item to items.otb that copies an existing item's flags and attributes.
 
     scripts/otb-add-item.py <items.otb> <template server id> <new server id> [client id]
+    scripts/otb-add-item.py --replace <items.otb> <template server id> <server id> [client id]
 
-The new id must be the next free id after the last item. The server reads ids 30001-30099 as 1-99,
+The new id must be the next free id after the last item. --replace overwrites an existing item
+instead, keeping its server id. The server reads ids 30001-30099 as 1-99,
 so those can't be used. Clients don't read items.otb; the new item draws the template's (or the
 given) client sprite.
 """
@@ -60,10 +62,14 @@ def item_attrs(props):
 
 
 def main():
-    if len(sys.argv) not in (4, 5):
+    args = sys.argv[1:]
+    replace = bool(args) and args[0] == '--replace'
+    if replace:
+        args = args[1:]
+    if len(args) not in (3, 4):
         sys.exit(__doc__)
-    path, template_id, new_id = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
-    client_id = int(sys.argv[4]) if len(sys.argv) == 5 else None
+    path, template_id, new_id = args[0], int(args[1]), int(args[2])
+    client_id = int(args[3]) if len(args) == 4 else None
     if 30000 < new_id < 30100:
         sys.exit('ids 30001-30099 are read as 1-99 by the server')
 
@@ -71,6 +77,7 @@ def main():
     _, _, root_children, root_end = read_node(data, 4)
 
     template = None
+    existing = None
     last_id = 0
     for start, end in root_children:
         node_type, props, _, _ = read_node(data, start)
@@ -79,9 +86,13 @@ def main():
         last_id = max(last_id, server_id)
         if server_id == template_id:
             template = (node_type, flags, attrs)
+        if server_id == new_id:
+            existing = (start, end)
     if template is None:
         sys.exit('template id %d not found' % template_id)
-    if new_id != last_id + 1:
+    if replace and existing is None:
+        sys.exit('item %d not found' % new_id)
+    if not replace and new_id != last_id + 1:
         sys.exit('new id must be %d (the last item is %d)' % (last_id + 1, last_id))
 
     node_type, flags, attrs = template
@@ -93,6 +104,12 @@ def main():
             value = struct.pack('<H', client_id)
         props += bytes([attr]) + struct.pack('<H', len(value)) + value
     node = bytes([START, node_type]) + escape(bytes(props)) + bytes([END])
+
+    if replace:
+        start, end = existing
+        open(path, 'wb').write(data[:start] + node + data[end:])
+        print('replaced item %d with a copy of %d' % (new_id, template_id))
+        return
 
     insert_at = root_end - 1
     assert data[insert_at] == END
