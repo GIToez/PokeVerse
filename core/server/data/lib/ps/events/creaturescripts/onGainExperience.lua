@@ -6,11 +6,11 @@ function onGainExperience(cid, gainExp, referenceItem, target)
         doPlayerPokemonAddExperience(cid, ((isItem(ball) and (ball.uid == referenceItem.uid) and isPokemonOnline(cid)) and
                 getPlayerPokemon(cid) or nil), gainExp, nil, referenceItem)
         PokemonStats.onDefeated(cid, referenceItem, target)
-        DailyTasks.onDefeated(cid, target)
+        Tasks.onDefeated(cid, target)
     elseif (isPokemonOnline(cid)) then
         doPlayerPokemonAddExperience(cid, getPlayerPokemon(cid), gainExp, nil, referenceItem)
         PokemonStats.onDefeated(cid, getPlayerBall(cid), target)
-        DailyTasks.onDefeated(cid, target)
+        Tasks.onDefeated(cid, target)
     end
 	return true
 end
