@@ -238,6 +238,17 @@ def show_server_message(data):
                 print("  server message: " + text.decode("latin-1"), flush=True)
                 end = i + 3 + n
         i = data.find(b"\xB4", end + 1)
+    # JSON extended opcodes (0x32, opcode, u16 length, text starting with "{")
+    i = data.find(b"\x32") if data else -1
+    while i >= 0:
+        end = i
+        if i + 5 <= len(data):
+            n = struct.unpack_from("<H", data, i + 2)[0]
+            text = data[i + 4:i + 4 + n]
+            if n >= 2 and len(text) == n and text[:1] == b"{" and text[-1:] == b"}":
+                print("  extended opcode %d: %s" % (data[i + 1], text.decode("latin-1")), flush=True)
+                end = i + 3 + n
+        i = data.find(b"\x32", end + 1)
 
 
 def drain(conn, seconds):

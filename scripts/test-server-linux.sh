@@ -150,6 +150,32 @@ groups=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT GROUP_CONCAT(CONCAT
 [ "$groups" = "0:4 1:1" ] || { echo "FAIL: set_group should change only the live 'Reuse Trainer' (deleted:group = $groups)"; exit 1; }
 echo "Reused name: $groups"
 
+step "Level-up banners"
+banners=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk east \
+  --say "/addskill Admin, level, 2" --say "/mypokemon Bulbasaur, 12" --say "/pokemonexp 3")
+echo "$banners" | grep "extended opcode 16" || true
+echo "$banners" | python3 -c '
+import json, sys
+banners = [json.loads(line.split("extended opcode 16: ", 1)[1]) for line in sys.stdin if "extended opcode 16: " in line]
+trainer = [b for b in banners if b["kind"] == "trainer"]
+pokemon = [b for b in banners if b["kind"] == "pokemon"]
+assert trainer, "no trainer banner"
+t = trainer[0]
+assert t["to"] - t["from"] == 2, t
+assert t["hp"]["new"] - t["hp"]["old"] == 20, t
+assert t["pokemonCap"] == t["to"] + 10, t
+assert pokemon, "no Pokemon banner"
+p = pokemon[0]
+assert (p["name"], p["from"], p["to"]) == ("Bulbasaur", 12, 15), p
+assert len(p["stats"]) == 6 and all(s["new"] >= s["old"] for s in p["stats"]), p
+assert any(s["new"] > s["old"] for s in p["stats"]), p
+moves = [m["name"] for m in p["moves"]]
+assert moves == ["Vine Whip"], moves
+m = p["moves"][0]
+assert m["element"] == 11 and m["energy"] > 0 and m["cooldown"] > 0 and m["description"], m
+print("Level-up banners: trainer %d -> %d, %s %d -> %d learned %s" % (t["from"], t["to"], p["name"], p["from"], p["to"], ", ".join(moves)))
+' || { echo "$banners" | tail -30; echo "FAIL: level-up banner messages are wrong"; exit 1; }
+
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true
 if grep -q "MYSQL ERROR" "$work/server.log"; then echo "FAIL: database errors in server log"; exit 1; fi

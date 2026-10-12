@@ -806,6 +806,8 @@ function onTmChoose(cid, replacedMoveClientItemId)
 
     setBallTm(ball.uid, tmSlot, slot, tmId)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "1, 2, and ... ... ... Poof! %s forgot %s. And... Machine Set! %s learned %s!"), pokemonName, replacingMove, pokemonName, TMS[tmId].move))
+    local pokemonNickname = getBallPokemonNickname(ball.uid)
+    LevelUpBanner.sendTm(cid, pokemonName, (pokemonNickname ~= nil and pokemonNickname ~= -1) and pokemonNickname or pokemonName, TMS[tmId].move)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
     doPlayerUpdatePokemonMoves(cid, ball.uid, nil, pokemonName)
     doBallUpdateDescription(ball.uid)

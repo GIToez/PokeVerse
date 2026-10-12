@@ -45,7 +45,8 @@ EXTENDED_IDS = {
     SUMMON_OWNER = 11, -- sent by the server's protocol code: "creatureId,ownerId" for other trainers' Pokemon
     POKEMON_STATS = 12, -- JSON stat sheet of your own Pokemon after a Pokedex view (PokemonStats.getStatSheet)
     -- 13 is the client's AutoLoot
-    EVOLUTION = 14 -- JSON {state = "start", from, to, fromLook, toLook, duration} then {state = "done"} (doPokemonEvolve)
+    EVOLUTION = 14, -- JSON {state = "start", from, to, fromLook, toLook, duration} then {state = "done"} (doPokemonEvolve)
+    LEVEL_UP = 16 -- JSON Pokemon/trainer level-up and TM banners (LevelUpBanner)
 }
 
 TOURNAMENT_TYPES = {}

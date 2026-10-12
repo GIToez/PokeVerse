@@ -502,7 +502,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                     local pokemonNickname = getBallPokemonNickname(ball.uid)
                     local pokemonExtraPoints = getBallPokemonExtraPoints(ball.uid) + gainLevel
                     local newLevel = currentLevel + gainLevel
-                    local messageClass = getPlayerUsingOtClient(player) and MESSAGE_EVENT_DEFAULT or MESSAGE_EVENT_ADVANCE
+                    local messageClass = getPlayerUsingOtClient(player) and MESSAGE_STATUS_CONSOLE_BLUE or MESSAGE_EVENT_ADVANCE
 
                     if (pokemonNickname ~= nil and pokemonNickname ~= -1) then
                         doBallUpdateDescription(ball.uid, getBallPokemonSex(ball.uid), pokemonName, pokemonNickname, newLevel, pokemonExtraPoints)
@@ -539,6 +539,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                     local moves = getPokemonSkills(pokemonName, ball.uid)
                     local sendCooldowns = nil
                     local newMoves = {}
+                    local newMoveNames = {}
                     for _, move in pairs(moves) do
                         if (getPokemonSkillRequiredLevel(pokemonName, move) <= newLevel and
                                 getPokemonSkillRequiredLevel(pokemonName, move) > currentLevel) then
@@ -548,6 +549,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                                 sendCooldowns = true
                             end
                             newMoves[#newMoves + 1] = getPokemonSkillClientIconId(move)
+                            newMoveNames[#newMoveNames + 1] = move
                         end
                     end
 
@@ -564,6 +566,9 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
 
                     currentLevel = currentLevel + gainLevel
                     doPlayerSendPokemonLevelUp(player, getPokemonNumberByName(pokemonName), currentLevel, newMoves)
+                    LevelUpBanner.sendPokemon(player, ball.uid, pokemonName,
+                        (pokemonNickname ~= nil and pokemonNickname ~= -1) and pokemonNickname or pokemonName,
+                        newLevel - gainLevel, newLevel, newMoveNames)
 
                 else -- We are at Extra Point up mode
                     local pokemonPosition = getCreaturePosition(pokemon and pokemon or player)
