@@ -13,10 +13,12 @@ local ADVANCES = {
         {image = '/images/advances/rangerclub', title = tr('New Feature'), description = tr('Ranger Club - Coordinator')}
     },
     [75] = {
-        {image = '/images/advances/rangerclub', title = tr('New Feature'), description = tr('Ranger Club - Coach')}
+        {image = '/images/advances/rangerclub', title = tr('New Feature'), description = tr('Ranger Club - Coach')},
+        {image = '/images/advances/tournament', title = tr('New Feature'), description = tr('Tournament - Titan')}
     },
     [85] = {
-        {image = '/images/advances/daycare', title = tr('New Feature'), description = tr('Day Care')}
+        {image = '/images/advances/daycare', title = tr('New Feature'), description = tr('Day Care')},
+        {image = '/images/advances/mastery', title = tr('New Feature'), description = tr('Mastery')}
     },
     [70] = {
         {image = '/images/advances/battletower', title = tr('New Feature'), description = tr('Battle Tower - Twenty')}
@@ -26,9 +28,6 @@ local ADVANCES = {
     },
     [90] = {
         {image = '/images/advances/battletower', title = tr('New Feature'), description = tr('Battle Tower - Ten')}
-    },
-    [85] = {
-        {image = '/images/advances/mastery', title = tr('New Feature'), description = tr('Mastery')}
     },
     [15] = {
         {image = '/images/advances/tournament', title = tr('New Feature'), description = tr('Tournament - Starter')}
@@ -41,9 +40,6 @@ local ADVANCES = {
     },
     [61] = {
         {image = '/images/advances/tournament', title = tr('New Feature'), description = tr('Tournament - Elite')}
-    },
-    [75] = {
-        {image = '/images/advances/tournament', title = tr('New Feature'), description = tr('Tournament - Titan')}
     },
 }
 
@@ -294,6 +290,11 @@ local function showPokemon(id, value, newMoves)
     end
 end
 
+-- game_levelup shows level-ups and new moves as banners when it is loaded
+local function bannersLoaded()
+    return modules.game_levelup ~= nil
+end
+
 -- Hooks
 function onOnline()
 end
@@ -311,7 +312,9 @@ function onLevelChange(localPlayer, value, percent)
         return
     end
 
-    show(value)
+    if not bannersLoaded() then
+        show(value)
+    end
     lastLevel = value
 end
 
@@ -329,6 +332,9 @@ function onSkillChange(localPlayer, id, level, percent)
 end
 
 function onPokemonLevelUp(pokemonNumber, newLevel, newMoves)
+    if bannersLoaded() then
+        return
+    end
     showPokemon(pokemonNumber, newLevel, newMoves)
 end
 

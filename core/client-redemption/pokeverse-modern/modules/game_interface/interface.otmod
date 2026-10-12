@@ -41,6 +41,7 @@ Module
     - game_pokehud
     - game_pokedex
     - game_evolution
+    - game_levelup
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

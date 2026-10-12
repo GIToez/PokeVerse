@@ -1,0 +1,8 @@
+Module
+  name: game_levelup
+  description: PokeVerse level-up banners: Pokemon stat gains, trainer level, moves learned and TMs
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ levelup ]
+  @onLoad: init()
+  @onUnload: terminate()

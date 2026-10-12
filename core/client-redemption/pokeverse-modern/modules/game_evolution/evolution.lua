@@ -134,6 +134,10 @@ local function onEvolution(protocol, opcode, buffer)
     end
 end
 
+function isShowing()
+    return scene ~= nil
+end
+
 function init()
     g_ui.importStyle('evolution')
     g_shaders.createFragmentShader(SILHOUETTE_SHADER, '/modules/game_evolution/silhouette', false)

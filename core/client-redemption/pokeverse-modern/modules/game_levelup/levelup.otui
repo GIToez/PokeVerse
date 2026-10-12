@@ -1,0 +1,254 @@
+LevelUpStack < UIWidget
+  width: 600
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  phantom: true
+  focusable: false
+  layout:
+    type: verticalBox
+    spacing: 4
+    fit-children: true
+
+LevelUpSparkle < UIWidget
+  size: 12 12
+  image-source: /modules/game_levelup/images/sparkle
+  phantom: true
+
+LevelUpBanner < UIWidget
+  size: 600 112
+  image-source: /modules/game_levelup/images/banner
+  image-border: 12
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: rays
+    size: 120 120
+    image-source: /modules/game_levelup/images/rays
+    image-smooth: true
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: -2
+    phantom: true
+
+  UIWidget
+    id: picture
+    size: 88 88
+    image-smooth: true
+    anchors.centerIn: rays
+    phantom: true
+    visible: false
+
+  UICreature
+    id: creature
+    size: 72 72
+    anchors.centerIn: rays
+    creature-center: true
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: badge
+    size: 24 24
+    image-source: /modules/game_levelup/images/tm
+    anchors.right: rays.right
+    anchors.bottom: rays.bottom
+    margin: 0 14 14 0
+    phantom: true
+    visible: false
+
+  LevelUpSparkle
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin: 10 0 0 12
+
+  LevelUpSparkle
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 12 14 0 0
+
+  LevelUpSparkle
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 10 12 0
+
+  Label
+    id: name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 8 0 0 120
+    ttf-font: pixelify-sans
+    ttf-font-size: 26
+    ttf-stroke: 2 #0b1530
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: highlight
+    anchors.top: name.top
+    anchors.left: name.right
+    margin-left: 8
+    ttf-font: pixelify-sans
+    ttf-font-size: 26
+    ttf-stroke: 2 #3a2205
+    color: #ffd75a
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: subtitle
+    font: Verdana Bold-11px
+    color: #c8d8f0
+    anchors.top: name.bottom
+    anchors.left: name.left
+    anchors.right: parent.right
+    margin: 2 16 0 0
+    text-auto-resize: false
+    height: 14
+    phantom: true
+
+  UIWidget
+    id: chips
+    anchors.left: subtitle.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 12 12 0
+    height: 34
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 5
+
+LevelUpChip < UIWidget
+  size: 74 34
+  image-source: /modules/game_levelup/images/chip
+  image-border: 6
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    image-smooth: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  Label
+    id: label
+    font: Verdana-8px-antialiased
+    color: #b8c4dc
+    anchors.top: parent.top
+    anchors.left: icon.right
+    anchors.right: parent.right
+    margin: 4 4 0 5
+    height: 11
+    phantom: true
+
+  UIWidget
+    id: arrow
+    size: 8 8
+    image-source: /modules/game_levelup/images/up
+    anchors.left: label.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 6
+    phantom: true
+
+  Label
+    id: value
+    font: Verdana Bold-11px
+    color: #7cf08c
+    anchors.left: arrow.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 4 3 3
+    height: 14
+    phantom: true
+
+LevelUpMoveBox < UIWidget
+  height: 70
+  image-source: /modules/game_levelup/images/banner
+  image-border: 12
+  margin-left: 65
+  margin-right: 65
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: iconFrame
+    size: 46 46
+    image-source: /modules/game_levelup/images/chip
+    image-border: 6
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 12
+    phantom: true
+
+    Item
+      id: icon
+      size: 34 34
+      anchors.centerIn: parent
+      border-width: 0
+      padding: 0
+      image-source: ~
+      phantom: true
+
+  Label
+    id: title
+    font: Verdana Bold-11px
+    color: #ffffff
+    anchors.top: parent.top
+    anchors.left: iconFrame.right
+    margin: 9 0 0 10
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: moveName
+    font: Verdana Bold-11px
+    color: #ffd75a
+    anchors.top: title.top
+    anchors.left: title.right
+    margin-left: 4
+    text-auto-resize: true
+    phantom: true
+
+  UIWidget
+    id: element
+    size: 18 18
+    image-smooth: true
+    anchors.top: title.bottom
+    anchors.left: title.left
+    margin-top: 4
+    phantom: true
+
+  UIWidget
+    id: category
+    size: 18 18
+    image-smooth: true
+    anchors.top: element.top
+    anchors.left: element.right
+    margin-left: 4
+    phantom: true
+
+  Label
+    id: details
+    font: verdana-11px-antialised
+    color: #c8d8f0
+    anchors.verticalCenter: element.verticalCenter
+    anchors.left: category.right
+    anchors.right: parent.right
+    margin: 0 12 0 8
+    phantom: true
+
+  Label
+    id: description
+    font: Verdana-8px-antialiased
+    color: #8a9ab8
+    anchors.top: element.bottom
+    anchors.left: title.left
+    anchors.right: parent.right
+    margin: 4 12 0 0
+    height: 11
+    phantom: true
