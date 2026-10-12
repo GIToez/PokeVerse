@@ -1,0 +1,8 @@
+Module
+  name: game_evolution
+  description: PokeVerse evolution scene: the Pokemon flashes between both forms and the new one is revealed
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ evolution ]
+  @onLoad: init()
+  @onUnload: terminate()

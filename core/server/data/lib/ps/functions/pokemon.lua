@@ -173,6 +173,8 @@ local function doCreateWildPokemon(name, inPosition, level, sex, target)
 	end
 end
 
+POKEMON_EVOLVE_DURATION = 9500
+
 function doPokemonEvolve(cid, toPokemon)
 	local pokemonName = getCreatureName(cid)
 	local pokemonPosition = getCreaturePosition(cid)
@@ -187,27 +189,27 @@ function doPokemonEvolve(cid, toPokemon)
         setBallPokemonName(ball.uid, toPokemon)
         doBallUpdateDescription(ball.uid)
 
-		doPlayerSendTextMessage(pokemonMaster, MESSAGE_EVENT_ADVANCE, "Something is happening!")
+		local toInfo = getMonsterInfo(toPokemon)
+		doSendPlayerExtendedOpcode(pokemonMaster, EXTENDED_IDS.EVOLUTION, JSON.encode({
+			state = "start", from = pokemonName, to = __L(pokemonMaster, toInfo.description),
+			fromLook = getCreatureOutfit(cid).lookType, toLook = toInfo.outfit.lookType,
+			duration = POKEMON_EVOLVE_DURATION
+		}))
 		doCreatureSetStorage(pokemonMaster, playersStorages.isEvolving, 1)
         doPlayerAddStatistic(pokemonMaster, PLAYER_STATISTIC_IDS.EVOLVE_POKEMON, 1)
         doSendCreatureEffect(cid, CREATURE_EFFECTS.EVOLVE, getMonsterInfo(toPokemon, false).outfit.lookType)
 
-		addEvent(function(pokemonMaster)
-            if (isCreature(pokemonMaster)) then
-                doPlayerSendTextMessage(pokemonMaster, MESSAGE_EVENT_ADVANCE, "Your Pokemon is evolving!")
-            end
-        end, 3000, pokemonMaster)
-
 		addEvent(function(pokemonMaster, cidName, toPokemon, pokemonPosition)
             if (isCreature(pokemonMaster)) then
-                doPlayerSendTextMessage(pokemonMaster, MESSAGE_EVENT_ADVANCE, string.format(__L(pokemonMaster, "Your %s has evolved into %s!"), cidName, __L(pokemonMaster, getMonsterInfo(toPokemon).description)))
+                doPlayerSendTextMessage(pokemonMaster, MESSAGE_EVENT_ADVANCE, string.format(__L(pokemonMaster, "Congratulations! Your %s evolved into %s!"), cidName, __L(pokemonMaster, getMonsterInfo(toPokemon).description)))
+                doSendPlayerExtendedOpcode(pokemonMaster, EXTENDED_IDS.EVOLUTION, JSON.encode({state = "done"}))
                 doCreatureSetStorage(pokemonMaster, playersStorages.isEvolving, -1)
                 doPokemonUpdate(toPokemon, pokemonMaster, pokemonPosition)
             end
-        end, 9500, pokemonMaster, getCreatureName(cid), toPokemon, pokemonPosition)
+        end, POKEMON_EVOLVE_DURATION, pokemonMaster, getCreatureName(cid), toPokemon, pokemonPosition)
 
 	else
-		addEvent(doCreateWildPokemon, 9500, toPokemon, pokemonPosition, getMonsterLevel(cid), getMonsterSex(cid), getCreatureTarget(cid))
+		addEvent(doCreateWildPokemon, POKEMON_EVOLVE_DURATION, toPokemon, pokemonPosition, getMonsterLevel(cid), getMonsterSex(cid), getCreatureTarget(cid))
 	end
 
     doRemoveCreature(cid)

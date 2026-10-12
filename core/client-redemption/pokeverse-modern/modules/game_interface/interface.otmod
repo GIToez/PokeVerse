@@ -40,6 +40,7 @@ Module
     - game_pokebar
     - game_pokehud
     - game_pokedex
+    - game_evolution
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

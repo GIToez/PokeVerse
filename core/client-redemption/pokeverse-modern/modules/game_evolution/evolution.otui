@@ -1,0 +1,54 @@
+EvolutionScene < UIWidget
+  size: 300 230
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  anchors.centerIn: parent
+  focusable: false
+
+  Label
+    id: title
+    font: Verdana Bold-11px-outline
+    color: #ffffff
+    text-align: center
+    text-wrap: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 32
+    margin: 10 10 0 10
+    phantom: true
+
+  UIWidget
+    id: glow
+    size: 150 150
+    image-source: /modules/game_evolution/glow
+    image-smooth: true
+    anchors.centerIn: pokemon
+    opacity: 0
+    phantom: true
+
+  UICreature
+    id: pokemon
+    size: 128 128
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: title.bottom
+    margin-top: 6
+    phantom: true
+
+  Label
+    id: hint
+    font: verdana-11px-antialised
+    color: #a8b4b4
+    text-align: center
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-bottom: 10
+    phantom: true
+
+  UIWidget
+    id: flash
+    background-color: #ffffff
+    anchors.fill: parent
+    opacity: 0
+    phantom: true
