@@ -19,11 +19,12 @@ local function moveAction(index)
     return 'Use move ' .. index
 end
 
--- F1-F12 in both chat modes, and with the chat off (WASD) also the number row: 1-9, 0 for move 10
+local MOVE_KEYS = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=' }
+
+-- The number row: plain with the chat off (WASD), with Ctrl while typing; F1-F6 call Pokemon (game_pokebar).
 local function moveKeys(index)
-    local number = index <= 10 and tostring(index % 10) or ''
-    return { [CHAT_MODE.ON] = 'F' .. index, [CHAT_MODE.OFF] = 'F' .. index },
-        { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = number }
+    local key = MOVE_KEYS[index]
+    return { [CHAT_MODE.ON] = 'Ctrl+' .. key, [CHAT_MODE.OFF] = key }, ''
 end
 
 local function slots()
@@ -34,6 +35,18 @@ local function slots()
         end
     end
     return list
+end
+
+local function updateKeyLabels()
+    if not pokemonMovesWindow then
+        return
+    end
+    for _, slot in ipairs(slots()) do
+        local index = tonumber(slot:getId():match('%d+'))
+        if index then
+            slot.key:setText(Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(index)))
+        end
+    end
 end
 
 local function applyOrientation()
@@ -213,7 +226,7 @@ function onPokemonMoves(iconItemId, moves)
         local slot = g_ui.createWidget('MoveSlot', pokemonMovesWindow)
         slot:setId('move' .. k)
         slot.icon:setItemId(v)
-        slot.key:setText(k)
+        slot.key:setText(Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(k)))
         slot:setTooltip(getMoveNameByIconItemId(v) .. '\n' .. tr('Click to use, Shift+click for details'))
         delegateDrag(slot)
         slot.onMousePress = function(self)
@@ -295,6 +308,7 @@ function onInit()
 
     applyOrientation()
     pokemonMovesWindow:hide()
+    connect(Keybind, { onBind = updateKeyLabels })
     bindKeys()
     if g_game.isOnline() then
         onOnline()
@@ -314,6 +328,7 @@ function onTerminate()
         stopCooldown(slot)
     end
     unbindKeys()
+    disconnect(Keybind, { onBind = updateKeyLabels })
     savePosition()
     pokemonMovesWindow:destroy()
 end

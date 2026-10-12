@@ -17,6 +17,16 @@ QuickCallSlot < UIWidget
     margin-top: 3
 
   Label
+    id: key
+    font: verdana-11px-antialised
+    color: #d8e4e4
+    text-auto-resize: true
+    phantom: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-left: 3
+
+  Label
     id: health
     font: verdana-11px-antialised
     color: #4cdc8c

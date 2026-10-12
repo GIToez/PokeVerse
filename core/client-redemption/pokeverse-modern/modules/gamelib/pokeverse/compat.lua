@@ -53,6 +53,25 @@ function g_game.evolvePokemon()
   g_game.useInventoryItem(EVOLVE_ICON_ITEMID)
 end
 
+-- Keybind has no change event; every rebind and chat mode switch binds the keys again.
+local keybindBind = Keybind.bind
+function Keybind.bind(category, action, callbacks, widget)
+  keybindBind(category, action, callbacks, widget)
+  signalcall(Keybind.onBind, category, action)
+end
+
+local keyLabelPrefixes = { ['Ctrl+'] = 'C', ['Shift+'] = 'S', ['Alt+'] = 'A' }
+
+-- The primary key of a keybind in the current chat mode, short enough for a slot corner.
+function Keybind.getShortLabel(category, action)
+  local keys = Keybind.defaultKeybinds[category .. '_' .. action] and Keybind.getKeybindKeys(category, action)
+  local label = keys and keys.primary or ''
+  for prefix, short in pairs(keyLabelPrefixes) do
+    label = label:gsub(prefix:gsub('%+', '%%+'), short)
+  end
+  return label
+end
+
 function g_game.getProtocolVersionForClient(client)
   return client
 end

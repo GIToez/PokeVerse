@@ -11,6 +11,13 @@ local activeSlot
 
 local HEALTH_COLORS = { [0] = '#4cdc8c', [1] = '#e8d24c', [2] = '#e8505a' }
 
+local KEYBIND_CATEGORY = 'Pokemon'
+local CALL_KEYS = 6
+
+local function callAction(position)
+    return 'Call Pokemon ' .. position
+end
+
 local function slots()
     local list = {}
     for _, child in ipairs(pokemonBar:getChildren()) do
@@ -19,6 +26,39 @@ local function slots()
         end
     end
     return list
+end
+
+local function updateKeyLabels()
+    if not pokemonBar then
+        return
+    end
+    for position, slot in ipairs(slots()) do
+        slot.key:setText(position <= CALL_KEYS and Keybind.getShortLabel(KEYBIND_CATEGORY, callAction(position)) or '')
+    end
+end
+
+-- calls the Pokemon in that position of the bar (top to bottom, or left to right); the server
+-- calls back the one that is out
+local function callPosition(position)
+    local slot = slots()[position]
+    if slot then
+        g_game.talkChannel(MessageModes.Say, 0, '/cp ' .. slot.number)
+    end
+end
+
+local function bindKeys()
+    for position = 1, CALL_KEYS do
+        Keybind.new(KEYBIND_CATEGORY, callAction(position), 'F' .. position, '')
+        Keybind.bind(KEYBIND_CATEGORY, callAction(position), {
+            { type = KEY_DOWN, callback = function() callPosition(position) end }
+        })
+    end
+end
+
+local function unbindKeys()
+    for position = 1, CALL_KEYS do
+        Keybind.delete(KEYBIND_CATEGORY, callAction(position))
+    end
 end
 
 local function applyOrientation()
@@ -135,6 +175,7 @@ end
 function onPokemonBarAdd(itemId, number, textColor, text)
     local slot = g_ui.createWidget('QuickCallSlot', pokemonBar)
     slot:setId('poke' .. number)
+    slot.number = number
     slot.portrait:setItemId(itemId)
     slot:setTooltip(getPokemonNameByIconItemId(itemId) .. '\n' .. tr('Click to call, Ctrl+click to call back, Shift+click for details'))
     slot:setDraggable(true)
@@ -174,6 +215,7 @@ function onPokemonBarAdd(itemId, number, textColor, text)
     end
     updateSlot(slot, textColor, text)
     applyOrientation()
+    updateKeyLabels()
     show()
 end
 
@@ -186,6 +228,7 @@ function onPokemonBarRemove(number)
         slot:destroy()
     end
     applyOrientation()
+    updateKeyLabels()
 end
 
 function onPokemonBarUpdate(number, textColor, text)
@@ -260,6 +303,8 @@ function onInit()
 
     applyOrientation()
     pokemonBar:hide()
+    connect(Keybind, { onBind = updateKeyLabels })
+    bindKeys()
     if g_game.isOnline() then
         onOnline()
     end
@@ -276,6 +321,8 @@ function onTerminate()
         onPokemonBarClose = onPokemonBarClose
     })
     disconnect(Creature, { onHealthPercentChange = onCreatureHealthPercentChange })
+    unbindKeys()
+    disconnect(Keybind, { onBind = updateKeyLabels })
     savePosition()
     pokemonBar:destroy()
 end
