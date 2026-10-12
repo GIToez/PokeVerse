@@ -153,27 +153,79 @@ echo "Reused name: $groups"
 step "Daily tasks"
 sql() { $db -upokeverse -ppokeverse -N pokeverse -e "$1"; }
 tasks_of() { sql "SELECT d.data FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = '$1'"; }
+board_of() { sql "SELECT b.data FROM player_task_boards b JOIN players p ON p.id = b.player_id WHERE p.name = '$1' AND b.board = '$2'"; }
 picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = 'Trainer' AND d.day = '$(date +%F)'")
-[ "$picked" = 1 ] || { echo "FAIL: Trainer got no daily tasks for today at login"; exit 1; }
-tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['tasks']) == 3, s; assert len({t['kind'] for t in s['tasks']}) == 3, s"
+[ "$picked" = 1 ] || { echo "FAIL: Trainer has no daily board for today after logging in"; exit 1; }
+tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert not s['tasks'] and 'difficulty' not in s, s"
 say_admin() { # the server reads its table at login only through its own connection, so tests use the staff commands
   local args=()
   for text in "$@"; do args+=(--say "$text"); done
   python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin "${args[@]}"
 }
-say_admin "/dailytasks reset" "/dailytasks progress 1 999" "/dailytasks claim 1" "/dailytasks claim 2" \
+# the difficulty is picked once a day: the second start must not change it; Medium and Easy below need level 35
+say_admin "/addskill Admin, level, 40" "/dailytasks reset" "/dailytasks claim 1" "/dailytasks start 1" "/dailytasks start 5" \
+  "/dailytasks progress 1 999" "/dailytasks claim 1" "/dailytasks claim 2" \
   "/dailytasks bonus" "/dailytasks progress 2 999" "/dailytasks progress 3 999" "/dailytasks claim 2" \
   "/dailytasks claim 3" "/dailytasks bonus"
 tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
+assert s['difficulty'] == 1 and len(t) == 3 and len({x['kind'] for x in t}) == 3, s
 assert all(x['claimed'] and x['progress'] == x['target'] for x in t), s
 assert s['bonusClaimed'] and not s['rerolled'], s"
 [ "$(inside Admin 10 13295,13292)" -ge 1 ] || { echo "FAIL: the daily bonus (a surprise box) is not in Admin's bag"; exit 1; }
-say_admin "/i 2152, 10" "/dailytasks reset" "/dailytasks progress 3 999" "/dailytasks reroll 3" \
-  "/dailytasks reroll 1" "/dailytasks reroll 2"
+say_admin "/i 2152, 10" "/tasks daily reset" "/tasks daily start 3" "/tasks daily progress 3 999" "/tasks daily reroll 3" \
+  "/tasks daily reroll 1" "/tasks daily reroll 2" "/tasks daily progress 2 1"
+# a new login must load the saved board, not pick a new one
+say_admin "/tasks"
 tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
-assert s['rerolled'] and len({x['kind'] for x in t}) == 3, s
-assert t[2]['progress'] == t[2]['target'] and t[0]['progress'] == 0, s"
-echo "Daily tasks: picked at login, claim, bonus, rewards and one reroll a day"
+assert s['difficulty'] == 3 and s['rerolled'] and len({x['kind'] for x in t}) == 3, s
+assert t[2]['progress'] == t[2]['target'] and t[0]['progress'] == 0 and t[1]['progress'] == 1, s"
+echo "Daily tasks: difficulty picked once, claim, bonus, rewards, one reroll a day, kept across logins"
+
+step "Weekly tasks"
+say_admin "/tasks weekly reset" "/tasks weekly start 2" "/tasks weekly start 4" "/tasks weekly reroll 1" \
+  "/tasks weekly progress 2 3"
+say_admin "/tasks"
+board_of Admin weekly | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
+assert s['difficulty'] == 2 and len(t) == 5 and s['rerolled'], s
+assert t[1]['progress'] == 3 and all(x['target'] >= 5 for x in t), s"
+monday=$(python3 -c "import datetime; d=datetime.date.today(); print(d - datetime.timedelta(days=d.weekday()))")
+[ "$(sql "SELECT period FROM player_task_boards b JOIN players p ON p.id = b.player_id WHERE p.name = 'Admin' AND b.board = 'weekly'")" = "$monday" ] \
+  || { echo "FAIL: the weekly board should be for the week starting $monday"; exit 1; }
+echo "Weekly tasks: 5 tasks for the week of $monday, free reroll, kept across logins"
+
+step "Hunting board"
+hunting=$(say_admin "/tasks hunting reset" "/tasks hunting take 1 1" "/tasks hunting difficulty 1" \
+  "/tasks hunting take 1 1" "/tasks hunting take 1 2" "/tasks hunting difficulty 3" "/tasks hunting progress 1 999" \
+  "/tasks hunting claim 1" "/tasks hunting points 100" "/tasks hunting buy 1")
+board_of Admin hunting | python3 -c "
+import json, sys
+s = json.load(sys.stdin)
+assert s['difficulty'] == 1 and s['completed'] == 1, s
+assert s['earned'] == 10 and s['points'] == 80, s  # a Small hunt, then 20 points spent in the shop
+assert len(s['offers']) == 3, s"
+echo "$hunting" | python3 -c '
+import json, sys
+boards = [json.loads(l.split("extended opcode 17: ", 1)[1]) for l in sys.stdin if "extended opcode 17: " in l]
+hunts = [b for b in boards if b["board"] == "hunting" and b.get("difficulty") == 1]
+assert hunts, "no hunting board messages"
+for b in hunts:
+    for o in b["offers"]:
+        assert o["maxLevel"] <= 70 and o["look"] > 0, o
+first = hunts[0]
+assert len(first["offers"]) == 3 and len(first["offers"][0]["sizes"]) == 3, first
+print("Hunting offers at Beginner:", ", ".join("%s (%d-%d)" % (o["species"], o["minLevel"], o["maxLevel"]) for o in first["offers"]))
+'
+[ "$(inside Admin 10 13295)" -ge 1 ] || { echo "FAIL: the hunting shop item is not in Admin's bag"; exit 1; }
+say_admin "/tasks hunting take 1 1" "/tasks hunting difficulty 2" >/dev/null
+taken=$(board_of Admin hunting | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['active']) == 1 and len(s['offers']) == 2, s; print(s['active'][0]['species'])")
+say_admin "/tasks hunting cancel 1" >/dev/null
+board_of Admin hunting | TAKEN="$taken" python3 -c "
+import json, os, sys
+s = json.load(sys.stdin)
+assert len(s['offers']) == 3 and os.environ['TAKEN'] in s['offers'], s  # giving up returns the offer"
+say_admin "/tasks hunting cancel 1" "/tasks hunting difficulty 2"
+board_of Admin hunting | python3 -c "import json,sys; s=json.load(sys.stdin); assert s['difficulty'] == 2 and not s['active'], s"
+echo "Hunting board: difficulty locked while hunting, claim, points, shop, giving up returns the offer"
 
 step "Level-up banners"
 # only the banner messages matter here, not whether the walk succeeded

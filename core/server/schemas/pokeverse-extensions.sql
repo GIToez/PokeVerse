@@ -736,6 +736,23 @@ CREATE TABLE IF NOT EXISTS `player_daily_tasks` (
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------------
+-- Weekly tasks and the hunting board (data/lib/ps/systems/062-dailyTasks.lua, 064-huntingTasks.lua)
+-- ---------------------------------------------------------------------------
+-- One row per character and board ("weekly", "hunting"): `period` is the Monday the weekly
+-- tasks were picked for (empty for the hunting board) and `data` the JSON state. Only the
+-- game server writes it.
+-- Rollback: DROP TABLE `player_task_boards`; no existing table was changed.
+CREATE TABLE IF NOT EXISTS `player_task_boards` (
+  `player_id` INT NOT NULL,
+  `board` VARCHAR(16) NOT NULL,
+  `period` VARCHAR(16) NOT NULL,
+  `data` TEXT NOT NULL,
+  `updated_at` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`player_id`, `board`),
+  CONSTRAINT `player_task_boards_player` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------------
 -- One-time data migrations
 -- ---------------------------------------------------------------------------
 -- Each migration runs once per database and is recorded here by name.

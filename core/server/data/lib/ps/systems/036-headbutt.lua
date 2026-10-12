@@ -192,7 +192,7 @@ local function checkHeadbutt(cid, itemEx, toPosition, ticks)
             end
 
             PokemonAbility.afterHeadbutt(master, cid, toPosition)
-            DailyTasks.onEvent(master, "headbutt")
+            Tasks.onEvent(master, "headbutt")
             
         elseif (ticks > 1) then
             addEvent(checkHeadbutt, 1000, cid, itemEx, toPosition, ticks - 1)

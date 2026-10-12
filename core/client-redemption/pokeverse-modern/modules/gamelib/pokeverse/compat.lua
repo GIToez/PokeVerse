@@ -140,6 +140,7 @@ ExtendedIds.AutoLoot = 13
 ExtendedIds.Evolution = 14
 ExtendedIds.DailyTasks = 15
 ExtendedIds.LevelUp = 16
+ExtendedIds.TaskBoards = 17
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v
