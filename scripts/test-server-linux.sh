@@ -216,10 +216,16 @@ assert len(first["offers"]) == 3 and len(first["offers"][0]["sizes"]) == 3, firs
 print("Hunting offers at Beginner:", ", ".join("%s (%d-%d)" % (o["species"], o["minLevel"], o["maxLevel"]) for o in first["offers"]))
 '
 [ "$(inside Admin 10 13295)" -ge 1 ] || { echo "FAIL: the hunting shop item is not in Admin's bag"; exit 1; }
-say_admin "/tasks hunting take 1 1" "/tasks hunting difficulty 2" "/tasks hunting cancel 1" \
-  "/tasks hunting cancel 1" "/tasks hunting difficulty 2"
+say_admin "/tasks hunting take 1 1" "/tasks hunting difficulty 2" >/dev/null
+taken=$(board_of Admin hunting | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['active']) == 1 and len(s['offers']) == 2, s; print(s['active'][0]['species'])")
+say_admin "/tasks hunting cancel 1" >/dev/null
+board_of Admin hunting | TAKEN="$taken" python3 -c "
+import json, os, sys
+s = json.load(sys.stdin)
+assert len(s['offers']) == 3 and os.environ['TAKEN'] in s['offers'], s  # giving up returns the offer"
+say_admin "/tasks hunting cancel 1" "/tasks hunting difficulty 2"
 board_of Admin hunting | python3 -c "import json,sys; s=json.load(sys.stdin); assert s['difficulty'] == 2 and not s['active'], s"
-echo "Hunting board: difficulty locked while hunting, claim, points, shop, cancel"
+echo "Hunting board: difficulty locked while hunting, claim, points, shop, giving up returns the offer"
 
 step "Level-up banners"
 # only the banner messages matter here, not whether the walk succeeded

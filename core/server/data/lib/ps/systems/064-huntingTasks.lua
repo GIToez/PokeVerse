@@ -207,7 +207,7 @@ end
 function HuntingTasks.setDifficulty(cid, difficulty)
     local state = HuntingTasks.get(cid)
     if (#state.active > 0) then
-        doPlayerSendCancel(cid, __L(cid, "Finish or cancel your hunts before changing the difficulty."))
+        doPlayerSendCancel(cid, __L(cid, "Finish or give up your hunts before changing the difficulty."))
         return false
     elseif (state.difficulty == difficulty) then
         HuntingTasks.send(cid)
@@ -253,6 +253,9 @@ function HuntingTasks.cancel(cid, slot)
         return false
     end
     table.remove(state.active, slot)
+    if (#state.offers < OFFER_COUNT and not isInArray(state.offers, hunt.species)) then
+        state.offers[#state.offers + 1] = hunt.species
+    end
     save(cid, state)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "You gave up the %s hunt."), hunt.species))
     HuntingTasks.send(cid)
