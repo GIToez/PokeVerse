@@ -1,5 +1,6 @@
 EvolutionScene < UIWidget
   size: 300 230
+  background-color: #141c24f0
   image-source: /modules/game_pokehud/images/panel
   image-border: 9
   anchors.centerIn: parent
