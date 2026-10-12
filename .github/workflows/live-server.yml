@@ -24,6 +24,7 @@ on:
           - backup
           - restore
           - set-group
+          - set-premium
           - discord-deploy
           - discord-setup
           - logs
@@ -39,10 +40,13 @@ on:
         description: "restore: type RESTORE to confirm"
         required: false
       character:
-        description: "set-group: character name (must be offline)"
+        description: "set-group / set-premium: character name (must be offline)"
         required: false
       group:
         description: "set-group: 1 player, 2 tutor, 3 senior tutor, 4 gamemaster, 5 community manager, 6 god"
+        required: false
+      premium_days:
+        description: "set-premium: number of days (0 ends premium) or unlimited"
         required: false
 
 concurrency:
@@ -249,6 +253,7 @@ jobs:
       PV_BACKUP: ${{ inputs.backup }}
       PV_CHARACTER: ${{ inputs.character }}
       PV_GROUP: ${{ inputs.group }}
+      PV_PREMIUM_DAYS: ${{ inputs.premium_days }}
       DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID || secrets.DISCORD_APPLICATION_ID }}
       DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID || secrets.DISCORD_GUILD_ID }}

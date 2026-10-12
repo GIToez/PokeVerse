@@ -5,7 +5,7 @@
 #   scripts/live/deploy.sh <action>
 #
 # Actions: verify, deploy, discord-deploy, restart, rollback, status, backup, restore,
-#          set-group, discord-setup, logs
+#          set-group, set-premium, discord-setup, logs
 #
 # Environment:
 #   PV_HOST            server address for SSH (required)
@@ -20,7 +20,8 @@
 #   PV_DAILY_RESTART   true/false (default true), PV_DAILY_TIME HH:MM (default 06:00),
 #   PV_TIMEZONE        e.g. America/New_York (default: the server's time zone)
 #   PV_WARNING_MINUTES warning before a restart when players are online (default 5)
-#   PV_BACKUP          backup file name (restore), PV_CHARACTER / PV_GROUP (set-group)
+#   PV_BACKUP          backup file name (restore), PV_CHARACTER / PV_GROUP (set-group),
+#                      PV_CHARACTER / PV_PREMIUM_DAYS (set-premium: days or unlimited)
 #   DISCORD_TOKEN, DISCORD_APPLICATION_ID, DISCORD_GUILD_ID, DISCORD_ADMIN_USER_IDS,
 #   DISCORD_ADMIN_ROLE_IDS   production bot settings (the bot is skipped without a token)
 set -euo pipefail
@@ -243,6 +244,10 @@ case "$action" in
   set-group)
     check_ssh
     remote_ctl "$CTL" set-group "${PV_CHARACTER:?character}" "${PV_GROUP:?group}"
+    ;;
+  set-premium)
+    check_ssh
+    remote_ctl "$CTL" set-premium "${PV_CHARACTER:?character}" "${PV_PREMIUM_DAYS:?days or unlimited}"
     ;;
   discord-setup)
     check_ssh

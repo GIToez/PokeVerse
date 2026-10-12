@@ -101,6 +101,7 @@ same check offline (no connection to the server), for repository-level settings 
 | `backup` | Make a backup now. |
 | `restore` | Restore a backup (`backup` = file name, `confirm` = `RESTORE`). A safety backup is made first. |
 | `set-group` | Set a character's staff group (`character`, `group`). |
+| `set-premium` | Set the premium days of a character's account (`character`, `premium_days` = a number of days, `0` to end premium, or `unlimited`). The account's characters must be offline. |
 | `discord-setup` | Run the bot's setup: register the slash commands and create the Discord channels and roles it needs (Admin Logs / `#player-activity`, Verified Trainer, Ace Trainer). Changes nothing else; run once after a bot update that adds channels or roles. |
 | `status`, `logs` | Releases, services, backups, and the last log lines. |
 

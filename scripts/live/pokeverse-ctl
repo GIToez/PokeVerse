@@ -15,6 +15,7 @@
 #   pokeverse-ctl status                     releases, services, players online, backups, disk
 #   pokeverse-ctl configure key=value ...    host=, daily_restart=true|false, daily_time=HH:MM, timezone=
 #   pokeverse-ctl set-group <character> <group id>
+#   pokeverse-ctl set-premium <character> <days|unlimited>   premium of the character's account (0 ends it)
 #   pokeverse-ctl restore <backup file> --yes  replace the database with a backup (safety backup first)
 #   pokeverse-ctl logs                       last lines of the game server log
 #   pokeverse-ctl discord-deploy <release>   install the Discord bot (settings on stdin, KEY=VALUE)
@@ -551,6 +552,25 @@ cmd_set_group() {
   log "'$name' is now in group $group"
 }
 
+# Premium belongs to the account; 65535 days is never used up (IOLoginData::removePremium).
+cmd_set_premium() {
+  local name=${1:?character name} days=${2:?days or unlimited}
+  [[ "$name" =~ ^[A-Za-z][A-Za-z\ ]{1,28}[A-Za-z]$ ]] || die "invalid character name"
+  [ "$days" = unlimited ] && days=65535
+  [[ "$days" =~ ^[0-9]{1,5}$ ]] && [ "$days" -le 65535 ] || die "days must be 0 to 65534, or unlimited"
+  local id account
+  id=$(live_character_id "$name")
+  account=$(dbq "SELECT account_id FROM players WHERE id = $id")
+  [ "$(dbq "SELECT COUNT(*) FROM players WHERE account_id = $account AND online = 1")" = 0 ] \
+    || die "a character of '$name''s account is online; log out first (the server would overwrite the change)"
+  dbq "UPDATE accounts SET premdays = $days, lastday = UNIX_TIMESTAMP() WHERE id = $account"
+  case $days in
+    65535) log "'$name''s account now has unlimited premium" ;;
+    0) log "'$name''s account no longer has premium" ;;
+    *) log "'$name''s account now has $days premium days" ;;
+  esac
+}
+
 # Prints the id of the character that is not deleted; deleted characters keep their name.
 live_character_id() {
   local name=$1 id similar
@@ -692,9 +712,10 @@ case "$command" in
   status) cmd_status ;;
   configure) cmd_configure "$@" ;;
   set-group) cmd_set_group "$@" ;;
+  set-premium) cmd_set_premium "$@" ;;
   restore) cmd_restore "$@" ;;
   logs) show_server_log ;;
   discord-deploy) cmd_discord_deploy "$@" ;;
   discord) cmd_discord "$@" ;;
-  *) sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+  *) sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
 esac

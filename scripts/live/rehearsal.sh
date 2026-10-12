@@ -89,6 +89,12 @@ PV_CHARACTER="Rehearsal Reuse" PV_GROUP=2 deploy set-group
 [ "$(sudo mariadb -N pokeverse -e "SELECT group_id FROM players WHERE name = 'Rehearsal Reuse' AND deleted = 0")" = 2 ] \
   || fail "set-group did not change the recreated character"
 if PV_CHARACTER="Rehearsal Nobody" PV_GROUP=2 deploy set-group; then fail "set-group accepted a missing character"; fi
+premdays() { sudo mariadb -N pokeverse -e "SELECT a.premdays FROM accounts a JOIN players p ON p.account_id = a.id WHERE p.name = 'Rehearsal Reuse' AND p.deleted = 0"; }
+PV_CHARACTER="Rehearsal Reuse" PV_PREMIUM_DAYS=30 deploy set-premium
+[ "$(premdays)" = 30 ] || fail "set-premium did not set 30 days"
+PV_CHARACTER="Rehearsal Reuse" PV_PREMIUM_DAYS=unlimited deploy set-premium
+[ "$(premdays)" = 65535 ] || fail "set-premium did not set unlimited premium"
+if PV_CHARACTER="Rehearsal Reuse" PV_PREMIUM_DAYS=forever deploy set-premium; then fail "set-premium accepted 'forever'"; fi
 player=(--account rehearsal --password rehearsal1 --character "Rehearsal Trainer")
 gm=(--account rehearsalgm --password rehearsal1 --character "Rehearsal Admin")
 pos=$(pt "${player[@]}" --walk east | tee /dev/stderr | sed -n 's/^POSITION //p')
