@@ -225,6 +225,9 @@ s = json.load(sys.stdin)
 assert len(s['offers']) == 3 and os.environ['TAKEN'] in s['offers'], s  # giving up returns the offer"
 say_admin "/tasks hunting cancel 1" "/tasks hunting difficulty 2"
 board_of Admin hunting | python3 -c "import json,sys; s=json.load(sys.stdin); assert s['difficulty'] == 2 and not s['active'], s"
+# the free refresh comes back at midnight, so it is kept as the day it was used
+say_admin "/tasks hunting refresh" >/dev/null
+board_of Admin hunting | TODAY="$(date +%F)" python3 -c "import json,os,sys; s=json.load(sys.stdin); assert s.get('freeRefreshDay') == os.environ['TODAY'] and len(s['offers']) == 3, s"
 echo "Hunting board: difficulty locked while hunting, claim, points, shop, giving up returns the offer"
 
 step "Level-up banners"

@@ -127,6 +127,7 @@ end
 TaskBoards = {
     rewardJson = rewardJson,
     giveReward = giveReward,
+    secondsUntilMidnight = secondsUntilMidnight,
 }
 
 function TaskBoards.save(cid, board, period, state)

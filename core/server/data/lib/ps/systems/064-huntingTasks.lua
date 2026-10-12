@@ -2,7 +2,7 @@
 -- from three offers, choose a size (how many to defeat), hunt, claim money and Hunt Points,
 -- repeat. The difficulty can only change while no hunt is running. Points raise the
 -- trainer's hunting rank (more money per hunt) and buy items in the board's shop. The offers
--- can be refreshed for free every REFRESH_HOURS hours, or any time for money. Premium trainers
+-- can be refreshed for free once a day (it comes back at midnight), or any time for money. Premium trainers
 -- can run two hunts at once.
 --
 -- State lives in `player_task_boards` (board = "hunting"). The client's Tasks window sends
@@ -11,8 +11,6 @@
 
 HuntingTasks = {}
 
-local HOUR = 60 * 60
-local REFRESH_HOURS = 20
 local OFFER_COUNT = 3
 local MIN_SPAWNS = 20 -- species with fewer spawns in the world are too rare to hunt
 
@@ -131,7 +129,7 @@ function HuntingTasks.get(cid)
     local guid = getPlayerGUID(cid)
     local state = cache[guid] or TaskBoards.load(cid, "hunting")
     if (not state or type(state.active) ~= "table" or type(state.offers) ~= "table") then
-        state = { active = {}, offers = {}, savedOffers = {}, points = 0, earned = 0, completed = 0, freeRefreshAt = 0 }
+        state = { active = {}, offers = {}, savedOffers = {}, points = 0, earned = 0, completed = 0 }
         save(cid, state)
     end
     state.savedOffers = state.savedOffers or {}
@@ -182,7 +180,7 @@ function HuntingTasks.send(cid)
                         name = item.count > 1 and getItemPluralNameById(item.id) or getItemNameById(item.id) }
     end
 
-    local now = os.time()
+    local today = os.date("%Y-%m-%d")
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.TASK_BOARDS, JSON.encode({
         board = "hunting",
         slots = slotCount(cid),
@@ -192,7 +190,7 @@ function HuntingTasks.send(cid)
         completed = state.completed,
         rank = { name = rank.name, bonus = rank.bonus, earned = state.earned,
                  next = nextRank and nextRank.name or nil, nextAt = nextRank and nextRank.points or nil },
-        refresh = { free = now >= state.freeRefreshAt, freeIn = math.max(0, state.freeRefreshAt - now),
+        refresh = { free = state.freeRefreshDay ~= today, freeIn = state.freeRefreshDay ~= today and 0 or TaskBoards.secondsUntilMidnight(),
                     cost = state.difficulty and TASK_DIFFICULTIES[state.difficulty].refreshCost or 0 },
         difficulty = state.difficulty,
         difficulties = TaskBoards.difficultiesJson(cid),
@@ -297,9 +295,9 @@ function HuntingTasks.refresh(cid)
     if (not state.difficulty) then
         return false
     end
-    local now = os.time()
-    if (now >= state.freeRefreshAt) then
-        state.freeRefreshAt = now + REFRESH_HOURS * HOUR
+    local today = os.date("%Y-%m-%d")
+    if (state.freeRefreshDay ~= today) then
+        state.freeRefreshDay = today
     else
         local cost = TASK_DIFFICULTIES[state.difficulty].refreshCost
         if (getPlayerMoney(cid) < cost or not doPlayerRemoveMoney(cid, cost)) then
@@ -356,7 +354,7 @@ end
 
 -- Staff tools: reset (clears the difficulty too), progress <slot> <count>, points <count>
 function HuntingTasks.reset(cid)
-    local state = { active = {}, offers = {}, savedOffers = {}, points = 0, earned = 0, completed = 0, freeRefreshAt = 0 }
+    local state = { active = {}, offers = {}, savedOffers = {}, points = 0, earned = 0, completed = 0 }
     cache[getPlayerGUID(cid)] = state
     save(cid, state)
     HuntingTasks.send(cid)
