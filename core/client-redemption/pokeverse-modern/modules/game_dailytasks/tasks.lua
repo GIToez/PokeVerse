@@ -226,7 +226,7 @@ local function drawHunting()
         end
     end
     panel.picker.info:setVisible(picked)
-    panel.picker.info:setText(state.locked and tr('Finish or give up your hunts to change it') or '')
+    panel.picker.info:setText(state.locked and tr('Locked while hunting') or '')
     if picked then
         choice.onOptionChange = function(_, _, id)
             if id ~= state.difficulty then

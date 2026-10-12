@@ -385,7 +385,7 @@ HuntingBoard < UIWidget
     anchors.top: shopTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: parent.bottom
+    height: 70
     margin-top: 4
     layout:
       type: horizontalBox
