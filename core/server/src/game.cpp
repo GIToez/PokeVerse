@@ -6747,6 +6747,10 @@ void Game::freeThing(Thing* thing)
 
 void Game::showHotkeyUseMessage(Player* player, Item* item)
 {
+	// Single items (the evolve icon, a Pokemon's ball) have nothing to count down.
+	if(!item->isStackable())
+		return;
+
 	int32_t subType = -1;
 	if(item->hasSubType() && !item->hasCharges())
 		subType = item->getSubType();
