@@ -1,0 +1,88 @@
+Particle
+  name: login_leaf_orange
+  min-duration: 7
+  max-duration: 11
+  min-position-radius: 0
+  max-position-radius: 240
+  min-velocity: 25
+  max-velocity: 55
+  min-velocity-angle: 105
+  max-velocity-angle: 150
+  min-acceleration: 4
+  max-acceleration: 10
+  acceleration-angle: 90
+  size: 26 26
+  random-size-multiplier: 0.7 1.3
+  colors: #e8783800 #e87838ff #d0582cff #b0442800
+  colors-stops: 0 0.08 0.85 1
+  texture: /particles/leaf
+  composition-mode: normal
+
+Particle
+  name: login_leaf_red
+  min-duration: 7
+  max-duration: 11
+  min-position-radius: 0
+  max-position-radius: 240
+  min-velocity: 20
+  max-velocity: 45
+  min-velocity-angle: 110
+  max-velocity-angle: 160
+  min-acceleration: 4
+  max-acceleration: 10
+  acceleration-angle: 90
+  size: 22 22
+  random-size-multiplier: 0.7 1.2
+  colors: #b8403400 #b84034ff #8c3030ff #6a283000
+  colors-stops: 0 0.08 0.85 1
+  texture: /particles/leaf
+  composition-mode: normal
+
+Particle
+  name: login_firefly
+  min-duration: 4
+  max-duration: 7
+  min-position-radius: 0
+  max-position-radius: 360
+  min-velocity: 5
+  max-velocity: 16
+  min-velocity-angle: 0
+  max-velocity-angle: 360
+  size: 20 20
+  random-size-multiplier: 0.6 1.4
+  colors: #fff59000 #fff590ff #e4ff70a0 #d0ff6000
+  colors-stops: 0 0.3 0.7 1
+  texture: /particles/firefly
+  composition-mode: normal
+
+Effect
+  name: login-leaves
+  description: Leaves drifting off the tree on the login screen
+
+  System
+    position: 0 0
+
+    Emitter
+      position: 0 0
+      burst-rate: 1.1
+      burst-count: 1
+      particle-type: login_leaf_orange
+
+    Emitter
+      position: 0 0
+      burst-rate: 0.6
+      burst-count: 1
+      particle-type: login_leaf_red
+
+Effect
+  name: login-fireflies
+  description: Fireflies over the river on the login screen
+
+  System
+    position: 0 0
+
+    Emitter
+      position: 0 0
+      burst-rate: 1.4
+      burst-count: 1
+      particle-type: login_firefly

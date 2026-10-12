@@ -1,0 +1,48 @@
+LoginParticles < UIParticles
+  anchors.fill: parent
+  phantom: true
+  focusable: false
+
+Panel
+  id: background
+  image-source: /images/background
+  image-smooth: false
+  image-fixed-ratio: true
+  anchors.top: parent.top
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 1
+  focusable: false
+
+  LoginParticles
+    id: fireflies
+    effect: login-fireflies
+    reference-pos: 0.62 0.74
+
+  LoginParticles
+    id: leaves
+    effect: login-leaves
+    reference-pos: 0.86 0.16
+
+  UIWidget
+    id: logo
+    image-source: /modules/client_background/images/logo
+    image-fixed-ratio: true
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    size: 480 196
+    phantom: true
+    focusable: false
+
+  UILabel
+    id: clientVersionLabel
+    background-color: #00000099
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    text-align: center
+    text-auto-resize: true
+    width: 120
+    padding: 2
+    color: #ffffff
+    font: verdana-11px-monochrome
