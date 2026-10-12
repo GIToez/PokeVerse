@@ -618,3 +618,5 @@ items:
     image: /images/items/tamato_berry
   28793:
     image: /images/items/trainer_belt
+  28794:
+    image: /images/items/master_ball_empty
