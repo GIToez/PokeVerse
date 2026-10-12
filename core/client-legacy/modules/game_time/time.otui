@@ -2,6 +2,7 @@ HeadlessWindow
   id: timeWindow
   focusable: false
   draggable: false
+  phantom: true
   //image-color: #ffffffee
   image-source: ~
   size: 256 48
@@ -15,12 +16,14 @@ HeadlessWindow
 
   UIWidget
     id: timeImage
+    phantom: true
     height: 24
     anchors.left: parent.left
     anchors.top: parent.top
 
   UILabel
     id: timeLabel
+    phantom: true
     height: 24
     text-align: center
     anchors.left: prev.right
@@ -28,6 +31,7 @@ HeadlessWindow
 
   Label
     id: location
+    phantom: true
     !text: ''
     font: terminus-10px
     color: #FFFFFF
