@@ -156,12 +156,14 @@ tasks_of() { sql "SELECT d.data FROM player_daily_tasks d JOIN players p ON p.id
 picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = 'Trainer' AND d.day = '$(date +%F)'")
 [ "$picked" = 1 ] || { echo "FAIL: Trainer got no daily tasks for today at login"; exit 1; }
 tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['tasks']) == 3, s; assert len({t['kind'] for t in s['tasks']}) == 3, s"
-admin_tasks() { # <task 1 progress> <task 2 claimed> <task 3 claimed>
-  sql "UPDATE player_daily_tasks d JOIN players p ON p.id = d.player_id SET d.data = '{\"day\":\"$(date +%F)\",\"band\":1,
-    \"rerolled\":false,\"bonusClaimed\":false,\"tasks\":[
-    {\"kind\":\"defeat\",\"target\":15,\"progress\":$1,\"claimed\":false,\"money\":400,\"item\":[12244,5]},
-    {\"kind\":\"catch\",\"target\":2,\"progress\":0,\"claimed\":$2,\"money\":400,\"item\":[12157,10]},
-    {\"kind\":\"fish\",\"target\":3,\"progress\":0,\"claimed\":$3,\"money\":400,\"item\":[12157,10]}]}' WHERE p.name = 'Admin'"
+admin_tasks() { # <task 1 progress> <task 2 claimed> <task 3 claimed>; one line, the mariadb CLI escapes newlines
+  local json
+  json=$(python3 -c "import json,sys; p,c2,c3=sys.argv[1:]; print(json.dumps({'day': '$(date +%F)', 'band': 1,
+    'rerolled': False, 'bonusClaimed': False, 'tasks': [
+    {'kind': 'defeat', 'target': 15, 'progress': int(p), 'claimed': False, 'money': 400, 'item': [12244, 5]},
+    {'kind': 'catch', 'target': 2, 'progress': 0, 'claimed': c2 == 'true', 'money': 400, 'item': [12157, 10]},
+    {'kind': 'fish', 'target': 3, 'progress': 0, 'claimed': c3 == 'true', 'money': 400, 'item': [12157, 10]}]}))" "$@")
+  sql "UPDATE player_daily_tasks d JOIN players p ON p.id = d.player_id SET d.data = '$json' WHERE p.name = 'Admin'"
 }
 admin_tasks 15 true true
 python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin \

@@ -162,7 +162,7 @@ function onLogin(cid)
 
         doPlayerCheckTms(cid) -- TODO: Remove it after TS or no
         PokemonStats.onLogin(cid)
-        DailyTasks.send(cid)
+        DailyTasks.onLogin(cid)
 
         if (checkFirstAchievment) then
             addEvent(function(cid)

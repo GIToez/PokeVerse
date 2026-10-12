@@ -292,6 +292,12 @@ function DailyTasks.reroll(cid, slot)
     return true
 end
 
+-- the database is the truth between sessions (staff may edit it while the character is offline)
+function DailyTasks.onLogin(cid)
+    cache[getPlayerGUID(cid)] = nil
+    DailyTasks.send(cid)
+end
+
 function DailyTasks.onLogout(cid)
     cache[getPlayerGUID(cid)] = nil
 end
