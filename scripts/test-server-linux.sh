@@ -158,6 +158,9 @@ picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id =
 tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['tasks']) == 3, s; assert len({t['kind'] for t in s['tasks']}) == 3, s"
 admin_tasks() { # <task 1 progress> <task 2 claimed> <task 3 claimed>; one line, the mariadb CLI escapes newlines
   local json
+  # the server only reads the saved state at login, and may keep a character in game a while after logout
+  for _ in $(seq 90); do [ "$(sql "SELECT online FROM players WHERE name = 'Admin'")" = 0 ] && break; sleep 1; done
+  [ "$(sql "SELECT online FROM players WHERE name = 'Admin'")" = 0 ] || { echo "FAIL: Admin is still online"; exit 1; }
   json=$(python3 -c "import json,sys; p,c2,c3=sys.argv[1:]; print(json.dumps({'day': '$(date +%F)', 'band': 1,
     'rerolled': False, 'bonusClaimed': False, 'tasks': [
     {'kind': 'defeat', 'target': 15, 'progress': int(p), 'claimed': False, 'money': 400, 'item': [12244, 5]},
