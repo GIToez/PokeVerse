@@ -1,0 +1,28 @@
+diff -ruN pristine/modules/game_healthinfo/healthinfo.lua modules/game_healthinfo/healthinfo.lua
+--- a/modules/game_healthinfo/healthinfo.lua
++++ b/modules/game_healthinfo/healthinfo.lua
+@@ -27,7 +27,13 @@
+     end
+ end
+ 
++-- PokeVerse: trainer HP is in the top HUD, so this panel stays hidden (the module stays loaded
++-- because game_interface calls extendedView).
+ function healthManaController:onGameStart()
++    healthManaController.ui:hide()
++    if true then
++        return
++    end
+     healthManaController:registerEvents(LocalPlayer, {
+         onHealthChange = healthManaEvent,
+         onManaChange = healthManaEvent
+@@ -35,6 +41,10 @@
+ end
+ 
+ function extendedView(extendedView)
++    if true then
++        healthManaController.ui:hide()
++        return
++    end
+     if extendedView then
+         if not iconTopMenu then
+             iconTopMenu = modules.client_topmenu.addTopRightToggleButton('healthMana', tr('Show health'),

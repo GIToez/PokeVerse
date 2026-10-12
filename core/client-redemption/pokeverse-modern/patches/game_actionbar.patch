@@ -1,0 +1,26 @@
+diff -ruN pristine/modules/game_actionbar/game_actionbar.lua modules/game_actionbar/game_actionbar.lua
+--- a/modules/game_actionbar/game_actionbar.lua
++++ b/modules/game_actionbar/game_actionbar.lua
+@@ -770,6 +770,8 @@
+     }
+     local n = map[key]
+     if not n then return end
++    -- PokeVerse: trainers have no spells, so the action bars stay hidden
++    value = false
+     local actionbar = actionBars[n]
+     if actionbar then
+         ApiJson.setBarVisibility(n, key, value)
+diff -ruN pristine/modules/game_actionbar/logics/ActionButtonLogic.lua modules/game_actionbar/logics/ActionButtonLogic.lua
+--- a/modules/game_actionbar/logics/ActionButtonLogic.lua
++++ b/modules/game_actionbar/logics/ActionButtonLogic.lua
+@@ -139,6 +139,10 @@
+     end
+ end
+ local function bindHotkey(button, hotkey)
++    -- PokeVerse: F1-F6 call Pokemon and the number row uses moves; the action bar binds no keys
++    if true then
++        return
++    end
+     if not gameRootPanel or not button or not hotkey or string_empty(hotkey) then
+         return
+     end
