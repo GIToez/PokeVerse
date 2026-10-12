@@ -17,6 +17,7 @@
 		<talkaction words="/autoWalk" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/autoWalk.lua" description="Automatic walk's straight."/>
 		<talkaction words="/sd" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/skillDescription.lua"/>
 		<talkaction words="/cp" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/callPokemon.lua"/>
+		<talkaction words="/dailytasks" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/dailyTasks.lua"/>
 		<talkaction words="/pd" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/pokemonDescription.lua"/>
 		<talkaction words="/tc" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/client/tmChoose.lua"/>
 		<talkaction words="/d1;/d2" event="script" value="../../lib/ps/events/talkactions/transformMemory.lua" description="Order your Pokemon to transform into the corresponding memory slot."/>

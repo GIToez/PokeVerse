@@ -46,6 +46,7 @@ EXTENDED_IDS = {
     POKEMON_STATS = 12, -- JSON stat sheet of your own Pokemon after a Pokedex view (PokemonStats.getStatSheet)
     -- 13 is the client's AutoLoot
     EVOLUTION = 14, -- JSON {state = "start", from, to, fromLook, toLook, duration} then {state = "done"} (doPokemonEvolve)
+    DAILY_TASKS = 15, -- JSON state of today's daily tasks (DailyTasks.send)
     LEVEL_UP = 16 -- JSON Pokemon/trainer level-up and TM banners (LevelUpBanner)
 }
 

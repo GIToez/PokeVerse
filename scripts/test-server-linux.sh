@@ -150,6 +150,31 @@ groups=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT GROUP_CONCAT(CONCAT
 [ "$groups" = "0:4 1:1" ] || { echo "FAIL: set_group should change only the live 'Reuse Trainer' (deleted:group = $groups)"; exit 1; }
 echo "Reused name: $groups"
 
+step "Daily tasks"
+sql() { $db -upokeverse -ppokeverse -N pokeverse -e "$1"; }
+tasks_of() { sql "SELECT d.data FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = '$1'"; }
+picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = 'Trainer' AND d.day = '$(date +%F)'")
+[ "$picked" = 1 ] || { echo "FAIL: Trainer got no daily tasks for today at login"; exit 1; }
+tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['tasks']) == 3, s; assert len({t['kind'] for t in s['tasks']}) == 3, s"
+say_admin() { # the server reads its table at login only through its own connection, so tests use the staff commands
+  local args=()
+  for text in "$@"; do args+=(--say "$text"); done
+  python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin "${args[@]}"
+}
+say_admin "/dailytasks reset" "/dailytasks progress 1 999" "/dailytasks claim 1" "/dailytasks claim 2" \
+  "/dailytasks bonus" "/dailytasks progress 2 999" "/dailytasks progress 3 999" "/dailytasks claim 2" \
+  "/dailytasks claim 3" "/dailytasks bonus"
+tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
+assert all(x['claimed'] and x['progress'] == x['target'] for x in t), s
+assert s['bonusClaimed'] and not s['rerolled'], s"
+[ "$(inside Admin 10 13295,13292)" -ge 1 ] || { echo "FAIL: the daily bonus (a surprise box) is not in Admin's bag"; exit 1; }
+say_admin "/i 2152, 10" "/dailytasks reset" "/dailytasks progress 3 999" "/dailytasks reroll 3" \
+  "/dailytasks reroll 1" "/dailytasks reroll 2"
+tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
+assert s['rerolled'] and len({x['kind'] for x in t}) == 3, s
+assert t[2]['progress'] == t[2]['target'] and t[0]['progress'] == 0, s"
+echo "Daily tasks: picked at login, claim, bonus, rewards and one reroll a day"
+
 step "Level-up banners"
 # only the banner messages matter here, not whether the walk succeeded
 banners=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk west,east,north,south \
