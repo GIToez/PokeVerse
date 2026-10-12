@@ -721,6 +721,21 @@ CREATE TABLE IF NOT EXISTS `discord_account_links` (
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------------
+-- Daily tasks (data/lib/ps/systems/062-dailyTasks.lua)
+-- ---------------------------------------------------------------------------
+-- One row per character: `day` is the server-local date the tasks were picked for and
+-- `data` the JSON state (tasks, progress, claims, reroll). Only the game server writes it.
+-- Rollback: DROP TABLE `player_daily_tasks`; no existing table was changed.
+CREATE TABLE IF NOT EXISTS `player_daily_tasks` (
+  `player_id` INT NOT NULL,
+  `day` CHAR(10) NOT NULL,
+  `data` TEXT NOT NULL,
+  `updated_at` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`player_id`),
+  CONSTRAINT `player_daily_tasks_player` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------------
 -- One-time data migrations
 -- ---------------------------------------------------------------------------
 -- Each migration runs once per database and is recorded here by name.

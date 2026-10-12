@@ -150,6 +150,35 @@ groups=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT GROUP_CONCAT(CONCAT
 [ "$groups" = "0:4 1:1" ] || { echo "FAIL: set_group should change only the live 'Reuse Trainer' (deleted:group = $groups)"; exit 1; }
 echo "Reused name: $groups"
 
+step "Daily tasks"
+sql() { $db -upokeverse -ppokeverse -N pokeverse -e "$1"; }
+tasks_of() { sql "SELECT d.data FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = '$1'"; }
+picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = 'Trainer' AND d.day = '$(date +%F)'")
+[ "$picked" = 1 ] || { echo "FAIL: Trainer got no daily tasks for today at login"; exit 1; }
+tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert len(s['tasks']) == 3, s; assert len({t['kind'] for t in s['tasks']}) == 3, s"
+admin_tasks() { # <task 1 progress> <task 2 claimed> <task 3 claimed>
+  sql "UPDATE player_daily_tasks d JOIN players p ON p.id = d.player_id SET d.data = '{\"day\":\"$(date +%F)\",\"band\":1,
+    \"rerolled\":false,\"bonusClaimed\":false,\"tasks\":[
+    {\"kind\":\"defeat\",\"target\":15,\"progress\":$1,\"claimed\":false,\"money\":400,\"item\":[12244,5]},
+    {\"kind\":\"catch\",\"target\":2,\"progress\":0,\"claimed\":$2,\"money\":400,\"item\":[12157,10]},
+    {\"kind\":\"fish\",\"target\":3,\"progress\":0,\"claimed\":$3,\"money\":400,\"item\":[12157,10]}]}' WHERE p.name = 'Admin'"
+}
+admin_tasks 15 true true
+python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin \
+  --say "/dailytasks claim 2" --say "/dailytasks claim 1" --say "/dailytasks bonus" --say "/dailytasks bonus"
+tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
+assert t[0]['claimed'] and s['bonusClaimed'], s
+assert not s['rerolled'], s"
+[ "$(inside Admin 10 12244)" = 1 ] || { echo "FAIL: the daily task reward (health potions) is not in Admin's bag"; exit 1; }
+[ "$(inside Admin 10 13295)" = 1 ] || { echo "FAIL: the daily bonus (white surprise box) is not in Admin's bag"; exit 1; }
+admin_tasks 3 false false
+python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin \
+  --say "/i 2152, 10" --say "/dailytasks reroll 1" --say "/dailytasks reroll 2" --say "/dailytasks claim 1"
+tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks']
+assert s['rerolled'] and t[0]['kind'] not in ('defeat', 'catch', 'fish'), s
+assert t[1]['kind'] == 'catch' and not t[0]['claimed'], s"
+echo "Daily tasks: picked at login, claim, bonus and one reroll a day"
+
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true
 if grep -q "MYSQL ERROR" "$work/server.log"; then echo "FAIL: database errors in server log"; exit 1; fi

@@ -28,6 +28,7 @@ local function onCaughtPokemon(cid, attributes, tries)
     setPlayerCaughts(cid, caughts)
     setPlayerPokemonCaughts(cid, attributes.name, getPlayerPokemonCaughts(cid, attributes.name) + 1)
     doQuestCatch(cid, attributes.name)
+    DailyTasks.onEvent(cid, "catch", { name = attributes.name })
     doPokedexTryRegister(cid, attributes.name)
     doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.CATCH_1, caughts)
 

@@ -1,6 +1,7 @@
 function onStatisticChange(cid, statisticId, newValue)
     if (statisticId == PLAYER_STATISTIC_IDS.HOOKED_FISH) then
         doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.FISH_1, newValue)
+        DailyTasks.onEvent(cid, "fish")
 
     elseif (statisticId == PLAYER_STATISTIC_IDS.EVOLVE_POKEMON) then
         doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.EVOLVE_1, newValue)
@@ -31,6 +32,7 @@ function onStatisticChange(cid, statisticId, newValue)
 
     elseif (statisticId == PLAYER_STATISTIC_IDS.DEFEAT_NPC) then
         doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.DEFEAT_NPC_1, newValue)
+        DailyTasks.onEvent(cid, "trainer")
 
     elseif (statisticId == PLAYER_STATISTIC_IDS.DEFEAT_PLAYER) then
         doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.DEFEAT_PLAYER_1, newValue)

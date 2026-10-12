@@ -83,6 +83,7 @@ function onLogout(cid, forceLogout)
     doPlayerRemoveFrontierBalls(cid)
 
     local guid = getPlayerGUID(cid)
+    DailyTasks.onLogout(cid)
     if (isTutor(cid) and ONLINE_TUTORS[getPlayerGUID(cid)]) then
         ONLINE_TUTORS[guid] = nil
     end
