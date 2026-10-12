@@ -56,8 +56,21 @@ If GitHub cannot be reached, the client shows an error and starts normally after
 ## Platform notes
 
 - **Windows and Linux:** the executable updates itself under the same name, so shortcuts
-  keep working. The running file is renamed to `PokeVerse.exe.old` (`otclient.old` on Linux),
+  keep working. The running file is renamed to `PokeVerse.exe.old` (`PokeVerse.old` on Linux),
   the new one is written in its place, and the old copy is deleted on a later start.
+- **Linux:** players start the game with `PokeVerse.sh` (or by double-clicking
+  `PokeVerse.desktop` in the game folder). The launcher changes to the game folder, starts
+  `./PokeVerse`, and keeps a "PokeVerse" entry with the icon in the app menu
+  (`~/.local/share/applications/pokeverse.desktop`) pointing at that folder;
+  `sh PokeVerse.sh --remove-menu-entry` removes it. Installs from before the rename keep
+  their engine as `./otclient` (the updater replaces it under its own name), and the
+  launcher starts that instead. Files from the updater are not executable, so both
+  shortcuts run the launcher with `sh`. Desktop entries cannot use relative paths, so
+  `PokeVerse.desktop` finds the game folder from its own location (`%k`, which KDE
+  passes but GNOME's GLib does not), then from the app menu entry, then by looking for
+  `PokeVerse/PokeVerse.sh` up to four folders deep in the home folder. GNOME may ask the
+  player to right-click it and pick "Allow Launching" the first time. The source files
+  are in `core/client-redemption/packaging/linux/`.
 - **Android:** the APK carries the client files as `data.zip` and unpacks them on first
   start; after that the updater keeps them current like on the other platforms. Android
   apps cannot restart themselves, so after an update the client asks the player to reopen

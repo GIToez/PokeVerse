@@ -87,8 +87,8 @@ jobs:
             "-DBUILD_COMMIT=${GITHUB_SHA::7}" "-DBUILD_REVISION=${GITHUB_RUN_NUMBER}"
           cmake --build --preset linux-release
           mkdir -p "$GITHUB_WORKSPACE/bin-linux"
-          cp build/linux-release/bin/otclient "$GITHUB_WORKSPACE/bin-linux/"
-          strip "$GITHUB_WORKSPACE/bin-linux/otclient"
+          cp build/linux-release/bin/otclient "$GITHUB_WORKSPACE/bin-linux/PokeVerse"
+          strip "$GITHUB_WORKSPACE/bin-linux/PokeVerse"
 
       # saved even when the build fails, so the libraries built so far are not lost
       - uses: actions/cache/save@v4
@@ -266,10 +266,11 @@ jobs:
 
       - name: Assemble live packages
         run: |
-          chmod +x bin-linux/otclient
+          chmod +x bin-linux/PokeVerse
           updater="$PAGES_URL/updater/"
           scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/windows bin-windows/*
-          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/linux bin-linux/otclient
+          scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/linux bin-linux/PokeVerse \
+            core/client-redemption/packaging/linux/PokeVerse.sh core/client-redemption/packaging/linux/PokeVerse.desktop
           # what the APK unpacks on first start; the engine itself comes with the APK
           scripts/assemble-redemption-client.sh --host "$LIVE_HOST" --updater "$updater" pkg/android
 
@@ -281,7 +282,7 @@ jobs:
           common=(--site site/updater --files-url "$PAGES_URL/updater/files" --version "$TAG"
                   --release-dir release --release-url "$release_url")
           python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
-          python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary otclient "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary PokeVerse "${common[@]}"
           python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}"
           cat > site/index.html <<EOF
           <!doctype html><meta charset="utf-8"><title>PokeVerse client</title>
