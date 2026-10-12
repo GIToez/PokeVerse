@@ -156,7 +156,7 @@ tasks_of() { sql "SELECT d.data FROM player_daily_tasks d JOIN players p ON p.id
 board_of() { sql "SELECT b.data FROM player_task_boards b JOIN players p ON p.id = b.player_id WHERE p.name = '$1' AND b.board = '$2'"; }
 picked=$(sql "SELECT COUNT(*) FROM player_daily_tasks d JOIN players p ON p.id = d.player_id WHERE p.name = 'Trainer' AND d.day = '$(date +%F)'")
 [ "$picked" = 1 ] || { echo "FAIL: Trainer has no daily board for today after logging in"; exit 1; }
-tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert s['tasks'] == [] and 'difficulty' not in s, s"
+tasks_of Trainer | python3 -c "import json,sys; s=json.load(sys.stdin); assert not s['tasks'] and 'difficulty' not in s, s"
 say_admin() { # the server reads its table at login only through its own connection, so tests use the staff commands
   local args=()
   for text in "$@"; do args+=(--say "$text"); done
