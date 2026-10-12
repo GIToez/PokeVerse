@@ -151,8 +151,8 @@ groups=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT GROUP_CONCAT(CONCAT
 echo "Reused name: $groups"
 
 step "Level-up banners"
-banners=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk east \
-  --say "/addskill Admin, level, 2" --say "/mypokemon Bulbasaur, 12" --say "/pokemonexp 3")
+banners=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk west \
+  --say "/addskill Admin, level, 2" --say "/mypokemon Bulbasaur, 12" --say "/pokemonexp 3, Bulbasaur")
 echo "$banners" | grep "extended opcode 16" || true
 echo "$banners" | python3 -c '
 import json, sys
