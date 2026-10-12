@@ -166,7 +166,7 @@ local function buildPokemon(parent, data)
     local banner = createBanner(parent)
     setPortrait(banner, tonumber(data.look), data.number)
     local gained = (tonumber(data.to) or 0) - (tonumber(data.from) or 0)
-    banner.name:setText(data.name or '')
+    banner.name:setText(shorten(data.name, 16))
     banner.highlight:setText(gained > 1 and tr('+%d Levels!', gained) or tr('Leveled Up!'))
     banner.subtitle:setText(tr('Level %d  ->  %d   -   Stats increased', data.from or 0, data.to or 0))
     for _, stat in ipairs(data.stats or {}) do
@@ -240,9 +240,9 @@ local function buildTm(parent, data)
     setPortrait(banner, tonumber(data.look), data.number)
     banner.badge:show()
     local move = data.move or {}
-    banner.name:setText(tr('%s learned', data.name or ''))
+    banner.name:setText(tr('%s learned', shorten(data.name, 14)))
     banner.highlight:setText((move.name or '') .. '!')
-    banner.subtitle:setText(shorten(tr('Technical Machine') .. '   -   ' .. (move.description or ''), 78))
+    banner.subtitle:setText(shorten(tr('Technical Machine') .. '   -   ' .. (move.description or ''), 66))
     if move.element and ELEMENTS[move.element] then
         addChip(banner, { icon = '/images/types/' .. move.element, label = tr('Type'), value = tr(ELEMENTS[move.element]), width = 92 })
     end
