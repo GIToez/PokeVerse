@@ -155,7 +155,20 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      end
  end
  
-@@ -236,7 +323,44 @@
+@@ -225,18 +312,55 @@
+ local function playEffect(effect)
+     if (playingEffect ~= effect) then
+         local map = modules.game_interface.getMapPanel()
+-        map:setMapShader(g_shaders.getShader(effect[DATA_INDEX.NAME]), SHADER_FADE, SHADER_FADE)
++        map:setShader(effect[DATA_INDEX.NAME], SHADER_FADE, SHADER_FADE)
+         playingEffect = effect
+     end
+ end
+ 
+ local function resetEffect()
+     local map = modules.game_interface.getMapPanel()
+-    map:setMapShader(nil, SHADER_FADE, SHADER_FADE)
++    map:setShader('', SHADER_FADE, SHADER_FADE)
      playingEffect = nil
  end
  
