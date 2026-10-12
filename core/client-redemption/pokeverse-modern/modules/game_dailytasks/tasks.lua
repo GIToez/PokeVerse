@@ -285,7 +285,7 @@ local function drawHunting()
     panel.refresh:setVisible(state.difficulty ~= nil)
     if refresh.free then
         panel.refresh:setText(tr('New offers (free)'))
-        panel.refresh:setTooltip(tr('Free once every 20 hours'))
+        panel.refresh:setTooltip(tr('Free once a day, again after midnight'))
     else
         panel.refresh:setText(tr('New offers (%s)', formatMoney(refresh.cost)))
         panel.refresh:setTooltip(tr('Free again in %s', formatTime(secondsLeft('hunting', 'refreshIn') or 0)))
