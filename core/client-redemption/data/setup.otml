@@ -23,10 +23,10 @@ game
     volatile-square-duration: 1000
     adjust-creature-information-based-crop-size: false
     use-crop-size-for-ui-draw: true
-    diagonal-walk-speed: 1
+    diagonal-walk-speed: 1.25
 
   player
-    diagonal-walk-speed: 1
+    diagonal-walk-speed: 1.25
 
   render
     invisible-ticks-per-frame: 75

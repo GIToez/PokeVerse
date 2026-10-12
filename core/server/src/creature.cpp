@@ -550,9 +550,11 @@ void Creature::onCreatureMove(const Creature* creature, const Tile* newTile, con
 		setLastPosition(oldPos);
 		if(!teleport)
 		{
-			// diagonal steps cost the same as straight ones (the client's diagonal-walk-speed is 1)
+			// must match diagonal-walk-speed in the client's setup.otml
 			if(oldPos.z != newPos.z)
 				lastStepCost = 2;
+			else if(oldPos.x != newPos.x && oldPos.y != newPos.y)
+				lastStepCost = 1.25;
 		}
 		else
 			stopEventWalk();
@@ -1704,7 +1706,7 @@ int32_t Creature::getStepDuration() const
 	if(!tile || !tile->ground)
 		return 0;
 
-	return ((1000 * Item::items[tile->ground->getID()].speed) / stepSpeed) * lastStepCost;
+	return (int32_t)(((1000 * Item::items[tile->ground->getID()].speed) / stepSpeed) * lastStepCost);
 }
 
 int64_t Creature::getEventStepTicks() const

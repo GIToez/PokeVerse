@@ -490,7 +490,7 @@ class Creature : public AutoId, virtual public Thing
 		Position lastPosition;
 		int32_t masterRadius;
 		uint64_t lastStep;
-		uint32_t lastStepCost;
+		double lastStepCost;
 		uint32_t baseSpeed;
 		int32_t varSpeed;
 		bool skillLoss;
