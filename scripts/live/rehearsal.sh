@@ -81,6 +81,14 @@ step "players: login, movement, persistence"
 sudo mariadb pokeverse -e "CALL pokeverse_create_account('rehearsal', 'rehearsal1'); CALL pokeverse_create_character('rehearsal', 'Rehearsal Trainer', 1);
   CALL pokeverse_create_account('rehearsalgm', 'rehearsal1'); CALL pokeverse_create_character('rehearsalgm', 'Rehearsal Admin', 0);" >/dev/null
 PV_CHARACTER="Rehearsal Admin" PV_GROUP=6 deploy set-group
+sudo mariadb pokeverse -e "CALL pokeverse_create_account('rehearsalreuse', 'rehearsal1');
+  CALL pokeverse_create_character('rehearsalreuse', 'Rehearsal Reuse', 0);
+  UPDATE players SET deleted = 1 WHERE name = 'Rehearsal Reuse';
+  CALL pokeverse_create_character('rehearsalreuse', 'Rehearsal Reuse', 1);" >/dev/null
+PV_CHARACTER="Rehearsal Reuse" PV_GROUP=2 deploy set-group
+[ "$(sudo mariadb -N pokeverse -e "SELECT group_id FROM players WHERE name = 'Rehearsal Reuse' AND deleted = 0")" = 2 ] \
+  || fail "set-group did not change the recreated character"
+if PV_CHARACTER="Rehearsal Nobody" PV_GROUP=2 deploy set-group; then fail "set-group accepted a missing character"; fi
 player=(--account rehearsal --password rehearsal1 --character "Rehearsal Trainer")
 gm=(--account rehearsalgm --password rehearsal1 --character "Rehearsal Admin")
 pos=$(pt "${player[@]}" --walk east | tee /dev/stderr | sed -n 's/^POSITION //p')

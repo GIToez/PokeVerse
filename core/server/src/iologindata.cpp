@@ -1585,6 +1585,13 @@ DeleteCharacter_t IOLoginData::deleteCharacter(uint32_t accountId, const std::st
 	if(IOGuild::getInstance()->getGuildLevel(id) == 3)
 		return DELETE_LEADER;
 
+	// UNIQUE (name, deleted) holds one deleted row per name, and a deleted name can be taken again.
+	query.str("");
+	query << "UPDATE `players` SET `name` = CONCAT(LEFT(`name`, 240), '~', `id`) WHERE `name` "
+		<< db->getStringComparison() << db->escapeString(characterName) << " AND `deleted` = 1";
+	if(!db->executeQuery(query.str()))
+		return DELETE_INTERNAL;
+
 	query.str("");
 	query << "UPDATE `players` SET `deleted` = 1 WHERE `id` = " << id << db->getUpdateLimiter();
 	if(!db->executeQuery(query.str()))

@@ -3,6 +3,7 @@
 --   CALL pokeverse_create_account('name', 'password');
 --   CALL pokeverse_create_character('account name', 'Character Name', sex);   -- sex: 0 female, 1 male
 --   CALL pokeverse_set_group('Character Name', group_id);                     -- see data/XML/groups.xml
+--   CALL pokeverse_set_group_id(player id, group_id);                        -- the same, by id (live-server set-group)
 --
 -- pokeverse_add_character(account id, name, sex) inserts a character and its starting kit
 -- without any checks or result rows. The game server's account service (create character
@@ -18,6 +19,7 @@ DROP PROCEDURE IF EXISTS `pokeverse_create_account`;
 DROP PROCEDURE IF EXISTS `pokeverse_create_character`;
 DROP PROCEDURE IF EXISTS `pokeverse_add_character`;
 DROP PROCEDURE IF EXISTS `pokeverse_set_group`;
+DROP PROCEDURE IF EXISTS `pokeverse_set_group_id`;
 
 DELIMITER //
 
@@ -77,7 +79,7 @@ BEGIN
   IF p_name NOT REGEXP '^[A-Za-z][A-Za-z ]{1,28}[A-Za-z]$' THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Character names must be 3-30 letters and spaces.';
   END IF;
-  IF EXISTS (SELECT 1 FROM `players` WHERE `name` = p_name) THEN
+  IF EXISTS (SELECT 1 FROM `players` WHERE `name` = p_name AND `deleted` = 0) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'A character with that name already exists.';
   END IF;
   IF p_sex NOT IN (0, 1) THEN
@@ -87,11 +89,18 @@ BEGIN
   SELECT CONCAT('Character created: ', p_name) AS `result`;
 END //
 
+CREATE PROCEDURE `pokeverse_set_group_id`(IN p_id INT, IN p_group INT)
+BEGIN
+  UPDATE `players` SET `group_id` = p_group WHERE `id` = p_id AND `deleted` = 0;
+  UPDATE `accounts` a JOIN `players` p ON p.`account_id` = a.`id`
+    SET a.`group_id` = GREATEST(a.`group_id`, p_group) WHERE p.`id` = p_id AND p.`deleted` = 0;
+END //
+
 CREATE PROCEDURE `pokeverse_set_group`(IN p_name VARCHAR(255), IN p_group INT)
 BEGIN
-  UPDATE `players` SET `group_id` = p_group WHERE `name` = p_name;
-  UPDATE `accounts` a JOIN `players` p ON p.`account_id` = a.`id`
-    SET a.`group_id` = GREATEST(a.`group_id`, p_group) WHERE p.`name` = p_name;
+  DECLARE v_id INT;
+  SELECT `id` INTO v_id FROM `players` WHERE `name` = p_name AND `deleted` = 0 LIMIT 1;
+  CALL pokeverse_set_group_id(v_id, p_group);
 END //
 
 DELIMITER ;

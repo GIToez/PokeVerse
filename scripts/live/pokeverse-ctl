@@ -544,10 +544,26 @@ cmd_set_group() {
   local name=${1:?character name} group=${2:?group id}
   [[ "$name" =~ ^[A-Za-z][A-Za-z\ ]{1,28}[A-Za-z]$ ]] || die "invalid character name"
   [[ "$group" =~ ^[1-6]$ ]] || die "group must be 1 (player) to 6 (god), see data/XML/groups.xml"
-  [ "$(dbq "SELECT COUNT(*) FROM players WHERE name = '$name'")" = 1 ] || die "character '$name' not found"
-  [ "$(dbq "SELECT online FROM players WHERE name = '$name'")" = 0 ] || die "'$name' is online; log out first (the server would overwrite the change)"
-  dbq "CALL pokeverse_set_group('$name', $group)"
+  local id
+  id=$(live_character_id "$name")
+  [ "$(dbq "SELECT online FROM players WHERE id = $id")" = 0 ] || die "'$name' is online; log out first (the server would overwrite the change)"
+  dbq "CALL pokeverse_set_group_id($id, $group)"
   log "'$name' is now in group $group"
+}
+
+# Prints the id of the character that is not deleted; deleted characters keep their name.
+live_character_id() {
+  local name=$1 id similar
+  id=$(dbq "SELECT id FROM players WHERE name = '$name' AND deleted = 0 LIMIT 1")
+  if [ -z "$id" ]; then
+    if [ "$(dbq "SELECT COUNT(*) FROM players WHERE name = '$name' AND deleted = 1")" != 0 ]; then
+      echo "  '$name' was deleted and has not been created again" >&2
+    fi
+    similar=$(dbq "SELECT GROUP_CONCAT(name ORDER BY name SEPARATOR ', ') FROM players WHERE deleted = 0 AND name LIKE '%$name%'")
+    [ -n "$similar" ] && [ "$similar" != NULL ] && echo "  similar names: $similar" >&2
+    die "character '$name' not found"
+  fi
+  echo "$id"
 }
 
 # ---------------------------------------------------------------------------------------

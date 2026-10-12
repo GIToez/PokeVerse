@@ -138,6 +138,17 @@ deleted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT deleted FROM playe
 
 step "Account service tests"
 python3 "$root/scripts/account-test.py"
+testers=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(SUM(deleted = 0), ',', SUM(deleted = 1), ',', SUM(name LIKE '%~%')) FROM players WHERE name LIKE 'Tester %'")
+[ "$testers" = "0,3,2" ] || { echo "FAIL: a name deleted three times should leave 3 deleted rows, 2 renamed (live,deleted,renamed: $testers)"; exit 1; }
+
+step "Reused character names"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_character('newuser', 'Reuse Trainer', 0);
+  UPDATE players SET deleted = 1 WHERE name = 'Reuse Trainer';
+  CALL pokeverse_create_character('newuser', 'Reuse Trainer', 1);
+  CALL pokeverse_set_group('Reuse Trainer', 4);" >/dev/null
+groups=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT GROUP_CONCAT(CONCAT(deleted, ':', group_id) ORDER BY deleted SEPARATOR ' ') FROM players WHERE name = 'Reuse Trainer'")
+[ "$groups" = "0:4 1:1" ] || { echo "FAIL: set_group should change only the live 'Reuse Trainer' (deleted:group = $groups)"; exit 1; }
+echo "Reused name: $groups"
 
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true

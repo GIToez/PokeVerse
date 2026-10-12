@@ -134,6 +134,11 @@ def main():
             c.failures += 1
         else:
             print("OK: %s is gone from the character list" % character)
+        for attempt in (1, 2):
+            c.expect("create the deleted name again (%d)" % attempt,
+                     request(args, ACTION_CREATE_CHARACTER, account, password, character, 1), True)
+            c.expect("delete the reused name (%d)" % attempt,
+                     request(args, ACTION_DELETE_CHARACTER, account, password, character), True)
     except (pt.ProtocolError, OSError) as e:
         print("FAIL: " + str(e))
         return 1
