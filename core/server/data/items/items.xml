@@ -35805,7 +35805,6 @@
     <item fromid="30133" toid="30135" name="morganite tapestry" />
 	<item id="30136" article="an" name="empty master ball">
 		<attribute key="description" value="Catches any wild Pokemon it can be used on, without fail." />
-		<attribute key="weight" value="090" />
 	</item>
 	<item id="30137" article="a" name="destiny knot">
 		<attribute key="description" value="When held by a Pokemon left at the Day Care, five of the parents' IVs are passed down to the Egg instead of three." />
