@@ -84,9 +84,3 @@ EnterGameWindow
     anchors.top: separator.bottom
     @onClick: EnterGame.showCreateAccount()
     margin-top: 8
-
-  UIWidget
-    image-source: /images/animated
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: -138
