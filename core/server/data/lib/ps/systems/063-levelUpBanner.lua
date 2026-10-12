@@ -1,7 +1,7 @@
 -- Level-up banners in the client (game_levelup), sent as JSON on EXTENDED_IDS.LEVEL_UP:
---   {kind = "pokemon", name, number, from, to, stats = {{name, old, new}, ...}, moves = {move, ...}}
---   {kind = "trainer", name, from, to, hp = {old, new}, pokemonCap, unlocks = {{icon, title, text, level}, ...}}
---   {kind = "tm", name, number, move = move}
+--   {kind = "pokemon", name, number, look, from, to, stats = {{name, old, new}, ...}, moves = {move, ...}}
+--   {kind = "trainer", name, from, to, hp = {old, new}, pokemonCap, pokemonCapOld, unlocks = {{icon, title, text, level}, ...}}
+--   {kind = "tm", name, number, look, move = move}
 -- with move = {name, icon, element, category, power, energy, cooldown, description}.
 
 LevelUpBanner = {}
@@ -28,6 +28,11 @@ LevelUpBanner.UNLOCKS = {
     },
     [90] = { { icon = "battletower", title = "New Feature", text = "Battle Tower - Ten" } },
 }
+
+local function getLook(pokemonName)
+    local info = getMonsterInfo(pokemonName)
+    return info and info.outfit and info.outfit.lookType or nil
+end
 
 local function send(cid, data)
     if (isPlayer(cid) and getPlayerUsingOtClient(cid)) then
@@ -76,6 +81,7 @@ LevelUpBanner.sendPokemon = function(cid, ballUid, pokemonName, displayName, fro
         kind = "pokemon",
         name = displayName or pokemonName,
         number = getPokemonNumberByName(pokemonName),
+        look = getLook(pokemonName),
         from = fromLevel,
         to = toLevel,
         stats = LevelUpBanner.getStatChanges(ballUid, pokemonName, fromLevel, toLevel),
@@ -104,6 +110,7 @@ LevelUpBanner.sendTrainer = function(cid, fromLevel, toLevel)
         to = toLevel,
         hp = { old = maxHealth - hpGain, new = maxHealth },
         pokemonCap = math.min(toLevel + MAX_LEVEL_DIFF_BETWEEN_PLAYER_POKEMON, POKEMON_LEVEL_MAX),
+        pokemonCapOld = math.min(fromLevel + MAX_LEVEL_DIFF_BETWEEN_PLAYER_POKEMON, POKEMON_LEVEL_MAX),
         unlocks = LevelUpBanner.getUnlocks(cid, fromLevel, toLevel)
     })
 end
@@ -113,6 +120,7 @@ LevelUpBanner.sendTm = function(cid, pokemonName, displayName, moveName)
         kind = "tm",
         name = displayName or pokemonName,
         number = getPokemonNumberByName(pokemonName),
+        look = getLook(pokemonName),
         move = LevelUpBanner.getMoveInfo(cid, moveName)
     })
 end

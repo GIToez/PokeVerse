@@ -11,6 +11,7 @@ local FADE_OUT_MS = 500
 local SLIDE = 16
 local GAP_MS = 200
 local MAX_PER_GROUP = 2
+local MAX_UNLOCK_BOXES = 4
 
 local STATS = {
     ['HP'] = { label = 'HP', icon = 'stat-hp' },
@@ -89,8 +90,12 @@ local function createBanner(parent)
     return banner
 end
 
-local function setPortrait(banner, number)
-    if number then
+local function setPortrait(banner, look, number)
+    if look then
+        banner.creature:setSize({ width = 96, height = 96 })
+        banner.creature:setOutfit({ type = look })
+        banner.creature:show()
+    elseif number then
         banner.picture:setImageSource('/images/staticPortraits/' .. number)
         banner.picture:show()
     end
@@ -115,7 +120,7 @@ local function addMoveBox(parent, move, title)
     box.title:setText(title)
     box.moveName:setText(move.name or '')
     if move.icon then
-        box.icon:setItemId(move.icon)
+        box.iconFrame.icon:setItemId(move.icon)
     end
     if move.element and ELEMENTS[move.element] then
         box.element:setImageSource('/images/types/' .. move.element)
@@ -138,7 +143,7 @@ local function addUnlockBox(parent, unlock, level)
     local box = g_ui.createWidget('LevelUpMoveBox', parent)
     box.title:setText((unlock.title or tr('New Feature')) .. ':')
     box.moveName:setText(unlock.text or '')
-    box.icon:hide()
+    box.iconFrame.icon:hide()
     local picture = g_ui.createWidget('UIWidget', box.iconFrame)
     picture:setSize({ width = 34, height = 34 })
     picture:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
@@ -149,13 +154,17 @@ local function addUnlockBox(parent, unlock, level)
     box.category:hide()
     box.details:addAnchor(AnchorLeft, 'title', AnchorLeft)
     box.details:setMarginLeft(0)
-    box.details:setText(tr('Unlocked at trainer level %d', unlock.level or level or 0))
+    if unlock.summary then
+        box.details:setText(shorten(unlock.summary, 60))
+    else
+        box.details:setText(tr('Unlocked at trainer level %d', unlock.level or level or 0))
+    end
     return box
 end
 
 local function buildPokemon(parent, data)
     local banner = createBanner(parent)
-    setPortrait(banner, data.number)
+    setPortrait(banner, tonumber(data.look), data.number)
     local gained = (tonumber(data.to) or 0) - (tonumber(data.from) or 0)
     banner.name:setText(data.name or '')
     banner.highlight:setText(gained > 1 and tr('+%d Levels!', gained) or tr('Leveled Up!'))
@@ -204,12 +213,23 @@ local function buildTrainer(parent, data)
             icon = IMAGES .. 'cap',
             label = tr('Pokemon level cap'),
             value = tr('Level %d', data.pokemonCap),
-            up = true,
+            up = data.pokemonCap > (tonumber(data.pokemonCapOld) or 0),
+            color = '#8a9ab8',
             width = 112
         })
     end
+    local unlocks = data.unlocks or {}
+    if #unlocks > MAX_UNLOCK_BOXES then
+        local rest = {}
+        for index = MAX_UNLOCK_BOXES, #unlocks do
+            table.insert(rest, unlocks[index].text)
+        end
+        local shown = { unpack(unlocks, 1, MAX_UNLOCK_BOXES - 1) }
+        table.insert(shown, { title = tr('And'), text = tr('%d more features', #rest), summary = table.concat(rest, ', ') })
+        unlocks = shown
+    end
     local boxes = {}
-    for _, unlock in ipairs(data.unlocks or {}) do
+    for _, unlock in ipairs(unlocks) do
         table.insert(boxes, function() return addUnlockBox(parent, unlock, data.to) end)
     end
     return banner, boxes
@@ -217,7 +237,7 @@ end
 
 local function buildTm(parent, data)
     local banner = createBanner(parent)
-    setPortrait(banner, data.number)
+    setPortrait(banner, tonumber(data.look), data.number)
     banner.badge:show()
     local move = data.move or {}
     banner.name:setText(tr('%s learned', data.name or ''))
