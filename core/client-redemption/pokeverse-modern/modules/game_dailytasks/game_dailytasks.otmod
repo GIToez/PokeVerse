@@ -1,0 +1,8 @@
+Module
+  name: game_dailytasks
+  description: PokeVerse daily tasks: today's three tasks, their rewards and the daily bonus
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ dailytasks ]
+  @onLoad: init()
+  @onUnload: terminate()

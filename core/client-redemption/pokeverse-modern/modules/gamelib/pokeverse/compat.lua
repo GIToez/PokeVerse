@@ -138,6 +138,7 @@ ExtendedIds.SummonOwner = 11
 ExtendedIds.PokemonStats = 12
 ExtendedIds.AutoLoot = 13
 ExtendedIds.Evolution = 14
+ExtendedIds.DailyTasks = 15
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v
