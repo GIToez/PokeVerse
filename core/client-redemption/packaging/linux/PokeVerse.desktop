@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=PokeVerse
+Comment=Play PokeVerse
+Exec=sh -c "exec sh \\"\\$(dirname \\"\\$0\\")/PokeVerse.sh\\"" %k
+Icon=pokeverse
+Terminal=false
+Categories=Game;
