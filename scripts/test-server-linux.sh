@@ -162,8 +162,8 @@ say_admin() { # the server reads its table at login only through its own connect
   for text in "$@"; do args+=(--say "$text"); done
   python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin "${args[@]}"
 }
-# the difficulty is picked once a day: the second start must not change it
-say_admin "/dailytasks reset" "/dailytasks claim 1" "/dailytasks start 1" "/dailytasks start 5" \
+# the difficulty is picked once a day: the second start must not change it; Medium and Easy below need level 35
+say_admin "/addskill Admin, level, 40" "/dailytasks reset" "/dailytasks claim 1" "/dailytasks start 1" "/dailytasks start 5" \
   "/dailytasks progress 1 999" "/dailytasks claim 1" "/dailytasks claim 2" \
   "/dailytasks bonus" "/dailytasks progress 2 999" "/dailytasks progress 3 999" "/dailytasks claim 2" \
   "/dailytasks claim 3" "/dailytasks bonus"
