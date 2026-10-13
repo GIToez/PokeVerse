@@ -406,13 +406,13 @@ Moves cost 40 to 120, most often 100 (`requiredEnergy` in `config/moves`); not e
 energy blocks the move (`003-skill.lua`). Wild and NPC trainer Pokémon have no energy,
 only move cooldowns.
 
-- **Show it clearly:** the client shows energy as the blue mana bar, which doesn't say it
-  belongs to the Pokémon. Label it as the Pokémon's energy, put it with the Pokémon's
-  health, show each move's cost on the move bar, and grey out moves it can't afford.
+- **Show it clearly (agreed):** the client shows energy as the blue mana bar, which
+  doesn't say it belongs to the Pokémon. Show it as an energy bar right under the
+  Pokémon's health bar, show each move's cost on the move bar, and grey out moves it can't afford.
 - **Balance:** at level 50 a Pokémon has about 600 energy and gets 60 back a minute, so
   energy may rarely run out. Check it in the [economy audit](#14-economy-audit) together
   with energy potions and food.
-- **Who has energy (recommended, to confirm):** players only. Wild and NPC trainer Pokémon keep just
+- **Who has energy (agreed):** players only. Wild and NPC trainer Pokémon keep just
   cooldowns: energy would make them stop attacking and easier to beat, and they would
   need an AI that manages it.
 
@@ -493,11 +493,18 @@ becomes a post in a Discord forum channel, with tags.
   the [PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord) bot creates the forum
   post and applies the tags (kind, category, platform). Bugs and feature requests go to
   public forums, player reports to a staff-only forum.
-- **Status back to the player:** when staff change the post's tag (for example Fixed,
-  Planned, Won't do), the bot tells the game and the player gets an in-game message.
+- **Discord setup (agreed):** the bot creates the forum channels and their tags itself
+  when they don't exist yet, so no manual setup is needed.
+- **Ticket system in game (agreed):** reports are stored as tickets in the database
+  instead of a log file. Staff (GM and above) open a ticket window in game: list, filter
+  by kind, category and status, read the details, jump to the reported position, add a
+  note, and set the status: Open, Confirmed, Accepted, Fixed, Added, Won't do, Duplicate.
+- **Statuses stay in sync:** a status set in game updates the Discord post's tags (and
+  posts the note), and a tag changed on Discord updates the ticket. The player gets an
+  in-game message (or mail, if offline) when the status of their report changes.
 - **Limits:** a few reports per player per hour, and a minimum length, against spam.
-- **To decide:** the forum channels and tag names, and whether players can vote on
-  feature requests (Discord reactions).
+- **To decide:** whether players can vote on feature requests (Discord reactions), and
+  whether players can see their own tickets in game.
 
 ## Going private
 
