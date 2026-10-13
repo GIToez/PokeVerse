@@ -172,11 +172,10 @@ taken out, there is a chance of an egg: `eggChance` out of 300 (20 for most spec
 about 7%), plus held-item bonuses. Each failure raises the next chance, so an egg takes
 about 10 tries on average (about 18 for species with chance 10). After an egg, the player
 must wait 15 days before the next one. That is about 10 days for the first egg and about
-25 days between eggs, which is far too long. Target for everyone: about one egg a week, or
-one every two weeks (to decide). For example a 7-day wait between eggs and a much better
-chance, or an egg every time once the pair has trained long enough. The Breeder
-percentages apply to the new timing: with 7 days, rank 5 would be about 5¼ days; with
-14 days, 10½ days.
+25 days between eggs, which is far too long. Agreed: one egg every two weeks. Proposal: a 14-day wait per player (as today), and the
+egg is guaranteed once the wait is over and the pair has trained for 24 hours, with no
+extra roll. Breeder shortens the wait: rank 5 is about 10½ days. The NPC's "fifteen
+days" message is hard-coded and needs updating too.
 
 **Ranger**: tracking wild Pokémon with a radar.
 
@@ -192,7 +191,7 @@ Only Pokémon that have actually spawned are found, including off screen. Spawns
 shiny or legendary rates do not change. To keep it balanced: a cooldown between scans,
 a limited range, and one type filter at a time (agreed). The rank 5 abilities (normal,
 shiny, legendary, maybe special Pokémon at a long distance) are agreed; the ranges and
-cooldowns are not.
+cooldowns are proposed and accepted as the plan.
 
 For scale: the map is about 5,700 by 3,400 tiles with about 19,000 spawn points, and the
 screen shows about 15 by 11 tiles. Proposed limits on "too far":
@@ -250,15 +249,15 @@ do not change.
   eggs), the Angler ranks, and removing the masteries while keeping their items.
   All the rank titles are agreed, and the top Ranger rank tracks normal, shiny, legendary
   and maybe special Pokémon at a long distance.
-- **Proposed:** the rank levels, the other percentages, and the Ranger ranges and
-  cooldowns.
+  The Ranger radar plan (ranges, cooldowns, limits) and a two-week egg wait are agreed.
+- **Proposed:** the rank levels, the other percentages, and whether the egg is
+  guaranteed after the wait.
 
 ### To decide
 
 1. What the mastery items (type plates, mastery tokens, outfits) are used for.
-2. The Ranger ranges and cooldowns (proposal above), and what counts as a "special".
-3. The daycare egg timing for everyone: one egg a week or every two weeks, and whether an
-   egg is guaranteed or still a chance.
+2. What counts as a "special" for the Ranger radar.
+3. Whether the two-week egg is guaranteed or still a chance.
 
 ### The old masteries
 
