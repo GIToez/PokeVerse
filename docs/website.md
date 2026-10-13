@@ -32,7 +32,9 @@ Build it locally (needs `lua5.1` and the LFS files):
   server data without a client release). It keeps `updater/` as it is. Pull requests
   build the site and attach it as the `website` artifact.
 - The Discord button links to the same invite as the game's top menu
-  (`https://discord.gg/P88WNBB56E`); the repository variable `DISCORD_INVITE_URL` overrides it.
+  (`https://discord.gg/P88WNBB56E`); the repository variable `DISCORD_INVITE_URL` overrides it
+  on the website and in the Windows, Linux and Android packages (a `discord.gg/...` or
+  `discord.com/invite/...` link). Clients pick up a changed invite with the next release.
 
 The server status panel says "coming soon": a live status needs a small read-only API
 on the server side, which comes later with a domain and Cloudflare in front of it.
