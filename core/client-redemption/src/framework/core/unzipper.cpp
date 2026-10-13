@@ -34,7 +34,8 @@ const int MAX_FILENAME = 512;
 const int READ_SIZE = 8192;
 const char dir_delimiter = '/';
 
-void unzipper::extract(const char* fileBuffer, uint fileLength, std::string& destinationPath) {
+void unzipper::extract(const char* fileBuffer, size_t fileLength, const std::string& destinationPath,
+                       const Progress& progress) {
     const std::filesystem::path destinationFolder { destinationPath };
     if (!std::filesystem::exists(destinationFolder)) {
         std::filesystem::create_directories(destinationFolder);
@@ -43,9 +44,10 @@ void unzipper::extract(const char* fileBuffer, uint fileLength, std::string& des
     zlib_filefunc_def filefunc32 = { nullptr };
     ourmemory_t unzmem = {nullptr};
 
+    // read straight from the caller's buffer: the memory io only reads, and the asset is
+    // hundreds of MB, too much to copy on a low-end phone
     unzmem.size = fileLength;
-    unzmem.base = (char *)malloc(unzmem.size);
-    memcpy(unzmem.base, fileBuffer, unzmem.size);
+    unzmem.base = const_cast<char*>(fileBuffer);
     fill_memory_filefunc(&filefunc32, &unzmem);
     unzFile zipfile = unzOpen2(nullptr, &filefunc32);
 
@@ -57,9 +59,20 @@ void unzipper::extract(const char* fileBuffer, uint fileLength, std::string& des
         g_logger.fatal("Could not read file global info");
     }
 
-    uint readSize = 8192;
+    uint64_t totalBytes = 0;
+    if (progress) {
+        for (int status = unzGoToFirstFile(zipfile); status == UNZ_OK; status = unzGoToNextFile(zipfile)) {
+            unz_file_info info;
+            if (unzGetCurrentFileInfo(zipfile, &info, nullptr, 0, nullptr, 0, nullptr, 0) == UNZ_OK)
+                totalBytes += info.uncompressed_size;
+        }
+        unzGoToFirstFile(zipfile);
+        progress(0, totalBytes);
+    }
+    uint64_t doneBytes = 0;
+
     // Buffer to hold data read from the zip file.
-    char read_buffer[ readSize ];
+    char read_buffer[ READ_SIZE ];
 
     // Loop to extract all files
     u_long i;
@@ -139,6 +152,10 @@ void unzipper::extract(const char* fileBuffer, uint fileLength, std::string& des
             } while (error > 0);
 
             fclose(out);
+
+            doneBytes += file_info.uncompressed_size;
+            if (progress)
+                progress(doneBytes, totalBytes);
         }
 
         unzCloseCurrentFile( zipfile );
