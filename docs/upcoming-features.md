@@ -91,8 +91,10 @@ The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to bui
 
 ## 6. Vocations
 
-The old vocation entries in `data/XML/vocations.xml` go. Whether the old masteries go too
-is still open; see [the old masteries](#the-old-masteries).
+The old vocation entries in `data/XML/vocations.xml` go, and so does the old mastery system
+(leaning towards removing it; see [the old masteries](#the-old-masteries)). Nobody has a
+mastery yet, so nothing needs refunding; the mastery items (type plates, mastery tokens,
+outfits) can be reused for something else.
 
 ### Rules
 
@@ -147,12 +149,21 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 | Rank | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- |
 | Hatching time | -3% | -6% | -9% | -12% | -15% |
-| Daycare efficiency | +2% | +4% | +6% | +8% | +10% |
+| Time until the daycare gives an egg | -2% | -4% | -6% | -8% | -10% |
 
 Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
 is time based: an egg in an incubator hatches after 60 minutes
 (`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`), so rank 5 would be about
 51 minutes.
+
+How the daycare makes eggs today (`npc/scripts/daycareFemale.lua`): a female and a
+compatible male train for at least 24 hours (players pick 24 or 48). When the female is
+taken out, there is a chance of an egg: `eggChance` out of 300 (20 for most species, so
+about 7%), plus held-item bonuses. Each failure raises the next chance, so an egg takes
+about 10 tries on average (about 18 for species with chance 10). After an egg, the player
+must wait 15 days before the next one. That is about 10 days for the first egg and about
+25 days between eggs, so the daycare probably needs rebalancing for everyone before the
+Breeder bonus; the bonus could then shorten the training time, the 15-day wait, or both.
 
 **Ranger**: tracking wild Pokémon with a radar.
 
@@ -166,20 +177,23 @@ is time based: an egg in an incubator hatches after 60 minutes
 
 Only Pokémon that have actually spawned are found, including off screen. Spawns and
 shiny or legendary rates do not change. To keep it balanced: a cooldown between scans,
-a limited range, and one type filter at a time.
+a limited range, and one type filter at a time (agreed).
 
-**Researcher**: Pokédex knowledge and analysis. **May be dropped**: no good perks yet.
+**Angler**: fishing. Replaces the Researcher, which is dropped.
 
-| Rank | Ability |
-| --- | --- |
-| 1 | Basic Pokémon research |
-| 2 | Advanced species information |
-| 3 | IV analysis and research rewards |
-| 4 | Expanded Pokédex research |
-| 5 | All research tools and rewards |
+| Rank | Title (proposed) | Ability (proposed) |
+| --- | --- | --- |
+| 1 | Novice Angler | Bonus fishing experience |
+| 2 | Angler | More fishing experience; see which Pokémon can be fished at a spot |
+| 3 | Skilled Angler | Faster bites |
+| 4 | Expert Angler | A map of where each Pokémon can be fished |
+| 5 | Master Angler | Most fishing experience and all fishing tools |
 
-No changes to IVs, EVs or base stats and no combat bonus. Every player can still see the
-IVs and EVs of their own Pokémon.
+Fishing today (`data/lib/ps/systems/043-fishing.lua`): a fishing skill that rises with
+use, rods that need a skill level (Old 0, Good 30, Super 50, cranes 60), and what can bite
+depends on the skill and the region (Kanto, Orange Archipelago, Hoenn). "Fishing
+experience" means faster fishing-skill gain. No change to what can be fished or to shiny
+rates.
 
 **Medic**: healing and support.
 
@@ -202,21 +216,22 @@ do not change.
 - **Confirmed:** permanent choice from level 20 through a quest line, ranks earned through
   quests and tasks at the required levels, no paid vocation change, no combat-stat bonuses,
   ball recovery after failed throws, the Ranger radar (regular Pokémon first, shinies and
-  legendaries at higher ranks), Medics only heal outside duels, and the Ace Trainer titles.
+  legendaries at higher ranks, with a cooldown, limited range and one type filter), Medics
+  only heal outside duels, the Ace Trainer titles, the Angler in place of the Researcher,
+  and the Breeder shortening the time until the daycare gives an egg.
 - **Proposed:** the rank levels, the percentages, the Breeder values, and the details of
-  the Ranger and Researcher ranks.
+  the Ranger and Angler ranks.
 - **Rank titles:** Novice to Master are placeholders. Ace Trainer uses the Trainer titles
-  above; the other vocations' titles are still to be chosen.
+  and Angler the angler titles above; the others are still to be chosen.
 
 ### To decide
 
-1. Do the old masteries go, or stay as their own system (see below)?
-2. Keep the Researcher, replace it, or drop it?
-3. Characters that already have a mastery vocation go back to Trainer. Are the stones and
-   tokens they spent refunded?
-4. The Ranger rank details (which rank unlocks shinies and legendaries, range, cooldown).
-5. What "daycare efficiency" improves (leveling speed, cost, results).
-6. Each vocation's rank titles.
+1. Confirm removing the old masteries, and what the mastery items become.
+2. The Ranger numbers (range and cooldown per rank).
+3. The Angler perks per rank.
+4. Rebalancing the daycare egg timing (24-hour training, about 7% chance, 15-day wait),
+   and what the Breeder shortens.
+5. The rank titles for Catcher, Breeder, Ranger and Medic.
 
 ### The old masteries
 
