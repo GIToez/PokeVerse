@@ -9,6 +9,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 
@@ -19,6 +20,9 @@ class AndroidManager(
     private val previewText: TextView,
     private val pasteButton: ImageButton,
     private val copyButton: ImageButton,
+    private val unpackOverlay: View,
+    private val unpackProgress: ProgressBar,
+    private val unpackPercent: TextView,
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private var isImeVisible = false
@@ -134,6 +138,22 @@ class AndroidManager(
             clipboard.setPrimaryClip(ClipData.newPlainText("OTClient", text))
             // Refresh paste button visibility after clipboard change
             pasteButton.visibility = View.VISIBLE
+        }
+    }
+
+    fun setUnpackProgress(percent: Int) {
+        handler.post {
+            unpackOverlay.visibility = View.VISIBLE
+            unpackProgress.progress = percent
+            unpackPercent.text = "$percent%"
+        }
+    }
+
+    fun hideUnpackProgress() {
+        handler.post {
+            unpackOverlay.animate().alpha(0f).setDuration(300).withEndAction {
+                unpackOverlay.visibility = View.GONE
+            }.start()
         }
     }
 

@@ -54,4 +54,54 @@
             android:textSize="13sp" />
     </LinearLayout>
 
+    <!-- first start: shown while data.zip unpacks, before the game can draw anything -->
+    <LinearLayout
+        android:id="@+id/unpackOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FF0E1530"
+        android:clickable="true"
+        android:elevation="16dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PokeVerse"
+            android:textColor="#FFFFD34E"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Preparing the game files. This only happens on the first start."
+            android:textAlignment="center"
+            android:textColor="#CCFFFFFF"
+            android:textSize="15sp" />
+
+        <ProgressBar
+            android:id="@+id/unpackProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:max="100"
+            android:progressBackgroundTint="#55FFFFFF"
+            android:progressTint="#FFFFD34E" />
+
+        <TextView
+            android:id="@+id/unpackPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="0%"
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 </FrameLayout>

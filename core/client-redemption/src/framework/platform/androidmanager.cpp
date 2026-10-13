@@ -26,6 +26,9 @@
 #include <framework/core/unzipper.h>
 #include <framework/core/resourcemanager.h>
 #include <framework/sound/soundmanager.h>
+#include <chrono>
+#include <filesystem>
+#include <thread>
 
 AndroidManager g_androidManager;
 
@@ -46,7 +49,6 @@ void AndroidManager::setAndroidApp(android_app* app) {
 void AndroidManager::setAndroidManager(JNIEnv* env, jobject androidManager) {
     JNIEnv* jniEnv = getJNIEnv();
     jclass androidManagerJClass = jniEnv->GetObjectClass(androidManager);
-    m_androidManagerJObject = jniEnv->NewGlobalRef(androidManager);
     m_midShowSoftKeyboard = jniEnv->GetMethodID(androidManagerJClass, "showSoftKeyboard", "()V");
     m_midHideSoftKeyboard = jniEnv->GetMethodID(androidManagerJClass, "hideSoftKeyboard", "()V");
     m_midGetDisplayDensity = jniEnv->GetMethodID(androidManagerJClass, "getDisplayDensity", "()F");
@@ -55,7 +57,11 @@ void AndroidManager::setAndroidManager(JNIEnv* env, jobject androidManager) {
     m_midHideInputPreview = jniEnv->GetMethodID(androidManagerJClass, "hideInputPreview", "()V");
     m_midGetClipboardText = jniEnv->GetMethodID(androidManagerJClass, "getClipboardText", "()Ljava/lang/String;");
     m_midSetClipboardText = jniEnv->GetMethodID(androidManagerJClass, "setClipboardText", "(Ljava/lang/String;)V");
+    m_midSetUnpackProgress = jniEnv->GetMethodID(androidManagerJClass, "setUnpackProgress", "(I)V");
+    m_midHideUnpackProgress = jniEnv->GetMethodID(androidManagerJClass, "hideUnpackProgress", "()V");
     jniEnv->DeleteLocalRef(androidManagerJClass);
+    // published last: the native thread may already be waiting for it (waitForJavaManager)
+    m_androidManagerJObject = jniEnv->NewGlobalRef(androidManager);
 }
 
 void AndroidManager::showKeyboardSoft() {
@@ -115,12 +121,17 @@ void AndroidManager::setClipboardText(const std::string& text) {
 }
 
 void AndroidManager::unZipAssetData() {
-    std::string destFolder = getAppBaseDir() + "/game_data/";
-
-    const std::filesystem::path initLua { destFolder + "init.lua" };
-    if (std::filesystem::exists(initLua)) {
+    const std::filesystem::path baseDir { getAppBaseDir() };
+    const auto dataDir = baseDir / "game_data";
+    if (std::filesystem::exists(dataDir / "init.lua")) {
         return;
     }
+
+    // unpacked beside game_data and renamed at the end, so a first start that is cut off
+    // halfway unpacks again instead of running on a partial copy
+    const auto unpackDir = baseDir / "game_data.unpacking";
+    std::error_code ec;
+    std::filesystem::remove_all(unpackDir, ec);
 
     AAsset* dataAsset = AAssetManager_open(
             m_app->activity->assetManager,
@@ -132,15 +143,48 @@ void AndroidManager::unZipAssetData() {
         return;
     }
 
-    auto dataFileLength = AAsset_getLength(dataAsset);
-    char* dataContent = (char *) malloc(dataFileLength + 1);
-    AAsset_read(dataAsset, dataContent, dataFileLength);
-    dataContent[dataFileLength] = '\0';
+    // data.zip is stored uncompressed in the APK, so this maps it instead of copying it
+    const auto* data = static_cast<const char*>(AAsset_getBuffer(dataAsset));
+    if (!data) {
+        g_logger.fatal("Failed to read data.zip from APK assets.");
+        return;
+    }
 
-    unzipper::extract(dataContent, dataFileLength, destFolder);
-
+    waitForJavaManager();
+    setUnpackProgress(0);
+    int shownPercent = 0;
+    unzipper::extract(data, static_cast<size_t>(AAsset_getLength64(dataAsset)), unpackDir.string() + "/",
+        [&](uint64_t done, uint64_t total) {
+            const int percent = total > 0 ? static_cast<int>(done * 100 / total) : 100;
+            if (percent != shownPercent) {
+                shownPercent = percent;
+                setUnpackProgress(percent);
+            }
+        });
     AAsset_close(dataAsset);
-    free(dataContent);
+
+    std::filesystem::remove_all(dataDir, ec);
+    std::filesystem::rename(unpackDir, dataDir);
+    hideUnpackProgress();
+}
+
+void AndroidManager::waitForJavaManager() {
+    // MainActivity registers itself (nativeInit) on the UI thread, which can be a moment
+    // after this native thread starts
+    for (int i = 0; i < 250 && !m_androidManagerJObject; ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+}
+
+void AndroidManager::setUnpackProgress(int percent) {
+    if (!m_androidManagerJObject) return;
+    JNIEnv* env = getJNIEnv();
+    env->CallVoidMethod(m_androidManagerJObject, m_midSetUnpackProgress, (jint)percent);
+}
+
+void AndroidManager::hideUnpackProgress() {
+    if (!m_androidManagerJObject) return;
+    JNIEnv* env = getJNIEnv();
+    env->CallVoidMethod(m_androidManagerJObject, m_midHideUnpackProgress);
 }
 
 std::string AndroidManager::getAppBaseDir() {

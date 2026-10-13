@@ -25,6 +25,7 @@
 #ifdef ANDROID
 
 #include <game-activity/native_app_glue/android_native_app_glue.h>
+#include <atomic>
 #include <string>
 
 class AndroidManager {
@@ -42,6 +43,7 @@ public:
     void updateInputPreview(const std::string& text);
     void hideInputPreview();
 
+    // first start only: unpacks assets/data.zip into game_data with a progress screen
     void unZipAssetData();
 
     std::string getClipboardText();
@@ -55,9 +57,13 @@ public:
     void attachToAppMainThread();
 private:
     JNIEnv* getJNIEnv();
+    void waitForJavaManager();
+    void setUnpackProgress(int percent);
+    void hideUnpackProgress();
 
     android_app* m_app;
-    jobject m_androidManagerJObject;
+    // set on the UI thread, read by the native thread
+    std::atomic<jobject> m_androidManagerJObject{ nullptr };
     jmethodID m_midShowSoftKeyboard;
     jmethodID m_midHideSoftKeyboard;
     jmethodID m_midGetDisplayDensity;
@@ -66,6 +72,8 @@ private:
     jmethodID m_midHideInputPreview;
     jmethodID m_midGetClipboardText;
     jmethodID m_midSetClipboardText;
+    jmethodID m_midSetUnpackProgress;
+    jmethodID m_midHideUnpackProgress;
 };
 
 extern AndroidManager g_androidManager;

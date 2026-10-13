@@ -25,6 +25,9 @@ class MainActivity : GameActivity() {
             previewText = binding.inputPreviewText,
             pasteButton = binding.pasteButton,
             copyButton = binding.copyButton,
+            unpackOverlay = binding.unpackOverlay,
+            unpackProgress = binding.unpackProgress,
+            unpackPercent = binding.unpackPercent,
         ).apply {
             nativeInit()
             nativeSetAudioEnabled(true)

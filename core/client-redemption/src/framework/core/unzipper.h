@@ -22,9 +22,14 @@
 
 #pragma once
 
+#include <cstdint>
+#include <functional>
 #include <string>
 
 namespace unzipper {
+    // (bytes written so far, total uncompressed bytes), called after each file
+    using Progress = std::function<void(uint64_t, uint64_t)>;
 
-    void extract(const char* fileBuffer, uint fileLength, std::string& destinationPath);
+    void extract(const char* fileBuffer, size_t fileLength, const std::string& destinationPath,
+                 const Progress& progress = {});
 };
