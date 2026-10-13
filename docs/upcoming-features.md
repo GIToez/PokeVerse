@@ -501,10 +501,13 @@ becomes a post in a Discord forum channel, with tags.
   note, and set the status: Open, Confirmed, Accepted, Fixed, Added, Won't do, Duplicate.
 - **Statuses stay in sync:** a status set in game updates the Discord post's tags (and
   posts the note), and a tag changed on Discord updates the ticket. The player gets an
-  in-game message (or mail, if offline) when the status of their report changes.
+  in-game message (or mail, if offline) when the status of their report changes, and a
+  Discord ping too if they linked their Discord account ([account linking](discord-bridge.md#account-linking))
+  (agreed).
+- **My reports (agreed):** players see their own tickets and each one's status in game.
+- **Voting (agreed):** players vote on feature requests with a reaction on the Discord
+  post. The vote count shows on the ticket in game, and staff can sort by it.
 - **Limits:** a few reports per player per hour, and a minimum length, against spam.
-- **To decide:** whether players can vote on feature requests (Discord reactions), and
-  whether players can see their own tickets in game.
 
 ## Going private
 
