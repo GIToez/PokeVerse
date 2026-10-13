@@ -81,7 +81,7 @@ Actions > **Live server** > Run workflow:
 4. `set-group` with your character name and group `6` (God) or `4` (Gamemaster).
    The character must be offline.
 
-Then install the client from the Pages site (`https://gitoez.github.io/PokeVerse/`, see
+Then install the client from the Pages site (`https://gitoez.github.io/PokeVerse-Clients/`, see
 [client-updates.md](client-updates.md)) and log in.
 
 Every live action first checks the secrets and variables and shows the result in the run

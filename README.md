@@ -39,7 +39,7 @@ both workflows from the Actions tab on `main`:
 - [ ] **Live server** → Run workflow → action **`deploy`** (in-game warning: 5 minutes, or
   0 when nobody is online). Backs up, installs and restarts the game server, then checks it.
 - [ ] **Client release** → Run workflow → tick **Publish**. Installed clients download the
-  update on their next start; new players get it from <https://gitoez.github.io/PokeVerse/>.
+  update on their next start; new players get it from <https://gitoez.github.io/PokeVerse-Clients/>.
 
 Run both when a change touches the server and the client (most do), so they stay in step.
 Server-only changes need only the first, client-only changes only the second.
