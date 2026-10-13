@@ -211,10 +211,10 @@ std::string Application::getOs()
     return "windows";
 #elif defined(__APPLE__)
     return "mac";
+#elif defined(ANDROID)
+    return "android";
 #elif __linux
     return "linux";
-#elif ANDROID
-    return "android";
 #elif __EMSCRIPTEN__
     return "browser";
 #else
