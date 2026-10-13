@@ -91,6 +91,10 @@ doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
      and so do Pokémon moved out by the party limit.
    - Each box holds 30 Pokémon (agreed), and boxes fill in order: when Box 1 is full, the next Pokémon goes into Box 2, and so on. A new empty
      box appears when the last one fills.
+   - At most 40 boxes, so 1,200 Pokémon, the same for everyone (agreed to leave the
+     number to us; the games have 32 boxes). When every box is full, throwing a ball is
+     refused with "Your Poké boxes are full", so a caught Pokémon is never lost; anything
+     else (a reward or the party limit) goes to the inbox as a last resort.
    - Each box uses the current depot box sprite with its number added (Box 1, Box 2...).
    - Boxes can be renamed ("Box 1" by default), and Pokémon can be dragged between boxes
      and the party.
@@ -100,12 +104,16 @@ doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
      nature, moves) with no change to how they are saved. They don't count toward the
      depot limit.
 3. **Supply stash:** every stackable item (balls, potions, stones, berries, food,
-   vitamins...) as item and count, in its own table (`player_stash`). It takes no depot
+   vitamins...) and every item that doesn't stack but has nothing of its own, like Tibia
+   equipment, as item and count, in its own table (`player_stash`). Held items go here
+   (agreed): they don't stack, but their level and experience are saved on the Pokémon's
+   ball, not on the item (`046-heldItem.lua`). Items with their own details can't, the same
+   as imbued items in Tibia: an elemental stone with its slots set stays in the depot chest. It takes no depot
    space. "Stow" from the bag or depot, take out any amount. Redemption's `game_stash`
    window (search, sorting, categories) is reused, with PokeVerse categories instead of
    Tibia ones.
-4. **Depot chest:** what's left (items that don't stack, such as decorations and outfit
-   items), with the normal limit.
+4. **Depot chest:** what's left (items with their own details, such as written letters
+   or elemental stones with slots set), with the normal limit.
 5. **Reward chest:** boss and event loot, for each player who took part, so loot is
    never lost to a full bag.
 6. **Depot search:** one search box across the Poké boxes, stash, depot chest and inbox;
@@ -120,10 +128,8 @@ when bosses or raids need it.
 
 **To decide:**
 
-- Whether there is any maximum number of boxes.
 - Whether Premium gets anything extra (for example box wallpapers or names), never more
   safety.
-- Whether held items stack (stash) or not (depot chest).
 
 - Search the live server logs for `Can't send to depot` to find Pokémon already lost.
 - Raising the depot limit for everyone is not a fix on its own: it moves the problem, and
