@@ -411,7 +411,7 @@ only move cooldowns.
 - **Balance:** at level 50 a Pokémon has about 600 energy and gets 60 back a minute, so
   energy may rarely run out. Check it in the [economy audit](#14-economy-audit) together
   with energy potions and food.
-- **Who has energy (agreed):** players only. Wild and NPC trainer Pokémon keep just
+- **Who has energy (recommended, to confirm):** players only. Wild and NPC trainer Pokémon keep just
   cooldowns: energy would make them stop attacking and easier to beat, and they would
   need an AI that manages it.
 
