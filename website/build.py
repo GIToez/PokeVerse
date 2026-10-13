@@ -162,6 +162,12 @@ class Site:
             self.write(rel, encode_png(*image))
         return rel
 
+    def portrait_image(self, entry):
+        """The face icon the game shows for the Pokémon. dexPortrait is not used: past #151
+        it points at unrelated map items."""
+        portrait = entry.get("portrait") or 0
+        return self.item_image(portrait) if portrait > 0 else None
+
     def outfit_image(self, look, name):
         png = self.images.outfit_png(look) if look else None
         if png is None:
@@ -250,10 +256,12 @@ class Site:
         for number, name, entry, wild in species:
             types = [label(t) for t in entry.get("pTypes") or []]
             gen, region = generation(number)
-            portrait = self.item_image(entry.get("dexPortrait") or 0)
-            cards.append((number, name, types, gen, portrait))
+            portrait = self.portrait_image(entry)
+            sprite = self.outfit_image(wild["look"], name)
+            cards.append((number, name, types, gen, portrait or sprite))
             self.write_pokemon(number, name, entry, wild, types, gen, region, moves, evolves_from,
-                               [f for f in forms.get(number, []) if f != name and f in config])
+                               [f for f in forms.get(number, []) if f != name and f in config],
+                               portrait, sprite)
         self.write_pokedex(cards)
         self.write_home(len(species), len(moves))
         print("website: %d Pokémon, %d moves, %d item pictures in %s"
@@ -366,9 +374,8 @@ class Site:
             parts.append("as an extra Pokémon")
         return ", ".join(parts)
 
-    def write_pokemon(self, number, name, entry, wild, types, gen, region, moves, evolves_from, forms):
-        portrait = self.item_image(entry.get("dexPortrait") or 0)
-        sprite = self.outfit_image(wild["look"], name)
+    def write_pokemon(self, number, name, entry, wild, types, gen, region, moves, evolves_from, forms,
+                      portrait, sprite):
         stats = [("Attack", entry.get("atk", 0)), ("Defense", entry.get("def", 0)),
                  ("Sp. Atk", entry.get("spAtk", 0)), ("Sp. Def", entry.get("spDef", 0))]
         stat_rows = "".join(
