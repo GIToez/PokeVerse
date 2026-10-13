@@ -19,8 +19,9 @@ android {
         applicationId = "com.pokeverse.client"
         minSdk = 21
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        // CI passes the run number, so each release APK counts as newer than the last
+        versionCode = (System.getenv("OTCLIENT_VERSION_CODE") ?: "1").toInt()
+        versionName = System.getenv("OTCLIENT_VERSION_NAME") ?: "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -35,7 +36,9 @@ android {
                     "-DVCPKG_TARGET_ANDROID=ON",
                     "-DANDROID_STL=c++_shared",
                     "-DVCPKG_MANIFEST_INSTALL=ON",
-                    "-DVCPKG_INSTALL_OPTIONS=--allow-unsupported"
+                    "-DVCPKG_INSTALL_OPTIONS=--allow-unsupported",
+                    "-DBUILD_COMMIT=" + (System.getenv("OTCLIENT_BUILD_COMMIT") ?: ""),
+                    "-DBUILD_REVISION=" + (System.getenv("OTCLIENT_VERSION_CODE") ?: "")
                 )
             }
         }

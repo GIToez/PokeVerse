@@ -214,7 +214,10 @@ jobs:
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          OTCLIENT_VERSION_CODE: ${{ github.run_number }}
+          OTCLIENT_VERSION_NAME: client-${{ github.run_number }}
         run: |
+          export OTCLIENT_BUILD_COMMIT=${GITHUB_SHA::7}
           scripts/build-android-client.sh --host "$LIVE_HOST" --updater "$PAGES_URL/updater/" \
             bin-android/PokeVerse-Android.apk
 
