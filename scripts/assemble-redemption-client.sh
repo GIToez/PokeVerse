@@ -17,6 +17,7 @@
 #   --host <address>   point the client at this server instead of 127.0.0.1
 #   --port <port>      login port (default 7564; the parity tests use a proxy port)
 #   --updater <url>    enable the updater with this manifest URL (live packages only)
+#   --discord <url>    Discord invite for the client's Discord buttons (default: the one in the modules)
 #   --link             hard-link the legacy data instead of copying it (local testing)
 #   --test             also ship the self-test module (scripts/client-test/client_selftest)
 set -euo pipefail
@@ -29,6 +30,7 @@ classic=0
 host=""
 port=""
 updater=""
+discord=""
 link=0
 test_module=0
 
@@ -37,6 +39,7 @@ while [ $# -gt 0 ]; do
     --host) host=$2; shift 2 ;;
     --port) port=$2; shift 2 ;;
     --updater) updater=$2; shift 2 ;;
+    --discord) discord=$2; shift 2 ;;
     --link) link=1; shift ;;
     --test) test_module=1; shift ;;
     --classic) classic=1; shift ;;
@@ -44,7 +47,7 @@ while [ $# -gt 0 ]; do
     *) break ;;
   esac
 done
-[ $# -ge 1 ] || { sed -n '2,21p' "$0" >&2; exit 1; }
+[ $# -ge 1 ] || { sed -n '2,22p' "$0" >&2; exit 1; }
 out=$(realpath -m "$1")
 shift
 
@@ -53,6 +56,9 @@ if [ -n "$host" ]; then
 fi
 if [ -n "$port" ]; then
   [[ "$port" =~ ^[0-9]{1,5}$ ]] || { echo "invalid port: '$port'" >&2; exit 1; }
+fi
+if [ -n "$discord" ]; then
+  [[ "$discord" =~ ^https://(discord\.gg|discord\.com/invite)/[A-Za-z0-9-]+$ ]] || { echo "invalid Discord invite: '$discord'" >&2; exit 1; }
 fi
 if [ -n "$updater" ]; then
   [[ "$updater" =~ ^(https://[A-Za-z0-9./_-]+|http://(127\.0\.0\.1|localhost)(:[0-9]+)?/[A-Za-z0-9./_-]*)$ ]] || { echo "invalid updater URL: '$updater' (https, or http on localhost for tests)" >&2; exit 1; }
@@ -174,6 +180,14 @@ for bin in "$@"; do
 done
 
 "$root/scripts/set-client-server.sh" "$out" "$host" "$port"
+
+# the modules carry this invite; --discord swaps in another one everywhere it appears
+default_discord=https://discord.gg/P88WNBB56E
+if [ -n "$discord" ] && [ "$discord" != "$default_discord" ]; then
+  grep -rlZF "$default_discord" "$out/modules" | xargs -0 -r sed -i "s#$default_discord#$discord#g"
+  ! grep -rqF "$default_discord" "$out/modules" || { echo "could not set the Discord invite" >&2; exit 1; }
+  grep -rqF "$discord" "$out/modules" || { echo "no Discord button found to set the invite on" >&2; exit 1; }
+fi
 
 if [ -n "$updater" ]; then
   sed -i "s#^  updater = \"\",#  updater = \"$updater\",#" "$out/init.lua"
