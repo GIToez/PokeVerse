@@ -119,6 +119,11 @@ doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
 6. **Depot search:** one search box across the Poké boxes, stash, depot chest and inbox;
    Pokémon by species, type or stats, items by name; take the result straight to the bag.
 
+**Only Pokémon are moved for the player (agreed).** Loot from defeated Pokémon never goes
+to the depot, the inbox or the stash: when the bag is full, the player can't loot and the
+loot stays in the corpse. Auto loot already works this way (`src/monster.cpp`: it stops
+and says "Loot not collected! Check your backpack.").
+
 **Moving existing depots:** at a player's first login after the update, the Pokémon in
 their depot move into Poké boxes and the stackable items into the stash; the rest stays.
 Logged, so it can be checked.
