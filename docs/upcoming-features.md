@@ -72,19 +72,56 @@ server (Canary) is not, so this part comes from the client code plus how Canary 
   data over our own extended messages (like the Tasks window does) and reusing the
   client windows.
 
-### What to take from Redemption
+### The new depot (agreed): Redemption's depot, redesigned for Pokémon
 
-1. **The inbox idea fixes the data loss:** a delivery must never fail. When the depot is
-   full, a Pokémon still goes in, past the limit (with `FLAG_NOLIMIT`), and the player is
-   told the depot is over its limit. This is a small change: one option on
-   `doPlayerAddDepotItem` and the two Lua callers. It covers every caller listed above.
-2. **The supply stash for stackables** (potions, balls, stones, berries): they stop
-   filling depot slots, and the `game_stash` window can be reused. Medium-sized: a new
-   table, server commands, and the window wired to our messages.
-3. **Pokémon storage:** the stash cannot hold Pokémon, since every ball is different
-   (stats, IVs, nature, moves). The real fix is the PC storage in
-   [Pokémon storage](#7-pokémon-storage); after that, Pokémon no longer go to the depot.
-4. **Depot search** and depot boxes: nice to have, later.
+All five parts, built on our own extended messages (JSON, like the Tasks window) and
+reusing the Redemption client windows where they exist.
+
+**Step 0, first: a delivery never fails.** Until the inbox exists, a Pokémon or item that
+doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
+`doPlayerAddDepotItem`), and the player is told. Small, and it stops the data loss now.
+
+1. **Inbox:** everything delivered arrives here: mail, Pokémon and items that don't fit in
+   the bag, rewards, and later GTS purchases and returned listings. No limit, so a delivery
+   never fails. The player takes things out from there.
+2. **Poké boxes** (the numbered depot boxes): they only hold Pokémon balls.
+   - Each box holds a fixed number of Pokémon (proposed 30, like the games), and boxes fill
+     in order: when Box 1 is full, the next Pokémon goes into Box 2, and so on. A new empty
+     box appears when the last one fills.
+   - Boxes can be renamed ("Box 1" by default), and Pokémon can be dragged between boxes
+     and the party.
+   - Pokémon are shown with their face icons, with sorting, search and filters (species,
+     type, level, IVs, EVs, nature, shiny), the same as the GTS.
+   - The balls stay real items, so every Pokémon keeps all its details (stats, IVs,
+     nature, moves) with no change to how they are saved. They don't count toward the
+     depot limit.
+3. **Supply stash:** every stackable item (balls, potions, stones, berries, food,
+   vitamins...) as item and count, in its own table (`player_stash`). It takes no depot
+   space. "Stow" from the bag or depot, take out any amount. Redemption's `game_stash`
+   window (search, sorting, categories) is reused, with PokeVerse categories instead of
+   Tibia ones.
+4. **Depot chest:** what's left (items that don't stack, such as decorations and outfit
+   items), with the normal limit.
+5. **Reward chest:** boss and event loot, for each player who took part, so loot is
+   never lost to a full bag.
+6. **Depot search:** one search box across the Poké boxes, stash, depot chest and inbox;
+   Pokémon by species, type or stats, items by name; take the result straight to the bag.
+
+**Moving existing depots:** at a player's first login after the update, the Pokémon in
+their depot move into Poké boxes and the stackable items into the stash; the rest stays.
+Logged, so it can be checked.
+
+**Order:** step 0, then the inbox, Poké boxes, stash, depot search, and the reward chest
+when bosses or raids need it.
+
+**To decide:**
+
+- Box size (proposed 30) and whether there is any maximum number of boxes.
+- Whether Premium gets anything extra (for example box wallpapers or names), never more
+  safety.
+- One depot shared by every Pokémon Center (like the PC in the games): deliveries already
+  all go to depot 0; check whether every Pokémon Center's depot uses 0 too.
+- Whether held items stack (stash) or not (depot chest).
 
 - Search the live server logs for `Can't send to depot` to find Pokémon already lost.
 - Raising the depot limit for everyone is not a fix on its own: it moves the problem, and
@@ -362,15 +399,8 @@ Keeping the masteries would mean at least removing or replacing that bonus.
 
 ## 7. Pokémon storage
 
-Pokémon storage with no practical limit, replacing the depot for Pokémon (see the
-[depot overflow fix](#1-depot-overflow-fix-pokémon-are-lost-today)).
-
-- The Redemption stash (`game_stash`) is the modern Tibia supply stash. It only holds
-  stackable items, and every Pokémon ball is unique (stats, IVs, nature, moves), so it
-  cannot hold Pokémon. Pokémon get their own PC storage instead: boxes in the database,
-  as many as needed.
-- Pokémon shown with their face icons.
-- Same search and filters as the GTS: species, type, level, IVs, EVs, nature, shiny.
+Now part of the [new depot](#the-new-depot-agreed-redemptions-depot-redesigned-for-pokémon):
+the Poké boxes. The GTS uses the same search and filters.
 
 ## 8. GTS (Global Trading System)
 
