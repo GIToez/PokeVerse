@@ -1,0 +1,93 @@
+name: Website
+
+# Builds the website (website/build.py) and, on main, replaces it on the PokeVerse-Clients
+# Pages site while keeping the updater/ folder that Client release publishes there. Client
+# release also rebuilds the website each time it publishes, so this is for website-only
+# changes, or a manual run to show new game data without a client release.
+# Pull requests upload the built site as an artifact to look at.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - website/**
+      - .github/workflows/website.yml
+  pull_request:
+    paths:
+      - website/**
+      - .github/workflows/website.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CLIENTS_REPO: GIToez/PokeVerse-Clients
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Current client release
+        id: current
+        run: |
+          tag=$(curl -fsSL "https://gitoez.github.io/PokeVerse-Clients/updater/windows.json" 2>/dev/null |
+                python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])' 2>/dev/null || true)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        env:
+          TAG: ${{ steps.current.outputs.tag }}
+          DISCORD_URL: ${{ vars.DISCORD_INVITE_URL }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends lua5.1
+          python3 website/build.py --out website-out --downloads-repo "$CLIENTS_REPO" --release-tag "$TAG" \
+            --discord-url "$DISCORD_URL"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website
+          path: website-out/
+
+  publish:
+    name: Publish
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    # Client release's publish job replaces the same branch
+    concurrency:
+      group: pokeverse-clients-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: website
+          path: website-out
+
+      - name: Replace the website, keep updater/
+        env:
+          REPO_TOKEN: ${{ secrets.PV_REPOS_TOKEN }}
+        run: |
+          if ! git clone -q --depth 1 --branch gh-pages "https://github.com/$CLIENTS_REPO.git" pages; then
+            echo "::notice::$CLIENTS_REPO has no gh-pages branch yet; the first published Client release creates it with the website."
+            exit 0
+          fi
+          cd pages
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name updater -exec rm -rf {} +
+          cp -r ../website-out/. .
+          # without it, GitHub Pages runs the branch through Jekyll
+          touch .nojekyll
+          # a new single-commit branch each time, like Client release, so old files do not pile up
+          rm -rf .git
+          git init -q -b gh-pages
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "Website update"
+          git push --force "https://x-access-token:$REPO_TOKEN@github.com/$CLIENTS_REPO.git" gh-pages
+          echo "Website published next to updater/" >> "$GITHUB_STEP_SUMMARY"
