@@ -159,12 +159,13 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 | --- | --- | --- | --- | --- | --- |
 | Hatching time | -5% | -10% | -15% | -20% | -25% |
 | Hatching an egg (now 60 minutes) | 57 min | 54 min | 51 min | 48 min | 45 min |
-| Time until the daycare gives an egg | -5% | -10% | -15% | -20% | -25% |
+| Chance of a second daycare egg | 2% | 4% | 6% | 8% | 10% |
 
 Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
 is time based: an egg in an incubator hatches after 60 minutes
 (`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`). At the top rank it takes 45
-minutes (agreed), and the same percentages shorten the time until the daycare gives an egg.
+minutes (agreed). The daycare wait is the same for everyone; Breeder adds a chance of a
+second egg (agreed).
 
 How the daycare makes eggs today (`npc/scripts/daycareFemale.lua`): a female and a
 compatible male train for at least 24 hours (players pick 24 or 48). When the female is
@@ -172,9 +173,9 @@ taken out, there is a chance of an egg: `eggChance` out of 300 (20 for most spec
 about 7%), plus held-item bonuses. Each failure raises the next chance, so an egg takes
 about 10 tries on average (about 18 for species with chance 10). After an egg, the player
 must wait 15 days before the next one. That is about 10 days for the first egg and about
-25 days between eggs, which is far too long. Agreed: one egg every two weeks. Proposal: a 14-day wait per player (as today), and the
-egg is guaranteed once the wait is over and the pair has trained for 24 hours, with no
-extra roll. Breeder shortens the wait: rank 5 is about 10½ days. The NPC's "fifteen
+25 days between eggs, which is far too long. Agreed for everyone: the egg is guaranteed after 14 days (per player, the pair must have
+trained for 24 hours), with a chance of getting it sooner. Proposal for the early chance:
+from day 7, one roll a day at 10%, so about half of players get their egg before day 14. The NPC's "fifteen
 days" message is hard-coded and needs updating too.
 
 **Ranger**: tracking wild Pokémon with a radar.
@@ -250,14 +251,16 @@ do not change.
   All the rank titles are agreed, and the top Ranger rank tracks normal, shiny, legendary
   and maybe special Pokémon at a long distance.
   The Ranger radar plan (ranges, cooldowns, limits) and a two-week egg wait are agreed.
-- **Proposed:** the rank levels, the other percentages, and whether the egg is
-  guaranteed after the wait.
+  The egg is guaranteed at 14 days with a chance to come sooner; Breeder gets a chance of a
+  second egg.
+- **Proposed:** the rank levels, the other percentages, and the early egg chance (from
+  day 7, 10% a day).
 
 ### To decide
 
 1. What the mastery items (type plates, mastery tokens, outfits) are used for.
 2. What counts as a "special" for the Ranger radar.
-3. Whether the two-week egg is guaranteed or still a chance.
+3. The early egg chance before day 14 (proposal: from day 7, 10% a day).
 
 ### The old masteries
 
