@@ -396,6 +396,25 @@ The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
 [Pokémon storage](#7-pokémon-storage).
 
+### Pokémon energy
+
+Energy works today, but only for the player's Pokémon: it is the trainer's mana
+(`getPokemonEnergy` in `data/lib/ps/functions/pokemon.lua`). Most species start at 100 energy
+(200 for shinies) plus 10 per level, and it refills 1 per second (`XML/vocations.xml`).
+Moves cost 40 to 120, most often 100 (`requiredEnergy` in `config/moves`); not enough
+energy blocks the move (`003-skill.lua`). Wild and NPC trainer Pokémon have no energy,
+only move cooldowns.
+
+- **Show it clearly:** the client shows energy as the blue mana bar, which doesn't say it
+  belongs to the Pokémon. Label it as the Pokémon's energy, put it with the Pokémon's
+  health, show each move's cost on the move bar, and grey out moves it can't afford.
+- **Balance:** at level 50 a Pokémon has about 600 energy and gets 60 back a minute, so
+  energy may rarely run out. Check it in the [economy audit](#14-economy-audit) together
+  with energy potions and food.
+- **Who has energy (agreed):** players only. Wild and NPC trainer Pokémon keep just
+  cooldowns: energy would make them stop attacking and easier to beat, and they would
+  need an AI that manages it.
+
 ## 12. Level requirement audit
 
 Go through the level requirements of every feature and lower the ones that don't fit.
@@ -437,8 +456,9 @@ too low.
 
 ## 15. Daily login rewards and events
 
-- **Daily login reward:** a reward for each day in a row, with a bigger one on day 7 (or
-  a monthly calendar of rewards), and the streak resets after a missed day. The values
+- **Daily login reward:** a 7-day streak that repeats (agreed): a reward for each day in a
+  row, a bigger one on day 7, then it starts again at day 1. A missed day resets the
+  streak. The values
   come from the [economy audit](#14-economy-audit).
 - **Event calendar:** one calendar that shows the upcoming events (double EXP, double
   shiny, holiday events, tournaments): in a game window, on the website, and posted by
