@@ -82,13 +82,16 @@ reusing the Redemption client windows where they exist.
 doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
 `doPlayerAddDepotItem`), and the player is told. Small, and it stops the data loss now.
 
-1. **Inbox:** everything delivered arrives here: mail, Pokémon and items that don't fit in
-   the bag, rewards, and later GTS purchases and returned listings. No limit, so a delivery
+1. **Inbox:** deliveries arrive here: mail (items and Pokémon mailed to the player),
+   items that don't fit in the bag, rewards, and later GTS purchases (items and Pokémon)
+   and returned listings. Caught Pokémon never go to the inbox (agreed). No limit, so a delivery
    never fails. The player takes things out from there.
 2. **Poké boxes** (the numbered depot boxes): they only hold Pokémon balls.
-   - Each box holds a fixed number of Pokémon (proposed 30, like the games), and boxes fill
-     in order: when Box 1 is full, the next Pokémon goes into Box 2, and so on. A new empty
+   - Caught Pokémon that don't fit in the party go straight to the Poké boxes (agreed),
+     and so do Pokémon moved out by the party limit.
+   - Each box holds 30 Pokémon (agreed), and boxes fill in order: when Box 1 is full, the next Pokémon goes into Box 2, and so on. A new empty
      box appears when the last one fills.
+   - Each box uses the current depot box sprite with its number added (Box 1, Box 2...).
    - Boxes can be renamed ("Box 1" by default), and Pokémon can be dragged between boxes
      and the party.
    - Pokémon are shown with their face icons, with sorting, search and filters (species,
@@ -117,7 +120,7 @@ when bosses or raids need it.
 
 **To decide:**
 
-- Box size (proposed 30) and whether there is any maximum number of boxes.
+- Whether there is any maximum number of boxes.
 - Whether Premium gets anything extra (for example box wallpapers or names), never more
   safety.
 - Whether held items stack (stash) or not (depot chest).
