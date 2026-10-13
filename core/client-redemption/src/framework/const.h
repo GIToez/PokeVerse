@@ -40,6 +40,8 @@
 #define BUILD_ARCH "x64"
 #elif defined(__i386) || defined(_M_IX86) || defined(_X86_)
 #define BUILD_ARCH "x86"
+#elif defined(__aarch64__) || defined(_M_ARM64)
+#define BUILD_ARCH "ARM64"
 #elif defined(__arm__)
 #define BUILD_ARCH "ARM"
 #elif defined(__EMSCRIPTEN__)
