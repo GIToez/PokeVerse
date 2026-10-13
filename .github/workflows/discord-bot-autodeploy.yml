@@ -1,15 +1,18 @@
 name: Discord bot auto-deploy
 
 # Deploys the production Discord bot when PokeVerse-Discord main has a commit that is not
-# live yet. The check runs every 15 minutes without the production environment; only a new
-# bot commit starts the deploy job (which waits for the environment's reviewers, if any).
+# live yet. A push to PokeVerse-Discord main starts this workflow through workflow_dispatch
+# (a token with only Actions: write on this repository, kept in PokeVerse-Discord); the
+# twice-daily schedule only catches a push whose dispatch failed. The check runs
+# without the production environment; only a new bot commit starts the deploy job (which
+# waits for the environment's reviewers, if any).
 # Deployed commits are remembered as "discord-bot-deployed-<sha7>" cache entries, also written
 # by the Live server workflow when it deploys the bot. Only the bot restarts, never the game.
 # Setup: docs/live-server.md
 
 on:
   schedule:
-    - cron: "7,22,37,52 * * * *"
+    - cron: "17 3,15 * * *"
   workflow_dispatch:
 
 permissions:
@@ -28,8 +31,12 @@ jobs:
     steps:
       - name: Bot main commit
         id: bot
+        env:
+          REPO_TOKEN: ${{ secrets.PV_REPOS_TOKEN }}
         run: |
-          commit=$(git ls-remote https://github.com/GIToez/PokeVerse-Discord.git refs/heads/main | cut -f1)
+          url=https://github.com/GIToez/PokeVerse-Discord.git
+          [ -z "$REPO_TOKEN" ] || url="https://x-access-token:$REPO_TOKEN@github.com/GIToez/PokeVerse-Discord.git"
+          commit=$(git ls-remote "$url" refs/heads/main | cut -f1)
           [ -n "$commit" ] || { echo "::error::could not read PokeVerse-Discord main"; exit 1; }
           sha=${commit::7}
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
@@ -109,6 +116,7 @@ jobs:
           repository: GIToez/PokeVerse-Discord
           ref: ${{ needs.check.outputs.commit }}
           path: bot
+          token: ${{ secrets.PV_REPOS_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:
