@@ -1,5 +1,5 @@
 HTTP = {
-  timeout = 2,
+  timeout = 10, -- connect + TLS handshake; 2s was too short on mobile data
   websocketTimeout = 15,
   agent = "Mozilla/5.0",
   imageId = 1000,
