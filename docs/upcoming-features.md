@@ -30,15 +30,65 @@ server (open ports, SSH, firewall).
 
 ## 1. Depot overflow fix (Pokémon are lost today)
 
-A player's depot holds up to 2,000 items (`group.depotLimit`, default in
-`src/player.cpp`). A Pokémon caught or given as a reward goes to the depot when the bag is
-full. When the depot is full too, `doCreatePokemonBall` (`data/lib/ps/config/balls.lua`)
-and `doPlayerEnforcePokemonLimit` (`data/lib/ps/functions/player.lua`) only log
-`Can't send to depot` and the ball is lost.
+A player's depot holds up to 2,000 items (`Group::getDepotLimit` in `src/group.cpp`; staff
+groups have 3,000 to 5,000 in `data/XML/groups.xml`). A Pokémon caught or given as a reward
+goes to the depot when the bag is full. When the depot is full too, `doCreatePokemonBall`
+(`data/lib/ps/config/balls.lua`) and `doPlayerEnforcePokemonLimit`
+(`data/lib/ps/functions/player.lua`) only log `Can't send to depot` and the ball is lost.
 
-- Never delete: when both are full, the Pokémon goes to overflow storage and the player is
-  told. Later it moves into [Pokémon storage](#7-pokémon-storage).
+### Audit: PokeVerse depot today
+
+- One depot per town: a depot locker that holds a depot chest (item 2594); everything else
+  is normal containers inside it.
+- `doPlayerAddDepotItem` (`src/luascript.cpp`) adds an item to the depot through the normal
+  checks, so a full depot refuses it (`Depot::__queryAdd` in `src/depot.cpp` returns
+  "depot is full"). The engine has a flag that skips the limit (`FLAG_NOLIMIT`), but this
+  function never uses it.
+- Each Pokémon ball counts as one item, the same as a potion or a stone.
+- The code already warns that lowering the limit makes items disappear
+  (`group.cpp`: "THIS IS VERY DANGEROUS, ITEMS CAN DISAPPEAR").
+- Used by NPC battles, Rocket battles, the Frontier Island arenas, the Pokémon market and
+  PokéTrader NPCs, and surprise boxes, so all of them can hit the same problem.
+
+### Audit: the Redemption depot
+
+Only the Redemption client is in this repository (`references/otclient-redemption`); its
+server (Canary) is not, so this part comes from the client code plus how Canary works.
+
+- **Depot locker** with four parts:
+  - **Depot chest** with numbered depot boxes for sorting.
+  - **Inbox:** mail, store purchases and returned market items arrive here. It is not
+    limited by the depot limit, so a delivery never fails.
+  - **Supply stash:** stackable items kept as "item and count" in their own table, not as
+    items in a container. The client window is `modules/game_stash`, with categories,
+    search and sorting.
+  - **Reward chest:** boss loot.
+- **Depot limit:** applies to the depot chest only; free and premium accounts have
+  different limits.
+- **Depot search:** search every item in the depot by name and take it out
+  (`parseCloseDepotSearch` and the related messages in `src/client/protocolgameparse.cpp`).
+- These are newer Tibia protocol messages. The PokeVerse server speaks the old protocol,
+  so none of them work as they are. Using them would mean new server code, or sending the
+  data over our own extended messages (like the Tasks window does) and reusing the
+  client windows.
+
+### What to take from Redemption
+
+1. **The inbox idea fixes the data loss:** a delivery must never fail. When the depot is
+   full, a Pokémon still goes in, past the limit (with `FLAG_NOLIMIT`), and the player is
+   told the depot is over its limit. This is a small change: one option on
+   `doPlayerAddDepotItem` and the two Lua callers. It covers every caller listed above.
+2. **The supply stash for stackables** (potions, balls, stones, berries): they stop
+   filling depot slots, and the `game_stash` window can be reused. Medium-sized: a new
+   table, server commands, and the window wired to our messages.
+3. **Pokémon storage:** the stash cannot hold Pokémon, since every ball is different
+   (stats, IVs, nature, moves). The real fix is the PC storage in
+   [Pokémon storage](#7-pokémon-storage); after that, Pokémon no longer go to the depot.
+4. **Depot search** and depot boxes: nice to have, later.
+
 - Search the live server logs for `Can't send to depot` to find Pokémon already lost.
+- Raising the depot limit for everyone is not a fix on its own: it moves the problem, and
+  every depot item is saved again on each save.
 
 ## 2. Auto-walk fix
 
