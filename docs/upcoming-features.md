@@ -74,7 +74,8 @@ server (Canary) is not, so this part comes from the client code plus how Canary 
 
 ### The new depot (agreed): Redemption's depot, redesigned for Pokémon
 
-All five parts, built on our own extended messages (JSON, like the Tasks window) and
+The depot is already one depot shared by every Pokémon Center, so it can be opened
+anywhere (like the PC in the games); the new depot stays shared. All five parts, built on our own extended messages (JSON, like the Tasks window) and
 reusing the Redemption client windows where they exist.
 
 **Step 0, first: a delivery never fails.** Until the inbox exists, a Pokémon or item that
@@ -119,8 +120,6 @@ when bosses or raids need it.
 - Box size (proposed 30) and whether there is any maximum number of boxes.
 - Whether Premium gets anything extra (for example box wallpapers or names), never more
   safety.
-- One depot shared by every Pokémon Center (like the PC in the games): deliveries already
-  all go to depot 0; check whether every Pokémon Center's depot uses 0 too.
 - Whether held items stack (stash) or not (depot chest).
 
 - Search the live server logs for `Can't send to depot` to find Pokémon already lost.
