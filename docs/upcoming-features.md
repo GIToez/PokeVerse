@@ -122,7 +122,7 @@ they are used for is not decided yet.
 | 50–59 | 4 |
 | 60+ | 5 |
 
-Rank titles (Ace Trainer and Angler agreed, the others proposed):
+Rank titles (agreed):
 
 | Rank | Ace Trainer | Catcher | Breeder | Ranger | Angler | Medic |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -172,22 +172,40 @@ taken out, there is a chance of an egg: `eggChance` out of 300 (20 for most spec
 about 7%), plus held-item bonuses. Each failure raises the next chance, so an egg takes
 about 10 tries on average (about 18 for species with chance 10). After an egg, the player
 must wait 15 days before the next one. That is about 10 days for the first egg and about
-25 days between eggs, so the daycare probably needs rebalancing for everyone first; the
-Breeder percentages then apply to the new timing.
+25 days between eggs, which is far too long. Target for everyone: about one egg a week, or
+one every two weeks (to decide). For example a 7-day wait between eggs and a much better
+chance, or an egg every time once the pair has trained long enough. The Breeder
+percentages apply to the new timing: with 7 days, rank 5 would be about 5¼ days; with
+14 days, 10½ days.
 
 **Ranger**: tracking wild Pokémon with a radar.
 
-| Rank | Ability (proposed) |
-| --- | --- |
-| 1 | Radar for nearby regular Pokémon |
-| 2 | Longer range; pick a type to look for |
-| 3 | See the species and direction |
-| 4 | Shiny Pokémon show up on the radar |
-| 5 | Longest range; legendaries show up |
+| Rank | Ability | Range (proposed) | Cooldown (proposed) |
+| --- | --- | --- | --- |
+| 1 | Radar for nearby regular Pokémon | 30 tiles (about 2 screens) | 60 s |
+| 2 | Pick a type to look for | 50 tiles | 50 s |
+| 3 | See the species and direction | 80 tiles | 40 s |
+| 4 | Shiny Pokémon show up | 120 tiles | 35 s |
+| 5 | Legendaries and specials show up | 200 tiles (about a route or a town) | 30 s |
 
 Only Pokémon that have actually spawned are found, including off screen. Spawns and
 shiny or legendary rates do not change. To keep it balanced: a cooldown between scans,
-a limited range, and one type filter at a time (agreed).
+a limited range, and one type filter at a time (agreed). The rank 5 abilities (normal,
+shiny, legendary, maybe special Pokémon at a long distance) are agreed; the ranges and
+cooldowns are not.
+
+For scale: the map is about 5,700 by 3,400 tiles with about 19,000 spawn points, and the
+screen shows about 15 by 11 tiles. Proposed limits on "too far":
+
+- Never the whole map. Past the range, the radar shows nothing, so exploring still
+  matters.
+- Only the player's floor.
+- Shinies, legendaries and specials show as a direction and a distance band ("far to the
+  north-east") instead of an exact spot, so a Ranger can't race straight to them.
+- Legendary scans get their own longer cooldown (for example 10 minutes).
+- Legendaries only appear through quests and events (they are not in the map spawns), so
+  legendary tracking mostly matters for event spawns.
+- "Specials" still needs defining (event Pokémon, bosses?).
 
 **Angler**: fishing. Replaces the Researcher, which is dropped.
 
@@ -230,16 +248,17 @@ do not change.
   only heal outside duels, the Ace Trainer titles, the Angler in place of the Researcher,
   the Breeder values (hatching 45 minutes at the top rank, the same percentages for daycare
   eggs), the Angler ranks, and removing the masteries while keeping their items.
-- **Proposed:** the rank levels, the other percentages, the Ranger numbers, and the rank
-  titles other than Ace Trainer and Angler.
+  All the rank titles are agreed, and the top Ranger rank tracks normal, shiny, legendary
+  and maybe special Pokémon at a long distance.
+- **Proposed:** the rank levels, the other percentages, and the Ranger ranges and
+  cooldowns.
 
 ### To decide
 
 1. What the mastery items (type plates, mastery tokens, outfits) are used for.
-2. The Ranger numbers (range and cooldown per rank).
-3. The new daycare egg timing for everyone (today: 24-hour training, about 7% chance,
-   15-day wait).
-4. The proposed rank titles for Catcher, Breeder, Ranger and Medic.
+2. The Ranger ranges and cooldowns (proposal above), and what counts as a "special".
+3. The daycare egg timing for everyone: one egg a week or every two weeks, and whether an
+   egg is guaranteed or still a chance.
 
 ### The old masteries
 
