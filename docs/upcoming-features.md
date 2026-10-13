@@ -20,8 +20,9 @@ so. Items marked **To decide** need an answer before work starts.
 Alongside, as small separate changes: the [bug fixes and small ideas](#11-bug-fixes-and-small-ideas),
 the [level requirement audit](#12-level-requirement-audit) and
 [switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content),
-the [economy audit](#14-economy-audit) (before the GTS), and the
-[daily login rewards and event calendar](#15-daily-login-rewards-and-events).
+the [economy audit](#14-economy-audit) (before the GTS), the
+[daily login rewards and event calendar](#15-daily-login-rewards-and-events), and
+[reports to Discord forums](#16-reports-and-feature-requests-to-discord-forums).
 
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
@@ -474,6 +475,29 @@ too low.
   reading the value once at start. All of them must use the event multiplier, so it needs
   a server build.
 - Both events are announced in game and on Discord, and show on the calendar.
+
+## 16. Reports and feature requests to Discord forums
+
+An in-game window to send a bug report, a feature request or a player report. Each one
+becomes a post in a Discord forum channel, with tags.
+
+- **Today:** the client's bug report (`onReportBug`,
+  `data/lib/ps/events/creaturescripts/onReportBug.lua`) only writes to a log file on the
+  server, together with the player's IP address. Nobody sees it unless they read the file.
+- **In-game window:** pick the kind (bug, feature request, player report), a category
+  (for example client, map, NPC or quest, Pokémon or moves, tasks, economy, other), a
+  title and a description.
+- **Sent along automatically:** character name, position, client version and platform
+  (Windows, Linux, Android), and the Pokémon out. Never the IP address.
+- **Discord:** the game sends a new `report` event over the [Discord bridge](discord-bridge.md);
+  the [PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord) bot creates the forum
+  post and applies the tags (kind, category, platform). Bugs and feature requests go to
+  public forums, player reports to a staff-only forum.
+- **Status back to the player:** when staff change the post's tag (for example Fixed,
+  Planned, Won't do), the bot tells the game and the player gets an in-game message.
+- **Limits:** a few reports per player per hour, and a minimum length, against spam.
+- **To decide:** the forum channels and tag names, and whether players can vote on
+  feature requests (Discord reactions).
 
 ## Going private
 
