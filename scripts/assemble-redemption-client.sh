@@ -150,6 +150,8 @@ if [ "$classic" = 0 ]; then
 fi
 overlay_tree "$overlay" "$out"
 rm -rf "$out/patches"
+# Photoshop sources: the client cannot load them, and background.psd alone is 16 MB
+find "$out/data" -name '*.psd' -delete
 
 # small changes to Redemption's own modules, kept as patches so they stay reviewable
 if [ "$classic" = 0 ]; then
