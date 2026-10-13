@@ -312,8 +312,8 @@
 
 	-- Status
 	ownerName = "PokeVerse"
-	ownerEmail = "contact@psoul.net"
-	url = "http://www.psoul.net/"
+	ownerEmail = ""
+	url = "https://gitoez.github.io/PokeVerse-Clients/"
 	location = "EUA"
 	displayGamemastersWithOnlineCommand = false
 
