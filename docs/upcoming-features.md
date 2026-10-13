@@ -22,7 +22,7 @@ the [level requirement audit](#12-level-requirement-audit) and
 [switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content),
 the [economy audit](#14-economy-audit) (before the GTS), the
 [daily login rewards and event calendar](#15-daily-login-rewards-and-events), [reports to Discord forums](#16-reports-and-feature-requests-to-discord-forums), and
-[client fixes for Linux and Android](#17-client-fixes-linux-and-android).
+[Android touch controls](#17-android-touch-controls).
 
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
@@ -509,20 +509,9 @@ becomes a post in a Discord forum channel, with tags.
   post. The vote count shows on the ticket in game, and staff can sort by it.
 - **Limits:** a few reports per player per hour, and a minimum length, against spam.
 
-## 17. Client fixes: Linux and Android
+## 17. Android touch controls
 
-**Linux: start without a terminal.** Today players start the game with `PokeVerse.sh` or
-by double-clicking `PokeVerse.desktop` ([client-updates.md](client-updates.md#platform-notes)).
-Files from a download or the updater are not executable, and GNOME asks for "Allow
-Launching" first, so it may still need a terminal.
-
-- First, test it on a fresh Ubuntu and Mint: download, unpack, double-click, update.
-- Likely fix: a `.deb` package (opens in the software center, adds the app menu entry)
-  that installs only a small launcher; the game files go to
-  `~/.local/share/PokeVerse` on first start, like the Android unpack, so the updater can
-  still write them. Maybe an AppImage later for other distributions.
-
-**Android: touch controls.** Today a long press (over 0.5 s) already works as a right
+Today a long press (over 0.5 s) already works as a right
 click and opens the menu (`src/framework/platform/androidwindow.cpp`). A tap only does
 something with one of the shortcut buttons (look, use, attack, follow) selected, or walks;
 on phones the client skips the smart left click (`processMouseAction` in
