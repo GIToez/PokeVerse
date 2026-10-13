@@ -1,30 +1,22 @@
 name: Client release
 
 # Builds the Redemption client for Windows, Linux and Android, assembles the live packages and the
-# updater site. When started by hand with "publish", it creates a GitHub Release (large
-# files and the first-install downloads) and deploys the updater manifests and files to
-# GitHub Pages. Clients that are already installed then update themselves on start.
-# Players download from the public GIToez/PokeVerse-Clients repository (its releases and
-# its gh-pages site). The old site on this repository's Pages gets the same update with
-# links into this repository, so clients installed before the move update once and then
-# use the new updater URL. Setup: docs/client-updates.md
+# updater site. When started by hand with "publish", it publishes to the public
+# GIToez/PokeVerse-Clients repository: a release (large files and the first-install
+# downloads) and its gh-pages site (the website, the updater manifests and files).
+# Clients that are already installed then update themselves on start. This repository
+# can be private. Setup: docs/client-updates.md
 
+# Pull requests check the build; main is only built when publishing, so merges do not
+# build the same thing twice.
 on:
-  push:
-    branches: [main]
+  pull_request:
     paths:
       - core/client-redemption/**
       - core/client-legacy/data/**
       - core/client-legacy/modules/**
       - scripts/assemble-redemption-client.sh
       - scripts/set-client-server.sh
-      - scripts/make-updater-manifest.py
-      - scripts/build-android-client.sh
-      - .github/workflows/client-release.yml
-  pull_request:
-    paths:
-      - core/client-redemption/**
-      - scripts/assemble-redemption-client.sh
       - scripts/make-updater-manifest.py
       - scripts/build-android-client.sh
       - .github/workflows/client-release.yml
@@ -45,7 +37,6 @@ permissions:
 env:
   CLIENTS_REPO: GIToez/PokeVerse-Clients
   PAGES_URL: https://gitoez.github.io/PokeVerse-Clients
-  LEGACY_PAGES_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
 
 jobs:
@@ -289,28 +280,13 @@ jobs:
         env:
           TAG: ${{ steps.version.outputs.tag }}
         run: |
-          # site/: PokeVerse-Clients gh-pages; site-legacy/: this repository's Pages
-          build_site() {
-            local dir=$1 pages=$2 repo=$3
-            local common=(--site "$dir/updater" --files-url "$pages/updater/files" --version "$TAG"
-                          --release-dir release --release-url "https://github.com/$repo/releases/download/$TAG")
-            python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
-            python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary PokeVerse "${common[@]}"
-            python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}"
-            cat > "$dir/index.html" <<EOF
-          <!doctype html><meta charset="utf-8"><title>PokeVerse client</title>
-          <h1>PokeVerse client</h1>
-          <p>Install once; the client updates itself when it starts.</p>
-          <ul>
-            <li><a href="https://github.com/${CLIENTS_REPO}/releases/latest/download/PokeVerse-Windows.zip">Windows</a></li>
-            <li><a href="https://github.com/${CLIENTS_REPO}/releases/latest/download/PokeVerse-Linux.tar.gz">Linux</a></li>
-            <li><a href="https://github.com/${CLIENTS_REPO}/releases/latest/download/PokeVerse-Android.apk">Android</a></li>
-          </ul>
-          EOF
-          }
-          build_site site "$PAGES_URL" "$CLIENTS_REPO"
-          build_site site-legacy "$LEGACY_PAGES_URL" "$GITHUB_REPOSITORY"
-          du -sh site site-legacy release
+          # site/ becomes PokeVerse-Clients gh-pages
+          common=(--site site/updater --files-url "$PAGES_URL/updater/files" --version "$TAG"
+                  --release-dir release --release-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG")
+          python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary PokeVerse "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}"
+          du -sh site release
 
       # the PokeVerse-Clients site is the website too: its pages sit next to updater/
       - name: Website
@@ -330,13 +306,12 @@ jobs:
             python3 - "$os" <<'EOF'
           import json, os, sys
           name = sys.argv[1]
-          for site, pages, repo in (("site", os.environ["PAGES_URL"], os.environ["CLIENTS_REPO"]),
-                                    ("site-legacy", os.environ["LEGACY_PAGES_URL"], os.environ["GITHUB_REPOSITORY"])):
-              m = json.load(open(f"{site}/updater/{name}.json"))
-              assert m["url"] == f"{pages}/updater/files", (site, m["url"])
-              for url in m["urls"].values():
-                  assert url.startswith(f"https://github.com/{repo}/releases/download/"), (site, url)
-          print(f"{name}: both manifests point at their own site and releases")
+          pages, repo = os.environ["PAGES_URL"], os.environ["CLIENTS_REPO"]
+          m = json.load(open(f"site/updater/{name}.json"))
+          assert m["url"] == f"{pages}/updater/files", m["url"]
+          for url in m["urls"].values():
+              assert url.startswith(f"https://github.com/{repo}/releases/download/"), url
+          print(f"{name}: the manifest points at {pages} and the {repo} releases")
           EOF
           done
 
@@ -358,10 +333,6 @@ jobs:
           name: clients-site
           path: site/
           compression-level: 0
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site-legacy/
 
       # a dry-run push needs write access, so a token that cannot publish fails here
       # instead of halfway through publishing
@@ -391,12 +362,7 @@ jobs:
       group: pokeverse-clients-pages
       cancel-in-progress: false
     permissions:
-      contents: write
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      contents: read
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -408,18 +374,8 @@ jobs:
           name: clients-site
           path: clients-site
 
-      # Release assets first: the manifests point at them. Each step skips what an earlier
-      # attempt already published, so "Re-run failed jobs" is safe.
-      - name: GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ needs.package.outputs.tag }}
-        run: |
-          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 ||
-          gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --title "PokeVerse client $TAG" \
-            --notes "Installed clients update themselves on start. New players: download PokeVerse-Windows.zip, PokeVerse-Linux.tar.gz or PokeVerse-Android.apk."
-
+      # Release assets first: the manifests point at them. Each step skips or redoes what an
+      # earlier attempt already published, so "Re-run failed jobs" is safe.
       - name: PokeVerse-Clients release
         env:
           GH_TOKEN: ${{ secrets.PV_REPOS_TOKEN }}
@@ -446,9 +402,7 @@ jobs:
             commit -qm "PokeVerse client $TAG"
           git push --force "https://x-access-token:$REPO_TOKEN@github.com/$CLIENTS_REPO.git" gh-pages
 
-      # The old site sends installed clients the new updater URL, so it only changes once
-      # the new site serves this release.
-      - name: Wait for the PokeVerse-Clients site
+      - name: Check the PokeVerse-Clients site
         env:
           TAG: ${{ needs.package.outputs.tag }}
         run: |
@@ -458,8 +412,5 @@ jobs:
             if [ "$version" = "$TAG" ]; then echo "$PAGES_URL serves $TAG"; exit 0; fi
             sleep 15
           done
-          echo "::error::$PAGES_URL/updater/windows.json does not serve $TAG (got '${version}'). In $CLIENTS_REPO: Settings → Pages → Deploy from a branch → gh-pages, / (root). The old site was not changed; re-run the failed job once the page is up."
+          echo "::error::$PAGES_URL/updater/windows.json does not serve $TAG (got '${version}'). In $CLIENTS_REPO: Settings → Pages → Deploy from a branch → gh-pages, / (root)."
           exit 1
-
-      - id: deploy
-        uses: actions/deploy-pages@v4

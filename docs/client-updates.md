@@ -14,36 +14,25 @@ Nothing runs on our own servers for this, and there is no PHP.
 
 Both live in the public repository
 [GIToez/PokeVerse-Clients](https://github.com/GIToez/PokeVerse-Clients), so this repository
-can become private: its Pages site is on the `gh-pages` branch, and the updater URL in the
+can be private: its Pages site is on the `gh-pages` branch, and the updater URL in the
 clients is `https://gitoez.github.io/PokeVerse-Clients/updater/`.
-
-**Moving over.** Clients installed before the move still check this repository's Pages
-site (`https://gitoez.github.io/PokeVerse/updater/`). Until it is switched off, every
-release also goes there, with its own copy of the release, and its files carry the new
-updater URL in `init.lua`. An old client therefore updates once from the old site and uses
-the new one from then on. The workflow only changes the old site after the new one serves
-the release, so no client is sent to a site that is not up yet. Once players have updated,
-the old site, the release in this repository and the `site-legacy` part of the workflow can go.
 
 Only the live packages have the updater turned on. Development builds (`builds/dev/`) and
 the test builds never update.
 
 ## One-time setup
 
-1. In this repository on GitHub: **Settings → Pages → Build and deployment → Source:
-   GitHub Actions** (the old site, while clients move over).
-2. The repository secret `PV_REPOS_TOKEN`: a fine-grained token with **Contents: Read and
+1. The repository secret `PV_REPOS_TOKEN`: a fine-grained token with **Contents: Read and
    write** on `GIToez/PokeVerse-Clients` (the same token the Discord bot deploy uses). Every
    run checks that it can push there; publishing stops before it starts if it cannot.
-3. In PokeVerse-Clients, after the first publish has created the `gh-pages` branch:
+2. In PokeVerse-Clients, after the first publish has created the `gh-pages` branch:
    **Settings → Pages → Build and deployment → Source: Deploy from a branch**, branch
    `gh-pages`, folder `/ (root)`. That first publish waits up to 15 minutes for the site;
-   if Pages is not on by then it fails without touching the old site. Turn Pages on and
-   use **Re-run failed jobs**: steps that already finished are skipped.
-4. Optional: set the repository variable `LIVE_SERVER_HOST` (Settings → Secrets and
+   if Pages is not on by then it fails. Turn Pages on and use **Re-run failed jobs**.
+3. Optional: set the repository variable `LIVE_SERVER_HOST` (Settings → Secrets and
    variables → Actions → Variables) if the live server address changes. Without it the
    workflow uses the current OVH address.
-5. Android signing key (once, then keep it safe: Android only installs a new APK over an
+4. Android signing key (once, then keep it safe: Android only installs a new APK over an
    old one when both are signed with the same key). Create it with
    `keytool -genkeypair -v -keystore pokeverse.keystore -alias pokeverse -keyalg RSA -keysize 4096 -validity 10000`,
    then add these repository secrets: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 pokeverse.keystore`),
@@ -56,13 +45,13 @@ the test builds never update.
 1. Merge the changes into `main`.
 2. Actions → **Client release** → **Run workflow** on `main`, tick **Publish**, run.
 3. The workflow builds Windows, Linux and Android and creates the release
-   `client-<run number>` in both repositories. It then pushes the new site to
-   PokeVerse-Clients `gh-pages`, waits until it is served, and deploys the old site.
+   `client-<run number>` in PokeVerse-Clients. It then pushes the new site to its
+   `gh-pages` branch and waits until it is served.
    Players get the update the next time they start the client.
 
-Pushes and pull requests run the same build and packaging without publishing, so a broken
-package shows up before anyone publishes it. They also check that both sites' manifests
-point at their own files and releases, and that `PV_REPOS_TOKEN` can push to PokeVerse-Clients.
+Pull requests that touch the client run the same build and packaging without publishing, so a broken
+package shows up before anyone publishes it. They also check that the manifests
+point at the PokeVerse-Clients site and releases, and that `PV_REPOS_TOKEN` can push to PokeVerse-Clients.
 
 Players who install for the first time use the links on
 `https://gitoez.github.io/PokeVerse-Clients/`, which always point at the latest release.

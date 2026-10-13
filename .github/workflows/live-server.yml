@@ -8,7 +8,21 @@ name: Live server
 on:
   push:
     branches: [main]
+    paths:
+      - core/server/**
+      - core/database/**
+      - scripts/live/**
+      - scripts/account-test.py
+      - scripts/protocol-test.py
+      - .github/workflows/live-server.yml
   pull_request:
+    paths:
+      - core/server/**
+      - core/database/**
+      - scripts/live/**
+      - scripts/account-test.py
+      - scripts/protocol-test.py
+      - .github/workflows/live-server.yml
   workflow_dispatch:
     inputs:
       action:
