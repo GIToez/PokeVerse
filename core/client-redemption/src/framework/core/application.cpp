@@ -29,6 +29,7 @@
 #define ADD_QUOTES(s) ADD_QUOTES_HELPER(s)
 
 #include <csignal>
+#include <string_view>
 
 #include "clock.h"
 #include "configmanager.h"
@@ -225,9 +226,20 @@ std::string Application::getOs()
 // https://stackoverflow.com/a/46448040
 std::string Application::getBuildRevision()
 {
+#ifdef BUILD_REVISION
+    if (std::string_view(BUILD_REVISION).size() > 0)
+        return BUILD_REVISION;
+#endif
     std::stringstream ss;
     ss << std::fixed << std::setprecision(3) << (static_cast<float>(GIT_COMMITS) / 1000);
     return ss.str();
 }
 std::string Application::getVersion() { return ADD_QUOTES(GIT_VERSION); }
-std::string Application::getBuildCommit() { return ADD_QUOTES(GIT_BRANCH); }
+std::string Application::getBuildCommit()
+{
+#ifdef BUILD_COMMIT
+    if (std::string_view(BUILD_COMMIT).size() > 0)
+        return BUILD_COMMIT;
+#endif
+    return ADD_QUOTES(GIT_BRANCH);
+}
