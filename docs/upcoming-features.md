@@ -20,7 +20,8 @@ so. Items marked **To decide** need an answer before work starts.
 Alongside, as small separate changes: the [bug fixes and small ideas](#11-bug-fixes-and-small-ideas),
 the [level requirement audit](#12-level-requirement-audit) and
 [switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content),
-and the [economy audit](#14-economy-audit) (before the GTS).
+the [economy audit](#14-economy-audit) (before the GTS), and the
+[daily login rewards and event calendar](#15-daily-login-rewards-and-events).
 
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
@@ -380,6 +381,17 @@ From the `#notes` channel:
   not finished in time fails on its own and is removed. **To decide:** how long (for
   example by size), and whether a failed hunt costs anything.
 
+- **Fishing tasks don't count up:** the daily or weekly task "Hook X Pokémon while
+  fishing" doesn't go up. Hooking records the statistic, and that should count the task
+  (`043-fishing.lua` → `onStatisticChange.lua` → `Tasks.onEvent`). Likely cause: the
+  server runs actions, creature events and talk commands in separate Lua environments,
+  and each keeps its own copy of the task board (`cache` in `062-dailyTasks.lua` and
+  `064-huntingTasks.lua`). Fishing counts in one copy, while the Tasks window reads and
+  saves an older copy, which shows or saves over the progress. This may affect other task
+  kinds too (catching counts in the actions copy). Fix: read the state from the database
+  every time instead of keeping a copy, and add a server test that hooks a Pokémon and
+  checks the task.
+
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
 [Pokémon storage](#7-pokémon-storage).
@@ -422,6 +434,26 @@ too low.
 - Keep all reward values in config tables, so tuning is easy.
 - Track it over time: total money on the server (bank plus inventories), shown by a staff
   command or the Discord bot.
+
+## 15. Daily login rewards and events
+
+- **Daily login reward:** a reward for each day in a row, with a bigger one on day 7 (or
+  a monthly calendar of rewards), and the streak resets after a missed day. The values
+  come from the [economy audit](#14-economy-audit).
+- **Event calendar:** one calendar that shows the upcoming events (double EXP, double
+  shiny, holiday events, tournaments): in a game window, on the website, and posted by
+  the Discord bot. Staff add events with a date, time and length, and they start and
+  stop on their own.
+- **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
+  `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
+  to 7 days; `/doubleexp off` and `/doubleexp status` too
+  (`data/lib/ps/systems/058-serverExpEvent.lua`).
+- **Double shiny:** new, built the same way: `/doubleshiny 2x 2h` up to 10x. Shiny chance
+  is 1 in 8,192 (`shinyAppearChance` in `config.lua`). Map spawns roll it in the C++ code
+  (`src/spawn.cpp`), and fishing, headbutt, eggs and abilities roll it in Lua, each
+  reading the value once at start. All of them must use the event multiplier, so it needs
+  a server build.
+- Both events are announced in game and on Discord, and show on the calendar.
 
 ## Going private
 
