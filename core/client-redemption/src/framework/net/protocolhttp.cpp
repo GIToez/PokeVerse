@@ -33,10 +33,50 @@
 #include <fmt/format.h>
 #include <ixwebsocket/IXNetSystem.h>
 #endif
+#ifdef ANDROID
+#include <filesystem>
+#include <fstream>
+#endif
 #include <utility>
 #include <vector>
 
 Http g_http;
+
+#ifdef ANDROID
+namespace {
+    // OpenSSL's default verify paths do not exist on Android, so the system CA store
+    // (updatable APEX copy first, the one in /system on older releases) is passed in memory.
+    ix::SocketTLSOptions androidTlsOptions()
+    {
+        static const std::string roots = [] {
+            static constexpr std::string_view begin = "-----BEGIN CERTIFICATE-----";
+            static constexpr std::string_view end = "-----END CERTIFICATE-----";
+            std::string pem;
+            for (const char* dir : { "/apex/com.android.conscrypt/cacerts", "/system/etc/security/cacerts" }) {
+                std::error_code ec;
+                for (const auto& entry : std::filesystem::directory_iterator(dir, ec)) {
+                    std::ifstream in(entry.path(), std::ios::binary);
+                    const std::string text((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+                    const auto from = text.find(begin);
+                    const auto to = from == std::string::npos ? from : text.find(end, from);
+                    if (to != std::string::npos)
+                        pem.append(text, from, to + end.size() - from).push_back('\n');
+                }
+                if (!pem.empty())
+                    break;
+            }
+            if (pem.empty())
+                g_logger.warning("No system CA certificates found, HTTPS requests will fail");
+            return pem;
+        }();
+
+        ix::SocketTLSOptions options;
+        if (!roots.empty())
+            options.caFile = roots;
+        return options;
+    }
+}
+#endif
 
 #ifdef __EMSCRIPTEN__
 namespace {
@@ -618,6 +658,9 @@ void Http::init()
     // if a request came in after Http::terminate() reset the pointer.
     if (!g_ixHttpClient) {
         g_ixHttpClient = std::make_shared<ix::HttpClient>(true);
+#ifdef ANDROID
+        g_ixHttpClient->setTLSOptions(androidTlsOptions());
+#endif
     }
     m_working.store(true);
 }
@@ -934,6 +977,9 @@ int Http::ws(const std::string& url, int timeout)
 
     auto websocket = std::make_shared<ix::WebSocket>();
     websocket->setUrl(url);
+#ifdef ANDROID
+    websocket->setTLSOptions(androidTlsOptions());
+#endif
     websocket->setHandshakeTimeout(timeout);
     websocket->setPingInterval(10);
     // Keep the ix::WebSocket reconnection disabled: the Lua callbacks
