@@ -1005,6 +1005,126 @@ function createThingMenu(menuPosition, lookThing, useThing, creatureThing)
     menu:display(menuPosition)
 end
 
+-- Smart left click (and a plain tap on phones): talk to an NPC, attack, use, open or loot,
+-- walk there, or look. Returns true when it did something.
+local function doSmartLeftClick(autoWalkPos, lookThing, useThing, creatureThing, attackCreature)
+    local player = g_game.getLocalPlayer()
+
+    -- Handle NPCs first - they should not be attacked
+    if creatureThing and creatureThing:isNpc() then
+        local playerPos = player:getPosition()
+        local npcPos = creatureThing:getPosition()
+        if playerPos.z == npcPos.z then
+            local dist = math.max(math.abs(playerPos.x - npcPos.x), math.abs(playerPos.y - npcPos.y))
+            if dist <= 3 then
+                g_game.talk("hi")
+                return true
+            end
+        end
+    end
+
+    -- Handle creature attacks (but not NPCs)
+    if attackCreature and attackCreature ~= player and not attackCreature:isNpc() then
+        g_game.attack(attackCreature)
+        return true
+    elseif creatureThing and creatureThing ~= player and not creatureThing:isNpc() and autoWalkPos and creatureThing:getPosition().z == autoWalkPos.z then
+        g_game.attack(creatureThing)
+        return true
+    elseif useThing then
+        -- Handle interactive items first, without looking at them
+        if useThing:isUsable() then
+            -- Only use the item, don't look at it
+            if useThing:isContainer() then
+                if useThing:getParentContainer() then
+                    g_game.open(useThing, useThing:getParentContainer())
+                else
+                    g_game.open(useThing)
+                end
+                return true
+            elseif useThing:isMultiUse() then
+                startUseWith(useThing)
+                return true
+            else
+                g_game.use(useThing)
+                return true
+            end
+        end
+
+        -- Standard handling for other usable items
+        -- For containers (including corpses), only execute quicklooting with Smart Left-Click
+        -- Exception: If container has a parent container, open it instead of quicklooting
+        if useThing:isContainer() or useThing:isLyingCorpse() then
+            -- Prioritize containers/corpses even if there are creatures on the same tile
+            if useThing:getParentContainer() then
+                -- For containers inside other containers, we want to open them, not quickloot
+                g_game.open(useThing, useThing:getParentContainer())
+                return true
+            elseif useThing:isPickupable() then
+                -- For pickupable containers like quivers, backpacks, etc., open them instead of quicklooting
+                g_game.open(useThing)
+                return true
+            elseif g_game.getFeature(GameThingQuickLoot) and modules.game_quickloot then
+                -- For containers in the world (not inside another container), quickloot
+                g_game.sendQuickLoot(1, useThing)
+                return true
+            end
+        elseif useThing:isMultiUse() then
+            startUseWith(useThing)
+            return true
+        else
+            local useResult = g_game.use(useThing)
+
+            if useResult ~= nil then
+                return true
+            end
+        end
+
+        -- If we couldn't use the item through any of the above methods,
+        -- but it's pickupable, try to pick it up (like in Classic Control mode)
+        if useThing:isPickupable() then
+            g_game.move(useThing, useThing:getPosition(), 1)
+            return true
+        end
+
+        -- If we couldn't use or pick up the item, try to walk to its position if possible
+        local position = useThing:getPosition()
+        if position and position.x ~= 0 and autoWalkPos then
+            local player = g_game.getLocalPlayer()
+            player:autoWalk(autoWalkPos)
+            return true
+        end
+
+        return true
+    end
+
+    -- Only look at things if no usable item was found
+    if lookThing and lookThing ~= useThing then
+        local lookPosition = lookThing:getPosition()
+        local lookTile = nil
+
+        if lookPosition and lookPosition.x ~= 0 then
+            lookTile = g_map.getTile(lookPosition)
+        end
+
+        -- For walkable tiles, we want to walk
+        if lookTile and lookTile:isWalkable() and autoWalkPos then
+            local player = g_game.getLocalPlayer()
+            player:autoWalk(autoWalkPos)
+            return true
+        else
+            -- Only look at the thing if we haven't used it already
+            g_game.look(lookThing)
+            return true
+        end
+    end
+
+    if autoWalkPos then
+        local player = g_game.getLocalPlayer()
+        player:autoWalk(autoWalkPos)
+        return true
+    end
+end
+
 function processMouseAction(menuPosition, mouseButton, autoWalkPos, lookThing, useThing, creatureThing, attackCreature)
     local keyboardModifiers = g_keyboard.getModifiers()
 
@@ -1086,6 +1206,9 @@ function processMouseAction(menuPosition, mouseButton, autoWalkPos, lookThing, u
                 return true
             end
             return true
+        elseif shortcut == "" and mouseButton == MouseLeftButton and
+            doSmartLeftClick(autoWalkPos, lookThing, useThing, creatureThing, attackCreature) then
+            return true
         elseif not autoWalkPos and useThing then
             createThingMenu(menuPosition, lookThing, useThing, creatureThing)
             return true
@@ -1093,122 +1216,9 @@ function processMouseAction(menuPosition, mouseButton, autoWalkPos, lookThing, u
     elseif not modules.client_options.getOption('classicControl') then
         local smartLeftClick = modules.client_options.getOption('smartLeftClick')
 
-        if smartLeftClick and mouseButton == MouseLeftButton and keyboardModifiers == KeyboardNoModifier then
-            local player = g_game.getLocalPlayer()
-
-            -- Handle NPCs first - they should not be attacked
-            if creatureThing and creatureThing:isNpc() then
-                local playerPos = player:getPosition()
-                local npcPos = creatureThing:getPosition()
-                if playerPos.z == npcPos.z then
-                    local dist = math.max(math.abs(playerPos.x - npcPos.x), math.abs(playerPos.y - npcPos.y))
-                    if dist <= 3 then
-                        g_game.talk("hi")
-                        return true
-                    end
-                end
-            end
-
-            -- Handle creature attacks (but not NPCs)
-            if attackCreature and attackCreature ~= player and not attackCreature:isNpc() then
-                g_game.attack(attackCreature)
-                return true
-            elseif creatureThing and creatureThing ~= player and not creatureThing:isNpc() and autoWalkPos and creatureThing:getPosition().z == autoWalkPos.z then
-                g_game.attack(creatureThing)
-                return true
-            elseif useThing then
-                -- Handle interactive items first, without looking at them
-                if useThing:isUsable() then
-                    -- Only use the item, don't look at it
-                    if useThing:isContainer() then
-                        if useThing:getParentContainer() then
-                            g_game.open(useThing, useThing:getParentContainer())
-                        else
-                            g_game.open(useThing)
-                        end
-                        return true
-                    elseif useThing:isMultiUse() then
-                        startUseWith(useThing)
-                        return true
-                    else
-                        g_game.use(useThing)
-                        return true
-                    end
-                end
-
-                -- Standard handling for other usable items
-                -- For containers (including corpses), only execute quicklooting with Smart Left-Click
-                -- Exception: If container has a parent container, open it instead of quicklooting
-                if useThing:isContainer() or useThing:isLyingCorpse() then
-                    -- Prioritize containers/corpses even if there are creatures on the same tile
-                    if useThing:getParentContainer() then
-                        -- For containers inside other containers, we want to open them, not quickloot
-                        g_game.open(useThing, useThing:getParentContainer())
-                        return true
-                    elseif useThing:isPickupable() then
-                        -- For pickupable containers like quivers, backpacks, etc., open them instead of quicklooting
-                        g_game.open(useThing)
-                        return true
-                    elseif g_game.getFeature(GameThingQuickLoot) and modules.game_quickloot then
-                        -- For containers in the world (not inside another container), quickloot
-                        g_game.sendQuickLoot(1, useThing)
-                        return true
-                    end
-                elseif useThing:isMultiUse() then
-                    startUseWith(useThing)
-                    return true
-                else
-                    local useResult = g_game.use(useThing)
-
-                    if useResult ~= nil then
-                        return true
-                    end
-                end
-
-                -- If we couldn't use the item through any of the above methods,
-                -- but it's pickupable, try to pick it up (like in Classic Control mode)
-                if useThing:isPickupable() then
-                    g_game.move(useThing, useThing:getPosition(), 1)
-                    return true
-                end
-
-                -- If we couldn't use or pick up the item, try to walk to its position if possible
-                local position = useThing:getPosition()
-                if position and position.x ~= 0 and autoWalkPos then
-                    local player = g_game.getLocalPlayer()
-                    player:autoWalk(autoWalkPos)
-                    return true
-                end
-
-                return true
-            end
-
-            -- Only look at things if no usable item was found
-            if lookThing and lookThing ~= useThing then
-                local lookPosition = lookThing:getPosition()
-                local lookTile = nil
-
-                if lookPosition and lookPosition.x ~= 0 then
-                    lookTile = g_map.getTile(lookPosition)
-                end
-
-                -- For walkable tiles, we want to walk
-                if lookTile and lookTile:isWalkable() and autoWalkPos then
-                    local player = g_game.getLocalPlayer()
-                    player:autoWalk(autoWalkPos)
-                    return true
-                else
-                    -- Only look at the thing if we haven't used it already
-                    g_game.look(lookThing)
-                    return true
-                end
-            end
-
-            if autoWalkPos then
-                local player = g_game.getLocalPlayer()
-                player:autoWalk(autoWalkPos)
-                return true
-            end
+        if smartLeftClick and mouseButton == MouseLeftButton and keyboardModifiers == KeyboardNoModifier and
+            doSmartLeftClick(autoWalkPos, lookThing, useThing, creatureThing, attackCreature) then
+            return true
         end
 
         if keyboardModifiers == KeyboardNoModifier and mouseButton == MouseRightButton then
