@@ -92,9 +92,9 @@ The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to bui
 ## 6. Vocations
 
 The old vocation entries in `data/XML/vocations.xml` go, and so does the old mastery system
-(leaning towards removing it; see [the old masteries](#the-old-masteries)). Nobody has a
-mastery yet, so nothing needs refunding; the mastery items (type plates, mastery tokens,
-outfits) can be reused for something else.
+(see [the old masteries](#the-old-masteries)). Nobody has a mastery yet, so nothing needs
+refunding. The mastery items (type plates, mastery tokens, outfits) stay in the game; what
+they are used for is not decided yet.
 
 ### Rules
 
@@ -113,19 +113,28 @@ outfits) can be reused for something else.
 8. One vocation per character.
 9. [Factions](#10-factions) are a separate system.
 
-| Player level | Rank | Title (placeholder, see below) |
-| --- | --- | --- |
-| 1–19 | — | Regular Trainer |
-| 20–29 | 1 | Novice |
-| 30–39 | 2 | Intermediate |
-| 40–49 | 3 | Advanced |
-| 50–59 | 4 | Expert |
-| 60+ | 5 | Master |
+| Player level | Rank |
+| --- | --- |
+| 1–19 | — (regular Trainer) |
+| 20–29 | 1 |
+| 30–39 | 2 |
+| 40–49 | 3 |
+| 50–59 | 4 |
+| 60+ | 5 |
 
-### The six vocations
+Rank titles (Ace Trainer and Angler agreed, the others proposed):
+
+| Rank | Ace Trainer | Catcher | Breeder | Ranger | Angler | Medic |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Novice Trainer | Rookie Catcher | Novice Breeder | Ranger Cadet | Novice Angler | Medic Trainee |
+| 2 | Pokémon Trainer | Ball Adept | Egg Keeper | Field Ranger | Angler | Field Medic |
+| 3 | Experienced Trainer | Seasoned Catcher | Skilled Breeder | Area Ranger | Skilled Angler | Senior Medic |
+| 4 | Veteran Trainer | Elite Catcher | Expert Breeder | Ranger Captain | Expert Angler | Pokémon Doctor |
+| 5 | Ace Trainer | Master Catcher | Master Breeder | Top Ranger | Master Angler | Chief Medic |
+
+### The vocations
 
 **Ace Trainer**: battles and experience. Its ranks are the Trainer titles, ending at Ace
-Trainer: Novice Trainer, Pokémon Trainer, Experienced Trainer, Veteran Trainer, Ace
 Trainer.
 
 | Rank | 1 | 2 | 3 | 4 | 5 |
@@ -148,13 +157,14 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 
 | Rank | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- |
-| Hatching time | -3% | -6% | -9% | -12% | -15% |
-| Time until the daycare gives an egg | -2% | -4% | -6% | -8% | -10% |
+| Hatching time | -5% | -10% | -15% | -20% | -25% |
+| Hatching an egg (now 60 minutes) | 57 min | 54 min | 51 min | 48 min | 45 min |
+| Time until the daycare gives an egg | -5% | -10% | -15% | -20% | -25% |
 
 Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
 is time based: an egg in an incubator hatches after 60 minutes
-(`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`), so rank 5 would be about
-51 minutes.
+(`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`). At the top rank it takes 45
+minutes (agreed), and the same percentages shorten the time until the daycare gives an egg.
 
 How the daycare makes eggs today (`npc/scripts/daycareFemale.lua`): a female and a
 compatible male train for at least 24 hours (players pick 24 or 48). When the female is
@@ -162,8 +172,8 @@ taken out, there is a chance of an egg: `eggChance` out of 300 (20 for most spec
 about 7%), plus held-item bonuses. Each failure raises the next chance, so an egg takes
 about 10 tries on average (about 18 for species with chance 10). After an egg, the player
 must wait 15 days before the next one. That is about 10 days for the first egg and about
-25 days between eggs, so the daycare probably needs rebalancing for everyone before the
-Breeder bonus; the bonus could then shorten the training time, the 15-day wait, or both.
+25 days between eggs, so the daycare probably needs rebalancing for everyone first; the
+Breeder percentages then apply to the new timing.
 
 **Ranger**: tracking wild Pokémon with a radar.
 
@@ -181,7 +191,7 @@ a limited range, and one type filter at a time (agreed).
 
 **Angler**: fishing. Replaces the Researcher, which is dropped.
 
-| Rank | Title (proposed) | Ability (proposed) |
+| Rank | Title | Ability |
 | --- | --- | --- |
 | 1 | Novice Angler | Bonus fishing experience |
 | 2 | Angler | More fishing experience; see which Pokémon can be fished at a spot |
@@ -218,20 +228,18 @@ do not change.
   ball recovery after failed throws, the Ranger radar (regular Pokémon first, shinies and
   legendaries at higher ranks, with a cooldown, limited range and one type filter), Medics
   only heal outside duels, the Ace Trainer titles, the Angler in place of the Researcher,
-  and the Breeder shortening the time until the daycare gives an egg.
-- **Proposed:** the rank levels, the percentages, the Breeder values, and the details of
-  the Ranger and Angler ranks.
-- **Rank titles:** Novice to Master are placeholders. Ace Trainer uses the Trainer titles
-  and Angler the angler titles above; the others are still to be chosen.
+  the Breeder values (hatching 45 minutes at the top rank, the same percentages for daycare
+  eggs), the Angler ranks, and removing the masteries while keeping their items.
+- **Proposed:** the rank levels, the other percentages, the Ranger numbers, and the rank
+  titles other than Ace Trainer and Angler.
 
 ### To decide
 
-1. Confirm removing the old masteries, and what the mastery items become.
+1. What the mastery items (type plates, mastery tokens, outfits) are used for.
 2. The Ranger numbers (range and cooldown per rank).
-3. The Angler perks per rank.
-4. Rebalancing the daycare egg timing (24-hour training, about 7% chance, 15-day wait),
-   and what the Breeder shortens.
-5. The rank titles for Catcher, Breeder, Ranger and Medic.
+3. The new daycare egg timing for everyone (today: 24-hour training, about 7% chance,
+   15-day wait).
+4. The proposed rank titles for Catcher, Breeder, Ranger and Medic.
 
 ### The old masteries
 
