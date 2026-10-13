@@ -5,7 +5,7 @@ so. Items marked **To decide** need an answer before work starts.
 
 ## Order
 
-1. [Depot overflow fix](#1-depot-overflow-fix-pokémon-are-lost-today): Pokémon are lost today.
+1. [New depot](#1-new-depot): Poké boxes, inbox and stash.
 2. [Auto-walk fix](#2-auto-walk-fix).
 3. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
 4. [Website: live status and Discord card](#4-website).
@@ -28,27 +28,30 @@ Also open: the [Android signing key](client-updates.md#one-time-setup) (needed b
 players install the APK for real), a phone UI pass, and a security check of the live
 server (open ports, SSH, firewall).
 
-## 1. Depot overflow fix (Pokémon are lost today)
+## 1. New depot
 
 A player's depot holds up to 2,000 items (`Group::getDepotLimit` in `src/group.cpp`; staff
 groups have 3,000 to 5,000 in `data/XML/groups.xml`). A Pokémon caught or given as a reward
-goes to the depot when the bag is full. When the depot is full too, `doCreatePokemonBall`
-(`data/lib/ps/config/balls.lua`) and `doPlayerEnforcePokemonLimit`
-(`data/lib/ps/functions/player.lua`) only log `Can't send to depot` and the ball is lost.
+goes to the depot when the bag is full (`doCreatePokemonBall` in
+`data/lib/ps/config/balls.lua`, `doPlayerEnforcePokemonLimit` in
+`data/lib/ps/functions/player.lua`). These deliveries go in even past the limit, so a full
+depot does not lose Pokémon (checked in the code; see below). An over-limit depot only
+stops the player from putting more items in by hand.
 
 ### Audit: PokeVerse depot today
 
-- One depot per town: a depot locker that holds a depot chest (item 2594); everything else
-  is normal containers inside it.
-- `doPlayerAddDepotItem` (`src/luascript.cpp`) adds an item to the depot through the normal
-  checks, so a full depot refuses it (`Depot::__queryAdd` in `src/depot.cpp` returns
-  "depot is full"). The engine has a flag that skips the limit (`FLAG_NOLIMIT`), but this
-  function never uses it.
+- One depot (number 0) shared by every Pokémon Center: a depot locker that holds a depot
+  chest (item 2594); everything else is normal containers inside it.
+- `doPlayerAddDepotItem` (`src/luascript.cpp`) moves the item with `FLAG_NOLIMIT`, which
+  skips both the depot limit (`Depot::__queryAdd` in `src/depot.cpp`) and the full
+  container check (`Container::__queryAdd` and `__queryMaxCount` in `src/container.cpp`).
+  So deliveries never fail because the depot is full. The `Can't send to depot` log line
+  is only reached for other errors (no player, no item).
 - Each Pokémon ball counts as one item, the same as a potion or a stone.
 - The code already warns that lowering the limit makes items disappear
   (`group.cpp`: "THIS IS VERY DANGEROUS, ITEMS CAN DISAPPEAR").
 - Used by NPC battles, Rocket battles, the Frontier Island arenas, the Pokémon market and
-  PokéTrader NPCs, and surprise boxes, so all of them can hit the same problem.
+  PokéTrader NPCs, and surprise boxes.
 
 ### Audit: the Redemption depot
 
@@ -77,10 +80,6 @@ server (Canary) is not, so this part comes from the client code plus how Canary 
 The depot is already one depot shared by every Pokémon Center, so it can be opened
 anywhere (like the PC in the games); the new depot stays shared. All five parts, built on our own extended messages (JSON, like the Tasks window) and
 reusing the Redemption client windows where they exist.
-
-**Step 0, first: a delivery never fails.** Until the inbox exists, a Pokémon or item that
-doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
-`doPlayerAddDepotItem`), and the player is told. Small, and it stops the data loss now.
 
 1. **Inbox:** deliveries arrive here: mail (items and Pokémon mailed to the player),
    items that don't fit in the bag, rewards, and later GTS purchases (items and Pokémon)
@@ -128,7 +127,7 @@ and says "Loot not collected! Check your backpack.").
 their depot move into Poké boxes and the stackable items into the stash; the rest stays.
 Logged, so it can be checked.
 
-**Order:** step 0, then the inbox, Poké boxes, stash, depot search, and the reward chest
+**Order:** the inbox, Poké boxes, stash, depot search, and the reward chest
 when bosses or raids need it.
 
 **To decide:**
@@ -136,7 +135,7 @@ when bosses or raids need it.
 - Whether Premium gets anything extra (for example box wallpapers or names), never more
   safety.
 
-- Search the live server logs for `Can't send to depot` to find Pokémon already lost.
+- To be sure, search the live server logs for `Can't send to depot`.
 - Raising the depot limit for everyone is not a fix on its own: it moves the problem, and
   every depot item is saved again on each save.
 
