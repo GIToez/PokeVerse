@@ -17,6 +17,10 @@ so. Items marked **To decide** need an answer before work starts.
    [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial).
 9. [Factions](#10-factions).
 
+Alongside, as small separate changes: the [bug fixes and small ideas](#11-bug-fixes-and-small-ideas),
+the [level requirement audit](#12-level-requirement-audit) and
+[switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content).
+
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
 server (open ports, SSH, firewall).
@@ -93,8 +97,9 @@ The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to bui
 
 The old vocation entries in `data/XML/vocations.xml` go, and so does the old mastery system
 (see [the old masteries](#the-old-masteries)). Nobody has a mastery yet, so nothing needs
-refunding. The mastery items (type plates, mastery tokens, outfits) stay in the game; what
-they are used for is not decided yet.
+refunding. The mastery items (type plates, mastery tokens, outfits) stay in the game. Ideas (not
+decided): give the outfits to the vocations (for example as rank rewards), and use the type
+plates and tokens as rank-up quest costs or for crafting.
 
 ### Rules
 
@@ -207,7 +212,7 @@ screen shows about 15 by 11 tiles. Proposed limits on "too far":
 - Legendary scans get their own longer cooldown (for example 10 minutes).
 - Legendaries only appear through quests and events (they are not in the map spawns), so
   legendary tracking mostly matters for event spawns.
-- "Specials" still needs defining (event Pokémon, bosses?).
+- Specials are event Pokémon, such as Christmas Pikachu (agreed).
 
 **Angler**: fishing. Replaces the Researcher, which is dropped.
 
@@ -256,12 +261,13 @@ do not change.
   The egg is guaranteed at 14 days with a chance to come sooner; Breeder gets a chance of a
   second egg.
   The early egg chance is from day 7 at 10% a day, and Breeders get 11–15%.
+  Ranger specials are event Pokémon, such as Christmas Pikachu.
 - **Proposed:** the rank levels and the other percentages.
 
 ### To decide
 
-1. What the mastery items (type plates, mastery tokens, outfits) are used for.
-2. What counts as a "special" for the Ranger radar.
+1. What the mastery items are used for. Ideas: outfits as vocation rewards, plates and
+   tokens for rank-ups or crafting.
 
 ### The old masteries
 
@@ -352,6 +358,50 @@ Team Rocket and other factions, separate from vocations:
   games, and the points raise their faction rank;
 - faction reputation and ranks are separate from vocation ranks;
 - faction membership does not change vocation bonuses.
+
+## 11. Bug fixes and small ideas
+
+From the `#notes` channel:
+
+- **Look text for field moves:** looking at an object a field move works on says so, for
+  example "You see a stone. It looks like it can be smashed." for the Rock Smash stone
+  (item 1285), and the same for Cut, Strength and the others.
+- **Battle list:** a Pokémon's level does not update until one of the filters is clicked.
+- **WASD double step:** walking with WASD sometimes moves two tiles instead of one; the
+  arrow keys do not. Cause unknown.
+- **Switching Pokémon:** the player is invulnerable for 0.5 seconds after switching.
+- **Bugged stairs:** going down some stairs works but lags or disconnects the player. Known:
+  the stone stairway (item 3220) at 3295, 252, 7, and the stairs at 3853, 813, 7. Check
+  for more.
+- **Gym leaders** say how many are left (to confirm: gym trainers left before the leader,
+  or badges left).
+
+The missing clickable responses (gym leaders and others) are part of the
+[NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
+[Pokémon storage](#7-pokémon-storage).
+
+## 12. Level requirement audit
+
+Go through the level requirements of every feature and lower the ones that don't fit.
+For example, buying a house needs level 50 (`levelToBuyHouse = 50` in
+`core/server/config.lua`), which is too high. List each requirement with its current and
+proposed level, and decide them together.
+
+## 13. Switch off the old PSoul and anniversary content
+
+Switch off, but keep, the content left from PSoul (the original game) so it can be reused
+for PokeVerse later. Do not delete it.
+
+- **PSoul:** about 18 files mention it, including quests (`quests.xml`, the
+  `quest_chief*` and `quest_prophetSlowking` NPCs, `legendaryChest.lua`), achievements,
+  Pokémon addons, the Logan NPC, and a psoul.net link in the welcome message
+  (`creaturescripts/scripts/login.lua`).
+- **Anniversary and birthday events:** about 38 files, including the global event
+  (`globalevents/scripts/start.lua`, `lib/ps/events/globalevents/anniversary.lua`), the
+  cake monsters (`monster/Events/Anniversary`), the surprise bag, the magic flame, and the
+  `event_anniversary` and `event_birthday` NPCs.
+- Switch them off in one place where possible (a config flag), so turning them back on is
+  easy.
 
 ## Going private
 
