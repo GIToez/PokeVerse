@@ -76,7 +76,11 @@ public:
     static OperatingSystem getOsByName(std::string shortName);
 
 private:
+#ifdef ANDROID
+    Device m_device{ Device(Mobile, Android) };
+#else
     Device m_device{ Device(Desktop, Windows) };
+#endif
 
     static std::unordered_map<DeviceType, std::string> m_deviceShortNames;
     static std::unordered_map<OperatingSystem, std::string> m_osShortNames;

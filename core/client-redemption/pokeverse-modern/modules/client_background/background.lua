@@ -46,10 +46,11 @@ function init()
 
     logo = background:getChildById('logo')
     clientVersionLabel = background:getChildById('clientVersionLabel')
+    -- the NDK compiler string is a full toolchain URL, wider than a phone screen
+    local compiler = g_platform.isMobile() and '' or g_app.getBuildCompiler() .. ' - '
     clientVersionLabel:setText(g_app.getName() .. ' ' .. g_app.getVersion() .. '\n' .. 'Rev  ' ..
                                    g_app.getBuildRevision() .. ' (' .. g_app.getBuildCommit() .. ')\n' .. 'Built on ' ..
-                                   g_app.getBuildDate() .. '\n' .. g_app.getBuildCompiler() .. ' - ' ..
-                                   g_app.getBuildArch())
+                                   g_app.getBuildDate() .. '\n' .. compiler .. g_app.getBuildArch())
 
     connect(background, { onGeometryChange = layoutLogo })
     layoutLogo()

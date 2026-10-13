@@ -29,6 +29,11 @@ if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
 elseif(APPLE)
   target_compile_definitions(lua51 PRIVATE LUA_USE_MACOSX)
 endif()
+# Lua 5.1 keeps string bytes right after the TString header (svalue(ts) is ts + 1), so
+# bionic's FORTIFY sees a zero-sized object and aborts on the first strchr in the GC.
+if(ANDROID)
+  target_compile_options(lua51 PRIVATE -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0)
+endif()
 
 set(LUAJIT_INCLUDE_DIR "${lua51_SOURCE_DIR}/src;${lua51_SOURCE_DIR}/etc")
 set(LUAJIT_LIBRARY lua51)
