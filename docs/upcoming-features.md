@@ -19,7 +19,8 @@ so. Items marked **To decide** need an answer before work starts.
 
 Alongside, as small separate changes: the [bug fixes and small ideas](#11-bug-fixes-and-small-ideas),
 the [level requirement audit](#12-level-requirement-audit) and
-[switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content).
+[switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content),
+and the [economy audit](#14-economy-audit) (before the GTS).
 
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
@@ -373,8 +374,11 @@ From the `#notes` channel:
 - **Bugged stairs:** going down some stairs works but lags or disconnects the player. Known:
   the stone stairway (item 3220) at 3295, 252, 7, and the stairs at 3853, 813, 7. Check
   for more.
-- **Gym leaders** say how many are left (to confirm: gym trainers left before the leader,
-  or badges left).
+- **Gym leaders** say how many of the gym's trainers are left to beat before the player
+  can challenge them.
+- **Hunting tasks get a time limit** (`data/lib/ps/systems/064-huntingTasks.lua`): a hunt
+  not finished in time fails on its own and is removed. **To decide:** how long (for
+  example by size), and whether a failed hunt costs anything.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
@@ -383,8 +387,9 @@ The missing clickable responses (gym leaders and others) are part of the
 ## 12. Level requirement audit
 
 Go through the level requirements of every feature and lower the ones that don't fit.
-For example, buying a house needs level 50 (`levelToBuyHouse = 50` in
-`core/server/config.lua`), which is too high. List each requirement with its current and
+Known so far: buying a house needs level 50 (`levelToBuyHouse = 50` in
+`core/server/config.lua`), and the Safari Zone needs level 30
+(`npc/scripts/saffariZoneEnter.lua`). Both are probably too high. List each requirement with its current and
 proposed level, and decide them together.
 
 ## 13. Switch off the old PSoul and anniversary content
@@ -402,6 +407,21 @@ for PokeVerse later. Do not delete it.
   `event_anniversary` and `event_birthday` NPCs.
 - Switch them off in one place where possible (a config flag), so turning them back on is
   easy.
+
+## 14. Economy audit
+
+Check that money and rewards are balanced against each other, and fix what is too high or
+too low.
+
+- Every way money and items come in: task and hunting rewards (the biggest worry), daily
+  tasks, quests, selling items to NPCs, drops, and later GTS sales.
+- Every way money goes out: NPC shops, healing, travel, refreshing the hunting offers,
+  houses, and later the GTS fees.
+- Compare them per hour of play at each level range, write the numbers in one table, and
+  balance from there.
+- Keep all reward values in config tables, so tuning is easy.
+- Track it over time: total money on the server (bank plus inventories), shown by a staff
+  command or the Discord bot.
 
 ## Going private
 
