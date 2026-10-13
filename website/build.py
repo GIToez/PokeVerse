@@ -162,10 +162,13 @@ class Site:
             self.write(rel, encode_png(*image))
         return rel
 
-    def portrait_image(self, entry):
+    def portrait_image(self, entry, number):
         """The face icon the game shows for the Pokémon. dexPortrait is not used: past #151
         it points at unrelated map items."""
         portrait = entry.get("portrait") or 0
+        if portrait == -1:
+            # the server's rule for -1 (core/server/data/lib/ps/config/pokemon.lua)
+            portrait = 28149 + number
         return self.item_image(portrait) if portrait > 0 else None
 
     def outfit_image(self, look, name):
@@ -256,7 +259,7 @@ class Site:
         for number, name, entry, wild in species:
             types = [label(t) for t in entry.get("pTypes") or []]
             gen, region = generation(number)
-            portrait = self.portrait_image(entry)
+            portrait = self.portrait_image(entry, number)
             sprite = self.outfit_image(wild["look"], name)
             cards.append((number, name, types, gen, portrait or sprite))
             self.write_pokemon(number, name, entry, wild, types, gen, region, moves, evolves_from,
