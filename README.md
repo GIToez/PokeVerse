@@ -16,7 +16,7 @@ PokeVerse is being rebuilt from a clean, organized foundation, starting from the
 Source code lives in `core/`; compiled output lives in `builds/`. The two are never mixed.
 
 See [`docs/project-structure.md`](docs/project-structure.md) for details and
-[`docs/phase1-plan.md`](docs/phase1-plan.md) for the current roadmap.
+[`docs/upcoming-features.md`](docs/upcoming-features.md) for what is planned next.
 
 ## Play locally on Windows
 
