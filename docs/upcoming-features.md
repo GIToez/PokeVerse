@@ -91,16 +91,18 @@ The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to bui
 
 ## 6. Vocations
 
-All the old vocations go: the "Trainer" entries and the nine element masteries (Blaze,
-Hurricane, Voltagic, Spectrum, Vital, Gaia, Avalanche, Heremit, Zen) in
-`data/XML/vocations.xml` and `data/lib/ps/systems/014-mastery.lua`.
+The old vocation entries in `data/XML/vocations.xml` go. Whether the old masteries go too
+is still open; see [the old masteries](#the-old-masteries).
 
 ### Rules
 
 1. Players begin as regular Trainers.
-2. At player level 20 they choose one vocation. The choice is permanent.
-3. Ranks unlock automatically with player level: 20, 30, 40, 50 and 60. There is no
-   separate vocation level or EXP.
+2. From player level 20 they choose one vocation through a quest line. The choice is
+   permanent: there is no paid change. A player who wants another vocation plays another
+   character slot. (A Soul Coins change item was considered and is leaning no.)
+3. Each rank needs a player level (20, 30, 40, 50, 60) and is earned through that
+   vocation's quests and tasks, not automatically. There is no separate vocation level or
+   EXP.
 4. Every vocation has five ranks.
 5. Vocation bonuses never increase Pokémon damage, HP, Attack, Defense, Special Attack,
    Special Defense or Speed.
@@ -109,7 +111,7 @@ Hurricane, Voltagic, Spectrum, Vital, Gaia, Avalanche, Heremit, Zen) in
 8. One vocation per character.
 9. [Factions](#10-factions) are a separate system.
 
-| Player level | Rank | Title (placeholder) |
+| Player level | Rank | Title (placeholder, see below) |
 | --- | --- | --- |
 | 1–19 | — | Regular Trainer |
 | 20–29 | 1 | Novice |
@@ -120,7 +122,9 @@ Hurricane, Voltagic, Spectrum, Vital, Gaia, Avalanche, Heremit, Zen) in
 
 ### The six vocations
 
-**Ace Trainer**: battles and experience.
+**Ace Trainer**: battles and experience. Its ranks are the Trainer titles, ending at Ace
+Trainer: Novice Trainer, Pokémon Trainer, Experienced Trainer, Veteran Trainer, Ace
+Trainer.
 
 | Rank | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- |
@@ -142,25 +146,29 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 
 | Rank | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- |
-| Hatching speed | +3% | +6% | +9% | +12% | +15% |
+| Hatching time | -3% | -6% | -9% | -12% | -15% |
 | Daycare efficiency | +2% | +4% | +6% | +8% | +10% |
 
-Uses the existing breeding and daycare. IV, EV and nature limits do not change.
+Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
+is time based: an egg in an incubator hatches after 60 minutes
+(`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`), so rank 5 would be about
+51 minutes.
 
-**Ranger**: tracking wild Pokémon.
+**Ranger**: tracking wild Pokémon with a radar.
 
-| Rank | Ability |
+| Rank | Ability (proposed) |
 | --- | --- |
-| 1 | Detect nearby spawned Pokémon |
-| 2 | Longer tracking range |
+| 1 | Radar for nearby regular Pokémon |
+| 2 | Longer range; pick a type to look for |
 | 3 | See the species and direction |
-| 4 | Filter tracking by species |
-| 5 | Longest range and advanced filters |
+| 4 | Shiny Pokémon show up on the radar |
+| 5 | Longest range; legendaries show up |
 
 Only Pokémon that have actually spawned are found, including off screen. Spawns and
-shiny or legendary rates do not change.
+shiny or legendary rates do not change. To keep it balanced: a cooldown between scans,
+a limited range, and one type filter at a time.
 
-**Researcher**: Pokédex knowledge and analysis.
+**Researcher**: Pokédex knowledge and analysis. **May be dropped**: no good perks yet.
 
 | Rank | Ability |
 | --- | --- |
@@ -182,44 +190,68 @@ IVs and EVs of their own Pokémon.
 | Situation | Medic bonus |
 | --- | --- |
 | Outside combat | Yes |
-| PvE combat | Yes |
-| PvP combat | No |
+| Fighting wild Pokémon | Yes |
+| In a duel with a player or an NPC trainer | No |
 
-Healing items work in PvE. Medics may heal other players' Pokémon where target healing
-supports it. The PvP healing-item rules do not change.
+Medics may heal other players' Pokémon, but nobody who is in a duel with a player or an
+NPC trainer: in practice only during fights with wild Pokémon. The PvP healing-item rules
+do not change.
 
 ### Status
 
-- **Confirmed:** permanent choice at level 20, ranks from player level, no combat-stat
-  bonuses, ball recovery after failed throws, Ranger tracking, and Medic bonuses in PvE
-  but not PvP.
+- **Confirmed:** permanent choice from level 20 through a quest line, ranks earned through
+  quests and tasks at the required levels, no paid vocation change, no combat-stat bonuses,
+  ball recovery after failed throws, the Ranger radar (regular Pokémon first, shinies and
+  legendaries at higher ranks), Medics only heal outside duels, and the Ace Trainer titles.
 - **Proposed:** the rank levels, the percentages, the Breeder values, and the details of
   the Ranger and Researcher ranks.
-- **Rank titles:** Novice to Master are placeholders. The earlier Trainer titles were
-  Novice Trainer, Pokémon Trainer, Experienced Trainer, Veteran Trainer and Ace Trainer.
-  Each vocation's titles are still to be chosen.
+- **Rank titles:** Novice to Master are placeholders. Ace Trainer uses the Trainer titles
+  above; the other vocations' titles are still to be chosen.
 
 ### To decide
 
-1. The masteries: the spec also says "the nine-category mastery progression stays
-   independent", which conflicts with removing all the old vocations. Do the masteries go,
-   or stay as their own system?
-2. "Ace Trainer" is both a vocation and the old rank-5 Trainer title. Rename one.
+1. Do the old masteries go, or stay as their own system (see below)?
+2. Keep the Researcher, replace it, or drop it?
 3. Characters that already have a mastery vocation go back to Trainer. Are the stones and
    tokens they spent refunded?
-4. Is there a rare paid item to change vocation after a wrong pick?
-5. Can Rangers track shinies and legendaries, or only regular spawns?
-6. What are the Researcher rewards (for example items for Pokédex entries, or research
-   tasks)?
-7. What counts as "in PvP combat" for the Medic (for example X seconds after attacking or
-   being attacked by a player)?
-8. Is hatching based on steps or time, and what does "daycare efficiency" improve (leveling
-   speed, cost, results)?
+4. The Ranger rank details (which rank unlocks shinies and legendaries, range, cooldown).
+5. What "daycare efficiency" improves (leveling speed, cost, results).
+6. Each vocation's rank titles.
+
+### The old masteries
+
+Nine masteries from the original game (`data/lib/ps/systems/014-mastery.lua`, the
+`mastery_*` NPCs and `shop_mastery.lua`). Each is tied to one or more Pokémon types:
+
+| Mastery | Types | Perk |
+| --- | --- | --- |
+| Blaze | Fire | Burn damage |
+| Hurricane | Flying, Dragon | Fly speed, finding without energy, evasion |
+| Voltagic | Electric, Steel | Energy regeneration, paralyze duration |
+| Spectrum | Ghost, Poison | Poison damage, levitate speed |
+| Vital | Fighting, Normal, Fairy | Ride speed, buff duration |
+| Gaia | Grass, Bug | Food regeneration |
+| Avalanche | Ice, Water | Surf and dive speed, freeze chance |
+| Heremit | Ground, Rock | Low-accuracy duration |
+| Zen | Psychic, Dark | Blink and teleport cooldown |
+
+- **Joining** (one per character): trainer level 85, a payment in type plates (for
+  example 12 Flame Plates for Blaze) and an NPC trainer battle.
+- **Ranks:** Starter plus five more. Each needs a higher level (85 up to 130), mastery
+  tokens (9 up to 42) and a mastery dungeon (dungeon level 70 up to 90).
+- **Bonus:** the player's Pokémon of the mastery's types get extra attack: +1, +3, +6, +12
+  and +20 by rank (not in tournaments). The defense bonus is switched off in the code. The
+  perk unlocks at one of the higher ranks, plus outfits and a mastery shop.
+
+The attack bonus is a direct combat-stat boost, which goes against the new vocation rules.
+Keeping the masteries would mean at least removing or replacing that bonus.
 
 ### Also planned
 
-- At level 20, a window or NPC presents the six vocations with a confirmation step.
-- A banner at each rank-up (reusing the level-up banners).
+- The vocation quest line starts at level 20 and presents the vocations, with a
+  confirmation before the permanent choice.
+- Rank-up quests and tasks in the task list, and a banner at each rank-up (reusing the
+  level-up banners).
 - All values (levels, percentages) in one config table, so tuning is a one-line change.
 - Server tests that check the bonuses never touch combat stats and never apply in PvP.
 - Vocation and rank in the Discord bot's trainer lookup, and vocation pages on the website.
@@ -271,10 +303,10 @@ Replaces the player marketplace. Built on the existing market module (the legacy
 Team Rocket and other factions, separate from vocations:
 
 - any vocation can join any faction;
+- players earn faction points from faction tasks, like the Pokémon Ranger tasks in the
+  games, and the points raise their faction rank;
 - faction reputation and ranks are separate from vocation ranks;
 - faction membership does not change vocation bonuses.
-
-Possibly faction quests and rewards.
 
 ## Going private
 
