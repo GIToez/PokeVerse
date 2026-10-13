@@ -1,8 +1,8 @@
 # Phase 3: PokeVerse on the Redemption client
 
 The Redemption client (`core/client-redemption`) runs the PokeVerse modules and data on the
-OTClient Redemption engine. The legacy client (`core/client-legacy`) is not edited and stays
-the fallback until Redemption covers everything; then it is phased out.
+OTClient Redemption engine. It is the only client: the old one is no longer built, and only
+its PokeVerse `data/` and `modules/` remain in `core/client-legacy`.
 
 ## How the client is put together
 
@@ -59,31 +59,12 @@ Windows builds with the `windows-release` preset (Visual Studio and vcpkg), Andr
 `scripts/build-android-client.sh`. The **Client release** workflow builds all three; see
 [client-updates.md](client-updates.md) for publishing.
 
-The legacy client also builds on Linux (`scripts/assemble-legacy-linux-client.sh`), for the
-parity tests and as a fallback.
+## Parity tests (done)
 
-## Parity tests
-
-`scripts/client-test/run-parity.sh` runs one scripted session on both clients against a
-throwaway server and compares them:
-
-- `server.sh` starts the server and a MariaDB on port 3307 and restores the database
-  between the two client sessions.
-- The `client_selftest` module drives the session with real keyboard and mouse input
-  (xdotool) and takes screenshots.
-- `packet-recorder.py` sits between client and server, decrypts the traffic and records
-  what each client sent; the two logs must be identical.
-- `compare-screenshots.py` compares each screenshot pair (1% tolerance). Animated PNGs are
-  frozen on their last frame in the test copies, so animation timing does not count.
-
-```bash
-DISPLAY=:99 scripts/client-test/run-parity.sh --legacy-build build/client \
-  --redemption core/client-redemption/otclient --server build/server/pokeverse-server --out /tmp/parity
-```
-
-Results are in `<out>/summary.txt`, `<out>/packets.diff` and `<out>/screenshots/report.md`.
-
-### Checklist
+Before the old client was retired, a parity test ran the same scripted session on both
+clients against a throwaway server and compared the packets they sent and their
+screenshots. The test is gone with the old client (it is in the git history); its last
+results:
 
 | Area | Covered by the self-test | Result |
 | --- | --- | --- |

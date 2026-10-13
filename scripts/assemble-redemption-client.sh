@@ -9,17 +9,15 @@
 # (otclient or PokeVerse.exe, DLLs...).
 #
 # With --classic the tree is the previous layout instead: the legacy modules and data with
-# the overlay core/client-redemption/pokeverse on top and no Redemption modules. The parity
-# tests use it as the reference for unchanged behaviour.
+# the overlay core/client-redemption/pokeverse on top and no Redemption modules.
 #
 # Options:
 #   --classic          the previous layout (see above)
 #   --host <address>   point the client at this server instead of 127.0.0.1
-#   --port <port>      login port (default 7564; the parity tests use a proxy port)
+#   --port <port>      login port (default 7564)
 #   --updater <url>    enable the updater with this manifest URL (live packages only)
 #   --discord <url>    Discord invite for the client's Discord buttons (default: the one in the modules)
 #   --link             hard-link the legacy data instead of copying it (local testing)
-#   --test             also ship the self-test module (scripts/client-test/client_selftest)
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
@@ -32,7 +30,6 @@ port=""
 updater=""
 discord=""
 link=0
-test_module=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -41,13 +38,12 @@ while [ $# -gt 0 ]; do
     --updater) updater=$2; shift 2 ;;
     --discord) discord=$2; shift 2 ;;
     --link) link=1; shift ;;
-    --test) test_module=1; shift ;;
     --classic) classic=1; shift ;;
     -*) echo "unknown option: $1" >&2; exit 1 ;;
     *) break ;;
   esac
 done
-[ $# -ge 1 ] || { sed -n '2,22p' "$0" >&2; exit 1; }
+[ $# -ge 1 ] || { sed -n '2,20p' "$0" >&2; exit 1; }
 out=$(realpath -m "$1")
 shift
 
@@ -169,10 +165,6 @@ if [ "$classic" = 0 ]; then
     fi
     patch -s -p1 -d "$out" --no-backup-if-mismatch -r - < "$p" || { echo "patch does not apply: $p" >&2; exit 1; }
   done
-fi
-
-if [ "$test_module" = 1 ]; then
-  cp -r "$root/scripts/client-test/client_selftest" "$out/modules/"
 fi
 
 for bin in "$@"; do

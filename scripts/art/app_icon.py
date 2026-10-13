@@ -142,8 +142,7 @@ def main():
     args = ap.parse_args()
 
     icons = {s: render_ball(s) for s in ICO_SIZES}
-    for rel in ("core/client-redemption/cmake/icon/otcicon.ico", "core/client-redemption/src/otcicon.ico",
-                "core/client-legacy/src/otcicon.ico"):
+    for rel in ("core/client-redemption/cmake/icon/otcicon.ico", "core/client-redemption/src/otcicon.ico"):
         path = os.path.join(root, rel)
         big = icons[256]
         big.save(path, format="ICO", sizes=[(s, s) for s in ICO_SIZES],
