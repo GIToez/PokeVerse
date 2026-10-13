@@ -109,8 +109,9 @@ The production bot is always built from the `main` branch of
 [PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord).
 
 **Bot updates go out by themselves.** A push to PokeVerse-Discord `main` starts the
-"Discord bot auto-deploy" workflow here, and it also checks twice a day (03:17 and 15:17 UTC)
-in case that start was missed. When `main` has a commit that is not live yet, it builds the
+"Discord bot auto-deploy" workflow here, and it also checks at 00:10 and 12:10 server time
+(`LIVE_TIMEZONE`, default America/Los_Angeles), just after the midnight restart, in case
+that start was missed. When `main` has a commit that is not live yet, it builds the
 bot and runs `discord-deploy`, which restarts only the bot. Deployed commits are remembered
 in the Actions cache (`discord-bot-deployed-<commit>`), and the Live server workflow records
 them too.

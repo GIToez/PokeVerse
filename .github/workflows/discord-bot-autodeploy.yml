@@ -3,7 +3,7 @@ name: Discord bot auto-deploy
 # Deploys the production Discord bot when PokeVerse-Discord main has a commit that is not
 # live yet. A push to PokeVerse-Discord main starts this workflow through workflow_dispatch
 # (a token with only Actions: write on this repository, kept in PokeVerse-Discord); the
-# twice-daily schedule only catches a push whose dispatch failed. The check runs
+# midnight and noon schedule only catches a push whose dispatch failed. The check runs
 # without the production environment; only a new bot commit starts the deploy job (which
 # waits for the environment's reviewers, if any).
 # Deployed commits are remembered as "discord-bot-deployed-<sha7>" cache entries, also written
@@ -11,8 +11,10 @@ name: Discord bot auto-deploy
 # Setup: docs/live-server.md
 
 on:
+  # 00:10 and 12:10 server time, just after the midnight restart. Cron is UTC only, so both
+  # daylight-saving offsets are scheduled and the window job drops the one that is off.
   schedule:
-    - cron: "17 3,15 * * *"
+    - cron: "10 7,8,19,20 * * *"
   workflow_dispatch:
 
 permissions:
@@ -20,8 +22,28 @@ permissions:
   actions: read
 
 jobs:
+  window:
+    name: Time window
+    runs-on: ubuntu-24.04
+    outputs:
+      run: ${{ steps.window.outputs.run }}
+    steps:
+      - id: window
+        env:
+          TZ: ${{ vars.LIVE_TIMEZONE || 'America/Los_Angeles' }}
+        run: |
+          hour=$(date +%H)
+          run=true
+          if [ "${{ github.event_name }}" = schedule ] && [ "$hour" != 00 ] && [ "$hour" != 12 ]; then
+            run=false
+            echo "It is $(date '+%H:%M %Z'), not the midnight or noon check: skipping." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   check:
     name: Check PokeVerse-Discord main
+    needs: window
+    if: needs.window.outputs.run == 'true'
     runs-on: ubuntu-24.04
     outputs:
       sha: ${{ steps.bot.outputs.sha }}
