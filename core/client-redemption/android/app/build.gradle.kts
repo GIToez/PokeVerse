@@ -87,6 +87,11 @@ android {
         prefab = true
     }
 
+    // kept uncompressed so the native side maps data.zip instead of inflating it into memory
+    androidResources {
+        noCompress += "zip"
+    }
+
     ndkVersion = "29.0.13599879"
 }
 
