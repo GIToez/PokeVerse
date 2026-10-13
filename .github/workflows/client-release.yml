@@ -313,7 +313,7 @@ jobs:
       - name: Website
         env:
           TAG: ${{ steps.version.outputs.tag }}
-          DISCORD_URL: ${{ vars.DISCORD_INVITE_URL }}
+          DISCORD_URL: ${{ vars.DISCORD_INVITE_URL || 'https://discord.gg/P88WNBB56E' }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends lua5.1
