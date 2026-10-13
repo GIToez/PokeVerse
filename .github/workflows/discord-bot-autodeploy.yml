@@ -1,15 +1,20 @@
 name: Discord bot auto-deploy
 
 # Deploys the production Discord bot when PokeVerse-Discord main has a commit that is not
-# live yet. The check runs every 15 minutes without the production environment; only a new
-# bot commit starts the deploy job (which waits for the environment's reviewers, if any).
+# live yet. A push to PokeVerse-Discord main starts this workflow through workflow_dispatch
+# (a token with only Actions: write on this repository, kept in PokeVerse-Discord); the
+# midnight and noon schedule only catches a push whose dispatch failed. The check runs
+# without the production environment; only a new bot commit starts the deploy job (which
+# waits for the environment's reviewers, if any).
 # Deployed commits are remembered as "discord-bot-deployed-<sha7>" cache entries, also written
 # by the Live server workflow when it deploys the bot. Only the bot restarts, never the game.
 # Setup: docs/live-server.md
 
 on:
+  # 00:10 and 12:10 server time, just after the midnight restart. Cron is UTC only, so both
+  # daylight-saving offsets are scheduled and the window job drops the one that is off.
   schedule:
-    - cron: "7,22,37,52 * * * *"
+    - cron: "10 7,8,19,20 * * *"
   workflow_dispatch:
 
 permissions:
@@ -17,8 +22,28 @@ permissions:
   actions: read
 
 jobs:
+  window:
+    name: Time window
+    runs-on: ubuntu-24.04
+    outputs:
+      run: ${{ steps.window.outputs.run }}
+    steps:
+      - id: window
+        env:
+          TZ: ${{ vars.LIVE_TIMEZONE || 'America/Los_Angeles' }}
+        run: |
+          hour=$(date +%H)
+          run=true
+          if [ "${{ github.event_name }}" = schedule ] && [ "$hour" != 00 ] && [ "$hour" != 12 ]; then
+            run=false
+            echo "It is $(date '+%H:%M %Z'), not the midnight or noon check: skipping." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   check:
     name: Check PokeVerse-Discord main
+    needs: window
+    if: needs.window.outputs.run == 'true'
     runs-on: ubuntu-24.04
     outputs:
       sha: ${{ steps.bot.outputs.sha }}
@@ -28,8 +53,12 @@ jobs:
     steps:
       - name: Bot main commit
         id: bot
+        env:
+          REPO_TOKEN: ${{ secrets.PV_REPOS_TOKEN }}
         run: |
-          commit=$(git ls-remote https://github.com/GIToez/PokeVerse-Discord.git refs/heads/main | cut -f1)
+          url=https://github.com/GIToez/PokeVerse-Discord.git
+          [ -z "$REPO_TOKEN" ] || url="https://x-access-token:$REPO_TOKEN@github.com/GIToez/PokeVerse-Discord.git"
+          commit=$(git ls-remote "$url" refs/heads/main | cut -f1)
           [ -n "$commit" ] || { echo "::error::could not read PokeVerse-Discord main"; exit 1; }
           sha=${commit::7}
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
@@ -109,6 +138,7 @@ jobs:
           repository: GIToez/PokeVerse-Discord
           ref: ${{ needs.check.outputs.commit }}
           path: bot
+          token: ${{ secrets.PV_REPOS_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:

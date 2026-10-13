@@ -108,11 +108,20 @@ same check offline (no connection to the server), for repository-level settings 
 The production bot is always built from the `main` branch of
 [PokeVerse-Discord](https://github.com/GIToez/PokeVerse-Discord).
 
-**Bot updates go out by themselves.** The "Discord bot auto-deploy" workflow checks
-PokeVerse-Discord `main` every 15 minutes. When it has a commit that is not live yet, it
-builds the bot and runs `discord-deploy`, which restarts only the bot. Deployed commits are
-remembered in the Actions cache (`discord-bot-deployed-<commit>`), and the Live server
-workflow records them too.
+**Bot updates go out by themselves.** A push to PokeVerse-Discord `main` starts the
+"Discord bot auto-deploy" workflow here, and it also checks at 00:10 and 12:10 server time
+(`LIVE_TIMEZONE`, default America/Los_Angeles), just after the midnight restart, in case
+that start was missed. When `main` has a commit that is not live yet, it builds the
+bot and runs `discord-deploy`, which restarts only the bot. Deployed commits are remembered
+in the Actions cache (`discord-bot-deployed-<commit>`), and the Live server workflow records
+them too.
+
+- Both workflows read PokeVerse-Discord with the `PV_REPOS_TOKEN` secret (a fine-grained
+  token with Contents access to PokeVerse-Discord and PokeVerse-Clients), so the bot
+  repository can be private.
+- PokeVerse-Discord starts the workflow with its `PV_DISPATCH_TOKEN` secret: a
+  fine-grained token on this repository only, with **Actions: Read and write** and nothing
+  else.
 
 - The deploy job uses the `production` environment, so each new bot version waits for the
   environment's reviewers: one approval per merge.
