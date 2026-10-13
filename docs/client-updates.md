@@ -49,7 +49,7 @@ the test builds never update.
    `gh-pages` branch and waits until it is served.
    Players get the update the next time they start the client.
 
-Pushes and pull requests run the same build and packaging without publishing, so a broken
+Pull requests that touch the client run the same build and packaging without publishing, so a broken
 package shows up before anyone publishes it. They also check that the manifests
 point at the PokeVerse-Clients site and releases, and that `PV_REPOS_TOKEN` can push to PokeVerse-Clients.
 

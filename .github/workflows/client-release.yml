@@ -7,22 +7,16 @@ name: Client release
 # Clients that are already installed then update themselves on start. This repository
 # can be private. Setup: docs/client-updates.md
 
+# Pull requests check the build; main is only built when publishing, so merges do not
+# build the same thing twice.
 on:
-  push:
-    branches: [main]
+  pull_request:
     paths:
       - core/client-redemption/**
       - core/client-legacy/data/**
       - core/client-legacy/modules/**
       - scripts/assemble-redemption-client.sh
       - scripts/set-client-server.sh
-      - scripts/make-updater-manifest.py
-      - scripts/build-android-client.sh
-      - .github/workflows/client-release.yml
-  pull_request:
-    paths:
-      - core/client-redemption/**
-      - scripts/assemble-redemption-client.sh
       - scripts/make-updater-manifest.py
       - scripts/build-android-client.sh
       - .github/workflows/client-release.yml

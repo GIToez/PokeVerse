@@ -3,7 +3,19 @@ name: Windows dev package
 on:
   push:
     branches: [main]
+    paths:
+      - core/**
+      - scripts/**
+      - "!scripts/live/**"
+      - "!scripts/art/**"
+      - .github/workflows/windows-dev-package.yml
   pull_request:
+    paths:
+      - core/**
+      - scripts/**
+      - "!scripts/live/**"
+      - "!scripts/art/**"
+      - .github/workflows/windows-dev-package.yml
   workflow_dispatch:
 
 concurrency:

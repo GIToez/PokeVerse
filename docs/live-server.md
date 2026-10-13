@@ -22,11 +22,13 @@ Press Enter twice when asked for a passphrase (GitHub cannot type one). This cre
 
 ### 2. Prepare the server (one command)
 
-Log in once with `ssh ubuntu@<server address>` and run, pasting the whole contents of
-`pokeverse-deploy.pub` between the quotes:
+From a clone of this repository, copy the setup scripts to the server and run them there,
+pasting the whole contents of `pokeverse-deploy.pub` between the quotes (the repository is
+private, so the server cannot download them itself):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/GIToez/PokeVerse/main/scripts/live/bootstrap-ovh.sh | sudo bash -s -- "ssh-ed25519 AAAA... pokeverse-deploy"
+scp -r scripts/live ubuntu@<server address>:pokeverse-live
+ssh -t ubuntu@<server address> 'sudo bash pokeverse-live/bootstrap-ovh.sh "ssh-ed25519 AAAA... pokeverse-deploy"'
 ```
 
 It installs MariaDB (listening on 127.0.0.1 only), creates the `pokeverse` user and the
@@ -59,7 +61,7 @@ secret; secrets are hidden in the logs):
 | Variable | `OVH_SSH_PORT` | optional, if SSH is not on port 22 |
 | Variable | `DISCORD_APPLICATION_ID`, `DISCORD_GUILD_ID` | production bot application and server IDs |
 | Variable | `DISCORD_ADMIN_USER_IDS`, `DISCORD_ADMIN_ROLE_IDS` | comma-separated IDs allowed to use admin commands |
-| Variable | `LIVE_AUTO_DEPLOY` | optional, `true` deploys every push to `main` after a successful rehearsal |
+| Variable | `LIVE_AUTO_DEPLOY` | optional, `true` deploys every push to `main` that changes the server (`core/server`, `core/database`, `scripts/live`) after a successful rehearsal |
 
 Use a separate Discord application for production. Never run the development bot with the
 production token: two bots with one token disconnect each other.
