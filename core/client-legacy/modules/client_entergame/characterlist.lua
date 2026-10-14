@@ -14,7 +14,46 @@ local createCharacterWindow
 -- Opened by the Donate button: the PokeVerse Discord server invite.
 local DONATE_URL = 'https://discord.gg/P88WNBB56E'
 
+-- Character slots per account; keep in step with maxCharactersPerAccount in the server's config.lua.
+local MAX_CHARACTERS = 3
+-- space kept free around the window, so it never touches the screen edges
+local SCREEN_MARGIN = 10
+
 -- private functions
+
+-- Sizes the window to the cards: one row of up to as many cards as fit on the screen, more rows
+-- below, and a scroll bar when not every row fits (small phone screens).
+local function layoutWindow()
+  if not charactersWindow or not characterList then return end
+  local layout = characterList:getLayout()
+  local cell = layout:getCellSize()
+  local spacing = layout:getCellSpacing()
+  local count = math.max(1, characterList:getChildCount())
+  local root = g_ui.getRootWidget()
+  local scrollBar = charactersWindow:getChildById('characterListScrollBar')
+
+  charactersWindow:updateLayout()
+  local listPadding = characterList:getPaddingLeft() + characterList:getPaddingRight()
+  local chromeWidth = charactersWindow:getPaddingLeft() + charactersWindow:getPaddingRight()
+  local chromeHeight = charactersWindow:getHeight() - characterList:getHeight()
+  local roomWidth = root:getWidth() - 2 * SCREEN_MARGIN - chromeWidth - listPadding - scrollBar:getWidth()
+  local roomHeight = root:getHeight() - 2 * SCREEN_MARGIN - chromeHeight - listPadding
+
+  local columns = math.max(1, math.min(count, math.floor((roomWidth + spacing) / (cell.width + spacing))))
+  local rows = math.ceil(count / columns)
+  local shownRows = math.max(1, math.min(rows, math.floor((roomHeight + spacing) / (cell.height + spacing))))
+  local listWidth = columns * (cell.width + spacing) - spacing + listPadding
+  local listHeight = shownRows * (cell.height + spacing) - spacing + listPadding
+
+  -- the buttons need about two cards of width
+  local minWidth = math.min(2 * cell.width + spacing + listPadding, roomWidth + listPadding)
+  local scrolls = shownRows < rows
+  scrollBar:setVisible(scrolls)
+  characterList:setWidth(listWidth)
+  charactersWindow:setSize({ width = math.max(listWidth + (scrolls and scrollBar:getWidth() or 0), minWidth) + chromeWidth,
+                             height = listHeight + chromeHeight })
+end
+
 local function tryLogin(charInfo, tries)
   tries = tries or 1
 
@@ -141,6 +180,7 @@ function CharacterList.init()
   connect(g_game, { onGameStart = CharacterList.destroyLoadBox })
   connect(g_game, { onLoginWait = onLoginWait })
   connect(g_game, { onGameEnd = CharacterList.showAgain })
+  connect(rootWidget, { onGeometryChange = layoutWindow })
 
   if G.characters then
     CharacterList.create(G.characters, G.characterAccount)
@@ -154,6 +194,7 @@ function CharacterList.terminate()
   disconnect(g_game, { onGameStart = CharacterList.destroyLoadBox })
   disconnect(g_game, { onLoginWait = onLoginWait })
   disconnect(g_game, { onGameEnd = CharacterList.showAgain })
+  disconnect(rootWidget, { onGeometryChange = layoutWindow })
 
   if charactersWindow then
     characterList = nil
@@ -250,6 +291,16 @@ function CharacterList.create(characters, account, otui)
     end
   end
 
+  if #characters < MAX_CHARACTERS then
+    local card = g_ui.createWidget('CreateCharacterCard', characterList)
+    card.createCard = true
+    card:getChildById('slots'):setText(tr('%d of %d slots used', #characters, MAX_CHARACTERS))
+    card.onClick = function() CharacterList.showCreateCharacter() return true end
+    focusLabel = focusLabel or card
+  end
+  charactersWindow:getChildById('buttonDeleteCharacter'):setEnabled(#characters > 0)
+  layoutWindow()
+
   if focusLabel then
     characterList:focusChild(focusLabel, KeyboardFocusReason)
     addEvent(function() characterList:ensureChildVisible(focusLabel) end)
@@ -283,6 +334,7 @@ end
 
 function CharacterList.show()
   if loadBox or errorBox or not charactersWindow then return end
+  layoutWindow()
   charactersWindow:show()
   charactersWindow:raise()
   charactersWindow:focus()
@@ -312,7 +364,9 @@ end
 
 function CharacterList.doLogin()
   local selected = characterList:getFocusedChild()
-  if selected then
+  if selected and selected.createCard then
+    CharacterList.showCreateCharacter()
+  elseif selected then
     local charInfo = { worldHost = selected.worldHost,
                        worldPort = selected.worldPort,
                        worldName = selected.worldName,
@@ -380,7 +434,7 @@ end
 
 function CharacterList.deleteCharacter()
   local selected = characterList:getFocusedChild()
-  if not selected then
+  if not selected or selected.createCard then
     displayErrorBox(tr('Error'), tr('You must select a character to delete!'))
     return
   end
