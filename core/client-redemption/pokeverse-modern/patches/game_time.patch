@@ -1,14 +1,14 @@
 diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 --- a/modules/game_time/time.otui
 +++ b/modules/game_time/time.otui
-@@ -5,28 +5,30 @@
+@@ -5,41 +5,42 @@
    phantom: true
    //image-color: #ffffffee
    image-source: ~
 -  size: 256 48
 -  anchors.top: gameMapPanel.top
 -  anchors.left: gameMapPanel.left
-+  size: 256 40
++  size: 256 46
 +  // under the HUD at the top of the map (game_pokehud), clear of the side panels' windows
 +  anchors.top: pokeHud.bottom
 +  anchors.horizontalCenter: pokeHud.horizontalCenter
@@ -17,38 +17,43 @@ diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
    //border-width: 1
 -  margin-left: 4
 -  margin-top: 3
-+  margin-top: -2
- 
+-
 -  UIWidget
 -    id: timeImage
-+  UILabel
-+    id: timeLabel
-     phantom: true
-     height: 24
+-    phantom: true
+-    height: 24
 -    anchors.left: parent.left
-+    text-align: center
+-    anchors.top: parent.top
++  margin-top: -10
+ 
+   UILabel
+     id: timeLabel
+     phantom: true
+-    height: 24
++    height: 20
+     text-align: center
+-    anchors.left: prev.right
 +    text-auto-resize: true
 +    anchors.horizontalCenter: parent.horizontalCenter
-     anchors.top: parent.top
++    anchors.top: parent.top
 +    margin-left: 12
- 
--  UILabel
--    id: timeLabel
++
 +  UIWidget
 +    id: timeImage
-     phantom: true
-     height: 24
--    text-align: center
--    anchors.left: prev.right
++    phantom: true
++    height: 20
 +    anchors.right: timeLabel.left
      anchors.top: parent.top
  
    Label
-@@ -35,11 +37,9 @@
+     id: location
+     phantom: true
      !text: ''
-     font: terminus-10px
-     color: #FFFFFF
+-    font: terminus-10px
+-    color: #FFFFFF
 -    //text-align: center
++    font: verdana-11px-rounded
++    color: #f0d070
 +    text-align: center
      background-color: alpha
 -    anchors.bottom: parent.bottom
@@ -58,4 +63,5 @@ diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 -    text-offset: 2 0
 -    text-auto-resize: true
 -    margin-top: 3
-+    height: 12
++    margin-top: 6
++    height: 14
