@@ -1,10 +1,53 @@
 diff -ruN pristine/modules/game_time/time.lua modules/game_time/time.lua
 --- a/modules/game_time/time.lua
 +++ b/modules/game_time/time.lua
-@@ -77,6 +77,14 @@
-     window:recursiveGetChildById('location'):setText(text)
+@@ -50,7 +50,7 @@
+ 
+ function setDisplay(v)
+     enabled = v
+-    window:setVisible(enabled)
++    window:setVisible(enabled and g_game.isOnline())
  end
  
+ local function increaseMinute()
+@@ -73,15 +73,65 @@
+     lightState = nil
+ end
+ 
++local function fitWidth()
++    local image, location = window:recursiveGetChildById('timeImage'), window:recursiveGetChildById('location')
++    window:setWidth(image:getWidth() + time:getMarginLeft() + time:getWidth() + location:getMarginLeft()
++        + location:getWidth() + 2)
++end
++
++-- on the top menu bar while it shows in game, else under the HUD at the top of the map
++local function place()
++    if not window then
++        return
++    end
++    local topMenu = modules.client_topmenu and modules.client_topmenu.getTopMenu and modules.client_topmenu.getTopMenu()
++    window:breakAnchors()
++    if topMenu and topMenu:isVisible() then
++        window:setParent(topMenu)
++        window:addAnchor(AnchorLeft, 'leftButtonsPanel', AnchorRight)
++        window:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
++        window:setMarginLeft(10)
++        window:setMarginTop(0)
++    else
++        window:setParent(modules.game_interface.getRootPanel())
++        window:addAnchor(AnchorTop, 'pokeHud', AnchorBottom)
++        window:addAnchor(AnchorHorizontalCenter, 'pokeHud', AnchorHorizontalCenter)
++        window:setMarginLeft(0)
++        window:setMarginTop(-14)
++    end
++    window:setVisible(enabled and g_game.isOnline())
++end
++
+ function setLocation(text)
+     window:recursiveGetChildById('location'):setText(text)
++    fitWidth()
++end
++
 +function getLocation()
 +    if not window then
 +        return ''
@@ -13,55 +56,98 @@ diff -ruN pristine/modules/game_time/time.lua modules/game_time/time.lua
 +    return label and label:getText() or ''
 +end
 +
- -- Hooks
- function onOnline() end
++local function onTopMenuVisibility(widget, visible)
++    if g_game.isOnline() and (visible or window:getParent() == widget) then
++        place()
++    end
+ end
  
+ -- Hooks
+-function onOnline() end
++function onOnline()
++    place()
++    -- the top menu shows or hides for the view mode right after the game starts
++    scheduleEvent(place, 200)
++end
+ 
+ function onOffline()
+-    --reset()
++    if window then
++        window:hide()
++    end
+ end
+ 
+ function onLightHour(lightHour)
+@@ -93,6 +143,11 @@
+     time = window:recursiveGetChildById('timeLabel')
+     time:setText("00:00")
+     lightStateImage = window:recursiveGetChildById('timeImage')
++    window:hide()
++    local topMenu = modules.client_topmenu and modules.client_topmenu.getTopMenu and modules.client_topmenu.getTopMenu()
++    if topMenu then
++        connect(topMenu, { onVisibilityChange = onTopMenuVisibility })
++    end
+ 
+     connect(g_game, {
+         onGameStart = onOnline,
+@@ -108,6 +163,10 @@
+ end
+ 
+ function onTerminate()
++    local topMenu = modules.client_topmenu and modules.client_topmenu.getTopMenu and modules.client_topmenu.getTopMenu()
++    if topMenu then
++        disconnect(topMenu, { onVisibilityChange = onTopMenuVisibility })
++    end
+     disconnect(g_game, {
+         onGameStart = onOnline,
+         onGameEnd = onOffline,
 diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 --- a/modules/game_time/time.otui
 +++ b/modules/game_time/time.otui
-@@ -5,41 +5,42 @@
+@@ -1,45 +1,37 @@
+-HeadlessWindow
++// the clock and the area name on one line at the left of the top menu bar (client_topmenu), or
++// under the HUD when that bar is hidden in game; placed by time.lua
++UIWidget
+   id: timeWindow
+   focusable: false
+-  draggable: false
    phantom: true
-   //image-color: #ffffffee
-   image-source: ~
+-  //image-color: #ffffffee
+-  image-source: ~
 -  size: 256 48
 -  anchors.top: gameMapPanel.top
 -  anchors.left: gameMapPanel.left
-+  size: 256 46
-+  // under the HUD at the top of the map (game_pokehud), clear of the side panels' windows
-+  anchors.top: pokeHud.bottom
-+  anchors.horizontalCenter: pokeHud.horizontalCenter
-   //background-color: #898989bb
-   //border-color: #272727cc
-   //border-width: 1
+-  //background-color: #898989bb
+-  //border-color: #272727cc
+-  //border-width: 1
 -  margin-left: 4
 -  margin-top: 3
--
--  UIWidget
--    id: timeImage
--    phantom: true
++  size: 300 20
+ 
+   UIWidget
+     id: timeImage
+     phantom: true
 -    height: 24
--    anchors.left: parent.left
++    size: 18 18
++    image-smooth: true
+     anchors.left: parent.left
 -    anchors.top: parent.top
-+  margin-top: -18
++    anchors.verticalCenter: parent.verticalCenter
  
    UILabel
      id: timeLabel
      phantom: true
 -    height: 24
-+    height: 20
-     text-align: center
+-    text-align: center
 -    anchors.left: prev.right
+-    anchors.top: parent.top
++    font: verdana-11px-rounded
++    color: #ffffff
 +    text-auto-resize: true
-+    anchors.horizontalCenter: parent.horizontalCenter
-+    anchors.top: parent.top
-+    margin-left: 12
-+
-+  UIWidget
-+    id: timeImage
-+    phantom: true
-+    height: 20
-+    anchors.right: timeLabel.left
-     anchors.top: parent.top
++    anchors.left: timeImage.right
++    anchors.verticalCenter: parent.verticalCenter
++    margin-left: 4
  
    Label
      id: location
@@ -70,16 +156,16 @@ diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 -    font: terminus-10px
 -    color: #FFFFFF
 -    //text-align: center
+-    background-color: alpha
+-    anchors.bottom: parent.bottom
+-    anchors.left: parent.left
+-    anchors.right: parent.right
+-    text-offset: 2 0
 +    font: verdana-11px-rounded
 +    color: #f0d070
-+    text-align: center
-     background-color: alpha
--    anchors.bottom: parent.bottom
-+    anchors.top: timeLabel.bottom
-     anchors.left: parent.left
-     anchors.right: parent.right
--    text-offset: 2 0
--    text-auto-resize: true
+     text-auto-resize: true
 -    margin-top: 3
-+    margin-top: 4
-+    height: 14
++    background-color: alpha
++    anchors.left: timeLabel.right
++    anchors.verticalCenter: parent.verticalCenter
++    margin-left: 10
