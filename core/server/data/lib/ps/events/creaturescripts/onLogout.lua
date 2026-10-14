@@ -102,6 +102,7 @@ function onLogout(cid, forceLogout)
         doCreatureSetStorage(cid, playersStorages.playTime, math.max(0, getCreatureStorage(cid, playersStorages.playTime)) + math.max(0, os.time() - sessionStart))
         doCreatureSetStorage(cid, playersStorages.playSessionStart, 0)
     end
+    Pokepedia.onLogout(cid)
 
     return true
 end

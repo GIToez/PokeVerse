@@ -873,3 +873,19 @@ CREATE TABLE IF NOT EXISTS `pc_inbox` (
   PRIMARY KEY (`id`),
   KEY `player_id` (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pokepedia (lib/ps/systems/069-pokepedia.lua): items a trainer has discovered (shop items are
+-- known without a row), and defeats and catches per species for the Pokedex knowledge levels.
+CREATE TABLE IF NOT EXISTS `player_item_discoveries` (
+  `player_id` INT UNSIGNED NOT NULL,
+  `itemtype` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`player_id`, `itemtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `player_dex_kills` (
+  `player_id` INT UNSIGNED NOT NULL,
+  `species` VARCHAR(40) NOT NULL,
+  `kills` INT UNSIGNED NOT NULL DEFAULT 0,
+  `catches` INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`, `species`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

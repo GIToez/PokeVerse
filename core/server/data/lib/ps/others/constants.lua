@@ -54,7 +54,8 @@ EXTENDED_IDS = {
     MOVE_ENERGY = 19, -- JSON {{icon, energy}, ...}: the energy cost of each move in the moves bar, sent after the moves
     GTS = 20, -- JSON Global Trade Station window state, one message per {type = ...} (GTS)
     PC = 21, -- JSON PC window state: Poke boxes, stash, inbox and depot, one {type = ...} per message (PC)
-    GYM = 22 -- JSON gym leader duel intro and victory banners (GymLeaders.send)
+    GYM = 22, -- JSON gym leader duel intro and victory banners (GymLeaders.send)
+    POKEPEDIA = 23 -- JSON Pokepedia window: houses, items, Pokedex knowledge, one {type = ...} per message (Pokepedia)
 }
 
 TOURNAMENT_TYPES = {}

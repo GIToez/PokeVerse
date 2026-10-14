@@ -4,6 +4,7 @@ end
 
 function onAddContainerItem(cid, item)
 	if (isItem(item)) then
+		Pokepedia.discoverThing(cid, item)
 		if (isBallWithPokemon(item.uid)) then
 			doFastcallLink(cid, item.uid)
 

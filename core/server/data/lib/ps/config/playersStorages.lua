@@ -91,5 +91,7 @@ playersStorages = {
     pcClient = base + 88, -- 1 once the client said it has the PC window (reset at login)
     pcMigrated = base + 89, -- 1 once the old depot was sorted into the Poke boxes and stash
     pcClassic = base + 90, -- 1: the next locker use opens the depot containers
+    pokedexCompleted = base + 91, -- 1 once the Master Ball for the complete Pokedex was given (Pokepedia)
+    pokepediaMigrated = base + 92, -- 1 once the species caught before the Pokedex knowledge levels were counted
     -- tournamentWeekWinnerStorage = base + 65
 }
