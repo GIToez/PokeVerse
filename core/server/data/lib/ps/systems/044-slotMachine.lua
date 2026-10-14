@@ -18,7 +18,7 @@ local ROLL_DELAY = 5000 + 1500
 local COIN_ITEMID = 23497
 local PLAY_PRICE = 100
 local MAX_PLAY_PER_DAY = 90 -- (30 * 60) / (ROLL_DELAY / 1000) -- 30 minutes per day
-local REQUIRED_LEVEL = 50
+local REQUIRED_LEVEL = 20
 
 local SLOTS = {
     [SLOT_IDS.LEFTOVER] = {reelsAmount = {6, 1, 1}, payout = 1, name = "Leftover"},

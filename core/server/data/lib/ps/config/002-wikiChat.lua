@@ -400,13 +400,13 @@ WIKICHAT_NODES = {
 					{
                         keywords = {'buying a house'},
                         parameters = {
-                            text = "You need to be minimum level 50 and Premium Account. Make sure the house is empty by clicking both mouse buttons above the door to see the description if the description is: 'Nobody owns this house.' Means that this house has no owner. To buy it is in front of the door and enter '/house buy'. Every month you have to pay for the house, to pays just leave the money in the bank or at the Pokemon Center deposit."
+                            text = "You need to be minimum level 20 and Premium Account. Make sure the house is empty by clicking both mouse buttons above the door to see the description if the description is: 'Nobody owns this house.' Means that this house has no owner. To buy it is in front of the door and enter '/house buy'. Every month you have to pay for the house, to pays just leave the money in the bank or at the Pokemon Center deposit."
                         }
                     },
 					{
                         keywords = {'guild'},
                         parameters = {
-                            text = "To create a guild you need at least level 50, Premium Account and have to be 15 Soul Coins. After all requirements go in the Soul Coins NPC and say hi, guild, <name>, yes. To invite someone say /invite <username>, to accept say !joinguild."
+                            text = "To create a guild you need at least level 20, Premium Account and have to be 15 Soul Coins. After all requirements go in the Soul Coins NPC and say hi, guild, <name>, yes. To invite someone say /invite <username>, to accept say !joinguild."
                         }
                     },
 					{

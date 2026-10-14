@@ -31,8 +31,8 @@ function creatureSayCallback(cid, type, msg)
             selfSay("You have visited the Safari recently, you must wait ".. table.concat(string.timediff(enterInterval - interval)) .." to enter again.", cid)
             talkState[talkUser] = 0
 
-        else]]if (getPlayerLevel(cid) < 30) then
-            selfSay("You need at least level 30 to enter the Safari Zone", cid)
+        else]]if (getPlayerLevel(cid) < 20) then
+            selfSay("You need at least level 20 to enter the Safari Zone", cid)
             talkState[talkUser] = 0
 
         else

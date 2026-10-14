@@ -510,16 +510,16 @@ only move cooldowns.
 
 ## 12. Level requirement audit
 
-Every player level requirement found in the server code (October 2026). The suggested
-levels are proposals; nothing is changed yet.
+Every player level requirement found in the server code (October 2026). The first six rows
+are changed to the new level (agreed); the rest are kept.
 
-| Feature | Today | Where | Suggested |
+| Feature | Before | Where | Now |
 | --- | --- | --- | --- |
 | Buy a house | 50 | `levelToBuyHouse`, `config.lua` | 20 |
 | Safari Zone | 30 | `npc/scripts/saffariZoneEnter.lua` | 20 |
-| Daycare (both NPCs) | 85 and Premium | `npc/scripts/daycareFemale.lua`, `daycareMale.lua` | 20, the Breeder level |
+| Daycare (both NPCs) | 85 and Premium | `npc/scripts/daycareFemale.lua`, `daycareMale.lua` | 20, the Breeder level; still Premium |
 | Form a guild | 40 | `levelToFormGuild`, `config.lua` | 20 |
-| Slot machine | 50 | `lib/ps/systems/044-slotMachine.lua` | 20, after the [economy audit](#14-economy-audit) |
+| Slot machine | 50 | `lib/ps/systems/044-slotMachine.lua` | 20 |
 | Frontier Island arenas (gladiator, cooperative, survive) | 50 | `npc/scripts/fi_stadiumarena.lua` | keep |
 | Wave arena | 20 | `npc/scripts/wavearena.lua` | keep |
 | Elite Four | 95 | `lib/ps/systems/049-eliteFour.lua` | keep, or 80 if the badges already gate it |
@@ -538,8 +538,10 @@ levels are proposals; nothing is changed yet.
 Not requirements, but level based: the tutorial sends players on from level 10
 (`activationTile.lua`), and the wiki channel opens at login below level 30 (`login.lua`).
 
-**To decide:** the suggested levels, whether the daycare stays Premium, and what the
-level 70 quest group is (76 quests at the same level).
+The house and guild texts in the in-game wiki (`002-wikiChat.lua`) say level 20 too.
+
+**To decide:** whether the daycare stays Premium (it is today), whether the Elite Four
+moves to 80, and what the level 70 quest group is (76 quests at the same level).
 
 ## 13. Switch off the old PSoul and anniversary content
 
