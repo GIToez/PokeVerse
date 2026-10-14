@@ -577,4 +577,6 @@
   <house name="Pacifidlog House #08" houseid="577" entryx="1280" entryy="1766" entryz="7" rent="0" townid="49" size="7"/>
   <house name="Pacifidlog House #09" houseid="578" entryx="1284" entryy="1766" entryz="7" rent="0" townid="49" size="7"/>
   <house name="Pacifidlog House #10" houseid="579" entryx="1300" entryy="1783" entryz="7" rent="0" townid="49" size="57"/>
+  <house name="New Bark House #1" houseid="580" entryx="2741" entryy="791" entryz="7" rent="0" townid="50" size="77"/>
+  <house name="New Bark House #2" houseid="581" entryx="2737" entryy="813" entryz="7" rent="0" townid="50" size="77"/>
 </houses>
