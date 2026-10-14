@@ -200,6 +200,9 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
                 elseif (getPokemonAllowedBall(pokemonName) and ballName ~= getPokemonAllowedBall(pokemonName)) then
                     doPlayerSendCancel(cid, "You cannot catch this Pokemon with this type of ball.")
                     return true
+                elseif (PC.enabled(cid) and not isGamemaster(cid) and getPlayerFreeCap(cid) < 1 and PC.boxesFull(cid)) then
+                    doPlayerSendCancel(cid, "Your Poke boxes are full.")
+                    return true
                 end
 
                 doPlayerIncreaseWastedBalls(cid, getPokemonNumberByName(pokemonName), item.itemid)

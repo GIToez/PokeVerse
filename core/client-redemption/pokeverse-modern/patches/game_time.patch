@@ -1,13 +1,61 @@
 diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 --- a/modules/game_time/time.otui
 +++ b/modules/game_time/time.otui
-@@ -7,7 +7,8 @@
+@@ -5,28 +5,30 @@
+   phantom: true
+   //image-color: #ffffffee
    image-source: ~
-   size: 256 48
-   anchors.top: gameMapPanel.top
+-  size: 256 48
+-  anchors.top: gameMapPanel.top
 -  anchors.left: gameMapPanel.left
-+  // the left panel's windows (the trainer belt) lie over the map
-+  anchors.left: gameLeftPanel.right
++  size: 256 40
++  // under the HUD at the top of the map (game_pokehud), clear of the side panels' windows
++  anchors.top: pokeHud.bottom
++  anchors.horizontalCenter: pokeHud.horizontalCenter
    //background-color: #898989bb
    //border-color: #272727cc
    //border-width: 1
+-  margin-left: 4
+-  margin-top: 3
++  margin-top: -2
+ 
+-  UIWidget
+-    id: timeImage
++  UILabel
++    id: timeLabel
+     phantom: true
+     height: 24
+-    anchors.left: parent.left
++    text-align: center
++    text-auto-resize: true
++    anchors.horizontalCenter: parent.horizontalCenter
+     anchors.top: parent.top
++    margin-left: 12
+ 
+-  UILabel
+-    id: timeLabel
++  UIWidget
++    id: timeImage
+     phantom: true
+     height: 24
+-    text-align: center
+-    anchors.left: prev.right
++    anchors.right: timeLabel.left
+     anchors.top: parent.top
+ 
+   Label
+@@ -35,11 +37,9 @@
+     !text: ''
+     font: terminus-10px
+     color: #FFFFFF
+-    //text-align: center
++    text-align: center
+     background-color: alpha
+-    anchors.bottom: parent.bottom
++    anchors.top: timeLabel.bottom
+     anchors.left: parent.left
+     anchors.right: parent.right
+-    text-offset: 2 0
+-    text-auto-resize: true
+-    margin-top: 3
++    height: 12
