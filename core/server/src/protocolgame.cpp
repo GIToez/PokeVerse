@@ -1861,6 +1861,13 @@ void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string& buffer)
     }
     
     NetworkMessage_ptr msg = getOutputBuffer();
+    // a string that doesn't fit is dropped while the opcode bytes aren't, and the client
+    // reads the next packets as the string: start a new message instead
+    if(msg && !msg->hasSpace(buffer.size() + 4)) {
+        flushOutputBuffer();
+        msg = getOutputBuffer();
+    }
+
     if(msg) {
 		TRACK_MESSAGE(msg);
 		msg->AddByte(0x32);

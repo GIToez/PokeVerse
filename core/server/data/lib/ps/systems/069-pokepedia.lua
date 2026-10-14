@@ -12,13 +12,11 @@
 
 Pokepedia = {}
 
-Pokepedia.LIST_PART = 150 -- houses per message
-Pokepedia.ITEMS_PART = 250 -- items per message
 Pokepedia.TRANSFER_TIME = 5 * 60
 Pokepedia.MAX_PRICE = 100000000
 Pokepedia.REQUESTS_PER_SECOND = 12
 
-local MESSAGE_LIMIT = 14000
+local MESSAGE_LIMIT = 200000
 local COMPLETED = playersStorages.pokedexCompleted
 local MIGRATED = playersStorages.pokepediaMigrated
 local MASTER_BALL = 30136
@@ -32,6 +30,11 @@ local dex = {} -- guid -> { [species] = { kills, catches } }
 local offers = {} -- house id -> { from, to, price, expires }
 local requests = {} -- cid -> { second, count }
 
+-- AddString drops strings over 8 KB: longer messages go as "#id:index:count:" fragments the
+-- client joins back together
+local FRAGMENT_SIZE = 3500
+local fragmentId = 0
+
 local function send(cid, data, list)
     local text = JSON.encode(data)
     while (#text > MESSAGE_LIMIT and list and #list > 0) do
@@ -39,7 +42,16 @@ local function send(cid, data, list)
         data.more = true
         text = JSON.encode(data)
     end
-    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEPEDIA, text)
+    if (#text <= FRAGMENT_SIZE) then
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEPEDIA, text)
+        return
+    end
+    fragmentId = fragmentId % 1000000 + 1
+    local count = math.ceil(#text / FRAGMENT_SIZE)
+    for index = 1, count do
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEPEDIA, string.format("#%d:%d:%d:", fragmentId, index, count)
+            .. text:sub((index - 1) * FRAGMENT_SIZE + 1, index * FRAGMENT_SIZE))
+    end
 end
 
 local function result(cid, ok, text, ...)
@@ -267,14 +279,7 @@ Pokepedia.sendHouses = function(cid)
         rows[#rows + 1] = { id, house.name, house.townName, house.size, house.beds, house.price,
             ownerName(house, owner), house.guild and 1 or 0 }
     end
-    local parts = math.max(1, math.ceil(#rows / Pokepedia.LIST_PART))
-    for part = 1, parts do
-        local list = {}
-        for i = (part - 1) * Pokepedia.LIST_PART + 1, math.min(#rows, part * Pokepedia.LIST_PART) do
-            list[#list + 1] = rows[i]
-        end
-        send(cid, { type = "houses", part = part, parts = parts, mine = mine, list = JSON.array(list) }, list)
-    end
+    send(cid, { type = "houses", part = 1, parts = 1, mine = mine, list = JSON.array(rows) }, rows)
 end
 
 Pokepedia.sendHouse = function(cid, id)
@@ -632,15 +637,8 @@ Pokepedia.sendCategory = function(cid, index)
             rows[#rows + 1] = 0
         end
     end
-    local parts = math.max(1, math.ceil(#rows / Pokepedia.ITEMS_PART))
-    for part = 1, parts do
-        local items = {}
-        for i = (part - 1) * Pokepedia.ITEMS_PART + 1, math.min(#rows, part * Pokepedia.ITEMS_PART) do
-            items[#items + 1] = rows[i]
-        end
-        send(cid, { type = "category", index = index, name = category.name, part = part, parts = parts,
-            items = JSON.array(items) }, items)
-    end
+    send(cid, { type = "category", index = index, name = category.name, part = 1, parts = 1,
+        items = JSON.array(rows) }, rows)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -781,6 +779,7 @@ Pokepedia.sendDex = function(cid, name)
     local data = progressRow(knowledge)
     data.type = "dex"
     if (knowledge.level < 0) then
+        data.name = ""
         data.kills, data.catches, data.tier, data.thresholds = knowledge.kills, knowledge.catches, knowledge.tier,
             knowledge.thresholds
         data.tracked = tracked[cid] and tracked[cid][knowledge.species] or false
@@ -789,7 +788,8 @@ Pokepedia.sendDex = function(cid, name)
     data.kills, data.catches, data.tier = knowledge.kills, knowledge.catches, knowledge.tier
     data.thresholds = knowledge.thresholds
     data.tracked = tracked[cid] and tracked[cid][knowledge.species] or false
-    local definition = POKEMONS[knowledge.species]
+    data.dexed = hasPlayerDexedPokemon(cid, knowledge.species) and true or false
+    local definition = getPokemonDefinition(knowledge.species)
     if (knowledge.level >= 1 and definition) then
         data.stats = { attack = definition.atk or 0, defense = definition.def or 0, spAttack = definition.spAtk or 0,
             spDefense = definition.spDef or 0 }
@@ -819,7 +819,6 @@ Pokepedia.sendDex = function(cid, name)
 end
 
 -- every base species with what the trainer knows: [[number, name, level, points, next, wild]]
-Pokepedia.DEX_PART = 200
 Pokepedia.sendDexList = function(cid)
     local rows = {}
     for number = 1, POKEMON_NUMBER do
@@ -830,21 +829,14 @@ Pokepedia.sendDexList = function(cid)
                 knowledge.level < 3 and knowledge.next or 0, POKEPEDIA_SPAWNS[name] and 1 or 0 }
         end
     end
-    local parts = math.max(1, math.ceil(#rows / Pokepedia.DEX_PART))
     local complete = 0
     for _, species in ipairs(WILD) do
         if (Pokepedia.getDexLevel(cid, species) >= 3) then
             complete = complete + 1
         end
     end
-    for part = 1, parts do
-        local list = {}
-        for i = (part - 1) * Pokepedia.DEX_PART + 1, math.min(#rows, part * Pokepedia.DEX_PART) do
-            list[#list + 1] = rows[i]
-        end
-        send(cid, { type = "dexlist", part = part, parts = parts, complete = complete, wild = #WILD,
-            list = JSON.array(list) }, list)
-    end
+    send(cid, { type = "dexlist", part = 1, parts = 1, complete = complete, wild = #WILD,
+        list = JSON.array(rows) }, rows)
 end
 
 local function sendProgress(cid, species)
@@ -965,7 +957,7 @@ local function migrate(cid)
     local guid = getPlayerGUID(cid)
     for name in pairs(BASE) do
         local catches = getPlayerPokemonCaughts(cid, name)
-        if (POKEMONS["Shiny " .. name]) then
+        if (getPokemonDefinition("Shiny " .. name)) then
             catches = catches + getPlayerPokemonCaughts(cid, "Shiny " .. name)
         end
         if (catches > 0) then
@@ -1047,8 +1039,8 @@ Pokepedia.onClientMessage = function(cid, buffer)
         Pokepedia.sendCategory(cid, id)
     elseif (action == "dexlist") then
         Pokepedia.sendDexList(cid)
-    elseif (action == "dex" and data.name) then
-        Pokepedia.sendDex(cid, tostring(data.name))
+    elseif (action == "dex" and (data.name or data.number)) then
+        Pokepedia.sendDex(cid, data.name and tostring(data.name) or getPokemonNameByNumber(tonumber(data.number) or 0))
     elseif (action == "track") then
         Pokepedia.setTracked(cid, data.list)
     elseif (action == "pokedex") then
