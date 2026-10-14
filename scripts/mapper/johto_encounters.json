@@ -1,0 +1,984 @@
+{
+ "26": {
+  "main": {
+   "fishing": {
+    "Chinchou": 60.0,
+    "Lanturn": 10.0,
+    "Magikarp": 125.0,
+    "Shellder": 40.0,
+    "Tentacool": 45.0,
+    "Tentacruel": 20.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Arbok": 2.5,
+    "Dodrio": 1.67,
+    "Doduo": 28.33,
+    "Ponyta": 20.0,
+    "Quagsire": 2.5,
+    "Raticate": 30.0,
+    "Sandslash": 15.0
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "27": {
+  "main": {
+   "fishing": {
+    "Chinchou": 60.0,
+    "Lanturn": 10.0,
+    "Magikarp": 125.0,
+    "Shellder": 40.0,
+    "Tentacool": 45.0,
+    "Tentacruel": 20.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Arbok": 15.0,
+    "Dodrio": 1.67,
+    "Doduo": 30.0,
+    "Ponyta": 5.0,
+    "Quagsire": 17.5,
+    "Raticate": 28.33,
+    "Sandslash": 2.5
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "28": {
+  "main": {
+   "fishing": {
+    "Magikarp": 165.0,
+    "Poliwag": 135.0
+   },
+   "headbutt": {
+    "Aipom": 60.0,
+    "Heracross": 100.0,
+    "Natu": 40.0
+   },
+   "land": {
+    "Dodrio": 3.33,
+    "Doduo": 3.33,
+    "Donphan": 10.0,
+    "Ponyta": 30.0,
+    "Rapidash": 10.0,
+    "Sneasel": 3.33,
+    "Tangela": 30.0,
+    "Ursaring": 10.0
+   },
+   "water": {
+    "Poliwag": 90.0,
+    "Poliwhirl": 10.0
+   }
+  }
+ },
+ "29": {
+  "main": {
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Hoothoot": 28.33,
+    "Pidgey": 36.67,
+    "Rattata": 8.33,
+    "Sentret": 26.67
+   }
+  }
+ },
+ "30": {
+  "main": {
+   "fishing": {
+    "Magikarp": 165.0,
+    "Poliwag": 135.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Caterpie": 14.17,
+    "Hoothoot": 15.0,
+    "Kakuna": 4.17,
+    "Ledyba": 5.0,
+    "Metapod": 4.17,
+    "Pidgey": 25.0,
+    "Rattata": 13.33,
+    "Spinarak": 5.0,
+    "Weedle": 14.17
+   },
+   "water": {
+    "Poliwag": 90.0,
+    "Poliwhirl": 10.0
+   }
+  }
+ },
+ "31": {
+  "main": {
+   "fishing": {
+    "Magikarp": 165.0,
+    "Poliwag": 135.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Bellsprout": 20.0,
+    "Caterpie": 11.67,
+    "Hoothoot": 8.34,
+    "Kakuna": 4.17,
+    "Ledyba": 5.0,
+    "Metapod": 5.0,
+    "Pidgey": 16.67,
+    "Rattata": 13.33,
+    "Spinarak": 5.0,
+    "Weedle": 10.83
+   },
+   "water": {
+    "Poliwag": 90.0,
+    "Poliwhirl": 10.0
+   }
+  }
+ },
+ "32": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Qwilfish": 15.0,
+    "Tentacool": 140.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 130.0,
+    "Pineco": 30.0
+   },
+   "land": {
+    "Bellsprout": 26.67,
+    "Ekans": 15.0,
+    "Hoppip": 6.67,
+    "Mareep": 16.67,
+    "Rattata": 20.0,
+    "Wooper": 11.67,
+    "Zubat": 3.33
+   },
+   "water": {
+    "Quagsire": 30.0,
+    "Tentacool": 60.0,
+    "Tentacruel": 10.0
+   }
+  },
+  "{{color2|000|Mass outbreak|Swarm": {
+   "fishing": {
+    "Qwilfish": 170.0
+   }
+  }
+ },
+ "33": {
+  "main": {
+   "headbutt": {
+    "Aipom": 40.0,
+    "Heracross": 30.0,
+    "Spearow": 130.0
+   },
+   "land": {
+    "Ekans": 15.0,
+    "Hoppip": 23.33,
+    "Rattata": 33.34,
+    "Spearow": 13.33,
+    "Zubat": 15.0
+   }
+  }
+ },
+ "34": {
+  "main": {
+   "fishing": {
+    "Corsola": 26.67,
+    "Kingler": 10.0,
+    "Krabby": 125.0,
+    "Magikarp": 125.0,
+    "Staryu": 13.33
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Abra": 10.0,
+    "Ditto": 5.0,
+    "Drowzee": 50.0,
+    "Rattata": 35.0
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "35": {
+  "main": {
+   "fishing": {
+    "Magikarp": 165.0,
+    "Poliwag": 135.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Abra": 10.0,
+    "Ditto": 4.0,
+    "Drowzee": 20.0,
+    "Hoothoot": 1.67,
+    "Nidoran♀": 30.0,
+    "Nidoran♂": 30.0,
+    "Pidgey": 3.33,
+    "Yanma": 1.0
+   },
+   "water": {
+    "Golduck": 10.0,
+    "Psyduck": 90.0
+   }
+  }
+ },
+ "36": {
+  "main": {
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Growlithe": 5.83,
+    "Hoothoot": 8.33,
+    "Nidoran♀": 30.0,
+    "Nidoran♂": 30.0,
+    "Pidgey": 15.01,
+    "Stantler": 5.0,
+    "Vulpix": 5.83
+   }
+  }
+ },
+ "37": {
+  "main": {
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Growlithe": 5.83,
+    "Hoothoot": 13.33,
+    "Ledyba": 6.67,
+    "Pidgeotto": 1.67,
+    "Pidgey": 29.99,
+    "Spinarak": 6.67,
+    "Stantler": 30.0,
+    "Vulpix": 5.83
+   }
+  }
+ },
+ "38": {
+  "main": {
+   "headbutt": {
+    "Burmy": 35.0
+   },
+   "land": {
+    "Farfetch'd": 6.67,
+    "Magnemite": 20.0,
+    "Meowth": 16.67,
+    "Miltank": 5.0,
+    "Raticate": 30.0,
+    "Rattata": 16.67,
+    "Snubbull": 1.0,
+    "Tauros": 4.0
+   }
+  }
+ },
+ "39": {
+  "main": {
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Farfetch'd": 6.67,
+    "Magnemite": 20.0,
+    "Meowth": 16.67,
+    "Miltank": 5.0,
+    "Raticate": 30.0,
+    "Rattata": 16.67,
+    "Tauros": 5.0
+   }
+  }
+ },
+ "40": {},
+ "41": {},
+ "42": {
+  "main": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "headbutt": {
+    "Aipom": 40.0,
+    "Heracross": 30.0,
+    "Spearow": 130.0
+   },
+   "land": {
+    "Flaaffy": 10.0,
+    "Mankey": 15.0,
+    "Mareep": 40.0,
+    "Spearow": 23.33,
+    "Zubat": 11.67
+   },
+   "water": {
+    "Goldeen": 90.0,
+    "Seaking": 10.0
+   }
+  }
+ },
+ "43": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 155.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 115.0,
+    "Pineco": 30.0,
+    "Venonat": 15.0
+   },
+   "land": {
+    "Flaaffy": 33.33,
+    "Girafarig": 30.0,
+    "Mareep": 8.34,
+    "Noctowl": 6.67,
+    "Pidgeotto": 15.0,
+    "Venonat": 6.67
+   },
+   "water": {
+    "Magikarp": 100.0
+   }
+  }
+ },
+ "44": {
+  "Swarm": {
+   "fishing": {
+    "Remoraid": 180.0
+   }
+  },
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 140.0,
+    "Remoraid": 15.0
+   },
+   "headbutt": {
+    "Aipom": 40.0,
+    "Heracross": 30.0,
+    "Spearow": 130.0
+   },
+   "land": {
+    "Bellsprout": 20.0,
+    "Lickitung": 15.0,
+    "Tangela": 30.0,
+    "Weepinbell": 35.0
+   },
+   "water": {
+    "Poliwag": 90.0,
+    "Poliwhirl": 10.0
+   }
+  }
+ },
+ "45": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 155.0
+   },
+   "headbutt": {
+    "Aipom": 40.0,
+    "Heracross": 30.0,
+    "Spearow": 130.0
+   },
+   "land": {
+    "Geodude": 30.0,
+    "Gligar": 10.0,
+    "Graveler": 47.5,
+    "Phanpy": 5.0,
+    "Skarmory": 2.5,
+    "Teddiursa": 5.0
+   },
+   "water": {
+    "Magikarp": 100.0
+   }
+  }
+ },
+ "46": {
+  "main": {
+   "headbutt": {
+    "Aipom": 40.0,
+    "Heracross": 30.0,
+    "Spearow": 130.0
+   },
+   "land": {
+    "Geodude": 41.67,
+    "Rattata": 35.0,
+    "Spearow": 23.33
+   }
+  }
+ },
+ "Bell Tower": {},
+ "Burned Tower": {},
+ "Dark Cave": {},
+ "Dragon's Den": {},
+ "Ice Path": {
+  "1F and B1F": {
+   "land": {
+    "Delibird": 10.0,
+    "Golbat": 30.0,
+    "Jynx": 6.67,
+    "Swinub": 40.0,
+    "Zubat": 13.34
+   }
+  },
+  "B2F and B3F": {
+   "land": {
+    "Delibird": 10.0,
+    "Golbat": 30.0,
+    "Jynx": 6.67,
+    "Swinub": 40.0,
+    "Zubat": 13.34
+   }
+  }
+ },
+ "Ilex Forest": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 155.0
+   },
+   "headbutt": {
+    "Beedrill": 5.0,
+    "Butterfree": 5.0,
+    "Caterpie": 15.0,
+    "Hoothoot": 110.0,
+    "Kakuna": 5.0,
+    "Metapod": 5.0,
+    "Noctowl": 10.0,
+    "Pineco": 30.0,
+    "Weedle": 15.0
+   },
+   "land": {
+    "Caterpie": 18.33,
+    "Kakuna": 10.0,
+    "Metapod": 10.0,
+    "Oddish": 20.0,
+    "Paras": 11.67,
+    "Weedle": 18.33,
+    "Zubat": 11.66
+   },
+   "water": {
+    "Golduck": 10.0,
+    "Psyduck": 90.0
+   }
+  }
+ },
+ "Lake of Rage": {
+  "main": {
+   "fishing": {
+    "Gyarados": 40.0,
+    "Magikarp": 260.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 115.0,
+    "Pineco": 30.0,
+    "Venonat": 15.0
+   },
+   "water": {
+    "Gyarados": 10.0,
+    "Magikarp": 90.0
+   }
+  }
+ },
+ "Mt. Mortar": {
+  "1F (back)": {
+   "land": {
+    "Geodude": 50.0,
+    "Machop": 35.0,
+    "Rattata": 10.0,
+    "Zubat": 5.0
+   }
+  },
+  "1F (entrance)": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Geodude": 5.0,
+    "Machop": 20.0,
+    "Marill": 1.0,
+    "Rattata": 14.0,
+    "Zubat": 60.0
+   },
+   "water": {
+    "Goldeen": 90.0,
+    "Seaking": 10.0
+   }
+  },
+  "2F": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Geodude": 20.0,
+    "Golbat": 5.0,
+    "Graveler": 30.0,
+    "Machoke": 30.0,
+    "Machop": 5.0,
+    "Raticate": 10.0
+   },
+   "water": {
+    "Goldeen": 90.0,
+    "Seaking": 10.0
+   }
+  },
+  "B1F": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Geodude": 5.0,
+    "Machop": 10.0,
+    "Raticate": 5.0,
+    "Rattata": 20.0,
+    "Zubat": 60.0
+   },
+   "water": {
+    "Goldeen": 90.0,
+    "Seaking": 10.0
+   }
+  }
+ },
+ "Mt. Silver": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 155.0
+   },
+   "headbutt": {
+    "Aipom": 60.0,
+    "Heracross": 100.0,
+    "Natu": 40.0
+   },
+   "land": {
+    "Dodrio": 3.33,
+    "Doduo": 3.33,
+    "Donphan": 10.0,
+    "Ponyta": 30.0,
+    "Rapidash": 10.0,
+    "Sneasel": 3.33,
+    "Tangela": 30.0,
+    "Ursaring": 10.0
+   },
+   "water": {
+    "Poliwag": 9.0,
+    "Poliwhirl": 91.0
+   }
+  }
+ },
+ "Mt. Silver Cave": {
+  "1F": {
+   "fishing": {
+    "Goldeen": 45.0,
+    "Gyarados": 63.33,
+    "Magikarp": 131.67,
+    "Seaking": 60.0
+   },
+   "land": {
+    "Donphan": 15.0,
+    "Golbat": 5.0,
+    "Graveler": 20.0,
+    "Larvitar": 5.0,
+    "Onix": 30.0,
+    "Phanpy": 5.0,
+    "Teddiursa": 5.0,
+    "Ursaring": 15.0
+   },
+   "water": {
+    "Goldeen": 9.0,
+    "Seaking": 91.0
+   }
+  },
+  "2F": {
+   "land": {
+    "Donphan": 10.0,
+    "Golbat": 5.0,
+    "Golduck": 10.0,
+    "Larvitar": 5.0,
+    "Misdreavus": 3.33,
+    "Phanpy": 5.0,
+    "Quagsire": 26.67,
+    "Sneasel": 20.0,
+    "Teddiursa": 5.0,
+    "Ursaring": 10.0
+   }
+  },
+  "3F": {
+   "land": {
+    "Donphan": 10.0,
+    "Golbat": 5.0,
+    "Golduck": 30.0,
+    "Larvitar": 5.0,
+    "Misdreavus": 3.33,
+    "Quagsire": 16.67,
+    "Sneasel": 20.0,
+    "Ursaring": 10.0
+   }
+  },
+  "Expert Belt chamber": {
+   "land": {
+    "Donphan": 10.0,
+    "Golbat": 5.0,
+    "Golduck": 20.0,
+    "Larvitar": 5.0,
+    "Misdreavus": 10.0,
+    "Phanpy": 5.0,
+    "Pupitar": 5.0,
+    "Quagsire": 25.0,
+    "Teddiursa": 5.0,
+    "Ursaring": 10.0
+   }
+  },
+  "Lower mountainside": {
+   "headbutt": {
+    "Aipom": 60.0,
+    "Heracross": 100.0,
+    "Natu": 40.0
+   },
+   "land": {
+    "Donphan": 5.0,
+    "Golbat": 40.0,
+    "Golduck": 5.0,
+    "Larvitar": 5.0,
+    "Onix": 30.0,
+    "Phanpy": 5.0,
+    "Teddiursa": 5.0,
+    "Ursaring": 5.0
+   }
+  },
+  "Moltres's chamber": {
+   "land": {
+    "Donphan": 10.0,
+    "Golbat": 5.0,
+    "Golduck": 10.0,
+    "Larvitar": 5.0,
+    "Misdreavus": 3.33,
+    "Quagsire": 36.67,
+    "Steelix": 20.0,
+    "Ursaring": 10.0
+   }
+  },
+  "Upper mountainside": {
+   "land": {
+    "Donphan": 10.0,
+    "Golbat": 5.0,
+    "Golduck": 26.67,
+    "Larvitar": 10.0,
+    "Misdreavus": 5.0,
+    "Quagsire": 13.33,
+    "Sneasel": 20.0,
+    "Ursaring": 10.0
+   }
+  }
+ },
+ "National Park": {
+  "Bug-Catching Contest (pre-National Pokédex)": {
+   "land": {
+    "Beedrill": 5.0,
+    "Butterfree": 5.0,
+    "Caterpie": 20.0,
+    "Kakuna": 10.0,
+    "Metapod": 10.0,
+    "Paras": 10.0,
+    "Pinsir": 5.0,
+    "Scyther": 5.0,
+    "Venonat": 10.0,
+    "Weedle": 20.0
+   }
+  },
+  "Saturday Contest": {
+   "land": {
+    "Beautifly": 5.0,
+    "Cascoon": 10.0,
+    "Combee": 5.0,
+    "Illumise": 10.0,
+    "Kricketot": 10.0,
+    "Kricketune": 10.0,
+    "Nincada": 20.0,
+    "Pinsir": 5.0,
+    "Scyther": 5.0,
+    "Wurmple": 20.0
+   }
+  },
+  "Thursday Contest": {
+   "land": {
+    "Combee": 5.0,
+    "Dustox": 5.0,
+    "Kricketot": 10.0,
+    "Kricketune": 10.0,
+    "Nincada": 20.0,
+    "Pinsir": 5.0,
+    "Scyther": 5.0,
+    "Silcoon": 10.0,
+    "Volbeat": 10.0,
+    "Wurmple": 20.0
+   }
+  },
+  "Tuesday Contest": {
+   "land": {
+    "Beedrill": 5.0,
+    "Butterfree": 5.0,
+    "Caterpie": 20.0,
+    "Kakuna": 10.0,
+    "Metapod": 10.0,
+    "Paras": 10.0,
+    "Pinsir": 5.0,
+    "Scyther": 5.0,
+    "Venonat": 10.0,
+    "Weedle": 20.0
+   }
+  },
+  "main": {
+   "land": {
+    "Caterpie": 13.33,
+    "Hoothoot": 33.33,
+    "Kakuna": 10.0,
+    "Metapod": 10.0,
+    "Pidgey": 11.67,
+    "Sunkern": 8.33,
+    "Weedle": 13.33
+   }
+  }
+ },
+ "Ruins of Alph": {},
+ "Safari Zone": {
+  "main": {
+   "fishing": {
+    "Goldeen": 180.0,
+    "Gyarados": 20.0,
+    "Magikarp": 470.0,
+    "Poliwag": 320.0,
+    "Poliwhirl": 300.0,
+    "Seaking": 100.0
+   },
+   "land": {
+    "Abra": 30.0,
+    "Geodude": 40.0,
+    "Graveler": 13.33,
+    "Haunter": 6.67,
+    "Hypno": 6.67,
+    "Marill": 10.0,
+    "Sandshrew": 40.0,
+    "Sandslash": 30.0
+   },
+   "water": {
+    "Marill": 20.0
+   }
+  }
+ },
+ "Slowpoke Well": {
+  "B1F": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Slowpoke": 15.0,
+    "Zubat": 85.0
+   },
+   "water": {
+    "Slowpoke": 100.0
+   }
+  },
+  "B2F": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Golbat": 5.0,
+    "Slowpoke": 15.0,
+    "Zubat": 80.0
+   },
+   "water": {
+    "Slowbro": 10.0,
+    "Slowpoke": 90.0
+   }
+  }
+ },
+ "Sprout Tower": {},
+ "Tohjo Falls": {},
+ "Union Cave": {
+  "1F, Ruins exits top rooms": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Geodude": 30.0,
+    "Onix": 5.0,
+    "Rattata": 25.0,
+    "Sandshrew": 15.0,
+    "Zubat": 25.0
+   },
+   "water": {
+    "Quagsire": 40.0,
+    "Wooper": 60.0
+   }
+  },
+  "B1F": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Geodude": 30.0,
+    "Onix": 10.0,
+    "Rattata": 20.0,
+    "Sandshrew": 15.0,
+    "Zubat": 25.0
+   },
+   "water": {
+    "Quagsire": 40.0,
+    "Wooper": 60.0
+   }
+  },
+  "B2F, Ruins exits lower rooms": {
+   "fishing": {
+    "Corsola": 26.67,
+    "Kingler": 10.0,
+    "Krabby": 125.0,
+    "Magikarp": 125.0,
+    "Staryu": 13.33
+   },
+   "land": {
+    "Geodude": 10.0,
+    "Golbat": 20.0,
+    "Onix": 5.0,
+    "Raticate": 30.0,
+    "Rattata": 5.0,
+    "Zubat": 30.0
+   },
+   "water": {
+    "Quagsire": 30.0,
+    "Tentacool": 60.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "Whirl Islands": {
+  "1F-B1F": {
+   "fishing": {
+    "Horsea": 40.0,
+    "Kingler": 20.0,
+    "Krabby": 105.0,
+    "Magikarp": 125.0,
+    "Seadra": 10.0
+   },
+   "land": {
+    "Golbat": 5.0,
+    "Krabby": 50.0,
+    "Seel": 15.0,
+    "Zubat": 30.0
+   },
+   "water": {
+    "Horsea": 30.0,
+    "Tentacool": 60.0,
+    "Tentacruel": 10.0
+   }
+  },
+  "B2F": {
+   "fishing": {
+    "Horsea": 40.0,
+    "Kingler": 20.0,
+    "Krabby": 105.0,
+    "Magikarp": 125.0,
+    "Seadra": 10.0
+   },
+   "land": {
+    "Golbat": 5.0,
+    "Krabby": 50.0,
+    "Seel": 15.0,
+    "Zubat": 30.0
+   },
+   "water": {
+    "Horsea": 60.0,
+    "Seadra": 10.0,
+    "Tentacruel": 30.0
+   }
+  },
+  "B3F": {
+   "land": {
+    "Golbat": 5.0,
+    "Krabby": 50.0,
+    "Seel": 15.0,
+    "Zubat": 30.0
+   }
+  }
+ }
+}
