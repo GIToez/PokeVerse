@@ -1,0 +1,13 @@
+diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
+--- a/modules/game_time/time.otui
++++ b/modules/game_time/time.otui
+@@ -7,7 +7,8 @@
+   image-source: ~
+   size: 256 48
+   anchors.top: gameMapPanel.top
+-  anchors.left: gameMapPanel.left
++  // the left panel's windows (the trainer belt) lie over the map
++  anchors.left: gameLeftPanel.right
+   //background-color: #898989bb
+   //border-color: #272727cc
+   //border-width: 1
