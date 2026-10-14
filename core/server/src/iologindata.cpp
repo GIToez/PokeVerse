@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
 #include "otpch.h"
+#include "resources.h"
 #include <iostream>
 #include <iomanip>
 
@@ -1840,6 +1841,40 @@ uint8_t IOLoginData::getPlayerVocation(const std::string& name)
 		return 0;
 		
 	return result->getDataInt("vocation");
+}
+
+bool IOLoginData::getPlayerSelectInfo(const std::string& name, uint8_t& sex, uint32_t& townId, uint32_t& lastLogin, uint32_t& playTime)
+{
+	sex = 0;
+	townId = 0;
+	lastLogin = 0;
+	playTime = 0;
+
+	Database* db = Database::getInstance();
+	DBQuery query;
+	query << "SELECT `p`.`sex`, `p`.`town_id`, `p`.`lastlogin`, (SELECT `s`.`value` FROM `player_storage` `s` WHERE `s`.`player_id` = `p`.`id` AND `s`.`key` = "
+		<< PLAYER_STORAGE_PLAYTIME << ") AS `playtime` FROM `players` `p` WHERE `p`.`name` " << db->getStringComparison() << db->escapeString(name)
+		<< " AND `p`.`deleted` = 0 LIMIT 1";
+
+	DBResult* result;
+	if(!(result = db->storeQuery(query.str())))
+		return false;
+
+	sex = result->getDataInt("sex");
+	townId = result->getDataInt("town_id");
+	lastLogin = result->getDataLong("lastlogin");
+	playTime = atoi(result->getDataString("playtime").c_str());
+	result->free();
+
+	// online players keep their storages in memory until the next save
+	if(Player* player = g_game.getPlayerByName(name))
+	{
+		std::string value;
+		if(player->getStorage(PLAYER_STORAGE_PLAYTIME, value))
+			playTime = atoi(value.c_str());
+	}
+
+	return true;
 }
 
 uint32_t IOLoginData::getAccountHighestLevel(uint32_t acc)

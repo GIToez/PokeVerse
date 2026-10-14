@@ -82,5 +82,7 @@ playersStorages = {
     switchProtectionUntil = base + 79,
     dailyStreak = base + 80, -- days in a row with all daily tasks done
     dailyStreakDay = base + 81,
+    playTime = base + 82, -- seconds played before this session; the server reads 7082 for the character list
+    playSessionStart = base + 83,
     -- tournamentWeekWinnerStorage = base + 65
 }

@@ -32,6 +32,7 @@
 #include "configmanager.h"
 #include "game.h"
 #include "discordbridge.h"
+#include "outfit.h"
 
 extern ConfigManager g_config;
 extern Game g_game;
@@ -40,6 +41,8 @@ namespace
 {
 	const uint32_t MAX_ACCOUNTS_PER_IP = 3;
 	const time_t ACCOUNTS_PER_IP_WINDOW = 3600;
+	// last entry of the client's outfit color table
+	const uint8_t MAX_OUTFIT_COLOR = 132;
 
 	// Accounts created per client IP; dispatcher thread only.
 	std::map<uint32_t, std::list<time_t> > createdAccounts;
@@ -82,10 +85,19 @@ bool ProtocolAccount::parseFirstPacket(NetworkMessage& msg)
 	uint8_t action = msg.GetByte();
 	std::string account = msg.GetString(), password = msg.GetString(), name;
 	uint8_t sex = 0;
+	Outfit_t outfit;
 	if(action == ACTION_CREATE_CHARACTER)
 	{
 		name = msg.GetString();
 		sex = msg.GetByte();
+		if(version >= CLIENT_VERSION_SELECT_INFO)
+		{
+			outfit.lookType = msg.GetU16();
+			outfit.lookHead = msg.GetByte();
+			outfit.lookBody = msg.GetByte();
+			outfit.lookLegs = msg.GetByte();
+			outfit.lookFeet = msg.GetByte();
+		}
 	}
 	else if(action == ACTION_DELETE_CHARACTER)
 		name = msg.GetString();
@@ -103,12 +115,12 @@ bool ProtocolAccount::parseFirstPacket(NetworkMessage& msg)
 	}
 
 	Dispatcher::getInstance().addTask(createTask(boost::bind(&ProtocolAccount::handleRequest, this,
-		clientIp, action, account, password, name, sex)));
+		clientIp, action, account, password, name, sex, outfit)));
 	return true;
 }
 
 void ProtocolAccount::handleRequest(uint32_t clientIp, uint8_t action, std::string account, std::string password,
-	std::string name, uint8_t sex)
+	std::string name, uint8_t sex, Outfit_t outfit)
 {
 	if(!getConnection())
 		return;
@@ -184,7 +196,7 @@ void ProtocolAccount::handleRequest(uint32_t clientIp, uint8_t action, std::stri
 			return;
 		}
 
-		std::string message = createCharacter(accountId, name, sex, success);
+		std::string message = createCharacter(accountId, name, sex, outfit, success);
 		reply(success, message);
 	}
 	else
@@ -231,7 +243,7 @@ std::string ProtocolAccount::createAccount(uint32_t clientIp, const std::string&
 	return "Your account has been created. You can now log in and create your first character.";
 }
 
-std::string ProtocolAccount::createCharacter(uint32_t accountId, std::string name, uint8_t sex, bool& success)
+std::string ProtocolAccount::createCharacter(uint32_t accountId, std::string name, uint8_t sex, const Outfit_t& outfit, bool& success)
 {
 	success = false;
 	trimString(name);
@@ -252,11 +264,36 @@ std::string ProtocolAccount::createCharacter(uint32_t accountId, std::string nam
 	if(sex > 1)
 		return "Please choose female or male.";
 
+	if(outfit.lookType)
+	{
+		bool starter = false;
+		OutfitList starters = Outfits::getInstance()->getStarterOutfits(sex);
+		for(OutfitList::const_iterator it = starters.begin(); it != starters.end() && !starter; ++it)
+			starter = it->lookType == outfit.lookType;
+
+		if(!starter)
+			return "That outfit is not available for new characters.";
+
+		if(outfit.lookHead > MAX_OUTFIT_COLOR || outfit.lookBody > MAX_OUTFIT_COLOR
+			|| outfit.lookLegs > MAX_OUTFIT_COLOR || outfit.lookFeet > MAX_OUTFIT_COLOR)
+			return "Please choose valid outfit colors.";
+	}
+
 	Database* db = Database::getInstance();
 	DBQuery query;
 	query << "CALL `pokeverse_add_character`(" << accountId << ", " << db->escapeString(name) << ", " << (uint32_t)sex << ")";
 	if(!db->executeQuery(query.str()))
 		return "The character could not be created, please try again.";
+
+	if(outfit.lookType)
+	{
+		query.str("");
+		query << "UPDATE `players` SET `looktype` = " << outfit.lookType << ", `lookhead` = " << (uint32_t)outfit.lookHead
+			<< ", `lookbody` = " << (uint32_t)outfit.lookBody << ", `looklegs` = " << (uint32_t)outfit.lookLegs
+			<< ", `lookfeet` = " << (uint32_t)outfit.lookFeet << " WHERE `account_id` = " << accountId
+			<< " AND `name` " << db->getStringComparison() << db->escapeString(name) << " AND `deleted` = 0";
+		db->executeQuery(query.str());
+	}
 
 	success = true;
 	DiscordBridge::getInstance()->onAccountCharactersChanged(accountId, "created", name);

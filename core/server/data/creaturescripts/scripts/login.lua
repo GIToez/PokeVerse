@@ -31,6 +31,7 @@ function onLogin(cid)
 		for _, v in pairs(events) do
             registerCreatureEvent(cid, v)
         end
+        doCreatureSetStorage(cid, playersStorages.playSessionStart, os.time())
 
         local lastLogin, str = getPlayerLastLoginSaved(cid), loginMessage
 		if (lastLogin > 0) then

@@ -18,6 +18,7 @@
 #ifndef __PROTOCOL_ACCOUNT__
 #define __PROTOCOL_ACCOUNT__
 #include "protocol.h"
+#include "enums.h"
 
 class NetworkMessage;
 
@@ -54,10 +55,10 @@ class ProtocolAccount : public Protocol
 		void reply(bool success, const std::string& message);
 		bool parseFirstPacket(NetworkMessage& msg);
 		void handleRequest(uint32_t clientIp, uint8_t action, std::string account, std::string password,
-			std::string name, uint8_t sex);
+			std::string name, uint8_t sex, Outfit_t outfit);
 
 		std::string createAccount(uint32_t clientIp, const std::string& account, const std::string& password, bool& success);
-		std::string createCharacter(uint32_t accountId, std::string name, uint8_t sex, bool& success);
+		std::string createCharacter(uint32_t accountId, std::string name, uint8_t sex, const Outfit_t& outfit, bool& success);
 		std::string deleteCharacter(uint32_t accountId, const std::string& name, bool& success);
 };
 #endif
