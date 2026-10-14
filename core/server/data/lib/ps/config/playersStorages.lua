@@ -80,5 +80,7 @@ playersStorages = {
     extraEggRateTime = base + 77,
     extraEggRateValue = base + 78,
     switchProtectionUntil = base + 79,
+    dailyStreak = base + 80, -- days in a row with all daily tasks done
+    dailyStreakDay = base + 81,
     -- tournamentWeekWinnerStorage = base + 65
 }
