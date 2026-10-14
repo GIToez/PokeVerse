@@ -53,7 +53,8 @@ EXTENDED_IDS = {
     DAILY_LOGIN = 18, -- JSON state of the 7-day login calendar (DailyLogin.send)
     MOVE_ENERGY = 19, -- JSON {{icon, energy}, ...}: the energy cost of each move in the moves bar, sent after the moves
     GTS = 20, -- JSON Global Trade Station window state, one message per {type = ...} (GTS)
-    PC = 21 -- JSON PC window state: Poke boxes, stash, inbox and depot, one {type = ...} per message (PC)
+    PC = 21, -- JSON PC window state: Poke boxes, stash, inbox and depot, one {type = ...} per message (PC)
+    GYM = 22 -- JSON gym leader duel intro and victory banners (GymLeaders.send)
 }
 
 TOURNAMENT_TYPES = {}

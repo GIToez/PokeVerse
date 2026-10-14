@@ -46,6 +46,7 @@ Module
     - game_gts
     - game_pc
     - game_levelup
+    - game_gymbattle
     - game_tmchoose
     - game_statusbar
     - game_duelmessage
