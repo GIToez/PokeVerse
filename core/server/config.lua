@@ -100,7 +100,8 @@
 	displayOnOrOffAtCharlist = false
 	onePlayerOnlinePerAccount = true
 	allowClones = false
-	serverName = "PokeVerse"
+	-- world name shown on the character list; live servers set it with the LIVE_SERVER_NAME variable
+	serverName = "LeafGreen"
 	loginMessage = "Welcome to PokeVerse! Train your Pokemon, complete quests and explore every city."
 	statusTimeout = 5 * 60 * 1000
 	replaceKickOnLogin = true
