@@ -63,7 +63,10 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   lanterns and cherry trees along the avenue up to the Bell Tower), Olivine after Vermilion (grey
   stone paving, the Lighthouse from Vermilion's round guild hall on a point, a pier with boats, the
   S.S. Aqua's dock) and Cianwood after Cinnabar (an island town of dirt streets, the Pharmacy
-  from Cinnabar's lab, a pier toward Route 41). Every door gets a footpath to the paving.
+  from Cinnabar's lab, a pier toward Route 41). Mahogany and Blackthorn both follow Lavender, the
+  last Kanto town not used yet, with its slate-roofed homes and souvenir shop: Mahogany on dirt
+  crossroads with lanterns, Blackthorn on dark cobblestone with Dragon's Den, a pond with a shrine
+  islet north of the town. Every door gets a footpath to the paving.
 - **Sites:** laid out like towns but without a temple: the National Park (a fenced lawn with
   stone walks, a fountain, flower beds, benches and trees, where the park's own Pokémon spawn),
   the Ruins of Alph (sandstone courts with statues before four rock mounds, broken stones, the
@@ -116,19 +119,26 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   Whirl Islands (1F on floor 8, in at 2030,607 and 2004,659), Route 41 sea on to Cianwood City
   (town 57, temple 1902,639,7, with a Gym and the Pharmacy). A strait keeps Cianwood's side apart
   from the mainland, so it is reached by Surf only.
-- 1006 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
-  clerk in every Mart; 94 houses.
+- **The east:** Route 42 from Ecruteak past Mt. Mortar (1F on floor 8, in at 2425,384 and
+  2495,382) to Mahogany Town (town 58, temple 2532,391,7, with a Gym and the souvenir shop),
+  Route 43 north to the Lake of Rage, whose water Pokémon spawn on its shore. Route 44 runs east
+  below a snowfield of fir trees to the Ice Path (1F, in at 2668,382 and 2708,378), under the
+  ridge that walls Blackthorn City off (town 59, temple 2723,387,7, with a Gym and Dragon's Den at
+  2770,335). Routes 45 and 46 run south past Dark Cave (1F, in at 2585,610 and 2690,611) to
+  Route 29, so Blackthorn can also be reached on foot from New Bark.
+- 1157 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+  clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
-  Well's insides, Goldenrod's Magnet Train station and Underground, Dark Cave, the cave floors
-  below 1F and the Gym leaders; Ecruteak's Dance Theater; the east (Route 42, Mt. Mortar,
-  Mahogany, Lake of Rage, Ice Path, Blackthorn) and Route 47 and the Safari Zone west of
-  Cianwood. The gates are open passes, since Kanto has no route gatehouses.
+  Well's insides, Goldenrod's Magnet Train station and Underground, the cave floors below 1F
+  and the Gym leaders; Ecruteak's Dance Theater; the hunting grounds of the concept; Route 47
+  and the Safari Zone west of Cianwood, and the far north (Mount Quena, Snowtop Mountain). The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
 
 - `core/server/data/npc/scripts/nurse_joy.lua`, `CITY_BY_POS`: New Bark (2717,797,7),
   Cherrygrove (2542,826,7), Violet (2513,556,7), Azalea (2391,1030,7), Goldenrod (2283,720,7),
-  Ecruteak (2290,401,7), Olivine (2111,491,7) and Cianwood (1902,631,7) are in (`build_johto.py` prints them). The Mt. Silver and Route 32 nurses only heal, like in
+  Ecruteak (2290,401,7), Olivine (2111,491,7), Cianwood (1902,631,7), Mahogany (2532,383,7) and
+  Blackthorn (2723,379,7) are in (`build_johto.py` prints them). The Mt. Silver and Route 32 nurses only heal, like in
   the games, so they have no entry.
 - `core/server/data/lib/ps/systems/026-guide.lua` (`GUIDES`) and
   `core/server/data/npc/scripts/travels.lua` (`TRAVELS`): entries go in when a Johto town gets a

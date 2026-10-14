@@ -158,6 +158,8 @@ CITY_BY_POS[{x = 2283, y = 720, z = 7}] = "Goldenrod"
 CITY_BY_POS[{x = 2290, y = 401, z = 7}] = "Ecruteak"
 CITY_BY_POS[{x = 1902, y = 631, z = 7}] = "Cianwood"
 CITY_BY_POS[{x = 2111, y = 491, z = 7}] = "Olivine"
+CITY_BY_POS[{x = 2532, y = 383, z = 7}] = "Mahogany"
+CITY_BY_POS[{x = 2723, y = 379, z = 7}] = "Blackthorn"
 
 local function getCity()
     local city
