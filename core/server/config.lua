@@ -95,6 +95,7 @@
 	retryTimeout = 5 * 1000
 	loginTimeout = 60 * 1000
 	maxPlayers = 100
+	maxCharactersPerAccount = 3
 	motd = "Welcome to PokeVerse!"
 	displayOnOrOffAtCharlist = false
 	onePlayerOnlinePerAccount = true

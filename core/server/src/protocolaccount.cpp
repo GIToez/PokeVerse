@@ -38,7 +38,6 @@ extern Game g_game;
 
 namespace
 {
-	const uint32_t MAX_CHARACTERS_PER_ACCOUNT = 10;
 	const uint32_t MAX_ACCOUNTS_PER_IP = 3;
 	const time_t ACCOUNTS_PER_IP_WINDOW = 3600;
 
@@ -176,10 +175,11 @@ void ProtocolAccount::handleRequest(uint32_t clientIp, uint8_t action, std::stri
 
 	if(action == ACTION_CREATE_CHARACTER)
 	{
-		if(acc.charList.size() >= MAX_CHARACTERS_PER_ACCOUNT)
+		const uint32_t maxCharacters = std::max<int32_t>(1, g_config.getNumber(ConfigManager::MAX_CHARACTERS_PER_ACCOUNT));
+		if(acc.charList.size() >= maxCharacters)
 		{
 			std::ostringstream ss;
-			ss << "Your account already has " << MAX_CHARACTERS_PER_ACCOUNT << " characters, the maximum.";
+			ss << "Your account already has " << maxCharacters << " characters, the maximum.";
 			reply(false, ss.str());
 			return;
 		}
