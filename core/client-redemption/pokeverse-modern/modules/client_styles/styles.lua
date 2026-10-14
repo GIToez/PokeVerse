@@ -11,6 +11,8 @@ function init()
     -- PokeVerse windows use legacy style names; Redemption's styles then replace the shared ones
     importResources("legacy-styles", "otui")
     importResources("styles", "otui", device)
+    -- PokeVerse restyles of shared Redemption styles (popups, ...) win over both sets
+    importResources("pokeverse-styles", "otui")
     importResources("fonts/otfont", "otfont", device)
     importResources("fonts//ttf", "ttf", device)
     importResources("fonts/ttf", "otf", device)

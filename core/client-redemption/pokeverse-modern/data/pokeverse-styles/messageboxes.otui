@@ -1,0 +1,99 @@
+// Info, error and confirm popups (displayInfoBox, displayErrorBox, displayGeneralBox) in the login
+// screens' look; the sizes follow the margins here (UIMessageBox.display in corelib.patch).
+// Artwork: scripts/art/login_ui.py (client_entergame/images)
+
+MessageBoxButton < UIButton
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #cfe2ff
+  text-align: center
+  image-source: /modules/client_entergame/images/button_blue
+  image-border: 8
+  height: 30
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_blue_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_blue_pressed
+  $disabled:
+    opacity: 0.45
+
+MessageBoxPrimaryButton < MessageBoxButton
+  color: #2a1e00
+  image-source: /modules/client_entergame/images/button_yellow
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_yellow_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_yellow_pressed
+
+MessageBoxWindow < UIMessageBox
+  size: 320 150
+  image-source: /modules/client_entergame/images/panel
+  image-border: 22
+  &minimizedHeight: 17
+  anchors.centerIn: parent
+  draggable: false
+
+  UIWidget
+    id: miniwindowTopBar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 44
+    phantom: true
+
+  Label
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 15
+    color: #ffffff
+    text-align: center
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 22
+    margin-left: 26
+    margin-right: 26
+    height: 18
+
+  UIWidget
+    id: titleSeparator
+    height: 1
+    background-color: #2c4170
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    margin-left: 26
+    margin-right: 26
+    phantom: true
+
+  Label
+    id: content
+    font: verdana-11px-antialised
+    color: #dce6ff
+    text-wrap: true
+    text-auto-resize: true
+    overflow-wrap: anywhere
+    anchors.left: parent.left
+    anchors.top: titleSeparator.bottom
+    margin-left: 26
+    margin-top: 14
+
+  UIWidget
+    id: messageBoxSeparator
+    height: 0
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: content.bottom
+    margin-left: 26
+    margin-right: 26
+    phantom: true
+
+  UIWidget
+    id: holder
+    anchors.left: prev.left
+    anchors.right: prev.right
+    anchors.top: prev.bottom
+    anchors.bottom: parent.bottom
+    margin-top: 18
+    margin-bottom: 22
