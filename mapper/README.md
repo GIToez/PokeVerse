@@ -131,7 +131,8 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   Arbor Woods, Lake of Life, Ecruteak Old Forest, Snowtop Mountain, Mount Quena, Rage Marshes,
   Mortar Badlands, Frozen North, Dragon Holy Land, Lake Slowpoke, Azalea South Woods), the
   anime's isles off the west coast, and sea all round; nothing in the layout's extent is left
-  empty.
+  empty. Azalea South Woods' island runs on a little past the bottom edge to a beach, and the
+  channel below it (down to y 2300) is sea, joining the open sea west of Johto to the islands'.
 - **Getting around (as in HeartGold/SoulSilver, see Bulbapedia):** Surf from New Bark onto Route
   27 (a channel at x 2805) and again across the Tohjo river to Route 26; Route 42 is cut by two
   small lakes (x 2445 and 2475), so Mahogany's side is reached through Mt. Mortar or by Surf;
@@ -141,7 +142,7 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1364 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1384 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
   Well's insides, Goldenrod's Magnet Train station and Underground, the cave floors below 1F

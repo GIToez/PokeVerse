@@ -83,6 +83,12 @@ FROZEN = (2590, 2780, 365)
 RAGE = (2550, 180, 62, 145)
 # Land the layout leaves under the sea routes: Olivine's shore, the Lighthouse's point, Cianwood's island.
 LAND_PATCHES = [(2140, 502, 44), (2086, 548, 17), (1925, 655, 42)]
+# South of the area, the empty channel between the sea west of Johto and the islands' sea to the
+# east (both open water on the base map) is filled with sea, down to where the western sea ends.
+SOUTH_SEA = (2188, BOX[3] + 1, 2930, 2300)
+# Azalea South Woods' island runs on past the area's edge to a rounded coast this many rows below
+# it, its woods mirrored from the rows above the edge.
+SOUTH_CAP = 40
 # The anime's isles off the west coast (x, y, r, rocky): Yellow Rock, Silver Rock, Blue Point, Ogi Isle.
 ISLES = [(2070, 680, 6, True), (1985, 702, 5, True), (2110, 735, 8, False), (2150, 640, 8, False)]
 # From y 772 down the sea of the region west of Johto starts at x 2187, so Goldenrod's bay and the
@@ -791,8 +797,11 @@ def build(base, out_path):
                                                            if n == 'Nurse Joy')))
     places = TOWNS_BUILT + OUTPOSTS + SITES
 
+    sx0, sy0, sx1, sy1 = SOUTH_SEA
+    south_base = pvmap.read_region_raw(base, sx0 - 1, sy0, sx1 + 1, sy1 + 1, (Z,))
+
     def existing(x, y):
-        return keep.get((x, y, Z))
+        return keep.get((x, y, Z)) or south_base.get((x, y, Z))
 
     def existing_ids(x, y):
         t = existing(x, y)
@@ -1301,6 +1310,47 @@ def build(base, out_path):
     lost = sorted(p for p in decor if p not in tiles)
     if lost:
         print('warning: %d decoration tiles fall on buildings, e.g. %s' % (len(lost), lost[:5]))
+    sea_rng = np.random.default_rng(61)
+    sea_items = [(i, c) for i, c in brushes['walkable sea'].items if c > 0]
+    sea = brushes['walkable sea']
+    edge = [x for x in range(sx0, sx1 + 1)
+            if (x, f.y1) in tiles and brushes.by_item.get(tiles[(x, f.y1)][0]) not in (None, sea)]
+    runs = [[edge[0]]] if edge else []
+    for x in edge[1:]:
+        if x == runs[-1][-1] + 1:
+            runs[-1].append(x)
+        else:
+            runs.append([x])
+    island = max(runs, key=len) if runs else []
+    cf = Field(67, (sx0, sy0, sx1, sy0 + SOUTH_CAP))
+    cap = np.zeros((cf.h, cf.w), bool)
+    if island:
+        cx, rx = (island[0] + island[-1]) / 2, (island[-1] - island[0]) / 2 + 0.5
+        cap = ((cf.X - cx) / rx) ** 2 + ((cf.Y - f.y1) / SOUTH_CAP) ** 2 + cf.noise(14) * 0.3 < 1
+        for iy, ix in np.argwhere(cap):
+            src = tiles.get((ix + sx0, f.y1 - iy))
+            cap[iy, ix] = src is not None and brushes.by_item.get(src[0]) is not sea
+    # Pad the top with the island's own edge row, so the beach runs on from the one above.
+    padded = np.vstack([np.isin(np.arange(sx0, sx1 + 1), island)[None], cap])
+    beach_rim = cap & ~erode(padded, 7)[1:]
+    sand_items = [(i, c) for i, c in brushes['sand'].items if c > 0]
+    open_deco = {i for table in (TUFTS, FERNS, FLOWERS) for i, _ in table}
+    cap_spawns = []
+    for y in range(sy0, sy1 + 1):
+        for x in range(sx0, sx1 + 1):
+            if (x, y, Z) in south_base:
+                continue
+            iy, ix = y - sy0, x - sx0
+            if iy < cf.h and beach_rim[iy, ix]:
+                tiles[(x, y)] = [pick(sea_rng, sand_items), []]
+            elif iy < cf.h and cap[iy, ix]:
+                src = tiles[(x, 2 * f.y1 + 1 - y)]
+                tiles[(x, y)] = [src[0], list(src[1])]
+                if brushes.by_item.get(src[0]) is brushes['grass'] and all(i in open_deco for i in src[1]) \
+                        and sea_rng.random() < 1 / 210.0:
+                    cap_spawns.append((x, y))
+            else:
+                tiles[(x, y)] = [pick(sea_rng, sea_items), []]
 
     # Borders.
     def brush_at(x, y):
@@ -1417,6 +1467,10 @@ def build(base, out_path):
         table = spawn_table(str(route_of[iy, ix]))
         if table:
             spawns.append((pick(rng, table), ix + f.x0, iy + f.y0, Z))
+    for x, y in cap_spawns:
+        table = spawn_table(str(route_of[f.h - 1, x - f.x0]))
+        if table:
+            spawns.append((pick(sea_rng, table), x, y, Z))
     # the sea routes' Pokémon come ashore on their islands and beaches, a step back from the water's
     # (blocking) border, like the cave ponds'
     beach = (np.isin(terrain, [GRASS, LAWN, SAND, DIRT]) & gen & ~blocked_spawn & ~clear & ~road
