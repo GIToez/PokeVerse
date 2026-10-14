@@ -11,7 +11,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  local SHADER_FADE = 0.5
  
  local DATA_INDEX = {}
-@@ -166,37 +163,127 @@
+@@ -166,37 +163,130 @@
  table.merge(SOUNDS, SOUNDS1)
  table.merge(SOUNDS, SOUNDS2)
  
@@ -152,10 +152,13 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +        local text = tr(data[DATA_INDEX.MESSAGE])
          modules.game_time.setLocation(text)
 +        showBanner(text)
++        if CharacterList and CharacterList.setCurrentArea then
++            CharacterList.setCurrentArea(text)
++        end
      end
  end
  
-@@ -225,18 +312,55 @@
+@@ -225,18 +315,55 @@
  local function playEffect(effect)
      if (playingEffect ~= effect) then
          local map = modules.game_interface.getMapPanel()
@@ -213,7 +216,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      local checkList, stop
      if (playingSound and isInPos(newPos, playingSound.fromPos, playingSound.toPos)) then
          if (playingSound.closePriorities) then
-@@ -322,12 +446,14 @@
+@@ -322,12 +449,14 @@
  -- Hooks
  function onOnline()
      stopSound()
@@ -229,7 +232,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  end
  
  function onPositionChange(cid, newPos, oldPos)
-@@ -345,23 +471,9 @@
+@@ -345,23 +474,9 @@
  function onInit()
      rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
  
@@ -255,7 +258,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      labelWindow:hide()
  
      connect(g_game, {
-@@ -388,5 +500,6 @@
+@@ -388,5 +503,6 @@
          onPositionChange = onPositionChange
      })
  
