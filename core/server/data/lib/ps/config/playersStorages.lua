@@ -79,5 +79,6 @@ playersStorages = {
     extraCatchRateValue = base + 76,
     extraEggRateTime = base + 77,
     extraEggRateValue = base + 78,
+    switchProtectionUntil = base + 79,
     -- tournamentWeekWinnerStorage = base + 65
 }
