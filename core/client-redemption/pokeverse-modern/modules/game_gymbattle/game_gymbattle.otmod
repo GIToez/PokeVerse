@@ -1,0 +1,8 @@
+Module
+  name: game_gymbattle
+  description: PokeVerse gym leader duel banners: the leader's intro and the badge on victory
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ gymbattle ]
+  @onLoad: init()
+  @onUnload: terminate()
