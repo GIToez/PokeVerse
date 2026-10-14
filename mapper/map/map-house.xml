@@ -579,4 +579,8 @@
   <house name="Pacifidlog House #10" houseid="579" entryx="1300" entryy="1783" entryz="7" rent="0" townid="49" size="57"/>
   <house name="New Bark House #1" houseid="580" entryx="2741" entryy="791" entryz="7" rent="0" townid="50" size="77"/>
   <house name="New Bark House #2" houseid="581" entryx="2737" entryy="813" entryz="7" rent="0" townid="50" size="77"/>
+  <house name="Cherrygrove House #1" houseid="582" entryx="2559" entryy="847" entryz="7" rent="0" townid="51" size="77"/>
+  <house name="Violet House #1" houseid="583" entryx="2469" entryy="577" entryz="7" rent="0" townid="52" size="77"/>
+  <house name="Violet House #2" houseid="584" entryx="2511" entryy="580" entryz="7" rent="0" townid="52" size="77"/>
+  <house name="Azalea House #1" houseid="585" entryx="2367" entryy="1029" entryz="7" rent="0" townid="53" size="77"/>
 </houses>
