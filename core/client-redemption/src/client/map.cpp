@@ -1096,7 +1096,10 @@ PathFindResult_ptr Map::newFindPath(const Position& start, const Position& goal,
     nodes[start] = initNode;
     searchList.push(initNode);
 
-    int limit = 50000;
+    // unseen tiles cost far more than the heuristic, so the search spreads wide across unexplored
+    // land; 50000 nodes ran out around 200 tiles away, which minimap and world map walks reach
+    constexpr int maxNodes = 400000;
+    int limit = maxNodes;
     const float distance = start.distance(goal);
 
     const Node* dstNode = nullptr;
@@ -1166,8 +1169,7 @@ PathFindResult_ptr Map::newFindPath(const Position& start, const Position& goal,
         std::reverse(ret->path.begin(), ret->path.end());
         ret->status = Otc::PathFindResultOk;
     }
-    ret->complexity = 50000 - limit;
-
+    ret->complexity = maxNodes - limit;
     for (const auto& node : nodes) {
         delete node.second;
     }
