@@ -77,8 +77,6 @@ for index, category in ipairs(GTS.CATEGORIES) do
     category.items = items
 end
 
-local sessions = {}
-
 local function send(cid, data, list)
     local text = JSON.encode(data)
     -- long lists lose their last rows rather than the whole message
@@ -272,6 +270,22 @@ local function pokemonSummary(uid)
     return summary
 end
 
+-- what the detail panels show (the PC's Poke boxes too)
+GTS.describe = function(data, uid, name, level)
+    for key, value in pairs(pokemonSummary(uid)) do
+        data[key] = value
+    end
+    data.ability = getPokemonSpecialAbilityName(getBallPokemonSpecialAbility(uid))
+    data.eggMove = getBallEggMove(uid)
+    local held = getBallHeld(uid)
+    data.held = held and PokemonHeldItem.getHeldName(held, uid) or nil
+    data.sheet = PokemonStats.getStatSheet(uid, name, level)
+    return data
+end
+
+GTS.summary = pokemonSummary
+GTS.faceOf = faceOf
+
 -- database
 
 local SELECT = "SELECT o.`id`, o.`player_id`, o.`kind`, o.`sale`, o.`itemtype`, o.`amount`, o.`price`, o.`created`,"
@@ -359,18 +373,7 @@ end
 
 -- session
 
-local function canUse(cid)
-    local session = sessions[cid]
-    if (not session) then
-        return false
-    end
-    if (session.anywhere) then
-        return true
-    end
-
-    local pos = getCreaturePosition(cid)
-    return pos.z == session.pos.z and math.max(math.abs(pos.x - session.pos.x), math.abs(pos.y - session.pos.y)) <= GTS.RANGE
-end
+local SESSION = playersStorages.gtsSession
 
 local function sendBalance(cid)
     send(cid, { type = "balance", bank = getPlayerBalance(cid), money = getPlayerMoney(cid) })
@@ -395,6 +398,7 @@ end
 
 GTS.onLogin = function(cid)
     if (isPlayer(cid)) then
+        WindowSession.close(cid, SESSION)
         GTS.returnExpired(cid)
     end
 end
@@ -404,7 +408,7 @@ GTS.open = function(cid, anywhere)
         return false
     end
 
-    sessions[cid] = { pos = getCreaturePosition(cid), anywhere = anywhere }
+    WindowSession.open(cid, SESSION, anywhere)
     GTS.returnExpired(cid)
 
     local categories = {}
@@ -417,15 +421,16 @@ GTS.open = function(cid, anywhere)
 end
 
 GTS.close = function(cid)
-    sessions[cid] = nil
+    WindowSession.close(cid, SESSION)
 end
 
 GTS.isOpen = function(cid)
-    if (canUse(cid)) then
+    local ok, open = WindowSession.inRange(cid, SESSION, GTS.RANGE)
+    if (ok) then
         return true
     end
-    if (sessions[cid]) then
-        sessions[cid] = nil
+    if (open) then
+        WindowSession.close(cid, SESSION)
         send(cid, { type = "close" })
         doPlayerSendCancel(cid, __L(cid, "You moved away from the computer."))
     end
@@ -711,14 +716,7 @@ GTS.sendPokemon = function(cid, id)
     data.type, data.name, data.level, data.number = "pokemon", name, level, getPokemonNumberByName(name)
     data.ball = getItemInfo(offer:getDataInt('itemtype')).clientId
     if (uid) then
-        for key, value in pairs(pokemonSummary(uid)) do
-            data[key] = value
-        end
-        data.ability = getPokemonSpecialAbilityName(getBallPokemonSpecialAbility(uid))
-        data.eggMove = getBallEggMove(uid)
-        local held = getBallHeld(uid)
-        data.held = held and PokemonHeldItem.getHeldName(held, uid) or nil
-        data.sheet = PokemonStats.getStatSheet(uid, name, level)
+        GTS.describe(data, uid, name, level)
     end
     offer:free()
     send(cid, data)

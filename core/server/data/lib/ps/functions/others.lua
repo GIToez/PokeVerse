@@ -915,3 +915,43 @@ function getPositionAdjacent(cid, targetPos, checkPath)
     end
     return nil
 end
+
+-- A window opened at an object (the GTS computer, the PC locker) and used through talk commands.
+-- Actions and talk commands run in separate Lua environments, so the session is a player storage:
+-- "p<x>,<y>,<z>,<anywhere>" (a leading digit would make it a number).
+WindowSession = {}
+
+function WindowSession.open(cid, key, anywhere)
+    local pos = getCreaturePosition(cid)
+    doCreatureSetStorage(cid, key, string.format("p%d,%d,%d,%d", pos.x, pos.y, pos.z, anywhere and 1 or 0))
+end
+
+function WindowSession.close(cid, key)
+    doCreatureSetStorage(cid, key, -1)
+end
+
+function WindowSession.get(cid, key)
+    local value = getCreatureStorage(cid, key)
+    if (type(value) ~= "string") then
+        return nil
+    end
+    local x, y, z, anywhere = value:match("^p(%d+),(%d+),(%d+),(%d)$")
+    if (not x) then
+        return nil
+    end
+    return { pos = { x = tonumber(x), y = tonumber(y), z = tonumber(z) }, anywhere = anywhere == "1" }
+end
+
+-- open, and still within range tiles of where it was opened
+function WindowSession.inRange(cid, key, range)
+    local session = WindowSession.get(cid, key)
+    if (not session) then
+        return false, false
+    end
+    if (session.anywhere) then
+        return true, true
+    end
+    local pos = getCreaturePosition(cid)
+    return pos.z == session.pos.z and math.max(math.abs(pos.x - session.pos.x),
+        math.abs(pos.y - session.pos.y)) <= range, true
+end
