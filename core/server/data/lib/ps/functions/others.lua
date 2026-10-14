@@ -797,7 +797,10 @@ function doPokemonCall(cid, ball)
         doAddExhaust(cid)
         doPlayerSendPokemonWindowUpdatePokemonIcon(cid, getFastcallNumber(ball.uid), 3, __L(cid, "USE"))
         setPlayerVulnerable(cid, false)
-        doAddCondition(pokemon, createConditionObject(CONDITION_INVULNERABLE, POKEMON_SWITCH_PROTECTION_MS))
+        if (getCreatureStorage(cid, playersStorages.switchProtectionUntil) >= os.time()) then
+            doRemoveCondition(cid, CONDITION_INVULNERABLE)
+        end
+        doCreatureSetStorage(cid, playersStorages.switchProtectionUntil, -1)
         addEvent(checkPokemonHungry, 60 * 1000, pokemon)
 
         if (getPlayerMastery(cid) and not getPlayerTournamentReady(cid)) then
