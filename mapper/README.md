@@ -137,7 +137,8 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   down to y 772) and north of Kanto's coast (up to y 20, as far east as x 4327) is sea too, so the
   world's outline runs straight along the top; a strip of Kanto's floor-7 hole over its caves that
   showed next to the new sea is closed with mountain.
-  Olivine's bay south of the city has a wandering coast with a rounded corner (no straight cuts),
+  Olivine's bay south of the city is a run of rounded coves, and the islands and points that reach
+  the sea west of Johto end in rounded tips short of it (no straight cuts),
   and a square of plain grass off Snowtop Mountain's north coast on the base map, the only tiles
   in its chunks, is redone with the rest of the coast.
 - **Getting around (as in HeartGold/SoulSilver, see Bulbapedia):** Surf from New Bark onto Route
@@ -149,7 +150,7 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1359 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1397 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
   Well's insides, Goldenrod's Magnet Train station and Underground, the cave floors below 1F

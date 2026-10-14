@@ -99,8 +99,11 @@ SOUTH_CAP = 40
 ISLES = [(2070, 680, 6, True), (1985, 702, 5, True), (2110, 735, 8, False), (2150, 640, 8, False)]
 # From y 772 down the sea of the region west of Johto starts at x 2187, so Goldenrod's bay and the
 # Ilex coast run out to it; the coast itself wanders around COAST_X.
-SEA_WEST_FROM = 772
+SEA_WEST_FROM, SEA_WEST_X = 772, 2187
 COAST_X, COAST_FROM = 2252, 700
+# Olivine's bay south of the city, open to that sea: overlapping coves (x, y, r) under a noisy edge.
+OLIVINE_BAY = [(2122, 742, 26), (2160, 722, 24), (2198, 734, 28), (2236, 752, 24), (2140, 772, 34),
+               (2190, 778, 40), (2236, 790, 30)]
 # Ilex Forest: a wall of trees from the sea to the end of Union Cave's ridge, so the forest path is the
 # way between Route 34 and Azalea.
 ILEX_WALL = ([(2230, 922), (2280, 928), (2325, 934)], 26)
@@ -940,9 +943,22 @@ def build(base, out_path):
             water &= ~m
     for x, y, r in SEA:
         land &= ~f.disc(x, y, r, n1, 0.5)
-    # the bay's north and west shores wander too, and its north-west corner is rounded off
-    land &= ~((Y >= COAST_FROM + n3 * 60) & (X < COAST_X + f.noise(18) * 22) & (X < 2300) & (X >= 2100 + n2 * 50)
-              & ((X - 2100) + (Y - COAST_FROM) + n1 * 30 > 30))
+    # Olivine's bay is a run of coves; south of it the Ilex coast wanders around COAST_X
+    ilex_coast = X < COAST_X + f.noise(18) * 22
+    for x, y, r in OLIVINE_BAY:
+        land &= ~f.disc(x, y, r, n1 + n3, 0.45)
+    land &= ~((Y >= COAST_FROM + 80) & ilex_coast & (X < 2300) & (X >= 2100))
+    # Land that runs into the sea west of Johto (from y SEA_WEST_FROM) ends in rounded points short of it.
+    edge = SEA_WEST_FROM - f.y0
+    cols = np.flatnonzero(land[edge] & (X[edge] < SEA_WEST_X))
+    points, band = np.zeros_like(land), np.zeros_like(land)
+    for run in np.split(cols, np.flatnonzero(np.diff(cols) > 1) + 1) if cols.size else []:
+        cx, rx = (run[0] + run[-1]) / 2 + f.x0, (run[-1] - run[0]) / 2 + 3
+        depth = max(14.0, rx * 1.3)
+        top = SEA_WEST_FROM - 4 - depth
+        points |= ((X - cx) / rx) ** 2 + ((Y - top) / depth) ** 2 + n1 * 0.3 < 1
+        band |= (Y > top) & (abs(X - cx) < rx + 15)
+    land &= ~(band & ~points)
     for x, y, r in LAND_PATCHES:
         patch = f.disc(x, y, r, n1, 0.4)
         land |= patch
