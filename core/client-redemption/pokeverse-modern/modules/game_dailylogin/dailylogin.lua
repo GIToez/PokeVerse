@@ -2,7 +2,7 @@
 -- ExtendedIds.DailyLogin JSON at login, after a claim and at midnight; the window only asks with
 -- "/tasks login claim" and draws what comes back. It opens by itself at login while today's
 -- reward is unclaimed.
-local window, button
+local window, button, badge
 local state, receivedAt
 local openAtLogin = false
 
@@ -108,6 +108,9 @@ local function draw()
     if button then
         button:setTooltip(state.claimedToday and tr('Daily login reward') or tr('Daily login reward (ready to claim)'))
     end
+    if badge then
+        badge:setVisible(not state.claimedToday)
+    end
 end
 
 local function show()
@@ -148,6 +151,9 @@ end
 local function onGameEnd()
     state = nil
     openAtLogin = false
+    if badge then
+        badge:hide()
+    end
     if window then
         window:hide()
     end
@@ -161,6 +167,20 @@ function init()
 
     button = modules.client_topmenu.addRightGameToggleButton('dailyLoginButton', tr('Daily login reward'),
         '/images/options/rewardwall', toggle)
+    if button then
+        badge = g_ui.createWidget('UILabel', button)
+        badge:setId('badge')
+        badge:setText('!')
+        badge:setFont('verdana-11px-rounded')
+        badge:setColor('#ffffff')
+        badge:setBackgroundColor('#d03030')
+        badge:setTextAlign(AlignCenter)
+        badge:setSize({ width = 12, height = 12 })
+        badge:addAnchor(AnchorTop, 'parent', AnchorTop)
+        badge:addAnchor(AnchorRight, 'parent', AnchorRight)
+        badge:setPhantom(true)
+        badge:hide()
+    end
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.DailyLogin, onDailyLogin)
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
@@ -178,5 +198,5 @@ function terminate()
         button:destroy()
     end
     window:destroy()
-    window, button, state = nil, nil, nil
+    window, button, badge, state = nil, nil, nil, nil
 end
