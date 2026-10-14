@@ -403,7 +403,8 @@ GTS.onLogin = function(cid)
     end
 end
 
-GTS.open = function(cid, anywhere)
+-- terminal: where the computer stands, so the client can close the window when the player walks off
+GTS.open = function(cid, anywhere, terminal)
     if (not getPlayerUsingOtClient(cid)) then
         return false
     end
@@ -416,7 +417,8 @@ GTS.open = function(cid, anywhere)
         categories[#categories + 1] = { id = index, name = category.name }
     end
     send(cid, { type = "open", categories = categories, bank = getPlayerBalance(cid), money = getPlayerMoney(cid),
-        tax = GTS.TAX, days = GTS.DURATION / 86400, maxPrice = GTS.MAX_PRICE, maxAmount = GTS.MAX_AMOUNT })
+        tax = GTS.TAX, days = GTS.DURATION / 86400, maxPrice = GTS.MAX_PRICE, maxAmount = GTS.MAX_AMOUNT,
+        terminal = not anywhere and terminal and { x = terminal.x, y = terminal.y, z = terminal.z } or nil })
     return true
 end
 

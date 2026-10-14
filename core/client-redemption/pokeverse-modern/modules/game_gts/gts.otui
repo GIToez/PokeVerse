@@ -17,7 +17,6 @@ GtsList < TextList
   border-width: 1
   border-color: #3a568c
   padding: 1
-  vertical-scrollbar: next
   focusable: false
 
 GtsScrollBar < VerticalScrollBar
@@ -230,6 +229,7 @@ GtsOfferTable < UIWidget
 
   GtsList
     id: list
+    vertical-scrollbar: scroll
     anchors.left: parent.left
     anchors.right: scroll.left
     anchors.top: header.bottom
@@ -275,6 +275,7 @@ GtsWindow < MainWindow
 
   GtsList
     id: categories
+    vertical-scrollbar: categoriesScroll
     width: 196
     height: 140
     anchors.left: parent.left
@@ -296,6 +297,7 @@ GtsWindow < MainWindow
 
   GtsList
     id: entries
+    vertical-scrollbar: entriesScroll
     width: 196
     anchors.left: parent.left
     anchors.top: entriesTitle.bottom
@@ -517,6 +519,7 @@ GtsWindow < MainWindow
 
       GtsList
         id: list
+        vertical-scrollbar: scroll
         height: 180
         anchors.left: parent.left
         anchors.right: scroll.left
@@ -664,6 +667,7 @@ GtsWindow < MainWindow
 
       GtsList
         id: list
+        vertical-scrollbar: scroll
         anchors.left: parent.left
         anchors.right: scroll.left
         anchors.top: hint.bottom
@@ -734,6 +738,7 @@ GtsWindow < MainWindow
 
       GtsList
         id: offers
+        vertical-scrollbar: offersScroll
         height: 200
         anchors.left: parent.left
         anchors.right: offersScroll.left
@@ -761,6 +766,7 @@ GtsWindow < MainWindow
 
       GtsList
         id: history
+        vertical-scrollbar: historyScroll
         anchors.left: parent.left
         anchors.right: historyScroll.left
         anchors.top: historyHeader.bottom
