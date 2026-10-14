@@ -1,5 +1,6 @@
 """Johto's towns as approved in the design proposal: what each one copies from its Kanto mirror
-(New Bark from Pallet, Cherrygrove from Viridian, Violet from Pewter, Azalea from Cerulean),
+(New Bark from Pallet, Cherrygrove from Viridian, Violet from Pewter, Azalea from Cerulean,
+Goldenrod from Saffron and Celadon, Ecruteak from Fuchsia, Olivine from Vermilion, Cianwood from Cinnabar),
 where its streets, buildings, water and landmarks go, and the decoration around them.
 
 Buildings are copied tile for tile from Kanto. Boxes are the building's house tiles plus the
@@ -68,6 +69,21 @@ BUILDINGS = {
         (254, (3705, 406, 3721, 419)), (255, (3672, 429, 3684, 441)), (256, (3661, 429, 3672, 441)),
         (257, (3679, 464, 3696, 478)), (258, (3645, 450, 3659, 465)), (259, (3623, 454, 3637, 467)),
         (260, (3637, 465, 3650, 479)), (261, (3634, 418, 3651, 433)), (262, (3638, 404, 3654, 418))]},
+    # Fuchsia City (Ecruteak), Vermilion City (Olivine) and Cinnabar Island (Cianwood)
+    **{'fuchsia-%d' % h: {'box': b} for h, b in [
+        (357, (3835, 854, 3847, 866)), (358, (3856, 858, 3867, 870)), (359, (3867, 860, 3878, 872)),
+        (360, (3855, 870, 3866, 882)), (361, (3886, 855, 3898, 867)), (362, (3898, 857, 3908, 868)),
+        (363, (3885, 867, 3897, 878)), (364, (3874, 835, 3886, 846)), (365, (3875, 824, 3888, 835)),
+        (367, (3852, 827, 3866, 838)), (369, (3867, 802, 3880, 815)), (370, (3880, 804, 3891, 815)),
+        (371, (3891, 803, 3902, 816)), (372, (3902, 802, 3914, 815))]},
+    **{'vermilion-%d' % h: {'box': b} for h, b in [
+        (331, (3969, 657, 3981, 670)), (332, (3982, 655, 3995, 668)), (333, (3995, 653, 4005, 666)),
+        (334, (3987, 628, 3999, 640)), (337, (3970, 598, 3982, 610)), (338, (3957, 599, 3970, 611)),
+        (341, (3934, 605, 3947, 617)), (342, (3922, 604, 3933, 616)), (344, (3905, 652, 3918, 666))]},
+    **{'cinnabar-%d' % h: {'box': b} for h, b in [
+        (376, (3376, 1040, 3387, 1053)), (378, (3359, 1022, 3372, 1032)), (380, (3344, 1018, 3355, 1027)),
+        (381, (3325, 1039, 3339, 1051)), (382, (3326, 1027, 3338, 1039)), (383, (3374, 1008, 3388, 1018)),
+        (386, (3387, 1037, 3398, 1046))]},
     # Landmarks: Kanto buildings standing in for Johto's, not for rent.
     'sprout-tower': {'box': (3872, 238, 3893, 258), 'rent': False},
     'academy': {'box': (3260, 520, 3279, 537), 'rent': False},
@@ -80,6 +96,13 @@ BUILDINGS = {
     'global-terminal': {'box': (3720, 457, 3737, 474), 'rent': False},
     'dept-store': {'box': (3678, 399, 3698, 414), 'walled': False, 'door': 9, 'rent': False},
     'game-corner': {'box': (3956, 443, 3970, 453), 'walled': False, 'door': 0, 'rent': False},
+    # Ecruteak: Fuchsia's five-storey walled hall as the Bell Tower, its guild hall round an open,
+    # overgrown court as the Burned Tower. Vermilion's round guild hall on its hill as the Olivine
+    # Lighthouse, and Cinnabar's lab as Cianwood's Pharmacy.
+    'bell-tower': {'box': (3851, 802, 3863, 817), 'walled': False, 'door': 10, 'rent': False},
+    'burned-tower': {'box': (3814, 794, 3834, 810), 'rent': False},
+    'lighthouse': {'box': (3890, 568, 3910, 589), 'z': 6, 'rent': False},
+    'pharmacy': {'box': (3355, 1001, 3372, 1012), 'walled': False, 'door': 9, 'rent': False},
     # the Ruins of Alph research center: a Celadon building
     'ruins-lab': {'box': (3638, 404, 3654, 418), 'rent': False},
     # the Route 34 Day-Care: Pallet's house without its walls' ring, like the police box
@@ -500,13 +523,14 @@ def goldenrod(t):
 
 def national_park(t):
     """A walled park on lawn: gray stone walks crossing at a fountain, flower beds, benches and lamps,
-    rows of trees along the walks and the contest grass around them. Gates south (Route 35) and
-    east (Route 36)."""
-    t.streets += [([(2325, 618), (2325, 560)], 1.5), ([(2290, 588), (2362, 588)], 1.5)]
+    rows of trees along the walks and the contest grass around them. Gates south (Route 35),
+    east (Route 36) and north (Route 37)."""
+    t.streets += [([(2325, 618), (2325, 556)], 1.5), ([(2290, 588), (2362, 588)], 1.5)]
     t.plazas.append((2325, 588, 6))
     t.areas.append((2287, 557, 2363, 617))
     t.fence(2286, 556, 2364, 618, gates=[(2324, 618), (2325, 618), (2326, 618),
-                                         (2364, 587), (2364, 588), (2364, 589)])
+                                         (2364, 587), (2364, 588), (2364, 589),
+                                         (2324, 556), (2325, 556), (2326, 556)])
     t.ground(2323, 586, 2327, 590, 'small tiled gray stone')
     t.ground(2324, 587, 2326, 589, 'walkable sea')
     t.block(2323, 586, 2327, 590)
@@ -577,8 +601,150 @@ def ilex_shrine(t):
         t.item(x, 946, FLOWERS[x % len(FLOWERS)])
 
 
-LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea, 54: goldenrod,
-           'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine}
+def ecruteak(t):
+    """Fuchsia's mirror: the old town of wooden houses on dirt streets, two streets crossed by the
+    avenue from Route 37 that runs on north to the Bell Tower's gate. The Burned Tower by the north
+    street, the Pokémon Center, Mart and Gym on the main street, which leads west to Route 38 and
+    east to Route 42. Lanterns and cherry trees along the avenue."""
+    t.streets += [([(2264, 410), (2396, 410)], 2), ([(2280, 375), (2380, 375)], 2),
+                  ([(2330, 342), (2330, 456)], 2.5)]
+    t.plazas.append((2330, 410, 7))
+    # north street: homes and the Burned Tower
+    t.put('fuchsia-369', 2282, 358)
+    t.put('fuchsia-370', 2299, 360)
+    t.put('burned-tower', 2338, 355)
+    t.item(2336, 373, SIGN)
+    t.put('fuchsia-371', 2362, 358)
+    # main street, north side: a home, the Pokémon Center and Mart, the Gym and homes east of the avenue
+    t.put('fuchsia-372', 2270, 393)
+    t.put('pokecenter', 2285, 399)
+    t.item(2283, 407, PC_SIGN)
+    t.put('mart', 2296, 398)
+    t.item(2305, 407, MART_SIGN)
+    t.put('fuchsia-360', 2308, 394)
+    t.put('gym', 2337, 394)
+    t.put('fuchsia-359', 2353, 394)
+    t.put('fuchsia-361', 2367, 394)
+    t.put('fuchsia-363', 2382, 395)
+    # main street, south side: the homes with their doors on the street
+    t.put('fuchsia-357', 2272, 414)
+    t.put('fuchsia-362', 2287, 414)
+    t.put('fuchsia-367', 2300, 414)
+    t.put('fuchsia-365', 2337, 414)
+    t.put('fuchsia-358', 2353, 414)
+    t.put('fuchsia-364', 2367, 414)
+    for y in range(430, 456, 6):
+        for x in (2326, 2334):
+            t.item(x, y, LANTERN)
+    for y in range(346, 372, 6):
+        for x in (2326, 2334):
+            t.item(x, y, CHERRY_TREE)
+    for x, y in [(2324, 403), (2335, 403), (2324, 417), (2335, 417)]:
+        t.item(x, y, CHERRY_TREE)
+
+
+def bell_tower(t):
+    """The Bell Tower on its sandstone court north of Ecruteak, lanterns along the walk up from the
+    town and cherry trees round the court."""
+    t.put('bell-tower', 2295, 288)
+    t.streets += [([(2305, 306), (2305, 322), (2330, 334), (2330, 342)], 1.5)]
+    t.areas.append((2280, 280, 2322, 314))
+    t.ground(2299, 305, 2311, 310, 'tiled sandstone floor')
+    for x, y in [(2299, 305), (2311, 305), (2299, 310), (2311, 310)]:
+        t.item(x, y, LANTERN)
+    for y in range(314, 322, 4):
+        t.item(2302, y, LANTERN)
+        t.item(2308, y, LANTERN)
+    for k in range(14):
+        a = k / 14 * 6.283
+        x, y = int(round(2301 + np.cos(a) * 19)), int(round(297 + np.sin(a) * 16))
+        if t.free_tile(x, y) and y < 305:
+            t.item(x, y, CHERRY_TREE)
+
+
+def olivine(t):
+    """Vermilion's mirror: the port city on the bay, the avenue from Route 39 crossing two streets.
+    The Pokémon Center, Mart and Gym on the first street, the harbour street below it with the
+    S.S. Aqua's dock, a pier with boats to the west and the Lighthouse on its point to the
+    south-west, at the start of Route 40."""
+    rng = _rng(56)
+    t.streets += [([(2140, 466), (2140, 526)], 2), ([(2100, 500), (2186, 500)], 2),
+                  ([(2100, 524), (2182, 524)], 2), ([(2100, 524), (2100, 561), (2084, 561)], 1.5)]
+    t.plazas.append((2140, 500, 6))
+    t.put('vermilion-338', 2090, 484)
+    t.put('pokecenter', 2106, 489)
+    t.item(2104, 497, PC_SIGN)
+    t.put('mart', 2117, 488)
+    t.item(2126, 497, MART_SIGN)
+    t.put('gym', 2145, 484)
+    t.put('vermilion-334', 2161, 484)
+    t.put('vermilion-337', 2176, 484)
+    # between the streets: homes with their doors on the first street
+    t.put('vermilion-331', 2104, 504)
+    t.put('vermilion-333', 2119, 504)
+    t.put('vermilion-332', 2145, 504)
+    t.put('vermilion-344', 2161, 504)
+    # harbour street: homes, the dock and the Lighthouse
+    t.put('vermilion-341', 2146, 528)
+    t.put('vermilion-342', 2163, 528)
+    t.put('lighthouse', 2076, 536)
+    t.item(2098, 557, SIGN)
+    t.boardwalk = ([(2130, 526), (2130, 556)], 1)
+    t.pier = ([(2100, 500), (2074, 500)], 1)
+    t.item(2082, 496, BOAT, ground='walkable sea')
+    t.item(2086, 504, BOAT, ground='walkable sea')
+    t.item(2135, 552, BOAT, ground='walkable sea')
+    for x, y in [(2127, 528), (2127, 532), (2134, 530), (2134, 536)]:
+        t.item(x, y, int(rng.choice(CRATES + WOOD_PILES)))
+    for x in range(2108, 2184, 12):
+        for y in (496, 520):
+            if t.free_tile(x, y) and not 2134 <= x <= 2146:
+                t.item(x, y, STREET_LAMP)
+
+
+def moomoo_farm(t):
+    """The Moomoo Farm on Route 39: the farmhouse and a fenced pasture with hay and a scarecrow."""
+    t.put('house', 2098, 412)
+    t.streets += [([(2104, 425), (2140, 425)], 1)]
+    t.areas.append((2090, 410, 2130, 456))
+    t.fence(2094, 428, 2126, 454, gates=[(2126, 440), (2126, 441), (2103, 428), (2104, 428)])
+    rng = _rng(57)
+    for _ in range(14):
+        x, y = int(rng.integers(2097, 2124)), int(rng.integers(431, 452))
+        if all(t.free_tile(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+            t.item(x, y, int(rng.choice(HAY)))
+    t.item(2110, 442, SCARECROW)
+
+
+def cianwood(t):
+    """Cinnabar's mirror: the island town at the end of Route 41, two streets crossed by the avenue,
+    the Pokémon Center, Mart and the Pharmacy on the first street, the Gym on the second and a pier
+    out to the sea route in the east."""
+    t.streets += [([(1925, 616), (1925, 690)], 2), ([(1888, 640), (1962, 640)], 2),
+                  ([(1890, 676), (1960, 676)], 2)]
+    t.plazas.append((1925, 640, 6))
+    t.put('pokecenter', 1897, 629)
+    t.item(1895, 637, PC_SIGN)
+    t.put('mart', 1909, 628)
+    t.item(1918, 637, MART_SIGN)
+    t.put('pharmacy', 1930, 625)
+    t.put('cinnabar-376', 1893, 644)
+    t.put('cinnabar-380', 1908, 644)
+    t.put('cinnabar-386', 1930, 644)
+    t.put('cinnabar-383', 1893, 662)
+    t.put('gym', 1930, 660)
+    t.put('cinnabar-378', 1891, 680)
+    t.put('cinnabar-381', 1907, 680)
+    t.put('cinnabar-382', 1946, 680)
+    t.pier = ([(1962, 640), (1986, 640)], 1)
+    t.item(1980, 636, BOAT, ground='walkable sea')
+    for x, y in [(1950, 630), (1955, 652), (1950, 668)]:
+        t.item(x, y, PARASOLS[x % len(PARASOLS)])
+
+
+LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea, 54: goldenrod, 55: ecruteak, 56: olivine,
+           57: cianwood, 'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine,
+           'Bell Tower': bell_tower, 'Moomoo Farm': moomoo_farm}
 
 
 def layout(spec, sizes, strict=True):

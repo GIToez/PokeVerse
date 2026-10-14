@@ -58,12 +58,18 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   Celadon's department store: grey stone paving in a grid of two avenues and a ring of side
   streets, a fountain square, the Radio Tower (Saffron's six-storey guild hall), the department
   store, the Game Corner (Saffron's café), the Global Terminal (Celadon's guild hall), the Gym,
-  a flower shop with fenced gardens and a harbour pier on the bay. Every door gets a footpath to
-  the paving.
+  a flower shop with fenced gardens and a harbour pier on the bay. Ecruteak after Fuchsia (dirt
+  streets, wooden houses, the Burned Tower from Fuchsia's guild hall round its overgrown court,
+  lanterns and cherry trees along the avenue up to the Bell Tower), Olivine after Vermilion (grey
+  stone paving, the Lighthouse from Vermilion's round guild hall on a point, a pier with boats, the
+  S.S. Aqua's dock) and Cianwood after Cinnabar (an island town of dirt streets, the Pharmacy
+  from Cinnabar's lab, a pier toward Route 41). Every door gets a footpath to the paving.
 - **Sites:** laid out like towns but without a temple: the National Park (a fenced lawn with
   stone walks, a fountain, flower beds, benches and trees, where the park's own Pokémon spawn),
   the Ruins of Alph (sandstone courts with statues before four rock mounds, broken stones, the
-  research center) and Ilex Forest's shrine. Ilex Forest has a wall of trees from the sea to
+  research center), Ilex Forest's shrine, the Bell Tower (Fuchsia's five-storey walled hall on a
+  sandstone court) and the Moomoo Farm (farmhouse and a fenced pasture where Route 39's Pokémon
+  spawn). Ilex Forest has a wall of trees from the sea to
   Union Cave's ridge, so its path is the only way from Route 34 to Azalea above ground.
 - **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
   below, with rocky patches, debris, stones and wall candles. The way in is a corridor cut into
@@ -74,7 +80,10 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   weighted by the game's encounter rate averaged over morning, day and night
   (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge
   blocks. The Ruins of Alph's chambers hold Unown only (Bulbapedia has no single table for them),
-  and Bulbapedia's Nidoran♀/♂ are the server's Nidorana/Nidorano.
+  and Bulbapedia's Nidoran♀/♂ are the server's Nidorana/Nidorano. The sea routes have no land
+  table, so their surf table spawns on their islands and beaches, a step back from the water
+  like the cave ponds'. Spawns only go where players can walk to from a road or street, since
+  wild trees and bushes can close off small pockets in the forests.
 - **Kanto edits:** Kanto's unfinished, undecorated grass south of the Elite Four building; the
   pass through Kanto's mountain from the west gate to the building (including a broken ramp on
   that road that led up to nothing); the counters that closed the building's west and south
@@ -100,19 +109,26 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   34 south with the Day-Care (2333,828), Ilex Forest and its shrine (2292,940) down to Azalea,
   Route 35 north to the National Park (2325,588), Route 36 east to Violet, and the Ruins of Alph
   (chambers at 2396,633, 2418,651, 2440,627 and 2448,655) between Route 36 and Route 32.
-- 710 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
-  clerk in every Mart; 63 houses.
-- **Not yet:** townsfolk and shop staff in the new landmarks, Sprout Tower's and the Slowpoke
+- **Ecruteak and the coast:** Route 37 from the National Park's north gate to Ecruteak City
+  (town 55, temple 2290,409,7, with a Gym, the Burned Tower and the Bell Tower at 2295,288), Route
+  38 west and Route 39 south past the Moomoo Farm (2110,440) to Olivine City (town 56, temple
+  2111,499,7, with a Gym and the Lighthouse at 2076,536). Route 40 is sea from Olivine to the
+  Whirl Islands (1F on floor 8, in at 2030,607 and 2004,659), Route 41 sea on to Cianwood City
+  (town 57, temple 1902,639,7, with a Gym and the Pharmacy). A strait keeps Cianwood's side apart
+  from the mainland, so it is reached by Surf only.
+- 1006 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+  clerk in every Mart; 94 houses.
+- **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
   Well's insides, Goldenrod's Magnet Train station and Underground, Dark Cave, the cave floors
-  below 1F and the Gym leaders; Route 37 north of the park, the north (Ecruteak, Mahogany,
-  Blackthorn, Ice Path) and the coast (Olivine, Cianwood). The gates are open passes, since
-  Kanto has no route gatehouses.
+  below 1F and the Gym leaders; Ecruteak's Dance Theater; the east (Route 42, Mt. Mortar,
+  Mahogany, Lake of Rage, Ice Path, Blackthorn) and Route 47 and the Safari Zone west of
+  Cianwood. The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
 
 - `core/server/data/npc/scripts/nurse_joy.lua`, `CITY_BY_POS`: New Bark (2717,797,7),
-  Cherrygrove (2542,826,7), Violet (2513,556,7), Azalea (2391,1030,7) and Goldenrod (2283,720,7)
-  are in (`build_johto.py` prints them). The Mt. Silver and Route 32 nurses only heal, like in
+  Cherrygrove (2542,826,7), Violet (2513,556,7), Azalea (2391,1030,7), Goldenrod (2283,720,7),
+  Ecruteak (2290,401,7), Olivine (2111,491,7) and Cianwood (1902,631,7) are in (`build_johto.py` prints them). The Mt. Silver and Route 32 nurses only heal, like in
   the games, so they have no entry.
 - `core/server/data/lib/ps/systems/026-guide.lua` (`GUIDES`) and
   `core/server/data/npc/scripts/travels.lua` (`TRAVELS`): entries go in when a Johto town gets a
