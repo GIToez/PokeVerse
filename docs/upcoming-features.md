@@ -269,6 +269,12 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 | Chance of a second daycare egg | 2% | 4% | 6% | 8% | 10% |
 | Daily early egg chance (others: 10%) | 11% | 12% | 13% | 14% | 15% |
 
+**Premium (agreed):** Breeder can be chosen by everyone and its perks never pause. The
+daycare stays Premium, so the daycare perks (second egg, early egg chance) apply while the
+player has Premium; faster hatching always works, for every egg (eggs can also be bought).
+When Premium runs out, Pokémon in the daycare and eggs in incubators can still be
+collected.
+
 Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
 is time based: an egg in an incubator hatches after 60 minutes
 (`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`). At the top rank it takes 45
