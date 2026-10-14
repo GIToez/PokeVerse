@@ -97,7 +97,7 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 ## Built so far
 
 - **South:** New Bark Town (town 50, temple 2717,805,7), Route 29 toward Cherrygrove, Route 27,
-  Tohjo Falls (river out of the ridge, wooden bridge), Route 26 to the south gate (3049,700) and
+  Tohjo Falls (river out of the ridge and on out to sea, no bridge), Route 26 to the south gate (3049,700) and
   the road from the gate to the Elite Four building's south door.
 - **North:** the west gate (3049,593) and its pass to the building's west door, Route 28 with a
   pond, the Silver–Indigo range around the plateau, Mt. Silver with snowfields, its Pokémon
@@ -124,14 +124,30 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   Route 43 north to the Lake of Rage, whose water Pokémon spawn on its shore. Route 44 runs east
   below a snowfield of fir trees to the Ice Path (1F, in at 2668,382 and 2708,378), under the
   ridge that walls Blackthorn City off (town 59, temple 2723,387,7, with a Gym and Dragon's Den at
-  2770,335). Routes 45 and 46 run south past Dark Cave (1F, in at 2585,610 and 2690,611) to
-  Route 29, so Blackthorn can also be reached on foot from New Bark.
-- 1157 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+  2770,335). Routes 45 and 46 run south past Dark Cave (1F, in at 2585,610 and 2690,611).
+- **The rest of the layout:** Routes 47 and 48 from Cianwood to the Safari Zone (1810,560, its
+  own wild Pokémon inside the fence), the Battle Frontier (2010,366) north-west of Olivine, the
+  hunting grounds with trails in from the routes and wild Pokémon of their own (Olivine Cliffs,
+  Arbor Woods, Lake of Life, Ecruteak Old Forest, Snowtop Mountain, Mount Quena, Rage Marshes,
+  Mortar Badlands, Frozen North, Dragon Holy Land, Lake Slowpoke, Azalea South Woods), the
+  anime's isles off the west coast, and sea all round; nothing in the layout's extent is left
+  empty.
+- **Getting around (as in HeartGold/SoulSilver, see Bulbapedia):** Surf from New Bark onto Route
+  27 (a channel at x 2805) and again across the Tohjo river to Route 26; Route 42 is cut by two
+  small lakes (x 2445 and 2475), so Mahogany's side is reached through Mt. Mortar or by Surf;
+  Blackthorn's side through the Ice Path, or Dark Cave with Rock Smash (rocks across the tunnel at
+  x 2604, floor 8), a cliff standing in for Route 46's one-way ledges; Cut for the jungle grass
+  across the Ilex Forest path (y 918) on the way to Route 34; Surf to Cianwood, Routes 47 and 48
+  on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
+  server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
+  grass 3985, Rock Smash: rock 1285, both grow back).
+- 1364 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
   Well's insides, Goldenrod's Magnet Train station and Underground, the cave floors below 1F
-  and the Gym leaders; Ecruteak's Dance Theater; the hunting grounds of the concept; Route 47
-  and the Safari Zone west of Cianwood, and the far north (Mount Quena, Snowtop Mountain). The gates are open passes, since Kanto has no route gatehouses.
+  (Tohjo Falls' cave with Waterfall, Mt. Silver Cave up to the summit and the Ho-Oh Shrine) and
+  the Gym leaders; Ecruteak's Dance Theater; Route 36's Sudowoodo and Route 46's one-way ledges.
+  The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
 
