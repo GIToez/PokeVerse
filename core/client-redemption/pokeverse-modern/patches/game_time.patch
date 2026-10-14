@@ -1,3 +1,21 @@
+diff -ruN pristine/modules/game_time/time.lua modules/game_time/time.lua
+--- a/modules/game_time/time.lua
++++ b/modules/game_time/time.lua
+@@ -77,6 +77,14 @@
+     window:recursiveGetChildById('location'):setText(text)
+ end
+ 
++function getLocation()
++    if not window then
++        return ''
++    end
++    local label = window:recursiveGetChildById('location')
++    return label and label:getText() or ''
++end
++
+ -- Hooks
+ function onOnline() end
+ 
 diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 --- a/modules/game_time/time.otui
 +++ b/modules/game_time/time.otui
@@ -24,7 +42,7 @@ diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 -    height: 24
 -    anchors.left: parent.left
 -    anchors.top: parent.top
-+  margin-top: -10
++  margin-top: -18
  
    UILabel
      id: timeLabel
@@ -63,5 +81,5 @@ diff -ruN pristine/modules/game_time/time.otui modules/game_time/time.otui
 -    text-offset: 2 0
 -    text-auto-resize: true
 -    margin-top: 3
-+    margin-top: 6
++    margin-top: 4
 +    height: 14

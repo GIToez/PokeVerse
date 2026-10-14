@@ -31,9 +31,9 @@ server (open ports, SSH, firewall).
 ## 1. New depot
 
 **Built** (`lib/ps/systems/067-pc.lua`, client `game_pc`): one PC window with Poké boxes,
-stash, inbox and depot tabs and a search over all of them. It opens from a locker in a
-Pokémon Center (a locker within 10 tiles of Nurse Joy); other lockers, and clients without
-the window, open the old containers. Where it differs from the plan below:
+stash, inbox and depot tabs and a search over all of them. It opens when you use the depot locker at a Pokémon Center (standard Tibia: the locker
+container opens, then the PC window). The server checks Nurse Joy is nearby; other lockers
+stay classic containers only. The client talks over extended opcode JSON, not chat commands. Where it differs from the plan below:
 
 - A Pokémon in a Poké box is a database row with its ball's attributes (`pc_boxes`), the
   same way the GTS and the Day Care keep them, not an item in a container. Nothing about

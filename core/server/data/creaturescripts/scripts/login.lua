@@ -17,7 +17,7 @@ local loginMessage = getConfigValue('loginMessage')
 
 local events = {"onDeath", "onKill", "onGainExperience", "onAddContainerItem", "onRemoveContainerItem",
 "onPrepareDeath", "onTarget", "onJoinChannel", "onReportBug", "onTradeRequestAccept", "onStatisticChange",
-"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit"}
+"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit", "ExtendedOpcode"}
 
 if (getBooleanFromString(getConfigValue('advancedSave'))) then
     events[#events + 1] = "AdvancedSave"

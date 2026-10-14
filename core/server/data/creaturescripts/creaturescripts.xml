@@ -63,6 +63,7 @@
 	<event type="death" name="anniversary_onDeath" event="script" value="../../lib/ps/events/creaturescripts/events/anniversary_onDeath.lua" />
 	<!-- End PS -->
 	
+	<event type="extendedopcode" name="ExtendedOpcode" event="script" value="../../lib/ps/events/creaturescripts/onExtendedOpcode.lua"/>
 	<event type="login" name="PlayerLogin" event="script" value="login.lua"/>
 
 	<event type="joinchannel" name="GuildMotd" event="script" value="guildmotd.lua"/>

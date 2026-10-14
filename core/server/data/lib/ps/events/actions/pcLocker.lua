@@ -1,5 +1,5 @@
--- A Pokemon Center locker opens the PC window (lib/ps/systems/067-pc.lua) for clients that have it;
--- false lets it open as a container, as it always has.
+-- The locker always opens as a container, like standard Tibia. The modern client shows the PC
+-- window when that container opens at a Pokemon Center (extended opcode to 067-pc.lua).
 function onUse(cid, item, fromPosition, itemEx, toPosition)
-    return PC.open(cid, getThingPos(item.uid))
+    return false
 end

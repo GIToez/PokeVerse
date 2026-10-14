@@ -6,8 +6,8 @@
 --   Inbox: deliveries (items that didn't fit, rewards, GTS purchases, mail), no limit.
 --   Depot: the old containers, for everything else; "Open depot" opens them as before.
 --
--- The client's PC window (game_pc) says "/pc hello" at login; only those players get the PC, everyone
--- else keeps the old depot. It sends "/pc <action> ..." (talkactions/client/pc.lua) and draws the
+-- Modern clients register with a hello over extended opcode at login; only those players get the PC, everyone
+-- else keeps the old depot. It sends "/pc <action> ..." (extended opcode JSON) and draws the
 -- EXTENDED_IDS.PC JSON that comes back.
 --
 -- Deliveries still go through doPlayerAddDepotItem: for PC players the item is marked and put in the
@@ -1045,4 +1045,77 @@ PC.search = function(cid, text)
         table.remove(list)
     end
     send(cid, { type = "search", text = text, list = list }, list)
+end
+
+-- Client requests (extended opcode EXTENDED_IDS.PC, JSON). No chat commands.
+PC.onClientMessage = function(cid, buffer)
+    local ok, data = pcall(JSON.decode, buffer)
+    if (not ok or type(data) ~= "table") then
+        return
+    end
+    local action = (data.action or ""):lower()
+
+    if (action == "hello") then
+        PC.hello(cid)
+        return
+    elseif (action == "close") then
+        PC.close(cid)
+        return
+    elseif (action == "open") then
+        PC.hello(cid)
+        if (not PC.enabled(cid)) then
+            return
+        end
+        if (data.staff and getPlayerAccess(cid) >= PC.STAFF_ACCESS) then
+            PC.open(cid, getThingPos(cid), true)
+        elseif (PC.inPokemonCenter(getThingPos(cid))) then
+            PC.open(cid, getThingPos(cid))
+        end
+        return
+    elseif (not PC.isOpen(cid)) then
+        return
+    end
+
+    local a, b, c = data.a, data.b, data.c
+    if (action == "box") then
+        PC.sendBox(cid, a or 1)
+    elseif (action == "pokemon" and a) then
+        PC.sendPokemon(cid, a)
+    elseif (action == "partymon" and a) then
+        PC.sendPartyPokemon(cid, a, data.name or "")
+    elseif (action == "party") then
+        PC.sendParty(cid)
+    elseif (action == "deposit" and a and b and c) then
+        PC.deposit(cid, a, b, c, data.name or "")
+    elseif (action == "withdraw" and a) then
+        PC.withdraw(cid, a)
+    elseif (action == "move" and a and b) then
+        PC.move(cid, a, b, c)
+    elseif (action == "rename" and a) then
+        PC.rename(cid, a, data.name or "")
+    elseif (action == "inbox") then
+        PC.sendInbox(cid)
+    elseif (action == "take" and a) then
+        PC.take(cid, a)
+    elseif (action == "takeall") then
+        PC.takeAll(cid)
+    elseif (action == "tobox" and a) then
+        PC.inboxToBox(cid, a)
+    elseif (action == "stash") then
+        PC.sendStash(cid)
+    elseif (action == "bag") then
+        PC.sendBag(cid)
+    elseif (action == "stow" and a and b) then
+        PC.stow(cid, a, b)
+    elseif (action == "stowall") then
+        PC.stowAll(cid)
+    elseif (action == "unstow" and a and b) then
+        PC.unstow(cid, a, b)
+    elseif (action == "depot") then
+        PC.sendDepot(cid)
+    elseif (action == "opendepot") then
+        PC.openDepot(cid)
+    elseif (action == "search") then
+        PC.search(cid, (data.text or ""):gsub("[^%w%s%.%-']", ""))
+    end
 end

@@ -1,12 +1,16 @@
 -- Pokemon Center PC: one window with Poke boxes, stash, inbox and depot tabs and a search over all of
--- them. The server (067-pc.lua) opens it when a Pokemon Center locker is used, sends everything as
--- ExtendedIds.Pc JSON, one {type = ...} per message, and the window only asks with "/pc <action> ...".
--- The hello at login is what tells the server this client has the window; without it the locker
--- opens as a container, as it always has.
+-- them. Click the depot locker at a Pokemon Center (standard Tibia containers); this module opens
+-- the PC window and talks to the server over ExtendedIds.Pc JSON — no chat commands.
 local window
 local state = {}
 local searchEvent, helloEvent
 local drag
+
+-- server locker ids and the client ids OTClient uses for the same items
+local LOCKER_IDS = {
+    [2589] = true, [2590] = true, [2591] = true, [2592] = true, [13015] = true,
+    [3497] = true, [3498] = true, [3499] = true, [3500] = true,
+}
 
 local SEX_NAMES = { [0] = 'Female', [1] = 'Male', [2] = '-' }
 local OK_COLOR, ERROR_COLOR = '#8fe08f', '#ff8a80'
@@ -15,8 +19,76 @@ local TABS = { boxes = 'boxesPage', stash = 'stashPage', inbox = 'inboxPage', de
 local SORTS = { { id = 'name', name = 'Name' }, { id = 'count', name = 'Amount' }, { id = 'category', name = 'Category' } }
 local WHERE_NAMES = { box = 'Poke boxes', stash = 'Stash', inbox = 'Inbox', depot = 'Depot' }
 
+local function sendRequest(data)
+    local protocol = g_game.getProtocolGame()
+    if protocol then
+        protocol:sendExtendedJSONOpcode(ExtendedIds.Pc, data)
+    end
+end
+
 local function send(text)
-    g_game.talk('/pc ' .. text)
+    local action, rest = text:match('^(%S+)%s*(.*)$')
+    if not action then
+        return
+    end
+    action = action:lower()
+    local numbers = {}
+    for n in rest:gmatch('%d+') do
+        numbers[#numbers + 1] = tonumber(n)
+    end
+    local a, b, c = numbers[1], numbers[2], numbers[3]
+    local data = { action = action }
+    if action == 'box' then
+        data.a = a or 1
+    elseif action == 'pokemon' or action == 'withdraw' or action == 'take' or action == 'tobox' then
+        data.a = a
+    elseif action == 'partymon' then
+        data.a = a
+        data.name = rest:match('^%d+%s+(.+)$') or ''
+    elseif action == 'deposit' then
+        data.a, data.b, data.c = a, b, c
+        data.name = rest:match('^%d+%s+%d+%s+%d+%s+(.+)$') or ''
+    elseif action == 'move' then
+        data.a, data.b, data.c = a, b, c
+    elseif action == 'rename' then
+        data.a = a
+        data.name = rest:match('^%d+%s*(.*)$') or ''
+    elseif action == 'stow' or action == 'unstow' then
+        data.a, data.b = a, b
+    elseif action == 'search' then
+        data.text = rest
+    end
+    sendRequest(data)
+end
+
+local function isPokemonCenter()
+    local loc = modules.game_time and modules.game_time.getLocation and modules.game_time.getLocation() or ''
+    return loc:find('Pokemon Center', 1, true) ~= nil
+end
+
+local function closeLockerContainers()
+    for _, container in pairs(g_game.getContainers()) do
+        local item = container:getContainerItem()
+        if item and LOCKER_IDS[item:getId()] then
+            g_game.close(container)
+        end
+    end
+end
+
+local function onContainerOpen(container, previousContainer)
+    if previousContainer then
+        return
+    end
+    local item = container:getContainerItem()
+    if not item or not LOCKER_IDS[item:getId()] then
+        return
+    end
+    if not isPokemonCenter() then
+        return
+    end
+    scheduleEvent(function()
+        sendRequest({ action = 'open' })
+    end, 100)
 end
 
 local function formatCount(n)
@@ -756,6 +828,7 @@ function handlers.open(data)
     setStatus(tr('Drag Pokemon between your party and the boxes, or double click to move them.'), true)
     local root = rootWidget
     window:setSize({ width = math.min(1000, root:getWidth() - 20), height = math.min(620, root:getHeight() - 20) })
+    closeLockerContainers()
     window:show()
     window:raise()
     window:focus()
@@ -986,7 +1059,7 @@ local function sayHello()
     helloEvent = scheduleEvent(function()
         helloEvent = nil
         if g_game.isOnline() then
-            send('hello')
+            sendRequest({ action = 'hello' })
         end
     end, 1500)
 end
@@ -1019,6 +1092,7 @@ function init()
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Pc, onPc)
     connect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
+    connect(Container, { onOpen = onContainerOpen })
     if g_game.isOnline() then
         sayHello()
     end
@@ -1029,6 +1103,7 @@ function terminate()
     stopSparkles()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Pc)
     disconnect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
+    disconnect(Container, { onOpen = onContainerOpen })
     for _, event in ipairs({ searchEvent, helloEvent }) do
         removeEvent(event)
     end
