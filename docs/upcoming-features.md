@@ -632,13 +632,12 @@ is changed yet.
    cost $150,000 once. Hunting tasks pay about 2.5 times the loot of the same kills. Once a
    trainer owns the late game items, money only piles up (inflation). Lower the top two
    difficulties, or add money sinks that repeat.
-2. **Houses cost almost nothing and have no rent.** A median house is less than one
-   Beginner day of tasks, and nothing is ever paid again. Set a rent in the house file
-   (for example a weekly rent from the house's size), or raise `housePriceEachSquare`.
+2. **Houses are cheap.** A median house, and its monthly rent, is about one Beginner day
+   of tasks. Raise `housePriceEachSquare`, which sets both, or make the rent weekly.
 3. **Rare candy comes from the boards every week** (Extreme gives one a day plus three a
    week, Hard one a week). Check it against how fast levelling is meant to be.
-4. **Few repeating sinks.** Balls, potions and travel are small. Ideas: the GTS fee, house
-   rent, paid hunting refreshes (they exist: $1,000 to $20,000), cosmetic shops.
+4. **Few repeating sinks.** Balls, potions, travel and the house rent are small. Ideas: the
+   GTS fee, a higher rent, paid hunting refreshes (they exist: $1,000 to $20,000), cosmetic shops.
 
 **Checked and fine**
 
