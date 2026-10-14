@@ -506,6 +506,67 @@
    }
   }
  },
+ "47": {
+  "main": {
+   "fishing": {
+    "Chinchou": 60.0,
+    "Lanturn": 10.0,
+    "Magikarp": 125.0,
+    "Shellder": 40.0,
+    "Tentacool": 45.0,
+    "Tentacruel": 20.0
+   },
+   "headbutt": {
+    "Beedrill": 15.0,
+    "Butterfree": 15.0,
+    "Exeggcute": 40.0,
+    "Heracross": 20.0,
+    "Hoothoot": 100.0,
+    "Kakuna": 25.0,
+    "Ledyba": 15.0,
+    "Metapod": 25.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Ditto": 41.0,
+    "Farfetch'd": 13.33,
+    "Fearow": 4.0,
+    "Gloom": 5.0,
+    "Miltank": 20.0,
+    "Noctowl": 6.67,
+    "Raticate": 5.0,
+    "Spearow": 5.0
+   },
+   "water": {
+    "Seel": 30.0,
+    "Staryu": 10.0,
+    "Tentacool": 60.0
+   }
+  }
+ },
+ "48": {
+  "main": {
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "land": {
+    "Diglett": 4.0,
+    "Farfetch'd": 13.34,
+    "Fearow": 10.0,
+    "Girafarig": 5.0,
+    "Gloom": 20.0,
+    "Growlithe": 7.83,
+    "Hoppip": 11.0,
+    "Tauros": 21.0,
+    "Vulpix": 7.83
+   }
+  }
+ },
  "Bell Tower": {},
  "Burned Tower": {},
  "Cherrygrove City": {

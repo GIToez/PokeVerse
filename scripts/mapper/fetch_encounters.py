@@ -17,7 +17,7 @@ import urllib.request
 
 PAGES = {
     '26': 'Kanto Route 26', '27': 'Kanto Route 27', '28': 'Kanto Route 28',
-    **{str(n): 'Johto Route %d' % n for n in range(29, 47)},
+    **{str(n): 'Johto Route %d' % n for n in range(29, 49)},
     'Mt. Silver': 'Mt. Silver', 'Mt. Silver Cave': 'Mt. Silver Cave', 'Tohjo Falls': 'Tohjo Falls',
     'Union Cave': 'Union Cave', 'Dark Cave': 'Dark Cave', 'Ice Path': 'Ice Path', 'Ilex Forest': 'Ilex Forest',
     'Mt. Mortar': 'Mt. Mortar', 'Slowpoke Well': 'Slowpoke Well', 'Ruins of Alph': 'Ruins of Alph',
