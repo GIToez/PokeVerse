@@ -150,10 +150,10 @@ CITY_BY_POS[{x = 1732, y = 1427, z = 6}] = "Mosssdeep"
 CITY_BY_POS[{x = 1576, y = 1545, z = 5}] = "Sootopolis"
 CITY_BY_POS[{x = 1311, y = 1760, z = 7}] = "Pacifidlog"
 
-CITY_BY_POS[{x = 2722, y = 795, z = 7}] = "New Bark"
-CITY_BY_POS[{x = 2531, y = 824, z = 7}] = "Cherrygrove"
-CITY_BY_POS[{x = 2510, y = 553, z = 7}] = "Violet"
-CITY_BY_POS[{x = 2395, y = 1028, z = 7}] = "Azalea"
+CITY_BY_POS[{x = 2717, y = 797, z = 7}] = "New Bark"
+CITY_BY_POS[{x = 2542, y = 826, z = 7}] = "Cherrygrove"
+CITY_BY_POS[{x = 2513, y = 556, z = 7}] = "Violet"
+CITY_BY_POS[{x = 2391, y = 1030, z = 7}] = "Azalea"
 
 local function getCity()
     local city

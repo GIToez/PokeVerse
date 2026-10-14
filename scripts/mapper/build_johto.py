@@ -17,12 +17,14 @@ its Pokémon Center, and Mt. Silver Cave 1F below ground. The Elite Four buildin
 counters are taken out so both gates lead into it.
 """
 import argparse
+import collections
 import json
 import os
 import pickle
 import re
 import struct
 import sys
+import zlib
 
 import numpy as np
 from PIL import Image, ImageFilter
@@ -30,6 +32,7 @@ from PIL import Image, ImageFilter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import autoborder  # noqa: E402
 import johto_layout as L  # noqa: E402
+import johto_towns as T  # noqa: E402
 import pvmap  # noqa: E402
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
@@ -71,25 +74,18 @@ PREFABS = {
     'mart': {'box': (3304, 535, 3312, 543), 'z': 7, 'door': 4, 'npcs': [('Mart', 3310, 537)]},
     'gym': {'box': (3247, 559, 3260, 571), 'z': 7, 'door': 6},
 }
-# Towns: the temple, a clearing (x, y, r), streets, and buildings by top-left corner. Buildings north
-# of a street get a path from the door down to it; the others a short apron in front of the door.
+# The Kanto buildings the towns copy (johto_towns.py): box with the walls, entries from map-house.xml.
+for _name, _spec in T.BUILDINGS.items():
+    PREFABS[_name] = dict({'z': Z, 'walled': True, 'rent': True}, **_spec)
+# Towns, laid out in johto_towns.py, paved like their Kanto mirror. The temple is set in front of the
+# Pokémon Center and the clearing (x, y, r) around the layout.
 TOWNS_BUILT = [
-    {'town_id': 50, 'name': 'New Bark', 'temple': (2722, 803), 'clear': (2718, 800, 40),
-     'streets': [[(2735, 800), (2705, 800)]],
-     'buildings': [('pokecenter', 2717, 793), ('lab', 2686, 787), ('house', 2742, 786), ('cottage', 2700, 809),
-                   ('house', 2738, 808)]},
-    {'town_id': 51, 'name': 'Cherrygrove', 'temple': (2530, 832), 'clear': (2548, 834, 38),
-     'streets': [[(2592, 836), (2510, 836)], [(2548, 836), (2548, 798)]],
-     'buildings': [('pokecenter', 2526, 822), ('mart', 2556, 821), ('house', 2560, 842), ('cottage', 2513, 842)]},
-    {'town_id': 52, 'name': 'Violet', 'temple': (2509, 561), 'clear': (2500, 563, 48),
-     'streets': [[(2546, 565), (2456, 565)], [(2498, 522), (2498, 608)]],
-     'buildings': [('pokecenter', 2505, 551), ('mart', 2520, 550), ('gym', 2476, 546), ('house', 2470, 572),
-                   ('house', 2512, 575), ('cottage', 2524, 590)]},
-    {'town_id': 53, 'name': 'Azalea', 'temple': (2394, 1036), 'clear': (2387, 1040, 36),
-     'streets': [[(2420, 1040), (2352, 1040)]],
-     'buildings': [('pokecenter', 2390, 1026), ('mart', 2402, 1025), ('house', 2368, 1024), ('gym', 2365, 1046),
-                   ('cottage', 2395, 1048)]},
+    {'town_id': 50, 'name': 'New Bark', 'paving': 'dirt'},
+    {'town_id': 51, 'name': 'Cherrygrove', 'paving': 'gray stone tiles', 'core': 7},
+    {'town_id': 52, 'name': 'Violet', 'paving': 'dark cobblestone', 'core': 3},
+    {'town_id': 53, 'name': 'Azalea', 'paving': 'cobblestone', 'core': 4},
 ]
+# `core`: how far the paving spreads from the streets, leaving grass around the buildings and water.
 # Pokémon Centers outside towns only heal (like in the games), so they are not towns.
 OUTPOSTS = [
     {'name': 'Mt. Silver', 'clear': (2912, 524, 26), 'streets': [[(2910, 533), (2930, 533)]],
@@ -103,12 +99,12 @@ ROUTE_28 = [(3049, 593), (3020, 589), (2985, 588), (2955, 584), (2932, 566), (29
 # Roads of the routes built so far (the layout's polylines, run into the town streets and cave mouths).
 ROADS = {
     '26': [(3049, 700), (3010, 701), (2965, 706), (2920, 712), (2895, 714)],
-    '27': [(2895, 714), (2860, 745), (2815, 772), (2760, 793), (2735, 800)],
-    '29': [(2705, 800), (2660, 822), (2620, 834), (2592, 836)],
-    '30': [(2548, 798), (2560, 760), (2566, 720), (2556, 670), (2546, 628)],
-    '31': [(2546, 628), (2552, 600), (2550, 578), (2546, 565)],
-    '32': [(2498, 608), (2484, 660), (2474, 730), (2468, 800), (2462, 850), (2461, 872), (2450, 878), (2448, 882)],
-    '33': [(2442, 967), (2428, 990), (2410, 1015), (2420, 1040)],
+    '27': [(2895, 714), (2860, 745), (2815, 772), (2785, 800), (2770, 806)],
+    '29': [(2676, 806), (2650, 824), (2620, 834), (2597, 836)],
+    '30': [(2552, 795), (2560, 760), (2566, 720), (2556, 670), (2546, 628)],
+    '31': [(2546, 628), (2552, 600), (2552, 578), (2552, 566)],
+    '32': [(2499, 612), (2484, 660), (2474, 730), (2468, 800), (2462, 850), (2461, 872), (2450, 878), (2448, 882)],
+    '33': [(2442, 967), (2433, 990), (2429, 1015), (2428, 1040)],
     'silver': [(2910, 533), (2906, 516), (2903, 502)],
 }
 # Caves on the floor below: mouths (stairs down at x, y on floor 7, facing the way players walk out),
@@ -164,7 +160,8 @@ def spawn_table(key, method='land'):
     return sorted(ENCOUNTERS[place][area].get(method, {}).items())
 
 
-GRASS, MOUNTAIN, WATER, SAND, DIRT, LAWN, BRIDGE, SNOW_PEAK, STAIRS, CAVE_FLOOR, SNOW = range(1, 12)
+# PAVE is a town's ground, its brush looked up per tile: paving, wooden floor or a ground the layout asks for.
+GRASS, MOUNTAIN, WATER, SAND, DIRT, LAWN, BRIDGE, SNOW_PEAK, STAIRS, CAVE_FLOOR, SNOW, PAVE = range(1, 13)
 # plank ground and rails per bridge row (north, middle, south); rails alternate post / plain.
 # Kanto's 6211/6212 edge planks are see-through and only work on bridges above a lower floor.
 BRIDGE_ROWS = [(6210, [(3758, 3773), (3769,)]), (6210, [(), ()]), (6210, [(3761, 3772), (3768,)])]
@@ -176,10 +173,18 @@ WATER_IDS = set(range(4608, 4626)) | {4664, 4665, 4666} | set(range(4820, 4826))
 # ---------------------------------------------------------------------------------------------
 # Reading the base map
 
+def upper_box(box, up):
+    """A building's box `up` floors higher: floors above are drawn one tile up-left per floor, so
+    the roofs over the box are stored that far to the right and down."""
+    x0, y0, x1, y1 = box
+    return (x0, y0, x1 + up, y1 + up)
+
+
 def scan(path):
     """One pass over the base map, collecting what the layout and the builder need."""
     st = os.stat(path)
-    cache = '/tmp/pv_scan_%d_%d_%s.pkl' % (st.st_size, int(st.st_mtime), '_'.join(map(str, BOX)))
+    boxes = zlib.crc32(repr(('upper', sorted((p['box'], p['z']) for p in PREFABS.values()))).encode())
+    cache = '/tmp/pv_scan_%d_%d_%s_%08x.pkl' % (st.st_size, int(st.st_mtime), '_'.join(map(str, BOX)), boxes)
     if os.path.exists(cache):
         return pickle.load(open(cache, 'rb'))
     data = open(path, 'rb').read()
@@ -191,8 +196,13 @@ def scan(path):
     keep = {}
     keep_boxes = [((bx0 - 1, by0 - 1, bx1 + 1, by1 + 1), (Z,))]
     for p in PREFABS.values():
-        x0, y0, x1, y1 = p['box']
-        keep_boxes.append(((x0, y0, x1, y1), range(0, p['z'] + 1)))
+        for z in range(0, p['z'] + 1):
+            keep_boxes.append((upper_box(p['box'], p['z'] - z), (z,)))
+    by_chunk = collections.defaultdict(list)
+    for box, floors in keep_boxes:
+        for cx in range(box[0] >> 5, (box[2] >> 5) + 1):
+            for cy in range(box[1] >> 5, (box[3] >> 5) + 1):
+                by_chunk[(cx, cy)].append((box, floors))
     area = None
     cur = None
     pending = None
@@ -214,7 +224,7 @@ def scan(path):
                     else:
                         pending = (x, y)
                 cur = None
-                for (x0, y0, x1, y1), floors in keep_boxes:
+                for (x0, y0, x1, y1), floors in by_chunk.get((x >> 5, y >> 5), ()):
                     if x0 <= x <= x1 and y0 <= y <= y1 and z in floors:
                         cur = pvmap.RawTile(house_id, flags, item, b)
                         keep[(x, y, z)] = cur
@@ -327,16 +337,38 @@ def smooth_path(pts, rng, wobble=10, step=12):
 # Prefabs
 
 class Prefab:
-    def __init__(self, name, spec, keep, brushes, nature):
+    """A Kanto building copied by its box. Plain prefabs have their door below the box (`door` is its
+    first column); walled ones include the walls and get their entries from map-house.xml, and only
+    keep the houses whose entry is in the box (a neighbour's tile on a shared wall is not theirs).
+    Landmarks (rent False) are not houses at all."""
+
+    def __init__(self, name, spec, keep, brushes, nature, houses_xml):
         self.name = name
         x0, y0, x1, y1 = spec['box']
         self.w, self.h = x1 - x0 + 1, y1 - y0 + 1
         self.base_z = spec['z']
         self.tiles = {}
         self.house_ids = set()
+        self.src = (x0, y0)
+        self.door = spec.get('door', self.w // 2 - 1)
+        if spec.get('walled'):
+            own = {hid for hid, h in houses_xml.items()
+                   if x0 <= int(h['entryx']) <= x1 and y0 <= int(h['entryy']) <= y1 and int(h['entryz']) == self.base_z}
+            self.entries = sorted({(int(houses_xml[hid]['entryx']) - x0, int(houses_xml[hid]['entryy']) - y0)
+                                   for hid in own})
+        else:
+            own = None
+            self.entries = [(self.door, self.h), (self.door + 1, self.h)]
+        if not spec.get('rent', True):
+            own = set()
         for (x, y, z), tile in keep.items():
-            if not (x0 <= x <= x1 and y0 <= y <= y1 and z <= self.base_z):
+            if z > self.base_z:
                 continue
+            ux0, uy0, ux1, uy1 = upper_box(spec['box'], self.base_z - z)
+            if not (ux0 <= x <= ux1 and uy0 <= y <= uy1):
+                continue
+            if own is not None and tile.house_id and tile.house_id not in own:
+                tile = pvmap.RawTile(0, tile.flags, tile.ground, tile.children)
             if z == self.base_z:
                 ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
                 if not tile.house_id and all(i in nature for i in ids):
@@ -344,8 +376,6 @@ class Prefab:
             if tile.house_id:
                 self.house_ids.add(tile.house_id)
             self.tiles[(x - x0, y - y0, z - self.base_z)] = tile
-        self.src = (x0, y0)
-        self.door = spec.get('door', self.w // 2 - 1)
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
 
@@ -365,6 +395,32 @@ def pick(rng, table):
     ids, weights = zip(*table)
     w = np.array(weights, float)
     return ids[rng.choice(len(ids), p=w / w.sum())]
+
+
+def footpath(start, target, walkable, reach=40):
+    """Shortest path of (iy, ix) cells from start (ix, iy) up to the first target cell, which is left
+    out. Steps go through walkable cells only, at most `reach` tiles from the start."""
+    sx, sy = start
+    prev = {(sy, sx): None}
+    queue = collections.deque([(sy, sx)])
+    h, w = walkable.shape
+    while queue:
+        cell = queue.popleft()
+        if target[cell] and cell != (sy, sx):
+            path = []
+            cell = prev[cell]
+            while cell is not None:
+                path.append(cell)
+                cell = prev[cell]
+            return path
+        cy, cx = cell
+        for dy, dx in ((1, 0), (-1, 0), (0, -1), (0, 1)):
+            n = (cy + dy, cx + dx)
+            if (0 <= n[0] < h and 0 <= n[1] < w and n not in prev and (walkable[n] or target[n])
+                    and abs(n[0] - sy) + abs(n[1] - sx) <= reach):
+                prev[n] = cell
+                queue.append(n)
+    return None
 
 
 def landing(x, y, facing):
@@ -483,7 +539,23 @@ def build(base, out_path):
         nature.update(i for i, _ in table)
     nature.update(GRAVEL)
     nature.update(range(6476, 6489))
-    prefabs = {name: Prefab(name, spec, keep, brushes, nature) for name, spec in PREFABS.items()}
+    houses_xml = house_entries()
+    prefabs = {name: Prefab(name, spec, keep, brushes, nature, houses_xml) for name, spec in PREFABS.items()}
+    sizes = {name: (p.w, p.h) for name, p in prefabs.items()}
+    layouts = {}
+    for pl in TOWNS_BUILT:
+        t = layouts[pl['town_id']] = T.layout(pl, sizes)
+        pl['buildings'], pl['streets'] = t.buildings, []
+        pc = prefabs['pokecenter']
+        px, py = next((x, y) for n, x, y in t.buildings if n == 'pokecenter')
+        pl['temple'] = (px + pc.door + 1, py + pc.h + 2)
+        pts = [p for line, _ in t.streets for p in line] + list(t.decor) + list(t.grounds)
+        pts += [(x + dx, y + dy) for n, x, y in t.buildings for dx in (0, sizes[n][0]) for dy in (0, sizes[n][1])]
+        xs, ys = zip(*pts)
+        pl['clear'] = ((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2,
+                       np.hypot(max(xs) - min(xs), max(ys) - min(ys)) / 2)
+        print('%s: Nurse Joy at %s' % (pl['name'], ', '.join('%d,%d' % (px + dx, py + dy) for n, dx, dy in pc.npcs
+                                                           if n == 'Nurse Joy')))
     places = TOWNS_BUILT + OUTPOSTS
 
     def existing(x, y):
@@ -622,14 +694,68 @@ def build(base, out_path):
     forest &= ~(road_d < 4)
     land |= road & ~water
 
-    # Towns and outposts.
-    for pl in places:
+    # Outposts get a clearing; towns are cleared around their layout, paved and given their water.
+    for pl in OUTPOSTS:
         cx, cy, r = pl['clear']
         c = f.disc(cx, cy, r, f.noise(12), 0.5)
         mount &= ~c
         water &= ~c
         land |= c
         forest &= ~f.disc(cx, cy, r + 6, f.noise(12), 0.5)
+
+    def mask():
+        return np.zeros((f.h, f.w), bool)
+
+    town_area, town_water, islets, boxes = mask(), mask(), mask(), mask()
+    town_ground = {}  # (x, y) -> brush name
+    decor = {}
+    planks = set()
+    town_pave = {}
+    for pl in TOWNS_BUILT:
+        t = layouts[pl['town_id']]
+        pave, wood, wet, foot, built = mask(), mask(), mask(), mask(), mask()
+        street_d = np.full((f.h, f.w), 1e9)
+        for pts, hw in t.streets:
+            street_d = np.minimum(street_d, f.seg_dist(pts) - hw)
+        pave |= street_d < 0
+        for x, y, r in t.plazas:
+            pave |= f.disc(x, y, r, f.noise(4), 0.15)
+        for n, x, y in t.buildings:
+            w, h = sizes[n]
+            for dx, dy in prefabs[n].footprint:
+                boxes[y + dy - f.y0, x + dx - f.x0] = True
+            built[y - f.y0:y - f.y0 + h, x - f.x0:x - f.x0 + w] = True
+        foot |= built
+        for (x, y) in (set(t.decor) | set(t.grounds)) - {p for p, b in t.grounds.items() if b == 'walkable sea'}:
+            foot[y - f.y0, x - f.x0] = True
+        for pts, hw in t.rivers:
+            wet |= f.seg_dist(smooth_path(pts, rng, 2, 8)) + f.noise(5) * 1.5 < hw
+        for _kind, x0, y0, x1, y1, width in t.ponds:
+            wet |= ((X >= x0) & (X <= x1) & (Y >= y0) & (Y <= y1)
+                    & ~((X >= x0 + width) & (X <= x1 - width) & (Y >= y0 + width) & (Y <= y1 - width)))
+        for x, y, r in t.islets:
+            islets |= f.disc(x, y, r, f.noise(4), 0.3)
+        for spec in (t.pier, t.boardwalk):
+            if spec:
+                wood |= f.seg_dist(spec[0]) < spec[1] + 0.5
+        for x0, x1, y0, y1 in t.bridge_ns:
+            planks |= {(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)}
+        if pl.get('core'):
+            pave |= (street_d + f.noise(6) * 3 < pl['core']) & ~dilate(built, 5) & ~dilate(wet | wood, 5)
+        foot |= pave
+        town_area |= dilate(foot | wet | wood, 13)
+        land |= dilate(foot, 9)
+        town_water |= wet
+        for iy, ix in np.argwhere(pave):
+            town_ground[(ix + f.x0, iy + f.y0)] = pl['paving']
+        for iy, ix in np.argwhere(wood):
+            town_ground[(ix + f.x0, iy + f.y0)] = 'wooden floor'
+        town_ground.update(t.grounds)
+        decor.update(t.decor)
+        town_pave[pl['town_id']] = pave
+    mount &= ~town_area
+    forest &= ~town_area
+    water &= ~town_area
 
     terrain = np.zeros((f.h, f.w), np.uint8)
     terrain[land] = GRASS
@@ -687,8 +813,41 @@ def build(base, out_path):
     for (x, y) in bridge:
         terrain[y - f.y0, x - f.x0] = BRIDGE
 
+    # Town ground: grass between the buildings, the water, the paving, bridges where streets and roads
+    # cross the rivers (the rivers all run north-south, so the rails go along the top and bottom rows),
+    # and a footpath from every entry to the nearest paving.
+    terrain[town_area & land & (terrain != SAND) & ~road] = GRASS
+    terrain[town_water] = WATER
+    terrain[islets & ~land] = MOUNTAIN
+    for (x, y), b in town_ground.items():
+        terrain[y - f.y0, x - f.x0] = WATER if b == 'walkable sea' else PAVE
+    streets = np.any(list(town_pave.values()), axis=0)
+    crossing = {(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(town_water & (streets | road))}
+    for (x, y) in crossing:
+        bridge[(x, y)] = 0 if (x, y - 1) not in crossing else 2 if (x, y + 1) not in crossing else 1
+    for (x, y) in planks:
+        bridge[(x, y)] = 1
+    for (x, y) in crossing | planks:
+        town_ground.pop((x, y), None)
+        terrain[y - f.y0, x - f.x0] = BRIDGE
+    walkable = town_area & ~boxes & ~np.isin(terrain, [WATER, MOUNTAIN, SNOW_PEAK])
+    for (x, y) in decor:
+        walkable[y - f.y0, x - f.x0] = False
+    for pl in TOWNS_BUILT:
+        target = (town_pave[pl['town_id']] & (terrain == PAVE)) | (terrain == BRIDGE)
+        for name, ox, oy in pl['buildings']:
+            for ex, ey in prefabs[name].entries:
+                path = footpath((ox + ex - f.x0, oy + ey - f.y0), target, walkable)
+                if path is None:
+                    print('warning: no path from %s at %d,%d' % (name, ox + ex, oy + ey))
+                    continue
+                for iy, ix in path:
+                    town_ground[(ix + f.x0, iy + f.y0)] = pl['paving']
+                    terrain[iy, ix] = PAVE
+    clear |= town_area
+    near_town_paths = dilate((terrain == PAVE) | (terrain == BRIDGE) | boxes, 3)
+
     # Prefabs.
-    houses_xml = house_entries()
     next_house = max(houses_xml) + 1
     prefab_tiles = {}
     npcs = []
@@ -713,6 +872,8 @@ def build(base, out_path):
                                    'entryz': Z, 'rent': 0, 'townid': place.get('town_id', 0), 'size': size})
             for n, dx, dy in p.npcs:
                 npcs.append((n, ox + dx, oy + dy, Z))
+            if place not in OUTPOSTS:
+                continue
             y0, x0 = oy - f.y0, ox - f.x0
             clear[y0 - 2:y0 + p.h + 2, x0 - 2:x0 + p.w + 2] = True
             terrain[y0 - 1:y0 + p.h + 1, x0 - 1:x0 + p.w + 1] = GRASS
@@ -722,12 +883,16 @@ def build(base, out_path):
             door = x0 + p.door
             terrain[y0 + p.h:end, door:door + 2] = DIRT
             clear[y0 + p.h:end, door - 1:door + 3] = True
-        if 'temple' in place:
-            # town square in front of the Pokémon Center
-            tx, ty = place['temple']
-            sq = f.disc(tx, ty + 1, 5.5, f.noise(4), 0.3)
-            terrain[sq & land] = DIRT
-            clear |= sq | f.disc(tx, ty, 8)
+    # windmills: the wheel goes on the middle of the roof's front row
+    roof = [(dx, dy) for (dx, dy, dz) in prefabs['windmill'].tiles if dz == -1]
+    front = max(dy for _, dy in roof)
+    row = sorted(dx for dx, dy in roof if dy == front)
+    mid = row[len(row) // 2 - 1]
+    for t in layouts.values():
+        for x, y in t.wheels:
+            for k, item in enumerate(T.MILL_WHEEL):
+                tile = prefab_tiles[(x + mid + k, y + front, Z - 1)]
+                tile.children += pvmap.item_node(item)
 
     for (x, y, z) in prefab_tiles:
         if z == Z and f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
@@ -765,10 +930,14 @@ def build(base, out_path):
                 tiles[(x, y)] = [STAIRS_DOWN, []]
                 blocked_spawn[iy, ix] = True
                 continue
-            brush = brushes[BRUSH_OF[cls]]
+            brush = brushes[town_ground.get((x, y)) or BRUSH_OF[cls]]
             ground = pick(rng, [(i, c) for i, c in brush.items if c > 0])
             deco = []
             r = rng.random()
+            if (x, y) in decor:
+                tiles[(x, y)] = [ground, list(decor[(x, y)])]
+                blocked_spawn[iy, ix] = True
+                continue
             if cls in (GRASS, LAWN) and not clear[iy, ix] and not road[iy, ix]:
                 g = groves[iy, ix]
                 if keep_free[iy, ix]:
@@ -799,11 +968,16 @@ def build(base, out_path):
                         deco.append(pick(rng, FLOWERS))
                     elif r2 < p_tuft + 0.036 + p_flower:
                         deco.append(pick(rng, STONES))
+            elif cls in (GRASS, LAWN) and town_area[iy, ix] and r < 0.4:
+                deco.append(pick(rng, BUSHES) if r < 0.025 and not near_town_paths[iy, ix] else pick(rng, TUFTS))
             elif cls == DIRT and not clear[iy, ix] and r < 0.18:
                 deco.append(rng.choice(GRAVEL))
             if deco and deco[0] not in dict(TUFTS) and deco[0] not in dict(FERNS) and deco[0] not in dict(FLOWERS):
                 blocked_spawn[iy, ix] = True
             tiles[(x, y)] = [ground, deco]
+    lost = sorted(p for p in decor if p not in tiles)
+    if lost:
+        print('warning: %d decoration tiles fall on buildings, e.g. %s' % (len(lost), lost[:5]))
 
     # Borders.
     def brush_at(x, y):
@@ -887,7 +1061,7 @@ def build(base, out_path):
     # Spawns along the routes, drawn from the game's encounter rates.
     shore = dilate(terrain == WATER, 5)  # sea borders on the shore tiles block
     walk_ok = np.isin(terrain, [GRASS, LAWN, SAND]) & gen & ~blocked_spawn & ~clear & ~road & ~shore
-    walk_ok &= ~dilate(np.isin(terrain, [MOUNTAIN, SNOW_PEAK]), 5)
+    walk_ok &= ~dilate(np.isin(terrain, [MOUNTAIN, SNOW_PEAK]), 5) & ~town_area
     for pl in places:
         cx, cy, r = pl['clear']
         walk_ok &= ~f.disc(cx, cy, r + 10)
