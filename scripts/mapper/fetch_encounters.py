@@ -23,7 +23,9 @@ PAGES = {
     'Mt. Mortar': 'Mt. Mortar', 'Slowpoke Well': 'Slowpoke Well', 'Ruins of Alph': 'Ruins of Alph',
     'National Park': 'National Park', 'Lake of Rage': 'Lake of Rage', 'Whirl Islands': 'Whirl Islands',
     "Dragon's Den": "Dragon's Den", 'Sprout Tower': 'Sprout Tower', 'Burned Tower': 'Burned Tower',
-    'Bell Tower': 'Bell Tower', 'Safari Zone': 'Johto Safari Zone',
+    'Bell Tower': 'Bell Tower', 'Safari Zone': 'Johto Safari Zone', 'Olivine City': 'Olivine City',
+    'Cianwood City': 'Cianwood City', 'Goldenrod City': 'Goldenrod City', 'Cherrygrove City': 'Cherrygrove City',
+    'New Bark Town': 'New Bark Town', 'Violet City': 'Violet City', 'Ecruteak City': 'Ecruteak City',
 }
 METHODS = {'Grass': 'land', 'Cave': 'land', 'Rock Smash': 'rock smash', 'Surf': 'water', 'Headbutt': 'headbutt',
            'Fish Old': 'fishing', 'Fish Good': 'fishing', 'Fish Super': 'fishing'}
@@ -58,10 +60,10 @@ def parse(text):
             elif in_gen4:
                 area = title
             continue
-        b = re.match(r'^\{\{Catch/div\|[^|]*\|([^}]*)\}\}', line)
+        b = re.match(r'^\{\{[Cc]atch/div\|[^|]*\|([^}]*)\}\}', line)
         if b and in_gen4 and 'Headbutt' not in b.group(1) and b.group(1) not in ('Surfing', 'Fishing', 'Rock Smash', 'Special'):
             area = re.sub(r'<[^>]+>', ' ', b.group(1)).strip()
-        m = re.match(r'^\{\{Catch/entryhs\|(.*)\}\}\s*$', line)
+        m = re.match(r'^\{\{[Cc]atch/entryhs\|(.*)\}\}\s*$', line)
         if not m:
             continue
         parts = m.group(1).split('|')

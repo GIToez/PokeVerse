@@ -318,7 +318,12 @@
  "38": {
   "main": {
    "headbutt": {
-    "Burmy": 35.0
+    "Burmy": 35.0,
+    "Exeggcute": 105.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
    },
    "land": {
     "Farfetch'd": 6.67,
@@ -352,8 +357,38 @@
    }
   }
  },
- "40": {},
- "41": {},
+ "40": {
+  "main": {
+   "fishing": {
+    "Corsola": 26.67,
+    "Kingler": 10.0,
+    "Krabby": 125.0,
+    "Magikarp": 125.0,
+    "Staryu": 13.33
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "41": {
+  "main": {
+   "fishing": {
+    "Chinchou": 60.0,
+    "Lanturn": 10.0,
+    "Magikarp": 125.0,
+    "Shellder": 40.0,
+    "Tentacool": 45.0,
+    "Tentacruel": 20.0
+   },
+   "water": {
+    "Mantine": 5.0,
+    "Tentacool": 75.0,
+    "Tentacruel": 20.0
+   }
+  }
+ },
  "42": {
   "main": {
    "fishing": {
@@ -473,8 +508,119 @@
  },
  "Bell Tower": {},
  "Burned Tower": {},
- "Dark Cave": {},
- "Dragon's Den": {},
+ "Cherrygrove City": {
+  "main": {
+   "fishing": {
+    "Corsola": 26.67,
+    "Kingler": 10.0,
+    "Krabby": 125.0,
+    "Magikarp": 125.0,
+    "Staryu": 13.33
+   },
+   "headbutt": {
+    "Exeggcute": 105.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0,
+    "Taillow": 35.0
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "Cianwood City": {
+  "main": {
+   "fishing": {
+    "Corsola": 26.67,
+    "Kingler": 10.0,
+    "Krabby": 125.0,
+    "Magikarp": 125.0,
+    "Staryu": 13.33
+   },
+   "rock smash": {
+    "Krabby": 80.0,
+    "Shuckle": 20.0
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "Dark Cave": {
+  "Route 31 side": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Dunsparce": 1.0,
+    "Geodude": 60.0,
+    "Zubat": 39.0
+   },
+   "rock smash": {
+    "Dunsparce": 80.0,
+    "Geodude": 20.0
+   },
+   "water": {
+    "Magikarp": 100.0
+   }
+  },
+  "Route 45 side": {
+   "fishing": {
+    "Goldeen": 145.0,
+    "Magikarp": 145.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Geodude": 30.0,
+    "Golbat": 5.0,
+    "Graveler": 20.0,
+    "Wobbuffet": 15.0,
+    "Zubat": 30.0
+   },
+   "water": {
+    "Magikarp": 100.0
+   }
+  }
+ },
+ "Dragon's Den": {
+  "main": {
+   "fishing": {
+    "Dragonair": 3.0,
+    "Dratini": 42.0,
+    "Magikarp": 255.0
+   },
+   "water": {
+    "Dratini": 10.0,
+    "Magikarp": 90.0
+   }
+  }
+ },
+ "Ecruteak City": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 155.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "water": {
+    "Poliwag": 90.0,
+    "Poliwhirl": 10.0
+   }
+  }
+ },
+ "Goldenrod City": {},
  "Ice Path": {
   "1F and B1F": {
    "land": {
@@ -800,6 +946,14 @@
    }
   },
   "main": {
+   "headbutt": {
+    "Cherubi": 35.0,
+    "Exeggcute": 105.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
    "land": {
     "Caterpie": 13.33,
     "Hoothoot": 33.33,
@@ -811,12 +965,76 @@
    }
   }
  },
- "Ruins of Alph": {},
+ "New Bark Town": {
+  "main": {
+   "fishing": {
+    "Chinchou": 60.0,
+    "Lanturn": 10.0,
+    "Magikarp": 125.0,
+    "Shellder": 40.0,
+    "Tentacool": 45.0,
+    "Tentacruel": 20.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 100.0,
+    "Ledyba": 15.0,
+    "Pineco": 30.0,
+    "Spinarak": 15.0
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "Olivine City": {
+  "main": {
+   "fishing": {
+    "Corsola": 26.67,
+    "Kingler": 10.0,
+    "Krabby": 125.0,
+    "Magikarp": 125.0,
+    "Staryu": 13.33
+   },
+   "water": {
+    "Tentacool": 90.0,
+    "Tentacruel": 10.0
+   }
+  }
+ },
+ "Ruins of Alph": {
+  "After obtaining all 26 alphabetic Unown forms, completing all 4 tile puzzles, and unlocking all 4 secret rooms": {
+   "land": {
+    "Unown": 100.0
+   }
+  },
+  "Outside": {
+   "fishing": {
+    "Magikarp": 165.0,
+    "Poliwag": 135.0
+   },
+   "land": {
+    "Natu": 90.0,
+    "Smeargle": 10.0
+   },
+   "rock smash": {
+    "Geodude": 100.0
+   },
+   "water": {
+    "Quagsire": 40.0,
+    "Wooper": 60.0
+   }
+  }
+ },
  "Safari Zone": {
   "main": {
    "fishing": {
+    "Dratini": 20.0,
     "Goldeen": 180.0,
     "Gyarados": 20.0,
+    "Kingler": 20.0,
+    "Krabby": 70.0,
     "Magikarp": 470.0,
     "Poliwag": 320.0,
     "Poliwhirl": 300.0,
@@ -824,16 +1042,83 @@
    },
    "land": {
     "Abra": 30.0,
+    "Arbok": 6.67,
+    "Bellsprout": 36.67,
+    "Clefairy": 3.33,
+    "Cubone": 13.33,
+    "Ditto": 6.67,
+    "Doduo": 20.0,
+    "Drowzee": 6.67,
+    "Ekans": 13.33,
+    "Farfetch'd": 20.0,
+    "Fearow": 20.0,
+    "Gastly": 6.67,
     "Geodude": 40.0,
+    "Girafarig": 26.67,
+    "Gloom": 6.67,
+    "Golbat": 13.33,
+    "Golduck": 6.67,
     "Graveler": 13.33,
+    "Grimer": 6.67,
     "Haunter": 6.67,
+    "Hoppip": 23.33,
     "Hypno": 6.67,
+    "Jigglypuff": 56.67,
+    "Kangaskhan": 13.33,
+    "Koffing": 30.0,
+    "Krabby": 30.0,
+    "Larvitar": 6.67,
+    "Lickitung": 20.0,
+    "Machoke": 3.33,
+    "Machop": 13.33,
+    "Magmar": 6.67,
+    "Magnemite": 50.0,
+    "Magneton": 23.33,
     "Marill": 10.0,
+    "Marowak": 6.67,
+    "Misdreavus": 16.67,
+    "Mr. Mime": 13.33,
+    "Murkrow": 16.67,
+    "Nidoran♀": 20.0,
+    "Nidoran♂": 20.0,
+    "Nidorina": 10.0,
+    "Nidorino": 10.0,
+    "Oddish": 6.67,
+    "Onix": 30.0,
+    "Paras": 20.0,
+    "Pidgey": 20.0,
+    "Psyduck": 6.67,
+    "Quagsire": 6.67,
+    "Raticate": 30.0,
+    "Rattata": 40.0,
+    "Rhyhorn": 6.67,
     "Sandshrew": 40.0,
-    "Sandslash": 30.0
+    "Sandslash": 30.0,
+    "Sentret": 50.0,
+    "Skiploom": 6.67,
+    "Slowbro": 10.0,
+    "Slowpoke": 30.0,
+    "Smeargle": 6.67,
+    "Spearow": 20.0,
+    "Stantler": 6.67,
+    "Sunkern": 10.0,
+    "Tauros": 20.0,
+    "Weezing": 20.0,
+    "Wobbuffet": 6.67,
+    "Wooper": 33.33,
+    "Zubat": 33.33
    },
    "water": {
-    "Marill": 20.0
+    "Goldeen": 40.0,
+    "Grimer": 30.0,
+    "Lapras": 20.0,
+    "Magikarp": 140.0,
+    "Marill": 20.0,
+    "Poliwag": 100.0,
+    "Poliwhirl": 20.0,
+    "Psyduck": 20.0,
+    "Quagsire": 20.0,
+    "Wooper": 90.0
    }
   }
  },
@@ -870,7 +1155,27 @@
   }
  },
  "Sprout Tower": {},
- "Tohjo Falls": {},
+ "Tohjo Falls": {
+  "main": {
+   "fishing": {
+    "Goldeen": 125.0,
+    "Magikarp": 165.0,
+    "Seaking": 10.0
+   },
+   "land": {
+    "Golbat": 20.0,
+    "Raticate": 30.0,
+    "Rattata": 5.0,
+    "Slowpoke": 15.0,
+    "Zubat": 30.0
+   },
+   "water": {
+    "Goldeen": 60.0,
+    "Seaking": 10.0,
+    "Slowpoke": 30.0
+   }
+  }
+ },
  "Union Cave": {
   "1F, Ruins exits top rooms": {
    "fishing": {
@@ -928,6 +1233,28 @@
     "Quagsire": 30.0,
     "Tentacool": 60.0,
     "Tentacruel": 10.0
+   }
+  }
+ },
+ "Violet City": {
+  "main": {
+   "fishing": {
+    "Magikarp": 145.0,
+    "Poliwag": 155.0
+   },
+   "headbutt": {
+    "Exeggcute": 40.0,
+    "Hoothoot": 130.0,
+    "Pineco": 30.0
+   },
+   "water": {
+    "Poliwag": 90.0,
+    "Poliwhirl": 10.0
+   }
+  },
+  "{{color2|000|Mass outbreak|Swarm": {
+   "fishing": {
+    "Whiscash": 180.0
    }
   }
  },
