@@ -78,12 +78,24 @@ local function savePosition()
     end
 end
 
+-- just over the chat when it floats on the map (full screen view), else at the bottom of the map
+function placeDefault()
+    if not pokemonMovesWindow or pokemonMovesWindow.moved then
+        return
+    end
+    local floating = modules.game_interface.isChatFloating and modules.game_interface.isChatFloating()
+        and modules.game_interface.getBottomPanel():isVisible()
+    local anchor = floating and 'gameBottomPanel' or 'gameMapPanel'
+    pokemonMovesWindow:breakAnchors()
+    pokemonMovesWindow:addAnchor(AnchorBottom, anchor, floating and AnchorTop or AnchorBottom)
+    pokemonMovesWindow:addAnchor(AnchorHorizontalCenter, anchor, AnchorHorizontalCenter)
+    pokemonMovesWindow:setMarginBottom(floating and 4 or 44)
+end
+
 local function resetPosition()
     pokemonMovesWindow.moved = false
     g_settings.remove('pokeverse-moves-pos')
-    pokemonMovesWindow:breakAnchors()
-    pokemonMovesWindow:addAnchor(AnchorBottom, 'gameMapPanel', AnchorBottom)
-    pokemonMovesWindow:addAnchor(AnchorHorizontalCenter, 'gameMapPanel', AnchorHorizontalCenter)
+    placeDefault()
 end
 
 function switchOrientation()
@@ -349,6 +361,8 @@ function onInit()
             pokemonMovesWindow:setPosition(saved)
             pokemonMovesWindow.moved = true
         end, 100)
+    else
+        placeDefault()
     end
 
     applyOrientation()
