@@ -175,6 +175,75 @@ def child_item_ids(children):
     return ids
 
 
+def split_items(children):
+    """Splits an escaped children blob into its top-level ITEM node blobs."""
+    out = []
+    for ev, t, depth, a, b, _ in walk(children, 0):
+        if ev == 'close' and depth == 0:
+            out.append(children[a:b])
+    return out
+
+
+def encode_town(town_id, name, x, y, z):
+    props = struct.pack('<I', town_id) + struct.pack('<H', len(name)) + name.encode('latin-1') + struct.pack('<HHB', x, y, z)
+    return bytes([START, TOWN]) + escape(props) + bytes([END])
+
+
+def encode_areas(tiles):
+    """tiles: {(x, y, z): RawTile} -> TILE_AREA node bytes, one area per 256x256 block and floor."""
+    blocks = {}
+    for (x, y, z), tile in tiles.items():
+        blocks.setdefault((x & ~0xFF, y & ~0xFF, z), []).append((x, y, tile))
+    out = bytearray()
+    for (bx, by, z), items in sorted(blocks.items()):
+        out += bytes([START, TILE_AREA]) + escape(struct.pack('<HHB', bx, by, z))
+        for x, y, tile in sorted(items, key=lambda i: (i[1], i[0])):
+            out += tile.encode(x - bx, y - by)
+        out.append(END)
+    return bytes(out)
+
+
+def write_map(data, out_path, new_tiles, remove=(), towns=()):
+    """Writes `data` (an OTBM file's bytes) to out_path with tiles added, replaced and towns added.
+
+    new_tiles: {(x, y, z): RawTile}. Existing tiles at those positions, and at any position in
+    `remove`, are dropped. towns: (id, name, x, y, z) tuples appended to the town list.
+    """
+    drop = set(new_tiles) | set(remove)
+    cuts = []
+    towns_start = towns_end = None
+    area = None
+    pos = None
+    for ev, t, depth, a, b, _ in walk(data):
+        if ev == 'open':
+            if t == TILE_AREA:
+                area = struct.unpack_from('<HHB', unescape(data[a:b]), 0)
+            elif t in (TILE, HOUSETILE) and depth == 3:
+                p = unescape(data[a:a + 4])
+                pos = (area[0] + p[0], area[1] + p[1], area[2])
+            elif t == TOWNS:
+                towns_start = a - 2
+        else:
+            if t in (TILE, HOUSETILE) and depth == 3 and pos in drop:
+                cuts.append((a, b))
+            elif t == TOWNS:
+                towns_end = b - 1
+    if towns_start is None:
+        raise ValueError('map has no town list')
+    with open(out_path, 'wb') as f:
+        i = 0
+        for a, b in cuts:
+            f.write(data[i:a])
+            i = b
+        f.write(data[i:towns_start])
+        f.write(encode_areas(new_tiles))
+        f.write(data[towns_start:towns_end])
+        for town in towns:
+            f.write(encode_town(*town))
+        f.write(data[towns_end:])
+    return len(cuts)
+
+
 class Otb:
     """items.otb: server id -> (client id, group, flags)."""
 

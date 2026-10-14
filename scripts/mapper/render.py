@@ -84,6 +84,20 @@ class Renderer:
         m = margin * 32
         return img.crop((m, m, m + (x1 - x0 + 1) * 32, m + (y1 - y0 + 1) * 32))
 
+    def render_scaled(self, tiles, x0, y0, x1, y1, floor, upper=True, scale=1.0, chunk=64):
+        """Same as render, built in chunks so large areas can be drawn small without huge buffers."""
+        if scale >= 1.0:
+            return self.render(tiles, x0, y0, x1, y1, floor, upper)
+        px = 32 * scale
+        out = Image.new('RGBA', (int((x1 - x0 + 1) * px), int((y1 - y0 + 1) * px)), (0, 0, 0, 255))
+        for cy in range(y0, y1 + 1, chunk):
+            for cx in range(x0, x1 + 1, chunk):
+                ex, ey = min(x1, cx + chunk - 1), min(y1, cy + chunk - 1)
+                part = self.render(tiles, cx, cy, ex, ey, floor, upper)
+                w, h = int(round((ex - x0 + 1) * px)) - int(round((cx - x0) * px)), int(round((ey - y0 + 1) * px)) - int(round((cy - y0) * px))
+                out.paste(part.resize((w, h), Image.LANCZOS), (int(round((cx - x0) * px)), int(round((cy - y0) * px))))
+        return out
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -104,8 +118,8 @@ def main():
     r = Renderer(args.items, args.dat, args.spr)
     top = 0 if not args.no_upper else args.floor
     tiles = pvmap.read_region(args.map, args.x0 - 2, args.y0 - 2, args.x1 + 10, args.y1 + 10, range(top, args.floor + 1))
-    img = r.render(tiles, args.x0, args.y0, args.x1, args.y1, args.floor, not args.no_upper)
-    if args.scale != 1.0:
+    img = r.render_scaled(tiles, args.x0, args.y0, args.x1, args.y1, args.floor, not args.no_upper, args.scale)
+    if args.scale > 1.0:
         img = img.resize((int(img.width * args.scale), int(img.height * args.scale)), Image.LANCZOS)
     img.convert('RGB').save(args.out)
     print('wrote %s (%dx%d)' % (args.out, img.width, img.height))
