@@ -829,3 +829,47 @@ INSERT INTO `gts_offers` (`player_id`, `kind`, `sale`, `itemtype`, `amount`, `pr
   FROM `market_offers`;
 DELETE FROM `market_offers`;
 COMMIT;
+
+-- PC (lib/ps/systems/067-pc.lua). A Pokemon in a Poke box keeps its ball's attributes, like the GTS;
+-- box 0 slot 0 is where a Pokemon waits while two swap places.
+CREATE TABLE IF NOT EXISTS `pc_boxes` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `box` TINYINT UNSIGNED NOT NULL,
+  `slot` TINYINT UNSIGNED NOT NULL,
+  `ball_id` INT UNSIGNED NOT NULL,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `attributes` BLOB,
+  `created` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `place` (`player_id`, `box`, `slot`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pc_box_names` (
+  `player_id` INT UNSIGNED NOT NULL,
+  `box` TINYINT UNSIGNED NOT NULL,
+  `name` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`player_id`, `box`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pc_stash` (
+  `player_id` INT UNSIGNED NOT NULL,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`, `itemtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pc_inbox` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `count` INT UNSIGNED NOT NULL DEFAULT 1,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `attributes` BLOB,
+  `source` VARCHAR(64) NOT NULL DEFAULT '',
+  `created` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `player_id` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

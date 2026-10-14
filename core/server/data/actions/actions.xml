@@ -40,6 +40,7 @@
 	<action itemid="14359" event="script" value="../../lib/ps/events/actions/tv/record.lua"/>
 	<action itemid="14360-14362;11925-11930;24216-24218" event="script" value="../../lib/ps/events/actions/tv/watch.lua"/>
 	<action itemid="11931-11938;18823-18836;24112-24113;25125" event="script" value="../../lib/ps/events/actions/computer.lua"/>
+	<action itemid="2589-2592;13015" event="script" value="../../lib/ps/events/actions/pcLocker.lua"/>
 	<action itemid="14433-14437" event="script" value="../../lib/ps/events/actions/events/birthdayBox.lua"/>
 	<action itemid="14457" event="script" value="../../lib/ps/events/actions/events/halloween/enchantedStaff.lua"/>
 	<action itemid="14458" event="script" value="../../lib/ps/events/actions/events/halloween/lightWand.lua"/>
