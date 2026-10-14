@@ -88,7 +88,7 @@ them with 0 EVs. Eggs from before this system hatch with random values.
   `ExtendedIds.PokemonStats` in the client); the chart is the `UIRadarChart` widget
   (`core/client-redemption/src/client/uiradarchart.cpp`), and the window is
   `pokeverse-modern/modules/game_pokedex/stats.lua`.
-- **Pokemon Market:** listings have a Stats column, for example
-  `Jolly | IV 142/186 (2x31) | EV 252/510`.
+- **GTS:** each Pokemon listing shows its Nature and IV total, and opening one shows the
+  full stat sheet with IV and EV bars.
 
 Staff can set a ball's values with `/pstats` (access 3).

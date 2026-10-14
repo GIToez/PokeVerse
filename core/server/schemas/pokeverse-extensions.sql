@@ -814,3 +814,18 @@ UPDATE `player_skills` SET `value` = GREATEST(`value` - 10, 0), `count` = 0
   WHERE `skillid` IN (0, 1, 2, 3, 4, 6)
     AND NOT EXISTS (SELECT 1 FROM `pokeverse_migrations` WHERE `name` = 'skills-start-at-0');
 INSERT IGNORE INTO `pokeverse_migrations` (`name`) VALUES ('skills-start-at-0');
+
+-- The Pokemon market and item market NPCs were retired for the GTS. Their listings move over
+-- with a fresh 7 days; item offers the GTS doesn't trade come back to their trainers at login.
+START TRANSACTION;
+INSERT INTO `gts_offers` (`player_id`, `kind`, `sale`, `itemtype`, `amount`, `price`, `created`, `expires`,
+    `pokemon_name`, `pokemon_level`, `attributes`)
+  SELECT `player_id`, 1, 1, `ball_id`, 1, `value`, `date`, UNIX_TIMESTAMP() + 604800,
+    `pokemon_name`, `pokemon_level`, `attributes`
+  FROM `pokemon_market`;
+DELETE FROM `pokemon_market`;
+INSERT INTO `gts_offers` (`player_id`, `kind`, `sale`, `itemtype`, `amount`, `price`, `created`, `expires`)
+  SELECT `player_id`, 0, `sale`, `itemtype`, `amount`, `price`, `created`, UNIX_TIMESTAMP() + 604800
+  FROM `market_offers`;
+DELETE FROM `market_offers`;
+COMMIT;

@@ -196,7 +196,8 @@ local function removeTradeable(cid, itemid, count)
 end
 
 local function stacksOf(itemid, count)
-    local size = CATALOG[itemid] and CATALOG[itemid].stackable and 100 or 1
+    local info = CATALOG[itemid] or getItemInfo(itemid)
+    local size = info and info.stackable and 100 or 1
     local stacks = {}
     while (count > 0) do
         stacks[#stacks + 1] = math.min(size, count)
@@ -379,8 +380,10 @@ end
 
 GTS.returnExpired = function(cid)
     local guid, returned = getPlayerGUID(cid), 0
-    rows(string.format("WHERE o.`player_id` = %d AND o.`expires` <= %d", guid, os.time()), function(offer)
-        if (returnOffer(cid, offer, STATE_EXPIRED)) then
+    -- item offers the GTS doesn't trade (moved over from the old market) go back too
+    rows(string.format("WHERE o.`player_id` = %d", guid), function(offer)
+        local untraded = offer:getDataInt('kind') ~= KIND_POKEMON and not CATALOG[offer:getDataInt('itemtype')]
+        if ((untraded or offer:getDataLong('expires') <= os.time()) and returnOffer(cid, offer, STATE_EXPIRED)) then
             returned = returned + 1
         end
     end)
