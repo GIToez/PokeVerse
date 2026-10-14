@@ -86,6 +86,12 @@ LAND_PATCHES = [(2140, 502, 44), (2086, 548, 17), (1925, 655, 42)]
 # South of the area, the empty channel between the sea west of Johto and the islands' sea to the
 # east (both open water on the base map) is filled with sea, down to where the western sea ends.
 SOUTH_SEA = (2188, BOX[3] + 1, 2930, 2300)
+# A square of plain grass out in that sea, left over on the base map, made sea.
+STRAY_ISLE = (2600, 1290, 2640, 1330)
+# The world's outline: west of the area, down to where the sea west of Johto starts on the base map,
+# and north of Kanto's coast up to the area's top edge, the empty map is made sea.
+WEST_SEA = (48, BOX[1], BOX[0] - 1, 772)
+NORTH_SEA = (BOX[2] + 1, BOX[1], 4327, 250)
 # Azalea South Woods' island runs on past the area's edge to a rounded coast this many rows below
 # it, its woods mirrored from the rows above the edge.
 SOUTH_CAP = 40
@@ -798,10 +804,13 @@ def build(base, out_path):
     places = TOWNS_BUILT + OUTPOSTS + SITES
 
     sx0, sy0, sx1, sy1 = SOUTH_SEA
-    south_base = pvmap.read_region_raw(base, sx0 - 1, sy0, sx1 + 1, sy1 + 1, (Z,))
+    base_data = open(base, 'rb').read()
+    outside = {}
+    for bx0, by0, bx1, by1 in (SOUTH_SEA, WEST_SEA, NORTH_SEA):
+        outside.update(pvmap.read_region_raw(base, bx0 - 2, by0 - 2, bx1 + 2, by1 + 2, (Z,), base_data))
 
     def existing(x, y):
-        return keep.get((x, y, Z)) or south_base.get((x, y, Z))
+        return keep.get((x, y, Z)) or outside.get((x, y, Z))
 
     def existing_ids(x, y):
         t = existing(x, y)
@@ -1336,9 +1345,16 @@ def build(base, out_path):
     sand_items = [(i, c) for i, c in brushes['sand'].items if c > 0]
     open_deco = {i for table in (TUFTS, FERNS, FLOWERS) for i, _ in table}
     cap_spawns = []
+    grass = brushes['grass']
+    ix0, iy0, ix1, iy1 = STRAY_ISLE
     for y in range(sy0, sy1 + 1):
         for x in range(sx0, sx1 + 1):
-            if (x, y, Z) in south_base:
+            t = outside.get((x, y, Z))
+            if t is not None:
+                ids = ([t.ground] if t.ground is not None else []) + pvmap.child_item_ids(t.children)
+                if ix0 <= x <= ix1 and iy0 <= y <= iy1 and ids and brushes.by_item.get(ids[0]) is grass \
+                        and all(brushes.by_item.get(i) is grass or i in brushes.border_item_ids for i in ids):
+                    tiles[(x, y)] = [pick(sea_rng, sea_items), []]
                 continue
             iy, ix = y - sy0, x - sx0
             if iy < cf.h and beach_rim[iy, ix]:
@@ -1351,6 +1367,52 @@ def build(base, out_path):
                     cap_spawns.append((x, y))
             else:
                 tiles[(x, y)] = [pick(sea_rng, sea_items), []]
+    wx0, wy0, wx1, wy1 = WEST_SEA
+    for y in range(wy0, wy1 + 1):
+        for x in range(wx0, wx1 + 1):
+            if (x, y, Z) not in outside:
+                tiles[(x, y)] = [pick(sea_rng, sea_items), []]
+    nx0, ny0, nx1, ny1 = NORTH_SEA
+    for x in range(nx0, nx1 + 1):
+        first = min((y for y in range(ny0, ny1 + 2) if (x, y, Z) in outside), default=ny1 + 1)
+        for y in range(ny0, first):
+            tiles[(x, y)] = [pick(sea_rng, sea_items), []]
+    # Kanto's floor-7 holes over its caves are walled in by its mountains, but where one reaches the new
+    # sea it shows, so those are closed with mountain (and any hole that then shows next to that).
+    def hole(p):
+        if not (f.x0 <= p[0] <= f.x1 and f.y0 <= p[1] <= f.y1) or p in tiles or (*p, Z) in prefab_tiles:
+            return False
+        ids = existing_ids(*p)
+        return not ids or all(i in brushes.border_item_ids for i in ids)
+    mountain_items = [(i, c) for i, c in brushes['mountain'].items if c > 0]
+    closed = set()
+    while True:
+        seen, grew = set(), False
+        for y in range(f.y0, f.y1 + 1):
+            for x in range(f.x0, f.x1 + 1):
+                if (x, y) in seen or not hole((x, y)):
+                    continue
+                part, stack, shows = [], [(x, y)], False
+                seen.add((x, y))
+                while stack:
+                    p = stack.pop()
+                    part.append(p)
+                    for dx, dy in autoborder.NEIGHBOURS:
+                        q = (p[0] + dx, p[1] + dy)
+                        if q in seen:
+                            continue
+                        if hole(q):
+                            seen.add(q)
+                            stack.append(q)
+                        elif q in closed or (q in tiles and brushes.by_item.get(tiles[q][0]) is sea):
+                            shows = True
+                if shows:
+                    grew = True
+                    closed.update(part)
+                    for p in part:
+                        tiles[p] = [pick(sea_rng, mountain_items), []]
+        if not grew:
+            break
 
     # Borders.
     def brush_at(x, y):
