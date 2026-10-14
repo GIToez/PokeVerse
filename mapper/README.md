@@ -27,6 +27,7 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 | `render.py` | Renders part of a map with the real sprites: `render.py <map> x0 y0 x1 y1 out.png [--floor 7] [--scale 0.5]`. |
 | `verify.py` | Checks a map the way the server loads it (node tree, duplicate tiles, unknown items, houses, spawns). |
 | `publish.py` | Verifies `map/` and copies it over the live map files. |
+| `fetch_encounters.py` | Re-downloads the HeartGold/SoulSilver encounter tables into `johto_encounters.json` (only needed if the tables change). |
 
 `build_johto.py` always starts from the live map, so running it again throws away hand edits in
 `map/`. Once hand editing starts, edit in RME only.
@@ -43,22 +44,33 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   rates as Kanto's Route 1, clustered into groves and forests.
 - **Buildings:** copied tile for tile from Pallet Town (Pokémon Center with Nurse Joy, Oak's lab,
   two house types). House tiles get new house ids in `map-house.xml`.
-- **Kanto edits:** only Kanto's unfinished, undecorated grass south of the Elite Four building
-  is redone. Kanto tiles next to new ground get their borders recalculated, and nothing else on
-  them changes.
+- **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
+  below, with rocky patches, debris, stones and wall candles. The way in is Kanto's stairs
+  (22709 outside, 22702 below ground one tile north of it).
+- **Wild Pokémon:** each spawn is drawn from the HeartGold/SoulSilver land table of its route,
+  weighted by the game's encounter rate averaged over morning, day and night
+  (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge
+  blocks.
+- **Kanto edits:** Kanto's unfinished, undecorated grass south of the Elite Four building; the
+  pass through Kanto's mountain from the west gate to the building (including a broken ramp on
+  that road that led up to nothing); the counters that closed the building's west and south
+  doors. Kanto tiles next to new ground get their borders recalculated, and nothing else on them
+  changes.
 
-## Built so far (test area)
+## Built so far
 
-New Bark Town (town 50, temple 2722,803,7), Route 29 toward Cherrygrove, Route 27, Tohjo Falls
-(river out of the ridge, wooden bridge), Route 26 to the south gate (3049,700), the road from
-the gate to the Elite Four building, and the Silver–Indigo ridge that keeps Route 26 apart from
-Route 28. 459 Pokémon spawns, plus Nurse Joy and Chansey.
+- **South:** New Bark Town (town 50, temple 2722,803,7), Route 29 toward Cherrygrove, Route 27,
+  Tohjo Falls (river out of the ridge, wooden bridge), Route 26 to the south gate (3049,700) and
+  the road from the gate to the Elite Four building's south door.
+- **North:** the west gate (3049,593) and its pass to the building's west door, Route 28 with a
+  pond, the Silver–Indigo range around the plateau, Mt. Silver with snowfields, its Pokémon
+  Center (2921,520) and the cave mouth (2903,503,7), and Mt. Silver Cave 1F on floor 8.
+- 465 Pokémon spawns, and Nurse Joy with Chansey in both Pokémon Centers.
 
-## Before publishing
+## Scripts with town positions
 
-Scripts with hard-coded positions need the new towns:
-
-- `core/server/data/npc/scripts/nurse_joy.lua`, `CITY_BY_POS`: add
-  `CITY_BY_POS[{x = 2722, y = 795, z = 7}] = "New Bark"`.
+- `core/server/data/npc/scripts/nurse_joy.lua`, `CITY_BY_POS`: New Bark's nurse (2722,795,7) is
+  in. Mt. Silver's nurse only heals, like in the games, so it has no entry.
 - `core/server/data/lib/ps/systems/026-guide.lua` (`GUIDES`) and
-  `core/server/data/npc/scripts/travels.lua` (`TRAVELS`) for guides and travel routes.
+  `core/server/data/npc/scripts/travels.lua` (`TRAVELS`): entries go in when a Johto town gets a
+  guide NPC or a travel stop.

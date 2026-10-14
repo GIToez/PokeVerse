@@ -150,6 +150,8 @@ CITY_BY_POS[{x = 1732, y = 1427, z = 6}] = "Mosssdeep"
 CITY_BY_POS[{x = 1576, y = 1545, z = 5}] = "Sootopolis"
 CITY_BY_POS[{x = 1311, y = 1760, z = 7}] = "Pacifidlog"
 
+CITY_BY_POS[{x = 2722, y = 795, z = 7}] = "New Bark"
+
 local function getCity()
     local city
     local pos = getNpcPos()
