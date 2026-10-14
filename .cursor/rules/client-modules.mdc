@@ -1,0 +1,21 @@
+---
+description: Which client module to build on when changing the PokeVerse client
+globs: core/client-redemption/**,core/client-legacy/modules/**,scripts/assemble-redemption-client.sh
+alwaysApply: false
+---
+
+# Client modules: Redemption first
+
+The live client is Redemption (`core/client-redemption`), assembled by
+`scripts/assemble-redemption-client.sh`.
+
+- When Redemption has a module for something, build on it and restyle or adapt it to PokeVerse
+  with the `core/client-redemption/pokeverse-modern` overlay (new files) or
+  `pokeverse-modern/patches/*.patch` (changes to Redemption files). Do not bring in or extend the
+  legacy client's (`core/client-legacy`) module of the same name.
+- Legacy modules are only for PokeVerse features Redemption has no module for (pokebar, pokedex,
+  badge case, ...).
+- Still on legacy and due to move to Redemption: `client_entergame` (login, character list),
+  `game_market`, `game_tutorial`, and the `protocollogin`/`protocolaccount` gamelib files
+  (`legacy_modules` and `legacy_protocol` in the assemble script). New work on these should start
+  by moving them, not by changing the legacy copy.
