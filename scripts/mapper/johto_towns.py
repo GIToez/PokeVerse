@@ -84,6 +84,12 @@ BUILDINGS = {
         (376, (3376, 1040, 3387, 1053)), (378, (3359, 1022, 3372, 1032)), (380, (3344, 1018, 3355, 1027)),
         (381, (3325, 1039, 3339, 1051)), (382, (3326, 1027, 3338, 1039)), (383, (3374, 1008, 3388, 1018)),
         (386, (3387, 1037, 3398, 1046))]},
+    # Lavender Town (Mahogany and Blackthorn)
+    **{'lavender-%d' % h: {'box': b} for h, b in [
+        (308, (4168, 539, 4179, 549)), (309, (4161, 557, 4172, 567)), (310, (4188, 566, 4202, 579)),
+        (311, (4208, 555, 4222, 568)), (312, (4210, 534, 4224, 548)), (313, (4186, 530, 4200, 544)),
+        (314, (4155, 535, 4168, 547)), (315, (4143, 555, 4155, 567)), (316, (4145, 567, 4156, 580)),
+        (317, (4160, 586, 4175, 598)), (318, (4175, 587, 4188, 601)), (319, (4189, 591, 4205, 605))]},
     # Landmarks: Kanto buildings standing in for Johto's, not for rent.
     'sprout-tower': {'box': (3872, 238, 3893, 258), 'rent': False},
     'academy': {'box': (3260, 520, 3279, 537), 'rent': False},
@@ -103,6 +109,8 @@ BUILDINGS = {
     'burned-tower': {'box': (3814, 794, 3834, 810), 'rent': False},
     'lighthouse': {'box': (3890, 568, 3910, 589), 'z': 6, 'rent': False},
     'pharmacy': {'box': (3355, 1001, 3372, 1012), 'walled': False, 'door': 9, 'rent': False},
+    # Mahogany's souvenir shop: Lavender's little house with the stairs down
+    'souvenir-shop': {'box': (4142, 530, 4153, 540), 'walled': False, 'door': 3, 'rent': False},
     # the Ruins of Alph research center: a Celadon building
     'ruins-lab': {'box': (3638, 404, 3654, 418), 'rent': False},
     # the Route 34 Day-Care: Pallet's house without its walls' ring, like the police box
@@ -742,8 +750,64 @@ def cianwood(t):
         t.item(x, y, PARASOLS[x % len(PARASOLS)])
 
 
+def mahogany(t):
+    """Lavender's mirror: the small town between Mt. Mortar and the Ice Path. The main street runs
+    from Route 42 to Route 44 and the avenue north to Route 43 and the Lake of Rage. The Pokémon
+    Center, Mart and souvenir shop on the main street, the Gym behind it."""
+    t.streets += [([(2520, 392), (2586, 392)], 2), ([(2550, 345), (2550, 424)], 2)]
+    t.plazas.append((2550, 392, 6))
+    t.put('pokecenter', 2527, 381)
+    t.item(2525, 389, PC_SIGN)
+    t.put('mart', 2537, 380)
+    t.item(2546, 389, MART_SIGN)
+    t.put('souvenir-shop', 2555, 378)
+    t.put('lavender-308', 2569, 378)
+    t.put('lavender-314', 2532, 362)
+    t.put('gym', 2558, 360)
+    t.put('lavender-310', 2576, 358)
+    t.put('lavender-317', 2522, 396)
+    t.put('lavender-318', 2555, 396)
+    t.put('lavender-309', 2572, 400)
+    for y in range(400, 424, 6):
+        t.item(2546, y, LANTERN)
+        t.item(2554, y, LANTERN)
+
+
+def blackthorn(t):
+    """Lavender's mirror as the dragon tamers' town under the mountains: the main street from the
+    Ice Path's exit, the avenue south to Route 45, the Gym on the main street and Dragon's Den
+    behind it, a pond with the dragon shrine on its islet."""
+    t.streets += [([(2706, 388), (2776, 388)], 2), ([(2742, 336), (2742, 420)], 2),
+                  ([(2742, 336), (2758, 336)], 1)]
+    t.plazas.append((2742, 388, 6))
+    t.put('pokecenter', 2718, 377)
+    t.item(2716, 385, PC_SIGN)
+    t.put('mart', 2729, 376)
+    t.item(2738, 385, MART_SIGN)
+    t.put('gym', 2746, 372)
+    t.put('lavender-313', 2762, 370)
+    t.put('lavender-312', 2724, 352)
+    t.put('lavender-311', 2746, 352)
+    t.put('lavender-319', 2718, 392)
+    t.put('lavender-315', 2746, 392)
+    t.put('lavender-316', 2762, 392)
+    # Dragon's Den: the pond and the shrine on its islet, reached by Surf
+    cx, cy = 2770, 335
+    for x in range(cx - 9, cx + 10):
+        for y in range(cy - 9, cy + 10):
+            d = np.hypot(x - cx, y - cy)
+            if d < 3:
+                t.ground(x, y, x, y, 'tiled sandstone floor')
+            elif d < 9:
+                t.ground(x, y, x, y, 'walkable sea')
+    t.block(cx - 9, cy - 9, cx + 9, cy + 9)
+    t.item(cx, cy, STATUE)
+    t.item(cx - 1, cy + 1, LANTERN)
+    t.item(cx + 1, cy + 1, LANTERN)
+
+
 LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea, 54: goldenrod, 55: ecruteak, 56: olivine,
-           57: cianwood, 'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine,
+           57: cianwood, 58: mahogany, 59: blackthorn, 'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine,
            'Bell Tower': bell_tower, 'Moomoo Farm': moomoo_farm}
 
 
