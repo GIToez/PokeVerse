@@ -27,6 +27,7 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 #include "framework/core/clock.h"
 #include <framework/core/eventdispatcher.h>
+#include <android/keycodes.h>
 #include <android/log.h>
 #define ALOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "OTClientMobile", __VA_ARGS__)
 
@@ -393,7 +394,21 @@ void AndroidWindow::initializeAndroidApp(android_app* app) {
         engine->handleCmd(cmd);
     };
 
-    android_app_set_key_event_filter(m_app, NULL);
+    // keys the filter rejects go back to Android, so the volume buttons keep working
+    android_app_set_key_event_filter(m_app, [](const GameActivityKeyEvent* event) {
+        switch (event->keyCode) {
+            case AKEYCODE_VOLUME_UP:
+            case AKEYCODE_VOLUME_DOWN:
+            case AKEYCODE_VOLUME_MUTE:
+            case AKEYCODE_MUTE:
+            case AKEYCODE_CAMERA:
+            case AKEYCODE_ZOOM_IN:
+            case AKEYCODE_ZOOM_OUT:
+                return false;
+            default:
+                return true;
+        }
+    });
     android_app_set_motion_event_filter(m_app, NULL);
 }
 

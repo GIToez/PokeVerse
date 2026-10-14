@@ -1,5 +1,6 @@
 package com.otclient
 
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
@@ -15,6 +16,7 @@ class MainActivity : GameActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        volumeControlStream = AudioManager.STREAM_MUSIC
         val binding = ActivityMainBinding.inflate(layoutInflater)
         findViewById<ViewGroup>(contentViewId).addView(binding.root)
 
