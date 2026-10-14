@@ -102,6 +102,12 @@ local function notify(guid, text)
     end
 end
 
+-- the face item the Pokemon bar shows (shinies have their own)
+local function faceOf(name)
+    local pokemon = getPokemonDefinition(name)
+    return pokemon and pokemon.fastcallPortrait or nil
+end
+
 local function escape(text)
     return db.escapeString(text)
 end
@@ -664,8 +670,8 @@ GTS.sendSpecies = function(cid, search)
     if (r:getID() ~= -1) then
         repeat
             local name = r:getDataString('pokemon_name')
-            list[#list + 1] = { name = name, number = getPokemonNumberByName(name), count = r:getDataInt('total'),
-                cheapest = r:getDataLong('cheapest') }
+            list[#list + 1] = { name = name, number = getPokemonNumberByName(name), face = faceOf(name),
+                count = r:getDataInt('total'), cheapest = r:getDataLong('cheapest') }
         until not r:next()
         r:free()
     end
@@ -719,7 +725,7 @@ GTS.sendMyPokemon = function(cid)
     local list = {}
     for index, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
         local name = getBallPokemonName(ball.uid)
-        local row = { index = index, name = name, number = getPokemonNumberByName(name),
+        local row = { index = index, name = name, number = getPokemonNumberByName(name), face = faceOf(name),
             level = getBallPokemonLevel(ball.uid), sex = getBallPokemonSex(ball.uid), problem = ballProblem(cid, ball) }
         if (row.problem) then
             row.problem = __L(cid, row.problem)

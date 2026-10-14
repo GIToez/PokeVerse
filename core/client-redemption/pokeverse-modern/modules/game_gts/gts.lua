@@ -80,6 +80,18 @@ local function setPortrait(widget, number)
     end
 end
 
+-- list icons use the Pokemon bar's face (shinies have their own), else the portrait shrunk
+local function setFace(entry, pokemon)
+    if pokemon.face then
+        entry.item:setItemId(pokemon.face)
+        entry.item:show()
+        entry.portrait:hide()
+    else
+        entry.item:hide()
+        setPortrait(entry.portrait, pokemon.number)
+    end
+end
+
 local function setStatus(text, ok)
     window.status:setText(text or '')
     window.status:setColor(ok == false and ERROR_COLOR or OK_COLOR)
@@ -293,7 +305,66 @@ local function ivText(entry)
         or string.format('%d/186', entry.ivs)
 end
 
+local SPARKLE_COUNT = 5
+local SPARKLE_TICK = 50
+local SPARKLE_SIZE = 22
+local sparkleEvent
+local sparkles = {}
+
+local function placeSparkle(sparkle, frame)
+    local room = frame:getWidth() - SPARKLE_SIZE
+    sparkle.x = math.random(0, room)
+    sparkle.y = math.random(0, room)
+    sparkle.length = math.random(18, 30)
+end
+
+local function stopSparkles()
+    if sparkleEvent then
+        removeEvent(sparkleEvent)
+        sparkleEvent = nil
+    end
+    for _, sparkle in ipairs(sparkles) do
+        sparkle:destroy()
+    end
+    sparkles = {}
+end
+
+local function tickSparkles()
+    for _, sparkle in ipairs(sparkles) do
+        sparkle.step = sparkle.step + 1
+        if sparkle.step >= sparkle.length then
+            sparkle.step = 0
+            placeSparkle(sparkle, sparkle:getParent())
+        end
+        local glow = math.sin(math.pi * sparkle.step / sparkle.length)
+        local size = math.max(1, math.floor(SPARKLE_SIZE * (0.3 + 0.7 * glow)))
+        local offset = math.floor((SPARKLE_SIZE - size) / 2)
+        sparkle:setSize({ width = size, height = size })
+        sparkle:setMarginLeft(sparkle.x + offset)
+        sparkle:setMarginTop(sparkle.y + offset)
+        sparkle:setOpacity(glow)
+    end
+end
+
+local function startSparkles(frame)
+    stopSparkles()
+    for i = 1, SPARKLE_COUNT do
+        local sparkle = g_ui.createWidget('UIWidget', frame)
+        sparkle:setImageSource('/modules/game_gts/images/sparkle')
+        sparkle:setImageSmooth(true)
+        sparkle:setPhantom(true)
+        sparkle:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+        sparkle:addAnchor(AnchorTop, 'parent', AnchorTop)
+        placeSparkle(sparkle, frame)
+        sparkle.step = math.floor(sparkle.length * (i - 1) / SPARKLE_COUNT)
+        table.insert(sparkles, sparkle)
+    end
+    tickSparkles()
+    sparkleEvent = cycleEvent(tickSparkles, SPARKLE_TICK)
+end
+
 local function clearDetail()
+    stopSparkles()
     local detail = window.pages.pokemonPage.detail
     detail.content:hide()
     detail.empty:show()
@@ -345,6 +416,11 @@ local function drawDetail(data)
     content:show()
 
     setPortrait(content.portraitFrame.portrait, data.number)
+    if data.name and data.name:find('^Shiny ') then
+        startSparkles(content.portraitFrame)
+    else
+        stopSparkles()
+    end
     content.name:setText(pokemonLabel(data))
     if data.ball then
         content.ball:setItemId(data.ball)
@@ -404,8 +480,7 @@ local function drawSpecies(data)
     local first, keep
     for _, species in ipairs(data.list or {}) do
         local entry = g_ui.createWidget('GtsEntry', entries)
-        entry.item:hide()
-        setPortrait(entry.portrait, species.number)
+        setFace(entry, species)
         entry.name:setText(species.name)
         entry.info:setText(tr('%d for sale, from %s', species.count, formatMoney(species.cheapest)))
         entry.data = species
@@ -442,8 +517,7 @@ local function drawMyPokemon(data)
     local first
     for _, ball in ipairs(data.list or {}) do
         local entry = g_ui.createWidget('GtsEntry', page.list)
-        entry.item:hide()
-        setPortrait(entry.portrait, ball.number)
+        setFace(entry, ball)
         entry.name:setText(pokemonLabel(ball))
         if ball.problem then
             entry.info:setText(ball.problem)
@@ -846,6 +920,11 @@ function init()
     g_ui.importStyle('gts')
     window = g_ui.createWidget('GtsWindow', rootWidget)
     window:hide()
+    window.onVisibilityChange = function(widget, visible)
+        if not visible then
+            stopSparkles()
+        end
+    end
 
     window.itemsTab.onClick = function() setMode('items') end
     window.pokemonTab.onClick = function() setMode('pokemon') end
@@ -881,6 +960,7 @@ function init()
 end
 
 function terminate()
+    stopSparkles()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Gts)
     disconnect(g_game, { onGameEnd = onGameEnd })
     if searchEvent then
