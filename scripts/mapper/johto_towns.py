@@ -118,6 +118,10 @@ BUILDINGS = {
     'daycare': {'box': (3302, 790, 3314, 799), 'walled': False, 'door': 5, 'rent': False},
     # Pallet's house and cottage without their walls' ring (the door is below the box, `door` its
     # first column): Officer Jenny's police box, the boathouse and the windmills (a wheel on the roof).
+    # The Battle Frontier's Battle Tower (Pewter's four-storey guild hall) and the Safari Zone's
+    # warden's office (a Vermilion house).
+    'battle-tower': {'box': (3316, 236, 3336, 253), 'rent': False},
+    'safari-gate': {'box': (3972, 621, 3987, 634), 'rent': False},
     'police-box': {'box': (3302, 790, 3314, 799), 'walled': False, 'door': 5, 'rent': False},
     'boathouse': {'box': (3302, 804, 3310, 813), 'walled': False, 'door': 3, 'rent': False},
     'windmill': {'box': (3302, 804, 3310, 813), 'walled': False, 'door': 3, 'rent': False},
@@ -807,9 +811,119 @@ def blackthorn(t):
     t.item(cx + 1, cy + 1, LANTERN)
 
 
+WILD_TREES = [2700, 2702, 2703, 2707, 2708]
+BOULDERS = [3607, 1285, 1300, 1301]
+SNOWY_FIR = 2698
+
+
+def _shrine(t, cx, cy, w, h, statue=STATUE):
+    """A sandstone court with a statue in the middle and a lantern at each corner."""
+    t.ground(cx - w, cy - h, cx + w, cy + h, 'tiled sandstone floor')
+    t.areas.append((cx - w - 4, cy - h - 4, cx + w + 4, cy + h + 4))
+    t.item(cx, cy, statue)
+    for x, y in [(cx - w, cy - h), (cx + w, cy - h), (cx - w, cy + h), (cx + w, cy + h)]:
+        t.item(x, y, LANTERN)
+
+
+def safari_zone(t):
+    """The Safari Zone at the end of Route 47: the warden's office on the street, a fenced reserve
+    behind it with a sand flat, a marsh pond, a grove and a rocky corner around the open grass,
+    where its Pokémon spawn."""
+    rng = _rng(47)
+    t.streets += [([(1772, 570), (1830, 570)], 2), ([(1810, 570), (1810, 546)], 1)]
+    t.put('safari-gate', 1787, 552)
+    t.item(1806, 568, SIGN)
+    x0, y0, x1, y1 = 1752, 470, 1838, 546
+    t.areas.append((x0 + 1, y0 + 1, x1 - 1, y1 - 1))
+    t.fence(x0, y0, x1, y1, gates=[(1809, y1), (1810, y1), (1811, y1)])
+    t.ground(1756, 474, 1784, 498, 'sand')
+    for _ in range(10):
+        x, y = int(rng.integers(1758, 1783)), int(rng.integers(476, 497))
+        if t.free_tile(x, y):
+            t.item(x, y, int(rng.choice(BOULDERS)))
+    cx, cy = 1818, 492
+    for x in range(cx - 9, cx + 10):
+        for y in range(cy - 7, cy + 8):
+            if np.hypot((x - cx) / 9.0, (y - cy) / 7.0) < 1:
+                t.ground(x, y, x, y, 'walkable sea')
+    t.block(cx - 9, cy - 7, cx + 9, cy + 7)
+    for _ in range(26):
+        x, y = int(rng.integers(1756, 1784)), int(rng.integers(512, 542))
+        if all(t.free_tile(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+            t.item(x, y, int(rng.choice(WILD_TREES)))
+    for _ in range(12):
+        x, y = int(rng.integers(1820, 1836)), int(rng.integers(522, 542))
+        if t.free_tile(x, y):
+            t.item(x, y, int(rng.choice(BOULDERS)))
+
+
+def battle_frontier(t):
+    """The Battle Frontier on the cliffs north-west of Olivine: the Battle Tower on a paved square
+    with a fountain and lamps, reached by the trail from Route 38."""
+    t.streets += [([(1980, 356), (2040, 356)], 2), ([(2010, 356), (2010, 384)], 2)]
+    t.put('battle-tower', 2000, 334)
+    t.plazas.append((2010, 366, 5))
+    t.areas.append((1972, 328, 2048, 392))
+    t.ground(2008, 364, 2012, 368, 'small tiled gray stone')
+    t.ground(2009, 365, 2011, 367, 'walkable sea')
+    t.block(2008, 364, 2012, 368)
+    t.item(2010, 366, STATUE)
+    for x in range(1984, 2040, 8):
+        if abs(x - 2010) > 4:
+            t.item(x, 352, STREET_LAMP)
+    t.item(2014, 380, SIGN)
+
+
+def ho_oh_shrine(t):
+    """The Ho-Oh Shrine on Mt. Silver's snowy top, at the end of the climb from the Pokémon Center."""
+    _shrine(t, 2905, 362, 5, 4)
+    for x in (2898, 2912):
+        t.item(x, 362, LANTERN)
+
+
+def dragon_holy_land(t):
+    """The Dragon Holy Land in the mountains above Blackthorn: a pond with the dragon shrine on its
+    islet, lanterns on the shore."""
+    cx, cy = 2802, 280
+    for x in range(cx - 11, cx + 12):
+        for y in range(cy - 11, cy + 12):
+            d = np.hypot(x - cx, y - cy)
+            if d < 3:
+                t.ground(x, y, x, y, 'tiled sandstone floor')
+            elif d < 10:
+                t.ground(x, y, x, y, 'walkable sea')
+    t.block(cx - 11, cy - 11, cx + 11, cy + 11)
+    t.areas.append((cx - 15, cy - 15, cx + 15, cy + 15))
+    t.item(cx, cy, STATUE)
+    for k in range(8):
+        a = k / 8 * 6.283
+        t.item(int(round(cx + np.cos(a) * 12)), int(round(cy + np.sin(a) * 12)), LANTERN)
+
+
+def lake_slowpoke(t):
+    """The Slowpoke Temple's court on Lake Slowpoke's north shore, with Slowpoke statues."""
+    _shrine(t, 2640, 424, 4, 3, statue=CAT_STATUE)
+    t.item(2636, 428, SIGN)
+
+
+def snowtop(t):
+    """Snowtop Mountain's summit, where Articuno's statue stands among snowy firs."""
+    _shrine(t, 2200, 214, 3, 3)
+    for x, y in [(2193, 208), (2207, 208), (2193, 220), (2207, 221)]:
+        t.item(x, y, SNOWY_FIR)
+
+
+def mount_quena(t):
+    """Mount Quena's snowy summit above the Rage Marshes, a cairn and a campfire."""
+    _shrine(t, 2401, 128, 3, 2)
+    t.item(2397, 132, CAMPFIRE)
+
+
 LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea, 54: goldenrod, 55: ecruteak, 56: olivine,
            57: cianwood, 58: mahogany, 59: blackthorn, 'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine,
-           'Bell Tower': bell_tower, 'Moomoo Farm': moomoo_farm}
+           'Bell Tower': bell_tower, 'Moomoo Farm': moomoo_farm, 'Safari Zone': safari_zone,
+           'Battle Frontier': battle_frontier, 'Ho-Oh Shrine': ho_oh_shrine, 'Dragon Holy Land': dragon_holy_land,
+           'Lake Slowpoke': lake_slowpoke, 'Snowtop Mountain': snowtop, 'Mount Quena': mount_quena}
 
 
 def layout(spec, sizes, strict=True):
