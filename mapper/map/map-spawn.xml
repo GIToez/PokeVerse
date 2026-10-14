@@ -65372,40 +65372,40 @@
     <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2571" centery="1271" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2403" centery="1272" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2397" centery="1274" centerz="7" radius="1">
     <monster name="Spearow" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2518" centery="1274" centerz="7" radius="1">
+  <spawn centerx="2403" centery="1272" centerz="7" radius="1">
     <monster name="Zubat" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
+  <spawn centerx="2397" centery="1274" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2518" centery="1274" centerz="7" radius="1">
+    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
   <spawn centerx="2409" centery="1275" centerz="7" radius="1">
-    <monster name="Ekans" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2515" centery="1277" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Zubat" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2527" centery="1279" centerz="7" radius="1">
-    <monster name="Ekans" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Spearow" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2564" centery="1280" centerz="7" radius="1">
-    <monster name="Ekans" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2406" centery="1282" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2518" centery="1282" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Zubat" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2517" centery="1283" centerz="7" radius="1">
     <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2480" centery="1287" centerz="7" radius="1">
-    <monster name="Spearow" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2487" centery="1287" centerz="7" radius="1">
     <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
@@ -65414,22 +65414,19 @@
     <monster name="Spearow" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2551" centery="1291" centerz="7" radius="1">
-    <monster name="Ekans" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2458" centery="1292" centerz="7" radius="1">
     <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2427" centery="1295" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Zubat" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2458" centery="1295" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2489" centery="1295" centerz="7" radius="1">
     <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2501" centery="1307" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2467" centery="88" centerz="7" radius="1">
     <monster name="Gyarados" x="0" y="0" z="7" spawntime="60" level="0"/>
