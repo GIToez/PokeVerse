@@ -602,6 +602,7 @@ PcWindow < MainWindow
 
       GtsList
         id: list
+        vertical-scrollbar: scroll
         anchors.left: parent.left
         anchors.right: scroll.left
         anchors.top: hint.bottom
@@ -659,6 +660,7 @@ PcWindow < MainWindow
 
       GtsList
         id: list
+        vertical-scrollbar: scroll
         anchors.left: parent.left
         anchors.right: scroll.left
         anchors.top: hint.bottom
@@ -693,6 +695,7 @@ PcWindow < MainWindow
 
       GtsList
         id: list
+        vertical-scrollbar: scroll
         anchors.left: parent.left
         anchors.right: scroll.left
         anchors.top: title.bottom
