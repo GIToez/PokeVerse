@@ -107,23 +107,27 @@ ROADS = {
     '29': [(2705, 800), (2660, 822), (2620, 834), (2592, 836)],
     '30': [(2548, 798), (2560, 760), (2566, 720), (2556, 670), (2546, 628)],
     '31': [(2546, 628), (2552, 600), (2550, 578), (2546, 565)],
-    '32': [(2498, 608), (2484, 660), (2474, 730), (2468, 800), (2462, 850), (2461, 872), (2457, 886), (2448, 884)],
-    '33': [(2442, 966), (2428, 990), (2410, 1015), (2420, 1040)],
-    'silver': [(2910, 533), (2906, 516), (2903, 505)],
+    '32': [(2498, 608), (2484, 660), (2474, 730), (2468, 800), (2462, 850), (2461, 872), (2450, 878), (2448, 882)],
+    '33': [(2442, 967), (2428, 990), (2410, 1015), (2420, 1040)],
+    'silver': [(2910, 533), (2906, 516), (2903, 502)],
 }
 # Caves on the floor below: mouths (stairs down at x, y on floor 7, facing the way players walk out),
-# tunnels and rooms, an optional pond, and the encounter table.
+# tunnels and rooms, an optional pond, and the encounter table. A mouth with a corridor (from the
+# open ground to just past the stairs) is cut into the mountain under a floor-6 roof, like Kanto's
+# passages: the roof hides the way in until players walk under it.
 CAVES = [
-    {'name': 'Mt. Silver Cave', 'box': (2846, 412, 2966, 512), 'mouths': [(2903, 503, 'south')],
-     'path': [(2903, 503), (2900, 490), (2884, 478), (2876, 462), (2888, 446), (2908, 438), (2928, 446),
+    {'name': 'Mt. Silver Cave', 'box': (2846, 412, 2966, 512), 'lip': 'snow',
+     'mouths': [(2903, 489, 'south', [(2903, 501), (2903, 487)])],
+     'path': [(2903, 489), (2896, 482), (2884, 476), (2876, 462), (2888, 446), (2908, 438), (2928, 446),
               (2942, 462), (2938, 482), (2924, 492)],
      'rooms': [(2878, 466, 10), (2909, 438, 12), (2941, 470, 9), (2926, 491, 6)],
      'pond': (2909, 434, 5)},
     {'name': 'Union Cave', 'box': (2400, 850, 2510, 975), 'mountain': (2453, 924, 40),
-     'ridge': ([(2440, 926), (2400, 932), (2365, 928), (2320, 934)], 16),
-     'mouths': [(2448, 881, 'south'), (2442, 962, 'south')],
-     'path': [(2448, 881), (2447, 869), (2436, 864), (2427, 874), (2431, 890), (2448, 897), (2462, 900), (2476, 912), (2470, 930), (2452, 938), (2430, 930), (2424, 946), (2442, 962)],
-     'rooms': [(2474, 914, 8), (2448, 937, 9), (2426, 932, 7)],
+     'ridge': ([(2440, 926), (2400, 932), (2365, 928), (2320, 934)], 16),      'faces': [(2448, 889, 10), (2446, 955, 11)],
+     'mouths': [(2448, 895, 'north', [(2448, 882), (2448, 897)]), (2442, 954, 'south', [(2442, 966), (2442, 952)])],
+     'path': [(2424, 902), (2448, 904), (2462, 906), (2476, 914), (2470, 930), (2452, 938), (2430, 932),
+              (2424, 946), (2442, 954)],
+     'rooms': [(2448, 904, 6), (2424, 902, 8), (2474, 914, 8), (2448, 937, 9), (2426, 932, 7)],
      'pond': (2448, 939, 4)},
 ]
 # Kanto's cave stairs: 22709 goes down; below ground 22702 (southEx) one tile north of it leads back up
@@ -160,12 +164,12 @@ def spawn_table(key, method='land'):
     return sorted(ENCOUNTERS[place][area].get(method, {}).items())
 
 
-GRASS, MOUNTAIN, WATER, SAND, DIRT, LAWN, BRIDGE, SNOW_PEAK, STAIRS = 1, 2, 3, 4, 5, 6, 7, 8, 9
+GRASS, MOUNTAIN, WATER, SAND, DIRT, LAWN, BRIDGE, SNOW_PEAK, STAIRS, CAVE_FLOOR, SNOW = range(1, 12)
 # plank ground and rails per bridge row (north, middle, south); rails alternate post / plain.
 # Kanto's 6211/6212 edge planks are see-through and only work on bridges above a lower floor.
 BRIDGE_ROWS = [(6210, [(3758, 3773), (3769,)]), (6210, [(), ()]), (6210, [(3761, 3772), (3768,)])]
 BRUSH_OF = {GRASS: 'grass', MOUNTAIN: 'mountain', WATER: 'walkable sea', SAND: 'sand', DIRT: 'dirt', LAWN: 'lawn',
-            SNOW_PEAK: 'snow'}
+            SNOW_PEAK: 'snow', CAVE_FLOOR: 'mountain top ground', SNOW: 'snow'}
 WATER_IDS = set(range(4608, 4626)) | {4664, 4665, 4666} | set(range(4820, 4826))
 
 
@@ -383,7 +387,7 @@ def build_cave(cave, brushes, present, rng, z=8):
     up = {}
     near_stairs = np.zeros((f.h, f.w), bool)
     no_optional = set()
-    for ex, ey, facing in cave['mouths']:
+    for ex, ey, facing, *_ in cave['mouths']:
         item, off = STAIRS_UP[facing]
         up[(ex, ey + off)] = item
         near = abs(X - ex) <= 4
@@ -582,6 +586,8 @@ def build(base, out_path):
             if 'ridge' in cave:
                 line, width = cave['ridge']
                 m |= f.seg_dist(smooth_path(line, rng, 6)) + n2 * 5 < width
+            for face in cave.get('faces', []):
+                m |= f.disc(*face, n2, 0.3)
             land |= m
             mount |= m
             forest &= ~m
@@ -611,6 +617,7 @@ def build(base, out_path):
         road_d = np.minimum(road_d, f.seg_dist(pts))
     nroad = f.noise(6)
     road = road_d + nroad * 2.5 < 2.0
+    uncut = mount.copy()
     mount &= ~(road_d < 6 + n2 * 4)
     forest &= ~(road_d < 4)
     land |= road & ~water
@@ -640,15 +647,31 @@ def build(base, out_path):
     clear = np.zeros((f.h, f.w), bool)
     # Cave mouths: stairs down set one tile into a rock face, opening the way they face.
     stair_landing = set()
+    roofs = []
     for cave in CAVES:
-        for cx, cy, facing in cave['mouths']:
+        for cx, cy, facing, *corridor in cave['mouths']:
             d = 1 if facing == 'south' else -1
             ix, iy = cx - f.x0, cy - f.y0
-            terrain[f.disc(cx, cy - 5 * d, 6.5, f.noise(4), 0.4) | f.disc(cx, cy - d, 2.5)] = MOUNTAIN
+            if corridor:
+                (ax, ay), (bx, by) = corridor[0][0], corridor[0][-1]
+                length = np.hypot(bx - ax, by - ay)
+                proj = ((X - ax) * (bx - ax) + (Y - ay) * (by - ay)) / length
+                hall_d = f.seg_dist(corridor[0])
+                hall = (hall_d < 2.1) & (proj >= 0) & (proj <= length)
+                terrain[((hall_d + f.noise(4) * 2 < 5.5) | (uncut & (hall_d < 12))) & (proj >= 1)] = MOUNTAIN
+                if cave.get('lip'):
+                    lip = f.disc(ax, ay - 1, 7, f.noise(5), 0.4) & (terrain != MOUNTAIN)
+                    terrain[lip] = SNOW
+                terrain[hall] = CAVE_FLOOR
+                roofs.append((hall & (proj >= 1), 'mountain'))
+                stair_landing |= {(x + f.x0, y + f.y0) for y, x in np.argwhere(hall)}
+                clear |= dilate(hall, 9)
+            else:
+                terrain[f.disc(cx, cy - 5 * d, 6.5, f.noise(4), 0.4) | f.disc(cx, cy - d, 2.5)] = MOUNTAIN
+                for (x, y) in landing(cx, cy, facing):
+                    terrain[y - f.y0, x - f.x0] = DIRT
+                clear[iy - 4:iy + 5, ix - 3:ix + 4] = True
             terrain[iy, ix] = STAIRS
-            for (x, y) in landing(cx, cy, facing):
-                terrain[y - f.y0, x - f.x0] = DIRT
-            clear[iy - 4:iy + 5, ix - 3:ix + 4] = True
             stair_landing |= landing(cx, cy, facing)
 
     # Wooden bridge where Route 26 crosses the Tohjo river, built like Kanto's bridges.
@@ -838,6 +861,21 @@ def build(base, out_path):
         new_tiles[(x, y, Z)] = pvmap.RawTile(t.house_id, t.flags, t.ground, children)
         reborder += 1
     new_tiles.update(prefab_tiles)
+
+    # Roofs over the cave corridors. A floor-6 tile shows one tile up and to the left of the tile under
+    # it, and the client hides floor 6 for players standing under (x, y) or (x + 1, y + 1), so each
+    # roof covers the corridor and the corridor shifted by one, and runs on over the walls beside it.
+    roof = {}
+    for core, name in roofs:
+        cover = core | np.roll(np.roll(core, 1, 0), 1, 1)
+        cover |= dilate(cover, 5) & np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, STAIRS])
+        for iy, ix in np.argwhere(cover):
+            assert not present[iy, ix], 'roof over existing tiles at %d,%d' % (ix + f.x0, iy + f.y0)
+            roof[(ix + f.x0, iy + f.y0)] = brushes[name]
+    for (x, y), brush in roof.items():
+        ground = pick(rng, [(i, c) for i, c in brush.items if c > 0])
+        border = brushes.borders_for(brush, [roof.get((x + dx, y + dy)) for dx, dy in autoborder.NEIGHBOURS])
+        new_tiles[(x, y, Z - 1)] = pvmap.RawTile(0, 0, None, b''.join(pvmap.item_node(i) for i in [ground] + border))
 
     # The Elite Four building's west and south doors: take the counters out, keep the rest of the tile.
     for (x, y) in INDIGO_OPEN:
