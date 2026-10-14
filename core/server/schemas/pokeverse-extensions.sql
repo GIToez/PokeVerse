@@ -240,6 +240,45 @@ CREATE TABLE IF NOT EXISTS `market_history` (
   KEY `player_id` (`player_id`, `sale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- Global Trade Station (data/lib/ps/systems/066-gts.lua). kind 0 is an item offer (sale 1 sells
+-- items held here, sale 0 buys with money held here), kind 1 a Pokemon for sale: itemtype is then
+-- the ball and attributes the ball itself. price is per piece.
+CREATE TABLE IF NOT EXISTS `gts_offers` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `kind` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `sale` TINYINT(1) NOT NULL DEFAULT 1,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `amount` INT UNSIGNED NOT NULL DEFAULT 1,
+  `price` BIGINT UNSIGNED NOT NULL,
+  `created` BIGINT NOT NULL,
+  `expires` BIGINT NOT NULL,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `attributes` BLOB,
+  PRIMARY KEY (`id`),
+  KEY `item` (`kind`, `itemtype`, `expires`),
+  KEY `pokemon` (`kind`, `pokemon_name`, `expires`),
+  KEY `player_id` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- state 1 done (sold or bought), 2 cancelled, 3 expired
+CREATE TABLE IF NOT EXISTS `gts_history` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `kind` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `sale` TINYINT(1) NOT NULL DEFAULT 1,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `amount` INT UNSIGNED NOT NULL DEFAULT 1,
+  `price` BIGINT UNSIGNED NOT NULL,
+  `state` TINYINT UNSIGNED NOT NULL,
+  `date` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `player_id` (`player_id`, `date`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE IF NOT EXISTS `pokemon_market` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `player_id` INT UNSIGNED NOT NULL,

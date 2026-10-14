@@ -1,0 +1,769 @@
+GtsLabel < Label
+  font: verdana-11px-antialised
+  color: #dfe6f5
+  text-auto-resize: true
+
+GtsTitle < GtsLabel
+  font: verdana-11px-rounded
+  color: #f0d070
+
+GtsBox < UIWidget
+  background-color: #0b1427
+  border-width: 1
+  border-color: #3a568c
+
+GtsList < TextList
+  background-color: #0b1427
+  border-width: 1
+  border-color: #3a568c
+  padding: 1
+  vertical-scrollbar: next
+  focusable: false
+
+GtsScrollBar < VerticalScrollBar
+  step: 28
+  pixels-scroll: true
+
+GtsCell < Label
+  font: verdana-11px-antialised
+  color: #dfe6f5
+  text-auto-resize: false
+  text-offset: 4 0
+  phantom: true
+
+GtsRow < UIWidget
+  height: 20
+  focusable: true
+  background-color: #12203d
+  layout: horizontalBox
+
+  $alternate:
+    background-color: #0f1a33
+
+  $hover:
+    background-color: #1c3260
+
+  $focus:
+    background-color: #3a568c
+
+GtsHeader < UIWidget
+  height: 20
+  background-color: #1a2b4f
+  layout: horizontalBox
+  phantom: true
+
+GtsEntry < UIWidget
+  height: 36
+  focusable: true
+  background-color: #12203d
+
+  $alternate:
+    background-color: #0f1a33
+
+  $hover:
+    background-color: #1c3260
+
+  $focus:
+    background-color: #3a568c
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    phantom: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 2
+
+  UIWidget
+    id: portrait
+    size: 32 32
+    phantom: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 2
+    visible: false
+
+  GtsLabel
+    id: name
+    text-auto-resize: false
+    phantom: true
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 3 4 0 40
+
+  GtsLabel
+    id: info
+    color: #9fb6e0
+    text-auto-resize: false
+    phantom: true
+    anchors.left: name.left
+    anchors.right: name.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 3
+
+GtsPriceEdit < TextEdit
+  height: 20
+  text-align: right
+  max-length: 9
+
+GtsStatRow < UIWidget
+  height: 18
+
+  GtsLabel
+    id: name
+    width: 74
+    text-auto-resize: false
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  GtsLabel
+    id: actual
+    width: 34
+    text-auto-resize: false
+    text-align: right
+    anchors.left: name.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: ivTrack
+    width: 96
+    height: 8
+    background-color: #050913
+    border-width: 1
+    border-color: #2a3e66
+    anchors.left: actual.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+
+    UIWidget
+      id: fill
+      background-color: #5aa0e6
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      margin: 1
+
+  GtsLabel
+    id: iv
+    width: 24
+    text-auto-resize: false
+    text-align: right
+    anchors.left: ivTrack.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: evTrack
+    width: 96
+    height: 8
+    background-color: #050913
+    border-width: 1
+    border-color: #2a3e66
+    anchors.left: iv.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 12
+
+    UIWidget
+      id: fill
+      background-color: #e6c34a
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      margin: 1
+
+  GtsLabel
+    id: ev
+    width: 30
+    text-auto-resize: false
+    text-align: right
+    anchors.left: evTrack.right
+    anchors.verticalCenter: parent.verticalCenter
+
+// one offer table: title, list and the accept bar under it
+GtsOfferTable < UIWidget
+  GtsTitle
+    id: title
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  Button
+    id: accept
+    !text: tr('Accept')
+    width: 70
+    height: 20
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: -3
+
+  GtsLabel
+    id: total
+    color: #f0d070
+    anchors.right: accept.left
+    anchors.verticalCenter: accept.verticalCenter
+    margin-right: 10
+
+  SpinBox
+    id: amount
+    width: 70
+    height: 20
+    minimum: 1
+    maximum: 1
+    anchors.right: total.left
+    anchors.verticalCenter: accept.verticalCenter
+    margin-right: 14
+
+  GtsLabel
+    id: amountLabel
+    !text: tr('Amount:')
+    anchors.right: amount.left
+    anchors.verticalCenter: accept.verticalCenter
+    margin-right: 6
+
+  GtsHeader
+    id: header
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: accept.bottom
+    margin-top: 4
+
+  GtsList
+    id: list
+    anchors.left: parent.left
+    anchors.right: scroll.left
+    anchors.top: header.bottom
+    anchors.bottom: parent.bottom
+
+  GtsScrollBar
+    id: scroll
+    anchors.right: parent.right
+    anchors.top: header.bottom
+    anchors.bottom: parent.bottom
+
+GtsWindow < MainWindow
+  !text: tr('Global Trade Station')
+  size: 960 620
+  padding: 32 12 12 12
+  @onEscape: modules.game_gts.close()
+
+  // left column
+
+  TabButton
+    id: itemsTab
+    !text: tr('Items')
+    width: 88
+    height: 22
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  TabButton
+    id: pokemonTab
+    !text: tr('Pokemon')
+    width: 88
+    height: 22
+    anchors.left: itemsTab.right
+    anchors.top: parent.top
+    margin-left: 4
+
+  GtsTitle
+    id: categoriesTitle
+    !text: tr('Categories')
+    anchors.left: parent.left
+    anchors.top: itemsTab.bottom
+    margin-top: 10
+
+  GtsList
+    id: categories
+    width: 168
+    height: 140
+    anchors.left: parent.left
+    anchors.top: categoriesTitle.bottom
+    margin-top: 4
+
+  GtsScrollBar
+    id: categoriesScroll
+    anchors.left: categories.right
+    anchors.top: categories.top
+    anchors.bottom: categories.bottom
+
+  GtsTitle
+    id: entriesTitle
+    !text: tr('Items')
+    anchors.left: parent.left
+    anchors.top: categories.bottom
+    margin-top: 10
+
+  GtsList
+    id: entries
+    width: 168
+    anchors.left: parent.left
+    anchors.top: entriesTitle.bottom
+    anchors.bottom: search.top
+    margin-top: 4
+    margin-bottom: 8
+
+  GtsScrollBar
+    id: entriesScroll
+    anchors.left: entries.right
+    anchors.top: entries.top
+    anchors.bottom: entries.bottom
+
+  TextEdit
+    id: search
+    width: 184
+    height: 22
+    placeholder: Search
+    anchors.left: parent.left
+    anchors.bottom: bank.top
+    margin-bottom: 10
+
+  // bottom bar
+
+  GtsLabel
+    id: bank
+    color: #f0d070
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 4
+
+  GtsLabel
+    id: money
+    color: #f0d070
+    anchors.left: bank.right
+    anchors.verticalCenter: bank.verticalCenter
+    margin-left: 18
+
+  GtsLabel
+    id: status
+    text-auto-resize: false
+    text-align: right
+    anchors.left: money.right
+    anchors.right: sellPokemonButton.left
+    anchors.verticalCenter: bank.verticalCenter
+    margin: 0 12 0 12
+
+  Button
+    id: sellPokemonButton
+    !text: tr('Sell Pokemon')
+    width: 100
+    anchors.right: mineButton.left
+    anchors.bottom: parent.bottom
+    margin-right: 6
+
+  Button
+    id: mineButton
+    !text: tr('My Offers')
+    width: 90
+    anchors.right: closeButton.left
+    anchors.bottom: parent.bottom
+    margin-right: 6
+
+  Button
+    id: closeButton
+    !text: tr('Close')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_gts.close()
+
+  HorizontalSeparator
+    id: bottomSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: closeButton.top
+    margin-bottom: 8
+
+  // right side: one page at a time
+
+  Panel
+    id: pages
+    anchors.left: categoriesScroll.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: bottomSeparator.top
+    margin-left: 14
+    margin-bottom: 8
+
+    Panel
+      id: itemPage
+      anchors.fill: parent
+
+      GtsOfferTable
+        id: sell
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        height: 180
+
+      GtsOfferTable
+        id: buy
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: sell.bottom
+        margin-top: 14
+        height: 160
+
+      GtsBox
+        id: create
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: buy.bottom
+        anchors.bottom: parent.bottom
+        margin-top: 14
+        padding: 8
+
+        UIItem
+          id: item
+          size: 32 32
+          virtual: true
+          anchors.left: parent.left
+          anchors.top: parent.top
+
+        GtsTitle
+          id: title
+          !text: tr('Create Offer')
+          anchors.left: item.right
+          anchors.top: parent.top
+          margin-left: 8
+
+        GtsLabel
+          id: owned
+          color: #9fb6e0
+          anchors.left: title.left
+          anchors.top: title.bottom
+          margin-top: 3
+
+        CheckBox
+          id: sellMode
+          !text: tr('Sell')
+          width: 60
+          anchors.left: parent.left
+          anchors.top: item.bottom
+          margin-top: 10
+
+        CheckBox
+          id: buyMode
+          !text: tr('Buy')
+          width: 60
+          anchors.left: sellMode.right
+          anchors.top: sellMode.top
+
+        GtsLabel
+          id: amountLabel
+          !text: tr('Amount:')
+          anchors.left: parent.left
+          anchors.top: sellMode.bottom
+          margin-top: 12
+
+        SpinBox
+          id: amount
+          width: 80
+          height: 20
+          minimum: 1
+          maximum: 1000
+          anchors.left: parent.left
+          anchors.top: amountLabel.bottom
+          margin-top: 4
+
+        GtsLabel
+          id: priceLabel
+          !text: tr('Price each:')
+          anchors.left: amount.right
+          anchors.top: amountLabel.top
+          margin-left: 16
+
+        GtsPriceEdit
+          id: price
+          width: 110
+          anchors.left: priceLabel.left
+          anchors.top: amount.top
+
+        GtsLabel
+          id: summary
+          color: #dfe6f5
+          text-auto-resize: false
+          text-wrap: true
+          anchors.left: price.right
+          anchors.right: createButton.left
+          anchors.top: item.top
+          anchors.bottom: parent.bottom
+          margin: 0 14 0 18
+
+        Button
+          id: createButton
+          !text: tr('Create')
+          width: 80
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+
+    Panel
+      id: pokemonPage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: title
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      GtsHeader
+        id: header
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: title.bottom
+        margin-top: 6
+
+      GtsList
+        id: list
+        height: 180
+        anchors.left: parent.left
+        anchors.right: scroll.left
+        anchors.top: header.bottom
+
+      GtsScrollBar
+        id: scroll
+        anchors.right: parent.right
+        anchors.top: list.top
+        anchors.bottom: list.bottom
+
+      GtsBox
+        id: detail
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: list.bottom
+        anchors.bottom: parent.bottom
+        margin-top: 12
+        padding: 10
+
+        GtsLabel
+          id: empty
+          !text: tr('Pick a Pokemon from the list to see its stats.')
+          color: #9fb6e0
+          anchors.centerIn: parent
+
+        Panel
+          id: content
+          anchors.fill: parent
+          visible: false
+
+          UIWidget
+            id: portraitFrame
+            size: 112 112
+            background-color: #12203d
+            border-width: 1
+            border-color: #3a568c
+            anchors.left: parent.left
+            anchors.top: parent.top
+
+            UIWidget
+              id: portrait
+              size: 96 96
+              anchors.centerIn: parent
+
+          GtsTitle
+            id: name
+            font: verdana-11px-rounded
+            anchors.left: portraitFrame.right
+            anchors.top: parent.top
+            margin-left: 12
+
+          UIItem
+            id: ball
+            size: 32 32
+            virtual: true
+            anchors.right: parent.right
+            anchors.top: parent.top
+
+          GtsLabel
+            id: line1
+            anchors.left: name.left
+            anchors.top: name.bottom
+            margin-top: 6
+
+          GtsLabel
+            id: line2
+            anchors.left: name.left
+            anchors.top: line1.bottom
+            margin-top: 4
+
+          GtsLabel
+            id: line3
+            anchors.left: name.left
+            anchors.top: line2.bottom
+            margin-top: 4
+
+          GtsLabel
+            id: line4
+            anchors.left: name.left
+            anchors.top: line3.bottom
+            margin-top: 4
+
+          GtsLabel
+            id: nature
+            color: #f0d070
+            anchors.left: parent.left
+            anchors.top: portraitFrame.bottom
+            margin-top: 10
+
+          GtsLabel
+            id: totals
+            color: #9fb6e0
+            anchors.left: nature.right
+            anchors.verticalCenter: nature.verticalCenter
+            margin-left: 16
+
+          Panel
+            id: stats
+            width: 400
+            anchors.left: parent.left
+            anchors.top: nature.bottom
+            anchors.bottom: parent.bottom
+            margin-top: 6
+            layout:
+              type: verticalBox
+
+          GtsLabel
+            id: sellerLabel
+            color: #9fb6e0
+            anchors.right: parent.right
+            anchors.bottom: buyPrice.top
+            margin-bottom: 6
+
+          GtsTitle
+            id: buyPrice
+            anchors.right: buyButton.left
+            anchors.verticalCenter: buyButton.verticalCenter
+            margin-right: 10
+
+          Button
+            id: buyButton
+            !text: tr('Buy')
+            width: 80
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+
+    Panel
+      id: sellPokemonPage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: title
+        !text: tr('Sell a Pokemon')
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      GtsLabel
+        id: hint
+        color: #9fb6e0
+        anchors.left: parent.left
+        anchors.top: title.bottom
+        margin-top: 4
+
+      GtsList
+        id: list
+        anchors.left: parent.left
+        anchors.right: scroll.left
+        anchors.top: hint.bottom
+        anchors.bottom: priceLabel.top
+        margin-top: 8
+        margin-bottom: 12
+
+      GtsScrollBar
+        id: scroll
+        anchors.right: parent.right
+        anchors.top: list.top
+        anchors.bottom: list.bottom
+
+      GtsLabel
+        id: priceLabel
+        !text: tr('Price:')
+        anchors.left: parent.left
+        anchors.verticalCenter: listButton.verticalCenter
+
+      GtsPriceEdit
+        id: price
+        width: 120
+        anchors.left: priceLabel.right
+        anchors.verticalCenter: listButton.verticalCenter
+        margin-left: 8
+
+      GtsLabel
+        id: summary
+        anchors.left: price.right
+        anchors.verticalCenter: listButton.verticalCenter
+        margin-left: 14
+
+      Button
+        id: listButton
+        !text: tr('Put up for sale')
+        width: 120
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+    Panel
+      id: minePage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: offersTitle
+        !text: tr('My Offers')
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      Button
+        id: cancelButton
+        !text: tr('Cancel Offer')
+        width: 100
+        height: 20
+        anchors.right: parent.right
+        anchors.top: parent.top
+        margin-top: -3
+
+      GtsHeader
+        id: offersHeader
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: cancelButton.bottom
+        margin-top: 4
+
+      GtsList
+        id: offers
+        height: 200
+        anchors.left: parent.left
+        anchors.right: offersScroll.left
+        anchors.top: offersHeader.bottom
+
+      GtsScrollBar
+        id: offersScroll
+        anchors.right: parent.right
+        anchors.top: offers.top
+        anchors.bottom: offers.bottom
+
+      GtsTitle
+        id: historyTitle
+        !text: tr('History')
+        anchors.left: parent.left
+        anchors.top: offers.bottom
+        margin-top: 14
+
+      GtsHeader
+        id: historyHeader
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: historyTitle.bottom
+        margin-top: 6
+
+      GtsList
+        id: history
+        anchors.left: parent.left
+        anchors.right: historyScroll.left
+        anchors.top: historyHeader.bottom
+        anchors.bottom: parent.bottom
+
+      GtsScrollBar
+        id: historyScroll
+        anchors.right: parent.right
+        anchors.top: history.top
+        anchors.bottom: history.bottom

@@ -43,6 +43,7 @@ Module
     - game_evolution
     - game_dailytasks
     - game_dailylogin
+    - game_gts
     - game_levelup
     - game_tmchoose
     - game_statusbar

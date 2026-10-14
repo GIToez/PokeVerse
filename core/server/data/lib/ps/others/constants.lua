@@ -51,7 +51,8 @@ EXTENDED_IDS = {
     LEVEL_UP = 16, -- JSON Pokemon/trainer level-up and TM banners (LevelUpBanner)
     TASK_BOARDS = 17, -- JSON state of the weekly and hunting task boards, with board = "weekly" or "hunting"
     DAILY_LOGIN = 18, -- JSON state of the 7-day login calendar (DailyLogin.send)
-    MOVE_ENERGY = 19 -- JSON {{icon, energy}, ...}: the energy cost of each move in the moves bar, sent after the moves
+    MOVE_ENERGY = 19, -- JSON {{icon, energy}, ...}: the energy cost of each move in the moves bar, sent after the moves
+    GTS = 20 -- JSON Global Trade Station window state, one message per {type = ...} (GTS)
 }
 
 TOURNAMENT_TYPES = {}

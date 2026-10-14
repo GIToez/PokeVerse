@@ -190,6 +190,8 @@ function onLogin(cid)
 			setPlayerAutoLoot(cid, true)
 		end
 
+		addEvent(GTS.onLogin, 3000, cid)
+
 	elseif(accountManager == MANAGER_NAMELOCK) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Hello, it appears that your character has been namelocked, what would you like as your new name?")
 
