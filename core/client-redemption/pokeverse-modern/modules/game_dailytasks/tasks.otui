@@ -667,6 +667,7 @@ HuntingBoard < UIWidget
     icon-size: 14 14
     icon-align: left
     icon-offset-x: 10
+    icon-offset-y: 5
     text-offset: 8 0
     anchors.verticalCenter: offersTitle.verticalCenter
     anchors.right: parent.right
