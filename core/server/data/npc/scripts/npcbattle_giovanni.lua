@@ -19,16 +19,15 @@ npcBattle:setRewardRespect(2)
 npcBattle:setPayRespect(200)
 npcBattle:setOneWin(true)
 npcBattle:setDifficulty(80)
-npcBattle:setRequiredMessage("You must first defeat the GYM trainers before battle against me.")
-npcBattle:setRequired(function(cid)
-                        return getPlayerDefeatedNPC(cid, "Kelly Oquin") and
-                                getPlayerDefeatedNPC(cid, "Clinton Elton") and
-                                getPlayerDefeatedNPC(cid, "Max Antes") and
-                                getPlayerDefeatedNPC(cid, "Elinor Rameau") and
-                                getPlayerDefeatedNPC(cid, "Margery Meidinger") and
-                                getPlayerDefeatedNPC(cid, "Tanisha Ditmore") and
-                                getPlayerDefeatedNPC(cid, "Rosalinda Fails")
-                        end)
+npcBattle:setRequiredTrainers({
+    "Kelly Oquin",
+    "Clinton Elton",
+    "Max Antes",
+    "Elinor Rameau",
+    "Margery Meidinger",
+    "Tanisha Ditmore",
+    "Rosalinda Fails",
+})
 npcBattle:setOnWin(function(cid)
     doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.EARTH_BADGE)
     giveTm(cid)

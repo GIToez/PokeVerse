@@ -243,8 +243,30 @@ if (NpcBattle == nil) then
         self.required = required
     end
 
+    -- msg: a string, or function(cid) returning one
     function NpcBattle:setRequiredMessage(msg)
         self.requiredMessage = msg
+    end
+
+    -- Gym leaders: every one of these trainers must be beaten first, and the leader says how many are left.
+    function NpcBattle:setRequiredTrainers(names)
+        local function remaining(cid)
+            local left = {}
+            for _, name in ipairs(names) do
+                if (not getPlayerDefeatedNPC(cid, name)) then
+                    left[#left + 1] = name
+                end
+            end
+            return left
+        end
+        self.required = function(cid) return #remaining(cid) == 0 end
+        self.requiredMessage = function(cid)
+            local left = remaining(cid)
+            if (#left == 1) then
+                return string.format(__L(cid, "You must first defeat the GYM trainers. Only %s is left, then battle against me."), left[1])
+            end
+            return string.format(__L(cid, "You must first defeat the GYM trainers: %d of %d are left."), #left, #names)
+        end
     end
 
     function NpcBattle:setOnWin(onWin)
@@ -471,6 +493,9 @@ if (NpcBattle == nil) then
 
         if ((self.requiredStorage and getCreatureStorage(pid, self.requiredStorage) < 0) or
                 (self.required and not self.required(pid))) then
+            if (type(self.requiredMessage) == "function") then
+                return self.requiredMessage(pid)
+            end
             return self.requiredMessage and self.requiredMessage or __L(pid, "You can't duel against me yet.")
         end
 
