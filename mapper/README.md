@@ -140,9 +140,6 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   Olivine's bay south of the city has a wandering coast with a rounded corner (no straight cuts),
   and a square of plain grass off Snowtop Mountain's north coast on the base map, the only tiles
   in its chunks, is redone with the rest of the coast.
-- **PSoul logos removed:** the three PSoul floor logos north-east of Kanto (items 27856-27934, at
-  4630,123 / 4657,105 / 4717,134, 9x9 each) are taken off; the floor under them, the teleport
-  machines and everything else on those tiles stay as they were.
 - **Getting around (as in HeartGold/SoulSilver, see Bulbapedia):** Surf from New Bark onto Route
   27 (a channel at x 2805) and again across the Tohjo river to Route 26; Route 42 is cut by two
   small lakes (x 2445 and 2475), so Mahogany's side is reached through Mt. Mortar or by Surf;
