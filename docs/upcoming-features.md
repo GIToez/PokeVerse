@@ -5,7 +5,7 @@ so. Items marked **To decide** need an answer before work starts.
 
 ## Order
 
-1. [New depot](#1-new-depot): Poké boxes, inbox and stash.
+1. [New depot](#1-new-depot): Poké boxes, inbox and stash (built).
 2. [Auto-walk fix](#2-auto-walk-fix).
 3. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
 4. [Website: live status and Discord card](#4-website).
@@ -29,6 +29,24 @@ players install the APK for real), a phone UI pass, and a security check of the 
 server (open ports, SSH, firewall).
 
 ## 1. New depot
+
+**Built** (`lib/ps/systems/067-pc.lua`, client `game_pc`): one PC window with Poké boxes,
+stash, inbox and depot tabs and a search over all of them. It opens from a locker in a
+Pokémon Center (a locker within 10 tiles of Nurse Joy); other lockers, and clients without
+the window, open the old containers. Where it differs from the plan below:
+
+- A Pokémon in a Poké box is a database row with its ball's attributes (`pc_boxes`), the
+  same way the GTS and the Day Care keep them, not an item in a container. Nothing about
+  the Pokémon changes, and it takes no depot space.
+- Throwing a ball is not refused when every box is full: the Pokémon goes to the inbox,
+  which has no limit, so it is still never lost.
+- Deliveries still call `doPlayerAddDepotItem`. For PC players, stacks go straight to the
+  inbox; Pokémon and other items are marked, put in the depot chest and moved right after
+  the script that delivered them is done (it may still use the item). Mail and parcels
+  left in the locker are unpacked into the inbox. A delivered bag stays in the depot.
+- The stash takes stackable items and held items only.
+- Search results open the tab they are in; they are not taken straight to the bag.
+- Not built yet: the reward chest, and the GTS filters (type, IVs, nature) in the boxes.
 
 A player's depot holds up to 2,000 items (`Group::getDepotLimit` in `src/group.cpp`; staff
 groups have 3,000 to 5,000 in `data/XML/groups.xml`). A Pokémon caught or given as a reward
