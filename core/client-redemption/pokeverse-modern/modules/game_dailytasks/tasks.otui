@@ -1,312 +1,535 @@
-TaskText < Label
+// The Tasks window (artwork: scripts/art/tasks_ui.py, the PV styles come from client_entergame)
+
+TkText < UILabel
   font: verdana-11px-antialised
-  color: #dfdfdf
+  color: #dce6ff
+  text-auto-resize: true
   phantom: true
 
-TaskHeading < TaskText
-  font: verdana-11px-rounded
-  color: #f0d070
-  text-auto-resize: true
+TkMuted < TkText
+  color: #96aacd
 
-RewardItem < UIItem
+TkBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+TkHeading < TkBold
+  color: #ffd75a
+
+TkIconText < TkMuted
+  text-offset: 19 0
+  icon-align: left
+  icon-size: 14 14
+
+TkMoney < TkBold
+  color: #ffd75a
+
+TkCard < UIWidget
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 10
+  padding: 7
+
+TkSection < UIWidget
+  image-source: /modules/game_dailytasks/images/section
+  image-border: 10
+  padding: 8
+
+TkTrack < UIWidget
+  height: 10
+  image-source: /modules/game_dailytasks/images/track
+  image-border: 5
+  phantom: true
+
+  UIWidget
+    id: fill
+    image-source: /modules/game_dailytasks/images/fill_blue
+    image-border: 5
+    width: 0
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    phantom: true
+
+// the picture of a task: an item, a Pokedex portrait or an outfit, whichever the task sends
+TkIconFrame < UIWidget
+  size: 46 46
+  image-source: /modules/game_dailytasks/images/icon_frame
+  image-border: 10
+  phantom: true
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: portrait
+    size: 40 40
+    image-smooth: true
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+  UICreature
+    id: creature
+    size: 44 44
+    creature-center: true
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: picture
+    size: 38 38
+    image-smooth: true
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+TkRewardItem < UIItem
   size: 32 32
   virtual: true
-  margin-left: 4
+  margin-left: 2
 
-TaskReward < UIWidget
+TkRewardItems < UIWidget
   height: 32
+  phantom: true
   layout:
     type: horizontalBox
     fit-children: true
-  phantom: true
 
-TaskTab < UIButton
-  size: 96 22
-  image-source: /images/ui/tabbutton_square
-  image-color: #dfdfdf
-  image-clip: 0 0 98 18
-  image-border: 3
-  color: #dfdfdf
-  font: verdana-11px-rounded
-  anchors.top: parent.top
-  $first:
-    anchors.left: parent.left
-  $!first:
-    anchors.left: prev.right
-    margin-left: 4
+TkClaimButton < PVButton
+  ttf-font-size: 12
+  height: 24
+  image-source: /modules/game_dailytasks/images/button_claim
+  $hover !disabled:
+    image-source: /modules/game_dailytasks/images/button_claim_hover
+  $pressed:
+    image-source: /modules/game_dailytasks/images/button_claim_pressed
+  $disabled:
+    image-source: /modules/game_dailytasks/images/button_off
+    color: #7f8ba3
+    opacity: 1
+
+TkSmallBlueButton < PVBlueButton
+  ttf-font-size: 12
+  height: 24
+
+TkSmallRedButton < PVRedButton
+  ttf-font-size: 12
+  height: 24
+
+TkTab < UIButton
+  height: 34
+  image-source: /modules/game_dailytasks/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 14
+  color: #c8d4ee
+  icon-size: 18 18
+  icon-align: left
+  icon-offset-y: 4
+  text-offset: 12 0
   $hover !checked:
-    image-clip: 0 18 98 18
+    image-source: /modules/game_dailytasks/images/tab_hover
   $checked:
-    image-clip: 0 36 98 18
+    image-source: /modules/game_dailytasks/images/tab_on
     color: #ffffff
 
-TaskRow < UIWidget
-  height: 66
-  image-source: /modules/game_pokehud/images/panel
-  image-border: 9
-  padding: 7
-  margin-top: 5
+TkCombo < ComboBox
+  height: 26
+  width: 150
+  image-source: /modules/client_entergame/images/field
+  image-clip: 0 0 32 32
+  image-border: 8
+  image-color: #ffffff
+  font: verdana-11px-antialised
+  color: #e6ecff
+  text-align: left
+  text-offset: 10 0
+  $hover !disabled:
+    image-clip: 0 0 32 32
+    image-source: /modules/client_entergame/images/field_focus
+  $on:
+    image-clip: 0 0 32 32
+    image-source: /modules/client_entergame/images/field_focus
+  $checked:
+    image-clip: 0 0 32 32
+  $disabled:
+    color: #96aacd
+    opacity: 1
 
-DailyTaskRow < TaskRow
-  TaskText
-    id: title
-    font: verdana-11px-rounded
-    color: #ffffff
-    anchors.top: parent.top
-    anchors.left: parent.left
-    anchors.right: claim.left
-    margin-right: 6
-
-  ProgressBar
-    id: progress
-    background-color: #3f9fd8
-    anchors.top: title.bottom
-    anchors.left: parent.left
-    anchors.right: claim.left
-    margin-top: 3
-    margin-right: 6
-
-  TaskText
-    id: money
-    color: #f0d070
-    text-auto-resize: true
-    anchors.left: parent.left
-    anchors.bottom: parent.bottom
-    margin-bottom: 7
-
-  TaskReward
-    id: items
-    anchors.left: money.right
-    anchors.bottom: parent.bottom
-    margin-left: 6
-    margin-bottom: -4
-
-  Button
-    id: claim
-    !text: tr('Claim')
-    width: 64
-    anchors.top: parent.top
+  UIWidget
+    id: chevron
+    size: 12 12
+    image-source: /modules/client_entergame/images/icon_chevron
+    image-color: #ffd75a
     anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 9
+    phantom: true
 
-  Button
-    id: reroll
-    !text: tr('Reroll')
-    width: 64
-    anchors.top: claim.bottom
-    anchors.right: parent.right
-    margin-top: 4
+// difficulty: the picker, then a Start button before the period starts or a note after
+TkPicker < UIWidget
+  height: 34
 
-DifficultyPicker < UIWidget
-  height: 22
-  anchors.left: parent.left
-  anchors.right: parent.right
-
-  TaskText
+  TkText
     id: label
-    !text: tr('Difficulty')
-    text-auto-resize: true
+    !text: tr('Difficulty:')
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
 
-  ComboBox
+  TkCombo
     id: choice
-    width: 150
     anchors.left: label.right
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 6
+    margin-left: 8
 
-  Button
+  PVYellowButton
     id: start
     !text: tr('Start')
-    width: 64
+    width: 150
     anchors.left: choice.right
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 6
+    margin-left: 12
 
-  TaskText
+  TkIconText
     id: info
-    color: #a8b4b4
+    icon: /modules/game_dailytasks/images/icon_info
     anchors.left: choice.right
-    anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 8
+    margin-left: 12
+
+TkTaskCard < TkCard
+  height: 60
+  margin-top: 6
+  $first:
+    margin-top: 0
+
+  TkIconFrame
+    id: icon
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  TkBold
+    id: title
+    text-auto-resize: false
+    anchors.left: icon.right
+    anchors.right: rewardLabel.left
+    anchors.top: parent.top
+    margin-left: 10
+    margin-right: 8
+    height: 16
+
+  TkMuted
+    id: desc
+    text-auto-resize: false
+    anchors.left: title.left
+    anchors.right: title.right
+    anchors.top: title.bottom
+    margin-top: 1
+    height: 14
+
+  TkTrack
+    id: track
+    anchors.left: title.left
+    anchors.right: count.left
+    anchors.bottom: parent.bottom
+    margin-right: 8
+    margin-bottom: 2
+
+  TkText
+    id: count
+    width: 56
+    height: 14
+    text-auto-resize: false
+    text-align: right
+    anchors.right: title.right
+    anchors.bottom: parent.bottom
+
+  TkMuted
+    id: rewardLabel
+    !text: tr('Reward')
+    width: 116
+    text-auto-resize: false
+    anchors.right: buttons.left
+    anchors.top: parent.top
+    margin-right: 8
+
+  TkMoney
+    id: money
+    anchors.left: rewardLabel.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 4
+
+  TkRewardItems
+    id: items
+    anchors.left: money.right
+    anchors.verticalCenter: money.verticalCenter
+    margin-left: 4
+
+  UIWidget
+    id: buttons
+    width: 92
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    phantom: true
+
+    TkClaimButton
+      id: claim
+      !text: tr('Claim')
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.top: parent.top
+
+    TkSmallBlueButton
+      id: reroll
+      !text: tr('Reroll')
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+TkBonusCard < TkTaskCard
+  height: 66
+  image-source: /modules/game_dailytasks/images/card_gold
+
+TkReadyCard < TkSection
+  UIWidget
+    id: picture
+    size: 72 72
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    margin-top: 30
+    phantom: true
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 20
+    color: #ffffff
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: picture.bottom
+    margin-top: 14
+    phantom: true
+
+  TkMuted
+    id: text
+    text-auto-resize: false
+    text-wrap: true
+    text-align: center
+    width: 380
+    height: 40
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: title.bottom
+    margin-top: 10
 
 PeriodicBoard < UIWidget
   anchors.top: tabs.bottom
   anchors.left: parent.left
   anchors.right: parent.right
   anchors.bottom: parent.bottom
-  margin-top: 8
+  margin-top: 10
 
-  TaskText
-    id: resets
-    color: #a8b4b4
+  TkPicker
+    id: picker
     anchors.top: parent.top
     anchors.left: parent.left
     anchors.right: parent.right
 
-  DifficultyPicker
-    id: picker
-    anchors.top: resets.bottom
-    margin-top: 4
-
-  TaskText
+  TkIconText
     id: pickHint
-    color: #a8b4b4
-    text-wrap: true
+    icon: /modules/game_dailytasks/images/icon_info
     anchors.top: picker.bottom
     anchors.left: parent.left
+    margin-top: 6
+
+  TkReadyCard
+    id: ready
+    height: 250
+    anchors.top: pickHint.bottom
+    anchors.left: parent.left
     anchors.right: parent.right
-    height: 56
     margin-top: 10
 
-  UIWidget
-    id: tasks
+  TkSection
+    id: list
     anchors.top: picker.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: separator.top
-    margin-top: 2
+    margin-top: 8
     layout:
       type: verticalBox
+      fit-children: true
 
-  HorizontalSeparator
-    id: separator
-    anchors.bottom: bonus.top
-    anchors.left: parent.left
-    anchors.right: parent.right
-    margin-bottom: 4
-
-  DailyTaskRow
+  TkBonusCard
     id: bonus
-    height: 60
-    anchors.bottom: rerollInfo.top
+    anchors.top: list.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-bottom: 4
+    margin-top: 8
 
-  TaskText
+  TkIconText
     id: rerollInfo
-    color: #a8b4b4
-    text-wrap: true
-    height: 28
-    anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
+    icon: /modules/game_dailytasks/images/icon_info
+    anchors.top: bonus.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
 
-HuntRow < TaskRow
-  height: 60
+TkHuntCard < TkCard
+  height: 58
+  margin-top: 6
+  $first:
+    margin-top: 0
 
-  UICreature
-    id: creature
-    size: 48 48
-    creature-center: true
+  TkIconFrame
+    id: icon
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
+
+  TkBold
+    id: title
+    text-auto-resize: false
+    anchors.left: icon.right
+    anchors.right: buttons.left
+    anchors.top: parent.top
+    margin-left: 10
+    margin-right: 10
+    height: 16
+
+  TkTrack
+    id: track
+    anchors.left: title.left
+    anchors.right: count.left
+    anchors.top: title.bottom
+    margin-top: 5
+    margin-right: 8
+
+  TkText
+    id: count
+    width: 70
+    height: 14
+    text-auto-resize: false
+    text-align: right
+    anchors.right: title.right
+    anchors.top: title.bottom
+    margin-top: 3
+
+  TkMoney
+    id: money
+    ttf-font-size: 12
+    anchors.left: title.left
+    anchors.bottom: parent.bottom
+
+  UILabel
+    id: points
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #5ae6dc
+    text-auto-resize: true
+    anchors.left: money.right
+    anchors.verticalCenter: money.verticalCenter
+    margin-left: 8
     phantom: true
 
-  TaskText
-    id: title
-    font: verdana-11px-rounded
-    color: #ffffff
+  UIWidget
+    id: buttons
+    width: 92
+    anchors.right: parent.right
     anchors.top: parent.top
-    anchors.left: creature.right
-    anchors.right: claim.left
-    margin-left: 6
-    margin-right: 6
-
-  ProgressBar
-    id: progress
-    background-color: #3fb860
-    anchors.top: title.bottom
-    anchors.left: title.left
-    anchors.right: claim.left
-    margin-top: 3
-    margin-right: 6
-
-  TaskText
-    id: reward
-    color: #f0d070
-    anchors.left: title.left
-    anchors.right: claim.left
     anchors.bottom: parent.bottom
-    margin-right: 6
+    phantom: true
 
-  Button
-    id: claim
-    !text: tr('Claim')
-    width: 64
-    anchors.top: parent.top
-    anchors.right: parent.right
+    TkClaimButton
+      id: claim
+      !text: tr('Claim')
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.top: parent.top
 
-  Button
-    id: cancel
-    !text: tr('Give up')
-    width: 64
-    anchors.top: claim.bottom
-    anchors.right: parent.right
-    margin-top: 4
+    TkSmallRedButton
+      id: cancel
+      !text: tr('Give up')
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
 
-HuntSizeButton < Button
-  width: 76
-  anchors.bottom: parent.bottom
+TkHuntSizeButton < TkSmallBlueButton
+  width: 100
+  anchors.verticalCenter: parent.verticalCenter
   $first:
     anchors.right: parent.right
   $!first:
     anchors.right: prev.left
-    margin-right: 4
+    margin-right: 6
 
-OfferRow < TaskRow
-  height: 56
+TkOfferCard < TkCard
+  height: 50
+  margin-top: 5
+  $first:
+    margin-top: 0
 
   UICreature
     id: creature
-    size: 44 44
+    size: 40 40
     creature-center: true
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     phantom: true
 
-  TaskText
+  TkBold
     id: title
-    font: verdana-11px-rounded
-    color: #ffffff
-    text-auto-resize: true
-    anchors.top: parent.top
     anchors.left: creature.right
-    margin-left: 6
+    anchors.top: parent.top
+    margin-left: 10
+    margin-top: 2
 
-  TaskText
+  TkMuted
     id: levels
-    color: #a8b4b4
-    text-auto-resize: true
-    anchors.top: title.bottom
     anchors.left: title.left
+    anchors.top: title.bottom
     margin-top: 2
 
   UIWidget
     id: sizes
+    width: 330
+    anchors.right: parent.right
     anchors.top: parent.top
     anchors.bottom: parent.bottom
-    anchors.right: parent.right
-    width: 240
+    phantom: true
 
-ShopItem < UIWidget
-  size: 74 70
-  image-source: /modules/game_pokehud/images/panel
-  image-border: 9
-  padding: 4
+TkShopTile < TkCard
+  size: 114 96
+  padding: 6
 
   UIItem
     id: item
     size: 32 32
     virtual: true
-    anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    phantom: true
 
-  Button
+  TkMuted
+    id: name
+    text-auto-resize: false
+    text-align: center
+    text-wrap: true
+    height: 28
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: item.bottom
+    margin-top: 1
+
+  TkSmallBlueButton
     id: buy
-    height: 20
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: parent.bottom
@@ -316,121 +539,245 @@ HuntingBoard < UIWidget
   anchors.left: parent.left
   anchors.right: parent.right
   anchors.bottom: parent.bottom
-  margin-top: 8
+  margin-top: 10
 
-  TaskText
-    id: rank
-    color: #dfdfdf
+  TkSection
+    id: rankCard
+    height: 66
     anchors.top: parent.top
     anchors.left: parent.left
-    anchors.right: points.left
-
-  TaskHeading
-    id: points
-    anchors.top: parent.top
     anchors.right: parent.right
 
-  DifficultyPicker
-    id: picker
-    anchors.top: rank.bottom
-    margin-top: 6
+    UIWidget
+      id: medal
+      size: 44 44
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      phantom: true
 
-  TaskHeading
+    TkBold
+      id: rank
+      ttf-font-size: 14
+      anchors.left: medal.right
+      anchors.top: parent.top
+      margin-left: 10
+      margin-top: 2
+
+    TkTrack
+      id: track
+      width: 170
+      anchors.left: rank.left
+      anchors.top: rank.bottom
+      margin-top: 6
+
+    TkMuted
+      id: rankNext
+      anchors.left: rank.left
+      anchors.top: track.bottom
+      margin-top: 3
+
+    UIWidget
+      id: pointsIcon
+      size: 22 22
+      image-source: /modules/game_dailytasks/images/icon_points
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 250
+      phantom: true
+
+    TkMuted
+      id: pointsLabel
+      !text: tr('Hunt Points')
+      anchors.left: pointsIcon.right
+      anchors.top: parent.top
+      margin-left: 8
+      margin-top: 6
+
+    UILabel
+      id: points
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 18
+      color: #ffffff
+      text-auto-resize: true
+      anchors.left: pointsLabel.left
+      anchors.top: pointsLabel.bottom
+      margin-top: 2
+      phantom: true
+
+    TkText
+      id: difficultyLabel
+      !text: tr('Difficulty')
+      width: 140
+      text-auto-resize: false
+      anchors.right: parent.right
+      anchors.top: parent.top
+      margin-top: 1
+
+    TkCombo
+      id: choice
+      width: 140
+      anchors.right: parent.right
+      anchors.top: difficultyLabel.bottom
+      margin-top: 3
+
+    PVYellowButton
+      id: start
+      !text: tr('Pick')
+      width: 70
+      height: 26
+      ttf-font-size: 12
+      anchors.right: choice.left
+      anchors.verticalCenter: choice.verticalCenter
+      margin-right: 6
+
+    TkIconText
+      id: info
+      icon: /modules/game_dailytasks/images/icon_lock
+      anchors.left: choice.left
+      anchors.top: choice.bottom
+      margin-top: 3
+
+  TkHeading
     id: activeTitle
-    anchors.top: picker.bottom
+    anchors.top: rankCard.bottom
     anchors.left: parent.left
-    margin-top: 8
+    margin-top: 10
 
-  UIWidget
+  TkSection
     id: active
     anchors.top: activeTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    height: 130
+    margin-top: 5
     layout:
       type: verticalBox
+      fit-children: true
 
-  TaskHeading
+  TkHeading
     id: offersTitle
     !text: tr('Offers')
     anchors.top: active.bottom
     anchors.left: parent.left
-    margin-top: 6
+    margin-top: 14
 
-  Button
+  TkSmallBlueButton
     id: refresh
-    width: 150
+    width: 170
+    icon: /modules/game_dailytasks/images/icon_refresh
+    icon-size: 14 14
+    icon-align: left
+    icon-offset-x: 10
+    text-offset: 8 0
     anchors.verticalCenter: offersTitle.verticalCenter
     anchors.right: parent.right
 
-  UIWidget
+  TkSection
     id: offers
     anchors.top: offersTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    height: 186
-    margin-top: 2
+    margin-top: 8
     layout:
       type: verticalBox
+      fit-children: true
 
-  TaskHeading
+  TkHeading
     id: shopTitle
     !text: tr('Hunt shop')
     anchors.top: offers.bottom
     anchors.left: parent.left
-    margin-top: 6
+    margin-top: 12
 
   UIWidget
     id: shop
+    height: 96
     anchors.top: shopTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    height: 70
-    margin-top: 4
+    margin-top: 6
     layout:
       type: horizontalBox
-      spacing: 6
+      spacing: 9
 
-TasksWindow < Window
-  !text: tr('Tasks')
-  size: 470 660
+TasksWindow < UIWindow
+  size: 660 690
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
   @onEscape: self:hide()
 
-  UIButton
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_dailytasks/images/icon_tasks
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Tasks')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.verticalCenter: headerIcon.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  PVCloseButton
     id: closeButton
-    size: 14 14
-    image-source: /images/ui/miniwindow_buttons
-    image-clip: 28 0 14 14
+    size: 24 24
     anchors.top: parent.top
     anchors.right: parent.right
-    margin-top: -29
-    margin-right: -10
     @onClick: self:getParent():hide()
-
-    $hover:
-      image-clip: 28 14 14 14
-
-    $pressed:
-      image-clip: 28 28 14 14
 
   UIWidget
     id: tabs
-    height: 22
-    anchors.top: parent.top
+    height: 34
+    anchors.top: headerIcon.bottom
     anchors.left: parent.left
     anchors.right: parent.right
+    margin-top: 12
 
-    TaskTab
+    TkTab
       id: daily
+      width: 140
       !text: tr('Daily')
+      icon: /modules/game_dailytasks/images/icon_daily
+      icon-offset-x: 22
+      anchors.top: parent.top
+      anchors.left: parent.left
 
-    TaskTab
+    TkTab
       id: weekly
+      width: 140
       !text: tr('Weekly')
+      icon: /modules/game_dailytasks/images/icon_weekly
+      icon-offset-x: 18
+      anchors.top: parent.top
+      anchors.left: daily.right
+      margin-left: 8
 
-    TaskTab
+    TkTab
       id: hunting
+      width: 140
       !text: tr('Hunting')
+      icon: /modules/game_dailytasks/images/icon_hunting
+      icon-offset-x: 18
+      anchors.top: parent.top
+      anchors.left: weekly.right
+      margin-left: 8
+
+    TkIconText
+      id: resets
+      icon: /modules/game_dailytasks/images/icon_clock
+      color: #dce6ff
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
 
   PeriodicBoard
     id: dailyBoard
