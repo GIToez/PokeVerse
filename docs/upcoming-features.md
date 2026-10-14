@@ -189,9 +189,17 @@ Static site on the PokeVerse-Clients `gh-pages` branch ([website.md](website.md)
 
 The full map (from the minimap, or the M key) gets a modern look:
 
-- waypoints the player can set;
-- a trail on the map from the player to the selected waypoint;
-- auto-walk to a waypoint (after the [auto-walk fix](#2-auto-walk-fix)).
+- **Opens on the player:** the map centers on the player and their floor every time it opens.
+  Today it reopens wherever it was last left (`fullscreen` in `game_minimap/minimap.lua`
+  swaps the camera with the last full-map position). A button recenters it after dragging.
+- **Waypoints:** the player sets, names and removes them; they are saved per character.
+- **Routes:** a route is a list of stops (waypoints, towns or a clicked spot). The map draws
+  it as a trail from the player through each stop, with the distance, and a stop is crossed
+  off when the player reaches it.
+- **Auto-walk** along the route (after the [auto-walk fix](#2-auto-walk-fix)), stopping for
+  battles, doors and floor changes.
+- **Map labels:** towns, Pokémon Centers, gyms and routes named on the map, with a search
+  that jumps to a place.
 
 The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to build on.
 
