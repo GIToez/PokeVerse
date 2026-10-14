@@ -144,6 +144,7 @@ ExtendedIds.TaskBoards = 17
 ExtendedIds.DailyLogin = 18
 ExtendedIds.MoveEnergy = 19
 ExtendedIds.Gts = 20
+ExtendedIds.Pc = 21
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

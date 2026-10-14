@@ -1,0 +1,8 @@
+Module
+  name: game_pc
+  description: PokeVerse Pokemon Center PC: Poke boxes, stash, inbox and depot, opened from the locker
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ pc ]
+  @onLoad: init()
+  @onUnload: terminate()

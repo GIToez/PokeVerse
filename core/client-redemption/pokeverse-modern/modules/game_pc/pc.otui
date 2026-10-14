@@ -1,0 +1,707 @@
+// the Gts* styles come from game_gts/gts.otui
+
+// a Pokemon in a box or the party
+PcSlot < UIWidget
+  size: 56 56
+  background-color: #12203d
+  border-width: 1
+  border-color: #2a3e66
+  focusable: false
+  draggable: true
+
+  $hover:
+    border-color: #5a7ec0
+
+  $on:
+    border-width: 2
+    border-color: #f0d070
+
+  UIItem
+    id: face
+    size: 40 40
+    virtual: true
+    phantom: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    margin-top: 2
+
+  UIWidget
+    id: portrait
+    size: 40 40
+    phantom: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    margin-top: 2
+    visible: false
+
+  GtsLabel
+    id: level
+    font: verdana-11px-antialised
+    color: #9fb6e0
+    phantom: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-bottom: 1
+
+  UIWidget
+    id: shiny
+    size: 12 12
+    image-source: /modules/game_gts/images/sparkle
+    image-smooth: true
+    phantom: true
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 2
+    visible: false
+
+// an item in the stash or the bag
+PcItemCell < UIWidget
+  size: 44 44
+  background-color: #12203d
+  border-width: 1
+  border-color: #2a3e66
+
+  $hover:
+    border-color: #5a7ec0
+
+  $on:
+    border-width: 2
+    border-color: #f0d070
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    phantom: true
+    anchors.centerIn: parent
+
+  GtsLabel
+    id: count
+    font: verdana-11px-rounded
+    color: #ffffff
+    phantom: true
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 3 1 0
+
+PcGrid < ScrollablePanel
+  background-color: #0b1427
+  border-width: 1
+  border-color: #3a568c
+  padding: 4
+  layout:
+    type: grid
+    cell-size: 44 44
+    cell-spacing: 3
+    flow: true
+
+PcItemBar < GtsBox
+  height: 52
+  padding: 8
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  GtsTitle
+    id: name
+    text-auto-resize: false
+    anchors.left: item.right
+    anchors.right: amount.left
+    anchors.top: parent.top
+    margin: 0 8 0 8
+
+  GtsLabel
+    id: info
+    color: #9fb6e0
+    text-auto-resize: false
+    anchors.left: name.left
+    anchors.right: name.right
+    anchors.bottom: parent.bottom
+
+  SpinBox
+    id: amount
+    focusable: true
+    width: 70
+    height: 20
+    minimum: 1
+    maximum: 1
+    anchors.right: max.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 4
+
+  Button
+    id: max
+    !text: tr('All')
+    width: 36
+    height: 20
+    anchors.right: action.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+
+  Button
+    id: action
+    width: 76
+    height: 20
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+PcWindow < MainWindow
+  !text: tr('Pokemon Center PC')
+  size: 1000 620
+  padding: 32 12 12 12
+  @onEscape: modules.game_pc.close()
+
+  TabButton
+    id: boxesTab
+    !text: tr('Poke Boxes')
+    width: 110
+    height: 22
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+  TabButton
+    id: stashTab
+    !text: tr('Stash')
+    width: 110
+    height: 22
+    anchors.left: boxesTab.right
+    anchors.top: parent.top
+    margin-left: 4
+
+  TabButton
+    id: inboxTab
+    !text: tr('Inbox')
+    width: 110
+    height: 22
+    anchors.left: stashTab.right
+    anchors.top: parent.top
+    margin-left: 4
+
+  UILabel
+    id: inboxBadge
+    font: verdana-11px-rounded
+    color: #ffffff
+    background-color: #d03030
+    text-align: center
+    text-auto-resize: false
+    width: 18
+    height: 14
+    phantom: true
+    anchors.right: inboxTab.right
+    anchors.top: inboxTab.top
+    margin: -5 -5 0 0
+    visible: false
+
+  TabButton
+    id: depotTab
+    !text: tr('Depot')
+    width: 110
+    height: 22
+    anchors.left: inboxTab.right
+    anchors.top: parent.top
+    margin-left: 4
+
+  TextEdit
+    id: search
+    width: 240
+    height: 22
+    placeholder: Search everything
+    anchors.right: parent.right
+    anchors.top: parent.top
+
+  // bottom bar
+
+  GtsLabel
+    id: summary
+    color: #9fb6e0
+    anchors.left: parent.left
+    anchors.verticalCenter: closeButton.verticalCenter
+
+  GtsLabel
+    id: status
+    text-auto-resize: false
+    text-align: right
+    anchors.left: summary.right
+    anchors.right: closeButton.left
+    anchors.verticalCenter: closeButton.verticalCenter
+    margin: 0 12 0 12
+
+  Button
+    id: closeButton
+    !text: tr('Close')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_pc.close()
+
+  HorizontalSeparator
+    id: bottomSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: closeButton.top
+    margin-bottom: 8
+
+  Panel
+    id: pages
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: boxesTab.bottom
+    anchors.bottom: bottomSeparator.top
+    margin-top: 10
+    margin-bottom: 8
+
+    // Poke boxes: the box grid and the party on the left, the picked Pokemon on the right
+    Panel
+      id: boxesPage
+      anchors.fill: parent
+
+      Button
+        id: prevBox
+        text: <
+        width: 24
+        height: 22
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      ComboBox
+        id: boxCombo
+        width: 190
+        height: 22
+        anchors.left: prevBox.right
+        anchors.top: parent.top
+        margin-left: 4
+
+      Button
+        id: nextBox
+        text: >
+        width: 24
+        height: 22
+        anchors.left: boxCombo.right
+        anchors.top: parent.top
+        margin-left: 4
+
+      GtsLabel
+        id: boxCount
+        color: #9fb6e0
+        anchors.left: nextBox.right
+        anchors.verticalCenter: nextBox.verticalCenter
+        margin-left: 10
+
+      Panel
+        id: grid
+        width: 346
+        height: 288
+        anchors.left: parent.left
+        anchors.top: prevBox.bottom
+        margin-top: 8
+        layout:
+          type: grid
+          cell-size: 56 56
+          cell-spacing: 2
+          num-columns: 6
+
+      TextEdit
+        id: boxName
+        width: 200
+        height: 22
+        max-length: 16
+        placeholder: Box name
+        anchors.left: parent.left
+        anchors.top: grid.bottom
+        margin-top: 8
+
+      Button
+        id: renameButton
+        !text: tr('Rename')
+        width: 70
+        height: 22
+        anchors.left: boxName.right
+        anchors.top: boxName.top
+        margin-left: 4
+
+      GtsTitle
+        id: partyTitle
+        !text: tr('With you')
+        anchors.left: parent.left
+        anchors.top: boxName.bottom
+        margin-top: 12
+
+      Panel
+        id: party
+        width: 346
+        height: 56
+        anchors.left: parent.left
+        anchors.top: partyTitle.bottom
+        margin-top: 4
+        layout:
+          type: grid
+          cell-size: 56 56
+          cell-spacing: 2
+          num-columns: 6
+
+      GtsLabel
+        id: hint
+        color: #9fb6e0
+        text-auto-resize: false
+        text-wrap: true
+        width: 346
+        anchors.left: parent.left
+        anchors.top: party.bottom
+        anchors.bottom: parent.bottom
+        margin-top: 6
+
+      GtsBox
+        id: detail
+        anchors.left: grid.right
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        margin-left: 14
+        padding: 10
+
+        GtsLabel
+          id: empty
+          !text: tr('Pick a Pokemon to see its stats.')
+          color: #9fb6e0
+          anchors.centerIn: parent
+
+        Panel
+          id: content
+          anchors.fill: parent
+          visible: false
+
+          UIWidget
+            id: portraitFrame
+            size: 112 112
+            background-color: #12203d
+            border-width: 1
+            border-color: #3a568c
+            anchors.left: parent.left
+            anchors.top: parent.top
+
+            UIWidget
+              id: portrait
+              size: 96 96
+              anchors.centerIn: parent
+
+          GtsTitle
+            id: name
+            anchors.left: portraitFrame.right
+            anchors.top: parent.top
+            margin-left: 12
+
+          UIItem
+            id: ball
+            size: 32 32
+            virtual: true
+            anchors.right: parent.right
+            anchors.top: parent.top
+
+          GtsLabel
+            id: line1
+            anchors.left: name.left
+            anchors.top: name.bottom
+            margin-top: 6
+
+          GtsLabel
+            id: line2
+            anchors.left: name.left
+            anchors.top: line1.bottom
+            margin-top: 4
+
+          GtsLabel
+            id: line3
+            anchors.left: name.left
+            anchors.top: line2.bottom
+            margin-top: 4
+
+          GtsLabel
+            id: line4
+            anchors.left: name.left
+            anchors.top: line3.bottom
+            margin-top: 4
+
+          GtsLabel
+            id: nature
+            color: #f0d070
+            anchors.left: parent.left
+            anchors.top: portraitFrame.bottom
+            margin-top: 10
+
+          GtsLabel
+            id: totals
+            color: #9fb6e0
+            anchors.left: nature.right
+            anchors.verticalCenter: nature.verticalCenter
+            margin-left: 16
+
+          Panel
+            id: stats
+            width: 400
+            anchors.left: parent.left
+            anchors.top: nature.bottom
+            anchors.bottom: actionButton.top
+            margin-top: 6
+            layout:
+              type: verticalBox
+
+          Button
+            id: actionButton
+            width: 120
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+
+          GtsLabel
+            id: moveLabel
+            !text: tr('Move to:')
+            anchors.right: moveCombo.left
+            anchors.verticalCenter: actionButton.verticalCenter
+            margin-right: 6
+
+          ComboBox
+            id: moveCombo
+            width: 160
+            height: 22
+            anchors.right: moveButton.left
+            anchors.verticalCenter: actionButton.verticalCenter
+            margin-right: 4
+
+          Button
+            id: moveButton
+            !text: tr('Move')
+            width: 60
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+
+    // Stash: categories, the stash grid and what you pick; the bag on the right
+    Panel
+      id: stashPage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: categoriesTitle
+        !text: tr('Categories')
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      GtsList
+        id: categories
+        width: 170
+        anchors.left: parent.left
+        anchors.top: categoriesTitle.bottom
+        anchors.bottom: sortLabel.top
+        margin-top: 4
+        margin-bottom: 10
+
+      GtsLabel
+        id: sortLabel
+        !text: tr('Sort by')
+        anchors.left: parent.left
+        anchors.bottom: sort.top
+        margin-bottom: 4
+
+      ComboBox
+        id: sort
+        width: 170
+        height: 22
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+      GtsTitle
+        id: stashTitle
+        anchors.left: categories.right
+        anchors.top: parent.top
+        margin-left: 14
+
+      PcGrid
+        id: stash
+        anchors.left: stashTitle.left
+        anchors.right: stashScroll.left
+        anchors.top: stashTitle.bottom
+        anchors.bottom: take.top
+        margin-top: 4
+        margin-bottom: 8
+        vertical-scrollbar: stashScroll
+
+      GtsScrollBar
+        id: stashScroll
+        anchors.right: bagTitle.left
+        anchors.top: stashTitle.bottom
+        anchors.bottom: take.top
+        margin: 4 14 8 0
+
+      PcItemBar
+        id: take
+        anchors.left: stashTitle.left
+        anchors.right: bagTitle.left
+        anchors.bottom: parent.bottom
+        margin-right: 14
+
+      GtsTitle
+        id: bagTitle
+        !text: tr('In your bag')
+        width: 250
+        text-auto-resize: false
+        anchors.right: parent.right
+        anchors.top: parent.top
+
+      PcGrid
+        id: bag
+        anchors.left: bagTitle.left
+        anchors.right: bagScroll.left
+        anchors.top: bagTitle.bottom
+        anchors.bottom: stow.top
+        margin-top: 4
+        margin-bottom: 8
+        vertical-scrollbar: bagScroll
+
+      GtsScrollBar
+        id: bagScroll
+        anchors.right: parent.right
+        anchors.top: bagTitle.bottom
+        anchors.bottom: stow.top
+        margin: 4 0 8 0
+
+      PcItemBar
+        id: stow
+        anchors.left: bagTitle.left
+        anchors.right: parent.right
+        anchors.bottom: stowAll.top
+        margin-bottom: 6
+
+      Button
+        id: stowAll
+        !text: tr('Stow everything')
+        anchors.left: bagTitle.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+    // Inbox: deliveries, mail and what the GTS sent
+    Panel
+      id: inboxPage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: title
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      GtsLabel
+        id: hint
+        !text: tr('Rewards, purchases and mail land here when your bag is full. Pokemon go to your boxes first.')
+        color: #9fb6e0
+        anchors.left: parent.left
+        anchors.top: title.bottom
+        margin-top: 4
+
+      GtsList
+        id: list
+        anchors.left: parent.left
+        anchors.right: scroll.left
+        anchors.top: hint.bottom
+        anchors.bottom: takeButton.top
+        margin-top: 8
+        margin-bottom: 8
+
+      GtsScrollBar
+        id: scroll
+        anchors.right: parent.right
+        anchors.top: hint.bottom
+        anchors.bottom: takeButton.top
+        margin: 8 0 8 0
+
+      Button
+        id: takeButton
+        !text: tr('Take')
+        width: 90
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+      Button
+        id: toBoxButton
+        !text: tr('Send to a box')
+        width: 110
+        anchors.left: takeButton.right
+        anchors.bottom: parent.bottom
+        margin-left: 6
+
+      Button
+        id: takeAllButton
+        !text: tr('Take all')
+        width: 90
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+    // Depot: the old containers
+    Panel
+      id: depotPage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: title
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      GtsLabel
+        id: hint
+        !text: tr('Everything that is not a Pokemon or a stackable item stays in your depot. Open it to use it as before.')
+        color: #9fb6e0
+        anchors.left: parent.left
+        anchors.top: title.bottom
+        margin-top: 4
+
+      GtsList
+        id: list
+        anchors.left: parent.left
+        anchors.right: scroll.left
+        anchors.top: hint.bottom
+        anchors.bottom: openButton.top
+        margin-top: 8
+        margin-bottom: 8
+
+      GtsScrollBar
+        id: scroll
+        anchors.right: parent.right
+        anchors.top: hint.bottom
+        anchors.bottom: openButton.top
+        margin: 8 0 8 0
+
+      Button
+        id: openButton
+        !text: tr('Open depot')
+        width: 110
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+    // search results from everywhere
+    Panel
+      id: searchPage
+      anchors.fill: parent
+      visible: false
+
+      GtsTitle
+        id: title
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+      GtsList
+        id: list
+        anchors.left: parent.left
+        anchors.right: scroll.left
+        anchors.top: title.bottom
+        anchors.bottom: parent.bottom
+        margin-top: 8
+
+      GtsScrollBar
+        id: scroll
+        anchors.right: parent.right
+        anchors.top: title.bottom
+        anchors.bottom: parent.bottom
+        margin-top: 8

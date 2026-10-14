@@ -44,6 +44,7 @@ Module
     - game_dailytasks
     - game_dailylogin
     - game_gts
+    - game_pc
     - game_levelup
     - game_tmchoose
     - game_statusbar
