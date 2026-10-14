@@ -44,7 +44,23 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
  local function resolveKeyAlias(desc)
      if not desc then
          return nil
-@@ -358,7 +364,7 @@
+@@ -297,6 +303,7 @@
+     end
+     local keyComboDesc = retranslateKeyComboDesc(keyComboDesc)
+     disconnect(widget.boundKeyDownCombos, keyComboDesc, callback)
++    disconnect(widget.boundAloneKeyDownCombos, keyComboDesc, callback)
+ end
+ 
+ function g_keyboard.unbindKeyUp(keyComboDesc, arg1, arg2)
+@@ -306,6 +313,7 @@
+     end
+     local keyComboDesc = retranslateKeyComboDesc(keyComboDesc)
+     disconnect(widget.boundKeyUpCombos, keyComboDesc, callback)
++    disconnect(widget.boundAloneKeyUpCombos, keyComboDesc, callback)
+ end
+ 
+ function g_keyboard.unbindKeyPress(keyComboDesc, arg1, arg2)
+@@ -358,7 +366,7 @@
      if (g_platform.isMobile()) then
          return false
      else
@@ -53,7 +69,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
      end
  end
  
-@@ -366,7 +372,7 @@
+@@ -366,7 +374,7 @@
      if (g_platform.isMobile()) then
          return false
      else
@@ -62,7 +78,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
      end
  end
  
-@@ -411,7 +417,7 @@
+@@ -411,7 +419,7 @@
      if primaryIsCtrl then
          return bit.bor(KeyboardPrimaryModifier, KeyboardCtrlModifier)
      end
@@ -71,7 +87,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
  end
  
  function g_keyboard.isPrimaryModifierOnly(keyboardModifiers)
-@@ -419,14 +425,14 @@
+@@ -419,14 +427,14 @@
          return false
      end
      local allowedMask = primaryAllowedMask()
