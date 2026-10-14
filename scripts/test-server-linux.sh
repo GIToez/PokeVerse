@@ -180,6 +180,11 @@ tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks
 assert s['difficulty'] == 3 and s['rerolled'] and len({x['kind'] for x in t}) == 3, s
 assert t[2]['progress'] == t[2]['target'] and t[0]['progress'] == 0 and t[1]['progress'] == 1, s"
 echo "Daily tasks: difficulty picked once, claim, bonus, rewards, one reroll a day, kept across logins"
+# picked in the window (a talkaction) and counted by fishing (a creaturescript) in the same session
+say_admin "/tasks daily reset" "/tasks daily start 1" "/tasks daily kind 1 fish" "/tasks hook 2"
+tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks'][0]
+assert s['difficulty'] == 1 and t['kind'] == 'fish' and t['progress'] == 2, s"
+echo "Daily tasks: hooking Pokemon counts right after the tasks are picked"
 
 step "Weekly tasks"
 say_admin "/tasks weekly reset" "/tasks weekly start 2" "/tasks weekly start 4" "/tasks weekly reroll 1" \

@@ -194,7 +194,6 @@ end
 local function newBoard(config)
     local board = {}
     board.TASK_COUNT = config.taskCount
-    local cache = {} -- player guid -> state
 
     local function newTask(kindName, difficulty)
         local kind = KINDS[kindName]
@@ -234,24 +233,21 @@ local function newBoard(config)
         return config.freeReroll and 0 or TASK_DIFFICULTIES[state.difficulty].rerollCost
     end
 
-    -- The state for this period.
+    -- The state for this period. Read from the table every time: the window's talkactions, the
+    -- creaturescripts (fishing, defeats, NPC battles) and the actions (catching) each run in their
+    -- own Lua state, so a copy kept in memory would miss what the others saved.
     function board.get(cid)
-        local guid = getPlayerGUID(cid)
-        local state = cache[guid]
-        if (not state) then
-            state = config.load(cid)
-            if (state and type(state.tasks) ~= "table") then
-                state = nil
-            end
-            if (state and not state.difficulty and state.band and #state.tasks > 0) then
-                state.difficulty = OLD_BAND_DIFFICULTY[state.band] or 1
-            end
+        local state = config.load(cid)
+        if (state and type(state.tasks) ~= "table") then
+            state = nil
+        end
+        if (state and not state.difficulty and state.band and #state.tasks > 0) then
+            state.difficulty = OLD_BAND_DIFFICULTY[state.band] or 1
         end
         if (not state or state.day ~= config.period()) then
             state = newPeriod()
             config.save(cid, state)
         end
-        cache[guid] = state
         return state
     end
 
@@ -419,7 +415,6 @@ local function newBoard(config)
     -- character's tasks with these instead of editing the tables. A reset clears the difficulty.
     function board.reset(cid)
         local state = newPeriod()
-        cache[getPlayerGUID(cid)] = state
         config.save(cid, state)
         board.send(cid)
     end
@@ -436,13 +431,26 @@ local function newBoard(config)
         return true
     end
 
-    function board.onLogin(cid)
-        cache[getPlayerGUID(cid)] = nil
+    -- Staff test tool: replaces the task in a slot with a new one of the given kind.
+    function board.setKind(cid, slot, name)
+        local kindName
+        for _, kind in ipairs(KIND_NAMES) do
+            if (kind:lower() == tostring(name):lower()) then
+                kindName = kind
+            end
+        end
+        local state = board.get(cid)
+        if (not kindName or not state.difficulty or not state.tasks[slot]) then
+            return false
+        end
+        state.tasks[slot] = newTask(kindName, state.difficulty)
+        config.save(cid, state)
         board.send(cid)
+        return true
     end
 
-    function board.onLogout(cid)
-        cache[getPlayerGUID(cid)] = nil
+    function board.onLogin(cid)
+        board.send(cid)
     end
 
     return board
