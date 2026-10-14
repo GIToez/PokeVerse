@@ -12,9 +12,10 @@ from PIL import Image, ImageDraw
 
 SCALE = 4  # drawn large, then scaled down for smooth edges
 
-PANEL = (20, 28, 29, 225)
-PANEL_EDGE = (78, 104, 104, 200)
-TRACK = (6, 10, 10, 235)
+# the navy of the login screens and window art (scripts/pokeverse-skin.py)
+PANEL = (15, 23, 41, 228)
+PANEL_EDGE = (58, 86, 140, 210)
+TRACK = (5, 9, 19, 235)
 GOLD = (226, 178, 62, 255)
 GOLD_DARK = (120, 86, 22, 255)
 
