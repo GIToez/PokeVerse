@@ -42,7 +42,9 @@ env:
 jobs:
   linux:
     name: Build (Linux)
-    runs-on: ubuntu-24.04
+    # the binary needs at least the glibc it was built against, so build on an older
+    # system (glibc 2.35) to run on Ubuntu 22.04, Mint 21, Debian 12 and newer
+    runs-on: ubuntu-22.04
     env:
       CC: gcc-14
       CXX: g++-14
@@ -54,6 +56,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends autoconf autoconf-archive automake \
             gcc-14 g++-14 libgl1-mesa-dev libglu1-mesa-dev libltdl-dev libtool libtool-bin \
@@ -68,10 +71,10 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: vcpkg-cache
-          key: vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+          key: vcpkg-linux2204-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
           restore-keys: |
-            vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-
-            vcpkg-linux-
+            vcpkg-linux2204-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-
+            vcpkg-linux2204-
 
       - uses: lukka/run-vcpkg@v11
         with:
@@ -79,19 +82,35 @@ jobs:
 
       - name: Build
         run: |
+          # GCC 14's C++ runtime is linked in; players' systems have an older libstdc++
           cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_IPO=OFF -DOPTIONS_ENABLE_CCACHE=OFF \
+            "-DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc" \
             "-DBUILD_COMMIT=${GITHUB_SHA::7}" "-DBUILD_REVISION=${GITHUB_RUN_NUMBER}"
           cmake --build --preset linux-release
           mkdir -p "$GITHUB_WORKSPACE/bin-linux"
           cp build/linux-release/bin/otclient "$GITHUB_WORKSPACE/bin-linux/PokeVerse"
           strip "$GITHUB_WORKSPACE/bin-linux/PokeVerse"
 
+      - name: Check the system libraries it needs
+        run: |
+          bin="$GITHUB_WORKSPACE/bin-linux/PokeVerse"
+          versions=$(objdump -T "$bin" | grep -oE '(GLIBC|GLIBCXX|CXXABI)_[0-9.]+' | sort -u -V)
+          echo "$versions"
+          glibc=$(echo "$versions" | grep '^GLIBC_' | sed 's/GLIBC_//' | sort -V | tail -1)
+          if echo "$versions" | grep -q '^GLIBCXX_\|^CXXABI_'; then
+            echo "::error::PokeVerse still needs the system libstdc++"; exit 1
+          fi
+          if [ "$(printf '%s\n' "$glibc" 2.35 | sort -V | tail -1)" != 2.35 ]; then
+            echo "::error::PokeVerse needs glibc $glibc, newer than 2.35"; exit 1
+          fi
+          echo "Needs glibc $glibc or newer"
+
       # saved even when the build fails, so the libraries built so far are not lost
       - uses: actions/cache/save@v4
         if: always()
         with:
           path: vcpkg-cache
-          key: vcpkg-linux-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
+          key: vcpkg-linux2204-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
 
       - uses: actions/upload-artifact@v4
         with:
