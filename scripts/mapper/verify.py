@@ -111,7 +111,7 @@ def main():
     print('%d tiles, %d towns, %d houses with tiles, %d spawned creatures' % (tiles, len(towns), len(house_tiles), n_spawns))
     print('last towns: %s' % towns[-3:])
     if bad_spawns:
-        print('note: %d creatures spawn on a missing or blocked tile: %s' % (len(bad_spawns), bad_spawns[:40]))
+        print('note: %d creatures spawn on a missing or blocked tile: %s' % (len(bad_spawns), bad_spawns[:80]))
     if problems:
         for p in problems:
             print('PROBLEM: ' + p)

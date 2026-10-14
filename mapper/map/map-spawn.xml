@@ -61759,1381 +61759,1405 @@
   <spawn centerx="2722" centery="795" centerz="7" radius="1">
     <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2695" centery="600" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2925" centery="522" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2520" centery="601" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2926" centery="522" centerz="7" radius="1">
+    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2641" centery="604" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2899" centery="516" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2575" centery="607" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2914" centery="529" centerz="7" radius="1">
+    <monster name="Ursaring" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2713" centery="607" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2914" centery="531" centerz="7" radius="1">
+    <monster name="Donphan" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2554" centery="608" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2674" centery="608" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2699" centery="610" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2591" centery="611" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2679" centery="611" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2582" centery="612" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2667" centery="614" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2701" centery="614" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2713" centery="617" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2534" centery="618" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2571" centery="619" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2639" centery="619" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2565" centery="620" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2582" centery="622" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2638" centery="625" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2679" centery="625" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2567" centery="627" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2715" centery="629" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2526" centery="632" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2577" centery="632" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2595" centery="632" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2554" centery="634" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2717" centery="634" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2554" centery="636" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2647" centery="637" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2704" centery="638" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2712" centery="638" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2555" centery="639" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2640" centery="640" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2660" centery="640" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2564" centery="644" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2639" centery="644" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2654" centery="644" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2697" centery="644" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2699" centery="644" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2707" centery="645" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2580" centery="646" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2553" centery="647" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2602" centery="647" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2553" centery="650" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2522" centery="653" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2593" centery="655" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2628" centery="656" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2601" centery="661" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2552" centery="662" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2589" centery="663" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2637" centery="663" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3001" centery="663" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2589" centery="664" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2707" centery="664" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2539" centery="665" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2693" centery="665" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2705" centery="665" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2706" centery="665" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2725" centery="666" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2726" centery="666" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2877" centery="666" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2881" centery="668" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2559" centery="669" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2666" centery="669" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2547" centery="670" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2647" centery="670" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2861" centery="670" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2544" centery="671" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2652" centery="671" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2568" centery="672" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2599" centery="672" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2928" centery="672" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2593" centery="673" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2895" centery="673" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2957" centery="673" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3033" centery="673" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2625" centery="675" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2649" centery="675" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2701" centery="675" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2607" centery="676" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2878" centery="676" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2964" centery="676" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2566" centery="677" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2698" centery="677" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2700" centery="677" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2703" centery="677" centerz="7" radius="1">
+  <spawn centerx="2926" centery="535" centerz="7" radius="1">
     <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2958" centery="677" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2910" centery="544" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2712" centery="678" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2921" centery="544" centerz="7" radius="1">
+    <monster name="Donphan" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3014" centery="679" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2939" centery="561" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2890" centery="681" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2942" centery="562" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2950" centery="681" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2967" centery="581" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2570" centery="682" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2981" centery="581" centerz="7" radius="1">
+    <monster name="Donphan" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2727" centery="682" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2966" centery="582" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2975" centery="682" centerz="7" radius="1">
+  <spawn centerx="2965" centery="583" centerz="7" radius="1">
+    <monster name="Sneasel" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3029" centery="583" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3033" centery="588" centerz="7" radius="1">
     <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2682" centery="684" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="3026" centery="590" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2699" centery="684" centerz="7" radius="1">
+  <spawn centerx="3039" centery="590" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3003" centery="597" centerz="7" radius="1">
+    <monster name="Tangela" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2576" centery="600" centerz="7" radius="1">
     <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2731" centery="684" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2752" centery="684" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2910" centery="684" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3026" centery="684" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2704" centery="685" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2881" centery="686" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2697" centery="687" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2844" centery="687" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3006" centery="689" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2549" centery="690" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2776" centery="690" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2560" centery="692" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2624" centery="692" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2830" centery="692" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2890" centery="693" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2988" centery="693" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2747" centery="694" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3041" centery="694" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2568" centery="695" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2926" centery="695" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2931" centery="695" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2669" centery="696" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2783" centery="696" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2658" centery="697" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2799" centery="697" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2633" centery="698" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2757" centery="698" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2986" centery="699" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2568" centery="700" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2712" centery="700" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2729" centery="700" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2734" centery="700" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2959" centery="700" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2653" centery="701" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2657" centery="701" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2849" centery="701" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2638" centery="702" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2667" centery="702" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2678" centery="702" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2760" centery="702" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2851" centery="702" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2836" centery="703" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2845" centery="704" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2549" centery="705" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3044" centery="705" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2792" centery="706" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2920" centery="706" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3033" centery="706" centerz="7" radius="1">
+  <spawn centerx="2706" centery="601" centerz="7" radius="1">
     <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2845" centery="707" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2601" centery="708" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2811" centery="709" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2607" centery="711" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2619" centery="711" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2658" centery="711" centerz="7" radius="1">
+  <spawn centerx="2548" centery="603" centerz="7" radius="1">
     <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2735" centery="713" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2663" centery="603" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2984" centery="713" centerz="7" radius="1">
+  <spawn centerx="2572" centery="610" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2539" centery="611" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2643" centery="612" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2546" centery="615" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2709" centery="615" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2679" centery="616" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2642" centery="618" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2696" centery="618" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2526" centery="619" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2558" centery="619" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2526" centery="622" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2692" centery="622" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2694" centery="622" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2700" centery="622" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2633" centery="624" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2626" centery="625" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2636" centery="625" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2647" centery="625" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2676" centery="625" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2521" centery="627" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2577" centery="627" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2673" centery="627" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2582" centery="628" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2617" centery="628" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2641" centery="628" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2594" centery="630" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2674" centery="630" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2609" centery="631" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2589" centery="632" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2658" centery="632" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2560" centery="635" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2556" centery="636" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2557" centery="639" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2620" centery="639" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2629" centery="639" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2615" centery="641" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2702" centery="642" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2648" centery="644" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2720" centery="644" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2710" centery="645" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2615" centery="646" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2608" centery="648" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2539" centery="649" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2635" centery="650" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2677" centery="654" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2701" centery="655" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2708" centery="655" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2535" centery="656" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2575" centery="656" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2592" centery="656" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2727" centery="656" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2705" centery="657" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2529" centery="658" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2614" centery="658" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2646" centery="660" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2658" centery="660" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2535" centery="661" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2538" centery="662" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2564" centery="662" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2551" centery="665" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2608" centery="665" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3008" centery="665" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2564" centery="666" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2586" centery="666" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2984" centery="667" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2741" centery="668" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2561" centery="671" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2581" centery="671" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2839" centery="671" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2849" centery="671" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2539" centery="672" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2922" centery="672" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2937" centery="672" centerz="7" radius="1">
     <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2774" centery="714" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2801" centery="714" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2842" centery="714" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2573" centery="715" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2638" centery="715" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2693" centery="715" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2838" centery="715" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2889" centery="715" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2900" centery="718" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2651" centery="719" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2561" centery="720" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2620" centery="721" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3013" centery="721" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2746" centery="723" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2789" centery="724" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2610" centery="725" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2661" centery="725" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2810" centery="725" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2976" centery="725" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2690" centery="727" centerz="7" radius="1">
+  <spawn centerx="2586" centery="673" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2772" centery="727" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2621" centery="673" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2800" centery="727" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2589" centery="674" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2898" centery="727" centerz="7" radius="1">
+  <spawn centerx="2836" centery="674" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2548" centery="675" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2581" centery="675" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2661" centery="675" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2590" centery="677" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2607" centery="677" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2811" centery="677" centerz="7" radius="1">
     <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2709" centery="728" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2940" centery="677" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3032" centery="730" centerz="7" radius="1">
+  <spawn centerx="2961" centery="677" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3026" centery="677" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2610" centery="678" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2996" centery="678" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2573" centery="679" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2739" centery="679" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3008" centery="679" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2713" centery="680" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2738" centery="680" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2759" centery="680" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2977" centery="680" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2529" centery="681" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2980" centery="681" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2665" centery="682" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2843" centery="682" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2890" centery="682" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3025" centery="682" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2572" centery="683" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2744" centery="683" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2746" centery="683" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2958" centery="683" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2629" centery="685" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2600" centery="686" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2784" centery="686" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2998" centery="686" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2790" centery="687" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2835" centery="687" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2535" centery="688" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2684" centery="688" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2999" centery="688" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2607" centery="689" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2870" centery="689" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2571" centery="690" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2729" centery="690" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2828" centery="690" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2701" centery="691" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2935" centery="691" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3020" centery="691" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2558" centery="692" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2834" centery="692" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2749" centery="693" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2755" centery="693" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2578" centery="695" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2715" centery="695" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2588" centery="696" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2995" centery="696" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2546" centery="697" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2679" centery="697" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2719" centery="697" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2917" centery="697" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2595" centery="698" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2637" centery="698" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2711" centery="698" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2616" centery="699" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2862" centery="699" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2863" centery="699" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2931" centery="699" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2943" centery="699" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2605" centery="702" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2616" centery="702" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2761" centery="702" centerz="7" radius="1">
     <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2595" centery="731" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2969" centery="702" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2705" centery="731" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2894" centery="731" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2940" centery="731" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2997" centery="731" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3033" centery="731" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2943" centery="732" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2852" centery="733" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2968" centery="733" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2926" centery="735" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2687" centery="736" centerz="7" radius="1">
+  <spawn centerx="2693" centery="703" centerz="7" radius="1">
     <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2953" centery="736" centerz="7" radius="1">
+  <spawn centerx="2844" centery="703" centerz="7" radius="1">
     <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2997" centery="736" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3043" centery="736" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2667" centery="737" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2935" centery="737" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2668" centery="740" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2555" centery="742" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2965" centery="742" centerz="7" radius="1">
+  <spawn centerx="2892" centery="703" centerz="7" radius="1">
     <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2569" centery="743" centerz="7" radius="1">
+  <spawn centerx="2694" centery="704" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2817" centery="704" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2919" centery="704" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2659" centery="705" centerz="7" radius="1">
     <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2659" centery="743" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2688" centery="743" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2921" centery="744" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2928" centery="744" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2659" centery="745" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2872" centery="745" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2673" centery="747" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2733" centery="747" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2755" centery="747" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2876" centery="747" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2987" centery="747" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2613" centery="748" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2759" centery="748" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2960" centery="748" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3012" centery="748" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2709" centery="749" centerz="7" radius="1">
+  <spawn centerx="2724" centery="705" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3015" centery="749" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2654" centery="750" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2540" centery="752" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2929" centery="752" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2861" centery="753" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2581" centery="756" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2642" centery="756" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2527" centery="757" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2595" centery="757" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2950" centery="757" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3030" centery="757" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2613" centery="758" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3027" centery="758" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2896" centery="759" centerz="7" radius="1">
+  <spawn centerx="2771" centery="706" centerz="7" radius="1">
     <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2922" centery="759" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2542" centery="707" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2987" centery="759" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2650" centery="760" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2813" centery="760" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3047" centery="760" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2946" centery="761" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2967" centery="761" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2893" centery="763" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2623" centery="764" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2625" centery="765" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2638" centery="765" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3025" centery="765" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2585" centery="766" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2560" centery="769" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2618" centery="770" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2899" centery="770" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2976" centery="770" centerz="7" radius="1">
+  <spawn centerx="2890" centery="707" centerz="7" radius="1">
     <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2521" centery="771" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2610" centery="771" centerz="7" radius="1">
+  <spawn centerx="2650" centery="708" centerz="7" radius="1">
     <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2996" centery="771" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2822" centery="772" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2892" centery="772" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3019" centery="773" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2830" centery="774" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2935" centery="774" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3030" centery="775" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2549" centery="779" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2574" centery="779" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2776" centery="779" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2782" centery="779" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2880" centery="779" centerz="7" radius="1">
+  <spawn centerx="2738" centery="708" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3043" centery="779" centerz="7" radius="1">
+  <spawn centerx="2884" centery="708" centerz="7" radius="1">
     <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2821" centery="780" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2856" centery="781" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2902" centery="781" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3029" centery="782" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3038" centery="782" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2531" centery="783" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2987" centery="783" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3016" centery="783" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2624" centery="784" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2799" centery="785" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2938" centery="785" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2904" centery="786" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2990" centery="786" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3008" centery="787" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2861" centery="788" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2558" centery="789" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2624" centery="789" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2634" centery="789" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2529" centery="791" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2536" centery="791" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2843" centery="791" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3004" centery="791" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2554" centery="792" centerz="7" radius="1">
+  <spawn centerx="2543" centery="709" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3048" centery="792" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2887" centery="794" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2869" centery="795" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2660" centery="796" centerz="7" radius="1">
+  <spawn centerx="2674" centery="709" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2786" centery="796" centerz="7" radius="1">
+  <spawn centerx="2769" centery="709" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2858" centery="796" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3036" centery="797" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2546" centery="798" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2978" centery="798" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2998" centery="799" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3025" centery="799" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2891" centery="800" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3018" centery="800" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2947" centery="802" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2994" centery="802" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2591" centery="804" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3036" centery="804" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2612" centery="805" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2947" centery="805" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2563" centery="806" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2910" centery="806" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2527" centery="808" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2546" centery="808" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2562" centery="808" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2567" centery="808" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2656" centery="808" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2885" centery="808" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2574" centery="809" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2584" centery="810" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2833" centery="810" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2640" centery="811" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2976" centery="812" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2839" centery="813" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2582" centery="814" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2986" centery="814" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2992" centery="814" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3007" centery="814" centerz="7" radius="1">
+  <spawn centerx="2891" centery="709" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2561" centery="815" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="3019" centery="711" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2932" centery="815" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2549" centery="816" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2550" centery="816" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2525" centery="817" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2534" centery="817" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2836" centery="817" centerz="7" radius="1">
-    <monster name="Noctowl" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2649" centery="818" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2669" centery="819" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2539" centery="820" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2577" centery="820" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2625" centery="821" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2799" centery="821" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2559" centery="824" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3016" centery="824" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2616" centery="825" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2642" centery="826" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2629" centery="829" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2635" centery="829" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2776" centery="831" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3024" centery="831" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2650" centery="832" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2759" centery="832" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2535" centery="835" centerz="7" radius="1">
-    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2964" centery="835" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2552" centery="838" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2779" centery="839" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2967" centery="839" centerz="7" radius="1">
+  <spawn centerx="3029" centery="712" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2999" centery="839" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2673" centery="841" centerz="7" radius="1">
+  <spawn centerx="2641" centery="713" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2984" centery="841" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2655" centery="713" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3014" centery="841" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2760" centery="713" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2555" centery="842" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2716" centery="716" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2600" centery="842" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="3003" centery="716" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2944" centery="842" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3015" centery="842" centerz="7" radius="1">
+  <spawn centerx="3027" centery="716" centerz="7" radius="1">
     <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2597" centery="844" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2899" centery="717" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2776" centery="845" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2628" centery="719" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2875" centery="845" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2944" centery="845" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2999" centery="846" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2570" centery="847" centerz="7" radius="1">
+  <spawn centerx="2638" centery="719" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2570" centery="848" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3005" centery="848" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2570" centery="849" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2907" centery="849" centerz="7" radius="1">
+  <spawn centerx="2749" centery="719" centerz="7" radius="1">
     <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3028" centery="849" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2809" centery="719" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2725" centery="850" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2761" centery="850" centerz="7" radius="1">
+  <spawn centerx="2877" centery="719" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2999" centery="850" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2765" centery="851" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3019" centery="851" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2558" centery="852" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2728" centery="852" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2576" centery="853" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2602" centery="853" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2660" centery="853" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3005" centery="853" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2560" centery="854" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2602" centery="854" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2743" centery="854" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2912" centery="854" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2725" centery="855" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2599" centery="856" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2534" centery="857" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2686" centery="857" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2914" centery="857" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2524" centery="858" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2525" centery="858" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2665" centery="858" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2972" centery="858" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3040" centery="859" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2914" centery="861" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2650" centery="862" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2580" centery="863" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2587" centery="864" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2609" centery="864" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2659" centery="864" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2886" centery="864" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2660" centery="865" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2688" centery="865" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3002" centery="865" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2572" centery="866" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2908" centery="866" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2523" centery="867" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2966" centery="867" centerz="7" radius="1">
-    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2984" centery="868" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2736" centery="869" centerz="7" radius="1">
-    <monster name="Sandshrew" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3003" centery="869" centerz="7" radius="1">
-    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3033" centery="869" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2893" centery="872" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2927" centery="872" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2976" centery="872" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2648" centery="874" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2692" centery="875" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2918" centery="875" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2530" centery="876" centerz="7" radius="1">
-    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2540" centery="876" centerz="7" radius="1">
+  <spawn centerx="2571" centery="720" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2894" centery="877" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2780" centery="721" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3005" centery="877" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="3047" centery="877" centerz="7" radius="1">
+  <spawn centerx="2863" centery="721" centerz="7" radius="1">
     <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2576" centery="878" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2674" centery="722" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2640" centery="878" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2737" centery="724" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2997" centery="880" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2810" centery="724" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2551" centery="881" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2874" centery="724" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2647" centery="881" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2886" centery="724" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2983" centery="882" centerz="7" radius="1">
+  <spawn centerx="2654" centery="726" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2712" centery="726" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3034" centery="726" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2783" centery="727" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3043" centery="882" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2956" centery="728" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2620" centery="883" centerz="7" radius="1">
-    <monster name="Hoppip" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2815" centery="729" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2889" centery="885" centerz="7" radius="1">
-    <monster name="Furret" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2930" centery="885" centerz="7" radius="1">
+  <spawn centerx="2953" centery="730" centerz="7" radius="1">
     <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2550" centery="886" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2719" centery="732" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2550" centery="887" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2776" centery="732" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2913" centery="887" centerz="7" radius="1">
+  <spawn centerx="2679" centery="734" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2787" centery="734" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2951" centery="734" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2938" centery="735" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2959" centery="735" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2565" centery="736" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="736" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3038" centery="736" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3019" centery="738" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3047" centery="738" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2673" centery="739" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2803" centery="739" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2520" centery="741" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2537" centery="741" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2543" centery="741" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2701" centery="741" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2742" centery="741" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3008" centery="741" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2648" centery="742" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2896" centery="742" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2683" centery="743" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2542" centery="744" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2582" centery="744" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2689" centery="744" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2530" centery="746" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2873" centery="746" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2722" centery="748" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3004" centery="748" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3014" centery="748" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2685" centery="749" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2870" centery="749" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2927" centery="749" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2770" centery="750" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3002" centery="751" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3043" centery="751" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2776" centery="755" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2852" centery="755" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2883" centery="755" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2668" centery="756" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2602" centery="757" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2753" centery="758" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2680" centery="759" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2811" centery="761" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2620" centery="762" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2629" centery="762" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3002" centery="762" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2921" centery="764" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3040" centery="764" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2669" centery="765" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2789" centery="766" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2900" centery="766" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2572" centery="767" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3003" centery="767" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2520" centery="768" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2906" centery="769" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2984" centery="769" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2564" centery="770" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2650" centery="771" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2669" centery="771" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2944" centery="771" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2645" centery="772" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2922" centery="772" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2983" centery="772" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2576" centery="773" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2930" centery="773" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2939" centery="773" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2564" centery="775" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2617" centery="775" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3012" centery="775" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2649" centery="777" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2889" centery="777" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3040" centery="777" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2581" centery="778" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2660" centery="779" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2905" centery="780" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2874" centery="782" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2555" centery="783" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2668" centery="783" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3009" centery="783" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2913" centery="784" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3017" centery="784" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3031" centery="784" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2650" centery="785" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2837" centery="785" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2870" centery="785" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2628" centery="787" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2771" centery="787" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2960" centery="787" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2607" centery="789" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2980" centery="789" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3035" centery="789" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2826" centery="791" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2905" centery="791" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2931" centery="791" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2957" centery="791" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3023" centery="791" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2912" centery="792" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2661" centery="794" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2906" centery="794" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3003" centery="795" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2777" centery="796" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2993" centery="798" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2855" centery="801" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2898" centery="801" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2961" centery="802" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2873" centery="803" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2890" centery="804" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2967" centery="807" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2979" centery="808" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2543" centery="810" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2614" centery="811" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2935" centery="811" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2652" centery="813" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2625" centery="815" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2941" centery="815" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2976" centery="815" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3004" centery="815" centerz="7" radius="1">
     <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2949" centery="887" centerz="7" radius="1">
+  <spawn centerx="3028" centery="816" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2827" centery="817" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3045" centery="817" centerz="7" radius="1">
+    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2615" centery="822" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2808" centery="823" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2524" centery="824" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2886" centery="824" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2954" centery="826" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3043" centery="826" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2911" centery="827" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3002" centery="827" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="828" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2960" centery="828" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2901" centery="829" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2904" centery="829" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2942" centery="830" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2990" centery="830" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2901" centery="831" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2794" centery="832" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3027" centery="832" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2653" centery="833" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2780" centery="833" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2537" centery="834" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2539" centery="834" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2779" centery="834" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2611" centery="835" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2787" centery="835" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="835" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2948" centery="835" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2755" centery="837" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2957" centery="837" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2616" centery="838" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2768" centery="838" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2913" centery="839" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2604" centery="840" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2770" centery="840" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3010" centery="841" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2549" centery="843" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2962" centery="843" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3044" centery="844" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3006" centery="845" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2610" centery="846" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2557" centery="848" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2592" centery="848" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2737" centery="848" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2738" centery="849" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2880" centery="850" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3037" centery="850" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2590" centery="851" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2776" centery="851" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2969" centery="851" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2989" centery="851" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2630" centery="852" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2594" centery="853" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2699" centery="853" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2714" centery="857" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2577" centery="859" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2696" centery="861" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2737" centery="861" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2878" centery="861" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3035" centery="861" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2578" centery="862" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2662" centery="862" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2989" centery="862" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2700" centery="863" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2978" centery="863" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3006" centery="863" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2986" centery="864" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2978" centery="866" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2537" centery="867" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2584" centery="867" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2649" centery="868" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2894" centery="869" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2624" centery="870" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2998" centery="870" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2526" centery="873" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3028" centery="873" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3040" centery="875" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3029" centery="876" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3028" centery="877" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2896" centery="878" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2945" centery="878" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2941" centery="880" centerz="7" radius="1">
+    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2611" centery="881" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="883" centerz="7" radius="1">
+    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2963" centery="883" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3038" centery="883" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2541" centery="884" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2536" centery="886" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2702" centery="886" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2914" centery="887" centerz="7" radius="1">
     <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3010" centery="887" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2619" centery="888" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2587" centery="889" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2648" centery="889" centerz="7" radius="1">
-    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2675" centery="889" centerz="7" radius="1">
-    <monster name="Ledyba" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2941" centery="891" centerz="7" radius="1">
+  <spawn centerx="3015" centery="887" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2951" centery="891" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="3027" centery="887" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2527" centery="893" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2987" centery="893" centerz="7" radius="1">
-    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2563" centery="895" centerz="7" radius="1">
+  <spawn centerx="2560" centery="888" centerz="7" radius="1">
     <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2935" centery="895" centerz="7" radius="1">
-    <monster name="Dodrio" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2558" centery="896" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2582" centery="897" centerz="7" radius="1">
-    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2676" centery="897" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2948" centery="898" centerz="7" radius="1">
-    <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2975" centery="900" centerz="7" radius="1">
-    <monster name="Marill" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2993" centery="903" centerz="7" radius="1">
-    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2553" centery="904" centerz="7" radius="1">
+  <spawn centerx="2695" centery="888" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2626" centery="904" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2609" centery="889" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2689" centery="904" centerz="7" radius="1">
-    <monster name="Spinarak" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2528" centery="890" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2956" centery="904" centerz="7" radius="1">
+  <spawn centerx="2901" centery="890" centerz="7" radius="1">
     <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2963" centery="904" centerz="7" radius="1">
-    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  <spawn centerx="2951" centery="893" centerz="7" radius="1">
+    <monster name="Sandslash" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2987" centery="904" centerz="7" radius="1">
+  <spawn centerx="2522" centery="894" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2660" centery="895" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2700" centery="896" centerz="7" radius="1">
     <monster name="Arbok" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2603" centery="905" centerz="7" radius="1">
+  <spawn centerx="2997" centery="897" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2525" centery="898" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2527" centery="898" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2912" centery="898" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2528" centery="899" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2614" centery="899" centerz="7" radius="1">
     <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2620" centery="899" centerz="7" radius="1">
+    <monster name="Hoothoot" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2653" centery="899" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2715" centery="900" centerz="7" radius="1">
+    <monster name="Ponyta" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2896" centery="900" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="3009" centery="900" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2631" centery="901" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2894" centery="902" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2894" centery="903" centerz="7" radius="1">
+    <monster name="Quagsire" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2999" centery="903" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2524" centery="904" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2562" centery="904" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2665" centery="904" centerz="7" radius="1">
+    <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2666" centery="904" centerz="7" radius="1">
+    <monster name="Sentret" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2541" centery="905" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2593" centery="905" centerz="7" radius="1">
+    <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2973" centery="905" centerz="7" radius="1">
+    <monster name="Raticate" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2994" centery="905" centerz="7" radius="1">
+    <monster name="Doduo" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2901" centery="438" centerz="8" radius="1">
+    <monster name="Teddiursa" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2916" centery="445" centerz="8" radius="1">
+    <monster name="Graveler" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2881" centery="469" centerz="8" radius="1">
+    <monster name="Donphan" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2945" centery="469" centerz="8" radius="1">
+    <monster name="Donphan" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2942" centery="471" centerz="8" radius="1">
+    <monster name="Onix" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2947" centery="473" centerz="8" radius="1">
+    <monster name="Larvitar" x="0" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
 </spawns>
