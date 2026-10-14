@@ -288,8 +288,10 @@ more by defeating and catching it:
 - Types and matchups are never hidden: they are needed to battle.
 - A defeat counts when your Pokémon knocks it out or you catch it. A catch counts as level 1
   plus extra defeats.
-- Defeats needed depend on how common the species is (Tibia uses rarity the same way).
-  Legendaries and event Pokémon unlock by catching only.
+- **Agreed:** defeats needed rise with each level: 25 for level 1, 100 for level 2, 500 for
+  level 3 (complete). A grind, but reachable by hunting normally. Legendaries and event
+  Pokémon unlock by catching only.
+- No charms or bestiary points: Tibia's charm system has no fit in a Pokémon setting.
 - Kill counts per player and species are kept on the server (one table); the hunting tasks
   (`064-huntingTasks.lua`) already count kills and can use the same count.
 - Spawn areas come from the spawn files (`data/world/*-spawn.xml`), grouped into areas with
@@ -297,9 +299,23 @@ more by defeating and catching it:
   the same data.
 - Existing players start each species they have registered or caught at the matching level.
 
-**To decide:** defeats per level (starting point: common 25, uncommon 10, rare 5, scaled for
-the other levels); a reward for completing a species (money, Pokédex points, an achievement);
-a small tracker panel like Tibia's bestiary tracker.
+**To decide:** whether very rare species (rare spawns that are not legendary) need fewer
+defeats.
+
+### Tracker panel (agreed)
+
+A side panel like Tibia's bestiary tracker, in the right column under the minimap. It
+follows what the player picks:
+
+- **Pokédex:** chosen species with their level and defeats to the next level
+  ("Rattata 63/100").
+- **Daily, weekly and hunting tasks:** progress of the active tasks ("Defeat 30 Water
+  Pokémon 12/30"), from the same data the Tasks window already gets
+  (`game_dailytasks/tasks.lua`); a finished task shows a Claim button that opens the Tasks
+  window.
+- Each line can be removed or pinned; a click opens the Pokédex entry or the Tasks tab. The
+  panel can be collapsed or hidden like the other side panels, and what is tracked is saved
+  per character.
 
 ### Suggested delivery order
 
@@ -310,6 +326,7 @@ Phase C  Houses tab                     → buy, leave and manage houses without
 Phase D  Waypoints + routes             → walk a trail; depends on A
 Phase E  Items tab with discovery
 Phase F  Pokédex knowledge levels       → spawn areas need the map (B) and routes (D)
+         + tracker panel (Pokédex and tasks; the task part can come first)
 Later    Help tab (hints, tutorials)
 ```
 
