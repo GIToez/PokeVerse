@@ -110,6 +110,9 @@ SEA = [(2535, 905, 48)] + [(x, 550, 16) for x in range(1845, 2000, 15)]
 KANTO_EDIT = (3040, 603, 3190, 888)
 # A stray patch of plain grass out in Goldenrod's bay, redone as sea like the Kanto strip.
 STRAY_GRASS = (2222, 773, 2229, 779)
+# Another off Snowtop Mountain's coast, which cut a square into it; the only tiles in its chunks, so
+# the layout may use them.
+SNOWTOP_GRASS = (2395, 45, 2445, 90)
 # North of y 600 only Route 28 and Mt. Silver are built so far (x0, x1); Blackthorn and the rest wait.
 NORTH = (2790, 3110)
 # The west gate's pass through Kanto's mountain to the road west of the Elite Four building.
@@ -769,7 +772,9 @@ def build(base, out_path):
     scanned = scan(base)
     keep = scanned['keep']
     present = scanned['present'][1:-1, 1:-1]
-    coarse = L.concept(ground_class(scanned['ground7'], brushes), scanned['occupied'])
+    gx0, gy0, gx1, gy1 = SNOWTOP_GRASS
+    stray = {(cx, cy) for cx in range(gx0 >> 5, (gx1 >> 5) + 1) for cy in range(gy0 >> 5, (gy1 >> 5) + 1)}
+    coarse = L.concept(ground_class(scanned['ground7'], brushes), scanned['occupied'] - stray)
     f = Field(29)
     rng = np.random.default_rng(29)
     X, Y = f.X, f.Y
@@ -820,7 +825,7 @@ def build(base, out_path):
 
     # Which tiles this pass may write.
     editable = np.zeros((f.h, f.w), bool)
-    for kx0, ky0, kx1, ky1 in (KANTO_EDIT, STRAY_GRASS):
+    for kx0, ky0, kx1, ky1 in (KANTO_EDIT, STRAY_GRASS, SNOWTOP_GRASS):
         for y in range(ky0, ky1 + 1):
             for x in range(kx0, kx1 + 1):
                 ids = existing_ids(x, y)
@@ -935,7 +940,9 @@ def build(base, out_path):
             water &= ~m
     for x, y, r in SEA:
         land &= ~f.disc(x, y, r, n1, 0.5)
-    land &= ~((Y >= COAST_FROM) & (X < COAST_X + f.noise(18) * 22) & (X < 2300) & (X >= 2100))
+    # the bay's north and west shores wander too, and its north-west corner is rounded off
+    land &= ~((Y >= COAST_FROM + n3 * 60) & (X < COAST_X + f.noise(18) * 22) & (X < 2300) & (X >= 2100 + n2 * 50)
+              & ((X - 2100) + (Y - COAST_FROM) + n1 * 30 > 30))
     for x, y, r in LAND_PATCHES:
         patch = f.disc(x, y, r, n1, 0.4)
         land |= patch
