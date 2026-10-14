@@ -532,7 +532,7 @@ PC.open = function(cid, pos, anywhere)
 
     PC.collect(cid)
     WindowSession.open(cid, SESSION, anywhere)
-    send(cid, { type = "open", locker = pos, boxes = PC.BOXES, boxSize = PC.BOX_SIZE })
+    send(cid, { type = "open", locker = pos, anywhere = anywhere and true or nil, boxes = PC.BOXES, boxSize = PC.BOX_SIZE })
     sendCounts(cid)
     PC.sendBox(cid, 1)
     PC.sendParty(cid)

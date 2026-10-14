@@ -5,6 +5,7 @@ local window
 local state = {}
 local searchEvent, helloEvent
 local drag
+local lockerPos
 
 -- server locker ids and the client ids OTClient uses for the same items
 local LOCKER_IDS = {
@@ -75,6 +76,28 @@ local function closeLockerContainers()
     end
 end
 
+-- the opened container carries no map position; the locker is one of the tiles next to the player
+local function findLocker()
+    local player = g_game.getLocalPlayer()
+    local pos = player and player:getPosition()
+    if not pos then
+        return nil
+    end
+    for dx = -1, 1 do
+        for dy = -1, 1 do
+            local tile = g_map.getTile({ x = pos.x + dx, y = pos.y + dy, z = pos.z })
+            if tile then
+                for _, thing in ipairs(tile:getItems()) do
+                    if LOCKER_IDS[thing:getId()] then
+                        return tile:getPosition()
+                    end
+                end
+            end
+        end
+    end
+    return nil
+end
+
 local function onContainerOpen(container, previousContainer)
     if previousContainer then
         return
@@ -86,6 +109,7 @@ local function onContainerOpen(container, previousContainer)
     if not isPokemonCenter() then
         return
     end
+    lockerPos = findLocker()
     scheduleEvent(function()
         sendRequest({ action = 'open' })
     end, 100)
@@ -821,8 +845,9 @@ end
 local handlers = {}
 
 function handlers.open(data)
-    state = { locker = data.locker, boxes = data.boxes, boxSize = data.boxSize, box = 1, tab = 'boxes',
-        category = 'All', sort = state.sort or 'name' }
+    state = { locker = not data.anywhere and (lockerPos or data.locker) or nil, anywhere = data.anywhere,
+        boxes = data.boxes, boxSize = data.boxSize, box = 1, tab = 'boxes', category = 'All', sort = state.sort or 'name' }
+    lockerPos = nil
     clearDetail()
     window.search:setText('', true)
     setStatus(tr('Drag Pokemon between your party and the boxes, or double click to move them.'), true)
@@ -1064,6 +1089,20 @@ local function sayHello()
     end, 1500)
 end
 
+-- like a Tibia container, the window closes once the player is no longer next to the locker
+local function onPositionChange(player, newPos)
+    local locker = state.locker
+    if not window or not window:isVisible() or state.anywhere or not locker or not newPos then
+        return
+    end
+    if newPos.z ~= locker.z or math.max(math.abs(newPos.x - locker.x), math.abs(newPos.y - locker.y)) > 1 then
+        close()
+        if modules.game_textmessage then
+            modules.game_textmessage.displayFailureMessage(tr('You moved away from the PC.'))
+        end
+    end
+end
+
 local function onGameEnd()
     stopDrag()
     stopSparkles()
@@ -1093,6 +1132,7 @@ function init()
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Pc, onPc)
     connect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
     connect(Container, { onOpen = onContainerOpen })
+    connect(LocalPlayer, { onPositionChange = onPositionChange })
     if g_game.isOnline() then
         sayHello()
     end
@@ -1104,6 +1144,7 @@ function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Pc)
     disconnect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
     disconnect(Container, { onOpen = onContainerOpen })
+    disconnect(LocalPlayer, { onPositionChange = onPositionChange })
     for _, event in ipairs({ searchEvent, helloEvent }) do
         removeEvent(event)
     end
