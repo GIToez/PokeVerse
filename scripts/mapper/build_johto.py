@@ -506,8 +506,9 @@ def build(base, out_path):
     edge = f.noise(30)
     outline = (X > NORTH[0] + 25 + edge * 40) & (Y > f.y0 + 25 + edge * 40)
     north_scope = (X >= NORTH[0]) & (X <= NORTH[1]) & outline
-    south = (X >= SOUTH[0]) & (Y >= SOUTH[1]) & (Y <= SOUTH[3])
     inset = 25 + edge * 40
+    # below SOUTH the sea carries on down to the area's edge, between the west and the north's open sea
+    south = (X >= SOUTH[0]) & (Y >= SOUTH[1]) & ((Y <= SOUTH[3]) | (Y <= WEST[3] - inset))
     west = ((X >= WEST[0] + inset) & (Y >= WEST[1] + inset) & (Y <= WEST[3] - inset) & (X <= WEST[2])
             & (((Y >= SOUTH[1]) & (Y <= SOUTH[3])) | (X <= WEST[2] - inset)))
     for pl in places:
