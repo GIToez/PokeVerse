@@ -270,6 +270,8 @@ void AndroidWindow::processFingerDownAndUp() {
 
     if (isTouchdown) {
         m_lastPress = g_clock.millis();
+        m_pressPos = Point(m_currentEvent.x / m_displayDensity, m_currentEvent.y / m_displayDensity);
+        m_isDragging = false;
         m_mouseButtonStates |= 1 << mouseButton;
     } else if (m_currentEvent.type == TOUCH_UP) {
         if (!m_isDragging && stdext::millis() > m_lastPress + 500) {
@@ -286,23 +288,21 @@ void AndroidWindow::processFingerDownAndUp() {
 }
 
 void AndroidWindow::processFingerMotion() {
-    static Point lastMousePos(-1, -1);
     static const int dragThreshold = 15; // Increased for touch (was 5, too sensitive)
 
     m_inputEvent.reset();
     m_inputEvent.type = Fw::MouseMoveInputEvent;
 
-    Point newMousePos(m_currentEvent.x / m_displayDensity, m_currentEvent.y / m_displayDensity);
+    // measured from where the finger went down: a long press is a right click unless the finger
+    // wandered off, and a slow drag never jumps far between two motion events
+    const Point newMousePos(m_currentEvent.x / m_displayDensity, m_currentEvent.y / m_displayDensity);
+    if (std::abs(newMousePos.x - m_pressPos.x) > dragThreshold || std::abs(newMousePos.y - m_pressPos.y) > dragThreshold)
+        m_isDragging = true;
 
-    if (lastMousePos.x != -1 && lastMousePos.y != -1) {
-        int dx = std::abs(newMousePos.x - lastMousePos.x);
-        int dy = std::abs(newMousePos.y - lastMousePos.y);
-
-        if (dx > dragThreshold || dy > dragThreshold) {
-            m_isDragging = true;
-        }
-    }
-    lastMousePos = newMousePos;
+    // the UI starts dragging what is under the finger after 4 pixels, which would swallow the
+    // long press release, so a finger that is only trembling does not move the mouse
+    if ((m_mouseButtonStates & (1 << Fw::MouseLeftButton)) && !m_isDragging)
+        return;
 
     handleInputEvent();
 }
