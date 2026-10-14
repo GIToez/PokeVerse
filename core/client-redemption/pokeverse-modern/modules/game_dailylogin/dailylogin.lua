@@ -56,18 +56,22 @@ local function drawDay(widget, info, status)
     if item then
         widget.item:setItemId(item.id)
         widget.item:setItemCount(item.count)
-        widget.name:setText(string.format('%d %s', item.count, item.name or ''))
+        widget:setTooltip(string.format('%d %s', item.count, item.name or ''))
     else
         widget.money:setText(formatMoney(reward.money or 0))
-        widget.name:setText(tr('money'))
+        widget:setTooltip(formatMoney(reward.money or 0))
     end
+    widget.name:setText(info.label or '')
 
-    local titles = { claimed = tr('Day %d', info.day), today = tr('Today'), tomorrow = tr('Tomorrow'),
+    local titles = { claimed = tr('Day %d', info.day), today = tr('Today'), tomorrow = tr('Next'),
                      later = tr('Day %d', info.day) }
     widget.title:setText(titles[status])
     widget.check:setVisible(status == 'claimed')
     widget:setOn(status == 'today')
-    widget:setOpacity(status == 'claimed' and 0.55 or (status == 'today' and 1 or 0.8))
+    local opacity = status == 'claimed' and 0.4 or (status == 'today' and 1 or 0.8)
+    for _, child in ipairs({ widget.title, widget.item, widget.money, widget.name }) do
+        child:setOpacity(opacity)
+    end
 end
 
 local function draw()

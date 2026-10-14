@@ -6,7 +6,6 @@ LoginText < Label
 LoginDay < UIWidget
   image-source: /modules/game_pokehud/images/panel
   image-border: 9
-  phantom: true
 
   LoginText
     id: title
@@ -22,6 +21,7 @@ LoginDay < UIWidget
     id: item
     size: 32 32
     virtual: true
+    phantom: true
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: title.bottom
     margin-top: 6
@@ -50,11 +50,10 @@ LoginDay < UIWidget
   UIWidget
     id: check
     image-source: /images/ui/checkbox-checked
-    size: 18 18
-    anchors.top: parent.top
-    anchors.right: parent.right
-    margin-top: 4
-    margin-right: 4
+    size: 24 24
+    phantom: true
+    anchors.horizontalCenter: item.horizontalCenter
+    anchors.verticalCenter: item.verticalCenter
     visible: false
 
   $on:

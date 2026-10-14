@@ -7,13 +7,13 @@
 -- draws the EXTENDED_IDS.DAILY_LOGIN JSON that comes back.
 
 local DAYS = {
-    { items = { { 12157, 10 } } }, -- empty poke balls
-    { items = { { 12244, 5 } } }, -- pokemon health potions
-    { money = 1000 },
-    { items = { { 12161, 10 } } }, -- empty great balls
-    { items = { { 12245, 3 } } }, -- great health potions
-    { items = { { 12248, 2 } } }, -- pokemon revives
-    { items = { { 14463, 1 } } }, -- rare candy
+    { label = "Poke Balls", items = { { 12157, 10 } } },
+    { label = "Potions", items = { { 12244, 5 } } },
+    { label = "Money", money = 1000 },
+    { label = "Great Balls", items = { { 12161, 10 } } },
+    { label = "Great Potions", items = { { 12245, 3 } } },
+    { label = "Revives", items = { { 12248, 2 } } },
+    { label = "Rare Candy", items = { { 14463, 1 } } },
 }
 
 DailyLogin = {}
@@ -54,7 +54,8 @@ function DailyLogin.send(cid)
     local done, claimedToday, missed = progress(cid)
     local days = {}
     for day, reward in ipairs(DAYS) do
-        days[day] = { day = day, reward = TaskBoards.rewardJson(reward.money or 0, reward.items or {}) }
+        days[day] = { day = day, label = __L(cid, reward.label),
+                      reward = TaskBoards.rewardJson(reward.money or 0, reward.items or {}) }
     end
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.DAILY_LOGIN, JSON.encode({
         days = JSON.array(days),
