@@ -1,8 +1,12 @@
 -- Last Storages: 9312, 9712
 if (NpcBattle == nil) then
     local NPC_BATTLE_TIMEOUT = 60 -- one minute
-    local NPC_TIME_BETWEEN_BATTLES = 23 * 60 * 60 -- 24 hours
+    local NPC_TIME_BETWEEN_BATTLES = 6 * 60 * 60
+    local NPC_GYM_TIME_BETWEEN_BATTLES = 10 * 60 * 60 -- NPCs that give a badge
     local NPC_TIME_BETWEEN_BATTLES_FOREVER = -2
+    local NPC_BATTLE_MAX_DISTANCE = 6 -- farther from the NPC than this and the battle is canceled
+    local NPC_ARENA_MIN_DISTANCE = 3 -- a gym's arena must be at least this long to move the player across it
+    local NPC_BATTLE_DURATION = 10 * 60
     local NPC_DIFFICULTY_DYNAMIC = 0 -- Depends on player level
     local NPC_POKEMON_EXPERIENCE_RATE = 2.0
 
@@ -479,10 +483,13 @@ if (NpcBattle == nil) then
             return __L(pid, "You beat me before, there is no reason to a new battle.")
 
         elseif (lastBattleTime > -1) then
-            local interval = self.battleInterval ~= nil and self.battleInterval or NPC_TIME_BETWEEN_BATTLES
-            -- If default 24h, we can disable the remaing time if the player dueled before the serversave
-            if (interval == NPC_TIME_BETWEEN_BATTLES and lastBattleTime <= getGlobalStorageValue(GLOBAL_STORAGES.SERVER_START_TIME)) then
-                interval = 0
+            local interval = self.battleInterval
+            if (interval == nil) then
+                interval = self.rewardBadge ~= nil and NPC_GYM_TIME_BETWEEN_BATTLES or NPC_TIME_BETWEEN_BATTLES
+                -- With the default intervals, a server save also clears the wait
+                if (lastBattleTime <= getGlobalStorageValue(GLOBAL_STORAGES.SERVER_START_TIME)) then
+                    interval = 0
+                end
             end
 
             local remaingTime = (lastBattleTime + interval) - os.time()
@@ -751,6 +758,11 @@ if (NpcBattle == nil) then
                 doPlayerSendTextMessage(pid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pid, "You won %s."), self.name))
             end
 
+            -- Before the battle win count changes, so the client shows it instead of the plain win banner
+            if (GymLeaders.get(self.name, self.rewardBadge)) then
+                GymLeaders.send(pid, "victory", self.name, self.uid)
+            end
+
             doPlayerAddBattleWin(pid)
             doPlayerAddRespect(pid, (self.rewardRespect * 2))
             doPlayerAddStatistic(pid, PLAYER_STATISTIC_IDS.DEFEAT_NPC, 1)
@@ -830,6 +842,7 @@ if (NpcBattle == nil) then
         end
 
         self:setBattleStatus(NPC_BATTLE_STATUS.ISNT_BATTLEING)
+        self:doHoldConversation(false)
         self.npcHandler:releaseFocus(pid)
 
         if (isPlayer(pid)) then
@@ -868,7 +881,7 @@ if (NpcBattle == nil) then
             return
         end
 
-        if (getDistanceBetween(npcPosition, playerPosition) > 6 or playerPosition.z ~= npcPosition.z) then
+        if (getDistanceBetween(npcPosition, playerPosition) > NPC_BATTLE_MAX_DISTANCE or playerPosition.z ~= npcPosition.z) then
             self:doBattleEnd(pid, BATTLE_END_MODES.PLAYER_AWAY)
             return
         end
@@ -946,7 +959,92 @@ if (NpcBattle == nil) then
         addEvent(self.doBattleCheck, 500, self, pid, battleTimeRemaing - 0.5, decreaseTimeout, playerCap, checkAlivePokemon)
     end
 
+    local ARENA_DIRECTIONS = { { x = 1, y = 0 }, { x = -1, y = 0 }, { x = 0, y = 1 }, { x = 0, y = -1 } }
+
+    -- The far end of the gym leader's arena: the longest straight run of free tiles from the NPC,
+    -- on the side the player talked from, up to the battle distance.
+    function NpcBattle:getArenaPosition(pid)
+        local npcPosition = getCreaturePosition(self.uid)
+        local playerPosition = getCreaturePosition(pid)
+        local best, bestScore
+
+        for _, direction in ipairs(ARENA_DIRECTIONS) do
+            local facing = (playerPosition.x - npcPosition.x) * direction.x + (playerPosition.y - npcPosition.y) * direction.y
+            if (facing >= 0) then
+                local run, free = 0, nil
+                for i = 1, NPC_BATTLE_MAX_DISTANCE do
+                    local position = { x = npcPosition.x + direction.x * i, y = npcPosition.y + direction.y * i, z = npcPosition.z }
+                    local own = getSamePosition(position, playerPosition)
+                    if ((not own and doTileQueryAdd(pid, position, 4, false) ~= 1) or getTilePzInfo(position)) then -- 4: FLAG_IGNOREBLOCKCREATURE
+                        break
+                    end
+                    run = i
+                    if (own or isWalkable(pid, position)) then
+                        free = position
+                    end
+                end
+
+                local score = run * 10 + facing
+                if (run >= NPC_ARENA_MIN_DISTANCE and free and (not bestScore or score > bestScore)) then
+                    best, bestScore = { position = free, direction = direction }, score
+                end
+            end
+        end
+
+        return best
+    end
+
+    function NpcBattle:doPlaceInArena(pid)
+        local arena = self:getArenaPosition(pid)
+        if (not arena) then
+            return
+        end
+
+        local npcPosition = getCreaturePosition(self.uid)
+        local destination = arena.position
+        if (not getSamePosition(destination, getCreaturePosition(pid))) then
+            doSendMagicEffect(getCreaturePosition(pid), CONST_ME_TELEPORT)
+            doTeleportThing(pid, destination, false)
+            doSendMagicEffect(destination, CONST_ME_TELEPORT)
+        end
+        doCreatureSetLookDirection(pid, getDirectionTo(destination, npcPosition))
+        doCreatureSetLookDirection(self.uid, getDirectionTo(npcPosition, destination))
+
+        -- The player's Pokemon stands one step ahead of its trainer
+        local pokemon = getPlayerPokemon(pid)
+        if (isCreature(pokemon)) then
+            local ahead = { x = destination.x - arena.direction.x, y = destination.y - arena.direction.y, z = destination.z }
+            local position = isWalkable(pokemon, ahead) and ahead or getPositionAdjacent(pokemon, destination)
+            if (position) then
+                doTeleportThing(pokemon, position, false)
+                doCreatureSetLookDirection(pokemon, getDirectionTo(position, npcPosition))
+            end
+        end
+    end
+
+    -- The conversation stays open while the battle lasts, wherever the player stands in it
+    function NpcBattle:doHoldConversation(hold)
+        local handler = self.npcHandler
+        if (hold) then
+            self.savedTalkRadius = self.savedTalkRadius or handler.talkRadius
+            self.savedIdleTime = self.savedIdleTime or handler.idleTime
+            handler.talkRadius = math.max(self.savedTalkRadius, NPC_BATTLE_MAX_DISTANCE)
+            handler.idleTime = math.max(self.savedIdleTime, NPC_BATTLE_DURATION)
+        elseif (self.savedTalkRadius) then
+            handler.talkRadius = self.savedTalkRadius
+            handler.idleTime = self.savedIdleTime
+            self.savedTalkRadius, self.savedIdleTime = nil, nil
+        end
+    end
+
     function NpcBattle:doBattleStart(pid)
+        local gym = GymLeaders.get(self.name, self.rewardBadge)
+        if (gym) then
+            self:doPlaceInArena(pid)
+            GymLeaders.send(pid, "intro", self.name, self.uid)
+        end
+        self:doHoldConversation(true)
+
         self:setBattleStatus(NPC_BATTLE_STATUS.IS_BATTLEING)
         self:setOpponent(pid)
         self:doUpdateCurrentPokemons(pid)
@@ -962,7 +1060,7 @@ if (NpcBattle == nil) then
         doCreatureSay(self.uid, __L(pid, table.random(NPC_DIALOGS.BATTLE_START)), TALKTYPE_SAY)
         setPlayerDisconnectAtExit(pid, false)
         doCreatureSetNoMove(pid, true)
-        self:doBattleCheck(pid, 10 * 60, true, nil, true)
+        self:doBattleCheck(pid, NPC_BATTLE_DURATION, true, nil, true)
     end
 
     function NpcBattle:doPokemonUseMove(pokemonUid, move)
