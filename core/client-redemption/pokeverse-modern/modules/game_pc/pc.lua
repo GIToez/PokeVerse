@@ -1,11 +1,10 @@
 -- Pokemon Center PC: one window with Poke boxes, stash, inbox and depot tabs and a search over all of
--- them. Click the depot locker at a Pokemon Center (standard Tibia containers); this module opens
--- the PC window and talks to the server over ExtendedIds.Pc JSON — no chat commands.
+-- them. Using any locker opens it (the server's locker action, 067-pc.lua); the window talks to the
+-- server over ExtendedIds.Pc JSON — no chat commands.
 local window
 local state = {}
 local searchEvent, helloEvent
 local drag
-local lockerPos
 local openChestEvent
 
 -- server locker ids and the client ids OTClient uses for the same items
@@ -63,11 +62,6 @@ local function send(text)
     sendRequest(data)
 end
 
-local function isPokemonCenter()
-    local loc = modules.game_time and modules.game_time.getLocation and modules.game_time.getLocation() or ''
-    return loc:find('Pokemon Center', 1, true) ~= nil
-end
-
 local function closeLockerContainers()
     for _, container in pairs(g_game.getContainers()) do
         local item = container:getContainerItem()
@@ -75,28 +69,6 @@ local function closeLockerContainers()
             g_game.close(container)
         end
     end
-end
-
--- the opened container carries no map position; the locker is one of the tiles next to the player
-local function findLocker()
-    local player = g_game.getLocalPlayer()
-    local pos = player and player:getPosition()
-    if not pos then
-        return nil
-    end
-    for dx = -1, 1 do
-        for dy = -1, 1 do
-            local tile = g_map.getTile({ x = pos.x + dx, y = pos.y + dy, z = pos.z })
-            if tile then
-                for _, thing in ipairs(tile:getItems()) do
-                    if LOCKER_IDS[thing:getId()] then
-                        return tile:getPosition()
-                    end
-                end
-            end
-        end
-    end
-    return nil
 end
 
 local function openDepotChest(locker)
@@ -121,13 +93,6 @@ local function onContainerOpen(container, previousContainer)
         openChestEvent = nil
         openDepotChest(container)
     end
-    if not isPokemonCenter() then
-        return
-    end
-    lockerPos = findLocker()
-    scheduleEvent(function()
-        sendRequest({ action = 'open' })
-    end, 100)
 end
 
 local function formatCount(n)
@@ -860,9 +825,8 @@ end
 local handlers = {}
 
 function handlers.open(data)
-    state = { locker = not data.anywhere and (lockerPos or data.locker) or nil, anywhere = data.anywhere,
+    state = { locker = not data.anywhere and data.locker or nil, anywhere = data.anywhere,
         boxes = data.boxes, boxSize = data.boxSize, box = 1, tab = 'boxes', category = 'All', sort = state.sort or 'name' }
-    lockerPos = nil
     clearDetail()
     window.search:setText('', true)
     setStatus(tr('Drag Pokemon between your party and the boxes, or double click to move them.'), true)
