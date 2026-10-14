@@ -92,6 +92,10 @@ STRAY_ISLE = (2600, 1290, 2640, 1330)
 # and north of Kanto's coast up to the area's top edge, the empty map is made sea.
 WEST_SEA = (48, BOX[1], BOX[0] - 1, 772)
 NORTH_SEA = (BOX[2] + 1, BOX[1], 4327, 250)
+# Floor pieces of the PSoul logo ('floor' 27856-27934 in items.xml), laid over the floor in three
+# spots north-east of Kanto.
+LOGO_IDS = set(range(27856, 27935))
+LOGO_BOXES = [(4630, 123, 4638, 131), (4657, 105, 4665, 113), (4717, 134, 4725, 142)]
 # Azalea South Woods' island runs on past the area's edge to a rounded coast this many rows below
 # it, its woods mirrored from the rows above the edge.
 SOUTH_CAP = 40
@@ -1477,6 +1481,16 @@ def build(base, out_path):
         new_tiles[(x, y, Z)] = pvmap.RawTile(t.house_id, t.flags, t.ground, children)
         reborder += 1
     new_tiles.update(prefab_tiles)
+    # The other server's PSoul floor logos come off; the floor, teleports and the rest stay.
+    logo = 0
+    for lx0, ly0, lx1, ly1 in LOGO_BOXES:
+        for (x, y, z), t in pvmap.read_region_raw(base, lx0, ly0, lx1, ly1, (Z,), base_data).items():
+            kept = [blob for i, blob in zip(pvmap.child_item_ids(t.children), pvmap.split_items(t.children))
+                    if i not in LOGO_IDS]
+            if len(kept) < len(pvmap.split_items(t.children)):
+                new_tiles[(x, y, z)] = pvmap.RawTile(t.house_id, t.flags, t.ground, b''.join(kept))
+                logo += 1
+    print('removed the logo from %d tiles' % logo)
 
     # Roofs over the cave corridors. A floor-6 tile shows one tile up and to the left of the tile under
     # it, and the client hides floor 6 for players standing under (x, y) or (x + 1, y + 1), so each
