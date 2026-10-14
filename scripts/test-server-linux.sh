@@ -257,6 +257,10 @@ assert m["element"] == 11 and m["energy"] > 0 and m["cooldown"] > 0 and m["descr
 print("Level-up banners: trainer %d -> %d, %s %d -> %d learned %s" % (t["from"], t["to"], p["name"], p["from"], p["to"], ", ".join(moves)))
 ' || { echo "$banners" | tail -30; echo "FAIL: level-up banner messages are wrong"; exit 1; }
 
+step "Character limit"
+max_characters=$(tr -d '\r' < "$root/core/server/config.lua" | sed -n 's/^\s*maxCharactersPerAccount = \([0-9]*\).*/\1/p')
+python3 "$root/scripts/account-test.py" --slot-limit "$max_characters"
+
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true
 if grep -q "MYSQL ERROR" "$work/server.log"; then echo "FAIL: database errors in server log"; exit 1; fi

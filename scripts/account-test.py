@@ -8,6 +8,7 @@ only, so it runs on Windows and Linux CI runners.
 
 Usage:
   account-test.py [--host 127.0.0.1] [--login-port 7564]
+  account-test.py --slot-limit 3      # only the character limit (maxCharactersPerAccount)
 """
 import argparse
 import importlib.util
@@ -78,6 +79,28 @@ def character_list(args, account, password):
     return {c[0]: (c[2], c[3]) for c in pt.flood_retry(lambda: pt.login(login_args))}
 
 
+def slot_limit_test(args):
+    """Fills a fresh account up to the character limit and checks that one more is refused."""
+    suffix = "".join(random.choice(string.ascii_lowercase) for _ in range(6))
+    account, password = "slots" + suffix, "secret" + suffix
+    names = ["Slot " + suffix.capitalize() + chr(ord("a") + i) for i in range(args.slot_limit + 1)]
+    c = Checker()
+    try:
+        c.expect("create account", request(args, ACTION_CREATE_ACCOUNT, account, password), True)
+        for name in names[:-1]:
+            c.expect("create %s" % name, request(args, ACTION_CREATE_CHARACTER, account, password, name, 0), True)
+        c.expect("create one more than %d characters" % args.slot_limit,
+                 request(args, ACTION_CREATE_CHARACTER, account, password, names[-1], 0), False)
+    except (pt.ProtocolError, OSError) as e:
+        print("FAIL: " + str(e))
+        return 1
+    if c.failures:
+        print("FAIL: %d character limit check(s) failed" % c.failures)
+        return 1
+    print("OK: an account holds at most %d characters." % args.slot_limit)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--host", default="127.0.0.1")
@@ -85,7 +108,11 @@ def main():
     ap.add_argument("--timeout", type=float, default=30)
     ap.add_argument("--account", help="use this existing account instead of creating a new one (live health check)")
     ap.add_argument("--password", help="password of --account")
+    ap.add_argument("--slot-limit", type=int,
+                    help="only check that a new account holds at most this many characters")
     args = ap.parse_args()
+    if args.slot_limit:
+        return slot_limit_test(args)
     if bool(args.account) != bool(args.password):
         ap.error("--account and --password go together")
 
