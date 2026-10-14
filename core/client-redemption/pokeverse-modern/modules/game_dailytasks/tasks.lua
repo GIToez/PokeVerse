@@ -422,12 +422,21 @@ local function showTab(name)
     fitWindow()
 end
 
+-- the Pokepedia tracker panel lists the open tasks
+local function notifyTracker()
+    local pokepedia = modules.game_pokepedia
+    if pokepedia and pokepedia.Tracker then
+        pokepedia.Tracker.refresh()
+    end
+end
+
 local function receive(name, data)
     if name == 'hunting' and data.refresh then
         data.refreshIn = data.refresh.freeIn
     end
     boards[name] = { state = data, receivedAt = g_clock.millis() }
     draw(name)
+    notifyTracker()
 end
 
 local function decode(buffer)
@@ -484,6 +493,7 @@ local function onGameEnd()
         window:hide()
     end
     updateBadge()
+    notifyTracker()
 end
 
 function init()
@@ -535,4 +545,16 @@ function selectTab(name)
     if window and window.tabs[name] then
         showTab(name)
     end
+end
+
+function getBoards()
+    return boards
+end
+
+function openTab(name)
+    if not window:isVisible() then
+        toggle()
+    end
+    selectTab(name)
+    window:raise()
 end
