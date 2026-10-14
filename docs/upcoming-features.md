@@ -234,14 +234,45 @@ status line (“Walking…”) and clearer cancel. Optional: small `game_nav` mo
 - Later: gyms, Pokémon Centers, routes as a structured layer (extend `GUIDES` or a new JSON
   file generated from the wiki).
 
+### Pokepedia (Cyclopedia-style window)
+
+One window with tabs, modelled on Redemption's Cyclopedia (`modules/game_cyclopedia`) but
+built for protocol 854: our own JSON messages (like the PC and GTS), not Tibia's cyclopedia
+packets. The Cyclopedia module itself stays out of the client (it unloads below 13.10).
+
+- **Map:** the world map from the phases above (centred on the player, floors, mark filters,
+  Places search, waypoints and routes). M opens this tab directly.
+- **Houses:** replaces the `/house` commands, the way Tibia's house tab works.
+  - Today: 577 houses (8 guild halls) in `data/world/map-house.xml`; price is 50 per tile
+    and the weekly rent equals the price (`config.lua`); level 25, premium, one house per
+    player; buying needs the player to face the door (`TalkAction::houseBuy`).
+  - List with search and filters (town, free or rented, size, guild hall); details: size,
+    beds, price, weekly rent, owner, paid until; a small map centred on the entrance with
+    the house tiles highlighted (the server sends the tiles).
+  - Buttons: Buy, Leave, Show on map, Walk here; guest and sub-owner lists edited in the
+    window. They call the same server code as the commands, which keep working.
+- **Pokédex:** opens the current Pokédex window (asks the server, which opens it as today
+  through `doPlayerSendPokedexOpen`). No rebuild.
+- **Items:** everything sold in shops is listed from the start; rare drops, held items, quest
+  and event items show as "???" until the player has had one (bag or depot) or looked at
+  one, with a count per category ("Held items 4/32"). Discoveries are saved on the server per
+  character.
+- **Later, Help:** hints, controls and "what to do next", from the in-game wiki and the
+  tutorial ([section 9](#9-in-game-wiki-and-tutorial)), pointing at routes on the map.
+
+**To decide:** flat price (today) or auctions like Tibia; buy from the window anywhere or only
+near the house; whether houses still need premium (`houseNeedPremium`); item discovery or
+show everything; M for the map tab and P for the Pokepedia.
+
 ### Suggested delivery order
 
 ```text
-Phase A  Auto-walk fix          → playable click-walk everywhere
-Phase B  Center + recenter     → world map feels modern
-Phase C  Waypoints             → personal marks saved per char
-Phase D  Routes + navigation   → walk a trail; depends on A
-Phase E  Search / POI polish   → can trail C/D slightly
+Phase A  Auto-walk fix                  → playable click-walk everywhere
+Phase B  Pokepedia + Map tab            → centred map, Places search, Pokédex button
+Phase C  Houses tab                     → buy, leave and manage houses without commands
+Phase D  Waypoints + routes             → walk a trail; depends on A
+Phase E  Items tab with discovery
+Later    Help tab (hints, tutorials)
 ```
 
 One client branch (`cursor/autowalk-worldmap-c8d5` or similar), client-only until we choose
