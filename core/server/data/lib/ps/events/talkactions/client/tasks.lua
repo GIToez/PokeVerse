@@ -10,7 +10,7 @@ local function periodic(board, cid, staff, action, a, b)
     if (staff and action == "reset") then
         board.reset(cid)
     elseif (staff and action == "progress" and a and tonumber(b)) then
-        board.setProgress(cid, a, tonumber(b))
+        board.setProgress(cid, a, b)
     elseif (staff and action == "kind" and a and b) then
         board.setKind(cid, a, b)
     elseif (action == "start" and a) then
@@ -30,12 +30,12 @@ local function hunting(cid, staff, action, a, b)
     if (staff and action == "reset") then
         HuntingTasks.reset(cid)
     elseif (staff and action == "progress" and a and tonumber(b)) then
-        HuntingTasks.setProgress(cid, a, tonumber(b))
+        HuntingTasks.setProgress(cid, a, b)
     elseif (staff and action == "points" and a) then
         HuntingTasks.setPoints(cid, a)
     elseif (action == "difficulty" and a) then
         HuntingTasks.setDifficulty(cid, a)
-    elseif (action == "take" and a and b) then
+    elseif (action == "take" and a and tonumber(b)) then
         HuntingTasks.take(cid, a, b)
     elseif (action == "claim" and a) then
         HuntingTasks.claim(cid, a)
@@ -55,7 +55,7 @@ function onSay(cid, words, param)
     if (not board) then
         return true
     end
-    a, b = tonumber(a), b ~= "" and b or nil
+    a, b = tonumber(a), tonumber(b) or (b ~= "" and b or nil)
     local staff = getPlayerAccess(cid) >= STAFF_ACCESS
     if (staff and board == "hook") then
         for _ = 1, math.min(a or 0, 50) do
