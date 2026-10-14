@@ -619,4 +619,25 @@
   <house name="Azalea House #7" houseid="619" entryx="2428" entryy="1060" entryz="7" rent="0" townid="53" size="101"/>
   <house name="Azalea House #8" houseid="620" entryx="2360" entryy="1075" entryz="7" rent="0" townid="53" size="178"/>
   <house name="Azalea House #9" houseid="621" entryx="2378" entryy="1075" entryz="7" rent="0" townid="53" size="114"/>
+  <house name="Goldenrod House #1" houseid="622" entryx="2286" entryy="685" entryz="7" rent="0" townid="54" size="173"/>
+  <house name="Goldenrod House #2" houseid="623" entryx="2304" entryy="685" entryz="7" rent="0" townid="54" size="140"/>
+  <house name="Goldenrod House #3" houseid="624" entryx="2288" entryy="694" entryz="7" rent="0" townid="54" size="252"/>
+  <house name="Goldenrod House #4" houseid="625" entryx="2304" entryy="694" entryz="7" rent="0" townid="54" size="137"/>
+  <house name="Goldenrod House #5" houseid="626" entryx="2336" entryy="694" entryz="7" rent="0" townid="54" size="200"/>
+  <house name="Goldenrod House #6" houseid="627" entryx="2351" entryy="694" entryz="7" rent="0" townid="54" size="250"/>
+  <house name="Goldenrod House #7" houseid="628" entryx="2289" entryy="734" entryz="7" rent="0" townid="54" size="284"/>
+  <house name="Goldenrod House #8" houseid="629" entryx="2306" entryy="734" entryz="7" rent="0" townid="54" size="293"/>
+  <house name="Goldenrod House #9" houseid="630" entryx="2280" entryy="767" entryz="7" rent="0" townid="54" size="210"/>
+  <house name="Goldenrod House #10" houseid="631" entryx="2309" entryy="767" entryz="7" rent="0" townid="54" size="166"/>
+  <house name="Goldenrod House #11" houseid="632" entryx="2333" entryy="734" entryz="7" rent="0" townid="54" size="149"/>
+  <house name="Goldenrod House #12" houseid="633" entryx="2352" entryy="734" entryz="7" rent="0" townid="54" size="326"/>
+  <house name="Goldenrod House #13" houseid="634" entryx="2335" entryy="767" entryz="7" rent="0" townid="54" size="138"/>
+  <house name="Goldenrod House #14" houseid="635" entryx="2352" entryy="767" entryz="7" rent="0" townid="54" size="114"/>
+  <house name="Goldenrod House #15" houseid="636" entryx="2269" entryy="698" entryz="7" rent="0" townid="54" size="245"/>
+  <house name="Goldenrod House #16" houseid="637" entryx="2269" entryy="748" entryz="7" rent="0" townid="54" size="342"/>
+  <house name="Goldenrod House #17" houseid="638" entryx="2371" entryy="698" entryz="7" rent="0" townid="54" size="217"/>
+  <house name="Goldenrod House #18" houseid="639" entryx="2371" entryy="712" entryz="7" rent="0" townid="54" size="248"/>
+  <house name="Goldenrod House #19" houseid="640" entryx="2371" entryy="746" entryz="7" rent="0" townid="54" size="262"/>
+  <house name="Goldenrod House #20" houseid="641" entryx="2371" entryy="758" entryz="7" rent="0" townid="54" size="199"/>
+  <house name="Goldenrod House #21" houseid="642" entryx="2312" entryy="779" entryz="7" rent="0" townid="54" size="185"/>
 </houses>
