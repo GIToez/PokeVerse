@@ -155,9 +155,9 @@ SPAWNS = {
 }
 
 
-def spawn_table(key):
+def spawn_table(key, method='land'):
     place, area = SPAWNS[key]
-    return sorted(ENCOUNTERS[place][area]['land'].items())
+    return sorted(ENCOUNTERS[place][area].get(method, {}).items())
 
 
 GRASS, MOUNTAIN, WATER, SAND, DIRT, LAWN, BRIDGE, SNOW_PEAK, STAIRS = 1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -453,6 +453,14 @@ def build_cave(cave, brushes, present, rng, z=8):
     spawns = []
     for iy, ix in np.argwhere(walk & (rng.random((f.h, f.w)) < 1 / 70.0)):
         spawns.append((pick(rng, spawn_table(cave['name'])), ix + f.x0, iy + f.y0, z))
+    # the water table along the pond, one tile back from the water's (blocking) border, like Kanto's
+    water_table = spawn_table(cave['name'], 'water')
+    if water.any() and water_table:
+        edge = dilate(water, 5) & ~dilate(water, 3) & erode(floor, 3)
+        edge &= np.array([[not deco.get((ix + f.x0, iy + f.y0)) for ix in range(f.w)] for iy in range(f.h)])
+        cells = np.argwhere(edge)
+        for iy, ix in cells[rng.permutation(len(cells))[:min(6, max(2, len(cells) // 8))]]:
+            spawns.append((pick(rng, water_table), ix + f.x0, iy + f.y0, z))
     return tiles, spawns
 
 
@@ -861,15 +869,65 @@ def build(base, out_path):
     data = open(base, 'rb').read()
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
     cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP, towns=towns)
-    write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs)
+    write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs, data)
     write_houses(os.path.join(os.path.dirname(out_path), 'map-house.xml'), new_houses)
     print('wrote %s: %d new or changed tiles (%d Kanto tiles replaced, %d re-bordered), %d spawns, %d houses'
           % (out_path, len(new_tiles), cut, reborder, len(spawns), len(new_houses)))
     return {'tiles': tiles, 'terrain': terrain}
 
 
-def write_spawns(path, monsters, npcs):
+SPAWN_BLOCK = re.compile(r'(<spawn centerx="(\d+)" centery="(\d+)" centerz="(\d+)"[^>]*>)(.*?)(</spawn>)', re.S)
+SPAWN_MONSTER = re.compile(r'(<monster name="[^"]+" x=")(-?\d+)(" y=")(-?\d+)(")')
+
+
+def unblock_spawns(src, data, otb, reach=3):
+    """Moves live spawns that sit on a blocking item to the nearest clear tile, at most `reach` away."""
+    wanted = set()
+    for m in SPAWN_BLOCK.finditer(src):
+        cx, cy, cz = int(m.group(2)), int(m.group(3)), int(m.group(4))
+        for c in SPAWN_MONSTER.finditer(m.group(5)):
+            x, y = cx + int(c.group(2)), cy + int(c.group(4))
+            wanted |= {(x + dx, y + dy, cz) for dx in range(-reach, reach + 1) for dy in range(-reach, reach + 1)}
+    tiles = pvmap.read_tiles(None, wanted, data)
+    taken = set()
+    for m in SPAWN_BLOCK.finditer(src):
+        cx, cy, cz = int(m.group(2)), int(m.group(3)), int(m.group(4))
+        taken |= {(cx + int(c.group(2)), cy + int(c.group(4)), cz) for c in SPAWN_MONSTER.finditer(m.group(5))}
+
+    def clear(p):
+        ids = tiles.get(p)
+        return (bool(ids) and not any(otb.blocks(i) or i in WATER_IDS for i in ids) and p not in taken)
+
+    steps = sorted(((dx, dy) for dx in range(-reach, reach + 1) for dy in range(-reach, reach + 1) if dx or dy),
+                   key=lambda d: (max(abs(d[0]), abs(d[1])), abs(d[0]) + abs(d[1])))
+    moved = []
+
+    def fix_block(m):
+        cx, cy, cz = int(m.group(2)), int(m.group(3)), int(m.group(4))
+
+        def fix_monster(c):
+            ox, oy = int(c.group(2)), int(c.group(4))
+            p = (cx + ox, cy + oy, cz)
+            if tiles.get(p) and not any(otb.blocks(i) for i in tiles[p]):
+                return c.group(0)
+            for dx, dy in steps:
+                n = (p[0] + dx, p[1] + dy, cz)
+                if clear(n):
+                    taken.add(n)
+                    moved.append((p, n))
+                    return '%s%d%s%d%s' % (c.group(1), ox + dx, c.group(3), oy + dy, c.group(5))
+            return c.group(0)
+
+        return m.group(1) + SPAWN_MONSTER.sub(fix_monster, m.group(5)) + m.group(6)
+
+    return SPAWN_BLOCK.sub(fix_block, src), moved
+
+
+def write_spawns(path, monsters, npcs, base_data=None):
     src = open(os.path.join(WORLD, 'map-spawn.xml'), encoding='latin-1').read()
+    if base_data is not None:
+        src, moved = unblock_spawns(src, base_data, pvmap.Otb(os.path.join(ROOT, 'core/server/data/items/items.otb')))
+        print('moved %d live spawns off blocking items' % len(moved))
     add = []
     for name, x, y, z in npcs:
         add.append('  <spawn centerx="%d" centery="%d" centerz="%d" radius="1">\n'
