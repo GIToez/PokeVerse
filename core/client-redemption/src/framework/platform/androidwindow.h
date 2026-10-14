@@ -148,6 +148,7 @@ private:
     NativeEvent m_currentEvent;
 
     ticks_t m_lastPress = 0;
+    Point m_pressPos;
     bool m_isDragging = false;
 
     float m_baseDisplayDensity{ DEFAULT_DISPLAY_DENSITY };
