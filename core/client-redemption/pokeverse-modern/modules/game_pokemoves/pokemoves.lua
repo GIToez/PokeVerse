@@ -8,6 +8,7 @@ local SPACING = 4
 local SLOT_SIZE = 40
 
 local orientation = HORIZONTAL
+local moveEnergy = {} -- move icon item id -> energy cost (ExtendedIds.MoveEnergy)
 
 local MOVE_COUNT = 12
 local KEYBIND_CATEGORY = 'Pokemon'
@@ -150,6 +151,45 @@ function onPokemonMoveCooldown(itemId, cooldown)
     end
 end
 
+-- moves the Pokemon has too little energy for are dimmed, with their cost in red
+local function updateEnergy()
+    if not pokemonMovesWindow then
+        return
+    end
+    local player = g_game.getLocalPlayer()
+    local energy = player and player:getMana() or 0
+    for _, slot in ipairs(slots()) do
+        local cost = moveEnergy[slot.icon:getItemId()]
+        local short = cost ~= nil and cost > energy
+        slot.energy:setVisible(cost ~= nil and cost > 0)
+        slot.energy:setText(cost or '')
+        slot.energy:setOn(short)
+        slot.icon:setOpacity(short and 0.35 or 1)
+        local lines = { slot.moveName }
+        if cost and cost > 0 then
+            lines[#lines + 1] = short and tr('Energy: %d (you have %d)', cost, energy) or tr('Energy: %d', cost)
+        end
+        lines[#lines + 1] = tr('Click to use, Shift+click for details')
+        slot:setTooltip(table.concat(lines, '\n'))
+    end
+end
+
+local function onMoveEnergy(protocol, opcode, buffer)
+    local ok, costs = pcall(json.decode, buffer)
+    if not ok or type(costs) ~= 'table' then
+        return
+    end
+    moveEnergy = {}
+    for _, move in ipairs(costs) do
+        moveEnergy[tonumber(move.icon)] = tonumber(move.energy)
+    end
+    updateEnergy()
+end
+
+local function onManaChange()
+    updateEnergy()
+end
+
 local function useMove(index)
     if g_game.isOnline() and pokemonMovesWindow:getChildById('move' .. index) then
         g_game.talkChannel(MessageModes.Say, 0, 'm' .. index)
@@ -227,7 +267,7 @@ function onPokemonMoves(iconItemId, moves)
         slot:setId('move' .. k)
         slot.icon:setItemId(v)
         slot.key:setText(Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(k)))
-        slot:setTooltip(getMoveNameByIconItemId(v) .. '\n' .. tr('Click to use, Shift+click for details'))
+        slot.moveName = getMoveNameByIconItemId(v)
         delegateDrag(slot)
         slot.onMousePress = function(self)
             self.pressPosition = pokemonMovesWindow:getPosition()
@@ -251,6 +291,7 @@ function onPokemonMoves(iconItemId, moves)
             return true
         end
     end
+    updateEnergy()
     applyOrientation()
     show()
 end
@@ -271,6 +312,7 @@ end
 function onOffline()
     hide()
     reset()
+    moveEnergy = {}
 end
 
 function onInit()
@@ -282,6 +324,9 @@ function onInit()
         onPokemonMovesClose = onPokemonMovesClose,
         onPokemonMovesOpen = onPokemonMovesOpen
     })
+
+    connect(LocalPlayer, { onManaChange = onManaChange })
+    ProtocolGame.registerExtendedOpcode(ExtendedIds.MoveEnergy, onMoveEnergy)
 
     pokemonMovesWindow = g_ui.loadUI('pokemoves', modules.game_interface.getRootPanel())
     orientation = g_settings.getNumber('pokeverse-moves-orientation', HORIZONTAL)
@@ -324,6 +369,8 @@ function onTerminate()
         onPokemonMovesClose = onPokemonMovesClose,
         onPokemonMovesOpen = onPokemonMovesOpen
     })
+    disconnect(LocalPlayer, { onManaChange = onManaChange })
+    ProtocolGame.unregisterExtendedOpcode(ExtendedIds.MoveEnergy)
     for _, slot in ipairs(slots()) do
         stopCooldown(slot)
     end

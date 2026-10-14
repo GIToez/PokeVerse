@@ -54,6 +54,30 @@ local function onHealthChange(player, health, maxHealth)
            tr('Your character health is %d out of %d.', health, maxHealth))
 end
 
+-- the trainer's mana is the energy of the Pokemon that is out
+local function updateEnergy()
+    local panel = hud.mainPanel
+    local player = g_game.getLocalPlayer()
+    local maxEnergy = player and player:getMaxMana() or 0
+    local visible = panel.pokemonHealth:isVisible() and maxEnergy > 0
+    panel.pokemonEnergy:setVisible(visible)
+    panel.bolt:setVisible(visible)
+    if not visible then
+        return
+    end
+    local energy = math.max(0, math.min(player:getMana(), maxEnergy))
+    local percent = math.floor(energy * 100 / maxEnergy)
+    setBar(panel.pokemonEnergy, percent, percent < 25 and 'fill-energy-low' or 'fill-energy',
+           energy .. ' / ' .. maxEnergy, tr('%s energy is %d out of %d. Moves use energy; it refills over time.',
+                                             summon:getName(), energy, maxEnergy))
+end
+
+local function onManaChange()
+    if hud then
+        updateEnergy()
+    end
+end
+
 local function onLevelChange(player, level, percent)
     hud.experiencePanel.level:setText(tr('Lv.') .. ' ' .. level)
     hud.experiencePanel.experienceText:setText(percent .. '% ' .. tr('XP'))
@@ -97,6 +121,7 @@ local function updateSummon()
         panel.pokemonName:setColor('#8a9696')
         panel.pokemonHealth:setVisible(false)
     end
+    updateEnergy()
 end
 
 local function onCreatureAppear(creature)
@@ -242,7 +267,8 @@ function init()
     hud:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
     hud:addAnchor(AnchorHorizontalCenter, 'gameMapPanel', AnchorHorizontalCenter)
     hud:setMarginTop(4)
-    for _, track in ipairs({ hud.experiencePanel.experience, hud.mainPanel.health, hud.mainPanel.pokemonHealth }) do
+    for _, track in ipairs({ hud.experiencePanel.experience, hud.mainPanel.health, hud.mainPanel.pokemonHealth,
+                                  hud.mainPanel.pokemonEnergy }) do
         track.onGeometryChange = resizeFill
     end
     for i = 1, PARTY_SIZE do
@@ -258,6 +284,7 @@ function init()
     connect(LocalPlayer, {
         onHealthChange = onHealthChange,
         onLevelChange = onLevelChange,
+        onManaChange = onManaChange,
         onStatesChange = onStatesChange
     })
     connect(Creature, {
@@ -288,6 +315,7 @@ function terminate()
     disconnect(LocalPlayer, {
         onHealthChange = onHealthChange,
         onLevelChange = onLevelChange,
+        onManaChange = onManaChange,
         onStatesChange = onStatesChange
     })
     disconnect(Creature, {

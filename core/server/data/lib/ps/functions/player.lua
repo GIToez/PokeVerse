@@ -432,12 +432,16 @@ local function doPlayerSendPokemonSkillWindowData(cid, ballUid, moves, pokemonNa
         end
     end
 
-    local icons = {}
+    local icons, costs = {}, {}
     for _, move in pairs(moves) do
         icons[#icons + 1] = getPokemonSkillClientIconId(move)
+        costs[#costs + 1] = { icon = icons[#icons], energy = getPokemonSkillRequiredEnergy(move) }
     end
 
     doPlayerSendPokemonSkills(cid, getPokemonFastcallPortraitId(pokemonName), icons)
+    if (getPlayerUsingOtClient(cid)) then
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.MOVE_ENERGY, JSON.encode(costs))
+    end
 end
 
 local function doSendPlayerPokemonCooldowns(cid, ball, moves)

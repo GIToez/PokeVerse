@@ -60,7 +60,7 @@ HudCoin < UIWidget
 
 UIWidget
   id: pokeHud
-  size: 500 126
+  size: 500 138
   phantom: true
   focusable: false
 
@@ -94,7 +94,7 @@ UIWidget
 
   HudPanel
     id: mainPanel
-    size: 500 46
+    size: 500 58
     anchors.top: experiencePanel.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     margin-top: 5
@@ -113,7 +113,7 @@ UIWidget
       anchors.left: parent.left
       anchors.bottom: parent.bottom
       margin-left: 14
-      margin-bottom: 8
+      margin-bottom: 20
       phantom: true
 
     HudTrack
@@ -141,6 +141,25 @@ UIWidget
       anchors.verticalCenter: heart.verticalCenter
       margin-left: 44
       margin-right: 14
+      phantom: false
+
+    UIWidget
+      id: bolt
+      image-source: /modules/game_pokehud/images/bolt
+      size: 9 12
+      anchors.right: pokemonEnergy.left
+      anchors.verticalCenter: pokemonEnergy.verticalCenter
+      margin-right: 5
+      phantom: true
+
+    HudTrack
+      id: pokemonEnergy
+      height: 11
+      anchors.left: pokemonHealth.left
+      anchors.right: pokemonHealth.right
+      anchors.top: pokemonHealth.bottom
+      margin-top: 4
+      margin-left: 14
       phantom: false
 
   UIWidget
