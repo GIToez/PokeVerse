@@ -1971,6 +1971,9 @@ void LuaScriptInterface::registerFunctions()
 	//getHouseInfo(houseId)
 	lua_register(m_luaState, "getHouseInfo", LuaScriptInterface::luaGetHouseInfo);
 
+	//getHouseTiles(houseId)
+	lua_register(m_luaState, "getHouseTiles", LuaScriptInterface::luaGetHouseTiles);
+
 	//getHouseAccessList(houseid, listId)
 	lua_register(m_luaState, "getHouseAccessList", LuaScriptInterface::luaGetHouseAccessList);
 
@@ -6001,6 +6004,29 @@ int32_t LuaScriptInterface::luaGetHouseInfo(lua_State* L)
 	setField(L, "doors", house->getDoorsCount());
 	setField(L, "beds", house->getBedsCount());
 	setField(L, "tiles", house->getTilesCount());
+
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetHouseTiles(lua_State* L)
+{
+	//getHouseTiles(houseId)
+	House* house = Houses::getInstance()->getHouse(popNumber(L));
+	if(!house)
+	{
+		errorEx(getError(LUA_ERROR_HOUSE_NOT_FOUND));
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	lua_newtable(L);
+	int32_t i = 1;
+	for(HouseTileList::iterator it = house->getHouseTileBegin(); it != house->getHouseTileEnd(); ++it, ++i)
+	{
+		lua_pushnumber(L, i);
+		pushPosition(L, (*it)->getPosition(), 0);
+		pushTable(L);
+	}
 
 	return 1;
 }
