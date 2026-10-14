@@ -1,5 +1,5 @@
--- The locker always opens as a container, like standard Tibia. The modern client shows the PC
--- window when any locker opens (extended opcode to 067-pc.lua).
+-- Any locker opens the PC window (lib/ps/systems/067-pc.lua) for clients that have it, without
+-- opening the container first; false lets it open as a container (old clients, "Open depot").
 function onUse(cid, item, fromPosition, itemEx, toPosition)
-    return false
+    return PC.open(cid, getThingPos(item.uid))
 end

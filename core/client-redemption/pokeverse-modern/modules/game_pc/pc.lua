@@ -1,6 +1,6 @@
 -- Pokemon Center PC: one window with Poke boxes, stash, inbox and depot tabs and a search over all of
--- them. Click any depot locker (standard Tibia containers); this module opens
--- the PC window and talks to the server over ExtendedIds.Pc JSON — no chat commands.
+-- them. Using any locker opens it (the server's locker action, 067-pc.lua); the window talks to the
+-- server over ExtendedIds.Pc JSON — no chat commands.
 local window
 local state = {}
 local searchEvent, helloEvent
@@ -68,19 +68,6 @@ local function closeLockerContainers()
             g_game.close(container)
         end
     end
-end
-
-local function onContainerOpen(container, previousContainer)
-    if previousContainer then
-        return
-    end
-    local item = container:getContainerItem()
-    if not item or not LOCKER_IDS[item:getId()] then
-        return
-    end
-    scheduleEvent(function()
-        sendRequest({ action = 'open' })
-    end, 100)
 end
 
 local function formatCount(n)
@@ -1084,7 +1071,6 @@ function init()
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Pc, onPc)
     connect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
-    connect(Container, { onOpen = onContainerOpen })
     if g_game.isOnline() then
         sayHello()
     end
@@ -1095,7 +1081,6 @@ function terminate()
     stopSparkles()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Pc)
     disconnect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
-    disconnect(Container, { onOpen = onContainerOpen })
     for _, event in ipairs({ searchEvent, helloEvent }) do
         removeEvent(event)
     end
