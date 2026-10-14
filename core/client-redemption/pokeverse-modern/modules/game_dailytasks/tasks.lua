@@ -41,14 +41,47 @@ local function secondsLeft(board, field)
     return math.max(0, entry.state[field] - math.floor((g_clock.millis() - entry.receivedAt) / 1000))
 end
 
+local IMAGES = '/modules/game_dailytasks/images/'
+
 local function setReward(row, reward)
     row.money:setText(reward.money > 0 and formatMoney(reward.money) or '')
     row.items:destroyChildren()
     for _, item in ipairs(reward.items or {}) do
-        local widget = g_ui.createWidget('RewardItem', row.items)
+        local widget = g_ui.createWidget('TkRewardItem', row.items)
         widget:setItemId(item.id)
         widget:setItemCount(item.count)
         widget:setTooltip(string.format('%d %s', item.count, item.name or ''))
+    end
+end
+
+-- the fill is sized from the track's width, which is only known once the layout has run
+local function setTrack(track, value, max, fill)
+    track.fill:setImageSource(IMAGES .. (fill or 'fill_blue'))
+    local function resize()
+        local ratio = math.min(1, value / math.max(1, max))
+        local width = math.floor(track:getWidth() * ratio)
+        track.fill:setWidth(width)
+        track.fill:setVisible(width >= 6)
+    end
+    track.onGeometryChange = resize
+    resize()
+end
+
+-- icon = { item = clientId } | { portrait = dex number } | { look = outfit } | { picture = path }
+local function setIcon(frame, icon)
+    icon = icon or {}
+    frame.item:setVisible(icon.item ~= nil)
+    frame.portrait:setVisible(icon.portrait ~= nil)
+    frame.creature:setVisible(icon.look ~= nil)
+    frame.picture:setVisible(icon.picture ~= nil)
+    if icon.item then
+        frame.item:setItemId(icon.item)
+    elseif icon.portrait then
+        frame.portrait:setImageSource('/images/staticPortraits/' .. icon.portrait)
+    elseif icon.look then
+        frame.creature:setOutfit({ type = icon.look })
+    elseif icon.picture then
+        frame.picture:setImageSource(icon.picture)
     end
 end
 
@@ -114,38 +147,34 @@ local function setupPicker(picker, state, chosen, locked, onPick)
     return choice
 end
 
-local function difficultyName(state, id)
-    for _, difficulty in ipairs(state.difficulties or {}) do
-        if difficulty.id == id then
-            return tr(difficulty.name)
-        end
-    end
-    return '?'
-end
-
-local function drawTask(board, row, task, state)
+local function drawTask(board, card, task, state)
     local done = task.progress >= task.target
-    row.title:setText(task.title)
-    row.progress:setPercent(math.floor(task.progress * 100 / math.max(1, task.target)))
-    row.progress:setText(string.format('%d / %d', task.progress, task.target))
-    setReward(row, task.reward)
-    row.claim:setText(task.claimed and tr('Claimed') or tr('Claim'))
-    row.claim:setEnabled(done and not task.claimed)
-    row.claim.onClick = function() command(board, 'claim ' .. task.slot) end
-    row.reroll:setVisible(not done and not task.claimed)
-    row.reroll:setEnabled(state.reroll.available)
+    setIcon(card.icon, task.icon)
+    card.title:setText(task.title)
+    card.desc:setText(task.desc or '')
+    setTrack(card.track, task.progress, task.target, (done or task.claimed) and 'fill_green' or 'fill_blue')
+    card.count:setText(string.format('%d / %d', math.min(task.progress, task.target), task.target))
+    setReward(card, task.reward)
+    local claim, reroll = card.buttons.claim, card.buttons.reroll
+    claim:setText(task.claimed and tr('Claimed') or tr('Claim'))
+    claim:setEnabled(done and not task.claimed)
+    claim.onClick = function() command(board, 'claim ' .. task.slot) end
+    reroll:setVisible(not done and not task.claimed)
+    reroll:setEnabled(state.reroll.available)
     local cost = state.reroll.cost > 0 and formatMoney(state.reroll.cost) or tr('free')
-    row.reroll:setTooltip(state.reroll.available and tr('Swap this task for another one (%s, once per reset)', cost)
+    reroll:setTooltip(state.reroll.available and tr('Swap this task for another one (%s, once per reset)', cost)
         or tr('You already rerolled a task'))
-    row.reroll.onClick = function() command(board, 'reroll ' .. task.slot) end
+    reroll.onClick = function() command(board, 'reroll ' .. task.slot) end
 end
 
 local PERIODIC_TEXT = {
     daily = { resets = 'New tasks in %s', pick = 'Pick today\'s difficulty. It sets the tasks and rewards and stays until midnight.',
-              locked = 'Set until midnight', bonus = 'Daily bonus: claim every task', bonusDone = 'Daily bonus claimed. See you tomorrow!',
+              locked = 'Set until midnight', bonus = 'Daily bonus', bonusDone = 'Daily bonus claimed. See you tomorrow!',
+              ready = 'Ready for a new day?', readyText = 'Pick a difficulty above and press Start to get today\'s tasks.',
               reroll = 'You can reroll one unfinished task today for %s.', rerollUsed = 'You used today\'s reroll.' },
-    weekly = { resets = 'New tasks in %s (Monday)', pick = 'Pick this week\'s difficulty. It sets the tasks and rewards and stays until Monday.',
-               locked = 'Set until Monday', bonus = 'Weekly bonus: claim every task', bonusDone = 'Weekly bonus claimed. New tasks on Monday!',
+    weekly = { resets = 'New tasks in %s', pick = 'Pick this week\'s difficulty. It sets the tasks and rewards and stays until Monday.',
+               locked = 'Set until Monday', bonus = 'Weekly bonus', bonusDone = 'Weekly bonus claimed. New tasks on Monday!',
+               ready = 'Ready for a new week?', readyText = 'Pick a difficulty above and press Start to get this week\'s tasks.',
                reroll = 'You can reroll one unfinished task this week for %s.', rerollUsed = 'You used this week\'s reroll.' },
 }
 
@@ -170,32 +199,41 @@ local function drawPeriodic(name)
     panel.pickHint:setVisible(not started)
     panel.pickHint:setText(tr(text.pick))
 
-    panel.tasks:destroyChildren()
+    panel.ready:setVisible(not started)
+    panel.ready.picture:setImageSource(IMAGES .. 'ready_' .. name)
+    panel.ready.title:setText(tr(text.ready))
+    panel.ready.text:setText(tr(text.readyText))
+
+    panel.list:setVisible(started)
+    panel.list:destroyChildren()
+    local claimed = 0
     for _, task in ipairs(state.tasks or {}) do
-        drawTask(name, g_ui.createWidget('DailyTaskRow', panel.tasks), task, state)
+        drawTask(name, g_ui.createWidget('TkTaskCard', panel.list), task, state)
+        if task.claimed then
+            claimed = claimed + 1
+        end
     end
 
     local bonus = panel.bonus
     bonus:setVisible(started)
-    panel.separator:setVisible(started)
     panel.rerollInfo:setVisible(started)
-    if started then
-        bonus.title:setText(state.bonus.claimed and tr(text.bonusDone) or tr(text.bonus))
-        bonus.progress:hide()
-        bonus.reroll:hide()
-        setReward(bonus, state.bonus.reward)
-        bonus.claim:setText(state.bonus.claimed and tr('Claimed') or tr('Claim'))
-        bonus.claim:setEnabled(state.bonus.ready)
-        bonus.claim.onClick = function() command(name, 'bonus') end
-        local cost = state.reroll.cost > 0 and formatMoney(state.reroll.cost) or tr('free')
-        panel.rerollInfo:setText(state.reroll.available and tr(text.reroll, cost) or tr(text.rerollUsed))
+    if not started then
+        return
     end
-end
-
-local function setPortrait(widget, look)
-    if look and look > 0 then
-        widget:setOutfit({ type = look })
-    end
+    setIcon(bonus.icon, { picture = IMAGES .. 'chest' })
+    bonus.title:setText(state.bonus.claimed and tr(text.bonusDone) or tr(text.bonus))
+    bonus.desc:setText(tr('Claim every task to receive a bonus reward!'))
+    local total = #(state.tasks or {})
+    setTrack(bonus.track, claimed, total, 'fill_gold')
+    bonus.count:setText(string.format('%d / %d', claimed, total))
+    bonus.rewardLabel:setText(tr('Bonus reward'))
+    setReward(bonus, state.bonus.reward)
+    bonus.buttons.reroll:hide()
+    bonus.buttons.claim:setText(state.bonus.claimed and tr('Claimed') or tr('Claim'))
+    bonus.buttons.claim:setEnabled(state.bonus.ready)
+    bonus.buttons.claim.onClick = function() command(name, 'bonus') end
+    local cost = state.reroll.cost > 0 and formatMoney(state.reroll.cost) or tr('free')
+    panel.rerollInfo:setText(state.reroll.available and tr(text.reroll, cost) or tr(text.rerollUsed))
 end
 
 local function drawHunting()
@@ -205,28 +243,33 @@ local function drawHunting()
     end
     local panel, state = window.huntingBoard, entry.state
 
-    local rank = state.rank
+    local card, rank = panel.rankCard, state.rank
+    card.medal:setImageSource(IMAGES .. 'rank_' .. (rank.name:lower():match('%a+') or 'bronze'))
     local rankText = tr('Rank: %s', tr(rank.name))
     if rank.bonus > 0 then
         rankText = rankText .. ' ' .. tr('(+%d%% money)', rank.bonus)
     end
+    card.rank:setText(rankText)
     if rank.next then
-        rankText = rankText .. '  ' .. tr('%d / %d points to %s', rank.earned, rank.nextAt, tr(rank.next))
+        setTrack(card.track, rank.earned, rank.nextAt, 'fill_gold')
+        card.rankNext:setText(tr('%d / %d points to %s', rank.earned, rank.nextAt, tr(rank.next)))
+    else
+        setTrack(card.track, 1, 1, 'fill_gold')
+        card.rankNext:setText(tr('Highest rank reached'))
     end
-    panel.rank:setText(rankText)
-    panel.points:setText(tr('%d Hunt Points', state.points))
+    card.points:setText(tostring(state.points))
 
-    local choice = setupPicker(panel.picker, state, state.difficulty, state.locked)
+    local choice = setupPicker(card, state, state.difficulty, state.locked)
     local picked = state.difficulty ~= nil
-    panel.picker.start:setVisible(not picked)
-    panel.picker.start.onClick = function()
+    card.start:setVisible(not picked)
+    card.start.onClick = function()
         local option = choice:getCurrentOption()
         if option then
             command('hunting', 'difficulty ' .. option.data)
         end
     end
-    panel.picker.info:setVisible(picked)
-    panel.picker.info:setText(state.locked and tr('Locked while hunting') or '')
+    card.info:setVisible(state.locked)
+    card.info:setText(tr('Locked while hunting'))
     if picked then
         choice.onOptionChange = function(_, _, id)
             if id ~= state.difficulty then
@@ -238,17 +281,19 @@ local function drawHunting()
     panel.activeTitle:setText(tr('Your hunts (%d / %d)', #state.active, state.slots))
     panel.active:destroyChildren()
     for _, hunt in ipairs(state.active) do
-        local row = g_ui.createWidget('HuntRow', panel.active)
-        setPortrait(row.creature, hunt.look)
+        local row = g_ui.createWidget('TkHuntCard', panel.active)
+        setIcon(row.icon, { look = hunt.look })
         local done = hunt.progress >= hunt.target
         row.title:setText(tr('%s hunt: defeat %d %s', tr(hunt.sizeName), hunt.target, hunt.species))
-        row.progress:setPercent(math.floor(hunt.progress * 100 / math.max(1, hunt.target)))
-        row.progress:setText(string.format('%d / %d', hunt.progress, hunt.target))
-        row.reward:setText(tr('%s and %d Hunt Points', formatMoney(hunt.money), hunt.points))
-        row.claim:setEnabled(done)
-        row.claim.onClick = function() command('hunting', 'claim ' .. hunt.slot) end
-        row.cancel:setVisible(not done)
-        row.cancel.onClick = function()
+        setTrack(row.track, hunt.progress, hunt.target, done and 'fill_green' or 'fill_blue')
+        row.count:setText(string.format('%d / %d', math.min(hunt.progress, hunt.target), hunt.target))
+        row.money:setText(formatMoney(hunt.money))
+        row.points:setText(tr('+%d Hunt Points', hunt.points))
+        local claim, cancel = row.buttons.claim, row.buttons.cancel
+        claim:setEnabled(done)
+        claim.onClick = function() command('hunting', 'claim ' .. hunt.slot) end
+        cancel:setVisible(not done)
+        cancel.onClick = function()
             local box
             box = displayGeneralBox(tr('Give up the hunt'), tr('Give up the %s hunt? Its progress is lost.', hunt.species),
                 { { text = tr('Give up'), callback = function() box:destroy(); command('hunting', 'cancel ' .. hunt.slot) end },
@@ -256,23 +301,25 @@ local function drawHunting()
         end
     end
     if #state.active == 0 then
-        local hint = g_ui.createWidget('TaskText', panel.active)
-        hint:setHeight(20)
-        hint:setColor('#a8b4b4')
+        local hint = g_ui.createWidget('TkMuted', panel.active)
         hint:setText(state.difficulty and tr('Pick a hunt from the offers below.')
             or tr('Pick a difficulty to see the offers.'))
     end
 
     local full = #state.active >= state.slots
+    panel.offersTitle:setVisible(picked)
+    panel.offers:setVisible(#state.offers > 0)
     panel.offers:destroyChildren()
     for _, offer in ipairs(state.offers) do
-        local row = g_ui.createWidget('OfferRow', panel.offers)
-        setPortrait(row.creature, offer.look)
+        local row = g_ui.createWidget('TkOfferCard', panel.offers)
+        if offer.look and offer.look > 0 then
+            row.creature:setOutfit({ type = offer.look })
+        end
         row.title:setText(offer.species)
         row.levels:setText(tr('Level %d-%d', offer.minLevel, offer.maxLevel))
         for i = #offer.sizes, 1, -1 do
             local size = offer.sizes[i]
-            local sizeButton = g_ui.createWidget('HuntSizeButton', row.sizes)
+            local sizeButton = g_ui.createWidget('TkHuntSizeButton', row.sizes)
             sizeButton:setText(string.format('%s %d', tr(size.name), size.kills))
             sizeButton:setTooltip(tr('Defeat %d %s: %s and %d Hunt Points', size.kills, offer.species,
                 formatMoney(size.money), size.points))
@@ -294,24 +341,61 @@ local function drawHunting()
 
     panel.shop:destroyChildren()
     for _, item in ipairs(state.shop) do
-        local widget = g_ui.createWidget('ShopItem', panel.shop)
-        widget.item:setItemId(item.id)
-        widget.item:setItemCount(item.count)
-        widget:setTooltip(string.format('%d %s', item.count, item.name or ''))
-        widget.buy:setText(tr('%d pts', item.cost))
-        widget.buy:setEnabled(state.points >= item.cost)
-        widget.buy.onClick = function() command('hunting', 'buy ' .. item.item) end
+        local tile = g_ui.createWidget('TkShopTile', panel.shop)
+        tile.item:setItemId(item.id)
+        tile.item:setItemCount(item.count)
+        tile:setTooltip(string.format('%d %s', item.count, item.name or ''))
+        local name = (item.name or ''):gsub('(%a)(%a*)', function(first, rest) return first:upper() .. rest end)
+        tile.name:setText(name)
+        tile.buy:setText(tr('%d pts', item.cost))
+        tile.buy:setEnabled(state.points >= item.cost)
+        tile.buy.onClick = function() command('hunting', 'buy ' .. item.item) end
     end
+end
+
+local fitEvent, fitCenter
+
+-- the window follows the height of the open tab; it waits a moment so the lists have laid out
+local function fitWindow(center)
+    removeEvent(fitEvent)
+    fitCenter = fitCenter or center
+    fitEvent = scheduleEvent(function()
+        fitEvent = nil
+        if not window then
+            return
+        end
+        local board = window[current .. 'Board']
+        local bottom = board:getY()
+        for _, child in ipairs(board:getChildren()) do
+            if child:isVisible() then
+                bottom = math.max(bottom, child:getY() + child:getHeight())
+            end
+        end
+        local root = rootWidget:getSize()
+        local height = math.min(bottom - window:getY() + window:getPaddingBottom(), root.height - 20)
+        window:setHeight(height)
+        local y = fitCenter and math.floor((root.height - height) / 2) or window:getY()
+        fitCenter = nil
+        window:setY(math.max(0, math.min(y, root.height - height)))
+    end, 30)
 end
 
 local function updateClock()
     if not window then
         return
     end
-    for _, name in ipairs({ 'daily', 'weekly' }) do
-        if boards[name] then
-            window[name .. 'Board'].resets:setText(tr(PERIODIC_TEXT[name].resets, formatTime(secondsLeft(name, 'resetsIn'))))
+    local resets, entry = window.tabs.resets, boards[current]
+    if current == 'hunting' then
+        local free = entry and entry.state.refresh and not entry.state.refresh.free
+        resets:setVisible(free and true or false)
+        if free then
+            resets:setText(tr('Free offers in %s', formatTime(secondsLeft('hunting', 'refreshIn'))))
         end
+        return
+    end
+    resets:setVisible(entry ~= nil)
+    if entry then
+        resets:setText(tr(PERIODIC_TEXT[current].resets, formatTime(secondsLeft(current, 'resetsIn'))))
     end
 end
 
@@ -323,6 +407,9 @@ local function draw(name)
     end
     updateClock()
     updateBadge()
+    if name == current then
+        fitWindow()
+    end
 end
 
 local function showTab(name)
@@ -331,6 +418,8 @@ local function showTab(name)
         window.tabs[board]:setChecked(board == name)
         window[board .. 'Board']:setVisible(board == name)
     end
+    updateClock()
+    fitWindow()
 end
 
 local function receive(name, data)
@@ -379,7 +468,11 @@ function toggle()
         window:hide()
         return
     end
+    local root = rootWidget:getSize()
+    window:setWidth(math.min(660, root.width - 20))
     window:show()
+    window:setX(math.floor((root.width - window:getWidth()) / 2))
+    fitWindow(true)
     window:raise()
     window:focus()
     g_game.talk('/tasks')
@@ -429,6 +522,7 @@ function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.TaskBoards)
     disconnect(g_game, { onGameEnd = onGameEnd })
     removeEvent(clockEvent)
+    removeEvent(fitEvent)
     if button then
         button:destroy()
     end

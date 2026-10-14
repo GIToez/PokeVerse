@@ -44,19 +44,30 @@ local OLD_BAND_DIFFICULTY = { 1, 3, 4, 5 }
 local COMMON_TYPES = { ELEMENT_NORMAL, ELEMENT_BUG, ELEMENT_GRASS, ELEMENT_WATER, ELEMENT_FLYING,
     ELEMENT_POISON, ELEMENT_FIRE, ELEMENT_ELECTRIC, ELEMENT_GROUND, ELEMENT_ROCK }
 
--- counts[difficulty] for a daily task; weight scales the difficulty's money reward
+-- counts[difficulty] for a daily task; weight scales the difficulty's money reward. The Tasks
+-- window shows icon: an item (server id), a Pokedex portrait or an outfit; typed tasks show the
+-- portrait of their type in TYPE_PORTRAITS.
 local KINDS = {
-    defeat = { event = "defeat", title = "Defeat %d wild Pokemon", counts = { 15, 25, 35, 50, 80 }, weight = 1 },
+    defeat = { event = "defeat", title = "Defeat %d wild Pokemon", desc = "Defeat wild Pokemon of any type.",
+               icon = { portrait = 56 }, counts = { 15, 25, 35, 50, 80 }, weight = 1 },
     defeatType = { event = "defeat", typed = true, title = "Defeat %d wild %s-type Pokemon",
-                   counts = { 8, 12, 18, 25, 40 }, weight = 1.2 },
-    catch = { event = "catch", title = "Catch %d Pokemon", counts = { 2, 3, 4, 5, 8 }, weight = 1.2 },
+                   desc = "Defeat wild %s-type Pokemon of any level.", counts = { 8, 12, 18, 25, 40 }, weight = 1.2 },
+    catch = { event = "catch", title = "Catch %d Pokemon", desc = "Catch Pokemon of any type.",
+              icon = { item = 12159 }, counts = { 2, 3, 4, 5, 8 }, weight = 1.2 },
     catchType = { event = "catch", typed = true, title = "Catch %d %s-type Pokemon",
-                  counts = { 1, 2, 2, 3, 4 }, weight = 1.5 },
-    fish = { event = "fish", title = "Hook %d Pokemon while fishing", counts = { 3, 4, 6, 8, 12 }, weight = 1 },
-    headbutt = { event = "headbutt", title = "Headbutt %d trees that hide Pokemon", counts = { 2, 3, 4, 6, 10 },
-                 weight = 1, minLevel = 10 },
-    trainer = { event = "trainer", title = "Win %d battles against NPC trainers", counts = { 1, 2, 2, 3, 5 },
-                weight = 1.5, minLevel = 10 },
+                  desc = "Catch %s-type Pokemon of any level.", counts = { 1, 2, 2, 3, 4 }, weight = 1.5 },
+    fish = { event = "fish", title = "Hook %d Pokemon while fishing", desc = "Catch them with a fishing rod.",
+             icon = { item = 12292 }, counts = { 3, 4, 6, 8, 12 }, weight = 1 },
+    headbutt = { event = "headbutt", title = "Headbutt %d trees that hide Pokemon",
+                 desc = "Use Headbutt on trees with hidden Pokemon.", icon = { portrait = 214 },
+                 counts = { 2, 3, 4, 6, 10 }, weight = 1, minLevel = 10 },
+    trainer = { event = "trainer", title = "Win %d battles against NPC trainers", desc = "Defeat NPC trainers in battle.",
+                icon = { look = 540 }, counts = { 1, 2, 2, 3, 5 }, weight = 1.5, minLevel = 10 },
+}
+
+local TYPE_PORTRAITS = {
+    [ELEMENT_NORMAL] = 19, [ELEMENT_BUG] = 12, [ELEMENT_GRASS] = 1, [ELEMENT_WATER] = 7, [ELEMENT_FLYING] = 16,
+    [ELEMENT_POISON] = 23, [ELEMENT_FIRE] = 4, [ELEMENT_ELECTRIC] = 25, [ELEMENT_GROUND] = 27, [ELEMENT_ROCK] = 74,
 }
 local KIND_NAMES = {}
 for name in pairs(KINDS) do
@@ -264,6 +275,24 @@ local function newBoard(config)
         return string.format(__L(cid, kind.title), task.target)
     end
 
+    local function taskDesc(cid, task)
+        local kind = KINDS[task.kind]
+        if (kind.typed) then
+            return string.format(__L(cid, kind.desc), ELEMENT_NAMES[task.type] or "?")
+        end
+        return __L(cid, kind.desc)
+    end
+
+    local function taskIcon(task)
+        local kind = KINDS[task.kind]
+        if (kind.typed) then
+            return { portrait = TYPE_PORTRAITS[task.type] or 132 }
+        elseif (kind.icon.item) then
+            return { item = getItemClientId(kind.icon.item) or 0 }
+        end
+        return kind.icon
+    end
+
     function board.send(cid)
         local state = board.get(cid)
         local data = {
@@ -276,7 +305,8 @@ local function newBoard(config)
             local bonus = TASK_DIFFICULTIES[state.difficulty][config.bonusKey]
             local allClaimed = true
             for slot, task in ipairs(state.tasks) do
-                tasks[slot] = { slot = slot, title = taskTitle(cid, task), progress = math.min(task.progress, task.target),
+                tasks[slot] = { slot = slot, title = taskTitle(cid, task), desc = taskDesc(cid, task), icon = taskIcon(task),
+                                progress = math.min(task.progress, task.target),
                                 target = task.target, claimed = task.claimed, reward = rewardJson(task.money, { task.item }) }
                 allClaimed = allClaimed and task.claimed
             end
