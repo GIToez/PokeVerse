@@ -130,7 +130,7 @@
 
 	-- Guilds
 	ingameGuildManagement = true
-	levelToFormGuild = 40
+	levelToFormGuild = 30
 	premiumDaysToFormGuild = 0
 	guildNameMinLength = 4
 	guildNameMaxLength = 20
@@ -143,7 +143,7 @@
 	buyableAndSellableHouses = true
 	houseNeedPremium = true
 	bedsRequirePremium = true
-	levelToBuyHouse = 50
+	levelToBuyHouse = 25
 	housesPerAccount = 0
 	houseRentAsPrice = false
 	housePriceAsRent = true

@@ -269,6 +269,12 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 | Chance of a second daycare egg | 2% | 4% | 6% | 8% | 10% |
 | Daily early egg chance (others: 10%) | 11% | 12% | 13% | 14% | 15% |
 
+**Premium (agreed):** Breeder can be chosen by everyone and its perks never pause. The
+daycare stays Premium, so the daycare perks (second egg, early egg chance) apply while the
+player has Premium; faster hatching always works, for every egg (eggs can also be bought).
+When Premium runs out, Pokémon in the daycare and eggs in incubators can still be
+collected.
+
 Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
 is time based: an egg in an incubator hatches after 60 minutes
 (`data/lib/ps/events/actions/eggIncubator/emptyIncubator.lua`). At the top rank it takes 45
@@ -510,11 +516,58 @@ only move cooldowns.
 
 ## 12. Level requirement audit
 
-Go through the level requirements of every feature and lower the ones that don't fit.
-Known so far: buying a house needs level 50 (`levelToBuyHouse = 50` in
-`core/server/config.lua`), and the Safari Zone needs level 30
-(`npc/scripts/saffariZoneEnter.lua`). Both are probably too high. List each requirement with its current and
-proposed level, and decide them together.
+Every player level requirement found in the server code (October 2026). The first six rows
+are changed to the new level (agreed); the rest are kept.
+
+| Feature | Before | Where | Now |
+| --- | --- | --- | --- |
+| Buy a house | 50 | `levelToBuyHouse`, `config.lua` | 25 |
+| Safari Zone | 30 | `npc/scripts/saffariZoneEnter.lua` | 15 |
+| Daycare (both NPCs) | 85 and Premium | `npc/scripts/daycareFemale.lua`, `daycareMale.lua` | 20, the Breeder level; still Premium |
+| Form a guild | 40 | `levelToFormGuild`, `config.lua` | 30 |
+| Slot machine | 50 | `lib/ps/systems/044-slotMachine.lua` | 15 |
+| Frontier Island arenas (gladiator, cooperative, survive) | 50 | `npc/scripts/fi_stadiumarena.lua` | keep |
+| Wave arena | 20 | `npc/scripts/wavearena.lua` | keep |
+| Elite Four | 95 | `lib/ps/systems/049-eliteFour.lua` | keep, or 80 if the badges already gate it |
+| Tournaments | by Pokémon level (0–100, 20–40, 41–50, 45–100, 50–100, 51–65, 66–80, 80–100); trainer level at least the minimum − 5 | `XML/tournaments.xml`, `npc/scripts/tournament.lua` | keep |
+| Daily and weekly tasks | Beginner 1, Easy 15, Medium 35, Hard 55, Extreme 80; two task kinds need 10 | `lib/ps/systems/062-dailyTasks.lua` | keep |
+| Ranger Club ranks | Rookie 10, Mentor 25, Coordinator 50, Coach 75 | `lib/ps/config/001-rangerClub.lua` | keep (becomes [factions](#10-factions)) |
+| Referral reward | the friend reaches 50 | `lib/ps/systems/035-referral.lua` | 30 |
+| Quests | 258 have no level; the rest 10–100, with 76 at level 70 | `lib/ps/config/003-quest.lua` | check the level 70 group |
+| Professor Josh Rock and William Rock quests | 80 | `npc/scripts/quest_*Rock.lua` | keep |
+| Masteries | 85–130 | `lib/ps/systems/014-mastery.lua` | removed with the [vocations](#6-vocations) |
+| Calling a Pokémon | its level at most the trainer's level + 10 | `MAX_LEVEL_DIFF_BETWEEN_PLAYER_POKEMON`, `others/constants.lua` | keep |
+| Level doors on the map | the door's action id − 1000 | `movements/scripts/tiles.lua` | list them from the map |
+| Experience loss on death | from level 20 | `deathProtection`, `config.lua` | keep |
+| Gym leaders | none (`NpcBattle:setRequiredLevel` is never used) | `lib/ps/systems/001-npcBattle.lua` | keep |
+
+Not requirements, but level based: the tutorial sends players on from level 10
+(`activationTile.lua`), and the wiki channel opens at login below level 30 (`login.lua`).
+
+The house and guild texts in the in-game wiki (`002-wikiChat.lua`) say the new levels too.
+
+**Unlock ladder (agreed)**, so something new opens every few levels instead of everything
+at 20:
+
+| Level | Unlocks |
+| --- | --- |
+| 10 | End of the tutorial, Ranger Club Rookie, two task kinds |
+| 15 | Safari Zone, slot machine, Easy tasks |
+| 20 | Vocation quest, daycare, wave arena |
+| 25 | Houses, Ranger Club Mentor |
+| 30 | Guilds, referral reward |
+| 35 | Medium tasks |
+| 50 | Frontier Island arenas, Ranger Club Coordinator |
+| 55 | Hard tasks |
+| 75 | Ranger Club Coach |
+| 80 | Extreme tasks, the Josh Rock and William Rock quests |
+| 95 | Elite Four |
+
+Planned: the level-up banner lists what just unlocked ("Level 25: you can now buy a
+house").
+
+**To decide:** whether the daycare stays Premium (it is today), whether the Elite Four
+moves to 80, and what the level 70 quest group is (76 quests at the same level).
 
 ## 13. Switch off the old PSoul and anniversary content
 

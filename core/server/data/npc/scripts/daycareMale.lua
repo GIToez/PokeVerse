@@ -314,8 +314,8 @@ function creatureSayCallback(cid, type, msg)
 			selfSay("You have a Pokemon being trained by me at this moment! You can {withdraw} it if you want.", cid)
 
 		else
-			if (getPlayerLevel(cid) < 85) then
-				selfSay("Sorry, only players with at least level 85 can use this service.", cid)
+			if (getPlayerLevel(cid) < 20) then
+				selfSay("Sorry, only players with at least level 20 can use this service.", cid)
 
 			elseif (not isPremium(cid)) then
 				selfSay("Sorry, only players with a premium account can use this service.", cid)
