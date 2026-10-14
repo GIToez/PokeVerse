@@ -54,12 +54,36 @@ BUILDINGS = {
     'cerulean-282': {'box': (3897, 282, 3911, 293)},
     'cerulean-283': {'box': (3887, 263, 3902, 276)},
     'cerulean-284': {'box': (3924, 280, 3938, 292)},
+    # Saffron City and Celadon City (Goldenrod)
+    **{'saffron-%d' % h: {'box': b} for h, b in [
+        (292, (3919, 491, 3933, 505)), (293, (3903, 490, 3917, 504)), (294, (3914, 505, 3929, 517)),
+        (295, (3942, 495, 3955, 510)), (296, (3939, 458, 3951, 469)), (297, (3927, 447, 3942, 457)),
+        (298, (3926, 457, 3939, 467)), (299, (3903, 459, 3916, 469)), (300, (3904, 442, 3916, 453)),
+        (301, (3903, 469, 3915, 481)), (302, (3889, 470, 3903, 482)), (303, (3888, 493, 3903, 506)),
+        (304, (3956, 500, 3971, 515)), (305, (3961, 478, 3975, 492)), (306, (3971, 500, 3986, 514)),
+        (307, (3983, 459, 3996, 471))]},
+    **{'celadon-%d' % h: {'box': b} for h, b in [
+        (248, (3687, 451, 3698, 464)), (249, (3674, 449, 3687, 461)), (250, (3708, 450, 3720, 463)),
+        (251, (3720, 441, 3735, 453)), (252, (3719, 420, 3734, 433)), (253, (3693, 416, 3705, 429)),
+        (254, (3705, 406, 3721, 419)), (255, (3672, 429, 3684, 441)), (256, (3661, 429, 3672, 441)),
+        (257, (3679, 464, 3696, 478)), (258, (3645, 450, 3659, 465)), (259, (3623, 454, 3637, 467)),
+        (260, (3637, 465, 3650, 479)), (261, (3634, 418, 3651, 433)), (262, (3638, 404, 3654, 418))]},
     # Landmarks: Kanto buildings standing in for Johto's, not for rent.
     'sprout-tower': {'box': (3872, 238, 3893, 258), 'rent': False},
     'academy': {'box': (3260, 520, 3279, 537), 'rent': False},
     'theatre': {'box': (3323, 292, 3348, 303), 'rent': False},
     'kurts-house': {'box': (3848, 270, 3863, 283), 'rent': False},
     'guide-gent': {'box': (3286, 607, 3296, 616), 'rent': False},
+    # Goldenrod: Saffron's six-storey guild hall as the Radio Tower, Celadon's department store, its
+    # guild hall as the Global Terminal and Saffron's café as the Game Corner.
+    'radio-tower': {'box': (3997, 455, 4014, 472), 'rent': False},
+    'global-terminal': {'box': (3720, 457, 3737, 474), 'rent': False},
+    'dept-store': {'box': (3678, 399, 3698, 414), 'walled': False, 'door': 9, 'rent': False},
+    'game-corner': {'box': (3956, 443, 3970, 453), 'walled': False, 'door': 0, 'rent': False},
+    # the Ruins of Alph research center: a Celadon building
+    'ruins-lab': {'box': (3638, 404, 3654, 418), 'rent': False},
+    # the Route 34 Day-Care: Pallet's house without its walls' ring, like the police box
+    'daycare': {'box': (3302, 790, 3314, 799), 'walled': False, 'door': 5, 'rent': False},
     # Pallet's house and cottage without their walls' ring (the door is below the box, `door` its
     # first column): Officer Jenny's police box, the boathouse and the windmills (a wheel on the roof).
     'police-box': {'box': (3302, 790, 3314, 799), 'walled': False, 'door': 5, 'rent': False},
@@ -110,6 +134,7 @@ class Town:
         self.npcs = []
         self.errors = []
         self.wheels = []  # windmills (top-left corner) that get MILL_WHEEL on the front of the roof
+        self.areas = []  # (x0, y0, x1, y1) kept clear of wild trees, like the ground around the streets
 
     # -- buildings
     def free(self, name, x, y, margin=1):
@@ -187,6 +212,13 @@ class Town:
 
 def _rng(seed):
     return np.random.default_rng(seed)
+
+
+def _seg_dist(x, y, a, b):
+    (ax, ay), (bx, by) = a, b
+    vx, vy = bx - ax, by - ay
+    k = min(1.0, max(0.0, ((x - ax) * vx + (y - ay) * vy) / max(1, vx * vx + vy * vy)))
+    return float(np.hypot(x - (ax + k * vx), y - (ay + k * vy)))
 
 
 def new_bark(t):
@@ -389,14 +421,171 @@ def azalea(t):
     t.put('cerulean-284', 2372, 1063)
 
 
-LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea}
+def goldenrod(t):
+    """Saffron's mirror, with Celadon's department store: the big city of the region, a paved grid
+    of two avenues crossing at a fountain square and a ring of side streets. The Radio Tower to the
+    north-east, the department store and Game Corner across from Whitney's Gym and the Pokémon
+    Center, the Global Terminal by the south gate, a flower shop and its gardens, and a harbour on
+    the bay in the south-west."""
+    rng = _rng(54)
+    t.streets += [([(2320, 662), (2320, 800)], 3), ([(2248, 730), (2396, 730)], 3),
+                  ([(2272, 690), (2368, 690)], 2), ([(2250, 770), (2368, 770)], 2),
+                  ([(2272, 690), (2272, 770)], 2), ([(2368, 690), (2368, 770)], 2)]
+    t.plazas.append((2320, 730, 9))
+    # fountain on the square: water in a stone ring with lamps on the corners
+    t.ground(2318, 728, 2322, 732, 'small tiled gray stone')
+    t.ground(2319, 729, 2321, 731, 'walkable sea')
+    t.block(2318, 728, 2322, 732)
+    for x, y in [(2318, 728), (2322, 728), (2318, 732), (2322, 732)]:
+        t.item(x, y, STREET_LAMP)
+    # north of the first street: the Radio Tower and homes
+    t.put('radio-tower', 2340, 668)
+    t.item(2338, 686, SIGN)
+    t.put('saffron-300', 2276, 674)
+    t.put('saffron-305', 2295, 671)
+    # north-west block: homes along the first street, then the Pokémon Center, Mart and Gym on the avenue
+    t.put('saffron-292', 2276, 694)
+    t.put('saffron-303', 2296, 694)
+    t.put('pokecenter', 2278, 718)
+    t.item(2276, 726, PC_SIGN)
+    t.put('mart', 2289, 717)
+    t.item(2298, 726, MART_SIGN)
+    t.put('gym', 2301, 713)
+    # north-east block: homes, the department store and the Game Corner
+    t.put('celadon-249', 2326, 694)
+    t.put('celadon-260', 2347, 694)
+    t.put('dept-store', 2326, 710)
+    t.put('game-corner', 2349, 715)
+    # south blocks: homes facing the main street and the third street
+    t.put('saffron-293', 2277, 734)
+    t.put('celadon-258', 2298, 734)
+    t.put('saffron-307', 2277, 755)
+    t.put('celadon-256', 2300, 755)
+    t.put('saffron-306', 2326, 734)
+    t.put('saffron-304', 2347, 734)
+    t.put('celadon-252', 2326, 754)
+    t.put('saffron-302', 2347, 755)
+    # west of the ring, facing the west street; east of it, facing the east street
+    t.put('saffron-294', 2254, 695)
+    t.put('celadon-257', 2252, 740)
+    t.put('saffron-297', 2371, 694)
+    t.put('celadon-251', 2371, 708)
+    t.put('saffron-295', 2371, 736)
+    t.put('celadon-250', 2371, 755)
+    # by the south gate: the Global Terminal, and the flower shop with its fenced gardens
+    t.put('global-terminal', 2324, 776)
+    t.put('celadon-255', 2300, 776)
+    t.fence(2276, 775, 2296, 791, gates=[(2296, 781), (2296, 782)])
+    for y in range(778, 790, 3):
+        for x in range(2279, 2294):
+            t.item(x, y, FLOWERS[(x + y) % len(FLOWERS)], ground='dirt')
+    # harbour: a pier from the third street into the bay, boats and crates
+    t.pier = ([(2250, 770), (2226, 770)], 1)
+    for x, y in [(2253, 765), (2255, 776), (2258, 776)]:
+        t.item(x, y, int(rng.choice(CRATES + WOOD_PILES)))
+    t.item(2231, 766, BOAT, ground='walkable sea')
+    t.item(2236, 775, BOAT, ground='walkable sea')
+    # street lamps along the avenues, benches round the square, trees in planters
+    for y in range(676, 800, 12):
+        for x in (2316, 2324):
+            if t.free_tile(x, y) and not 724 <= y <= 736:
+                t.item(x, y, STREET_LAMP)
+    for x in range(2256, 2396, 12):
+        for y in (726, 734):
+            if t.free_tile(x, y) and not 2310 <= x <= 2330:
+                t.item(x, y, STREET_LAMP)
+    for x, y in [(2312, 727), (2328, 727), (2312, 733), (2328, 733)]:
+        t.item(x, y, BENCH_S)
+
+
+def national_park(t):
+    """A walled park on lawn: gray stone walks crossing at a fountain, flower beds, benches and lamps,
+    rows of trees along the walks and the contest grass around them. Gates south (Route 35) and
+    east (Route 36)."""
+    t.streets += [([(2325, 618), (2325, 560)], 1.5), ([(2290, 588), (2362, 588)], 1.5)]
+    t.plazas.append((2325, 588, 6))
+    t.areas.append((2287, 557, 2363, 617))
+    t.fence(2286, 556, 2364, 618, gates=[(2324, 618), (2325, 618), (2326, 618),
+                                         (2364, 587), (2364, 588), (2364, 589)])
+    t.ground(2323, 586, 2327, 590, 'small tiled gray stone')
+    t.ground(2324, 587, 2326, 589, 'walkable sea')
+    t.block(2323, 586, 2327, 590)
+    t.item(2325, 588, STATUE)
+    for x, y in [(2323, 586), (2327, 586), (2323, 590), (2327, 590)]:
+        t.item(x, y, STREET_LAMP)
+    for k in range(10):
+        a = k / 10 * 6.283
+        x, y = int(round(2325 + np.cos(a) * 9)), int(round(588 + np.sin(a) * 9))
+        if t.free_tile(x, y):
+            t.item(x, y, FLOWERS[k % len(FLOWERS)])
+    for x in range(2296, 2360, 8):
+        for y in (584, 592):
+            if abs(x - 2325) > 8:
+                t.item(x, y, BENCH_S if (x // 8) % 2 else STREET_LAMP)
+    for y in range(564, 616, 8):
+        for x in (2321, 2329):
+            if abs(y - 588) > 8:
+                t.item(x, y, CHERRY_TREE)
+    # a ring of trees inside the wall, and a flower bed in each quarter
+    for x in range(2290, 2362, 6):
+        for y in (560, 614):
+            if abs(x - 2325) > 4:
+                t.item(x, y, RED_TREE if (x // 6) % 2 else YELLOW_TREE)
+    for y in range(566, 612, 6):
+        for x in (2290, 2360):
+            if abs(y - 588) > 4:
+                t.item(x, y, RED_TREE if (y // 6) % 2 else YELLOW_TREE)
+    for cx, cy in [(2305, 572), (2345, 572), (2305, 604), (2345, 604)]:
+        for x in range(cx - 4, cx + 5):
+            for y in (cy - 1, cy + 1):
+                t.item(x, y, FLOWERS[(x + y) % len(FLOWERS)], ground='dirt')
+
+
+def ruins_of_alph(t):
+    """The ruins on their plateau: sandstone courts with broken stones and statues in front of four
+    chambers cut into rock mounds, and the research center by the path in from Route 36."""
+    t.streets += [([(2410, 600), (2410, 628), (2440, 641), (2486, 652)], 1.5)]
+    t.areas.append((2380, 604, 2470, 668))
+    t.put('ruins-lab', 2372, 606)
+    courts = [(2392, 634), (2414, 652), (2436, 628), (2444, 656)]
+    for x0, y0 in courts:
+        t.ground(x0, y0, x0 + 8, y0 + 5, 'tiled sandstone floor')
+        t.block(x0 - 1, y0 - 14, x0 + 9, y0 + 6)  # the court and the mound behind it
+        for dx, dy in [(0, 0), (8, 0), (0, 5), (8, 5)]:
+            t.item(x0 + dx, y0 + dy, int(3729 + (x0 + dx + y0) % 4))
+        t.item(x0 + 2, y0 + 3, STATUE)
+        t.item(x0 + 6, y0 + 3, STATUE)
+    # broken stones strewn over the plateau, off the path
+    street = t.streets[-1][0]
+    rng = _rng(55)
+    for _ in range(60):
+        x, y = int(rng.integers(2382, 2468)), int(rng.integers(606, 666))
+        near_path = min(_seg_dist(x, y, a, b) for a, b in zip(street, street[1:])) < 4
+        if not near_path and all(t.free_tile(x + dx, y + dy) for dx in range(-2, 3) for dy in range(-2, 3)):
+            t.item(x, y, int(rng.choice([3729, 3730, 3731, 3732])))
+
+
+def ilex_shrine(t):
+    """The shrine in a clearing beside the Ilex Forest path: a stone court with a statue, lanterns and
+    flowers."""
+    t.ground(2288, 939, 2296, 945, 'tiled sandstone floor')
+    t.areas.append((2284, 935, 2300, 949))
+    t.item(2292, 940, STATUE)
+    t.item(2290, 941, LANTERN)
+    t.item(2294, 941, LANTERN)
+    for x in range(2289, 2296, 2):
+        t.item(x, 946, FLOWERS[x % len(FLOWERS)])
+
+
+LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea, 54: goldenrod,
+           'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine}
 
 
 def layout(spec, sizes, strict=True):
     t = Town(spec, sizes)
     t.pier = t.boardwalk = None
     t.bridge_ns = []
-    LAYOUTS[spec['town_id']](t)
+    LAYOUTS[spec.get('town_id', spec['name'])](t)
     if strict and t.errors:
         raise ValueError('%s: %s' % (spec['name'], '; '.join(t.errors)))
     return t

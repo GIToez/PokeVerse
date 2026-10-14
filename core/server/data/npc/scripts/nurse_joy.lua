@@ -154,6 +154,7 @@ CITY_BY_POS[{x = 2717, y = 797, z = 7}] = "New Bark"
 CITY_BY_POS[{x = 2542, y = 826, z = 7}] = "Cherrygrove"
 CITY_BY_POS[{x = 2513, y = 556, z = 7}] = "Violet"
 CITY_BY_POS[{x = 2391, y = 1030, z = 7}] = "Azalea"
+CITY_BY_POS[{x = 2283, y = 720, z = 7}] = "Goldenrod"
 
 local function getCity()
     local city
