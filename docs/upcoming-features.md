@@ -618,7 +618,7 @@ is changed yet.
 | --- | --- | --- |
 | Poké, Great and Ultra Balls | $8, $35, $130 | Poké Mart NPCs |
 | Potions and revives | $10 to $130, revive $200 | Poké Mart NPCs |
-| Houses | $50 a tile once (median house $3,900, largest $39,250); **rent is 0 for all 577 houses** | `housePriceEachSquare`, `world/map-house.xml` |
+| Houses (Premium only) | $50 a tile (median house $3,900, largest $39,250), and the same again as rent every 30 days (`housePriceAsRent`), from the bank, else the depot; 7 daily warnings, then the house is lost | `housePriceEachSquare`, `houseRentPeriod`, `config.lua`; `Houses::payRent`, `src/house.cpp` |
 | Daycare | $1 to $4 a minute by level, + $100 | `getPricePerMinute`, `daycareMale.lua` |
 | Travel | $50 to $300 a trip | captain NPCs (`travel_destinations`) |
 | Safari Zone | $1,000 | `saffariZoneEnter.lua` |
