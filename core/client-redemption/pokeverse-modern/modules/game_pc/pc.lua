@@ -6,6 +6,7 @@ local state = {}
 local searchEvent, helloEvent
 local drag
 local lockerPos
+local openChestEvent
 
 -- server locker ids and the client ids OTClient uses for the same items
 local LOCKER_IDS = {
@@ -98,6 +99,15 @@ local function findLocker()
     return nil
 end
 
+local function openDepotChest(locker)
+    for _, item in ipairs(locker:getItems()) do
+        if item:isContainer() then
+            g_game.open(item, locker)
+            return
+        end
+    end
+end
+
 local function onContainerOpen(container, previousContainer)
     if previousContainer then
         return
@@ -105,6 +115,11 @@ local function onContainerOpen(container, previousContainer)
     local item = container:getContainerItem()
     if not item or not LOCKER_IDS[item:getId()] then
         return
+    end
+    if openChestEvent then
+        removeEvent(openChestEvent)
+        openChestEvent = nil
+        openDepotChest(container)
     end
     if not isPokemonCenter() then
         return
@@ -932,13 +947,18 @@ function handlers.changed()
     end
 end
 
--- "Open depot": the server lets the next use of the locker open it as a container
+-- "Open depot": the server lets the next use of the locker open it as a container, and the depot
+-- chest inside is opened in the same window
 function handlers.useLocker()
     handlers.close()
     local pos = state.locker
     local tile = pos and g_map.getTile(pos)
     local thing = tile and tile:getTopUseThing()
     if thing then
+        if openChestEvent then
+            removeEvent(openChestEvent)
+        end
+        openChestEvent = scheduleEvent(function() openChestEvent = nil end, 3000)
         g_game.use(thing)
     end
 end
@@ -1145,10 +1165,10 @@ function terminate()
     disconnect(g_game, { onGameStart = sayHello, onGameEnd = onGameEnd })
     disconnect(Container, { onOpen = onContainerOpen })
     disconnect(LocalPlayer, { onPositionChange = onPositionChange })
-    for _, event in ipairs({ searchEvent, helloEvent }) do
+    for _, event in pairs({ searchEvent, helloEvent, openChestEvent }) do
         removeEvent(event)
     end
-    searchEvent, helloEvent = nil, nil
+    searchEvent, helloEvent, openChestEvent = nil, nil, nil
     window:destroy()
     window = nil
     state = {}
