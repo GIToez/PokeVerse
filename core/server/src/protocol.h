@@ -64,6 +64,8 @@ class Protocol : boost::noncopyable
 	protected:
 		//use this function for autosend messages only
 		OutputMessage_ptr getOutputBuffer();
+		// sends what the output buffer holds now, so the next getOutputBuffer starts an empty one
+		void flushOutputBuffer();
 
 		void setRawMessages(bool value) {m_rawMessages = value;}
 		void enableChecksum() {m_checksumEnabled = true;}

@@ -1,0 +1,111 @@
+LoginText < Label
+  font: verdana-11px-antialised
+  color: #dfdfdf
+  phantom: true
+
+LoginDay < UIWidget
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+
+  LoginText
+    id: title
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-align: center
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    phantom: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: title.bottom
+    margin-top: 6
+
+  LoginText
+    id: money
+    color: #f0d070
+    text-align: center
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: title.bottom
+    margin-top: 16
+    visible: false
+
+  LoginText
+    id: name
+    color: #a8b4b4
+    text-align: center
+    text-wrap: true
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 3 6 3
+    height: 26
+
+  UIWidget
+    id: check
+    image-source: /images/ui/checkbox-checked
+    size: 24 24
+    phantom: true
+    anchors.horizontalCenter: item.horizontalCenter
+    anchors.verticalCenter: item.verticalCenter
+    visible: false
+
+  $on:
+    image-color: #f0d070
+
+DailyLoginWindow < MainWindow
+  !text: tr('Daily Login Reward')
+  size: 520 230
+  @onEscape: self:hide()
+
+  Panel
+    id: days
+    anchors.top: parent.top
+    anchors.bottom: info.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: 488
+    margin-bottom: 8
+    layout:
+      type: grid
+      cell-size: 64 104
+      cell-spacing: 4
+      flow: true
+
+  LoginText
+    id: info
+    text-wrap: true
+    text-align: center
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: separator.top
+    margin-bottom: 6
+    height: 28
+
+  HorizontalSeparator
+    id: separator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: close.top
+    margin-bottom: 8
+
+  Button
+    id: claim
+    !text: tr('Claim')
+    width: 80
+    anchors.right: close.left
+    anchors.bottom: parent.bottom
+    margin-right: 8
+
+  Button
+    id: close
+    !text: tr('Close')
+    width: 80
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: self:getParent():hide()

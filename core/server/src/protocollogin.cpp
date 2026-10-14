@@ -35,6 +35,8 @@
 #include "game.h"
 
 #include "polls.h"
+#include "outfit.h"
+#include "town.h"
 
 extern ConfigManager g_config;
 extern Game g_game;
@@ -285,6 +287,22 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
                     output->AddU16(pInfoIt->first);
                     output->AddString(pInfoIt->second);
                 }
+
+                if(version >= CLIENT_VERSION_SELECT_INFO)
+                {
+                    uint8_t sex;
+                    uint32_t townId, lastLogin, playTime;
+                    #ifndef __LOGIN_SERVER__
+                    IOLoginData::getInstance()->getPlayerSelectInfo((*it), sex, townId, lastLogin, playTime);
+                    #else
+                    IOLoginData::getInstance()->getPlayerSelectInfo(it->first, sex, townId, lastLogin, playTime);
+                    #endif
+                    Town* town = Towns::getInstance()->getTown(townId);
+                    output->AddByte(sex);
+                    output->AddString(town ? town->getName() : "");
+                    output->AddU32(lastLogin);
+                    output->AddU32(playTime);
+                }
             }
 		}
 
@@ -296,6 +314,25 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 			
 		if (operatingSystem >= CLIENTOS_OTCLIENT_WINDOWS && operatingSystem <= CLIENTOS_OTCLIENT_MAC) {
             output->AddByte(Polls::getInstance()->getAvailablePollForAccount(account.number) ? true : false);
+            if(version >= CLIENT_VERSION_SELECT_INFO)
+            {
+                OutfitList female = Outfits::getInstance()->getStarterOutfits(PLAYERSEX_FEMALE),
+                    male = Outfits::getInstance()->getStarterOutfits(PLAYERSEX_MALE);
+                output->AddByte(std::min<size_t>(female.size() + male.size(), 255));
+                uint16_t count = 0;
+                for(uint8_t sex = PLAYERSEX_FEMALE; sex <= PLAYERSEX_MALE; ++sex)
+                {
+                    const OutfitList& list = (sex == PLAYERSEX_FEMALE ? female : male);
+                    for(OutfitList::const_iterator oit = list.begin(); oit != list.end() && count < 255; ++oit, ++count)
+                    {
+                        output->AddByte(sex);
+                        output->AddU16(oit->lookType);
+                        output->AddString(oit->name);
+                    }
+                }
+                output->AddByte(std::min<int32_t>(255, std::max<int32_t>(1, g_config.getNumber(ConfigManager::MAX_CHARACTERS_PER_ACCOUNT))));
+                output->AddString(g_config.getString(ConfigManager::SERVER_NAME));
+            }
         }
 
 		OutputMessagePool::getInstance()->send(output);

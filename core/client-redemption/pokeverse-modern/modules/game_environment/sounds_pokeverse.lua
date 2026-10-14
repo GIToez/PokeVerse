@@ -9,7 +9,7 @@
 --     track           a key of SOUND_FILES (environment.lua), or nil to keep the music that
 --                     is playing and only change the name
 --     priority        kept for the legacy format, unused here
---     name            shown in the area banner and under the clock; its banner theme and
+--     name            shown in the area banner and next to the clock; its banner theme and
 --                     line come from area_names.lua
 --
 -- The minimap shows the coordinates under the mouse; click it to copy your own position.

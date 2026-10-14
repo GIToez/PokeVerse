@@ -1,0 +1,196 @@
+// PokeVerse login and character select look (artwork: scripts/art/login_ui.py)
+
+PVPanel < UIWidget
+  image-source: /modules/client_entergame/images/panel
+  image-border: 22
+  padding: 26
+  focusable: false
+
+PVInner < UIWidget
+  image-source: /modules/client_entergame/images/inner
+  image-border: 10
+  phantom: true
+
+PVText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  phantom: true
+
+PVMuted < PVText
+  color: #96aacd
+
+PVTitle < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 16
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+PVField < UITextEdit
+  image-source: /modules/client_entergame/images/field
+  image-border: 8
+  font: verdana-11px-antialised
+  color: #e6ecff
+  placeholder-color: #7d8db0
+  selection-color: #ffffff
+  selection-background-color: #3d6fb8
+  text-offset: 0 1
+  text-align: left
+  height: 34
+  padding: 10 10 10 32
+  change-cursor-image: false
+
+  $focus:
+    image-source: /modules/client_entergame/images/field_focus
+
+// children anchor to the padding box, so the icon goes back into the left padding
+PVFieldIcon < UIWidget
+  size: 16 16
+  anchors.left: parent.left
+  anchors.verticalCenter: parent.verticalCenter
+  margin-left: -22
+  phantom: true
+
+PVPasswordField < PVField
+  text-hidden: true
+  padding-right: 34
+
+  UICheckBox
+    id: showPassword
+    size: 18 18
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: -25
+    image-source: /modules/client_entergame/images/icon_eye
+    image-clip: 0 0 18 18
+    !tooltip: tr('Show password')
+    @onCheckChange: |
+      self:getParent():setTextHidden(not self:isChecked())
+      self:setTooltip(self:isChecked() and tr('Hide password') or tr('Show password'))
+    $checked:
+      image-clip: 0 18 18 18
+
+PVCheckBox < UICheckBox
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  text-offset: 22 0
+  image-source: /modules/client_entergame/images/checkbox
+  image-clip: 0 0 16 16
+  image-size: 16 16
+  height: 16
+  $checked:
+    image-clip: 0 16 16 16
+  $disabled:
+    opacity: 0.45
+
+PVButton < UIButton
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffffff
+  image-border: 8
+  height: 34
+  text-align: center
+  $disabled:
+    opacity: 0.45
+
+PVYellowButton < PVButton
+  image-source: /modules/client_entergame/images/button_yellow
+  color: #2a1e00
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_yellow_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_yellow_pressed
+
+PVGreenButton < PVButton
+  image-source: /modules/client_entergame/images/button_green
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_green_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_green_pressed
+
+PVBlueButton < PVButton
+  image-source: /modules/client_entergame/images/button_blue
+  color: #cfe2ff
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_blue_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_blue_pressed
+
+PVRedButton < PVButton
+  image-source: /modules/client_entergame/images/button_red
+  color: #ffb4b4
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_red_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_red_pressed
+
+PVGoldButton < PVButton
+  image-source: /modules/client_entergame/images/button_gold
+  color: #ffd75a
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_gold_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_gold_pressed
+
+// a button icon left of its centered text
+PVButtonIcon < UIWidget
+  anchors.verticalCenter: parent.verticalCenter
+  anchors.right: parent.horizontalCenter
+  phantom: true
+
+PVFooterButton < UIButton
+  font: verdana-11px-antialised
+  color: #dce6ff
+  size: 70 46
+  text-align: bottom
+  icon-align: top
+  icon-size: 24 24
+  icon-offset-y: 2
+  $hover:
+    color: #ffffff
+    icon-color: #ffd75a
+  $pressed:
+    opacity: 0.7
+
+PVCloseButton < UIButton
+  image-source: /modules/client_entergame/images/icon_close
+  size: 18 18
+  $hover:
+    opacity: 0.8
+  $pressed:
+    opacity: 0.6
+
+PVSeparator < UIWidget
+  height: 1
+  background-color: #34507a
+  phantom: true
+
+PVPartySlot < UIWidget
+  image-source: /modules/client_entergame/images/party_slot
+  size: 40 40
+  UIWidget
+    id: picture
+    anchors.fill: parent
+    margin: 4
+    image-smooth: true
+    phantom: true
+
+PVSmallPartySlot < PVPartySlot
+  image-source: /modules/client_entergame/images/party_slot_small
+  size: 30 30
+
+// label with an icon: the icon is the widget's own image, the text is offset past it
+PVIconText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  text-offset: 17 0
+  icon-align: left
+  icon-size: 12 12
+  phantom: true
+
+PVModal < PVPanel
+  anchors.centerIn: parent
+  focusable: true

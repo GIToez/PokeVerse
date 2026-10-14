@@ -114,7 +114,9 @@
 	<item id="467" article="a" name="stone tile">
 		<attribute key="description" value="It seems to be a switch." />
 	</item>
-	<item id="468" article="a" name="loose stone pile" />
+	<item id="468" article="a" name="loose stone pile">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="469" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="468" />
@@ -131,13 +133,17 @@
 	<item fromid="479" toid="480" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 	</item>
-	<item id="481" article="a" name="loose stone pile" />
+	<item id="481" article="a" name="loose stone pile">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="482" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="481" />
 		<attribute key="duration" value="300" />
 	</item>
-	<item id="483" article="a" name="loose ice pile" />
+	<item id="483" article="a" name="loose ice pile">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="484" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="483" />
@@ -411,7 +417,10 @@
 	<item fromid="1278" toid="1279" article="a" name="sail" />
 	<item fromid="1280" toid="1283" article="a" name="rudder of the boat" />
 	<item id="1284" article="a" name="drawbridge" />
-	<item fromid="1285" toid="1292" article="a" name="stone" />
+	<item id="1285" article="a" name="stone">
+		<attribute key="description" value="It looks like it can be smashed." />
+	</item>
+	<item fromid="1286" toid="1292" article="a" name="stone" />
 	<item id="1293" article="a" name="stone">
 		<attribute key="weight" value="1500" />
 	</item>
@@ -4029,7 +4038,9 @@
 		<attribute key="decayTo" value="2782" />
 		<attribute key="duration" value="30" />
 	</item>
-	<item id="2782" name="jungle grass" />
+	<item id="2782" name="jungle grass">
+		<attribute key="description" value="It looks like it can be cut." />
+	</item>
 	<item id="2783" article="a" name="swamp flower" />
 	<item id="2784" article="a" name="dry bush" />
 	<item id="2785" article="a" name="blueberry bush" />
@@ -6122,7 +6133,10 @@
 	<item id="3552" article="an" name="open door">
 		<attribute key="type" value="door" />
 	</item>
-	<item fromid="3569" toid="3574" article="a" name="waterfall" />
+	<item fromid="3569" toid="3572" article="a" name="waterfall">
+		<attribute key="description" value="It looks like it can be climbed with Waterfall." />
+	</item>
+	<item fromid="3573" toid="3574" article="a" name="waterfall" />
 	<item fromid="3587" toid="3596" article="a" name="small boat" />
 	<item fromid="3597" toid="3598" article="a" name="sail" />
 	<item fromid="3599" toid="3600" article="a" name="paddle" />
@@ -6569,7 +6583,9 @@
 		<attribute key="decayTo" value="3985" />
 		<attribute key="duration" value="240" />
 	</item>
-	<item id="3985" name="jungle grass" />
+	<item id="3985" name="jungle grass">
+		<attribute key="description" value="It looks like it can be cut." />
+	</item>
 	<item fromid="3986" toid="4005" article="a" name="thorn bush" />
 	<item id="4006" article="an" name="orange tree" />
 	<item id="4007" article="a" name="thread tree" />
@@ -13415,7 +13431,9 @@
 		<attribute key="corpseType" value="blood" />
 		<attribute key="fluidSource" value="blood" />
 	</item>
-	<item id="7932" article="a" name="burried hole" />
+	<item id="7932" article="a" name="burried hole">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="7933" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="7932" />
@@ -13863,7 +13881,9 @@
 	<item id="8575" article="a" name="magma hole" />
 	<item id="8577" />
 	<item id="8578" name="grass" />
-	<item id="8579" article="a" name="hole" />
+	<item id="8579" article="a" name="hole">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="8580" article="a" name="grate" />
 	<item id="8581" article="a" name="wooden cart" />
 	<item id="8582" article="a" name="branch" />
@@ -18274,8 +18294,11 @@
 	<item id="12292" article="an" name="old fishing rod" />
 	<item id="12293" article="a" name="good fishing rod" />
 	<item id="12294" article="a" name="super fishing rod" />
-	<item id="12295" article="a" name="nest tree" />
+	<item id="12295" article="a" name="nest tree">
+		<attribute key="description" value="It looks like it can be headbutted." />
+	</item>
 	<item id="12296" article="a" name="nest tree">
+		<attribute key="description" value="It was headbutted a moment ago. Come back in a minute." />
 		<attribute key="decayTo" value="12295" />
 		<attribute key="duration" value="60" />
 	</item>
@@ -24803,7 +24826,9 @@
 	<item id="18739" article="a" name="horn trumpet" />
 	<item id="18740" name="nothing special" /> <!-- Moltres Dungeon invisible tile -->
 	<item id="18741" article="an" name="ice block" />
-	<item id="18742" name="ice pillar" />
+	<item id="18742" name="ice pillar">
+		<attribute key="description" value="It looks like it can be smashed." />
+	</item>
 	<item id="18743" name="nothing special" /> <!-- Articuno Dungeon invisible tile -->
 	<item id="18744" article="a" name="legendary chest" />
 	<item id="18745" article="an" name="energized barrel" />
@@ -25978,8 +26003,13 @@
 	<item fromid="21443" toid="21446" article="a" name="bookshelf" />
 	<item fromid="21524" toid="21527" article="a" name="cord" />
 
-	<item id="23443" article="a" name="big rock" />
-	<item fromid="23444" toid="23449" article="a" name="mountain climb rock" />
+	<item id="23443" article="a" name="big rock">
+		<attribute key="description" value="It looks like it can be moved with Strength." />
+	</item>
+	<item fromid="23444" toid="23445" article="a" name="mountain climb rock" />
+	<item fromid="23446" toid="23449" article="a" name="mountain climb rock">
+		<attribute key="description" value="It looks like it can be climbed with Rock Climb." />
+	</item>
 	<item id="23450" article="a" name="calcium vitamin">
 		<attribute key="description" value="Adds extra (5%, 8%, 10%) special attack stats to the target pokemon per use, until reach 3 uses." />
 		<attribute key="rareEffect" value="1" />

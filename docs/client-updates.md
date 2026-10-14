@@ -29,6 +29,8 @@ the test builds never update.
    **Settings → Pages → Build and deployment → Source: Deploy from a branch**, branch
    `gh-pages`, folder `/ (root)`. That first publish waits up to 15 minutes for the site;
    if Pages is not on by then it fails. Turn Pages on and use **Re-run failed jobs**.
+   The site's custom domain (`pokeverse.quest`) is published with it as a `CNAME` file, so
+   every publish keeps it; set the repository variable `PAGES_DOMAIN` if the domain changes.
 3. Optional: set the repository variable `LIVE_SERVER_HOST` (Settings → Secrets and
    variables → Actions → Variables) if the live server address changes. Without it the
    workflow uses the current OVH address.

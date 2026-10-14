@@ -58,6 +58,7 @@ secret; secrets are hidden in the logs):
 | Variable | `LIVE_DAILY_RESTART_TIME` | optional, `HH:MM`, default `06:00` |
 | Variable | `LIVE_DAILY_RESTART` | optional, `false` turns the daily restart off |
 | Variable | `LIVE_SERVER_HOST` | optional, a domain name players connect to (default `OVH_HOST`) |
+| Variable | `LIVE_SERVER_NAME` | optional, world name on the character list (default `LeafGreen`; up to 20 letters, digits or spaces) |
 | Variable | `OVH_SSH_PORT` | optional, if SSH is not on port 22 |
 | Variable | `DISCORD_APPLICATION_ID`, `DISCORD_GUILD_ID` | production bot application and server IDs |
 | Variable | `DISCORD_ADMIN_USER_IDS`, `DISCORD_ADMIN_ROLE_IDS` | comma-separated IDs allowed to use admin commands |

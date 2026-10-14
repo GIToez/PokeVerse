@@ -1,4 +1,6 @@
 local duelRunAwayCondition = createConditionObject(CONDITION_EXHAUST, -1, false, CONDITION_SUBID.EXHAUST.DUELRUNAWAY)
+-- the trainer can be hit once the Pokemon is back; a short grace period covers a switch (doPokemonCall ends it)
+local switchProtection = createConditionObject(CONDITION_INVULNERABLE, POKEMON_SWITCH_PROTECTION_MS)
 
 local function doSendProjectile(fromPosition, toCid, projectile)
 	doSendDistanceShoot(fromPosition, getCreaturePosition(toCid), projectile)
@@ -46,6 +48,10 @@ function inUseBall(cid, item)
 		doTransformItem(item.uid, balls[ballName].charged)
 		doSendMagicEffect(getCreaturePosition(pokemon), balls[ballName].effects.use)
 		setPlayerVulnerable(cid, true)
+		if (not getPlayerDueling(cid) and not getPlayerBattleing(cid)) then
+			doAddCondition(cid, switchProtection)
+			doCreatureSetStorage(cid, playersStorages.switchProtectionUntil, os.time() + math.ceil(POKEMON_SWITCH_PROTECTION_MS / 1000))
+		end
 		setCreatureMaxMana(cid, 0)
 		doPlayerAddMana(cid, -pokemonEnergy, false)
 		doAddExhaust(cid)

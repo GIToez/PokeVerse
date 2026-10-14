@@ -5,11 +5,10 @@ so. Items marked **To decide** need an answer before work starts.
 
 ## Order
 
-1. [Depot overflow fix](#1-depot-overflow-fix-pokémon-are-lost-today): Pokémon are lost today.
-2. [Auto-walk fix](#2-auto-walk-fix).
+1. [New depot](#1-new-depot): Poké boxes, inbox and stash (built).
+2. [Auto-walk and world map](#2-auto-walk-and-world-map) (one effort, shipped in phases).
 3. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
 4. [Website: live status and Discord card](#4-website).
-5. [World map and waypoints](#5-world-map).
 6. [Vocations](#6-vocations), replacing the old vocations.
 7. [Pokémon storage](#7-pokémon-storage) and the [GTS](#8-gts-global-trading-system),
    together: they share the search, filters and windows.
@@ -28,27 +27,49 @@ Also open: the [Android signing key](client-updates.md#one-time-setup) (needed b
 players install the APK for real), a phone UI pass, and a security check of the live
 server (open ports, SSH, firewall).
 
-## 1. Depot overflow fix (Pokémon are lost today)
+## 1. New depot
+
+**Built** (`lib/ps/systems/067-pc.lua`, client `game_pc`): one PC window with Poké boxes,
+stash, inbox and depot tabs and a search over all of them. Using any depot locker opens it
+straight away (the locker action calls `PC.open`; the container no longer opens first). "Open
+depot" in the PC opens the old locker and its depot chest. Old clients without the PC keep the
+classic container. The client talks over extended opcode JSON, not chat commands. Where it differs from the plan below:
+
+- A Pokémon in a Poké box is a database row with its ball's attributes (`pc_boxes`), the
+  same way the GTS and the Day Care keep them, not an item in a container. Nothing about
+  the Pokémon changes, and it takes no depot space.
+- Throwing a ball is not refused when every box is full: the Pokémon goes to the inbox,
+  which has no limit, so it is still never lost.
+- Deliveries still call `doPlayerAddDepotItem`. For PC players, stacks go straight to the
+  inbox; Pokémon and other items are marked, put in the depot chest and moved right after
+  the script that delivered them is done (it may still use the item). Mail and parcels
+  left in the locker are unpacked into the inbox. A delivered bag stays in the depot.
+- The stash takes stackable items and held items only.
+- Search results open the tab they are in; they are not taken straight to the bag.
+- Not built yet: the reward chest, and the GTS filters (type, IVs, nature) in the boxes.
 
 A player's depot holds up to 2,000 items (`Group::getDepotLimit` in `src/group.cpp`; staff
 groups have 3,000 to 5,000 in `data/XML/groups.xml`). A Pokémon caught or given as a reward
-goes to the depot when the bag is full. When the depot is full too, `doCreatePokemonBall`
-(`data/lib/ps/config/balls.lua`) and `doPlayerEnforcePokemonLimit`
-(`data/lib/ps/functions/player.lua`) only log `Can't send to depot` and the ball is lost.
+goes to the depot when the bag is full (`doCreatePokemonBall` in
+`data/lib/ps/config/balls.lua`, `doPlayerEnforcePokemonLimit` in
+`data/lib/ps/functions/player.lua`). These deliveries go in even past the limit, so a full
+depot does not lose Pokémon (checked in the code; see below). An over-limit depot only
+stops the player from putting more items in by hand.
 
 ### Audit: PokeVerse depot today
 
-- One depot per town: a depot locker that holds a depot chest (item 2594); everything else
-  is normal containers inside it.
-- `doPlayerAddDepotItem` (`src/luascript.cpp`) adds an item to the depot through the normal
-  checks, so a full depot refuses it (`Depot::__queryAdd` in `src/depot.cpp` returns
-  "depot is full"). The engine has a flag that skips the limit (`FLAG_NOLIMIT`), but this
-  function never uses it.
+- One depot (number 0) shared by every Pokémon Center: a depot locker that holds a depot
+  chest (item 2594); everything else is normal containers inside it.
+- `doPlayerAddDepotItem` (`src/luascript.cpp`) moves the item with `FLAG_NOLIMIT`, which
+  skips both the depot limit (`Depot::__queryAdd` in `src/depot.cpp`) and the full
+  container check (`Container::__queryAdd` and `__queryMaxCount` in `src/container.cpp`).
+  So deliveries never fail because the depot is full. The `Can't send to depot` log line
+  is only reached for other errors (no player, no item).
 - Each Pokémon ball counts as one item, the same as a potion or a stone.
 - The code already warns that lowering the limit makes items disappear
   (`group.cpp`: "THIS IS VERY DANGEROUS, ITEMS CAN DISAPPEAR").
 - Used by NPC battles, Rocket battles, the Frontier Island arenas, the Pokémon market and
-  PokéTrader NPCs, and surprise boxes, so all of them can hit the same problem.
+  PokéTrader NPCs, and surprise boxes.
 
 ### Audit: the Redemption depot
 
@@ -77,10 +98,6 @@ server (Canary) is not, so this part comes from the client code plus how Canary 
 The depot is already one depot shared by every Pokémon Center, so it can be opened
 anywhere (like the PC in the games); the new depot stays shared. All five parts, built on our own extended messages (JSON, like the Tasks window) and
 reusing the Redemption client windows where they exist.
-
-**Step 0, first: a delivery never fails.** Until the inbox exists, a Pokémon or item that
-doesn't fit still goes into the depot past the limit (`FLAG_NOLIMIT` on
-`doPlayerAddDepotItem`), and the player is told. Small, and it stops the data loss now.
 
 1. **Inbox:** deliveries arrive here: mail (items and Pokémon mailed to the player),
    items that don't fit in the bag, rewards, and later GTS purchases (items and Pokémon)
@@ -128,7 +145,7 @@ and says "Loot not collected! Check your backpack.").
 their depot move into Poké boxes and the stackable items into the stash; the rest stays.
 Logged, so it can be checked.
 
-**Order:** step 0, then the inbox, Poké boxes, stash, depot search, and the reward chest
+**Order:** the inbox, Poké boxes, stash, depot search, and the reward chest
 when bosses or raids need it.
 
 **To decide:**
@@ -136,14 +153,201 @@ when bosses or raids need it.
 - Whether Premium gets anything extra (for example box wallpapers or names), never more
   safety.
 
-- Search the live server logs for `Can't send to depot` to find Pokémon already lost.
+- To be sure, search the live server logs for `Can't send to depot`.
 - Raising the depot limit for everyone is not a fix on its own: it moves the problem, and
   every depot item is saved again on each save.
 
-## 2. Auto-walk fix
+## 2. Auto-walk and world map
 
-Auto-walk (clicking on the map or minimap) misbehaves since diagonal walking became faster.
-The waypoint walking of the [world map](#5-world-map) depends on it.
+Click-to-walk (game map, minimap, full map) must feel reliable again. On top of that, the
+**M** / full map becomes the place to orient, drop waypoints, build routes, and walk them.
+Route following reuses the same auto-walk engine as a single click, so we build and test them
+together rather than as two separate features.
+
+### What exists today
+
+| Piece | Where |
+| --- | --- |
+| Server diagonal step timing | `lastStepCost = 1.25` on diagonal moves in `core/server/src/creature.cpp` (must match client `diagonal-walk-speed` in `data/setup.otml`, **1.25** on the Redemption client). |
+| Client path + auto-walk | `LocalPlayer::autoWalk`, `Game::autoWalk`, 127-step packets, continue-walk when the path ends before the destination (`localplayer.cpp`). |
+| Minimap click walk | `modules/gamelib/ui/uiminimap.lua` (`autowalk = true`). |
+| Full map (protocol 854) | `game_minimap/minimap.lua` `fullscreen()` — **does not** center on the player when opened; it restores `oldPos` from the last session. Side panel minimap already follows the player when `fullMapView` is false. |
+| Town names + guide marks | `pokeverse-modern/modules/game_minimap/pokeverse.lua` (`MAP_COMPOSITIONS`, `GUIDES`, coord copy label). |
+| Cyclopedia map | Not shipped (stripped in `assemble-redemption-client.sh`); **M** uses fullscreen minimap, not Tibia 13 cyclopedia. |
+
+### Auto-walk: symptoms and likely causes
+
+Players report stutter, stopping short, or “fighting” the path after diagonals got faster on
+the server. Before adding routes, we should **reproduce on 854** (map click, minimap click,
+long diagonal paths, corners, stairs, doors) and fix the core loop:
+
+1. **Timing alignment** — Server step interval vs client `getStepDuration()` / diagonal
+   multiplier vs A* diagonal cost in `map.cpp`. Any mismatch shows up as cancel-walk retries
+   (`retryAutoWalk`, `onAutoWalkFail`) or pre-walk desync on old protocol.
+2. **Chaining** — Destinations farther than 127 steps must seamlessly re-path (`m_lastAutoWalkPosition`
+   continuation); routes will hit this constantly.
+3. **Interrupts** — Manual WASD, combat, dialogs, teleport, and `stopAutoWalk()` in
+   `gameinterface.lua` must leave a predictable state for “resume route” later.
+4. **Floors** — Clicks on another floor: confirm whether we keep the legacy z-adjust hack in
+   `uigamemap.lua` or require same-floor clicks on the world map only.
+
+**Phase A (auto-walk only):** fix and regression-check the above; no new UI beyond maybe a
+status line (“Walking…”) and clearer cancel. Optional: small `game_nav` module that only wraps
+`player:autoWalk` with logging hooks for QA.
+
+### World map: phases (after Phase A is stable)
+
+**Phase B — Open on the player**
+
+- On `fullscreen()` **open**, set camera to local player position and current floor; keep
+  `oldPos` only for “return to where I was looking” if we add that as a secondary action.
+- **Recenter** button (reuse hidden `resetButton` or new PokeVerse-styled control) snaps to
+  player + matching floor.
+- Call `PokeverseMap.setFullMapView(true)` as today for town labels.
+
+**Phase C — Waypoints**
+
+- Player-placed marks: name, icon, position, floor; list in a side panel on the full map.
+- **Persistence:** per character in `g_settings` (same pattern as minimap flags in
+  `uiminimap.lua:save`). Server sync is optional later (extended opcode + one table) if we
+  want waypoints across reinstalls.
+- Left-click existing waypoint → `autoWalk` (respect 250-tile flag limit or raise for routes
+  only). Right-click → rename / delete.
+
+**Phase D — Routes**
+
+- A **route** is an ordered list of stops: waypoint refs, town labels from `MAP_COMPOSITIONS`,
+  or a raw clicked tile.
+- UI: build route from waypoints, show polyline + per-leg distance, checklist of stops.
+- **Navigation controller** (client Lua): current stop index, on `onPositionChange` mark stop
+  reached within N tiles, then `autoWalk` next stop; on failure show message and pause.
+- **Pauses (agreed defaults — change if you want):**
+  - Wild battle / forced battle → pause; offer **Resume route** when combat ends.
+  - NPC dialog open → pause.
+  - Manual walk or click elsewhere → cancel route (or “Pause route” — **To decide**).
+  - Stairs / holes → auto-continue if the next stop is on another floor (**To decide**:
+    full multi-floor pathing is hard; v1 may be same-floor routes only).
+
+**Phase E — Search and POIs**
+
+- Search box over town names (already in data) + guide POIs; jump camera and optional “Add to
+  route”.
+- Later: gyms, Pokémon Centers, routes as a structured layer (extend `GUIDES` or a new JSON
+  file generated from the wiki).
+
+### Pokepedia (Cyclopedia-style window)
+
+One window with tabs, modelled on Redemption's Cyclopedia (`modules/game_cyclopedia`) but
+built for protocol 854: our own JSON messages (like the PC and GTS), not Tibia's cyclopedia
+packets. The Cyclopedia module itself stays out of the client (it unloads below 13.10).
+
+- **Map:** the world map from the phases above (centred on the player, floors, mark filters,
+  Places search, waypoints and routes). M opens this tab directly.
+- **Houses:** replaces the `/house` commands, the way Tibia's house tab works.
+  - Today: 577 houses (8 guild halls) in `data/world/map-house.xml`; price is 50 per tile
+    and the weekly rent equals the price (`config.lua`); level 25, premium, one house per
+    player; buying needs the player to face the door (`TalkAction::houseBuy`).
+  - List with search and filters (town, free or rented, size, guild hall); details: size,
+    beds, price, weekly rent, owner, paid until; a small map centred on the entrance with
+    the house tiles highlighted (the server sends the tiles).
+  - Buttons: Buy, Leave, Show on map, Walk here; guest and sub-owner lists edited in the
+    window. They call the same server code as the commands, which keep working.
+  - **Agreed:** first come, first served at the fixed price (no auctions for now); bought
+    from the tab anywhere; still premium only; one house per account (`housesPerAccount`
+    goes from 0, no limit, to 1).
+  - **Transfer (agreed):** an owner can transfer or sell the house to another player. Today
+    that is `/house sell <name>`: both stand within 3 tiles and trade a house deed in the
+    trade window. In the tab: the owner enters the name and a price, the buyer gets a confirm
+    window, and the money and the house change hands in one step, anywhere. The buyer must
+    meet the buy rules (level, premium, no house on the account).
+  - Fix with it: `TalkAction::houseSell` checks premium the wrong way round
+    (`!tradePartner->isPremium() && !HOUSE_NEED_PREMIUM`).
+- **Pokédex:** opens the current Pokédex window (asks the server, which opens it as today
+  through `doPlayerSendPokedexOpen`). No rebuild.
+- **Items (agreed):** everything sold in shops is listed from the start; everything else (rare
+  drops, held items, quest and event items) shows as "???" until the player has had one in
+  the bag or depot or looked at one, with a count per category ("Held items 4/32").
+  Discoveries are saved on the server per character.
+- **Later, Help:** hints, controls and "what to do next", from the in-game wiki and the
+  tutorial ([section 9](#9-in-game-wiki-and-tutorial)), pointing at routes on the map.
+
+**Agreed keys:** M opens the map tab, P opens the Pokepedia.
+
+### Pokédex knowledge levels (like Tibia's bestiary)
+
+Using the Pokédex on your own Pokémon shows everything, as today (`detailed` in
+`010-pokedex.lua`). On a wild Pokémon it shows what you know about the species, and you learn
+more by defeating and catching it:
+
+| Level | How | Shows |
+| --- | --- | --- |
+| Seen | Use the Pokédex on one (today's registration) | Name, picture, types, type matchups, evolution family |
+| 1 | A few defeats, or one catch | Base stats, abilities and field moves, move list |
+| 2 | More defeats | EV yield, item drops, a catch-rate hint |
+| 3 (complete) | Many defeats | Spawn areas on the map, with Show on map and Route here |
+
+- Types and matchups are never hidden: they are needed to battle.
+- A defeat counts when your Pokémon knocks it out or you catch it. A catch counts as level 1
+  plus extra defeats.
+- **Agreed:** defeats needed rise with each level: 25 for level 1, 100 for level 2, 500 for
+  level 3 (complete). A grind, but reachable by hunting normally. Event Pokémon unlock by
+  catching only.
+- No charms or bestiary points: Tibia's charm system has no fit in a Pokémon setting.
+- Kill counts per player and species are kept on the server (one table); the hunting tasks
+  (`064-huntingTasks.lua`) already count kills and can use the same count.
+- Spawn areas come from the spawn files (`data/world/*-spawn.xml`), grouped into areas with
+  the nearest town; rare and event spawns are left out. The website's "where it spawns" uses
+  the same data.
+- Existing players start each species they have registered or caught at the matching level.
+
+- **Agreed:** rare spawns that are not legendary (Dratini, for example) need fewer defeats,
+  about half (roughly 10, 50 and 250). The list of rare species is set by hand from the spawn
+  files.
+- **Agreed:** legendaries need 1, 5 and 15 defeats (or catches).
+- **Rewards (agreed):** completing a species gives experience or money; completing the whole
+  Pokédex (100%) gives a Master Ball, once per character.
+
+### Tracker panel (agreed)
+
+A side panel like Tibia's bestiary tracker, in the right column under the minimap. It
+follows what the player picks:
+
+- **Pokédex:** chosen species with their level and defeats to the next level
+  ("Rattata 63/100").
+- **Daily, weekly and hunting tasks:** progress of the active tasks ("Defeat 30 Water
+  Pokémon 12/30"), from the same data the Tasks window already gets
+  (`game_dailytasks/tasks.lua`); a finished task shows a Claim button that opens the Tasks
+  window.
+- Each line can be removed or pinned; a click opens the Pokédex entry or the Tasks tab. The
+  panel can be collapsed or hidden like the other side panels, and what is tracked is saved
+  per character.
+
+### Suggested delivery order
+
+```text
+Phase A  Auto-walk fix                  → playable click-walk everywhere
+Phase B  Pokepedia + Map tab            → centred map, Places search, Pokédex button
+Phase C  Houses tab                     → buy, leave and manage houses without commands
+Phase D  Waypoints + routes             → walk a trail; depends on A
+Phase E  Items tab with discovery
+Phase F  Pokédex knowledge levels       → spawn areas need the map (B) and routes (D)
+         + tracker panel (Pokédex and tasks; the task part can come first)
+Later    Help tab (hints, tutorials)
+```
+
+One client branch (`cursor/autowalk-worldmap-c8d5` or similar), client-only until we choose
+server waypoint sync. Server changes only if we add persistence or anti-cheat limits on auto-walk.
+
+### To decide (need your call)
+
+1. **Full map entry** — Keep **M** as fullscreen minimap + new side panel, or invest in a
+   dedicated `game_worldmap` window (more work, more room for route UI).
+2. **Waypoint storage** — Client-only per character (fast) vs server-backed (portable).
+3. **Route cancel rule** — Any new click cancels vs explicit Cancel / Pause buttons.
+4. **Multi-floor routes** — v1 same-floor only, or allow stops on different floors with
+   manual floor changes between legs.
+5. **Range limit** — Keep 250-tile autowalk cap for ad-hoc clicks; routes might need chunked
+   legs or a higher cap.
 
 ## 3. NPC dialogue, quests and tasks
 
@@ -185,16 +389,6 @@ Static site on the PokeVerse-Clients `gh-pages` branch ([website.md](website.md)
   - A better download section: detect the player's platform, show the version, and tell
     Android players to open the link in Chrome (the GitHub app catches `github.com` links).
 - **Later, with a domain:** rankings (level, catches, shinies) and trainer profiles.
-
-## 5. World map
-
-The full map (from the minimap, or the M key) gets a modern look:
-
-- waypoints the player can set;
-- a trail on the map from the player to the selected waypoint;
-- auto-walk to a waypoint (after the [auto-walk fix](#2-auto-walk-fix)).
-
-The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to build on.
 
 ## 6. Vocations
 
@@ -269,6 +463,12 @@ successful catch uses the ball as usual. The Master Ball keeps its guaranteed ca
 | Hatching an egg (now 60 minutes) | 57 min | 54 min | 51 min | 48 min | 45 min |
 | Chance of a second daycare egg | 2% | 4% | 6% | 8% | 10% |
 | Daily early egg chance (others: 10%) | 11% | 12% | 13% | 14% | 15% |
+
+**Premium (agreed):** Breeder can be chosen by everyone and its perks never pause. The
+daycare stays Premium, so the daycare perks (second egg, early egg chance) apply while the
+player has Premium; faster hatching always works, for every egg (eggs can also be bought).
+When Premium runs out, Pokémon in the daycare and eggs in incubators can still be
+collected.
 
 Uses the existing breeding and daycare. IV, EV and nature limits do not change. Hatching
 is time based: an egg in an incubator hatches after 60 minutes
@@ -475,16 +675,12 @@ From the `#notes` channel:
   not finished in time fails on its own and is removed. **To decide:** how long (for
   example by size), and whether a failed hunt costs anything.
 
-- **Fishing tasks don't count up:** the daily or weekly task "Hook X Pokémon while
-  fishing" doesn't go up. Hooking records the statistic, and that should count the task
-  (`043-fishing.lua` → `onStatisticChange.lua` → `Tasks.onEvent`). Likely cause: the
-  server runs actions, creature events and talk commands in separate Lua environments,
-  and each keeps its own copy of the task board (`cache` in `062-dailyTasks.lua` and
-  `064-huntingTasks.lua`). Fishing counts in one copy, while the Tasks window reads and
-  saves an older copy, which shows or saves over the progress. This may affect other task
-  kinds too (catching counts in the actions copy). Fix: read the state from the database
-  every time instead of keeping a copy, and add a server test that hooks a Pokémon and
-  checks the task.
+- **Fishing tasks don't count up (fixed):** the server runs actions, creature events and
+  talk commands in separate Lua environments, and each kept its own copy of the task
+  board. The Tasks window picks tasks through a talk command, so fishing, wild defeats and
+  NPC trainer wins (creature events) kept counting on the copy loaded at login, which had
+  no tasks yet, until the next login. The boards are now read from the database every
+  time, and the server test picks tasks and hooks Pokémon in one session.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
@@ -511,11 +707,58 @@ only move cooldowns.
 
 ## 12. Level requirement audit
 
-Go through the level requirements of every feature and lower the ones that don't fit.
-Known so far: buying a house needs level 50 (`levelToBuyHouse = 50` in
-`core/server/config.lua`), and the Safari Zone needs level 30
-(`npc/scripts/saffariZoneEnter.lua`). Both are probably too high. List each requirement with its current and
-proposed level, and decide them together.
+Every player level requirement found in the server code (October 2026). The first six rows
+are changed to the new level (agreed); the rest are kept.
+
+| Feature | Before | Where | Now |
+| --- | --- | --- | --- |
+| Buy a house | 50 | `levelToBuyHouse`, `config.lua` | 25 |
+| Safari Zone | 30 | `npc/scripts/saffariZoneEnter.lua` | 15 |
+| Daycare (both NPCs) | 85 and Premium | `npc/scripts/daycareFemale.lua`, `daycareMale.lua` | 20, the Breeder level; still Premium |
+| Form a guild | 40 | `levelToFormGuild`, `config.lua` | 30 |
+| Slot machine | 50 | `lib/ps/systems/044-slotMachine.lua` | 15 |
+| Frontier Island arenas (gladiator, cooperative, survive) | 50 | `npc/scripts/fi_stadiumarena.lua` | keep |
+| Wave arena | 20 | `npc/scripts/wavearena.lua` | keep |
+| Elite Four | 95 | `lib/ps/systems/049-eliteFour.lua` | keep, or 80 if the badges already gate it |
+| Tournaments | by Pokémon level (0–100, 20–40, 41–50, 45–100, 50–100, 51–65, 66–80, 80–100); trainer level at least the minimum − 5 | `XML/tournaments.xml`, `npc/scripts/tournament.lua` | keep |
+| Daily and weekly tasks | Beginner 1, Easy 15, Medium 35, Hard 55, Extreme 80; two task kinds need 10 | `lib/ps/systems/062-dailyTasks.lua` | keep |
+| Ranger Club ranks | Rookie 10, Mentor 25, Coordinator 50, Coach 75 | `lib/ps/config/001-rangerClub.lua` | keep (becomes [factions](#10-factions)) |
+| Referral reward | the friend reaches 50 | `lib/ps/systems/035-referral.lua` | 30 |
+| Quests | 258 have no level; the rest 10–100, with 76 at level 70 | `lib/ps/config/003-quest.lua` | check the level 70 group |
+| Professor Josh Rock and William Rock quests | 80 | `npc/scripts/quest_*Rock.lua` | keep |
+| Masteries | 85–130 | `lib/ps/systems/014-mastery.lua` | removed with the [vocations](#6-vocations) |
+| Calling a Pokémon | its level at most the trainer's level + 10 | `MAX_LEVEL_DIFF_BETWEEN_PLAYER_POKEMON`, `others/constants.lua` | keep |
+| Level doors on the map | the door's action id − 1000 | `movements/scripts/tiles.lua` | list them from the map |
+| Experience loss on death | from level 20 | `deathProtection`, `config.lua` | keep |
+| Gym leaders | none (`NpcBattle:setRequiredLevel` is never used) | `lib/ps/systems/001-npcBattle.lua` | keep |
+
+Not requirements, but level based: the tutorial sends players on from level 10
+(`activationTile.lua`), and the wiki channel opens at login below level 30 (`login.lua`).
+
+The house and guild texts in the in-game wiki (`002-wikiChat.lua`) say the new levels too.
+
+**Unlock ladder (agreed)**, so something new opens every few levels instead of everything
+at 20:
+
+| Level | Unlocks |
+| --- | --- |
+| 10 | End of the tutorial, Ranger Club Rookie, two task kinds |
+| 15 | Safari Zone, slot machine, Easy tasks |
+| 20 | Vocation quest, daycare, wave arena |
+| 25 | Houses, Ranger Club Mentor |
+| 30 | Guilds, referral reward |
+| 35 | Medium tasks |
+| 50 | Frontier Island arenas, Ranger Club Coordinator |
+| 55 | Hard tasks |
+| 75 | Ranger Club Coach |
+| 80 | Extreme tasks, the Josh Rock and William Rock quests |
+| 95 | Elite Four |
+
+Planned: the level-up banner lists what just unlocked ("Level 25: you can now buy a
+house").
+
+**To decide:** whether the daycare stays Premium (it is today), whether the Elite Four
+moves to 80, and what the level 70 quest group is (76 quests at the same level).
 
 ## 13. Switch off the old PSoul and anniversary content
 
@@ -547,6 +790,78 @@ too low.
 - Keep all reward values in config tables, so tuning is easy.
 - Track it over time: total money on the server (bank plus inventories), shown by a staff
   command or the Discord bot.
+
+### Findings (October 2026, read only)
+
+The first pass read every NPC shop (144 NPCs, 227 items for sale, 582 items they buy), the
+wild Pokémon loot tables, the task boards and the fixed prices in the NPC scripts. Nothing
+is changed yet.
+
+**Money coming in**
+
+| Source | Amount | Where |
+| --- | --- | --- |
+| Loot sold to NPCs | about $27 a kill for a typical wild Pokémon, $70 for the best common ones (Alakazam, Jynx, Tentacruel, Houndoom) | `monster/Pokemons`, NPC `shop_sellable` lists |
+| Hunting tasks | $10 + $2 × the species' level per kill, + up to 30% by rank: a Small hunt (100 kills) of a level 30 species pays about $7,000 | `moneyFor`, `064-huntingTasks.lua` |
+| Daily tasks (3 tasks + the all-done bonus) | Beginner about $3,200, Hard $19,500, Extreme $48,000 a day | `TASK_DIFFICULTIES`, `062-dailyTasks.lua` |
+| Weekly tasks (5 tasks + bonus) | Beginner about $18,000, Hard $110,000, Extreme $270,000 a week | the same table, money × 4 |
+| Selling Pokémon to the NPC | catch difficulty × $10 (× 2 for shinies) + $5 a level | `getPokemonPrice`, `npc/scripts/shop_pokemonShop.lua` |
+
+**Money going out**
+
+| Sink | Price | Where |
+| --- | --- | --- |
+| Poké, Great and Ultra Balls | $8, $35, $130 | Poké Mart NPCs |
+| Potions and revives | $10 to $130, revive $200 | Poké Mart NPCs |
+| Houses (Premium only) | $50 a tile (median house $3,900, largest $39,250), and the same again as rent every 30 days (`housePriceAsRent`), from the bank, else the depot; 7 daily warnings, then the house is lost | `housePriceEachSquare`, `houseRentPeriod`, `config.lua`; `Houses::payRent`, `src/house.cpp` |
+| Daycare | $1 to $4 a minute by level, + $100 | `getPricePerMinute`, `daycareMale.lua` |
+| Travel | $50 to $300 a trip | captain NPCs (`travel_destinations`) |
+| Safari Zone | $1,000 | `saffariZoneEnter.lua` |
+| Slot machine | $100 a spin, at most 90 a day; pays casino coins, not money | `044-slotMachine.lua` |
+| Late game buys | berry pot $150,000; egg move remover $100,000; Bill's assistant quest $100,000; ball pillar $100,000; destiny knot $50,000; power items $25,000; egg move regenerator $25,000 | NPC shops and scripts |
+
+**What looks wrong**
+
+1. **The task boards pay far more than anything else.** A trainer on Extreme gets about
+   $600,000 a week from daily and weekly tasks, while the most expensive things to buy
+   cost $150,000 once. Hunting tasks pay about 2.5 times the loot of the same kills. Once a
+   trainer owns the late game items, money only piles up (inflation). Lower the top two
+   difficulties, or add money sinks that repeat.
+2. **Houses are cheap.** A median house, and its monthly rent, is about one Beginner day
+   of tasks. Raise `housePriceEachSquare`, which sets both, or make the rent weekly.
+3. **Rare candy comes from the boards every week** (Extreme gives one a day plus three a
+   week, Hard one a week). Check it against how fast levelling is meant to be.
+4. **Few repeating sinks.** Balls, potions, travel and the house rent are small. Ideas: the
+   GTS fee, a higher rent, paid hunting refreshes (they exist: $1,000 to $20,000), cosmetic shops.
+
+**Checked and fine**
+
+- No money loop between NPCs: no NPC buys an item for more than another sells it, and
+  prices for the same item agree across NPCs (except brass legs, see below).
+- Catching and selling Pokémon pays about double the Poké Balls used (one ball a kill), on
+  top of the loot. It is a fair income, not an exploit.
+- Soya buys old Tibia equipment for up to $400,000 (steel boots) and $20,000 for brass
+  legs, against $100 elsewhere, but Soya is not on the map and no monster drops those
+  items. Remove Soya or keep it off the map.
+
+### First tuning (done)
+
+| What | Before | Now |
+| --- | --- | --- |
+| Daily task money (Beginner to Extreme) | 400, 700, 1,000, 2,500, 6,000 | 300, 500, 800, 1,500, 2,500 |
+| Daily bonus money | 2,000, 3,500, 5,000, 12,000, 30,000 | 1,000, 1,500, 2,500, 5,000, 8,000 |
+| Weekly bonus money | 10,000, 16,000, 25,000, 60,000, 150,000 | 5,000, 8,000, 12,000, 25,000, 50,000 |
+| Weekly task money | 4 × a daily task | 3 × |
+| Reroll cost, Hard and Extreme | 2,000 and 5,000 | 1,500 and 2,500 (one task's money) |
+| Hunting money per kill | $10 + $2 × the species' level | $5 + $1 × the level |
+| A week of tasks (Beginner / Hard / Extreme) | $40,400 / $246,500 / $606,000 | $22,800 / $114,000 / $196,000 |
+| Rare candy | Extreme daily bonus and task items, Hard weekly 1, Extreme weekly 3, shop 80 points | all daily tasks done 7 days in a row (repeats), Extreme weekly 1, shop 250 points |
+| House rent | the price every 30 days | the price every week (`houseRentPeriod`), still from the bank first |
+
+Boards already rolled keep their rewards; new ones use these values.
+
+**Next:** decide the target income per hour for each level range, then tune again from
+play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to check.
 
 ## 15. Daily login rewards and events
 

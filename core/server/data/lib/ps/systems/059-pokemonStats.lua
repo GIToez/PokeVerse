@@ -563,7 +563,7 @@ PokemonStats.INHERITED_IVS_DESTINY_KNOT = 5
 local EGG_IVS_ATTRIBUTE = "eggIvs"
 local EGG_NATURE_ATTRIBUTE = "eggNature"
 
--- Pokemon at the Day Care or on the Pokemon Market are database rows (ball_id and attributes): the
+-- Pokemon at the Day Care or on the GTS are database rows (ball_id and attributes): the
 -- ball is rebuilt on a temporary item to read it. Returns the item uid, or nil.
 PokemonStats.loadStoredBall = function(dbResult)
     if (not dbResult or dbResult:getDataInt('ball_id') == 0) then

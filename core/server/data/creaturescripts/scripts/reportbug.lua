@@ -5,9 +5,9 @@ function onReportBug(cid, comment)
 		pos.x .. ", " .. pos.y .. ", " .. pos.z .. ", " ..
 		os.time() .. ", " .. db.escapeString(comment) .. ")"))
 	then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Your report has been sent to " .. getConfigValue('serverName') .. ".")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Your report has been sent to the PokeVerse team.")
 	else
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, getConfigValue('serverName') .. " couldn't save your report, please contact with gamemaster.")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Your report couldn't be saved, please contact a gamemaster.")
 	end
 
 	return true

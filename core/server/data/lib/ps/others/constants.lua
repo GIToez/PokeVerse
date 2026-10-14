@@ -12,6 +12,7 @@ LAST_UNIQUE_ID = 65535
 ITEM_UNIQUE_OWNER_NONE = 0
 PLAYER_BALL_MAX = 6
 POKEMON_GAIN_ENERGY = 10
+POKEMON_SWITCH_PROTECTION_MS = 1500 -- after calling a Pokemon back the trainer can't be hit until the next one is out, at most this long; not in duels
 RANDOM_CHANCE_MIN = 1
 RANDOM_CHANCE_MAX = 100000
 PLAYER_SKILL_CATCHING_MAX = 100
@@ -48,7 +49,12 @@ EXTENDED_IDS = {
     EVOLUTION = 14, -- JSON {state = "start", from, to, fromLook, toLook, duration} then {state = "done"} (doPokemonEvolve)
     DAILY_TASKS = 15, -- JSON state of today's daily tasks (DailyTasks.send)
     LEVEL_UP = 16, -- JSON Pokemon/trainer level-up and TM banners (LevelUpBanner)
-    TASK_BOARDS = 17 -- JSON state of the weekly and hunting task boards, with board = "weekly" or "hunting"
+    TASK_BOARDS = 17, -- JSON state of the weekly and hunting task boards, with board = "weekly" or "hunting"
+    DAILY_LOGIN = 18, -- JSON state of the 7-day login calendar (DailyLogin.send)
+    MOVE_ENERGY = 19, -- JSON {{icon, energy}, ...}: the energy cost of each move in the moves bar, sent after the moves
+    GTS = 20, -- JSON Global Trade Station window state, one message per {type = ...} (GTS)
+    PC = 21, -- JSON PC window state: Poke boxes, stash, inbox and depot, one {type = ...} per message (PC)
+    GYM = 22 -- JSON gym leader duel intro and victory banners (GymLeaders.send)
 }
 
 TOURNAMENT_TYPES = {}

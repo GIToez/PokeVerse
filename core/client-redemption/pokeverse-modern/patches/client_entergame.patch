@@ -1,0 +1,90 @@
+diff -ruN pristine/modules/client_entergame/characterlist.lua modules/client_entergame/characterlist.lua
+--- a/modules/client_entergame/characterlist.lua
++++ b/modules/client_entergame/characterlist.lua
+@@ -703,6 +703,10 @@
+             focusedChild:updateOnStates()
+             self:ensureChildVisible(focusedChild)
+         end
++        -- PokeVerse hooks: pokeverse_characters.lua
++        if CharacterList.onCharacterFocus then
++            CharacterList.onCharacterFocus(focusedChild)
++        end
+     end
+ 
+     -- characters
+@@ -768,6 +772,10 @@
+ 
+         autoReconnectButton:setText(statusText)
+     end
++
++    if CharacterList.onCreate then
++        CharacterList.onCreate(charactersWindow)
++    end
+ end
+ 
+ function CharacterList.rebuildCharactersList()
+@@ -825,6 +833,10 @@
+             CharacterList.updateCharactersAppearance(widget, characterInfo, showOutfits)
+         end
+ 
++        if CharacterList.onCharacterWidget then
++            CharacterList.onCharacterWidget(widget, characterInfo)
++        end
++
+         -- these are used by login
+         widget.characterName = characterInfo.name
+         widget.worldName = characterInfo.worldName
+@@ -850,6 +862,10 @@
+         widget:updateOnStates()
+     end
+ 
++    if CharacterList.onCharactersRebuilt then
++        focusLabel = CharacterList.onCharactersRebuilt(characterList, characters, focusLabel)
++    end
++
+     if focusLabel then
+         characterList:focusChild(focusLabel, KeyboardFocusReason)
+         addEvent(function()
+@@ -923,7 +939,9 @@
+ function CharacterList.doLogin()
+     removeAutoReconnectEvent()
+     local selected = characterList:getFocusedChild()
+-    if selected then
++    if selected and selected.createCard then
++        CharacterList.showCreateCharacter()
++    elseif selected then
+         local charInfo = {
+             worldHost = selected.worldHost,
+             worldPort = selected.worldPort,
+diff -ruN pristine/modules/client_entergame/entergame.lua modules/client_entergame/entergame.lua
+--- a/modules/client_entergame/entergame.lua
++++ b/modules/client_entergame/entergame.lua
+@@ -154,6 +154,9 @@
+         enterGame:getChildById('emailLabel'):setText("Acc Name:")
+         enterGame:getChildById('rememberEmailBox'):setText("Remember password:")
+     end
++    if EnterGame.onLabelsUpdated then
++        EnterGame.onLabelsUpdated(enterGame)
++    end
+ end
+ 
+ local function loadServerListModule()
+@@ -303,14 +306,16 @@
+ end
+ 
+ function EnterGame.hidePanels()
+-    if g_modules.getModule("client_bottommenu"):isLoaded()  then
++    local bottomMenu = g_modules.getModule("client_bottommenu") -- PokeVerse: not packaged
++    if bottomMenu and bottomMenu:isLoaded() then
+         modules.client_bottommenu.hide()
+     end
+     modules.client_topmenu.hide()
+ end
+ 
+ function EnterGame.showPanels()
+-    if g_modules.getModule("client_bottommenu"):isLoaded()  then
++    local bottomMenu = g_modules.getModule("client_bottommenu")
++    if bottomMenu and bottomMenu:isLoaded() then
+         modules.client_bottommenu.show()
+     end
+     modules.client_topmenu.show()

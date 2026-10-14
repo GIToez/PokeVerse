@@ -133,6 +133,18 @@ void OutputMessagePool::sendAll()
 	}
 }
 
+void OutputMessagePool::flush(OutputMessage_ptr msg)
+{
+	boost::recursive_mutex::scoped_lock lockClass(m_outputPoolLock);
+	OutputMessageList::iterator it = std::find(m_autoSend.begin(), m_autoSend.end(), msg);
+	if(it == m_autoSend.end())
+		return;
+
+	m_autoSend.erase(it);
+	if(msg->getConnection() && !msg->getConnection()->send(msg) && msg->getProtocol())
+		msg->getProtocol()->onSendMessage(msg);
+}
+
 void OutputMessagePool::releaseMessage(OutputMessage* msg)
 {
 	Dispatcher::getInstance().addTask(createTask(boost::bind(

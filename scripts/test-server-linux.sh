@@ -180,6 +180,28 @@ tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks
 assert s['difficulty'] == 3 and s['rerolled'] and len({x['kind'] for x in t}) == 3, s
 assert t[2]['progress'] == t[2]['target'] and t[0]['progress'] == 0 and t[1]['progress'] == 1, s"
 echo "Daily tasks: difficulty picked once, claim, bonus, rewards, one reroll a day, kept across logins"
+# picked in the window (a talkaction) and counted by fishing (a creaturescript) in the same session
+say_admin "/tasks daily reset" "/tasks daily start 1" "/tasks daily kind 1 fish" "/tasks hook 2"
+tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks'][0]
+assert s['difficulty'] == 1 and t['kind'] == 'fish' and t['progress'] == 2, s"
+echo "Daily tasks: hooking Pokemon counts right after the tasks are picked"
+
+step "Daily login calendar"
+in_bag() { item_query Admin "COALESCE(SUM(i.count), 0)" "AND c.pid = 10 AND i.itemtype = $1"; }
+balls=$(in_bag 12157)
+say_admin "/tasks login reset" "/tasks login claim" "/tasks login claim"
+[ "$(in_bag 12157)" = "$((balls + 10))" ] || { echo "FAIL: day 1 should give 10 poke balls, once ($balls before, $(in_bag 12157) after)"; exit 1; }
+candies=$(in_bag 14463)
+say_admin "/tasks login streak 6" "/tasks login claim"
+[ "$(in_bag 14463)" = "$((candies + 1))" ] || { echo "FAIL: day 7 should give a rare candy ($candies before, $(in_bag 14463) after)"; exit 1; }
+# day 3 claimed three days ago: the round is lost and today is day 1 again
+today=$(python3 -c "import datetime, time; d = datetime.date.today(); print(int(time.mktime((d.year, d.month, d.day, 12, 0, 0, 0, 0, -1)) // 86400))")
+sql "UPDATE player_storage s JOIN players p ON p.id = s.player_id SET s.value = IF(s.key = 7084, '3', '$((today - 3))')
+  WHERE p.name = 'Admin' AND s.key IN (7084, 7085)"
+balls=$(in_bag 12157)
+say_admin "/tasks login claim"
+[ "$(in_bag 12157)" = "$((balls + 10))" ] || { echo "FAIL: after a missed day the calendar should start over at day 1 ($balls before, $(in_bag 12157) after)"; exit 1; }
+echo "Daily login calendar: day 1 once a day, day 7 gives a rare candy, a missed day starts over"
 
 step "Weekly tasks"
 say_admin "/tasks weekly reset" "/tasks weekly start 2" "/tasks weekly start 4" "/tasks weekly reroll 1" \
@@ -256,6 +278,10 @@ m = p["moves"][0]
 assert m["element"] == 11 and m["energy"] > 0 and m["cooldown"] > 0 and m["description"], m
 print("Level-up banners: trainer %d -> %d, %s %d -> %d learned %s" % (t["from"], t["to"], p["name"], p["from"], p["to"], ", ".join(moves)))
 ' || { echo "$banners" | tail -30; echo "FAIL: level-up banner messages are wrong"; exit 1; }
+
+step "Character limit"
+max_characters=$(tr -d '\r' < "$root/core/server/config.lua" | sed -n 's/^\s*maxCharactersPerAccount = \([0-9]*\).*/\1/p')
+python3 "$root/scripts/account-test.py" --slot-limit "$max_characters"
 
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true

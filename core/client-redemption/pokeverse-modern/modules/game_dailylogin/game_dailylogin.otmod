@@ -1,0 +1,8 @@
+Module
+  name: game_dailylogin
+  description: PokeVerse daily login calendar: a reward for each day in a row, the biggest on day 7
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ dailylogin ]
+  @onLoad: init()
+  @onUnload: terminate()

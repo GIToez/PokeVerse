@@ -8,7 +8,7 @@ Referral = {}
 local GENERATE_UNIQUE = false
 local SEND_TO_DEPOT = true
 local SHOW_MESSAGE = true
-local REFERRAL_FRIEND_LEVEL = 50
+local REFERRAL_FRIEND_LEVEL = 30
 local REFERRAL_FRIEND_GAIN_POINTS = 5
 
 local OPTIONS = {

@@ -17,16 +17,15 @@ npcBattle:setRewardRespect(2)
 npcBattle:setPayRespect(150)
 npcBattle:setOneWin(true)
 npcBattle:setDifficulty(75)
-npcBattle:setRequiredMessage("You must first defeat the GYM trainers before battle against me.")
-npcBattle:setRequired(function(cid)
-                        return getPlayerDefeatedNPC(cid, "Cody Strackbein") and
-                                getPlayerDefeatedNPC(cid, "Guy Choquette") and
-                                getPlayerDefeatedNPC(cid, "Hugh Taff") and
-                                getPlayerDefeatedNPC(cid, "Lance Trevathan") and
-                                getPlayerDefeatedNPC(cid, "Alana Linscott") and
-                                getPlayerDefeatedNPC(cid, "Hambly") and
-                                getPlayerDefeatedNPC(cid, "Neva Klawitter")
-                        end)
+npcBattle:setRequiredTrainers({
+    "Cody Strackbein",
+    "Guy Choquette",
+    "Hugh Taff",
+    "Lance Trevathan",
+    "Alana Linscott",
+    "Hambly",
+    "Neva Klawitter",
+})
 npcBattle:setOnWin(function(cid)
     doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.VOLCANO_BADGE)
     giveTm(cid)

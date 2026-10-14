@@ -79,5 +79,17 @@ playersStorages = {
     extraCatchRateValue = base + 76,
     extraEggRateTime = base + 77,
     extraEggRateValue = base + 78,
+    switchProtectionUntil = base + 79,
+    dailyStreak = base + 80, -- days in a row with all daily tasks done
+    dailyStreakDay = base + 81,
+    playTime = base + 82, -- seconds played before this session; the server reads 7082 for the character list
+    playSessionStart = base + 83,
+    loginStreak = base + 84, -- day of the 7-day login calendar claimed last (1-7)
+    loginStreakDay = base + 85, -- the day number it was claimed on (DailyLogin)
+    gtsSession = base + 86, -- "p<x>,<y>,<z>,<anywhere>" while the GTS window is open
+    pcSession = base + 87, -- the same for the PC window
+    pcClient = base + 88, -- 1 once the client said it has the PC window (reset at login)
+    pcMigrated = base + 89, -- 1 once the old depot was sorted into the Poke boxes and stash
+    pcClassic = base + 90, -- 1: the next locker use opens the depot containers
     -- tournamentWeekWinnerStorage = base + 65
 }

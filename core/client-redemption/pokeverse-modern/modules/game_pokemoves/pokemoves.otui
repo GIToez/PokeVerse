@@ -40,6 +40,19 @@ MoveSlot < UIWidget
     anchors.left: parent.left
     margin-left: 3
 
+  Label
+    id: energy
+    font: verdana-11px-antialised
+    color: #8fdcff
+    text-auto-resize: true
+    phantom: true
+    visible: false
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-right: 3
+    $on:
+      color: #ff6b74
+
 UIWindow
   id: movesWindow
   image-source: /modules/game_pokehud/images/panel

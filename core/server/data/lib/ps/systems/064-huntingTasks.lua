@@ -33,10 +33,8 @@ HuntingTasks.SHOP = {
     { id = 12248, count = 5, cost = 25 }, -- pokemon revives
     { id = 12165, count = 25, cost = 30 }, -- empty ultra balls
     { id = 13292, count = 1, cost = 60 }, -- black surprise box
-    { id = 14463, count = 1, cost = 80 }, -- rare candy
+    { id = 14463, count = 1, cost = 250 }, -- rare candy
 }
-
-local cache = {} -- player guid -> state
 
 -- Wild species that spawn often enough to hunt, with their level range, read once from the
 -- map's spawn file (kept across /reload).
@@ -125,21 +123,21 @@ local function save(cid, state)
     TaskBoards.save(cid, "hunting", "", state)
 end
 
+-- Read from the table every time, like the daily board: the window's talkactions and the
+-- creaturescripts that count defeats run in different Lua states.
 function HuntingTasks.get(cid)
-    local guid = getPlayerGUID(cid)
-    local state = cache[guid] or TaskBoards.load(cid, "hunting")
+    local state = TaskBoards.load(cid, "hunting")
     if (not state or type(state.active) ~= "table" or type(state.offers) ~= "table") then
         state = { active = {}, offers = {}, savedOffers = {}, points = 0, earned = 0, completed = 0 }
         save(cid, state)
     end
     state.savedOffers = state.savedOffers or {}
-    cache[guid] = state
     return state
 end
 
 local function moneyFor(cid, state, speciesName, size)
     local s = findSpecies(speciesName)
-    local perKill = 10 + 2 * (s and s.level or 1)
+    local perKill = 5 + (s and s.level or 1)
     local bonus = HuntingTasks.RANKS[rankOf(state.earned)].bonus
     return math.floor(perKill * HuntingTasks.SIZES[size].kills * (100 + bonus) / 100 / 100) * 100
 end
@@ -355,7 +353,6 @@ end
 -- Staff tools: reset (clears the difficulty too), progress <slot> <count>, points <count>
 function HuntingTasks.reset(cid)
     local state = { active = {}, offers = {}, savedOffers = {}, points = 0, earned = 0, completed = 0 }
-    cache[getPlayerGUID(cid)] = state
     save(cid, state)
     HuntingTasks.send(cid)
 end
@@ -380,12 +377,7 @@ function HuntingTasks.setPoints(cid, count)
 end
 
 function HuntingTasks.onLogin(cid)
-    cache[getPlayerGUID(cid)] = nil
     HuntingTasks.send(cid)
-end
-
-function HuntingTasks.onLogout(cid)
-    cache[getPlayerGUID(cid)] = nil
 end
 
 -- Everything that feeds the task boards goes through here.
@@ -404,16 +396,10 @@ end
 
 -- a broken board must not stop the trainer from logging in
 function Tasks.onLogin(cid)
-    for name, board in pairs({ daily = DailyTasks, weekly = WeeklyTasks, hunting = HuntingTasks }) do
+    for name, board in pairs({ daily = DailyTasks, weekly = WeeklyTasks, hunting = HuntingTasks, login = DailyLogin }) do
         local ok, err = pcall(board.onLogin, cid)
         if (not ok) then
             log(LOG_TYPES.ERROR, "Tasks - " .. name .. " board failed at login: " .. tostring(err), getCreatureName(cid))
         end
     end
-end
-
-function Tasks.onLogout(cid)
-    DailyTasks.onLogout(cid)
-    WeeklyTasks.onLogout(cid)
-    HuntingTasks.onLogout(cid)
 end

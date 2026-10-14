@@ -2932,9 +2932,19 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Tile* newTil
 		if(msg)
 		{
             TRACK_MESSAGE(msg);
-			if(teleport || oldStackpos >= 10)
+			// the floor change packets only describe one floor; stairs that land on more stairs
+			// can move a player two or more floors in one step
+			if(teleport || oldStackpos >= 10 || std::abs(newPos.z - oldPos.z) > 1)
 			{
                 RemoveTileItem(msg, oldPos, oldStackpos);
+				// a map description fills most of a message: two in one (scripted stairs that
+				// teleport twice in a step) overflow it and the client stops reading the connection
+				flushOutputBuffer();
+				msg = getOutputBuffer();
+				if(!msg)
+					return;
+
+				TRACK_MESSAGE(msg);
 				AddMapDescription(msg, newPos);
 			}
 			else

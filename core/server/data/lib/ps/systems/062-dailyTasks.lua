@@ -15,26 +15,26 @@ local DAY = 24 * 60 * 60
 -- Shared by every task board, the hunting board included. huntLevels is the level range of the
 -- species the hunting board offers.
 TASK_DIFFICULTIES = {
-    { name = "Beginner", minLevel = 1, huntLevels = { 1, 20 }, money = 400, rerollCost = 300, refreshCost = 1000,
+    { name = "Beginner", minLevel = 1, huntLevels = { 1, 20 }, money = 300, rerollCost = 300, refreshCost = 1000,
       items = { { 12244, 5 }, { 12157, 10 } }, -- pokemon health potions, empty poke balls
-      bonus = { money = 2000, items = { { 13295, 1 } } }, -- white surprise box
-      weeklyBonus = { money = 10000, items = { { 13292, 1 }, { 12248, 3 } } } }, -- black surprise box, revives
-    { name = "Easy", minLevel = 15, huntLevels = { 15, 40 }, money = 700, rerollCost = 500, refreshCost = 2000,
+      bonus = { money = 1000, items = { { 13295, 1 } } }, -- white surprise box
+      weeklyBonus = { money = 5000, items = { { 13292, 1 }, { 12248, 3 } } } }, -- black surprise box, revives
+    { name = "Easy", minLevel = 15, huntLevels = { 15, 40 }, money = 500, rerollCost = 500, refreshCost = 2000,
       items = { { 12244, 8 }, { 12161, 8 } }, -- pokemon health potions, empty great balls
-      bonus = { money = 3500, items = { { 13295, 1 }, { 12248, 1 } } },
-      weeklyBonus = { money = 16000, items = { { 13292, 1 }, { 12248, 4 } } } },
-    { name = "Medium", minLevel = 35, huntLevels = { 35, 60 }, money = 1000, rerollCost = 800, refreshCost = 4000,
+      bonus = { money = 1500, items = { { 13295, 1 }, { 12248, 1 } } },
+      weeklyBonus = { money = 8000, items = { { 13292, 1 }, { 12248, 4 } } } },
+    { name = "Medium", minLevel = 35, huntLevels = { 35, 60 }, money = 800, rerollCost = 800, refreshCost = 4000,
       items = { { 12245, 5 }, { 12161, 10 } }, -- great health potions, empty great balls
-      bonus = { money = 5000, items = { { 13295, 1 }, { 12248, 2 } } },
-      weeklyBonus = { money = 25000, items = { { 13292, 1 }, { 12248, 5 } } } },
-    { name = "Hard", minLevel = 55, huntLevels = { 55, 85 }, money = 2500, rerollCost = 2000, refreshCost = 10000,
+      bonus = { money = 2500, items = { { 13295, 1 }, { 12248, 2 } } },
+      weeklyBonus = { money = 12000, items = { { 13292, 1 }, { 12248, 5 } } } },
+    { name = "Hard", minLevel = 55, huntLevels = { 55, 85 }, money = 1500, rerollCost = 1500, refreshCost = 10000,
       items = { { 12246, 5 }, { 12165, 10 }, { 12248, 2 } }, -- ultra health potions, empty ultra balls
-      bonus = { money = 12000, items = { { 13292, 1 } } },
-      weeklyBonus = { money = 60000, items = { { 13292, 2 }, { 14463, 1 } } } }, -- + rare candy
-    { name = "Extreme", minLevel = 80, huntLevels = { 80, 150 }, money = 6000, rerollCost = 5000, refreshCost = 20000,
-      items = { { 12247, 5 }, { 12165, 20 }, { 14463, 1 } }, -- super health potions, ultra balls, rare candy
-      bonus = { money = 30000, items = { { 13292, 1 }, { 14463, 1 } } },
-      weeklyBonus = { money = 150000, items = { { 13292, 2 }, { 14463, 3 } } } },
+      bonus = { money = 5000, items = { { 13292, 1 } } },
+      weeklyBonus = { money = 25000, items = { { 13292, 2 } } } },
+    { name = "Extreme", minLevel = 80, huntLevels = { 80, 150 }, money = 2500, rerollCost = 2500, refreshCost = 20000,
+      items = { { 12247, 5 }, { 12165, 20 }, { 12248, 3 } }, -- super health potions, ultra balls, revives
+      bonus = { money = 8000, items = { { 13292, 1 } } },
+      weeklyBonus = { money = 50000, items = { { 13292, 2 }, { 14463, 1 } } } },
 }
 
 -- saved states from before difficulties had a level band (4 of them) instead
@@ -44,19 +44,30 @@ local OLD_BAND_DIFFICULTY = { 1, 3, 4, 5 }
 local COMMON_TYPES = { ELEMENT_NORMAL, ELEMENT_BUG, ELEMENT_GRASS, ELEMENT_WATER, ELEMENT_FLYING,
     ELEMENT_POISON, ELEMENT_FIRE, ELEMENT_ELECTRIC, ELEMENT_GROUND, ELEMENT_ROCK }
 
--- counts[difficulty] for a daily task; weight scales the difficulty's money reward
+-- counts[difficulty] for a daily task; weight scales the difficulty's money reward. The Tasks
+-- window shows icon: an item (server id), a Pokedex portrait or an outfit; typed tasks show the
+-- portrait of their type in TYPE_PORTRAITS.
 local KINDS = {
-    defeat = { event = "defeat", title = "Defeat %d wild Pokemon", counts = { 15, 25, 35, 50, 80 }, weight = 1 },
+    defeat = { event = "defeat", title = "Defeat %d wild Pokemon", desc = "Defeat wild Pokemon of any type.",
+               icon = { portrait = 56 }, counts = { 15, 25, 35, 50, 80 }, weight = 1 },
     defeatType = { event = "defeat", typed = true, title = "Defeat %d wild %s-type Pokemon",
-                   counts = { 8, 12, 18, 25, 40 }, weight = 1.2 },
-    catch = { event = "catch", title = "Catch %d Pokemon", counts = { 2, 3, 4, 5, 8 }, weight = 1.2 },
+                   desc = "Defeat wild %s-type Pokemon of any level.", counts = { 8, 12, 18, 25, 40 }, weight = 1.2 },
+    catch = { event = "catch", title = "Catch %d Pokemon", desc = "Catch Pokemon of any type.",
+              icon = { item = 12159 }, counts = { 2, 3, 4, 5, 8 }, weight = 1.2 },
     catchType = { event = "catch", typed = true, title = "Catch %d %s-type Pokemon",
-                  counts = { 1, 2, 2, 3, 4 }, weight = 1.5 },
-    fish = { event = "fish", title = "Hook %d Pokemon while fishing", counts = { 3, 4, 6, 8, 12 }, weight = 1 },
-    headbutt = { event = "headbutt", title = "Headbutt %d trees that hide Pokemon", counts = { 2, 3, 4, 6, 10 },
-                 weight = 1, minLevel = 10 },
-    trainer = { event = "trainer", title = "Win %d battles against NPC trainers", counts = { 1, 2, 2, 3, 5 },
-                weight = 1.5, minLevel = 10 },
+                  desc = "Catch %s-type Pokemon of any level.", counts = { 1, 2, 2, 3, 4 }, weight = 1.5 },
+    fish = { event = "fish", title = "Hook %d Pokemon while fishing", desc = "Catch them with a fishing rod.",
+             icon = { item = 12292 }, counts = { 3, 4, 6, 8, 12 }, weight = 1 },
+    headbutt = { event = "headbutt", title = "Headbutt %d trees that hide Pokemon",
+                 desc = "Use Headbutt on trees with hidden Pokemon.", icon = { portrait = 214 },
+                 counts = { 2, 3, 4, 6, 10 }, weight = 1, minLevel = 10 },
+    trainer = { event = "trainer", title = "Win %d battles against NPC trainers", desc = "Defeat NPC trainers in battle.",
+                icon = { look = 540 }, counts = { 1, 2, 2, 3, 5 }, weight = 1.5, minLevel = 10 },
+}
+
+local TYPE_PORTRAITS = {
+    [ELEMENT_NORMAL] = 19, [ELEMENT_BUG] = 12, [ELEMENT_GRASS] = 1, [ELEMENT_WATER] = 7, [ELEMENT_FLYING] = 16,
+    [ELEMENT_POISON] = 23, [ELEMENT_FIRE] = 4, [ELEMENT_ELECTRIC] = 25, [ELEMENT_GROUND] = 27, [ELEMENT_ROCK] = 74,
 }
 local KIND_NAMES = {}
 for name in pairs(KINDS) do
@@ -187,6 +198,7 @@ end
     itemScale      multiplies the difficulty's reward item counts
     bonusKey       the TASK_DIFFICULTIES field with the all-done bonus
     freeReroll     the reroll costs nothing
+    onBonus(cid)   optional, after the all-done bonus is claimed
     load(cid), save(cid, state)
     send(cid, json)
     text           player messages
@@ -194,7 +206,6 @@ end
 local function newBoard(config)
     local board = {}
     board.TASK_COUNT = config.taskCount
-    local cache = {} -- player guid -> state
 
     local function newTask(kindName, difficulty)
         local kind = KINDS[kindName]
@@ -234,24 +245,21 @@ local function newBoard(config)
         return config.freeReroll and 0 or TASK_DIFFICULTIES[state.difficulty].rerollCost
     end
 
-    -- The state for this period.
+    -- The state for this period. Read from the table every time: the window's talkactions, the
+    -- creaturescripts (fishing, defeats, NPC battles) and the actions (catching) each run in their
+    -- own Lua state, so a copy kept in memory would miss what the others saved.
     function board.get(cid)
-        local guid = getPlayerGUID(cid)
-        local state = cache[guid]
-        if (not state) then
-            state = config.load(cid)
-            if (state and type(state.tasks) ~= "table") then
-                state = nil
-            end
-            if (state and not state.difficulty and state.band and #state.tasks > 0) then
-                state.difficulty = OLD_BAND_DIFFICULTY[state.band] or 1
-            end
+        local state = config.load(cid)
+        if (state and type(state.tasks) ~= "table") then
+            state = nil
+        end
+        if (state and not state.difficulty and state.band and #state.tasks > 0) then
+            state.difficulty = OLD_BAND_DIFFICULTY[state.band] or 1
         end
         if (not state or state.day ~= config.period()) then
             state = newPeriod()
             config.save(cid, state)
         end
-        cache[guid] = state
         return state
     end
 
@@ -267,6 +275,24 @@ local function newBoard(config)
         return string.format(__L(cid, kind.title), task.target)
     end
 
+    local function taskDesc(cid, task)
+        local kind = KINDS[task.kind]
+        if (kind.typed) then
+            return string.format(__L(cid, kind.desc), ELEMENT_NAMES[task.type] or "?")
+        end
+        return __L(cid, kind.desc)
+    end
+
+    local function taskIcon(task)
+        local kind = KINDS[task.kind]
+        if (kind.typed) then
+            return { portrait = TYPE_PORTRAITS[task.type] or 132 }
+        elseif (kind.icon.item) then
+            return { item = getItemClientId(kind.icon.item) or 0 }
+        end
+        return kind.icon
+    end
+
     function board.send(cid)
         local state = board.get(cid)
         local data = {
@@ -279,7 +305,8 @@ local function newBoard(config)
             local bonus = TASK_DIFFICULTIES[state.difficulty][config.bonusKey]
             local allClaimed = true
             for slot, task in ipairs(state.tasks) do
-                tasks[slot] = { slot = slot, title = taskTitle(cid, task), progress = math.min(task.progress, task.target),
+                tasks[slot] = { slot = slot, title = taskTitle(cid, task), desc = taskDesc(cid, task), icon = taskIcon(task),
+                                progress = math.min(task.progress, task.target),
                                 target = task.target, claimed = task.claimed, reward = rewardJson(task.money, { task.item }) }
                 allClaimed = allClaimed and task.claimed
             end
@@ -388,6 +415,9 @@ local function newBoard(config)
         local bonus = TASK_DIFFICULTIES[state.difficulty][config.bonusKey]
         giveReward(cid, bonus.money, bonus.items)
         doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, __L(cid, config.text.bonus))
+        if (config.onBonus) then
+            config.onBonus(cid)
+        end
         board.send(cid)
         return true
     end
@@ -419,7 +449,6 @@ local function newBoard(config)
     -- character's tasks with these instead of editing the tables. A reset clears the difficulty.
     function board.reset(cid)
         local state = newPeriod()
-        cache[getPlayerGUID(cid)] = state
         config.save(cid, state)
         board.send(cid)
     end
@@ -436,13 +465,26 @@ local function newBoard(config)
         return true
     end
 
-    function board.onLogin(cid)
-        cache[getPlayerGUID(cid)] = nil
+    -- Staff test tool: replaces the task in a slot with a new one of the given kind.
+    function board.setKind(cid, slot, name)
+        local kindName
+        for _, kind in ipairs(KIND_NAMES) do
+            if (kind:lower() == tostring(name):lower()) then
+                kindName = kind
+            end
+        end
+        local state = board.get(cid)
+        if (not kindName or not state.difficulty or not state.tasks[slot]) then
+            return false
+        end
+        state.tasks[slot] = newTask(kindName, state.difficulty)
+        config.save(cid, state)
         board.send(cid)
+        return true
     end
 
-    function board.onLogout(cid)
-        cache[getPlayerGUID(cid)] = nil
+    function board.onLogin(cid)
+        board.send(cid)
     end
 
     return board
@@ -480,7 +522,7 @@ WeeklyTasks = newBoard({
     taskCount = 5,
     period = thisMonday,
     secondsLeft = secondsUntilMonday,
-    countScale = 5, moneyScale = 4, itemScale = 3,
+    countScale = 5, moneyScale = 3, itemScale = 3,
     bonusKey = "weeklyBonus",
     freeReroll = true,
     load = function(cid) return TaskBoards.load(cid, "weekly") end,
@@ -505,6 +547,7 @@ local function onMidnight()
     for _, cid in ipairs(getPlayersOnline()) do
         DailyTasks.send(cid)
         WeeklyTasks.send(cid)
+        DailyLogin.send(cid)
     end
     addEvent(onMidnight, secondsUntilMidnight() * 1000 + 1000)
 end

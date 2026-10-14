@@ -2872,6 +2872,9 @@ void LuaScriptInterface::registerFunctions()
 	//getPlayerDepotTopItemById(cid, depotId, itemId)
 	lua_register(m_luaState, "getPlayerDepotTopItemById", LuaScriptInterface::luaGetPlayerDepotTopItemById);
 
+	//getPlayerDepot(cid, depotid)
+	lua_register(m_luaState, "getPlayerDepot", LuaScriptInterface::luaGetPlayerDepot);
+
 	//getPlayerIsAfk(cid)
 	lua_register(m_luaState, "getPlayerIsAfk", LuaScriptInterface::luaGetPlayerIsAfk);
 
@@ -4590,6 +4593,35 @@ int32_t LuaScriptInterface::luaDoPlayerAddDepotItem(lua_State* L)
     //depot->setParent(player);
     lua_pushboolean(L, g_game.internalMoveItem(player, item->getParent(), dest, INDEX_WHEREEVER, item,
             item->getItemCount(), NULL, FLAG_NOLIMIT) == RET_NOERROR);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetPlayerDepot(lua_State* L)
+{
+	//getPlayerDepot(cid, depotid): the uid of the depot (what the locker holds), loading it if needed
+	uint32_t depotid = popNumber(L);
+	ScriptEnviroment* env = getEnv();
+
+	Player* player = env->getPlayerByUID(popNumber(L));
+	if(!player)
+	{
+		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	Depot* depot = player->getDepot(depotid, true);
+	if(!depot)
+	{
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// a depot nobody opened at a locker yet has no parent, and scripts can't reach parentless things
+	if(!depot->getParent())
+		depot->setParent(player);
+
+	lua_pushnumber(L, env->addThing(depot));
 	return 1;
 }
 

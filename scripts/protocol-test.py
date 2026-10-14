@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end protocol test for the PokeVerse server (client protocol 8.54, version 313).
+"""End-to-end protocol test for the PokeVerse server (client protocol 8.54, version 314).
 
 Logs in like the legacy client does, reads the character list, enters the game
 with a character, walks a few steps and logs out. Exit code 0 means every step
@@ -23,7 +23,8 @@ RSA_N = int(
 )
 RSA_E = 65537
 CLIENT_OS = 0x0A  # CLIENTOS_OTCLIENT_WINDOWS
-CLIENT_VERSION = 313
+CLIENT_VERSION = 314
+CLIENT_VERSION_SELECT_INFO = 314  # character list with sex, town, last login, play time, starter outfits
 
 WALK_OPCODES = {"north": 0x65, "east": 0x66, "south": 0x67, "west": 0x68}
 
@@ -147,13 +148,14 @@ def new_xtea_key():
     return list(struct.unpack("<4I", os.urandom(16)))
 
 
-def login(args):
+def login(args, details=None, version=CLIENT_VERSION):
+    """Returns [(name, world, ip, port)]; fills details[name] and details["starter outfits"] if given."""
     conn = Connection(args.host, args.login_port, args.timeout)
     try:
         key = new_xtea_key()
         rsa_block = b"\x00" + struct.pack("<4I", *key) + pstr(args.account) + pstr(args.password)
         rsa_block += b"\x00" * (128 - len(rsa_block))
-        payload = struct.pack("<BHHB", 0x01, CLIENT_OS, CLIENT_VERSION, 0)  # protocol, os, version, language
+        payload = struct.pack("<BHHB", 0x01, CLIENT_OS, version, 0)  # protocol, os, version, language
         payload += b"\x00" * 12  # dat, spr and pic signatures (not checked by the server)
         payload += rsa_encrypt(rsa_block)
         conn.send_first(payload)
@@ -173,11 +175,24 @@ def login(args):
                     ip, port = msg.u32(), msg.u16()
                     characters.append((name, world, socket.inet_ntoa(struct.pack("<I", ip)), port))
                     # OTClient extras: level, vocation, outfit (type, 4 colors, addons), Pokemon team.
-                    msg.u16(), msg.u8(), msg.u16()
-                    for _ in range(5):
-                        msg.u8()
-                    for _ in range(msg.u8()):
-                        msg.u16(), msg.string()
+                    info = {"level": msg.u16(), "vocation": msg.u8(), "looktype": msg.u16(),
+                            "colors": [msg.u8() for _ in range(4)], "addons": msg.u8()}
+                    info["pokemon"] = [(msg.u16(), msg.string()) for _ in range(msg.u8())]
+                    if version >= CLIENT_VERSION_SELECT_INFO:
+                        info.update(sex=msg.u8(), town=msg.string(), last_login=msg.u32(), play_time=msg.u32())
+                    if details is not None:
+                        details[name] = info
+                msg.u16()  # premium days
+                msg.u8()  # poll available
+                if version >= CLIENT_VERSION_SELECT_INFO:
+                    starters = [(msg.u8(), msg.u16(), msg.string()) for _ in range(msg.u8())]
+                    max_characters, server_name = msg.u8(), msg.string()
+                    if details is not None:
+                        details["starter outfits"] = starters
+                        details["max characters"] = max_characters
+                        details["server name"] = server_name
+                if msg.pos != len(msg.data):
+                    raise ProtocolError("%d unread bytes after the character list" % (len(msg.data) - msg.pos))
                 break
             else:
                 raise ProtocolError("unexpected login opcode 0x%02X" % op)

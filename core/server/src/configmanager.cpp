@@ -335,6 +335,7 @@ bool ConfigManager::load()
 	m_confNumber[DISCORD_BRIDGE_PORT] = getGlobalNumber("discordBridgePort", 7199);
 	m_confNumber[DISCORD_BRIDGE_QUEUE_SIZE] = getGlobalNumber("discordBridgeQueueSize", 2000);
 	m_confNumber[DISCORD_BRIDGE_LINK_CODE_LIFETIME] = getGlobalNumber("discordBridgeLinkCodeLifetime", 600);
+	m_confNumber[MAX_CHARACTERS_PER_ACCOUNT] = getGlobalNumber("maxCharactersPerAccount", 3);
 
 	m_loaded = true;
 	return true;

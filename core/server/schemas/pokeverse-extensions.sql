@@ -240,6 +240,45 @@ CREATE TABLE IF NOT EXISTS `market_history` (
   KEY `player_id` (`player_id`, `sale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- Global Trade Station (data/lib/ps/systems/066-gts.lua). kind 0 is an item offer (sale 1 sells
+-- items held here, sale 0 buys with money held here), kind 1 a Pokemon for sale: itemtype is then
+-- the ball and attributes the ball itself. price is per piece.
+CREATE TABLE IF NOT EXISTS `gts_offers` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `kind` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `sale` TINYINT(1) NOT NULL DEFAULT 1,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `amount` INT UNSIGNED NOT NULL DEFAULT 1,
+  `price` BIGINT UNSIGNED NOT NULL,
+  `created` BIGINT NOT NULL,
+  `expires` BIGINT NOT NULL,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `attributes` BLOB,
+  PRIMARY KEY (`id`),
+  KEY `item` (`kind`, `itemtype`, `expires`),
+  KEY `pokemon` (`kind`, `pokemon_name`, `expires`),
+  KEY `player_id` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- state 1 done (sold or bought), 2 cancelled, 3 expired
+CREATE TABLE IF NOT EXISTS `gts_history` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `kind` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `sale` TINYINT(1) NOT NULL DEFAULT 1,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `amount` INT UNSIGNED NOT NULL DEFAULT 1,
+  `price` BIGINT UNSIGNED NOT NULL,
+  `state` TINYINT UNSIGNED NOT NULL,
+  `date` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `player_id` (`player_id`, `date`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE IF NOT EXISTS `pokemon_market` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `player_id` INT UNSIGNED NOT NULL,
@@ -775,3 +814,62 @@ UPDATE `player_skills` SET `value` = GREATEST(`value` - 10, 0), `count` = 0
   WHERE `skillid` IN (0, 1, 2, 3, 4, 6)
     AND NOT EXISTS (SELECT 1 FROM `pokeverse_migrations` WHERE `name` = 'skills-start-at-0');
 INSERT IGNORE INTO `pokeverse_migrations` (`name`) VALUES ('skills-start-at-0');
+
+-- The Pokemon market and item market NPCs were retired for the GTS. Their listings move over
+-- with a fresh 7 days; item offers the GTS doesn't trade come back to their trainers at login.
+START TRANSACTION;
+INSERT INTO `gts_offers` (`player_id`, `kind`, `sale`, `itemtype`, `amount`, `price`, `created`, `expires`,
+    `pokemon_name`, `pokemon_level`, `attributes`)
+  SELECT `player_id`, 1, 1, `ball_id`, 1, `value`, `date`, UNIX_TIMESTAMP() + 604800,
+    `pokemon_name`, `pokemon_level`, `attributes`
+  FROM `pokemon_market`;
+DELETE FROM `pokemon_market`;
+INSERT INTO `gts_offers` (`player_id`, `kind`, `sale`, `itemtype`, `amount`, `price`, `created`, `expires`)
+  SELECT `player_id`, 0, `sale`, `itemtype`, `amount`, `price`, `created`, UNIX_TIMESTAMP() + 604800
+  FROM `market_offers`;
+DELETE FROM `market_offers`;
+COMMIT;
+
+-- PC (lib/ps/systems/067-pc.lua). A Pokemon in a Poke box keeps its ball's attributes, like the GTS;
+-- box 0 slot 0 is where a Pokemon waits while two swap places.
+CREATE TABLE IF NOT EXISTS `pc_boxes` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `box` TINYINT UNSIGNED NOT NULL,
+  `slot` TINYINT UNSIGNED NOT NULL,
+  `ball_id` INT UNSIGNED NOT NULL,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `attributes` BLOB,
+  `created` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `place` (`player_id`, `box`, `slot`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pc_box_names` (
+  `player_id` INT UNSIGNED NOT NULL,
+  `box` TINYINT UNSIGNED NOT NULL,
+  `name` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`player_id`, `box`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pc_stash` (
+  `player_id` INT UNSIGNED NOT NULL,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`, `itemtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pc_inbox` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` INT UNSIGNED NOT NULL,
+  `itemtype` INT UNSIGNED NOT NULL,
+  `count` INT UNSIGNED NOT NULL DEFAULT 1,
+  `pokemon_name` VARCHAR(255) NOT NULL DEFAULT '',
+  `pokemon_level` INT NOT NULL DEFAULT 0,
+  `attributes` BLOB,
+  `source` VARCHAR(64) NOT NULL DEFAULT '',
+  `created` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `player_id` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

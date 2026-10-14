@@ -1,0 +1,68 @@
+diff -ruN pristine/modules/gamelib/protocollogin.lua modules/gamelib/protocollogin.lua
+--- a/modules/gamelib/protocollogin.lua
++++ b/modules/gamelib/protocollogin.lua
+@@ -35,11 +35,19 @@
+ end
+ 
+ function ProtocolLogin:sendLoginPacket()
++    -- PokeVerse: features of the PokeVerse server that protocol 8.54 does not have
++    g_game.enableFeature(GameMagicEffectU16)
++    g_game.enableFeature(GameCreatureIcons)
++    g_game.enableFeature(GameSpritesAlphaChannel)
++    g_game.enableFeature(GamePlayerMarket)
++
+     local msg = OutputMessage.create()
+     msg:addU8(ClientOpcodes.ClientEnterAccount)
+     msg:addU16(g_game.getOs())
+ 
+-    msg:addU16(g_game.getProtocolVersion())
++    -- PokeVerse: the server checks its own client version, then reads the language
++    msg:addU16(POKEVERSE_CLIENT_VERSION)
++    msg:addU8(modules.client_locales.getCurrentLocale().id or 0)
+ 
+     if g_game.getFeature(GameClientVersion) then
+         msg:addU32(g_game.getClientVersion())
+@@ -242,6 +250,27 @@
+                 character.previewState = msg:getU8()
+             end
+ 
++            -- PokeVerse (server src/protocollogin.cpp): level, vocation, outfit, party, then the
++            -- details for the character select
++            character.level = msg:getU16()
++            character.vocation = msg:getU8()
++            character.outfit = {
++                type = msg:getU16(),
++                head = msg:getU8(),
++                body = msg:getU8(),
++                legs = msg:getU8(),
++                feet = msg:getU8(),
++                addons = msg:getU8()
++            }
++            character.pokemonTeam = {}
++            for j = 1, msg:getU8() do
++                character.pokemonTeam[j] = { number = msg:getU16(), description = msg:getString() }
++            end
++            character.sex = msg:getU8()
++            character.town = msg:getString()
++            character.lastLogin = msg:getU32()
++            character.playTime = msg:getU32()
++
+             characters[i] = character
+         end
+     end
+@@ -259,6 +288,15 @@
+         account.status = AccountStatus.Ok
+         account.premDays = msg:getU16()
+         account.subStatus = account.premDays > 0 and SubscriptionStatus.Premium or SubscriptionStatus.Free
++
++        -- PokeVerse: poll flag and the outfits a new character may pick ({sex, type, name})
++        modules.game_poll.doPreparePollIconShow(msg:getU8() > 0)
++        account.starterOutfits = {}
++        for j = 1, msg:getU8() do
++            account.starterOutfits[j] = { sex = msg:getU8(), type = msg:getU16(), name = msg:getString() }
++        end
++        account.maxCharacters = msg:getU8()
++        account.serverName = msg:getString()
+     end
+ 
+     signalcall(self.onCharacterList, self, characters, account)

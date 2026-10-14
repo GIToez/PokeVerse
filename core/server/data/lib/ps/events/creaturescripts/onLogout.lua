@@ -83,7 +83,6 @@ function onLogout(cid, forceLogout)
     doPlayerRemoveFrontierBalls(cid)
 
     local guid = getPlayerGUID(cid)
-    Tasks.onLogout(cid)
     if (isTutor(cid) and ONLINE_TUTORS[getPlayerGUID(cid)]) then
         ONLINE_TUTORS[guid] = nil
     end
@@ -96,6 +95,12 @@ function onLogout(cid, forceLogout)
         db.executeQuery(string.concat("INSERT INTO `player_pokemon` (`player_id`, `slot`, `pokemon_number`, `description`) VALUES('",
             guid, "', '", i, "', '", getPokemonNumberByName(getBallPokemonName(ball.uid)), "', '", getItemSpecialDescription(ball.uid), "') ON DUPLICATE KEY UPDATE `pokemon_number`='",
             getPokemonNumberByName(getBallPokemonName(ball.uid)), "', `description`='", getItemSpecialDescription(ball.uid), "' ;"))
+    end
+
+    local sessionStart = getCreatureStorage(cid, playersStorages.playSessionStart)
+    if (sessionStart > 0) then
+        doCreatureSetStorage(cid, playersStorages.playTime, math.max(0, getCreatureStorage(cid, playersStorages.playTime)) + math.max(0, os.time() - sessionStart))
+        doCreatureSetStorage(cid, playersStorages.playSessionStart, 0)
     end
 
     return true

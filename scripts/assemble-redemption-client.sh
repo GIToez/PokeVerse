@@ -68,12 +68,11 @@ redemption_skip=(client_assets client_bottommenu client_debug_info dev_otui game
   game_taskboard game_unjustifiedpoints game_inspect game_quickloot
   game_shop game_store game_cyclopedia game_analyser game_lootsplitter game_notifications)
 # PokeVerse modules taken from the legacy client, replacing a Redemption module of the same name
-legacy_modules=(client_entergame game_advanceeffect game_badgecase game_combatcontrols game_dollcase
+legacy_modules=(game_advanceeffect game_badgecase game_combatcontrols game_dollcase
   game_duelmessage game_effects game_environment game_guide game_lootlist game_market game_pokebar game_pokedex
   game_pokemoves game_poll game_slotmachine game_statusbar game_time game_tips game_tmchoose game_tutorial)
 # PokeVerse game data and protocol files from the legacy gamelib
 legacy_gamelib=(pokemon moves items types)
-legacy_protocol=(protocollogin protocolaccount)
 # PokeVerse artwork that replaces Redemption's file of the same name
 legacy_data_wins=(images/background.png images/clienticon.png images/game/slots images/game/npcicons
   images/game/combatmodes images/game/skulls)
@@ -136,9 +135,6 @@ else
   mkdir -p "$out/modules/gamelib/pokeverse"
   for f in "${legacy_gamelib[@]}"; do
     cp "$legacy/modules/gamelib/$f.lua" "$out/modules/gamelib/pokeverse/"
-  done
-  for f in "${legacy_protocol[@]}"; do
-    cp "$legacy/modules/gamelib/$f.lua" "$out/modules/gamelib/"
   done
   cp "$redemption/init.lua" "$out/"
 fi

@@ -7,6 +7,12 @@ Services = {
   updater = "",
 }
 
+-- The one PokeVerse server: the login shows no server, port or version fields.
+-- scripts/set-client-server.sh sets the address and port of a package.
+Servers_init = {
+  ["127.0.0.1"] = { port = 7564, protocol = 854, httpLogin = false },
+}
+
 g_app.setName("PokeVerse")
 g_app.setCompactName("pokeverse")
 g_app.setOrganizationName("pokeverse")

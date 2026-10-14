@@ -2778,7 +2778,8 @@ bool Game::playerUseItem(uint32_t playerId, const Position& pos, int16_t stackpo
 		if(ret == RET_TOOFARAWAY)
 		{
 			std::list<Direction> listDir;
-			if(getPathToEx(player, pos, listDir, 0, 1, true, true))
+			// extended nodes: 100 run out about 4 tiles away, short of a locker across a Pokemon Center
+			if(getPathToEx(player, pos, listDir, 0, 1, true, true, -1, true))
 			{
 				Dispatcher::getInstance().addTask(createTask(boost::bind(&Game::playerAutoWalk,
 					this, player->getID(), listDir)));

@@ -44,11 +44,12 @@ jobs:
         env:
           TAG: ${{ steps.current.outputs.tag }}
           DISCORD_URL: ${{ vars.DISCORD_INVITE_URL || 'https://discord.gg/P88WNBB56E' }}
+          PAGES_DOMAIN: ${{ vars.PAGES_DOMAIN || 'pokeverse.quest' }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends lua5.1
           python3 website/build.py --out website-out --downloads-repo "$CLIENTS_REPO" --release-tag "$TAG" \
-            --discord-url "$DISCORD_URL"
+            --discord-url "$DISCORD_URL" --cname "$PAGES_DOMAIN"
 
       - uses: actions/upload-artifact@v4
         with:

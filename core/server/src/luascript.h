@@ -817,6 +817,7 @@ class LuaScriptInterface
         static int32_t luaGetPlayerLanguage(lua_State* L);
         static int32_t luaSetPlayerLanguage(lua_State* L);
         static int32_t luaGetPlayerDepotTopItemById(lua_State* L);
+        static int32_t luaGetPlayerDepot(lua_State* L);
         static int32_t luaGetPlayerIsAfk(lua_State* L);
         static int32_t luaSetPlayerIsAfk(lua_State* L);
 

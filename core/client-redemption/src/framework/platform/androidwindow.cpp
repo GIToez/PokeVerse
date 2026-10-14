@@ -27,6 +27,7 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 #include "framework/core/clock.h"
 #include <framework/core/eventdispatcher.h>
+#include <android/keycodes.h>
 #include <android/log.h>
 #define ALOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "OTClientMobile", __VA_ARGS__)
 
@@ -269,6 +270,8 @@ void AndroidWindow::processFingerDownAndUp() {
 
     if (isTouchdown) {
         m_lastPress = g_clock.millis();
+        m_pressPos = Point(m_currentEvent.x / m_displayDensity, m_currentEvent.y / m_displayDensity);
+        m_isDragging = false;
         m_mouseButtonStates |= 1 << mouseButton;
     } else if (m_currentEvent.type == TOUCH_UP) {
         if (!m_isDragging && stdext::millis() > m_lastPress + 500) {
@@ -285,23 +288,21 @@ void AndroidWindow::processFingerDownAndUp() {
 }
 
 void AndroidWindow::processFingerMotion() {
-    static Point lastMousePos(-1, -1);
     static const int dragThreshold = 15; // Increased for touch (was 5, too sensitive)
 
     m_inputEvent.reset();
     m_inputEvent.type = Fw::MouseMoveInputEvent;
 
-    Point newMousePos(m_currentEvent.x / m_displayDensity, m_currentEvent.y / m_displayDensity);
+    // measured from where the finger went down: a long press is a right click unless the finger
+    // wandered off, and a slow drag never jumps far between two motion events
+    const Point newMousePos(m_currentEvent.x / m_displayDensity, m_currentEvent.y / m_displayDensity);
+    if (std::abs(newMousePos.x - m_pressPos.x) > dragThreshold || std::abs(newMousePos.y - m_pressPos.y) > dragThreshold)
+        m_isDragging = true;
 
-    if (lastMousePos.x != -1 && lastMousePos.y != -1) {
-        int dx = std::abs(newMousePos.x - lastMousePos.x);
-        int dy = std::abs(newMousePos.y - lastMousePos.y);
-
-        if (dx > dragThreshold || dy > dragThreshold) {
-            m_isDragging = true;
-        }
-    }
-    lastMousePos = newMousePos;
+    // the UI starts dragging what is under the finger after 4 pixels, which would swallow the
+    // long press release, so a finger that is only trembling does not move the mouse
+    if ((m_mouseButtonStates & (1 << Fw::MouseLeftButton)) && !m_isDragging)
+        return;
 
     handleInputEvent();
 }
@@ -393,7 +394,21 @@ void AndroidWindow::initializeAndroidApp(android_app* app) {
         engine->handleCmd(cmd);
     };
 
-    android_app_set_key_event_filter(m_app, NULL);
+    // keys the filter rejects go back to Android, so the volume buttons keep working
+    android_app_set_key_event_filter(m_app, [](const GameActivityKeyEvent* event) {
+        switch (event->keyCode) {
+            case AKEYCODE_VOLUME_UP:
+            case AKEYCODE_VOLUME_DOWN:
+            case AKEYCODE_VOLUME_MUTE:
+            case AKEYCODE_MUTE:
+            case AKEYCODE_CAMERA:
+            case AKEYCODE_ZOOM_IN:
+            case AKEYCODE_ZOOM_OUT:
+                return false;
+            default:
+                return true;
+        }
+    });
     android_app_set_motion_event_filter(m_app, NULL);
 }
 

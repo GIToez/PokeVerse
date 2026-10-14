@@ -1,0 +1,8 @@
+Module
+  name: game_gts
+  description: PokeVerse Global Trade Station: trainers trade items and Pokemon, opened from the Pokemon Center computer
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ gts ]
+  @onLoad: init()
+  @onUnload: terminate()

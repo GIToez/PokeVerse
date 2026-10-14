@@ -5,9 +5,18 @@ MESSAGES.ON_LOSE = {image = "/images/messages/duel_lose"}
 
 -- Vars
 local window, event, firstShow
+local suppressedUntil = 0
 
 -- Methods
+-- Another module shows its own banner for the next win or loss (game_gymbattle on a gym victory)
+function suppress(ms)
+    suppressedUntil = g_clock.millis() + ms
+end
+
 local function show(message)
+    if (g_clock.millis() < suppressedUntil) then
+        return
+    end
     window:setImageSource(message.image)
     window:restartImageAnimation();
     window:show()

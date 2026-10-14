@@ -1,0 +1,123 @@
+GymBanner < UIWidget
+  size: 880 184
+  anchors.horizontalCenter: parent.horizontalCenter
+  anchors.top: parent.top
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: band
+    anchors.fill: parent
+    phantom: true
+
+  UIWidget
+    id: portrait
+    size: 168 168
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 44
+    image-smooth: true
+    phantom: true
+
+  UIWidget
+    id: element
+    size: 20 20
+    anchors.left: portrait.right
+    anchors.top: parent.top
+    margin: 22 0 0 18
+    phantom: true
+
+  Label
+    id: heading
+    anchors.left: element.right
+    anchors.verticalCenter: element.verticalCenter
+    margin-left: 6
+    font: Verdana Bold-11px
+    color: #ffe9a0
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: name
+    anchors.left: element.left
+    anchors.top: element.bottom
+    margin-top: 2
+    ttf-font: pixelify-sans
+    ttf-font-size: 42
+    ttf-stroke: 3 #0b1530
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: title
+    anchors.left: element.left
+    anchors.top: name.bottom
+    margin-top: 0
+    font: Verdana Bold-11px
+    color: #dfe6ff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: quote
+    anchors.left: element.left
+    anchors.top: title.bottom
+    margin-top: 10
+    font: verdana-11px-antialised
+    color: #fff4c8
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: vs
+    !text: tr('VS')
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: 548
+    ttf-font: pixelify-sans
+    ttf-font-size: 58
+    ttf-stroke: 4 #3a2205
+    color: #ffd75a
+    text-auto-resize: true
+    phantom: true
+    opacity: 0
+
+  UICreature
+    id: player
+    size: 96 96
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 664
+    margin-top: -12
+    creature-center: true
+    phantom: true
+
+  Label
+    id: playerName
+    anchors.horizontalCenter: player.horizontalCenter
+    anchors.top: player.bottom
+    margin-top: -6
+    font: Verdana Bold-11px
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  UIWidget
+    id: rays
+    size: 150 150
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: 620
+    image-source: /modules/game_levelup/images/rays
+    image-smooth: true
+    phantom: true
+    visible: false
+
+  UIItem
+    id: badge
+    size: 72 72
+    anchors.centerIn: rays
+    virtual: true
+    phantom: true
+    visible: false

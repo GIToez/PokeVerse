@@ -1,0 +1,220 @@
+// PokeVerse login. Redemption's entergame.lua finds its widgets by id among the direct
+// children, so the server, port and client version widgets stay here, hidden: the one
+// server comes from Servers_init in init.lua.
+
+HiddenWidget < UIWidget
+  visible: false
+  size: 0 0
+  anchors.top: parent.top
+  anchors.left: parent.left
+  phantom: true
+
+PVPanel
+  id: enterGame
+  size: 340 446
+  anchors.centerIn: parent
+  color: alpha
+  focusable: true
+  @onEnter: EnterGame.doLogin()
+
+  UIWidget
+    id: badge
+    image-source: /modules/client_entergame/images/badge
+    size: 44 44
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -47
+    phantom: true
+
+  UIWidget
+    id: logo
+    image-source: /modules/client_background/images/logo
+    image-fixed-ratio: true
+    image-smooth: true
+    size: 236 96
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true
+
+  PVField
+    id: accountNameTextEdit
+    placeholder: Account Name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 110
+    max-length: 25
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_user
+
+  PVPasswordField
+    id: accountPasswordTextEdit
+    placeholder: Password
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    max-length: 29
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_lock
+
+  PVCheckBox
+    id: rememberEmailBox
+    !text: tr('Remember Account')
+    !tooltip: tr('Remember the account and password on this computer')
+    anchors.top: accountPasswordTextEdit.bottom
+    anchors.left: parent.left
+    margin-top: 12
+    @onCheckChange: |
+      local autoLogin = self:getParent():getChildById('autoLoginBox')
+      autoLogin:setEnabled(self:isChecked())
+      if not self:isChecked() then autoLogin:setChecked(false) end
+
+  PVCheckBox
+    id: autoLoginBox
+    enabled: false
+    !text: tr('Auto Login')
+    !tooltip: tr('Open the character list by itself when the client starts')
+    anchors.top: rememberEmailBox.top
+    anchors.left: parent.horizontalCenter
+    margin-left: 26
+
+  PVYellowButton
+    id: loginButton
+    !text: tr('Login')
+    ttf-font-size: 18
+    height: 44
+    anchors.top: rememberEmailBox.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 16
+    text-offset: 14 0
+    @onClick: EnterGame.doLogin()
+
+    PVButtonIcon
+      image-source: /modules/client_entergame/images/icon_login
+      size: 18 18
+      margin-right: 24
+
+  PVBlueButton
+    id: createAccountButton
+    !text: tr('Create Account')
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    text-offset: 12 0
+    @onClick: EnterGame.showCreateAccount()
+
+    PVButtonIcon
+      image-source: /modules/client_entergame/images/icon_user
+      image-color: #cfe2ff
+      size: 14 14
+      margin-right: 50
+
+  PVSeparator
+    id: footerSeparator
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 16
+
+  PVFooterButton
+    id: newsButton
+    !text: tr('News')
+    icon: /modules/client_entergame/images/icon_news
+    anchors.top: prev.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    @onClick: EnterGame.displayMotd()
+
+  PVFooterButton
+    id: settingsButton
+    !text: tr('Settings')
+    icon: /modules/client_entergame/images/icon_settings
+    anchors.top: newsButton.top
+    anchors.left: parent.left
+    margin-left: 8
+    @onClick: PokeVerseEnterGame.openSettings()
+
+  PVFooterButton
+    id: websiteButton
+    !text: tr('Website')
+    icon: /modules/client_entergame/images/icon_website
+    anchors.top: newsButton.top
+    anchors.right: parent.right
+    margin-right: 8
+    @onClick: PokeVerseEnterGame.openWebsite()
+
+  UIWidget
+    id: footerLine1
+    width: 1
+    height: 34
+    background-color: #34507a
+    anchors.top: newsButton.top
+    anchors.left: settingsButton.right
+    margin-left: 15
+    margin-top: 6
+    phantom: true
+
+  UIWidget
+    id: footerLine2
+    width: 1
+    height: 34
+    background-color: #34507a
+    anchors.top: newsButton.top
+    anchors.left: newsButton.right
+    margin-left: 15
+    margin-top: 6
+    phantom: true
+
+  HiddenWidget
+    id: emailLabel
+  HiddenWidget
+    id: passwordLabel
+  HiddenWidget
+    id: rememberEmailTip
+  UICheckBox
+    id: stayLoggedBox
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+  HiddenWidget
+    id: serverLabel
+  HiddenWidget
+    id: serverListButton
+  UITextEdit
+    id: serverHostTextEdit
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+  HiddenWidget
+    id: clientLabel
+  ComboBox
+    id: clientComboBox
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+  HiddenWidget
+    id: portLabel
+  UITextEdit
+    id: serverPortTextEdit
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+  UICheckBox
+    id: httpLoginBox
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+  HiddenWidget
+    id: btnCreateNewAccount
+  HiddenWidget
+    id: serverInfoLabel

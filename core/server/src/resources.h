@@ -77,7 +77,12 @@
 #endif
 
 #define CLIENT_VERSION_MIN 313
-#define CLIENT_VERSION_MAX 313
+#define CLIENT_VERSION_MAX 314
+// 314: character list sends sex, town, last login and play time, plus the starter outfits;
+// create character sends the chosen outfit
+#define CLIENT_VERSION_SELECT_INFO 314
+// keep in sync with playersStorages.playTime in data/lib/ps/config/playersStorages.lua
+#define PLAYER_STORAGE_PLAYTIME 7082
 #define CLIENT_VERSION_STRING "Your client is outdated, please download the latest PokeVerse client."
 
 #define STATUS_SERVER_NAME "Unknown"

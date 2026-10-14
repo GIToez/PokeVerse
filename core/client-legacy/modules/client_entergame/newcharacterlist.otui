@@ -5,11 +5,15 @@ Character < Creature
   margin-top: 30
   margin-left: -10
   image-source: ~
+  phantom: true
+
+CharacterPokemon < UIWidget
+  image-source: ~
+  size: 50 54
 
 CharacterWidget < UIWidget
   image-source: /images/trainerCards/trainer
   background-color: alpha
-  margin: 4
   &updateOnStates: |
     function(self)
       local children = self:getChildren()
@@ -37,6 +41,7 @@ CharacterWidget < UIWidget
     text-align: center
     margin-top: 8
     margin-left: 5
+    phantom: true
 
     $on:
       color: #ffffff
@@ -44,7 +49,6 @@ CharacterWidget < UIWidget
   Label
     visible: false
     id: worldName
-    color: #ffffff
     color: #aaaaaa
     anchors.top: parent.top
     anchors.right: parent.right
@@ -68,96 +72,122 @@ CharacterWidget < UIWidget
     text-align: center
     background-color: alpha
     width: 75
+    phantom: true
 
     $on:
       color: #7F7F7F
 
-  UIWidget
+  CharacterPokemon
     id: pokemon1
-    color: #5C5C5C
     anchors.top: parent.top
     anchors.left: parent.left
     margin-top: 30
     margin-left: 78
-    image-source: ~
-    size: 50 54
 
-  UIWidget
+  CharacterPokemon
     id: pokemon2
-    color: #5C5C5C
     anchors.top: pokemon1.top
     anchors.left: pokemon1.right
-    image-source: ~
-    size: 50 54
 
-  UIWidget
+  CharacterPokemon
     id: pokemon3
-    color: #5C5C5C
     anchors.top: pokemon1.top
     anchors.left: pokemon2.right
-    image-source: ~
-    size: 50 54
 
-  UIWidget
+  CharacterPokemon
     id: pokemon4
-    color: #5C5C5C
     anchors.top: pokemon1.bottom
     anchors.left: pokemon1.left
-    image-source: ~
-    size: 50 54
 
-  UIWidget
+  CharacterPokemon
     id: pokemon5
-    color: #5C5C5C
     anchors.top: pokemon4.top
     anchors.left: pokemon4.right
-    image-source: ~
-    size: 50 54
 
-  UIWidget
+  CharacterPokemon
     id: pokemon6
-    color: #5C5C5C
     anchors.top: pokemon4.top
     anchors.left: pokemon5.right
-    image-source: ~
-    size: 50 54
+
+CreateCharacterCard < UIWidget
+  background-color: #00000050
+  border-width: 1
+  border-color: #ffffff40
+  opacity: 0.8
+
+  $focus:
+    opacity: 1.0
+    border-color: #ffffffa0
+
+  Label
+    id: plus
+    !text: '+'
+    font: sans-bold-16px
+    color: #ffffff
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.verticalCenter
+    phantom: true
+
+  Label
+    !text: tr('Create character')
+    font: verdana-11px-monochrome
+    color: #ffffff
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.verticalCenter
+    margin-top: 6
+    phantom: true
+
+  Label
+    id: slots
+    font: verdana-11px-monochrome
+    color: #aaaaaa
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-bottom: 10
+    phantom: true
 
 MainWindow
   id: charactersWindow
-  !text: tr('Character List')
-  size: 540 600
+  !text: tr('Select Character')
+  size: 540 300
   visible: false
   @onEnter: CharacterList.doLogin()
   @onEscape: CharacterList.hide(true)
   @onSetup: |
-    g_keyboard.bindKeyPress('Up', function() self:getChildById('characters'):focusPreviousChild(KeyboardFocusReason) end, self)
-    g_keyboard.bindKeyPress('Down', function() self:getChildById('characters'):focusNextChild(KeyboardFocusReason) end, self)
+    local function list() return self:getChildById('characters') end
+    g_keyboard.bindKeyPress('Up', function() list():focusPreviousChild(KeyboardFocusReason) end, self)
+    g_keyboard.bindKeyPress('Down', function() list():focusNextChild(KeyboardFocusReason) end, self)
+    g_keyboard.bindKeyPress('Left', function() list():focusPreviousChild(KeyboardFocusReason) end, self)
+    g_keyboard.bindKeyPress('Right', function() list():focusNextChild(KeyboardFocusReason) end, self)
 
   ScrollableFlatPanel
     id: characters
     anchors.top: parent.top
-    anchors.left: parent.left
-    anchors.right: characterListScrollBar.left
     anchors.bottom: accountStatusCaption.top
-    margin-bottom: 5
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: 494
+    margin-bottom: 6
     padding: 1
     layout:
       type: grid
       cell-size: 245 158
+      cell-spacing: 4
       flow: true
-      cell-spacing: 1
     vertical-scrollbar: characterListScrollBar
     auto-focus: first
     focusable: false
 
   VerticalScrollBar
     id: characterListScrollBar
-    anchors.top: parent.top
-    anchors.bottom: accountStatusCaption.top
-    anchors.right: parent.right
-    margin-bottom: 5
-    step: 158
+    anchors.top: characters.top
+    anchors.bottom: characters.bottom
+    anchors.left: characters.right
+    step: 162
     pixels-scroll: true
+    visible: false
 
   Label
     id: accountStatusCaption
@@ -183,52 +213,15 @@ MainWindow
     id: separator
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: next.top
-    margin-bottom: 10
-
-  //CheckBox
-  //  id: charAutoLoginBox
-  //  !text: tr('Auto login')
-  //  !tooltip: tr('Auto login selected character on next charlist load')
-  //  anchors.left: parent.left
-  //  anchors.right: parent.right
-  //  anchors.bottom: next.top
-  //  margin-bottom: 6
-  //  margin-left: 18
-  //  margin-right: 18
-
-  Button
-    id: buttonOk
-    !text: tr('Ok')
-    width: 64
-    anchors.right: next.left
-    anchors.bottom: parent.bottom
-    margin-right: 10
-    @onClick: CharacterList.doLogin()
-
-  Button
-    id: buttonCancel
-    !text: tr('Cancel')
-    width: 64
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
-    @onClick: CharacterList.hide(true)
-
-  Button
-    id: buttonNewCharacter
-    !text: tr('New Character')
-    anchors.left: parent.left
-    anchors.bottom: parent.bottom
-    width: 110
-    @onClick: CharacterList.showCreateCharacter()
+    anchors.bottom: buttonOk.top
+    margin-bottom: 8
 
   Button
     id: buttonDeleteCharacter
-    !text: tr('Delete Character')
-    anchors.left: buttonNewCharacter.right
+    !text: tr('Delete')
+    anchors.left: parent.left
     anchors.bottom: parent.bottom
-    width: 110
-    margin-left: 10
+    width: 70
     @onClick: CharacterList.deleteCharacter()
 
   Button
@@ -237,6 +230,23 @@ MainWindow
     !tooltip: tr('Opens the PokeVerse Discord server')
     anchors.left: buttonDeleteCharacter.right
     anchors.bottom: parent.bottom
-    width: 110
-    margin-left: 10
+    width: 70
+    margin-left: 8
     @onClick: CharacterList.openDonate()
+
+  Button
+    id: buttonOk
+    !text: tr('Play')
+    width: 70
+    anchors.right: buttonCancel.left
+    anchors.bottom: parent.bottom
+    margin-right: 8
+    @onClick: CharacterList.doLogin()
+
+  Button
+    id: buttonCancel
+    !text: tr('Cancel')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: CharacterList.hide(true)

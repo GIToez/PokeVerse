@@ -17,7 +17,7 @@ local loginMessage = getConfigValue('loginMessage')
 
 local events = {"onDeath", "onKill", "onGainExperience", "onAddContainerItem", "onRemoveContainerItem",
 "onPrepareDeath", "onTarget", "onJoinChannel", "onReportBug", "onTradeRequestAccept", "onStatisticChange",
-"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit"}
+"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit", "ExtendedOpcode"}
 
 if (getBooleanFromString(getConfigValue('advancedSave'))) then
     events[#events + 1] = "AdvancedSave"
@@ -31,6 +31,7 @@ function onLogin(cid)
 		for _, v in pairs(events) do
             registerCreatureEvent(cid, v)
         end
+        doCreatureSetStorage(cid, playersStorages.playSessionStart, os.time())
 
         local lastLogin, str = getPlayerLastLoginSaved(cid), loginMessage
 		if (lastLogin > 0) then
@@ -38,7 +39,6 @@ function onLogin(cid)
 			doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
 			str = string.format(__L(cid, "Your last visit was %s ago, on %s."), table.concat(string.timediff(os.time() - lastLogin, cid)), os.date("%a %b %d %X %Y", lastLogin))
 		else
-			--doPlayerPopupFYI(cid, "Welcome to the world of PokeVerse! You are about to start your journey\nin a fun and mysterious world inhabited by Pokemon!\n\nThe first sites listed to start training your Pokemon is through\nthe sewers of cities or near rivers fishing with a fishing rod\nthat is in your backpack.\n\nFor heal your Pokemon, approach the Nurse Joy and say 'hi'.\nWhile in battle you can use health potions!\n\nYou can visit http://www.psoul.net/blogCategories/1-tutorials to find guides!\nFeel free to also get help in the 'Help' or 'Game-Chat' channels\nusing the shortcut Ctrl + O.\n\nGood luck on your journey!\n")
 			
 			--str = str .. " Please choose your outfit."
 			--doPlayerSendOutfitWindow(cid)
@@ -189,6 +189,9 @@ function onLogin(cid)
 		if (getPlayerAutoLootSave(cid)) then
 			setPlayerAutoLoot(cid, true)
 		end
+
+		PC.onLogin(cid)
+		addEvent(GTS.onLogin, 3000, cid)
 
 	elseif(accountManager == MANAGER_NAMELOCK) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Hello, it appears that your character has been namelocked, what would you like as your new name?")

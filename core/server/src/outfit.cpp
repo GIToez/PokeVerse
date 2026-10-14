@@ -25,7 +25,10 @@
 #include "condition.h"
 
 #include "game.h"
+#include "configmanager.h"
+
 extern Game g_game;
+extern ConfigManager g_config;
 
 bool Outfits::parseOutfitNode(xmlNodePtr p)
 {
@@ -590,6 +593,25 @@ bool Outfits::loadFromXml()
 
 	xmlFreeDoc(doc);
 	return true;
+}
+
+bool Outfits::isStarterOutfit(const Outfit& outfit)
+{
+	return outfit.isDefault && !outfit.accessLevel && !outfit.storageId
+		&& (!outfit.isPremium || g_config.getBool(ConfigManager::FREE_PREMIUM));
+}
+
+OutfitList Outfits::getStarterOutfits(uint16_t sex)
+{
+	OutfitList list;
+	const OutfitMap& map = getOutfits(sex);
+	for(OutfitMap::const_iterator it = map.begin(); it != map.end(); ++it)
+	{
+		if(isStarterOutfit(it->second))
+			list.push_back(it->second);
+	}
+
+	return list;
 }
 
 uint32_t Outfits::getOutfitId(uint32_t lookType)

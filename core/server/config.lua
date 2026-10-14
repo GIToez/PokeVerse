@@ -95,11 +95,13 @@
 	retryTimeout = 5 * 1000
 	loginTimeout = 60 * 1000
 	maxPlayers = 100
+	maxCharactersPerAccount = 3
 	motd = "Welcome to PokeVerse!"
 	displayOnOrOffAtCharlist = false
 	onePlayerOnlinePerAccount = true
 	allowClones = false
-	serverName = "PokeVerse"
+	-- world name shown on the character list; live servers set it with the LIVE_SERVER_NAME variable
+	serverName = "LeafGreen"
 	loginMessage = "Welcome to PokeVerse! Train your Pokemon, complete quests and explore every city."
 	statusTimeout = 5 * 60 * 1000
 	replaceKickOnLogin = true
@@ -130,7 +132,7 @@
 
 	-- Guilds
 	ingameGuildManagement = true
-	levelToFormGuild = 40
+	levelToFormGuild = 30
 	premiumDaysToFormGuild = 0
 	guildNameMinLength = 4
 	guildNameMaxLength = 20
@@ -143,12 +145,12 @@
 	buyableAndSellableHouses = true
 	houseNeedPremium = true
 	bedsRequirePremium = true
-	levelToBuyHouse = 50
+	levelToBuyHouse = 25
 	housesPerAccount = 0
 	houseRentAsPrice = false
 	housePriceAsRent = true
 	housePriceEachSquare = 50
-	houseRentPeriod = "monthly"
+	houseRentPeriod = "weekly"
 	houseCleanOld = 60 * 60 * 24 * 45
 	guildHalls = true
 
@@ -312,8 +314,8 @@
 
 	-- Status
 	ownerName = "PokeVerse"
-	ownerEmail = "contact@psoul.net"
-	url = "http://www.psoul.net/"
+	ownerEmail = ""
+	url = "https://gitoez.github.io/PokeVerse-Clients/"
 	location = "EUA"
 	displayGamemastersWithOnlineCommand = false
 

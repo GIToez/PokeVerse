@@ -90,6 +90,10 @@ class Outfits
 
 		uint32_t getOutfitId(uint32_t lookType);
 
+		// outfits a new character may pick: no access level, quest storage or premium
+		static bool isStarterOutfit(const Outfit& outfit);
+		OutfitList getStarterOutfits(uint16_t sex);
+
 		int16_t getOutfitAbsorb(uint32_t lookType, uint16_t sex, CombatType_t combat);
 		int16_t getOutfitReflect(uint32_t lookType, uint16_t sex, CombatType_t combat);
 

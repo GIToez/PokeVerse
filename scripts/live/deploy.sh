@@ -19,6 +19,7 @@
 #   PV_PUBLIC_HOST     address players connect to (default PV_HOST)
 #   PV_DAILY_RESTART   true/false (default true), PV_DAILY_TIME HH:MM (default 06:00),
 #   PV_TIMEZONE        e.g. America/New_York (default: the server's time zone)
+#   PV_SERVER_NAME     world name on the character list (default LeafGreen)
 #   PV_WARNING_MINUTES warning before a restart when players are online (default 5)
 #   PV_BACKUP          backup file name (restore), PV_CHARACTER / PV_GROUP (set-group),
 #                      PV_CHARACTER / PV_PREMIUM_DAYS (set-premium: days or unlimited)
@@ -35,6 +36,7 @@ PV_PUBLIC_HOST=${PV_PUBLIC_HOST:-$PV_HOST}
 PV_DAILY_RESTART=${PV_DAILY_RESTART:-true}
 PV_DAILY_TIME=${PV_DAILY_TIME:-06:00}
 PV_TIMEZONE=${PV_TIMEZONE:-}
+PV_SERVER_NAME=${PV_SERVER_NAME:-LeafGreen}
 PV_WARNING_MINUTES=${PV_WARNING_MINUTES:-5}
 REMOTE=/opt/pokeverse
 CTL=$REMOTE/current/tools/pokeverse-ctl
@@ -144,7 +146,8 @@ upload_bot() {
 configure() {
   step "Live settings"
   remote_ctl "$REMOTE/releases/$server_release/tools/pokeverse-ctl" configure \
-    "host=$PV_PUBLIC_HOST" "daily_restart=$PV_DAILY_RESTART" "daily_time=$PV_DAILY_TIME" "timezone=$PV_TIMEZONE"
+    "host=$PV_PUBLIC_HOST" "daily_restart=$PV_DAILY_RESTART" "daily_time=$PV_DAILY_TIME" "timezone=$PV_TIMEZONE" \
+    "server_name=$PV_SERVER_NAME"
   endstep
 }
 

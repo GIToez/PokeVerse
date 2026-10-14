@@ -44,7 +44,23 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
  local function resolveKeyAlias(desc)
      if not desc then
          return nil
-@@ -358,7 +364,7 @@
+@@ -297,6 +303,7 @@
+     end
+     local keyComboDesc = retranslateKeyComboDesc(keyComboDesc)
+     disconnect(widget.boundKeyDownCombos, keyComboDesc, callback)
++    disconnect(widget.boundAloneKeyDownCombos, keyComboDesc, callback)
+ end
+ 
+ function g_keyboard.unbindKeyUp(keyComboDesc, arg1, arg2)
+@@ -306,6 +313,7 @@
+     end
+     local keyComboDesc = retranslateKeyComboDesc(keyComboDesc)
+     disconnect(widget.boundKeyUpCombos, keyComboDesc, callback)
++    disconnect(widget.boundAloneKeyUpCombos, keyComboDesc, callback)
+ end
+ 
+ function g_keyboard.unbindKeyPress(keyComboDesc, arg1, arg2)
+@@ -358,7 +366,7 @@
      if (g_platform.isMobile()) then
          return false
      else
@@ -53,7 +69,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
      end
  end
  
-@@ -366,7 +372,7 @@
+@@ -366,7 +374,7 @@
      if (g_platform.isMobile()) then
          return false
      else
@@ -62,7 +78,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
      end
  end
  
-@@ -411,7 +417,7 @@
+@@ -411,7 +419,7 @@
      if primaryIsCtrl then
          return bit.bor(KeyboardPrimaryModifier, KeyboardCtrlModifier)
      end
@@ -71,7 +87,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
  end
  
  function g_keyboard.isPrimaryModifierOnly(keyboardModifiers)
-@@ -419,14 +425,14 @@
+@@ -419,14 +427,14 @@
          return false
      end
      local allowedMask = primaryAllowedMask()
@@ -88,6 +104,67 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
      local allowedMask = requiredMask
      local _, primaryIsCtrl = getPlatformFlags()
      if primaryIsCtrl then
+diff -ruN pristine/modules/corelib/ui/uimessagebox.lua modules/corelib/ui/uimessagebox.lua
+--- a/modules/corelib/ui/uimessagebox.lua
++++ b/modules/corelib/ui/uimessagebox.lua
+@@ -17,14 +17,16 @@
+     local staticSizes = {
+         width = {
+             max = math.min(916, math.max(260, rootWidth - 40)),
+-            min = 246
++            min = 300
+         },
+         height = {
+-            min = 56,
++            min = 100,
+             max = math.min(616, math.max(120, rootHeight - 40))
+         }
+     }
+-    local horizontalPadding = 32
++    -- MessageBoxWindow margins (data/pokeverse-styles): 26 each side, 65 above the text,
++    -- 22 below it, and 48 more for a row of buttons
++    local horizontalPadding = 52
+     local maxContentWidth = staticSizes.width.max - horizontalPadding
+     local currentSizes = {
+         width = 0,
+@@ -47,7 +49,9 @@
+ 
+     currentSizes.height = currentSizes.height + 22
+     for i = 1, #buttons do
+-        local button = messageBox:addButton(buttons[i].text, buttons[i].callback)
++        local primary = i == 1 and #buttons > 1
++        local button = messageBox:addButton(buttons[i].text, buttons[i].callback,
++                                            primary and 'MessageBoxPrimaryButton' or nil)
+         button:addAnchor(AnchorTop, 'parent', AnchorTop)
+         if i == 1 then
+             button:addAnchor(AnchorRight, 'parent', AnchorRight)
+@@ -63,9 +67,9 @@
+     messageBox.content:setWidth(finalWidth - horizontalPadding)
+     messageBox.content:resizeToText()
+ 
+-    currentSizes.height = messageBox.content:getHeight() + 20 + 22
++    currentSizes.height = messageBox.content:getHeight() + 65 + 22
+     if #buttons > 0 then
+-        currentSizes.height = currentSizes.height + 42
++        currentSizes.height = currentSizes.height + 48
+     end
+     messageBox:setHeight(math.min(staticSizes.height.max, math.max(staticSizes.height.min, currentSizes.height)))
+ 
+@@ -131,11 +135,10 @@
+     return UIMessageBox.displaySHOP(title, message, description, buttons, onEnterCallback, onEscapeCallback)
+ end
+ 
+-function UIMessageBox:addButton(text, callback)
++function UIMessageBox:addButton(text, callback, style)
+     local holder = self:getChildById('holder')
+-    local button = g_ui.createWidget('QtButton', holder)
+-    button:setWidth(math.max(48, 10 + (string.len(text) * 8)))
+-    button:setHeight(20)
++    local button = g_ui.createWidget(style or 'MessageBoxButton', holder)
++    button:setWidth(math.max(90, 28 + (string.len(text) * 8)))
+     button:setText(text)
+     connect(button, {
+         onClick = callback
 diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsbar.lua
 --- a/modules/corelib/ui/uistatsbar.lua
 +++ b/modules/corelib/ui/uistatsbar.lua

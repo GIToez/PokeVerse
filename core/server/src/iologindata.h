@@ -115,6 +115,7 @@ class IOLoginData
 		Outfit_t getPlayerOutfit(const std::string& name);
 		uint32_t getPlayerLevel(const std::string& name);
 		uint8_t getPlayerVocation(const std::string& name);
+		bool getPlayerSelectInfo(const std::string& name, uint8_t& sex, uint32_t& townId, uint32_t& lastLogin, uint32_t& playTime);
 		
 		uint32_t getAccountHighestLevel(uint32_t acc);
 		

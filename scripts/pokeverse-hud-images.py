@@ -12,9 +12,10 @@ from PIL import Image, ImageDraw
 
 SCALE = 4  # drawn large, then scaled down for smooth edges
 
-PANEL = (20, 28, 29, 225)
-PANEL_EDGE = (78, 104, 104, 200)
-TRACK = (6, 10, 10, 235)
+# the navy of the login screens and window art (scripts/pokeverse-skin.py)
+PANEL = (15, 23, 41, 228)
+PANEL_EDGE = (58, 86, 140, 210)
+TRACK = (5, 9, 19, 235)
 GOLD = (226, 178, 62, 255)
 GOLD_DARK = (120, 86, 22, 255)
 
@@ -108,6 +109,15 @@ def heart(out):
     save(im, out, 'heart')
 
 
+def bolt(out):
+    im = canvas(9, 12)
+    d = ImageDraw.Draw(im)
+    s = SCALE
+    d.polygon(((5.6 * s, 0), (0.4 * s, 6.8 * s), (4 * s, 6.8 * s), (2.8 * s, 12 * s - 1),
+               (8.6 * s, 4.8 * s), (5 * s, 4.8 * s), (6.8 * s, 0)), fill=(196, 160, 255, 255))
+    save(im, out, 'bolt')
+
+
 def popup_card(out):
     """Level-up card background, drawn as a 9-slice (image-border: 12): panel, edge and a gold top accent."""
     w = h = 32
@@ -163,11 +173,14 @@ def main():
     bar_fill(out, 'fill-health', (96, 226, 140), (44, 170, 92))
     bar_fill(out, 'fill-pokemon', (110, 180, 245), (52, 116, 200))
     bar_fill(out, 'fill-experience', (250, 204, 82), (214, 150, 30))
+    bar_fill(out, 'fill-energy', (184, 140, 255), (118, 72, 222))
+    bar_fill(out, 'fill-energy-low', (255, 132, 146), (200, 52, 74))
     portrait(out)
     ball(out, 'ball', (222, 44, 52), (240, 240, 240))
     ball(out, 'ball-fainted', (96, 70, 72), (130, 130, 130), button=(150, 150, 150))
     ball(out, 'ball-empty', (74, 90, 94), (54, 66, 70), band=(14, 20, 22), button=(104, 120, 124))
     heart(out)
+    bolt(out)
     rounded(out, 'slot', 16, 16, 6, (12, 18, 19, 210), (70, 92, 92, 220))
     rounded(out, 'slot-hover', 16, 16, 6, (30, 42, 43, 220), (150, 176, 176, 240))
     rounded(out, 'slot-active', 16, 16, 6, (40, 36, 18, 220), GOLD)
