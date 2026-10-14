@@ -1,0 +1,24 @@
+Module
+  name: client_entergame
+  description: Manages enter game and character list windows
+  author: edubart
+  website: https://github.com/edubart/otclient
+
+  dependencies:
+    - game_features
+    - game_things
+
+  @onLoad: |
+    g_ui.importStyle('pokeverse_styles')
+    dofile 'entergame'
+    dofile 'characterlist'
+    dofile 'pokeverse_entergame'
+    dofile 'pokeverse_characters'
+    EnterGame.init()
+    CharacterList.init()
+    PokeVerseEnterGame.init()
+
+  @onUnload: |
+    PokeVerseEnterGame.terminate()
+    EnterGame.terminate()
+    CharacterList.terminate()

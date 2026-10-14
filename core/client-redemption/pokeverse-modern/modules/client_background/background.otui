@@ -25,16 +25,6 @@ Panel
     effect: login-leaves
     reference-pos: 0.86 0.16
 
-  UIWidget
-    id: logo
-    image-source: /modules/client_background/images/logo
-    image-fixed-ratio: true
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    size: 480 196
-    phantom: true
-    focusable: false
-
   UILabel
     id: clientVersionLabel
     background-color: #00000099

@@ -27,19 +27,39 @@ _spec.loader.exec_module(pt)
 PROTOCOL_ACCOUNT = 0x0B
 ACTION_CREATE_ACCOUNT, ACTION_CREATE_CHARACTER, ACTION_DELETE_CHARACTER = 1, 2, 3
 TUTORIAL_START = (5000, 806, 6)
+FISHER_FEMALE, FISHER_MALE, PREMIUM_LOOKTYPE = 627, 628, 614  # data/XML/outfits.xml
+NEW_OUTFIT = (FISHER_MALE, 10, 20, 30, 40)
 
 
-def request(args, action, account, password, name=None, sex=None):
-    """Sends one account request and returns (success, message)."""
-    success, message = _request(args, action, account, password, name, sex)
+class PacedConnection(pt.Connection):
+    # More than 10 connections from one IP within about a second block it for 10 seconds, and the
+    # blocked connections are closed without a reply (ConnectionManager::acceptConnection).
+    def __init__(self, *args, **kwargs):
+        time.sleep(0.25)
+        super().__init__(*args, **kwargs)
+
+
+pt.Connection = PacedConnection
+
+
+def request(args, action, account, password, name=None, sex=None, outfit=None):
+    """Sends one account request and returns (success, message). outfit is (lookType, head, body, legs, feet)."""
+    success, message = _request(args, action, account, password, name, sex, outfit)
     if not success and pt.FLOOD_MESSAGE in message:
         print("  login flood protection active; retrying in %ds" % pt.FLOOD_WAIT, flush=True)
         time.sleep(pt.FLOOD_WAIT)
-        success, message = _request(args, action, account, password, name, sex)
+        success, message = _request(args, action, account, password, name, sex, outfit)
     return success, message
 
 
-def _request(args, action, account, password, name, sex):
+def pace():
+    # More than 10 connections from one IP within about a second block it for 10 seconds,
+    # and the blocked connections are closed without a reply (ConnectionManager::acceptConnection).
+    time.sleep(0.2)
+
+
+def _request(args, action, account, password, name, sex, outfit):
+    pace()
     conn = pt.Connection(args.host, args.login_port, args.timeout)
     try:
         key = pt.new_xtea_key()
@@ -48,6 +68,8 @@ def _request(args, action, account, password, name, sex):
             block += pt.pstr(name)
         if sex is not None:
             block += bytes([sex])
+        if outfit is not None:
+            block += struct.pack("<H4B", *outfit)
         block += b"\x00" * (128 - len(block))
         conn.send_first(struct.pack("<BHH", PROTOCOL_ACCOUNT, pt.CLIENT_OS, pt.CLIENT_VERSION) + pt.rsa_encrypt(block))
         conn.key = key
@@ -73,10 +95,11 @@ class Checker:
         return ok
 
 
-def character_list(args, account, password):
+def character_list(args, account, password, details=None):
     login_args = argparse.Namespace(host=args.host, login_port=args.login_port, timeout=args.timeout,
                                     account=account, password=password)
-    return {c[0]: (c[2], c[3]) for c in pt.flood_retry(lambda: pt.login(login_args))}
+    pace()
+    return {c[0]: (c[2], c[3]) for c in pt.flood_retry(lambda: pt.login(login_args, details))}
 
 
 def slot_limit_test(args):
@@ -131,19 +154,54 @@ def main():
                  request(args, ACTION_CREATE_CHARACTER, account, "wrong" + password, character, 1), False)
         c.expect("create character with invalid name",
                  request(args, ACTION_CREATE_CHARACTER, account, password, "x1", 1), False)
-        c.expect("create character", request(args, ACTION_CREATE_CHARACTER, account, password, character, 1), True)
+        c.expect("create character with a premium outfit",
+                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (PREMIUM_LOOKTYPE, 0, 0, 0, 0)), False)
+        c.expect("create character with a female outfit on a male",
+                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (FISHER_FEMALE, 0, 0, 0, 0)), False)
+        c.expect("create character with an invalid outfit color",
+                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (FISHER_MALE, 133, 0, 0, 0)), False)
+        c.expect("create character", request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, NEW_OUTFIT), True)
         c.expect("create duplicate character",
                  request(args, ACTION_CREATE_CHARACTER, account, password, character, 0), False)
 
-        characters = character_list(args, account, password)
+        details = {}
+        characters = character_list(args, account, password, details)
         if character not in characters:
             print("FAIL: %s missing from the character list %s" % (character, list(characters)))
             return 1
         print("OK: %s is in the character list" % character)
+        info = details[character]
+        if (info["looktype"], *info["colors"]) == NEW_OUTFIT and info["sex"] == 1 and info["town"] and info["last_login"] == 0:
+            print("OK: %s has the chosen outfit %s, sex male, town %s" % (character, NEW_OUTFIT, info["town"]))
+        else:
+            print("FAIL: unexpected character details %s" % info)
+            c.failures += 1
+        starters = details["starter outfits"]
+        if (1, FISHER_MALE, "Fisher") in starters and not [o for o in starters if o[1] == PREMIUM_LOOKTYPE]:
+            print("OK: starter outfits %s" % starters)
+        else:
+            print("FAIL: unexpected starter outfits %s" % starters)
+            c.failures += 1
+        if details["max characters"] == 3 and details["server name"] == "LeafGreen":  # config.lua
+            print("OK: the character list reports 3 character slots on LeafGreen")
+        else:
+            print("FAIL: the character list reports %d character slots on %r, expected 3 on LeafGreen"
+                  % (details["max characters"], details["server name"]))
+            c.failures += 1
+        old_client = argparse.Namespace(host=args.host, login_port=args.login_port, timeout=args.timeout,
+                                        account=account, password=password)
+        pace()
+        if character in [ch[0] for ch in pt.flood_retry(lambda: pt.login(old_client, version=313))]:
+            print("OK: a version 313 client still gets the character list")
+        else:
+            print("FAIL: version 313 character list is missing %s" % character)
+            c.failures += 1
 
         game_args = argparse.Namespace(timeout=args.timeout, account=account, password=password, character=character)
+        pace()
         conn, _, position = pt.flood_retry(lambda: pt.enter_game(game_args, *characters[character]))
         try:
+            pt.drain(conn, 3)
             conn.send(b"\x14")  # logout
             pt.drain(conn, 2)
         finally:
@@ -155,6 +213,14 @@ def main():
             c.failures += 1
 
         time.sleep(2)  # let the logout save finish before deleting
+        details = {}
+        character_list(args, account, password, details)
+        info = details[character]
+        if info["last_login"] > 0 and info["play_time"] >= 3:
+            print("OK: last login %d, play time %ds after one session" % (info["last_login"], info["play_time"]))
+        else:
+            print("FAIL: last login %d, play time %d after one session" % (info["last_login"], info["play_time"]))
+            c.failures += 1
         c.expect("delete character", request(args, ACTION_DELETE_CHARACTER, account, password, character), True)
         if character in character_list(args, account, password):
             print("FAIL: %s is still in the character list after deletion" % character)

@@ -13,7 +13,8 @@
 #   pokeverse-ctl health                     login, character list, movement, persistence and
 #                                            character creation checks against the running server
 #   pokeverse-ctl status                     releases, services, players online, backups, disk
-#   pokeverse-ctl configure key=value ...    host=, daily_restart=true|false, daily_time=HH:MM, timezone=
+#   pokeverse-ctl configure key=value ...    host=, daily_restart=true|false, daily_time=HH:MM, timezone=,
+#                                            server_name=
 #   pokeverse-ctl set-group <character> <group id>
 #   pokeverse-ctl set-premium <character> <days|unlimited>   premium of the character's account (0 ends it)
 #   pokeverse-ctl restore <backup file> --yes  replace the database with a backup (safety backup first)
@@ -511,13 +512,14 @@ set_managed_block() {
 }
 
 cmd_configure() {
-  local host="" daily_restart=true daily_time=06:00 timezone="" kv
+  local host="" daily_restart=true daily_time=06:00 timezone="" server_name="" kv
   for kv in "$@"; do
     case "$kv" in
       host=*) host=${kv#host=} ;;
       daily_restart=*) daily_restart=${kv#daily_restart=} ;;
       daily_time=*) daily_time=${kv#daily_time=} ;;
       timezone=*) timezone=${kv#timezone=} ;;
+      server_name=*) server_name=${kv#server_name=} ;;
       *) die "unknown setting: $kv" ;;
     esac
   done
@@ -527,18 +529,22 @@ cmd_configure() {
   if [ -n "$timezone" ]; then
     [[ "$timezone" =~ ^[A-Za-z0-9_+/-]+$ ]] && [ -f "/usr/share/zoneinfo/$timezone" ] || die "unknown timezone: $timezone"
   fi
+  if [ -n "$server_name" ]; then
+    [[ "$server_name" =~ ^[A-Za-z0-9]([A-Za-z0-9\ ]{0,18}[A-Za-z0-9])?$ ]] || die "server_name must be 1 to 20 letters, digits or spaces, got '$server_name'"
+  fi
   set_managed_block "ip = \"$host\"
 bindOnlyConfiguredIpAddress = false
 dailyRestartEnabled = $daily_restart
 dailyRestartTime = \"$daily_time\"
 restartRequestFile = \"$RESTART_REQUEST\"
-"
+${server_name:+serverName = \"$server_name\"
+}"
   if [ -n "$timezone" ]; then
     printf 'TZ=%s\n' "$timezone" > "$SERVER_ENV"
   else
     rm -f "$SERVER_ENV"
   fi
-  log "Settings: public address $host, daily restart $daily_restart at $daily_time ${timezone:-server time ($(date +%Z))}"
+  log "Settings: ${server_name:+world $server_name, }public address $host, daily restart $daily_restart at $daily_time ${timezone:-server time ($(date +%Z))}"
 }
 
 cmd_set_group() {

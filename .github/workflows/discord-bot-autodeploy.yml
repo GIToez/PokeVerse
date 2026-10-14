@@ -119,6 +119,7 @@ jobs:
       PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
       PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '06:00' }}
       PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE || secrets.LIVE_TIMEZONE }}
+      PV_SERVER_NAME: ${{ vars.LIVE_SERVER_NAME || 'LeafGreen' }}
       DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       DISCORD_APPLICATION_ID: ${{ vars.DISCORD_APPLICATION_ID || secrets.DISCORD_APPLICATION_ID }}
       DISCORD_GUILD_ID: ${{ vars.DISCORD_GUILD_ID || secrets.DISCORD_GUILD_ID }}
