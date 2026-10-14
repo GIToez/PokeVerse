@@ -165,8 +165,12 @@ void LocalPlayer::cancelWalk(const Otc::Direction direction)
     callLuaField("onCancelWalk", direction);
 }
 
-bool LocalPlayer::autoWalk(const Position& destination, const bool retry)
+bool LocalPlayer::autoWalk(const Position& destinationRef, const bool retry)
 {
+    // the retry and continue events call this with a position captured in m_autoWalkContinueEvent,
+    // which is released below
+    const Position destination = destinationRef;
+
     // reset state
     m_autoWalkDestination = {};
     m_lastAutoWalkPosition = {};
@@ -205,9 +209,9 @@ bool LocalPlayer::autoWalk(const Position& destination, const bool retry)
             return;
         }
 
-        if (self->m_autoWalkDestination != result->destination) {
-            self->m_lastAutoWalkPosition = result->destination;
-        }
+        // the path stops short of the destination when it runs into tiles never seen or the
+        // protocol limit; reaching its end paths again from there (onPositionChange)
+        self->m_lastAutoWalkPosition = result->start.translatedToDirections(result->path).back();
 
         g_game.autoWalk(result->path, result->start);
     });
@@ -246,8 +250,16 @@ void LocalPlayer::onPositionChange(const Position& newPos, const Position& oldPo
 
     if (newPos == m_autoWalkDestination)
         stopAutoWalk();
-    else if (m_autoWalkDestination.isValid() && newPos == m_lastAutoWalkPosition)
-        autoWalk(m_autoWalkDestination);
+    else if (m_autoWalkDestination.isValid() && newPos == m_lastAutoWalkPosition) {
+        // the tiles that came into view arrive after this move, and while they load the minimap
+        // marks them blocked; the async path search would read that and find no way
+        if (m_autoWalkContinueEvent)
+            m_autoWalkContinueEvent->cancel();
+        m_autoWalkContinueEvent = g_dispatcher.scheduleEvent([self = asLocalPlayer(), destination = m_autoWalkDestination] {
+            if (self->m_autoWalkDestination == destination)
+                self->autoWalk(destination);
+        }, 50);
+    }
 
     m_serverWalk = false;
 }
