@@ -47,6 +47,7 @@ Module
     - game_pc
     - game_levelup
     - game_gymbattle
+    - game_pokepedia
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

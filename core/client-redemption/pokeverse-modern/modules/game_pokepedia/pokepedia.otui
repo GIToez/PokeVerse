@@ -1,0 +1,1435 @@
+// The Pokepedia window (artwork: scripts/art/pokepedia_ui.py; the Tk styles come from game_dailytasks,
+// the Gts list styles from game_gts and the PV styles from client_entergame)
+
+PpField < PVField
+  height: 28
+  padding: 6 10 6 10
+
+PpArea < UITextEdit
+  image-source: /modules/client_entergame/images/field
+  image-border: 8
+  font: verdana-11px-antialised
+  color: #e6ecff
+  selection-color: #ffffff
+  selection-background-color: #3d6fb8
+  padding: 6 8 6 8
+  multiline: true
+  text-wrap: true
+  text-align: topLeft
+  $focus:
+    image-source: /modules/client_entergame/images/field_focus
+  $disabled:
+    color: #96aacd
+
+PpList < GtsList
+  auto-focus: none
+  padding-right: 14
+
+PpSubTab < TkTab
+  height: 28
+  ttf-font-size: 12
+  icon-size: 14 14
+  icon-offset-y: 4
+  text-offset: 8 0
+
+PpRow < UIWidget
+  height: 24
+  focusable: true
+  background-color: #12203d
+  $alternate:
+    background-color: #0f1a33
+  $hover:
+    background-color: #1c3260
+  $focus:
+    background-color: #3a568c
+
+PpCell < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-align: left
+  text-auto-resize: false
+  text-offset: 6 0
+  phantom: true
+  anchors.top: parent.top
+  anchors.bottom: parent.bottom
+
+PpMutedCell < PpCell
+  color: #96aacd
+
+PpIconButton < UIButton
+  size: 28 28
+  image-source: /modules/client_entergame/images/button_blue
+  image-border: 8
+  icon-align: center
+  opacity: 1
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_blue_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_blue_pressed
+  $disabled:
+    opacity: 0.45
+
+PpLine < UIWidget
+  height: 18
+  phantom: true
+
+  TkMuted
+    id: label
+    width: 110
+    text-auto-resize: false
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  TkText
+    id: value
+    text-auto-resize: false
+    anchors.left: label.right
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+PpMapMark < UIWidget
+  size: 16 16
+  focusable: false
+
+PpRouteDot < UIWidget
+  size: 6 6
+  image-source: /modules/game_pokepedia/images/route_dot
+  phantom: true
+  focusable: false
+
+PpHouseTile < UIWidget
+  background-color: #ffd75a88
+  border-width: 1
+  border-color: #ffd75aff
+  phantom: true
+  focusable: false
+
+PpMinimap < UIMinimap
+  clipping: true
+  draggable: true
+  focusable: false
+  color: black
+  zoom: 1
+  min-zoom: -2
+  max-zoom: 4
+
+// map tab
+
+PpPlaceRow < PpRow
+  UIWidget
+    id: icon
+    size: 11 11
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  PpCell
+    id: name
+    anchors.left: icon.right
+    anchors.right: town.left
+
+  PpMutedCell
+    id: town
+    width: 96
+    text-align: right
+    text-offset: -6 0
+    anchors.right: parent.right
+
+PpStopRow < PpRow
+  height: 28
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  PpCell
+    id: name
+    anchors.left: icon.right
+    anchors.right: distance.left
+
+  PpMutedCell
+    id: distance
+    width: 64
+    text-align: right
+    text-offset: 0 0
+    anchors.right: up.left
+    margin-right: 6
+
+  UIButton
+    id: up
+    size: 14 14
+    icon: /modules/game_pokepedia/images/icon_floor_up
+    anchors.right: down.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 2
+    !tooltip: tr('Move up')
+
+  UIButton
+    id: down
+    size: 14 14
+    icon: /modules/game_pokepedia/images/icon_floor_down
+    anchors.right: remove.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 2
+    !tooltip: tr('Move down')
+
+  UIButton
+    id: remove
+    size: 14 14
+    icon: /modules/game_pokepedia/images/icon_remove
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+    !tooltip: tr('Remove')
+
+PpSidePanel < UIWidget
+  anchors.top: placesTab.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 8
+
+MapPage < UIWidget
+  UIWidget
+    id: side
+    width: 300
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+    PpSubTab
+      id: placesTab
+      width: 96
+      !text: tr('Places')
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    PpSubTab
+      id: waypointsTab
+      width: 108
+      !text: tr('Waypoints')
+      anchors.top: parent.top
+      anchors.left: placesTab.right
+      margin-left: 4
+
+    PpSubTab
+      id: routeTab
+      width: 88
+      !text: tr('Route')
+      icon: /modules/game_pokepedia/images/icon_route
+      icon-offset-x: 8
+      anchors.top: parent.top
+      anchors.left: waypointsTab.right
+      margin-left: 4
+
+    PpSidePanel
+      id: placesPanel
+
+      PpField
+        id: search
+        !placeholder: tr('Search towns and places')
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+      PpList
+        id: list
+        vertical-scrollbar: listScroll
+        anchors.top: search.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: buttons.top
+        margin-top: 6
+        margin-bottom: 6
+
+      GtsScrollBar
+        id: listScroll
+        anchors.top: list.top
+        anchors.bottom: list.bottom
+        anchors.right: list.right
+
+      UIWidget
+        id: buttons
+        height: 24
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        TkSmallBlueButton
+          id: walk
+          !text: tr('Walk here')
+          width: 96
+          anchors.left: parent.left
+          anchors.top: parent.top
+
+        TkSmallBlueButton
+          id: stop
+          !text: tr('Add to route')
+          width: 106
+          anchors.left: walk.right
+          anchors.top: parent.top
+          margin-left: 4
+
+        TkSmallBlueButton
+          id: save
+          !text: tr('Waypoint')
+          anchors.left: stop.right
+          anchors.right: parent.right
+          anchors.top: parent.top
+          margin-left: 4
+
+    PpSidePanel
+      id: waypointsPanel
+      visible: false
+
+      TkMuted
+        id: hint
+        !text: tr('Right-click the map to add a waypoint. Click one to walk there, right-click it to rename or delete it.')
+        text-auto-resize: false
+        text-wrap: true
+        height: 30
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+      PpList
+        id: list
+        vertical-scrollbar: listScroll
+        anchors.top: hint.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 6
+
+      GtsScrollBar
+        id: listScroll
+        anchors.top: list.top
+        anchors.bottom: list.bottom
+        anchors.right: list.right
+
+    PpSidePanel
+      id: routePanel
+      visible: false
+
+      TkBold
+        id: status
+        text-auto-resize: false
+        text-wrap: true
+        height: 34
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+      TkTrack
+        id: track
+        anchors.top: status.bottom
+        anchors.left: parent.left
+        anchors.right: count.left
+        margin-top: 3
+        margin-right: 8
+
+      TkText
+        id: count
+        width: 60
+        height: 14
+        text-auto-resize: false
+        text-align: right
+        anchors.right: parent.right
+        anchors.top: status.bottom
+
+      PpList
+        id: list
+        vertical-scrollbar: listScroll
+        anchors.top: track.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: hint.top
+        margin-top: 8
+        margin-bottom: 6
+
+      GtsScrollBar
+        id: listScroll
+        anchors.top: list.top
+        anchors.bottom: list.bottom
+        anchors.right: list.right
+
+      TkMuted
+        id: hint
+        !text: tr('Right-click the map to add stops. Battles and NPC talks pause the route; walking yourself stops it.')
+        text-auto-resize: false
+        text-wrap: true
+        height: 30
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: buttons.top
+        margin-bottom: 6
+
+      UIWidget
+        id: buttons
+        height: 24
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        TkClaimButton
+          id: start
+          !text: tr('Start')
+          width: 92
+          anchors.left: parent.left
+          anchors.top: parent.top
+
+        TkSmallBlueButton
+          id: pause
+          !text: tr('Pause')
+          width: 92
+          anchors.left: start.right
+          anchors.top: parent.top
+          margin-left: 4
+
+        TkSmallRedButton
+          id: clear
+          !text: tr('Clear')
+          anchors.left: pause.right
+          anchors.right: parent.right
+          anchors.top: parent.top
+          margin-left: 4
+
+  TkSection
+    id: mapFrame
+    padding: 4
+    anchors.top: parent.top
+    anchors.left: side.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 12
+
+    PpMinimap
+      id: minimap
+      anchors.fill: parent
+
+    PVBlueButton
+      id: pokedexButton
+      !text: tr('Pokedex')
+      width: 104
+      height: 28
+      ttf-font-size: 12
+      icon: /modules/game_pokepedia/images/icon_dex
+      icon-size: 16 16
+      icon-align: left
+      icon-offset-x: 10
+      icon-offset-y: 6
+      text-offset: 10 0
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin: 6
+
+    UIWidget
+      id: controls
+      width: 48
+      height: 214
+      anchors.top: parent.top
+      anchors.right: parent.right
+      margin: 6
+      phantom: true
+
+      PpIconButton
+        id: center
+        icon: /modules/game_pokepedia/images/icon_center
+        !tooltip: tr('Back to you')
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+
+      PpIconButton
+        id: floorUp
+        icon: /modules/game_pokepedia/images/icon_floor_up
+        !tooltip: tr('Floor up')
+        anchors.top: center.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 10
+
+      UILabel
+        id: floor
+        height: 26
+        font: verdana-11px-rounded
+        color: #ffd75a
+        text-align: center
+        background-color: #0b1427cc
+        anchors.top: floorUp.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 2
+        phantom: true
+
+      PpIconButton
+        id: floorDown
+        icon: /modules/game_pokepedia/images/icon_floor_down
+        !tooltip: tr('Floor down')
+        anchors.top: floor.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
+
+      PpIconButton
+        id: zoomIn
+        text: +
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 16
+        color: #cfe2ff
+        !tooltip: tr('Zoom in')
+        anchors.top: floorDown.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 10
+
+      PpIconButton
+        id: zoomOut
+        text: -
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 16
+        color: #cfe2ff
+        !tooltip: tr('Zoom out')
+        anchors.top: zoomIn.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
+
+    UILabel
+      id: coords
+      font: verdana-11px-rounded
+      color: #ffffff
+      background-color: #000000aa
+      text-auto-resize: true
+      padding: 2 5 2 5
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      margin: 6
+      phantom: true
+
+// houses tab
+
+PpHouseRow < PpRow
+  PpCell
+    id: name
+    anchors.left: parent.left
+    anchors.right: size.left
+
+  PpMutedCell
+    id: size
+    width: 52
+    text-align: right
+    anchors.right: state.left
+
+  PpCell
+    id: state
+    width: 110
+    text-align: right
+    text-offset: -6 0
+    anchors.right: parent.right
+
+HousesPage < UIWidget
+  UIWidget
+    id: side
+    width: 380
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+    PpField
+      id: search
+      !placeholder: tr('Search houses or owners')
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+    TkCombo
+      id: town
+      width: 150
+      anchors.top: search.bottom
+      anchors.left: parent.left
+      margin-top: 6
+
+    TkCombo
+      id: state
+      width: 104
+      anchors.top: town.top
+      anchors.left: town.right
+      margin-left: 6
+
+    TkCombo
+      id: size
+      anchors.top: town.top
+      anchors.left: state.right
+      anchors.right: parent.right
+      margin-left: 6
+
+    PVCheckBox
+      id: guild
+      !text: tr('Guild halls only')
+      anchors.top: town.bottom
+      anchors.left: parent.left
+      margin-top: 8
+
+    TkMuted
+      id: count
+      anchors.right: parent.right
+      anchors.verticalCenter: guild.verticalCenter
+
+    PpList
+      id: list
+      vertical-scrollbar: listScroll
+      anchors.top: guild.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: list.right
+
+  TkSection
+    id: details
+    padding: 14
+    anchors.top: parent.top
+    anchors.left: side.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 12
+
+    TkMuted
+      id: empty
+      !text: tr('Pick a house from the list.')
+      anchors.centerIn: parent
+
+    UIWidget
+      id: content
+      anchors.fill: parent
+      visible: false
+
+      UIWidget
+        id: houseIcon
+        size: 18 18
+        image-source: /modules/game_pokepedia/images/icon_house
+        anchors.top: parent.top
+        anchors.left: parent.left
+        margin-top: 2
+        phantom: true
+
+      UILabel
+        id: name
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 18
+        color: #ffffff
+        text-auto-resize: false
+        height: 22
+        anchors.top: parent.top
+        anchors.left: houseIcon.right
+        anchors.right: preview.left
+        margin-left: 8
+        margin-right: 12
+        phantom: true
+
+      TkMuted
+        id: town
+        anchors.top: name.bottom
+        anchors.left: parent.left
+        margin-top: 2
+
+      UIWidget
+        id: info
+        anchors.top: town.bottom
+        anchors.left: parent.left
+        anchors.right: preview.left
+        margin-top: 10
+        margin-right: 12
+        height: 120
+        layout:
+          type: verticalBox
+          spacing: 2
+
+      TkSection
+        id: preview
+        width: 300
+        height: 190
+        padding: 3
+        anchors.top: parent.top
+        anchors.right: parent.right
+
+        PpMinimap
+          id: minimap
+          zoom: 3
+          anchors.fill: parent
+
+      UIWidget
+        id: buttons
+        height: 26
+        anchors.top: preview.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 10
+
+        TkClaimButton
+          id: buy
+          !text: tr('Buy')
+          width: 110
+          height: 26
+          anchors.left: parent.left
+          anchors.top: parent.top
+
+        TkSmallRedButton
+          id: leave
+          !text: tr('Leave house')
+          width: 110
+          height: 26
+          anchors.left: buy.right
+          anchors.top: parent.top
+          margin-left: 6
+
+        TkSmallBlueButton
+          id: walk
+          !text: tr('Walk here')
+          width: 104
+          height: 26
+          anchors.right: parent.right
+          anchors.top: parent.top
+
+        TkSmallBlueButton
+          id: show
+          !text: tr('Show on map')
+          width: 116
+          height: 26
+          anchors.right: walk.left
+          anchors.top: parent.top
+          margin-right: 6
+
+      TkIconText
+        id: reason
+        icon: /modules/game_dailytasks/images/icon_info
+        text-auto-resize: false
+        height: 16
+        anchors.top: buttons.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 6
+
+      UIWidget
+        id: access
+        anchors.top: reason.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 132
+        margin-top: 8
+
+        TkHeading
+          id: guestsTitle
+          !text: tr('Guests')
+          anchors.top: parent.top
+          anchors.left: parent.left
+
+        PpArea
+          id: guests
+          anchors.top: guestsTitle.bottom
+          anchors.left: parent.left
+          anchors.right: parent.horizontalCenter
+          anchors.bottom: saveGuests.top
+          margin-top: 4
+          margin-right: 6
+          margin-bottom: 4
+
+        TkSmallBlueButton
+          id: saveGuests
+          !text: tr('Save guests')
+          width: 120
+          anchors.left: parent.left
+          anchors.bottom: parent.bottom
+
+        TkHeading
+          id: subownersTitle
+          !text: tr('Sub-owners')
+          anchors.top: parent.top
+          anchors.left: parent.horizontalCenter
+          margin-left: 6
+
+        PpArea
+          id: subowners
+          anchors.top: subownersTitle.bottom
+          anchors.left: subownersTitle.left
+          anchors.right: parent.right
+          anchors.bottom: saveSubowners.top
+          margin-top: 4
+          margin-bottom: 4
+
+        TkSmallBlueButton
+          id: saveSubowners
+          !text: tr('Save sub-owners')
+          width: 140
+          anchors.left: subownersTitle.left
+          anchors.bottom: parent.bottom
+
+      UIWidget
+        id: transfer
+        anchors.top: access.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 56
+        margin-top: 12
+
+        TkHeading
+          id: title
+          !text: tr('Transfer')
+          anchors.top: parent.top
+          anchors.left: parent.left
+
+        PpField
+          id: buyer
+          !placeholder: tr('Trainer name')
+          width: 180
+          anchors.top: title.bottom
+          anchors.left: parent.left
+          margin-top: 4
+
+        PpField
+          id: price
+          !placeholder: tr('Price')
+          width: 120
+          anchors.top: buyer.top
+          anchors.left: buyer.right
+          margin-left: 6
+
+        TkSmallBlueButton
+          id: offer
+          !text: tr('Offer')
+          width: 90
+          height: 28
+          anchors.top: buyer.top
+          anchors.left: price.right
+          margin-left: 6
+
+        TkText
+          id: pending
+          text-auto-resize: false
+          anchors.left: parent.left
+          anchors.right: cancel.left
+          anchors.verticalCenter: buyer.verticalCenter
+          margin-right: 8
+
+        TkSmallRedButton
+          id: cancel
+          !text: tr('Cancel offer')
+          width: 120
+          anchors.right: parent.right
+          anchors.verticalCenter: buyer.verticalCenter
+
+// Pokedex tab
+
+PpDexRow < PpRow
+  height: 26
+
+  PpMutedCell
+    id: number
+    width: 46
+    anchors.left: parent.left
+
+  PpCell
+    id: name
+    anchors.left: number.right
+    anchors.right: level.left
+
+  PpCell
+    id: level
+    width: 34
+    color: #ffd75a
+    anchors.right: points.left
+
+  PpMutedCell
+    id: points
+    width: 74
+    text-align: right
+    text-offset: -6 0
+    anchors.right: parent.right
+
+PpSpawnRow < PpRow
+  height: 28
+
+  PpCell
+    id: name
+    anchors.left: parent.left
+    anchors.right: show.left
+
+  TkSmallBlueButton
+    id: route
+    !text: tr('Route here')
+    width: 92
+    height: 22
+    ttf-font-size: 11
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 3
+
+  TkSmallBlueButton
+    id: show
+    !text: tr('Show on map')
+    width: 100
+    height: 22
+    ttf-font-size: 11
+    anchors.right: route.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 4
+
+PpDropItem < UIItem
+  size: 32 32
+  virtual: true
+  margin-right: 4
+
+PpKnowledgeCard < TkCard
+  padding: 10
+
+  TkHeading
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  TkIconText
+    id: locked
+    icon: /modules/game_dailytasks/images/icon_lock
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    margin-top: 6
+
+DexPage < UIWidget
+  UIWidget
+    id: side
+    width: 340
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+    PpField
+      id: search
+      !placeholder: tr('Search by name or number')
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+    TkCombo
+      id: filter
+      width: 170
+      anchors.top: search.bottom
+      anchors.left: parent.left
+      margin-top: 6
+
+    TkMuted
+      id: complete
+      anchors.right: parent.right
+      anchors.verticalCenter: filter.verticalCenter
+
+    PpList
+      id: list
+      vertical-scrollbar: listScroll
+      anchors.top: filter.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: list.right
+
+  TkSection
+    id: details
+    padding: 14
+    anchors.top: parent.top
+    anchors.left: side.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 12
+
+    TkMuted
+      id: empty
+      !text: tr('Pick a Pokemon from the list.')
+      anchors.centerIn: parent
+
+    UIWidget
+      id: content
+      anchors.fill: parent
+      visible: false
+
+      TkIconFrame
+        id: icon
+        size: 76 76
+        anchors.top: parent.top
+        anchors.left: parent.left
+
+      UILabel
+        id: name
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 20
+        color: #ffffff
+        text-auto-resize: true
+        anchors.top: parent.top
+        anchors.left: icon.right
+        margin-left: 12
+        phantom: true
+
+      TkMuted
+        id: tier
+        anchors.top: name.bottom
+        anchors.left: name.left
+        margin-top: 2
+
+      TkBold
+        id: level
+        anchors.top: tier.bottom
+        anchors.left: name.left
+        margin-top: 6
+
+      TkTrack
+        id: track
+        width: 260
+        anchors.top: level.bottom
+        anchors.left: name.left
+        margin-top: 5
+
+      TkText
+        id: count
+        anchors.left: track.right
+        anchors.verticalCenter: track.verticalCenter
+        margin-left: 8
+
+      TkMuted
+        id: kills
+        anchors.verticalCenter: level.verticalCenter
+        anchors.left: level.right
+        margin-left: 14
+
+      TkSmallBlueButton
+        id: trackButton
+        !text: tr('Track')
+        width: 120
+        anchors.top: parent.top
+        anchors.right: parent.right
+
+      TkSmallBlueButton
+        id: open
+        !text: tr('Open in Pokedex')
+        width: 140
+        anchors.top: trackButton.bottom
+        anchors.right: parent.right
+        margin-top: 6
+
+      PpKnowledgeCard
+        id: stats
+        height: 76
+        anchors.top: icon.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 12
+
+        UIWidget
+          id: values
+          height: 34
+          anchors.top: title.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 6
+          layout:
+            type: horizontalBox
+            spacing: 24
+
+      PpKnowledgeCard
+        id: catching
+        height: 92
+        anchors.top: stats.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 8
+
+        TkText
+          id: hint
+          anchors.top: title.bottom
+          anchors.left: parent.left
+          margin-top: 6
+
+        UIWidget
+          id: drops
+          height: 32
+          anchors.top: hint.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 4
+          layout:
+            type: horizontalBox
+
+      PpKnowledgeCard
+        id: spawns
+        anchors.top: catching.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 8
+
+        PpList
+          id: list
+          vertical-scrollbar: listScroll
+          anchors.top: title.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+          margin-top: 6
+
+        GtsScrollBar
+          id: listScroll
+          anchors.top: list.top
+          anchors.bottom: list.bottom
+          anchors.right: list.right
+
+// items tab
+
+PpCategoryRow < PpRow
+  height: 28
+
+  PpCell
+    id: name
+    anchors.left: parent.left
+    anchors.right: count.left
+
+  PpMutedCell
+    id: count
+    width: 80
+    text-align: right
+    text-offset: -6 0
+    anchors.right: parent.right
+
+PpItemCell < UIWidget
+  size: 46 46
+  image-source: /modules/game_dailytasks/images/icon_frame
+  image-border: 10
+  focusable: true
+  $hover:
+    image-color: #a8c8ff
+  $focus:
+    image-color: #ffd75a
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    anchors.centerIn: parent
+    phantom: true
+
+  UIWidget
+    id: unknown
+    size: 32 32
+    image-source: /modules/game_pokepedia/images/item_unknown
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+ItemsPage < UIWidget
+  UIWidget
+    id: side
+    width: 280
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+    TkHeading
+      id: title
+      !text: tr('Categories')
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    TkMuted
+      id: total
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+
+    PpList
+      id: list
+      vertical-scrollbar: listScroll
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: hint.top
+      margin-top: 8
+      margin-bottom: 8
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: list.right
+
+    TkMuted
+      id: hint
+      !text: tr('Shop items are known from the start. Have any other item in your bag or depot, or look at one, to add it.')
+      text-auto-resize: false
+      text-wrap: true
+      height: 44
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  TkSection
+    id: grid
+    padding: 10
+    anchors.top: parent.top
+    anchors.left: side.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 12
+
+    UILabel
+      id: name
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 15
+      color: #ffffff
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 4
+      phantom: true
+
+    PpField
+      id: search
+      !placeholder: tr('Search known items')
+      width: 220
+      anchors.top: parent.top
+      anchors.right: parent.right
+
+    ScrollablePanel
+      id: items
+      vertical-scrollbar: itemsScroll
+      anchors.top: search.bottom
+      anchors.left: parent.left
+      anchors.right: itemsScroll.left
+      anchors.bottom: selected.top
+      margin-top: 10
+      margin-bottom: 8
+      layout:
+        type: grid
+        cell-size: 46 46
+        cell-spacing: 6
+        flow: true
+
+    GtsScrollBar
+      id: itemsScroll
+      anchors.top: search.bottom
+      anchors.bottom: selected.top
+      anchors.right: parent.right
+      margin-top: 10
+      margin-bottom: 8
+
+    TkText
+      id: selected
+      text-auto-resize: false
+      height: 18
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+PpIconChoice < UIButton
+  size: 30 30
+  image-source: /modules/game_dailytasks/images/icon_frame
+  image-border: 8
+  image-color: #ffffff
+  margin-right: 4
+  $hover:
+    image-color: #a8c8ff
+  $checked:
+    image-color: #ffd75a
+
+PpWaypointDialog < UIWindow
+  size: 400 196
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 20 24 20 24
+  draggable: true
+  focusable: true
+  anchors.centerIn: parent
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 16
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  TkMuted
+    id: position
+    anchors.right: parent.right
+    anchors.verticalCenter: title.verticalCenter
+
+  PpField
+    id: name
+    !placeholder: tr('Name')
+    max-length: 40
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 12
+
+  UIWidget
+    id: icons
+    height: 30
+    anchors.top: name.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    layout:
+      type: horizontalBox
+
+  TkSmallBlueButton
+    id: cancel
+    !text: tr('Cancel')
+    width: 100
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+  TkClaimButton
+    id: ok
+    !text: tr('Save')
+    width: 100
+    anchors.right: cancel.left
+    anchors.bottom: parent.bottom
+    margin-right: 8
+
+PokepediaWindow < UIWindow
+  size: 1120 720
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_pokepedia.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_pokepedia/images/icon_pokepedia
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Pokepedia')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.verticalCenter: headerIcon.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  TkIconText
+    id: status
+    icon: /modules/game_dailytasks/images/icon_info
+    color: #dce6ff
+    anchors.left: headerTitle.right
+    anchors.right: closeButton.left
+    anchors.verticalCenter: headerIcon.verticalCenter
+    text-auto-resize: false
+    margin-left: 24
+    margin-right: 16
+    visible: false
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_pokepedia.hide()
+
+  UIWidget
+    id: tabs
+    height: 34
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 12
+
+    TkTab
+      id: map
+      width: 140
+      !text: tr('Map')
+      icon: /modules/game_pokepedia/images/icon_map
+      icon-offset-x: 26
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    TkTab
+      id: houses
+      width: 140
+      !text: tr('Houses')
+      icon: /modules/game_pokepedia/images/icon_house
+      icon-offset-x: 18
+      anchors.top: parent.top
+      anchors.left: map.right
+      margin-left: 8
+
+    TkTab
+      id: dex
+      width: 140
+      !text: tr('Pokedex')
+      icon: /modules/game_pokepedia/images/icon_dex
+      icon-offset-x: 16
+      anchors.top: parent.top
+      anchors.left: houses.right
+      margin-left: 8
+
+    TkTab
+      id: items
+      width: 140
+      !text: tr('Items')
+      icon: /modules/game_pokepedia/images/icon_items
+      icon-offset-x: 24
+      anchors.top: parent.top
+      anchors.left: dex.right
+      margin-left: 8
+
+  MapPage
+    id: mapPage
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 12
+
+  HousesPage
+    id: housesPage
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 12
+    visible: false
+
+  DexPage
+    id: dexPage
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 12
+    visible: false
+
+  ItemsPage
+    id: itemsPage
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 12
+    visible: false

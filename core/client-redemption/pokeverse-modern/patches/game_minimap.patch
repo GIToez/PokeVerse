@@ -32,7 +32,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
 +    connect(self.ui, { onGeometryChange = updateMinimapSize })
 +    addEvent(updateMinimapSize)
 +    Keybind.new("Minimap", "Open full map", { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'M' }, '')
-+    Keybind.bind("Minimap", "Open full map", { { type = KEY_DOWN, callback = function() fullscreen() end } })
++    Keybind.bind("Minimap", "Open full map", { { type = KEY_DOWN, callback = function() if modules.game_pokepedia and modules.game_pokepedia.openMap then modules.game_pokepedia.openMap() else fullscreen() end end } })
      self.ui.minimapBorder.minimap:getChildById('floorUpButton'):hide()
      self.ui.minimapBorder.minimap:getChildById('floorDownButton'):hide()
      self.ui.minimapBorder.minimap:getChildById('zoomInButton'):hide()

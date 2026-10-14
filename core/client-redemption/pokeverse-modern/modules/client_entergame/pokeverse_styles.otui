@@ -92,6 +92,7 @@ PVButton < UIButton
   image-border: 8
   height: 34
   text-align: center
+  opacity: 1
   $disabled:
     opacity: 0.45
 
