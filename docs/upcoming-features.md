@@ -251,18 +251,55 @@ packets. The Cyclopedia module itself stays out of the client (it unloads below 
     the house tiles highlighted (the server sends the tiles).
   - Buttons: Buy, Leave, Show on map, Walk here; guest and sub-owner lists edited in the
     window. They call the same server code as the commands, which keep working.
+  - **Agreed:** first come, first served at the fixed price (no auctions for now); bought
+    from the tab anywhere; still premium only; one house per account (`housesPerAccount`
+    goes from 0, no limit, to 1).
+  - **Transfer (agreed):** an owner can transfer or sell the house to another player. Today
+    that is `/house sell <name>`: both stand within 3 tiles and trade a house deed in the
+    trade window. In the tab: the owner enters the name and a price, the buyer gets a confirm
+    window, and the money and the house change hands in one step, anywhere. The buyer must
+    meet the buy rules (level, premium, no house on the account).
+  - Fix with it: `TalkAction::houseSell` checks premium the wrong way round
+    (`!tradePartner->isPremium() && !HOUSE_NEED_PREMIUM`).
 - **Pokédex:** opens the current Pokédex window (asks the server, which opens it as today
   through `doPlayerSendPokedexOpen`). No rebuild.
-- **Items:** everything sold in shops is listed from the start; rare drops, held items, quest
-  and event items show as "???" until the player has had one (bag or depot) or looked at
-  one, with a count per category ("Held items 4/32"). Discoveries are saved on the server per
-  character.
+- **Items (agreed):** everything sold in shops is listed from the start; everything else (rare
+  drops, held items, quest and event items) shows as "???" until the player has had one in
+  the bag or depot or looked at one, with a count per category ("Held items 4/32").
+  Discoveries are saved on the server per character.
 - **Later, Help:** hints, controls and "what to do next", from the in-game wiki and the
   tutorial ([section 9](#9-in-game-wiki-and-tutorial)), pointing at routes on the map.
 
-**To decide:** flat price (today) or auctions like Tibia; buy from the window anywhere or only
-near the house; whether houses still need premium (`houseNeedPremium`); item discovery or
-show everything; M for the map tab and P for the Pokepedia.
+**Agreed keys:** M opens the map tab, P opens the Pokepedia.
+
+### Pokédex knowledge levels (like Tibia's bestiary)
+
+Using the Pokédex on your own Pokémon shows everything, as today (`detailed` in
+`010-pokedex.lua`). On a wild Pokémon it shows what you know about the species, and you learn
+more by defeating and catching it:
+
+| Level | How | Shows |
+| --- | --- | --- |
+| Seen | Use the Pokédex on one (today's registration) | Name, picture, types, type matchups, evolution family |
+| 1 | A few defeats, or one catch | Base stats, abilities and field moves, move list |
+| 2 | More defeats | EV yield, item drops, a catch-rate hint |
+| 3 (complete) | Many defeats | Spawn areas on the map, with Show on map and Route here |
+
+- Types and matchups are never hidden: they are needed to battle.
+- A defeat counts when your Pokémon knocks it out or you catch it. A catch counts as level 1
+  plus extra defeats.
+- Defeats needed depend on how common the species is (Tibia uses rarity the same way).
+  Legendaries and event Pokémon unlock by catching only.
+- Kill counts per player and species are kept on the server (one table); the hunting tasks
+  (`064-huntingTasks.lua`) already count kills and can use the same count.
+- Spawn areas come from the spawn files (`data/world/*-spawn.xml`), grouped into areas with
+  the nearest town; rare and event spawns are left out. The website's "where it spawns" uses
+  the same data.
+- Existing players start each species they have registered or caught at the matching level.
+
+**To decide:** defeats per level (starting point: common 25, uncommon 10, rare 5, scaled for
+the other levels); a reward for completing a species (money, Pokédex points, an achievement);
+a small tracker panel like Tibia's bestiary tracker.
 
 ### Suggested delivery order
 
