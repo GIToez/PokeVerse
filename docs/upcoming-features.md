@@ -6,10 +6,9 @@ so. Items marked **To decide** need an answer before work starts.
 ## Order
 
 1. [New depot](#1-new-depot): Poké boxes, inbox and stash (built).
-2. [Auto-walk fix](#2-auto-walk-fix).
+2. [Auto-walk and world map](#2-auto-walk-and-world-map) (one effort, shipped in phases).
 3. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
 4. [Website: live status and Discord card](#4-website).
-5. [World map and waypoints](#5-world-map).
 6. [Vocations](#6-vocations), replacing the old vocations.
 7. [Pokémon storage](#7-pokémon-storage) and the [GTS](#8-gts-global-trading-system),
    together: they share the search, filters and windows.
@@ -157,10 +156,197 @@ when bosses or raids need it.
 - Raising the depot limit for everyone is not a fix on its own: it moves the problem, and
   every depot item is saved again on each save.
 
-## 2. Auto-walk fix
+## 2. Auto-walk and world map
 
-Auto-walk (clicking on the map or minimap) misbehaves since diagonal walking became faster.
-The waypoint walking of the [world map](#5-world-map) depends on it.
+Click-to-walk (game map, minimap, full map) must feel reliable again. On top of that, the
+**M** / full map becomes the place to orient, drop waypoints, build routes, and walk them.
+Route following reuses the same auto-walk engine as a single click, so we build and test them
+together rather than as two separate features.
+
+### What exists today
+
+| Piece | Where |
+| --- | --- |
+| Server diagonal step timing | `lastStepCost = 1.25` on diagonal moves in `core/server/src/creature.cpp` (must match client `diagonal-walk-speed` in `data/setup.otml`, **1.25** on the Redemption client). |
+| Client path + auto-walk | `LocalPlayer::autoWalk`, `Game::autoWalk`, 127-step packets, continue-walk when the path ends before the destination (`localplayer.cpp`). |
+| Minimap click walk | `modules/gamelib/ui/uiminimap.lua` (`autowalk = true`). |
+| Full map (protocol 854) | `game_minimap/minimap.lua` `fullscreen()` — **does not** center on the player when opened; it restores `oldPos` from the last session. Side panel minimap already follows the player when `fullMapView` is false. |
+| Town names + guide marks | `pokeverse-modern/modules/game_minimap/pokeverse.lua` (`MAP_COMPOSITIONS`, `GUIDES`, coord copy label). |
+| Cyclopedia map | Not shipped (stripped in `assemble-redemption-client.sh`); **M** uses fullscreen minimap, not Tibia 13 cyclopedia. |
+
+### Auto-walk: symptoms and likely causes
+
+Players report stutter, stopping short, or “fighting” the path after diagonals got faster on
+the server. Before adding routes, we should **reproduce on 854** (map click, minimap click,
+long diagonal paths, corners, stairs, doors) and fix the core loop:
+
+1. **Timing alignment** — Server step interval vs client `getStepDuration()` / diagonal
+   multiplier vs A* diagonal cost in `map.cpp`. Any mismatch shows up as cancel-walk retries
+   (`retryAutoWalk`, `onAutoWalkFail`) or pre-walk desync on old protocol.
+2. **Chaining** — Destinations farther than 127 steps must seamlessly re-path (`m_lastAutoWalkPosition`
+   continuation); routes will hit this constantly.
+3. **Interrupts** — Manual WASD, combat, dialogs, teleport, and `stopAutoWalk()` in
+   `gameinterface.lua` must leave a predictable state for “resume route” later.
+4. **Floors** — Clicks on another floor: confirm whether we keep the legacy z-adjust hack in
+   `uigamemap.lua` or require same-floor clicks on the world map only.
+
+**Phase A (auto-walk only):** fix and regression-check the above; no new UI beyond maybe a
+status line (“Walking…”) and clearer cancel. Optional: small `game_nav` module that only wraps
+`player:autoWalk` with logging hooks for QA.
+
+### World map: phases (after Phase A is stable)
+
+**Phase B — Open on the player**
+
+- On `fullscreen()` **open**, set camera to local player position and current floor; keep
+  `oldPos` only for “return to where I was looking” if we add that as a secondary action.
+- **Recenter** button (reuse hidden `resetButton` or new PokeVerse-styled control) snaps to
+  player + matching floor.
+- Call `PokeverseMap.setFullMapView(true)` as today for town labels.
+
+**Phase C — Waypoints**
+
+- Player-placed marks: name, icon, position, floor; list in a side panel on the full map.
+- **Persistence:** per character in `g_settings` (same pattern as minimap flags in
+  `uiminimap.lua:save`). Server sync is optional later (extended opcode + one table) if we
+  want waypoints across reinstalls.
+- Left-click existing waypoint → `autoWalk` (respect 250-tile flag limit or raise for routes
+  only). Right-click → rename / delete.
+
+**Phase D — Routes**
+
+- A **route** is an ordered list of stops: waypoint refs, town labels from `MAP_COMPOSITIONS`,
+  or a raw clicked tile.
+- UI: build route from waypoints, show polyline + per-leg distance, checklist of stops.
+- **Navigation controller** (client Lua): current stop index, on `onPositionChange` mark stop
+  reached within N tiles, then `autoWalk` next stop; on failure show message and pause.
+- **Pauses (agreed defaults — change if you want):**
+  - Wild battle / forced battle → pause; offer **Resume route** when combat ends.
+  - NPC dialog open → pause.
+  - Manual walk or click elsewhere → cancel route (or “Pause route” — **To decide**).
+  - Stairs / holes → auto-continue if the next stop is on another floor (**To decide**:
+    full multi-floor pathing is hard; v1 may be same-floor routes only).
+
+**Phase E — Search and POIs**
+
+- Search box over town names (already in data) + guide POIs; jump camera and optional “Add to
+  route”.
+- Later: gyms, Pokémon Centers, routes as a structured layer (extend `GUIDES` or a new JSON
+  file generated from the wiki).
+
+### Pokepedia (Cyclopedia-style window)
+
+One window with tabs, modelled on Redemption's Cyclopedia (`modules/game_cyclopedia`) but
+built for protocol 854: our own JSON messages (like the PC and GTS), not Tibia's cyclopedia
+packets. The Cyclopedia module itself stays out of the client (it unloads below 13.10).
+
+- **Map:** the world map from the phases above (centred on the player, floors, mark filters,
+  Places search, waypoints and routes). M opens this tab directly.
+- **Houses:** replaces the `/house` commands, the way Tibia's house tab works.
+  - Today: 577 houses (8 guild halls) in `data/world/map-house.xml`; price is 50 per tile
+    and the weekly rent equals the price (`config.lua`); level 25, premium, one house per
+    player; buying needs the player to face the door (`TalkAction::houseBuy`).
+  - List with search and filters (town, free or rented, size, guild hall); details: size,
+    beds, price, weekly rent, owner, paid until; a small map centred on the entrance with
+    the house tiles highlighted (the server sends the tiles).
+  - Buttons: Buy, Leave, Show on map, Walk here; guest and sub-owner lists edited in the
+    window. They call the same server code as the commands, which keep working.
+  - **Agreed:** first come, first served at the fixed price (no auctions for now); bought
+    from the tab anywhere; still premium only; one house per account (`housesPerAccount`
+    goes from 0, no limit, to 1).
+  - **Transfer (agreed):** an owner can transfer or sell the house to another player. Today
+    that is `/house sell <name>`: both stand within 3 tiles and trade a house deed in the
+    trade window. In the tab: the owner enters the name and a price, the buyer gets a confirm
+    window, and the money and the house change hands in one step, anywhere. The buyer must
+    meet the buy rules (level, premium, no house on the account).
+  - Fix with it: `TalkAction::houseSell` checks premium the wrong way round
+    (`!tradePartner->isPremium() && !HOUSE_NEED_PREMIUM`).
+- **Pokédex:** opens the current Pokédex window (asks the server, which opens it as today
+  through `doPlayerSendPokedexOpen`). No rebuild.
+- **Items (agreed):** everything sold in shops is listed from the start; everything else (rare
+  drops, held items, quest and event items) shows as "???" until the player has had one in
+  the bag or depot or looked at one, with a count per category ("Held items 4/32").
+  Discoveries are saved on the server per character.
+- **Later, Help:** hints, controls and "what to do next", from the in-game wiki and the
+  tutorial ([section 9](#9-in-game-wiki-and-tutorial)), pointing at routes on the map.
+
+**Agreed keys:** M opens the map tab, P opens the Pokepedia.
+
+### Pokédex knowledge levels (like Tibia's bestiary)
+
+Using the Pokédex on your own Pokémon shows everything, as today (`detailed` in
+`010-pokedex.lua`). On a wild Pokémon it shows what you know about the species, and you learn
+more by defeating and catching it:
+
+| Level | How | Shows |
+| --- | --- | --- |
+| Seen | Use the Pokédex on one (today's registration) | Name, picture, types, type matchups, evolution family |
+| 1 | A few defeats, or one catch | Base stats, abilities and field moves, move list |
+| 2 | More defeats | EV yield, item drops, a catch-rate hint |
+| 3 (complete) | Many defeats | Spawn areas on the map, with Show on map and Route here |
+
+- Types and matchups are never hidden: they are needed to battle.
+- A defeat counts when your Pokémon knocks it out or you catch it. A catch counts as level 1
+  plus extra defeats.
+- **Agreed:** defeats needed rise with each level: 25 for level 1, 100 for level 2, 500 for
+  level 3 (complete). A grind, but reachable by hunting normally. Event Pokémon unlock by
+  catching only.
+- No charms or bestiary points: Tibia's charm system has no fit in a Pokémon setting.
+- Kill counts per player and species are kept on the server (one table); the hunting tasks
+  (`064-huntingTasks.lua`) already count kills and can use the same count.
+- Spawn areas come from the spawn files (`data/world/*-spawn.xml`), grouped into areas with
+  the nearest town; rare and event spawns are left out. The website's "where it spawns" uses
+  the same data.
+- Existing players start each species they have registered or caught at the matching level.
+
+- **Agreed:** rare spawns that are not legendary (Dratini, for example) need fewer defeats,
+  about half (roughly 10, 50 and 250). The list of rare species is set by hand from the spawn
+  files.
+- **Agreed:** legendaries need 1, 5 and 15 defeats (or catches).
+- **Rewards (agreed):** completing a species gives experience or money; completing the whole
+  Pokédex (100%) gives a Master Ball, once per character.
+
+### Tracker panel (agreed)
+
+A side panel like Tibia's bestiary tracker, in the right column under the minimap. It
+follows what the player picks:
+
+- **Pokédex:** chosen species with their level and defeats to the next level
+  ("Rattata 63/100").
+- **Daily, weekly and hunting tasks:** progress of the active tasks ("Defeat 30 Water
+  Pokémon 12/30"), from the same data the Tasks window already gets
+  (`game_dailytasks/tasks.lua`); a finished task shows a Claim button that opens the Tasks
+  window.
+- Each line can be removed or pinned; a click opens the Pokédex entry or the Tasks tab. The
+  panel can be collapsed or hidden like the other side panels, and what is tracked is saved
+  per character.
+
+### Suggested delivery order
+
+```text
+Phase A  Auto-walk fix                  → playable click-walk everywhere
+Phase B  Pokepedia + Map tab            → centred map, Places search, Pokédex button
+Phase C  Houses tab                     → buy, leave and manage houses without commands
+Phase D  Waypoints + routes             → walk a trail; depends on A
+Phase E  Items tab with discovery
+Phase F  Pokédex knowledge levels       → spawn areas need the map (B) and routes (D)
+         + tracker panel (Pokédex and tasks; the task part can come first)
+Later    Help tab (hints, tutorials)
+```
+
+One client branch (`cursor/autowalk-worldmap-c8d5` or similar), client-only until we choose
+server waypoint sync. Server changes only if we add persistence or anti-cheat limits on auto-walk.
+
+### To decide (need your call)
+
+1. **Full map entry** — Keep **M** as fullscreen minimap + new side panel, or invest in a
+   dedicated `game_worldmap` window (more work, more room for route UI).
+2. **Waypoint storage** — Client-only per character (fast) vs server-backed (portable).
+3. **Route cancel rule** — Any new click cancels vs explicit Cancel / Pause buttons.
+4. **Multi-floor routes** — v1 same-floor only, or allow stops on different floors with
+   manual floor changes between legs.
+5. **Range limit** — Keep 250-tile autowalk cap for ad-hoc clicks; routes might need chunked
+   legs or a higher cap.
 
 ## 3. NPC dialogue, quests and tasks
 
@@ -202,24 +388,6 @@ Static site on the PokeVerse-Clients `gh-pages` branch ([website.md](website.md)
   - A better download section: detect the player's platform, show the version, and tell
     Android players to open the link in Chrome (the GitHub app catches `github.com` links).
 - **Later, with a domain:** rankings (level, catches, shinies) and trainer profiles.
-
-## 5. World map
-
-The full map (from the minimap, or the M key) gets a modern look:
-
-- **Opens on the player:** the map centers on the player and their floor every time it opens.
-  Today it reopens wherever it was last left (`fullscreen` in `game_minimap/minimap.lua`
-  swaps the camera with the last full-map position). A button recenters it after dragging.
-- **Waypoints:** the player sets, names and removes them; they are saved per character.
-- **Routes:** a route is a list of stops (waypoints, towns or a clicked spot). The map draws
-  it as a trail from the player through each stop, with the distance, and a stop is crossed
-  off when the player reaches it.
-- **Auto-walk** along the route (after the [auto-walk fix](#2-auto-walk-fix)), stopping for
-  battles, doors and floor changes.
-- **Map labels:** towns, Pokémon Centers, gyms and routes named on the map, with a search
-  that jumps to a place.
-
-The Redemption client's encyclopedia window (`game_cyclopedia`) has a map to build on.
 
 ## 6. Vocations
 
