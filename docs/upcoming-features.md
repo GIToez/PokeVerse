@@ -299,8 +299,9 @@ more by defeating and catching it:
   the same data.
 - Existing players start each species they have registered or caught at the matching level.
 
-**To decide:** whether very rare species (rare spawns that are not legendary) need fewer
-defeats.
+- **Agreed:** rare spawns that are not legendary (Dratini, for example) need fewer defeats,
+  about half (roughly 10, 50 and 250). The list of rare species is set by hand from the spawn
+  files.
 
 ### Tracker panel (agreed)
 
