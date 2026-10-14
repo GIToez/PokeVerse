@@ -515,11 +515,11 @@ are changed to the new level (agreed); the rest are kept.
 
 | Feature | Before | Where | Now |
 | --- | --- | --- | --- |
-| Buy a house | 50 | `levelToBuyHouse`, `config.lua` | 20 |
-| Safari Zone | 30 | `npc/scripts/saffariZoneEnter.lua` | 20 |
+| Buy a house | 50 | `levelToBuyHouse`, `config.lua` | 25 |
+| Safari Zone | 30 | `npc/scripts/saffariZoneEnter.lua` | 15 |
 | Daycare (both NPCs) | 85 and Premium | `npc/scripts/daycareFemale.lua`, `daycareMale.lua` | 20, the Breeder level; still Premium |
-| Form a guild | 40 | `levelToFormGuild`, `config.lua` | 20 |
-| Slot machine | 50 | `lib/ps/systems/044-slotMachine.lua` | 20 |
+| Form a guild | 40 | `levelToFormGuild`, `config.lua` | 30 |
+| Slot machine | 50 | `lib/ps/systems/044-slotMachine.lua` | 15 |
 | Frontier Island arenas (gladiator, cooperative, survive) | 50 | `npc/scripts/fi_stadiumarena.lua` | keep |
 | Wave arena | 20 | `npc/scripts/wavearena.lua` | keep |
 | Elite Four | 95 | `lib/ps/systems/049-eliteFour.lua` | keep, or 80 if the badges already gate it |
@@ -538,7 +538,27 @@ are changed to the new level (agreed); the rest are kept.
 Not requirements, but level based: the tutorial sends players on from level 10
 (`activationTile.lua`), and the wiki channel opens at login below level 30 (`login.lua`).
 
-The house and guild texts in the in-game wiki (`002-wikiChat.lua`) say level 20 too.
+The house and guild texts in the in-game wiki (`002-wikiChat.lua`) say the new levels too.
+
+**Unlock ladder (agreed)**, so something new opens every few levels instead of everything
+at 20:
+
+| Level | Unlocks |
+| --- | --- |
+| 10 | End of the tutorial, Ranger Club Rookie, two task kinds |
+| 15 | Safari Zone, slot machine, Easy tasks |
+| 20 | Vocation quest, daycare, wave arena |
+| 25 | Houses, Ranger Club Mentor |
+| 30 | Guilds, referral reward |
+| 35 | Medium tasks |
+| 50 | Frontier Island arenas, Ranger Club Coordinator |
+| 55 | Hard tasks |
+| 75 | Ranger Club Coach |
+| 80 | Extreme tasks, the Josh Rock and William Rock quests |
+| 95 | Elite Four |
+
+Planned: the level-up banner lists what just unlocked ("Level 25: you can now buy a
+house").
 
 **To decide:** whether the daycare stays Premium (it is today), whether the Elite Four
 moves to 80, and what the level 70 quest group is (76 quests at the same level).
