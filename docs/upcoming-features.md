@@ -309,6 +309,7 @@ Phase B  Pokepedia + Map tab            → centred map, Places search, Pokédex
 Phase C  Houses tab                     → buy, leave and manage houses without commands
 Phase D  Waypoints + routes             → walk a trail; depends on A
 Phase E  Items tab with discovery
+Phase F  Pokédex knowledge levels       → spawn areas need the map (B) and routes (D)
 Later    Help tab (hints, tutorials)
 ```
 
