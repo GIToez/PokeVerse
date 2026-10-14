@@ -649,8 +649,24 @@ is changed yet.
   legs, against $100 elsewhere, but Soya is not on the map and no monster drops those
   items. Remove Soya or keep it off the map.
 
-**Next:** decide the target income per hour for each level range, then tune the table
-values above. Pokémon energy balance (see [energy](#pokémon-energy)) is still to check.
+### First tuning (done)
+
+| What | Before | Now |
+| --- | --- | --- |
+| Daily task money (Beginner to Extreme) | 400, 700, 1,000, 2,500, 6,000 | 300, 500, 800, 1,500, 2,500 |
+| Daily bonus money | 2,000, 3,500, 5,000, 12,000, 30,000 | 1,000, 1,500, 2,500, 5,000, 8,000 |
+| Weekly bonus money | 10,000, 16,000, 25,000, 60,000, 150,000 | 5,000, 8,000, 12,000, 25,000, 50,000 |
+| Weekly task money | 4 × a daily task | 3 × |
+| Reroll cost, Hard and Extreme | 2,000 and 5,000 | 1,500 and 2,500 (one task's money) |
+| Hunting money per kill | $10 + $2 × the species' level | $5 + $1 × the level |
+| A week of tasks (Beginner / Hard / Extreme) | $40,400 / $246,500 / $606,000 | $22,800 / $114,000 / $196,000 |
+| Rare candy | Extreme daily bonus and task items, Hard weekly 1, Extreme weekly 3, shop 80 points | all daily tasks done 7 days in a row (repeats), Extreme weekly 1, shop 250 points |
+| House rent | the price every 30 days | the price every week (`houseRentPeriod`), still from the bank first |
+
+Boards already rolled keep their rewards; new ones use these values.
+
+**Next:** decide the target income per hour for each level range, then tune again from
+play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to check.
 
 ## 15. Daily login rewards and events
 
