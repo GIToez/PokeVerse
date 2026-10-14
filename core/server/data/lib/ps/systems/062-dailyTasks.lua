@@ -15,26 +15,26 @@ local DAY = 24 * 60 * 60
 -- Shared by every task board, the hunting board included. huntLevels is the level range of the
 -- species the hunting board offers.
 TASK_DIFFICULTIES = {
-    { name = "Beginner", minLevel = 1, huntLevels = { 1, 20 }, money = 400, rerollCost = 300, refreshCost = 1000,
+    { name = "Beginner", minLevel = 1, huntLevels = { 1, 20 }, money = 300, rerollCost = 300, refreshCost = 1000,
       items = { { 12244, 5 }, { 12157, 10 } }, -- pokemon health potions, empty poke balls
-      bonus = { money = 2000, items = { { 13295, 1 } } }, -- white surprise box
-      weeklyBonus = { money = 10000, items = { { 13292, 1 }, { 12248, 3 } } } }, -- black surprise box, revives
-    { name = "Easy", minLevel = 15, huntLevels = { 15, 40 }, money = 700, rerollCost = 500, refreshCost = 2000,
+      bonus = { money = 1000, items = { { 13295, 1 } } }, -- white surprise box
+      weeklyBonus = { money = 5000, items = { { 13292, 1 }, { 12248, 3 } } } }, -- black surprise box, revives
+    { name = "Easy", minLevel = 15, huntLevels = { 15, 40 }, money = 500, rerollCost = 500, refreshCost = 2000,
       items = { { 12244, 8 }, { 12161, 8 } }, -- pokemon health potions, empty great balls
-      bonus = { money = 3500, items = { { 13295, 1 }, { 12248, 1 } } },
-      weeklyBonus = { money = 16000, items = { { 13292, 1 }, { 12248, 4 } } } },
-    { name = "Medium", minLevel = 35, huntLevels = { 35, 60 }, money = 1000, rerollCost = 800, refreshCost = 4000,
+      bonus = { money = 1500, items = { { 13295, 1 }, { 12248, 1 } } },
+      weeklyBonus = { money = 8000, items = { { 13292, 1 }, { 12248, 4 } } } },
+    { name = "Medium", minLevel = 35, huntLevels = { 35, 60 }, money = 800, rerollCost = 800, refreshCost = 4000,
       items = { { 12245, 5 }, { 12161, 10 } }, -- great health potions, empty great balls
-      bonus = { money = 5000, items = { { 13295, 1 }, { 12248, 2 } } },
-      weeklyBonus = { money = 25000, items = { { 13292, 1 }, { 12248, 5 } } } },
-    { name = "Hard", minLevel = 55, huntLevels = { 55, 85 }, money = 2500, rerollCost = 2000, refreshCost = 10000,
+      bonus = { money = 2500, items = { { 13295, 1 }, { 12248, 2 } } },
+      weeklyBonus = { money = 12000, items = { { 13292, 1 }, { 12248, 5 } } } },
+    { name = "Hard", minLevel = 55, huntLevels = { 55, 85 }, money = 1500, rerollCost = 1500, refreshCost = 10000,
       items = { { 12246, 5 }, { 12165, 10 }, { 12248, 2 } }, -- ultra health potions, empty ultra balls
-      bonus = { money = 12000, items = { { 13292, 1 } } },
-      weeklyBonus = { money = 60000, items = { { 13292, 2 }, { 14463, 1 } } } }, -- + rare candy
-    { name = "Extreme", minLevel = 80, huntLevels = { 80, 150 }, money = 6000, rerollCost = 5000, refreshCost = 20000,
-      items = { { 12247, 5 }, { 12165, 20 }, { 14463, 1 } }, -- super health potions, ultra balls, rare candy
-      bonus = { money = 30000, items = { { 13292, 1 }, { 14463, 1 } } },
-      weeklyBonus = { money = 150000, items = { { 13292, 2 }, { 14463, 3 } } } },
+      bonus = { money = 5000, items = { { 13292, 1 } } },
+      weeklyBonus = { money = 25000, items = { { 13292, 2 } } } },
+    { name = "Extreme", minLevel = 80, huntLevels = { 80, 150 }, money = 2500, rerollCost = 2500, refreshCost = 20000,
+      items = { { 12247, 5 }, { 12165, 20 }, { 12248, 3 } }, -- super health potions, ultra balls, revives
+      bonus = { money = 8000, items = { { 13292, 1 } } },
+      weeklyBonus = { money = 50000, items = { { 13292, 2 }, { 14463, 1 } } } },
 }
 
 -- saved states from before difficulties had a level band (4 of them) instead
@@ -187,6 +187,7 @@ end
     itemScale      multiplies the difficulty's reward item counts
     bonusKey       the TASK_DIFFICULTIES field with the all-done bonus
     freeReroll     the reroll costs nothing
+    onBonus(cid)   optional, after the all-done bonus is claimed
     load(cid), save(cid, state)
     send(cid, json)
     text           player messages
@@ -384,6 +385,9 @@ local function newBoard(config)
         local bonus = TASK_DIFFICULTIES[state.difficulty][config.bonusKey]
         giveReward(cid, bonus.money, bonus.items)
         doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, __L(cid, config.text.bonus))
+        if (config.onBonus) then
+            config.onBonus(cid)
+        end
         board.send(cid)
         return true
     end
@@ -456,8 +460,37 @@ local function newBoard(config)
     return board
 end
 
+-- All daily tasks done this many days in a row gives the streak reward, then the count starts over.
+local STREAK_DAYS = 7
+local STREAK_REWARD = { { 14463, 1 } } -- rare candy
+
+local function dayNumber()
+    local now = os.date("*t")
+    return math.floor(os.time({ year = now.year, month = now.month, day = now.day, hour = 12 }) / 86400)
+end
+
+local function onDailyBonus(cid)
+    local today = dayNumber()
+    local streak = 1
+    if (getCreatureStorage(cid, playersStorages.dailyStreakDay) == today - 1) then
+        streak = math.max(getCreatureStorage(cid, playersStorages.dailyStreak), 0) + 1
+    end
+    doCreatureSetStorage(cid, playersStorages.dailyStreak, streak)
+    doCreatureSetStorage(cid, playersStorages.dailyStreakDay, today)
+    if (streak % STREAK_DAYS == 0) then
+        giveReward(cid, 0, STREAK_REWARD)
+        doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(
+            __L(cid, "%d days in a row! You received a rare candy."), STREAK_DAYS))
+    else
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(
+            __L(cid, "Daily streak: %d of %d days. Finish all daily tasks %d days in a row for a rare candy."),
+            streak % STREAK_DAYS, STREAK_DAYS, STREAK_DAYS))
+    end
+end
+
 DailyTasks = newBoard({
     taskCount = 3,
+    onBonus = onDailyBonus,
     period = function() return os.date("%Y-%m-%d") end,
     secondsLeft = secondsUntilMidnight,
     countScale = 1, moneyScale = 1, itemScale = 1,
@@ -484,11 +517,17 @@ DailyTasks = newBoard({
     },
 })
 
+-- Staff test tool: as if the bonus was claimed yesterday after a streak of this many days.
+function DailyTasks.setStreak(cid, days)
+    doCreatureSetStorage(cid, playersStorages.dailyStreak, days)
+    doCreatureSetStorage(cid, playersStorages.dailyStreakDay, dayNumber() - 1)
+end
+
 WeeklyTasks = newBoard({
     taskCount = 5,
     period = thisMonday,
     secondsLeft = secondsUntilMonday,
-    countScale = 5, moneyScale = 4, itemScale = 3,
+    countScale = 5, moneyScale = 3, itemScale = 3,
     bonusKey = "weeklyBonus",
     freeReroll = true,
     load = function(cid) return TaskBoards.load(cid, "weekly") end,

@@ -185,6 +185,13 @@ say_admin "/tasks daily reset" "/tasks daily start 1" "/tasks daily kind 1 fish"
 tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks'][0]
 assert s['difficulty'] == 1 and t['kind'] == 'fish' and t['progress'] == 2, s"
 echo "Daily tasks: hooking Pokemon counts right after the tasks are picked"
+candies() { item_query Admin "COALESCE(SUM(i.count), 0)" "AND c.pid = 10 AND i.itemtype = 14463"; }
+before=$(candies)
+say_admin "/tasks daily reset" "/tasks daily start 1" "/tasks daily streak 6" "/tasks daily progress 1 999" \
+  "/tasks daily progress 2 999" "/tasks daily progress 3 999" "/tasks daily claim 1" "/tasks daily claim 2" \
+  "/tasks daily claim 3" "/tasks daily bonus"
+[ "$(candies)" = "$((before + 1))" ] || { echo "FAIL: day 7 of the daily streak should give a rare candy ($before before, $(candies) after)"; exit 1; }
+echo "Daily tasks: the seventh day in a row gives a rare candy"
 
 step "Weekly tasks"
 say_admin "/tasks weekly reset" "/tasks weekly start 2" "/tasks weekly start 4" "/tasks weekly reroll 1" \

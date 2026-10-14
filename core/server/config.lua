@@ -148,7 +148,7 @@
 	houseRentAsPrice = false
 	housePriceAsRent = true
 	housePriceEachSquare = 50
-	houseRentPeriod = "monthly"
+	houseRentPeriod = "weekly"
 	houseCleanOld = 60 * 60 * 24 * 45
 	guildHalls = true
 

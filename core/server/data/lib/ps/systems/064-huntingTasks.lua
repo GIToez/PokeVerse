@@ -33,7 +33,7 @@ HuntingTasks.SHOP = {
     { id = 12248, count = 5, cost = 25 }, -- pokemon revives
     { id = 12165, count = 25, cost = 30 }, -- empty ultra balls
     { id = 13292, count = 1, cost = 60 }, -- black surprise box
-    { id = 14463, count = 1, cost = 80 }, -- rare candy
+    { id = 14463, count = 1, cost = 250 }, -- rare candy
 }
 
 -- Wild species that spawn often enough to hunt, with their level range, read once from the
@@ -137,7 +137,7 @@ end
 
 local function moneyFor(cid, state, speciesName, size)
     local s = findSpecies(speciesName)
-    local perKill = 10 + 2 * (s and s.level or 1)
+    local perKill = 5 + (s and s.level or 1)
     local bonus = HuntingTasks.RANKS[rankOf(state.earned)].bonus
     return math.floor(perKill * HuntingTasks.SIZES[size].kills * (100 + bonus) / 100 / 100) * 100
 end

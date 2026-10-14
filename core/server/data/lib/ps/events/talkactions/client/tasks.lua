@@ -2,8 +2,9 @@
 --   daily | weekly: "" (state), "start <difficulty>", "claim <slot>", "bonus", "reroll <slot>"
 --   hunting: "" (state), "difficulty <id>", "take <offer> <size>", "claim <slot>", "cancel <slot>", "refresh", "buy <item>"
 -- Gods also have "reset" and "progress <slot> <count>" on every board, "points <count>" on hunting,
--- and for tests "kind <slot> <kind>" on daily and weekly and "hook <count>" (hooks Pokemon the way
--- fishing does, through the statistic).
+-- and for tests "kind <slot> <kind>" on daily and weekly, "streak <days>" on daily (as if the
+-- streak reached that yesterday) and "hook <count>" (hooks Pokemon the way fishing does, through
+-- the statistic).
 local STAFF_ACCESS = 5
 
 local function periodic(board, cid, staff, action, a, b)
@@ -13,6 +14,8 @@ local function periodic(board, cid, staff, action, a, b)
         board.setProgress(cid, a, b)
     elseif (staff and action == "kind" and a and b) then
         board.setKind(cid, a, b)
+    elseif (staff and action == "streak" and a and board.setStreak) then
+        board.setStreak(cid, a)
     elseif (action == "start" and a) then
         board.start(cid, a)
     elseif (action == "claim" and a) then
