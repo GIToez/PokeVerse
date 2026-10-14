@@ -71,7 +71,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
                 (i == 'hideKnights' and creature:isPlayer() and creature:isKnight()) or
                 (i == 'hidePaladins' and creature:isPlayer() and creature:isPaladin()) or
                 (i == 'hideDruids' and creature:isPlayer() and creature:isDruid()) or
-@@ -1359,6 +1375,7 @@
+@@ -1359,9 +1375,11 @@
      connect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
      connect(Creature, {
          onSkullChange = updateCreatureSkull,
@@ -79,7 +79,11 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          onEmblemChange = updateCreatureEmblem,
          onOutfitChange = onCreatureOutfitChange,
          onHealthPercentChange = onCreatureHealthPercentChange,
-@@ -1384,6 +1401,7 @@
++        onChangeName = onCreatureNameChange,
+         onPositionChange = onCreaturePositionChange,
+         onAppear = onCreatureAppear,
+         onDisappear = onCreatureDisappear
+@@ -1384,9 +1402,11 @@
      disconnect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
      disconnect(Creature, {
          onSkullChange = updateCreatureSkull,
@@ -87,7 +91,11 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          onEmblemChange = updateCreatureEmblem,
          onOutfitChange = onCreatureOutfitChange,
          onHealthPercentChange = onCreatureHealthPercentChange,
-@@ -1478,6 +1496,8 @@
++        onChangeName = onCreatureNameChange,
+         onPositionChange = onCreaturePositionChange,
+         onAppear = onCreatureAppear,
+         onDisappear = onCreatureDisappear
+@@ -1478,6 +1498,8 @@
      -- Setup keybind
      Keybind.new("Windows", "Show/hide battle list", "Ctrl+B", "")
      Keybind.bind("Windows", "Show/hide battle list", {{ type = KEY_DOWN, callback = toggle }})
@@ -96,7 +104,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  
      -- Setup scrollbar - use default MiniWindow behavior
      local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
-@@ -1497,13 +1517,13 @@
+@@ -1497,13 +1519,13 @@
          -- Set initial scrollbar position when filters are visible
          local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
          if scrollbar then
@@ -113,7 +121,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      for i, v in ipairs(options) do
          hideButtons[v] = battleWindow:recursiveGetChildById(v)
      end
-@@ -1765,6 +1785,21 @@
+@@ -1765,6 +1787,21 @@
      end
  end
  
@@ -135,7 +143,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onZoomChange()
      removeEvent(eventOnCheckCreature)
      eventOnCheckCreature = scheduleEvent(function()
-@@ -2001,7 +2036,7 @@
+@@ -2001,7 +2038,7 @@
      local children = mainInstance.panel:getChildren()
  
      for _, battleButton in pairs(mainInstance.panel:getChildren()) do
@@ -144,7 +152,24 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
              -- select visible first child
              if not firstElement then
                  firstElement = battleButton
-@@ -2609,6 +2644,7 @@
+@@ -2381,6 +2418,16 @@
+     end
+ end
+ 
++-- Pokemon names carry their level ("Rattata [5]"), so this runs on every level change too. The
++-- entry is added again: its place in the sorted list may depend on the name.
++function onCreatureNameChange(creature, name, oldName)
++    for _, instance in pairs(BattleListManager.instances) do
++        if instance.battleButtons[creature:getId()] and instance:removeCreature(creature) then
++            instance:addCreature(creature, instance:getSortType())
++        end
++    end
++end
++
+ function onCreatureAppear(creature) -- Update battleButton once a creature appear (add)
+     if creature:isLocalPlayer() then
+         addEvent(updateStaticSquare)
+@@ -2609,6 +2656,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")
