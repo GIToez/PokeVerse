@@ -1,6 +1,7 @@
 """Johto's towns as approved in the design proposal: what each one copies from its Kanto mirror
 (New Bark from Pallet, Cherrygrove from Viridian, Violet from Pewter, Azalea from Cerulean,
-Goldenrod from Saffron and Celadon, Ecruteak from Fuchsia, Olivine from Vermilion, Cianwood from Cinnabar),
+Goldenrod from Saffron and Celadon, Ecruteak from Fuchsia, Olivine from Vermilion, Cianwood from Cinnabar,
+Mahogany and Blackthorn from Lavender),
 where its streets, buildings, water and landmarks go, and the decoration around them.
 
 Buildings are copied tile for tile from Kanto. Boxes are the building's house tiles plus the

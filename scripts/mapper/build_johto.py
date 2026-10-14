@@ -17,7 +17,10 @@ and its shrine, Route 35, the National Park, Route 36 and the Ruins of Alph with
 chambers below their rock mounds. Ecruteak and the coast: Route 37 from the National Park's north
 gate, Ecruteak City with the Burned Tower and the Bell Tower, Routes 38 and 39 with the Moomoo Farm,
 Olivine City with its Lighthouse, the sea routes 40 and 41, the Whirl Islands (1F below the rocks)
-and Cianwood City on its island, cut off from the mainland by a strait. North of the ridge: the west gate's pass
+and Cianwood City on its island, cut off from the mainland by a strait. The east: Route 42 past
+Mt. Mortar (1F, two mouths on Route 42) to Mahogany Town, Route 43 north to the Lake of Rage, Route 44
+east under the snowfield to the Ice Path (1F, under the ridge that walls Blackthorn off), Blackthorn City
+with Dragon's Den, and Routes 45 and 46 south past Dark Cave to Route 29. North of the ridge: the west gate's pass
 through Kanto's mountain, Route 28, the Silver-Indigo range around the plateau, Mt. Silver with
 its Pokémon Center, and Mt. Silver Cave 1F below ground. The Elite Four building's west and south
 counters are taken out so both gates lead into it.
