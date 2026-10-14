@@ -42,11 +42,15 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   Kanto: it gives the same borders on 99.8% of Route 1's tiles.
 - **Decoration:** grass tufts, bushes, trees, ferns, flowers and stones use the same items and
   rates as Kanto's Route 1, clustered into groves and forests.
-- **Buildings:** copied tile for tile from Pallet Town (Pokémon Center with Nurse Joy, Oak's lab,
-  two house types). House tiles get new house ids in `map-house.xml`.
+- **Buildings:** copied tile for tile from Kanto: Pallet Town's Pokémon Center with Nurse Joy,
+  Oak's lab and two house types, Viridian's Mart with its clerk, and Viridian's Gym (all floors).
+  House tiles get new house ids in `map-house.xml`.
 - **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
   below, with rocky patches, debris, stones and wall candles. The way in is Kanto's stairs
-  (22709 outside, 22702 below ground one tile north of it).
+  (22709 outside, 22702 below ground one tile north of it). Mouths always open to the south, like
+  Kanto's: mountain sprites reach over the tile up-left of them, so stairs on a north face would
+  be hidden. Where a route reaches a cave from the north (Route 32 to Union Cave) the stairs sit on
+  the south side of a rock outcrop and the road goes round it.
 - **Wild Pokémon:** each spawn is drawn from the HeartGold/SoulSilver land table of its route,
   weighted by the game's encounter rate averaged over morning, day and night
   (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge
@@ -65,12 +69,21 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 - **North:** the west gate (3049,593) and its pass to the building's west door, Route 28 with a
   pond, the Silver–Indigo range around the plateau, Mt. Silver with snowfields, its Pokémon
   Center (2921,520) and the cave mouth (2903,503,7), and Mt. Silver Cave 1F on floor 8.
-- 465 Pokémon spawns, and Nurse Joy with Chansey in both Pokémon Centers.
+- **West:** Cherrygrove City (town 51, temple 2530,832,7) at the end of Route 29, Routes 30 and
+  31 north to Violet City (town 52, temple 2509,561,7, with a Gym), Route 32 south with its
+  Pokémon Center (2470,862), Union Cave 1F (in at 2448,881, out at 2442,962), Route 33 and
+  Azalea Town (town 53, temple 2394,1036,7, with a Gym). Union Cave's ridge runs to the map's
+  west edge, so like in the games the cave is the only way from Route 32 to Azalea.
+- 749 Pokémon spawns; Nurse Joy with Chansey in every Pokémon Center and a clerk in every Mart.
+- **Not yet:** Sprout Tower, the Ruins of Alph, Slowpoke Well, Dark Cave and the Gym leaders;
+  the north (Ecruteak, Mahogany, Blackthorn, Ice Path) and the coast (Olivine, Cianwood).
+  The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
 
-- `core/server/data/npc/scripts/nurse_joy.lua`, `CITY_BY_POS`: New Bark's nurse (2722,795,7) is
-  in. Mt. Silver's nurse only heals, like in the games, so it has no entry.
+- `core/server/data/npc/scripts/nurse_joy.lua`, `CITY_BY_POS`: New Bark (2722,795,7),
+  Cherrygrove (2531,824,7), Violet (2510,553,7) and Azalea (2395,1028,7) are in. The Mt. Silver and
+  Route 32 nurses only heal, like in the games, so they have no entry.
 - `core/server/data/lib/ps/systems/026-guide.lua` (`GUIDES`) and
   `core/server/data/npc/scripts/travels.lua` (`TRAVELS`): entries go in when a Johto town gets a
   guide NPC or a travel stop.
