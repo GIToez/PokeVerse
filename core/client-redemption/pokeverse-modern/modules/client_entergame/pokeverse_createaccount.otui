@@ -1,0 +1,73 @@
+PVModal
+  id: createAccountWindow
+  size: 340 330
+  @onEnter: EnterGame.doCreateAccount()
+  @onEscape: EnterGame.hideCreateAccount()
+
+  PVTitle
+    id: title
+    !text: tr('Create Account')
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+
+  PVMuted
+    id: hint
+    !text: tr('Account name: 3 to 25 letters or numbers.\nPassword: 6 to 29 characters.')
+    text-align: center
+    anchors.top: prev.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
+
+  PVField
+    id: accountNameTextEdit
+    placeholder: Account Name
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 16
+    max-length: 25
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_user
+
+  PVPasswordField
+    id: passwordTextEdit
+    placeholder: Password
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    max-length: 29
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_lock
+
+  PVPasswordField
+    id: passwordRepeatTextEdit
+    placeholder: Repeat Password
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    max-length: 29
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_lock
+
+  PVYellowButton
+    id: createButton
+    !text: tr('Create Account')
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 18
+    @onClick: EnterGame.doCreateAccount()
+
+  PVBlueButton
+    id: cancelButton
+    !text: tr('Back')
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    @onClick: EnterGame.hideCreateAccount()

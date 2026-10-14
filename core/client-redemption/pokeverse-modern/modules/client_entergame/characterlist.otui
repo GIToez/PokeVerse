@@ -1,0 +1,400 @@
+// PokeVerse character select. Redemption's characterlist.lua needs characters, characterTable,
+// autoReconnect and accountStatusLabel as direct children of the window; the rest is filled in
+// by pokeverse_characters.lua.
+
+CharacterWidget < UIWidget
+  image-source: /modules/client_entergame/images/card
+  image-border: 10
+  height: 96
+  margin-bottom: 8
+  focusable: true
+  &updateOnStates: |
+    function(self)
+      local children = self:getChildren()
+      for i = 1, #children do
+        children[i]:setOn(self:isFocused())
+      end
+    end
+  @onFocusChange: self:updateOnStates()
+  @onSetup: self:updateOnStates()
+
+  $focus:
+    image-source: /modules/client_entergame/images/card_selected
+
+  PVInner
+    id: portraitBox
+    size: 70 80
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+
+  UICreature
+    id: outfit
+    size: 64 64
+    anchors.centerIn: portraitBox
+    phantom: true
+
+  PVTitle
+    id: name
+    ttf-font-size: 15
+    anchors.top: parent.top
+    anchors.left: portraitBox.right
+    margin-top: 16
+    margin-left: 12
+
+  UIWidget
+    id: genderIcon
+    size: 14 14
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  PVIconText
+    id: level
+    &baseText: 'Level %d'
+    icon: /modules/client_entergame/images/icon_level
+    anchors.top: name.bottom
+    anchors.left: name.left
+    margin-top: 9
+
+  PVIconText
+    id: town
+    icon: /modules/client_entergame/images/icon_location
+    anchors.top: prev.bottom
+    anchors.left: name.left
+    margin-top: 7
+
+  PVSmallPartySlot
+    id: party3
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 14
+    margin-right: 12
+  PVSmallPartySlot
+    id: party2
+    anchors.top: party3.top
+    anchors.right: party3.left
+    margin-right: 6
+  PVSmallPartySlot
+    id: party1
+    anchors.top: party3.top
+    anchors.right: party2.left
+    margin-right: 6
+  PVSmallPartySlot
+    id: party6
+    anchors.top: party3.bottom
+    anchors.right: party3.right
+    margin-top: 6
+  PVSmallPartySlot
+    id: party5
+    anchors.top: party6.top
+    anchors.right: party6.left
+    margin-right: 6
+  PVSmallPartySlot
+    id: party4
+    anchors.top: party6.top
+    anchors.right: party5.left
+    margin-right: 6
+
+CreateCharacterCard < UIButton
+  image-source: /modules/client_entergame/images/card_create
+  image-border: 12
+  height: 96
+  focusable: true
+  // Redemption's list calls this on focus changes, also while the card is being created
+  &updateOnStates: function(self) end
+  $hover:
+    image-source: /modules/client_entergame/images/card_create_hover
+  $focus:
+    image-source: /modules/client_entergame/images/card_create_hover
+
+  UIWidget
+    id: plus
+    image-source: /modules/client_entergame/images/icon_create
+    size: 30 30
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    margin-top: 16
+    phantom: true
+
+  PVText
+    id: caption
+    !text: tr('Create Character')
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: plus.bottom
+    margin-top: 8
+
+  PVMuted
+    id: slots
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: caption.bottom
+    margin-top: 3
+
+DetailRow < UIWidget
+  height: 16
+  anchors.left: parent.left
+  anchors.right: parent.right
+  phantom: true
+  UIWidget
+    id: icon
+    size: 12 12
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+  PVMuted
+    id: caption
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+  PVText
+    id: value
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 84
+
+UIWidget
+  id: charactersWindow
+  anchors.fill: parent
+  image-source: /modules/client_entergame/images/town
+  image-smooth: true
+  focusable: true
+  @onEnter: CharacterList.doLogin()
+  @onEscape: CharacterList.hide(true)
+
+  UIWidget
+    id: shade
+    anchors.fill: parent
+    background-color: #05081455
+    phantom: true
+
+  PVPanel
+    id: frame
+    size: 780 476
+    anchors.centerIn: parent
+    padding: 22 26 24 26
+    phantom: false
+
+    UIWidget
+      id: titleIcon
+      image-source: /modules/client_entergame/images/icon_pokeball
+      size: 16 16
+      anchors.top: parent.top
+      anchors.right: title.left
+      margin-right: 8
+      phantom: true
+
+    PVTitle
+      id: title
+      !text: tr('Select Character')
+      ttf-font-size: 15
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-left: 12
+
+    PVCloseButton
+      id: closeButton
+      !tooltip: tr('Back to login')
+      anchors.top: parent.top
+      anchors.right: parent.right
+      margin-top: -2
+      @onClick: CharacterList.hide(true)
+
+    PVSeparator
+      id: titleSeparator
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 12
+
+    PVInner
+      id: detailPanel
+      width: 266
+      anchors.top: titleSeparator.bottom
+      anchors.right: parent.right
+      anchors.bottom: playButton.top
+      margin-top: 14
+      margin-bottom: 12
+      padding: 12
+
+      UIWidget
+        id: portrait
+        image-source: /modules/client_entergame/images/portrait
+        image-border: 13
+        size: 86 102
+        anchors.top: parent.top
+        anchors.left: parent.left
+
+      UICreature
+        id: detailOutfit
+        size: 80 80
+        anchors.centerIn: portrait
+        margin-top: -4
+        phantom: true
+
+      PVTitle
+        id: detailName
+        ttf-font-size: 15
+        anchors.top: parent.top
+        anchors.left: portrait.right
+        margin-top: 6
+        margin-left: 12
+
+      UIWidget
+        id: detailGender
+        size: 14 14
+        anchors.left: detailName.right
+        anchors.verticalCenter: detailName.verticalCenter
+        margin-left: 6
+        phantom: true
+
+      DetailRow
+        id: detailLevel
+        anchors.top: detailName.bottom
+        anchors.left: detailName.left
+        margin-top: 10
+      DetailRow
+        id: detailLocation
+        anchors.top: prev.bottom
+        anchors.left: detailName.left
+        margin-top: 4
+      DetailRow
+        id: detailPlayTime
+        anchors.top: prev.bottom
+        anchors.left: detailName.left
+        margin-top: 4
+      DetailRow
+        id: detailLastLogin
+        anchors.top: prev.bottom
+        anchors.left: detailName.left
+        margin-top: 4
+
+      PVSeparator
+        id: partySeparator
+        anchors.top: portrait.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 12
+
+      PVText
+        id: partyCaption
+        !text: tr('Party Pokemon')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: partyGrid
+        anchors.top: prev.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 10
+        size: 156 98
+        layout:
+          type: grid
+          cell-size: 44 44
+          cell-spacing: 12
+          flow: true
+          num-columns: 3
+        phantom: true
+
+      PVText
+        id: emptyCaption
+        !text: tr('Create your first character to start your journey.')
+        text-wrap: true
+        text-auto-resize: false
+        text-align: center
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        height: 40
+        visible: false
+
+    PVGreenButton
+      id: playButton
+      !text: tr('Play')
+      ttf-font-size: 16
+      width: 266
+      height: 40
+      anchors.right: parent.right
+      anchors.bottom: deleteButton.top
+      margin-bottom: 8
+      text-offset: 12 0
+      @onClick: CharacterList.doLogin()
+
+      PVButtonIcon
+        image-source: /modules/client_entergame/images/icon_play
+        size: 16 16
+        margin-right: 22
+
+    PVRedButton
+      id: deleteButton
+      !text: tr('Delete')
+      width: 129
+      anchors.right: logoutButton.left
+      anchors.bottom: parent.bottom
+      margin-right: 8
+      text-offset: 10 0
+      @onClick: CharacterList.deleteCharacter()
+
+      PVButtonIcon
+        image-source: /modules/client_entergame/images/icon_delete
+        size: 14 14
+        margin-right: 22
+
+    PVBlueButton
+      id: logoutButton
+      !text: tr('Log Out')
+      width: 129
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      @onClick: CharacterList.hide(true)
+
+  TextList
+    id: characters
+    background-color: alpha
+    border-width: 0
+    padding: 0 6 0 0
+    anchors.top: frame.top
+    anchors.left: frame.left
+    anchors.right: characterListScrollBar.left
+    anchors.bottom: accountStatusLabel.top
+    margin-top: 72
+    margin-left: 26
+    margin-bottom: 10
+    focusable: false
+    vertical-scrollbar: characterListScrollBar
+    auto-focus: first
+
+  VerticalScrollBar
+    id: characterListScrollBar
+    anchors.top: frame.top
+    anchors.bottom: accountStatusLabel.top
+    anchors.right: frame.right
+    margin-top: 72
+    margin-bottom: 10
+    margin-right: 306
+    step: 52
+    pixels-scroll: true
+
+  PVMuted
+    id: accountStatusLabel
+    anchors.left: frame.left
+    anchors.bottom: frame.bottom
+    margin-left: 26
+    margin-bottom: 28
+    $on:
+      color: #ff9a5a
+
+  UIWidget
+    id: characterTable
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  UIButton
+    id: autoReconnect
+    visible: false
+    size: 0 0
+    anchors.top: parent.top
+    anchors.left: parent.left

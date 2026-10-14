@@ -1,0 +1,483 @@
+PVSection < PVInner
+  padding: 10 12 10 12
+
+PVSectionTitle < PVIconText
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffffff
+  icon-size: 16 16
+  text-offset: 22 0
+  anchors.top: parent.top
+  anchors.left: parent.left
+
+PVToggleButton < PVBlueButton
+  height: 30
+  ttf-font-size: 13
+  icon-offset-x: -30
+  text-offset: 10 0
+  $on:
+    image-source: /modules/client_entergame/images/button_yellow
+    color: #2a1e00
+
+PVArrowButton < UIButton
+  size: 30 30
+  $hover !disabled:
+    opacity: 0.85
+  $disabled:
+    opacity: 0.3
+
+PVOutfitThumb < UIButton
+  size: 56 60
+  image-source: /modules/client_entergame/images/thumb
+  image-border: 9
+  $hover !checked:
+    opacity: 0.85
+  $checked:
+    image-source: /modules/client_entergame/images/thumb_selected
+
+  UICreature
+    id: creature
+    size: 64 64
+    anchors.centerIn: parent
+    margin-top: -4
+    phantom: true
+
+PVDot < UIWidget
+  size: 8 8
+  image-source: /modules/client_entergame/images/dot
+  phantom: true
+  $on:
+    image-source: /modules/client_entergame/images/dot_on
+
+PVSwatch < UIButton
+  size: 20 20
+  border-width: 1
+  border-color: #0a1020
+  $hover:
+    border-color: #ffffff
+  $checked:
+    border-width: 2
+    border-color: #ffd75a
+
+PVMoreSwatch < UIButton
+  size: 20 20
+  image-source: /modules/client_entergame/images/swatch_more
+  !tooltip: tr('More colors')
+  $hover:
+    image-source: /modules/client_entergame/images/swatch_more_hover
+
+PVColorRow < UIWidget
+  height: 22
+  anchors.left: parent.left
+  anchors.right: parent.right
+
+  PVIconText
+    id: caption
+    icon-size: 16 16
+    text-offset: 22 0
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: swatches
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    size: 236 20
+    layout:
+      type: horizontalBox
+      spacing: 7
+
+PVSummaryRow < UIWidget
+  height: 15
+  phantom: true
+
+  PVMuted
+    id: caption
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  PVText
+    id: value
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 52
+
+PVComboBoxPopupMenu < UIPopupMenu
+  image-source: /modules/client_entergame/images/field
+  image-border: 8
+  padding: 4
+
+PVComboBoxPopupMenuButton < UIButton
+  height: 24
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-align: left
+  text-offset: 8 0
+  background-color: alpha
+  $hover !disabled:
+    color: #ffffff
+    background-color: #3d6fb860
+
+PVComboBox < UIComboBox
+  image-source: /modules/client_entergame/images/field
+  image-border: 8
+  font: verdana-11px-antialised
+  color: #e6ecff
+  text-align: left
+  text-offset: 10 0
+  height: 30
+  $on:
+    image-source: /modules/client_entergame/images/field_focus
+
+  UIWidget
+    image-source: /modules/client_entergame/images/icon_chevron
+    size: 12 12
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+    phantom: true
+
+PVModal
+  id: createCharacterWindow
+  size: 760 540
+  @onEnter: CharacterList.doCreateCharacter()
+  @onEscape: CharacterList.hideCreateCharacter()
+
+  UIWidget
+    id: titleIconLeft
+    image-source: /modules/client_entergame/images/icon_pokeball
+    size: 16 16
+    anchors.verticalCenter: title.verticalCenter
+    anchors.right: title.left
+    margin-right: 12
+    phantom: true
+
+  PVTitle
+    id: title
+    !text: tr('Create Character')
+    ttf-font-size: 18
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -6
+
+  UIWidget
+    id: titleIconRight
+    image-source: /modules/client_entergame/images/icon_pokeball
+    size: 16 16
+    anchors.verticalCenter: title.verticalCenter
+    anchors.left: title.right
+    margin-left: 12
+    phantom: true
+
+  PVCloseButton
+    id: closeButton
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -6
+    !tooltip: tr('Cancel')
+    @onClick: CharacterList.hideCreateCharacter()
+
+  PVSeparator
+    id: titleSeparator
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+  // left column: preview, outfits, summary
+
+  UIWidget
+    id: stage
+    image-source: /modules/client_entergame/images/stage
+    size: 296 200
+    anchors.top: titleSeparator.bottom
+    anchors.left: parent.left
+    margin-top: 12
+
+  UICreature
+    id: preview
+    size: 128 128
+    anchors.horizontalCenter: stage.horizontalCenter
+    anchors.bottom: stage.bottom
+    margin-bottom: 26
+    phantom: true
+
+  PVArrowButton
+    id: turnLeft
+    image-source: /modules/client_entergame/images/arrow_left
+    !tooltip: tr('Turn')
+    anchors.left: stage.left
+    anchors.verticalCenter: stage.verticalCenter
+    margin-left: 10
+    @onClick: CharacterList.turnPreview(1)
+
+  PVArrowButton
+    id: turnRight
+    image-source: /modules/client_entergame/images/arrow_right
+    !tooltip: tr('Turn')
+    anchors.right: stage.right
+    anchors.verticalCenter: stage.verticalCenter
+    margin-right: 10
+    @onClick: CharacterList.turnPreview(-1)
+
+  PVArrowButton
+    id: previousOutfit
+    image-source: /modules/client_entergame/images/arrow_left
+    !tooltip: tr('Previous outfit')
+    anchors.verticalCenter: outfitThumbs.verticalCenter
+    anchors.left: stage.left
+    @onClick: CharacterList.changeOutfit(-1)
+
+  PVArrowButton
+    id: nextOutfit
+    image-source: /modules/client_entergame/images/arrow_right
+    !tooltip: tr('Next outfit')
+    anchors.verticalCenter: outfitThumbs.verticalCenter
+    anchors.right: stage.right
+    @onClick: CharacterList.changeOutfit(1)
+
+  UIWidget
+    id: outfitThumbs
+    anchors.top: stage.bottom
+    anchors.horizontalCenter: stage.horizontalCenter
+    margin-top: 8
+    size: 56 60
+    layout:
+      type: horizontalBox
+      spacing: 8
+
+  PVMuted
+    id: outfitCount
+    anchors.top: outfitThumbs.bottom
+    anchors.right: stage.horizontalCenter
+    margin-top: 6
+
+  UIWidget
+    id: outfitDots
+    anchors.verticalCenter: outfitCount.verticalCenter
+    anchors.left: stage.horizontalCenter
+    margin-left: 10
+    size: 8 8
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+  PVSection
+    id: summary
+    anchors.top: outfitCount.bottom
+    anchors.left: stage.left
+    anchors.right: stage.right
+    anchors.bottom: parent.bottom
+    margin-top: 8
+
+    PVSectionTitle
+      !text: tr('Appearance Preview')
+      icon-source: /modules/client_entergame/images/icon_preview
+
+    UIWidget
+      id: summaryPortrait
+      image-source: /modules/client_entergame/images/portrait
+      image-border: 13
+      size: 76 80
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-top: 12
+
+    UICreature
+      id: summaryOutfit
+      size: 64 64
+      anchors.centerIn: summaryPortrait
+      margin-top: -4
+      phantom: true
+
+    UIWidget
+      id: summaryRows
+      anchors.left: summaryPortrait.right
+      anchors.right: parent.right
+      anchors.verticalCenter: summaryPortrait.verticalCenter
+      margin-left: 16
+      height: 79
+      layout:
+        type: verticalBox
+        spacing: 1
+
+  // right column: server, name, gender, colors
+
+  PVSection
+    id: serverSection
+    anchors.top: stage.top
+    anchors.left: stage.right
+    anchors.right: parent.right
+    margin-left: 16
+    height: 66
+
+    PVSectionTitle
+      id: serverTitle
+      !text: tr('Server')
+      icon-source: /modules/client_entergame/images/icon_server
+
+    PVComboBox
+      id: serverComboBox
+      anchors.left: parent.left
+      anchors.right: serverSignal.left
+      anchors.bottom: parent.bottom
+      margin-right: 12
+      @onOptionChange: CharacterList.updateCreateSummary()
+
+    UIWidget
+      id: serverSignal
+      image-source: /modules/client_entergame/images/icon_signal
+      size: 16 16
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-bottom: 7
+
+  PVSection
+    id: nameSection
+    anchors.top: serverSection.bottom
+    anchors.left: serverSection.left
+    anchors.right: serverSection.right
+    margin-top: 8
+    height: 89
+
+    PVSectionTitle
+      !text: tr('Character Name')
+      icon-source: /modules/client_entergame/images/icon_user
+
+    PVField
+      id: nameTextEdit
+      placeholder: Character Name
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+      height: 30
+      padding-left: 10
+      max-length: 20
+      @onTextChange: CharacterList.updateCreateSummary()
+
+    PVMuted
+      id: nameHint
+      !text: tr('4 to 20 letters, starting with a capital letter.')
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-top: 5
+
+  PVSection
+    id: genderSection
+    anchors.top: nameSection.bottom
+    anchors.left: serverSection.left
+    anchors.right: serverSection.right
+    margin-top: 8
+    height: 72
+
+    PVSectionTitle
+      id: genderTitle
+      !text: tr('Gender')
+      icon-source: /modules/client_entergame/images/icon_gender
+
+    PVToggleButton
+      id: maleButton
+      !text: tr('Male')
+      icon-source: /modules/client_entergame/images/icon_male
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      anchors.bottom: parent.bottom
+      margin-right: 5
+      @onClick: CharacterList.setCreateSex(1)
+
+    PVToggleButton
+      id: femaleButton
+      !text: tr('Female')
+      icon-source: /modules/client_entergame/images/icon_female
+      anchors.left: parent.horizontalCenter
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 5
+      @onClick: CharacterList.setCreateSex(0)
+
+  PVSection
+    id: colorSection
+    anchors.top: genderSection.bottom
+    anchors.left: serverSection.left
+    anchors.right: serverSection.right
+    anchors.bottom: createButton.top
+    margin-top: 8
+    margin-bottom: 12
+
+    PVSectionTitle
+      id: colorTitle
+      !text: tr('Customize Colors')
+      icon-source: /modules/client_entergame/images/icon_palette
+
+    UIButton
+      id: randomButton
+      font: verdana-11px-antialised
+      color: #96aacd
+      text-auto-resize: true
+      !text: tr('Random')
+      !tooltip: tr('Random colors')
+      anchors.verticalCenter: colorTitle.verticalCenter
+      anchors.right: parent.right
+      @onClick: CharacterList.randomColors()
+      $hover:
+        color: #ffd75a
+
+    PVColorRow
+      id: headRow
+      anchors.top: colorTitle.bottom
+      margin-top: 8
+
+    PVColorRow
+      id: bodyRow
+      anchors.top: prev.bottom
+      margin-top: 3
+
+    PVColorRow
+      id: legsRow
+      anchors.top: prev.bottom
+      margin-top: 3
+
+    PVColorRow
+      id: feetRow
+      anchors.top: prev.bottom
+      margin-top: 3
+
+  PVGreenButton
+    id: createButton
+    !text: tr('Create Character')
+    anchors.bottom: parent.bottom
+    anchors.left: serverSection.left
+    anchors.right: cancelButton.left
+    margin-right: 12
+    height: 40
+    ttf-font-size: 14
+    @onClick: CharacterList.doCreateCharacter()
+
+    PVButtonIcon
+      image-source: /modules/client_entergame/images/icon_create
+      size: 18 18
+      margin-right: 64
+
+  PVBlueButton
+    id: cancelButton
+    !text: tr('Cancel')
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    width: 120
+    height: 40
+    @onClick: CharacterList.hideCreateCharacter()
+
+PVColorPalette < UIWidget
+  id: colorPalette
+  image-source: /modules/client_entergame/images/panel
+  image-border: 22
+  padding: 16
+  size: 356 152
+  focusable: true
+  layout:
+    type: grid
+    cell-size: 16 16
+    cell-spacing: 1
+    flow: true
+    num-columns: 19
