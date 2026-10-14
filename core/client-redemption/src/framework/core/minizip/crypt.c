@@ -36,6 +36,9 @@
 #  include <sys/stat.h>
 #  include <fcntl.h>
 #  include <unistd.h>
+#  if defined(__linux__) && !defined(__ANDROID__)
+#    include <sys/random.h>
+#  endif
 #endif
 
 #include "zlib.h"
@@ -110,6 +113,17 @@ int cryptrand(unsigned char *buf, unsigned int len)
     }
 
     return rlen;
+#elif defined(__linux__) && !defined(__ANDROID__)
+    /* glibc only has arc4random_buf from 2.36; the Linux client is built against 2.35 */
+    unsigned int got = 0;
+    while (got < len)
+    {
+        ssize_t n = getrandom(buf + got, len - got, 0);
+        if (n <= 0)
+            return got;
+        got += (unsigned int)n;
+    }
+    return len;
 #else
     arc4random_buf(buf, len);
     return len;
