@@ -638,7 +638,7 @@ local handlers = {}
 
 function handlers.open(data)
     state = { categories = data.categories or {}, bank = data.bank, money = data.money, tax = data.tax or 0,
-        maxPrice = data.maxPrice, maxAmount = data.maxAmount, days = data.days, filter = 'all' }
+        maxPrice = data.maxPrice, maxAmount = data.maxAmount, days = data.days, filter = 'all', terminal = data.terminal }
     state.category = state.categories[1] and state.categories[1].id
     window.pages.itemPage.create.amount:setMaximum(state.maxAmount or 1000)
     updateBalance()
@@ -909,6 +909,20 @@ function close()
     end
 end
 
+-- like the PC, the window closes once the player is no longer next to the computer
+local function onPositionChange(player, newPos)
+    local terminal = state.terminal
+    if not window or not window:isVisible() or not terminal or not newPos then
+        return
+    end
+    if newPos.z ~= terminal.z or math.max(math.abs(newPos.x - terminal.x), math.abs(newPos.y - terminal.y)) > 1 then
+        close()
+        if modules.game_textmessage then
+            modules.game_textmessage.displayFailureMessage(tr('You moved away from the computer.'))
+        end
+    end
+end
+
 local function onGameEnd()
     if window then
         window:hide()
@@ -957,12 +971,14 @@ function init()
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Gts, onGts)
     connect(g_game, { onGameEnd = onGameEnd })
+    connect(LocalPlayer, { onPositionChange = onPositionChange })
 end
 
 function terminate()
     stopSparkles()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Gts)
     disconnect(g_game, { onGameEnd = onGameEnd })
+    disconnect(LocalPlayer, { onPositionChange = onPositionChange })
     if searchEvent then
         removeEvent(searchEvent)
         searchEvent = nil
