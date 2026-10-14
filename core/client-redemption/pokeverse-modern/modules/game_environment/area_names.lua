@@ -4,7 +4,7 @@
 
 AREA_BANNER = {}
 
--- Names containing any of these only update the location label under the clock.
+-- Names containing any of these only update the location label next to the clock.
 local BUILDING_WORDS = {
     "Pokemon Center", "Pokemon Mart", "Pokemon Market", "Pokemon Buyer", "House", "Shop", "Store",
     "Hotel", "Bank", "Post", "Bar", "Parlor", "Pizzeria", "Juices", "Fast Food", "Fast Foof",
