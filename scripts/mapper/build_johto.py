@@ -436,7 +436,9 @@ def build_cave(cave, brushes, present, rng, z=8):
     X, Y = f.X, f.Y
     n1, n2 = f.noise(8), f.noise(16)
     path_d = f.seg_dist(smooth_path(cave['path'], rng, 4, 8))
-    # at least 5 wide everywhere, so 3 tiles stay walkable between the wall borders
+    # at least 5 wide everywhere, so 3 tiles stay walkable between the wall borders; the lane down the
+    # middle is kept clear of debris, blocking borders and water so every room stays connected
+    lane = path_d < 1.5
     floor = (path_d + n1 * 3 < 2.6) | (path_d < 2.5)
     for x, y, r in cave['rooms']:
         floor |= f.disc(x, y, r, n2, 0.5)
@@ -459,7 +461,8 @@ def build_cave(cave, brushes, present, rng, z=8):
         no_optional |= {(ex + dx, arrive + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
     water = np.zeros((f.h, f.w), bool)
     if cave.get('pond'):
-        water = f.disc(*cave['pond'], n1, 0.3) & erode(floor, 3) & ~near_stairs
+        water = f.disc(*cave['pond'], n1, 0.3) & erode(floor, 3) & ~near_stairs & ~(path_d < 2.6)
+    no_optional |= {(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(lane)}
     rocky = (f.noise(10) > 0.2) & erode(floor, 3) & ~water
     wall = dilate(floor, 7) & ~floor
     bx0, by0 = BOX[:2]
@@ -485,7 +488,7 @@ def build_cave(cave, brushes, present, rng, z=8):
         if wall[iy, ix]:
             if iy + 1 < f.h and floor[iy + 1, ix] and not water[iy + 1, ix] and r < 0.05:
                 items.append(WALL_CANDLE)
-        elif not water[iy, ix] and not near_stairs[iy, ix]:
+        elif not water[iy, ix] and not near_stairs[iy, ix] and not lane[iy, ix]:
             if r < 0.06:
                 items.append(int(rng.choice(CAVE_DEBRIS)))
             elif r < 0.085:
@@ -510,14 +513,27 @@ def build_cave(cave, brushes, present, rng, z=8):
         children = b''.join(pvmap.item_node(i) for i in [g] + border + deco[(x, y)])
         tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
 
+    # spawns only go where players can get to from the lane: off the water and its border, the
+    # blocking wall borders and the decoration
+    free = np.array([[not deco.get((ix + f.x0, iy + f.y0)) for ix in range(f.w)] for iy in range(f.h)])
+    exempt = np.zeros((f.h, f.w), bool)
+    for x, y in no_optional:
+        if f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
+            exempt[y - f.y0, x - f.x0] = True
+    passable = floor & ~dilate(water, 3) & free & ~(dilate(wall, 3) & ~exempt)
+    reached = lane & passable
+    while True:
+        grown = dilate(reached, 3) & passable
+        if (grown == reached).all():
+            break
+        reached = grown
     spawns = []
-    for iy, ix in np.argwhere(walk & (rng.random((f.h, f.w)) < 1 / 70.0)):
+    for iy, ix in np.argwhere(walk & reached & (rng.random((f.h, f.w)) < 1 / 70.0)):
         spawns.append((pick(rng, spawn_table(cave['name'])), ix + f.x0, iy + f.y0, z))
     # the water table along the pond, one tile back from the water's (blocking) border, like Kanto's
     water_table = spawn_table(cave['name'], 'water')
     if water.any() and water_table:
-        edge = dilate(water, 5) & ~dilate(water, 3) & erode(floor, 3)
-        edge &= np.array([[not deco.get((ix + f.x0, iy + f.y0)) for ix in range(f.w)] for iy in range(f.h)])
+        edge = dilate(water, 5) & ~dilate(water, 3) & erode(floor, 3) & reached
         cells = np.argwhere(edge)
         for iy, ix in cells[rng.permutation(len(cells))[:min(6, max(2, len(cells) // 8))]]:
             spawns.append((pick(rng, water_table), ix + f.x0, iy + f.y0, z))
@@ -1073,8 +1089,9 @@ def build(base, out_path):
     for iy, ix in cand:
         spawns.append((pick(rng, spawn_table(str(route_of[iy, ix]))), ix + f.x0, iy + f.y0, Z))
 
-    for cave in CAVES:
-        cave_tiles, cave_spawns = build_cave(cave, brushes, present, rng)
+    for k, cave in enumerate(CAVES):
+        # each cave draws from its own generator, so changes elsewhere leave the caves as they are
+        cave_tiles, cave_spawns = build_cave(cave, brushes, present, np.random.default_rng(41 + k))
         new_tiles.update(cave_tiles)
         spawns += cave_spawns
 

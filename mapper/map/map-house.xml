@@ -577,10 +577,46 @@
   <house name="Pacifidlog House #08" houseid="577" entryx="1280" entryy="1766" entryz="7" rent="0" townid="49" size="7"/>
   <house name="Pacifidlog House #09" houseid="578" entryx="1284" entryy="1766" entryz="7" rent="0" townid="49" size="7"/>
   <house name="Pacifidlog House #10" houseid="579" entryx="1300" entryy="1783" entryz="7" rent="0" townid="49" size="57"/>
-  <house name="New Bark House #1" houseid="580" entryx="2741" entryy="791" entryz="7" rent="0" townid="50" size="77"/>
-  <house name="New Bark House #2" houseid="581" entryx="2737" entryy="813" entryz="7" rent="0" townid="50" size="77"/>
-  <house name="Cherrygrove House #1" houseid="582" entryx="2559" entryy="847" entryz="7" rent="0" townid="51" size="77"/>
-  <house name="Violet House #1" houseid="583" entryx="2469" entryy="577" entryz="7" rent="0" townid="52" size="77"/>
-  <house name="Violet House #2" houseid="584" entryx="2511" entryy="580" entryz="7" rent="0" townid="52" size="77"/>
-  <house name="Azalea House #1" houseid="585" entryx="2367" entryy="1029" entryz="7" rent="0" townid="53" size="77"/>
+  <house name="New Bark House #1" houseid="580" entryx="2735" entryy="797" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #2" houseid="581" entryx="2751" entryy="797" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #3" houseid="582" entryx="2734" entryy="810" entryz="7" rent="0" townid="50" size="119"/>
+  <house name="New Bark House #4" houseid="583" entryx="2744" entryy="812" entryz="7" rent="0" townid="50" size="80"/>
+  <house name="New Bark House #5" houseid="584" entryx="2760" entryy="810" entryz="7" rent="0" townid="50" size="119"/>
+  <house name="New Bark House #6" houseid="585" entryx="2770" entryy="812" entryz="7" rent="0" townid="50" size="80"/>
+  <house name="New Bark House #7" houseid="586" entryx="2702" entryy="818" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #8" houseid="587" entryx="2703" entryy="785" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #9" houseid="588" entryx="2666" entryy="813" entryz="7" rent="0" townid="50" size="17"/>
+  <house name="New Bark House #10" houseid="589" entryx="2671" entryy="816" entryz="7" rent="0" townid="50" size="16"/>
+  <house name="New Bark House #11" houseid="590" entryx="2664" entryy="825" entryz="7" rent="0" townid="50" size="16"/>
+  <house name="New Bark House #12" houseid="591" entryx="2675" entryy="821" entryz="7" rent="0" townid="50" size="16"/>
+  <house name="Cherrygrove House #1" houseid="592" entryx="2586" entryy="831" entryz="7" rent="0" townid="51" size="128"/>
+  <house name="Cherrygrove House #2" houseid="593" entryx="2597" entryy="831" entryz="7" rent="0" townid="51" size="134"/>
+  <house name="Cherrygrove House #3" houseid="594" entryx="2587" entryy="841" entryz="7" rent="0" townid="51" size="129"/>
+  <house name="Cherrygrove House #4" houseid="595" entryx="2598" entryy="845" entryz="7" rent="0" townid="51" size="77"/>
+  <house name="Cherrygrove House #5" houseid="596" entryx="2517" entryy="848" entryz="7" rent="0" townid="51" size="179"/>
+  <house name="Cherrygrove House #6" houseid="597" entryx="2502" entryy="808" entryz="7" rent="0" townid="51" size="170"/>
+  <house name="Cherrygrove House #7" houseid="598" entryx="2505" entryy="826" entryz="7" rent="0" townid="51" size="141"/>
+  <house name="Cherrygrove House #8" houseid="599" entryx="2545" entryy="810" entryz="7" rent="0" townid="51" size="167"/>
+  <house name="Cherrygrove House #9" houseid="600" entryx="2556" entryy="805" entryz="7" rent="0" townid="51" size="133"/>
+  <house name="Cherrygrove House #10" houseid="601" entryx="2544" entryy="844" entryz="7" rent="0" townid="51" size="192"/>
+  <house name="Violet House #1" houseid="602" entryx="2524" entryy="540" entryz="7" rent="0" townid="52" size="189"/>
+  <house name="Violet House #2" houseid="603" entryx="2542" entryy="540" entryz="7" rent="0" townid="52" size="168"/>
+  <house name="Violet House #3" houseid="604" entryx="2473" entryy="541" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #4" houseid="605" entryx="2481" entryy="597" entryz="7" rent="0" townid="52" size="134"/>
+  <house name="Violet House #5" houseid="606" entryx="2459" entryy="598" entryz="7" rent="0" townid="52" size="147"/>
+  <house name="Violet House #6" houseid="607" entryx="2504" entryy="609" entryz="7" rent="0" townid="52" size="188"/>
+  <house name="Violet House #7" houseid="608" entryx="2553" entryy="598" entryz="7" rent="0" townid="52" size="125"/>
+  <house name="Violet House #8" houseid="609" entryx="2448" entryy="575" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #9" houseid="610" entryx="2464" entryy="575" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #10" houseid="611" entryx="2453" entryy="581" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #11" houseid="612" entryx="2461" entryy="581" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Azalea House #1" houseid="613" entryx="2397" entryy="1012" entryz="7" rent="0" townid="53" size="227"/>
+  <house name="Azalea House #2" houseid="614" entryx="2370" entryy="1047" entryz="7" rent="0" townid="53" size="269"/>
+  <house name="Azalea House #3" houseid="615" entryx="2439" entryy="1036" entryz="7" rent="0" townid="53" size="177"/>
+  <house name="Azalea House #4" houseid="616" entryx="2456" entryy="1036" entryz="7" rent="0" townid="53" size="184"/>
+  <house name="Azalea House #5" houseid="617" entryx="2435" entryy="1045" entryz="7" rent="0" townid="53" size="173"/>
+  <house name="Azalea House #6" houseid="618" entryx="2454" entryy="1045" entryz="7" rent="0" townid="53" size="182"/>
+  <house name="Azalea House #7" houseid="619" entryx="2428" entryy="1060" entryz="7" rent="0" townid="53" size="101"/>
+  <house name="Azalea House #8" houseid="620" entryx="2360" entryy="1075" entryz="7" rent="0" townid="53" size="178"/>
+  <house name="Azalea House #9" houseid="621" entryx="2378" entryy="1075" entryz="7" rent="0" townid="53" size="114"/>
 </houses>
