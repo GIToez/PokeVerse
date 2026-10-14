@@ -17736,9 +17736,6 @@
   <spawn centerx="5850" centery="140" centerz="6" radius="1">
     <npc name="Lunatticous Ubilam" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4732" centery="141" centerz="6" radius="1">
-    <npc name="Jack Eden" x="1" y="0" z="6" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="5030" centery="141" centerz="6" radius="1">
     <npc name="Allie Bucko" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
