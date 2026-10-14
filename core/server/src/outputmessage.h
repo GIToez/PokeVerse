@@ -162,6 +162,8 @@ class OutputMessagePool
 
 		void startExecutionFrame();
 		void autoSend(OutputMessage_ptr msg);
+		// sends an auto send message now instead of at the end of the frame
+		void flush(OutputMessage_ptr msg);
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 		size_t getTotalMessageCount() const {return (size_t)outputMessagePoolCount;}

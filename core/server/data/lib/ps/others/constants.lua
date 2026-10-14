@@ -49,7 +49,8 @@ EXTENDED_IDS = {
     EVOLUTION = 14, -- JSON {state = "start", from, to, fromLook, toLook, duration} then {state = "done"} (doPokemonEvolve)
     DAILY_TASKS = 15, -- JSON state of today's daily tasks (DailyTasks.send)
     LEVEL_UP = 16, -- JSON Pokemon/trainer level-up and TM banners (LevelUpBanner)
-    TASK_BOARDS = 17 -- JSON state of the weekly and hunting task boards, with board = "weekly" or "hunting"
+    TASK_BOARDS = 17, -- JSON state of the weekly and hunting task boards, with board = "weekly" or "hunting"
+    DAILY_LOGIN = 18 -- JSON state of the 7-day login calendar (DailyLogin.send)
 }
 
 TOURNAMENT_TYPES = {}

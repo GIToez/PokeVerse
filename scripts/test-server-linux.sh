@@ -185,13 +185,23 @@ say_admin "/tasks daily reset" "/tasks daily start 1" "/tasks daily kind 1 fish"
 tasks_of Admin | python3 -c "import json,sys; s=json.load(sys.stdin); t=s['tasks'][0]
 assert s['difficulty'] == 1 and t['kind'] == 'fish' and t['progress'] == 2, s"
 echo "Daily tasks: hooking Pokemon counts right after the tasks are picked"
-candies() { item_query Admin "COALESCE(SUM(i.count), 0)" "AND c.pid = 10 AND i.itemtype = 14463"; }
-before=$(candies)
-say_admin "/tasks daily reset" "/tasks daily start 1" "/tasks daily streak 6" "/tasks daily progress 1 999" \
-  "/tasks daily progress 2 999" "/tasks daily progress 3 999" "/tasks daily claim 1" "/tasks daily claim 2" \
-  "/tasks daily claim 3" "/tasks daily bonus"
-[ "$(candies)" = "$((before + 1))" ] || { echo "FAIL: day 7 of the daily streak should give a rare candy ($before before, $(candies) after)"; exit 1; }
-echo "Daily tasks: the seventh day in a row gives a rare candy"
+
+step "Daily login calendar"
+in_bag() { item_query Admin "COALESCE(SUM(i.count), 0)" "AND c.pid = 10 AND i.itemtype = $1"; }
+balls=$(in_bag 12157)
+say_admin "/tasks login reset" "/tasks login claim" "/tasks login claim"
+[ "$(in_bag 12157)" = "$((balls + 10))" ] || { echo "FAIL: day 1 should give 10 poke balls, once ($balls before, $(in_bag 12157) after)"; exit 1; }
+candies=$(in_bag 14463)
+say_admin "/tasks login streak 6" "/tasks login claim"
+[ "$(in_bag 14463)" = "$((candies + 1))" ] || { echo "FAIL: day 7 should give a rare candy ($candies before, $(in_bag 14463) after)"; exit 1; }
+# day 3 claimed three days ago: the round is lost and today is day 1 again
+today=$(python3 -c "import datetime, time; d = datetime.date.today(); print(int(time.mktime((d.year, d.month, d.day, 12, 0, 0, 0, 0, -1)) // 86400))")
+sql "UPDATE player_storage s JOIN players p ON p.id = s.player_id SET s.value = IF(s.key = 7084, '3', '$((today - 3))')
+  WHERE p.name = 'Admin' AND s.key IN (7084, 7085)"
+balls=$(in_bag 12157)
+say_admin "/tasks login claim"
+[ "$(in_bag 12157)" = "$((balls + 10))" ] || { echo "FAIL: after a missed day the calendar should start over at day 1 ($balls before, $(in_bag 12157) after)"; exit 1; }
+echo "Daily login calendar: day 1 once a day, day 7 gives a rare candy, a missed day starts over"
 
 step "Weekly tasks"
 say_admin "/tasks weekly reset" "/tasks weekly start 2" "/tasks weekly start 4" "/tasks weekly reroll 1" \

@@ -42,6 +42,7 @@ Module
     - game_pokedex
     - game_evolution
     - game_dailytasks
+    - game_dailylogin
     - game_levelup
     - game_tmchoose
     - game_statusbar

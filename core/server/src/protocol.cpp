@@ -90,6 +90,16 @@ OutputMessage_ptr Protocol::getOutputBuffer()
 	return OutputMessage_ptr();
 }
 
+void Protocol::flushOutputBuffer()
+{
+	if(!m_outputBuffer || !m_outputBuffer->getMessageLength())
+		return;
+
+	OutputMessage_ptr msg = m_outputBuffer;
+	m_outputBuffer.reset();
+	OutputMessagePool::getInstance()->flush(msg);
+}
+
 void Protocol::releaseProtocol()
 {
 	if(m_refCount > 0)

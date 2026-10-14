@@ -84,5 +84,7 @@ playersStorages = {
     dailyStreakDay = base + 81,
     playTime = base + 82, -- seconds played before this session; the server reads 7082 for the character list
     playSessionStart = base + 83,
+    loginStreak = base + 84, -- day of the 7-day login calendar claimed last (1-7)
+    loginStreakDay = base + 85, -- the day number it was claimed on (DailyLogin)
     -- tournamentWeekWinnerStorage = base + 65
 }

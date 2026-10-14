@@ -18298,6 +18298,7 @@
 		<attribute key="description" value="It looks like it can be headbutted." />
 	</item>
 	<item id="12296" article="a" name="nest tree">
+		<attribute key="description" value="It was headbutted a moment ago. Come back in a minute." />
 		<attribute key="decayTo" value="12295" />
 		<attribute key="duration" value="60" />
 	</item>

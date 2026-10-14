@@ -528,10 +528,17 @@ def main():
     p.add_argument("--downloads-repo", default="GIToez/PokeVerse-Clients")
     p.add_argument("--release-tag", default="")
     p.add_argument("--discord-url", default="")
+    # GitHub Pages keeps a branch site's custom domain in this file: a published branch without
+    # it loses the domain
+    p.add_argument("--cname", default="", help="custom domain of the Pages site, e.g. pokeverse.quest")
     args = p.parse_args()
     if args.discord_url and not args.discord_url.startswith("https://"):
         sys.exit("--discord-url must be an https URL")
-    Site(os.path.abspath(args.out), args.downloads_repo, args.release_tag, args.discord_url).build()
+    out = os.path.abspath(args.out)
+    Site(out, args.downloads_repo, args.release_tag, args.discord_url).build()
+    if args.cname:
+        with open(os.path.join(out, "CNAME"), "w") as f:
+            f.write(args.cname.strip() + "\n")
 
 
 if __name__ == "__main__":
