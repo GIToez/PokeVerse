@@ -480,16 +480,12 @@ From the `#notes` channel:
   not finished in time fails on its own and is removed. **To decide:** how long (for
   example by size), and whether a failed hunt costs anything.
 
-- **Fishing tasks don't count up:** the daily or weekly task "Hook X Pokémon while
-  fishing" doesn't go up. Hooking records the statistic, and that should count the task
-  (`043-fishing.lua` → `onStatisticChange.lua` → `Tasks.onEvent`). Likely cause: the
-  server runs actions, creature events and talk commands in separate Lua environments,
-  and each keeps its own copy of the task board (`cache` in `062-dailyTasks.lua` and
-  `064-huntingTasks.lua`). Fishing counts in one copy, while the Tasks window reads and
-  saves an older copy, which shows or saves over the progress. This may affect other task
-  kinds too (catching counts in the actions copy). Fix: read the state from the database
-  every time instead of keeping a copy, and add a server test that hooks a Pokémon and
-  checks the task.
+- **Fishing tasks don't count up (fixed):** the server runs actions, creature events and
+  talk commands in separate Lua environments, and each kept its own copy of the task
+  board. The Tasks window picks tasks through a talk command, so fishing, wild defeats and
+  NPC trainer wins (creature events) kept counting on the copy loaded at login, which had
+  no tasks yet, until the next login. The boards are now read from the database every
+  time, and the server test picks tasks and hooks Pokémon in one session.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
@@ -599,6 +595,62 @@ too low.
 - Keep all reward values in config tables, so tuning is easy.
 - Track it over time: total money on the server (bank plus inventories), shown by a staff
   command or the Discord bot.
+
+### Findings (October 2026, read only)
+
+The first pass read every NPC shop (144 NPCs, 227 items for sale, 582 items they buy), the
+wild Pokémon loot tables, the task boards and the fixed prices in the NPC scripts. Nothing
+is changed yet.
+
+**Money coming in**
+
+| Source | Amount | Where |
+| --- | --- | --- |
+| Loot sold to NPCs | about $27 a kill for a typical wild Pokémon, $70 for the best common ones (Alakazam, Jynx, Tentacruel, Houndoom) | `monster/Pokemons`, NPC `shop_sellable` lists |
+| Hunting tasks | $10 + $2 × the species' level per kill, + up to 30% by rank: a Small hunt (100 kills) of a level 30 species pays about $7,000 | `moneyFor`, `064-huntingTasks.lua` |
+| Daily tasks (3 tasks + the all-done bonus) | Beginner about $3,200, Hard $19,500, Extreme $48,000 a day | `TASK_DIFFICULTIES`, `062-dailyTasks.lua` |
+| Weekly tasks (5 tasks + bonus) | Beginner about $18,000, Hard $110,000, Extreme $270,000 a week | the same table, money × 4 |
+| Selling Pokémon to the NPC | catch difficulty × $10 (× 2 for shinies) + $5 a level | `getPokemonPrice`, `npc/scripts/shop_pokemonShop.lua` |
+
+**Money going out**
+
+| Sink | Price | Where |
+| --- | --- | --- |
+| Poké, Great and Ultra Balls | $8, $35, $130 | Poké Mart NPCs |
+| Potions and revives | $10 to $130, revive $200 | Poké Mart NPCs |
+| Houses (Premium only) | $50 a tile (median house $3,900, largest $39,250), and the same again as rent every 30 days (`housePriceAsRent`), from the bank, else the depot; 7 daily warnings, then the house is lost | `housePriceEachSquare`, `houseRentPeriod`, `config.lua`; `Houses::payRent`, `src/house.cpp` |
+| Daycare | $1 to $4 a minute by level, + $100 | `getPricePerMinute`, `daycareMale.lua` |
+| Travel | $50 to $300 a trip | captain NPCs (`travel_destinations`) |
+| Safari Zone | $1,000 | `saffariZoneEnter.lua` |
+| Slot machine | $100 a spin, at most 90 a day; pays casino coins, not money | `044-slotMachine.lua` |
+| Late game buys | berry pot $150,000; egg move remover $100,000; Bill's assistant quest $100,000; ball pillar $100,000; destiny knot $50,000; power items $25,000; egg move regenerator $25,000 | NPC shops and scripts |
+
+**What looks wrong**
+
+1. **The task boards pay far more than anything else.** A trainer on Extreme gets about
+   $600,000 a week from daily and weekly tasks, while the most expensive things to buy
+   cost $150,000 once. Hunting tasks pay about 2.5 times the loot of the same kills. Once a
+   trainer owns the late game items, money only piles up (inflation). Lower the top two
+   difficulties, or add money sinks that repeat.
+2. **Houses are cheap.** A median house, and its monthly rent, is about one Beginner day
+   of tasks. Raise `housePriceEachSquare`, which sets both, or make the rent weekly.
+3. **Rare candy comes from the boards every week** (Extreme gives one a day plus three a
+   week, Hard one a week). Check it against how fast levelling is meant to be.
+4. **Few repeating sinks.** Balls, potions, travel and the house rent are small. Ideas: the
+   GTS fee, a higher rent, paid hunting refreshes (they exist: $1,000 to $20,000), cosmetic shops.
+
+**Checked and fine**
+
+- No money loop between NPCs: no NPC buys an item for more than another sells it, and
+  prices for the same item agree across NPCs (except brass legs, see below).
+- Catching and selling Pokémon pays about double the Poké Balls used (one ball a kill), on
+  top of the loot. It is a fair income, not an exploit.
+- Soya buys old Tibia equipment for up to $400,000 (steel boots) and $20,000 for brass
+  legs, against $100 elsewhere, but Soya is not on the map and no monster drops those
+  items. Remove Soya or keep it off the map.
+
+**Next:** decide the target income per hour for each level range, then tune the table
+values above. Pokémon energy balance (see [energy](#pokémon-energy)) is still to check.
 
 ## 15. Daily login rewards and events
 
