@@ -289,8 +289,8 @@ more by defeating and catching it:
 - A defeat counts when your Pokémon knocks it out or you catch it. A catch counts as level 1
   plus extra defeats.
 - **Agreed:** defeats needed rise with each level: 25 for level 1, 100 for level 2, 500 for
-  level 3 (complete). A grind, but reachable by hunting normally. Legendaries and event
-  Pokémon unlock by catching only.
+  level 3 (complete). A grind, but reachable by hunting normally. Event Pokémon unlock by
+  catching only.
 - No charms or bestiary points: Tibia's charm system has no fit in a Pokémon setting.
 - Kill counts per player and species are kept on the server (one table); the hunting tasks
   (`064-huntingTasks.lua`) already count kills and can use the same count.
@@ -302,6 +302,9 @@ more by defeating and catching it:
 - **Agreed:** rare spawns that are not legendary (Dratini, for example) need fewer defeats,
   about half (roughly 10, 50 and 250). The list of rare species is set by hand from the spawn
   files.
+- **Agreed:** legendaries need 1, 5 and 15 defeats (or catches).
+- **Rewards (agreed):** completing a species gives experience or money; completing the whole
+  Pokédex (100%) gives a Master Ball, once per character.
 
 ### Tracker panel (agreed)
 
