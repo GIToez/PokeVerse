@@ -1,5 +1,5 @@
 -- Pokemon Center PC: one window with Poke boxes, stash, inbox and depot tabs and a search over all of
--- them. Click the depot locker at a Pokemon Center (standard Tibia containers); this module opens
+-- them. Click any depot locker (standard Tibia containers); this module opens
 -- the PC window and talks to the server over ExtendedIds.Pc JSON — no chat commands.
 local window
 local state = {}
@@ -61,11 +61,6 @@ local function send(text)
     sendRequest(data)
 end
 
-local function isPokemonCenter()
-    local loc = modules.game_time and modules.game_time.getLocation and modules.game_time.getLocation() or ''
-    return loc:find('Pokemon Center', 1, true) ~= nil
-end
-
 local function closeLockerContainers()
     for _, container in pairs(g_game.getContainers()) do
         local item = container:getContainerItem()
@@ -81,9 +76,6 @@ local function onContainerOpen(container, previousContainer)
     end
     local item = container:getContainerItem()
     if not item or not LOCKER_IDS[item:getId()] then
-        return
-    end
-    if not isPokemonCenter() then
         return
     end
     scheduleEvent(function()

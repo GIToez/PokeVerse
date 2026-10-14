@@ -1,4 +1,4 @@
--- PC: the depot window, one window with four tabs, opened at a Pokemon Center locker
+-- PC: the depot window, one window with four tabs, opened at any locker
 -- (events/actions/pcLocker.lua). Four parts:
 --   Poke boxes: Pokemon only, 40 boxes of 30, filled in order. A Pokemon in a box is a database row
 --     with its ball's attributes, the same way the GTS and the Day Care keep them.
@@ -19,7 +19,6 @@ PC = {}
 PC.BOXES = 40
 PC.BOX_SIZE = 30
 PC.RANGE = 4 -- tiles from the locker
-PC.CENTER_RANGE = 10 -- a locker this close to Nurse Joy, on her floor, is in a Pokemon Center
 PC.STAFF_ACCESS = 5
 PC.LIST_LIMIT = 80
 PC.SEARCH_LIMIT = 40
@@ -463,7 +462,7 @@ PC.migrate = function(cid)
     log(LOG_TYPES.INFO, "PC:migrate", getCreatureName(cid), pokemon, stashed)
     if (pokemon + stashed > 0) then
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid,
-            "Your depot was sorted: %d Pokemon moved to your Poke boxes and %d items to your stash. Use a locker at a Pokemon Center to see them."),
+            "Your depot was sorted: %d Pokemon moved to your Poke boxes and %d items to your stash. Use any locker to see them."),
             pokemon, stashed))
     end
 end
@@ -511,18 +510,24 @@ sendCounts = function(cid)
         stash = count(string.format("SELECT COUNT(*) AS `total` FROM `pc_stash` WHERE `player_id` = %d", guid)) })
 end
 
-PC.inPokemonCenter = function(pos)
-    for _, creature in ipairs(getSpectators(pos, PC.CENTER_RANGE, PC.CENTER_RANGE) or {}) do
-        if (isNpc(creature) and getCreatureName(creature) == "Nurse Joy") then
-            return true
+-- the locker next to the player (lockers sit on a wall, so diagonals count), or nil
+PC.lockerNear = function(pos)
+    for dx = -1, 1 do
+        for dy = -1, 1 do
+            local spot = { x = pos.x + dx, y = pos.y + dy, z = pos.z }
+            for itemid in pairs(LOCKERS) do
+                if (isItem(getTileItemById(spot, itemid))) then
+                    return spot
+                end
+            end
         end
     end
-    return false
+    return nil
 end
 
--- from the locker; false lets the locker open as a container (lockers outside a Pokemon Center too)
+-- from any locker; false lets the locker open as a container
 PC.open = function(cid, pos, anywhere)
-    if (not PC.enabled(cid) or (not anywhere and not PC.inPokemonCenter(pos))) then
+    if (not PC.enabled(cid)) then
         return false
     end
     if (getCreatureStorage(cid, CLASSIC) == 1) then
@@ -1068,8 +1073,11 @@ PC.onClientMessage = function(cid, buffer)
         end
         if (data.staff and getPlayerAccess(cid) >= PC.STAFF_ACCESS) then
             PC.open(cid, getThingPos(cid), true)
-        elseif (PC.inPokemonCenter(getThingPos(cid))) then
-            PC.open(cid, getThingPos(cid))
+        else
+            local locker = PC.lockerNear(getThingPos(cid))
+            if (locker) then
+                PC.open(cid, locker)
+            end
         end
         return
     elseif (not PC.isOpen(cid)) then
