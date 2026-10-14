@@ -49,7 +49,8 @@ local function join(...)
 end
 
 GTS.CATEGORIES = {
-    { name = "Poke Balls", items = join({ 12157, 12161, 12165, 30136 }, range(19029, 19061)) },
+    { name = "Poke Balls", items = { 12157, 12161, 12165, 30136, 19029, 19033, 19037, 19041, 19045, 19049, 19053,
+        19057, 19061 } },
     { name = "Medicine", items = { 12244, 12247, 12245, 12246, 12248, 12249, 12250, 13653, 13819 } },
     { name = "Evolution Stones", items = range(18083, 18088) },
     { name = "Held Items", items = join(range(23513, 23531), range(30137, 30144)) },
@@ -566,6 +567,7 @@ local function acceptPokemon(cid, offer)
     notify(holder, string.format("You sold your %s for $%d.", name, profitOf(price)))
     doPlayerSave(cid)
     sendBalance(cid)
+    GTS.sendSpecies(cid)
     GTS.sendListings(cid, name)
     return result(cid, true, string.format("%s is yours!", name))
 end
@@ -715,9 +717,9 @@ end
 
 GTS.sendMyPokemon = function(cid)
     local list = {}
-    for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+    for index, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
         local name = getBallPokemonName(ball.uid)
-        local row = { uid = ball.uid, name = name, number = getPokemonNumberByName(name),
+        local row = { index = index, name = name, number = getPokemonNumberByName(name),
             level = getBallPokemonLevel(ball.uid), sex = getBallPokemonSex(ball.uid), problem = ballProblem(cid, ball) }
         if (row.problem) then
             row.problem = __L(cid, row.problem)
@@ -727,15 +729,10 @@ GTS.sendMyPokemon = function(cid)
     send(cid, { type = "myPokemon", list = list }, list)
 end
 
-GTS.listPokemon = function(cid, uid, price)
-    local ball
-    for _, tmpBall in ipairs(getPlayerAllBallsWithPokemon(cid)) do
-        if (tmpBall.uid == uid) then
-            ball = tmpBall
-            break
-        end
-    end
-    if (not ball) then
+-- uids only last one script run: the ball is the index-th of sendMyPokemon's list, if it still holds that Pokemon
+GTS.listPokemon = function(cid, index, price, name)
+    local ball = getPlayerAllBallsWithPokemon(cid)[index]
+    if (not ball or getBallPokemonName(ball.uid) ~= name) then
         return result(cid, false, "This Pokemon is not with you anymore.")
     end
 
@@ -747,7 +744,7 @@ GTS.listPokemon = function(cid, uid, price)
     end
 
     PokemonStats.ensureBall(ball.uid)
-    local name, level = getBallPokemonName(ball.uid), getBallPokemonLevel(ball.uid)
+    local level = getBallPokemonLevel(ball.uid)
     local attributes = getItemAttributesBlob(ball.uid)
     if (not attributes or not insertOffer(cid, KIND_POKEMON, 1, ball.itemid, 1, price, name, level, attributes)) then
         return result(cid, false, "Not possible, please try again later.")

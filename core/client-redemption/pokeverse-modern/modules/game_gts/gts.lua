@@ -15,36 +15,36 @@ local FILTERS = { { id = 'all', name = 'All Pokemon' }, { id = 'shiny', name = '
 
 local ITEM_COLUMNS = {
     { id = 'holder', title = 'Trainer', width = 200 },
-    { id = 'amount', title = 'Amount', width = 70, align = AlignRight },
-    { id = 'price', title = 'Price each', width = 110, align = AlignRight },
-    { id = 'total', title = 'Total', width = 130, align = AlignRight },
-    { id = 'expires', title = 'Ends', width = 130, align = AlignRight },
+    { id = 'amount', title = 'Amount', width = 70, align = AlignRightCenter },
+    { id = 'price', title = 'Price each', width = 110, align = AlignRightCenter },
+    { id = 'total', title = 'Total', width = 130, align = AlignRightCenter },
+    { id = 'expires', title = 'Ends', width = 130, align = AlignRightCenter },
 }
 local POKEMON_COLUMNS = {
     { id = 'holder', title = 'Trainer', width = 150 },
-    { id = 'level', title = 'Level', width = 50, align = AlignRight },
+    { id = 'level', title = 'Level', width = 50, align = AlignRightCenter },
     { id = 'sex', title = 'Gender', width = 70, align = AlignCenter },
     { id = 'nature', title = 'Nature', width = 80 },
     { id = 'ivs', title = 'IVs', width = 110 },
-    { id = 'boost', title = 'Boost', width = 50, align = AlignRight },
-    { id = 'price', title = 'Price', width = 110, align = AlignRight },
-    { id = 'expires', title = 'Ends', width = 100, align = AlignRight },
+    { id = 'boost', title = 'Boost', width = 50, align = AlignRightCenter },
+    { id = 'price', title = 'Price', width = 110, align = AlignRightCenter },
+    { id = 'expires', title = 'Ends', width = 100, align = AlignRightCenter },
 }
 local MINE_COLUMNS = {
     { id = 'kind', title = 'Offer', width = 70 },
     { id = 'name', title = 'Name', width = 200 },
-    { id = 'amount', title = 'Amount', width = 60, align = AlignRight },
-    { id = 'price', title = 'Price each', width = 110, align = AlignRight },
-    { id = 'total', title = 'Total', width = 120, align = AlignRight },
-    { id = 'expires', title = 'Ends', width = 120, align = AlignRight },
+    { id = 'amount', title = 'Amount', width = 60, align = AlignRightCenter },
+    { id = 'price', title = 'Price each', width = 110, align = AlignRightCenter },
+    { id = 'total', title = 'Total', width = 120, align = AlignRightCenter },
+    { id = 'expires', title = 'Ends', width = 120, align = AlignRightCenter },
 }
 local HISTORY_COLUMNS = {
     { id = 'date', title = 'Date', width = 110 },
     { id = 'action', title = 'What', width = 90 },
     { id = 'name', title = 'Name', width = 200 },
-    { id = 'amount', title = 'Amount', width = 60, align = AlignRight },
-    { id = 'price', title = 'Price each', width = 110, align = AlignRight },
-    { id = 'total', title = 'Total', width = 110, align = AlignRight },
+    { id = 'amount', title = 'Amount', width = 60, align = AlignRightCenter },
+    { id = 'price', title = 'Price each', width = 110, align = AlignRightCenter },
+    { id = 'total', title = 'Total', width = 110, align = AlignRightCenter },
 }
 local STATE_NAMES = { [1] = { [1] = 'Sold', [0] = 'Bought' }, [2] = 'Cancelled', [3] = 'Expired' }
 
@@ -94,7 +94,7 @@ local function buildHeader(header, columns)
         cell:setWidth(column.width)
         cell:setText(tr(column.title))
         cell:setColor(MUTED_COLOR)
-        cell:setTextAlign(column.align or AlignLeft)
+        cell:setTextAlign(column.align or AlignLeftCenter)
     end
 end
 
@@ -104,7 +104,7 @@ local function addRow(list, columns, values, data)
         local cell = g_ui.createWidget('GtsCell', row)
         cell:setId(column.id)
         cell:setWidth(column.width)
-        cell:setTextAlign(column.align or AlignLeft)
+        cell:setTextAlign(column.align or AlignLeftCenter)
         cell:setText(values[column.id] ~= nil and tostring(values[column.id]) or '')
     end
     row.data = data
@@ -269,7 +269,7 @@ local function drawCategories()
     local source = state.mode == 'pokemon' and FILTERS or state.categories or {}
     local selected
     for _, category in ipairs(source) do
-        local row = addRow(list, { { id = 'name', width = 166 } }, { name = tr(category.name) }, category)
+        local row = addRow(list, { { id = 'name', width = 194 } }, { name = tr(category.name) }, category)
         if (state.mode == 'pokemon' and category.id == state.filter) or (state.mode ~= 'pokemon' and category.id == state.category) then
             selected = row
         end
@@ -282,7 +282,7 @@ end
 -- Pokemon
 
 local function pokemonLabel(entry)
-    return string.format('%s  Lv. %d', entry.name or '?', entry.level or 0)
+    return string.format('%s Lv. %d', entry.name or '?', entry.level or 0)
 end
 
 local function ivText(entry)
@@ -570,6 +570,8 @@ function handlers.open(data)
     updateBalance()
     setStatus(tr('Offers last %d days. Sellers pay a %d%% tax when something sells.', data.days or 7,
         math.floor(state.tax * 100 + 0.5)), true)
+    local root = rootWidget
+    window:setSize({ width = math.min(1000, root:getWidth() - 20), height = math.min(620, root:getHeight() - 20) })
     window:show()
     window:raise()
     window:focus()
@@ -801,7 +803,7 @@ local function setupPokemonPages()
             return
         end
         confirm(tr('Global Trade Station'), tr('Put your %s up for sale for %s?', pokemonLabel(ball), formatMoney(price)),
-            function() send(string.format('list %d %d', ball.uid, price)) end)
+            function() send(string.format('list %d %d %s', ball.index, price, ball.name)) end)
     end
 end
 

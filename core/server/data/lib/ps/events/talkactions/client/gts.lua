@@ -1,7 +1,7 @@
 -- Sent by the client's GTS window (GTS, lib/ps/systems/066-gts.lua): "/gts <action> ...".
 --   close, category <id>, offers <item>, sell|buy <item> <amount> <price>, accept <offer> [amount],
 --   cancel <offer>, mine, species [search], listings <name>, pokemon <offer>, mypokemon,
---   list <ball uid> <price>
+--   list <index> <price> <name> (the index-th Pokemon of mypokemon)
 -- Every action but close needs the window opened at a Pokemon Center computer; staff can
 -- "/gts open" anywhere.
 function onSay(cid, words, param)
@@ -44,7 +44,7 @@ function onSay(cid, words, param)
     elseif (action == "mypokemon") then
         GTS.sendMyPokemon(cid)
     elseif (action == "list" and b) then
-        GTS.listPokemon(cid, a, b)
+        GTS.listPokemon(cid, a, b, rest:match("^%d+%s+%d+%s+(.+)$") or "")
     end
     return true
 end
