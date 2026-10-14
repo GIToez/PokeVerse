@@ -80,7 +80,7 @@ playersStorages = {
     extraEggRateTime = base + 77,
     extraEggRateValue = base + 78,
     switchProtectionUntil = base + 79,
-    dailyStreak = base + 80, -- days in a row with all daily tasks done
-    dailyStreakDay = base + 81,
+    loginStreak = base + 80, -- day of the 7-day login calendar claimed last (1-7)
+    loginStreakDay = base + 81, -- the day number it was claimed on (DailyLogin)
     -- tournamentWeekWinnerStorage = base + 65
 }

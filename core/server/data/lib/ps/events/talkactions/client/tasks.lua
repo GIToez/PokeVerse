@@ -1,10 +1,11 @@
 -- Sent by the client's Tasks window: "/tasks <board> [action ...]".
 --   daily | weekly: "" (state), "start <difficulty>", "claim <slot>", "bonus", "reroll <slot>"
 --   hunting: "" (state), "difficulty <id>", "take <offer> <size>", "claim <slot>", "cancel <slot>", "refresh", "buy <item>"
+--   login: "" (state), "claim" (today's login calendar reward)
 -- Gods also have "reset" and "progress <slot> <count>" on every board, "points <count>" on hunting,
--- and for tests "kind <slot> <kind>" on daily and weekly, "streak <days>" on daily (as if the
--- streak reached that yesterday) and "hook <count>" (hooks Pokemon the way fishing does, through
--- the statistic).
+-- and for tests "kind <slot> <kind>" on daily and weekly, "streak <days>" on login (as if that
+-- many days were claimed by yesterday) and "hook <count>" (hooks Pokemon the way fishing does,
+-- through the statistic).
 local STAFF_ACCESS = 5
 
 local function periodic(board, cid, staff, action, a, b)
@@ -14,8 +15,6 @@ local function periodic(board, cid, staff, action, a, b)
         board.setProgress(cid, a, b)
     elseif (staff and action == "kind" and a and b) then
         board.setKind(cid, a, b)
-    elseif (staff and action == "streak" and a and board.setStreak) then
-        board.setStreak(cid, a)
     elseif (action == "start" and a) then
         board.start(cid, a)
     elseif (action == "claim" and a) then
@@ -70,6 +69,16 @@ function onSay(cid, words, param)
         periodic(WeeklyTasks, cid, staff, action, a, b)
     elseif (board == "hunting") then
         hunting(cid, staff, action, a, b)
+    elseif (board == "login") then
+        if (staff and action == "reset") then
+            DailyLogin.reset(cid)
+        elseif (staff and action == "streak" and a) then
+            DailyLogin.setStreak(cid, a)
+        elseif (action == "claim") then
+            DailyLogin.claim(cid)
+        else
+            DailyLogin.send(cid)
+        end
     else
         DailyTasks.send(cid)
         WeeklyTasks.send(cid)

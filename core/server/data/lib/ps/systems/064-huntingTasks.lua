@@ -396,7 +396,7 @@ end
 
 -- a broken board must not stop the trainer from logging in
 function Tasks.onLogin(cid)
-    for name, board in pairs({ daily = DailyTasks, weekly = WeeklyTasks, hunting = HuntingTasks }) do
+    for name, board in pairs({ daily = DailyTasks, weekly = WeeklyTasks, hunting = HuntingTasks, login = DailyLogin }) do
         local ok, err = pcall(board.onLogin, cid)
         if (not ok) then
             log(LOG_TYPES.ERROR, "Tasks - " .. name .. " board failed at login: " .. tostring(err), getCreatureName(cid))

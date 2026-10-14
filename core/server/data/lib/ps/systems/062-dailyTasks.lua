@@ -460,37 +460,8 @@ local function newBoard(config)
     return board
 end
 
--- All daily tasks done this many days in a row gives the streak reward, then the count starts over.
-local STREAK_DAYS = 7
-local STREAK_REWARD = { { 14463, 1 } } -- rare candy
-
-local function dayNumber()
-    local now = os.date("*t")
-    return math.floor(os.time({ year = now.year, month = now.month, day = now.day, hour = 12 }) / 86400)
-end
-
-local function onDailyBonus(cid)
-    local today = dayNumber()
-    local streak = 1
-    if (getCreatureStorage(cid, playersStorages.dailyStreakDay) == today - 1) then
-        streak = math.max(getCreatureStorage(cid, playersStorages.dailyStreak), 0) + 1
-    end
-    doCreatureSetStorage(cid, playersStorages.dailyStreak, streak)
-    doCreatureSetStorage(cid, playersStorages.dailyStreakDay, today)
-    if (streak % STREAK_DAYS == 0) then
-        giveReward(cid, 0, STREAK_REWARD)
-        doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(
-            __L(cid, "%d days in a row! You received a rare candy."), STREAK_DAYS))
-    else
-        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(
-            __L(cid, "Daily streak: %d of %d days. Finish all daily tasks %d days in a row for a rare candy."),
-            streak % STREAK_DAYS, STREAK_DAYS, STREAK_DAYS))
-    end
-end
-
 DailyTasks = newBoard({
     taskCount = 3,
-    onBonus = onDailyBonus,
     period = function() return os.date("%Y-%m-%d") end,
     secondsLeft = secondsUntilMidnight,
     countScale = 1, moneyScale = 1, itemScale = 1,
@@ -516,12 +487,6 @@ DailyTasks = newBoard({
         locked = "Today's difficulty is set. Pick again after midnight.",
     },
 })
-
--- Staff test tool: as if the bonus was claimed yesterday after a streak of this many days.
-function DailyTasks.setStreak(cid, days)
-    doCreatureSetStorage(cid, playersStorages.dailyStreak, days)
-    doCreatureSetStorage(cid, playersStorages.dailyStreakDay, dayNumber() - 1)
-end
 
 WeeklyTasks = newBoard({
     taskCount = 5,
@@ -552,6 +517,7 @@ local function onMidnight()
     for _, cid in ipairs(getPlayersOnline()) do
         DailyTasks.send(cid)
         WeeklyTasks.send(cid)
+        DailyLogin.send(cid)
     end
     addEvent(onMidnight, secondsUntilMidnight() * 1000 + 1000)
 end
