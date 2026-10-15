@@ -150,6 +150,11 @@ PC_SIGN, MART_SIGN = 11887, 11888
 FURNACES = [8684, 8686, 8688, 8690]
 MILL_WHEEL = (1379, 1380)
 CAMPFIRE = 1421
+TRAPDOOR = 369
+# Mahogany's souvenir shop, and the floor tiles by its east wall that become the stairs down to the
+# Rocket Hideout (build_johto.UNDERGROUND lines the hideout's stairs up with them)
+SOUVENIR_SHOP = (2569, 378)
+SHOP_STAIRS = [(SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 7), (SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 8)]
 
 
 class Town:
@@ -171,6 +176,8 @@ class Town:
         self.errors = []
         self.wheels = []  # windmills (top-left corner) that get MILL_WHEEL on the front of the roof
         self.areas = []  # (x0, y0, x1, y1) kept clear of wild trees, like the ground around the streets
+        self.raw = {}  # (x, y) -> ground item put in as it is (a trapdoor), not drawn from a brush
+        self.stairs_down = []  # (x, y) floor tiles inside a building that become stairs down
 
     # -- buildings
     def free(self, name, x, y, margin=1):
@@ -408,7 +415,7 @@ def violet(t):
 
 def azalea(t):
     """Cerulean's mirror: Kurt's house and its Apricorn grove in the north-west, the charcoal kiln
-    yard, a river with bridges, the Slowpoke Well with Slowpoke statues and offerings, Slowpoke
+    yard, a river with bridges, the Slowpoke Well (a trapdoor down) with Slowpoke statues and offerings, Slowpoke
     crossing signs and the Gym in the south-west."""
     rng = _rng(53)
     t.streets += [([(2352, 1040), (2470, 1040)], 2.5), ([(2400, 1012), (2400, 1078)], 2),
@@ -438,6 +445,9 @@ def azalea(t):
     t.block(2404, 1074, 2407, 1077)
     for x, y in [(2404, 1074), (2407, 1074), (2404, 1077), (2407, 1077)]:
         t.item(x, y, FENCE_V)
+    # the way down into the well, on the ring's south side
+    t.item(2405, 1077)
+    t.raw[(2405, 1077)] = TRAPDOOR
     t.item(2403, 1073, CAT_STATUE)
     t.item(2409, 1073, CAT_STATUE)
     for x in (2403, 2409):
@@ -459,7 +469,7 @@ def azalea(t):
 
 def goldenrod(t):
     """Saffron's mirror, with Celadon's department store: the big city of the region, a paved grid
-    of two avenues crossing at a fountain square and a ring of side streets. The Radio Tower to the
+    of two avenues crossing at a square with a round fountain and a ring of side streets. The Radio Tower to the
     north-east, the department store and Game Corner across from Whitney's Gym and the Pokémon
     Center, the Global Terminal by the south gate, a flower shop and its gardens, and a harbour on
     the bay in the south-west."""
@@ -468,11 +478,17 @@ def goldenrod(t):
                   ([(2272, 690), (2368, 690)], 2), ([(2250, 770), (2368, 770)], 2),
                   ([(2272, 690), (2272, 770)], 2), ([(2368, 690), (2368, 770)], 2)]
     t.plazas.append((2320, 730, 9))
-    # fountain on the square: water in a stone ring with lamps on the corners
-    t.ground(2318, 728, 2322, 732, 'small tiled gray stone')
-    t.ground(2319, 729, 2321, 731, 'walkable sea')
-    t.block(2318, 728, 2322, 732)
-    for x, y in [(2318, 728), (2322, 728), (2318, 732), (2322, 732)]:
+    # the round fountain on the square: a basin in a stone ring, lamps round it, and flower beds
+    # between the avenues
+    for x in range(2315, 2326):
+        for y in range(725, 736):
+            d = np.hypot(x - 2320, y - 730)
+            if d < 2.6:
+                t.ground(x, y, x, y, 'walkable sea')
+            elif d < 4.2:
+                t.ground(x, y, x, y, 'small tiled gray stone')
+    t.block(2316, 726, 2324, 734)
+    for x, y in [(2317, 727), (2323, 727), (2317, 733), (2323, 733)]:
         t.item(x, y, STREET_LAMP)
     # north of the first street: the Radio Tower and homes
     t.put('radio-tower', 2340, 668)
@@ -532,6 +548,11 @@ def goldenrod(t):
                 t.item(x, y, STREET_LAMP)
     for x, y in [(2312, 727), (2328, 727), (2312, 733), (2328, 733)]:
         t.item(x, y, BENCH_S)
+    for cx, cy in [(2315, 725), (2325, 725), (2315, 735), (2325, 735)]:
+        for dx, dy in [(0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)]:
+            x, y = cx + dx, cy + dy
+            if abs(x - 2320) > 3 and abs(y - 730) > 3 and t.free_tile(x, y):
+                t.item(x, y, FLOWERS[(x + y) % len(FLOWERS)])
 
 
 def national_park(t):
@@ -618,7 +639,8 @@ def ecruteak(t):
     """Fuchsia's mirror: the old town of wooden houses on dirt streets, two streets crossed by the
     avenue from Route 37 that runs on north to the Bell Tower's gate. The Burned Tower by the north
     street, the Pokémon Center, Mart and Gym on the main street, which leads west to Route 38 and
-    east to Route 42. Lanterns and cherry trees along the avenue."""
+    east to Route 42, and the Kimono Dance Theater on a lane east of the avenue. Lanterns and cherry
+    trees along the avenue."""
     t.streets += [([(2264, 410), (2396, 410)], 2), ([(2280, 375), (2380, 375)], 2),
                   ([(2330, 342), (2330, 456)], 2.5)]
     t.plazas.append((2330, 410, 7))
@@ -654,6 +676,11 @@ def ecruteak(t):
             t.item(x, y, CHERRY_TREE)
     for x, y in [(2324, 403), (2335, 403), (2324, 417), (2335, 417)]:
         t.item(x, y, CHERRY_TREE)
+    # the Kimono Dance Theater (Pewter's theatre) on a lane east off the avenue, lanterns along it
+    t.streets.append(([(2330, 452), (2372, 452)], 1.5))
+    t.put('theatre', 2340, 436)
+    for x in range(2342, 2372, 6):
+        t.item(x, 455, LANTERN)
 
 
 def bell_tower(t):
@@ -678,8 +705,8 @@ def bell_tower(t):
 def olivine(t):
     """Vermilion's mirror: the port city on the bay, the avenue from Route 39 crossing two streets.
     The Pokémon Center, Mart and Gym on the first street, the harbour street below it with the
-    S.S. Aqua's dock, a pier with boats to the west and the Lighthouse on its point to the
-    south-west, at the start of Route 40."""
+    S.S. Aqua's dock, a sandy market square by it, a pier with boats to the west and the Lighthouse
+    on its point to the south-west, at the start of Route 40."""
     rng = _rng(56)
     t.streets += [([(2140, 466), (2140, 526)], 2), ([(2100, 500), (2186, 500)], 2),
                   ([(2100, 524), (2182, 524)], 2), ([(2100, 524), (2100, 561), (2084, 561)], 1.5)]
@@ -713,6 +740,15 @@ def olivine(t):
         for y in (496, 520):
             if t.free_tile(x, y) and not 2134 <= x <= 2146:
                 t.item(x, y, STREET_LAMP)
+    # the harbour market: a sandy square below the harbour street, stalls under parasols and crates
+    for x in range(2106, 2125):
+        for y in range(527, 537):
+            if np.hypot((x - 2115) / 8.5, (y - 531.5) / 5) < 1:
+                t.ground(x, y, x, y, 'sand')
+    for x, y in [(2110, 529), (2115, 528), (2120, 529), (2109, 534), (2121, 534)]:
+        t.item(x, y, PARASOLS[(x + y) % len(PARASOLS)])
+    for x, y in [(2111, 530), (2116, 529), (2119, 530)]:
+        t.item(x, y, int(rng.choice(CRATES)))
 
 
 def moomoo_farm(t):
@@ -758,15 +794,17 @@ def cianwood(t):
 def mahogany(t):
     """Lavender's mirror: the small town between Mt. Mortar and the Ice Path. The main street runs
     from Route 42 to Route 44 and the avenue north to Route 43 and the Lake of Rage. The Pokémon
-    Center, Mart and souvenir shop on the main street, the Gym behind it."""
+    Center, Mart and souvenir shop (stairs down to the Rocket Hideout) on the main street, the Gym
+    behind it."""
     t.streets += [([(2520, 392), (2586, 392)], 2), ([(2550, 345), (2550, 424)], 2)]
     t.plazas.append((2550, 392, 6))
     t.put('pokecenter', 2527, 381)
     t.item(2525, 389, PC_SIGN)
     t.put('mart', 2537, 380)
     t.item(2546, 389, MART_SIGN)
-    t.put('souvenir-shop', 2555, 378)
-    t.put('lavender-308', 2569, 378)
+    t.put('lavender-308', 2555, 378)
+    t.put('souvenir-shop', *SOUVENIR_SHOP)
+    t.stairs_down += SHOP_STAIRS
     t.put('lavender-314', 2532, 362)
     t.put('gym', 2558, 360)
     t.put('lavender-310', 2576, 358)

@@ -323,10 +323,50 @@ for _k, (_x, _y) in enumerate([(2396, 633), (2418, 651), (2440, 627), (2448, 655
     CAVES.append({'name': 'Ruins of Alph chamber %d' % (_k + 1), 'spawns': 'Ruins of Alph', 'rate': 1 / 20.0,
                   'box': (_x - 11, _y - 19, _x + 11, _y + 3), 'mouths': [(_x, _y, 'south')],
                   'path': [(_x, _y - 1), (_x, _y - 9)], 'rooms': [(_x, _y - 10, 6)]})
+# The floors below. Each down on a floor is a mouth on the next (same place, one floor deeper).
+next(c for c in CAVES if c['name'] == 'Union Cave')['downs'] = [(2480, 908, 'south')]
+CAVES += [
+    # Union Cave B1F, round the west under the ridge, and B2F's lake, kept free of spawns (Lapras's)
+    {'name': 'Union Cave B1F', 'z': 9, 'spawns': 'Union Cave B1F', 'box': (2395, 845, 2515, 980),
+     'mouths': [(2480, 908, 'south')], 'downs': [(2466, 950, 'south')],
+     'path': [(2480, 903), (2486, 888), (2478, 872), (2456, 864), (2432, 870), (2414, 886), (2410, 906),
+              (2418, 928), (2440, 950), (2462, 958)],
+     'rooms': [(2484, 886, 7), (2456, 866, 8), (2414, 888, 9), (2420, 930, 8), (2462, 956, 7)],
+     'pond': (2456, 866, 4)},
+    {'name': 'Union Cave B2F', 'z': 10, 'spawns': 'Union Cave B2F', 'box': (2395, 845, 2515, 980),
+     'mouths': [(2466, 950, 'south')], 'free_water': True,
+     'path': [(2466, 945), (2462, 930), (2456, 918)],
+     'rooms': [(2445, 898, 20), (2464, 934, 6)], 'pond': (2440, 892, 13)},
+    # the Slowpoke Well under Azalea's well: a ladder below the trapdoor, a tunnel to the Slowpoke pool
+    {'name': 'Slowpoke Well B1F', 'spawns': 'Slowpoke Well B1F', 'rate': 1 / 40.0, 'box': (2370, 1045, 2455, 1112),
+     'mouths': [(2405, 1077, 'ladder')],
+     'path': [(2405, 1077), (2405, 1088), (2418, 1095), (2430, 1088)],
+     'rooms': [(2405, 1088, 6), (2428, 1088, 9)], 'pond': (2431, 1086, 5)},
+]
 # Kanto's cave stairs: 22709 goes down; below ground 22702 (southEx) one tile north of it leads back up
 # for a mouth facing south, and 22673 (north) right under it for one facing north.
 STAIRS_DOWN = 22709
-STAIRS_UP = {'south': (22702, -1), 'north': (22673, 0)}
+STAIRS_UP = {'south': (22702, -1), 'north': (22673, 0), 'ladder': (1386, 0)}
+# a trapdoor in town drops players onto the ladder under it, which takes them back up a tile south
+TRAPDOOR = 369
+# indoor stairs down (a ground), as Kanto's buildings have them over their basements
+INDOOR_STAIRS = 432
+# Below ground in towns, copied from Kanto: `src` and `dst` line the copy up (a Kanto tile and where it
+# goes, under the stairs down in the building above) and each floor has the box it comes from, a seed
+# and a neighbour. With a seed only the tiles joined to it come along (the piece stands alone in the
+# void, and whatever else is in the box stays behind); a neighbour that touches the piece's rock is
+# left out first, all of it but the rock (the tiles joined to that point that aren't mountain).
+UNDERGROUND = [
+    # the Global Terminal's basement: Celadon's guild hall's, under the same stairs
+    {'name': 'Global Terminal basement', 'src': (3722, 461), 'dst': (2326, 780),
+     'floors': {8: ((3720, 453, 3737, 471), None, None)}},
+    # Mahogany's Rocket Hideout, B1F to B4F: Celadon's under the Game Corner, its stairs up under the
+    # souvenir shop's stairs down; Celadon's sewer touches it on the first two
+    {'name': 'Rocket Hideout', 'src': (3776, 488), 'dst': T.SHOP_STAIRS[0],
+     'floors': {8: ((3700, 462, 3810, 552), (3776, 488), (3700, 466)),
+                9: ((3700, 455, 3810, 552), (3769, 535), (3700, 466)),
+                10: ((3695, 460, 3805, 556), (3752, 475), None), 11: ((3715, 455, 3810, 556), (3752, 518), None)}},
+]
 CAVE_DEBRIS = list(range(6374, 6387))
 # The server's field moves (lib/ps/events/actions/abilities.lua): Rock Smash breaks this rock and Cut
 # this jungle grass, both growing back after a while.
@@ -371,6 +411,8 @@ SPAWNS = {
     'Ice Path': ('Ice Path', '1F and B1F'), 'Dark Cave': ('Dark Cave', 'Route 45 side'),
     'Ilex Forest': ('Ilex Forest', 'main'), 'National Park': ('National Park', 'main'),
     'Mt. Silver Cave': ('Mt. Silver Cave', '1F'), 'Union Cave': ('Union Cave', '1F, Ruins exits top rooms'),
+    'Union Cave B1F': ('Union Cave', 'B1F'), 'Union Cave B2F': ('Union Cave', 'B2F, Ruins exits lower rooms'),
+    'Slowpoke Well B1F': ('Slowpoke Well', 'B1F'),
     # the chambers hold Unown only (Bulbapedia lists them per form, so there is no table to fetch)
     'Ruins of Alph': {'land': {'Unown': 1.0}},
 }
@@ -569,7 +611,7 @@ class Prefab:
     keep the houses whose entry is in the box (a neighbour's tile on a shared wall is not theirs).
     Landmarks (rent False) are not houses at all."""
 
-    def __init__(self, name, spec, keep, brushes, nature, houses_xml):
+    def __init__(self, name, spec, keep, brushes, nature, houses_xml, down_ids=()):
         self.name = name
         x0, y0, x1, y1 = spec['box']
         self.w, self.h = x1 - x0 + 1, y1 - y0 + 1
@@ -603,8 +645,67 @@ class Prefab:
             if tile.house_id:
                 self.house_ids.add(tile.house_id)
             self.tiles[(x - x0, y - y0, z - self.base_z)] = tile
+        # an upper floor's box takes in a strip of the neighbour's roofs, and the stairs down in it
+        # would lead nowhere
+        for (dx, dy, dz), tile in list(self.tiles.items()):
+            ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
+            if dz < 0 and (dx, dy, dz + 1) not in self.tiles and any(i in down_ids for i in ids):
+                del self.tiles[(dx, dy, dz)]
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
+
+
+def floor_down_ids():
+    """Items that take players down a floor when they step on them (items.xml floorchange down)."""
+    xml = open(os.path.join(ROOT, 'core/server/data/items/items.xml'), encoding='latin-1').read()
+    out = set()
+    for m in re.finditer(r'<item\s+(?:id="(\d+)"|fromid="(\d+)"\s+toid="(\d+)")[^>]*?(?:/>|>(.*?)</item>)', xml, re.S):
+        if m.group(4) and re.search(r'key="floorchange" value="down"', m.group(4)):
+            a = int(m.group(1) or m.group(2))
+            out |= set(range(a, int(m.group(1) or m.group(3)) + 1))
+    return out
+
+
+def joined(start, cells):
+    """The cells joined to start (diagonals count)."""
+    taken, queue = {start}, collections.deque([start])
+    while queue:
+        x, y = queue.popleft()
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                n = (x + dx, y + dy)
+                if n in cells and n not in taken:
+                    taken.add(n)
+                    queue.append(n)
+    return taken
+
+
+def underground_tiles(data, brushes):
+    """The UNDERGROUND pieces' tiles, keyed by where they go, without house ids."""
+    boxes = [box for piece in UNDERGROUND for box, _, _ in piece['floors'].values()]
+    floors = {z for piece in UNDERGROUND for z in piece['floors']}
+    raw = pvmap.read_region_raw(None, min(b[0] for b in boxes), min(b[1] for b in boxes),
+                                max(b[2] for b in boxes), max(b[3] for b in boxes), floors, data)
+    rock = {i for i, _ in brushes['mountain'].items}
+    out = {}
+    for piece in UNDERGROUND:
+        before = len(out)
+        ox, oy = piece['dst'][0] - piece['src'][0], piece['dst'][1] - piece['src'][1]
+        for z, ((x0, y0, x1, y1), seed, neighbour) in piece['floors'].items():
+            inside = {(x, y) for (x, y, zz) in raw if zz == z and x0 <= x <= x1 and y0 <= y <= y1}
+            if neighbour is not None:
+                def ground(p):
+                    t = raw[(*p, z)]
+                    return t.ground if t.ground is not None else (pvmap.child_item_ids(t.children) or [None])[0]
+                inside -= joined(neighbour, {p for p in inside if ground(p) not in rock})
+            if seed is not None:
+                inside = joined(seed, inside)
+            for x, y in inside:
+                t = raw[(x, y, z)]
+                assert (x + ox, y + oy, z) not in out, '%s overlaps another piece' % piece['name']
+                out[(x + ox, y + oy, z)] = pvmap.RawTile(0, t.flags, t.ground, t.children)
+        print('%s: %d tiles on floors %s' % (piece['name'], len(out) - before, sorted(piece['floors'])))
+    return out
 
 
 def house_entries():
@@ -656,9 +757,12 @@ def landing(x, y, facing):
     return {(x + dx, y + dy * k) for dx in (-1, 0, 1) for k in (1, 2, 3)}
 
 
-def build_cave(cave, brushes, present, rng, z=8):
+def build_cave(cave, brushes, present, rng):
     """One cave floor, made like Kanto's caves: mountain top ground carved out of solid mountain,
-    patches of rocky ground, debris and stones on the floor and candles on the walls."""
+    patches of rocky ground, debris and stones on the floor and candles on the walls. Its mouths
+    are the ways up (stairs, or a ladder under a trapdoor in town), its `downs` the stairs down to
+    the floor below, which has a mouth at the same place."""
+    z = cave.get('z', 8)
     f = Field(41, cave['box'])
     X, Y = f.X, f.Y
     n1, n2 = f.noise(8), f.noise(16)
@@ -676,7 +780,10 @@ def build_cave(cave, brushes, present, rng, z=8):
         item, off = STAIRS_UP[facing]
         up[(ex, ey + off)] = item
         near = abs(X - ex) <= 4
-        if facing == 'south':
+        if facing == 'ladder':
+            floor |= (abs(X - ex) <= 2) & (abs(Y - ey) <= 2)
+            arrive = ey
+        elif facing == 'south':
             floor |= (abs(X - ex) <= 2) & (Y >= ey - 5) & (Y <= ey + 1)
             floor &= ~(near & (Y > ey + 1) & (Y <= ey + 8))
             arrive = ey
@@ -686,6 +793,15 @@ def build_cave(cave, brushes, present, rng, z=8):
             arrive = ey + 1
         near_stairs |= (abs(X - ex) <= 3) & (abs(Y - ey) <= 4)
         no_optional |= {(ex + dx, arrive + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
+    # stairs down set into the rock like a surface mouth: rock on the far side, the landing in front
+    downs = set()
+    for ex, ey, facing in cave.get('downs', []):
+        d = 1 if facing == 'south' else -1
+        floor |= (abs(X - ex) <= 2) & ((Y - ey) * d >= 0) & ((Y - ey) * d <= 5)
+        floor &= ~((abs(X - ex) <= 1) & ((ey - Y) * d >= 1) & ((ey - Y) * d <= 3))
+        downs.add((ex, ey))
+        near_stairs |= (abs(X - ex) <= 3) & (abs(Y - ey) <= 4)
+        no_optional |= landing(ex, ey, facing) | {(ex, ey)}
     water = np.zeros((f.h, f.w), bool)
     if cave.get('pond'):
         water = f.disc(*cave['pond'], n1, 0.3) & erode(floor, 3) & ~near_stairs & ~(path_d < 2.6)
@@ -741,6 +857,9 @@ def build_cave(cave, brushes, present, rng, z=8):
         border = brushes.borders_for(center, nb, optional=optional)
         children = b''.join(pvmap.item_node(i) for i in [g] + border + deco[(x, y)])
         tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
+    for x, y in downs:
+        tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(STAIRS_DOWN))
+        deco[(x, y)] = [STAIRS_DOWN]
 
     # spawns only go where players can get to from the lane: off the water and its border, the
     # blocking wall borders and the decoration
@@ -762,7 +881,7 @@ def build_cave(cave, brushes, present, rng, z=8):
         spawns.append((pick(rng, spawn_table(table)), ix + f.x0, iy + f.y0, z))
     # the water table along the pond, one tile back from the water's (blocking) border, like Kanto's
     water_table = spawn_table(table, 'water')
-    if water.any() and water_table:
+    if water.any() and water_table and not cave.get('free_water'):
         edge = dilate(water, 5) & ~dilate(water, 3) & erode(floor, 3) & reached
         cells = np.argwhere(edge)
         for iy, ix in cells[rng.permutation(len(cells))[:min(6, max(2, len(cells) // 8))]]:
@@ -789,7 +908,8 @@ def build(base, out_path):
     nature.update((SNOW_FIR, SNOW_DEAD, SNOW_HEAP))
     nature.update(range(6476, 6489))
     houses_xml = house_entries()
-    prefabs = {name: Prefab(name, spec, keep, brushes, nature, houses_xml) for name, spec in PREFABS.items()}
+    down_ids = floor_down_ids()
+    prefabs = {name: Prefab(name, spec, keep, brushes, nature, houses_xml, down_ids) for name, spec in PREFABS.items()}
     sizes = {name: (p.w, p.h) for name, p in prefabs.items()}
     layouts = {}
     laid_out = TOWNS_BUILT + SITES
@@ -1019,6 +1139,7 @@ def build(base, out_path):
     town_area, town_water, islets, boxes = mask(), mask(), mask(), mask()
     town_ground = {}  # (x, y) -> brush name
     decor = {}
+    raw_ground = {}
     planks = set()
     town_pave = {}
     site_lawn, site_spawn = mask(), {}
@@ -1076,6 +1197,7 @@ def build(base, out_path):
             town_ground[(ix + f.x0, iy + f.y0)] = 'wooden floor'
         town_ground.update(t.grounds)
         decor.update(t.decor)
+        raw_ground.update(t.raw)
         town_pave[key] = pave
     mount &= ~town_area
     forest &= ~town_area
@@ -1160,7 +1282,11 @@ def build(base, out_path):
     stair_landing = set()
     roofs = []
     for cave in CAVES:
+        if cave.get('z', 8) != Z + 1:
+            continue
         for cx, cy, facing, *corridor in cave['mouths']:
+            if facing == 'ladder':
+                continue
             d = 1 if facing == 'south' else -1
             ix, iy = cx - f.x0, cy - f.y0
             if corridor:
@@ -1242,6 +1368,15 @@ def build(base, out_path):
             for k, item in enumerate(T.MILL_WHEEL):
                 tile = prefab_tiles[(x + mid + k, y + front, Z - 1)]
                 tile.children += pvmap.item_node(item)
+    # stairs down inside buildings: the floor's ground swapped for stairs, the rest of the tile kept
+    for t in layouts.values():
+        for x, y in t.stairs_down:
+            tile = prefab_tiles[(x, y, Z)]
+            rest = tile.children if tile.ground is not None else b''.join(pvmap.split_items(tile.children)[1:])
+            prefab_tiles[(x, y, Z)] = pvmap.RawTile(tile.house_id, tile.flags, INDOOR_STAIRS, rest)
+    below = underground_tiles(base_data, brushes)
+    assert not set(below) & set(prefab_tiles), 'an underground piece overlaps a building'
+    prefab_tiles.update(below)
 
     for (x, y, z) in prefab_tiles:
         if z == Z and f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
@@ -1284,7 +1419,7 @@ def build(base, out_path):
             deco = []
             r = rng.random()
             if (x, y) in decor:
-                tiles[(x, y)] = [ground, list(decor[(x, y)])]
+                tiles[(x, y)] = [raw_ground.get((x, y), ground), list(decor[(x, y)])]
                 blocked_spawn[iy, ix] = True
                 continue
             if ilex_cut[iy, ix]:
@@ -1577,6 +1712,7 @@ def build(base, out_path):
     for k, cave in enumerate(CAVES):
         # each cave draws from its own generator, so changes elsewhere leave the caves as they are
         cave_tiles, cave_spawns = build_cave(cave, brushes, present, np.random.default_rng(41 + k))
+        assert not set(cave_tiles) & set(new_tiles), '%s overlaps other new tiles' % cave['name']
         new_tiles.update(cave_tiles)
         spawns += cave_spawns
 

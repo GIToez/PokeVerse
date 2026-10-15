@@ -79,6 +79,12 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   the mountain under a floor-6 roof, like Kanto's passages, with Kanto's stairs (22709) at its
   end. A clear lane runs down the middle of every tunnel, so no room is cut off. The Ruins of
   Alph's chambers are single rooms under their mounds, entered by stairs from their courts.
+  Lower floors are carved the same way on their own floor, joined by stairs down from the floor
+  above; the Slowpoke Well is entered through a trapdoor and left by a ladder.
+- **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
+  under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
+  Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's
+  sewers next to it, and stairs down from a floor that is not copied are dropped.
 - **Wild Pokémon:** each spawn is drawn from the HeartGold/SoulSilver land table of its route,
   weighted by the game's encounter rate averaged over morning, day and night
   (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge
@@ -105,22 +111,29 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 - **West:** Cherrygrove City (town 51, temple 2542,834,7) at the end of Route 29, Routes 30 and
   31 north to Violet City (town 52, temple 2513,564,7, with a Gym and Sprout Tower), Route 32 south with its
   Pokémon Center (2470,862), Union Cave 1F (in at 2448,881, out at 2442,962), Route 33 and
-  Azalea Town (town 53, temple 2391,1038,7, with a Gym and the Slowpoke Well). Union Cave's ridge
+  Azalea Town (town 53, temple 2391,1038,7, with a Gym and the Slowpoke Well, B1F on floor 8
+  through the trapdoor at 2405,1077). Union Cave goes down to B1F (floor 9, stairs at 2480,908)
+  and B2F (floor 10, stairs at 2466,950), whose lake is left free of spawns for Lapras. Union Cave's ridge
   runs to Ilex Forest's wall of trees, so like in the games the cave and the forest are the ways
   south.
-- **Goldenrod's area:** Goldenrod City (town 54, temple 2283,728,7, with a Gym) on the bay, Route
+- **Goldenrod's area:** Goldenrod City (town 54, temple 2283,728,7, with a Gym, a round fountain
+  with lamps and flower beds at 2320,730, and the Global Terminal's basement down the stairs at
+  2326,780) on the bay, Route
   34 south with the Day-Care (2333,828), Ilex Forest and its shrine (2292,940) down to Azalea,
   Route 35 north to the National Park (2325,588), Route 36 east to Violet, and the Ruins of Alph
   (chambers at 2396,633, 2418,651, 2440,627 and 2448,655) between Route 36 and Route 32.
 - **Ecruteak and the coast:** Route 37 from the National Park's north gate to Ecruteak City
-  (town 55, temple 2290,409,7, with a Gym, the Burned Tower and the Bell Tower at 2295,288), Route
+  (town 55, temple 2290,409,7, with a Gym, the Burned Tower, the Dance Theater at 2340,436 on a
+  lantern street, and the Bell Tower at 2295,288), Route
   38 west and Route 39 south past the Moomoo Farm (2110,440) to Olivine City (town 56, temple
-  2111,499,7, with a Gym and the Lighthouse at 2076,536). Route 40 is sea from Olivine to the
+  2111,499,7, with a Gym, the Lighthouse at 2076,536 and a beach market with parasols and crates
+  at 2115,531). Route 40 is sea from Olivine to the
   Whirl Islands (1F on floor 8, in at 2030,607 and 2004,659), Route 41 sea on to Cianwood City
   (town 57, temple 1902,639,7, with a Gym and the Pharmacy). A strait keeps Cianwood's side apart
   from the mainland, so it is reached by Surf only.
 - **The east:** Route 42 from Ecruteak past Mt. Mortar (1F on floor 8, in at 2425,384 and
-  2495,382) to Mahogany Town (town 58, temple 2532,391,7, with a Gym and the souvenir shop),
+  2495,382) to Mahogany Town (town 58, temple 2532,391,7, with a Gym and the souvenir shop,
+  whose stairs at 2579,385 lead down to the Rocket Hideout's four floors),
   Route 43 north to the Lake of Rage, whose water Pokémon spawn on its shore. Route 44 runs east
   below a snowfield of fir trees to the Ice Path (1F, in at 2668,382 and 2708,378), under the
   ridge that walls Blackthorn City off (town 59, temple 2723,387,7, with a Gym and Dragon's Den at
@@ -150,12 +163,12 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1397 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1416 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
-- **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
-  Well's insides, Goldenrod's Magnet Train station and Underground, the cave floors below 1F
-  (Tohjo Falls' cave with Waterfall, Mt. Silver Cave up to the summit and the Ho-Oh Shrine) and
-  the Gym leaders; Ecruteak's Dance Theater; Route 36's Sudowoodo and Route 46's one-way ledges.
+- **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
+  Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, Mt.
+  Silver Cave up to the summit and the Ho-Oh Shrine, the lower floors of Mt. Mortar, the Ice Path
+  and the Whirl Islands, the Gym leaders, Route 36's Sudowoodo and Route 46's one-way ledges.
   The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
