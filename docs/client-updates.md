@@ -61,9 +61,19 @@ Players who install for the first time use the links on
 ## How the client decides what to download
 
 The client lists its own files with a CRC32 checksum and compares them with the manifest
-for its platform. Files that are missing or different are downloaded, checked, and written
-in place. If an `init.lua`, `corelib`, `updater` or `.otmod` file changed, or the
+for its platform. Files that are missing or different are downloaded four at a time,
+checked, and written to disk every 25 files, biggest first. The window shows "File X of N",
+the megabytes left (from the manifest's `sizes`), the speed and the current file.
+
+An interrupted update (closed, crashed, lost connection) keeps the files already written,
+so the next start only downloads what is still missing. The executable and the files the
+updater itself runs on (`init.lua`, `corelib`, `updater`, the styles and locales) come
+last and are written together, so an interrupted update always starts again with the old,
+working updater. If an `init.lua`, `corelib`, `updater` or `.otmod` file changed, or the
 executable, the client restarts; otherwise it reloads its modules.
+
+Clients from before this change use the old updater (one file at a time, everything written
+at the end). They ignore `sizes`, download the new updater with the rest, and restart into it.
 
 If GitHub cannot be reached, the client shows an error and starts normally after **Ok**.
 
@@ -91,6 +101,11 @@ If GitHub cannot be reached, the client shows an error and starts normally after
   it. The engine cannot update itself on Android: engine changes need the new APK, which
   installs over the old one and keeps the downloaded files. The APK is built for 64-bit ARM
   phones (`arm64-v8a`), which covers current Android devices.
+- **Android in the background:** while updating or logged in, leaving the app starts a
+  foreground service with a notification ("PokeVerse is updating in the background" with
+  a progress bar, or "PokeVerse is still connected"), so Android does not freeze the game.
+  Coming back to the app removes it. Android 13 and newer ask once for permission to show
+  notifications. This needs the APK from this change; older APKs behave as before.
 
 ## Rolling back
 
