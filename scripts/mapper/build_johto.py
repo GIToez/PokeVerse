@@ -322,6 +322,17 @@ CAVES = [
      'path': [(2585, 609), (2595, 596), (2620, 590), (2648, 598), (2675, 590), (2690, 610)],
      'rooms': [(2620, 592, 7), (2650, 598, 8), (2676, 592, 6)],
      'pond': (2650, 598, 4)},
+    # Tohjo Falls, under the ridge where the Tohjo river comes out: in from the river's west bank
+    # (Route 27's side) and out on its east (Route 26's), the underground river across the way (Surf),
+    # and at its head the falls themselves (`waterfalls`, the rock tiles that take Waterfall), up to
+    # TOHJO_LEDGE on the floor above
+    {'name': 'Tohjo Falls', 'box': (2868, 620, 2945, 676), 'rate': 1 / 30.0,
+     'faces': [(2888, 667, 6), (2924, 667, 6)],
+     'mouths': [(2888, 670, 'south', [(2888, 684), (2888, 668)]), (2924, 670, 'south', [(2924, 684), (2924, 668)])],
+     'path': [(2888, 669), (2888, 656), (2896, 652), (2905, 654), (2914, 652), (2924, 656), (2924, 669)],
+     'rooms': [(2888, 660, 5), (2905, 647, 9), (2924, 660, 5)],
+     'pond': (2905, 644, 5), 'stream': ([(2905, 646), (2904, 668)], 1.6),
+     'waterfalls': [(2902, 637), (2903, 637), (2907, 637), (2908, 637)]},
 ]
 # The Ruins of Alph's four chambers, each a room under its rock mound, entered from its court.
 for _k, (_x, _y) in enumerate([(2396, 633), (2418, 651), (2440, 627), (2448, 655)]):
@@ -378,6 +389,16 @@ UNDERGROUND = [
 # `dst` where its top left goes), south of the Whirl Islands' big island, with `spawns` on board.
 WRECK = {'name': 'I.S.S. Raspberry', 'src': (3880, 1083, 3914, 1103), 'dst': (2027, 653), 'floors': (5, 6, 7),
          'spawns': 6}
+# Waterfall (core/server/data/lib/ps/systems/039-pokemonAbility.lua): used on WATERFALL_UP on a rock
+# face, a surfing player comes out on WATERFALL_TOP over it on the floor above; used on that, back
+# down on WATERFALL_FOOT, the water a tile south of the face (Kanto's falls are built the same way).
+WATERFALL_UP, WATERFALL_TOP, WATERFALL_FOOT = 3569, 3571, 3573
+# The room hidden behind Tohjo Falls in HeartGold and SoulSilver, open to the sky in the ridge over
+# the falls: the pool they come down from (its south row over the falls' faces) and the ledge round
+# it, empty but for the broken radio (where an event Celebi takes players back to Giovanni) and
+# Rock Smash rocks, with no wild Pokémon.
+TOHJO_LEDGE = {'ledge': (2905, 631, 8, 5), 'pool': (2901, 633, 2909, 637), 'radio': (2899, 629), 'radio_id': 28143,
+               'rocks': [(2911, 629), (2910, 632), (2904, 628)]}
 CAVE_DEBRIS = list(range(6374, 6387))
 # Hills, built like Kanto's terraces: a plateau one floor up is grass over mountain ground on the
 # floor below (bordered onto the grass round it as usual), and its own edge tiles take the mountain
@@ -544,6 +565,7 @@ SPAWNS = {
     'Ruins of Alph': {'land': {'Unown': 1.0}},
     # the wreck's guards in the anime
     'I.S.S. Raspberry': {'land': {'Remoraid': 70.0, 'Mantine': 30.0}},
+    'Tohjo Falls': ('Tohjo Falls', 'main'),
 }
 # Bulbapedia's names that the server spells differently.
 MONSTER_NAMES = {'Nidoran♀': 'Nidorana', 'Nidoran♂': 'Nidorano'}
@@ -1809,6 +1831,21 @@ def build_cave(cave, brushes, present, rng):
     water = np.zeros((f.h, f.w), bool)
     if cave.get('pond'):
         water = f.disc(*cave['pond'], n1, 0.3) & erode(floor, 3) & ~near_stairs & ~(path_d < 2.6)
+    # a stream across the way, to Surf over (the lane goes on either side of it)
+    if cave.get('stream'):
+        line, width = cave['stream']
+        water |= (f.seg_dist(line) + n1 < width) & floor & ~near_stairs
+    # each waterfall's face is rock, the water running from its foot down to the pond
+    falls = cave.get('waterfalls', [])
+    for x, y in falls:
+        ix, iy = x - f.x0, y - f.y0
+        floor[iy - 3:iy + 1, ix - 1:ix + 2] = False
+        k = iy + 1
+        while not water[k, ix]:
+            floor[k, ix] = water[k, ix] = True
+            k += 1
+            assert k < iy + 16, '%s: the waterfall at %d,%d is far from the water' % (cave['name'], x, y)
+    lane &= ~water
     no_optional |= {(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(lane)}
     rocky = (f.noise(10) > 0.2) & erode(floor, 3) & ~water
     wall = dilate(floor, 7) & ~floor
@@ -1852,6 +1889,9 @@ def build_cave(cave, brushes, present, rng):
         deco[(x, y)] = items
     for pos, item in up.items():
         deco[pos] = [item]
+    for x, y in falls:
+        deco[(x, y)] = [WATERFALL_UP]
+        deco[(x, y + 1)] = [WATERFALL_FOOT]
 
     def brush_at(x, y):
         g = ground.get((x, y))
@@ -1864,6 +1904,9 @@ def build_cave(cave, brushes, present, rng):
         nb = [brush_at(x + dx, y + dy) for dx, dy in autoborder.NEIGHBOURS]
         optional = center is not mountain and mountain in nb and (x, y) not in no_optional
         border = brushes.borders_for(center, nb, optional=optional)
+        # the rock's edge would hide the foam at a waterfall's foot (Kanto's have none)
+        if (x, y - 1) in falls:
+            border = []
         children = b''.join(pvmap.item_node(i) for i in [g] + border + deco[(x, y)])
         tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
     for x, y in downs:
@@ -2341,6 +2384,21 @@ def build(base, out_path):
             terrain[iy, ix] = STAIRS
             town_ground.pop((cx, cy), None)
             stair_landing |= landing(cx, cy, facing)
+    lx, ly, rx, ry = TOHJO_LEDGE['ledge']
+    hollow = ((X - lx) / rx) ** 2 + ((Y - ly) / ry) ** 2 + f.noise(4) * 0.3 < 1
+    px0, py0, px1, py1 = TOHJO_LEDGE['pool']
+    pool = (X >= px0) & (X <= px1) & (Y >= py0) & (Y <= py1)
+    assert (terrain[dilate(hollow | pool, 9)] == MOUNTAIN).all(), 'Tohjo Falls\' ledge is not inside the ridge'
+    terrain[hollow] = CAVE_FLOOR
+    terrain[pool] = WATER
+    ravines |= hollow | pool
+    for x, y in next(c for c in CAVES if c['name'] == 'Tohjo Falls')['waterfalls']:
+        assert pool[y - f.y0, x - f.x0] and not pool[y + 1 - f.y0, x - f.x0]
+        decor[(x, y)] = [WATERFALL_TOP]
+    for pos in [TOHJO_LEDGE['radio']] + TOHJO_LEDGE['rocks']:
+        assert hollow[pos[1] - f.y0, pos[0] - f.x0] and not pool[pos[1] - f.y0, pos[0] - f.x0]
+        decor[pos] = [SMASH_ROCK]
+    decor[TOHJO_LEDGE['radio']] = [TOHJO_LEDGE['radio_id']]
     near_town_paths = dilate((terrain == PAVE) | (terrain == BRIDGE) | boxes, 3)
     # Ilex Forest's wall: a tree on every open tile off the path and the shrine's clearing
     line, width = ILEX_WALL
