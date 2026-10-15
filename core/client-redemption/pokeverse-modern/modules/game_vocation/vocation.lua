@@ -1,6 +1,6 @@
 -- The vocation window. The server (Vocations in the server lib) opens it with JSON on
--- ExtendedIds.Vocation: {type = "open", level, minLevel, chosen, vocations = {{key, name, tagline, perks}, ...}},
--- then answers a choice with {type = "chosen", key, name} or {type = "result", ok, text}.
+-- ExtendedIds.Vocation: {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}},
+-- then answers a choice with {type = "chosen", key, name, rank, title} or {type = "result", ok, text}.
 -- A card's Select turns into Confirm and Back; Confirm sends {action = "choose", key}.
 local IMAGES = '/modules/game_vocation/images/'
 local ERROR_COLOR = '#ff8a80'
@@ -30,7 +30,12 @@ local function updateSubtitle()
     local text
     if state.chosen then
         local vocation = cards[state.chosen]
-        text = tr('You are a %s', vocation and vocation.data.name or state.chosen)
+        local name = vocation and vocation.data.name or state.chosen
+        local title = state.title or name
+        text = tr('You are %s', (title:match('^[AEIOUaeiou]') and 'an ' or 'a ') .. title)
+        if state.title then
+            text = text .. ' ' .. tr('(%s, rank %d of 5)', name, state.rank or 1)
+        end
     elseif canChoose() then
         text = tr('Unlocks at Trainer Level %d', state.minLevel) .. '  \183  ' .. tr('Permanent choice')
     else
@@ -126,12 +131,15 @@ local function onVocation(protocol, opcode, buffer)
         return
     end
     if data.type == 'open' and type(data.vocations) == 'table' then
-        state = { level = tonumber(data.level) or 0, minLevel = tonumber(data.minLevel) or 0, chosen = data.chosen }
+        state = { level = tonumber(data.level) or 0, minLevel = tonumber(data.minLevel) or 0, chosen = data.chosen,
+                  rank = tonumber(data.rank), title = data.title }
         build(data.vocations)
         updateSubtitle()
         show()
     elseif data.type == 'chosen' then
         state.chosen = data.key
+        state.rank = tonumber(data.rank)
+        state.title = data.title
         selected = nil
         refreshCards()
         updateSubtitle()

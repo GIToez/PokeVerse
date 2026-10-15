@@ -51,15 +51,17 @@ local function onCaughtPokemon(cid, attributes, tries)
     end
 end
 
-function getCatchChance(cid, pokemonName, ballId, pokemonLevel)
+-- The catch roll is getRandom(1, max): a ball catches when the roll is at most its catch rate.
+-- nil when the Pokemon can't be caught yet.
+function getCatchRollMax(cid, pokemonName, ballId, pokemonLevel)
     local catchChance = getPokemonCatchChance(pokemonName) / (RATE_CATCH + getPlayerExtraCatchRateValue(cid))
     if (getPokemonIgnoreBallCounter(pokemonName)) then
-        return getRandom(1, catchChance)
+        return catchChance
     end
 
     local triesFactor = getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName)) / catchChance
     if (triesFactor <= 0.25) then -- Never catch with equal or less 25% of tries
-        return 1000 -- Higher enough to any ball
+        return nil
     end
 
     local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING)
@@ -72,7 +74,28 @@ function getCatchChance(cid, pokemonName, ballId, pokemonLevel)
 	if (chanceMax < 5) then
         chanceMax = ((catchChance < 5 and catchChance > 0) and catchChance or 5)
     end
-	return getRandom(1, chanceMax)
+	return chanceMax
+end
+
+function getCatchChance(cid, pokemonName, ballId, pokemonLevel)
+    local max = getCatchRollMax(cid, pokemonName, ballId, pokemonLevel)
+    if (not max) then
+        return 1000 -- Higher enough to any ball
+    end
+    return getRandom(1, max)
+end
+
+-- A normal throw: the roll, then the Catcher's second chance on a miss
+local function rollCatch(cid, pokemonName, ballName, ballId, pokemonLevel)
+    local max = getCatchRollMax(cid, pokemonName, ballId, pokemonLevel)
+    if (not max) then
+        return false
+    end
+    local rate = getBallCatchRate(ballName)
+    if (getRandom(1, max) <= rate) then
+        return true
+    end
+    return Vocations.catchSecondChance(cid, math.min(1, math.floor(rate) / math.max(1, math.floor(max))))
 end
 
 function catchMiss(cid, ballName, ballItemid, pokemon, wastedBallsMsg)
@@ -90,6 +113,12 @@ function catchMiss(cid, ballName, ballItemid, pokemon, wastedBallsMsg)
 
     if (balls[ballName].returnOnBroke) then
         doPlayerSafeAddItem(cid, ballItemid, 1, false, true)
+    else
+        local ballBack = Vocations.perk(cid, "catcher", "ballBack")
+        if (ballBack and math.random() < ballBack) then
+            doPlayerSafeAddItem(cid, ballItemid, 1, false, true)
+            doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Catcher: you got your %s ball back."), ballName))
+        end
     end
 
 end
@@ -233,8 +262,7 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
 					doSendDistanceShoot(playerPosition, toPosition, balls[ballName].projectile)
 					doCreatureSay(cid, string.format(__L(cid, "%s ball, go!"), ballName:gsub("^%l", string.upper)), TALKTYPE_SAY)
 
-					if (balls[ballName].guaranteedCatch or
-                            getCatchChance(cid, pokemonName, item.itemid, pokemonLevel) <= getBallCatchRate(ballName)) then
+					if (balls[ballName].guaranteedCatch or rollCatch(cid, pokemonName, ballName, item.itemid, pokemonLevel)) then
                         doSendMagicEffect(toPosition, balls[ballName].effects.catch)
 						addEvent(catchPokemon, 5500, cid, toPosition, pokemonName, balls[ballName].charged,
                             pokemonSex, pokemonLevel, pokemonSpecialAbility,

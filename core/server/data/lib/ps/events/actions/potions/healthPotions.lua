@@ -35,6 +35,45 @@ local HEALTH_POTIONS = {
 
 local EVENTS = {}
 
+-- The Medic's stronger potions: the same condition with more health per tick, for every potion and
+-- Medic bonus. Conditions can only be created while the script loads.
+local medicConditions = {}
+for itemid, potion in pairs(HEALTH_POTIONS) do
+    for _, bonus in ipairs(Vocations.PERKS.medic.healing) do
+        local gain = math.floor(potion.healthGain * (1 + bonus))
+        local condition = createConditionObject(CONDITION_REGENERATION, HEALTH_DURATION * 1000, false,
+            CONDITION_SUBID.REGENERATION.HEALTH_POTION)
+        setConditionParam(condition, CONDITION_PARAM_HEALTHGAIN, gain)
+        setConditionParam(condition, CONDITION_PARAM_HEALTHTICKS, HEALTH_DELAY)
+        setConditionParam(condition, CONDITION_PARAM_LIGHT_LEVEL, true)
+        medicConditions[itemid .. ":" .. bonus] = { condition = condition, gain = gain }
+    end
+end
+
+local function getHealCondition(itemid, bonus)
+    local medic = bonus and medicConditions[itemid .. ":" .. bonus]
+    if (not medic) then
+        return HEALTH_POTIONS[itemid].condition, HEALTH_POTIONS[itemid].healthGain
+    end
+    return medic.condition, medic.gain
+end
+
+-- Another trainer's Pokemon on that tile, when a Medic may heal it (neither trainer in a duel or battle)
+local function getOtherTrainerPokemon(cid, position)
+    if (not Vocations.perk(cid, "medic", "healOthersRank")) then
+        return nil
+    end
+    local creature = getTopCreature(position).uid
+    if (not isCreature(creature) or not isMonster(creature) or not isSummon(creature)) then
+        return nil
+    end
+    local owner = getCreatureMaster(creature)
+    if (not isPlayer(owner) or owner == cid or Vocations.inBattle(owner)) then
+        return nil
+    end
+    return creature, owner
+end
+
 local function onHealEnd(cid, msg)
     if (isCreature(cid)) then
         setIsPokemonUsingHealthPotion(cid, false)
@@ -48,9 +87,10 @@ local function onHealEnd(cid, msg)
     end
 end
 
-local function onHealStart(target, item, targetPosition, playerPosition, forceFirstHeal)
+local function onHealStart(cid, target, item, targetPosition, playerPosition, forceFirstHeal)
+    local condition, healthGain = getHealCondition(item.itemid, Vocations.perk(cid, "medic", "healing"))
     setIsPokemonUsingHealthPotion(target, true)
-    doAddCondition(target, HEALTH_POTIONS[item.itemid].condition)
+    doAddCondition(target, condition)
     EVENTS[target] = addEvent(onHealEnd, HEALTH_DURATION * 1000, target, HEALTH_POTIONS[item.itemid].msg)
     doSendAnimatedText(targetPosition, "HEAL +" .. HEALTH_POTIONS[item.itemid].msg, COLOR_LIGHTGREEN)
     doSendMagicEffect(targetPosition, EFFECT_GREEN_BUFF)
@@ -58,7 +98,7 @@ local function onHealStart(target, item, targetPosition, playerPosition, forceFi
     doRemoveItem(item.uid, 1)
 
     if (forceFirstHeal) then
-        doCreatureAddHealth(target, HEALTH_POTIONS[item.itemid].healthGain, true)
+        doCreatureAddHealth(target, healthGain, true)
     end
 end
 
@@ -70,6 +110,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 
 	local target, pokemon, playerPosition, msg, targetPosition = nil, getPlayerPokemon(cid), getCreaturePosition(cid), "Sorry, not possible.", nil
     local replacing = false
+    local owner = cid
 	if (getDistanceBetween(playerPosition, toPosition) > 4) then
 		msg = "Too far."
 
@@ -101,6 +142,14 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
         end
     end
 
+    if (not target and getDistanceBetween(playerPosition, toPosition) <= 4) then
+        local other, otherOwner = getOtherTrainerPokemon(cid, toPosition)
+        if (other) then
+            target, owner, targetPosition = other, otherOwner, getCreaturePosition(other)
+            replacing = isPokemonUsingHealthPotion(other)
+        end
+    end
+
     if (target == cid and isPokemonUsingHealthPotion(cid)) then
         replacing = true
     end
@@ -116,16 +165,21 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
             end
         end
 
-        onHealStart(target, item, targetPosition, playerPosition, not replacing)
+        local iconItemId = HEALTH_POTIONS[item.itemid].iconItemId
+        onHealStart(cid, target, item, targetPosition, playerPosition, not replacing)
+        if (owner ~= cid) then
+            doPlayerSendTextMessage(owner, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(owner, "Medic %s is healing your Pokemon."), getCreatureName(cid)))
+            doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "You are healing %s's Pokemon."), getCreatureName(owner)))
+        end
 
         if (replacing) then
             addEvent(function() -- Ugly hack due to slow connections
-                    if (isCreature(cid)) then
-                        doPlayerSendPokemonStatusAdd(cid, HEALTH_POTIONS[item.itemid].iconItemId, HEALTH_DURATION)
+                    if (isCreature(owner)) then
+                        doPlayerSendPokemonStatusAdd(owner, iconItemId, HEALTH_DURATION)
                     end
                 end, 100)
         else
-            doPlayerSendPokemonStatusAdd(cid, HEALTH_POTIONS[item.itemid].iconItemId, HEALTH_DURATION)
+            doPlayerSendPokemonStatusAdd(owner, iconItemId, HEALTH_DURATION)
         end
 
 

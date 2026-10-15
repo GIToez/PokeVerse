@@ -6,6 +6,8 @@
 		<talkaction words="/cupom;/coupon" event="script" value="../../lib/ps/events/talkactions/coupon.lua" description="Uses a coupon." />
 		<talkaction words="/afk" event="script" value="../../lib/ps/events/talkactions/afk.lua" description="Set AFK state." />
 		<talkaction words="/time" event="script" value="../../lib/ps/events/talkactions/time.lua" description="Show game time." />
+		<talkaction words="!radar;/radar" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/radar.lua" description="Ranger: scan for wild Pokemon, optionally of one type." />
+		<talkaction words="!fishing;/fishing" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/fishingMap.lua" description="Angler: what bites in each region." />
 		<talkaction words="/help;/command;/commands;/comando;/comandos" hidden="yes" event="script" value="../../lib/ps/events/talkactions/commands.lua" />
 		<talkaction words="/megusta;/trollface;/yaomingface;/pokerface;/foreveralone" event="script" value="../../lib/ps/events/talkactions/memes.lua" description="Show a meme."/>
 		<talkaction words="/autoloot" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/autoLoot.lua" description="Automatic loot from corpses."/>

@@ -274,7 +274,29 @@ end
 ]]
 
 local function getPlayerFishingFormula(cid, rodId)
-    return getPlayerSkill(cid, SKILL_FISHING) / 200 + 0.85 * math.random()
+    local luck = Vocations.perk(cid, "angler", "fastBiteRank") and Vocations.PERKS.angler.fastBiteLuck or 0
+    return getPlayerSkill(cid, SKILL_FISHING) / 200 + 0.85 * math.random() + luck
+end
+
+-- Fishing skill tries for a hooked Pokemon: 1, plus the Angler's bonus as a chance of more
+Fishing.getSkillTries = function(cid)
+    local bonus = Vocations.perk(cid, "angler", "fishingExp") or 0
+    local tries = 1 + math.floor(bonus)
+    if (math.random() < bonus - math.floor(bonus)) then
+        tries = tries + 1
+    end
+    return tries
+end
+
+local function uniqueNames(list)
+    local names, seen = {}, {}
+    for _, pokemon in ipairs(list) do
+        if (not seen[pokemon.name]) then
+            seen[pokemon.name] = true
+            names[#names + 1] = pokemon.name
+        end
+    end
+    return names
 end
 
 local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart, remaingFishingTicks)
@@ -324,7 +346,7 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
                     setMonsterUniqueTarget(pokemonFished, cid)
 
                     doPlayerAddStatistic(cid, PLAYER_STATISTIC_IDS.HOOKED_FISH, 1)
-                    doPlayerAddSkillTry(cid, PLAYER_SKILL_FISHING, 1)
+                    doPlayerAddSkillTry(cid, PLAYER_SKILL_FISHING, Fishing.getSkillTries(cid))
 
 
                 else
@@ -366,6 +388,36 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
 end
 
 -- Global
+
+-- The Angler's fishing map (rank 4): what bites in each region, by fishing skill, marked when the
+-- trainer's skill already reaches it
+local REGIONS = { { key = "kantoPokemon", name = "Kanto" }, { key = "orangeArchipelagoPokemon", name = "Orange Archipelago" },
+                  { key = "hoennPokemon", name = "Hoenn" } }
+
+Fishing.sendGuide = function(cid)
+    if (not Vocations.perk(cid, "angler", "mapRank")) then
+        doPlayerSendCancel(cid, string.format(__L(cid, "The fishing map is for Anglers from rank %d."),
+            Vocations.PERKS.angler.mapRank))
+        return false
+    end
+    local skill = getPlayerSkill(cid, PLAYER_SKILL_FISHING)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Fishing map (your fishing skill: %d, * = you can hook it now):"), skill))
+    for _, region in ipairs(REGIONS) do
+        local parts = {}
+        for _, drop in ipairs(DROPS) do
+            local names = {}
+            for _, pokemon in ipairs(drop[region.key]) do
+                names[#names + 1] = pokemon.name
+            end
+            if (#names > 0) then
+                parts[#parts + 1] = string.format("%s%d: %s", drop.skill <= skill and "*" or "", drop.skill, table.concat(names, ", "))
+            end
+        end
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, region.name .. ": " .. table.concat(parts, "; ") .. ".")
+    end
+    return true
+end
+
 Fishing.onFishing = function(cid, item, fromPosition, itemEx, toPosition)
     if (not isInArray(WATER_IDS, itemEx.itemid) or getSafariZone(cid) or getPlayerMounted(cid) or
             isBiking(cid) or getPlayerFrontierIsland(cid) or getPlayerPvpArena(cid) or
@@ -406,11 +458,20 @@ Fishing.onFishing = function(cid, item, fromPosition, itemEx, toPosition)
 
         else
             doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You are fishing now.")
+            if (Vocations.perk(cid, "angler", "spotInfoRank")) then
+                local names = uniqueNames(getPlayerFishinablePokemons(cid, getPlayerPokemon(cid), item.itemid))
+                doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Angler: can bite here: %s."),
+                    #names > 0 and table.concat(names, ", ") or __L(cid, "nothing")))
+            end
+            local delay = RODS[item.itemid].delay
+            if (Vocations.perk(cid, "angler", "fastBiteRank")) then
+                delay = math.ceil(delay * Vocations.PERKS.angler.fastBiteDelay)
+            end
             setFishingStatus(cid, true)
             doCreateItem(FISHING_FLOAT_ID, 1, toPosition)
             doSendDistanceShoot(playerPosition, toPosition, PROJECTILE_GRAVEL)
             doSendMagicEffect(toPosition, EFFECT_WATER_PULSE)
-            addEvent(doFishing, 1000, cid, playerPosition, toPosition, item.itemid, 0, RODS[item.itemid].delay - 1, RODS[item.itemid].fishingTime)
+            addEvent(doFishing, 1000, cid, playerPosition, toPosition, item.itemid, 0, delay - 1, RODS[item.itemid].fishingTime)
 
             local outfit = getCreatureOutfit(cid)
             outfit.lookType = getPlayerSex(cid) == PLAYERSEX_FEMALE and 1227 or 1228

@@ -189,6 +189,7 @@ function onLogin(cid)
 
 		PC.onLogin(cid)
 		Pokepedia.onLogin(cid)
+		Vocations.onLogin(cid)
 		addEvent(GTS.onLogin, 3000, cid)
 
 	elseif(accountManager == MANAGER_NAMELOCK) then

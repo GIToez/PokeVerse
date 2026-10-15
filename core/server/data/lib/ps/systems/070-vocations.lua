@@ -1,36 +1,95 @@
 -- Vocations (docs/upcoming-features.md, section 6): from trainer level 20 a trainer picks one of
--- six vocations, once and for good. The client's vocation window (game_vocation) talks JSON on
--- EXTENDED_IDS.VOCATION:
---   server -> client  {type = "open", level, minLevel, chosen, vocations = {{key, name, tagline, perks}, ...}}
---                     {type = "chosen", key, name}
+-- six vocations, once and for good, and starts at rank 1. Ranks 2 to 5 need a trainer level
+-- (Vocations.RANK_LEVELS) and are given by the vocation quests and tasks (Vocations.rankUp).
+-- Perks never touch Pokemon damage or stats and never work in duels, the PvP arena or NPC battles.
+--
+-- The client's vocation window (game_vocation) talks JSON on EXTENDED_IDS.VOCATION:
+--   server -> client  {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}}
+--                     {type = "chosen", key, name, rank, title}
 --                     {type = "result", ok, text}
---   client -> server  {action = "choose", key}
--- A choice is only accepted while the window that was opened by Vocations.open is up, so the
--- vocation quest line decides when a trainer may choose. The perks themselves are not in yet.
+--   client -> server  {action = "choose", key}, {action = "close"}
+-- A choice is only accepted while a window opened by Vocations.open is up, so the vocation quest
+-- line decides when a trainer may choose.
+--
+-- Where the perks are used:
+--   Ace Trainer  doPlayerPokemonAddExperience (functions/player.lua): Pokemon EXP from defeats
+--   Catcher      emptyBall and catchMiss (functions/ball/empty.lua)
+--   Breeder      the incubator (events/actions/eggIncubator) and the daycare (npc/scripts/daycareFemale.lua)
+--   Ranger       Vocations.radar, the !radar command
+--   Angler       Fishing (systems/043-fishing.lua) and the !fishing command
+--   Medic        the health potions (events/actions/potions/healthPotions.lua)
 
 Vocations = {}
 
 Vocations.MIN_LEVEL = 20
+Vocations.RANK_LEVELS = { 20, 30, 40, 50, 60 }
+Vocations.MAX_RANK = #Vocations.RANK_LEVELS
 
 -- id is what the storage keeps, so ids never change or get reused
 Vocations.LIST = {
     { id = 1, key = "ace", name = "Ace Trainer", tagline = "Battles and experience",
-      perks = { "Battle EXP +2% to +10%", "Titles up to Ace Trainer", "Bonus grows with each rank" } },
+      perks = { "Battle EXP +2% to +10%", "Titles up to Ace Trainer", "Bonus grows with each rank" },
+      titles = { "Novice Trainer", "Pokemon Trainer", "Experienced Trainer", "Veteran Trainer", "Ace Trainer" } },
     { id = 2, key = "catcher", name = "Catcher", tagline = "Catching",
-      perks = { "Catch chance +2% to +10%", "Ball back after a failed throw", "Bonus grows with each rank" } },
+      perks = { "Catch chance +2% to +10%", "Ball back after a failed throw", "Bonus grows with each rank" },
+      titles = { "Rookie Catcher", "Ball Adept", "Seasoned Catcher", "Elite Catcher", "Master Catcher" } },
     { id = 3, key = "breeder", name = "Breeder", tagline = "Eggs and the daycare",
-      perks = { "Hatching up to 25% faster", "Chance of a second egg", "Better early egg chance" } },
+      perks = { "Hatching up to 25% faster", "Chance of a second egg", "Better early egg chance" },
+      titles = { "Novice Breeder", "Egg Keeper", "Skilled Breeder", "Expert Breeder", "Master Breeder" } },
     { id = 4, key = "ranger", name = "Ranger", tagline = "Tracking wild Pokemon",
-      perks = { "Radar for nearby spawns", "Filter by type, see direction", "Rare finds at top ranks" } },
+      perks = { "Radar for nearby spawns", "Filter by type, see direction", "Rare finds at top ranks" },
+      titles = { "Ranger Cadet", "Field Ranger", "Area Ranger", "Ranger Captain", "Top Ranger" } },
     { id = 5, key = "angler", name = "Angler", tagline = "Fishing",
-      perks = { "Faster fishing skill", "See what bites at a spot", "Fishing map at rank 4" } },
+      perks = { "Faster fishing skill", "See what bites at a spot", "Fishing map at rank 4" },
+      titles = { "Novice Angler", "Angler", "Skilled Angler", "Expert Angler", "Master Angler" } },
     { id = 6, key = "medic", name = "Medic", tagline = "Healing and support",
-      perks = { "Healing items +3% to +15%", "Heal other players' team", "Bonus grows with each rank" } },
+      perks = { "Healing items +3% to +15%", "Heal other players' team", "Bonus grows with each rank" },
+      titles = { "Medic Trainee", "Field Medic", "Senior Medic", "Pokemon Doctor", "Chief Medic" } },
+}
+
+-- Every tunable number, by rank 1 to 5
+Vocations.PERKS = {
+    ace = {
+        battleExp = { 0.02, 0.04, 0.06, 0.08, 0.10 }, -- extra Pokemon EXP from defeated Pokemon
+    },
+    catcher = {
+        catchChance = { 0.02, 0.04, 0.06, 0.08, 0.10 }, -- relative: multiplies the normal chance
+        ballBack = { 0.02, 0.04, 0.06, 0.08, 0.10 }, -- chance to get the ball back after a failed throw
+    },
+    breeder = {
+        hatchTime = { 0.05, 0.10, 0.15, 0.20, 0.25 }, -- shorter hatching, every egg
+        secondEgg = { 0.02, 0.04, 0.06, 0.08, 0.10 }, -- daycare, Premium
+        earlyEgg = { 0.11, 0.12, 0.13, 0.14, 0.15 }, -- daycare daily early egg chance (others 0.10), Premium
+    },
+    ranger = {
+        range = { 30, 50, 80, 120, 200 }, -- tiles
+        cooldown = { 60, 50, 40, 35, 30 }, -- seconds
+        typeFilterRank = 2,
+        speciesRank = 3, -- species, direction and distance instead of a count
+        shinyRank = 4,
+        legendaryRank = 5, -- legendaries and event Pokemon
+        legendaryCooldown = 10 * 60,
+    },
+    angler = {
+        fishingExp = { 0.20, 0.40, 0.60, 0.80, 1.00 }, -- extra fishing skill tries
+        spotInfoRank = 2, -- which Pokemon can bite where the line is cast
+        fastBiteRank = 3,
+        fastBiteDelay = 0.5, -- of the rod's wait before the first bite
+        fastBiteLuck = 0.15, -- added to each bite roll
+        mapRank = 4, -- the !fishing guide: what bites in each region at which skill
+    },
+    medic = {
+        healing = { 0.03, 0.06, 0.09, 0.12, 0.15 }, -- health potion effect
+        healOthersRank = 1, -- health potions on other trainers' Pokemon, outside duels and battles
+    },
 }
 
 local STORAGE = playersStorages.vocation
+local RANK = playersStorages.vocationRank
 -- a storage, not a table: talkactions, NPCs and creature scripts each have their own Lua state
 local WINDOW = playersStorages.vocationWindow
+local RADAR_AT = playersStorages.vocationRadarAt
+local LEGENDARY_AT = playersStorages.vocationLegendaryAt
 
 local byKey, byId = {}, {}
 for _, vocation in ipairs(Vocations.LIST) do
@@ -47,8 +106,93 @@ local function result(cid, ok, text)
     return ok
 end
 
+local function withArticle(text)
+    return (text:match("^[AEIOUaeiou]") and "an " or "a ") .. text
+end
+
+local function reply(cid, text)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
+end
+
 Vocations.get = function(cid)
     return byId[getPlayerStorageValue(cid, STORAGE)]
+end
+
+Vocations.is = function(cid, key)
+    local vocation = Vocations.get(cid)
+    return vocation ~= nil and vocation.key == key
+end
+
+Vocations.getRank = function(cid)
+    if (not Vocations.get(cid)) then
+        return 0
+    end
+    return math.max(1, math.min(Vocations.MAX_RANK, getPlayerStorageValue(cid, RANK)))
+end
+
+Vocations.getTitle = function(cid)
+    local vocation = Vocations.get(cid)
+    return vocation and vocation.titles[Vocations.getRank(cid)] or nil
+end
+
+-- The value of one perk for this trainer, or nil when the trainer is not of that vocation.
+-- Rank tables give the value at the trainer's rank; a "...Rank" number gives true once reached.
+Vocations.perk = function(cid, key, perk)
+    if (not isPlayer(cid) or not Vocations.is(cid, key)) then
+        return nil
+    end
+    local value = Vocations.PERKS[key][perk]
+    local rank = Vocations.getRank(cid)
+    if (type(value) == "table") then
+        return value[rank]
+    elseif (perk:sub(-4) == "Rank") then
+        return rank >= value or nil
+    end
+    return value
+end
+
+-- Duels, the PvP arena and NPC trainer battles
+Vocations.inBattle = function(cid)
+    return (getPlayerDueling(cid) or getPlayerPvpArena(cid) or getPlayerBattleing(cid)) and true or false
+end
+
+Vocations.updateDescription = function(cid)
+    local vocation = Vocations.get(cid)
+    if (not vocation) then
+        doPlayerSetSpecialDescription(cid, "")
+        return
+    end
+    doPlayerSetSpecialDescription(cid, string.format(__L(cid, ". Vocation: %s, %s (rank %d)"),
+        __L(cid, vocation.name), __L(cid, Vocations.getTitle(cid)), Vocations.getRank(cid)))
+end
+
+Vocations.setRank = function(cid, rank)
+    if (not Vocations.get(cid)) then
+        return false
+    end
+    rank = math.max(1, math.min(Vocations.MAX_RANK, rank))
+    setPlayerStorageValue(cid, RANK, rank)
+    Vocations.updateDescription(cid)
+    return true
+end
+
+-- For the rank-up quests and tasks: the next rank, when the trainer's level allows it
+Vocations.rankUp = function(cid)
+    local vocation = Vocations.get(cid)
+    local rank = Vocations.getRank(cid)
+    if (not vocation or rank >= Vocations.MAX_RANK) then
+        return false
+    end
+    if (getPlayerLevel(cid) < Vocations.RANK_LEVELS[rank + 1]) then
+        doPlayerSendCancel(cid, string.format(__L(cid, "You need trainer level %d for the next rank."),
+            Vocations.RANK_LEVELS[rank + 1]))
+        return false
+    end
+    Vocations.setRank(cid, rank + 1)
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
+    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "You are now %s!"),
+        withArticle(__L(cid, Vocations.getTitle(cid)))))
+    return true
 end
 
 Vocations.open = function(cid)
@@ -56,8 +200,7 @@ Vocations.open = function(cid)
         return false
     end
     if (not getPlayerUsingOtClient(cid)) then
-        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE,
-            __L(cid, "Choosing a vocation needs the PokeVerse client."))
+        reply(cid, __L(cid, "Choosing a vocation needs the PokeVerse client."))
         return false
     end
     local list = {}
@@ -72,7 +215,8 @@ Vocations.open = function(cid)
     local chosen = Vocations.get(cid)
     setPlayerStorageValue(cid, WINDOW, chosen and -1 or 1)
     send(cid, { type = "open", level = getPlayerLevel(cid), minLevel = Vocations.MIN_LEVEL,
-                chosen = chosen and chosen.key or nil, vocations = list })
+                chosen = chosen and chosen.key or nil, rank = chosen and Vocations.getRank(cid) or nil,
+                title = chosen and __L(cid, Vocations.getTitle(cid)) or nil, vocations = list })
     return true
 end
 
@@ -93,17 +237,191 @@ Vocations.choose = function(cid, key)
     end
     setPlayerStorageValue(cid, WINDOW, -1)
     setPlayerStorageValue(cid, STORAGE, vocation.id)
+    Vocations.setRank(cid, 1)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE,
-        string.format(__L(cid, "You are now a %s!"), __L(cid, vocation.name)))
-    send(cid, { type = "chosen", key = vocation.key, name = __L(cid, vocation.name) })
+        string.format(__L(cid, "You are now %s!"), withArticle(__L(cid, vocation.name))))
+    send(cid, { type = "chosen", key = vocation.key, name = __L(cid, vocation.name), rank = 1,
+                title = __L(cid, vocation.titles[1]) })
     return true
 end
 
 Vocations.reset = function(cid)
     setPlayerStorageValue(cid, STORAGE, -1)
+    setPlayerStorageValue(cid, RANK, -1)
     setPlayerStorageValue(cid, WINDOW, -1)
+    Vocations.updateDescription(cid)
 end
+
+-- Catcher: a failed roll gets a second chance sized so the catch chance becomes chance * (1 + bonus)
+Vocations.catchSecondChance = function(cid, chance)
+    local bonus = Vocations.perk(cid, "catcher", "catchChance")
+    if (not bonus or chance <= 0 or chance >= 1) then
+        return false
+    end
+    local wanted = math.min(1, chance * (1 + bonus))
+    return math.random() < (wanted - chance) / (1 - chance)
+end
+
+-- Ranger radar ---------------------------------------------------------------------------------
+
+local DIRECTIONS = { "east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east" }
+
+local function direction(from, to)
+    local dx, dy = to.x - from.x, to.y - from.y
+    if (dx == 0 and dy == 0) then
+        return "here"
+    end
+    local angle = math.deg(math.atan2(dy, dx)) -- y grows to the south
+    return DIRECTIONS[(math.floor((angle + 22.5) / 45) % 8) + 1]
+end
+
+local function band(distance)
+    if (distance <= 30) then
+        return "near"
+    elseif (distance <= 100) then
+        return "far"
+    end
+    return "very far"
+end
+
+local TYPE_NAMES = {}
+for id, name in pairs(ELEMENT_NAMES) do
+    TYPE_NAMES[name:lower()] = id
+end
+TYPE_NAMES["fighting"] = TYPE_NAMES["fight"]
+
+local pokemonNames
+
+local function isPokemon(name)
+    if (not pokemonNames) then
+        pokemonNames = {}
+        for _, n in ipairs(pokemonsNames) do
+            pokemonNames[n] = true
+        end
+    end
+    return pokemonNames[name] == true
+end
+
+local function hasType(name, typeId)
+    for _, t in ipairs(getPokemonTypes(nil, name) or {}) do
+        if (t == typeId) then
+            return true
+        end
+    end
+    return false
+end
+
+local function isSpecial(name)
+    return (getPokemonAllowedBall(name) or getPokemonIgnoreBallCounter(name)) and true or false
+end
+
+-- What the radar would show the trainer: { regular = {...}, shiny = {...}, legendary = {...} }, each
+-- entry { name, distance, direction }. Only wild Pokemon on the trainer's floor.
+Vocations.scan = function(cid, range, typeId)
+    local pos = getCreaturePosition(cid)
+    local found = { regular = {}, shiny = {}, legendary = {} }
+    for _, creature in ipairs(getSpectators(pos, range, range, false) or {}) do
+        if (isMonster(creature) and not isSummon(creature)) then
+            local name = getCreatureName(creature)
+            if (isPokemon(name) and (not typeId or hasType(name, typeId))) then
+                local where = getCreaturePosition(creature)
+                local entry = { name = name, distance = getDistanceBetween(pos, where), direction = direction(pos, where) }
+                if (DiscordBridge.isLegendary(name) or isSpecial(name)) then
+                    table.insert(found.legendary, entry)
+                elseif (isShinyName(name)) then
+                    table.insert(found.shiny, entry)
+                else
+                    table.insert(found.regular, entry)
+                end
+            end
+        end
+    end
+    for _, list in pairs(found) do
+        table.sort(list, function(a, b) return a.distance < b.distance end)
+    end
+    return found
+end
+
+Vocations.radar = function(cid, param)
+    local rank = Vocations.is(cid, "ranger") and Vocations.getRank(cid) or 0
+    if (rank == 0) then
+        doPlayerSendCancel(cid, "Only Rangers can use the radar.")
+        return false
+    end
+    local perks = Vocations.PERKS.ranger
+    local typeId
+    param = (param or ""):trim():lower()
+    if (param ~= "") then
+        if (rank < perks.typeFilterRank) then
+            doPlayerSendCancel(cid, string.format(__L(cid, "You can pick a type from Ranger rank %d."), perks.typeFilterRank))
+            return false
+        end
+        typeId = TYPE_NAMES[param]
+        if (not typeId) then
+            doPlayerSendCancel(cid, "Unknown type.")
+            return false
+        end
+    end
+
+    local now = os.time()
+    local wait = getPlayerStorageValue(cid, RADAR_AT) - now
+    if (wait > 0) then
+        doPlayerSendCancel(cid, string.format(__L(cid, "Your radar is recharging. Try again in %d seconds."), wait))
+        return false
+    end
+    setPlayerStorageValue(cid, RADAR_AT, now + perks.cooldown[rank])
+
+    local range = perks.range[rank]
+    local found = Vocations.scan(cid, range, typeId)
+    local typeText = typeId and (" " .. ELEMENT_NAMES[typeId]) or ""
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_WATER_PULSE)
+
+    if (rank < perks.speciesRank) then
+        reply(cid, string.format(__L(cid, "Radar: %d wild%s Pokemon within %d tiles."), #found.regular, typeText, range))
+    elseif (#found.regular == 0) then
+        reply(cid, string.format(__L(cid, "Radar: no wild%s Pokemon within %d tiles."), typeText, range))
+    else
+        local groups, order = {}, {}
+        for _, entry in ipairs(found.regular) do
+            if (not groups[entry.name]) then
+                groups[entry.name] = { count = 0, nearest = entry }
+                order[#order + 1] = entry.name
+            end
+            groups[entry.name].count = groups[entry.name].count + 1
+        end
+        local parts = {}
+        for i, name in ipairs(order) do
+            if (i > 8) then
+                parts[#parts + 1] = string.format(__L(cid, "and %d more species"), #order - 8)
+                break
+            end
+            local group = groups[name]
+            parts[#parts + 1] = string.format("%s%s (%s, %d tiles)", name,
+                group.count > 1 and (" x" .. group.count) or "", __L(cid, group.nearest.direction), group.nearest.distance)
+        end
+        reply(cid, string.format(__L(cid, "Radar, %d tiles: %s."), range, table.concat(parts, ", ")))
+    end
+
+    if (rank >= perks.shinyRank) then
+        for _, entry in ipairs(found.shiny) do
+            reply(cid, string.format(__L(cid, "Radar: a shiny %s, %s to the %s!"), (entry.name:gsub("^[Ss]hiny ", "")),
+                __L(cid, band(entry.distance)), __L(cid, entry.direction)))
+        end
+    end
+    if (rank >= perks.legendaryRank and #found.legendary > 0) then
+        if (getPlayerStorageValue(cid, LEGENDARY_AT) <= now) then
+            setPlayerStorageValue(cid, LEGENDARY_AT, now + perks.legendaryCooldown)
+            for _, entry in ipairs(found.legendary) do
+                reply(cid, string.format(__L(cid, "Radar: something rare, %s to the %s: %s!"),
+                    __L(cid, band(entry.distance)), __L(cid, entry.direction), entry.name))
+            end
+        end
+    end
+    return true
+end
+
+-- Events ---------------------------------------------------------------------------------------
 
 Vocations.onClientMessage = function(cid, buffer)
     local ok, data = pcall(JSON.decode, buffer)
@@ -116,6 +434,11 @@ Vocations.onClientMessage = function(cid, buffer)
     elseif (action == "close") then
         setPlayerStorageValue(cid, WINDOW, -1)
     end
+end
+
+Vocations.onLogin = function(cid)
+    setPlayerStorageValue(cid, WINDOW, -1)
+    Vocations.updateDescription(cid)
 end
 
 Vocations.onLogout = function(cid)
