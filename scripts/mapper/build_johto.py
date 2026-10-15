@@ -372,6 +372,12 @@ UNDERGROUND = [
                 9: ((3700, 455, 3810, 552), (3769, 535), (3700, 466)),
                 10: ((3695, 460, 3805, 556), (3752, 475), None), 11: ((3715, 455, 3810, 556), (3752, 518), None)}},
 ]
+# The anime's I.S.S. Raspberry (Mantine Overboard!), the wreck in the strait by the Whirl Islands that
+# went down with the Silver Wing, guarded by Mantine and Remoraid: Kanto's wreck run aground on its
+# reef (the hold, the deck and the captain's cabin, floors 7 to 5) copied tile for tile (`src` box,
+# `dst` where its top left goes), south of the Whirl Islands' big island, with `spawns` on board.
+WRECK = {'name': 'I.S.S. Raspberry', 'src': (3880, 1083, 3914, 1103), 'dst': (2027, 653), 'floors': (5, 6, 7),
+         'spawns': 6}
 CAVE_DEBRIS = list(range(6374, 6387))
 # Hills, built like Kanto's terraces: a plateau one floor up is grass over mountain ground on the
 # floor below (bordered onto the grass round it as usual), and its own edge tiles take the mountain
@@ -435,6 +441,9 @@ SILVER = {
     # on the ledge above, passages, passages above) for caves from one ledge up to the next, only
     # between ledges reached with the same field moves
     'caves_seed': 61, 'cave_step': 6,
+    # the Ho-Oh Shrine's court on the summit (johto_towns.ho_oh_shrine), east of where the 3F tunnel
+    # comes out
+    'shrine': (2907, 400),
     # the way up between ledges with no tunnel: caves in from the ledge at an angle, coming out on the
     # ledge above (floor, angle, angle above, passages, passages above)
     'route': [(5, 0, 0, 40, 30), (4, 90, 90, 40, 30), (2, 90, 90, 25, 15)],
@@ -533,6 +542,8 @@ SPAWNS = {
     'Slowpoke Well B1F': ('Slowpoke Well', 'B1F'),
     # the chambers hold Unown only (Bulbapedia lists them per form, so there is no table to fetch)
     'Ruins of Alph': {'land': {'Unown': 1.0}},
+    # the wreck's guards in the anime
+    'I.S.S. Raspberry': {'land': {'Remoraid': 70.0, 'Mantine': 30.0}},
 }
 # Bulbapedia's names that the server spells differently.
 MONSTER_NAMES = {'Nidoran♀': 'Nidorana', 'Nidoran♂': 'Nidorano'}
@@ -838,12 +849,13 @@ class Prefab:
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
 
 
-def floor_down_ids():
-    """Items that take players down a floor when they step on them (items.xml floorchange down)."""
+def floor_down_ids(way='down'):
+    """Items that take players down a floor when they step on them (items.xml floorchange down), or
+    with way '[a-z]+' any floor change."""
     xml = open(os.path.join(ROOT, 'core/server/data/items/items.xml'), encoding='latin-1').read()
     out = set()
     for m in re.finditer(r'<item\s+(?:id="(\d+)"|fromid="(\d+)"\s+toid="(\d+)")[^>]*?(?:/>|>(.*?)</item>)', xml, re.S):
-        if m.group(4) and re.search(r'key="floorchange" value="down"', m.group(4)):
+        if m.group(4) and re.search(r'key="floorchange" value="%s"' % way, m.group(4)):
             a = int(m.group(1) or m.group(2))
             out |= set(range(a, int(m.group(1) or m.group(3)) + 1))
     return out
@@ -1741,6 +1753,14 @@ def landing(x, y, facing):
     return {(x + dx, y + dy * k) for dx in (-1, 0, 1) for k in (1, 2, 3)}
 
 
+def wreck_tiles(data):
+    """WRECK's tiles, keyed by where they go, without house ids."""
+    x0, y0, x1, y1 = WRECK['src']
+    ox, oy = WRECK['dst'][0] - x0, WRECK['dst'][1] - y0
+    raw = pvmap.read_region_raw(None, x0, y0, x1, y1, WRECK['floors'], data)
+    return {(x + ox, y + oy, z): pvmap.RawTile(0, t.flags, t.ground, t.children) for (x, y, z), t in raw.items()}
+
+
 def build_cave(cave, brushes, present, rng):
     """One cave floor, made like Kanto's caves: mountain top ground carved out of solid mountain,
     patches of rocky ground, debris and stones on the floor and candles on the walls. Its mouths
@@ -2383,6 +2403,12 @@ def build(base, out_path):
     below = underground_tiles(base_data, brushes)
     assert not set(below) & set(prefab_tiles), 'an underground piece overlaps a building'
     prefab_tiles.update(below)
+    wreck = wreck_tiles(base_data)
+    wx0, wy0 = WRECK['dst']
+    wx1, wy1 = wx0 + WRECK['src'][2] - WRECK['src'][0], wy0 + WRECK['src'][3] - WRECK['src'][1]
+    assert (terrain[wy0 - f.y0 - 2:wy1 - f.y0 + 3, wx0 - f.x0 - 2:wx1 - f.x0 + 3] == WATER).all() \
+        and not set(wreck) & set(prefab_tiles), 'the wreck is not out at sea'
+    prefab_tiles.update(wreck)
 
     for (x, y, z) in prefab_tiles:
         if z == Z and f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
@@ -2432,6 +2458,18 @@ def build(base, out_path):
     slevel, silver_ramps, silver_holes, bored, up_ground, up_deco, ledges, silver_keep, silver_places = plan_silver(f, mlevel, ravines | (terrain == STAIRS))
     changed = slevel != mlevel
     assert not (changed & (~gen | present)).any(), 'Mt. Silver over existing tiles'
+    shrine, guards = T.ho_oh_shrine()
+    hx, hy = SILVER['shrine']
+    top_z = Z - SILVER['top']
+    for (dx, dy), (brush, items) in shrine.items():
+        x, y = hx + dx, hy + dy
+        iy, ix = y - f.y0, x - f.x0
+        assert (slevel[iy - 2:iy + 3, ix - 2:ix + 3] == SILVER['top']).all() and not silver_keep[iy, ix], \
+            'Ho-Oh Shrine off the summit at %d,%d' % (x, y)
+        up_ground[(x, y, top_z)] = brush
+        if items:
+            up_deco[(x, y, top_z)] = items
+    shrine_guards = [(MONSTER_NAMES.get(n, n), hx + dx, hy + dy, top_z) for n, dx, dy in guards]
     mlevel = slevel.astype(np.uint8)
     terrain[changed & (mlevel > 0) & ~np.isin(terrain, [MOUNTAIN, CAVE_FLOOR])] = MOUNTAIN
     lower, upper_ledges = SILVER['lower'], ledges & (mlevel > SILVER['lower'])
@@ -2716,7 +2754,19 @@ def build(base, out_path):
             break
         reached = grown
     walk_ok &= reached
-    spawns = []
+    spawns = list(shrine_guards)
+    # on board the wreck: its wooden floors (no ground of the brushes'), where nothing blocks or leads
+    # up or down
+    aboard = []
+    changes_floor = floor_down_ids('[a-z]+') | {STAIRS_UP['ladder'][0]}
+    for (x, y, z), t in sorted(wreck.items()):
+        ids = ([t.ground] if t.ground is not None else []) + pvmap.child_item_ids(t.children)
+        if ids and ids[0] not in brushes.by_item and ids[0] not in WATER_IDS and z in (6, 7) \
+                and not any(otb.blocks(i) or i in changes_floor for i in ids):
+            aboard.append((x, y, z))
+    wreck_rng = np.random.default_rng(97)
+    for k in wreck_rng.permutation(len(aboard))[:WRECK['spawns']]:
+        spawns.append((pick(wreck_rng, spawn_table(WRECK['name'])), *aboard[k]))
     cand = np.argwhere(walk_ok & (rng.random((f.h, f.w)) < 1 / 210.0) & (X < 3049))
     for iy, ix in cand:
         table = spawn_table(str(route_of[iy, ix]))
