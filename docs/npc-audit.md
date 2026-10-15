@@ -10,10 +10,10 @@ never see as a blue word, and questions that expect yes or no without showing th
 | --- | --- |
 | NPC files | 900 |
 | Placed on the map | 715 |
-| Placed, with nothing to fix | 212 |
+| Placed, with nothing to fix | 222 |
 | Greeting shows no blue word although the NPC answers to some | 411 |
 | Answers to a word it never shows in blue | 487 |
-| Own script asks a yes/no question without {yes} | 48 |
+| Own script asks a yes/no question without {yes} | 0 |
 
 NPC files not placed on the map are left out below; they are listed at the end.
 
@@ -21,42 +21,6 @@ NPC files not placed on the map are left out below; they are listed at the end.
 
 One fix here covers every NPC that uses it.
 
-- **Travel module (every travel NPC)** (`core/server/data/npc/lib/npcsystem/modules.lua`):
-  - `module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. '?', cid)`
-  - `module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. ' for ' .. parameters.cost .. ' dollars?', cid)`
-- **Outfit module** (`core/server/data/npc/lib/npcsystem/modules.lua`):
-  - `module.npcHandler:say('Do you want ' .. keywords[1] .. ' ' .. (addon == 0 and "outfit" or "addon") .. ' for ' .. items .. '?', cid)`
-- **NPC battles (gym leaders, trainers, Elite Four)** (`core/server/data/lib/ps/systems/001-npcBattle.lua`):
-  - "Do you really want to battle with me?%s%s"
-- **`npc/scripts/rangerClub.lua`** (24 NPCs):
-  - "Oh, you want to receive a promotion in the Ranger Club?"
-  - "These are the details of this task, do you accept it?"
-  - "You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task?"
-  - "You really want to be part of the Ranger Club?"
-  - "You really want to challenge this boss?"
-- **`npc/scripts/bank.lua`** (19 NPCs):
-  - "Alright, it's done. Is there something else I can do for you?"
-  - "Are you sure do you want to deposit all your money?"
-  - "Are you sure do you want to withdraw all your money?"
-  - "Do you really want to transfer %s dollars to %s?"
-  - "So you want to transfer %s dollar(s) to?"
-- **`npc/scripts/tutorial_quests.lua`** (10 NPCs):
-  - "The Ranger Club is a place for trainers that seeks adventures. At the Ranger Club you will have the opportunity to advance on Ranks and be a successful Ranger. There you will have several missions that give you points to move up in ranks. Each mission will give you rewards and the possibility of facing a Pokemon Boss. What you are waiting for? Each city has a representative of the Ranger Club!"
-  - "You really want to skip the tutorial?"
-- **`npc/scripts/shop_mastery.lua`** (9 NPCs):
-  - "You want to exchange %s mastery token%s%s for %sx %s?"
-- **`npc/scripts/travels.lua`** (7 NPCs):
-  - "Do you really want go to %s? This will cost you %s dollars."
-- **`npc/scripts/tm_remover.lua`** (2 NPCs):
-  - "Ok, now what is your Pokemon move that you want to replace with that TM? Type the name exactly!"
-  - "You really want to move the TM %s from your %s to replace the move %s?"
-  - "You really want to remove the move %s from your %s?"
-- **`npc/scripts/casinoMerchant.lua`** (2 NPCs):
-  - "You want to exchange %s poke coins for a %s?"
-- **`npc/scripts/shop_pokemonShop.lua`** (2 NPCs):
-  - "Do you want to sell your %s for %s dollars plus %s dollars for each level?"
-  - "Do you want to sell: %s For %s dollars?"
-  - "Ok... So what Pokemon do you want to sell?"
 
 ## By script
 
@@ -241,10 +205,6 @@ Most often hidden: battle / duel / fight (170), tm (8), help / mission / quest /
 | Tyrone Reetz | battle / duel / fight | no blue word |
 | West | battle / duel / fight | no blue word |
 | Yushiro Lee | battle / duel / fight | no blue word |
-
-Questions without {yes}:
-
-- Giovanni: "So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?"
 
 ### `quest_default.lua` (62 NPCs)
 
@@ -534,72 +494,6 @@ Most often hidden: dismiss / leave (9).
 | Jarom | dismiss / leave | ok |
 | Koby | dismiss / leave | ok |
 
-Questions without {yes}:
-
-- Ader: "Are you ready to the dungeon?"
-- Ader: "Are you ready to the next level?"
-- Ader: "Do you really want to join into the %s Mastery?"
-- Ader: "Do you really want to leave the mastery?"
-- Ader: "Do you want to join into the %s Mastery?"
-- Ader: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Ader: and 1 more
-- Dax: "Are you ready to the dungeon?"
-- Dax: "Are you ready to the next level?"
-- Dax: "Do you really want to join into the %s Mastery?"
-- Dax: "Do you really want to leave the mastery?"
-- Dax: "Do you want to join into the %s Mastery?"
-- Dax: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Dax: and 1 more
-- Darus: "Are you ready to the dungeon?"
-- Darus: "Are you ready to the next level?"
-- Darus: "Do you really want to join into the %s Mastery?"
-- Darus: "Do you really want to leave the mastery?"
-- Darus: "Do you want to join into the %s Mastery?"
-- Darus: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Darus: and 1 more
-- Dax: "Are you ready to the dungeon?"
-- Dax: "Are you ready to the next level?"
-- Dax: "Do you really want to join into the %s Mastery?"
-- Dax: "Do you really want to leave the mastery?"
-- Dax: "Do you want to join into the %s Mastery?"
-- Dax: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Dax: and 1 more
-- Eddie: "Are you ready to the dungeon?"
-- Eddie: "Are you ready to the next level?"
-- Eddie: "Do you really want to join into the %s Mastery?"
-- Eddie: "Do you really want to leave the mastery?"
-- Eddie: "Do you want to join into the %s Mastery?"
-- Eddie: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Eddie: and 1 more
-- Isak: "Are you ready to the dungeon?"
-- Isak: "Are you ready to the next level?"
-- Isak: "Do you really want to join into the %s Mastery?"
-- Isak: "Do you really want to leave the mastery?"
-- Isak: "Do you want to join into the %s Mastery?"
-- Isak: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Isak: and 1 more
-- Jacob: "Are you ready to the dungeon?"
-- Jacob: "Are you ready to the next level?"
-- Jacob: "Do you really want to join into the %s Mastery?"
-- Jacob: "Do you really want to leave the mastery?"
-- Jacob: "Do you want to join into the %s Mastery?"
-- Jacob: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Jacob: and 1 more
-- Jarom: "Are you ready to the dungeon?"
-- Jarom: "Are you ready to the next level?"
-- Jarom: "Do you really want to join into the %s Mastery?"
-- Jarom: "Do you really want to leave the mastery?"
-- Jarom: "Do you want to join into the %s Mastery?"
-- Jarom: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Jarom: and 1 more
-- Koby: "Are you ready to the dungeon?"
-- Koby: "Are you ready to the next level?"
-- Koby: "Do you really want to join into the %s Mastery?"
-- Koby: "Do you really want to leave the mastery?"
-- Koby: "Do you want to join into the %s Mastery?"
-- Koby: "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?"
-- Koby: and 1 more
-
 ### `shop_mastery.lua` (9 NPCs)
 
 Most often hidden: opcoes / option (9).
@@ -678,74 +572,11 @@ Most often hidden: esconde / hidden / seek (5).
 | Catherin Dana | offer / trade | ok |
 | Curt Raeburn | offer / trade | ok |
 
-### `daycareFemale.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Old Lady | - | ok |
-
-Questions without {yes}:
-
-- Old Lady: "And how much train time do you want? The options are: %s"
-- Old Lady: "Do you really want to cancel your Pokemon training? He will not gain any experience points and generate eggs, but you still have to pay the amount."
-- Old Lady: "Do you really want to remove the plate that you deposited here?"
-- Old Lady: "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter and an additional 1, 2 or 4 dollars per minute that he stay here (depends on the level of your Pokemon)."
-- Old Lady: "Do you want to remove your Pokemon from the daycare?"
-- Old Lady: "Oh, you want to deposit a plate here huh? So what plate do you want to deposit?"
-- Old Lady: and 3 more
-
-### `daycareMale.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Old Man | - | ok |
-
-Questions without {yes}:
-
-- Old Man: "And how much train time do you want? The options are: %s"
-- Old Man: "Do you really want to cancel your Pokemon training? He will not gain any experience points and generate eggs, but you still have to pay the amount."
-- Old Man: "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter and an additional 1, 2 or 4 dollars per minute that he stay here (depends on the level of your Pokemon)."
-- Old Man: "Do you want to remove your Pokemon from the daycare?"
-- Old Man: "Please, say the name of a Pokemon! What the name of your Pokemon that you want to leave here?"
-- Old Man: "So what's the name of your Pokemon that you want to leave here?"
-
-### `eggmove_regenerator.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Haywood Grady | - | ok |
-
-Questions without {yes}:
-
-- Haywood Grady: "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget your current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule."
-- Haywood Grady: "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule."
-- Haywood Grady: "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue?"
-
-### `eggmove_remover.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Kemp Drummond | - | ok |
-
-Questions without {yes}:
-
-- Kemp Drummond: "Here you can also generate an Egg Move to an old Pokemon from egg that you have. Do you want to do that?"
-- Kemp Drummond: "So, do you really want to remove your Pokemon Egg Move?"
-- Kemp Drummond: "This will cost you %s dollars, you are sure?"
-- Kemp Drummond: "YOU REALLY WANT TO REMOVE YOUR POKEMON EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!"
-- Kemp Drummond: "Yes, I can change the move that your Pokemon forgot to learn a Egg move. What is your Pokemon move that you want to replace with that Egg Move? Type the name exactly!"
-- Kemp Drummond: "Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the currently generated. Do you want to do that?"
-- Kemp Drummond: and 2 more
-
 ### `elitefour_enter.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Drogo Toby | elite | no blue word |
-
-Questions without {yes}:
-
-- Drogo Toby: "Oh, you think that you are ready to challenge the Elite Four?"
 
 ### `event_anniversary.lua` (1 NPCs)
 
@@ -753,22 +584,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | Murray Aaron | gift / presente, opcoes / option | ok |
 
-Questions without {yes}:
-
-- Murray Aaron: "Do you really want to exchange 'psoul' letters for a %s?"
-- Murray Aaron: "You want to exchange %s %s for a %s?"
-- Murray Aaron: "You want to exchange %s anniversary token for a %s?"
-
 ### `event_anniversary_letters.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
-| Timothy Kelvin | gift / letra / letter / presente, opcoes / option | ok |
-
-Questions without {yes}:
-
-- Timothy Kelvin: "And how much letters do you want do exchange?"
-- Timothy Kelvin: "You want to exchange %s %s for %s anniversary token(s)?"
+| Timothy Kelvin | gift / letra / letter / presente / token, opcoes / option | ok |
 
 ### `event_halloween.lua` (1 NPCs)
 
@@ -776,19 +596,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | Trevor | opcoes / option | ok |
 
-Questions without {yes}:
-
-- Trevor: "You want to exchange %s halloween tokens for a %s?"
-
 ### `event_halloween_hermitwo.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Hermitwo | dia das bruxas / gift / halloween / presente, opcoes / option / pocoes / potion | ok |
-
-Questions without {yes}:
-
-- Hermitwo: "You want to exchange %s for the %s?"
 
 ### `event_halloween_selam.lua` (1 NPCs)
 
@@ -796,35 +608,17 @@ Questions without {yes}:
 | --- | --- | --- |
 | Selam | ball / bola / opcoes / option, dia das bruxas / gift / halloween / presente | ok |
 
-Questions without {yes}:
-
-- Selam: "You want to exchange %s more %s empty poke balls for %s empty enchanted balls?"
-
 ### `fi_battletower.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Rafael Townson | enter | ok |
 
-Questions without {yes}:
-
-- Rafael Townson: "Do you want to enter the Fifteen mode? This will cost you %s dollars."
-- Rafael Townson: "Do you want to enter the Ten mode? This will cost you %s dollars."
-- Rafael Townson: "Do you want to enter the Twenty mode? This will cost you %s dollars."
-
 ### `fi_stadiumarena.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Kurt Petrillose | enter | ok |
-
-Questions without {yes}:
-
-- Kurt Petrillose: "Do you want to enter the Cooperative Elite mode? This will cost you %s dollars."
-- Kurt Petrillose: "Do you want to enter the Cooperative Titan mode? This will cost you %s dollars."
-- Kurt Petrillose: "Do you want to enter the Gladiator mode? This will cost you %s dollars."
-- Kurt Petrillose: "Do you want to enter the Survive Challenge mode? This will cost you %s dollars."
-- Kurt Petrillose: "Do you want to enter the Survive Hardcore mode? This will cost you %s dollars."
 
 ### `held_remove.lua` (1 NPCs)
 
@@ -838,40 +632,17 @@ Questions without {yes}:
 | --- | --- | --- |
 | Nurse Joy | recuperar / vida | no blue word |
 
-Questions without {yes}:
-
-- Nurse Joy: "You really want to live in %s?"
-
-### `professorTommy.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Professor Tommy | - | ok |
-
-Questions without {yes}:
-
-- Professor Tommy: "Congratulations on your first catch! Now you must go to the next continent to start your journey. Which city do you want to go to?"
-
 ### `quest_adventurerLucy.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Adventurer Lucy | - | no blue word |
 
-Questions without {yes}:
-
-- Adventurer Lucy: "Hello |PLAYERNAME|, you want to hear a good story?"
-
 ### `quest_agustin.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Agustin | rock | no blue word |
-
-Questions without {yes}:
-
-- Agustin: "Also, I got a letter to deliver to him. You do this favor for me?"
-- Agustin: "Rock? It is an old friend. Hehe, time does not see it."
 
 ### `quest_albert.lua` (1 NPCs)
 
@@ -921,11 +692,6 @@ Questions without {yes}:
 | --- | --- | --- |
 | Bill's Assistant | machine / tradutor / translator | no blue word |
 
-Questions without {yes}:
-
-- Bill's Assistant: "Hey, how are you? I'm busy now, maybe we talk later..."
-- Bill's Assistant: "It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want?"
-
 ### `quest_budJude.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
@@ -948,13 +714,7 @@ Questions without {yes}:
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
-| Chief Vaporeon | chefe / chief, help / mission / quest / task | no blue word |
-
-Questions without {yes}:
-
-- Chief Vaporeon: "A human! Speaking with me! You can understand me? VAPOREONN"
-- Chief Vaporeon: "This is PPOREN amazing! And VAAPP what brings you to VAPOREONN our tribe reviewer?"
-- Chief Vaporeon: "You would not dare VAPP go after this REONN evil thing! I will not VAPPP allow! Our king has sacrificed VAPOREONN for it. You want to use it for evil?"
+| Chief Vaporeon | chefe / chief, deepsoul, help / mission / quest / task | no blue word |
 
 ### `quest_corey.lua` (1 NPCs)
 
@@ -979,14 +739,6 @@ Questions without {yes}:
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Guardian Mantine | amigo / amigos / friend / friends, ball / bola / pokeball / pokebola, deepsoul / recuperar / restore, unown | no blue word |
-
-Questions without {yes}:
-
-- Guardian Mantine: "Correct! Second question... Sometimes I'm strange MANTII and misunderstood. I am the key to what it means and I can TINEE express what you think. Who am I?"
-- Guardian Mantine: "I am simple and efficient... I have improved but INEEE still believe in me. I have several MANN types and properties, and believe me you will be the best. What is it?"
-- Guardian Mantine: "I am simple and efficient... I have improved but still believe in me. I have MANTIIN several types and properties, and believe me INEEE you will be the best. What is it?"
-- Guardian Mantine: "Sometimes I'm strange and MANTIINE misunderstood. I am the key to what it means and MANN I can express what you think. Who am I?"
-- Guardian Mantine: "You that will help MANTT strengthen Deepsoul Stone?"
 
 ### `quest_halloween_lunatticus_exit.lua` (1 NPCs)
 
@@ -1030,30 +782,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | Mateo | crystal / estatua / statue, help / mission / onix / quest / task | no blue word |
 
-Questions without {yes}:
-
-- Mateo: "Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it?"
-
-### `quest_maurice.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Maurice | - | ok |
-
-Questions without {yes}:
-
-- Maurice: "You already done this mission. If you need I can sell you another TV Camera for 1000 dollars, do you want?"
-
 ### `quest_mervKelley.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Merv Kelley | - | no blue word |
-
-Questions without {yes}:
-
-- Merv Kelley: "Hey! Have you heard the latest rumors? There is a mysterious legend in the Orange Archipelago, my friend Adventurer Lucy has not slept in days behind it."
-- Merv Kelley: "Hey! How are you doing?"
 
 ### `quest_misteryGuy.lua` (1 NPCs)
 
@@ -1079,22 +812,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | Officer Jeny | chansey, help / mission / present / presente / quest / task | no blue word |
 
-Questions without {yes}:
-
-- Officer Jeny: "I do not want to see you getting into the affairs of the police without permission, OK?"
-- Officer Jeny: "So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?"
-- Officer Jeny: "You've done this mission and has the old reward, I can renew your reward. Do you want it?"
-
 ### `quest_pistachio.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Pistachio | help / mission / quest / task, map / mapa | no blue word |
-
-Questions without {yes}:
-
-- Pistachio: "Did you know that Butterfree is the evolution of Venonat? Muahahaha."
-- Pistachio: "Did you know that Venomoth is the evolution of Metapod?"
 
 ### `quest_professorJoshRock.lua` (1 NPCs)
 
@@ -1102,33 +824,17 @@ Questions without {yes}:
 | --- | --- | --- |
 | Professor Josh Rock | fosseis / fossil | ok |
 
-Questions without {yes}:
-
-- Professor Josh Rock: "I've been searching the fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them, I need you to deliver a letter for him and help him find the fossils. Do you want help me?"
-- Professor Josh Rock: "You could find a fossil?"
-
 ### `quest_professorMark.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Professor Mark | help / mission / quest / task | ok |
 
-Questions without {yes}:
-
-- Professor Mark: "You've done this mission and has the old reward, I can renew your reward. Do you want it?"
-
 ### `quest_professorOak.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Professor Oak | corrigir / fix | ok |
-
-Questions without {yes}:
-
-- Professor Oak: "Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that?"
-- Professor Oak: "You really want a Bulbasaur?"
-- Professor Oak: "You really want a Charmander?"
-- Professor Oak: "You really want a Squirtle?"
 
 ### `quest_prophetSlowking.lua` (1 NPCs)
 
@@ -1141,10 +847,6 @@ Questions without {yes}:
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Rock | final test / fome / teste final, help / mission / quest / task | ok |
-
-Questions without {yes}:
-
-- Rock: "You've done this mission and has the old reward, I can renew your reward. Do you want it?"
 
 ### `quest_rocketGrunt.lua` (1 NPCs)
 
@@ -1164,32 +866,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | William Rock | fosseis / fossil | ok |
 
-Questions without {yes}:
-
-- William Rock: "Oh! You have a message from my brother for me?"
-- William Rock: "Oh, thanks! So you want to help me in my excavations?"
-- William Rock: "You could find some fossil rock?"
-- William Rock: "You want to help me in my excavations?"
-
-### `saffariZoneEnter.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Jeffrey | - | ok |
-
-Questions without {yes}:
-
-- Jeffrey: "Uh! The Safari Zone! I can take you there for %s dollars. Do you want?"
-
 ### `saffariZoneLeave.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Hugh | safari / saffari / zone | ok |
-
-Questions without {yes}:
-
-- Hugh: "Alright, do you want to back to Fuchsia City?"
 
 ### `shop_ballPaint.lua` (1 NPCs)
 
@@ -1197,22 +878,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | Rofie | opcoes / option | ok |
 
-Questions without {yes}:
-
-- Rofie: "Ball paint - Epic ball detected, bug abuser?"
-- Rofie: "First, you want to see the options of what category? %s"
-- Rofie: "You want to paint your pokeball with option %s for %s dollars and a %s ticket?"
-- Rofie: "You want to paint your pokeball with option %s for %s dollars?"
-
 ### `shop_frontierIsland.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
-| Jess Dennis | opcoes / option | ok |
-
-Questions without {yes}:
-
-- Jess Dennis: "You want to exchange %s frontier tokens for a %s?"
+| Jess Dennis | opcoes / option / reward, token | ok |
 
 ### `sketch_reset.lua` (1 NPCs)
 
@@ -1220,51 +890,11 @@ Questions without {yes}:
 | --- | --- | --- |
 | Saxon Ashton | offer / trade | ok |
 
-Questions without {yes}:
-
-- Saxon Ashton: "So, you really want to reset your Smeargle %s? This will cost you %sx Artist's Pallete."
-
-### `tournament.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Joey | - | ok |
-
-Questions without {yes}:
-
-- Joey: "You really want to join the %s tournament? (This will cost you %s dollars)"
-- Joey: "You really want to unsubscribe to the tournament?"
-- Joey: "You want to exchange %s tournament token%s for a %s?"
-
-### `tournamentLeave.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Zyon | - | ok |
-
-Questions without {yes}:
-
-- Zyon: "You really want to leave this room? You can be disqualified for that tournament."
-
-### `vitamin_reset.lua` (1 NPCs)
-
-| NPC | Hidden words | Greeting |
-| --- | --- | --- |
-| Josh Pillberg | - | ok |
-
-Questions without {yes}:
-
-- Josh Pillberg: "I can reset your Pokemon vitamin's. Do you want that? This will cost %s soul coin."
-
 ### `wavearena.lua` (1 NPCs)
 
 | NPC | Hidden words | Greeting |
 | --- | --- | --- |
 | Leroi Bradley | enter | ok |
-
-Questions without {yes}:
-
-- Leroi Bradley: "Do you want to enter the Colosseum Arena? This will cost you %s dollars."
 
 ## Not placed on the map
 

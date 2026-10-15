@@ -95,13 +95,48 @@ def braced(texts):
 
 
 OPEN_QUESTION = re.compile(r'^\W*(how|what|which|where|who|why|when|sorry)\b', re.I)
+# the last question of a line asks for yes or no ("..., do you want it?")
+YES_NO_QUESTION = re.compile(r'\b(do|does|did|are|is|will|would|can|could|shall|should|have|has|may|want)\b[^.!?]*\?', re.I)
+# questions that are not answered with yes or no although the script answers "yes" elsewhere:
+# riddles, trivia, small talk and questions that ask for a name, amount or choice
+NOT_YES_NO = {
+    "Rock? He's an old friend. Hehe, I haven't seen him in ages.",
+    "Hey, how are you? I'm busy now, maybe we talk later...",
+    'A human! Speaking with me! Can you understand me? VAPOREONN',
+    'This is PPOREN amazing! And VAAPP what brings you to VAPOREONN our tribe, visitor?',
+    "Correct! Second question... Sometimes I'm strange MANTII and misunderstood. I am the key to meaning and I can TINEE express what you think. What am I?",
+    "Correct! Third and last question... On a journey you can do nothing without them. They TINN will always be by your side to MANTII support you when you need it. But you don't give them orders, that is disrespectful. What are they?",
+    "I am simple and efficient... I've been improved, but INEEE people still trust me. I come in many MANN types and properties, and believe me, I'll make you the best. What am I?",
+    "I am simple and efficient... I've been improved, but people still trust me. I come in MANTIIN many types and properties, and believe me INEEE, I'll make you the best. What am I?",
+    "On a journey you can do nothing without them. They will always MANTINN be by your side to support you when you need it. But you MANTINNE don't give them orders, that is disrespectful. What are they?",
+    "Sometimes I'm strange and MANTIINE misunderstood. I am the key to meaning and MANN I can express what you think. What am I?",
+    "Hey! Have you heard the latest rumors? There is a mysterious legend in the Orange Archipelago. My friend Adventurer Lucy hasn't slept in days chasing it.",
+    'Hey! How are you doing?',
+    'Did you know that Butterfree is the evolution of Venonat? Muahahaha.',
+    'Did you know that Venomoth is the evolution of Metapod?',
+    'Ball paint - Epic ball detected, bug abuser?',
+    "Alright, it's done. Is there something else I can do for you?",
+    "So you're a friend of Bill's? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you meddling in police affairs without permission, OK?",
+    'I do not want to see you getting into the affairs of the police without permission, OK?',
+    "So you're a friend of Bill? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you getting into police affairs without permission, OK?",
+    "Do you understand my dilemma? She doesn't want me anymore... and nothing I do can {help} me.",
+    "You don't give up, do you? I WANT A {BATTLE}!",
+    "I've waited for this since our childhood... does he want me now? I need a new {lipstick} first.",
+    'Something went wrong! Please try again later. Do you have enough referral points?',
+}
 
 
 def is_question(s):
-    """A yes/no question: open questions and ones that already offer {choices} don't count."""
+    """A yes/no question. Open questions and ones that offer other {choices} don't count."""
     s = s.strip()
-    return ('?' in s and len(s.split()) >= 3 and not s.startswith('(') and '{' not in s
-            and not OPEN_QUESTION.match(s))
+    if '?' not in s or len(s.split()) < 3 or s.startswith('(') or s in NOT_YES_NO:
+        return False
+    last = re.findall(r'[^.!?]*\?', s)[-1]
+    if OPEN_QUESTION.match(last) or re.search(r'\b(how|what|which|where|who|whom)\b', last, re.I):
+        return False
+    if '{' in s:
+        return bool(YES_NO_QUESTION.search(last)) and '{' not in last
+    return not OPEN_QUESTION.match(s)
 
 
 def says_yes(s):
@@ -109,8 +144,12 @@ def says_yes(s):
     return '{yes' in low
 
 
+def answers_yes(code, texts):
+    return bool(YES_RE.search(code)) or any(t.strip().lower() == 'yes' for t in texts)
+
+
 def questions_without_yes(code, texts):
-    if not YES_RE.search(code):
+    if not answers_yes(code, texts):
         return []
     return sorted({t for t in texts if is_question(t) and not says_yes(t)})
 
