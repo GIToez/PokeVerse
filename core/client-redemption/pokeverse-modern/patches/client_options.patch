@@ -120,7 +120,84 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
 +++ b/modules/client_options/options.lua
-@@ -175,7 +175,7 @@
+@@ -30,17 +30,22 @@
+ 
+ -- LuaFormatter off
+ local buttons = { {
+-
+     text = "Controls",
+-    icon = "/images/icons/icon_controls",
+-    open = "generalPanel",
++    icon = "/modules/game_hotkeys/images/icon_keyboard",
++    open = "keybindsPanel",
++    mainText = "Key bindings",
++    callbackFunc = function() setKeybindsFilter(nil) end,
+     subCategories = { {
+-        text = "General Hotkeys",
+-        open = "keybindsPanel"
++        text = "Item hotkeys",
++        open = "keybindsPanel",
++        callbackFunc = function() setKeybindsFilter('items') end
++    }, {
++        text = "General",
++        open = "generalPanel"
+     } }
+ }, {
+     text = "Interface",
+-    icon = "/images/icons/icon_interface",
++    icon = "/modules/game_hotkeys/images/icon_layout",
+     open = "interface",
+     subCategories = { {
+         text = "HUD",
+@@ -54,7 +59,7 @@
+     } }
+ }, {
+     text = "Graphics",
+-    icon = "/images/icons/icon_graphics",
++    icon = "/modules/game_hotkeys/images/icon_monitor",
+     open = "graphicsPanel",
+     subCategories = { {
+         text = "Effects",
+@@ -62,7 +67,7 @@
+     } }
+ }, {
+     text = "Sound",
+-    icon = "/images/icons/icon_sound",
++    icon = "/modules/game_hotkeys/images/icon_sound",
+     open = "soundPanel",
+     subCategories = {{
+         text = "Battle Sounds",
+@@ -70,24 +75,20 @@
+     }, {
+         text = "UI Sounds",
+         open = "iuSoundPanel"
+-    }} 
++    }}
+ }, {
+     text = "Misc.",
+-    icon = "/images/icons/icon_misc",
++    icon = "/modules/game_hotkeys/images/icon_dots",
+     open = "misc",
+-    subCategories = { --[[ {
+-        text = "GamePlay",
+-        open = "GamePlay"
+-    },  {
+-        text = "Screenshots",
+-        open = "Screenshots"
+-    }, ]] {
++    subCategories = { {
+         text = "Help",
+         open = "miscHelp"
+     } }
+ } }
+ 
+ -- LuaFormatter on
++local selectedTab, selectedPage
++
+ local extraWidgets = {
+     audioButton = nil,
+     optionsButton = nil,
+@@ -175,7 +176,7 @@
          setOption('soundMaster', restoreVolume)
      else
          options.soundMaster.lastVolume = current
@@ -129,7 +206,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -293,6 +293,73 @@
+@@ -293,6 +294,73 @@
  
      setupComboBox()
  
@@ -203,7 +280,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +589,8 @@
+@@ -522,6 +590,8 @@
  end
  
  function controller:onGameStart()
@@ -212,7 +289,351 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -930,13 +999,17 @@
+@@ -631,6 +701,7 @@
+ end
+ 
+ function hide()
++    stopKeyCapture()
+     controller.ui:hide()
+     if extraWidgets.optionsButton then
+         extraWidgets.optionsButton:setOn(false)
+@@ -646,15 +717,8 @@
+         hide()
+         return
+     end
+-    if not controller.ui.openedCategory then
+-        local firstCategory = controller.ui.optionsTabBar:getChildByIndex(1)
+-        controller.ui.openedCategory = firstCategory
+-        firstCategory.Button:onClick()
+-        local panelToShow = panels[firstCategory.open]
+-        if panelToShow then
+-            panelToShow:show()
+-            controller.ui.selectedOption = panelToShow
+-        end
++    if not selectedTab then
++        selectTab(1)
+     end
+     show()
+     updateKeybinds()
+@@ -672,182 +736,166 @@
+     -- TODO: Implement Show Advanced Options functionality in the near future
+ end
+ 
+-local function toggleSubCategories(parent, isOpen)
+-    for subId, _ in ipairs(parent.subCategories) do
+-        local subWidget = parent:getChildById(subId)
+-        if subWidget then
+-            subWidget:setVisible(isOpen)
++-- every tab opens on its own panel; the panels added with addButton follow as sub tabs
++local function pagesOf(button)
++    local pages = { { text = button.mainText or 'General', open = button.open, callbackFunc = button.callbackFunc } }
++    for _, sub in ipairs(button.subCategories or {}) do
++        table.insert(pages, sub)
++    end
++    return pages
++end
++
++-- the option pages are built from Qt frame panels: give them the PokeVerse card look instead,
++-- hiding the four 2px edge widgets the SmallReversedQtPanel style draws its frame with
++local function restyleCards(widget)
++    for _, child in ipairs(widget:getChildren()) do
++        if child:getStyleName() == 'SmallReversedQtPanel' and not child.pvCard then
++            child.pvCard = true
++            -- an image on a widget with no size (hidden cards are 0 high) resizes it to the image
++            local size = child:getSize()
++            child:setImageSource('/modules/game_dailytasks/images/card')
++            child:setImageBorder(8)
++            child:setSize(size)
++            for index = 1, math.min(4, child:getChildCount()) do
++                local edge = child:getChildByIndex(index)
++                if edge:getStyleName() == 'UIWidget' and edge:getChildCount() == 0 then
++                    edge:hide()
++                end
++            end
+         end
++        restyleCards(child)
+     end
+-    parent:setHeight(isOpen and parent.openedSize or parent.closedSize)
+-    parent.opened = isOpen
+-    parent.Button.Arrow:setVisible(not isOpen)
+ end
+ 
+-local function close(parent)
+-    if parent.subCategories then
+-        toggleSubCategories(parent, false)
++-- Redemption sizes its cards for 13px checkboxes; ours are taller, so cards grow to fit
++local function fitCards(widget)
++    local grew = false
++    for _, child in ipairs(widget:getChildren()) do
++        if child:isVisible() then
++            grew = fitCards(child) or grew
++            if child.pvCard then
++                local bottom = 0
++                for _, inner in ipairs(child:getChildren()) do
++                    if inner:isVisible() then
++                        bottom = math.max(bottom, inner:getY() + inner:getHeight() + inner:getMarginBottom() - child:getY())
++                    end
++                end
++                if bottom > child:getHeight() then
++                    child:setHeight(bottom + 4)
++                    grew = true
++                end
++            end
++        end
+     end
++    return grew
+ end
+ 
+-local function open(parent)
+-    local oldOpen = controller.ui.openedCategory
+-    if oldOpen and oldOpen ~= parent then
+-        close(oldOpen)
+-    end
+-    toggleSubCategories(parent, true)
+-    controller.ui.openedCategory = parent
++local function fitCardsSoon(panel, passes)
++    addEvent(function()
++        if panel:isVisible() and fitCards(panel) and passes > 1 then
++            fitCardsSoon(panel, passes - 1)
++        end
++    end)
+ end
+ 
+-function selectCharacterPage()
+-    local selectedOption = controller.ui.selectedOption
+-    if selectedOption then
+-        selectedOption:hide()
+-    end
+-    if controller.ui.InfoBase then
+-        controller.ui.InfoBase:setVisible(true)
+-        controller.ui.InfoBase:show()
++local function showPage(page)
++    if controller.ui.selectedOption then
++        controller.ui.selectedOption:hide()
++    end
++    local panel = page and panels[page.open]
++    if not panel then
++        return
++    end
++    restyleCards(panel)
++    panel:show()
++    fitCardsSoon(panel, 3)
++    controller.ui.selectedOption = panel
++    if page.callbackFunc then
++        page.callbackFunc()
+     end
+ end
+ 
+-local function createSubWidget(parent, subId, subButton)
+-    local subWidget = g_ui.createWidget("OptionsCategory", parent)
+-    subWidget:setId(subId)
+-    subWidget.Button.Icon:setIcon(subButton.icon)
+-    subWidget.Button.Title:setText(subButton.text)
+-    subWidget:setVisible(false)
+-    subWidget.open = subButton.open
+-    subWidget.callbackFunc = subButton.callbackFunc
+-
+-    function subWidget.Button.onClick()
+-        local selectedOption = controller.ui.selectedOption
+-        closeCharacterButtons()
+-        parent.Button:setChecked(false)
+-        parent.Button.Arrow:setVisible(true)
+-        parent.Button.Arrow:setImageSource("")
+-        subWidget.Button:setChecked(true)
+-        subWidget.Button.Arrow:setVisible(true)
+-        subWidget.Button.Arrow:setImageSource("/images/ui/icon-arrow7x7-right")
+-
+-        if selectedOption then
+-            selectedOption:hide()
+-        end
+-
+-        local panelToShow = panels[subWidget.open]
+-        if panelToShow then
+-            panelToShow:show()
+-            panelToShow:setVisible(true)
+-            controller.ui.selectedOption = panelToShow
+-        else
+-            print("Error: panelToShow is nil or does not exist in panels")
+-        end
+-        if subWidget.callbackFunc then
+-            subWidget.callbackFunc()
+-        end
++local function selectPage(index)
++    local button = buttons[selectedTab]
++    local pages = button and pagesOf(button) or {}
++    if not pages[index] then
++        return
+     end
++    selectedPage = index
++    for i, widget in ipairs(controller.ui.optionsSubTabBar:getChildren()) do
++        widget:setChecked(i == index)
++    end
++    showPage(pages[index])
++end
+ 
+-    subWidget:addAnchor(AnchorHorizontalCenter, "parent", AnchorHorizontalCenter)
+-    if subId == 1 then
+-        subWidget:addAnchor(AnchorTop, "parent", AnchorTop)
+-        subWidget:setMarginTop(20)
+-    else
+-        subWidget:addAnchor(AnchorTop, "prev", AnchorBottom)
+-        subWidget:setMarginTop(-1)
++function selectTab(id, pageIndex)
++    local button = buttons[id]
++    if not button then
++        return
++    end
++    selectedTab = id
++    for i, widget in ipairs(controller.ui.optionsTabBar:getChildren()) do
++        widget:setChecked(i == id)
++    end
++    local bar = controller.ui.optionsSubTabBar
++    bar:destroyChildren()
++    for index, page in ipairs(pagesOf(button)) do
++        local sub = g_ui.createWidget('OptSubTab', bar)
++        sub:setText(tr(page.text))
++        sub:setWidth(sub:getTextSize().width + 28)
++        sub.onClick = function()
++            selectPage(index)
++        end
++    end
++    selectPage(pageIndex or 1)
++end
++
++local function layoutTabs(bar)
++    local count = bar:getChildCount()
++    if count == 0 then
++        return
++    end
++    local width = math.floor((bar:getWidth() - 8 * (count - 1)) / count)
++    for _, tab in ipairs(bar:getChildren()) do
++        tab:setWidth(width)
+     end
++end
+ 
+-    return subWidget
++function selectCharacterPage()
+ end
+ 
+-function configureCharacterCategories()
+-    controller.ui.optionsTabBar:destroyChildren()
++function closeCharacterButtons()
++end
+ 
++function configureCharacterCategories()
++    local bar = controller.ui.optionsTabBar
++    bar:destroyChildren()
+     for id, button in ipairs(buttons) do
+-        local widget = g_ui.createWidget("OptionsCategory", controller.ui.optionsTabBar)
+-        widget:setId(id)
+-        widget.Button.Icon:setIcon(button.icon)
+-        widget.Button.Title:setText(button.text)
+-        widget.open = button.open
+-
+-        if button.subCategories then
+-            widget.subCategories = button.subCategories
+-            widget.subCategoriesSize = #button.subCategories
+-            widget.Button.Arrow:setVisible(true)
+-
+-            for subId, subButton in ipairs(button.subCategories) do
+-                local subWidget = createSubWidget(widget, subId, subButton)
+-                if button.text == "Controls" then
+-                    subWidget.Button.Title:setMarginLeft(-5)
+-                end
+-            end
+-        end
+-
+-        widget:addAnchor(AnchorHorizontalCenter, "parent", AnchorHorizontalCenter)
+-        if id == 1 then
+-            widget:addAnchor(AnchorTop, "parent", AnchorTop)
+-            widget:setMarginTop(10)
+-        else
+-            widget:addAnchor(AnchorTop, "prev", AnchorBottom)
+-            widget:setMarginTop(10)
+-        end
+-
+-        function widget.Button.onClick()
+-            local parent = widget
+-            local oldOpen = controller.ui.openedCategory
+-
+-            if oldOpen and oldOpen ~= parent then
+-                if oldOpen.Button then
+-                    oldOpen.Button:setChecked(false)
+-                    oldOpen.Button.Arrow:setImageSource("/images/ui/icon-arrow7x7-down")
+-                end
+-
+-                close(oldOpen)
+-            end
+-
+-            if parent.subCategoriesSize then
+-                parent.closedSize = parent.closedSize or parent:getHeight() / (parent.subCategoriesSize + 1) + 15
+-                parent.openedSize = parent.openedSize or parent:getHeight() * (parent.subCategoriesSize + 1) - 6
+-
+-                if not parent.opened then
+-                    open(parent)
+-                end
+-            end
+-
+-            widget.Button:setChecked(true)
+-            widget.Button.Arrow:setImageSource("/images/ui/icon-arrow7x7-right")
+-            widget.Button.Arrow:setVisible(true)
+-
+-            if controller.ui.selectedOption then
+-                controller.ui.selectedOption:hide()
+-            end
+-
+-            local panelToShow = panels[parent.open]
+-            if panelToShow then
+-                closeCharacterButtons()
+-                panelToShow:show()
+-                panelToShow:setVisible(true)
+-                controller.ui.selectedOption = panelToShow
+-            else
+-                print("Error: panelToShow is nil or does not exist in panels")
+-            end
+-
+-            controller.ui.openedCategory = parent
++        local tab = g_ui.createWidget('OptTab', bar)
++        tab:setText(tr(button.text))
++        tab:setIcon(button.icon)
++        tab.onClick = function()
++            selectTab(id)
+         end
+     end
++    bar.onGeometryChange = layoutTabs
++    layoutTabs(bar)
++    if selectedTab then
++        selectTab(math.min(selectedTab, #buttons), selectedPage)
++    end
+ end
+ 
+-function closeCharacterButtons()
+-    for i = 1, controller.ui.optionsTabBar:getChildCount() do
+-        local widget = controller.ui.optionsTabBar:getChildByIndex(i)
+-        if widget and widget.subCategories then
+-            for subId, _ in ipairs(widget.subCategories) do
+-                local subWidget = widget:getChildById(subId)
+-                if subWidget then
+-                    subWidget.Button:setChecked(false)
+-                    subWidget.Button.Arrow:setVisible(false)
+-                end
+-            end
+-        end
++function updateSliderFill(bar)
++    local fill = bar and bar:getChildById('fill')
++    if not fill then
++        return
++    end
++    local range = bar:getMaximum() - bar:getMinimum()
++    local width = 0
++    if range > 0 then
++        width = math.floor((bar:getValue() - bar:getMinimum()) / range * (bar:getWidth() - 13)) + 7
+     end
++    fill:setWidth(math.max(0, width))
+ end
+ 
+ function createCategory(text, icon, openPanel, subCategories)
+@@ -930,13 +978,17 @@
      end
  end
  
@@ -231,17 +652,33 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-diff -ruN pristine/modules/client_options/options.otui modules/client_options/options.otui
---- a/modules/client_options/options.otui
-+++ b/modules/client_options/options.otui
-@@ -253,6 +253,7 @@
-       margin-left: 3  
-       !text: tr('Show Advanced Options')
-       text-auto-resize: true
-+      checked: true
-       color: #c0c0c0
-       @onCheckChange: onShowAdvancedOptions(self, self:isChecked())
- 
+@@ -951,19 +1003,15 @@
+     if not controller.ui:isVisible() then
+         show()
+     end
+-    for i = 1, controller.ui.optionsTabBar:getChildCount() do
+-        local widget = controller.ui.optionsTabBar:getChildByIndex(i)
+-        if widget and widget.Button.Title:getText() == category then
+-            widget.Button:onClick()
+-            if subcategory and widget.subCategories then
+-                for subId, _ in ipairs(widget.subCategories) do
+-                    local subWidget = widget:getChildById(subId)
+-                    if subWidget and subWidget.Button.Title:getText() == subcategory then
+-                        subWidget.Button:onClick()
+-                        return true
+-                    end
++    for id, button in ipairs(buttons) do
++        if button.text == category then
++            local pageIndex = 1
++            for index, page in ipairs(pagesOf(button)) do
++                if subcategory and page.text == subcategory then
++                    pageIndex = index
+                 end
+             end
++            selectTab(id, pageIndex)
+             return true
+         end
+     end
 diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/client_options/styles/controls/general.otui
 --- a/modules/client_options/styles/controls/general.otui
 +++ b/modules/client_options/styles/controls/general.otui
@@ -276,6 +713,23 @@ diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/c
          id: openMaximized
          !text: tr('Open containers maximized')
  
+@@ -216,16 +240,6 @@
+           local value = modules.client_options.getOption('walkStairsDelay')
+           self:setText(tr('Walk delay after turn: %dms', value))
+ 
+-    QtButton
+-      id: hotkeysButton
+-      !text: tr('Hotkeys Manager')
+-      @onClick: modules.game_hotkeys.show()
+-      anchors.top: prev.bottom
+-      anchors.left: parent.left
+-      margin-top: 12
+-
+-      size: 120 20
+-
+   VerticalScrollBar
+     id: generalScrollBar
+     anchors.top: parent.top
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui

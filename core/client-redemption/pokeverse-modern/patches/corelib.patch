@@ -1,7 +1,61 @@
 diff -ruN pristine/modules/corelib/keybind.lua modules/corelib/keybind.lua
 --- a/modules/corelib/keybind.lua
 +++ b/modules/corelib/keybind.lua
-@@ -49,13 +49,21 @@
+@@ -43,19 +43,74 @@
+   USE = 5,
+   TEXT = 6,
+   TEXT_AUTO = 7,
+-  SPELL = 8
++  SPELL = 8,
++  USE_POKEMON = 9 -- PokeVerse: use the item on the Pokemon the player has out
+ }
+ 
++-- OTML hands numbers back as strings, and a saved list must not carry the bound callbacks
++local function normalizeHotkey(hotkey)
++  hotkey.action = tonumber(hotkey.action)
++  hotkey.hotkeyId = tonumber(hotkey.hotkeyId)
++  hotkey.primary = hotkey.primary and tostring(hotkey.primary) or ""
++  hotkey.secondary = hotkey.secondary and tostring(hotkey.secondary) or ""
++  local data = hotkey.data or {}
++  hotkey.data = data
++  data.itemId = tonumber(data.itemId)
++  data.subType = tonumber(data.subType)
++  if data.text ~= nil then
++    data.text = tostring(data.text)
++  end
++  return hotkey
++end
++
++local function storableHotkeys(list)
++  local out = {}
++  for id, hotkey in ipairs(list) do
++    out[id] = {
++      hotkeyId = id,
++      action = hotkey.action,
++      data = table.recursivecopy(hotkey.data or {}),
++      primary = hotkey.primary or "",
++      secondary = hotkey.secondary or ""
++    }
++  end
++  return out
++end
++
++local function saveHotkeys(preset, chatMode)
++  local config = Keybind.configs.hotkeys[preset]
++  local list = Keybind.hotkeys[chatMode][preset] or {}
++  if #list == 0 then
++    config:remove(chatMode)
++  else
++    config:setNode(chatMode, storableHotkeys(list))
++  end
++  config:save()
++end
++
++local function usesKeyDown(action)
++  return action == HOTKEY_ACTION.EQUIP or action == HOTKEY_ACTION.USE or action == HOTKEY_ACTION.TEXT or
++    action == HOTKEY_ACTION.TEXT_AUTO or action == HOTKEY_ACTION.USE_POKEMON
++end
++
  function Keybind.init()
    connect(g_game, { onGameStart = Keybind.online, onGameEnd = Keybind.offline })
  
@@ -28,6 +82,312 @@ diff -ruN pristine/modules/corelib/keybind.lua modules/corelib/keybind.lua
    end
  
    for index, preset in ipairs(Keybind.presets) do
+@@ -92,7 +147,7 @@
+             hotkey.data.parameter = "\"" .. hotkey.data.parameter .. "\"" -- forcing quotes cause OTML is not saving them, just wow
+           end
+ 
+-          table.insert(Keybind.hotkeys[chatMode][preset], hotkey)
++          table.insert(Keybind.hotkeys[chatMode][preset], normalizeHotkey(hotkey))
+           hotkeyId = hotkeyId + 1
+ 
+           hotkey = hotkeys[tostring(hotkeyId)]
+@@ -416,7 +471,7 @@
+           hotkey.data.parameter = "\"" .. hotkey.data.parameter .. "\"" -- forcing quotes cause OTML is not saving them, just wow
+         end
+ 
+-        table.insert(Keybind.hotkeys[chatMode][toPreset], hotkey)
++        table.insert(Keybind.hotkeys[chatMode][toPreset], normalizeHotkey(hotkey))
+         hotkeyId = hotkeyId + 1
+ 
+         hotkey = hotkeys[tostring(hotkeyId)]
+@@ -571,6 +626,7 @@
+     Keybind.bind(category, action, keybind.callbacks, keybind.widget)
+   end
+ 
++  signalcall(Keybind.onBind, category, action)
+   return ret
+ end
+ 
+@@ -615,6 +671,7 @@
+     Keybind.bind(category, action, keybind.callbacks, keybind.widget)
+   end
+ 
++  signalcall(Keybind.onBind, category, action)
+   return ret
+ end
+ 
+@@ -670,41 +727,8 @@
+ end
+ 
+ function Keybind.isKeyComboUsed(keyCombo, category, action, chatMode)
+-  if not chatMode then
+-    chatMode = Keybind.chatMode
+-  end
+-
+-  if Keybind.reservedKeys[keyCombo] then
+-    return true
+-  end
+-
+-  if category and action then
+-    local targetKeys = Keybind.getKeybindKeys(category, action, chatMode, Keybind.currentPreset)
+-
+-    for _, keybind in pairs(Keybind.defaultKeybinds) do
+-      local keys = Keybind.getKeybindKeys(keybind.category, keybind.action, chatMode, Keybind.currentPreset)
+-      if (keys.primary == keyCombo and targetKeys.primary ~= keyCombo) or (keys.secondary == keyCombo and targetKeys.secondary ~= keyCombo) then
+-        return true
+-      end
+-    end
+-  else
+-    for _, keybind in pairs(Keybind.defaultKeybinds) do
+-      local keys = Keybind.getKeybindKeys(keybind.category, keybind.action, chatMode, Keybind.currentPreset)
+-      if keys.primary == keyCombo or keys.secondary == keyCombo then
+-        return true
+-      end
+-    end
+-
+-    if Keybind.hotkeys[chatMode][Keybind.currentPreset] then
+-      for _, hotkey in ipairs(Keybind.hotkeys[chatMode][Keybind.currentPreset]) do
+-        if hotkey.primary == keyCombo or hotkey.secondary == keyCombo then
+-          return true
+-        end
+-      end
+-    end
+-  end
+-
+-  return false
++  local ignore = (category and action) and { category = category, action = action } or nil
++  return Keybind.findKeyUser(keyCombo, chatMode, ignore) ~= nil
+ end
+ 
+ function Keybind.newHotkey(action, data, primary, secondary, chatMode)
+@@ -712,12 +736,12 @@
+     chatMode = Keybind.chatMode
+   end
+ 
+-  local hotkey = {
++  local hotkey = normalizeHotkey({
+     action = action,
+     data = data,
+-    primary = primary or "",
+-    secondary = secondary or ""
+-  }
++    primary = primary and primary:len() > 0 and retranslateKeyComboDesc(primary) or "",
++    secondary = secondary and secondary:len() > 0 and retranslateKeyComboDesc(secondary) or ""
++  })
+ 
+   if not Keybind.hotkeys[chatMode][Keybind.currentPreset] then
+     Keybind.hotkeys[chatMode][Keybind.currentPreset] = {}
+@@ -727,10 +751,11 @@
+ 
+   local hotkeyId = #Keybind.hotkeys[chatMode][Keybind.currentPreset]
+   hotkey.hotkeyId = hotkeyId
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:setNode(chatMode, Keybind.hotkeys[chatMode][Keybind.currentPreset])
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:save()
++  saveHotkeys(Keybind.currentPreset, chatMode)
+ 
+   Keybind.bindHotkey(hotkeyId, chatMode)
++  signalcall(Keybind.onHotkeysChange)
++  return hotkeyId
+ end
+ 
+ function Keybind.removeHotkey(hotkeyId, chatMode)
+@@ -742,18 +767,21 @@
+     return
+   end
+ 
+-  Keybind.unbindHotkey(hotkeyId, chatMode)
+-
+-  table.remove(Keybind.hotkeys[chatMode][Keybind.currentPreset], hotkeyId)
+-
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:clear()
++  local list = Keybind.hotkeys[chatMode][Keybind.currentPreset]
++  for _, hotkey in ipairs(list) do
++    Keybind.unbindHotkey(hotkey.hotkeyId, chatMode)
++  end
+ 
+-  for id, hotkey in ipairs(Keybind.hotkeys[chatMode][Keybind.currentPreset]) do
++  table.remove(list, hotkeyId)
++  for id, hotkey in ipairs(list) do
+     hotkey.hotkeyId = id
+-    Keybind.configs.hotkeys[Keybind.currentPreset]:setNode(id, hotkey)
+   end
++  saveHotkeys(Keybind.currentPreset, chatMode)
+ 
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:save()
++  for _, hotkey in ipairs(list) do
++    Keybind.bindHotkey(hotkey.hotkeyId, chatMode)
++  end
++  signalcall(Keybind.onHotkeysChange)
+ end
+ 
+ function Keybind.editHotkey(hotkeyId, action, data, chatMode)
+@@ -766,10 +794,11 @@
+   local hotkey = Keybind.hotkeys[chatMode][Keybind.currentPreset][hotkeyId]
+   hotkey.action = action
+   hotkey.data = data
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:setNode(chatMode, Keybind.hotkeys[chatMode][Keybind.currentPreset])
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:save()
++  normalizeHotkey(hotkey)
++  saveHotkeys(Keybind.currentPreset, chatMode)
+ 
+   Keybind.bindHotkey(hotkeyId, chatMode)
++  signalcall(Keybind.onHotkeysChange)
+ end
+ 
+ function Keybind.editHotkeyKeys(hotkeyId, primary, secondary, chatMode)
+@@ -794,10 +823,10 @@
+   end
+   hotkey.primary = primary or ""
+   hotkey.secondary = secondary or ""
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:setNode(chatMode, Keybind.hotkeys[chatMode][Keybind.currentPreset])
+-  Keybind.configs.hotkeys[Keybind.currentPreset]:save()
++  saveHotkeys(Keybind.currentPreset, chatMode)
+ 
+   Keybind.bindHotkey(hotkeyId, chatMode)
++  signalcall(Keybind.onHotkeysChange)
+ end
+ 
+ function Keybind.removeAllHotkeys(chatMode)
+@@ -806,7 +835,7 @@
+   end
+ 
+   for _, hotkey in ipairs(Keybind.hotkeys[chatMode][Keybind.currentPreset]) do
+-    Keybind.unbindHotkey(hotkey.hotkeyId)
++    Keybind.unbindHotkey(hotkey.hotkeyId, chatMode)
+   end
+ 
+   Keybind.hotkeys[chatMode][Keybind.currentPreset] = {}
+@@ -833,12 +862,7 @@
+     return keys
+   end
+ 
+-  local config = Keybind.configs.hotkeys[preset]:getNode(chatMode)
+-  if not config then
+-    return keys
+-  end
+-
+-  return config[tostring(hotkeyId)] or keys
++  return { primary = hotkey.primary or "", secondary = hotkey.secondary or "" }
+ end
+ 
+ function Keybind.hotkeyCallback(hotkeyId, chatMode)
+@@ -852,10 +876,42 @@
+     return
+   end
+ 
++  if modules.game_hotkeys and modules.game_hotkeys.areHotkeysDisabled and modules.game_hotkeys.areHotkeysDisabled() then
++    return
++  end
++
+   local action = hotkey.action
+   local data = hotkey.data
+ 
+-  if action == HOTKEY_ACTION.USE_YOURSELF then
++  if data.itemId then
++    local delay = modules.client_options and modules.client_options.getOption('hotkeyDelay') or 0
++    if g_clock.millis() - (Keybind.lastItemHotkey or 0) < (tonumber(delay) or 0) then
++      return
++    end
++    Keybind.lastItemHotkey = g_clock.millis()
++  end
++
++  if action == HOTKEY_ACTION.USE_POKEMON then
++    local player = g_game.getLocalPlayer()
++    local pos = player and player:getPosition()
++    if not pos then
++      return
++    end
++    for _, creature in ipairs(g_map.getSpectators(pos, false)) do
++      if creature:isLocalPlayerSummon() then
++        if data.subType then
++          local item = g_game.findPlayerItem(data.itemId, data.subType)
++          if item then
++            g_game.useWith(item, creature)
++          end
++        else
++          g_game.useInventoryItemWith(data.itemId, creature)
++        end
++        return
++      end
++    end
++    modules.game_textmessage.displayFailureMessage(tr('Call a Pokemon out first.'))
++  elseif action == HOTKEY_ACTION.USE_YOURSELF then
+     if g_game.getClientVersion() < 780 then
+       local item = g_game.findPlayerItem(data.itemId, data.subType or -1)
+ 
+@@ -965,7 +1021,7 @@
+   if keys.primary then
+     keys.primary = tostring(keys.primary)
+     if keys.primary:len() > 0 then
+-      if action == HOTKEY_ACTION.EQUIP or action == HOTKEY_ACTION.USE or action == HOTKEY_ACTION.TEXT or action == HOTKEY_ACTION.TEXT_AUTO then
++      if usesKeyDown(action) then
+         g_keyboard.bindKeyDown(keys.primary, hotkey.callback, gameRootPanel)
+       else
+         g_keyboard.bindKeyPress(keys.primary, hotkey.callback, gameRootPanel)
+@@ -976,7 +1032,7 @@
+   if keys.secondary then
+     keys.secondary = tostring(keys.secondary)
+     if keys.secondary:len() > 0 then
+-      if action == HOTKEY_ACTION.EQUIP or action == HOTKEY_ACTION.USE or action == HOTKEY_ACTION.TEXT or action == HOTKEY_ACTION.TEXT_AUTO then
++      if usesKeyDown(action) then
+         g_keyboard.bindKeyDown(keys.secondary, hotkey.callback, gameRootPanel)
+       else
+         g_keyboard.bindKeyPress(keys.secondary, hotkey.callback, gameRootPanel)
+@@ -1007,7 +1063,7 @@
+   if keys.primary then
+     keys.primary = tostring(keys.primary)
+     if keys.primary:len() > 0 then
+-      if action == HOTKEY_ACTION.EQUIP or action == HOTKEY_ACTION.USE or action == HOTKEY_ACTION.TEXT or action == HOTKEY_ACTION.TEXT_AUTO then
++      if usesKeyDown(action) then
+         g_keyboard.unbindKeyDown(keys.primary, hotkey.callback, gameRootPanel)
+       else
+         g_keyboard.unbindKeyPress(keys.primary, hotkey.callback, gameRootPanel)
+@@ -1018,7 +1074,7 @@
+   if keys.secondary then
+     keys.secondary = tostring(keys.secondary)
+     if keys.secondary:len() > 0 then
+-      if action == HOTKEY_ACTION.EQUIP or action == HOTKEY_ACTION.USE or action == HOTKEY_ACTION.TEXT or action == HOTKEY_ACTION.TEXT_AUTO then
++      if usesKeyDown(action) then
+         g_keyboard.unbindKeyDown(keys.secondary, hotkey.callback, gameRootPanel)
+       else
+         g_keyboard.unbindKeyPress(keys.secondary, hotkey.callback, gameRootPanel)
+@@ -1062,3 +1118,36 @@
+     modules.game_walking.bindTurnKeys()
+   end
+ end
++
++-- PokeVerse: what a key does now in a chat mode, for clash warnings. ignore = { category, action }
++-- or { hotkeyId } leaves out the entry being edited. Returns nil when the key is free.
++function Keybind.findKeyUser(keyCombo, chatMode, ignore)
++  if not keyCombo or keyCombo == "" then
++    return nil
++  end
++  chatMode = chatMode or Keybind.chatMode
++  ignore = ignore or {}
++  if Keybind.reservedKeys[keyCombo] then
++    return { type = "reserved" }
++  end
++  for _, keybind in pairs(Keybind.defaultKeybinds) do
++    if not (keybind.category == ignore.category and keybind.action == ignore.action) then
++      local keys = Keybind.getKeybindKeys(keybind.category, keybind.action, chatMode, Keybind.currentPreset)
++      for _, slot in ipairs({ "primary", "secondary" }) do
++        if keys[slot] and tostring(keys[slot]) == keyCombo then
++          return { type = "keybind", category = keybind.category, action = keybind.action, slot = slot }
++        end
++      end
++    end
++  end
++  for id, hotkey in ipairs(Keybind.hotkeys[chatMode][Keybind.currentPreset] or {}) do
++    if id ~= ignore.hotkeyId and not (ignore.uid and hotkey.data.uid == ignore.uid) then
++      for _, slot in ipairs({ "primary", "secondary" }) do
++        if hotkey[slot] == keyCombo then
++          return { type = "hotkey", hotkeyId = id, hotkey = hotkey, slot = slot }
++        end
++      end
++    end
++  end
++  return nil
++end
 diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
 --- a/modules/corelib/keyboard.lua
 +++ b/modules/corelib/keyboard.lua

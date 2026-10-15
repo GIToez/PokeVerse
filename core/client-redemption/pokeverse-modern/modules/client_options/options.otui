@@ -1,0 +1,369 @@
+// Settings window in the PokeVerse look (artwork: scripts/art/controls_ui.py). Replaces Redemption's
+// options.otui: top tabs and sub tabs instead of the category tree (options.lua builds both),
+// switches and sliders for the option rows. The images are referenced by path because this
+// module loads before the modules that define the shared PV and Tk styles.
+
+SpecialConditionLabelSettings < UIWidget
+  height: 20
+
+  UIWidget
+    id: icon
+    size: 10 10
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+
+  Label
+    id: label
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+    color: #dce6ff
+
+  CheckBox
+    id: showInHudCheckBox
+    size: 12 12
+    anchors.right: showInBarCheckBox.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 80
+    image-source: /images/ui/checkbox
+    image-clip: 0 0 12 12
+
+  CheckBox
+    id: showInBarCheckBox
+    size: 12 12
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 50
+    image-source: /images/ui/checkbox
+    image-clip: 0 0 12 12
+
+// top row: Controls, Interface, Graphics, Sound, Misc
+OptTab < UIButton
+  height: 34
+  image-source: /modules/game_dailytasks/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #c8d4ee
+  icon-align: left
+  icon-offset: 16 0
+  text-offset: 10 0
+  $hover !checked:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $checked:
+    image-source: /modules/game_dailytasks/images/tab_on
+    color: #ffffff
+
+// second row: the pages of the selected tab
+OptSubTab < UIButton
+  height: 24
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 8
+  font: verdana-11px-antialised
+  color: #a9badb
+  icon-align: left
+  icon-offset: 9 0
+  $hover !checked:
+    image-source: /modules/game_dailytasks/images/tab_hover
+    color: #dce6ff
+  $checked:
+    image-source: /modules/game_dailytasks/images/tab_hover
+    color: #ffd75a
+
+OptButton < UIButton
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  height: 28
+  width: 96
+  image-source: /modules/client_entergame/images/button_blue
+  image-border: 8
+  color: #cfe2ff
+  opacity: 1
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_blue_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_blue_pressed
+  $disabled:
+    opacity: 0.45
+
+OptGoldButton < OptButton
+  image-source: /modules/client_entergame/images/button_yellow
+  color: #2a1e00
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_yellow_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_yellow_pressed
+
+OptRedButton < OptButton
+  image-source: /modules/client_entergame/images/button_red
+  color: #ffb4b4
+  $hover !disabled:
+    image-source: /modules/client_entergame/images/button_red_hover
+  $pressed:
+    image-source: /modules/client_entergame/images/button_red_pressed
+
+// small square button with an icon, for the preset row
+OptIconButton < OptButton
+  size: 28 26
+  icon-align: center
+
+OptLabel < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  phantom: true
+
+OptMuted < OptLabel
+  color: #8fa3c8
+
+OptSection < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #ffd75a
+  text-auto-resize: true
+  phantom: true
+
+// a switch on the right instead of a tick box on the left
+OptionCheckBox < UICheckBox
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: parent.top
+  height: 18
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-align: left
+  text-offset: 6 0
+  icon: /modules/client_options/images/switch_off
+  icon-align: right
+  // the same column as the switches beside an info icon
+  icon-offset: -24 0
+  opacity: 1
+  $checked:
+    icon: /modules/client_options/images/switch_on
+  $disabled:
+    opacity: 0.5
+  @onCheckChange: modules.client_options.setOption(self:getId(), self:isChecked())
+
+OptionCheckBoxMarked < OptionCheckBox
+  UIWidget
+    id: toolTipWidget
+    image-source: /images/icons/show_gui_help_grey
+    size: 12 12
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 3
+
+// track, a filled part up to the knob, and the knob; no arrow buttons
+OptionSlider < UIScrollBar
+  orientation: horizontal
+  size: 174 14
+  default-scroll: true
+  pixels-scroll: true
+  @onGeometryChange: modules.client_options.updateSliderFill(self)
+
+  UIWidget
+    id: track
+    height: 6
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    image-source: /modules/client_options/images/slider_track
+    image-border: 3
+    phantom: true
+
+  UIWidget
+    id: fill
+    height: 6
+    width: 0
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    image-source: /modules/client_options/images/slider_fill
+    image-border: 3
+    phantom: true
+
+  UIButton
+    id: decrementButton
+    size: 0 0
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIButton
+    id: incrementButton
+    size: 0 0
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIButton
+    id: sliderButton
+    size: 13 13
+    anchors.centerIn: parent
+    image-source: /modules/client_options/images/slider_knob
+
+OptionScaleScroll < Label
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: parent.top
+  font: verdana-11px-antialised
+  text-align: left
+  text-offset: 18 0
+  color: #dce6ff
+
+  OptionSlider
+    id: valueBar
+    step: 1
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+    @onValueChange: |
+      modules.client_options.updateSliderFill(self)
+      modules.client_options.setOption(self:getParent():getId(), self:getValue())
+
+OptionLabelMarked < Label
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: parent.top
+  font: verdana-11px-antialised
+  text-align: left
+  text-offset: 18 0
+  color: #dce6ff
+
+  UIWidget
+    id: toolTipWidget
+    image-source: /images/icons/show_gui_help_grey
+    size: 12 12
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 3
+
+OptionScaleScrollMarked < Label
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: parent.top
+  font: verdana-11px-antialised
+  text-align: left
+  text-offset: 18 0
+  color: #dce6ff
+
+  UIWidget
+    id: toolTipWidget
+    image-source: /images/icons/show_gui_help_grey
+    size: 12 12
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 3
+
+  OptionSlider
+    id: valueBar
+    step: 1
+    anchors.right: toolTipWidget.left
+    anchors.verticalCenter: toolTipWidget.verticalCenter
+    margin-right: 10
+    @onValueChange: |
+      modules.client_options.updateSliderFill(self)
+      modules.client_options.setOption(self:getParent():getId(), self:getValue())
+
+UIWindow
+  id: optionsWindow
+  size: 760 660
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 18 22 18 22
+  anchors.centerIn: parent
+  visible: false
+  draggable: true
+  focusable: true
+  @onEnter: |
+    modules.client_options.saveOptions()
+    modules.client_options.hide()
+  @onEscape: modules.client_options.hide()
+  $mobile:
+    size: 560 460
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/client_options/images/icon_settings
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Settings')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 20
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.verticalCenter: headerIcon.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  UIButton
+    id: close
+    size: 18 18
+    image-source: /modules/client_entergame/images/icon_close
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 6
+    @onClick: modules.client_options.hide()
+    $hover:
+      opacity: 0.8
+    $pressed:
+      opacity: 0.6
+
+  UIWidget
+    id: optionsTabBar
+    height: 34
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 14
+    layout:
+      type: horizontalBox
+      spacing: 8
+
+  UIWidget
+    id: optionsSubTabBar
+    height: 24
+    anchors.top: optionsTabBar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+  UIWidget
+    id: optionsTabContent
+    anchors.top: optionsSubTabBar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin-top: 12
+    margin-bottom: 12
+
+  UIWidget
+    id: footer
+    height: 28
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+    OptGoldButton
+      id: save
+      !text: tr('Save')
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      @onClick: |
+        modules.client_options.saveOptions()
+        modules.client_options.hide()
+
+    OptButton
+      id: cancel
+      !text: tr('Close')
+      anchors.right: save.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
+      @onClick: modules.client_options.hide()
