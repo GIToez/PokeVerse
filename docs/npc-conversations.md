@@ -11,18 +11,18 @@ audit is in [npc-audit.md](npc-audit.md).
 | | |
 | --- | --- |
 | NPCs placed on the map | 715 |
-| Lines checked | 2938 |
+| Lines checked | 3045 |
 | Quests | 452 |
 | Lines still in Portuguese | 0 (0 NPCs or files) |
 | Tibia or old-server leftovers | 3 (2) |
-| Quests whose text does not match what they check | 58 |
+| Quests whose text does not match what they check | 56 |
 | Quests nobody can start | 64 |
 | NPCs with blue words that do nothing | 13 |
-| Formatting problems | 7 (7) |
-| Spelling mistakes | 97 (69) |
-| Grammar problems | 115 (79) |
+| Formatting problems | 1 (1) |
+| Spelling mistakes | 47 (36) |
+| Grammar problems | 20 (19) |
 | One-liners (only a greeting so far) | 92 |
-| Lines that read badly (reading review) | 1635 |
+| Lines that read badly (reading review) | 1634 |
 
 ## Reading review
 
@@ -86,7 +86,6 @@ Checked against `questRequest`, the item names in `items.xml` and `requiredLevel
 | George Carter | 8027 | bring items | checks for **1 treasure map**, the text does not say what |
 | Gord Scottie | 8247 | bring items | checks for **1 curtis sacheverell letter to gord scottie**, the text does not say what |
 | Hanzo Hasashi | 8454 | bring items | checks for **1 hanzo hasashi poke ball**, the text does not say what |
-| Harold Sheen | 8339 | bring items | checks for **1 baby ticket**, the text does not say what |
 | Jane Hills | 8291 | bring items | checks for **20 onigiri**, the text does not say how many |
 | Javy Dones | 8686 | bring items | checks for **1 cash bag**, the text does not say what |
 | Javy Dones | 8687 | bring items | checks for **1 diamond**, the text does not say what |
@@ -125,7 +124,6 @@ Checked against `questRequest`, the item names in `items.xml` and `requiredLevel
 | Sotashi | 8717 | bring items | empty `talk_questStarting` |
 | Sotashi | 8717 | bring items | empty `talk_questStarted` |
 | Stiller | 8042 | bring items | checks for **50 notes of hundred dollars**, the text does not say how many |
-| Woodworker Courts Ted | 8316 | bring items | checks for **5 wood**, the text does not say what |
 | Woodworker Courts Ted | 8321 | defeat | checks for **30 Murkrow**, the text does not say what or how many |
 
 ## Quests nobody can start
@@ -182,33 +180,9 @@ NPCs sharing a script and the same words are one row.
 
 Unbalanced braces, double spaces and missing spaces after punctuation.
 
-**Erika**
-
-- double space - "Very well. This was a beautiful test. Give me 3 bottles and stick with 2. This juice enhances HP and Energy regeneration  of your Pokemon for 30 minutes. Make good use. Take over this for all the work." (quest 8472 talk_questFinished)
-
-**Gary Oak**
-
-- double space - "Now there's no turning back. I'll tell you everything. Ash Ketchum from Pallet Town is gone. The last contact we had was when his getting back home from a visit to another continent with info about new Pokemon. He emailed me telling  the location of his arrival, but I couldn't find him myself. The battle signs that we saw in Viridian are indications that he was there. We would meet there. I talked to his mother and she did not know anything. My grandfather cannot contact him, and since he is the league champion... everyone is concerned. He may have been ambushed. The clues that I follow brought me here. Everything indicates that he was taken by someone. Ash kept a diary in which he wrote his achievements and some notes. I found one of the pages torn near here. If we could find more about this diary... so we need to get divide. Go with this magnifier. See what you can do. I will mark on your map the location where you must begin the search, use the magnifier at all. The track can be anywhere." (quest 8417 talk_questStarted)
-
-**Haywood Grady**
-
-- repeated word "will" - "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule." (npc/scripts/eggmove_regenerator.lua)
-
 **Kenya Madere**
 
 - double space - "I love flowers and everything in nature, but  I'm going to beat you." (message_greet)
-
-**Rakin**
-
-- double space - "Bro, relax...  need only catch some Pokemon." (message_greet)
-
-**Tabatha Elizalde**
-
-- double space - "I like Starmie and Dewgong,  you?" (message_greet)
-
-**npc/scripts/tutorial_quests.lua**
-
-- repeated word "Account" - "These are the game virtual currency. With them you can make your Premium Account account to have access to various locations on the map and also the full use of your Pokemon. They are not required to play, but if you want a total experience for the game be sure to have them. You can buy directly from other players or by donating to the project through the official site. It is a symbolic way to keep PokeVerse online and your enjoyment. There are several uses for it, so if you want to see more detail read the Wiki tab of the Pokepedia (press P) or ask in the Help channel." (10 NPCs)
 
 ## Spelling
 
@@ -216,74 +190,52 @@ Most common misspellings (LanguageTool, with game names left out):
 
 | Misspelling | Times |
 | --- | --- |
-| "avaiable" → "available" | 8 |
-| "Saffari" → "Safari" | 3 |
-| "remaing" → "remain" | 3 |
-| "itens" → "items" | 2 |
 | "coff" → "COFF" | 2 |
 | "Trovitopolis" | 2 |
-| "Technichal" → "Technical" | 2 |
 | "Fwahahaha" → "Hahaha" | 2 |
-| "Remaing" → "Remain" | 2 |
-| "exhcange" → "exchange" | 2 |
-| "Premmium" → "Premium" | 2 |
-| "its" → "it's" | 2 |
-| "trainment" → "trainmen" | 2 |
 | "Pallete" → "Pallet" | 2 |
 | "Heeellooo" | 2 |
 | "Electriciiiitttttyyy" | 1 |
 | "Muauhauhmauha" | 1 |
-| "citzen" → "citizen" | 1 |
-| "trasform" → "transform" | 1 |
-| "were" → "where" | 1 |
-| "mals" → "MALS" | 1 |
-| "beautf" → "beauty" | 1 |
+| "beautif" → "beautify" | 1 |
 | "WINEE on" → "WINE Eon" | 1 |
+| "avaiable" → "available" | 1 |
 | "Nooo" → "New" | 1 |
 | "hotdog" → "hot-dog" | 1 |
-| "Itens" → "Items" | 1 |
-| "especias" → "especial" | 1 |
-| "Updrager" → "Updater" | 1 |
+| "Upgrader" → "Upgraded" | 1 |
 | "Pokerus" → "Pokers" | 1 |
 | "Heeellloooo" | 1 |
-| "Its" → "It's" | 1 |
-| "Ledyans" → "Sedans" | 1 |
 | "Humf" → "Humph" | 1 |
+| "exhcange" → "exchange" | 1 |
 | "Hahahahahahha" | 1 |
 | "shhhh" → "shhh" | 1 |
 | "Uepa" → "HEPA" | 1 |
 | "Shiiii" → "Shi iii" | 1 |
 | "PvE" → "Eve" | 1 |
-| "conection" → "connection" | 1 |
-| "Thankss" → "Thanks" | 1 |
 | "Hii" → "His" | 1 |
-| "Courtes" → "Courses" | 1 |
 | "reseted" → "reset" | 1 |
 | "colect" → "collect" | 1 |
 | "informations" → "information" | 1 |
 | "Heelloooo" | 1 |
-| "Remeber" → "Remember" | 1 |
-| "kock" → "rock" | 1 |
 | "Redbeard" → "Redbird" | 1 |
 | "Rickon" → "Reckon" | 1 |
-| "Surammon" → "Summon" | 1 |
 | "Humpf" → "Hump" | 1 |
-| "joob" → "job" | 1 |
 | "ELEc" → "Elect" | 1 |
 | "Ziiing" → "Living" | 1 |
 | "Venon" → "Vernon" | 1 |
-| "Sketchs" → "Sketch" | 1 |
-| "treinars" → "traders" | 1 |
-| "let's" → "lets" | 1 |
 | "Ooops" → "Loops" | 1 |
+| "Heereee" → "Hearse" | 1 |
+| "thaaanksss" | 1 |
+| "Whaat" → "What" | 1 |
+| "setrank" → "set rank" | 1 |
+| "StdModule" → "Submodule" | 1 |
+| "npcHandler" → "Chandler" | 1 |
+| "NpcSystem" → "System" | 1 |
+| "dexed" → "deed" | 1 |
 
 ## Spelling by NPC
 
 Every misspelled line.
-
-**Ader**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_blaze.lua)
 
 **Alana Montesano**
 
@@ -293,99 +245,50 @@ Every misspelled line.
 
 - "Muauhauhmauha" - "Muauhauhmauha! Errr ... All right, congratulations! Here is the cloth I promised." (quest 8670 talk_questFinished)
 
-**Alex**
-
-- "citzen" → "citizen" - "Hey \|PLAYERNAME\|, how are you? My name is Alex, I'm a former citzen from Fuchsia and you can buy diving equipment from me. I am also doing {research} on wetsuits." (message_greet)
-- "itens" → "items" - "Did you got the itens to the clothing manufacture?" (quest 8387 talk_questFinishing)
-
-**Bill**
-
-- "trasform" → "transform" - "Give me a doll of any Pokemon you have in your PokeDex and I can trasform you into this Pokemon for 30 minutes. That's my new machine." (npc/scripts/quest_bill.lua)
-- "were" → "where" - "Dr. Fuji has been a great Pokemon researcher on the Cinnabar island. He was currently living in Lavender were he took care of orphans Pokemon. He was kidnapped for some reason and is being maintained by Team Rocket at the top of the tower. Please help him. Rescue him from the clutches of these criminals, maybe we can find something with this... everything is very strange within this story." (quest 8510 talk_questStarted)
-- "mals" → "MALS" - "That's great. Give him to me... this. I'll put him to rest. He underwent mals bits. I need you to talk to Gary in this next step. I believe we are making progress on the whereabouts of Ash. When Pikachu wake want to extract from him what I can ... once again, congratulations. Take this Doll Case I developed, it can store all your dolls without taking up space in your backpack." (quest 8517 talk_questFinished)
-
 **Brockling Forrest**
 
-- "coff" → "COFF" - "That's great. I'm kinda ill today... coff, coff... and some of my brothers are needing help. I'll tell what to do. Okay? First helps Salvadore. He is the eldest after me... you'll know who it is." (quest 8457 talk_questStarted)
-- "coff" → "COFF" - "That's great. I'm kinda ill today... coff, coff... and some of my brothers are needing help. I'll tell what to do. Okay? First helps Salvadore. He is the eldest after me... you'll know who it is." (quest 8457 talk_questStarted)
+- "coff" → "COFF" - "That's great. I'm kinda ill today... coff, coff... and some of my brothers need help. I'll tell you what to do. Okay? First, help Salvadore. He is the eldest after me... you'll know who he is." (quest 8457 talk_questStarted)
+- "coff" → "COFF" - "That's great. I'm kinda ill today... coff, coff... and some of my brothers need help. I'll tell you what to do. Okay? First, help Salvadore. He is the eldest after me... you'll know who he is." (quest 8457 talk_questStarted)
 
 **Captain Abraham Crofton**
 
-- "Trovitopolis" - "The city has a lot of things. Enjoy everything and travel a lot. Trovitopolis! Where you want to go? If you don't know where to flow, say {travel}." (message_greet)
-
-**Catherin Dana**
-
-- "Technichal" → "Technical" - "Hello \|PLAYERNAME\|. Do you want to sell Technichal Machines? Here you can also {remove} or {change} your Pokemon TM's!" (message_greet)
+- "Trovitopolis" - "The city has a lot to offer. Enjoy everything and travel a lot. Trovitopolis! Where do you want to go? If you don't know where to sail, say {travel}." (message_greet)
 
 **Charity**
 
-- "beautf" → "beauty" - "You're so beautf... I mean you can do me a personal favor? I always wanted a Sunkern to help me polymerize our lands, can you catch one for me?" (quest 8220 talk_questStarting)
+- "beautif" → "beautify" - "You're so beautif... I mean, can you do me a personal favor? I always wanted a Sunkern to help me fertilize our lands, can you catch one for me?" (quest 8220 talk_questStarting)
 
 **Chief Piloswine**
 
-- "WINEE on" → "WINE Eon" - "She sits WINEE on one of the lower PILLL floors. Good luck." (npc/scripts/quest_chiefPiloswine.lua)
+- "WINEE on" → "WINE Eon" - "It sits WINEE on one of the lower PILLL floors. Good luck." (npc/scripts/quest_chiefPiloswine.lua)
 
 **Corey**
 
-- "Nooo" → "New" - "Nooo! My Pokemon!" (quest 8660 talk_questStarting)
-
-**Curt Raeburn**
-
-- "Technichal" → "Technical" - "Hello \|PLAYERNAME\|. Do you want to sell Technichal Machines? Here you can also {remove} or {change} your Pokemon TM's!" (message_greet)
+- "Nooo" → "New" - "Nooo! My Pokemon! Someone took them! Will you help me?" (quest 8660 talk_questStarting)
 
 **Cyrus Egbert**
 
-- "hotdog" → "hot-dog" - "Are you hungry my friend? Wait... make a hotdog for you!" (message_greet)
-
-**Darus**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_avalanche.lua)
+- "hotdog" → "hot-dog" - "Are you hungry, my friend? Wait... I'll make a hotdog for you!" (message_greet)
 
 **Dax**
 
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_gaia.lua)
-
-**Doroty**
-
-- "Itens" → "Items" - "That's right! Now you have learned about the seals. To use TMs, Vitamins and Held Itens in your Pokemon is simple as the seals. Select the desired TM and use at the Poke Ball. There are three types of Poke Balls: Poke Ball, Great Ball and Ultra Ball. These are purchased at any PokeMart. There are other especias balls for decoration and events. There is also the coveted Master Ball... but I must research more about it. Take these Poke Balls to help you." (quest 8503 talk_questFinished)
-- "especias" → "especial" - "That's right! Now you have learned about the seals. To use TMs, Vitamins and Held Itens in your Pokemon is simple as the seals. Select the desired TM and use at the Poke Ball. There are three types of Poke Balls: Poke Ball, Great Ball and Ultra Ball. These are purchased at any PokeMart. There are other especias balls for decoration and events. There is also the coveted Master Ball... but I must research more about it. Take these Poke Balls to help you." (quest 8503 talk_questFinished)
+- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_vital.lua)
 
 **Dr. Oravaf**
 
-- "Updrager" → "Updater" - "What? you're saying that the Pokedex Updrager is broken? Never thought it would happen, but do not worry because I'll fix it. I have all the tools necessary for repair." (quest 8332 talk_questStarting)
-
-**Drew Wisdom**
-
-- "itens" → "items" - "Did you got the itens?" (quest 8391 talk_questFinishing)
-
-**Eddie**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_heremit.lua)
+- "Upgrader" → "Upgraded" - "What? You're saying the Pokedex Upgrader is broken? Never thought it would happen, but don't worry, I'll fix it. I have all the tools needed for the repair." (quest 8332 talk_questStarting)
 
 **Erika**
 
-- "Pokerus" → "Pokers" - "I need you to prepare a berries juice for them. I developed a machine to extract the juice here in the gym. I need you to do 5 juices for me. It is the combination of five berries: Sitrus, Pecha, Leppa, Oran and Chesto. But there is a correct order, and this is my challenge to you. Try to find the correct order and use these flask to collect the juice. He is very special and with this tempered glass it is free of any virus like Pokerus. When performing the right mix, just so get collecting it. Get back to me with 5 full flasks and be careful with them." (quest 8472 talk_questStarted)
+- "Pokerus" → "Pokers" - "I need you to prepare a berry juice for them. I built a machine in the gym to extract the juice. I need you to make 5 juices for me. It's a combination of five berries: Sitrus, Pecha, Leppa, Oran and Chesto. But there is a correct order, and that is my challenge to you. Find the correct order and use these flasks to collect the juice. It's very special, and this tempered glass keeps it free of any virus like Pokerus. Once you get the mix right, just collect it. Come back to me with 5 full flasks and be careful with them." (quest 8472 talk_questStarted)
 
 **Fletcher**
 
 - "Heeellloooo" - "Heeellloooo." (message_greet)
 
-**George Carter**
-
-- "Its" → "It's" - "Its a reward of your previous {mission}." (quest 8665 talk_questStarted)
-
 **Giovanni**
 
-- "Fwahahaha" → "Hahaha" - "Fwahahaha! This is my hideout! I planned to resurrect team rocket here! But, you have caught me again! So be it! This time, I'm not holding back! Once more, you shall face Giovanni, the greatest trainer!" (message_greet)
-
-**Gollum**
-
-- "Ledyans" → "Sedans" - "I was packing my picnic when Pinsir and Ledyans came and ate all my food. Could you help me to collect food for the picnic?" (quest 8260 talk_questStarting)
-
-**Gosse**
-
-- "Saffari" → "Safari" - "The only place where you do not need to defeat the Pokemon to catch is the Saffari Zone in Fuchsia." (quest 8494 talk_questStarting)
-- "Saffari" → "Safari" - "Ok! At the Saffari Zone its necessary to use some items to make the Pokemon submit an exclamation (!), and thus releasing the catch. Right at this moment you can throw the Poke Ball at him directly. Roger That?" (quest 8494 talk_questFinishing)
+- "Fwahahaha" → "Hahaha" - "Fwahahaha! This is my hideout! I planned to resurrect Team Rocket here! But, you have caught me again! So be it! This time, I'm not holding back! Once more, you shall face Giovanni, the greatest trainer!" (message_greet)
 
 **Guardian Mantine**
 
@@ -393,44 +296,24 @@ Every misspelled line.
 
 **Guide Emmerson**
 
-- "Trovitopolis" - "Welcome to Trovitopolis Island! I can {mark} on your map the locations of the island." (message_greet)
-
-**Hermitwo**
-
-- "Remaing" → "Remain" - "Remaing ingredients: %s" (npc/scripts/quest_halloweenHermitwo.lua)
-
-**Isak**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_spectrum.lua)
-
-**Jacob**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_voltagic.lua)
-
-**Jarom**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_hurricane.lua)
+- "Trovitopolis" - "Welcome to Trovitopolis Island! I can {mark} the island's locations on your map." (message_greet)
 
 **Jess Dennis**
 
-- "exhcange" → "exchange" - "Welcome to the Frontier Island! I'm here to exhcange your {frontier tokens} into {rewards}! Just type {options} to see." (message_greet)
+- "exhcange" → "exchange" - "Welcome to the Frontier Island! I'm here to exhcange your {frontier tokens} into {rewards}! Just type {options} to see." (npc/scripts/shop_frontierIsland.lua)
 
 **Kane**
 
-- "Hahahahahahha" - "Take another underwear in your backpack, you're gonna need it! Hahahahahahha." (message_greet)
+- "Hahahahahahha" - "Pack some spare underwear in your backpack, you're gonna need it! Hahahahahahha." (message_greet)
 
 **Keith Wiggs**
 
-- "shhhh" → "shhh" - "Hey \|PLAYERNAME\|, shhhh! I'm very busy now, talk to me after... unless you want to buy something." (message_greet)
+- "shhhh" → "shhh" - "Hey \|PLAYERNAME\|, shhhh! I'm very busy now, talk to me later... unless you want to buy something." (message_greet)
 
 **Kenelm Reilly**
 
-- "Uepa" → "HEPA" - "Hello \|PLAYERNAME\|! All right? Uepa! I am a world-renowned scientist for my {research}! Yes! Yes!" (message_greet)
+- "Uepa" → "HEPA" - "Hello \|PLAYERNAME\|! How are you? Uepa! I am a scientist world-renowned for my {research}! Yes! Yes!" (message_greet)
 - "Shiiii" → "Shi iii" - "All right, I'll tell you, no more secrets. The truth is ... I AM ASH KETCHUM! Shiiii, do not tell anyone. Now I need one more favor." (quest 8726 talk_questStarting)
-
-**Koby**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_zen.lua)
 
 **Koga**
 
@@ -438,33 +321,11 @@ Every misspelled line.
 
 **Kurt Petrillose**
 
-- "PvE" → "Eve" - "What Survive mode you want? Your options are: {Challenge}(PvP - %s players) and {Hardcore}(PvP and PvE - %s players)." (npc/scripts/fi_stadiumarena.lua)
-- "Premmium" → "Premium" - "Sorry, only Premmium Accounts can join this challenge." (npc/scripts/fi_stadiumarena.lua)
-
-**Leroi Bradley**
-
-- "Premmium" → "Premium" - "Sorry, only Premmium Accounts can join this game." (npc/scripts/wavearena.lua)
-
-**Luka**
-
-- "conection" → "connection" - "This conection we all use is so interesting. Ah, I adore seeing the powers of the mind." (message_greet)
-
-**Luken**
-
-- "Thankss" → "Thanks" - "Thankss!" (quest 8449 talk_questFinished)
+- "PvE" → "Eve" - "Which Survive mode do you want? Your options are: {Challenge}(PvP - %s players) and {Hardcore}(PvP and PvE - %s players)." (npc/scripts/fi_stadiumarena.lua)
 
 **Martha May**
 
 - "Hii" → "His" - "Hii!!" (message_greet)
-
-**Max Fegan**
-
-- "Courtes" → "Courses" - "The enclosure where my Miltanks was broke and I was going to the Mikan island take the tablets with Courtes Ted joiner to make the new fence, but I'm afraid to leave my Miltanks alone. You could go there and pick up the boards for me?" (quest 8315 talk_questStarting)
-
-**Merv Kelley**
-
-- "Saffari" → "Safari" - "My father, who started this research a long time ago, had hidden one fruit recipe inside a secret place in the Kanto Saffari Zone, I don't know where is the secret area. You want to look for that recipe for me?" (quest 8226 talk_questStarting)
-- "remaing" → "remain" - "Wow, you got it! Now there's only one {fruit} remaing." (quest 8228 talk_questFinished)
 
 **Mitchell Meade**
 
@@ -472,43 +333,21 @@ Every misspelled line.
 
 **Oak's Assistant**
 
-- "colect" → "collect" - "No.. you do not have, colect the informations and return back to me." (quest 8008 talk_questFinishFail)
-- "informations" → "information" - "No.. you do not have, colect the informations and return back to me." (quest 8008 talk_questFinishFail)
-- "its" → "it's" - "This is the last task, its a very important step for the my research. Do you want to help me?" (quest 8013 talk_questStarting)
+- "colect" → "collect" - "No.. you do not have, colect the informations and return back to me." (quest 8010 talk_questFinishFail)
+- "informations" → "information" - "No.. you do not have, colect the informations and return back to me." (quest 8010 talk_questFinishFail)
 
 **Old Lady**
 
-- "Heelloooo" - "Heelloooo! You already know our {daycare}? We handle all kinds of {Pokemon}. If you have a Pokemon here you can see its {status}, otherwise you can {leave} a Pokemon here. And if you need to buy incubators, just say {trade}. Also you can {deposit} and {remove} plates." (message_greet)
-- "Remeber" → "Remember" - " Remeber that I have one of your %s plate here." (npc/scripts/daycareFemale.lua)
-- "Remaing" → "Remain" - "Egg status: You have already generated an egg recently, you must wait fifteen days after produce an egg to generate another. Remaing %s." (npc/scripts/daycareFemale.lua)
-- "remaing" → "remain" - "You can't withdraw your Pokemon right now. There's remaing %s minutes of training. If you really want, you can {cancel} the trainment." (npc/scripts/daycareFemale.lua)
-- "trainment" → "trainmen" - "You can't withdraw your Pokemon right now. There's remaing %s minutes of training. If you really want, you can {cancel} the trainment." (npc/scripts/daycareFemale.lua)
-
-**Old Man**
-
-- "remaing" → "remain" - "You can't withdraw your Pokemon right now. There's remaing %s minutes of training. If you really want, you can {cancel} the trainment." (npc/scripts/daycareMale.lua)
-- "trainment" → "trainmen" - "You can't withdraw your Pokemon right now. There's remaing %s minutes of training. If you really want, you can {cancel} the trainment." (npc/scripts/daycareMale.lua)
-
-**Ozy**
-
-- "kock" → "rock" - "Take it easy, only gotta kock them out, no need to hurt." (message_greet)
+- "Heelloooo" - "Heelloooo! Do you already know our {daycare}? We handle all kinds of {Pokemon}. If you have a Pokemon here you can see its {status}, otherwise you can {leave} a Pokemon here. And if you need to buy incubators, just say {trade}. Also you can {deposit} and {remove} plates." (message_greet)
 
 **Peter Paul**
 
-- "Redbeard" → "Redbird" - "Led by Javy Dones, this faction is the most aggressive of all, despite their aggressiveness they may hear adventurers, but beware, Javy Dones loves to do business, but if he does not make a profit he'll ask for Redbeard to make some profit from some way." (npc/scripts/quest_halloween_peter_paul.lua)
-- "Rickon" → "Reckon" - "I would not say it's a faction, as they are only 2, Ed Blackhood and Will Kid, it seems they seek revenge for Rickon, Ed's eldest son, Will's brother, I can only say that they have no interest in anything that You want to offer them." (npc/scripts/quest_halloween_peter_paul.lua)
-
-**Queter Phill**
-
-- "Surammon" → "Summon" - "OK! You will now be on the second level of the simulator. Do the same thing, wait for the call, enter the teleport and defeat Surammon! Then bring me the essences." (quest 8668 talk_questStarted)
+- "Redbeard" → "Redbird" - "Led by Javy Dones, this faction is the most aggressive of all. Despite their aggressiveness, they may listen to adventurers. But beware, Javy Dones loves doing business, and if he doesn't make a profit he'll ask Redbeard to get it some other way." (npc/scripts/quest_halloween_peter_paul.lua)
+- "Rickon" → "Reckon" - "I wouldn't call it a faction, as there are only 2 of them, Ed Blackhood and Will Kid. It seems they seek revenge for Rickon, Ed's eldest son and Will's brother. I can only say they have no interest in anything you want to offer them." (npc/scripts/quest_halloween_peter_paul.lua)
 
 **Rocket Grunt**
 
 - "Humpf" → "Hump" - "Humpf!?" (npc/scripts/quest_rocketGrunt.lua)
-
-**Roman**
-
-- "joob" → "job" - "Good joob, here is. Now you have all the necessary equipment to get your Pokemon!" (quest 8045 talk_questFinished)
 
 **Ryne**
 
@@ -521,22 +360,12 @@ Every misspelled line.
 
 **Saxon Ashton**
 
-- "Sketchs" → "Sketch" - "Hello \|PLAYERNAME\|. Do you want to {reset} your Smeargle Sketchs?" (message_greet)
 - "Pallete" → "Pallet" - "So, you really want to reset your Smeargle %s? This will cost you %sx Artist's Pallete." (npc/scripts/sketch_reset.lua)
 - "Pallete" → "Pallet" - "You need at least %sx Artist's Pallete to do it." (npc/scripts/sketch_reset.lua)
-
-**Shelley**
-
-- "treinars" → "traders" - "No! This happens because your Pokedex is not updated yet. To find out information about second generation Pokemon, you need to update it first. You can also use the Pokedex in wild Pokemon or the tamed ones also. If you use the Pokedex at treinars, you will get some cool information. Now let's on at {HM}." (quest 8496 talk_questFinished)
-- "let's" → "lets" - "No! This happens because your Pokedex is not updated yet. To find out information about second generation Pokemon, you need to update it first. You can also use the Pokedex in wild Pokemon or the tamed ones also. If you use the Pokedex at treinars, you will get some cool information. Now let's on at {HM}." (quest 8496 talk_questFinished)
 
 **Substitute**
 
 - "Ooops" → "Loops" - "Ooops! I'm a robot!" (npc/scripts/substitute_robot.lua)
-
-**Timothy Kelvin**
-
-- "do" → "to" - "And how much letters do you want do exchange?" (npc/scripts/event_anniversary_letters.lua)
 
 **Trevor**
 
@@ -547,15 +376,7 @@ Every misspelled line.
 
 **Warwick Howard**
 
-- "Heeellooo" - "Heeellooo! It's all right?? Have you seen any {Pokemon} out there?" (message_greet)
-
-**Woodworker Courts Ted**
-
-- "secound" → "second" - "Thank you. The secound amount of boards are ready, take." (quest 8320 talk_questFinished)
-
-**Zazi**
-
-- "Zazy" → "Lazy" - "Hello, I am Zazy, an old fisherman of this continent. I work with {fishing rods} from infancy." (message_greet)
+- "Heeellooo" - "Heeellooo! How's it going?? Have you seen any {Pokemon} out there?" (message_greet)
 
 **lib/ps/systems/002-quest.lua**
 
@@ -566,380 +387,91 @@ Every misspelled line.
 - "StdModule" → "Submodule" - "StdModule.say called without any npcHandler instance." (Travel module (every travel NPC))
 - "npcHandler" → "Chandler" - "StdModule.say called without any npcHandler instance." (Travel module (every travel NPC))
 - "NpcSystem" → "System" - "[Warning] NpcSystem:" (Travel module (every travel NPC))
-- "alrady" → "already" - "You alrady have this " (Travel module (every travel NPC))
-
-**npc/scripts/shop_mastery.lua**
-
-- "exhcange" → "exchange" - "I'm here to exhcange your {mastery tokens} into {rewards}! Just type {options} to see." (9 NPCs)
-
-**npc/scripts/shop_pokemonShop.lua**
-
-- "offerts" → "offers" - "Yes, I can buy your Pokemon, show me your offerts. Say {sell}." (2 NPCs)
 
 **npc/scripts/soulTrade.lua**
 
-- "setrank" → "set rank" - "Congratulations! Your guild rank has been created! You must use the command "/setrank[name,rank]" to change a member rank." (16 NPCs)
-
-**npc/scripts/tutorial_quests.lua**
-
-- "Defese" → "Defense" - "Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defese and Speed. Each Pokemon has a limit to Stat that can be modified by vitamins. Each Pokemon has a limit of 10 total vitamins and a 3 per vitamin. To learn more, visit the Help channel or the Wiki tab of the Pokepedia (press P)." (10 NPCs)
-- "its" → "it's" - "The Frontier Island gives trainers the opportunity to test their ability as a Pokemon Master with some challenges. It can be accessed directly from the Trading Area, its a place to visit with friends. There you can earn Frontier Tokens, which opens the possibility to purchase some unique items at the island." (10 NPCs)
+- "setrank" → "set rank" - "Congratulations! Your guild rank has been created! You must use the command "/setrank[name,rank]" to change a member's rank." (16 NPCs)
 
 ## Grammar
 
 LanguageTool's grammar findings, with its suggested fix.
 
-**Ader**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_blaze.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_blaze.lua)
-
 **Adventurer Lucy**
 
-- The pronoun ‘you’ must be used with a non-third-person form of a verb. ("goes" → "go") - "She may be in the Golden or Butwal Island. Thanks buddy, pay close attention to where you goes!" (quest 8240 talk_questStarted)
-
-**Alex**
-
-- Incorrect singular possessive form after the number (200). Did you mean “furs” or “furs'”? ("fur's" → "furs") - "You must bring me 200 fur's, 30 ape hair's, 5 gyarados tail's and 30 shell bell's." (quest 8387 talk_questStarted)
-- An apostrophe ‘s’ denotes possession. To use the plural form of the noun, remove the apostrophe. ("bell's" → "bells") - "You must bring me 200 fur's, 30 ape hair's, 5 gyarados tail's and 30 shell bell's." (quest 8387 talk_questStarted)
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the itens to the clothing manufacture?" (quest 8387 talk_questFinishing)
-
-**Ash Ketchum**
-
-- Did you mean “are”? ("is" → "are") - "Thank you! This will be very useful in order to {save} those Pokemon! But where is Brock and Misty !? Grr!" (quest 8378 talk_questFinished)
-- The plural of ‘Pokémon’ is “Pokémon”. ("Pokemons" → "Pokémon") - "Thank you! Brock now will be able to complete the recipe and save those poor Pokemons, thanks! Take this reward, you deserve it." (quest 8379 talk_questFinished)
-
-**Assistant Guyli**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the help?" (quest 8410 talk_questFinishing)
+- Possible agreement error. You should probably use: “are”. ("is" → "are") - "I have three clues about where the stone of prophecy is. Will you help me look?" (quest 8240 talk_questStarting)
 
 **Bertina Stacy**
 
 - Did you mean the adverb “anymore”? ("any more" → "anymore") - "Wow thank you very much. Hopefully these {Pokemon} will not haunt me any more." (quest 8738 talk_questFinished)
-- Did you mean the adverb “anymore”? ("any more" → "anymore") - "My biggest fear is these horrible snakes that have appeared, I can not get into my house any more." (quest 8740 talk_questStarting)
-
-**Bill**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("notified" → "notify") - "Did you notified the authorities?" (quest 8421 talk_questFinishing)
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("helped" → "help") - "Did you helped Dr. Fuji?" (quest 8510 talk_questFinishing)
 
 **Blaine**
 
 - It appears that the past participle should be used here. ("burn" → "burned") - "Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You better have burn heal!" (message_greet)
 
-**Bob Lop**
-
-- Consider using just “return”. ("return back" → "return") - "No..You do not have, go get the ingredients and return back to me." (quest 8007 talk_questFinishFail)
-
-**Briscoe Len**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("saved" → "save") - "Did you saved my son?" (quest 8544 talk_questFinishing)
-
-**Brockling Forrest**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("sent" → "send") - "Did Brock sent you?" (quest 8457 talk_questStarting)
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("helped" → "help") - "Did you helped my brothers?" (quest 8457 talk_questFinishing)
-
-**Brockling Salvadore**
-
-- If this is a question, use a question mark. ("." → "?") - "Can you help me with the food for today." (quest 8458 talk_questStarting)
-- A determiner cannot be combined with a possessive pronoun. Did you mean simply “the” or “my”? ("the my" → "the") - "Phew, what a job... go see my sister Yolanda. She said something about the my father Golem." (quest 8459 talk_questFinished)
-
-**Brockling Yolanda**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("helped" → "help") - "Did you helped my friend?" (quest 8460 talk_questFinishing)
-
 **Captain Evelyn Scottie**
 
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}." (message_greet)
+- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
 
 **Captain Jefferson Wilson**
 
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}." (message_greet)
+- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
 
 **Captain Neil Pace**
 
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}." (message_greet)
+- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
 
 **Captain Sean Brand**
 
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}." (message_greet)
+- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
 
 **Captain Stanley Brent**
 
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}." (message_greet)
+- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
 
 **Captain Tristen Coby**
 
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}." (message_greet)
+- An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
 
 **Chief Vaporeon**
 
-- Incorrect singular possessive form after the number (two). Did you mean “Chiefs” or “Chiefs'”? ("Chief's" → "Chiefs") - "Great. We need two other Stones called Restore Stones. VAPOREONN They will help distribute the evil that supports Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and know where are Restore Stones. Get back here later." (quest 8243 talk_questStarted)
-
-**Clayton Giltner**
-
-- A determiner may be missing. ("least" → "the least") - "The beam comes where least expected Boy! Hahaha!" (message_greet)
-
-**Daisy Oak**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the plant extraction?" (quest 8412 talk_questFinishing)
-
-**Darion Clive**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("finished" → "finish") - "Did you finished the dungeon?" (quest 8396 talk_questFinishing)
-
-**Darius Chas**
-
-- Possible agreement error. Did you mean to use another form of ‘do’? If you’re using the imperative voice, a comma should be inserted between the subject and the verb. (" do" → " does") - "Pokemon Center do not charge to heal your Pokemon, you know?" (message_greet)
-
-**Darus**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_avalanche.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_avalanche.lua)
+- Incorrect singular possessive form after the number (two). Did you mean “Chiefs” or “Chiefs'”? ("Chief's" → "Chiefs") - "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and find out where the Restore Stones are. Come back here later." (quest 8243 talk_questStarted)
 
 **Dax**
 
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_gaia.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_gaia.lua)
-
-**Doroty**
-
-- After the auxiliary verb ‘do’, use the base form of a verb. Did you mean “attach”? ("attached" → "attach") - "Did attached the seal to the poke ball?" (quest 8503 talk_questFinishing)
-
-**Dr. Alan Grant**
-
-- The verb “extract” needs to be in the to-infinitive form. ("try extract" → "try to extract") - "I'm looking for it for years! Listen, I developed this resynthesizer, with it we can try extract the DNA that is in the Old Amber. Take it, use in the Old Amber and return here once he is 100% charged." (quest 8383 talk_questStarted)
-
-**Drew Wisdom**
-
-- Incorrect singular possessive form after the number (200). Did you mean “furs” or “furs'”? ("fur's" → "furs") - "First 200 fur's, 30 jynx clothes, 40 frozen heart's and 60 shard's will be needed." (quest 8391 talk_questStarted)
-- An apostrophe ‘s’ denotes possession. To use the plural form of the noun, remove the apostrophe. ("shard's" → "shards") - "First 200 fur's, 30 jynx clothes, 40 frozen heart's and 60 shard's will be needed." (quest 8391 talk_questStarted)
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the itens?" (quest 8391 talk_questFinishing)
-
-**Eddie**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_heremit.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_heremit.lua)
-
-**Elihu Jesse**
-
-- Check that the noun ‘lemonade’ after the pronoun ‘We’ is correct. It’s possible that you may need to switch to a possessive pronoun, or use another part of speech. - "Accepts a refreshment my friend? We lemonade and coconut water!" (message_greet)
-
-**Erika**
-
-- The plural determiner ‘these’ does not agree with the singular noun ‘flask’. ("these flask" → "this flask") - "I need you to prepare a berries juice for them. I developed a machine to extract the juice here in the gym. I need you to do 5 juices for me. It is the combination of five berries: Sitrus, Pecha, Leppa, Oran and Chesto. But there is a correct order, and this is my challenge to you. Try to find the correct order and use these flask to collect the juice. He is very special and with this tempered glass it is free of any virus like Pokerus. When performing the right mix, just so get collecting it. Get back to me with 5 full flasks and be careful with them." (quest 8472 talk_questStarted)
-
-**Faith**
-
-- Possibly wrong usage of ‘Do’ in the question. Did you mean: “can you”? ("Do you can" → "Can you") - "Do you can buy a crystal statue for me?" (quest 8224 talk_questStarting)
-
-**Flanagan**
-
-- Consider using “there are other” or “there are also” ("there are also other" → "there are other") - "This works to position your Pokemon to battle and also to perform a specific attack. Note that in the inventory menu there are also other buttons that you can explore to perform actions. Ok, when you feel ready, let's {CONTINUE}." (quest 8491 talk_questFinished)
+- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_vital.lua)
+- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_vital.lua)
 
 **Gabriel Wright**
 
-- The word “” spelled with a hyphen is a verb. Did you mean the noun “hot dog”? ("hot-dog" → "hot dog") - "Will a hot-dog out there brother?" (message_greet)
-
-**Gary's Assistant**
-
-- A determiner cannot be combined with a possessive pronoun. Did you mean simply “the” or “your”? ("the your" → "the") - "Congratulations, get your reward. I liked the your results, I keep doing my tests and maybe someday I'll call you. Haha." (quest 8033 talk_questFinished)
-
-**Giovanni**
-
-- An apostrophe may be missing. ("eyes" → "eyes'") - "The team rocket will continue with their activities, more than a different way ... Wait and see with their own eyes boy. See you some other day." (npc/scripts/npcbattle_giovanni.lua)
-
-**Gosse**
-
-- After the auxiliary verb ‘do’, use the base form of the main verb. Did you mean “catch”? ("caught" → "catch") - "Do you caught the Magikarp?" (quest 8493 talk_questFinishing)
-
-**Guardian Mantine**
-
-- The verb “support” needs to be in the to-infinitive form. ("need support" → "need to support") - "On the journey does nothing without them. They will always MANTINN be by your side when you need support you and what you want. But they MANTINNE do not give the order, it is disrespectful." (npc/scripts/quest_guardianMantine.lua)
-
-**Haywood Grady**
-
-- Did you mean “didn't”? ("din't" → "didn't") - "I din't understand. Do you want to {ACCEPT} or {REJECT} the regenerated Egg Move?" (npc/scripts/eggmove_regenerator.lua)
-
-**Isak**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_spectrum.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_spectrum.lua)
-
-**Jack Simps**
-
-- The verb “help” needs to be in the to-infinitive form. ("want help" → "want to help") - "Well, I'm doing some experiments and I need a few ingredients, do you want help me?" (quest 8001 talk_questStarting)
-- Consider using just “return”. ("return back" → "return") - "No..You do not have, go get the ingredients and return back to me." (quest 8001 talk_questFinishFail)
-
-**Jacob**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_voltagic.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_voltagic.lua)
-
-**Jarom**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_hurricane.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_hurricane.lua)
-
-**Joe Tiff**
-
-- Consider using just “return”. ("return back" → "return") - "No..You do not have, go get the ingredients and return back to me." (quest 8006 talk_questFinishFail)
-
-**Joey**
-
-- There isn’t usually a preposition after “enter”. Did you mean “enter the tournament room”? ("enter in the tournament room" → "enter the tournament room") - "You cannot enter in the tournament room while you are carrying Pokemon!" (npc/scripts/tournament.lua)
-
-**John Rouver**
-
-- An auxiliary verb seems to be missing from this progressive structure. Did you mean “I are having”, “I am having”? ("I having" → "I are having") - "I'm doing a collection of items and I having trouble finding some things, do you want help me?" (quest 8002 talk_questStarting)
-- The verb “help” needs to be in the to-infinitive form. ("want help" → "want to help") - "I'm doing a collection of items and I having trouble finding some things, do you want help me?" (quest 8002 talk_questStarting)
-
-**Julia**
-
-- Uncountable nouns are usually not used with an indefinite article. Use simply “heavy equipment”. ("a heavy equipment" → "heavy equipment") - "The great hunters of insects spend days in a forest, for that they need to take a heavy equipment. You will not take everything in your arms, I can get you a backpack for it. Let's make a deal." (quest 8047 talk_questStarting)
-
-**Kemp Drummond**
-
-- The auxiliary verb ‘do’ requires the base form of the verb. ("learned" → "learn") - "Your Pokemon doesn't learned such move, please type again. Remember to type it name exactly!" (npc/scripts/eggmove_remover.lua)
+- The word “” spelled with a hyphen is a verb. Did you mean the noun “hot dog”? ("hot-dog" → "hot dog") - "Want a hot-dog, brother?" (message_greet)
 
 **Kenelm Reilly**
 
 - When a person is directly addressed, a comma should set off the name. ("Thank you" → "Thank you,") - "Thank you Pikachu! My research will reach the stars now!" (quest 8726 talk_questFinished)
 
-**Koby**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_zen.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_zen.lua)
-
 **Kurt Petrillose**
 
-- The usual preposition for “island” is “on”, not “in”. ("in the Frontier Island" → "on the Frontier island") - "You're in the Frontier Island, an appropriate location to test for the continent's greatest Pokemon trainers. Prove your strength here and you will be rewarded." (npc/scripts/fi_stadiumarena.lua)
 - Unless you mean “in a political party”, the usual preposition for a party is “at”. ("in a Party" → "at a party") - "In cooperative mode you face many challenges as a group, for this you need to be in a Party. If you want this challenge, say 'enter'." (npc/scripts/fi_stadiumarena.lua)
-
-**Lia**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("destroyed" → "destroy") - "Did you destroyed the wardrobes?" (quest 8450 talk_questFinishing)
-
-**Lt. Surge**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the energy?" (quest 8471 talk_questFinishing)
-
-**Margery Meidinger**
-
-- After ‘it’, use the third-person verb form “passes”. ("pass" → "passes") - "The leader awaits... if it pass me by. Hahahaha!" (message_greet)
-
-**Mary Nady**
-
-- The verb “help” needs to be in the to-infinitive form. ("want help" → "want to help") - "Uh, I do not usually do this but .. I'm running a science event and I need some items to finish my experience, do you want help me?" (quest 8005 talk_questStarting)
-- Consider using just “return”. ("return back" → "return") - "No..You do not have, go get the ingredients and return back to me." (quest 8005 talk_questFinishFail)
-
-**Maurice**
-
-- A verb (‘be’ or ‘have’) is missing before the past participle. ("already done" → "have already done") - "You already done this mission. If you need I can sell you another TV Camera for 1000 dollars, do you want?" (npc/scripts/quest_maurice.lua)
-- It appears that a comma is missing. ("need" → "need,") - "You already done this mission. If you need I can sell you another TV Camera for 1000 dollars, do you want?" (npc/scripts/quest_maurice.lua)
-
-**Misty**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the bow?" (quest 8467 talk_questFinishing)
-
-**Noemi Retherford**
-
-- The adverb ‘never’ is usually put between ‘will’ and ‘win’. ("never will win" → "will never win") - "Even if you pass me by, you never will win Brock!" (message_greet)
 
 **Oak's Assistant**
 
-- The verb “help” needs to be in the to-infinitive form. ("want help" → "want to help") - "I am collecting information about Pokemon and need you to collect some for me, do you want help me?" (quest 8008 talk_questStarting)
-- Consider using just “return”. ("return back" → "return") - "No.. you do not have, colect the informations and return back to me." (quest 8008 talk_questFinishFail)
-- A determiner cannot be combined with a possessive pronoun. Did you mean simply “the” or “my”? ("the my" → "the") - "This is the last task, its a very important step for the my research. Do you want to help me?" (quest 8013 talk_questStarting)
+- Consider using just “return”. ("return back" → "return") - "No.. you do not have, colect the informations and return back to me." (quest 8010 talk_questFinishFail)
 
-**Officer Jeny**
+**Peter Paul**
 
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("pasted" → "paste") - "Did you pasted all the posters?" (quest 8422 talk_questFinishing)
+- Possible agreement error. The noun ‘get’ seems to be countable; consider using: “few gets”. ("few get" → "few gets") - "You're one tough cookie!! I saw everything, you were fantastic, you fought those aberrations and survived. Well, I healed you, but you stayed alive until I arrived... I was looking for you, you forgot to tell me if it was true that they had returned... Then I saw Will Kid shooting at you with my own eyes... lucky I got there in time, the sleeping dose was high and you almost didn't make it... While taking you home, I boarded a boat near Nagumo's ship to get a closer look, when Nagumo told me to stop... she wanted to know what I had done to you. I got caught, and they took care of you... I explained everything I saw... so I thought I'd better get you to the city... I think you should go and thank Nagumo, she defended you, and that's an honor few get." (npc/scripts/quest_halloween_peter_paul.lua)
 
 **Professor Josh Rock**
 
-- The verb “help” needs to be in the to-infinitive form. ("want help" → "want to help") - "I've been searching the fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them, I need you to deliver a letter for him and help him find the fossils. Do you want help me?" (npc/scripts/quest_professorJoshRock.lua)
+- An apostrophe may be missing. ("fossils" → "fossils'") - "Hi, I'm Josh Rock, a {fossils} researcher." (message_greet)
 
-**Professor Oak**
+**Rick**
 
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("used" → "use") - "Did you used your Pokedex?" (quest 8752 talk_questFinishing)
-- Make sure that the ambiguous verb form ‘found’ is correct. (It can either be the base form ‘found’, or the past tense of a different verb.) - "Did you found Dr. Oravaf?" (quest 8338 talk_questFinishing)
-
-**Rafael Townson**
-
-- The usual preposition for “island” is “on”, not “in”. ("in the Frontier Island" → "on the Frontier island") - "You're in the Frontier Island, an appropriate location to test for the continent's greatest Pokemon trainers. Prove your strength here and you will be rewarded." (npc/scripts/fi_battletower.lua)
-
-**Rebbeca**
-
-- After the auxiliary verb ‘do’, use the base form of a verb. Did you mean “saw”? ("saw" → "saw") - "Argh! I didn't saw you." (message_greet)
+- Use a comma before ‘so’ if it connects two independent clauses (unless they are closely connected and short). (" so" → ", so") - "Oh! We have a new candidate! I invented a system where people post messages on the Mission Board so trainers can take jobs and earn rewards. The Mission Board is right beside me, and to use it you just have to show you can handle the requests. What do you think?" (quest 8446 talk_questStarting)
 
 **Rock**
 
 - The verb ‘impress’ can be stative. If ‘impressing’ describes a state, change the sentence structure and use the base form of the verb. - "You're really impressing me. I underestimated you. But now there is only the {final test}." (quest 8022 talk_questFinished)
-
-**Runford**
-
-- The pronoun ‘you’ must be used with a non-third-person form of a verb. ("has" → "have") - "Cool buddy, I hope you have fun there! But before, I fear that you already has a map right? No...? I think that Pistachio has one. You can get with him? Go behind this crazy old guy. But watch out! He bites!" (quest 8207 talk_questStarted)
-
-**Sabrina**
-
-- A determiner cannot be combined with a possessive pronoun. Did you mean simply “the” or “my”? ("the my" → "the") - "I have a test for trainers with courage and determination. If you think you can, just confirm if you want. So get ready. You will be mesmerized by my Pokemon and you will be taken to the world of dreams. There, you will have to unravel the my mystery, all this thanks to recent advances in Devon Corporation. We will be connected to the Dream World, a world of Pokemon dreams. And there I created a challenge for trainers. Unravel the mystery and you will can. Are you ready?" (quest 8474 talk_questStarting)
-
-**Saxon Ashton**
-
-- The auxiliary verb ‘do’ requires the base form of the verb. ("copied" → "copy") - "Your Pokemon didn't copied any move." (npc/scripts/sketch_reset.lua)
-- The auxiliary verb ‘do’ requires the base form of the verb. ("copied" → "copy") - "Your Pokemon didn't copied this move." (npc/scripts/sketch_reset.lua)
-- A verb may be missing between “you” and “your”, or a word may be misspelled. - "Here you can {reset} Sketch moves that you your Smeargle copies!" (npc/scripts/sketch_reset.lua)
-
-**Selam**
-
-- The plural of ‘Pokémon’ is “Pokémon”. ("Pokemons" → "Pokémon") - "Yes, I can speak!! I can help you build magic {balls} to catch Halloween Pokemons!" (message_greet)
-- The plural of ‘Pokémon’ is “Pokémon”. ("Pokemons" → "Pokémon") - "I can help you build magic {balls} to catch Halloween Pokemons!" (npc/scripts/event_halloween_selam.lua)
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("purified" → "purify") - "Did you purified the poor creatures soul?" (quest 8408 talk_questFinishing)
-
-**Shelley**
-
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the Psyduck information?" (quest 8495 talk_questFinishing)
-- The past tense is already inflected in the auxiliary verb “did”, so the infinitive (base) form of the verb should be used here. ("got" → "get") - "Did you got the Skarmory information?" (quest 8496 talk_questFinishing)
-- You should probably use “is”. ("are" → "is") - "The HM are special moves that your Pokemon can use at the map to perform a specific action. If your Pokemon has the Surf HM, he can travel through water with you. Just use the ORDER button on the Inventory at water's edge." (quest 8497 talk_questStarting)
-
-**Timothy Kelvin**
-
-- Use “many” with countable plural nouns like ‘letters’. ("much" → "many") - "And how much letters do you want do exchange?" (npc/scripts/event_anniversary_letters.lua)
-
-**Woodworker Courts Ted**
-
-- The usual preposition for “island” is “on”, not “in”. ("in the island" → "on the island") - "He lives underground in the island. Take some fruit. I thank you immensely for it." (quest 8320 talk_questStarted)
-
-**Zazi**
-
-- The inflection of the verb “thank” seems to be incorrect here. ("thank" → "thanked") - "Hey! How long, how are you? I've been looking for you, I have not just thank you for your help, I want to make a best fishing rod for you. Do you want?" (quest 8035 talk_questStarting)
-- Use “the” before the superlative. ("a" → "the") - "Hey! How long, how are you? I've been looking for you, I have not just thank you for your help, I want to make a best fishing rod for you. Do you want?" (quest 8035 talk_questStarting)
-
-**npc/scripts/bank.lua**
-
-- Use “many” with countable plural nouns like ‘dollars’. ("much" → "many") - "How much dollars do you like to deposit?" (10 NPCs)
-- Use “many” with countable plural nouns like ‘dollars’. ("much" → "many") - "How much dollars do you like to withdraw?" (10 NPCs)
-- Use “many” with countable plural nouns like ‘dollars’. ("much" → "many") - "How much dollars do you like to transfer?" (10 NPCs)
-
-**npc/scripts/soulTrade.lua**
-
-- The verb “be” needs to be in the to-infinitive form. ("need be" → "need to be") - "Sorry, your Pokemon nick can't contain invalid symbols and need be between 4 and 20 characters, please try again." (16 NPCs)
-- Use “many” with countable plural nouns like ‘coins’. ("much" → "many") - "How much soul coins do you want to withdraw?" (16 NPCs)
-
-**npc/scripts/tm_remover.lua**
-
-- The auxiliary verb ‘do’ requires the base form of the verb. ("learned" → "learn") - "Your Pokemon doesn't learned such move, please type again. Remember to type it name exactly!" (2 NPCs)
-
-**npc/scripts/travels.lua**
-
-- The verb “go” needs to be in the to-infinitive form. ("want go" → "want to go") - "Do you really want go to %s? This will cost you %s dollars." (7 NPCs)
-
-**npc/scripts/tutorial_quests.lua**
-
-- “Trainer” is a singular noun. It appears that the verb form is incorrect. ("leave" → "leaves") - "The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without it being in your current team. This place was designed for trainers who do not have much time or want to train other Pokemon besides the six that carries. You can leave two Pokemon in the Daycare what gives a second use for the system. If a trainer leave a female and a male Pokemon at the Daycare, which are compatible to relate, there is the possibility of generating a Pokemon Egg. If you generate an Egg, you must make he born. Once the process is finished you will have a very good Pokemon in your hands as well. To learn more, look for other players, the Help channel and the Wiki tab of the Pokepedia (press P). Good luck trainer!" (10 NPCs)
-- A verb may be missing. Did you mean “he was born”? ("he born" → "he was born") - "The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without it being in your current team. This place was designed for trainers who do not have much time or want to train other Pokemon besides the six that carries. You can leave two Pokemon in the Daycare what gives a second use for the system. If a trainer leave a female and a male Pokemon at the Daycare, which are compatible to relate, there is the possibility of generating a Pokemon Egg. If you generate an Egg, you must make he born. Once the process is finished you will have a very good Pokemon in your hands as well. To learn more, look for other players, the Help channel and the Wiki tab of the Pokepedia (press P). Good luck trainer!" (10 NPCs)
 
 ## One-liners
 
