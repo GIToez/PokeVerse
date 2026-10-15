@@ -1,8 +1,12 @@
 package com.otclient
 
+import android.Manifest
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -11,6 +15,8 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 
 class AndroidManager(
@@ -29,6 +35,12 @@ class AndroidManager(
     private var shouldShowPreview = false
     private var pendingPreviewText: String = ""
     private var imeHeight: Int = 0
+
+    private var inBackground = false
+    private var backgroundKind = BackgroundService.KIND_NONE
+    private var backgroundText = ""
+    private var backgroundPercent = -1
+    private var notificationPermissionAsked = false
 
     // Widget position from C++ (in game pixels, maps 1:1 to screen pixels)
     private var widgetX: Int = -1
@@ -154,6 +166,43 @@ class AndroidManager(
             unpackOverlay.animate().alpha(0f).setDuration(300).withEndAction {
                 unpackOverlay.visibility = View.GONE
             }.start()
+        }
+    }
+
+    /** From the engine (any thread): what to keep running when the player leaves the game. */
+    fun setBackgroundTask(kind: Int, text: String, percent: Int) {
+        handler.post {
+            val wasRunning = inBackground && backgroundKind != BackgroundService.KIND_NONE
+            val kindChanged = kind != backgroundKind
+            backgroundKind = kind
+            backgroundText = text
+            backgroundPercent = percent
+            if (kind != BackgroundService.KIND_NONE) requestNotificationPermission()
+            if (!inBackground) return@post
+            when {
+                kind == BackgroundService.KIND_NONE -> BackgroundService.stop(context)
+                wasRunning && !kindChanged -> BackgroundService.update(context, kind, text, percent)
+                else -> BackgroundService.start(context, kind, text, percent)
+            }
+        }
+    }
+
+    /** From MainActivity on the UI thread: onPause (true) and onResume (false). */
+    fun onBackgroundChanged(background: Boolean) {
+        inBackground = background
+        if (background && backgroundKind != BackgroundService.KIND_NONE) {
+            BackgroundService.start(context, backgroundKind, backgroundText, backgroundPercent)
+        } else if (!background) {
+            BackgroundService.stop(context)
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (notificationPermissionAsked || Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        notificationPermissionAsked = true
+        val activity = context as? Activity ?: return
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
         }
     }
 

@@ -59,6 +59,7 @@ void AndroidManager::setAndroidManager(JNIEnv* env, jobject androidManager) {
     m_midSetClipboardText = jniEnv->GetMethodID(androidManagerJClass, "setClipboardText", "(Ljava/lang/String;)V");
     m_midSetUnpackProgress = jniEnv->GetMethodID(androidManagerJClass, "setUnpackProgress", "(I)V");
     m_midHideUnpackProgress = jniEnv->GetMethodID(androidManagerJClass, "hideUnpackProgress", "()V");
+    m_midSetBackgroundTask = jniEnv->GetMethodID(androidManagerJClass, "setBackgroundTask", "(ILjava/lang/String;I)V");
     jniEnv->DeleteLocalRef(androidManagerJClass);
     // published last: the native thread may already be waiting for it (waitForJavaManager)
     m_androidManagerJObject = jniEnv->NewGlobalRef(androidManager);
@@ -185,6 +186,14 @@ void AndroidManager::hideUnpackProgress() {
     if (!m_androidManagerJObject) return;
     JNIEnv* env = getJNIEnv();
     env->CallVoidMethod(m_androidManagerJObject, m_midHideUnpackProgress);
+}
+
+void AndroidManager::setBackgroundTask(int kind, const std::string& text, int percent) {
+    if (!m_androidManagerJObject) return;
+    JNIEnv* env = getJNIEnv();
+    jstring jText = env->NewStringUTF(text.c_str());
+    env->CallVoidMethod(m_androidManagerJObject, m_midSetBackgroundTask, (jint)kind, jText, (jint)percent);
+    env->DeleteLocalRef(jText);
 }
 
 std::string AndroidManager::getAppBaseDir() {

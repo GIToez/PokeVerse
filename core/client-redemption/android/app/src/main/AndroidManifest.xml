@@ -14,6 +14,12 @@
     <!-- Allow make internet connections -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- BackgroundService: keeps updating / stays connected while the player is in another app -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
@@ -42,6 +48,15 @@
                 android:name="android.app.lib_name"
                 android:value="otclient" />
         </activity>
+
+        <service
+            android:name="com.otclient.BackgroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps the online game session connected while the player briefly switches apps" />
+        </service>
     </application>
 
 </manifest>

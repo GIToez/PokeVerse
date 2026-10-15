@@ -55,15 +55,19 @@ class MainActivity : GameActivity() {
     override fun onResume() {
         super.onResume()
         androidManager.nativeSetAudioEnabled(true)
+        androidManager.onBackgroundChanged(false)
     }
 
     override fun onPause() {
         androidManager.nativeSetAudioEnabled(false)
+        // started while still visible: Android does not let a background app start one
+        androidManager.onBackgroundChanged(true)
         super.onPause()
     }
 
     override fun onDestroy() {
         androidManager.nativeSetAudioEnabled(false)
+        BackgroundService.stop(this)
         super.onDestroy()
     }
 

@@ -54,6 +54,10 @@ public:
 
     float getScreenDensity();
 
+    // keeps the game running while it is in the background, with a notification:
+    // kind 0 = nothing, 1 = updating (percent 0-100, or -1), 2 = connected to the game
+    void setBackgroundTask(int kind, const std::string& text, int percent);
+
     void attachToAppMainThread();
 private:
     JNIEnv* getJNIEnv();
@@ -74,6 +78,7 @@ private:
     jmethodID m_midSetClipboardText;
     jmethodID m_midSetUnpackProgress;
     jmethodID m_midHideUnpackProgress;
+    jmethodID m_midSetBackgroundTask;
 };
 
 extern AndroidManager g_androidManager;
