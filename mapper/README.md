@@ -90,20 +90,26 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   are thick with trees, bushes and undergrowth. Snow is dressed with stones (never the snow heap,
   486, which is a floor change).
 - **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
-  SoulSilver: wide ledges round the peak, one per floor, with trails wide enough for its wild
-  Pokémon, and a flat summit on floor 0. Each ledge is closed one way round by a spur of rock
-  and the other way by a bluff with one narrow, crooked way through it and a single tree (Cut)
-  or rock (Rock Smash) in it, or by a lake (Surf), so the way up zigzags: from 1F (floor 8) up
-  inside the mountain to the lower mountainside (floor 5), Surf across its lake, a ramp to
-  floor 4, Cut, a ramp to floor 3, Rock Smash, into the 2F tunnel under the ledge above (it
-  pinches to one tile round another rock), out on floor 2, Rock Smash, a ramp to floor 1, and
-  the 3F tunnel out onto the summit. Tunnel mouths are wide cuts into the cliffs. Without Surf,
-  Cut and Rock Smash a player gets no higher than the lower mountainside.
+  SoulSilver: a lobed, uneven cone with wide ledges round the peak, one per floor, trails wide
+  enough for its wild Pokémon, and a flat summit on floor 0. Each ledge is closed one way round by
+  a spur of rock and the other way by a lake (Surf) or a bluff with one crooked way through it two
+  tiles wide, opening out into a clearing closed by a ragged patch of trees (Cut) or rocks (Rock
+  Smash), so the way up zigzags: from 1F (floor 8) up inside the mountain to the lower
+  mountainside (floor 5), Surf across its lake, a ramp to floor 4, Cut, a ramp to floor 3, Rock
+  Smash, into the 2F tunnel under the ledge above (a patch of rocks where it opens out), out on
+  floor 2, Rock Smash, a ramp to floor 1, and the 3F tunnel out onto the summit. Outdoor ramps
+  come three side by side and climb only north or west, so the ramp is never hidden under the
+  ledge above (ice ramps on snow). Tunnel mouths are wide cuts into the cliffs; the mountain
+  keeps its old height round the ravine to the cave mouth, so the mouth stays in sight. Without
+  Surf a player gets no higher than caves on floor 4; Surf and Cut reach floor 3; all three
+  reach the summit.
   The rest of the inside is caves (`SILVER['caves']`, `silver_caves`): off the tunnels and in
   from mouths on the ledges, winding passages that branch, loop and end blind, caverns at some
-  ends, and ramps or cave stairs under a rock hole up to more caves on the floor above. Every
-  cave has the one way in, so none is a way round an obstacle. They are dressed with rocky
-  patches, debris, stones, wall candles and, from floor 4 up, ice crystals.
+  ends, and ramps or stone cave stairs under a rock hole up to more caves on the floor above.
+  Caves are kept well apart from each other and from the lakes; most have the one way in, and
+  the links (`'link'`) come out again on the ledge above, joining only ledges between the same
+  obstacles, so none is a way round one. They are dressed with rocky patches, debris, stones,
+  wall candles and, from floor 4 up, ice crystals.
 - **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
   under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
   Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's
@@ -187,7 +193,7 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1144 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1186 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
   Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, the
