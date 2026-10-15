@@ -18,6 +18,8 @@ mouseGrabberWidget = nil
 countWindow = nil
 logoutWindow = nil
 exitWindow = nil
+-- server popups (such as the idle warning) belong to the session, so they close when it ends
+adviceWindows = {}
 bottomSplitter = nil
 -- timestamp of the last manual keyboard walk, refreshed by game_walk and read
 -- by consumers (e.g. game_bot) to pause automation while the player walks;
@@ -371,6 +373,12 @@ function hide()
         countWindow:destroy()
         countWindow = nil
     end
+    for _, window in ipairs(adviceWindows) do
+        if not window:isDestroyed() then
+            window:destroy()
+        end
+    end
+    adviceWindows = {}
     gameRootPanel:hide()
     modules.client_background.show()
 end
@@ -391,7 +399,7 @@ function load()
 end
 
 function onLoginAdvice(message)
-    displayInfoBox(tr('For Your Information'), message)
+    table.insert(adviceWindows, displayInfoBox(tr('For Your Information'), message))
 end
 
 function forceExit()

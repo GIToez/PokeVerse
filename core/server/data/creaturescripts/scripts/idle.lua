@@ -17,7 +17,7 @@ function onThink(cid, interval)
 		local message = string.format(__L(cid, "You have been idle for %s minutes"), math.ceil(config.idleWarning / 60000))
 		if(config.idleKick > 0) then
 			message = message .. __L(cid, ", you will be disconnected in ")
-			local diff = math.ceil((config.idleWarning - config.idleKick) / 60000)
+			local diff = math.ceil((config.idleKick - config.idleWarning) / 60000)
 			if(diff > 1) then
 				message = message .. diff .. __L(cid, " minutes")
 			else

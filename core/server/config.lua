@@ -223,8 +223,8 @@
 	ghostModeSpellEffects = true
 
 	-- Limits
-	idleWarningTime = 9 * 60 * 1000
-	idleKickTime = 10 * 60 * 1000
+	idleWarningTime = 15 * 60 * 1000
+	idleKickTime = 20 * 60 * 1000
 	expireReportsAfterReads = 1
 	playerQueryDeepness = 2
 	maxItemsPerPZTile = 0
