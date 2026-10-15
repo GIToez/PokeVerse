@@ -2518,7 +2518,27 @@ std::string UIWidget::getTextByPos(const Point& mousePos)
             return pair.second;
     }
 
-    return "";
+    // Short words like YES/NO are only ~16px wide, so near misses on the same line still count.
+    constexpr int slackX = 6;
+    constexpr int slackY = 3;
+    const std::string* nearest = nullptr;
+    int nearestDist = slackX + 1;
+    for (const auto& pair : m_rectToWord) {
+        const Rect& r = pair.first;
+        if (mousePos.y < r.top() - slackY || mousePos.y > r.bottom() + slackY)
+            continue;
+        int dx = 0;
+        if (mousePos.x < r.left())
+            dx = r.left() - mousePos.x;
+        else if (mousePos.x > r.right())
+            dx = mousePos.x - r.right();
+        if (dx < nearestDist) {
+            nearestDist = dx;
+            nearest = &pair.second;
+        }
+    }
+
+    return nearest ? *nearest : "";
 }
 
 void UIWidget::setEventListener(WidgetEvents event)
