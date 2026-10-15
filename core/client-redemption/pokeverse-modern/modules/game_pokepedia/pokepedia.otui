@@ -538,7 +538,7 @@ MapPage < UIWidget
     UIWidget
       id: controls
       width: 48
-      height: 214
+      height: 252
       anchors.top: parent.top
       anchors.right: parent.right
       margin: 6
@@ -601,6 +601,14 @@ MapPage < UIWidget
         anchors.top: zoomIn.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         margin-top: 2
+
+      PpIconButton
+        id: view
+        icon-size: 16 16
+        visible: false
+        anchors.top: zoomOut.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 10
 
     UILabel
       id: coords
