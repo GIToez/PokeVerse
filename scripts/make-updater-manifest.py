@@ -65,7 +65,7 @@ def main():
     if args.release_dir:
         os.makedirs(args.release_dir, exist_ok=True)
 
-    manifest = {"version": args.version, "url": args.files_url.rstrip("/"), "files": {}, "urls": {}}
+    manifest = {"version": args.version, "url": args.files_url.rstrip("/"), "files": {}, "sizes": {}, "urls": {}}
 
     def publish(rel, src):
         if os.path.getsize(src) > args.max_size:
@@ -94,13 +94,14 @@ def main():
             if rel == binary or rel in skip:
                 continue
             manifest["files"]["/" + rel] = crc32(src)
+            manifest["sizes"]["/" + rel] = os.path.getsize(src)
             publish(rel, src)
 
     if binary:
         src = os.path.join(package, binary)
         if not os.path.isfile(src):
             sys.exit(f"binary {binary} not found in {package}")
-        manifest["binary"] = {"file": "/" + binary, "checksum": crc32(src)}
+        manifest["binary"] = {"file": "/" + binary, "checksum": crc32(src), "size": os.path.getsize(src)}
         publish(binary, src)
 
     if not manifest["urls"]:

@@ -31,15 +31,30 @@ function g_game.getSupportedClients()
   return { 854 }
 end
 
+-- Android: while logged in, leaving the app keeps the game running with a notification
+-- (g_android is only in Android builds that have the background service)
+local function setAndroidOnline(online)
+  if g_android and g_android.setBackgroundTask then
+    g_android.setBackgroundTask(online and 2 or 0, "", -1)
+  end
+end
+
+local function onGameStart() setAndroidOnline(true) end
+local function onGameEnd() setAndroidOnline(false) end
+
 function init()
-  connect(g_game, { onClientVersionChange = setup })
+  connect(g_game, { onClientVersionChange = setup, onGameStart = onGameStart, onGameEnd = onGameEnd })
   if g_game.getClientVersion() ~= 0 then
     setup(g_game.getClientVersion())
+  end
+  if g_game.isOnline() then
+    setAndroidOnline(true)
   end
 end
 
 function terminate()
-  disconnect(g_game, { onClientVersionChange = setup })
+  disconnect(g_game, { onClientVersionChange = setup, onGameStart = onGameStart, onGameEnd = onGameEnd })
+  setAndroidOnline(false)
 end
 
 function setup(version)
