@@ -261,6 +261,44 @@ GUIDES["Tutorial"] = {
     {position = {x = 5020, y = 788, z = 7}, type = MAPMARK_STAR, description = "Professor Oak Lab"},
 }
 
+-- the guide marks' icons (scripts/mapper/make_mark_icons.py), from the first words in a mark's name
+-- that have one; a gym shows its town's badge
+local MARKS = '/modules/game_minimap/images/marks/'
+local MARK_SIZE = { width = 14, height = 14 }
+local MARK_WORDS = {
+    { 'pokemon center', 'center' }, { 'poke mart', 'mart' }, { 'gym', 'gym' }, { 'food', 'food' },
+    { 'berr', 'berry' }, { 'furniture', 'furniture' }, { 'bike', 'bike' }, { 'shopping', 'shopping' },
+    { 'guild', 'guild' }, { 'ranger', 'ranger' }, { 'daycare', 'daycare' }, { 'casino', 'casino' },
+    { 'museum', 'museum' }, { 'safari', 'safari' }, { 'silph', 'silph' }, { 'oak', 'lab' },
+    { 'travel ship', 'ship' }, { 's. s. anne', 'ship' }, { 'travel fly', 'fly' }, { 'travel train', 'train' },
+    { 'travel balloon', 'balloon' },
+}
+local GYM_BADGES = {
+    Pewter = 'boulder', Cerulean = 'cascade', Vermilion = 'thunder', Celadon = 'rainbow', Fuchsia = 'soul',
+    Saffron = 'marsh', Cinnabar = 'volcano', Viridian = 'earth',
+}
+
+local function markIcon(town, description)
+    local name = description:lower()
+    local icon, at
+    for _, entry in ipairs(MARK_WORDS) do
+        local found = name:find(entry[1], 1, true)
+        if found and (not at or found < at) then
+            icon, at = entry[2], found
+        end
+    end
+    if icon == 'gym' and GYM_BADGES[town] then
+        icon = 'gym_' .. GYM_BADGES[town]
+    end
+    return MARKS .. (icon or 'place')
+end
+
+for town, marks in pairs(GUIDES) do
+    for _, mark in ipairs(marks) do
+        mark.icon = markIcon(town, mark.description)
+    end
+end
+
 local cityLabels = {}
 local guidesEnabled = true
 
@@ -278,7 +316,11 @@ end
 local function addGuides(minimap)
     for _, city in pairs(GUIDES) do
         for _, mark in pairs(city) do
-            minimap:addFlag(mark.position, mark.type, tr(mark.description), true)
+            minimap:addFlag(mark.position, mark.icon, tr(mark.description), true)
+            local flag = minimap:getFlag(mark.position)
+            if flag and flag.icon == mark.icon then
+                flag:setSize(MARK_SIZE)
+            end
         end
     end
 end
@@ -381,7 +423,7 @@ function PokeverseMap.load(minimap)
     end
 end
 
--- the Pokepedia map's Places list: { { name, town, position, type } }, towns have no type
+-- the Pokepedia map's Places list: { { name, town, position, type, icon } }, towns have no type
 function PokeverseMap.getPlaces()
     local places = {}
     for _, composition in ipairs(MAP_COMPOSITIONS) do
@@ -389,7 +431,8 @@ function PokeverseMap.getPlaces()
     end
     for town, marks in pairs(GUIDES) do
         for _, mark in ipairs(marks) do
-            places[#places + 1] = { name = tr(mark.description), town = town, position = mark.position, type = mark.type }
+            places[#places + 1] = { name = tr(mark.description), town = town, position = mark.position, type = mark.type,
+                icon = mark.icon }
         end
     end
     return places
