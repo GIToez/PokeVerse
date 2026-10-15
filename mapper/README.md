@@ -77,7 +77,9 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 - **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
   below, with rocky patches, debris, stones and wall candles. The way in is an open ravine cut
   into the mountain face (no roof, so the mouth reads as a cave and not a missing tile), with
-  Kanto's hole in the rock (6130) at its end. Underground floors get no daylight in the client, so
+  Kanto's hole in the rock (6130) at its end, floor either side of it. The rock (919) leaves its
+  own corner for the tile down-right of it to draw, so the rock round the hole is edged as round
+  the ravine floor, or it shows black. Underground floors get no daylight in the client, so
   every cave has wall candles and glowing crystals along its walls (blue, pale ice, green, or a
   dim glow in Dark Cave, per cave in `CAVE_LIGHT`). A clear lane runs down the middle of every
   tunnel, so no room is cut off. The Ruins of
@@ -91,10 +93,13 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   486, which is a floor change).
 - **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
   SoulSilver: a lobed, uneven cone with wide ledges round the peak, one per floor, trails wide
-  enough for its wild Pokémon, and a flat summit on floor 0. Each ledge is closed one way round by
-  a spur of rock and the other way by a lake (Surf) or a bluff with one crooked way through it two
-  tiles wide, opening out into a clearing closed by a ragged patch of trees (Cut) or rocks (Rock
-  Smash), so the way up zigzags: from 1F (floor 8) up inside the mountain to the lower
+  enough for its wild Pokémon, and a flat summit on floor 0 (the highest floor there is). Each
+  ledge is closed one way round by a shoulder of the ledge above pushed out across it (broad at
+  the cliff behind, narrowing and bending as it reaches the cliff in front, `shoulder`) and the
+  other way by a lake (Surf) or another such shoulder with one crooked way through it two tiles
+  wide, crossing it where it is thin, opening out into a clearing closed by a ragged patch of
+  trees (Cut) or rocks (Rock Smash); the build checks that nothing gets round a patch. The way
+  up zigzags: from 1F (floor 8) up inside the mountain to the lower
   mountainside (floor 5), Surf across its lake, a ramp to floor 4, Cut, a ramp to floor 3, Rock
   Smash, into the 2F tunnel under the ledge above (a patch of rocks where it opens out), out on
   floor 2, Rock Smash, a ramp to floor 1, and the 3F tunnel out onto the summit. Outdoor ramps
