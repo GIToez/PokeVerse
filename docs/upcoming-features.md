@@ -5,24 +5,39 @@ so. Items marked **To decide** need an answer before work starts.
 
 ## Order
 
-1. [New depot](#1-new-depot): Poké boxes, inbox and stash (built).
-2. [Auto-walk and world map](#2-auto-walk-and-world-map) (one effort, shipped in phases; the
-   Pokepedia phases B to F are built).
-3. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
-4. [Website: live status and Discord card](#4-website).
-6. [Vocations](#6-vocations), replacing the old vocations.
-7. [Pokémon storage](#7-pokémon-storage) and the [GTS](#8-gts-global-trading-system),
-   together: they share the search, filters and windows.
-8. Convert every NPC, quest and task to the new dialogue, then the
-   [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial).
-9. [Factions](#10-factions).
+**Built:**
 
-Alongside, as small separate changes: the [bug fixes and small ideas](#11-bug-fixes-and-small-ideas),
-the [level requirement audit](#12-level-requirement-audit) and
+- [New depot](#1-new-depot) and [Pokémon storage](#7-pokémon-storage): the PC with Poké
+  boxes, stash, inbox, depot and search, opened from every locker.
+- [Auto-walk and world map](#2-auto-walk-and-world-map): the auto-walk fix and the
+  Pokepedia (map, houses, Pokédex knowledge levels, items, waypoints, routes, tracker).
+- [GTS](#8-gts-global-trading-system).
+- [Website](#4-website): home, downloads, Pokédex and moves pages, Discord button (not the live
+  status or the Discord card yet).
+- Most of the [bug fixes and small ideas](#11-bug-fixes-and-small-ideas), including the
+  energy bar.
+- The [level requirement audit](#12-level-requirement-audit) and the unlock ladder.
+- The first [economy](#14-economy-audit) tuning.
+- The [daily login reward](#15-daily-login-rewards-and-events) (7-day streak).
+- [Android](#17-android-touch-controls): a tap works as smart left click.
+- Not in this plan before: the Tasks window redesign, gym leader duels with banners, the
+  Redemption login and character screens.
+
+**Next, in order:**
+
+1. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
+2. [Vocations](#6-vocations), replacing the old vocations.
+3. Convert every NPC, quest and task to the new dialogue, then the
+   [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial).
+4. [Factions](#10-factions).
+
+Alongside, as small separate changes: what's left of the
+[bug fixes and small ideas](#11-bug-fixes-and-small-ideas) (hunting task time limit),
 [switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content),
-the [economy audit](#14-economy-audit) (before the GTS), the
-[daily login rewards and event calendar](#15-daily-login-rewards-and-events), [reports to Discord forums](#16-reports-and-feature-requests-to-discord-forums), and
-[Android touch controls](#17-android-touch-controls).
+the [event calendar and double shiny](#15-daily-login-rewards-and-events),
+[reports to Discord forums](#16-reports-and-feature-requests-to-discord-forums), the website's
+[live status and Discord card](#4-website), the level-up banner that lists what just unlocked,
+and the Android phone UI pass.
 
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
@@ -159,6 +174,9 @@ when bosses or raids need it.
   every depot item is saved again on each save.
 
 ## 2. Auto-walk and world map
+
+**Built.** Phase A (the client's auto-walk stopping on long walks) is fixed, and phases B to F
+are the [Pokepedia](#pokepedia-cyclopedia-style-window). The plan below is kept for reference.
 
 Click-to-walk (game map, minimap, full map) must feel reliable again. On top of that, the
 **M** / full map becomes the place to orient, drop waypoints, build routes, and walk them.
@@ -355,19 +373,19 @@ Phase F  Pokédex knowledge levels       → spawn areas need the map (B) and ro
 Later    Help tab (hints, tutorials)
 ```
 
-One client branch (`cursor/autowalk-worldmap-c8d5` or similar), client-only until we choose
-server waypoint sync. Server changes only if we add persistence or anti-cheat limits on auto-walk.
+Phases A to F are built; the Help tab is still to come.
 
-### To decide (need your call)
+### Decided while building
 
-1. **Full map entry** — Keep **M** as fullscreen minimap + new side panel, or invest in a
-   dedicated `game_worldmap` window (more work, more room for route UI).
-2. **Waypoint storage** — Client-only per character (fast) vs server-backed (portable).
-3. **Route cancel rule** — Any new click cancels vs explicit Cancel / Pause buttons.
-4. **Multi-floor routes** — v1 same-floor only, or allow stops on different floors with
-   manual floor changes between legs.
-5. **Range limit** — Keep 250-tile autowalk cap for ad-hoc clicks; routes might need chunked
-   legs or a higher cap.
+1. **Full map entry:** M opens the Pokepedia's Map tab, its own window, not the fullscreen
+   minimap.
+2. **Waypoint storage:** on the client, per character. Server sync can come later.
+3. **Route cancel rule:** walking with the keys or clicking somewhere to walk stops the route;
+   the Route tab has Pause and Resume.
+4. **Multi-floor routes:** stops can be on any floor; the route waits until the player takes
+   the stairs.
+5. **Range limit:** routes walk one leg at a time and try shorter steps toward a stop when no
+   path reaches it.
 
 ## 3. NPC dialogue, quests and tasks
 
@@ -383,6 +401,10 @@ files and 338 NPC scripts (`core/server/data/npc`).
 ## 4. Website
 
 Static site on the PokeVerse-Clients `gh-pages` branch ([website.md](website.md)).
+
+**Built:** home and downloads, Pokédex and moves pages from the game data, and a Discord
+button with the game's invite. Still to do: the live server status (the panel says "coming
+soon"), the Discord card, and the pages below.
 
 - **Live server status:** online or offline, players online, uptime, and who's online. The
   bot already asks the game for these (`server.status`; the online list, `admin.sessions`,
@@ -632,10 +654,17 @@ Keeping the masteries would mean at least removing or replacing that bonus.
 
 ## 7. Pokémon storage
 
-Now part of the [new depot](#the-new-depot-agreed-redemptions-depot-redesigned-for-pokémon):
-the Poké boxes. The GTS uses the same search and filters.
+**Built** as part of the [new depot](#1-new-depot): the Poké boxes.
 
 ## 8. GTS (Global Trading System)
+
+**Built** (`lib/ps/systems/066-gts.lua`, client `game_gts`): item offers to sell or buy and
+Pokémon offers to sell, from the Pokémon Center computer. Offers are held until they are sold,
+cancelled or expire (7 days), sellers are paid into the bank less a 1% tax even when offline,
+at most 30 offers each, Pokémon with face icons, and a history of the player's trades. The
+Pokémon and item market NPCs are retired and their listings moved over. Not built yet: price
+history ("last sold for"), the bank history window, staff tools beyond opening it anywhere,
+and Discord posts.
 
 Replaces the player marketplace. Built on the existing market module (the legacy
 `game_market`; Redemption has one too) and extended:
@@ -679,18 +708,21 @@ Team Rocket and other factions, separate from vocations:
 
 From the `#notes` channel:
 
-- **Look text for field moves:** looking at an object a field move works on says so, for
-  example "You see a stone. It looks like it can be smashed." for the Rock Smash stone
-  (item 1285), and the same for Cut, Strength and the others.
-- **Battle list:** a Pokémon's level does not update until one of the filters is clicked.
-- **WASD double step:** walking with WASD sometimes moves two tiles instead of one; the
-  arrow keys do not. Cause unknown.
-- **Switching Pokémon:** the player is invulnerable for 0.5 seconds after switching.
-- **Bugged stairs:** going down some stairs works but lags or disconnects the player. Known:
-  the stone stairway (item 3220) at 3295, 252, 7, and the stairs at 3853, 813, 7. Check
-  for more.
-- **Gym leaders** say how many of the gym's trainers are left to beat before the player
-  can challenge them.
+- **Look text for field moves (done):** looking at an object a field move works on says
+  so, for example "You see a stone. It looks like it can be smashed." for the Rock Smash
+  stone (item 1285), and the same for holes, grass, nest trees, waterfalls, big rocks and
+  climbing rocks.
+- **Battle list (fixed):** a Pokémon's level did not update until one of the filters was
+  clicked; an entry now refreshes when the creature's name (and so its level) changes.
+- **WASD double step (fixed):** binding the walk keys again after a relog stacked their
+  handlers, so one press walked twice.
+- **Switching Pokémon (done):** the trainer is protected until the next Pokémon is out (at
+  most 1.5 seconds), not in duels or trainer battles.
+- **Bugged stairs (fixed, check on live):** stairs that land on more stairs sent two full map
+  descriptions in one message, which overflowed it; each now goes in its own message. Known
+  spots: the stone stairway (item 3220) at 3295, 252, 7, and the stairs at 3853, 813, 7.
+- **Gym leaders (done)** say how many of the gym's trainers are left to beat (or which one,
+  when one is left). Gym duels also got banners with each leader's portrait.
 - **Hunting tasks get a time limit** (`data/lib/ps/systems/064-huntingTasks.lua`): a hunt
   not finished in time fails on its own and is removed. **To decide:** how long (for
   example by size), and whether a failed hunt costs anything.
@@ -703,8 +735,7 @@ From the `#notes` channel:
   time, and the server test picks tasks and hooks Pokémon in one session.
 
 The missing clickable responses (gym leaders and others) are part of the
-[NPC dialogue](#3-npc-dialogue-quests-and-tasks) work, and more Pokémon boxes are part of
-[Pokémon storage](#7-pokémon-storage).
+[NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.
 
 ### Pokémon energy
 
@@ -715,10 +746,9 @@ Moves cost 40 to 120, most often 100 (`requiredEnergy` in `config/moves`); not e
 energy blocks the move (`003-skill.lua`). Wild and NPC trainer Pokémon have no energy,
 only move cooldowns.
 
-- **Show it clearly (agreed):** the client shows energy as the blue mana bar, which
-  doesn't say it belongs to the Pokémon. Show it as an energy bar right under the
-  Pokémon's health bar, show each move's cost on the move bar, and grey out moves it can't afford.
-- **Balance:** at level 50 a Pokémon has about 600 energy and gets 60 back a minute, so
+- **Show it clearly (done):** an energy bar right under the Pokémon's health bar, each
+  move's cost on the move bar, and moves it can't afford dimmed.
+- **Balance (still to check):** at level 50 a Pokémon has about 600 energy and gets 60 back a minute, so
   energy may rarely run out. Check it in the [economy audit](#14-economy-audit) together
   with energy potions and food.
 - **Who has energy (agreed):** players only. Wild and NPC trainer Pokémon keep just
@@ -726,6 +756,8 @@ only move cooldowns.
   need an AI that manages it.
 
 ## 12. Level requirement audit
+
+**Done:** every "Now" level below is in the game, with the unlock ladder.
 
 Every player level requirement found in the server code (October 2026). The first six rows
 are changed to the new level (agreed); the rest are kept.
@@ -777,8 +809,8 @@ at 20:
 Planned: the level-up banner lists what just unlocked ("Level 25: you can now buy a
 house").
 
-**To decide:** whether the daycare stays Premium (it is today), whether the Elite Four
-moves to 80, and what the level 70 quest group is (76 quests at the same level).
+**To decide:** whether the Elite Four moves to 80, and what the level 70 quest group is (76
+quests at the same level). The daycare stays Premium (agreed with the Breeder perks).
 
 ## 13. Switch off the old PSoul and anniversary content
 
@@ -787,8 +819,8 @@ for PokeVerse later. Do not delete it.
 
 - **PSoul:** about 18 files mention it, including quests (`quests.xml`, the
   `quest_chief*` and `quest_prophetSlowking` NPCs, `legendaryChest.lua`), achievements,
-  Pokémon addons, the Logan NPC, and a psoul.net link in the welcome message
-  (`creaturescripts/scripts/login.lua`).
+  Pokémon addons and the Logan NPC. The old psoul.net links (welcome popup, server URL,
+  owner email) are already gone; the rest is still on.
 - **Anniversary and birthday events:** about 38 files, including the global event
   (`globalevents/scripts/start.lua`, `lib/ps/events/globalevents/anniversary.lua`), the
   cake monsters (`monster/Events/Anniversary`), the surprise bag, the magic flame, and the
@@ -885,10 +917,10 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
 
 ## 15. Daily login rewards and events
 
-- **Daily login reward:** a 7-day streak that repeats (agreed): a reward for each day in a
-  row, a bigger one on day 7, then it starts again at day 1. A missed day resets the
-  streak. The values
-  come from the [economy audit](#14-economy-audit).
+- **Daily login reward (built,** `lib/ps/systems/065-dailyLogin.lua`, client
+  `game_dailylogin`**):** a 7-day streak that repeats: a reward for each day in a row, rare
+  candy on day 7, then it starts again at day 1. A missed day resets the streak. A red flag
+  on the top menu button shows while today's reward is unclaimed.
 - **Event calendar:** one calendar that shows the upcoming events (double EXP, double
   shiny, holiday events, tournaments): in a game window, on the website, and posted by
   the Discord bot. Staff add events with a date, time and length, and they start and
@@ -939,17 +971,14 @@ becomes a post in a Discord forum channel, with tags.
 
 ## 17. Android touch controls
 
-Today a long press (over 0.5 s) already works as a right
-click and opens the menu (`src/framework/platform/androidwindow.cpp`). A tap only does
-something with one of the shortcut buttons (look, use, attack, follow) selected, or walks;
-on phones the client skips the smart left click (`processMouseAction` in
-`modules/game_interface/gameinterface.lua`).
-
-- **Tap = smart left click (agreed idea):** talk to an NPC, attack a Pokémon, use an
-  object, or walk there, the same as smart left click on the computer.
-- **Long press = right click:** keep it, with a small vibration or circle so the player
-  knows the menu is coming. Double tap is not recommended: every single tap would have to
-  wait to see if a second one follows, so walking and attacking would feel slow.
+- **Tap = smart left click (done):** with no shortcut button selected, a tap talks to an
+  NPC, attacks a Pokémon, uses an object (lockers and other containers too), walks there or
+  looks, the same as smart left click on the computer.
+- **Long press = right click (done):** a long press (over 0.5 s) opens the menu
+  (`src/framework/platform/androidwindow.cpp`). Still to add: a small vibration or circle so
+  the player knows the menu is coming. Double tap is not recommended: every single tap would
+  have to wait to see if a second one follows, so walking and attacking would feel slow.
+- **Volume buttons (done):** they control the phone's media volume.
 - The shortcut buttons keep working for look and follow.
 - Then a phone UI pass: button sizes, the joystick, and windows that don't fit the
   screen.
