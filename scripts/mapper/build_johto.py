@@ -413,7 +413,7 @@ SILVER = {
     'center': (2905, 400), 'top': 7, 'summit': 18, 'ring': 12, 'base': 2, 'lower': 3, 'wall': 4,
     # the rings' outline: stretched in and out by `stretch` in lobes about `lobes` tiles across, and ragged
     'stretch': 0.45, 'lobes': 36, 'wobble': 3,
-    'ramps': [(0, 2), (90, 3), (90, 5)],
+    'ramps': [],
     'spurs': [(40, 2), (20, 3), (110, 4), (230, 5), (60, 6)],
     'obstacles': [(120, 2, 'surf'), (220, 3, 'cut'), (30, 4, 'smash'), (130, 5, 'smash')],
     # the way of each run: map points, ('at', angle, distance) for a point that far out on the rings
@@ -434,9 +434,11 @@ SILVER = {
     # on the ledge above, passages, passages above) for caves from one ledge up to the next, only
     # between ledges reached with the same field moves
     'caves_seed': 61, 'cave_step': 6,
-    'caves': [('link', 5, 270, 300, 30, 25), ('link', 4, 150, 70, 30, 25), ('link', 3, 200, 180, 30, 20),
-              (5, 80, 50, 25), (5, 200, 50, 0), (5, 330, 40, 0), (4, 245, 35, 12), (4, 180, 35, 0),
-              (3, 340, 30, 0), (2, 350, 15, 0), (2, 40, 12, 0),
+    # the way up between ledges with no tunnel: caves in from the ledge at an angle, coming out on the
+    # ledge above (floor, angle, angle above, passages, passages above)
+    'route': [(5, 0, 0, 40, 30), (4, 90, 90, 40, 30), (2, 90, 90, 25, 15)],
+    'caves': [('link', 5, 270, 300, 30, 25),
+              (5, 80, 50, 25), (5, 200, 50, 0), (4, 245, 35, 12), (3, 340, 30, 0), (2, 350, 15, 0),
               (7, 'Mt. Silver Cave', 110, 40), (7, 'Mt. Silver Cave', 120, 40, 200, 45),
               (7, 'Mt. Silver Cave', 80, 0, 140, 45), (6, 'Mt. Silver Cave', 60, 0),
               (6, 'Mt. Silver Cave', 80, 0, 250, 45), (7, 'Mt. Silver Cave', 80, 0, 270, 45)],
@@ -1531,6 +1533,7 @@ def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot
                 room = stamp(at_(k), at_(k), 3.2)
                 if all(inwin(c) and (can[loc(c)] or c in cells) for c in room):
                     carve(z, room)
+                    cells |= room
                     caverns.append((at_(k), z))
         return {'nodes': [pos[k] for k in seen], 'cells': cells, 'z': z, 'upper': upper}
 
@@ -1580,9 +1583,9 @@ def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot
                 return True
         return False
 
-    for spec in SILVER['caves']:
+    for spec in [('link', *r, True) for r in SILVER['route']] + SILVER['caves']:
         if spec[0] == 'link':
-            _, z, a, b, cap, up = spec
+            _, z, a, b, cap, up, *must = spec
             target = spot(('at', b, s + (top - 2 - (Z - z)) * w + w / 2))
             for inner, d0, face, lead in mouth(z, a):
                 net = grow(z, inner, d0, cap, up, lead, True, toward=target)
@@ -1590,9 +1593,11 @@ def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot
                     cut(z, face, lead)
                     break
             else:
+                assert not must, 'Mt. Silver: no room for the way up from %d degrees on floor %d' % (a, z)
                 print('Mt. Silver: no room for the cave up from %d degrees on floor %d' % (a, z))
                 continue
             if not (net['upper'] and come_out(net['upper'], b)):
+                assert not must, 'Mt. Silver: the way up from %d degrees on floor %d does not come out' % (a, z)
                 print('Mt. Silver: the cave up from %d degrees on floor %d does not come out' % (a, z))
             continue
         # a fifth and sixth entry aim the caves at the point that far out at that angle

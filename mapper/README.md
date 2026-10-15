@@ -98,16 +98,17 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   the cliff behind, narrowing and bending as it reaches the cliff in front, `shoulder`) and the
   other way by a lake (Surf) or another such shoulder with one crooked way through it two tiles
   wide, crossing it where it is thin, opening out into a clearing closed by a ragged patch of
-  trees (Cut) or rocks (Rock Smash); the build checks that nothing gets round a patch. The way
-  up zigzags: from 1F (floor 8) up inside the mountain to the lower
-  mountainside (floor 5), Surf across its lake, a ramp to floor 4, Cut, a ramp to floor 3, Rock
-  Smash, into the 2F tunnel under the ledge above (a patch of rocks where it opens out), out on
-  floor 2, Rock Smash, a ramp to floor 1, and the 3F tunnel out onto the summit. Outdoor ramps
-  come three side by side and climb only north or west, so the ramp is never hidden under the
-  ledge above (ice ramps on snow). Tunnel mouths are wide cuts into the cliffs; the mountain
-  keeps its old height round the ravine to the cave mouth, so the mouth stays in sight. Without
-  Surf a player gets no higher than caves on floor 4; Surf and Cut reach floor 3; all three
-  reach the summit.
+  trees (Cut) or rocks (Rock Smash); the build checks that nothing gets round a patch. Every
+  floor up is a cave and every ledge a walk round to the next cave: from 1F (floor 8) up inside
+  the mountain to the lower mountainside (floor 5), round past its lake (Surf) into a cave up to
+  floor 4 (`SILVER['route']`), round past Cut into a cave up to floor 3, round past Rock Smash
+  into the 2F tunnel under the ledge above (a patch of rocks where it opens out), out on floor
+  2, round past Rock Smash into a cave up to floor 1, and round to the 3F tunnel out onto the
+  summit. The build fails if a cave on the way up has no room or does not come out on the ledge
+  above. Mouths are wide cuts into the cliffs; the mountain keeps its old height round the
+  ravine to the cave mouth, so the mouth stays in sight. Without Surf a player gets no higher
+  than floor 5; with Surf, no higher than floor 4 outside (a side cave reaches floor 3); Surf and
+  Cut reach floor 3; all three reach the summit.
   The rest of the inside is caves (`SILVER['caves']`, `silver_caves`): off the tunnels and in
   from mouths on the ledges, winding passages that branch, loop and end blind, caverns at some
   ends, and ramps or stone cave stairs under a rock hole up to more caves on the floor above.
