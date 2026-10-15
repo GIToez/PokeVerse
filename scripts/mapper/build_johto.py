@@ -217,9 +217,9 @@ ROADS = {
     '47': [(1888, 640), (1866, 628), (1850, 612)],
     '48': [(1850, 612), (1836, 592), (1830, 570)],
     # trails off the routes into the hunting grounds and up to the landmarks
-    'frontier trail': [(2180, 410), (2120, 400), (2080, 385), (2045, 372), (2040, 356)],
+    'frontier trail': [(2180, 410), (2120, 400), (2080, 385), (2060, 366), (2053, 358)],
     'cliffs trail': [(2080, 385), (2050, 415), (2030, 435)],
-    'life trail': [(2040, 356), (2048, 330), (2040, 300), (2030, 278)],
+    'life trail': [(2053, 358), (2050, 330), (2040, 300), (2030, 278)],
     'snowtop trail': [(2225, 402), (2222, 380), (2215, 340), (2210, 295), (2205, 250), (2200, 222)],
     'quena trail': [(2548, 262), (2510, 250), (2470, 235), (2440, 215), (2415, 180), (2401, 133)],
     'badlands trail': [(2334, 485), (2380, 482), (2440, 480)],
@@ -255,9 +255,10 @@ RANGE_WALL_X = 2835
 NECK = 9
 # Snowy summits besides Mt. Silver's (x, y, r): Snowtop Mountain and Mount Quena.
 SNOW_PEAKS = [(2200, 215, 40), (2401, 128, 30)]
-# The hunting grounds (x, y, r) with wild Pokémon of their own (a table in SPAWNS).
+# The hunting grounds (x, y, r) with wild Pokémon of their own (a table in SPAWNS). Arbor Woods is
+# the woods east of the Battle Frontier, its middle off the layout's so the Frontier is not in it.
 HUNT = {
-    'Olivine Cliffs': (2030, 430, 45), 'Arbor Woods': (2060, 340, 45), 'Lake of Life': (2030, 270, 35),
+    'Olivine Cliffs': (2030, 430, 45), 'Arbor Woods': (2095, 335, 45), 'Lake of Life': (2030, 270, 35),
     'Ecruteak Old Forest': (2210, 290, 60), 'Snowtop Mountain': (2200, 215, 45), 'Mount Quena': (2401, 128, 40),
     'Rage Marshes': (2440, 220, 55), 'Mortar Badlands': (2440, 480, 50), 'Frozen North': (2700, 220, 70),
     'Dragon Holy Land': (2800, 280, 35), 'Lake Slowpoke': (2640, 440, 30),
@@ -769,7 +770,7 @@ class Prefab:
     """A Kanto building copied by its box. Plain prefabs have their door below the box (`door` is its
     first column); walled ones include the walls and get their entries from map-house.xml, and only
     keep the houses whose entry is in the box (a neighbour's tile on a shared wall is not theirs).
-    Landmarks (rent False) are not houses at all."""
+    Landmarks (rent False) are not houses at all; `entries` overrides where the doors are."""
 
     def __init__(self, name, spec, keep, brushes, nature, houses_xml, down_ids=()):
         self.name = name
@@ -788,8 +789,27 @@ class Prefab:
         else:
             own = None
             self.entries = [(self.door, self.h), (self.door + 1, self.h)]
+        self.entries = spec.get('entries', self.entries)
         if not spec.get('rent', True):
             own = set()
+        # the base floor's plain nature is left out, for the ground round the building to fill;
+        # with `enclosed`, only what joins the box's edge (a pool or rockery indoors stays)
+        loose = set()
+        for (x, y, z), tile in keep.items():
+            if z == self.base_z and x0 <= x <= x1 and y0 <= y <= y1 and not tile.house_id:
+                ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
+                if all(i in nature for i in ids):
+                    loose.add((x - x0, y - y0))
+        if spec.get('enclosed'):
+            todo = [(dx, dy) for dx, dy in loose if dx in (0, self.w - 1) or dy in (0, self.h - 1)]
+            outside = set(todo)
+            while todo:
+                dx, dy = todo.pop()
+                for p in ((dx + 1, dy), (dx - 1, dy), (dx, dy + 1), (dx, dy - 1)):
+                    if p in loose and p not in outside:
+                        outside.add(p)
+                        todo.append(p)
+            loose = outside
         for (x, y, z), tile in keep.items():
             if z > self.base_z:
                 continue
@@ -798,10 +818,8 @@ class Prefab:
                 continue
             if own is not None and tile.house_id and tile.house_id not in own:
                 tile = pvmap.RawTile(0, tile.flags, tile.ground, tile.children)
-            if z == self.base_z:
-                ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
-                if not tile.house_id and all(i in nature for i in ids):
-                    continue
+            if z == self.base_z and (x - x0, y - y0) in loose:
+                continue
             if tile.house_id:
                 self.house_ids.add(tile.house_id)
             self.tiles[(x - x0, y - y0, z - self.base_z)] = tile
@@ -811,6 +829,11 @@ class Prefab:
             ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
             if dz < 0 and (dx, dy, dz + 1) not in self.tiles and any(i in down_ids for i in ids):
                 del self.tiles[(dx, dy, dz)]
+        # doorways knocked through a wall (`open`): only the floor under it is kept
+        for dx, dy in spec.get('open', []):
+            tile = self.tiles[(dx, dy, 0)]
+            floor = b'' if tile.ground is not None else pvmap.split_items(tile.children)[0]
+            self.tiles[(dx, dy, 0)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, floor)
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
 

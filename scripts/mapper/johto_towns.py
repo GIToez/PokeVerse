@@ -118,13 +118,26 @@ BUILDINGS = {
     'daycare': {'box': (3302, 790, 3314, 799), 'walled': False, 'door': 5, 'rent': False},
     # Pallet's house and cottage without their walls' ring (the door is below the box, `door` its
     # first column): Officer Jenny's police box, the boathouse and the windmills (a wheel on the roof).
-    # The Battle Frontier's Battle Tower (Pewter's four-storey guild hall) and the Safari Zone's
-    # warden's office (a Vermilion house).
-    'battle-tower': {'box': (3316, 236, 3336, 253), 'rent': False},
+    # The Safari Zone's warden's office (a Vermilion house).
     'safari-gate': {'box': (3972, 621, 3987, 634), 'rent': False},
     'police-box': {'box': (3302, 790, 3314, 799), 'walled': False, 'door': 5, 'rent': False},
     'boathouse': {'box': (3302, 804, 3310, 813), 'walled': False, 'door': 3, 'rent': False},
     'windmill': {'box': (3302, 804, 3310, 813), 'walled': False, 'door': 3, 'rent': False},
+    # The Battle Frontier's five facilities, none of them houses, so `entries` are where their doors
+    # open (relative to the box, the tile outside): Saffron's four-storey office as the Battle Tower
+    # (its gate in the south-east corner), Vermilion's metal works as the Battle Factory, Celadon's
+    # slot machines and card tables as the Battle Arcade, Cerulean's pillared hall round its pool as
+    # the Battle Hall and Saffron's colonnade round its fountains as the Battle Castle. They are
+    # `enclosed`: the rockery in the Tower's corner and the Factory's indoor pool are copied too.
+    'battle-tower': {'box': (3867, 479, 3887, 494), 'entries': [(18, 16), (19, 16)], 'enclosed': True, 'rent': False},
+    # Kanto's works are entered from below (the stairs in from the basement are not copied), so a
+    # doorway is opened (`open`) from the room inside the door up into the hall
+    'battle-factory': {'box': (3920, 654, 3938, 669), 'entries': [(19, 11), (19, 12)], 'open': [(14, 9)],
+                       'enclosed': True, 'rent': False},
+    'battle-arcade': {'box': (3622, 435, 3638, 452), 'entries': [(17, 3), (17, 4)], 'enclosed': True, 'rent': False},
+    'battle-hall': {'box': (3910, 255, 3929, 273), 'entries': [(8, 18), (9, 18), (17, 2)], 'enclosed': True,
+                    'rent': False},
+    'battle-castle': {'box': (3957, 454, 3981, 469), 'entries': [(7, 13), (8, 13)], 'enclosed': True, 'rent': False},
 }
 
 # Decoration (item ids), none of which players can pick up or move. Fences go like Pallet's: a post
@@ -928,27 +941,76 @@ def safari_zone(t):
 
 
 def battle_frontier(t):
-    """The Battle Frontier on the cliffs north-west of Olivine: the Battle Tower on a paved square
-    with a fountain and lamps, reached by the trail from Route 38."""
-    t.streets += [([(1980, 356), (2040, 356)], 2), ([(2010, 356), (2010, 384)], 2)]
-    t.put('battle-tower', 2000, 334)
-    t.plazas.append((2010, 366, 5))
-    t.areas.append((1972, 328, 2048, 392))
-    t.ground(2008, 364, 2012, 368, 'small tiled gray stone')
-    t.ground(2009, 365, 2011, 367, 'walkable sea')
-    t.block(2008, 364, 2012, 368)
-    t.item(2010, 366, STATUE)
-    for x in range(1984, 2040, 8):
-        if abs(x - 2010) > 4:
-            t.item(x, 352, STREET_LAMP)
-    t.item(2014, 380, SIGN)
+    """The Battle Frontier on the cliffs north-west of Olivine, as in HeartGold and SoulSilver: the
+    Battle Tower at the head of a paved square with a fountain in the middle, the Battle Castle and
+    Battle Arcade either side of it, the Battle Factory and Battle Hall down the avenue south, and the
+    Exchange Service Corner's stalls (where Battle Points are traded) on the square. The trail from
+    Route 38 comes in at the east end of the cross avenue."""
+    px, py = 2008, 358
+    t.streets += [([(1962, py), (2052, py)], 2), ([(px, 342), (px, 394)], 2)]
+    t.put('battle-castle', 1966, 328)
+    t.put('battle-tower', 1998, 326)
+    t.put('battle-arcade', 2022, 326)
+    t.put('battle-factory', 1972, 372)
+    t.put('battle-hall', 2026, 370)
+    t.plazas.append((px, py, 7))
+    t.areas.append((1958, 318, 2056, 398))
+    t.ground(px - 2, py - 2, px + 2, py + 2, 'small tiled gray stone')
+    t.ground(px - 1, py - 1, px + 1, py + 1, 'walkable sea')
+    t.block(px - 2, py - 2, px + 2, py + 2)
+    t.item(px, py, STATUE)
+    # the Exchange Service Corner
+    for x in (px - 5, px + 5):
+        t.item(x, py + 5, PARASOLS[1])
+        t.item(x + 1, py + 5, CRATES[0])
+    for x in range(1966, 2052, 8):
+        if abs(x - px) > 8:
+            t.item(x, py - 3, STREET_LAMP)
+            t.item(x, py + 3, FLOWERS[(x // 8) % len(FLOWERS)])
+    for y in range(346, 394, 8):
+        if abs(y - py) > 8:
+            t.item(px - 3, y, STREET_LAMP)
+            t.item(px + 3, y, STREET_LAMP)
+    t.item(2050, py - 3, SIGN)
 
 
-def ho_oh_shrine(t):
-    """The Ho-Oh Shrine on Mt. Silver's snowy top, at the end of the climb from the Pokémon Center."""
-    _shrine(t, 2905, 362, 5, 4)
-    for x in (2898, 2912):
-        t.item(x, 362, LANTERN)
+SACRED_FLAME = [7504, 7505, 7506, 7507]  # the fire shrine, 2x2: top left, top right, bottom left, bottom right
+STONE_BRAZIER = 1486
+WINGED_TOTEM = 3803
+# a red carpet's pieces, 3x3 in the order top left, top, top right, left, middle, right, bottom left, ...
+RED_CARPET = list(range(4394, 4403))
+
+
+def ho_oh_shrine():
+    """The anime's Ho-Oh Shrine (Pop Goes The Sneasel), the temple grounds on Mt. Silver where the
+    Sacred Flame burns, built on the summit at the end of the climb: a sandstone court, the flame at
+    its north end between two statues of Ho-Oh and winged totems, a red carpet up to it lined with
+    lit braziers. Returns {(dx, dy): (ground, items)} from the court's middle (between the two
+    middle columns, dx -1 and 0), and where its guards stand (Machop and Machoke, as in the anime)."""
+    out = {}
+    for dx in range(-6, 6):
+        for dy in range(-8, 7):
+            out[(dx, dy)] = ('tiled sandstone floor', [])
+
+    def put(dx, dy, *items):
+        out[(dx, dy)][1].extend(items)
+
+    for (dx, dy), item in zip([(-1, -7), (0, -7), (-1, -6), (0, -6)], SACRED_FLAME):
+        put(dx, dy, item)
+    for dx in (-3, 2):
+        put(dx, -6, STATUE)
+    for dx in (-5, 4):
+        put(dx, -7, WINGED_TOTEM)
+    for dy in range(-5, 7):
+        row = 0 if dy == -5 else 6 if dy == 6 else 3
+        for dx, col in zip(range(-2, 2), (0, 1, 1, 2)):
+            put(dx, dy, RED_CARPET[row + col])
+    for dx in (-3, 2):
+        for dy in (-3, 0, 3):
+            put(dx, dy, STONE_BRAZIER)
+    for dx, dy in [(-6, -8), (5, -8), (-6, 6), (5, 6)]:
+        put(dx, dy, LANTERN)
+    return out, [('Machop', -4, 5), ('Machoke', 3, 5)]
 
 
 def dragon_holy_land(t):
@@ -992,7 +1054,7 @@ def mount_quena(t):
 LAYOUTS = {50: new_bark, 51: cherrygrove, 52: violet, 53: azalea, 54: goldenrod, 55: ecruteak, 56: olivine,
            57: cianwood, 58: mahogany, 59: blackthorn, 'National Park': national_park, 'Ruins of Alph': ruins_of_alph, 'Ilex Shrine': ilex_shrine,
            'Bell Tower': bell_tower, 'Moomoo Farm': moomoo_farm, 'Safari Zone': safari_zone,
-           'Battle Frontier': battle_frontier, 'Ho-Oh Shrine': ho_oh_shrine, 'Dragon Holy Land': dragon_holy_land,
+           'Battle Frontier': battle_frontier, 'Dragon Holy Land': dragon_holy_land,
            'Lake Slowpoke': lake_slowpoke, 'Snowtop Mountain': snowtop, 'Mount Quena': mount_quena}
 
 
