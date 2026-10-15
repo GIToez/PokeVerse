@@ -6720,13 +6720,6 @@
   "problem": "'get your reward' awkward"
  },
  {
-  "npc": "Mikko",
-  "where": "quest 8080 talk_questStarted",
-  "text": "Thanks! I need you to bring me these items: 14x linearly guided hypnose pendant.",
-  "rewrite": "Thanks! I need you to bring me these items: 14x Linearly Guided Hypnosis Pendant.",
-  "problem": "lowercase item name, misspelled 'hypnose'"
- },
- {
   "npc": "Mistery Guy",
   "where": "npc/scripts/quest_misteryGuy.lua",
   "text": "Mm... I'm just a pokemon trainer, my dream is to be the greatest Pokemon trainer of all time! I already know! Let's {duel}!",
@@ -8480,7 +8473,7 @@
   "npc": "Prophet Slowking",
   "where": "quest 8242 talk_questFinishing",
   "text": "Do you find the Chief Vaporeon and get the restore stones?",
-  "rewrite": "Did you find Chief Vaporeon and get the Deepsoul Stone?",
+  "rewrite": "Did you find Chief Vaporeon and get the restore stones?",
   "problem": "'Do you find'; mismatched item"
  },
  {

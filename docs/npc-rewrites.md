@@ -5,7 +5,7 @@ Every line in [npc-conversations.md](npc-conversations.md) was read for broken o
 proposed rewrite that keeps the blue {words}, placeholders, names and numbers. Nothing here is
 applied yet; the same list is in `npc-rewrites.json` for applying once approved.
 
-1635 of 2938 lines, 428 NPCs or shared files.
+1634 of 2938 lines, 428 NPCs or shared files.
 
 ## Abi
 
@@ -3723,9 +3723,6 @@ applied yet; the same list is in `npc-rewrites.json` for applying once approved.
 - quest 8080 talk_questFinished - 'get your reward' awkward
   - was: Congratulations, get your reward.
   - now: Congratulations, here is your reward.
-- quest 8080 talk_questStarted - lowercase item name, misspelled 'hypnose'
-  - was: Thanks! I need you to bring me these items: 14x linearly guided hypnose pendant.
-  - now: Thanks! I need you to bring me these items: 14x Linearly Guided Hypnosis Pendant.
 
 ## Mistery Guy
 
@@ -4595,7 +4592,7 @@ applied yet; the same list is in `npc-rewrites.json` for applying once approved.
   - now: You need to help the three tribes restore the balance that is breaking. They are not far from my house. First go to the {Sea Tribe} and talk to the Chief, ask for the {Deepsoul Stone}.
 - quest 8242 talk_questFinishing - 'Do you find'; mismatched item
   - was: Do you find the Chief Vaporeon and get the restore stones?
-  - now: Did you find Chief Vaporeon and get the Deepsoul Stone?
+  - now: Did you find Chief Vaporeon and get the restore stones?
 - quest 8368 talk_questStarting - garbled sentence
   - was: Great, you got a great stage of your adventure. As of now there is no return... 
   - now: Great, you have reached an important stage of your adventure. From now on there is no turning back... 
