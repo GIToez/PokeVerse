@@ -420,13 +420,14 @@ Phases A to F are built, and so is a Wiki tab; the Help hints are still to come.
 The Map tab shows the real map, drawn from the game's sprites, instead of the minimap; a button
 under the zoom switches back to the minimap. The HUD minimap is unchanged.
 
-- `scripts/mapper/render_pokepedia.py` draws every floor at 4 pixels per tile (and coarser
-  copies for zooming out) in the format of Redemption's satellite map (`satellitemap.cpp`),
-  which draws only what is on screen. The client got a 4 pixels per tile level and keeps at
+- `scripts/mapper/render_pokepedia.py` draws the ground floor and the floors above it at 4
+  pixels per tile (and coarser copies for zooming out) in the format of Redemption's satellite
+  map (`satellitemap.cpp`), which draws only what is on screen. Underground floors are left
+  out and show the explored minimap; house pictures still cover every floor. The client got a 4 pixels per tile level and keeps at
   most 64 chunks in memory (both need the next client binary).
 - The client release renders it and caches it; after a map change only the pieces that
   changed are drawn again (about 12 minutes for the whole map on 4 cores, a few minutes
-  after a small change). About 135 MB with the house pictures, downloaded once.
+  after a small change). About 120 MB with the house pictures, downloaded once.
 - **Hidden regions:** a region listed in `scripts/mapper/hidden-regions.txt` is left out of
   the map and the house pictures until its line is removed and a client is published.
 - `scripts/render-map.sh [client folder]` renders it locally, hidden regions included, to

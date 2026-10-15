@@ -9,12 +9,13 @@ tiles around them, without the floors above so the rooms show. <out>/houses/inde
 house id and floor to [x, y, w, h, pixel width, pixel height]: the picture's top-left tile, its
 size in tiles and in pixels, min(16, 512 / longest side) pixels per tile.
 
-world: the world map of every floor as the client's satellite map chunks (src/client/satellitemap.cpp),
-512x512 pictures in <out>/world: lod 8 at 4 pixels per tile (128x128 tiles), and lods 16, 32 and 64
-built from them for the zoomed-out map. Floors 0-7 are "satellite" chunks, which the client draws
-over the ground floor; the ground floor is drawn with the floors above it, the way it looks from
-outside, and the floors above it are only opaque on their own tiles. Floors 8-15 are "minimap"
-chunks, one floor at a time.
+world: the world map of the ground floor and the floors above it as the client's satellite map
+chunks (src/client/satellitemap.cpp), 512x512 pictures in <out>/world: lod 8 at 4 pixels per tile
+(128x128 tiles), and lods 16, 32 and 64 built from them for the zoomed-out map. The client draws
+floors 0-7 over the ground floor; the ground floor is drawn with the floors above it, the way it
+looks from outside, and the floors above it are only opaque on their own tiles. Underground floors
+(8-15) are not drawn: there the client shows the minimap the player has explored. House pictures
+still cover every floor.
 
 A piece is only drawn again when its tiles change: <out>-state.json keeps a hash of each piece's
 tiles (and of the sprites), so a map change redraws just the pieces it touches. Files that no
@@ -147,8 +148,9 @@ def survey():
             if hidden(x, y):
                 continue
             width, height = max(width, x + 1), max(height, y + 1)
-            key = (z, x // CHUNK, y // CHUNK)
-            chunks[key] = chunks.get(key, 0) + 1
+            if z <= GROUND:
+                key = (z, x // CHUNK, y // CHUNK)
+                chunks[key] = chunks.get(key, 0) + 1
             if t == pvmap.HOUSETILE:
                 house_id = struct.unpack_from('<I', p, 2)[0]
                 houses.setdefault(house_id, []).append((x, y, z))
