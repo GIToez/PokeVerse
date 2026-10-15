@@ -1,9 +1,14 @@
-# NPC line rewrites (proposed)
+# NPC line rewrites
 
 Every line in [npc-conversations.md](npc-conversations.md) was read for broken or unclear English
-(a reading review, not an automatic check). These are the lines that need work, each with a
-proposed rewrite that keeps the blue {words}, placeholders, names and numbers. Nothing here is
-applied yet; the same list is in `npc-rewrites.json` for applying once approved.
+(a reading review, not an automatic check). These are the lines that needed work, each with a
+rewrite that keeps the blue {words}, placeholders, names and numbers. They are applied; the same
+list is in `npc-rewrites.json` and `scripts/apply_npc_rewrites.py` applies it.
+
+Later fixes are in `npc-fixes.json`, in the same format (`python3 scripts/apply_npc_rewrites.py
+--file docs/npc-fixes.json`): copies of these lines in other NPCs and shared scripts
+(`"where": "everywhere"`), quest lines that now say what the quest checks and how many, blue
+words that were meant for another NPC, the travel and shop "gold coins", and spelling.
 
 1634 of 2938 lines, 428 NPCs or shared files.
 
