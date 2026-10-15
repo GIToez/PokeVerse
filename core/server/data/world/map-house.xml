@@ -577,4 +577,110 @@
   <house name="Pacifidlog House #08" houseid="577" entryx="1280" entryy="1766" entryz="7" rent="0" townid="49" size="7"/>
   <house name="Pacifidlog House #09" houseid="578" entryx="1284" entryy="1766" entryz="7" rent="0" townid="49" size="7"/>
   <house name="Pacifidlog House #10" houseid="579" entryx="1300" entryy="1783" entryz="7" rent="0" townid="49" size="57"/>
+  <house name="New Bark House #1" houseid="580" entryx="2735" entryy="797" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #2" houseid="581" entryx="2751" entryy="797" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #3" houseid="582" entryx="2734" entryy="810" entryz="7" rent="0" townid="50" size="119"/>
+  <house name="New Bark House #4" houseid="583" entryx="2744" entryy="812" entryz="7" rent="0" townid="50" size="80"/>
+  <house name="New Bark House #5" houseid="584" entryx="2760" entryy="810" entryz="7" rent="0" townid="50" size="119"/>
+  <house name="New Bark House #6" houseid="585" entryx="2770" entryy="812" entryz="7" rent="0" townid="50" size="80"/>
+  <house name="New Bark House #7" houseid="586" entryx="2702" entryy="818" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #8" houseid="587" entryx="2703" entryy="785" entryz="7" rent="0" townid="50" size="69"/>
+  <house name="New Bark House #9" houseid="588" entryx="2666" entryy="813" entryz="7" rent="0" townid="50" size="17"/>
+  <house name="New Bark House #10" houseid="589" entryx="2671" entryy="816" entryz="7" rent="0" townid="50" size="16"/>
+  <house name="New Bark House #11" houseid="590" entryx="2664" entryy="825" entryz="7" rent="0" townid="50" size="16"/>
+  <house name="New Bark House #12" houseid="591" entryx="2675" entryy="821" entryz="7" rent="0" townid="50" size="16"/>
+  <house name="Cherrygrove House #1" houseid="592" entryx="2586" entryy="831" entryz="7" rent="0" townid="51" size="128"/>
+  <house name="Cherrygrove House #2" houseid="593" entryx="2597" entryy="831" entryz="7" rent="0" townid="51" size="134"/>
+  <house name="Cherrygrove House #3" houseid="594" entryx="2587" entryy="841" entryz="7" rent="0" townid="51" size="129"/>
+  <house name="Cherrygrove House #4" houseid="595" entryx="2598" entryy="845" entryz="7" rent="0" townid="51" size="77"/>
+  <house name="Cherrygrove House #5" houseid="596" entryx="2517" entryy="848" entryz="7" rent="0" townid="51" size="179"/>
+  <house name="Cherrygrove House #6" houseid="597" entryx="2502" entryy="808" entryz="7" rent="0" townid="51" size="170"/>
+  <house name="Cherrygrove House #7" houseid="598" entryx="2505" entryy="826" entryz="7" rent="0" townid="51" size="141"/>
+  <house name="Cherrygrove House #8" houseid="599" entryx="2545" entryy="810" entryz="7" rent="0" townid="51" size="167"/>
+  <house name="Cherrygrove House #9" houseid="600" entryx="2556" entryy="805" entryz="7" rent="0" townid="51" size="133"/>
+  <house name="Cherrygrove House #10" houseid="601" entryx="2544" entryy="844" entryz="7" rent="0" townid="51" size="192"/>
+  <house name="Violet House #1" houseid="602" entryx="2524" entryy="540" entryz="7" rent="0" townid="52" size="189"/>
+  <house name="Violet House #2" houseid="603" entryx="2542" entryy="540" entryz="7" rent="0" townid="52" size="168"/>
+  <house name="Violet House #3" houseid="604" entryx="2473" entryy="541" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #4" houseid="605" entryx="2481" entryy="597" entryz="7" rent="0" townid="52" size="134"/>
+  <house name="Violet House #5" houseid="606" entryx="2459" entryy="598" entryz="7" rent="0" townid="52" size="147"/>
+  <house name="Violet House #6" houseid="607" entryx="2504" entryy="609" entryz="7" rent="0" townid="52" size="188"/>
+  <house name="Violet House #7" houseid="608" entryx="2553" entryy="598" entryz="7" rent="0" townid="52" size="125"/>
+  <house name="Violet House #8" houseid="609" entryx="2448" entryy="575" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #9" houseid="610" entryx="2464" entryy="575" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #10" houseid="611" entryx="2453" entryy="581" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Violet House #11" houseid="612" entryx="2461" entryy="581" entryz="7" rent="0" townid="52" size="17"/>
+  <house name="Azalea House #1" houseid="613" entryx="2397" entryy="1012" entryz="7" rent="0" townid="53" size="227"/>
+  <house name="Azalea House #2" houseid="614" entryx="2370" entryy="1047" entryz="7" rent="0" townid="53" size="269"/>
+  <house name="Azalea House #3" houseid="615" entryx="2439" entryy="1036" entryz="7" rent="0" townid="53" size="177"/>
+  <house name="Azalea House #4" houseid="616" entryx="2456" entryy="1036" entryz="7" rent="0" townid="53" size="184"/>
+  <house name="Azalea House #5" houseid="617" entryx="2435" entryy="1045" entryz="7" rent="0" townid="53" size="173"/>
+  <house name="Azalea House #6" houseid="618" entryx="2454" entryy="1045" entryz="7" rent="0" townid="53" size="182"/>
+  <house name="Azalea House #7" houseid="619" entryx="2428" entryy="1060" entryz="7" rent="0" townid="53" size="101"/>
+  <house name="Azalea House #8" houseid="620" entryx="2360" entryy="1075" entryz="7" rent="0" townid="53" size="178"/>
+  <house name="Azalea House #9" houseid="621" entryx="2378" entryy="1075" entryz="7" rent="0" townid="53" size="114"/>
+  <house name="Goldenrod House #1" houseid="622" entryx="2286" entryy="685" entryz="7" rent="0" townid="54" size="173"/>
+  <house name="Goldenrod House #2" houseid="623" entryx="2304" entryy="685" entryz="7" rent="0" townid="54" size="140"/>
+  <house name="Goldenrod House #3" houseid="624" entryx="2288" entryy="694" entryz="7" rent="0" townid="54" size="252"/>
+  <house name="Goldenrod House #4" houseid="625" entryx="2304" entryy="694" entryz="7" rent="0" townid="54" size="137"/>
+  <house name="Goldenrod House #5" houseid="626" entryx="2336" entryy="694" entryz="7" rent="0" townid="54" size="200"/>
+  <house name="Goldenrod House #6" houseid="627" entryx="2351" entryy="694" entryz="7" rent="0" townid="54" size="250"/>
+  <house name="Goldenrod House #7" houseid="628" entryx="2289" entryy="734" entryz="7" rent="0" townid="54" size="284"/>
+  <house name="Goldenrod House #8" houseid="629" entryx="2306" entryy="734" entryz="7" rent="0" townid="54" size="293"/>
+  <house name="Goldenrod House #9" houseid="630" entryx="2280" entryy="767" entryz="7" rent="0" townid="54" size="210"/>
+  <house name="Goldenrod House #10" houseid="631" entryx="2309" entryy="767" entryz="7" rent="0" townid="54" size="166"/>
+  <house name="Goldenrod House #11" houseid="632" entryx="2333" entryy="734" entryz="7" rent="0" townid="54" size="149"/>
+  <house name="Goldenrod House #12" houseid="633" entryx="2352" entryy="734" entryz="7" rent="0" townid="54" size="326"/>
+  <house name="Goldenrod House #13" houseid="634" entryx="2335" entryy="767" entryz="7" rent="0" townid="54" size="138"/>
+  <house name="Goldenrod House #14" houseid="635" entryx="2352" entryy="767" entryz="7" rent="0" townid="54" size="114"/>
+  <house name="Goldenrod House #15" houseid="636" entryx="2269" entryy="698" entryz="7" rent="0" townid="54" size="245"/>
+  <house name="Goldenrod House #16" houseid="637" entryx="2269" entryy="748" entryz="7" rent="0" townid="54" size="342"/>
+  <house name="Goldenrod House #17" houseid="638" entryx="2371" entryy="698" entryz="7" rent="0" townid="54" size="217"/>
+  <house name="Goldenrod House #18" houseid="639" entryx="2371" entryy="712" entryz="7" rent="0" townid="54" size="248"/>
+  <house name="Goldenrod House #19" houseid="640" entryx="2371" entryy="746" entryz="7" rent="0" townid="54" size="262"/>
+  <house name="Goldenrod House #20" houseid="641" entryx="2371" entryy="758" entryz="7" rent="0" townid="54" size="199"/>
+  <house name="Goldenrod House #21" houseid="642" entryx="2312" entryy="779" entryz="7" rent="0" townid="54" size="185"/>
+  <house name="Ecruteak House #1" houseid="643" entryx="2290" entryy="371" entryz="7" rent="0" townid="55" size="228"/>
+  <house name="Ecruteak House #2" houseid="644" entryx="2304" entryy="371" entryz="7" rent="0" townid="55" size="148"/>
+  <house name="Ecruteak House #3" houseid="645" entryx="2370" entryy="371" entryz="7" rent="0" townid="55" size="181"/>
+  <house name="Ecruteak House #4" houseid="646" entryx="2273" entryy="406" entryz="7" rent="0" townid="55" size="204"/>
+  <house name="Ecruteak House #5" houseid="647" entryx="2308" entryy="402" entryz="7" rent="0" townid="55" size="186"/>
+  <house name="Ecruteak House #6" houseid="648" entryx="2364" entryy="401" entryz="7" rent="0" townid="55" size="168"/>
+  <house name="Ecruteak House #7" houseid="649" entryx="2367" entryy="397" entryz="7" rent="0" townid="55" size="189"/>
+  <house name="Ecruteak House #8" houseid="650" entryx="2382" entryy="398" entryz="7" rent="0" townid="55" size="179"/>
+  <house name="Ecruteak House #9" houseid="651" entryx="2277" entryy="414" entryz="7" rent="0" townid="55" size="184"/>
+  <house name="Ecruteak House #10" houseid="652" entryx="2289" entryy="414" entryz="7" rent="0" townid="55" size="148"/>
+  <house name="Ecruteak House #11" houseid="653" entryx="2305" entryy="414" entryz="7" rent="0" townid="55" size="202"/>
+  <house name="Ecruteak House #12" houseid="654" entryx="2348" entryy="414" entryz="7" rent="0" townid="55" size="181"/>
+  <house name="Ecruteak House #13" houseid="655" entryx="2361" entryy="414" entryz="7" rent="0" townid="55" size="168"/>
+  <house name="Ecruteak House #14" houseid="656" entryx="2367" entryy="417" entryz="7" rent="0" townid="55" size="166"/>
+  <house name="Olivine House #1" houseid="657" entryx="2100" entryy="496" entryz="7" rent="0" townid="56" size="202"/>
+  <house name="Olivine House #2" houseid="658" entryx="2167" entryy="496" entryz="7" rent="0" townid="56" size="95"/>
+  <house name="Olivine House #3" houseid="659" entryx="2180" entryy="496" entryz="7" rent="0" townid="56" size="188"/>
+  <house name="Olivine House #4" houseid="660" entryx="2109" entryy="504" entryz="7" rent="0" townid="56" size="198"/>
+  <house name="Olivine House #5" houseid="661" entryx="2123" entryy="504" entryz="7" rent="0" townid="56" size="172"/>
+  <house name="Olivine House #6" houseid="662" entryx="2152" entryy="504" entryz="7" rent="0" townid="56" size="228"/>
+  <house name="Olivine House #7" houseid="663" entryx="2170" entryy="504" entryz="7" rent="0" townid="56" size="239"/>
+  <house name="Olivine House #8" houseid="664" entryx="2159" entryy="535" entryz="7" rent="0" townid="56" size="206"/>
+  <house name="Olivine House #9" houseid="665" entryx="2163" entryy="532" entryz="7" rent="0" townid="56" size="167"/>
+  <house name="Cianwood House #1" houseid="666" entryx="1901" entryy="644" entryz="7" rent="0" townid="57" size="179"/>
+  <house name="Cianwood House #2" houseid="667" entryx="1916" entryy="644" entryz="7" rent="0" townid="57" size="109"/>
+  <house name="Cianwood House #3" houseid="668" entryx="1933" entryy="644" entryz="7" rent="0" townid="57" size="114"/>
+  <house name="Cianwood House #4" houseid="669" entryx="1904" entryy="672" entryz="7" rent="0" townid="57" size="181"/>
+  <house name="Cianwood House #5" houseid="670" entryx="1891" entryy="687" entryz="7" rent="0" townid="57" size="157"/>
+  <house name="Cianwood House #6" houseid="671" entryx="1921" entryy="683" entryz="7" rent="0" townid="57" size="227"/>
+  <house name="Cianwood House #7" houseid="672" entryx="1958" entryy="689" entryz="7" rent="0" townid="57" size="190"/>
+  <house name="Mahogany House #1" houseid="673" entryx="2562" entryy="388" entryz="7" rent="0" townid="58" size="191"/>
+  <house name="Mahogany House #2" houseid="674" entryx="2537" entryy="374" entryz="7" rent="0" townid="58" size="206"/>
+  <house name="Mahogany House #3" houseid="675" entryx="2583" entryy="371" entryz="7" rent="0" townid="58" size="240"/>
+  <house name="Mahogany House #4" houseid="676" entryx="2530" entryy="396" entryz="7" rent="0" townid="58" size="335"/>
+  <house name="Mahogany House #5" houseid="677" entryx="2561" entryy="396" entryz="7" rent="0" townid="58" size="243"/>
+  <house name="Mahogany House #6" houseid="678" entryx="2583" entryy="408" entryz="7" rent="0" townid="58" size="69"/>
+  <house name="Blackthorn House #1" houseid="679" entryx="2776" entryy="376" entryz="7" rent="0" townid="59" size="270"/>
+  <house name="Blackthorn House #2" houseid="680" entryx="2724" entryy="361" entryz="7" rent="0" townid="59" size="267"/>
+  <house name="Blackthorn House #3" houseid="681" entryx="2746" entryy="360" entryz="7" rent="0" townid="59" size="357"/>
+  <house name="Blackthorn House #4" houseid="682" entryx="2729" entryy="392" entryz="7" rent="0" townid="59" size="160"/>
+  <house name="Blackthorn House #5" houseid="683" entryx="2758" entryy="401" entryz="7" rent="0" townid="59" size="184"/>
+  <house name="Blackthorn House #6" houseid="684" entryx="2773" entryy="395" entryz="7" rent="0" townid="59" size="93"/>
+  <house name="Moomoo Farm House #1" houseid="685" entryx="2097" entryy="417" entryz="7" rent="0" townid="0" size="77"/>
 </houses>
