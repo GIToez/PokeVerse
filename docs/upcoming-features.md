@@ -690,14 +690,47 @@ do not change.
   `vocation` storage. Below level 20 the buttons are greyed out; after the choice the card shows
   "Your vocation". `Vocations.open(cid)` opens it, and a choice only counts while a window it
   opened is up, so the quest line decides when trainers choose. Until then staff test it with
-  `/vocation`, `/vocation reset` and `/vocation Name`. The perks themselves are not in yet.
+  `/vocation`, `/vocation reset`, `/vocation rank,3` and `/vocation Name` (or `Name,rank,3`).
   Artwork: `scripts/art/vocation_ui.py`, with the card pictures in
   `scripts/art/vocation-banners`.
+- **Built: ranks and perks.** Every number is in `Vocations.PERKS` (`070-vocations.lua`).
+  A new vocation starts at rank 1; `Vocations.rankUp(cid)` gives the next rank when the
+  trainer's level allows it, for the rank-up quests and tasks to call (they don't exist yet).
+  The title shows when others look at the trainer ("Vocation: Catcher, Rookie Catcher
+  (rank 1)") and in the vocation window. No perk works in a duel, the PvP arena or an NPC
+  battle.
+  - Ace Trainer: the bonus is added to Pokémon EXP from defeated Pokémon only.
+  - Catcher: ball rates are small whole numbers compared with a whole-number roll, so the
+    bonus can't scale the rate. A failed roll gets a second chance sized so the overall
+    chance is exactly ×1.02 to ×1.10. Pokémon that can't be caught yet (under 25% of the
+    tries) stay uncatchable, and Safari and Master Balls are unchanged.
+  - Breeder: faster hatching is set when the egg goes into the incubator. The daycare now
+    uses the agreed wait for everyone: from day 7 since the last egg (or the first daycare
+    visit), one 10% roll per day, and a certain egg on day 14. A late visit rolls once for
+    each day it missed. The old 15-day wait and the "out of 300" chance with failure counter
+    are gone; the timed extra egg rate item adds its value as percentage points to the daily
+    roll. Breeders with Premium roll 11–15% and have the second egg chance.
+  - Ranger: `!radar` or `!radar <type>`. Ranks 1 and 2 count Pokémon; from rank 3 it lists
+    species with direction and distance. Shinies (rank 4), legendaries and event Pokémon
+    (rank 5) only show a distance band and direction; legendary results have a 10-minute
+    cooldown.
+  - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
+    bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll
+    is a little luckier. From rank 4, `!fishing` lists what bites in each region at each skill
+    level, marking what the trainer can already hook.
+  - Medic: +3% to +15% from health potions, and health potions work on another trainer's
+    Pokémon when neither trainer is in a duel, the arena or an NPC battle.
+  - Tests: `scripts/vocation-test.py` with `scripts/testing/vocation-test-talkaction.lua`
+    (70 checks against a live server, run by `scripts/test-server-linux.sh`).
 
 ### To decide
 
 1. What the mastery items are used for. Ideas: outfits as vocation rewards, plates and
    tokens for rank-ups or crafting.
+2. What "all fishing tools" means for the rank 5 Angler (not built). For example, the cranes
+   without the skill 60 requirement, or a rank-up reward rod.
+3. The vocation quest line and the rank-up quests and tasks that call `Vocations.open` and
+   `Vocations.rankUp`.
 
 ### The old masteries
 
