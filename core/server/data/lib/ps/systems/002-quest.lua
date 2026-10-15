@@ -141,17 +141,40 @@ local function getCurrentQuest(pid, npcName)
     return false --QUESTS[npcName][#QUESTS[npcName]] -- No more quests to do, just return the last
 end
 
+local function getQuestItemsText(quest)
+    local list = {}
+    for i = 1, #quest.questRequest, 2 do
+        local id, count = quest.questRequest[i], quest.questRequest[i + 1]
+        local name = getItemNameById(id)
+        if (count > 1) then
+            local plural = getItemPluralNameById(id)
+            name = (plural and plural ~= "") and plural or name
+        end
+        list[#list + 1] = count .. " " .. name
+    end
+    return table.concat(list, ", ")
+end
+
+-- What the quest checks, said when it is accepted so the player knows exactly what to bring or do
+local function getQuestGoalMessage(quest, cid)
+    if (quest.questType == QUEST_TYPE.BRING_ITEMS) then
+        return string.format(__L(cid, "(Mission: bring %s.)"), getQuestItemsText(quest))
+    elseif (quest.questType == QUEST_TYPE.BRING_POKEMON) then
+        return string.format(__L(cid, "(Mission: bring a %s.)"), quest.questRequest)
+    elseif (quest.questType == QUEST_TYPE.DEX_POKEMONS) then
+        return string.format(__L(cid, "(Mission: register %s Pokemon in your Pokedex.)"), quest.questRequest)
+    elseif (quest.questType == QUEST_TYPE.DEFEAT_POKEMON) then
+        return string.format(__L(cid, "(Mission: defeat %s %s.)"), quest.questRequest[2], quest.questRequest[1])
+    elseif (quest.questType == QUEST_TYPE.CATCH_POKEMON) then
+        return string.format(__L(cid, "(Mission: catch %s %s.)"), quest.questRequest[2], quest.questRequest[1])
+    end
+    return nil
+end
+
 local function getQuestMessageFinish(quest, cid)
     local msg = __L(cid, quest.talk_questFinishing)
     if (quest.questType == QUEST_TYPE.BRING_ITEMS) then
-        msg = msg .. " ("
-        for i = 1, #quest.questRequest, 2 do
-            msg = msg .. quest.questRequest[i + 1] .. " " .. getItemNameById(quest.questRequest[i])
-            if ((i + 1) ~= #quest.questRequest) then
-                msg = msg .. ", "
-            end
-        end
-        msg = msg .. ")"
+        msg = msg .. " (" .. getQuestItemsText(quest) .. ")"
     elseif (quest.questType == QUEST_TYPE.BRING_POKEMON) then
         msg = msg .. " (" .. quest.questRequest .. ")"
     elseif (quest.questType == QUEST_TYPE.DEX_POKEMONS) then
@@ -259,7 +282,19 @@ function doPlayerStartQuest(pid, quest, npcName, questStorage)
         end
     end
 
-    say(string.createStory(__L(pid, quest.talk_questStarted)), pid)
+    local story = (quest.talk_questStarted and quest.talk_questStarted ~= "") and
+            string.createStory(__L(pid, quest.talk_questStarted)) or __L(pid, "Thank you! Come back to me when it's done.")
+    local goal = getQuestGoalMessage(quest, pid)
+    if (isString(story) or #story == 1) then
+        say(isString(story) and story or story[1], pid)
+        if (goal) then
+            selfSay(goal, pid)
+        end
+    else
+        -- after the last part of a long text, which is said a few seconds apart
+        story[#story + 1] = goal
+        say(story, pid)
+    end
     setPlayerQuestStatus(pid, quest, QUEST_STATUS.STARTED)
 
     if (quest.questStartItems) then

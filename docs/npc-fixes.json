@@ -460,5 +460,194 @@
   "text": "Alright, it's here.",
   "rewrite": "Alright, here they are.",
   "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "Assistant Jofrey",
+  "where": "quest 8501 talk_questStarted",
+  "text": "I'm here to teach you about fishing. Take this little Oddish and use the fishing rod on the water. Then you must hook 5 Pokemon and defeat them. Come back and talk to me when you're done.",
+  "rewrite": "I'm here to teach you about fishing. Take this little Oddish and use the fishing rod on the water. Then hook 5 Magikarp and defeat them. Come back and talk to me when you're done.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Professor Oak",
+  "where": "quest 8753 talk_questStarted",
+  "text": "Lately some Rattatas are infesting my basement and I want to ask your help to move them away, could you do it for me?",
+  "rewrite": "Lately some Rattata have been infesting my basement. Could you defeat 5 of them for me?",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Jane Hills",
+  "where": "quest 8291 talk_questStarted",
+  "text": "His favorite food is Onigiri. Thanks for helping me.",
+  "rewrite": "His favorite food is Onigiri, please bring me 20. Thanks for helping me.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queenie Jerrie",
+  "where": "quest 8245 talk_questStarting",
+  "text": "I have a proposal for you: gather some grape flowers for me and in return I will give you grape fruits.",
+  "rewrite": "I have a proposal for you: gather 20 grape flowers for me and in return I will give you grape fruits.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queter Phill",
+  "where": "quest 8667 talk_questStarted",
+  "text": "Great, very good! Your task is simple: wait for the battle simulator to send the global message, enter the teleport and defeat the copy of Suramoon. To prove your feat, bring me the essences you find on his body.",
+  "rewrite": "Great, very good! Your task is simple: wait for the battle simulator to send the global message, enter the teleport and defeat the copy of Suramoon. To prove your feat, bring me 5 of the essences you find on his body.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queter Phill",
+  "where": "quest 8668 talk_questStarted",
+  "text": "OK! You will now be on the second level of the simulator. Do the same thing: wait for the call, enter the teleport and defeat Suramoon! Then bring me the essences.",
+  "rewrite": "OK! You will now be on the second level of the simulator. Do the same thing: wait for the call, enter the teleport and defeat Suramoon! Then bring me 5 of his essences.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queter Phill",
+  "where": "quest 8669 talk_questStarted",
+  "text": "All right. You are now on the third level! For the last time I need you to defeat Suramoon in our simulator, after that return to me.",
+  "rewrite": "All right. You are now on the third level! For the last time I need you to defeat Suramoon in our simulator, after that bring me 5 of his essences.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Curtis Sacheverell",
+  "where": "quest 8246 talk_questStarted",
+  "text": "What is it?",
+  "rewrite": "What is it? The 10 grape fruits from Gord Scottie? Bring them to me.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Woodworker Courts Ted",
+  "where": "quest 8321 talk_questStarted",
+  "text": "It seems my Pokemon is being attacked! I know you can help him. When you're ready, step into the teleport machine.",
+  "rewrite": "It seems my Pokemon is being attacked by Murkrow! I know you can help him: defeat 30 of them. When you're ready, step into the teleport machine.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Stiller",
+  "where": "quest 8042 talk_questStarted",
+  "text": "Okay, bring me 200x Fancy Fabrics, 200x Long Silks and 5000 dollars.",
+  "rewrite": "Okay, bring me 200x Fancy Fabrics, 200x Long Silks and 5000 dollars in hundred-dollar notes (50 notes).",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Officer Jeny",
+  "where": "quest 8017 talk_questStarted",
+  "text": "Thanks! We know Team Rocket is involved in this, so we need to find them. We have information that one of their bases is in Celadon. Take these special balls, and if you find the Chanseys, use them on them.",
+  "rewrite": "Thanks! We know Team Rocket is involved in this, so we need to find them. We have information that one of their bases is in Celadon. Take these 5 special balls, and use them on the Chanseys when you find them.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Mr. Fuji",
+  "where": "quest 8511 talk_questStarted",
+  "text": "I was at my house here in Lavender when a loud noise caught my attention. I ran to the window and saw many lights and lanterns. A boy was being taken by hooded thieves, it was a kidnapping. I take care of Pokemon abandoned by their trainers, and I couldn't stand by and watch. I ran out to help the boy, but my Pokemon are afraid of battles, and I was soon captured and brought here. I don't know who the boy was, but he shouted: 'Run Pikachu! Escape to safety!' Through the window I could only see them fading into the horizon in a balloon. I need you to do me a favor and bring back my lost Pokemon. Do you think you can do it?",
+  "rewrite": "I was at my house here in Lavender when a loud noise caught my attention. I ran to the window and saw many lights and lanterns. A boy was being taken by hooded thieves, it was a kidnapping. I take care of Pokemon abandoned by their trainers, and I couldn't stand by and watch. I ran out to help the boy, but my Pokemon are afraid of battles, and I was soon captured and brought here. I don't know who the boy was, but he shouted: 'Run Pikachu! Escape to safety!' Through the window I could only see them fading into the horizon in a balloon. I need you to do me a favor and bring back my 5 lost Pokemon. Use these 5 Poke Balls on them when you find them. Do you think you can do it?",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Professor Ivy",
+  "where": "quest 8214 talk_questStarting",
+  "text": "Cool! Here in my lab we do research, including developing new rations to feed Pokemon. I recently discovered that a plant native to Tangelo Island may have a property that helps newborn Pokemon develop better. Can you try to find it for me?",
+  "rewrite": "Cool! Here in my lab we do research, including developing new rations to feed Pokemon. I recently discovered that a plant native to Tangelo Island, the Tangel Rue, may have a property that helps newborn Pokemon develop better. Can you bring me some of its leaves?",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Assistant Guyli",
+  "where": "quest 8410 talk_questStarted",
+  "text": "I asked him for help. Some Pokemon from our reserves have been stressed lately, and we don't know how to handle it. Can you find help? We can't leave the lab for long. I'm sure someone in Pallet can help us. A girl, yes! I don't remember her name... ask about {Pokemon stress}. Take a look around Pallet and return with good news!",
+  "rewrite": "I asked him for help. Some Pokemon from our reserves have been stressed lately, and we don't know how to handle it. Can you find help? We can't leave the lab for long. I'm sure someone in Pallet can help us. A girl, yes! I don't remember her name... ask her if she has a mission for you. Take a look around Pallet and return with good news!",
+  "problem": "blue word meant for another NPC"
+ },
+ {
+  "npc": "Pepper Denis",
+  "where": "quest 8250 talk_questStarted",
+  "text": "You'll have to find my five friends! They could be anyone in the city! Hahahahahaha! Say {hidden} to the people you suspect to find them.",
+  "rewrite": "You'll have to find my five friends! They could be anyone in the city! Hahahahahaha! Say 'hidden' to the people you suspect to find them.",
+  "problem": "blue word meant for other NPCs"
+ },
+ {
+  "npc": "Prophet Slowking",
+  "where": "quest 8242 talk_questStarted",
+  "text": "You need to help the three tribes restore the balance that is breaking. They are not far from my house. First go to the {Sea Tribe} and talk to the Chief, ask for the {Deepsoul Stone}.",
+  "rewrite": "You need to help the three tribes restore the balance that is breaking. They are not far from my house. First go to the Sea Tribe and ask their Chief about the 'Deepsoul Stone'.",
+  "problem": "blue word meant for another NPC"
+ },
+ {
+  "npc": "Mistery Guy",
+  "where": "quest 8529 talk_questFinished",
+  "text": "So Mewtwo really was created... Damn, I was afraid of that. At least we know more about it and its origin. Thank you, now I can go back to my {dad} as soon as possible.",
+  "rewrite": "So Mewtwo really was created... Damn, I was afraid of that. At least we know more about it and its origin. Thank you, now I can go back to my dad as soon as possible.",
+  "problem": "blue word nobody answers"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here?",
+  "rewrite": "By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here? The {Deepsoul} Stone?",
+  "problem": "nothing told the player what to say next"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "What do you LOSSWI want with that damn stone? Do you want to do something with it? Think about PILOSWINEEE your answer!",
+  "rewrite": "What do you LOSSWI want with that damn stone? Do you want to {help} protect it? Think about PILOSWINEEE your answer!",
+  "problem": "nothing told the player what to say next"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want.",
+  "rewrite": "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want. If you came for the {Deepsoul} Stone, forget it.",
+  "problem": "nothing told the player what to say first"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": " gold coins.",
+  "rewrite": " dollars.",
+  "problem": "Tibia money"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So, you really want to reset your Smeargle %s? This will cost you %sx Artist's Pallete.",
+  "rewrite": "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes.",
+  "problem": "spelling; the item is an artist palette"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You need at least %sx Artist's Pallete to do it.",
+  "rewrite": "You need at least %sx artist palettes to do it.",
+  "problem": "spelling; the item is an artist palette"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can {remove} your Pokemon held! Do you want that? {Your Pokemon Held Item level will be reseted if you do that.}",
+  "rewrite": "I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that.",
+  "problem": "spelling, and a whole sentence was a blue word"
+ },
+ {
+  "npc": "Donald",
+  "where": "message_greet",
+  "text": "Hello |PLAYERNAME|. I sell ham, meat, carrots, apples, brown breads, brown mushrooms and eggs (everything for 8 gold coins)!",
+  "rewrite": "Hello |PLAYERNAME|. I sell ham, meat, carrots, apples, brown breads, brown mushrooms and eggs (everything for 8 dollars)!",
+  "problem": "Tibia money"
+ },
+ {
+  "npc": "Kenya Madere",
+  "where": "message_greet",
+  "text": "I love flowers and everything in nature, but  I'm going to beat you.",
+  "rewrite": "I love flowers and everything in nature, but I'm going to beat you.",
+  "problem": "double space"
+ },
+ {
+  "npc": "Sakura",
+  "where": "quest 8080 talk_questStarted",
+  "text": "Thanks! I need you to bring me these items: 39x Venon Pendant.",
+  "rewrite": "Thanks! I need you to bring me these items: 39x Venom Pendant.",
+  "problem": "spelling; the item is a venom pendant"
  }
 ]

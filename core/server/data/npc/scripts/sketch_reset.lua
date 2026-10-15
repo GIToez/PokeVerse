@@ -38,7 +38,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
             lastMove[talkUser] = msg
             talkState[talkUser] = TALKSTATE_CONFIRM
-            selfSay(string.format(__L(cid, "So, you really want to reset your Smeargle %s? This will cost you %sx Artist's Pallete."), msg, REQUIRED_PALETTE), cid)
+            selfSay(string.format(__L(cid, "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes."), msg, REQUIRED_PALETTE), cid)
             return true
         end
 
@@ -52,7 +52,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("Your Pokemon hasn't copied any moves.", cid)
 
             elseif (getPlayerItemCount(cid, PALETTE_ITEMID) < REQUIRED_PALETTE) then
-                selfSay(string.format(__L(cid, "You need at least %sx Artist's Pallete to do it."), REQUIRED_PALETTE), cid)
+                selfSay(string.format(__L(cid, "You need at least %sx artist palettes to do it."), REQUIRED_PALETTE), cid)
 
             else
                 local sketchs = getBallSketchMoves(ball.uid)

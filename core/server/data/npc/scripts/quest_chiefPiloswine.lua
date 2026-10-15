@@ -23,7 +23,7 @@ NODES[1] = keywordHandler:addKeyword(
             return false
         end
 
-        parameters.npcHandler:say("By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here?", cid)
+        parameters.npcHandler:say("By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here? The {Deepsoul} Stone?", cid)
 
         return true
     end,
@@ -32,7 +32,7 @@ NODES[1] = keywordHandler:addKeyword(
 NODES[2] = NODES[1]:addChildKeyword(
     {'deepsoul'},
     StdModule.say,
-    {npcHandler = npcHandler, onlyFocus = true, text = 'What do you LOSSWI want with that damn stone? Do you want to do something with it? Think about PILOSWINEEE your answer!'})
+    {npcHandler = npcHandler, onlyFocus = true, text = 'What do you LOSSWI want with that damn stone? Do you want to {help} protect it? Think about PILOSWINEEE your answer!'})
 
 NODES[3] = NODES[2]:addChildKeyword(
     {'help', 'ajuda'},

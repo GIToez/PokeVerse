@@ -20,7 +20,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'remove') or msgcontains(msg, 'held') or msgcontains(msg, 'remover')) then
-        selfSay("I can {remove} your Pokemon held! Do you want that? {Your Pokemon Held Item level will be reseted if you do that.}", cid)
+        selfSay("I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that.", cid)
         talkState[talkUser] = TALKSTATE_CONFIRM
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM) then

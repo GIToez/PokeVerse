@@ -47,7 +47,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 
     -- TODO: redo greet
-    npcHandler:setMessage(MESSAGE_GREET, "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want.")
+    npcHandler:setMessage(MESSAGE_GREET, "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want. If you came for the {Deepsoul} Stone, forget it.")
     return true
 end)
 

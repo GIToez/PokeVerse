@@ -314,8 +314,25 @@ def talk(q, key):
     return v if isinstance(v, str) else ''
 
 
-def check_quest(q, items):
-    text = ' '.join(talk(q, k) for k in ('talk_questStarting', 'talk_questStarted'))
+def auto_started():
+    """Quest storages that a script or another quest starts, so their start lines are never said."""
+    found = set()
+    for root, _, fns in os.walk(DATA):
+        for fn in fns:
+            if fn.endswith('.lua'):
+                with open(os.path.join(root, fn), encoding='utf-8', errors='replace') as f:
+                    code = f.read()
+                found.update(int(n) for n in re.findall(
+                    r'doCreatureSetStorage\(\s*\w+\s*,\s*(\d+)\s*,\s*QUEST_STATUS\.STARTED', code))
+                found.update(int(n) for n in re.findall(r'doPlayerStartQuest\([^()]*,\s*(\d+)\s*\)', code))
+    return found
+
+
+def check_quest(q, items, started_elsewhere=frozenset()):
+    auto = q.get('blockStart') or q.get('storage') in started_elsewhere
+    # a quest started elsewhere is explained by whoever starts it; its NPC only asks for it back
+    text = ' '.join(talk(q, k) for k in ('talk_questStarting', 'talk_questStarted') +
+                    (('talk_questFinishing',) if auto else ()))
     problems = []
     req = q.get('questRequest')
     kind = q.get('questType')
@@ -335,6 +352,9 @@ def check_quest(q, items):
     elif kind == 2 and isinstance(req, int):
         wanted.append((f'{req} Pokemon in the Pokedex', set(), req))
 
+    # for these types the NPC says what the quest checks when it is accepted (002-quest.lua)
+    if kind in (0, 1, 2, 3, 4):
+        wanted = []
     for label, forms, count in wanted:
         missing = []
         if forms and not text_has(text, forms):
@@ -350,7 +370,7 @@ def check_quest(q, items):
             problems.append(f'text says level {m.group(1)}, the quest needs level {level}')
     # talk_questDone is never said (002-quest.lua); quests with blockStart are started elsewhere
     needed = ['talk_questFinishing', 'talk_questFinished', 'talk_questFinishFail']
-    if not q.get('blockStart'):
+    if not auto:
         needed = ['talk_questStarting', 'talk_questStarted'] + needed
     for k in needed:
         if q.get(k) is not None and not isinstance(q.get(k), str):
@@ -373,6 +393,8 @@ def answered_words(npc, sc, q_default, q_per, shared_groups):
     p = npc['params']
     if p.get('module_shop') == '1' or 'shop_buyable' in p or 'shop_sellable' in p:
         words.update({'trade', 'offer', 'buy', 'sell'})
+    if p.get('module_keywords') == '1' and p.get('keywords'):
+        words.update(w.strip().lower() for w in re.split(r'[;,]', p['keywords']) if w.strip())
     if p.get('travel_destinations'):
         words.update({'travel', 'destination', 'destinations', 'list', 'where'})
         for dest in p['travel_destinations'].split(';'):
@@ -399,6 +421,12 @@ def answered_words(npc, sc, q_default, q_per, shared_groups):
 
 
 SHORT_ANSWERS = {'hi', 'hello', 'bye', 'farewell', 'yes', 'no', 'sim', 'nao'}
+
+# checked by hand: these scripts take any word at that point in the talk
+ANSWERS_ANY_WORD = {
+    ('eggmove_remover.lua', 'none'),  # any word that is not a plate name means no plate
+    ('quest_red.lua', 'journey'),  # after the first Pokemon, any word leads to the town choice
+}
 
 
 def dead_blue_words(texts, words, dynamic):
@@ -504,6 +532,7 @@ def audit(args):
                 f[kind].append((source, text, note))
 
     quest_problems = []
+    started_elsewhere = auto_started()
     for npc_name, qs in sorted(quests.items()):
         npc = by_name.get(npc_name)
         reason = None
@@ -516,7 +545,7 @@ def audit(args):
             if 'doQuestTalk' not in code and 'getCurrentQuest' not in code and 'Quest' not in code:
                 reason = f"its script (`{npc['script']}`) has no quest talk"
         for q in qs:
-            probs = check_quest(q, items)
+            probs = check_quest(q, items, started_elsewhere)
             if probs or reason:
                 quest_problems.append({'npc': npc_name, 'storage': q.get('storage'),
                                        'type': TYPE_NAMES.get(q.get('questType'), '?'),
@@ -544,6 +573,7 @@ def audit(args):
             texts += [talk(q, k) for k in QUEST_TALK if talk(q, k)]
         words, dynamic = answered_words(npc, sc, q_default, q_per, shared_groups)
         d, dyn = dead_blue_words(texts, words, dynamic)
+        d = [w for w in d if (npc['script'], w.lower()) not in ANSWERS_ANY_WORD]
         if d:
             labelled = []
             for w in d:
@@ -580,7 +610,8 @@ def write_report(r, out):
     owners = lambda kind: sorted(o for o, f in findings.items() if f.get(kind))  # noqa: E731
     live = [n for n in r['npcs'] if r['placed'].get(n['name'])]
     unreachable = [q for q in r['quests'] if q['unreachable']]
-    mismatched = [q for q in r['quests'] if q['problems']]
+    # quests nobody can start are listed in their own section and not fixed
+    mismatched = [q for q in r['quests'] if q['problems'] and not q['unreachable']]
 
     spell_words = collections.Counter()
     for f in findings.values():
@@ -652,7 +683,10 @@ def write_report(r, out):
     if mismatched:
         L += ['## Quests whose text does not match', '',
               'The quest checks for one thing and the NPC asks for another (or does not say how many).',
-              'Checked against `questRequest`, the item names in `items.xml` and `requiredLevel`.', '',
+              'Checked against `questRequest`, the item names in `items.xml` and `requiredLevel`.',
+              'Bring, defeat, catch and Pokedex quests are left out: when one is accepted the NPC says',
+              'exactly what it checks ("(Mission: bring 20 onigiri.)"), so only custom quests are compared.',
+              'Start lines of quests that a script or another quest starts are never said, so they may be empty.', '',
               '| NPC | Quest (storage) | Type | Problem |', '| --- | --- | --- | --- |']
         for q in mismatched:
             for p in q['problems']:

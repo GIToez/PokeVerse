@@ -11,16 +11,16 @@ audit is in [npc-audit.md](npc-audit.md).
 | | |
 | --- | --- |
 | NPCs placed on the map | 715 |
-| Lines checked | 3045 |
+| Lines checked | 2950 |
 | Quests | 452 |
 | Lines still in Portuguese | 0 (0 NPCs or files) |
-| Tibia or old-server leftovers | 3 (2) |
-| Quests whose text does not match what they check | 56 |
+| Tibia or old-server leftovers | 2 (1) |
+| Quests whose text does not match what they check | 0 |
 | Quests nobody can start | 64 |
-| NPCs with blue words that do nothing | 13 |
-| Formatting problems | 1 (1) |
-| Spelling mistakes | 47 (36) |
-| Grammar problems | 20 (19) |
+| NPCs with blue words that do nothing | 0 |
+| Formatting problems | 0 (0) |
+| Spelling mistakes | 39 (30) |
+| Grammar problems | 17 (17) |
 | One-liners (only a greeting so far) | 92 |
 | Lines that read badly (reading review) | 1634 |
 
@@ -40,91 +40,6 @@ Names, money and places from Tibia or the servers PokeVerse grew out of.
 
 - old server name: "psoul" - "Here you can exchange the 'psoul' letters for exclusive items." (npc/scripts/event_anniversary.lua)
 - old server name: "psoul" - "Do you really want to exchange 'psoul' letters for a %s?" (npc/scripts/event_anniversary.lua)
-
-**npc/lib/npcsystem/modules.lua**
-
-- Tibia money: "gold coins" - " gold coins." (Travel module (every travel NPC))
-
-## Quests whose text does not match
-
-The quest checks for one thing and the NPC asks for another (or does not say how many).
-Checked against `questRequest`, the item names in `items.xml` and `requiredLevel`.
-
-| NPC | Quest (storage) | Type | Problem |
-| --- | --- | --- | --- |
-| Albert | 8216 | bring items | checks for **1 tangel rue leaves**, the text does not say what |
-| Alex | 8388 | bring items | checks for **1 oil bottle**, the text does not say what |
-| Ash Ketchum | 8659 | bring items | checks for **1 ash's pokemon belt**, the text does not say what |
-| Ash Ketchum | 8378 | custom | checks for **1 honey**, the text does not say what |
-| Ash Ketchum | 8523 | bring items | checks for **1 balm mushroom**, the text does not say what |
-| Ash Ketchum | 8523 | bring items | checks for **1 honey**, the text does not say what |
-| Assistant Jofrey | 8501 | defeat | checks for **5 Magikarp**, the text does not say what |
-| Barba Roja | 8684 | bring items | checks for **20 cup**, the text does not say what or how many |
-| Barba Roja | 8684 | bring items | empty `talk_questFinishing` |
-| Brock | 8663 | bring items | checks for **1 brock's pokemon belt**, the text does not say what |
-| Corey | 8660 | bring items | checks for **1 corey's pokemon belt**, the text does not say what |
-| Curtis Sacheverell | 8246 | bring items | checks for **10 grape fruit**, the text does not say what or how many |
-| Daisy Oak | 8412 | bring items | checks for **1 acid foxglove extraction**, the text does not say what |
-| Easter Rabbit | 8385 | defeat | checks for **1 Easter Rabbit Shadow**, the text does not say what |
-| Easter Rabbit | 8650 | defeat | checks for **5 Easter Rabbit Shadow**, the text does not say what or how many |
-| Ed Blackhood | 8678 | bring items | checks for **100 water gem**, the text does not say what or how many |
-| Ed Blackhood | 8678 | bring items | checks for **100 fire element**, the text does not say what or how many |
-| Ed Blackhood | 8678 | bring items | checks for **30 screw**, the text does not say what or how many |
-| Ed Blackhood | 8678 | bring items | empty `talk_questStarting` |
-| Ed Blackhood | 8678 | bring items | empty `talk_questStarted` |
-| Ed Blackhood | 8679 | custom | empty `talk_questStarting` |
-| Ed Blackhood | 8679 | custom | empty `talk_questStarted` |
-| Ed Blackhood | 8681 | custom | empty `talk_questStarting` |
-| Ed Blackhood | 8681 | custom | empty `talk_questStarted` |
-| Ed Blackhood | 8682 | custom | empty `talk_questStarting` |
-| Ed Blackhood | 8682 | custom | empty `talk_questStarted` |
-| Ed Blackhood | 8683 | bring items | checks for **1 suspicious parchment**, the text does not say what |
-| Ernest Upper | 8262 | bring items | checks for **1 ernest upper charged poke ball**, the text does not say what |
-| Fergus | 8664 | bring items | checks for **1 fergu's pokemon belt**, the text does not say what |
-| Gary Oak | 8414 | custom | empty `talk_questStarting` |
-| Gary Oak | 8414 | custom | empty `talk_questStarted` |
-| George Carter | 8027 | bring items | checks for **1 treasure map**, the text does not say what |
-| Gord Scottie | 8247 | bring items | checks for **1 curtis sacheverell letter to gord scottie**, the text does not say what |
-| Hanzo Hasashi | 8454 | bring items | checks for **1 hanzo hasashi poke ball**, the text does not say what |
-| Jane Hills | 8291 | bring items | checks for **20 onigiri**, the text does not say how many |
-| Javy Dones | 8686 | bring items | checks for **1 cash bag**, the text does not say what |
-| Javy Dones | 8687 | bring items | checks for **1 diamond**, the text does not say what |
-| Jewel Annice | 8258 | bring items | checks for **1 jewel annice poke ball**, the text does not say what |
-| Mary Vinn | 8003 | bring items | checks for **15 teeths**, the text does not say what |
-| Max Fegan | 8322 | bring items | checks for **1 wooden boards**, the text does not say what |
-| Misty | 8467 | bring items | checks for **1 good bow**, the text does not say what |
-| Misty | 8205 | bring items | checks for **1 misty pokemon egg**, the text does not say what |
-| Misty | 8662 | bring items | checks for **1 misty's pokemon belt**, the text does not say what |
-| Mr. Fuji | 8511 | custom | checks for **5 charged mr. fuji poke ball**, the text does not say what or how many |
-| Nagumo Harbor | 8673 | custom | empty `talk_questStarting` |
-| Nagumo Harbor | 8673 | custom | empty `talk_questStarted` |
-| Neesha | 8661 | bring items | checks for **1 neesha's pokemon belt**, the text does not say what |
-| Officer Jeny | 8017 | bring items | checks for **5 charged nurse chansey ball**, the text does not say how many |
-| Oliver Terrel | 8350 | bring items | checks for **1 oliver bear**, the text does not say what |
-| Professor Ivy | 8214 | custom | checks for **1 tangel rue leaves**, the text does not say what |
-| Professor Ivy | 8215 | bring items | checks for **1 tangel rue extraction**, the text does not say what |
-| Professor Mark | 8016 | bring items | checks for **1 professor mark book**, the text does not say what |
-| Professor Oak | 8751 | custom | empty `talk_questStarting` |
-| Professor Oak | 8751 | custom | empty `talk_questStarted` |
-| Professor Oak | 8752 | custom | empty `talk_questStarting` |
-| Professor Oak | 8753 | defeat | checks for **5 Rattata**, the text does not say how many |
-| Professor Oak | 8753 | defeat | empty `talk_questStarting` |
-| Professor Oak | 8498 | bring items | checks for **1 Oak package**, the text does not say what |
-| Queenie Jerrie | 8245 | bring items | checks for **20 grape flower**, the text does not say how many |
-| Queter Phill | 8667 | bring items | checks for **5 suramoon essence**, the text does not say how many |
-| Queter Phill | 8668 | bring items | checks for **5 suramoon essence**, the text does not say how many |
-| Queter Phill | 8669 | bring items | checks for **5 suramoon essence**, the text does not say how many |
-| Ray Fitz | 8359 | bring items | checks for **1 ray fitz package**, the text does not say what |
-| Rock | 8020 | bring items | checks for **1 agustin message to rock**, the text does not say what |
-| Rock | 8022 | bring items | checks for **1 bronze goblet**, the text does not say what |
-| Rock | 8022 | bring items | checks for **1 silver goblet**, the text does not say what |
-| Rock | 8022 | bring items | checks for **1 golden goblet**, the text does not say what |
-| Sotashi | 8671 | bring items | checks for **1 Nagumo's diary**, the text does not say what |
-| Sotashi | 8717 | bring items | checks for **1 sotashi parchment**, the text does not say what |
-| Sotashi | 8717 | bring items | empty `talk_questStarting` |
-| Sotashi | 8717 | bring items | empty `talk_questStarted` |
-| Stiller | 8042 | bring items | checks for **50 notes of hundred dollars**, the text does not say how many |
-| Woodworker Courts Ted | 8321 | defeat | checks for **30 Murkrow**, the text does not say what or how many |
 
 ## Quests nobody can start
 
@@ -154,36 +69,6 @@ Checked against `questRequest`, the item names in `items.xml` and `requiredLevel
 | Snap | 8384 | the NPC is not placed on the map |
 | Sotashi | 8671, 8672, 8717 | the NPC is not placed on the map |
 
-## Blue words that do nothing
-
-Words shown in {braces} that the NPC does not answer to: clicking them gets no reply.
-"Maybe" means the script also matches words it builds at runtime, so check by talking to it.
-
-NPCs sharing a script and the same words are one row.
-
-| NPC | Script | Blue words | |
-| --- | --- | --- | --- |
-| Assistant Guyli | `quest_default.lua` | Pokemon stress |  |
-| 2 NPCs: Catherin Dana, Curt Raeburn | `tm_remover.lua` | 1, 2 |  |
-| Charlotte | `default.lua` | berries |  |
-| Chief Piloswine | `quest_chiefPiloswine.lua` | Restore |  |
-| Chief Skarmory | `quest_chiefSkarmory.lua` | understand |  |
-| Jess Dennis | `shop_frontierIsland.lua` | frontier tokens, rewards | maybe |
-| Kemp Drummond | `eggmove_remover.lua` | none (answered by Rofie) |  |
-| Mistery Guy | `quest_misteryGuy.lua` | dad |  |
-| Pepper Denis | `quest_default.lua` | hidden |  |
-| Prophet Slowking | `quest_prophetSlowking.lua` | Deepsoul Stone |  |
-| Red | `quest_red.lua` | journey | maybe |
-| Timothy Kelvin | `event_anniversary_letters.lua` | anniversary tokens | maybe |
-
-## Formatting
-
-Unbalanced braces, double spaces and missing spaces after punctuation.
-
-**Kenya Madere**
-
-- double space - "I love flowers and everything in nature, but  I'm going to beat you." (message_greet)
-
 ## Spelling
 
 Most common misspellings (LanguageTool, with game names left out):
@@ -193,36 +78,29 @@ Most common misspellings (LanguageTool, with game names left out):
 | "coff" → "COFF" | 2 |
 | "Trovitopolis" | 2 |
 | "Fwahahaha" → "Hahaha" | 2 |
-| "Pallete" → "Pallet" | 2 |
 | "Heeellooo" | 2 |
 | "Electriciiiitttttyyy" | 1 |
 | "Muauhauhmauha" | 1 |
 | "beautif" → "beautify" | 1 |
 | "WINEE on" → "WINE Eon" | 1 |
-| "avaiable" → "available" | 1 |
 | "Nooo" → "New" | 1 |
 | "hotdog" → "hot-dog" | 1 |
 | "Upgrader" → "Upgraded" | 1 |
 | "Pokerus" → "Pokers" | 1 |
 | "Heeellloooo" | 1 |
 | "Humf" → "Humph" | 1 |
-| "exhcange" → "exchange" | 1 |
 | "Hahahahahahha" | 1 |
 | "shhhh" → "shhh" | 1 |
 | "Uepa" → "HEPA" | 1 |
 | "Shiiii" → "Shi iii" | 1 |
 | "PvE" → "Eve" | 1 |
 | "Hii" → "His" | 1 |
-| "reseted" → "reset" | 1 |
-| "colect" → "collect" | 1 |
-| "informations" → "information" | 1 |
 | "Heelloooo" | 1 |
 | "Redbeard" → "Redbird" | 1 |
 | "Rickon" → "Reckon" | 1 |
 | "Humpf" → "Hump" | 1 |
 | "ELEc" → "Elect" | 1 |
 | "Ziiing" → "Living" | 1 |
-| "Venon" → "Vernon" | 1 |
 | "Ooops" → "Loops" | 1 |
 | "Heereee" → "Hearse" | 1 |
 | "thaaanksss" | 1 |
@@ -270,10 +148,6 @@ Every misspelled line.
 
 - "hotdog" → "hot-dog" - "Are you hungry, my friend? Wait... I'll make a hotdog for you!" (message_greet)
 
-**Dax**
-
-- "avaiable" → "available" - "There is no dungeon avaiable, please try again later." (npc/scripts/mastery_vital.lua)
-
 **Dr. Oravaf**
 
 - "Upgrader" → "Upgraded" - "What? You're saying the Pokedex Upgrader is broken? Never thought it would happen, but don't worry, I'll fix it. I have all the tools needed for the repair." (quest 8332 talk_questStarting)
@@ -297,10 +171,6 @@ Every misspelled line.
 **Guide Emmerson**
 
 - "Trovitopolis" - "Welcome to Trovitopolis Island! I can {mark} the island's locations on your map." (message_greet)
-
-**Jess Dennis**
-
-- "exhcange" → "exchange" - "Welcome to the Frontier Island! I'm here to exhcange your {frontier tokens} into {rewards}! Just type {options} to see." (npc/scripts/shop_frontierIsland.lua)
 
 **Kane**
 
@@ -327,15 +197,6 @@ Every misspelled line.
 
 - "Hii" → "His" - "Hii!!" (message_greet)
 
-**Mitchell Meade**
-
-- "reseted" → "reset" - "I can {remove} your Pokemon held! Do you want that? {Your Pokemon Held Item level will be reseted if you do that.}" (npc/scripts/held_remove.lua)
-
-**Oak's Assistant**
-
-- "colect" → "collect" - "No.. you do not have, colect the informations and return back to me." (quest 8010 talk_questFinishFail)
-- "informations" → "information" - "No.. you do not have, colect the informations and return back to me." (quest 8010 talk_questFinishFail)
-
 **Old Lady**
 
 - "Heelloooo" - "Heelloooo! Do you already know our {daycare}? We handle all kinds of {Pokemon}. If you have a Pokemon here you can see its {status}, otherwise you can {leave} a Pokemon here. And if you need to buy incubators, just say {trade}. Also you can {deposit} and {remove} plates." (message_greet)
@@ -353,15 +214,6 @@ Every misspelled line.
 
 - "ELEc" → "Elect" - "Wanna an EE ELEc Tri Tri Ziiing adventure?" (message_greet)
 - "Ziiing" → "Living" - "Wanna an EE ELEc Tri Tri Ziiing adventure?" (message_greet)
-
-**Sakura**
-
-- "Venon" → "Vernon" - "Thanks! I need you to bring me these items: 39x Venon Pendant." (quest 8080 talk_questStarted)
-
-**Saxon Ashton**
-
-- "Pallete" → "Pallet" - "So, you really want to reset your Smeargle %s? This will cost you %sx Artist's Pallete." (npc/scripts/sketch_reset.lua)
-- "Pallete" → "Pallet" - "You need at least %sx Artist's Pallete to do it." (npc/scripts/sketch_reset.lua)
 
 **Substitute**
 
@@ -436,11 +288,6 @@ LanguageTool's grammar findings, with its suggested fix.
 
 - Incorrect singular possessive form after the number (two). Did you mean “Chiefs” or “Chiefs'”? ("Chief's" → "Chiefs") - "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and find out where the Restore Stones are. Come back here later." (quest 8243 talk_questStarted)
 
-**Dax**
-
-- The pronoun ‘You’ must be used with a non-third-person form of a verb. ("has" → "have") - "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader." (npc/scripts/mastery_vital.lua)
-- The verb “pay” needs to be in the to-infinitive form. ("need pay" → "need to pay") - "Before to this dungeon you need pay the necessary tokens." (npc/scripts/mastery_vital.lua)
-
 **Gabriel Wright**
 
 - The word “” spelled with a hyphen is a verb. Did you mean the noun “hot dog”? ("hot-dog" → "hot dog") - "Want a hot-dog, brother?" (message_greet)
@@ -452,10 +299,6 @@ LanguageTool's grammar findings, with its suggested fix.
 **Kurt Petrillose**
 
 - Unless you mean “in a political party”, the usual preposition for a party is “at”. ("in a Party" → "at a party") - "In cooperative mode you face many challenges as a group, for this you need to be in a Party. If you want this challenge, say 'enter'." (npc/scripts/fi_stadiumarena.lua)
-
-**Oak's Assistant**
-
-- Consider using just “return”. ("return back" → "return") - "No.. you do not have, colect the informations and return back to me." (quest 8010 talk_questFinishFail)
 
 **Peter Paul**
 
