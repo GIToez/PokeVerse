@@ -26,8 +26,12 @@
 #include <framework/core/unzipper.h>
 #include <framework/core/resourcemanager.h>
 #include <framework/sound/soundmanager.h>
+#include <algorithm>
 #include <chrono>
 #include <filesystem>
+#include <fstream>
+#include <functional>
+#include <string_view>
 #include <thread>
 
 AndroidManager g_androidManager;
@@ -124,15 +128,7 @@ void AndroidManager::setClipboardText(const std::string& text) {
 void AndroidManager::unZipAssetData() {
     const std::filesystem::path baseDir { getAppBaseDir() };
     const auto dataDir = baseDir / "game_data";
-    if (std::filesystem::exists(dataDir / "init.lua")) {
-        return;
-    }
-
-    // unpacked beside game_data and renamed at the end, so a first start that is cut off
-    // halfway unpacks again instead of running on a partial copy
-    const auto unpackDir = baseDir / "game_data.unpacking";
-    std::error_code ec;
-    std::filesystem::remove_all(unpackDir, ec);
+    const auto stampFile = baseDir / "game_data.apk";
 
     AAsset* dataAsset = AAssetManager_open(
             m_app->activity->assetManager,
@@ -150,11 +146,35 @@ void AndroidManager::unZipAssetData() {
         g_logger.fatal("Failed to read data.zip from APK assets.");
         return;
     }
+    const auto dataSize = static_cast<size_t>(AAsset_getLength64(dataAsset));
+
+    // A newer APK installed over an older one must replace the unpacked files, or the old
+    // Lua (and its updater) keeps running. The zip's central directory, at the end of the
+    // file, holds every entry's CRC, so hashing the tail identifies the APK's contents.
+    const size_t tail = std::min<size_t>(dataSize, 4 * 1024 * 1024);
+    const auto stamp = std::to_string(dataSize) + ":" +
+        std::to_string(std::hash<std::string_view>{}(std::string_view(data + dataSize - tail, tail)));
+    if (std::filesystem::exists(dataDir / "init.lua")) {
+        std::ifstream in(stampFile);
+        std::string unpacked;
+        std::getline(in, unpacked);
+        if (unpacked == stamp) {
+            AAsset_close(dataAsset);
+            return;
+        }
+        g_logger.info("APK changed since the last unpack, unpacking its client files again");
+    }
+
+    // unpacked beside game_data and renamed at the end, so a start that is cut off halfway
+    // unpacks again instead of running on a partial copy
+    const auto unpackDir = baseDir / "game_data.unpacking";
+    std::error_code ec;
+    std::filesystem::remove_all(unpackDir, ec);
 
     waitForJavaManager();
     setUnpackProgress(0);
     int shownPercent = 0;
-    unzipper::extract(data, static_cast<size_t>(AAsset_getLength64(dataAsset)), unpackDir.string() + "/",
+    unzipper::extract(data, dataSize, unpackDir.string() + "/",
         [&](uint64_t done, uint64_t total) {
             const int percent = total > 0 ? static_cast<int>(done * 100 / total) : 100;
             if (percent != shownPercent) {
@@ -166,6 +186,7 @@ void AndroidManager::unZipAssetData() {
 
     std::filesystem::remove_all(dataDir, ec);
     std::filesystem::rename(unpackDir, dataDir);
+    std::ofstream(stampFile, std::ios::trunc) << stamp << "\n";
     hideUnpackProgress();
 }
 
