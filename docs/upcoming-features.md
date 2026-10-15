@@ -48,7 +48,9 @@ so. Items marked **To decide** need an answer before work starts.
    pop it open.
 4. **Mission notices**: started, updated and complete, from the server.
 5. **NPC role icons**: mission, trade, duel, travel, bank and so on, from what each NPC really
-   does; NPCs with several roles rotate their icons every second. (The battle icon the server
+   does; NPCs with several roles rotate their icons every second. The mission icon is per
+   player: it only shows when that player has a mission they can start or hand in there
+   (level, earlier quests and cooldown checked by the server). (The battle icon the server
    sends today has no picture in the client.)
 6. The NPCs with their own scripts, town by town.
 7. [Vocations](#6-vocations), replacing the old vocations.
