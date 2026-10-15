@@ -9,7 +9,7 @@ Handlers = {}
 local window, button, trackerButton
 local helloEvent
 local current = 'map'
-local TABS = { 'map', 'houses', 'dex', 'items' }
+local TABS = { 'map', 'houses', 'dex', 'items', 'wiki' }
 local PAGES = {}
 
 Pp.OK_COLOR, Pp.ERROR_COLOR = '#8fe08f', '#ff8a80'
@@ -138,6 +138,64 @@ end
 
 function Pp.portrait(number)
     return '/images/staticPortraits/' .. number
+end
+
+-- A list of groups that open and close: groups = { { key, name, note, icon, item, entries } }.
+-- addEntry(list, entry, group) makes an entry's row; expanded[key] keeps which groups are open, and
+-- an open search opens them all. Hiding rows keeps the scroll position, so a group opens in place.
+function Pp.fillTree(list, groups, expanded, addEntry, openAll)
+    list:destroyChildren()
+    local headers = {}
+    for _, group in ipairs(groups) do
+        local header = g_ui.createWidget('PpGroupRow', list)
+        header.name:setText(group.name)
+        header.note:setText(group.note or '')
+        if group.item then
+            header.item:setItemId(group.item)
+            header.item:show()
+        elseif group.icon then
+            header.icon:setImageSource(group.icon)
+            header.icon:show()
+        end
+        header.rows = {}
+        for _, entry in ipairs(group.entries) do
+            local row = addEntry(list, entry, group)
+            row:setMarginLeft(14)
+            header.rows[#header.rows + 1] = row
+        end
+        header.apply = function()
+            local open = openAll or expanded[group.key] == true
+            header.chevron:setImageSource(Pp.IMAGES .. (open and 'chevron_down' or 'chevron_right'))
+            header:setOn(open)
+            for _, row in ipairs(header.rows) do
+                row:setVisible(open)
+            end
+        end
+        header.open = function()
+            expanded[group.key] = true
+            header.apply()
+        end
+        header.onMouseRelease = function(widget, mousePos, mouseButton)
+            if mouseButton == MouseLeftButton and widget:containsPoint(mousePos) and not openAll then
+                expanded[group.key] = not expanded[group.key]
+                header.apply()
+            end
+            return true
+        end
+        header.apply()
+        headers[#headers + 1] = header
+    end
+    return headers
+end
+
+-- opens the group holding a row and scrolls to it
+function Pp.revealRow(list, row)
+    for _, header in ipairs(list:getChildren()) do
+        if header.rows and table.find(header.rows, row) and not row:isVisible() then
+            header.open()
+        end
+    end
+    list:ensureChildVisible(row)
 end
 
 -- window
@@ -352,6 +410,7 @@ function init()
     HousesTab.setup(window.housesPage)
     DexTab.setup(window.dexPage)
     ItemsTab.setup(window.itemsPage)
+    WikiTab.setup(window.wikiPage)
     Tracker.setup()
     showTab('map')
     window:hide()

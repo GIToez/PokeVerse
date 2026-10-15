@@ -160,7 +160,7 @@ GUIDES["Viridian"] = { -- Guide Chesley
 }
 
 GUIDES["Pewter"] = { -- Guide Emil
-    {position = {x = 3336, y = 276, z = 7}, type = MAPMARK_DOLLAR, description = "Poke Mart an Bank"},
+    {position = {x = 3336, y = 276, z = 7}, type = MAPMARK_DOLLAR, description = "Poke Mart and Bank"},
     {position = {x = 3307, y = 296, z = 7}, type = MAPMARK_TEMPLE, description = "Pokemon Center"},
     {position = {x = 3257, y = 293, z = 7}, type = MAPMARK_BAG, description = "Food Shop"},
     {position = {x = 3276, y = 254, z = 7}, type = MAPMARK_BAG, description = "Berries Shop"},
@@ -216,7 +216,7 @@ GUIDES["Vermilion"] = { -- Guide Ron
     {position = {x = 3968, y = 640, z = 7}, type = MAPMARK_TEMPLE, description = "Pokemon Center"},
     {position = {x = 3902, y = 643, z = 7}, type = MAPMARK_BAG, description = "Food Shop"},
     {position = {x = 3965, y = 660, z = 7}, type = MAPMARK_BAG, description = "Berries Shop"},
-    {position = {x = 3965, y = 627, z = 7}, type = MAPMARK_BAG, description = "Furnitures Shop"},
+    {position = {x = 3965, y = 627, z = 7}, type = MAPMARK_BAG, description = "Furniture Shop"},
     {position = {x = 3929, y = 661, z = 7}, type = MAPMARK_SWORD, description = "GYM"},
     {position = {x = 3865, y = 637, z = 7}, type = MAPMARK_STAR, description = "S. S. Anne"},
     {position = {x = 4007, y = 639, z = 7}, type = MAPMARK_STAR, description = "Travel Fly"},

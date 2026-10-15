@@ -1,0 +1,601 @@
+-- The Pokepedia's game guide (wiki.lua draws it). It replaces the old Wiki Chat channel; every fact
+-- was checked against the server scripts when it was written. Items are client item ids, Pokemon
+-- are Pokedex numbers. Block types are listed at the top of wiki.lua.
+WikiData = {
+    { key = 'start', name = 'Getting started', item = 11118, topics = {
+        { key = 'controls', title = 'Controls and moving', portrait = 16, body = {
+            { 'p', "Left-click does the obvious thing: it walks to a tile, uses an item, talks to someone or attacks a wild Pokemon. Right-click opens a menu with every choice for what you clicked. Shift+click looks at it." },
+            { 'h', "Two chat modes" },
+            { 'p', "With the chat closed you are in WASD mode: W A S D and the arrow keys walk, and the letter keys are shortcuts. Press Enter to write one message; the chat closes again after you send it. With the chat open you are in typing mode: letters go into the chat, the arrow keys still walk, and the shortcuts need Ctrl." },
+            { 'keys', { "W", "A", "S", "D", "Arrows", "Enter" } },
+            { 'h', "Long trips" },
+            { 'p', "Open the Pokepedia (P), go to the Map tab and left-click where you want to go. Your trainer walks the whole way, through doors and up stairs. Moving with the keys stops the walk." },
+            { 'tip', "Every key can be changed in Settings > Controls > Key bindings." },
+            { 'see', { 'hotkeys', 'autowalk' } },
+        } },
+        { key = 'pokebar', title = 'Calling your Pokemon', portrait = 25, body = {
+            { 'p', "The pokebar at the left of the game screen holds the six Pokemon you carry. A slot shows its Pokemon's health, and FNT when it has fainted." },
+            { 'steps', {
+                "Press F1 to F6, or left-click a slot, to call that Pokemon out. Calling another one switches them.",
+                "Ctrl+click a slot to call your Pokemon back.",
+                "Shift+click a slot to see the Pokemon's details.",
+                "Right-click the slot of the Pokemon that is out for more, such as Evolve.",
+            } },
+            { 'keys', { "F1", "F2", "F3", "F4", "F5", "F6" } },
+            { 'see', { 'moves', 'order', 'evolve' } },
+        } },
+        { key = 'moves', title = 'Using moves', portrait = 4, body = {
+            { 'p', "The moves bar shows the moves of the Pokemon that is out, in up to 12 slots. Click a slot to use it, or press its key." },
+            { 'keys', { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" } },
+            { 'p', "In WASD mode press the plain key; while the chat is open press Ctrl and the key. Hover a slot to see the move and its energy cost; slots dim when your Pokemon lacks the energy. Shift+click a slot to read the move's description." },
+            { 'tip', "Saying m1 to m16 in the chat also uses a move." },
+            { 'see', { 'energy', 'controls' } },
+        } },
+        { key = 'order', title = 'Giving orders', item = 645, body = {
+            { 'p', "An order tells your Pokemon to do something where you click. Press R in WASD mode, or use the order icon, then click the target." },
+            { 'table', {
+                { "Click on", "Your Pokemon" },
+                { "The ground", "Walks there (not into protection zones)" },
+                { "Yourself", "Ride, Fly, Levitate or Dive, if it can" },
+                { "A water edge", "Surf" },
+                { "Itself", "Flash" },
+                { "A bush, stone, tree...", "Cut, Rock Smash, Headbutt, Dig..." },
+            } },
+            { 'see', { 'abilities' } },
+        } },
+        { key = 'catch', title = 'Catching Pokemon', item = 11122, body = {
+            { 'steps', {
+                "Defeat a wild Pokemon. Only the trainer who defeated it can catch it.",
+                "Click an empty ball in your bag, then click the corpse.",
+                "The throw takes about five seconds. If the ball breaks you get \"Ouch! Your ball broke.\" and can try again with another.",
+            } },
+            { 'items', { { 11118, "Poke Ball" }, { 11122, "Great Ball" } } },
+            { 'p', "A catch gives experience: the Pokemon's experience times its level times two. Some species need a specific ball, and in the Safari Zone only Safari Balls work." },
+            { 'tip', "Carrying six Pokemon already? The new ball goes straight to your PC's Poke boxes." },
+            { 'see', { 'pc', 'safari', 'ivs' } },
+        } },
+        { key = 'loot', title = 'Loot', item = 3043, body = {
+            { 'p', "Auto loot is on by default: what the Pokemon you defeat drop goes straight into your bag. You can switch it in Settings, or say /autoloot." },
+            { 'p', "Without auto loot, click a corpse to open it and drag the items out. A move's field effect on top of a corpse can be in the way: remove it with a field remover." },
+            { 'see', { 'fieldremover' } },
+        } },
+        { key = 'center', title = 'Pokemon Centers', portrait = 113, body = {
+            { 'p', "Every Pokemon Center has three things you will use all the time:" },
+            { 'steps', {
+                "Nurse Joy heals you and your Pokemon. Say hi (or heal) while inside the center. She can also make it your hometown, for free.",
+                "The lockers open your PC: Poke boxes, stash, inbox and depot.",
+                "The computers open the GTS, the market for every trainer.",
+            } },
+            { 'p', "Lockers and computers work from up to 4 tiles away." },
+            { 'see', { 'pc', 'gts', 'potions' } },
+        } },
+        { key = 'pc', title = 'Your PC and depot', item = 3497, body = {
+            { 'p', "Use a locker in any Pokemon Center to open your PC. It has four tabs:" },
+            { 'table', {
+                { "Tab", "What it holds" },
+                { "Poke boxes", "40 boxes of 30 Pokemon" },
+                { "Stash", "Stackable items and held items" },
+                { "Inbox", "Deliveries, rewards, GTS purchases and mail" },
+                { "Depot", "Your old depot containers" },
+            } },
+            { 'p', "Pokemon you catch with a full party land in the Poke boxes." },
+        } },
+        { key = 'pokedex', title = 'Pokedex', item = 11242, body = {
+            { 'p', "Use the Pokedex on a Pokemon (wild or yours, within 5 tiles), a corpse or a ball to read about it; the first time you register a species you get experience. Use it on yourself to see your status. Both Pokedex items know every species." },
+            { 'keys', { "X" } },
+            { 'p', "X uses the Pokedex on your target in WASD mode. On your own Pokemon it opens the Stat Overview with its IVs, EVs and Nature." },
+            { 'p', "The Pokepedia (P) has a Pokedex tab with everything you have learned about each species, and an Items tab for the items you know." },
+            { 'see', { 'ivs' } },
+        } },
+        { key = 'look', title = 'Looking at things', item = 3484, body = {
+            { 'p', "Shift+click anything to look at it: you get its name and description. Right-click and Look does the same." },
+            { 'p', "Look text tells you more than the name: a ball shows its Pokemon's level, IVs and Nature, and unique items say so." },
+        } },
+        { key = 'hotkeys', title = 'Keys and hotkeys', item = 11205, body = {
+            { 'p', "These are the default keys. Change any of them in Settings > Controls > Key bindings." },
+            { 'table', {
+                { "Action", "Key" },
+                { "Call Pokemon 1-6", "F1 - F6" },
+                { "Moves", "1 - 0, -, = (Ctrl + key while chatting)" },
+                { "Order", "R" },
+                { "Pokedex on your target", "X" },
+                { "Pokepedia", "P" },
+                { "Map", "M" },
+                { "Next target", "Tab" },
+                { "Battle list", "Ctrl+B" },
+                { "Item hotkeys", "Ctrl+K" },
+                { "Next chat channel", "Ctrl+Tab" },
+            } },
+            { 'h', "Item hotkeys" },
+            { 'steps', {
+                "Press Ctrl+K, or the Hotkeys button in the top bar.",
+                "Pick the item from your bag (or drag it in), or write a text to say.",
+                "Choose what happens when you press it: on your Pokemon (potions, revives), with a crosshair, on your target, on yourself, or a plain use.",
+                "Press the key you want. Keys already in use are flagged, and you can swap them.",
+            } },
+            { 'tip', "Balls holding a Pokemon can't be item hotkeys: F1 to F6 call them." },
+        } },
+        { key = 'rotate', title = 'Turning your Pokemon', portrait = 7, body = {
+            { 'p', "With your Pokemon out, say t1 to face it north, t2 east, t3 south and t4 west." },
+            { 'commands', { "t1", "t2", "t3", "t4" } },
+        } },
+    } },
+
+    { key = 'pokemon', name = 'Pokemon care', item = 11205, topics = {
+        { key = 'potions', title = 'Potions and healing', item = 11205, body = {
+            { 'p', "Use a potion on your Pokemon from up to 4 tiles away. It heals over 60 seconds." },
+            { 'table', {
+                { "Potion", "Heals" },
+                { "Potion", "3,000 HP (also works on you)" },
+                { "Great Potion", "6,000 HP" },
+                { "Ultra Potion", "12,000 HP" },
+                { "Super Potion", "18,000 HP" },
+            } },
+            { 'items', { { 11205, "Potion" }, { 11206, "Great" }, { 11207, "Ultra" }, { 11208, "Super" }, { 11209, "Revive" } } },
+            { 'p', "Use a Revive on the ball of a fainted Pokemon. Potions can't be used in player duels, the PvP arena or NPC battles." },
+            { 'see', { 'energy', 'center' } },
+        } },
+        { key = 'energy', title = 'Energy', item = 12025, body = {
+            { 'p', "Your Pokemon's energy pays for its moves and some abilities. Its maximum is 100 plus 10 per level (200 plus 10 per level for shinies), and it comes back at 1 point a second." },
+            { 'p', "Energy potions refill it faster: the Energy Potion gives 10 every 2 seconds, 30 times, and the Great Energy Potion 20. The Leppa Berry gives 200 at once." },
+            { 'items', { { 12025, "Energy Potion" }, { 12145, "Great Energy" } } },
+        } },
+        { key = 'evolve', title = 'Evolving', portrait = 133, body = {
+            { 'p', "With the Pokemon out, right-click its pokebar slot (or the Pokemon itself) and choose Evolve. There is also an Evolve key you can bind." },
+            { 'p', "It needs the evolution level and the stones or items for it, and some species only evolve at a certain time of day. Carry the items for one evolution only." },
+        } },
+        { key = 'ivs', title = 'IVs, EVs and Natures', item = 28779, body = {
+            { 'p', "Every Pokemon has six IVs from 0 to 31, EVs up to 252 per stat (510 in all), and one of 25 Natures that raises one stat by 10% and lowers another by 10%. A better Speed also shortens move cooldowns, by up to 15%." },
+            { 'p', "EVs come only from defeating wild Pokemon, following each species' official yield." },
+            { 'h', "Seeing them" },
+            { 'p', "Look at the ball, open the Pokedex Stat Overview on your Pokemon, or read a GTS listing (it shows the Nature and IV total)." },
+            { 'h', "Josh Pillberg, Trading Area (say trade)" },
+            { 'table', {
+                { "Item", "Price", "Effect" },
+                { "Power items", "$25,000", "+8 EVs in their stat per wild defeat" },
+                { "Destiny Knot", "$50,000", "5 IVs inherited instead of 3" },
+                { "Everstone", "$15,000", "Passes on the Nature" },
+                { "EV berries", "$1,500", "-10 EVs, used on the ball" },
+            } },
+            { 'see', { 'daycare', 'vitamins' } },
+        } },
+        { key = 'tms', title = 'TMs', item = 15720, body = {
+            { 'p', "A TM teaches a move. Use it on the Pokemon's ball; the Pokemon must reach the TM's level (20, 40 or 60), and the TM is used up." },
+            { 'steps', {
+                "Each Pokemon can learn at most 2 TM moves, from different groups (offensive, support, heal), and only one heal move.",
+                "A TM can't replace Tackle, an egg move or another TM move.",
+                "Some TMs (Bide, Counter, Double Team, Mimic, Nightmare, Reflect, Rest, Selfdestruct, Softboiled, Substitute) make the Pokemon unique to you.",
+            } },
+            { 'p', "Curt Raeburn in the Trading Area and Catherin Dana in Lilycove remove a TM move for free (a unique TM comes back, others are lost), move a TM to another slot, and buy TMs." },
+            { 'p', "TMs come from gym leaders, the tournament and casino shops, quests and events." },
+            { 'see', { 'gyms', 'tournaments', 'casino' } },
+        } },
+        { key = 'vitamins', title = 'Vitamins', item = 22109, body = {
+            { 'p', "Use a vitamin on a Pokemon's ball to raise a stat for good." },
+            { 'table', {
+                { "Vitamin", "Raises (1st / 2nd / 3rd)" },
+                { "HP Up", "Max HP 5 / 8 / 10%" },
+                { "Protein", "Attack 5 / 8 / 10%" },
+                { "Iron", "Defense 5 / 8 / 10%" },
+                { "Calcium", "Sp. Attack 5 / 8 / 10%" },
+                { "Zinc", "Sp. Defense 5 / 8 / 10%" },
+                { "Carbos", "Speed 10 / 16 / 20%" },
+                { "PP Up", "Max energy 5 / 8 / 10%" },
+                { "PP Max", "Max energy 10% (once)" },
+            } },
+            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Josh Pillberg in the Trading Area resets them for 1 soul coin. The casino merchants sell them for poke coins." },
+        } },
+        { key = 'held', title = 'Held items', item = 22170, body = {
+            { 'p', "A held item boosts one type of moves: +5% at level 1 up to +20% at level 7. It levels up as your Pokemon gains experience; /held shows its level." },
+            { 'p', "Use the held item on the ball of a Pokemon that has none. Mitchell Meade in the Trading Area takes it off for free and gives it back, but its level starts over." },
+            { 'commands', { "/held" } },
+        } },
+        { key = 'berries', title = 'Berries', item = 11581, body = {
+            { 'p', "Berries need a Premium account, with 3 minutes between two berries." },
+            { 'table', {
+                { "Berry", "Effect" },
+                { "Cheri, Chesto, Pecha", "Cure paralysis, sleep, poison" },
+                { "Rawst, Aspear, Persim", "Cure burn, freeze, confusion" },
+                { "Lum", "Cures every status" },
+                { "Leppa", "+200 energy" },
+                { "Oran / Sitrus", "+2,000 / +4,000 HP" },
+            } },
+            { 'h', "Growing them" },
+            { 'steps', {
+                "Inside your house, use a hoe on bare ground to make it fertile.",
+                "Plant a seed there.",
+                "Fill the watering can at water or a well and water the seed.",
+                "The tree grows in three stages of 8 hours. Picking it gives 1 to 5 berries.",
+            } },
+            { 'p', "Hoes, watering cans and seeds are sold by the farmers in the Kanto towns." },
+        } },
+        { key = 'nickname', title = 'Nicknames', item = 6499, body = {
+            { 'p', "At a soul coin NPC, put the Pokemon's ball in your Poke Ball slot and say nick change, then the name (4 to 20 letters), then yes. It costs 1 soul coin; nick remove clears it." },
+            { 'see', { 'soulcoins' } },
+        } },
+        { key = 'seals', title = 'Ball seals', item = 15744, body = {
+            { 'p', "A seal adds an animation when you call the Pokemon. Use it on a ball in your bag; the seal is used up. A ball seal remover ($100 at the Poke Marts) takes it off, and both are lost." },
+            { 'p', "Seals come from seal boxes, which are quest and referral rewards." },
+        } },
+        { key = 'shiny', title = 'Shiny Pokemon', portrait = 6, body = {
+            { 'p', "About 1 wild Pokemon in 8,192 is shiny. A shiny has 10% more HP and starts with 200 energy instead of 100. Eggs can hatch shiny at the same chance; Headbutt finds them ten times less often." },
+        } },
+        { key = 'specials', title = 'Special abilities', portrait = 4, body = {
+            { 'p', "Many Pokemon have a passive ability. For example Overgrow, Blaze and Torrent make Grass, Fire or Water moves 1.5 times stronger at a third of the HP or less, Shield Dust blocks side effects, and Shed Skin has a 30% chance to cure a status." },
+        } },
+        { key = 'daycare', title = 'Day Care and eggs', portrait = 175, body = {
+            { 'p', "The Old Man takes male or genderless Pokemon and the Old Lady female or genderless ones. They are in Cerulean and in Mauville. You need level 20 and Premium, and one character per account can use them." },
+            { 'steps', {
+                "Say leave, the Pokemon's name, the time (1440 or 2880 minutes) and yes. The Pokemon must be in its ball.",
+                "It gains 70, 140 or 210 experience a minute depending on its level (nothing at 100).",
+                "Withdraw it when the time is up. You pay $100 plus $1, $2 or $4 a minute by level. Cancel takes it out early, without experience or egg.",
+            } },
+            { 'h', "Eggs" },
+            { 'p', "When you withdraw the female, an egg can come if both partners trained at least 24 hours and are compatible (Ditto works with anything), and you had no egg in the last 15 days. The female sets the species. Ask egg status for a hint; a plate deposited at the Old Lady steers the egg move." },
+            { 'p', "Put the egg in an incubator ($100 at the Old Lady) and use it again after 60 minutes. The baby inherits IVs and the Nature from its parents." },
+            { 'items', { { 12374, "Incubator" } } },
+            { 'see', { 'ivs' } },
+        } },
+    } },
+
+    { key = 'abilities', name = 'Pokemon abilities', item = 645, topics = {
+        { key = 'abilities', title = 'Overview', portrait = 18, body = {
+            { 'p', "Abilities are used with an order (R or the order icon) unless the topic says otherwise. Epic balls can't use them." },
+            { 'table', {
+                { "Free", "Premium" },
+                { "Ride, Dig, Cut, Rock Smash", "Fly, Levitate, Surf, Dive" },
+                { "Headbutt, Flash, Blink", "Waterfall, Strength" },
+                { "Transform, Find", "Rock Climb, Teleport" },
+            } },
+            { 'see', { 'order', 'premium' } },
+        } },
+        { key = 'ride', title = 'Ride', portrait = 78, body = {
+            { 'p', "Order on yourself to get on your Pokemon, and again to get off. No Premium needed." },
+        } },
+        { key = 'fly', title = 'Fly and Levitate', portrait = 6, body = {
+            { 'p', "Premium. Order on yourself to take off; say /up and /down to change floors, and order on yourself again to land. Not during a fight or a duel. Levitate works the same way." },
+            { 'commands', { "/up", "/down" } },
+        } },
+        { key = 'surf', title = 'Surf', portrait = 131, body = {
+            { 'p', "Premium. Order on the edge of the water to start surfing, and on the shore to land." },
+        } },
+        { key = 'dive', title = 'Dive', item = 11674, body = {
+            { 'p', "Premium. Wear an oxygen mask in the key item slot, surf on a Pokemon that knows Dive and move onto a whirlpool. Underwater you are faster; leave by an exit and you come back up surfing." },
+            { 'p', "Alex, north-east of Cerulean, sells the oxygen mask for $2,000." },
+        } },
+        { key = 'teleport', title = 'Teleport', portrait = 65, body = {
+            { 'p', "Premium. With a Pokemon that knows Teleport out, say /teleport and pick where to go: towns you can reach, your home, your house or your guild hall. Not underwater, in a fight, a duel or the PvP arena." },
+            { 'table', {
+                { "Pokemon", "Wait between teleports" },
+                { "Abra", "30 minutes" },
+                { "Kadabra", "25 minutes" },
+                { "Alakazam", "20 minutes" },
+                { "Mew, Mewtwo", "15 minutes" },
+                { "Others", "30 minutes" },
+            } },
+            { 'commands', { "/teleport" } },
+        } },
+        { key = 'dig', title = 'Dig', portrait = 27, body = {
+            { 'p', "Order on a pile of small stones to open a hole. It closes again after a few minutes." },
+        } },
+        { key = 'cut', title = 'Cut', portrait = 123, body = {
+            { 'p', "Order on a small bush to cut it. It grows back after a while." },
+        } },
+        { key = 'rocksmash', title = 'Rock Smash', portrait = 66, body = {
+            { 'p', "Order on a round stone to break it. It comes back after a minute." },
+        } },
+        { key = 'headbutt', title = 'Headbutt', portrait = 204, body = {
+            { 'p', "Order on a nest tree. Which Pokemon fall out depends on your headbutt skill and the region. Wait 10 seconds between headbutts." },
+        } },
+        { key = 'flash', title = 'Flash', portrait = 181, body = {
+            { 'p', "Order on your own Pokemon to switch its light on or off. A flashlight in the key item slot lights you up too." },
+        } },
+        { key = 'find', title = 'Find', portrait = 164, body = {
+            { 'p', "Say /find and a trainer's name: you learn which way they are, and a mark of their position goes on your map. It costs 15 energy." },
+            { 'commands', { "/find name" } },
+        } },
+        { key = 'transform', title = 'Transform', portrait = 132, body = {
+            { 'p', "Order on the Pokemon to copy. It costs 30% of the maximum energy (40% for a shiny), can't copy a Pokemon of a higher level or one whose evolution level you lack, and needs 20 minutes between transforms. The new form lasts until you change it." },
+            { 'p', "Say /d1 or /d2 to recall a saved form." },
+            { 'commands', { "/d1", "/d2" } },
+        } },
+    } },
+
+    { key = 'world', name = 'Getting around', item = 3484, topics = {
+        { key = 'autowalk', title = 'The Pokepedia map', item = 3484, body = {
+            { 'p', "Press P and open the Map tab. Left-click a spot and your trainer walks there; right-click to add waypoints or stops to a route. The Places list has every town with its Pokemon Center, shops, travel and gyms, and a filter by kind." },
+            { 'p', "The walk pauses in fights and while you talk to an NPC, waits at floor changes, and stops when you walk with the keys." },
+            { 'see', { 'marks', 'travel' } },
+        } },
+        { key = 'marks', title = 'Map marks', item = 3484, body = {
+            { 'p', "Right-click the minimap and choose Create mark to save a spot with a name and an icon. M opens the big map in WASD mode." },
+        } },
+        { key = 'travel', title = 'Travel', portrait = 131, body = {
+            { 'p', "Your Pokemon must be in its ball to travel." },
+            { 'h', "Boats from Vermilion and Cinnabar" },
+            { 'table', {
+                { "To", "Price" },
+                { "Cinnabar / Vermilion", "$50" },
+                { "Pummelo", "$200" },
+                { "Mikan", "$300" },
+                { "Sunburst", "$325" },
+                { "Tangelo", "$350" },
+                { "Slateport (Hoenn)", "$250, Premium" },
+            } },
+            { 'p', "Captain Neil Pace sails from Vermilion and Captain Herman Gerry from Cinnabar. The S.S. Anne Ticket makes every route but Slateport free. The Hoenn boats all need Premium; the Orange Islands captains link the islands for everyone." },
+            { 'items', { { 22196, "S.S. Anne Ticket" } } },
+            { 'h', "Inside Kanto" },
+            { 'p', "A balloon flies between Viridian and Saffron ($300), flying taxis link Saffron, Celadon, Cerulean, Lavender and Vermilion ($100 to $150), and a train runs between Pewter and Cerulean ($200)." },
+            { 'see', { 'teleport', 'fly' } },
+        } },
+        { key = 'pokemart', title = 'Poke Marts', item = 11118, body = {
+            { 'p', "Say hi, then trade." },
+            { 'table', {
+                { "Kind", "Items" },
+                { "Balls", "Poke $8, Great $35, Ultra $130" },
+                { "Potions", "$10, Great $25, Ultra $60, Super $130" },
+                { "Revive", "$200" },
+                { "Energy", "Energy $35, Great Energy $50" },
+                { "Tools", "Rope $50, Old rod $75, Flashlight $300" },
+                { "More tools", "Field remover $1, Telescope $1,000" },
+            } },
+            { 'p', "Marts also buy a lot of loot." },
+        } },
+        { key = 'fish', title = 'Fishing', item = 11254, body = {
+            { 'p', "Use a rod on water within 4 tiles. Moving away stops fishing; you can't fish in a protection zone, the Safari Zone, or while riding or biking. A Pokemon you hook stays for 3 minutes and only attacks you." },
+            { 'table', {
+                { "Rod", "Fishing skill" },
+                { "Old rod ($75 at marts)", "0" },
+                { "Good rod", "30" },
+                { "Super rod", "50" },
+            } },
+            { 'items', { { 11254, "Old" }, { 11255, "Good" }, { 11256, "Super" } } },
+        } },
+        { key = 'rope', title = 'Rope', item = 3003, body = {
+            { 'p', "Use the rope, then click a rope spot (the lighter hole in the floor) to climb up one floor. Ropes cost $50 at the marts." },
+        } },
+        { key = 'fieldremover', title = 'Field remover', item = 12303, body = {
+            { 'p', "Use it on a tile to clear a move's field effect, like the ones that cover a corpse. It is used up, and costs $1 at the marts." },
+        } },
+        { key = 'equipment', title = 'Equipment', item = 11610, body = {
+            { 'table', {
+                { "Item", "What it does" },
+                { "Flashlight", "Lights you up in the key item slot ($300)" },
+                { "Oxygen mask", "Lets you dive" },
+                { "Mach bike", "Faster on land ($1,000)" },
+                { "Ski equipment", "+300 speed on snow" },
+            } },
+            { 'items', { { 11610, "Flashlight" }, { 11674, "Oxygen mask" }, { 11609, "Mach bike" }, { 17521, "Ski" } } },
+            { 'p', "Andy in Cerulean and Ludwik Bishan in Mauville sell bikes. The ski set is Drew Wisdom's quest reward, near the Fuchsia farms." },
+        } },
+        { key = 'clothes', title = 'Clothes and addons', item = 11854, body = {
+            { 'p', "Right-click your trainer and choose Set Outfit; right-click your Pokemon for its addons. Addons need Premium. The clothes kits are sold in Celadon, Kumquat, Lilycove, Mandarin North, Mauville and Murcott." },
+        } },
+        { key = 'safari', title = 'Safari Zone', item = 11130, body = {
+            { 'p', "Jeffrey in Fuchsia lets you in from level 15 for $1,000. Leave every Pokemon and every ball behind: you get 20 Safari Balls, bait, cookies, small stones, traps and 2 passes." },
+            { 'steps', {
+                "Throw small stones (they confuse the Pokemon) or cookies (they usually calm it, sometimes it gets angry) to raise your chance.",
+                "When you see \"You're able to try caught it now\", throw a Safari Ball.",
+                "Bait lures Pokemon close by, and a trap paralyzes the one that steps on it.",
+            } },
+            { 'p', "Out of small stones, you are sent back to the entrance. Hugh inside takes you out (say leave); the safari items are taken back." },
+        } },
+    } },
+
+    { key = 'people', name = 'Trainers and trading', item = 3043, topics = {
+        { key = 'gts', title = 'GTS', item = 10892, body = {
+            { 'p', "Use a computer in a Pokemon Center to buy and sell items and Pokemon with every trainer, even when they are offline. Pokemon listings show the Nature and IV total." },
+            { 'steps', {
+                "Offers last 7 days; you can have 30 at a time.",
+                "The seller pays a 1% tax, and is paid into the bank.",
+                "Buying takes money from your bank first, then your bag.",
+                "Offers that don't sell come back to you.",
+            } },
+            { 'see', { 'bank', 'pc' } },
+        } },
+        { key = 'trade', title = 'Trading', item = 3043, body = {
+            { 'p', "Right-click the item, choose Trade with..., click the trainer, check both offers and accept. Unique items, and bags holding them, can't be traded." },
+            { 'see', { 'gts' } },
+        } },
+        { key = 'unique', title = 'Unique items', item = 11118, body = {
+            { 'p', "Unique items belong to one trainer: only they can carry them, they can't be traded, and they can only be put on the floor inside a house. Their look text says so." },
+        } },
+        { key = 'vip', title = 'VIP list and messages', portrait = 35, body = {
+            { 'p', "Right-click a trainer and choose Add to VIP list; the VIP button in the top bar shows who is online. Choose Message to send them a private message." },
+        } },
+        { key = 'duels', title = 'Player duels', item = 11420, body = {
+            { 'p', "Right-click a trainer and choose Invite to Duel, or Accept Duel when they invited you. Pick how many Pokemon each side uses (1 to 6), the team size up to 6 against 6, and whether to bet." },
+            { 'p', "Bets go from $50 to $30,000; the winners get twice their stake and a draw gives it back. You can't duel in a protection zone or with a Pokemon out." },
+        } },
+        { key = 'bank', title = 'Bank', item = 3043, body = {
+            { 'p', "Bank NPCs answer balance, deposit, withdraw, transfer and history. Emmet Cash is in the Trading Area, and the Orange Islands have bankers in Hamlin, Kumquat, Pummelo, Shamouti, Ascorbia, Tangelo, Mikan, Moro and Trovitopolis." },
+            { 'p', "The GTS, house rent and Pokepedia purchases use your bank balance." },
+        } },
+        { key = 'guilds', title = 'Guilds', item = 6499, body = {
+            { 'p', "Create one at a soul coin NPC: say guild, the name (4 to 20 letters) and yes. You need level 30 and 5 soul coins; no Premium. A custom rank costs 1 soul coin." },
+            { 'p', "Run it from the Guild channel with commands starting with ! or /: invite, revoke, kick, promote, demote, setrankname, passleadership, setmotd, leave and disband. Accept an invitation with !joinguild and the guild's name." },
+            { 'commands', { "!invite name", "!joinguild guild" } },
+            { 'see', { 'houses', 'soulcoins' } },
+        } },
+        { key = 'houses', title = 'Houses and guild halls', item = 3043, body = {
+            { 'p', "A house needs level 25, Premium, and no other house on your account. The price is $50 a tile, and the weekly rent is the same as the price." },
+            { 'steps', {
+                "Find one in the Pokepedia's Houses tab: it shows every house by town, its rooms on every floor, and who lives there.",
+                "Buy it from there, from anywhere (bank first, then your bag), or face its door and say /house buy.",
+                "Rent is paid every week from your bank, or the money in your depot. After 3 warnings you lose the house, and also after 45 days without logging in.",
+            } },
+            { 'p', "From the Houses tab you can also set guests and sub-owners, leave (your things go to your depot, no refund) or offer the house to an online trainer for a price." },
+            { 'p', "Guild halls are bought by the guild leader, one per guild, with no level or Premium check. They can't be transferred." },
+            { 'commands', { "/house buy", "/house leave" } },
+        } },
+    } },
+
+    { key = 'battle', name = 'Battles and challenges', item = 11420, topics = {
+        { key = 'npcduels', title = 'NPC trainers and respect', portrait = 95, body = {
+            { 'p', "Say hi, then battle (or fight, or duel), then yes. Each trainer has its own rules: a minimum level, respect points to have or to pay, and money only if that trainer bets." },
+            { 'p', "Winning gives respect points. You can fight the same trainer again after 6 hours (10 for gym leaders), or after a server restart." },
+        } },
+        { key = 'gyms', title = 'Gym leaders', item = 11174, body = {
+            { 'p', "Beat the gym's trainers first, then pay the leader's respect points. Each leader gives a badge, experience, 4 respect and a TM (say tm if you missed it). A leader won't fight you again once you have the badge." },
+            { 'table', {
+                { "Leader", "Town", "Respect", "TM" },
+                { "Brock", "Pewter", "3", "Selfdestruct" },
+                { "Misty", "Cerulean", "10", "Bubblebeam" },
+                { "Lt. Surge", "Vermilion", "20", "Thunderbolt" },
+                { "Erika", "Celadon", "30", "Mega Drain" },
+                { "Koga", "Fuchsia", "40", "Double Team" },
+                { "Sabrina", "Saffron", "70", "Reflect" },
+                { "Blaine", "Cinnabar", "150", "Fire Punch" },
+                { "Giovanni", "Viridian", "200", "Fissure" },
+            } },
+            { 'p', "Badges go into your badge case. Professor Oak's quest at level 70 upgrades it to the Orange Archipelago case, with room for the four Orange Islands badges." },
+            { 'items', { { 11174, "Boulder" }, { 11176, "Cascade" }, { 11178, "Thunder" }, { 11180, "Rainbow" }, { 11182, "Soul" }, { 11184, "Marsh" } } },
+        } },
+        { key = 'elitefour', title = 'Elite Four', item = 18926, body = {
+            { 'p', "Drogo Toby takes challengers in (say elite). You need all 8 Kanto badges, 6 Pokemon, level 95, no potions and no Pokemon out; one challenger at a time, 23 hours between tries." },
+            { 'p', "Beat Lorelei, Bruno, Agatha and Lance, then the Champion, who uses the last winner's team. Winning gives the Pokemon League trophy, an announcement, and your team becomes the next Champion." },
+        } },
+        { key = 'tournaments', title = 'Tournaments', item = 13000, body = {
+            { 'p', "Joey in the Trading Area runs them: say tournaments, then join and the name. Later say enter to go in. Entry is free, and you can enter once a day." },
+            { 'table', {
+                { "Tournament", "Levels", "When" },
+                { "Starter", "20-40", "Mon-Fri 18:00" },
+                { "Pro", "41-50", "Mon-Fri 19:00" },
+                { "Titan", "80-100", "Mon-Fri 20:00" },
+                { "Epic (random teams)", "45-100", "Mon-Fri 21:00, weekends 17/19/21" },
+                { "Mastery", "50-100", "Weekends 18:00" },
+            } },
+            { 'p', "Normal brackets need exactly 6 Pokemon within the levels and no duplicates. Epic brackets hand you random level 100 Pokemon, so carry none. Every battle pays tokens, and winning pays money and more tokens; Joey's token shop has TMs, outfits and more. The week's best gets the gold tournament trophy." },
+        } },
+        { key = 'mastery', title = 'Masteries', item = 17406, body = {
+            { 'p', "A mastery makes your Pokemon of its types hit harder. Join at the leader in the Trading Area's mastery wing: level 85, Premium, element plates worth 100 points of its types, and a win against the leader's assistant." },
+            { 'table', {
+                { "Rank", "Level", "Attack bonus" },
+                { "1", "85", "0%" },
+                { "2", "85", "1%" },
+                { "3", "100", "3%" },
+                { "4", "110", "6%" },
+                { "5", "120", "12%" },
+                { "6", "130", "20%" },
+            } },
+            { 'p', "Promotions take mastery tokens from the base's missions and a mastery dungeon (once a day). From rank 5 each mastery has a perk:" },
+            { 'table', {
+                { "Mastery", "Types", "Perk" },
+                { "Blaze", "Fire", "Burns hurt twice as much" },
+                { "Avalanche", "Ice, Water", "Faster surf and dive, freezing" },
+                { "Gaia", "Grass, Bug", "Stronger food" },
+                { "Voltagic", "Electric, Steel", "More energy, longer paralysis" },
+                { "Hurricane", "Flying, Dragon", "Faster fly, free /find" },
+                { "Heremit", "Ground, Rock", "Longer low accuracy" },
+                { "Vital", "Fighting, Normal, Fairy", "Faster ride" },
+                { "Spectrum", "Ghost, Poison", "Poison twice, faster levitate" },
+                { "Zen", "Psychic, Dark", "Shorter blink and teleport waits" },
+            } },
+        } },
+        { key = 'dungeons', title = 'Legendary dungeons', portrait = 145, body = {
+            { 'p', "After the Ancient Times quest (level 70), use the matching orb on the statue of Zapdos, Moltres or Articuno to enter its dungeon. One group at a time, no logging out inside." },
+        } },
+        { key = 'bosses', title = 'World bosses', portrait = 9, body = {
+            { 'p', "Now and then a world boss appears, and a hint is announced every 10 minutes while it lives. Deal at least 10% of its damage for a reward: 2 gold bars, with small chances of a rare candy, plates, its artifact or a mastery stone. One reward a week; /boss shows your wait." },
+            { 'commands', { "/boss" } },
+        } },
+        { key = 'rockets', title = 'Team Rocket', portrait = 24, body = {
+            { 'p', "Rocket Grunts attack trainers with teams of 4 to 6 strong Pokemon around their hideouts. When the last one falls the grunt runs off." },
+        } },
+        { key = 'ranger', title = 'Ranger Club', portrait = 18, body = {
+            { 'p', "Ranger Club masters are in almost every town. Say join, then task for a job: defeat a number of one Pokemon for experience, points and items. Some jobs open a boss challenge." },
+            { 'table', {
+                { "Rank", "Level", "Points" },
+                { "Rookie", "10", "0" },
+                { "Mentor", "25", "15" },
+                { "Coordinator", "50", "180" },
+                { "Coach", "75", "580" },
+            } },
+            { 'p', "Your rank and task are in the Quest Log." },
+        } },
+    } },
+
+    { key = 'progress', name = 'Tasks and rewards', item = 12796, topics = {
+        { key = 'tasks', title = 'Daily and weekly tasks', portrait = 19, body = {
+            { 'p', "Open the Tasks button in the top bar and pick a difficulty. Tasks are to defeat, catch or fish; each pays money and items, and finishing them all gives a bonus." },
+            { 'table', {
+                { "Difficulty", "Level", "Money" },
+                { "Beginner", "1", "$300" },
+                { "Easy", "15", "$500" },
+                { "Medium", "35", "$800" },
+                { "Hard", "55", "$1,500" },
+                { "Extreme", "80", "$2,500" },
+            } },
+            { 'p', "The day starts over at midnight and the week on Monday at midnight, server time." },
+        } },
+        { key = 'hunting', title = 'Hunting tasks', portrait = 21, body = {
+            { 'p', "In the Tasks window's Hunting tab, pick a difficulty, one of three offered Pokemon and a size: 100, 250 or 500 defeats for 10, 30 or 70 Hunt Points, plus money. Higher ranks (Silver, Gold, Master) pay more money." },
+            { 'p', "Spend Hunt Points on surprise boxes, revives, ultra balls and rare candy. One free refresh of the offers a day. Free trainers hunt one task at a time, Premium two." },
+        } },
+        { key = 'tracker', title = 'Tracker', portrait = 19, body = {
+            { 'p', "The tracker panel shows the Pokemon you track, your open tasks with a Claim button when they are done, and your route. Pin or remove lines as you like." },
+        } },
+        { key = 'login', title = 'Daily login reward', item = 12796, body = {
+            { 'p', "Log in every day for a 7 day streak; a missed day starts it over." },
+            { 'table', {
+                { "Day", "Reward" },
+                { "1", "10 Poke Balls" },
+                { "2", "5 Potions" },
+                { "3", "$1,000" },
+                { "4", "10 Great Balls" },
+                { "5", "3 Great Potions" },
+                { "6", "2 Revives" },
+                { "7", "1 Rare Candy" },
+            } },
+        } },
+        { key = 'quests', title = 'Quests', portrait = 25, body = {
+            { 'p', "Quest NPCs answer quest, mission, task or help. Steps ask you to bring items or Pokemon, register species, or defeat or catch a number of Pokemon, and can need a level or an earlier step. The Quest Log follows your progress." },
+        } },
+        { key = 'achievements', title = 'Achievements', item = 18926, body = {
+            { 'p', "There are 182 achievements, some of them secret, worth 10, 20 or 30 points. Your list is in the Quest Log under Achievements, and the points count on the highscores." },
+        } },
+        { key = 'levels', title = 'Trainer levels', item = 12796, body = {
+            { 'p', "A level-up shows what you gained and what opened up." },
+            { 'table', {
+                { "Level", "Opens" },
+                { "10", "Ranger Club Rookie" },
+                { "15", "Starter tournament, Safari Zone" },
+                { "20", "Day Care" },
+                { "25", "Houses, Ranger Club Mentor" },
+                { "30", "Guilds" },
+                { "41 / 80", "Pro / Titan tournaments" },
+                { "85", "Masteries" },
+                { "95", "Elite Four" },
+            } },
+        } },
+        { key = 'premium', title = 'Premium', item = 6499, body = {
+            { 'p', "Premium costs 10 soul coins for 30 days at a soul coin NPC. It is needed for:" },
+            { 'steps', {
+                "Fly, Levitate, Surf, Dive, Waterfall, Strength, Rock Climb and Teleport.",
+                "Houses, beds, the Day Care, masteries and outfit addons.",
+                "Planting and using berries, premium doors, and the Hoenn boats.",
+            } },
+            { 'p', "Premium trainers can also run two hunting tasks at once. Guilds, tournaments, duels, the Safari Zone, TMs, gyms and the Elite Four are free." },
+        } },
+        { key = 'soulcoins', title = 'Soul coins', item = 6499, body = {
+            { 'p', "Soul coin NPCs are in the Orange Islands and the Trading Area (Richard). They sell:" },
+            { 'table', {
+                { "For", "Soul coins" },
+                { "Premium, 30 days", "10" },
+                { "Pokemon addon", "15" },
+                { "Create a guild", "5" },
+                { "Sex change", "3" },
+                { "Bless, nickname, stamina", "1 each" },
+                { "Guild rank, egg move capsule", "1 each" },
+            } },
+            { 'p', "They also keep your account's soul coins: say balance or withdraw." },
+        } },
+        { key = 'casino', title = 'Slot machines and casino', item = 22154, body = {
+            { 'p', "From level 15 a spin costs $100, up to 90 spins a day. Three of a kind pays poke coins: 1 for leftovers up to 30 for amulet coins." },
+            { 'p', "Eugene Oliver in Celadon and Dusty Kaylyn in Mauville trade poke coins for vitamins, TMs, bags and addon kits." },
+        } },
+        { key = 'dolls', title = 'Doll case', item = 22120, body = {
+            { 'p', "Bill near Cerulean gives the doll case for his quest. Use it on a Pokemon doll to file it, and on yourself to see how many of the 250 you have." },
+        } },
+    } },
+}

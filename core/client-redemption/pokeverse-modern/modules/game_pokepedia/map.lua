@@ -408,30 +408,97 @@ local function getPlaces()
 end
 
 local selectedPlace
+local expandedTowns = {}
+
+-- the guide marks only carry a name, so the kind comes from the words in it (first match wins)
+local KINDS = {
+    { id = 'center', name = 'Pokemon Centers', words = { 'pokemon center' } },
+    { id = 'travel', name = 'Travel', words = { 'travel', 's. s.', 'ship', 'fly', 'train', 'balloon' } },
+    { id = 'shop', name = 'Shops and banks', words = { 'mart', 'bank', 'shop', 'store' } },
+    { id = 'gym', name = 'Gyms', words = { 'gym' } },
+    { id = 'club', name = 'Guilds and clubs', words = { 'guild', 'ranger', 'club' } },
+    { id = 'other', name = 'Other places' },
+}
+
+local function placeKind(place)
+    if not place.type then
+        return 'town'
+    end
+    if not place.kind then
+        local name = place.name:lower()
+        place.kind = 'other'
+        for _, kind in ipairs(KINDS) do
+            for _, word in ipairs(kind.words or {}) do
+                if name:find(word, 1, true) then
+                    place.kind = kind.id
+                    break
+                end
+            end
+            if place.kind ~= 'other' then
+                break
+            end
+        end
+    end
+    return place.kind
+end
+
+local function addPlaceRow(list, place)
+    local row = g_ui.createWidget('PpPlaceRow', list)
+    row.icon:setImageSource(place.type and iconPath(place.type) or '/modules/client_entergame/images/town')
+    row.icon:setSize(place.type and { width = 11, height = 11 } or { width = 12, height = 12 })
+    row.name:setText(place.type and place.name or tr('Town centre'))
+    row.town:setText('')
+    row:setTooltip(Pp.formatPosition(place.position))
+    row.place = place
+    row.onDoubleClick = function() Navigation.goTo(place.position, place.name) end
+    return row
+end
 
 local function drawPlaces()
     local panel = page.side.placesPanel
     local filter = panel.search:getText():lower()
-    panel.list:destroyChildren()
-    local shown = 0
+    local kind = (panel.kind:getCurrentOption() or {}).data or ''
+    local groups, byTown, count = {}, {}, 0
     for _, place in ipairs(getPlaces()) do
-        if filter == '' or place.name:lower():find(filter, 1, true) or place.town:lower():find(filter, 1, true) then
-            local row = g_ui.createWidget('PpPlaceRow', panel.list)
-            row.icon:setImageSource(place.type and iconPath(place.type) or '/modules/client_entergame/images/town')
-            row.icon:setSize(place.type and { width = 11, height = 11 } or { width = 12, height = 12 })
-            row.name:setText(place.name)
-            row.town:setText(place.type and place.town or tr('Town'))
-            row:setTooltip(Pp.formatPosition(place.position))
-            row.place = place
-            row.onDoubleClick = function() Navigation.goTo(place.position, place.name) end
-            shown = shown + 1
+        local wanted = kind == '' or placeKind(place) == kind
+        if wanted and (filter == '' or place.name:lower():find(filter, 1, true) or place.town:lower():find(filter, 1, true)) then
+            local group = byTown[place.town]
+            if not group then
+                group = { key = place.town, name = place.town, icon = '/modules/client_entergame/images/town', entries = {} }
+                byTown[place.town] = group
+                groups[#groups + 1] = group
+            end
+            group.entries[#group.entries + 1] = place
+            count = count + 1
         end
     end
-    if shown == 0 then
+    table.sort(groups, function(a, b) return a.name < b.name end)
+    for _, group in ipairs(groups) do
+        -- the town itself first, then its places by name
+        table.sort(group.entries, function(a, b)
+            if (a.type == nil) ~= (b.type == nil) then
+                return a.type == nil
+            end
+            return a.name < b.name
+        end)
+        group.note = tostring(#group.entries)
+    end
+    local focus
+    Pp.fillTree(panel.list, groups, expandedTowns, function(list, place)
+        local row = addPlaceRow(list, place)
+        if place == selectedPlace then
+            focus = row
+        end
+        return row
+    end, filter ~= '' or kind ~= '')
+    if count == 0 then
         local hint = g_ui.createWidget('TkMuted', panel.list)
         hint:setText(tr('Nothing matches.'))
         hint:setMarginLeft(6)
         hint:setMarginTop(6)
+    end
+    if focus then
+        Pp.revealRow(panel.list, focus)
     end
 end
 
@@ -622,6 +689,11 @@ function MapTab.setup(widget)
         removeEvent(placesEvent)
         placesEvent = scheduleEvent(drawPlaces, 150)
     end
+    placesPanel.kind:addOption(tr('All places'), '')
+    for _, kind in ipairs(KINDS) do
+        placesPanel.kind:addOption(tr(kind.name), kind.id)
+    end
+    placesPanel.kind.onOptionChange = drawPlaces
     placesPanel.list.onChildFocusChange = function(list, focused)
         if focused and focused.place then
             selectedPlace = focused.place

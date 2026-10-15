@@ -6,7 +6,8 @@
 # The tree is Redemption's modules and data (core/client-redemption) with the PokeVerse
 # modules and artwork from the legacy client added, and the PokeVerse adaptations
 # (core/client-redemption/pokeverse-modern) copied on top, plus the given binaries
-# (otclient or PokeVerse.exe, DLLs...).
+# (otclient or PokeVerse.exe, DLLs...). The Pokepedia's map pictures in build/map-pictures are
+# added when they were rendered (scripts/mapper/render_pokepedia.py).
 #
 # With --classic the tree is the previous layout instead: the legacy modules and data with
 # the overlay core/client-redemption/pokeverse on top and no Redemption modules.
@@ -148,6 +149,11 @@ if [ "$classic" = 0 ]; then
 fi
 overlay_tree "$overlay" "$out"
 rm -rf "$out/patches"
+# the Pokepedia's map pictures, rendered from the map by scripts/mapper/render_pokepedia.py
+if [ "$classic" = 0 ] && [ -d "$root/build/map-pictures" ]; then
+  mkdir -p "$out/data/images/pokepedia"
+  copy_tree "$root/build/map-pictures" "$out/data/images/pokepedia"
+fi
 # Photoshop sources: the client cannot load them, and background.psd alone is 16 MB
 find "$out/data" -name '*.psd' -delete
 

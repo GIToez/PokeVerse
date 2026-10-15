@@ -181,6 +181,48 @@ def draw_x(color, size=12):
     return im
 
 
+def draw_open_book(color, size=18):
+    im = icon(size)
+    d = ImageDraw.Draw(im)
+    k = size / 18
+    for side in (-1, 1):
+        x0, x1 = (9 - 0.4) * k, (9 + side * 7.8) * k
+        d.polygon(((s(x0), s(4 * k)), (s(x1), s(2.5 * k)), (s(x1), s(14 * k)), (s(x0), s(15.5 * k))), fill=color)
+        for y in (5.8, 8.3, 10.8):
+            d.line((s((9 + side * 2) * k), s((y + 0.2) * k), s((9 + side * 6) * k), s((y - 0.6) * k)), fill=NAVY,
+                   width=s(1 * k))
+    d.line((s(9 * k), s(4 * k), s(9 * k), s(15.5 * k)), fill=NAVY, width=s(1.2 * k))
+    return im
+
+
+def draw_chevron(color, down, size=12):
+    im = icon(size)
+    d = ImageDraw.Draw(im)
+    if down:
+        pts = ((2.5, 4), (6, 8), (9.5, 4))
+    else:
+        pts = ((4, 2.5), (8, 6), (4, 9.5))
+    d.line([(s(x * size / 12), s(y * size / 12)) for x, y in pts], fill=color, width=s(1.8), joint='curve')
+    return im
+
+
+def draw_step_badge(size=20):
+    im = icon(size)
+    d = ImageDraw.Draw(im)
+    d.ellipse((s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)), fill=GOLD_LIGHT, outline=GOLD, width=s(1))
+    return im
+
+
+def draw_keycap(size=22):
+    """A keyboard key, stretched with a 6 px border."""
+    im = icon(size)
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)), s(5), fill=(14, 22, 40, 255),
+                        outline=(70, 100, 150, 255), width=s(1))
+    d.rounded_rectangle((s(1.5), s(1.5), s(size - 1.5), s(size - 3.5)), s(4), fill=(36, 56, 96, 255))
+    return im
+
+
 FRAME = Path(__file__).resolve().parents[2] / 'core/client-redemption/data/images/options/button_taskboard.png'
 
 
@@ -223,6 +265,11 @@ def main():
     save(draw_pin_button(GOLD_LIGHT), out, 'icon_pinned')
     save(draw_pin_button((150, 170, 205, 255)), out, 'icon_pin')
     save(draw_x((150, 170, 205, 255)), out, 'icon_remove')
+    save(draw_open_book(WHITE), out, 'icon_wiki')
+    save(draw_chevron(GOLD_LIGHT, False), out, 'chevron_right')
+    save(draw_chevron(GOLD_LIGHT, True), out, 'chevron_down')
+    save(draw_step_badge(), out, 'step_badge')
+    save(draw_keycap(), out, 'keycap')
 
 
 if __name__ == '__main__':
