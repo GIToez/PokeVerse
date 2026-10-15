@@ -1,0 +1,12 @@
+diff -ruN pristine/modules/client_terminal/terminal.lua modules/client_terminal/terminal.lua
+--- a/modules/client_terminal/terminal.lua
++++ b/modules/client_terminal/terminal.lua
+@@ -150,6 +150,8 @@
+ 
+     terminalButton = modules.client_topmenu.addTopRightToggleButton('terminalButton', tr('Terminal') .. ' (Ctrl + T)',
+                                                           '/images/topbuttons/terminal', toggle)
++    -- a developer console: players reach it with Ctrl+T, it does not need a top bar button
++    terminalButton:hide()
+     Keybind.new("Misc.", "Toggle Terminal", "Ctrl+T", "")
+     Keybind.bind("Misc.", "Toggle Terminal", {{
+         type = KEY_DOWN,
