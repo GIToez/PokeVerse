@@ -1,0 +1,11 @@
+# Parts of the map that the Pokepedia's map pictures leave out (scripts/mapper/render_pokepedia.py):
+# a region that is on map.otbm but not open to players yet. The next client release draws them
+# black on every floor, and their houses get no picture. To open a region, delete its line and
+# publish a client.
+#
+# One region per line, the top-left and the bottom-right tile (every floor):
+#   name: x1,y1 - x2,y2
+# For example:
+#   Johto: 100,100 - 1500,1200
+#
+# scripts/render-map.sh draws them anyway, to preview a region while it is being built.

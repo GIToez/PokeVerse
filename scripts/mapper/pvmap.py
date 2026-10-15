@@ -85,9 +85,10 @@ def parse_tile_props(p, house):
     return p[0], p[1], house_id, flags, item
 
 
-def read_region(path, x0, y0, x1, y1, floors=range(16)):
+def read_region(path, x0, y0, x1, y1, floors=range(16), data=None):
     """Returns {(x, y, z): [server item ids in stored order]} for tiles inside the box."""
-    data = open(path, 'rb').read()
+    if data is None:
+        data = open(path, 'rb').read()
     floors = set(floors)
     tiles = {}
     area = None
