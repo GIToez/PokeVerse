@@ -1,6 +1,8 @@
 -- The Map tab: the world map centred on the player with floors, zoom and a way back to the player,
 -- and a side column with Places (towns and guide marks), Waypoints and the Route. Left-click on the
 -- map walks there; right-click adds waypoints and stops. Marks only show on their own floor.
+-- The map is the real one, drawn from the game's sprites (the minimap's satellite mode, with the
+-- chunks from scripts/mapper/render_pokepedia.py), with a button to switch to the minimap.
 MapTab = {}
 
 local page, minimap
@@ -14,6 +16,11 @@ local dialog
 local placesEvent
 
 local MAX_DOTS = 700
+local WORLD = '/images/pokepedia/world'
+local REAL_MAP_SETTING = 'pokepedia-real-map'
+-- how much of the ground shows under the floors above it
+local GROUND_OPACITY = 0.4
+local hasWorld
 local FLAG_ICONS = { 'pin', 0, 3, 4, 5, 8, 9, 11, 12, 13 }
 
 local function iconPath(icon)
@@ -568,6 +575,23 @@ end
 
 -- the map widget
 
+local function worldAvailable()
+    if hasWorld == nil then
+        hasWorld = g_resources.directoryExists(WORLD) and g_satelliteMap.loadDirectory(WORLD) > 0
+    end
+    return hasWorld
+end
+
+local function applyView()
+    local real = worldAvailable() and g_settings.getBoolean(REAL_MAP_SETTING, true)
+    minimap:setSatelliteMode(real)
+    minimap:setUseStaticMinimap(real)
+    local button = page.mapFrame.controls.view
+    button:setVisible(worldAvailable())
+    button:setIcon(Pp.IMAGES .. (real and 'icon_view_minimap' or 'icon_view_real'))
+    button:setTooltip(real and tr('Show the minimap') or tr('Show the real map'))
+end
+
 local function mapMenu(pos, mousePos)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
@@ -648,6 +672,12 @@ local function setupMinimap()
     controls.floorDown.onClick = function() minimap:floorDown(1); refreshVisibility() end
     controls.zoomIn.onClick = function() minimap:zoomIn() end
     controls.zoomOut.onClick = function() minimap:zoomOut() end
+    controls.view.onClick = function()
+        g_settings.set(REAL_MAP_SETTING, not g_settings.getBoolean(REAL_MAP_SETTING, true))
+        applyView()
+    end
+    minimap:setFloorSeparatorOpacity(GROUND_OPACITY)
+    applyView()
     page.mapFrame.pokedexButton.onClick = function() Pp.send({ action = 'pokedex' }) end
     page.mapFrame.pokedexButton:setTooltip(tr('Open your Pokedex'))
 end

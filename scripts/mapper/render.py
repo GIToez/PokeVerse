@@ -69,11 +69,11 @@ class Renderer:
             if ELEVATION in attrs:
                 elevation = min(24, elevation + attrs[ELEVATION])
 
-    def render(self, tiles, x0, y0, x1, y1, floor, upper=True):
+    def render(self, tiles, x0, y0, x1, y1, floor, upper=True, background=(0, 0, 0, 255)):
         top = 0 if upper else floor
         margin = (floor - top) + 2
         w, h = (x1 - x0 + 1 + margin) * 32, (y1 - y0 + 1 + margin) * 32
-        img = Image.new('RGBA', (w, h), (0, 0, 0, 255))
+        img = Image.new('RGBA', (w, h), background)
         for z in range(floor, top - 1, -1):
             shift = (floor - z) * 32
             for y in range(y0 - 2, y1 + margin + 1):
@@ -84,16 +84,16 @@ class Renderer:
         m = margin * 32
         return img.crop((m, m, m + (x1 - x0 + 1) * 32, m + (y1 - y0 + 1) * 32))
 
-    def render_scaled(self, tiles, x0, y0, x1, y1, floor, upper=True, scale=1.0, chunk=64):
+    def render_scaled(self, tiles, x0, y0, x1, y1, floor, upper=True, scale=1.0, chunk=64, background=(0, 0, 0, 255)):
         """Same as render, built in chunks so large areas can be drawn small without huge buffers."""
         if scale >= 1.0:
-            return self.render(tiles, x0, y0, x1, y1, floor, upper)
+            return self.render(tiles, x0, y0, x1, y1, floor, upper, background)
         px = 32 * scale
-        out = Image.new('RGBA', (int((x1 - x0 + 1) * px), int((y1 - y0 + 1) * px)), (0, 0, 0, 255))
+        out = Image.new('RGBA', (int((x1 - x0 + 1) * px), int((y1 - y0 + 1) * px)), background)
         for cy in range(y0, y1 + 1, chunk):
             for cx in range(x0, x1 + 1, chunk):
                 ex, ey = min(x1, cx + chunk - 1), min(y1, cy + chunk - 1)
-                part = self.render(tiles, cx, cy, ex, ey, floor, upper)
+                part = self.render(tiles, cx, cy, ex, ey, floor, upper, background)
                 w, h = int(round((ex - x0 + 1) * px)) - int(round((cx - x0) * px)), int(round((ey - y0 + 1) * px)) - int(round((cy - y0) * px))
                 out.paste(part.resize((w, h), Image.LANCZOS), (int(round((cx - x0) * px)), int(round((cy - y0) * px))))
         return out

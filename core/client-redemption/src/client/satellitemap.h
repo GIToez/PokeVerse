@@ -33,8 +33,9 @@
 //
 // File naming: {prefix}-{lod}-{posX}-{posY}-{floor}-{hash}.bmp.lzma
 //   prefix : "satellite" or "minimap"
-//   lod    : scale identifier (16, 32 or 64); actual tiles/px = lod/32
-//            LOD-16 → 0.5 tiles/px, 256-tile chunks (finest)
+//   lod    : scale identifier (8, 16, 32 or 64); actual tiles/px = lod/32
+//            LOD-8  → 0.25 tiles/px, 128-tile chunks (finest)
+//            LOD-16 → 0.5 tiles/px, 256-tile chunks
 //            LOD-32 → 1.0 tiles/px, 512-tile chunks
 //            LOD-64 → 2.0 tiles/px, 1024-tile chunks (coarsest)
 //   posX   : chunk X origin in map-block units (tile / 32)
@@ -105,10 +106,17 @@ private:
         std::string path;
         TexturePtr  texture;    // nullptr until first successful load
         bool        loadFailed{ false }; // set on first load failure; skips retries
+        uint32_t    lastDraw{ 0 };
     };
+
+    // Chunk textures (1 MB each) are released, least recently drawn first, past this many.
+    static constexpr size_t MAX_LOADED_TEXTURES = 64;
 
     // Selects the best LOD for a given scale (pixels per tile).
     static int pickLod(float scale);
+    static int coarserThan(int lod);
+
+    void releaseUnusedTextures();
 
     // Loads and decompresses a single chunk file, returning its texture.
     // Returns nullptr on failure (file missing, corrupt, etc.).
@@ -138,6 +146,9 @@ private:
     struct ScannedFile { ChunkKey key; std::string path; bool isSatellite; };
     std::vector<ScannedFile> m_fileCache;
     std::string              m_fileCacheDir;
+
+    uint32_t m_drawTick{ 0 };
+    size_t   m_loadedTextures{ 0 };
 };
 
 extern SatelliteMap g_satelliteMap;

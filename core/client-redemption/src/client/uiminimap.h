@@ -54,7 +54,7 @@ public:
     void fillPosition(const UIWidgetPtr& anchoredWidget, const Position& hookedPosition);
     void centerInPosition(const UIWidgetPtr& anchoredWidget, const Position& hookedPosition);
 
-    // Satellite / Surface View mode — used exclusively by the Cyclopedia Map.
+    // Satellite / Surface View mode — used by the Cyclopedia Map and the Pokepedia's world map.
     // The HUD minimap widget is never put in satellite mode.
     void setSatelliteMode(bool enabled)
     {
@@ -80,7 +80,7 @@ public:
     // Static Map View mode — when enabled, drawSelf() uses pre-built minimap-* image
     // chunks (from SatelliteMap) for Map View instead of the live in-game minimap.
     // Falls back to the live minimap when no static chunks exist for the current floor.
-    // Only set on the Cyclopedia map widget — the HUD minimap is unaffected.
+    // Only set on the Cyclopedia and Pokepedia map widgets — the HUD minimap is unaffected.
     void setUseStaticMinimap(bool enabled)
     {
         if (m_useStaticMinimap == enabled)

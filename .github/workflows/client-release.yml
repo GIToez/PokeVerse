@@ -22,6 +22,7 @@ on:
       - scripts/mapper/pvmap.py
       - scripts/mapper/render.py
       - scripts/mapper/render_pokepedia.py
+      - scripts/mapper/hidden-regions.txt
       - core/server/data/world/map.otbm
       - core/server/data/items/items.otb
       - .github/workflows/client-release.yml
@@ -288,14 +289,18 @@ jobs:
         id: version
         run: echo "tag=client-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
 
-      # the Pokepedia's pictures of the map, rendered again only when the map, the items or the
-      # sprites change; scripts/assemble-redemption-client.sh adds them to the packages
+      # the Pokepedia's pictures of the map, rendered again only when the map, the items, the sprites
+      # or the hidden regions change; after a change the last render is restored and only the pieces
+      # that changed are drawn again. scripts/assemble-redemption-client.sh adds them to the packages
       - name: Map pictures cache
         id: map-pictures
         uses: actions/cache@v4
         with:
-          path: build/map-pictures
-          key: map-pictures-${{ hashFiles('core/server/data/world/map.otbm', 'core/server/data/items/items.otb', 'core/client-legacy/data/things/data.dat', 'core/client-legacy/data/things/data.spr', 'scripts/mapper/pvmap.py', 'scripts/mapper/render.py', 'scripts/mapper/render_pokepedia.py') }}
+          path: |
+            build/map-pictures
+            build/map-pictures-state.json
+          key: map-pictures-${{ hashFiles('core/server/data/world/map.otbm', 'core/server/data/items/items.otb', 'core/client-legacy/data/things/data.dat', 'core/client-legacy/data/things/data.spr', 'scripts/mapper/pvmap.py', 'scripts/mapper/render.py', 'scripts/mapper/render_pokepedia.py', 'scripts/mapper/hidden-regions.txt') }}
+          restore-keys: map-pictures-
 
       - name: Render map pictures
         if: steps.map-pictures.outputs.cache-hit != 'true'
