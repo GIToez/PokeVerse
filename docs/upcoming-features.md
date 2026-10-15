@@ -250,8 +250,10 @@ knowledge levels and the tracker panel, as agreed below. P opens the window and 
   (`housesPerAccount = 1`); the transfer asks the buyer to confirm and moves the money and the
   house in one step.
 - Long messages are sent in pieces the client joins back together, because the server drops
-  strings over 8 KB. The server binary needs a rebuild: `sendExtendedOpcode` now starts a new
-  packet when a message doesn't fit in the current one.
+  strings over 8 KB, and `sendExtendedOpcode` (C++) now starts a new packet when a message
+  doesn't fit in the current one. The Live server `deploy` action builds the new binary and
+  adds the two new tables (`player_item_discoveries`, `player_dex_kills`, in
+  `schemas/pokeverse-extensions.sql`) on its own; nothing to run by hand.
 - "Open in Pokedex" opens the old Pokédex window, which only shows species scanned with the
   Pokédex item; the button is disabled until then.
 

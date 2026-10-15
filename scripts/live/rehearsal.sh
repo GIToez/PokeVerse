@@ -75,6 +75,10 @@ first=$(basename "$(readlink /opt/pokeverse/current)")
 sudo -u pokeverse test -f /opt/pokeverse/backups/"$(sudo ls -1t /opt/pokeverse/backups | head -1)" || fail "no pre-deployment backup"
 grep -q '^ip = "127.0.0.1"' <(sudo cat /opt/pokeverse/shared/config.local.lua) || fail "deployment settings not written"
 journal | grep -q "Discord bridge listening on 127.0.0.1:7199" || fail "the Discord bridge is not listening"
+for table in player_daily_tasks player_task_boards player_item_discoveries player_dex_kills; do
+  [ "$(sudo mariadb -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'pokeverse' AND table_name = '$table'")" = 1 ] \
+    || fail "the schema update did not create $table"
+done
 endstep
 
 step "players: login, movement, persistence"
