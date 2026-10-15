@@ -10,6 +10,7 @@
 --   { 'items', { { client id, caption }, ... } }
 --   { 'pokemon', { { dex number, caption }, ... } }
 --   { 'image', path, width, height, caption }
+--   { 'table', { { heading, ... }, { cell, ... }, ... } }
 --   { 'see', { topic key, ... } }    buttons to other topics
 WikiTab = {}
 
@@ -36,7 +37,11 @@ local function blockText(block)
     end
     local parts = {}
     for _, entry in ipairs(value or {}) do
-        parts[#parts + 1] = type(entry) == 'table' and tostring(entry[2] or '') or tostring(entry)
+        if kind == 'table' then
+            parts[#parts + 1] = table.concat(entry, ' ')
+        else
+            parts[#parts + 1] = type(entry) == 'table' and tostring(entry[2] or '') or tostring(entry)
+        end
     end
     return table.concat(parts, ' ')
 end
@@ -143,6 +148,35 @@ function BLOCKS.image(body, block)
     image.picture.image:setImageSource(block[2])
     image.caption:setText(block[5] or '')
     image:setHeight(height + 8 + (block[5] and 20 or 0))
+end
+
+function BLOCKS.table(body, block)
+    local rows = block[2]
+    local columns = #rows[1]
+    for index, cells in ipairs(rows) do
+        local row = g_ui.createWidget(index == 1 and 'WikiTableHead' or 'WikiTableRow', body)
+        if index == 2 then
+            row:setMarginTop(2)
+        end
+        if index > 1 and index % 2 == 1 then
+            row:setBackgroundColor('#16244233')
+        end
+        local labels = {}
+        for column = 1, columns do
+            local label = g_ui.createWidget(index == 1 and 'WikiTableHeadCell' or 'WikiTableCell', row)
+            label:setText(tostring(cells[column] or ''))
+            labels[column] = label
+        end
+        -- the first column is wider: it names the row
+        row.onGeometryChange = function()
+            local width = row:getWidth()
+            local first = math.floor(width * (columns > 2 and 0.34 or 0.5))
+            local rest = math.floor((width - first) / math.max(1, columns - 1))
+            for column, label in ipairs(labels) do
+                label:setWidth(column == 1 and first or rest)
+            end
+        end
+    end
 end
 
 function BLOCKS.see(body, block)

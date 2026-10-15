@@ -1521,6 +1521,27 @@ WikiImage < UIWidget
     margin-top: 4
     phantom: true
 
+WikiTableRow < UIWidget
+  height: 20
+  phantom: true
+  layout:
+    type: horizontalBox
+
+WikiTableHead < WikiTableRow
+  margin-top: 10
+  border-width-bottom: 1
+  border-color: #2a3f6a
+
+WikiTableCell < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: false
+  text-offset: 6 0
+  phantom: true
+
+WikiTableHeadCell < WikiTableCell
+  color: #ffd75a
+
 WikiLinks < UIWidget
   height: 24
   margin-top: 14
