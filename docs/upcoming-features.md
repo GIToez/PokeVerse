@@ -459,8 +459,11 @@ files and 338 NPC scripts (`core/server/data/npc`).
      out: the client can't tell whether asking again would say something new.
    - There is no text box in the window, so WASD isn't affected; typed answers (bank amounts,
      bids, names) go in the NPCs tab.
-   - Goodbye says "bye" and closes it. Walking away, the NPC leaving the screen, or two quiet
-     minutes close it too.
+   - Goodbye says "bye" and closes it. The X closes it like walking away, without a goodbye.
+     Walking away, the NPC leaving the screen, or two quiet minutes close it too. That NPC's
+     later lines don't reopen it until you talk to it again.
+   - When several NPCs answer a "hi", the closest one keeps the window.
+   - Long answers wrap inside the window and the buttons wrap to more rows.
    - The role line ("Gym Leader, Pewter City") is a client list for the NPCs with portraits.
    - The mission notices still need the server.
 2. A checker that lists every NPC whose responses are not clickable.
