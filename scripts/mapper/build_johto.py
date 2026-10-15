@@ -326,11 +326,11 @@ CAVES = [
     # (Route 27's side) and out on its east (Route 26's), the underground river across the way (Surf),
     # and at its head the falls themselves (`waterfalls`, the rock tiles that take Waterfall), up to
     # TOHJO_LEDGE on the floor above
-    {'name': 'Tohjo Falls', 'box': (2868, 620, 2945, 676), 'rate': 1 / 30.0,
+    {'name': 'Tohjo Falls', 'box': (2868, 620, 2945, 676), 'rate': 1 / 10.0,
      'faces': [(2888, 667, 6), (2924, 667, 6)],
      'mouths': [(2888, 670, 'south', [(2888, 684), (2888, 668)]), (2924, 670, 'south', [(2924, 684), (2924, 668)])],
      'path': [(2888, 669), (2888, 656), (2896, 652), (2905, 654), (2914, 652), (2924, 656), (2924, 669)],
-     'rooms': [(2888, 660, 5), (2905, 647, 9), (2924, 660, 5)],
+     'rooms': [(2887, 659, 7), (2905, 647, 9), (2925, 659, 7)],
      'pond': (2905, 644, 5), 'stream': ([(2905, 646), (2904, 668)], 1.6),
      'waterfalls': [(2902, 637), (2903, 637), (2907, 637), (2908, 637)]},
 ]
@@ -2409,6 +2409,9 @@ def build(base, out_path):
     # Prefabs.
     next_house = max(houses_xml) + 1
     prefab_tiles = {}
+    # enclosed landmarks' own ground draws no border onto the ground round them (Kanto has none
+    # round the rockery in the Battle Tower's corner)
+    unbordered = set()
     npcs = []
     new_houses = []
     for place in places:
@@ -2421,6 +2424,8 @@ def build(base, out_path):
             for (dx, dy, dz), tile in p.tiles.items():
                 t = pvmap.RawTile(remap.get(tile.house_id, 0), tile.flags, tile.ground, tile.children)
                 prefab_tiles[(ox + dx, oy + dy, Z + dz)] = t
+                if dz == 0 and PREFABS[name].get('enclosed'):
+                    unbordered.add((ox + dx, oy + dy))
             for hid, new_id in remap.items():
                 src = houses_xml[hid]
                 sx, sy = p.src
@@ -2723,6 +2728,8 @@ def build(base, out_path):
             # the rock round a hole is edged as round the cave floor it is cut into
             return brushes['mountain top ground'] if ground == STAIRS_DOWN else brushes.by_item.get(ground)
         pt = prefab_tiles.get((x, y, Z))
+        if (x, y) in unbordered:
+            return None
         if pt is not None:
             ids = ([pt.ground] if pt.ground is not None else []) + pvmap.child_item_ids(pt.children)
             return brushes.by_item.get(ids[0]) if ids else None
