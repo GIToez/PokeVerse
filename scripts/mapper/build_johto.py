@@ -475,7 +475,10 @@ BUSHES = [(2767, 1), (2768, 1)]
 TUFTS = [(6216, 367), (6217, 895), (6218, 888), (6219, 909)]
 FERNS = [(3610, 29), (3611, 31), (3612, 32), (3613, 32), (3614, 32), (3621, 26), (3622, 23), (3623, 27)]
 FLOWERS = [(3648, 7), (3649, 13), (3651, 17), (3652, 10), (3654, 8), (3655, 7), (3656, 13)]
-STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6), (1300, 7), (1301, 8)]
+STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6)]
+# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and most of 7004 to 7019) are quarters
+# of big rocks that take several tiles, and look broken on their own
+ROCK_PIECES = set(range(1297, 1303)) | {7006, 7007, 7009, 7010, 7011, 7015, 7017, 7019}
 GRAVEL = list(range(6477, 6489))
 # The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
 # (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
@@ -489,19 +492,17 @@ FOREST_FLOOR = [(2787, 3), (2788, 2), (2789, 4), (2791, 4), (2793, 3), (4181, 2)
                [(i, 3) for i in range(6220, 6226)] + [(i, 2) for i in range(6476, 6489)]
 WILDFLOWERS = [(4156, 4), (4157, 3), (2762, 2), (2764, 2)] + [(i, 3) for i in range(6226, 6232)]
 # the mountain tiers' rocky tops
-ROCKY = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1297, 3), (1298, 3),
-         (1299, 3), (1300, 3), (1301, 3), (1302, 3), (1304, 3)] + [(i, 4) for i in range(3648, 3657)]
+ROCKY = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)] + [(i, 4) for i in range(3648, 3657)]
 # the snowfield's: snowy fir trees in groves, the odd dead tree and snowy stone (not the heap of snow,
 # 486, which is a hole down)
 SNOW_FIR, SNOW_DEAD = 2698, 2697
 # Mt. Silver's: pines and firs, dead trees, big snowy stones (all blocking) and drifts (not)
 SNOW_TREES = [(SNOW_FIR, 6), (7023, 2), (8139, 2)]
 SNOW_DEAD_TREES = [(SNOW_DEAD, 2), (7020, 1), (7021, 1)]
-SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017)]
+SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017) if i not in ROCK_PIECES]
 SNOW_DRIFTS = [(6609, 6), (7022, 2), (13316, 1)]
-SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1297, 3), (1298, 3),
-                (1299, 3), (1300, 3), (1301, 3), (1302, 3), (1304, 3)]
-SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7017, 2), (7018, 2)]
+SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)]
+SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7018, 2)]
 
 # Wild Pokémon follow HeartGold/SoulSilver: johto_encounters.json (see fetch_encounters.py) holds the
 # land tables with the rates averaged over the time of day; spawns are drawn by those weights.
@@ -1874,6 +1875,7 @@ def build(base, out_path):
     nature.update((SNOW_FIR, SNOW_DEAD))
     nature.update(i for i, _ in SNOW_STONES)
     nature.update(range(6476, 6489))
+    nature.update(ROCK_PIECES)
     houses_xml = house_entries()
     down_ids = floor_down_ids()
     prefabs = {name: Prefab(name, spec, keep, brushes, nature, houses_xml, down_ids) for name, spec in PREFABS.items()}
