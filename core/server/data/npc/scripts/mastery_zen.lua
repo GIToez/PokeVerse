@@ -159,7 +159,7 @@ function creatureSayCallback(cid, type, msg)
             elseif (checkPlayerRequiredStones(cid)) then
                 removePlayerRequiredStones(cid)
                 setPlayerMasteryStonesPayed(cid, MASTERY, masteryRank)
-                selfSay(string.format(__L(cid, "To complete your initiation, you must win a battle with my assistant %s."), ASSISTANT), cid)
+                selfSay(string.format(__L(cid, "To complete your initiation, you must win a battle against my assistant %s."), ASSISTANT), cid)
             else
                 selfSay(string.format(__L(cid, "You do not have the necessary plates, come back when you have them. Remember that you must reach %s points with our element plates."), MASTERY_REQUIRED_PLATE_POINTS), cid)
             end
@@ -167,13 +167,13 @@ function creatureSayCallback(cid, type, msg)
 
         elseif (talkState[talkUser] == TALKSTATE_JOIN_CONFIRM) then
             setPlayerMasteryRank(cid, MASTERY, FIRST_RANK)
-            selfSay(string.format(__L(cid, "Congratulations! You are now part of %s Mastery! Honor your Mastery!"), MASTERY_NAME), cid)
+            selfSay(string.format(__L(cid, "Congratulations! You are now part of the %s Mastery! Honor your Mastery!"), MASTERY_NAME), cid)
             talkState[talkUser] = TALKSTATE_NONE
 
         elseif (talkState[talkUser] == TALKSTATE_NEXT) then
             if (getPlayerMasteryRankDungeonDone(cid, MASTERY, getMasteryRankNext(MASTERY, getPlayerMasteryRank(cid)))) then
                 setPlayerMasteryRank(cid, MASTERY, getMasteryRankNext(MASTERY, getPlayerMasteryRank(cid)))
-                selfSay(string.format(__L(cid, "Congratulations! You were promoted in %s Mastery!"), MASTERY_NAME), cid)
+                selfSay(string.format(__L(cid, "Congratulations! You were promoted in the %s Mastery!"), MASTERY_NAME), cid)
                 talkState[talkUser] = TALKSTATE_NONE
             elseif (getPlayerLevel(cid) < getMasteryRankRequiredLevel(MASTERY, getMasteryRankNext(MASTERY, getPlayerMasteryRank(cid)))) then
                 selfSay(string.format(__L(cid, "You need at least level %s to advance."), getMasteryRankRequiredLevel(MASTERY, getMasteryRankNext(MASTERY, getPlayerMasteryRank(cid)))), cid)
@@ -209,7 +209,7 @@ function creatureSayCallback(cid, type, msg)
             elseif (#getMasteryDungeonsFree(MASTERY) == 0) then
                 selfSay("There is no dungeon available, please try again later.", cid)
             elseif (not checkPlayerPokemon(cid)) then
-                selfSay(string.format(__L(cid, "You can only enter the dungeon carrying Pokemon with Mastery %s types and without Ditto!"), MASTERY_NAME), cid)
+                selfSay(string.format(__L(cid, "You can only enter the dungeon carrying Pokemon of the %s Mastery types and no Ditto!"), MASTERY_NAME), cid)
             else
                 local diff =  (getPlayerLastDungeonDate(cid) + 24 * 60 * 60) - os.time()
                 if (diff > 0) then

@@ -125,7 +125,7 @@ function creatureSayCallback(cid, type, msg)
         elseif (getPlayerItemCountByUnique(cid, TOKEN_ID) >= opt.tokens and
                 doPlayerRemoveItemByUnique(cid, TOKEN_ID, opt.tokens)) then
 			doPlayerSafeAddItem(cid, opt.id, opt.count, true, opt.unique)
-			selfSay("Here is, thanks!", cid)
+			selfSay("Here it is, thanks!", cid)
 
             if (opt.onBuy) then
                 opt.onBuy(cid)

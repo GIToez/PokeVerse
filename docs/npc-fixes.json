@@ -1,0 +1,464 @@
+[
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hey |PLAYERNAME|, it is hot? This desert is getting worse.",
+  "rewrite": "Hey |PLAYERNAME|, is it hot? This desert is getting worse.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have got what I asked?",
+  "rewrite": "Have you got what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to join into the %s Mastery?",
+  "rewrite": "Do you want to join the %s Mastery?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader.",
+  "rewrite": "You already have a mastery. If you want to join here, you first need to leave it by talking to your mastery leader.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you ready to the next level?",
+  "rewrite": "Are you ready for the next level?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you ready to the dungeon?",
+  "rewrite": "Are you ready for the dungeon?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You need to dismiss with your mastery leader, not here.",
+  "rewrite": "You need to leave through your own mastery leader, not here.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Your account must be with the premium days to join here.",
+  "rewrite": "Your account must have premium days to join here.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to join into the %s Mastery?",
+  "rewrite": "Do you really want to join the %s Mastery?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have already paid the necessary plates, now you need to win my assistant %s.",
+  "rewrite": "You have already paid the necessary plates, now you need to defeat my assistant %s.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To join into %s Mastery you will need %s. You're with them?",
+  "rewrite": "To join the %s Mastery you will need %s. Do you have them?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To complete your initiation, you must win a battle with my assistant %s.",
+  "rewrite": "To complete your initiation, you must win a battle against my assistant %s.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You do not have the necessary plates, come back here when you're with them. Remember that you must achieve %s points through our element plates.",
+  "rewrite": "You do not have the necessary plates, come back when you have them. Remember that you must reach %s points with our element plates.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations! You are now part of %s Mastery! Honor your Mastery!",
+  "rewrite": "Congratulations! You are now part of the %s Mastery! Honor your Mastery!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations! You were promoted in %s Mastery!",
+  "rewrite": "Congratulations! You were promoted in the %s Mastery!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have already paid the necessary tokens, now you need to win the {dungeon}.",
+  "rewrite": "You have already paid the necessary tokens, now you need to complete the {dungeon}.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?",
+  "rewrite": "To advance in rank within the Mastery you need to prove that you're mastering it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Now you're ready to make the {dungeon} and prove that you are able to advance. When you are ready come talk to me.",
+  "rewrite": "Now you're ready to do the {dungeon} and prove that you are able to advance. When you are ready, come talk to me.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You do not have the necessary tokens, come back here when you're with them.",
+  "rewrite": "You do not have the necessary tokens, come back when you have them.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Before to this dungeon you need pay the necessary tokens.",
+  "rewrite": "Before entering this dungeon you need to pay the necessary tokens.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "There is no dungeon avaiable, please try again later.",
+  "rewrite": "There is no dungeon available, please try again later.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You can only enter the dungeon carrying Pokemon with Mastery %s types and without Ditto!",
+  "rewrite": "You can only enter the dungeon carrying Pokemon of the %s Mastery types and no Ditto!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "The task is done?",
+  "rewrite": "Is the task done?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Looks like no.",
+  "rewrite": "Looks like you didn't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Likes no.",
+  "rewrite": "Looks like you didn't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You got the items?",
+  "rewrite": "Did you get the items?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You took them out of my yard?",
+  "rewrite": "Did you get them out of my yard?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You've got what I asked?",
+  "rewrite": "Have you got what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, let's trade your soul coins?",
+  "rewrite": "Hello |PLAYERNAME|, shall we trade your soul coins?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|. You can buy here all the necessary equipment to start planting your Pokemon berries.",
+  "rewrite": "Hello |PLAYERNAME|. Here you can buy all the equipment you need to start planting your Pokemon berries.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Can you help me get my Pokemon?",
+  "rewrite": "Can you help me get my Pokemon back?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to help me with some task?",
+  "rewrite": "Do you want to help me with a task?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations, get your reward.",
+  "rewrite": "Congratulations, here is your reward.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Did you bring what I've asked?",
+  "rewrite": "Did you bring what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, you need something to brighten your home?",
+  "rewrite": "Hello |PLAYERNAME|, do you need something to brighten your home?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you bring what I've asked?",
+  "rewrite": "Did you bring what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No, you did not.",
+  "rewrite": "No, you didn't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations, get your reward. I have more missions for you, when you want to come talk to me.",
+  "rewrite": "Congratulations, here is your reward. I have more missions for you; come talk to me whenever you want.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?",
+  "rewrite": "So you're a friend of Bill's? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you meddling in police affairs without permission, OK?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Good luck!",
+  "rewrite": "Good luck finding them!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Please, check your backpack for space.",
+  "rewrite": "Please make sure you have space in your backpack.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "This is not a Pokemon from egg!",
+  "rewrite": "This Pokemon did not hatch from an egg!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here is, thanks!",
+  "rewrite": "Here it is, thanks!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Will not need it? We did. Which items to sell?",
+  "rewrite": "Don't need it anymore? We buy it. Which items do you want to sell?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here is.",
+  "rewrite": "Here it is.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You will make another delivery?",
+  "rewrite": "Will you make another delivery?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Great! Thanks for helping me in this. As a reward I will give you the chance to win one of Miltank eggs we produce here. Every 24 hours bring me 50 oranges, they like a lot. Once you bring the oranges, come back in 24 hours and I'll tell you if got your egg. We agree? Great, good luck!",
+  "rewrite": "Great! Thanks for helping me with this. As a reward, I'll give you the chance to win one of the Miltank eggs we produce here. Every 24 hours, bring me 50 oranges, they love them. Once you bring the oranges, come back in 24 hours and I'll tell you if you got your egg. Deal? Great, good luck!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You can not do it while you have a Pokemon out of the ball.",
+  "rewrite": "You can't do that while your Pokemon is out of its ball.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Please, first put a poke ball in your inventory slot.",
+  "rewrite": "Please put a poke ball in your ball slot first.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello baby, we have everything you need. We are fashion too! Remember that only premium account players can wear these clothes!",
+  "rewrite": "Hello baby, we have everything you need. We're fashionable too! Remember that only premium account players can wear these clothes!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Thanks! Your task is defeat 30 Golem.",
+  "rewrite": "Thanks! Your task is to defeat 30 Golem.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No.. you do not have, colect the informations and return back to me.",
+  "rewrite": "No... you don't have it. Collect the information and come back to me.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So you brought the items I ordered?",
+  "rewrite": "So you brought the items I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Sorry, do not know what you're talking about.",
+  "rewrite": "Sorry, I don't know what you're talking about.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No.. you do not have.",
+  "rewrite": "No... you haven't done it yet.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Now which city you want to start out? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.",
+  "rewrite": "Now, which city do you want to start in? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No you do not have...",
+  "rewrite": "No, you don't have it...",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No, you haven't.",
+  "rewrite": "No, you don't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You're just getting started, now let's go the next step.",
+  "rewrite": "You're just getting started, now let's go to the next step.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "The largest store of dolls!",
+  "rewrite": "The biggest doll store around!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "It's what I asked?",
+  "rewrite": "Is that what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do not waste your time! Go get the parts.",
+  "rewrite": "Do not waste my time! Go get the parts.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|. Here you will find the best churros of all towns, hu?",
+  "rewrite": "Hello |PLAYERNAME|. Here you will find the best churros in all the towns, huh?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hi |PLAYERNAME|, welcome to the Ranger Club! You can view the {task} list, try your {promotion} inside the club or challenge the {bosses}.",
+  "rewrite": "Hi |PLAYERNAME|, welcome to the Ranger Club! You can view the {task} list, attempt your {promotion} inside the club or challenge the {bosses}.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "How much dollars do you like to withdraw?",
+  "rewrite": "How many dollars would you like to withdraw?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Alright, it's here.",
+  "rewrite": "Alright, here they are.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ }
+]

@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Applies docs/npc-rewrites.json to the NPC files, the quest config and the shared libraries.
+"""Applies docs/npc-rewrites.json (or another list given with --file, like docs/npc-fixes.json)
+to the NPC files, the quest config and the shared libraries.
 
 Each entry names where its line is (an XML message of an NPC, an NPC script, a quest field
 or a library) and the old and new text. Lines are matched by their exact old text inside a
 Lua string or XML attribute, so running it twice changes nothing the second time. Keys of
 pt_br.loc that were the old English text are renamed to the new one, so translations stay.
+An empty old text fills an empty quest field.
 
   python3 scripts/apply_npc_rewrites.py            # apply
   python3 scripts/apply_npc_rewrites.py --dry-run  # only report
+  python3 scripts/apply_npc_rewrites.py --file docs/npc-fixes.json
 """
 
 import argparse
@@ -72,6 +75,15 @@ def npc_files():
     return by_name
 
 
+def everywhere_files():
+    """Every NPC XML and every Lua file under npc/ and lib/ (the quest config included)."""
+    paths = [os.path.join(NPC_DIR, fn) for fn in sorted(os.listdir(NPC_DIR)) if fn.endswith('.xml')]
+    for top in (NPC_DIR, os.path.join(DATA, 'lib')):
+        for root, _, fns in sorted(os.walk(top)):
+            paths += [os.path.join(root, fn) for fn in sorted(fns) if fn.endswith('.lua')]
+    return paths
+
+
 def xml_attr(s):
     return html.escape(s, quote=True).replace('&#x27;', "'")
 
@@ -112,7 +124,22 @@ def apply(entries, files, by_name):
         if old == new:
             continue
         n = 0
-        if where.startswith(('message_', 'keyword_reply')):
+        if where == 'everywhere':
+            for path in everywhere_files():
+                if path.endswith('.lua'):
+                    code, found = replace_literals(files.get(path), old, new)
+                    files.set(path, code)
+                    n += found
+                else:
+                    pattern = re.compile(r'(<parameter\s+key="(?:message_\w+|keyword_reply\d+)"\s+value=")([^"]*)(")')
+                    def sub(m):
+                        nonlocal n
+                        if html.unescape(m.group(2)) == old:
+                            n += 1
+                            return m.group(1) + xml_attr(new) + m.group(3)
+                        return m.group(0)
+                    files.set(path, pattern.sub(sub, files.get(path)))
+        elif where.startswith(('message_', 'keyword_reply')):
             for path in by_name.get(owner, []):
                 xml = files.get(path)
                 pattern = re.compile(r'(<parameter\s+key="' + re.escape(where) + r'"\s+value=")([^"]*)(")')
@@ -131,7 +158,8 @@ def apply(entries, files, by_name):
             block_end = re.compile(r'\n\s*\[\s*"[^"]+"\s*\]\s*=\s*\{').search(code, block.end()) if block else None
             start = block.end() if block else 0
             stop = block_end.start() if block_end else len(code)
-            for m in re.compile(r'\bstorage\s*=\s*' + re.escape(storage) + r'\s*,').finditer(code, start, stop):
+            # last to first, so a replacement does not move the quests still to do
+            for m in reversed(list(re.compile(r'\bstorage\s*=\s*' + re.escape(storage) + r'\s*,').finditer(code, start, stop))):
                 nxt = re.compile(r'\bstorage\s*=\s*\d+\s*,').search(code, m.end())
                 end = nxt.start() if nxt else len(code)
                 k = re.compile(r'\b' + re.escape(key) + r'\s*=\s*').search(code, m.end(), end)
@@ -155,6 +183,8 @@ def rename_translations(done):
         return 0
     renames = {}
     for e in done:
+        if not e['text']:
+            continue
         renames.setdefault(e['text'].replace('\n', '\\n'), e['rewrite'].replace('\n', '\\n'))
     with open(PT_BR, encoding='latin-1', newline='') as f:
         lines = f.read().split('\n')
@@ -172,8 +202,9 @@ def rename_translations(done):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--file', default=REWRITES, help='list of rewrites (default: docs/npc-rewrites.json)')
     args = ap.parse_args()
-    with open(REWRITES, encoding='utf-8') as f:
+    with open(args.file, encoding='utf-8') as f:
         entries = json.load(f)
     files = Files()
     done, missing = apply(entries, files, npc_files())

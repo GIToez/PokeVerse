@@ -41,7 +41,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     if (talkState[talkUser] == TALKSTATE_MOVE_CHANGE) then
         local ball = getPlayerBall(cid)
         if (not isItem(ball) or not getBallPokemonName(ball.uid)) then
-            selfSay("Please, first put a poke ball in your inventory slot.", cid)
+            selfSay("Please put a poke ball in your ball slot first.", cid)
             talkState[talkUser] = 0
 
         else
@@ -98,7 +98,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
                 selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -156,9 +156,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (talkState[talkUser] == TALKSTATE_TYPE_PLATE) then
         local msg = string.lower(msg)
-        if (getPlateItemIdByName(msg)) then
-            lastPlate[cid] = getPlateItemIdByName(msg)
-        end
+        lastPlate[cid] = getPlateItemIdByName(msg)
 
         if (lastPlate[cid]) then
             selfSay(string.format(__L(cid, "Ok, be careful now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE FOR YOUR POKEMON USING A {%s} PLATE?"), string.upper(PLATE_NAME_BY_ITEMID[lastPlate[cid]])), cid)
@@ -170,9 +168,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (talkState[talkUser] == TALKSTATE_FIX_TYPE_PLATE) then
         local msg = string.lower(msg)
-        if (getPlateItemIdByName(msg)) then
-            lastPlate[cid] = getPlateItemIdByName(msg)
-        end
+        lastPlate[cid] = getPlateItemIdByName(msg)
 
         if (lastPlate[cid]) then
             selfSay(string.format(__L(cid, "Ok, be careful now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE FOR YOUR POKEMON USING A {%s} PLATE?"), string.upper(PLATE_NAME_BY_ITEMID[lastPlate[cid]])), cid)
@@ -186,7 +182,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
                 selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -237,7 +233,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
                 selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -293,7 +289,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             else
                 if (getItemUniqueOwner(ball.uid) ~= ITEM_UNIQUE_OWNER_NONE and
@@ -321,7 +317,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             else
                 if (not getBallEggMoveSlot(ball.uid)) then

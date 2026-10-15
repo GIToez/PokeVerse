@@ -34,7 +34,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     if (msgcontains(msg, 'regenerate')) then
         local ball = getPlayerBall(cid)
         if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
         elseif (not isItem(ball)) then
             selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -82,7 +82,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
                 selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -124,7 +124,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     elseif (talkState[talkUser] == TALKSTATE_RESULT) then
         local ball = getPlayerBall(cid)
         if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
         elseif (not isItem(ball)) then
             selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -151,7 +151,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
                 selfSay("Please, put the poke ball in the ball slot!", cid)
@@ -185,7 +185,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
                 selfSay("Please, put the poke ball in the ball slot!", cid)

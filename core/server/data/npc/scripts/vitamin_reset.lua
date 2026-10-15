@@ -29,13 +29,13 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
                 return true
             end
 
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             elseif (getBallTotalVitamins(ball.uid) == 0) then
                 selfSay("Your Pokemon doesn't have any vitamins.", cid)

@@ -91,7 +91,7 @@ function creatureSayCallback(cid, type, msg)
 		selfSay("Ok!", cid)
 		talkState[talkUser] = TALKSTATE_NONE
 	else
-		selfSay("Sorry, do not know what you're talking about.", cid)
+		selfSay("Sorry, I don't know what you're talking about.", cid)
 		talkState[talkUser] = TALKSTATE_NONE
 	end
 	return true

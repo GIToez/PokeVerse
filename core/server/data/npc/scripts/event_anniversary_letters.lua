@@ -100,7 +100,7 @@ function creatureSayCallback(cid, type, msg)
     talkState[talkUser] = TALKSTATE_COUNT
     selfSay("And how many letters do you want to exchange?", cid)
     
-  elseif (msgcontains(msg, 'gift') or msgcontains(msg, 'presente') or msgcontains(msg, 'letter') or msgcontains(msg, 'letra')) then
+  elseif (msgcontains(msg, 'gift') or msgcontains(msg, 'presente') or msgcontains(msg, 'letter') or msgcontains(msg, 'letra') or msgcontains(msg, 'token')) then
     selfSay("Here you can exchange the letters for anniversary tokens, you can see the {options}.", cid)
     
   elseif (talkState[talkUser] == TALKSTATE_COUNT) then

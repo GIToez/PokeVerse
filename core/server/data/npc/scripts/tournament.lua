@@ -357,7 +357,7 @@ function creatureSayCallback(cid, type, msg)
 
         else
             if (getPlayerMounted(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
                 return true
             end
 

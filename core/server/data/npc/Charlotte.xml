@@ -5,6 +5,9 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="berries,berry"/>
+		<parameter key="keyword_reply1" value="Berries are plants any trainer can grow at home, and each kind has its own effect on your Pokemon. You plant them with the right tools on fertile land, like the ground in a house. My medicine is made from them, say {trade} if you want some."/>
 		<parameter key="message_greet" value="Hello! What do you know about {berries}? They have an amazing rejuvenating power."/>
 		<parameter key="shop_buyable" value="
 		pokemon antidote, 12249, 100;

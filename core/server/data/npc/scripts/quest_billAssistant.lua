@@ -46,7 +46,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
                 else
                     doPlayerAddMoney(cid, 100000)
-                    selfSay("Please, check your backpack for space.", cid)
+                    selfSay("Please make sure you have space in your backpack.", cid)
                 end
 
             else

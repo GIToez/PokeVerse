@@ -80,7 +80,7 @@ EliteFour.doCheckPlayerEntrance = function(cid)
     end
     
     if (isPokemonOnline(cid) or getPlayerMounted(cid)) then
-        return 'You can not do it while you have a Pokemon out of the ball.'
+        return 'You can\'t do that while your Pokemon is out of its ball.'
     end
 
     return true

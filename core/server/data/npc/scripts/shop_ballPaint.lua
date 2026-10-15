@@ -302,7 +302,7 @@ function creatureSayCallback(cid, type, msg)
         elseif (getPlayerMoney(cid) < PRICE) then
             selfSay("You do not have enough money for it.", cid)
         elseif (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while your Pokemon is out of its ball.", cid)
         elseif (isEpicBall(ball.itemid)) then
             selfSay("You can not paint this kind of ball.", cid)
             log(LOG_TYPES.WARNING, "Ball paint - Epic ball detected, bug abuser?", getCreatureName(cid), ball)
