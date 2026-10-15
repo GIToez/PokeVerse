@@ -53,7 +53,7 @@ players install the APK for real), a phone UI pass, and a security check of the 
 server (open ports, SSH, firewall).
 
 Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
-how players get Soul Coins, and putting Johto in `scripts/mapper/hidden-regions.txt` while
+buying Soul Coins (the premium currency) and the Store items they pay for, and putting Johto in `scripts/mapper/hidden-regions.txt` while
 it is built, so the map doesn't show it before launch.
 
 ## 1. New depot
@@ -748,10 +748,11 @@ Still to do:
 
 Not fixed yet:
 
-- **Soul Coins:** nothing in the code says how players get them (the Store says "coming
-  soon"), and the Soul Coin and bank NPCs stand only in the Orange Islands and the Trading
-  Area, none in Kanto or Hoenn. About 17 Soul Coin and bank NPC files are never placed.
-- **The level-up banner says the daycare opens at 85;** the daycare NPCs check 20.
+- **Soul Coins (decided: the premium currency).** Players buy them with real money and
+  spend them on Premium time, outfits, addons and similar. Not built: buying them (the Store
+  says "coming soon"), and the Store items to spend them on. Today the Soul Coin and bank
+  NPCs stand only in the Orange Islands and the Trading Area, and about 17 Soul Coin and bank
+  NPC files are never placed; check which of them still fit a bought currency.
 - **Vital mastery:** its "longer buffs" perk makes buffs shorter (13 s instead of 20 s).
   The masteries go with the [vocations](#6-vocations), so it may not need a fix.
 - **Surprise boxes** only spawn in the west of the map (Hoenn), never in Kanto or the Orange
@@ -845,7 +846,7 @@ are changed to the new level (agreed); the rest are kept.
 | Frontier Island arenas (gladiator, cooperative, survive) | 50 | `npc/scripts/fi_stadiumarena.lua` | keep |
 | Wave arena | 20 | `npc/scripts/wavearena.lua` | keep |
 | Elite Four | 95 | `lib/ps/systems/049-eliteFour.lua` | keep, or 80 if the badges already gate it |
-| Tournaments | by Pokémon level (0–100, 20–40, 41–50, 45–100, 50–100, 51–65, 66–80, 80–100); trainer level at least the minimum − 5 | `XML/tournaments.xml`, `npc/scripts/tournament.lua` | keep |
+| Tournaments | by Pokémon level (0–100, 20–40, 41–50, 45–100, 50–100, 51–65, 66–80, 80–100); trainer level at least the minimum + 5 (`level - 5 < minLevel` refuses); Elite and Master are commented out | `XML/tournaments.xml`, `npc/scripts/tournament.lua` | keep |
 | Daily and weekly tasks | Beginner 1, Easy 15, Medium 35, Hard 55, Extreme 80; two task kinds need 10 | `lib/ps/systems/062-dailyTasks.lua` | keep |
 | Ranger Club ranks | Rookie 10, Mentor 25, Coordinator 50, Coach 75 | `lib/ps/config/001-rangerClub.lua` | keep (becomes [factions](#10-factions)) |
 | Referral reward | the friend reaches 50 | `lib/ps/systems/035-referral.lua` | 30 |
@@ -878,8 +879,13 @@ at 20:
 | 80 | Extreme tasks, the Josh Rock and William Rock quests |
 | 95 | Elite Four |
 
-Planned: the level-up banner lists what just unlocked ("Level 25: you can now buy a
-house").
+**Level-up banner (fixed):** `LevelUpBanner.UNLOCKS` in `lib/ps/systems/063-levelUpBanner.lua`
+still had the old levels (daycare 85, Safari Zone 30, tournaments at the Pokémon minimum, the
+switched-off Elite and Master tournaments). It now follows the real checks: Safari Zone 15,
+daycare 20, houses and Starter tournament 25, guilds 30, Pro tournament 46, Epic tournaments
+50, Titan and Mastery tournaments 85, Elite Four 95. The Wiki's "Trainer levels" and
+"Tournaments" pages match. Not in the banner yet: slot machine, tasks, wave arena, the
+vocation quest and the Frontier Island arenas.
 
 **To decide:** whether the Elite Four moves to 80, and what the level 70 quest group is (76
 quests at the same level). The daycare stays Premium (agreed with the Breeder perks).
