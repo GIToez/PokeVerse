@@ -124,7 +124,7 @@ NpcDialog < UIWidget
     color: #dfe7f5
     text: x
     text-offset: 0 -1
-    @onClick: modules.game_npcdialog.hide()
+    @onClick: modules.game_npcdialog.close()
 
     $hover:
       image-source: /modules/game_npcdialog/images/close-hover
@@ -151,16 +151,22 @@ NpcDialog < UIWidget
       text-auto-resize: true
       phantom: true
 
-    Label
+    UITextEdit
       id: text
       anchors.top: parent.top
       anchors.left: parent.left
       anchors.right: parent.right
       margin: 0 10 0 10
+      height: 14
       font: verdana-11px-antialised
       color: #e6ecf5
       text-wrap: true
       text-auto-resize: true
+      change-cursor-image: false
+      cursor-visible: false
+      editable: false
+      selectable: false
+      focusable: false
       phantom: true
 
   UIWidget

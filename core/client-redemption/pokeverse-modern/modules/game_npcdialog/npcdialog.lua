@@ -11,8 +11,6 @@ local WORD_COLOR = '#6fb6ff'
 -- talking range of the server's NPCs; farther away they stop listening
 local RANGE = 4
 local IDLE_MS = 120000
--- after Goodbye, the NPC's farewell doesn't open the window again
-local FAREWELL_MS = 3000
 local FAREWELLS = { bye = true, goodbye = true, farewell = true, cya = true }
 
 local PORTRAITS = {
@@ -39,8 +37,14 @@ local replyAt = 0
 -- a line said this recently is what a newly opened conversation answers (usually the "hi")
 local RECENT_REPLY_MS = 5000
 local lastHeard = 0
-local quietName, quietUntil = nil, 0
+-- the NPC whose conversation the player left (Goodbye, the close button or walking away): its
+-- farewell and later lines don't open the window again until the player talks again
+local quietName
+-- every NPC in range answers a "hi"; within this time of the page starting, the closest one keeps the window
+local SAME_ANSWER_MS = 1500
+local pageStart = 0
 local checkEvent, layoutEvent
+local shownText = ''
 
 local function trim(s)
     return (s:gsub('^%s+', ''):gsub('%s+$', ''))
@@ -97,6 +101,18 @@ local function findNpc(name, pos)
         end
     end
     return nil
+end
+
+local function distance(creature)
+    local player = g_game.getLocalPlayer()
+    if not creature or not player then
+        return math.huge
+    end
+    local a, b = player:getPosition(), creature:getPosition()
+    if not a or not b or a.z ~= b.z then
+        return math.huge
+    end
+    return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
 end
 
 local function place()
@@ -164,6 +180,8 @@ local function layout()
         return
     end
     local message = window.message
+    -- wrap again now that the window has its final width
+    message.text:setColoredText(shownText)
     local textTop = 7
     if message.reply:isVisible() then
         textTop = 7 + message.reply:getHeight() + 2
@@ -208,7 +226,8 @@ end
 
 local function refresh()
     local text = table.concat(lines, '\n')
-    window.message.text:setColoredText(coloredText(text))
+    shownText = coloredText(text)
+    window.message.text:setColoredText(shownText)
     if reply and reply ~= '' then
         window.message.reply:setText(tr('You: %s', reply))
         window.message.reply:show()
@@ -261,17 +280,27 @@ function hide()
     npc, lines, reply, replied, replyAt = nil, {}, nil, false, 0
 end
 
+local function leave()
+    quietName = npc and npc.name or nil
+    hide()
+end
+
+-- the close button: like walking away, without saying goodbye
+function close()
+    leave()
+end
+
 -- the conversation ends when the player walks out of range, the NPC leaves the screen or goes quiet
 local function check()
     local player = g_game.getLocalPlayer()
     local creature = npcCreature()
     if not player or not creature or g_clock.millis() - lastHeard > IDLE_MS then
-        hide()
+        leave()
         return
     end
     local a, b = player:getPosition(), creature:getPosition()
     if not a or not b or a.z ~= b.z or math.max(math.abs(a.x - b.x), math.abs(a.y - b.y)) > RANGE + 2 then
-        hide()
+        leave()
     end
 end
 
@@ -290,11 +319,7 @@ local function open(name, creature)
 end
 
 function goodbye()
-    if npc then
-        quietName, quietUntil = npc.name, g_clock.millis() + FAREWELL_MS
-    end
     say('bye')
-    hide()
 end
 
 -- every line the player says to the NPC, typed in the NPCs tab or sent by a button
@@ -304,12 +329,10 @@ function onPlayerSay(text)
         return
     end
     if FAREWELLS[text:lower()] then
-        if npc then
-            quietName, quietUntil = npc.name, g_clock.millis() + FAREWELL_MS
-        end
-        hide()
+        leave()
         return
     end
+    quietName = nil
     reply, replied, replyAt = text, true, g_clock.millis()
 end
 
@@ -321,11 +344,16 @@ local function onTalk(name, level, mode, text, channelId, creaturePos)
     if mode ~= MessageModes.NpcFrom and mode ~= MessageModes.NpcFromStartBlock then
         return
     end
-    if name == quietName and g_clock.millis() < quietUntil then
+    if name == quietName then
         return
     end
     local creature = findNpc(name, creaturePos)
+    if npc and npc.name ~= name and not replied and g_clock.millis() - pageStart < SAME_ANSWER_MS
+            and distance(creature) >= distance(npcCreature()) then
+        return
+    end
     if not npc or npc.name ~= name then
+        pageStart = g_clock.millis()
         lines = {}
         if g_clock.millis() - replyAt > RECENT_REPLY_MS then
             reply, replied = nil, false
@@ -333,7 +361,7 @@ local function onTalk(name, level, mode, text, channelId, creaturePos)
     end
     -- every NPC line comes as NpcFromStartBlock, so the player's reply is what starts a new page
     if replied then
-        lines, replied = {}, false
+        lines, replied, pageStart = {}, false, g_clock.millis()
     end
     open(name, creature or npcCreature())
     lines[#lines + 1] = text
