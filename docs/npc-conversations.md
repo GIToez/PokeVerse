@@ -22,6 +22,15 @@ audit is in [npc-audit.md](npc-audit.md).
 | Spelling mistakes | 97 (69) |
 | Grammar problems | 115 (79) |
 | One-liners (only a greeting so far) | 92 |
+| Lines that read badly (reading review) | 1635 |
+
+## Reading review
+
+Every line was also read by a reviewer for broken or unclear English that the checks below miss
+("do you want help me?", "Likes no.", "where to flow"). The lines that need work, with a
+proposed rewrite each, are in [npc-rewrites.md](npc-rewrites.md). Most lines to fix:
+
+Professor Oak (33), Bill (31), npc/scripts/soulTrade.lua (23), Ader (20), Dax (20), npc/scripts/tutorial_quests.lua (19), Darus (18), Eddie (18), Joey (18), Peter Paul (18), Taya (18), Oak's Assistant (17), Ash Ketchum (16), Gary Oak (16), George Carter (16), Gerry (16), Isak (16), Jacob (16), Jarom (16), Kemp Drummond (16), Koby (16), Old Lady (16), Rock (16), Misty (15), Flanagan (14), Noah (14), Satya (14), Giovanni (13), Kurt Petrillose (13), Martha May (13).
 
 ## Tibia and old-server leftovers
 

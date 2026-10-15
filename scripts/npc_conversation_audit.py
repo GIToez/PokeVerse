@@ -615,7 +615,21 @@ def write_report(r, out):
               f'| Grammar problems | {total["grammar"]} ({len(owners("grammar"))}) |']
     else:
         L += ['| Spelling and grammar | not checked (LanguageTool not installed) |']
-    L += [f'| One-liners (only a greeting so far) | {len(r["one_liners"])} |', '']
+    L += [f'| One-liners (only a greeting so far) | {len(r["one_liners"])} |']
+    rewrites_path = os.path.join(ROOT, 'docs', 'npc-rewrites.json')
+    rewrites = []
+    if os.path.exists(rewrites_path):
+        with open(rewrites_path, encoding='utf-8') as f:
+            rewrites = json.load(f)
+        L.append(f'| Lines that read badly (reading review) | {len(rewrites)} |')
+    L.append('')
+    if rewrites:
+        per = collections.Counter(x['npc'] for x in rewrites)
+        L += ['## Reading review', '',
+              'Every line was also read by a reviewer for broken or unclear English that the checks below miss',
+              '("do you want help me?", "Likes no.", "where to flow"). The lines that need work, with a',
+              'proposed rewrite each, are in [npc-rewrites.md](npc-rewrites.md). Most lines to fix:', '',
+              ', '.join(f'{n} ({c})' for n, c in per.most_common(30)) + '.', '']
 
     def section(kind, title, intro, limit=None):
         os_ = owners(kind)
