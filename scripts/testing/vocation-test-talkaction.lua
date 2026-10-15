@@ -1,0 +1,658 @@
+-- TEST ONLY - never part of the game data or any package.
+-- scripts/test-server-linux.sh copies this file into a temporary server directory as "/vocationtest"
+-- and scripts/vocation-test.py says it. It drives the real vocation code paths for every vocation
+-- and prints one "vocationtest: PASS|FAIL <name>" message per check, then
+-- "vocationtest: done <passed> passed, <failed> failed". The catch and potion checks finish a few
+-- seconds later (the ball throw has a delay).
+--
+--   /vocationtest <name of a second online trainer>   (the Medic heals that trainer's Pokemon)
+--
+-- The action and NPC scripts (incubator, health potions, daycare) are loaded into a sandbox so
+-- their local functions run unchanged. Loading the potion script there logs "can only be used while
+-- loading the script" for its conditions; the Medic checks only use the potion's first heal.
+
+local SCRIPTS = "data/lib/ps/events/actions/"
+local passed, failed = 0, 0
+local tester
+
+local function say(text)
+    doPlayerSendTextMessage(tester, MESSAGE_STATUS_CONSOLE_BLUE, "vocationtest: " .. text)
+end
+
+local function check(name, ok, detail)
+    if (ok) then
+        passed = passed + 1
+        say("PASS " .. name)
+    else
+        failed = failed + 1
+        say("FAIL " .. name .. (detail and (" (" .. tostring(detail) .. ")") or ""))
+    end
+end
+
+local function sandbox(path, extra, libs)
+    local env = setmetatable(extra or {}, { __index = _G })
+    for _, file in ipairs(libs or {}) do
+        local lib = assert(loadfile(file))
+        setfenv(lib, env)
+        lib()
+    end
+    local chunk = assert(loadfile(path))
+    setfenv(chunk, env)
+    chunk()
+    return env
+end
+
+local function become(cid, key, rank)
+    Vocations.reset(cid)
+    if (key) then
+        for _, vocation in ipairs(Vocations.LIST) do
+            if (vocation.key == key) then
+                setPlayerStorageValue(cid, playersStorages.vocation, vocation.id)
+            end
+        end
+        Vocations.setRank(cid, rank or 1)
+    end
+end
+
+-- Runs fn with Vocations.PERKS[key][perk] replaced by value at every rank
+local function withPerk(key, perk, value, fn)
+    local old = Vocations.PERKS[key][perk]
+    Vocations.PERKS[key][perk] = { value, value, value, value, value }
+    local ok, err = pcall(fn)
+    Vocations.PERKS[key][perk] = old
+    if (not ok) then
+        check(key .. "." .. perk .. " ran without errors", false, err)
+    end
+end
+
+-- Messages the code sends to the tester while fn runs
+local function captureMessages(fn)
+    local messages, original = {}, doPlayerSendTextMessage
+    doPlayerSendTextMessage = function(cid, kind, text)
+        messages[#messages + 1] = text
+        return original(cid, kind, text)
+    end
+    local ok, err = pcall(fn)
+    doPlayerSendTextMessage = original
+    if (not ok) then
+        check("no errors while capturing messages", false, err)
+    end
+    return table.concat(messages, "\n")
+end
+
+local function isFree(cid, pos)
+    local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+    if (not ground or ground.itemid == 0) then
+        return false
+    end
+    local info = getTileInfo(pos)
+    return info and not info.protection and not info.house and doTileQueryAdd(cid, pos) == RETURNVALUE_NOERROR
+end
+
+-- A free non-protection tile with free tiles around it
+local function findArena(cid)
+    local origin = getCreaturePosition(cid)
+    for radius = 1, 40 do
+        for dx = -radius, radius do
+            for dy = -radius, radius do
+                local p = { x = origin.x + dx, y = origin.y + dy, z = origin.z }
+                local all = isFree(cid, p)
+                for _, d in ipairs({ { 1, 0 }, { 2, 0 }, { 0, 1 }, { -1, -1 } }) do
+                    all = all and isFree(cid, { x = p.x + d[1], y = p.y + d[2], z = p.z })
+                end
+                if (all) then
+                    return p
+                end
+            end
+        end
+    end
+end
+
+local function newBall(cid, pokemon, level, sex)
+    local uid = doCreatePokemonBall(cid, "poke", pokemon, level, sex or POKEMON_SEX_FEMALE, nil, 0, nil, false, nil,
+        getExperienceForLevel(level), nil, nil, nil, nil, nil, nil, false, nil, nil, true)
+    return getThing(uid)
+end
+
+---------------------------------------------------------------------------------------------------
+
+local function testRanks(cid)
+    become(cid, nil)
+    check("no vocation: rank 0, no perks", Vocations.getRank(cid) == 0 and Vocations.perk(cid, "ace", "battleExp") == nil)
+
+    setPlayerStorageValue(cid, playersStorages.vocationWindow, -1)
+    check("choosing needs the window", not Vocations.choose(cid, "catcher") and not Vocations.get(cid))
+    setPlayerStorageValue(cid, playersStorages.vocationWindow, 1)
+    check("choosing works with the window open", Vocations.choose(cid, "catcher") and Vocations.is(cid, "catcher"))
+    check("a new vocation starts at rank 1", Vocations.getRank(cid) == 1 and Vocations.getTitle(cid) == "Rookie Catcher")
+    setPlayerStorageValue(cid, playersStorages.vocationWindow, 1)
+    check("the vocation can't be changed", not Vocations.choose(cid, "medic") and Vocations.is(cid, "catcher"))
+    check("look text shows the title",
+        (getPlayerSpecialDescription(cid) or ""):find("Catcher, Rookie Catcher %(rank 1%)") ~= nil, getPlayerSpecialDescription(cid))
+    check("other vocations' perks don't apply", Vocations.perk(cid, "medic", "healing") == nil)
+
+    for _, vocation in ipairs(Vocations.LIST) do
+        become(cid, vocation.key, 5)
+        check(vocation.name .. " rank 5 title", Vocations.getTitle(cid) == vocation.titles[5])
+    end
+    become(cid, "ace", 1)
+    check("Ace rank 1: +2% EXP", Vocations.perk(cid, "ace", "battleExp") == 0.02)
+    become(cid, "ace", 5)
+    check("Ace rank 5: +10% EXP", Vocations.perk(cid, "ace", "battleExp") == 0.10)
+    become(cid, "ranger", 1)
+    check("Ranger rank 1: no type filter yet", Vocations.perk(cid, "ranger", "typeFilterRank") == nil)
+    become(cid, "ranger", 2)
+    check("Ranger rank 2: type filter", Vocations.perk(cid, "ranger", "typeFilterRank") == true)
+
+    become(cid, "angler", 1)
+    local level = getPlayerLevel(cid)
+    if (level >= 30) then
+        check("rank up from 1 to 2 at level " .. level, Vocations.rankUp(cid) and Vocations.getRank(cid) == 2)
+    end
+    become(cid, "angler", 5)
+    check("no rank above 5", not Vocations.rankUp(cid) and Vocations.getRank(cid) == 5)
+    Vocations.reset(cid)
+    check("reset clears the vocation", not Vocations.get(cid) and (getPlayerSpecialDescription(cid) or "") == "")
+end
+
+local function testAce(cid)
+    local ball = newBall(cid, "Pidgey", 50)
+    if (not isItem(ball)) then
+        check("Ace: test ball", false, "no ball")
+        return
+    end
+    local function gain()
+        local before = getBallPokemonExp(ball.uid)
+        doPlayerPokemonAddExperience(cid, nil, 200, true, ball)
+        return getBallPokemonExp(ball.uid) - before
+    end
+    become(cid, nil)
+    local base = gain()
+    become(cid, "ace", 5)
+    local ace = gain()
+    become(cid, "ace", 1)
+    local ace1 = gain()
+    check("Ace rank 5 gets +10% battle EXP", base > 0 and ace == base + math.floor(base * 0.10), base .. " -> " .. ace)
+    check("Ace rank 1 gets +2% battle EXP", ace1 == base + math.floor(base * 0.02), base .. " -> " .. ace1)
+    become(cid, "ace", 5)
+    local before = getBallPokemonExp(ball.uid)
+    doPlayerPokemonAddExperience(cid, nil, 200, false, ball)
+    check("Ace bonus is only for battle EXP", getBallPokemonExp(ball.uid) - before == 200)
+    doRemoveItem(ball.uid)
+end
+
+local function testCatcherOdds(cid)
+    local function rate(trials, chance)
+        local hits = 0
+        for _ = 1, trials do
+            if (math.random() < chance or Vocations.catchSecondChance(cid, chance)) then
+                hits = hits + 1
+            end
+        end
+        return hits / trials
+    end
+    become(cid, nil)
+    check("no second chance without the vocation", not Vocations.catchSecondChance(cid, 0.5))
+    become(cid, "catcher", 5)
+    local r = rate(200000, 0.2)
+    check("Catcher rank 5: a 20% throw catches 22% of the time", r > 0.2155 and r < 0.2245, r)
+    become(cid, "catcher", 1)
+    r = rate(200000, 0.2)
+    check("Catcher rank 1: a 20% throw catches 20.4% of the time", r > 0.1995 and r < 0.2085, r)
+end
+
+-- A real kill and throw; fresh trainers always miss (fewer than 25% of the needed tries)
+local function throwAt(cid, pos, pokemon, after)
+    local m = doCreateMonster(pokemon, pos, false)
+    if (not isMonster(m)) then
+        check("catch test: monster", false, pokemon)
+        return
+    end
+    doTargetCombatHealth(cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
+    addEvent(function()
+        local corpse = getTileItemByType(pos, ITEM_TYPE_CONTAINER)
+        if (not isPlayer(cid) or not isItem(corpse)) then
+            check("catch test: corpse", false)
+            return
+        end
+        local itemid = balls["ultra"].empty
+        local ball = doPlayerAddItem(cid, itemid, 1)
+        local count = getPlayerItemCount(cid, itemid)
+        emptyBall(cid, { uid = ball, itemid = itemid }, getThingPosition(ball), corpse, pos)
+        addEvent(function()
+            if (isPlayer(cid)) then
+                after(count - getPlayerItemCount(cid, itemid))
+            end
+        end, 6000)
+    end, 500)
+end
+
+local function countCaught(cid)
+    local n = 0
+    for _, b in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+        if (getBallPokemonName(b.uid) == "Dragonite") then
+            n = n + 1
+        end
+    end
+    return n
+end
+
+local function testCatcherThrows(cid, arena)
+    local east = { x = arena.x + 1, y = arena.y, z = arena.z }
+    local south = { x = arena.x, y = arena.y + 1, z = arena.z }
+    become(cid, "catcher", 5)
+    Vocations.PERKS.catcher.ballBack = { 1, 1, 1, 1, 1 }
+    Vocations.PERKS.catcher.catchChance = { 100, 100, 100, 100, 100 }
+    throwAt(cid, east, "Dragonite", function(lost)
+        check("Catcher: the failed ball comes back", lost == 0, lost)
+        check("Catcher: no catch before 25% of the tries, even with the bonus", countCaught(cid) == 0)
+        Vocations.PERKS.catcher.ballBack = { 0.02, 0.04, 0.06, 0.08, 0.10 }
+        Vocations.PERKS.catcher.catchChance = { 0.02, 0.04, 0.06, 0.08, 0.10 }
+        become(cid, nil)
+        throwAt(cid, south, "Dragonite", function(lost2)
+            check("regular trainer: the failed ball is lost", lost2 == 1, lost2)
+        end)
+    end)
+end
+
+local function testBreederIncubator(cid)
+    local env = sandbox(SCRIPTS .. "eggIncubator/emptyIncubator.lua")
+    local function hatchSeconds()
+        local incubator = doPlayerAddItem(cid, 14048, 1)
+        local egg = doPlayerAddItem(cid, getPokemonEggId("Pidgey"), 1)
+        local now = getCurrentTimeInSeconds()
+        env.onUse(cid, getThing(incubator), getThingPosition(incubator), getThing(egg), getThingPosition(egg))
+        local seconds = (getItemAttribute(incubator, 1000) or 0) - now
+        doRemoveItem(incubator)
+        return seconds
+    end
+    become(cid, nil)
+    local base = hatchSeconds()
+    become(cid, "breeder", 5)
+    local fast = hatchSeconds()
+    become(cid, "breeder", 1)
+    local fast1 = hatchSeconds()
+    check("incubator: 60 minutes for everyone", math.abs(base - 3600) <= 1, base)
+    check("Breeder rank 5 hatches in 45 minutes", math.abs(fast - 2700) <= 1, fast)
+    check("Breeder rank 1 hatches in 57 minutes", math.abs(fast1 - 3420) <= 1, fast1)
+end
+
+local function testDaycare(cid)
+    local said = {}
+    local callback
+    local handler = {
+        setCallback = function(_, _, fn) callback = fn end,
+        addModule = function() end,
+        isFocused = function() return true end,
+    }
+    local env = sandbox("data/npc/scripts/daycareFemale.lua", {
+        KeywordHandler = { new = function() return {} end },
+        NpcHandler = { new = function() return handler end },
+        NpcSystem = { parseParameters = function() end },
+        FocusModule = { new = function() return {} end },
+        selfSay = function(text) said[#said + 1] = text end,
+    }, { "data/npc/lib/npc.lua" })
+    local function talk(text)
+        said = {}
+        callback(cid, TALKTYPE_SAY, text)
+        return table.concat(said, " ")
+    end
+    local guid = getPlayerGUID(cid)
+    local eggId = getPokemonEggId("Pidgey")
+    db.executeQuery("DELETE FROM daycare_female WHERE player_id = " .. guid)
+    db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
+    db.executeQuery("INSERT INTO daycare_male (player_id, date, max_training_minutes, pokemon_name, pokemon_level) VALUES (" ..
+        guid .. ", " .. (os.time() - 3 * 86400) .. ", 2880, 'Pidgey', 30)")
+
+    -- One daycare visit: leave a female Pidgey, two days of training, then take it out
+    local function visit(name, daysSinceEgg, statusCheck)
+        db.executeQuery("UPDATE players SET lasteggtime = " .. (os.time() - daysSinceEgg * 86400 - 60) .. " WHERE id = " .. guid)
+        local ball = newBall(cid, "Pidgey", 30, POKEMON_SEX_FEMALE)
+        doPlayerAddMoney(cid, 100)
+        talk("leave")
+        talk("pidgey")
+        talk("1440")
+        local left = talk("yes")
+        if (not left:find("will be fine here")) then
+            check(name .. ": leave the Pokemon", false, left)
+            return nil
+        end
+        db.executeQuery("UPDATE daycare_female SET date = date - 2 * 86400 WHERE player_id = " .. guid)
+        if (statusCheck) then
+            statusCheck(talk("status"))
+        end
+        doPlayerAddMoney(cid, 5000)
+        local eggs = getPlayerItemCount(cid, eggId)
+        talk("withdraw")
+        local out = talk("yes")
+        for _, b in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+            if (getBallPokemonName(b.uid) == "Pidgey") then
+                doRemoveItem(b.uid)
+            end
+        end
+        local got = getPlayerItemCount(cid, eggId) - eggs
+        doPlayerRemoveItem(cid, eggId, got)
+        if (not out:find("Thank you for using our services")) then
+            check(name .. ": withdraw", false, out)
+        end
+        return got
+    end
+
+    doPlayerAddPremiumDays(cid, 30)
+    become(cid, nil)
+    check("daycare: no egg in the first 7 days", visit("day 3", 3, function(status)
+        check("daycare: status explains the wait", status:find("on day 14 it is certain") ~= nil, status)
+    end) == 0)
+    check("daycare: the egg is certain on day 14", visit("day 14", 14) == 1)
+    become(cid, "breeder", 3)
+    withPerk("breeder", "earlyEgg", 1, function()
+        withPerk("breeder", "secondEgg", 0, function()
+            check("daycare: Breeder's early egg roll (forced to 100%) gives an egg on day 8", visit("day 8", 8, function(status)
+                check("daycare: status shows the day of the wait", status:find("day 8 of the wait") ~= nil, status)
+            end) == 1)
+        end)
+        withPerk("breeder", "secondEgg", 1, function()
+            check("daycare: Breeder's second egg (forced to 100%)", visit("second egg", 14) == 2)
+        end)
+    end)
+    withPerk("breeder", "earlyEgg", 0, function()
+        check("daycare: early rolls (forced to 0%) give no egg on day 10", visit("day 10", 10) == 0)
+        check("daycare: rolls are remembered up to today",
+            getPlayerStorageValue(cid, playersStorages.eggRollDay) == 10, getPlayerStorageValue(cid, playersStorages.eggRollDay))
+    end)
+    db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
+    db.executeQuery("UPDATE players SET lasteggtime = 0 WHERE id = " .. guid)
+end
+
+-- The radar's eight directions, worked out independently of Vocations
+local function compass(from, to)
+    local dx, dy = to.x - from.x, to.y - from.y
+    local ns = (dy < 0 and math.abs(dy) * 2.414 >= math.abs(dx)) and "north" or
+        ((dy > 0 and math.abs(dy) * 2.414 >= math.abs(dx)) and "south" or "")
+    local ew = (dx > 0 and math.abs(dx) * 2.414 >= math.abs(dy)) and "east" or
+        ((dx < 0 and math.abs(dx) * 2.414 >= math.abs(dy)) and "west" or "")
+    return (ns ~= "" and ew ~= "") and (ns .. "-" .. ew) or (ns .. ew)
+end
+
+local function testRanger(cid, arena)
+    local made = {}
+    -- On the first free tile within 6 tiles of the wanted offset (the checks use where it landed)
+    local function spawnAt(name, dx, dy)
+        for radius = 0, 6 do
+            for ox = -radius, radius do
+                for oy = -radius, radius do
+                    local p = { x = arena.x + dx + ox, y = arena.y + dy + oy, z = arena.z }
+                    if ((math.abs(ox) == radius or math.abs(oy) == radius) and (p.x ~= arena.x or p.y ~= arena.y)
+                            and isFree(cid, p)) then
+                        local m = doCreateMonster(name, p, false)
+                        if (isMonster(m)) then
+                            made[#made + 1] = m
+                            return m
+                        end
+                    end
+                end
+            end
+        end
+    end
+    local function spawn(name, ...)
+        local offsets = { ... }
+        for i = 1, #offsets, 2 do
+            local m = spawnAt(name, offsets[i], offsets[i + 1])
+            if (m) then
+                return m
+            end
+        end
+        check("radar test: room for " .. name, false)
+    end
+    local function where(m)
+        local from = getCreaturePosition(cid)
+        local to = getCreaturePosition(m)
+        local distance = getDistanceBetween(from, to)
+        return compass(from, to), distance, distance <= 30 and "near" or (distance <= 100 and "far" or "very far")
+    end
+    become(cid, "ranger", 5)
+    local before = Vocations.scan(cid, 30)
+    local pidgey = spawn("Pidgey", 6, 0)
+    local shiny = spawn("Shiny Rattata", 0, 8)
+    local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0)
+    if (not (pidgey and shiny and articuno)) then
+        return
+    end
+    local found = Vocations.scan(cid, 30)
+    check("radar finds the regular Pokemon", #found.regular == #before.regular + 1, #found.regular)
+    check("radar sorts shinies apart", #found.shiny == #before.shiny + 1)
+    check("radar sorts legendaries apart", #found.legendary == #before.legendary + 1)
+    local fire = Vocations.scan(cid, 30, ELEMENT_FIRE)
+    check("radar type filter", #fire.regular <= #before.regular)
+    local entry
+    for _, e in ipairs(found.regular) do
+        if (e.name == "Pidgey" and isCreature(pidgey) and e.distance == getDistanceBetween(getCreaturePosition(cid), getCreaturePosition(pidgey))) then
+            entry = e
+        end
+    end
+    check("radar gives the direction", entry ~= nil and entry.direction == (where(pidgey)), entry and entry.direction)
+    local near = Vocations.scan(cid, 3)
+    check("radar range limit", #near.regular < #found.regular)
+
+    become(cid, "ranger", 1)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    local text = captureMessages(function() Vocations.radar(cid, "") end)
+    check("rank 1 radar counts Pokemon", text:find("wild Pokemon within 30 tiles") ~= nil, text)
+    check("rank 1 radar hides the shiny and the legendary", not text:find("shiny") and not text:find("Articuno"))
+    check("radar cooldown", not Vocations.radar(cid, ""))
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    check("rank 1 can't filter by type", not Vocations.radar(cid, "normal"))
+
+    become(cid, "ranger", 3)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    text = captureMessages(function() Vocations.radar(cid, "") end)
+    local pidgeyDirection, pidgeyDistance = where(pidgey)
+    check("rank 3 radar names species and direction",
+        text:find("Pidgey %(" .. pidgeyDirection .. ", " .. pidgeyDistance .. " tiles%)") ~= nil, text)
+    check("rank 3 radar still hides the shiny", not text:find("shiny Rattata"))
+
+    become(cid, "ranger", 4)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    text = captureMessages(function() Vocations.radar(cid, "flying") end)
+    check("radar type filter keeps Pidgey (Flying)", text:find("Pidgey") ~= nil, text)
+    check("radar type filter drops the shiny Rattata (Normal)", not text:find("Rattata"), text)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    text = captureMessages(function() Vocations.radar(cid, "") end)
+    local shinyDirection, _, shinyBand = where(shiny)
+    check("rank 4 radar finds the shiny", text:find("shiny Rattata, " .. shinyBand .. " to the " .. shinyDirection, 1, true) ~= nil, text)
+    check("rank 4 radar hides the legendary", not text:find("Articuno"))
+
+    become(cid, "ranger", 5)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    setPlayerStorageValue(cid, playersStorages.vocationLegendaryAt, 0)
+    text = captureMessages(function() Vocations.radar(cid, "") end)
+    local legendDirection, _, legendBand = where(articuno)
+    check("rank 5 radar finds the legendary",
+        text:find("something rare, " .. legendBand .. " to the " .. legendDirection .. ": Articuno", 1, true) ~= nil, text)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    text = captureMessages(function() Vocations.radar(cid, "") end)
+    check("legendary scans have their own cooldown", not text:find("Articuno"), text)
+
+    for _, m in ipairs(made) do
+        if (isCreature(m)) then
+            doRemoveCreature(m)
+        end
+    end
+end
+
+local function testAngler(cid)
+    become(cid, nil)
+    local n, total = 20000, 0
+    for _ = 1, n do total = total + Fishing.getSkillTries(cid) end
+    check("regular trainer: 1 fishing try per hook", total == n)
+    become(cid, "angler", 1)
+    total = 0
+    for _ = 1, n do total = total + Fishing.getSkillTries(cid) end
+    check("Angler rank 1: +20% fishing tries", total / n > 1.18 and total / n < 1.22, total / n)
+    become(cid, "angler", 5)
+    total = 0
+    for _ = 1, n do total = total + Fishing.getSkillTries(cid) end
+    check("Angler rank 5: double fishing tries", total == 2 * n, total / n)
+
+    become(cid, "angler", 3)
+    check("fishing map needs rank 4", not Fishing.sendGuide(cid))
+    become(cid, "angler", 4)
+    local text = captureMessages(function() Fishing.sendGuide(cid) end)
+    check("fishing map at rank 4", text:find("Kanto: %*0: Magikarp") ~= nil and text:find("Hoenn:") ~= nil, text)
+end
+
+-- A water tile with a free, non-protection tile next to it
+local function findWater(cid, origin)
+    for radius = 1, 80 do
+        for dx = -radius, radius do
+            for dy = -radius, radius do
+                if (math.abs(dx) == radius or math.abs(dy) == radius) then
+                    local water = { x = origin.x + dx, y = origin.y + dy, z = origin.z, stackpos = 0 }
+                    local ground = getTileThingByPos(water)
+                    if (ground and isInArray(WATER_IDS, ground.itemid) and getTileInfo(water).things <= 1) then
+                        for _, d in ipairs({ { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } }) do
+                            local stand = { x = water.x + d[1], y = water.y + d[2], z = water.z }
+                            if (isFree(cid, stand)) then
+                                return water, stand, ground
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Casts an Old Rod: returns the messages and the wait before the first bite the fishing loop got
+local function cast(cid, water, ground)
+    local rod = doPlayerAddItem(cid, 12292, 1)
+    local ticks
+    local realAddEvent = addEvent
+    addEvent = function(fn, delay, ...)
+        local args = { ... }
+        if (args[1] == cid and args[6] ~= nil) then
+            ticks = args[6]
+            return 0
+        end
+        return realAddEvent(fn, delay, ...)
+    end
+    local text = captureMessages(function()
+        Fishing.onFishing(cid, getThing(rod), getThingPosition(rod), ground, water)
+    end)
+    addEvent = realAddEvent
+    setFishingStatus(cid, false)
+    doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.FISHING)
+    local float = getTileItemById(water, 13181)
+    if (isItem(float)) then
+        doRemoveItem(float.uid)
+    end
+    doRemoveItem(rod)
+    return text, ticks
+end
+
+local function testAnglerSpot(cid, arena)
+    local water, stand, ground = findWater(cid, arena)
+    for town = 1, 20 do
+        if (water) then
+            break
+        end
+        local temple = getTownTemplePosition(town)
+        if (temple and temple.x and temple.x > 0) then
+            water, stand, ground = findWater(cid, temple)
+        end
+    end
+    if (not water) then
+        check("Angler spot: water near the test spot", false)
+        return
+    end
+    doTeleportThing(cid, stand, false)
+    become(cid, nil)
+    local text, base = cast(cid, water, ground)
+    check("regular trainer fishes without the bite list", text:find("You are fishing now") ~= nil and not text:find("can bite here"), text)
+    become(cid, "angler", 2)
+    text = cast(cid, water, ground)
+    check("Angler rank 2 sees what can bite", text:find("Angler: can bite here: Magikarp") ~= nil, text)
+    become(cid, "angler", 3)
+    local _, fast = cast(cid, water, ground)
+    check("Angler rank 3 gets the first bite sooner", base and fast and fast < base, tostring(base) .. " -> " .. tostring(fast))
+    doTeleportThing(cid, arena, false)
+end
+
+local function testMedic(cid, friend, arena)
+    local env = sandbox(SCRIPTS .. "potions/healthPotions.lua")
+    local pos = { x = arena.x + 2, y = arena.y, z = arena.z }
+    doTeleportThing(friend, { x = arena.x, y = arena.y + 1, z = arena.z }, false)
+    local m = doCreateMonster("Snorlax", pos, false)
+    if (not isMonster(m)) then
+        check("Medic: test Pokemon", false)
+        return
+    end
+    doConvinceCreature(friend, m)
+    local function heal()
+        doRemoveCondition(m, CONDITION_REGENERATION, CONDITION_SUBID.REGENERATION.HEALTH_POTION)
+        setIsPokemonUsingHealthPotion(m, false)
+        doCreatureAddHealth(m, -(getCreatureHealth(m) - 1))
+        local potion = doPlayerAddItem(cid, 12245, 1)
+        local where = getCreaturePosition(m)
+        env.onUse(cid, getThing(potion), getThingPosition(potion), { uid = m, itemid = 0 }, where)
+        doPlayerRemoveItem(cid, 12245, getPlayerItemCount(cid, 12245))
+        return getCreatureHealth(m) - 1
+    end
+    check("Medic test Pokemon belongs to the other trainer", getCreatureMaster(m) == friend)
+    become(cid, nil)
+    check("a regular trainer can't heal another trainer's Pokemon", heal() == 0)
+    become(cid, "medic", 5)
+    local base = math.floor(6000 / 12)
+    local healed = heal()
+    check("Medic heals another trainer's Pokemon, +15% at rank 5", healed == math.min(math.floor(base * 1.15), getCreatureMaxHealth(m) - 1),
+        healed .. " of max " .. getCreatureMaxHealth(m))
+    become(cid, "medic", 1)
+    healed = heal()
+    check("Medic rank 1 heals +3%", healed == math.min(math.floor(base * 1.03), getCreatureMaxHealth(m) - 1), healed)
+    doRemoveCreature(m)
+end
+
+function onSay(cid, words, param, channel)
+    tester, passed, failed = cid, 0, 0
+    local friend = getPlayerByName(param ~= "" and param or "-")
+    if (getPlayerLevel(cid) < 65) then
+        doPlayerAddLevel(cid, 65 - getPlayerLevel(cid), false)
+    end
+    local arena = findArena(cid)
+    if (not arena) then
+        say("FAIL no free tiles")
+        return true
+    end
+    doTeleportThing(cid, arena, false)
+    for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+        doRemoveItem(ball.uid)
+    end
+
+    local tests = {
+        { "ranks", testRanks }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "ranger", function() testRanger(cid, arena) end },
+        { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
+        { "medic", function()
+            if (isPlayer(friend)) then
+                testMedic(cid, friend, arena)
+            else
+                check("Medic: second trainer online", false, param)
+            end
+        end },
+    }
+    for _, test in ipairs(tests) do
+        local ok, err = pcall(test[2], cid)
+        if (not ok) then
+            check(test[1] .. " ran without errors", false, err)
+        end
+    end
+    become(cid, nil)
+    testCatcherThrows(cid, arena)
+    addEvent(function()
+        if (isPlayer(cid)) then
+            become(cid, nil)
+            say(string.format("done %d passed, %d failed", passed, failed))
+        end
+    end, 15000)
+    return true
+end

@@ -58,7 +58,7 @@ echo "Bag Trainer gets the old item layout (bag in the hidden slot 3, no duel ic
 $db -upokeverse -ppokeverse pokeverse -e "DELETE i FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'Bag Trainer' AND i.pid = 3;
   UPDATE player_items i JOIN players p ON p.id = i.player_id SET i.pid = 3 WHERE p.name = 'Bag Trainer' AND i.pid = 10;"
 # Characters used only by the Discord bridge test (each logs in once per run).
-$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1);"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1);"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -76,6 +76,10 @@ discordBridgeLinkCodeLifetime = 8
 LUA
 cp "$root/scripts/testing/discord-bridge-test-talkaction.lua" "$work/server/data/talkactions/scripts/bridgetest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value="bridgetest.lua"/>\n</talkactions>#' \
+  "$work/server/data/talkactions/talkactions.xml"
+# /vocationtest (scripts/testing/) drives every vocation perk through the real game code.
+cp "$root/scripts/testing/vocation-test-talkaction.lua" "$work/server/data/talkactions/scripts/vocationtest.lua"
+sed -i 's#</talkactions>#\t<talkaction words="/vocationtest" event="script" value="vocationtest.lua"/>\n</talkactions>#' \
   "$work/server/data/talkactions/talkactions.xml"
 (cd "$work/server" && exec "./$(basename "$binary")" >"$work/server.log" 2>&1) &
 server_pid=$!
@@ -102,6 +106,10 @@ python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --catch
   --listener "bridgetrainer:secret:Bridge Trainer" --speaker "bridgestaff:secret:Bridge Staff" --staff-character "Bridge Staff" \
   --link-test --linker "bridgelink:secret:Link Alpha:Link Beta" --code-lifetime 8
 lua5.1 "$root/scripts/test-lua-json.lua"
+sleep 3
+
+step "Vocation tests"
+python3 "$root/scripts/vocation-test.py" --tester "voctester:secret:Vocation Tester" --friend "vocfriend:secret:Vocation Friend"
 sleep 3
 
 step "Database checks"
