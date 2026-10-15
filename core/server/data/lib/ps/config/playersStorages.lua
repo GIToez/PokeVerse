@@ -95,5 +95,11 @@ playersStorages = {
     pokepediaMigrated = base + 92, -- 1 once the species caught before the Pokedex knowledge levels were counted
     vocation = base + 93, -- the chosen vocation's id in Vocations.LIST, -1 for a regular Trainer
     vocationWindow = base + 94, -- 1 while the vocation window is open and may choose (Vocations)
+    vocationRank = base + 95, -- 1-5
+    vocationRadarAt = base + 96, -- os.time() when the Ranger radar can scan again
+    vocationLegendaryAt = base + 97, -- the same for legendaries and event Pokemon
+    eggCycleStart = base + 98, -- os.time() the wait for the first daycare egg started (later eggs count from lasteggtime)
+    eggRollCycle = base + 99, -- the egg wait the daily early egg rolls belong to (its start time)
+    eggRollDay = base + 100, -- the last day of that wait that had its early egg roll
     -- tournamentWeekWinnerStorage = base + 65
 }
