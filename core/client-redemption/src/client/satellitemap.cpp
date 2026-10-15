@@ -29,6 +29,7 @@
 #include <framework/graphics/image.h>
 #include <framework/graphics/texture.h>
 
+#include <algorithm>
 #include <lzma.h>
 
 SatelliteMap g_satelliteMap;
@@ -55,6 +56,7 @@ int SatelliteMap::loadFloors(const std::string& dir, const int floorMin, const i
         m_index.clear();
         m_mmChunks.clear();
         m_mmIndex.clear();
+        m_loadedTextures = 0;
     }
 
     // Build the file list exactly once per directory — reused on every subsequent call.
@@ -110,7 +112,7 @@ void SatelliteMap::buildFileCache(const std::string& dir)
         if (p != PREFIX_SATELLITE && p != PREFIX_MINIMAP)
             continue;
 
-        if (lod != 16 && lod != 32 && lod != 64)
+        if (lod != 8 && lod != 16 && lod != 32 && lod != 64)
             continue;
 
         if (floor < 0 || floor > 15)
@@ -130,12 +132,14 @@ void SatelliteMap::clear()
     m_mmIndex.clear();
     m_fileCache.clear();
     m_fileCacheDir.clear();
+    m_loadedTextures = 0;
 }
 
 void SatelliteMap::draw(const Rect& screenRect, const Position& cameraPos, float scale, const Color& color, float floorSeparatorOpacity)
 {
     if (screenRect.isEmpty() || m_chunks.empty())
         return;
+    ++m_drawTick;
 
     const auto oldClipRect = g_drawPool.getClipRect();
     g_drawPool.setClipRect(screenRect);
@@ -154,7 +158,7 @@ void SatelliteMap::draw(const Rect& screenRect, const Position& cameraPos, float
     // Render the best LOD for the current scale plus one coarser for smooth transitions.
     const int targetFloor = cameraPos.z;
     const int bestLod    = pickLod(scale);
-    const int coarserLod = (bestLod == 16) ? 32 : 64;
+    const int coarserLod = coarserThan(bestLod);
 
     for (int floor = SURFACE_FLOOR; floor >= targetFloor; --floor) {
         // Target floor is always fully opaque.
@@ -214,7 +218,9 @@ void SatelliteMap::draw(const Rect& screenRect, const Position& cameraPos, float
                         g_logger.warning("SatelliteMap: failed to load chunk '{}'", info.path);
                         continue;
                     }
+                    ++m_loadedTextures;
                 }
+                info.lastDraw = m_drawTick;
 
                 g_drawPool.addTexturedRect(dest, info.texture, Rect(0, 0, 512, 512));
             }
@@ -224,12 +230,14 @@ void SatelliteMap::draw(const Rect& screenRect, const Position& cameraPos, float
             g_drawPool.resetOpacity();
     }
     g_drawPool.setClipRect(oldClipRect);
+    releaseUnusedTextures();
 }
 
 void SatelliteMap::drawStaticMinimap(const Rect& screenRect, const Position& cameraPos, float scale, const Color& color)
 {
     if (screenRect.isEmpty() || m_mmChunks.empty())
         return;
+    ++m_drawTick;
 
     const auto oldClipRect = g_drawPool.getClipRect();
     g_drawPool.setClipRect(screenRect);
@@ -245,7 +253,7 @@ void SatelliteMap::drawStaticMinimap(const Rect& screenRect, const Position& cam
 
     // Single-floor rendering — coarser LOD first so finer detail paints on top.
     const int bestLod    = pickLod(scale);
-    const int coarserLod = (bestLod == 16) ? 32 : 64;
+    const int coarserLod = coarserThan(bestLod);
     int seenLod = -1;
     for (const int lod : { coarserLod, bestLod }) {
         if (lod == seenLod) continue;
@@ -286,19 +294,22 @@ void SatelliteMap::drawStaticMinimap(const Rect& screenRect, const Position& cam
                     g_logger.warning("SatelliteMap: failed to load minimap chunk '{}'", info.path);
                     continue;
                 }
+                ++m_loadedTextures;
             }
+            info.lastDraw = m_drawTick;
 
             g_drawPool.addTexturedRect(dest, info.texture, Rect(0, 0, 512, 512));
         }
     }
 
     g_drawPool.setClipRect(oldClipRect);
+    releaseUnusedTextures();
 }
 
 bool SatelliteMap::hasChunksForFloor(const int floor) const
 {
     // Check any LOD
-    for (const int lod : { 16, 32, 64 }) {
+    for (const int lod : { 8, 16, 32, 64 }) {
         if (m_index.count(floor * 100 + lod))
             return true;
     }
@@ -320,7 +331,7 @@ bool SatelliteMap::hasChunksForView(const int floor) const
 
 bool SatelliteMap::hasMinimapChunksForFloor(const int floor) const
 {
-    for (const int lod : { 16, 32, 64 }) {
+    for (const int lod : { 8, 16, 32, 64 }) {
         if (m_mmIndex.count(floor * 100 + lod))
             return true;
     }
@@ -331,15 +342,45 @@ bool SatelliteMap::hasMinimapChunksForFloor(const int floor) const
 // Private helpers
 // ---------------------------------------------------------------------------
 
+int SatelliteMap::coarserThan(const int lod)
+{
+    return lod >= 64 ? 64 : lod * 2;
+}
+
+void SatelliteMap::releaseUnusedTextures()
+{
+    if (m_loadedTextures <= MAX_LOADED_TEXTURES)
+        return;
+
+    // Least recently drawn first; the chunks of the current frame are kept.
+    std::vector<ChunkInfo*> loaded;
+    loaded.reserve(m_loadedTextures);
+    for (auto* chunks : { &m_chunks, &m_mmChunks }) {
+        for (auto& [key, info] : *chunks) {
+            if (info.texture && info.lastDraw != m_drawTick)
+                loaded.push_back(&info);
+        }
+    }
+    std::sort(loaded.begin(), loaded.end(), [](const ChunkInfo* a, const ChunkInfo* b) { return a->lastDraw < b->lastDraw; });
+    for (auto* info : loaded) {
+        if (m_loadedTextures <= MAX_LOADED_TEXTURES / 2)
+            break;
+        info->texture = nullptr;
+        --m_loadedTextures;
+    }
+}
+
 int SatelliteMap::pickLod(const float scale)
 {
     // scale = screen pixels per tile; tilesPerPixel = 1/scale.
     // Native resolution of each LOD: lod/32 tiles per image pixel.
-    //   LOD-16: 0.5 tiles/px  (finest detail, 256-tile chunks)
+    //   LOD-8:  0.25 tiles/px (finest detail, 128-tile chunks)
+    //   LOD-16: 0.5 tiles/px  (256-tile chunks)
     //   LOD-32: 1.0 tiles/px  (medium,        512-tile chunks)
     //   LOD-64: 2.0 tiles/px  (coarsest,      1024-tile chunks)
     // Choose the finest LOD whose native resolution is not finer than the screen.
     const float tilesPerPixel = 1.f / scale;
+    if (tilesPerPixel <= 0.25f) return 8;
     if (tilesPerPixel <= 0.5f) return 16;
     if (tilesPerPixel <= 1.0f) return 32;
     return 64;
