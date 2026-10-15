@@ -22,6 +22,15 @@ so. Items marked **To decide** need an answer before work starts.
 - [Android](#17-android-touch-controls): a tap works as smart left click.
 - Not in this plan before: the Tasks window redesign, gym leader duels with banners, the
   Redemption login and character screens.
+- The [in-game wiki](#9-in-game-wiki-and-tutorial): a Wiki tab in the Pokepedia, checked
+  against the code, in place of the Wiki Chat channel.
+- The Pokepedia's [real world map](#real-world-map-built), drawn from the game's sprites and
+  updated by each client release, with a list of regions to keep hidden until they launch.
+- Houses tab pictures of each house and floor, towns as groups in the Houses and Places lists,
+  and a filter by kind of place.
+- Pokemon [minimap marks](#minimap-marks-built) in place of Tibia's flags.
+- The new top menu bar (grouped icons, Store button) and one hotkey system for items and moves.
+- [Slot machine and world boss fixes](#11-bug-fixes-and-small-ideas).
 
 **Next, in order:**
 
@@ -42,6 +51,10 @@ and the Android phone UI pass.
 Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
 players install the APK for real), a phone UI pass, and a security check of the live
 server (open ports, SSH, firewall).
+
+Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
+how players get Soul Coins, and putting Johto in `scripts/mapper/hidden-regions.txt` while
+it is built, so the map doesn't show it before launch.
 
 ## 1. New depot
 
@@ -306,8 +319,8 @@ packets. The Cyclopedia module itself stays out of the client (it unloads below 
   drops, held items, quest and event items) shows as "???" until the player has had one in
   the bag or depot or looked at one, with a count per category ("Held items 4/32").
   Discoveries are saved on the server per character.
-- **Later, Help:** hints, controls and "what to do next", from the in-game wiki and the
-  tutorial ([section 9](#9-in-game-wiki-and-tutorial)), pointing at routes on the map.
+- **Wiki (built):** see [section 9](#9-in-game-wiki-and-tutorial).
+- **Later, Help:** "what to do next" hints from the tutorial, pointing at routes on the map.
 
 **Agreed keys:** M opens the map tab, P opens the Pokepedia.
 
@@ -373,7 +386,7 @@ Phase F  Pokédex knowledge levels       → spawn areas need the map (B) and ro
 Later    Help tab (hints, tutorials)
 ```
 
-Phases A to F are built; the Help tab is still to come.
+Phases A to F are built, and so is a Wiki tab; the Help hints are still to come.
 
 ### Decided while building
 
@@ -386,6 +399,33 @@ Phases A to F are built; the Help tab is still to come.
    the stairs.
 5. **Range limit:** routes walk one leg at a time and try shorter steps toward a stop when no
    path reaches it.
+
+### Real world map (built)
+
+The Map tab shows the real map, drawn from the game's sprites, instead of the minimap; a button
+under the zoom switches back to the minimap. The HUD minimap is unchanged.
+
+- `scripts/mapper/render_pokepedia.py` draws every floor at 4 pixels per tile (and coarser
+  copies for zooming out) in the format of Redemption's satellite map (`satellitemap.cpp`),
+  which draws only what is on screen. The client got a 4 pixels per tile level and keeps at
+  most 64 chunks in memory (both need the next client binary).
+- The client release renders it and caches it; after a map change only the pieces that
+  changed are drawn again (about 12 minutes for the whole map on 4 cores, a few minutes
+  after a small change). About 135 MB with the house pictures, downloaded once.
+- **Hidden regions:** a region listed in `scripts/mapper/hidden-regions.txt` is left out of
+  the map and the house pictures until its line is removed and a client is published.
+- `scripts/render-map.sh [client folder]` renders it locally, hidden regions included, to
+  check a region while it is built.
+- Still to do: places where the map has no tiles show the minimap's sea colour on the ground
+  floor (a few inland spots look like lakes); black is a small change if wanted.
+
+### Minimap marks (built)
+
+The guide marks use Pokemon icons drawn from the game's item sprites
+(`scripts/mapper/make_mark_icons.py`) instead of Tibia's flags: a Poke Ball for Pokemon
+Centers, a Potion for marts, each gym's badge, a Pidgeot for Travel Fly, and so on. The
+icon comes from the words in the mark's name, so new marks (Johto) get one on their own; a
+gym in a new town needs its badge added to the script and to `pokeverse.lua`.
 
 ## 3. NPC dialogue, quests and tasks
 
@@ -688,11 +728,39 @@ Replaces the player marketplace. Built on the existing market module (the legacy
 
 ## 9. In-game wiki and tutorial
 
-- Update the in-game wiki (`data/lib/ps/config/002-wikiChat.lua`) and the guide and
-  tutorial windows (`game_guide`, `game_tutorial`).
-- The in-game wiki and the website come from the same game data, so they always agree.
+**Wiki built:** the Pokepedia's Wiki tab (`game_pokepedia/wiki_data.lua`, 76 topics in 7
+categories, with search, pictures, tables and links between topics). Every topic was checked
+against the code: most of the old Wiki Chat text was out of date (controls, berries, banks,
+houses, guilds, tournaments, the Safari Zone, TMs, the daycare) and is corrected. The Wiki Chat
+channel is switched off (`channels.xml`), and the texts that pointed to it now say "the Wiki
+tab of the Pokepedia (press P)".
+
+Still to do:
+
+- The guide and tutorial windows (`game_guide`, `game_tutorial`).
+- The wiki and the website from the same data, so they always agree (the wiki is a Lua table
+  in the client today).
 - The tutorial uses the new dialogue window and the waypoint trails (for example "follow
   the trail to the Pokémon Center").
+- Keep the wiki up to date when systems change; the topics say which files they come from.
+
+### Found while checking the wiki
+
+Not fixed yet:
+
+- **Soul Coins:** nothing in the code says how players get them (the Store says "coming
+  soon"), and the Soul Coin and bank NPCs stand only in the Orange Islands and the Trading
+  Area, none in Kanto or Hoenn. About 17 Soul Coin and bank NPC files are never placed.
+- **The level-up banner says the daycare opens at 85;** the daycare NPCs check 20.
+- **Vital mastery:** its "longer buffs" perk makes buffs shorter (13 s instead of 20 s).
+  The masteries go with the [vocations](#6-vocations), so it may not need a fix.
+- **Surprise boxes** only spawn in the west of the map (Hoenn), never in Kanto or the Orange
+  Islands. Check whether players can reach Hoenn at all: the Mauville daycare and casino and
+  the Lilycove TM NPC are there too.
+- **Sandboards** work in the code but can't be obtained.
+- The per-tournament trophy is switched off; only the weekly trophy is given.
+- Not checked: where the slot machines are, what Rocket Grunts give, and whether the Quest
+  Log lists PokeVerse quests.
 
 ## 10. Factions
 
@@ -727,6 +795,11 @@ From the `#notes` channel:
   not finished in time fails on its own and is removed. **To decide:** how long (for
   example by size), and whether a failed hunt costs anything.
 
+- **Slot machine pairs (fixed):** two matching symbols paid by the reel's position, so every
+  pair paid 0 coins; they now pay a third of the symbol's payout (Great and Ultra Ball 1,
+  Master Ball 3, Amulet Coin 10). A $100 spin returns 0.81 coins on average, not 0.12.
+- **World boss repeats (fixed):** a typo in the storage key meant the server never knew which
+  boss spawned last, so the same one could come twice in a row.
 - **Fishing tasks don't count up (fixed):** the server runs actions, creature events and
   talk commands in separate Lua environments, and each kept its own copy of the task
   board. The Tasks window picks tasks through a talk command, so fishing, wild defeats and
@@ -785,9 +858,8 @@ are changed to the new level (agreed); the rest are kept.
 | Gym leaders | none (`NpcBattle:setRequiredLevel` is never used) | `lib/ps/systems/001-npcBattle.lua` | keep |
 
 Not requirements, but level based: the tutorial sends players on from level 10
-(`activationTile.lua`), and the wiki channel opens at login below level 30 (`login.lua`).
-
-The house and guild texts in the in-game wiki (`002-wikiChat.lua`) say the new levels too.
+(`activationTile.lua`). The Wiki Chat channel that opened at login below level 30 is gone;
+the Pokepedia's Wiki tab has the new levels.
 
 **Unlock ladder (agreed)**, so something new opens every few levels instead of everything
 at 20:
