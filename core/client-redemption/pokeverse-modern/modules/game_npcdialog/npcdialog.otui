@@ -1,0 +1,181 @@
+NpcWordButton < UIButton
+  height: 22
+  font: verdana-11px-antialised
+  color: #e6eefc
+  text-offset: 0 1
+  image-source: /modules/game_npcdialog/images/word
+  image-border: 7
+  padding: 0 12
+
+  $hover:
+    image-source: /modules/game_npcdialog/images/word-hover
+    color: #ffffff
+
+  $pressed:
+    text-offset: 1 2
+
+NpcYesButton < NpcWordButton
+  height: 26
+  width: 120
+  font: Verdana Bold-11px
+  color: #ffffff
+  image-source: /modules/game_npcdialog/images/yes
+  image-border: 8
+
+  $hover:
+    image-source: /modules/game_npcdialog/images/yes-hover
+    color: #ffffff
+
+NpcNoButton < NpcYesButton
+  color: #ffd5da
+  image-source: /modules/game_npcdialog/images/no
+
+  $hover:
+    image-source: /modules/game_npcdialog/images/no-hover
+    color: #ffffff
+
+NpcGoodbyeButton < NpcWordButton
+  width: 96
+  color: #c9d4e6
+  image-source: /modules/game_npcdialog/images/goodbye
+
+  $hover:
+    image-source: /modules/game_npcdialog/images/goodbye-hover
+    color: #ffffff
+
+NpcDialog < UIWidget
+  size: 660 156
+  image-source: /modules/game_npcdialog/images/panel
+  image-border: 10
+  focusable: false
+  anchors.top: parent.top
+  anchors.left: parent.left
+
+  UIWidget
+    id: portrait
+    size: 112 112
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 12 0 0 14
+    image-source: /modules/game_npcdialog/images/disc
+    image-smooth: true
+    phantom: true
+
+    UICreature
+      id: creature
+      size: 96 96
+      anchors.centerIn: parent
+      phantom: true
+
+    UIWidget
+      id: picture
+      anchors.fill: parent
+      image-smooth: true
+      phantom: true
+      visible: false
+
+    UIWidget
+      id: ring
+      anchors.fill: parent
+      image-source: /modules/game_npcdialog/images/ring
+      image-smooth: true
+      phantom: true
+
+  Label
+    id: hint
+    anchors.top: portrait.bottom
+    anchors.horizontalCenter: portrait.horizontalCenter
+    margin-top: 6
+    font: verdana-11px-antialised
+    color: #8e9db6
+    !text: tr('Click a word or type')
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: name
+    anchors.top: parent.top
+    anchors.left: portrait.right
+    margin: 7 0 0 18
+    font: sans-bold-16px
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: role
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 10
+    font: Verdana Bold-11px
+    color: #f0c850
+    text-auto-resize: true
+    phantom: true
+
+  UIButton
+    id: close
+    size: 16 16
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 8 10 0 0
+    image-source: /modules/game_npcdialog/images/close
+    image-border: 4
+    font: Verdana Bold-11px
+    color: #dfe7f5
+    text: x
+    text-offset: 0 -1
+    @onClick: modules.game_npcdialog.hide()
+
+    $hover:
+      image-source: /modules/game_npcdialog/images/close-hover
+
+  UIWidget
+    id: message
+    anchors.top: name.bottom
+    anchors.left: name.left
+    anchors.right: parent.right
+    margin: 5 14 0 0
+    height: 60
+    image-source: /modules/game_npcdialog/images/inset
+    image-border: 6
+    phantom: true
+
+    Label
+      id: reply
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 7 10 0 10
+      font: verdana-11px-antialised
+      color: #8f9cb3
+      text-auto-resize: true
+      phantom: true
+
+    Label
+      id: text
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 0 10 0 10
+      font: verdana-11px-antialised
+      color: #e6ecf5
+      text-wrap: true
+      text-auto-resize: true
+      phantom: true
+
+  UIWidget
+    id: words
+    anchors.top: message.bottom
+    anchors.left: message.left
+    anchors.right: goodbye.left
+    margin: 8 8 0 0
+    height: 26
+    phantom: true
+
+  NpcGoodbyeButton
+    id: goodbye
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin: 0 14 12 0
+    !text: tr('Goodbye')
+    @onClick: modules.game_npcdialog.goodbye()
