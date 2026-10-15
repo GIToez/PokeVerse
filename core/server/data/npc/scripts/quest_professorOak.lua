@@ -19,6 +19,8 @@ function onPlayerEndTrade(cid) npcHandler:onPlayerEndTrade(cid) end
 function sayStory(...) return npcHandler:sayStory(...) end
 
 local FIRST_POKEMON_STORAGE = 8506
+-- the same NPC also stands in his Pallet Town lab, where he gives his other quests
+local TUTORIAL_OAK_POSITION = { x = 5020, y = 788, z = 7 }
 --local FIRSTY_CITY_STORAGE = 8507
 
 local lastChoice = {}
@@ -142,7 +144,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         --            selfSay("Now, which city do you want to start in? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.", cid)
         --        end
 
-    elseif (getCreatureStorage(cid, 8753) == QUEST_STATUS.FINISHED) then
+    elseif (getSamePosition(getNpcPos(), TUTORIAL_OAK_POSITION) and getCreatureStorage(cid, 8753) == QUEST_STATUS.FINISHED) then
         selfSay("Now you must head to the north to find Red and complete your initial mission.", cid)
 
     else
@@ -153,7 +155,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 end)
 
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
-    if (getSamePosition(getNpcPos(), { x = 5020, y = 788, z = 7 }) and getCreatureStorage(cid, FIRST_POKEMON_STORAGE) ~= QUEST_STATUS.FINISHED) then
+    if (getSamePosition(getNpcPos(), TUTORIAL_OAK_POSITION) and getCreatureStorage(cid, FIRST_POKEMON_STORAGE) ~= QUEST_STATUS.FINISHED) then
         selfSay("You can choose a {Charmander} or a {Squirtle} or a {Bulbasaur}. What is your choice?", cid)
         npcHandler:addFocus(cid)
         return false

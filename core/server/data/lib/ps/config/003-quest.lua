@@ -218,7 +218,9 @@ QUESTS_CONFIG = {
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 23950, 1 },
             canStart = function(cid)
-                return getPlayerLevel(cid) <= 20 and not getPlayerGotStarterPokemon(cid) --getCreatureStorage(cid, 8497) == QUEST_STATUS.FINISHED -- lv 20 and Tutorial Island done
+                -- up to level 20, after Professor Oak's tutorial (8753) or with a Pokemon from Professor Tommy's island
+                return getPlayerLevel(cid) <= 20 and
+                        (getCreatureStorage(cid, 8753) == QUEST_STATUS.FINISHED or not getPlayerGotStarterPokemon(cid))
             end,
             onStart = function(cid)
                 doCreatureSetStorage(cid, 8500, QUEST_STATUS.STARTED)
