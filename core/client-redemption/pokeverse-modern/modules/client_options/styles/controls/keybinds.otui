@@ -1,0 +1,364 @@
+// Key bindings page (keybins.lua): every Keybind action and item hotkey of the selected preset and
+// chat mode, grouped by category, with keys captured in place and clashes offered as swaps.
+
+KbKey < UIButton
+  height: 20
+  width: 74
+  image-source: /modules/game_hotkeys/images/key
+  image-border: 6
+  font: verdana-11px-antialised
+  color: #ffffff
+  text-offset: 0 -1
+  opacity: 1
+  $hover:
+    opacity: 0.85
+
+KbGroup < UIWidget
+  height: 24
+  phantom: true
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-left: 8
+    margin-bottom: 4
+    phantom: true
+
+  UILabel
+    id: note
+    font: verdana-11px-antialised
+    color: #7f93bb
+    text-auto-resize: true
+    anchors.left: title.right
+    anchors.verticalCenter: title.verticalCenter
+    margin-left: 8
+    phantom: true
+
+KbRow < UIWidget
+  height: 24
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 8
+  margin-bottom: 2
+  $on:
+    image-source: /modules/game_dailytasks/images/tab_hover
+
+  UIItem
+    id: item
+    size: 20 20
+    virtual: true
+    phantom: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    visible: false
+
+  UILabel
+    id: name
+    font: verdana-11px-antialised
+    color: #dce6ff
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  UILabel
+    id: how
+    font: verdana-11px-antialised
+    color: #7f93bb
+    text-auto-resize: true
+    anchors.left: name.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+
+  KbKey
+    id: secondary
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+
+  KbKey
+    id: primary
+    anchors.right: secondary.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 30
+
+KbClash < UIWidget
+  height: 34
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 8
+  image-color: #ff9a8a
+  margin-bottom: 2
+
+  UIWidget
+    id: icon
+    size: 16 16
+    image-source: /modules/game_hotkeys/images/icon_warn
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  UILabel
+    id: text
+    font: verdana-11px-antialised
+    color: #ffd2c8
+    text-auto-resize: true
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+
+  OptButton
+    id: other
+    !text: tr('Pick another')
+    height: 24
+    width: 100
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+
+  OptButton
+    id: swap
+    !text: tr('Swap keys')
+    height: 24
+    width: 100
+    icon: /modules/game_hotkeys/images/icon_swap
+    icon-align: left
+    icon-offset: 8 0
+    text-offset: 8 0
+    anchors.right: other.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+
+KbModeButton < UIButton
+  height: 24
+  width: 92
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 8
+  font: verdana-11px-antialised
+  color: #a9badb
+  icon-align: left
+  icon-offset: 10 0
+  text-offset: 10 0
+  $hover !checked:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $checked:
+    image-source: /modules/game_dailytasks/images/tab_on
+    color: #ffffff
+
+UIWidget
+  anchors.fill: parent
+  visible: false
+
+  UIWidget
+    id: presets
+    height: 26
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+    OptMuted
+      id: presetLabel
+      !text: tr('PRESET')
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    QtComboBox
+      id: list
+      width: 190
+      height: 24
+      anchors.left: presetLabel.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      mouse-scroll: false
+
+    OptIconButton
+      id: add
+      icon: /modules/game_hotkeys/images/icon_plus
+      !tooltip: tr('New preset')
+      anchors.left: list.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+
+    OptIconButton
+      id: copy
+      icon: /modules/game_hotkeys/images/icon_copy
+      !tooltip: tr('Copy this preset')
+      anchors.left: add.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 4
+
+    OptIconButton
+      id: rename
+      icon: /modules/game_hotkeys/images/icon_pen
+      !tooltip: tr('Rename this preset')
+      anchors.left: copy.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 4
+
+    OptIconButton
+      id: remove
+      icon: /modules/game_hotkeys/images/icon_trash
+      !tooltip: tr('Delete this preset')
+      anchors.left: rename.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 4
+
+    KbModeButton
+      id: off
+      !text: tr('WASD')
+      icon: /modules/game_hotkeys/images/icon_wasd
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+
+    KbModeButton
+      id: on
+      !text: tr('Typing')
+      icon: /modules/game_hotkeys/images/icon_chat
+      anchors.right: off.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 4
+
+  OptMuted
+    id: modeHint
+    !text: tr('Typing: the chat is open, so letters type. WASD: the chat is closed, so single keys work. Each mode keeps its own keys.')
+    anchors.top: presets.bottom
+    anchors.left: parent.left
+    margin-top: 8
+
+  UITextEdit
+    id: search
+    height: 28
+    anchors.top: modeHint.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    image-source: /modules/client_entergame/images/field
+    image-border: 8
+    font: verdana-11px-antialised
+    color: #e6ecff
+    placeholder-color: #7d8db0
+    selection-color: #ffffff
+    selection-background-color: #3d6fb8
+    !placeholder: tr('Search actions or keys')
+    text-align: left
+    padding: 8 10 8 32
+    change-cursor-image: false
+    $focus:
+      image-source: /modules/client_entergame/images/field_focus
+
+    UIWidget
+      size: 16 16
+      image-source: /modules/game_hotkeys/images/icon_search
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: -22
+      phantom: true
+
+  UIWidget
+    id: header
+    height: 20
+    anchors.top: search.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+
+    OptMuted
+      !text: tr('ACTION')
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+
+    OptMuted
+      id: secondTitle
+      !text: tr('SECOND KEY')
+      width: 74
+      text-auto-resize: false
+      text-align: center
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 24
+
+    OptMuted
+      !text: tr('KEY')
+      width: 74
+      text-auto-resize: false
+      text-align: center
+      anchors.right: secondTitle.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 30
+
+  ScrollablePanel
+    id: rows
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: rowsScroll.left
+    anchors.bottom: buttons.top
+    margin-top: 4
+    margin-bottom: 8
+    margin-right: 4
+    vertical-scrollbar: rowsScroll
+    layout:
+      type: verticalBox
+
+  VerticalScrollBar
+    id: rowsScroll
+    anchors.top: header.bottom
+    anchors.bottom: buttons.top
+    anchors.right: parent.right
+    margin-top: 4
+    margin-bottom: 8
+    step: 26
+    pixels-scroll: true
+
+  OptMuted
+    id: empty
+    !text: tr('Nothing matches.')
+    anchors.top: header.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 30
+    visible: false
+
+  UIWidget
+    id: buttons
+    height: 28
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+    OptButton
+      id: newHotkey
+      !text: tr('New item hotkey')
+      width: 140
+      icon: /modules/game_hotkeys/images/icon_plus
+      icon-align: left
+      icon-offset: 10 0
+      text-offset: 8 0
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    OptButton
+      id: reset
+      !text: tr('Reset to defaults')
+      width: 140
+      anchors.left: newHotkey.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+
+    OptionCheckBox
+      id: autoSwitchPreset
+      !text: tr('Use the preset named after my character')
+      width: 290
+      height: 16
+      icon-offset: -4 0
+      anchors.left: none
+      anchors.top: none
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
