@@ -84,7 +84,7 @@ function onJoinChannel(cid, channel, users)
             if (isCreature(cid)) then
                 doPlayerSendChannelMessage(cid, "", "Looking for help? Ask your question here and a tutor or another player will help you.", TALKTYPE_CHANNEL_RN, channel)
                 doPlayerSendChannelMessage(cid, "", "Type /commands to view the commands.", TALKTYPE_CHANNEL_RN, channel)
-                doPlayerSendChannelMessage(cid, "", "Before asking, take a look at the Wiki Chat!", TALKTYPE_CHANNEL_RN, channel)
+                doPlayerSendChannelMessage(cid, "", "Before asking, take a look at the Wiki tab of the Pokepedia (press P)!", TALKTYPE_CHANNEL_RN, channel)
                 --
                 if (not isTutor(cid)) then
                     local msg = {}
@@ -1050,13 +1050,6 @@ function onJoinChannel(cid, channel, users)
             doCreatureExecuteTalkAction(cid, "/tp pacifidlog")
         elseif (channel == CHANNEL_DUEL_WITHOUT_BET or channel == CHANNEL_DUEL_WITH_BET) then
             chooseBet(cid, channel == CHANNEL_DUEL_WITH_BET)
-        elseif (channel == CHANNEL_WIKI_CHAT) then
-            addEvent(function(cid)
-                if (isCreature(cid)) then
-                    WikiChat.handler:greet(cid)
-                end
-            end, 150, cid)
-            return true
         end
 		return false
 

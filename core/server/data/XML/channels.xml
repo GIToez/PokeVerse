@@ -384,7 +384,7 @@
 	<channel id="446" name="Duel Without Bet" active="no"/>
 	<channel id="447" name="Duel With Bet" active="no"/>
 	<channel id="448" name="Ranger Club" active="no"/>
-	<channel id="449" name="Wiki Chat" talkEvent="1"/>
+	<channel id="449" name="Wiki Chat" active="no"/> <!-- replaced by the Pokepedia's Wiki tab -->
 	<channel id="450" name="Caught Species" active="no"/>
 	<channel id="451" name="Lotad" active="no"/>
 	<channel id="452" name="Wynaut" active="no"/>

@@ -89,7 +89,7 @@ end
 -- Daycare Helper
 NPCS["Carlton"] = function(cid, type, msg)
     if (msgcontains(msg, 'daycare')) then
-        npcHandler:sayStory(string.createStory("The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without it being in your current team. This place was designed for trainers who do not have much time or want to train other Pokemon besides the six that carries. You can leave two Pokemon in the Daycare what gives a second use for the system. If a trainer leave a female and a male Pokemon at the Daycare, which are compatible to relate, there is the possibility of generating a Pokemon Egg. If you generate an Egg, you must make he born. Once the process is finished you will have a very good Pokemon in your hands as well. To learn more, look for other players and also the Help or Wiki Chat channels. Good luck trainer!"), cid)
+        npcHandler:sayStory(string.createStory("The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without it being in your current team. This place was designed for trainers who do not have much time or want to train other Pokemon besides the six that carries. You can leave two Pokemon in the Daycare what gives a second use for the system. If a trainer leave a female and a male Pokemon at the Daycare, which are compatible to relate, there is the possibility of generating a Pokemon Egg. If you generate an Egg, you must make he born. Once the process is finished you will have a very good Pokemon in your hands as well. To learn more, look for other players, the Help channel and the Wiki tab of the Pokepedia (press P). Good luck trainer!"), cid)
 
     else
         selfSay("You know the {POKEMON DAYCARE}?", cid)
@@ -102,7 +102,7 @@ NPCS["Cletis"] = function(cid, type, msg)
         npcHandler:sayStory(string.createStory("The TM (Technical Machine) are able to teach your Pokemon a new move that he did not learn normally. All you need to do is find a TM like this one besides me and use it at the Pokemon Poke Ball. After that, you will choose a move to replace by the TM move. Again remembering that the PokeVerse follows in fact the official data of Pokemon universe, and therefore this system also has some rules."), cid)
 
     elseif (msgcontains(msg, 'vitamin') or msgcontains(msg, 'vitamina')) then
-        npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defese and Speed. Each Pokemon has a limit to Stat that can be modified by vitamins. Each Pokemon has a limit of 10 total vitamins and a 3 per vitamin. To learn more, visit the Help and Wiki Chat channels."), cid)
+        npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defese and Speed. Each Pokemon has a limit to Stat that can be modified by vitamins. Each Pokemon has a limit of 10 total vitamins and a 3 per vitamin. To learn more, visit the Help channel or the Wiki tab of the Pokepedia (press P)."), cid)
 
     else
         selfSay("You know the {TMS} or {VITAMINS}?", cid)
@@ -135,7 +135,7 @@ end
 -- Soul Coin Trader
 NPCS["Jimi"] = function(cid, type, msg)
     if (msgcontains(msg, 'soul')) then
-        npcHandler:sayStory(string.createStory("These are the game virtual currency. With them you can make your Premium Account account to have access to various locations on the map and also the full use of your Pokemon. They are not required to play, but if you want a total experience for the game be sure to have them. You can buy directly from other players or by donating to the project through the official site. It is a symbolic way to keep PokeVerse online and your enjoyment. There are several uses for it, so if you want to see more detail visit the Wiki Chat or Game Help channels."), cid)
+        npcHandler:sayStory(string.createStory("These are the game virtual currency. With them you can make your Premium Account account to have access to various locations on the map and also the full use of your Pokemon. They are not required to play, but if you want a total experience for the game be sure to have them. You can buy directly from other players or by donating to the project through the official site. It is a symbolic way to keep PokeVerse online and your enjoyment. There are several uses for it, so if you want to see more detail read the Wiki tab of the Pokepedia (press P) or ask in the Help channel."), cid)
 
     else
         selfSay("Do you know what is a {SOUL COIN}?", cid)

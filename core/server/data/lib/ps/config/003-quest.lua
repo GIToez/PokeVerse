@@ -6837,7 +6837,7 @@ QUESTS_CONFIG = {
     ["Shelley"] = {
         {
             storage = 8495,
-            talk_questStarting = "Note that at the tables next to me are the machines to catalog Pokemon, the Pokedex. When a trainer starts his journey he receives his own Pokedex. This is an important device to store all the information about the Pokemon that you own. Here you will find information on the Stats of your Pokemon, his attacks (Moves) and their advantages and disadvantages. The extra information such as: Egg Group, HM's, the Pokemon description and like are also very important and can be explained in the Wiki Chat channel (Ctrl + O). Copy that?",
+            talk_questStarting = "Note that at the tables next to me are the machines to catalog Pokemon, the Pokedex. When a trainer starts his journey he receives his own Pokedex. This is an important device to store all the information about the Pokemon that you own. Here you will find information on the Stats of your Pokemon, his attacks (Moves) and their advantages and disadvantages. The extra information such as: Egg Group, HM's, the Pokemon description and like are also very important and are explained in the Wiki tab of the Pokepedia (press P). Copy that?",
             talk_questStarted = "Now take your Pokedex and use it on the Psyduck. Just \"Use\" the Pokedex and then select the Pokemon. See the details and come back to talk to me.",
             talk_questFinishing = "Did you got the Psyduck information?",
             talk_questFinished = "Great, let's {CONTINUE}",
@@ -6865,7 +6865,7 @@ QUESTS_CONFIG = {
             storage = 8497,
             talk_questStarting = "The HM are special moves that your Pokemon can use at the map to perform a specific action. If your Pokemon has the Surf HM, he can travel through water with you. Just use the ORDER button on the Inventory at water's edge.",
             talk_questStarted = "To fly through the air, just use a Pokemon with Fly HM. Use ORDER on your character and your Pokemon will fly with you. To get up and down speak out \"/up\" and \"/down\". I can {continue} when you feel ready.",
-            talk_questFinishing = "To view which HM your Pokemon has, use the Pokedex at your Pokemon. For a more detailed explanation, use the Wiki Chat channel.",
+            talk_questFinishing = "To view which HM your Pokemon has, use the Pokedex at your Pokemon. For a more detailed explanation, read the Wiki tab of the Pokepedia (press P).",
             talk_questFinished = "Now use the next door and follow to the next room. Your goal in the next room is to talk to all NPCs. Once you're done, talk to Oak's Assistant at the end and you'll be ready for your journey.",
             talk_questFinishFail = "Likes no.",
             talk_questDone = "",
