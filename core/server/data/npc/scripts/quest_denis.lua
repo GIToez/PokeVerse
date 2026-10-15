@@ -18,15 +18,15 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         selfSay("Sorry?", cid)
 
 	elseif (msgcontains(msg, 'warnings') or msgcontains(msg, 'aviso')) then
-        selfSay("That's right, they are why I do not want company... that day still haunts me. That {monster}!", cid)
+        selfSay("That's right, they're why I don't want company... that day still haunts me. That {monster}!", cid)
 
     elseif (msgcontains(msg, 'monster') or msgcontains(msg, 'monstro')) then
-        selfSay("Tyranitar is his name. I remember when captured in its first form... the Larvitar. So beautiful and so cute... then he turned that bloody thing! And just when we were about to {find} out about that...", cid)
+        selfSay("Tyranitar is its name. I remember when I captured it in its first form... Larvitar. So beautiful and so cute... then it turned into that bloody thing! And just when we were about to {find} out about that...", cid)
 
     elseif (msgcontains(msg, 'find') or msgcontains(msg, 'encontrar')) then
         doCreatureSetStorage(cid, 8342, QUEST_STATUS.FINISHED)
         doCreatureSetStorage(cid, 8343, QUEST_STATUS.STARTED)
-        selfSay("Yes, yes... we were to discover something, but fear does not help me remember. How about talking to Aleb, he was also there. Get out of here soon, you may be being followed! Go...", cid)
+        selfSay("Yes, yes... we were about to discover something, but fear clouds my memory. Try talking to Aleb, he was there too. Get out of here now, you may be followed! Go...", cid)
 
 	else
 		selfSay("Hmm?", cid)

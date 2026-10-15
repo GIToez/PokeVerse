@@ -28,7 +28,7 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if (msgcontains(msg, 'leave') or msgcontains(msg, 'exit') or msgcontains(msg, 'sair')) then
-		selfSay("You really want to leave this room? You can be disqualified for that tournament.", cid)
+		selfSay("Do you really want to leave this room? You may be disqualified from the tournament. {Yes} or {No}", cid)
 		talkState[talkUser] = TALKSTATE_LEAVE
 
 	elseif (talkState[talkUser] == TALKSTATE_LEAVE) then
@@ -39,7 +39,7 @@ function creatureSayCallback(cid, type, msg)
 			end
 
 			if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-				selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+				selfSay("You can't do that while you have a Pokemon out of its ball.", cid)
 				return true
 			end
 

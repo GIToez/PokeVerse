@@ -203,7 +203,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (getCreatureStorage(cid, 8240) ~= QUEST_STATUS.FINISHED) then -- Adventurer Lucy completed?
-        selfSay("Please do not interrupt, I'm coming in harmony with nature now.", cid)
+        selfSay("Please do not interrupt, I'm communing with nature right now.", cid)
         return true
     end
 
@@ -219,23 +219,23 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         end
 
         if (reward == 0) then
-            selfSay("What reward you want? Your options are: {Dragon Scale}, {King's Rock} or {Metal Coat}.", cid)
+            selfSay("What reward do you want? Your options are: {Dragon Scale}, {King's Rock} or {Metal Coat}.", cid)
             return true
         end
 
         if (doPlayerSafeAddItem(cid, reward, 1, true, false)) then
             doCreatureSetStorage(cid, rewardStorage, QUEST_STATUS.FINISHED)
-            selfSay("Great choice! Here is.", cid)
+            selfSay("Great choice! Here it is.", cid)
         end
 
         return true
     end
 
 	if (msgcontains(msg, 'sea') or msgcontains(msg, 'mar')) then
-        selfSay("You will need to look my friend, I suggest you to start looking in Navel. Also talk to a scientist of your kind and get a translator to talk to the Pokemon that live there. The machine is under construction I think. Good luck", cid)
+        selfSay("You will need to look for my friend. I suggest you start looking in Navel. Also talk to a scientist of your kind and get a translator to talk to the Pokemon that live there. I think the machine is still under construction. Good luck!", cid)
 
     elseif ((msgcontains(msg, 'restore') or msgcontains(msg, 'recuperar')) and getCreatureStorage(cid, 8242) == QUEST_STATUS.FINISHED) then -- Check for Chief Vaporeon quest complete
-        selfSay("Great, you got a great stage of your adventure. As of now there is no return... the Deepsoul Stone was recently removed from its original location and is now guarded by a large Pokemon. You need to go after a new treasure to get to her. Go talk to your professor, he is already aware of the situation. At the end go back to my presence. Good luck!", cid)
+        selfSay("Great, you have reached an important stage of your adventure. From now on there is no turning back... the Deepsoul Stone was recently removed from its original location and is now guarded by a large Pokemon. You need to go after a new treasure to reach it. Go talk to your professor, he is already aware of the situation. Then come back to me. Good luck!", cid)
 
     elseif (msgcontains(msg, 'quest') or msgcontains(msg, 'mission') or msgcontains(msg, 'task') or
             msgcontains(msg, 'elder') or msgcontains(msg, 'prophecy') or msgcontains(msg, 'missao') or msgcontains(msg, 'tarefa') or msgcontains(msg, 'profecia')) then

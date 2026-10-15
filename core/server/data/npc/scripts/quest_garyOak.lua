@@ -38,7 +38,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             npcHandler.talkState[talkUser] =  npcBattle:doTalkEnd(getNpcId(), cid, npcHandler.talkState[talkUser])
 
         else
-            selfSay("Let's {battle}?", cid)
+            selfSay("Shall we {battle}?", cid)
         end
 
         return true

@@ -1,0 +1,8 @@
+Module
+  name: game_npcdialog
+  description: PokeVerse NPC conversation window: portrait, the NPC's message and its blue words as buttons
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ npcdialog ]
+  @onLoad: init()
+  @onUnload: terminate()

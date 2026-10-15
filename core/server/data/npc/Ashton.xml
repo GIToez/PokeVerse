@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Need potions and balls? Came to the right place."/>
+		<parameter key="message_greet" value="Need potions and balls? You came to the right place."/>
 		<parameter key="shop_buyable" value="
 		empty flask, 18163, 50;
 		empty poke ball, 12157, 8;

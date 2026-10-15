@@ -3,6 +3,6 @@
 	<health now="150" max="150"/>
 	<look type="1314" head="25" body="30" legs="10" feet="80"/>
 	<parameters>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|. You know the {POKEMON DAYCARE}?"/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|. Do you know about the {POKEMON DAYCARE}?"/>
     </parameters>
 </npc>

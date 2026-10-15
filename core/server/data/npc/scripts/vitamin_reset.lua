@@ -23,22 +23,22 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'reset') or msgcontains(msg, 'vitamin') or msgcontains(msg, 'resetar') or msgcontains(msg, 'vitamina')) then
-        selfSay(string.format(__L(cid, "I can reset your Pokemon vitamin's. Do you want that? This will cost %s soul coin."), REQUIRED_COUNT), cid)
+        selfSay(string.format(__L(cid, "I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin. {Yes} or {No}"), REQUIRED_COUNT), cid)
         talkState[talkUser] = TALKSTATE_CONFIRM
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
                 return true
             end
 
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             elseif (getBallTotalVitamins(ball.uid) == 0) then
-                selfSay("Your Pokemon didn't have any vitamin.", cid)
+                selfSay("Your Pokemon doesn't have any vitamins.", cid)
 
             elseif (getPlayerItemCount(cid, REQUIRED_ITEMID) < REQUIRED_COUNT) then
                 selfSay(string.format(__L(cid, "You need at least %sx Soul Coin to do it."), REQUIRED_COUNT), cid)

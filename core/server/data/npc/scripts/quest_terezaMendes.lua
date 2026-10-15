@@ -19,11 +19,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     if (getCreatureStorage(cid, 8248) == QUEST_STATUS.STARTED) then
         if (msgcontains(msg, 'juanito')) then
-            selfSay("He's needing {help}? Oh my.", cid)
+            selfSay("He needs {help}? Oh my.", cid)
             return true
 
         elseif (msgcontains(msg, 'help') or msgcontains(msg, 'ajuda')) then
-            selfSay("Since our childhood I wait for it... does he want me now? I need a new {lipstick} first.", cid)
+            selfSay("I've waited for this since our childhood... does he want me now? I need a new {lipstick} first.", cid)
             return true
         end
     end

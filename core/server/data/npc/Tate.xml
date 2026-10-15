@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="911" head="55" body="35" legs="25" feet="55" addons="3"/>
 	<parameters>
-		<parameter key="message_greet" value="Not only nail and screw, there are lots of cutting things too!"/>
+		<parameter key="message_greet" value="Not only nails and screws, we have lots of cutting tools too!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

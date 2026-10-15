@@ -27,7 +27,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     if (msgcontains(msg, 'crystal') or msgcontains(msg, 'statue') or msgcontains(msg, 'estatua')) then
         if (getCreatureStorage(cid, questStorage == QUEST_STATUS.STARTED) and
             getCreatureStorage(cid, statueStorage) ~= QUEST_STATUS.FINISHED) then
-            selfSay("Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it?", cid)
+            selfSay("Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.BUYING
 
         else
@@ -39,10 +39,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             if (doPlayerRemoveMoney(cid, 4000)) then
                 if (doPlayerAddUniqueItem(cid, 18166, 1, false)) then
                     doCreatureSetStorage(cid, statueStorage, QUEST_STATUS.FINISHED)
-                    selfSay("Here is! When you finish what you're doing, come talk to me!", cid)
+                    selfSay("Here it is! When you finish what you're doing, come talk to me!", cid)
                 else
                     doPlayerAddMoney(cid, 4000)
-                    selfSay("I can't sell you this right now, please check your backpack", cid)
+                    selfSay("I can't sell you this right now, please check your backpack.", cid)
                 end
 
             else

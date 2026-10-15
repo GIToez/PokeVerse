@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. What I can do for you?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. What can I do for you?"/>
 		<parameter key="shop_buyable" value="
 		inox stove kit, 13263, 900;
 		black stove kit, 13264, 600;

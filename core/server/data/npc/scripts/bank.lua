@@ -131,27 +131,27 @@ function creatureSayCallback(cid, type, msg)
   elseif (msgcontains(msg, 'deposit all') or msgcontains(msg, 'depositar tudo')) then
     talkState[talkUser] = STATES.DEPOSIT_ALL
 
-    selfSay("Are you sure do you want to deposit all your money?", cid)
+    selfSay("Are you sure you want to deposit all your money? {Yes} or {No}", cid)
 
   elseif (msgcontains(msg, 'withdraw all') or msgcontains(msg, 'sacar tudo')) then
     talkState[talkUser] = STATES.WITHDRAW_ALL
 
-    selfSay("Are you sure do you want to withdraw all your money?", cid)
+    selfSay("Are you sure you want to withdraw all your money? {Yes} or {No}", cid)
 
   elseif (msgcontains(msg, 'deposit') or msgcontains(msg, 'depositar')) then
     talkState[talkUser] = STATES.DEPOSIT
 
-    selfSay("How much dollars do you like to deposit?", cid)
+    selfSay("How many dollars would you like to deposit?", cid)
 
   elseif (msgcontains(msg, 'withdraw') or msgcontains(msg, 'sacar')) then
     talkState[talkUser] = STATES.WITHDRAW
 
-    selfSay("How much dollars do you like to withdraw?", cid)
+    selfSay("How many dollars would you like to withdraw?", cid)
 
   elseif (msgcontains(msg, 'transfer') or msgcontains(msg, 'transferir')) then
     talkState[talkUser] = STATES.TRANSFER_ONE
 
-    selfSay("How much dollars do you like to transfer?", cid)
+    selfSay("How many dollars would you like to transfer?", cid)
 
   elseif (talkState[talkUser] == STATES.DEPOSIT and getCountFromMessage(msg) > 0) then
     local count = getCountFromMessage(msg)
@@ -166,7 +166,7 @@ function creatureSayCallback(cid, type, msg)
       end
 
     else
-      selfSay(string.format(__L(cid, "Sorry, you don't have %s dollar(s)"),count), cid)
+      selfSay(string.format(__L(cid, "Sorry, you don't have %s dollar(s)."),count), cid)
     end
 
   elseif (talkState[talkUser] == STATES.WITHDRAW and getCountFromMessage(msg) > 0) then
@@ -192,7 +192,7 @@ function creatureSayCallback(cid, type, msg)
       talkState[talkUser] = STATES.TRANSFER_TWO
       lastCount[talkUser] = count
 
-      selfSay(string.format(__L(cid, "So you want to transfer %s dollar(s) to?"), count), cid)
+      selfSay(string.format(__L(cid, "So you want to transfer %s dollar(s) to whom?"), count), cid)
 
     else
       talkState[talkUser] = STATES.NONE
@@ -209,18 +209,18 @@ function creatureSayCallback(cid, type, msg)
     else
       talkState[talkUser] = STATES.NONE
 
-      selfSay("Sorry, any account has founded with this name.", cid)
+      selfSay("Sorry, no account was found with this name.", cid)
     end
 
   elseif (talkState[talkUser] == STATES.TRANSFER_THREE) then
     if (msg == lastTransferName[talkUser]) then
-      selfSay(string.format(__L(cid, "Do you really want to transfer %s dollars to %s?"), lastCount[talkUser], lastTransferName[talkUser]), cid)
+      selfSay(string.format(__L(cid, "Do you really want to transfer %s dollars to %s? {Yes} or {No}"), lastCount[talkUser], lastTransferName[talkUser]), cid)
       talkState[talkUser] = STATES.TRANSFER_FOUR
 
     else
       talkState[talkUser] = STATES.NONE
 
-      selfSay("Sorry, any account has founded with this name.", cid)
+      selfSay("Sorry, no account was found with this name.", cid)
     end
 
   elseif (talkState[talkUser] == STATES.TRANSFER_FOUR) then
@@ -235,7 +235,7 @@ function creatureSayCallback(cid, type, msg)
     else
       talkState[talkUser] = STATES.NONE
 
-      selfSay("Sorry, any account has founded with this name.", cid)
+      selfSay("Sorry, no account was found with this name.", cid)
     end
 
     lastCount[talkUser] = 0
@@ -278,7 +278,7 @@ npcHandler:addModule(FocusModule:new())
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     if (npcHandler:isInRange(cid)) then
       if (REQUIREMENTS[getNpcName()] and not REQUIREMENTS[getNpcName()](cid)) then
-        selfSay("You do not have enough access to deal here!", cid)
+        selfSay("You do not have enough access to trade here!", cid)
         return false
       end
     end

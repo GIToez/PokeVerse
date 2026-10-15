@@ -60,7 +60,7 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'enter') or msgcontains(msg, 'entrar')) then
         if (talkState[talkUser] == TALKSTATES.WAVEARENA) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Colosseum Arena? This will cost you %s dollars."), getArenaCost(getPlayerLevel(cid))), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Colosseum Arena? This will cost you %s dollars. {Yes} or {No}"), getArenaCost(getPlayerLevel(cid))), cid)
             talkState[talkUser] = TALKSTATES.WAVEARENA_ACCEPT
         end
 
@@ -69,7 +69,7 @@ function creatureSayCallback(cid, type, msg)
             talkState[talkUser] = TALKSTATES.NONE
 
             if (PLAYER_CACHE[cid] and PLAYER_CACHE[cid] >= PLAYER_CACHE_MAX) then
-                selfSay(string.format(__L(cid, "You have reached the maximum daily attempt of %s times! Try again tomorrow."), PLAYER_CACHE_MAX), cid)
+                selfSay(string.format(__L(cid, "You have reached the maximum of %s attempts for today! Try again tomorrow."), PLAYER_CACHE_MAX), cid)
                 return true
             else
                 PLAYER_CACHE[cid] = 0
@@ -77,7 +77,7 @@ function creatureSayCallback(cid, type, msg)
 
             local arena = WaveArena.getFreeArena()
             if (not arena) then
-                selfSay("Sorry, there is no arena free now. Please, try again later.", cid)
+                selfSay("Sorry, there is no free arena right now. Please try again later.", cid)
                 return true
 
             elseif (getPlayerLevel(cid) < WAVEARENA_LEVEL) then
@@ -85,7 +85,7 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (not isPremium(cid)) then
-                selfSay("Sorry, only Premmium Accounts can join this game.", cid)
+                selfSay("Sorry, only Premium Accounts can join this game.", cid)
                 return true
 
             elseif (not getPlayerColosseumArenaPaid(cid) and not doPlayerRemoveMoney(cid, getArenaCost(getPlayerLevel(cid)))) then
@@ -93,13 +93,13 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (getPlayerAccountPlayedToday(cid)) then
-                selfSay("One of your account character's already played the Colosseum Arena today! Please try again tomorrow.", cid)
+                selfSay("One of the characters on your account already played the Colosseum Arena today! Please try again tomorrow.", cid)
                 return true
             end
 
             if (not WaveArena.onStart(cid, arena)) then
                 LOG(LOG_TYPES.ERROR, "wavearena - Can't start.", getCreatureName(cid), arena)
-                selfSay("Something got wrong, please try again later.", cid)
+                selfSay("Something went wrong, please try again later.", cid)
                 return true
 
             else

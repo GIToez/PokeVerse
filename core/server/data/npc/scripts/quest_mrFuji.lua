@@ -18,7 +18,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	end
 
 	if (msgcontains(msg, 'amber')) then
-		selfSay('My daughter Amber. She left a long time ago, my cloning studies have only led me to total failure. Except with Mewtwo.', cid)
+		selfSay('My daughter Amber left a long time ago. My cloning studies have led only to total failure. Except for Mewtwo.', cid)
 		return true
 
 	elseif (msgcontains(msg, 'mewtwo')) then

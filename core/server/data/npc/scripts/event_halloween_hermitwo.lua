@@ -135,7 +135,7 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s for the %s?"), getReagentsMessage(OPTION_BY_NAME[msg].reagents), OPTION_BY_NAME[msg].name), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s for the %s? {Yes} or {No}"), getReagentsMessage(OPTION_BY_NAME[msg].reagents), OPTION_BY_NAME[msg].name), cid)
 
     elseif (msgcontains(msg, 'halloween') or msgcontains(msg, 'gift') or msgcontains(msg, 'dia das bruxas') or msgcontains(msg, 'presente')) then
         selfSay("I can create magic {potions} for you!", cid)
@@ -148,11 +148,11 @@ function creatureSayCallback(cid, type, msg)
         local opt = OPTION_BY_NAME[lastOption[talkUser]]
 
         if (not doPlayerCanBuyPotion(cid, opt)) then
-            selfSay("Errr! You have already generated many potions today! Please try again tomorrow!", cid)
+            selfSay("Errr! You have already made too many potions today! Please try again tomorrow!", cid)
 
         elseif (doPlayerCheckReagents(cid, opt.reagents) and doPlayerRemoveReagents(cid, opt.reagents)) then
             doPlayerSafeAddItem(cid, opt.potionItemId, 1, true, true)
-            selfSay("Here is, thanks!", cid)
+            selfSay("Here it is, thanks!", cid)
             doPlayerRegisterPotionBought(cid, opt)
 
             if (opt.onBuy) then
@@ -160,7 +160,7 @@ function creatureSayCallback(cid, type, msg)
             end
 
         else
-            selfSay("You do not have reagents for it.", cid)
+            selfSay("You do not have the reagents for it.", cid)
         end
 
         talkState[talkUser] = TALKSTATE_NONE

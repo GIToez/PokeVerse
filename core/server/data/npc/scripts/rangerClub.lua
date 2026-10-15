@@ -55,12 +55,12 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     if (msgcontains(msg, 'join') or msgcontains(msg, 'entrar')) then
         if (RangerClub.getPlayerRank(cid) ~= RangerClub.RANK_IDS.NONE) then
-            selfSay("You already joined our club!", cid)
+            selfSay("You have already joined our club!", cid)
             return true
         end
 
         npcHandler.talkState[talkUser] = TALKSTATE.JOIN
-        selfSay("You really want to be part of the Ranger Club?", cid)
+        selfSay("Do you really want to be part of the Ranger Club? {Yes} or {No}", cid)
 
     elseif (msgcontains(msg, 'task') or msgcontains(msg, 'tarefa')) then
         if (RangerClub.getPlayerRank(cid) == RangerClub.RANK_IDS.NONE) then
@@ -72,7 +72,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (task ~= RangerClub.TASK_IDS.NONE) then
             local defeats = RangerClub.getPlayerTaskDefeats(cid, task)
             if (defeats < RangerClub.getTaskDefeats(task)) then
-                selfSay("You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task?", cid)
+                selfSay("You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task? {Yes} or {No}", cid)
                 npcHandler.talkState[talkUser] = TALKSTATE.PAUSE
                 return true
             end
@@ -95,7 +95,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             return true
         end
 
-        selfSay("Oh, you want to receive a promotion in the Ranger Club?", cid)
+        selfSay("Oh, you want to receive a promotion in the Ranger Club? {Yes} or {No}", cid)
         npcHandler.talkState[talkUser] = TALKSTATE.PROMOTION
 
     elseif (msgcontains(msg, 'boss') or msgcontains(msg, 'bosses') or msgcontains(msg, 'chefe') or msgcontains(msg, 'chefao')) then
@@ -160,7 +160,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         elseif (npcHandler.talkState[talkUser] == TALKSTATE.TASK_CONTINUE and lastTask[cid]) then
             npcHandler.talkState[talkUser] = TALKSTATE.NONE
             RangerClub.setPlayerTask(cid, lastTask[cid].id)
-            selfSay("Your task has been updated! Good hunt!", cid)
+            selfSay("Your task has been updated! Good hunting!", cid)
             lastTask[cid] = nil
         end
 
@@ -177,7 +177,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             end
 
             showTaskInfo(cid, task)
-            selfSay("These are the details of this task, do you accept it?", cid)
+            selfSay("These are the details of this task, do you accept it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATE.TASK_CONTINUE
             lastTask[cid] = task
 
@@ -190,7 +190,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (boss) then
             npcHandler.talkState[talkUser] = TALKSTATE.BOSS_CONTINUE
             lastBoss[cid] = boss
-            selfSay("You really want to challenge this boss?", cid)
+            selfSay("Do you really want to challenge this boss? {Yes} or {No}", cid)
 
         else
             selfSay(string.format(__L(cid, "Sorry? You are able to defeat these bosses: %s"), RangerClub.getPlayerAvailableBosses(cid)), cid)
@@ -203,7 +203,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         npcHandler.talkState[talkUser] = TALKSTATE.NONE
 
     else
-        selfSay("Welcome to the Ranger Club! You can view the {task} list, try your {promotion} inside the club or challenge the {bosses}.", cid)
+        selfSay("Welcome to the Ranger Club! You can view the {task} list, attempt your {promotion} inside the club or challenge the {bosses}.", cid)
     end
 
     return true

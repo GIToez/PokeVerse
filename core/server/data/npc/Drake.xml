@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Everything is better with Drake. What are you looking brother?"/>
+		<parameter key="message_greet" value="Everything is better with Drake. What are you looking for, brother?"/>
 		<parameter key="shop_buyable" value="
 		empty poke ball, 12157, 8;
 		empty great ball, 12161, 35;

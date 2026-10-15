@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="620" head="14" body="26" legs="84" feet="55" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|! I'm Arlo Fulke, let's {battle}?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|! I'm Arlo Fulke, shall we {battle}?"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

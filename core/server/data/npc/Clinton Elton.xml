@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="626" head="26" body="49" legs="49" feet="15" addons="1"/>
 	<parameters>
-		<parameter key="message_greet" value="Our strength is underestimated, but are the fool who do this."/>
+		<parameter key="message_greet" value="Our strength is underestimated, but only fools do that."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

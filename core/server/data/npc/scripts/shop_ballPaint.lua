@@ -287,9 +287,9 @@ function creatureSayCallback(cid, type, msg)
         lastOption[talkUser] = string.lower(msg)
         talkState[talkUser] = TALKSTATE_PAINTING
         if (PAINT_OPTION_BY_NAME[lastOption[talkUser]].ticket > 0) then
-            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars and a %s ticket?"), msg, PRICE, lastOption[talkUser]), cid)
+            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars and a %s ticket? {Yes} or {No}"), msg, PRICE, lastOption[talkUser]), cid)
         else
-            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars?"), msg, PRICE), cid)
+            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars? {Yes} or {No}"), msg, PRICE), cid)
         end
     elseif (PAINT_CATEGORIES[msg]) then
         selfSay(string.format(__L(cid, "The options in this category are: %s"), getPaintOptionsMessage(PAINT_CATEGORIES[msg])), cid)
@@ -302,7 +302,7 @@ function creatureSayCallback(cid, type, msg)
         elseif (getPlayerMoney(cid) < PRICE) then
             selfSay("You do not have enough money for it.", cid)
         elseif (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while your Pokemon is out of its ball.", cid)
         elseif (isEpicBall(ball.itemid)) then
             selfSay("You can not paint this kind of ball.", cid)
             log(LOG_TYPES.WARNING, "Ball paint - Epic ball detected, bug abuser?", getCreatureName(cid), ball)
@@ -321,7 +321,7 @@ function creatureSayCallback(cid, type, msg)
                 end
                 doPlayerRemoveMoney(cid, PRICE)
                 doTransformItem(ball.uid, newBall)
-                selfSay("Here is! Thanks!", cid)
+                selfSay("Here it is! Thanks!", cid)
             end
         end
         talkState[talkUser] = TALKSTATE_NONE
@@ -329,7 +329,7 @@ function creatureSayCallback(cid, type, msg)
         selfSay("Ok!", cid)
         talkState[talkUser] = TALKSTATE_NONE
     else
-        selfSay("Sorry, do not know what you're talking about.", cid)
+        selfSay("Sorry, I don't know what you're talking about.", cid)
         talkState[talkUser] = TALKSTATE_NONE
     end
     return true

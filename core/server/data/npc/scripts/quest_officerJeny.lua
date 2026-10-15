@@ -41,7 +41,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     end]]
 
     if (msgcontains(msg, 'chansey') and isPlayerAbleToRefund(cid)) then
-        selfSay("You've done this mission and has the old reward, I can renew your reward. Do you want it?", cid)
+        selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it? {Yes} or {No}", cid)
         npcHandler.talkState[talkUser] = TALKSTATE_RENEW
         return true
 
@@ -68,7 +68,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
 
     if (getSamePosition(getNpcPos(), KANTOMAIN10_POSITION)) then
         if (getCreatureStorage(cid, 8547) ~= QUEST_STATUS.FINISHED) then
-            selfSay("So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?", cid)
+            selfSay("So you're a friend of Bill? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you getting into police affairs without permission, OK?", cid)
             doCreatureSetStorage(cid, 8547, QUEST_STATUS.FINISHED)
             doCreatureSetStorage(cid, 8546, QUEST_STATUS.STARTED) -- Start Mistery Guy quest
         else
@@ -79,7 +79,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
 
     elseif (getSamePosition(getNpcPos(), EVENT_CHRISTMAS_POSITION)) then
         if (getCreatureStorage(cid, 8562) ~= QUEST_STATUS.FINISHED) then
-            selfSay("Sorry I'm here to investigate something suspicious, if you do not have information about something strange going on here do not take my time.", cid)
+            selfSay("Sorry, I'm here to investigate something suspicious. If you don't have information about something strange going on here, don't waste my time.", cid)
         else
             selfSay("So you saw someone stealing {presents}?", cid)
             npcHandler:addFocus(cid)

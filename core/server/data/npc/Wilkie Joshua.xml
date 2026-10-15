@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Wilkie It's me! Best pizza ever!"/>
+		<parameter key="message_greet" value="It's me, Wilkie! Best pizza ever!"/>
 		<parameter key="shop_buyable" value="
 		pizza, 12210, 4"/>
 	</parameters>

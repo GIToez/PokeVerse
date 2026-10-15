@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="1196" head="11" body="55" legs="55" feet="11"/>
 	<parameters>
-		<parameter key="message_greet" value="Argh! I didn't saw you."/>
+		<parameter key="message_greet" value="Argh! I didn't see you."/>
 	</parameters>
 </npc>

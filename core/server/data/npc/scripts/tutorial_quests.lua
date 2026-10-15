@@ -29,7 +29,7 @@ local function doExitPlayer(cid)
     end
 
     if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-        selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+        selfSay("You can't do that while you have a Pokemon out of its ball.", cid)
         return
     end
 
@@ -48,7 +48,7 @@ local TALKSTATE_SKIP = 400
 local function doHandleSkip(cid, msg)
     if (msgcontains(msg, 'skip') or msgcontains(msg, 'pular')) then
         npcHandler.talkState[cid] = TALKSTATE_SKIP
-        selfSay("You really want to skip the tutorial?", cid)
+        selfSay("Do you really want to skip the tutorial? {Yes} or {No}", cid)
         return true
 
     elseif (npcHandler.talkState[cid] == TALKSTATE_SKIP) then
@@ -72,47 +72,47 @@ local NPCS = {}
 NPCS["Biff"] = function(cid, type, msg)
     if (msgcontains(msg, 'continue') or msgcontains(msg, 'continuar')) then
         if (getPlayerUsingOtClient(cid)) then
-            selfSay("Okay, that's a start. All quest NPCs will be indicated by a balloon with a exclamation mark (!). Then we go to our first mission. Remember that you can {SKIP} this tutorial whenever you want. Now, let's start your first mission? Just say {YES}.", cid)
+            selfSay("Okay, that's a start. All quest NPCs are marked by a balloon with an exclamation mark (!). Now on to our first mission. Remember that you can {SKIP} this tutorial whenever you want. Shall we start your first mission? Just say {YES}.", cid)
         else
-            selfSay("Okay, that's a start. Then we go to our first mission. Remember that if you can {SKIP} this tutorial whenever you want. Now, let's start your first mission? Just say {YES}.", cid)
+            selfSay("Okay, that's a start. Now on to our first mission. Remember that you can {SKIP} this tutorial whenever you want. Shall we start your first mission? Just say {YES}.", cid)
         end
 
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-        selfSay("Go through that door and \"Use\" to open it. You can do it using Shift + Click to open the context menu for interaction and click on \"Use\", or you can select the option to use the \"Classic Control\" menu to simply use the right mouse button. Once you open it, speak with the second NPC, Flanagan.", cid)
+        selfSay("Go to that door and \"Use\" it to open it. You can Shift + Click to open the context menu and click \"Use\", or select the \"Classic Control\" option in the menu to simply use the right mouse button. Once it's open, speak with the second NPC, Flanagan.", cid)
         doPlayerSendTip(cid, TIP_IDS.OPEN_DOOR)
 
     else
-        selfSay("Some dialogs will contain blue words, you just need to repeat them to {CONTINUE} the dialogue.", cid)
+        selfSay("Some dialogues contain blue words; just say them back to {CONTINUE} the dialogue.", cid)
     end
 end
 
 -- Daycare Helper
 NPCS["Carlton"] = function(cid, type, msg)
     if (msgcontains(msg, 'daycare')) then
-        npcHandler:sayStory(string.createStory("The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without it being in your current team. This place was designed for trainers who do not have much time or want to train other Pokemon besides the six that carries. You can leave two Pokemon in the Daycare what gives a second use for the system. If a trainer leave a female and a male Pokemon at the Daycare, which are compatible to relate, there is the possibility of generating a Pokemon Egg. If you generate an Egg, you must make he born. Once the process is finished you will have a very good Pokemon in your hands as well. To learn more, look for other players, the Help channel and the Wiki tab of the Pokepedia (press P). Good luck trainer!"), cid)
+        npcHandler:sayStory(string.createStory("The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without having it in your current team. It was designed for trainers who don't have much time or want to train Pokemon besides the six they carry. You can leave two Pokemon in the Daycare, which gives the system a second use: if a trainer leaves a compatible male and female Pokemon at the Daycare, they may produce a Pokemon Egg. If you get an Egg, you must hatch it. Once it hatches you will have a very good Pokemon in your hands. To learn more, ask other players, the Help channel or the Wiki tab of the Pokepedia (press P). Good luck trainer!"), cid)
 
     else
-        selfSay("You know the {POKEMON DAYCARE}?", cid)
+        selfSay("Do you know about the {POKEMON DAYCARE}?", cid)
     end
 end
 
 -- Pokemon Helper
 NPCS["Cletis"] = function(cid, type, msg)
     if (msgcontains(msg, 'tm')) then
-        npcHandler:sayStory(string.createStory("The TM (Technical Machine) are able to teach your Pokemon a new move that he did not learn normally. All you need to do is find a TM like this one besides me and use it at the Pokemon Poke Ball. After that, you will choose a move to replace by the TM move. Again remembering that the PokeVerse follows in fact the official data of Pokemon universe, and therefore this system also has some rules."), cid)
+        npcHandler:sayStory(string.createStory("A TM (Technical Machine) can teach your Pokemon a move it can't normally learn. Just find a TM like this one beside me and use it on your Pokemon's Poke Ball. Then choose which move the TM move will replace. Remember that PokeVerse follows the official data of the Pokemon universe, so this system has some rules too."), cid)
 
     elseif (msgcontains(msg, 'vitamin') or msgcontains(msg, 'vitamina')) then
-        npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defese and Speed. Each Pokemon has a limit to Stat that can be modified by vitamins. Each Pokemon has a limit of 10 total vitamins and a 3 per vitamin. To learn more, visit the Help channel or the Wiki tab of the Pokepedia (press P)."), cid)
+        npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defense and Speed. Each Pokemon has a limit on how much a Stat can be raised by vitamins: 10 vitamins in total and 3 of each kind. To learn more, visit the Help channel or the Wiki tab of the Pokepedia (press P)."), cid)
 
     else
-        selfSay("You know the {TMS} or {VITAMINS}?", cid)
+        selfSay("Do you know about {TMS} or {VITAMINS}?", cid)
     end
 end
 
 -- Berry Helper
 NPCS["Tracy"] = function(cid, type, msg)
     if (msgcontains(msg, 'berries')) then
-        npcHandler:sayStory(string.createStory("Berries are plants that any trainer can have at home. They are of different species and with different effects. There is a cooldown between each use, even in tournament battles! To plant a Berry, you need some tools like these behind me and use on a fertile land, normally found in homes or rental locations. You find these spaces by PokeVerse world. The tools are also found within shop NPCs in the cities."), cid)
+        npcHandler:sayStory(string.createStory("Berries are plants that any trainer can grow at home. There are different species with different effects. There is a cooldown between each use, even in tournament battles! To plant a Berry, you need tools like the ones behind me, used on fertile land, usually found in homes or rented places. You can find these spots around the PokeVerse world. The tools are sold by shop NPCs in the cities."), cid)
 
     else
         selfSay("Looking to know about {BERRIES}?", cid)
@@ -122,37 +122,37 @@ end
 -- Ranger Helper
 NPCS["Gray"] = function(cid, type, msg)
     if (msgcontains(msg, 'frontier')) then
-        npcHandler:sayStory(string.createStory("The Frontier Island gives trainers the opportunity to test their ability as a Pokemon Master with some challenges. It can be accessed directly from the Trading Area, its a place to visit with friends. There you can earn Frontier Tokens, which opens the possibility to purchase some unique items at the island."), cid)
+        npcHandler:sayStory(string.createStory("The Frontier Island gives trainers the chance to test their skill as a Pokemon Master with some challenges. It can be reached directly from the Trading Area, and it's a place to visit with friends. There you can earn Frontier Tokens, which let you buy some unique items on the island."), cid)
 
     elseif (msgcontains(msg, 'ranger')) then
-        npcHandler:sayStory(string.createStory("The Ranger Club is a place for trainers that seeks adventures. At the Ranger Club you will have the opportunity to advance on Ranks and be a successful Ranger. There you will have several missions that give you points to move up in ranks. Each mission will give you rewards and the possibility of facing a Pokemon Boss. What you are waiting for? Each city has a representative of the Ranger Club!"), cid)
+        npcHandler:sayStory(string.createStory("The Ranger Club is a place for trainers who seek adventure. At the Ranger Club you will have the chance to advance in Ranks and become a successful Ranger. There are several missions that give you points to move up in ranks. Each mission gives you rewards and the chance to face a Pokemon Boss. What are you waiting for? Each city has a representative of the Ranger Club!"), cid)
 
     else
-        selfSay("You want to hear about the {FRONTIER ISLAND} or the {RANGER CLUB}?", cid)
+        selfSay("Do you want to hear about the {FRONTIER ISLAND} or the {RANGER CLUB}?", cid)
     end
 end
 
 -- Soul Coin Trader
 NPCS["Jimi"] = function(cid, type, msg)
     if (msgcontains(msg, 'soul')) then
-        npcHandler:sayStory(string.createStory("These are the game virtual currency. With them you can make your Premium Account account to have access to various locations on the map and also the full use of your Pokemon. They are not required to play, but if you want a total experience for the game be sure to have them. You can buy directly from other players or by donating to the project through the official site. It is a symbolic way to keep PokeVerse online and your enjoyment. There are several uses for it, so if you want to see more detail read the Wiki tab of the Pokepedia (press P) or ask in the Help channel."), cid)
+        npcHandler:sayStory(string.createStory("These are the game's virtual currency. With them you can get a Premium Account, which gives access to various locations on the map and full use of your Pokemon. They are not required to play, but if you want the full experience be sure to get some. You can buy them from other players or by donating to the project through the official site. It's a symbolic way to keep PokeVerse online for your enjoyment. They have several uses, so to see more details read the Wiki tab of the Pokepedia (press P) or ask in the Help channel."), cid)
 
     else
-        selfSay("Do you know what is a {SOUL COIN}?", cid)
+        selfSay("Do you know what a {SOUL COIN} is?", cid)
     end
 end
 
 -- End
 NPCS["Oak's Assistant Brenny"] = function(cid, type, msg)
     if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-        npcHandler:sayStory(string.createStory("Now I will take you to the laboratory of one of the greatest Pokemon researchers who have trod this land. There he will instruct you on how to do different things and you also have the possibility to receive your first Pokemon. Remembering that you are very vulnerable without a Pokemon, so perform the QUEST to begin your journey on the right foot. When {READY} take you to his lab, it will not take long. Just close your eyes..."), cid)
+        npcHandler:sayStory(string.createStory("Now I will take you to the laboratory of one of the greatest Pokemon researchers who have walked this land. There he will teach you how to do different things and you can also receive your first Pokemon. Remember that you are very vulnerable without a Pokemon, so do the QUEST to start your journey on the right foot. When you're {READY} I'll take you to his lab, it won't take long. Just close your eyes..."), cid)
 
     elseif (msgcontains(msg, 'ready') or msgcontains(msg, 'pronto')) then
         selfSay("There you go! Good luck!", cid)
         doExitPlayer(cid)
 
     else
-        selfSay("It's fine.", cid)
+        selfSay("That's fine.", cid)
     end
 end
 --

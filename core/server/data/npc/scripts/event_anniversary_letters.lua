@@ -98,22 +98,22 @@ function creatureSayCallback(cid, type, msg)
   if (OPTION_BY_NAME[msg]) then
     lastOption[talkUser] = msg
     talkState[talkUser] = TALKSTATE_COUNT
-    selfSay("And how much letters do you want do exchange?", cid)
+    selfSay("And how many letters do you want to exchange?", cid)
     
-  elseif (msgcontains(msg, 'gift') or msgcontains(msg, 'presente') or msgcontains(msg, 'letter') or msgcontains(msg, 'letra')) then
-    selfSay("Here you can exchange the letters into anniversary tokens, you can see the {options}.", cid)
+  elseif (msgcontains(msg, 'gift') or msgcontains(msg, 'presente') or msgcontains(msg, 'letter') or msgcontains(msg, 'letra') or msgcontains(msg, 'token')) then
+    selfSay("Here you can exchange the letters for anniversary tokens, you can see the {options}.", cid)
     
   elseif (talkState[talkUser] == TALKSTATE_COUNT) then
     local count = string.extractNumber(msg)
     if (count <= 0) then
-      selfSay("And how much letters do you want do exchange?", cid)
+      selfSay("And how many letters do you want to exchange?", cid)
       return true
     end
     
     local opt = OPTION_BY_NAME[lastOption[talkUser]]
     lastCount[talkUser] = count
     talkState[talkUser] = TALKSTATE_EXCHANGING
-    selfSay(string.format(__L(cid, "You want to exchange %s %s for %s anniversary token(s)?"), count, opt.name, count * opt.tokens), cid)
+    selfSay(string.format(__L(cid, "You want to exchange %s %s for %s anniversary token(s)? {Yes} or {No}"), count, opt.name, count * opt.tokens), cid)
 
   elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then
     doPlayerPopupFYI(cid, optionsMessage)

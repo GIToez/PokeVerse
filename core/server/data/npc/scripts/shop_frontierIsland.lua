@@ -182,16 +182,19 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, msg), cid)
 
     elseif (OPTIONS[tonumber(msg)]) then
         msg = string.lower(OPTIONS[tonumber(msg)].name)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, msg), cid)
 
-    elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then
+    elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes') or msgcontains(msg, 'reward')) then
         doPlayerPopupFYI(cid, optionsMessage)
+
+    elseif (msgcontains(msg, 'token')) then
+        selfSay("You earn frontier tokens by winning the challenges here on the Frontier Island. Bring them to me and say {options} to see what you can get for them.", cid)
 
     elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and talkState[talkUser] == TALKSTATE_EXCHANGING and
             lastOption[talkUser]) then
@@ -205,7 +208,7 @@ function creatureSayCallback(cid, type, msg)
             if (opt.id) then
                 doPlayerSafeAddItem(cid, opt.id, opt.count, true, opt.unique)
             end
-            selfSay("Here is, thanks!", cid)
+            selfSay("Here it is, thanks!", cid)
 
             if (opt.onBuy) then
                 opt.onBuy(cid)
@@ -222,7 +225,7 @@ function creatureSayCallback(cid, type, msg)
         talkState[talkUser] = TALKSTATE_NONE
 
     else
-        selfSay("Welcome to the Frontier Island! I'm here to exhcange your {frontier tokens} into {rewards}! Just type {options} to see.", cid)
+        selfSay("Welcome to the Frontier Island! I'm here to exchange your {frontier tokens} for {rewards}! Just type {options} to see.", cid)
     end
 
     return true

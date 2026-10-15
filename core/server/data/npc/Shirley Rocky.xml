@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="You know, the life of chef is not easy, but my meals are fabulous ehhh!"/>
+		<parameter key="message_greet" value="You know, the life of a chef is not easy, but my meals are fabulous ehhh!"/>
 		<parameter key="shop_buyable" value="
 		burguer, 12205, 6;
 		potato chip, 12206, 4;

@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hey |PLAYERNAME|, you have Pokemon dolls? I buy them all."/>
+		<parameter key="message_greet" value="Hey |PLAYERNAME|, do you have Pokemon dolls? I buy them all."/>
 		<parameter key="shop_sellable" value="
 		zubat doll, 17855, 60;
 		sandshrew doll, 17842, 80;

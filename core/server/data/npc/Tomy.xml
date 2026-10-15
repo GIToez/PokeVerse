@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. Here you will find the best churros of all towns, hu?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Here you will find the best churros in all the towns, huh?"/>
 		<parameter key="shop_buyable" value="
 		churros with white chocolate, 12202, 3;
 		churros with milk candy, 12203, 3;

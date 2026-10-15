@@ -24,11 +24,11 @@ end)
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     local status = getCreatureStorage(cid, 8229)
     if (status == QUEST_STATUS.UNSTARTED) then -- Last quest of the chain
-        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, my name is Merv Kelley, I'm a Pokemon researcher, currently study on the behavior of Pokemon insects when feed with fruits, but I'm now experiencing terrible {problems}.")
+        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, my name is Merv Kelley, I'm a Pokemon researcher. I'm currently studying the behavior of bug Pokemon when fed with fruits, but now I'm having terrible {problems}.")
     elseif (status == QUEST_STATUS.STARTED) then
         npcHandler:setMessage(MESSAGE_GREET, "Hey! How are you doing?")
     else
-        npcHandler:setMessage(MESSAGE_GREET, "Hey! Have you heard the latest rumors? There is a mysterious legend in the Orange Archipelago, my friend Adventurer Lucy has not slept in days behind it.")
+        npcHandler:setMessage(MESSAGE_GREET, "Hey! Have you heard the latest rumors? There is a mysterious legend in the Orange Archipelago. My friend Adventurer Lucy hasn't slept in days chasing it.")
     end
 
     return true

@@ -20,22 +20,22 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'remove') or msgcontains(msg, 'held') or msgcontains(msg, 'remover')) then
-        selfSay("I can {remove} your Pokemon held! Do you want that? {Your Pokemon Held Item level will be reseted if you do that.}", cid)
+        selfSay("I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that. {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_CONFIRM
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
                 return true
             end
 
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a Poke Ball in your ball slot first.", cid)
 
             elseif (not getBallHeld(ball.uid)) then
-                selfSay("Your Pokemon didn't have any Held.", cid)
+                selfSay("Your Pokemon doesn't have any held item.", cid)
 
             else
                 doPlayerSafeAddItem(cid, PokemonHeldItem.getHeldItemId(getBallHeld(ball.uid)), 1, true)

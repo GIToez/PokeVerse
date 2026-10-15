@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="920" head="55" body="35" legs="25" feet="55" addons="3"/>
 	<parameters>
-		<parameter key="message_greet" value="Let's make them eat dust and bury them 7 feets underground."/>
+		<parameter key="message_greet" value="Let's make them eat dust and bury them 7 feet underground."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

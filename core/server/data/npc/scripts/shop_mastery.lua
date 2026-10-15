@@ -348,21 +348,21 @@ function creatureSayCallback(cid, type, msg)
     local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (getPlayerMastery(cid) ~= REQUIRED_MASTERY or getPlayerVocation(cid) < REQUIRED_VOCATION) then
-        selfSay("Sorry, you are not able to deal with me! Only 3rd or greater rank members of our mastery can do this.", cid)
+        selfSay("Sorry, you can't trade with me! Only members of rank 3 or higher in our mastery can do this.", cid)
         return true
     end
 
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s?"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
+        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
                 (" more " .. OPTION_BY_NAME[msg].requiredItemsMessage) or ""), OPTION_BY_NAME[msg].count, msg), cid)
 
     elseif (OPTIONS[tonumber(msg)]) then
         msg = string.lower(OPTIONS[tonumber(msg)].name)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s?"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
+        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
                 (" more " .. OPTION_BY_NAME[msg].requiredItemsMessage) or ""), OPTION_BY_NAME[msg].count, msg), cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then
@@ -391,7 +391,7 @@ function creatureSayCallback(cid, type, msg)
                 end
 
                 if (not gotItems) then
-                    selfSay(string.format(__L(cid, "You do not have all needed items for manufacturing! (%s)"), opt.requiredItemsMessage), cid)
+                    selfSay(string.format(__L(cid, "You do not have all the items needed for manufacturing! (%s)"), opt.requiredItemsMessage), cid)
                     return true
                 end
 
@@ -402,7 +402,7 @@ function creatureSayCallback(cid, type, msg)
 
             doPlayerRemoveItem(cid, TOKEN_ID, opt.tokens)
             doPlayerSafeAddItem(cid, opt.id, opt.count, true, opt.unique)
-            selfSay("Here is, thanks!", cid)
+            selfSay("Here it is, thanks!", cid)
             doDatalogMasteryTokenBought(os.time(), getPlayerGUID(cid), opt.id, opt.count, opt.tokens)
 
             if (opt.onBuy) then
@@ -417,7 +417,7 @@ function creatureSayCallback(cid, type, msg)
         talkState[talkUser] = TALKSTATE_NONE
 
     else
-        selfSay("I'm here to exhcange your {mastery tokens} into {rewards}! Just type {options} to see.", cid)
+        selfSay("I'm here to exchange your {mastery tokens} for {rewards}! Just type {options} to see.", cid)
     end
 
     return true

@@ -35,7 +35,7 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if (msgcontains(msg, 'pokemon')) then
-		selfSay("You are on this island to capture your first Pokemon, try to capture a wild one with your special small stones and your empty soul ball. After that come to talk about your {journey}. Anytime you can get off this island, just say '{skip}'.", cid)
+		selfSay("You are on this island to capture your first Pokemon. Try to catch a wild one with your special small stones and your empty soul ball. After that, come talk to me about your {journey}. If you want to leave this island at any time, just say '{skip}'.", cid)
 
 	elseif (msgcontains(msg, 'skip') or msgcontains(msg, 'sair')) then
 		talkState[talkUser] = TALK_STATE_SKIP_ISLAND

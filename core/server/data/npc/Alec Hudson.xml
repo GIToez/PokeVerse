@@ -4,7 +4,7 @@
 	<look type="563" head="0" body="0" legs="0" feet="0"/>
 	<parameters>
         <parameter key="module_travel" value="1"/>
-		<parameter key="message_greet" value="Hello, welcome to Cerulean central trains! Tell your destiny! If you don't know where to flow, say {travel}."/>
+		<parameter key="message_greet" value="Hello, welcome to Cerulean central trains! Tell me your destination! If you don't know where to go, say {travel}."/>
         <parameter key="travel_destinations" value="pewter,3344,309,9,200,false;"/>
     </parameters>
 </npc>

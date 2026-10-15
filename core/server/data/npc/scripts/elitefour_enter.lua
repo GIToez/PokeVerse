@@ -20,7 +20,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'elite')) then
-        selfSay("Oh, you think that you are ready to challenge the Elite Four?", cid)
+        selfSay("Oh, you think that you are ready to challenge the Elite Four? {Yes} or {No}", cid)
         npcHandler.talkState[talkUser] = STATES.CHALLENGE
 
     elseif (npcHandler.talkState[talkUser] == STATES.CHALLENGE) then
@@ -33,7 +33,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             end
 
         else
-            selfSay("Yes, yes. Maybe when you get ready.", cid)
+            selfSay("No, no. Maybe when you are ready.", cid)
         end
         
         npcHandler.talkState[talkUser] = 0

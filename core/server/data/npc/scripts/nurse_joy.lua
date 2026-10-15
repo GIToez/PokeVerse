@@ -179,7 +179,7 @@ local function tryHeal(cid)
     end
 
     if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-        selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+        selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
     elseif (not getTileInfo(getCreaturePosition(cid)).protection) then
         selfSay("Please enter the Pokemon center to heal your Pokemon.", cid)
@@ -189,7 +189,7 @@ local function tryHeal(cid)
         for k, v in pairs(REQUIREMENTS) do
             if (getSamePosition(k, pos)) then
                 if (not v(cid)) then
-                    selfSay("You do not have enough access to heal your Pokemon here!", cid)
+                    selfSay("You don't have access to heal your Pokemon here!", cid)
                     return false
                 end
                 break
@@ -197,9 +197,9 @@ local function tryHeal(cid)
         end
 
         if (getCity()) then
-            selfSay("One second... Alright, it's here. Remember that you can also change your {hometown} here. If you want to restore your pokemon again, just say {heal}.", cid)
+            selfSay("One second... Alright, all done. Remember that you can also change your {hometown} here. If you want to restore your Pokemon again, just say {heal}.", cid)
         else
-            selfSay("One second... Alright, it's here. If you want to restore your pokemon again, just say {heal}.", cid)
+            selfSay("One second... Alright, all done. If you want to restore your Pokemon again, just say {heal}.", cid)
         end
 
         doCreatureAddHealth(cid, (getCreatureMaxHealth(cid) - getCreatureHealth(cid)))
@@ -254,7 +254,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             return true
         end
 
-        selfSay(string.format(__L(cid, "You really want to live in %s?"), city), cid)
+        selfSay(string.format(__L(cid, "Do you really want to live in %s? {Yes} or {No}"), city), cid)
         lastCity[cid] = city
 
     elseif ((msgcontains(msg, "yes") or msgcontains(msg, 'sim')) and lastCity[cid] ~= nil) then

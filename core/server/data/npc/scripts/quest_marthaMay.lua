@@ -27,7 +27,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 
     if (getPlayerDefeatedNPC(cid, 9706)) then
-        selfSay("Then he wrote a letter to me? He still loves me, why he never sent me the letter? ... Well I will tell you about the Grinch, he was born different but it was always affectionate, we fell in love, but people did not like the situation pro he was different, then at Christmas made a bad joke with him that ended up hurting his feelings, he ran away and was never seen again, you know where he {hides}?", cid)
+        selfSay("So he wrote me a letter? He still loves me, why did he never send it? ... Well, I'll tell you about the Grinch. He was born different but was always affectionate, and we fell in love, but people didn't like it because he was different. Then one Christmas they played a cruel joke on him that hurt his feelings, and he ran away and was never seen again. Do you know where he {hides}?", cid)
         npcHandler:addFocus(cid)
         return false
     end

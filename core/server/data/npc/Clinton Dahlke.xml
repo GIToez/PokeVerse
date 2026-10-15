@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="618" head="10" body="10" legs="100" feet="10" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="It's beautiful control your entire brain, no?"/>
+		<parameter key="message_greet" value="Isn't it beautiful to control your entire brain?"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

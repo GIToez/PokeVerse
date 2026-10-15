@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. I can {remove} your Pokemon helds!"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. I can {remove} your Pokemon's held items!"/>
 		<parameter key="shop_sellable" value="
 		held black belt, 23513;
 		held black glasses, 23514;

@@ -35,7 +35,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
 		if (questStatus == QUESTSTATUS_UNSTARTED) then
 			if (getPlayerLevel(cid) >= QUEST_LEVEL) then
-				selfSay("I've been searching the fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them, I need you to deliver a letter for him and help him find the fossils. Do you want help me?", cid)
+				selfSay("I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me? {Yes} or {No}", cid)
 				npcHandler.talkState[talkUser] = TALKSTATE_ACCEPTING
 			else
 				selfSay(string.format(__L(cid, "Sorry, you do not have the required level to accept this mission. The minimum is %s."), QUEST_LEVEL), cid)
@@ -43,7 +43,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 			end
 
 		elseif (questStatus == QUESTSTATUS_STARTED) then
-			selfSay("You could find a fossil?", cid)
+			selfSay("Did you find a fossil? {Yes} or {No}", cid)
 			npcHandler.talkState[talkUser] = TALKSTATE_FINISHING
 
 		elseif (questStatus == QUESTSTATUS_WAITINGOMANYTEEGG) then
@@ -51,7 +51,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 			if (eggTime < getCurrentTimeInSeconds()) then
 				doPlayerAddItem(cid, 14364) -- Omanyte Egg
 				doCreatureSetStorage(cid, QUEST_STORAGE, QUESTSTATUS_FINISHED)
-				selfSay("I managed to extract DNA from fossil and produce an egg! Here, take good care of it!", cid)
+				selfSay("I managed to extract DNA from the fossil and produce an egg! Here, take good care of it!", cid)
                 doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.REVIVE_FOSSIL)
 			else
 				selfSay("I'm still studying the fossil, check back later.", cid)
@@ -65,7 +65,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 			if (eggTime < getCurrentTimeInSeconds()) then
 				doPlayerAddItem(cid, 14365) -- Kabuto Egg
 				doCreatureSetStorage(cid, QUEST_STORAGE, QUESTSTATUS_FINISHED)
-				selfSay("I managed to extract DNA from fossil and produce an egg! Here, take good care of it!", cid)
+				selfSay("I managed to extract DNA from the fossil and produce an egg! Here, take good care of it!", cid)
                 doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.REVIVE_FOSSIL)
 			else
 				selfSay("I'm still studying the fossil, check back later.", cid)
@@ -78,7 +78,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
 	elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
 		if (npcHandler.talkState[talkUser] == TALKSTATE_ACCEPTING) then
-			selfSay("My brother is in a dig at Mt Moon, go there find him, deliver this letter and ask about the fossils.", cid)
+			selfSay("My brother is at a dig in Mt Moon. Go there, find him, deliver this letter and ask about the fossils.", cid)
 			doPlayerAddItem(cid, 14366) -- Professor Josh Rock message to William Rock
 			doCreatureSetStorage(cid, QUEST_STORAGE, QUESTSTATUS_STARTED)
 			npcHandler.talkState[talkUser] = TALKSTATE_NONE
@@ -86,18 +86,18 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 		elseif (npcHandler.talkState[talkUser] == TALKSTATE_FINISHING) then
 			if (getPlayerItemCount(cid, 12088) > 0) then -- Dome Fossil
 				doPlayerRemoveItem(cid, 12088, 1)
-				selfSay("You really did it! Congratulations! I'm seeing a real fossil! Thank you! I will start studying it now, come back 24 hours to see if there was any news.", cid)
+				selfSay("You really did it! Congratulations! I'm seeing a real fossil! Thank you! I will start studying it now, come back in 24 hours to see if there is any news.", cid)
 				doCreatureSetStorage(cid, QUEST_STORAGE, QUESTSTATUS_WAITINGKABUTOEGG)
 				doCreatureSetStorage(cid, TIME_STORAGE, getCurrentTimeInSeconds() + 60 * 60 * 24)
 
 			elseif (getPlayerItemCount(cid, 12092) > 0) then -- Helix Fossil
 				doPlayerRemoveItem(cid, 12092, 1)
-				selfSay("You really did it! Congratulations! I'm seeing a real fossil! Thank you! I will start studying it now, come back 24 hours to see if there was any news.", cid)
+				selfSay("You really did it! Congratulations! I'm seeing a real fossil! Thank you! I will start studying it now, come back in 24 hours to see if there is any news.", cid)
 				doCreatureSetStorage(cid, QUEST_STORAGE, QUESTSTATUS_WAITINGOMANYTEEGG)
 				doCreatureSetStorage(cid, TIME_STORAGE, getCurrentTimeInSeconds() + 60 * 60 * 24)
 
 			else
-				selfSay("No.. you have not found.", cid)
+				selfSay("No... you haven't found it.", cid)
 			end
 
 			npcHandler.talkState[talkUser] = TALKSTATE_NONE
@@ -112,7 +112,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 		npcHandler.talkState[talkUser] = TALKSTATE_NONE
 
 	else
-		selfSay("Sorry, do not know what you're talking about.", cid)
+		selfSay("Sorry, I don't know what you're talking about.", cid)
 		npcHandler.talkState[talkUser] = TALKSTATE_NONE
     end
 

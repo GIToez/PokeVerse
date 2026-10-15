@@ -20,7 +20,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'ingredients') or msgcontains(msg, 'ingredientes')) then
-        sayStory(string.createStory(string.format(__L(cid, "Remaing ingredients: %s"), HalloweenEvent.getRemaingIngredientsMessage())), cid)
+        sayStory(string.createStory(string.format(__L(cid, "Remaining ingredients: %s"), HalloweenEvent.getRemaingIngredientsMessage())), cid)
         return true
     end
 

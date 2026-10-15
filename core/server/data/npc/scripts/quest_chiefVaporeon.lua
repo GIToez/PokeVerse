@@ -25,7 +25,7 @@ NODES[1] = keywordHandler:addKeyword(
         end
 
         if (npcHandler.talkState[cid] == TALKSTATES.CAN_UNDERSTAND) then
-            selfSay("This is PPOREN amazing! And VAAPP what brings you to VAPOREONN our tribe reviewer?", cid)
+            selfSay("This is PPOREN amazing! And VAAPP what brings you to VAPOREONN our tribe, visitor?", cid)
         else
             auxTalkState[cid] = doQuestTalkEnd(cid, "Chief Vaporeon", auxTalkState[cid])
         end
@@ -43,7 +43,7 @@ NODES[2] = NODES[1]:addChildKeyword(
             return false
         end
 
-        selfSay("You would not dare VAPP go after this REONN evil thing! I will not VAPPP allow! Our king has sacrificed VAPOREONN for it. You want to use it for evil?", cid)
+        selfSay("Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil? {Yes} or {No}", cid)
 
         return true
     end,
@@ -95,7 +95,7 @@ keywordHandler:addKeyword(
             return false
         end
 
-        selfSay("You can find the Mountain Tribe at the Kumquat Island and the Sky Tribe at the Fairchild Island.", cid)
+        selfSay("You can find the Mountain Tribe on Kumquat Island and the Sky Tribe on Fairchild Island.", cid)
 
         return true
     end,
@@ -120,7 +120,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     -- TODO: redo greet
     local status = getCreatureStorage(cid, 8243)
     if (status == QUEST_STATUS.UNSTARTED) then
-        npcHandler:setMessage(MESSAGE_GREET, "A human! Speaking with me! You can understand me? VAPOREONN")
+        npcHandler:setMessage(MESSAGE_GREET, "A human! Speaking with me! Can you understand me? VAPOREONN")
         npcHandler.talkState[cid] = TALKSTATES.CAN_UNDERSTAND
 
     elseif (status == QUEST_STATUS.STARTED) then

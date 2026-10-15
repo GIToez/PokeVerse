@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Will not need it? We did. Which items to sell?"/>
+		<parameter key="message_greet" value="Don't need it anymore? We buy it. Which items do you want to sell?"/>
 		<parameter key="shop_sellable" value="
 		Fire Stone, 18083;
 		Leaf Stone, 18086;

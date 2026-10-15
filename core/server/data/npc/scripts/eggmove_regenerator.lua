@@ -34,13 +34,13 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     if (msgcontains(msg, 'regenerate')) then
         local ball = getPlayerBall(cid)
         if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
         elseif (not isItem(ball)) then
-            selfSay("Please, put the poke ball at the ball slot!", cid)
+            selfSay("Please, put the poke ball in the ball slot!", cid)
 
         elseif (not isBallPokemonFromEgg(ball.uid)) then
-            selfSay("This is not a Pokemon from egg!", cid)
+            selfSay("This Pokemon did not hatch from an egg!", cid)
 
         elseif (not getBallReceivedEggMove(ball.uid)) then
             selfSay("Your Pokemon does not have an Egg Move!", cid)
@@ -49,7 +49,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             selfSay("Your Pokemon is not able to regenerate an Egg Move! You must first use an Egg Move Capsule on him.", cid)
 
         elseif (((getBallLastEggMoveRegenerationTry(ball.uid) + TIME_BETWEEN_TRIES) - getCurrentTimeInSeconds()) > 0) then
-            selfSay(string.format(__L(cid, "Your Pokemon already tried to regenerate an Egg Move recently, he must wait %s before try again."), table.concat(string.timediff(((getBallLastEggMoveRegenerationTry(ball.uid) +
+            selfSay(string.format(__L(cid, "Your Pokemon already tried to regenerate an Egg Move recently, it must wait %s before trying again."), table.concat(string.timediff(((getBallLastEggMoveRegenerationTry(ball.uid) +
                     TIME_BETWEEN_TRIES) - getCurrentTimeInSeconds()), cid))), cid)
 
         else
@@ -73,7 +73,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             eggMovesMessage[#eggMovesMessage] = nil
             eggMovesMessage = table.concat(eggMovesMessage)
 
-            selfSay(string.format(__L(cid, "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue?"), getBallPokemonName(ball.uid), eggMovesMessage, REGENERATE_COST), cid)
+            selfSay(string.format(__L(cid, "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue? {Yes} or {No}"), getBallPokemonName(ball.uid), eggMovesMessage, REGENERATE_COST), cid)
         end
 
         talkState[talkUser] = TALKSTATE_REGENERATE
@@ -82,13 +82,13 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please, put the poke ball in the ball slot!", cid)
 
             elseif (not isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is not a Pokemon from egg!", cid)
+                selfSay("This Pokemon did not hatch from an egg!", cid)
 
             elseif (not getBallReceivedEggMove(ball.uid)) then
                 selfSay("Your Pokemon does not have an Egg Move!", cid)
@@ -97,7 +97,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("Your Pokemon is not able to regenerate an Egg Move! You must first use an Egg Move Capsule on him.", cid)
 
             elseif (((getBallLastEggMoveRegenerationTry(ball.uid) + TIME_BETWEEN_TRIES) - getCurrentTimeInSeconds()) > 0) then
-                selfSay(string.format(__L(cid, "Your Pokemon already tried to regenerate an Egg Move recently, he must wait %s before try again."), table.concat(string.timediff(((getBallLastEggMoveRegenerationTry(ball.uid) +
+                selfSay(string.format(__L(cid, "Your Pokemon already tried to regenerate an Egg Move recently, it must wait %s before trying again."), table.concat(string.timediff(((getBallLastEggMoveRegenerationTry(ball.uid) +
                         TIME_BETWEEN_TRIES) - getCurrentTimeInSeconds()), cid))), cid)
 
             elseif (not doPlayerRemoveMoney(cid, REGENERATE_COST)) then
@@ -124,43 +124,43 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     elseif (talkState[talkUser] == TALKSTATE_RESULT) then
         local ball = getPlayerBall(cid)
         if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
         elseif (not isItem(ball)) then
-            selfSay("Please, put the poke ball at the ball slot!", cid)
+            selfSay("Please, put the poke ball in the ball slot!", cid)
 
         elseif (not isBallPokemonFromEgg(ball.uid)) then
-            selfSay("This is not a Pokemon from egg!", cid)
+            selfSay("This Pokemon did not hatch from an egg!", cid)
 
         elseif (not getBallLastEggMoveRegenerated(ball.uid)) then
-            selfSay("Your Pokemon doesn't have regenerated an Egg Move!", cid)
+            selfSay("Your Pokemon hasn't regenerated an Egg Move!", cid)
 
         elseif (msgcontains(msg, 'accept') or msgcontains(msg, 'aceitar')) then
-            selfSay(string.format(__L(cid, "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget your current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule."), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
+            selfSay(string.format(__L(cid, "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget its current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule. {Yes} or {No}"), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
             talkState[talkUser] = TALKSTATE_ACCEPT_CONFIRM
 
         elseif (msgcontains(msg, 'reject') or msgcontains(msg, 'rejeitar')) then
-            selfSay(string.format(__L(cid, "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule."), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
+            selfSay(string.format(__L(cid, "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule. {Yes} or {No}"), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
             talkState[talkUser] = TALKSTATE_REJECT_CONFIRM
 
         else
-            selfSay("I din't understand. Do you want to {ACCEPT} or {REJECT} the regenerated Egg Move?", cid)
+            selfSay("I didn't understand. Do you want to {ACCEPT} or {REJECT} the regenerated Egg Move?", cid)
         end
 
     elseif (talkState[talkUser] == TALKSTATE_ACCEPT_CONFIRM) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please, put the poke ball in the ball slot!", cid)
 
             elseif (not isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is not a Pokemon from egg!", cid)
+                selfSay("This Pokemon did not hatch from an egg!", cid)
 
             elseif (not getBallLastEggMoveRegenerated(ball.uid)) then
-                selfSay("Your Pokemon doesn't have regenerated an Egg Move!", cid)
+                selfSay("Your Pokemon hasn't regenerated an Egg Move!", cid)
 
             else
                 local eggMove = getBallLastEggMoveRegenerated(ball.uid)
@@ -185,16 +185,16 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please, put the poke ball in the ball slot!", cid)
 
             elseif (not isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is not a Pokemon from egg!", cid)
+                selfSay("This Pokemon did not hatch from an egg!", cid)
 
             elseif (not getBallLastEggMoveRegenerated(ball.uid)) then
-                selfSay("Your Pokemon doesn't have regenerated an Egg Move!", cid)
+                selfSay("Your Pokemon hasn't regenerated an Egg Move!", cid)
 
             else
                 selfSay("Alright! It's done! You can try to regenerate another Egg Move for this Pokemon tomorrow.", cid)

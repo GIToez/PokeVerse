@@ -19,7 +19,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             if (doPlayerRemoveItem(cid, 18190, 1)) then -- Newspaper
                 if (doPlayerAddUniqueItem(cid, 18191, 1, false)) then -- Wardrobe key
                     doCreatureSetStorage(cid, 8297, QUEST_STATUS.FINISHED)
-                    selfSay("Oh, thanks. Take the key with you, maybe one day you find what you need.", cid)
+                    selfSay("Oh, thanks. Take the key with you, maybe one day you'll find what you need.", cid)
 
                 else
                     doPlayerAddUniqueItem(cid, 18190, 1, true) -- Newspaper

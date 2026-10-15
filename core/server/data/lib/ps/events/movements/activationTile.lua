@@ -1141,7 +1141,7 @@ local ACTS_ONLY_PLAYER = {
         return true
     end,
     [302] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #3
-        if (getCreatureStorage(cid, 8751) ~= QUEST_STATUS.FINISEHD and table.find({ NORTH, NORTHEAST, NORTHWEST }, getDirectionTo(fromPosition, toPosition))) then -- Entering
+        if (getCreatureStorage(cid, 8751) == QUEST_STATUS.UNSTARTED and table.find({ NORTH, NORTHEAST, NORTHWEST }, getDirectionTo(fromPosition, toPosition))) then -- Entering
             local oak = getNpcAtPosition({x = 5020, y = 788, z = 7}, "Professor Oak")
             if (isNpc(oak)) then
                 doCreatureSay(oak, string.format(__L(cid, "Hello %s, welcome to my lab! My name is Oak, I'm a researcher fascinated by the Pokemon world... I see that your big day has arrived, are you ready to receive your first Pokemon?"), getCreatureName(cid)), TALKTYPE_SAY)

@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="503" head="150" body="170" legs="0" feet="200" corpse="2212"/>
 	<parameters>
-		<parameter key="message_greet" value="Hi |PLAYERNAME|, do you want to {sell} some Pokemon for me? Always good price here, you can trust."/>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|, do you want to {sell} me some Pokemon? Always a good price here, you can trust me."/>
 	</parameters>
 </npc>

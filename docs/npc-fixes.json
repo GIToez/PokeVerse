@@ -1,0 +1,1395 @@
+[
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hey |PLAYERNAME|, it is hot? This desert is getting worse.",
+  "rewrite": "Hey |PLAYERNAME|, is it hot? This desert is getting worse.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have got what I asked?",
+  "rewrite": "Have you got what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to join into the %s Mastery?",
+  "rewrite": "Do you want to join the %s Mastery?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You already has a mastery, if you want to join here first you need to dismiss with your mastery leader.",
+  "rewrite": "You already have a mastery. If you want to join here, you first need to leave it by talking to your mastery leader.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you ready to the next level?",
+  "rewrite": "Are you ready for the next level?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you ready to the dungeon?",
+  "rewrite": "Are you ready for the dungeon?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You need to dismiss with your mastery leader, not here.",
+  "rewrite": "You need to leave through your own mastery leader, not here.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Your account must be with the premium days to join here.",
+  "rewrite": "Your account must have premium days to join here.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to join into the %s Mastery?",
+  "rewrite": "Do you really want to join the %s Mastery?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have already paid the necessary plates, now you need to win my assistant %s.",
+  "rewrite": "You have already paid the necessary plates, now you need to defeat my assistant %s.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To join into %s Mastery you will need %s. You're with them?",
+  "rewrite": "To join the %s Mastery you will need %s. Do you have them?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To complete your initiation, you must win a battle with my assistant %s.",
+  "rewrite": "To complete your initiation, you must win a battle against my assistant %s.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You do not have the necessary plates, come back here when you're with them. Remember that you must achieve %s points through our element plates.",
+  "rewrite": "You do not have the necessary plates, come back when you have them. Remember that you must reach %s points with our element plates.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations! You are now part of %s Mastery! Honor your Mastery!",
+  "rewrite": "Congratulations! You are now part of the %s Mastery! Honor your Mastery!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations! You were promoted in %s Mastery!",
+  "rewrite": "Congratulations! You were promoted in the %s Mastery!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have already paid the necessary tokens, now you need to win the {dungeon}.",
+  "rewrite": "You have already paid the necessary tokens, now you need to complete the {dungeon}.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To advance in rank within the Mastery you need to prove that you're dominating it, joining %s tokens, you can get them by completing missions with the inhabitants of this base. You are already with the %s %s tokens?",
+  "rewrite": "To advance in rank within the Mastery you need to prove that you're mastering it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Now you're ready to make the {dungeon} and prove that you are able to advance. When you are ready come talk to me.",
+  "rewrite": "Now you're ready to do the {dungeon} and prove that you are able to advance. When you are ready, come talk to me.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You do not have the necessary tokens, come back here when you're with them.",
+  "rewrite": "You do not have the necessary tokens, come back when you have them.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Before to this dungeon you need pay the necessary tokens.",
+  "rewrite": "Before entering this dungeon you need to pay the necessary tokens.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "There is no dungeon avaiable, please try again later.",
+  "rewrite": "There is no dungeon available, please try again later.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You can only enter the dungeon carrying Pokemon with Mastery %s types and without Ditto!",
+  "rewrite": "You can only enter the dungeon carrying Pokemon of the %s Mastery types and no Ditto!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "The task is done?",
+  "rewrite": "Is the task done?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Looks like no.",
+  "rewrite": "Looks like you didn't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Likes no.",
+  "rewrite": "Looks like you didn't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You got the items?",
+  "rewrite": "Did you get the items?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You took them out of my yard?",
+  "rewrite": "Did you get them out of my yard?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You've got what I asked?",
+  "rewrite": "Have you got what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, let's trade your soul coins?",
+  "rewrite": "Hello |PLAYERNAME|, shall we trade your soul coins?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|. You can buy here all the necessary equipment to start planting your Pokemon berries.",
+  "rewrite": "Hello |PLAYERNAME|. Here you can buy all the equipment you need to start planting your Pokemon berries.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Can you help me get my Pokemon?",
+  "rewrite": "Can you help me get my Pokemon back?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to help me with some task?",
+  "rewrite": "Do you want to help me with a task?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations, get your reward.",
+  "rewrite": "Congratulations, here is your reward.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Did you bring what I've asked?",
+  "rewrite": "Did you bring what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, you need something to brighten your home?",
+  "rewrite": "Hello |PLAYERNAME|, do you need something to brighten your home?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you bring what I've asked?",
+  "rewrite": "Did you bring what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No, you did not.",
+  "rewrite": "No, you didn't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Congratulations, get your reward. I have more missions for you, when you want to come talk to me.",
+  "rewrite": "Congratulations, here is your reward. I have more missions for you; come talk to me whenever you want.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?",
+  "rewrite": "So you're a friend of Bill's? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you meddling in police affairs without permission, OK?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Good luck!",
+  "rewrite": "Good luck finding them!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Please, check your backpack for space.",
+  "rewrite": "Please make sure you have space in your backpack.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "This is not a Pokemon from egg!",
+  "rewrite": "This Pokemon did not hatch from an egg!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here is, thanks!",
+  "rewrite": "Here it is, thanks!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Will not need it? We did. Which items to sell?",
+  "rewrite": "Don't need it anymore? We buy it. Which items do you want to sell?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here is.",
+  "rewrite": "Here it is.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You will make another delivery?",
+  "rewrite": "Will you make another delivery?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Great! Thanks for helping me in this. As a reward I will give you the chance to win one of Miltank eggs we produce here. Every 24 hours bring me 50 oranges, they like a lot. Once you bring the oranges, come back in 24 hours and I'll tell you if got your egg. We agree? Great, good luck!",
+  "rewrite": "Great! Thanks for helping me with this. As a reward, I'll give you the chance to win one of the Miltank eggs we produce here. Every 24 hours, bring me 50 oranges, they love them. Once you bring the oranges, come back in 24 hours and I'll tell you if you got your egg. Deal? Great, good luck!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You can not do it while you have a Pokemon out of the ball.",
+  "rewrite": "You can't do that while your Pokemon is out of its ball.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Please, first put a poke ball in your inventory slot.",
+  "rewrite": "Please put a poke ball in your ball slot first.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello baby, we have everything you need. We are fashion too! Remember that only premium account players can wear these clothes!",
+  "rewrite": "Hello baby, we have everything you need. We're fashionable too! Remember that only premium account players can wear these clothes!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Thanks! Your task is defeat 30 Golem.",
+  "rewrite": "Thanks! Your task is to defeat 30 Golem.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No.. you do not have, colect the informations and return back to me.",
+  "rewrite": "No... you don't have it. Collect the information and come back to me.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So you brought the items I ordered?",
+  "rewrite": "So you brought the items I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Sorry, do not know what you're talking about.",
+  "rewrite": "Sorry, I don't know what you're talking about.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No.. you do not have.",
+  "rewrite": "No... you haven't done it yet.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Now which city you want to start out? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.",
+  "rewrite": "Now, which city do you want to start in? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No you do not have...",
+  "rewrite": "No, you don't have it...",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "No, you haven't.",
+  "rewrite": "No, you don't.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You're just getting started, now let's go the next step.",
+  "rewrite": "You're just getting started, now let's go to the next step.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "The largest store of dolls!",
+  "rewrite": "The biggest doll store around!",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "It's what I asked?",
+  "rewrite": "Is that what I asked for?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do not waste your time! Go get the parts.",
+  "rewrite": "Do not waste my time! Go get the parts.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|. Here you will find the best churros of all towns, hu?",
+  "rewrite": "Hello |PLAYERNAME|. Here you will find the best churros in all the towns, huh?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hi |PLAYERNAME|, welcome to the Ranger Club! You can view the {task} list, try your {promotion} inside the club or challenge the {bosses}.",
+  "rewrite": "Hi |PLAYERNAME|, welcome to the Ranger Club! You can view the {task} list, attempt your {promotion} inside the club or challenge the {bosses}.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "How much dollars do you like to withdraw?",
+  "rewrite": "How many dollars would you like to withdraw?",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Alright, it's here.",
+  "rewrite": "Alright, here they are.",
+  "problem": "same line as one already rewritten, in another NPC, quest or shared script"
+ },
+ {
+  "npc": "Assistant Jofrey",
+  "where": "quest 8501 talk_questStarted",
+  "text": "I'm here to teach you about fishing. Take this little Oddish and use the fishing rod on the water. Then you must hook 5 Pokemon and defeat them. Come back and talk to me when you're done.",
+  "rewrite": "I'm here to teach you about fishing. Take this little Oddish and use the fishing rod on the water. Then hook 5 Magikarp and defeat them. Come back and talk to me when you're done.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Professor Oak",
+  "where": "quest 8753 talk_questStarted",
+  "text": "Lately some Rattatas are infesting my basement and I want to ask your help to move them away, could you do it for me?",
+  "rewrite": "Lately some Rattata have been infesting my basement. Could you defeat 5 of them for me?",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Jane Hills",
+  "where": "quest 8291 talk_questStarted",
+  "text": "His favorite food is Onigiri. Thanks for helping me.",
+  "rewrite": "His favorite food is Onigiri, please bring me 20. Thanks for helping me.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queenie Jerrie",
+  "where": "quest 8245 talk_questStarting",
+  "text": "I have a proposal for you: gather some grape flowers for me and in return I will give you grape fruits.",
+  "rewrite": "I have a proposal for you: gather 20 grape flowers for me and in return I will give you grape fruits.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queter Phill",
+  "where": "quest 8667 talk_questStarted",
+  "text": "Great, very good! Your task is simple: wait for the battle simulator to send the global message, enter the teleport and defeat the copy of Suramoon. To prove your feat, bring me the essences you find on his body.",
+  "rewrite": "Great, very good! Your task is simple: wait for the battle simulator to send the global message, enter the teleport and defeat the copy of Suramoon. To prove your feat, bring me 5 of the essences you find on his body.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queter Phill",
+  "where": "quest 8668 talk_questStarted",
+  "text": "OK! You will now be on the second level of the simulator. Do the same thing: wait for the call, enter the teleport and defeat Suramoon! Then bring me the essences.",
+  "rewrite": "OK! You will now be on the second level of the simulator. Do the same thing: wait for the call, enter the teleport and defeat Suramoon! Then bring me 5 of his essences.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Queter Phill",
+  "where": "quest 8669 talk_questStarted",
+  "text": "All right. You are now on the third level! For the last time I need you to defeat Suramoon in our simulator, after that return to me.",
+  "rewrite": "All right. You are now on the third level! For the last time I need you to defeat Suramoon in our simulator, after that bring me 5 of his essences.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Curtis Sacheverell",
+  "where": "quest 8246 talk_questStarted",
+  "text": "What is it?",
+  "rewrite": "What is it? The 10 grape fruits from Gord Scottie? Bring them to me.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Woodworker Courts Ted",
+  "where": "quest 8321 talk_questStarted",
+  "text": "It seems my Pokemon is being attacked! I know you can help him. When you're ready, step into the teleport machine.",
+  "rewrite": "It seems my Pokemon is being attacked by Murkrow! I know you can help him: defeat 30 of them. When you're ready, step into the teleport machine.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Stiller",
+  "where": "quest 8042 talk_questStarted",
+  "text": "Okay, bring me 200x Fancy Fabrics, 200x Long Silks and 5000 dollars.",
+  "rewrite": "Okay, bring me 200x Fancy Fabrics, 200x Long Silks and 5000 dollars in hundred-dollar notes (50 notes).",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Officer Jeny",
+  "where": "quest 8017 talk_questStarted",
+  "text": "Thanks! We know Team Rocket is involved in this, so we need to find them. We have information that one of their bases is in Celadon. Take these special balls, and if you find the Chanseys, use them on them.",
+  "rewrite": "Thanks! We know Team Rocket is involved in this, so we need to find them. We have information that one of their bases is in Celadon. Take these 5 special balls, and use them on the Chanseys when you find them.",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Mr. Fuji",
+  "where": "quest 8511 talk_questStarted",
+  "text": "I was at my house here in Lavender when a loud noise caught my attention. I ran to the window and saw many lights and lanterns. A boy was being taken by hooded thieves, it was a kidnapping. I take care of Pokemon abandoned by their trainers, and I couldn't stand by and watch. I ran out to help the boy, but my Pokemon are afraid of battles, and I was soon captured and brought here. I don't know who the boy was, but he shouted: 'Run Pikachu! Escape to safety!' Through the window I could only see them fading into the horizon in a balloon. I need you to do me a favor and bring back my lost Pokemon. Do you think you can do it?",
+  "rewrite": "I was at my house here in Lavender when a loud noise caught my attention. I ran to the window and saw many lights and lanterns. A boy was being taken by hooded thieves, it was a kidnapping. I take care of Pokemon abandoned by their trainers, and I couldn't stand by and watch. I ran out to help the boy, but my Pokemon are afraid of battles, and I was soon captured and brought here. I don't know who the boy was, but he shouted: 'Run Pikachu! Escape to safety!' Through the window I could only see them fading into the horizon in a balloon. I need you to do me a favor and bring back my 5 lost Pokemon. Use these 5 Poke Balls on them when you find them. Do you think you can do it?",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Professor Ivy",
+  "where": "quest 8214 talk_questStarting",
+  "text": "Cool! Here in my lab we do research, including developing new rations to feed Pokemon. I recently discovered that a plant native to Tangelo Island may have a property that helps newborn Pokemon develop better. Can you try to find it for me?",
+  "rewrite": "Cool! Here in my lab we do research, including developing new rations to feed Pokemon. I recently discovered that a plant native to Tangelo Island, the Tangel Rue, may have a property that helps newborn Pokemon develop better. Can you bring me some of its leaves?",
+  "problem": "say what the quest checks and how many"
+ },
+ {
+  "npc": "Assistant Guyli",
+  "where": "quest 8410 talk_questStarted",
+  "text": "I asked him for help. Some Pokemon from our reserves have been stressed lately, and we don't know how to handle it. Can you find help? We can't leave the lab for long. I'm sure someone in Pallet can help us. A girl, yes! I don't remember her name... ask about {Pokemon stress}. Take a look around Pallet and return with good news!",
+  "rewrite": "I asked him for help. Some Pokemon from our reserves have been stressed lately, and we don't know how to handle it. Can you find help? We can't leave the lab for long. I'm sure someone in Pallet can help us. A girl, yes! I don't remember her name... ask her if she has a mission for you. Take a look around Pallet and return with good news!",
+  "problem": "blue word meant for another NPC"
+ },
+ {
+  "npc": "Pepper Denis",
+  "where": "quest 8250 talk_questStarted",
+  "text": "You'll have to find my five friends! They could be anyone in the city! Hahahahahaha! Say {hidden} to the people you suspect to find them.",
+  "rewrite": "You'll have to find my five friends! They could be anyone in the city! Hahahahahaha! Say 'hidden' to the people you suspect to find them.",
+  "problem": "blue word meant for other NPCs"
+ },
+ {
+  "npc": "Prophet Slowking",
+  "where": "quest 8242 talk_questStarted",
+  "text": "You need to help the three tribes restore the balance that is breaking. They are not far from my house. First go to the {Sea Tribe} and talk to the Chief, ask for the {Deepsoul Stone}.",
+  "rewrite": "You need to help the three tribes restore the balance that is breaking. They are not far from my house. First go to the Sea Tribe and ask their Chief about the 'Deepsoul Stone'.",
+  "problem": "blue word meant for another NPC"
+ },
+ {
+  "npc": "Mistery Guy",
+  "where": "quest 8529 talk_questFinished",
+  "text": "So Mewtwo really was created... Damn, I was afraid of that. At least we know more about it and its origin. Thank you, now I can go back to my {dad} as soon as possible.",
+  "rewrite": "So Mewtwo really was created... Damn, I was afraid of that. At least we know more about it and its origin. Thank you, now I can go back to my dad as soon as possible.",
+  "problem": "blue word nobody answers"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here?",
+  "rewrite": "By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here? The {Deepsoul} Stone?",
+  "problem": "nothing told the player what to say next"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "What do you LOSSWI want with that damn stone? Do you want to do something with it? Think about PILOSWINEEE your answer!",
+  "rewrite": "What do you LOSSWI want with that damn stone? Do you want to {help} protect it? Think about PILOSWINEEE your answer!",
+  "problem": "nothing told the player what to say next"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want.",
+  "rewrite": "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want. If you came for the {Deepsoul} Stone, forget it.",
+  "problem": "nothing told the player what to say first"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": " gold coins.",
+  "rewrite": " dollars.",
+  "problem": "Tibia money"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So, you really want to reset your Smeargle %s? This will cost you %sx Artist's Pallete.",
+  "rewrite": "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes.",
+  "problem": "spelling; the item is an artist palette"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You need at least %sx Artist's Pallete to do it.",
+  "rewrite": "You need at least %sx artist palettes to do it.",
+  "problem": "spelling; the item is an artist palette"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can {remove} your Pokemon held! Do you want that? {Your Pokemon Held Item level will be reseted if you do that.}",
+  "rewrite": "I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that.",
+  "problem": "spelling, and a whole sentence was a blue word"
+ },
+ {
+  "npc": "Donald",
+  "where": "message_greet",
+  "text": "Hello |PLAYERNAME|. I sell ham, meat, carrots, apples, brown breads, brown mushrooms and eggs (everything for 8 gold coins)!",
+  "rewrite": "Hello |PLAYERNAME|. I sell ham, meat, carrots, apples, brown breads, brown mushrooms and eggs (everything for 8 dollars)!",
+  "problem": "Tibia money"
+ },
+ {
+  "npc": "Kenya Madere",
+  "where": "message_greet",
+  "text": "I love flowers and everything in nature, but  I'm going to beat you.",
+  "rewrite": "I love flowers and everything in nature, but I'm going to beat you.",
+  "problem": "double space"
+ },
+ {
+  "npc": "Sakura",
+  "where": "quest 8080 talk_questStarted",
+  "text": "Thanks! I need you to bring me these items: 39x Venon Pendant.",
+  "rewrite": "Thanks! I need you to bring me these items: 39x Venom Pendant.",
+  "problem": "spelling; the item is a venom pendant"
+ },
+ {
+  "npc": "Bertina Stacy",
+  "where": "quest 8738 talk_questFinished",
+  "text": "Wow thank you very much. Hopefully these {Pokemon} will not haunt me any more.",
+  "rewrite": "Wow thank you very much. Hopefully these {Pokemon} will not haunt me anymore.",
+  "problem": "grammar"
+ },
+ {
+  "npc": "Chief Vaporeon",
+  "where": "quest 8243 talk_questStarted",
+  "text": "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and find out where the Restore Stones are. Come back here later.",
+  "rewrite": "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chiefs} and find out where the Restore Stones are. Come back here later.",
+  "problem": "grammar"
+ },
+ {
+  "npc": "Kenelm Reilly",
+  "where": "quest 8726 talk_questFinished",
+  "text": "Thank you Pikachu! My research will reach the stars now!",
+  "rewrite": "Thank you, Pikachu! My research will reach the stars now!",
+  "problem": "grammar"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You better have burn heal!",
+  "rewrite": "Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You'd better have a Burn Heal!",
+  "problem": "grammar"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Want a hot-dog, brother?",
+  "rewrite": "Want a hot dog, brother?",
+  "problem": "spelling"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here you can exchange the 'psoul' letters for exclusive items.",
+  "rewrite": "Here you can exchange the letters P, S, O, U and L for exclusive items.",
+  "problem": "old server name (PokeSoul)"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to exchange 'psoul' letters for a %s?",
+  "rewrite": "Do you really want to exchange the letters P, S, O, U and L for a %s?",
+  "problem": "old server name (PokeSoul)"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you sure you want to deposit all your money?",
+  "rewrite": "Are you sure you want to deposit all your money? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you sure you want to withdraw all your money?",
+  "rewrite": "Are you sure you want to withdraw all your money? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to transfer %s dollars to %s?",
+  "rewrite": "Do you really want to transfer %s dollars to %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to exchange %s poke coins for a %s?",
+  "rewrite": "Do you want to exchange %s poke coins for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee.",
+  "rewrite": "Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to deposit %s %s?",
+  "rewrite": "Do you really want to deposit %s %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to remove the plate that you deposited here?",
+  "rewrite": "Do you really want to remove the plate that you deposited here? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level).",
+  "rewrite": "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level). {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to remove your Pokemon from the daycare?",
+  "rewrite": "Do you want to remove your Pokemon from the daycare? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget its current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule.",
+  "rewrite": "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget its current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule.",
+  "rewrite": "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue?",
+  "rewrite": "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!",
+  "rewrite": "DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE! {YES} or {NO}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to use the Egg Move %s of your %s to replace the move %s?",
+  "rewrite": "Do you really want to use the Egg Move %s of your %s to replace the move %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that?",
+  "rewrite": "Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So, do you really want to remove your Pokemon Egg Move?",
+  "rewrite": "So, do you really want to remove your Pokemon Egg Move? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "This will cost you %s dollars, are you sure?",
+  "rewrite": "This will cost you %s dollars, are you sure? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that?",
+  "rewrite": "Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Yes, you can recover an Egg Move that your Pokemon forgot. Do you want to do that?",
+  "rewrite": "Yes, you can recover an Egg Move that your Pokemon forgot. Do you want to do that? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Oh, you think that you are ready to challenge the Elite Four?",
+  "rewrite": "Oh, you think that you are ready to challenge the Elite Four? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to exchange the letters P, S, O, U and L for a %s?",
+  "rewrite": "Do you really want to exchange the letters P, S, O, U and L for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to exchange %s %s for a %s?",
+  "rewrite": "Do you want to exchange %s %s for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to exchange %s anniversary token for a %s?",
+  "rewrite": "Do you want to exchange %s anniversary token for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s %s for %s anniversary token(s)?",
+  "rewrite": "You want to exchange %s %s for %s anniversary token(s)? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s halloween tokens for a %s?",
+  "rewrite": "You want to exchange %s halloween tokens for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s for the %s?",
+  "rewrite": "You want to exchange %s for the %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s more %s empty poke balls for %s empty enchanted balls?",
+  "rewrite": "You want to exchange %s more %s empty poke balls for %s empty enchanted balls? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Fifteen mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Fifteen mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Ten mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Ten mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Twenty mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Twenty mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Cooperative Elite mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Cooperative Elite mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Cooperative Titan mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Cooperative Titan mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Gladiator mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Gladiator mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Survive Challenge mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Survive Challenge mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Survive Hardcore mode? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Survive Hardcore mode? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that.",
+  "rewrite": "I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you ready for the dungeon?",
+  "rewrite": "Are you ready for the dungeon? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Are you ready for the next level?",
+  "rewrite": "Are you ready for the next level? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to join the %s Mastery?",
+  "rewrite": "Do you really want to join the %s Mastery? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to leave the mastery?",
+  "rewrite": "Do you really want to leave the mastery? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to join the %s Mastery?",
+  "rewrite": "Do you want to join the %s Mastery? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To advance in rank within the Mastery you must prove you've mastered it by collecting %s tokens. You can get them by completing missions for the people of this base. Do you have the %s %s tokens?",
+  "rewrite": "To advance in rank within the Mastery you must prove you've mastered it by collecting %s tokens. You can get them by completing missions for the people of this base. Do you have the %s %s tokens? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To join the %s Mastery you will need %s. Do you have them?",
+  "rewrite": "To join the %s Mastery you will need %s. Do you have them? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To advance in rank within the Mastery you need to prove you've mastered it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens?",
+  "rewrite": "To advance in rank within the Mastery you need to prove you've mastered it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "To advance in rank within the Mastery you need to prove that you're mastering it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens?",
+  "rewrite": "To advance in rank within the Mastery you need to prove that you're mastering it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to live in %s?",
+  "rewrite": "Do you really want to live in %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, do you want to hear a good story?",
+  "rewrite": "Hello |PLAYERNAME|, do you want to hear a good story? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Also, I have a letter to deliver to him. Will you do me this favor?",
+  "rewrite": "Also, I have a letter to deliver to him. Will you do me this favor? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it?",
+  "rewrite": "It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil?",
+  "rewrite": "Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it?",
+  "rewrite": "Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You already did this mission. If you need, I can sell you another TV Camera for 1000 dollars. Do you want it?",
+  "rewrite": "You already did this mission. If you need, I can sell you another TV Camera for 1000 dollars. Do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You've done this mission and have the old reward. I can renew your reward. Do you want it?",
+  "rewrite": "You've done this mission and have the old reward. I can renew your reward. Do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Did you find a fossil?",
+  "rewrite": "Did you find a fossil? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me?",
+  "rewrite": "I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want a Bulbasaur?",
+  "rewrite": "Do you really want a Bulbasaur? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want a Charmander?",
+  "rewrite": "Do you really want a Charmander? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want a Squirtle?",
+  "rewrite": "Do you really want a Squirtle? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that?",
+  "rewrite": "Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Could you find a fossil rock?",
+  "rewrite": "Could you find a fossil rock? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to help me with my excavations?",
+  "rewrite": "Do you want to help me with my excavations? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Oh! You have a message from my brother for me?",
+  "rewrite": "Oh! You have a message from my brother for me? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Oh, thanks! So you want to help me with my excavations?",
+  "rewrite": "Oh, thanks! So you want to help me with my excavations? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to be part of the Ranger Club?",
+  "rewrite": "Do you really want to be part of the Ranger Club? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to challenge this boss?",
+  "rewrite": "Do you really want to challenge this boss? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Oh, you want to receive a promotion in the Ranger Club?",
+  "rewrite": "Oh, you want to receive a promotion in the Ranger Club? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "These are the details of this task, do you accept it?",
+  "rewrite": "These are the details of this task, do you accept it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task?",
+  "rewrite": "You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go?",
+  "rewrite": "Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Alright, do you want to go back to Fuchsia City?",
+  "rewrite": "Alright, do you want to go back to Fuchsia City? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to paint your pokeball with option %s for %s dollars and a %s ticket?",
+  "rewrite": "You want to paint your pokeball with option %s for %s dollars and a %s ticket? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to paint your pokeball with option %s for %s dollars?",
+  "rewrite": "You want to paint your pokeball with option %s for %s dollars? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s frontier tokens for a %s?",
+  "rewrite": "You want to exchange %s frontier tokens for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s mastery token%s%s for %sx %s?",
+  "rewrite": "You want to exchange %s mastery token%s%s for %sx %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to sell your %s for %s dollars plus %s dollars for each level?",
+  "rewrite": "Do you want to sell your %s for %s dollars plus %s dollars for each level? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to sell: %s for %s dollars?",
+  "rewrite": "Do you want to sell: %s for %s dollars? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes.",
+  "rewrite": "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "%s, are you sure?",
+  "rewrite": "%s, are you sure? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to exchange %s referral points for a %s?",
+  "rewrite": "Do you really want to exchange %s referral points for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to exchange %s soul coin(s) for a %s?",
+  "rewrite": "Do you really want to exchange %s soul coin(s) for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to change your sex? The price is 3 Soul Coins.",
+  "rewrite": "Do you want to change your sex? The price is 3 Soul Coins. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can remove your Pokemon's nickname for free, do you want that?",
+  "rewrite": "I can remove your Pokemon's nickname for free, do you want that? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can sell you a stamina recover for 1 Soul Coin, do you want it?",
+  "rewrite": "I can sell you a stamina recover for 1 Soul Coin, do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can sell you an Egg Move Capsule for 1 Soul Coin, do you want it?",
+  "rewrite": "I can sell you an Egg Move Capsule for 1 Soul Coin, do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it?",
+  "rewrite": "Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to move the TM %s from your %s to replace the move %s?",
+  "rewrite": "Do you really want to move the TM %s from your %s to replace the move %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to remove the move %s from your %s?",
+  "rewrite": "Do you really want to remove the move %s from your %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to join the %s tournament? (This will cost you %s dollars)",
+  "rewrite": "Do you really want to join the %s tournament? (This will cost you %s dollars) {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to unsubscribe from the tournament?",
+  "rewrite": "Do you really want to unsubscribe from the tournament? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "You want to exchange %s tournament token%s for a %s?",
+  "rewrite": "You want to exchange %s tournament token%s for a %s? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to leave this room? You may be disqualified from the tournament.",
+  "rewrite": "Do you really want to leave this room? You may be disqualified from the tournament. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to go to %s? This will cost you %s dollars.",
+  "rewrite": "Do you really want to go to %s? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to skip the tutorial?",
+  "rewrite": "Do you really want to skip the tutorial? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin.",
+  "rewrite": "I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to enter the Colosseum Arena? This will cost you %s dollars.",
+  "rewrite": "Do you want to enter the Colosseum Arena? This will cost you %s dollars. {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars?",
+  "rewrite": "Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars?",
+  "rewrite": "Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}",
+  "problem": "yes/no question without {yes}"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, want to trade your soul coins?",
+  "rewrite": "Hello |PLAYERNAME|, want to trade your {soul} coins?",
+  "problem": "greeting hides the word the NPC answers to"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hello |PLAYERNAME|, shall we trade your soul coins?",
+  "rewrite": "Hello |PLAYERNAME|, shall we trade your {soul} coins?",
+  "problem": "greeting hides the word the NPC answers to"
+ }
+]

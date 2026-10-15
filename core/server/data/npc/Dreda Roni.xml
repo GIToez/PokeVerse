@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="idletime" value="180" />
         <parameter key="module_shop" value="1"/>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|. How I can help you? Are you hungry or thirsty?"/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|. How can I help you? Are you hungry or thirsty?"/>
         <parameter key="shop_buyable" value="
 		churros with white chocolate, 12202, 3;
 		churros with milk candy, 12203, 3;

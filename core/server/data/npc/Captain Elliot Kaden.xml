@@ -4,7 +4,7 @@
 	<look type="563" head="0" body="0" legs="0" feet="0"/>
 	<parameters>
         <parameter key="module_travel" value="1"/>
-		<parameter key="message_greet" value="The sun strengthens those who live on the sea. Our headquarters is great bravery. And it has a sailor stretching members... good guy. Where you want to go? If you don't know where to flow, say {travel}."/>
+		<parameter key="message_greet" value="The sun strengthens those who live on the sea. Our crew is full of bravery. And we have a sailor who stretches members... good guy. Where do you want to go? If you don't know where to sail, say {travel}."/>
         <parameter key="travel_destinations" value="vermilion,3858,641,5,325,false;mandarin north,2968,2297,6,50,false,-1,4;"/>
     </parameters>
 </npc>

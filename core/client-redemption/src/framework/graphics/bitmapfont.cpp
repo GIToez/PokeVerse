@@ -529,7 +529,8 @@ std::string BitmapFont::wrapText(std::string_view text, int maxWidth, const Wrap
             unsigned char ch = (unsigned char)*cur;
             if (_isSpace(ch)) {
                 const int w = glyphWidth(' ');
-                if (lineW + w > maxW) { commitBreak(false); pushChar(' '); lineW = w; ++cur; continue; }
+                // the word before fits, only the space overflows: end the line at this space
+                if (lineW + w > maxW) { pushChar(' '); newline(); ++cur; continue; }
                 pushChar(' '); lineW += w; markBreak(false, 0); ++cur; continue;
             }
             if (_isHyphen(ch)) {

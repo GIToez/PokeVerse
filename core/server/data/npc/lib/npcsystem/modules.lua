@@ -113,7 +113,7 @@ if(Modules == nil) then
             elseif(not parameters.vocation(cid)) then
                 npcHandler:say('This spell is not for your vocation', cid)
             elseif(not doPlayerRemoveMoney(cid, parameters.price)) then
-                npcHandler:say('You do not have enough money, this spell costs ' .. parameters.price .. ' gold coins.', cid)
+                npcHandler:say('You do not have enough money, this spell costs ' .. parameters.price .. ' dollars.', cid)
             else
                 npcHandler:say('You have learned ' .. parameters.spellName .. '.', cid)
                 playerLearnInstantSpell(cid, parameters.spellName)
@@ -176,7 +176,7 @@ if(Modules == nil) then
         elseif(parameters.storageId ~= nil and getPlayerStorageValue(cid, parameters.storageId) < storage) then
             npcHandler:say(parameters.storageInfo or 'You may not travel there!', cid)
         elseif(not pzLocked and isPlayerPzLocked(cid)) then
-            npcHandler:say('Get out of there with this blood!', cid)
+            npcHandler:say('Come back when you\'re not covered in blood!', cid)
         elseif(not doPlayerRemoveMoney(cid, parameters.cost)) then
             npcHandler:say('You do not have enough money.', cid)
         else
@@ -422,9 +422,9 @@ if(Modules == nil) then
         end
 
         if (parameters.requiredItem and getPlayerItemCount(cid, parameters.requiredItem) > 0) then
-            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. '?', cid)
+            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. '? {Yes} or {No}', cid)
         else
-            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. ' for ' .. parameters.cost .. ' dollars?', cid)
+            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. ' for ' .. parameters.cost .. ' dollars? {Yes} or {No}', cid)
         end
         return true
     end
@@ -457,7 +457,7 @@ if(Modules == nil) then
                         module.npcHandler:say('You do not have enough money.', cid)
                     end
                 else
-                    module.npcHandler:say('Get out of there with this blood!', cid)
+                    module.npcHandler:say('Come back when you\'re not covered in blood!', cid)
                 end
             else
                 module.npcHandler:say('I can only allow premium players to travel there.', cid)
@@ -703,7 +703,7 @@ if(Modules == nil) then
             end
         end
 
-        module.npcHandler:say('Do you want ' .. keywords[1] .. ' ' .. (addon == 0 and "outfit" or "addon") .. ' for ' .. items .. '?', cid)
+        module.npcHandler:say('Do you want ' .. keywords[1] .. ' ' .. (addon == 0 and "outfit" or "addon") .. ' for ' .. items .. '? {Yes} or {No}', cid)
         return true
 
     end
@@ -774,13 +774,13 @@ if(Modules == nil) then
                         module.npcHandler:say('Sorry, this ' .. (parent.addon == 0 and 'outfit' or 'addon') .. ' is not for your gender.', cid)
                     end
                 else
-                    module.npcHandler:say('I will not dress you with addon of outfit you cannot wear!', cid)
+                    module.npcHandler:say('I will not dress you in an addon for an outfit you cannot wear!', cid)
                 end
             else
-                module.npcHandler:say('You alrady have this ' .. (parent.addon == 0 and 'outfit' or 'addon') .. '!', cid)
+                module.npcHandler:say('You already have this ' .. (parent.addon == 0 and 'outfit' or 'addon') .. '!', cid)
             end
         else
-            module.npcHandler:say('Sorry, I dress only premium players.', cid)
+            module.npcHandler:say('Sorry, I only dress premium players.', cid)
         end
 
         module.npcHandler:resetNpc()

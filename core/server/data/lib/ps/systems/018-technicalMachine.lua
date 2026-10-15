@@ -621,7 +621,7 @@ local function canLearn(cid, tm, ball, tmId)
         return __L(cid, "Sorry, not possible.")
 
     elseif (isPokemonOnline(cid)) then
-        return __L(cid, "You can not do it while you have a Pokemon out of the ball.")
+        return __L(cid, "You can't do that while your Pokemon is out of its ball.")
 
     elseif (not getPokemonTmLearnable(getBallPokemonName(ball.uid), tmId)) then
         return __L(cid, "Your Pokemon can't learn this Technical Machine.")

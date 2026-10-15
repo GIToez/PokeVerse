@@ -1,6 +1,6 @@
 function onUse(cid, item, fromPosition, itemEx, toPosition)
     if (isPokemonOnline(cid)) then
-        doPlayerSendCancel(cid, "You can not do it while you have a Pokemon out of the ball.")
+        doPlayerSendCancel(cid, "You can't do that while your Pokemon is out of its ball.")
         return true
 
     elseif (fromPosition.x ~= CONTAINER_POSITION or toPosition.x ~= CONTAINER_POSITION) then -- TODO: This doesnt mean that the player is carring the item or no
@@ -12,7 +12,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
         return true
 
     elseif (not isBallPokemonFromEgg(itemEx.uid)) then
-        doPlayerSendCancel(cid, "This is not a Pokemon from egg!")
+        doPlayerSendCancel(cid, "This Pokemon did not hatch from an egg!")
         return true
 
     elseif (not getBallReceivedEggMove(itemEx.uid)) then

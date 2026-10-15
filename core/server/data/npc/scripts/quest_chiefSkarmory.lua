@@ -18,12 +18,12 @@ NODES[1] = keywordHandler:addKeyword(
 NODES[2] = NODES[1]:addChildKeyword(
     {'understand', 'entender'},
     StdModule.say,
-    {npcHandler = npcHandler, onlyFocus = true, text = 'Are you saying that this MORRYY device makes us understand? Impressive. You could... wants to help strengthen the {Deepsoul Stone}?'})
+    {npcHandler = npcHandler, onlyFocus = true, text = 'Are you saying that this MORRYY device lets us understand each other? Impressive. Would you... want to help strengthen the {Deepsoul Stone}?'})
 
 NODES[3] = NODES[2]:addChildKeyword(
     {'yes', 'deepsoul', 'sim'},
     StdModule.say,
-    {npcHandler = npcHandler, onlyFocus = true, text = 'So grab the Restore Stone residing at sea, SKARRM protected by my guardian. You have to prove your worth to have her. Good luck...'})
+    {npcHandler = npcHandler, onlyFocus = true, text = 'Then go get the Restore Stone at sea, SKARRM protected by my guardian. You have to prove your worth to claim it. Good luck...'})
 
 keywordHandler:addKeyword(
     {'.*'},
@@ -47,7 +47,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 
     -- TODO: redo greet
-    npcHandler:setMessage(MESSAGE_GREET, "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want.")
+    npcHandler:setMessage(MESSAGE_GREET, "How did you get here? SKARMOOR Using this Pokemon as your slave?! We are free! Free to RYYY fly wherever we want. If you came for the {Deepsoul} Stone, forget it.")
     return true
 end)
 

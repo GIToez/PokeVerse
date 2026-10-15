@@ -25,10 +25,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             getCreatureStorage(cid, 8250) == QUEST_STATUS.STARTED) then
         if (getCreatureStorage(cid, hiddenAndSeekStorage[getNpcName()]) ~= QUEST_STATUS.FINISHED) then
             doCreatureSetStorage(cid, hiddenAndSeekStorage[getNpcName()], QUEST_STATUS.FINISHED)
-            selfSay("You find me! Haha!", cid)
+            selfSay("You found me! Haha!", cid)
 
         else
-            selfSay("You already found me! Look for the next.", cid)
+            selfSay("You already found me! Look for the next one.", cid)
         end
 
 	else

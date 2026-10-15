@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="1399"/>
 	<parameters>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|, we were waiting you. You brought the {invitation}?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|, we were waiting for you. Did you bring the {invitation}?"/>
 	</parameters>
 </npc>

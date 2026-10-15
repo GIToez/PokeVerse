@@ -21,7 +21,7 @@ keywordHandler:addKeyword(
             return false
         end
 
-        npcHandler:sayStory(string.createStory(__L(cid, "Once there were three kings who ruled their small tribes that were always hidden. These tribes have always helped each other in secret and cooperated to maintain balance in the Islands. Once an evil being would awaken an ancient guardian of the seas to cause chaos in the archipelago, and for that he would need the mystical artifact of the three legendary birds. The three kings knowing the plan, were behind the evil and be locked up inside a Stone along with his household using psychic powers. Unfortunately during the three kings perished and fell before the exhaust by using so much energy. This is the story that I know, and seeking the {location of prophecy} since.")), cid)
+        npcHandler:sayStory(string.createStory(__L(cid, "Once there were three kings who ruled small tribes that were always hidden. These tribes secretly helped each other to keep balance in the Islands. One day an evil being sought to awaken an ancient guardian of the seas to bring chaos to the archipelago, and for that he needed the mystical artifacts of the three legendary birds. Knowing his plan, the three kings went after the villain and sealed him and his household inside a Stone using psychic powers. Sadly, the three kings perished from exhaustion after using so much energy. This is the story I know, and I've been seeking the {location of prophecy} ever since.")), cid)
         npcHandler.talkState[cid] = TALKSTATES.NONE
 
         return true
@@ -56,13 +56,13 @@ keywordHandler:addKeyword(
 
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     if (getCreatureStorage(cid, 8229) ~= QUEST_STATUS.FINISHED) then -- Orange Archipelago Main #3 completed?
-        selfSay("Excuse, I'm busy now!", cid)
+        selfSay("Excuse me, I'm busy now!", cid)
         return false
     end
 
     local status = getCreatureStorage(cid, 8240)
     if (status == QUEST_STATUS.UNSTARTED) then
-        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, you want to hear a good story?")
+        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, do you want to hear a good story? {Yes} or {No}")
         npcHandler.talkState[cid] = TALKSTATES.HEAR_STORY
 
     elseif (status == QUEST_STATUS.STARTED) then

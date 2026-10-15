@@ -84,10 +84,10 @@ function creatureSayCallback(cid, type, msg)
   if (OPTION_BY_REAGENT[msg]) then
     lastOption[talkUser] = msg
     talkState[talkUser] = TALKSTATE_EXCHANGING
-    selfSay(string.format(__L(cid, "You want to exchange %s more %s empty poke balls for %s empty enchanted balls?"), OPTION_BY_REAGENT[msg].reagent, OPTION_BY_REAGENT[msg].requiredPokeballs, OPTION_BY_REAGENT[msg].enchantedBallsGenerate), cid)
+    selfSay(string.format(__L(cid, "You want to exchange %s more %s empty poke balls for %s empty enchanted balls? {Yes} or {No}"), OPTION_BY_REAGENT[msg].reagent, OPTION_BY_REAGENT[msg].requiredPokeballs, OPTION_BY_REAGENT[msg].enchantedBallsGenerate), cid)
 
   elseif (msgcontains(msg, 'halloween') or msgcontains(msg, 'gift') or msgcontains(msg, 'dia das bruxas') or msgcontains(msg, 'presente')) then
-    selfSay("I can help you build magic {balls} to catch Halloween Pokemons!", cid)
+    selfSay("I can help you build magic {balls} to catch Halloween Pokemon!", cid)
 
   elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes') or msgcontains(msg, 'ball') or msgcontains(msg, 'bola')) then
     doPlayerPopupFYI(cid, optionsMessage)
@@ -102,14 +102,14 @@ function creatureSayCallback(cid, type, msg)
     elseif (getPlayerItemCount(cid, opt.reagentId) >= 1 and getPlayerItemCount(cid, EMPTY_POKE_BALL_ITEM_ID) >= opt.requiredPokeballs and
       doPlayerRemoveItem(cid, opt.reagentId, 1) and doPlayerRemoveItem(cid, EMPTY_POKE_BALL_ITEM_ID, opt.requiredPokeballs)) then
       doPlayerSafeAddItem(cid, EMPTY_ENCHANTED_BALL_ITEM_ID, opt.enchantedBallsGenerate)
-      selfSay("Here is, thanks!", cid)
+      selfSay("Here you go, thanks!", cid)
 
       if (opt.onBuy) then
         opt.onBuy(cid)
       end
 
     else
-      selfSay("You do not have reagents for it.", cid)
+      selfSay("You do not have enough reagents for it.", cid)
     end
 
     talkState[talkUser] = TALKSTATE_NONE

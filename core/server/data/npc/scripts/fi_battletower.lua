@@ -87,7 +87,7 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'frontier') or msgcontains(msg, 'island') or msgcontains(msg, 'ilha')) then
-        selfSay("You're in the Frontier Island, an appropriate location to test for the continent's greatest Pokemon trainers. Prove your strength here and you will be rewarded.", cid)
+        selfSay("You're on Frontier Island, the right place to test the continent's greatest Pokemon trainers. Prove your strength here and you will be rewarded.", cid)
 
     elseif (msgcontains(msg, 'battle') or msgcontains(msg, 'tower') or msgcontains(msg, 'batalha') or msgcontains(msg, 'torre')) then
         selfSay("I can offer you three challenges in the Battle Tower: {Twenty}, {Fifteen} and {Ten}.", cid)
@@ -106,15 +106,15 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'enter') or msgcontains(msg, 'entrar')) then
         if (talkState[talkUser] == TALKSTATES.TWENTY) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Twenty mode? This will cost you %s dollars."), TWENTY_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Twenty mode? This will cost you %s dollars. {Yes} or {No}"), TWENTY_COST), cid)
             talkState[talkUser] = TALKSTATES.TWENTY_ACCEPT
 
         elseif (talkState[talkUser] == TALKSTATES.FIFTEEN) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Fifteen mode? This will cost you %s dollars."), FIFTEEN_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Fifteen mode? This will cost you %s dollars. {Yes} or {No}"), FIFTEEN_COST), cid)
             talkState[talkUser] = TALKSTATES.FIFTEEN_ACCEPT
 
         elseif (talkState[talkUser] == TALKSTATES.TEN) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Ten mode? This will cost you %s dollars."), TEN_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Ten mode? This will cost you %s dollars. {Yes} or {No}"), TEN_COST), cid)
             talkState[talkUser] = TALKSTATES.TEN_ACCEPT
         end
 
@@ -149,7 +149,7 @@ function creatureSayCallback(cid, type, msg)
             else
                 doPlayerAddMoney(cid, TWENTY_COST)
                 doPlayerRemoveFrontierBalls(cid) -- Just to be sure
-                selfSay("You do not have enough space to receive Pokemon! Check your backpack.", cid)
+                selfSay("You do not have enough space to receive the Pokemon! Check your backpack.", cid)
             end
 
         elseif (talkState[talkUser] == TALKSTATES.FIFTEEN_ACCEPT) then
@@ -182,7 +182,7 @@ function creatureSayCallback(cid, type, msg)
             else
                 doPlayerAddMoney(cid, FIFTEEN_COST)
                 doPlayerRemoveFrontierBalls(cid) -- Just to be sure
-                selfSay("You do not have enough space to receive Pokemon! Check your backpack.", cid)
+                selfSay("You do not have enough space to receive the Pokemon! Check your backpack.", cid)
             end
 
         elseif (talkState[talkUser] == TALKSTATES.TEN_ACCEPT) then
@@ -215,7 +215,7 @@ function creatureSayCallback(cid, type, msg)
             else
                 doPlayerAddMoney(cid, TEN_COST)
                 doPlayerRemoveFrontierBalls(cid) -- Just to be sure
-                selfSay("You do not have enough space to receive Pokemon! Check your backpack.", cid)
+                selfSay("You do not have enough space to receive the Pokemon! Check your backpack.", cid)
             end
 
         else

@@ -51,7 +51,7 @@ local NODES = {
     callback = StdModule.say,
     parameters = {
       npcHandler = npcHandler,
-      text = 'How much dollars do you like to withdraw?'
+      text = 'How many dollars would you like to withdraw?'
     },
     childs = {
       {
@@ -82,7 +82,7 @@ local NODES = {
           setPlayerAccountSoulCoins(cid, playerSoulCoins - count)
           doPlayerAddItem(cid, SOUL_COIN_ID, count)
           doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.WITHDRAW, count)
-          npcHandler:say("Alright, it's here.", cid)
+          npcHandler:say("Alright, here they are.", cid)
 
           npcHandler:resetNpc(cid)
           return true

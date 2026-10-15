@@ -18,10 +18,10 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if (msgcontains(msg, 'saffari') or msgcontains(msg, 'zone') or msgcontains(msg, 'safari') or msgcontains(msg, 'zona')) then
-		selfSay("Safari the largest of these lands, here you will find many species of Pokemon, many of the same, so be very careful!", cid)
+		selfSay("The Safari is the largest place in these lands. Here you will find many species of Pokemon, some in great numbers, so be very careful!", cid)
 
 	elseif (msgcontains(msg, 'leave') or msgcontains(msg, 'back') or msgcontains(msg, 'city') or msgcontains(msg, 'fuchsia') or msgcontains(msg, 'sair')) then
-		selfSay("Alright, do you want to back to Fuchsia City?", cid)
+		selfSay("Alright, do you want to go back to Fuchsia City? {Yes} or {No}", cid)
 		talkState[talkUser] = STATE_LEAVE
 
 	elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and talkState[talkUser] == STATE_LEAVE) then

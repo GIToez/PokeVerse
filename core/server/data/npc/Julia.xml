@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="627" head="100" body="50" legs="25" feet="15" addons="3"/>
 	<parameters>
-		<parameter key="message_greet" value="Hey |PLAYERNAME|, how are you? Pokemon insects are part of my life, I want to collect them all!"/>
+		<parameter key="message_greet" value="Hey |PLAYERNAME|, how are you? Insect Pokemon are part of my life, I want to collect them all!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

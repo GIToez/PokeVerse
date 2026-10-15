@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="idletime" value="180" />
         <parameter key="module_shop" value="1"/>
-        <parameter key="message_greet" value="Hello baby, we have everything you need. We are fashion too! Remember that only premium account players can wear these clothes!"/>
+        <parameter key="message_greet" value="Hello baby, we have everything you need. We're fashionable too! Remember that only premium account players can wear these clothes!"/>
         <parameter key="shop_buyable" value="
 		clothes kit, 13481, 8000;
 		clothes kit, 13482, 5000;

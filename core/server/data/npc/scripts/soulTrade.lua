@@ -204,7 +204,7 @@ local lastAddonOption = {}
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     if (npcHandler:isInRange(cid)) then
         if (REQUIREMENTS[getNpcName()] and not REQUIREMENTS[getNpcName()](cid)) then
-            selfSay("You do not have enough access to deal here!", cid)
+            selfSay("You do not have enough access to trade here!", cid)
             return false
         end
     end
@@ -233,7 +233,7 @@ local NODES = {
         parameters = {
             npcHandler = npcHandler,
             --onlyFocus = true,
-            text = 'Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it?'
+            text = 'Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -254,7 +254,7 @@ local NODES = {
                     end
 
                     doPlayerAddPremiumDays(cid, 30)
-                    selfSay("Thanks! Was credited 30 days of premium to your account.", cid)
+                    selfSay("Thanks! 30 days of premium were credited to your account.", cid)
                     doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.PREMIUM, 10)
                     Referral.onPlayerAcquirePremium(cid)
 
@@ -272,7 +272,7 @@ local NODES = {
                     npcHandler = npcHandler,
                     onlyFocus = true,
                     reset = true,
-                    text = 'Maybe latter.'
+                    text = 'Maybe later.'
                 }
             }
         }
@@ -283,7 +283,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'Do you want to change your sex? The price is 3 Souls Coins.'
+            text = 'Do you want to change your sex? The price is 3 Soul Coins. {Yes} or {No}'
         },
         childs = {
             {
@@ -305,7 +305,7 @@ local NODES = {
 
                     doPlayerSetSex(cid, getPlayerSex(cid) == 1 and 0 or 1)
                     doPlayerSendOutfitWindow(cid)
-                    selfSay("Thanks! Your sex was exchanged.", cid)
+                    selfSay("Thanks! Your sex has been changed.", cid)
                     doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.CHANGE_SEX, 3)
 
                     npcHandler:resetNpc(cid)
@@ -322,7 +322,7 @@ local NODES = {
                     npcHandler = npcHandler,
                     onlyFocus = true,
                     reset = true,
-                    text = 'Maybe latter.'
+                    text = 'Maybe later.'
                 }
             }
         }
@@ -480,7 +480,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can create or change your Pokemon nickname for 1 Soul Coins. What nickname you want?'
+            text = 'I can create or change your Pokemon\'s nickname for 1 Soul Coin. What nickname do you want?'
         },
         childs = {
             {
@@ -496,7 +496,7 @@ local NODES = {
                     end
 
                     lastNickname[cid] = message
-                    npcHandler:say(string.format(__L(cid, "%s, are you sure?"), message), cid)
+                    npcHandler:say(string.format(__L(cid, "%s, are you sure? {Yes} or {No}"), message), cid)
 
                     return true
                 end,
@@ -521,7 +521,7 @@ local NODES = {
                                 return true
 
                             elseif (not isNickAcceptable(lastNickname[cid])) then
-                                npcHandler:say("Sorry, your Pokemon nick can't contain invalid symbols and need be between 4 and 20 characters, please try again.", cid)
+                                npcHandler:say("Sorry, your Pokemon's nickname can't contain invalid symbols and must be between 4 and 20 characters, please try again.", cid)
                                 return true
 
                             elseif (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 1)) then
@@ -552,7 +552,7 @@ local NODES = {
                             npcHandler = npcHandler,
                             onlyFocus = true,
                             reset = true,
-                            text = 'Maybe latter.'
+                            text = 'Maybe later.'
                         }
                     }
                 }
@@ -565,7 +565,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can remove your Pokemon nickname for free, do you want?'
+            text = 'I can remove your Pokemon\'s nickname for free, do you want that? {Yes} or {No}'
         },
         childs = {
             {
@@ -609,7 +609,7 @@ local NODES = {
                     npcHandler = npcHandler,
                     onlyFocus = true,
                     reset = true,
-                    text = 'Maybe latter.'
+                    text = 'Maybe later.'
                 }
             }
         }
@@ -620,7 +620,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'How much soul coins do you want to withdraw?'
+            text = 'How many soul coins do you want to withdraw?'
         },
         childs = {
             {
@@ -651,7 +651,7 @@ local NODES = {
                     setPlayerAccountSoulCoins(cid, playerSoulCoins - count)
                     doPlayerAddItem(cid, SOUL_COIN_ID, count)
                     doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.WITHDRAW, count)
-                    npcHandler:say("Alright, it's here.", cid)
+                    npcHandler:say("Alright, here they are.", cid)
 
                     npcHandler:resetNpc(cid)
                     return true
@@ -675,7 +675,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say(string.format(__L(cid, "Your account soul coins balance is: %s."), getPlayerAccountSoulCoins(cid)), cid)
+            npcHandler:say(string.format(__L(cid, "Your account's soul coin balance is: %s."), getPlayerAccountSoulCoins(cid)), cid)
 
             npcHandler:resetNpc(cid)
             return true
@@ -690,7 +690,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can sell you a stamina recover for 1 Soul Coins, do you want?'
+            text = 'I can sell you a stamina recover for 1 Soul Coin, do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -711,7 +711,7 @@ local NODES = {
                     end
 
                     doPlayerAddItem(cid, 13971, 1, true)
-                    npcHandler:say("Thanks! Here is.", cid)
+                    npcHandler:say("Thanks! Here it is.", cid)
                     doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.STAMINA_RECOVER, 1)
 
                     npcHandler:resetNpc(cid)
@@ -728,7 +728,7 @@ local NODES = {
                     npcHandler = npcHandler,
                     onlyFocus = true,
                     reset = true,
-                    text = 'Maybe latter.'
+                    text = 'Maybe later.'
                 }
             }
         }
@@ -746,7 +746,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say("Souls are valuable coins that can be exchanged for the following benefits: {premium account}, {exchange of sex}, {Pokemon nick change}, {Pokemon nick remove}, {stamina recover}, to form a {guild}, create a guild {rank}, buy {Egg Move Capsule} and {Pokemon Addon}. You can also {withdraw} or {balance} your account Soul Coins.", cid)
+            npcHandler:say("Souls are valuable coins that can be exchanged for the following benefits: {premium account}, {exchange of sex}, {Pokemon nick change}, {Pokemon nick remove}, {stamina recover}, forming a {guild}, creating a guild {rank}, buying an {Egg Move Capsule} and {Pokemon Addon}. You can also {withdraw} your Soul Coins or check your account {balance}.", cid)
 
             npcHandler:resetNpc(cid)
             return true
@@ -777,7 +777,7 @@ local NODES = {
                     end
 
                     lastGuildName[cid] = message
-                    npcHandler:say(string.format(__L(cid, "%s, are you sure?"), message), cid)
+                    npcHandler:say(string.format(__L(cid, "%s, are you sure? {Yes} or {No}"), message), cid)
 
                     return true
                 end,
@@ -845,7 +845,7 @@ local NODES = {
                             npcHandler = npcHandler,
                             onlyFocus = true,
                             reset = true,
-                            text = 'Maybe latter.'
+                            text = 'Maybe later.'
                         }
                     }
                 }
@@ -858,7 +858,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'You can create a new rank for you guild for 1 soul coin. What will be the name of the new rank?'
+            text = 'You can create a new rank for your guild for 1 soul coin. What will be the name of the new rank?'
         },
         childs = {
             {
@@ -874,7 +874,7 @@ local NODES = {
                     end
 
                     lastGuildName[cid] = message
-                    npcHandler:say(string.format(__L(cid, "%s, are you sure?"), message), cid)
+                    npcHandler:say(string.format(__L(cid, "%s, are you sure? {Yes} or {No}"), message), cid)
 
                     return true
                 end,
@@ -911,7 +911,7 @@ local NODES = {
                                 return true
 
                             elseif (doGuildCreateRank(getPlayerGuildId(cid), lastGuildName[cid])) then
-                                npcHandler:say("Congratulations! Your guild rank has been created! You must use the command \"/setrank[name,rank]\" to change a member rank.", cid)
+                                npcHandler:say("Congratulations! Your guild rank has been created! You must use the command \"/setrank[name,rank]\" to change a member's rank.", cid)
                                 doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.CREATE_GUILD_RANK, 1)
 
                             else
@@ -934,7 +934,7 @@ local NODES = {
                             npcHandler = npcHandler,
                             onlyFocus = true,
                             reset = true,
-                            text = 'Maybe latter.'
+                            text = 'Maybe later.'
                         }
                     }
                 }
@@ -954,7 +954,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say('Yes, here you can exchange your account referral points into rewards. These are the reward options. Just say the name of what you want.', cid)
+            npcHandler:say('Yes, here you can exchange your account referral points for rewards. These are the reward options. Just say the name of what you want.', cid)
             Referral.doPlayerShowOptions(cid)
 
             return true
@@ -983,7 +983,7 @@ local NODES = {
                     end
 
                     lastReferralOption[cid] = option
-                    npcHandler:say(string.format(__L(cid, "You really want to exchange %s referral points into a %s?"), option.points, option.name), cid)
+                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s referral points for a %s? {Yes} or {No}"), option.points, option.name), cid)
 
                     return true
                 end,
@@ -1004,9 +1004,9 @@ local NODES = {
                             end
 
                             if (Referral.onPlayerBuy(cid, lastReferralOption[cid])) then
-                                npcHandler:say("Thanks! Here is!", cid)
+                                npcHandler:say("Thanks! Here it is!", cid)
                             else
-                                npcHandler:say("Something went wrong! Please try again later. Did you have enough referral points?", cid)
+                                npcHandler:say("Something went wrong! Please try again later. Do you have enough referral points?", cid)
                             end
 
                             npcHandler:resetNpc(cid)
@@ -1023,7 +1023,7 @@ local NODES = {
                             npcHandler = npcHandler,
                             onlyFocus = true,
                             reset = true,
-                            text = 'Maybe latter.'
+                            text = 'Maybe later.'
                         }
                     }
                 }
@@ -1043,7 +1043,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say('Yes, here you can exchange your soul coins into Pokemon addons. These are the options. Just say the name of what you want.', cid)
+            npcHandler:say('Yes, here you can exchange your soul coins for Pokemon addons. These are the options. Just say the name of what you want.', cid)
             PokemonAddon.doPlayerShowOptions(cid)
 
             return true
@@ -1072,7 +1072,7 @@ local NODES = {
                     end
 
                     lastAddonOption[cid] = option
-                    npcHandler:say(string.format(__L(cid, "You really want to exchange %s soul coin(s) into a %s?"), option.coins, option.name), cid)
+                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s soul coin(s) for a %s? {Yes} or {No}"), option.coins, option.name), cid)
 
                     return true
                 end,
@@ -1093,7 +1093,7 @@ local NODES = {
                             end
 
                             if (PokemonAddon.onPlayerBuy(cid, lastAddonOption[cid])) then
-                                npcHandler:say("Thanks! Here is!", cid)
+                                npcHandler:say("Thanks! Here it is!", cid)
                             else
                                 npcHandler:say("Something went wrong! Please try again later.", cid)
                             end
@@ -1112,7 +1112,7 @@ local NODES = {
                             npcHandler = npcHandler,
                             onlyFocus = true,
                             reset = true,
-                            text = 'Maybe latter.'
+                            text = 'Maybe later.'
                         }
                     }
                 }
@@ -1125,7 +1125,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can sell you an Egg Move Capsule for 1 Soul Coin, do you want?'
+            text = 'I can sell you an Egg Move Capsule for 1 Soul Coin, do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -1146,7 +1146,7 @@ local NODES = {
                     end
 
                     doPlayerAddItem(cid, 28915, 1, true)
-                    npcHandler:say("Thanks! Here is.", cid)
+                    npcHandler:say("Thanks! Here it is.", cid)
                     doDatalogCoinUse(os.time(), getPlayerGUID(cid), COIN_USE_IDS.EGG_MOVE_CAPSULE, 1)
 
                     npcHandler:resetNpc(cid)
@@ -1163,7 +1163,7 @@ local NODES = {
                     npcHandler = npcHandler,
                     onlyFocus = true,
                     reset = true,
-                    text = 'Maybe latter.'
+                    text = 'Maybe later.'
                 }
             }
         }

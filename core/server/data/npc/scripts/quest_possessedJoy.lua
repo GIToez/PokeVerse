@@ -90,7 +90,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
 
     if (getSamePosition(getNpcPos(), KANTOMAIN10_POSITION)) then
         if (getCreatureStorage(cid, 8547) ~= QUEST_STATUS.FINISHED) then
-            selfSay("So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?", cid)
+            selfSay("So you're a friend of Bill's? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you meddling in police affairs without permission, OK?", cid)
             doCreatureSetStorage(cid, 8547, QUEST_STATUS.FINISHED)
             doCreatureSetStorage(cid, 8546, QUEST_STATUS.STARTED) -- Start Mistery Guy quest
         else

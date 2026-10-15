@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="503" head="150" body="170" legs="0" feet="200" corpse="2212"/>
 	<parameters>
-		<parameter key="message_greet" value="Bought all the Pokemon. If you can not take care, we can help."/>
+		<parameter key="message_greet" value="We buy all kinds of Pokemon. If you can't take care of them, we can help."/>
 	</parameters>
 </npc>

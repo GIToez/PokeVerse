@@ -18,7 +18,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         selfSay("Sorry?", cid)
 
 	elseif (msgcontains(msg, 'orange') or msgcontains(msg, 'archipelago') or msgcontains(msg, 'laranja')) then
-        selfSay(string.format(__L(cid, "That place is beautiful %s. I lived moments there, and various {battles} and adventures and got lost... Han, hi."), getPlayerName(cid)), cid)
+        selfSay(string.format(__L(cid, "That place is beautiful, %s. I lived great moments there, many {battles} and adventures, and got lost... Huh, hi."), getPlayerName(cid)), cid)
 
     elseif (msgcontains(msg, 'battles') or msgcontains(msg, 'batalhas')) then
         selfSay("Oh yes, there are many {secret places}, with trainers, with Pokemon... ah, ah... hi.", cid)
@@ -26,7 +26,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     elseif (msgcontains(msg, 'secret') or msgcontains(msg, 'places') or msgcontains(msg, 'secreto') or msgcontains(msg, 'lugares')) then
         doCreatureSetStorage(cid, 8343, QUEST_STATUS.FINISHED)
         --selfSay("I do not remember them but had water, had dark, had lightning, fire and ice... ah... hi.", cid)
-        selfSay("I do not remember them but had water, had dark, had lightning, fire and ice... oh, Runford can remember... Who is he? A sailor...? Ah... hi.", cid)
+        selfSay("I don't remember them, but there was water, darkness, lightning, fire and ice... oh, Runford may remember... Who is he? A sailor...? Ah... hi.", cid)
 
 	else
 		selfSay("Hmm?", cid)

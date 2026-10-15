@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="512"/>
 	<parameters>
-		<parameter key="message_greet" value="Hello recruit, they were toward the engine room, our sailors pursued them there. Go on, I'm calling the authorities!"/>
+		<parameter key="message_greet" value="Hello recruit, the intruders went toward the engine room and our sailors chased them there. Go on, I'm calling the authorities!"/>
 	</parameters>
 </npc>

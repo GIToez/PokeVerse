@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="612" head="49" body="74" legs="34" feet="26" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Do not cover much, we know you can not."/>
+		<parameter key="message_greet" value="Don't push yourself too hard, we know you can't do it."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

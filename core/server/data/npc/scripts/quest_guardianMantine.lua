@@ -37,16 +37,16 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     end
 
     if (msgcontains(msg, 'restore') or msgcontains(msg, 'deepsoul') or msgcontains(msg, 'recuperar')) then
-        selfSay("You that will help MANTT strengthen Deepsoul Stone?", cid)
+        selfSay("Are you the one who will help MANTT strengthen the Deepsoul Stone?", cid)
         npcHandler.talkState[talkUser] = TALKSTATES.RESTORE_STONE
 
     elseif (msgcontains(msg, 'ready') or msgcontains(msg, 'pronto')) then
-        selfSay("I am simple and efficient... I have improved but INEEE still believe in me. I have several MANN types and properties, and believe me you will be the best. What is it?", cid)
+        selfSay("I am simple and efficient... I've been improved, but INEEE people still trust me. I come in many MANN types and properties, and believe me, I'll make you the best. What am I?", cid)
         npcHandler.talkState[talkUser] = TALKSTATES.QUESTION1
 
     elseif (npcHandler.talkState[talkUser] == TALKSTATES.RESTORE_STONE) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay("Then answer my three questions and I will give it. {Ready}?", cid)
+            selfSay("Then answer my three questions and I will give it to you. {Ready}?", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.READY
 
         else
@@ -56,22 +56,22 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (npcHandler.talkState[talkUser] == TALKSTATES.QUESTION1) then
         if (msgcontains(msg, 'pokeball') or msgcontains(msg, 'ball') or msgcontains(msg, 'pokebola') or msgcontains(msg, 'bola')) then
-            selfSay("Correct! Second question... Sometimes I'm strange MANTII and misunderstood. I am the key to what it means and I can TINEE express what you think. Who am I?", cid)
+            selfSay("Correct! Second question... Sometimes I'm strange MANTII and misunderstood. I am the key to meaning and I can TINEE express what you think. What am I?", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.QUESTION2
 
         else
             selfSay("Wrong answer! Again...", cid)
-            selfSay("I am simple and efficient... I have improved but still believe in me. I have MANTIIN several types and properties, and believe me INEEE you will be the best. What is it?", cid)
+            selfSay("I am simple and efficient... I've been improved, but people still trust me. I come in MANTIIN many types and properties, and believe me INEEE, I'll make you the best. What am I?", cid)
         end
 
     elseif (npcHandler.talkState[talkUser] == TALKSTATES.QUESTION2) then
         if (msgcontains(msg, 'unown')) then
-            selfSay("Correct! Third and last question... On the journey does nothing without them. They TINN will always be by your side when you need MANTII support you and what you want. But they do not give the order, it is disrespectful.", cid)
+            selfSay("Correct! Third and last question... On a journey you can do nothing without them. They TINN will always be by your side to MANTII support you when you need it. But you don't give them orders, that is disrespectful. What are they?", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.QUESTION3
 
         else
             selfSay("Wrong answer! Again...", cid)
-            selfSay("Sometimes I'm strange and MANTIINE misunderstood. I am the key to what it means and MANN I can express what you think. Who am I?", cid)
+            selfSay("Sometimes I'm strange and MANTIINE misunderstood. I am the key to meaning and MANN I can express what you think. What am I?", cid)
         end
 
     elseif (npcHandler.talkState[talkUser] == TALKSTATES.QUESTION3) then
@@ -81,13 +81,13 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 doCreatureSetStorage(cid, questStorage, QUEST_STATUS.FINISHED)
 
             else
-                selfSay("Please, check your backpack for space.", cid)
+                selfSay("Please make sure you have space in your backpack.", cid)
             end
             npcHandler.talkState[talkUser] = TALKSTATES.NONE
 
         else
             selfSay("Wrong answer! Again...", cid)
-            selfSay("On the journey does nothing without them. They will always MANTINN be by your side when you need support you and what you want. But they MANTINNE do not give the order, it is disrespectful.", cid)
+            selfSay("On a journey you can do nothing without them. They will always MANTINN be by your side to support you when you need it. But you MANTINNE don't give them orders, that is disrespectful. What are they?", cid)
         end
 
     else

@@ -21,7 +21,7 @@ function creatureSayCallback(cid, type, msg)
 
 	if ((msgcontains(msg, 'mission') or msgcontains(msg, 'tv') or msgcontains(msg, 'camera') or msgcontains(msg, 'missao')) and
             getCreatureStorage(cid, QUEST_STORAGE) == QUEST_STATUS.FINISHED) then -- Quest finished
-            selfSay("You already done this mission. If you need I can sell you another TV Camera for 1000 dollars, do you want?", cid)
+            selfSay("You already did this mission. If you need, I can sell you another TV Camera for 1000 dollars. Do you want it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATE_BUY
 
 	elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and npcHandler.talkState[talkUser] == TALKSTATE_BUY) then
@@ -36,7 +36,7 @@ function creatureSayCallback(cid, type, msg)
                 if (camera) then
                     doPlayerRemoveMoney(cid, 1000)
                     setItemUniqueOwner(camera, cid)
-                    selfSay("Here is.", cid)
+                    selfSay("Here it is.", cid)
                 end
             end
             npcHandler.talkState[talkUser] = 0

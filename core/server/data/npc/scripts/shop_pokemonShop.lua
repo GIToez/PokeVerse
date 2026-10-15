@@ -239,15 +239,15 @@ function creatureSayCallback(cid, type, msg)
 	msg = string.capitalise(msg)
 
 	if (msgcontains(msg, 'pokemon') or msgcontains(msg, 'pokemons')) then
-		selfSay("Yes, I can buy your Pokemon, show me your offerts. Say {sell}.", cid)
+		selfSay("Yes, I can buy your Pokemon, show me your offers. Say {sell}.", cid)
 
 	elseif (msgcontains(msg, 'sell') or msgcontains(msg, 'vender')) then
-		selfSay("Alright, what Pokemon that you want to sell? If you want to sell all your Pokemon, say {all}.", cid)
+		selfSay("Alright, which Pokemon do you want to sell? If you want to sell all your Pokemon, say {all}.", cid)
 		talkState[talkUser] = TALKSTATE_SELLING
 
 	elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
         if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-            selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+            selfSay("You can't do that while you have a Pokemon out of its ball.", cid)
             return true
         end
 
@@ -257,7 +257,7 @@ function creatureSayCallback(cid, type, msg)
                 if (getItemUniqueOwner(ball.uid) == ITEM_UNIQUE_OWNER_NONE and
                         getBallPokemonName(ball.uid) == lastPokemon[talkUser]) then
                     if (not isSellable(ball.uid)) then
-                        selfSay("You can not sell a Pokemon that has learned a TM, first remove it!", cid)
+                        selfSay("You can't sell a Pokemon that has learned a TM, remove the TM first!", cid)
                         lastPokemon[talkUser] = nil
                         talkState[talkUser] = nil
                         return true
@@ -274,7 +274,7 @@ function creatureSayCallback(cid, type, msg)
             end
 
             if (not found) then
-                selfSay("You haven't this Pokemon!", cid)
+                selfSay("You don't have this Pokemon!", cid)
             end
 
             lastPokemon[talkUser] = nil
@@ -284,7 +284,7 @@ function creatureSayCallback(cid, type, msg)
             local amount = 0
             for _, ball in pairs(getPlayerAllBallsWithPokemon(cid)) do
                 if (not isSellable(ball.uid)) then
-                    selfSay("You can not sell a Pokemon that has learned a TM, first remove it!", cid)
+                    selfSay("You can't sell a Pokemon that has learned a TM, remove the TM first!", cid)
 
                 elseif (getItemUniqueOwner(ball.uid) == ITEM_UNIQUE_OWNER_NONE) then
                     local newAmount = amount + (getPokemonPrice(getBallPokemonName(ball.uid)) +
@@ -339,13 +339,13 @@ function creatureSayCallback(cid, type, msg)
             offert[#offert] = "."
             offert = table.concat(offert)
 
-            selfSay(string.format(__L(cid, "Do you want to sell: %s For %s dollars?"), offert, amount), cid)
-            doPlayerPopupFYI(cid, "ATTENTION! If you say YES you will sell all the Pokemon that you're carrying! Be sure before confirm.")
+            selfSay(string.format(__L(cid, "Do you want to sell: %s for %s dollars? {Yes} or {No}"), offert, amount), cid)
+            doPlayerPopupFYI(cid, "ATTENTION! If you say YES you will sell all the Pokemon that you're carrying! Be sure before you confirm.")
             talkState[talkUser] = TALKSTATE_SELL_ALL
             lastPokemon[talkUser] = nil
 
         elseif (isPokemonName(msg)) then
-            selfSay(string.format(__L(cid, "Do you want to sell your %s for %s dollars plus %s dollars for each level?"), msg, getPokemonPrice(msg), cashIncreasedPerLevel), cid)
+            selfSay(string.format(__L(cid, "Do you want to sell your %s for %s dollars plus %s dollars for each level? {Yes} or {No}"), msg, getPokemonPrice(msg), cashIncreasedPerLevel), cid)
 		    lastPokemon[talkUser] = msg
 
         else
@@ -364,7 +364,7 @@ npcHandler:addModule(FocusModule:new())
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     if (npcHandler:isInRange(cid)) then
         if (REQUIREMENTS[getNpcName()] and not REQUIREMENTS[getNpcName()](cid)) then
-            selfSay("You do not have enough access to deal here!", cid)
+            selfSay("You do not have enough access to trade here!", cid)
             return false
         end
 	end

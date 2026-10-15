@@ -45,7 +45,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     local ball = doCreatePokemonBall(cid, "poke", pokemonName, pokemonLevel, nil, nil, pokemonExtraPoints, nil, nil, 99999999999, nil, getPokemonRandomSpecialAbility(pokemonName))
     doBallUpdateDescription(ball)
-    selfSay("Here is.", cid)
+    selfSay("Here it is.", cid)
     return true
 end)
 
