@@ -71,8 +71,14 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   stone walks, a fountain, flower beds, benches and trees, where the park's own Pokémon spawn),
   the Ruins of Alph (sandstone courts with statues before four rock mounds, broken stones, the
   research center), Ilex Forest's shrine, the Bell Tower (Fuchsia's five-storey walled hall on a
-  sandstone court) and the Moomoo Farm (farmhouse and a fenced pasture where Route 39's Pokémon
-  spawn). Ilex Forest has a wall of trees from the sea to
+  sandstone court), the Moomoo Farm (farmhouse and a fenced pasture where Route 39's Pokémon
+  spawn) and the Battle Frontier as in HeartGold and SoulSilver: the Battle Tower (Saffron's
+  four-storey office) at the head of a paved square with a fountain and the Exchange Service
+  Corner's stalls, the Battle Castle (Saffron's colonnade round its fountains) and Battle Arcade
+  (Celadon's slot machines and card tables) either side of it, the Battle Factory (Vermilion's
+  metal works, a doorway opened into its hall, which Kanto enters from below) and Battle Hall
+  (Cerulean's pillared hall round its pool) down the avenue. Landmarks that are not houses give
+  their doors as `entries`. Ilex Forest has a wall of trees from the sea to
   Union Cave's ridge, so its path is the only way from Route 34 to Azalea above ground.
 - **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
   below, with rocky patches, debris, stones and wall candles. The way in is an open ravine cut
@@ -85,7 +91,11 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   tunnel, so no room is cut off. The Ruins of
   Alph's chambers are single rooms under their mounds, entered by stairs from their courts.
   Lower floors are carved the same way on their own floor, joined by stairs down from the floor
-  above; the Slowpoke Well is entered through a trapdoor and left by a ladder.
+  above; the Slowpoke Well is entered through a trapdoor and left by a ladder. Tohjo Falls is
+  under the ridge where the Tohjo river comes out, in from its west bank and out on its east,
+  the underground river across the way (Surf), and two waterfalls (Kanto's 3569 on the rock face,
+  3573 on the water at its foot, 3571 on the pool above) up to the room hidden behind the falls:
+  open to the sky in the ridge on floor 7, empty but for the broken radio and Rock Smash rocks.
 - **Terrain depth:** open country rises in terraced hills up to floor 4, spread evenly over the
   region (noise against its local mean), each reached by ramps from the nearest road; mountain
   ranges stand in tiers up to seven floors, with gravel and rock along their cliffs, and forests
@@ -123,11 +133,16 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   The ledges (`silver_deco`) are trails through stands of trees and boulder fields where a broad
   noise is high: conifers and bushes on the grass, rocks and gravel on the bare rock, snow firs,
   dead trees and drifts on the snow, with fallen rocks or snow boulders along the cliffs. The
-  summit is open snow with stones round its rim.
+  summit is open snow with stones round its rim and the anime's Ho-Oh Shrine (`ho_oh_shrine`) on
+  it: a sandstone court, the Sacred Flame between statues of Ho-Oh and winged totems, a red carpet
+  up to it lined with lit braziers, and Machop and Machoke on guard. Only whole rocks are
+  scattered (`ROCK_PIECES` are corners of rocks that take several tiles, and look broken alone).
 - **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
   under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
   Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's
-  sewers next to it, and stairs down from a floor that is not copied are dropped.
+  sewers next to it, and stairs down from a floor that is not copied are dropped. The anime's
+  I.S.S. Raspberry (`WRECK`) is Kanto's wreck run aground, all three floors, south of the Whirl
+  Islands' big island, with Remoraid and Mantine on board.
 - **Wild Pokémon:** each spawn is drawn from the HeartGold/SoulSilver land table of its route,
   weighted by the game's encounter rate averaged over morning, day and night
   (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge

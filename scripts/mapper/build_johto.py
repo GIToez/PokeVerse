@@ -22,11 +22,13 @@ Mt. Mortar (1F, two mouths on Route 42) to Mahogany Town, Route 43 north to the 
 east under the snowfield to the Ice Path (1F, under the ridge that walls Blackthorn off), Blackthorn City
 with Dragon's Den, and Routes 45 and 46 south past Dark Cave to Route 29. North of the ridge: the west gate's pass
 through Kanto's mountain, Route 28, the Silver-Indigo range around the plateau, Mt. Silver with
-its Pokémon Center, and Mt. Silver Cave 1F below ground. The Elite Four building's west and south
+its Pokémon Center, Mt. Silver Cave 1F below ground and the Ho-Oh Shrine on the summit, and Tohjo
+Falls under the ridge where the Tohjo river comes out. The Elite Four building's west and south
 counters are taken out so both gates lead into it. The rest of the layout's extent: Routes 47 and 48
 from Cianwood to the Safari Zone, the Battle Frontier, the hunting grounds with trails in from the
 routes and wild Pokémon of their own, Snowtop Mountain and Mount Quena, the Dragon Holy Land and Lake
-Slowpoke, the anime's isles off the west coast, and the sea all round.
+Slowpoke, the anime's isles off the west coast and the I.S.S. Raspberry's wreck by the Whirl
+Islands, and the sea all round.
 
 Places are joined the games' way (Bulbapedia): Surf from New Bark onto Route 27 and across the Tohjo
 river to Route 26, Surf or Mt. Mortar on Route 42, the Ice Path or Dark Cave to Blackthorn's side,
