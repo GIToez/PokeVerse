@@ -423,6 +423,12 @@ SILVER = {
         # 3F, up through the summit's west face
         'Mt. Silver 3F': [(1, [('at', 180, 21), ('at', 180, 12), ('at', 200, 9), ('at', 245, 8)], (1, 0))],
     },
+    # caves to wander in the rest of the mountain: (floor, where they start - a tunnel above, or a
+    # mouth on a ledge - how many passages, how many more on the floor above, up a ramp)
+    'caves_seed': 61, 'cave_step': 6,
+    'caves': [(3, ('at', 50, 41), 25, 0), (2, ('at', 250, 31), 15, 0), (5, ('at', 110, 61), 45, 25),
+              (5, ('at', 215, 61), 40, 0), (4, ('at', 320, 51), 35, 20), (7, 'Mt. Silver Cave', 110, 40),
+              (6, 'Mt. Silver Cave', 60, 0), (3, 'Mt. Silver 2F', 30, 0), (3, 'Mt. Silver 2F', 20, 0)],
     'smash': {'Mt. Silver 2F': [('at', 270, 31), ('at', 240, 31)]},
 }
 # Johto's west is low-lying and forested (Bulbapedia): woods spread over the lowlands west of this,
@@ -1146,9 +1152,27 @@ def plan_silver(f, mlevel):
             for iy, ix in np.argwhere(lake & ~keep):
                 ground[(ix + f.x0, iy + f.y0, z)] = 'walkable sea'
         else:
+            # a bluff across the ledge with one narrow, crooked way through, a single tree or rock in it
             item = CUT_BUSH if kind == 'cut' else SMASH_ROCK
-            for iy, ix in np.argwhere(strip(a, 0.75) & (level == j) & area & ~keep):
-                deco[(ix + f.x0, iy + f.y0, z)] = [item]
+            bluff = strip(a, 3) & (level == j) & area & ~keep
+            level[bluff] = j + 1
+            ux, uy = np.cos(np.radians(a)), np.sin(np.radians(a))
+            c = spot(('at', a, sum(silver_ring(j)) / 2))
+            ax_, ay_ = axis(-uy, ux)
+            k = 1 if kind == 'cut' else -1
+            m = (c[0] + ay_ * k, c[1] + ax_ * k)
+            way = [(c[0] + uy * 7, c[1] - ux * 7), (m[0] - ax_ * 3, m[1] - ay_ * 3), (m[0] + ax_ * 3, m[1] + ay_ * 3),
+                   (c[0] - uy * 7, c[1] + ux * 7)]
+            c = m
+            path = np.zeros(level.shape, bool)
+            for q in trace(way):
+                path[at(q)] = True
+            approach = dilate(path, 3)
+            path &= bluff
+            level[path] = j
+            keep |= path | (approach & (level == j))
+            x, y = choke({(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(path)}, c)
+            deco[(x, y, z)] = [item]
     # the tunnels: runs of cells 3 wide, a floor each, a ramp up from the end of each run onto the
     # next (or onto the ledge above, where the last comes out)
     bored = {}
@@ -1158,15 +1182,29 @@ def plan_silver(f, mlevel):
             last = pts[-1]
             lx, ly = last[0] + 2 * dx, last[1] + 2 * dy
             d = f.seg_dist(list(pts) + [(lx, ly)])
+            wide = np.zeros(level.shape, bool)
             if k == 0 and level[at(pts[0])] == Z - z:
-                # an open cut into the cliff where the way goes in, so it can be seen from the ledge
+                # an open cut into the cliff where the way goes in, so it can be seen from the ledge,
+                # and the way wider for a few steps in
                 (ax, ay), (bx, by) = pts[0], pts[1]
                 face = next(q for q in ((int(round(ax + (bx - ax) * t)), int(round(ay + (by - ay) * t)))
                                         for t in np.linspace(0, 1, 60)) if level[at(q)] > Z - z)
-                notch = (d < 1.5) & (np.hypot(X - face[0], Y - face[1]) <= 2.5) & (level > Z - z)
+                near = np.hypot(X - face[0], Y - face[1])
+                notch = (d < 2.3) & (near <= 3.5) & (level > Z - z)
                 level[notch] = Z - z
                 keep |= notch
-            cells = (d < 1.5) & (level > Z - z)
+                wide = (d < 2.3) & (near <= 8)
+            cells = ((d < 1.5) | wide) & (level > Z - z)
+            for q in map(spot, SILVER['smash'].get(name, []) if k == 0 else []):
+                # the tunnel pinches to one tile for a few steps, a rock in the narrows
+                (sx, sy), (ex, ey) = min(zip(pts, pts[1:]), key=lambda sg: np.hypot(
+                    (sg[0][0] + sg[1][0]) / 2 - q[0], (sg[0][1] + sg[1][1]) / 2 - q[1]))
+                ax_, ay_ = axis(ex - sx, ey - sy)
+                line = np.zeros(level.shape, bool)
+                for t in range(-4, 5):
+                    line[at((q[0] + ax_ * t, q[1] + ay_ * t))] = True
+                cells &= ~((np.hypot(X - q[0], Y - q[1]) <= 2.5) & ~line)
+                cells |= line & (level > Z - z)
             for iy, ix in np.argwhere(cells):
                 bored[(ix + f.x0, iy + f.y0, z)] = name
             for p in [(lx, ly), (lx + dx, ly + dy)]:
@@ -1177,14 +1215,251 @@ def plan_silver(f, mlevel):
                 keep[at((lx, ly))[0] - 2:at((lx, ly))[0] + 3, at((lx, ly))[1] - 2:at((lx, ly))[1] + 3] = True
             ramps.append((lx, ly, Z - z + 1, (dx, dy)))
         for p in map(spot, SILVER['smash'].get(name, [])):
-            for (x, y, z), n in bored.items():
-                if n == name and abs(x - p[0]) <= 1 and abs(y - p[1]) <= 1:
-                    deco[(x, y, z)] = [SMASH_ROCK]
+            z = runs[0][0]
+            x, y = choke({q[:2] for q, nm in bored.items() if nm == name and q[2] == z}, p)
+            deco[(x, y, z)] = [SMASH_ROCK]
+    holes = set()
+    silver_caves(f, level, r < foot + 4, bored, ramps, holes, keep, deco, ground, spot)
     ledges = area & (level >= SILVER['base'])
     places = {}
     for j in range(SILVER['base'], top):
         places[j] = 'Mt. Silver lower' if j <= SILVER['lower'] else 'Mt. Silver upper'
-    return level, ramps, bored, ground, deco, ledges, keep, places
+    return level, ramps, holes, bored, ground, deco, ledges, keep, places
+
+
+def axis(vx, vy):
+    """The straight step (east, west, south or north) nearest a direction."""
+    return (int(np.sign(vx)), 0) if abs(vx) >= abs(vy) else (0, int(np.sign(vy)))
+
+
+def trace(pts):
+    """The cells of a line through pts one tile wide, stepping straight (never corner to corner)."""
+    out = []
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        x, y, tx, ty = int(round(ax)), int(round(ay)), int(round(bx)), int(round(by))
+        out.append((x, y))
+        while (x, y) != (tx, ty):
+            if abs(tx - x) * (abs(ty - ay) + 1) >= abs(ty - y) * (abs(tx - ax) + 1):
+                x += int(np.sign(tx - x))
+            else:
+                y += int(np.sign(ty - y))
+            out.append((x, y))
+    return out
+
+
+def choke(cells, p):
+    """The cell of a one-tile way (`cells`) nearest p that nobody can step round: its two neighbours
+    on the way don't touch."""
+    def tight(c):
+        nb = [(c[0] + dx, c[1] + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1) if (dx or dy)
+              and (c[0] + dx, c[1] + dy) in cells]
+        return len(nb) == 2 and max(abs(nb[0][0] - nb[1][0]), abs(nb[0][1] - nb[1][1])) > 1
+    x, y = min((c for c in cells if tight(c)), key=lambda c: np.hypot(c[0] - p[0], c[1] - p[1]))
+    return int(x), int(y)
+
+
+def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot):
+    """The rest of Mt. Silver's inside: caves off the tunnels and in from the ledges, each with only
+    the one way in, so none is a way round an obstacle. Each winds off in passages that branch,
+    loop and end blind, some ends opening into caverns and some climbing by a ramp to more caves on
+    the floor above by a ramp or by stairs under a hole. Adds their cells to `bored`, their ramps to
+    `ramps` and the holes over their stairs to `holes`, and dresses every
+    tunnel: rocky patches, debris and stones, candles on the walls, ice crystals higher up."""
+    cx, cy = SILVER['center']
+    rng = np.random.default_rng(SILVER['caves_seed'])
+    half, step = 100, SILVER['cave_step']
+    ox, oy = cx - half, cy - half
+    win = (slice(oy - f.y0, oy - f.y0 + 2 * half + 1), slice(ox - f.x0, ox - f.x0 + 2 * half + 1))
+    lv, ins = level[win], inside[win]
+    n = 2 * half + 1
+    taken = {z: np.zeros((n, n), bool) for z in range(Z + 1)}
+
+    def loc(p):
+        return p[1] - oy, p[0] - ox
+
+    def inwin(p):
+        return 0 <= p[0] - ox < n and 0 <= p[1] - oy < n
+
+    def mark(z, p):
+        if inwin(p) and 0 <= z <= Z:
+            taken[z][loc(p)] = True
+
+    for (x, y, z) in bored:
+        mark(z, (x, y))
+    for x, y, j, (dx, dy) in ramps:
+        for z in (Z + 1 - j, Z - j):
+            mark(z, (x, y))
+            mark(z, (x + dx, y + dy))
+    mark(Z, SILVER_INNER_MOUTH[:2])
+
+    def stamp(a, b, rr):
+        cells = set()
+        k = int(np.hypot(b[0] - a[0], b[1] - a[1]) * 3) + 1
+        for t in np.linspace(0, 1, k + 1):
+            px, py = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+            for qx in range(int(np.floor(px - rr)), int(np.ceil(px + rr)) + 1):
+                for qy in range(int(np.floor(py - rr)), int(np.ceil(py + rr)) + 1):
+                    if np.hypot(qx - px, qy - py) <= rr:
+                        cells.add((qx, qy))
+        return cells
+
+    def carvable(z):
+        return (distance(lv > Z - z) > 2.5) & ~dilate(taken[z], 7) & ins
+
+    def name_of(z):
+        return 'Mt. Silver Cave' if z >= 6 else 'Mt. Silver 2F' if z >= 4 else 'Mt. Silver 3F'
+
+    caverns = []
+    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+    def grow(z, start, d0, cap, up, lead=None, open_lead=False, own=()):
+        """Caves on floor z from `start` (open already), first heading d0; None if there is no room."""
+        j, can = Z - z, carvable(z)
+        first = (start[0] + d0[0] * step, start[1] + d0[1] * step)
+        lead = set(lead or ()) | stamp(start, first, 1.2)
+        if not inwin(first) or not can[loc(first)]:
+            return None
+        # the way in keeps apart from every other tunnel but the one it leaves
+        others = taken[z].copy()
+        for c in own:
+            if inwin(c):
+                others[loc(c)] = False
+        free = ~dilate(others, 5)
+        for c in lead:
+            if not inwin(c):
+                return None
+            if lv[loc(c)] <= j:
+                if not open_lead:
+                    return None
+            elif not free[loc(c)]:
+                return None
+        pos, cells, seen, stack, deg, edges = {}, set(lead), {(0, 0)}, [(0, 0)], collections.Counter(), set()
+
+        def at_(key):
+            if key not in pos:
+                jx, jy = (0, 0) if key == (0, 0) else rng.integers(-1, 2, 2)
+                pos[key] = (int(first[0] + step * key[0] + jx), int(first[1] + step * key[1] + jy))
+            return pos[key]
+
+        def link(a, b):
+            seg = stamp(at_(a), at_(b), 1.2 if rng.random() < 0.75 else 1.8)
+            if all(inwin(c) and can[loc(c)] for c in seg):
+                cells.update(seg)
+                deg[a] += 1
+                deg[b] += 1
+                edges.add(frozenset((a, b)))
+                return True
+            return False
+
+        while stack and len(seen) < cap:
+            cur = stack[-1] if rng.random() < 0.7 else stack[int(rng.integers(len(stack)))]
+            opts = [(cur[0] + a, cur[1] + b) for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1))]
+            rng.shuffle(opts)
+            for nxt in opts:
+                if nxt not in seen and link(cur, nxt):
+                    seen.add(nxt)
+                    stack.append(nxt)
+                    break
+            else:
+                stack.remove(cur)
+        for a in list(seen):
+            for b in ((a[0] + 1, a[1]), (a[0], a[1] + 1)):
+                if b in seen and frozenset((a, b)) not in edges and rng.random() < 0.12:
+                    link(a, b)
+        for c in cells:
+            if (c[0], c[1], z) not in bored:
+                bored[(c[0], c[1], z)] = name_of(z)
+            mark(z, c)
+        ends = sorted((k for k in seen if deg[k] == 1 and k != (0, 0)), key=lambda k: -abs(k[0]) - abs(k[1]))
+        climbed = False
+        for k in ends:
+            if up and not climbed and z > 1:
+                foot = at_(k)
+                ways = [('ramp', d) for d in dirs]
+                ways.insert(0 if rng.random() < 0.5 else 4, ('stairs', (0, -1)))
+                for kind, d in ways:
+                    if grow(z - 1, foot, d, up, 0, stamp(foot, (foot[0] + d[0] * step, foot[1] + d[1] * step), 1.2)):
+                        if kind == 'ramp':
+                            ramps.append((foot[0], foot[1], Z - z + 1, d))
+                        else:
+                            holes.add((foot[0], foot[1], z - 1))
+                            deco[(foot[0], foot[1], z)] = [STAIRS_UP['north'][0]]
+                        mark(z, foot)
+                        climbed = True
+                        break
+                if climbed:
+                    continue
+            if rng.random() < 0.4:
+                room = stamp(at_(k), at_(k), 3.2)
+                if all(inwin(c) and (can[loc(c)] or c in cells) for c in room):
+                    for c in room:
+                        bored[(c[0], c[1], z)] = name_of(z)
+                        mark(z, c)
+                    caverns.append((at_(k), z))
+        return len(seen)
+
+    for z, where, cap, up in SILVER['caves']:
+        j = Z - z
+        if isinstance(where, str):
+            starts = sorted(p[:2] for p, nm in bored.items() if nm == where and p[2] == z)
+            own = set(starts)
+            for _ in range(60):
+                start = starts[int(rng.integers(len(starts)))]
+                if grow(z, start, dirs[int(rng.integers(4))], cap, up, own=own):
+                    break
+            else:
+                print('Mt. Silver: no room for caves off %s on floor %d' % (where, z))
+            continue
+        for shift in (0, 10, -10, 20, -20, 30, -30):
+            p = spot((where[0], where[1] + shift, where[2]))
+            ux, uy = cx - p[0], cy - p[1]
+            d0 = (int(np.sign(ux)), 0) if abs(ux) > abs(uy) else (0, int(np.sign(uy)))
+            face = next(q for q in ((p[0] + d0[0] * t, p[1] + d0[1] * t) for t in range(40))
+                        if level[q[1] - f.y0, q[0] - f.x0] > j)
+            mouth = (face[0] + d0[0] * 3, face[1] + d0[1] * 3)
+            lead = stamp(p, mouth, 2.2)
+            if level[p[1] - f.y0, p[0] - f.x0] == j and not any((c[0], c[1], z) in bored or (c[0], c[1], z) in deco
+                                                               for c in lead) \
+                    and grow(z, mouth, d0, cap, up, lead, True):
+                break
+        else:
+            print('Mt. Silver: no room for caves in from %s' % (where,))
+            continue
+        for c in lead:
+            if np.hypot(c[0] - face[0], c[1] - face[1]) <= 2.5 and level[c[1] - f.y0, c[0] - f.x0] > j:
+                level[c[1] - f.y0, c[0] - f.x0] = j
+                keep[c[1] - f.y0, c[0] - f.x0] = True
+            if level[c[1] - f.y0, c[0] - f.x0] <= j:
+                bored.pop((c[0], c[1], z), None)
+                keep[c[1] - f.y0 - 1:c[1] - f.y0 + 2, c[0] - f.x0 - 1:c[0] - f.x0 + 2] = True
+    # dressing, kept off the ramps, their tops and anything already placed
+    clear = {(x + dx, y + dy, zz) for x, y, jj, (rx, ry) in ramps for zz in (Z + 1 - jj, Z - jj)
+             for dx in range(-2, 3) for dy in range(-2, 3)}
+    hx, hy, _ = SILVER_INNER_MOUTH
+    clear |= {(hx + dx, hy + dy, Z) for dx in range(-3, 4) for dy in range(-3, 4)}
+    clear |= {(x + dx, y + dy, zz) for x, y, z in holes for zz in (z, z + 1) for dx in range(-2, 3) for dy in range(-2, 3)}
+    patches = Field(113).noise(6)
+    room_cells = {(x, y, z) for (cxy, z) in caverns for x in range(cxy[0] - 3, cxy[0] + 4)
+                  for y in range(cxy[1] - 3, cxy[1] + 4)}
+    for (x, y, z) in list(bored):
+        if (x, y, z) in deco or (x, y, z) in clear:
+            continue
+        if patches[y - f.y0, x - f.x0] > 0.2:
+            ground[(x, y, z)] = 'rocky ground'
+        around = sum((x + dx, y + dy, z) in bored for dx in (-1, 0, 1) for dy in (-1, 0, 1)) - 1
+        edge, roomy = around < 8, around >= 5
+        r = rng.random()
+        if edge and (x, y - 1, z) not in bored and (x, y - 1, z) not in clear and rng.random() < 0.08:
+            deco[(x, y - 1, z)] = [WALL_CANDLE]
+        if edge and roomy and z <= 4 and r < 0.05:
+            deco[(x, y, z)] = [8634 if rng.random() < 0.6 else 8638]
+        elif (x, y, z) in room_cells and roomy and r < 0.08:
+            deco[(x, y, z)] = [pick(rng, ROCKY)]
+        elif r < 0.07:
+            deco[(x, y, z)] = [int(rng.choice(CAVE_DEBRIS))]
+        elif r < 0.095:
+            deco[(x, y, z)] = [int(rng.choice(CAVE_STONES))]
+    return caverns
 
 
 def landing(x, y, facing):
@@ -1876,7 +2151,7 @@ def build(base, out_path):
     surface = np.where(snowy, SNOW, np.where(meadow, GRASS, CAVE_FLOOR))
     hill_ground[mlevel > 0] = surface[mlevel > 0]
     terrain[(mlevel > 0) & (terrain == SNOW_PEAK)] = MOUNTAIN
-    slevel, silver_ramps, bored, up_ground, up_deco, ledges, silver_keep, silver_places = plan_silver(f, mlevel)
+    slevel, silver_ramps, silver_holes, bored, up_ground, up_deco, ledges, silver_keep, silver_places = plan_silver(f, mlevel)
     changed = slevel != mlevel
     assert not (changed & (~gen | present)).any(), 'Mt. Silver over existing tiles'
     mlevel = slevel.astype(np.uint8)
@@ -1959,6 +2234,10 @@ def build(base, out_path):
     for (x, y, z), ramp in ramp_feet.items():
         if z == Z:
             tiles[(x, y)] = [tiles[(x, y)][0], [ramp]]
+            blocked_spawn[y - f.y0, x - f.x0] = True
+    for (x, y, z), items in up_deco.items():
+        if z == Z and (x, y, z) not in ramp_feet:
+            tiles[(x, y)] = [tiles[(x, y)][0], list(items)]
             blocked_spawn[y - f.y0, x - f.x0] = True
     lost = sorted(p for p in decor if p not in tiles)
     if lost:
@@ -2192,14 +2471,12 @@ def build(base, out_path):
         above = pvmap.read_region_raw(None, xs.min() + f.x0, ys.min() + f.y0, xs.max() + f.x0, ys.max() + f.y0,
                                       range(Z - top_level, Z), base_data)
 
-    tunnel = brushes['mountain top ground']
-
     def hill_brush(x, y, j):
         ix, iy = x - f.x0, y - f.y0
         if not (0 <= ix < f.w and 0 <= iy < f.h) or height[iy, ix] < j:
             return None
         if (x, y, Z - j) in bored:
-            return tunnel
+            return brushes[up_ground.get((x, y, Z - j), 'mountain top ground')]
         if height[iy, ix] > j:
             return mountain
         return brushes[up_ground.get((x, y, Z - j)) or BRUSH_OF[hill_ground[iy, ix]]]
@@ -2218,6 +2495,7 @@ def build(base, out_path):
             if center is mountain:
                 ground = pick(hill_rng, mountain_items)
                 border = brushes.borders_for(mountain, nb)
+                deco = list(up_deco.get((x, y, z), []))
             else:
                 ground = pick(hill_rng, [(i, c) for i, c in center.items if c > 0])
                 rim = [b or (center if (x + dx, y + dy, z) in tops else mountain)
@@ -2270,12 +2548,15 @@ def build(base, out_path):
                 walk[iy, ix] = (country[iy, ix] and not any(i in gravel for i in border)
                                 and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet)
                 silver_walk[iy, ix] = ((ledges[iy, ix] or inside) and not edge and not deco and not silver_keep[iy, ix]
-                                       and (x, y, z) not in up_ground)
+                                       and up_ground.get((x, y, z)) != 'walkable sea')
             children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
             new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
         for (x, y, zz) in tops:
             if zz == z:
                 new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(RAMP_TOP))
+        for (x, y, zz) in silver_holes:
+            if zz == z:
+                new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(STAIRS_DOWN))
         # wild Pokémon on Mt. Silver's ledges and in its tunnels
         for iy, ix in np.argwhere(silver_walk & (hill_rng.random((f.h, f.w)) < SILVER_SPAWN_RATE)):
             x, y = ix + f.x0, iy + f.y0

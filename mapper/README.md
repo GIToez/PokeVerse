@@ -92,12 +92,18 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 - **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
   SoulSilver: wide ledges round the peak, one per floor, with trails wide enough for its wild
   Pokémon, and a flat summit on floor 0. Each ledge is closed one way round by a spur of rock
-  and the other way by what takes a field move, so the way up zigzags: from 1F (floor 8) up
+  and the other way by a bluff with one narrow, crooked way through it and a single tree (Cut)
+  or rock (Rock Smash) in it, or by a lake (Surf), so the way up zigzags: from 1F (floor 8) up
   inside the mountain to the lower mountainside (floor 5), Surf across its lake, a ramp to
-  floor 4, Cut, a ramp to floor 3, Rock Smash, into the 2F tunnel under the ledge above (its
-  rocks need Rock Smash too), out on floor 2, Rock Smash, a ramp to floor 1, and the 3F tunnel
-  out onto the summit. Tunnel mouths are cut open into the cliffs. Without Surf, Cut and Rock
-  Smash a player gets no higher than the lower mountainside.
+  floor 4, Cut, a ramp to floor 3, Rock Smash, into the 2F tunnel under the ledge above (it
+  pinches to one tile round another rock), out on floor 2, Rock Smash, a ramp to floor 1, and
+  the 3F tunnel out onto the summit. Tunnel mouths are wide cuts into the cliffs. Without Surf,
+  Cut and Rock Smash a player gets no higher than the lower mountainside.
+  The rest of the inside is caves (`SILVER['caves']`, `silver_caves`): off the tunnels and in
+  from mouths on the ledges, winding passages that branch, loop and end blind, caverns at some
+  ends, and ramps or cave stairs under a rock hole up to more caves on the floor above. Every
+  cave has the one way in, so none is a way round an obstacle. They are dressed with rocky
+  patches, debris, stones, wall candles and, from floor 4 up, ice crystals.
 - **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
   under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
   Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's
@@ -181,7 +187,7 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1123 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1144 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
   Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, the
