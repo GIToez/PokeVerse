@@ -103,6 +103,7 @@ function onLogout(cid, forceLogout)
         doCreatureSetStorage(cid, playersStorages.playSessionStart, 0)
     end
     Pokepedia.onLogout(cid)
+    Vocations.onLogout(cid)
 
     return true
 end

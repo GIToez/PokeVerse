@@ -682,6 +682,17 @@ do not change.
   The early egg chance is from day 7 at 10% a day, and Breeders get 11–15%.
   Ranger specials are event Pokémon, such as Christmas Pikachu.
 - **Proposed:** the rank levels and the other percentages.
+- **Built: the vocation window** (client `game_vocation`, server `Vocations` in
+  `data/lib/ps/systems/070-vocations.lua`, `EXTENDED_IDS.VOCATION`). A scrolling grid of
+  cards, three per row, each with a picture, the vocation's icon, name, tagline and three
+  perks. Select turns into Confirm and Back with "This choice is permanent"; the server checks
+  trainer level 20 and that the trainer has no vocation, then keeps the choice in the
+  `vocation` storage. Below level 20 the buttons are greyed out; after the choice the card shows
+  "Your vocation". `Vocations.open(cid)` opens it, and a choice only counts while a window it
+  opened is up, so the quest line decides when trainers choose. Until then staff test it with
+  `/vocation`, `/vocation reset` and `/vocation Name`. The perks themselves are not in yet.
+  Artwork: `scripts/art/vocation_ui.py`, with the card pictures in
+  `scripts/art/vocation-banners`.
 
 ### To decide
 

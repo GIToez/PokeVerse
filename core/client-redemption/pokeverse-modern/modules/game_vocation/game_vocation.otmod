@@ -1,0 +1,8 @@
+Module
+  name: game_vocation
+  description: PokeVerse vocation window: the six vocations and the permanent choice from trainer level 20
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ vocation ]
+  @onLoad: init()
+  @onUnload: terminate()

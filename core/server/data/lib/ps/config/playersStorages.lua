@@ -93,5 +93,7 @@ playersStorages = {
     pcClassic = base + 90, -- 1: the next locker use opens the depot containers
     pokedexCompleted = base + 91, -- 1 once the Master Ball for the complete Pokedex was given (Pokepedia)
     pokepediaMigrated = base + 92, -- 1 once the species caught before the Pokedex knowledge levels were counted
+    vocation = base + 93, -- the chosen vocation's id in Vocations.LIST, -1 for a regular Trainer
+    vocationWindow = base + 94, -- 1 while the vocation window is open and may choose (Vocations)
     -- tournamentWeekWinnerStorage = base + 65
 }

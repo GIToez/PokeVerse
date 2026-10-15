@@ -49,6 +49,7 @@ Module
     - game_gymbattle
     - game_npcdialog
     - game_pokepedia
+    - game_vocation
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

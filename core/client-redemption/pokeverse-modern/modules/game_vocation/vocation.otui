@@ -1,0 +1,200 @@
+// The vocation window (artwork: scripts/art/vocation_ui.py; the frame comes from game_dailytasks,
+// the buttons from client_entergame)
+
+VocationPerk < UILabel
+  height: 18
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: false
+  icon: /modules/game_vocation/images/bullet
+  icon-align: left
+  icon-size: 10 10
+  icon-offset-y: 4
+  text-offset: 16 0
+  phantom: true
+
+VocationButton < PVGreenButton
+  ttf-font-size: 12
+  height: 26
+
+VocationCard < UIWidget
+  image-source: /modules/game_vocation/images/card
+  image-border: 10
+  focusable: false
+  $hover !checked:
+    image-source: /modules/game_vocation/images/card_hover
+  $checked:
+    image-source: /modules/game_vocation/images/card_selected
+    image-border: 14
+
+  UIWidget
+    id: banner
+    size: 214 96
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 4
+    image-smooth: true
+    phantom: true
+
+  UIWidget
+    id: icon
+    size: 34 34
+    anchors.top: banner.bottom
+    anchors.left: parent.left
+    margin: 6 0 0 9
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 15
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: icon.top
+    anchors.left: icon.right
+    margin: 1 0 0 8
+    phantom: true
+
+  UILabel
+    id: tagline
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.top: name.bottom
+    anchors.left: name.left
+    margin-top: 2
+    phantom: true
+
+  UIWidget
+    id: perks
+    anchors.top: icon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin: 8 10 0 12
+    height: 54
+    phantom: true
+    layout:
+      type: verticalBox
+
+  UILabel
+    id: note
+    !text: tr('This choice is permanent')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.bottom: select.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: 4
+    phantom: true
+    visible: false
+
+  VocationButton
+    id: select
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 10 9 10
+
+  VocationButton
+    id: confirm
+    !text: tr('Confirm')
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin: 0 3 9 10
+    visible: false
+
+  PVBlueButton
+    id: back
+    !text: tr('Back')
+    ttf-font-size: 12
+    height: 26
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 10 9 3
+    visible: false
+
+  UILabel
+    id: chosen
+    !text: tr('Your vocation')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 13
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.verticalCenter: select.verticalCenter
+    phantom: true
+    visible: false
+
+VocationWindow < UIWindow
+  size: 760 620
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_vocation.close()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_vocation/images/icon_vocation
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Choose Your Vocation')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  UILabel
+    id: subtitle
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+    phantom: true
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_vocation.close()
+
+  ScrollablePanel
+    id: grid
+    vertical-scrollbar: gridScroll
+    anchors.top: subtitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 12
+    margin-right: 16
+    layout:
+      type: grid
+      cell-size: 222 252
+      cell-spacing: 10
+      num-columns: 3
+      flow: true
+
+  GtsScrollBar
+    id: gridScroll
+    step: 40
+    anchors.top: grid.top
+    anchors.bottom: grid.bottom
+    anchors.left: grid.right
+    margin-left: 4
