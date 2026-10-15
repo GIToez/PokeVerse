@@ -1335,7 +1335,7 @@ Do you really want to go to %s? This will cost you %s dollars.@Você realmente qu
 Do you really want to battle with me?%s%s@Você realmente quer batalhar comigo?%s%s
 Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee.@Você realmente deseja cancelar o treinamento do seu Pokemon? Ele não vai ganhar nenhum ponto de experiência ou gerar ovos, mas você ainda terá que pagar a dívida.
 Do you really want to delete the character named @Você realmente quer deletar o personagem chamado 
-Do you really want to exchange 'psoul' letters for a %s?@Você realmente quer trocar letras 'psoul' por um %s?
+Do you really want to exchange the letters P, S, O, U and L for a %s?@Você realmente quer trocar letras 'psoul' por um %s?
 Do you really want to join the %s Mastery?@Você realmente quer se juntar a Mastery %s?
 Do you really want to leave the mastery?@Você realmente quer deixar a Mastery?
 Do you really want to remove the plate that you deposited here?@Você realmente deseja remover a Plate que você depositou aqui?
@@ -1733,7 +1733,7 @@ Great. Our house is suffering from a Rattata infestation. I know you can handle 
 Great. Professor Ivy, who lives in the archipelago, has a new type of Pokeball she calls the GS Ball. She still could not open it and asked for my help to continue the research. I need you to fetch it for me. Go ahead champion! Tip: take the ship at Vermilion and reach Valencia Island.@Ótimo. Professor Ivy habita o arquipélago e está na posse de um novo tipo de Pokebola que ela chama da Pokebola GS. Ela ainda não conseguiu abrir a Pokebola e pediu minha ajuda para continuar a pesquisa. Eu preciso de você para buscá-la para mim. Vá em frente campeão! Dica: comece no navio de Vermilion e chegue pela Ilha de Valencia.
 Great. Put them in this bag and hand it to the bow maker in Lavender. Once he has it, return to me! Thank you!@Ótimo. Coloque-os neste saco. Entregue ele ao fabricante de arcos em Lavender. Quando estiver pronto, retorne até mim! Obrigado!
 Great. The bow maker gave me a list of materials I need to collect. Get them for me and you will have your reward.@Ótimo. O fabricante deu-me uma lista de materiais que eu preciso recolher. Pegue-os para mim e você terá sua recompensa.
-Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and find out where the Restore Stones are. Come back here later.@Ótimo. Precisamos de duas outras pedras chamadas Restore Stones. VAPOREONN Elas vão ajudar a distribuir o mal que apoia Deepsoul Stone. Vá falar com os outros VAPPOR dois {Chiefs} e descubra onde estão as Restore Stones. Volte aqui depois.
+Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chiefs} and find out where the Restore Stones are. Come back here later.@Ótimo. Precisamos de duas outras pedras chamadas Restore Stones. VAPOREONN Elas vão ajudar a distribuir o mal que apoia Deepsoul Stone. Vá falar com os outros VAPPOR dois {Chiefs} e descubra onde estão as Restore Stones. Volte aqui depois.
 Great choice! Here it is.@Ótima escolha! Aqui está.
 Great choice, take it!@Grande escolha, pegue!
 Great job! Congratulations!@Bom trabalho! Parabéns!
@@ -1754,7 +1754,7 @@ Guts raises the Attack stat by 50% while affected by the burn, paralysis, poison
 GYM@Ginásio
 Gym Rainbow@Gym Rainbow
 Gyro Ball deals damage and has no secondary effect.@Gyro Ball inflige dano e não tem nenhum efeito secundário.
-Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You better have burn heal!@Hah! Eu sou Blaine! Eu sou o líder de Cinnabar ginásio! Meu Pokemon de fogo vai incinerar todos os adversários! Hah! É melhor ter cura de queimadura!
+Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You'd better have a Burn Heal!@Hah! Eu sou Blaine! Eu sou o líder de Cinnabar ginásio! Meu Pokemon de fogo vai incinerar todos os adversários! Hah! É melhor ter cura de queimadura!
 Haha! Thanks buddy!@Haha! Valeu amigo!
 Haha! Where is the Pokemon trainer?@Haha! Onde está o treinador Pokemon?
 Haha, great news! I'm really enjoying help you, take this reward! Type {mission} when you want to get your next task!@Haha, boas notícias! Estou gostando muito de ajudá-lo, pegue esta recompensa! Diga {missão} quando você desejar obter a sua próxima tarefa!
@@ -1971,7 +1971,7 @@ Here you can also generate an Egg Move for an old Pokemon of yours hatched from 
 Here you can exchange christmas tokens into christmas gifts, you can see the {options}.@Aqui você pode trocar christmas tokens em presentes de Natal, você pode ver as {opções}.
 Here you can exchange golden easter eggs into gifts, you can see the {options}.@Aqui você pode trocar ovos de páscoa de ouro em presentes, você pode ver as {opções}.
 Here you can exchange halloween tokens for halloween gifts, you can see the {options}.@Aqui você pode trocar halloween tokens por presentes do dia das bruxas, você pode ver as {opções}.
-Here you can exchange the 'psoul' letters for exclusive items.@Aqui você pode trocar as letras 'psoul' para itens exclusivos.
+Here you can exchange the letters P, S, O, U and L for exclusive items.@Aqui você pode trocar as letras 'psoul' para itens exclusivos.
 Here you can paint your pokeballs, I have several color {options} available.@Aqui você pode pintar suas Pokebolas, tenho várias {opções} de cores disponíveis.
 Here you can {buy} or {sell} Pokemon. You can also {list} or {cancel} your offerts.@Aqui você pode {comprar} ou {vender} Pokemons. Você também pode {listar} ou {cancelar} suas ofertas.
 Here you can {remove}, {change} and {recover} Egg moves of your Pokemon!@Aqui você pode {remover}, {alterar} e {recuperar} movimentos ovo do seu Pokemon!
@@ -4839,7 +4839,7 @@ Why not?! ... ... ... Ok, ok, I'm sorry about that. It's fine.@Por que não?! ...
 wife@esposa
 It's me, Wilkie! Best pizza ever!@Wilkie sou eu! A melhor pizza!
 Will-O-Wisp inflicts a burn on the target. It has no effect on Fire-type Pokemon.@Will-O-Wisp causa o efeito "burn" no alvo. Ele não tem efeito sobre Pokemons do tipo fogo.
-Want a hot-dog, brother?@Vai um cachorro quente ai, irmão?
+Want a hot dog, brother?@Vai um cachorro quente ai, irmão?
 Don't need it anymore? We buy it. Which items do you want to sell?@Não vai precisar dele? Nós precisamos. Quais os itens quer vender?
 Won't you need this plate?@Não precisará desta plate?
 Don't need this Stone anymore?@Não precisará desta Pedra?
@@ -6480,7 +6480,7 @@ THANK YOU! You are amazing! Now, my {research} will change the world.@OBRIGADO! 
 All right, I'll tell you, no more secrets. The truth is ... I AM ASH KETCHUM! Shiiii, do not tell anyone. Now I need one more favor.@Tudo bem, vou lhe contar, chega de segredos. A verdade é que... EU SOU ASH KETCHUM! Shiiii, não conte a ninguém. Agora preciso de mais um favorzinho.
 I knew I could count on you, bring me the following: 5x Bat Wing, 5x Tooth, 10x Mouldy Cheese, and 10x Bitten Apple.@Eu sabia que poderia contar com você, me traga o seguinte: 5x Bat Wing, 5x Tooth, 10x Mouldy Cheese e 10x Bitten Apple.
 Got it all for your friend Ash??@Conseguiu tudo para seu amigo Ash??
-Thank you Pikachu! My research will reach the stars now!@Obrigado Pikachu! Minha pesquisa vai alcançar as estrelas agora!
+Thank you, Pikachu! My research will reach the stars now!@Obrigado Pikachu! Minha pesquisa vai alcançar as estrelas agora!
 Hi! I see you're a Pokemon {trainer}! Like me!@Oi! Vejo que você é um {treinador} Pokemon! Assim como eu!
 Err... Actually I still haven't got my first Pokemon, could you help me?@Err... Na verdade eu ainda não obtive meu primeiro Pokemon, você poderia me ajudar?
 My dream is to start my journey with a Rattata, my favorite Pokemon! If you bring one for me, I will give you a very good reward.@O meu sonho é iniciar minha jornada com um Rattata, meu Pokemon preferido! Se você trazer um para mim, lhe darei uma recompensa muito boa.
@@ -6532,7 +6532,7 @@ Thank you very much, here's a reward. When you are available, I need a little mo
 In fact I discovered that the cause of the infestation are other Pokemon!@Na verdade descobri que a causa da infestação são outros Pokemons!
 It's those Zubats that are eating all my flowers, could you defeat 5x Zubat?@São aqueles Zubats que estão comendo todas minhas flores, você poderia derrotar 5x Zubat?
 Did you defeat them?@Você espantou eles??
-Wow thank you very much. Hopefully these {Pokemon} will not haunt me any more.@Nossa, muito obrigado. Tomara que estes {Pokemons} não voltem a me assombrar.
+Wow thank you very much. Hopefully these {Pokemon} will not haunt me anymore.@Nossa, muito obrigado. Tomara que estes {Pokemons} não voltem a me assombrar.
 You will not believe it, but the infestation is not over yet.@Você não vai acreditar, mas a infestação ainda não terminou.
 I thought it was over, but these terrible ones showed up. Please defeat 5x Weedle.@Eu pensei que tinha terminado, mas estes terríveis apareceram. Por favor, derrote 5x Weedle.
 Did you get them out of my yard?@Você tirou eles do meu quintal?

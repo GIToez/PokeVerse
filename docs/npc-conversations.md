@@ -14,13 +14,13 @@ audit is in [npc-audit.md](npc-audit.md).
 | Lines checked | 2950 |
 | Quests | 452 |
 | Lines still in Portuguese | 0 (0 NPCs or files) |
-| Tibia or old-server leftovers | 2 (1) |
+| Tibia or old-server leftovers | 0 (0) |
 | Quests whose text does not match what they check | 0 |
 | Quests nobody can start | 64 |
 | NPCs with blue words that do nothing | 0 |
 | Formatting problems | 0 (0) |
 | Spelling mistakes | 39 (30) |
-| Grammar problems | 17 (17) |
+| Grammar problems | 12 (12) |
 | One-liners (only a greeting so far) | 92 |
 | Lines that read badly (reading review) | 1634 |
 
@@ -31,15 +31,6 @@ Every line was also read by a reviewer for broken or unclear English that the ch
 proposed rewrite each, are in [npc-rewrites.md](npc-rewrites.md). Most lines to fix:
 
 Professor Oak (33), Bill (31), npc/scripts/soulTrade.lua (23), Ader (20), Dax (20), npc/scripts/tutorial_quests.lua (19), Darus (18), Eddie (18), Joey (18), Peter Paul (18), Taya (18), Oak's Assistant (17), Ash Ketchum (16), Gary Oak (16), George Carter (16), Gerry (16), Isak (16), Jacob (16), Jarom (16), Kemp Drummond (16), Koby (16), Old Lady (16), Rock (16), Misty (15), Flanagan (14), Noah (14), Satya (14), Giovanni (13), Kurt Petrillose (13), Martha May (13).
-
-## Tibia and old-server leftovers
-
-Names, money and places from Tibia or the servers PokeVerse grew out of.
-
-**Murray Aaron**
-
-- old server name: "psoul" - "Here you can exchange the 'psoul' letters for exclusive items." (npc/scripts/event_anniversary.lua)
-- old server name: "psoul" - "Do you really want to exchange 'psoul' letters for a %s?" (npc/scripts/event_anniversary.lua)
 
 ## Quests nobody can start
 
@@ -252,14 +243,6 @@ LanguageTool's grammar findings, with its suggested fix.
 
 - Possible agreement error. You should probably use: “are”. ("is" → "are") - "I have three clues about where the stone of prophecy is. Will you help me look?" (quest 8240 talk_questStarting)
 
-**Bertina Stacy**
-
-- Did you mean the adverb “anymore”? ("any more" → "anymore") - "Wow thank you very much. Hopefully these {Pokemon} will not haunt me any more." (quest 8738 talk_questFinished)
-
-**Blaine**
-
-- It appears that the past participle should be used here. ("burn" → "burned") - "Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You better have burn heal!" (message_greet)
-
 **Captain Evelyn Scottie**
 
 - An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
@@ -283,18 +266,6 @@ LanguageTool's grammar findings, with its suggested fix.
 **Captain Tristen Coby**
 
 - An auxiliary verb seems to be missing from this progressive structure. Did you mean “what are you”? ("what you" → "what are you") - "Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}." (message_greet)
-
-**Chief Vaporeon**
-
-- Incorrect singular possessive form after the number (two). Did you mean “Chiefs” or “Chiefs'”? ("Chief's" → "Chiefs") - "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and find out where the Restore Stones are. Come back here later." (quest 8243 talk_questStarted)
-
-**Gabriel Wright**
-
-- The word “” spelled with a hyphen is a verb. Did you mean the noun “hot dog”? ("hot-dog" → "hot dog") - "Want a hot-dog, brother?" (message_greet)
-
-**Kenelm Reilly**
-
-- When a person is directly addressed, a comma should set off the name. ("Thank you" → "Thank you,") - "Thank you Pikachu! My research will reach the stars now!" (quest 8726 talk_questFinished)
 
 **Kurt Petrillose**
 

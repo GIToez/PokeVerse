@@ -157,13 +157,13 @@ function creatureSayCallback(cid, type, msg)
     msg = string.lower(msg)
 
     if (msgcontains(msg, 'gift') or msgcontains(msg, 'presente')) then
-        selfSay("Here you can exchange the 'psoul' letters for exclusive items.", cid)
+        selfSay("Here you can exchange the letters P, S, O, U and L for exclusive items.", cid)
         doPlayerPopupFYI(cid, lettersOptionsMessage)
 
     elseif (LETTERS_OPTION_BY_NAME[msg]) then
         lastLettersOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_LETTERS_EXCHANGING
-        selfSay(string.format(__L(cid, "Do you really want to exchange 'psoul' letters for a %s?"), msg), cid)
+        selfSay(string.format(__L(cid, "Do you really want to exchange the letters P, S, O, U and L for a %s?"), msg), cid)
 
     elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and talkState[talkUser] == TALKSTATE_LETTERS_EXCHANGING and lastLettersOption[talkUser]) then
         local opt = LETTERS_OPTION_BY_NAME[lastLettersOption[talkUser]]

@@ -649,5 +649,54 @@
   "text": "Thanks! I need you to bring me these items: 39x Venon Pendant.",
   "rewrite": "Thanks! I need you to bring me these items: 39x Venom Pendant.",
   "problem": "spelling; the item is a venom pendant"
+ },
+ {
+  "npc": "Bertina Stacy",
+  "where": "quest 8738 talk_questFinished",
+  "text": "Wow thank you very much. Hopefully these {Pokemon} will not haunt me any more.",
+  "rewrite": "Wow thank you very much. Hopefully these {Pokemon} will not haunt me anymore.",
+  "problem": "grammar"
+ },
+ {
+  "npc": "Chief Vaporeon",
+  "where": "quest 8243 talk_questStarted",
+  "text": "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chief}'s and find out where the Restore Stones are. Come back here later.",
+  "rewrite": "Great. We need two other Stones called Restore Stones. VAPOREONN They will help disperse the evil that weighs on the Deepsoul Stone. Go talk to the other VAPPOR two {Chiefs} and find out where the Restore Stones are. Come back here later.",
+  "problem": "grammar"
+ },
+ {
+  "npc": "Kenelm Reilly",
+  "where": "quest 8726 talk_questFinished",
+  "text": "Thank you Pikachu! My research will reach the stars now!",
+  "rewrite": "Thank you, Pikachu! My research will reach the stars now!",
+  "problem": "grammar"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You better have burn heal!",
+  "rewrite": "Hah! I am Blaine! I am the leader of Cinnabar gym! My fiery Pokemon will incinerate all challengers! Hah! You'd better have a Burn Heal!",
+  "problem": "grammar"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Want a hot-dog, brother?",
+  "rewrite": "Want a hot dog, brother?",
+  "problem": "spelling"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Here you can exchange the 'psoul' letters for exclusive items.",
+  "rewrite": "Here you can exchange the letters P, S, O, U and L for exclusive items.",
+  "problem": "old server name (PokeSoul)"
+ },
+ {
+  "npc": "*",
+  "where": "everywhere",
+  "text": "Do you really want to exchange 'psoul' letters for a %s?",
+  "rewrite": "Do you really want to exchange the letters P, S, O, U and L for a %s?",
+  "problem": "old server name (PokeSoul)"
  }
 ]
