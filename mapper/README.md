@@ -183,7 +183,8 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   ridge that walls Blackthorn City off (town 59, temple 2723,387,7, with a Gym and Dragon's Den at
   2770,335). Routes 45 and 46 run south past Dark Cave (1F, in at 2585,610 and 2690,611).
 - **The rest of the layout:** Routes 47 and 48 from Cianwood to the Safari Zone (1810,560, its
-  own wild Pokémon inside the fence), the Battle Frontier (2010,366) north-west of Olivine, the
+  own wild Pokémon inside the fence, among copses and thickets with the grass running round each
+  and any gap they shut in filled), the Battle Frontier (2010,366) north-west of Olivine, the
   hunting grounds with trails in from the routes and wild Pokémon of their own (Olivine Cliffs,
   Arbor Woods, Lake of Life, Ecruteak Old Forest, Snowtop Mountain, Mount Quena, Rage Marshes,
   Mortar Badlands, Frozen North, Dragon Holy Land, Lake Slowpoke, Azalea South Woods), the

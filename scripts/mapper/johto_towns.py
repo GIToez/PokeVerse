@@ -851,6 +851,8 @@ def blackthorn(t):
 
 WILD_TREES = [2700, 2702, 2703, 2707, 2708]
 BOULDERS = [3607, 1285, 1300, 1301]
+SAFARI_BUSHES = [2767, 2768]
+SAFARI_PLANTS = [6216, 6217, 6218, 6219, 3610, 3611, 3612, 3613, 2740, 2742]
 SNOWY_FIR = 2698
 
 
@@ -893,6 +895,36 @@ def safari_zone(t):
         x, y = int(rng.integers(1820, 1836)), int(rng.integers(522, 542))
         if t.free_tile(x, y):
             t.item(x, y, int(rng.choice(BOULDERS)))
+    # copses and thickets across the open grass: solid clumps, each well clear of the others, the
+    # fence, the pond and the way in from the gate, so the grass still runs all round every one
+    for gx, gy in [(1795, 480), (1790, 508), (1802, 530), (1771, 508), (1826, 513), (1776, 534)]:
+        r = float(rng.uniform(3.5, 5))
+        for x in range(int(gx - r), int(gx + r) + 1):
+            for y in range(int(gy - r), int(gy + r) + 1):
+                if abs(x - 1810) < 3 or not (x0 + 3 <= x <= x1 - 3 and y0 + 3 <= y <= y1 - 3):
+                    continue
+                if np.hypot(x - gx, y - gy) > r * float(rng.uniform(0.75, 1.05)) or rng.random() < 0.12:
+                    continue
+                if t.free_tile(x, y):
+                    t.item(x, y, int(rng.choice(WILD_TREES)) if rng.random() < 0.55 else int(rng.choice(SAFARI_BUSHES)))
+    # gaps shut in by a copse are filled, so nothing spawns where it can't get out
+    open_ = {(x, y) for x in range(x0 + 1, x1) for y in range(y0 + 1, y1) if t.free_tile(x, y)}
+    while open_:
+        part, todo = set(), [open_.pop()]
+        while todo:
+            x, y = todo.pop()
+            part.add((x, y))
+            for p in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if p in open_:
+                    open_.discard(p)
+                    todo.append(p)
+        if len(part) <= 6:
+            for x, y in part:
+                t.item(x, y, int(rng.choice(SAFARI_BUSHES)))
+    for _ in range(90):
+        x, y = int(rng.integers(x0 + 2, x1 - 1)), int(rng.integers(y0 + 2, y1 - 1))
+        if t.free_tile(x, y) and abs(x - 1810) >= 3:
+            t.item(x, y, int(rng.choice(SAFARI_PLANTS)))
 
 
 def battle_frontier(t):
