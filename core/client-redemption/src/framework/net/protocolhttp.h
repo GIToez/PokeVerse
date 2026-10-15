@@ -83,6 +83,15 @@ public:
 
     void clearDownloads() { m_downloads.clear(); }
 
+    // drops a download once the updater has written it, so a large update is not held in memory
+    void forgetDownload(std::string path)
+    {
+        if (!path.empty() && path[0] == '/')
+            path = path.substr(1);
+        std::lock_guard<std::mutex> lock(m_mutex);
+        m_downloads.erase(path);
+    }
+
     HttpResult_ptr getFile(std::string path)
     {
         if (!path.empty() && path[0] == '/')

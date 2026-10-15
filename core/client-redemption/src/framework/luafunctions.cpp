@@ -29,6 +29,9 @@
 #include <framework/core/resourcemanager.h>
 #include <framework/luaengine/luainterface.h>
 #include <framework/platform/platform.h>
+#ifdef ANDROID
+#include <framework/platform/androidmanager.h>
+#endif
 #include <framework/proxy/proxy.h>
 #include <framework/stdext/net.h>
 #include <framework/util/crypt.h>
@@ -220,6 +223,12 @@ void Application::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_http", "wsSend", &Http::wsSend, &g_http);
     g_lua.bindSingletonFunction("g_http", "wsClose", &Http::wsClose, &g_http);
     g_lua.bindSingletonFunction("g_http", "cancel", &Http::cancel, &g_http);
+    g_lua.bindSingletonFunction("g_http", "forgetDownload", &Http::forgetDownload, &g_http);
+
+#ifdef ANDROID
+    g_lua.registerSingletonClass("g_android");
+    g_lua.bindSingletonFunction("g_android", "setBackgroundTask", &AndroidManager::setBackgroundTask, &g_androidManager);
+#endif
 
     // ModuleManager
     g_lua.registerSingletonClass("g_modules");

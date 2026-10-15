@@ -32,13 +32,28 @@ so. Items marked **To decide** need an answer before work starts.
 - The new top menu bar (grouped icons, Store button) and one hotkey system for items and moves.
 - [Slot machine and world boss fixes](#11-bug-fixes-and-small-ideas).
 
-**Next, in order:**
+**Next, in order (agreed October 15):**
 
-1. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
-2. [Vocations](#6-vocations), replacing the old vocations.
-3. Convert every NPC, quest and task to the new dialogue, then the
-   [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial).
-4. [Factions](#10-factions).
+1. **Updater** (in progress): four files at a time, written to disk every 25 so an interrupted
+   update resumes, "File X of N, MB left" and the speed; the client's own files come last.
+   On Android the game keeps running in the background with a notification ("PokeVerse is
+   updating in the background", or still connected while logged in). No "update the client
+   first" step. The map pictures stay as they are.
+2. **NPC fixes** from the [NPC audit](npc-audit.md): the shared code (battles, travel, quests,
+   Ranger Club, bank), greetings that hide what the NPC answers to, and missing {yes}/{no}.
+   NPCs that only have one line are their own category, not a problem.
+3. **[NPC dialogue window](#3-npc-dialogue-quests-and-tasks)**: portrait (the leaders' portraits;
+   everyone without one shows their outfit, no new portraits are made), the blue words as
+   buttons, big Yes/No for questions. The NPC tab stays as the history, but NPC lines no longer
+   pop it open.
+4. **Mission notices**: started, updated and complete, from the server.
+5. **NPC role icons**: mission, trade, duel, travel, bank and so on, from what each NPC really
+   does; NPCs with several roles rotate their icons every second. (The battle icon the server
+   sends today has no picture in the client.)
+6. The NPCs with their own scripts, town by town.
+7. [Vocations](#6-vocations), replacing the old vocations.
+8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
+9. [Factions](#10-factions).
 
 Alongside, as small separate changes: what's left of the
 [bug fixes and small ideas](#11-bug-fixes-and-small-ideas) (hunting task time limit),
