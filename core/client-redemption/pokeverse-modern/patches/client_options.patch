@@ -120,6 +120,15 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
 +++ b/modules/client_options/options.lua
+@@ -175,7 +175,7 @@
+         setOption('soundMaster', restoreVolume)
+     else
+         options.soundMaster.lastVolume = current
+-        g_settings.setNumber('soundMasterLastVolume', current)
++        g_settings.set('soundMasterLastVolume', current)
+         setOption('soundMaster', 1)
+     end
+ end
 @@ -293,6 +293,73 @@
  
      setupComboBox()
