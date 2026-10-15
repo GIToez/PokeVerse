@@ -22,11 +22,13 @@ Mt. Mortar (1F, two mouths on Route 42) to Mahogany Town, Route 43 north to the 
 east under the snowfield to the Ice Path (1F, under the ridge that walls Blackthorn off), Blackthorn City
 with Dragon's Den, and Routes 45 and 46 south past Dark Cave to Route 29. North of the ridge: the west gate's pass
 through Kanto's mountain, Route 28, the Silver-Indigo range around the plateau, Mt. Silver with
-its Pokémon Center, and Mt. Silver Cave 1F below ground. The Elite Four building's west and south
+its Pokémon Center, Mt. Silver Cave 1F below ground and the Ho-Oh Shrine on the summit, and Tohjo
+Falls under the ridge where the Tohjo river comes out. The Elite Four building's west and south
 counters are taken out so both gates lead into it. The rest of the layout's extent: Routes 47 and 48
 from Cianwood to the Safari Zone, the Battle Frontier, the hunting grounds with trails in from the
 routes and wild Pokémon of their own, Snowtop Mountain and Mount Quena, the Dragon Holy Land and Lake
-Slowpoke, the anime's isles off the west coast, and the sea all round.
+Slowpoke, the anime's isles off the west coast and the I.S.S. Raspberry's wreck by the Whirl
+Islands, and the sea all round.
 
 Places are joined the games' way (Bulbapedia): Surf from New Bark onto Route 27 and across the Tohjo
 river to Route 26, Surf or Mt. Mortar on Route 42, the Ice Path or Dark Cave to Blackthorn's side,
@@ -217,9 +219,9 @@ ROADS = {
     '47': [(1888, 640), (1866, 628), (1850, 612)],
     '48': [(1850, 612), (1836, 592), (1830, 570)],
     # trails off the routes into the hunting grounds and up to the landmarks
-    'frontier trail': [(2180, 410), (2120, 400), (2080, 385), (2045, 372), (2040, 356)],
+    'frontier trail': [(2180, 410), (2120, 400), (2080, 385), (2060, 366), (2053, 358)],
     'cliffs trail': [(2080, 385), (2050, 415), (2030, 435)],
-    'life trail': [(2040, 356), (2048, 330), (2040, 300), (2030, 278)],
+    'life trail': [(2053, 358), (2050, 330), (2040, 300), (2030, 278)],
     'snowtop trail': [(2225, 402), (2222, 380), (2215, 340), (2210, 295), (2205, 250), (2200, 222)],
     'quena trail': [(2548, 262), (2510, 250), (2470, 235), (2440, 215), (2415, 180), (2401, 133)],
     'badlands trail': [(2334, 485), (2380, 482), (2440, 480)],
@@ -255,9 +257,10 @@ RANGE_WALL_X = 2835
 NECK = 9
 # Snowy summits besides Mt. Silver's (x, y, r): Snowtop Mountain and Mount Quena.
 SNOW_PEAKS = [(2200, 215, 40), (2401, 128, 30)]
-# The hunting grounds (x, y, r) with wild Pokémon of their own (a table in SPAWNS).
+# The hunting grounds (x, y, r) with wild Pokémon of their own (a table in SPAWNS). Arbor Woods is
+# the woods east of the Battle Frontier, its middle off the layout's so the Frontier is not in it.
 HUNT = {
-    'Olivine Cliffs': (2030, 430, 45), 'Arbor Woods': (2060, 340, 45), 'Lake of Life': (2030, 270, 35),
+    'Olivine Cliffs': (2030, 430, 45), 'Arbor Woods': (2095, 335, 45), 'Lake of Life': (2030, 270, 35),
     'Ecruteak Old Forest': (2210, 290, 60), 'Snowtop Mountain': (2200, 215, 45), 'Mount Quena': (2401, 128, 40),
     'Rage Marshes': (2440, 220, 55), 'Mortar Badlands': (2440, 480, 50), 'Frozen North': (2700, 220, 70),
     'Dragon Holy Land': (2800, 280, 35), 'Lake Slowpoke': (2640, 440, 30),
@@ -272,10 +275,14 @@ SEA_LINES = {
 }
 # Caves on the floor below: mouths (stairs down at x, y on floor 7, facing the way players walk out),
 # tunnels and rooms, an optional pond, and the encounter table. A mouth with a corridor (from the
-# open ground to just past the stairs) is cut into the mountain under a floor-6 roof, like Kanto's
-# passages: the roof hides the way in until players walk under it.
+# open ground to two tiles past the stairs) is reached up a ravine cut into the mountain, the stairs
+# in the rock face at its end like Kanto's.
+# Mt. Silver Cave's 1F also has stairs up at the back of its north room, to its way up inside the mountain.
+SILVER_INNER_MOUTH = (2909, 428, 'north')
+SILVER_SPAWN_RATE = 1 / 90.0
 CAVES = [
-    {'name': 'Mt. Silver Cave', 'box': (2846, 412, 2966, 512), 'lip': 'snow',
+    {'name': 'Mt. Silver Cave', 'light': 'ice', 'box': (2846, 412, 2966, 512), 'lip': 'snow',
+     'inner_mouths': [SILVER_INNER_MOUTH],
      'mouths': [(2903, 489, 'south', [(2903, 501), (2903, 487)])],
      'path': [(2903, 489), (2896, 482), (2884, 476), (2876, 462), (2888, 446), (2908, 438), (2928, 446),
               (2942, 462), (2938, 482), (2924, 492)],
@@ -290,7 +297,7 @@ CAVES = [
      'pond': (2448, 939, 4)},
     # rocky islands on Route 41, the cave entered from the north of the big one and the south of the
     # small one, its pool in the middle room
-    {'name': 'Whirl Islands', 'box': (1985, 585, 2060, 675), 'mountain': (2030, 620, 14),
+    {'name': 'Whirl Islands', 'light': 'ice', 'box': (1985, 585, 2060, 675), 'mountain': (2030, 620, 14),
      'faces': [(2060, 598, 9), (2004, 650, 9)],
      'mouths': [(2030, 607, 'north'), (2004, 659, 'south')],
      'path': [(2030, 608), (2030, 616), (2018, 628), (2008, 642), (2004, 658)],
@@ -303,7 +310,7 @@ CAVES = [
      'rooms': [(2440, 350, 9), (2470, 345, 8), (2420, 368, 6)],
      'pond': (2470, 345, 4)},
     # the Ice Path: the ridge that walls Mahogany off from Blackthorn, crossed underneath
-    {'name': 'Ice Path', 'box': (2655, 320, 2725, 392), 'lip': 'snow', 'mountain': (2690, 350, 28),
+    {'name': 'Ice Path', 'light': 'ice', 'box': (2655, 320, 2725, 392), 'lip': 'snow', 'mountain': (2690, 350, 28),
      'ridge': ([(2688, 110), (2690, 240), (2690, 300), (2692, 360), (2700, 430), (2712, 510)], 14),
      'faces': [(2668, 372, 9), (2708, 368, 9)],
      'mouths': [(2668, 382, 'south', [(2668, 394), (2668, 380)]), (2708, 378, 'south', [(2708, 390), (2708, 376)])],
@@ -311,23 +318,171 @@ CAVES = [
      'rooms': [(2668, 362, 6), (2690, 340, 9), (2706, 355, 6)]},
     # Dark Cave's Route 45 side, a long tunnel under the ridge above Route 46; in HeartGold and SoulSilver
     # rocks block the way through (`smash`: the column of Rock Smash rocks across the tunnel)
-    {'name': 'Dark Cave', 'box': (2565, 565, 2712, 620), 'smash': 2604,
+    {'name': 'Dark Cave', 'light': 'dark', 'box': (2565, 565, 2712, 620), 'smash': 2604,
      'ridge': ([(2575, 600), (2610, 592), (2645, 598), (2690, 595)], 16),
      'mouths': [(2585, 610, 'south', [(2585, 622), (2585, 608)]), (2690, 611, 'south', [(2690, 623), (2690, 609)])],
      'path': [(2585, 609), (2595, 596), (2620, 590), (2648, 598), (2675, 590), (2690, 610)],
      'rooms': [(2620, 592, 7), (2650, 598, 8), (2676, 592, 6)],
      'pond': (2650, 598, 4)},
+    # Tohjo Falls, under the ridge where the Tohjo river comes out: in from the river's west bank
+    # (Route 27's side) and out on its east (Route 26's), the underground river across the way (Surf),
+    # and at its head the falls themselves (`waterfalls`, the rock tiles that take Waterfall), up to
+    # TOHJO_LEDGE on the floor above
+    {'name': 'Tohjo Falls', 'box': (2868, 620, 2945, 676), 'rate': 1 / 10.0,
+     'faces': [(2888, 667, 6), (2924, 667, 6)],
+     'mouths': [(2888, 670, 'south', [(2888, 684), (2888, 668)]), (2924, 670, 'south', [(2924, 684), (2924, 668)])],
+     'path': [(2888, 669), (2888, 656), (2896, 652), (2905, 654), (2914, 652), (2924, 656), (2924, 669)],
+     'rooms': [(2887, 659, 7), (2905, 647, 9), (2925, 659, 7)],
+     'pond': (2905, 644, 5), 'stream': ([(2905, 646), (2904, 668)], 1.6),
+     'waterfalls': [(2902, 637), (2903, 637), (2907, 637), (2908, 637)]},
 ]
 # The Ruins of Alph's four chambers, each a room under its rock mound, entered from its court.
 for _k, (_x, _y) in enumerate([(2396, 633), (2418, 651), (2440, 627), (2448, 655)]):
-    CAVES.append({'name': 'Ruins of Alph chamber %d' % (_k + 1), 'spawns': 'Ruins of Alph', 'rate': 1 / 20.0,
+    CAVES.append({'name': 'Ruins of Alph chamber %d' % (_k + 1), 'light': 'candles', 'spawns': 'Ruins of Alph', 'rate': 1 / 20.0,
                   'box': (_x - 11, _y - 19, _x + 11, _y + 3), 'mouths': [(_x, _y, 'south')],
                   'path': [(_x, _y - 1), (_x, _y - 9)], 'rooms': [(_x, _y - 10, 6)]})
+# The floors below. Each down on a floor is a mouth on the next (same place, one floor deeper).
+next(c for c in CAVES if c['name'] == 'Union Cave')['downs'] = [(2480, 908, 'south')]
+CAVES += [
+    # Union Cave B1F, round the west under the ridge, and B2F's lake, kept free of spawns (Lapras's)
+    {'name': 'Union Cave B1F', 'z': 9, 'spawns': 'Union Cave B1F', 'box': (2395, 845, 2515, 980),
+     'mouths': [(2480, 908, 'south')], 'downs': [(2466, 950, 'south')],
+     'path': [(2480, 903), (2486, 888), (2478, 872), (2456, 864), (2432, 870), (2414, 886), (2410, 906),
+              (2418, 928), (2440, 950), (2462, 958)],
+     'rooms': [(2484, 886, 7), (2456, 866, 8), (2414, 888, 9), (2420, 930, 8), (2462, 956, 7)],
+     'pond': (2456, 866, 4)},
+    {'name': 'Union Cave B2F', 'z': 10, 'spawns': 'Union Cave B2F', 'box': (2395, 845, 2515, 980),
+     'mouths': [(2466, 950, 'south')], 'free_water': True,
+     'path': [(2466, 945), (2462, 930), (2456, 918)],
+     'rooms': [(2445, 898, 20), (2464, 934, 6)], 'pond': (2440, 892, 13)},
+    # the Slowpoke Well under Azalea's well: a ladder below the trapdoor, a tunnel to the Slowpoke pool
+    {'name': 'Slowpoke Well B1F', 'light': 'green', 'spawns': 'Slowpoke Well B1F', 'rate': 1 / 40.0, 'box': (2370, 1045, 2455, 1112),
+     'mouths': [(2405, 1077, 'ladder')],
+     'path': [(2405, 1077), (2405, 1088), (2418, 1095), (2430, 1088)],
+     'rooms': [(2405, 1088, 6), (2428, 1088, 9)], 'pond': (2431, 1086, 5)},
+]
 # Kanto's cave stairs: 22709 goes down; below ground 22702 (southEx) one tile north of it leads back up
 # for a mouth facing south, and 22673 (north) right under it for one facing north.
-STAIRS_DOWN = 22709
-STAIRS_UP = {'south': (22702, -1), 'north': (22673, 0)}
+STAIRS_DOWN = 6130  # Kanto's hole in the rock: 22709 is a piece of a wooden stairwell, black on its own
+STAIRS_UP = {'south': (22702, -1), 'north': (22673, 0), 'ladder': (1386, 0)}
+# a trapdoor in town drops players onto the ladder under it, which takes them back up a tile south
+TRAPDOOR = 369
+# indoor stairs down (a ground), as Kanto's buildings have them over their basements
+INDOOR_STAIRS = 432
+# Below ground in towns, copied from Kanto: `src` and `dst` line the copy up (a Kanto tile and where it
+# goes, under the stairs down in the building above) and each floor has the box it comes from, a seed
+# and a neighbour. With a seed only the tiles joined to it come along (the piece stands alone in the
+# void, and whatever else is in the box stays behind); a neighbour that touches the piece's rock is
+# left out first, all of it but the rock (the tiles joined to that point that aren't mountain).
+UNDERGROUND = [
+    # the Global Terminal's basement: Celadon's guild hall's, under the same stairs
+    {'name': 'Global Terminal basement', 'src': (3722, 461), 'dst': (2326, 780),
+     'floors': {8: ((3720, 453, 3737, 471), None, None)}},
+    # Mahogany's Rocket Hideout, B1F to B4F: Celadon's under the Game Corner, its stairs up under the
+    # souvenir shop's stairs down; Celadon's sewer touches it on the first two
+    {'name': 'Rocket Hideout', 'src': (3776, 488), 'dst': T.SHOP_STAIRS[0],
+     'floors': {8: ((3700, 462, 3810, 552), (3776, 488), (3700, 466)),
+                9: ((3700, 455, 3810, 552), (3769, 535), (3700, 466)),
+                10: ((3695, 460, 3805, 556), (3752, 475), None), 11: ((3715, 455, 3810, 556), (3752, 518), None)}},
+]
+# The anime's I.S.S. Raspberry (Mantine Overboard!), the wreck in the strait by the Whirl Islands that
+# went down with the Silver Wing, guarded by Mantine and Remoraid: Kanto's wreck run aground on its
+# reef (the hold, the deck and the captain's cabin, floors 7 to 5) copied tile for tile (`src` box,
+# `dst` where its top left goes), south of the Whirl Islands' big island, with `spawns` on board.
+WRECK = {'name': 'I.S.S. Raspberry', 'src': (3880, 1083, 3914, 1103), 'dst': (2027, 653), 'floors': (5, 6, 7),
+         'spawns': 6}
+# Waterfall (core/server/data/lib/ps/systems/039-pokemonAbility.lua): used on WATERFALL_UP on a rock
+# face, a surfing player comes out on WATERFALL_TOP over it on the floor above; used on that, back
+# down on WATERFALL_FOOT, the water a tile south of the face (Kanto's falls are built the same way).
+WATERFALL_UP, WATERFALL_TOP, WATERFALL_FOOT = 3569, 3571, 3573
+# The room hidden behind Tohjo Falls in HeartGold and SoulSilver, open to the sky in the ridge over
+# the falls: the pool they come down from (its south row over the falls' faces) and the ledge round
+# it, empty but for the broken radio (where an event Celebi takes players back to Giovanni) and
+# Rock Smash rocks, with no wild Pokémon.
+TOHJO_LEDGE = {'ledge': (2905, 631, 8, 5), 'pool': (2901, 633, 2909, 637), 'radio': (2899, 629), 'radio_id': 28143,
+               'rocks': [(2911, 629), (2910, 632), (2904, 628)]}
 CAVE_DEBRIS = list(range(6374, 6387))
+# Hills, built like Kanto's terraces: a plateau one floor up is grass over mountain ground on the
+# floor below (bordered onto the grass round it as usual), and its own edge tiles take the mountain
+# border as if mountain lay all round, which draws the cliff's lip. Up to HILL_LEVELS floors, over
+# about HILL_SHARE of the open countryside, in patches about HILL_SCALE tiles across, as many within HILL_REACH tiles of anywhere; parts under HILL_SMALLEST tiles are dropped.
+HILL_LEVELS = 3
+HILL_SHARE = 0.45
+HILL_SCALE = 38
+HILL_SMALLEST = 80
+HILL_REACH = 90
+# a ramp per this many tiles of a hill (at least one), at least HILL_RAMP_GAP tiles apart
+HILL_RAMP_EVERY = 1500
+HILL_RAMP_GAP = 30
+# how far from a road a hill's first ramp may be (a footpath is kept clear to the road)
+HILL_RAMP_REACH = 160
+# Kanto's ramps by the way they climb: on the lower floor in front of the cliff, with stairs down
+# (RAMP_TOP) on the tile above, which drop players back off the ramp's foot.
+RAMPS = {(1, 0): 1388, (-1, 0): 1390, (0, 1): 1392, (0, -1): 1394}
+RAMP_TOP = 459
+# The mountains in tiers (plan_mountains), topped with rocky ground and grass, snow near the snowfields.
+MOUNT_LEVELS = 4
+MOUNT_BASE = 3
+MOUNT_STEP = 6
+MOUNT_WOBBLE = 4
+PEAK_LEVELS = 7
+PEAK_STEP = 10
+# Mt. Silver (plan_silver), the tallest of the mountains: ledges `ring` tiles wide round `center`, one
+# per level from `base` (the lower mountainside, walled in at `wall` outside it) up to the summit on
+# `top`, `summit` tiles round; levels up to `lower` have the lower mountainside's wild Pokémon.
+# Ramps (angle, level of their foot), only on the east and south faces, since the client draws
+# higher floors up and to the left over a ramp that climbs south or east; spurs that close a ledge
+# one way round (angle, level), obstacles across the other (angle, level, Surf, Cut or Rock Smash),
+# and the tunnels up inside the mountain (floor, the way, the way the ramp at its end climbs), with
+# patches of Rock Smash rocks in them. Angles go clockwise from east. The way up: 1F comes out on
+# the lower mountainside in the south-east, Surf east of south, ramps on the east face; Cut in the
+# west, ramps on the south face; Rock Smash in the north-east, the 2F tunnel from the north round
+# under the ledge above to the west; Rock Smash in the south, ramps on the south face; the 3F
+# tunnel from the west up to the summit.
+SILVER = {
+    'center': (2905, 400), 'top': 7, 'summit': 18, 'ring': 12, 'base': 2, 'lower': 3, 'wall': 4,
+    # the rings' outline: stretched in and out by `stretch` in lobes about `lobes` tiles across, and ragged
+    'stretch': 0.45, 'lobes': 36, 'wobble': 3,
+    'ramps': [],
+    'spurs': [(40, 2), (20, 3), (110, 4), (230, 5), (60, 6)],
+    'obstacles': [(120, 2, 'surf'), (220, 3, 'cut'), (30, 4, 'smash'), (130, 5, 'smash')],
+    # the way of each run: map points, ('at', angle, distance) for a point that far out on the rings
+    # at that angle (as the rings would be if round), or ('by', dx, dy) from the point before
+    'tunnels': {
+        # 1F's way up, from the stairs at the back of its north room to the lower mountainside
+        'Mt. Silver Cave': [(7, [(2909, 426), (2918, 424), (2926, 432), (2934, 440), (2930, 440)], (-1, 0)),
+                            (6, [(2927, 440), ('at', 62, 74), ('by', 0, -4)], (0, -1))],
+        # 2F, under the ledge above, from its north face round to the west
+        'Mt. Silver 2F': [(3, [('at', 300, 50), ('at', 300, 34)] + [('at', a, 34) for a in range(295, 209, -5)]
+                           + [('by', -2, 0)], (-1, 0))],
+        # 3F, up through the summit's west face
+        'Mt. Silver 3F': [(1, [('at', 180, 24), ('at', 180, 13), ('at', 160, 10), ('by', 0, -3)], (0, -1))],
+    },
+    'smash': {'Mt. Silver 2F': [('at', 270, 34), ('at', 235, 34)]},
+    # caves in the rest of the mountain, each (floor, where, passages, passages on the floor above):
+    # from a mouth on that floor's ledge at an angle, or off a tunnel; ('link', floor, angle, angle
+    # on the ledge above, passages, passages above) for caves from one ledge up to the next, only
+    # between ledges reached with the same field moves
+    'caves_seed': 61, 'cave_step': 6,
+    # the Ho-Oh Shrine's court on the summit (johto_towns.ho_oh_shrine), east of where the 3F tunnel
+    # comes out
+    'shrine': (2907, 400),
+    # the way up between ledges with no tunnel: caves in from the ledge at an angle, coming out on the
+    # ledge above (floor, angle, angle above, passages, passages above)
+    'route': [(5, 0, 0, 40, 30), (4, 90, 90, 40, 30), (2, 90, 90, 25, 15)],
+    'caves': [('link', 5, 270, 300, 30, 25),
+              (5, 80, 50, 25), (5, 200, 50, 0), (4, 245, 35, 12), (3, 340, 30, 0), (2, 350, 15, 0),
+              (7, 'Mt. Silver Cave', 110, 40), (7, 'Mt. Silver Cave', 120, 40, 200, 45),
+              (7, 'Mt. Silver Cave', 80, 0, 140, 45), (6, 'Mt. Silver Cave', 60, 0),
+              (6, 'Mt. Silver Cave', 80, 0, 250, 45), (7, 'Mt. Silver Cave', 80, 0, 270, 45)],
+}
+# Mt. Silver's cave stairs, under a hole in the rock above (they climb north)
+CAVE_STAIRS = 3687
+ICE_RAMPS = {(1, 0): 6909, (-1, 0): 6911, (0, 1): 6913, (0, -1): 6915}
+# Johto's west is low-lying and forested (Bulbapedia): woods spread over the lowlands west of this,
+# thinning out east of it to patches (EAST_WOODS raises the noise they need there).
+WOODS_X = 2640
+EAST_WOODS = 0.22
 # The server's field moves (lib/ps/events/actions/abilities.lua): Rock Smash breaks this rock and Cut
 # this jungle grass, both growing back after a while.
 SMASH_ROCK, CUT_BUSH = 1285, 3985
@@ -336,6 +491,15 @@ SMASH_ROCK, CUT_BUSH = 1285, 3985
 ILEX_CUT = (918, 4)
 CAVE_STONES = [3649, 3653, 3655, 3666, 3670]
 WALL_CANDLE = 3944
+# The caves' light (the client shows nothing below ground but what gives off light): how often a wall
+# over the floor has a candle, and crystals along the walls (large, small, how often), by `light`.
+CAVE_LIGHT = {
+    'crystal': (0.12, (8633, 8637, 0.05)),  # blue
+    'ice': (0.10, (8634, 8638, 0.05)),  # pale cyan
+    'green': (0.12, (8636, 8640, 0.05)),
+    'dark': (0.06, (8640, 8640, 0.02)),  # Dark Cave keeps to a dim glow
+    'candles': (0.25, None),
+}
 
 # Kanto's decoration on open grass (counts from Route 1, see docs in mapper/README.md).
 BIG_TREES = [(12295, 56), (2700, 51), (2707, 48), (2702, 45), (2703, 40), (2701, 40), (2711, 37), (2708, 32),
@@ -344,10 +508,34 @@ BUSHES = [(2767, 1), (2768, 1)]
 TUFTS = [(6216, 367), (6217, 895), (6218, 888), (6219, 909)]
 FERNS = [(3610, 29), (3611, 31), (3612, 32), (3613, 32), (3614, 32), (3621, 26), (3622, 23), (3623, 27)]
 FLOWERS = [(3648, 7), (3649, 13), (3651, 17), (3652, 10), (3654, 8), (3655, 7), (3656, 13)]
-STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6), (1300, 7), (1301, 8)]
+STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6)]
+# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and most of 7004 to 7019) are quarters
+# of big rocks that take several tiles, and look broken on their own
+ROCK_PIECES = set(range(1297, 1303)) | {7006, 7007, 7009, 7010, 7011, 7015, 7017, 7019}
 GRAVEL = list(range(6477, 6489))
-# the snowfield's: snowy fir trees in groves, the odd dead tree and heap of snow
-SNOW_FIR, SNOW_DEAD, SNOW_HEAP = 2698, 2697, 486
+# The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
+# (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
+CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
+BROADLEAF = [(12295, 56), (2707, 48), (2702, 45), (2703, 25), (2701, 40), (2708, 32), (7024, 27), (2705, 20)]
+UNDERGROWTH = [(2767, 30), (2768, 20), (2785, 10), (2786, 10), (4008, 4), (4009, 4), (4010, 6), (4011, 6),
+               (4012, 6), (4013, 6), (4014, 5), (4015, 5), (4018, 5), (2784, 3), (10913, 5), (10914, 5),
+               (10915, 5), (2709, 1), (5392, 1), (4167, 1), (4184, 1)]
+FOREST_FLOOR = [(2787, 3), (2788, 2), (2789, 4), (2791, 4), (2793, 3), (4181, 2), (4183, 3), (3811, 2),
+                (3821, 2), (2801, 6), (8166, 6), (8148, 3), (8149, 3), (8150, 3), (8151, 3)] + \
+               [(i, 3) for i in range(6220, 6226)] + [(i, 2) for i in range(6476, 6489)]
+WILDFLOWERS = [(4156, 4), (4157, 3), (2762, 2), (2764, 2)] + [(i, 3) for i in range(6226, 6232)]
+# the mountain tiers' rocky tops
+ROCKY = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)] + [(i, 4) for i in range(3648, 3657)]
+# the snowfield's: snowy fir trees in groves, the odd dead tree and snowy stone (not the heap of snow,
+# 486, which is a hole down)
+SNOW_FIR, SNOW_DEAD = 2698, 2697
+# Mt. Silver's: pines and firs, dead trees, big snowy stones (all blocking) and drifts (not)
+SNOW_TREES = [(SNOW_FIR, 6), (7023, 2), (8139, 2)]
+SNOW_DEAD_TREES = [(SNOW_DEAD, 2), (7020, 1), (7021, 1)]
+SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017) if i not in ROCK_PIECES]
+SNOW_DRIFTS = [(6609, 6), (7022, 2), (13316, 1)]
+SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)]
+SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7018, 2)]
 
 # Wild Pokémon follow HeartGold/SoulSilver: johto_encounters.json (see fetch_encounters.py) holds the
 # land tables with the rates averaged over the time of day; spawns are drawn by those weights.
@@ -370,9 +558,16 @@ SPAWNS = {
     'Whirl Islands': ('Whirl Islands', '1F-B1F'), 'Mt. Mortar': ('Mt. Mortar', '1F (entrance)'),
     'Ice Path': ('Ice Path', '1F and B1F'), 'Dark Cave': ('Dark Cave', 'Route 45 side'),
     'Ilex Forest': ('Ilex Forest', 'main'), 'National Park': ('National Park', 'main'),
-    'Mt. Silver Cave': ('Mt. Silver Cave', '1F'), 'Union Cave': ('Union Cave', '1F, Ruins exits top rooms'),
+    'Mt. Silver Cave': ('Mt. Silver Cave', '1F'), 'Mt. Silver 2F': ('Mt. Silver Cave', '2F'),
+    'Mt. Silver 3F': ('Mt. Silver Cave', '3F'), 'Mt. Silver lower': ('Mt. Silver Cave', 'Lower mountainside'),
+    'Mt. Silver upper': ('Mt. Silver Cave', 'Upper mountainside'), 'Union Cave': ('Union Cave', '1F, Ruins exits top rooms'),
+    'Union Cave B1F': ('Union Cave', 'B1F'), 'Union Cave B2F': ('Union Cave', 'B2F, Ruins exits lower rooms'),
+    'Slowpoke Well B1F': ('Slowpoke Well', 'B1F'),
     # the chambers hold Unown only (Bulbapedia lists them per form, so there is no table to fetch)
     'Ruins of Alph': {'land': {'Unown': 1.0}},
+    # the wreck's guards in the anime
+    'I.S.S. Raspberry': {'land': {'Remoraid': 70.0, 'Mantine': 30.0}},
+    'Tohjo Falls': ('Tohjo Falls', 'main'),
 }
 # Bulbapedia's names that the server spells differently.
 MONSTER_NAMES = {'Nidoran♀': 'Nidorana', 'Nidoran♂': 'Nidorano'}
@@ -545,6 +740,49 @@ def erode(mask, size):
     return np.asarray(img.filter(ImageFilter.MinFilter(size))) > 0
 
 
+def distance(mask):
+    """Chamfer distance (1 straight, 1.4 diagonal) from each True cell to the nearest False one; 0 on
+    False cells."""
+    d = np.where(mask, 1e6, 0.0)
+    idx = np.arange(d.shape[1], dtype=float)
+    for rows in (range(d.shape[0]), range(d.shape[0] - 1, -1, -1)):
+        prev = None
+        for y in rows:
+            row = d[y].copy()
+            if prev is not None:
+                row = np.minimum(row, prev + 1)
+                row[1:] = np.minimum(row[1:], prev[:-1] + 1.4)
+                row[:-1] = np.minimum(row[:-1], prev[1:] + 1.4)
+            row = np.minimum.accumulate(row - idx) + idx
+            row = np.minimum.accumulate((row + idx)[::-1])[::-1] - idx
+            d[y] = np.where(mask[y], row, 0.0)
+            prev = d[y]
+    return d
+
+
+def grow(mask, r):
+    """Round dilation by r tiles."""
+    return mask | (distance(~mask) <= r)
+
+
+def local_mean(v, weight, r):
+    """Mean of v over the weighted cells of the (2r + 1)-square round each cell."""
+    def box(a):
+        s = np.pad(a, ((1, 0), (1, 0))).cumsum(0).cumsum(1)
+        h, w = a.shape
+        y0, y1 = np.clip(np.arange(h) - r, 0, h), np.clip(np.arange(h) + r + 1, 0, h)
+        x0, x1 = np.clip(np.arange(w) - r, 0, w), np.clip(np.arange(w) + r + 1, 0, w)
+        return s[y1][:, x1] - s[y0][:, x1] - s[y1][:, x0] + s[y0][:, x0]
+    wt = weight.astype(float)
+    return box(v * wt) / np.maximum(box(wt), 1)
+
+
+def soften(mask, r):
+    """Rounds a mask's outline, dropping parts thinner than about r."""
+    img = Image.fromarray(mask.astype(np.uint8) * 255).filter(ImageFilter.GaussianBlur(r))
+    return np.asarray(img) > 127
+
+
 def smooth_path(pts, rng, wobble=10, step=12):
     """Polyline with gentle bends so roads do not look ruler-drawn."""
     out = [pts[0]]
@@ -567,9 +805,9 @@ class Prefab:
     """A Kanto building copied by its box. Plain prefabs have their door below the box (`door` is its
     first column); walled ones include the walls and get their entries from map-house.xml, and only
     keep the houses whose entry is in the box (a neighbour's tile on a shared wall is not theirs).
-    Landmarks (rent False) are not houses at all."""
+    Landmarks (rent False) are not houses at all; `entries` overrides where the doors are."""
 
-    def __init__(self, name, spec, keep, brushes, nature, houses_xml):
+    def __init__(self, name, spec, keep, brushes, nature, houses_xml, down_ids=()):
         self.name = name
         x0, y0, x1, y1 = spec['box']
         self.w, self.h = x1 - x0 + 1, y1 - y0 + 1
@@ -586,8 +824,27 @@ class Prefab:
         else:
             own = None
             self.entries = [(self.door, self.h), (self.door + 1, self.h)]
+        self.entries = spec.get('entries', self.entries)
         if not spec.get('rent', True):
             own = set()
+        # the base floor's plain nature is left out, for the ground round the building to fill;
+        # with `enclosed`, only what joins the box's edge (a pool or rockery indoors stays)
+        loose = set()
+        for (x, y, z), tile in keep.items():
+            if z == self.base_z and x0 <= x <= x1 and y0 <= y <= y1 and not tile.house_id:
+                ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
+                if all(i in nature for i in ids):
+                    loose.add((x - x0, y - y0))
+        if spec.get('enclosed'):
+            todo = [(dx, dy) for dx, dy in loose if dx in (0, self.w - 1) or dy in (0, self.h - 1)]
+            outside = set(todo)
+            while todo:
+                dx, dy = todo.pop()
+                for p in ((dx + 1, dy), (dx - 1, dy), (dx, dy + 1), (dx, dy - 1)):
+                    if p in loose and p not in outside:
+                        outside.add(p)
+                        todo.append(p)
+            loose = outside
         for (x, y, z), tile in keep.items():
             if z > self.base_z:
                 continue
@@ -596,15 +853,78 @@ class Prefab:
                 continue
             if own is not None and tile.house_id and tile.house_id not in own:
                 tile = pvmap.RawTile(0, tile.flags, tile.ground, tile.children)
-            if z == self.base_z:
-                ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
-                if not tile.house_id and all(i in nature for i in ids):
-                    continue
+            if z == self.base_z and (x - x0, y - y0) in loose:
+                continue
             if tile.house_id:
                 self.house_ids.add(tile.house_id)
             self.tiles[(x - x0, y - y0, z - self.base_z)] = tile
+        # an upper floor's box takes in a strip of the neighbour's roofs, and the stairs down in it
+        # would lead nowhere
+        for (dx, dy, dz), tile in list(self.tiles.items()):
+            ids = ([tile.ground] if tile.ground is not None else []) + pvmap.child_item_ids(tile.children)
+            if dz < 0 and (dx, dy, dz + 1) not in self.tiles and any(i in down_ids for i in ids):
+                del self.tiles[(dx, dy, dz)]
+        # doorways knocked through a wall (`open`): only the floor under it is kept
+        for dx, dy in spec.get('open', []):
+            tile = self.tiles[(dx, dy, 0)]
+            floor = b'' if tile.ground is not None else pvmap.split_items(tile.children)[0]
+            self.tiles[(dx, dy, 0)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, floor)
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
+
+
+def floor_down_ids(way='down'):
+    """Items that take players down a floor when they step on them (items.xml floorchange down), or
+    with way '[a-z]+' any floor change."""
+    xml = open(os.path.join(ROOT, 'core/server/data/items/items.xml'), encoding='latin-1').read()
+    out = set()
+    for m in re.finditer(r'<item\s+(?:id="(\d+)"|fromid="(\d+)"\s+toid="(\d+)")[^>]*?(?:/>|>(.*?)</item>)', xml, re.S):
+        if m.group(4) and re.search(r'key="floorchange" value="%s"' % way, m.group(4)):
+            a = int(m.group(1) or m.group(2))
+            out |= set(range(a, int(m.group(1) or m.group(3)) + 1))
+    return out
+
+
+def joined(start, cells):
+    """The cells joined to start (diagonals count)."""
+    taken, queue = {start}, collections.deque([start])
+    while queue:
+        x, y = queue.popleft()
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                n = (x + dx, y + dy)
+                if n in cells and n not in taken:
+                    taken.add(n)
+                    queue.append(n)
+    return taken
+
+
+def underground_tiles(data, brushes):
+    """The UNDERGROUND pieces' tiles, keyed by where they go, without house ids."""
+    boxes = [box for piece in UNDERGROUND for box, _, _ in piece['floors'].values()]
+    floors = {z for piece in UNDERGROUND for z in piece['floors']}
+    raw = pvmap.read_region_raw(None, min(b[0] for b in boxes), min(b[1] for b in boxes),
+                                max(b[2] for b in boxes), max(b[3] for b in boxes), floors, data)
+    rock = {i for i, _ in brushes['mountain'].items}
+    out = {}
+    for piece in UNDERGROUND:
+        before = len(out)
+        ox, oy = piece['dst'][0] - piece['src'][0], piece['dst'][1] - piece['src'][1]
+        for z, ((x0, y0, x1, y1), seed, neighbour) in piece['floors'].items():
+            inside = {(x, y) for (x, y, zz) in raw if zz == z and x0 <= x <= x1 and y0 <= y <= y1}
+            if neighbour is not None:
+                def ground(p):
+                    t = raw[(*p, z)]
+                    return t.ground if t.ground is not None else (pvmap.child_item_ids(t.children) or [None])[0]
+                inside -= joined(neighbour, {p for p in inside if ground(p) not in rock})
+            if seed is not None:
+                inside = joined(seed, inside)
+            for x, y in inside:
+                t = raw[(x, y, z)]
+                assert (x + ox, y + oy, z) not in out, '%s overlaps another piece' % piece['name']
+                out[(x + ox, y + oy, z)] = pvmap.RawTile(0, t.flags, t.ground, t.children)
+        print('%s: %d tiles on floors %s' % (piece['name'], len(out) - before, sorted(piece['floors'])))
+    return out
 
 
 def house_entries():
@@ -622,6 +942,89 @@ def pick(rng, table):
     ids, weights = zip(*table)
     w = np.array(weights, float)
     return ids[rng.choice(len(ids), p=w / w.sum())]
+
+
+def wild_deco(rng, r, forest, road_d, canopy, stand, glade, groves, tufty, flowery):
+    """Decoration for a tile of open country or woods, from one draw `r` and the noise at the tile.
+    The woods' canopy thickens and thins and opens into glades; trees stand thicker along the roads
+    in the open, in lines like the games' routes."""
+    if forest:
+        p_tree = 0.12 + 0.55 * max(0.0, canopy + 0.15)
+        p_under = 0.08 + 0.12 * max(0.0, canopy + 0.1)
+        if glade > 0.2:
+            p_tree, p_under = p_tree * 0.1, p_under * 0.3
+        p_floor = 0.16
+    else:
+        p_tree = 0.05 + 0.5 * max(0.0, groves - 0.05)
+        p_under = 0.05 + 0.35 * max(0.0, groves + 0.05)
+        if 4 <= road_d < 7:
+            p_tree += 0.08
+        p_floor = 0.012
+    if road_d < 3.5:
+        p_tree, p_under = p_tree * 0.15, p_under * 0.3
+    if r < p_tree:
+        conifer = stand + (rng.random() - 0.5) * 0.3 > 0.08
+        return [pick(rng, CONIFERS if conifer else BROADLEAF)]
+    r -= p_tree
+    if r < p_under:
+        return [pick(rng, UNDERGROWTH if forest else BUSHES)]
+    r -= p_under
+    if r < p_floor:
+        return [pick(rng, FOREST_FLOOR)]
+    r -= p_floor
+    p_tuft = 0.3 + 0.25 * tufty
+    if r < p_tuft:
+        return [pick(rng, TUFTS)]
+    r -= p_tuft
+    if r < 0.03:
+        return [pick(rng, FERNS)]
+    r -= 0.03
+    p_flower = 0.004 + 0.03 * max(0.0, flowery - 0.15) + (0.04 if forest and glade > 0.2 else 0.0)
+    if r < p_flower:
+        return [pick(rng, FLOWERS if rng.random() < 0.5 else WILDFLOWERS)]
+    r -= p_flower
+    if r < 0.006:
+        return [pick(rng, STONES)]
+    return []
+
+
+def silver_deco(rng, r, cls, edge, summit, clump):
+    """Mt. Silver's ledges are trails through stands of trees and boulder fields where `clump` (broad
+    noise) is high, with rocks fallen along the cliffs and drifts, gravel and grass between; never
+    thick enough to close one. The summit is open, with stones round its edge and the odd drift."""
+    thick = clump > 0.12
+    r2 = rng.random()
+    if summit:
+        if edge:
+            return [pick(rng, SNOW_STONES)] if r < 0.14 else []
+        if r < 0.012:
+            return [pick(rng, SNOW_BOULDERS)]
+        return [pick(rng, SNOW_DRIFTS)] if r < 0.06 else []
+    if cls == SNOW:
+        if not edge and r < (0.2 if thick else 0.025):
+            return [pick(rng, SNOW_TREES) if r2 < 0.88 else pick(rng, SNOW_DEAD_TREES)]
+        if edge and r2 < 0.09:
+            return [pick(rng, SNOW_BOULDERS)]
+        if r2 < (0.12 if edge else 0.025):
+            return [pick(rng, SNOW_STONES)]
+        return [pick(rng, SNOW_DRIFTS)] if r2 < (0.18 if edge else 0.1) else []
+    if cls == CAVE_FLOOR:
+        if r < (0.13 if thick else 0.03) or (edge and r2 < 0.09):
+            return [pick(rng, SILVER_ROCKS)]
+        if r2 < 0.12:
+            return [int(rng.choice(CAVE_DEBRIS))]
+        if r2 < 0.18:
+            return [int(rng.choice(GRAVEL))]
+        return [int(rng.choice(CAVE_STONES))] if r2 < 0.2 else []
+    if not edge and r < (0.22 if thick else 0.05):
+        return [pick(rng, CONIFERS) if r2 < 0.7 else pick(rng, BUSHES) if r2 < 0.9 else pick(rng, BROADLEAF)]
+    if edge and r2 < 0.07:
+        return [pick(rng, SILVER_ROCKS)]
+    if r2 < 0.36:
+        return [pick(rng, TUFTS)]
+    if r2 < 0.42:
+        return [pick(rng, FERNS)]
+    return [pick(rng, FLOWERS)] if r2 < 0.47 else []
 
 
 def footpath(start, target, walkable, reach=40):
@@ -650,15 +1053,744 @@ def footpath(start, target, walkable, reach=40):
     return None
 
 
+def components(mask):
+    """4-connected parts of a mask, as lists of (iy, ix) cells."""
+    seen = np.zeros(mask.shape, bool)
+    h, w = mask.shape
+    out = []
+    for iy, ix in np.argwhere(mask):
+        if seen[iy, ix]:
+            continue
+        seen[iy, ix] = True
+        stack, cells = [(iy, ix)], []
+        while stack:
+            cy, cx = stack.pop()
+            cells.append((cy, cx))
+            for ny, nx in ((cy + 1, cx), (cy - 1, cx), (cy, cx + 1), (cy, cx - 1)):
+                if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    stack.append((ny, nx))
+        out.append(cells)
+    return out
+
+
+def keep_parts(mask, smallest):
+    out = np.zeros_like(mask)
+    for cells in components(mask):
+        if len(cells) >= smallest:
+            ys, xs = zip(*cells)
+            out[ys, xs] = True
+    return out
+
+
+def plan_hills(f, allowed, walk0, target0, road_d, rng):
+    """Kanto's terraces: a height (0 to HILL_LEVELS) per tile and the ramps that climb each plateau.
+
+    Each level's plateaus get ramps on a straight stretch of their edge, the ramp's tile and the two
+    behind it on the level below, with a footpath from there to a road (level 1) or to where a ramp
+    of the level below comes up (level 2). Plateaus no ramp can reach are left out. Returns the
+    height, the ramps (x, y, level climbed to, (dx, dy)) and per level the cells kept clear of
+    decoration on the floor of that level (0 is floor 7)."""
+    hf = Field(83)
+    hn = hf.noise(HILL_SCALE) + hf.noise(HILL_SCALE / 4) * 0.3
+    # measured against the country round it, so every part of the region gets its share of hills
+    hn = hn - local_mean(hn, allowed, HILL_REACH)
+    hill = allowed & (hn > np.quantile(hn[allowed], 1 - HILL_SHARE))
+    hill = keep_parts(soften(hill, 2.5) & allowed, HILL_SMALLEST)
+    height = hill.astype(np.uint8)
+    for j in range(2, HILL_LEVELS + 1):
+        inner = (distance(height >= j - 1) > 5 + hf.noise(10) * 4) & (height == j - 1)
+        if not inner.any():
+            break
+        top = inner & (hn > np.quantile(hn[inner], 0.35))
+        height += keep_parts(soften(top, 2) & inner, HILL_SMALLEST // 2)
+    ramps = []
+    keep = {j: np.zeros_like(allowed) for j in range(HILL_LEVELS + 1)}
+    landings = np.zeros_like(allowed)
+    h, w = allowed.shape
+    for j in range(1, HILL_LEVELS + 1):
+        below = (height == j - 1) & (walk0 if j == 1 else distance(height >= j - 1) > 1.5)
+        target = target0 if j == 1 else landings.copy()
+        level = height >= j
+        for cells in components(level):
+            plateau = [(iy, ix) for iy, ix in cells if height[iy, ix] == j]
+            cands = []
+            for iy, ix in plateau:
+                for dx, dy in RAMPS:
+                    px, py = dy, dx
+                    ok = (2 <= iy < h - 3 and 2 <= ix < w - 3 and 4 <= iy + dy * 4 < h - 4 and 4 <= ix + dx * 4 < w - 4)
+                    if not ok:
+                        continue
+                    ly, lx = iy - dy, ix - dx
+                    if not all(below[ly - dy * k, lx - dx * k] for k in range(3)):
+                        continue
+                    if not all(height[ly + py * s, lx + px * s] == j - 1 for s in (-1, 1)):
+                        continue
+                    if not all(height[iy + dy * k + py * s, ix + dx * k + px * s] == j
+                               for k in range(3) for s in (-1, 0, 1)):
+                        continue
+                    if j == 1 and road_d[ly, lx] > HILL_RAMP_REACH:
+                        continue
+                    score = road_d[ly, lx] if j == 1 else rng.random() * 40
+                    cands.append((score, (ix, iy), (dx, dy)))
+            cands.sort(key=lambda c: c[0])
+            want = 1 + len(cells) // HILL_RAMP_EVERY
+            chosen = []
+            for score, (ix, iy), (dx, dy) in cands:
+                if len(chosen) >= want:
+                    break
+                if any(abs(ix - cx) + abs(iy - cy) < HILL_RAMP_GAP for cx, cy in chosen):
+                    continue
+                lx, ly = ix - dx, iy - dy
+                start = (lx - 2 * dx, ly - 2 * dy)
+                path = [] if target[start[1], start[0]] else footpath(start, target, below, reach=HILL_RAMP_REACH + 10 if j == 1 else 200)
+                if path is None:
+                    continue
+                chosen.append((ix, iy))
+                ramps.append((lx + f.x0, ly + f.y0, j, (dx, dy)))
+                for k in range(3):
+                    keep[j - 1][ly - dy * k, lx - dx * k] = True
+                for cy, cx in path:
+                    keep[j - 1][cy, cx] = True
+                for k in range(4):
+                    for s in (-1, 0, 1):
+                        keep[j][iy + dy * k + dx * s, ix + dx * k + dy * s] = True
+                landings[iy + dy, ix + dx] = True
+            if not chosen:
+                ys, xs = zip(*cells)
+                height[ys, xs] = j - 1
+    return height, ramps, keep
+
+
+def plan_mountains(mask, peaks):
+    """Kanto's mountains rise in tiers: a level (0 to MOUNT_LEVELS) per tile of the mountains, a
+    tier every MOUNT_STEP tiles in from their foot, starting MOUNT_BASE tiles in. The snowy peaks
+    go on up, a tier every PEAK_STEP tiles in from their edge, to PEAK_LEVELS. Every tier is
+    softened and sits inside the one below."""
+    mf = Field(101)
+    wobble = mf.noise(18) * MOUNT_WOBBLE
+    d = distance(mask) + wobble
+    dp = distance(peaks & mask) + wobble
+    level = np.zeros(mask.shape, np.uint8)
+    prev = mask
+    for j in range(1, PEAK_LEVELS + 1):
+        rise = d >= MOUNT_BASE + (j - 1) * MOUNT_STEP if j <= MOUNT_LEVELS else \
+            dp >= MOUNT_BASE + (j - MOUNT_LEVELS - 1) * PEAK_STEP
+        tier = keep_parts(soften(rise, 1.5) & prev & (distance(prev) > 2), 12)
+        level += tier
+        prev = tier
+    return level
+
+
+def silver_ring(j):
+    """Inner and outer radius of Mt. Silver's ledge on level j (the summit's is 0 to SILVER['summit'])."""
+    s, w = SILVER['summit'], SILVER['ring']
+    return (0, s) if j == SILVER['top'] else (s + (SILVER['top'] - 1 - j) * w, s + (SILVER['top'] - j) * w)
+
+
+def plan_silver(f, mlevel, open_sky):
+    """Mt. Silver as the games' climb (HeartGold and SoulSilver): the cave's 1F comes up inside the
+    mountain to the lower mountainside, a valley round the peak; ledges round the cone, one ring per
+    floor, climb by ramps, each walled off one way round by a spur and closed the other way by what
+    takes Surf, Cut or Rock Smash; the 2F and 3F are tunnels under the ledges above, the last coming
+    out on the flat summit. Returns the levels over the mountain, its ramps, the tunnels' cells (x, y,
+    z), ground and decoration that replace the ledges' own (x, y, z), the ledges' mask and spawn
+    tables by place."""
+    X, Y = f.X, f.Y
+    cx, cy = SILVER['center']
+    top, wall = SILVER['top'], SILVER['wall']
+    rng = np.random.default_rng(SILVER['caves_seed'] + 1)
+    sf = Field(107)
+    r = np.hypot(X - cx, Y - cy) * (1 + sf.noise(SILVER['lobes']) * SILVER['stretch']) + sf.noise(10) * SILVER['wobble']
+    s, w = SILVER['summit'], SILVER['ring']
+    cone = np.where(r < s, top, top - 1 - np.floor((r - s) / w)).astype(int)
+    _, foot = silver_ring(SILVER['base'])
+    area = r < foot
+    level = mlevel.astype(int).copy()
+    level[area] = cone[area]
+    rim = (r >= foot) & (r < foot + 6)
+    level[rim] = np.maximum(level[rim], wall)
+    # the mountain stays as it was round the ravine to the cave mouth, low enough not to hide it
+    by_sky = dilate(open_sky, 3)
+    level[by_sky] = mlevel[by_sky]
+
+    def at(p):
+        return p[1] - f.y0, p[0] - f.x0
+
+    def spot(p):
+        """A map point, or for ('at', angle, distance) the first point out along that angle as far
+        out on the rings as `distance` is on round ones."""
+        if len(p) == 2:
+            return p
+        _, a, dist = p
+        ux, uy = np.cos(np.radians(p[1])), np.sin(np.radians(p[1]))
+        for t in np.arange(0, 120, 0.25):
+            q = (int(round(cx + t * ux)), int(round(cy + t * uy)))
+            if r[at(q)] >= dist:
+                return q
+        raise ValueError(p)
+
+    hyp = np.hypot(X - cx, Y - cy)
+    theta = np.degrees(np.arctan2(Y - cy, X - cx))
+    lumpy = sf.noise(5)
+
+    def shoulder(a, j, wide, narrow):
+        """A shoulder of the ledge above pushed out across ledge j: broad where it leaves the cliff
+        behind, narrowing as it reaches the cliff in front, bending and lumpy on the way. Returns its
+        cells and the angle its middle crosses the middle of the ledge at."""
+        ri, ro = silver_ring(j)
+        t = np.clip((r - ri) / (ro - ri), 0, 1)
+        ph, bend = rng.uniform(0, 2 * np.pi), rng.uniform(4, 9) * rng.choice([-1, 1])
+        mid = a + bend * np.sin(t * 2.2 + ph)
+        dth = (theta - mid + 180) % 360 - 180
+        half = wide * (1 - t) + narrow * t + lumpy * 1.6
+        return (np.abs(np.radians(dth)) * hyp < half) & (np.abs(dth) < 60), a + bend * np.sin(1.1 + ph)
+
+    keep = np.zeros(level.shape, bool)
+    ramps = []
+    # the outdoor ramps: three side by side on a straight stretch of cliff 7 wide and 4 deep either
+    # side, the feet outside
+    for a, j in SILVER['ramps']:
+        ux, uy = int(round(np.cos(np.radians(a)))), int(round(np.sin(np.radians(a))))
+        rb = next(t for t in range(200) if cone[at((cx + ux * t, cy + uy * t))] <= j) - 1
+        for sd in range(-3, 4):
+            for k in range(4):
+                level[at((cx + ux * (rb + 1 + k) + uy * sd, cy + uy * (rb + 1 + k) + ux * sd))] = j
+                level[at((cx + ux * (rb - k) + uy * sd, cy + uy * (rb - k) + ux * sd))] = j + 1
+        lx, ly = cx + ux * (rb + 1), cy + uy * (rb + 1)
+        for sd in (-1, 0, 1):
+            ramps.append((lx + uy * sd, ly + ux * sd, j + 1, (-ux, -uy)))
+        keep[at((lx, ly))[0] - 5:at((lx, ly))[0] + 6, at((lx, ly))[1] - 5:at((lx, ly))[1] + 6] = True
+    for a, j in SILVER['spurs']:
+        sp = shoulder(a, j, 6, 2.5)[0] & (level == j) & area
+        assert not (sp & keep).any(), 'Mt. Silver spur at %d over a ramp' % a
+        level[sp] = j + 1
+    ground, deco = {}, {}
+    for a, j, kind in SILVER['obstacles']:
+        z = Z - j
+        if kind == 'surf':
+            arm, am = shoulder(a, j, 4, 3.5)
+            lake = (arm | f.disc(*spot(('at', am, sum(silver_ring(j)) / 2)), 6)) & (level == j) & area
+            for iy, ix in np.argwhere(lake & ~keep):
+                ground[(ix + f.x0, iy + f.y0, z)] = 'walkable sea'
+        else:
+            # a bluff across the ledge with one crooked way through, two tiles wide, a patch of trees
+            # or rocks across it
+            item = CUT_BUSH if kind == 'cut' else SMASH_ROCK
+            bluff, am = shoulder(a, j, 5.5, 3)
+            bluff &= (level == j) & area & ~keep
+            level[bluff] = j + 1
+            # the way crosses the bluff straight over, where it is thin, near the middle of the ledge
+            mid_r = sum(silver_ring(j)) / 2
+            best = None
+            for iy, ix in np.argwhere(bluff):
+                q0 = (ix + f.x0, iy + f.y0)
+                for d in ((1, 0), (0, 1)):
+                    ends = []
+                    for sg in (1, -1):
+                        for t in range(1, 16):
+                            q = (q0[0] + sg * d[0] * t, q0[1] + sg * d[1] * t)
+                            if level[at(q)] != j + 1:
+                                if level[at(q)] == j:
+                                    ends.append(t)
+                                break
+                    # bluff four deep either side of the way where the patch goes, so it closes it
+                    solid = all(level[at((q0[0] + d[0] * u + d[1] * v, q0[1] + d[1] * u + d[0] * v))] > j
+                                for u in (-1, 0, 1) for v in (-4, -3, 3, 4))
+                    if len(ends) == 2 and min(ends) >= 2 and solid:
+                        score = sum(ends) + 0.5 * abs(r[iy, ix] - mid_r)
+                        if best is None or score < best[0]:
+                            best = (score, q0, d, ends)
+            assert best, 'Mt. Silver bluff at %d has no way across' % a
+            _, c, (ax_, ay_), (t1, t2) = best
+            k = 1 if kind == 'cut' else -1
+            m = (c[0] + ay_ * k, c[1] + ax_ * k)
+            way = [(c[0] - ax_ * (t2 + 3) - ay_ * k, c[1] - ay_ * (t2 + 3) - ax_ * k),
+                   (m[0] - ax_ * t2, m[1] - ay_ * t2), (m[0] + ax_ * t1, m[1] + ay_ * t1),
+                   (c[0] + ax_ * (t1 + 3) - ay_ * k, c[1] + ay_ * (t1 + 3) - ax_ * k)]
+            sides = ((c[0] - ax_ * t2, c[1] - ay_ * t2), (c[0] + ax_ * t1, c[1] + ay_ * t1))
+            path = np.zeros(level.shape, bool)
+            for q in trace(way) + trace([(x + ay_, y + ax_) for x, y in way]):
+                path[at(q)] = True
+            # opening out where the patch grows
+            for q in clearing((m[0] + ay_ * 0.5, m[1] + ax_ * 0.5), rng):
+                path[at(q)] = True
+            approach = dilate(path, 3)
+            path &= bluff
+            level[path] = j
+            keep |= path | (approach & (level == j))
+            items = patch({(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(path)}, m, (ax_, ay_), rng)
+            for x, y in items:
+                deco[(x, y, z)] = [item]
+            # nothing round the patch: from one side the other is out of reach
+            shut = set(items)
+            start = tuple(int(round(v)) for v in sides[0])
+            goal = tuple(int(round(v)) for v in sides[1])
+            seen, todo = {start}, [start]
+            while todo:
+                x, y = todo.pop()
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        q = (x + dx, y + dy)
+                        if (q not in seen and q not in shut and np.hypot(q[0] - c[0], q[1] - c[1]) < 30
+                                and level[at(q)] == j):
+                            seen.add(q)
+                            todo.append(q)
+            assert goal not in seen, 'Mt. Silver %s at %d can be walked round' % (kind, a)
+    # the tunnels: runs of cells 3 wide, a floor each, a ramp up from the end of each run onto the
+    # next (or onto the ledge above, where the last comes out)
+    bored, smash_along = {}, {}
+    for name, runs in SILVER['tunnels'].items():
+        for k, (z, pts, (dx, dy)) in enumerate(runs):
+            way = []
+            for p in pts:
+                way.append((way[-1][0] + p[1], way[-1][1] + p[2]) if p[0] == 'by' else spot(p))
+            pts = way
+            last = pts[-1]
+            lx, ly = last[0] + 2 * dx, last[1] + 2 * dy
+            d = f.seg_dist(list(pts) + [(lx, ly)])
+            wide = np.zeros(level.shape, bool)
+            if k == 0 and level[at(pts[0])] == Z - z:
+                # an open cut into the cliff where the way goes in, so it can be seen from the ledge,
+                # and the way wider for a few steps in
+                (ax, ay), (bx, by) = pts[0], pts[1]
+                face = next(q for q in ((int(round(ax + (bx - ax) * t)), int(round(ay + (by - ay) * t)))
+                                        for t in np.linspace(0, 1, 60)) if level[at(q)] > Z - z)
+                near = np.hypot(X - face[0], Y - face[1])
+                notch = (d < 2.3) & (near <= 3.5) & (level > Z - z)
+                level[notch] = Z - z
+                keep |= notch
+                wide = (d < 2.3) & (near <= 8)
+            cells = ((d < 1.5) | wide) & (level > Z - z)
+            for q in map(spot, SILVER['smash'].get(name, []) if k == 0 else []):
+                # the tunnel opens out a little round a patch of rocks
+                (sx, sy), (ex, ey) = min(zip(pts, pts[1:]), key=lambda sg: np.hypot(
+                    (sg[0][0] + sg[1][0]) / 2 - q[0], (sg[0][1] + sg[1][1]) / 2 - q[1]))
+                smash_along[q] = axis(ex - sx, ey - sy)
+                for c in clearing(q, rng):
+                    cells[at(c)] |= level[at(c)] > Z - z
+            for iy, ix in np.argwhere(cells):
+                bored[(ix + f.x0, iy + f.y0, z)] = name
+            for p in [(lx, ly), (lx + dx, ly + dy)]:
+                assert level[at(p)] > Z - z, '%s: no rock over %s on floor %d' % (name, p, z)
+            if k == len(runs) - 1:
+                for p in [(lx, ly), (lx + dx, ly + dy)]:
+                    level[at(p)] = Z - z + 1
+                keep[at((lx, ly))[0] - 2:at((lx, ly))[0] + 3, at((lx, ly))[1] - 2:at((lx, ly))[1] + 3] = True
+            ramps.append((lx, ly, Z - z + 1, (dx, dy)))
+        for p in map(spot, SILVER['smash'].get(name, [])):
+            z = runs[0][0]
+            for x, y in patch({q[:2] for q, nm in bored.items() if nm == name and q[2] == z}, p, smash_along[p], rng):
+                deco[(x, y, z)] = [SMASH_ROCK]
+    holes = set()
+    silver_caves(f, level, r < foot + 4, bored, ramps, holes, keep, deco, ground, spot)
+    ledges = area & (level >= SILVER['base'])
+    places = {}
+    for j in range(SILVER['base'], top):
+        places[j] = 'Mt. Silver lower' if j <= SILVER['lower'] else 'Mt. Silver upper'
+    return level, ramps, holes, bored, ground, deco, ledges, keep, places
+
+
+def axis(vx, vy):
+    """The straight step (east, west, south or north) nearest a direction."""
+    return (int(np.sign(vx)), 0) if abs(vx) >= abs(vy) else (0, int(np.sign(vy)))
+
+
+def trace(pts):
+    """The cells of a line through pts one tile wide, stepping straight (never corner to corner)."""
+    out = []
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        x, y, tx, ty = int(round(ax)), int(round(ay)), int(round(bx)), int(round(by))
+        out.append((x, y))
+        while (x, y) != (tx, ty):
+            if abs(tx - x) * (abs(ty - ay) + 1) >= abs(ty - y) * (abs(tx - ax) + 1):
+                x += int(np.sign(tx - x))
+            else:
+                y += int(np.sign(ty - y))
+            out.append((x, y))
+    return out
+
+
+def clearing(p, rng):
+    """A ragged opening round p: every cell within 1.6 and some out to 2.9."""
+    out = set()
+    for dy in range(-3, 4):
+        for dx in range(-3, 4):
+            d = np.hypot(dx, dy)
+            if d <= 1.6 or (d <= 2.9 and rng.random() < 0.55):
+                out.add((int(p[0]) + dx, int(p[1]) + dy))
+    return out
+
+
+def patch(cells, p, along, rng):
+    """A ragged patch over the cells of a way round p that runs `along`: across it a band three
+    deep from wall to wall, so the way is closed even corner to corner, and some just beyond."""
+    out = []
+    for q in sorted(cells):
+        off = abs((q[0] - p[0]) * along[0] + (q[1] - p[1]) * along[1])
+        if np.hypot(q[0] - p[0], q[1] - p[1]) <= 4 and (off <= 1 or (off == 2 and rng.random() < 0.45)):
+            out.append((int(q[0]), int(q[1])))
+    return out
+
+
+def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot):
+    """The rest of Mt. Silver's inside: caves off the tunnels and in from the ledges, winding off in
+    passages that branch, loop and end blind, some ends opening into caverns and some climbing to
+    more caves on the floor above, by a ramp or by stairs under a hole. Most have the one way in;
+    the links come out again on the ledge above, as another way up between ledges that the same
+    field moves reach, so no cave is a way round an obstacle. Caves keep well clear of each other
+    and of the lakes. Adds their cells to `bored`, their ramps to `ramps` and the holes over their
+    stairs to `holes`, and dresses every tunnel: rocky patches, debris and stones, candles on the
+    walls, ice crystals higher up."""
+    cx, cy = SILVER['center']
+    rng = np.random.default_rng(SILVER['caves_seed'])
+    half, step = 100, SILVER['cave_step']
+    s, w, top = SILVER['summit'], SILVER['ring'], SILVER['top']
+    ox, oy = cx - half, cy - half
+    win = (slice(oy - f.y0, oy - f.y0 + 2 * half + 1), slice(ox - f.x0, ox - f.x0 + 2 * half + 1))
+    lv, ins = level[win], inside[win]
+    n = 2 * half + 1
+    taken = {z: np.zeros((n, n), bool) for z in range(Z + 1)}
+    avoid = {z: np.zeros((n, n), bool) for z in range(Z + 1)}
+
+    def loc(p):
+        return p[1] - oy, p[0] - ox
+
+    def inwin(p):
+        return 0 <= p[0] - ox < n and 0 <= p[1] - oy < n
+
+    def mark(z, p):
+        if inwin(p) and 0 <= z <= Z:
+            taken[z][loc(p)] = True
+
+    for (x, y, z) in bored:
+        mark(z, (x, y))
+    for x, y, j, (dx, dy) in ramps:
+        for z in (Z + 1 - j, Z - j):
+            mark(z, (x, y))
+            mark(z, (x + dx, y + dy))
+    mark(Z, SILVER_INNER_MOUTH[:2])
+    for (x, y, z), g in ground.items():
+        if g == 'walkable sea' and inwin((x, y)):
+            avoid[z][loc((x, y))] = True
+    for z in avoid:
+        avoid[z] = dilate(avoid[z], 21)
+
+    def stamp(a, b, rr):
+        cells = set()
+        k = int(np.hypot(b[0] - a[0], b[1] - a[1]) * 3) + 1
+        for t in np.linspace(0, 1, k + 1):
+            px, py = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+            for qx in range(int(np.floor(px - rr)), int(np.ceil(px + rr)) + 1):
+                for qy in range(int(np.floor(py - rr)), int(np.ceil(py + rr)) + 1):
+                    if np.hypot(qx - px, qy - py) <= rr:
+                        cells.add((qx, qy))
+        return cells
+
+    def apart(z, own=()):
+        """Cells on floor z at least five tiles from every tunnel (but `own`) and clear of the lakes."""
+        others = taken[z].copy()
+        for c in own:
+            if inwin(c):
+                others[loc(c)] = False
+        return ~dilate(others, 11) & ~avoid[z] & ins
+
+    def carvable(z, own=()):
+        return (distance(lv > Z - z) > 2.5) & apart(z, own)
+
+    def name_of(z):
+        return 'Mt. Silver Cave' if z >= 6 else 'Mt. Silver 2F' if z >= 4 else 'Mt. Silver 3F'
+
+    def carve(z, cells):
+        for c in cells:
+            if (c[0], c[1], z) not in bored:
+                bored[(c[0], c[1], z)] = name_of(z)
+            mark(z, c)
+
+    caverns = []
+    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+    def grow(z, start, d0, cap, up, lead=None, open_lead=False, own=(), toward=None):
+        """Caves on floor z from `start` (open already), first heading d0; None if there is no room,
+        else their junctions and the caves they climb to (or None)."""
+        j, can = Z - z, carvable(z, own)
+        first = (start[0] + d0[0] * step, start[1] + d0[1] * step)
+        lead = set(lead or ()) | stamp(start, first, 1.2)
+        if not inwin(first) or not can[loc(first)]:
+            return None
+        # the way in keeps apart from every other tunnel but the one it leaves
+        free = apart(z, own)
+        for c in lead:
+            if not inwin(c):
+                return None
+            if lv[loc(c)] <= j:
+                if not open_lead:
+                    return None
+            elif not free[loc(c)]:
+                return None
+        pos, cells, seen, stack, deg, edges = {}, set(lead), {(0, 0)}, [(0, 0)], collections.Counter(), set()
+
+        def at_(key):
+            if key not in pos:
+                jx, jy = (0, 0) if key == (0, 0) else rng.integers(-1, 2, 2)
+                pos[key] = (int(first[0] + step * key[0] + jx), int(first[1] + step * key[1] + jy))
+            return pos[key]
+
+        def link(a, b):
+            seg = stamp(at_(a), at_(b), 1.2 if rng.random() < 0.75 else 1.8)
+            if all(inwin(c) and can[loc(c)] for c in seg):
+                cells.update(seg)
+                deg[a] += 1
+                deg[b] += 1
+                edges.add(frozenset((a, b)))
+                return True
+            return False
+
+        while stack and len(seen) < cap:
+            cur = stack[-1] if rng.random() < 0.7 else stack[int(rng.integers(len(stack)))]
+            opts = [(cur[0] + a, cur[1] + b) for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1))]
+            rng.shuffle(opts)
+            if toward and rng.random() < 0.6:
+                opts.sort(key=lambda k: np.hypot(at_(k)[0] - toward[0], at_(k)[1] - toward[1]))
+            for nxt in opts:
+                if nxt not in seen and link(cur, nxt):
+                    seen.add(nxt)
+                    stack.append(nxt)
+                    break
+            else:
+                stack.remove(cur)
+        for a in list(seen):
+            for b in ((a[0] + 1, a[1]), (a[0], a[1] + 1)):
+                if b in seen and frozenset((a, b)) not in edges and rng.random() < 0.12:
+                    link(a, b)
+        carve(z, cells)
+        ends = [k for k in seen if deg[k] == 1 and k != (0, 0)]
+        if toward:
+            ends.sort(key=lambda k: np.hypot(at_(k)[0] - toward[0], at_(k)[1] - toward[1]))
+        else:
+            ends.sort(key=lambda k: -abs(k[0]) - abs(k[1]))
+        upper = None
+        for k in ends:
+            if up and upper is None and z > 1:
+                foot = at_(k)
+                # only climbs north or west show: the floor above is drawn over the rest
+                ways = [('ramp', (0, -1)), ('ramp', (-1, 0))]
+                ways.insert(int(rng.integers(3)), ('stairs', (0, -1)))
+                for kind, d in ways:
+                    upper = grow(z - 1, foot, d, up, 0, stamp(foot, (foot[0] + d[0] * step, foot[1] + d[1] * step), 1.2),
+                                 toward=toward)
+                    if upper:
+                        if kind == 'ramp':
+                            ramps.append((foot[0], foot[1], Z - z + 1, d))
+                        else:
+                            holes.add((foot[0], foot[1], z - 1))
+                            deco[(foot[0], foot[1], z)] = [CAVE_STAIRS]
+                        mark(z, foot)
+                        break
+                if upper:
+                    continue
+            if rng.random() < 0.4:
+                room = stamp(at_(k), at_(k), 3.2)
+                if all(inwin(c) and (can[loc(c)] or c in cells) for c in room):
+                    carve(z, room)
+                    cells |= room
+                    caverns.append((at_(k), z))
+        return {'nodes': [pos[k] for k in seen], 'cells': cells, 'z': z, 'upper': upper}
+
+    def mouth(z, a):
+        """A way in from floor z's ledge at angle a (or near it): the ledge point, the way in, the
+        cliff face and the cells from the ledge to just inside; None if it can't go there."""
+        j = Z - z
+        for shift in (0, 8, -8, 16, -16):
+            p = spot(('at', a + shift, s + (top - 1 - j) * w + w / 2))
+            if level[p[1] - f.y0, p[0] - f.x0] != j:
+                continue
+            d0 = axis(cx - p[0], cy - p[1])
+            face = next((q for q in ((p[0] + d0[0] * t, p[1] + d0[1] * t) for t in range(40))
+                         if level[q[1] - f.y0, q[0] - f.x0] > j), None)
+            if face is None:
+                continue
+            inner = (face[0] + d0[0] * 3, face[1] + d0[1] * 3)
+            lead = stamp(p, inner, 2.2)
+            if any((c[0], c[1], z) in bored or (c[0], c[1], z) in deco or keep[c[1] - f.y0, c[0] - f.x0]
+                   for c in lead):
+                continue
+            yield inner, d0, face, lead
+
+    def cut(z, face, lead):
+        """Open the way in: a wide cut into the cliff, clear of gravel."""
+        j = Z - z
+        for c in lead:
+            if np.hypot(c[0] - face[0], c[1] - face[1]) <= 2.5 and level[c[1] - f.y0, c[0] - f.x0] > j:
+                level[c[1] - f.y0, c[0] - f.x0] = j
+                keep[c[1] - f.y0, c[0] - f.x0] = True
+            if level[c[1] - f.y0, c[0] - f.x0] <= j:
+                bored.pop((c[0], c[1], z), None)
+                keep[c[1] - f.y0 - 1:c[1] - f.y0 + 2, c[0] - f.x0 - 1:c[0] - f.x0 + 2] = True
+
+    def come_out(net, a):
+        """Run the caves `net` out to the ledge on their floor at angle a; False if they can't."""
+        z = net['z']
+        j = Z - z
+        own = set(net['cells'])
+        free = apart(z, own)
+        for inner, d0, face, lead in mouth(z, a):
+            node = min(net['nodes'], key=lambda q: np.hypot(q[0] - inner[0], q[1] - inner[1]))
+            way = stamp(node, inner, 1.2) | lead
+            if all(inwin(c) and (lv[loc(c)] <= j or c in own or free[loc(c)]) for c in way):
+                carve(z, way)
+                cut(z, face, lead)
+                return True
+        return False
+
+    for spec in [('link', *r, True) for r in SILVER['route']] + SILVER['caves']:
+        if spec[0] == 'link':
+            _, z, a, b, cap, up, *must = spec
+            target = spot(('at', b, s + (top - 2 - (Z - z)) * w + w / 2))
+            for inner, d0, face, lead in mouth(z, a):
+                net = grow(z, inner, d0, cap, up, lead, True, toward=target)
+                if net:
+                    cut(z, face, lead)
+                    break
+            else:
+                assert not must, 'Mt. Silver: no room for the way up from %d degrees on floor %d' % (a, z)
+                print('Mt. Silver: no room for the cave up from %d degrees on floor %d' % (a, z))
+                continue
+            if not (net['upper'] and come_out(net['upper'], b)):
+                assert not must, 'Mt. Silver: the way up from %d degrees on floor %d does not come out' % (a, z)
+                print('Mt. Silver: the cave up from %d degrees on floor %d does not come out' % (a, z))
+            continue
+        # a fifth and sixth entry aim the caves at the point that far out at that angle
+        z, where, cap, up, *aim = spec
+        toward = spot(('at', *aim)) if aim else None
+        if isinstance(where, str):
+            starts = sorted(p[:2] for p, nm in bored.items() if nm == where and p[2] == z)
+            own = set(starts)
+            if toward:
+                starts.sort(key=lambda q: np.hypot(q[0] - toward[0], q[1] - toward[1]))
+                starts = starts[:max(1, len(starts) // 3)]
+            for _ in range(60):
+                start = starts[int(rng.integers(len(starts)))]
+                net = grow(z, start, dirs[int(rng.integers(4))], cap, up, own=own, toward=toward)
+                if net and len(net['nodes']) > cap // 3:
+                    break
+            else:
+                print('Mt. Silver: no room for caves off %s on floor %d' % (where, z))
+            continue
+        for inner, d0, face, lead in mouth(z, where):
+            if grow(z, inner, d0, cap, up, lead, True, toward=toward):
+                cut(z, face, lead)
+                break
+        else:
+            print('Mt. Silver: no room for caves in from %d degrees on floor %d' % (where, z))
+    # dressing, kept off the ramps, their tops and anything already placed
+    clear = {(x + dx, y + dy, zz) for x, y, jj, (rx, ry) in ramps for zz in (Z + 1 - jj, Z - jj)
+             for dx in range(-2, 3) for dy in range(-2, 3)}
+    hx, hy, _ = SILVER_INNER_MOUTH
+    clear |= {(hx + dx, hy + dy, Z) for dx in range(-3, 4) for dy in range(-3, 4)}
+    clear |= {(x + dx, y + dy, zz) for x, y, z in holes for zz in (z, z + 1) for dx in range(-2, 3) for dy in range(-2, 3)}
+    patches = Field(113).noise(6)
+    room_cells = {(x, y, z) for (cxy, z) in caverns for x in range(cxy[0] - 3, cxy[0] + 4)
+                  for y in range(cxy[1] - 3, cxy[1] + 4)}
+    ring = [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0)]
+    solid = set()
+
+    def can_block(x, y, z):
+        """Whether an item that blocks can stand here without cutting the passage: the open cells
+        round it still join up among themselves (side by side, round the ring)."""
+        open_ = [(x + dx, y + dy, z) in bored and (x + dx, y + dy, z) not in deco for dx, dy in ring]
+        cells = [k for k in range(8) if open_[k]]
+        if not cells:
+            return False
+        seen, todo = {cells[0]}, [cells[0]]
+        while todo:
+            k = todo.pop()
+            for n in ((k + 7) % 8, (k + 1) % 8):
+                if open_[n] and n not in seen:
+                    seen.add(n)
+                    todo.append(n)
+        return len(seen) == len(cells)
+
+    for (x, y, z) in list(bored):
+        if (x, y, z) in deco or (x, y, z) in clear:
+            continue
+        if patches[y - f.y0, x - f.x0] > 0.2:
+            ground[(x, y, z)] = 'rocky ground'
+        around = sum((x + dx, y + dy, z) in bored for dx in (-1, 0, 1) for dy in (-1, 0, 1)) - 1
+        edge, roomy = around < 8, around >= 5
+        r = rng.random()
+        if edge and (x, y - 1, z) not in bored and (x, y - 1, z) not in clear and rng.random() < 0.08:
+            deco[(x, y - 1, z)] = [WALL_CANDLE]
+        if edge and roomy and r < (0.05 if z <= 4 else 0.025) and can_block(x, y, z):
+            deco[(x, y, z)] = [8634 if rng.random() < 0.6 else 8638]
+            solid.add((x, y, z))
+        elif roomy and r < (0.1 if (x, y, z) in room_cells else 0.04) and can_block(x, y, z):
+            deco[(x, y, z)] = [pick(rng, SILVER_ROCKS)]
+            solid.add((x, y, z))
+        elif r < 0.15:
+            deco[(x, y, z)] = [int(rng.choice(CAVE_DEBRIS))]
+        elif r < 0.22:
+            deco[(x, y, z)] = [int(rng.choice(GRAVEL))]
+        elif r < 0.25 and can_block(x, y, z):
+            deco[(x, y, z)] = [int(rng.choice(CAVE_STONES))]
+            solid.add((x, y, z))
+    # and no run of them shuts off part of a cave: one touching two parts that don't otherwise meet
+    # gives way to debris
+    while True:
+        part, n = {}, 0
+        for c in bored:
+            if c in part or c in solid:
+                continue
+            n += 1
+            part[c], todo = n, [c]
+            while todo:
+                x, y, z = todo.pop()
+                for p in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z)):
+                    if p in bored and p not in solid and p not in part:
+                        part[p] = n
+                        todo.append(p)
+        opened = False
+        for c in list(solid):
+            if c not in solid:
+                continue
+            run, todo, touch = {c}, [c], set()
+            while todo:
+                x, y, z = todo.pop()
+                for p in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z)):
+                    if p in solid and p not in run:
+                        run.add(p)
+                        todo.append(p)
+                    elif p in part:
+                        touch.add(part[p])
+            if len(touch) > 1:
+                for p in run:
+                    solid.discard(p)
+                    deco[p] = [int(rng.choice(CAVE_DEBRIS))]
+                opened = True
+        if not opened:
+            return caverns
+
+
 def landing(x, y, facing):
     """Tiles in front of a mouth (stairs at x, y) that players step out onto, on that floor."""
     dy = 1 if facing == 'south' else -1
     return {(x + dx, y + dy * k) for dx in (-1, 0, 1) for k in (1, 2, 3)}
 
 
-def build_cave(cave, brushes, present, rng, z=8):
+def wreck_tiles(data):
+    """WRECK's tiles, keyed by where they go, without house ids."""
+    x0, y0, x1, y1 = WRECK['src']
+    ox, oy = WRECK['dst'][0] - x0, WRECK['dst'][1] - y0
+    raw = pvmap.read_region_raw(None, x0, y0, x1, y1, WRECK['floors'], data)
+    return {(x + ox, y + oy, z): pvmap.RawTile(0, t.flags, t.ground, t.children) for (x, y, z), t in raw.items()}
+
+
+def build_cave(cave, brushes, present, rng):
     """One cave floor, made like Kanto's caves: mountain top ground carved out of solid mountain,
-    patches of rocky ground, debris and stones on the floor and candles on the walls."""
+    patches of rocky ground, debris and stones on the floor and candles on the walls. Its mouths
+    are the ways up (stairs, or a ladder under a trapdoor in town), its `downs` the stairs down to
+    the floor below, which has a mouth at the same place."""
+    z = cave.get('z', 8)
     f = Field(41, cave['box'])
     X, Y = f.X, f.Y
     n1, n2 = f.noise(8), f.noise(16)
@@ -672,11 +1804,14 @@ def build_cave(cave, brushes, present, rng, z=8):
     up = {}
     near_stairs = np.zeros((f.h, f.w), bool)
     no_optional = set()
-    for ex, ey, facing, *_ in cave['mouths']:
+    for ex, ey, facing, *_ in cave['mouths'] + cave.get('inner_mouths', []):
         item, off = STAIRS_UP[facing]
         up[(ex, ey + off)] = item
         near = abs(X - ex) <= 4
-        if facing == 'south':
+        if facing == 'ladder':
+            floor |= (abs(X - ex) <= 2) & (abs(Y - ey) <= 2)
+            arrive = ey
+        elif facing == 'south':
             floor |= (abs(X - ex) <= 2) & (Y >= ey - 5) & (Y <= ey + 1)
             floor &= ~(near & (Y > ey + 1) & (Y <= ey + 8))
             arrive = ey
@@ -686,9 +1821,33 @@ def build_cave(cave, brushes, present, rng, z=8):
             arrive = ey + 1
         near_stairs |= (abs(X - ex) <= 3) & (abs(Y - ey) <= 4)
         no_optional |= {(ex + dx, arrive + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
+    # stairs down set into the rock like a surface mouth: rock on the far side, the landing in front
+    downs = set()
+    for ex, ey, facing in cave.get('downs', []):
+        d = 1 if facing == 'south' else -1
+        floor |= (abs(X - ex) <= 2) & ((Y - ey) * d >= 0) & ((Y - ey) * d <= 5)
+        floor &= ~((abs(X - ex) <= 1) & ((ey - Y) * d >= 1) & ((ey - Y) * d <= 3))
+        downs.add((ex, ey))
+        near_stairs |= (abs(X - ex) <= 3) & (abs(Y - ey) <= 4)
+        no_optional |= landing(ex, ey, facing) | {(ex, ey)}
     water = np.zeros((f.h, f.w), bool)
     if cave.get('pond'):
         water = f.disc(*cave['pond'], n1, 0.3) & erode(floor, 3) & ~near_stairs & ~(path_d < 2.6)
+    # a stream across the way, to Surf over (the lane goes on either side of it)
+    if cave.get('stream'):
+        line, width = cave['stream']
+        water |= (f.seg_dist(line) + n1 < width) & floor & ~near_stairs
+    # each waterfall's face is rock, the water running from its foot down to the pond
+    falls = cave.get('waterfalls', [])
+    for x, y in falls:
+        ix, iy = x - f.x0, y - f.y0
+        floor[iy - 3:iy + 1, ix - 1:ix + 2] = False
+        k = iy + 1
+        while not water[k, ix]:
+            floor[k, ix] = water[k, ix] = True
+            k += 1
+            assert k < iy + 16, '%s: the waterfall at %d,%d is far from the water' % (cave['name'], x, y)
+    lane &= ~water
     no_optional |= {(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(lane)}
     rocky = (f.noise(10) > 0.2) & erode(floor, 3) & ~water
     wall = dilate(floor, 7) & ~floor
@@ -703,6 +1862,9 @@ def build_cave(cave, brushes, present, rng, z=8):
     names[water] = 'walkable sea'
     shore = dilate(water, 5)
     inner = erode(floor, 5)  # the optional mountain border on the tiles along the walls blocks
+    candles, glow = CAVE_LIGHT[cave.get('light', 'crystal')]
+    by_wall = floor & dilate(wall, 3)
+    near_lane = dilate(lane, 3)
     ground = {}
     deco = {}
     walk = np.zeros((f.h, f.w), bool)
@@ -713,10 +1875,12 @@ def build_cave(cave, brushes, present, rng, z=8):
         items = []
         r = rng.random()
         if wall[iy, ix]:
-            if iy + 1 < f.h and floor[iy + 1, ix] and not water[iy + 1, ix] and r < 0.05:
+            if iy + 1 < f.h and floor[iy + 1, ix] and not water[iy + 1, ix] and r < candles:
                 items.append(WALL_CANDLE)
         elif not water[iy, ix] and not near_stairs[iy, ix] and not lane[iy, ix]:
-            if r < 0.06:
+            if glow and by_wall[iy, ix] and not shore[iy, ix] and not near_lane[iy, ix] and r < glow[2]:
+                items.append(glow[0] if rng.random() < 0.6 else glow[1])
+            elif r < 0.06:
                 items.append(int(rng.choice(CAVE_DEBRIS)))
             elif r < 0.085:
                 items.append(int(rng.choice(CAVE_STONES)))
@@ -727,6 +1891,9 @@ def build_cave(cave, brushes, present, rng, z=8):
         deco[(x, y)] = items
     for pos, item in up.items():
         deco[pos] = [item]
+    for x, y in falls:
+        deco[(x, y)] = [WATERFALL_UP]
+        deco[(x, y + 1)] = [WATERFALL_FOOT]
 
     def brush_at(x, y):
         g = ground.get((x, y))
@@ -739,8 +1906,14 @@ def build_cave(cave, brushes, present, rng, z=8):
         nb = [brush_at(x + dx, y + dy) for dx, dy in autoborder.NEIGHBOURS]
         optional = center is not mountain and mountain in nb and (x, y) not in no_optional
         border = brushes.borders_for(center, nb, optional=optional)
+        # the rock's edge would hide the foam at a waterfall's foot (Kanto's have none)
+        if (x, y - 1) in falls:
+            border = []
         children = b''.join(pvmap.item_node(i) for i in [g] + border + deco[(x, y)])
         tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
+    for x, y in downs:
+        tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(STAIRS_DOWN))
+        deco[(x, y)] = [STAIRS_DOWN]
 
     # spawns only go where players can get to from the lane: off the water and its border, the
     # blocking wall borders and the decoration
@@ -762,7 +1935,7 @@ def build_cave(cave, brushes, present, rng, z=8):
         spawns.append((pick(rng, spawn_table(table)), ix + f.x0, iy + f.y0, z))
     # the water table along the pond, one tile back from the water's (blocking) border, like Kanto's
     water_table = spawn_table(table, 'water')
-    if water.any() and water_table:
+    if water.any() and water_table and not cave.get('free_water'):
         edge = dilate(water, 5) & ~dilate(water, 3) & erode(floor, 3) & reached
         cells = np.argwhere(edge)
         for iy, ix in cells[rng.permutation(len(cells))[:min(6, max(2, len(cells) // 8))]]:
@@ -772,6 +1945,7 @@ def build_cave(cave, brushes, present, rng, z=8):
 
 def build(base, out_path):
     brushes = autoborder.Brushes()
+    otb = pvmap.Otb(os.path.join(ROOT, 'core/server/data/items/items.otb'))
     scanned = scan(base)
     keep = scanned['keep']
     present = scanned['present'][1:-1, 1:-1]
@@ -786,10 +1960,13 @@ def build(base, out_path):
     for table in (BIG_TREES, BUSHES, TUFTS, FERNS, FLOWERS, STONES):
         nature.update(i for i, _ in table)
     nature.update(GRAVEL)
-    nature.update((SNOW_FIR, SNOW_DEAD, SNOW_HEAP))
+    nature.update((SNOW_FIR, SNOW_DEAD))
+    nature.update(i for i, _ in SNOW_STONES)
     nature.update(range(6476, 6489))
+    nature.update(ROCK_PIECES)
     houses_xml = house_entries()
-    prefabs = {name: Prefab(name, spec, keep, brushes, nature, houses_xml) for name, spec in PREFABS.items()}
+    down_ids = floor_down_ids()
+    prefabs = {name: Prefab(name, spec, keep, brushes, nature, houses_xml, down_ids) for name, spec in PREFABS.items()}
     sizes = {name: (p.w, p.h) for name, p in prefabs.items()}
     layouts = {}
     laid_out = TOWNS_BUILT + SITES
@@ -873,6 +2050,13 @@ def build(base, out_path):
     mount = f.refine(coarse['mount'], n2, 0.45) & land
     forest = f.refine(coarse['forest'], n3, 0.5) & land
     forest |= f.disc(2300, 990, 50, n3, 0.5) & land  # Ilex Forest's south half, down to Azalea
+    # Johto's west is low-lying and forested (Bulbapedia): woods round the layout's forests, with
+    # their own noise for how thick the canopy is, firs or broadleaf, glades and the forest floor.
+    wf = Field(97)
+    woods = wf.noise(60) + wf.noise(14) * 0.3
+    woods_line = WOODS_X + wf.noise(30) * 60
+    forest |= (woods > -0.02 + np.clip((X - woods_line) / 200, 0, 1) * EAST_WOODS) & land
+    canopy, stand, glade, litter = wf.noise(16), wf.noise(40), wf.noise(9), wf.noise(7)
     water = f.refine(coarse['lakes'], n2) & land
 
     # The Kanto strip: carry the existing ground across the seam.
@@ -1019,6 +2203,7 @@ def build(base, out_path):
     town_area, town_water, islets, boxes = mask(), mask(), mask(), mask()
     town_ground = {}  # (x, y) -> brush name
     decor = {}
+    raw_ground = {}
     planks = set()
     town_pave = {}
     site_lawn, site_spawn = mask(), {}
@@ -1076,6 +2261,7 @@ def build(base, out_path):
             town_ground[(ix + f.x0, iy + f.y0)] = 'wooden floor'
         town_ground.update(t.grounds)
         decor.update(t.decor)
+        raw_ground.update(t.raw)
         town_pave[key] = pave
     mount &= ~town_area
     forest &= ~town_area
@@ -1158,9 +2344,13 @@ def build(base, out_path):
     # Cave mouths: stairs down set one tile into a rock face, opening the way they face. They come
     # after the town ground, as the Ruins of Alph's chambers open onto their courts.
     stair_landing = set()
-    roofs = []
+    ravines = mask()
     for cave in CAVES:
+        if cave.get('z', 8) != Z + 1:
+            continue
         for cx, cy, facing, *corridor in cave['mouths']:
+            if facing == 'ladder':
+                continue
             d = 1 if facing == 'south' else -1
             ix, iy = cx - f.x0, cy - f.y0
             if corridor:
@@ -1168,13 +2358,20 @@ def build(base, out_path):
                 length = np.hypot(bx - ax, by - ay)
                 proj = ((X - ax) * (bx - ax) + (Y - ay) * (by - ay)) / length
                 hall_d = f.seg_dist(corridor[0])
-                hall = (hall_d < 2.1) & (proj >= 0) & (proj <= length)
+                # narrowing to the stairs, which sit in the rock face at the ravine's end
+                stairs_at = length - 2
+                width = np.where(proj > stairs_at - 2, 1.1, 2.1)
+                hall = (hall_d < width) & (proj >= 0) & (proj < stairs_at - 0.5)
                 terrain[((hall_d + f.noise(4) * 2 < 5.5) | (uncut & (hall_d < 12))) & (proj >= 1)] = MOUNTAIN
                 if cave.get('lip'):
                     lip = f.disc(ax, ay - 1, 7, f.noise(5), 0.4) & (terrain != MOUNTAIN)
                     terrain[lip] = SNOW
+                # floor either side of the stairs too, so the rock's edge is drawn round the hole
+                # and not over it
+                hall[iy, ix - 1:ix + 2] = True
+                hall[iy, ix] = False
                 terrain[hall] = CAVE_FLOOR
-                roofs.append((hall & (proj >= 1), 'mountain'))
+                ravines |= hall
                 stair_landing |= {(x + f.x0, y + f.y0) for y, x in np.argwhere(hall)}
                 clear |= dilate(hall, 9)
             else:
@@ -1189,6 +2386,21 @@ def build(base, out_path):
             terrain[iy, ix] = STAIRS
             town_ground.pop((cx, cy), None)
             stair_landing |= landing(cx, cy, facing)
+    lx, ly, rx, ry = TOHJO_LEDGE['ledge']
+    hollow = ((X - lx) / rx) ** 2 + ((Y - ly) / ry) ** 2 + f.noise(4) * 0.3 < 1
+    px0, py0, px1, py1 = TOHJO_LEDGE['pool']
+    pool = (X >= px0) & (X <= px1) & (Y >= py0) & (Y <= py1)
+    assert (terrain[dilate(hollow | pool, 9)] == MOUNTAIN).all(), 'Tohjo Falls\' ledge is not inside the ridge'
+    terrain[hollow] = CAVE_FLOOR
+    terrain[pool] = WATER
+    ravines |= hollow | pool
+    for x, y in next(c for c in CAVES if c['name'] == 'Tohjo Falls')['waterfalls']:
+        assert pool[y - f.y0, x - f.x0] and not pool[y + 1 - f.y0, x - f.x0]
+        decor[(x, y)] = [WATERFALL_TOP]
+    for pos in [TOHJO_LEDGE['radio']] + TOHJO_LEDGE['rocks']:
+        assert hollow[pos[1] - f.y0, pos[0] - f.x0] and not pool[pos[1] - f.y0, pos[0] - f.x0]
+        decor[pos] = [SMASH_ROCK]
+    decor[TOHJO_LEDGE['radio']] = [TOHJO_LEDGE['radio_id']]
     near_town_paths = dilate((terrain == PAVE) | (terrain == BRIDGE) | boxes, 3)
     # Ilex Forest's wall: a tree on every open tile off the path and the shrine's clearing
     line, width = ILEX_WALL
@@ -1199,6 +2411,9 @@ def build(base, out_path):
     # Prefabs.
     next_house = max(houses_xml) + 1
     prefab_tiles = {}
+    # enclosed landmarks' own ground draws no border onto the ground round them (Kanto has none
+    # round the rockery in the Battle Tower's corner)
+    unbordered = set()
     npcs = []
     new_houses = []
     for place in places:
@@ -1211,6 +2426,8 @@ def build(base, out_path):
             for (dx, dy, dz), tile in p.tiles.items():
                 t = pvmap.RawTile(remap.get(tile.house_id, 0), tile.flags, tile.ground, tile.children)
                 prefab_tiles[(ox + dx, oy + dy, Z + dz)] = t
+                if dz == 0 and PREFABS[name].get('enclosed'):
+                    unbordered.add((ox + dx, oy + dy))
             for hid, new_id in remap.items():
                 src = houses_xml[hid]
                 sx, sy = p.src
@@ -1242,6 +2459,21 @@ def build(base, out_path):
             for k, item in enumerate(T.MILL_WHEEL):
                 tile = prefab_tiles[(x + mid + k, y + front, Z - 1)]
                 tile.children += pvmap.item_node(item)
+    # stairs down inside buildings: the floor's ground swapped for stairs, the rest of the tile kept
+    for t in layouts.values():
+        for x, y in t.stairs_down:
+            tile = prefab_tiles[(x, y, Z)]
+            rest = tile.children if tile.ground is not None else b''.join(pvmap.split_items(tile.children)[1:])
+            prefab_tiles[(x, y, Z)] = pvmap.RawTile(tile.house_id, tile.flags, INDOOR_STAIRS, rest)
+    below = underground_tiles(base_data, brushes)
+    assert not set(below) & set(prefab_tiles), 'an underground piece overlaps a building'
+    prefab_tiles.update(below)
+    wreck = wreck_tiles(base_data)
+    wx0, wy0 = WRECK['dst']
+    wx1, wy1 = wx0 + WRECK['src'][2] - WRECK['src'][0], wy0 + WRECK['src'][3] - WRECK['src'][1]
+    assert (terrain[wy0 - f.y0 - 2:wy1 - f.y0 + 3, wx0 - f.x0 - 2:wx1 - f.x0 + 3] == WATER).all() \
+        and not set(wreck) & set(prefab_tiles), 'the wreck is not out at sea'
+    prefab_tiles.update(wreck)
 
     for (x, y, z) in prefab_tiles:
         if z == Z and f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
@@ -1257,6 +2489,77 @@ def build(base, out_path):
             x, y = int(m.group(1)) + int(c.group(1)), int(m.group(2)) + int(c.group(2))
             if f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
                 keep_free[y - f.y0, x - f.x0] = True
+
+    # The woods' floor: patches of bare earth under the trees, and smaller ones out in the open.
+    terrain[forest & (terrain == GRASS) & (litter > 0.22) & ~road & ~clear & gen] = DIRT
+    terrain[~forest & (terrain == GRASS) & (wf.noise(5) > 0.3) & ~road & ~clear & ~town_area & gen] = DIRT
+
+    # Hills (see HILL_LEVELS) on open countryside away from the roads, the towns, the water, the
+    # mountains and whatever else is built, short of the Kanto seam. Their footprint is mountain
+    # ground on this floor.
+    busy = np.isin(terrain, [WATER, MOUNTAIN, SNOW_PEAK, SAND, STAIRS, CAVE_FLOOR, PAVE, BRIDGE])
+    allowed = (gen & ~present & np.isin(terrain, [GRASS, LAWN, DIRT, SNOW]) & ~road & (road_d > 4.5) & ~thicket
+               & ~grow(town_area | clear | boxes | keep_free, 6) & ~grow(busy, 6) & (X < 3035))
+    walk0 = (gen & ~present & np.isin(terrain, [GRASS, LAWN, DIRT, SAND, SNOW, PAVE]) & ~boxes & ~thicket
+             & ~grow(np.isin(terrain, [WATER, MOUNTAIN, SNOW_PEAK]), 2))
+    for (x, y) in decor:
+        walk0[y - f.y0, x - f.x0] = False
+    target0 = (road | np.isin(terrain, [PAVE, BRIDGE])) & (walk0 | (terrain == BRIDGE))
+    height, ramps, hill_keep = plan_hills(f, allowed, walk0, target0, road_d, np.random.default_rng(83))
+    country = height > 0
+    hill_ground = terrain.copy()
+    terrain[country] = MOUNTAIN
+    clear |= hill_keep[0]
+    # The mountains in tiers, kept off the ravines up to the cave mouths so those stay open to the sky.
+    rocks = np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, SNOW_PEAK]) & ~country & ~ravines & gen & ~present & (X < 3035)
+    rocks &= ~grow(boxes, 5)
+    mlevel = plan_mountains(rocks, terrain == SNOW_PEAK)
+    mf = Field(103)
+    snowy = grow(np.isin(terrain, [SNOW_PEAK, SNOW]), 20)
+    meadow = mf.noise(22) + mf.noise(6) * 0.3 > 0.12
+    surface = np.where(snowy, SNOW, np.where(meadow, GRASS, CAVE_FLOOR))
+    hill_ground[mlevel > 0] = surface[mlevel > 0]
+    terrain[(mlevel > 0) & (terrain == SNOW_PEAK)] = MOUNTAIN
+    slevel, silver_ramps, silver_holes, bored, up_ground, up_deco, ledges, silver_keep, silver_places = plan_silver(f, mlevel, ravines | (terrain == STAIRS))
+    changed = slevel != mlevel
+    assert not (changed & (~gen | present)).any(), 'Mt. Silver over existing tiles'
+    shrine, guards = T.ho_oh_shrine()
+    hx, hy = SILVER['shrine']
+    top_z = Z - SILVER['top']
+    for (dx, dy), (brush, items) in shrine.items():
+        x, y = hx + dx, hy + dy
+        iy, ix = y - f.y0, x - f.x0
+        assert (slevel[iy - 2:iy + 3, ix - 2:ix + 3] == SILVER['top']).all() and not silver_keep[iy, ix], \
+            'Ho-Oh Shrine off the summit at %d,%d' % (x, y)
+        up_ground[(x, y, top_z)] = brush
+        if items:
+            up_deco[(x, y, top_z)] = items
+    shrine_guards = [(MONSTER_NAMES.get(n, n), hx + dx, hy + dy, top_z) for n, dx, dy in guards]
+    mlevel = slevel.astype(np.uint8)
+    terrain[changed & (mlevel > 0) & ~np.isin(terrain, [MOUNTAIN, CAVE_FLOOR])] = MOUNTAIN
+    lower, upper_ledges = SILVER['lower'], ledges & (mlevel > SILVER['lower'])
+    hill_ground[ledges] = np.where(mlevel <= 2, GRASS, np.where(mlevel <= lower, CAVE_FLOOR, SNOW))[ledges]
+    snowfield = mf.noise(9) > 0.15
+    snowfield = grow(distance(snowfield) > 2.5, 2.5) & snowfield
+    hill_ground[upper_ledges & (mlevel == lower + 1) & ~snowfield] = CAVE_FLOOR
+    for (x, y, z), _name in bored.items():
+        if z == Z:
+            terrain[y - f.y0, x - f.x0] = CAVE_FLOOR
+            stair_landing.add((x, y))
+    hx, hy, _facing = SILVER_INNER_MOUTH
+    terrain[hy - f.y0, hx - f.x0] = STAIRS
+    ramps += silver_ramps
+    height = height + mlevel
+    ramp_feet = {(x, y, Z + 1 - j): RAMPS[d] for x, y, j, d in ramps}
+    for x, y, j, d in silver_ramps:
+        if j > 1 and (x, y, Z + 1 - j) not in bored and hill_ground[y - f.y0, x - f.x0] == SNOW:
+            ramp_feet[(x, y, Z + 1 - j)] = ICE_RAMPS[d]
+    for x, y, j, (dx, dy) in ramps:
+        if j == 1:
+            stair_landing |= {(x, y), (x - dx, y - dy)}
+    print('hills: %s, %d ramps; mountain tiers: %s'
+          % (', '.join('%d on floor %d' % ((country & (height >= j)).sum(), Z - j) for j in range(1, HILL_LEVELS + 1)),
+             len(ramps), ', '.join('%d on floor %d' % ((mlevel >= j).sum(), Z - j) for j in range(1, PEAK_LEVELS + 1))))
 
     # Ground items and decoration.
     groves = f.noise(20)
@@ -1284,45 +2587,20 @@ def build(base, out_path):
             deco = []
             r = rng.random()
             if (x, y) in decor:
-                tiles[(x, y)] = [ground, list(decor[(x, y)])]
+                tiles[(x, y)] = [raw_ground.get((x, y), ground), list(decor[(x, y)])]
                 blocked_spawn[iy, ix] = True
                 continue
             if ilex_cut[iy, ix]:
                 tiles[(x, y)] = [ground, [CUT_BUSH]]
                 blocked_spawn[iy, ix] = True
                 continue
-            if thicket[iy, ix] and cls == GRASS:
-                deco.append(pick(rng, BIG_TREES))
-            elif cls in (GRASS, LAWN) and not clear[iy, ix] and not road[iy, ix]:
-                g = groves[iy, ix]
-                if keep_free[iy, ix]:
-                    r = 1.0
-                if forest[iy, ix]:
-                    p_tree, p_bush = 0.45, 0.15
-                else:
-                    p_tree = 0.02 + 0.5 * max(0.0, g - 0.05)
-                    p_bush = 0.03 + 0.35 * max(0.0, g + 0.05)
-                if road_d[iy, ix] < 3.5:
-                    p_tree *= 0.15
-                    p_bush *= 0.3
-                if r < p_tree:
-                    deco.append(pick(rng, BIG_TREES))
-                elif r < p_tree + p_bush:
-                    deco.append(pick(rng, BUSHES))
-                else:
-                    r2 = rng.random()
-                    p_tuft = 0.3 + 0.25 * tufty[iy, ix]
-                    p_flower = 0.004 + 0.03 * max(0.0, flowery[iy, ix] - 0.15)
-                    if keep_free[iy, ix]:
-                        pass
-                    elif r2 < p_tuft:
-                        deco.append(pick(rng, TUFTS))
-                    elif r2 < p_tuft + 0.03:
-                        deco.append(pick(rng, FERNS))
-                    elif r2 < p_tuft + 0.03 + p_flower:
-                        deco.append(pick(rng, FLOWERS))
-                    elif r2 < p_tuft + 0.036 + p_flower:
-                        deco.append(pick(rng, STONES))
+            if thicket[iy, ix] and cls in (GRASS, DIRT):
+                trees = CONIFERS if stand[iy, ix] > 0.08 else BROADLEAF
+                deco.append(pick(rng, trees) if r < 0.7 else pick(rng, UNDERGROWTH))
+            elif (cls in (GRASS, LAWN) or (cls == DIRT and forest[iy, ix])) and not clear[iy, ix] and not road[iy, ix]:
+                if not keep_free[iy, ix]:
+                    deco += wild_deco(rng, r, forest[iy, ix], road_d[iy, ix], canopy[iy, ix], stand[iy, ix],
+                                      glade[iy, ix], groves[iy, ix], tufty[iy, ix], flowery[iy, ix])
             elif cls in (GRASS, LAWN) and town_area[iy, ix] and r < 0.4:
                 deco.append(pick(rng, BUSHES) if r < 0.025 and not near_town_paths[iy, ix] else pick(rng, TUFTS))
             elif ((cls == SNOW and frozen[iy, ix]) or (cls == SNOW_PEAK and summits[iy, ix] and not clear[iy, ix])) \
@@ -1333,12 +2611,20 @@ def build(base, out_path):
                 elif r < p_tree + 0.003:
                     deco.append(SNOW_DEAD)
                 elif r < p_tree + 0.008:
-                    deco.append(SNOW_HEAP)
+                    deco.append(pick(rng, SNOW_STONES))
             elif cls == DIRT and not clear[iy, ix] and r < 0.18:
                 deco.append(rng.choice(GRAVEL))
-            if deco and deco[0] not in dict(TUFTS) and deco[0] not in dict(FERNS) and deco[0] not in dict(FLOWERS):
+            if any(otb.blocks(i) for i in deco):
                 blocked_spawn[iy, ix] = True
             tiles[(x, y)] = [ground, deco]
+    for (x, y, z), ramp in ramp_feet.items():
+        if z == Z:
+            tiles[(x, y)] = [tiles[(x, y)][0], [ramp]]
+            blocked_spawn[y - f.y0, x - f.x0] = True
+    for (x, y, z), items in up_deco.items():
+        if z == Z and (x, y, z) not in ramp_feet:
+            tiles[(x, y)] = [tiles[(x, y)][0], list(items)]
+            blocked_spawn[y - f.y0, x - f.x0] = True
     lost = sorted(p for p in decor if p not in tiles)
     if lost:
         print('warning: %d decoration tiles fall on buildings, e.g. %s' % (len(lost), lost[:5]))
@@ -1440,8 +2726,12 @@ def build(base, out_path):
     # Borders.
     def brush_at(x, y):
         if (x, y) in tiles:
-            return brushes.by_item.get(tiles[(x, y)][0])
+            ground = tiles[(x, y)][0]
+            # the rock round a hole is edged as round the cave floor it is cut into
+            return brushes['mountain top ground'] if ground == STAIRS_DOWN else brushes.by_item.get(ground)
         pt = prefab_tiles.get((x, y, Z))
+        if (x, y) in unbordered:
+            return None
         if pt is not None:
             ids = ([pt.ground] if pt.ground is not None else []) + pvmap.child_item_ids(pt.children)
             return brushes.by_item.get(ids[0]) if ids else None
@@ -1494,21 +2784,6 @@ def build(base, out_path):
         reborder += 1
     new_tiles.update(prefab_tiles)
 
-    # Roofs over the cave corridors. A floor-6 tile shows one tile up and to the left of the tile under
-    # it, and the client hides floor 6 for players standing under (x, y) or (x + 1, y + 1), so each
-    # roof covers the corridor and the corridor shifted by one, and runs on over the walls beside it.
-    roof = {}
-    for core, name in roofs:
-        cover = core | np.roll(np.roll(core, 1, 0), 1, 1)
-        cover |= dilate(cover, 5) & np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, STAIRS])
-        for iy, ix in np.argwhere(cover):
-            assert not present[iy, ix], 'roof over existing tiles at %d,%d' % (ix + f.x0, iy + f.y0)
-            roof[(ix + f.x0, iy + f.y0)] = brushes[name]
-    for (x, y), brush in roof.items():
-        ground = pick(rng, [(i, c) for i, c in brush.items if c > 0])
-        border = brushes.borders_for(brush, [roof.get((x + dx, y + dy)) for dx, dy in autoborder.NEIGHBOURS])
-        new_tiles[(x, y, Z - 1)] = pvmap.RawTile(0, 0, None, b''.join(pvmap.item_node(i) for i in [ground] + border))
-
     # The Elite Four building's west and south doors: take the counters out, keep the rest of the tile.
     for (x, y) in INDIGO_OPEN:
         t = existing(x, y)
@@ -1546,7 +2821,19 @@ def build(base, out_path):
             break
         reached = grown
     walk_ok &= reached
-    spawns = []
+    spawns = list(shrine_guards)
+    # on board the wreck: its wooden floors (no ground of the brushes'), where nothing blocks or leads
+    # up or down
+    aboard = []
+    changes_floor = floor_down_ids('[a-z]+') | {STAIRS_UP['ladder'][0]}
+    for (x, y, z), t in sorted(wreck.items()):
+        ids = ([t.ground] if t.ground is not None else []) + pvmap.child_item_ids(t.children)
+        if ids and ids[0] not in brushes.by_item and ids[0] not in WATER_IDS and z in (6, 7) \
+                and not any(otb.blocks(i) or i in changes_floor for i in ids):
+            aboard.append((x, y, z))
+    wreck_rng = np.random.default_rng(97)
+    for k in wreck_rng.permutation(len(aboard))[:WRECK['spawns']]:
+        spawns.append((pick(wreck_rng, spawn_table(WRECK['name'])), *aboard[k]))
     cand = np.argwhere(walk_ok & (rng.random((f.h, f.w)) < 1 / 210.0) & (X < 3049))
     for iy, ix in cand:
         table = spawn_table(str(route_of[iy, ix]))
@@ -1574,9 +2861,136 @@ def build(base, out_path):
     for iy, ix in np.argwhere(beach & (rng.random((f.h, f.w)) < 1 / 40.0)):
         spawns.append((pick(rng, spawn_table(str(route_of[iy, ix]), 'water')), ix + f.x0, iy + f.y0, Z))
 
+    # The upper floors of the hills and the mountain tiers. A plateau's edge borders as if mountain lay
+    # round it (the cliff's lip), but not toward the stairs over a ramp, which players walk onto from it.
+    hill_rng = np.random.default_rng(89)
+    gravel = set(mountain.optional.items.values())
+    tops = {(x, y, Z - j) for x, y, j, _ in ramps}
+    top_level = int(height.max())
+    above = {}
+    if top_level:
+        ys, xs = np.nonzero(height)
+        above = pvmap.read_region_raw(None, xs.min() + f.x0, ys.min() + f.y0, xs.max() + f.x0, ys.max() + f.y0,
+                                      range(Z - top_level, Z), base_data)
+
+    def hill_brush(x, y, j):
+        ix, iy = x - f.x0, y - f.y0
+        if not (0 <= ix < f.w and 0 <= iy < f.h) or height[iy, ix] < j:
+            return None
+        if (x, y, Z - j) in bored:
+            return brushes[up_ground.get((x, y, Z - j), 'mountain top ground')]
+        if height[iy, ix] > j:
+            return mountain
+        return brushes[up_ground.get((x, y, Z - j)) or BRUSH_OF[hill_ground[iy, ix]]]
+
+    hill_spawns = 0
+    for j in range(1, top_level + 1):
+        z = Z - j
+        walk = np.zeros((f.h, f.w), bool)
+        silver_walk = np.zeros((f.h, f.w), bool)
+        for iy, ix in np.argwhere(height >= j):
+            x, y = ix + f.x0, iy + f.y0
+            assert (x, y, z) not in new_tiles and (x, y, z) not in above, 'hill over other tiles at %d,%d,%d' % (x, y, z)
+            center = hill_brush(x, y, j)
+            nb = [hill_brush(x + dx, y + dy, j) for dx, dy in autoborder.NEIGHBOURS]
+            deco = []
+            if center is mountain:
+                ground = pick(hill_rng, mountain_items)
+                border = brushes.borders_for(mountain, nb)
+                deco = list(up_deco.get((x, y, z), []))
+            else:
+                ground = pick(hill_rng, [(i, c) for i, c in center.items if c > 0])
+                rim = [b or (center if (x + dx, y + dy, z) in tops else mountain)
+                       for b, (dx, dy) in zip(nb, autoborder.NEIGHBOURS)]
+                border = brushes.borders_for(center, rim)
+                inside = (x, y, z) in bored
+                if mountain in nb and not (j in hill_keep and hill_keep[j][iy, ix]) and not inside \
+                        and not silver_keep[iy, ix]:
+                    border += [i for i in brushes.borders_for(center, nb, optional=True) if i in gravel]
+                edge = None in nb or mountain in nb
+                cls, r = hill_ground[iy, ix], hill_rng.random()
+                if (x, y, z) in ramp_feet:
+                    deco = [ramp_feet[(x, y, z)]]
+                elif (x, y, z) in up_deco:
+                    deco = list(up_deco[(x, y, z)])
+                elif inside or (x, y, z) in up_ground or silver_keep[iy, ix]:
+                    pass
+                elif ledges[iy, ix]:
+                    deco = silver_deco(hill_rng, r, cls, edge, height[iy, ix] == SILVER['top'], groves[iy, ix])
+                elif country[iy, ix] and (hill_keep[j][iy, ix] or keep_free[iy, ix]):
+                    pass
+                elif cls == CAVE_FLOOR:
+                    if r < 0.05:
+                        deco.append(pick(hill_rng, ROCKY))
+                    elif r < 0.11:
+                        deco.append(int(hill_rng.choice(CAVE_DEBRIS)))
+                    elif r < 0.13 and not edge:
+                        deco.append(pick(hill_rng, CONIFERS))
+                elif cls == SNOW:
+                    p_fir = 0.01 + 0.3 * max(0.0, groves[iy, ix] - 0.1)
+                    if r < p_fir and not edge:
+                        deco.append(SNOW_FIR)
+                    elif r < p_fir + 0.005:
+                        deco.append(pick(hill_rng, SNOW_STONES))
+                    elif r < p_fir + 0.02:
+                        deco.append(pick(hill_rng, ROCKY))
+                elif edge:
+                    if r < 0.3:
+                        deco.append(pick(hill_rng, TUFTS))
+                    elif r < 0.33:
+                        deco.append(pick(hill_rng, STONES))
+                elif cls == DIRT and not forest[iy, ix]:
+                    if r < 0.18:
+                        deco.append(int(hill_rng.choice(GRAVEL)))
+                else:
+                    woods = forest[iy, ix] and country[iy, ix]
+                    deco += wild_deco(hill_rng, r, woods, 99.0, canopy[iy, ix], stand[iy, ix], glade[iy, ix],
+                                      groves[iy, ix] + (0.15 if not country[iy, ix] else 0.0), tufty[iy, ix],
+                                      flowery[iy, ix])
+                walk[iy, ix] = (country[iy, ix] and not any(i in gravel for i in border)
+                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet)
+                silver_walk[iy, ix] = ((ledges[iy, ix] or inside) and not edge and not deco and not silver_keep[iy, ix]
+                                       and up_ground.get((x, y, z)) != 'walkable sea')
+            children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
+            new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
+        for (x, y, zz) in tops:
+            if zz == z:
+                new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(RAMP_TOP))
+        for (x, y, zz) in silver_holes:
+            if zz == z:
+                new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(STAIRS_DOWN))
+        # wild Pokémon on Mt. Silver's ledges and in its tunnels
+        for iy, ix in np.argwhere(silver_walk & (hill_rng.random((f.h, f.w)) < SILVER_SPAWN_RATE)):
+            x, y = ix + f.x0, iy + f.y0
+            place = bored.get((x, y, z)) or silver_places.get(j)
+            table = spawn_table(place) if place else None
+            if table and (x, y, z) not in tops:
+                spawns.append((pick(hill_rng, table), x, y, z))
+                hill_spawns += 1
+        if j > HILL_LEVELS:
+            continue
+        # wild Pokémon on the plateaus, where players can walk to from the ramps up, off the edge
+        reached = np.zeros((f.h, f.w), bool)
+        for x, y, jj, (dx, dy) in ramps:
+            if jj == j:
+                reached[y + dy - f.y0, x + dx - f.x0] = True
+        while True:
+            grown = (dilate(reached, 3) & walk) | reached
+            if grown.sum() == reached.sum():
+                break
+            reached = grown
+        inside = (distance(height >= j) > 2.5) & (height == j) & country & reached & ~hill_keep[j]
+        for iy, ix in np.argwhere(inside & (hill_rng.random((f.h, f.w)) < 1 / 210.0)):
+            table = spawn_table(str(route_of[iy, ix]))
+            if table:
+                spawns.append((pick(hill_rng, table), ix + f.x0, iy + f.y0, z))
+                hill_spawns += 1
+    print('hills: %d spawns on the plateaus' % hill_spawns)
+
     for k, cave in enumerate(CAVES):
         # each cave draws from its own generator, so changes elsewhere leave the caves as they are
         cave_tiles, cave_spawns = build_cave(cave, brushes, present, np.random.default_rng(41 + k))
+        assert not set(cave_tiles) & set(new_tiles), '%s overlaps other new tiles' % cave['name']
         new_tiles.update(cave_tiles)
         spawns += cave_spawns
 

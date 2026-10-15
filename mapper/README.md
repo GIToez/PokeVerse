@@ -71,14 +71,78 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   stone walks, a fountain, flower beds, benches and trees, where the park's own Pokémon spawn),
   the Ruins of Alph (sandstone courts with statues before four rock mounds, broken stones, the
   research center), Ilex Forest's shrine, the Bell Tower (Fuchsia's five-storey walled hall on a
-  sandstone court) and the Moomoo Farm (farmhouse and a fenced pasture where Route 39's Pokémon
-  spawn). Ilex Forest has a wall of trees from the sea to
+  sandstone court), the Moomoo Farm (farmhouse and a fenced pasture where Route 39's Pokémon
+  spawn) and the Battle Frontier as in HeartGold and SoulSilver: the Battle Tower (Saffron's
+  four-storey office) at the head of a paved square with a fountain and the Exchange Service
+  Corner's stalls, the Battle Castle (Saffron's colonnade round its fountains) and Battle Arcade
+  (Celadon's slot machines and card tables) either side of it, the Battle Factory (Vermilion's
+  metal works, a doorway opened into its hall, which Kanto enters from below) and Battle Hall
+  (Cerulean's pillared hall round its pool) down the avenue. Landmarks that are not houses give
+  their doors as `entries`. Ilex Forest has a wall of trees from the sea to
   Union Cave's ridge, so its path is the only way from Route 34 to Azalea above ground.
 - **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
-  below, with rocky patches, debris, stones and wall candles. The way in is a corridor cut into
-  the mountain under a floor-6 roof, like Kanto's passages, with Kanto's stairs (22709) at its
-  end. A clear lane runs down the middle of every tunnel, so no room is cut off. The Ruins of
+  below, with rocky patches, debris, stones and wall candles. The way in is an open ravine cut
+  into the mountain face (no roof, so the mouth reads as a cave and not a missing tile), with
+  Kanto's hole in the rock (6130) at its end, floor either side of it. The rock (919) leaves its
+  own corner for the tile down-right of it to draw, so the rock round the hole is edged as round
+  the ravine floor, or it shows black. Underground floors get no daylight in the client, so
+  every cave has wall candles and glowing crystals along its walls (blue, pale ice, green, or a
+  dim glow in Dark Cave, per cave in `CAVE_LIGHT`). A clear lane runs down the middle of every
+  tunnel, so no room is cut off. The Ruins of
   Alph's chambers are single rooms under their mounds, entered by stairs from their courts.
+  Lower floors are carved the same way on their own floor, joined by stairs down from the floor
+  above; the Slowpoke Well is entered through a trapdoor and left by a ladder. Tohjo Falls is
+  under the ridge where the Tohjo river comes out, in from its west bank and out on its east,
+  the underground river across the way (Surf), and two waterfalls (Kanto's 3569 on the rock face,
+  3573 on the water at its foot, 3571 on the pool above) up to the room hidden behind the falls:
+  open to the sky in the ridge on floor 7, empty but for the broken radio and Rock Smash rocks.
+- **Terrain depth:** open country rises in terraced hills up to floor 4, spread evenly over the
+  region (noise against its local mean), each reached by ramps from the nearest road; mountain
+  ranges stand in tiers up to seven floors, with gravel and rock along their cliffs, and forests
+  are thick with trees, bushes and undergrowth. Snow is dressed with stones (never the snow heap,
+  486, which is a floor change).
+- **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
+  SoulSilver: a lobed, uneven cone with wide ledges round the peak, one per floor, trails wide
+  enough for its wild Pokémon, and a flat summit on floor 0 (the highest floor there is). Each
+  ledge is closed one way round by a shoulder of the ledge above pushed out across it (broad at
+  the cliff behind, narrowing and bending as it reaches the cliff in front, `shoulder`) and the
+  other way by a lake (Surf) or another such shoulder with one crooked way through it two tiles
+  wide, crossing it where it is thin, opening out into a clearing closed by a ragged patch of
+  trees (Cut) or rocks (Rock Smash); the build checks that nothing gets round a patch. Every
+  floor up is a cave and every ledge a walk round to the next cave: from 1F (floor 8) up inside
+  the mountain to the lower mountainside (floor 5), round past its lake (Surf) into a cave up to
+  floor 4 (`SILVER['route']`), round past Cut into a cave up to floor 3, round past Rock Smash
+  into the 2F tunnel under the ledge above (a patch of rocks where it opens out), out on floor
+  2, round past Rock Smash into a cave up to floor 1, and round to the 3F tunnel out onto the
+  summit. The build fails if a cave on the way up has no room or does not come out on the ledge
+  above. Mouths are wide cuts into the cliffs; the mountain keeps its old height round the
+  ravine to the cave mouth, so the mouth stays in sight. Without Surf a player gets no higher
+  than floor 5; with Surf, no higher than floor 4 outside (a side cave reaches floor 3); Surf and
+  Cut reach floor 3; all three reach the summit.
+  The rest of the inside is caves (`SILVER['caves']`, `silver_caves`): off the tunnels and in
+  from mouths on the ledges, winding passages that branch, loop and end blind, caverns at some
+  ends, and ramps or stone cave stairs under a rock hole up to more caves on the floor above.
+  Caves are kept well apart from each other and from the lakes; most have the one way in, and
+  the links (`'link'`) come out again on the ledge above, joining only ledges between the same
+  obstacles, so none is a way round one. A cave can aim at a point (a fifth and sixth entry,
+  angle and distance), which is how 1F's maze reaches north and east under the mountain. They
+  are dressed with rocky patches, debris, gravel, stones, wall candles, ice crystals (thicker
+  from floor 4 up) and fallen rocks in the wider spots. A rock, crystal or stone only goes where
+  the floor round it still joins up, and any run of them that would still shut off part of a
+  cave gives way to debris.
+  The ledges (`silver_deco`) are trails through stands of trees and boulder fields where a broad
+  noise is high: conifers and bushes on the grass, rocks and gravel on the bare rock, snow firs,
+  dead trees and drifts on the snow, with fallen rocks or snow boulders along the cliffs. The
+  summit is open snow with stones round its rim and the anime's Ho-Oh Shrine (`ho_oh_shrine`) on
+  it: a sandstone court, the Sacred Flame between statues of Ho-Oh and winged totems, a red carpet
+  up to it lined with lit braziers, and Machop and Machoke on guard. Only whole rocks are
+  scattered (`ROCK_PIECES` are corners of rocks that take several tiles, and look broken alone).
+- **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
+  under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
+  Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's
+  sewers next to it, and stairs down from a floor that is not copied are dropped. The anime's
+  I.S.S. Raspberry (`WRECK`) is Kanto's wreck run aground, all three floors, south of the Whirl
+  Islands' big island, with Remoraid and Mantine on board.
 - **Wild Pokémon:** each spawn is drawn from the HeartGold/SoulSilver land table of its route,
   weighted by the game's encounter rate averaged over morning, day and night
   (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge
@@ -101,32 +165,41 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   the road from the gate to the Elite Four building's south door.
 - **North:** the west gate (3049,593) and its pass to the building's west door, Route 28 with a
   pond, the Silver–Indigo range around the plateau, Mt. Silver with snowfields, its Pokémon
-  Center (2921,520) and the cave mouth (2903,503,7), and Mt. Silver Cave 1F on floor 8.
+  Center (2921,520) and the cave mouth (2903,503,7), Mt. Silver Cave 1F on floor 8 and the climb
+  to the summit (2905,400,0), with the 2F and 3F tunnels.
 - **West:** Cherrygrove City (town 51, temple 2542,834,7) at the end of Route 29, Routes 30 and
   31 north to Violet City (town 52, temple 2513,564,7, with a Gym and Sprout Tower), Route 32 south with its
   Pokémon Center (2470,862), Union Cave 1F (in at 2448,881, out at 2442,962), Route 33 and
-  Azalea Town (town 53, temple 2391,1038,7, with a Gym and the Slowpoke Well). Union Cave's ridge
+  Azalea Town (town 53, temple 2391,1038,7, with a Gym and the Slowpoke Well, B1F on floor 8
+  through the trapdoor at 2405,1077). Union Cave goes down to B1F (floor 9, stairs at 2480,908)
+  and B2F (floor 10, stairs at 2466,950), whose lake is left free of spawns for Lapras. Union Cave's ridge
   runs to Ilex Forest's wall of trees, so like in the games the cave and the forest are the ways
   south.
-- **Goldenrod's area:** Goldenrod City (town 54, temple 2283,728,7, with a Gym) on the bay, Route
+- **Goldenrod's area:** Goldenrod City (town 54, temple 2283,728,7, with a Gym, a round fountain
+  with lamps and flower beds at 2320,730, and the Global Terminal's basement down the stairs at
+  2326,780) on the bay, Route
   34 south with the Day-Care (2333,828), Ilex Forest and its shrine (2292,940) down to Azalea,
   Route 35 north to the National Park (2325,588), Route 36 east to Violet, and the Ruins of Alph
   (chambers at 2396,633, 2418,651, 2440,627 and 2448,655) between Route 36 and Route 32.
 - **Ecruteak and the coast:** Route 37 from the National Park's north gate to Ecruteak City
-  (town 55, temple 2290,409,7, with a Gym, the Burned Tower and the Bell Tower at 2295,288), Route
+  (town 55, temple 2290,409,7, with a Gym, the Burned Tower, the Dance Theater at 2340,436 on a
+  lantern street, and the Bell Tower at 2295,288), Route
   38 west and Route 39 south past the Moomoo Farm (2110,440) to Olivine City (town 56, temple
-  2111,499,7, with a Gym and the Lighthouse at 2076,536). Route 40 is sea from Olivine to the
+  2111,499,7, with a Gym, the Lighthouse at 2076,536 and a beach market with parasols and crates
+  at 2115,531). Route 40 is sea from Olivine to the
   Whirl Islands (1F on floor 8, in at 2030,607 and 2004,659), Route 41 sea on to Cianwood City
   (town 57, temple 1902,639,7, with a Gym and the Pharmacy). A strait keeps Cianwood's side apart
   from the mainland, so it is reached by Surf only.
 - **The east:** Route 42 from Ecruteak past Mt. Mortar (1F on floor 8, in at 2425,384 and
-  2495,382) to Mahogany Town (town 58, temple 2532,391,7, with a Gym and the souvenir shop),
+  2495,382) to Mahogany Town (town 58, temple 2532,391,7, with a Gym and the souvenir shop,
+  whose stairs at 2579,385 lead down to the Rocket Hideout's four floors),
   Route 43 north to the Lake of Rage, whose water Pokémon spawn on its shore. Route 44 runs east
   below a snowfield of fir trees to the Ice Path (1F, in at 2668,382 and 2708,378), under the
   ridge that walls Blackthorn City off (town 59, temple 2723,387,7, with a Gym and Dragon's Den at
   2770,335). Routes 45 and 46 run south past Dark Cave (1F, in at 2585,610 and 2690,611).
 - **The rest of the layout:** Routes 47 and 48 from Cianwood to the Safari Zone (1810,560, its
-  own wild Pokémon inside the fence), the Battle Frontier (2010,366) north-west of Olivine, the
+  own wild Pokémon inside the fence, among copses and thickets with the grass running round each
+  and any gap they shut in filled), the Battle Frontier (2010,366) north-west of Olivine, the
   hunting grounds with trails in from the routes and wild Pokémon of their own (Olivine Cliffs,
   Arbor Woods, Lake of Life, Ecruteak Old Forest, Snowtop Mountain, Mount Quena, Rage Marshes,
   Mortar Badlands, Frozen North, Dragon Holy Land, Lake Slowpoke, Azalea South Woods), the
@@ -150,12 +223,13 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1397 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1186 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
-- **Not yet:** townsfolk and shop staff in the new landmarks, the towers' and the Slowpoke
-  Well's insides, Goldenrod's Magnet Train station and Underground, the cave floors below 1F
-  (Tohjo Falls' cave with Waterfall, Mt. Silver Cave up to the summit and the Ho-Oh Shrine) and
-  the Gym leaders; Ecruteak's Dance Theater; Route 36's Sudowoodo and Route 46's one-way ledges.
+- **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
+  Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, the
+  Ho-Oh Shrine, the lower floors of Mt. Mortar, the Ice Path
+  and the Whirl Islands, the Gym leaders, Route 36's Sudowoodo and Route 46's one-way ledges.
+  Wild Pokémon are to be redone area by area once the terrain is finished.
   The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
