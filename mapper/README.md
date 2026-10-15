@@ -113,8 +113,16 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   ends, and ramps or stone cave stairs under a rock hole up to more caves on the floor above.
   Caves are kept well apart from each other and from the lakes; most have the one way in, and
   the links (`'link'`) come out again on the ledge above, joining only ledges between the same
-  obstacles, so none is a way round one. They are dressed with rocky patches, debris, stones,
-  wall candles and, from floor 4 up, ice crystals.
+  obstacles, so none is a way round one. A cave can aim at a point (a fifth and sixth entry,
+  angle and distance), which is how 1F's maze reaches north and east under the mountain. They
+  are dressed with rocky patches, debris, gravel, stones, wall candles, ice crystals (thicker
+  from floor 4 up) and fallen rocks in the wider spots. A rock, crystal or stone only goes where
+  the floor round it still joins up, and any run of them that would still shut off part of a
+  cave gives way to debris.
+  The ledges (`silver_deco`) are trails through stands of trees and boulder fields where a broad
+  noise is high: conifers and bushes on the grass, rocks and gravel on the bare rock, snow firs,
+  dead trees and drifts on the snow, with fallen rocks or snow boulders along the cliffs. The
+  summit is open snow with stones round its rim.
 - **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
   under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
   Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's

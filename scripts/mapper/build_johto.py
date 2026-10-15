@@ -435,8 +435,11 @@ SILVER = {
     # between ledges reached with the same field moves
     'caves_seed': 61, 'cave_step': 6,
     'caves': [('link', 5, 270, 300, 30, 25), ('link', 4, 150, 70, 30, 25), ('link', 3, 200, 180, 30, 20),
-              (5, 80, 40, 20), (5, 200, 40, 0), (4, 245, 30, 12), (3, 340, 25, 0), (2, 350, 15, 0),
-              (2, 40, 12, 0), (7, 'Mt. Silver Cave', 110, 40), (6, 'Mt. Silver Cave', 60, 0)],
+              (5, 80, 50, 25), (5, 200, 50, 0), (5, 330, 40, 0), (4, 245, 35, 12), (4, 180, 35, 0),
+              (3, 340, 30, 0), (2, 350, 15, 0), (2, 40, 12, 0),
+              (7, 'Mt. Silver Cave', 110, 40), (7, 'Mt. Silver Cave', 120, 40, 200, 45),
+              (7, 'Mt. Silver Cave', 80, 0, 140, 45), (6, 'Mt. Silver Cave', 60, 0),
+              (6, 'Mt. Silver Cave', 80, 0, 250, 45), (7, 'Mt. Silver Cave', 80, 0, 270, 45)],
 }
 # Mt. Silver's cave stairs, under a hole in the rock above (they climb north)
 CAVE_STAIRS = 3687
@@ -489,6 +492,13 @@ ROCKY = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1297
 # the snowfield's: snowy fir trees in groves, the odd dead tree and snowy stone (not the heap of snow,
 # 486, which is a hole down)
 SNOW_FIR, SNOW_DEAD = 2698, 2697
+# Mt. Silver's: pines and firs, dead trees, big snowy stones (all blocking) and drifts (not)
+SNOW_TREES = [(SNOW_FIR, 6), (7023, 2), (8139, 2)]
+SNOW_DEAD_TREES = [(SNOW_DEAD, 2), (7020, 1), (7021, 1)]
+SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017)]
+SNOW_DRIFTS = [(6609, 6), (7022, 2), (13316, 1)]
+SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1297, 3), (1298, 3),
+                (1299, 3), (1300, 3), (1301, 3), (1302, 3), (1304, 3)]
 SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7017, 2), (7018, 2)]
 
 # Wild Pokémon follow HeartGold/SoulSilver: johto_encounters.json (see fetch_encounters.py) holds the
@@ -916,22 +926,43 @@ def wild_deco(rng, r, forest, road_d, canopy, stand, glade, groves, tufty, flowe
     return []
 
 
-def silver_deco(rng, r, cls, edge, summit):
-    """Mt. Silver's ledges are trails: firs, stones and grass now and then, never thick enough to
-    close one; the summit is bare but for stones round its edge."""
+def silver_deco(rng, r, cls, edge, summit, clump):
+    """Mt. Silver's ledges are trails through stands of trees and boulder fields where `clump` (broad
+    noise) is high, with rocks fallen along the cliffs and drifts, gravel and grass between; never
+    thick enough to close one. The summit is open, with stones round its edge and the odd drift."""
+    thick = clump > 0.12
+    r2 = rng.random()
     if summit:
-        return [pick(rng, SNOW_STONES)] if edge and r < 0.06 else []
+        if edge:
+            return [pick(rng, SNOW_STONES)] if r < 0.14 else []
+        if r < 0.012:
+            return [pick(rng, SNOW_BOULDERS)]
+        return [pick(rng, SNOW_DRIFTS)] if r < 0.06 else []
     if cls == SNOW:
-        if r < 0.03 and not edge:
-            return [SNOW_FIR]
-        return [pick(rng, SNOW_STONES)] if r < 0.045 else []
+        if not edge and r < (0.2 if thick else 0.025):
+            return [pick(rng, SNOW_TREES) if r2 < 0.88 else pick(rng, SNOW_DEAD_TREES)]
+        if edge and r2 < 0.09:
+            return [pick(rng, SNOW_BOULDERS)]
+        if r2 < (0.12 if edge else 0.025):
+            return [pick(rng, SNOW_STONES)]
+        return [pick(rng, SNOW_DRIFTS)] if r2 < (0.18 if edge else 0.1) else []
     if cls == CAVE_FLOOR:
-        if r < 0.03:
-            return [pick(rng, ROCKY)]
-        return [int(rng.choice(CAVE_DEBRIS))] if r < 0.07 else []
-    if r < 0.07 and not edge:
-        return [pick(rng, CONIFERS)]
-    return [pick(rng, TUFTS)] if r < 0.3 else [pick(rng, FERNS)] if r < 0.34 else []
+        if r < (0.13 if thick else 0.03) or (edge and r2 < 0.09):
+            return [pick(rng, SILVER_ROCKS)]
+        if r2 < 0.12:
+            return [int(rng.choice(CAVE_DEBRIS))]
+        if r2 < 0.18:
+            return [int(rng.choice(GRAVEL))]
+        return [int(rng.choice(CAVE_STONES))] if r2 < 0.2 else []
+    if not edge and r < (0.22 if thick else 0.05):
+        return [pick(rng, CONIFERS) if r2 < 0.7 else pick(rng, BUSHES) if r2 < 0.9 else pick(rng, BROADLEAF)]
+    if edge and r2 < 0.07:
+        return [pick(rng, SILVER_ROCKS)]
+    if r2 < 0.36:
+        return [pick(rng, TUFTS)]
+    if r2 < 0.42:
+        return [pick(rng, FERNS)]
+    return [pick(rng, FLOWERS)] if r2 < 0.47 else []
 
 
 def footpath(start, target, walkable, reach=40):
@@ -1564,20 +1595,25 @@ def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot
             if not (net['upper'] and come_out(net['upper'], b)):
                 print('Mt. Silver: the cave up from %d degrees on floor %d does not come out' % (a, z))
             continue
-        z, where, cap, up = spec
+        # a fifth and sixth entry aim the caves at the point that far out at that angle
+        z, where, cap, up, *aim = spec
+        toward = spot(('at', *aim)) if aim else None
         if isinstance(where, str):
             starts = sorted(p[:2] for p, nm in bored.items() if nm == where and p[2] == z)
             own = set(starts)
+            if toward:
+                starts.sort(key=lambda q: np.hypot(q[0] - toward[0], q[1] - toward[1]))
+                starts = starts[:max(1, len(starts) // 3)]
             for _ in range(60):
                 start = starts[int(rng.integers(len(starts)))]
-                net = grow(z, start, dirs[int(rng.integers(4))], cap, up, own=own)
+                net = grow(z, start, dirs[int(rng.integers(4))], cap, up, own=own, toward=toward)
                 if net and len(net['nodes']) > cap // 3:
                     break
             else:
                 print('Mt. Silver: no room for caves off %s on floor %d' % (where, z))
             continue
         for inner, d0, face, lead in mouth(z, where):
-            if grow(z, inner, d0, cap, up, lead, True):
+            if grow(z, inner, d0, cap, up, lead, True, toward=toward):
                 cut(z, face, lead)
                 break
         else:
@@ -1591,6 +1627,25 @@ def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot
     patches = Field(113).noise(6)
     room_cells = {(x, y, z) for (cxy, z) in caverns for x in range(cxy[0] - 3, cxy[0] + 4)
                   for y in range(cxy[1] - 3, cxy[1] + 4)}
+    ring = [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0)]
+    solid = set()
+
+    def can_block(x, y, z):
+        """Whether an item that blocks can stand here without cutting the passage: the open cells
+        round it still join up among themselves (side by side, round the ring)."""
+        open_ = [(x + dx, y + dy, z) in bored and (x + dx, y + dy, z) not in deco for dx, dy in ring]
+        cells = [k for k in range(8) if open_[k]]
+        if not cells:
+            return False
+        seen, todo = {cells[0]}, [cells[0]]
+        while todo:
+            k = todo.pop()
+            for n in ((k + 7) % 8, (k + 1) % 8):
+                if open_[n] and n not in seen:
+                    seen.add(n)
+                    todo.append(n)
+        return len(seen) == len(cells)
+
     for (x, y, z) in list(bored):
         if (x, y, z) in deco or (x, y, z) in clear:
             continue
@@ -1601,15 +1656,54 @@ def silver_caves(f, level, inside, bored, ramps, holes, keep, deco, ground, spot
         r = rng.random()
         if edge and (x, y - 1, z) not in bored and (x, y - 1, z) not in clear and rng.random() < 0.08:
             deco[(x, y - 1, z)] = [WALL_CANDLE]
-        if edge and roomy and z <= 4 and r < 0.05:
+        if edge and roomy and r < (0.05 if z <= 4 else 0.025) and can_block(x, y, z):
             deco[(x, y, z)] = [8634 if rng.random() < 0.6 else 8638]
-        elif (x, y, z) in room_cells and roomy and r < 0.08:
-            deco[(x, y, z)] = [pick(rng, ROCKY)]
-        elif r < 0.07:
+            solid.add((x, y, z))
+        elif roomy and r < (0.1 if (x, y, z) in room_cells else 0.04) and can_block(x, y, z):
+            deco[(x, y, z)] = [pick(rng, SILVER_ROCKS)]
+            solid.add((x, y, z))
+        elif r < 0.15:
             deco[(x, y, z)] = [int(rng.choice(CAVE_DEBRIS))]
-        elif r < 0.095:
+        elif r < 0.22:
+            deco[(x, y, z)] = [int(rng.choice(GRAVEL))]
+        elif r < 0.25 and can_block(x, y, z):
             deco[(x, y, z)] = [int(rng.choice(CAVE_STONES))]
-    return caverns
+            solid.add((x, y, z))
+    # and no run of them shuts off part of a cave: one touching two parts that don't otherwise meet
+    # gives way to debris
+    while True:
+        part, n = {}, 0
+        for c in bored:
+            if c in part or c in solid:
+                continue
+            n += 1
+            part[c], todo = n, [c]
+            while todo:
+                x, y, z = todo.pop()
+                for p in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z)):
+                    if p in bored and p not in solid and p not in part:
+                        part[p] = n
+                        todo.append(p)
+        opened = False
+        for c in list(solid):
+            if c not in solid:
+                continue
+            run, todo, touch = {c}, [c], set()
+            while todo:
+                x, y, z = todo.pop()
+                for p in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z)):
+                    if p in solid and p not in run:
+                        run.add(p)
+                        todo.append(p)
+                    elif p in part:
+                        touch.add(part[p])
+            if len(touch) > 1:
+                for p in run:
+                    solid.discard(p)
+                    deco[p] = [int(rng.choice(CAVE_DEBRIS))]
+                opened = True
+        if not opened:
+            return caverns
 
 
 def landing(x, y, facing):
@@ -2675,7 +2769,7 @@ def build(base, out_path):
                 elif inside or (x, y, z) in up_ground or silver_keep[iy, ix]:
                     pass
                 elif ledges[iy, ix]:
-                    deco = silver_deco(hill_rng, r, cls, edge, height[iy, ix] == SILVER['top'])
+                    deco = silver_deco(hill_rng, r, cls, edge, height[iy, ix] == SILVER['top'], groves[iy, ix])
                 elif country[iy, ix] and (hill_keep[j][iy, ix] or keep_free[iy, ix]):
                     pass
                 elif cls == CAVE_FLOOR:
