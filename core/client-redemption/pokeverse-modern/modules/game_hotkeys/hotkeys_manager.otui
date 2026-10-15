@@ -1,0 +1,522 @@
+// Item hotkeys: Poke Balls, potions and chat text on keys. They are Keybind hotkeys, so
+// Settings > Controls lists them with the other keys. Artwork: scripts/art/controls_ui.py;
+// the Tk styles come from game_dailytasks and the PV styles from client_entergame.
+
+HkLabel < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  phantom: true
+
+HkMuted < HkLabel
+  color: #8fa3c8
+
+HkStep < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #ffd75a
+  text-auto-resize: true
+  phantom: true
+
+HkKey < UILabel
+  image-source: /modules/game_hotkeys/images/key
+  image-border: 6
+  font: verdana-11px-antialised
+  color: #ffffff
+  text-align: center
+  text-auto-resize: true
+  text-offset: 0 -1
+  height: 21
+  padding: 0 7 0 7
+  phantom: true
+  $on:
+    image-source: /modules/game_hotkeys/images/key_bad
+
+HkPanel < UIWidget
+  image-source: /modules/game_dailytasks/images/section
+  image-border: 10
+  padding: 8
+
+HkRow < UIWidget
+  height: 40
+  focusable: true
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 10
+  margin-bottom: 4
+  $hover !focus:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $focus:
+    image-source: /modules/game_dailytasks/images/tab_on
+
+  UIWidget
+    id: keys
+    width: 78
+    height: 22
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 2
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    phantom: true
+    anchors.left: keys.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: textIcon
+    size: 28 28
+    image-source: /modules/game_dailytasks/images/icon_frame
+    image-border: 8
+    icon: /modules/game_hotkeys/images/act_text
+    icon-align: center
+    anchors.centerIn: item
+    phantom: true
+    visible: false
+
+  UILabel
+    id: name
+    font: verdana-11px-antialised
+    color: #ffffff
+    text-auto-resize: false
+    anchors.left: item.right
+    anchors.right: count.left
+    anchors.top: parent.top
+    margin-left: 6
+    margin-top: 6
+    height: 14
+    phantom: true
+
+  UILabel
+    id: how
+    font: verdana-11px-antialised
+    color: #8fa3c8
+    text-auto-resize: false
+    anchors.left: name.left
+    anchors.right: name.right
+    anchors.top: name.bottom
+    height: 14
+    phantom: true
+
+  UILabel
+    id: count
+    font: verdana-11px-antialised
+    color: #ffffff
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+    phantom: true
+
+HkAction < UIButton
+  height: 46
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 10
+  icon-align: left
+  icon-offset: 10 0
+  opacity: 1
+  $hover !checked !disabled:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $checked:
+    image-source: /modules/game_dailytasks/images/tab_on
+  $disabled:
+    opacity: 0.4
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 38
+    margin-top: 9
+    phantom: true
+
+  UILabel
+    id: desc
+    font: verdana-11px-antialised
+    color: #8fa3c8
+    text-auto-resize: true
+    anchors.left: title.left
+    anchors.top: title.bottom
+    margin-top: 1
+    phantom: true
+
+HkBagSlot < UIItem
+  size: 40 40
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 8
+  padding: 4
+  virtual: true
+  focusable: false
+  $hover:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $checked:
+    image-source: /modules/game_dailytasks/images/tab_on
+
+HkIconButton < TkSmallBlueButton
+  icon-align: left
+  icon-offset: 8 0
+  text-offset: 10 0
+
+HkWindow < UIWindow
+  size: 820 540
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 20 24 20 24
+  draggable: true
+  focusable: true
+  anchors.centerIn: parent
+  @onEscape: modules.game_hotkeys.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_hotkeys/images/icon_hotkeys
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Item hotkeys')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 20
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.verticalCenter: headerIcon.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  HkMuted
+    id: toggleKey
+    anchors.left: headerTitle.right
+    anchors.verticalCenter: headerIcon.verticalCenter
+    margin-left: 10
+
+  PVCloseButton
+    id: close
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 6
+    @onClick: modules.game_hotkeys.hide()
+
+  HkPanel
+    id: left
+    width: 290
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.bottom: footer.top
+    margin-top: 14
+    margin-bottom: 12
+
+    HkMuted
+      id: listTitle
+      !text: tr('YOUR HOTKEYS')
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-left: 2
+
+    HkMuted
+      id: preset
+      anchors.top: parent.top
+      anchors.right: parent.right
+
+    ScrollablePanel
+      id: list
+      anchors.top: listTitle.bottom
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: newHotkey.top
+      margin-top: 8
+      margin-bottom: 8
+      margin-right: 2
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+
+    VerticalScrollBar
+      id: listScroll
+      anchors.top: listTitle.bottom
+      anchors.bottom: newHotkey.top
+      anchors.right: parent.right
+      margin-top: 8
+      margin-bottom: 8
+      step: 44
+      pixels-scroll: true
+
+    HkMuted
+      id: empty
+      !text: tr('No hotkeys yet.')
+      anchors.top: list.top
+      anchors.horizontalCenter: list.horizontalCenter
+      margin-top: 20
+
+    HkIconButton
+      id: newHotkey
+      !text: tr('New hotkey')
+      icon: /modules/game_hotkeys/images/icon_plus
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: note.top
+      margin-bottom: 8
+      @onClick: modules.game_hotkeys.newHotkey()
+
+    UILabel
+      id: note
+      !text: tr('Item hotkeys are part of your key bindings: Settings > Controls lists them too and warns about clashes.')
+      font: verdana-11px-antialised
+      color: #7f93bb
+      text-wrap: true
+      text-auto-resize: true
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      phantom: true
+
+  UIWidget
+    id: right
+    anchors.top: left.top
+    anchors.left: left.right
+    anchors.right: parent.right
+    anchors.bottom: left.bottom
+    margin-left: 16
+
+    HkStep
+      id: itemStep
+      !text: tr('1 - ITEM')
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    UIWidget
+      id: slot
+      size: 64 64
+      image-source: /modules/game_dailytasks/images/icon_frame
+      image-border: 10
+      anchors.top: itemStep.bottom
+      anchors.left: parent.left
+      margin-top: 6
+      $checked:
+        image-source: /modules/game_dailytasks/images/tab_on
+
+      UIItem
+        id: item
+        size: 48 48
+        virtual: true
+        phantom: true
+        anchors.centerIn: parent
+
+    UILabel
+      id: itemName
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffffff
+      text-auto-resize: true
+      anchors.top: slot.top
+      anchors.left: slot.right
+      margin-left: 12
+      margin-top: 2
+      phantom: true
+
+    HkMuted
+      id: itemInfo
+      anchors.top: itemName.bottom
+      anchors.left: itemName.left
+      margin-top: 3
+
+    HkIconButton
+      id: pick
+      !text: tr('Pick from bag')
+      icon: /modules/game_hotkeys/images/icon_bag
+      width: 130
+      anchors.top: itemInfo.bottom
+      anchors.left: itemName.left
+      margin-top: 6
+      @onClick: modules.game_hotkeys.startPick()
+
+    TkSmallBlueButton
+      id: clearItem
+      !text: tr('Clear')
+      width: 60
+      anchors.top: pick.top
+      anchors.left: pick.right
+      margin-left: 6
+      @onClick: modules.game_hotkeys.clearItem()
+
+    HkMuted
+      id: dragHint
+      !text: tr('or drag an item onto the slot')
+      anchors.verticalCenter: pick.verticalCenter
+      anchors.left: clearItem.right
+      margin-left: 10
+
+    PVField
+      id: text
+      height: 30
+      !placeholder: tr('Text or command, for example /tasks')
+      max-length: 255
+      anchors.top: itemName.bottom
+      anchors.left: itemName.left
+      anchors.right: parent.right
+      margin-top: 6
+      visible: false
+
+    PVCheckBox
+      id: autoSend
+      !text: tr('Send at once')
+      anchors.top: text.bottom
+      anchors.left: text.left
+      margin-top: 6
+      visible: false
+
+    UIWidget
+      id: bag
+      height: 48
+      image-source: /modules/game_dailytasks/images/section
+      image-border: 10
+      padding: 4
+      anchors.top: slot.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+      layout:
+        type: horizontalBox
+        spacing: 4
+
+    HkMuted
+      id: bagEmpty
+      !text: tr('Open your bag to pick from it here.')
+      anchors.centerIn: bag
+
+    HkStep
+      id: howStep
+      !text: tr('2 - WHEN PRESSED')
+      anchors.top: bag.bottom
+      anchors.left: parent.left
+      margin-top: 12
+
+    UIWidget
+      id: how
+      height: 98
+      anchors.top: howStep.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+      layout:
+        type: grid
+        cell-size: 150 46
+        cell-spacing: 6
+        num-columns: 3
+        flow: true
+
+    HkStep
+      id: keyStep
+      !text: tr('3 - KEY')
+      anchors.top: how.bottom
+      anchors.left: parent.left
+      margin-top: 12
+
+    UIButton
+      id: keyBox
+      height: 40
+      image-source: /modules/game_dailytasks/images/section
+      image-border: 10
+      anchors.top: keyStep.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+      @onClick: modules.game_hotkeys.startCapture()
+      $hover:
+        image-source: /modules/game_dailytasks/images/card
+      $on:
+        image-source: /modules/game_dailytasks/images/tab_on
+
+      HkKey
+        id: key
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 10
+
+      UIWidget
+        id: statusIcon
+        size: 16 16
+        anchors.left: key.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 10
+        phantom: true
+
+      HkLabel
+        id: status
+        anchors.left: statusIcon.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+
+    TkSmallBlueButton
+      id: swap
+      !text: tr('Swap keys')
+      width: 90
+      anchors.right: keyBox.right
+      anchors.verticalCenter: keyBox.verticalCenter
+      margin-right: 8
+      visible: false
+      @onClick: modules.game_hotkeys.swapKey()
+
+  UIWidget
+    id: footer
+    height: 28
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+    HkIconButton
+      id: delete
+      !text: tr('Delete')
+      icon: /modules/game_hotkeys/images/icon_trash
+      width: 96
+      image-source: /modules/client_entergame/images/button_red
+      color: #ffb4b4
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      @onClick: modules.game_hotkeys.deleteHotkey()
+      $hover !disabled:
+        image-source: /modules/client_entergame/images/button_red_hover
+      $pressed:
+        image-source: /modules/client_entergame/images/button_red_pressed
+
+    PVYellowButton
+      id: save
+      !text: tr('Save hotkey')
+      ttf-font-size: 12
+      height: 28
+      width: 120
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      @onClick: modules.game_hotkeys.saveHotkey()
+
+    TkSmallBlueButton
+      id: cancel
+      !text: tr('Close')
+      width: 90
+      height: 28
+      anchors.right: save.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
+      @onClick: modules.game_hotkeys.hide()
+
+    HkMuted
+      id: message
+      anchors.left: delete.right
+      anchors.right: cancel.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 12
+      text-auto-resize: false
+      text-wrap: true
+      height: 28
