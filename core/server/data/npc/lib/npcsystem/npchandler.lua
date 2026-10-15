@@ -82,10 +82,10 @@ if(NpcHandler == nil) then
             -- These are the default replies of all npcs. They can/should be changed individually for each npc.
             [MESSAGE_GREET] 	= 'Welcome, |PLAYERNAME|! I have been expecting you.',
             [MESSAGE_FAREWELL] 	= 'Good bye, |PLAYERNAME|!',
-            [MESSAGE_BUY] 		= 'Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars?',
+            [MESSAGE_BUY] 		= 'Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}',
             [MESSAGE_ONBUY] 	= 'It was a pleasure doing business with you.',
             [MESSAGE_BOUGHT] 	= 'Bought |ITEMCOUNT|x |ITEMNAME| for |TOTALCOST| dollars.',
-            [MESSAGE_SELL] 		= 'Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars?',
+            [MESSAGE_SELL] 		= 'Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}',
             [MESSAGE_ONSELL] 	= 'Thank you for this |ITEMNAME|, |PLAYERNAME| dollars.',
             [MESSAGE_SOLD]	 	= 'Sold |ITEMCOUNT|x |ITEMNAME| for |TOTALCOST| dollars.',
             [MESSAGE_MISSINGMONEY]	= 'Sorry, you don\'t have enough money.',

@@ -182,13 +182,13 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, msg), cid)
 
     elseif (OPTIONS[tonumber(msg)]) then
         msg = string.lower(OPTIONS[tonumber(msg)].name)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s frontier tokens for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, msg), cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes') or msgcontains(msg, 'reward')) then
         doPlayerPopupFYI(cid, optionsMessage)

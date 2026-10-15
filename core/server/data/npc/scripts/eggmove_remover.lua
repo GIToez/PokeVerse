@@ -57,7 +57,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 return true
             end
 
-            selfSay(string.format(__L(cid, "Do you really want to use the Egg Move %s of your %s to replace the move %s?"), getBallEggMove(ball.uid), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
+            selfSay(string.format(__L(cid, "Do you really want to use the Egg Move %s of your %s to replace the move %s? {Yes} or {No}"), getBallEggMove(ball.uid), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
 
             talkState[talkUser] = TALKSTATE_CONFIRM_CHANGE
             tmMoveChange[talkUser] = moves[moveSlot]
@@ -65,7 +65,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         end
 
     elseif (msgcontains(msg, 'remove') or msgcontains(msg, 'remover')) then
-        selfSay("So, do you really want to remove your Pokemon Egg Move?", cid)
+        selfSay("So, do you really want to remove your Pokemon Egg Move? {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_CONFIRM_PRE
 
     elseif (msgcontains(msg, 'change') or msgcontains(msg, 'alterar') or msgcontains(msg, 'mover')) then
@@ -73,20 +73,20 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         talkState[talkUser] = TALKSTATE_MOVE_CHANGE
 
     elseif (msgcontains(msg, 'generate') or msgcontains(msg, 'gerar')) then
-        selfSay("Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that?", cid)
+        selfSay("Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that? {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_GENERATE_ASK
 
     elseif (msgcontains(msg, 'recover') or msgcontains(msg, 'recuperar')) then
-        selfSay("Yes, you can recover an Egg Move that your Pokemon forgot. Do you want to do that?", cid)
+        selfSay("Yes, you can recover an Egg Move that your Pokemon forgot. Do you want to do that? {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_RECOVER_ASK
 
     elseif (msgcontains(msg, 'fix') or msgcontains(msg, 'corrigir')) then
-        selfSay("Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that?", cid)
+        selfSay("Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that? {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_FIX_ASK
 
     elseif (talkState[talkUser] == TALKSTATE_RECOVER_ASK) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay(string.format(__L(cid, "This will cost you %s dollars, are you sure?"), RECOVER_COST), cid)
+            selfSay(string.format(__L(cid, "This will cost you %s dollars, are you sure? {Yes} or {No}"), RECOVER_COST), cid)
             talkState[talkUser] = TALKSTATE_RECOVER_ASK_FINAL
 
         else
@@ -277,8 +277,8 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM_PRE) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay("DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!", cid)
-            doPlayerPopupFYI(cid, "DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!")
+            selfSay("DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE! {YES} or {NO}", cid)
+            doPlayerPopupFYI(cid, "DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE! {YES} or {NO}")
             talkState[talkUser] = TALKSTATE_CONFIRM
         else
             selfSay("Fine.", cid)

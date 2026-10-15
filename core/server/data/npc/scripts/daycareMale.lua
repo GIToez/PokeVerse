@@ -304,7 +304,7 @@ function creatureSayCallback(cid, type, msg)
 		else
 			talkState[talkUser] = TALK_STATES.QUESTION_WITHDRAW_POKEMON
 
-			selfSay("Do you want to remove your Pokemon from the daycare?", cid)
+			selfSay("Do you want to remove your Pokemon from the daycare? {Yes} or {No}", cid)
 		end
 
 	elseif (msgcontains(msg, 'leave') or msgcontains(msg, 'deixar')) then
@@ -339,7 +339,7 @@ function creatureSayCallback(cid, type, msg)
 		if (pokemonOnDaycare) then
 			talkState[talkUser] = TALK_STATES.QUESTION_WITHDRAW_POKEMON_WITHOUT_TRAINING
 
-			selfSay("Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee.", cid)
+			selfSay("Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee. {Yes} or {No}", cid)
 
 		else
 			selfSay("You have no Pokemon being trained by me at this moment! You can {leave} a Pokemon here if you want.", cid)
@@ -454,7 +454,7 @@ function creatureSayCallback(cid, type, msg)
 				talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON
 				lastTrainTime[talkUser] = msg
 
-				selfSay(string.format(__L(cid, "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level)."), lastName[talkUser], msg), cid)
+				selfSay(string.format(__L(cid, "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level). {Yes} or {No}"), lastName[talkUser], msg), cid)
 			end
 
 		else

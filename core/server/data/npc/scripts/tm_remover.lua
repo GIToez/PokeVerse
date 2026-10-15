@@ -49,7 +49,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                     talkState[talkUser] = 0
 
                 else
-                    selfSay(string.format(__L(cid, "Do you really want to remove the move %s from your %s?"), getTmMove(getBallTm(ball.uid, slot)), getBallPokemonName(ball.uid)), cid)
+                    selfSay(string.format(__L(cid, "Do you really want to remove the move %s from your %s? {Yes} or {No}"), getTmMove(getBallTm(ball.uid, slot)), getBallPokemonName(ball.uid)), cid)
 
                     talkState[talkUser] = TALKSTATE_CONFIRM
                     tmSlot[talkUser] = slot
@@ -100,7 +100,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 return true
             end
 
-            selfSay(string.format(__L(cid, "Do you really want to move the TM %s from your %s to replace the move %s?"), getTmMove(getBallTm(ball.uid, tmSlotChange[talkUser])), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
+            selfSay(string.format(__L(cid, "Do you really want to move the TM %s from your %s to replace the move %s? {Yes} or {No}"), getTmMove(getBallTm(ball.uid, tmSlotChange[talkUser])), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
 
             talkState[talkUser] = TALKSTATE_CONFIRM_CHANGE
             tmMoveChange[talkUser] = moveSlot

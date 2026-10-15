@@ -233,7 +233,7 @@ local NODES = {
         parameters = {
             npcHandler = npcHandler,
             --onlyFocus = true,
-            text = 'Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it?'
+            text = 'Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -283,7 +283,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'Do you want to change your sex? The price is 3 Soul Coins.'
+            text = 'Do you want to change your sex? The price is 3 Soul Coins. {Yes} or {No}'
         },
         childs = {
             {
@@ -496,7 +496,7 @@ local NODES = {
                     end
 
                     lastNickname[cid] = message
-                    npcHandler:say(string.format(__L(cid, "%s, are you sure?"), message), cid)
+                    npcHandler:say(string.format(__L(cid, "%s, are you sure? {Yes} or {No}"), message), cid)
 
                     return true
                 end,
@@ -565,7 +565,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can remove your Pokemon\'s nickname for free, do you want that?'
+            text = 'I can remove your Pokemon\'s nickname for free, do you want that? {Yes} or {No}'
         },
         childs = {
             {
@@ -690,7 +690,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can sell you a stamina recover for 1 Soul Coin, do you want it?'
+            text = 'I can sell you a stamina recover for 1 Soul Coin, do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -777,7 +777,7 @@ local NODES = {
                     end
 
                     lastGuildName[cid] = message
-                    npcHandler:say(string.format(__L(cid, "%s, are you sure?"), message), cid)
+                    npcHandler:say(string.format(__L(cid, "%s, are you sure? {Yes} or {No}"), message), cid)
 
                     return true
                 end,
@@ -874,7 +874,7 @@ local NODES = {
                     end
 
                     lastGuildName[cid] = message
-                    npcHandler:say(string.format(__L(cid, "%s, are you sure?"), message), cid)
+                    npcHandler:say(string.format(__L(cid, "%s, are you sure? {Yes} or {No}"), message), cid)
 
                     return true
                 end,
@@ -983,7 +983,7 @@ local NODES = {
                     end
 
                     lastReferralOption[cid] = option
-                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s referral points for a %s?"), option.points, option.name), cid)
+                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s referral points for a %s? {Yes} or {No}"), option.points, option.name), cid)
 
                     return true
                 end,
@@ -1072,7 +1072,7 @@ local NODES = {
                     end
 
                     lastAddonOption[cid] = option
-                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s soul coin(s) for a %s?"), option.coins, option.name), cid)
+                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s soul coin(s) for a %s? {Yes} or {No}"), option.coins, option.name), cid)
 
                     return true
                 end,
@@ -1125,7 +1125,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can sell you an Egg Move Capsule for 1 Soul Coin, do you want it?'
+            text = 'I can sell you an Egg Move Capsule for 1 Soul Coin, do you want it? {Yes} or {No}'
         },
         childs = {
             {

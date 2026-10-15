@@ -35,7 +35,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
         if (npcHandler.talkState[talkUser] == TALKSTATES.TRADUTOR) then
-            selfSay("It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it?", cid)
+            selfSay("It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.TRADUTOR_CONFIRM
 
         elseif (npcHandler.talkState[talkUser] == TALKSTATES.TRADUTOR_CONFIRM) then

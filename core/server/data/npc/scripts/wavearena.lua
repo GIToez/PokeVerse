@@ -60,7 +60,7 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'enter') or msgcontains(msg, 'entrar')) then
         if (talkState[talkUser] == TALKSTATES.WAVEARENA) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Colosseum Arena? This will cost you %s dollars."), getArenaCost(getPlayerLevel(cid))), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Colosseum Arena? This will cost you %s dollars. {Yes} or {No}"), getArenaCost(getPlayerLevel(cid))), cid)
             talkState[talkUser] = TALKSTATES.WAVEARENA_ACCEPT
         end
 

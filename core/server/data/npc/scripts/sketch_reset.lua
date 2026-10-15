@@ -38,7 +38,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
             lastMove[talkUser] = msg
             talkState[talkUser] = TALKSTATE_CONFIRM
-            selfSay(string.format(__L(cid, "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes."), msg, REQUIRED_PALETTE), cid)
+            selfSay(string.format(__L(cid, "So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes. {Yes} or {No}"), msg, REQUIRED_PALETTE), cid)
             return true
         end
 

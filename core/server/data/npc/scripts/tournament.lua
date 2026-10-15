@@ -312,13 +312,13 @@ function creatureSayCallback(cid, type, msg)
         msg = string.lower(msg)
         lastTokenOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s tournament token%s for a %s?"), TOKEN_OPTION_BY_NAME[msg].tokens, (TOKEN_OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s tournament token%s for a %s? {Yes} or {No}"), TOKEN_OPTION_BY_NAME[msg].tokens, (TOKEN_OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), msg), cid)
 
     elseif (TOKEN_OPTIONS[tonumber(msg)]) then
         msg = string.lower(TOKEN_OPTIONS[tonumber(msg)].name)
         lastTokenOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s tournament token%s for a %s?"), TOKEN_OPTION_BY_NAME[msg].tokens, (TOKEN_OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s tournament token%s for a %s? {Yes} or {No}"), TOKEN_OPTION_BY_NAME[msg].tokens, (TOKEN_OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), msg), cid)
 
     elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and talkState[talkUser] == TALKSTATE_EXCHANGING and lastTokenOption[talkUser]) then
         local opt = TOKEN_OPTION_BY_NAME[lastTokenOption[talkUser]]
@@ -340,7 +340,7 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'leave') or msgcontains(msg, 'quit') or msgcontains(msg, 'unsubscribe') or msgcontains(msg, 'sair')) then
         if (getPlayerTournamentInscribed(cid)) then
-            selfSay("Do you really want to unsubscribe from the tournament?", cid)
+            selfSay("Do you really want to unsubscribe from the tournament? {Yes} or {No}", cid)
             talkState[talkUser] = TALKSTATE_LEAVE
 
         else
@@ -461,7 +461,7 @@ function creatureSayCallback(cid, type, msg)
         if (TOURNAMENT_ID_BY_NAME[msg]) then
             msg = string.lower(msg)
             lastUserTournamentId[talkUser] = TOURNAMENT_ID_BY_NAME[msg]
-            selfSay(string.format(__L(cid, "Do you really want to join the %s tournament? (This will cost you %s dollars)"), msg, TOURNAMENTS[lastUserTournamentId[talkUser]].inscriptionPrice), cid)
+            selfSay(string.format(__L(cid, "Do you really want to join the %s tournament? (This will cost you %s dollars) {Yes} or {No}"), msg, TOURNAMENTS[lastUserTournamentId[talkUser]].inscriptionPrice), cid)
             talkState[talkUser] = TALKSTATE_JOIN_CONFIRM
 
         else

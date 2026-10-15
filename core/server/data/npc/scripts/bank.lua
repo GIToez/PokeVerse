@@ -131,12 +131,12 @@ function creatureSayCallback(cid, type, msg)
   elseif (msgcontains(msg, 'deposit all') or msgcontains(msg, 'depositar tudo')) then
     talkState[talkUser] = STATES.DEPOSIT_ALL
 
-    selfSay("Are you sure you want to deposit all your money?", cid)
+    selfSay("Are you sure you want to deposit all your money? {Yes} or {No}", cid)
 
   elseif (msgcontains(msg, 'withdraw all') or msgcontains(msg, 'sacar tudo')) then
     talkState[talkUser] = STATES.WITHDRAW_ALL
 
-    selfSay("Are you sure you want to withdraw all your money?", cid)
+    selfSay("Are you sure you want to withdraw all your money? {Yes} or {No}", cid)
 
   elseif (msgcontains(msg, 'deposit') or msgcontains(msg, 'depositar')) then
     talkState[talkUser] = STATES.DEPOSIT
@@ -214,7 +214,7 @@ function creatureSayCallback(cid, type, msg)
 
   elseif (talkState[talkUser] == STATES.TRANSFER_THREE) then
     if (msg == lastTransferName[talkUser]) then
-      selfSay(string.format(__L(cid, "Do you really want to transfer %s dollars to %s?"), lastCount[talkUser], lastTransferName[talkUser]), cid)
+      selfSay(string.format(__L(cid, "Do you really want to transfer %s dollars to %s? {Yes} or {No}"), lastCount[talkUser], lastTransferName[talkUser]), cid)
       talkState[talkUser] = STATES.TRANSFER_FOUR
 
     else

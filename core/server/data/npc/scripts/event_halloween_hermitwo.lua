@@ -135,7 +135,7 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s for the %s?"), getReagentsMessage(OPTION_BY_NAME[msg].reagents), OPTION_BY_NAME[msg].name), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s for the %s? {Yes} or {No}"), getReagentsMessage(OPTION_BY_NAME[msg].reagents), OPTION_BY_NAME[msg].name), cid)
 
     elseif (msgcontains(msg, 'halloween') or msgcontains(msg, 'gift') or msgcontains(msg, 'dia das bruxas') or msgcontains(msg, 'presente')) then
         selfSay("I can create magic {potions} for you!", cid)

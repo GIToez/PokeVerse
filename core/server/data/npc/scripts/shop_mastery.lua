@@ -355,14 +355,14 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s?"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
+        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
                 (" more " .. OPTION_BY_NAME[msg].requiredItemsMessage) or ""), OPTION_BY_NAME[msg].count, msg), cid)
 
     elseif (OPTIONS[tonumber(msg)]) then
         msg = string.lower(OPTIONS[tonumber(msg)].name)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s?"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
+        selfSay(string.format(__L(cid, "You want to exchange %s mastery token%s%s for %sx %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, (OPTION_BY_NAME[msg].tokens > 1 and "s" or ""), (OPTION_BY_NAME[msg].requiredItemsMessage and
                 (" more " .. OPTION_BY_NAME[msg].requiredItemsMessage) or ""), OPTION_BY_NAME[msg].count, msg), cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then

@@ -100,7 +100,7 @@ function creatureSayCallback(cid, type, msg)
     if (msgcontains(msg, 'join') or msgcontains(msg, 'enter') or msgcontains(msg, MASTERY_NAME) or msgcontains(msg, 'entrar')) then
         local mastery = getPlayerMastery(cid)
         if (not mastery) then
-            selfSay(string.format(__L(cid, "Do you want to join the %s Mastery?"), MASTERY_NAME), cid)
+            selfSay(string.format(__L(cid, "Do you want to join the %s Mastery? {Yes} or {No}"), MASTERY_NAME), cid)
             talkState[talkUser] = TALKSTATE_JOIN
         elseif (mastery ~= MASTERY) then
             selfSay('You already have a mastery. If you want to join this one, you first need to leave it by talking to your mastery leader.', cid)
@@ -109,12 +109,12 @@ function creatureSayCallback(cid, type, msg)
             selfSay("You're already at the last level of this mastery.", cid)
             talkState[talkUser] = TALKSTATE_NONE
         else
-            selfSay("Are you ready for the next level?", cid)
+            selfSay("Are you ready for the next level? {Yes} or {No}", cid)
             talkState[talkUser] = TALKSTATE_NEXT
         end
 
     elseif (msgcontains(msg, 'dungeon') or msgcontains(msg, 'calabouco')) then
-        selfSay("Are you ready for the dungeon?", cid)
+        selfSay("Are you ready for the dungeon? {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_DUNGEON
 
     elseif (msgcontains(msg, 'dismiss') or msgcontains(msg, 'leave') or msgcontains(msg, 'sair')) then
@@ -126,7 +126,7 @@ function creatureSayCallback(cid, type, msg)
             selfSay("You need to leave through your own mastery leader, not here.", cid)
             talkState[talkUser] = TALKSTATE_NONE
         else
-            selfSay("Do you really want to leave the mastery?", cid)
+            selfSay("Do you really want to leave the mastery? {Yes} or {No}", cid)
           talkState[talkUser] = TALKSTATE_LEAVE
         end
 
@@ -141,7 +141,7 @@ function creatureSayCallback(cid, type, msg)
                 talkState[talkUser] = TALKSTATE_NONE
 
             elseif (getPlayerDefeatedNPC(cid, ASSISTANT)) then
-                selfSay(string.format(__L(cid, "Do you really want to join the %s Mastery?"), MASTERY_NAME), cid)
+                selfSay(string.format(__L(cid, "Do you really want to join the %s Mastery? {Yes} or {No}"), MASTERY_NAME), cid)
                 talkState[talkUser] = TALKSTATE_JOIN_CONFIRM
 
             elseif (getPlayerMasteryStonesPayed(cid, MASTERY)) then
@@ -149,7 +149,7 @@ function creatureSayCallback(cid, type, msg)
                 talkState[talkUser] = TALKSTATE_NONE
 
             else
-                selfSay(string.format(__L(cid, "To join the %s Mastery you will need %s. Do you have them?"), MASTERY_NAME, requiredStoneMessage), cid)
+                selfSay(string.format(__L(cid, "To join the %s Mastery you will need %s. Do you have them? {Yes} or {No}"), MASTERY_NAME, requiredStoneMessage), cid)
                 talkState[talkUser] = TALKSTATE_JOIN_2
             end
 
@@ -182,7 +182,7 @@ function creatureSayCallback(cid, type, msg)
                 selfSay("You have already paid the necessary tokens, now you need to complete the {dungeon}.", cid)
                 talkState[talkUser] = TALKSTATE_NONE
             elseif (getMasteryRankNext(MASTERY, getPlayerMasteryRank(cid))) then
-                selfSay(string.format(__L(cid, "To advance in rank within the Mastery you must prove you've mastered it by collecting %s tokens. You can get them by completing missions for the people of this base. Do you have the %s %s tokens?"), MASTERY_NAME, getRequiredTokensToNextRank(cid), MASTERY_NAME), cid)
+                selfSay(string.format(__L(cid, "To advance in rank within the Mastery you must prove you've mastered it by collecting %s tokens. You can get them by completing missions for the people of this base. Do you have the %s %s tokens? {Yes} or {No}"), MASTERY_NAME, getRequiredTokensToNextRank(cid), MASTERY_NAME), cid)
                 talkState[talkUser] = TALKSTATE_NEXT_2
             else
                 selfSay("You're already at the last level of this mastery.", cid)

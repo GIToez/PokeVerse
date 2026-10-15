@@ -422,9 +422,9 @@ if(Modules == nil) then
         end
 
         if (parameters.requiredItem and getPlayerItemCount(cid, parameters.requiredItem) > 0) then
-            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. '?', cid)
+            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. '? {Yes} or {No}', cid)
         else
-            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. ' for ' .. parameters.cost .. ' dollars?', cid)
+            module.npcHandler:say('Do you want to travel to ' .. keywords[1] .. ' for ' .. parameters.cost .. ' dollars? {Yes} or {No}', cid)
         end
         return true
     end
@@ -703,7 +703,7 @@ if(Modules == nil) then
             end
         end
 
-        module.npcHandler:say('Do you want ' .. keywords[1] .. ' ' .. (addon == 0 and "outfit" or "addon") .. ' for ' .. items .. '?', cid)
+        module.npcHandler:say('Do you want ' .. keywords[1] .. ' ' .. (addon == 0 and "outfit" or "addon") .. ' for ' .. items .. '? {Yes} or {No}', cid)
         return true
 
     end

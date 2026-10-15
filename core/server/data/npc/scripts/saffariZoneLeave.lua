@@ -21,7 +21,7 @@ function creatureSayCallback(cid, type, msg)
 		selfSay("The Safari is the largest place in these lands. Here you will find many species of Pokemon, some in great numbers, so be very careful!", cid)
 
 	elseif (msgcontains(msg, 'leave') or msgcontains(msg, 'back') or msgcontains(msg, 'city') or msgcontains(msg, 'fuchsia') or msgcontains(msg, 'sair')) then
-		selfSay("Alright, do you want to go back to Fuchsia City?", cid)
+		selfSay("Alright, do you want to go back to Fuchsia City? {Yes} or {No}", cid)
 		talkState[talkUser] = STATE_LEAVE
 
 	elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and talkState[talkUser] == STATE_LEAVE) then

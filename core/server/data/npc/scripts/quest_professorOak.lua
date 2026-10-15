@@ -38,7 +38,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'fix') or msgcontains(msg, 'corrigir')) then
-        selfSay("Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that?", cid)
+        selfSay("Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that? {Yes} or {No}", cid)
         npcHandler.talkState[cid] = TALKSTATE_FIX_ASK
         return true
     elseif (npcHandler.talkState[cid] == TALKSTATE_FIX_ASK) then
@@ -76,19 +76,19 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             lastChoice[cid] = 'Charmander'
             npcHandler.talkState[cid] = TALKSTATE_CONFIRM
             selfSay("{YES} or {NO}", cid)
-            selfSay("Do you really want a Charmander?", cid)
+            selfSay("Do you really want a Charmander? {Yes} or {No}", cid)
 
         elseif (msgcontains(msg, 'squirtle')) then
             lastChoice[cid] = 'Squirtle'
             npcHandler.talkState[cid] = TALKSTATE_CONFIRM
             selfSay("{YES} or {NO}", cid)
-            selfSay("Do you really want a Squirtle?", cid)
+            selfSay("Do you really want a Squirtle? {Yes} or {No}", cid)
 
         elseif (msgcontains(msg, 'bulbasaur')) then
             lastChoice[cid] = 'Bulbasaur'
             npcHandler.talkState[cid] = TALKSTATE_CONFIRM
             selfSay("{YES} or {NO}", cid)
-            selfSay("Do you really want a Bulbasaur?", cid)
+            selfSay("Do you really want a Bulbasaur? {Yes} or {No}", cid)
 
         elseif (npcHandler.talkState[cid] == TALKSTATE_CONFIRM) then
             if (msgcontains(msg, { 'yes', 'sim' })) then

@@ -1222,7 +1222,7 @@ if (NpcBattle == nil) then
         else
             local result = self:canPlayerBattleWithNpc(pid)
             if (result == true) then
-                selfSay(string.format(__L(pid, "Do you really want to battle with me?%s%s"),
+                selfSay(string.format(__L(pid, "Do you really want to battle with me?%s%s {Yes} or {No}"),
                     (self.currentBet > 0 and (string.format(__L(pid, " (You will bet %s dollars)"), self.currentBet)) or ""),
                     (self.payRespect > 0 and (string.format(__L(pid, " (You will pay %s respect points)"), self.payRespect)) or "")), pid)
                 return TALK_STATE.ACCEPTING_BATTLE

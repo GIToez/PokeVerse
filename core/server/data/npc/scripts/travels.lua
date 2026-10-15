@@ -174,7 +174,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (TRAVEL_BY_NAME[getNpcName()][msg]) then
         local travel = TRAVEL_BY_NAME[getNpcName()][msg]
-        selfSay(string.format(__L(cid, "Do you really want to go to %s? This will cost you %s dollars."), travel.name, travel.price), cid)
+        selfSay(string.format(__L(cid, "Do you really want to go to %s? This will cost you %s dollars. {Yes} or {No}"), travel.name, travel.price), cid)
         LAST_TRAVEl[cid] = travel
 
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then

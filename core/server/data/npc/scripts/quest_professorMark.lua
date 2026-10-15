@@ -23,7 +23,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
 	if(msgcontains(msg, 'Pokemon mansion') or msgcontains(msg, 'mansao pokemon')) then
 		if (getCreatureStorage(cid, refundStorage) == -1 and getCreatureStorage(cid, questStorage) == 1) then -- Quest done but with old reward
-            selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it?", cid)
+            selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATE_RENEW
         else
             npcHandler.talkState[talkUser] = doQuestTalkStart(cid, "Professor Mark")

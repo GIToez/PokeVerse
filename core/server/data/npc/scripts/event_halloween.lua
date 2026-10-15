@@ -129,7 +129,7 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s halloween tokens for a %s?"), OPTION_BY_NAME[msg].halloweenTokens, msg), cid)
+        selfSay(string.format(__L(cid, "You want to exchange %s halloween tokens for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].halloweenTokens, msg), cid)
 
     elseif (msgcontains(msg, 'halloween') or msgcontains(msg, 'gift') or msgcontains(msg, 'dia das bruxas') or msgcontains(msg, 'presente')) then
         selfSay("Here you can exchange halloween tokens for halloween gifts, you can see the {options}.", cid)

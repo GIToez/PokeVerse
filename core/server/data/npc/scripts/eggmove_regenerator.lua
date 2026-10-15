@@ -73,7 +73,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             eggMovesMessage[#eggMovesMessage] = nil
             eggMovesMessage = table.concat(eggMovesMessage)
 
-            selfSay(string.format(__L(cid, "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue?"), getBallPokemonName(ball.uid), eggMovesMessage, REGENERATE_COST), cid)
+            selfSay(string.format(__L(cid, "Your %s is able to regenerate one of these Egg Moves: %s. This will cost you %s dollars, do you want to continue? {Yes} or {No}"), getBallPokemonName(ball.uid), eggMovesMessage, REGENERATE_COST), cid)
         end
 
         talkState[talkUser] = TALKSTATE_REGENERATE
@@ -136,11 +136,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             selfSay("Your Pokemon hasn't regenerated an Egg Move!", cid)
 
         elseif (msgcontains(msg, 'accept') or msgcontains(msg, 'aceitar')) then
-            selfSay(string.format(__L(cid, "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget its current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule."), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
+            selfSay(string.format(__L(cid, "Do you really want to accept the regenerated Egg Move %s? If you accept, your Pokemon will forget its current Egg Move and will learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule. {Yes} or {No}"), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
             talkState[talkUser] = TALKSTATE_ACCEPT_CONFIRM
 
         elseif (msgcontains(msg, 'reject') or msgcontains(msg, 'rejeitar')) then
-            selfSay(string.format(__L(cid, "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule."), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
+            selfSay(string.format(__L(cid, "Do you really want to reject the regenerated Egg Move %s? If you reject, your Pokemon will not be able to learn the Egg Move %s. You can only start the process again if you use another Egg Move Capsule. {Yes} or {No}"), getBallLastEggMoveRegenerated(ball.uid), getBallLastEggMoveRegenerated(ball.uid)), cid)
             talkState[talkUser] = TALKSTATE_REJECT_CONFIRM
 
         else

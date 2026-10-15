@@ -36,7 +36,7 @@ function creatureSayCallback(cid, type, msg)
             talkState[talkUser] = 0
 
         else
-            selfSay(string.format(__L(cid, "Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go?"), safariZoneEntrancePrice), cid)
+            selfSay(string.format(__L(cid, "Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go? {Yes} or {No}"), safariZoneEntrancePrice), cid)
             talkState[talkUser] = STATE_SAFFARI_ENTER
         end
 

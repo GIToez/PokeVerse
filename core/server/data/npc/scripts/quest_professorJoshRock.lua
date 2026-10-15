@@ -35,7 +35,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
 		if (questStatus == QUESTSTATUS_UNSTARTED) then
 			if (getPlayerLevel(cid) >= QUEST_LEVEL) then
-				selfSay("I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me?", cid)
+				selfSay("I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me? {Yes} or {No}", cid)
 				npcHandler.talkState[talkUser] = TALKSTATE_ACCEPTING
 			else
 				selfSay(string.format(__L(cid, "Sorry, you do not have the required level to accept this mission. The minimum is %s."), QUEST_LEVEL), cid)
@@ -43,7 +43,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 			end
 
 		elseif (questStatus == QUESTSTATUS_STARTED) then
-			selfSay("Did you find a fossil?", cid)
+			selfSay("Did you find a fossil? {Yes} or {No}", cid)
 			npcHandler.talkState[talkUser] = TALKSTATE_FINISHING
 
 		elseif (questStatus == QUESTSTATUS_WAITINGOMANYTEEGG) then

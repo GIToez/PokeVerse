@@ -48,7 +48,7 @@ local TALKSTATE_SKIP = 400
 local function doHandleSkip(cid, msg)
     if (msgcontains(msg, 'skip') or msgcontains(msg, 'pular')) then
         npcHandler.talkState[cid] = TALKSTATE_SKIP
-        selfSay("Do you really want to skip the tutorial?", cid)
+        selfSay("Do you really want to skip the tutorial? {Yes} or {No}", cid)
         return true
 
     elseif (npcHandler.talkState[cid] == TALKSTATE_SKIP) then

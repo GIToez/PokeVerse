@@ -62,7 +62,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
 
     local status = getCreatureStorage(cid, 8240)
     if (status == QUEST_STATUS.UNSTARTED) then
-        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, do you want to hear a good story?")
+        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, do you want to hear a good story? {Yes} or {No}")
         npcHandler.talkState[cid] = TALKSTATES.HEAR_STORY
 
     elseif (status == QUEST_STATUS.STARTED) then

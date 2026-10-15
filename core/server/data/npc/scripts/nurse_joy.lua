@@ -254,7 +254,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             return true
         end
 
-        selfSay(string.format(__L(cid, "Do you really want to live in %s?"), city), cid)
+        selfSay(string.format(__L(cid, "Do you really want to live in %s? {Yes} or {No}"), city), cid)
         lastCity[cid] = city
 
     elseif ((msgcontains(msg, "yes") or msgcontains(msg, 'sim')) and lastCity[cid] ~= nil) then

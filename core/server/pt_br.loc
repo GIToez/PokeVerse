@@ -239,7 +239,7 @@ All you need to do is keep your Pokemon out of its Poke Ball during the battle. 
 All you need to do is return him to his PokeBall. We'll have to put him to sleep. Try this device that I recently created.@Tudo que você precisa fazer é devolvê-lo à sua Pokebola. Nós vamos ter que colocá-lo para dormir. Tente este dispositivo que criei recentemente.
 All you need to do is return him to his PokeBall. We'll have to put him to sleep. Try this device I recently created; just use it on the floor to make it work. But watch the time: in my tests it didn't work for very long.@Tudo que você precisa fazer é devolvê-lo à sua Pokebola. Nós vamos ter que colocá-lo para dormir. Tente este dispositivo que eu criei. Tudo que você precisa fazer é usá-lo no chão para fazê-lo funcionar. Mas esteja ciente do tempo, ele não é capaz de funcionar muito.
 A Lower Level@Um nível mais baixo
-Alright, do you want to go back to Fuchsia City?@Tudo bem, você quer voltar para a cidade de Fuchsia?
+Alright, do you want to go back to Fuchsia City? {Yes} or {No}@Tudo bem, você quer voltar para a cidade de Fuchsia? {Sim} ou {Não}
 Alright, I need more information. Register a total of 50 Pokemon with your Pokedex and then come back to me.@Tudo bem, eu preciso de mais informações, recolha um total de 50 informações de Pokemons com sua pokedex e depois de retorne para mim.
 Alright, it's done. Is there something else I can do for you?@Tudo bem, está feito. Há outra coisa que eu posso fazer por você?
 Alright, here they are.@Certo, aqui está.
@@ -249,7 +249,7 @@ Alright, the items that I need are 13 pot of moss mug, come back when you have t
 Alright. Thousands of fighters have tried this mission and failed, so be careful. Go to the south of this mountain, there is a secret passage to the Natural Mountain. Go there and bring me a special stone called Ancient Rune.@Tudo bem, milhares de lutadores tentaram fazer essa missão e não conseguiram, por isso tome cuidado. Vá ao sul desta motanha, lá existe uma passagem secreta para a Montanha Natural. Vá lá e traga a pedra especial, chamada Ancient Rune.
 Alright, which Pokemon do you want to sell? If you want to sell all your Pokemon, say {all}.@Tudo bem, qual o Pokemon que você quer vender? Se você quiser vender todos os seus Pokemon, diga {todos}.
 Alright.@Tudo bem.
-Also, I have a letter to deliver to him. Will you do me this favor?@Além disso, eu tenho uma carta para entregar a ele. Você faz esse favor para mim?
+Also, I have a letter to deliver to him. Will you do me this favor? {Yes} or {No}@Além disso, eu tenho uma carta para entregar a ele. Você faz esse favor para mim? {Sim} ou {Não}
 a Lugia@um Lugia
 Always pay attention to the status of your Pokemon during a duel.@Sempre preste atenção ao status de seu Pokemon durante um duelo.
 a Machamp@um Machamp
@@ -442,12 +442,12 @@ Are you kidding me? WHERE IS MY BURGER!@Você está brincando comigo? ONDE ESTÁ ME
 Are you lost, you little mouse?@Você está perdido, pequeno rato?
 Are you prepared to see the strength and all the energy that moves us?@Você está preparado para ver a força e toda a energia dos seus movimentos?
 Are you ready for the next step of your journey?@Você está pronto para a próxima etapa de sua viagem?
-Are you ready for the dungeon?@Você está pronto para o calabouço?
-Are you ready for the next level?@Você está pronto para o próximo nível?
+Are you ready for the dungeon? {Yes} or {No}@Você está pronto para o calabouço? {Sim} ou {Não}
+Are you ready for the next level? {Yes} or {No}@Você está pronto para o próximo nível? {Sim} ou {Não}
 Are you ready to the next task?@Você está pronto para a próxima tarefa?
 Are you saying that this MORRYY device lets us understand each other? Impressive. Would you... want to help strengthen the {Deepsoul Stone}?@Você está dizendo que este MORRYY aparelho faz você nos entender? Impressionante. Você poderia... ajudar a fortalecer a {Deepsoul Stone}?
-Are you sure you want to deposit all your money?@Tem certeza que você deseja depositar todo o seu dinheiro?
-Are you sure you want to withdraw all your money?@Tem certeza que você quer retirar todo o seu dinheiro?
+Are you sure you want to deposit all your money? {Yes} or {No}@Tem certeza que você deseja depositar todo o seu dinheiro? {Sim} ou {Não}
+Are you sure you want to withdraw all your money? {Yes} or {No}@Tem certeza que você quer retirar todo o seu dinheiro? {Sim} ou {Não}
 are you sure?@você tem certeza?
 Are you very busy? I need a big favor!@Você está muito ocupado? Eu preciso de um grande favor!
 Do the following: plant 5 seeds in my field for me. Here, take these.@Faça o seguinte: plante 5 sementes para mim no meu campo. Pegue isto.
@@ -1331,35 +1331,35 @@ Did you find Chief Vaporeon and get the restore stones?@Você achou o Chief Vapor
 Do you have any friends? POKEMON you get in trades grow very quickly. I think it's worth a try!@Você tem amigos? POKEMONS que você obtem em trocas crescem muito rapidamente. Eu acho que vale a pena tentar!
 Do you know what a {SOUL COIN} is?@Você sabe o que é uma {SOUL COIN}?
 Do you mean {BATTLE}?@Você quer dizer {BATALHAR}?
-Do you really want to go to %s? This will cost you %s dollars.@Você realmente quer ir para %s? Isso vai te custar %s dólares.
-Do you really want to battle with me?%s%s@Você realmente quer batalhar comigo?%s%s
-Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee.@Você realmente deseja cancelar o treinamento do seu Pokemon? Ele não vai ganhar nenhum ponto de experiência ou gerar ovos, mas você ainda terá que pagar a dívida.
+Do you really want to go to %s? This will cost you %s dollars. {Yes} or {No}@Você realmente quer ir para %s? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you really want to battle with me?%s%s {Yes} or {No}@Você realmente quer batalhar comigo?%s%s {Sim} ou {Não}
+Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee. {Yes} or {No}@Você realmente deseja cancelar o treinamento do seu Pokemon? Ele não vai ganhar nenhum ponto de experiência ou gerar ovos, mas você ainda terá que pagar a dívida. {Sim} ou {Não}
 Do you really want to delete the character named @Você realmente quer deletar o personagem chamado 
-Do you really want to exchange the letters P, S, O, U and L for a %s?@Você realmente quer trocar letras 'psoul' por um %s?
-Do you really want to join the %s Mastery?@Você realmente quer se juntar a Mastery %s?
-Do you really want to leave the mastery?@Você realmente quer deixar a Mastery?
-Do you really want to remove the plate that you deposited here?@Você realmente deseja remover a Plate que você depositou aqui?
+Do you really want to exchange the letters P, S, O, U and L for a %s? {Yes} or {No}@Você realmente quer trocar letras 'psoul' por um %s? {Sim} ou {Não}
+Do you really want to join the %s Mastery? {Yes} or {No}@Você realmente quer se juntar a Mastery %s? {Sim} ou {Não}
+Do you really want to leave the mastery? {Yes} or {No}@Você realmente quer deixar a Mastery? {Sim} ou {Não}
+Do you really want to remove the plate that you deposited here? {Yes} or {No}@Você realmente deseja remover a Plate que você depositou aqui? {Sim} ou {Não}
 Do you think you can withstand the strength of an entire mountain?@Você acha que suporta a força de todo um mountain cockerel?
 Do you want @Você quer 
 Do you want to buy a sauce for 500 dollars?@Você quer comprar um molho por 500 dólares?
-Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars?@Você quer comprar |ITEMCOUNT| |ITEMNAME| por |TOTALCOST| doláres?
+Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}@Você quer comprar |ITEMCOUNT| |ITEMNAME| por |TOTALCOST| doláres? {Sim} ou {Não}
 Do you want to change your 'password', request a 'recovery key', add a 'character', or 'delete' a character?@Você quer mudar o seu 'password', pedir uma 'chave de recuperação', adicione um 'personagem', ou 'deletar' um personagem?
-Do you want to change your sex? The price is 3 Soul Coins.@Você quer alterar seu sexo? O preço é 3 Soul Coins.
-Do you want to enter the Cooperative Elite mode? This will cost you %s dollars.@Você quer entrar no modo Cooperativo Elite? Isso vai te custar %s dólares.
-Do you want to enter the Cooperative Titan mode? This will cost you %s dollars.@Você quer entrar no modo Cooperativo Titan? Isso vai te custar %s dólares.
-Do you want to enter the Fifteen mode? This will cost you %s dollars.@Você quer entrar no modo Quinze? Isso vai te custar %s dólares.
-Do you want to enter the Gladiator mode? This will cost you %s dollars.@Você quer entrar no modo de Gladiator? Isso vai te custar %s dólares.
-Do you want to enter the Survive Challenge mode? This will cost you %s dollars.@Você quer entrar no modo Survive Challenge? Isso vai te custar %s dólares.
-Do you want to enter the Survive Hardcore mode? This will cost you %s dollars.@Você quer entrar no modo sobrevivência Hardcore? Isso vai te custar %s dólares.
-Do you want to enter the Ten mode? This will cost you %s dollars.@Você quer entrar no modo Dez? Isso vai te custar %s dólares.
-Do you want to enter the Twenty mode? This will cost you %s dollars.@Você quer entrar no modo Twenty? Isso vai te custar %s dólares.
+Do you want to change your sex? The price is 3 Soul Coins. {Yes} or {No}@Você quer alterar seu sexo? O preço é 3 Soul Coins. {Sim} ou {Não}
+Do you want to enter the Cooperative Elite mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Cooperativo Elite? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Cooperative Titan mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Cooperativo Titan? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Fifteen mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Quinze? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Gladiator mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo de Gladiator? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Survive Challenge mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Survive Challenge? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Survive Hardcore mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo sobrevivência Hardcore? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Ten mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Dez? Isso vai te custar %s dólares. {Sim} ou {Não}
+Do you want to enter the Twenty mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Twenty? Isso vai te custar %s dólares. {Sim} ou {Não}
 Do you want to help me with a task?@Você quer me ajudar em alguma tarefa?
-Do you want to join the %s Mastery?@Você quer se juntar para a Mastery %s?
-Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level).@Você quer deixar o seu %s aqui por %s minutos? Isso vai custar 100 dólares para entrar e um adicional de 1, 2 ou 4 dólares por minuto que ele fique aqui (depende do nível do seu Pokemon).
-Do you want to remove your Pokemon from the daycare?@Você quer remover o seu Pokemon do Daycare?
-Do you want to sell: %s for %s dollars?@Você quer vender: %s por %s dólares?
-Do you want to sell your %s for %s dollars plus %s dollars for each level?@Você quer vender o seu %s por %s dólares mais %s dólares para cada nível?
-Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars?@Você quer vender |ITEMCOUNT| |ITEMNAME| por |TOTALCOST| doláres?
+Do you want to join the %s Mastery? {Yes} or {No}@Você quer se juntar para a Mastery %s? {Sim} ou {Não}
+Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level). {Yes} or {No}@Você quer deixar o seu %s aqui por %s minutos? Isso vai custar 100 dólares para entrar e um adicional de 1, 2 ou 4 dólares por minuto que ele fique aqui (depende do nível do seu Pokemon). {Sim} ou {Não}
+Do you want to remove your Pokemon from the daycare? {Yes} or {No}@Você quer remover o seu Pokemon do Daycare? {Sim} ou {Não}
+Do you want to sell: %s for %s dollars? {Yes} or {No}@Você quer vender: %s por %s dólares? {Sim} ou {Não}
+Do you want to sell your %s for %s dollars plus %s dollars for each level? {Yes} or {No}@Você quer vender o seu %s por %s dólares mais %s dólares para cada nível? {Sim} ou {Não}
+Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}@Você quer vender |ITEMCOUNT| |ITEMNAME| por |TOTALCOST| doláres? {Sim} ou {Não}
 Do you want to travel to @Você quer viajar para 
 Dr. Alan Grant@Dr. Alan Grant
 Dragon@Dragão
@@ -1883,7 +1883,7 @@ Hello |PLAYERNAME|, I'm a police officer in this area. If you see something stra
 Hello |PLAYERNAME|, I'm going through some difficulties right now, could you come back another time?@Olá |PLAYERNAME|, eu estou passando por algumas dificuldades neste momento, poderia voltar outra hora?
 Hello |PLAYERNAME|, I'm Hugh, the guide of the Safari Zone. I can take you back to {Fuchsia} City. Here you can also buy some stuff, just say {trade}.@Olá |PLAYERNAME|, estou Hugh, o guia da Zona Safari. Posso levá-lo de volta para {Fuchsia}. Aqui você também pode comprar algumas coisas, basta dizer {negociar}.
 Hello |PLAYERNAME|, I am responsible for taking care of the Poke Balls technology here. Can I help you?@Olá |PLAYERNAME|, eu sou responsável por cuidar da tecnologia de Pokebolas aqui. Posso ajudar?
-Hello |PLAYERNAME|, shall we trade your soul coins?@Olá |PLAYERNAME|, vamos trocar suas soul coins?
+Hello |PLAYERNAME|, shall we trade your {soul} coins?@Olá |PLAYERNAME|, vamos trocar suas {soul} coins?
 Hello |PLAYERNAME|, Lichi fruits are very tasty, aren't they?@Olá |PLAYERNAME|, frutas Lichi são muito saborosa, não é mesmo?
 Hello |PLAYERNAME|, my name is Merv Kelley, I'm a Pokemon researcher. I'm currently studying the behavior of bug Pokemon when fed with fruits, but now I'm having terrible {problems}.@Olá |PLAYERNAME|, meu nome é Merv Kelley, sou um pesquisador Pokemon, atualmente estudo o comportammento de Pokemons insetos quando alimentados com frutas, mas estou com terríveis {problemas}.
 Hello |PLAYERNAME|, VAPP did you find REON the {Restore} Stones?@Olá |PLAYERNAME|, VAPP você encontrou REON as {Restore} Stones?
@@ -1894,7 +1894,7 @@ Hello |PLAYERNAME|, what's up? Need a delivery?@Olá |PLAYERNAME|, o que há? Prec
 Hello |PLAYERNAME|, what brings you here?@Olá |PLAYERNAME|, o que o traz aqui?
 Hello |PLAYERNAME|, you can heal your pokemons.@Olá |PLAYERNAME|, você pode curar seus pokemons.
 Hello |PLAYERNAME|, do you need something to brighten your home?@Olá |PLAYERNAME|, você precisa de algo para iluminar sua casa?
-Hello |PLAYERNAME|, do you want to hear a good story?@Olá |PLAYERNAME|, quer ouvir uma boa história?
+Hello |PLAYERNAME|, do you want to hear a good story? {Yes} or {No}@Olá |PLAYERNAME|, quer ouvir uma boa história? {Sim} ou {Não}
 Hello |PLAYERNAME|.@Olá |PLAYERNAME|.
 Hello |PLAYERNAME|. Do you know what a {SOUL COIN} is?@Olá |PLAYERNAME|. Você sabe o que é uma {SOUL COIN}?
 Hello |PLAYERNAME|. Do you want to sell Technical Machines? Here you can also {remove} or {change} your Pokemon TMs!@Olá |PLAYERNAME|. Você quer vender technichal Machines? Aqui você também pode {remover} ou {mover} o movimento de TM do seu Pokemon!
@@ -1967,7 +1967,7 @@ Here it is! If you want to buy more, come back tomorrow.@Aqui está! Se você quis
 Here it is.@Aqui está.
 Heremit Mastery - Golem@Heremit Mastery - Golem
 Here you can also exchange tournament tokens for special items, you can see the {options}.@Aqui você também pode trocar tokens de torneio em itens especiais, você pode ver as {opções}.
-Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that?@Aqui você também pode gerar um movimento de ovo a um velho Pokemon de ovo que você tem. Você quer fazer isso?
+Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that? {Yes} or {No}@Aqui você também pode gerar um movimento de ovo a um velho Pokemon de ovo que você tem. Você quer fazer isso? {Sim} ou {Não}
 Here you can exchange christmas tokens into christmas gifts, you can see the {options}.@Aqui você pode trocar christmas tokens em presentes de Natal, você pode ver as {opções}.
 Here you can exchange golden easter eggs into gifts, you can see the {options}.@Aqui você pode trocar ovos de páscoa de ouro em presentes, você pode ver as {opções}.
 Here you can exchange halloween tokens for halloween gifts, you can see the {options}.@Aqui você pode trocar halloween tokens por presentes do dia das bruxas, você pode ver as {opções}.
@@ -2001,7 +2001,7 @@ Hey, hey! What's up?@Hey, hey! E aí?
 Hey, how are you doing? Any news about the {prophecy}?@Hey, o que você está fazendo? Alguma novidade sobre a {profecia}?
 Hey, how are you? I'm busy now, maybe we talk later...@Olá, como vai? Estou ocupado agora, talvez a gente converse mais tarde...
 Hey, I can't help you anymore.@Hey, eu não posso ajudá-lo mais.
-Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it?@Hey, eu posso vender-lhe uma estátua de cristal para 4000 dólares. Você quer?
+Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it? {Yes} or {No}@Hey, eu posso vender-lhe uma estátua de cristal para 4000 dólares. Você quer? {Sim} ou {Não}
 Hey, kid! What do you think you're doing here? You won't live long in combat! That's for sure! I tell you kid, electric Pokemon saved me during the war! They zapped my enemies into paralysis! The same as I'll do to you!@Ei, garoto! O que você acha que você está fazendo aqui? Você não vai viver por muito tempo em combate! Isso é certeza! Digo-te miúdo, Pokemon elétrico me salvou durante a guerra! Eles eletrocutado meus inimigos em paralisia! O mesmo que eu vou fazer com você!
 Hey, please be quiet.@Hey, por favor, fique quieto.
 Hey, did Rick send you?@Ei, Rick te enviou?
@@ -2161,7 +2161,7 @@ I'm sure there's someone who can help us in Pallet. A girl, yes! I do not rememb
 I'm the FISHING GURU! I simply Looove fishing!@Eu sou o GURU DA PESCA! Eu simplesmente ammoo pesca!
 I'm working!@Estou trabalhando!
 I've 6 POKE BALLS set in my belt. At most, you can carry 6 POKEMON.@Eu tenho 6 POKEBOLAS no meu cinto. No máximo, você pode transportar 6 POKEMONS.
-I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me?@Estive procurando o Pokemon fóssil por um longo tempo, mas nunca consegui chegar perto de um. Meu irmão William está fazendo uma escavação em Mt. Moon e disse que estava perto de encontrá-los, eu preciso de você para entregar uma carta para ele e ajudá-lo a encontrar os fósseis. Você quer me ajudar?
+I've been searching for fossil Pokemon for a long time, but could never get close to one. My brother William is doing an excavation in Mt Moon and said he was close to finding them. I need you to deliver a letter to him and help him find the fossils. Do you want to help me? {Yes} or {No}@Estive procurando o Pokemon fóssil por um longo tempo, mas nunca consegui chegar perto de um. Meu irmão William está fazendo uma escavação em Mt. Moon e disse que estava perto de encontrá-los, eu preciso de você para entregar uma carta para ele e ajudá-lo a encontrar os fósseis. Você quer me ajudar? {Sim} ou {Não}
 I've been studying ski clothing and finally figured out the best way to make it. It's not easy to make this outfit because it takes time and dedication, but if you bring me the necessary resources I can make one for you.@Venho estudando sobre a roupa de esqui e, finalmente, descobrir a melhor maneira de fabricar. Não é fácil fazer essa roupa porque exige tempo e dedicação, mas se você me trazer os recursos necessários eu posso fazer um para você.
 I've exhausted my Poke Balls to capture the new Pokemon. You should always carry some extras.@Eu já esgotei minhas Pokebolas para capturar o novo Pokemon. Você deve sempre levar alguns extras.
 I've visited the most distant places and faced it all!@Visitei os lugares mais distantes e enfrentei tudo!
@@ -2202,11 +2202,11 @@ I can offer you three challenges in the Battle Tower: {Twenty}, {Fifteen} and {T
 I can offer you three challenges in the Stadium Arena: {Gladiator}, {Cooperative} and {Survive}.@Posso oferecer-lhe três desafios no Estádio Arena: {Gladiator}, {Cooperative} e {Survive}.
 I can only allow premium players to travel there.@Eu só posso permitir jogadores Premium viajem para lá.
 I can only allow premium players to travel with me.@Eu só posso permitir que jogadores Premium viajem comigo.
-I can remove your Pokemon's nickname for free, do you want that?@Eu posso remover o apelido do seu Pokemon sem qualquer custo, você quer isso?
-I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin.@Eu posso remover as vitaminas do seu Pokemon. Você quer isso? Isso vai custar %s soul coin.
-I can sell you a stamina recover for 1 Soul Coin, do you want it?@Eu posso vender uma Stamina Recover para você por 1 Soul Coin, você aceita?
+I can remove your Pokemon's nickname for free, do you want that? {Yes} or {No}@Eu posso remover o apelido do seu Pokemon sem qualquer custo, você quer isso? {Sim} ou {Não}
+I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin. {Yes} or {No}@Eu posso remover as vitaminas do seu Pokemon. Você quer isso? Isso vai custar %s soul coin. {Sim} ou {Não}
+I can sell you a stamina recover for 1 Soul Coin, do you want it? {Yes} or {No}@Eu posso vender uma Stamina Recover para você por 1 Soul Coin, você aceita? {Sim} ou {Não}
 I can beat you!@Eu posso ganhar de você!
-I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that.@Eu posso {remover} o held do seu Pokemon! Você quer isso? {O nível do held do seu Pokemon será resetado se você fizer isso.}
+I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that. {Yes} or {No}@Eu posso {remover} o held do seu Pokemon! Você quer isso? {O nível do held do seu Pokemon será resetado se você fizer isso.} {Sim} ou {Não}
 I can {remove} your Pokemon Held.@Eu posso {remover} o Held do seu Pokemon.
 I can {reset} your Pokemon vitamins.@Eu posso {resetar} as vitaminas do seu Pokemon.
 I caught a Magby! He's awesome!@Eu peguei um Magby! Ele é incrível!
@@ -2641,7 +2641,7 @@ It was a pleasure doing business with you.@Foi um prazer fazer negócios com você
 It was a pleasure to dress you.@Foi um prazer vestir você.
 It was regenerated from a dinosaur's genetic matter that was found in amber. It flies with high-pitched cries.@Foi regeneradas a partir de material genético de um dinossauro que foi encontrado em âmbar. Ela voa com gritos agudos.
 It wears the skull of its dead mother on its head. When it becomes lonesome, it is said to cry loudly.@Ele usa o crânio de sua mãe morta em sua cabeça. Quando está solitário, dizem que chorar alto.
-It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it?@Vai custar-lhe um pouco. Hehe... 100,000 dólares. Preciso de dinheiro para financiar minha pesquisa... Você quer?
+It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it? {Yes} or {No}@Vai custar-lhe um pouco. Hehe... 100,000 dólares. Preciso de dinheiro para financiar minha pesquisa... Você quer? {Sim} ou {Não}
 It will remove your modification bed.@Isto irá remover a modificação da sua cama.
 I understand! Will you help me with this problem?@Entendo! Você vai me ajudar com este problema!
 Ivy called me with this information. Look, try this special banana... it might work. The thief Aipom is on Valencia Island.@Ivy me ligou dando esta informação. Olha, tente esta banana especial... isso pode funcionar. O Thief Aipom está em Valência Island.
@@ -3030,7 +3030,7 @@ Oh! There you are@Oh! Aí está você
 Oh! We have a new candidate! I invented a system where people post messages on the Mission Board so trainers can take jobs and earn rewards. The Mission Board is right beside me, and to use it you just have to show you can handle the requests. What do you think?@Oh! Temos um candidato novo! Eu inventei um sistema em que as pessoas deixam mensagens no Mission Board para treinadores recolherem e ganharem recompensas com ele. A Mission Board é como esta ao meu lado, e tudo que você tem que fazer para usá-lo é mostrar que você pode responder às solicitações. O que você acha?
 Oh! You again! Did you like the cage? I hope so... because I have more equipment to give you.@Oh! Você de novo, gostou da gaiola? Espero que sim... porque eu tenho outros equipamentos para lhe dar.
 Oh! You came here to take Ray's order?@Oh! Você veio aqui para pegar o pedido de Ray?
-Oh! You have a message from my brother for me?@Oh! Você tem uma mensagem do meu irmão para mim?
+Oh! You have a message from my brother for me? {Yes} or {No}@Oh! Você tem uma mensagem do meu irmão para mim? {Sim} ou {Não}
 Oh, Ash! He must be going through trouble. I received a letter from him days ago. I put it in my trunk upstairs. Read it yourself and return here.@Oh, Ash! Ele deve estar passando por problemas. Eu recebi uma carta dele dias atrás. Eu coloquei ela no meu baú lá em cima. Leia ela e volte aqui.
 Oh, hello! I see, you are a Pokemon trainer too! Like my Ash!@Oh, Olá! Eu vejo, você é um treinador Pokemon também! Como meu Ash!
 Oh, hello |PLAYERNAME|! I was waiting for you! My name is Ray Fitz, I'm Professor Oak assistant and I'm here to {help} you in your journey as a Pokemon trainer!@Oh, olá |PLAYERNAME|! Eu estava esperando por você! Meu nome é Ray Fitz, sou assistente do Professor Oak e eu estou aqui para {ajudar} você em sua jornada como um treinador Pokemon!
@@ -3040,17 +3040,17 @@ Oh, I'm so worried! Have you and Gary made any progress?@Oh, eu estou tão preocu
 Oh, that's right! But we have a problem... the last trainer who came here to upgrade broke my device. Can you go ask my friend Dr. Oravaf to come fix it? The last I heard, his house faces the sea. I do not remember where...@Oh, é verdade! Mas temos um problema... o último treinador que veio aqui para atualizar estragou o meu equipamento. Você pode ir falar com meu amigo Dr. Oravaf para vir corrigir isso? A última notícia que tenho dele é de sua casa de frente para o mar. Eu não me lembro onde ...
 Oh, Ivy told me you were bringing a new plant, let me see it. Hmmm... it has unique characteristics. Could you buy a flask for me at the Poke Mart?@Oh, Ivy me disse que estava trazendo uma nova planta, deixe-me vê-lo. Hmmm... ela tem características únicas. Você poderia comprar um frasco para mim no PokeMart?
 Oh, thanks!@Oh obrigado!
-Oh, thanks! So you want to help me with my excavations?@Oh obrigado! Então você quer me ajudar em minhas escavações?
+Oh, thanks! So you want to help me with my excavations? {Yes} or {No}@Oh obrigado! Então você quer me ajudar em minhas escavações? {Sim} ou {Não}
 Oh, thanks. Take the key with you, maybe one day you'll find what you need.@Oh obrigado. Pegue a chave com você, talvez um dia você encontre o que precisa.
 Oh, thank you for your effort. Take your reward!@Oh, muito obrigado por seu esforço. Tome a sua recompensa!
 Oh, that's wonderful! I think we just are creating a better Easter to everyone! Yeah, I think this fits you, take as a reward!@Oh, isso é maravilhoso! Nós estamos criando uma Páscoa melhor para todos! Sim, acho que isso se encaixa você, tome como uma recompensa!
-Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it?@Oh, então você quer uma Conta Premium. Você pode comprar 30 dias por 10 Soul Coins. Você aceita?
+Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it? {Yes} or {No}@Oh, então você quer uma Conta Premium. Você pode comprar 30 dias por 10 Soul Coins. Você aceita? {Sim} ou {Não}
 So, ready for the {BATTLE}?@Oh, a {BATALHA}?
 Oh, you are Oak's pupil?@Oh, você é o aluno de Oak?
 Oh, you came to get the bow?@Oh, você veio para obter o arco?
 Oh, you can receive a new starter Pokemon! What do you want? {Bulbasaur}, {Charmander} or {Squirtle}.@Oh, você pode receber um novo Pokemon inicial! Qual você quer? {Bulbasaur}, {Charmander} ou {Squirtle}.
 Oh, you want to deposit a plate here huh? So what plate do you want to deposit?@Oh, você deseja depositar uma Plate aqui? Então, qual Plate você deseja deixar?
-Oh, you want to receive a promotion in the Ranger Club?@Oh, você quer receber uma promoção no Ranger Club?
+Oh, you want to receive a promotion in the Ranger Club? {Yes} or {No}@Oh, você quer receber uma promoção no Ranger Club? {Sim} ou {Não}
 Oh, you want to test the new dive equipment? It's a long process though... First you must get some items that I can bring to the clothing manufacturer.@Oh, você quer testar o novo equipamento de mergulho? É um longo processo... Primeiro você deve obter alguns itens para que eu possa usar para a fabricação de roupas.
 Ohh, my baby!@Ohh, meu bebê!
 Ohh... Hello!@Ohh ... Olá!
@@ -3185,7 +3185,7 @@ Peck inflicts damage and has no secondary effect.@Peck inflige dano e não tem ne
 People of high society stand out when they wear nice clothes. With good money and some items, I can help you.@As pessoas da alta sociedade se destacam quando vestem roupas bonitas. Com um bom dinheiro e alguns itens, eu possa ajudá-lo.
 Pepper Denis@Pimenta Denis
 %s's TV Channel@Canal de TV do %s
-%s, are you sure?@%s, você tem certeza?
+%s, are you sure? {Yes} or {No}@%s, você tem certeza? {Sim} ou {Não}
 %s, back!@%s, volte!
 %s, blink!@%s, blink!
 %s, cut it!@%s, corte isto!
@@ -3651,9 +3651,9 @@ Snap@Snap
 Snore can only be used whilst the user is sleeping and will fail if the user is not.@Snore só pode ser utilizado enquanto o usuário está dormindo e falhará se o usuário não está.
 Snow Cloak grants 5% chance of evasion from moves.@Snow Cloak concede 5% de chance de evasão de movimentos.
 Snowman@Boneco de neve
-So, do you really want to remove your Pokemon Egg Move?@Então, você realmente deseja remover o seu movimento ovo do seu Pokemon?
+So, do you really want to remove your Pokemon Egg Move? {Yes} or {No}@Então, você realmente deseja remover o seu movimento ovo do seu Pokemon? {Sim} ou {Não}
 So, what TM slot do you want to remove? {1} or {2}.@Então, qual é o slot de TM que você quer remover? {1} ou {2}.
-So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes.@Então, você realmente quer redefinir seu Smeargle %s? Isso vai custar %sx Artist's Pallete.
+So, you really want to reset your Smeargle %s? This will cost you %sx artist palettes. {Yes} or {No}@Então, você realmente quer redefinir seu Smeargle %s? Isso vai custar %sx Artist's Pallete. {Sim} ou {Não}
 So, you want a {Hitmonchan} or a {Hitmonlee}?@Então, você quer um {Hitmonchan} ou um {Hitmonlee}?
 So you are the trainer Gary told me about... I see.@Então é você o treinador que Gary falou... Eu entendo.
 Social Addons@Addons Social
@@ -4267,7 +4267,7 @@ The Resynthesizer is ready! Now you must bring it to Dr. Alan Grant.@O Resynthes
 There you go! Good luck!@Aqui vai! Boa sorte!
 The rightful bearer of a plate draws from the plate it holds. Represents the dark type.@O legítimo portador de uma Plate retira a Plate que detém. Representa o tipo trevas.
 The rightful bearer of a plate draws from the plate it holds. Represents the normal type.@O legítimo portador de uma Plate retira a Plate que detém. Representa o tipo normal.
-These are the details of this task, do you accept it?@Estes são os detalhes desta tarefa, você aceita?
+These are the details of this task, do you accept it? {Yes} or {No}@Estes são os detalhes desta tarefa, você aceita? {Sim} ou {Não}
 These are your current offerts. You can {cancel} then anytime.@Estes são as suas ofertas atuais. Você pode {cancelar} elas a qualquer momento.
 These here are cool too!@Estes aqui são legais também!
  these objects.@ esses objetos.
@@ -4483,7 +4483,7 @@ Tip: Do not stop running!@Dica: Não pare de correr!
 Tip: Note the path that you're doing!@Dica: Anote o caminho que você faz!
 Tip: Use your pokemon Rock Smash!@Dica: Use o Rock Smash!
 TIRED!@CANSADO!
-To advance in rank within the Mastery you need to prove you've mastered it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens?@Para avançar na classificação dentro da Mastery você precisa provar que está dominando-a, juntando %s tokens, você pode obtê-los por completar missões com os habitantes desta base. Você já está com %s %s tokens?
+To advance in rank within the Mastery you need to prove you've mastered it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens? {Yes} or {No}@Para avançar na classificação dentro da Mastery você precisa provar que está dominando-a, juntando %s tokens, você pode obtê-los por completar missões com os habitantes desta base. Você já está com %s %s tokens? {Sim} ou {Não}
 To be promoted to the next rank, you need at least level %s.@Para ser promovido a próxima categoria, você precisa de pelo menos nível %s.
 To be promoted to the next rank, you need at least %s Ranger Club points.@Para ser promovido a próxima categoria, você precisa de pelo menos %s pontos no Ranger Club.
  to catch it.@ para capturar.
@@ -4494,7 +4494,7 @@ To do that, first put a ball in your ball slot.@Para isso, em primeiro lugar col
 To enter into this challenge you need three players fit in the correct locations.@Para entrar neste desafio você precisa de três jogadores nos locais corretos.
 To enter into this challenge you need three players fit in the correct locations and without any pokemon.@Para entrar neste desafio você precisa de três jogadores nos locais corretos e sem nenhum Pokemon.
 To fly through the air, just use a Pokemon with the Fly HM. Use ORDER on your character and your Pokemon will fly with you. To go up and down, say "/up" and "/down". I can {continue} when you feel ready.@Para voar pelo ar, é só usar um Pokemon com o HM Fly. Use ORDER sobre o seu personagem e seu Pokemon vai voar com você. Para levantar e descer e fale "/up" e "/down". Eu posso {continuar} quando se sentir pronto.
-To join the %s Mastery you will need %s. Do you have them?@Para unir-se a Mastery %s você precisará de %s. Você está com eles?
+To join the %s Mastery you will need %s. Do you have them? {Yes} or {No}@Para unir-se a Mastery %s você precisará de %s. Você está com eles? {Sim} ou {Não}
 To keep its pitchblack tail hidden, it lives quietly in the darkness. It is never first to attack.@Para manter sua cauda pitchblack escondido, vive tranquilamente na escuridão. Nunca é primeiro a atacar.
 To my mother:\n\nDear mother, I am concerned. I am writing to tell you about a few things. I discovered many interesting things about the new Pokemon on this continent, but I feel that I'm being followed. I'll be back in Kanto soon. I'll arrive by Viridian.\n\nPS: Talk to Gary that I sent an email to him, ok?\n\nAsh Ketchum@Para minha mãe:\n\Querida mãe, estou preocupado. Estou escrevendo para informá-la sobre algumas coisas. Descobri muitas coisas interessantes sobre o novo Pokemon neste continente, mas eu sinto que eu estou sendo seguido. Estarei de volta em breve em Kanto. Vou chegar de Viridian\n\nPS:. Fale com Gary que eu mandei um e-mail para ele, ok\n\Ash Ketchum
 Too far away.@Muito distante.
@@ -4550,7 +4550,7 @@ Two make matter and three make spirit, shaping the world. Represents the fairy t
 Two make matter and three make spirit, shaping the world. Represents the fire type.@Dois fazem a matéria e três fazem o espírito, moldando o mundo. Representa o tipo fogo.
 Typed color has to be between 0 and 256@Digite a cor que deve estar entre 0 e 256
 Tyranitar is its name. I remember when I captured it in its first form... Larvitar. So beautiful and so cute... then it turned into that bloody thing! And just when we were about to {find} out about that...@Tyranitar é o seu nome. Eu me lembro quando foi capturado em sua primeira forma... o Larvitar. Tão lindo e tão bonito... então ele virou essa coisa sangrenta! E justamente quando estávamos prestes a {encontrar} sobre isso...
-Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go?@Uh! O Safari Zone! Posso levá-lo lá por %s dólares. Você quer?
+Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go? {Yes} or {No}@Uh! O Safari Zone! Posso levá-lo lá por %s dólares. Você quer? {Sim} ou {Não}
 Uh, I don't usually do this but... I'm running a science event and I need some items to finish my experiment. Do you want to help me?@Uh, eu não costumo fazer isso, mas.. Eu estou participando em um evento de ciências e eu preciso de alguns itens para terminar a minha experiência, você quer me ajudar?
 Uh, I need some items that smell of nature, want to help me?@Uh, eu preciso de alguns itens que contêm um cheiro da natureza, quer me ajudar?
 Uh... who calls me? Oh, hi.@Uh... que me chama? Oh, oi.
@@ -4942,7 +4942,7 @@ Do you have my special stone?@Você está com a minha pedra especial?
 Do you have the items I need?@Você está com os itens que eu preciso?
 Do you have the items I need? Please!@Você está com os itens que eu preciso? Por Favor!
 You've already caught %s Pokemon species, totaling %s caughts.@Você já capturou %s espécies de Pokemon, totalizando %s capturas.
-You've done this mission and have the old reward. I can renew your reward. Do you want it?@Você já fez esta missão e tem a recompensa antiga, posso renovar a sua recompensa. Você quer?
+You've done this mission and have the old reward. I can renew your reward. Do you want it? {Yes} or {No}@Você já fez esta missão e tem a recompensa antiga, posso renovar a sua recompensa. Você quer? {Sim} ou {Não}
 Did you find the device?@Você encontrou o dispositivo?
 Have you found the maps?@Você encontrou os mapas?
 Did you find Team Rocket? The Chanseys?@Você encontrou a Equipe Rocket? As Chanseys?
@@ -4955,7 +4955,7 @@ You've wasted @Você gastou
 You advanced from Level %d to Level %d.@Você avançou do nível %d para o nível %d.
 You advanced to magic level %d.@You advanced to magic level %d.
 You already have this @Você já tem este 
-You already did this mission. If you need, I can sell you another TV Camera for 1000 dollars. Do you want it?@Você já fez esta missão. Se precisar eu posso vender-lhe uma outra câmera de TV por 1000 dólares, você quer?
+You already did this mission. If you need, I can sell you another TV Camera for 1000 dollars. Do you want it? {Yes} or {No}@Você já fez esta missão. Se precisar eu posso vender-lhe uma outra câmera de TV por 1000 dólares, você quer? {Sim} ou {Não}
 You already fed this Pokemon.@Você já alimentou este Pokemon.
 You already finished this step, please move on to the next one.@Você já terminou esta etapa, por favor, passe para a próxima.
 You already found me! Look for the next one.@Você já me encontrou! Procure o próximo.
@@ -5183,9 +5183,9 @@ You could collect the information that I ask?@Você coletou as informações?
 Were you able to cut the trees?@Você cortou as árvores?
 You could defeat and catch the Rattata?@Você poderia derrotar e capturar o Rattata?
 You could defeat the Rattata?@Você conseguiu derrotar o Rattata?
-Did you find a fossil?@Você poderia encontrar um fóssil?
+Did you find a fossil? {Yes} or {No}@Você poderia encontrar um fóssil? {Sim} ou {Não}
 Did you find Ash?@Você poderia encontrar Ash?
-Could you find a fossil rock?@Você conseguiu encontrar algum fossil rock?
+Could you find a fossil rock? {Yes} or {No}@Você conseguiu encontrar algum fossil rock? {Sim} ou {Não}
 Did you find the flute and wake up my Pokemon?@Você pode encontrar o flauta e acordar meu Pokemon?
 Did you find the GS Ball?@Você encontrou a Pokebola GS?
 Were you able to find the mushroom?@Você pode encontrar o cogumelo?
@@ -5323,7 +5323,7 @@ You have less than %s Pokemon with you!@Você tem menos de %s Pokemon com você!
 You don't have this Pokemon!@Você não tem esse Pokemon!
 You have none Safari Zone pass left, you will be teleported to the entrance.@Você não tem nenhum passe de Zona do Safari, você será teletransportado para a entrada.
 You have no Pokemon being trained by me at this moment! You can {leave} a Pokemon here if you want.@Você não tem nenhum Pokemon sendo treinado por mim neste momento! Você pode {deixar} um Pokemon aqui se você desejar.
-You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task?@Você não concluiu sua tarefa atual. Se você quer aceitar uma nova tarefa, você tem pausar a atual. Você quer pausar sua tarefa atual?
+You have not completed your current task. If you want to accept a new task, you have to pause your current one. Do you want to pause your current task? {Yes} or {No}@Você não concluiu sua tarefa atual. Se você quer aceitar uma nova tarefa, você tem pausar a atual. Você quer pausar sua tarefa atual? {Sim} ou {Não}
 You have not enough space.@Você não tem espaço suficiente.
  You have no vocation@ Você não tem vocação
 You have now %s Safari Zone pass left.@Você tem agora %s passes da Zona Safari restando.
@@ -5492,34 +5492,34 @@ Your doll case now have the %s doll!@Sua Maleta de Bonecos têm agora o boneco do
 You read: @Você lê: 
 Did you read the letter?@Você leu a carta?
 You really did it! Congratulations! I'm seeing a real fossil! Thank you! I will start studying it now, come back in 24 hours to see if there is any news.@Você realmente fez isso! Parabéns! Eu estou vendo um verdadeiro fóssil! Obrigado! Eu vou começar a estudar agora, volte em 24 horas para ver se há alguma notícia.
-Do you really want a Bulbasaur?@Você realmente quer um Bulbasaur?
-Do you really want a Charmander?@Você realmente quer um Charmander?
-Do you really want a Squirtle?@Você realmente quer um Squirtle?
+Do you really want a Bulbasaur? {Yes} or {No}@Você realmente quer um Bulbasaur? {Sim} ou {Não}
+Do you really want a Charmander? {Yes} or {No}@Você realmente quer um Charmander? {Sim} ou {Não}
+Do you really want a Squirtle? {Yes} or {No}@Você realmente quer um Squirtle? {Sim} ou {Não}
 You really want a Chikorita?@Você realmente quer uma Chikorita?
 You really want a Totodile?@Você realmente quer um Totodile?
 You really want a Cyndaquil?@Você realmente quer um Cyndaquil?
 You really want a Treecko?@Você realmente quer um Treecko?
 You really want a Torchic?@Você realmente quer um Torchic?
 You really want a Mudkip?@Você realmente quer um Mudkip?
-Do you really want to be part of the Ranger Club?@Você realmente quer ser parte do Ranger Club?
+Do you really want to be part of the Ranger Club? {Yes} or {No}@Você realmente quer ser parte do Ranger Club? {Sim} ou {Não}
 You really want to buy this Pokemon (%s %s+%s) for %s dollars?@Você realmente quer comprar este Pokemon (%s %s+%s) por %s doláres?
 You really want to cancel this offert?@Você realmente deseja cancelar esta oferta?
 You really want to cancel your bid for this offert?@Você realmente deseja cancelar o seu lance para este offert?
-Do you really want to challenge this boss?@Você realmente quer desafiar este chefão?
-Do you really want to deposit %s %s?@Você realmente deseja depositar %s %s?
-Do you really want to exchange %s referral points for a %s?@Você realmente quer trocar %s pontos de referência por um(a) %s?
-Do you really want to join the %s tournament? (This will cost you %s dollars)@Você realmente quer se juntar ao torneio %s? (Isso vai te custar %s dólares)
-Do you really want to leave this room? You may be disqualified from the tournament.@Você realmente quer sair desta sala? Você pode será desclassificado para esse torneio.
+Do you really want to challenge this boss? {Yes} or {No}@Você realmente quer desafiar este chefão? {Sim} ou {Não}
+Do you really want to deposit %s %s? {Yes} or {No}@Você realmente deseja depositar %s %s? {Sim} ou {Não}
+Do you really want to exchange %s referral points for a %s? {Yes} or {No}@Você realmente quer trocar %s pontos de referência por um(a) %s? {Sim} ou {Não}
+Do you really want to join the %s tournament? (This will cost you %s dollars) {Yes} or {No}@Você realmente quer se juntar ao torneio %s? (Isso vai te custar %s dólares) {Sim} ou {Não}
+Do you really want to leave this room? You may be disqualified from the tournament. {Yes} or {No}@Você realmente quer sair desta sala? Você pode será desclassificado para esse torneio. {Sim} ou {Não}
 You really want to live in @Você realmente quer viver em 
-Do you really want to live in %s?@Você realmente quer viver em %s?
+Do you really want to live in %s? {Yes} or {No}@Você realmente quer viver em %s? {Sim} ou {Não}
 You really want to make a bid for the %s by %s dollars?@Você realmente quer fazer uma oferta para o %s por %s dólares?
-Do you really want to use the Egg Move %s of your %s to replace the move %s?@Você realmente deseja mover o Movimento de Ovo %s de seu %s para substituir o movimento %s?
-Do you really want to move the TM %s from your %s to replace the move %s?@Você realmente deseja mover o movimento da TM de seu %s para substituir o movimento %s?
-Do you really want to remove the move %s from your %s?@Você realmente deseja remover o movimento %s do seu %s?
-DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!@VOCÊ REALMENTE DESEJA REMOVER O MOVIMENTO DE OVO DO SEU POKEMON? ELE NUNCA SERÁ CAPAZ DE APRENDER OUTRO MOVIMENTO DE OVO!
+Do you really want to use the Egg Move %s of your %s to replace the move %s? {Yes} or {No}@Você realmente deseja mover o Movimento de Ovo %s de seu %s para substituir o movimento %s? {Sim} ou {Não}
+Do you really want to move the TM %s from your %s to replace the move %s? {Yes} or {No}@Você realmente deseja mover o movimento da TM de seu %s para substituir o movimento %s? {Sim} ou {Não}
+Do you really want to remove the move %s from your %s? {Yes} or {No}@Você realmente deseja remover o movimento %s do seu %s? {Sim} ou {Não}
+DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE! {YES} or {NO}@VOCÊ REALMENTE DESEJA REMOVER O MOVIMENTO DE OVO DO SEU POKEMON? ELE NUNCA SERÁ CAPAZ DE APRENDER OUTRO MOVIMENTO DE OVO! {SIM} ou {NÃO}
 You really want to sell your %s for %s dollars?@Você realmente quer vender seu %s por %s doláres?
-Do you really want to skip the tutorial?@Você realmente quer pular o tutorial?
-Do you really want to unsubscribe from the tournament?@Você realmente deseja cancelar a inscrição para o torneio?
+Do you really want to skip the tutorial? {Yes} or {No}@Você realmente quer pular o tutorial? {Sim} ou {Não}
+Do you really want to unsubscribe from the tournament? {Yes} or {No}@Você realmente deseja cancelar a inscrição para o torneio? {Sim} ou {Não}
 You received: %s [%sx].@Você recebeu: %s [%sx].
 You received: %s [%x] directly into your depot.@Você recebeu: %s [%x] diretamente em seu depósito.
 You received a donphan toy ball.@Você recebeu uma donphan toy ball.
@@ -5677,22 +5677,22 @@ Do you understand my dilemma? She doesn't want me anymore... and nothing I do ca
 You ve already played %s times today, this is the limit per day.@Você já jogou %s vezes hoje, este é o limite por dia.
 Do you want to bring some oranges for my Miltanks?@Você quer trazer algumas oranges para as minhas Miltanks?
 You want to exchange %s christmas tokens for a %s?@Você quer trocar %s christmas tokens por um %s?
-You want to exchange %s frontier tokens for a %s?@Você quer trocar %s frontier tokens por um %s?
+You want to exchange %s frontier tokens for a %s? {Yes} or {No}@Você quer trocar %s frontier tokens por um %s? {Sim} ou {Não}
 You want to exchange %s golden easter egg for a %s?@Você quer trocar %s golden easter egg por um %s?
-You want to exchange %s halloween tokens for a %s?@Você quer trocar %s halloween tokens por um %s?
-You want to exchange %s mastery token%s%s for %sx %s?@Você quer trocar %s mastery token%s%s por %sx %s?
-Do you want to exchange %s poke coins for a %s?@Você quer trocar %s poke coins por um %s?
-You want to exchange %s tournament token%s for a %s?@Você quer trocar %s tournament token%s por um %s?
-Do you want to exchange %s %s for a %s?@Você quer trocar %s %s por um %s?
+You want to exchange %s halloween tokens for a %s? {Yes} or {No}@Você quer trocar %s halloween tokens por um %s? {Sim} ou {Não}
+You want to exchange %s mastery token%s%s for %sx %s? {Yes} or {No}@Você quer trocar %s mastery token%s%s por %sx %s? {Sim} ou {Não}
+Do you want to exchange %s poke coins for a %s? {Yes} or {No}@Você quer trocar %s poke coins por um %s? {Sim} ou {Não}
+You want to exchange %s tournament token%s for a %s? {Yes} or {No}@Você quer trocar %s tournament token%s por um %s? {Sim} ou {Não}
+Do you want to exchange %s %s for a %s? {Yes} or {No}@Você quer trocar %s %s por um %s? {Sim} ou {Não}
 Will you help me find a reason to live?@Você poderia encontrar uma razão para a minha vida?
 You want to go back?@Você quer voltar?
 Do you want to hear about the {FRONTIER ISLAND} or the {RANGER CLUB}?@Você quer ouvir sobre a {FRONTIER ISLAND} ou o {RANGER CLUB}?
-Do you want to help me with my excavations?@Você quer me ajudar em minhas escavações?
+Do you want to help me with my excavations? {Yes} or {No}@Você quer me ajudar em minhas escavações? {Sim} ou {Não}
 You want to help PILOSS strengthen the stone's protection? Then first you have to get one of the {Restore} Stones that lie in this mountain. We Pokemon PILOSSW can't get near it because it gives off too much negative energy, but maybe you can.@Você quer ajudar PILOSS a fortalecer a proteção da pedra? Primeiro então você vai ter que pegar uma das {Restore} Stones que residem nesta montanha. Nós Pokemons PILOSSW não podemos chegar perto devido a sua energia negativa, talvez você possa.
 You want to help Santa recover his presents? I'll send you to the North Pole.@Você quer ajudar o Papai Noel a recuperar seus presentes? Eu vou mandar você para o Pólo Norte.
 You want to know what we're doing here? Okay... since you're snooping, take this broom and help us clean up this mess. Use it to clean the floor of this room. Clean 7 places and return.@Você quer saber o que estamos fazendo aqui? Ok... já que você está bisbilhotando, aproveite esta vassoura e nos ajude a limpar essa bagunça. Use-a para limpar o chão da sala. Limpe 7 lugares e retorne.
-You want to paint your pokeball with option %s for %s dollars and a %s ticket?@Você quer pintar sua Pokebola com opção %s por %s dólares e um bilhete %s?
-You want to paint your pokeball with option %s for %s dollars?@Você quer pintar sua Pokebola com opção %s por %s dólares?
+You want to paint your pokeball with option %s for %s dollars and a %s ticket? {Yes} or {No}@Você quer pintar sua Pokebola com opção %s por %s dólares e um bilhete %s? {Sim} ou {Não}
+You want to paint your pokeball with option %s for %s dollars? {Yes} or {No}@Você quer pintar sua Pokebola com opção %s por %s dólares? {Sim} ou {Não}
 You was defeated in the Cooperative Elite Arena!@Você foi derrotado na Cooperativa Elite Arena!
 You was defeated in the Cooperative Titan Arena!@Você foi derrotado na Cooperativa Titan Arena!
 You was defeated in the Gladiator Arena!@Você foi derrotado no Gladiator Arena!
@@ -5718,7 +5718,7 @@ You won't withstand my Tsunami, kid!@Você não vai segurar a minha Tsunami garoto
 You won %s.@Você venceu %s.
 You won %s and received your reward.@Você venceu %s e recebeu a sua recompensa.
 You won %s poke coin%s@Você ganhou %s poke coin%s
-Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil?@Você não ousaria VAPP ir atrás desta REONN coisa maligna! Eu não VAPPP permitirei! Nosso rei se sacrificou VAPOREONN por isso. Você quer usar ela para o mal?
+Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil? {Yes} or {No}@Você não ousaria VAPP ir atrás desta REONN coisa maligna! Eu não VAPPP permitirei! Nosso rei se sacrificou VAPOREONN por isso. Você quer usar ela para o mal? {Sim} ou {Não}
 Yup! Did you bring me the Heracross?@Sim! Você me trouxe o Heracross?
 Yup! Nice. Now you must talk to Dorothy. She will teach you more about Pokeballs. You can find her inside the Oak Lab.@Sim! Muito bem. Agora você deve falar com Dorothy. Ela vai te ensinar mais sobre Pokebolas. Você pode encontrá-la dentro do Laboratório do Oak.
 Yup! Perfect! But the tasks are not over yet, I need more things.@Sim! Perfeito! Mas as tarefas ainda não acabaram, eu preciso de mais coisas.
@@ -5747,16 +5747,16 @@ my guild house@a casa da minha guilda
 You cannot enter the tournament room while you are carrying Pokemon!@Você não pode entrar na sala do torneio enquanto estiver carregando Pokemons!
 Please check your backpack for free space!@Por favor verifique se a sua mochila tem espaço livre!
 You already entered this tournament room today! You cannot enter again, please try tomorrow.@Você já entrou na sala deste torneio hoje! Você não pode entrar novamente, por favor tente amanhã.
-Yes, you can recover an Egg Move that your Pokemon forgot. Do you want to do that?@Sim, você pode recuperar um Golpe de Ovo que seu Pokemon esqueceu. Você quer fazer isto?
+Yes, you can recover an Egg Move that your Pokemon forgot. Do you want to do that? {Yes} or {No}@Sim, você pode recuperar um Golpe de Ovo que seu Pokemon esqueceu. Você quer fazer isto? {Sim} ou {Não}
 Your Pokemon does not have an Egg Move!@Seu Pokemon não tem um Golpe de Ovo!
 Your %s recovered the egg move %s!@Seu %s recuperou o Golpe de Ovo %s!
-This will cost you %s dollars, are you sure?@Isto vai lhe custar %s doláres, você tem certeza?
+This will cost you %s dollars, are you sure? {Yes} or {No}@Isto vai lhe custar %s doláres, você tem certeza? {Sim} ou {Não}
 Hello |PLAYERNAME|, welcome to the {Colosseum Arena}!@Olá |PLAYERNAME|, bem vindo a {Colosseum Arena}!
 The level of this Pokemon is too high to use this Lollipop. You can use it at maximum on level %s Pokemon.@O nível desse Pokemon é muito alto para usar este Lollipop. Você pode usá-lo em até no máximo Pokemons de nível %s.
 One of the characters on your account already played the Colosseum Arena today! Please try again tomorrow.@Um personagem da sua conta já jogou a Colosseum Arena hoje! Por favor, tente novamente amanhã.
 This Pokemon has received a Lollipop recently. He must wait %s to receive another.@Este Pokemon já recebeu um Lollipop recentemente. Ele deve aguardar %s para receber outro.
 Here you can face the Colosseum Arena, a singleplayer mode game that will test your trainer skills. If you want this challenge, say 'enter'.@Aqui você pode enfrentar a Colosseum Arena, um jogo solo que vai testar as suas habilidades como treinador. Se você quer este desafio, diga 'entrar'.
-Do you want to enter the Colosseum Arena? This will cost you %s dollars.@Você quer entrar na Colosseum Arena? Isto vai lhe custar %s doláres.
+Do you want to enter the Colosseum Arena? This will cost you %s dollars. {Yes} or {No}@Você quer entrar na Colosseum Arena? Isto vai lhe custar %s doláres. {Sim} ou {Não}
 You need at least level %s to challenge this game!@Você precisa ao menos nível %s para desafiar este jogo!
 Sorry, only Premium Accounts can join this game.@Desculpe, somente jogadores com Conta Premium podem entrar neste jogo.
 Your Pokemon already has an Egg Move!@Seu Pokemon já possui um Golpe de Ovo!
@@ -5786,7 +5786,7 @@ Anniversary Event - Cake Minion Defeat Status: %s/%s@Evento de Aniversário - Sta
 The Evil Cake has appeared!@O Evil Cake apareceu!
 You do not have enough anniversary token for it.@Você não tem anniversary token suficiente para isto.
 Here you can exchange anniversary tokens for gifts. You can see the {options}.@Aqui você pode trocar suas anniversary tokens por presentes, você pode ver as {opções}.
-Do you want to exchange %s anniversary token for a %s?@Você quer trocar %s anniversary token por um %s?
+Do you want to exchange %s anniversary token for a %s? {Yes} or {No}@Você quer trocar %s anniversary token por um %s? {Sim} ou {Não}
 You must collect Kanto badges first.@Você deve coletar as insignias de Kanto primeiro.
 Someone is challenging the Elite Four right now, please try again later.@Alguém está desafiando o Elite Four agora, por favor tente mais tarde.
 You cannot challenge while you are carrying any type of potion.@Você não pode desafiar enquanto você está carregando poções.
@@ -5818,7 +5818,7 @@ You already won this challenge.@Você já venceu este desafio.
 You MUST use CTRL + ARROW KEYS to turn your character!@Você DEVE utilizar CTRL + SETAS para direcionar seu personagem.
 You won the Snake game!@Você venceu o jogo da Snake!
 You loss the Snake game!@Você perdeu o jogo da Snake!
-Oh, you think that you are ready to challenge the Elite Four?@Oh, você acha que está preparado para desafiar a Elite Four?
+Oh, you think that you are ready to challenge the Elite Four? {Yes} or {No}@Oh, você acha que está preparado para desafiar a Elite Four? {Sim} ou {Não}
 No, no. Maybe when you are ready.@Sim, sim. Talvez quando você estiver pronto.
 Hello |PLAYERNAME|! Welcome to the Elite Four challenge!@Olá |PLAYERNAME|! Bem-vindo ao desafio da Elite Four!
 Call your Pokemon!@Chame seu Pokemon!
@@ -6133,7 +6133,7 @@ Oh ok, take it.@Oh certo, aqui está.
 Yoo |PLAYERNAME|! I can exchange your {letters} for {anniversary tokens}.@Yoo |PLAYERNAME|! Eu posso trocar suas {letras} em {anniversary tokens}.
 And how many letters do you want to exchange?@E quantas letras você quer trocar?
 Here you can exchange the letters for anniversary tokens, you can see the {options}.@Aqui você pode trocar letras em anniversary tokens, você pode ver as {opções}.
-You want to exchange %s %s for %s anniversary token(s)?@Você quer trocar %s %s por %s anniversary token(s)?
+You want to exchange %s %s for %s anniversary token(s)? {Yes} or {No}@Você quer trocar %s %s por %s anniversary token(s)? {Sim} ou {Não}
 You do not have enough items for it.@Você não tem items suficientes para isto.
 Ya Ya! We no longer need to collect items to defeat Suramoon! But I can still create {potions} for you!@Ya Ya! Nós não precisamos mais coletar items para derrotar Suramoon! Mas eu posso criar {poções} para você!
 Yes, I can speak!! I can help you build magic {balls} to catch Halloween Pokemon!@Sim, eu posso falar! Eu posso lhe ajudar criando {bolas} mágicas para capturar os Pokemons do Halloween!
@@ -6403,8 +6403,8 @@ Did you find Calico?@Você encontrou Calico?
 You are here, Ed Blackhood is building something and need these parts to finish. Can you take it to him?@Eu preciso de sua ajuda agora, lembrei que Ed Blackhood precisava dessa peça aqui para completar um artefato pro barco dele, preciso que você entregue isto a ele.
 Dind you find Ed?@Você encontrou Ed?
 You must wait %s to use the teleporter again.@Você precisar aguardar %s para poder usar o teletransportador novamente.
-You want to exchange %s for the %s?@Você quer trocar %s por %s?
-You want to exchange %s more %s empty poke balls for %s empty enchanted balls?@Você quer trocar %s mais %s poke bolas vazias por %s enchanted bolas vazias?
+You want to exchange %s for the %s? {Yes} or {No}@Você quer trocar %s por %s? {Sim} ou {Não}
+You want to exchange %s more %s empty poke balls for %s empty enchanted balls? {Yes} or {No}@Você quer trocar %s mais %s poke bolas vazias por %s enchanted bolas vazias? {Sim} ou {Não}
 Thanks to Bill's help I can now return to the past any time! So I created this battle simulator to prepare our young people for the future! Do you want to join us?@Graças a ajuda de Bill agora eu posso retornar ao passado quando quiser! Então eu decidi criar este simulador de batalha para preparar os mais jovens para o futuro! Você quer se juntar a nós?
 Great, very good! Your task is simple: wait for the battle simulator to send the global message, enter the teleport and defeat the copy of Suramoon. To prove your feat, bring me 5 of the essences you find on his body.@Ótimo, muito bem! A sua tarefa é simples, aguarde a mensagem global do simulador, então entre no teletransporte e derrote a cópia do Suramoon. Para provar sua vitória, traga as essências que estarão em seu corpo.
 Did you get his essence?@Você pegou as essências?
@@ -6646,7 +6646,7 @@ A unique attack that varies in type depending on the Pokemon using it.@Um ataque
 Pluck does damage and has no secondary effect.@Pluck inflinge dano e não tem nenhum efeito secundário.
 Your Pokemon doesn't have an Egg Move!@O seu Pokemon não possui um Movimento de Ovo!
 Your Pokemon is not eligible to be fixed.@O seu Pokemon não está elegível para ser corrigido.
-Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that?@Sim, eu posso consertar um Movimento de Ovo perdido devido a atualizações do PokeVerse. Neste caso, você vai gerar um novo Movimento de Ovo se seu Pokemon não pode utilizar o atual. Você quer isso?
+Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that? {Yes} or {No}@Sim, eu posso consertar um Movimento de Ovo perdido devido a atualizações do PokeVerse. Neste caso, você vai gerar um novo Movimento de Ovo se seu Pokemon não pode utilizar o atual. Você quer isso? {Sim} ou {Não}
 Dragon Claw inflicts damage and has no secondary effect.@Dragon Claw inflinge dano e não tem efeito secundário.
 Force Palm inflicts damage and has a 30% chance of paralyzing the target.@Force Palm inflinge dano e tem 30% de chance de causar paralisia no alvo.
 Waterfall does damage and has a 20% chance of causing the target to flinch.@Waterfall causa dano e tem 20% de chance de causar o efeito flinch no alvo.
@@ -6893,7 +6893,7 @@ After collecting the loot, you can try to capture the wild Pokemon by right-clic
 You did it, congratulations! Now go north, I'm waiting for you.@Você conseguiu, parabéns! Agora siga para o norte, estou lhe aguardando.
 Now you must talk to Professor Oak to continue your adventure.@Agora você deve falar com o Professor Oak para continuar sua aventura.
 Did you call your Pokemon out?@Você conseguiu chamar seu Pokemon?
-Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that?@Sim, eu posso transformar um Pokemon Inicial antigo em um Pokemon Inicial Egg. Você quer fazer isto?
+Yes, I can transform an old Starter Pokemon into an Egg Starter Pokemon. Do you want to do that? {Yes} or {No}@Sim, eu posso transformar um Pokemon Inicial antigo em um Pokemon Inicial Egg. Você quer fazer isto? {Sim} ou {Não}
 This Pokemon already came from an egg!@Este é um Pokemon Egg!
 You aren't this Pokemon's original trainer.@Você não é o treinador original deste Pokemon.
 This coupon has been expired.@Este cupom expirou.
@@ -6910,7 +6910,7 @@ You can only take Pokemon of your Mastery's type!@Você só pode levar Pokemons qu
 You do not have enough letters for it.@Você não tem letras suficientes.
 You already have a mastery. If you want to join here, you first need to leave it by talking to your mastery leader.@Você já possui uma Mastery, se você quiser se alistar aqui, primeiro você precisa deixar o seu líder atual.
 You need to leave through your own mastery leader, not here.@Você precisa cancelar com o líder da sua Mastery, não aqui.
-To advance in rank within the Mastery you need to prove that you're mastering it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens?@Para avançar na classificação dentro da Mastery você precisa provar que está dominando-a, juntando %s tokens, você pode obtê-los por completar missões com os habitantes desta base. Você já está com %s %s tokens?
+To advance in rank within the Mastery you need to prove that you're mastering it by collecting %s tokens. You can get them by completing missions for the inhabitants of this base. Do you already have the %s %s tokens? {Yes} or {No}@Para avançar na classificação dentro da Mastery você precisa provar que está dominando-a, juntando %s tokens, você pode obtê-los por completar missões com os habitantes desta base. Você já está com %s %s tokens? {Sim} ou {Não}
 Please put a poke ball in your ball slot first.@Por favor, primeiro coloque a Pokebola no slot do seu inventário.
 (Mission: bring %s.)@(Missão: traga %s.)
 (Mission: bring a %s.)@(Missão: traga um %s.)

@@ -287,9 +287,9 @@ function creatureSayCallback(cid, type, msg)
         lastOption[talkUser] = string.lower(msg)
         talkState[talkUser] = TALKSTATE_PAINTING
         if (PAINT_OPTION_BY_NAME[lastOption[talkUser]].ticket > 0) then
-            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars and a %s ticket?"), msg, PRICE, lastOption[talkUser]), cid)
+            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars and a %s ticket? {Yes} or {No}"), msg, PRICE, lastOption[talkUser]), cid)
         else
-            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars?"), msg, PRICE), cid)
+            selfSay(string.format(__L(cid, "You want to paint your pokeball with option %s for %s dollars? {Yes} or {No}"), msg, PRICE), cid)
         end
     elseif (PAINT_CATEGORIES[msg]) then
         selfSay(string.format(__L(cid, "The options in this category are: %s"), getPaintOptionsMessage(PAINT_CATEGORIES[msg])), cid)

@@ -163,7 +163,7 @@ function creatureSayCallback(cid, type, msg)
     elseif (LETTERS_OPTION_BY_NAME[msg]) then
         lastLettersOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_LETTERS_EXCHANGING
-        selfSay(string.format(__L(cid, "Do you really want to exchange the letters P, S, O, U and L for a %s?"), msg), cid)
+        selfSay(string.format(__L(cid, "Do you really want to exchange the letters P, S, O, U and L for a %s? {Yes} or {No}"), msg), cid)
 
     elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and talkState[talkUser] == TALKSTATE_LETTERS_EXCHANGING and lastLettersOption[talkUser]) then
         local opt = LETTERS_OPTION_BY_NAME[lastLettersOption[talkUser]]
@@ -197,9 +197,9 @@ function creatureSayCallback(cid, type, msg)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
         if (OPTION_BY_NAME[msg].tokenId) then
-            selfSay(string.format(__L(cid, "Do you want to exchange %s %s for a %s?"), OPTION_BY_NAME[msg].tokens, getItemNameById(OPTION_BY_NAME[msg].tokenId), msg), cid)
+            selfSay(string.format(__L(cid, "Do you want to exchange %s %s for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, getItemNameById(OPTION_BY_NAME[msg].tokenId), msg), cid)
         else
-            selfSay(string.format(__L(cid, "Do you want to exchange %s anniversary token for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+            selfSay(string.format(__L(cid, "Do you want to exchange %s anniversary token for a %s? {Yes} or {No}"), OPTION_BY_NAME[msg].tokens, msg), cid)
         end
 
     elseif (msgcontains(msg, 'anniversary') or msgcontains(msg, 'aniversário')) then

@@ -41,7 +41,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     end]]
 
     if (msgcontains(msg, 'chansey') and isPlayerAbleToRefund(cid)) then
-        selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it?", cid)
+        selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it? {Yes} or {No}", cid)
         npcHandler.talkState[talkUser] = TALKSTATE_RENEW
         return true
 

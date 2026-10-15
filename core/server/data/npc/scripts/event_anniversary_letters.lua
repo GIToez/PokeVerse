@@ -113,7 +113,7 @@ function creatureSayCallback(cid, type, msg)
     local opt = OPTION_BY_NAME[lastOption[talkUser]]
     lastCount[talkUser] = count
     talkState[talkUser] = TALKSTATE_EXCHANGING
-    selfSay(string.format(__L(cid, "You want to exchange %s %s for %s anniversary token(s)?"), count, opt.name, count * opt.tokens), cid)
+    selfSay(string.format(__L(cid, "You want to exchange %s %s for %s anniversary token(s)? {Yes} or {No}"), count, opt.name, count * opt.tokens), cid)
 
   elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then
     doPlayerPopupFYI(cid, optionsMessage)

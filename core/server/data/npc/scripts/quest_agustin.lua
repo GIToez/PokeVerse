@@ -20,7 +20,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 		selfSay("Rock? He's an old friend. Hehe, I haven't seen him in ages.", cid)
 
 		if (getCreatureStorage(cid, 8020) == 0 and getCreatureStorage(cid, 8021) ~= 1) then -- Doing Rock Task
-			selfSay("Also, I have a letter to deliver to him. Will you do me this favor?", cid)
+			selfSay("Also, I have a letter to deliver to him. Will you do me this favor? {Yes} or {No}", cid)
 			npcHandler.talkState[talkUser] = 1
 		end
 

@@ -106,15 +106,15 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'enter') or msgcontains(msg, 'entrar')) then
         if (talkState[talkUser] == TALKSTATES.TWENTY) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Twenty mode? This will cost you %s dollars."), TWENTY_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Twenty mode? This will cost you %s dollars. {Yes} or {No}"), TWENTY_COST), cid)
             talkState[talkUser] = TALKSTATES.TWENTY_ACCEPT
 
         elseif (talkState[talkUser] == TALKSTATES.FIFTEEN) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Fifteen mode? This will cost you %s dollars."), FIFTEEN_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Fifteen mode? This will cost you %s dollars. {Yes} or {No}"), FIFTEEN_COST), cid)
             talkState[talkUser] = TALKSTATES.FIFTEEN_ACCEPT
 
         elseif (talkState[talkUser] == TALKSTATES.TEN) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Ten mode? This will cost you %s dollars."), TEN_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Ten mode? This will cost you %s dollars. {Yes} or {No}"), TEN_COST), cid)
             talkState[talkUser] = TALKSTATES.TEN_ACCEPT
         end
 

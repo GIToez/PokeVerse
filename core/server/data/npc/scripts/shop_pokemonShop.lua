@@ -339,13 +339,13 @@ function creatureSayCallback(cid, type, msg)
             offert[#offert] = "."
             offert = table.concat(offert)
 
-            selfSay(string.format(__L(cid, "Do you want to sell: %s for %s dollars?"), offert, amount), cid)
+            selfSay(string.format(__L(cid, "Do you want to sell: %s for %s dollars? {Yes} or {No}"), offert, amount), cid)
             doPlayerPopupFYI(cid, "ATTENTION! If you say YES you will sell all the Pokemon that you're carrying! Be sure before you confirm.")
             talkState[talkUser] = TALKSTATE_SELL_ALL
             lastPokemon[talkUser] = nil
 
         elseif (isPokemonName(msg)) then
-            selfSay(string.format(__L(cid, "Do you want to sell your %s for %s dollars plus %s dollars for each level?"), msg, getPokemonPrice(msg), cashIncreasedPerLevel), cid)
+            selfSay(string.format(__L(cid, "Do you want to sell your %s for %s dollars plus %s dollars for each level? {Yes} or {No}"), msg, getPokemonPrice(msg), cashIncreasedPerLevel), cid)
 		    lastPokemon[talkUser] = msg
 
         else

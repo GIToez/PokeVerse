@@ -27,7 +27,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     if (msgcontains(msg, 'crystal') or msgcontains(msg, 'statue') or msgcontains(msg, 'estatua')) then
         if (getCreatureStorage(cid, questStorage == QUEST_STATUS.STARTED) and
             getCreatureStorage(cid, statueStorage) ~= QUEST_STATUS.FINISHED) then
-            selfSay("Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it?", cid)
+            selfSay("Hey, I can sell you one Crystal Statue for 4000 dollars. Do you want it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.BUYING
 
         else

@@ -28,7 +28,7 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if (msgcontains(msg, 'leave') or msgcontains(msg, 'exit') or msgcontains(msg, 'sair')) then
-		selfSay("Do you really want to leave this room? You may be disqualified from the tournament.", cid)
+		selfSay("Do you really want to leave this room? You may be disqualified from the tournament. {Yes} or {No}", cid)
 		talkState[talkUser] = TALKSTATE_LEAVE
 
 	elseif (talkState[talkUser] == TALKSTATE_LEAVE) then

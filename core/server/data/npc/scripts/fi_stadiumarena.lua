@@ -66,7 +66,7 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'enter') or msgcontains(msg, 'entrar')) then
         if (talkState[talkUser] == TALKSTATES.GLADIATOR) then
-            selfSay(string.format(__L(cid, "Do you want to enter the Gladiator mode? This will cost you %s dollars."), GLADIATOR_COST), cid)
+            selfSay(string.format(__L(cid, "Do you want to enter the Gladiator mode? This will cost you %s dollars. {Yes} or {No}"), GLADIATOR_COST), cid)
             talkState[talkUser] = TALKSTATES.GLADIATOR_ACCEPT
 
         elseif (talkState[talkUser] == TALKSTATES.COOPERATIVE) then
@@ -79,19 +79,19 @@ function creatureSayCallback(cid, type, msg)
         end
 
     elseif (msgcontains(msg, 'elite') and talkState[talkUser] == TALKSTATES.COOPERATIVE_CHOOSE) then
-        selfSay(string.format(__L(cid, "Do you want to enter the Cooperative Elite mode? This will cost you %s dollars."), COOPERATIVE_COST), cid)
+        selfSay(string.format(__L(cid, "Do you want to enter the Cooperative Elite mode? This will cost you %s dollars. {Yes} or {No}"), COOPERATIVE_COST), cid)
         talkState[talkUser] = TALKSTATES.COOPERATIVE_ELITE_ACCEPT
 
     elseif (msgcontains(msg, 'titan') and talkState[talkUser] == TALKSTATES.COOPERATIVE_CHOOSE) then
-        selfSay(string.format(__L(cid, "Do you want to enter the Cooperative Titan mode? This will cost you %s dollars."), COOPERATIVE_COST), cid)
+        selfSay(string.format(__L(cid, "Do you want to enter the Cooperative Titan mode? This will cost you %s dollars. {Yes} or {No}"), COOPERATIVE_COST), cid)
         talkState[talkUser] = TALKSTATES.COOPERATIVE_TITAN_ACCEPT
 
     elseif (msgcontains(msg, 'challenge') and talkState[talkUser] == TALKSTATES.SURVIVE_CHOOSE) then
-        selfSay(string.format(__L(cid, "Do you want to enter the Survive Challenge mode? This will cost you %s dollars."), SURVIVE_COST), cid)
+        selfSay(string.format(__L(cid, "Do you want to enter the Survive Challenge mode? This will cost you %s dollars. {Yes} or {No}"), SURVIVE_COST), cid)
         talkState[talkUser] = TALKSTATES.SURVIVE_CHALLENGE_ACCEPT
 
     elseif (msgcontains(msg, 'hardcore') and talkState[talkUser] == TALKSTATES.SURVIVE_CHOOSE) then
-        selfSay(string.format(__L(cid, "Do you want to enter the Survive Hardcore mode? This will cost you %s dollars."), SURVIVE_COST), cid)
+        selfSay(string.format(__L(cid, "Do you want to enter the Survive Hardcore mode? This will cost you %s dollars. {Yes} or {No}"), SURVIVE_COST), cid)
         talkState[talkUser] = TALKSTATES.SURVIVE_HARDCORE_ACCEPT
 
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then

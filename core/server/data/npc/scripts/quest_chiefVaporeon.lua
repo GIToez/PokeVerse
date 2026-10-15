@@ -43,7 +43,7 @@ NODES[2] = NODES[1]:addChildKeyword(
             return false
         end
 
-        selfSay("Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil?", cid)
+        selfSay("Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil? {Yes} or {No}", cid)
 
         return true
     end,

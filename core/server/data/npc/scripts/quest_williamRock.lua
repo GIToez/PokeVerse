@@ -37,7 +37,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 		if (questStatus == QUESTSTATUS_UNSTARTED) then
 			if (getCreatureStorage(cid, MESSAGE_STORAGE) == QUESTSTATUS_UNSTARTED) then
 				if (getPlayerLevel(cid) >= QUEST_LEVEL) then
-					selfSay("Oh! You have a message from my brother for me?", cid)
+					selfSay("Oh! You have a message from my brother for me? {Yes} or {No}", cid)
 					npcHandler.talkState[talkUser] = TALKSTATE_DELIVERING
 
 				else
@@ -46,12 +46,12 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 				end
 
 			else
-				selfSay("Do you want to help me with my excavations?", cid)
+				selfSay("Do you want to help me with my excavations? {Yes} or {No}", cid)
 				npcHandler.talkState[talkUser] = TALKSTATE_ACCEPTING
 			end
 
 		elseif (questStatus == QUESTSTATUS_STARTED) then
-			selfSay("Could you find a fossil rock?", cid)
+			selfSay("Could you find a fossil rock? {Yes} or {No}", cid)
 			npcHandler.talkState[talkUser] = TALKSTATE_FINISHING
 
 		elseif (questStatus == QUESTSTATUS_WAITINGTIME) then
@@ -76,7 +76,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 		if (npcHandler.talkState[talkUser] == TALKSTATE_DELIVERING) then
 			if (getPlayerItemCount(cid, 14366) > 0) then -- Professor Josh Rock message to William Rock
 				doPlayerRemoveItem(cid, 14366, 1)
-				selfSay("Oh, thanks! So you want to help me with my excavations?", cid)
+				selfSay("Oh, thanks! So you want to help me with my excavations? {Yes} or {No}", cid)
 				npcHandler.talkState[talkUser] = TALKSTATE_ACCEPTING
 				doCreatureSetStorage(cid, MESSAGE_STORAGE, QUESTSTATUS_FINISHED)
 
