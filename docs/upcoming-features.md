@@ -42,10 +42,10 @@ so. Items marked **To decide** need an answer before work starts.
 2. **NPC fixes** from the [NPC audit](npc-audit.md): the shared code (battles, travel, quests,
    Ranger Club, bank), greetings that hide what the NPC answers to, and missing {yes}/{no}.
    NPCs that only have one line are their own category, not a problem.
-3. **[NPC dialogue window](#3-npc-dialogue-quests-and-tasks)**: portrait (the leaders' portraits;
-   everyone without one shows their outfit, no new portraits are made), the blue words as
-   buttons, big Yes/No for questions. The NPC tab stays as the history, but NPC lines no longer
-   pop it open.
+3. **[NPC dialogue window](#3-npc-dialogue-quests-and-tasks)** (built): portrait (the leaders',
+   Oak's and Red's portraits; everyone without one shows their outfit, no new portraits are
+   made), the blue words as buttons, big Yes/No for questions. The NPCs tab stays as it is: it
+   still opens when an NPC talks, keeps the history, and is where answers are typed.
 4. **Mission notices**: started, updated and complete, from the server.
 5. **NPC role icons**: mission, trade, duel, travel, bank and so on, from what each NPC really
    does; NPCs with several roles rotate their icons every second. The mission icon is per
@@ -450,7 +450,19 @@ Many NPCs from the old system are missing the blue clickable responses. There ar
 files and 338 NPC scripts (`core/server/data/npc`).
 
 1. One modern dialogue window for every NPC: name and portrait, blue clickable responses,
-   and a notice when a quest is accepted or a task updated.
+   and a notice when a quest is accepted or a task updated. **Window built**
+   (`pokeverse-modern/modules/game_npcdialog`):
+   - Docked at the bottom of the game screen above the console. It shows the NPC's lines since
+     your last reply, with that reply greyed out above them.
+   - Every blue word is also a button. A {yes} question gets a big green Yes and a red No.
+     Buttons send through the NPCs tab, like clicking the link there. They are never greyed
+     out: the client can't tell whether asking again would say something new.
+   - There is no text box in the window, so WASD isn't affected; typed answers (bank amounts,
+     bids, names) go in the NPCs tab.
+   - Goodbye says "bye" and closes it. Walking away, the NPC leaving the screen, or two quiet
+     minutes close it too.
+   - The role line ("Gym Leader, Pewter City") is a client list for the NPCs with portraits.
+   - The mission notices still need the server.
 2. A checker that lists every NPC whose responses are not clickable.
 3. Convert the NPCs, quests and tasks town by town. Quests and the task boards show up in
    the quest log.
