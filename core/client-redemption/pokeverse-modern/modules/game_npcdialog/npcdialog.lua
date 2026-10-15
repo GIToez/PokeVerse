@@ -12,6 +12,9 @@ local WORD_COLOR = '#6fb6ff'
 local RANGE = 4
 local IDLE_MS = 120000
 local FAREWELLS = { bye = true, goodbye = true, farewell = true, cya = true }
+-- the Portuguese texts show {Sim} ou {Não}
+local YES_WORDS = { yes = true, sim = true }
+local NO_WORDS = { no = true, ['não'] = true, ['nÃo'] = true, nao = true }
 
 local PORTRAITS = {
     ['Brock'] = LEADERS .. 'brock', ['Misty'] = LEADERS .. 'misty', ['Lt. Surge'] = LEADERS .. 'ltsurge',
@@ -237,23 +240,18 @@ local function refresh()
 
     window.words:destroyChildren()
     local words = wordsOf(text)
-    local hasYes = false
+    local yes, no
     for _, word in ipairs(words) do
-        if word:lower() == 'yes' then
-            hasYes = true
-        end
+        local key = word:lower()
+        if YES_WORDS[key] then yes = yes or word elseif NO_WORDS[key] then no = no or word end
     end
-    if hasYes then
-        local yes, no = 'yes', 'no'
-        for _, word in ipairs(words) do
-            if word:lower() == 'yes' then yes = word elseif word:lower() == 'no' then no = word end
-        end
+    if yes then
         addButton('NpcYesButton', yes, tr('Yes'))
-        addButton('NpcNoButton', no, tr('No'))
+        addButton('NpcNoButton', no or 'no', tr('No'))
     end
     for _, word in ipairs(words) do
         local key = word:lower()
-        if not (hasYes and (key == 'yes' or key == 'no')) then
+        if not (yes and (YES_WORDS[key] or NO_WORDS[key])) then
             addButton('NpcWordButton', word)
         end
     end
