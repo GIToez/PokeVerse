@@ -75,12 +75,29 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   spawn). Ilex Forest has a wall of trees from the sea to
   Union Cave's ridge, so its path is the only way from Route 34 to Azalea above ground.
 - **Caves:** made like Kanto's: mountain top ground carved out of solid mountain on the floor
-  below, with rocky patches, debris, stones and wall candles. The way in is a corridor cut into
-  the mountain under a floor-6 roof, like Kanto's passages, with Kanto's stairs (22709) at its
-  end. A clear lane runs down the middle of every tunnel, so no room is cut off. The Ruins of
+  below, with rocky patches, debris, stones and wall candles. The way in is an open ravine cut
+  into the mountain face (no roof, so the mouth reads as a cave and not a missing tile), with
+  Kanto's hole in the rock (6130) at its end. Underground floors get no daylight in the client, so
+  every cave has wall candles and glowing crystals along its walls (blue, pale ice, green, or a
+  dim glow in Dark Cave, per cave in `CAVE_LIGHT`). A clear lane runs down the middle of every
+  tunnel, so no room is cut off. The Ruins of
   Alph's chambers are single rooms under their mounds, entered by stairs from their courts.
   Lower floors are carved the same way on their own floor, joined by stairs down from the floor
   above; the Slowpoke Well is entered through a trapdoor and left by a ladder.
+- **Terrain depth:** open country rises in terraced hills up to floor 4, spread evenly over the
+  region (noise against its local mean), each reached by ramps from the nearest road; mountain
+  ranges stand in tiers up to seven floors, with gravel and rock along their cliffs, and forests
+  are thick with trees, bushes and undergrowth. Snow is dressed with stones (never the snow heap,
+  486, which is a floor change).
+- **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
+  SoulSilver: wide ledges round the peak, one per floor, with trails wide enough for its wild
+  Pokémon, and a flat summit on floor 0. Each ledge is closed one way round by a spur of rock
+  and the other way by what takes a field move, so the way up zigzags: from 1F (floor 8) up
+  inside the mountain to the lower mountainside (floor 5), Surf across its lake, a ramp to
+  floor 4, Cut, a ramp to floor 3, Rock Smash, into the 2F tunnel under the ledge above (its
+  rocks need Rock Smash too), out on floor 2, Rock Smash, a ramp to floor 1, and the 3F tunnel
+  out onto the summit. Tunnel mouths are cut open into the cliffs. Without Surf, Cut and Rock
+  Smash a player gets no higher than the lower mountainside.
 - **Copied interiors:** Kanto's Rocket Hideout (four floors under Celadon's Game Corner) goes
   under Mahogany's souvenir shop, and the basement under Celadon's guild hall under the Global
   Terminal. Each floor is cut from its box by flood fill from its stairs, leaving out Celadon's
@@ -107,7 +124,8 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   the road from the gate to the Elite Four building's south door.
 - **North:** the west gate (3049,593) and its pass to the building's west door, Route 28 with a
   pond, the Silver–Indigo range around the plateau, Mt. Silver with snowfields, its Pokémon
-  Center (2921,520) and the cave mouth (2903,503,7), and Mt. Silver Cave 1F on floor 8.
+  Center (2921,520) and the cave mouth (2903,503,7), Mt. Silver Cave 1F on floor 8 and the climb
+  to the summit (2905,400,0), with the 2F and 3F tunnels.
 - **West:** Cherrygrove City (town 51, temple 2542,834,7) at the end of Route 29, Routes 30 and
   31 north to Violet City (town 52, temple 2513,564,7, with a Gym and Sprout Tower), Route 32 south with its
   Pokémon Center (2470,862), Union Cave 1F (in at 2448,881, out at 2442,962), Route 33 and
@@ -163,12 +181,13 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1416 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1123 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
-  Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, Mt.
-  Silver Cave up to the summit and the Ho-Oh Shrine, the lower floors of Mt. Mortar, the Ice Path
+  Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, the
+  Ho-Oh Shrine, the lower floors of Mt. Mortar, the Ice Path
   and the Whirl Islands, the Gym leaders, Route 36's Sudowoodo and Route 46's one-way ledges.
+  Wild Pokémon are to be redone area by area once the terrain is finished.
   The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions
