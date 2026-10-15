@@ -12,6 +12,7 @@ local searchEvent
 local tileWidgets = {}
 local loadedAt = 0
 local confirmBox
+local expandedTowns = {}
 
 local SIZES = {
     { name = 'Any size' },
@@ -64,47 +65,73 @@ local function matches(house)
     return true
 end
 
+local function addHouseRow(list, house)
+    local row = g_ui.createWidget('PpHouseRow', list)
+    row.house = house
+    local name = house.name
+    if house.id == mine then
+        name = tr('%s (yours)', name)
+        row.name:setColor('#ffd75a')
+    end
+    row.name:setText(name)
+    row.size:setText(tr('%d sqm', house.size))
+    if house.owner == '' then
+        row.state:setText(Pp.formatMoney(house.price))
+        row.state:setColor('#8fe08f')
+    else
+        row.state:setText(house.owner)
+        row.state:setColor('#96aacd')
+    end
+    row:setTooltip(tr('%s, %s\n%d sqm, %d beds%s', house.name, house.town, house.size, house.beds,
+        house.guild and ('\n' .. tr('Guild hall')) or ''))
+    return row
+end
+
 local function drawList()
     local side = page.side
     local list = side.list
-    list:destroyChildren()
-    local shown, focus = 0, nil
+    local groups, byTown, count = {}, {}, 0
     for _, house in ipairs(houses) do
         if matches(house) then
-            local row = g_ui.createWidget('PpHouseRow', list)
-            row.house = house
-            local name = house.name
-            if house.id == mine then
-                name = tr('%s (yours)', name)
-                row.name:setColor('#ffd75a')
+            local town = house.town ~= '' and house.town or tr('Elsewhere')
+            local group = byTown[town]
+            if not group then
+                group = { key = town, name = town, icon = Pp.IMAGES .. 'icon_house', entries = {}, free = 0 }
+                byTown[town] = group
+                groups[#groups + 1] = group
             end
-            row.name:setText(name)
-            row.size:setText(tr('%d sqm', house.size))
+            group.entries[#group.entries + 1] = house
             if house.owner == '' then
-                row.state:setText(Pp.formatMoney(house.price))
-                row.state:setColor('#8fe08f')
-            else
-                row.state:setText(house.owner)
-                row.state:setColor('#96aacd')
+                group.free = group.free + 1
             end
-            row:setTooltip(tr('%s, %s\n%d sqm, %d beds%s', house.name, house.town, house.size, house.beds,
-                house.guild and ('\n' .. tr('Guild hall')) or ''))
-            if house.id == selectedId then
-                focus = row
-            end
-            shown = shown + 1
+            count = count + 1
         end
     end
-    if shown == 0 then
+    table.sort(groups, function(a, b) return a.name < b.name end)
+    for _, group in ipairs(groups) do
+        table.sort(group.entries, function(a, b) return a.sortName < b.sortName end)
+        group.note = group.free > 0 and tr('%d of %d for sale', group.free, #group.entries) or tr('%d houses', #group.entries)
+    end
+    -- a search or a single town shows every match without opening groups by hand
+    local openAll = side.search:getText() ~= '' or #groups == 1
+    local focus
+    Pp.fillTree(list, groups, expandedTowns, function(parent, house)
+        local row = addHouseRow(parent, house)
+        if house.id == selectedId then
+            focus = row
+        end
+        return row
+    end, openAll)
+    if count == 0 then
         local hint = g_ui.createWidget('TkMuted', list)
         hint:setText(#houses == 0 and tr('Loading the houses...') or tr('No house matches.'))
         hint:setMarginLeft(6)
         hint:setMarginTop(6)
     end
-    side.count:setText(tr('%d houses', shown))
+    side.count:setText(tr('%d houses', count))
     if focus then
         list:focusChild(focus, KeyboardFocusReason)
-        list:ensureChildVisible(focus)
+        Pp.revealRow(list, focus)
     end
 end
 
@@ -136,6 +163,9 @@ function Handlers.houses(data)
     for _, row in ipairs(data.list or {}) do
         incoming[#incoming + 1] = { id = row[1], name = tostring(row[2]), town = tostring(row[3]), size = row[4] or 0,
             beds = row[5] or 0, price = row[6] or 0, owner = tostring(row[7] or ''), guild = row[8] == 1 }
+        local house = incoming[#incoming]
+        -- numbers padded so House #2 sorts before House #10
+        house.sortName = house.name:lower():gsub('%d+', function(n) return ('%08d'):format(tonumber(n)) end)
     end
     if data.part >= data.parts then
         houses, incoming = incoming, nil
@@ -164,8 +194,153 @@ local function addLine(label, value, color)
     end
 end
 
+-- the pictures rendered from the map (scripts/mapper/render_pokepedia.py); without them the minimap
+local PICTURES = '/images/pokepedia/houses/'
+local pictures
+local shown = { zoom = 1, x = 0, y = 0 } -- the picture on screen: house, floor, zoom and offset
+
+local function picturesIndex()
+    if pictures == nil then
+        pictures = false
+        local path = PICTURES .. 'index.json'
+        if g_resources.fileExists(path) then
+            local ok, index = pcall(json.decode, g_resources.readFileContents(path))
+            if ok and type(index) == 'table' then
+                pictures = index
+            else
+                g_logger.warning('Pokepedia: invalid house picture index')
+            end
+        end
+    end
+    return pictures or nil
+end
+
+local function floorName(z)
+    if z == 7 then
+        return tr('Ground')
+    elseif z < 7 then
+        return tr('Floor %d', 7 - z)
+    end
+    return tr('Cellar %d', z - 7)
+end
+
+local function placePicture()
+    local view = page.details.content.preview.view
+    local picture = view.picture
+    local box = shown.box
+    local ppt = box[5] / box[3] * shown.zoom
+    local width, height = math.floor(box[5] * shown.zoom), math.floor(box[6] * shown.zoom)
+    local viewWidth, viewHeight = view:getWidth(), view:getHeight()
+    -- a picture smaller than the view stays centered; a bigger one can be dragged up to its edges
+    if width <= viewWidth then
+        shown.x = math.floor((viewWidth - width) / 2)
+    else
+        shown.x = math.max(viewWidth - width, math.min(0, shown.x))
+    end
+    if height <= viewHeight then
+        shown.y = math.floor((viewHeight - height) / 2)
+    else
+        shown.y = math.max(viewHeight - height, math.min(0, shown.y))
+    end
+    picture:setSize({ width = width, height = height })
+    picture:setMarginLeft(shown.x)
+    picture:setMarginTop(shown.y)
+    local size = math.max(1, math.floor(ppt))
+    for _, widget in ipairs(tileWidgets) do
+        local spot = widget.spot
+        if widget.houseTile then
+            widget:setSize({ width = size, height = size })
+            widget:setMarginLeft(math.floor((spot.x - box[1]) * ppt))
+            widget:setMarginTop(math.floor((spot.y - box[2]) * ppt))
+        else
+            widget:setMarginLeft(math.floor((spot.x - box[1] + 0.5) * ppt - widget:getWidth() / 2))
+            widget:setMarginTop(math.floor((spot.y - box[2] + 0.5) * ppt - widget:getHeight() / 2))
+        end
+    end
+end
+
+local function fitZoom(box)
+    local view = page.details.content.preview.view
+    return math.min(1, view:getWidth() / box[5], view:getHeight() / box[6])
+end
+
+local function showFloor(data, z)
+    local preview = page.details.content.preview
+    local box = picturesIndex()[tostring(data.id)][tostring(z)]
+    clearTiles()
+    shown.id, shown.z, shown.box = data.id, z, box
+    shown.zoom = fitZoom(box)
+    shown.x, shown.y = 0, 0
+    local picture = preview.view.picture
+    picture:setImageSource(PICTURES .. data.id .. '_' .. z)
+    local entry = data.entry
+    local count = 0
+    for _, tile in ipairs(data.tiles or {}) do
+        if tile[3] == z and count < 600 then
+            local widget = g_ui.createWidget('PpHousePictureTile', picture)
+            widget.houseTile = true
+            widget.spot = { x = entry.x + tile[1], y = entry.y + tile[2] }
+            widget:addAnchor(AnchorTop, 'parent', AnchorTop)
+            widget:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+            tileWidgets[#tileWidgets + 1] = widget
+            count = count + 1
+        end
+    end
+    if entry.z == z then
+        local door = g_ui.createWidget('PpMapMark', picture)
+        door:setImageSource(Pp.IMAGES .. 'mark_stop')
+        door:setPhantom(true)
+        door.spot = { x = entry.x, y = entry.y }
+        door:addAnchor(AnchorTop, 'parent', AnchorTop)
+        door:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+        tileWidgets[#tileWidgets + 1] = door
+    end
+    for _, button in ipairs(preview.floors:getChildren()) do
+        button:setChecked(button.z == z)
+    end
+    placePicture()
+end
+
+local function drawPicture(data, floors)
+    local preview = page.details.content.preview
+    preview.minimap:hide()
+    preview.view:show()
+    preview.floors:destroyChildren()
+    preview.floors:setHeight(0)
+    local list = {}
+    for z in pairs(floors) do
+        list[#list + 1] = tonumber(z)
+    end
+    -- top floor first, the way the buttons read left to right
+    table.sort(list, function(a, b) return a > b end)
+    if #list > 1 then
+        preview.floors:setHeight(25)
+        for _, z in ipairs(list) do
+            local button = g_ui.createWidget('PpFloorButton', preview.floors)
+            button:setText(floorName(z))
+            button.z = z
+            button.onClick = function()
+                if detail then
+                    showFloor(detail, z)
+                end
+            end
+        end
+    end
+    showFloor(data, floors[tostring(data.entry.z)] and data.entry.z or list[1])
+end
+
 local function drawPreview(data)
-    local preview = page.details.content.preview.minimap
+    local preview = page.details.content.preview
+    local index = picturesIndex()
+    if index and index[tostring(data.id)] then
+        drawPicture(data, index[tostring(data.id)])
+        return
+    end
+    preview.view:hide()
+    preview.floors:destroyChildren()
+    preview.floors:setHeight(0)
+    preview.minimap:show()
+    preview = preview.minimap
     clearTiles()
     local entry = data.entry
     preview:setCameraPosition({ x = entry.x, y = entry.y, z = entry.z })
@@ -336,6 +511,45 @@ function HousesTab.setup(widget)
         return true
     end
 
+    local view = content.preview.view
+    view.onMouseWheel = function(self, mousePos, direction)
+        if not shown.box then
+            return true
+        end
+        local fit = fitZoom(shown.box)
+        local zoom = direction == MouseWheelUp and shown.zoom * 1.25 or shown.zoom / 1.25
+        zoom = math.max(fit, math.min(math.max(fit, 3), zoom))
+        -- keep the spot under the cursor in place
+        local pos = self:getPosition()
+        local cx, cy = mousePos.x - pos.x, mousePos.y - pos.y
+        shown.x = math.floor(cx - (cx - shown.x) * zoom / shown.zoom)
+        shown.y = math.floor(cy - (cy - shown.y) * zoom / shown.zoom)
+        shown.zoom = zoom
+        placePicture()
+        return true
+    end
+    view.onMousePress = function(self, mousePos, button)
+        if button == MouseLeftButton then
+            self.dragFrom = { x = mousePos.x - shown.x, y = mousePos.y - shown.y }
+        end
+        return true
+    end
+    view.onMouseMove = function(self, mousePos)
+        if self.dragFrom and shown.box then
+            shown.x, shown.y = mousePos.x - self.dragFrom.x, mousePos.y - self.dragFrom.y
+            placePicture()
+        end
+    end
+    view.onMouseRelease = function(self)
+        self.dragFrom = nil
+        return true
+    end
+    view.onGeometryChange = function()
+        if shown.box then
+            placePicture()
+        end
+    end
+
     local buttons = content.buttons
     buttons.buy.onClick = function()
         if not detail then
@@ -417,6 +631,7 @@ end
 function HousesTab.onGameEnd()
     houses, incoming, mine, selectedId, detail = {}, nil, 0, nil, nil
     loadedAt = 0
+    shown.box = nil
     if page then
         clearTiles()
         page.details.content:hide()

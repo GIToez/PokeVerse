@@ -43,6 +43,93 @@ PpRow < UIWidget
   $focus:
     background-color: #3a568c
 
+// a group of rows that opens and closes (Pp.fillTree)
+PpGroupRow < UIWidget
+  height: 30
+  focusable: false
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 8
+  margin-top: 3
+  $hover:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $on:
+    image-source: /modules/game_dailytasks/images/tab_hover
+
+  UIWidget
+    id: chevron
+    size: 12 12
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+
+  UIItem
+    id: item
+    size: 24 24
+    virtual: true
+    anchors.left: chevron.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 4
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: chevron.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+    visible: false
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: false
+    anchors.left: chevron.right
+    anchors.right: note.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 34
+    phantom: true
+
+  UILabel
+    id: note
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-align: right
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+    phantom: true
+
+// a row inside a group: an icon (image or item), a name and a muted note
+PpTreeRow < PpRow
+  height: 24
+
+  UIWidget
+    id: icon
+    size: 12 12
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+
+  PpCell
+    id: name
+    anchors.left: icon.right
+    anchors.right: note.left
+    margin-left: 2
+
+  PpMutedCell
+    id: note
+    width: 96
+    text-align: right
+    text-offset: -6 0
+    anchors.right: parent.right
+
 PpCell < UILabel
   font: verdana-11px-antialised
   color: #dce6ff
@@ -103,6 +190,19 @@ PpHouseTile < UIWidget
   border-color: #ffd75aff
   phantom: true
   focusable: false
+
+// the house on its rendered picture: a light tint, the rooms stay visible
+PpHousePictureTile < UIWidget
+  background-color: #ffd75a38
+  phantom: true
+  focusable: false
+
+PpFloorButton < TkTab
+  height: 22
+  width: 58
+  ttf-font-size: 11
+  text-offset: 0 0
+  text-align: center
 
 PpMinimap < UIMinimap
   clipping: true
@@ -237,10 +337,17 @@ MapPage < UIWidget
         anchors.left: parent.left
         anchors.right: parent.right
 
+      TkCombo
+        id: kind
+        anchors.top: search.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 6
+
       PpList
         id: list
         vertical-scrollbar: listScroll
-        anchors.top: search.bottom
+        anchors.top: kind.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: buttons.top
@@ -653,8 +760,8 @@ HousesPage < UIWidget
 
       TkSection
         id: preview
-        width: 300
-        height: 190
+        width: 360
+        height: 250
         padding: 3
         anchors.top: parent.top
         anchors.right: parent.right
@@ -663,6 +770,34 @@ HousesPage < UIWidget
           id: minimap
           zoom: 3
           anchors.fill: parent
+
+        UIWidget
+          id: floors
+          height: 0
+          anchors.top: parent.top
+          anchors.left: parent.left
+          anchors.right: parent.right
+          phantom: true
+          layout:
+            type: horizontalBox
+            spacing: 3
+
+        UIWidget
+          id: view
+          clipping: true
+          background-color: #000000
+          anchors.top: floors.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+          visible: false
+
+          UIWidget
+            id: picture
+            anchors.top: parent.top
+            anchors.left: parent.left
+            phantom: true
+
 
       UIWidget
         id: buttons
@@ -1235,6 +1370,266 @@ ItemsPage < UIWidget
       anchors.right: parent.right
       anchors.bottom: parent.bottom
 
+// wiki tab (wiki.lua builds the article out of these)
+
+WikiText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-wrap: true
+  text-vertical-auto-resize: true
+  text-align: topLeft
+  phantom: true
+  margin-top: 6
+
+WikiHeading < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 14
+  color: #ffd75a
+  text-auto-resize: true
+  phantom: true
+  margin-top: 14
+
+WikiStep < UIWidget
+  margin-top: 6
+  phantom: true
+
+  UILabel
+    id: number
+    size: 20 20
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #0e1628
+    text-align: center
+    image-source: /modules/game_pokepedia/images/step_badge
+    anchors.left: parent.left
+    anchors.top: parent.top
+    phantom: true
+
+  WikiText
+    id: text
+    anchors.left: number.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-left: 8
+    margin-top: 2
+
+WikiTip < TkCard
+  margin-top: 10
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 14 14
+    image-source: /modules/game_dailytasks/images/icon_info
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 1
+    phantom: true
+
+  WikiText
+    id: text
+    color: #ffe9a8
+    anchors.left: icon.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-left: 8
+    margin-top: 0
+
+// a key or a chat command, inline in a row of them
+WikiKey < UILabel
+  height: 22
+  font: verdana-11px-rounded
+  color: #ffffff
+  text-auto-resize: true
+  text-align: center
+  padding: 0 9 0 9
+  image-source: /modules/game_pokepedia/images/keycap
+  image-border: 6
+  phantom: true
+  margin-right: 6
+
+WikiCommand < WikiKey
+  color: #8fe08f
+
+WikiChips < UIWidget
+  height: 22
+  margin-top: 8
+  phantom: true
+  layout:
+    type: horizontalBox
+
+WikiPicture < UIWidget
+  size: 80 84
+  phantom: true
+  margin-right: 8
+
+  TkIconFrame
+    id: frame
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+
+  UILabel
+    id: caption
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-align: center
+    text-wrap: true
+    text-auto-resize: false
+    anchors.top: frame.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 2
+    phantom: true
+
+WikiPictures < UIWidget
+  height: 84
+  margin-top: 10
+  phantom: true
+  layout:
+    type: horizontalBox
+
+WikiImage < UIWidget
+  margin-top: 10
+  phantom: true
+
+  UIWidget
+    id: picture
+    image-source: /modules/game_dailytasks/images/icon_frame
+    image-border: 10
+    padding: 4
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true
+
+    UIWidget
+      id: image
+      image-smooth: true
+      anchors.fill: parent
+      phantom: true
+
+  UILabel
+    id: caption
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-align: center
+    text-auto-resize: false
+    height: 16
+    anchors.top: picture.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+    phantom: true
+
+WikiLinks < UIWidget
+  height: 24
+  margin-top: 14
+  phantom: true
+  layout:
+    type: horizontalBox
+    spacing: 6
+
+WikiPage < UIWidget
+  UIWidget
+    id: side
+    width: 300
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+    TkHeading
+      id: title
+      !text: tr('Guide')
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    TkMuted
+      id: total
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+
+    PpField
+      id: search
+      !placeholder: tr('Search the guide')
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+    PpList
+      id: list
+      vertical-scrollbar: listScroll
+      anchors.top: search.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 6
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: list.right
+
+  TkSection
+    id: article
+    padding: 14 16 14 16
+    anchors.top: parent.top
+    anchors.left: side.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 12
+
+    TkIconFrame
+      id: icon
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    UILabel
+      id: name
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 18
+      color: #ffffff
+      text-auto-resize: true
+      anchors.left: icon.right
+      anchors.top: icon.top
+      margin-left: 12
+      margin-top: 4
+      phantom: true
+
+    TkMuted
+      id: category
+      anchors.left: name.left
+      anchors.top: name.bottom
+      margin-top: 4
+
+    UIWidget
+      id: rule
+      height: 1
+      background-color: #2a3f6a
+      anchors.top: icon.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+      phantom: true
+
+    ScrollablePanel
+      id: body
+      vertical-scrollbar: bodyScroll
+      anchors.top: rule.bottom
+      anchors.left: parent.left
+      anchors.right: bodyScroll.left
+      anchors.bottom: parent.bottom
+      margin-right: 10
+      layout:
+        type: verticalBox
+
+    GtsScrollBar
+      id: bodyScroll
+      anchors.top: rule.bottom
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
 PpIconChoice < UIButton
   size: 30 30
   image-source: /modules/game_dailytasks/images/icon_frame
@@ -1399,6 +1794,16 @@ PokepediaWindow < UIWindow
       anchors.left: dex.right
       margin-left: 8
 
+    TkTab
+      id: wiki
+      width: 140
+      !text: tr('Wiki')
+      icon: /modules/game_pokepedia/images/icon_wiki
+      icon-offset-x: 26
+      anchors.top: parent.top
+      anchors.left: items.right
+      margin-left: 8
+
   MapPage
     id: mapPage
     anchors.top: tabs.bottom
@@ -1427,6 +1832,15 @@ PokepediaWindow < UIWindow
 
   ItemsPage
     id: itemsPage
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 12
+    visible: false
+
+  WikiPage
+    id: wikiPage
     anchors.top: tabs.bottom
     anchors.left: parent.left
     anchors.right: parent.right
