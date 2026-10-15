@@ -56,10 +56,11 @@ local function modesForKey(key)
     if not key or key == '' then
         return chatModes()
     end
-    if key:find('+', 1, true) or key:match('^F%d+$') or key:len() > 1 then
-        return chatModes()
+    local base = key:match('^Shift%+(.+)$') or key
+    if base:len() == 1 or base == 'Space' then
+        return { CHAT_MODE.OFF }
     end
-    return { CHAT_MODE.OFF }
+    return chatModes()
 end
 
 -- Each ball type has four client ids in a row: empty, in use, holding a Pokemon, Pokemon fainted
@@ -868,7 +869,14 @@ function terminate()
     howButtons = {}
 end
 
--- used by the Settings key list (client_options) for its New hotkey button
+-- used by the Settings key list (client_options): a Keybind hotkey's name and how it is used
+function describeHotkey(hotkey)
+    if isTextAction(hotkey.action) then
+        return string.format('"%s"', hotkey.data.text or hotkey.data.words or ''), tr(HOW_TEXT[hotkey.action] or '')
+    end
+    return itemName(hotkey.data.itemId), tr(HOW_TEXT[hotkey.action] or '')
+end
+
 function openNew()
     show()
     newHotkey()
