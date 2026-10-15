@@ -17,7 +17,7 @@ function sayStory(...) return npcHandler:sayStory(...) end
 local FIRST_POKEMON_STORAGE = 8506
 local FIRSTY_CITY_STORAGE = 8507
 
-local starterTowns = { "viridian", "pewter", "cerulean", "saffron", "celadon", "vermilion", "fuchsia" }
+local starterTowns = { "pallet", "viridian", "pewter", "cerulean", "saffron", "celadon", "vermilion", "fuchsia" }
 local inverseStarterTowns = table.inverse(starterTowns)
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
@@ -29,11 +29,15 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     if (--getCreatureStorage(cid, FIRSTY_CITY_STORAGE) ~= QUEST_STATUS.FINISHED and
             getCreatureStorage(cid, FIRST_POKEMON_STORAGE) == QUEST_STATUS.FINISHED) then
-        msg = string.lower(msg)
+        msg = string.lower(msg):gsub("%s+town$", "")
         if (inverseStarterTowns[msg]) then
             local townId = getTownId(msg)
             doPlayerSetTown(cid, townId)
-            selfSay("Here you go! Good luck! Remember that Pallet is always open to trainers that want to help!", cid)
+            if (msg == "pallet") then
+                selfSay("Good choice! Here you go! Go see Professor Oak in his lab, he has some missions that will teach you the basics.", cid)
+            else
+                selfSay("Here you go! Good luck! Remember that Pallet is always open to trainers that want to help!", cid)
+            end
             doCreatureSetStorage(cid, FIRSTY_CITY_STORAGE, QUEST_STATUS.FINISHED)
             doTeleportThing(cid, getTownTemplePosition(townId), false)
             doPlayerPopupFYI(cid, string.format(__L(cid, 'You are now in %s! Try to walk around and talk with NPCs to start out quests!\nSimple speak out "Hi" and "Quest".'), msg))
@@ -41,7 +45,8 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, "") -- Hide
 
         else
-            selfSay("Now, which city do you want to start in? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.", cid)
+            selfSay("Now, which city do you want to start in? If you're new, I recommend {Pallet}: Professor Oak and his assistants have missions there that teach you fishing, Headbutt and more.", cid)
+            selfSay("You can also pick {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.", cid)
         end
     end
 

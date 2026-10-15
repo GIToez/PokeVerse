@@ -11,7 +11,7 @@ audit is in [npc-audit.md](npc-audit.md).
 | | |
 | --- | --- |
 | NPCs placed on the map | 715 |
-| Lines checked | 2950 |
+| Lines checked | 2952 |
 | Quests | 452 |
 | Lines still in Portuguese | 0 (0 NPCs or files) |
 | Tibia or old-server leftovers | 0 (0) |

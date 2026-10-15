@@ -241,20 +241,7 @@ QUESTS_CONFIG = {
             rewardItems = {},
             rewardExp = 0,
             requiredLevel = 70,
-            canStart = function(cid)
-                local badges = {
-                    BADGES.EARTH.newItemId, BADGES.VOLCANO.newItemId, BADGES.MARSH.newItemId,
-                    BADGES.SOUL.newItemId, BADGES.RAINBOW.newItemId, BADGES.THUNDER.newItemId,
-                    BADGES.CASCADE.newItemId, BADGES.BOULDER.newItemId
-                }
-                for _, badgeItemId in pairs(badges) do
-                    if (getPlayerItemCount(cid, badgeItemId) <= 0) then
-                        selfSay("You must collect Kanto badges first!", cid)
-                        return false
-                    end
-                end
-                return true
-            end
+            canStart = function(cid) return getPlayerLevel(cid) >= 70 and getPlayerHasKantoBadges(cid) end
         },
         {
             storage = 8338,

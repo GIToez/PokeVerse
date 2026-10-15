@@ -76,6 +76,31 @@ KEYWORDS["Warwick Howard"] = { "quest", "missao", "mission", "task", "tarefa", "
 KEYWORDS["Bertina Stacy"] = { "quest", "missao", "mission", "task", "tarefa", "help", "ajuda", "pokemon" }
 KEYWORDS["Rusty Barret"] = { "quest", "missao", "mission", "task", "tarefa", "help", "ajuda", "fisherman", "pescador", "fish", "peixe" }
 
+function getPlayerHasKantoBadges(cid)
+    local badges = { BADGES.EARTH, BADGES.VOLCANO, BADGES.MARSH, BADGES.SOUL, BADGES.RAINBOW, BADGES.THUNDER, BADGES.CASCADE, BADGES.BOULDER }
+    for _, badge in ipairs(badges) do
+        if (getPlayerItemCount(cid, badge.newItemId) <= 0) then
+            return false
+        end
+    end
+    return true
+end
+
+local PROFESSOR_OAK_IDLE_LINES = {
+    "%s! How is your Pokedex coming along?",
+    "%s! There's a time and place for everything! But not now.",
+    "A world of dreams and adventures with Pokemon awaits, %s! Go out and explore it!",
+}
+
+-- Said instead of "Sorry, I can't help you right now." when the NPC has no mission for the player
+local NO_QUEST_TALK = {}
+NO_QUEST_TALK["Professor Oak"] = function(pid)
+    if (getPlayerLevel(pid) >= 70 and not getPlayerHasKantoBadges(pid)) then
+        return __L(pid, "Come back to me once you have collected all eight Kanto badges. There is something important I need your help with.")
+    end
+    return string.format(__L(pid, PROFESSOR_OAK_IDLE_LINES[math.random(#PROFESSOR_OAK_IDLE_LINES)]), getCreatureName(pid))
+end
+
 -- Quests
 local QUESTS = {}
 
@@ -472,7 +497,8 @@ function doQuestTalkStart(pid, npcName, quest)
             return TALK_STATE.ERASE
         end
     else
-        selfSay("Sorry, I can't help you right now.", pid) --say(currentQuest.talk_questDone, pid)
+        local noQuestTalk = NO_QUEST_TALK[npcName]
+        selfSay(noQuestTalk and noQuestTalk(pid) or "Sorry, I can't help you right now.", pid) --say(currentQuest.talk_questDone, pid)
         return TALK_STATE.ERASE
     end
 end

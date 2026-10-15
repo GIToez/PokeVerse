@@ -2995,7 +2995,8 @@ Now there's no turning back. I'll tell you everything. Ash Ketchum from Pallet T
 Now go through the next door into the next room. Your goal in the next room is to talk to all NPCs. Once you're done, talk to Oak's Assistant at the end and you'll be ready for your journey.@Agora use a próxima porta e siga para a próxima sala. Seu objetivo na sala ao lado é conversar com todos os NPCs. Assim que estiver pronto, fale com o Assistente de Oak no final e você estará pronto para sua jornada.
 Now use the Pokeball before him wakes up!@Agora use a Pokebola antes dele acordar!
 Now we need to find the map of the Orange Archipelago.@Agora precisamos encontrar o mapa das Ilhas Laranjas.
-Now, which city do you want to start in? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.@Agora qual cidade você quer começar? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} ou {Fuchsia}.
+Now, which city do you want to start in? If you're new, I recommend {Pallet}: Professor Oak and his assistants have missions there that teach you fishing, Headbutt and more.@Agora, em qual cidade você quer começar? Se você é novo, eu recomendo {Pallet}: o Professor Oak e seus assistentes têm missões lá que ensinam pesca, Headbutt e mais.
+You can also pick {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.@Você também pode escolher {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} ou {Fuchsia}.
 Now you're ready for the {last} part, which is a favor for me.@Agora você está pronto para a {última} parte, que é para me beneficiar.
 Now you're ready to do the {dungeon} and prove that you are able to advance. When you are ready, come talk to me.@Agora você está pronto para fazer o {calabouço} e provar que você é capaz de avançar. Quando estiver pronto venha falar comigo.
 Now you and your partners must find the secret ticket. Good luck!@Agora você e seus parceiros devem encontrar o bilhete secreto. Boa sorte!
@@ -6917,3 +6918,8 @@ Please put a poke ball in your ball slot first.@Por favor, primeiro coloque a Po
 (Mission: defeat %s %s.)@(Missão: derrote %s %s.)
 (Mission: catch %s %s.)@(Missão: capture %s %s.)
 Thank you! Come back to me when it's done.@Obrigado! Volte aqui quando terminar.
+%s! How is your Pokedex coming along?@%s! Como está indo a sua Pokedex?
+%s! There's a time and place for everything! But not now.@%s! Há hora e lugar para tudo! Mas não agora.
+A world of dreams and adventures with Pokemon awaits, %s! Go out and explore it!@Um mundo de sonhos e aventuras com Pokemon espera por você, %s! Vá lá fora e explore-o!
+Come back to me once you have collected all eight Kanto badges. There is something important I need your help with.@Volte a falar comigo quando tiver coletado as oito insígnias de Kanto. Há algo importante com que preciso da sua ajuda.
+Good choice! Here you go! Go see Professor Oak in his lab, he has some missions that will teach you the basics.@Boa escolha! Lá vai! Vá ver o Professor Oak no laboratório dele, ele tem algumas missões que vão te ensinar o básico.
