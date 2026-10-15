@@ -423,7 +423,8 @@ under the zoom switches back to the minimap. The HUD minimap is unchanged.
 - `scripts/mapper/render_pokepedia.py` draws the ground floor and the floors above it at 4
   pixels per tile (and coarser copies for zooming out) in the format of Redemption's satellite
   map (`satellitemap.cpp`), which draws only what is on screen. Underground floors are left
-  out and show the explored minimap; house pictures still cover every floor. The client got a 4 pixels per tile level and keeps at
+  out and show the explored minimap; house pictures still cover every floor. The local
+  preview (`scripts/render-map.sh`) still draws the underground, for mapping. The client got a 4 pixels per tile level and keeps at
   most 64 chunks in memory (both need the next client binary).
 - The client release renders it and caches it; after a map change only the pieces that
   changed are drawn again (about 12 minutes for the whole map on 4 cores, a few minutes

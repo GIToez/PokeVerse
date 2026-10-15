@@ -2,7 +2,7 @@
 """Renders the Pokepedia's map pictures from the server map with the client sprites.
 
     scripts/mapper/render_pokepedia.py [--out build/map-pictures] [--jobs 4]
-        [--only houses|world] [--state <out>-state.json] [--show-hidden]
+        [--only houses|world] [--state <out>-state.json] [--show-hidden] [--underground]
 
 houses: one picture per house floor, <out>/houses/<house id>_<z>.png: the house's tiles and a few
 tiles around them, without the floors above so the rooms show. <out>/houses/index.json maps each
@@ -15,7 +15,8 @@ chunks (src/client/satellitemap.cpp), 512x512 pictures in <out>/world: lod 8 at 
 floors 0-7 over the ground floor; the ground floor is drawn with the floors above it, the way it
 looks from outside, and the floors above it are only opaque on their own tiles. Underground floors
 (8-15) are not drawn: there the client shows the minimap the player has explored. House pictures
-still cover every floor.
+still cover every floor. --underground draws floors 8-15 too, one floor at a time ("minimap"
+chunks), for previews while mapping.
 
 A piece is only drawn again when its tiles change: <out>-state.json keeps a hash of each piece's
 tiles (and of the sprites), so a map change redraws just the pieces it touches. Files that no
@@ -131,7 +132,7 @@ def visible_tiles(tiles):
 
 # a single streaming pass: what the map holds, per floor and piece, and every house tile
 
-def survey():
+def survey(underground=False):
     data = map_data()
     chunks = {}
     houses = {}
@@ -148,7 +149,7 @@ def survey():
             if hidden(x, y):
                 continue
             width, height = max(width, x + 1), max(height, y + 1)
-            if z <= GROUND:
+            if z <= GROUND or underground:
                 key = (z, x // CHUNK, y // CHUNK)
                 chunks[key] = chunks.get(key, 0) + 1
             if t == pvmap.HOUSETILE:
@@ -402,13 +403,14 @@ def main():
     ap.add_argument('--only', choices=('houses', 'world'))
     ap.add_argument('--state', help='the piece hashes of the last render (default: <out>-state.json)')
     ap.add_argument('--show-hidden', action='store_true')
+    ap.add_argument('--underground', action='store_true')
     args = ap.parse_args()
     if not args.show_hidden:
         set_hidden(read_hidden(HIDDEN))
         for name, x1, y1, x2, y2 in _hidden:
             print('hidden: %s (%d,%d - %d,%d)' % (name, x1, y1, x2, y2))
     print('reading the map...')
-    chunks, houses, width, height = survey()
+    chunks, houses, width, height = survey(args.underground)
     if args.only != 'world':
         houses_main(args.out, args.jobs, houses)
     if args.only != 'houses':
