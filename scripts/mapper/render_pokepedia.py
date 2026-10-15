@@ -2,31 +2,38 @@
 """Renders the Pokepedia's map pictures from the server map with the client sprites.
 
     scripts/mapper/render_pokepedia.py [--out build/map-pictures] [--jobs 4]
-        [--only houses|world] [--show-hidden]
+        [--only houses|world] [--state <out>-state.json] [--show-hidden]
 
 houses: one picture per house floor, <out>/houses/<house id>_<z>.png: the house's tiles and a few
 tiles around them, without the floors above so the rooms show. <out>/houses/index.json maps each
 house id and floor to [x, y, w, h, pixel width, pixel height]: the picture's top-left tile, its
 size in tiles and in pixels, min(16, 512 / longest side) pixels per tile.
 
-world: the world map of every floor in pieces of 128x128 tiles at 4 pixels per tile,
-<out>/world/<z>/<cx>_<cy>.png, and overview blocks of 512x512 tiles at 1 pixel per tile,
-<out>/world/<z>/o_<ox>_<oy>.png, for the zoomed-out map. The ground floor is drawn with the floors
-above it, the way it looks from outside; floors above the ground show the ground dimmed under
-them. <out>/world/index.json lists the pieces and blocks of each floor.
+world: the world map of every floor as the client's satellite map chunks (src/client/satellitemap.cpp),
+512x512 pictures in <out>/world: lod 8 at 4 pixels per tile (128x128 tiles), and lods 16, 32 and 64
+built from them for the zoomed-out map. Floors 0-7 are "satellite" chunks, which the client draws
+over the ground floor; the ground floor is drawn with the floors above it, the way it looks from
+outside, and the floors above it are only opaque on their own tiles. Floors 8-15 are "minimap"
+chunks, one floor at a time.
+
+A piece is only drawn again when its tiles change: <out>-state.json keeps a hash of each piece's
+tiles (and of the sprites), so a map change redraws just the pieces it touches. Files that no
+longer match a piece are removed.
 
 The regions in hidden-regions.txt (next to this script) are left out of both, until they are
 removed from the list; --show-hidden draws them anyway, for previews.
 
-The pictures are not kept in the repository: the client release renders them (cached until the
-map, the sprites or the hidden regions change), and scripts/assemble-redemption-client.sh copies
+The pictures are not kept in the repository: the client release renders them (the last render and
+its state are cached, so a release only draws what changed), and scripts/assemble-redemption-client.sh copies
 <out> into the client's data/images/pokepedia when it exists. Without them the Pokepedia shows
 the minimap.
 
 Reads core/server/data/world/map.otbm, items.otb, and the client's data.dat and data.spr.
 """
 import argparse
+import hashlib
 import json
+import lzma
 import os
 import re
 import shutil
@@ -34,7 +41,7 @@ import struct
 import sys
 from multiprocessing import Pool
 
-from PIL import Image, ImageEnhance
+from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -53,8 +60,10 @@ HOUSE_MARGIN = 3
 HOUSE_TILE = 16
 HOUSE_MAX_PIXELS = 512
 CHUNK = 128
-OVERVIEW = 512
 SCALE = 4
+PIXELS = CHUNK * SCALE
+# bump to redraw every piece after a change to how they are drawn
+WORLD_VERSION = 1
 GROUND = 7
 COLORS = 256
 
@@ -213,93 +222,174 @@ def houses_main(out, jobs, houses):
 # world
 
 def floors_for(z):
-    if z == GROUND:
-        return range(0, GROUND + 1)
-    if z < GROUND:
-        return sorted({z, GROUND})
-    return [z]
+    return range(0, GROUND + 1) if z == GROUND else [z]
+
+
+def chunk_name(lod, z, cx, cy):
+    """The client's satellite map file for a chunk; cx, cy count chunks of that lod."""
+    tiles = PIXELS * lod // 32
+    return '%s-%d-%d-%d-%d-pv.bmp.lzma' % ('satellite' if z <= GROUND else 'minimap', lod,
+                                            cx * tiles // 32, cy * tiles // 32, z)
+
+
+def write_chunk(img, path):
+    """A 512x512 picture as the client reads it: 32 header bytes, then an LZMA-alone 32-bit BMP."""
+    rgb = img.convert('RGB').quantize(COLORS, method=Image.Quantize.MEDIANCUT).convert('RGB')
+    rgb.putalpha(img.getchannel('A'))
+    pixels = rgb.tobytes('raw', 'BGRA')
+    bmp = struct.pack('<2sIHHI', b'BM', 54 + len(pixels), 0, 0, 54)
+    bmp += struct.pack('<IiiHHIIiiII', 40, img.width, -img.height, 1, 32, 0, len(pixels), 2835, 2835, 0, 0)
+    packed = lzma.compress(bmp + pixels, format=lzma.FORMAT_ALONE,
+                           filters=[{'id': lzma.FILTER_LZMA1, 'preset': 6, 'dict_size': 1 << 21}])
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'wb') as f:
+        f.write(bytes(32) + packed)
+
+
+def read_chunk(path):
+    data = lzma.decompress(open(path, 'rb').read()[32:], format=lzma.FORMAT_ALONE)
+    offset, = struct.unpack_from('<I', data, 10)
+    width, height = struct.unpack_from('<ii', data, 18)
+    return Image.frombytes('RGBA', (width, abs(height)), data[offset:], 'raw', 'BGRA')
+
+
+def inputs_digest():
+    """What every piece depends on besides its own tiles: the sprites and the way they're drawn."""
+    h = hashlib.sha1(b'world %d' % WORLD_VERSION)
+    for path in (OTB, DAT, SPR, render.__file__):
+        with open(path, 'rb') as f:
+            for block in iter(lambda: f.read(1 << 20), b''):
+                h.update(block)
+    return h.hexdigest()
+
+
+def piece_box(cx, cy):
+    x0, y0 = cx * CHUNK, cy * CHUNK
+    return x0, y0, x0 + CHUNK - 1, y0 + CHUNK - 1
+
+
+def render_piece(r, tiles, z, cx, cy):
+    x0, y0, x1, y1 = piece_box(cx, cy)
+    img = r.render_scaled(tiles, x0, y0, x1, y1, z, upper=(z == GROUND), scale=SCALE / 32.0)
+    # off the ground the client draws the floor over the ground below, so only its own tiles are opaque
+    if z != GROUND:
+        alpha = Image.new('L', img.size, 0)
+        for (x, y, tz) in tiles:
+            if tz == z and x0 <= x <= x1 and y0 <= y <= y1:
+                alpha.paste(255, ((x - x0) * SCALE, (y - y0) * SCALE, (x - x0 + 1) * SCALE, (y - y0 + 1) * SCALE))
+        img.putalpha(alpha)
+    if any(rx1 <= x1 and x0 <= rx2 and ry1 <= y1 and y0 <= ry2 for _, rx1, ry1, rx2, ry2 in _hidden):
+        # the floors above can reach into a hidden region's edge
+        cover = (0, 0, 0, 255 if z == GROUND else 0)
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                if hidden(x, y):
+                    img.paste(cover, ((x - x0) * SCALE, (y - y0) * SCALE, (x - x0 + 1) * SCALE, (y - y0 + 1) * SCALE))
+    return img
 
 
 def render_band(args):
-    """Renders every piece of one row of pieces (cy) for the given floors."""
-    cy, keys, out = args
-    y0, y1 = cy * CHUNK, cy * CHUNK + CHUNK - 1
+    """Draws the pieces of one row (cy) whose tiles changed since the hashes in known."""
+    cy, keys, out, known = args
+    x0, y0, x1, y1 = piece_box(0, cy)
     needed = set()
     for z, _ in keys:
         needed.update(floors_for(z))
-    # the floors above the ground are drawn shifted up and left, so read a little further down
+    # the floors above the ground are drawn shifted up and left, so read a little further down and right
     tiles = visible_tiles(pvmap.read_region(MAP, 0, y0 - 2, 65535, y1 + 10, needed, data=map_data()))
-    r = renderer()
-    scale = SCALE / 32.0
+    columns = {}
+    for (x, y, z), items in tiles.items():
+        for cx in ((x + 2) // CHUNK, (x + 2) // CHUNK - 1):
+            if cx * CHUNK - 2 <= x <= cx * CHUNK + CHUNK + 9:
+                columns.setdefault(cx, {})[(x, y, z)] = items
+    r = None
     done = []
     for z, cx in keys:
-        x0, x1 = cx * CHUNK, cx * CHUNK + CHUNK - 1
-        if z >= GROUND:
-            img = r.render_scaled(tiles, x0, y0, x1, y1, z, upper=(z == GROUND), scale=scale)
-        else:
-            base = r.render_scaled(tiles, x0, y0, x1, y1, GROUND, upper=False, scale=scale)
-            base = ImageEnhance.Brightness(base.convert('RGB')).enhance(0.35).convert('RGBA')
-            mine = {k: v for k, v in tiles.items() if k[2] == z}
-            top = r.render_scaled(mine, x0, y0, x1, y1, z, upper=False, scale=scale)
-            # the floor's own tiles are opaque; where it has none the dimmed ground shows
-            alpha = Image.new('L', top.size, 0)
-            for (x, y, _) in mine:
-                if x0 <= x <= x1 and y0 <= y <= y1:
-                    alpha.paste(255, ((x - x0) * SCALE, (y - y0) * SCALE, (x - x0 + 1) * SCALE, (y - y0 + 1) * SCALE))
-            base.paste(top, (0, 0), alpha)
-            img = base
-        if any(rx1 <= x1 and x0 <= rx2 and ry1 <= y1 and y0 <= ry2 for _, rx1, ry1, rx2, ry2 in _hidden):
-            # the floors above can reach into a hidden region's edge
-            black = Image.new('RGBA', (SCALE, SCALE), (0, 0, 0, 255))
-            for y in range(y0, y1 + 1):
-                for x in range(x0, x1 + 1):
-                    if hidden(x, y):
-                        img.paste(black, ((x - x0) * SCALE, (y - y0) * SCALE))
-        save(img, os.path.join(out, 'world', str(z), '%d_%d.png' % (cx, cy)))
-        done.append((z, cx, cy))
+        part = {k: v for k, v in columns.get(cx, {}).items() if k[2] in floors_for(z)}
+        bx0, by0, bx1, by1 = piece_box(cx, cy)
+        h = hashlib.sha1(repr((sorted(part.items()), [reg for reg in _hidden if reg[1] <= bx1 + 10 and
+                               bx0 - 2 <= reg[3] and reg[2] <= by1 + 10 and by0 - 2 <= reg[4]])).encode())
+        digest = h.hexdigest()
+        path = os.path.join(out, 'world', chunk_name(8, z, cx, cy))
+        drawn = known.get('8/%d/%d/%d' % (z, cx, cy)) != digest or not os.path.exists(path)
+        if drawn:
+            r = r or renderer()
+            write_chunk(render_piece(r, part, z, cx, cy), path)
+        done.append((z, cx, cy, digest, drawn))
     return done
 
 
-def overviews(out, done):
-    blocks = {}
-    per = OVERVIEW // CHUNK
-    for z, cx, cy in done:
-        blocks.setdefault((z, cx // per, cy // per), []).append((cx, cy))
-    for (z, ox, oy), parts in sorted(blocks.items()):
-        img = Image.new('RGB', (OVERVIEW, OVERVIEW), (0, 0, 0))
-        for cx, cy in sorted(parts):
-            piece = Image.open(os.path.join(out, 'world', str(z), '%d_%d.png' % (cx, cy))).convert('RGB')
-            piece = piece.resize((CHUNK, CHUNK), Image.LANCZOS)
-            img.paste(piece, ((cx - ox * per) * CHUNK, (cy - oy * per) * CHUNK))
-        save(img, os.path.join(out, 'world', str(z), 'o_%d_%d.png' % (ox, oy)))
-    return sorted(blocks)
+def build_level(args):
+    """One chunk of a coarser lod, from the 2x2 chunks of the lod below."""
+    lod, z, cx, cy, out = args
+    img = Image.new('RGBA', (PIXELS, PIXELS), (0, 0, 0, 0))
+    half = PIXELS // 2
+    for dy in range(2):
+        for dx in range(2):
+            path = os.path.join(out, 'world', chunk_name(lod // 2, z, cx * 2 + dx, cy * 2 + dy))
+            if os.path.exists(path):
+                img.paste(read_chunk(path).resize((half, half), Image.LANCZOS), (dx * half, dy * half))
+    write_chunk(img, os.path.join(out, 'world', chunk_name(lod, z, cx, cy)))
 
 
-def world_main(out, jobs, chunks, width, height):
-    shutil.rmtree(os.path.join(out, 'world'), ignore_errors=True)
+def world_main(out, jobs, chunks, width, height, state_path):
+    inputs = inputs_digest()
+    state = {}
+    if os.path.exists(state_path):
+        state = json.load(open(state_path))
+    if state.get('inputs') != inputs:
+        state = {'inputs': inputs, 'chunks': {}}
+    known = state['chunks']
+    os.makedirs(os.path.join(out, 'world'), exist_ok=True)
+
     rows = {}
     for (z, cx, cy) in chunks:
         rows.setdefault(cy, []).append((z, cx))
     # the busiest rows first, so the pool doesn't end waiting on one long row
-    work = sorted(((cy, sorted(keys), out) for cy, keys in rows.items()), key=lambda w: -len(w[1]))
+    work = sorted(((cy, sorted(keys), out, known) for cy, keys in rows.items()), key=lambda w: -len(w[1]))
     total = sum(len(w[1]) for w in work)
     print('world %dx%d tiles: %d pieces in %d rows' % (width, height, total, len(work)))
-    done = []
+    current = {}
+    changed = {8: set()}
+    count = drawn = 0
     with Pool(jobs, initializer=set_hidden, initargs=(_hidden,)) as pool:
         for part in pool.imap_unordered(render_band, work):
-            done += part
-            print('  world %d / %d' % (len(done), total))
-    blocks = overviews(out, done)
-    floors = {}
-    for z, cx, cy in sorted(done):
-        floors.setdefault(str(z), {'pieces': [], 'blocks': []})['pieces'].append([cx, cy])
-    for z, ox, oy in blocks:
-        floors[str(z)]['blocks'].append([ox, oy])
-    index = {'piece': CHUNK, 'block': OVERVIEW, 'scale': SCALE, 'width': width, 'height': height,
-             'floors': floors}
-    with open(os.path.join(out, 'world', 'index.json'), 'w') as f:
-        json.dump(index, f, separators=(',', ':'), sort_keys=True)
-    print('wrote %d world pieces and %d overview blocks' % (len(done), len(blocks)))
+            for z, cx, cy, digest, was_drawn in part:
+                current['8/%d/%d/%d' % (z, cx, cy)] = digest
+                if was_drawn:
+                    changed[8].add((z, cx, cy))
+                    drawn += 1
+            count += len(part)
+            print('  world %d / %d, %d drawn' % (count, total, drawn))
+
+        lod = 8
+        while lod < 64:
+            parent = {}
+            for key in current:
+                if key.startswith('%d/' % lod):
+                    z, cx, cy = (int(v) for v in key.split('/')[1:])
+                    parent.setdefault((z, cx // 2, cy // 2), []).append(current[key])
+            lod *= 2
+            todo = []
+            for (z, cx, cy), digests in sorted(parent.items()):
+                key = '%d/%d/%d/%d' % (lod, z, cx, cy)
+                current[key] = hashlib.sha1(repr(sorted(digests)).encode()).hexdigest()
+                if known.get(key) != current[key] or not os.path.exists(
+                        os.path.join(out, 'world', chunk_name(lod, z, cx, cy))):
+                    todo.append((lod, z, cx, cy, out))
+            pool.map(build_level, todo, chunksize=4)
+            print('  lod %d: %d chunks, %d drawn' % (lod, len(parent), len(todo)))
+
+    wanted = {chunk_name(*(int(v) for v in key.split('/'))) for key in current}
+    removed = 0
+    for name in os.listdir(os.path.join(out, 'world')):
+        if name not in wanted:
+            os.remove(os.path.join(out, 'world', name))
+            removed += 1
+    state['chunks'] = current
+    with open(state_path, 'w') as f:
+        json.dump(state, f, separators=(',', ':'), sort_keys=True)
+    print('world: %d chunks, %d pieces drawn, %d old files removed' % (len(current), drawn, removed))
 
 
 def main():
@@ -307,6 +397,7 @@ def main():
     ap.add_argument('--out', default=OUT)
     ap.add_argument('--jobs', type=int, default=4)
     ap.add_argument('--only', choices=('houses', 'world'))
+    ap.add_argument('--state', help='the piece hashes of the last render (default: <out>-state.json)')
     ap.add_argument('--show-hidden', action='store_true')
     args = ap.parse_args()
     if not args.show_hidden:
@@ -318,7 +409,8 @@ def main():
     if args.only != 'world':
         houses_main(args.out, args.jobs, houses)
     if args.only != 'houses':
-        world_main(args.out, args.jobs, chunks, width, height)
+        state = args.state or os.path.normpath(args.out) + '-state.json'
+        world_main(args.out, args.jobs, chunks, width, height, state)
 
 
 if __name__ == '__main__':

@@ -7,7 +7,11 @@
 # scripts/assemble-redemption-client.sh adds to the client. With a client dir (an assembled
 # or installed client), the pictures are also copied into it, so a restart of that client
 # shows them. The client release renders the same pictures by itself; this is only for looking
-# at map changes early. Needs python3 with Pillow (apt install python3-pil).
+# at map changes early. The regions in scripts/mapper/hidden-regions.txt are drawn too, so a
+# region that isn't out yet can be checked; the release leaves them out.
+#
+# The first render takes a while (about 20 minutes on 4 cores); after that only the pieces of the
+# map that changed are drawn again. Needs python3 with Pillow (apt install python3-pil).
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
@@ -17,7 +21,8 @@ if [ -n "$client" ] && [ ! -d "$client/data" ]; then
   exit 1
 fi
 
-python3 "$root/scripts/mapper/render_pokepedia.py" --out "$root/build/map-pictures" --jobs "$(nproc 2>/dev/null || echo 4)"
+python3 "$root/scripts/mapper/render_pokepedia.py" --out "$root/build/map-pictures" \
+  --jobs "$(nproc 2>/dev/null || echo 4)" --show-hidden
 
 if [ -n "$client" ]; then
   rm -rf "$client/data/images/pokepedia"
