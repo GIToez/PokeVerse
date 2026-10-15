@@ -1137,10 +1137,21 @@ def plan_silver(f, mlevel, open_sky):
                 return q
         raise ValueError(p)
 
-    def strip(a, half):
-        ux, uy = np.cos(np.radians(a)), np.sin(np.radians(a))
-        along = (X - cx) * ux + (Y - cy) * uy
-        return (np.abs((X - cx) * uy - (Y - cy) * ux) <= half) & (along > 0)
+    hyp = np.hypot(X - cx, Y - cy)
+    theta = np.degrees(np.arctan2(Y - cy, X - cx))
+    lumpy = sf.noise(5)
+
+    def shoulder(a, j, wide, narrow):
+        """A shoulder of the ledge above pushed out across ledge j: broad where it leaves the cliff
+        behind, narrowing as it reaches the cliff in front, bending and lumpy on the way. Returns its
+        cells and the angle its middle crosses the middle of the ledge at."""
+        ri, ro = silver_ring(j)
+        t = np.clip((r - ri) / (ro - ri), 0, 1)
+        ph, bend = rng.uniform(0, 2 * np.pi), rng.uniform(4, 9) * rng.choice([-1, 1])
+        mid = a + bend * np.sin(t * 2.2 + ph)
+        dth = (theta - mid + 180) % 360 - 180
+        half = wide * (1 - t) + narrow * t + lumpy * 1.6
+        return (np.abs(np.radians(dth)) * hyp < half) & (np.abs(dth) < 60), a + bend * np.sin(1.1 + ph)
 
     keep = np.zeros(level.shape, bool)
     ramps = []
@@ -1158,28 +1169,53 @@ def plan_silver(f, mlevel, open_sky):
             ramps.append((lx + uy * sd, ly + ux * sd, j + 1, (-ux, -uy)))
         keep[at((lx, ly))[0] - 5:at((lx, ly))[0] + 6, at((lx, ly))[1] - 5:at((lx, ly))[1] + 6] = True
     for a, j in SILVER['spurs']:
-        sp = strip(a, 1.5) & (level == j) & area
+        sp = shoulder(a, j, 6, 2.5)[0] & (level == j) & area
+        assert not (sp & keep).any(), 'Mt. Silver spur at %d over a ramp' % a
         level[sp] = j + 1
     ground, deco = {}, {}
     for a, j, kind in SILVER['obstacles']:
         z = Z - j
         if kind == 'surf':
-            lake = (strip(a, 3) | f.disc(*spot(('at', a, sum(silver_ring(j)) / 2)), 6)) & (level == j) & area
+            arm, am = shoulder(a, j, 4, 3.5)
+            lake = (arm | f.disc(*spot(('at', am, sum(silver_ring(j)) / 2)), 6)) & (level == j) & area
             for iy, ix in np.argwhere(lake & ~keep):
                 ground[(ix + f.x0, iy + f.y0, z)] = 'walkable sea'
         else:
             # a bluff across the ledge with one crooked way through, two tiles wide, a patch of trees
             # or rocks across it
             item = CUT_BUSH if kind == 'cut' else SMASH_ROCK
-            bluff = strip(a, 3) & (level == j) & area & ~keep
+            bluff, am = shoulder(a, j, 5.5, 3)
+            bluff &= (level == j) & area & ~keep
             level[bluff] = j + 1
-            ux, uy = np.cos(np.radians(a)), np.sin(np.radians(a))
-            c = spot(('at', a, sum(silver_ring(j)) / 2))
-            ax_, ay_ = axis(-uy, ux)
+            # the way crosses the bluff straight over, where it is thin, near the middle of the ledge
+            mid_r = sum(silver_ring(j)) / 2
+            best = None
+            for iy, ix in np.argwhere(bluff):
+                q0 = (ix + f.x0, iy + f.y0)
+                for d in ((1, 0), (0, 1)):
+                    ends = []
+                    for sg in (1, -1):
+                        for t in range(1, 16):
+                            q = (q0[0] + sg * d[0] * t, q0[1] + sg * d[1] * t)
+                            if level[at(q)] != j + 1:
+                                if level[at(q)] == j:
+                                    ends.append(t)
+                                break
+                    # bluff four deep either side of the way where the patch goes, so it closes it
+                    solid = all(level[at((q0[0] + d[0] * u + d[1] * v, q0[1] + d[1] * u + d[0] * v))] > j
+                                for u in (-1, 0, 1) for v in (-4, -3, 3, 4))
+                    if len(ends) == 2 and min(ends) >= 2 and solid:
+                        score = sum(ends) + 0.5 * abs(r[iy, ix] - mid_r)
+                        if best is None or score < best[0]:
+                            best = (score, q0, d, ends)
+            assert best, 'Mt. Silver bluff at %d has no way across' % a
+            _, c, (ax_, ay_), (t1, t2) = best
             k = 1 if kind == 'cut' else -1
             m = (c[0] + ay_ * k, c[1] + ax_ * k)
-            way = [(c[0] + uy * 7, c[1] - ux * 7), (m[0] - ax_ * 3, m[1] - ay_ * 3), (m[0] + ax_ * 3, m[1] + ay_ * 3),
-                   (c[0] - uy * 7, c[1] + ux * 7)]
+            way = [(c[0] - ax_ * (t2 + 3) - ay_ * k, c[1] - ay_ * (t2 + 3) - ax_ * k),
+                   (m[0] - ax_ * t2, m[1] - ay_ * t2), (m[0] + ax_ * t1, m[1] + ay_ * t1),
+                   (c[0] + ax_ * (t1 + 3) - ay_ * k, c[1] + ay_ * (t1 + 3) - ax_ * k)]
+            sides = ((c[0] - ax_ * t2, c[1] - ay_ * t2), (c[0] + ax_ * t1, c[1] + ay_ * t1))
             path = np.zeros(level.shape, bool)
             for q in trace(way) + trace([(x + ay_, y + ax_) for x, y in way]):
                 path[at(q)] = True
@@ -1190,8 +1226,24 @@ def plan_silver(f, mlevel, open_sky):
             path &= bluff
             level[path] = j
             keep |= path | (approach & (level == j))
-            for x, y, in patch({(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(path)}, m, (ax_, ay_), rng):
+            items = patch({(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(path)}, m, (ax_, ay_), rng)
+            for x, y in items:
                 deco[(x, y, z)] = [item]
+            # nothing round the patch: from one side the other is out of reach
+            shut = set(items)
+            start = tuple(int(round(v)) for v in sides[0])
+            goal = tuple(int(round(v)) for v in sides[1])
+            seen, todo = {start}, [start]
+            while todo:
+                x, y = todo.pop()
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        q = (x + dx, y + dy)
+                        if (q not in seen and q not in shut and np.hypot(q[0] - c[0], q[1] - c[1]) < 30
+                                and level[at(q)] == j):
+                            seen.add(q)
+                            todo.append(q)
+            assert goal not in seen, 'Mt. Silver %s at %d can be walked round' % (kind, a)
     # the tunnels: runs of cells 3 wide, a floor each, a ramp up from the end of each run onto the
     # next (or onto the ledge above, where the last comes out)
     bored, smash_along = {}, {}
@@ -2125,6 +2177,10 @@ def build(base, out_path):
                 if cave.get('lip'):
                     lip = f.disc(ax, ay - 1, 7, f.noise(5), 0.4) & (terrain != MOUNTAIN)
                     terrain[lip] = SNOW
+                # floor either side of the stairs too, so the rock's edge is drawn round the hole
+                # and not over it
+                hall[iy, ix - 1:ix + 2] = True
+                hall[iy, ix] = False
                 terrain[hall] = CAVE_FLOOR
                 ravines |= hall
                 stair_landing |= {(x + f.x0, y + f.y0) for y, x in np.argwhere(hall)}
@@ -2443,7 +2499,9 @@ def build(base, out_path):
     # Borders.
     def brush_at(x, y):
         if (x, y) in tiles:
-            return brushes.by_item.get(tiles[(x, y)][0])
+            ground = tiles[(x, y)][0]
+            # the rock round a hole is edged as round the cave floor it is cut into
+            return brushes['mountain top ground'] if ground == STAIRS_DOWN else brushes.by_item.get(ground)
         pt = prefab_tiles.get((x, y, Z))
         if pt is not None:
             ids = ([pt.ground] if pt.ground is not None else []) + pvmap.child_item_ids(pt.children)
