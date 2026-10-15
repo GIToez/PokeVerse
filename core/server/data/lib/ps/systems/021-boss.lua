@@ -266,7 +266,7 @@ function doBossStart() -- Server Start
                 setGlobalStorageValue(config.storageLastBossDate, lastSpawnDate)
             end
 
-            local lastBoss = getGlobalStorageValue(config.sotrageLastBoss)
+            local lastBoss = getGlobalStorageValue(config.storageLastBoss)
             local boss = table.random(BOSSES_BY_LEVEL[level])
 
             if (boss == lastBoss) then
