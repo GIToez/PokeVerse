@@ -47,7 +47,8 @@ PORTUGUESE = {
 
 STRING_RE = re.compile(r'"((?:[^"\\\n]|\\.)*)"|\'((?:[^\'\\\n]|\\.)*)\'|\[\[(.*?)\]\]', re.S)
 MSGCONTAINS_RE = re.compile(r'msgcontains\s*\(\s*\w+\s*,\s*(\{[^}]*\}|"[^"]*"|\'[^\']*\')')
-ADDKEYWORD_RE = re.compile(r'addKeyword\s*\(\s*\{([^}]*)\}')
+ADDKEYWORD_RE = re.compile(r'add(?:Child)?Keyword\s*\(\s*\{([^}]*)\}')
+MSG_EQUALS_RE = re.compile(r'\b(?:msg|message)(?::lower\(\))?\s*[~=]=\s*("[^"]*"|\'[^\']*\')')
 BRACED_RE = re.compile(r'\{([^{}]+)\}')
 YES_RE = re.compile(r'msgcontains\s*\(\s*\w+\s*,\s*["\']yes["\']|SHOP_YESWORD|doQuestTalk|doTalkEnd')
 
@@ -71,6 +72,8 @@ def keyword_groups(code):
     for line in code.splitlines():
         words = []
         for m in MSGCONTAINS_RE.finditer(line):
+            words += [w.lower() for w in lua_strings(m.group(1))]
+        for m in MSG_EQUALS_RE.finditer(line):
             words += [w.lower() for w in lua_strings(m.group(1))]
         if words:
             groups.append(frozenset(words))
