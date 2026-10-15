@@ -1,0 +1,98 @@
+diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/mainpanel.lua
+--- a/modules/game_mainpanel/mainpanel.lua
++++ b/modules/game_mainpanel/mainpanel.lua
+@@ -171,7 +171,7 @@
+ optionsController:setUI('mainoptionspanel', modules.game_interface.getMainRightPanel())
+ 
+ function optionsController:onInit()
+-    createButton_large('Store shop', tr('Store shop'), '/images/options/store_large', toggleStore,
++    createButton_large('Store shop', tr('Store'), '/images/options/store_large', toggleStore,
+     false, 8)
+ 
+     if not optionPanel then
+@@ -181,10 +181,12 @@
+ end
+ 
+ function toggleStore()
+-    if  g_game.getFeature(GameIngameStore) then
++    if g_game.getFeature(GameIngameStore) and modules.game_store then
+         modules.game_store.toggle() -- cipsoft packets
+-    else
++    elseif modules.game_shop then
+         modules.game_shop.toggle() -- custom
++    else
++        displayInfoBox(tr('Store'), tr('The PokeVerse store is coming soon.'))
+     end
+ end
+ 
+@@ -263,6 +265,49 @@
+     return optionsController.ui.onPanel.options:recursiveGetChildById(id)
+ end
+ 
++-- PokeVerse top bar order in the extended view, in groups: adventure, side panels, system
++local topBarGroups = {
++    { 'pokepediaButton', 'dailyTasksButton', 'questLogButton', 'dailyLoginButton', 'pokepediaTrackerButton' },
++    { 'miniMap', 'inventory', 'skillsButton', 'battleButton', 'vipListButton' },
++    { 'hotkeysWindowButton', 'audioButton', 'optionsButton', 'terminalButton', 'logoutButton' },
++}
++
++local function sortTopBar(panel)
++    local rank = {}
++    for g, ids in ipairs(topBarGroups) do
++        for i, id in ipairs(ids) do
++            rank[id] = g * 100 + i
++        end
++        if g > 1 then
++            local sepId = 'topBarSeparator' .. g
++            if not panel:getChildById(sepId) then
++                local sep = g_ui.createWidget('UIWidget', panel)
++                sep:setId(sepId)
++                sep:setSize({ width = 1, height = 16 })
++                sep:setMarginTop(2)
++                sep:setBackgroundColor('#2f4878')
++                sep:setPhantom(true)
++            end
++            panel:getChildById(sepId):show()
++            rank[sepId] = g * 100
++        end
++    end
++    rank['Store shop'] = 1000
++    local children = panel:getChildren()
++    local position = {}
++    for i, child in ipairs(children) do
++        position[child] = i
++    end
++    table.sort(children, function(a, b)
++        local ra, rb = rank[a:getId()] or 900, rank[b:getId()] or 900
++        if ra ~= rb then
++            return ra < rb
++        end
++        return position[a] < position[b]
++    end)
++    panel:reorderChildren(children)
++end
++
+ function toggleExtendedViewButtons(extended)
+     local optionsPanel = optionsController.ui.onPanel.options
+     local specialsPanel = optionsController.ui.onPanel.store
+@@ -282,6 +327,7 @@
+                 rightGamePanel:addChild(button)
+             end
+         end
++        sortTopBar(rightGamePanel)
+         optionsController.ui:hide()
+         optionsController.ui:setHeight(0)
+     else
+@@ -295,6 +341,12 @@
+                 end
+             end
+         end
++        for g = 2, #topBarGroups do
++            local sep = rightGamePanel:getChildById('topBarSeparator' .. g)
++            if sep then
++                sep:hide()
++            end
++        end
+         optionsController.ui:show()
+         optionsController.ui:setHeight(28)
+         local mainRightPanel = modules.game_interface.getMainRightPanel()
