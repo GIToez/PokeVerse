@@ -110,7 +110,7 @@ private:
     };
 
     // Chunk textures (1 MB each) are released, least recently drawn first, past this many.
-    static constexpr size_t MAX_LOADED_TEXTURES = 96;
+    static constexpr size_t MAX_LOADED_TEXTURES = 64;
 
     // Selects the best LOD for a given scale (pixels per tile).
     static int pickLod(float scale);
