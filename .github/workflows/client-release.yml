@@ -19,6 +19,11 @@ on:
       - scripts/set-client-server.sh
       - scripts/make-updater-manifest.py
       - scripts/build-android-client.sh
+      - scripts/mapper/pvmap.py
+      - scripts/mapper/render.py
+      - scripts/mapper/render_pokepedia.py
+      - core/server/data/world/map.otbm
+      - core/server/data/items/items.otb
       - .github/workflows/client-release.yml
   workflow_dispatch:
     inputs:
@@ -282,6 +287,22 @@ jobs:
       - name: Version
         id: version
         run: echo "tag=client-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      # the Pokepedia's pictures of the map, rendered again only when the map, the items or the
+      # sprites change; scripts/assemble-redemption-client.sh adds them to the packages
+      - name: Map pictures cache
+        id: map-pictures
+        uses: actions/cache@v4
+        with:
+          path: build/map-pictures
+          key: map-pictures-${{ hashFiles('core/server/data/world/map.otbm', 'core/server/data/items/items.otb', 'core/client-legacy/data/things/data.dat', 'core/client-legacy/data/things/data.spr', 'scripts/mapper/pvmap.py', 'scripts/mapper/render.py', 'scripts/mapper/render_pokepedia.py') }}
+
+      - name: Render map pictures
+        if: steps.map-pictures.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3-pil
+          python3 scripts/mapper/render_pokepedia.py --jobs "$(nproc)"
 
       - name: Assemble live packages
         env:
