@@ -34,10 +34,11 @@ so. Items marked **To decide** need an answer before work starts.
 
 **Next, in order (agreed October 15):**
 
-1. **Updater: left as it is.** It works, so it isn't being changed (no resume, no "File X of
-   N", no updating the client first). The map pictures stay as they are. Possible later, only
-   in a new APK and without touching the updater: an Android notification that keeps the game
-   running in the background ("PokeVerse is still connected").
+1. **Updater** (in progress): four files at a time, written to disk every 25 so an interrupted
+   update resumes, "File X of N, MB left" and the speed; the client's own files come last.
+   On Android the game keeps running in the background with a notification ("PokeVerse is
+   updating in the background", or still connected while logged in). No "update the client
+   first" step. The map pictures stay as they are.
 2. **NPC fixes** from the [NPC audit](npc-audit.md): the shared code (battles, travel, quests,
    Ranger Club, bank), greetings that hide what the NPC answers to, and missing {yes}/{no}.
    NPCs that only have one line are their own category, not a problem.
