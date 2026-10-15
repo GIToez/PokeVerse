@@ -144,12 +144,12 @@ SlotMachine.onUse = function(cid, item, fromPosition, itemEx, toPosition)
                 end
 
             elseif (results[1] == results[2] or results[1] == results[3] or results[2] == results[3]) then
-                local winnerSlot = 1
+                local pairSlot = results[1]
                 if (results[2] == results[3]) then
-                    winnerSlot = 2
+                    pairSlot = results[2]
                 end
 
-                coins = math.floor(SLOTS[winnerSlot].payout / 3)
+                coins = math.floor(SLOTS[pairSlot].payout / 3)
             end
 
             if (coins > 0) then
