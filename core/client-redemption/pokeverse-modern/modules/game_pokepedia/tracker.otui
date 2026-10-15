@@ -1,0 +1,134 @@
+PpTrackerLine < UIWidget
+  height: 30
+  margin-top: 2
+  background-color: #00000000
+  $hover:
+    background-color: #ffffff14
+
+  UIWidget
+    id: icon
+    size: 12 12
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 2
+    margin-left: 2
+    phantom: true
+
+  UILabel
+    id: name
+    font: verdana-11px-rounded
+    color: #dfdfdf
+    text-auto-resize: false
+    anchors.left: icon.right
+    anchors.right: pin.left
+    anchors.top: parent.top
+    margin-left: 4
+    margin-right: 2
+    height: 14
+    phantom: true
+
+  UILabel
+    id: count
+    font: verdana-11px-rounded
+    color: #c0c0c0
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+  UIButton
+    id: pin
+    size: 12 12
+    anchors.right: remove.left
+    anchors.top: parent.top
+    margin-top: 1
+    margin-right: 2
+
+  UIButton
+    id: remove
+    size: 12 12
+    icon: /modules/game_pokepedia/images/icon_remove
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 1
+    !tooltip: tr('Remove from the tracker')
+
+  TkTrack
+    id: track
+    height: 8
+    anchors.left: name.left
+    anchors.right: count.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 3
+    margin-right: 4
+
+  UIButton
+    id: claim
+    !text: tr('Claim')
+    font: verdana-11px-rounded
+    color: #2a1e00
+    width: 40
+    height: 14
+    image-source: /modules/game_dailytasks/images/button_claim
+    image-border: 6
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 1
+    visible: false
+    $hover:
+      image-source: /modules/game_dailytasks/images/button_claim_hover
+
+PpTrackerHeading < UILabel
+  font: verdana-11px-rounded
+  color: #ffd75a
+  text-auto-resize: false
+  height: 14
+  margin-top: 4
+  phantom: true
+
+MiniWindow
+  id: pokepediaTracker
+  height: 180
+  @onOpen: modules.game_pokepedia.Tracker.onOpen()
+  @onClose: modules.game_pokepedia.Tracker.onClose()
+  &save: true
+
+  UIWidget
+    id: miniwindowIcon
+    anchors.top: miniwindowHeader.top
+    anchors.left: miniwindowHeader.left
+    margin-top: 2
+    margin-left: 4
+    size: 12 12
+    image-source: /modules/game_pokepedia/images/icon_pokepedia_small
+    image-size: 12 12
+    image-smooth: true
+
+  Label
+    id: miniwindowTitle
+    anchors.top: miniwindowHeader.top
+    anchors.left: miniwindowHeader.left
+    anchors.right: miniwindowHeader.right
+    margin-top: 2
+    margin-left: 20
+    margin-right: 50
+    font: verdana-11px-monochrome
+    height: 13
+    !text: tr('Tracker')
+    color: #9d9d9dff
+
+  MiniWindowContents
+    padding-left: 4
+    padding-right: 4
+    layout:
+      type: verticalBox
+
+    UILabel
+      id: empty
+      font: verdana-11px-rounded
+      color: #9d9d9d
+      text-wrap: true
+      text-auto-resize: false
+      height: 42
+      !text: tr('Track a Pokemon from the Pokepedia, or take a task, to follow it here.')
+      margin-top: 4

@@ -17,7 +17,7 @@ local loginMessage = getConfigValue('loginMessage')
 
 local events = {"onDeath", "onKill", "onGainExperience", "onAddContainerItem", "onRemoveContainerItem",
 "onPrepareDeath", "onTarget", "onJoinChannel", "onReportBug", "onTradeRequestAccept", "onStatisticChange",
-"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit", "ExtendedOpcode"}
+"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit", "ExtendedOpcode", "onLook"}
 
 if (getBooleanFromString(getConfigValue('advancedSave'))) then
     events[#events + 1] = "AdvancedSave"
@@ -191,6 +191,7 @@ function onLogin(cid)
 		end
 
 		PC.onLogin(cid)
+		Pokepedia.onLogin(cid)
 		addEvent(GTS.onLogin, 3000, cid)
 
 	elseif(accountManager == MANAGER_NAMELOCK) then

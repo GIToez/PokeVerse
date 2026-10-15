@@ -6,7 +6,8 @@ so. Items marked **To decide** need an answer before work starts.
 ## Order
 
 1. [New depot](#1-new-depot): Poké boxes, inbox and stash (built).
-2. [Auto-walk and world map](#2-auto-walk-and-world-map) (one effort, shipped in phases).
+2. [Auto-walk and world map](#2-auto-walk-and-world-map) (one effort, shipped in phases; the
+   Pokepedia phases B to F are built).
 3. [Modern NPC dialogue window](#3-npc-dialogue-quests-and-tasks).
 4. [Website: live status and Discord card](#4-website).
 6. [Vocations](#6-vocations), replacing the old vocations.
@@ -236,6 +237,25 @@ status line (“Walking…”) and clearer cancel. Optional: small `game_nav` mo
   file generated from the wiki).
 
 ### Pokepedia (Cyclopedia-style window)
+
+**Built (phases B to F)** (server `lib/ps/systems/069-pokepedia.lua`, client `game_pokepedia`):
+the window with the Map, Houses, Pokédex and Items tabs, waypoints and routes, Pokédex
+knowledge levels and the tracker panel, as agreed below. P opens the window and M the Map tab
+(not while typing). Choices made:
+
+- Waypoints and the route are saved per character on the client (`g_settings`). A route walks
+  its stops in order; a battle or an NPC talk pauses it, and walking somewhere else stops it.
+  A stop on another floor waits until the player takes the stairs.
+- Houses: the tab buys from anywhere, premium only, one house per account
+  (`housesPerAccount = 1`); the transfer asks the buyer to confirm and moves the money and the
+  house in one step.
+- Long messages are sent in pieces the client joins back together, because the server drops
+  strings over 8 KB, and `sendExtendedOpcode` (C++) now starts a new packet when a message
+  doesn't fit in the current one. The Live server `deploy` action builds the new binary and
+  adds the two new tables (`player_item_discoveries`, `player_dex_kills`, in
+  `schemas/pokeverse-extensions.sql`) on its own; nothing to run by hand.
+- "Open in Pokedex" opens the old Pokédex window, which only shows species scanned with the
+  Pokédex item; the button is disabled until then.
 
 One window with tabs, modelled on Redemption's Cyclopedia (`modules/game_cyclopedia`) but
 built for protocol 854: our own JSON messages (like the PC and GTS), not Tibia's cyclopedia

@@ -381,6 +381,20 @@ function PokeverseMap.load(minimap)
     end
 end
 
+-- the Pokepedia map's Places list: { { name, town, position, type } }, towns have no type
+function PokeverseMap.getPlaces()
+    local places = {}
+    for _, composition in ipairs(MAP_COMPOSITIONS) do
+        places[#places + 1] = { name = composition.text, town = composition.text, position = composition.position }
+    end
+    for town, marks in pairs(GUIDES) do
+        for _, mark in ipairs(marks) do
+            places[#places + 1] = { name = tr(mark.description), town = town, position = mark.position, type = mark.type }
+        end
+    end
+    return places
+end
+
 function PokeverseMap.setFullMapView(fullMapView)
     for _, label in pairs(cityLabels) do
         label:setVisible(fullMapView)

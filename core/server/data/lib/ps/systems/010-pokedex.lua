@@ -474,10 +474,13 @@ local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
     end
   end
 
-  lines[#lines + 1] = string.format(__L(pid, "\n\nEV Yield: %s."), PokemonStats.getEvYieldText(pokemonName))
+  if (info.level >= 2) then
+    lines[#lines + 1] = string.format(__L(pid, "\n\nEV Yield: %s."), PokemonStats.getEvYieldText(pokemonName))
+  end
   if (sheet) then
     lines[#lines + 1] = "\n\n" .. PokemonStats.getStatSheetText(sheet)
   end
+  lines[#lines + 1] = info.knowledge
 
   doPlayerSendPokedexInfo(pid, getPokemonNumberByName(pokemonName), table.concat(lines), info.skills,
     info.typeEffectiveness, getPokemonFamiliesString(pokemonName))
@@ -520,10 +523,13 @@ local function doSendOldDexInfo(pid, pokemonName, detailed, info, pokemonBall)
     lines[#lines + 1] = __L(pid, "\nPo = Power, En = Energy, Lv = Level\nCd = Cooldown, G = Group, T = Type")
   end
 
-  lines[#lines + 1] = string.format(__L(pid, "\n\nEV Yield: %s."), PokemonStats.getEvYieldText(pokemonName))
+  if (info.level >= 2) then
+    lines[#lines + 1] = string.format(__L(pid, "\n\nEV Yield: %s."), PokemonStats.getEvYieldText(pokemonName))
+  end
   if (sheet) then
     lines[#lines + 1] = "\n\n" .. PokemonStats.getStatSheetText(sheet)
   end
+  lines[#lines + 1] = info.knowledge
 
   doShowTextDialog(pid, getPokemonPortraitId(pokemonName), table.concat(lines))
 end
@@ -538,25 +544,34 @@ function doPokedexItemView(pid, pokemonName, detailed--[[ = false]], itemId, pok
     doSendMagicEffect(getCreaturePosition(pid), dex.effect)
   end
 
+  -- a wild Pokemon's entry shows what the trainer knows about the species (Pokepedia knowledge
+  -- levels); their own Pokemon show everything. Types and matchups are never hidden.
   local info = {}
+  info.level, info.knowledge = 3, ""
+  if (not detailed and not pokemonBall) then
+    info.level = math.max(0, Pokepedia.getDexLevel(pid, pokemonName))
+    info.knowledge = Pokepedia.describeLevel(pid, pokemonName)
+  end
+  local hidden = __L(pid, "??? (defeat or catch more to learn it)")
   info.types = getTypesText(pokemonName, pokemon, pid)
-  info.abilities = getAbilitiesText(pokemonName, pid)
-  info.eggGroups = getEggGroupsText(pokemonName, pid)
+  info.abilities = info.level >= 1 and getAbilitiesText(pokemonName, pid) or hidden
+  info.eggGroups = info.level >= 1 and getEggGroupsText(pokemonName, pid) or hidden
   info.evolution = getEvolutionsText(pokemonName, pid)
-  info.specialAbilities = getSpecialAbilitiesText(pokemonName, pid, detailed)
-  info.eggMoves = getEggMovesText(pokemonName, pid)
+  info.specialAbilities = info.level >= 1 and getSpecialAbilitiesText(pokemonName, pid, detailed) or hidden
+  info.eggMoves = info.level >= 1 and getEggMovesText(pokemonName, pid) or hidden
 
   if (getPlayerUsingOtClient(pid)) then
-    info.skills = getMovesText(pokemonName, pid, detailed, true)
+    info.skills = info.level >= 1 and getMovesText(pokemonName, pid, detailed, true) or ""
     info.typeEffectiveness = getTypeEffectivenessText(pokemonName, pokemon, true, pid)
     doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
   else
-    info.skills = getMovesText(pokemonName, pid, detailed, false)
+    info.skills = info.level >= 1 and getMovesText(pokemonName, pid, detailed, false) or hidden
     info.typeEffectiveness = getTypeEffectivenessText(pokemonName, pokemon, false, pid)
     doSendOldDexInfo(pid, pokemonName, detailed, info, pokemonBall)
   end
 
   doPokedexTryRegister(pid, pokemonName)
+  Pokepedia.sendDex(pid, pokemonName)
 end
 
 function doPokedexStatusSend(pid)

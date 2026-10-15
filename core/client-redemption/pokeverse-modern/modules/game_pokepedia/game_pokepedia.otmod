@@ -1,0 +1,8 @@
+Module
+  name: game_pokepedia
+  description: PokeVerse Pokepedia: the world map with places, waypoints and routes, houses, the Pokedex knowledge, items and the tracker panel
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ pokepedia, navigation, map, houses, dex, items, tracker ]
+  @onLoad: init()
+  @onUnload: terminate()
