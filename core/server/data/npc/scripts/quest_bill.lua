@@ -20,7 +20,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'poketransformation')) then
-        selfSay("Give me a doll of any Pokemon you have in your PokeDex and I can trasform you into this Pokemon for 30 minutes. That's my new machine.", cid)
+        selfSay("Give me a doll of any Pokemon you have in your PokeDex and I can transform you into that Pokemon for 30 minutes. That's my new machine.", cid)
         return true
     end
 
@@ -29,11 +29,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             if (getCreatureStorage(cid, bananaStorage) ~= QUEST_STATUS.FINISHED) then
                 if (doPlayerAddUniqueItem(cid, 18162, 15, false)) then
                     doCreatureSetStorage(cid, bananaStorage, QUEST_STATUS.FINISHED)
-                    selfSay("Ivy called me giving this information. Look, try this special banana... this can work. The thief Aipom is on Valencia Island.", cid)
+                    selfSay("Ivy called me with this information. Look, try this special banana... it might work. The thief Aipom is on Valencia Island.", cid)
                 end
 
             else
-                selfSay("You must now use the special bananas to hook the Thief Aipom!", cid)
+                selfSay("You must now use the special bananas to lure the Thief Aipom!", cid)
             end
 
         else

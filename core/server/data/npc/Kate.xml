@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="637" head="15" body="20" legs="15" feet="0" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Is aware of where you are? Haha!"/>
+		<parameter key="message_greet" value="Are you aware of where you are? Haha!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

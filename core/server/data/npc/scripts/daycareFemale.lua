@@ -401,7 +401,7 @@ function creatureSayCallback(cid, type, msg)
 
         local plateItemId = getPlateItemIdByName(msg)
 
-        selfSay(string.format(__L(cid, "You really want to deposit %s %s?"), __L(cid, getItemArticleById(plateItemId)),
+        selfSay(string.format(__L(cid, "Do you really want to deposit %s %s?"), __L(cid, getItemArticleById(plateItemId)),
             getItemNameById(plateItemId)), cid)
         talkState[talkUser] = TALK_STATES.DEPOSIT_PLATE_CONFIRM
         lastPlate[cid] = plateItemId
@@ -412,13 +412,13 @@ function creatureSayCallback(cid, type, msg)
                 selfSay("You already have got a plate here! You can {remove} it if you want.", cid)
 
             elseif (getPlayerItemCount(cid, lastPlate[cid]) < 1) then
-                selfSay("You don't have any of this plate!", cid)
+                selfSay("You don't have this plate!", cid)
 
             elseif (setPlayerDaycarePlate(cid, lastPlate[cid])) then
                 doPlayerRemoveItem(cid, lastPlate[cid], 1)
                 selfSay("Great, I will keep it for you.", cid)
             else
-                selfSay("Something goes wrong! Please try again later.", cid)
+                selfSay("Something went wrong! Please try again later.", cid)
                 log(LOG_TYPES.ERROR, "DaycareFemale::depositPlate - Can't save player plate.", getPlayerName(cid),
                     lastPlate[cid])
             end
@@ -461,22 +461,22 @@ function creatureSayCallback(cid, type, msg)
             local pokemonLevel = pokemonOnDaycare:getDataInt('pokemon_level')
             local eggStatus = getPokemonOnDaycareEggStatus(cid, pokemonOnDaycare)
 
-            selfSay(string.format(__L(cid, "Your {%s} has been training for {%s minutes} and has earned {%s experience points}. The price to remove your Pokemon is {%s dollars}. You can also {cancel} the training.%s"), pokemonOnDaycare:getDataString('pokemon_name'), min, getPokemonGainExpPerMinute(pokemonLevel) * min, getPricePerMinute(pokemonLevel) * min, (getPlayerDaycarePlate(cid) and (string.format(__L(cid, " Remeber that I have one of your %s plate here."), PLATE_NAME_BY_ITEMID[getPlayerDaycarePlate(cid)])) or "")), cid)
+            selfSay(string.format(__L(cid, "Your {%s} has been training for {%s minutes} and has earned {%s experience points}. The price to remove your Pokemon is {%s dollars}. You can also {cancel} the training.%s"), pokemonOnDaycare:getDataString('pokemon_name'), min, getPokemonGainExpPerMinute(pokemonLevel) * min, getPricePerMinute(pokemonLevel) * min, (getPlayerDaycarePlate(cid) and (string.format(__L(cid, " Remember that I have one of your %s plates here."), PLATE_NAME_BY_ITEMID[getPlayerDaycarePlate(cid)])) or "")), cid)
 
             local remaingTime = getPlayerRemaingTimeToGenerateAnotherEgg(cid)
             if (remaingTime > 0) then
-                selfSay(string.format(__L(cid, "Egg status: You have already generated an egg recently, you must wait fifteen days after produce an egg to generate another. Remaing %s."), table.concat(string.timediff(remaingTime, cid))), cid)
+                selfSay(string.format(__L(cid, "Egg status: You have already generated an egg recently. You must wait fifteen days after producing an egg to generate another. Remaining %s."), table.concat(string.timediff(remaingTime, cid))), cid)
                 return true
             end
 
             if (eggStatus == EGG_STATUS_PLAYER_NEED_MORE_TIME) then
-                selfSay(string.format(__L(cid, "Egg status: You have already generated an egg recently, you must wait fifteen days after produce an egg to generate another. Remaing %s."), table.concat(string.timediff((getPlayerLastEggTime(cid) + TIME_BETWEEN_EACH_EGG) - os.time(), cid))), cid)
+                selfSay(string.format(__L(cid, "Egg status: You have already generated an egg recently. You must wait fifteen days after producing an egg to generate another. Remaining %s."), table.concat(string.timediff((getPlayerLastEggTime(cid) + TIME_BETWEEN_EACH_EGG) - os.time(), cid))), cid)
 
             elseif (eggStatus == EGG_STATUS_NO_MALE_POKEMON) then
-                selfSay("Egg status: You don't have a male Pokemon being trained as well.", cid)
+                selfSay("Egg status: You don't have a male Pokemon being trained too.", cid)
 
             elseif (eggStatus == EGG_STATUS_NEED_MORE_TIME) then
-                selfSay(string.format(__L(cid, "Egg status: The two need to be training for at least %s minutes (24 hours) to take chances to breed."), MIN_TRAIN_TIME_TO_EGG), cid)
+                selfSay(string.format(__L(cid, "Egg status: The two need to be training for at least %s minutes (24 hours) to have a chance to breed."), MIN_TRAIN_TIME_TO_EGG), cid)
 
             elseif (eggStatus == EGG_STATUS_INCOMPATIBLE) then
                 selfSay("Egg status: The two don't seem to like each other. No chance of producing an egg.", cid)
@@ -512,7 +512,7 @@ function creatureSayCallback(cid, type, msg)
                 selfSay("Sorry, only players with a premium account can use this service.", cid)
 
             elseif (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             elseif (hasSameAccountCharacterUsingDaycare(cid)) then
                 selfSay("Sorry, a character of your account is already using our services.", cid)
@@ -530,7 +530,7 @@ function creatureSayCallback(cid, type, msg)
         if (pokemonOnDaycare) then
             talkState[talkUser] = TALK_STATES.QUESTION_WITHDRAW_POKEMON_WITHOUT_TRAINING
 
-            selfSay("Do you really want to cancel your Pokemon training? He will not gain any experience points and generate eggs, but you still have to pay the amount.", cid)
+            selfSay("Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee.", cid)
 
         else
             selfSay("You have no Pokemon being trained by me at this moment! You can {leave} a Pokemon here if you want.", cid)
@@ -539,7 +539,7 @@ function creatureSayCallback(cid, type, msg)
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
         if (talkState[talkUser] == TALK_STATES.QUESTION_LEAVE_POKEMON and lastName[talkUser] and lastTrainTime[talkUser]) then
             if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-                selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+                selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
             else
                 local daycareBall
@@ -554,7 +554,7 @@ function creatureSayCallback(cid, type, msg)
                 if (not daycareBall) then
                     talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON_NAME
 
-                    selfSay("You do not have this Pokemon! Please tell the name of a Pokemon that is with you.", cid)
+                    selfSay("You don't have this Pokemon! Please tell me the name of a Pokemon you are carrying.", cid)
 
                 elseif (getPlayerMoney(cid) < 100) then
                     talkState[talkUser] = TALK_STATES.NONE
@@ -564,7 +564,7 @@ function creatureSayCallback(cid, type, msg)
                 elseif (getBallPokemonSex(daycareBall.uid) == POKEMON_SEX_MALE) then
                     talkState[talkUser] = TALK_STATES.NONE
 
-                    selfSay("Sorry, I care only female and sexless Pokemon.", cid)
+                    selfSay("Sorry, I only care for female and genderless Pokemon.", cid)
 
                 else
                     talkState[talkUser] = TALK_STATES.NONE
@@ -580,7 +580,7 @@ function creatureSayCallback(cid, type, msg)
 
             local remaingTrainTime = (pokemonOnDaycare:getDataInt('max_training_minutes')) - (math.floor((os.time() - pokemonOnDaycare:getDataInt('date')) / 60))
             if (remaingTrainTime > 0) then
-                selfSay(string.format(__L(cid, "You can't withdraw your Pokemon right now. There's remaing %s minutes of training. If you really want, you can {cancel} the trainment."), remaingTrainTime), cid)
+                selfSay(string.format(__L(cid, "You can't withdraw your Pokemon right now. There are %s minutes of training remaining. If you really want, you can {cancel} the training."), remaingTrainTime), cid)
                 talkState[talkUser] = TALK_STATES.NONE
                 return true
             end
@@ -630,7 +630,7 @@ function creatureSayCallback(cid, type, msg)
     else
         if (talkState[talkUser] == TALK_STATES.QUESTION_LEAVE_POKEMON_NAME) then
             if (not isPokemonName(msg)) then
-                selfSay("Please, say the name of a Pokemon! What the name of your Pokemon that you want to leave here?", cid)
+                selfSay("Please say the name of a Pokemon! What's the name of the Pokemon you want to leave here?", cid)
 
             else
                 local trueName, i, word
@@ -647,7 +647,7 @@ function creatureSayCallback(cid, type, msg)
                 lastName[talkUser] = trueName
                 talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON_TIME
 
-                selfSay(string.format(__L(cid, "And how much train time do you want? The options are: %s"), getTrainOptionsMessage(cid)), cid)
+                selfSay(string.format(__L(cid, "And how long do you want it to train? The options are: %s"), getTrainOptionsMessage(cid)), cid)
             end
 
         elseif (talkState[talkUser] == TALK_STATES.QUESTION_LEAVE_POKEMON_TIME) then
@@ -659,7 +659,7 @@ function creatureSayCallback(cid, type, msg)
                 talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON
                 lastTrainTime[talkUser] = msg
 
-                selfSay(string.format(__L(cid, "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter and an additional 1, 2 or 4 dollars per minute that he stay here (depends on the level of your Pokemon)."), lastName[talkUser], msg), cid)
+                selfSay(string.format(__L(cid, "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level)."), lastName[talkUser], msg), cid)
             end
 
         else

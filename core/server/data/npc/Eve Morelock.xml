@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="619" head="12" body="36" legs="40" feet="90" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="I can hold my breath for 10 minutes with my Goldeen!"/>
+		<parameter key="message_greet" value="I can hold my breath for 10 minutes swimming with my Goldeen!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

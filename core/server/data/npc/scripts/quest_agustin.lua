@@ -17,15 +17,15 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if (msgcontains(msg, 'rock')) then
-		selfSay("Rock? It is an old friend. Hehe, time does not see it.", cid)
+		selfSay("Rock? He's an old friend. Hehe, I haven't seen him in ages.", cid)
 
 		if (getCreatureStorage(cid, 8020) == 0 and getCreatureStorage(cid, 8021) ~= 1) then -- Doing Rock Task
-			selfSay("Also, I got a letter to deliver to him. You do this favor for me?", cid)
+			selfSay("Also, I have a letter to deliver to him. Will you do me this favor?", cid)
 			npcHandler.talkState[talkUser] = 1
 		end
 
 	elseif ((msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) and npcHandler.talkState[talkUser] == 1) then
-		selfSay("Ok, here is.", cid)
+		selfSay("Ok, here it is.", cid)
 		doPlayerAddItem(cid, 13011, 1, true)
 		doCreatureSetStorage(cid, 8021, 1)
 		npcHandler.talkState[talkUser] = 0

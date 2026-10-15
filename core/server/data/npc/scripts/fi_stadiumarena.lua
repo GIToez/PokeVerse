@@ -47,13 +47,13 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'frontier') or msgcontains(msg, 'island') or msgcontains(msg, 'ilha')) then
-        selfSay("You're in the Frontier Island, an appropriate location to test for the continent's greatest Pokemon trainers. Prove your strength here and you will be rewarded.", cid)
+        selfSay("You're on the Frontier Island, the right place to test the continent's greatest Pokemon trainers. Prove your strength here and you will be rewarded.", cid)
 
     elseif (msgcontains(msg, 'stadium') or msgcontains(msg, 'arena')) then
         selfSay("I can offer you three challenges in the Stadium Arena: {Gladiator}, {Cooperative} and {Survive}.", cid)
 
     elseif (msgcontains(msg, 'gladiator')) then
-        selfSay("In Gladiator mode you face several challenges in the best singleplayer mode. If you want this challenge, say 'enter'.", cid)
+        selfSay("In Gladiator mode you face several challenges alone, in singleplayer mode. If you want this challenge, say 'enter'.", cid)
         talkState[talkUser] = TALKSTATES.GLADIATOR
 
     elseif (msgcontains(msg, 'cooperative')) then
@@ -70,11 +70,11 @@ function creatureSayCallback(cid, type, msg)
             talkState[talkUser] = TALKSTATES.GLADIATOR_ACCEPT
 
         elseif (talkState[talkUser] == TALKSTATES.COOPERATIVE) then
-            selfSay("Right! What Cooperative mode you want? Your options are: {Elite}(4 players) and {Titan}(6 players).", cid)
+            selfSay("Right! Which Cooperative mode do you want? Your options are: {Elite}(4 players) and {Titan}(6 players).", cid)
             talkState[talkUser] = TALKSTATES.COOPERATIVE_CHOOSE
 
         elseif (talkState[talkUser] == TALKSTATES.SURVIVE) then
-            selfSay(string.format(__L(cid, "What Survive mode you want? Your options are: {Challenge}(PvP - %s players) and {Hardcore}(PvP and PvE - %s players)."), SurviveChallenge.Config.REQUIRED_PLAYERS, SurviveHardcore.Config.REQUIRED_PLAYERS), cid)
+            selfSay(string.format(__L(cid, "Which Survive mode do you want? Your options are: {Challenge}(PvP - %s players) and {Hardcore}(PvP and PvE - %s players)."), SurviveChallenge.Config.REQUIRED_PLAYERS, SurviveHardcore.Config.REQUIRED_PLAYERS), cid)
             talkState[talkUser] = TALKSTATES.SURVIVE_CHOOSE
         end
 
@@ -100,7 +100,7 @@ function creatureSayCallback(cid, type, msg)
 
             local arena = Gladiator.getFreeArena()
             if (not arena) then
-                selfSay("Sorry, there is no arena free now. Please, try again later.", cid)
+                selfSay("Sorry, there is no free arena right now. Please, try again later.", cid)
                 return true
 
             elseif (not doPlayerCheck(cid)) then
@@ -112,7 +112,7 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (not isPremium(cid)) then
-                selfSay("Sorry, only Premmium Accounts can join this challenge.", cid)
+                selfSay("Sorry, only Premium Accounts can join this challenge.", cid)
                 return true
 
             elseif (not doPlayerRemoveMoney(cid, GLADIATOR_COST)) then
@@ -122,7 +122,7 @@ function creatureSayCallback(cid, type, msg)
 
             if (not Gladiator.onStart(cid, arena)) then
                 LOG(LOG_TYPES.ERROR, "fi_stadiumarena - Gladiator can't start.", getCreatureName(cid), arena)
-                selfSay("Something got wrong, please try again later.", cid)
+                selfSay("Something went wrong, please try again later.", cid)
                 return true
             end
 
@@ -135,29 +135,29 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (party ~= cid) then
-                selfSay("You are not the leader of your Party! Only the group leader who can enroll in cooperative mode.", cid)
+                selfSay("You are not the leader of your Party! Only the group leader can enroll in cooperative mode.", cid)
                 return true
             end
 
             local members = getPartyMembers(party)
             if (#members ~= 4) then
-                selfSay("Your group haven't 4 members! You can only enroll in cooperative mode with 4 members in the Party.", cid)
+                selfSay("Your group doesn't have 4 members! You can only enroll in cooperative mode with 4 members in the Party.", cid)
                 return true
             end
 
             local arena = CooperativeElite.getFreeArena()
             if (not arena) then
-                selfSay("Sorry, there is no arena free now. Please, try again later.", cid)
+                selfSay("Sorry, there is no free arena right now. Please, try again later.", cid)
                 return true
             end
 
             for _, c in pairs(members) do
                 if (getPlayerLevel(c) < COOPERATIVE_LEVEL) then
-                    selfSay(string.format(__L(cid, "You can't enter while you or your Party members aren't at least level %s."), COOPERATIVE_LEVEL), cid)
+                    selfSay(string.format(__L(cid, "You can't enter unless you and your Party members are at least level %s."), COOPERATIVE_LEVEL), cid)
                     return true
 
                 elseif (not isPremium(c)) then
-                    selfSay("You can't enter while you or your Party members haven't a Premium Account.", cid)
+                    selfSay("You can't enter unless you and your Party members have a Premium Account.", cid)
                     return true
 
                 elseif (not doPlayerCheck(c)) then
@@ -165,7 +165,7 @@ function creatureSayCallback(cid, type, msg)
                     return true
 
                 elseif (getDistanceBetween(getCreaturePosition(c), getCreaturePosition(cid)) > 3) then
-                    selfSay("You can't enter while one of your party members are too far from you!", cid)
+                    selfSay("You can't enter while one of your party members is too far from you!", cid)
                     return true
                 end
             end
@@ -177,7 +177,7 @@ function creatureSayCallback(cid, type, msg)
 
             if (not CooperativeElite.onStart(members, arena)) then
                 LOG(LOG_TYPES.ERROR, "fi_stadiumarena - CooperativeElite can't start.", getCreatureName(cid), arena)
-                selfSay("Something got wrong, please try again later.", cid)
+                selfSay("Something went wrong, please try again later.", cid)
                 return true
             end
 
@@ -190,29 +190,29 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (party ~= cid) then
-                selfSay("You are not the leader of your Party! Only the group leader who can enroll in cooperative mode.", cid)
+                selfSay("You are not the leader of your Party! Only the group leader can enroll in cooperative mode.", cid)
                 return true
             end
 
             local members = getPartyMembers(party)
             if (#members ~= 6) then
-                selfSay("Your group haven't 6 members! You can only enroll in cooperative mode with 4 members in the Party.", cid)
+                selfSay("Your group doesn't have 6 members! You can only enroll in this cooperative mode with 6 members in the Party.", cid)
                 return true
             end
 
             local arena = CooperativeTitan.getFreeArena()
             if (not arena) then
-                selfSay("Sorry, there is no arena free now. Please, try again later.", cid)
+                selfSay("Sorry, there is no free arena right now. Please, try again later.", cid)
                 return true
             end
 
             for _, c in pairs(members) do
                 if (getPlayerLevel(c) < COOPERATIVE_LEVEL) then
-                    selfSay(string.format(__L(cid, "You can't enter while you or your Party members aren't at least level %s."), COOPERATIVE_LEVEL), cid)
+                    selfSay(string.format(__L(cid, "You can't enter unless you and your Party members are at least level %s."), COOPERATIVE_LEVEL), cid)
                     return true
 
                 elseif (not isPremium(c)) then
-                    selfSay("You can't enter while you or your Party members haven't a Premium Account.", cid)
+                    selfSay("You can't enter unless you and your Party members have a Premium Account.", cid)
                     return true
 
                 elseif (not doPlayerCheck(c)) then
@@ -220,7 +220,7 @@ function creatureSayCallback(cid, type, msg)
                     return true
 
                 elseif (getDistanceBetween(getCreaturePosition(c), getCreaturePosition(cid)) > 3) then
-                    selfSay("You can't enter while one of your party members are too far from you!", cid)
+                    selfSay("You can't enter while one of your party members is too far from you!", cid)
                     return true
                 end
             end
@@ -232,7 +232,7 @@ function creatureSayCallback(cid, type, msg)
 
             if (not CooperativeTitan.onStart(members, arena)) then
                 LOG(LOG_TYPES.ERROR, "fi_stadiumarena - CooperativeTitan can't start.", getCreatureName(cid), arena)
-                selfSay("Something got wrong, please try again later.", cid)
+                selfSay("Something went wrong, please try again later.", cid)
                 return true
             end
 
@@ -240,7 +240,7 @@ function creatureSayCallback(cid, type, msg)
             talkState[talkUser] = TALKSTATES.NONE
 
             if (not SurviveChallenge.getFreeArena()) then
-                selfSay("Sorry, there is no arena free now. Please, try again later.", cid)
+                selfSay("Sorry, there is no free arena right now. Please, try again later.", cid)
                 return true
 
             elseif (not doPlayerCheck(cid)) then
@@ -252,7 +252,7 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (not isPremium(cid)) then
-                selfSay("Sorry, only Premmium Accounts can join this challenge.", cid)
+                selfSay("Sorry, only Premium Accounts can join this challenge.", cid)
                 return true
 
             elseif (not doPlayerRemoveMoney(cid, SURVIVE_LEVEL)) then
@@ -268,7 +268,7 @@ function creatureSayCallback(cid, type, msg)
             talkState[talkUser] = TALKSTATES.NONE
 
             if (not SurviveHardcore.getFreeArena()) then
-                selfSay("Sorry, there is no arena free now. Please, try again later.", cid)
+                selfSay("Sorry, there is no free arena right now. Please, try again later.", cid)
                 return true
 
             elseif (not doPlayerCheck(cid)) then
@@ -280,7 +280,7 @@ function creatureSayCallback(cid, type, msg)
                 return true
 
             elseif (not isPremium(cid)) then
-                selfSay("Sorry, only Premmium Accounts can join this challenge.", cid)
+                selfSay("Sorry, only Premium Accounts can join this challenge.", cid)
                 return true
 
             elseif (not doPlayerRemoveMoney(cid, SURVIVE_LEVEL)) then

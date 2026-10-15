@@ -5,6 +5,6 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. Do you want to {reset} your Smeargle Sketchs?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Do you want to {reset} your Smeargle's Sketches?"/>
 	</parameters>
 </npc>

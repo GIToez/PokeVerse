@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Planting, watering, harvesting... is not this a beautiful thing?"/>
+		<parameter key="message_greet" value="Planting, watering, harvesting... isn't it a beautiful thing?"/>
 		<parameter key="shop_buyable" value="
 		watering can, 13174, 100;
 		hoe, 2552, 200;

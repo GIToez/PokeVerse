@@ -89,13 +89,13 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     local name = getNpcName()
     if (not REQUIREMENTS[name]) then
         log(LOG_TYPES.ERROR, "Npc::default_requirement - Unknown NPC!", name)
-        selfSay("You do not have enough access to deal here!", cid)
+        selfSay("You do not have enough access to trade here!", cid)
         return false
     end
 
     if (npcHandler:isInRange(cid)) then
         if (not REQUIREMENTS[name](cid)) then
-            selfSay("You do not have enough access to deal here!", cid)
+            selfSay("You do not have enough access to trade here!", cid)
             return false
         end
     end

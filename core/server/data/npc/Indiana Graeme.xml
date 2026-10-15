@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. want to sell Stones? Just say {trade}."/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Want to sell Stones? Just say {trade}."/>
 		<parameter key="shop_sellable" value="
 		Fire Stone, 18083;
 		Leaf Stone, 18086;

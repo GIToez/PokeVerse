@@ -132,7 +132,7 @@ function creatureSayCallback(cid, type, msg)
         selfSay(string.format(__L(cid, "You want to exchange %s halloween tokens for a %s?"), OPTION_BY_NAME[msg].halloweenTokens, msg), cid)
 
     elseif (msgcontains(msg, 'halloween') or msgcontains(msg, 'gift') or msgcontains(msg, 'dia das bruxas') or msgcontains(msg, 'presente')) then
-        selfSay("Here you can exchange halloween tokens into halloween gifts, you can see the {options}.", cid)
+        selfSay("Here you can exchange halloween tokens for halloween gifts, you can see the {options}.", cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then
         doPlayerPopupFYI(cid, optionsMessage)
@@ -154,7 +154,7 @@ function creatureSayCallback(cid, type, msg)
             end
 
         else
-            selfSay("You do not have enough halloween coins for it.", cid)
+            selfSay("You do not have enough halloween tokens for it.", cid)
         end
 
         talkState[talkUser] = TALKSTATE_NONE

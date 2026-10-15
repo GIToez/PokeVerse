@@ -197,13 +197,13 @@ function creatureSayCallback(cid, type, msg)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
         if (OPTION_BY_NAME[msg].tokenId) then
-            selfSay(string.format(__L(cid, "You want to exchange %s %s for a %s?"), OPTION_BY_NAME[msg].tokens, getItemNameById(OPTION_BY_NAME[msg].tokenId), msg), cid)
+            selfSay(string.format(__L(cid, "Do you want to exchange %s %s for a %s?"), OPTION_BY_NAME[msg].tokens, getItemNameById(OPTION_BY_NAME[msg].tokenId), msg), cid)
         else
-            selfSay(string.format(__L(cid, "You want to exchange %s anniversary token for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+            selfSay(string.format(__L(cid, "Do you want to exchange %s anniversary token for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
         end
 
     elseif (msgcontains(msg, 'anniversary') or msgcontains(msg, 'aniversário')) then
-        selfSay("Here you can exchange anniversary tokens into gifts, you can see the {options}.", cid)
+        selfSay("Here you can exchange anniversary tokens for gifts. You can see the {options}.", cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'opcoes')) then
         doPlayerPopupFYI(cid, optionsMessage)

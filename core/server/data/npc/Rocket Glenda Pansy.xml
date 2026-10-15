@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="534" head="50" body="20" legs="20" feet="30"/>
 	<parameters>
-		<parameter key="message_greet" value="Steal or not to steal? That's the question."/>
+		<parameter key="message_greet" value="To steal or not to steal? That is the question."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

@@ -25,7 +25,7 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if (msgcontains(msg, 'orenji') or msgcontains(msg, 'fruit')) then
-        selfSay("So you're interested in the Orenji fruit? I can give you one if you won a {battle} against me.", cid)
+        selfSay("So you're interested in the Orenji fruit? I can give you one if you win a {battle} against me.", cid)
 
     elseif (msgcontains(msg, 'battle') or msgcontains(msg, 'fight') or msgcontains(msg, 'duel')) then
 		talkState[talkUser] =  npcBattle:doTalkStart(getNpcId(), cid)

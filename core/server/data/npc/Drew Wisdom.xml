@@ -3,6 +3,6 @@
 	<health now="150" max="150"/>
 	<look type="1255" head="50" body="76" legs="34" feet="34" corpse="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|! How about skiing? Hahaha! I think you're cold in this {outfit}."/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|! How about skiing? Hahaha! You must be cold in that {outfit}."/>
 	</parameters>
 </npc>

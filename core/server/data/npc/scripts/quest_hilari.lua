@@ -24,7 +24,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             selfSay("How are you doing? Keep helping us please!", cid)
         else
             doCreatureSetStorage(cid, questStorage, QUEST_STATUS.STARTED)
-            selfSay("We need help here. Talk to those who are to receive mission offers.", cid)
+            selfSay("We need help here. Talk to the people around here to receive mission offers.", cid)
         end
 
 	else

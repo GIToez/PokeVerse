@@ -4,7 +4,7 @@
 	<look type="563" head="0" body="0" legs="0" feet="0"/>
 	<parameters>
         <parameter key="module_travel" value="1"/>
-		<parameter key="message_greet" value="Yoo friend! His eyes overflow thirst for adventure! Boarding and let's go! If you don't know where to flow, say {travel}."/>
+		<parameter key="message_greet" value="Yoo friend! Your eyes overflow with thirst for adventure! Climb aboard and let's go! If you don't know where to sail, say {travel}."/>
         <parameter key="travel_destinations" value="tangelo,2721,2860,6,50,false;vermilion,3858,641,5,300,false;trovitopolis,3425,3230,6,100,false,-1,6;"/>
     </parameters>
 </npc>

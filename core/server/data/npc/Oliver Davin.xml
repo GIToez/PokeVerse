@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Churros parish, enjoy!"/>
+		<parameter key="message_greet" value="Fresh churros, enjoy!"/>
 		<parameter key="shop_buyable" value="
 		churros with white chocolate, 12202, 3;
 		churros with milk candy, 12203, 3;

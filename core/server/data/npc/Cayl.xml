@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="909" head="67" body="20" legs="30" feet="67" addons="3"/>
 	<parameters>
-		<parameter key="message_greet" value="Watch out the skies and sand. And be quick man!"/>
+		<parameter key="message_greet" value="Watch out for the skies and sand. And be quick, man!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

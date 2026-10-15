@@ -60,7 +60,7 @@ local function doJennyScene(cid, npcId)
 
     addEvent(function(npcId)
         if (getCreatureStorage(cid, 8547) ~= QUEST_STATUS.FINISHED) then
-            doCreatureSay(npcs.jenny, "So you're a friend of Bill? Wait a minute I will confirm this... Looks like Bill know you, I will let you go, but I do not want to see you getting into the affairs of the police without permission, OK?", TALKTYPE_SAY)
+            doCreatureSay(npcs.jenny, "So you're a friend of Bill's? Wait a minute, I'll confirm this... Looks like Bill knows you. I'll let you go, but I don't want to see you meddling in police affairs without permission, OK?", TALKTYPE_SAY)
             doCreatureSetStorage(cid, 8547, QUEST_STATUS.FINISHED)
             doCreatureSetStorage(cid, 8546, QUEST_STATUS.STARTED) -- Start Mistery Guy quest
         end
@@ -89,7 +89,7 @@ npcBattleKantoMain:setOnEnd(function(cid, playerWin, npc)
         local misteryGuy = doCreateNpc("Mistery Guy", pos)
         doSendMagicEffect(pos, EFFECT_TELEPORT_DOWN)
 
-        addEvent(doCreatureSay, 3000, misteryGuy, "That's right trainer, thank you, meet me at my father.", TALKTYPE_SAY)
+        addEvent(doCreatureSay, 3000, misteryGuy, "That's right trainer, thank you. Meet me at my father's.", TALKTYPE_SAY)
         addEvent(doRemoveCreature, 6000, misteryGuy)
         addEvent(doJennyScene, 6500, cid, npc)
     else
@@ -106,7 +106,7 @@ local function doMisteryGuyAppear(cid)
     end
 
     isMisteryGuyAppearing = true
-    selfSay("Oh, I almost forgot. Guards! Bring him.", cid)
+    selfSay("Oh, I almost forgot. Guards! Bring him in.", cid)
     
     local pos = {x = 5029, y = 485, z = 8}
     local npc = doCreateNpc("Mistery Guy", pos)
@@ -120,7 +120,7 @@ local function doMisteryGuyAppear(cid)
     local rocket2 = doCreateNpc("Rocket", rocket2Pos)
     doSendMagicEffect(rocket2Pos, EFFECT_TELEPORT_DOWN)
 
-    addEvent(doCreatureSay, 5000, npc, "ESCAPE MY FRIEND, RUN AWAY, GET HELP WITH MY FATHER! BRISCOE LEN!", TALKTYPE_SAY)
+    addEvent(doCreatureSay, 5000, npc, "ESCAPE MY FRIEND, RUN AWAY, GET HELP FROM MY FATHER! BRISCOE LEN!", TALKTYPE_SAY)
     addEvent(function()
         for i = 1, 30 do
             local tmpPos = getPositionRandomAdjacent(pos, 7)
@@ -154,7 +154,7 @@ npcBattleKantoMain12:setPokemonDefeatExperienced(true)
 npcBattleKantoMain12:setPokemonExtraStats(0.3)
 npcBattleKantoMain12:setOnEnd(function(cid, playerWin, npc)
     if (playerWin) then
-        selfSay("Now boy, you made me feel something I have not felt for many years. I had completely forgotten how to have that euphoria during duels pokemon, how it feels as one with your pokemon and I ended up turning it into a {business} only.", cid)
+        selfSay("Now boy, you made me feel something I haven't felt in many years. I had completely forgotten the euphoria of Pokemon duels, how it feels to be one with your Pokemon, and I ended up turning it into just a {business}.", cid)
         npcHandler:addFocus(cid)
     else
     end
@@ -180,7 +180,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'friend') or msgcontains(msg, 'amigo')) then
             doMisteryGuyAppear(cid)
         else
-            selfSay("So you are the kid who is messing me? Your {friend} told me a lot about you.", cid)
+            selfSay("So you're the kid who's been messing with me? Your {friend} told me a lot about you.", cid)
         end
         return true
     end
@@ -189,15 +189,15 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     if (getSamePosition(getNpcPos(), GIOVANNI_KANTOMAIN12_POSITION)) then
         if (getPlayerDefeatedNPC(cid, 9703)) then
             if (msgcontains(msg, 'business') or msgcontains(msg, 'negocio')) then
-                selfSay("I do not regret having facilitated the creation of Mewtwo, but I will let him free he will decide what is best for you, now I and my subordinates of {team rocket} will from this island.", cid)
+                selfSay("I don't regret helping create Mewtwo, but I will set him free; he will decide what is best for himself. Now my subordinates of {team rocket} and I will leave this island.", cid)
 
             elseif (msgcontains(msg, 'team') or msgcontains(msg, 'rocket') or msgcontains(msg, 'equipe')) then
-                selfSay("The team rocket will continue with their activities, more than a different way ... Wait and see with their own eyes boy. See you some other day.", cid)
+                selfSay("Team Rocket will continue its activities, but in a different way... Wait and see with your own eyes, boy. See you some other day.", cid)
                 doSendMagicEffect(getNpcPos(), EFFECT_TELEPORT_UP)
                 doRemoveCreature(getNpcId())
 
             else
-                selfSay("Now boy, you made me feel something I have not felt for many years. I had completely forgotten how to have that euphoria during duels pokemon, how it feels as one with your pokemon and I ended up turning it into a {business} only.", cid)
+                selfSay("Now boy, you made me feel something I haven't felt in many years. I had completely forgotten the euphoria of Pokemon duels, how it feels to be one with your Pokemon, and I ended up turning it into just a {business}.", cid)
             end
 
         elseif(msgcontains(msg, 'battle') or msgcontains(msg, 'fight') or msgcontains(msg, 'duel') or msgcontains(msg, 'batalha') or msgcontains(msg, 'duelar')) then
@@ -206,7 +206,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         elseif(msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             talkState[talkUser] =  npcBattleKantoMain12:doTalkEnd(getNpcId(), cid, talkState[talkUser])
         else
-            selfSay("Your damn kid promise that this will be the last time you will annoy me! Let's {duel}!", cid)
+            selfSay("You damn kid, promise this will be the last time you annoy me! Let's {duel}!", cid)
         end
         return true
     end
@@ -220,14 +220,14 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (msgcontains(msg, 'tm')) then
         if (not getPlayerDefeatedNPC(cid, getNpcName())) then
-            selfSay("You must defeat me before receive your reward.", cid)
+            selfSay("You must defeat me before receiving your reward.", cid)
 
         elseif (getCreatureStorage(cid, TM_STORAGE) == QUEST_STATUS.FINISHED) then
             selfSay("You already got this reward.", cid)
 
         else
             giveTm(cid)
-            selfSay("Oh, here is!", cid)
+            selfSay("Oh, here it is!", cid)
         end
 
     else
@@ -243,27 +243,27 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 
     if (getSamePosition(getNpcPos(), GIOVANNI_KANTOMAIN10_POSITION)) then
-        selfSay("So you are the kid who is messing me? Your {friend} told me a lot about you.", cid)
+        selfSay("So you're the kid who's been messing with me? Your {friend} told me a lot about you.", cid)
         npcHandler:addFocus(cid)
         return false
 
     elseif (getSamePosition(getNpcPos(), GIOVANNI_KANTOMAIN10_2_POSITION)) then
         if (getCreatureStorage(cid, 8544) == QUEST_STATUS.STARTED) then
             if (not getPlayerDefeatedNPC(cid, 9702)) then
-              selfSay("Your damn kid, I'll stop you now! Ready or not, it's time to duel!", cid)
+              selfSay("You damn kid, I'll stop you now! Ready or not, it's time to duel!", cid)
               npcBattleKantoMain:doForceBattleStart(getNpcId(), cid)
             else
               selfSay("...", cid)
             end
         else
-            selfSay("So you are the kid who is messing me? Your {friend} told me a lot about you.", cid)
+            selfSay("So you're the kid who's been messing with me? Your {friend} told me a lot about you.", cid)
         end
 
         npcHandler:addFocus(cid)
         return false
 
     elseif (getSamePosition(getNpcPos(), GIOVANNI_KANTOMAIN12_POSITION)) then
-        selfSay("Your damn kid promise that this will be the last time you will annoy me! Let's {duel}!", cid)
+        selfSay("You damn kid, promise this will be the last time you annoy me! Let's {duel}!", cid)
         npcHandler:addFocus(cid)
         return false
     end

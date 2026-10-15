@@ -4,7 +4,7 @@
 	<look type="503" head="170" body="80" legs="90" feet="0" corpse="2212"/>
 	<parameters>
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. Here you go find the best churros of all the town, hu?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Here you'll find the best churros in town, huh?"/>
 		<parameter key="shop_buyable" value="
 		churros with white chocolate, 12202, 3;
 		churros with milk candy, 12203, 3;

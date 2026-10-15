@@ -16,7 +16,7 @@ npcBattle:setOneWin(true)
 npcBattle:setDifficulty(50)
 npcBattle:setRequired(function(cid) return getCreatureStorage(cid, 8435) == QUEST_STATUS.FINISHED end)
 npcBattle:setOnEnd(function(cid)
-    npcHandler:say("You're tough, I will not be able to hold you here anyway. I hope that others give you a lesson down there. Step the last right tile now... get out!", cid)
+    npcHandler:say("You're tough, I can't hold you here anyway. I hope the others teach you a lesson down there. Step on the last tile on the right now... get out!", cid)
 end)
 
 keywordHandler:addKeyword(
@@ -26,7 +26,7 @@ keywordHandler:addKeyword(
             return false
         end
 
-        selfSay("Am I alone here! Others are {down} there... I MEAN, are stealing Pokemon around!", cid)
+        selfSay("I'm all alone here! The others are {down} there... I MEAN, they're out stealing Pokemon!", cid)
 
         return true
     end,
@@ -39,7 +39,7 @@ keywordHandler:addKeyword(
             return false
         end
 
-        selfSay("You do not give up do you? I WANT A {BATTLE}!", cid)
+        selfSay("You don't give up, do you? I WANT A {BATTLE}!", cid)
 
         return true
     end,
@@ -51,7 +51,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
         return false
     end
 
-    npcHandler:setMessage(MESSAGE_GREET, "Get out, this is no place for nosy. {We}'re... I mean, I'm busy!")
+    npcHandler:setMessage(MESSAGE_GREET, "Get out, this is no place for nosy people. {We}'re... I mean, I'm busy!")
 	return true
 end)
 

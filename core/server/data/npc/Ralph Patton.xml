@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Valencia is a great place. Here are the goods in the store first, check!"/>
+		<parameter key="message_greet" value="Valencia is a great place. Check out the goods in the store first!"/>
 		<parameter key="shop_buyable" value="
 		empty poke ball, 12157, 8;
 		empty great ball, 12161, 35;

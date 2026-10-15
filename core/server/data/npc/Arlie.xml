@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Visit our island well, she's wonderful!"/>
+		<parameter key="message_greet" value="Explore our island well, it's wonderful!"/>
 		<parameter key="shop_buyable" value="
 		empty poke ball, 12157, 8;
 		empty great ball, 12161, 35;

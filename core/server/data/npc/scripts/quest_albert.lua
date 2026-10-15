@@ -27,7 +27,7 @@ function creatureSayCallback(cid, type, msg)
             if (diff <= 0) then
                 if (doPlayerAddUniqueItem(cid, 18245, 1, false)) then
                     doCreatureSetStorage(cid, timeStorage, timeStorageDone)
-                    selfSay("Oh! I finished the extraction, here is.", cid)
+                    selfSay("Oh! I finished the extraction, here it is.", cid)
                 else
                     selfSay("Please check your backpack for space.", cid)
                 end

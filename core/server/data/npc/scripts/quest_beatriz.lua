@@ -18,7 +18,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (getCreatureStorage(cid, 8317) == QUEST_STATUS.STARTED) then
             if (doPlayerRemoveItem(cid, 18306, 1)) then
                 doCreatureSetStorage(cid, 8318, QUEST_STATUS.FINISHED)
-                selfSay("Oh! My dear Courts Ted writes me? Great, tell also that I miss him.", cid)
+                selfSay("Oh! My dear Ted Courts wrote to me? Great, tell him I miss him too.", cid)
 
             else
                 selfSay("Where is the letter?", cid)

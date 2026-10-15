@@ -52,14 +52,14 @@ function creatureSayCallback(cid, type, msg)
 
     elseif (msgcontains(msg, 'tm')) then
         if (not getPlayerDefeatedNPC(cid, getNpcName())) then
-            selfSay("You must defeat me before receive your reward.", cid)
+            selfSay("You must defeat me before receiving your reward.", cid)
 
         elseif (getCreatureStorage(cid, TM_STORAGE) == QUEST_STATUS.FINISHED) then
             selfSay("You already got this reward.", cid)
 
         else
             giveTm(cid)
-            selfSay("Oh, here is!", cid)
+            selfSay("Oh, here it is!", cid)
         end
 
 	else

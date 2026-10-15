@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="534" head="67" body="33" legs="12" feet="77"/>
 	<parameters>
-		<parameter key="message_greet" value="Sorry, but I will hurt you much."/>
+		<parameter key="message_greet" value="Sorry, but I'm going to hurt you badly."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

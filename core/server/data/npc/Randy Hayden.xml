@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="idletime" value="180" />
         <parameter key="module_shop" value="1"/>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|. You can buy here all the necessary equipment to start planting your Pokemon berries."/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|. Here you can buy all the equipment you need to start planting berries for your Pokemon."/>
         <parameter key="shop_buyable" value="
 		watering can, 13174, 100;
 		hoe, 2552, 200;

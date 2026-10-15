@@ -32,13 +32,13 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         end
 
         if (tmItemId == 0) then
-            selfSay("What reward you want? Your options are: {TM 05} (Mega Kick), {TM 25} (Earthquake) and {TM 37} (Skull Bash).", cid)
+            selfSay("Which reward do you want? Your options are: {TM 05} (Mega Kick), {TM 25} (Earthquake) and {TM 37} (Skull Bash).", cid)
             return true
         end
 
         if (doPlayerSafeAddItem(cid, tmItemId, 1, true)) then
             doCreatureSetStorage(cid, tmRewardStorage, QUEST_STATUS.FINISHED)
-            selfSay("Great choice! Here is.", cid)
+            selfSay("Great choice! Here it is.", cid)
         end
 
     else

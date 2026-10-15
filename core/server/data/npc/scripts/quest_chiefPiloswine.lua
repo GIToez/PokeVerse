@@ -23,7 +23,7 @@ NODES[1] = keywordHandler:addKeyword(
             return false
         end
 
-        parameters.npcHandler:say("By the beard PILOSS of the King! You know SWINEE what I mean! What brings you here?", cid)
+        parameters.npcHandler:say("By the PILOSS beard of the King! You know SWINEE what I mean! What brings you here?", cid)
 
         return true
     end,
@@ -32,17 +32,17 @@ NODES[1] = keywordHandler:addKeyword(
 NODES[2] = NODES[1]:addChildKeyword(
     {'deepsoul'},
     StdModule.say,
-    {npcHandler = npcHandler, onlyFocus = true, text = 'What do you LOSSWI want with that damn stone? You want to do something with it? Think about PILOSWINEEE it in your reply!'})
+    {npcHandler = npcHandler, onlyFocus = true, text = 'What do you LOSSWI want with that damn stone? Do you want to do something with it? Think about PILOSWINEEE your answer!'})
 
 NODES[3] = NODES[2]:addChildKeyword(
     {'help', 'ajuda'},
     StdModule.say,
-    {npcHandler = npcHandler, onlyFocus = true, text = 'You want to help PILOSS strengthen the protection of stone? First then you have to pick one of the {Restore} Stones that resides in this mountain. We Pokemon PILOSSW could not get near it because reverberate too much negative energy, then maybe you can.'})
+    {npcHandler = npcHandler, onlyFocus = true, text = 'You want to help PILOSS strengthen the stone\'s protection? Then first you have to get one of the {Restore} Stones that lie in this mountain. We Pokemon PILOSSW can\'t get near it because it gives off too much negative energy, but maybe you can.'})
 
 NODES[4] = NODES[3]:addChildKeyword(
     {'restore'},
     StdModule.say,
-    {npcHandler = npcHandler, onlyFocus = true, text = 'She sits WINEE on one of the lower PILLL floors. Good luck.'})
+    {npcHandler = npcHandler, onlyFocus = true, text = 'It sits WINEE on one of the lower PILLL floors. Good luck.'})
 
 keywordHandler:addKeyword(
     {'.*'},
@@ -52,7 +52,7 @@ keywordHandler:addKeyword(
             return false
         end
 
-        parameters.npcHandler:say("You are insistent, PILOSS you will not {understand} WINEE me...", cid)
+        parameters.npcHandler:say("You are insistent, PILOSS but you will not {understand} WINEE me...", cid)
         parameters.npcHandler.talkState[cid] = TALKSTATES.CAN_UNDERSTAND
 
         return true
@@ -76,7 +76,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 
     -- TODO: redo greet
-    npcHandler:setMessage(MESSAGE_GREET, "The first human PILLS to visit us! It would be wasting my time WINEEE trying to communicate with you...")
+    npcHandler:setMessage(MESSAGE_GREET, "The first human PILLS to visit us! But it would be a waste of my time WINEEE trying to talk with you...")
     npcHandler.talkState[cid] = TALKSTATES.UNDERSTAND
 
     return true

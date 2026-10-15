@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="612" head="50" body="20" legs="70" feet="70" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|! I'm Greyson Tranter, let's {battle}?"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|! I'm Greyson Tranter, shall we {battle}?"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

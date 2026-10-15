@@ -29,7 +29,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         talkState[talkUser] = TALKSTATE_TM_SLOT
 
     elseif (msgcontains(msg, 'change') or msgcontains(msg, 'mover') or msgcontains(msg, 'alterar')) then
-        selfSay("Yes, I can change the move that your Pokemon forgot to learn a TM move. What TM slot do you want to change? {1} or {2}.", cid)
+        selfSay("Yes, I can restore the move your Pokemon forgot when it learned a TM move. Which TM slot do you want to change? {1} or {2}.", cid)
         talkState[talkUser] = TALKSTATE_TM_SLOT_CHANGE
 
     elseif (talkState[talkUser] == TALKSTATE_TM_SLOT) then
@@ -39,17 +39,17 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         else
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
                 talkState[talkUser] = 0
 
             else
                 local slot = msg == "1" and 1 or 2
                 if (getBallTm(ball.uid, slot) == TM_IDS.NONE) then
-                    selfSay("Your Pokemon doesn't have any TM in such slot.", cid)
+                    selfSay("Your Pokemon doesn't have a TM in that slot.", cid)
                     talkState[talkUser] = 0
 
                 else
-                    selfSay(string.format(__L(cid, "You really want to remove the move %s from your %s?"), getTmMove(getBallTm(ball.uid, slot)), getBallPokemonName(ball.uid)), cid)
+                    selfSay(string.format(__L(cid, "Do you really want to remove the move %s from your %s?"), getTmMove(getBallTm(ball.uid, slot)), getBallPokemonName(ball.uid)), cid)
 
                     talkState[talkUser] = TALKSTATE_CONFIRM
                     tmSlot[talkUser] = slot
@@ -68,17 +68,17 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         else
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
                 talkState[talkUser] = 0
 
             else
                 local slot = msg == "1" and 1 or 2
                 if (getBallTm(ball.uid, slot) == TM_IDS.NONE) then
-                    selfSay("Your Pokemon doesn't have any TM in such slot.", cid)
+                    selfSay("Your Pokemon doesn't have a TM in that slot.", cid)
                     talkState[talkUser] = 0
 
                 else
-                    selfSay("Ok, now what is your Pokemon move that you want to replace with that TM? Type the name exactly!", cid)
+                    selfSay("Ok, now which of your Pokemon's moves do you want to replace with that TM? Type the name exactly!", cid)
 
                     talkState[talkUser] = TALKSTATE_MOVE_CHANGE
                     tmSlotChange[talkUser] = slot
@@ -89,18 +89,18 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     elseif (talkState[talkUser] == TALKSTATE_MOVE_CHANGE) then
         local ball = getPlayerBall(cid)
         if (not isItem(ball)) then
-            selfSay("Please, first put a poke ball in your inventory slot.", cid)
+            selfSay("Please put a poke ball in your ball slot first.", cid)
             talkState[talkUser] = 0
 
         else
             local moves = getPokemonSkills(getBallPokemonName(ball.uid), ball.uid)
             local moveSlot = table.find(moves, msg)
             if (not moveSlot) then
-                selfSay("Your Pokemon doesn't learned such move, please type again. Remember to type it name exactly!", cid)
+                selfSay("Your Pokemon hasn't learned that move, please try again. Remember to type its name exactly!", cid)
                 return true
             end
 
-            selfSay(string.format(__L(cid, "You really want to move the TM %s from your %s to replace the move %s?"), getTmMove(getBallTm(ball.uid, tmSlotChange[talkUser])), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
+            selfSay(string.format(__L(cid, "Do you really want to move the TM %s from your %s to replace the move %s?"), getTmMove(getBallTm(ball.uid, tmSlotChange[talkUser])), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
 
             talkState[talkUser] = TALKSTATE_CONFIRM_CHANGE
             tmMoveChange[talkUser] = moveSlot
@@ -110,15 +110,15 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             else
                 if (getItemUniqueOwner(ball.uid) ~= ITEM_UNIQUE_OWNER_NONE and
                         getItemUniqueOwner(ball.uid) ~= getPlayerGUID(cid)) then
-                    selfSay("You aren't owner of this item.", cid)
+                    selfSay("You aren't the owner of this item.", cid)
 
                 elseif (getBallTm(ball.uid, tmSlot[talkUser]) == TM_IDS.NONE) then
-                    selfSay("Your Pokemon doesn't have any TM in such slot.", cid)
+                    selfSay("Your Pokemon doesn't have a TM in that slot.", cid)
 
                 else
                     if (getTmUnique(getBallTm(ball.uid, tmSlot[talkUser]))) then
@@ -154,11 +154,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             else
                 if (getBallTm(ball.uid, tmSlotChange[talkUser]) == TM_IDS.NONE) then
-                    selfSay("Your Pokemon doesn't have any TM in such slot.", cid)
+                    selfSay("Your Pokemon doesn't have a TM in that slot.", cid)
 
                 elseif (not canTmReplaceMove(getPokemonSkills(getBallPokemonName(ball.uid), ball.uid)[tmMoveChange[talkUser]],
                     getBallTm(ball.uid, tmSlotChange[talkUser]), ball)) then
@@ -184,7 +184,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         tmMoveChange[talkUser] = nil
 
     else
-        selfSay("Here you can {remove} and {change} TM moves that you teach to your Pokemon!", cid)
+        selfSay("Here you can {remove} and {change} TM moves that you taught your Pokemon!", cid)
     end
 	return true
 end)

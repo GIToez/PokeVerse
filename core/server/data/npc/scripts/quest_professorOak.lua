@@ -46,13 +46,13 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please put the poke ball in the ball slot!", cid)
 
             elseif (isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is a Pokemon from egg!", cid)
+                selfSay("This Pokemon already came from an egg!", cid)
 
             elseif (getBallOriginalTrainer(ball.uid) ~= getPlayerGUID(cid)) then
-                selfSay("You aren't the Pokemon original trainer.", cid)
+                selfSay("You aren't this Pokemon's original trainer.", cid)
 
             else
                 setBallIsNotPokemonFromEgg(ball.uid, false)
@@ -74,23 +74,23 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             lastChoice[cid] = 'Charmander'
             npcHandler.talkState[cid] = TALKSTATE_CONFIRM
             selfSay("{YES} or {NO}", cid)
-            selfSay("You really want a Charmander?", cid)
+            selfSay("Do you really want a Charmander?", cid)
 
         elseif (msgcontains(msg, 'squirtle')) then
             lastChoice[cid] = 'Squirtle'
             npcHandler.talkState[cid] = TALKSTATE_CONFIRM
             selfSay("{YES} or {NO}", cid)
-            selfSay("You really want a Squirtle?", cid)
+            selfSay("Do you really want a Squirtle?", cid)
 
         elseif (msgcontains(msg, 'bulbasaur')) then
             lastChoice[cid] = 'Bulbasaur'
             npcHandler.talkState[cid] = TALKSTATE_CONFIRM
             selfSay("{YES} or {NO}", cid)
-            selfSay("You really want a Bulbasaur?", cid)
+            selfSay("Do you really want a Bulbasaur?", cid)
 
         elseif (npcHandler.talkState[cid] == TALKSTATE_CONFIRM) then
             if (msgcontains(msg, { 'yes', 'sim' })) then
-                selfSay("Your Pokemon will be {female} or {male}?", cid)
+                selfSay("Should your Pokemon be {female} or {male}?", cid)
                 npcHandler.talkState[cid] = TALKSTATE_CONFIRM_SEX
             else
                 selfSay("You can choose a {Charmander} or a {Squirtle} or a {Bulbasaur}. What is your choice?", cid)
@@ -118,7 +118,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 lastChoice[cid] = nil
 
             else
-                selfSay("Your Pokemon will be {female} or {male}?", cid)
+                selfSay("Should your Pokemon be {female} or {male}?", cid)
             end
 
             return true

@@ -23,7 +23,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'reset') or msgcontains(msg, 'vitamin') or msgcontains(msg, 'resetar') or msgcontains(msg, 'vitamina')) then
-        selfSay(string.format(__L(cid, "I can reset your Pokemon vitamin's. Do you want that? This will cost %s soul coin."), REQUIRED_COUNT), cid)
+        selfSay(string.format(__L(cid, "I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin."), REQUIRED_COUNT), cid)
         talkState[talkUser] = TALKSTATE_CONFIRM
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM) then
@@ -38,7 +38,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("Please, first put a poke ball in your inventory slot.", cid)
 
             elseif (getBallTotalVitamins(ball.uid) == 0) then
-                selfSay("Your Pokemon didn't have any vitamin.", cid)
+                selfSay("Your Pokemon doesn't have any vitamins.", cid)
 
             elseif (getPlayerItemCount(cid, REQUIRED_ITEMID) < REQUIRED_COUNT) then
                 selfSay(string.format(__L(cid, "You need at least %sx Soul Coin to do it."), REQUIRED_COUNT), cid)

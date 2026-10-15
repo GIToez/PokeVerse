@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="idletime" value="180" />
         <parameter key="module_shop" value="1"/>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|. Do you want to sell Technichal Machines? Here you can also {remove} or {change} your Pokemon TM's!"/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|. Do you want to sell Technical Machines? Here you can also {remove} or {change} your Pokemon TMs!"/>
         <parameter key="shop_sellable" value="
 		tm 01 mega punch, 17337;
 		tm 02 razor wind, 17338;

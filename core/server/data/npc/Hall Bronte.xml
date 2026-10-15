@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="idletime" value="180" />
         <parameter key="module_shop" value="1"/>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|, you need something to brighten your home?"/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|, do you need something to brighten your home?"/>
         <parameter key="shop_buyable" value="
 		carpenter hammer, 2557, 500;
 		red balcony kit, 13254, 50;

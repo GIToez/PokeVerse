@@ -36,7 +36,7 @@ function creatureSayCallback(cid, type, msg)
             talkState[talkUser] = 0
 
         else
-            selfSay(string.format(__L(cid, "Uh! The Safari Zone! I can take you there for %s dollars. Do you want?"), safariZoneEntrancePrice), cid)
+            selfSay(string.format(__L(cid, "Uh! The Safari Zone! I can take you there for %s dollars. Do you want to go?"), safariZoneEntrancePrice), cid)
             talkState[talkUser] = STATE_SAFFARI_ENTER
         end
 
@@ -55,7 +55,7 @@ function creatureSayCallback(cid, type, msg)
             end
 
             if (not enter) then
-                selfSay("Sorry, you can not enter in the Safari zone with any type of ball and small stones.", cid)
+                selfSay("Sorry, you can not enter the Safari Zone carrying any type of ball or small stones.", cid)
                 talkState[talkUser] = 0
                 return true
             end
@@ -75,7 +75,7 @@ function creatureSayCallback(cid, type, msg)
             end
 
 	    else
-			selfSay("You do not enough money.", cid)
+			selfSay("You do not have enough money.", cid)
             talkState[talkUser] = 0
 		end
 

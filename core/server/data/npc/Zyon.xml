@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="622" head="50" body="10" legs="10" feet="0" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Hi |PLAYERNAME|, you can {leave} the tournament room."/>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|, I can help you {leave} the tournament room."/>
 	</parameters>
 </npc>

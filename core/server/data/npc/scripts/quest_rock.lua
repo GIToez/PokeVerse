@@ -44,7 +44,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             msgcontains(msg, 'final test') or msgcontains(msg, 'fome') or msgcontains(msg, 'missao') or msgcontains(msg, 'teste final')
 			or msgcontains(msg, 'tarefa')) then
 		if (getCreatureStorage(cid, refundStorage) == -1 and getCreatureStorage(cid, questStorage) == 1) then -- Quest done but with old reward
-            selfSay("You've done this mission and has the old reward, I can renew your reward. Do you want it?", cid)
+            selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it?", cid)
             npcHandler.talkState[talkUser] = TALKSTATE_RENEW
         else
             npcHandler.talkState[talkUser] = doQuestTalkStart(cid, "Rock")

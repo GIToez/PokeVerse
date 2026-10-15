@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="1185" head="100" body="50" legs="10" feet="10" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Pokemon Center do not charge to heal your Pokemon, you know?"/>
+		<parameter key="message_greet" value="The Pokemon Center doesn't charge to heal your Pokemon, you know?"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Is not good? Want to trade places with me?!"/>
+		<parameter key="message_greet" value="Not good enough? Want to trade places with me?!"/>
 		<parameter key="shop_buyable" value="
 		burguer, 12205, 6;
 		potato chip, 12206, 4;

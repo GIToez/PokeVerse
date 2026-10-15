@@ -170,11 +170,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     msg = string.lower(msg)
 
     if (msgcontains(msg, 'travel') or msgcontains(msg, 'viajar')) then
-        selfSay(string.format(__L(cid, "I can leave you to these destinations: %s"), DESTINATIONS_MESSAGE[getNpcName()]), cid)
+        selfSay(string.format(__L(cid, "I can take you to these destinations: %s"), DESTINATIONS_MESSAGE[getNpcName()]), cid)
 
     elseif (TRAVEL_BY_NAME[getNpcName()][msg]) then
         local travel = TRAVEL_BY_NAME[getNpcName()][msg]
-        selfSay(string.format(__L(cid, "Do you really want go to %s? This will cost you %s dollars."), travel.name, travel.price), cid)
+        selfSay(string.format(__L(cid, "Do you really want to go to %s? This will cost you %s dollars."), travel.name, travel.price), cid)
         LAST_TRAVEl[cid] = travel
 
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
@@ -183,7 +183,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay(string.format(__L(cid, "You need %s dollars to travel there."), LAST_TRAVEl[cid].price), cid)
 
             elseif (getPlayerMounted(cid) or isPokemonOnline(cid)) then
-                selfSay("You can't travel while you are with a Pokemon out of the ball.", cid)
+                selfSay("You can't travel while you have a Pokemon out of its ball.", cid)
 
             else
                 doPlayerRemoveMoney(cid, LAST_TRAVEl[cid].price)

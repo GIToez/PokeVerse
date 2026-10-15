@@ -30,7 +30,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     elseif (talkState[talkUser] == TALKSTATE_TYPE_MOVE) then
         local ball = getPlayerBall(cid)
         if (not isItem(ball)) then
-            selfSay("Please, first put a poke ball in your inventory slot.", cid)
+            selfSay("Please put a poke ball in your ball slot first.", cid)
             talkState[talkUser] = 0
 
         else
@@ -46,10 +46,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             local ball = getPlayerBall(cid)
             if (not isItem(ball)) then
-                selfSay("Please, first put a poke ball in your inventory slot.", cid)
+                selfSay("Please put a poke ball in your ball slot first.", cid)
 
             elseif (#getBallSketchMoves(ball.uid) == 0) then
-                selfSay("Your Pokemon didn't copied any move.", cid)
+                selfSay("Your Pokemon hasn't copied any moves.", cid)
 
             elseif (getPlayerItemCount(cid, PALETTE_ITEMID) < REQUIRED_PALETTE) then
                 selfSay(string.format(__L(cid, "You need at least %sx Artist's Pallete to do it."), REQUIRED_PALETTE), cid)
@@ -58,7 +58,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 local sketchs = getBallSketchMoves(ball.uid)
 
                 if (not table.find(sketchs, lastMove[talkUser])) then
-                    selfSay("Your Pokemon didn't copied this move.", cid)
+                    selfSay("Your Pokemon hasn't copied this move.", cid)
 
                 else
                     sketchs[table.find(sketchs, lastMove[talkUser])] = "Sketch"
@@ -77,7 +77,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         lastMove[talkUser] = nil
 
     else
-        selfSay("Here you can {reset} Sketch moves that you your Smeargle copies!", cid)
+        selfSay("Here you can {reset} the Sketch moves your Smeargle copied!", cid)
     end
 	return true
 end)

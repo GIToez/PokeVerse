@@ -67,14 +67,14 @@ function creatureSayCallback(cid, type, msg)
 
     if (msgcontains(msg, 'tm')) then
         if (not getPlayerDefeatedNPC(cid, getNpcName())) then
-            selfSay("You must defeat me before receive your reward.", cid)
+            selfSay("You must defeat me before receiving your reward.", cid)
 
         elseif (getCreatureStorage(cid, TM_STORAGE) == QUEST_STATUS.FINISHED) then
             selfSay("You already got this reward.", cid)
 
         else
             giveTm(cid)
-            selfSay("Oh, here is!", cid)
+            selfSay("Oh, here it is!", cid)
         end
 
     elseif ((msgcontains(msg, 'dream') or msgcontains(msg, 'sonho')) and getCreatureStorage(cid, 8474) == QUEST_STATUS.STARTED) then
@@ -96,7 +96,7 @@ function creatureSayCallback(cid, type, msg)
             if (spec) then
                 for k, v in pairs(spec) do
                     if (isPlayer(v)) then
-                        selfSay("There are someone doing this right now, please try again later.", cid)
+                        selfSay("Someone is doing this right now, please try again later.", cid)
                         return true
                     end
                 end

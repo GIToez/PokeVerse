@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="My friends and I had a home in Viridian, but was sold."/>
+		<parameter key="message_greet" value="My friends and I had a home in Viridian, but it was sold."/>
 		<parameter key="shop_buyable" value="
 		carpenter hammer, 2557, 500;
 		red balcony kit, 13254, 50;

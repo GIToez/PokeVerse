@@ -33,7 +33,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             end
 
         else
-            selfSay("Yes, yes. Maybe when you get ready.", cid)
+            selfSay("No, no. Maybe when you are ready.", cid)
         end
         
         npcHandler.talkState[talkUser] = 0

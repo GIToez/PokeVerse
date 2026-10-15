@@ -39,10 +39,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             if (doPlayerRemoveMoney(cid, 4000)) then
                 if (doPlayerAddUniqueItem(cid, 18166, 1, false)) then
                     doCreatureSetStorage(cid, statueStorage, QUEST_STATUS.FINISHED)
-                    selfSay("Here is! When you finish what you're doing, come talk to me!", cid)
+                    selfSay("Here it is! When you finish what you're doing, come talk to me!", cid)
                 else
                     doPlayerAddMoney(cid, 4000)
-                    selfSay("I can't sell you this right now, please check your backpack", cid)
+                    selfSay("I can't sell you this right now, please check your backpack.", cid)
                 end
 
             else

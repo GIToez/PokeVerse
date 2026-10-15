@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hey |PLAYERNAME|, how are you? My name is Alex, I'm a former citzen from Fuchsia and you can buy diving equipment from me. I am also doing {research} on wetsuits."/>
+		<parameter key="message_greet" value="Hey |PLAYERNAME|, how are you? My name is Alex, I'm a former citizen of Fuchsia and you can buy diving equipment from me. I am also doing {research} on wetsuits."/>
 		<parameter key="shop_buyable" value="
 		oxygen mask, 13299, 2000
 		"/>

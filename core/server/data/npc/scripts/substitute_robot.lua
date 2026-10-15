@@ -45,7 +45,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             end
 
         else
-            selfSay("You got me! I'm the real!", cid)
+            selfSay("You got me! I'm the real one!", cid)
             doCreatureSetStorage(cid, QUEST_STEP_STORAGE, QUEST_STATUS.FINISHED)
         end
 
@@ -58,7 +58,7 @@ end)
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     if (npcHandler:isInRange(cid)) then
         if (getCreatureStorage(cid, QUEST_STEP_STORAGE) == QUEST_STATUS.FINISHED) then
-            selfSay("You already finished this step, please move to the next.", cid)
+            selfSay("You already finished this step, please move on to the next one.", cid)
             return false
         end
     end

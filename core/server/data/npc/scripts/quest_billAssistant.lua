@@ -30,18 +30,18 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
     end
 
 	if (msgcontains(msg, 'tradutor') or msgcontains(msg, 'machine') or msgcontains(msg, 'translator') or msgcontains(msg, 'máquina')) then
-        selfSay("How do you know about my secret artifact? Look it does not matter... want to help me to test it?", cid)
+        selfSay("How do you know about my secret artifact? Well, it doesn't matter... want to help me test it?", cid)
         npcHandler.talkState[talkUser] = TALKSTATES.TRADUTOR
 
     elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
         if (npcHandler.talkState[talkUser] == TALKSTATES.TRADUTOR) then
-            selfSay("It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want?", cid)
+            selfSay("It will cost you a bit. Hehe... 100,000 dollars. I need money to fund my research... Do you want it?", cid)
             npcHandler.talkState[talkUser] = TALKSTATES.TRADUTOR_CONFIRM
 
         elseif (npcHandler.talkState[talkUser] == TALKSTATES.TRADUTOR_CONFIRM) then
             if (doPlayerRemoveMoney(cid, 100000)) then
                 if (doPlayerAddUniqueItem(cid, 18252, 1, false)) then
-                    selfSay("Take good advantage of it. But it will only work with Pokemon that have an average level of intelligence. I developed this prototype for Pokemon living in society. I can see the results here, go ahead!", cid)
+                    selfSay("Make good use of it. But it will only work with Pokemon of average intelligence. I developed this prototype for Pokemon living in society. I'll watch the results from here, go ahead!", cid)
                     doCreatureSetStorage(cid, QUEST_STORAGE, QUEST_STATUS.FINISHED)
 
                 else

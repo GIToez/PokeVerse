@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. Thirsty? So you came to the right place."/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Thirsty? Then you came to the right place."/>
 		<parameter key="shop_buyable" value="
 		coconut water, 12211, 4;
 		sushi, 12208, 5;

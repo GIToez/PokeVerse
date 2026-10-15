@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="1199" head="25" body="52" legs="58" feet="85"/>
 	<parameters>
-		<parameter key="message_greet" value="Yes?."/>
+		<parameter key="message_greet" value="Yes?"/>
 	</parameters>
 </npc>

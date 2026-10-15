@@ -302,11 +302,11 @@ function creatureSayCallback(cid, type, msg)
             selfSay(message, cid)
         end
 
-        selfSay("Here you can also exchange tournament tokens into especial items, you can see the {options}.", cid)
+        selfSay("Here you can also exchange tournament tokens for special items, you can see the {options}.", cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'exchange') or msgcontains(msg, 'opcoes') or msgcontains(msg, 'trocar')) then
         doPlayerPopupFYI(cid, tokenOptionsMessage)
-        selfSay("Here is! {NOTE: Every item that you buy here will be unique, this means that only you can use!}", cid)
+        selfSay("Here it is! {NOTE: Every item that you buy here will be unique, this means that only you can use!}", cid)
 
     elseif (TOKEN_OPTION_BY_NAME[string.lower(msg)]) then
         msg = string.lower(msg)
@@ -334,13 +334,13 @@ function creatureSayCallback(cid, type, msg)
         talkState[talkUser] = TALKSTATE_NONE
 
     elseif (msgcontains(msg, 'join') or msgcontains(msg, 'inscribe') or msgcontains(msg, 'inscription') or msgcontains(msg, 'inscricao') or msgcontains(msg, 'inscrever')) then
-        selfSay("In which tournament you want to sign up? (You can see the options saying {tournaments})",
+        selfSay("Which tournament do you want to sign up for? (You can see the options by saying {tournaments})",
             cid)
         talkState[talkUser] = TALKSTATE_JOIN
 
     elseif (msgcontains(msg, 'leave') or msgcontains(msg, 'quit') or msgcontains(msg, 'unsubscribe') or msgcontains(msg, 'sair')) then
         if (getPlayerTournamentInscribed(cid)) then
-            selfSay("You really want to unsubscribe to the tournament?", cid)
+            selfSay("Do you really want to unsubscribe from the tournament?", cid)
             talkState[talkUser] = TALKSTATE_LEAVE
 
         else
@@ -353,7 +353,7 @@ function creatureSayCallback(cid, type, msg)
             selfSay("You are not subscribed to any tournament.", cid)
 
         elseif (getTournamentInfo(getPlayerTournamentId(cid)).started) then
-            selfSay("This tournament already started!", cid)
+            selfSay("This tournament has already started!", cid)
 
         else
             if (getPlayerMounted(cid)) then
@@ -371,7 +371,7 @@ function creatureSayCallback(cid, type, msg)
                 end
 
                 if (#balls > 0) then
-                    selfSay("You cannot enter in the tournament room while you are carrying Pokemon!", cid)
+                    selfSay("You cannot enter the tournament room while you are carrying Pokemon!", cid)
                     return true
                 end
 
@@ -382,7 +382,7 @@ function creatureSayCallback(cid, type, msg)
 
             else
                 if (#balls < PLAYER_BALL_MAX) then
-                    selfSay(string.format(__L(cid, "You need at least %s Pokemon to enter in the tournament!"), PLAYER_BALL_MAX), cid)
+                    selfSay(string.format(__L(cid, "You need at least %s Pokemon to enter the tournament!"), PLAYER_BALL_MAX), cid)
                     return true
                 end
 
@@ -395,7 +395,7 @@ function creatureSayCallback(cid, type, msg)
                         for _, evolution in pairs(getPokemonEvolutions(prior)) do
                             if (evolution.name == pokemonName) then
                                 if (evolution.requiredLevel > getBallPokemonLevel(ball.uid)) then
-                                    selfSay(string.format(__L(cid, "Your team can not have Pokemon early evolved! (%s)"), pokemonName), cid)
+                                    selfSay(string.format(__L(cid, "Your team can not have early-evolved Pokemon! (%s)"), pokemonName), cid)
                                     return true
                                 end
                                 break
@@ -412,7 +412,7 @@ function creatureSayCallback(cid, type, msg)
                     end
 
                     if (isInArray(names, pokemonName)) then
-                        selfSay("Your team can not have two Pokemon alike!", cid)
+                        selfSay("Your team can not have two identical Pokemon!", cid)
                         return true
                     else
                         table.insert(names, pokemonName)
@@ -422,15 +422,15 @@ function creatureSayCallback(cid, type, msg)
                 for i, ball in ipairs(balls) do
                     local pokemonLevel = getBallPokemonLevel(ball.uid)
                     if (pokemonLevel < TOURNAMENTS[tournamentId].minLevel) then
-                        selfSay(string.format(__L(cid, "You have Pokemon with low level for this tournament, the minimum is level %s."), TOURNAMENTS[tournamentId].minLevel), cid)
+                        selfSay(string.format(__L(cid, "Some of your Pokemon are below the level for this tournament, the minimum is level %s."), TOURNAMENTS[tournamentId].minLevel), cid)
                         return true
 
                     elseif (pokemonLevel > TOURNAMENTS[tournamentId].maxLevel) then
-                        selfSay(string.format(__L(cid, "You have Pokemon with high level for this tournament, the maximum is level %s."), TOURNAMENTS[tournamentId].maxLevel), cid)
+                        selfSay(string.format(__L(cid, "Some of your Pokemon are above the level for this tournament, the maximum is level %s."), TOURNAMENTS[tournamentId].maxLevel), cid)
                         return true
 
                     elseif (TOURNAMENTS[tournamentId].type == TOURNAMENT_TYPES.MASTERY and not table.findAsTable(getPokemonTypes(nil, getBallPokemonName(ball.uid)), getMasteryElements(getPlayerMastery(cid)))) then
-                        selfSay("You can only take Pokemon that makes the type of your Mastery!", cid)
+                        selfSay("You can only take Pokemon of your Mastery's type!", cid)
                         return true
                     end
                 end
@@ -461,7 +461,7 @@ function creatureSayCallback(cid, type, msg)
         if (TOURNAMENT_ID_BY_NAME[msg]) then
             msg = string.lower(msg)
             lastUserTournamentId[talkUser] = TOURNAMENT_ID_BY_NAME[msg]
-            selfSay(string.format(__L(cid, "You really want to join the %s tournament? (This will cost you %s dollars)"), msg, TOURNAMENTS[lastUserTournamentId[talkUser]].inscriptionPrice), cid)
+            selfSay(string.format(__L(cid, "Do you really want to join the %s tournament? (This will cost you %s dollars)"), msg, TOURNAMENTS[lastUserTournamentId[talkUser]].inscriptionPrice), cid)
             talkState[talkUser] = TALKSTATE_JOIN_CONFIRM
 
         else
@@ -471,20 +471,20 @@ function creatureSayCallback(cid, type, msg)
     elseif (talkState[talkUser] == TALKSTATE_JOIN_CONFIRM) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
             if ((getPlayerLevel(cid) - 5 < TOURNAMENTS[lastUserTournamentId[talkUser]].minLevel) or (getPlayerLevel(cid) < TOURNAMENTS[lastUserTournamentId[talkUser]].minTrainerLevel)) then
-                selfSay("Sorry, you do not have the minimum level to participate this tournament.", cid)
+                selfSay("Sorry, you do not have the minimum level to participate in this tournament.", cid)
 
             elseif (getPlayerTournamentInscribed(cid)) then
-                selfSay("You are already inscribed in a tournament, you can only inscribe in one tournament at a time. If you want to change the tournament, first {leave} your subscription.", cid)
+                selfSay("You are already signed up for a tournament, you can only sign up for one tournament at a time. If you want to change tournaments, first {leave} your subscription.", cid)
 
             elseif (getPlayerMoney(cid) < TOURNAMENTS[lastUserTournamentId[talkUser]].inscriptionPrice) then
                 selfSay("You do not have enough money to join!", cid)
 
             elseif (TOURNAMENTS[lastUserTournamentId[talkUser]].type == TOURNAMENT_TYPES.MASTERY and not getPlayerMastery(cid)) then
-                selfSay("Only Mastery members players can join this tournament!", cid)
+                selfSay("Only Mastery members can join this tournament!", cid)
 
             elseif (doTournamentJoin(cid, lastUserTournamentId[talkUser])) then
                 doPlayerRemoveMoney(cid, TOURNAMENTS[lastUserTournamentId[talkUser]].inscriptionPrice)
-                selfSay("It is done! You are subscribed, so stay tuned to the date of the tournament! Do not miss it.", cid)
+                selfSay("It is done! You are subscribed, so keep an eye on the tournament date! Do not miss it.", cid)
                 TOURNAMENTS[lastUserTournamentId[talkUser]].freeCapacity = TOURNAMENTS[lastUserTournamentId[talkUser]].freeCapacity - 1
 
             else

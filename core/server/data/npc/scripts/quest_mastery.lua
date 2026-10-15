@@ -45,7 +45,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	end
 
     if (getPlayerMastery(cid) ~= NPCS[getNpcName()].mastery) then
-        selfSay("Sorry, you do not have the requirements to make my missions.", cid)
+        selfSay("Sorry, you do not meet the requirements to do my missions.", cid)
         return true
     end
 

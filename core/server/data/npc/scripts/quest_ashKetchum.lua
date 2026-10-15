@@ -30,7 +30,7 @@ local function onEndFollowing(cid, fail, npcId)
 
 	if (not fail) then
 		doCreatureSetStorage(cid, QUEST_STORAGE, QUEST_STATUS.FINISHED)
-		doCreatureSay(npcId, __L(cid, "Thank you. We have not much time before they come after us with everything again. I'll hide for a while. Tell Bill and Gary that I will be in the usual place. Thanks again, trainer."), TALKTYPE_SAY)
+		doCreatureSay(npcId, __L(cid, "Thank you. We don't have much time before they come after us with everything again. I'll hide for a while. Tell Bill and Gary that I will be in the usual place. Thanks again, trainer."), TALKTYPE_SAY)
 		addEvent(resetAsh, 5000)
 	else
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Ash is no longer following you.")
@@ -107,7 +107,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 			onStartFollowing(cid)
 
 		else
-			selfSay("Finally... someone got here. It was a very long and exhausting journey. They kidnapped me and held me here. I am some days without eating or drinking... we need to get out of here quickly. Please {help} me.", cid)
+			selfSay("Finally... someone got here. It was a very long and exhausting journey. They kidnapped me and held me here. I've gone days without eating or drinking... we need to get out of here quickly. Please {help} me.", cid)
 		end
 
 		return true
@@ -132,7 +132,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
 	end
 
 	if (getSamePosition(getNpcPos(), KIDNAPPED_ASH_POSITION)) then
-		selfSay("Finally ... someone got here. It was a very long and exhausting journey. They kidnapped me and held me here. I am some days without eating or drinking ... we need to get out of here quickly. Please {help} me.", cid)
+		selfSay("Finally ... someone got here. It was a very long and exhausting journey. They kidnapped me and held me here. I've gone days without eating or drinking ... we need to get out of here quickly. Please {help} me.", cid)
 		npcHandler:addFocus(cid)
 		return false
 

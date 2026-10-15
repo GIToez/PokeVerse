@@ -186,13 +186,13 @@ function creatureSayCallback(cid, type, msg)
     if (OPTION_BY_NAME[msg]) then
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s poke coins for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+        selfSay(string.format(__L(cid, "Do you want to exchange %s poke coins for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
 
     elseif (OPTIONS[tonumber(msg)]) then
         msg = string.lower(OPTIONS[tonumber(msg)].name)
         lastOption[talkUser] = msg
         talkState[talkUser] = TALKSTATE_EXCHANGING
-        selfSay(string.format(__L(cid, "You want to exchange %s poke coins for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
+        selfSay(string.format(__L(cid, "Do you want to exchange %s poke coins for a %s?"), OPTION_BY_NAME[msg].tokens, msg), cid)
 
     elseif (msgcontains(msg, 'option') or msgcontains(msg, 'poke coin') or msgcontains(msg, 'opcoes')) then
         doPlayerPopupFYI(cid, optionsMessage)
@@ -209,7 +209,7 @@ function creatureSayCallback(cid, type, msg)
             if (opt.id) then
                 doPlayerSafeAddItem(cid, opt.id, opt.count, true, opt.unique)
             end
-            selfSay("Here is, thanks!", cid)
+            selfSay("Here it is, thanks!", cid)
 
             if (opt.onBuy) then
                 opt.onBuy(cid)
@@ -228,7 +228,7 @@ function creatureSayCallback(cid, type, msg)
         talkState[talkUser] = TALKSTATE_NONE
 
     else
-        selfSay("Welcome to our Casino! If you have got some {poke coins} I can exchange it for you.", cid)
+        selfSay("Welcome to our Casino! If you have some {poke coins} I can exchange them for you.", cid)
     end
 
     return true

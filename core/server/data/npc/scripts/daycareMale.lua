@@ -321,7 +321,7 @@ function creatureSayCallback(cid, type, msg)
 				selfSay("Sorry, only players with a premium account can use this service.", cid)
 
 			elseif (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-				selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+				selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
 			elseif (hasSameAccountCharacterUsingDaycare(cid)) then
 				selfSay("Sorry, a character of your account is already using our services.", cid)
@@ -339,7 +339,7 @@ function creatureSayCallback(cid, type, msg)
 		if (pokemonOnDaycare) then
 			talkState[talkUser] = TALK_STATES.QUESTION_WITHDRAW_POKEMON_WITHOUT_TRAINING
 
-			selfSay("Do you really want to cancel your Pokemon training? He will not gain any experience points and generate eggs, but you still have to pay the amount.", cid)
+			selfSay("Do you really want to cancel your Pokemon's training? It will not gain any experience points or generate eggs, but you still have to pay the fee.", cid)
 
 		else
 			selfSay("You have no Pokemon being trained by me at this moment! You can {leave} a Pokemon here if you want.", cid)
@@ -348,7 +348,7 @@ function creatureSayCallback(cid, type, msg)
 	elseif (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
 		if (talkState[talkUser] == TALK_STATES.QUESTION_LEAVE_POKEMON and lastName[talkUser] and lastTrainTime[talkUser]) then
 			if (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid)) then
-				selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
+				selfSay("You can't do that while your Pokemon is out of its ball.", cid)
 
 			else
 				local daycareBall
@@ -363,7 +363,7 @@ function creatureSayCallback(cid, type, msg)
 				if (not daycareBall) then
 					talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON_NAME
 
-					selfSay("You do not have this Pokemon! Please tell the name of a Pokemon that is with you.", cid)
+					selfSay("You don't have this Pokemon! Please tell me the name of a Pokemon you are carrying.", cid)
 
 				elseif (getPlayerMoney(cid) < 100) then
 					talkState[talkUser] = TALK_STATES.NONE
@@ -373,7 +373,7 @@ function creatureSayCallback(cid, type, msg)
 				elseif (getBallPokemonSex(daycareBall.uid) == POKEMON_SEX_FEMALE) then
 					talkState[talkUser] = TALK_STATES.NONE
 
-                    selfSay("Sorry, I care only male and sexless Pokemon.", cid)
+                    selfSay("Sorry, I only care for male and genderless Pokemon.", cid)
 
 				else
 					talkState[talkUser] = TALK_STATES.NONE
@@ -389,7 +389,7 @@ function creatureSayCallback(cid, type, msg)
 
 			local remaingTrainTime = (pokemonOnDaycare:getDataInt('max_training_minutes')) - (math.floor((os.time() - pokemonOnDaycare:getDataInt('date')) / 60))
 			if (remaingTrainTime > 0) then
-				selfSay(string.format(__L(cid, "You can't withdraw your Pokemon right now. There's remaing %s minutes of training. If you really want, you can {cancel} the trainment."), remaingTrainTime), cid)
+				selfSay(string.format(__L(cid, "You can't withdraw your Pokemon right now. There are %s minutes of training remaining. If you really want, you can {cancel} the training."), remaingTrainTime), cid)
 				talkState[talkUser] = TALK_STATES.NONE
 				return true
 			end
@@ -425,7 +425,7 @@ function creatureSayCallback(cid, type, msg)
 	else
 		if (talkState[talkUser] == TALK_STATES.QUESTION_LEAVE_POKEMON_NAME) then
 			if (not isPokemonName(msg)) then
-				selfSay("Please, say the name of a Pokemon! What the name of your Pokemon that you want to leave here?", cid)
+				selfSay("Please say the name of a Pokemon! What's the name of the Pokemon you want to leave here?", cid)
 
 			else
 				local trueName, i, word
@@ -442,7 +442,7 @@ function creatureSayCallback(cid, type, msg)
 				lastName[talkUser] = trueName
 				talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON_TIME
 
-				selfSay(string.format(__L(cid, "And how much train time do you want? The options are: %s"), trainOptionsMessage), cid)
+				selfSay(string.format(__L(cid, "And how long do you want it to train? The options are: %s"), trainOptionsMessage), cid)
 			end
 
 		elseif (talkState[talkUser] == TALK_STATES.QUESTION_LEAVE_POKEMON_TIME) then
@@ -454,7 +454,7 @@ function creatureSayCallback(cid, type, msg)
 				talkState[talkUser] = TALK_STATES.QUESTION_LEAVE_POKEMON
 				lastTrainTime[talkUser] = msg
 
-				selfSay(string.format(__L(cid, "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter and an additional 1, 2 or 4 dollars per minute that he stay here (depends on the level of your Pokemon)."), lastName[talkUser], msg), cid)
+				selfSay(string.format(__L(cid, "Do you want to leave your %s here for %s minutes? This will cost 100 dollars to enter plus 1, 2 or 4 dollars for every minute it stays here (depending on your Pokemon's level)."), lastName[talkUser], msg), cid)
 			end
 
 		else

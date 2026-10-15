@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Will not need it? We did. Which items to sell?"/>
+		<parameter key="message_greet" value="Got things you don't need? We buy them. What do you want to sell?"/>
 		<parameter key="shop_sellable" value="
 		Pixie Plate, 23946, 8000;
 		Toxic Plate, 12235, 3000;

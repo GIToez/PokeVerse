@@ -420,7 +420,7 @@ function doQuestTalkStart(pid, npcName, quest)
             end
 
             if (diff > 0) then
-                selfSay(string.format(__L(pid, "You have done this mission in the last 24 hours, you must wait %s minutes to be able to do it again."), math.ceil(diff / 60)), pid)
+                selfSay(string.format(__L(pid, "You already did this mission in the last 24 hours, you must wait %s minutes before you can do it again."), math.ceil(diff / 60)), pid)
             else
                 selfSay("(Start quest? {YES} or {NO})", pid)
                 say(string.createStory(__L(pid, currentQuest.talk_questStarting)), pid)

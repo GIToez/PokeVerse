@@ -4,6 +4,6 @@
 	<look type="1201" head="50" body="50" legs="30" feet="200" corpse="0"/>
 	<parameters>
 		<parameter key="idletime" value="180" />
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. Here you can {remove}, {change}, {recover} or {fix} your Pokemon Egg move! Also you can {generate} an Egg Move to an old Pokemon egg!"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Here you can {remove}, {change}, {recover} or {fix} your Pokemon Egg move! You can also {generate} an Egg Move for an old Pokemon egg!"/>
 	</parameters>
 </npc>

@@ -321,7 +321,7 @@ function creatureSayCallback(cid, type, msg)
                 end
                 doPlayerRemoveMoney(cid, PRICE)
                 doTransformItem(ball.uid, newBall)
-                selfSay("Here is! Thanks!", cid)
+                selfSay("Here it is! Thanks!", cid)
             end
         end
         talkState[talkUser] = TALKSTATE_NONE
@@ -329,7 +329,7 @@ function creatureSayCallback(cid, type, msg)
         selfSay("Ok!", cid)
         talkState[talkUser] = TALKSTATE_NONE
     else
-        selfSay("Sorry, do not know what you're talking about.", cid)
+        selfSay("Sorry, I don't know what you're talking about.", cid)
         talkState[talkUser] = TALKSTATE_NONE
     end
     return true

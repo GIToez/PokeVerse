@@ -3,6 +3,6 @@
 	<health now="150" max="150"/>
 	<look type="1203" head="94" body="76" legs="114" feet="79"/>
 	<parameters>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|. How your {MISSIONS} are going? [You can {skip} this tutorial whenever you want.]"/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|. How are your {MISSIONS} going? [You can {skip} this tutorial whenever you want.]"/>
     </parameters>
 </npc>

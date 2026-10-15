@@ -48,7 +48,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             local moves = getPokemonSkills(getBallPokemonName(ball.uid), ball.uid)
             local moveSlot = table.find(moves, msg)
             if (not moveSlot or not moves[moveSlot]) then
-                selfSay("Your Pokemon doesn't learned such move, please type again. Remember to type it name exactly!", cid)
+                selfSay("Your Pokemon hasn't learned that move, please type it again. Remember to type its name exactly!", cid)
                 return true
             end
 
@@ -57,7 +57,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 return true
             end
 
-            selfSay(string.format(__L(cid, "You really want to move the Egg Move %s from your %s to replace the move %s?"), getBallEggMove(ball.uid), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
+            selfSay(string.format(__L(cid, "Do you really want to use the Egg Move %s of your %s to replace the move %s?"), getBallEggMove(ball.uid), getBallPokemonName(ball.uid), moves[moveSlot]), cid)
 
             talkState[talkUser] = TALKSTATE_CONFIRM_CHANGE
             tmMoveChange[talkUser] = moves[moveSlot]
@@ -69,11 +69,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         talkState[talkUser] = TALKSTATE_CONFIRM_PRE
 
     elseif (msgcontains(msg, 'change') or msgcontains(msg, 'alterar') or msgcontains(msg, 'mover')) then
-        selfSay("Yes, I can change the move that your Pokemon forgot to learn a Egg move. What is your Pokemon move that you want to replace with that Egg Move? Type the name exactly!", cid)
+        selfSay("Yes, I can change which move your Pokemon forgot to learn an Egg Move. Which of your Pokemon's moves do you want to replace with the Egg Move? Type the name exactly!", cid)
         talkState[talkUser] = TALKSTATE_MOVE_CHANGE
 
     elseif (msgcontains(msg, 'generate') or msgcontains(msg, 'gerar')) then
-        selfSay("Here you can also generate an Egg Move to an old Pokemon from egg that you have. Do you want to do that?", cid)
+        selfSay("Here you can also generate an Egg Move for an old Pokemon of yours hatched from an egg. Do you want to do that?", cid)
         talkState[talkUser] = TALKSTATE_GENERATE_ASK
 
     elseif (msgcontains(msg, 'recover') or msgcontains(msg, 'recuperar')) then
@@ -81,12 +81,12 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         talkState[talkUser] = TALKSTATE_RECOVER_ASK
 
     elseif (msgcontains(msg, 'fix') or msgcontains(msg, 'corrigir')) then
-        selfSay("Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the currently generated. Do you want to do that?", cid)
+        selfSay("Yes, I can fix an Egg Move lost due to PokeVerse update changes. In this case, you will generate a new Egg Move if your Pokemon can't use the current one. Do you want to do that?", cid)
         talkState[talkUser] = TALKSTATE_FIX_ASK
 
     elseif (talkState[talkUser] == TALKSTATE_RECOVER_ASK) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay(string.format(__L(cid, "This will cost you %s dollars, you are sure?"), RECOVER_COST), cid)
+            selfSay(string.format(__L(cid, "This will cost you %s dollars, are you sure?"), RECOVER_COST), cid)
             talkState[talkUser] = TALKSTATE_RECOVER_ASK_FINAL
 
         else
@@ -101,10 +101,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please, put the poke ball in the ball slot!", cid)
 
             elseif (not isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is not a Pokemon from egg!", cid)
+                selfSay("This Pokemon did not hatch from an egg!", cid)
 
             elseif (not getBallReceivedEggMove(ball.uid)) then
                 selfSay("Your Pokemon does not have an Egg Move!", cid)
@@ -113,7 +113,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("Sorry, you don't have enough money.", cid)
 
             elseif (getBallEggMoveSlot(ball.uid)) then
-                selfSay("Your Pokemon already have an Egg Move!", cid)
+                selfSay("Your Pokemon already has an Egg Move!", cid)
 
             else
                 doPlayerRemoveMoney(cid, RECOVER_COST)
@@ -136,7 +136,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (talkState[talkUser] == TALKSTATE_GENERATE_ASK) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay("Ya! First, put your Pokemon ball at the right ball slot. Ok, if you want to use a Plate to influence the generated Egg Move, type the Plate name. If you do not want to use a Plate, just type {none}.", cid)
+            selfSay("Ya! First, put your poke ball in the right ball slot. Ok, if you want to use a Plate to influence the generated Egg Move, type the Plate name. If you do not want to use a Plate, just type {none}.", cid)
             talkState[talkUser] = TALKSTATE_TYPE_PLATE
 
         else
@@ -146,7 +146,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (talkState[talkUser] == TALKSTATE_FIX_ASK) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay("Ya! First, put your Pokemon ball at the right ball slot. Ok, if you want to use a Plate to influence the generated Egg Move, type the Plate name. If you do not want to use a Plate, just type {none}.", cid)
+            selfSay("Ya! First, put your poke ball in the right ball slot. Ok, if you want to use a Plate to influence the generated Egg Move, type the Plate name. If you do not want to use a Plate, just type {none}.", cid)
             talkState[talkUser] = TALKSTATE_FIX_TYPE_PLATE
 
         else
@@ -161,9 +161,9 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         end
 
         if (lastPlate[cid]) then
-            selfSay(string.format(__L(cid, "Ok, be carefully now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE TO YOUR POKEMON USING A {%s} PLATE?"), string.upper(PLATE_NAME_BY_ITEMID[lastPlate[cid]])), cid)
+            selfSay(string.format(__L(cid, "Ok, be careful now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE FOR YOUR POKEMON USING A {%s} PLATE?"), string.upper(PLATE_NAME_BY_ITEMID[lastPlate[cid]])), cid)
         else
-            selfSay("Ok, be carefully now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE TO YOUR POKEMON USING {NO} PLATE?", cid)
+            selfSay("Ok, be careful now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE FOR YOUR POKEMON USING {NO} PLATE?", cid)
         end
 
         talkState[talkUser] = TALKSTATE_GENERATE_CONFIRM
@@ -175,9 +175,9 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         end
 
         if (lastPlate[cid]) then
-            selfSay(string.format(__L(cid, "Ok, be carefully now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE TO YOUR POKEMON USING A {%s} PLATE?"), string.upper(PLATE_NAME_BY_ITEMID[lastPlate[cid]])), cid)
+            selfSay(string.format(__L(cid, "Ok, be careful now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE FOR YOUR POKEMON USING A {%s} PLATE?"), string.upper(PLATE_NAME_BY_ITEMID[lastPlate[cid]])), cid)
         else
-            selfSay("Ok, be carefully now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE TO YOUR POKEMON USING {NO} PLATE?", cid)
+            selfSay("Ok, be careful now! DO YOU REALLY WANT TO TRY TO GENERATE AN EGG MOVE FOR YOUR POKEMON USING {NO} PLATE?", cid)
         end
 
         talkState[talkUser] = TALKSTATE_FIX_GENERATE_CONFIRM
@@ -189,10 +189,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please, put the poke ball in the ball slot!", cid)
 
             elseif (not isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is not a Pokemon from egg!", cid)
+                selfSay("This Pokemon did not hatch from an egg!", cid)
 
             elseif (getBallReceivedEggMove(ball.uid)) then
                 selfSay("Your Pokemon already received an Egg Move!", cid)
@@ -240,10 +240,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("You can not do it while you have a Pokemon out of the ball.", cid)
 
             elseif (not isItem(ball)) then
-                selfSay("Please, put the poke ball at the ball slot!", cid)
+                selfSay("Please, put the poke ball in the ball slot!", cid)
 
             elseif (not isBallPokemonFromEgg(ball.uid)) then
-                selfSay("This is not a Pokemon from egg!", cid)
+                selfSay("This Pokemon did not hatch from an egg!", cid)
 
             elseif (lastPlate[cid] and getPlayerItemCount(cid, lastPlate[cid]) <= 0) then
                 selfSay("You don't have the required plate!", cid)
@@ -281,8 +281,8 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM_PRE) then
         if (msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
-            selfSay("YOU REALLY WANT TO REMOVE YOUR POKEMON EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!", cid)
-            doPlayerPopupFYI(cid, "YOU REALLY WANT TO REMOVE YOUR POKEMON EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!")
+            selfSay("DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!", cid)
+            doPlayerPopupFYI(cid, "DO YOU REALLY WANT TO REMOVE YOUR POKEMON'S EGG MOVE? HE WILL NEVER BE ABLE TO LEARN ANOTHER EGG MOVE!")
             talkState[talkUser] = TALKSTATE_CONFIRM
         else
             selfSay("Fine.", cid)
@@ -298,7 +298,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             else
                 if (getItemUniqueOwner(ball.uid) ~= ITEM_UNIQUE_OWNER_NONE and
                         getItemUniqueOwner(ball.uid) ~= getPlayerGUID(cid)) then
-                    selfSay("You aren't owner of this item.", cid)
+                    selfSay("You aren't the owner of this item.", cid)
 
                 elseif (not getBallEggMoveSlot(ball.uid)) then
                     selfSay("Your Pokemon doesn't have any Egg Move.", cid)
@@ -351,7 +351,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
         tmMoveChange[talkUser] = nil
 
     else
-        selfSay("Here you can {remove}, {change} and {recover} Egg move from your Pokemon!", cid)
+        selfSay("Here you can {remove}, {change} and {recover} Egg moves of your Pokemon!", cid)
     end
     return true
 end)

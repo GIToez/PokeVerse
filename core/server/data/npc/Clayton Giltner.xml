@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="538" head="35" body="97" legs="64" feet="36" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="The beam comes where least expected Boy! Hahaha!"/>
+		<parameter key="message_greet" value="The beam comes when you least expect it, boy! Hahaha!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

@@ -4,7 +4,7 @@
     <look type="563" head="0" body="0" legs="0" feet="0"/>
     <parameters>
         <parameter key="module_travel" value="1"/>
-        <parameter key="message_greet" value="Hello matey, what you looking at my quarters? If you don't know where to flow, say {travel}."/>
+        <parameter key="message_greet" value="Hello matey, what you lookin' at in my quarters? If you don't know where to sail, say {travel}."/>
         <parameter key="travel_destinations" value="petalburg,297,1698,6,250"/>
     </parameters>
 </npc>
