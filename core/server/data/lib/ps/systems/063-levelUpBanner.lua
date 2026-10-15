@@ -6,27 +6,35 @@
 
 LevelUpBanner = {}
 
--- Trainer levels that open something new; icon is an image in the client's /images/advances
+-- Trainer levels that open something new; icon is an image in the client's /images/advances.
+-- No icon shows the banner's default picture. These must match the real checks: the daycare and
+-- Safari Zone NPC scripts, levelToBuyHouse / levelToFormGuild in config.lua, the Ranger Club ranks,
+-- Battle Tower (level - 5), tournaments (minLevel + 5 in data/XML/tournaments.xml) and Elite Four.
 LevelUpBanner.UNLOCKS = {
     [10] = { { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Rookie" } },
-    [15] = { { icon = "tournament", title = "New Feature", text = "Tournament - Starter" } },
-    [25] = { { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Mentor" } },
-    [30] = { { icon = "safarizone", title = "New Feature", text = "The Safari Zone" } },
-    [41] = { { icon = "tournament", title = "New Feature", text = "Tournament - Pro" } },
-    [46] = { { icon = "tournament", title = "New Feature", text = "Tournament - Master" } },
-    [50] = { { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Coordinator" } },
-    [61] = { { icon = "tournament", title = "New Feature", text = "Tournament - Elite" } },
-    [70] = { { icon = "battletower", title = "New Feature", text = "Battle Tower - Twenty" } },
-    [75] = {
-        { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Coach" },
-        { icon = "tournament", title = "New Feature", text = "Tournament - Titan" }
+    [15] = { { icon = "safarizone", title = "New Feature", text = "The Safari Zone" } },
+    [20] = { { icon = "daycare", title = "New Feature", text = "Day Care" } },
+    [25] = {
+        { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Mentor" },
+        { icon = "tournament", title = "New Feature", text = "Tournament - Starter" },
+        { title = "New Feature", text = "Houses" }
     },
+    [30] = { { title = "New Feature", text = "Guilds" } },
+    [46] = { { icon = "tournament", title = "New Feature", text = "Tournament - Pro" } },
+    [50] = {
+        { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Coordinator" },
+        { icon = "tournament", title = "New Feature", text = "Tournament - Epic" }
+    },
+    [70] = { { icon = "battletower", title = "New Feature", text = "Battle Tower - Twenty" } },
+    [75] = { { icon = "rangerclub", title = "New Feature", text = "Ranger Club - Coach" } },
     [80] = { { icon = "battletower", title = "New Feature", text = "Battle Tower - Fifteen" } },
     [85] = {
-        { icon = "daycare", title = "New Feature", text = "Day Care" },
-        { icon = "mastery", title = "New Feature", text = "Mastery" }
+        { icon = "mastery", title = "New Feature", text = "Mastery" },
+        { icon = "tournament", title = "New Feature", text = "Tournament - Titan" },
+        { icon = "tournament", title = "New Feature", text = "Tournament - Mastery" }
     },
     [90] = { { icon = "battletower", title = "New Feature", text = "Battle Tower - Ten" } },
+    [95] = { { title = "New Feature", text = "Elite Four" } },
 }
 
 local function getLook(pokemonName)
