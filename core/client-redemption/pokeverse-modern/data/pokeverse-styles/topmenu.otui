@@ -1,0 +1,54 @@
+// Top bar buttons with a hover; the tiles stay a little dim until the mouse is over them.
+// Artwork: scripts/art/topbar_icons.py (images/options, images/topbuttons)
+
+MainToggleButton < UIButton
+  size: 20 20
+  image-source: /images/options/button_empty
+  image-clip: 0 0 20 20
+  image-border: 3
+  image-color: #d4dcec
+
+  $hover !pressed:
+    image-color: #ffffff
+
+  $pressed:
+    image-clip: 20 0 20 20
+
+  $on:
+    image-clip: 20 0 20 20
+    image-color: #ffffff
+
+  UIWidget
+    id: brightButton
+    size: 20 20
+    anchors.top: prev.top
+    anchors.left: prev.left
+    phantom: true
+    visible: false
+    image-source: /images/ui/bright-x20
+
+  UIWidget
+    id: highlight
+    size: 22 22
+    visible: false
+    margin-top: -1
+    phantom: true
+    image-source: /images/ui/highlight
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.verticalCenter: parent.verticalCenter
+
+largeToggleButton < UIButton
+  size: 108 20
+  image-source: /images/options/store_large
+  image-clip: 0 0 108 20
+  image-border: 3
+  image-color: #e8e8e8
+
+  $hover !pressed:
+    image-color: #ffffff
+
+  $pressed:
+    image-clip: 0 20 108 20
+
+  $on:
+    image-clip: 0 20 108 20
