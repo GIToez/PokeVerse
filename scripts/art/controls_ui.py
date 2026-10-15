@@ -73,16 +73,18 @@ def keycap(top, bottom, edge, lip, ring=None):
 
 
 def switch(on):
-    track, edge, knob, x = (('#2f7d4a', '#6fe08a', '#ffffff', 23) if on else ('#1d2f58', '#34508a', '#96aacd', 9))
-    body = (f'<rect x=".75" y=".75" width="30.5" height="16.5" rx="8.25" fill="{track}" stroke="{edge}" stroke-width="1"/>'
-            f'<circle cx="{x}" cy="9" r="6.2" fill="{knob}"/>')
-    return render(svg_doc(32, 18, body), 32, 18)
+    # 28x16 so it fits the 14px rows of the option cards
+    track, edge, knob, x = (('#2f7d4a', '#6fe08a', '#ffffff', 20) if on else ('#1d2f58', '#34508a', '#96aacd', 8))
+    body = (f'<rect x=".75" y=".75" width="26.5" height="14.5" rx="7.25" fill="{track}" stroke="{edge}" stroke-width="1"/>'
+            f'<circle cx="{x}" cy="8" r="5.3" fill="{knob}"/>')
+    return render(svg_doc(28, 16, body), 28, 16)
 
 
 def slider_parts():
     track = render(svg_doc(16, 6, '<rect width="16" height="6" rx="3" fill="#1d2f58"/>'), 16, 6)
     fill = render(svg_doc(16, 6, '<rect width="16" height="6" rx="3" fill="#7fb2ff"/>'), 16, 6)
-    knob = render(svg_doc(16, 16, '<circle cx="8" cy="8" r="6.4" fill="#efe6cf" stroke="#0c1730" stroke-width="2"/>'), 16, 16)
+    # 13px: the scroll bar sizes its slider to 13 with default-scroll
+    knob = render(svg_doc(13, 13, '<circle cx="6.5" cy="6.5" r="5.4" fill="#efe6cf" stroke="#0c1730" stroke-width="1.6"/>'), 13, 13)
     return track, fill, knob
 
 
