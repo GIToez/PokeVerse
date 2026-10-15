@@ -368,6 +368,28 @@ UNDERGROUND = [
                 10: ((3695, 460, 3805, 556), (3752, 475), None), 11: ((3715, 455, 3810, 556), (3752, 518), None)}},
 ]
 CAVE_DEBRIS = list(range(6374, 6387))
+# Hills, built like Kanto's terraces: a plateau one floor up is grass over mountain ground on the
+# floor below (bordered onto the grass round it as usual), and its own edge tiles take the mountain
+# border as if mountain lay all round, which draws the cliff's lip. Up to HILL_LEVELS floors, over
+# about HILL_SHARE of the open countryside, in patches about HILL_SCALE tiles across; parts under HILL_SMALLEST tiles are dropped.
+HILL_LEVELS = 3
+HILL_SHARE = 0.45
+HILL_SCALE = 38
+HILL_SMALLEST = 80
+# a ramp per this many tiles of a hill (at least one), at least HILL_RAMP_GAP tiles apart
+HILL_RAMP_EVERY = 1500
+HILL_RAMP_GAP = 30
+# Kanto's ramps by the way they climb: on the lower floor in front of the cliff, with stairs down
+# (RAMP_TOP) on the tile above, which drop players back off the ramp's foot.
+RAMPS = {(1, 0): 1388, (-1, 0): 1390, (0, 1): 1392, (0, -1): 1394}
+RAMP_TOP = 459
+# The mountains in tiers (plan_mountains), topped with rocky ground and grass, snow near the snowfields.
+MOUNT_LEVELS = 4
+MOUNT_BASE = 3
+MOUNT_STEP = 6
+MOUNT_WOBBLE = 4
+# Johto's west is low-lying and forested (Bulbapedia): woods spread over the lowlands west of this.
+WOODS_X = 2640
 # The server's field moves (lib/ps/events/actions/abilities.lua): Rock Smash breaks this rock and Cut
 # this jungle grass, both growing back after a while.
 SMASH_ROCK, CUT_BUSH = 1285, 3985
@@ -386,6 +408,20 @@ FERNS = [(3610, 29), (3611, 31), (3612, 32), (3613, 32), (3614, 32), (3621, 26),
 FLOWERS = [(3648, 7), (3649, 13), (3651, 17), (3652, 10), (3654, 8), (3655, 7), (3656, 13)]
 STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6), (1300, 7), (1301, 8)]
 GRAVEL = list(range(6477, 6489))
+# The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
+# (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
+CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
+BROADLEAF = [(12295, 56), (2707, 48), (2702, 45), (2703, 25), (2701, 40), (2708, 32), (7024, 27), (2705, 20)]
+UNDERGROWTH = [(2767, 30), (2768, 20), (2785, 10), (2786, 10), (4008, 4), (4009, 4), (4010, 6), (4011, 6),
+               (4012, 6), (4013, 6), (4014, 5), (4015, 5), (4018, 5), (2784, 3), (10913, 5), (10914, 5),
+               (10915, 5), (2709, 1), (5392, 1), (4167, 1), (4184, 1)]
+FOREST_FLOOR = [(2787, 3), (2788, 2), (2789, 4), (2791, 4), (2793, 3), (4181, 2), (4183, 3), (3811, 2),
+                (3821, 2), (2801, 6), (8166, 6), (8148, 3), (8149, 3), (8150, 3), (8151, 3)] + \
+               [(i, 3) for i in range(6220, 6226)] + [(i, 2) for i in range(6476, 6489)]
+WILDFLOWERS = [(4156, 4), (4157, 3), (2762, 2), (2764, 2)] + [(i, 3) for i in range(6226, 6232)]
+# the mountain tiers' rocky tops
+ROCKY = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1297, 3), (1298, 3),
+         (1299, 3), (1300, 3), (1301, 3), (1302, 3), (1304, 3)] + [(i, 4) for i in range(3648, 3657)]
 # the snowfield's: snowy fir trees in groves, the odd dead tree and heap of snow
 SNOW_FIR, SNOW_DEAD, SNOW_HEAP = 2698, 2697, 486
 
@@ -587,6 +623,37 @@ def erode(mask, size):
     return np.asarray(img.filter(ImageFilter.MinFilter(size))) > 0
 
 
+def distance(mask):
+    """Chamfer distance (1 straight, 1.4 diagonal) from each True cell to the nearest False one; 0 on
+    False cells."""
+    d = np.where(mask, 1e6, 0.0)
+    idx = np.arange(d.shape[1], dtype=float)
+    for rows in (range(d.shape[0]), range(d.shape[0] - 1, -1, -1)):
+        prev = None
+        for y in rows:
+            row = d[y].copy()
+            if prev is not None:
+                row = np.minimum(row, prev + 1)
+                row[1:] = np.minimum(row[1:], prev[:-1] + 1.4)
+                row[:-1] = np.minimum(row[:-1], prev[1:] + 1.4)
+            row = np.minimum.accumulate(row - idx) + idx
+            row = np.minimum.accumulate((row + idx)[::-1])[::-1] - idx
+            d[y] = np.where(mask[y], row, 0.0)
+            prev = d[y]
+    return d
+
+
+def grow(mask, r):
+    """Round dilation by r tiles."""
+    return mask | (distance(~mask) <= r)
+
+
+def soften(mask, r):
+    """Rounds a mask's outline, dropping parts thinner than about r."""
+    img = Image.fromarray(mask.astype(np.uint8) * 255).filter(ImageFilter.GaussianBlur(r))
+    return np.asarray(img) > 127
+
+
 def smooth_path(pts, rng, wobble=10, step=12):
     """Polyline with gentle bends so roads do not look ruler-drawn."""
     out = [pts[0]]
@@ -725,6 +792,50 @@ def pick(rng, table):
     return ids[rng.choice(len(ids), p=w / w.sum())]
 
 
+def wild_deco(rng, r, forest, road_d, canopy, stand, glade, groves, tufty, flowery):
+    """Decoration for a tile of open country or woods, from one draw `r` and the noise at the tile.
+    The woods' canopy thickens and thins and opens into glades; trees stand thicker along the roads
+    in the open, in lines like the games' routes."""
+    if forest:
+        p_tree = 0.12 + 0.55 * max(0.0, canopy + 0.15)
+        p_under = 0.08 + 0.12 * max(0.0, canopy + 0.1)
+        if glade > 0.2:
+            p_tree, p_under = p_tree * 0.1, p_under * 0.3
+        p_floor = 0.16
+    else:
+        p_tree = 0.05 + 0.5 * max(0.0, groves - 0.05)
+        p_under = 0.05 + 0.35 * max(0.0, groves + 0.05)
+        if 4 <= road_d < 7:
+            p_tree += 0.08
+        p_floor = 0.012
+    if road_d < 3.5:
+        p_tree, p_under = p_tree * 0.15, p_under * 0.3
+    if r < p_tree:
+        conifer = stand + (rng.random() - 0.5) * 0.3 > 0.08
+        return [pick(rng, CONIFERS if conifer else BROADLEAF)]
+    r -= p_tree
+    if r < p_under:
+        return [pick(rng, UNDERGROWTH if forest else BUSHES)]
+    r -= p_under
+    if r < p_floor:
+        return [pick(rng, FOREST_FLOOR)]
+    r -= p_floor
+    p_tuft = 0.3 + 0.25 * tufty
+    if r < p_tuft:
+        return [pick(rng, TUFTS)]
+    r -= p_tuft
+    if r < 0.03:
+        return [pick(rng, FERNS)]
+    r -= 0.03
+    p_flower = 0.004 + 0.03 * max(0.0, flowery - 0.15) + (0.04 if forest and glade > 0.2 else 0.0)
+    if r < p_flower:
+        return [pick(rng, FLOWERS if rng.random() < 0.5 else WILDFLOWERS)]
+    r -= p_flower
+    if r < 0.006:
+        return [pick(rng, STONES)]
+    return []
+
+
 def footpath(start, target, walkable, reach=40):
     """Shortest path of (iy, ix) cells from start (ix, iy) up to the first target cell, which is left
     out. Steps go through walkable cells only, at most `reach` tiles from the start."""
@@ -749,6 +860,132 @@ def footpath(start, target, walkable, reach=40):
                 prev[n] = cell
                 queue.append(n)
     return None
+
+
+def components(mask):
+    """4-connected parts of a mask, as lists of (iy, ix) cells."""
+    seen = np.zeros(mask.shape, bool)
+    h, w = mask.shape
+    out = []
+    for iy, ix in np.argwhere(mask):
+        if seen[iy, ix]:
+            continue
+        seen[iy, ix] = True
+        stack, cells = [(iy, ix)], []
+        while stack:
+            cy, cx = stack.pop()
+            cells.append((cy, cx))
+            for ny, nx in ((cy + 1, cx), (cy - 1, cx), (cy, cx + 1), (cy, cx - 1)):
+                if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    stack.append((ny, nx))
+        out.append(cells)
+    return out
+
+
+def keep_parts(mask, smallest):
+    out = np.zeros_like(mask)
+    for cells in components(mask):
+        if len(cells) >= smallest:
+            ys, xs = zip(*cells)
+            out[ys, xs] = True
+    return out
+
+
+def plan_hills(f, allowed, walk0, target0, road_d, rng):
+    """Kanto's terraces: a height (0 to HILL_LEVELS) per tile and the ramps that climb each plateau.
+
+    Each level's plateaus get ramps on a straight stretch of their edge, the ramp's tile and the two
+    behind it on the level below, with a footpath from there to a road (level 1) or to where a ramp
+    of the level below comes up (level 2). Plateaus no ramp can reach are left out. Returns the
+    height, the ramps (x, y, level climbed to, (dx, dy)) and per level the cells kept clear of
+    decoration on the floor of that level (0 is floor 7)."""
+    hf = Field(83)
+    hn = hf.noise(HILL_SCALE) + hf.noise(HILL_SCALE / 4) * 0.3
+    hill = allowed & (hn > np.quantile(hn[allowed], 1 - HILL_SHARE))
+    hill = keep_parts(soften(hill, 2.5) & allowed, HILL_SMALLEST)
+    height = hill.astype(np.uint8)
+    for j in range(2, HILL_LEVELS + 1):
+        inner = (distance(height >= j - 1) > 5 + hf.noise(10) * 4) & (height == j - 1)
+        if not inner.any():
+            break
+        top = inner & (hn > np.quantile(hn[inner], 0.35))
+        height += keep_parts(soften(top, 2) & inner, HILL_SMALLEST // 2)
+    ramps = []
+    keep = {j: np.zeros_like(allowed) for j in range(HILL_LEVELS + 1)}
+    landings = np.zeros_like(allowed)
+    h, w = allowed.shape
+    for j in range(1, HILL_LEVELS + 1):
+        below = (height == j - 1) & (walk0 if j == 1 else distance(height >= j - 1) > 1.5)
+        target = target0 if j == 1 else landings.copy()
+        level = height >= j
+        for cells in components(level):
+            plateau = [(iy, ix) for iy, ix in cells if height[iy, ix] == j]
+            cands = []
+            for iy, ix in plateau:
+                for dx, dy in RAMPS:
+                    px, py = dy, dx
+                    ok = (2 <= iy < h - 3 and 2 <= ix < w - 3 and 4 <= iy + dy * 4 < h - 4 and 4 <= ix + dx * 4 < w - 4)
+                    if not ok:
+                        continue
+                    ly, lx = iy - dy, ix - dx
+                    if not all(below[ly - dy * k, lx - dx * k] for k in range(3)):
+                        continue
+                    if not all(height[ly + py * s, lx + px * s] == j - 1 for s in (-1, 1)):
+                        continue
+                    if not all(height[iy + dy * k + py * s, ix + dx * k + px * s] == j
+                               for k in range(3) for s in (-1, 0, 1)):
+                        continue
+                    if j == 1 and road_d[ly, lx] > 55:
+                        continue
+                    score = road_d[ly, lx] if j == 1 else rng.random() * 40
+                    cands.append((score, (ix, iy), (dx, dy)))
+            cands.sort(key=lambda c: c[0])
+            want = 1 + len(cells) // HILL_RAMP_EVERY
+            chosen = []
+            for score, (ix, iy), (dx, dy) in cands:
+                if len(chosen) >= want:
+                    break
+                if any(abs(ix - cx) + abs(iy - cy) < HILL_RAMP_GAP for cx, cy in chosen):
+                    continue
+                lx, ly = ix - dx, iy - dy
+                start = (lx - 2 * dx, ly - 2 * dy)
+                path = [] if target[start[1], start[0]] else footpath(start, target, below, reach=60 if j == 1 else 200)
+                if path is None:
+                    continue
+                chosen.append((ix, iy))
+                ramps.append((lx + f.x0, ly + f.y0, j, (dx, dy)))
+                for k in range(3):
+                    keep[j - 1][ly - dy * k, lx - dx * k] = True
+                for cy, cx in path:
+                    keep[j - 1][cy, cx] = True
+                for k in range(4):
+                    for s in (-1, 0, 1):
+                        keep[j][iy + dy * k + dx * s, ix + dx * k + dy * s] = True
+                landings[iy + dy, ix + dx] = True
+            if not chosen:
+                ys, xs = zip(*cells)
+                height[ys, xs] = j - 1
+    return height, ramps, keep
+
+
+def plan_mountains(mask, cover):
+    """Kanto's mountains rise in tiers: a level (0 to MOUNT_LEVELS) per tile of the mountains, a
+    tier every MOUNT_STEP tiles in from their foot, starting MOUNT_BASE tiles in. Every tier is
+    softened and sits inside the one below; `cover` (the roofs over the cave corridors) is at least
+    the first."""
+    mf = Field(101)
+    d = distance(mask) + mf.noise(18) * MOUNT_WOBBLE
+    level = np.zeros(mask.shape, np.uint8)
+    prev = mask
+    for j in range(1, MOUNT_LEVELS + 1):
+        tier = soften(d >= MOUNT_BASE + (j - 1) * MOUNT_STEP, 1.5) & prev & (distance(prev) > 2)
+        if j == 1:
+            tier |= cover
+        tier = keep_parts(tier, 12) | (cover if j == 1 else False)
+        level += tier
+        prev = tier
+    return level
 
 
 def landing(x, y, facing):
@@ -891,6 +1128,7 @@ def build_cave(cave, brushes, present, rng):
 
 def build(base, out_path):
     brushes = autoborder.Brushes()
+    otb = pvmap.Otb(os.path.join(ROOT, 'core/server/data/items/items.otb'))
     scanned = scan(base)
     keep = scanned['keep']
     present = scanned['present'][1:-1, 1:-1]
@@ -993,6 +1231,11 @@ def build(base, out_path):
     mount = f.refine(coarse['mount'], n2, 0.45) & land
     forest = f.refine(coarse['forest'], n3, 0.5) & land
     forest |= f.disc(2300, 990, 50, n3, 0.5) & land  # Ilex Forest's south half, down to Azalea
+    # Johto's west is low-lying and forested (Bulbapedia): woods round the layout's forests, with
+    # their own noise for how thick the canopy is, firs or broadleaf, glades and the forest floor.
+    wf = Field(97)
+    forest |= (wf.noise(60) + wf.noise(14) * 0.3 > -0.02) & land & (X < WOODS_X + wf.noise(30) * 60)
+    canopy, stand, glade, litter = wf.noise(16), wf.noise(40), wf.noise(9), wf.noise(7)
     water = f.refine(coarse['lakes'], n2) & land
 
     # The Kanto strip: carry the existing ground across the seam.
@@ -1393,6 +1636,52 @@ def build(base, out_path):
             if f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
                 keep_free[y - f.y0, x - f.x0] = True
 
+    # The woods' floor: patches of bare earth under the trees, and smaller ones out in the open.
+    terrain[forest & (terrain == GRASS) & (litter > 0.22) & ~road & ~clear & gen] = DIRT
+    terrain[~forest & (terrain == GRASS) & (wf.noise(5) > 0.3) & ~road & ~clear & ~town_area & gen] = DIRT
+
+    # Hills (see HILL_LEVELS) on open countryside away from the roads, the towns, the water, the
+    # mountains and whatever else is built, short of the Kanto seam. Their footprint is mountain
+    # ground on this floor.
+    busy = np.isin(terrain, [WATER, MOUNTAIN, SNOW_PEAK, SNOW, SAND, STAIRS, CAVE_FLOOR, PAVE, BRIDGE])
+    allowed = (gen & ~present & np.isin(terrain, [GRASS, LAWN, DIRT]) & ~road & (road_d > 4.5) & ~thicket
+               & ~grow(town_area | clear | boxes | keep_free, 6) & ~grow(busy, 6) & (X < 3035))
+    walk0 = (gen & ~present & np.isin(terrain, [GRASS, LAWN, DIRT, SAND, SNOW, PAVE]) & ~boxes & ~thicket
+             & ~grow(np.isin(terrain, [WATER, MOUNTAIN, SNOW_PEAK]), 2))
+    for (x, y) in decor:
+        walk0[y - f.y0, x - f.x0] = False
+    target0 = (road | np.isin(terrain, [PAVE, BRIDGE])) & (walk0 | (terrain == BRIDGE))
+    height, ramps, hill_keep = plan_hills(f, allowed, walk0, target0, road_d, np.random.default_rng(83))
+    country = height > 0
+    hill_ground = terrain.copy()
+    terrain[country] = MOUNTAIN
+    clear |= hill_keep[0]
+    # The mountains in tiers. The roofs over the cave corridors are the first tier: a floor-6 tile
+    # shows one tile up and to the left of the tile under it, and the client hides floor 6 for
+    # players standing under (x, y) or (x + 1, y + 1), so each roof covers the corridor and the
+    # corridor shifted by one, and runs on over the walls beside it.
+    roof_cover = np.zeros((f.h, f.w), bool)
+    for core, _name in roofs:
+        cover = core | np.roll(np.roll(core, 1, 0), 1, 1)
+        roof_cover |= cover | (dilate(cover, 5) & np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, STAIRS]))
+    assert not (roof_cover & present).any(), 'roof over existing tiles'
+    rocks = ((np.isin(terrain, [MOUNTAIN, CAVE_FLOOR]) & ~country) | roof_cover) & gen & ~present & (X < 3035)
+    rocks &= ~grow(boxes, 5) | roof_cover
+    mlevel = plan_mountains(rocks, roof_cover)
+    mf = Field(103)
+    snowy = grow(np.isin(terrain, [SNOW_PEAK, SNOW]), 20)
+    meadow = mf.noise(22) + mf.noise(6) * 0.3 > 0.12
+    surface = np.where(snowy, SNOW, np.where(meadow, GRASS, CAVE_FLOOR))
+    hill_ground[mlevel > 0] = surface[mlevel > 0]
+    height = height + mlevel
+    ramp_feet = {(x, y, Z + 1 - j): RAMPS[d] for x, y, j, d in ramps}
+    for x, y, j, (dx, dy) in ramps:
+        if j == 1:
+            stair_landing |= {(x, y), (x - dx, y - dy)}
+    print('hills: %s, %d ramps; mountain tiers: %s'
+          % (', '.join('%d on floor %d' % ((country & (height >= j)).sum(), Z - j) for j in range(1, HILL_LEVELS + 1)),
+             len(ramps), ', '.join('%d on floor %d' % ((mlevel >= j).sum(), Z - j) for j in range(1, MOUNT_LEVELS + 1))))
+
     # Ground items and decoration.
     groves = f.noise(20)
     tufty = f.noise(8)
@@ -1426,38 +1715,13 @@ def build(base, out_path):
                 tiles[(x, y)] = [ground, [CUT_BUSH]]
                 blocked_spawn[iy, ix] = True
                 continue
-            if thicket[iy, ix] and cls == GRASS:
-                deco.append(pick(rng, BIG_TREES))
-            elif cls in (GRASS, LAWN) and not clear[iy, ix] and not road[iy, ix]:
-                g = groves[iy, ix]
-                if keep_free[iy, ix]:
-                    r = 1.0
-                if forest[iy, ix]:
-                    p_tree, p_bush = 0.45, 0.15
-                else:
-                    p_tree = 0.02 + 0.5 * max(0.0, g - 0.05)
-                    p_bush = 0.03 + 0.35 * max(0.0, g + 0.05)
-                if road_d[iy, ix] < 3.5:
-                    p_tree *= 0.15
-                    p_bush *= 0.3
-                if r < p_tree:
-                    deco.append(pick(rng, BIG_TREES))
-                elif r < p_tree + p_bush:
-                    deco.append(pick(rng, BUSHES))
-                else:
-                    r2 = rng.random()
-                    p_tuft = 0.3 + 0.25 * tufty[iy, ix]
-                    p_flower = 0.004 + 0.03 * max(0.0, flowery[iy, ix] - 0.15)
-                    if keep_free[iy, ix]:
-                        pass
-                    elif r2 < p_tuft:
-                        deco.append(pick(rng, TUFTS))
-                    elif r2 < p_tuft + 0.03:
-                        deco.append(pick(rng, FERNS))
-                    elif r2 < p_tuft + 0.03 + p_flower:
-                        deco.append(pick(rng, FLOWERS))
-                    elif r2 < p_tuft + 0.036 + p_flower:
-                        deco.append(pick(rng, STONES))
+            if thicket[iy, ix] and cls in (GRASS, DIRT):
+                trees = CONIFERS if stand[iy, ix] > 0.08 else BROADLEAF
+                deco.append(pick(rng, trees) if r < 0.7 else pick(rng, UNDERGROWTH))
+            elif (cls in (GRASS, LAWN) or (cls == DIRT and forest[iy, ix])) and not clear[iy, ix] and not road[iy, ix]:
+                if not keep_free[iy, ix]:
+                    deco += wild_deco(rng, r, forest[iy, ix], road_d[iy, ix], canopy[iy, ix], stand[iy, ix],
+                                      glade[iy, ix], groves[iy, ix], tufty[iy, ix], flowery[iy, ix])
             elif cls in (GRASS, LAWN) and town_area[iy, ix] and r < 0.4:
                 deco.append(pick(rng, BUSHES) if r < 0.025 and not near_town_paths[iy, ix] else pick(rng, TUFTS))
             elif ((cls == SNOW and frozen[iy, ix]) or (cls == SNOW_PEAK and summits[iy, ix] and not clear[iy, ix])) \
@@ -1471,9 +1735,13 @@ def build(base, out_path):
                     deco.append(SNOW_HEAP)
             elif cls == DIRT and not clear[iy, ix] and r < 0.18:
                 deco.append(rng.choice(GRAVEL))
-            if deco and deco[0] not in dict(TUFTS) and deco[0] not in dict(FERNS) and deco[0] not in dict(FLOWERS):
+            if any(otb.blocks(i) for i in deco):
                 blocked_spawn[iy, ix] = True
             tiles[(x, y)] = [ground, deco]
+    for (x, y, z), ramp in ramp_feet.items():
+        if z == Z:
+            tiles[(x, y)] = [tiles[(x, y)][0], [ramp]]
+            blocked_spawn[y - f.y0, x - f.x0] = True
     lost = sorted(p for p in decor if p not in tiles)
     if lost:
         print('warning: %d decoration tiles fall on buildings, e.g. %s' % (len(lost), lost[:5]))
@@ -1629,21 +1897,6 @@ def build(base, out_path):
         reborder += 1
     new_tiles.update(prefab_tiles)
 
-    # Roofs over the cave corridors. A floor-6 tile shows one tile up and to the left of the tile under
-    # it, and the client hides floor 6 for players standing under (x, y) or (x + 1, y + 1), so each
-    # roof covers the corridor and the corridor shifted by one, and runs on over the walls beside it.
-    roof = {}
-    for core, name in roofs:
-        cover = core | np.roll(np.roll(core, 1, 0), 1, 1)
-        cover |= dilate(cover, 5) & np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, STAIRS])
-        for iy, ix in np.argwhere(cover):
-            assert not present[iy, ix], 'roof over existing tiles at %d,%d' % (ix + f.x0, iy + f.y0)
-            roof[(ix + f.x0, iy + f.y0)] = brushes[name]
-    for (x, y), brush in roof.items():
-        ground = pick(rng, [(i, c) for i, c in brush.items if c > 0])
-        border = brushes.borders_for(brush, [roof.get((x + dx, y + dy)) for dx, dy in autoborder.NEIGHBOURS])
-        new_tiles[(x, y, Z - 1)] = pvmap.RawTile(0, 0, None, b''.join(pvmap.item_node(i) for i in [ground] + border))
-
     # The Elite Four building's west and south doors: take the counters out, keep the rest of the tile.
     for (x, y) in INDIGO_OPEN:
         t = existing(x, y)
@@ -1708,6 +1961,105 @@ def build(base, out_path):
     beach &= landed
     for iy, ix in np.argwhere(beach & (rng.random((f.h, f.w)) < 1 / 40.0)):
         spawns.append((pick(rng, spawn_table(str(route_of[iy, ix]), 'water')), ix + f.x0, iy + f.y0, Z))
+
+    # The upper floors of the hills and the mountain tiers. A plateau's edge borders as if mountain lay
+    # round it (the cliff's lip), but not toward the stairs over a ramp, which players walk onto from it.
+    hill_rng = np.random.default_rng(89)
+    gravel = set(mountain.optional.items.values())
+    tops = {(x, y, Z - j) for x, y, j, _ in ramps}
+    top_level = int(height.max())
+    above = {}
+    if top_level:
+        ys, xs = np.nonzero(height)
+        above = pvmap.read_region_raw(None, xs.min() + f.x0, ys.min() + f.y0, xs.max() + f.x0, ys.max() + f.y0,
+                                      range(Z - top_level, Z), base_data)
+
+    def hill_brush(x, y, j):
+        ix, iy = x - f.x0, y - f.y0
+        if not (0 <= ix < f.w and 0 <= iy < f.h) or height[iy, ix] < j:
+            return None
+        return mountain if height[iy, ix] > j else brushes[BRUSH_OF[hill_ground[iy, ix]]]
+
+    hill_spawns = 0
+    for j in range(1, top_level + 1):
+        z = Z - j
+        walk = np.zeros((f.h, f.w), bool)
+        for iy, ix in np.argwhere(height >= j):
+            x, y = ix + f.x0, iy + f.y0
+            assert (x, y, z) not in new_tiles and (x, y, z) not in above, 'hill over other tiles at %d,%d,%d' % (x, y, z)
+            center = hill_brush(x, y, j)
+            nb = [hill_brush(x + dx, y + dy, j) for dx, dy in autoborder.NEIGHBOURS]
+            deco = []
+            if center is mountain:
+                ground = pick(hill_rng, mountain_items)
+                border = brushes.borders_for(mountain, nb)
+            else:
+                ground = pick(hill_rng, [(i, c) for i, c in center.items if c > 0])
+                rim = [b or (center if (x + dx, y + dy, z) in tops else mountain)
+                       for b, (dx, dy) in zip(nb, autoborder.NEIGHBOURS)]
+                border = brushes.borders_for(center, rim)
+                if mountain in nb and not (j in hill_keep and hill_keep[j][iy, ix]):
+                    border += [i for i in brushes.borders_for(center, nb, optional=True) if i in gravel]
+                edge = None in nb or mountain in nb
+                cls, r = hill_ground[iy, ix], hill_rng.random()
+                if (x, y, z) in ramp_feet:
+                    deco = [ramp_feet[(x, y, z)]]
+                elif country[iy, ix] and (hill_keep[j][iy, ix] or keep_free[iy, ix]):
+                    pass
+                elif cls == CAVE_FLOOR:
+                    if r < 0.05:
+                        deco.append(pick(hill_rng, ROCKY))
+                    elif r < 0.11:
+                        deco.append(int(hill_rng.choice(CAVE_DEBRIS)))
+                    elif r < 0.13 and not edge:
+                        deco.append(pick(hill_rng, CONIFERS))
+                elif cls == SNOW:
+                    p_fir = 0.01 + 0.3 * max(0.0, groves[iy, ix] - 0.1)
+                    if r < p_fir and not edge:
+                        deco.append(SNOW_FIR)
+                    elif r < p_fir + 0.005:
+                        deco.append(SNOW_HEAP)
+                    elif r < p_fir + 0.02:
+                        deco.append(pick(hill_rng, ROCKY))
+                elif edge:
+                    if r < 0.3:
+                        deco.append(pick(hill_rng, TUFTS))
+                    elif r < 0.33:
+                        deco.append(pick(hill_rng, STONES))
+                elif cls == DIRT and not forest[iy, ix]:
+                    if r < 0.18:
+                        deco.append(int(hill_rng.choice(GRAVEL)))
+                else:
+                    woods = forest[iy, ix] and country[iy, ix]
+                    deco += wild_deco(hill_rng, r, woods, 99.0, canopy[iy, ix], stand[iy, ix], glade[iy, ix],
+                                      groves[iy, ix] + (0.15 if not country[iy, ix] else 0.0), tufty[iy, ix],
+                                      flowery[iy, ix])
+                walk[iy, ix] = (country[iy, ix] and not any(i in gravel for i in border)
+                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet)
+            children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
+            new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, children)
+        for (x, y, zz) in tops:
+            if zz == z:
+                new_tiles[(x, y, z)] = pvmap.RawTile(0, 0, None, pvmap.item_node(RAMP_TOP))
+        if j > HILL_LEVELS:
+            continue
+        # wild Pokémon on the plateaus, where players can walk to from the ramps up, off the edge
+        reached = np.zeros((f.h, f.w), bool)
+        for x, y, jj, (dx, dy) in ramps:
+            if jj == j:
+                reached[y + dy - f.y0, x + dx - f.x0] = True
+        while True:
+            grown = (dilate(reached, 3) & walk) | reached
+            if grown.sum() == reached.sum():
+                break
+            reached = grown
+        inside = (distance(height >= j) > 2.5) & (height == j) & country & reached & ~hill_keep[j]
+        for iy, ix in np.argwhere(inside & (hill_rng.random((f.h, f.w)) < 1 / 210.0)):
+            table = spawn_table(str(route_of[iy, ix]))
+            if table:
+                spawns.append((pick(hill_rng, table), ix + f.x0, iy + f.y0, z))
+                hill_spawns += 1
+    print('hills: %d spawns on the plateaus' % hill_spawns)
 
     for k, cave in enumerate(CAVES):
         # each cave draws from its own generator, so changes elsewhere leave the caves as they are
