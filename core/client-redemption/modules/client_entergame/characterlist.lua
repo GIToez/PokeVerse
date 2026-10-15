@@ -738,7 +738,7 @@ function CharacterList.create(characters, account, otui)
         end
     elseif account.subStatus == SubscriptionStatus.Premium then
         if account.premDays == 0 or account.premDays == 65535 then
-            accountStatusLabel:setText(('%s%s'):format(tr('Gratis Premium Account'), status))
+            accountStatusLabel:setText(('%s%s'):format(tr('Premium Account (unlimited)'), status))
         else
             accountStatusLabel:setText(('%s%s'):format(tr('Premium Account (%s days left)', account.premDays), status))
         end
