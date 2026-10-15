@@ -46,8 +46,23 @@ function getNpcDistanceToCreature(id)
     return math.max(math.abs(s.x - c.x), math.abs(s.y - c.y))
 end
 
+-- Latin-1 accented letters as the client sends them, so "não" (a {não} button) matches "nao"
+local UNACCENTED = {
+    ['\224'] = 'a', ['\225'] = 'a', ['\226'] = 'a', ['\227'] = 'a', ['\231'] = 'c', ['\232'] = 'e',
+    ['\233'] = 'e', ['\234'] = 'e', ['\236'] = 'i', ['\237'] = 'i', ['\242'] = 'o', ['\243'] = 'o',
+    ['\244'] = 'o', ['\245'] = 'o', ['\249'] = 'u', ['\250'] = 'u', ['\252'] = 'u',
+    ['\192'] = 'a', ['\193'] = 'a', ['\194'] = 'a', ['\195'] = 'a', ['\199'] = 'c', ['\200'] = 'e',
+    ['\201'] = 'e', ['\202'] = 'e', ['\204'] = 'i', ['\205'] = 'i', ['\210'] = 'o', ['\211'] = 'o',
+    ['\212'] = 'o', ['\213'] = 'o', ['\217'] = 'u', ['\218'] = 'u', ['\220'] = 'u',
+}
+
+local function unaccent(s)
+    s = s:gsub('\195([\128-\191])', function(c) return string.char(c:byte() + 64) end)
+    return (s:gsub('[\192-\252]', UNACCENTED))
+end
+
 local function doKeywordCheck(message, keyword)
-    local a, b = message:lower():find(keyword:lower())
+    local a, b = unaccent(message:lower()):find(keyword:lower())
     if (a ~= nil and b ~= nil) then
         return true
     end
