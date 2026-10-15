@@ -43,7 +43,7 @@ ICONS = {
     'berry': ('shop', 14767),           # oran berry
     'furniture': ('shop', 12027),       # small white couch
     'shopping': ('shop', 23589),        # shopping bag
-    'bike': ('shop', 'bike'),
+    'bike': ('shop', 13218),            # mach bike
     'gym_boulder': ('gym', 12213),
     'gym_cascade': ('gym', 12215),
     'gym_thunder': ('gym', 12217),
@@ -69,18 +69,6 @@ ICONS = {
 }
 
 
-def draw_bike(d, s):
-    white = (235, 240, 255, 255)
-    w = max(2, s // 8)
-    r = s * 0.24
-    for cx in (r + 1, s - r - 1):
-        d.ellipse((cx - r, s * 0.7 - r, cx + r, s * 0.7 + r), outline=white, width=w)
-    d.line((r + 1, s * 0.7, s * 0.42, s * 0.38, s - r - 1, s * 0.7), fill=white, width=w)
-    d.line((s * 0.42, s * 0.38, s * 0.7, s * 0.38, s - r - 1, s * 0.7), fill=white, width=w)
-    d.line((s * 0.62, s * 0.2, s * 0.8, s * 0.2), fill=white, width=w)
-    d.line((s * 0.7, s * 0.2, s * 0.7, s * 0.38), fill=white, width=w)
-
-
 def draw_house(d, s):
     white = (235, 240, 255, 255)
     d.polygon([(s * 0.5, s * 0.05), (s, s * 0.5), (0, s * 0.5)], fill=white)
@@ -88,7 +76,7 @@ def draw_house(d, s):
     d.rectangle((s * 0.4, s * 0.62, s * 0.6, s * 0.95), fill=(11, 20, 39, 255))
 
 
-DRAWN = {'bike': draw_bike, 'house': draw_house}
+DRAWN = {'house': draw_house}
 
 
 def sprite(r, server_id):
