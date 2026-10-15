@@ -270,7 +270,9 @@ def piece_box(cx, cy):
 
 def render_piece(r, tiles, z, cx, cy):
     x0, y0, x1, y1 = piece_box(cx, cy)
-    img = r.render_scaled(tiles, x0, y0, x1, y1, z, upper=(z == GROUND), scale=SCALE / 32.0)
+    # where the map has nothing the client's background shows, the same on every floor
+    img = r.render_scaled(tiles, x0, y0, x1, y1, z, upper=(z == GROUND), scale=SCALE / 32.0,
+                          background=(0, 0, 0, 0))
     # off the ground the client draws the floor over the ground below, so only its own tiles are opaque
     if z != GROUND:
         alpha = Image.new('L', img.size, 0)
@@ -280,11 +282,10 @@ def render_piece(r, tiles, z, cx, cy):
         img.putalpha(alpha)
     if any(rx1 <= x1 and x0 <= rx2 and ry1 <= y1 and y0 <= ry2 for _, rx1, ry1, rx2, ry2 in _hidden):
         # the floors above can reach into a hidden region's edge
-        cover = (0, 0, 0, 255 if z == GROUND else 0)
         for y in range(y0, y1 + 1):
             for x in range(x0, x1 + 1):
                 if hidden(x, y):
-                    img.paste(cover, ((x - x0) * SCALE, (y - y0) * SCALE, (x - x0 + 1) * SCALE, (y - y0 + 1) * SCALE))
+                    img.paste((0, 0, 0, 0), ((x - x0) * SCALE, (y - y0) * SCALE, (x - x0 + 1) * SCALE, (y - y0 + 1) * SCALE))
     return img
 
 
