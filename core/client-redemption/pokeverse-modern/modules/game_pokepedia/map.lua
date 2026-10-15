@@ -23,11 +23,22 @@ local GROUND_OPACITY = 0.4
 local hasWorld
 local FLAG_ICONS = { 'pin', 0, 3, 4, 5, 8, 9, 11, 12, 13 }
 
+-- an icon is 'pin', a minimap flag number, or the path of a guide mark's icon
 local function iconPath(icon)
     if icon == nil or icon == 'pin' then
         return Pp.IMAGES .. 'mark_waypoint'
     end
+    if type(icon) == 'string' and icon:sub(1, 1) == '/' then
+        return icon
+    end
     return '/images/game/minimap/flag' .. tostring(icon)
+end
+
+local function iconSize(icon, pin)
+    if icon == nil or icon == 'pin' then
+        return pin
+    end
+    return (type(icon) == 'string' and icon:sub(1, 1) == '/') and 14 or 11
 end
 
 local function toPosition(entry)
@@ -242,7 +253,7 @@ drawWaypoints = function()
     for index, waypoint in ipairs(waypoints) do
         local pos = toPosition(waypoint)
         local name = tostring(waypoint.name)
-        local mark = newMark(iconPath(waypoint.icon), waypoint.icon == 'pin' and 16 or 11)
+        local mark = newMark(iconPath(waypoint.icon), iconSize(waypoint.icon, 16))
         mark:setTooltip(name)
         placeMark(mark, pos)
         mark.onMouseRelease = function(widget, mousePos, mouseButton)
@@ -257,7 +268,8 @@ drawWaypoints = function()
 
         local row = g_ui.createWidget('PpPlaceRow', list)
         row.icon:setImageSource(iconPath(waypoint.icon))
-        row.icon:setSize(waypoint.icon == 'pin' and { width = 14, height = 14 } or { width = 11, height = 11 })
+        local size = iconSize(waypoint.icon, 14)
+        row.icon:setSize({ width = size, height = size })
         row.name:setText(name)
         row.town:setText(tr('Floor %s', Pp.floorName(pos.z)))
         row:setTooltip(tr('Click to show it, double-click to walk there, right-click for more.'))
@@ -451,8 +463,9 @@ end
 
 local function addPlaceRow(list, place)
     local row = g_ui.createWidget('PpPlaceRow', list)
-    row.icon:setImageSource(place.type and iconPath(place.type) or '/modules/client_entergame/images/town')
-    row.icon:setSize(place.type and { width = 11, height = 11 } or { width = 12, height = 12 })
+    row.icon:setImageSource(place.type and iconPath(place.icon or place.type) or '/modules/client_entergame/images/town')
+    local size = place.type and iconSize(place.icon or place.type) or 12
+    row.icon:setSize({ width = size, height = size })
     row.name:setText(place.type and place.name or tr('Town centre'))
     row.town:setText('')
     row:setTooltip(Pp.formatPosition(place.position))
@@ -753,7 +766,7 @@ function MapTab.setup(widget)
             return
         end
         local place = selectedPlace
-        waypoints[#waypoints + 1] = { name = place.name, icon = place.type or 'pin', x = place.position.x,
+        waypoints[#waypoints + 1] = { name = place.name, icon = place.icon or place.type or 'pin', x = place.position.x,
             y = place.position.y, z = place.position.z }
         saveWaypoints()
         drawWaypoints()
