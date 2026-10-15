@@ -99,7 +99,10 @@ If GitHub cannot be reached, the client shows an error and starts normally after
   start; after that the updater keeps them current like on the other platforms. Android
   apps cannot restart themselves, so after an update the client asks the player to reopen
   it. The engine cannot update itself on Android: engine changes need the new APK, which
-  installs over the old one and keeps the downloaded files. The APK is built for 64-bit ARM
+  installs over the old one. On its first start a new APK unpacks its own files again
+  (it remembers which `data.zip` it unpacked in `game_data.apk`), so the new Lua and
+  updater run straight away and only download what changed since the APK was built.
+  Settings live outside `game_data` and are kept. The APK is built for 64-bit ARM
   phones (`arm64-v8a`), which covers current Android devices.
 - **Android in the background:** while updating or logged in, leaving the app starts a
   foreground service with a notification ("PokeVerse is updating in the background" with
