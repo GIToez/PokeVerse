@@ -645,6 +645,12 @@ bool Http::cancel(int id)
 #else
 std::shared_ptr<ix::HttpClient> g_ixHttpClient;
 
+// each ix::HttpClient runs its requests one at a time on its own thread, so downloads are
+// spread over a few clients to let the updater fetch several files at once
+static constexpr size_t DOWNLOAD_CLIENTS = 4;
+static std::vector<std::shared_ptr<ix::HttpClient>> g_ixDownloadClients;
+static std::atomic<size_t> g_nextDownloadClient{ 0 };
+
 void Http::init()
 {
     if (m_working.load())
@@ -661,6 +667,15 @@ void Http::init()
 #ifdef ANDROID
         g_ixHttpClient->setTLSOptions(androidTlsOptions());
 #endif
+    }
+    if (g_ixDownloadClients.empty()) {
+        for (size_t i = 0; i < DOWNLOAD_CLIENTS; ++i) {
+            auto client = std::make_shared<ix::HttpClient>(true);
+#ifdef ANDROID
+            client->setTLSOptions(androidTlsOptions());
+#endif
+            g_ixDownloadClients.push_back(client);
+        }
     }
     m_working.store(true);
 }
@@ -706,6 +721,7 @@ void Http::terminate()
     }
 
     g_ixHttpClient.reset();
+    g_ixDownloadClients.clear();
     ix::uninitNetSystem();
 }
 
@@ -939,7 +955,11 @@ int Http::download(const std::string& url, const std::string& path, int timeout)
         });
     };
 
-    if (!g_ixHttpClient->performRequest(request, callback)) {
+    auto client = g_ixHttpClient;
+    if (!g_ixDownloadClients.empty())
+        client = g_ixDownloadClients[g_nextDownloadClient++ % g_ixDownloadClients.size()];
+
+    if (!client->performRequest(request, callback)) {
         const std::string error = "http_error::queue";
         std::string body;
         result->finished = true;
