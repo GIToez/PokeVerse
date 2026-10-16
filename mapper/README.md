@@ -8,6 +8,7 @@ live map so work in progress never reaches the server by accident.
 | `RME/` | RME 8.54 (Windows). `data/854/` holds the server's `items.otb` and `items.xml`, and a `creatures.xml` generated from the server's monsters and NPCs. |
 | `client/` | `Tibia.dat` / `Tibia.spr`: the game's sprites (copies of `core/client-legacy/data/things`). |
 | `map/` | `johto-wip.otbm` with its `map-spawn.xml` and `map-house.xml`: the work copy. |
+| `backup/live-2026-10-15/` | The live map, spawns and houses as they were before Johto was published. To go back, copy the three files over `core/server/data/world/`. |
 
 The live map in `core/server/data/world/` is only changed by `scripts/mapper/publish.py`.
 
