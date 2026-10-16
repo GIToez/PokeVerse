@@ -9,7 +9,7 @@ local CLOTHES_KIT = {
     [13488] = { outfits = { 631, 632 }, addons = 0 }, -- Mercenary
     [13489] = { outfits = { 633, 634 }, addons = 0 }, -- Rapper
     [13490] = { outfits = { 635, 636 }, addons = 0 }, -- Oriental
-    [18717] = { outfits = { 1184, 1185 }, addons = 0 }, -- Catcher
+    [18717] = { outfits = { 2568, 2567 }, addons = 0 }, -- Duelist
     [18719] = { outfits = { 886, 887 }, addons = 0 }, -- Halloween #1 (skull / frankenstein)
     [18720] = { outfits = { 888, 889 }, addons = 0 }, -- Halloween #2 (witch / mummy)
     [18721] = { outfits = { 1213, 1214 }, addons = 0 }, -- Halloween #3 (naughty devil / skeleton)
