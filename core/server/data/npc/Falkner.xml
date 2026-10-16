@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Falkner" script="npcbattle_falkner.lua" walkinterval="0" floorchange="0">
+	<health now="100" max="100"/>
+	<look type="630" head="88" body="0" legs="88" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="I'm Falkner, the Violet City Gym Leader! People say you can clip a flying-type's wings with a jolt of electricity... I won't allow such insults to bird Pokemon! Do you want to battle?"/>
+		<parameter key="idletime" value="30" />
+	</parameters>
+</npc>
