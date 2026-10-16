@@ -1,0 +1,750 @@
+From d8eefa258afd412cf36860e837ab2897a00530ec Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Fri, 16 Oct 2026 15:14:16 +0000
+Subject: [PATCH 1/4] /trainer: show the Trainer Card with the chosen vocation,
+ rank, badges, favorite artwork and trophies
+
+---
+ src/commands/router.ts                    |   2 +-
+ src/integrations/pokeverse/protocol.ts    |  30 ++++++
+ src/services/embeds.ts                    |  43 ++++++++
+ src/services/trainers/trainerLookup.ts    | 123 +++++++++++++++++-----
+ tests/integration/gameIntegration.test.ts |   2 +-
+ tests/unit/commands.test.ts               |  69 ++++++++++--
+ 6 files changed, 232 insertions(+), 37 deletions(-)
+
+diff --git a/src/commands/router.ts b/src/commands/router.ts
+index e2ab3c9..f677afa 100644
+--- a/src/commands/router.ts
++++ b/src/commands/router.ts
+@@ -182,7 +182,7 @@ export class CommandRouter {
+     if (!this.options.game.connected) {
+       return reply(OFFLINE_TEXT);
+     }
+-    const result = await lookupTrainer(this.options.game, input.options.name ?? "");
++    const result = await lookupTrainer(this.options.game, this.options.artwork, input.options.name ?? "");
+     switch (result.kind) {
+       case "invalid_name":
+         return reply("Trainer names contain only letters, spaces, apostrophes and dashes (2-30 characters).");
+diff --git a/src/integrations/pokeverse/protocol.ts b/src/integrations/pokeverse/protocol.ts
+index 7d2333e..ec5b6eb 100644
+--- a/src/integrations/pokeverse/protocol.ts
++++ b/src/integrations/pokeverse/protocol.ts
+@@ -179,6 +179,31 @@ export interface GameEventEnvelope<E extends GameEvent = GameEvent> {
+ 
+ // Request results -------------------------------------------------------------
+ 
++const cardPokemonSchema = z.object({
++  name: z.string(),
++  level: z.number(),
++  sex: z.string().nullish(),
++  number: z.number().nullish(),
++  shiny: z.boolean().nullish(),
++  types: z.array(z.string()).optional(),
++});
++
++export const trainerCardSchema = z.object({
++  title: z.string(),
++  about: z.string().optional(),
++  since: z.number().optional(),
++  vocation: z
++    .object({ key: z.string(), name: z.string(), rank: z.number(), maxRank: z.number(), title: z.string().nullish() })
++    .optional(),
++  favorite: cardPokemonSchema.optional(),
++  trophies: z.array(cardPokemonSchema).optional(),
++  playTime: z.number().optional(),
++  dex: z.object({ seen: z.number(), total: z.number() }).optional(),
++  badges: z.array(z.object({ region: z.string(), earned: z.array(z.string()), total: z.number() })).optional(),
++  /** What the trainer's privacy settings keep off their card: playTime, stats, trophies. */
++  hidden: z.array(z.string()).optional(),
++});
++
+ export const trainerResultSchema = z.union([
+   z.object({ found: z.literal(false) }),
+   z.object({
+@@ -196,6 +221,9 @@ export const trainerResultSchema = z.union([
+     playersDefeated: z.number(),
+     tournamentsWon: z.number(),
+     achievements: z.object({ earned: z.number(), total: z.number(), recent: z.array(z.string()) }),
++    mastery: z.string().nullish(),
++    /** The Trainer Card; game servers from before it leave it out. */
++    card: trainerCardSchema.optional(),
+   }),
+ ]);
+ 
+@@ -301,5 +329,7 @@ export type TrainerResult = z.infer<typeof trainerResultSchema>;
+ export type PokemonResult = z.infer<typeof pokemonResultSchema>;
+ export type FoundPokemon = Extract<PokemonResult, { found: true }>;
+ export type FoundTrainer = Extract<TrainerResult, { found: true }>;
++export type TrainerCard = z.infer<typeof trainerCardSchema>;
++export type CardPokemon = z.infer<typeof cardPokemonSchema>;
+ export type ServerStatusResult = z.infer<typeof serverStatusResultSchema>;
+ export type BridgeConfigResult = z.infer<typeof bridgeConfigResultSchema>;
+diff --git a/src/services/embeds.ts b/src/services/embeds.ts
+index 8950718..4bd1945 100644
+--- a/src/services/embeds.ts
++++ b/src/services/embeds.ts
+@@ -31,6 +31,49 @@ export function embedMessage(embed: APIEmbed, artwork?: OutgoingFile, placement:
+   };
+ }
+ 
++/** The games' type colors, for embeds about one Pokemon. */
++export const TYPE_COLORS: Record<string, number> = {
++  normal: 0xa8a77a,
++  fire: 0xee8130,
++  water: 0x6390f0,
++  electric: 0xf7d02c,
++  grass: 0x7ac74c,
++  ice: 0x96d9d6,
++  fighting: 0xc22e28,
++  poison: 0xa33ea1,
++  ground: 0xe2bf65,
++  flying: 0xa98ff3,
++  psychic: 0xf95587,
++  bug: 0xa6b91a,
++  rock: 0xb6a136,
++  ghost: 0x735797,
++  dragon: 0x6f35fc,
++  dark: 0x705746,
++  steel: 0xb7b7ce,
++  fairy: 0xd685ad,
++};
++
++export function typeColor(types: readonly string[]): number | undefined {
++  return types.length > 0 ? TYPE_COLORS[types[0]!.toLowerCase()] : undefined;
++}
++
++/** "▰▰▰▱▱": value out of max in `width` cells. */
++export function progressBar(value: number, max: number, width = 10): string {
++  const filled = max > 0 ? Math.round((Math.min(Math.max(value, 0), max) / max) * width) : 0;
++  return "▰".repeat(filled) + "▱".repeat(width - filled);
++}
++
++/** ♂ / ♀ for the game's sex values (0 female, 1 male, or "female" / "male"). */
++export function sexSymbol(sex: number | string | null | undefined): string {
++  if (sex === 0 || sex === "female") {
++    return " ♀";
++  }
++  if (sex === 1 || sex === "male") {
++    return " ♂";
++  }
++  return "";
++}
++
+ export function sexLabel(sex: number | null | undefined): string | undefined {
+   switch (sex) {
+     case 0:
+diff --git a/src/services/trainers/trainerLookup.ts b/src/services/trainers/trainerLookup.ts
+index 51c4aa5..a518b76 100644
+--- a/src/services/trainers/trainerLookup.ts
++++ b/src/services/trainers/trainerLookup.ts
+@@ -1,8 +1,10 @@
+ import type { APIEmbed } from "discord.js";
+ import type { OutgoingMessage } from "../../bot/ports.js";
+ import type { GameApi } from "../../integrations/pokeverse/gameApi.js";
+-import type { FoundTrainer } from "../../integrations/pokeverse/protocol.js";
+-import { COLORS, plain } from "../embeds.js";
++import type { CardPokemon, FoundTrainer } from "../../integrations/pokeverse/protocol.js";
++import { formatDuration } from "../../utils/format.js";
++import { COLORS, embedMessage, plain, progressBar, sexSymbol } from "../embeds.js";
++import type { ArtworkResolver } from "../pokemon/artwork.js";
+ 
+ /** Same rules as character names in the game: letters, spaces, apostrophes and dashes. */
+ export const TRAINER_NAME_PATTERN = /^[A-Za-z][A-Za-z' -]{1,29}$/;
+@@ -12,45 +14,110 @@ export function normalizeTrainerName(input: string): string | undefined {
+   return TRAINER_NAME_PATTERN.test(name) ? name : undefined;
+ }
+ 
++/** The vocations' colors and icons, as in the game's vocation window. */
++export const VOCATION_STYLES: Record<string, { color: number; icon: string }> = {
++  ace: { color: 0xdc2626, icon: "⚔️" },
++  catcher: { color: 0xf97316, icon: "🎯" },
++  breeder: { color: 0xec4899, icon: "🥚" },
++  ranger: { color: 0x16a34a, icon: "🧭" },
++  angler: { color: 0x0ea5e9, icon: "🎣" },
++  medic: { color: 0x14b8a6, icon: "🩺" },
++};
++
++const count = (value: number) => value.toLocaleString("en-US");
++
++function pokemonLine(pokemon: CardPokemon): string {
++  return `${pokemon.shiny ? "✨ " : ""}**${plain(pokemon.name)}** Lv ${pokemon.level}${sexSymbol(pokemon.sex)}`;
++}
++
++function stars(rank: number, maxRank: number): string {
++  return "★".repeat(rank) + "☆".repeat(Math.max(0, maxRank - rank));
++}
++
+ export function buildTrainerEmbed(trainer: FoundTrainer): APIEmbed {
+-  const fields: NonNullable<APIEmbed["fields"]> = [
+-    { name: "Level", value: String(trainer.level), inline: true },
+-    { name: "Status", value: trainer.online ? "Online" : "Offline", inline: true },
+-  ];
+-  if (trainer.vocation) {
+-    fields.push({ name: "Vocation", value: plain(trainer.vocation), inline: true });
+-  }
+-  fields.push({ name: "Guild", value: trainer.guild ? plain(trainer.guild) : "None", inline: true });
++  const card = trainer.card;
++  const hidden = new Set(card?.hidden ?? []);
++  const style = card?.vocation ? VOCATION_STYLES[card.vocation.key] : undefined;
++  const fields: NonNullable<APIEmbed["fields"]> = [];
++
++  fields.push({ name: "Level", value: `**${trainer.level}**`, inline: true });
++  const vocation = card?.vocation
++    ? `${style?.icon ?? ""} ${plain(card.vocation.name)}\n${stars(card.vocation.rank, card.vocation.maxRank)} ${plain(card.vocation.title ?? "")}`.trim()
++    : plain(trainer.vocation ?? "Trainer");
+   fields.push({
+-    name: "Collection",
+-    value: [
+-      `Caught: **${trainer.caught}**`,
+-      `Unique species: **${trainer.uniqueCaught}**`,
+-      `Shiny caught: **${trainer.shinyCaught}**`,
+-    ].join("\n"),
++    name: "Vocation",
++    value: trainer.mastery ? `${vocation}\nMastery: ${plain(trainer.mastery)}` : vocation,
+     inline: true,
+   });
++  fields.push({ name: "Guild", value: trainer.guild ? plain(trainer.guild) : "None", inline: true });
++
++  if (card?.badges && card.badges.length > 0) {
++    fields.push({
++      name: "Badges",
++      value: card.badges
++        .map((region) => `${plain(region.region)}\n\`${progressBar(region.earned.length, region.total, region.total)}\` ${region.earned.length} / ${region.total}`)
++        .join("\n"),
++      inline: true,
++    });
++  }
++  if (hidden.has("stats")) {
++    fields.push({ name: "Collection", value: "*Private*", inline: true });
++  } else {
++    const dex = card?.dex ? [`Pokédex \`${progressBar(card.dex.seen, card.dex.total)}\` ${card.dex.seen} / ${card.dex.total}`] : [];
++    fields.push({
++      name: "Collection",
++      value: [
++        ...dex,
++        `Caught **${count(trainer.caught)}** · Species **${count(trainer.uniqueCaught)}**`,
++        `Shiny caught **${count(trainer.shinyCaught)}**`,
++      ].join("\n"),
++      inline: true,
++    });
++  }
+   fields.push({
+-    name: "PvP",
++    name: "Battles",
+     value: [
+-      `Duels won: **${trainer.duelWins}**`,
+-      `Duels lost: **${trainer.duelLosses}**`,
+-      `Players defeated: **${trainer.playersDefeated}**`,
+-      `Tournaments won: **${trainer.tournamentsWon}**`,
++      `Duels **${count(trainer.duelWins)}** won · **${count(trainer.duelLosses)}** lost`,
++      `Players defeated **${count(trainer.playersDefeated)}**`,
++      `Tournaments won **${count(trainer.tournamentsWon)}**`,
+     ].join("\n"),
+-    inline: true,
++    inline: card?.badges === undefined,
+   });
++
++  if (card?.favorite) {
++    fields.push({ name: "Favorite", value: pokemonLine(card.favorite), inline: true });
++  }
++  if (hidden.has("trophies")) {
++    fields.push({ name: "Trophies", value: "*Private*", inline: true });
++  } else if (card?.trophies && card.trophies.length > 0) {
++    fields.push({ name: "Trophies", value: card.trophies.map(pokemonLine).join("\n"), inline: true });
++  }
++
+   const achievements = trainer.achievements;
+-  const recent = achievements.recent.length > 0 ? `\n${achievements.recent.map((name) => `- ${plain(name)}`).join("\n")}` : "";
++  const recent = achievements.recent.length > 0 ? `\n${achievements.recent.map((name) => `🏅 ${plain(name)}`).join("\n")}` : "";
+   fields.push({
+     name: "Achievements",
+-    value: `${achievements.earned} / ${achievements.total}${recent}`,
++    value: `\`${progressBar(achievements.earned, achievements.total)}\` ${achievements.earned} / ${achievements.total}${recent}`,
+     inline: false,
+   });
++
++  const description = [
++    card ? `***${plain(card.title)}***` : undefined,
++    card?.about ? card.about.split("\n").map((line) => `> ${plain(line)}`).join("\n") : undefined,
++  ].filter(Boolean).join("\n");
++  const footer = [
++    card?.playTime !== undefined ? `Played ${formatDuration(card.playTime)}` : undefined,
++    card?.since ? "Trainer since" : undefined,
++  ].filter(Boolean).join(" · ");
++
+   return {
+-    title: `Trainer ${plain(trainer.name)}`,
+-    color: trainer.online ? COLORS.success : COLORS.neutral,
++    author: { name: `Trainer Card · ${trainer.online ? "🟢 Online" : "⚫ Offline"}` },
++    title: plain(trainer.name),
++    description: description || undefined,
++    color: style?.color ?? (trainer.online ? COLORS.success : COLORS.neutral),
+     fields,
++    footer: footer ? { text: footer } : undefined,
++    timestamp: card?.since ? new Date(card.since * 1000).toISOString() : undefined,
+   };
+ }
+ 
+@@ -59,7 +126,7 @@ export type TrainerLookupResult =
+   | { kind: "invalid_name" }
+   | { kind: "not_found"; name: string };
+ 
+-export async function lookupTrainer(game: GameApi, input: string): Promise<TrainerLookupResult> {
++export async function lookupTrainer(game: GameApi, artwork: ArtworkResolver, input: string): Promise<TrainerLookupResult> {
+   const name = normalizeTrainerName(input);
+   if (!name) {
+     return { kind: "invalid_name" };
+@@ -68,5 +135,5 @@ export async function lookupTrainer(game: GameApi, input: string): Promise<Train
+   if (!result.found) {
+     return { kind: "not_found", name };
+   }
+-  return { kind: "found", message: { embeds: [buildTrainerEmbed(result)] } };
++  return { kind: "found", message: embedMessage(buildTrainerEmbed(result), artwork.resolve(result.card?.favorite?.number)) };
+ }
+diff --git a/tests/integration/gameIntegration.test.ts b/tests/integration/gameIntegration.test.ts
+index 7a924b8..c6eb641 100644
+--- a/tests/integration/gameIntegration.test.ts
++++ b/tests/integration/gameIntegration.test.ts
+@@ -111,7 +111,7 @@ describe("bot <-> game bridge pipeline", () => {
+     const { integration } = await setup();
+     const user = { id: "1", displayName: "U", roleIds: [], manageGuild: false };
+     const trainer = await integration.commands.handle({ commandName: "trainer", options: { name: "Red Trainer" }, user, guildId: DEV_GUILD });
+-    expect(trainer.message.embeds![0]!.title).toBe("Trainer Red Trainer");
++    expect(trainer.message.embeds![0]!.title).toBe("Red Trainer");
+     const pokemon = await integration.commands.handle({ commandName: "pokemon", options: { name: "Rattata" }, user, guildId: DEV_GUILD });
+     expect(pokemon.message.embeds![0]!.title).toBe("#019 Rattata");
+     expect(await integration.commands.autocomplete("pokemon", "name", "ra")).toHaveLength(2);
+diff --git a/tests/unit/commands.test.ts b/tests/unit/commands.test.ts
+index 073fbf7..cb60955 100644
+--- a/tests/unit/commands.test.ts
++++ b/tests/unit/commands.test.ts
+@@ -16,7 +16,7 @@ import { Metrics } from "../../src/utils/metrics.js";
+ import { LinkCommands } from "../../src/commands/linkCommands.js";
+ import { isPrivateCommand } from "../../src/commands/router.js";
+ import { LinkService, type LinkChange } from "../../src/services/linking/linkService.js";
+-import { DEV_GUILD, FakeChannels, FakeGame, FakeGuild, FakeLinkApi, LINKED_USER, makeConfig, makeStore, tempDir } from "../helpers/fakes.js";
++import { DEV_GUILD, FakeChannels, FakeGame, FakeGuild, FakeLinkApi, LINKED_USER, makeConfig, makeStore, TRAINER, tempDir } from "../helpers/fakes.js";
+ 
+ const ADMIN = "700000000000000001";
+ const MEMBER = "700000000000000002";
+@@ -83,15 +83,69 @@ describe("/trainer", () => {
+     const response = await run("trainer", { name: "  Red   Trainer " });
+     expect(response.ephemeral).toBe(false);
+     const embed = response.message.embeds![0]!;
+-    expect(embed.title).toBe("Trainer Red Trainer");
++    expect(embed.title).toBe("Red Trainer");
++    expect(embed.author?.name).toBe("Trainer Card · 🟢 Online");
+     const fields = Object.fromEntries(embed.fields!.map((field) => [field.name, field.value]));
+-    expect(fields).toMatchObject({ Level: "25", Status: "Online", Vocation: "Trainer", Guild: "None" });
+-    expect(fields.Collection).toContain("Caught: **12**");
+-    expect(fields.PvP).toContain("Duels won: **3**");
+-    expect(fields.Achievements).toBe("2 / 40\n- First Catch\n- Explorer");
++    expect(fields).toMatchObject({ Level: "**25**", Vocation: "Trainer", Guild: "None" });
++    expect(fields.Collection).toContain("Caught **12**");
++    expect(fields.Battles).toContain("Duels **3** won");
++    expect(fields.Achievements).toBe("`▰▱▱▱▱▱▱▱▱▱` 2 / 40\n🏅 First Catch\n🏅 Explorer");
++    expect(fields.Badges).toBeUndefined();
+     expect(game.calls).toEqual(["trainer.lookup"]);
+   });
+ 
++  it("shows the Trainer Card with the chosen vocation, badges and the favorite's artwork", async () => {
++    const dir = tempDir();
++    mkdirSync(dir, { recursive: true });
++    writeFileSync(join(dir, "25.png"), "png");
++    const { run, game } = setup({}, dir);
++    game.trainers.set("red trainer", {
++      ...TRAINER,
++      online: false,
++      vocation: "Ranger",
++      mastery: "Blaze Starter",
++      card: {
++        title: "Field Ranger",
++        about: "Tracking legends\nacross Kanto.",
++        since: 1760000000,
++        vocation: { key: "ranger", name: "Ranger", rank: 3, maxRank: 5, title: "Area Ranger" },
++        favorite: { name: "Pikachu", level: 25, sex: "male", number: 25 },
++        trophies: [{ name: "Shiny Gyarados", level: 45, sex: "female", number: 130, shiny: true }],
++        playTime: 93784,
++        dex: { seen: 40, total: 386 },
++        badges: [{ region: "Kanto", earned: ["Boulder", "Cascade"], total: 8 }],
++        hidden: [],
++      },
++    });
++    const response = await run("trainer", { name: "Red Trainer" });
++    const embed = response.message.embeds![0]!;
++    expect(embed.author?.name).toBe("Trainer Card · ⚫ Offline");
++    expect(embed.description).toBe("***Field Ranger***\n> Tracking legends\n> across Kanto.");
++    expect(embed.color).toBe(0x16a34a);
++    expect(embed.thumbnail).toEqual({ url: "attachment://pokemon-25.png" });
++    expect(embed.footer?.text).toBe("Played 1d 2h 3m · Trainer since");
++    expect(embed.timestamp).toBe(new Date(1760000000 * 1000).toISOString());
++    const fields = Object.fromEntries(embed.fields!.map((field) => [field.name, field.value]));
++    expect(fields.Vocation).toBe("🧭 Ranger\n★★★☆☆ Area Ranger\nMastery: Blaze Starter");
++    expect(fields.Badges).toBe("Kanto\n`▰▰▱▱▱▱▱▱` 2 / 8");
++    expect(fields.Collection).toContain("Pokédex `▰▱▱▱▱▱▱▱▱▱` 40 / 386");
++    expect(fields.Favorite).toBe("**Pikachu** Lv 25 ♂");
++    expect(fields.Trophies).toBe("✨ **Shiny Gyarados** Lv 45 ♀");
++  });
++
++  it("keeps what the trainer made private off the card", async () => {
++    const { run, game } = setup();
++    game.trainers.set("red trainer", {
++      ...TRAINER,
++      card: { title: "Pokemon Trainer", hidden: ["playTime", "stats", "trophies"], trophies: [] },
++    });
++    const embed = (await run("trainer", { name: "Red Trainer" })).message.embeds![0]!;
++    const fields = Object.fromEntries(embed.fields!.map((field) => [field.name, field.value]));
++    expect(fields.Collection).toBe("*Private*");
++    expect(fields.Trophies).toBe("*Private*");
++    expect(embed.footer).toBeUndefined();
++  });
++
+   it("handles not found, invalid names and an offline game", async () => {
+     const { run, game } = setup();
+     expect((await run("trainer", { name: "Nobody" })).message.embeds![0]!.description).toBe('No trainer named "Nobody" was found.');
+@@ -124,7 +178,8 @@ describe("/pokemon", () => {
+     expect(embed.thumbnail).toEqual({ url: "attachment://pokemon-19.png" });
+     expect(response.message.files).toHaveLength(1);
+     const fields = Object.fromEntries(embed.fields!.map((field) => [field.name, field.value]));
+-    expect(fields.Type).toBe("normal");
++    expect(fields.Type).toBe("Normal");
++    expect(embed.color).toBe(0xa8a77a);
+     expect(fields["Base stats"]).toContain("Attack: **56**");
+     expect(fields["Base stats"]).not.toContain("Energy");
+     expect(fields.Evolutions).toBe("Rattata -> Raticate (level 20)");
+-- 
+2.43.0
+
+
+From 847b8e0a89b5a79dd0350ae8e5b4508953b2d462 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Fri, 16 Oct 2026 15:14:16 +0000
+Subject: [PATCH 2/4] Catch, spawn and /pokemon embeds: type colors, stat bars,
+ a catch sentence and large artwork for rare finds
+
+---
+ src/services/catches/catchAnnouncer.ts | 31 +++++++++++++++++---------
+ src/services/pokemon/pokemonLookup.ts  | 16 ++++++++-----
+ src/services/spawns/spawnAnnouncer.ts  |  8 ++++---
+ tests/unit/catchAnnouncer.test.ts      | 15 ++++++++-----
+ tests/unit/spawnAnnouncer.test.ts      |  6 ++---
+ 5 files changed, 49 insertions(+), 27 deletions(-)
+
+diff --git a/src/services/catches/catchAnnouncer.ts b/src/services/catches/catchAnnouncer.ts
+index 1b1ef8d..a6bbc27 100644
+--- a/src/services/catches/catchAnnouncer.ts
++++ b/src/services/catches/catchAnnouncer.ts
+@@ -7,7 +7,7 @@ import { padDex } from "../../utils/format.js";
+ import type { Logger } from "../../utils/logger.js";
+ import type { Metrics } from "../../utils/metrics.js";
+ import type { CatchMode } from "../../utils/stateStore.js";
+-import { COLORS, capitalizeWords, embedMessage, plain, sexLabel } from "../embeds.js";
++import { COLORS, capitalizeWords, embedMessage, plain, sexLabel, sexSymbol } from "../embeds.js";
+ import type { ArtworkResolver } from "../pokemon/artwork.js";
+ 
+ export interface CatchAnnouncerOptions {
+@@ -52,33 +52,41 @@ export function pokemonDisplayName(species: string, extraPoints: number | null |
+   return extraPoints !== null && extraPoints !== undefined && extraPoints > 0 ? `${species} +${extraPoints}` : species;
+ }
+ 
++function withArticle(text: string): string {
++  return `${/^[aeiou]/i.test(text) ? "an" : "a"} ${text}`;
++}
++
++/** Shiny and legendary catches show their artwork large, the others as a thumbnail. */
++export function catchArtworkPlacement(event: CatchEvent): "image" | "thumbnail" {
++  return event.shiny || event.legendary ? "image" : "thumbnail";
++}
++
+ export function buildCatchEmbed(event: CatchEvent, time: number): APIEmbed {
+   const name = pokemonDisplayName(event.species, event.extraPoints);
+   const tags = [
+     event.legendary ? "Legendary" : undefined,
+     event.shiny && !/^shiny\b/i.test(event.species) ? "Shiny" : undefined,
+   ].filter(Boolean);
++  const icon = event.legendary ? "👑 " : event.shiny ? "✨ " : "";
++  const ball = event.ball ? plain(capitalizeWords(event.ball)) : undefined;
+   const fields: NonNullable<APIEmbed["fields"]> = [
+     { name: "Trainer", value: plain(event.trainer), inline: true },
+-    { name: "Pokemon", value: plain(name), inline: true },
+     { name: "Level", value: String(event.level), inline: true },
+   ];
+   const sex = sexLabel(event.sex);
+   if (sex) {
+-    fields.push({ name: "Sex", value: sex, inline: true });
+-  }
+-  if (event.ball) {
+-    fields.push({ name: "Ball", value: plain(capitalizeWords(event.ball)), inline: true });
++    fields.push({ name: "Sex", value: `${sex}${sexSymbol(event.sex)}`, inline: true });
+   }
+-  if (event.safari) {
+-    fields.push({ name: "Area", value: "Safari Zone", inline: true });
++  if (ball) {
++    fields.push({ name: "Ball", value: ball, inline: true });
+   }
+   return {
+-    title: `${tags.length > 0 ? `${tags.join(" ")} ` : ""}${name} caught!`,
+-    description: `**${plain(event.trainer)}** caught **${plain(name)}**.`,
++    author: { name: event.safari ? "Safari Zone catch" : "New catch" },
++    title: `${icon}${tags.length > 0 ? `${tags.join(" ")} ` : ""}${name} caught!`,
++    description: `**${plain(event.trainer)}** caught ${event.legendary || event.shiny ? "the" : /^[aeiou]/i.test(name) ? "an" : "a"} **${plain(name)}**${ball ? ` with ${withArticle(ball)}` : ""}!`,
+     color: event.legendary ? COLORS.legendary : event.shiny ? COLORS.shiny : COLORS.success,
+     fields,
+-    footer: event.dexNumber ? { text: `Pokedex #${padDex(event.dexNumber)}` } : undefined,
++    footer: event.dexNumber ? { text: `Pokédex #${padDex(event.dexNumber)}` } : undefined,
+     timestamp: new Date(time * 1000).toISOString(),
+   };
+ }
+@@ -119,6 +127,7 @@ export class CatchAnnouncer {
+     const message = embedMessage(
+       buildCatchEmbed(envelope.event, envelope.time),
+       this.options.artwork.resolve(envelope.event.dexNumber),
++      catchArtworkPlacement(envelope.event),
+     );
+     this.options.queue.enqueue(`catch ${envelope.id}`, async () => {
+       const channel = this.options.channels.get("catches");
+diff --git a/src/services/pokemon/pokemonLookup.ts b/src/services/pokemon/pokemonLookup.ts
+index e85fa08..26f207d 100644
+--- a/src/services/pokemon/pokemonLookup.ts
++++ b/src/services/pokemon/pokemonLookup.ts
+@@ -3,7 +3,7 @@ import type { OutgoingMessage } from "../../bot/ports.js";
+ import type { GameApi } from "../../integrations/pokeverse/gameApi.js";
+ import type { FoundPokemon } from "../../integrations/pokeverse/protocol.js";
+ import { padDex, truncate } from "../../utils/format.js";
+-import { COLORS, embedMessage, plain } from "../embeds.js";
++import { COLORS, capitalizeWords, embedMessage, plain, progressBar, typeColor } from "../embeds.js";
+ import type { ArtworkResolver } from "./artwork.js";
+ 
+ export function normalizePokemonQuery(input: string): string | undefined {
+@@ -11,8 +11,13 @@ export function normalizePokemonQuery(input: string): string | undefined {
+   return name.length >= 1 && name.length <= 40 && /^[\p{L}\p{N} .'\-:♀♂]+$/u.test(name) ? name : undefined;
+ }
+ 
++/** Base stats above this fill the whole bar. */
++const STAT_BAR_MAX = 150;
++
+ function statLine(label: string, value: number | null | undefined): string | undefined {
+-  return value === null || value === undefined ? undefined : `${label}: **${value}**`;
++  return value === null || value === undefined
++    ? undefined
++    : `\`${progressBar(value, STAT_BAR_MAX, 8)}\` ${label}: **${value}**`;
+ }
+ 
+ function list(items: string[], max: number): string {
+@@ -26,7 +31,7 @@ function list(items: string[], max: number): string {
+ export function buildPokemonEmbed(pokemon: FoundPokemon): APIEmbed {
+   const fields: NonNullable<APIEmbed["fields"]> = [];
+   if (pokemon.types.length > 0) {
+-    fields.push({ name: "Type", value: pokemon.types.map(plain).join(" / "), inline: true });
++    fields.push({ name: "Type", value: pokemon.types.map((type) => plain(capitalizeWords(type))).join(" / "), inline: true });
+   }
+   if (pokemon.generation) {
+     fields.push({ name: "Generation", value: String(pokemon.generation), inline: true });
+@@ -75,9 +80,10 @@ export function buildPokemonEmbed(pokemon: FoundPokemon): APIEmbed {
+   }
+ 
+   return {
++    author: { name: pokemon.legendary ? "Pokédex · Legendary" : pokemon.shiny ? "Pokédex · Shiny" : "Pokédex" },
+     title: pokemon.dexNumber ? `#${padDex(pokemon.dexNumber)} ${plain(pokemon.name)}` : plain(pokemon.name),
+-    description: pokemon.description ? truncate(plain(pokemon.description), 1000) : undefined,
+-    color: pokemon.legendary ? COLORS.legendary : pokemon.shiny ? COLORS.shiny : COLORS.info,
++    description: pokemon.description ? `*${truncate(plain(pokemon.description), 1000)}*` : undefined,
++    color: pokemon.legendary ? COLORS.legendary : pokemon.shiny ? COLORS.shiny : (typeColor(pokemon.types) ?? COLORS.info),
+     fields,
+   };
+ }
+diff --git a/src/services/spawns/spawnAnnouncer.ts b/src/services/spawns/spawnAnnouncer.ts
+index a3c6626..b6f0960 100644
+--- a/src/services/spawns/spawnAnnouncer.ts
++++ b/src/services/spawns/spawnAnnouncer.ts
+@@ -78,11 +78,12 @@ export function buildSpawnEmbed(event: SpawnEvent, time: number, location: strin
+     fields.push({ name: "Location", value: plain(location), inline: false });
+   }
+   return {
+-    title: `${name} spotted!`,
+-    description: `**${plain(event.species)}** has appeared!`,
++    author: { name: event.legendary ? "Legendary sighting" : "Shiny sighting" },
++    title: `${event.legendary ? "👑" : "✨"} ${name} spotted!`,
++    description: `**${plain(event.species)}** has appeared${location?.startsWith("near ") ? ` ${plain(location)}` : ""}! Be the first to catch it.`,
+     color: event.legendary ? COLORS.legendary : COLORS.shiny,
+     fields,
+-    footer: event.dexNumber ? { text: `Pokedex #${padDex(event.dexNumber)}` } : undefined,
++    footer: event.dexNumber ? { text: `Pokédex #${padDex(event.dexNumber)}` } : undefined,
+     timestamp: new Date(time * 1000).toISOString(),
+   };
+ }
+@@ -132,6 +133,7 @@ export class SpawnAnnouncer {
+     const message = embedMessage(
+       buildSpawnEmbed(event, envelope.time, describeLocation(event, this.options.config.locationMode)),
+       this.options.artwork.resolve(event.dexNumber),
++      "image",
+     );
+     this.options.queue.enqueue(`spawn ${envelope.id}`, async () => {
+       const channel = this.options.channels.get(decision.channel);
+diff --git a/tests/unit/catchAnnouncer.test.ts b/tests/unit/catchAnnouncer.test.ts
+index e12fdb8..69e2b66 100644
+--- a/tests/unit/catchAnnouncer.test.ts
++++ b/tests/unit/catchAnnouncer.test.ts
+@@ -50,16 +50,16 @@ describe("catch announcements", () => {
+     await queue.idle();
+     const embed = channel.sent[0]!.message.embeds![0]!;
+     expect(embed.title).toBe("Rattata caught!");
+-    expect(embed.description).toBe("**Bridge Trainer** caught **Rattata**.");
++    expect(embed.description).toBe("**Bridge Trainer** caught a **Rattata** with an Ultra Ball!");
+     expect(embed.fields).toEqual(
+       expect.arrayContaining([
+         { name: "Trainer", value: "Bridge Trainer", inline: true },
+         { name: "Level", value: "5", inline: true },
+-        { name: "Sex", value: "Male", inline: true },
++        { name: "Sex", value: "Male ♂", inline: true },
+         { name: "Ball", value: "Ultra Ball", inline: true },
+       ]),
+     );
+-    expect(embed.footer?.text).toBe("Pokedex #019");
++    expect(embed.footer?.text).toBe("Pokédex #019");
+   });
+ 
+   it("shows the bonus only when the game reports one", () => {
+@@ -98,10 +98,11 @@ describe("catch announcements", () => {
+ 
+   it("styles shiny and legendary catches", () => {
+     const shiny = buildCatchEmbed({ ...RATTATA, species: "Shiny Rattata", shiny: true }, 0);
+-    expect(shiny.title).toBe("Shiny Rattata caught!");
++    expect(shiny.title).toBe("✨ Shiny Rattata caught!");
++    expect(shiny.description).toBe("**Bridge Trainer** caught the **Shiny Rattata** with an Ultra Ball!");
+     expect(shiny.color).toBe(0xfacc15);
+     const legendary = buildCatchEmbed({ ...RATTATA, species: "Mewtwo", legendary: true, sex: 2 }, 0);
+-    expect(legendary.title).toBe("Legendary Mewtwo caught!");
++    expect(legendary.title).toBe("👑 Legendary Mewtwo caught!");
+     expect(legendary.fields?.some((field) => field.name === "Sex")).toBe(false);
+   });
+ 
+@@ -118,6 +119,10 @@ describe("catch announcements", () => {
+     expect(first!.message.embeds![0]!.thumbnail).toEqual({ url: "attachment://pokemon-19.png" });
+     expect(second!.message.files).toBeUndefined();
+ 
++    withArt.announcer.handle(envelope({ ...RATTATA, species: "Shiny Rattata", shiny: true }));
++    await withArt.queue.idle();
++    expect(withArt.channel.sent[2]!.message.embeds![0]!.image).toEqual({ url: "attachment://pokemon-19.png" });
++
+     const noArt = setup("all");
+     noArt.announcer.handle(envelope(RATTATA));
+     await noArt.queue.idle();
+diff --git a/tests/unit/spawnAnnouncer.test.ts b/tests/unit/spawnAnnouncer.test.ts
+index 9b5dfde..5484d4a 100644
+--- a/tests/unit/spawnAnnouncer.test.ts
++++ b/tests/unit/spawnAnnouncer.test.ts
+@@ -40,8 +40,8 @@ describe("spawn alerts", () => {
+     expect(announcer.handle(envelope(SHINY))).toEqual({ action: "announce", channel: "shinySpawns" });
+     expect(announcer.handle(envelope(LEGENDARY))).toEqual({ action: "announce", channel: "legendarySpawns" });
+     await queue.idle();
+-    expect(channels.channel("shinySpawns").sent[0]!.message.embeds![0]!.title).toBe("Shiny Rattata spotted!");
+-    expect(channels.channel("legendarySpawns").sent[0]!.message.embeds![0]!.title).toBe("Legendary Mewtwo spotted!");
++    expect(channels.channel("shinySpawns").sent[0]!.message.embeds![0]!.title).toBe("✨ Shiny Rattata spotted!");
++    expect(channels.channel("legendarySpawns").sent[0]!.message.embeds![0]!.title).toBe("👑 Legendary Mewtwo spotted!");
+   });
+ 
+   it("announces a shiny legendary exactly once", async () => {
+@@ -50,7 +50,7 @@ describe("spawn alerts", () => {
+     await queue.idle();
+     expect(channels.channel("legendarySpawns").sent).toHaveLength(1);
+     expect(channels.channel("shinySpawns").sent).toHaveLength(0);
+-    expect(channels.channel("legendarySpawns").sent[0]!.message.embeds![0]!.title).toBe("Legendary Shiny Mewtwo spotted!");
++    expect(channels.channel("legendarySpawns").sent[0]!.message.embeds![0]!.title).toBe("👑 Legendary Shiny Mewtwo spotted!");
+ 
+     const shinyRoute = setup({ SPAWN_SHINY_LEGENDARY_ROUTE: "shiny" });
+     expect(routeSpawn(SHINY_LEGENDARY, shinyRoute.config.spawns)).toBe("shinySpawns");
+-- 
+2.43.0
+
+
+From 8b7825eaea9d8e3a70068c767afcbb9c314f1d1b Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Fri, 16 Oct 2026 15:14:16 +0000
+Subject: [PATCH 3/4] Package: ship the game's Pokedex pictures as artwork/
+ when PV_ARTWORK_DIR is set
+
+---
+ scripts/package.mjs | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/scripts/package.mjs b/scripts/package.mjs
+index 183d8cd..a8f2b95 100644
+--- a/scripts/package.mjs
++++ b/scripts/package.mjs
+@@ -239,6 +239,19 @@ async function main() {
+     join(stage, "VERSION.json"),
+     JSON.stringify({ name: pkg.name, version: pkg.version, profile: layout.profile, commit: gitCommit(), node: nodeVersion, builtAt: new Date().toISOString() }, null, 2) + "\n",
+   );
++  // PV_ARTWORK_DIR: the game's Pokedex pictures (<dex>.png), shipped as artwork/ for POKEMON_ARTWORK_DIR
++  const artwork = process.env.PV_ARTWORK_DIR;
++  if (artwork) {
++    const pictures = readdirSync(artwork).filter((file) => /^\d+\.png$/.test(file));
++    if (pictures.length === 0) {
++      throw new Error(`PV_ARTWORK_DIR has no <dex>.png pictures: ${artwork}`);
++    }
++    mkdirSync(join(stage, "artwork"));
++    for (const file of pictures) {
++      cpSync(join(artwork, file), join(stage, "artwork", file));
++    }
++    log(`Added ${pictures.length} Pokemon pictures`);
++  }
+   if (!skipNode) {
+     await addNodeRuntime();
+   }
+-- 
+2.43.0
+
+
+From b14db45fdef2f58305cb24ecb2a38e207602de34 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Fri, 16 Oct 2026 15:14:53 +0000
+Subject: [PATCH 4/4] Docs: the Trainer Card in /trainer and the artwork
+ shipped with the package
+
+---
+ docs/COMMANDS.md   | 12 +++++++++---
+ docs/DEPLOYMENT.md |  3 +++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/docs/COMMANDS.md b/docs/COMMANDS.md
+index 1c07d84..aab481b 100644
+--- a/docs/COMMANDS.md
++++ b/docs/COMMANDS.md
+@@ -9,9 +9,15 @@ reply privately.
+ 
+ ### `/trainer name:<character>`
+ 
+-Public profile from the game: level, class, guild, online state, Pokemon caught (total,
+-unique, shiny), duel wins/losses, players defeated, tournaments won and achievements
+-(count plus up to 5 recent, never secret ones).
++The trainer's Trainer Card from the game: the displayed title and About text, level, the
++chosen vocation with its rank (and mastery), guild, online state, badges per region,
++Pokédex progress, Pokemon caught (total, unique, shiny), duels, players defeated,
++tournaments won, the favorite Pokemon (its artwork is the thumbnail), trophy Pokemon, play
++time, "Trainer since" and achievements (count plus up to 5 recent, never secret ones). The
++color is the vocation's.
++
++- What the trainer made private on their card (play time, statistics, trophies) is left out.
++- Game servers from before the Trainer Card only send the profile without the card fields.
+ 
+ - Only existing, non-deleted characters of this world. Staff characters are reported as
+   "not found".
+diff --git a/docs/DEPLOYMENT.md b/docs/DEPLOYMENT.md
+index 841d0f7..b91286c 100644
+--- a/docs/DEPLOYMENT.md
++++ b/docs/DEPLOYMENT.md
+@@ -54,6 +54,9 @@ any token: the packaging script fails if it finds one.
+ 
+    Set `DISCORD_TOKEN`, `DISCORD_APPLICATION_ID`, `DISCORD_GUILD_ID`, admin IDs,
+    `BRIDGE_SECRET`, `POKEMON_ARTWORK_DIR` and `POKEVERSE_CONFIRM_PRODUCTION=yes`.
++   Packages built with `PV_ARTWORK_DIR=<game>/core/client-legacy/data/images/pictures`
++   carry the pictures in `artwork/`, and the game's deployment then sets
++   `POKEMON_ARTWORK_DIR=artwork` by itself.
+ 
+ 4. Game side: in `config.local.lua` next to the server's `config.lua` (mode 600, owned by
+    the game user):
+-- 
+2.43.0
+
