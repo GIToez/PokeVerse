@@ -237,9 +237,12 @@ ROADS = {
     'south woods trail': [(2400, 1078), (2405, 1110), (2430, 1145), (2470, 1170)],
 }
 # Where the games make players Surf (polyline, half width): Route 27 starts in the water east of New
-# Bark, and the Tohjo river (no bridge, carried on out to sea) stands for the falls between Route 27 and
+# Bark, and the Tohjo river (carried on out to sea) stands for the falls between Route 27 and
 # Route 26; Route 42 is
-# cut twice by small lakes, Mt. Mortar being the way round on foot.
+# cut twice by small lakes, Mt. Mortar being the way round on foot. Route 27 is bridged over its
+# channel (BRIDGED_CUTS) and over the Tohjo river, so Kanto and the League are reached from New Bark
+# on foot; Surf still takes the water itself.
+BRIDGED_CUTS = {0}
 SURF_CUTS = [
     ([(2806, 664), (2804, 700), (2800, 780), (2806, 870), (2812, 980)], 5),
     ([(2445, 376), (2445, 436)], 4),
@@ -2325,8 +2328,16 @@ def build(base, out_path):
     mount &= ~town_area
     forest &= ~town_area
     water &= ~town_area
-    for line, width in SURF_CUTS:
+    spans = road & river & (Y >= 668) & ~town_area
+    for k, (line, width) in enumerate(SURF_CUTS):
         cut = (f.seg_dist(line) + n2 * 2 < width) & ~town_area
+        if k in BRIDGED_CUTS and (road & cut).any():
+            # Square across at the road's middle row: a road meeting the channel at a slant would
+            # otherwise give a stepped bridge.
+            ys, xs = np.nonzero(road & cut)
+            yc, xc = int(np.median(ys)), int(np.median(xs))
+            row = cut[yc - 1:yc + 2].any(axis=0) & (np.abs(np.arange(cut.shape[1]) - xc) <= width + 4)
+            spans[yc - 1:yc + 2] |= row
         water |= cut
         land |= cut
         mount &= ~cut
@@ -2375,7 +2386,7 @@ def build(base, out_path):
     for (x, y), b in town_ground.items():
         terrain[y - f.y0, x - f.x0] = WATER if b == 'walkable sea' else PAVE
     streets = np.any(list(town_pave.values()), axis=0)
-    crossing = {(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere(town_water & (streets | road))}
+    crossing = {(ix + f.x0, iy + f.y0) for iy, ix in np.argwhere((town_water & (streets | road)) | spans)}
     for (x, y) in crossing:
         bridge[(x, y)] = 0 if (x, y - 1) not in crossing else 2 if (x, y + 1) not in crossing else 1
     for (x, y) in planks:

@@ -169,7 +169,7 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
 ## Built so far
 
 - **South:** New Bark Town (town 50, temple 2717,805,7), Route 29 toward Cherrygrove, Route 27,
-  Tohjo Falls (river out of the ridge and on out to sea, no bridge), Route 26 to the south gate (3049,700) and
+  Tohjo Falls (river out of the ridge and on out to sea), Route 26 to the south gate (3049,700) and
   the road from the gate to the Elite Four building's south door.
 - **North:** the west gate (3049,593) and its pass to the building's west door, Route 28 with a
   pond, the Silver–Indigo range around the plateau, Mt. Silver with snowfields, its Pokémon
@@ -222,8 +222,10 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   the sea west of Johto end in rounded tips short of it (no straight cuts),
   and a square of plain grass off Snowtop Mountain's north coast on the base map, the only tiles
   in its chunks, is redone with the rest of the coast.
-- **Getting around (as in HeartGold/SoulSilver, see Bulbapedia):** Surf from New Bark onto Route
-  27 (a channel at x 2805) and again across the Tohjo river to Route 26; Route 42 is cut by two
+- **Getting around (as in HeartGold/SoulSilver, see Bulbapedia, but every town but Cianwood is
+  reached on foot from Kanto):** Route 27 crosses its channel (x 2805) and the Tohjo river to
+  Route 26 on bridges (`BRIDGED_CUTS`), so New Bark is walked to from the League; Surf still
+  takes the water up and down them. Route 42 is cut by two
   small lakes (x 2445 and 2475), so Mahogany's side is reached through Mt. Mortar or by Surf;
   Blackthorn's side through the Ice Path, or Dark Cave with Rock Smash (rocks across the tunnel at
   x 2604, floor 8), a cliff standing in for Route 46's one-way ledges; Cut for the jungle grass
@@ -231,7 +233,7 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1186 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 1060 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
   Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, the
