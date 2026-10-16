@@ -10,10 +10,6 @@ npcBattle:setRewardRespect(2)
 npcBattle:setPayRespect(3)
 npcBattle:setOneWin(true)
 npcBattle:setDifficulty(25)
-npcBattle:setRequiredTrainers({
-    "Rod Haskell",
-    "Abe Whitlock",
-})
 npcBattle:setPokemonDefeatExperienced(true)
 
 function onCreatureAppear(cid) npcHandler:onCreatureAppear(cid) end
