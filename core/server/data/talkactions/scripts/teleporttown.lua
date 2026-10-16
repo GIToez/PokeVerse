@@ -1,6 +1,13 @@
 function onSay(cid, words, param, channel)
 	if(param == '') then
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Command requires param.")
+		local names = {}
+		for id = 1, 255 do
+			local name = getTownName(id)
+			if(name and name ~= '') then
+				table.insert(names, id .. " " .. name)
+			end
+		end
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Usage: /town name[, player]. Towns: " .. table.concat(names, ", "))
 		return true
 	end
 
