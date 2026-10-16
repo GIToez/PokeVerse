@@ -208,6 +208,13 @@ local function testTrials(cid)
     local notice = captureVocation(function() Vocations.sendTrial(cid) end).trial
     check("top bar: \"!\" to choose a vocation from level 20", notice and notice.choose == true and
         notice.ready == (getPlayerLevel(cid) >= Vocations.MIN_LEVEL))
+    -- a new character has fishing skill 0, and the skill checks below need a level to step back from
+    for _ = 1, 20 do
+        if (getPlayerSkillLevel(cid, PLAYER_SKILL_FISHING) >= 1) then
+            break
+        end
+        doPlayerAddSkillTry(cid, PLAYER_SKILL_FISHING, 1000, false)
+    end
     become(cid, "angler", 1)
     if (getPlayerLevel(cid) < Vocations.RANK_LEVELS[2]) then
         doPlayerAddLevel(cid, Vocations.RANK_LEVELS[2] - getPlayerLevel(cid))
