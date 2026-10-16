@@ -23,6 +23,7 @@ OPTIONS = ROOT / 'data/images/options'
 TOPBUTTONS = ROOT / 'data/images/topbuttons'
 POKEPEDIA = ROOT / 'modules/game_pokepedia/images'
 RADAR = ROOT / 'modules/game_radar/images'
+FISHING = ROOT / 'modules/game_fishing/images'
 
 SCALE = 4
 CREAM = '#efe6cf'
@@ -99,6 +100,9 @@ ICONS = {
     'radar': ('#5ad1c4',
         '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.4" stroke-width="1.4"/>'
         '<path class="a" d="M12 12l6.2-6.2"/><circle class="af" cx="15.6" cy="15.2" r="1.3"/>'),
+    'fishing': ('#4fb3ff',
+        '<path d="M4 20.5 17.5 4"/><path stroke-width="1.2" d="M17.5 4c1.6 3 2 7.5 1.6 10.5"/>'
+        '<path class="a" d="M19.1 14.5v2.6a2 2 0 0 1-4 0"/><circle class="af" cx="19.1" cy="13.6" r="1.2"/>'),
     'store': ('#c0392b',
         '<path d="M5 8.5h14l-1.1 12H6.1z"/><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7"/>'
         '<circle class="af" cx="12" cy="14.6" r="2.2"/>'),
@@ -116,6 +120,7 @@ SHEETS = {
     POKEPEDIA / 'button_pokepedia.png': 'pokepedia',
     POKEPEDIA / 'button_tracker.png': 'tracker',
     RADAR / 'button_radar.png': 'radar',
+    FISHING / 'button_fishing.png': 'fishing',
 }
 
 # glyphs the icon buttons draw over button_empty
@@ -186,7 +191,7 @@ def badge_dot():
 
 
 def main():
-    for d in (OPTIONS, TOPBUTTONS, POKEPEDIA, RADAR):
+    for d in (OPTIONS, TOPBUTTONS, POKEPEDIA, RADAR, FISHING):
         d.mkdir(parents=True, exist_ok=True)
     for path, key in SHEETS.items():
         sheet(key).save(path)

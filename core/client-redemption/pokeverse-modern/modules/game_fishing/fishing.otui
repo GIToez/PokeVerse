@@ -1,0 +1,395 @@
+// The Angler's Fishing Guide (artwork: scripts/art/fishing_ui.py; the frame comes from game_dailytasks,
+// the buttons from client_entergame, the scroll bar from game_gts, the portraits from data/images/staticPortraits)
+
+FishingPanel < UIWidget
+  image-source: /modules/game_fishing/images/panel
+  image-border: 10
+  padding: 9 10 9 10
+
+FishingPanelTitle < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffffff
+  text-auto-resize: true
+  anchors.top: parent.top
+  anchors.left: parent.left
+  phantom: true
+
+FishingText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+FishingTab < UIButton
+  height: 28
+  image-source: /modules/game_fishing/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #96aacd
+  text-offset: 0 -1
+  focusable: false
+  $hover !on:
+    color: #dce6ff
+  $on:
+    image-source: /modules/game_fishing/images/tab_on
+    color: #ffffff
+
+  UIWidget
+    id: pin
+    size: 12 12
+    image-source: /modules/game_fishing/images/pin
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: -4 -3 0 0
+    phantom: true
+    visible: false
+
+FishingBadge < UILabel
+  image-source: /modules/game_fishing/images/badge
+  image-border: 5
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #ffffff
+  text-auto-resize: true
+  text-offset: 0 1
+  padding: 2 6 2 6
+  height: 16
+  phantom: true
+
+FishingPortrait < UIButton
+  size: 48 48
+  image-source: /modules/game_fishing/images/portrait
+  focusable: false
+  $hover:
+    image-source: /modules/game_fishing/images/portrait_hover
+  $on:
+    image-source: /modules/game_fishing/images/portrait_regional
+
+  UIWidget
+    id: portrait
+    anchors.fill: parent
+    margin: 4
+    phantom: true
+
+FishingTierRow < UIButton
+  height: 60
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked:
+    image-source: /modules/game_fishing/images/row_hover
+  $on !checked:
+    image-source: /modules/game_fishing/images/row_locked
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+
+  UILabel
+    id: skill
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 13
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin: 12 0 0 10
+    phantom: true
+
+  FishingText
+    id: levels
+    color: #96aacd
+    text-auto-resize: true
+    anchors.left: skill.left
+    anchors.top: skill.bottom
+    margin-top: 3
+
+  UIWidget
+    id: pokemon
+    anchors.left: parent.left
+    anchors.right: state.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 124
+    margin-right: 6
+    height: 48
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+  UIWidget
+    id: check
+    size: 16 16
+    image-source: /modules/game_fishing/images/check
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+    phantom: true
+
+  UIWidget
+    id: lock
+    size: 16 16
+    image-source: /modules/game_fishing/images/lock
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+    phantom: true
+
+  FishingText
+    id: state
+    width: 84
+    text-align: right
+    anchors.right: check.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+
+  $on:
+    opacity: 0.8
+
+FishingRodRow < UIWidget
+  height: 30
+  phantom: true
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    virtual: true
+    phantom: true
+
+  FishingText
+    id: name
+    text-auto-resize: true
+    anchors.left: item.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  UILabel
+    id: tag
+    image-source: /modules/game_fishing/images/tag
+    image-border: 5
+    font: verdana-11px-antialised
+    color: #ffd75a
+    text-auto-resize: true
+    padding: 1 6 1 6
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    visible: false
+
+FishingWindow < UIWindow
+  size: 760 590
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_fishing.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_fishing/images/icon_fishing
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Fishing Guide')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  UILabel
+    id: subtitle
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+    phantom: true
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_fishing.hide()
+
+  UIWidget
+    id: tabs
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    size: 476 28
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+    FishingTab
+      id: kanto
+      width: 130
+
+    FishingTab
+      id: orange
+      width: 170
+
+    FishingTab
+      id: hoenn
+      width: 130
+
+  ScrollablePanel
+    id: list
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    width: 460
+    margin-top: 10
+    vertical-scrollbar: listScroll
+    layout:
+      type: verticalBox
+      spacing: 6
+
+  GtsScrollBar
+    id: listScroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.left: list.right
+    margin-left: 4
+
+  FishingPanel
+    id: selected
+    anchors.top: tabs.top
+    anchors.left: listScroll.right
+    anchors.right: parent.right
+    margin-left: 12
+    height: 194
+
+    FishingPanelTitle
+      !text: tr('Selected')
+
+    UIWidget
+      id: frame
+      size: 76 76
+      image-source: /modules/game_fishing/images/portrait
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-top: 6
+      phantom: true
+
+    UIWidget
+      id: portrait
+      anchors.fill: frame
+      margin: 5
+      phantom: true
+
+    UILabel
+      id: name
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 15
+      color: #ffffff
+      text-auto-resize: false
+      anchors.top: frame.top
+      anchors.left: frame.right
+      anchors.right: parent.right
+      margin: 8 0 0 10
+      height: 18
+      phantom: true
+
+    UIWidget
+      id: badges
+      anchors.top: name.bottom
+      anchors.left: name.left
+      anchors.right: parent.right
+      margin-top: 6
+      height: 16
+      phantom: true
+      layout:
+        type: horizontalBox
+        spacing: 3
+
+    FishingText
+      id: details
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: frame.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+  FishingPanel
+    id: skill
+    anchors.top: selected.bottom
+    anchors.left: selected.left
+    anchors.right: selected.right
+    margin-top: 10
+    height: 100
+
+    FishingPanelTitle
+      !text: tr('Your Skill')
+
+    FishingText
+      id: value
+      text-auto-resize: true
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-top: 6
+
+    UIWidget
+      id: track
+      image-source: /modules/game_fishing/images/track
+      image-border: 5
+      anchors.top: value.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 5
+      height: 10
+      phantom: true
+
+      UIWidget
+        id: fill
+        image-source: /modules/game_fishing/images/fill
+        image-border: 5
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        phantom: true
+
+    FishingText
+      id: nextUnlock
+      color: #96aacd
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: track.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+
+  FishingPanel
+    id: rods
+    anchors.top: skill.bottom
+    anchors.left: selected.left
+    anchors.right: selected.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+
+    FishingPanelTitle
+      !text: tr('Rod Requirements')
+
+    UIWidget
+      id: list
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 4
+      phantom: true
+      layout:
+        type: verticalBox
+        spacing: 2

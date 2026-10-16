@@ -1,0 +1,8 @@
+Module
+  name: game_fishing
+  description: PokeVerse Angler fishing guide: what bites in each region, at which skill, with which rod
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ fishing ]
+  @onLoad: init()
+  @onUnload: terminate()
