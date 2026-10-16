@@ -22,9 +22,11 @@ VocationText < UILabel
   text-auto-resize: true
   phantom: true
 
+// the badge image is white: each badge sets its own image-color
 VocationBadge < UILabel
   image-source: /modules/game_fishing/images/badge
   image-border: 5
+  image-color: #3a78d8
   ttf-font: /fonts/ttf/arialb.ttf
   ttf-font-size: 10
   color: #ffffff
@@ -328,6 +330,7 @@ VocationProgressWindow < UIWindow
       anchors.top: heading.bottom
       anchors.left: parent.left
       anchors.right: parent.right
+      anchors.bottom: parent.bottom
       margin-top: 8
       phantom: true
       layout:
@@ -406,6 +409,7 @@ VocationProgressWindow < UIWindow
       anchors.top: newAt.bottom
       anchors.left: parent.left
       anchors.right: parent.right
+      anchors.bottom: parent.bottom
       margin-top: 6
       phantom: true
       layout:
@@ -467,7 +471,6 @@ VocationProgressWindow < UIWindow
       anchors.right: parent.horizontalCenter
       margin-right: 5
       icon-align: left
-      icon-size: 16 16
       icon-offset-x: 12
 
     PVBlueButton
@@ -481,7 +484,6 @@ VocationProgressWindow < UIWindow
       margin-left: 5
       icon: /modules/game_vocation/images/perk_guide
       icon-align: left
-      icon-size: 16 16
       icon-offset-x: 12
       @onClick: modules.game_vocation.openGuide()
 
@@ -496,6 +498,5 @@ VocationProgressWindow < UIWindow
       margin-left: 10
       icon: /modules/game_vocation/images/perk_ranks
       icon-align: left
-      icon-size: 16 16
       icon-offset-x: 12
       @onClick: modules.game_vocation.toggleAllRanks()
