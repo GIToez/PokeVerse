@@ -342,6 +342,9 @@ GYM_CRACKED = 9231
 GYM_CRACKED_AID = 46000
 GYM_FLOOR = 9146
 GYM_UP, GYM_DOWN = 14420, 14418
+# the sign by the door, where Kanto's gyms have theirs (Viridian's at its box's corner + (8, 13)),
+# reading the gym's name
+GYM_SIGN, GYM_SIGN_AT = 11914, (8, 13)
 # the shell's white stone and marble as wood: walls, posts, corners, windows, railings, the door's
 # archway and the floor; the marble pillars go
 GYM_WOODEN = {9146: 405, 1111: 6839, 1112: 6840, 1113: 6841, 1115: 6843, 5303: 7027, 5304: 7028,
@@ -2521,6 +2524,7 @@ def build(base, out_path):
     town_area, town_water, islets, boxes = mask(), mask(), mask(), mask()
     town_ground = {}  # (x, y) -> brush name
     decor = {}
+    sign_texts = {}  # (x, y) -> what the sign there says
     raw_ground = {}
     planks = set()
     town_pave = {}
@@ -2529,6 +2533,12 @@ def build(base, out_path):
     for pl in laid_out:
         key = pl.get('town_id', pl['name'])
         t = layouts[key]
+        for n, x, y in t.buildings:
+            if n == 'gym':
+                sign = (x + GYM_SIGN_AT[0], y + GYM_SIGN_AT[1])
+                assert sign not in t.decor, '%s: something stands where the gym sign goes, %s' % (pl['name'], sign)
+                t.decor[sign] = [GYM_SIGN]
+                sign_texts[sign] = AREA_GYMS[pl['name']]
         pave, wood, wet, foot, built = mask(), mask(), mask(), mask(), mask()
         open_ground, around = mask(), mask()
         for x0, y0, x1, y1 in t.areas:
@@ -3100,7 +3110,8 @@ def build(base, out_path):
             # the optional mountain border blocks, and players come up the cave stairs onto these tiles
             optional = center is not mountain and mountain in nb and (x, y) not in stair_landing
             border = brushes.borders_for(center, nb, optional=optional)
-        children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
+        children = b''.join(pvmap.item_node(i) for i in [ground] + border) + b''.join(
+            pvmap.item_node(i, text=sign_texts.get((x, y)) if i == GYM_SIGN else None) for i in deco)
         new_tiles[(x, y, Z)] = pvmap.RawTile(0, 0, None, children)
     # Kanto tiles touching the new ones get their borders redone; everything else on them stays.
     ring = set()

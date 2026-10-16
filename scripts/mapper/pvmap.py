@@ -193,10 +193,12 @@ class RawTile:
         return bytes([START, kind]) + escape(props) + self.children + bytes([END])
 
 
-def item_node(sid, action_id=None):
+def item_node(sid, action_id=None, text=None):
     props = struct.pack('<H', sid)
     if action_id:
         props += bytes([A_ACTION_ID]) + struct.pack('<H', action_id)
+    if text:
+        props += bytes([A_TEXT]) + struct.pack('<H', len(text)) + text.encode('latin-1')
     return bytes([START, ITEM]) + escape(props) + bytes([END])
 
 
