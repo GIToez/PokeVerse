@@ -9,7 +9,7 @@
 --                     {action = "achievements", name}, {action = "duel", name}
 --   server -> client  {type = "card", own, name, sex, level, town = {id, name}, guild, mastery, playTime, since, duels,
 --                      respect, vocation = {key, name, rank, maxRank, title}, title, titleKey, outfit, favorite,
---                      trophies = {pokemon...}, badges = {{name, client, earned}}, badgesTotal, stats, about, privacy, hidden}
+--                      trophies = {pokemon...}, badges = {{region, list = {{name, client, earned, upcoming}}}}, stats, about, privacy, hidden}
 --                     {type = "titles", list = {{key, text, group, detail}}}
 --                     {type = "candidates", list = {pokemon...}}
 --                     {type = "achievements", name, earned, total, list = {{name, description}}}
@@ -38,10 +38,14 @@ local PRIVACY = playersStorages.cardPrivacy
 local SINCE = playersStorages.trainerSince
 local CLIENT = playersStorages.cardClient
 
-local BADGE_ORDER = { "BOULDER", "CASCADE", "THUNDER", "RAINBOW", "SOUL", "MARSH", "VOLCANO", "EARTH",
-                      "CORAL_EYE", "SEA_RUBY", "SPIKE_SHELL", "JADE_STAR" }
--- Every badge the game will have; the card shows the ones not added yet as locked slots
-local BADGE_TOTAL = 24
+-- Every region's badges in gym order; "upcoming" ones are not in the game yet and show as locked slots
+-- (the badge case window in game_badgecase keeps the same list)
+local BADGE_REGIONS = {
+    { name = "Kanto", badges = { "BOULDER", "CASCADE", "THUNDER", "RAINBOW", "SOUL", "MARSH", "VOLCANO", "EARTH" } },
+    { name = "Orange Islands", badges = { "CORAL_EYE", "SEA_RUBY", "SPIKE_SHELL", "JADE_STAR" } },
+    { name = "Johto", upcoming = { "Zephyr", "Hive", "Plain", "Fog", "Storm", "Mineral", "Glacier", "Rising" } },
+    { name = "Hoenn", upcoming = { "Stone", "Knuckle", "Dynamo", "Heat", "Balance", "Feather", "Mind", "Rain" } },
+}
 
 local function send(cid, data)
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.TRAINER_CARD, JSON.encode(data))
@@ -292,14 +296,21 @@ local function mastery(cid)
 end
 
 local function badges(cid)
-    local list = {}
-    for _, id in ipairs(BADGE_ORDER) do
-        local badge = BADGES[id]
-        local earned = getPlayerItemCount(cid, badge.newItemId) > 0
-        local info = getItemInfo(earned and badge.newItemId or badge.oldItemId)
-        list[#list + 1] = { name = badge.name, client = info and info.clientId or 0, earned = earned }
+    local regions = {}
+    for _, region in ipairs(BADGE_REGIONS) do
+        local list = {}
+        for _, id in ipairs(region.badges or {}) do
+            local badge = BADGES[id]
+            local earned = getPlayerItemCount(cid, badge.newItemId) > 0
+            local info = getItemInfo(earned and badge.newItemId or badge.oldItemId)
+            list[#list + 1] = { name = badge.name, client = info and info.clientId or 0, earned = earned }
+        end
+        for _, name in ipairs(region.upcoming or {}) do
+            list[#list + 1] = { name = name, upcoming = true }
+        end
+        regions[#regions + 1] = { region = region.name, list = list }
     end
-    return list
+    return regions
 end
 
 local function favoriteOf(cid)
@@ -345,7 +356,6 @@ TrainerCard.data = function(cid, target)
                    feet = outfit.lookFeet, addons = outfit.lookAddons },
         favorite = favoriteOf(target),
         badges = badges(target),
-        badgesTotal = BADGE_TOTAL,
         about = storageText(target, ABOUT),
         privacy = own and privacy(target) or nil,
     }

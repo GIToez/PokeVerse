@@ -231,42 +231,68 @@ local function fillInfo()
     infoRow(panel.col2, 'respect', tr('Respect'), formatNumber(card.respect), '#ff6f91')
 end
 
-local BADGES_PER_ROW = 12
+local badgeRegion = 1 -- the region the badge row shows; Kanto when the card opens
 
 local function fillBadges()
     local panel = window.right.badgesPanel
     panel.list:destroyChildren()
-    local badges = card.badges or {}
-    local total = math.max(#badges, tonumber(card.badgesTotal) or 0)
-    local earned = 0
-    local size = 34
-    local step = math.floor((panel.list:getWidth() - size) / (BADGES_PER_ROW - 1))
-    for i = 1, total do
-        local badge = badges[i]
+    local regions = card.badges or {}
+    local earned, total = 0, 0
+    for _, region in ipairs(regions) do
+        for _, badge in ipairs(region.list or {}) do
+            total = total + 1
+            earned = earned + (badge.earned and 1 or 0)
+        end
+    end
+    panel.count:setText(string.format('%d / %d', earned, total))
+    panel.prev:setVisible(#regions > 1)
+    panel.next:setVisible(#regions > 1)
+    badgeRegion = math.max(1, math.min(badgeRegion, #regions))
+    local region = regions[badgeRegion]
+    if not region then
+        panel.region:setText('')
+        return
+    end
+    local list = region.list or {}
+    local regionEarned = 0
+    for _, badge in ipairs(list) do
+        regionEarned = regionEarned + (badge.earned and 1 or 0)
+    end
+    panel.region:setText(string.format('%s  \183  %d / %d', region.region or '', regionEarned, #list))
+    local size, gap = 40, 14
+    local width = panel.list:getWidth()
+    local step = math.min(size + gap, #list > 1 and math.floor((width - size) / (#list - 1)) or 0)
+    local left = math.floor((width - (size + step * (#list - 1))) / 2)
+    for i, badge in ipairs(list) do
         local slot = g_ui.createWidget('TcBadgeSlot', panel.list)
-        local column, row = (i - 1) % BADGES_PER_ROW, math.floor((i - 1) / BADGES_PER_ROW)
         slot:addAnchor(AnchorTop, 'parent', AnchorTop)
         slot:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-        slot:setMarginLeft(column * step)
-        slot:setMarginTop(row * (size + 4))
-        if not badge then
+        slot:setMarginLeft(left + (i - 1) * step)
+        if badge.upcoming then
             slot.item:setVisible(false)
             slot:setIcon(IMAGES .. 'icon_lock')
-            slot:setIconRect({ x = 9, y = 9, width = 16, height = 16 })
+            slot:setIconRect({ x = 12, y = 12, width = 16, height = 16 })
             slot:setOpacity(0.5)
-            slot:setTooltip(tr('Coming soon'))
+            slot:setTooltip(tr('%s Badge  (coming soon)', badge.name or ''))
         else
             slot.item:setItemId(tonumber(badge.client) or 0)
             slot:setTooltip(tr('%s Badge', badge.name or '') .. (badge.earned and '' or ('  (' .. tr('not earned yet') .. ')')))
             if badge.earned then
-                earned = earned + 1
                 slot:setImageSource(IMAGES .. 'slot_on')
             else
                 slot.item:setOpacity(0.35)
             end
         end
     end
-    panel.count:setText(string.format('%d / %d', earned, total))
+end
+
+function showBadgeRegion(step)
+    local count = card and #(card.badges or {}) or 0
+    if count == 0 then
+        return
+    end
+    badgeRegion = (badgeRegion - 1 + step) % count + 1
+    fillBadges()
 end
 
 local function fillTrophies()
@@ -596,6 +622,7 @@ local function onCard(data)
         candidates = nil
         achievementsFor = nil
         tab = 'overview'
+        badgeRegion = 1
         closePicker()
         window.right.aboutPanel.field:hide()
     end

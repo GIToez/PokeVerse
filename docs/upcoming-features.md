@@ -775,7 +775,7 @@ do not change.
     their hometown (pictures rendered from the map by `scripts/art/trainercard_scenes.py`),
     the name with ♂/♀, the title, the vocation and rank, and the favorite Pokémon.
   - Overview: Trainer Information (level, hometown, guild, mastery, play time, trainer
-    since, duels won, respect), the badges (two rows of 12 out of 24; the ones not in the game yet are locked slots), six trophy Pokémon, statistics (caught,
+    since, duels won, respect), the badges (one region at a time with arrows: Kanto 8, Orange Islands 4, Johto 8 and Hoenn 8; the ones not in the game yet are locked slots, and the badge case window works the same way), six trophy Pokémon, statistics (caught,
     Pokédex, unique, shinies, tournaments, achievements, trainers defeated) and an About
     text of up to 160 letters and four lines. Other tabs: Trophies, Achievements (secret
     achievements are hidden from others) and Pokédex.

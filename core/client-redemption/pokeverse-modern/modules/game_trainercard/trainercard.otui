@@ -94,15 +94,22 @@ TcInfoRow < UIWidget
     anchors.verticalCenter: parent.verticalCenter
     margin-left: 120
 
+// The badge row's arrows to the previous and next region
+TcRegionArrow < UIButton
+  size: 30 30
+  image-source: /modules/client_entergame/images/arrow_left
+  $hover:
+    image-source: /modules/client_entergame/images/arrow_left_hover
+
 // One badge: the slot frame and the badge item, grey until earned; a lock for badges not in the game yet
 TcBadgeSlot < UIWidget
-  size: 34 34
+  size: 40 40
   image-source: /modules/game_trainercard/images/slot
   image-border: 8
 
   UIItem
     id: item
-    size: 28 28
+    size: 32 32
     anchors.centerIn: parent
     virtual: true
     phantom: true
@@ -691,7 +698,7 @@ TrainerCardWindow < UIWindow
 
     TcPanel
       id: badgesPanel
-      height: 108
+      height: 80
       anchors.top: infoPanel.bottom
       anchors.left: parent.left
       anchors.right: parent.right
@@ -702,18 +709,41 @@ TrainerCardWindow < UIWindow
         !text: tr('Badges')
         icon: /modules/game_trainercard/images/icon_badge
 
+      TcMuted
+        id: region
+        anchors.verticalCenter: heading.verticalCenter
+        anchors.left: heading.right
+        margin-left: 10
+
       TcValue
         id: count
         anchors.top: parent.top
         anchors.right: parent.right
 
+      TcRegionArrow
+        id: prev
+        anchors.top: list.top
+        anchors.left: parent.left
+        margin-top: 5
+        @onClick: modules.game_trainercard.showBadgeRegion(-1)
+
+      TcRegionArrow
+        id: next
+        image-source: /modules/client_entergame/images/arrow_right
+        anchors.top: list.top
+        anchors.right: parent.right
+        margin-top: 5
+        @onClick: modules.game_trainercard.showBadgeRegion(1)
+        $hover:
+          image-source: /modules/client_entergame/images/arrow_right_hover
+
       UIWidget
         id: list
         anchors.top: heading.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.left: prev.right
+        anchors.right: next.left
         anchors.bottom: parent.bottom
-        margin-top: 6
+        margin: 6 8 0 8
         phantom: true
 
     TcPanel
