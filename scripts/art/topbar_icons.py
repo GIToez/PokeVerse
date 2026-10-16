@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[2] / 'core/client-redemption/pokeverse-m
 OPTIONS = ROOT / 'data/images/options'
 TOPBUTTONS = ROOT / 'data/images/topbuttons'
 POKEPEDIA = ROOT / 'modules/game_pokepedia/images'
+RADAR = ROOT / 'modules/game_radar/images'
 
 SCALE = 4
 CREAM = '#efe6cf'
@@ -95,6 +96,9 @@ ICONS = {
     'logout': ('#ff7a6b',
         '<path d="M10 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2H10"/>'
         '<path class="a" d="M14.5 7.5 19 12l-4.5 4.5M19 12H9.5"/>'),
+    'radar': ('#5ad1c4',
+        '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.4" stroke-width="1.4"/>'
+        '<path class="a" d="M12 12l6.2-6.2"/><circle class="af" cx="15.6" cy="15.2" r="1.3"/>'),
     'store': ('#c0392b',
         '<path d="M5 8.5h14l-1.1 12H6.1z"/><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7"/>'
         '<circle class="af" cx="12" cy="14.6" r="2.2"/>'),
@@ -111,6 +115,7 @@ SHEETS = {
     OPTIONS / 'rewardwall.png': 'daily',
     POKEPEDIA / 'button_pokepedia.png': 'pokepedia',
     POKEPEDIA / 'button_tracker.png': 'tracker',
+    RADAR / 'button_radar.png': 'radar',
 }
 
 # glyphs the icon buttons draw over button_empty
@@ -181,7 +186,7 @@ def badge_dot():
 
 
 def main():
-    for d in (OPTIONS, TOPBUTTONS, POKEPEDIA):
+    for d in (OPTIONS, TOPBUTTONS, POKEPEDIA, RADAR):
         d.mkdir(parents=True, exist_ok=True)
     for path, key in SHEETS.items():
         sheet(key).save(path)

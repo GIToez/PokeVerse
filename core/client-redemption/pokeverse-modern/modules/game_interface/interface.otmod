@@ -50,6 +50,7 @@ Module
     - game_npcdialog
     - game_pokepedia
     - game_vocation
+    - game_radar
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

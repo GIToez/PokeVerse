@@ -1,0 +1,8 @@
+Module
+  name: game_radar
+  description: PokeVerse Ranger radar: the popup with the radar, filters and target, the arrow on the map and the minimap flag
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ radar ]
+  @onLoad: init()
+  @onUnload: terminate()
