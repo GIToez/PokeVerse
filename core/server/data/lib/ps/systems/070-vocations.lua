@@ -796,7 +796,8 @@ Vocations.radarScan = function(cid)
     local data = Vocations.radarState(cid)
     data.type = "scan"
     data.center = { x = center.x, y = center.y, z = center.z }
-    data.blips = JSON.array(blips)
+    -- long names and types can still pass the engine's string limit with MAX_BLIPS blips
+    JSON.encodeWithin(data, "blips", blips)
     return data
 end
 

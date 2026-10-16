@@ -24,6 +24,19 @@ check("encode control", JSON.encode("\1") == '"\\u0001"')
 check("encode nested", JSON.encode({x = {y = {1}}}) == '{"x":{"y":[1]}}')
 check("encode nan", JSON.encode(0 / 0) == "null")
 
+-- Size-capped lists
+local long = {}
+for i = 1, 400 do
+    long[i] = {key = "Pokemon" .. i, text = string.rep("x", 60)}
+end
+local text = JSON.encodeWithin({type = "titles"}, "list", long)
+local cut = JSON.decode(text)
+check("encodeWithin fits the budget", #text <= JSON.MESSAGE_BUDGET and #text > JSON.MESSAGE_BUDGET - 200)
+check("encodeWithin keeps the first entries", cut.more == true and cut.list[1].key == "Pokemon1" and #cut.list == #long)
+local short = JSON.encodeWithin({type = "titles"}, "list", {{key = "a"}})
+check("encodeWithin leaves short lists alone", short == '{"list":[{"key":"a"}],"type":"titles"}')
+check("encodeWithin empty list", JSON.encodeWithin({}, "list", {}) == '{"list":[]}')
+
 -- Decoding
 local v = JSON.decode('{"type":"request","requestId":"r1","params":{"name":"Pikachu","limit":5}}')
 check("decode object", v and v.type == "request" and v.params.name == "Pikachu" and v.params.limit == 5)
