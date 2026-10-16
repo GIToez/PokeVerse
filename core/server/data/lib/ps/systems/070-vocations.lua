@@ -25,7 +25,7 @@
 --   Catcher      emptyBall and catchMiss (functions/ball/empty.lua)
 --   Breeder      the incubator (events/actions/eggIncubator) and the daycare (npc/scripts/daycareFemale.lua)
 --   Ranger       Vocations.radar, the !radar command
---   Angler       Fishing (systems/043-fishing.lua), the !fishing command and the cranes
+--   Angler       Fishing (systems/043-fishing.lua), the Fishing Guide window (!fishing) and the cranes
 --   Medic        the health potions (events/actions/potions/healthPotions.lua)
 
 Vocations = {}
@@ -185,6 +185,7 @@ Vocations.setRank = function(cid, rank)
     setPlayerStorageValue(cid, RANK, rank)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Fishing.sendStatus(cid)
     return true
 end
 
@@ -264,6 +265,7 @@ Vocations.reset = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Fishing.sendStatus(cid)
 end
 
 -- Catcher: a failed roll gets a second chance sized so the catch chance becomes chance * (1 + bonus)
@@ -641,6 +643,7 @@ Vocations.onLogin = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Fishing.sendStatus(cid)
 end
 
 Vocations.onLogout = function(cid)

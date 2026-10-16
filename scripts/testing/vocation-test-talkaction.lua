@@ -559,6 +559,73 @@ local function testRanger(cid, arena)
     end
 end
 
+-- The JSON messages fn sends on EXTENDED_IDS.FISHING
+local function captureFishing(fn)
+    local original, sent = doSendPlayerExtendedOpcode, {}
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (opcode == EXTENDED_IDS.FISHING) then
+            sent[#sent + 1] = JSON.decode(buffer)
+            return true
+        end
+        return original(target, opcode, buffer)
+    end
+    local ok, result = pcall(fn)
+    doSendPlayerExtendedOpcode = original
+    if (not ok) then
+        check("no errors in the fishing guide", false, result)
+    end
+    return sent
+end
+
+local function testFishingGuide(cid)
+    become(cid, nil)
+    local status = Fishing.guideState(cid)
+    check("fishing guide button hidden for non-Anglers", status.enabled == false)
+    become(cid, "angler", 3)
+    status = Fishing.guideState(cid)
+    check("fishing guide button shown for Anglers", status.enabled == true and status.guideRank == 4, status.guideRank)
+    local sent = captureFishing(function() Fishing.onClientMessage(cid, '{"action":"open"}') end)
+    check("fishing guide refused below rank 4", #sent == 0)
+
+    become(cid, "angler", 4)
+    sent = captureFishing(function() Fishing.onClientMessage(cid, '{"action":"open"}') end)
+    local guide = sent[1] or {}
+    check("fishing guide sent at rank 4", guide.type == "guide" and guide.rank == 4 and #(guide.regions or {}) == 3,
+        tostring(guide.type))
+    local first = (guide.tiers or {})[1] or {}
+    check("guide: Magikarp at skill 0 everywhere", first.skill == 0 and (first.pools or {}).kanto and
+        first.pools.kanto[1] == "Magikarp", first.skill)
+    local hoenn, numbered, missing = false, 0, {}
+    for _, tier in ipairs(guide.tiers or {}) do
+        for _, name in ipairs((tier.pools or {}).hoenn or {}) do
+            hoenn = hoenn or name == "Surskit"
+        end
+    end
+    for name, info in pairs(guide.pokemon or {}) do
+        if ((tonumber(info.number) or 0) > 0) then
+            numbered = numbered + 1
+        else
+            missing[#missing + 1] = name
+        end
+    end
+    check("guide: Surskit in a Hoenn pool", hoenn)
+    check("guide: every Pokemon has a portrait number", numbered > 0 and #missing == 0, table.concat(missing, ", "))
+    local rods = {}
+    for _, rod in ipairs(guide.rods or {}) do
+        rods[rod.name] = rod
+    end
+    check("guide: rods with their skill", rods["Old Rod"] and rods["Old Rod"].skill == 0 and rods["Super Rod"] and
+        rods["Super Rod"].skill == 50 and (rods["Old Rod"].client or 0) > 0)
+    check("guide: cranes are for Angler masters", rods["Cranes"] and rods["Cranes"].anglerOnly == true and
+        guide.cranesRank == 5)
+    check("guide: player's region", guide.region == "kanto", guide.region)
+
+    sent = captureFishing(function() Fishing.onClientMessage(cid, '{"action":"hello"}') end)
+    check("fishing guide answers hello with the status", sent[1] and sent[1].type == "status" and sent[1].enabled == true)
+    local text = captureMessages(function() asTextClient(function() return Fishing.openGuide(cid) end) end)
+    check("fishing guide falls back to text without the client", text:find("Kanto: %*0: Magikarp") ~= nil, text)
+end
+
 local function testAngler(cid)
     become(cid, nil)
     local n, total = 20000, 0
@@ -578,6 +645,7 @@ local function testAngler(cid)
     become(cid, "angler", 4)
     local text = captureMessages(function() Fishing.sendGuide(cid) end)
     check("fishing map at rank 4", text:find("Kanto: %*0: Magikarp") ~= nil and text:find("Hoenn:") ~= nil, text)
+    testFishingGuide(cid)
 end
 
 -- A water tile with a free, non-protection tile next to it

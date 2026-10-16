@@ -418,6 +418,132 @@ Fishing.sendGuide = function(cid)
     return true
 end
 
+-- The Angler's Fishing Guide window (client game_fishing) on EXTENDED_IDS.FISHING:
+--   server -> client  {type = "status", enabled, rank, guideRank}
+--                     {type = "guide", rank, title, skill, progress, region, regions = {{key, name}, ...},
+--                      tiers = {{skill, minLevel, maxLevel, rods, pools = {region key = {names}}}, ...},
+--                      pokemon = {name = {number, types, caught, defeated}}, rods = {{name, client, skill, anglerOnly}, ...}}
+--   client -> server  {action = "hello"}, {action = "open"}
+-- The Kanto pool bites everywhere; the Orange Archipelago and Hoenn pools bite on top of it there.
+-- A tier's levels are the trainer's own Pokemon's: from minLevel, and past maxLevel the low tiers
+-- drop out once POKEMON_NUMBER_TO_ACTIVATE_MAX_LEVEL tiers are open.
+local REGION_KEYS = { kantoPokemon = "kanto", orangeArchipelagoPokemon = "orange", hoennPokemon = "hoenn" }
+local ROD_NAMES = { [OLD_ROD_ITEMID] = "Old Rod", [GOOD_ROD_ITEMID] = "Good Rod", [SUPER_ROD_ITEMID] = "Super Rod",
+                    [CRANE1_ITEMID] = "Cranes", [CRANE2_ITEMID] = "Cranes", [CRANE3_ITEMID] = "Cranes", [CRANE4_ITEMID] = "Cranes" }
+local ROD_ORDER = { OLD_ROD_ITEMID, GOOD_ROD_ITEMID, SUPER_ROD_ITEMID, CRANE1_ITEMID }
+
+local function sendFishing(cid, data)
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.FISHING, JSON.encode(data))
+end
+
+local function currentRegion(cid)
+    if (getPlayerInsideOrangeArchipelago(cid)) then
+        return "orange"
+    elseif (getPlayerInsideHoenn(cid)) then
+        return "hoenn"
+    end
+    return "kanto"
+end
+
+local function skillProgress(cid, skill)
+    local needed = getPlayerRequiredSkillTries(cid, PLAYER_SKILL_FISHING, skill + 1)
+    local tries = getPlayerSkillTries(cid, PLAYER_SKILL_FISHING)
+    if (not needed or not tries or needed <= 0) then
+        return 0
+    end
+    return math.max(0, math.min(1, tries / needed))
+end
+
+local function pokemonInfo(cid, name)
+    local types = {}
+    for _, id in ipairs(getPokemonTypes(nil, name) or {}) do
+        if (ELEMENT_NAMES[id]) then
+            types[#types + 1] = ELEMENT_NAMES[id]:lower()
+        end
+    end
+    local knowledge = Pokepedia.getKnowledge(cid, name)
+    return { number = getPokemonNumberByName(name) or 0, types = JSON.array(types),
+             caught = knowledge and knowledge.catches or 0, defeated = knowledge and knowledge.kills or 0 }
+end
+
+Fishing.guideState = function(cid)
+    local rank = Vocations.is(cid, "angler") and Vocations.getRank(cid) or 0
+    return { type = "status", enabled = rank > 0, rank = rank, guideRank = Vocations.PERKS.angler.mapRank }
+end
+
+Fishing.sendStatus = function(cid)
+    if (isPlayer(cid)) then
+        sendFishing(cid, Fishing.guideState(cid))
+    end
+end
+
+Fishing.guideData = function(cid)
+    local skill = getPlayerSkill(cid, PLAYER_SKILL_FISHING)
+    local tiers, pokemon = {}, {}
+    for _, drop in ipairs(DROPS) do
+        local rods, seen = {}, {}
+        for _, rod in ipairs(drop.rods) do
+            local name = ROD_NAMES[rod]
+            if (name and not seen[name]) then
+                seen[name] = true
+                rods[#rods + 1] = name
+            end
+        end
+        local pools = {}
+        for field, key in pairs(REGION_KEYS) do
+            local names = uniqueNames(drop[field])
+            for _, name in ipairs(names) do
+                pokemon[name] = pokemon[name] or pokemonInfo(cid, name)
+            end
+            pools[key] = JSON.array(names)
+        end
+        tiers[#tiers + 1] = { skill = drop.skill, minLevel = drop.minLevel, maxLevel = drop.maxLevel,
+                              rods = JSON.array(rods), pools = pools }
+    end
+    local rods = {}
+    for _, id in ipairs(ROD_ORDER) do
+        local info = getItemInfo(id)
+        rods[#rods + 1] = { name = ROD_NAMES[id], client = info and info.clientId or 0, skill = RODS[id].requiredSkill,
+                            anglerOnly = RODS[id].anglerOnly or nil }
+    end
+    local regions = {}
+    for _, region in ipairs(REGIONS) do
+        regions[#regions + 1] = { key = REGION_KEYS[region.key], name = __L(cid, region.name) }
+    end
+    local rank = Vocations.getRank(cid)
+    return { type = "guide", rank = rank, title = __L(cid, Vocations.getTitle(cid) or ""), skill = skill,
+             progress = skillProgress(cid, skill), region = currentRegion(cid), regions = regions,
+             tiers = JSON.array(tiers), pokemon = pokemon, rods = rods, cranesRank = Vocations.PERKS.angler.cranesRank,
+             top = POKEMON_NUMBER_TO_ACTIVATE_MAX_LEVEL }
+end
+
+-- The guide window in the PokeVerse client, the text map in other clients
+Fishing.openGuide = function(cid)
+    if (not Vocations.perk(cid, "angler", "mapRank")) then
+        local text = string.format(__L(cid, "The fishing guide is for Anglers from rank %d."), Vocations.PERKS.angler.mapRank)
+        doPlayerSendCancel(cid, text)
+        return false
+    end
+    if (not getPlayerUsingOtClient(cid)) then
+        return Fishing.sendGuide(cid)
+    end
+    sendFishing(cid, Fishing.guideData(cid))
+    return true
+end
+
+Fishing.onClientMessage = function(cid, buffer)
+    local ok, data = pcall(JSON.decode, buffer)
+    if (not ok or type(data) ~= "table") then
+        return
+    end
+    local action = tostring(data.action or "")
+    if (action == "open") then
+        Fishing.openGuide(cid)
+    elseif (action == "hello") then
+        Fishing.sendStatus(cid)
+    end
+end
+
 Fishing.onFishing = function(cid, item, fromPosition, itemEx, toPosition)
     if (not isInArray(WATER_IDS, itemEx.itemid) or getSafariZone(cid) or getPlayerMounted(cid) or
             isBiking(cid) or getPlayerFrontierIsland(cid) or getPlayerPvpArena(cid) or

@@ -1,5 +1,5 @@
--- Angler fishing map from rank 4 (Fishing.sendGuide)
+-- Angler fishing guide from rank 4: the window in the PokeVerse client, text in others (Fishing.openGuide)
 function onSay(cid, words, param, channel)
-    Fishing.sendGuide(cid)
+    Fishing.openGuide(cid)
     return true
 end
