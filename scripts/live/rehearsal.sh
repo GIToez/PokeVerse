@@ -18,7 +18,16 @@ ctl() { sudo -u pokeverse /opt/pokeverse/current/tools/pokeverse-ctl "$@"; }
 journal() { sudo journalctl -u pokeverse-server.service --no-pager "$@"; }
 step() { echo; echo "::group::REHEARSAL: $*"; }
 endstep() { echo "::endgroup::"; }
-fail() { echo "::error::REHEARSAL FAILED: $*"; journal -n 80 || true; exit 1; }
+fail() {
+  echo "::error::REHEARSAL FAILED: $*"
+  journal -n 200 || true
+  echo "--- $(date) ($(TZ=${PV_TIMEZONE:-UTC} date +%H:%M:%S) ${PV_TIMEZONE:-UTC}), NRestarts $(restarts)"
+  sudo sed -n '/BEGIN DEPLOYMENT SETTINGS/,/END DEPLOYMENT SETTINGS/p' /opt/pokeverse/shared/config.local.lua || true
+  sudo cat /opt/pokeverse/shared/server.env 2>/dev/null || true
+  # ServerRestart's keys in GLOBAL_STORAGES (as of the last save)
+  sudo mariadb pokeverse -e "SELECT * FROM global_storage WHERE \`key\` BETWEEN 7100 AND 7105" || true
+  exit 1
+}
 pt() { python3 -u "$root/scripts/protocol-test.py" "$@"; }
 restarts() { systemctl show -p NRestarts --value pokeverse-server.service; }
 wait_restarted() {
@@ -135,6 +144,7 @@ daily=$(TZ=$PV_TIMEZONE date -d "+4 min" +%H:%M)
 ctl configure host=127.0.0.1 daily_restart=true "daily_time=$daily" "timezone=$PV_TIMEZONE"
 deploy restart
 before=$(restarts)
+pt "${gm[@]}" --say "/restart" | grep -i "restart" || true
 wait_restarted "$before"
 journal -n 400 | grep -q "Restart: daily restart scheduled" || fail "the daily restart was not scheduled"
 ctl health
