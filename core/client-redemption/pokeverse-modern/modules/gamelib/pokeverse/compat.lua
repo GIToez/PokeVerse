@@ -151,6 +151,7 @@ ExtendedIds.Vocation = 24
 ExtendedIds.Radar = 25
 ExtendedIds.Fishing = 26
 ExtendedIds.TrainerCard = 27
+ExtendedIds.Daycare = 28
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

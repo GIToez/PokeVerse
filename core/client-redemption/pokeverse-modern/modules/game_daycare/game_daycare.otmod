@@ -1,0 +1,8 @@
+Module
+  name: game_daycare
+  description: PokeVerse Day Care: two Pokemon training, their compatibility and the egg they make
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ daycare ]
+  @onLoad: init()
+  @onUnload: terminate()

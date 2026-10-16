@@ -166,6 +166,13 @@ jobs:
           # PV_REPOS_TOKEN keeps this working once PokeVerse-Discord is private
           token: ${{ secrets.PV_REPOS_TOKEN || github.token }}
 
+      - uses: actions/checkout@v4
+        if: env.NEEDS_PACKAGES == 'true'
+        with:
+          path: game
+          sparse-checkout: core/client-legacy/data/images/pictures
+          sparse-checkout-cone-mode: true
+
       - uses: actions/setup-node@v4
         if: env.NEEDS_PACKAGES == 'true'
         with:
@@ -176,7 +183,8 @@ jobs:
         working-directory: bot
         run: |
           npm ci
-          npm run package:linux
+          # the Pokedex pictures for the embeds' artwork (the bot's POKEMON_ARTWORK_DIR)
+          PV_ARTWORK_DIR="$GITHUB_WORKSPACE/game/core/client-legacy/data/images/pictures" npm run package:linux
           release="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
           mkdir -p ../bot-package
           cp builds/production/pokeverse-discord-linux-x64.tar.gz ../bot-package/

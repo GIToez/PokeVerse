@@ -801,19 +801,26 @@ CREATE TABLE IF NOT EXISTS `pokeverse_migrations` (
   PRIMARY KEY (`name`)
 ) ENGINE = InnoDB;
 
--- New characters start duel win/loss, battle win/loss, headbutting and fishing at 0 (catching
--- stays at 10, getCatchChance uses it directly). Databases created before this still have the
--- old trigger, and their characters lose the 10 they started with; levels earned above it stay.
+-- New characters start duel win/loss and battle win/loss at 0 (they are counters), and the
+-- trainer skills headbutting (4), catching (5) and fishing (6) at 1.
 DROP TRIGGER IF EXISTS `oncreate_players`;
 CREATE TRIGGER `oncreate_players` AFTER INSERT ON `players` FOR EACH ROW
   INSERT INTO `player_skills` (`player_id`, `skillid`, `value`) VALUES
     (NEW.`id`, 0, 0), (NEW.`id`, 1, 0), (NEW.`id`, 2, 0), (NEW.`id`, 3, 0),
-    (NEW.`id`, 4, 0), (NEW.`id`, 5, 10), (NEW.`id`, 6, 0);
+    (NEW.`id`, 4, 1), (NEW.`id`, 5, 1), (NEW.`id`, 6, 1);
 
+-- Databases from before the counters started at 0 lose the 10 their characters started with;
+-- levels earned above it stay.
 UPDATE `player_skills` SET `value` = GREATEST(`value` - 10, 0), `count` = 0
   WHERE `skillid` IN (0, 1, 2, 3, 4, 6)
     AND NOT EXISTS (SELECT 1 FROM `pokeverse_migrations` WHERE `name` = 'skills-start-at-0');
 INSERT IGNORE INTO `pokeverse_migrations` (`name`) VALUES ('skills-start-at-0');
+
+-- Characters still at trainer skill 0 move up to 1; nobody loses a level.
+UPDATE `player_skills` SET `value` = 1, `count` = 0
+  WHERE `skillid` IN (4, 5, 6) AND `value` < 1
+    AND NOT EXISTS (SELECT 1 FROM `pokeverse_migrations` WHERE `name` = 'trainer-skills-start-at-1');
+INSERT IGNORE INTO `pokeverse_migrations` (`name`) VALUES ('trainer-skills-start-at-1');
 
 -- The Pokemon market and item market NPCs were retired for the GTS. Their listings move over
 -- with a fresh 7 days; item offers the GTS doesn't trade come back to their trainers at login.

@@ -128,7 +128,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: scripts
+          sparse-checkout: |
+            scripts
+            core/client-legacy/data/images/pictures
           sparse-checkout-cone-mode: true
 
       - name: Check GitHub secrets and variables
@@ -149,7 +151,8 @@ jobs:
         working-directory: bot
         run: |
           npm ci
-          npm run package:linux
+          # the Pokedex pictures for the embeds' artwork (the bot's POKEMON_ARTWORK_DIR)
+          PV_ARTWORK_DIR="$GITHUB_WORKSPACE/core/client-legacy/data/images/pictures" npm run package:linux
           release="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
           mkdir -p ../packages
           cp builds/production/pokeverse-discord-linux-x64.tar.gz ../packages/

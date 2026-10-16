@@ -53,6 +53,7 @@ Module
     - game_vocation
     - game_radar
     - game_fishing
+    - game_daycare
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

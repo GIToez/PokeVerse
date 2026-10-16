@@ -652,6 +652,10 @@ cmd_discord_deploy() {
   set_env_value "$env" BRIDGE_HOST 127.0.0.1
   set_env_value "$env" BRIDGE_PORT 7199
   set_env_value "$env" BRIDGE_SECRET "$(config_value discordBridgeSecret)"
+  # packages built with the game's Pokedex pictures carry them in artwork/ (relative to the release)
+  if [ -d "$dir/artwork" ]; then
+    set_env_value "$env" POKEMON_ARTWORK_DIR artwork
+  fi
 
   ln -sfn "$env" "$dir/.env.production"
   rm -rf "$dir/data" "$dir/logs"

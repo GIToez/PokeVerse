@@ -23,17 +23,6 @@ local TALK_STATES = {
 local TRAIN_TIME_OPTIONS = {1440, 2880}
 local MAX_TRAIN_TIME = TRAIN_TIME_OPTIONS[#TRAIN_TIME_OPTIONS]--2880 -- 2 days
 
-local function getPokemonGainExpPerMinute(pokemonLevel)
-	if (pokemonLevel >= 100) then
-		return 0
-	elseif (pokemonLevel > 75) then
-		return 210
-	elseif (pokemonLevel > 50) then
-		return 140
-	end
-	return 70
-end
-
 local function getPricePerMinute(pokemonLevel)
 	if (pokemonLevel > 75) then
 		return 4
@@ -158,7 +147,7 @@ local function doPlayerWithdrawPokemonFromDaycare(cid, data, cancelTraining)
 	end
 
 	if (not cancelTraining) then
-		pokemonExp = pokemonExp + (getPokemonGainExpPerMinute(pokemonLevel) * minTrained)
+		pokemonExp = pokemonExp + Daycare.trainingExp(pokemonLevel, data:getDataInt('date'), minTrained)
 		if (pokemonExp > getExperienceForLevel(100)) then
 			pokemonExp = getExperienceForLevel(100)
 		end
@@ -188,7 +177,7 @@ local function doPlayerWithdrawPokemonFromDaycare(cid, data, cancelTraining)
         local gainExtraPoints = pokemonLevel
 
         if (not cancelTraining) then
-            pokemonExp = pokemonExp + (getPokemonGainExpPerMinute(pokemonLevel) * minTrained)
+            pokemonExp = pokemonExp + Daycare.trainingExp(pokemonLevel, data:getDataInt('date'), minTrained)
             if (pokemonExp > getExperienceForLevel(POKEMON_LEVEL_MAX)) then
                 pokemonExp = getExperienceForLevel(POKEMON_LEVEL_MAX)
             end
@@ -272,6 +261,9 @@ function creatureSayCallback(cid, type, msg)
 	msg = string.lower(msg)
 
 	if (msgcontains(msg, 'daycare')) then
+		if (Daycare.open(cid)) then
+			return true
+		end
 		selfSay("In this place you can {leave} your Pokemon in our care, we will train him for you.", cid)
 
 	elseif (msgcontains(msg, 'pokemon')) then
@@ -292,7 +284,7 @@ function creatureSayCallback(cid, type, msg)
 			local min = getPlayerPokemonOnDaycareTrainedMinutes(cid, pokemonOnDaycare)
 			local pokemonLevel = pokemonOnDaycare:getDataInt('pokemon_level')
 
-			selfSay(string.format(__L(cid, "Your {%s} is being trained for {%s minutes} and has earned {%s experience points}. The price to remove your Pokemon is {%s dollars}. You can also {cancel} the training."), pokemonOnDaycare:getDataString('pokemon_name'), min, getPokemonGainExpPerMinute(pokemonLevel) * min, getPricePerMinute(pokemonLevel) * min), cid)
+			selfSay(string.format(__L(cid, "Your {%s} is being trained for {%s minutes} and has earned {%s experience points}. The price to remove your Pokemon is {%s dollars}. You can also {cancel} the training."), pokemonOnDaycare:getDataString('pokemon_name'), min, Daycare.trainingExp(pokemonLevel, pokemonOnDaycare:getDataInt('date'), min), getPricePerMinute(pokemonLevel) * min), cid)
 		end
 
 	elseif (msgcontains(msg, 'withdraw') or msgcontains(msg, 'sacar')) then
@@ -469,3 +461,13 @@ end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())
+
+npcHandler:setCallback(CALLBACK_GREET, function(cid)
+    if (npcHandler:isInRange(cid)) then
+        local eggMessage = Daycare.onGreet(cid)
+        if (eggMessage) then
+            selfSay(eggMessage, cid)
+        end
+    end
+    return true
+end)

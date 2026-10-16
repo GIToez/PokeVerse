@@ -96,9 +96,8 @@ local function resolveMain(link, characters)
     return fallback, false
 end
 
-local function vocationName(vocationId)
-    local info = getVocationInfo(vocationId)
-    return info and info.name or nil
+local function vocationName(character)
+    return Vocations.nameOf(character.id)
 end
 
 local function liveLevel(character)
@@ -132,7 +131,7 @@ local function linkSummary(link)
     summary.mainChanged = mainChanged
     if (main) then
         local level = liveLevel(main)
-        summary.main = {name = main.name, level = level, vocation = vocationName(main.vocation)}
+        summary.main = {name = main.name, level = level, vocation = vocationName(main)}
     end
     return summary
 end
@@ -219,7 +218,7 @@ local function handleCharacters(params)
     local out = JSON.array()
     for _, character in ipairs(characters) do
         local level, online = liveLevel(character)
-        out[#out + 1] = {name = character.name, level = level, vocation = vocationName(character.vocation),
+        out[#out + 1] = {name = character.name, level = level, vocation = vocationName(character),
             main = main ~= nil and character.id == main.id, online = online}
     end
     return {linked = true, characters = out}

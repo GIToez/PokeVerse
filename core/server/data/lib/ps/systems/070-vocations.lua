@@ -162,6 +162,23 @@ Vocations.getTitle = function(cid)
     return vocation and vocation.titles[Vocations.getRank(cid)] or nil
 end
 
+-- The chosen vocation's name for a character who may be offline ("Trainer" before choosing)
+Vocations.nameOf = function(guid)
+    local cid = getPlayerByGUID(guid)
+    local id
+    if (cid and isPlayer(cid)) then
+        id = getPlayerStorageValue(cid, STORAGE)
+    else
+        local r = db.getResult(string.format("SELECT `value` FROM `player_storage` WHERE `player_id` = %d AND `key` = %d LIMIT 1",
+            tonumber(guid) or 0, STORAGE))
+        if (r:getID() ~= -1) then
+            id = tonumber(r:getDataString("value"))
+            r:free()
+        end
+    end
+    return byId[id] and byId[id].name or "Trainer"
+end
+
 -- The value of one perk for this trainer, or nil when the trainer is not of that vocation.
 -- Rank tables give the value at the trainer's rank; a "...Rank" number gives true once reached.
 Vocations.perk = function(cid, key, perk)
@@ -228,7 +245,7 @@ Vocations.TRIALS = {
         { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 1, 2, 3, 5 } },
     },
     ranger = {
-        { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 30, 80, 150, 250 } },
+        { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 100, 300, 600, 1200 } },
         { on = "find", unique = true, text = "Find %d different species on the radar", goals = { 10, 25, 45, 70 } },
         { on = "find", shiny = true, text = "Find %d shiny Pokemon on the radar", goals = { 0, 0, 0, 1 } },
     },
@@ -291,7 +308,8 @@ Vocations.getTrial = function(cid)
         return nil
     end
     local counts = trialCounts(cid)
-    local trial = { goals = {}, have = 0, need = 0 }
+    -- text is for clients from before the goals, which show "Trial: <text>  <have> / <need>"
+    local trial = { goals = {}, have = 0, need = 0, text = __L(cid, "rank-up goals done") }
     for i, goal in ipairs(Vocations.TRIALS[vocation.key]) do
         local need = goal.goals[rank] or 0
         if (need > 0) then

@@ -711,6 +711,13 @@ do not change.
     each day it missed. The old 15-day wait and the "out of 300" chance with failure counter
     are gone; the timed extra egg rate item adds its value as percentage points to the daily
     roll. Breeders with Premium roll 11–15% and have the second egg chance.
+  - Day Care window (client `game_daycare`, `EXTENDED_IDS.DAYCARE`): the Old Man, the Old
+    Lady and the "daycare" word open it. Two places take any Pokémon in either order;
+    lines run from them down to the egg slot, blue for male, pink for female and lilac
+    for Ditto or genderless. It shows compatibility, time trained, EXP and fee, held
+    items, the egg wait and chance, the plates, and the running Day Care events. When an
+    egg is ready its sprite, nature and IVs show and "Take egg" puts it in the bag. Old
+    clients keep the NPC text and get waiting eggs on greeting.
   - Ranger: the radar popup (client `game_radar`, `EXTENDED_IDS.RADAR`), opened with `U`,
     the top bar radar button (Rangers only) or `!radar`. A scan draws every wild Pokémon in
     range as a blip around the trainer, coloured common, uncommon or rare (catch rate under
@@ -772,7 +779,7 @@ do not change.
   | | Catch shiny Pokémon | – | – | 1 | 2 |
   | Breeder | Hatch eggs (daycare eggs come about every 1–2 weeks; eggs can also be bought) | 2 | 4 | 6 | 10 |
   | | Hatch different species | 1 | 2 | 3 | 5 |
-  | Ranger | Radar scans that find Pokémon | 30 | 80 | 150 | 250 |
+  | Ranger | Radar scans that find Pokémon (a scan every 30–60 seconds) | 100 | 300 | 600 | 1200 |
   | | Find different species on the radar | 10 | 25 | 45 | 70 |
   | | Find a shiny on the radar (they show from rank 4) | – | – | – | 1 |
   | Angler | Hook Pokémon while fishing | 100 | 300 | 600 | 1200 |
@@ -1185,6 +1192,12 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   (`src/spawn.cpp`), and fishing, headbutt, eggs and abilities roll it in Lua, each
   reading the value once at start. All of them must use the event multiplier, so it needs
   a server build.
+- **Day Care events:** done. `/bonusdaycare 3x 2h` multiplies the training EXP Pokémon
+  get in the Day Care, and `/bonusbreeding 2x 1d` multiplies the daily early egg chance
+  (from day 7). Same arguments as `/doubleexp` (up to 10x, 1 minute to 7 days, `off`,
+  `status`); `/expevent` lists them too. Training EXP only counts the minutes that
+  overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
+  `talkactions/scripts/daycareevent.lua`.
 - Both events are announced in game and on Discord, and show on the calendar.
 
 ## 16. Reports and feature requests to Discord forums

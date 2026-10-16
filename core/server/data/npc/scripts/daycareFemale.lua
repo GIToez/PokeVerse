@@ -1,14 +1,3 @@
--- Counter Feature Start (kept for the egg datalog)
-local function getPlayerEggTries(cid, pokemonNumber)
-    local ret, res = 0, db.getResult("SELECT tries FROM `egg_counter` WHERE `player_id`=" ..
-            getPlayerGUID(cid) .. " AND `pokemon_id`=" .. pokemonNumber .. " LIMIT 1;")
-    if (res:getID() ~= -1) then
-        ret = res:getDataInt("tries")
-        res:free()
-    end
-    return ret
-end
--- Counter Feature End
 -- Plates S
 local function getPlayerDaycarePlate(cid)
     local r = db.getResult(string.concat("SELECT item_id FROM `daycare_plates` WHERE `player_id`='",
@@ -85,6 +74,7 @@ local EGG_STATUS_NEED_MORE_TIME = 1
 local EGG_STATUS_INCOMPATIBLE = 2
 local EGG_STATUS_HAS_CHANCE = 3
 local EGG_STATUS_PLAYER_NEED_MORE_TIME = 4
+local EGG_STATUS_READY = 5
 
 -- The wait for an egg starts at the last egg (or at the first daycare visit). From day 7 each day
 -- has one early roll; on day 14 the egg is certain. Breeders roll their own chance while Premium.
@@ -95,17 +85,6 @@ local EGG_EARLY_CHANCE = 0.10
 local TRAIN_TIME_OPTIONS = { 1440, 2880 }
 local MIN_TRAIN_TIME_TO_EGG = TRAIN_TIME_OPTIONS[1] --1440
 local MAX_TRAIN_TIME = TRAIN_TIME_OPTIONS[#TRAIN_TIME_OPTIONS] --2880 -- 2 days
-
-local function getPokemonGainExpPerMinute(pokemonLevel)
-    if (pokemonLevel >= 100) then
-        return 0
-    elseif (pokemonLevel > 75) then
-        return 210
-    elseif (pokemonLevel > 50) then
-        return 140
-    end
-    return 70
-end
 
 local function getPricePerMinute(pokemonLevel)
     if (pokemonLevel > 75) then
@@ -128,14 +107,6 @@ local function getPlayerPokemonOnDaycare(cid)
     return getPlayerPokemonOnDaycareByGUID(getPlayerGUID(cid))
 end
 
-local function getPlayerMalePokemonOnDaycare(cid)
-    local dbResult = db.getResult("SELECT * FROM `daycare_male` WHERE `player_id` = '" .. getPlayerGUID(cid) .. " LIMIT 1';")
-    if dbResult:getID() == -1 then
-        return false
-    end
-    return dbResult
-end
-
 local function getPlayerLastEggTime(cid)
     local accountPlayers = getAllPlayersByAccountId(getPlayerAccountId(cid))
     local lastTime = 0
@@ -146,10 +117,6 @@ local function getPlayerLastEggTime(cid)
         end
     end
     return lastTime
-end
-
-local function setPlayerLastEggTime(cid, mTime)
-    db.executeQuery("UPDATE `" .. getConfigValue('sqlDatabase') .. "`.`players` SET `lasteggtime` = '" .. mTime .. "' WHERE `players`.`id` ='" .. getPlayerGUID(cid) .. "';")
 end
 
 local function getPlayerPokemonOnDaycareTrainedMinutes(cid, data)
@@ -198,7 +165,7 @@ local function doPlayerWithdrawPokemonFromDaycare(cid, data, cancelTraining)
         local gainExtraPoints = pokemonLevel
 
         if (not cancelTraining) then
-            pokemonExp = pokemonExp + (getPokemonGainExpPerMinute(pokemonLevel) * minTrained)
+            pokemonExp = pokemonExp + Daycare.trainingExp(pokemonLevel, data:getDataInt('date'), minTrained)
             if (pokemonExp > getExperienceForLevel(POKEMON_LEVEL_MAX)) then
                 pokemonExp = getExperienceForLevel(POKEMON_LEVEL_MAX)
             end
@@ -264,86 +231,26 @@ local function getEggWaitDay(cid)
     return math.floor((os.time() - getEggWaitStart(cid)) / DAY)
 end
 
-local function getEggEarlyChance(cid)
-    local chance = isPremium(cid) and Vocations.perk(cid, "breeder", "earlyEgg") or EGG_EARLY_CHANCE
-    return chance + getPlayerExtraEggRateValue(cid) / 100
+-- Since the Day Care window the two places hold any two Pokemon: the pair is judged (and the egg rolled) as the
+-- window does, and an egg waits in the egg slot until it is handed over
+local EGG_STATUSES = {
+    together = EGG_STATUS_NEED_MORE_TIME, waiting = EGG_STATUS_PLAYER_NEED_MORE_TIME, chance = EGG_STATUS_HAS_CHANCE,
+    ready = EGG_STATUS_READY, incompatible = EGG_STATUS_INCOMPATIBLE, noEggs = EGG_STATUS_INCOMPATIBLE
+}
+
+local function getPokemonOnDaycareEggStatus(cid)
+    return EGG_STATUSES[Daycare.eggState(cid).status] or EGG_STATUS_NO_MALE_POKEMON
 end
 
--- One roll for every day of the wait from day 7 that hasn't had one, or the egg from day 14
-local function rollEgg(cid)
-    local day = getEggWaitDay(cid)
-    if (day >= EGG_GUARANTEED_DAY) then
-        return true
+local function doPlayerTakeEgg(cid)
+    local count, species = Daycare.handOverEgg(cid)
+    if (not count) then
+        selfSay("There is no egg yet.", cid)
+        return false
     end
-    local start = getEggWaitStart(cid)
-    local lastRolled = EGG_EARLY_FROM_DAY - 1
-    if (getPlayerStorageValue(cid, playersStorages.eggRollCycle) == start) then
-        lastRolled = math.max(lastRolled, getPlayerStorageValue(cid, playersStorages.eggRollDay))
-    end
-    local chance = getEggEarlyChance(cid)
-    local hit = false
-    for _ = lastRolled + 1, day do
-        if (math.random() < chance) then
-            hit = true
-            break
-        end
-    end
-    setPlayerStorageValue(cid, playersStorages.eggRollCycle, start)
-    setPlayerStorageValue(cid, playersStorages.eggRollDay, math.max(lastRolled, day))
-    return hit
-end
-
-local function getPokemonOnDaycareEggStatus(cid, femalePokemonOnDaycare)
-    local malePokemonOnDaycare = getPlayerMalePokemonOnDaycare(cid)
-
-    if (not malePokemonOnDaycare or
-            ((malePokemonOnDaycare:getDataString('pokemon_name') ~= "Ditto" and
-                    femalePokemonOnDaycare:getDataString('pokemon_name') ~= "Ditto") and
-                    getMonsterInfo(malePokemonOnDaycare:getDataString('pokemon_name')).sex == POKEMON_SEX_UNKNOWN)) then
-        return EGG_STATUS_NO_MALE_POKEMON
-
-    elseif (getPlayerPokemonOnDaycareTrainedMinutes(cid, femalePokemonOnDaycare) < MIN_TRAIN_TIME_TO_EGG or
-            getPlayerPokemonOnDaycareTrainedMinutes(cid, malePokemonOnDaycare) < MIN_TRAIN_TIME_TO_EGG) then
-        return EGG_STATUS_NEED_MORE_TIME
-
-    elseif (not canPokemonBreed(femalePokemonOnDaycare:getDataString('pokemon_name'),
-        malePokemonOnDaycare:getDataString('pokemon_name'))) then
-        return EGG_STATUS_INCOMPATIBLE
-
-    elseif (getEggWaitDay(cid) < EGG_EARLY_FROM_DAY) then
-        return EGG_STATUS_PLAYER_NEED_MORE_TIME
-
-    else
-        return EGG_STATUS_HAS_CHANCE
-    end
-end
-
-local function doPlayerAddPokemonEgg(cid, femalePokemonOnDaycare, malePokemonOnDaycare)
-    local femaleName = femalePokemonOnDaycare:getDataString('pokemon_name')
-    local maleName = malePokemonOnDaycare:getDataString('pokemon_name')
-    local egg = femaleName
-
-    if (femaleName == "Ditto") then -- When the female is a Ditto, the egg will be by the male race
-        egg = maleName
-
-    elseif (femaleName == "Nidorana" and maleName == "Ditto") then -- When the female is a Nidorana and the male is a Ditto, the egg wil be a Nidorana or a Nidorano
-        egg = table.random({ "Nidorana", "Nidorano" })
-    end
-
-    local plateType
-    if (getPlayerDaycarePlate(cid)) then
-        plateType = TYPE_BY_PLATE_ITEMID[getPlayerDaycarePlate(cid)]
-    end
-
-    local eggUid = doPlayerAddItem(cid, getPokemonEggId(egg), 1, true)
-    PokemonStats.setEggStats(eggUid, PokemonStats.makeEggStats(PokemonStats.readDaycareParent(femalePokemonOnDaycare),
-        PokemonStats.readDaycareParent(malePokemonOnDaycare)))
-    if (PokemonEgg.doGenerateEggMove(eggUid, egg, plateType)) then
-        setPlayerDaycarePlate(cid, nil)
-    end
-    setPlayerLastEggTime(cid, os.time())
-    doPlayerAddStatistic(cid, PLAYER_STATISTIC_IDS.GENERATE_POKEMON_EGG, 1)
-    doDatalogEggGenerate(cid, egg, os.time(), getPlayerEggTries(cid, getPokemonNumberByName(egg)))
+    selfSay(string.format(__L(cid, count > 1 and "Here are your two %s eggs! Your care as a Breeder shows." or
+        "Here is your %s egg! Congratulations!"), species), cid)
+    return true
 end
 
 local function hasSameAccountCharacterUsingDaycare(cid)
@@ -382,6 +289,9 @@ function creatureSayCallback(cid, type, msg)
     msg = string.lower(msg)
 
     if (msgcontains(msg, 'daycare')) then
+        if (Daycare.open(cid)) then
+            return true
+        end
         selfSay("In this place you can {leave} your Pokemon in our care, we will train him for you. You can also {deposit} a plate to influence your Pokemon egg move generation.", cid)
 
     elseif (msgcontains(msg, 'pokemon')) then
@@ -464,15 +374,18 @@ function creatureSayCallback(cid, type, msg)
         else
             local min = getPlayerPokemonOnDaycareTrainedMinutes(cid, pokemonOnDaycare)
             local pokemonLevel = pokemonOnDaycare:getDataInt('pokemon_level')
-            local eggStatus = getPokemonOnDaycareEggStatus(cid, pokemonOnDaycare)
+            local eggStatus = getPokemonOnDaycareEggStatus(cid)
 
-            selfSay(string.format(__L(cid, "Your {%s} has been training for {%s minutes} and has earned {%s experience points}. The price to remove your Pokemon is {%s dollars}. You can also {cancel} the training.%s"), pokemonOnDaycare:getDataString('pokemon_name'), min, getPokemonGainExpPerMinute(pokemonLevel) * min, getPricePerMinute(pokemonLevel) * min, (getPlayerDaycarePlate(cid) and (string.format(__L(cid, " Remember that I have one of your %s plates here."), PLATE_NAME_BY_ITEMID[getPlayerDaycarePlate(cid)])) or "")), cid)
+            selfSay(string.format(__L(cid, "Your {%s} has been training for {%s minutes} and has earned {%s experience points}. The price to remove your Pokemon is {%s dollars}. You can also {cancel} the training.%s"), pokemonOnDaycare:getDataString('pokemon_name'), min, Daycare.trainingExp(pokemonLevel, pokemonOnDaycare:getDataInt('date'), min), getPricePerMinute(pokemonLevel) * min, (getPlayerDaycarePlate(cid) and (string.format(__L(cid, " Remember that I have one of your %s plates here."), PLATE_NAME_BY_ITEMID[getPlayerDaycarePlate(cid)])) or "")), cid)
 
-            if (eggStatus == EGG_STATUS_PLAYER_NEED_MORE_TIME) then
+            if (eggStatus == EGG_STATUS_READY) then
+                selfSay("Egg status: An {egg} is waiting for you!", cid)
+
+            elseif (eggStatus == EGG_STATUS_PLAYER_NEED_MORE_TIME) then
                 selfSay(string.format(__L(cid, "Egg status: From day %d of the wait for an egg there is a chance of one every day, and on day %d it is certain. The chances start in %s."), EGG_EARLY_FROM_DAY, EGG_GUARANTEED_DAY, table.concat(string.timediff(getEggWaitStart(cid) + EGG_EARLY_FROM_DAY * DAY - os.time(), cid))), cid)
 
             elseif (eggStatus == EGG_STATUS_NO_MALE_POKEMON) then
-                selfSay("Egg status: You don't have a male Pokemon being trained too.", cid)
+                selfSay("Egg status: These two can't make an egg. It takes a female and a male, or one of them with a Ditto.", cid)
 
             elseif (eggStatus == EGG_STATUS_NEED_MORE_TIME) then
                 selfSay(string.format(__L(cid, "Egg status: The two need to be training for at least %s minutes (24 hours) to have a chance to breed."), MIN_TRAIN_TIME_TO_EGG), cid)
@@ -488,6 +401,10 @@ function creatureSayCallback(cid, type, msg)
                 end
             end
         end
+
+    elseif (msgcontains(msg, 'egg') or msgcontains(msg, 'ovo')) then
+        Daycare.eggState(cid)
+        doPlayerTakeEgg(cid)
 
     elseif (msgcontains(msg, 'withdraw') or msgcontains(msg, 'sacar')) then
         local pokemonOnDaycare = getPlayerPokemonOnDaycare(cid)
@@ -594,16 +511,8 @@ function creatureSayCallback(cid, type, msg)
                 selfSay(string.format(__L(cid, "You do not have enough money for this. You need %s dollars."), priceToWithdraw), cid)
 
             else
-                if (getPokemonOnDaycareEggStatus(cid, pokemonOnDaycare) == EGG_STATUS_HAS_CHANCE and rollEgg(cid)) then
-                    local male = getPlayerMalePokemonOnDaycare(cid)
-                    doPlayerAddPokemonEgg(cid, pokemonOnDaycare, male)
-                    selfSay("An egg was generated! Congratulations!", cid)
-                    local secondEgg = isPremium(cid) and Vocations.perk(cid, "breeder", "secondEgg")
-                    if (secondEgg and math.random() < secondEgg) then
-                        doPlayerAddPokemonEgg(cid, pokemonOnDaycare, male)
-                        selfSay("And a second egg! Your care as a Breeder shows.", cid)
-                    end
-
+                if (getPokemonOnDaycareEggStatus(cid) == EGG_STATUS_READY) then
+                    doPlayerTakeEgg(cid)
                 else
                     selfSay("No egg was generated.", cid)
                 end
@@ -678,3 +587,13 @@ end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())
+
+npcHandler:setCallback(CALLBACK_GREET, function(cid)
+    if (npcHandler:isInRange(cid)) then
+        local eggMessage = Daycare.onGreet(cid)
+        if (eggMessage) then
+            selfSay(eggMessage, cid)
+        end
+    end
+    return true
+end)

@@ -145,6 +145,7 @@ function onLogin(cid)
 
         doExtraExpRateCheck(cid)
         ServerExpEvent.onLogin(cid)
+        Daycare.onLogin(cid)
         doExtraLootRateCheck(cid)
         doExtraCatchRateCheck(cid)
         doExtraEggRateCheck(cid)
