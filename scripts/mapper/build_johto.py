@@ -283,6 +283,50 @@ SEA_LINES = {
     '41': [(2030, 620), (1986, 640)],
     'Lake of Rage': [(2510, 175), (2550, 135), (2595, 175), (2550, 215), (2510, 175)],
 }
+# The area banner's sections (the client's game_environment, AREAS_PATH): every tile west of
+# AREAS_X1 within AREA_REACH of a route's road (or a sea route's line) is that route's, then the
+# hunting grounds, sites and towns over it; buildings, caves and the floors below come first, as
+# rectangles of their own. The rest is cut into rectangles AREA_CELL tiles on a side.
+AREAS_PATH = os.path.join(ROOT, 'core', 'client-redemption', 'pokeverse-modern', 'modules', 'game_environment',
+                          'areas_johto.lua')
+AREAS_X1, AREA_REACH, AREA_CELL = 3048, 90, 4
+# The roads that name an area, by their key in ROADS (numbers are routes; trails take the route's
+# name next to them).
+AREA_ROADS = {'silver': 'Mt. Silver', 'dark cave': 'Route 31', 'Ilex Forest': 'Ilex Forest',
+              'Lake of Rage': 'Lake of Rage'}
+# Music (a key of SOUND_FILES in the client's environment.lua), each town's as its Kanto mirror's;
+# areas not listed keep the music that is playing.
+AREA_TRACKS = {
+    'New Bark': 'random_city_05_10', 'Cherrygrove': 'random_city_11_15', 'Violet': 'random_city_16_20',
+    'Azalea': 'random_city_01_05', 'Goldenrod': 'random_city_21_27', 'Ecruteak': 'random_city_16_20',
+    'Olivine': 'random_city_11_15', 'Cianwood': 'random_city_01_05', 'Mahogany': 'city_26', 'Blackthorn': 'city_26',
+    'Route': 'jungle_01', 'Ilex Forest': 'jungle_02', 'Arbor Woods': 'jungle_02', 'Ecruteak Old Forest': 'jungle_02',
+    'Azalea South Woods': 'jungle_02', 'Ilex Shrine': 'jungle_02', 'Safari Zone': 'jungle_02',
+    'National Park': 'jungle_01', 'Moomoo Farm': 'random_city_05_10', 'Battle Frontier': 'random_battle_06_10',
+    'Route 40': 'swamp_03', 'Route 41': 'swamp_03', 'I.S.S. Raspberry': 'underwater_01',
+    'Lake of Rage': 'water_02', 'Lake of Life': 'water_02', 'Lake Slowpoke': 'water_02', 'Rage Marshes': 'swamp_01',
+    'Mt. Silver': 'wind_high_01', 'Snowtop Mountain': 'wind_high_01', 'Mount Quena': 'wind_high_01',
+    'Frozen North': 'wind_high_01', 'Olivine Cliffs': 'wind_low_01', 'Mortar Badlands': 'wind_low_01',
+    'Dragon Holy Land': 'wind_low_01', 'Ruins of Alph': 'wind_low_01',
+    'Mt. Silver Cave': 'cave_02', 'Dark Cave': 'cave_02', 'Ice Path': 'cave_04', 'Whirl Islands': 'cave_03',
+    'Union Cave': 'cave_05', 'Mt. Mortar': 'cave_05', 'Tohjo Falls': 'waterfall_01', 'Slowpoke Well': 'cave_01',
+    'Ruins of Alph chamber': 'cave_01', 'Rocket Hideout': 'team_rocket_03',
+    'Pokemon Center': 'pokemon_center_01', 'Gym': 'random_battle_06_10',
+}
+# Buildings by prefab: the name in the banner (the rest are houses), the gyms by their town.
+AREA_BUILDINGS = {
+    'pokecenter': 'Pokemon Center', 'mart': 'Pokemon Mart', 'sprout-tower': 'Sprout Tower',
+    'academy': 'Pokemon Academy', 'theatre': 'Dance Theater', 'kurts-house': "Kurt's House",
+    'guide-gent': "Guide Gent's House", 'radio-tower': 'Radio Tower', 'global-terminal': 'Global Terminal',
+    'dept-store': 'Goldenrod Dept. Store', 'game-corner': 'Game Corner', 'bell-tower': 'Bell Tower',
+    'burned-tower': 'Burned Tower', 'lighthouse': 'Olivine Lighthouse', 'pharmacy': 'Cianwood Pharmacy',
+    'souvenir-shop': 'Souvenir Shop', 'ruins-lab': 'Ruins Research Center', 'daycare': 'Pokemon Daycare',
+    'safari-gate': 'Safari Zone Office', 'police-box': 'Police Box', 'boathouse': 'Boat House', 'windmill': 'Windmill',
+    'battle-tower': 'Battle Tower', 'battle-factory': 'Battle Factory', 'battle-arcade': 'Battle Arcade',
+    'battle-hall': 'Battle Hall', 'battle-castle': 'Battle Castle',
+}
+AREA_GYMS = {'Violet': 'Zephyr Gym', 'Azalea': 'Hive Gym', 'Goldenrod': 'Plain Gym', 'Ecruteak': 'Fog Gym',
+             'Olivine': 'Mineral Gym', 'Cianwood': 'Storm Gym', 'Mahogany': 'Glacier Gym', 'Blackthorn': 'Rising Gym'}
 # Caves on the floor below: mouths (stairs down at x, y on floor 7, facing the way players walk out),
 # tunnels and rooms, an optional pond, and the encounter table. A mouth with a corridor (from the
 # open ground to two tiles past the stairs) is reached up a ravine cut into the mountain, the stairs
@@ -935,6 +979,8 @@ def underground_tiles(data, brushes):
                 t = raw[(x, y, z)]
                 assert (x + ox, y + oy, z) not in out, '%s overlaps another piece' % piece['name']
                 out[(x + ox, y + oy, z)] = pvmap.RawTile(0, t.flags, t.ground, t.children)
+        xs, ys, zs = zip(*list(out)[before:])
+        piece['extent'] = (min(xs), min(ys), min(zs), max(xs), max(ys), max(zs))
         print('%s: %d tiles on floors %s' % (piece['name'], len(out) - before, sorted(piece['floors'])))
     return out
 
@@ -2269,6 +2315,7 @@ def build(base, out_path):
     planks = set()
     town_pave = {}
     site_lawn, site_spawn = mask(), {}
+    place_area = {}
     for pl in laid_out:
         key = pl.get('town_id', pl['name'])
         t = layouts[key]
@@ -2307,7 +2354,8 @@ def build(base, out_path):
         if pl.get('core'):
             pave |= (street_d + f.noise(6) * 3 < pl['core']) & ~dilate(built, 5) & ~dilate(wet | wood, 5)
         foot |= pave
-        town_area |= dilate(foot | wet | wood, 13) | open_ground | around
+        place_area[pl['name']] = dilate(foot | wet | wood, 13) | open_ground | around
+        town_area |= place_area[pl['name']]
         land |= dilate(foot, 9) | open_ground
         town_water |= wet
         if pl.get('lawn'):
@@ -3068,6 +3116,39 @@ def build(base, out_path):
         new_tiles.update(cave_tiles)
         spawns += cave_spawns
 
+    # The area banner's sections.
+    area_of = np.full((f.h, f.w), '', object)
+    best = np.full((f.h, f.w), np.inf)
+    for k, pts in dict(road_pts, **SEA_LINES).items():
+        name = 'Route %s' % k if k.isdigit() else AREA_ROADS.get(k)
+        if name:
+            d = f.seg_dist(pts)
+            area_of[d < best] = name
+            best = np.minimum(best, d)
+    area_of[best > AREA_REACH] = ''
+    area_of[range_box & (Y > 470)] = 'Route 28'
+    area_of[range_box & (Y <= 470)] = 'Mt. Silver'
+    for name, (x, y, r) in HUNT.items():
+        area_of[f.disc(x, y, r, n3, 0.3)] = name
+    for pl in SITES + OUTPOSTS[:1] + TOWNS_BUILT:
+        area_of[place_area[pl['name']] if pl['name'] in place_area else f.disc(*pl['clear'])] = pl['name']
+    area_of[X > AREAS_X1] = ''
+    first = []
+    for pl in TOWNS_BUILT + SITES + OUTPOSTS:
+        for n, x, y in pl['buildings']:
+            w, h = sizes[n]
+            name = AREA_GYMS[pl['name']] if n == 'gym' else AREA_BUILDINGS.get(n, 'House')
+            first.append((name, x, y, 0, x + w - 1, y + h - 1, Z))
+    wx0, wy0, wx1, wy1 = WRECK['src']
+    dx, dy = WRECK['dst']
+    first.append((WRECK['name'], dx, dy, min(WRECK['floors']), dx + wx1 - wx0, dy + wy1 - wy0, max(WRECK['floors'])))
+    for cave in CAVES:
+        cz = cave.get('z', Z + 1)
+        first.append((cave['name'], cave['box'][0], cave['box'][1], cz, cave['box'][2], cave['box'][3], cz))
+    for piece in UNDERGROUND:
+        first.append((piece['name'], *piece['extent']))
+    write_areas(AREAS_PATH, first, area_of, f.x0, f.y0, (0, Z))
+
     data = open(base, 'rb').read()
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
     cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP, towns=towns)
@@ -3140,6 +3221,63 @@ def write_spawns(path, monsters, npcs, base_data=None):
     i = src.rindex('</spawns>')
     with open(path, 'w', encoding='latin-1', newline='') as f:
         f.write(src[:i] + '\n'.join(add) + '\n' + src[i:])
+
+
+def area_track(name):
+    """Its own track, else its place's (a cave's floors, the chambers), a gym's or a route's."""
+    place = re.sub(r' (B\d+F|\d+)$', '', name)
+    if name.endswith(' Gym'):
+        place = 'Gym'
+    return AREA_TRACKS.get(name, AREA_TRACKS.get(place))
+
+
+def area_name(name):
+    """The banner's name for a cave floor or a piece below ground: the place, not the floor."""
+    return re.sub(r' (B\d+F|chamber \d+|basement)$', '', name)
+
+
+def area_rects(labels, cell):
+    """Rectangles (x0, y0, x1, y1, label) in cells of `cell` tiles covering `labels` (each cell
+    taking its middle tile's), grown greedily right and then down; '' is left out."""
+    grid = labels[cell // 2::cell, cell // 2::cell]
+    h, w = grid.shape
+    done = np.zeros((h, w), bool)
+    out = []
+    for cy in range(h):
+        for cx in range(w):
+            name = grid[cy, cx]
+            if done[cy, cx] or not name:
+                continue
+            x1 = cx
+            while x1 + 1 < w and grid[cy, x1 + 1] == name and not done[cy, x1 + 1]:
+                x1 += 1
+            y1 = cy
+            while y1 + 1 < h and all(grid[y1 + 1, x] == name and not done[y1 + 1, x] for x in range(cx, x1 + 1)):
+                y1 += 1
+            done[cy:y1 + 1, cx:x1 + 1] = True
+            out.append((cx * cell, cy * cell, (x1 + 1) * cell - 1, (y1 + 1) * cell - 1, name))
+    return out
+
+
+def write_areas(path, first, labels, x0, y0, floors):
+    """The client's Johto areas: `first` (name, x0, y0, z0, x1, y1, z1) in order, then `labels` (a
+    name per tile, the field's top left at x0, y0) cut into rectangles over `floors`."""
+    rows = list(first)
+    for ax0, ay0, ax1, ay1, name in area_rects(labels, AREA_CELL):
+        rows.append((name, ax0 + x0, ay0 + y0, floors[0], ax1 + x0, ay1 + y0, floors[1]))
+    lines = ['-- Generated by scripts/mapper/build_johto.py (write_areas); edit that, not this.',
+             '-- { x0, y0, z0, x1, y1, z1, name, track }: sounds_pokeverse.lua adds them in order, the first',
+             '-- containing the player wins.', 'AREAS_JOHTO = {']
+    for name, ax0, ay0, az0, ax1, ay1, az1 in rows:
+        track = area_track(name)
+        shown = area_name(name)
+        assert shown.isascii() and '"' not in shown, shown
+        lines.append('    { %d, %d, %d, %d, %d, %d, "%s"%s },' % (ax0, ay0, az0, ax1, ay1, az1, shown,
+                                                                 ', "%s"' % track if track else ''))
+    lines.append('}')
+    with open(path, 'w', newline='\n') as out:
+        out.write('\n'.join(lines) + '\n')
+    print('wrote %s: %d areas' % (path, len(rows)))
 
 
 def write_houses(path, houses):

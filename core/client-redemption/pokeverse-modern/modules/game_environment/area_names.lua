@@ -10,7 +10,8 @@ local BUILDING_WORDS = {
     "Hotel", "Bank", "Post", "Bar", "Parlor", "Pizzeria", "Juices", "Fast Food", "Fast Foof",
     "Daycare", "Cassino", "Kennel", "Iglu", "TM's", "Held Itens", "Vitamins", "Item Market",
     "Museum", "Laboratory", "Committee", "Club", "Trading Area", "Waiting Area", "Aquarium",
-    "Mastery - ",
+    "Mastery - ", "Academy", "Theater", "Terminal", "Game Corner", "Pharmacy", "Research", "Police",
+    "Windmill", "Office",
 }
 
 -- Checked in order, the first theme with a matching word wins; anything else is "city".
@@ -37,6 +38,29 @@ local THEME_OVERRIDES = {
     ["Area of the Fight"] = "special",
     ["Bill Lighthouse"] = "special",
     ["Tutorial Island"] = "sea",
+    -- Johto
+    ["Ice Path"] = "cave",
+    ["Whirl Islands"] = "cave",
+    ["Mt. Mortar"] = "cave",
+    ["Tohjo Falls"] = "cave",
+    ["Ruins of Alph"] = "special",
+    ["Olivine Lighthouse"] = "special",
+    ["Battle Frontier"] = "special",
+    ["Battle Factory"] = "special",
+    ["Battle Arcade"] = "special",
+    ["Battle Hall"] = "special",
+    ["Dragon Holy Land"] = "special",
+    ["Ilex Shrine"] = "forest",
+    ["Arbor Woods"] = "forest",
+    ["Azalea South Woods"] = "forest",
+    ["National Park"] = "route",
+    ["Moomoo Farm"] = "route",
+    ["Safari Zone"] = "route",
+    ["Rage Marshes"] = "route",
+    ["Mortar Badlands"] = "mountain",
+    ["Olivine Cliffs"] = "mountain",
+    ["Frozen North"] = "mountain",
+    ["I.S.S. Raspberry"] = "sea",
 }
 
 local THEME_SUBTITLES = {
@@ -89,6 +113,73 @@ local SUBTITLES = {
     ["Route 23"] = "The final road to the Indigo Plateau.",
     ["Route 24"] = "A bridge where trainers test newcomers.",
     ["Route 25"] = "A path to the cape north of Cerulean.",
+    -- Johto
+    ["New Bark"] = "The town where the winds of a new beginning blow.",
+    ["Cherrygrove"] = "The city of cute, fragrant flowers.",
+    ["Violet"] = "The city of nostalgic scents, home of the Sprout Tower.",
+    ["Azalea"] = "Where people and Pokemon live in happy harmony.",
+    ["Goldenrod"] = "The festive city of opulent charm.",
+    ["Ecruteak"] = "A historical city where the past meets the present.",
+    ["Olivine"] = "The port closest to foreign lands.",
+    ["Cianwood"] = "A port surrounded by rough seas.",
+    ["Mahogany"] = "Welcome to the home of the ninja.",
+    ["Blackthorn"] = "A quiet mountain retreat, home of the dragon masters.",
+    ["Route 26"] = "A rugged road up to the Pokemon League's gate.",
+    ["Route 27"] = "Rough country between New Bark and Tohjo Falls.",
+    ["Route 28"] = "A hidden valley at the foot of Mt. Silver.",
+    ["Route 29"] = "The first road out of New Bark.",
+    ["Route 30"] = "A road of fruit trees and young trainers.",
+    ["Route 31"] = "A grassy road by the mouth of Dark Cave.",
+    ["Route 32"] = "A long road south to Union Cave, good for fishing.",
+    ["Route 33"] = "A rainy hill road into Azalea.",
+    ["Route 34"] = "The road by the Day-Care, south of Goldenrod.",
+    ["Route 35"] = "A road of ponds and grass north of Goldenrod.",
+    ["Route 36"] = "Where a strange tree once blocked the way.",
+    ["Route 37"] = "A short road of apricorn trees.",
+    ["Route 38"] = "A country road west to the farms.",
+    ["Route 39"] = "Pastures where Miltank graze in the sun.",
+    ["Route 40"] = "Rough waves between Olivine and the Whirl Islands.",
+    ["Route 41"] = "A sea of whirlpools around the Whirl Islands.",
+    ["Route 42"] = "A road around the peaks of Mt. Mortar.",
+    ["Route 43"] = "A road of tall grass up to the Lake of Rage.",
+    ["Route 44"] = "A road of tall grass and ponds before the Ice Path.",
+    ["Route 45"] = "A steep mountain road of one-way ledges.",
+    ["Route 46"] = "A short rocky road down to Route 29.",
+    ["Route 47"] = "Rugged sea cliffs west of Cianwood.",
+    ["Route 48"] = "A windswept road to the Safari Zone.",
+    ["Sprout Tower"] = "A tall pagoda that sways but never falls.",
+    ["Ruins of Alph"] = "Ancient chambers covered in strange letters.",
+    ["Union Cave"] = "A cave under the hills between Route 32 and Azalea.",
+    ["Slowpoke Well"] = "A damp well where Slowpoke gather.",
+    ["Ilex Forest"] = "A dense forest guarded by its shrine.",
+    ["Ilex Shrine"] = "A shrine to the protector of the forest.",
+    ["National Park"] = "A park of lawns and fountains, famous for its Bug-Catching Contest.",
+    ["Radio Tower"] = "The voice of Johto, on the air day and night.",
+    ["Bell Tower"] = "Where the legendary Pokemon is said to land.",
+    ["Burned Tower"] = "Its ashes still hide the three that rose from the fire.",
+    ["Moomoo Farm"] = "Fresh Moomoo Milk from happy Miltank.",
+    ["Olivine Lighthouse"] = "Its light guides the ships at night.",
+    ["Whirl Islands"] = "Caves under the islands, where the sea god is said to sleep.",
+    ["I.S.S. Raspberry"] = "A wreck on the reef, guarded by Mantine.",
+    ["Mt. Mortar"] = "A huge mountain hollowed by waterfalls inside.",
+    ["Lake of Rage"] = "A lake made by the tears of Gyarados.",
+    ["Lake of Life"] = "A calm lake in the hills, teeming with life.",
+    ["Lake Slowpoke"] = "A sleepy lake where Slowpoke laze by the shore.",
+    ["Rage Marshes"] = "Soggy marshland south of the Lake of Rage.",
+    ["Olivine Cliffs"] = "Sheer cliffs over the sea north of Olivine.",
+    ["Frozen North"] = "Snowfields and ice where few trainers wander.",
+    ["Snowtop Mountain"] = "A snowy peak above the old forest.",
+    ["Mount Quena"] = "A lonely snowy peak in the far north.",
+    ["Mortar Badlands"] = "Dry, rocky ground in the shadow of Mt. Mortar.",
+    ["Rocket Hideout"] = "Something is going on under the souvenir shop.",
+    ["Ice Path"] = "A frozen passage of sliding ice floors.",
+    ["Dark Cave"] = "A pitch black cave. Flash would help here.",
+    ["Dragon Holy Land"] = "Sacred ground of the dragon clan.",
+    ["Tohjo Falls"] = "The falls between Johto and Kanto.",
+    ["Mt. Silver"] = "Only the strongest trainers are allowed up this mountain.",
+    ["Mt. Silver Cave"] = "Deep in the mountain, the toughest Pokemon wait.",
+    ["Safari Zone"] = "Pokemon from far away roam its fields.",
+    ["Battle Frontier"] = "Five facilities for trainers who want a real challenge.",
 }
 
 local function containsWord(name, words)
@@ -100,8 +191,13 @@ local function containsWord(name, words)
     return false
 end
 
+-- Places whose names contain one of the building words.
+local NOT_BUILDINGS = {
+    ["New Bark"] = true,
+}
+
 function AREA_BANNER.isBuilding(name)
-    return containsWord(name, BUILDING_WORDS)
+    return not NOT_BUILDINGS[name] and containsWord(name, BUILDING_WORDS)
 end
 
 function AREA_BANNER.theme(name)

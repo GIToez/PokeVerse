@@ -159,6 +159,13 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   table, so their surf table spawns on their islands and beaches, a step back from the water
   like the cave ponds'. Spawns only go where players can walk to from a road or street, since
   wild trees and bushes can close off small pockets in the forests.
+- **Area names:** the area banner and the clock's location label (the client's
+  `game_environment`) come from `areas_johto.lua`, which the build writes next to
+  `sounds_pokeverse.lua`: every tile west of x 3048 is the route whose road is nearest (or the sea
+  route's line), then the hunting grounds, sites and towns over it, cut into rectangles; before
+  those the buildings (Pokemon Centers, Marts and houses only change the label, gyms and towers
+  pop the banner), the caves and floors below and the wreck. Each has the music of its Kanto
+  mirror (`AREA_TRACKS`); the banner's themes and lines are in `area_names.lua`.
 - **Kanto edits:** Kanto's unfinished, undecorated grass south of the Elite Four building; the
   pass through Kanto's mountain from the west gate to the building (including a broken ramp on
   that road that led up to nothing); the counters that closed the building's west and south

@@ -141,13 +141,13 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +    end
 +    labelWindow:hide()
 +end
- 
++
 +local function checkMessage(data)
 +    -- inside one of our areas its name stays up, the legacy area around it stays quiet
 +    if (customArea and data ~= customArea) then
 +        return
 +    end
-+
+ 
 +    if (data[DATA_INDEX.MESSAGE]) then
 +        local text = tr(data[DATA_INDEX.MESSAGE])
          modules.game_time.setLocation(text)
@@ -158,7 +158,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      end
  end
  
-@@ -225,18 +315,55 @@
+@@ -225,18 +315,88 @@
  local function playEffect(effect)
      if (playingEffect ~= effect) then
          local map = modules.game_interface.getMapPanel()
@@ -175,9 +175,39 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      playingEffect = nil
  end
  
++-- SOUNDS_POKEVERSE by AREA_BUCKET x AREA_BUCKET tile squares, each list in the file's order
++local AREA_BUCKET = 64
++local areaBuckets
++
++local function bucketKey(bx, by)
++    return by * 65536 + bx
++end
++
 +local function findCustomArea(pos)
-+    for i = 1, #SOUNDS_POKEVERSE do
-+        local area = SOUNDS_POKEVERSE[i]
++    if (not areaBuckets) then
++        areaBuckets = {}
++        for i = 1, #SOUNDS_POKEVERSE do
++            local area = SOUNDS_POKEVERSE[i]
++            for by = math.floor(area.fromPos.y / AREA_BUCKET), math.floor(area.toPos.y / AREA_BUCKET) do
++                for bx = math.floor(area.fromPos.x / AREA_BUCKET), math.floor(area.toPos.x / AREA_BUCKET) do
++                    local key = bucketKey(bx, by)
++                    local list = areaBuckets[key]
++                    if (not list) then
++                        list = {}
++                        areaBuckets[key] = list
++                    end
++                    list[#list + 1] = area
++                end
++            end
++        end
++    end
++
++    local list = areaBuckets[bucketKey(math.floor(pos.x / AREA_BUCKET), math.floor(pos.y / AREA_BUCKET))]
++    if (not list) then
++        return
++    end
++    for i = 1, #list do
++        local area = list[i]
 +        if (isInPos(pos, area.fromPos, area.toPos)) then
 +            return area
 +        end
@@ -200,7 +230,10 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +            end
 +            playingSound = area
 +        end
-+        checkMessage(area)
++        -- an area is cut into many rectangles: stepping between two of them is not arriving
++        if (not left or left[DATA_INDEX.MESSAGE] ~= area[DATA_INDEX.MESSAGE]) then
++            checkMessage(area)
++        end
 +    elseif (left and playingSound and playingSound ~= left) then
 +        checkMessage(playingSound)
 +    end
@@ -216,7 +249,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      local checkList, stop
      if (playingSound and isInPos(newPos, playingSound.fromPos, playingSound.toPos)) then
          if (playingSound.closePriorities) then
-@@ -322,12 +449,14 @@
+@@ -322,12 +482,14 @@
  -- Hooks
  function onOnline()
      stopSound()
@@ -232,7 +265,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  end
  
  function onPositionChange(cid, newPos, oldPos)
-@@ -345,23 +474,9 @@
+@@ -345,23 +507,9 @@
  function onInit()
      rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
  
@@ -258,7 +291,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      labelWindow:hide()
  
      connect(g_game, {
-@@ -388,5 +503,6 @@
+@@ -388,5 +536,6 @@
          onPositionChange = onPositionChange
      })
  

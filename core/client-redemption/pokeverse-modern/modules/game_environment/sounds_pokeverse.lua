@@ -48,3 +48,21 @@ add(area({ x = 4985, y = 725, z = 6 }, { x = 5060, y = 815, z = 7 }, "random_cit
 
 -- New routes. Example (fill in the corners from the minimap, then remove the --):
 -- add(area({ x = 0, y = 0, z = 7 }, { x = 0, y = 0, z = 7 }, nil, 1, "Route 02"))
+
+-- Johto, generated with the map (areas_johto.lua). One entry spans its floors: there are thousands.
+dofile("areas_johto.lua")
+for _, a in ipairs(AREAS_JOHTO) do
+    SOUNDS_POKEVERSE[#SOUNDS_POKEVERSE + 1] = {
+        [1] = math.floor((a[1] + a[4]) / 2),
+        [2] = math.floor((a[2] + a[5]) / 2),
+        [3] = a[6],
+        [4] = math.max(a[4] - a[1], a[5] - a[2]),
+        [5] = a[8],
+        [6] = 1,
+        [7] = 0,
+        [8] = a[7],
+        fromPos = { x = a[1], y = a[2], z = a[3] },
+        toPos = { x = a[4], y = a[5], z = a[6] },
+    }
+end
+AREAS_JOHTO = nil
