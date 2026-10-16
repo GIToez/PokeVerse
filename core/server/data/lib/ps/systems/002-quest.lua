@@ -100,6 +100,12 @@ NO_QUEST_TALK["Professor Oak"] = function(pid)
     end
     return string.format(__L(pid, PROFESSOR_OAK_IDLE_LINES[math.random(#PROFESSOR_OAK_IDLE_LINES)]), getCreatureName(pid))
 end
+NO_QUEST_TALK["Julia"] = function(pid)
+    if (not Vocations.is(pid, "angler")) then
+        return __L(pid, "I only make gear for Anglers. Come back if you ever choose that vocation.")
+    end
+    return __L(pid, "Sorry, I can't help you right now.")
+end
 
 -- Quests
 local QUESTS = {}

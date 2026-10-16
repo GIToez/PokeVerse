@@ -34,24 +34,25 @@ Vocations.MIN_LEVEL = 20
 Vocations.RANK_LEVELS = { 20, 30, 40, 50, 60 }
 Vocations.MAX_RANK = #Vocations.RANK_LEVELS
 
--- id is what the storage keeps, so ids never change or get reused
+-- id is what the storage keeps, so ids never change or get reused. outfit is the XML/outfits.xml id that only
+-- this vocation can wear, looks its female and male look types.
 Vocations.LIST = {
-    { id = 1, key = "ace", name = "Ace Trainer", tagline = "Battles and experience",
+    { id = 1, key = "ace", outfit = 40, looks = { 1200, 1201 }, name = "Ace Trainer", tagline = "Battles and experience",
       perks = { "Battle EXP +2% to +10%", "Titles up to Ace Trainer", "Bonus grows with each rank" },
       titles = { "Novice Trainer", "Pokemon Trainer", "Experienced Trainer", "Veteran Trainer", "Ace Trainer" } },
-    { id = 2, key = "catcher", name = "Catcher", tagline = "Catching",
+    { id = 2, key = "catcher", outfit = 37, looks = { 1184, 1185 }, name = "Catcher", tagline = "Catching",
       perks = { "Catch chance +2% to +10%", "Ball back after a failed throw", "Bonus grows with each rank" },
       titles = { "Rookie Catcher", "Ball Adept", "Seasoned Catcher", "Elite Catcher", "Master Catcher" } },
-    { id = 3, key = "breeder", name = "Breeder", tagline = "Eggs and the daycare",
+    { id = 3, key = "breeder", outfit = 80, looks = { 2574, 2573 }, name = "Breeder", tagline = "Eggs and the daycare",
       perks = { "Hatching up to 25% faster", "Chance of a second egg", "Better early egg chance" },
       titles = { "Novice Breeder", "Egg Keeper", "Skilled Breeder", "Expert Breeder", "Master Breeder" } },
-    { id = 4, key = "ranger", name = "Ranger", tagline = "Tracking wild Pokemon",
+    { id = 4, key = "ranger", outfit = 49, looks = { 1202, 1203 }, name = "Ranger", tagline = "Tracking wild Pokemon",
       perks = { "Radar for nearby spawns", "Filter by type, see direction", "Rare finds at top ranks" },
       titles = { "Ranger Cadet", "Field Ranger", "Area Ranger", "Ranger Captain", "Top Ranger" } },
-    { id = 5, key = "angler", name = "Angler", tagline = "Fishing",
+    { id = 5, key = "angler", outfit = 9, looks = { 627, 628 }, name = "Angler", tagline = "Fishing",
       perks = { "Faster fishing skill", "See what bites, fishing map", "Only Anglers use cranes" },
       titles = { "Novice Angler", "Angler", "Skilled Angler", "Expert Angler", "Master Angler" } },
-    { id = 6, key = "medic", name = "Medic", tagline = "Healing and support",
+    { id = 6, key = "medic", outfit = 81, looks = { 1310, 1309 }, name = "Medic", tagline = "Healing and support",
       perks = { "Healing items +3% to +15%", "Heal other players' team", "Bonus grows with each rank" },
       titles = { "Medic Trainee", "Field Medic", "Senior Medic", "Pokemon Doctor", "Chief Medic" } },
 }
@@ -99,13 +100,17 @@ local STORAGE = playersStorages.vocation
 local RANK = playersStorages.vocationRank
 -- a storage, not a table: talkactions, NPCs and creature scripts each have their own Lua state
 local WINDOW = playersStorages.vocationWindow
+local OUTFITS_MIGRATED = playersStorages.vocationOutfits
 local RADAR_AT = playersStorages.vocationRadarAt
 local LEGENDARY_AT = playersStorages.vocationLegendaryAt
 
-local byKey, byId = {}, {}
+local byKey, byId, byLook = {}, {}, {}
 for _, vocation in ipairs(Vocations.LIST) do
     byKey[vocation.key] = vocation
     byId[vocation.id] = vocation
+    for _, look in ipairs(vocation.looks) do
+        byLook[look] = vocation
+    end
 end
 
 local function send(cid, data)
@@ -250,9 +255,16 @@ Vocations.choose = function(cid, key)
     setPlayerStorageValue(cid, WINDOW, -1)
     setPlayerStorageValue(cid, STORAGE, vocation.id)
     Vocations.setRank(cid, 1)
+    Vocations.updateOutfit(cid)
+    local outfit = getCreatureOutfit(cid)
+    outfit.lookType = vocation.looks[getPlayerSex(cid) == PLAYERSEX_FEMALE and 1 or 2]
+    outfit.lookAddons = 0
+    doCreatureChangeOutfit(cid, outfit)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE,
         string.format(__L(cid, "You are now %s!"), withArticle(__L(cid, vocation.name))))
+    reply(cid, string.format(__L(cid, "You are now wearing the %s outfit. You can change it in the outfit window."),
+        __L(cid, vocation.name)))
     send(cid, { type = "chosen", key = vocation.key, name = __L(cid, vocation.name), rank = 1,
                 title = __L(cid, vocation.titles[1]) })
     return true
@@ -264,6 +276,51 @@ Vocations.reset = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Vocations.updateOutfit(cid)
+end
+
+-- Gives the vocation its outfit, and takes a vocation outfit off a trainer who can't wear it (another
+-- vocation, or none). The outfits.xml storage check already keeps it out of the outfit window.
+Vocations.updateOutfit = function(cid)
+    local vocation = Vocations.get(cid)
+    if (vocation and not canPlayerWearOutfitId(cid, vocation.outfit, 0)) then
+        doPlayerAddOutfitId(cid, vocation.outfit, 0)
+    end
+    local outfit = getCreatureOutfit(cid)
+    local owner = byLook[outfit.lookType]
+    if (owner and owner ~= vocation) then
+        outfit.lookType = getPlayerSex(cid) == PLAYERSEX_FEMALE and 611 or 612 -- Trainer
+        outfit.lookAddons = 0
+        doCreatureChangeOutfit(cid, outfit)
+    end
+end
+
+-- Outfits that were quest and shop rewards before they became vocation outfits; who earned one gets
+-- the outfit that replaced it as the reward
+local REPLACED_OUTFITS = {
+    { outfit = 40, vocation = "ace", replacement = 83, name = "Master Trainer", replacementName = "Voyager" },
+    { outfit = 49, vocation = "ranger", replacement = 84, name = "Ranger", replacementName = "Wanderer" },
+    { outfit = 37, vocation = "catcher", replacement = 85, name = "Catcher", replacementName = "Duelist" },
+}
+
+Vocations.migrateOutfits = function(cid)
+    if (getPlayerStorageValue(cid, OUTFITS_MIGRATED) == 1) then
+        return
+    end
+    setPlayerStorageValue(cid, OUTFITS_MIGRATED, 1)
+    local own = getPlayerStorageValue(cid, STORAGE)
+    for _, replaced in ipairs(REPLACED_OUTFITS) do
+        local id = byKey[replaced.vocation].id
+        -- the wear check needs the outfit's vocation in the storage, so it only tells whether it was earned
+        setPlayerStorageValue(cid, STORAGE, id)
+        local earned = canPlayerWearOutfitId(cid, replaced.outfit, 0)
+        setPlayerStorageValue(cid, STORAGE, own)
+        if (earned and own ~= id) then
+            doPlayerAddOutfitId(cid, replaced.replacement, 0)
+            reply(cid, string.format(__L(cid, "The %s outfit now belongs to a vocation. You got the %s outfit instead."),
+                __L(cid, replaced.name), __L(cid, replaced.replacementName)))
+        end
+    end
 end
 
 -- Catcher: a failed roll gets a second chance sized so the catch chance becomes chance * (1 + bonus)
@@ -639,6 +696,8 @@ end
 
 Vocations.onLogin = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
+    Vocations.migrateOutfits(cid)
+    Vocations.updateOutfit(cid)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
 end
