@@ -185,7 +185,7 @@ local function downloadStep(step, keepAll, onDone)
           scheduledEvent = scheduleEvent(function()
             active = active - 1
             if updaterWindow and not finished then fetch(entry, retries + 1) end
-          end, 250 * (retries + 1))
+          end, 1000 * 2 ^ retries)
           return
         end
         done = done + 1

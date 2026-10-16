@@ -3,13 +3,15 @@
 
     scripts/make-updater-manifest.py --package <client dir> --os windows|linux|android
         --site <site dir> --files-url <url of <site>/files> --version <tag>
-        [--binary otclient.exe] [--release-dir <dir> --release-url <url>]
+        [--files-dir <dir>] [--binary otclient.exe] [--release-dir <dir> --release-url <url>]
         [--max-size 95000000] [--skip <path>]...
 
 Writes <site>/<os>.json and copies every package file into <site>/files/<path>, the
-layout modules/updater/updater.lua expects. Files over --max-size (the Pages limit is
-100 MB) go to --release-dir instead, to be uploaded as GitHub Release assets, and the
-manifest points at them with absolute URLs under --release-url.
+layout modules/updater/updater.lua expects. --files-dir puts them elsewhere (with --files-url
+pointing at it), e.g. <site>/files/<tag>: a URL that never served other content can't come
+back stale from the Pages cache (10 minutes, and it ignores query strings). Files over
+--max-size (the Pages limit is 100 MB) go to --release-dir instead, to be uploaded as GitHub
+Release assets, and the manifest points at them with absolute URLs under --release-url.
 
 Several platforms can share one site: common files are stored once, and a path that
 already exists with different content is an error.
@@ -48,6 +50,7 @@ def main():
     p.add_argument("--os", required=True, choices=["windows", "linux", "android", "mac"])
     p.add_argument("--site", required=True)
     p.add_argument("--files-url", required=True)
+    p.add_argument("--files-dir", default="", help="where the files go (default <site>/files)")
     p.add_argument("--version", required=True)
     p.add_argument("--binary", default="")
     p.add_argument("--release-dir", default="")
@@ -60,7 +63,7 @@ def main():
 
     package = os.path.abspath(args.package)
     site = os.path.abspath(args.site)
-    files_dir = os.path.join(site, "files")
+    files_dir = os.path.abspath(args.files_dir) if args.files_dir else os.path.join(site, "files")
     os.makedirs(files_dir, exist_ok=True)
     if args.release_dir:
         os.makedirs(args.release_dir, exist_ok=True)

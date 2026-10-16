@@ -325,8 +325,11 @@ jobs:
         env:
           TAG: ${{ steps.version.outputs.tag }}
         run: |
-          # site/ becomes PokeVerse-Clients gh-pages
-          common=(--site site/updater --files-url "$PAGES_URL/updater/files" --version "$TAG"
+          # site/ becomes PokeVerse-Clients gh-pages. Each release's files get their own folder:
+          # Pages caches every URL for 10 minutes (ignoring query strings), so a file changed at
+          # the same URL can come back stale and fail its checksum
+          common=(--site site/updater --files-dir "site/updater/files/$TAG"
+                  --files-url "$PAGES_URL/updater/files/$TAG" --version "$TAG"
                   --release-dir release --release-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG")
           python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
           python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary PokeVerse "${common[@]}"
@@ -346,6 +349,8 @@ jobs:
             --discord-url "$DISCORD_URL" --cname "$PAGES_DOMAIN"
 
       - name: Check the updater URLs
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
           for os in windows linux android; do
             grep -q "^  updater = \"$PAGES_URL/updater/\"," "pkg/$os/init.lua"
@@ -354,7 +359,7 @@ jobs:
           name = sys.argv[1]
           pages, repo = os.environ["PAGES_URL"], os.environ["CLIENTS_REPO"]
           m = json.load(open(f"site/updater/{name}.json"))
-          assert m["url"] == f"{pages}/updater/files", m["url"]
+          assert m["url"] == f"{pages}/updater/files/{os.environ['TAG']}", m["url"]
           for url in m["urls"].values():
               assert url.startswith(f"https://github.com/{repo}/releases/download/"), url
           print(f"{name}: the manifest points at {pages} and the {repo} releases")
@@ -439,6 +444,22 @@ jobs:
           REPO_TOKEN: ${{ secrets.PV_REPOS_TOKEN }}
           TAG: ${{ needs.package.outputs.tag }}
         run: |
+          # The previous release's files stay one more release: for up to 10 minutes the Pages
+          # cache can still hand out the old manifest, and it must find the files it lists
+          if git clone -q --depth 1 --branch gh-pages "https://x-access-token:$REPO_TOKEN@github.com/$CLIENTS_REPO.git" old-site &&
+             [ -f old-site/updater/windows.json ]; then
+            old=$(python3 -c 'import json,os,sys; u=json.load(open(sys.argv[1]))["url"]; p=os.environ["PAGES_URL"] + "/"; print(u[len(p):] if u.startswith(p) else "")' old-site/updater/windows.json)
+            case "$old" in
+              updater/files|updater/files/*)
+                if [ "$old" != "updater/files/$TAG" ] && [ -d "old-site/$old" ]; then
+                  # --update=none: the new release's own folder (inside the old flat updater/files) wins
+                  mkdir -p "clients-site/$old"
+                  cp -r --update=none "old-site/$old/." "clients-site/$old/"
+                  echo "Kept the previous files ($old) next to $TAG" >> "$GITHUB_STEP_SUMMARY"
+                fi ;;
+            esac
+          fi
+          rm -rf old-site
           cd clients-site
           # without it, GitHub Pages runs the branch through Jekyll
           touch .nojekyll

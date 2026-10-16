@@ -6,7 +6,8 @@ Nothing runs on our own servers for this, and there is no PHP.
 
 - **GitHub Pages** hosts the update manifests (`updater/windows.json`, `updater/linux.json`,
   `updater/android.json`)
-  and every file under 95 MB (`updater/files/...`). Pages does not accept files over 100 MB.
+  and every file under 95 MB (`updater/files/<release>/...`). Pages does not accept files
+  over 100 MB.
 - **GitHub Releases** host the larger files (the 308 MB `data.spr`, and the executable if it
   is too big) plus the first-install downloads, `PokeVerse-Windows.zip`,
   `PokeVerse-Linux.tar.gz` and `PokeVerse-Android.apk`.
@@ -76,6 +77,21 @@ Clients from before this change use the old updater (one file at a time, everyth
 at the end). They ignore `sizes`, download the new updater with the rest, and restart into it.
 
 If GitHub cannot be reached, the client shows an error and starts normally after **Ok**.
+A file that fails (a download error or a wrong checksum) is tried again after 1, 2, 4, 8 and
+16 seconds before the update stops with "Can't download file".
+
+### Why each release has its own files folder
+
+The Pages cache keeps every URL for 10 minutes and ignores query strings. When all releases
+used the same `updater/files/<path>` URLs, a file that changed (the map pictures change
+thousands of files at once) could come back from the cache in its old version for up to 10
+minutes after a publish, fail its checksum, and stop the update ("Invalid checksum of:
+/data/images/pokepedia/..."). Reinstalling worked because the downloads come from the
+release, not the cache. Now each release is in `updater/files/<release tag>/`, a URL that never
+had other content, and the manifest's `url` points there; clients already build every file
+URL from it, so old clients need no change. The publish keeps the previous release's folder
+one more release, for clients that still get the old manifest from the cache. Two releases
+of files are about 600 MB, under the 1 GB Pages size limit.
 
 ## Platform notes
 
