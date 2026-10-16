@@ -155,10 +155,18 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   weighted by the game's encounter rate averaged over morning, day and night
   (`johto_encounters.json`). Spawns stay off tiles next to mountains, since the mountain edge
   blocks. The Ruins of Alph's chambers hold Unown only (Bulbapedia has no single table for them),
-  and Bulbapedia's Nidoran♀/♂ are the server's Nidorana/Nidorano. The sea routes have no land
-  table, so their surf table spawns on their islands and beaches, a step back from the water
-  like the cave ponds'. Spawns only go where players can walk to from a road or street, since
-  wild trees and bushes can close off small pockets in the forests.
+  and Bulbapedia's Nidoran♀/♂ are the server's Nidorana/Nidorano (Farfetch'd is Farfetchd); the
+  build fails on a name the server has no monster for. Every route's surf table spawns on its
+  coasts, lakes and rivers, a step back from the water like the cave ponds' (the sea routes, which
+  have no land table, more often on their islands and beaches). Spawns only go where players can
+  walk to from a road or street, since wild trees and bushes can close off small pockets in the
+  forests. The rates (`GROUND_RATE`, `SHORE_RATE`, `SEA_SHORE_RATE`, `HILL_RATE`) keep Johto about
+  as busy as Kanto: one spawn per 140 walkable tiles on the ground, one per 90 on floor 6. Up on
+  the hills' plateaus a route's Pokémon are further along their evolutions, as on Kanto's
+  terraces (`HILL_EVOLVE`: half a step on floor 6, a whole one on floor 5, one and a half on
+  floor 4, from the server's `evolutions` in `data/lib/ps/config/_pokemon`), so Route 29's
+  Pidgey, Hoothoot and Sentret are Pidgeotto, Noctowl and Furret two floors up, off the road for
+  players who climb.
 - **Area names:** the area banner and the clock's location label (the client's
   `game_environment`) come from `areas_johto.lua`, which the build writes next to
   `sounds_pokeverse.lua`: every tile west of x 3048 is the route whose road is nearest (or the sea
@@ -240,13 +248,12 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   on foot from there; Mt. Silver from Route 28 only (the range is walled on the west). The
   server's field moves are in `core/server/data/lib/ps/events/actions/abilities.lua` (Cut: jungle
   grass 3985, Rock Smash: rock 1285, both grow back).
-- 1060 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
+- 4679 Pokémon spawns (none inside towns); Nurse Joy with Chansey in every Pokémon Center and a
   clerk in every Mart; 106 houses.
 - **Not yet:** townsfolk and shop staff in the new landmarks, the towers' insides, Goldenrod's
   Magnet Train station and the rest of the Underground, Tohjo Falls' cave with Waterfall, the
   Ho-Oh Shrine, the lower floors of Mt. Mortar, the Ice Path
   and the Whirl Islands, the Gym leaders, Route 36's Sudowoodo and Route 46's one-way ledges.
-  Wild Pokémon are to be redone area by area once the terrain is finished.
   The gates are open passes, since Kanto has no route gatehouses.
 
 ## Scripts with town positions

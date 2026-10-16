@@ -36,6 +36,7 @@ Surf to Cianwood (Routes 47 and 48 by land from there), and Mt. Silver from Rout
 """
 import argparse
 import collections
+import glob
 import json
 import os
 import pickle
@@ -333,7 +334,7 @@ AREA_GYMS = {'Violet': 'Zephyr Gym', 'Azalea': 'Hive Gym', 'Goldenrod': 'Plain G
 # in the rock face at its end like Kanto's.
 # Mt. Silver Cave's 1F also has stairs up at the back of its north room, to its way up inside the mountain.
 SILVER_INNER_MOUTH = (2909, 428, 'north')
-SILVER_SPAWN_RATE = 1 / 90.0
+SILVER_SPAWN_RATE = 1 / 70.0
 CAVES = [
     {'name': 'Mt. Silver Cave', 'light': 'ice', 'box': (2846, 412, 2966, 512), 'lip': 'snow',
      'inner_mouths': [SILVER_INNER_MOUTH],
@@ -626,7 +627,65 @@ SPAWNS = {
     'Tohjo Falls': ('Tohjo Falls', 'main'),
 }
 # Bulbapedia's names that the server spells differently.
-MONSTER_NAMES = {'Nidoran♀': 'Nidorana', 'Nidoran♂': 'Nidorano'}
+MONSTER_NAMES = {'Nidoran♀': 'Nidorana', 'Nidoran♂': 'Nidorano', "Farfetch'd": 'Farfetchd'}
+# How often a tile gets a spawn, set so Johto is as busy as Kanto (about one per 130 walkable tiles
+# on the ground, one per 80 on the floors above): the open ground off the roads, the shore (a
+# route's Surf table, the sea routes' denser), and the hills' plateaus.
+GROUND_RATE, SHORE_RATE, SEA_SHORE_RATE, HILL_RATE = 1 / 36.0, 1 / 60.0, 1 / 35.0, 1 / 32.0
+# Up on the hills a route's Pokémon are further along, as on Kanto's terraces: evolution steps
+# per level climbed (a half step moves half of each one's weight to its next stage), so the
+# harder ones are off the road for players who climb.
+HILL_EVOLVE = {1: 0.5, 2: 1.0, 3: 1.5}
+SERVER_DATA = os.path.join(ROOT, 'core', 'server', 'data')
+
+
+def server_monsters():
+    return set(re.findall(r'<monster name="([^"]+)"', open(os.path.join(SERVER_DATA, 'monster', 'monsters.xml')).read()))
+
+
+def load_evolutions():
+    """Each Pokémon's next stages, from the server's Pokémon configs (only those it can spawn)."""
+    known = server_monsters()
+    out = {}
+    for path in glob.glob(os.path.join(SERVER_DATA, 'lib', 'ps', 'config', '_pokemon', '*.lua')):
+        src = open(path, encoding='utf-8', errors='replace').read()
+        m = re.match(r'\s*POKEMON\["([^"]+)"\]', src)
+        start = src.find('evolutions = {')
+        if not m or m.group(1) not in known or start < 0:
+            continue
+        depth, i = 0, start + len('evolutions = ')
+        for i in range(i, len(src)):
+            depth += {'{': 1, '}': -1}.get(src[i], 0)
+            if depth == 0:
+                break
+        nexts = [n for n in re.findall(r'name = "([^"]+)"', src[start:i]) if n in known]
+        if nexts:
+            out[m.group(1)] = nexts
+    return out
+
+
+EVOLUTIONS = load_evolutions()
+
+
+def evolved(table, steps):
+    """`table` with its Pokémon `steps` evolution stages on, the weight split over branches; a
+    fraction of a step moves that share of the weight one stage on."""
+    out = {}
+
+    def add(name, w, s):
+        nexts = EVOLUTIONS.get(name)
+        if s <= 0 or not nexts:
+            out[name] = out.get(name, 0.0) + w
+            return
+        if s < 1:
+            out[name] = out.get(name, 0.0) + w * (1 - s)
+            w, s = w * s, 1
+        for n in nexts:
+            add(n, w / len(nexts), s - 1)
+
+    for name, w in table:
+        add(name, w, steps)
+    return sorted(out.items())
 
 
 def spawn_table(key, method='land'):
@@ -1998,7 +2057,7 @@ def build_cave(cave, brushes, present, rng):
         reached = grown
     spawns = []
     table = cave.get('spawns', cave['name'])
-    for iy, ix in np.argwhere(walk & reached & (rng.random((f.h, f.w)) < cave.get('rate', 1 / 70.0))):
+    for iy, ix in np.argwhere(walk & reached & (rng.random((f.h, f.w)) < cave.get('rate', 1 / 50.0))):
         spawns.append((pick(rng, spawn_table(table)), ix + f.x0, iy + f.y0, z))
     # the water table along the pond, one tile back from the water's (blocking) border, like Kanto's
     water_table = spawn_table(table, 'water')
@@ -2791,7 +2850,7 @@ def build(base, out_path):
                 src = tiles[(x, 2 * f.y1 + 1 - y)]
                 tiles[(x, y)] = [src[0], list(src[1])]
                 if brushes.by_item.get(src[0]) is brushes['grass'] and all(i in open_deco for i in src[1]) \
-                        and sea_rng.random() < 1 / 210.0:
+                        and sea_rng.random() < GROUND_RATE:
                     cap_spawns.append((x, y))
             else:
                 tiles[(x, y)] = [pick(sea_rng, sea_items), []]
@@ -2953,19 +3012,23 @@ def build(base, out_path):
     wreck_rng = np.random.default_rng(97)
     for k in wreck_rng.permutation(len(aboard))[:WRECK['spawns']]:
         spawns.append((pick(wreck_rng, spawn_table(WRECK['name'])), *aboard[k]))
-    cand = np.argwhere(walk_ok & (rng.random((f.h, f.w)) < 1 / 210.0) & (X < 3049))
+    cand = np.argwhere(walk_ok & (rng.random((f.h, f.w)) < GROUND_RATE) & (X < 3049))
     for iy, ix in cand:
         table = spawn_table(str(route_of[iy, ix]))
         if table:
             spawns.append((pick(rng, table), ix + f.x0, iy + f.y0, Z))
     for x, y in cap_spawns:
         table = spawn_table(str(route_of[f.h - 1, x - f.x0]))
-        if table:
+        # the cap's tiles are bordered later on, so a spawn needs grass all round
+        if table and all(brushes.by_item.get(tiles.get((x + dx, y + dy), [None])[0]) is grass
+                         for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
             spawns.append((pick(sea_rng, table), x, y, Z))
-    # the sea routes' Pokémon come ashore on their islands and beaches, a step back from the water's
+    # every route's Surf Pokémon come ashore on its coasts, lakes and rivers (the sea routes, which
+    # have no land table, on their islands and beaches more often), a step back from the water's
     # (blocking) border, like the cave ponds'
+    surfed = [k for k in SPAWNS if spawn_table(k, 'water')]
     beach = (np.isin(terrain, [GRASS, LAWN, SAND, DIRT]) & gen & ~blocked_spawn & ~clear & ~road
-             & dilate(terrain == WATER, 11) & ~shore & ~dilate(town_area, 21) & np.isin(route_of, list(SEA_LINES))
+             & dilate(terrain == WATER, 11) & ~shore & ~dilate(town_area, 21) & np.isin(route_of, surfed)
              & ~dilate(np.isin(terrain, [MOUNTAIN, SNOW_PEAK]), 5) & ~dilate(~gen, 7))
     # islands have no roads: players surf ashore anywhere a step past the water's border
     ashore = (np.isin(terrain, [GRASS, LAWN, SAND, DIRT, PAVE, BRIDGE]) & ~blocked_spawn & ~boxes & gen
@@ -2977,7 +3040,8 @@ def build(base, out_path):
             break
         landed = grown
     beach &= landed
-    for iy, ix in np.argwhere(beach & (rng.random((f.h, f.w)) < 1 / 40.0)):
+    shore_rate = np.where(np.isin(route_of, list(SEA_LINES)), SEA_SHORE_RATE, SHORE_RATE)
+    for iy, ix in np.argwhere(beach & (rng.random((f.h, f.w)) < shore_rate)):
         spawns.append((pick(rng, spawn_table(str(route_of[iy, ix]), 'water')), ix + f.x0, iy + f.y0, Z))
 
     # The upper floors of the hills and the mountain tiers. A plateau's edge borders as if mountain lay
@@ -3102,8 +3166,8 @@ def build(base, out_path):
                 break
             reached = grown
         inside = (distance(height >= j) > 2.5) & (height == j) & country & reached & ~hill_keep[j]
-        for iy, ix in np.argwhere(inside & (hill_rng.random((f.h, f.w)) < 1 / 210.0)):
-            table = spawn_table(str(route_of[iy, ix]))
+        for iy, ix in np.argwhere(inside & (hill_rng.random((f.h, f.w)) < HILL_RATE)):
+            table = evolved(spawn_table(str(route_of[iy, ix])), HILL_EVOLVE[j])
             if table:
                 spawns.append((pick(hill_rng, table), ix + f.x0, iy + f.y0, z))
                 hill_spawns += 1
@@ -3115,6 +3179,9 @@ def build(base, out_path):
         assert not set(cave_tiles) & set(new_tiles), '%s overlaps other new tiles' % cave['name']
         new_tiles.update(cave_tiles)
         spawns += cave_spawns
+    missing = sorted({s[0] for s in spawns} - server_monsters())
+    assert not missing, 'spawns the server has no monster for: %s' % missing
+    print('spawns by floor: %s' % sorted(collections.Counter(s[3] for s in spawns).items()))
 
     # The area banner's sections.
     area_of = np.full((f.h, f.w), '', object)
