@@ -37,7 +37,8 @@ local FILTER_NAMES = { all = 'All', species = 'Species', type = 'Type', rarity =
                        legendary = 'Legendaries Only' }
 
 local window, button, mapArrow
-local arrowOwner -- the local player the map arrow is attached to; the map moves it with the walk
+local arrowOwner -- the map panel the map arrow is on
+local arrowRect -- the trainer's tile on the map panel, from when they last stood still
 local layoutKey -- what the blips were last laid out for
 local status = { enabled = false }
 local blips = {} -- the last scan's blips, each with .widget and .halo
@@ -153,39 +154,42 @@ local function hideArrow()
 end
 
 local function destroyArrow()
-    if mapArrow and arrowOwner then
-        pcall(function() arrowOwner:detachWidget(mapArrow) end)
-    end
     if mapArrow and not mapArrow:isDestroyed() then
         mapArrow:destroy()
     end
-    mapArrow, arrowOwner = nil, nil
+    mapArrow, arrowOwner, arrowRect = nil, nil, nil
 end
 
--- The arrow is attached to the trainer: the map places it every frame at the top middle of the
--- trainer's tile, walk included, plus the arrow's margins.
+-- The arrow sits on the map panel around the trainer's tile. It is not attached to the trainer
+-- (creature:attachWidget): the client engine crashes laying out widgets attached to creatures.
+-- The camera follows the trainer, so while they walk their sprite stays where it was at rest.
 local function updateArrow(from, to)
     local mapPanel = modules.game_interface and modules.game_interface.getMapPanel()
     local player = g_game.getLocalPlayer()
-    if not mapPanel or not player then
-        return
-    end
-    local rect = from.z == to.z and mapPanel:getTileRect(from)
-    if not rect or rect.width == 0 then
+    if not mapPanel or not player or from.z ~= to.z then
         hideArrow()
         return
     end
-    if not mapArrow or mapArrow:isDestroyed() or arrowOwner ~= player then
+    if not arrowRect or not player:isWalking() then
+        local rect = mapPanel:getTileRect(from)
+        arrowRect = rect and rect.width > 0 and rect or nil
+    end
+    local rect = arrowRect
+    if not rect then
+        hideArrow()
+        return
+    end
+    if not mapArrow or mapArrow:isDestroyed() or arrowOwner ~= mapPanel then
         destroyArrow()
-        mapArrow = g_ui.createWidget('RadarMapArrow')
-        player:attachWidget(mapArrow)
-        arrowOwner = player
+        mapArrow = g_ui.createWidget('RadarMapArrow', mapPanel)
+        arrowOwner = mapPanel
+        arrowRect = rect
     end
     local dx, dy = to.x - from.x, to.y - from.y
     local angle = math.atan2(dy, dx)
     local reach = rect.width * ARROW_TILES
-    mapArrow:setMarginLeft(math.floor(math.cos(angle) * reach - mapArrow:getWidth() / 2))
-    mapArrow:setMarginTop(math.floor(rect.height * (0.5 - SPRITE_LIFT) + math.sin(angle) * reach - mapArrow:getHeight() / 2))
+    mapArrow:setPosition({ x = math.floor(rect.x + rect.width / 2 + math.cos(angle) * reach - mapArrow:getWidth() / 2),
+                           y = math.floor(rect.y + rect.height * (0.5 - SPRITE_LIFT) + math.sin(angle) * reach - mapArrow:getHeight() / 2) })
     mapArrow.icon:setRotation(math.deg(angle))
     mapArrow.distance:setText(tostring(math.max(math.abs(dx), math.abs(dy))))
     mapArrow:show()
