@@ -7,6 +7,9 @@ function onAdvance(cid, skill, oldLevel, newLevel)
             Vocations.sendTrial(cid)
         end
 
+    elseif (skill == PLAYER_SKILL_FISHING) then
+        Vocations.addTrial(cid, "angler", "skill", nil, oldLevel)
+
     elseif (skill >= PLAYER_SKILL_DUEL_WIN and skill <= PLAYER_SKILL_BATTLE_LOSS) then
         onPlayerEndDuel(cid)
     end

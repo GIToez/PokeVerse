@@ -364,6 +364,7 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
                     setMonsterUniqueTarget(pokemonFished, cid)
 
                     doPlayerAddStatistic(cid, PLAYER_STATISTIC_IDS.HOOKED_FISH, 1)
+                    Vocations.addTrial(cid, "angler", "hook", fishName)
                     doPlayerAddSkillTry(cid, PLAYER_SKILL_FISHING, Fishing.getSkillTries(cid))
 
 

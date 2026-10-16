@@ -754,21 +754,32 @@ do not change.
   vocation get it from `U` or the Vocation button on the top bar; trainers without one still
   get the choice window. It shows the vocation's banner, the five ranks as a track (done,
   current, next, locked), the perks active now, and the next rank with its level, its new
-  perks and the rank-up trial with a progress bar. Rank up is enabled once the level and the
-  trial are done, and the top bar button shows a red dot when it is. Wear outfit puts the
+  perks and the rank-up trial with a progress bar per goal. Rank up is enabled once the level and
+  every goal are done, and the top bar button shows a red dot when it is. Wear outfit puts the
   vocation's outfit on again. Artwork: `scripts/art/vocation_progress_ui.py`.
 - **Built, goals proposed: rank-up trials** (`Vocations.TRIALS`). Besides the trainer level,
-  each rank needs a count of what the vocation is about; the count starts again at each rank.
-  The goals below are a proposal to tune.
+  each rank has two or three goals about what the vocation does, and all of them have to be
+  done; the counts start again at each rank. "Different species" counts each species once per
+  rank (shiny forms count as their species), and "Reach fishing skill" is the skill itself.
+  A dash means the goal is not part of that rank. The numbers are a proposal to tune.
 
-  | Vocation | Trial | Rank 2 | Rank 3 | Rank 4 | Rank 5 |
+  | Vocation | Goal | Rank 2 | Rank 3 | Rank 4 | Rank 5 |
   | --- | --- | --- | --- | --- | --- |
   | Ace Trainer | Defeat wild Pokémon | 200 | 500 | 1000 | 2000 |
-  | Catcher | Catch Pokémon | 20 | 50 | 100 | 200 |
-  | Breeder | Hatch eggs | 3 | 6 | 10 | 15 |
-  | Ranger | Radar scans that find Pokémon | 30 | 60 | 100 | 150 |
-  | Angler | Hook Pokémon while fishing | 50 | 100 | 200 | 400 |
-  | Medic | Heal Pokémon with potions | 50 | 100 | 200 | 400 |
+  | | Defeat different wild species | 15 | 30 | 50 | 80 |
+  | Catcher | Catch Pokémon | 50 | 150 | 300 | 600 |
+  | | Catch different species | 10 | 25 | 45 | 70 |
+  | | Catch shiny Pokémon | – | – | 1 | 2 |
+  | Breeder | Hatch eggs | 5 | 12 | 25 | 40 |
+  | | Hatch different species | 2 | 5 | 10 | 15 |
+  | Ranger | Radar scans that find Pokémon | 30 | 80 | 150 | 250 |
+  | | Find different species on the radar | 10 | 25 | 45 | 70 |
+  | | Find a shiny on the radar (they show from rank 4) | – | – | – | 1 |
+  | Angler | Hook Pokémon while fishing | 100 | 300 | 600 | 1200 |
+  | | Hook different species | 4 | 8 | 14 | 20 |
+  | | Reach fishing skill | 15 | 30 | 45 | 60 |
+  | Medic | Heal Pokémon with potions | 50 | 150 | 300 | 600 |
+  | | Heal other trainers' Pokémon | 5 | 15 | 30 | 50 |
 - **Built: the top bar.** Its right side is Hotkeys, Tasks, Daily login, Pokepedia, Tracker,
   Trainer Card and Vocation, then the Radar (Rangers only) and the Fishing Guide (Anglers
   only). The order is the module load order in `game_interface/interface.otmod`. Icons: `scripts/art/topbar_icons.py`.

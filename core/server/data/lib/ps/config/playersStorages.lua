@@ -102,7 +102,7 @@ playersStorages = {
     eggRollCycle = base + 99, -- the egg wait the daily early egg rolls belong to (its start time)
     eggRollDay = base + 100, -- the last day of that wait that had its early egg roll
     vocationOutfits = base + 101, -- 1 once the outfits that became vocation outfits were swapped (Vocations.migrateOutfits)
-    vocationTrial = base + 102, -- progress of the rank-up trial for the next rank (Vocations.TRIALS)
+    vocationTrial = base + 102, -- the counts of the next rank's trial goals, "g" and "a,b,c" in Vocations.TRIALS order
     vocationSince = base + 103, -- os.time() the vocation was chosen
     trainerSince = base + 104, -- os.time() of the first login with the Trainer Card (TrainerCard)
     cardTitle = base + 105, -- the displayed title's key ("v<rank>" or "a<achievement id>")
@@ -111,5 +111,6 @@ playersStorages = {
     cardTrophies = base + 108, -- up to six "name|level|sex" joined with ";"
     cardPrivacy = base + 109, -- what other trainers don't see on the card: 1 play time, 2 statistics, 4 trophies
     cardClient = base + 110, -- 1 while the trainer's client has the Trainer Card window (it says hello at login)
+    vocationTrialSpecies = base + 111, -- "s" and a hex bitmap of the Pokedex numbers the trial's "different species" goal counted
     -- tournamentWeekWinnerStorage = base + 65
 }

@@ -195,52 +195,125 @@ local function captureVocation(fn)
     return last
 end
 
+local function goalsOf(trial)
+    local list = {}
+    for _, goal in ipairs(trial and trial.goals or {}) do
+        list[#list + 1] = goal.have .. "/" .. goal.need .. " " .. goal.text
+    end
+    return table.concat(list, "; ")
+end
+
 local function testTrials(cid)
     become(cid, nil)
     local notice = captureVocation(function() Vocations.sendTrial(cid) end).trial
     check("top bar: \"!\" to choose a vocation from level 20", notice and notice.choose == true and
         notice.ready == (getPlayerLevel(cid) >= Vocations.MIN_LEVEL))
     become(cid, "angler", 1)
-    setPlayerStorageValue(cid, playersStorages.vocationTrial, 0)
     if (getPlayerLevel(cid) < Vocations.RANK_LEVELS[2]) then
         doPlayerAddLevel(cid, Vocations.RANK_LEVELS[2] - getPlayerLevel(cid))
     end
+    -- the skill goal at the tester's own fishing skill, so it is done and the other goals decide
+    local skillGoal = Vocations.TRIALS.angler[3]
+    local oldSkillGoals = skillGoal.goals
+    local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_FISHING)
+    skillGoal.goals = { math.max(1, skill), 30, 45, 60 }
+    local ok, err = pcall(function()
+        local trial = Vocations.getTrial(cid)
+        local goals = trial and trial.goals or {}
+        check("trial: Angler rank 1 has three goals", #goals == 3 and goals[1].text == "Hook 100 Pokemon while fishing" and
+            goals[2].text == "Hook 4 different species" and goals[1].have == 0 and goals[2].have == 0 and
+            goals[3].have == goals[3].need and trial.have == 1 and trial.need == 3, goalsOf(trial))
+        local ok, why = Vocations.canRankUp(cid)
+        check("trial: no rank up before the trial", not ok and (why or ""):find("Hook 100") ~= nil, why)
+        check("trial: the Rank up action refuses", captureVocation(function()
+            Vocations.onClientMessage(cid, '{"action":"rankup"}')
+        end).result ~= nil and Vocations.getRank(cid) == 1)
+
+        setPlayerStorageValue(cid, playersStorages.vocationTrial, 7)
+        check("trial: the old single count is the first goal's", Vocations.getTrial(cid).goals[1].have == 7)
+        Vocations.resetTrial(cid)
+
+        Vocations.addTrial(cid, "ace", "defeat", "Rattata", 10)
+        Vocations.addTrial(cid, "angler", "catch", "Magikarp")
+        check("trial: other vocations' and other events don't count", Vocations.getTrial(cid).goals[1].have == 0 and
+            Vocations.getTrial(cid).goals[2].have == 0)
+        local sent = captureVocation(function() Vocations.addTrial(cid, "angler", "hook", "Magikarp", 98) end)
+        trial = Vocations.getTrial(cid)
+        check("trial: steps count, the species once, and are sent", trial.goals[1].have == 98 and trial.goals[2].have == 1 and
+            sent.trial and sent.trial.goals and sent.trial.goals[1].have == 98 and sent.trial.ready == false, goalsOf(trial))
+        Vocations.addTrial(cid, "angler", "hook", "Shiny Magikarp")
+        Vocations.addTrial(cid, "angler", "hook", "Magikarp")
+        trial = Vocations.getTrial(cid)
+        check("trial: a species counts once, shiny forms too", trial.goals[2].have == 1 and trial.goals[1].have == 100,
+            goalsOf(trial))
+        local messages = captureMessages(function() Vocations.addTrial(cid, "angler", "hook", "Poliwag") end)
+        check("trial: a finished goal stops counting", Vocations.getTrial(cid).goals[1].have == 100 and
+            Vocations.getTrial(cid).goals[2].have == 2)
+        check("trial: no goal message before a goal is done", not messages:find("goal done"), messages)
+        Vocations.addTrial(cid, "angler", "hook", "Krabby")
+        messages = captureMessages(function()
+            sent = captureVocation(function() Vocations.addTrial(cid, "angler", "hook", "Shellder") end)
+        end)
+        trial = Vocations.getTrial(cid)
+        check("trial: done once every goal is, ready", trial.have == 3 and trial.need == 3 and sent.trial and
+            sent.trial.ready == true and messages:find("Rank%-up trial done") ~= nil, goalsOf(trial) .. " | " .. messages)
+        local map = getPlayerStorageValue(cid, playersStorages.vocationTrialSpecies)
+        check("trial: the species are kept as a hex bitmap", type(map) == "string" and map:match("^s%x+$") ~= nil and
+            #map == 1 + math.ceil(math.max(getPokemonNumberByName("Magikarp"), getPokemonNumberByName("Shellder"),
+                getPokemonNumberByName("Krabby"), getPokemonNumberByName("Poliwag")) / 4), tostring(map))
+
+        local data = Vocations.progress(cid)
+        local gains = {}
+        for _, gain in ipairs(data.next.gains) do
+            gains[gain.text] = gain.badge
+        end
+        check("progress: rank, titles, perks and the next rank", data.key == "angler" and data.rank == 1 and #data.titles == 5 and
+            #data.ranks == 5 and #data.perks >= 2 and data.next.rank == 2 and data.next.ready == true and data.next.level == 30 and
+            #data.next.trial.goals == 3)
+        check("progress: next rank gains", gains["Fishing skill gain"] == "+20%" and gains["See what can bite"] == "New",
+            JSON.encode(gains))
+
+        sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"rankup"}') end)
+        trial = Vocations.getTrial(cid)
+        check("trial: Rank up takes rank 2 and starts the next trial", Vocations.getRank(cid) == 2 and
+            trial.goals[1].have == 0 and trial.goals[1].need == 300 and trial.goals[2].have == 0 and
+            not tostring(getPlayerStorageValue(cid, playersStorages.vocationTrialSpecies)):find("1") and sent.progress and sent.progress.rank == 2,
+            goalsOf(trial))
+
+        skillGoal.goals = { 1, skill + 1, 45, 60 }
+        messages = captureMessages(function() Vocations.addTrial(cid, "angler", "skill", nil, skill) end)
+        check("trial: the skill goal counts the skill itself", Vocations.getTrial(cid).goals[3].have == skill and
+            not messages:find("goal done"), messages)
+        skillGoal.goals = { 1, skill, 45, 60 }
+        messages = captureMessages(function() Vocations.addTrial(cid, "angler", "skill", nil, skill - 1) end)
+        check("trial: reaching the skill finishes its goal", messages:find("Rank%-up goal done: Reach fishing skill") ~= nil,
+            messages)
+    end)
+    skillGoal.goals = oldSkillGoals
+    check("trial checks ran without errors", ok, err)
+
+    become(cid, "catcher", 1)
+    check("trial: Catcher rank 1 has no shiny goal", #Vocations.getTrial(cid).goals == 2, goalsOf(Vocations.getTrial(cid)))
+    become(cid, "catcher", 3)
+    Vocations.addTrial(cid, "catcher", "catch", "Rattata")
     local trial = Vocations.getTrial(cid)
-    check("trial: Angler rank 1 needs 50 hooks", trial and trial.need == 50 and trial.have == 0 and
-        trial.text == "Hook 50 Pokemon while fishing", trial and trial.text)
-    local ok, why = Vocations.canRankUp(cid)
-    check("trial: no rank up before the trial", not ok and (why or ""):find("trial") ~= nil, why)
-    check("trial: the Rank up action refuses", captureVocation(function()
-        Vocations.onClientMessage(cid, '{"action":"rankup"}')
-    end).result ~= nil and Vocations.getRank(cid) == 1)
+    check("trial: only shinies count for the shiny goal", #trial.goals == 3 and trial.goals[3].have == 0 and
+        trial.goals[1].have == 1, goalsOf(trial))
+    Vocations.addTrial(cid, "catcher", "catch", "Shiny Rattata")
+    trial = Vocations.getTrial(cid)
+    check("trial: a shiny catch counts for all three", trial.goals[1].have == 2 and trial.goals[2].have == 1 and
+        trial.goals[3].have == 1, goalsOf(trial))
+    local last = getPokemonNameByNumber(POKEMON_NUMBER)
+    Vocations.addTrial(cid, "catcher", "catch", last)
+    check("trial: the last Pokedex number fits the bitmap", Vocations.getTrial(cid).goals[2].have == 2,
+        tostring(last) .. " " .. tostring(getPlayerStorageValue(cid, playersStorages.vocationTrialSpecies)))
 
-    Vocations.addTrial(cid, "ace", 10)
-    check("trial: other vocations' steps don't count", Vocations.getTrial(cid).have == 0)
-    local sent = captureVocation(function() Vocations.addTrial(cid, "angler", 49) end)
-    check("trial: steps count and are sent", Vocations.getTrial(cid).have == 49 and sent.trial and sent.trial.have == 49 and
-        sent.trial.ready == false)
-    sent = captureVocation(function() Vocations.addTrial(cid, "angler", 5) end)
-    check("trial: done, capped at the goal, ready", Vocations.getTrial(cid).have == 50 and sent.trial and sent.trial.ready == true)
-
-    local data = Vocations.progress(cid)
-    local gains = {}
-    for _, gain in ipairs(data.next.gains) do
-        gains[gain.text] = gain.badge
-    end
-    check("progress: rank, titles, perks and the next rank", data.key == "angler" and data.rank == 1 and #data.titles == 5 and
-        #data.ranks == 5 and #data.perks >= 2 and data.next.rank == 2 and data.next.ready == true and data.next.level == 30)
-    check("progress: next rank gains", gains["Fishing skill gain"] == "+20%" and gains["See what can bite"] == "New",
-        JSON.encode(gains))
-
-    sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"rankup"}') end)
-    check("trial: Rank up takes rank 2 and starts the next trial", Vocations.getRank(cid) == 2 and
-        Vocations.getTrial(cid).have == 0 and Vocations.getTrial(cid).need == 100 and sent.progress and sent.progress.rank == 2)
-
+    become(cid, "angler", 2)
     local outfit = getCreatureOutfit(cid)
     outfit.lookType = getPlayerSex(cid) == PLAYERSEX_FEMALE and 611 or 612
     doCreatureChangeOutfit(cid, outfit)
     check("progress: not wearing the outfit", Vocations.progress(cid).wearing == false)
-    sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"wear"}') end)
+    local sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"wear"}') end)
     check("wear: puts the vocation outfit on", sent.progress and sent.progress.wearing == true and
         getCreatureOutfit(cid).lookType == Vocations.LIST[5].looks[getPlayerSex(cid) == PLAYERSEX_FEMALE and 1 or 2])
 
