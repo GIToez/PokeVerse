@@ -115,12 +115,14 @@ local function fillSlot(card, info)
         card.heldItem:setItemId(tonumber(info.held.client) or 0)
         card.heldItem:setVisible(true)
         card.heldName:setText(info.held.name)
+        card.heldName:setMarginLeft(4)
         card.heldName:setColor('#dce6ff')
         card.heldName:setTooltip(info.held.text or '')
         card.heldItem:setTooltip(info.held.text or '')
     else
         card.heldItem:setItemId(0)
         card.heldName:setText(tr('No held item'))
+        card.heldName:setMarginLeft(-32)
         card.heldName:setColor(MUTED_COLOR)
         card.heldName:setTooltip('')
     end
@@ -348,12 +350,17 @@ local function fillEvents()
     local box = window.events
     box:destroyChildren()
     local labels = { daycare = 'Training EXP', breeding = 'Egg chance' }
+    local parts = {}
     for _, kind in ipairs({ 'daycare', 'breeding' }) do
         local event = (state.events or {})[kind]
         if event then
-            local pill = g_ui.createWidget('DaycareEventPill', box)
-            pill:setText(tr('%s %s  |  %s left', multiplier(event.multiplier), tr(labels[kind]), duration(event.left)))
+            parts[#parts + 1] = tr('%s %s for %s', multiplier(event.multiplier), tr(labels[kind]), duration(event.left))
         end
+    end
+    if #parts > 0 then
+        local pill = g_ui.createWidget('DaycareEventPill', box)
+        pill:setText(tr('Event') .. ':  ' .. table.concat(parts, '   \183   '))
+        pill:setTooltip(tr('Day Care events run for the whole server.'))
     end
 end
 
