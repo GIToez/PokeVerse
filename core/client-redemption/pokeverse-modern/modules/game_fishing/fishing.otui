@@ -234,15 +234,19 @@ FishingWindow < UIWindow
 
     FishingTab
       id: kanto
-      width: 130
+      width: 104
 
     FishingTab
       id: orange
-      width: 170
+      width: 144
 
     FishingTab
       id: hoenn
-      width: 130
+      width: 104
+
+    FishingTab
+      id: johto
+      width: 104
 
   ScrollablePanel
     id: list

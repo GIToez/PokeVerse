@@ -134,12 +134,10 @@ local function getPlayerHeadbuttablePokemons(cid, pokemon)
 
     for _, v in pairs(DROPS) do
         if (v.skill <= skill and level >= v.minLevel) then
+            r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.kantoPokemon}
             if (isInJohto) then
                 r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.johtoPokemon}
-            else
-                r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.kantoPokemon}
-            end
-            if (isInOl) then
+            elseif (isInOl) then
                 r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.orangeArchipelagoPokemon }
             elseif (isInHoenn) then
                 r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.hoennPokemon }

@@ -875,7 +875,7 @@ local function testFishingGuide(cid)
     become(cid, "angler", 4)
     sent = captureFishing(function() Fishing.onClientMessage(cid, '{"action":"open"}') end)
     local guide = sent[1] or {}
-    check("fishing guide sent at rank 4", guide.type == "guide" and guide.rank == 4 and #(guide.regions or {}) == 3,
+    check("fishing guide sent at rank 4", guide.type == "guide" and guide.rank == 4 and #(guide.regions or {}) == 4,
         tostring(guide.type))
     local first = (guide.tiers or {})[1] or {}
     check("guide: Magikarp at skill 0 everywhere", first.skill == 0 and (first.pools or {}).kanto and

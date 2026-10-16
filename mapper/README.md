@@ -172,8 +172,8 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   players who climb. Headbutt and fishing are the server's, by region: inside Johto's box
   (`getPlayerInsideJohto`, x 1700 to 3048, y 20 to 1270, checked before Hoenn's, which overlaps
   its south-west) they draw from the `johtoPokemon` lists in `036-headbutt.lua` and
-  `043-fishing.lua`, HeartGold and SoulSilver's headbutt and fishing Pokémon by skill, in place
-  of Kanto's.
+  `043-fishing.lua`, HeartGold and SoulSilver's headbutt and fishing Pokémon by skill, on top
+  of Kanto's (like the Orange Archipelago and Hoenn).
 - **Area names:** the area banner and the clock's location label (the client's
   `game_environment`) come from `areas_johto.lua`, which the build writes next to
   `sounds_pokeverse.lua`: every tile west of x 3048 is the route whose road is nearest (or the sea

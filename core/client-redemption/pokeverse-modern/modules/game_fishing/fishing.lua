@@ -35,6 +35,8 @@ local function typeLabel(name)
     return TYPE_LABELS[name] or (name:sub(1, 1):upper() .. name:sub(2))
 end
 
+local REGION_TABS = { 'kanto', 'orange', 'hoenn', 'johto' }
+
 local function regionName(key)
     for _, r in ipairs(guide.regions or {}) do
         if r.key == key then
@@ -195,7 +197,7 @@ local function refreshList()
 end
 
 local function refreshTabs()
-    for _, key in ipairs({ 'kanto', 'orange', 'hoenn' }) do
+    for _, key in ipairs(REGION_TABS) do
         local tab = window.tabs[key]
         tab:setText(regionName(key))
         tab:setOn(region == key)
@@ -296,7 +298,7 @@ function init()
     g_ui.importStyle('fishing')
     window = g_ui.createWidget('FishingWindow', rootWidget)
     window:hide()
-    for _, key in ipairs({ 'kanto', 'orange', 'hoenn' }) do
+    for _, key in ipairs(REGION_TABS) do
         window.tabs[key].onClick = function()
             if guide then
                 showRegion(key)

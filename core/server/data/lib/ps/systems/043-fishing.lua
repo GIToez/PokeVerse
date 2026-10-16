@@ -251,12 +251,10 @@ local function getPlayerFishinablePokemons(cid, pokemon, rodItemId)
 
     for _, v in pairs(DROPS) do
         if (v.skill <= skill and level >= v.minLevel and table.find(v.rods, rodItemId)) then
+            r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.kantoPokemon }
             if (isInJohto) then
                 r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.johtoPokemon }
-            else
-                r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.kantoPokemon }
-            end
-            if (isInOl) then
+            elseif (isInOl) then
                 r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.orangeArchipelagoPokemon }
             elseif (isInHoenn) then
                 r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.hoennPokemon }
@@ -447,7 +445,8 @@ end
 -- The Kanto pool bites everywhere; the Orange Archipelago and Hoenn pools bite on top of it there.
 -- A tier's levels are the trainer's own Pokemon's: from minLevel, and past maxLevel the low tiers
 -- drop out once POKEMON_NUMBER_TO_ACTIVATE_MAX_LEVEL tiers are open.
-local REGION_KEYS = { kantoPokemon = "kanto", orangeArchipelagoPokemon = "orange", hoennPokemon = "hoenn" }
+local REGION_KEYS = { kantoPokemon = "kanto", orangeArchipelagoPokemon = "orange", hoennPokemon = "hoenn",
+                      johtoPokemon = "johto" }
 local ROD_NAMES = { [OLD_ROD_ITEMID] = "Old Rod", [GOOD_ROD_ITEMID] = "Good Rod", [SUPER_ROD_ITEMID] = "Super Rod",
                     [CRANE1_ITEMID] = "Cranes", [CRANE2_ITEMID] = "Cranes", [CRANE3_ITEMID] = "Cranes", [CRANE4_ITEMID] = "Cranes" }
 local ROD_ORDER = { OLD_ROD_ITEMID, GOOD_ROD_ITEMID, SUPER_ROD_ITEMID, CRANE1_ITEMID }
@@ -457,7 +456,9 @@ local function sendFishing(cid, data)
 end
 
 local function currentRegion(cid)
-    if (getPlayerInsideOrangeArchipelago(cid)) then
+    if (getPlayerInsideJohto(cid)) then
+        return "johto"
+    elseif (getPlayerInsideOrangeArchipelago(cid)) then
         return "orange"
     elseif (getPlayerInsideHoenn(cid)) then
         return "hoenn"
