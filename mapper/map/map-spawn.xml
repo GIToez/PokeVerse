@@ -61879,13 +61879,13 @@
   <spawn centerx="2727" centery="387" centerz="7" radius="1">
     <npc name="Everett Crane" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2476" centery="572" centerz="5" radius="1">
-    <npc name="Falkner" x="0" y="0" z="5" spawntime="60" level="0"/>
+  <spawn centerx="2476" centery="571" centerz="6" radius="1">
+    <npc name="Falkner" x="0" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2476" centery="575" centerz="6" radius="1">
+  <spawn centerx="2473" centery="576" centerz="6" radius="1">
     <npc name="Rod Haskell" x="0" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2479" centery="577" centerz="6" radius="1">
+  <spawn centerx="2478" centery="574" centerz="6" radius="1">
     <npc name="Abe Whitlock" x="0" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2334" centery="657" centerz="9" radius="1">

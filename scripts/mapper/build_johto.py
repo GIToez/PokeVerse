@@ -335,13 +335,17 @@ AREA_GYMS = {'Violet': 'Zephyr Gym', 'Azalea': 'Hive Gym', 'Goldenrod': 'Plain G
 # floor below, '=' a plank,
 # 'x' a cracked plank (it gives way under players and mends, gyms/brokenPlank.lua), '^' and 'v'
 # escalators up and down (a '^' takes players to the tile north of it a floor up, where a 'v' over
-# it brings them back to the tile south of it). npcs: (name, dx, dy, z) from the gym's corner.
+# it brings them back to the tile south of it), 'g' glass floor, 'U' and 'D' a wooden lift up and
+# down (gyms/liftPlatform.lua; a 'U' carries players to the tile north of it a floor up, a 'D' to
+# the tile south of it a floor down). npcs: (name, dx, dy, z) from the gym's corner.
 # restyle swaps item ids over the whole building, so every floor is in one style (None takes the item out).
 GYM_PLANKS = (9224, 9227, 9228, 9230)
 GYM_CRACKED = 9231
 GYM_CRACKED_AID = 46000
 GYM_FLOOR = 9146
 GYM_UP, GYM_DOWN = 14420, 14418
+GYM_GLASS = 671
+GYM_LIFT, GYM_LIFT_UP_AID, GYM_LIFT_DOWN_AID = 446, 46001, 46002
 # the sign by the door, where Kanto's gyms have theirs (Viridian's at its box's corner + (8, 13)),
 # reading the gym's name
 GYM_SIGN, GYM_SIGN_AT = 11914, (8, 13)
@@ -350,30 +354,28 @@ GYM_SIGN, GYM_SIGN_AT = 11914, (8, 13)
 GYM_WOODEN = {9146: 405, 1111: 6839, 1112: 6840, 1113: 6841, 1115: 6843, 5303: 7027, 5304: 7028,
               1582: 1583, 1584: 1585, 1586: 1587, 1588: 1589, 1124: 1207, 1125: 1208, 1515: None}
 GYM_PLANS = {
-    # Zephyr Gym: two plank walkways over the hall up to Falkner's arena; the short ways are cracked
-    # and drop players back into the open hall
+    # Zephyr Gym (HGSS): a lift from the hall up to a plank path that winds in an S over the open
+    # hall to Falkner's platform by the back windows, a Bird Keeper at each end of the S; the glass
+    # walkway round the edge gets past both of them. The floor above is only the roof's attic.
     'Violet': {
         'floors': {
             7: ["............",
-                ".._________."] + ["____________"] * 9,
-            6: ["======  ====",
-                "=.  =   =  .",
-                "=   =   =   ",
-                "x   ==x===x=",
-                "=   == =   =",
-                "=  ===x=   x",
-                "x  =   ==  =",
-                "=  ==  ==  =",
-                "=   =   =  x",
-                "^x===   =x=^",
-                "=====   ===="],
-            5: [" .......... "] * 7 + [
-                "     ==     ",
-                "===x=x==x===",
-                "v =  ==  = v",
-                "  ========  "],
+                ".___________"] + ["____________"] * 6 + [
+                "_____UU_____"] + ["____________"] * 2,
+            6: ["gggg====gggg",
+                "g   ====   g",
+                "g     =    g",
+                "g  =====   g",
+                "g  =       g",
+                "g ======== g",
+                "g        = g",
+                "ggggg===== g",
+                "g    DD    g",
+                "g          g",
+                "gggggggggggg"],
+            5: ["____________"] * 11,
         },
-        'npcs': [('Falkner', 6, 2, 5), ('Rod Haskell', 6, 5, 6), ('Abe Whitlock', 9, 7, 6)],
+        'npcs': [('Falkner', 6, 1, 6), ('Rod Haskell', 3, 6, 6), ('Abe Whitlock', 8, 4, 6)],
         'restyle': GYM_WOODEN,
     },
 }
@@ -1088,7 +1090,7 @@ def gym_puzzles(places, prefab_tiles, npcs, gym):
         if plan is None:
             continue
         (ox, oy), = [(x, y) for name, x, y in place['buildings'] if name == 'gym']
-        cracked = []
+        cracked, lifts = [], []
         for z, rows in plan['floors'].items():
             for dy, row in enumerate(rows):
                 for dx, ch in enumerate(row):
@@ -1115,6 +1117,11 @@ def gym_puzzles(places, prefab_tiles, npcs, gym):
                         cracked.append(pos)
                     elif ch in '^v':
                         ground, items = GYM_FLOOR, pvmap.item_node(GYM_UP if ch == '^' else GYM_DOWN)
+                    elif ch == 'g':
+                        ground, items = GYM_GLASS, b''
+                    elif ch in 'UD':
+                        ground, items = None, pvmap.item_node(GYM_LIFT, GYM_LIFT_UP_AID if ch == 'U' else GYM_LIFT_DOWN_AID)
+                        lifts.append((pos, (pos[0], pos[1] - 1, z - 1) if ch == 'U' else (pos[0], pos[1] + 1, z + 1)))
                     else:
                         raise ValueError('%s gym plan: unknown tile %r' % (place['name'], ch))
                     prefab_tiles[pos] = pvmap.RawTile(shell.house_id, shell.flags, ground, items)
@@ -1129,6 +1136,8 @@ def gym_puzzles(places, prefab_tiles, npcs, gym):
         for x, y, z in cracked:
             assert any((x, y, zz) in prefab_tiles for zz in range(z + 1, Z + 1)), \
                 '%s gym: nothing under the cracked plank at %s' % (place['name'], (x, y, z))
+        for pos, to in lifts:
+            assert to in prefab_tiles, '%s gym: the lift at %s goes nowhere' % (place['name'], pos)
         for name, dx, dy, z in plan['npcs']:
             assert (ox + dx, oy + dy, z) in prefab_tiles, '%s gym: %s stands over a drop' % (place['name'], name)
             npcs.append((name, ox + dx, oy + dy, z))
