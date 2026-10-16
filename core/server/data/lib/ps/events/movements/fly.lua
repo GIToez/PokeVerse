@@ -61,14 +61,6 @@ local function canDeleteTile(cid, pos)
     return true
 end
 
--- Same box as getPlayerInsideJohto, on every floor: flying keeps to the region you took off in
-local JOHTO_FROM, JOHTO_TO = {x = 1700, y = 20}, {x = 3048, y = 1270}
-local BOUNCED = {}
-
-local function crossesJohtoBorder(fromPosition, toPosition)
-	return isInRange(fromPosition, JOHTO_FROM, JOHTO_TO, true) ~= isInRange(toPosition, JOHTO_FROM, JOHTO_TO, true)
-end
-
 function onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, actor)
 	if (not isPlayer(cid)) then
 		doTeleportThing(cid, fromPosition, false)
@@ -76,16 +68,6 @@ function onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, a
 	elseif (not isFlying(cid) and not isLevitating(cid) and not getPlayerTraveling(cid)) then
 		doTeleportThing(cid, fromPosition, false)
 		doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
-
-	elseif (BOUNCED[cid]) then
-		BOUNCED[cid] = nil
-
-	elseif (not getPlayerTraveling(cid) and crossesJohtoBorder(fromPosition, toPosition)) then
-		-- stepping back onto the void tile fires this again, the other way across the border
-		BOUNCED[cid] = true
-		doTeleportThing(cid, fromPosition, false)
-		BOUNCED[cid] = nil
-		doPlayerSendCancel(cid, "You can't fly out of this region. Land and go on foot, or take a ship or the train.")
 
 	else
 		for i, tile in ipairs(TILES[getDirectionTo(fromPosition, toPosition)]) do
