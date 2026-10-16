@@ -5,6 +5,8 @@ local talkState = {}
 local LAST_TRAVEl = {}
 
 local BALLOON_OUTFITS = {}
+-- Johto's towns are further apart than Kanto's, so its taxis fly twice as fast
+local JOHTO_STEP = 100
 local FLY_OUTFITS = {}
 
 for _, out in pairs({1297}) do
@@ -60,6 +62,117 @@ local TRAVELS = {
         {name = "celadon", destination = {x = 3659, y = 475, z = 7}, price = 150, outfits = FLY_OUTFITS},
         {name = "cerulean", destination = {x = 3935, y = 267, z = 7}, price = 150, outfits = FLY_OUTFITS},
         {name = "lavender", destination = {x = 4136, y = 550, z = 7}, price = 150, outfits = FLY_OUTFITS},
+    },
+    -- Johto: each taxi waits east of its Pokemon Center's temple tile and lands the tile west of the next one's
+    ["Hollis Brandt"] = { -- taxi new bark
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Corin Maddox"] = { -- taxi cherrygrove
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Wendell Price"] = { -- taxi violet
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Silas Thorne"] = { -- taxi azalea
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Desmond Reyes"] = { -- taxi goldenrod
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Rowan Ashby"] = { -- taxi ecruteak
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Marlon Kessler"] = { -- taxi olivine
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Griffin Ward"] = { -- taxi cianwood
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Tobias Lindqvist"] = { -- taxi mahogany
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "blackthorn", destination = {x = 2726, y = 387, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+    },
+    ["Everett Crane"] = { -- taxi blackthorn
+        {name = "new bark", destination = {x = 2720, y = 805, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cherrygrove", destination = {x = 2545, y = 834, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "violet", destination = {x = 2516, y = 564, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "azalea", destination = {x = 2394, y = 1038, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "goldenrod", destination = {x = 2286, y = 728, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "ecruteak", destination = {x = 2293, y = 409, z = 7}, price = 150, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "olivine", destination = {x = 2114, y = 499, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "cianwood", destination = {x = 1905, y = 639, z = 7}, price = 200, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
+        {name = "mahogany", destination = {x = 2535, y = 391, z = 7}, price = 100, outfits = FLY_OUTFITS, stepDelay = JOHTO_STEP},
     },
 }
 
@@ -129,7 +242,7 @@ local function onTravelEnd(cid, destination)
 end
 
 local doTravelStep
-doTravelStep = function(cid, destination, pos)
+doTravelStep = function(cid, destination, pos, delay)
     if (not isCreature(cid)) then
         return
     end
@@ -148,12 +261,12 @@ doTravelStep = function(cid, destination, pos)
     end
 
     doTeleportThing(cid, pos, true)--doCreatureWalkToPosition(cid, pos)
-    addEvent(doTravelStep, 200, cid, destination, pos)
+    addEvent(doTravelStep, delay, cid, destination, pos, delay)
 end
 
 local function doPlayerTravel(cid, travel)
     onTravelStart(cid, travel.outfits)
-    doTravelStep(cid, travel.destination, getCreaturePosition(cid))
+    doTravelStep(cid, travel.destination, getCreaturePosition(cid), travel.stepDelay or 200)
 end
 
 function onCreatureAppear(cid) npcHandler:onCreatureAppear(cid) end

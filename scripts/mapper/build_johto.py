@@ -155,18 +155,20 @@ PREFABS = {
 for _name, _spec in T.BUILDINGS.items():
     PREFABS[_name] = dict({'z': Z, 'walled': True, 'rent': True}, **_spec)
 # Towns, laid out in johto_towns.py, paved like their Kanto mirror. The temple is set in front of the
-# Pokémon Center and the clearing (x, y, r) around the layout.
+# Pokémon Center and the clearing (x, y, r) around the layout. `taxi`: the fly taxi NPC (npc/scripts/travels.lua),
+# standing 4 tiles east of the temple; the other taxis land on the tile between.
+TAXI_EAST = 4
 TOWNS_BUILT = [
-    {'town_id': 50, 'name': 'New Bark', 'paving': 'dirt'},
-    {'town_id': 51, 'name': 'Cherrygrove', 'paving': 'gray stone tiles', 'core': 7},
-    {'town_id': 52, 'name': 'Violet', 'paving': 'dark cobblestone', 'core': 3},
-    {'town_id': 53, 'name': 'Azalea', 'paving': 'cobblestone', 'core': 4},
-    {'town_id': 54, 'name': 'Goldenrod', 'paving': 'gray stone tiles', 'core': 6},
-    {'town_id': 55, 'name': 'Ecruteak', 'paving': 'dirt', 'core': 5},
-    {'town_id': 56, 'name': 'Olivine', 'paving': 'gray stone tiles', 'core': 5},
-    {'town_id': 57, 'name': 'Cianwood', 'paving': 'dirt', 'core': 4},
-    {'town_id': 58, 'name': 'Mahogany', 'paving': 'dirt', 'core': 4},
-    {'town_id': 59, 'name': 'Blackthorn', 'paving': 'dark cobblestone', 'core': 4},
+    {'town_id': 50, 'name': 'New Bark', 'taxi': 'Hollis Brandt', 'paving': 'dirt'},
+    {'town_id': 51, 'name': 'Cherrygrove', 'taxi': 'Corin Maddox', 'paving': 'gray stone tiles', 'core': 7},
+    {'town_id': 52, 'name': 'Violet', 'taxi': 'Wendell Price', 'paving': 'dark cobblestone', 'core': 3},
+    {'town_id': 53, 'name': 'Azalea', 'taxi': 'Silas Thorne', 'paving': 'cobblestone', 'core': 4},
+    {'town_id': 54, 'name': 'Goldenrod', 'taxi': 'Desmond Reyes', 'paving': 'gray stone tiles', 'core': 6},
+    {'town_id': 55, 'name': 'Ecruteak', 'taxi': 'Rowan Ashby', 'paving': 'dirt', 'core': 5},
+    {'town_id': 56, 'name': 'Olivine', 'taxi': 'Marlon Kessler', 'paving': 'gray stone tiles', 'core': 5},
+    {'town_id': 57, 'name': 'Cianwood', 'taxi': 'Griffin Ward', 'paving': 'dirt', 'core': 4},
+    {'town_id': 58, 'name': 'Mahogany', 'taxi': 'Tobias Lindqvist', 'paving': 'dirt', 'core': 4},
+    {'town_id': 59, 'name': 'Blackthorn', 'taxi': 'Everett Crane', 'paving': 'dark cobblestone', 'core': 4},
 ]
 # Places laid out like towns that are not towns (no temple): `lawn` grounds their open ground with
 # lawn, `spawns` lets the wild Pokémon of that table onto it.
@@ -2626,6 +2628,8 @@ def build(base, out_path):
             door = x0 + p.door
             terrain[y0 + p.h:end, door:door + 2] = DIRT
             clear[y0 + p.h:end, door - 1:door + 3] = True
+    for place in TOWNS_BUILT:
+        npcs.append((place['taxi'], place['temple'][0] + TAXI_EAST, place['temple'][1], Z))
     # windmills: the wheel goes on the middle of the roof's front row
     roof = [(dx, dy) for (dx, dy, dz) in prefabs['windmill'].tiles if dz == -1]
     front = max(dy for _, dy in roof)
