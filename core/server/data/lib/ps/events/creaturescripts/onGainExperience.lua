@@ -7,13 +7,13 @@ function onGainExperience(cid, gainExp, referenceItem, target)
                 getPlayerPokemon(cid) or nil), gainExp, nil, referenceItem)
         PokemonStats.onDefeated(cid, referenceItem, target)
         Tasks.onDefeated(cid, target)
-        Vocations.onDefeated(cid)
+        Vocations.onDefeated(cid, target)
         Pokepedia.onDefeated(cid, target)
     elseif (isPokemonOnline(cid)) then
         doPlayerPokemonAddExperience(cid, getPlayerPokemon(cid), gainExp, nil, referenceItem)
         PokemonStats.onDefeated(cid, getPlayerBall(cid), target)
         Tasks.onDefeated(cid, target)
-        Vocations.onDefeated(cid)
+        Vocations.onDefeated(cid, target)
         Pokepedia.onDefeated(cid, target)
     end
 	return true

@@ -6,7 +6,8 @@
 -- The client's vocation window (game_vocation) talks JSON on EXTENDED_IDS.VOCATION:
 --   server -> client  {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}}
 --                     {type = "chosen", key, name, rank, title}
---                     {type = "trial", have, need, ready} (the top bar button's "!"; without a vocation
+--                     {type = "trial", have, need, goals = {{id, text, have, need}}, ready} (the goals done and
+--                      of the rank, each goal's count; the top bar button's "!"; without a vocation
 --                      {type = "trial", choose = true, ready} where ready means level 20 is reached)
 --                     {type = "result", ok, text}
 --   client -> server  {action = "open"} (the U key), {action = "choose", key}, {action = "close"}
@@ -205,27 +206,103 @@ Vocations.setRank = function(cid, rank)
 end
 
 -- Rank-up trials: besides the trainer level, each rank is earned by doing what the vocation is
--- about. goals[r] is the count that takes rank r to rank r + 1; the count starts again at each rank.
+-- about. Every goal of the rank has to be done. goals[r] is what takes rank r to rank r + 1 (0: not a
+-- goal at that rank); the counts start again at each rank.
+--   on      the event that counts (Vocations.addTrial): defeat, catch, hatch, scan, find, hook, heal, healOther
+--   unique  only species not counted yet at this rank (one unique goal per vocation: a single bitmap)
+--   shiny   only shiny Pokemon
+--   skill   the skill level itself is the count (on = "skill", sent from onAdvance)
+-- Goal ids are their place in the list and the storage keeps counts in that order, so only add goals at the end.
 Vocations.TRIALS = {
-    ace = { text = "Defeat %d wild Pokemon", goals = { 200, 500, 1000, 2000 } },
-    catcher = { text = "Catch %d Pokemon", goals = { 20, 50, 100, 200 } },
-    breeder = { text = "Hatch %d eggs", goals = { 3, 6, 10, 15 } },
-    ranger = { text = "Find wild Pokemon with %d radar scans", goals = { 30, 60, 100, 150 } },
-    angler = { text = "Hook %d Pokemon while fishing", goals = { 50, 100, 200, 400 } },
-    medic = { text = "Heal %d Pokemon with potions", goals = { 50, 100, 200, 400 } },
+    ace = {
+        { on = "defeat", text = "Defeat %d wild Pokemon", goals = { 200, 500, 1000, 2000 } },
+        { on = "defeat", unique = true, text = "Defeat %d different wild species", goals = { 15, 30, 50, 80 } },
+    },
+    catcher = {
+        { on = "catch", text = "Catch %d Pokemon", goals = { 50, 150, 300, 600 } },
+        { on = "catch", unique = true, text = "Catch %d different species", goals = { 10, 25, 45, 70 } },
+        { on = "catch", shiny = true, text = "Catch %d shiny Pokemon", goals = { 0, 0, 1, 2 } },
+    },
+    breeder = {
+        { on = "hatch", text = "Hatch %d eggs", goals = { 2, 4, 6, 10 } },
+        { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 1, 2, 3, 5 } },
+    },
+    ranger = {
+        { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 30, 80, 150, 250 } },
+        { on = "find", unique = true, text = "Find %d different species on the radar", goals = { 10, 25, 45, 70 } },
+        { on = "find", shiny = true, text = "Find %d shiny Pokemon on the radar", goals = { 0, 0, 0, 1 } },
+    },
+    angler = {
+        { on = "hook", text = "Hook %d Pokemon while fishing", goals = { 100, 300, 600, 1200 } },
+        { on = "hook", unique = true, text = "Hook %d different species", goals = { 4, 8, 14, 20 } },
+        { on = "skill", skill = PLAYER_SKILL_FISHING, text = "Reach fishing skill %d", goals = { 15, 30, 45, 60 } },
+    },
+    medic = {
+        { on = "heal", text = "Heal %d Pokemon with potions", goals = { 50, 150, 300, 600 } },
+        { on = "healOther", text = "Heal %d of other trainers' Pokemon", goals = { 5, 15, 30, 50 } },
+    },
 }
 
--- { text, have, need } for the trainer's next rank, nil without a vocation or at the top rank
+local TRIAL_SPECIES = playersStorages.vocationTrialSpecies
+
+-- The species counted by the rank's unique goal: a hex bitmap of Pokedex numbers, bit n - 1 for number n.
+-- Stored after an "s" and the counts after a "g": the server reads a value that starts with a digit as a number.
+local function hasSpecies(map, number)
+    local digit = tonumber(map:sub(math.ceil(number / 4), math.ceil(number / 4)), 16) or 0
+    return math.floor(digit / 2 ^ ((number - 1) % 4)) % 2 == 1
+end
+
+local function addSpecies(map, number)
+    local at = math.ceil(number / 4)
+    if (#map < at) then
+        map = map .. string.rep("0", at - #map)
+    end
+    local digit = (tonumber(map:sub(at, at), 16) or 0) + 2 ^ ((number - 1) % 4)
+    return map:sub(1, at - 1) .. string.format("%x", digit) .. map:sub(at + 1)
+end
+
+local function speciesMap(cid)
+    local map = tostring(getPlayerStorageValue(cid, TRIAL_SPECIES)):match("^s(%x*)$")
+    return map or ""
+end
+
+-- The counts, in TRIALS order. Before there were several goals the storage was the first goal's number.
+local function trialCounts(cid)
+    local counts, value = {}, tostring(getPlayerStorageValue(cid, TRIAL)):gsub("^g", "")
+    for count in value:gmatch("[^,]+") do
+        counts[#counts + 1] = math.max(0, tonumber(count) or 0)
+    end
+    return counts
+end
+
+local function goalCount(cid, goal, counts, i)
+    if (goal.skill) then
+        return getPlayerSkillLevel(cid, goal.skill)
+    end
+    return counts[i] or 0
+end
+
+-- { goals = {{id, text, have, need}}, have, need } for the trainer's next rank, nil without a vocation or at
+-- the top rank. have and need of the whole trial are the goals done and the goals of the rank.
 Vocations.getTrial = function(cid)
     local vocation = Vocations.get(cid)
     local rank = Vocations.getRank(cid)
     if (not vocation or rank >= Vocations.MAX_RANK) then
         return nil
     end
-    local trial = Vocations.TRIALS[vocation.key]
-    local need = trial.goals[rank]
-    return { text = string.format(__L(cid, trial.text), need), need = need,
-             have = math.min(need, math.max(0, getPlayerStorageValue(cid, TRIAL))) }
+    local counts = trialCounts(cid)
+    local trial = { goals = {}, have = 0, need = 0 }
+    for i, goal in ipairs(Vocations.TRIALS[vocation.key]) do
+        local need = goal.goals[rank] or 0
+        if (need > 0) then
+            local have = math.min(need, goalCount(cid, goal, counts, i))
+            trial.goals[#trial.goals + 1] = { id = i, text = string.format(__L(cid, goal.text), need), have = have, need = need }
+            trial.need = trial.need + 1
+            trial.have = trial.have + (have >= need and 1 or 0)
+        end
+    end
+    trial.goals = JSON.array(trial.goals)
+    return trial
 end
 
 -- Whether the trainer may take the next rank now, and why not
@@ -238,30 +315,81 @@ Vocations.canRankUp = function(cid)
         return false, string.format(__L(cid, "You need trainer level %d for the next rank."), Vocations.RANK_LEVELS[rank + 1])
     end
     local trial = Vocations.getTrial(cid)
-    if (trial.have < trial.need) then
-        return false, string.format(__L(cid, "Finish your rank-up trial first: %s (%d/%d)."), trial.text, trial.have, trial.need)
+    for _, goal in ipairs(trial.goals) do
+        if (goal.have < goal.need) then
+            return false, string.format(__L(cid, "Finish your rank-up trial first: %s (%d/%d)."), goal.text, goal.have, goal.need)
+        end
     end
     return true
 end
 
--- Counts one step of the trial; called where the vocation's perks are used. Tells the trainer once
--- the trial is done.
-Vocations.addTrial = function(cid, key, amount)
+Vocations.resetTrial = function(cid)
+    setPlayerStorageValue(cid, TRIAL, 0)
+    setPlayerStorageValue(cid, TRIAL_SPECIES, "")
+end
+
+-- Counts an event for the trial's goals; called where the vocation's perks are used. name is the
+-- Pokemon's, for the unique and shiny goals. For "skill", amount is the level before the advance.
+-- Tells the trainer as goals and the whole trial get done.
+Vocations.addTrial = function(cid, key, event, name, amount)
     if (not isPlayer(cid) or not Vocations.is(cid, key)) then
         return
     end
-    local trial = Vocations.getTrial(cid)
-    if (not trial or trial.have >= trial.need) then
+    local rank = Vocations.getRank(cid)
+    if (rank >= Vocations.MAX_RANK) then
         return
     end
-    local have = math.min(trial.need, trial.have + (amount or 1))
-    setPlayerStorageValue(cid, TRIAL, have)
-    if (have >= trial.need) then
+    local counts, map = trialCounts(cid), nil
+    local changed, finished = event == "skill", {}
+    for i, goal in ipairs(Vocations.TRIALS[key]) do
+        local need = goal.goals[rank] or 0
+        local before = goal.skill and (amount or 0) or goalCount(cid, goal, counts, i)
+        if (goal.on == event and need > 0 and before < need) then
+            local step = amount or 1
+            if (goal.shiny and not (name and isShinyName(name))) then
+                step = 0
+            elseif (goal.unique) then
+                local number = name and getPokemonNumberByName(name)
+                map = map or speciesMap(cid)
+                if (not number or hasSpecies(map, number)) then
+                    step = 0
+                else
+                    map, step = addSpecies(map, number), 1
+                end
+            end
+            if (step > 0 and not goal.skill) then
+                counts[i] = math.min(need, before + step)
+                changed = true
+            end
+            if (goalCount(cid, goal, counts, i) >= need) then
+                finished[#finished + 1] = string.format(__L(cid, goal.text), need)
+            end
+        end
+    end
+    if (not changed and #finished == 0) then
+        return
+    end
+    if (changed and event ~= "skill") then
+        for i = 1, #Vocations.TRIALS[key] do
+            counts[i] = counts[i] or 0
+        end
+        setPlayerStorageValue(cid, TRIAL, "g" .. table.concat(counts, ","))
+        if (map) then
+            setPlayerStorageValue(cid, TRIAL_SPECIES, "s" .. map)
+        end
+    end
+    local trial = Vocations.getTrial(cid)
+    if (#finished > 0 and trial.have >= trial.need) then
         local ready = Vocations.canRankUp(cid)
         doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, ready and
             __L(cid, "Rank-up trial done! Open the vocation window to rank up.") or
             string.format(__L(cid, "Rank-up trial done! You can rank up at trainer level %d."),
-                Vocations.RANK_LEVELS[Vocations.getRank(cid) + 1]))
+                Vocations.RANK_LEVELS[rank + 1]))
+    else
+        for _, text in ipairs(finished) do
+            doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE,
+                string.format(__L(cid, "Rank-up goal done: %s (%d of %d goals)."), text, trial.have, trial.need))
+        end
     end
     Vocations.sendTrial(cid)
 end
@@ -278,7 +406,7 @@ Vocations.sendTrial = function(cid)
     end
     local trial = Vocations.getTrial(cid)
     if (trial) then
-        send(cid, { type = "trial", have = trial.have, need = trial.need, ready = Vocations.canRankUp(cid) })
+        send(cid, { type = "trial", have = trial.have, need = trial.need, goals = trial.goals, ready = Vocations.canRankUp(cid) })
     else
         send(cid, { type = "trial", ready = false })
     end
@@ -299,16 +427,25 @@ Vocations.wear = function(cid)
 end
 
 -- Ace Trainer's trial: wild Pokemon defeated outside duels and battles (onGainExperience)
-Vocations.onDefeated = function(cid)
+Vocations.onDefeated = function(cid, target)
     if (not Vocations.inBattle(cid)) then
-        Vocations.addTrial(cid, "ace")
+        Vocations.addTrial(cid, "ace", "defeat", isCreature(target) and getCreatureName(target) or nil)
     end
 end
 
--- Ranger's trial: scans that find at least one Pokemon
+-- Ranger's trial: scans that find at least one Pokemon, and what they found
 local function countScan(cid, found)
     if (#found.regular + #found.shiny + #found.legendary > 0) then
-        Vocations.addTrial(cid, "ranger")
+        Vocations.addTrial(cid, "ranger", "scan")
+    end
+    local seen = {}
+    for _, list in ipairs({ found.regular, found.shiny }) do
+        for _, entry in ipairs(list) do
+            if (not seen[entry.name]) then
+                seen[entry.name] = true
+                Vocations.addTrial(cid, "ranger", "find", entry.name)
+            end
+        end
     end
 end
 
@@ -322,7 +459,7 @@ Vocations.rankUp = function(cid)
         return false
     end
     Vocations.setRank(cid, Vocations.getRank(cid) + 1)
-    setPlayerStorageValue(cid, TRIAL, 0)
+    Vocations.resetTrial(cid)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "You are now %s!"),
         withArticle(__L(cid, Vocations.getTitle(cid)))))
@@ -518,7 +655,7 @@ Vocations.choose = function(cid, key)
     setPlayerStorageValue(cid, WINDOW, -1)
     setPlayerStorageValue(cid, STORAGE, vocation.id)
     setPlayerStorageValue(cid, SINCE, os.time())
-    setPlayerStorageValue(cid, TRIAL, 0)
+    Vocations.resetTrial(cid)
     Vocations.setRank(cid, 1)
     Vocations.wear(cid)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
@@ -537,7 +674,7 @@ Vocations.reset = function(cid)
     setPlayerStorageValue(cid, STORAGE, -1)
     setPlayerStorageValue(cid, RANK, -1)
     setPlayerStorageValue(cid, WINDOW, -1)
-    setPlayerStorageValue(cid, TRIAL, -1)
+    Vocations.resetTrial(cid)
     setPlayerStorageValue(cid, SINCE, -1)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)

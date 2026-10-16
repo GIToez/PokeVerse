@@ -4,9 +4,9 @@
 -- A card's Select turns into Confirm and Back; Confirm sends {action = "choose", key}.
 -- A trainer with a vocation gets the progress window instead: {type = "progress", key, name, tagline, rank,
 -- maxRank, title, titles, levels, level, since, look, wearing, perks = {{icon, text, value}, ...}, ranks = {perks
--- of each rank}, next = {rank, title, level, trial = {text, have, need}, gains = {{icon, text, value, badge}},
--- ready, why}}. Its buttons send {action = "rankup"} and {action = "wear"}; {type = "trial", have, need, ready}
--- updates the trial and the top bar button's red "!" (also shown from level 20 until a vocation is chosen).
+-- of each rank}, next = {rank, title, level, trial = {goals = {{id, text, have, need}}, have, need}, gains =
+-- {{icon, text, value, badge}}, ready, why}}. Its buttons send {action = "rankup"} and {action = "wear"};
+-- {type = "trial", have, need, goals, ready} updates the trial and the top bar button's red "!" (also shown from level 20 until a vocation is chosen).
 -- The U key is the vocation key: it opens the trainer's vocation tool (the Ranger radar, the Angler
 -- fishing guide; those modules call registerTool(id, {enabled = fn, toggle = fn})), and without one
 -- it asks the server for this window with {action = "open"}. Below level 20 the window opens with
@@ -217,7 +217,8 @@ local function fillNext(data)
     local panel = progressWindow.nextPanel
     panel.list:destroyChildren()
     local next = data.next
-    for _, id in ipairs({ 'requirements', 'levelText', 'levelValue', 'levelBar', 'trialText', 'trialValue', 'trialBar', 'newAt' }) do
+    panel.goals:destroyChildren()
+    for _, id in ipairs({ 'levelText', 'levelValue', 'levelBar', 'goals', 'newAt' }) do
         panel[id]:setVisible(next ~= nil)
     end
     panel.topRank:setVisible(next == nil)
@@ -233,9 +234,15 @@ local function fillNext(data)
     panel.levelValue:setText(reached and tr('Lv. %d  \183  done', data.level or 0) or
         tr('Lv. %d / %d', data.level or 0, next.level or 0))
     panel.levelValue:setColor(reached and '#6fe08a' or '#ffffff')
-    local trial = next.trial or { text = '', have = 0, need = 0 }
-    panel.trialText:setText(tr('Trial: %s', trial.text or ''))
-    panel.trialValue:setText(string.format('%d / %d', trial.have or 0, trial.need or 0))
+    local goals = {}
+    for _, goal in ipairs((next.trial or {}).goals or {}) do
+        local row = g_ui.createWidget('VocationGoal', panel.goals)
+        local have, need = tonumber(goal.have) or 0, tonumber(goal.need) or 0
+        row.text:setText(goal.text or '')
+        row.value:setText(have >= need and tr('%d / %d  \183  done', have, need) or string.format('%d / %d', have, need))
+        row.value:setColor(have >= need and '#6fe08a' or '#ffffff')
+        goals[#goals + 1] = { bar = row.bar, have = have, need = need }
+    end
     panel.newAt:setText(tr('New at rank %d', next.rank or 0))
     for _, gain in ipairs(next.gains or {}) do
         perkRow(panel.list, gain, true)
@@ -245,7 +252,14 @@ local function fillNext(data)
         barEvent = nil
         if progressWindow and progress then
             setBar(panel.levelBar, data.level or 0, next.level or 0)
-            setBar(panel.trialBar, trial.have or 0, trial.need or 0)
+            for _, goal in ipairs(goals) do
+                setBar(goal.bar, goal.have, goal.need)
+            end
+            local rows = panel.list:getChildCount()
+            local overflow = rows * 34 - 4 > panel.list:getHeight()
+            panel.nextScroll:setVisible(overflow)
+            panel.list:setMarginRight(overflow and 16 or 0)
+            panel.nextScroll:setValue(0)
         end
     end, 50)
 end
@@ -448,7 +462,7 @@ local function onVocation(protocol, opcode, buffer)
     elseif data.type == 'trial' then
         setDot(data.ready, data.choose)
         if progress and progress.next and progressWindow:isVisible() then
-            progress.next.trial.have = tonumber(data.have) or 0
+            progress.next.trial = { goals = data.goals or {}, have = tonumber(data.have) or 0, need = tonumber(data.need) or 0 }
             progress.next.ready = data.ready
             fillNext(progress)
             fillButtons(progress)

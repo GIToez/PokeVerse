@@ -52,6 +52,30 @@ VocationBar < UIWidget
     width: 0
     phantom: true
 
+// One rank-up goal: what to do, the count and its bar
+VocationGoal < UIWidget
+  height: 32
+  phantom: true
+
+  VocationText
+    id: text
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 5
+
+  VocationText
+    id: value
+    color: #ffffff
+    anchors.top: text.top
+    anchors.right: parent.right
+
+  VocationBar
+    id: bar
+    anchors.top: text.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+
 // One perk: the tick, the perk's icon, its name and its value (or the badge of a next-rank gain)
 VocationPerkRow < UIWidget
   height: 30
@@ -155,7 +179,7 @@ VocationRankSection < UIWidget
     spacing: 4
 
 VocationProgressWindow < UIWindow
-  size: 880 664
+  size: 880 704
   image-source: /modules/game_dailytasks/images/window
   image-border: 24
   padding: 22 26 22 26
@@ -352,18 +376,10 @@ VocationProgressWindow < UIWindow
       anchors.left: parent.left
 
     VocationText
-      id: requirements
-      !text: tr('To rank up')
-      color: #96aacd
+      id: levelText
       anchors.top: heading.bottom
       anchors.left: parent.left
       margin-top: 10
-
-    VocationText
-      id: levelText
-      anchors.top: requirements.bottom
-      anchors.left: parent.left
-      margin-top: 8
 
     VocationText
       id: levelValue
@@ -378,43 +394,42 @@ VocationProgressWindow < UIWindow
       anchors.right: parent.right
       margin-top: 4
 
-    VocationText
-      id: trialText
+    UIWidget
+      id: goals
       anchors.top: levelBar.bottom
       anchors.left: parent.left
-      margin-top: 10
-
-    VocationText
-      id: trialValue
-      color: #ffffff
-      anchors.top: trialText.top
       anchors.right: parent.right
-
-    VocationBar
-      id: trialBar
-      anchors.top: trialText.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      margin-top: 4
+      phantom: true
+      layout:
+        type: verticalBox
+        fit-children: true
 
     VocationText
       id: newAt
       color: #96aacd
-      anchors.top: trialBar.bottom
+      anchors.top: goals.bottom
       anchors.left: parent.left
       margin-top: 12
 
-    UIWidget
+    ScrollablePanel
       id: list
+      vertical-scrollbar: nextScroll
       anchors.top: newAt.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
       margin-top: 6
-      phantom: true
       layout:
         type: verticalBox
         spacing: 4
+
+    GtsScrollBar
+      id: nextScroll
+      step: 34
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: parent.right
+      visible: false
 
     VocationText
       id: topRank
