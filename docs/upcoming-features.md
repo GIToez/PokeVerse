@@ -969,6 +969,12 @@ From the `#notes` channel:
 - **Slot machine pairs (fixed):** two matching symbols paid by the reel's position, so every
   pair paid 0 coins; they now pay a third of the symbol's payout (Great and Ultra Ball 1,
   Master Ball 3, Amulet Coin 10). A $100 spin returns 0.81 coins on average, not 0.12.
+- **Held items (redone):** held items no longer gain levels or EXP; a type item (Charcoal,
+  Dragon Fang and the rest) is a flat +20% to that type's moves. Drag one from the bag onto a
+  Pokémon on the swap bar to give it (or "Use with" its ball); dropping another on it swaps
+  them. A small icon in the slot's corner shows what it holds, the slot's tooltip names it,
+  and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade is no
+  longer needed. **To decide:** what Polkadot Bow should do (it has no effect today).
 - **World boss repeats (fixed):** a typo in the storage key meant the server never knew which
   boss spawned last, so the same one could come twice in a row.
 - **Fishing tasks don't count up (fixed):** the server runs actions, creature events and

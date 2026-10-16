@@ -58,7 +58,8 @@ Sold by **Josh Pillberg** (say `trade`):
 | Everstone | 15,000 | Held: in breeding, the holder always passes its Nature. |
 | Pomeg / Kelpsy / Qualot / Hondew / Grepa / Tamato Berry | 1,500 | Use on your Pokemon's ball: -10 HP / Atk / Def / SpA / SpD / Spe EVs (refused at 0). |
 
-These held items have no levels. Removing them at the held-item NPC gives the item back.
+Held items have no levels or EXP. Drag one onto a Pokemon on the swap bar (or "Use with" its
+ball) to give it; Alt+click the Pokemon, or right-click > Take held item, gives it back.
 
 Item ids: server 30137-30150, client 28779-28792. The client artwork is in
 `core/client-legacy/data/images/items` and is wired up in `data/things/things.otml`; the

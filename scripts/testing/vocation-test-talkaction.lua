@@ -572,6 +572,34 @@ local function testShinyEvent(cid)
     check("shiny event: off cancels it", ShinyEvent.stop() and getShinyEventMultiplier() == 1 and not ShinyEvent.get())
 end
 
+local function testHeldItems(cid)
+    local CHARCOAL, DRAGON_FANG = 23515, 23516
+    local ball = newBall(cid, "Pidgey", 30)
+    local charcoal = getThing(doPlayerAddItem(cid, CHARCOAL, 1))
+    local fang = getThing(doPlayerAddItem(cid, DRAGON_FANG, 1))
+    local before = getPlayerItemCount(cid, CHARCOAL)
+
+    local name = PokemonHeldItem.give(cid, ball.uid, charcoal)
+    check("held: giving Charcoal", name == "Charcoal" and getBallHeld(ball.uid) == HELD_IDS.CHARCOAL and
+        getPlayerItemCount(cid, CHARCOAL) == before - 1, name)
+    name = PokemonHeldItem.give(cid, ball.uid, fang)
+    check("held: giving Dragon Fang swaps the Charcoal back", name == "Dragon Fang" and
+        getBallHeld(ball.uid) == HELD_IDS.DRAGON_FANG and getPlayerItemCount(cid, CHARCOAL) == before, name)
+    local _, err = PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, 2148, 1)))
+    check("held: only held items can be given", err == "Only held items can be given to a Pokemon.", err)
+    local fangs = getPlayerItemCount(cid, DRAGON_FANG)
+    name = PokemonHeldItem.take(cid, ball.uid)
+    check("held: taking it back", name == "Dragon Fang" and not getBallHeld(ball.uid) and
+        getPlayerItemCount(cid, DRAGON_FANG) == fangs + 1, name)
+    _, err = PokemonHeldItem.take(cid, ball.uid)
+    check("held: nothing to take", err == "This Pokemon isn't holding an item.", err)
+
+    doPlayerRemoveItem(cid, CHARCOAL, 1)
+    doPlayerRemoveItem(cid, DRAGON_FANG, 1)
+    doPlayerRemoveItem(cid, 2148, 1)
+    doRemoveItem(ball.uid)
+end
+
 local function testDaycare(cid)
     local said = {}
     local callbacks = {}
@@ -1293,7 +1321,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "shiny event", testShinyEvent }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
