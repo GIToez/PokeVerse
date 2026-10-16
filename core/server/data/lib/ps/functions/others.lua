@@ -473,6 +473,11 @@ function getPlayerInsideHoenn(cid) -- Yeah, this is ugly
     return isInRange(getCreaturePosition(cid), {x = 48, y = 773, z = 7}, {x = 2224, y = 2304, z = 7}, true)
 end
 
+-- Johto's box overlaps Hoenn's north-east corner (open sea there), so check it first; Kanto starts at x 3049
+function getPlayerInsideJohto(cid)
+    return isInRange(getCreaturePosition(cid), {x = 1700, y = 20, z = 7}, {x = 3048, y = 1270, z = 7}, true)
+end
+
 function doCreatureTrueDamage(cid, amount, effect, textColor, position)
     if (amount >= 0) then
         return

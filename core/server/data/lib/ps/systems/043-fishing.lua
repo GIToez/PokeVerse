@@ -44,7 +44,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Magikarp", maxAmount = 4 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = { { name = "Magikarp", maxAmount = 4 } }
     },
     {
         skill = 5,
@@ -56,7 +57,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Poliwag", maxAmount = 4 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = { { name = "Poliwag", maxAmount = 4 } }
     },
     {
         skill = 10,
@@ -68,7 +70,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Krabby", maxAmount = 4 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = { { name = "Krabby", maxAmount = 4 } }
     },
     {
         skill = 15,
@@ -80,7 +83,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Shellder", maxAmount = 4 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = { { name = "Shellder", maxAmount = 4 } }
     },
     {
         skill = 20,
@@ -92,7 +96,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Horsea", maxAmount = 4 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = { { name = "Horsea", maxAmount = 4 } }
     },
     {
         skill = 25,
@@ -104,7 +109,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Goldeen", maxAmount = 4 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = { { name = "Goldeen", maxAmount = 4 } }
     },
     {
         skill = 30,
@@ -116,7 +122,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Tentacool", maxAmount = 4 }, { name = "Psyduck", maxAmount = 4 } },
         orangeArchipelagoPokemon = { { name = "Wooper", maxAmount = 4 } },
-        hoennPokemon = { { name = "Surskit", maxAmount = 4 } }
+        hoennPokemon = { { name = "Surskit", maxAmount = 4 } },
+        johtoPokemon = { { name = "Tentacool", maxAmount = 4 }, { name = "Chinchou", maxAmount = 4 } }
     },
     {
         skill = 35,
@@ -128,7 +135,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Slowpoke", maxAmount = 4 }, { name = "Staryu", maxAmount = 4 }, { name = "Seel", maxAmount = 4 } },
         orangeArchipelagoPokemon = { { name = "Chinchou", maxAmount = 4 } },
-        hoennPokemon = { { name = "Carvanha", maxAmount = 4 } }
+        hoennPokemon = { { name = "Carvanha", maxAmount = 4 } },
+        johtoPokemon = { { name = "Staryu", maxAmount = 4 }, { name = "Corsola", maxAmount = 4 } }
     },
     {
         skill = 40,
@@ -140,7 +148,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Poliwhirl", maxAmount = 3 } },
         orangeArchipelagoPokemon = { { name = "Remoraid", maxAmount = 3 }, { name = "Marill", maxAmount = 3 } },
-        hoennPokemon = { { name = "Wailmer", maxAmount = 3 }, { name = "Barboach", maxAmount = 3 } }
+        hoennPokemon = { { name = "Wailmer", maxAmount = 3 }, { name = "Barboach", maxAmount = 3 } },
+        johtoPokemon = { { name = "Poliwhirl", maxAmount = 3 }, { name = "Remoraid", maxAmount = 3 } }
     },
     {
         skill = 45,
@@ -152,7 +161,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Seaking", maxAmount = 3 }, { name = "Starmie", maxAmount = 3 } },
         orangeArchipelagoPokemon = { { name = "Corsola", maxAmount = 3 } },
-        hoennPokemon = { { name = "Corphish", maxAmount = 3 }, { name = "Clamperl", maxAmount = 3 } }
+        hoennPokemon = { { name = "Corphish", maxAmount = 3 }, { name = "Clamperl", maxAmount = 3 } },
+        johtoPokemon = { { name = "Seaking", maxAmount = 3 }, { name = "Qwilfish", maxAmount = 3 } }
     },
     {
         skill = 50,
@@ -164,7 +174,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Kingler", maxAmount = 2 } },
         orangeArchipelagoPokemon = { { name = "Mantine", maxAmount = 2 }, { name = "Qwilfish", maxAmount = 2 } },
-        hoennPokemon = { { name = "Luvdisc", maxAmount = 2 }, { name = "Crawdaunt", maxAmount = 2 }, { name = "Huntail", maxAmount = 2 } }
+        hoennPokemon = { { name = "Luvdisc", maxAmount = 2 }, { name = "Crawdaunt", maxAmount = 2 }, { name = "Huntail", maxAmount = 2 } },
+        johtoPokemon = { { name = "Kingler", maxAmount = 2 }, { name = "Lanturn", maxAmount = 2 } }
     },
     {
         skill = 60,
@@ -176,7 +187,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Seadra", maxAmount = 2 } },
         orangeArchipelagoPokemon = { { name = "Lanturn", maxAmount = 2 }, { name = "Quagsire", maxAmount = 2 } },
-        hoennPokemon = { { name = "Sharpedo", maxAmount = 2 }, { name = "Whiscash", maxAmount = 2 }, { name = "Feebas", maxAmount = 2 } }
+        hoennPokemon = { { name = "Sharpedo", maxAmount = 2 }, { name = "Whiscash", maxAmount = 2 }, { name = "Feebas", maxAmount = 2 } },
+        johtoPokemon = { { name = "Seadra", maxAmount = 2 }, { name = "Dratini", maxAmount = 2 } }
     },
     {
         skill = 70,
@@ -188,7 +200,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Cloyster", maxAmount = 1 }, { name = "Dewgong", maxAmount = 2 } },
         orangeArchipelagoPokemon = { { name = "Politoed", maxAmount = 1 } },
-        hoennPokemon = { { name = "Gorebyss", maxAmount = 1 }, { name = "Relicanth", maxAmount = 1 } }
+        hoennPokemon = { { name = "Gorebyss", maxAmount = 1 }, { name = "Relicanth", maxAmount = 1 } },
+        johtoPokemon = { { name = "Tentacruel", maxAmount = 1 } }
     },
     {
         skill = 75,
@@ -200,7 +213,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Tentacruel", maxAmount = 1 }, { name = "Lapras", maxAmount = 1 } },
         orangeArchipelagoPokemon = {},
-        hoennPokemon = { { name = "Wailord", maxAmount = 1 } }
+        hoennPokemon = { { name = "Wailord", maxAmount = 1 } },
+        johtoPokemon = { { name = "Dragonair", maxAmount = 1 } }
     },
     {
         skill = 80,
@@ -212,7 +226,8 @@ local DROPS = {
         },
         kantoPokemon = { { name = "Gyarados", maxAmount = 1 } },
         orangeArchipelagoPokemon = { { name = "Octillery", maxAmount = 1 } },
-        hoennPokemon = { { name = "Milotic", maxAmount = 1 } }
+        hoennPokemon = { { name = "Milotic", maxAmount = 1 } },
+        johtoPokemon = { { name = "Gyarados", maxAmount = 1 } }
     },
 }
 
@@ -230,12 +245,17 @@ local function getPlayerFishinablePokemons(cid, pokemon, rodItemId)
 
     local skill = getPlayerSkill(cid, PLAYER_SKILL_FISHING)
     local isInOl = getPlayerInsideOrangeArchipelago(cid)
-    local isInHoenn = getPlayerInsideHoenn(cid)
+    local isInJohto = getPlayerInsideJohto(cid)
+    local isInHoenn = not isInJohto and getPlayerInsideHoenn(cid)
     local level = isCreature(pokemon) and getMonsterLevel(pokemon) or 1
 
     for _, v in pairs(DROPS) do
         if (v.skill <= skill and level >= v.minLevel and table.find(v.rods, rodItemId)) then
-            r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.kantoPokemon }
+            if (isInJohto) then
+                r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.johtoPokemon }
+            else
+                r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.kantoPokemon }
+            end
             if (isInOl) then
                 r[#r + 1] = { maxLevel = v.maxLevel, pokemon = v.orangeArchipelagoPokemon }
             elseif (isInHoenn) then
@@ -392,7 +412,7 @@ end
 -- The Angler's fishing map (rank 4): what bites in each region, by fishing skill, marked when the
 -- trainer's skill already reaches it
 local REGIONS = { { key = "kantoPokemon", name = "Kanto" }, { key = "orangeArchipelagoPokemon", name = "Orange Archipelago" },
-                  { key = "hoennPokemon", name = "Hoenn" } }
+                  { key = "hoennPokemon", name = "Hoenn" }, { key = "johtoPokemon", name = "Johto" } }
 
 Fishing.sendGuide = function(cid)
     if (not Vocations.perk(cid, "angler", "mapRank")) then

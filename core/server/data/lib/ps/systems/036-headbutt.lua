@@ -10,91 +10,106 @@ local DROPS = {
         skill = 0, minLevel = 1, maxLevel = 20,
         kantoPokemon = {{name = "Caterpie", maxAmount = 4}, {name = "Weedle", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Sentret", maxAmount = 4}},
-        hoennPokemon = {{name = "Wurmple", maxAmount = 4}}
+        hoennPokemon = {{name = "Wurmple", maxAmount = 4}},
+        johtoPokemon = {{name = "Caterpie", maxAmount = 4}, {name = "Weedle", maxAmount = 4}}
     },
     {
         skill = 10, minLevel = 5, maxLevel = 30,
         kantoPokemon = {{name = "Pidgey", maxAmount = 4}, {name = "Spearow", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Hoothoot", maxAmount = 4}},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = {{name = "Hoothoot", maxAmount = 4}, {name = "Spearow", maxAmount = 4}}
     },
     {
         skill = 20, minLevel = 10, maxLevel = 30,
         kantoPokemon = {{name = "Kakuna", maxAmount = 4}, {name = "Metapod", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Ledyba", maxAmount = 4}, {name = "Spinarak", maxAmount = 4}},
-        hoennPokemon = {{name = "Zigzagoon", maxAmount = 3}}
+        hoennPokemon = {{name = "Zigzagoon", maxAmount = 3}},
+        johtoPokemon = {{name = "Ledyba", maxAmount = 4}, {name = "Spinarak", maxAmount = 4}, {name = "Metapod", maxAmount = 4}, {name = "Kakuna", maxAmount = 4}}
     },
     {
         skill = 25, minLevel = 12, maxLevel = 40,
         kantoPokemon = {{name = "Ekans", maxAmount = 4}, {name = "Venonat", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Furret", maxAmount = 4}, {name = "Venonat", maxAmount = 4}},
-        hoennPokemon = {{name = "Silcoon", maxAmount = 3}}
+        hoennPokemon = {{name = "Silcoon", maxAmount = 3}},
+        johtoPokemon = {{name = "Pineco", maxAmount = 4}, {name = "Venonat", maxAmount = 4}}
     },
     {
         skill = 30, minLevel = 15, maxLevel = 40,
         kantoPokemon = {{name = "Mankey", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Aipom", maxAmount = 4}},
-        hoennPokemon = {{name = "Cascoon", maxAmount = 3}}
+        hoennPokemon = {{name = "Cascoon", maxAmount = 3}},
+        johtoPokemon = {{name = "Aipom", maxAmount = 4}}
     },
     {
         skill = 35, minLevel = 8, maxLevel = 50,
         kantoPokemon = {{name = "Exeggcute", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Yanma", maxAmount = 4}},
-        hoennPokemon = {{name = "Taillow", maxAmount = 3}}
+        hoennPokemon = {{name = "Taillow", maxAmount = 3}},
+        johtoPokemon = {{name = "Exeggcute", maxAmount = 4}}
     },
     {
         skill = 40, minLevel = 20, maxLevel = 60,
         kantoPokemon = {{name = "Pidgeotto", maxAmount = 4}},
         orangeArchipelagoPokemon = {{name = "Pidgeotto", maxAmount = 4}},
-        hoennPokemon = {{name = "Slakoth", maxAmount = 3}}
+        hoennPokemon = {{name = "Slakoth", maxAmount = 3}},
+        johtoPokemon = {{name = "Natu", maxAmount = 3}}
     },
     {
         skill = 45, minLevel = 30, maxLevel = 100,
         kantoPokemon = {{name = "Beedrill", maxAmount = 3}, {name = "Butterfree", maxAmount = 3}},
         orangeArchipelagoPokemon = {{name = "Teddiursa", maxAmount = 2}},
-        hoennPokemon = {{name = "Nincada", maxAmount = 3}}
+        hoennPokemon = {{name = "Nincada", maxAmount = 3}},
+        johtoPokemon = {{name = "Beedrill", maxAmount = 3}, {name = "Butterfree", maxAmount = 3}}
     },
     {
         skill = 50, minLevel = 35, maxLevel = 100,
         kantoPokemon = {{name = "Arbok", maxAmount = 3}, {name = "Golbat", maxAmount = 3}},
         orangeArchipelagoPokemon = {{name = "Noctowl", maxAmount = 3}, {name = "Ledian", maxAmount = 3}},
-        hoennPokemon = {{name = "Skitty", maxAmount = 3}}
+        hoennPokemon = {{name = "Skitty", maxAmount = 3}},
+        johtoPokemon = {{name = "Noctowl", maxAmount = 3}}
     },
     {
         skill = 55, minLevel = 50, maxLevel = 100,
         kantoPokemon = {{name = "Venomoth", maxAmount = 3}},
         orangeArchipelagoPokemon = {{name = "Ariados", maxAmount = 3}},
-        hoennPokemon = {{name = "Beautifly", maxAmount = 3}}
+        hoennPokemon = {{name = "Beautifly", maxAmount = 3}},
+        johtoPokemon = {{name = "Ledian", maxAmount = 3}, {name = "Ariados", maxAmount = 3}}
     },
     {
         skill = 60, minLevel = 45, maxLevel = 100,
         kantoPokemon = {{name = "Pinsir", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Pineco", maxAmount = 3}},
-        hoennPokemon = {{name = "Vigoroth", maxAmount = 3}}
+        hoennPokemon = {{name = "Vigoroth", maxAmount = 3}},
+        johtoPokemon = {}
     },
     {
         skill = 65, minLevel = 40, maxLevel = 100,
         kantoPokemon = {{name = "Farfetchd", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Heracross", maxAmount = 1}},
-        hoennPokemon = {{name = "Linoone", maxAmount = 3}}
+        hoennPokemon = {{name = "Linoone", maxAmount = 3}},
+        johtoPokemon = {{name = "Heracross", maxAmount = 1}}
     },
     {
         skill = 70, minLevel = 50, maxLevel = 100,
         kantoPokemon = {{name = "Scyther", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Forretress", maxAmount = 1}},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = {{name = "Forretress", maxAmount = 1}}
     },
     {
         skill = 75, minLevel = 50, maxLevel = 100,
         kantoPokemon = {{name = "Pidgeot", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Ursaring", maxAmount = 1}},
-        hoennPokemon = {}
+        hoennPokemon = {},
+        johtoPokemon = {}
     },
     {
         skill = 80, minLevel = 50, maxLevel = 100,
         kantoPokemon = {{name = "Fearow", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Scizor", maxAmount = 1}},
-        hoennPokemon = {{name = "Slaking", maxAmount = 1}}
+        hoennPokemon = {{name = "Slaking", maxAmount = 1}},
+        johtoPokemon = {}
     },
 }
 
@@ -113,12 +128,17 @@ local function getPlayerHeadbuttablePokemons(cid, pokemon)
 
     local skill = getPlayerSkill(cid, PLAYER_SKILL_HEADBUTTING)
     local isInOl = getPlayerInsideOrangeArchipelago(cid)
-    local isInHoenn = getPlayerInsideHoenn(cid)
+    local isInJohto = getPlayerInsideJohto(cid)
+    local isInHoenn = not isInJohto and getPlayerInsideHoenn(cid)
     local level = getMonsterLevel(pokemon)
 
     for _, v in pairs(DROPS) do
         if (v.skill <= skill and level >= v.minLevel) then
-            r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.kantoPokemon}
+            if (isInJohto) then
+                r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.johtoPokemon}
+            else
+                r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.kantoPokemon}
+            end
             if (isInOl) then
                 r[#r + 1] = {maxLevel = v.maxLevel, pokemon = v.orangeArchipelagoPokemon }
             elseif (isInHoenn) then

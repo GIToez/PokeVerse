@@ -169,7 +169,11 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   terraces (`HILL_EVOLVE`: half a step on floor 6, a whole one on floor 5, one and a half on
   floor 4, from the server's `evolutions` in `data/lib/ps/config/_pokemon`), so Route 29's
   Pidgey, Hoothoot and Sentret are Pidgeotto, Noctowl and Furret two floors up, off the road for
-  players who climb.
+  players who climb. Headbutt and fishing are the server's, by region: inside Johto's box
+  (`getPlayerInsideJohto`, x 1700 to 3048, y 20 to 1270, checked before Hoenn's, which overlaps
+  its south-west) they draw from the `johtoPokemon` lists in `036-headbutt.lua` and
+  `043-fishing.lua`, HeartGold and SoulSilver's headbutt and fishing Pokémon by skill, in place
+  of Kanto's.
 - **Area names:** the area banner and the clock's location label (the client's
   `game_environment`) come from `areas_johto.lua`, which the build writes next to
   `sounds_pokeverse.lua`: every tile west of x 3048 is the route whose road is nearest (or the sea
