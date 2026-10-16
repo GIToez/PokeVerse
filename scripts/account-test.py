@@ -27,8 +27,9 @@ _spec.loader.exec_module(pt)
 PROTOCOL_ACCOUNT = 0x0B
 ACTION_CREATE_ACCOUNT, ACTION_CREATE_CHARACTER, ACTION_DELETE_CHARACTER = 1, 2, 3
 TUTORIAL_START = (5000, 806, 6)
-FISHER_FEMALE, FISHER_MALE, PREMIUM_LOOKTYPE = 627, 628, 614  # data/XML/outfits.xml
-NEW_OUTFIT = (FISHER_MALE, 10, 20, 30, 40)
+# data/XML/outfits.xml: Rookie is a starter outfit, Fisher is the Angler's vocation outfit
+ROOKIE_FEMALE, ROOKIE_MALE, FISHER_MALE, PREMIUM_LOOKTYPE = 2542, 2541, 628, 614
+NEW_OUTFIT = (ROOKIE_MALE, 10, 20, 30, 40)
 
 
 class PacedConnection(pt.Connection):
@@ -156,10 +157,12 @@ def main():
                  request(args, ACTION_CREATE_CHARACTER, account, password, "x1", 1), False)
         c.expect("create character with a premium outfit",
                  request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (PREMIUM_LOOKTYPE, 0, 0, 0, 0)), False)
+        c.expect("create character with a vocation outfit",
+                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (FISHER_MALE, 0, 0, 0, 0)), False)
         c.expect("create character with a female outfit on a male",
-                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (FISHER_FEMALE, 0, 0, 0, 0)), False)
+                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (ROOKIE_FEMALE, 0, 0, 0, 0)), False)
         c.expect("create character with an invalid outfit color",
-                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (FISHER_MALE, 133, 0, 0, 0)), False)
+                 request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, (ROOKIE_MALE, 133, 0, 0, 0)), False)
         c.expect("create character", request(args, ACTION_CREATE_CHARACTER, account, password, character, 1, NEW_OUTFIT), True)
         c.expect("create duplicate character",
                  request(args, ACTION_CREATE_CHARACTER, account, password, character, 0), False)
@@ -177,7 +180,8 @@ def main():
             print("FAIL: unexpected character details %s" % info)
             c.failures += 1
         starters = details["starter outfits"]
-        if (1, FISHER_MALE, "Fisher") in starters and not [o for o in starters if o[1] == PREMIUM_LOOKTYPE]:
+        if ((1, ROOKIE_MALE, "Rookie") in starters and (0, ROOKIE_FEMALE, "Rookie") in starters
+                and not [o for o in starters if o[1] in (PREMIUM_LOOKTYPE, FISHER_MALE)]):
             print("OK: starter outfits %s" % starters)
         else:
             print("FAIL: unexpected starter outfits %s" % starters)
