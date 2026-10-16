@@ -418,6 +418,7 @@ HILL_SHARE = 0.45
 HILL_SCALE = 38
 HILL_SMALLEST = 80
 HILL_REACH = 90
+HILL_GAP = 16
 # a ramp per this many tiles of a hill (at least one), at least HILL_RAMP_GAP tiles apart
 HILL_RAMP_EVERY = 1500
 HILL_RAMP_GAP = 30
@@ -1105,6 +1106,13 @@ def plan_hills(f, allowed, walk0, target0, road_d, rng):
     hn = hn - local_mean(hn, allowed, HILL_REACH)
     hill = allowed & (hn > np.quantile(hn[allowed], 1 - HILL_SHARE))
     hill = keep_parts(soften(hill, 2.5) & allowed, HILL_SMALLEST)
+    # Wide stretches between the hills get knolls of their own from a finer noise, so no part of
+    # the country is left flat.
+    bare = allowed & (distance(~hill) > HILL_GAP)
+    if bare.any():
+        kn = hf.noise(HILL_SCALE / 2)
+        knoll = dilate(bare, 2 * HILL_GAP + 1) & allowed & (distance(~hill) > 4) & (kn > np.quantile(kn[bare], 0.5))
+        hill |= keep_parts(soften(knoll, 2) & allowed, HILL_SMALLEST)
     height = hill.astype(np.uint8)
     for j in range(2, HILL_LEVELS + 1):
         inner = (distance(height >= j - 1) > 5 + hf.noise(10) * 4) & (height == j - 1)
