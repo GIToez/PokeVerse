@@ -138,8 +138,9 @@ local function requestHeld()
     end, 300)
 end
 
-local function onHeldMessage(protocol, opcode, data)
-    if type(data) ~= 'table' or data.type ~= 'bar' then
+local function onHeldMessage(protocol, opcode, buffer)
+    local ok, data = pcall(json.decode, buffer)
+    if not ok or type(data) ~= 'table' or data.type ~= 'bar' then
         return
     end
     heldByNumber = {}
@@ -160,12 +161,13 @@ local function giveHeld(slot, dragged)
     if not item or not item.isItem or not item:isItem() then
         return false
     end
-    local pos = item:getPosition()
+    -- the bag's slot widgets know their slot; an item's own position can be out of date
+    local pos = dragged.position or item:getPosition()
     if not pos or pos.x ~= 65535 then
         modules.game_textmessage.displayFailureMessage(tr('You must pick up this item first.'))
         return true
     end
-    sendHeld({ action = 'give', number = slot.number, item = { x = pos.x, y = pos.y, z = pos.z } })
+    sendHeld({ action = 'give', number = slot.number, item = { x = pos.x, y = pos.y, z = pos.z, id = item:getId() } })
     return true
 end
 
@@ -359,7 +361,7 @@ function onInit()
         onPokemonBarClose = onPokemonBarClose
     })
     connect(Creature, { onHealthPercentChange = onCreatureHealthPercentChange })
-    ProtocolGame.registerExtendedJSONOpcode(ExtendedIds.HeldItem, onHeldMessage)
+    ProtocolGame.registerExtendedOpcode(ExtendedIds.HeldItem, onHeldMessage)
 
     pokemonBar = g_ui.loadUI('pokebar', modules.game_interface.getRootPanel())
     orientation = g_settings.getNumber('pokeverse-quickcall-orientation', VERTICAL)
@@ -404,7 +406,7 @@ function onTerminate()
         onPokemonBarClose = onPokemonBarClose
     })
     disconnect(Creature, { onHealthPercentChange = onCreatureHealthPercentChange })
-    ProtocolGame.unregisterExtendedJSONOpcode(ExtendedIds.HeldItem)
+    ProtocolGame.unregisterExtendedOpcode(ExtendedIds.HeldItem)
     removeEvent(refreshEvent)
     unbindKeys()
     disconnect(Keybind, { onBind = updateKeyLabels })

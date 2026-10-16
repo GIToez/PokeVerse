@@ -406,9 +406,38 @@ PokemonHeldItem.sendBar = function(cid)
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.HELD_ITEM, JSON.encode({ type = "bar", items = items }))
 end
 
+local function clientIdOf(itemId)
+    local info = getItemInfo(itemId)
+    return info and info.clientId or nil
+end
+
+-- The client's bag view can be sorted differently from the server's container, so the position is
+-- only trusted when the item there has the client id that was dragged; otherwise any carried held
+-- item with that client id is used.
+local function findDraggedItem(cid, dragged)
+    local clientId = tonumber(dragged.id)
+    local item = getPlayerItemFromClientPos(cid, { x = tonumber(dragged.x) or 0, y = tonumber(dragged.y) or 0,
+                                                   z = tonumber(dragged.z) or 0, stackpos = 0 })
+    if (isItem(item) and (not clientId or clientIdOf(item.itemid) == clientId)) then
+        return item
+    end
+    if (not clientId) then
+        return nil
+    end
+    for itemId in pairs(HELD_BY_ITEMID) do
+        if (clientIdOf(itemId) == clientId) then
+            local found = getPlayerItemById(cid, true, itemId)
+            if (isItem(found)) then
+                return found
+            end
+        end
+    end
+    return nil
+end
+
 -- Swap bar (client game_pokebar), JSON on EXTENDED_IDS.HELD_ITEM:
 --   {action = "refresh"}                                     -> {type = "bar", items = {{number, name, text, client}}}
---   {action = "give", number = <swap bar number>, item = <client position of the held item>}
+--   {action = "give", number = <swap bar number>, item = {x, y, z, id = <client id>}}
 --   {action = "take", number = <swap bar number>}            (both answer with the bar too)
 PokemonHeldItem.onClientMessage = function(cid, buffer)
     local ok, data = pcall(JSON.decode, buffer)
@@ -430,8 +459,7 @@ PokemonHeldItem.onClientMessage = function(cid, buffer)
     end
 
     if (data.action == "give" and type(data.item) == "table") then
-        local item = getPlayerItemFromClientPos(cid, { x = tonumber(data.item.x) or 0, y = tonumber(data.item.y) or 0,
-                                                       z = tonumber(data.item.z) or 0, stackpos = 0 })
+        local item = findDraggedItem(cid, data.item)
         if (not isItem(item)) then
             doPlayerSendCancel(cid, "You must pick up this item first.")
             return
