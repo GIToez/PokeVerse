@@ -190,6 +190,15 @@ Daycare.trainingExp = function(level, startedAt, minutes)
     return math.floor(rate * (minutes + eventBonusMinutes("daycare", startedAt, startedAt + minutes * 60)))
 end
 
+-- The species' egg item, or nil when it has none (getPokemonEggId raises on unknown names)
+local function eggIdOf(species)
+    if (not species or not isPokemonName(species, true)) then
+        return nil
+    end
+    local ok, eggId = pcall(getPokemonEggId, species)
+    return ok and eggId or nil
+end
+
 local function isDitto(name)
     return name == "Ditto" or name == "Shiny Ditto"
 end
@@ -331,14 +340,20 @@ Daycare.compatibility = function(a, b)
         end
         species = female.name
     end
-    if (not POKEMONS[species] or not getPokemonEggId(species)) then
+    if (not eggIdOf(species)) then
         return "noEggs", nil, species
     end
     return "ok", species
 end
 
 local function eggSpeciesName(species)
-    return getPokemonNameByEggId(getPokemonEggId(species)) or species
+    return getPokemonNameByEggId(eggIdOf(species) or 0) or species
+end
+
+-- The egg item's sprite, drawn in the egg slot
+local function eggClientId(species)
+    local info = getItemInfo(eggIdOf(species) or 0)
+    return info and info.clientId or 0
 end
 
 local function getPendingEgg(cid)
@@ -403,6 +418,7 @@ local function eggInfo(cid, infos)
     if (species) then
         egg.species = eggSpeciesName(species)
         egg.number = getPokemonNumberByName(egg.species)
+        egg.client = eggClientId(species)
     elseif (blocked) then
         egg.blocked = blocked
     end
@@ -411,6 +427,7 @@ local function eggInfo(cid, infos)
         egg.count = pending.count
         egg.species = eggSpeciesName(pending.species)
         egg.number = getPokemonNumberByName(egg.species)
+        egg.client = eggClientId(pending.species)
         egg.nature = PokemonStats.getNatureName(pending.natureId)
         egg.ivs = { total = PokemonStats.getTotal(pending.ivs), max = PokemonStats.IV_MAX * PokemonStats.STAT_COUNT }
     elseif (status == "ok") then
@@ -719,7 +736,7 @@ Daycare.handOverEgg = function(cid)
     end
     local plate = plateOf(cid)
     for _ = 1, egg.count do
-        local uid = doPlayerAddItem(cid, getPokemonEggId(egg.species), 1, true)
+        local uid = doPlayerAddItem(cid, eggIdOf(egg.species), 1, true)
         PokemonStats.setEggStats(uid, egg.ivs, egg.natureId)
         if (PokemonEgg.doGenerateEggMove(uid, egg.species, plate and TYPE_BY_PLATE_ITEMID[plate] or nil) and plate) then
             db.executeQuery(string.format("DELETE FROM `daycare_plates` WHERE `player_id` = %d;", getPlayerGUID(cid)))

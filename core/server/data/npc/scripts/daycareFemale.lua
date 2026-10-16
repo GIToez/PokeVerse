@@ -289,6 +289,9 @@ function creatureSayCallback(cid, type, msg)
     msg = string.lower(msg)
 
     if (msgcontains(msg, 'daycare')) then
+        if (Daycare.open(cid)) then
+            return true
+        end
         selfSay("In this place you can {leave} your Pokemon in our care, we will train him for you. You can also {deposit} a plate to influence your Pokemon egg move generation.", cid)
 
     elseif (msgcontains(msg, 'pokemon')) then

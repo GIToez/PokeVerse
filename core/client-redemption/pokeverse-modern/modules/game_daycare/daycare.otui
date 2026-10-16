@@ -1,0 +1,613 @@
+// The Day Care window (artwork: scripts/art/daycare_ui.py for the cards and the egg slot; the frame comes from
+// game_dailytasks, panels, rows, portraits and bars from game_fishing, the sex marks from game_trainercard,
+// the icons from game_vocation, the buttons from client_entergame and the eggs are the egg items)
+
+DaycareText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+DaycareMuted < DaycareText
+  color: #96aacd
+
+DaycareInfoRow < UIWidget
+  height: 16
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  DaycareText
+    id: text
+    anchors.left: icon.right
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+    text-auto-resize: false
+    height: 14
+
+DaycareLine < UIWidget
+  background-color: #3a4c6e
+  phantom: true
+
+DaycareSmallButton < PVBlueButton
+  height: 26
+  ttf-font-size: 12
+
+DaycareCard < UIWidget
+  image-source: /modules/game_daycare/images/card_empty
+  image-border: 12
+  padding: 12 14 12 14
+
+  UIWidget
+    id: frame
+    size: 76 76
+    image-source: /modules/game_fishing/images/portrait
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UIWidget
+    id: portrait
+    anchors.fill: frame
+    margin: 5
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 15
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: frame.top
+    anchors.left: frame.right
+    margin: 2 0 0 10
+    phantom: true
+
+  UIWidget
+    id: sex
+    size: 20 20
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  UILabel
+    id: level
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.top: name.bottom
+    anchors.left: name.left
+    margin-top: 3
+    phantom: true
+
+  DaycareMuted
+    id: stats
+    text-auto-resize: true
+    anchors.top: level.bottom
+    anchors.left: name.left
+    margin-top: 3
+
+  UIItem
+    id: heldItem
+    size: 32 32
+    anchors.top: stats.bottom
+    anchors.left: name.left
+    margin-top: 2
+    virtual: true
+
+  DaycareText
+    id: heldName
+    text-align: left
+    anchors.left: heldItem.right
+    anchors.right: parent.right
+    anchors.verticalCenter: heldItem.verticalCenter
+    margin-left: 4
+    text-auto-resize: false
+    height: 14
+
+  DaycareInfoRow
+    id: training
+    anchors.top: frame.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+  UIWidget
+    id: track
+    image-source: /modules/game_fishing/images/track
+    image-border: 5
+    anchors.top: training.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    height: 10
+    phantom: true
+
+    UIWidget
+      id: fill
+      image-source: /modules/game_fishing/images/fill
+      image-border: 5
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      phantom: true
+
+  DaycareInfoRow
+    id: exp
+    anchors.top: track.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 7
+
+  PVGreenButton
+    id: withdraw
+    !text: tr('Take back')
+    height: 28
+    ttf-font-size: 12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    margin-right: 4
+
+  PVRedButton
+    id: cancel
+    !text: tr('Stop training')
+    height: 28
+    ttf-font-size: 12
+    anchors.bottom: parent.bottom
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    margin-left: 4
+
+  UILabel
+    id: emptyTitle
+    !text: tr('Empty place')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 16
+    color: #96aacd
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.verticalCenter: parent.verticalCenter
+    margin-top: -10
+    phantom: true
+
+  DaycareMuted
+    id: emptyText
+    !text: tr('Pick a Pokemon below to leave it here.')
+    text-auto-resize: true
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: emptyTitle.bottom
+    margin-top: 6
+
+DaycareCandidate < UIWidget
+  height: 44
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+
+  UIWidget
+    id: portrait
+    size: 36 36
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: portrait.right
+    anchors.top: parent.top
+    margin: 7 0 0 8
+    phantom: true
+
+  UIWidget
+    id: sex
+    size: 14 14
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 5
+    phantom: true
+
+  DaycareMuted
+    id: details
+    anchors.left: name.left
+    anchors.right: leave.left
+    anchors.top: name.bottom
+    margin: 3 6 0 0
+    text-auto-resize: false
+    height: 14
+
+  DaycareSmallButton
+    id: leave
+    !text: tr('Leave here')
+    width: 96
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+
+DaycarePlate < UIButton
+  size: 36 36
+  image-source: /modules/game_fishing/images/portrait
+  focusable: false
+  $hover:
+    image-source: /modules/game_fishing/images/portrait_hover
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.centerIn: parent
+    virtual: true
+    phantom: true
+
+DaycarePanelTitle < UIWidget
+  height: 18
+  anchors.top: parent.top
+  anchors.left: parent.left
+  anchors.right: parent.right
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: text
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 13
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+DaycareTab < FishingTab
+  height: 24
+  ttf-font-size: 11
+
+DaycareWindow < UIWindow
+  size: 760 636
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_daycare.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 34 34
+    image-source: /modules/game_vocation/images/icon_breeder
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -2
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Day Care')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  DaycareMuted
+    id: subtitle
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_daycare.hide()
+
+  UIWidget
+    id: events
+    anchors.top: parent.top
+    anchors.right: closeButton.left
+    margin-right: 12
+    size: 420 22
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 10
+      align-right: true
+
+  DaycareCard
+    id: slot1
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    size: 300 200
+
+  DaycareCard
+    id: slot2
+    anchors.top: slot1.top
+    anchors.right: parent.right
+    size: 300 200
+
+  UIWidget
+    id: egg
+    size: 112 112
+    image-source: /modules/game_daycare/images/egg_slot
+    anchors.top: slot1.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 34
+
+    UIItem
+      id: item
+      size: 64 64
+      anchors.centerIn: parent
+      virtual: true
+      phantom: true
+
+    UILabel
+      id: unknown
+      text: ?
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 34
+      color: #3a4c6e
+      text-auto-resize: true
+      anchors.centerIn: parent
+      phantom: true
+
+    UILabel
+      id: count
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 13
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      margin: 0 18 16 0
+      phantom: true
+
+  UILabel
+    id: eggStatus
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #96aacd
+    text-auto-resize: true
+    anchors.top: egg.bottom
+    anchors.horizontalCenter: egg.horizontalCenter
+    margin-top: 4
+    phantom: true
+
+  DaycareLine
+    id: line1Down
+    width: 4
+    height: 20
+    anchors.top: slot1.bottom
+    anchors.horizontalCenter: slot1.horizontalCenter
+
+  DaycareLine
+    id: line1Across
+    height: 4
+    anchors.bottom: line1Down.bottom
+    anchors.left: line1Down.left
+    anchors.right: egg.horizontalCenter
+    margin-right: 2
+
+  DaycareLine
+    id: line1In
+    width: 4
+    anchors.top: line1Across.top
+    anchors.bottom: egg.top
+    anchors.right: line1Across.right
+    margin-bottom: -6
+
+  DaycareLine
+    id: line2Down
+    width: 4
+    height: 20
+    anchors.top: slot2.bottom
+    anchors.horizontalCenter: slot2.horizontalCenter
+
+  DaycareLine
+    id: line2Across
+    height: 4
+    anchors.bottom: line2Down.bottom
+    anchors.right: line2Down.right
+    anchors.left: egg.horizontalCenter
+    margin-left: 2
+
+  DaycareLine
+    id: line2In
+    width: 4
+    anchors.top: line2Across.top
+    anchors.bottom: egg.top
+    anchors.left: line2Across.left
+    margin-bottom: -6
+
+  FishingPanel
+    id: compatibility
+    anchors.top: line1Across.bottom
+    anchors.left: parent.left
+    anchors.right: egg.left
+    margin: 12 18 0 0
+    height: 128
+
+    DaycarePanelTitle
+      id: title
+
+    DaycareText
+      id: text
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+  FishingPanel
+    id: eggPanel
+    anchors.top: compatibility.top
+    anchors.left: egg.right
+    anchors.right: parent.right
+    anchors.bottom: compatibility.bottom
+    margin-left: 18
+
+    DaycarePanelTitle
+      id: title
+
+    DaycareText
+      id: text
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+    PVGoldButton
+      id: collect
+      !text: tr('Take the egg')
+      height: 28
+      ttf-font-size: 12
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+  FishingPanel
+    id: deposit
+    anchors.top: compatibility.bottom
+    anchors.left: parent.left
+    anchors.right: plates.left
+    anchors.bottom: parent.bottom
+    margin: 10 10 0 0
+
+    DaycarePanelTitle
+      id: title
+
+    UIWidget
+      id: times
+      anchors.top: parent.top
+      anchors.right: parent.right
+      size: 200 24
+      margin-top: -3
+      layout:
+        type: horizontalBox
+        spacing: 6
+        align-right: true
+
+    DaycareMuted
+      id: rules
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+
+    ScrollablePanel
+      id: list
+      anchors.top: rules.bottom
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: parent.bottom
+      margin: 6 4 0 0
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 4
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: parent.right
+
+    DaycareMuted
+      id: none
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: rules.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+
+  FishingPanel
+    id: plates
+    anchors.top: deposit.top
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    width: 230
+
+    DaycarePanelTitle
+      id: title
+
+    DaycareMuted
+      id: text
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+
+    UIWidget
+      id: list
+      anchors.top: text.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      layout:
+        type: grid
+        cell-size: 36 36
+        cell-spacing: 5
+        flow: true
+
+    UIItem
+      id: current
+      size: 32 32
+      anchors.top: text.bottom
+      anchors.left: parent.left
+      margin-top: 8
+      virtual: true
+
+    DaycareText
+      id: currentName
+      text-auto-resize: true
+      anchors.left: current.right
+      anchors.verticalCenter: current.verticalCenter
+      margin-left: 6
+
+    DaycareSmallButton
+      id: takePlate
+      !text: tr('Take it back')
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+DaycareEventPill < UILabel
+  image-source: /modules/game_daycare/images/event
+  image-border: 6
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #ffd75a
+  text-auto-resize: true
+  text-offset: 0 1
+  padding: 3 8 3 8
+  height: 22
