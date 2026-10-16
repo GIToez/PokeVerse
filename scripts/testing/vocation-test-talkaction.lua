@@ -127,7 +127,23 @@ local function testRanks(cid)
 
     setPlayerStorageValue(cid, playersStorages.vocationWindow, -1)
     check("choosing needs the window", not Vocations.choose(cid, "catcher") and not Vocations.get(cid))
-    setPlayerStorageValue(cid, playersStorages.vocationWindow, 1)
+    local original, opened = doSendPlayerExtendedOpcode, nil
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (opcode == EXTENDED_IDS.VOCATION) then
+            opened = JSON.decode(buffer)
+            return true
+        end
+        return original(target, opcode, buffer)
+    end
+    local ok, err = pcall(Vocations.onClientMessage, cid, '{"action":"open"}')
+    doSendPlayerExtendedOpcode = original
+    check("U opens the vocation window", ok and opened and opened.type == "open" and #(opened.vocations or {}) == 6 and
+        getPlayerStorageValue(cid, playersStorages.vocationWindow) == 1, err)
+    local level = getPlayerLevel(cid)
+    if (level < Vocations.MIN_LEVEL) then
+        check("below level 20 the window can't choose", not Vocations.choose(cid, "catcher") and not Vocations.get(cid))
+        doPlayerAddLevel(cid, Vocations.MIN_LEVEL - level)
+    end
     check("choosing works with the window open", Vocations.choose(cid, "catcher") and Vocations.is(cid, "catcher"))
     check("a new vocation starts at rank 1", Vocations.getRank(cid) == 1 and Vocations.getTitle(cid) == "Rookie Catcher")
     setPlayerStorageValue(cid, playersStorages.vocationWindow, 1)

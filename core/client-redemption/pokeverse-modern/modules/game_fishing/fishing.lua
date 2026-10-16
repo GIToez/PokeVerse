@@ -307,7 +307,10 @@ function init()
     button = modules.client_topmenu.addRightGameToggleButton('fishingButton', tr('Fishing guide (U)'),
         IMAGES .. 'button_fishing', toggle)
     button:setVisible(false)
-    modules.game_vocation.registerTool('fishing', { enabled = function() return status.enabled end, toggle = toggle })
+    modules.game_vocation.registerTool('fishing', {
+        enabled = function() return status.enabled and (status.rank or 0) >= (status.guideRank or 0) end,
+        toggle = toggle
+    })
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Fishing, onFishing)
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
