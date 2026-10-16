@@ -12,6 +12,18 @@ MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Vermilion", position = {x = 3
 MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fuchsia", position = {x = 3863, y = 845, z = 7}}
 MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cinnabar", position = {x = 3357, y = 1035, z = 7}}
 
+-- Johto (each town's middle in scripts/mapper/build_johto.py's area sections)
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "New Bark", position = {x = 2721, y = 812, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cherrygrove", position = {x = 2550, y = 829, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Violet", position = {x = 2498, y = 569, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Azalea", position = {x = 2398, y = 1040, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Goldenrod", position = {x = 2315, y = 731, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Ecruteak", position = {x = 2331, y = 399, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Olivine", position = {x = 2132, y = 513, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cianwood", position = {x = 1926, y = 657, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mahogany", position = {x = 2553, y = 384, z = 7}}
+MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Blackthorn", position = {x = 2744, y = 376, z = 7}}
+
 --[[MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Grassland", position = {x = 3025, y = 887, z = 7}}
 MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Waterland", position = {x = 2899, y = 715, z = 7}}
 MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fireland", position = {x = 2975, y = 413, z = 7}}
