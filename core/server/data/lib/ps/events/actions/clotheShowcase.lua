@@ -1,5 +1,5 @@
-local CLOTHES_FEMALE =	{615, 617, 621, 623, 625, 627, 629, 631, 633, 635}
-local CLOTHES_MALE = {616, 618, 622, 624, 626, 628, 630, 632, 634, 636}
+local CLOTHES_FEMALE =	{615, 617, 621, 623, 625, 629, 631, 633, 635}
+local CLOTHES_MALE = {616, 618, 622, 624, 626, 630, 632, 634, 636}
 
 function onUse(cid, item)
     local out = getCreatureOutfit(cid)

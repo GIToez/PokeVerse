@@ -101,5 +101,6 @@ playersStorages = {
     eggCycleStart = base + 98, -- os.time() the wait for the first daycare egg started (later eggs count from lasteggtime)
     eggRollCycle = base + 99, -- the egg wait the daily early egg rolls belong to (its start time)
     eggRollDay = base + 100, -- the last day of that wait that had its early egg roll
+    vocationOutfits = base + 101, -- 1 once the outfits that became vocation outfits were swapped (Vocations.migrateOutfits)
     -- tournamentWeekWinnerStorage = base + 65
 }

@@ -16,8 +16,10 @@ local CRANE_ITEMID = 3977 -- CRANE1_ITEMID, local to systems/043-fishing.lua
 local passed, failed = 0, 0
 local tester
 
+local sendText = doPlayerSendTextMessage
+
 local function say(text)
-    doPlayerSendTextMessage(tester, MESSAGE_STATUS_CONSOLE_BLUE, "vocationtest: " .. text)
+    sendText(tester, MESSAGE_STATUS_CONSOLE_BLUE, "vocationtest: " .. text)
 end
 
 local function check(name, ok, detail)
@@ -320,6 +322,8 @@ local function testDaycare(cid)
     end
     local guid = getPlayerGUID(cid)
     local eggId = getPokemonEggId("Pidgey")
+    -- the fee money left from earlier runs fills the bag, and an egg that doesn't fit drops on the floor
+    doPlayerRemoveMoney(cid, getPlayerMoney(cid))
     db.executeQuery("DELETE FROM daycare_female WHERE player_id = " .. guid)
     db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
     db.executeQuery("INSERT INTO daycare_male (player_id, date, max_training_minutes, pokemon_name, pokemon_level) VALUES (" ..
@@ -383,6 +387,7 @@ local function testDaycare(cid)
     end)
     db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
     db.executeQuery("UPDATE players SET lasteggtime = 0 WHERE id = " .. guid)
+    doPlayerRemoveMoney(cid, getPlayerMoney(cid))
 end
 
 -- Runs fn as if the tester played without the PokeVerse client (the radar answers in text there;
@@ -792,6 +797,121 @@ local function testMedic(cid, friend, arena)
     doRemoveCreature(m)
 end
 
+-- Runs fn without sending the game's messages and window updates: the outfit checks choose every
+-- vocation in one go, and all of that in one packet overflows the network message
+local function quietly(fn)
+    local text, opcode, effect = doPlayerSendTextMessage, doSendPlayerExtendedOpcode, doSendMagicEffect
+    doPlayerSendTextMessage = function() return true end
+    doSendPlayerExtendedOpcode = function() return true end
+    doSendMagicEffect = function() return true end
+    local ok, err = pcall(fn)
+    doPlayerSendTextMessage, doSendPlayerExtendedOpcode, doSendMagicEffect = text, opcode, effect
+    if (not ok) then
+        error(err, 0)
+    end
+end
+
+local STARTER_OUTFITS, REPLACEMENT_OUTFITS = { 82 }, { 83, 84, 85 }
+
+local function testOutfits(cid)
+    local female = getPlayerSex(cid) == PLAYERSEX_FEMALE
+    local trainer = female and 611 or 612
+    local function wear(lookType)
+        local outfit = getCreatureOutfit(cid)
+        outfit.lookType, outfit.lookAddons = lookType, 0
+        doCreatureChangeOutfit(cid, outfit)
+    end
+    local function forget()
+        for _, vocation in ipairs(Vocations.LIST) do
+            doPlayerRemoveOutfitId(cid, vocation.outfit, 255)
+        end
+        for _, id in ipairs(REPLACEMENT_OUTFITS) do
+            doPlayerRemoveOutfitId(cid, id, 255)
+        end
+    end
+    local function choose(key)
+        become(cid, nil)
+        setPlayerStorageValue(cid, playersStorages.vocationWindow, 1)
+        return Vocations.choose(cid, key)
+    end
+
+    forget()
+    become(cid, nil)
+    for _, vocation in ipairs(Vocations.LIST) do
+        check(vocation.name .. " outfit is locked without the vocation", not canPlayerWearOutfitId(cid, vocation.outfit, 0))
+    end
+    check("Rookie is a starter outfit", canPlayerWearOutfitId(cid, STARTER_OUTFITS[1], 0))
+
+    for _, vocation in ipairs(Vocations.LIST) do
+        choose(vocation.key)
+        check(vocation.name .. " can wear their outfit after choosing", canPlayerWearOutfitId(cid, vocation.outfit, 0))
+        check(vocation.name .. " puts their outfit on when choosing",
+            getCreatureOutfit(cid).lookType == vocation.looks[female and 1 or 2], getCreatureOutfit(cid).lookType)
+        wear(trainer)
+        Vocations.updateOutfit(cid)
+        check(vocation.name .. " can change back to Trainer", getCreatureOutfit(cid).lookType == trainer)
+        for _, other in ipairs(Vocations.LIST) do
+            if (other ~= vocation and canPlayerWearOutfitId(cid, other.outfit, 0)) then
+                check(vocation.name .. " can't wear the " .. other.name .. " outfit", false)
+            end
+        end
+        wear(vocation.looks[female and 1 or 2])
+        Vocations.updateOutfit(cid)
+        check(vocation.name .. " keeps wearing their outfit", getCreatureOutfit(cid).lookType == vocation.looks[female and 1 or 2])
+        Vocations.reset(cid)
+        check("without the vocation the " .. vocation.name .. " outfit comes off",
+            getCreatureOutfit(cid).lookType == trainer, getCreatureOutfit(cid).lookType)
+    end
+    check("Angler gets the Fisher addons too", (function()
+        choose("angler")
+        doPlayerAddOutfitId(cid, 9, 1)
+        return canPlayerWearOutfitId(cid, 9, 1)
+    end)())
+    become(cid, "ace")
+    check("another vocation can't wear the Fisher addons", not canPlayerWearOutfitId(cid, 9, 1))
+
+    local quests = sandbox(PS_LIB_CONFIG_DIR .. "003-quest.lua").QUESTS_CONFIG
+    become(cid, nil)
+    check("Julia's Fisher addon quests are for Anglers only",
+        not quests["Julia"][1].canStart(cid) and not quests["Julia"][2].canStart(cid))
+    become(cid, "angler")
+    check("Anglers can start Julia's quests", quests["Julia"][1].canStart(cid) and quests["Julia"][2].canStart(cid))
+    local function rewardLooks(npc)
+        local looks = {}
+        for _, quest in ipairs(quests[npc]) do
+            for _, reward in ipairs(quest.rewardItems or {}) do
+                if (reward.female) then
+                    looks[reward.female.looktype] = true
+                end
+            end
+        end
+        return looks
+    end
+    check("Professor Oak gives the Voyager outfit", rewardLooks("Professor Oak")[2543] and not rewardLooks("Professor Oak")[1200])
+    check("Justin Flowers gives the Wanderer outfit", rewardLooks("Justin Flowers")[2575] and not rewardLooks("Justin Flowers")[1202])
+
+    -- a Catcher who had earned the Master Trainer (Oak) and Ranger (Justin Flowers) outfits
+    forget()
+    for _, earned in ipairs({ { "ace", 40 }, { "ranger", 49 }, { "catcher", 37 } }) do
+        become(cid, earned[1])
+        doPlayerAddOutfitId(cid, earned[2], 0)
+    end
+    become(cid, "catcher")
+    setPlayerStorageValue(cid, playersStorages.vocationOutfits, -1)
+    local text = captureMessages(function() Vocations.migrateOutfits(cid) end)
+    check("migration: Voyager for the Master Trainer outfit", canPlayerWearOutfitId(cid, 83, 0), text)
+    check("migration: Wanderer for the Ranger outfit", canPlayerWearOutfitId(cid, 84, 0), text)
+    check("migration: no Duelist for a Catcher's own outfit", not canPlayerWearOutfitId(cid, 85, 0), text)
+    check("migration: tells the trainer", text:find("The Ranger outfit now belongs to a vocation. You got the Wanderer outfit instead.", 1, true) ~= nil, text)
+    check("migration: keeps the Catcher outfit", canPlayerWearOutfitId(cid, 37, 0))
+    doPlayerRemoveOutfitId(cid, 83, 255)
+    Vocations.migrateOutfits(cid)
+    check("migration runs once", not canPlayerWearOutfitId(cid, 83, 0))
+    forget()
+    become(cid, nil)
+    Vocations.updateOutfit(cid)
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -809,7 +929,7 @@ function onSay(cid, words, param, channel)
     end
 
     local tests = {
-        { "ranks", testRanks }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
+        { "ranks", testRanks }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
         { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()

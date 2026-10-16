@@ -326,7 +326,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8368) == QUEST_STATUS.FINISHED end,
             rewardItems = {
                 { type = REWARD_TYPE.ITEM, id = 17377, count = 1, unique = true }, -- TM 41 - Rest
-                { type = REWARD_TYPE.ADDON, female = { looktype = 1200, addons = 0 }, male = { looktype = 1201, addons = 0 } },
+                { type = REWARD_TYPE.ADDON, female = { looktype = 2543, addons = 0 }, male = { looktype = 2544, addons = 0 } },
             },
             rewardExp = 0,
             requiredLevel = 70,
@@ -624,9 +624,10 @@ QUESTS_CONFIG = {
         }
     },
     ["Julia"] = {
-        -- Fisher
+        -- Fisher (Angler vocation outfit)
         {
             storage = 8046,
+            canStart = function(cid) return Vocations.is(cid, "angler") end,
             talk_questStarting = "Insect Pokemon are very slippery, I use a net to capture them! I can build one for you.",
             talk_questStarted = "I'll need the following items: 50x Spool of Yarn and 500x Bamboo Leaves.",
             talk_questFinishing = "Have you got the items?",
@@ -643,6 +644,7 @@ QUESTS_CONFIG = {
         },
         {
             storage = 8047,
+            canStart = function(cid) return Vocations.is(cid, "angler") end,
             talk_questStarting = "Great insect hunters spend days in the forest, so they need to carry heavy equipment. You can't carry everything in your arms, but I can get you a backpack for it. Let's make a deal.",
             talk_questStarted = "You bring me some rare items and I'll build a backpack for you. Bring me 100x Insect Skins and 150x Hard Nails.",
             talk_questFinishing = "Have you got the items?",
@@ -6038,7 +6040,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Doesn't look like it.",
             talk_questDone = "",
             rewardItems = {
-                { type = REWARD_TYPE.ADDON, female = { looktype = 1202, addons = 0 }, male = { looktype = 1203, addons = 0 } },
+                { type = REWARD_TYPE.ADDON, female = { looktype = 2575, addons = 0 }, male = { looktype = 2576, addons = 0 } },
                 { type = REWARD_TYPE.ITEM, id = 2152, count = 50 }
             },
             rewardExp = 37100, -- 50% of 40 to 41

@@ -85,7 +85,7 @@ local TOKEN_OPTIONS = {
     { name = "TM Thunder", id = 17360, tokens = 120, count = 1, tokenUse = 10, token = TOKENS.TOURNAMENT, unique = true },
     --  {name = "TM Avalanche", id = 24723, tokens = 120, count = 1, tokenUse = 18, token = TOKENS.TOURNAMENT},
     --  {name = "TM Aerial Ace", id = 24718, tokens = 120, count = 1, tokenUse = 19, token = TOKENS.TOURNAMENT},
-    { name = "catcher clothes kit", id = 18717, tokens = 150, count = 1, tokenUse = 11, token = TOKENS.TOURNAMENT },
+    { name = "duelist clothes kit", id = 18717, tokens = 150, count = 1, tokenUse = 11, token = TOKENS.TOURNAMENT },
     { name = "academy addon #1 kit", id = 25071, tokens = 100, count = 1, tokenUse = 22, token = TOKENS.TOURNAMENT },
     { name = "academy addon #2 kit", id = 25072, tokens = 100, count = 1, tokenUse = 23, token = TOKENS.TOURNAMENT },
     { name = "adventurer addon #1 kit", id = 25073, tokens = 100, count = 1, tokenUse = 24, token = TOKENS.TOURNAMENT },
