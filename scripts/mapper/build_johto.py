@@ -65,6 +65,9 @@ BOX = (1700, 20, 3190, 1270)
 # Everything else in the layout's reach that the base map leaves empty: Johto out to x 3047, and the
 # sea north of Kanto (y < FAR_NORTH) beyond it.
 JOHTO_X1, FAR_NORTH = 3047, 300
+# Sea smaller than SEA_POCKET, shut in by land, is filled if mountain rings it or it is smaller
+# than SEA_SPECK (the lakes are drawn on land, so they stay).
+SEA_POCKET, SEA_SPECK = 1500, 8
 # Below that, down to KANTO_GAPS_TO, the holes the base map leaves between the Indigo Plateau and
 # Kanto's mountains are filled with mountain.
 KANTO_GAPS_TO = 575
@@ -2159,6 +2162,29 @@ def build(base, out_path):
     rage = f.disc(*RAGE[:3], n1, 0.4)
     land |= rage
     water &= ~(rage & (Y < RAGE[3] + n2 * 6))
+    # Sea the layout's shapes shut in, cut off from the open sea and from Kanto's water across the
+    # seam, stays as a pond on open ground (Bulbapedia's routes have them beside the path). Shut in
+    # by mountain it is water running into rock, and specks are glitches: both become land, mountain
+    # if the mountain rings them.
+    seam_water = np.array([(existing_ids(JOHTO_X1 + 3, y) or [None])[0] in WATER_IDS
+                           for y in range(f.y0, f.y1 + 1)])
+    filled = []
+    for cells in components(~land & (X <= JOHTO_X1)):
+        if len(cells) >= SEA_POCKET:
+            continue
+        ys, xs = map(np.array, zip(*cells))
+        if ys.min() == 0 or xs.min() == 0 or ys.max() == f.h - 1 or seam_water[ys[xs == JOHTO_X1 - f.x0]].any():
+            continue
+        pocket = np.zeros_like(land)
+        pocket[ys, xs] = True
+        walled = mount[dilate(pocket, 3) & ~pocket].mean() > 0.5
+        if not walled and len(cells) >= SEA_SPECK:
+            continue
+        land |= pocket
+        if walled:
+            mount |= pocket
+        filled.append((int(xs.mean()) + f.x0, int(ys.mean()) + f.y0, len(cells)))
+    print('sea pockets filled (x, y, tiles):', filled)
 
     # Roads: the routes, town streets, and paths from doors down to the street in front.
     road_pts = {k: smooth_path(v, rng, ROAD_WOBBLE[k]) if ROAD_WOBBLE.get(k) else v for k, v in ROADS.items()}
