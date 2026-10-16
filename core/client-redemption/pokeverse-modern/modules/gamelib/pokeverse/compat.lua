@@ -150,6 +150,7 @@ ExtendedIds.Pokepedia = 23
 ExtendedIds.Vocation = 24
 ExtendedIds.Radar = 25
 ExtendedIds.Fishing = 26
+ExtendedIds.TrainerCard = 27
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

@@ -58,7 +58,8 @@ EXTENDED_IDS = {
     POKEPEDIA = 23, -- JSON Pokepedia window: houses, items, Pokedex knowledge, one {type = ...} per message (Pokepedia)
     VOCATION = 24, -- JSON vocation window: the six vocations and the permanent choice (Vocations)
     RADAR = 25, -- JSON Ranger radar popup: scans, cooldown and whether the trainer has a radar (Vocations.radar)
-    FISHING = 26 -- JSON Angler fishing guide: what bites in each region at each skill (Fishing.openGuide)
+    FISHING = 26, -- JSON Angler fishing guide: what bites in each region at each skill (Fishing.openGuide)
+    TRAINER_CARD = 27 -- JSON Trainer Card: a trainer's profile, and the card's settings for its owner (TrainerCard)
 }
 
 TOURNAMENT_TYPES = {}

@@ -4,6 +4,7 @@ function onAdvance(cid, skill, oldLevel, newLevel)
         doSendMagicEffect(getCreaturePosition(cid), EFFECT_LEVEL_UP)
         if (newLevel > oldLevel) then
             LevelUpBanner.sendTrainer(cid, oldLevel, newLevel)
+            Vocations.sendTrial(cid)
         end
 
     elseif (skill >= PLAYER_SKILL_DUEL_WIN and skill <= PLAYER_SKILL_BATTLE_LOSS) then

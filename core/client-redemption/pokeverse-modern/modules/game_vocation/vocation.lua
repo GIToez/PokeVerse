@@ -2,6 +2,11 @@
 -- ExtendedIds.Vocation: {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}},
 -- then answers a choice with {type = "chosen", key, name, rank, title} or {type = "result", ok, text}.
 -- A card's Select turns into Confirm and Back; Confirm sends {action = "choose", key}.
+-- A trainer with a vocation gets the progress window instead: {type = "progress", key, name, tagline, rank,
+-- maxRank, title, titles, levels, level, since, look, wearing, perks = {{icon, text, value}, ...}, ranks = {perks
+-- of each rank}, next = {rank, title, level, trial = {text, have, need}, gains = {{icon, text, value, badge}},
+-- ready, why}}. Its buttons send {action = "rankup"} and {action = "wear"}; {type = "trial", have, need, ready}
+-- updates the trial and the top bar button's red "!" (also shown from level 20 until a vocation is chosen).
 -- The U key is the vocation key: it opens the trainer's vocation tool (the Ranger radar, the Angler
 -- fishing guide; those modules call registerTool(id, {enabled = fn, toggle = fn})), and without one
 -- it asks the server for this window with {action = "open"}. Below level 20 the window opens with
@@ -18,6 +23,15 @@ local selected
 local messageEvent
 local tools = {}
 local TOOL_ACTION = 'Vocation: window or vocation tool'
+local progressWindow
+local progress
+local showingAll = false
+local button, dot
+local barEvent
+local TOOL_BUTTONS = {
+    radar = { text = 'Open Radar', icon = 'perk_radar' },
+    fishing = { text = 'Open Fishing Guide', icon = 'perk_fish' },
+}
 
 local function send(data)
     local protocol = g_game.getProtocolGame()
@@ -113,13 +127,257 @@ local function build(vocations)
     refreshCards()
 end
 
-local function show()
+local function center(widget)
     local root = rootWidget:getSize()
-    window:show()
-    window:setPosition({ x = math.floor((root.width - window:getWidth()) / 2),
-                         y = math.max(0, math.floor((root.height - window:getHeight()) / 2)) })
-    window:raise()
-    window:focus()
+    widget:show()
+    widget:setPosition({ x = math.floor((root.width - widget:getWidth()) / 2),
+                         y = math.max(0, math.floor((root.height - widget:getHeight()) / 2)) })
+    widget:raise()
+    widget:focus()
+end
+
+local function show()
+    progressWindow:hide()
+    center(window)
+end
+
+-- Progress window --------------------------------------------------------------------------------
+
+-- The red "!" on the top bar button: a vocation to choose (choose) or a rank up ready
+local function setDot(visible, choose)
+    if dot then
+        dot:setVisible(visible and true or false)
+    end
+    if button then
+        if visible then
+            button:setTooltip(choose and tr('Vocation (choose your vocation!)') or tr('Vocation (rank up ready!)'))
+        else
+            button:setTooltip(tr('Vocation'))
+        end
+    end
+end
+
+local function setBar(bar, have, need)
+    local width = bar:getWidth()
+    bar.fill:setWidth(need > 0 and math.floor(width * math.min(1, have / need)) or width)
+end
+
+local function perkRow(parent, perk, gain)
+    local row = g_ui.createWidget('VocationPerkRow', parent)
+    row.icon:setImageSource(IMAGES .. 'perk_' .. (perk.icon or 'star'))
+    if gain then
+        row.tick:setImageSource(IMAGES .. 'perk_' .. (perk.icon or 'star'))
+        row.icon:setVisible(false)
+        row.icon:setWidth(0)
+        row.icon:setMarginLeft(0)
+        local on = perk.value == tr('On') or perk.value == 'On'
+        row.text:setText(on and perk.text or (perk.text .. '  ' .. (perk.value or '')))
+        row.value:setVisible(false)
+        row.badge:setText(perk.badge or '')
+        row.badge:setVisible(true)
+    else
+        row.text:setText(perk.text or '')
+        row.value:setText(perk.value or '')
+    end
+    return row
+end
+
+local function fillRanks(data)
+    local panel = progressWindow.ranksPanel
+    panel.count:setText(tr('Rank %d of %d', data.rank, data.maxRank))
+    panel.nodes:destroyChildren()
+    local width = panel.nodes:getWidth()
+    local cell = math.floor(width / data.maxRank)
+    for r = 1, data.maxRank do
+        local node = g_ui.createWidget('VocationRankNode', panel.nodes)
+        node:setWidth(cell)
+        node:addAnchor(AnchorTop, 'parent', AnchorTop)
+        node:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+        node:setMarginLeft((r - 1) * cell)
+        local kind = r < data.rank and 'done' or (r == data.rank and 'current' or (r == data.rank + 1 and 'next' or 'locked'))
+        node.node:setImageSource(IMAGES .. 'node_' .. kind)
+        node.number:setText((kind == 'current' or kind == 'next') and tostring(r) or '')
+        node.title:setText(data.titles[r] or '')
+        node.title:setColor(kind == 'current' and '#ffd75a' or (kind == 'locked' and '#7d8aa8' or '#ffffff'))
+        node.level:setText(tr('Trainer Lv. %d', data.levels[r] or 0))
+        if kind == 'current' or kind == 'next' then
+            node.tag:setText(kind == 'current' and tr('YOU') or tr('NEXT'))
+            node.tag:setColor(kind == 'current' and '#2a1e00' or '#ffffff')
+            node.tag:setImageColor(kind == 'current' and '#ffc83c' or '#3a78d8')
+            node.tag:setVisible(true)
+        end
+    end
+    panel.track:setMarginLeft(math.floor(cell / 2))
+    panel.track:setMarginRight(width - cell * data.maxRank + math.floor(cell / 2))
+    local trackWidth = cell * (data.maxRank - 1)
+    panel.track.fill:setWidth(math.floor(trackWidth * (data.rank - 1) / (data.maxRank - 1)))
+end
+
+local function fillNext(data)
+    local panel = progressWindow.nextPanel
+    panel.list:destroyChildren()
+    local next = data.next
+    for _, id in ipairs({ 'requirements', 'levelText', 'levelValue', 'levelBar', 'trialText', 'trialValue', 'trialBar', 'newAt' }) do
+        panel[id]:setVisible(next ~= nil)
+    end
+    panel.topRank:setVisible(next == nil)
+    if not next then
+        panel.heading:setText(tr('Top rank'))
+        panel.topRank:setText(tr('You are %s, the top rank of the %s. Every perk of the vocation is yours.',
+            data.title or '', data.name or ''))
+        return
+    end
+    panel.heading:setText(tr('Next: %s  (rank %d)', next.title or '', next.rank or 0))
+    panel.levelText:setText(tr('Trainer level %d', next.level or 0))
+    local reached = (data.level or 0) >= (next.level or 0)
+    panel.levelValue:setText(reached and tr('Lv. %d  \183  done', data.level or 0) or
+        tr('Lv. %d / %d', data.level or 0, next.level or 0))
+    panel.levelValue:setColor(reached and '#6fe08a' or '#ffffff')
+    local trial = next.trial or { text = '', have = 0, need = 0 }
+    panel.trialText:setText(tr('Trial: %s', trial.text or ''))
+    panel.trialValue:setText(string.format('%d / %d', trial.have or 0, trial.need or 0))
+    panel.newAt:setText(tr('New at rank %d', next.rank or 0))
+    for _, gain in ipairs(next.gains or {}) do
+        perkRow(panel.list, gain, true)
+    end
+    removeEvent(barEvent)
+    barEvent = scheduleEvent(function()
+        barEvent = nil
+        if progressWindow and progress then
+            setBar(panel.levelBar, data.level or 0, next.level or 0)
+            setBar(panel.trialBar, trial.have or 0, trial.need or 0)
+        end
+    end, 50)
+end
+
+local function fillAll(data)
+    local list = progressWindow.allPanel.list
+    list:destroyChildren()
+    for r = 1, data.maxRank do
+        local section = g_ui.createWidget('VocationRankSection', list)
+        local heading = g_ui.createWidget('VocationPanelTitle', section)
+        heading:setText(tr('Rank %d  \183  %s  \183  Trainer Lv. %d', r, data.titles[r] or '', data.levels[r] or 0))
+        heading:setIcon(IMAGES .. (r < data.rank and 'node_done' or (r == data.rank and 'node_current' or 'node_locked')))
+        heading:setColor(r <= data.rank and '#ffd75a' or '#96aacd')
+        for _, perk in ipairs(data.ranks[r] or {}) do
+            local row = perkRow(section, perk)
+            if r > data.rank then
+                row:setOpacity(0.6)
+            end
+        end
+    end
+end
+
+local function activeTool()
+    for id, tool in pairs(tools) do
+        if tool.enabled() then
+            return id, tool
+        end
+    end
+end
+
+local function fillButtons(data)
+    local main = progressWindow.buttons.main
+    main:setEnabled(true)
+    main:setTooltip('')
+    local next = data.next
+    if next and next.ready then
+        main:setText(tr('Rank up to %s', next.title or ''))
+        main:setIcon(IMAGES .. 'perk_up')
+        main.onClick = function() send({ action = 'rankup' }) end
+        return
+    end
+    local id, tool = activeTool()
+    if tool then
+        local info = TOOL_BUTTONS[id] or { text = 'Open', icon = 'perk_star' }
+        main:setText(tr(info.text))
+        main:setIcon(IMAGES .. info.icon)
+        main.onClick = function()
+            close()
+            tool.toggle()
+        end
+        return
+    end
+    main:setText(next and tr('Rank up') or tr('Top rank reached'))
+    main:setIcon(IMAGES .. (next and 'perk_up' or 'perk_crown'))
+    main:setEnabled(false)
+    main:setTooltip(next and next.why or '')
+    main.onClick = nil
+end
+
+local function setView()
+    progressWindow.allPanel:setVisible(showingAll)
+    progressWindow.perksPanel:setVisible(not showingAll)
+    progressWindow.nextPanel:setVisible(not showingAll)
+    progressWindow.buttons.all:setText(showingAll and tr('Back') or tr('All Ranks'))
+end
+
+local function fillProgress(data)
+    progress = data
+    local w = progressWindow
+    w.headerIcon:setImageSource(IMAGES .. 'icon_' .. data.key)
+    w.subtitle:setText(tr('%s  \183  rank %d of %d', data.name or '', data.rank or 1, data.maxRank or 5))
+    w.banner:setImageSource(IMAGES .. 'wide_' .. data.key)
+    w.banner.vocation:setText((data.name or ''):upper())
+    w.banner.title:setText(data.title or '')
+    local since = tonumber(data.since) or 0
+    w.banner.tagline:setText((data.tagline or '') ..
+        (since > 0 and ('  \183  ' .. tr('%s since %s', data.name or '', os.date('%b %d, %Y', since))) or ''))
+    w.banner.outfitTag:setText(tr('%s outfit unlocked', data.name or ''))
+    w.banner.wear:setVisible(not data.wearing)
+    local outfit = { type = tonumber(data.look) or 0, addons = 0 }
+    local player = g_game.getLocalPlayer()
+    if player then
+        local own = player:getOutfit()
+        outfit.head, outfit.body, outfit.legs, outfit.feet = own.head, own.body, own.legs, own.feet
+    end
+    w.banner.outfit:setOutfit(outfit)
+    w.banner.outfit:setDirection(Directions and Directions.South or 2)
+    w.perksPanel.heading:setText(tr('Your perks at rank %d', data.rank or 1))
+    w.perksPanel.list:destroyChildren()
+    for _, perk in ipairs(data.perks or {}) do
+        perkRow(w.perksPanel.list, perk)
+    end
+    fillRanks(data)
+    fillNext(data)
+    fillAll(data)
+    fillButtons(data)
+    setView()
+    setDot(data.next and data.next.ready)
+end
+
+local function showProgress(data)
+    window:hide()
+    if not progressWindow:isVisible() then
+        showingAll = false
+        center(progressWindow)
+    end
+    fillProgress(data)
+end
+
+function toggleAllRanks()
+    showingAll = not showingAll
+    setView()
+end
+
+function openGuide()
+    if progress and modules.game_pokepedia and modules.game_pokepedia.openWiki then
+        close()
+        modules.game_pokepedia.openWiki('voc_' .. progress.key)
+    end
+end
+
+function wearOutfit()
+    send({ action = 'wear' })
+end
+
+-- The top bar button and the vocation key's fallback: the picker or the progress window
+local function toggleWindow()
+    if window:isVisible() or progressWindow:isVisible() then
+        close()
+    else
+        send({ action = 'open' })
+    end
 end
 
 function registerTool(id, tool)
@@ -142,7 +400,7 @@ local function onToolKey()
     if typing() or not g_game.isOnline() then
         return
     end
-    if window:isVisible() then
+    if window:isVisible() or progressWindow:isVisible() then
         close()
         return
     end
@@ -159,6 +417,9 @@ function close()
     if window and window:isVisible() then
         window:hide()
         send({ action = 'close' })
+    end
+    if progressWindow and progressWindow:isVisible() then
+        progressWindow:hide()
     end
     selected = nil
 end
@@ -182,8 +443,31 @@ local function onVocation(protocol, opcode, buffer)
         selected = nil
         refreshCards()
         updateSubtitle()
-    elseif data.type == 'result' and data.text and window:isVisible() then
-        showMessage(data.text)
+    elseif data.type == 'progress' and data.key then
+        showProgress(data)
+    elseif data.type == 'trial' then
+        setDot(data.ready, data.choose)
+        if progress and progress.next and progressWindow:isVisible() then
+            progress.next.trial.have = tonumber(data.have) or 0
+            progress.next.ready = data.ready
+            fillNext(progress)
+            fillButtons(progress)
+        end
+    elseif data.type == 'result' and data.text then
+        if window:isVisible() then
+            showMessage(data.text)
+        elseif progressWindow:isVisible() then
+            progressWindow.subtitle:setText(data.text)
+            progressWindow.subtitle:setColor(ERROR_COLOR)
+            removeEvent(messageEvent)
+            messageEvent = scheduleEvent(function()
+                messageEvent = nil
+                if progress then
+                    progressWindow.subtitle:setColor(MUTED_COLOR)
+                    fillProgress(progress)
+                end
+            end, MESSAGE_MS)
+        end
     end
 end
 
@@ -192,15 +476,41 @@ local function onGameEnd()
     messageEvent = nil
     selected = nil
     state = {}
+    progress = nil
+    removeEvent(barEvent)
+    barEvent = nil
+    setDot(false)
     if window then
         window:hide()
+    end
+    if progressWindow then
+        progressWindow:hide()
     end
 end
 
 function init()
     g_ui.importStyle('vocation')
+    g_ui.importStyle('progress')
     window = g_ui.createWidget('VocationWindow', rootWidget)
     window:hide()
+    progressWindow = g_ui.createWidget('VocationProgressWindow', rootWidget)
+    progressWindow:hide()
+    button = modules.client_topmenu.addRightGameToggleButton('vocationButton', tr('Vocation'),
+        IMAGES .. 'button_vocation', toggleWindow)
+    if button then
+        -- the same badge as the Tasks button's count
+        dot = g_ui.createWidget('UILabel', button)
+        dot:setFont('verdana-11px-rounded')
+        dot:setColor('#ffffff')
+        dot:setBackgroundColor('#d03030')
+        dot:setTextAlign(AlignCenter)
+        dot:setText('!')
+        dot:setSize({ width = 12, height = 12 })
+        dot:addAnchor(AnchorTop, 'parent', AnchorTop)
+        dot:addAnchor(AnchorRight, 'parent', AnchorRight)
+        dot:setPhantom(true)
+        dot:hide()
+    end
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Vocation, onVocation)
     connect(g_game, { onGameEnd = onGameEnd })
     Keybind.new('Windows', TOOL_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'U' }, '')
@@ -212,8 +522,17 @@ function terminate()
     disconnect(g_game, { onGameEnd = onGameEnd })
     Keybind.delete('Windows', TOOL_ACTION)
     removeEvent(messageEvent)
+    removeEvent(barEvent)
     if window then
         window:destroy()
         window = nil
+    end
+    if progressWindow then
+        progressWindow:destroy()
+        progressWindow = nil
+    end
+    if button then
+        button:destroy()
+        button, dot = nil, nil
     end
 end

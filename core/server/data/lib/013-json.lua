@@ -116,6 +116,26 @@ function JSON.encode(v)
     return table.concat(out)
 end
 
+-- The engine drops an extended opcode string over 8192 bytes (NetworkMessage::AddString)
+JSON.MESSAGE_BUDGET = 7500
+
+-- Encodes data with data[field] = list, dropping entries from the end of the list until the text
+-- fits in budget bytes (default JSON.MESSAGE_BUDGET); data.more = true when entries were dropped
+function JSON.encodeWithin(data, field, list, budget)
+    budget = budget or JSON.MESSAGE_BUDGET
+    data[field] = JSON.array(list)
+    local text = JSON.encode(data)
+    while (#text > budget and #list > 0) do
+        local drop = math.max(1, math.floor(#list * (1 - budget / #text)))
+        for _ = 1, drop do
+            table.remove(list)
+        end
+        data.more = true
+        text = JSON.encode(data)
+    end
+    return text
+end
+
 -- Decoder
 
 local function decodeError(str, pos, msg)

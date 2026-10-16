@@ -2,8 +2,11 @@
 -- {type = "status", enabled, rank, title, range, cooldown, wait, unlocks, open} says whether the trainer has a
 -- radar (the top bar button only shows for Rangers), {type = "scan", ...the status fields, center, blips} is
 -- one scan and {type = "error", text, wait} a refused one. The popup sends {action = "hello"} and
--- {action = "scan"}. Blips stay where the scan saw them; filtering happens here. A tracked target gets
--- the cone on the radar, an arrow beside the trainer on the game map and a flag on the minimap.
+-- {action = "scan"}. Blips stay where the scan saw them, except from the live rank (scan.live): then exact
+-- blips follow their Pokemon, from the game map while they are on screen and from the server's
+-- {type = "live", blips, gone} otherwise, while the popup is open or tracking ({action = "live", on}).
+-- Filtering happens here. A tracked target gets the cone on the radar, an arrow beside the trainer on the
+-- game map and a flag on the minimap.
 local IMAGES = '/modules/game_radar/images/'
 local RADIUS = 176 -- pixels from the middle of the radar image to its edge (scripts/art/radar_ui.py)
 local TICK_MS = 150
@@ -240,6 +243,16 @@ local function refreshTargetDistance(from, to)
     info.direction:setText(tr('Direction: %s', direction and tr(DIRECTION_NAMES[direction]) or tr('Here')))
 end
 
+local liveWanted -- what the server was last told about the live updates
+
+local function setLive(on)
+    on = on and status.live == true
+    if liveWanted ~= on then
+        liveWanted = on
+        send({ action = 'live', on = on })
+    end
+end
+
 local function stopTracking()
     target = nil
     layoutKey = nil
@@ -251,7 +264,41 @@ local function stopTracking()
     if window then
         window.radar.selected:hide()
         refreshTarget()
+        if not window:isVisible() then
+            setLive(false)
+        end
     end
+end
+
+-- Live blips on the game map's screen move here every tick; the server sends the others
+local function followOnScreen()
+    if not status.live then
+        return
+    end
+    for _, blip in ipairs(blips) do
+        if blip.exact and blip.id then
+            local creature = g_map.getCreatureById(blip.id)
+            local pos = creature and creature:getPosition()
+            if pos and (pos.x ~= blip.x or pos.y ~= blip.y or pos.z ~= blip.z) then
+                blip.x, blip.y, blip.z = pos.x, pos.y, pos.z
+                layoutKey = nil
+            end
+        end
+    end
+end
+
+local function removeBlip(blip)
+    for i, other in ipairs(blips) do
+        if other == blip then
+            table.remove(blips, i)
+            break
+        end
+    end
+    blip.widget:destroy()
+    if blip.halo then
+        blip.halo:destroy()
+    end
+    layoutKey = nil
 end
 
 -- puts each blip where it is from the trainer now, so walking moves the radar under the blips
@@ -337,6 +384,7 @@ local function tick()
         return
     end
     local from = playerPos()
+    followOnScreen()
     if window:isVisible() then
         refreshScanButton()
         if from then
@@ -555,12 +603,16 @@ function show()
     if not status.scanned and readyAt <= g_clock.seconds() then
         send({ action = 'scan' })
     end
+    setLive(true)
     tick()
 end
 
 function hide()
     if window then
         window:hide()
+    end
+    if not target then
+        setLive(false)
     end
     if button then
         button:setOn(false)
@@ -586,10 +638,10 @@ function stop()
 end
 
 local function applyStatus(data)
-    local scanned = status.scanned
+    local scanned, live = status.scanned, status.live
     status = { enabled = data.enabled == true, rank = tonumber(data.rank), title = data.title,
                range = tonumber(data.range), cooldown = tonumber(data.cooldown), unlocks = data.unlocks or {},
-               scanned = scanned }
+               scanned = scanned, live = live }
     readyAt = g_clock.seconds() + (tonumber(data.wait) or 0)
     if button then
         button:setVisible(status.enabled)
@@ -608,6 +660,36 @@ local function applyStatus(data)
     refreshStatusLine()
 end
 
+local function onLive(data)
+    local byId = {}
+    for _, blip in ipairs(blips) do
+        if blip.id then
+            byId[blip.id] = blip
+        end
+    end
+    for _, moved in ipairs(type(data.blips) == 'table' and data.blips or {}) do
+        local blip = byId[tonumber(moved.id)]
+        if blip and blip.exact then
+            blip.x, blip.y, blip.z = tonumber(moved.x) or blip.x, tonumber(moved.y) or blip.y, tonumber(moved.z) or blip.z
+            layoutKey = nil
+        end
+    end
+    for _, id in ipairs(type(data.gone) == 'table' and data.gone or {}) do
+        local blip = byId[tonumber(id)]
+        if blip then
+            if blip == target then
+                local name = target.name or tr('the Pokemon')
+                stopTracking()
+                modules.game_textmessage.displayGameMessage(tr('Radar: you lost track of %s.', name))
+            end
+            removeBlip(blip)
+        end
+    end
+    if window:isVisible() then
+        refreshStatusLine()
+    end
+end
+
 local function onRadar(protocol, opcode, buffer)
     local ok, data = pcall(json.decode, buffer)
     if not ok or type(data) ~= 'table' then
@@ -622,12 +704,16 @@ local function onRadar(protocol, opcode, buffer)
     elseif data.type == 'scan' then
         applyStatus(data)
         status.scanned = true
+        status.live = data.live == true
+        liveWanted = status.live or nil
         buildBlips(type(data.blips) == 'table' and data.blips or {})
         refreshStatusLine()
         if not window:isVisible() then
             show()
         end
         tick()
+    elseif data.type == 'live' then
+        onLive(data)
     elseif data.type == 'error' then
         if data.wait then
             readyAt = g_clock.seconds() + (tonumber(data.wait) or 0)
@@ -650,6 +736,7 @@ local function onGameEnd()
     stopTracking()
     clearBlips()
     status = { enabled = false }
+    liveWanted = nil
     filter = { mode = 'all' }
     readyAt = 0
     if button then

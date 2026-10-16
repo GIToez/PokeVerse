@@ -1,0 +1,147 @@
+// The badge case window, in the Trainer Card's style (the frame comes from game_dailytasks, the panel
+// from game_fishing, the slots and lock from game_trainercard, the arrows and close button from client_entergame)
+
+BcText < UILabel
+  font: verdana-11px-antialised
+  color: #96aacd
+  text-auto-resize: true
+  phantom: true
+
+BcArrow < UIButton
+  size: 30 30
+  image-source: /modules/client_entergame/images/arrow_left
+  $hover:
+    image-source: /modules/client_entergame/images/arrow_left_hover
+
+// One badge: the slot frame, the badge (faded until earned, a lock when not in the game yet) and its name
+BcBadge < UIWidget
+  size: 64 78
+
+  UIWidget
+    id: slot
+    size: 56 56
+    image-source: /modules/game_trainercard/images/slot
+    image-border: 8
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.centerIn: slot
+    virtual: true
+    phantom: true
+
+  UIWidget
+    id: lock
+    size: 16 16
+    image-source: /modules/game_trainercard/images/icon_lock
+    anchors.centerIn: slot
+    visible: false
+    phantom: true
+
+  BcText
+    id: name
+    text-auto-resize: false
+    text-align: center
+    height: 14
+    anchors.top: slot.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+
+BadgeCaseWindow < UIWindow
+  size: 690 252
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_badgecase.close()
+
+  UIItem
+    id: icon
+    size: 32 32
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -2
+    virtual: true
+    phantom: true
+
+  UILabel
+    id: title
+    !text: tr('Badge Case')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: icon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  BcText
+    id: subtitle
+    anchors.left: title.left
+    anchors.top: title.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_badgecase.close()
+
+  UIWidget
+    id: panel
+    anchors.top: subtitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 14
+    image-source: /modules/game_fishing/images/panel
+    image-border: 10
+    padding: 8 10 8 10
+
+    UILabel
+      id: region
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      phantom: true
+
+    BcText
+      id: count
+      anchors.verticalCenter: region.verticalCenter
+      anchors.right: parent.right
+
+    BcArrow
+      id: prevRegion
+      anchors.top: region.bottom
+      anchors.left: parent.left
+      margin-top: 23
+      @onClick: modules.game_badgecase.showRegion(-1)
+
+    BcArrow
+      id: nextRegion
+      image-source: /modules/client_entergame/images/arrow_right
+      anchors.top: region.bottom
+      anchors.right: parent.right
+      margin-top: 23
+      @onClick: modules.game_badgecase.showRegion(1)
+      $hover:
+        image-source: /modules/client_entergame/images/arrow_right_hover
+
+    UIWidget
+      id: list
+      anchors.top: region.bottom
+      anchors.left: prevRegion.right
+      anchors.right: nextRegion.left
+      anchors.bottom: parent.bottom
+      margin: 10 6 0 6
+      phantom: true

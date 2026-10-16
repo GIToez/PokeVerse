@@ -2,6 +2,7 @@ function onStatisticChange(cid, statisticId, newValue)
     if (statisticId == PLAYER_STATISTIC_IDS.HOOKED_FISH) then
         doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.FISH_1, newValue)
         Tasks.onEvent(cid, "fish")
+        Vocations.addTrial(cid, "angler")
 
     elseif (statisticId == PLAYER_STATISTIC_IDS.EVOLVE_POKEMON) then
         doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.EVOLVE_1, newValue)

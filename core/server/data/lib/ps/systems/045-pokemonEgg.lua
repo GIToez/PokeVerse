@@ -33,6 +33,7 @@ local function doEggHatch(cid, incubator, pokemonName, replacingSlot)
 
     doRemoveItem(incubator.uid)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
+    Vocations.addTrial(cid, "breeder")
 
     if (eggMove) then
         doDatalogEggMoveGenerate(os.time(), getPlayerGUID(cid), pokemonName, 1, 10, eggMove, true)

@@ -1,0 +1,8 @@
+Module
+  name: game_trainercard
+  description: PokeVerse Trainer Card: a trainer's profile with their hometown, favorite and trophy Pokemon, badges and statistics
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ trainercard ]
+  @onLoad: init()
+  @onUnload: terminate()

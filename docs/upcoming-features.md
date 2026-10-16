@@ -721,7 +721,13 @@ do not change.
     cooldown. Filters (all, species, type, rarity, shiny only, legendaries only) work on the
     last scan; rows show the rank they need. Clicking a blip tracks it: Target Info, a cone on
     the radar, an arrow beside the trainer on the game map (with the distance) and a flag on
-    the minimap, until the trainer reaches it or presses Stop. Without the PokeVerse client
+    the minimap, until the trainer reaches it or presses Stop. Ranks 1 and 2 are a snapshot;
+    from rank 3 the exact blips follow their Pokémon live for 2 minutes after a scan (shinies
+    and legendaries stay a direction and band). Pokémon on screen move every tick from the
+    client's own map; for the rest the server re-reads only the scanned Pokémon's positions
+    every 2 seconds (no new search of the area), sends only the ones that moved or are gone
+    (caught or defeated: the blip goes and tracking stops), and pauses while the popup is
+    closed and nothing is tracked. Without the PokeVerse client
     `!radar` and `!radar <type>` answer in text as before. Artwork: `scripts/art/radar_ui.py`.
   - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
     bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll
@@ -743,7 +749,55 @@ do not change.
   - Medic: +3% to +15% from health potions, and health potions work on another trainer's
     Pokémon when neither trainer is in a duel, the arena or an NPC battle.
   - Tests: `scripts/vocation-test.py` with `scripts/testing/vocation-test-talkaction.lua`
-    (103 checks against a live server, run by `scripts/test-server-linux.sh`).
+    (checks against a live server, run by `scripts/test-server-linux.sh`).
+- **Built: the vocation progress window** (`game_vocation/progress.otui`). Trainers with a
+  vocation get it from `U` or the Vocation button on the top bar; trainers without one still
+  get the choice window. It shows the vocation's banner, the five ranks as a track (done,
+  current, next, locked), the perks active now, and the next rank with its level, its new
+  perks and the rank-up trial with a progress bar. Rank up is enabled once the level and the
+  trial are done, and the top bar button shows a red dot when it is. Wear outfit puts the
+  vocation's outfit on again. Artwork: `scripts/art/vocation_progress_ui.py`.
+- **Built, goals proposed: rank-up trials** (`Vocations.TRIALS`). Besides the trainer level,
+  each rank needs a count of what the vocation is about; the count starts again at each rank.
+  The goals below are a proposal to tune.
+
+  | Vocation | Trial | Rank 2 | Rank 3 | Rank 4 | Rank 5 |
+  | --- | --- | --- | --- | --- | --- |
+  | Ace Trainer | Defeat wild Pokémon | 200 | 500 | 1000 | 2000 |
+  | Catcher | Catch Pokémon | 20 | 50 | 100 | 200 |
+  | Breeder | Hatch eggs | 3 | 6 | 10 | 15 |
+  | Ranger | Radar scans that find Pokémon | 30 | 60 | 100 | 150 |
+  | Angler | Hook Pokémon while fishing | 50 | 100 | 200 | 400 |
+  | Medic | Heal Pokémon with potions | 50 | 100 | 200 | 400 |
+- **Built: the top bar.** Its right side is Hotkeys, Tasks, Daily login, Pokepedia, Tracker,
+  Trainer Card and Vocation, then the Radar (Rangers only) and the Fishing Guide (Anglers
+  only). The order is the module load order in `game_interface/interface.otmod`. Icons: `scripts/art/topbar_icons.py`.
+- **Built: the Trainer Card** (client `game_trainercard`, server `TrainerCard` in
+  `data/lib/ps/systems/071-trainerCard.lua`, `EXTENDED_IDS.TRAINER_CARD`). It opens from the
+  top bar (your own card), from "Trainer Card" in the right-click menu on a trainer, and in
+  place of the old Pokédex look at a trainer when the client supports it (the client says so
+  with a hello message at login). Only online trainers have a card.
+  - Left side: a scene where the trainer's outfit walks with their favorite Pokémon over
+    their hometown (pictures rendered from the map by `scripts/art/trainercard_scenes.py`),
+    the name with ♂/♀, the title, the vocation and rank, and the favorite Pokémon.
+  - Overview: Trainer Information (level, hometown, guild, mastery, play time, trainer
+    since, duels won, respect), the badges (one region at a time with arrows: Kanto 8, Orange Islands 4, Johto 8 and Hoenn 8; the ones not in the game yet are locked slots, and the badge case window works the same way), six trophy Pokémon, statistics (caught,
+    Pokédex, unique, shinies, tournaments, achievements, trainers defeated) and an About
+    text of up to 160 letters and four lines. Other tabs: Trophies, Achievements (secret
+    achievements are hidden from others) and Pokédex.
+  - Buttons on another trainer's card: View Trophies, Add to VIP, Trade (a hint, because a
+    trade needs an item), Message and Duel (the same checks as the duel item, within 7
+    tiles).
+  - Your own card has edit buttons: the favorite and the trophies are picked from the
+    Pokémon in the belt, the bag and the PC (trophies in click order), the title from a list
+    (vocation ranks reached and achievements), and the About text. Change Outfit, Privacy
+    (hide play time, statistics or trophies from others), Preview as Others, Cancel and Save.
+    The server refuses Pokémon the trainer doesn't own and drops favorites and trophies that
+    were released or traded.
+  - "Trainer since" counts from the first login after the card was added, because the
+    `players` table has no creation date.
+  - Artwork: `scripts/art/trainercard_ui.py`.
+  - Later: the card in the Discord bot.
 
 ### To decide
 
@@ -905,6 +959,16 @@ From the `#notes` channel:
   NPC trainer wins (creature events) kept counting on the copy loaded at login, which had
   no tasks yet, until the next login. The boards are now read from the database every
   time, and the server test picks tasks and hooks Pokémon in one session.
+
+- **To go over: legendary spawning and roaming.** Today legendaries only come from scripts
+  (quest bosses, the wave arena, world bosses and events such as `048-anniversaryEvent.lua`);
+  they are not in the map spawns, and there is no roaming system yet. Things to decide: where
+  and how often legendaries spawn, whether some roam between routes (and how the Ranger radar
+  shows them; it already gives legendaries only a direction and distance band, from rank 5,
+  with a 10-minute cooldown), how long they stay, and who can catch them. Related: the radar
+  test's Articuno did not spawn when the test spot was a small upper floor (5017, 790, 6 on
+  Tutorial Island), because no tile 12–16 tiles away was walkable; the test now also tries
+  nearer spots.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.

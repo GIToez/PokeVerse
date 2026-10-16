@@ -28,7 +28,7 @@ local function check(name, ok, detail)
         say("PASS " .. name)
     else
         failed = failed + 1
-        say("FAIL " .. name .. (detail and (" (" .. tostring(detail) .. ")") or ""))
+        say("FAIL " .. name .. (detail and (" (" .. tostring(detail):sub(1, 300) .. ")") or ""))
     end
 end
 
@@ -167,15 +167,197 @@ local function testRanks(cid)
     become(cid, "ranger", 2)
     check("Ranger rank 2: type filter", Vocations.perk(cid, "ranger", "typeFilterRank") == true)
 
-    become(cid, "angler", 1)
-    local level = getPlayerLevel(cid)
-    if (level >= 30) then
-        check("rank up from 1 to 2 at level " .. level, Vocations.rankUp(cid) and Vocations.getRank(cid) == 2)
-    end
     become(cid, "angler", 5)
     check("no rank above 5", not Vocations.rankUp(cid) and Vocations.getRank(cid) == 5)
     Vocations.reset(cid)
     check("reset clears the vocation", not Vocations.get(cid) and (getPlayerSpecialDescription(cid) or "") == "")
+end
+
+-- The vocation messages the code sends while fn runs, decoded
+local function captureVocation(fn)
+    local sent, original = {}, doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (opcode == EXTENDED_IDS.VOCATION) then
+            sent[#sent + 1] = JSON.decode(buffer)
+            return true
+        end
+        return original(target, opcode, buffer)
+    end
+    local ok, err = pcall(fn)
+    doSendPlayerExtendedOpcode = original
+    if (not ok) then
+        check("no errors while capturing vocation messages", false, err)
+    end
+    local last = {}
+    for _, data in ipairs(sent) do
+        last[data.type] = data
+    end
+    return last
+end
+
+local function testTrials(cid)
+    become(cid, nil)
+    local notice = captureVocation(function() Vocations.sendTrial(cid) end).trial
+    check("top bar: \"!\" to choose a vocation from level 20", notice and notice.choose == true and
+        notice.ready == (getPlayerLevel(cid) >= Vocations.MIN_LEVEL))
+    become(cid, "angler", 1)
+    setPlayerStorageValue(cid, playersStorages.vocationTrial, 0)
+    if (getPlayerLevel(cid) < Vocations.RANK_LEVELS[2]) then
+        doPlayerAddLevel(cid, Vocations.RANK_LEVELS[2] - getPlayerLevel(cid))
+    end
+    local trial = Vocations.getTrial(cid)
+    check("trial: Angler rank 1 needs 50 hooks", trial and trial.need == 50 and trial.have == 0 and
+        trial.text == "Hook 50 Pokemon while fishing", trial and trial.text)
+    local ok, why = Vocations.canRankUp(cid)
+    check("trial: no rank up before the trial", not ok and (why or ""):find("trial") ~= nil, why)
+    check("trial: the Rank up action refuses", captureVocation(function()
+        Vocations.onClientMessage(cid, '{"action":"rankup"}')
+    end).result ~= nil and Vocations.getRank(cid) == 1)
+
+    Vocations.addTrial(cid, "ace", 10)
+    check("trial: other vocations' steps don't count", Vocations.getTrial(cid).have == 0)
+    local sent = captureVocation(function() Vocations.addTrial(cid, "angler", 49) end)
+    check("trial: steps count and are sent", Vocations.getTrial(cid).have == 49 and sent.trial and sent.trial.have == 49 and
+        sent.trial.ready == false)
+    sent = captureVocation(function() Vocations.addTrial(cid, "angler", 5) end)
+    check("trial: done, capped at the goal, ready", Vocations.getTrial(cid).have == 50 and sent.trial and sent.trial.ready == true)
+
+    local data = Vocations.progress(cid)
+    local gains = {}
+    for _, gain in ipairs(data.next.gains) do
+        gains[gain.text] = gain.badge
+    end
+    check("progress: rank, titles, perks and the next rank", data.key == "angler" and data.rank == 1 and #data.titles == 5 and
+        #data.ranks == 5 and #data.perks >= 2 and data.next.rank == 2 and data.next.ready == true and data.next.level == 30)
+    check("progress: next rank gains", gains["Fishing skill gain"] == "+20%" and gains["See what can bite"] == "New",
+        JSON.encode(gains))
+
+    sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"rankup"}') end)
+    check("trial: Rank up takes rank 2 and starts the next trial", Vocations.getRank(cid) == 2 and
+        Vocations.getTrial(cid).have == 0 and Vocations.getTrial(cid).need == 100 and sent.progress and sent.progress.rank == 2)
+
+    local outfit = getCreatureOutfit(cid)
+    outfit.lookType = getPlayerSex(cid) == PLAYERSEX_FEMALE and 611 or 612
+    doCreatureChangeOutfit(cid, outfit)
+    check("progress: not wearing the outfit", Vocations.progress(cid).wearing == false)
+    sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"wear"}') end)
+    check("wear: puts the vocation outfit on", sent.progress and sent.progress.wearing == true and
+        getCreatureOutfit(cid).lookType == Vocations.LIST[5].looks[getPlayerSex(cid) == PLAYERSEX_FEMALE and 1 or 2])
+
+    become(cid, "angler", 5)
+    check("progress: no next rank at rank 5", Vocations.progress(cid).next == nil and Vocations.getTrial(cid) == nil)
+    become(cid, nil)
+end
+
+local function testTrainerCard(cid, friend)
+    local sent, original = {}, doSendPlayerExtendedOpcode
+    local function capture(fn)
+        sent = {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.TRAINER_CARD) then
+                sent[#sent + 1] = buffer
+                local data = JSON.decode(buffer)
+                sent[data.type] = data
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(fn)
+        doSendPlayerExtendedOpcode = original
+        if (not ok) then
+            check("Trainer Card ran without errors", false, err)
+        end
+    end
+    for _, key in ipairs({ "cardTitle", "cardAbout", "cardFavorite", "cardTrophies", "cardPrivacy" }) do
+        setPlayerStorageValue(cid, playersStorages[key], -1)
+    end
+    become(cid, "catcher", 3)
+
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"open"}') end)
+    local card = sent.card
+    check("card: opens your own card", card and card.own == true and card.name == getCreatureName(cid) and card.level == getPlayerLevel(cid))
+    check("card: vocation and title", card and card.vocation and card.vocation.key == "catcher" and card.vocation.rank == 3 and
+        card.title == Vocations.LIST[2].titles[3], card and card.title)
+    local regions, slots, real = {}, 0, 0
+    for _, region in ipairs(card and card.badges or {}) do
+        regions[#regions + 1] = region.region .. " " .. #region.list
+        for _, badge in ipairs(region.list) do
+            slots = slots + 1
+            real = real + (badge.upcoming and 0 or 1)
+        end
+    end
+    check("card: badges by region, Kanto first, 28 in all and 12 in the game",
+        table.concat(regions, ", ") == "Kanto 8, Orange Islands 4, Johto 8, Hoenn 8" and slots == 28 and real == 12,
+        table.concat(regions, ", "))
+    check("card: the stats", card and card.stats and card.stats.dexTotal == POKEMON_NUMBER)
+    check("card: hometown, outfit, play time", card and card.town and card.town.name == getTownName(getPlayerTown(cid)) and
+        card.outfit.type == getCreatureOutfit(cid).lookType and card.playTime ~= nil)
+    check("card: fits in one message", sent[1] and #sent[1] < 8192, sent[1] and #sent[1])
+
+    local ballA = newBall(cid, "Scyther", 41, POKEMON_SEX_MALE)
+    local ballB = newBall(cid, "Gengar", 52, POKEMON_SEX_FEMALE)
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"candidates"}') end)
+    local keys = {}
+    for _, pokemon in ipairs(sent.candidates and sent.candidates.list or {}) do
+        keys[pokemon.key] = pokemon
+    end
+    check("card: candidates list the party", keys["Scyther|41|1"] and keys["Gengar|52|0"] and keys["Scyther|41|1"].look ~= nil,
+        sent[1])
+
+    capture(function()
+        TrainerCard.onClientMessage(cid, JSON.encode({ action = "save", favorite = "Scyther|41|1",
+            trophies = { "Gengar|52|0", "Scyther|41|1" }, title = "v2", about = "Hello\n\n\n\nfive lines\r\n" .. string.rep("x", 300),
+            privacy = 3 }))
+    end)
+    card = sent.card
+    check("card: save keeps the favorite and the trophies", card and card.favorite and card.favorite.key == "Scyther|41|1" and
+        #card.trophies == 2 and card.trophies[1].name == "Gengar" and card.trophies[1].sex == "female")
+    check("card: an earned title", card and card.titleKey == "v2" and card.title == Vocations.LIST[2].titles[2], card and card.title)
+    local about = card and card.about or ""
+    check("card: About is cleaned (4 lines, 160 letters)", #about <= 160 and not about:find("\r") and
+        select(2, about:gsub("\n", "")) <= 3, about)
+    check("card: privacy saved", card and card.privacy == 3)
+    check("card: saved message", sent.result and sent.result.ok == true)
+
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"save","title":"v5"}') end)
+    check("card: a title above the rank is refused", sent.result and sent.result.ok == false and
+        getPlayerStorageValue(cid, playersStorages.cardTitle) == "v2")
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"save","trophies":["Mew|100|2"]}') end)
+    check("card: a Pokemon you don't have is refused", sent.result and sent.result.ok == false and
+        #TrainerCard.data(cid, cid).trophies == 2)
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"titles"}') end)
+    check("card: titles list the vocation ranks", sent.titles and sent.titles.list[1] and sent.titles.list[1].key == "v3" and
+        #sent.titles.list >= 3)
+
+    doRemoveItem(ballB.uid)
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"open"}') end)
+    check("card: a trophy you don't have anymore drops off", sent.card and #sent.card.trophies == 1 and
+        sent.card.trophies[1].name == "Scyther")
+
+    if (isPlayer(friend)) then
+        capture(function() TrainerCard.onClientMessage(friend, JSON.encode({ action = "open", name = getCreatureName(cid) })) end)
+        local other = sent.card
+        check("card: another trainer sees it, without your settings", other and other.own == false and other.privacy == nil and
+            other.favorite and other.favorite.name == "Scyther")
+        local hidden = {}
+        for _, what in ipairs(other and other.hidden or {}) do
+            hidden[what] = true
+        end
+        check("card: privacy hides play time and statistics", other and other.playTime == nil and other.stats == nil and
+            hidden.playTime and hidden.stats and #other.trophies == 1)
+        capture(function() TrainerCard.onClientMessage(friend, JSON.encode({ action = "achievements", name = getCreatureName(cid) })) end)
+        check("card: achievements tab", sent.achievements and sent.achievements.total > 0)
+    else
+        check("card: second trainer online", false)
+    end
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"open","name":"Nobody Here At All"}') end)
+    check("card: offline trainers", sent.result and sent.result.ok == false)
+
+    doRemoveItem(ballA.uid)
+    for _, key in ipairs({ "cardTitle", "cardAbout", "cardFavorite", "cardTrophies", "cardPrivacy" }) do
+        setPlayerStorageValue(cid, playersStorages[key], -1)
+    end
+    become(cid, nil)
 end
 
 local function testAce(cid)
@@ -415,16 +597,24 @@ end
 
 local function testRanger(cid, arena)
     local made = {}
-    -- On the first free tile within 6 tiles of the wanted offset (the checks use where it landed)
+    local tried, free, results = 0, 0, {}
+    -- On the first free tile within 6 tiles of the wanted offset (the checks use where it landed). The far
+    -- offsets come first; the near ones are for test spots on small upper floors, where the far ones are void.
     local function spawnAt(name, dx, dy)
         for radius = 0, 6 do
             for ox = -radius, radius do
                 for oy = -radius, radius do
                     local p = { x = arena.x + dx + ox, y = arena.y + dy + oy, z = arena.z }
-                    if ((math.abs(ox) == radius or math.abs(oy) == radius) and (p.x ~= arena.x or p.y ~= arena.y)
-                            and isFree(cid, p)) then
+                    local ring = (math.abs(ox) == radius or math.abs(oy) == radius) and (p.x ~= arena.x or p.y ~= arena.y)
+                    if (ring) then tried = tried + 1 end
+                    if (ring and isFree(cid, p)) then
+                        free = free + 1
                         local m = doCreateMonster(name, p, false)
+                        local r = tostring(m) .. (isCreature(m) and ":creature" or "")
+                        results[r] = (results[r] or 0) + 1
                         if (isMonster(m)) then
+                            -- the checks compare directions and distances, so the Pokemon stay put
+                            doCreatureSetNoMove(m, true)
                             made[#made + 1] = m
                             return m
                         end
@@ -434,6 +624,7 @@ local function testRanger(cid, arena)
         end
     end
     local function spawn(name, ...)
+        tried, free, results = 0, 0, {}
         local offsets = { ... }
         for i = 1, #offsets, 2 do
             local m = spawnAt(name, offsets[i], offsets[i + 1])
@@ -441,7 +632,10 @@ local function testRanger(cid, arena)
                 return m
             end
         end
-        check("radar test: room for " .. name, false)
+        local seen = {}
+        for r, n in pairs(results) do seen[#seen + 1] = r .. " x" .. n end
+        check("radar test: room for " .. name, false, string.format("arena %d,%d,%d; %d tiles tried, %d free; results %s",
+            arena.x, arena.y, arena.z, tried, free, table.concat(seen, " ", 1, math.min(#seen, 8))))
     end
     local function where(m)
         local from = getCreaturePosition(cid)
@@ -451,10 +645,15 @@ local function testRanger(cid, arena)
     end
     become(cid, "ranger", 5)
     local before = Vocations.scan(cid, 30)
-    local pidgey = spawn("Pidgey", 6, 0)
-    local shiny = spawn("Shiny Rattata", 0, 8)
-    local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0)
+    local pidgey = spawn("Pidgey", 6, 0, -6, 0, 0, 6, 0, -6)
+    local shiny = spawn("Shiny Rattata", 0, 8, 0, -8, 8, 0, -8, 0, 8, 8, -8, -8)
+    local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0, 0, 10, 10, 0, -10, 0, 0, -10, 6, 6, -6, -6, 6, -6, -6, 6)
     if (not (pidgey and shiny and articuno)) then
+        for _, m in ipairs(made) do
+            if (isCreature(m)) then
+                doRemoveCreature(m)
+            end
+        end
         return
     end
     local found = Vocations.scan(cid, 30)
@@ -568,10 +767,75 @@ local function testRanger(cid, arena)
     local encoded = JSON.encode(data)
     local ok, decoded = pcall(JSON.decode, encoded)
     check("popup scan encodes to JSON", ok and decoded.type == "scan" and decoded.center.x == data.center.x and
-        #encoded < 16000, #encoded)
+        #encoded < 8192, #encoded)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
     local scanned = Vocations.radar(cid, "")
     check("popup: !radar scans in the PokeVerse client, then recharges", scanned and not Vocations.radarPopupScan(cid))
+
+    -- the live view: rank 3 exact blips follow their Pokemon after the scan, rank 2 stays a snapshot
+    local function captureRadar(fn)
+        local original, got = doSendPlayerExtendedOpcode, {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.RADAR) then
+                got[#got + 1] = JSON.decode(buffer)
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(fn)
+        doSendPlayerExtendedOpcode = original
+        if (not ok) then
+            check("no errors in the live radar", false, err)
+        end
+        return got
+    end
+    -- other wild Pokemon around may move too, so the checks look for Pidgey
+    local function pidgeyIn(got, field)
+        for _, message in ipairs(got) do
+            for _, entry in ipairs(message[field] or {}) do
+                if ((type(entry) == "table" and entry.id or entry) == pidgey) then
+                    return entry
+                end
+            end
+        end
+    end
+    become(cid, "ranger", 2)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    local got = captureRadar(function() Vocations.radarPopupScan(cid) end)
+    check("live radar: rank 2 stays a snapshot", got[1] and got[1].type == "scan" and not got[1].live and
+        not Vocations.radarLiveUpdate(cid))
+    become(cid, "ranger", 3)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    got = captureRadar(function() Vocations.radarPopupScan(cid) end)
+    check("live radar: rank 3 scans are live", got[1] and got[1].type == "scan" and got[1].live == true)
+    got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+    check("live radar: nothing sent for a Pokemon that stayed", not pidgeyIn(got, "blips"))
+    local from = getCreaturePosition(pidgey)
+    local to
+    for _, d in ipairs({ { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, { 1, 1 }, { -1, -1 } }) do
+        local p = { x = from.x + d[1], y = from.y + d[2], z = from.z }
+        if (not to and isFree(cid, p)) then
+            to = p
+        end
+    end
+    if (to) then
+        doTeleportThing(pidgey, to, false)
+        got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+        local moved = pidgeyIn(got, "blips")
+        check("live radar: sends where Pidgey went", moved and moved.x == to.x and moved.y == to.y,
+            got[1] and JSON.encode(got[1]))
+    else
+        check("live radar: room to move Pidgey", false)
+    end
+    Vocations.setRadarLive(cid, false)
+    doTeleportThing(pidgey, from, false)
+    got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+    check("live radar: paused while the popup is closed", #got == 0 and not pidgeyIn(got, "blips"))
+    Vocations.setRadarLive(cid, true)
+    doRemoveCreature(pidgey)
+    got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+    check("live radar: a caught or defeated Pokemon is gone", pidgeyIn(got, "gone") ~= nil, got[1] and JSON.encode(got[1]))
+    Vocations.setRadarLive(cid, false)
 
     for _, m in ipairs(made) do
         if (isCreature(m)) then
@@ -929,7 +1193,8 @@ function onSay(cid, words, param, channel)
     end
 
     local tests = {
-        { "ranks", testRanks }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
+        { "ranks", testRanks }, { "trials", testTrials },
+        { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
         { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()

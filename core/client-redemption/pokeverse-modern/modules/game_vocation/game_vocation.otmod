@@ -1,6 +1,6 @@
 Module
   name: game_vocation
-  description: PokeVerse vocation window: the six vocations and the permanent choice from trainer level 20
+  description: PokeVerse vocation window: the six vocations and the permanent choice from trainer level 20, then the trainer's rank, perks and rank-up trial
   author: PokeVerse
   sandboxed: true
   scripts: [ vocation ]

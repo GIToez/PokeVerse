@@ -80,7 +80,9 @@ void NetworkMessage::AddBytes(const char* bytes, uint32_t size)
 
 void NetworkMessage::AddPaddingBytes(uint32_t n)
 {
-	if(!canAdd(n))
+	// the XTEA padding goes into the 16 bytes canAdd keeps free; without it the client can't
+	// decrypt the packet and drops the connection
+	if(n + m_ReadPos > NETWORKMESSAGE_MAXSIZE)
 		return;
 
 	memset((void*)&m_MsgBuf[m_ReadPos], 0x33, n);
