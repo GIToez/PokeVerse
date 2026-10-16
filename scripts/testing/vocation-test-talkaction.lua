@@ -306,6 +306,8 @@ local function testDaycare(cid)
     end
     local guid = getPlayerGUID(cid)
     local eggId = getPokemonEggId("Pidgey")
+    -- the fee money left from earlier runs fills the bag, and an egg that doesn't fit drops on the floor
+    doPlayerRemoveMoney(cid, getPlayerMoney(cid))
     db.executeQuery("DELETE FROM daycare_female WHERE player_id = " .. guid)
     db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
     db.executeQuery("INSERT INTO daycare_male (player_id, date, max_training_minutes, pokemon_name, pokemon_level) VALUES (" ..
@@ -369,6 +371,7 @@ local function testDaycare(cid)
     end)
     db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
     db.executeQuery("UPDATE players SET lasteggtime = 0 WHERE id = " .. guid)
+    doPlayerRemoveMoney(cid, getPlayerMoney(cid))
 end
 
 -- Runs fn as if the tester played without the PokeVerse client (the radar answers in text there;
