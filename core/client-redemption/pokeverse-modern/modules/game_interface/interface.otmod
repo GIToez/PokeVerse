@@ -49,6 +49,7 @@ Module
     - game_gymbattle
     - game_npcdialog
     - game_pokepedia
+    - game_trainercard
     - game_vocation
     - game_radar
     - game_fishing

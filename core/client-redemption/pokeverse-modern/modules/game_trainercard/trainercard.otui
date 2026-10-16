@@ -1,0 +1,1027 @@
+// The Trainer Card window (artwork: scripts/art/trainercard_ui.py and trainercard_scenes.py; the frame
+// and tabs come from game_dailytasks, the panels, badges and scroll bar from game_fishing, game_vocation
+// and game_gts, the buttons and fields from client_entergame)
+
+TcPanel < UIWidget
+  image-source: /modules/game_fishing/images/panel
+  image-border: 10
+  padding: 8 10 8 10
+
+TcHeading < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffd75a
+  text-auto-resize: true
+  icon-align: left
+  icon-size: 16 16
+  text-offset: 22 0
+  anchors.top: parent.top
+  anchors.left: parent.left
+  phantom: true
+
+TcText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  phantom: true
+
+TcMuted < TcText
+  color: #96aacd
+
+TcValue < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+TcBadge < UILabel
+  image-source: /modules/game_fishing/images/badge
+  image-border: 5
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #ffffff
+  text-auto-resize: true
+  text-offset: 0 1
+  padding: 2 7 2 7
+  height: 16
+  phantom: true
+
+TcEditButton < PVBlueButton
+  height: 20
+  width: 64
+  ttf-font-size: 11
+  icon: /modules/game_trainercard/images/icon_pencil
+  icon-size: 12 12
+  icon-align: left
+  icon-offset-x: 7
+  text-offset: 8 0
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: -2
+  visible: false
+
+TcButton < PVBlueButton
+  ttf-font-size: 13
+  icon-align: left
+  icon-size: 16 16
+  icon-offset-x: 12
+  text-offset: 8 0
+
+// One line of Trainer Information: icon, label, value
+TcInfoRow < UIWidget
+  height: 24
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  TcMuted
+    id: label
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 26
+
+  TcValue
+    id: value
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 120
+
+// One badge: the slot frame and the badge item, grey until earned
+TcBadgeSlot < UIWidget
+  size: 40 40
+  image-source: /modules/game_trainercard/images/slot
+  image-border: 8
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.centerIn: parent
+    virtual: true
+    phantom: true
+
+// One trophy Pokemon: portrait, level, sex and name; in edit mode a remove cross
+TcTrophy < UIButton
+  height: 88
+  image-source: /modules/game_trainercard/images/slot
+  image-border: 8
+  $hover:
+    image-source: /modules/game_trainercard/images/slot_hover
+
+  UIWidget
+    id: portrait
+    size: 54 54
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 4
+    image-smooth: true
+    phantom: true
+
+  UILabel
+    id: level
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: portrait.bottom
+    anchors.left: parent.left
+    margin: 1 0 0 7
+    phantom: true
+
+  UIWidget
+    id: sex
+    size: 14 14
+    anchors.verticalCenter: level.verticalCenter
+    anchors.right: parent.right
+    margin-right: 6
+    phantom: true
+
+  TcMuted
+    id: name
+    anchors.top: level.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1
+
+  UIButton
+    id: remove
+    size: 16 16
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 3 3 0 0
+    icon: /modules/game_trainercard/images/icon_remove
+    icon-size: 12 12
+    visible: false
+
+  UIWidget
+    id: add
+    size: 30 30
+    anchors.centerIn: parent
+    margin-top: -12
+    image-source: /modules/game_trainercard/images/icon_plus
+    visible: false
+    phantom: true
+
+  TcMuted
+    id: addText
+    !text: tr('Add a trophy')
+    color: #7fb2ff
+    anchors.top: add.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 6
+    visible: false
+
+// One Statistics line
+TcStatRow < UIWidget
+  height: 24
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  TcMuted
+    id: label
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 24
+
+  TcValue
+    id: value
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+// A Pokemon in the picker
+TcCandidate < UIButton
+  size: 112 92
+  image-source: /modules/game_trainercard/images/slot
+  image-border: 8
+  $hover:
+    image-source: /modules/game_trainercard/images/slot_hover
+  $checked:
+    image-source: /modules/game_trainercard/images/slot_on
+
+  UIWidget
+    id: portrait
+    size: 48 48
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 4
+    image-smooth: true
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: portrait.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+    phantom: true
+
+  TcMuted
+    id: detail
+    anchors.top: name.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1
+
+  TcBadge
+    id: order
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 4 0 0 4
+    visible: false
+
+  UIWidget
+    id: sex
+    size: 14 14
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 5 5 0 0
+    phantom: true
+
+// One achievement in the Achievements tab
+TcAchievement < UIWidget
+  height: 40
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    image-source: /modules/game_trainercard/images/icon_medal
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+    phantom: true
+
+  TcValue
+    id: name
+    anchors.left: icon.right
+    anchors.top: parent.top
+    margin: 5 0 0 10
+
+  TcMuted
+    id: description
+    anchors.left: name.left
+    anchors.top: name.bottom
+    margin-top: 2
+
+// A big trophy in the Trophies tab
+TcBigTrophy < UIWidget
+  size: 270 150
+  image-source: /modules/game_trainercard/images/slot
+  image-border: 8
+  phantom: true
+
+  UIWidget
+    id: portrait
+    size: 96 96
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 14
+    image-smooth: true
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 16
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: portrait.right
+    anchors.top: parent.top
+    margin: 30 0 0 14
+    phantom: true
+
+  UIWidget
+    id: sex
+    size: 20 20
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  TcText
+    id: level
+    anchors.left: name.left
+    anchors.top: name.bottom
+    margin-top: 6
+
+  TcMuted
+    id: types
+    anchors.left: name.left
+    anchors.top: level.bottom
+    margin-top: 4
+
+  TcBadge
+    id: shiny
+    !text: tr('Shiny')
+    anchors.left: name.left
+    anchors.top: types.bottom
+    margin-top: 6
+    visible: false
+
+// A big number in the Pokedex tab
+TcBigStat < UIWidget
+  size: 270 96
+  image-source: /modules/game_trainercard/images/slot
+  image-border: 8
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 14 0 0 14
+    phantom: true
+
+  TcMuted
+    id: label
+    anchors.verticalCenter: icon.verticalCenter
+    anchors.left: icon.right
+    margin-left: 8
+
+  UILabel
+    id: value
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 28
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.left: icon.left
+    anchors.top: icon.bottom
+    margin-top: 10
+    phantom: true
+
+TrainerCardWindow < UIWindow
+  size: 940 676
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_trainercard.close()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_trainercard/images/header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Trainer Card')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  UILabel
+    id: subtitle
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+    phantom: true
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_trainercard.close()
+
+  UIWidget
+    id: tabs
+    height: 34
+    anchors.top: subtitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 12
+    phantom: true
+
+    TkTab
+      id: overview
+      !text: tr('Overview')
+      icon: /modules/game_trainercard/images/icon_user
+      anchors.top: parent.top
+      anchors.left: parent.left
+      @onClick: modules.game_trainercard.showTab('overview')
+
+    TkTab
+      id: trophies
+      !text: tr('Trophies')
+      icon: /modules/game_trainercard/images/icon_trophy
+      anchors.top: parent.top
+      anchors.left: overview.right
+      margin-left: 8
+      @onClick: modules.game_trainercard.showTab('trophies')
+
+    TkTab
+      id: achievements
+      !text: tr('Achievements')
+      icon: /modules/game_trainercard/images/icon_medal
+      anchors.top: parent.top
+      anchors.left: trophies.right
+      margin-left: 8
+      @onClick: modules.game_trainercard.showTab('achievements')
+
+    TkTab
+      id: pokedex
+      !text: tr('Pokedex')
+      icon: /modules/game_trainercard/images/icon_book
+      anchors.top: parent.top
+      anchors.left: achievements.right
+      margin-left: 8
+      @onClick: modules.game_trainercard.showTab('pokedex')
+
+  // the left column: the hometown scene, name, title, vocation and the favorite Pokemon
+  UIWidget
+    id: left
+    width: 264
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.bottom: buttons.top
+    margin: 12 0 12 0
+    phantom: true
+
+    UIWidget
+      id: scene
+      size: 264 192
+      anchors.top: parent.top
+      anchors.left: parent.left
+      image-smooth: false
+      clipping: true
+      phantom: true
+
+      UICreature
+        id: pokemon
+        size: 64 64
+        phantom: true
+
+      UICreature
+        id: trainer
+        size: 64 64
+        phantom: true
+
+      UIWidget
+        id: shield
+        size: 26 30
+        image-source: /modules/game_trainercard/images/shield
+        anchors.top: parent.top
+        anchors.left: parent.left
+        margin: 8 0 0 10
+        phantom: true
+
+        UILabel
+          id: rank
+          ttf-font: /fonts/ttf/arialb.ttf
+          ttf-font-size: 13
+          color: #ffffff
+          text-auto-resize: true
+          anchors.horizontalCenter: parent.horizontalCenter
+          anchors.top: parent.top
+          margin-top: 6
+          phantom: true
+
+    UIWidget
+      id: sceneFrame
+      anchors.fill: scene
+      image-source: /modules/game_trainercard/images/scene_frame
+      image-border: 12
+      phantom: true
+
+    UIWidget
+      id: namePlate
+      height: 32
+      anchors.top: scene.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      image-source: /modules/game_trainercard/images/nameplate
+      image-border: 8
+      phantom: true
+
+      UILabel
+        id: name
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 17
+        color: #ffffff
+        text-auto-resize: true
+        anchors.centerIn: parent
+        margin-left: -12
+        phantom: true
+
+      UIWidget
+        id: sex
+        size: 20 20
+        anchors.left: name.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+        phantom: true
+
+    UIButton
+      id: title
+      height: 24
+      anchors.top: namePlate.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 6 22 0 22
+      image-source: /modules/game_trainercard/images/title
+      image-border: 8
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 12
+      color: #ffd75a
+      icon: /modules/game_trainercard/images/icon_trophy
+      icon-size: 14 14
+      icon-align: left
+      icon-offset-x: 10
+      enabled: false
+      @onClick: modules.game_trainercard.chooseTitle()
+      $disabled:
+        opacity: 1
+
+      UIWidget
+        id: chevron
+        size: 14 14
+        image-source: /modules/game_trainercard/images/icon_chevron
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        margin-right: 8
+        visible: false
+        phantom: true
+
+    UILabel
+      id: vocation
+      height: 24
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 6 22 0 22
+      image-source: /modules/game_trainercard/images/pill
+      image-border: 8
+      font: verdana-11px-antialised
+      color: #dce6ff
+      text-align: center
+      phantom: true
+
+    TcPanel
+      id: favoritePanel
+      anchors.top: vocation.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 10
+
+      TcHeading
+        id: heading
+        !text: tr('Favorite Pokemon')
+        icon: /modules/game_trainercard/images/icon_level
+
+      TcEditButton
+        id: edit
+        !text: tr('Change')
+        width: 74
+        @onClick: modules.game_trainercard.pickFavorite()
+
+      UICreature
+        id: creature
+        size: 104 104
+        anchors.top: heading.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
+        phantom: true
+
+      UILabel
+        id: name
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 14
+        color: #ffffff
+        text-auto-resize: true
+        anchors.bottom: detail.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-bottom: 2
+        phantom: true
+
+      UIWidget
+        id: sex
+        size: 14 14
+        anchors.left: name.right
+        anchors.verticalCenter: name.verticalCenter
+        margin-left: 6
+        phantom: true
+
+      TcMuted
+        id: detail
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+      TcMuted
+        id: empty
+        !text: tr('No Pokemon yet')
+        anchors.centerIn: parent
+        visible: false
+
+  // the right column
+  UIWidget
+    id: right
+    anchors.top: left.top
+    anchors.left: left.right
+    anchors.right: parent.right
+    anchors.bottom: left.bottom
+    margin-left: 12
+    phantom: true
+
+    TcPanel
+      id: infoPanel
+      height: 128
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+      TcHeading
+        id: heading
+        !text: tr('Trainer Information')
+        icon: /modules/game_trainercard/images/icon_user
+
+      UIWidget
+        id: col1
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        margin-top: 6
+        phantom: true
+        layout:
+          type: verticalBox
+
+      UIWidget
+        id: col2
+        anchors.top: heading.bottom
+        anchors.left: parent.horizontalCenter
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin: 6 0 0 12
+        phantom: true
+        layout:
+          type: verticalBox
+
+    TcPanel
+      id: badgesPanel
+      height: 76
+      anchors.top: infoPanel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+      TcHeading
+        id: heading
+        !text: tr('Badges')
+        icon: /modules/game_trainercard/images/icon_badge
+
+      TcValue
+        id: count
+        anchors.top: parent.top
+        anchors.right: parent.right
+
+      UIWidget
+        id: list
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 6
+        phantom: true
+
+    TcPanel
+      id: trophiesPanel
+      height: 126
+      anchors.top: badgesPanel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+      TcHeading
+        id: heading
+        !text: tr('Trophy Pokemon')
+        icon: /modules/game_trainercard/images/icon_trophy
+
+      TcMuted
+        id: note
+        !text: tr('Picked by the trainer')
+        anchors.top: parent.top
+        anchors.right: parent.right
+
+      TcEditButton
+        id: edit
+        !text: tr('Edit')
+        @onClick: modules.game_trainercard.pickTrophies()
+
+      UIWidget
+        id: list
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 6
+        phantom: true
+
+      TcMuted
+        id: empty
+        anchors.centerIn: list
+        visible: false
+
+    TcPanel
+      id: statsPanel
+      anchors.top: trophiesPanel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      anchors.bottom: parent.bottom
+      margin: 8 4 0 0
+
+      TcHeading
+        id: heading
+        !text: tr('Statistics')
+        icon: /modules/game_trainercard/images/icon_stats
+
+      UIWidget
+        id: col1
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        margin: 6 8 0 0
+        phantom: true
+        layout:
+          type: verticalBox
+
+      UIWidget
+        id: col2
+        anchors.top: heading.bottom
+        anchors.left: parent.horizontalCenter
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin: 6 0 0 8
+        phantom: true
+        layout:
+          type: verticalBox
+
+      TcMuted
+        id: hidden
+        !text: tr('Hidden by the trainer')
+        anchors.centerIn: parent
+        visible: false
+
+    TcPanel
+      id: aboutPanel
+      anchors.top: trophiesPanel.bottom
+      anchors.left: parent.horizontalCenter
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin: 8 0 0 4
+
+      TcHeading
+        id: heading
+        !text: tr('About')
+        icon: /modules/game_trainercard/images/icon_about
+
+      TcEditButton
+        id: edit
+        !text: tr('Edit')
+        @onClick: modules.game_trainercard.editAbout()
+
+      TcText
+        id: text
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: footer.top
+        margin-top: 8
+        text-auto-resize: false
+        text-wrap: true
+        text-align: topLeft
+
+      PpArea
+        id: field
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: footer.top
+        margin: 6 0 4 0
+        max-length: 160
+        visible: false
+        @onTextChange: modules.game_trainercard.onAboutChange()
+
+      TcMuted
+        id: footer
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+
+  // the other tabs share the space of both columns
+  TcPanel
+    id: trophiesTab
+    anchors.top: left.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: left.bottom
+    visible: false
+
+    TcHeading
+      id: heading
+      icon: /modules/game_trainercard/images/icon_trophy
+
+    UIWidget
+      id: list
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 14
+      phantom: true
+      layout:
+        type: grid
+        cell-size: 280 156
+        cell-spacing: 12
+        flow: true
+
+    TcMuted
+      id: empty
+      anchors.centerIn: parent
+      visible: false
+
+  TcPanel
+    id: achievementsTab
+    anchors.top: left.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: left.bottom
+    visible: false
+
+    TcHeading
+      id: heading
+      icon: /modules/game_trainercard/images/icon_medal
+
+    TcValue
+      id: count
+      anchors.top: parent.top
+      anchors.right: parent.right
+
+    ScrollablePanel
+      id: list
+      vertical-scrollbar: achievementsScroll
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin: 10 16 0 0
+      layout:
+        type: verticalBox
+        spacing: 4
+
+    GtsScrollBar
+      id: achievementsScroll
+      step: 44
+      anchors.top: list.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
+    TcMuted
+      id: empty
+      anchors.centerIn: parent
+      visible: false
+
+  TcPanel
+    id: pokedexTab
+    anchors.top: left.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: left.bottom
+    visible: false
+
+    TcHeading
+      id: heading
+      icon: /modules/game_trainercard/images/icon_book
+
+    UIWidget
+      id: list
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 14
+      phantom: true
+      layout:
+        type: grid
+        cell-size: 280 100
+        cell-spacing: 12
+        flow: true
+
+    TcMuted
+      id: empty
+      anchors.centerIn: parent
+      visible: false
+
+  // the Pokemon picker for the favorite and the trophies, over the content
+  TcPanel
+    id: picker
+    anchors.top: left.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: buttons.bottom
+    image-source: /modules/game_dailytasks/images/section
+    visible: false
+
+    TcHeading
+      id: heading
+      icon: /modules/game_trainercard/images/icon_ball
+
+    TcMuted
+      id: hint
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      margin-top: 4
+
+    ScrollablePanel
+      id: list
+      vertical-scrollbar: pickerScroll
+      anchors.top: hint.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: pickerButtons.top
+      margin: 10 16 10 0
+      layout:
+        type: grid
+        cell-size: 112 92
+        cell-spacing: 8
+        flow: true
+
+    GtsScrollBar
+      id: pickerScroll
+      step: 50
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: parent.right
+
+    TcMuted
+      id: empty
+      anchors.centerIn: list
+      visible: false
+
+    UIWidget
+      id: pickerButtons
+      height: 34
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      phantom: true
+
+      TcButton
+        id: cancel
+        !text: tr('Back')
+        width: 160
+        icon: /modules/game_trainercard/images/icon_cancel
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: done.left
+        margin-right: 10
+        @onClick: modules.game_trainercard.closePicker()
+
+      PVGreenButton
+        id: done
+        !text: tr('Done')
+        width: 160
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        icon: /modules/game_trainercard/images/icon_save
+        icon-size: 16 16
+        icon-align: left
+        icon-offset-x: 12
+        @onClick: modules.game_trainercard.pickerDone()
+
+  UIWidget
+    id: buttons
+    height: 34
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
