@@ -336,11 +336,16 @@ AREA_GYMS = {'Violet': 'Zephyr Gym', 'Azalea': 'Hive Gym', 'Goldenrod': 'Plain G
 # 'x' a cracked plank (it gives way under players and mends, gyms/brokenPlank.lua), '^' and 'v'
 # escalators up and down (a '^' takes players to the tile north of it a floor up, where a 'v' over
 # it brings them back to the tile south of it). npcs: (name, dx, dy, z) from the gym's corner.
+# restyle swaps item ids over the whole building, so every floor is in one style (None takes the item out).
 GYM_PLANKS = (9224, 9227, 9228, 9230)
 GYM_CRACKED = 9231
 GYM_CRACKED_AID = 46000
 GYM_FLOOR = 9146
 GYM_UP, GYM_DOWN = 14420, 14418
+# the shell's white stone and marble as wood: walls, posts, corners, windows, railings, the door's
+# archway and the floor; the marble pillars go
+GYM_WOODEN = {9146: 405, 1111: 6839, 1112: 6840, 1113: 6841, 1115: 6843, 5303: 7027, 5304: 7028,
+              1582: 1583, 1584: 1585, 1586: 1587, 1588: 1589, 1124: 1207, 1125: 1208, 1515: None}
 GYM_PLANS = {
     # Zephyr Gym: two plank walkways over the hall up to Falkner's arena; the short ways are cracked
     # and drop players back into the open hall
@@ -366,6 +371,7 @@ GYM_PLANS = {
                 "  ========  "],
         },
         'npcs': [('Falkner', 6, 2, 5), ('Rod Haskell', 6, 5, 6), ('Abe Whitlock', 9, 7, 6)],
+        'restyle': GYM_WOODEN,
     },
 }
 # Caves on the floor below: mouths (stairs down at x, y on floor 7, facing the way players walk out),
@@ -1054,9 +1060,25 @@ def floor_down_ids(way='down'):
     return out
 
 
-def gym_puzzles(places, prefab_tiles, npcs):
-    """Redraws the gyms in GYM_PLANS over their placed shells and adds their trainers; returns the
-    positions left open as drops."""
+def restyled(tile, swap):
+    """The tile with its item ids swapped by `swap` (an id mapped to None is taken out)."""
+    ground = swap.get(tile.ground, tile.ground) if tile.ground is not None else None
+    children = b''
+    for blob in pvmap.split_items(tile.children):
+        sid = pvmap.child_item_ids(blob)[0]
+        if sid in swap:
+            if swap[sid] is None:
+                continue
+            assert sum(1 for ev in pvmap.walk(blob, 0) if ev[0] == 'open') == 1, 'item %d holds items' % sid
+            props = pvmap.unescape(blob[2:-1])
+            blob = bytes([pvmap.START, pvmap.ITEM]) + pvmap.escape(struct.pack('<H', swap[sid]) + props[2:]) + bytes([pvmap.END])
+        children += blob
+    return pvmap.RawTile(tile.house_id, tile.flags, ground, children)
+
+
+def gym_puzzles(places, prefab_tiles, npcs, gym):
+    """Redraws the gyms in GYM_PLANS over their placed shells (gym: the shell's Prefab) and adds
+    their trainers; returns the positions left open as drops."""
     drops = []
     for place in places:
         plan = GYM_PLANS.get(place['name'])
@@ -1093,6 +1115,13 @@ def gym_puzzles(places, prefab_tiles, npcs):
                     else:
                         raise ValueError('%s gym plan: unknown tile %r' % (place['name'], ch))
                     prefab_tiles[pos] = pvmap.RawTile(shell.house_id, shell.flags, ground, items)
+        swap = plan.get('restyle')
+        if swap:
+            drawn = {(ox + 1 + dx, oy + 1 + dy, z) for z, rows in plan['floors'].items()
+                     for dy, row in enumerate(rows) for dx in range(len(row))}
+            for pos in drawn | {(ox + dx, oy + dy, Z + dz) for dx, dy, dz in gym.tiles}:
+                if pos in prefab_tiles:
+                    prefab_tiles[pos] = restyled(prefab_tiles[pos], swap)
         # a cracked plank drops players to the first floor below with ground under them
         for x, y, z in cracked:
             assert any((x, y, zz) in prefab_tiles for zz in range(z + 1, Z + 1)), \
@@ -2766,7 +2795,7 @@ def build(base, out_path):
             tile = prefab_tiles[(x, y, Z)]
             rest = tile.children if tile.ground is not None else b''.join(pvmap.split_items(tile.children)[1:])
             prefab_tiles[(x, y, Z)] = pvmap.RawTile(tile.house_id, tile.flags, INDOOR_STAIRS, rest)
-    gym_drops = gym_puzzles(places, prefab_tiles, npcs)
+    gym_drops = gym_puzzles(places, prefab_tiles, npcs, prefabs['gym'])
     below = underground_tiles(base_data, brushes)
     assert not set(below) & set(prefab_tiles), 'an underground piece overlaps a building'
     prefab_tiles.update(below)
