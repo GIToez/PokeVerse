@@ -99,7 +99,8 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   3573 on the water at its foot, 3571 on the pool above) up to the room hidden behind the falls:
   open to the sky in the ridge on floor 7, empty but for the broken radio and Rock Smash rocks.
 - **Terrain depth:** open country rises in terraced hills up to floor 4, spread evenly over the
-  region (noise against its local mean), each reached by ramps from the nearest road; mountain
+  region (noise against its local mean), each reached by ramps from the nearest road, and
+  stretches more than `HILL_GAP` tiles from a hill get knolls of their own from a finer noise; mountain
   ranges stand in tiers up to seven floors, with gravel and rock along their cliffs, ridges
   (`MOUNT_RIDGE`) carrying the tiers out in spurs, and tops mostly grass, dressed like Mt. Silver's
   ledges with stands of trees, boulder fields and tufts. Round the Indigo Plateau the holes in
