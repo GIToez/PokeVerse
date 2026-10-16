@@ -15,10 +15,13 @@
 --
 -- The Ranger radar popup (game_radar) talks JSON on EXTENDED_IDS.RADAR:
 --   server -> client  {type = "status", enabled, rank, title, range, cooldown, wait, legendaryWait, unlocks, open}
---                     {type = "scan", ...the status fields, center = {x, y, z}, blips = {{id, x, y, z, kind, exact,
+--                     {type = "scan", ...the status fields, center = {x, y, z}, live, blips = {{id, x, y, z, kind, exact,
 --                      distance, direction, band, name, look, types}, ...}}
 --                     {type = "error", text, wait}
---   client -> server  {action = "hello"}, {action = "scan"}
+--                     {type = "live", blips = {{id, x, y, z}}, gone = {ids}}: from liveRank, every liveMs for
+--                      liveSeconds after a scan, the exact blips that moved and the ones that are gone
+--   client -> server  {action = "hello"}, {action = "scan"}, {action = "live", on}: whether the popup
+--                     wants the live updates (it is open, or tracking a target)
 -- kind is common, uncommon, rare, shiny or legendary ("unknown" before speciesRank). Names and looks
 -- come from speciesRank, types from typeFilterRank; filtering happens in the popup.
 --
@@ -79,6 +82,9 @@ Vocations.PERKS = {
         accuracy = { 5, 3, 1, 1, 1 }, -- tiles: the popup snaps blips to this grid, 1 is exact
         typeFilterRank = 2,
         speciesRank = 3, -- species, direction and distance instead of a count
+        liveRank = 3, -- exact blips follow their Pokemon after the scan (shinies and legendaries stay vague)
+        liveMs = 2000, -- how often the server sends where they went
+        liveSeconds = 120, -- how long after a scan
         shinyRank = 4,
         legendaryRank = 5, -- legendaries and event Pokemon
         legendaryCooldown = 10 * 60,
@@ -368,6 +374,7 @@ local PERK_ROWS = {
         local unlocks = {
             { p.typeFilterRank, "filter", "filter", "Filter by type" },
             { p.speciesRank, "species", "compass", "Species, direction, distance" },
+            { p.liveRank, "live", "target", "Blips follow the Pokemon live" },
             { p.shinyRank, "shiny", "star", "Shiny Pokemon show on the radar" },
             { p.legendaryRank, "legendary", "crown", "Legendaries and event Pokemon" },
         }
@@ -810,6 +817,7 @@ Vocations.radarScan = function(cid)
     local data = Vocations.radarState(cid)
     data.type = "scan"
     data.center = { x = center.x, y = center.y, z = center.z }
+    data.live = rank >= perks.liveRank or nil
     -- long names and types can still pass the engine's string limit with MAX_BLIPS blips
     JSON.encodeWithin(data, "blips", blips)
     return data
@@ -817,6 +825,90 @@ end
 
 local function sendRadar(cid, data)
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.RADAR, JSON.encode(data))
+end
+
+-- The live view: per trainer the last scan's exact blips, where they were last sent and until when.
+-- Each update only reads those Pokemon's positions, no new search of the area.
+local live = {}
+
+-- Sends where the live blips went; false once the live view is over or paused
+Vocations.radarLiveUpdate = function(cid)
+    local state = live[cid]
+    if (not state) then
+        return false
+    end
+    if (not isPlayer(cid) or os.time() >= state.untilTime) then
+        live[cid] = nil
+        return false
+    end
+    if (not state.on) then
+        return false
+    end
+    local moved, gone = {}, {}
+    for id, last in pairs(state.blips) do
+        local pos = isCreature(id) and getCreaturePosition(id)
+        if (not pos) then
+            gone[#gone + 1] = id
+            state.blips[id] = nil
+        elseif (pos.x ~= last.x or pos.y ~= last.y or pos.z ~= last.z) then
+            moved[#moved + 1] = { id = id, x = pos.x, y = pos.y, z = pos.z }
+            state.blips[id] = { x = pos.x, y = pos.y, z = pos.z }
+        end
+    end
+    if (#moved > 0 or #gone > 0) then
+        local data = { type = "live", gone = JSON.array(gone) }
+        JSON.encodeWithin(data, "blips", moved)
+        sendRadar(cid, data)
+    end
+    return true
+end
+
+local function liveTick(cid)
+    local state = live[cid]
+    if (state) then
+        state.event = nil
+        if (Vocations.radarLiveUpdate(cid) and live[cid] == state) then
+            state.event = addEvent(liveTick, Vocations.PERKS.ranger.liveMs, cid)
+        end
+    end
+end
+
+local function startLive(cid)
+    local state = live[cid]
+    if (state and state.on and not state.event and os.time() < state.untilTime) then
+        state.event = addEvent(liveTick, Vocations.PERKS.ranger.liveMs, cid)
+    end
+end
+
+local function trackLive(cid, rank, blips)
+    local state = live[cid]
+    if (state and state.event) then
+        stopEvent(state.event)
+    end
+    live[cid] = nil
+    if (rank < Vocations.PERKS.ranger.liveRank) then
+        return
+    end
+    state = { blips = {}, on = true, untilTime = os.time() + Vocations.PERKS.ranger.liveSeconds }
+    local count = 0
+    for _, b in ipairs(blips) do
+        if (b.exact and b.id) then
+            state.blips[b.id] = { x = b.x, y = b.y, z = b.z }
+            count = count + 1
+        end
+    end
+    if (count > 0) then
+        live[cid] = state
+        startLive(cid)
+    end
+end
+
+Vocations.setRadarLive = function(cid, on)
+    local state = live[cid]
+    if (state) then
+        state.on = on and true or false
+        startLive(cid)
+    end
 end
 
 Vocations.sendRadarStatus = function(cid, open)
@@ -841,7 +933,9 @@ Vocations.radarPopupScan = function(cid)
         return false
     end
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_WATER_PULSE)
-    sendRadar(cid, Vocations.radarScan(cid))
+    local data = Vocations.radarScan(cid)
+    sendRadar(cid, data)
+    trackLive(cid, rank, data.blips or {})
     return true
 end
 
@@ -939,6 +1033,8 @@ Vocations.onRadarMessage = function(cid, buffer)
         Vocations.radarPopupScan(cid)
     elseif (action == "hello") then
         Vocations.sendRadarStatus(cid)
+    elseif (action == "live") then
+        Vocations.setRadarLive(cid, data.on == true)
     end
 end
 

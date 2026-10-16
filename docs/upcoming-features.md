@@ -721,7 +721,13 @@ do not change.
     cooldown. Filters (all, species, type, rarity, shiny only, legendaries only) work on the
     last scan; rows show the rank they need. Clicking a blip tracks it: Target Info, a cone on
     the radar, an arrow beside the trainer on the game map (with the distance) and a flag on
-    the minimap, until the trainer reaches it or presses Stop. Without the PokeVerse client
+    the minimap, until the trainer reaches it or presses Stop. Ranks 1 and 2 are a snapshot;
+    from rank 3 the exact blips follow their Pokémon live for 2 minutes after a scan (shinies
+    and legendaries stay a direction and band). Pokémon on screen move every tick from the
+    client's own map; for the rest the server re-reads only the scanned Pokémon's positions
+    every 2 seconds (no new search of the area), sends only the ones that moved or are gone
+    (caught or defeated: the blip goes and tracking stops), and pauses while the popup is
+    closed and nothing is tracked. Without the PokeVerse client
     `!radar` and `!radar <type>` answer in text as before. Artwork: `scripts/art/radar_ui.py`.
   - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
     bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll

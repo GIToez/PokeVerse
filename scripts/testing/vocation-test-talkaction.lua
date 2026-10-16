@@ -772,6 +772,71 @@ local function testRanger(cid, arena)
     local scanned = Vocations.radar(cid, "")
     check("popup: !radar scans in the PokeVerse client, then recharges", scanned and not Vocations.radarPopupScan(cid))
 
+    -- the live view: rank 3 exact blips follow their Pokemon after the scan, rank 2 stays a snapshot
+    local function captureRadar(fn)
+        local original, got = doSendPlayerExtendedOpcode, {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.RADAR) then
+                got[#got + 1] = JSON.decode(buffer)
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(fn)
+        doSendPlayerExtendedOpcode = original
+        if (not ok) then
+            check("no errors in the live radar", false, err)
+        end
+        return got
+    end
+    -- other wild Pokemon around may move too, so the checks look for Pidgey
+    local function pidgeyIn(got, field)
+        for _, message in ipairs(got) do
+            for _, entry in ipairs(message[field] or {}) do
+                if ((type(entry) == "table" and entry.id or entry) == pidgey) then
+                    return entry
+                end
+            end
+        end
+    end
+    become(cid, "ranger", 2)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    local got = captureRadar(function() Vocations.radarPopupScan(cid) end)
+    check("live radar: rank 2 stays a snapshot", got[1] and got[1].type == "scan" and not got[1].live and
+        not Vocations.radarLiveUpdate(cid))
+    become(cid, "ranger", 3)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    got = captureRadar(function() Vocations.radarPopupScan(cid) end)
+    check("live radar: rank 3 scans are live", got[1] and got[1].type == "scan" and got[1].live == true)
+    got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+    check("live radar: nothing sent for a Pokemon that stayed", not pidgeyIn(got, "blips"))
+    local from = getCreaturePosition(pidgey)
+    local to
+    for _, d in ipairs({ { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, { 1, 1 }, { -1, -1 } }) do
+        local p = { x = from.x + d[1], y = from.y + d[2], z = from.z }
+        if (not to and isFree(cid, p)) then
+            to = p
+        end
+    end
+    if (to) then
+        doTeleportThing(pidgey, to, false)
+        got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+        local moved = pidgeyIn(got, "blips")
+        check("live radar: sends where Pidgey went", moved and moved.x == to.x and moved.y == to.y,
+            got[1] and JSON.encode(got[1]))
+    else
+        check("live radar: room to move Pidgey", false)
+    end
+    Vocations.setRadarLive(cid, false)
+    doTeleportThing(pidgey, from, false)
+    got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+    check("live radar: paused while the popup is closed", #got == 0 and not pidgeyIn(got, "blips"))
+    Vocations.setRadarLive(cid, true)
+    doRemoveCreature(pidgey)
+    got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
+    check("live radar: a caught or defeated Pokemon is gone", pidgeyIn(got, "gone") ~= nil, got[1] and JSON.encode(got[1]))
+    Vocations.setRadarLive(cid, false)
+
     for _, m in ipairs(made) do
         if (isCreature(m)) then
             doRemoveCreature(m)
