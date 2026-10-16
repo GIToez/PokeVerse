@@ -8,7 +8,7 @@ live map so work in progress never reaches the server by accident.
 | `RME/` | RME 8.54 (Windows). `data/854/` holds the server's `items.otb` and `items.xml`, and a `creatures.xml` generated from the server's monsters and NPCs. |
 | `client/` | `Tibia.dat` / `Tibia.spr`: the game's sprites (copies of `core/client-legacy/data/things`). |
 | `map/` | `johto-wip.otbm` with its `map-spawn.xml` and `map-house.xml`: the work copy. |
-| `backup/live-2026-10-15/` | The live map, spawns and houses as they were before Johto was published. To go back, copy the three files over `core/server/data/world/`. |
+| `backup/live-2026-10-15/` | The live map, spawns and houses as they were before Johto was published. `build_johto.py` builds on these. To go back, copy the three files over `core/server/data/world/`. |
 
 The live map in `core/server/data/world/` is only changed by `scripts/mapper/publish.py`.
 
@@ -24,14 +24,15 @@ The live map in `core/server/data/world/` is only changed by `scripts/mapper/pub
 | Script | Use |
 | --- | --- |
 | `sync.py` | Refreshes `RME/` (items, creatures) and `client/` from the server and client. `--reset-map` replaces `map/` with a fresh copy of the live map. |
-| `build_johto.py` | Generates the Johto pieces built so far on top of the live map and writes `map/`. |
+| `build_johto.py` | Generates the Johto pieces built so far on top of the pre-Johto backup and writes `map/`. |
 | `render.py` | Renders part of a map with the real sprites: `render.py <map> x0 y0 x1 y1 out.png [--floor 7] [--scale 0.5]`. |
 | `verify.py` | Checks a map the way the server loads it (node tree, duplicate tiles, unknown items, houses, spawns). |
 | `publish.py` | Verifies `map/` and copies it over the live map files. |
 | `fetch_encounters.py` | Re-downloads the HeartGold/SoulSilver encounter tables into `johto_encounters.json` (only needed if the tables change). |
 
-`build_johto.py` always starts from the live map, so running it again throws away hand edits in
-`map/`. Once hand editing starts, edit in RME only.
+`build_johto.py` always starts from the pre-Johto backup, so changes made straight to the live map
+outside Johto are lost at the next publish unless they are made to the backup too. Running it
+again also throws away hand edits in `map/`. Once hand editing starts, edit in RME only.
 
 ## How the Johto generator works
 

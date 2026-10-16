@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generates Johto into the work copy of the map, leaving the live map alone.
 
-    scripts/mapper/build_johto.py [--base core/server/data/world/map.otbm] [--out mapper/map/johto-wip.otbm]
+    scripts/mapper/build_johto.py [--base mapper/backup/live-2026-10-15/map.otbm] [--out mapper/map/johto-wip.otbm]
 
 The base map is read, the Johto pieces built so far are generated on top of it, and the result
 is written to --out together with its spawn and house files. Re-running regenerates from the
@@ -54,7 +54,9 @@ import johto_towns as T  # noqa: E402
 import pvmap  # noqa: E402
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
-WORLD = os.path.join(ROOT, 'core', 'server', 'data', 'world')
+# The map Johto is generated onto: the live map as it was before Johto was published. The live map
+# now carries Johto, so building on it would stack a second Johto on the first.
+WORLD = os.path.join(ROOT, 'mapper', 'backup', 'live-2026-10-15')
 MAPPER = os.path.join(ROOT, 'mapper', 'map')
 Z = 7
 
