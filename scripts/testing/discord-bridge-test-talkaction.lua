@@ -34,13 +34,18 @@ local function findArena(cid)
     return nil
 end
 
-local function throwBall(cid, pos)
+local function throwBall(cid, pos, tries)
     if (not isPlayer(cid)) then
         return
     end
     local corpse = getTileItemByType(pos, ITEM_TYPE_CONTAINER)
     if (not isItem(corpse)) then
-        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "bridgetest: no corpse")
+        -- the death (and its corpse) can come a moment later when the server is busy
+        if ((tries or 0) < 10) then
+            addEvent(throwBall, 500, cid, pos, (tries or 0) + 1)
+        else
+            doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "bridgetest: no corpse")
+        end
         return
     end
     local itemid = balls["ultra"].empty
@@ -77,7 +82,9 @@ function onSay(cid, words, param, channel)
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "bridgetest: can't create " .. name)
         return true
     end
+    -- doCreateMonster may place it next to monsterPos when that tile is taken
+    local corpsePos = getCreaturePosition(m)
     doTargetCombatHealth(cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
-    addEvent(throwBall, 500, cid, monsterPos)
+    addEvent(throwBall, 500, cid, corpsePos)
     return true
 end
