@@ -71,7 +71,7 @@ class Player:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--login-port", type=int, default=7171)
+    parser.add_argument("--login-port", type=int, default=7564)
     parser.add_argument("--tester", required=True, help="account:password:character")
     parser.add_argument("--friend", required=True, help="account:password:character")
     parser.add_argument("--timeout", type=float, default=60)
