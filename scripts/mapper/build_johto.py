@@ -330,6 +330,44 @@ AREA_BUILDINGS = {
 }
 AREA_GYMS = {'Violet': 'Zephyr Gym', 'Azalea': 'Hive Gym', 'Goldenrod': 'Plain Gym', 'Ecruteak': 'Fog Gym',
              'Olivine': 'Mineral Gym', 'Cianwood': 'Storm Gym', 'Mahogany': 'Glacier Gym', 'Blackthorn': 'Rising Gym'}
+# Gym puzzles: floors of a town's gym redrawn over the shell's inside, rows north to south from the
+# gym's corner + (1, 1). '.' keeps the shell's tile, '_' is bare gym floor, ' ' is a drop to the
+# floor below, '=' a plank,
+# 'x' a cracked plank (it gives way under players and mends, gyms/brokenPlank.lua), '^' and 'v'
+# escalators up and down (a '^' takes players to the tile north of it a floor up, where a 'v' over
+# it brings them back to the tile south of it). npcs: (name, dx, dy, z) from the gym's corner.
+GYM_PLANKS = (9224, 9227, 9228, 9230)
+GYM_CRACKED = 9231
+GYM_CRACKED_AID = 46000
+GYM_FLOOR = 9146
+GYM_UP, GYM_DOWN = 14420, 14418
+GYM_PLANS = {
+    # Zephyr Gym: two plank walkways over the hall up to Falkner's arena; the short ways are cracked
+    # and drop players back into the open hall
+    'Violet': {
+        'floors': {
+            7: ["............",
+                ".._________."] + ["____________"] * 9,
+            6: ["======  ====",
+                "=.  =   =  .",
+                "=   =   =   ",
+                "x   ==x===x=",
+                "=   == =   =",
+                "=  ===x=   x",
+                "x  =   ==  =",
+                "=  ==  ==  =",
+                "=   =   =  x",
+                "^x===   =x=^",
+                "=====   ===="],
+            5: [" .......... "] * 7 + [
+                "     ==     ",
+                "===x=x==x===",
+                "v =  ==  = v",
+                "  ========  "],
+        },
+        'npcs': [('Falkner', 6, 2, 5), ('Rod Haskell', 6, 5, 6), ('Abe Whitlock', 9, 7, 6)],
+    },
+}
 # Caves on the floor below: mouths (stairs down at x, y on floor 7, facing the way players walk out),
 # tunnels and rooms, an optional pond, and the encounter table. A mouth with a corridor (from the
 # open ground to two tiles past the stairs) is reached up a ravine cut into the mountain, the stairs
@@ -1014,6 +1052,55 @@ def floor_down_ids(way='down'):
             a = int(m.group(1) or m.group(2))
             out |= set(range(a, int(m.group(1) or m.group(3)) + 1))
     return out
+
+
+def gym_puzzles(places, prefab_tiles, npcs):
+    """Redraws the gyms in GYM_PLANS over their placed shells and adds their trainers; returns the
+    positions left open as drops."""
+    drops = []
+    for place in places:
+        plan = GYM_PLANS.get(place['name'])
+        if plan is None:
+            continue
+        (ox, oy), = [(x, y) for name, x, y in place['buildings'] if name == 'gym']
+        cracked = []
+        for z, rows in plan['floors'].items():
+            for dy, row in enumerate(rows):
+                for dx, ch in enumerate(row):
+                    pos = (ox + 1 + dx, oy + 1 + dy, z)
+                    shell = prefab_tiles.get(pos)
+                    if shell is None and ch == '_':
+                        # the shell's planters are the ground round the building showing through
+                        shell = next(prefab_tiles[p] for p in ((pos[0] + 1, pos[1], z), (pos[0] - 1, pos[1], z),
+                                                               (pos[0], pos[1] + 1, z), (pos[0], pos[1] - 1, z))
+                                     if p in prefab_tiles)
+                    assert shell is not None, '%s gym plan runs outside the building at %s' % (place['name'], pos)
+                    if ch == '.':
+                        continue
+                    if ch == ' ':
+                        del prefab_tiles[pos]
+                        drops.append(pos)
+                        continue
+                    if ch == '_':
+                        ground, items = GYM_FLOOR, b''
+                    elif ch == '=':
+                        ground, items = GYM_PLANKS[zlib.crc32(repr(pos).encode()) % len(GYM_PLANKS)], b''
+                    elif ch == 'x':
+                        ground, items = None, pvmap.item_node(GYM_CRACKED, GYM_CRACKED_AID)
+                        cracked.append(pos)
+                    elif ch in '^v':
+                        ground, items = GYM_FLOOR, pvmap.item_node(GYM_UP if ch == '^' else GYM_DOWN)
+                    else:
+                        raise ValueError('%s gym plan: unknown tile %r' % (place['name'], ch))
+                    prefab_tiles[pos] = pvmap.RawTile(shell.house_id, shell.flags, ground, items)
+        # a cracked plank drops players to the first floor below with ground under them
+        for x, y, z in cracked:
+            assert any((x, y, zz) in prefab_tiles for zz in range(z + 1, Z + 1)), \
+                '%s gym: nothing under the cracked plank at %s' % (place['name'], (x, y, z))
+        for name, dx, dy, z in plan['npcs']:
+            assert (ox + dx, oy + dy, z) in prefab_tiles, '%s gym: %s stands over a drop' % (place['name'], name)
+            npcs.append((name, ox + dx, oy + dy, z))
+    return drops
 
 
 def joined(start, cells):
@@ -2679,6 +2766,7 @@ def build(base, out_path):
             tile = prefab_tiles[(x, y, Z)]
             rest = tile.children if tile.ground is not None else b''.join(pvmap.split_items(tile.children)[1:])
             prefab_tiles[(x, y, Z)] = pvmap.RawTile(tile.house_id, tile.flags, INDOOR_STAIRS, rest)
+    gym_drops = gym_puzzles(places, prefab_tiles, npcs)
     below = underground_tiles(base_data, brushes)
     assert not set(below) & set(prefab_tiles), 'an underground piece overlaps a building'
     prefab_tiles.update(below)
@@ -3272,7 +3360,7 @@ def build(base, out_path):
 
     data = open(base, 'rb').read()
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
-    cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP, towns=towns)
+    cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP + gym_drops, towns=towns)
     write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs, data)
     write_houses(os.path.join(os.path.dirname(out_path), 'map-house.xml'), new_houses)
     print('wrote %s: %d new or changed tiles (%d Kanto tiles replaced, %d re-bordered), %d spawns, %d houses'
