@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Abe Whitlock" script="npcbattle_abewhitlock.lua" walkinterval="0" floorchange="0">
+	<health now="100" max="100"/>
+	<look type="630" head="78" body="94" legs="116" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Falkner's father trained me up here. Let's see if you can keep your footing in a battle!"/>
+		<parameter key="idletime" value="30" />
+	</parameters>
+</npc>
