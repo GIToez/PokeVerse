@@ -107,8 +107,11 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   Kanto's map and Kanto's bare flat mountain (`KANTO_ROCK`, nothing on the floors above) rise with
   the range, worn back by the sea where they meet it. Sea that the layout shuts in by mountain, or
   specks of it, is filled (`SEA_POCKET`, `SEA_SPECK`); ponds on open ground stay. Forests
-  are thick with trees, bushes and undergrowth. Snow is dressed with stones (never the snow heap,
-  486, which is a floor change).
+  are thick with trees, bushes and undergrowth; open country far from hills, woods and mountains
+  has its trees and bushes in thicker clumps. Hills reach as far as `HILL_RAMP_REACH` tiles from a
+  road, so remote pockets rise too. The Frozen North's snowfield and snowy hills are dressed like
+  Mt. Silver's snow ledges (stands of firs, drifts and boulders); other snow gets stones (never the
+  snow heap, 486, which is a floor change).
 - **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
   SoulSilver: a lobed, uneven cone with wide ledges round the peak, one per floor, trails wide
   enough for its wild Pokémon, and a flat summit on floor 0 (the highest floor there is). Each

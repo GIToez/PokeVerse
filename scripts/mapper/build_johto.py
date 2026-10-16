@@ -471,7 +471,7 @@ HILL_GAP = 16
 HILL_RAMP_EVERY = 1500
 HILL_RAMP_GAP = 30
 # how far from a road a hill's first ramp may be (a footpath is kept clear to the road)
-HILL_RAMP_REACH = 160
+HILL_RAMP_REACH = 240
 # Kanto's ramps by the way they climb: on the lower floor in front of the cliff, with stairs down
 # (RAMP_TOP) on the tile above, which drop players back off the ramp's foot.
 RAMPS = {(1, 0): 1388, (-1, 0): 1390, (0, 1): 1392, (0, -1): 1394}
@@ -2741,6 +2741,10 @@ def build(base, out_path):
 
     # Ground items and decoration.
     groves = f.noise(20)
+    # Flat open country far from the hills, the woods and the mountains has its trees and bushes in
+    # thicker clumps, so it doesn't lie bare.
+    far = distance(~(forest | np.isin(terrain, [MOUNTAIN, SNOW_PEAK, WATER])))
+    open_groves = groves + 0.15 * np.clip((far - 12) / 12.0, 0, 1)
     tufty = f.noise(8)
     flowery = f.noise(10)
     tiles = {}
@@ -2778,11 +2782,13 @@ def build(base, out_path):
             elif (cls in (GRASS, LAWN) or (cls == DIRT and forest[iy, ix])) and not clear[iy, ix] and not road[iy, ix]:
                 if not keep_free[iy, ix]:
                     deco += wild_deco(rng, r, forest[iy, ix], road_d[iy, ix], canopy[iy, ix], stand[iy, ix],
-                                      glade[iy, ix], groves[iy, ix], tufty[iy, ix], flowery[iy, ix])
+                                      glade[iy, ix], open_groves[iy, ix], tufty[iy, ix], flowery[iy, ix])
             elif cls in (GRASS, LAWN) and town_area[iy, ix] and r < 0.4:
                 deco.append(pick(rng, BUSHES) if r < 0.025 and not near_town_paths[iy, ix] else pick(rng, TUFTS))
-            elif ((cls == SNOW and frozen[iy, ix]) or (cls == SNOW_PEAK and summits[iy, ix] and not clear[iy, ix])) \
-                    and road_d[iy, ix] > 3:
+            elif cls == SNOW and frozen[iy, ix] and road_d[iy, ix] > 3:
+                # the snowfield is dressed like Mt. Silver's ledges: stands of firs, drifts and boulders
+                deco = silver_deco(rng, r, SNOW, False, False, groves[iy, ix])
+            elif cls == SNOW_PEAK and summits[iy, ix] and not clear[iy, ix] and road_d[iy, ix] > 3:
                 p_tree = 0.01 + 0.4 * max(0.0, groves[iy, ix] - 0.1)
                 if r < p_tree:
                     deco.append(SNOW_FIR)
@@ -3113,13 +3119,7 @@ def build(base, out_path):
                     elif r < 0.13 and not edge:
                         deco.append(pick(hill_rng, CONIFERS))
                 elif cls == SNOW:
-                    p_fir = 0.01 + 0.3 * max(0.0, groves[iy, ix] - 0.1)
-                    if r < p_fir and not edge:
-                        deco.append(SNOW_FIR)
-                    elif r < p_fir + 0.005:
-                        deco.append(pick(hill_rng, SNOW_STONES))
-                    elif r < p_fir + 0.02:
-                        deco.append(pick(hill_rng, ROCKY))
+                    deco = silver_deco(hill_rng, r, cls, edge, False, groves[iy, ix])
                 elif edge:
                     if r < 0.3:
                         deco.append(pick(hill_rng, TUFTS))
