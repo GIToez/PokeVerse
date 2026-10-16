@@ -228,7 +228,7 @@ Vocations.TRIALS = {
         { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 1, 2, 3, 5 } },
     },
     ranger = {
-        { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 30, 80, 150, 250 } },
+        { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 100, 300, 600, 1200 } },
         { on = "find", unique = true, text = "Find %d different species on the radar", goals = { 10, 25, 45, 70 } },
         { on = "find", shiny = true, text = "Find %d shiny Pokemon on the radar", goals = { 0, 0, 0, 1 } },
     },
@@ -291,7 +291,8 @@ Vocations.getTrial = function(cid)
         return nil
     end
     local counts = trialCounts(cid)
-    local trial = { goals = {}, have = 0, need = 0 }
+    -- text is for clients from before the goals, which show "Trial: <text>  <have> / <need>"
+    local trial = { goals = {}, have = 0, need = 0, text = __L(cid, "rank-up goals done") }
     for i, goal in ipairs(Vocations.TRIALS[vocation.key]) do
         local need = goal.goals[rank] or 0
         if (need > 0) then

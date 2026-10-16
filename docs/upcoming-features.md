@@ -772,7 +772,7 @@ do not change.
   | | Catch shiny Pokémon | – | – | 1 | 2 |
   | Breeder | Hatch eggs (daycare eggs come about every 1–2 weeks; eggs can also be bought) | 2 | 4 | 6 | 10 |
   | | Hatch different species | 1 | 2 | 3 | 5 |
-  | Ranger | Radar scans that find Pokémon | 30 | 80 | 150 | 250 |
+  | Ranger | Radar scans that find Pokémon (a scan every 30–60 seconds) | 100 | 300 | 600 | 1200 |
   | | Find different species on the radar | 10 | 25 | 45 | 70 |
   | | Find a shiny on the radar (they show from rank 4) | – | – | – | 1 |
   | Angler | Hook Pokémon while fishing | 100 | 300 | 600 | 1200 |
