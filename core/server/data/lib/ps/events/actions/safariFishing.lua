@@ -19,7 +19,7 @@ local function doFishing(cid, fromPosition, toPosition)
 		elseif (getPlayerFishingFormula(cid) > 1.0) then
 			local randomFishablePokemon = FISHABLE_POKEMONS[math.random(1, #FISHABLE_POKEMONS)]
 
-			if (getRandom(0, SHINY_CHANCE) == 0) then
+			if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
 				randomFishablePokemon = getMonsterInfo(randomFishablePokemon).shiny
 			end
 

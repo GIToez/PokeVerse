@@ -38,7 +38,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 		--[[
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Congratulations! Your " .. pokemonName ..
                 " egg hatches!")
-		if (getRandom(0, SHINY_CHANCE) == 0) then
+		if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
 			pokemonName = getMonsterInfo(pokemonName).shiny
 		end
 		doCreatePokemonBall(cid, "poke", pokemonName, 1, nil, nil, 10, nil, true, 9999999, nil)

@@ -341,7 +341,7 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
             end
 
             for i = 1, getRandom(1, maxAmount) do
-                if (getRandom(0, SHINY_CHANCE) == 0) then
+                if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
                     local tmp = getMonsterInfo(fishName).shiny
                     if (tmp and isString(tmp) and tmp ~= "") then
                         log(LOG_TYPES.WARNING, "Hooked Shiny", getCreatureName(cid), tmp, SHINY_CHANCE)

@@ -793,7 +793,7 @@ local function checkHeadbutt(cid, itemEx, toPosition, ticks)
 
 			for i = 1, amount do
 				local pokemonName = randomHeadbuttablePokemon
-				if (getRandom(0, SHINY_CHANCE) == 0) then
+				if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
 					pokemonName = getMonsterInfo(pokemonName).shiny
 				end
 				local pokemon = doSummonCreature(pokemonName, getCreaturePosition(cid))

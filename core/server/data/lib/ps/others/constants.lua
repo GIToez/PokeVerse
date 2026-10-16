@@ -2293,7 +2293,7 @@ local origDoCreateMonster = doCreateMonster
 function doCreateMonster(name, pos, displayError, shinyChance)
     if (shinyChance) then
         local info = getMonsterInfo(name, false)
-        if (info and info.shiny and getRandom(0, getConfigValue('shinyAppearChance')) == 0) then
+        if (info and info.shiny and getRandom(0, ShinyEvent.chance(getConfigValue('shinyAppearChance'))) == 0) then
             name = info.shiny
         end
     end

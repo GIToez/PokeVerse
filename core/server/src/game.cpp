@@ -86,6 +86,7 @@ Game::Game()
 	map = NULL;
 	playersRecord = lastStageLevel = 0;
 	experienceEventMultiplier = 1.0;
+	shinyEventMultiplier = 1.0;
 	for(int32_t i = 0; i < 3; i++)
 		globalSaveMessage[i] = false;
 

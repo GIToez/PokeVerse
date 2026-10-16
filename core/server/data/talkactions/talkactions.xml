@@ -65,6 +65,7 @@
 	<talkaction log="yes" words="/restart" access="3" event="script" value="restart.lua"/>
 	<talkaction log="yes" words="/doubleexp" access="5" event="script" value="doubleexp.lua"/>
 	<talkaction log="yes" words="/bonusdaycare;/bonusbreeding" access="5" event="script" value="daycareevent.lua"/>
+	<talkaction log="yes" words="/bonusshiny" access="5" event="script" value="bonusshiny.lua"/>
 	<talkaction log="yes" words="/mode" access="5" event="script" value="mode.lua"/>
 	<talkaction log="yes" words="/createnpc" access="5" event="script" value="createNpc.lua"/>
 	<talkaction log="yes" words="/mypokemon" access="5" event="script" value="pokemon.lua"/>

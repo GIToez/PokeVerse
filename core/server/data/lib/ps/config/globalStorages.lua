@@ -49,6 +49,8 @@ GLOBAL_STORAGES = {
     BREEDING_EVENT_MULTIPLIER = 7109, -- /bonusbreeding: the daily egg chance x100
     BREEDING_EVENT_START = 7110,
     BREEDING_EVENT_END = 7111,
+    SHINY_EVENT_MULTIPLIER = 7112, -- /bonusshiny: shiny chance x100 (ShinyEvent)
+    SHINY_EVENT_END = 7113,
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

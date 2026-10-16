@@ -16,7 +16,7 @@ setConditionParam(CHOOSING_EGG_MOVE_CONDITION, CONDITION_PARAM_LIGHT_LEVEL, CONS
 -- Local
 local function doEggHatch(cid, incubator, pokemonName, replacingSlot)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Congratulations! Your %s egg hatches!"), pokemonName))
-    if (getRandom(0, SHINY_CHANCE) == 0) then
+    if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
         pokemonName = getMonsterInfo(pokemonName).shiny
     end
     local eggMove = nil

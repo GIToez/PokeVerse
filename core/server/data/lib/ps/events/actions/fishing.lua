@@ -65,7 +65,7 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
             local fishablePokemons = getPlayerFishablePokemons(cid, rod)
             local randomFishablePokemon = table.random(fishablePokemons)
 
-            if (getRandom(0, SHINY_CHANCE) == 0) then
+            if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
                 local tmp = getMonsterInfo(randomFishablePokemon).shiny
                 if (tmp and isString(tmp) and tmp ~= "") then
                     randomFishablePokemon = tmp

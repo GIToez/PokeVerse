@@ -195,7 +195,7 @@ local function checkHeadbutt(cid, itemEx, toPosition, ticks)
 
             for i = 1, getRandom(1, maxAmount) do
                 local pokemonName = fishName
-                if (getRandom(0, SHINY_CHANCE) == 0) then
+                if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
                     pokemonName = getMonsterInfo(pokemonName).shiny
                     log(LOG_TYPES.WARNING, "Headbutted Shiny", getCreatureName(cid), pokemonName, SHINY_CHANCE)
                 end

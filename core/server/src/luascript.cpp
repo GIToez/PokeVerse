@@ -2455,6 +2455,12 @@ void LuaScriptInterface::registerFunctions()
 	//setExperienceEventMultiplier(multiplier)
 	lua_register(m_luaState, "setExperienceEventMultiplier", LuaScriptInterface::luaSetExperienceEventMultiplier);
 
+	//getShinyEventMultiplier()
+	lua_register(m_luaState, "getShinyEventMultiplier", LuaScriptInterface::luaGetShinyEventMultiplier);
+
+	//setShinyEventMultiplier(multiplier)
+	lua_register(m_luaState, "setShinyEventMultiplier", LuaScriptInterface::luaSetShinyEventMultiplier);
+
 	//getDataDir()
 	lua_register(m_luaState, "getDataDir", LuaScriptInterface::luaGetDataDir);
 
@@ -11705,6 +11711,25 @@ int32_t LuaScriptInterface::luaSetExperienceEventMultiplier(lua_State* L)
 		multiplier = 1.0;
 
 	g_game.setExperienceEventMultiplier(multiplier);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetShinyEventMultiplier(lua_State* L)
+{
+	//getShinyEventMultiplier()
+	lua_pushnumber(L, g_game.getShinyEventMultiplier());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetShinyEventMultiplier(lua_State* L)
+{
+	//setShinyEventMultiplier(multiplier)
+	double multiplier = popFloatNumber(L);
+	if(multiplier < 1.0)
+		multiplier = 1.0;
+
+	g_game.setShinyEventMultiplier(multiplier);
 	lua_pushboolean(L, true);
 	return 1;
 }

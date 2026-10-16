@@ -632,6 +632,8 @@ class Game
 		// PS: server-wide experience event (systems/058-serverExpEvent.lua); 1.0 when none is running
 		double getExperienceEventMultiplier() const {return experienceEventMultiplier;}
 		void setExperienceEventMultiplier(double value) {experienceEventMultiplier = value;}
+		double getShinyEventMultiplier() const {return shinyEventMultiplier;}
+		void setShinyEventMultiplier(double value) {shinyEventMultiplier = value;}
 
 		inline StageList::const_iterator getFirstStage() const {return stages.begin();}
 		inline StageList::const_iterator getLastStage() const {return stages.end();}
@@ -731,6 +733,7 @@ class Game
 		StageList stages;
 		uint32_t lastStageLevel;
 		double experienceEventMultiplier;
+		double shinyEventMultiplier;
 
 		Highscore highscoreStorage[9];
 		time_t lastHighscoreCheck;
