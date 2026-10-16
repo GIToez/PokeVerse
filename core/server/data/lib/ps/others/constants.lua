@@ -59,7 +59,8 @@ EXTENDED_IDS = {
     VOCATION = 24, -- JSON vocation window: the six vocations and the permanent choice (Vocations)
     RADAR = 25, -- JSON Ranger radar popup: scans, cooldown and whether the trainer has a radar (Vocations.radar)
     FISHING = 26, -- JSON Angler fishing guide: what bites in each region at each skill (Fishing.openGuide)
-    TRAINER_CARD = 27 -- JSON Trainer Card: a trainer's profile, and the card's settings for its owner (TrainerCard)
+    TRAINER_CARD = 27, -- JSON Trainer Card: a trainer's profile, and the card's settings for its owner (TrainerCard)
+    DAYCARE = 28 -- JSON Day Care window: the two slots, the egg slot and the breeding status (Daycare)
 }
 
 TOURNAMENT_TYPES = {}
