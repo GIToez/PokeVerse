@@ -606,6 +606,12 @@ end
 
 local function doPokedexPlayerView(cid, target, itemId)
   local dex = DEX_BY_ITEMID[itemId]
+  if (TrainerCard.enabled(cid) and TrainerCard.open(cid, getCreatureName(target))) then
+    if (not isPlayerGhost(cid, true)) then
+      doSendMagicEffect(getCreaturePosition(cid), dex.effect)
+    end
+    return
+  end
 
   local badgeText = {}
   for _, badge in pairs(BADGES) do

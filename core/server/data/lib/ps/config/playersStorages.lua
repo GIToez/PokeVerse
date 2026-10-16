@@ -109,5 +109,7 @@ playersStorages = {
     cardAbout = base + 106, -- the About text
     cardFavorite = base + 107, -- "name|level|sex" of the favorite Pokemon
     cardTrophies = base + 108, -- up to six "name|level|sex" joined with ";"
+    cardPrivacy = base + 109, -- what other trainers don't see on the card: 1 play time, 2 statistics, 4 trophies
+    cardClient = base + 110, -- 1 while the trainer's client has the Trainer Card window (it says hello at login)
     -- tournamentWeekWinnerStorage = base + 65
 }
