@@ -2,6 +2,10 @@
 -- ExtendedIds.Vocation: {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}},
 -- then answers a choice with {type = "chosen", key, name, rank, title} or {type = "result", ok, text}.
 -- A card's Select turns into Confirm and Back; Confirm sends {action = "choose", key}.
+-- The U key is the vocation key: it opens the trainer's vocation tool (the Ranger radar, the Angler
+-- fishing guide; those modules call registerTool(id, {enabled = fn, toggle = fn})), and without one
+-- it asks the server for this window with {action = "open"}. Below level 20 the window opens with
+-- its buttons greyed out.
 local IMAGES = '/modules/game_vocation/images/'
 local ERROR_COLOR = '#ff8a80'
 local MUTED_COLOR = '#96aacd'
@@ -12,6 +16,8 @@ local cards = {}
 local state = {}
 local selected
 local messageEvent
+local tools = {}
+local TOOL_ACTION = 'Vocation: window or vocation tool'
 
 local function send(data)
     local protocol = g_game.getProtocolGame()
@@ -116,6 +122,39 @@ local function show()
     window:focus()
 end
 
+function registerTool(id, tool)
+    tools[id] = tool
+end
+
+function unregisterTool(id)
+    tools[id] = nil
+end
+
+local function typing()
+    local widget = rootWidget
+    while widget:getFocusedChild() do
+        widget = widget:getFocusedChild()
+    end
+    return widget:getClassName() == 'UITextEdit' and widget:isEnabled() and widget:isVisible()
+end
+
+local function onToolKey()
+    if typing() or not g_game.isOnline() then
+        return
+    end
+    if window:isVisible() then
+        close()
+        return
+    end
+    for _, tool in pairs(tools) do
+        if tool.enabled() then
+            tool.toggle()
+            return
+        end
+    end
+    send({ action = 'open' })
+end
+
 function close()
     if window and window:isVisible() then
         window:hide()
@@ -164,11 +203,14 @@ function init()
     window:hide()
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Vocation, onVocation)
     connect(g_game, { onGameEnd = onGameEnd })
+    Keybind.new('Windows', TOOL_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'U' }, '')
+    Keybind.bind('Windows', TOOL_ACTION, { { type = KEY_DOWN, callback = onToolKey } })
 end
 
 function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Vocation)
     disconnect(g_game, { onGameEnd = onGameEnd })
+    Keybind.delete('Windows', TOOL_ACTION)
     removeEvent(messageEvent)
     if window then
         window:destroy()

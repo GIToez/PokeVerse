@@ -8,6 +8,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Vocations.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.RADAR) then
         Vocations.onRadarMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.FISHING) then
+        Fishing.onClientMessage(cid, buffer)
     end
     return true
 end

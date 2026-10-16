@@ -34,6 +34,8 @@ local FILTER_NAMES = { all = 'All', species = 'Species', type = 'Type', rarity =
                        legendary = 'Legendaries Only' }
 
 local window, button, mapArrow
+local arrowOwner -- the local player the map arrow is attached to; the map moves it with the walk
+local layoutKey -- what the blips were last laid out for
 local status = { enabled = false }
 local blips = {} -- the last scan's blips, each with .widget and .halo
 local filter = { mode = 'all' }
@@ -47,14 +49,6 @@ local function send(data)
     if protocol and g_game.isOnline() then
         protocol:sendExtendedJSONOpcode(ExtendedIds.Radar, data)
     end
-end
-
-local function typing()
-    local widget = rootWidget
-    while widget:getFocusedChild() do
-        widget = widget:getFocusedChild()
-    end
-    return widget:getClassName() == 'UITextEdit' and widget:isEnabled() and widget:isVisible()
 end
 
 local function playerPos()
@@ -155,29 +149,43 @@ local function hideArrow()
     end
 end
 
+local function destroyArrow()
+    if mapArrow and arrowOwner then
+        pcall(function() arrowOwner:detachWidget(mapArrow) end)
+    end
+    if mapArrow and not mapArrow:isDestroyed() then
+        mapArrow:destroy()
+    end
+    mapArrow, arrowOwner = nil, nil
+end
+
+-- The arrow is attached to the trainer: the map places it every frame at the top middle of the
+-- trainer's tile, walk included, plus the arrow's margins.
 local function updateArrow(from, to)
     local mapPanel = modules.game_interface and modules.game_interface.getMapPanel()
-    if not mapPanel then
+    local player = g_game.getLocalPlayer()
+    if not mapPanel or not player then
         return
-    end
-    if not mapArrow then
-        mapArrow = g_ui.createWidget('RadarMapArrow', mapPanel)
     end
     local rect = from.z == to.z and mapPanel:getTileRect(from)
     if not rect or rect.width == 0 then
         hideArrow()
         return
     end
+    if not mapArrow or mapArrow:isDestroyed() or arrowOwner ~= player then
+        destroyArrow()
+        mapArrow = g_ui.createWidget('RadarMapArrow')
+        player:attachWidget(mapArrow)
+        arrowOwner = player
+    end
     local dx, dy = to.x - from.x, to.y - from.y
     local angle = math.atan2(dy, dx)
     local reach = rect.width * ARROW_TILES
-    local cx = rect.x + rect.width / 2 + math.cos(angle) * reach
-    local cy = rect.y + rect.height * (0.5 - SPRITE_LIFT) + math.sin(angle) * reach
-    mapArrow:setPosition({ x = math.floor(cx - mapArrow:getWidth() / 2), y = math.floor(cy - mapArrow:getHeight() / 2) })
+    mapArrow:setMarginLeft(math.floor(math.cos(angle) * reach - mapArrow:getWidth() / 2))
+    mapArrow:setMarginTop(math.floor(rect.height * (0.5 - SPRITE_LIFT) + math.sin(angle) * reach - mapArrow:getHeight() / 2))
     mapArrow.icon:setRotation(math.deg(angle))
     mapArrow.distance:setText(tostring(math.max(math.abs(dx), math.abs(dy))))
     mapArrow:show()
-    mapArrow:raise()
 end
 
 -- Radar drawing -----------------------------------------------------------------------------------
@@ -234,6 +242,7 @@ end
 
 local function stopTracking()
     target = nil
+    layoutKey = nil
     clearFlag()
     hideArrow()
     for _, blip in ipairs(blips) do
@@ -247,6 +256,12 @@ end
 
 -- puts each blip where it is from the trainer now, so walking moves the radar under the blips
 local function layoutBlips(from)
+    local key = string.format('%d,%d,%d,%d,%s', from.x, from.y, from.z, status.range or 0,
+        target and (target.x .. ',' .. target.y) or '')
+    if key == layoutKey then
+        return
+    end
+    layoutKey = key
     local range = math.max(1, status.range or 1)
     local radar = window.radar
     local half = radar:getWidth() / 2
@@ -363,6 +378,7 @@ local function selectBlip(blip)
         other.widget:setChecked(other == blip)
     end
     target = blip
+    layoutKey = nil
     clearFlag()
     refreshTarget()
     tick()
@@ -376,6 +392,7 @@ local function clearBlips()
         end
     end
     blips = {}
+    layoutKey = nil
 end
 
 local function buildBlips(list)
@@ -419,6 +436,7 @@ local refreshFilters
 
 local function setFilter(mode, value)
     filter = { mode = mode, value = value }
+    layoutKey = nil
     if target and not matches(target) then
         stopTracking()
     end
@@ -567,12 +585,6 @@ function stop()
     stopTracking()
 end
 
-local function onToggleKey()
-    if not typing() and status.enabled then
-        toggle()
-    end
-end
-
 local function applyStatus(data)
     local scanned = status.scanned
     status = { enabled = data.enabled == true, rank = tonumber(data.rank), title = data.title,
@@ -644,10 +656,7 @@ local function onGameEnd()
         button:setVisible(false)
     end
     hide()
-    if mapArrow then
-        mapArrow:destroy()
-        mapArrow = nil
-    end
+    destroyArrow()
 end
 
 function init()
@@ -660,8 +669,7 @@ function init()
         IMAGES .. 'button_radar', toggle)
     button:setVisible(false)
 
-    Keybind.new('Windows', 'Show/hide the Ranger radar', { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'U' }, '')
-    Keybind.bind('Windows', 'Show/hide the Ranger radar', { { type = KEY_DOWN, callback = onToggleKey } })
+    modules.game_vocation.registerTool('radar', { enabled = function() return status.enabled end, toggle = toggle })
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Radar, onRadar)
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
@@ -672,7 +680,7 @@ function init()
 end
 
 function terminate()
-    Keybind.delete('Windows', 'Show/hide the Ranger radar')
+    modules.game_vocation.unregisterTool('radar')
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Radar)
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     removeEvent(tickEvent)
@@ -680,10 +688,11 @@ function terminate()
     tickEvent, messageEvent = nil, nil
     clearFlag()
     clearBlips()
-    for _, widget in ipairs({ button, mapArrow, window }) do
+    destroyArrow()
+    for _, widget in ipairs({ button, window }) do
         if widget then
             widget:destroy()
         end
     end
-    button, mapArrow, window = nil, nil, nil
+    button, window = nil, nil
 end

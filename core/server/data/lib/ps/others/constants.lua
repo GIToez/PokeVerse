@@ -57,7 +57,8 @@ EXTENDED_IDS = {
     GYM = 22, -- JSON gym leader duel intro and victory banners (GymLeaders.send)
     POKEPEDIA = 23, -- JSON Pokepedia window: houses, items, Pokedex knowledge, one {type = ...} per message (Pokepedia)
     VOCATION = 24, -- JSON vocation window: the six vocations and the permanent choice (Vocations)
-    RADAR = 25 -- JSON Ranger radar popup: scans, cooldown and whether the trainer has a radar (Vocations.radar)
+    RADAR = 25, -- JSON Ranger radar popup: scans, cooldown and whether the trainer has a radar (Vocations.radar)
+    FISHING = 26 -- JSON Angler fishing guide: what bites in each region at each skill (Fishing.openGuide)
 }
 
 TOURNAMENT_TYPES = {}

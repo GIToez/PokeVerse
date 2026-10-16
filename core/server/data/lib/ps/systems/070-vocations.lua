@@ -7,9 +7,9 @@
 --   server -> client  {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}}
 --                     {type = "chosen", key, name, rank, title}
 --                     {type = "result", ok, text}
---   client -> server  {action = "choose", key}, {action = "close"}
--- A choice is only accepted while a window opened by Vocations.open is up, so the vocation quest
--- line decides when a trainer may choose.
+--   client -> server  {action = "open"} (the U key), {action = "choose", key}, {action = "close"}
+-- A choice is only accepted while a window opened by Vocations.open is up. For now every trainer can
+-- open it with U; below Vocations.MIN_LEVEL it opens with the choice locked.
 --
 -- The Ranger radar popup (game_radar) talks JSON on EXTENDED_IDS.RADAR:
 --   server -> client  {type = "status", enabled, rank, title, range, cooldown, wait, legendaryWait, unlocks, open}
@@ -25,7 +25,7 @@
 --   Catcher      emptyBall and catchMiss (functions/ball/empty.lua)
 --   Breeder      the incubator (events/actions/eggIncubator) and the daycare (npc/scripts/daycareFemale.lua)
 --   Ranger       Vocations.radar, the !radar command
---   Angler       Fishing (systems/043-fishing.lua), the !fishing command and the cranes
+--   Angler       Fishing (systems/043-fishing.lua), the Fishing Guide window (!fishing) and the cranes
 --   Medic        the health potions (events/actions/potions/healthPotions.lua)
 
 Vocations = {}
@@ -185,6 +185,7 @@ Vocations.setRank = function(cid, rank)
     setPlayerStorageValue(cid, RANK, rank)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Fishing.sendStatus(cid)
     return true
 end
 
@@ -241,7 +242,7 @@ Vocations.choose = function(cid, key)
         return result(cid, false, "You already have a vocation.")
     end
     if (getPlayerStorageValue(cid, WINDOW) ~= 1) then
-        return result(cid, false, "Talk to the vocation guide to choose a vocation.")
+        return result(cid, false, "Press U to open the vocation window.")
     end
     if (getPlayerLevel(cid) < Vocations.MIN_LEVEL) then
         return result(cid, false, string.format(__L(cid, "You need trainer level %d to choose a vocation."),
@@ -264,6 +265,7 @@ Vocations.reset = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Fishing.sendStatus(cid)
 end
 
 -- Catcher: a failed roll gets a second chance sized so the catch chance becomes chance * (1 + bonus)
@@ -630,7 +632,9 @@ Vocations.onClientMessage = function(cid, buffer)
         return
     end
     local action = tostring(data.action or "")
-    if (action == "choose") then
+    if (action == "open") then
+        Vocations.open(cid)
+    elseif (action == "choose") then
         Vocations.choose(cid, data.key)
     elseif (action == "close") then
         setPlayerStorageValue(cid, WINDOW, -1)
@@ -641,6 +645,7 @@ Vocations.onLogin = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
     Vocations.sendRadarStatus(cid)
+    Fishing.sendStatus(cid)
 end
 
 Vocations.onLogout = function(cid)

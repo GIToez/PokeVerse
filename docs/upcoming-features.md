@@ -689,7 +689,8 @@ do not change.
   trainer level 20 and that the trainer has no vocation, then keeps the choice in the
   `vocation` storage. Below level 20 the buttons are greyed out; after the choice the card shows
   "Your vocation". `Vocations.open(cid)` opens it, and a choice only counts while a window it
-  opened is up, so the quest line decides when trainers choose. Until then staff test it with
+  opened is up. For now every trainer opens it with `U` (the vocation key, `{action = "open"}`);
+  below level 20 it opens with the buttons locked. Staff can also test it with
   `/vocation`, `/vocation reset`, `/vocation rank,3` and `/vocation Name` (or `Name,rank,3`).
   Artwork: `scripts/art/vocation_ui.py`, with the card pictures in
   `scripts/art/vocation-banners`.
@@ -724,13 +725,25 @@ do not change.
     `!radar` and `!radar <type>` answer in text as before. Artwork: `scripts/art/radar_ui.py`.
   - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
     bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll
-    is a little luckier. From rank 4, `!fishing` lists what bites in each region at each skill
-    level, marking what the trainer can already hook. Cranes (skill 60) are for rank 5
-    Anglers only.
+    is a little luckier. From rank 4 the Fishing Guide (client `game_fishing`,
+    `EXTENDED_IDS.FISHING`), opened with `U`, the top bar button (Anglers only) or `!fishing`,
+    shows what bites in each region: a tab per region (pinned where the trainer is), one row per
+    skill tier with the Pokedex portraits, the Pokémon level range and "Can hook now" or the
+    skill it needs. A region's rows are the Kanto pool plus that region's own Pokémon, which
+    get a gold frame. Clicking a portrait shows its types, rods and catches; side panels show the
+    progress to the next skill and the rods. Without the PokeVerse client `!fishing` answers in
+    text as before. Cranes (skill 60) are for rank 5 Anglers only. Artwork:
+    `scripts/art/fishing_ui.py`.
+  - `U` is the vocation key: the radar for Rangers, the Fishing Guide for Anglers from rank 4,
+    and the vocation window for everyone else (`game_vocation` keeps the key; `registerTool`
+    adds a tool). The Pokepedia's Wiki has a Vocations category with a page for each.
+  - The radar's map arrow is attached to the trainer (`attachWidget`), so the map moves it with
+    every step instead of a 150 ms timer, and the blips are only laid out again when the
+    trainer or the target moves.
   - Medic: +3% to +15% from health potions, and health potions work on another trainer's
     Pokémon when neither trainer is in a duel, the arena or an NPC battle.
   - Tests: `scripts/vocation-test.py` with `scripts/testing/vocation-test-talkaction.lua`
-    (90 checks against a live server, run by `scripts/test-server-linux.sh`).
+    (103 checks against a live server, run by `scripts/test-server-linux.sh`).
 
 ### To decide
 
