@@ -700,6 +700,8 @@ local function tierOf(species)
     return RARE[species] and "rare" or "normal"
 end
 
+Pokepedia.tier = tierOf
+
 local function loadDex(guid)
     local list = {}
     each("SELECT `species`, `kills`, `catches` FROM `player_dex_kills` WHERE `player_id` = " .. guid, function(r)

@@ -12,6 +12,7 @@
 -- loading the script" for its conditions; the Medic checks only use the potion's first heal.
 
 local SCRIPTS = "data/lib/ps/events/actions/"
+local CRANE_ITEMID = 3977 -- CRANE1_ITEMID, local to systems/043-fishing.lua
 local passed, failed = 0, 0
 local tester
 
@@ -65,15 +66,19 @@ local function withPerk(key, perk, value, fn)
     end
 end
 
--- Messages the code sends to the tester while fn runs
+-- Messages (and cancel messages) the code sends to the tester while fn runs
 local function captureMessages(fn)
-    local messages, original = {}, doPlayerSendTextMessage
+    local messages, original, originalCancel = {}, doPlayerSendTextMessage, doPlayerSendCancel
     doPlayerSendTextMessage = function(cid, kind, text)
         messages[#messages + 1] = text
         return original(cid, kind, text)
     end
+    doPlayerSendCancel = function(cid, text)
+        messages[#messages + 1] = text
+        return originalCancel(cid, text)
+    end
     local ok, err = pcall(fn)
-    doPlayerSendTextMessage = original
+    doPlayerSendTextMessage, doPlayerSendCancel = original, originalCancel
     if (not ok) then
         check("no errors while capturing messages", false, err)
     end
@@ -364,6 +369,19 @@ local function testDaycare(cid)
     db.executeQuery("UPDATE players SET lasteggtime = 0 WHERE id = " .. guid)
 end
 
+-- Runs fn as if the tester played without the PokeVerse client (the radar answers in text there;
+-- this test client counts as OTClient)
+local function asTextClient(fn)
+    local original = getPlayerUsingOtClient
+    getPlayerUsingOtClient = function() return false end
+    local ok, result = pcall(fn)
+    getPlayerUsingOtClient = original
+    if (not ok) then
+        check("no errors in the text radar", false, result)
+    end
+    return result
+end
+
 -- The radar's eight directions, worked out independently of Vocations
 local function compass(from, to)
     local dx, dy = to.x - from.x, to.y - from.y
@@ -436,16 +454,16 @@ local function testRanger(cid, arena)
 
     become(cid, "ranger", 1)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
-    local text = captureMessages(function() Vocations.radar(cid, "") end)
+    local text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     check("rank 1 radar counts Pokemon", text:find("wild Pokemon within 30 tiles") ~= nil, text)
     check("rank 1 radar hides the shiny and the legendary", not text:find("shiny") and not text:find("Articuno"))
-    check("radar cooldown", not Vocations.radar(cid, ""))
+    check("radar cooldown", not asTextClient(function() return Vocations.radar(cid, "") end))
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
-    check("rank 1 can't filter by type", not Vocations.radar(cid, "normal"))
+    check("rank 1 can't filter by type", not asTextClient(function() return Vocations.radar(cid, "normal") end))
 
     become(cid, "ranger", 3)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
-    text = captureMessages(function() Vocations.radar(cid, "") end)
+    text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     local pidgeyDirection, pidgeyDistance = where(pidgey)
     check("rank 3 radar names species and direction",
         text:find("Pidgey %(" .. pidgeyDirection .. ", " .. pidgeyDistance .. " tiles%)") ~= nil, text)
@@ -453,11 +471,11 @@ local function testRanger(cid, arena)
 
     become(cid, "ranger", 4)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
-    text = captureMessages(function() Vocations.radar(cid, "flying") end)
+    text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "flying") end) end)
     check("radar type filter keeps Pidgey (Flying)", text:find("Pidgey") ~= nil, text)
     check("radar type filter drops the shiny Rattata (Normal)", not text:find("Rattata"), text)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
-    text = captureMessages(function() Vocations.radar(cid, "") end)
+    text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     local shinyDirection, _, shinyBand = where(shiny)
     check("rank 4 radar finds the shiny", text:find("shiny Rattata, " .. shinyBand .. " to the " .. shinyDirection, 1, true) ~= nil, text)
     check("rank 4 radar hides the legendary", not text:find("Articuno"))
@@ -465,13 +483,74 @@ local function testRanger(cid, arena)
     become(cid, "ranger", 5)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
     setPlayerStorageValue(cid, playersStorages.vocationLegendaryAt, 0)
-    text = captureMessages(function() Vocations.radar(cid, "") end)
+    text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     local legendDirection, _, legendBand = where(articuno)
     check("rank 5 radar finds the legendary",
         text:find("something rare, " .. legendBand .. " to the " .. legendDirection .. ": Articuno", 1, true) ~= nil, text)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
-    text = captureMessages(function() Vocations.radar(cid, "") end)
+    text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     check("legendary scans have their own cooldown", not text:find("Articuno"), text)
+
+    -- the popup's scan (the JSON for the PokeVerse client)
+    local pikachu = spawn("Pikachu", -6, 0, 0, -6, 6, 6)
+    local function blipOf(data, m)
+        for _, b in ipairs(data.blips) do
+            if (b.id == m) then
+                return b
+            end
+        end
+    end
+    local function onGrid(b, center, grid)
+        return b ~= nil and (b.x - center.x) % grid == 0 and (b.y - center.y) % grid == 0
+    end
+    become(cid, nil)
+    check("popup: no radar for other trainers", Vocations.radarState(cid).enabled == false)
+    become(cid, "ranger", 1)
+    local state = Vocations.radarState(cid)
+    check("popup: status for a Ranger", state.enabled and state.rank == 1 and state.range == 30 and
+        state.unlocks.type == 2 and state.unlocks.species == 3 and state.unlocks.shiny == 4 and state.unlocks.legendary == 5)
+    local data = Vocations.radarScan(cid)
+    local b = blipOf(data, pidgey)
+    check("popup rank 1: a blip without name, look or types", b and b.kind == "unknown" and not b.name and not b.look and
+        not b.types and not b.exact, b and JSON.encode(b))
+    check("popup rank 1: blips snapped to 5 tiles", onGrid(b, data.center, 5), b and JSON.encode(b))
+    check("popup rank 1: no shiny or legendary", not blipOf(data, shiny) and not blipOf(data, articuno))
+    become(cid, "ranger", 2)
+    data = Vocations.radarScan(cid)
+    b = blipOf(data, pidgey)
+    check("popup rank 2: types, blips snapped to 3 tiles", b and b.types and table.concat(b.types, ","):find("flying") and
+        not b.name and onGrid(b, data.center, 3), b and JSON.encode(b))
+    become(cid, "ranger", 3)
+    data = Vocations.radarScan(cid)
+    b = blipOf(data, pidgey)
+    local pidgeyPos = getCreaturePosition(pidgey)
+    check("popup rank 3: exact Pidgey with its name and look", b and b.exact and b.name == "Pidgey" and
+        b.x == pidgeyPos.x and b.y == pidgeyPos.y and b.look == getCreatureOutfit(pidgey).lookType, b and JSON.encode(b))
+    check("popup rank 3: Pidgey is common", b and b.kind == "common", b and b.kind)
+    local p = pikachu and blipOf(data, pikachu)
+    check("popup rank 3: Pikachu is uncommon", p and p.kind == "uncommon", p and p.kind)
+    check("popup rank 3: still no shiny", not blipOf(data, shiny))
+    become(cid, "ranger", 4)
+    data = Vocations.radarScan(cid)
+    b = blipOf(data, shiny)
+    check("popup rank 4: the shiny, only roughly", b and b.kind == "shiny" and not b.exact and b.band == shinyBand and
+        b.direction == shinyDirection, b and JSON.encode(b))
+    check("popup rank 4: no legendary", not blipOf(data, articuno))
+    become(cid, "ranger", 5)
+    setPlayerStorageValue(cid, playersStorages.vocationLegendaryAt, 0)
+    data = Vocations.radarScan(cid)
+    b = blipOf(data, articuno)
+    check("popup rank 5: the legendary with its name", b and b.kind == "legendary" and b.name == "Articuno" and
+        b.band == legendBand and b.direction == legendDirection, b and JSON.encode(b))
+    data = Vocations.radarScan(cid)
+    check("popup rank 5: legendaries keep their cooldown", not blipOf(data, articuno))
+    local encoded = JSON.encode(data)
+    local ok, decoded = pcall(JSON.decode, encoded)
+    check("popup scan encodes to JSON", ok and decoded.type == "scan" and decoded.center.x == data.center.x and
+        #encoded < 16000, #encoded)
+    setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    local scanned = Vocations.radar(cid, "")
+    check("popup: !radar scans in the PokeVerse client, then recharges", scanned and not Vocations.radarPopupScan(cid))
 
     for _, m in ipairs(made) do
         if (isCreature(m)) then
@@ -523,9 +602,10 @@ local function findWater(cid, origin)
     end
 end
 
--- Casts an Old Rod: returns the messages and the wait before the first bite the fishing loop got
-local function cast(cid, water, ground)
-    local rod = doPlayerAddItem(cid, 12292, 1)
+-- Casts an Old Rod (or the rod given): returns the messages and the wait before the first bite the
+-- fishing loop got
+local function cast(cid, water, ground, rodId)
+    local rod = doPlayerAddItem(cid, rodId or 12292, 1)
     local ticks
     local realAddEvent = addEvent
     addEvent = function(fn, delay, ...)
@@ -575,6 +655,22 @@ local function testAnglerSpot(cid, arena)
     become(cid, "angler", 3)
     local _, fast = cast(cid, water, ground)
     check("Angler rank 3 gets the first bite sooner", base and fast and fast < base, tostring(base) .. " -> " .. tostring(fast))
+
+    local refused = "Only Anglers from rank " .. Vocations.PERKS.angler.cranesRank .. " can use cranes"
+    become(cid, nil)
+    text = cast(cid, water, ground, CRANE_ITEMID)
+    check("regular trainers can't use cranes", text:find(refused, 1, true) ~= nil, text)
+    become(cid, "angler", 4)
+    text = cast(cid, water, ground, CRANE_ITEMID)
+    check("Anglers below rank 5 can't use cranes", text:find(refused, 1, true) ~= nil, text)
+    become(cid, "angler", 5)
+    local skill = getPlayerSkill(cid, SKILL_FISHING)
+    text = cast(cid, water, ground, CRANE_ITEMID)
+    check("rank 5 Anglers get past the crane rule", not text:find(refused, 1, true) and
+        (skill >= 60 or text:find("You need at least skill 60") ~= nil), text)
+    become(cid, "ranger", 5)
+    text = cast(cid, water, ground, CRANE_ITEMID)
+    check("other vocations can't use cranes", text:find(refused, 1, true) ~= nil, text)
     doTeleportThing(cid, arena, false)
 end
 

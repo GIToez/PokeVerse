@@ -6,6 +6,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Pokepedia.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.VOCATION) then
         Vocations.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.RADAR) then
+        Vocations.onRadarMessage(cid, buffer)
     end
     return true
 end

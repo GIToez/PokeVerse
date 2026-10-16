@@ -11,12 +11,21 @@
 -- A choice is only accepted while a window opened by Vocations.open is up, so the vocation quest
 -- line decides when a trainer may choose.
 --
+-- The Ranger radar popup (game_radar) talks JSON on EXTENDED_IDS.RADAR:
+--   server -> client  {type = "status", enabled, rank, title, range, cooldown, wait, legendaryWait, unlocks, open}
+--                     {type = "scan", ...the status fields, center = {x, y, z}, blips = {{id, x, y, z, kind, exact,
+--                      distance, direction, band, name, look, types}, ...}}
+--                     {type = "error", text, wait}
+--   client -> server  {action = "hello"}, {action = "scan"}
+-- kind is common, uncommon, rare, shiny or legendary ("unknown" before speciesRank). Names and looks
+-- come from speciesRank, types from typeFilterRank; filtering happens in the popup.
+--
 -- Where the perks are used:
 --   Ace Trainer  doPlayerPokemonAddExperience (functions/player.lua): Pokemon EXP from defeats
 --   Catcher      emptyBall and catchMiss (functions/ball/empty.lua)
 --   Breeder      the incubator (events/actions/eggIncubator) and the daycare (npc/scripts/daycareFemale.lua)
 --   Ranger       Vocations.radar, the !radar command
---   Angler       Fishing (systems/043-fishing.lua) and the !fishing command
+--   Angler       Fishing (systems/043-fishing.lua), the !fishing command and the cranes
 --   Medic        the health potions (events/actions/potions/healthPotions.lua)
 
 Vocations = {}
@@ -40,7 +49,7 @@ Vocations.LIST = {
       perks = { "Radar for nearby spawns", "Filter by type, see direction", "Rare finds at top ranks" },
       titles = { "Ranger Cadet", "Field Ranger", "Area Ranger", "Ranger Captain", "Top Ranger" } },
     { id = 5, key = "angler", name = "Angler", tagline = "Fishing",
-      perks = { "Faster fishing skill", "See what bites at a spot", "Fishing map at rank 4" },
+      perks = { "Faster fishing skill", "See what bites, fishing map", "Only Anglers use cranes" },
       titles = { "Novice Angler", "Angler", "Skilled Angler", "Expert Angler", "Master Angler" } },
     { id = 6, key = "medic", name = "Medic", tagline = "Healing and support",
       perks = { "Healing items +3% to +15%", "Heal other players' team", "Bonus grows with each rank" },
@@ -64,6 +73,7 @@ Vocations.PERKS = {
     ranger = {
         range = { 30, 50, 80, 120, 200 }, -- tiles
         cooldown = { 60, 50, 40, 35, 30 }, -- seconds
+        accuracy = { 5, 3, 1, 1, 1 }, -- tiles: the popup snaps blips to this grid, 1 is exact
         typeFilterRank = 2,
         speciesRank = 3, -- species, direction and distance instead of a count
         shinyRank = 4,
@@ -77,6 +87,7 @@ Vocations.PERKS = {
         fastBiteDelay = 0.5, -- of the rod's wait before the first bite
         fastBiteLuck = 0.15, -- added to each bite roll
         mapRank = 4, -- the !fishing guide: what bites in each region at which skill
+        cranesRank = 5, -- cranes are for these Anglers only (and still need fishing skill 60)
     },
     medic = {
         healing = { 0.03, 0.06, 0.09, 0.12, 0.15 }, -- health potion effect
@@ -173,6 +184,7 @@ Vocations.setRank = function(cid, rank)
     rank = math.max(1, math.min(Vocations.MAX_RANK, rank))
     setPlayerStorageValue(cid, RANK, rank)
     Vocations.updateDescription(cid)
+    Vocations.sendRadarStatus(cid)
     return true
 end
 
@@ -251,6 +263,7 @@ Vocations.reset = function(cid)
     setPlayerStorageValue(cid, RANK, -1)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
+    Vocations.sendRadarStatus(cid)
 end
 
 -- Catcher: a failed roll gets a second chance sized so the catch chance becomes chance * (1 + bonus)
@@ -317,7 +330,7 @@ local function isSpecial(name)
 end
 
 -- What the radar would show the trainer: { regular = {...}, shiny = {...}, legendary = {...} }, each
--- entry { name, distance, direction }. Only wild Pokemon on the trainer's floor.
+-- entry { cid, name, pos, distance, direction }, nearest first. Only wild Pokemon on the trainer's floor.
 Vocations.scan = function(cid, range, typeId)
     local pos = getCreaturePosition(cid)
     local found = { regular = {}, shiny = {}, legendary = {} }
@@ -326,7 +339,8 @@ Vocations.scan = function(cid, range, typeId)
             local name = getCreatureName(creature)
             if (isPokemon(name) and (not typeId or hasType(name, typeId))) then
                 local where = getCreaturePosition(creature)
-                local entry = { name = name, distance = getDistanceBetween(pos, where), direction = direction(pos, where) }
+                local entry = { cid = creature, name = name, pos = where, distance = getDistanceBetween(pos, where),
+                                direction = direction(pos, where) }
                 if (DiscordBridge.isLegendary(name) or isSpecial(name)) then
                     table.insert(found.legendary, entry)
                 elseif (isShinyName(name)) then
@@ -343,12 +357,191 @@ Vocations.scan = function(cid, range, typeId)
     return found
 end
 
+local MAX_BLIPS = 40 -- one scan has to fit in one network message
+local RARITY_CHANCE = { uncommon = 100, rare = 400 } -- getPokemonCatchChance: Rattata 2, Pikachu 150, Dragonite 800
+local BAND_DISTANCE = { near = 15, far = 60, ["very far"] = 150 }
+local DIRECTION_ANGLES = {} -- degrees from east, clockwise: y grows to the south
+for i, name in ipairs(DIRECTIONS) do
+    DIRECTION_ANGLES[name] = (i - 1) * 45
+end
+
+local function rarity(name)
+    local chance = getPokemonCatchChance(name) or 0
+    if (chance >= RARITY_CHANCE.rare or (Pokepedia.tier and Pokepedia.tier(name) == "rare")) then
+        return "rare"
+    elseif (chance >= RARITY_CHANCE.uncommon) then
+        return "uncommon"
+    end
+    return "common"
+end
+
+local function rangerRank(cid)
+    return Vocations.is(cid, "ranger") and Vocations.getRank(cid) or 0
+end
+
+-- Starts the recharge; false and the seconds left while it is still recharging
+local function charge(cid, rank)
+    local now = os.time()
+    local wait = getPlayerStorageValue(cid, RADAR_AT) - now
+    if (wait > 0) then
+        return false, wait
+    end
+    setPlayerStorageValue(cid, RADAR_AT, now + Vocations.PERKS.ranger.cooldown[rank])
+    return true
+end
+
+-- Legendaries show once per legendaryCooldown, from legendaryRank
+local function legendaryReady(cid, rank, found)
+    local perks = Vocations.PERKS.ranger
+    if (rank < perks.legendaryRank or #found.legendary == 0) then
+        return false
+    end
+    local now = os.time()
+    if (getPlayerStorageValue(cid, LEGENDARY_AT) > now) then
+        return false
+    end
+    setPlayerStorageValue(cid, LEGENDARY_AT, now + perks.legendaryCooldown)
+    return true
+end
+
+-- Where the popup draws a blip. Exact from speciesRank, snapped to a grid of accuracy tiles below it.
+-- Shinies and legendaries only at the middle of their direction and distance band.
+local function blipPosition(center, entry, rank, range, vague)
+    if (vague) then
+        local distance = math.min(BAND_DISTANCE[band(entry.distance)], range)
+        local angle = math.rad(DIRECTION_ANGLES[entry.direction] or 0)
+        return { x = center.x + math.floor(math.cos(angle) * distance + 0.5),
+                 y = center.y + math.floor(math.sin(angle) * distance + 0.5), z = center.z }, false
+    end
+    local grid = Vocations.PERKS.ranger.accuracy[rank]
+    if (grid <= 1) then
+        return { x = entry.pos.x, y = entry.pos.y, z = entry.pos.z }, true
+    end
+    local function snap(value, from)
+        return from + math.floor((value - from) / grid + 0.5) * grid
+    end
+    return { x = snap(entry.pos.x, center.x), y = snap(entry.pos.y, center.y), z = center.z }, false
+end
+
+local function blip(center, entry, kind, rank, range)
+    local perks = Vocations.PERKS.ranger
+    local vague = kind == "shiny" or kind == "legendary"
+    local pos, exact = blipPosition(center, entry, rank, range, vague)
+    local data = { id = entry.cid, x = pos.x, y = pos.y, z = pos.z, kind = kind, exact = exact,
+                   distance = exact and entry.distance or getDistanceBetween(center, pos),
+                   direction = entry.direction, band = vague and band(entry.distance) or nil }
+    if (rank >= perks.speciesRank or kind == "legendary") then
+        data.name = entry.name
+        local outfit = getCreatureOutfit(entry.cid)
+        data.look = outfit and outfit.lookType or nil
+    end
+    if (rank >= perks.typeFilterRank) then
+        local types = {}
+        for _, id in ipairs(getPokemonTypes(nil, entry.name) or {}) do
+            if (ELEMENT_NAMES[id]) then
+                types[#types + 1] = ELEMENT_NAMES[id]:lower()
+            end
+        end
+        data.types = JSON.array(types)
+    end
+    return data
+end
+
+-- What the popup needs besides the blips: rank, range, the recharge and which filters are open
+Vocations.radarState = function(cid)
+    local rank = rangerRank(cid)
+    if (rank == 0) then
+        return { type = "status", enabled = false }
+    end
+    local perks = Vocations.PERKS.ranger
+    local now = os.time()
+    return { type = "status", enabled = true, rank = rank, title = __L(cid, Vocations.getTitle(cid)),
+             range = perks.range[rank], cooldown = perks.cooldown[rank],
+             wait = math.max(0, getPlayerStorageValue(cid, RADAR_AT) - now),
+             legendaryWait = rank >= perks.legendaryRank and math.max(0, getPlayerStorageValue(cid, LEGENDARY_AT) - now) or nil,
+             unlocks = { type = perks.typeFilterRank, species = perks.speciesRank, rarity = perks.speciesRank,
+                         shiny = perks.shinyRank, legendary = perks.legendaryRank } }
+end
+
+-- One scan for the popup (the recharge already started): the state plus center and blips
+Vocations.radarScan = function(cid)
+    local rank = rangerRank(cid)
+    local perks = Vocations.PERKS.ranger
+    local range = perks.range[rank]
+    local center = getCreaturePosition(cid)
+    local found = Vocations.scan(cid, range)
+    local blips = {}
+    local function add(list, kindOf)
+        for _, entry in ipairs(list) do
+            if (#blips >= MAX_BLIPS) then
+                return
+            end
+            blips[#blips + 1] = blip(center, entry, kindOf(entry), rank, range)
+        end
+    end
+    -- the rare finds first, so the cap only drops the farthest regular Pokemon
+    if (legendaryReady(cid, rank, found)) then
+        add(found.legendary, function() return "legendary" end)
+    end
+    if (rank >= perks.shinyRank) then
+        add(found.shiny, function() return "shiny" end)
+    end
+    add(found.regular, function(entry)
+        return rank >= perks.speciesRank and rarity(entry.name) or "unknown"
+    end)
+    local data = Vocations.radarState(cid)
+    data.type = "scan"
+    data.center = { x = center.x, y = center.y, z = center.z }
+    data.blips = JSON.array(blips)
+    return data
+end
+
+local function sendRadar(cid, data)
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.RADAR, JSON.encode(data))
+end
+
+Vocations.sendRadarStatus = function(cid, open)
+    if (isPlayer(cid)) then
+        local data = Vocations.radarState(cid)
+        data.open = open or nil
+        sendRadar(cid, data)
+    end
+end
+
+-- The popup's Scan button
+Vocations.radarPopupScan = function(cid)
+    local rank = rangerRank(cid)
+    if (rank == 0) then
+        sendRadar(cid, { type = "error", text = __L(cid, "Only Rangers can use the radar.") })
+        return false
+    end
+    local ok, wait = charge(cid, rank)
+    if (not ok) then
+        sendRadar(cid, { type = "error", wait = wait,
+            text = string.format(__L(cid, "Your radar is recharging. Try again in %d seconds."), wait) })
+        return false
+    end
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_WATER_PULSE)
+    sendRadar(cid, Vocations.radarScan(cid))
+    return true
+end
+
+-- !radar [type]: opens the popup in the PokeVerse client (scanning when the radar is charged),
+-- text replies in other clients
 Vocations.radar = function(cid, param)
-    local rank = Vocations.is(cid, "ranger") and Vocations.getRank(cid) or 0
+    local rank = rangerRank(cid)
     if (rank == 0) then
         doPlayerSendCancel(cid, "Only Rangers can use the radar.")
         return false
     end
+    if (getPlayerUsingOtClient(cid)) then
+        if (getPlayerStorageValue(cid, RADAR_AT) > os.time()) then
+            Vocations.sendRadarStatus(cid, true)
+            return true
+        end
+        return Vocations.radarPopupScan(cid)
+    end
+
     local perks = Vocations.PERKS.ranger
     local typeId
     param = (param or ""):trim():lower()
@@ -364,13 +557,11 @@ Vocations.radar = function(cid, param)
         end
     end
 
-    local now = os.time()
-    local wait = getPlayerStorageValue(cid, RADAR_AT) - now
-    if (wait > 0) then
+    local ok, wait = charge(cid, rank)
+    if (not ok) then
         doPlayerSendCancel(cid, string.format(__L(cid, "Your radar is recharging. Try again in %d seconds."), wait))
         return false
     end
-    setPlayerStorageValue(cid, RADAR_AT, now + perks.cooldown[rank])
 
     local range = perks.range[rank]
     local found = Vocations.scan(cid, range, typeId)
@@ -409,16 +600,26 @@ Vocations.radar = function(cid, param)
                 __L(cid, band(entry.distance)), __L(cid, entry.direction)))
         end
     end
-    if (rank >= perks.legendaryRank and #found.legendary > 0) then
-        if (getPlayerStorageValue(cid, LEGENDARY_AT) <= now) then
-            setPlayerStorageValue(cid, LEGENDARY_AT, now + perks.legendaryCooldown)
-            for _, entry in ipairs(found.legendary) do
-                reply(cid, string.format(__L(cid, "Radar: something rare, %s to the %s: %s!"),
-                    __L(cid, band(entry.distance)), __L(cid, entry.direction), entry.name))
-            end
+    if (legendaryReady(cid, rank, found)) then
+        for _, entry in ipairs(found.legendary) do
+            reply(cid, string.format(__L(cid, "Radar: something rare, %s to the %s: %s!"),
+                __L(cid, band(entry.distance)), __L(cid, entry.direction), entry.name))
         end
     end
     return true
+end
+
+Vocations.onRadarMessage = function(cid, buffer)
+    local ok, data = pcall(JSON.decode, buffer)
+    if (not ok or type(data) ~= "table") then
+        return
+    end
+    local action = tostring(data.action or "")
+    if (action == "scan") then
+        Vocations.radarPopupScan(cid)
+    elseif (action == "hello") then
+        Vocations.sendRadarStatus(cid)
+    end
 end
 
 -- Events ---------------------------------------------------------------------------------------
@@ -439,6 +640,7 @@ end
 Vocations.onLogin = function(cid)
     setPlayerStorageValue(cid, WINDOW, -1)
     Vocations.updateDescription(cid)
+    Vocations.sendRadarStatus(cid)
 end
 
 Vocations.onLogout = function(cid)

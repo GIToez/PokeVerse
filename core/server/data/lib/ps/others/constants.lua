@@ -56,7 +56,8 @@ EXTENDED_IDS = {
     PC = 21, -- JSON PC window state: Poke boxes, stash, inbox and depot, one {type = ...} per message (PC)
     GYM = 22, -- JSON gym leader duel intro and victory banners (GymLeaders.send)
     POKEPEDIA = 23, -- JSON Pokepedia window: houses, items, Pokedex knowledge, one {type = ...} per message (Pokepedia)
-    VOCATION = 24 -- JSON vocation window: the six vocations and the permanent choice (Vocations)
+    VOCATION = 24, -- JSON vocation window: the six vocations and the permanent choice (Vocations)
+    RADAR = 25 -- JSON Ranger radar popup: scans, cooldown and whether the trainer has a radar (Vocations.radar)
 }
 
 TOURNAMENT_TYPES = {}

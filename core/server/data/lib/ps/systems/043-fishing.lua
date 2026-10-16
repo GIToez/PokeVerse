@@ -20,10 +20,10 @@ local RODS = {
     [OLD_ROD_ITEMID] = { delay = 4, requiredSkill = 0, allowMultiple = false, fishingTime = 20 },
     [GOOD_ROD_ITEMID] = { delay = 5, requiredSkill = 30, allowMultiple = false, fishingTime = 30 },
     [SUPER_ROD_ITEMID] = { delay = 5, requiredSkill = 50, allowMultiple = false, fishingTime = 30 },
-    [CRANE1_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY },
-    [CRANE2_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY },
-    [CRANE3_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY },
-    [CRANE4_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY },
+    [CRANE1_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY, anglerOnly = true },
+    [CRANE2_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY, anglerOnly = true },
+    [CRANE3_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY, anglerOnly = true },
+    [CRANE4_ITEMID] = { delay = 15, requiredSkill = 60, allowMultiple = true, nextUseAttr = CRANE_NEXTUSEDATE_ATTR, nextUseDelay = CRANE_USE_DELAY, anglerOnly = true },
 }
 
 --[[
@@ -429,6 +429,9 @@ Fishing.onFishing = function(cid, item, fromPosition, itemEx, toPosition)
 
     elseif (getTilePzInfo(getCreaturePosition(cid))) then
         doPlayerSendCancel(cid, "You can't fish while you're in a protection zone.")
+
+    elseif (RODS[item.itemid].anglerOnly and not Vocations.perk(cid, "angler", "cranesRank")) then
+        doPlayerSendCancel(cid, string.format(__L(cid, "Only Anglers from rank %d can use cranes."), Vocations.PERKS.angler.cranesRank))
 
     elseif (getPlayerSkill(cid, SKILL_FISHING) < RODS[item.itemid].requiredSkill) then
         doPlayerSendCancel(cid, string.format(__L(cid, "You need at least skill %s to use this fishing rod."), RODS[item.itemid].requiredSkill))
