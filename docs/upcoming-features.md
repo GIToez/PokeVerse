@@ -641,7 +641,7 @@ screen shows about 15 by 11 tiles. Proposed limits on "too far":
 | 2 | Angler | More fishing experience; see which Pokémon can be fished at a spot |
 | 3 | Skilled Angler | Faster bites |
 | 4 | Expert Angler | A map of where each Pokémon can be fished |
-| 5 | Master Angler | Most fishing experience and all fishing tools |
+| 5 | Master Angler | Most fishing experience; the only trainers who can use cranes |
 
 Fishing today (`data/lib/ps/systems/043-fishing.lua`): a fishing skill that rises with
 use, rods that need a skill level (Old 0, Good 30, Super 50, cranes 60), and what can bite
@@ -710,26 +710,33 @@ do not change.
     each day it missed. The old 15-day wait and the "out of 300" chance with failure counter
     are gone; the timed extra egg rate item adds its value as percentage points to the daily
     roll. Breeders with Premium roll 11–15% and have the second egg chance.
-  - Ranger: `!radar` or `!radar <type>`. Ranks 1 and 2 count Pokémon; from rank 3 it lists
-    species with direction and distance. Shinies (rank 4), legendaries and event Pokémon
-    (rank 5) only show a distance band and direction; legendary results have a 10-minute
-    cooldown.
+  - Ranger: the radar popup (client `game_radar`, `EXTENDED_IDS.RADAR`), opened with `U`,
+    the top bar radar button (Rangers only) or `!radar`. A scan draws every wild Pokémon in
+    range as a blip around the trainer, coloured common, uncommon or rare (catch rate under
+    100, 100–399, 400 and up or a Pokepedia rare species), shiny or legendary. Ranks 1 and 2
+    see unnamed blips snapped to 5 and 3 tiles (types from rank 2); from rank 3 blips are exact
+    with species and sprite. Shinies (rank 4), legendaries and event Pokémon (rank 5) sit in a
+    halo at their direction and distance band only; legendary results have a 10-minute
+    cooldown. Filters (all, species, type, rarity, shiny only, legendaries only) work on the
+    last scan; rows show the rank they need. Clicking a blip tracks it: Target Info, a cone on
+    the radar, an arrow beside the trainer on the game map (with the distance) and a flag on
+    the minimap, until the trainer reaches it or presses Stop. Without the PokeVerse client
+    `!radar` and `!radar <type>` answer in text as before. Artwork: `scripts/art/radar_ui.py`.
   - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
     bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll
     is a little luckier. From rank 4, `!fishing` lists what bites in each region at each skill
-    level, marking what the trainer can already hook.
+    level, marking what the trainer can already hook. Cranes (skill 60) are for rank 5
+    Anglers only.
   - Medic: +3% to +15% from health potions, and health potions work on another trainer's
     Pokémon when neither trainer is in a duel, the arena or an NPC battle.
   - Tests: `scripts/vocation-test.py` with `scripts/testing/vocation-test-talkaction.lua`
-    (70 checks against a live server, run by `scripts/test-server-linux.sh`).
+    (90 checks against a live server, run by `scripts/test-server-linux.sh`).
 
 ### To decide
 
 1. What the mastery items are used for. Ideas: outfits as vocation rewards, plates and
    tokens for rank-ups or crafting.
-2. What "all fishing tools" means for the rank 5 Angler (not built). For example, the cranes
-   without the skill 60 requirement, or a rank-up reward rod.
-3. The vocation quest line and the rank-up quests and tasks that call `Vocations.open` and
+2. The vocation quest line and the rank-up quests and tasks that call `Vocations.open` and
    `Vocations.rankUp`.
 
 ### The old masteries
