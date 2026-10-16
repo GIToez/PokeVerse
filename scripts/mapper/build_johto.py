@@ -71,6 +71,8 @@ SEA_POCKET, SEA_SPECK = 1500, 8
 # Below that, down to KANTO_GAPS_TO, the holes the base map leaves between the Indigo Plateau and
 # Kanto's mountains are filled with mountain.
 KANTO_GAPS_TO = 575
+# Where Kanto's bare, flat mountain round the Indigo Plateau may be redone as tiered range.
+KANTO_ROCK = (3048, 280, 3190, 670)
 # Built south of the ridge, the west added with Cherrygrove, Violet and Azalea, and Goldenrod's area
 # west of them (Routes 34 to 36, Ilex Forest, National Park, the Ruins of Alph). Where they meet
 # unbuilt space their edges get a noisy outline.
@@ -430,6 +432,7 @@ MOUNT_LEVELS = 4
 MOUNT_BASE = 3
 MOUNT_STEP = 6
 MOUNT_WOBBLE = 4
+MOUNT_RIDGE = 8
 PEAK_LEVELS = 7
 PEAK_STEP = 10
 # Mt. Silver (plan_silver), the tallest of the mountains: ledges `ring` tiles wide round `center`, one
@@ -1170,11 +1173,13 @@ def plan_hills(f, allowed, walk0, target0, road_d, rng):
 def plan_mountains(mask, peaks):
     """Kanto's mountains rise in tiers: a level (0 to MOUNT_LEVELS) per tile of the mountains, a
     tier every MOUNT_STEP tiles in from their foot, starting MOUNT_BASE tiles in. The snowy peaks
-    go on up, a tier every PEAK_STEP tiles in from their edge, to PEAK_LEVELS. Every tier is
+    go on up, a tier every PEAK_STEP tiles in from their edge, to PEAK_LEVELS. Ridges (crest lines
+    of a broad noise, MOUNT_RIDGE tiles of extra height) carry the tiers out in spurs. Every tier is
     softened and sits inside the one below."""
     mf = Field(101)
     wobble = mf.noise(18) * MOUNT_WOBBLE
-    d = distance(mask) + wobble
+    crest = np.clip(1 - np.abs(mf.noise(40)) * 12, 0, 1)
+    d = distance(mask) + wobble + crest * MOUNT_RIDGE * (distance(mask) > MOUNT_BASE)
     dp = distance(peaks & mask) + wobble
     level = np.zeros(mask.shape, np.uint8)
     prev = mask
@@ -2028,6 +2033,18 @@ def build(base, out_path):
             if ids and all(i in nature or i in PASS_CLEAR for i in ids) and pass_d[iy, ix] + n2[iy, ix] * 3 < 4.5:
                 pass_edit[iy, ix] = True
     editable |= pass_edit
+    # Kanto's bare mountain round the Indigo Plateau (rock and its edge, nothing on the floors above)
+    # is redone with the range, so it rises in tiers instead of lying flat. Kanto's own tiers stay.
+    kx0, ky0, kx1, ky1 = KANTO_ROCK
+    above = {(x, y) for (x, y, z), ids in pvmap.read_region(base, kx0, ky0, kx1, ky1, range(0, Z)).items() if ids}
+    kanto_rock = np.zeros((f.h, f.w), bool)
+    for y in range(ky0, ky1 + 1):
+        for x in range(kx0, kx1 + 1):
+            ids = existing_ids(x, y)
+            if ids and brushes.by_item.get(ids[0]) is brushes['mountain'] and (x, y) not in above \
+                    and all(i in brushes.border_item_ids for i in ids[1:]) and not pass_edit[y - f.y0, x - f.x0]:
+                kanto_rock[y - f.y0, x - f.x0] = True
+    editable |= kanto_rock
     edge = f.noise(30)
     outline = (X > NORTH[0] + 25 + edge * 40) & (Y > f.y0 + 25 + edge * 40)
     north_scope = (X >= NORTH[0]) & (X <= NORTH[1]) & outline
@@ -2047,7 +2064,7 @@ def build(base, out_path):
         west |= f.disc(cx, cy, r + 15, edge, 0.3) & (X >= GOLD[0])
     kanto_gaps = (X > JOHTO_X1) & (Y >= FAR_NORTH) & (Y < KANTO_GAPS_TO) & ~present
     rest = (X <= JOHTO_X1) | (Y < FAR_NORTH) | kanto_gaps
-    scope = south | west | gold | coast_scope | east_scope | north_scope | pass_edit | rest
+    scope = south | west | gold | coast_scope | east_scope | north_scope | pass_edit | kanto_rock | rest
     gen = (~present | editable) & scope
 
     # Terrain from the layout, refined to tiles.
@@ -2083,8 +2100,14 @@ def build(base, out_path):
             sel = strip & (X >= 3030 + (n1 * 20).astype(int))
             land &= ~sel
     land |= editable & (X >= KANTO_EDIT[0])
-    land |= kanto_gaps
-    mount |= kanto_gaps
+    land |= kanto_gaps | kanto_rock
+    mount |= kanto_gaps | kanto_rock
+    # The gaps meet the open sea along ruled lines (the layout stops at JOHTO_X1, the base map at
+    # FAR_NORTH): the sea wears them back into a coast.
+    to_sea = distance(land | present)
+    worn = kanto_gaps & (to_sea + n1 * 14 < 6)
+    land &= ~worn
+    mount &= ~worn
     # North of the ridge everything is the Silver-Indigo range, up to the plateau's west edge, except
     # the Route 28 valley that runs from the west gate to the clearing at the foot of Mt. Silver.
     # The range keeps to the layout's mountains: Mt. Silver's ring with green valleys between, the
@@ -2169,7 +2192,7 @@ def build(base, out_path):
     seam_water = np.array([(existing_ids(JOHTO_X1 + 3, y) or [None])[0] in WATER_IDS
                            for y in range(f.y0, f.y1 + 1)])
     filled = []
-    for cells in components(~land & (X <= JOHTO_X1)):
+    for cells in components(~land & ((X <= JOHTO_X1) | kanto_gaps)):
         if len(cells) >= SEA_POCKET:
             continue
         ys, xs = map(np.array, zip(*cells))
@@ -2539,12 +2562,13 @@ def build(base, out_path):
     terrain[country] = MOUNTAIN
     clear |= hill_keep[0]
     # The mountains in tiers, kept off the ravines up to the cave mouths so those stay open to the sky.
-    rocks = np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, SNOW_PEAK]) & ~country & ~ravines & gen & ~present & (X < 3035)
+    rocks = (np.isin(terrain, [MOUNTAIN, CAVE_FLOOR, SNOW_PEAK]) & ~country & ~ravines & gen & (~present | kanto_rock)
+             & ((X <= JOHTO_X1) | kanto_gaps | kanto_rock | (~present & (X <= KANTO_ROCK[2]) & (Y <= KANTO_ROCK[3]))))
     rocks &= ~grow(boxes, 5)
     mlevel = plan_mountains(rocks, terrain == SNOW_PEAK)
     mf = Field(103)
     snowy = grow(np.isin(terrain, [SNOW_PEAK, SNOW]), 20)
-    meadow = mf.noise(22) + mf.noise(6) * 0.3 > 0.12
+    meadow = mf.noise(22) + mf.noise(6) * 0.3 > -0.05
     surface = np.where(snowy, SNOW, np.where(meadow, GRASS, CAVE_FLOOR))
     hill_ground[mlevel > 0] = surface[mlevel > 0]
     terrain[(mlevel > 0) & (terrain == SNOW_PEAK)] = MOUNTAIN
@@ -2945,6 +2969,9 @@ def build(base, out_path):
                     pass
                 elif ledges[iy, ix]:
                     deco = silver_deco(hill_rng, r, cls, edge, height[iy, ix] == SILVER['top'], groves[iy, ix])
+                elif mlevel[iy, ix] and not country[iy, ix]:
+                    # The other mountains' tops are dressed like Mt. Silver's ledges: no one walks them.
+                    deco = silver_deco(hill_rng, r, cls, edge, False, groves[iy, ix])
                 elif country[iy, ix] and (hill_keep[j][iy, ix] or keep_free[iy, ix]):
                     pass
                 elif cls == CAVE_FLOOR:

@@ -100,7 +100,12 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   open to the sky in the ridge on floor 7, empty but for the broken radio and Rock Smash rocks.
 - **Terrain depth:** open country rises in terraced hills up to floor 4, spread evenly over the
   region (noise against its local mean), each reached by ramps from the nearest road; mountain
-  ranges stand in tiers up to seven floors, with gravel and rock along their cliffs, and forests
+  ranges stand in tiers up to seven floors, with gravel and rock along their cliffs, ridges
+  (`MOUNT_RIDGE`) carrying the tiers out in spurs, and tops mostly grass, dressed like Mt. Silver's
+  ledges with stands of trees, boulder fields and tufts. Round the Indigo Plateau the holes in
+  Kanto's map and Kanto's bare flat mountain (`KANTO_ROCK`, nothing on the floors above) rise with
+  the range, worn back by the sea where they meet it. Sea that the layout shuts in by mountain, or
+  specks of it, is filled (`SEA_POCKET`, `SEA_SPECK`); ponds on open ground stay. Forests
   are thick with trees, bushes and undergrowth. Snow is dressed with stones (never the snow heap,
   486, which is a floor change).
 - **Mt. Silver** (`SILVER`, `plan_silver`), the tallest mountain, climbs as in HeartGold and
