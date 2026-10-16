@@ -470,8 +470,6 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
         local pokemonName = getBallPokemonName(ball.uid)
         local maxExtraPoints = isShinyName(pokemonName) and (POKEMON_EXTRA_POINT_MAX - 10) or POKEMON_EXTRA_POINT_MAX
 
-        PokemonHeldItem.onGainExperience(player, pokemon, ball, expAmount)
-
         if (currentLevel < POKEMON_LEVEL_MAX or currentExtraPoints < maxExtraPoints) then
             if (multiplier) then -- Kill experience: stage (config/experience.lua), personal bonus, Ace Trainer, server event
                 expAmount = expAmount * getPokemonExpStageRate(currentLevel) * POKEMON_EXP_RATE

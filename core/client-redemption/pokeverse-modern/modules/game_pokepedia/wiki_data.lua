@@ -187,8 +187,8 @@ WikiData = {
             { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Josh Pillberg in the Trading Area resets them for 1 soul coin. The casino merchants sell them for poke coins." },
         } },
         { key = 'held', title = 'Held items', item = 22170, body = {
-            { 'p', "A held item boosts one type of moves: +5% at level 1 up to +20% at level 7. It levels up as your Pokemon gains experience; /held shows its level." },
-            { 'p', "Use the held item on the ball of a Pokemon that has none. Mitchell Meade in the Trading Area takes it off for free and gives it back, but its level starts over." },
+            { 'p', "A held item boosts one type of moves by 20% (Charcoal Fire, Mystic Water Water, Dragon Fang Dragon, and so on). An Elemental Stone boosts the two types it was charged with. Each Pokemon holds one item." },
+            { 'p', "To give one, drag it onto the Pokemon on the swap bar, or use it on the Pokemon's ball. A Pokemon that already holds an item gives the old one back. To take it back, right-click the Pokemon on the swap bar and pick Take held item. It works while the Pokemon is out too. /held shows what the Pokemon in your ball slot holds." },
             { 'commands', { "/held" } },
         } },
         { key = 'berries', title = 'Berries', item = 11581, body = {

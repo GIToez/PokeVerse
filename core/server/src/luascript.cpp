@@ -1468,6 +1468,9 @@ void LuaScriptInterface::registerFunctions()
 	//getPlayerSlotItem(cid, slot)
 	lua_register(m_luaState, "getPlayerSlotItem", LuaScriptInterface::luaGetPlayerSlotItem);
 
+	//getPlayerItemFromClientPos(cid, pos)
+	lua_register(m_luaState, "getPlayerItemFromClientPos", LuaScriptInterface::luaGetPlayerItemFromClientPos);
+
 	//getPlayerWeapon(cid[, ignoreAmmo = false])
 	lua_register(m_luaState, "getPlayerWeapon", LuaScriptInterface::luaGetPlayerWeapon);
 
@@ -6372,6 +6375,38 @@ int32_t LuaScriptInterface::luaGetPlayerSlotItem(lua_State* L)
 		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushThing(L, NULL, 0);
 	}
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetPlayerItemFromClientPos(lua_State* L)
+{
+	//getPlayerItemFromClientPos(cid, pos)
+	//	pos as the client sends it: {x = 0xFFFF, y = slot or 0x40 | container id, z = container slot}.
+	//	Only items the player carries (equipment, or containers in it); nothing else.
+	PositionEx pos;
+	popPosition(L, pos);
+
+	ScriptEnviroment* env = getEnv();
+	Player* player = env->getPlayerByUID(popNumber(L));
+	if(!player)
+	{
+		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushThing(L, NULL, 0);
+		return 1;
+	}
+
+	Item* item = NULL;
+	if(pos.x == 0xFFFF)
+	{
+		if(Thing* thing = g_game.internalGetThing(player, pos, pos.z))
+			item = thing->getItem();
+	}
+
+	if(item && item->getHoldingPlayer() == player)
+		pushThing(L, item, env->addThing(item));
+	else
+		pushThing(L, NULL, 0);
+
 	return 1;
 }
 

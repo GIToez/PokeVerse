@@ -103,11 +103,82 @@ local function switchOrientation()
     applyOrientation()
 end
 
+-- held items (server PokemonHeldItem.onClientMessage): drop one on a Pokemon to give it, Alt+click
+-- or the menu to take it back; the icon in the corner shows what it holds
+local heldByNumber = {}
+local refreshEvent
+
+local function sendHeld(data)
+    local protocol = g_game.getProtocolGame()
+    if protocol and g_game.isOnline() then
+        protocol:sendExtendedJSONOpcode(ExtendedIds.HeldItem, data)
+    end
+end
+
+local function showHeld(slot)
+    local held = heldByNumber[slot.number]
+    if held and held.client and held.client > 0 then
+        slot.held:setItemId(held.client)
+        slot.held:show()
+    else
+        slot.held:hide()
+    end
+    local tooltip = slot.baseTooltip
+    if held then
+        tooltip = tooltip .. '\n\n' .. tr('Holding %s', held.text or held.name) .. '\n' .. tr('Alt+click to take it back')
+    end
+    slot:setTooltip(tooltip)
+end
+
+local function requestHeld()
+    removeEvent(refreshEvent)
+    refreshEvent = scheduleEvent(function()
+        refreshEvent = nil
+        sendHeld({ action = 'refresh' })
+    end, 300)
+end
+
+local function onHeldMessage(protocol, opcode, data)
+    if type(data) ~= 'table' or data.type ~= 'bar' then
+        return
+    end
+    heldByNumber = {}
+    for _, held in ipairs(data.items or {}) do
+        heldByNumber[tonumber(held.number)] = held
+    end
+    for _, slot in ipairs(slots()) do
+        showHeld(slot)
+    end
+end
+
+local function takeHeld(slot)
+    sendHeld({ action = 'take', number = slot.number })
+end
+
+local function giveHeld(slot, dragged)
+    local item = dragged and dragged.currentDragThing
+    if not item or not item.isItem or not item:isItem() then
+        return false
+    end
+    local pos = item:getPosition()
+    if not pos or pos.x ~= 65535 then
+        modules.game_textmessage.displayFailureMessage(tr('You must pick up this item first.'))
+        return true
+    end
+    sendHeld({ action = 'give', number = slot.number, item = { x = pos.x, y = pos.y, z = pos.z } })
+    return true
+end
+
 local function openMenu(mousePos, slot)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
     if slot and slot == activeSlot then
         menu:addOption(tr('Evolve'), g_game.evolvePokemon)
+    end
+    if slot then
+        if heldByNumber[slot.number] then
+            menu:addOption(tr('Take held item'), function() takeHeld(slot) end, '(Alt)')
+        end
         menu:addSeparator()
     end
     menu:addOption(orientation == HORIZONTAL and tr('Show vertically') or tr('Show horizontally'), switchOrientation)
@@ -177,7 +248,9 @@ function onPokemonBarAdd(itemId, number, textColor, text)
     slot:setId('poke' .. number)
     slot.number = number
     slot.portrait:setItemId(itemId)
-    slot:setTooltip(getPokemonNameByIconItemId(itemId) .. '\n' .. tr('Click to call, Ctrl+click to call back, Shift+click for details'))
+    slot.baseTooltip = getPokemonNameByIconItemId(itemId) .. '\n' .. tr('Click to call, Ctrl+click to call back, Shift+click for details') ..
+        '\n' .. tr('Drop a held item here to give it to this Pokemon')
+    showHeld(slot)
     slot:setDraggable(true)
     slot.onDragEnter = function(self, mousePos)
         return pokemonBar:onDragEnter(mousePos)
@@ -189,6 +262,9 @@ function onPokemonBarAdd(itemId, number, textColor, text)
     slot.onDragLeave = function(self, droppedWidget, mousePos)
         pokemonBar:onDragLeave(droppedWidget, mousePos)
         return true
+    end
+    slot.onDrop = function(self, dragged, mousePos)
+        return giveHeld(self, dragged)
     end
     slot.onMousePress = function(self, mousePos, button)
         self.pressPosition = pokemonBar:getPosition()
@@ -204,7 +280,11 @@ function onPokemonBarAdd(itemId, number, textColor, text)
         if button ~= MouseLeftButton or moved or not self:containsPoint(mousePos) then
             return false
         end
-        if g_keyboard.isShiftPressed() then
+        if g_keyboard.isAltPressed() then
+            if heldByNumber[number] then
+                takeHeld(self)
+            end
+        elseif g_keyboard.isShiftPressed() then
             g_game.talkChannel(MessageModes.Say, 0, '/pd ' .. number)
         elseif g_keyboard.isCtrlPressed() then
             recallPokemon()
@@ -217,6 +297,7 @@ function onPokemonBarAdd(itemId, number, textColor, text)
     applyOrientation()
     updateKeyLabels()
     show()
+    requestHeld()
 end
 
 function onPokemonBarRemove(number)
@@ -248,6 +329,7 @@ function onPokemonBarClose()
 end
 
 function onOnline()
+    heldByNumber = {}
     hide()
     reset()
 end
@@ -277,6 +359,7 @@ function onInit()
         onPokemonBarClose = onPokemonBarClose
     })
     connect(Creature, { onHealthPercentChange = onCreatureHealthPercentChange })
+    ProtocolGame.registerExtendedJSONOpcode(ExtendedIds.HeldItem, onHeldMessage)
 
     pokemonBar = g_ui.loadUI('pokebar', modules.game_interface.getRootPanel())
     orientation = g_settings.getNumber('pokeverse-quickcall-orientation', VERTICAL)
@@ -321,6 +404,8 @@ function onTerminate()
         onPokemonBarClose = onPokemonBarClose
     })
     disconnect(Creature, { onHealthPercentChange = onCreatureHealthPercentChange })
+    ProtocolGame.unregisterExtendedJSONOpcode(ExtendedIds.HeldItem)
+    removeEvent(refreshEvent)
     unbindKeys()
     disconnect(Keybind, { onBind = updateKeyLabels })
     savePosition()

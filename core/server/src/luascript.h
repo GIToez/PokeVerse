@@ -513,6 +513,7 @@ class LuaScriptInterface
 		static int32_t luaGetPlayerFreeCap(lua_State* L);
 		static int32_t luaGetPlayerLight(lua_State* L);
 		static int32_t luaGetPlayerSlotItem(lua_State* L);
+		static int32_t luaGetPlayerItemFromClientPos(lua_State* L);
 		static int32_t luaGetPlayerWeapon(lua_State* L);
 		static int32_t luaGetPlayerItemById(lua_State* L);
 		static int32_t luaGetPlayerItemByIdWithAttribute(lua_State* L);
