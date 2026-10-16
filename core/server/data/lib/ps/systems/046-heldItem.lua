@@ -86,7 +86,7 @@ HELDS[HELD_IDS.DRAGON_FANG] = {
     values = {5, 7, 10, 13, 15, 18, 20},
     onApply = function(cid, level, ballUid)
         setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.DRAGON_FANG].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_FIRE)
+        setPokemonHeldMovePowerType(cid, ELEMENT_DRAGON)
     end,
     getDescription = function(uid)
         local level = getBallHeldLevel(uid)
@@ -645,10 +645,6 @@ end
 
 PokemonHeldItem.doResetBall = function(ball, cid)
     local heldId = getBallHeld(ball.uid)
-    -- items without levels are only swapped, so they come back
-    if (heldId and HELDS[heldId] and HELDS[heldId].noLevels) then
-        doPlayerSafeAddItem(cid, HELDS[heldId].itemId, 1, true)
-    end
     if (heldId and heldId == HELD_IDS.ELEMENTAL_STONE) then
         local heldVariables = getBallHeldVariables(ball.uid)
         if (heldVariables and isString(heldVariables)) then
