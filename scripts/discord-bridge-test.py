@@ -368,6 +368,11 @@ def main():
     speaker_account, speaker_password, speaker_name = args.speaker.split(":", 2)
     r = b.request("trainer.lookup", {"name": trainer.lower()})
     check("trainer.lookup", r and r["ok"] and r["result"].get("found") and r["result"]["name"] == trainer, str(r))
+    card = (r and r["ok"] and r["result"].get("card")) or {}
+    check("trainer.lookup card", r["result"].get("vocation") == "Trainer" and card.get("title") == "Pokemon Trainer"
+          and [b_["region"] for b_ in card.get("badges", [])] == ["Kanto", "Orange Islands"]
+          and card["badges"][0]["total"] == 8 and isinstance(card.get("trophies"), list)
+          and isinstance(card.get("hidden"), list) and "since" in card, str(r)[:600])
     r = b.request("trainer.lookup", {"name": args.staff_character})
     check("trainer.lookup hides staff", r and r["ok"] and r["result"] == {"found": False}, str(r))
     r = b.request("trainer.lookup", {"name": "a' OR '1'='1"})
