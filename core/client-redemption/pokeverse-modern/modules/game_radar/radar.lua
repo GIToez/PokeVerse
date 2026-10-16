@@ -49,14 +49,6 @@ local function send(data)
     end
 end
 
-local function typing()
-    local widget = rootWidget
-    while widget:getFocusedChild() do
-        widget = widget:getFocusedChild()
-    end
-    return widget:getClassName() == 'UITextEdit' and widget:isEnabled() and widget:isVisible()
-end
-
 local function playerPos()
     local player = g_game.getLocalPlayer()
     return player and player:getPosition() or nil
@@ -567,12 +559,6 @@ function stop()
     stopTracking()
 end
 
-local function onToggleKey()
-    if not typing() and status.enabled then
-        toggle()
-    end
-end
-
 local function applyStatus(data)
     local scanned = status.scanned
     status = { enabled = data.enabled == true, rank = tonumber(data.rank), title = data.title,
@@ -660,8 +646,7 @@ function init()
         IMAGES .. 'button_radar', toggle)
     button:setVisible(false)
 
-    Keybind.new('Windows', 'Show/hide the Ranger radar', { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'U' }, '')
-    Keybind.bind('Windows', 'Show/hide the Ranger radar', { { type = KEY_DOWN, callback = onToggleKey } })
+    modules.game_vocation.registerTool('radar', { enabled = function() return status.enabled end, toggle = toggle })
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Radar, onRadar)
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
@@ -672,7 +657,7 @@ function init()
 end
 
 function terminate()
-    Keybind.delete('Windows', 'Show/hide the Ranger radar')
+    modules.game_vocation.unregisterTool('radar')
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Radar)
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     removeEvent(tickEvent)
