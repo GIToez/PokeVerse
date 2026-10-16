@@ -960,6 +960,16 @@ From the `#notes` channel:
   no tasks yet, until the next login. The boards are now read from the database every
   time, and the server test picks tasks and hooks Pokémon in one session.
 
+- **To go over: legendary spawning and roaming.** Today legendaries only come from scripts
+  (quest bosses, the wave arena, world bosses and events such as `048-anniversaryEvent.lua`);
+  they are not in the map spawns, and there is no roaming system yet. Things to decide: where
+  and how often legendaries spawn, whether some roam between routes (and how the Ranger radar
+  shows them; it already gives legendaries only a direction and distance band, from rank 5,
+  with a 10-minute cooldown), how long they stay, and who can catch them. Related: the radar
+  test's Articuno did not spawn when the test spot was a small upper floor (5017, 790, 6 on
+  Tutorial Island), because no tile 12–16 tiles away was walkable; the test now also tries
+  nearer spots.
+
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.
 

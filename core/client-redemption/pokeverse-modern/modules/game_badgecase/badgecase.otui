@@ -122,17 +122,17 @@ BadgeCaseWindow < UIWindow
 
     BcArrow
       id: prev
-      anchors.verticalCenter: list.verticalCenter
+      anchors.top: region.bottom
       anchors.left: parent.left
-      margin-top: -10
+      margin-top: 23
       @onClick: modules.game_badgecase.showRegion(-1)
 
     BcArrow
       id: next
       image-source: /modules/client_entergame/images/arrow_right
-      anchors.verticalCenter: list.verticalCenter
+      anchors.top: region.bottom
       anchors.right: parent.right
-      margin-top: -10
+      margin-top: 23
       @onClick: modules.game_badgecase.showRegion(1)
       $hover:
         image-source: /modules/client_entergame/images/arrow_right_hover

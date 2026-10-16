@@ -722,17 +722,17 @@ TrainerCardWindow < UIWindow
 
       TcRegionArrow
         id: prev
-        anchors.top: list.top
+        anchors.top: heading.bottom
         anchors.left: parent.left
-        margin-top: 5
+        margin-top: 11
         @onClick: modules.game_trainercard.showBadgeRegion(-1)
 
       TcRegionArrow
         id: next
         image-source: /modules/client_entergame/images/arrow_right
-        anchors.top: list.top
+        anchors.top: heading.bottom
         anchors.right: parent.right
-        margin-top: 5
+        margin-top: 11
         @onClick: modules.game_trainercard.showBadgeRegion(1)
         $hover:
           image-source: /modules/client_entergame/images/arrow_right_hover
