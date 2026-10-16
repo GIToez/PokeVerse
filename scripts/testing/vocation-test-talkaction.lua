@@ -278,7 +278,18 @@ local function testTrainerCard(cid, friend)
     check("card: opens your own card", card and card.own == true and card.name == getCreatureName(cid) and card.level == getPlayerLevel(cid))
     check("card: vocation and title", card and card.vocation and card.vocation.key == "catcher" and card.vocation.rank == 3 and
         card.title == Vocations.LIST[2].titles[3], card and card.title)
-    check("card: 12 badges out of 24 and the stats", card and #card.badges == 12 and card.badgesTotal == 24 and card.stats and card.stats.dexTotal == POKEMON_NUMBER)
+    local regions, slots, real = {}, 0, 0
+    for _, region in ipairs(card and card.badges or {}) do
+        regions[#regions + 1] = region.region .. " " .. #region.list
+        for _, badge in ipairs(region.list) do
+            slots = slots + 1
+            real = real + (badge.upcoming and 0 or 1)
+        end
+    end
+    check("card: badges by region, Kanto first, 28 in all and 12 in the game",
+        table.concat(regions, ", ") == "Kanto 8, Orange Islands 4, Johto 8, Hoenn 8" and slots == 28 and real == 12,
+        table.concat(regions, ", "))
+    check("card: the stats", card and card.stats and card.stats.dexTotal == POKEMON_NUMBER)
     check("card: hometown, outfit, play time", card and card.town and card.town.name == getTownName(getPlayerTown(cid)) and
         card.outfit.type == getCreatureOutfit(cid).lookType and card.playTime ~= nil)
     check("card: fits in one message", sent[1] and #sent[1] < 8192, sent[1] and #sent[1])
@@ -586,16 +597,24 @@ end
 
 local function testRanger(cid, arena)
     local made = {}
-    -- On the first free tile within 6 tiles of the wanted offset (the checks use where it landed)
+    local tried, free, results = 0, 0, {}
+    -- On the first free tile within 6 tiles of the wanted offset (the checks use where it landed). The far
+    -- offsets come first; the near ones are for test spots on small upper floors, where the far ones are void.
     local function spawnAt(name, dx, dy)
         for radius = 0, 6 do
             for ox = -radius, radius do
                 for oy = -radius, radius do
                     local p = { x = arena.x + dx + ox, y = arena.y + dy + oy, z = arena.z }
-                    if ((math.abs(ox) == radius or math.abs(oy) == radius) and (p.x ~= arena.x or p.y ~= arena.y)
-                            and isFree(cid, p)) then
+                    local ring = (math.abs(ox) == radius or math.abs(oy) == radius) and (p.x ~= arena.x or p.y ~= arena.y)
+                    if (ring) then tried = tried + 1 end
+                    if (ring and isFree(cid, p)) then
+                        free = free + 1
                         local m = doCreateMonster(name, p, false)
+                        local r = tostring(m) .. (isCreature(m) and ":creature" or "")
+                        results[r] = (results[r] or 0) + 1
                         if (isMonster(m)) then
+                            -- the checks compare directions and distances, so the Pokemon stay put
+                            doCreatureSetNoMove(m, true)
                             made[#made + 1] = m
                             return m
                         end
@@ -605,6 +624,7 @@ local function testRanger(cid, arena)
         end
     end
     local function spawn(name, ...)
+        tried, free, results = 0, 0, {}
         local offsets = { ... }
         for i = 1, #offsets, 2 do
             local m = spawnAt(name, offsets[i], offsets[i + 1])
@@ -612,7 +632,10 @@ local function testRanger(cid, arena)
                 return m
             end
         end
-        check("radar test: room for " .. name, false)
+        local seen = {}
+        for r, n in pairs(results) do seen[#seen + 1] = r .. " x" .. n end
+        check("radar test: room for " .. name, false, string.format("arena %d,%d,%d; %d tiles tried, %d free; results %s",
+            arena.x, arena.y, arena.z, tried, free, table.concat(seen, " ", 1, math.min(#seen, 8))))
     end
     local function where(m)
         local from = getCreaturePosition(cid)
@@ -624,7 +647,7 @@ local function testRanger(cid, arena)
     local before = Vocations.scan(cid, 30)
     local pidgey = spawn("Pidgey", 6, 0, -6, 0, 0, 6, 0, -6)
     local shiny = spawn("Shiny Rattata", 0, 8, 0, -8, 8, 0, -8, 0, 8, 8, -8, -8)
-    local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0)
+    local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0, 0, 10, 10, 0, -10, 0, 0, -10, 6, 6, -6, -6, 6, -6, -6, 6)
     if (not (pidgey and shiny and articuno)) then
         for _, m in ipairs(made) do
             if (isCreature(m)) then
