@@ -121,7 +121,8 @@ local function refresh(container)
     panel.region:setText(shown.name)
     panel.count:setText(shown.upcoming and tr('Coming soon') or string.format('%d / %d', regionEarned, #slots))
 
-    local width = panel.list:getWidth()
+    -- the list sits between the arrows, whose layout may not have run yet
+    local width = panel:getPaddingRect().width - 2 * (panel.prevRegion:getWidth() + 6)
     local cell = 64
     local step = math.min(cell + 6, #slots > 1 and math.floor((width - cell) / (#slots - 1)) or 0)
     local left = math.floor((width - (cell + step * (#slots - 1))) / 2)
@@ -180,6 +181,9 @@ function onContainerOpen(container, previousContainer)
     if (isDexContainer(container)) then
         if (not window:isVisible()) then
             region = 1
+            local root = rootWidget:getSize()
+            window:setPosition({ x = math.floor((root.width - window:getWidth()) / 2),
+                                 y = math.max(0, math.floor((root.height - window:getHeight()) / 2)) })
         end
         openContainer = container
         refresh(container)
@@ -206,9 +210,6 @@ function onInit()
     g_ui.importStyle('badgecase')
 
     window = g_ui.createWidget('BadgeCaseWindow', rootWidget)
-    window:setPosition({
-        x = (g_window.getDisplaySize().width - window:getWidth()) / 2,
-        y = (g_window.getDisplaySize().height - window:getHeight()) / 2})
     window:hide()
 
     connect(g_game, {

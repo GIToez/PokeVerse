@@ -245,8 +245,8 @@ local function fillBadges()
         end
     end
     panel.count:setText(string.format('%d / %d', earned, total))
-    panel.prev:setVisible(#regions > 1)
-    panel.next:setVisible(#regions > 1)
+    panel.prevRegion:setVisible(#regions > 1)
+    panel.nextRegion:setVisible(#regions > 1)
     badgeRegion = math.max(1, math.min(badgeRegion, #regions))
     local region = regions[badgeRegion]
     if not region then
@@ -260,7 +260,8 @@ local function fillBadges()
     end
     panel.region:setText(string.format('%s  \183  %d / %d', region.region or '', regionEarned, #list))
     local size, gap = 40, 14
-    local width = panel.list:getWidth()
+    -- the list sits between the arrows, whose layout may not have run yet
+    local width = panel:getPaddingRect().width - 2 * (panel.prevRegion:getWidth() + 8)
     local step = math.min(size + gap, #list > 1 and math.floor((width - size) / (#list - 1)) or 0)
     local left = math.floor((width - (size + step * (#list - 1))) / 2)
     for i, badge in ipairs(list) do

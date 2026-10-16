@@ -121,14 +121,14 @@ BadgeCaseWindow < UIWindow
       anchors.right: parent.right
 
     BcArrow
-      id: prev
+      id: prevRegion
       anchors.top: region.bottom
       anchors.left: parent.left
       margin-top: 23
       @onClick: modules.game_badgecase.showRegion(-1)
 
     BcArrow
-      id: next
+      id: nextRegion
       image-source: /modules/client_entergame/images/arrow_right
       anchors.top: region.bottom
       anchors.right: parent.right
@@ -140,8 +140,8 @@ BadgeCaseWindow < UIWindow
     UIWidget
       id: list
       anchors.top: region.bottom
-      anchors.left: prev.right
-      anchors.right: next.left
+      anchors.left: prevRegion.right
+      anchors.right: nextRegion.left
       anchors.bottom: parent.bottom
       margin: 10 6 0 6
       phantom: true
