@@ -162,6 +162,23 @@ Vocations.getTitle = function(cid)
     return vocation and vocation.titles[Vocations.getRank(cid)] or nil
 end
 
+-- The chosen vocation's name for a character who may be offline ("Trainer" before choosing)
+Vocations.nameOf = function(guid)
+    local cid = getPlayerByGUID(guid)
+    local id
+    if (cid and isPlayer(cid)) then
+        id = getPlayerStorageValue(cid, STORAGE)
+    else
+        local r = db.getResult(string.format("SELECT `value` FROM `player_storage` WHERE `player_id` = %d AND `key` = %d LIMIT 1",
+            tonumber(guid) or 0, STORAGE))
+        if (r:getID() ~= -1) then
+            id = tonumber(r:getDataString("value"))
+            r:free()
+        end
+    end
+    return byId[id] and byId[id].name or "Trainer"
+end
+
 -- The value of one perk for this trainer, or nil when the trainer is not of that vocation.
 -- Rank tables give the value at the trainer's rank; a "...Rank" number gives true once reached.
 Vocations.perk = function(cid, key, perk)

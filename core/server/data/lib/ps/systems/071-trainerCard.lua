@@ -103,7 +103,7 @@ end
 TrainerCard.pokemon = function(name, level, sex)
     local monster = getMonsterInfo(name, false)
     return { key = keyOf(name, level, sex), name = name, level = level, sex = sexName(sex),
-             number = getPokemonNumberByName(name), shiny = isShinyName(name) or nil,
+             number = getPokemonNumberByName(name), shiny = isShinyName(name) ~= nil or nil,
              look = monster and monster.outfit and monster.outfit.lookType or nil, types = types(name) }
 end
 
@@ -116,7 +116,7 @@ local function candidates(cid, limit)
             seen[key] = true
             local monster = getMonsterInfo(name, false)
             list[#list + 1] = { key = key, name = name, level = level, sex = sexName(sex),
-                                number = getPokemonNumberByName(name), shiny = isShinyName(name) or nil, where = where,
+                                number = getPokemonNumberByName(name), shiny = isShinyName(name) ~= nil or nil, where = where,
                                 look = monster and monster.outfit and monster.outfit.lookType or nil }
         end
     end
@@ -393,6 +393,130 @@ TrainerCard.data = function(cid, target)
     data.trophies = JSON.array(trophies)
     data.hidden = JSON.array(hidden)
     return data
+end
+
+-- The card for the Discord bot's /trainer (DiscordBridge trainer.lookup), also for trainers who are
+-- offline: everything comes from the storages and tables, cid is set when the trainer is online.
+-- What the trainer's privacy settings hide stays out and is listed in hidden.
+TrainerCard.lookup = function(guid, cid)
+    local online = cid ~= nil and isPlayer(cid)
+    local function text(key)
+        if (online) then
+            return storageText(cid, key)
+        end
+        local r = db.getResult(string.format("SELECT `value` FROM `player_storage` WHERE `player_id` = %d AND `key` = %d LIMIT 1",
+            guid, key))
+        if (r:getID() == -1) then
+            return ""
+        end
+        local value = r:getDataString("value")
+        r:free()
+        return value == "-1" and "" or value
+    end
+    local function number(key)
+        return math.max(0, tonumber(text(key)) or 0)
+    end
+    local function hasAchievement(id)
+        local r = db.getResult(string.format("SELECT 1 FROM `player_achievements` WHERE `player_id` = %d AND `key` = %d LIMIT 1",
+            guid, id))
+        if (r:getID() == -1) then
+            return false
+        end
+        r:free()
+        return true
+    end
+
+    local vocation
+    for _, v in ipairs(Vocations.LIST) do
+        if (v.id == tonumber(text(playersStorages.vocation))) then
+            vocation = v
+        end
+    end
+    local rank = vocation and math.max(1, math.min(Vocations.MAX_RANK, number(playersStorages.vocationRank))) or 0
+
+    local titleKey = text(TITLE)
+    local title
+    local titleRank = tonumber(titleKey:match("^v(%d+)$"))
+    local achievement = tonumber(titleKey:match("^a(%d+)$"))
+    if (vocation and titleRank and titleRank >= 1 and titleRank <= rank) then
+        title = vocation.titles[titleRank]
+    elseif (achievement and getAchievementBaseName(achievement) and hasAchievement(achievement)) then
+        title = getAchievementBaseName(achievement)
+    end
+    title = title or (vocation and vocation.titles[rank]) or "Pokemon Trainer"
+
+    local flags = number(PRIVACY)
+    local function hidden(what)
+        return math.floor(flags / TrainerCard.PRIVACY[what]) % 2 == 1
+    end
+
+    local card = { title = title, about = text(ABOUT), since = number(SINCE), hidden = JSON.array() }
+    if (vocation) then
+        card.vocation = { key = vocation.key, name = vocation.name, rank = rank, maxRank = Vocations.MAX_RANK,
+                          title = vocation.titles[rank] }
+    end
+
+    local name, level, sex = parseKey(text(FAVORITE))
+    if (name) then
+        card.favorite = TrainerCard.pokemon(name, level, sex)
+    elseif (online) then
+        card.favorite = favoriteOf(cid)
+    end
+
+    if (hidden("playTime")) then
+        card.hidden[#card.hidden + 1] = "playTime"
+    else
+        card.playTime = online and playTime(cid) or number(playersStorages.playTime)
+    end
+    if (hidden("stats")) then
+        card.hidden[#card.hidden + 1] = "stats"
+    else
+        card.dex = { seen = number(playersStorages.pokemonsDexeds), total = POKEMON_NUMBER }
+    end
+    local trophies = JSON.array()
+    if (hidden("trophies")) then
+        card.hidden[#card.hidden + 1] = "trophies"
+    else
+        for key in text(TROPHIES):gmatch("[^;]+") do
+            local trophyName, trophyLevel, trophySex = parseKey(key)
+            if (trophyName and #trophies < TrainerCard.MAX_TROPHIES) then
+                trophies[#trophies + 1] = TrainerCard.pokemon(trophyName, trophyLevel, trophySex)
+            end
+        end
+    end
+    card.trophies = trophies
+
+    -- badges are items: online anywhere on the trainer, offline the saved inventory (not the depot)
+    local owned = {}
+    if (not online) then
+        local ids = {}
+        for _, badge in pairs(BADGES) do
+            ids[#ids + 1] = badge.newItemId
+        end
+        local r = db.getResult(string.format("SELECT DISTINCT `itemtype` FROM `player_items` WHERE `player_id` = %d AND `itemtype` IN (%s)",
+            guid, table.concat(ids, ",")))
+        if (r:getID() ~= -1) then
+            repeat
+                owned[r:getDataInt("itemtype")] = true
+            until not r:next()
+            r:free()
+        end
+    end
+    local regions = JSON.array()
+    for _, region in ipairs(BADGE_REGIONS) do
+        if (region.badges) then
+            local earned = JSON.array()
+            for _, id in ipairs(region.badges) do
+                local badge = BADGES[id]
+                if ((online and getPlayerItemCount(cid, badge.newItemId) > 0) or owned[badge.newItemId]) then
+                    earned[#earned + 1] = badge.name
+                end
+            end
+            regions[#regions + 1] = { region = region.name, earned = earned, total = #region.badges }
+        end
+    end
+    card.badges = regions
+    return card
 end
 
 local function findTarget(cid, name)

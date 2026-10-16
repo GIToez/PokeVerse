@@ -175,7 +175,7 @@ All handlers are read-only except `chat.send`, which only displays a message, an
 | Method | Params | Result |
 | --- | --- | --- |
 | `chat.send` | `author`, `text` | `delivered` (players who received it), `text` (as shown). Shown in channel 7 as `[Discord] <author>: <text>` (yellow). Control characters are removed, author max 24, text max 255 characters (client limit). |
-| `trainer.lookup` | `name` | `{found:false}` or `found`, `name`, `level`, `vocation`, `guild` (optional), `online`, `caught`, `uniqueCaught`, `shinyCaught`, `duelWins`, `duelLosses`, `playersDefeated`, `tournamentsWon`, `achievements {earned,total,recent[]}` |
+| `trainer.lookup` | `name` | `{found:false}` or `found`, `name`, `level`, `vocation`, `guild` (optional), `online`, `caught`, `uniqueCaught`, `shinyCaught`, `duelWins`, `duelLosses`, `playersDefeated`, `tournamentsWon`, `achievements {earned,total,recent[]}`, `mastery` (optional), `card` (below) |
 | `pokemon.lookup` | `name` | `{found:false}` or `found`, `name`, `baseSpecies`, `dexNumber`, `generation`, `types[]`, `stats {attack,defense,specialAttack,specialDefense,health,energy}`, `description`, `evolutions[] {from,to,level,items}`, `moves[] {name,level}`, `abilities[]`, `specialAbilities[]`, `shiny`, `legendary`, `catchable`, `shinyVariant` |
 | `pokemon.search` | `query`, `limit` (max 25) | `names[]` (prefix matches first) |
 | `server.status` | - | `serverName`, `state`, `playersOnline`, `maxPlayers`, `uptime` (seconds since server start), `bootId` |
@@ -187,6 +187,14 @@ All handlers are read-only except `chat.send`, which only displays a message, an
 | `link.setMain` | `discordUserId`, `character` | link summary |
 | `link.unlink` | `discordUserId` | `unlinked` (`false` when there was no link) |
 | `link.list` | `offset`, `limit` (max 200) | `links[]` (link summaries), `nextOffset` (absent on the last page) |
+
+In `trainer.lookup`, `vocation` is the vocation the trainer chose (Ace Trainer, Catcher, ...; `Trainer`
+before choosing) and `mastery` the engine vocation when it is a mastery. `card` is the Trainer Card,
+also for offline trainers: `title`, `about`, `since`, `vocation {key, name, rank, maxRank, title}`
+(absent before choosing), `favorite` and `trophies[]` (`{key, name, level, sex, number, shiny, look,
+types}`), `playTime`, `dex {seen, total}`, `badges[] {region, earned[] (badge names), total}` and
+`hidden[]`: what the trainer's privacy settings keep off other trainers' view (`playTime`, `stats`,
+`trophies`); the matching fields are left out and the bot leaves out the statistics.
 
 Link summary: `linked`, `discordUserId`, `linkedAt`, `characterCount`, `main {name, level,
 vocation}` (absent when the account has no characters), `mainChanged`, `premium`,

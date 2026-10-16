@@ -429,6 +429,14 @@ local function handleTrainerLookup(params)
         end
     end
     trainer.achievements = {earned = #achievements, total = totalAchievements, recent = names}
+
+    -- players.vocation is the engine's ("Trainer" or a mastery); the vocation trainers choose is the card's
+    local card = TrainerCard.lookup(guid, trainer.online and cid or nil)
+    if (trainer.vocation and trainer.vocation ~= "Trainer") then
+        trainer.mastery = trainer.vocation
+    end
+    trainer.vocation = card.vocation and card.vocation.name or "Trainer"
+    trainer.card = card
     return trainer
 end
 
