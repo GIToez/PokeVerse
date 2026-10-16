@@ -436,7 +436,8 @@ def main():
         check("exactly one catch event", len(catches) == 1, str(len(catches)))
 
         listener.say("/bridgetest spawn Shiny Rattata")
-        e = b.wait_event(lambda ev: ev["kind"] == "spawn" and ev["species"] == "Shiny Rattata", 10)
+        e = b.wait_event(lambda ev: ev["kind"] == "spawn" and ev["species"] == "Shiny Rattata"
+                         and ev["source"] == "script", 10)
         check("shiny spawn event (script)", e is not None and e["event"]["shiny"] is True
               and e["event"]["source"] == "script" and e["event"]["startup"] is False, str(e))
         listener.say("/bridgetest spawn Mewtwo")
