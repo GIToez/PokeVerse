@@ -168,6 +168,9 @@ TRAPDOOR = 369
 # Rocket Hideout (build_johto.UNDERGROUND lines the hideout's stairs up with them)
 SOUVENIR_SHOP = (2569, 378)
 SHOP_STAIRS = [(SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 7), (SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 8)]
+# Goldenrod's Magnet Train station: the top of its stairway down, off the north avenue
+# (build_johto.UNDERGROUND brings Cerulean's walled stairway, landing and station under it)
+TRAIN_STAIRS = (2330, 660)
 
 
 class Town:
@@ -506,6 +509,11 @@ def goldenrod(t):
     # north of the first street: the Radio Tower and homes
     t.put('radio-tower', 2340, 668)
     t.item(2338, 686, SIGN)
+    # the Magnet Train's stairway down on a cobbled forecourt by the avenue
+    sx, sy = TRAIN_STAIRS
+    t.ground(sx - 2, sy - 3, sx + 2, sy + 4, 'cobblestone')
+    t.block(sx - 2, sy - 3, sx + 2, sy + 4)
+    t.item(sx - 2, sy - 3, SIGN)
     t.put('saffron-300', 2276, 674)
     t.put('saffron-305', 2295, 671)
     # north-west block: homes along the first street, then the Pokémon Center, Mart and Gym on the avenue

@@ -435,6 +435,13 @@ UNDERGROUND = [
     # the Global Terminal's basement: Celadon's guild hall's, under the same stairs
     {'name': 'Global Terminal basement', 'src': (3722, 461), 'dst': (2326, 780),
      'floors': {8: ((3720, 453, 3737, 471), None, None)}},
+    # Goldenrod's Magnet Train station: Cerulean's, from its walled stairway in the street (floor 7)
+    # down through the landing over the canal to the platform and waiting room; its conductor
+    # (npc/Wade Carrington.xml) stands where Cerulean's does, and both Kanto stations ride here
+    {'name': 'Magnet Train Station', 'src': (3884, 272), 'dst': T.TRAIN_STAIRS,
+     'floors': {7: ((3883, 270, 3885, 274), None, None), 8: ((3882, 270, 3888, 274), None, None),
+                9: ((3878, 255, 3897, 278), None, None)},
+     'npcs': [('Wade Carrington', 3888, 269, 9)]},
     # Mahogany's Rocket Hideout, B1F to B4F: Celadon's under the Game Corner, its stairs up under the
     # souvenir shop's stairs down; Celadon's sewer touches it on the first two
     {'name': 'Rocket Hideout', 'src': (3776, 488), 'dst': T.SHOP_STAIRS[0],
@@ -2675,6 +2682,10 @@ def build(base, out_path):
     below = underground_tiles(base_data, brushes)
     assert not set(below) & set(prefab_tiles), 'an underground piece overlaps a building'
     prefab_tiles.update(below)
+    for piece in UNDERGROUND:
+        ox, oy = piece['dst'][0] - piece['src'][0], piece['dst'][1] - piece['src'][1]
+        for n, x, y, z in piece.get('npcs', []):
+            npcs.append((n, x + ox, y + oy, z))
     wreck = wreck_tiles(base_data)
     wx0, wy0 = WRECK['dst']
     wx1, wy1 = wx0 + WRECK['src'][2] - WRECK['src'][0], wy0 + WRECK['src'][3] - WRECK['src'][1]
