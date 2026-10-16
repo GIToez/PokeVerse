@@ -28,7 +28,7 @@ local function check(name, ok, detail)
         say("PASS " .. name)
     else
         failed = failed + 1
-        say("FAIL " .. name .. (detail and (" (" .. tostring(detail) .. ")") or ""))
+        say("FAIL " .. name .. (detail and (" (" .. tostring(detail):sub(1, 300) .. ")") or ""))
     end
 end
 
@@ -242,6 +242,106 @@ local function testTrials(cid)
 
     become(cid, "angler", 5)
     check("progress: no next rank at rank 5", Vocations.progress(cid).next == nil and Vocations.getTrial(cid) == nil)
+    become(cid, nil)
+end
+
+local function testTrainerCard(cid, friend)
+    local sent, original = {}, doSendPlayerExtendedOpcode
+    local function capture(fn)
+        sent = {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.TRAINER_CARD) then
+                sent[#sent + 1] = buffer
+                local data = JSON.decode(buffer)
+                sent[data.type] = data
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(fn)
+        doSendPlayerExtendedOpcode = original
+        if (not ok) then
+            check("Trainer Card ran without errors", false, err)
+        end
+    end
+    for _, key in ipairs({ "cardTitle", "cardAbout", "cardFavorite", "cardTrophies", "cardPrivacy" }) do
+        setPlayerStorageValue(cid, playersStorages[key], -1)
+    end
+    become(cid, "catcher", 3)
+
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"open"}') end)
+    local card = sent.card
+    check("card: opens your own card", card and card.own == true and card.name == getCreatureName(cid) and card.level == getPlayerLevel(cid))
+    check("card: vocation and title", card and card.vocation and card.vocation.key == "catcher" and card.vocation.rank == 3 and
+        card.title == Vocations.LIST[2].titles[3], card and card.title)
+    check("card: 12 badges and the stats", card and #card.badges == 12 and card.stats and card.stats.dexTotal == POKEMON_NUMBER)
+    check("card: hometown, outfit, play time", card and card.town and card.town.name == getTownName(getPlayerTown(cid)) and
+        card.outfit.type == getCreatureOutfit(cid).lookType and card.playTime ~= nil)
+    check("card: fits in one message", sent[1] and #sent[1] < 8192, sent[1] and #sent[1])
+
+    local ballA = newBall(cid, "Scyther", 41, POKEMON_SEX_MALE)
+    local ballB = newBall(cid, "Gengar", 52, POKEMON_SEX_FEMALE)
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"candidates"}') end)
+    local keys = {}
+    for _, pokemon in ipairs(sent.candidates and sent.candidates.list or {}) do
+        keys[pokemon.key] = pokemon
+    end
+    check("card: candidates list the party", keys["Scyther|41|1"] and keys["Gengar|52|0"] and keys["Scyther|41|1"].look ~= nil,
+        sent[1])
+
+    capture(function()
+        TrainerCard.onClientMessage(cid, JSON.encode({ action = "save", favorite = "Scyther|41|1",
+            trophies = { "Gengar|52|0", "Scyther|41|1" }, title = "v2", about = "Hello\n\n\n\nfive lines\r\n" .. string.rep("x", 300),
+            privacy = 3 }))
+    end)
+    card = sent.card
+    check("card: save keeps the favorite and the trophies", card and card.favorite and card.favorite.key == "Scyther|41|1" and
+        #card.trophies == 2 and card.trophies[1].name == "Gengar" and card.trophies[1].sex == "female")
+    check("card: an earned title", card and card.titleKey == "v2" and card.title == Vocations.LIST[2].titles[2], card and card.title)
+    local about = card and card.about or ""
+    check("card: About is cleaned (4 lines, 160 letters)", #about <= 160 and not about:find("\r") and
+        select(2, about:gsub("\n", "")) <= 3, about)
+    check("card: privacy saved", card and card.privacy == 3)
+    check("card: saved message", sent.result and sent.result.ok == true)
+
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"save","title":"v5"}') end)
+    check("card: a title above the rank is refused", sent.result and sent.result.ok == false and
+        getPlayerStorageValue(cid, playersStorages.cardTitle) == "v2")
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"save","trophies":["Mew|100|2"]}') end)
+    check("card: a Pokemon you don't have is refused", sent.result and sent.result.ok == false and
+        #TrainerCard.data(cid, cid).trophies == 2)
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"titles"}') end)
+    check("card: titles list the vocation ranks", sent.titles and sent.titles.list[1] and sent.titles.list[1].key == "v3" and
+        #sent.titles.list >= 3)
+
+    doRemoveItem(ballB.uid)
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"open"}') end)
+    check("card: a trophy you don't have anymore drops off", sent.card and #sent.card.trophies == 1 and
+        sent.card.trophies[1].name == "Scyther")
+
+    if (isPlayer(friend)) then
+        capture(function() TrainerCard.onClientMessage(friend, JSON.encode({ action = "open", name = getCreatureName(cid) })) end)
+        local other = sent.card
+        check("card: another trainer sees it, without your settings", other and other.own == false and other.privacy == nil and
+            other.favorite and other.favorite.name == "Scyther")
+        local hidden = {}
+        for _, what in ipairs(other and other.hidden or {}) do
+            hidden[what] = true
+        end
+        check("card: privacy hides play time and statistics", other and other.playTime == nil and other.stats == nil and
+            hidden.playTime and hidden.stats and #other.trophies == 1)
+        capture(function() TrainerCard.onClientMessage(friend, JSON.encode({ action = "achievements", name = getCreatureName(cid) })) end)
+        check("card: achievements tab", sent.achievements and sent.achievements.total > 0)
+    else
+        check("card: second trainer online", false)
+    end
+    capture(function() TrainerCard.onClientMessage(cid, '{"action":"open","name":"Nobody Here At All"}') end)
+    check("card: offline trainers", sent.result and sent.result.ok == false)
+
+    doRemoveItem(ballA.uid)
+    for _, key in ipairs({ "cardTitle", "cardAbout", "cardFavorite", "cardTrophies", "cardPrivacy" }) do
+        setPlayerStorageValue(cid, playersStorages[key], -1)
+    end
     become(cid, nil)
 end
 
@@ -522,6 +622,11 @@ local function testRanger(cid, arena)
     local shiny = spawn("Shiny Rattata", 0, 8)
     local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0)
     if (not (pidgey and shiny and articuno)) then
+        for _, m in ipairs(made) do
+            if (isCreature(m)) then
+                doRemoveCreature(m)
+            end
+        end
         return
     end
     local found = Vocations.scan(cid, 30)
@@ -635,7 +740,7 @@ local function testRanger(cid, arena)
     local encoded = JSON.encode(data)
     local ok, decoded = pcall(JSON.decode, encoded)
     check("popup scan encodes to JSON", ok and decoded.type == "scan" and decoded.center.x == data.center.x and
-        #encoded < 16000, #encoded)
+        #encoded < 8192, #encoded)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
     local scanned = Vocations.radar(cid, "")
     check("popup: !radar scans in the PokeVerse client, then recharges", scanned and not Vocations.radarPopupScan(cid))
@@ -996,7 +1101,8 @@ function onSay(cid, words, param, channel)
     end
 
     local tests = {
-        { "ranks", testRanks }, { "trials", testTrials }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
+        { "ranks", testRanks }, { "trials", testTrials },
+        { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
         { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
