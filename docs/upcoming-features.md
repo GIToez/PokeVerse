@@ -724,13 +724,21 @@ do not change.
     `!radar` and `!radar <type>` answer in text as before. Artwork: `scripts/art/radar_ui.py`.
   - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
     bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll
-    is a little luckier. From rank 4, `!fishing` lists what bites in each region at each skill
-    level, marking what the trainer can already hook. Cranes (skill 60) are for rank 5
-    Anglers only.
+    is a little luckier. From rank 4 the Fishing Guide (client `game_fishing`,
+    `EXTENDED_IDS.FISHING`), opened with `U`, the top bar button (Anglers only) or `!fishing`,
+    shows what bites in each region: a tab per region (pinned where the trainer is), one row per
+    skill tier with the Pokedex portraits, the Pokémon level range and "Can hook now" or the
+    skill it needs. A region's rows are the Kanto pool plus that region's own Pokémon, which
+    get a gold frame. Clicking a portrait shows its types, rods and catches; side panels show the
+    progress to the next skill and the rods. Without the PokeVerse client `!fishing` answers in
+    text as before. Cranes (skill 60) are for rank 5 Anglers only. Artwork:
+    `scripts/art/fishing_ui.py`.
+  - `U` opens the trainer's vocation tool: the radar for Rangers, the Fishing Guide for
+    Anglers (`game_vocation` keeps the key; `registerTool` adds a tool).
   - Medic: +3% to +15% from health potions, and health potions work on another trainer's
     Pokémon when neither trainer is in a duel, the arena or an NPC battle.
   - Tests: `scripts/vocation-test.py` with `scripts/testing/vocation-test-talkaction.lua`
-    (90 checks against a live server, run by `scripts/test-server-linux.sh`).
+    (102 checks against a live server, run by `scripts/test-server-linux.sh`).
 
 ### To decide
 
