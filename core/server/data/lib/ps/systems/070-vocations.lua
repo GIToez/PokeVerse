@@ -224,8 +224,8 @@ Vocations.TRIALS = {
         { on = "catch", shiny = true, text = "Catch %d shiny Pokemon", goals = { 0, 0, 1, 2 } },
     },
     breeder = {
-        { on = "hatch", text = "Hatch %d eggs", goals = { 5, 12, 25, 40 } },
-        { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 2, 5, 10, 15 } },
+        { on = "hatch", text = "Hatch %d eggs", goals = { 2, 4, 6, 10 } },
+        { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 1, 2, 3, 5 } },
     },
     ranger = {
         { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 30, 80, 150, 250 } },

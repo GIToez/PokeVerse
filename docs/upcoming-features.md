@@ -770,8 +770,8 @@ do not change.
   | Catcher | Catch Pokémon | 50 | 150 | 300 | 600 |
   | | Catch different species | 10 | 25 | 45 | 70 |
   | | Catch shiny Pokémon | – | – | 1 | 2 |
-  | Breeder | Hatch eggs | 5 | 12 | 25 | 40 |
-  | | Hatch different species | 2 | 5 | 10 | 15 |
+  | Breeder | Hatch eggs (daycare eggs come about every 1–2 weeks; eggs can also be bought) | 2 | 4 | 6 | 10 |
+  | | Hatch different species | 1 | 2 | 3 | 5 |
   | Ranger | Radar scans that find Pokémon | 30 | 80 | 150 | 250 |
   | | Find different species on the radar | 10 | 25 | 45 | 70 |
   | | Find a shiny on the radar (they show from rank 4) | – | – | – | 1 |
