@@ -448,6 +448,13 @@ UNDERGROUND = [
 # `dst` where its top left goes), south of the Whirl Islands' big island, with `spawns` on board.
 WRECK = {'name': 'I.S.S. Raspberry', 'src': (3880, 1083, 3914, 1103), 'dst': (2027, 653), 'floors': (5, 6, 7),
          'spawns': 6}
+# The S.S. Aqua at Olivine's harbour: Vermilion's ship (hull, deck, gangway and the captain's cabin on
+# floors 3 to 6) copied tile for tile to the end of Olivine's pier. On floor 7 only the hull and the
+# gangway's posts come (not the open water round them) and the stairs up on the dock, `dock` here
+# (the pier's west edge; the gangway reaches over the rest of it). Its captain stands in the cabin
+# where Vermilion's does and sails back there (npc/Captain Gideon Hale.xml); Vermilion's sails here.
+SHIP = {'name': 'S.S. Aqua', 'src': (3851, 625, 3885, 649), 'floors': (3, 4, 5, 6, 7),
+        'stairs': (3883, 638), 'dock': (2160, 566), 'captain': ('Captain Gideon Hale', 3858, 638, 5)}
 # Waterfall (core/server/data/lib/ps/systems/039-pokemonAbility.lua): used on WATERFALL_UP on a rock
 # face, a surfing player comes out on WATERFALL_TOP over it on the floor above; used on that, back
 # down on WATERFALL_FOOT, the water a tile south of the face (Kanto's falls are built the same way).
@@ -1913,6 +1920,25 @@ def wreck_tiles(data):
     return {(x + ox, y + oy, z): pvmap.RawTile(0, t.flags, t.ground, t.children) for (x, y, z), t in raw.items()}
 
 
+def ship_offset():
+    return SHIP['dock'][0] - SHIP['stairs'][0], SHIP['dock'][1] - SHIP['stairs'][1]
+
+
+def ship_tiles(data):
+    """SHIP's tiles, keyed by where they go, without house ids: everything above the water, and on
+    the water's floor the tiles with something on the water (hull, posts) and the dock's stairs."""
+    x0, y0, x1, y1 = SHIP['src']
+    ox, oy = ship_offset()
+    raw = pvmap.read_region_raw(None, x0, y0, x1, y1, SHIP['floors'], data)
+    out = {}
+    for (x, y, z), t in raw.items():
+        ids = ([t.ground] if t.ground is not None else []) + pvmap.child_item_ids(t.children)
+        if z == Z and (x, y) != SHIP['stairs'] and (x >= SHIP['stairs'][0] or set(ids) <= WATER_IDS):
+            continue
+        out[(x + ox, y + oy, z)] = pvmap.RawTile(0, t.flags, t.ground, t.children)
+    return out
+
+
 def build_cave(cave, brushes, present, rng):
     """One cave floor, made like Kanto's caves: mountain top ground carved out of solid mountain,
     patches of rocky ground, debris and stones on the floor and candles on the walls. Its mouths
@@ -2655,6 +2681,16 @@ def build(base, out_path):
     assert (terrain[wy0 - f.y0 - 2:wy1 - f.y0 + 3, wx0 - f.x0 - 2:wx1 - f.x0 + 3] == WATER).all() \
         and not set(wreck) & set(prefab_tiles), 'the wreck is not out at sea'
     prefab_tiles.update(wreck)
+    ship = ship_tiles(base_data)
+    sox, soy = ship_offset()
+    hx0, hy0, hx1, hy1 = SHIP['src'][0] + sox, SHIP['src'][1] + soy, SHIP['stairs'][0] + sox - 1, SHIP['src'][3] + soy
+    dock = [(x, y) for (x, y, z) in ship if z == Z - 1 and x >= SHIP['dock'][0]]
+    assert (terrain[hy0 - f.y0 - 2:hy1 - f.y0 + 3, hx0 - f.x0 - 2:SHIP['dock'][0] - f.x0 - 1] == WATER).all() \
+        and all(town_ground.get(p) == 'wooden floor' for p in dock) \
+        and not set(ship) & set(prefab_tiles), 'the ship is not moored at the end of a pier'
+    prefab_tiles.update(ship)
+    captain, cx, cy, cz = SHIP['captain']
+    npcs.append((captain, cx + sox, cy + soy, cz))
 
     for (x, y, z) in prefab_tiles:
         if z == Z and f.x0 <= x <= f.x1 and f.y0 <= y <= f.y1:
@@ -3213,6 +3249,9 @@ def build(base, out_path):
     wx0, wy0, wx1, wy1 = WRECK['src']
     dx, dy = WRECK['dst']
     first.append((WRECK['name'], dx, dy, min(WRECK['floors']), dx + wx1 - wx0, dy + wy1 - wy0, max(WRECK['floors'])))
+    sox, soy = ship_offset()
+    first.append((SHIP['name'], SHIP['src'][0] + sox, SHIP['src'][1] + soy, min(SHIP['floors']),
+                  SHIP['stairs'][0] + sox - 1, SHIP['src'][3] + soy, max(SHIP['floors'])))
     for cave in CAVES:
         cz = cave.get('z', Z + 1)
         first.append((cave['name'], cave['box'][0], cave['box'][1], cz, cave['box'][2], cave['box'][3], cz))

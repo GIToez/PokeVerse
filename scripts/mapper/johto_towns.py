@@ -742,11 +742,12 @@ def olivine(t):
     t.put('vermilion-342', 2163, 528)
     t.put('lighthouse', 2076, 536)
     t.item(2098, 557, SIGN)
-    t.boardwalk = ([(2130, 526), (2130, 556)], 1)
+    # the S.S. Aqua's pier, between the two homes; the ship (build_johto.py's SHIP) moors at its end
+    t.boardwalk = ([(2161, 526), (2161, 571)], 1)
     t.pier = ([(2100, 500), (2074, 500)], 1)
     t.item(2082, 496, BOAT, ground='walkable sea')
     t.item(2086, 504, BOAT, ground='walkable sea')
-    t.item(2135, 552, BOAT, ground='walkable sea')
+    t.item(2118, 548, BOAT, ground='walkable sea')
     for x, y in [(2127, 528), (2127, 532), (2134, 530), (2134, 536)]:
         t.item(x, y, int(rng.choice(CRATES + WOOD_PILES)))
     for x in range(2108, 2184, 12):
