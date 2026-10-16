@@ -6,7 +6,7 @@
 -- maxRank, title, titles, levels, level, since, look, wearing, perks = {{icon, text, value}, ...}, ranks = {perks
 -- of each rank}, next = {rank, title, level, trial = {text, have, need}, gains = {{icon, text, value, badge}},
 -- ready, why}}. Its buttons send {action = "rankup"} and {action = "wear"}; {type = "trial", have, need, ready}
--- updates the trial and the top bar button's dot.
+-- updates the trial and the top bar button's red "!" (also shown from level 20 until a vocation is chosen).
 -- The U key is the vocation key: it opens the trainer's vocation tool (the Ranger radar, the Angler
 -- fishing guide; those modules call registerTool(id, {enabled = fn, toggle = fn})), and without one
 -- it asks the server for this window with {action = "open"}. Below level 20 the window opens with
@@ -143,9 +143,17 @@ end
 
 -- Progress window --------------------------------------------------------------------------------
 
-local function setDot(visible)
+-- The red "!" on the top bar button: a vocation to choose (choose) or a rank up ready
+local function setDot(visible, choose)
     if dot then
         dot:setVisible(visible and true or false)
+    end
+    if button then
+        if visible then
+            button:setTooltip(choose and tr('Vocation (choose your vocation!)') or tr('Vocation (rank up ready!)'))
+        else
+            button:setTooltip(tr('Vocation'))
+        end
     end
 end
 
@@ -195,7 +203,7 @@ local function fillRanks(data)
         if kind == 'current' or kind == 'next' then
             node.tag:setText(kind == 'current' and tr('YOU') or tr('NEXT'))
             node.tag:setColor(kind == 'current' and '#2a1e00' or '#ffffff')
-            node.tag:setImageSource('/modules/game_fishing/images/' .. (kind == 'current' and 'tag' or 'badge'))
+            node.tag:setImageColor(kind == 'current' and '#ffc83c' or '#3a78d8')
             node.tag:setVisible(true)
         end
     end
@@ -221,7 +229,10 @@ local function fillNext(data)
     end
     panel.heading:setText(tr('Next: %s  (rank %d)', next.title or '', next.rank or 0))
     panel.levelText:setText(tr('Trainer level %d', next.level or 0))
-    panel.levelValue:setText(tr('Lv. %d / %d', math.min(data.level or 0, next.level or 0), next.level or 0))
+    local reached = (data.level or 0) >= (next.level or 0)
+    panel.levelValue:setText(reached and tr('Lv. %d  \183  done', data.level or 0) or
+        tr('Lv. %d / %d', data.level or 0, next.level or 0))
+    panel.levelValue:setColor(reached and '#6fe08a' or '#ffffff')
     local trial = next.trial or { text = '', have = 0, need = 0 }
     panel.trialText:setText(tr('Trial: %s', trial.text or ''))
     panel.trialValue:setText(string.format('%d / %d', trial.have or 0, trial.need or 0))
@@ -435,7 +446,7 @@ local function onVocation(protocol, opcode, buffer)
     elseif data.type == 'progress' and data.key then
         showProgress(data)
     elseif data.type == 'trial' then
-        setDot(data.ready)
+        setDot(data.ready, data.choose)
         if progress and progress.next and progressWindow:isVisible() then
             progress.next.trial.have = tonumber(data.have) or 0
             progress.next.ready = data.ready
@@ -487,9 +498,14 @@ function init()
     button = modules.client_topmenu.addRightGameToggleButton('vocationButton', tr('Vocation'),
         IMAGES .. 'button_vocation', toggleWindow)
     if button then
-        dot = g_ui.createWidget('UIWidget', button)
-        dot:setImageSource('/images/options/badge_dot')
-        dot:setSize({ width = 8, height = 8 })
+        -- the same badge as the Tasks button's count
+        dot = g_ui.createWidget('UILabel', button)
+        dot:setFont('verdana-11px-rounded')
+        dot:setColor('#ffffff')
+        dot:setBackgroundColor('#d03030')
+        dot:setTextAlign(AlignCenter)
+        dot:setText('!')
+        dot:setSize({ width = 12, height = 12 })
         dot:addAnchor(AnchorTop, 'parent', AnchorTop)
         dot:addAnchor(AnchorRight, 'parent', AnchorRight)
         dot:setPhantom(true)

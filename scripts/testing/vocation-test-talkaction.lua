@@ -196,6 +196,10 @@ local function captureVocation(fn)
 end
 
 local function testTrials(cid)
+    become(cid, nil)
+    local notice = captureVocation(function() Vocations.sendTrial(cid) end).trial
+    check("top bar: \"!\" to choose a vocation from level 20", notice and notice.choose == true and
+        notice.ready == (getPlayerLevel(cid) >= Vocations.MIN_LEVEL))
     become(cid, "angler", 1)
     setPlayerStorageValue(cid, playersStorages.vocationTrial, 0)
     if (getPlayerLevel(cid) < Vocations.RANK_LEVELS[2]) then
@@ -274,7 +278,7 @@ local function testTrainerCard(cid, friend)
     check("card: opens your own card", card and card.own == true and card.name == getCreatureName(cid) and card.level == getPlayerLevel(cid))
     check("card: vocation and title", card and card.vocation and card.vocation.key == "catcher" and card.vocation.rank == 3 and
         card.title == Vocations.LIST[2].titles[3], card and card.title)
-    check("card: 12 badges and the stats", card and #card.badges == 12 and card.stats and card.stats.dexTotal == POKEMON_NUMBER)
+    check("card: 12 badges out of 24 and the stats", card and #card.badges == 12 and card.badgesTotal == 24 and card.stats and card.stats.dexTotal == POKEMON_NUMBER)
     check("card: hometown, outfit, play time", card and card.town and card.town.name == getTownName(getPlayerTown(cid)) and
         card.outfit.type == getCreatureOutfit(cid).lookType and card.playTime ~= nil)
     check("card: fits in one message", sent[1] and #sent[1] < 8192, sent[1] and #sent[1])
@@ -618,8 +622,8 @@ local function testRanger(cid, arena)
     end
     become(cid, "ranger", 5)
     local before = Vocations.scan(cid, 30)
-    local pidgey = spawn("Pidgey", 6, 0)
-    local shiny = spawn("Shiny Rattata", 0, 8)
+    local pidgey = spawn("Pidgey", 6, 0, -6, 0, 0, 6, 0, -6)
+    local shiny = spawn("Shiny Rattata", 0, 8, 0, -8, 8, 0, -8, 0, 8, 8, -8, -8)
     local articuno = spawn("Articuno", -12, -12, 12, 12, -12, 12, 12, -12, 0, -16, 16, 0, 0, 16, -16, 0)
     if (not (pidgey and shiny and articuno)) then
         for _, m in ipairs(made) do

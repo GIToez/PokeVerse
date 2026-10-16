@@ -6,6 +6,8 @@
 -- The client's vocation window (game_vocation) talks JSON on EXTENDED_IDS.VOCATION:
 --   server -> client  {type = "open", level, minLevel, chosen, rank, title, vocations = {{key, name, tagline, perks}, ...}}
 --                     {type = "chosen", key, name, rank, title}
+--                     {type = "trial", have, need, ready} (the top bar button's "!"; without a vocation
+--                      {type = "trial", choose = true, ready} where ready means level 20 is reached)
 --                     {type = "result", ok, text}
 --   client -> server  {action = "open"} (the U key), {action = "choose", key}, {action = "close"}
 -- A choice is only accepted while a window opened by Vocations.open is up. For now every trainer can
@@ -258,11 +260,21 @@ Vocations.addTrial = function(cid, key, amount)
     Vocations.sendTrial(cid)
 end
 
--- The trial count and whether the rank up is ready (the top bar button's dot); at login and level ups
+-- The trial count and whether the rank up is ready (the top bar button's "!"); at login and level ups.
+-- Without a vocation, ready is whether the trainer can choose one (choose = true).
 Vocations.sendTrial = function(cid)
-    local trial = isPlayer(cid) and Vocations.getTrial(cid)
+    if (not isPlayer(cid)) then
+        return
+    end
+    if (not Vocations.get(cid)) then
+        send(cid, { type = "trial", choose = true, ready = getPlayerLevel(cid) >= Vocations.MIN_LEVEL })
+        return
+    end
+    local trial = Vocations.getTrial(cid)
     if (trial) then
         send(cid, { type = "trial", have = trial.have, need = trial.need, ready = Vocations.canRankUp(cid) })
+    else
+        send(cid, { type = "trial", ready = false })
     end
 end
 
@@ -510,6 +522,7 @@ Vocations.choose = function(cid, key)
     send(cid, { type = "chosen", key = vocation.key, name = __L(cid, vocation.name), rank = 1,
                 title = __L(cid, vocation.titles[1]) })
     send(cid, Vocations.progress(cid))
+    Vocations.sendTrial(cid)
     return true
 end
 
@@ -523,6 +536,7 @@ Vocations.reset = function(cid)
     Vocations.sendRadarStatus(cid)
     Fishing.sendStatus(cid)
     Vocations.updateOutfit(cid)
+    Vocations.sendTrial(cid)
 end
 
 -- Gives the vocation its outfit, and takes a vocation outfit off a trainer who can't wear it (another
