@@ -564,11 +564,12 @@ end
 
 local function testDaycare(cid)
     local said = {}
-    local callback
+    local callbacks = {}
     local handler = {
-        setCallback = function(_, _, fn) callback = fn end,
+        setCallback = function(_, id, fn) callbacks[id] = fn end,
         addModule = function() end,
         isFocused = function() return true end,
+        isInRange = function() return true end,
     }
     local env = sandbox("data/npc/scripts/daycareFemale.lua", {
         KeywordHandler = { new = function() return {} end },
@@ -576,13 +577,20 @@ local function testDaycare(cid)
         NpcSystem = { parseParameters = function() end },
         FocusModule = { new = function() return {} end },
         selfSay = function(text) said[#said + 1] = text end,
+        CALLBACK_GREET = 5,
+        CALLBACK_MESSAGE_DEFAULT = 7,
     }, { "data/npc/lib/npc.lua" })
     local function talk(text)
         said = {}
-        callback(cid, TALKTYPE_SAY, text)
+        callbacks[env.CALLBACK_MESSAGE_DEFAULT](cid, TALKTYPE_SAY, text)
         return table.concat(said, " ")
     end
     local guid = getPlayerGUID(cid)
+    setPlayerStorageValue(cid, playersStorages.daycareEgg, -1)
+    setPlayerStorageValue(cid, playersStorages.daycareClient, -1)
+    said = {}
+    check("daycare: greeting runs for clients without the window",
+        callbacks[env.CALLBACK_GREET] and callbacks[env.CALLBACK_GREET](cid) == true and #said == 0, table.concat(said, " "))
     local eggId = getPokemonEggId("Pidgey")
     -- the fee money left from earlier runs fills the bag, and an egg that doesn't fit drops on the floor
     doPlayerRemoveMoney(cid, getPlayerMoney(cid))
@@ -635,7 +643,7 @@ local function testDaycare(cid)
     withPerk("breeder", "earlyEgg", 1, function()
         withPerk("breeder", "secondEgg", 0, function()
             check("daycare: Breeder's early egg roll (forced to 100%) gives an egg on day 8", visit("day 8", 8, function(status)
-                check("daycare: status shows the day of the wait", status:find("day 8 of the wait") ~= nil, status)
+                check("daycare: status shows the egg rolled on day 8", status:find("An {egg} is waiting") ~= nil, status)
             end) == 1)
         end)
         withPerk("breeder", "secondEgg", 1, function()

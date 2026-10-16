@@ -237,6 +237,9 @@ local function slotInfo(row, slot)
                 info.ivs = { total = PokemonStats.getTotal(ivs), max = PokemonStats.IV_MAX * PokemonStats.STAT_COUNT }
                 info.evs = { total = PokemonStats.getTotal(evs), max = PokemonStats.EV_TOTAL_MAX }
             end
+        elseif (not info.ditto) then
+            -- no ball kept with the row: the NPCs only took females (slot 1) and males (slot 2)
+            sex = slot == 1 and POKEMON_SEX_FEMALE or POKEMON_SEX_MALE
         end
     end
     info.sexKey = sex
