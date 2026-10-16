@@ -43,8 +43,8 @@ local DROPS = {
             CRANE1_ITEMID, CRANE2_ITEMID, CRANE3_ITEMID, CRANE4_ITEMID
         },
         kantoPokemon = { { name = "Magikarp", maxAmount = 4 } },
-        orangeArchipelagoPokemon = {},
-        hoennPokemon = {},
+        orangeArchipelagoPokemon = { { name = "Marill", maxAmount = 4 } },
+        hoennPokemon = { { name = "Lotad", maxAmount = 4 } },
         johtoPokemon = { { name = "Magikarp", maxAmount = 4 } }
     },
     {
@@ -56,8 +56,8 @@ local DROPS = {
             CRANE1_ITEMID, CRANE2_ITEMID, CRANE3_ITEMID, CRANE4_ITEMID
         },
         kantoPokemon = { { name = "Poliwag", maxAmount = 4 } },
-        orangeArchipelagoPokemon = {},
-        hoennPokemon = {},
+        orangeArchipelagoPokemon = { { name = "Wooper", maxAmount = 4 } },
+        hoennPokemon = { { name = "Wingull", maxAmount = 4 } },
         johtoPokemon = { { name = "Poliwag", maxAmount = 4 } }
     },
     {
@@ -69,8 +69,8 @@ local DROPS = {
             CRANE1_ITEMID, CRANE2_ITEMID, CRANE3_ITEMID, CRANE4_ITEMID
         },
         kantoPokemon = { { name = "Krabby", maxAmount = 4 } },
-        orangeArchipelagoPokemon = {},
-        hoennPokemon = {},
+        orangeArchipelagoPokemon = { { name = "Chinchou", maxAmount = 4 } },
+        hoennPokemon = { { name = "Azurill", maxAmount = 4 } },
         johtoPokemon = { { name = "Krabby", maxAmount = 4 } }
     },
     {
@@ -82,8 +82,8 @@ local DROPS = {
             CRANE1_ITEMID, CRANE2_ITEMID, CRANE3_ITEMID, CRANE4_ITEMID
         },
         kantoPokemon = { { name = "Shellder", maxAmount = 4 } },
-        orangeArchipelagoPokemon = {},
-        hoennPokemon = {},
+        orangeArchipelagoPokemon = { { name = "Remoraid", maxAmount = 4 } },
+        hoennPokemon = { { name = "Marill", maxAmount = 4 } },
         johtoPokemon = { { name = "Shellder", maxAmount = 4 } }
     },
     {
@@ -95,8 +95,8 @@ local DROPS = {
             CRANE1_ITEMID, CRANE2_ITEMID, CRANE3_ITEMID, CRANE4_ITEMID
         },
         kantoPokemon = { { name = "Horsea", maxAmount = 4 } },
-        orangeArchipelagoPokemon = {},
-        hoennPokemon = {},
+        orangeArchipelagoPokemon = { { name = "Qwilfish", maxAmount = 4 } },
+        hoennPokemon = { { name = "Spheal", maxAmount = 4 } },
         johtoPokemon = { { name = "Horsea", maxAmount = 4 } }
     },
     {
@@ -108,8 +108,8 @@ local DROPS = {
             CRANE1_ITEMID, CRANE2_ITEMID, CRANE3_ITEMID, CRANE4_ITEMID
         },
         kantoPokemon = { { name = "Goldeen", maxAmount = 4 } },
-        orangeArchipelagoPokemon = {},
-        hoennPokemon = {},
+        orangeArchipelagoPokemon = { { name = "Corsola", maxAmount = 4 } },
+        hoennPokemon = { { name = "Barboach", maxAmount = 4 } },
         johtoPokemon = { { name = "Goldeen", maxAmount = 4 } }
     },
     {

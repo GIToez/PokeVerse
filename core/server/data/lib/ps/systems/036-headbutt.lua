@@ -81,7 +81,7 @@ local DROPS = {
         kantoPokemon = {{name = "Pinsir", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Pineco", maxAmount = 3}},
         hoennPokemon = {{name = "Vigoroth", maxAmount = 3}},
-        johtoPokemon = {}
+        johtoPokemon = {{name = "Exeggutor", maxAmount = 1}, {name = "Xatu", maxAmount = 1}}
     },
     {
         skill = 65, minLevel = 40, maxLevel = 100,
@@ -102,14 +102,14 @@ local DROPS = {
         kantoPokemon = {{name = "Pidgeot", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Ursaring", maxAmount = 1}},
         hoennPokemon = {},
-        johtoPokemon = {}
+        johtoPokemon = {{name = "Ursaring", maxAmount = 1}}
     },
     {
         skill = 80, minLevel = 50, maxLevel = 100,
         kantoPokemon = {{name = "Fearow", maxAmount = 1}},
         orangeArchipelagoPokemon = {{name = "Scizor", maxAmount = 1}},
         hoennPokemon = {{name = "Slaking", maxAmount = 1}},
-        johtoPokemon = {}
+        johtoPokemon = {{name = "Scizor", maxAmount = 1}}
     },
 }
 
