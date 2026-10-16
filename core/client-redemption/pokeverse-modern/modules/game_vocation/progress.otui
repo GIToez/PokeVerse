@@ -1,0 +1,501 @@
+// The vocation progress window, for trainers who have a vocation (artwork: scripts/art/vocation_progress_ui.py;
+// the frame comes from game_dailytasks, the panels, rows, badges and bars from game_fishing)
+
+VocationPanel < UIWidget
+  image-source: /modules/game_fishing/images/panel
+  image-border: 10
+  padding: 8 10 8 10
+
+VocationPanelTitle < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffd75a
+  text-auto-resize: true
+  icon-align: left
+  icon-size: 16 16
+  text-offset: 22 0
+  phantom: true
+
+VocationText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  phantom: true
+
+VocationBadge < UILabel
+  image-source: /modules/game_fishing/images/badge
+  image-border: 5
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #ffffff
+  text-auto-resize: true
+  text-offset: 0 1
+  padding: 2 7 2 7
+  height: 16
+  phantom: true
+
+VocationBar < UIWidget
+  height: 10
+  image-source: /modules/game_fishing/images/track
+  image-border: 4
+  phantom: true
+
+  UIWidget
+    id: fill
+    image-source: /modules/game_fishing/images/fill
+    image-border: 4
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    width: 0
+    phantom: true
+
+// One perk: the tick, the perk's icon, its name and its value (or the badge of a next-rank gain)
+VocationPerkRow < UIWidget
+  height: 30
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  phantom: true
+
+  UIWidget
+    id: tick
+    size: 20 20
+    image-source: /modules/game_vocation/images/perk_on
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: tick.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+
+  VocationText
+    id: text
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+
+  UILabel
+    id: value
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+    phantom: true
+
+  VocationBadge
+    id: badge
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+    visible: false
+
+// One rank on the track: the node, its number, the title, the level and the YOU / NEXT tag
+VocationRankNode < UIWidget
+  size: 150 92
+  phantom: true
+
+  UIWidget
+    id: node
+    size: 30 30
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true
+
+  UILabel
+    id: number
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 13
+    color: #ffffff
+    text-auto-resize: true
+    anchors.centerIn: node
+    phantom: true
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: node.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 6
+    phantom: true
+
+  VocationText
+    id: level
+    color: #96aacd
+    anchors.top: title.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+
+  VocationBadge
+    id: tag
+    anchors.top: level.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 4
+    visible: false
+
+// A rank's section in the All ranks view
+VocationRankSection < UIWidget
+  phantom: true
+  layout:
+    type: verticalBox
+    fit-children: true
+    spacing: 4
+
+VocationProgressWindow < UIWindow
+  size: 880 664
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_vocation.close()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Vocation')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  UILabel
+    id: subtitle
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+    phantom: true
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_vocation.close()
+
+  UIWidget
+    id: banner
+    height: 118
+    anchors.top: subtitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 12
+    image-smooth: true
+
+    UILabel
+      id: vocation
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 12
+      color: #6fe08a
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin: 14 0 0 20
+      phantom: true
+
+    UILabel
+      id: title
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 28
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.top: vocation.bottom
+      anchors.left: vocation.left
+      margin-top: 2
+      phantom: true
+
+    VocationText
+      id: tagline
+      anchors.top: title.bottom
+      anchors.left: vocation.left
+      margin-top: 4
+
+    UICreature
+      id: outfit
+      size: 96 96
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 18
+      phantom: true
+
+    VocationBadge
+      id: outfitTag
+      anchors.bottom: parent.bottom
+      anchors.left: vocation.left
+      margin-bottom: 10
+
+    PVBlueButton
+      id: wear
+      !text: tr('Wear it')
+      ttf-font-size: 11
+      size: 70 20
+      anchors.verticalCenter: outfitTag.verticalCenter
+      anchors.left: outfitTag.right
+      margin-left: 8
+      @onClick: modules.game_vocation.wearOutfit()
+
+  VocationPanel
+    id: ranksPanel
+    height: 132
+    anchors.top: banner.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+    VocationPanelTitle
+      id: heading
+      !text: tr('Ranks')
+      icon: /modules/game_vocation/images/perk_ranks
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    VocationText
+      id: count
+      color: #ffffff
+      anchors.top: parent.top
+      anchors.right: parent.right
+
+    UIWidget
+      id: track
+      height: 10
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 18 80 0 80
+      image-source: /modules/game_fishing/images/track
+      image-border: 4
+      phantom: true
+
+      UIWidget
+        id: fill
+        image-source: /modules/game_fishing/images/fill
+        image-border: 4
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: 0
+        phantom: true
+
+    UIWidget
+      id: nodes
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      phantom: true
+
+  VocationPanel
+    id: perksPanel
+    anchors.top: ranksPanel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    anchors.bottom: buttons.top
+    margin: 10 5 10 0
+
+    VocationPanelTitle
+      id: heading
+      icon: /modules/game_vocation/images/perk_on
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    UIWidget
+      id: list
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      phantom: true
+      layout:
+        type: verticalBox
+        spacing: 4
+
+  VocationPanel
+    id: nextPanel
+    anchors.top: ranksPanel.bottom
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    anchors.bottom: buttons.top
+    margin: 10 0 10 5
+
+    VocationPanelTitle
+      id: heading
+      icon: /modules/game_vocation/images/perk_target
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    VocationText
+      id: requirements
+      !text: tr('To rank up')
+      color: #96aacd
+      anchors.top: heading.bottom
+      anchors.left: parent.left
+      margin-top: 10
+
+    VocationText
+      id: levelText
+      anchors.top: requirements.bottom
+      anchors.left: parent.left
+      margin-top: 8
+
+    VocationText
+      id: levelValue
+      color: #ffffff
+      anchors.top: levelText.top
+      anchors.right: parent.right
+
+    VocationBar
+      id: levelBar
+      anchors.top: levelText.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 4
+
+    VocationText
+      id: trialText
+      anchors.top: levelBar.bottom
+      anchors.left: parent.left
+      margin-top: 10
+
+    VocationText
+      id: trialValue
+      color: #ffffff
+      anchors.top: trialText.top
+      anchors.right: parent.right
+
+    VocationBar
+      id: trialBar
+      anchors.top: trialText.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 4
+
+    VocationText
+      id: newAt
+      color: #96aacd
+      anchors.top: trialBar.bottom
+      anchors.left: parent.left
+      margin-top: 12
+
+    UIWidget
+      id: list
+      anchors.top: newAt.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+      phantom: true
+      layout:
+        type: verticalBox
+        spacing: 4
+
+    VocationText
+      id: topRank
+      text-wrap: true
+      text-auto-resize: false
+      text-align: center
+      color: #ffd75a
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      height: 60
+      visible: false
+
+  VocationPanel
+    id: allPanel
+    anchors.top: ranksPanel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: buttons.top
+    margin-top: 10
+    margin-bottom: 10
+    visible: false
+
+    ScrollablePanel
+      id: list
+      vertical-scrollbar: allScroll
+      anchors.fill: parent
+      margin-right: 16
+      layout:
+        type: verticalBox
+        spacing: 10
+
+    GtsScrollBar
+      id: allScroll
+      step: 40
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
+  UIWidget
+    id: buttons
+    height: 34
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+    PVGreenButton
+      id: main
+      ttf-font-size: 13
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      margin-right: 5
+      icon-align: left
+      icon-size: 16 16
+      icon-offset-x: 12
+
+    PVBlueButton
+      id: guide
+      !text: tr('Vocation Guide')
+      ttf-font-size: 13
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: parent.horizontalCenter
+      width: 210
+      margin-left: 5
+      icon: /modules/game_vocation/images/perk_guide
+      icon-align: left
+      icon-size: 16 16
+      icon-offset-x: 12
+      @onClick: modules.game_vocation.openGuide()
+
+    PVBlueButton
+      id: all
+      !text: tr('All Ranks')
+      ttf-font-size: 13
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: guide.right
+      anchors.right: parent.right
+      margin-left: 10
+      icon: /modules/game_vocation/images/perk_ranks
+      icon-align: left
+      icon-size: 16 16
+      icon-offset-x: 12
+      @onClick: modules.game_vocation.toggleAllRanks()

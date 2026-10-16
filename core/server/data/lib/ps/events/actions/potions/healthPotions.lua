@@ -96,6 +96,7 @@ local function onHealStart(cid, target, item, targetPosition, playerPosition, fo
     doSendMagicEffect(targetPosition, EFFECT_GREEN_BUFF)
     doSendDistanceShoot(playerPosition, targetPosition, PROJECTILE_GRAVEL)
     doRemoveItem(item.uid, 1)
+    Vocations.addTrial(cid, "medic")
 
     if (forceFirstHeal) then
         doCreatureAddHealth(target, healthGain, true)

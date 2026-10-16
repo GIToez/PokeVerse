@@ -167,15 +167,82 @@ local function testRanks(cid)
     become(cid, "ranger", 2)
     check("Ranger rank 2: type filter", Vocations.perk(cid, "ranger", "typeFilterRank") == true)
 
-    become(cid, "angler", 1)
-    local level = getPlayerLevel(cid)
-    if (level >= 30) then
-        check("rank up from 1 to 2 at level " .. level, Vocations.rankUp(cid) and Vocations.getRank(cid) == 2)
-    end
     become(cid, "angler", 5)
     check("no rank above 5", not Vocations.rankUp(cid) and Vocations.getRank(cid) == 5)
     Vocations.reset(cid)
     check("reset clears the vocation", not Vocations.get(cid) and (getPlayerSpecialDescription(cid) or "") == "")
+end
+
+-- The vocation messages the code sends while fn runs, decoded
+local function captureVocation(fn)
+    local sent, original = {}, doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (opcode == EXTENDED_IDS.VOCATION) then
+            sent[#sent + 1] = JSON.decode(buffer)
+            return true
+        end
+        return original(target, opcode, buffer)
+    end
+    local ok, err = pcall(fn)
+    doSendPlayerExtendedOpcode = original
+    if (not ok) then
+        check("no errors while capturing vocation messages", false, err)
+    end
+    local last = {}
+    for _, data in ipairs(sent) do
+        last[data.type] = data
+    end
+    return last
+end
+
+local function testTrials(cid)
+    become(cid, "angler", 1)
+    setPlayerStorageValue(cid, playersStorages.vocationTrial, 0)
+    if (getPlayerLevel(cid) < Vocations.RANK_LEVELS[2]) then
+        doPlayerAddLevel(cid, Vocations.RANK_LEVELS[2] - getPlayerLevel(cid))
+    end
+    local trial = Vocations.getTrial(cid)
+    check("trial: Angler rank 1 needs 50 hooks", trial and trial.need == 50 and trial.have == 0 and
+        trial.text == "Hook 50 Pokemon while fishing", trial and trial.text)
+    local ok, why = Vocations.canRankUp(cid)
+    check("trial: no rank up before the trial", not ok and (why or ""):find("trial") ~= nil, why)
+    check("trial: the Rank up action refuses", captureVocation(function()
+        Vocations.onClientMessage(cid, '{"action":"rankup"}')
+    end).result ~= nil and Vocations.getRank(cid) == 1)
+
+    Vocations.addTrial(cid, "ace", 10)
+    check("trial: other vocations' steps don't count", Vocations.getTrial(cid).have == 0)
+    local sent = captureVocation(function() Vocations.addTrial(cid, "angler", 49) end)
+    check("trial: steps count and are sent", Vocations.getTrial(cid).have == 49 and sent.trial and sent.trial.have == 49 and
+        sent.trial.ready == false)
+    sent = captureVocation(function() Vocations.addTrial(cid, "angler", 5) end)
+    check("trial: done, capped at the goal, ready", Vocations.getTrial(cid).have == 50 and sent.trial and sent.trial.ready == true)
+
+    local data = Vocations.progress(cid)
+    local gains = {}
+    for _, gain in ipairs(data.next.gains) do
+        gains[gain.text] = gain.badge
+    end
+    check("progress: rank, titles, perks and the next rank", data.key == "angler" and data.rank == 1 and #data.titles == 5 and
+        #data.ranks == 5 and #data.perks >= 2 and data.next.rank == 2 and data.next.ready == true and data.next.level == 30)
+    check("progress: next rank gains", gains["Fishing skill gain"] == "+20%" and gains["See what can bite"] == "New",
+        JSON.encode(gains))
+
+    sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"rankup"}') end)
+    check("trial: Rank up takes rank 2 and starts the next trial", Vocations.getRank(cid) == 2 and
+        Vocations.getTrial(cid).have == 0 and Vocations.getTrial(cid).need == 100 and sent.progress and sent.progress.rank == 2)
+
+    local outfit = getCreatureOutfit(cid)
+    outfit.lookType = getPlayerSex(cid) == PLAYERSEX_FEMALE and 611 or 612
+    doCreatureChangeOutfit(cid, outfit)
+    check("progress: not wearing the outfit", Vocations.progress(cid).wearing == false)
+    sent = captureVocation(function() Vocations.onClientMessage(cid, '{"action":"wear"}') end)
+    check("wear: puts the vocation outfit on", sent.progress and sent.progress.wearing == true and
+        getCreatureOutfit(cid).lookType == Vocations.LIST[5].looks[getPlayerSex(cid) == PLAYERSEX_FEMALE and 1 or 2])
+
+    become(cid, "angler", 5)
+    check("progress: no next rank at rank 5", Vocations.progress(cid).next == nil and Vocations.getTrial(cid) == nil)
+    become(cid, nil)
 end
 
 local function testAce(cid)
@@ -929,7 +996,7 @@ function onSay(cid, words, param, channel)
     end
 
     local tests = {
-        { "ranks", testRanks }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
+        { "ranks", testRanks }, { "trials", testTrials }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
         { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
