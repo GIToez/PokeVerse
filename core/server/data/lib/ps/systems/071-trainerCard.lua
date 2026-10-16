@@ -9,7 +9,7 @@
 --                     {action = "achievements", name}, {action = "duel", name}
 --   server -> client  {type = "card", own, name, sex, level, town = {id, name}, guild, mastery, playTime, since, duels,
 --                      respect, vocation = {key, name, rank, maxRank, title}, title, titleKey, outfit, favorite,
---                      trophies = {pokemon...}, badges = {{name, client, earned}}, stats, about, privacy, hidden}
+--                      trophies = {pokemon...}, badges = {{name, client, earned}}, badgesTotal, stats, about, privacy, hidden}
 --                     {type = "titles", list = {{key, text, group, detail}}}
 --                     {type = "candidates", list = {pokemon...}}
 --                     {type = "achievements", name, earned, total, list = {{name, description}}}
@@ -40,6 +40,8 @@ local CLIENT = playersStorages.cardClient
 
 local BADGE_ORDER = { "BOULDER", "CASCADE", "THUNDER", "RAINBOW", "SOUL", "MARSH", "VOLCANO", "EARTH",
                       "CORAL_EYE", "SEA_RUBY", "SPIKE_SHELL", "JADE_STAR" }
+-- Every badge the game will have; the card shows the ones not added yet as locked slots
+local BADGE_TOTAL = 24
 
 local function send(cid, data)
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.TRAINER_CARD, JSON.encode(data))
@@ -343,6 +345,7 @@ TrainerCard.data = function(cid, target)
                    feet = outfit.lookFeet, addons = outfit.lookAddons },
         favorite = favoriteOf(target),
         badges = badges(target),
+        badgesTotal = BADGE_TOTAL,
         about = storageText(target, ABOUT),
         privacy = own and privacy(target) or nil,
     }

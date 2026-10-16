@@ -50,6 +50,11 @@ local function editing()
     return card and card.own and not previewing
 end
 
+-- The preview shows the unsaved changes too
+local function drafted()
+    return card and card.own and draft ~= nil
+end
+
 local function formatNumber(n)
     local text = tostring(math.floor(tonumber(n) or 0))
     local out = text:reverse():gsub('(%d%d%d)', '%1,'):reverse()
@@ -75,7 +80,7 @@ local function setPortrait(widget, pokemon)
 end
 
 local function trophyKeys()
-    if editing() and draft then
+    if drafted() then
         return draft.trophies
     end
     local keys = {}
@@ -162,7 +167,7 @@ local function fillScene()
     scene.trainer:setOutfit(card.outfit or {})
     scene.trainer:setDirection(Directions and Directions.East or 1)
     sizeCreature(scene.trainer)
-    local favorite = editing() and pokemonByKey(draft.favorite) or card.favorite
+    local favorite = drafted() and pokemonByKey(draft.favorite) or card.favorite
     if favorite and favorite.look then
         scene.pokemon:setOutfit({ type = favorite.look })
         scene.pokemon:setDirection(Directions and Directions.East or 1)
@@ -226,29 +231,42 @@ local function fillInfo()
     infoRow(panel.col2, 'respect', tr('Respect'), formatNumber(card.respect), '#ff6f91')
 end
 
+local BADGES_PER_ROW = 12
+
 local function fillBadges()
     local panel = window.right.badgesPanel
     panel.list:destroyChildren()
+    local badges = card.badges or {}
+    local total = math.max(#badges, tonumber(card.badgesTotal) or 0)
     local earned = 0
-    local width = panel.list:getWidth()
-    local count = #(card.badges or {})
-    local gap = 14
-    local step = count > 0 and math.floor((width - gap - 40) / math.max(1, count - 1)) or 44
-    for i, badge in ipairs(card.badges or {}) do
+    local size = 34
+    local step = math.floor((panel.list:getWidth() - size) / (BADGES_PER_ROW - 1))
+    for i = 1, total do
+        local badge = badges[i]
         local slot = g_ui.createWidget('TcBadgeSlot', panel.list)
+        local column, row = (i - 1) % BADGES_PER_ROW, math.floor((i - 1) / BADGES_PER_ROW)
         slot:addAnchor(AnchorTop, 'parent', AnchorTop)
         slot:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-        slot:setMarginLeft((i - 1) * step + (i > 8 and gap or 0))
-        slot.item:setItemId(tonumber(badge.client) or 0)
-        slot:setTooltip(tr('%s Badge', badge.name or '') .. (badge.earned and '' or ('  (' .. tr('not earned yet') .. ')')))
-        if badge.earned then
-            earned = earned + 1
-            slot:setImageSource(IMAGES .. 'slot_on')
+        slot:setMarginLeft(column * step)
+        slot:setMarginTop(row * (size + 4))
+        if not badge then
+            slot.item:setVisible(false)
+            slot:setIcon(IMAGES .. 'icon_lock')
+            slot:setIconRect({ x = 9, y = 9, width = 16, height = 16 })
+            slot:setOpacity(0.5)
+            slot:setTooltip(tr('Coming soon'))
         else
-            slot.item:setOpacity(0.35)
+            slot.item:setItemId(tonumber(badge.client) or 0)
+            slot:setTooltip(tr('%s Badge', badge.name or '') .. (badge.earned and '' or ('  (' .. tr('not earned yet') .. ')')))
+            if badge.earned then
+                earned = earned + 1
+                slot:setImageSource(IMAGES .. 'slot_on')
+            else
+                slot.item:setOpacity(0.35)
+            end
         end
     end
-    panel.count:setText(string.format('%d / %d', earned, count))
+    panel.count:setText(string.format('%d / %d', earned, total))
 end
 
 local function fillTrophies()
@@ -329,7 +347,7 @@ local function fillStats()
 end
 
 local function aboutText()
-    if editing() then
+    if drafted() then
         return draft.about or ''
     end
     return card.about or ''
@@ -352,7 +370,7 @@ local function fillLeft()
     left.namePlate.name:setText((card.name or ''):upper())
     setSex(left.namePlate.sex, card.sex, true)
     local edit = editing()
-    left.title:setText(edit and draft.titleText or card.title or '')
+    left.title:setText(drafted() and draft.titleText or card.title or '')
     left.title:setEnabled(edit)
     left.title.chevron:setVisible(edit)
     if card.vocation then
@@ -363,8 +381,8 @@ local function fillLeft()
     end
     local panel = left.favoritePanel
     panel.edit:setVisible(edit)
-    local favorite = edit and pokemonByKey(draft.favorite) or card.favorite
-    if edit and not draft.favorite then
+    local favorite = drafted() and pokemonByKey(draft.favorite) or card.favorite
+    if drafted() and not draft.favorite then
         favorite = card.favorite
     end
     panel.empty:setVisible(favorite == nil)
@@ -391,8 +409,7 @@ local function addButton(style, text, icon, onClick)
     widget:setText(text)
     if icon then
         widget:setIcon(IMAGES .. 'icon_' .. icon)
-        widget:setIconSize({ width = 16, height = 16 })
-        widget:setIconAlign(AlignLeft)
+        widget:setIconAlign(AlignLeftCenter)
         widget:setIconOffsetX(12)
     end
     widget.onClick = onClick
