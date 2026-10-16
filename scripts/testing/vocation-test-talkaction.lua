@@ -562,6 +562,16 @@ local function testBreederIncubator(cid)
     check("Breeder rank 1 hatches in 57 minutes", math.abs(fast1 - 3420) <= 1, fast1)
 end
 
+local function testShinyEvent(cid)
+    ShinyEvent.stop()
+    check("shiny event: 1 in 8192 without an event", ShinyEvent.chance(8192) == 8192, ShinyEvent.chance(8192))
+    ShinyEvent.start(2, 60)
+    check("shiny event: /bonusshiny 2x sets the C++ multiplier", getShinyEventMultiplier() == 2, getShinyEventMultiplier())
+    check("shiny event: 1 in 4096 at 2x", ShinyEvent.chance(8192) == 4096, ShinyEvent.chance(8192))
+    check("shiny event: described", ShinyEvent.describe():find("2x shiny event") ~= nil, ShinyEvent.describe())
+    check("shiny event: off cancels it", ShinyEvent.stop() and getShinyEventMultiplier() == 1 and not ShinyEvent.get())
+end
+
 local function testDaycare(cid)
     local said = {}
     local callbacks = {}
@@ -1283,7 +1293,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "shiny event", testShinyEvent }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

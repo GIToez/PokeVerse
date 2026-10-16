@@ -1187,11 +1187,12 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
   (`data/lib/ps/systems/058-serverExpEvent.lua`).
-- **Double shiny:** new, built the same way: `/doubleshiny 2x 2h` up to 10x. Shiny chance
-  is 1 in 8,192 (`shinyAppearChance` in `config.lua`). Map spawns roll it in the C++ code
-  (`src/spawn.cpp`), and fishing, headbutt, eggs and abilities roll it in Lua, each
-  reading the value once at start. All of them must use the event multiplier, so it needs
-  a server build.
+- **Shiny event:** done. `/bonusshiny 2x 2h` makes every shiny roll that many times more
+  likely (1 in 8,192 becomes 1 in 4,096 at 2x), with the same arguments as `/doubleexp`;
+  `/expevent` lists it. Map spawns roll in C++ (`src/spawn.cpp`, `getShinyEventMultiplier`),
+  and fishing, Safari fishing, headbutt, eggs, incubators, abilities and `doCreateMonster`
+  roll through `ShinyEvent.chance` (`data/lib/ps/systems/073-shinyEvent.lua`). Needs the
+  new server build.
 - **Day Care events:** done. `/bonusdaycare 3x 2h` multiplies the training EXP Pokémon
   get in the Day Care, and `/bonusbreeding 2x 1d` multiplies the daily early egg chance
   (from day 7). Same arguments as `/doubleexp` (up to 10x, 1 minute to 7 days, `off`,
