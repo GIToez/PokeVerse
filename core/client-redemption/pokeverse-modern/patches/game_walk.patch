@@ -1,12 +1,118 @@
 diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
 --- a/modules/game_walk/walk.lua
 +++ b/modules/game_walk/walk.lua
-@@ -284,8 +284,11 @@
+@@ -28,6 +28,37 @@
+     { "Control+Left",  West },
+ }
+ 
++-- PokeVerse: the letter keys are Keybinds (Settings > Controls), only bound with chat off; the
++-- arrows, numpad and Ctrl+arrows above stay fixed. Diagonals have no default key.
++local KEYBIND_CATEGORY = 'Movement'
++
++local walkKeybinds = {
++    { 'Walk north',      North,     'W' },
++    { 'Walk east',       East,      'D' },
++    { 'Walk south',      South,     'S' },
++    { 'Walk west',       West,      'A' },
++    { 'Walk north-east', NorthEast, '' },
++    { 'Walk north-west', NorthWest, '' },
++    { 'Walk south-east', SouthEast, '' },
++    { 'Walk south-west', SouthWest, '' },
++}
++
++local turnKeybinds = {
++    { 'Turn north', North, 'Ctrl+W' },
++    { 'Turn east',  East,  'Ctrl+D' },
++    { 'Turn south', South, 'Ctrl+S' },
++    { 'Turn west',  West,  'Ctrl+A' },
++}
++
++local floorKeybinds = {
++    { 'Fly up a floor (/up)',     '/up',   'Q' },
++    { 'Fly down a floor (/down)', '/down', 'Z' },
++}
++
++local function chatOffKey(key)
++    return { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = key }
++end
++
+ WalkController = Controller:new()
+ 
+ --- Stops the smart walking process.
+@@ -205,6 +236,55 @@
+     for _, keyDir in ipairs(turnKeys) do bindTurnKey(keyDir[1], keyDir[2]) end
+ end
+ 
++local function bindKeybinds()
++    local gameRootPanel = modules.game_interface.getRootPanel()
++
++    for _, entry in ipairs(walkKeybinds) do
++        local dir = entry[2]
++        Keybind.new(KEYBIND_CATEGORY, entry[1], chatOffKey(entry[3]), '')
++        Keybind.bind(KEYBIND_CATEGORY, entry[1], {
++            { type = KEY_DOWN, alone = true, callback = function(_, keyCode)
++                g_window.setKeyDelay(keyCode, 1)
++                changeWalkDir(dir)
++            end },
++            { type = KEY_UP, alone = true, callback = function(_, keyCode)
++                g_window.setKeyDelay(keyCode, 30)
++                changeWalkDir(dir, true)
++            end },
++            { type = KEY_PRESS, callback = function() smartWalk(dir) end },
++        }, gameRootPanel)
++    end
++
++    for _, entry in ipairs(turnKeybinds) do
++        local dir = entry[2]
++        Keybind.new(KEYBIND_CATEGORY, entry[1], chatOffKey(entry[3]), '')
++        Keybind.bind(KEYBIND_CATEGORY, entry[1], {
++            { type = KEY_DOWN, callback = function() turn(dir, false) end },
++            { type = KEY_PRESS, callback = function() turn(dir, true) end },
++            { type = KEY_UP, callback = function()
++                local player = g_game.getLocalPlayer()
++                if player then player:lockWalk(200) end
++            end },
++        }, gameRootPanel)
++    end
++
++    for _, entry in ipairs(floorKeybinds) do
++        local words = entry[2]
++        Keybind.new(KEYBIND_CATEGORY, entry[1], chatOffKey(entry[3]), '')
++        Keybind.bind(KEYBIND_CATEGORY, entry[1], {
++            { type = KEY_DOWN, callback = function()
++                if g_game.isOnline() then g_game.talk(words) end
++            end },
++        }, gameRootPanel)
++    end
++end
++
++local function unbindKeybinds()
++    for _, list in ipairs({ walkKeybinds, turnKeybinds, floorKeybinds }) do
++        for _, entry in ipairs(list) do Keybind.delete(KEYBIND_CATEGORY, entry[1]) end
++    end
++end
++
+ local function unbindKeys()
+     for _, keyDir in ipairs(keys) do unbindWalkKey(keyDir[1]) end
+     for _, keyDir in ipairs(turnKeys) do unbindTurnKey(keyDir[1]) end
+@@ -248,10 +328,12 @@
+ --- Initializes the WalkController.
+ function WalkController:onInit()
+     bindKeys()
++    bindKeybinds()
+ end
+ 
+ function WalkController:onTerminate()
+     unbindKeys()
++    unbindKeybinds()
+ end
+ 
+ --- Sets up game-related events for the WalkController.
+@@ -284,8 +366,10 @@
  end
  
  --- Utility functions for binding and unbinding keys.
-+-- Binding a key again replaces its handlers: the console binds WASD at every game start, and
-+-- stacked handlers walk once per handler.
++-- Binding a key again replaces its handlers; stacked handlers walk once per handler.
  function bindWalkKey(key, dir)
      local gameRootPanel = modules.game_interface.getRootPanel()
 +    unbindWalkKey(key)
