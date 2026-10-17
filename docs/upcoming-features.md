@@ -1624,14 +1624,29 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
   `talkactions/scripts/daycareevent.lua`.
 - Both events are announced in game and on Discord, and show on the calendar.
-- **Admin window:** done. A crown button on the top bar, only for God accounts (access 5),
-  opens a window to start, replace or stop the four events above (1.5x to 5x, 30 minutes to
-  3 days), broadcast a message, save the server, clean the map, and put common staff
-  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. A Decorations tab
-  saves props by hand for a set on the tile or wall you face, removes them, previews a set
-  and turns a town's automatic props on or off, and lists the props saved near you (see
-  Decorations above). The server checks the access on every action and logs it. Code:
-  `data/lib/ps/systems/074-admin.lua` (opcode 30), `modules/game_admin`.
+- **Admin window:** done. A crown button on the top bar for every staff account (access 1
+  and up). Each staff member sees the tabs and buttons their rank can use:
+  - **Events** (access 3; starting events and the calendar need 5): start, replace or stop
+    the four events above (1.5x to 10x, 30 minutes to 7 days), force a season or a holiday
+    or put it back to its dates, and broadcast in game, to Discord or both.
+  - **Players** (access 1): the players online with a search, and for the player you pick
+    or type: go to, bring here, kick, chat ban, info, notations, ban info, unban,
+    promote/demote and send to a town's temple. Ban the account for 1, 3, 7 or 30 days or
+    for good with a reason and a comment (access 3); the banned player is disconnected.
+    The banned accounts are listed with an Unban button.
+  - **World** (access 5): set the weather here, in a region or everywhere for a while or
+    until auto, clear it, move the game clock, and spawn, send away or check the wild
+    legendaries.
+  - **Decorations** (access 5): save props by hand for a set on the tile or wall you face,
+    remove them, preview a set, turn a town's automatic props on or off, and list the
+    props saved near you (see Decorations above).
+  - **Server** (access 3 and 5): save, clean the map, restarts, close or open the server,
+    PvP mode, ghost and the other staff toggles, and reload any part of the scripts.
+  - **Commands** (access 1): every staff command the staff member can use, by group, with
+    its usage and what it does; typing filters the list and Run runs it.
+  The buttons run the staff commands themselves, so talkactions.xml's access decides and
+  the answers show in the Server Log; the server also checks the access on every action
+  and logs it. Code: `data/lib/ps/systems/074-admin.lua` (opcode 30), `modules/game_admin`.
 
 ## 16. Reports and feature requests to Discord forums
 

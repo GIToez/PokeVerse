@@ -13,6 +13,17 @@ AdminTab < FishingTab
   size: 46 22
   ttf-font-size: 11
 
+AdminScrollBar < VerticalScrollBar
+  step: 28
+  pixels-scroll: true
+
+// a label on the left of a row of buttons or picks
+AdminRowLabel < AdminMuted
+  width: 84
+  height: 22
+  text-auto-resize: false
+  text-align: left
+
 AdminEventRow < UIWidget
   height: 60
   image-source: /modules/game_fishing/images/row
@@ -81,11 +92,117 @@ AdminEventRow < UIWidget
     anchors.bottom: parent.bottom
     margin-bottom: -3
 
-AdminCommand < FishingTab
+// a label and a grid of command buttons (game_admin builds these from SECTIONS)
+AdminSection < UIWidget
   height: 26
-  text-auto-resize: false
+
+  AdminRowLabel
+    id: label
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 2
+
+  UIWidget
+    id: buttons
+    anchors.top: parent.top
+    anchors.left: label.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    layout:
+      type: grid
+      cell-size: 112 26
+      cell-spacing: 6
+      flow: true
+
+AdminSectionButton < PVBlueButton
   ttf-font-size: 11
+
+AdminPlayerRow < FishingTab
+  height: 26
+  text-align: left
+  text-offset: 10 -1
+  ttf-font-size: 12
   color: #dce6ff
+
+  AdminMuted
+    id: level
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+
+AdminBanRow < UIWidget
+  height: 40
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  padding: 4 6 4 10
+
+  AdminText
+    id: names
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  AdminMuted
+    id: detail
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: unban.left
+    margin-right: 4
+    text-auto-resize: false
+
+  PVBlueButton
+    id: unban
+    !text: tr('Unban')
+    size: 60 26
+    ttf-font-size: 11
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+AdminCommandHeading < UILabel
+  height: 24
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffffff
+  text-align: bottomLeft
+  phantom: true
+
+AdminCommandRow < UIButton
+  height: 40
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  padding: 4 10 4 10
+  $hover:
+    image-color: #c8dcff
+
+  UILabel
+    id: words
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  AdminMuted
+    id: access
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.right: parent.right
+
+  AdminMuted
+    id: usage
+    text-auto-resize: true
+    anchors.left: words.right
+    anchors.verticalCenter: words.verticalCenter
+    margin-left: 8
+
+  AdminText
+    id: help
+    text-auto-resize: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
 
 AdminDecoItem < FishingTab
   size: 132 40
@@ -140,6 +257,16 @@ AdminDecoRow < UIWidget
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
 
+// a tab's panel: under the tabs, above the result line
+AdminPage < UIWidget
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: result.top
+  margin-top: 10
+  margin-bottom: 8
+  visible: false
+
 AdminWindow < UIWindow
   size: 760 744
   image-source: /modules/game_dailytasks/images/window
@@ -172,7 +299,7 @@ AdminWindow < UIWindow
 
   AdminMuted
     id: subtitle
-    !text: tr('Server events and staff tools. Only staff accounts see this window.')
+    !text: tr('Staff tools. You see the tabs and buttons your staff rank can use.')
     text-auto-resize: true
     anchors.left: headerTitle.left
     anchors.top: headerTitle.bottom
@@ -205,173 +332,588 @@ AdminWindow < UIWindow
 
     FishingTab
       id: eventsTab
-      !text: tr('Events & tools')
-      width: 140
+      !text: tr('Events')
+      width: 112
       @onClick: modules.game_admin.showTab('events')
+
+    FishingTab
+      id: playersTab
+      !text: tr('Players')
+      width: 112
+      @onClick: modules.game_admin.showTab('players')
+
+    FishingTab
+      id: worldTab
+      !text: tr('World')
+      width: 112
+      @onClick: modules.game_admin.showTab('world')
 
     FishingTab
       id: decorationsTab
       !text: tr('Decorations')
-      width: 140
+      width: 112
       @onClick: modules.game_admin.showTab('decorations')
 
-  FishingPanel
-    id: events
-    anchors.top: tabs.bottom
-    anchors.left: parent.left
-    anchors.right: parent.right
-    margin-top: 10
-    height: 314
+    FishingTab
+      id: serverTab
+      !text: tr('Server')
+      width: 112
+      @onClick: modules.game_admin.showTab('server')
 
-    FishingPanelTitle
-      id: title
-      !text: tr('Server events')
+    FishingTab
+      id: commandsTab
+      !text: tr('Commands')
+      width: 112
+      @onClick: modules.game_admin.showTab('commands')
 
-    AdminMuted
-      id: hint
-      !text: tr('Starting an event replaces the one running. Everyone online sees a broadcast.')
-      text-auto-resize: true
-      anchors.right: parent.right
-      anchors.verticalCenter: title.verticalCenter
-
-    UIWidget
-      id: rows
-      anchors.top: title.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.bottom: parent.bottom
-      margin-top: 8
-      layout:
-        type: verticalBox
-        spacing: 6
-
-  FishingPanel
-    id: tools
-    anchors.top: events.bottom
-    anchors.left: parent.left
-    anchors.right: parent.right
-    margin-top: 10
-    height: 104
-
-    FishingPanelTitle
-      id: title
-      !text: tr('Tools')
-
-    UIWidget
-      id: targets
-      size: 290 22
-      anchors.right: parent.right
-      anchors.verticalCenter: title.verticalCenter
-      layout:
-        type: horizontalBox
-        spacing: 4
-
-      AdminTab
-        id: both
-        !text: tr('Game + Discord')
-        width: 120
-
-      AdminTab
-        id: game
-        !text: tr('Game only')
-        width: 80
-
-      AdminTab
-        id: discord
-        !text: tr('Discord only')
-        width: 82
-
-    AdminMuted
-      id: targetLabel
-      !text: tr('Broadcast to')
-      text-auto-resize: true
-      anchors.right: targets.left
-      anchors.verticalCenter: title.verticalCenter
-      margin-right: 8
-
-    PVField
-      id: broadcastText
-      !placeholder: tr('Message to broadcast')
-      anchors.top: title.bottom
-      anchors.left: parent.left
-      anchors.right: broadcast.left
-      margin: 8 8 0 0
-      padding-left: 10
-      max-length: 255
-
-    PVBlueButton
-      id: broadcast
-      !text: tr('Broadcast')
-      size: 110 34
-      ttf-font-size: 12
-      anchors.top: title.bottom
-      anchors.right: parent.right
-      margin-top: 8
-
-    PVBlueButton
-      id: save
-      !text: tr('Save server')
-      size: 130 28
-      ttf-font-size: 12
-      anchors.top: broadcastText.bottom
-      anchors.left: parent.left
-      margin-top: 8
-
-    PVBlueButton
-      id: clean
-      !text: tr('Clean map')
-      size: 130 28
-      ttf-font-size: 12
-      anchors.top: save.top
-      anchors.left: save.right
-      margin-left: 8
-
-    AdminText
-      id: result
-      text-auto-resize: true
-      anchors.left: clean.right
-      anchors.verticalCenter: clean.verticalCenter
-      margin-left: 14
-
-  FishingPanel
-    id: commands
-    anchors.top: tools.bottom
+  AdminText
+    id: result
+    height: 16
+    text-auto-resize: false
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-top: 10
 
-    FishingPanelTitle
-      id: title
-      !text: tr('Commands')
+  // Events: the server events, the calendar and the broadcast
+  AdminPage
+    id: events
 
-    AdminMuted
-      id: hint
-      !text: tr('Click one to put it in the chat line.')
-      text-auto-resize: true
+    FishingPanel
+      id: eventsPanel
+      anchors.top: parent.top
+      anchors.left: parent.left
       anchors.right: parent.right
-      anchors.verticalCenter: title.verticalCenter
+      height: 314
 
-    UIWidget
-      id: list
-      anchors.top: title.bottom
+      FishingPanelTitle
+        id: title
+        !text: tr('Server events')
+
+      AdminMuted
+        id: hint
+        !text: tr('Starting an event replaces the one running. Everyone online sees a broadcast.')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      UIWidget
+        id: rows
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 8
+        layout:
+          type: verticalBox
+          spacing: 6
+
+    FishingPanel
+      id: calendar
+      anchors.top: eventsPanel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+      height: 150
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Calendar')
+
+      AdminMuted
+        !text: tr('Force a season or a holiday, or put it back to its dates. /calendar')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      AdminRowLabel
+        id: seasonLabel
+        !text: tr('Season')
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: seasons
+        height: 22
+        anchors.top: seasonLabel.top
+        anchors.left: seasonLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      AdminRowLabel
+        id: holidayLabel
+        !text: tr('Holiday')
+        anchors.top: seasonLabel.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      UIWidget
+        id: holidays
+        height: 48
+        anchors.top: holidayLabel.top
+        anchors.left: holidayLabel.right
+        anchors.right: parent.right
+        layout:
+          type: grid
+          cell-size: 96 22
+          cell-spacing: 4
+          flow: true
+
+      UIWidget
+        id: holidayButtons
+        height: 22
+        anchors.top: holidays.bottom
+        anchors.left: holidays.left
+        anchors.right: parent.right
+        margin-top: 6
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+    FishingPanel
+      id: tools
+      anchors.top: calendar.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+      height: 84
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Broadcast')
+
+      UIWidget
+        id: targets
+        size: 290 22
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+        AdminTab
+          id: both
+          !text: tr('Game + Discord')
+          width: 120
+
+        AdminTab
+          id: game
+          !text: tr('Game only')
+          width: 80
+
+        AdminTab
+          id: discord
+          !text: tr('Discord only')
+          width: 82
+
+      AdminMuted
+        id: targetLabel
+        !text: tr('Broadcast to')
+        text-auto-resize: true
+        anchors.right: targets.left
+        anchors.verticalCenter: title.verticalCenter
+        margin-right: 8
+
+      PVField
+        id: broadcastText
+        !placeholder: tr('Message to broadcast')
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: broadcast.left
+        margin: 8 8 0 0
+        padding-left: 10
+        max-length: 255
+
+      PVBlueButton
+        id: broadcast
+        !text: tr('Broadcast')
+        size: 110 34
+        ttf-font-size: 12
+        anchors.top: title.bottom
+        anchors.right: parent.right
+        margin-top: 8
+
+  // Players: the players online and the banned accounts on the left, the actions on the right
+  AdminPage
+    id: players
+
+    FishingPanel
+      id: online
+      anchors.top: parent.top
+      anchors.left: parent.left
+      width: 262
+      height: 334
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Online')
+
+      AdminTab
+        id: refresh
+        !text: tr('Refresh')
+        width: 64
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      PVField
+        id: search
+        !placeholder: tr('Search by name')
+        height: 30
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 8
+        padding-left: 10
+        max-length: 30
+
+      ScrollablePanel
+        id: list
+        vertical-scrollbar: listScroll
+        anchors.top: search.bottom
+        anchors.left: parent.left
+        anchors.right: listScroll.left
+        anchors.bottom: count.top
+        margin: 6 4 4 0
+        layout:
+          type: verticalBox
+          spacing: 3
+
+      AdminScrollBar
+        id: listScroll
+        anchors.top: search.bottom
+        anchors.bottom: count.top
+        anchors.right: parent.right
+        margin: 6 0 4 0
+
+      AdminMuted
+        id: count
+        height: 14
+        text-auto-resize: false
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+    FishingPanel
+      id: bans
+      anchors.top: online.bottom
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      width: 262
+      margin-top: 10
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Banned accounts')
+
+      ScrollablePanel
+        id: list
+        vertical-scrollbar: listScroll
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: listScroll.left
+        anchors.bottom: parent.bottom
+        margin: 8 4 0 0
+        layout:
+          type: verticalBox
+          spacing: 3
+
+      AdminScrollBar
+        id: listScroll
+        anchors.top: title.bottom
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        margin-top: 8
+
+    FishingPanel
+      id: player
+      anchors.top: parent.top
+      anchors.left: online.right
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 10
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Player')
+
+      PVField
+        id: name
+        !placeholder: tr('Pick a player or type a name')
+        height: 30
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 8
+        padding-left: 10
+        max-length: 30
+
+      AdminMuted
+        id: info
+        height: 14
+        text-auto-resize: false
+        anchors.top: name.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 4
+
+      AdminMuted
+        id: actionsLabel
+        !text: tr('Actions')
+        text-auto-resize: true
+        anchors.top: info.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: actions
+        height: 92
+        anchors.top: actionsLabel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 4
+        layout:
+          type: grid
+          cell-size: 100 28
+          cell-spacing: 4
+          flow: true
+
+      AdminMuted
+        id: townsLabel
+        !text: tr('Send to a town\'s temple')
+        text-auto-resize: true
+        anchors.top: actions.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      ScrollablePanel
+        id: towns
+        vertical-scrollbar: townsScroll
+        height: 74
+        anchors.top: townsLabel.bottom
+        anchors.left: parent.left
+        anchors.right: townsScroll.left
+        margin: 4 4 0 0
+        layout:
+          type: grid
+          cell-size: 96 22
+          cell-spacing: 4
+          flow: true
+
+      AdminScrollBar
+        id: townsScroll
+        height: 74
+        anchors.top: townsLabel.bottom
+        anchors.right: parent.right
+        margin-top: 4
+
+      AdminMuted
+        id: banLabel
+        !text: tr('Ban the account: how long and why')
+        text-auto-resize: true
+        anchors.top: towns.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: banDays
+        height: 22
+        anchors.top: banLabel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 4
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      UIWidget
+        id: banReasons
+        height: 74
+        anchors.top: banDays.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 6
+        layout:
+          type: grid
+          cell-size: 136 22
+          cell-spacing: 4
+          flow: true
+
+      PVField
+        id: banComment
+        !placeholder: tr('Comment (the player doesn\'t see it)')
+        height: 30
+        anchors.top: banReasons.bottom
+        anchors.left: parent.left
+        anchors.right: ban.left
+        margin: 6 8 0 0
+        padding-left: 10
+        max-length: 200
+
+      PVRedButton
+        id: ban
+        !text: tr('Ban')
+        size: 100 30
+        ttf-font-size: 12
+        anchors.top: banReasons.bottom
+        anchors.right: parent.right
+        margin-top: 6
+
+  // World: the weather, the game clock and the wild legendaries
+  AdminPage
+    id: world
+
+    FishingPanel
+      id: weather
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 246
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Weather')
+
+      AdminMuted
+        !text: tr('Staff weather stays until it runs out or goes back to auto. /weather')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      AdminRowLabel
+        id: whereLabel
+        !text: tr('Where')
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: targets
+        height: 22
+        anchors.top: whereLabel.top
+        anchors.left: whereLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      AdminRowLabel
+        id: kindLabel
+        !text: tr('Weather')
+        anchors.top: whereLabel.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      UIWidget
+        id: kinds
+        height: 48
+        anchors.top: kindLabel.top
+        anchors.left: kindLabel.right
+        anchors.right: parent.right
+        layout:
+          type: grid
+          cell-size: 112 22
+          cell-spacing: 4
+          flow: true
+
+      AdminRowLabel
+        id: forLabel
+        !text: tr('For')
+        anchors.top: kinds.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      UIWidget
+        id: durations
+        height: 22
+        anchors.top: forLabel.top
+        anchors.left: forLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      UIWidget
+        id: buttons
+        height: 30
+        anchors.top: durations.bottom
+        anchors.left: durations.left
+        anchors.right: parent.right
+        margin-top: 10
+        layout:
+          type: horizontalBox
+          spacing: 6
+
+      AdminRowLabel
+        id: clockLabel
+        !text: tr('Game clock')
+        anchors.top: buttons.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: clock
+        height: 22
+        anchors.top: clockLabel.top
+        anchors.left: clockLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+    FishingPanel
+      id: legendaries
+      anchors.top: weather.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
-      margin-top: 8
-      layout:
-        type: grid
-        cell-size: 165 26
-        cell-spacing: 6
-        flow: true
+      margin-top: 10
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Wild legendaries')
+
+      AdminMuted
+        !text: tr('Pick one, then spawn it or send it away. /legendary')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      UIWidget
+        id: species
+        height: 100
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 10
+        layout:
+          type: grid
+          cell-size: 106 22
+          cell-spacing: 4
+          flow: true
+
+      UIWidget
+        id: buttons
+        height: 62
+        anchors.top: species.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 10
+        layout:
+          type: grid
+          cell-size: 160 28
+          cell-spacing: 6
+          flow: true
 
   FishingPanel
     id: decorations
     anchors.top: tabs.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: parent.bottom
+    anchors.bottom: result.top
     margin-top: 10
+    margin-bottom: 8
     visible: false
 
     FishingPanelTitle
@@ -491,3 +1033,90 @@ AdminWindow < UIWindow
       layout:
         type: verticalBox
         spacing: 4
+
+  // Server: rows of command buttons (SERVER_SECTIONS in admin.lua)
+  AdminPage
+    id: server
+
+    FishingPanel
+      id: panel
+      anchors.fill: parent
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Server')
+
+      AdminMuted
+        !text: tr('Each button runs the staff command in its tooltip. Answers go to the Server Log.')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      UIWidget
+        id: sections
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 10
+        layout:
+          type: verticalBox
+          spacing: 8
+
+  // Commands: every staff command you can use; type one (or click it) and run it
+  AdminPage
+    id: commands
+
+    FishingPanel
+      id: panel
+      anchors.fill: parent
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Commands')
+
+      AdminMuted
+        id: hint
+        !text: tr('Typing filters the list. Click a command to fill it in.')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      PVField
+        id: text
+        !placeholder: tr('/command and its parameters')
+        height: 34
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: run.left
+        margin: 8 8 0 0
+        padding-left: 10
+        max-length: 255
+
+      PVGreenButton
+        id: run
+        !text: tr('Run')
+        size: 110 34
+        ttf-font-size: 12
+        anchors.top: title.bottom
+        anchors.right: parent.right
+        margin-top: 8
+
+      ScrollablePanel
+        id: list
+        vertical-scrollbar: listScroll
+        anchors.top: text.bottom
+        anchors.left: parent.left
+        anchors.right: listScroll.left
+        anchors.bottom: parent.bottom
+        margin: 10 4 0 0
+        layout:
+          type: verticalBox
+          spacing: 4
+
+      AdminScrollBar
+        id: listScroll
+        anchors.top: text.bottom
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        margin-top: 10
