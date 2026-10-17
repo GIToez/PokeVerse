@@ -138,7 +138,8 @@ local function getQuestStatus(pid, quest)
     return getCreatureStorage(pid, quest.storage) or QUEST_STATUS.ERROR
 end
 
-local function getCurrentQuest(pid, npcName)
+-- anywhere: outside the NPC's script (the quest log), where there is no NPC position to check
+local function getCurrentQuest(pid, npcName, anywhere)
     if (not QUESTS[npcName]) then
         log(LOG_TYPES.ERROR, "Quest:getCurrentQuest - Unkown NPC.", npcName)
         return false
@@ -164,7 +165,7 @@ local function getCurrentQuest(pid, npcName)
                     end
                 end
                 return QUESTS[npcName][i] -- TODO test
-            elseif (not QUESTS[npcName][i].startPosition or getSamePosition(getNpcPos(), QUESTS[npcName][i].startPosition)) then
+            elseif (anywhere or not QUESTS[npcName][i].startPosition or getSamePosition(getNpcPos(), QUESTS[npcName][i].startPosition)) then
                 return QUESTS[npcName][i]
             end
         end
@@ -341,6 +342,7 @@ function doPlayerStartQuest(pid, quest, npcName, questStorage)
     if (quest.onStart) then
         quest.onStart(pid)
     end
+    Quests.onStart(pid, quest, npcName)
 end
 
 local function doPlayerFinishQuest(pid, quest)
@@ -428,6 +430,7 @@ local function doPlayerFinishQuest(pid, quest)
     if (quest.onEnd) then
         quest.onEnd(pid)
     end
+    Quests.onFinish(pid, quest)
 end
 
 local function canStartQuest(pid, quest)
@@ -571,7 +574,9 @@ function doQuestDefeat(cid, pokemonName)
             local count = getCreatureStorage(cid, quest.counterStorage)
             if (count < quest.questRequest[2]) then
                 doCreatureSetStorage(cid, quest.counterStorage, count + 1)
-                doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "Defeat Task: %s - step complete [%s/%s]."), pokemonName, count + 1, quest.questRequest[2]))
+                if (not Quests.onProgress(cid, quest, count + 1, quest.questRequest[2])) then
+                    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "Defeat Task: %s - step complete [%s/%s]."), pokemonName, count + 1, quest.questRequest[2]))
+                end
                 return
             end
         end
@@ -584,7 +589,9 @@ function doQuestCatch(cid, pokemonName)
             local count = getCreatureStorage(cid, quest.counterStorage)
             if (count < quest.questRequest[2]) then
                 doCreatureSetStorage(cid, quest.counterStorage, count + 1)
-                doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "Catch Task: %s - step complete [%s/%s]."), pokemonName, count + 1, quest.questRequest[2]))
+                if (not Quests.onProgress(cid, quest, count + 1, quest.questRequest[2])) then
+                    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "Catch Task: %s - step complete [%s/%s]."), pokemonName, count + 1, quest.questRequest[2]))
+                end
                 return
             end
         end
@@ -597,4 +604,21 @@ end
 
 function getNpcQuests(npcName)
     return QUESTS[npcName]
+end
+
+function getAllNpcQuests()
+    return QUESTS
+end
+
+-- The quest the NPC offers or takes back now, as the quest log sees it: no position checks, and the
+-- canStart checks that explain a wait don't make anyone talk
+function getNpcCurrentQuest(pid, npcName)
+    if (not QUESTS[npcName]) then
+        return nil
+    end
+    local say = selfSay
+    selfSay = function() end
+    local ok, quest = pcall(getCurrentQuest, pid, npcName, true)
+    selfSay = say
+    return ok and quest or nil
 end

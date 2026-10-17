@@ -18,6 +18,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         PokemonHeldItem.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.ADMIN) then
         Admin.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.QUEST) then
+        Quests.onClientMessage(cid, buffer)
     end
     return true
 end
