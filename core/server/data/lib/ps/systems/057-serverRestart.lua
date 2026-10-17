@@ -207,6 +207,13 @@ function ServerRestart.onThink()
         if (at and (at <= now or reason == REASON_UPDATE)) then
             doSetStorage(KEY_AT, 0)
             print("> Restart: dropped the restart left over from the previous run")
+        elseif (at and reason == REASON_DAILY) then
+            -- scheduled up to 30 minutes ahead: a deployment may have changed the daily time since
+            local daily = ServerRestart.getDaily()
+            if (not daily or ServerRestart.nextDaily(daily, now) ~= at) then
+                doSetStorage(KEY_AT, 0)
+                print("> Restart: the daily restart time changed, rescheduling")
+            end
         end
     end
 
