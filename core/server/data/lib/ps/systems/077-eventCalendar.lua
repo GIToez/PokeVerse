@@ -280,6 +280,84 @@ EventCalendar.setForced = function(id, value)
 end
 
 ---------------------------------------------------------------------------------------------------
+-- Seasons (northern, real time): each one starts at the restart after its equinox or solstice
+---------------------------------------------------------------------------------------------------
+
+EventCalendar.SEASONS = {
+    { id = "spring", name = "Spring", color = "#9ad870" },
+    { id = "summer", name = "Summer", color = "#f0c850" },
+    { id = "autumn", name = "Autumn", color = "#e08a40" },
+    { id = "winter", name = "Winter", color = "#a8d0f0" },
+}
+local SEASON_BY_ID = {}
+for index, season in ipairs(EventCalendar.SEASONS) do
+    season.index = index
+    SEASON_BY_ID[season.id] = season
+end
+local SEASON_KEY = GLOBAL_STORAGES.EVENT_CALENDAR_SEASON
+
+EventCalendar.getSeason = function(id)
+    return SEASON_BY_ID[id]
+end
+
+local function seasonStart(year, index)
+    local moment = EventCalendar.seasonTime(year, index)
+    local restart = restartOf(moment)
+    return restart >= moment and restart or restartOf(moment, 1)
+end
+
+-- The natural seasons that overlap from..to: { season, startsAt, endsAt }
+function EventCalendar.seasonSpans(from, to)
+    local starts = {}
+    for year = dateOf(from).year - 1, dateOf(to).year + 1 do
+        for index = 1, 4 do
+            starts[#starts + 1] = { season = EventCalendar.SEASONS[index], startsAt = seasonStart(year, index) }
+        end
+    end
+    local spans = {}
+    for i = 1, #starts - 1 do
+        local span = starts[i]
+        span.endsAt = starts[i + 1].startsAt
+        if (span.endsAt > from and span.startsAt <= to) then
+            spans[#spans + 1] = span
+        end
+    end
+    return spans
+end
+
+-- nil = automatic, or the season staff forced
+EventCalendar.getForcedSeason = function()
+    return EventCalendar.SEASONS[tonumber(getStorage(SEASON_KEY)) or 0]
+end
+
+EventCalendar.setForcedSeason = function(id)
+    local season = id and SEASON_BY_ID[id]
+    store(SEASON_KEY, season and season.index or 0)
+end
+
+local naturalSpan = nil
+
+-- What season it is: the season, when it started and ends, and whether staff forced it
+function EventCalendar.currentSeason(now)
+    now = now or os.time()
+    local span = naturalSpan
+    if (not span or now < span.startsAt or now >= span.endsAt) then
+        local spans = EventCalendar.seasonSpans(now, now)
+        span = spans[#spans]
+        naturalSpan = span
+    end
+    local forced = EventCalendar.getForcedSeason()
+    if (forced) then
+        return { season = forced, startsAt = span.startsAt, endsAt = span.endsAt, forced = true }
+    end
+    return { season = span.season, startsAt = span.startsAt, endsAt = span.endsAt, forced = false }
+end
+
+EventCalendar.seasonId = function(now)
+    return EventCalendar.currentSeason(now).season.id
+end
+
+---------------------------------------------------------------------------------------------------
 -- Staff events (event_calendar)
 ---------------------------------------------------------------------------------------------------
 
@@ -621,6 +699,11 @@ local function eventData(event)
              forced = event.forced or false }
 end
 
+local function seasonData(span)
+    return { id = span.season.id, name = span.season.name, color = span.season.color, startsAt = span.startsAt,
+             endsAt = span.endsAt, forced = span.forced or false }
+end
+
 function EventCalendar.statusData(now)
     now = now or os.time()
     local active = {}
@@ -628,7 +711,8 @@ function EventCalendar.statusData(now)
         active[#active + 1] = eventData(event)
     end
     local nextEvent = EventCalendar.getNext(now)
-    return { type = "status", now = now, active = active, next = nextEvent and eventData(nextEvent) or nil }
+    return { type = "status", now = now, active = active, next = nextEvent and eventData(nextEvent) or nil,
+             season = seasonData(EventCalendar.currentSeason(now)) }
 end
 
 function EventCalendar.sendStatus(cid)
@@ -648,7 +732,11 @@ function EventCalendar.rangeData(from, to)
     for _, phase in ipairs(EventCalendar.moonPhases(from - LUNATION, to + LUNATION)) do
         moons[#moons + 1] = { time = phase.time, full = phase.full }
     end
-    return { type = "range", from = from, to = to, now = os.time(), events = events, moons = moons }
+    local seasons = {}
+    for _, span in ipairs(EventCalendar.seasonSpans(from, to)) do
+        seasons[#seasons + 1] = seasonData(span)
+    end
+    return { type = "range", from = from, to = to, now = os.time(), events = events, moons = moons, seasons = seasons }
 end
 
 function EventCalendar.onClientMessage(cid, buffer)
@@ -813,6 +901,7 @@ end
 
 local running = nil
 local lastStatusKey = nil
+local lastSeason = nil
 local lastRaid = {}
 
 local function keysOf(list)
@@ -874,6 +963,17 @@ function EventCalendar.onThink()
         setLootEventMultiplier(loot)
     end
 
+    local season = EventCalendar.seasonId(now)
+    if (lastSeason and lastSeason ~= season) then
+        local name = SEASON_BY_ID[season].name
+        doBroadcastMessage(string.format("%s has come to the regions, and the weather changes with it.", name),
+            MESSAGE_STATUS_WARNING)
+        if (EventCalendar.onSeasonChange) then
+            EventCalendar.onSeasonChange(season, lastSeason)
+        end
+    end
+    lastSeason = season
+
     local nextEvent = EventCalendar.getNext(now)
     local statusKey = table.concat((function()
         local list = {}
@@ -881,6 +981,7 @@ function EventCalendar.onThink()
             list[#list + 1] = event.key
         end
         list[#list + 1] = nextEvent and nextEvent.key or ""
+        list[#list + 1] = season
         return list
     end)(), ",")
     if (statusKey ~= lastStatusKey) then

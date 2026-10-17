@@ -74,6 +74,26 @@ CalendarDay < UIButton
     anchors.right: parent.right
     margin: 1 2 0 0
 
+  // the first day of a season (artwork: scripts/art/weather_ui.py)
+  UIWidget
+    id: season
+    size: 14 14
+    anchors.top: parent.top
+    anchors.right: moon.left
+    margin: 1 2 0 0
+    visible: false
+
+  // the season the day falls in
+  UIWidget
+    id: seasonBand
+    height: 2
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 -1 -2 -1
+    opacity: 0.7
+    phantom: true
+
   UIWidget
     id: strips
     anchors.top: number.bottom
@@ -212,6 +232,23 @@ CalendarWindow < UIWindow
     anchors.left: nextMonth.right
     margin-left: 8
     @onClick: modules.game_calendar.showToday()
+
+  UIWidget
+    id: seasonIcon
+    size: 14 14
+    anchors.verticalCenter: today.verticalCenter
+    anchors.left: today.right
+    margin-left: 16
+    phantom: true
+
+  UILabel
+    id: seasonLabel
+    font: verdana-11px-rounded
+    color: #dce6ff
+    text-auto-resize: true
+    anchors.verticalCenter: today.verticalCenter
+    anchors.left: seasonIcon.right
+    margin-left: 5
 
   UIWidget
     id: weekdays

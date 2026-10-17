@@ -75,14 +75,17 @@ local function placeBanner()
     banner:breakAnchors()
     if clock and clock:getParent() then
         banner:setParent(clock:getParent())
+        -- the weather badge (game_weather) sits between the clock and the banner
+        local weather = modules.game_weather and modules.game_weather.getBadge and modules.game_weather.getBadge()
+        local after = (weather and weather:isVisible() and weather:getParent() == clock:getParent()) and 'weatherBadge' or 'timeWindow'
         local topMenu = modules.client_topmenu and modules.client_topmenu.getTopMenu and modules.client_topmenu.getTopMenu()
         if topMenu and clock:getParent() == topMenu then
-            banner:addAnchor(AnchorLeft, 'timeWindow', AnchorRight)
+            banner:addAnchor(AnchorLeft, after, AnchorRight)
             banner:addAnchor(AnchorVerticalCenter, 'timeWindow', AnchorVerticalCenter)
             banner:setMarginLeft(14)
             banner:setMarginTop(0)
         else
-            banner:addAnchor(AnchorTop, 'timeWindow', AnchorBottom)
+            banner:addAnchor(AnchorTop, after, AnchorBottom)
             banner:addAnchor(AnchorHorizontalCenter, 'timeWindow', AnchorHorizontalCenter)
             banner:setMarginLeft(0)
             banner:setMarginTop(2)
@@ -94,6 +97,26 @@ local function placeBanner()
         banner:setMarginTop(4)
     end
     banner:setVisible(g_game.isOnline() and status ~= nil)
+end
+
+function relayout()
+    placeBanner()
+end
+
+local function seasonLine()
+    local season = status and status.season
+    if not season then
+        return nil
+    end
+    if season.forced then
+        return tr('Season: %s', season.name)
+    end
+    return tr('Season: %s, until %s', season.name, os.date('%d %b', season.endsAt))
+end
+
+local function withSeason(text)
+    local line = seasonLine()
+    return line and (text .. '\n\n' .. line) or text
 end
 
 local function updateBanner()
@@ -121,17 +144,17 @@ local function updateBanner()
         for _, event in ipairs(active) do
             tips[#tips + 1] = eventTooltip(event)
         end
-        banner:setTooltip(table.concat(tips, '\n\n') .. '\n\n' .. tr('Click to open the calendar.'))
+        banner:setTooltip(withSeason(table.concat(tips, '\n\n')) .. '\n\n' .. tr('Click to open the calendar.'))
         refresh = #active < #(status.active or {})
     elseif status.next then
         label:setText(tr('Next: %s in %s', status.next.name, formatLeft(status.next.startsAt - t)))
         label:setColor('#96aacd')
-        banner:setTooltip(tr('No event is running.') .. '\n\n' .. eventTooltip(status.next) .. '\n\n' ..
+        banner:setTooltip(withSeason(tr('No event is running.') .. '\n\n' .. eventTooltip(status.next)) .. '\n\n' ..
             tr('Click to open the calendar.'))
     else
         label:setText(tr('Event calendar'))
         label:setColor('#96aacd')
-        banner:setTooltip(tr('Click to open the calendar.'))
+        banner:setTooltip(withSeason(tr('Event calendar')) .. '\n\n' .. tr('Click to open the calendar.'))
     end
     refresh = refresh or (#active == 0 and status.next and status.next.startsAt <= t)
     banner:setWidth(banner:getChildById('icon'):getWidth() + label:getMarginLeft() + label:getWidth() + 2)
@@ -234,6 +257,15 @@ local function drawGrid()
         return
     end
     window:recursiveGetChildById('month'):setText(os.date('%B %Y', monthStart(viewYear, viewMonth)))
+    local season = status and status.season
+    window:recursiveGetChildById('seasonIcon'):setVisible(season ~= nil)
+    window:recursiveGetChildById('seasonLabel'):setVisible(season ~= nil)
+    if season then
+        window:recursiveGetChildById('seasonIcon'):setImageSource('/modules/game_weather/images/season_' .. season.id)
+        local label = window:recursiveGetChildById('seasonLabel')
+        label:setText(season.forced and tr('%s (set by staff)', season.name) or tr('%s until %s', season.name, os.date('%d %B', season.endsAt)))
+        label:setColor(season.color or '#dce6ff')
+    end
     local grid = window:recursiveGetChildById('grid')
     grid:destroyChildren()
     local today = dayStart(now())
@@ -277,6 +309,19 @@ local function drawGrid()
             local strips2 = strips:getChildByIndex(MAX_STRIPS)
             strips2:setText(tr('+%d more', more + 1))
             strips2:setBackgroundColor('#34507a')
+        end
+        for _, span in ipairs(range and range.seasons or {}) do
+            if span.startsAt < to and span.endsAt > from then
+                cell:getChildById('seasonBand'):setBackgroundColor(span.color or '#ffffff')
+            end
+            if span.startsAt >= from and span.startsAt < to then
+                local icon = cell:getChildById('season')
+                icon:setImageSource('/modules/game_weather/images/season_' .. span.id)
+                icon:show()
+                local begins = tr('%s begins (%s)', span.name, os.date('%H:%M', span.startsAt))
+                icon:setTooltip(begins)
+                table.insert(tips, 1, begins)
+            end
         end
         cell:setTooltip(#tips > 0 and table.concat(tips, '\n') or nil)
         local start = from
