@@ -675,6 +675,7 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<Creature>("setEmblemTexture", &Creature::setEmblemTexture);
     g_lua.bindClassMemberFunction<Creature>("setTypeTexture", &Creature::setTypeTexture);
     g_lua.bindClassMemberFunction<Creature>("setIconTexture", &Creature::setIconTexture);
+    g_lua.bindClassMemberFunction<Creature>("setIcon", &Creature::setIcon);
     g_lua.bindClassMemberFunction<Creature>("setIconsTexture", &Creature::setIconsTexture);
     g_lua.bindClassMemberFunction<Creature>("setStaticWalking", &Creature::setStaticWalking);
     g_lua.bindClassMemberFunction<Creature>("setManaPercent", &Creature::setManaPercent);
