@@ -138,7 +138,13 @@ BUILDINGS = {
     'battle-hall': {'box': (3910, 255, 3929, 273), 'entries': [(8, 18), (9, 18), (17, 2)], 'enclosed': True,
                     'rent': False},
     'battle-castle': {'box': (3957, 454, 3981, 469), 'entries': [(7, 13), (8, 13)], 'enclosed': True, 'rent': False},
+    # The fly taxi's stand: Vermilion's bird stable, fenced, open to the south, four stalls of hay
+    # along the back. Only its ground floor (`flat`): the box's floor above takes in the next house's roof.
+    'taxi-stand': {'box': (4000, 633, 4012, 642), 'walled': False, 'door': 3, 'rent': False, 'flat': True},
 }
+# In the stand: where the taxi waits and where the others' passengers land (as at Vermilion's), and
+# its sign outside the gate.
+TAXI_SPOT, TAXI_LANDING, TAXI_SIGN = (5, 7), (6, 8), (2, 10)
 
 # Decoration (item ids), none of which players can pick up or move. Fences go like Pallet's: a post
 # in the top-left corner, rails along the top and bottom, side pieces and a post bottom-right.
@@ -161,6 +167,7 @@ BOAT = 3587
 SIGN = 1429
 STREET_SIGN = 1438
 PC_SIGN, MART_SIGN = 11887, 11888
+STAND_SIGN = 11913
 FURNACES = [8684, 8686, 8688, 8690]
 MILL_WHEEL = (1379, 1380)
 CAMPFIRE = 1421
@@ -242,6 +249,16 @@ class Town:
             self.put(name, x, y)
             y += h + gap
         return y
+
+    def taxi_stand(self, x, y):
+        """The fly taxi's stand, its top-left corner at (x, y) and its gate on the south side."""
+        if self.put('taxi-stand', x, y):
+            self.item(x + TAXI_SIGN[0], y + TAXI_SIGN[1], STAND_SIGN)
+            # the trodden yard in front of the stalls, out through the gate (the copy leaves Kanto's
+            # dirt out with the plain ground)
+            w, h = self.sizes['taxi-stand']
+            self.ground(x + 1, y + 4, x + w - 2, y + h - 2, 'dirt')
+            self.ground(x + 3, y + h - 1, x + w - 4, y + h - 1, 'dirt')
 
     def block(self, x0, y0, x1, y1):
         self.taken |= {(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)}
@@ -411,6 +428,7 @@ def violet(t):
     t.item(2507, 562, PC_SIGN)
     t.put('mart', 2520, 553)
     t.item(2530, 562, MART_SIGN)
+    t.taxi_stand(2541, 548)
     t.put('gym', 2470, 570)
     # the Academy and its fenced schoolyard across the street
     t.put('academy', 2516, 570)
@@ -544,6 +562,7 @@ def goldenrod(t):
     t.put('mart', 2289, 717)
     t.item(2298, 726, MART_SIGN)
     t.put('gym', 2301, 713)
+    t.taxi_stand(2255, 711)
     # north-east block: homes, the department store and the Game Corner
     t.put('celadon-249', 2326, 694)
     t.put('celadon-260', 2347, 694)
@@ -696,6 +715,7 @@ def ecruteak(t):
     t.put('fuchsia-371', 2362, 358)
     # main street, north side: a home, the Pokémon Center and Mart, the Gym and homes east of the avenue
     t.put('fuchsia-372', 2270, 393)
+    t.taxi_stand(2255, 394)
     t.put('pokecenter', 2285, 399)
     t.item(2283, 407, PC_SIGN)
     t.put('mart', 2296, 398)
@@ -760,6 +780,7 @@ def olivine(t):
     t.item(2104, 497, PC_SIGN)
     t.put('mart', 2117, 488)
     t.item(2126, 497, MART_SIGN)
+    t.taxi_stand(2120, 473)
     t.put('gym', 2145, 484)
     t.put('vermilion-334', 2161, 484)
     t.put('vermilion-337', 2176, 484)
@@ -847,6 +868,7 @@ def mahogany(t):
     t.item(2525, 389, PC_SIGN)
     t.put('mart', 2537, 380)
     t.item(2546, 389, MART_SIGN)
+    t.taxi_stand(2512, 376)
     t.put('lavender-308', 2555, 378)
     t.put('souvenir-shop', *SOUVENIR_SHOP)
     t.stairs_down += SHOP_STAIRS
