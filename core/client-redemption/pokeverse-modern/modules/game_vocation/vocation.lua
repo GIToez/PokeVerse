@@ -215,9 +215,13 @@ local function fillRanks(data)
     panel.track.fill:setWidth(math.floor(trackWidth * (data.rank - 1) / (data.maxRank - 1)))
 end
 
--- perk rows are 30 tall with 4 between them
+-- the rows and 4 between them
 local function fitScroll(list, scroll)
-    local overflow = list:getChildCount() * 34 - 4 > list:getHeight()
+    local height = -4
+    for _, child in ipairs(list:getChildren()) do
+        height = height + child:getHeight() + 4
+    end
+    local overflow = height > list:getHeight()
     scroll:setVisible(overflow)
     list:setMarginRight(overflow and 16 or 0)
     scroll:setValue(0)
@@ -227,8 +231,7 @@ local function fillNext(data)
     local panel = progressWindow.nextPanel
     panel.list:destroyChildren()
     local next = data.next
-    panel.goals:destroyChildren()
-    for _, id in ipairs({ 'levelText', 'levelValue', 'levelBar', 'goals', 'newAt' }) do
+    for _, id in ipairs({ 'levelText', 'levelValue', 'levelBar', 'list' }) do
         panel[id]:setVisible(next ~= nil)
     end
     panel.topRank:setVisible(next == nil)
@@ -246,14 +249,15 @@ local function fillNext(data)
     panel.levelValue:setColor(reached and '#6fe08a' or '#ffffff')
     local goals = {}
     for _, goal in ipairs((next.trial or {}).goals or {}) do
-        local row = g_ui.createWidget('VocationGoal', panel.goals)
+        local row = g_ui.createWidget('VocationGoal', panel.list)
         local have, need = tonumber(goal.have) or 0, tonumber(goal.need) or 0
         row.text:setText(goal.text or '')
         row.value:setText(have >= need and tr('%d / %d  \183  done', have, need) or string.format('%d / %d', have, need))
         row.value:setColor(have >= need and '#6fe08a' or '#ffffff')
         goals[#goals + 1] = { bar = row.bar, have = have, need = need }
     end
-    panel.newAt:setText(tr('New at rank %d', next.rank or 0))
+    local heading = g_ui.createWidget('VocationListHeading', panel.list)
+    heading:setText(tr('New at rank %d', next.rank or 0))
     for _, gain in ipairs(next.gains or {}) do
         perkRow(panel.list, gain, true)
     end
