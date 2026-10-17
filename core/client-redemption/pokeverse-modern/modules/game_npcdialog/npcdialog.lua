@@ -278,6 +278,11 @@ local function stopChecking()
     end
 end
 
+-- the drawn portrait of a famous NPC, or nil (the quest log shows the outfit then)
+function getPortrait(name)
+    return PORTRAITS[name]
+end
+
 function hide()
     stopChecking()
     if layoutEvent then

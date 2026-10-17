@@ -1,5 +1,6 @@
 -- The tracker panel on the side: the Pokemon the trainer tracks ("Rattata 63 / 100"), the open
--- tasks from the Tasks window (finished ones get a Claim button) and the route while it runs.
+-- tasks from the Tasks window (finished ones get a Claim button), the tracked quests (game_quests)
+-- and the route while it runs.
 -- Lines can be pinned to the top or removed; a click opens the Pokedex entry or the Tasks tab.
 Tracker = {}
 
@@ -146,6 +147,10 @@ local function collect()
                 end
             end
         end
+    end
+    local quests = modules.game_quests
+    for _, line in ipairs(quests and quests.getTrackerLines and quests.getTrackerLines() or {}) do
+        lines[#lines + 1] = line
     end
     local shown = {}
     for _, line in ipairs(lines) do

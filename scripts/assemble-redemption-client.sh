@@ -67,7 +67,8 @@ redemption_skip=(client_assets client_bottommenu client_debug_info dev_otui game
   game_forge game_wheel game_prey game_imbuing game_imbuementtracker game_blessing game_highscore
   game_paperdolls game_playermount game_proficiency game_rewardwall game_spelllist game_stash
   game_taskboard game_unjustifiedpoints game_inspect game_quickloot
-  game_shop game_store game_cyclopedia game_analyser game_lootsplitter game_notifications)
+  game_shop game_store game_cyclopedia game_analyser game_lootsplitter game_notifications
+  game_questlog)
 # PokeVerse modules taken from the legacy client, replacing a Redemption module of the same name
 legacy_modules=(game_advanceeffect game_badgecase game_combatcontrols game_dollcase
   game_duelmessage game_effects game_environment game_guide game_lootlist game_market game_pokebar game_pokedex

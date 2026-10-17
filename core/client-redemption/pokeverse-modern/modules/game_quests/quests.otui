@@ -1,0 +1,508 @@
+// The quest log and the quest notices (artwork: scripts/art/quest_ui.py; the frame and the bars come from
+// game_dailytasks, the panels, rows and tabs from game_fishing, the banner from game_levelup, the buttons
+// from client_entergame and the scroll bar from game_gts)
+
+QuestText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+QuestMuted < QuestText
+  color: #96aacd
+
+QuestTab < FishingTab
+  width: 128
+
+QuestGroup < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffd75a
+  height: 20
+  text-offset: 2 3
+  phantom: true
+
+QuestRow < UIButton
+  height: 46
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+
+  UIWidget
+    id: icon
+    size: 22 22
+    image-source: /modules/game_quests/images/icon_quests_small
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 9
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: false
+    anchors.top: parent.top
+    anchors.left: icon.right
+    anchors.right: parent.right
+    margin: 7 10 0 9
+    height: 16
+    phantom: true
+
+  QuestMuted
+    id: sub
+    text-auto-resize: false
+    anchors.top: name.bottom
+    anchors.left: name.left
+    anchors.right: track.left
+    margin: 2 6 0 0
+    height: 14
+
+  TkTrack
+    id: track
+    width: 74
+    height: 8
+    anchors.right: parent.right
+    anchors.top: name.bottom
+    margin: 5 10 0 0
+    visible: false
+
+QuestReward < UIWidget
+  size: 46 46
+  image-source: /modules/game_fishing/images/portrait
+  phantom: false
+
+  UIItem
+    id: item
+    size: 32 32
+    virtual: true
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: picture
+    size: 30 30
+    anchors.centerIn: parent
+    phantom: true
+    visible: false
+
+  UILabel
+    id: count
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 4 3 0
+    phantom: true
+
+QuestLogWindow < UIWindow
+  size: 860 600
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_quests.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 34 34
+    image-source: /modules/game_quests/images/icon_quests
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -2
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Quest Log')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  QuestMuted
+    id: subtitle
+    !text: tr('Your quests, the ones the NPCs offer you now and the ones you have done.')
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_quests.hide()
+
+  UIWidget
+    id: tabs
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    size: 400 28
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+    QuestTab
+      id: active
+    QuestTab
+      id: available
+    QuestTab
+      id: done
+
+  PVField
+    id: search
+    !placeholder: tr('Search quests, NPCs and towns')
+    anchors.top: tabs.top
+    anchors.right: parent.right
+    size: 300 28
+    padding-left: 10
+    max-length: 40
+
+  ScrollablePanel
+    id: list
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    width: 360
+    margin-top: 10
+    vertical-scrollbar: listScroll
+    layout:
+      type: verticalBox
+      spacing: 4
+
+  GtsScrollBar
+    id: listScroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.left: list.right
+    margin-left: 4
+
+  QuestMuted
+    id: empty
+    text-wrap: true
+    text-auto-resize: true
+    text-align: center
+    anchors.top: list.top
+    anchors.left: list.left
+    anchors.right: list.right
+    margin: 60 16 0 16
+    visible: false
+
+  FishingPanel
+    id: details
+    anchors.top: tabs.bottom
+    anchors.left: listScroll.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+    margin-left: 12
+    padding: 14 16 12 16
+
+    UILabel
+      id: name
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 17
+      color: #ffd75a
+      text-auto-resize: false
+      text-align: center
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 22
+      phantom: true
+
+    QuestMuted
+      id: step
+      text-align: center
+      text-auto-resize: false
+      anchors.top: name.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 14
+
+    UIWidget
+      id: frame
+      size: 92 92
+      image-source: /modules/game_fishing/images/portrait
+      anchors.top: step.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 6
+      phantom: true
+
+    UIWidget
+      id: portrait
+      anchors.fill: frame
+      margin: 6
+      image-smooth: true
+      phantom: true
+
+    UICreature
+      id: creature
+      anchors.fill: frame
+      margin: 4
+      creature-center: true
+      phantom: true
+
+    QuestText
+      id: giver
+      text-align: center
+      text-auto-resize: false
+      anchors.top: frame.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+      height: 14
+
+    UIWidget
+      id: actions
+      anchors.top: giver.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      size: 268 30
+      layout:
+        type: horizontalBox
+        spacing: 8
+
+      PVBlueButton
+        id: goThere
+        !text: tr('Go there')
+        size: 130 30
+        ttf-font-size: 12
+
+      PVGreenButton
+        id: track
+        !text: tr('Track')
+        size: 130 30
+        ttf-font-size: 12
+
+    FishingPanel
+      id: objective
+      anchors.top: actions.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+      height: 104
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Objective')
+
+      QuestText
+        id: text
+        text-wrap: true
+        text-auto-resize: true
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 5
+
+      TkTrack
+        id: track
+        anchors.left: parent.left
+        anchors.right: count.left
+        anchors.bottom: parent.bottom
+        margin-right: 8
+
+      QuestText
+        id: count
+        width: 64
+        height: 14
+        text-align: right
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-bottom: -2
+
+      QuestMuted
+        id: description
+        text-wrap: true
+        text-auto-resize: true
+        anchors.top: text.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 4
+
+    FishingPanel
+      id: rewards
+      anchors.top: objective.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+      height: 84
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Rewards')
+
+      UIWidget
+        id: list
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 6
+        margin-right: 110
+        phantom: true
+        layout:
+          type: horizontalBox
+          spacing: 6
+
+      UILabel
+        id: exp
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 14
+        color: #8fe08f
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-bottom: 14
+        phantom: true
+
+    QuestMuted
+      id: footer
+      text-wrap: true
+      text-auto-resize: true
+      text-align: center
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+    QuestMuted
+      id: none
+      !text: tr('Pick a quest on the left.')
+      text-align: center
+      anchors.centerIn: parent
+      text-auto-resize: true
+      visible: false
+
+// notices
+
+QuestBanner < UIWidget
+  size: 520 84
+  image-source: /modules/game_levelup/images/banner
+  image-border: 12
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: rays
+    size: 96 96
+    image-source: /modules/game_levelup/images/rays
+    image-smooth: true
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: -2
+    phantom: true
+
+  UIWidget
+    id: icon
+    size: 44 44
+    image-source: /modules/game_quests/images/icon_quests
+    anchors.centerIn: rays
+    phantom: true
+
+  Label
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 8 0 0 96
+    ttf-font: pixelify-sans
+    ttf-font-size: 24
+    ttf-stroke: 2 #0b1530
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: name
+    font: Verdana Bold-11px
+    color: #ffd75a
+    anchors.top: title.bottom
+    anchors.left: title.left
+    anchors.right: parent.right
+    margin: 1 16 0 0
+    text-auto-resize: false
+    height: 14
+    phantom: true
+
+  Label
+    id: line
+    font: verdana-11px-antialised
+    color: #c8d8f0
+    anchors.top: name.bottom
+    anchors.left: title.left
+    anchors.right: parent.right
+    margin: 3 16 0 0
+    text-auto-resize: false
+    height: 14
+    phantom: true
+
+QuestToast < UIWidget
+  size: 250 48
+  image-source: /modules/game_fishing/images/panel
+  image-border: 10
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: icon
+    size: 22 22
+    image-source: /modules/game_quests/images/icon_quests_small
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin: 7 0 0 8
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: false
+    anchors.top: parent.top
+    anchors.left: icon.right
+    anchors.right: parent.right
+    margin: 6 10 0 7
+    height: 15
+    phantom: true
+
+  QuestText
+    id: line
+    text-auto-resize: false
+    anchors.top: name.bottom
+    anchors.left: name.left
+    anchors.right: count.left
+    margin: 1 4 0 0
+    height: 13
+
+  QuestText
+    id: count
+    width: 50
+    height: 13
+    text-align: right
+    anchors.right: parent.right
+    anchors.top: name.bottom
+    margin: 1 10 0 0
+
+  TkTrack
+    id: track
+    height: 6
+    anchors.left: name.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 10 6 0

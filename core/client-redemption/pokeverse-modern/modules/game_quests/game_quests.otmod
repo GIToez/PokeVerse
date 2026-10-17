@@ -1,0 +1,8 @@
+Module
+  name: game_quests
+  description: PokeVerse quest log, quest notices and the icons over the NPCs (quests, battles, shops, travel, bank, healing, daycare)
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ npc_roles, quests, notices, icons ]
+  @onLoad: init()
+  @onUnload: terminate()
