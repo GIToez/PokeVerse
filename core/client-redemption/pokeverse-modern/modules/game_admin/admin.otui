@@ -87,8 +87,62 @@ AdminCommand < FishingTab
   ttf-font-size: 11
   color: #dce6ff
 
+AdminDecoItem < FishingTab
+  size: 132 40
+  text: ''
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 4
+    virtual: true
+    phantom: true
+
+  UILabel
+    id: name
+    font: verdana-11px-antialised
+    color: #dce6ff
+    text-wrap: true
+    anchors.left: item.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    margin: 2 4 2 4
+    text-align: left
+    phantom: true
+
+AdminDecoRow < UIWidget
+  height: 30
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  padding: 0 10 0 6
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-top: -4
+    virtual: true
+    phantom: true
+
+  AdminText
+    id: text
+    text-auto-resize: true
+    anchors.left: item.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  AdminMuted
+    id: note
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
 AdminWindow < UIWindow
-  size: 760 702
+  size: 760 744
   image-source: /modules/game_dailytasks/images/window
   image-border: 24
   padding: 22 26 22 26
@@ -139,12 +193,35 @@ AdminWindow < UIWindow
     anchors.verticalCenter: closeButton.verticalCenter
     margin-right: 14
 
-  FishingPanel
-    id: events
+  UIWidget
+    id: tabs
+    height: 28
     anchors.top: headerIcon.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 16
+    margin-top: 12
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+    FishingTab
+      id: eventsTab
+      !text: tr('Events & tools')
+      width: 140
+      @onClick: modules.game_admin.showTab('events')
+
+    FishingTab
+      id: decorationsTab
+      !text: tr('Decorations')
+      width: 140
+      @onClick: modules.game_admin.showTab('decorations')
+
+  FishingPanel
+    id: events
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
     height: 314
 
     FishingPanelTitle
@@ -256,3 +333,130 @@ AdminWindow < UIWindow
         cell-size: 165 26
         cell-spacing: 6
         flow: true
+
+  FishingPanel
+    id: decorations
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+    visible: false
+
+    FishingPanelTitle
+      id: title
+      !text: tr('Decorations')
+
+    AdminText
+      id: status
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+
+    AdminMuted
+      id: setsLabel
+      !text: tr('Set: the props go up whenever this set is up')
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      margin-top: 10
+
+    UIWidget
+      id: sets
+      height: 52
+      anchors.top: setsLabel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 5
+      layout:
+        type: grid
+        cell-size: 94 24
+        cell-spacing: 4
+        flow: true
+
+    AdminMuted
+      id: itemsLabel
+      !text: tr('Prop: wall props hang on the wall you face, the others stand on the tile you face')
+      text-auto-resize: true
+      anchors.top: sets.bottom
+      anchors.left: parent.left
+      margin-top: 10
+
+    UIWidget
+      id: items
+      height: 132
+      anchors.top: itemsLabel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 5
+      layout:
+        type: grid
+        cell-size: 132 40
+        cell-spacing: 6
+        flow: true
+
+    PVGreenButton
+      id: place
+      !text: tr('Place in front of me')
+      size: 164 30
+      ttf-font-size: 12
+      anchors.top: items.bottom
+      anchors.left: parent.left
+      margin-top: 10
+
+    PVRedButton
+      id: remove
+      !text: tr('Remove in front of me')
+      size: 164 30
+      ttf-font-size: 12
+      anchors.top: place.top
+      anchors.left: place.right
+      margin-left: 8
+
+    PVBlueButton
+      id: preview
+      size: 164 30
+      ttf-font-size: 12
+      anchors.top: place.top
+      anchors.left: remove.right
+      margin-left: 8
+
+    PVBlueButton
+      id: auto
+      size: 176 30
+      ttf-font-size: 12
+      anchors.top: place.top
+      anchors.left: preview.right
+      margin-left: 8
+
+    AdminText
+      id: result
+      text-auto-resize: true
+      anchors.top: place.bottom
+      anchors.left: parent.left
+      margin-top: 8
+
+    AdminMuted
+      id: spotsTitle
+      text-auto-resize: true
+      anchors.top: result.bottom
+      anchors.left: parent.left
+      margin-top: 10
+
+    AdminTab
+      id: refresh
+      !text: tr('Refresh')
+      width: 70
+      anchors.right: parent.right
+      anchors.verticalCenter: spotsTitle.verticalCenter
+
+    UIWidget
+      id: spots
+      anchors.top: spotsTitle.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      layout:
+        type: verticalBox
+        spacing: 4

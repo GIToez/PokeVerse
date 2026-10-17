@@ -1990,6 +1990,131 @@ local function testDecorations(cid)
     end
 end
 
+local function testHandDecorations(cid)
+    local D = Decorations
+    local viridian = Weather.getZone(1)
+    check("Decorations: sets by id or name", D.findSet("Valentine's") == "valentines" and D.findSet("pokemon day") == "pokemonday"
+        and not D.findSet("nope"))
+    local garland, why = D.findItem("christmas", "garland")
+    check("Decorations: props by name or id", D.findItem("christmas", "wreath") == 6502 and D.findItem("christmas", "2105") == 2105
+        and not D.findItem("christmas", "99999") and not garland and tostring(why):find("Which one"), why)
+
+    -- a wall with a hook to stand by, and a clear tile, near Viridian's temple
+    local wall, stand, dir, floor
+    local steps = { { 0, 1, NORTH }, { 0, -1, SOUTH }, { 1, 0, WEST }, { -1, 0, EAST } }
+    for dx = -16, 16 do
+        for dy = -16, 16 do
+            local pos = { x = viridian.pos.x + dx, y = viridian.pos.y + dy, z = viridian.pos.z }
+            if (not wall and D.hasHook(pos) and D.checkSpot(pos, 6502)) then
+                for _, step in ipairs(steps) do
+                    local near = { x = pos.x + step[1], y = pos.y + step[2], z = pos.z }
+                    if (not wall and not D.hasHook(near) and D.checkSpot(near, 2105)) then
+                        wall, stand, dir = pos, near, step[3]
+                    end
+                end
+            end
+            local tile = getTileInfo(pos)
+            if (not floor and math.abs(dx) > 3 and not D.hasHook(pos) and D.checkSpot(pos, 2105) and tile
+                and tile.downItems == 0 and tile.creatures == 0) then
+                floor = pos
+            end
+        end
+    end
+    check("Decorations: a hook wall and a clear tile near Viridian's temple", wall and floor)
+    if (not wall or not floor) then
+        return
+    end
+    check("Decorations: a tree doesn't go on a wall", not D.checkSpot(wall, 2105))
+
+    local sent, level = {}, Admin.ACCESS
+    local opcode, access = doSendPlayerExtendedOpcode, getPlayerAccess
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.ADMIN) then
+            sent[#sent + 1] = JSON.decode(buffer)
+        end
+        return true
+    end
+    getPlayerAccess = function() return level end
+    local function ask(data)
+        sent = {}
+        Admin.onClientMessage(cid, JSON.encode(data))
+        return sent
+    end
+    local back = getCreaturePosition(cid)
+    local preview, viridianOff = D.getPreview(), D.getNoAuto()[viridian.id] == true
+    local count = #D.getSpots()
+    local ok, err = pcall(function()
+        doTeleportThing(cid, stand, false)
+        doCreatureSetLookDir(cid, dir)
+        local answer = ask({ action = "deco_add", set = "christmas", item = 6502 })
+        local state = answer[2]
+        local saved = state and state.spots and state.spots[1]
+        check("Decorations: the Admin window saves a wreath on the wall you face", answer[1] and answer[1].ok
+            and #D.getSpots() == count + 1 and saved and saved.x == wall.x and saved.y == wall.y and saved.valid,
+            answer[1] and answer[1].text)
+        check("Decorations: the window lists every set and its props", state and #state.sets == #D.setIds()
+            and state.items and state.items.christmas and state.items.christmas[1].client > 0)
+        ask({ action = "deco_add", set = "christmas", item = 6503 })
+        local spots = D.spotsNear(wall, 0)
+        check("Decorations: a second prop for the set replaces the first", #D.getSpots() == count + 1 and spots[1]
+            and spots[1].spot.itemid == 6503)
+        level = 0
+        ask({ action = "deco_add", set = "halloween", item = 5616 })
+        check("Decorations: players below God can't save props", #D.getSpots() == count + 1)
+        level = Admin.ACCESS
+        check("Decorations: a tree for Christmas on a clear tile", D.addSpot("christmas", floor, 2105, "test")
+            and #D.getSpots() == count + 2)
+        ask({ action = "deco_preview", set = "christmas", minutes = 5 })
+        check("Decorations: preview puts the set up", D.theme() == "christmas" and D.getPreview() == "christmas")
+        doTeleportThing(cid, viridian.pos, false)
+        ask({ action = "deco_auto", on = false })
+        check("Decorations: Viridian's automatic props can be turned off", D.getNoAuto()[viridian.id] == true)
+    end)
+    doSendPlayerExtendedOpcode, getPlayerAccess = opcode, access
+    doTeleportThing(cid, back, false)
+    if (not ok) then
+        error(err)
+    end
+
+    local function protectedAt(pos, itemid)
+        local item = getTileItemById(pos, itemid)
+        return item and item.uid and item.uid > 0 and getItemAttribute(item.uid, "scriptprotected") == true
+    end
+    -- the automatic props of the set up now around Viridian's temple (this script's spotsFor was worked
+    -- out with the props already down, so it names other tiles)
+    local function autoProps()
+        local set, ids, n = D.SETS[D.theme() or ""], {}, 0
+        for _, itemid in ipairs(set and set.items or {}) do ids[itemid] = true end
+        if (set and set.first) then ids[set.first] = true end
+        local r = D.CONFIG.maxDistance
+        for x = viridian.pos.x - r, viridian.pos.x + r do
+            for y = viridian.pos.y - r, viridian.pos.y + r do
+                local pos = { x = x, y = y, z = viridian.pos.z }
+                local ground = getTileThingByPos({ x = x, y = y, z = pos.z, stackpos = 0 })
+                for itemid in pairs((ground and ground.itemid and ground.itemid > 0) and ids or {}) do
+                    n = n + (protectedAt(pos, itemid) and not (x == floor.x and y == floor.y) and 1 or 0)
+                end
+            end
+        end
+        return n
+    end
+    addEvent(function()
+        check("Decorations: the saved wreath and tree go up with the set", protectedAt(wall, 6503) and protectedAt(floor, 2105))
+        check("Decorations: with automatic props off, only the saved ones are in Viridian", autoProps() == 0, autoProps())
+        D.removeSpots(wall, "christmas")
+        D.removeSpots(floor)
+        D.setAuto(viridian.id, not viridianOff)
+        if (not preview) then
+            D.setPreview(nil)
+        end
+        check("Decorations: removing deletes the rows", #D.getSpots() == count, #D.getSpots() - count)
+        addEvent(function()
+            check("Decorations: removed props come down", not protectedAt(wall, 6503) and not protectedAt(floor, 2105))
+            check("Decorations: the automatic props come back", autoProps() >= 3, autoProps())
+        end, 4000)
+    end, 3000)
+end
+
 local function testLegendaries(cid, friend, arena)
     local W = WildLegendaries
     local MON, KEY = W.MON, W.KEY
@@ -2276,7 +2401,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

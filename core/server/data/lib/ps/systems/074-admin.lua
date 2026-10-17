@@ -5,9 +5,15 @@
 -- JSON on EXTENDED_IDS.ADMIN:
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
 --                     {action = "start", event, multiplier, minutes}, {action = "stop", event},
---                     {action = "broadcast", text}, {action = "save"}, {action = "clean"}
+--                     {action = "broadcast", text}, {action = "save"}, {action = "clean"},
+--                     {action = "decorations"}, {action = "deco_add", set, item}, {action = "deco_remove", set},
+--                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on}
 --   server -> client  {type = "state", access, online, events = {{key, label, command, multiplier, left}}}
 --                     {type = "result", ok, text}
+--                     {type = "decorations", sets = {{id, name}}, items = {[set] = {{id, client, name, wall}}},
+--                      theme, preview = {set, left}, town = {name, auto}, radius,
+--                      spots = {{set, item, client, name, x, y, z, by, valid, why}}}
+-- Decorations are placed on the tile the staff member faces, like /deco.
 -- Nothing is sent to anyone below Admin.ACCESS, so their client never shows the button.
 
 Admin = {}
@@ -129,6 +135,94 @@ local function broadcast(cid, data)
     result(cid, true, "Broadcast sent.")
 end
 
+Admin.sendDecorations = function(cid)
+    local sets, items = {}, {}
+    for _, id in ipairs(Decorations.setIds()) do
+        sets[#sets + 1] = { id = id, name = Decorations.SETS[id].name }
+        items[id] = {}
+        for _, item in ipairs(Decorations.catalog(id)) do
+            local info = getItemInfo(item.id)
+            items[id][#items[id] + 1] = { id = item.id, client = info and info.clientId or 0, name = item.name, wall = item.wall }
+        end
+    end
+    local pos = getCreaturePosition(cid)
+    local spots = {}
+    for _, entry in ipairs(Decorations.spotsNear(pos, Decorations.NEARBY)) do
+        local spot, info = entry.spot, getItemInfo(entry.spot.itemid)
+        spots[#spots + 1] = { set = spot.set, item = spot.itemid, client = info and info.clientId or 0,
+                              name = Decorations.itemName(spot.itemid), x = spot.pos.x, y = spot.pos.y, z = spot.pos.z,
+                              by = spot.by, valid = entry.valid, why = entry.why }
+    end
+    local zone = Weather.zoneAt(pos)
+    local preview, endsAt = Decorations.getPreview()
+    send(cid, { type = "decorations", sets = sets, items = items, theme = Decorations.theme(),
+                preview = preview and { set = preview, left = endsAt - os.time() } or nil,
+                town = zone and { name = zone.name, auto = not Decorations.getNoAuto()[zone.id] } or nil,
+                radius = Decorations.NEARBY, spots = spots, previewMinutes = Decorations.PREVIEW_MINUTES })
+end
+
+local function decoFront(cid)
+    local pos = getCreatureLookPosition(cid)
+    return { x = pos.x, y = pos.y, z = pos.z }
+end
+
+local function decoAdd(cid, data)
+    local setId, itemid = Decorations.findSet(data.set), tonumber(data.item)
+    if (not setId or not itemid) then
+        return result(cid, false, "Pick a set and a prop.")
+    end
+    local pos = decoFront(cid)
+    local ok, replaced = Decorations.addSpot(setId, pos, itemid, getCreatureName(cid))
+    if (not ok) then
+        return result(cid, false, replaced)
+    end
+    log(cid, string.format("saved %s for %s at %d, %d, %d", Decorations.itemName(itemid), setId, pos.x, pos.y, pos.z))
+    result(cid, true, string.format("Saved %s for %s%s.", Decorations.itemName(itemid), Decorations.SETS[setId].name,
+        Decorations.theme() == setId and "" or " (it shows while the set is up; preview it to see it)"))
+end
+
+local function decoRemove(cid, data)
+    local setId = Decorations.findSet(data.set)
+    if (not setId) then
+        return result(cid, false, "Pick a set.")
+    end
+    local pos = decoFront(cid)
+    local removed = Decorations.removeSpots(pos, setId)
+    if (#removed == 0) then
+        return result(cid, false, string.format("No %s prop is saved on the tile you face.", Decorations.SETS[setId].name))
+    end
+    log(cid, string.format("removed %s's prop at %d, %d, %d", setId, pos.x, pos.y, pos.z))
+    result(cid, true, string.format("Removed %s's %s.", Decorations.SETS[setId].name, Decorations.itemName(removed[1].itemid)))
+end
+
+local function decoPreview(cid, data)
+    if (data.set == nil) then
+        Decorations.setPreview(nil)
+        log(cid, "ended the decorations preview")
+        return result(cid, true, "Preview ended.")
+    end
+    local setId, minutes = Decorations.findSet(data.set), tonumber(data.minutes) or Decorations.PREVIEW_MINUTES
+    if (not setId or minutes < 1 or minutes > Decorations.PREVIEW_MAX_MINUTES) then
+        return result(cid, false, "Pick a set to preview.")
+    end
+    Decorations.setPreview(setId, minutes)
+    log(cid, string.format("previews %s for %d minutes", setId, minutes))
+    result(cid, true, string.format("%s is up for everyone for %d minutes.", Decorations.SETS[setId].name, minutes))
+end
+
+local function decoAuto(cid, data)
+    local zone = Weather.zoneAt(getCreaturePosition(cid))
+    if (not zone) then
+        return result(cid, false, "You are not in a town.")
+    end
+    Decorations.setAuto(zone.id, data.on == true)
+    log(cid, string.format("turned %s's automatic decorations %s", zone.name, data.on == true and "on" or "off"))
+    result(cid, true, string.format("%s's automatic props are %s.", zone.name, data.on == true and "on" or "off"))
+end
+
+local DECORATION_ACTIONS = { decorations = function() end, deco_add = decoAdd, deco_remove = decoRemove,
+                             deco_preview = decoPreview, deco_auto = decoAuto }
+
 Admin.onClientMessage = function(cid, buffer)
     if (not Admin.allowed(cid)) then
         return
@@ -139,7 +233,10 @@ Admin.onClientMessage = function(cid, buffer)
     end
 
     local action = data.action
-    if (action == "hello" or action == "refresh") then
+    if (DECORATION_ACTIONS[action]) then
+        DECORATION_ACTIONS[action](cid, data)
+        return Admin.sendDecorations(cid)
+    elseif (action == "hello" or action == "refresh") then
         -- falls through to the state below
     elseif (action == "start") then
         startEvent(cid, data)

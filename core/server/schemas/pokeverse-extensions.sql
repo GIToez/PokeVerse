@@ -917,3 +917,21 @@ CREATE TABLE IF NOT EXISTS `event_calendar` (
   `created_at` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Decorations (lib/ps/systems/080-decorations.lua): props staff place by hand with /deco or the
+-- Admin window. set_id is a decoration set ("christmas", "autumn"...); the prop goes up on its tile
+-- while that set is up. The automatic props around the temples have no rows.
+-- Rollback: DROP TABLE `decoration_spots`; no existing table was changed.
+CREATE TABLE IF NOT EXISTS `decoration_spots` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `world_id` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `set_id` VARCHAR(32) NOT NULL,
+  `x` SMALLINT UNSIGNED NOT NULL,
+  `y` SMALLINT UNSIGNED NOT NULL,
+  `z` TINYINT UNSIGNED NOT NULL,
+  `itemid` SMALLINT UNSIGNED NOT NULL,
+  `added_by` VARCHAR(255) NOT NULL DEFAULT '',
+  `added_at` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `decoration_spots_tile` (`world_id`, `set_id`, `x`, `y`, `z`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

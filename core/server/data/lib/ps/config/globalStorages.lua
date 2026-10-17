@@ -61,6 +61,9 @@ GLOBAL_STORAGES = {
     LEGENDARY_RECENT = 7146, -- "m;<species>=<unix time>:<encounter>": defeats whose body may still be caught
     EVENT_CALENDAR_SEASON = 7150, -- a season forced with /calendar season (1 spring to 4 winter), anything else automatic
     WEATHER_OVERRIDES = 7151, -- "m;<kind>:<until>=<zone runs>;...": weather staff set with /weather (Weather)
+    DECORATIONS_VERSION = 7152, -- bumped when staff change decorations, so the globalevent puts them up again
+    DECORATIONS_PREVIEW = 7153, -- "m;<set>:<until>": a decoration set staff preview with /deco preview
+    DECORATIONS_NO_AUTO = 7154, -- "m;<zone ids>": towns staff decorate by hand only (/deco auto off)
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]
