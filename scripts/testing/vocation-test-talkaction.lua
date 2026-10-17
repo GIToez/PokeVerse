@@ -1902,6 +1902,9 @@ local function testLegendaries(cid, friend, arena)
     if (isMonster(m)) then
         local candies, money = getPlayerItemCount(cid, W.CONFIG.rareCandyId), getPlayerMoney(cid)
         local friendMoney = isPlayer(friend) and getPlayerMoney(friend) or 0
+        -- auto loot would add the body's loot money on top of the reward
+        local autoLoot = getPlayerAutoLoot(cid)
+        setPlayerAutoLoot(cid, false)
         local function defeats()
             local r = db.getResult(string.format("SELECT `kills` FROM `player_dex_kills` WHERE `player_id` = %d AND `species` = 'Mewtwo'",
                 getPlayerGUID(cid)))
@@ -1936,6 +1939,7 @@ local function testLegendaries(cid, friend, arena)
                 if (isMonster(p)) then doRemoveCreature(p) end
             end
             if (not isPlayer(cid)) then return end
+            setPlayerAutoLoot(cid, autoLoot)
             check("Legendary defeat: Rare Candies and money for 10% of the damage",
                 getPlayerItemCount(cid, W.CONFIG.rareCandyId) - candies == 2 and getPlayerMoney(cid) - money == 10000,
                 (getPlayerItemCount(cid, W.CONFIG.rareCandyId) - candies) .. " / " .. (getPlayerMoney(cid) - money))
@@ -1944,12 +1948,24 @@ local function testLegendaries(cid, friend, arena)
             local cd = W.getCooldowns()["Mewtwo"]
             check("Legendary defeat: tier 2 cooldown", cd and math.abs(cd - os.time() - W.getPopulation().cooldown[2]) <= 3)
             check("Legendary defeat: the encounter is closed", #W.getActive() == 0, #W.getActive())
-            local corpse = getTileItemByType(pos, ITEM_TYPE_CONTAINER)
+            -- it can still walk for the second or two it takes to die
+            local corpse, bodyPos
+            for radius = 0, 4 do
+                for dx = -radius, radius do
+                    for dy = -radius, radius do
+                        local at = { x = pos.x + dx, y = pos.y + dy, z = pos.z }
+                        local found = not corpse and getTileItemById(at, 11538) -- fainted mewtwo
+                        if (found and isItem(found)) then
+                            corpse, bodyPos = found, at
+                        end
+                    end
+                end
+            end
             check("Legendary defeat: the body lasts 3 minutes and belongs to the top damage dealer", isItem(corpse) and
                 (getItemAttribute(corpse.uid, "duration") or 0) > 150000 and getItemAttribute(corpse.uid, "corpseowner") == getPlayerGUID(cid),
-                isItem(corpse) and tostring(getItemAttribute(corpse.uid, "duration")))
+                isItem(corpse) and tostring(getItemAttribute(corpse.uid, "duration")) or "no body")
             if (isItem(corpse)) then
-                W.releaseBody(pos, corpse.itemid, "Mewtwo")
+                W.releaseBody(bodyPos, corpse.itemid, "Mewtwo")
                 check("Legendary defeat: after the window anyone may throw", not getItemAttribute(corpse.uid, "corpseowner"))
                 doRemoveItem(corpse.uid)
             end

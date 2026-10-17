@@ -635,7 +635,7 @@ function WildLegendaries.onDeath(cid, corpse)
         #winners > 0 and (" by " .. table.concat(winners, ", ")) or ""))
     sendCard(allPlayers(), { type = "end", reason = "defeated", species = species.name, trainers = winners })
     discord({ event = "end", reason = "defeated", encounterId = encounter, species = species.name,
-        area = type(area) == "string" and area or nil, trainers = winners,
+        area = type(area) == "string" and area or nil, trainers = #winners > 0 and winners or nil,
         topTrainer = top and getCreatureName(top) or nil })
 end
 

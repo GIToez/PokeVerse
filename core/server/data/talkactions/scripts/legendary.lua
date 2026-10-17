@@ -13,6 +13,17 @@ local function reply(cid, text)
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
 end
 
+local function nearestArea(pos)
+	local best, area = nil, nil
+	for _, point in ipairs(LEGENDARY_ANCHORS.ROAM) do
+		local distance = math.abs(point[1] - pos.x) + math.abs(point[2] - pos.y)
+		if (not best or distance < best) then
+			best, area = distance, point[4]
+		end
+	end
+	return area or "Kanto"
+end
+
 local function parseDuration(text)
 	local amount, unit = tostring(text or ""):match("^(%d+)%s*([smhd]?)$")
 	if (not amount) then
@@ -44,7 +55,7 @@ function onSay(cid, words, param, channel)
 		local pos, area
 		if (here) then
 			pos = getCreaturePosition(cid)
-			area = "your position"
+			area = nearestArea(pos)
 		end
 		local created, err = WildLegendaries.spawn(species, pos, area, "staff")
 		reply(cid, created and (species.name .. " is out.") or err)
