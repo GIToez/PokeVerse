@@ -54,6 +54,7 @@ Module
     - game_radar
     - game_fishing
     - game_daycare
+    - game_admin
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

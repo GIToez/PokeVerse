@@ -1206,6 +1206,12 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
   `talkactions/scripts/daycareevent.lua`.
 - Both events are announced in game and on Discord, and show on the calendar.
+- **Admin window:** done. A crown button on the top bar, only for God accounts (access 5),
+  opens a window to start, replace or stop the four events above (1.5x to 5x, 30 minutes to
+  3 days), broadcast a message, save the server, clean the map, and put common staff
+  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. The server checks
+  the access on every action and logs it. Code: `data/lib/ps/systems/074-admin.lua`
+  (opcode 30), `modules/game_admin`.
 
 ## 16. Reports and feature requests to Discord forums
 
