@@ -1086,7 +1086,7 @@ From the `#notes` channel:
     region is live. They are built for group fights, but a high-level trainer can beat one
     alone. Level 50 is recommended, not required. The catch chances stay as they are for now.
     Trainers can catch more than one, and can trade them on the GTS.
-  - **Plan (agreed, not built):** one new system file (`systems/0xx-wildLegendaries.lua`)
+  - **Plan (agreed, steps 1–3 built):** one new system file (`systems/078-wildLegendaries.lua`)
     with a table per species, not the map spawns.
     - **Tiers:** tier 1 is the birds, the beasts, the Regis and Latias/Latios. Tier 2 is
       Mewtwo, Mew, Lugia, Ho-Oh, Celebi, Kyogre, Groudon, Rayquaza, Jirachi and Deoxys.
@@ -1152,6 +1152,31 @@ From the `#notes` channel:
       no new build); (2) notifications and the Discord threads; (3) boss health, damage
       shares and rewards; (4) the world map pin and the radar check (client release);
       (5) tuning on live.
+    - **Built (steps 1–3, server only):**
+      - `systems/078-wildLegendaries.lua` with all the settings in `WildLegendaries.CONFIG`.
+        The `serverExpEvent` globalevent runs it every second; the `wildLegendaryHit` and
+        `wildLegendaryDeath` creature events record hits and hand out the rewards. The next
+        spawn, the cooldowns and the open encounters are global storages 7140–7146.
+      - Anchor points: `config/legendaryAnchors.lua`, made by
+        `scripts/make-legendary-anchors.py` from the area names and the map spawns (no
+        water species' spawns, outdoor only for the Kanto pool): 1,150 Kanto points plus
+        the 13 home areas. A move looks for a free tile up to 3 tiles from the point.
+      - The 5-trainer population row is set to 1 while we test.
+      - Health: 30 times (tier 1) and 60 times (tier 2) the monster file's health, for the
+        encounter only. Signature moves and area attacks are not built yet.
+      - Notifications: server-wide messages, a locked **Legendaries** chat channel (id 14,
+        shows what's out when you open it), Discord `legendary` events (see
+        `docs/discord-bridge.md`) and pop-up card data on extended opcode 34
+        (`EXTENDED_IDS.LEGENDARY`: `spawn`, `sighting`, `flee`, `end`, `caught` and the
+        personal `reward`). The client cards (a big banner for the spawn and the reward,
+        small cards for the rest, with an Options switch to turn them off) and the world
+        map pin come with step 4.
+      - The body: the monster's own corpse, kept 3 minutes; the top damage dealer has it
+        alone for 60 seconds. Only damage from a trainer's Pokémon (or balls) counts toward
+        the share. Mewtwo's monster file had no corpse; it now uses "fainted mewtwo".
+      - Staff: `/legendary status`, `spawn <name> [here]`, `end <name>`, `next <time>`
+        (`30s`, `5m`, `2h`, `1d`) and `cooldowns clear [name]`.
+      - Tests: the legendary part of the vocation test talkaction, with a real Mewtwo defeat.
   - **The bird dungeons stay as they are:** they are the end of the Ancient Times quest,
     one bird per trainer, once, and not a repeatable raid.
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper

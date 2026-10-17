@@ -108,6 +108,7 @@ detect restarts and de-duplicate deliveries.
 | `chat` | `onTalkChannel` on Game-Chat[EN-US] (channel 7) | `channelId`, `author`, `level`, `text` |
 | `catch` | `catchPokemon`, `catchPokemonWithSafariBall`, `catchPokemonWithSoulBall` after the ball was created | `trainer`, `species`, `baseSpecies`, `dexNumber`, `level`, `sex`, `shiny`, `legendary`, `extraPoints`, `ball`, `safari` |
 | `spawn` | shiny or legendary wild monsters only | `species`, `baseSpecies`, `dexNumber`, `level`, `shiny`, `legendary`, `source`, `startup`, `creatureId`, `position {x,y,z}`, `nearestTown` (optional) |
+| `legendary` | wild legendaries (`078-wildLegendaries.lua`) | `event` (`spawn`, `sighting`, `flee`, `end`, `caught`), `encounterId`, `species`, `dexNumber`; spawn: `tier`, `area`, `position {x,y,z}`, `nearestTown`, `endsAt`, `source` (`schedule`, `staff`, `test`), `health`; sighting and flee: `area`, `position`, `nearestTown`, `healthPercent`; end: `reason` (`defeated`, `fled`, `staff`, `restart`, `vanished`), and for `defeated` also `area`, `trainers[]` (10% of the damage or more), `topTrainer`; caught: `trainer` |
 | `player_login` | `Player::onPlacedCreature`, after the login scripts accepted the player | `scope` (`admin`), `sessionId`, `character`, `level`, `accountId`, `loginTime`, `ip` (only with `discordBridgeSessionIps`), `clientOs`, `clientVersion`, `playersOnline` |
 | `player_logout` | `Game::removeCreature` for a player with an open session | `scope` (`admin`), `sessionId`, `character`, `level`, `accountId`, `loginTime`, `logoutTime`, `duration` (seconds), `reason` (optional), `playersOnline` |
 | `account_link` | in-game `!discord unlink confirm` | `scope` (`account`), `action` (`unlinked`), `source` (`game`), `discordUserId` |
@@ -123,6 +124,10 @@ Notes:
 - Catch: failed throws never produce an event. If a caught Pokemon could not be delivered
   (no ball created) there is no event either. `extraPoints` is the ball's "+N" value at
   catch time, which the game always sets to 0.
+- Legendary: one `encounterId` per wild legendary, so the bot can keep one thread per
+  encounter. Wild legendaries never send a `spawn` event, and the 5-minute limit per
+  species does not apply. `caught` is sent when someone catches the species within 5
+  minutes of its defeat.
 - Spawn `source`: `spawn` (map spawn system and raids, `onMonsterSpawn`), `script`
   (`doCreateMonster`: quests, bosses, events), `fishing`, `headbutt`. `startup` is `true`
   for monsters placed while the server was starting. Script spawns of the same species are
