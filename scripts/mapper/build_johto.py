@@ -195,6 +195,7 @@ OUTPOSTS = [
     {'name': 'Route 34', 'clear': (2338, 834, 13), 'streets': [[(2314, 841), (2346, 841)]],
      'buildings': [('daycare', 2333, 828)]},
 ]
+ROAD_HALF_WIDTH = (1.6, 3.25)
 GATE_ROAD = [(3049, 700), (3066, 676), (3080, 650), (3094, 628), (3105, 614)]
 ROAD_WOBBLE = {'26': 6, '27': 8, '29': 8, '30': 8, '31': 5, '32': 8, '33': 6, '34': 5, '35': 3, '36': 6,
                'Ilex Forest': 3, '37': 5, '38': 6, '39': 3, '42': 5, '43': 5, '44': 4, '45': 6, '46': 6,
@@ -2534,11 +2535,16 @@ def build(base, out_path):
             if ends:
                 door_path[(name, ox, oy)] = min(ends)
                 road_pts['%s door %d,%d' % (pl['name'], ox, oy)] = [(dx + 0.5, dy), (dx + 0.5, min(ends))]
-    road_d = np.full((f.h, f.w), 1e9)
-    for pts in road_pts.values():
-        road_d = np.minimum(road_d, f.seg_dist(pts))
+    route_d, door_d = np.full((f.h, f.w), 1e9), np.full((f.h, f.w), 1e9)
+    for k, pts in road_pts.items():
+        if ' door ' in k:
+            door_d = np.minimum(door_d, f.seg_dist(pts))
+        else:
+            route_d = np.minimum(route_d, f.seg_dist(pts))
+    road_d = np.minimum(route_d, door_d)
     nroad = f.noise(6)
-    road = road_d + nroad * 2.5 < 2.0
+    # roads wander in width but never narrow to a single tile; a door's path is as wide as the door
+    road = (route_d < np.clip(2.0 - nroad * 2.5, ROAD_HALF_WIDTH[0], ROAD_HALF_WIDTH[1])) | (door_d < 1.0)
     uncut = mount.copy()
     mount &= ~(road_d < 6 + n2 * 4)
     forest &= ~(road_d < 4)
@@ -2712,6 +2718,14 @@ def build(base, out_path):
                 if path is None:
                     print('warning: no path from %s at %d,%d' % (name, ox + ex, oy + ey))
                     continue
+                # the path is three wide, the door in its middle
+                wide = []
+                for k, (iy, ix) in enumerate(path):
+                    ny, nx = path[k + 1] if k + 1 < len(path) else path[k - 1] if k else (iy + 1, ix)
+                    sy, sx = (0, 1) if ny != iy else (1, 0)
+                    wide += [(iy + d * sy, ix + d * sx) for d in (-1, 1)
+                             if walkable[iy + d * sy, ix + d * sx] and terrain[iy + d * sy, ix + d * sx] != BRIDGE]
+                path = path + wide
                 for iy, ix in path:
                     town_ground[(ix + f.x0, iy + f.y0)] = pl['paving']
                     terrain[iy, ix] = PAVE
