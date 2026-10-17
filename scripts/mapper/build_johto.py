@@ -2633,6 +2633,7 @@ def build(base, out_path):
     for pl in laid_out:
         key = pl.get('town_id', pl['name'])
         t = layouts[key]
+        sign_texts.update(t.texts)
         for n, x, y in t.buildings:
             if n == 'gym':
                 sign = (x + GYM_SIGN_AT[0], y + GYM_SIGN_AT[1])
@@ -3232,7 +3233,7 @@ def build(base, out_path):
             optional = center is not mountain and mountain in nb and (x, y) not in stair_landing
             border = brushes.borders_for(center, nb, optional=optional)
         children = b''.join(pvmap.item_node(i) for i in [ground] + border) + b''.join(
-            pvmap.item_node(i, text=sign_texts.get((x, y)) if i == GYM_SIGN else None) for i in deco)
+            pvmap.item_node(i, text=sign_texts.get((x, y)) if i in (T.SIGN, GYM_SIGN) else None) for i in deco)
         new_tiles[(x, y, Z)] = pvmap.RawTile(0, 0, None, children)
     # Kanto tiles touching the new ones get their borders redone; everything else on them stays.
     ring = set()
