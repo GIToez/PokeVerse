@@ -514,6 +514,23 @@ WikiData = {
         { key = 'dungeons', title = 'Legendary dungeons', portrait = 145, body = {
             { 'p', "After the Ancient Times quest (level 70), use the matching orb on the statue of Zapdos, Moltres or Articuno to enter its dungeon. One group at a time, no logging out inside." },
         } },
+        { key = 'wildlegendaries', title = 'Wild legendaries', portrait = 144, body = {
+            { 'p', "All 21 legendaries roam Kanto, one or two at a time, never two of the same and never two of the strongest group together. Each one is announced to everyone with the area it appeared in, and it moves to another spot every few minutes (Latias and Latios more often). The Legendaries chat channel lists what is out and where it was last seen." },
+            { 'p', "They are built for groups: level 50 is recommended, not required. A legendary stays put while it is being hit, flees once at half its HP (the strongest group again at a quarter) and slowly heals if nobody hits it for 3 minutes. If nobody beats it, it flies away after 90 minutes (2 hours for the strongest group)." },
+            { 'h', "Tier 1" },
+            { 'pokemon', { { 144, "Articuno" }, { 145, "Zapdos" }, { 146, "Moltres" }, { 243, "Raikou" }, { 244, "Entei" },
+                { 245, "Suicune" }, { 377, "Regirock" }, { 378, "Regice" }, { 379, "Registeel" }, { 380, "Latias" }, { 381, "Latios" } } },
+            { 'h', "Tier 2, the strongest group" },
+            { 'pokemon', { { 150, "Mewtwo" }, { 151, "Mew" }, { 249, "Lugia" }, { 250, "Ho-Oh" }, { 251, "Celebi" },
+                { 382, "Kyogre" }, { 383, "Groudon" }, { 384, "Rayquaza" }, { 385, "Jirachi" }, { 386, "Deoxys" } } },
+            { 'table', {
+                { "Group", "Reward" },
+                { "Tier 1", "1 rare candy and $5,000" },
+                { "Tier 2", "2 rare candies and $10,000" },
+            } },
+            { 'p', "Everyone whose Pokemon dealt at least 10% of the damage gets the reward and a Pokepedia defeat. The trainer who dealt the most has the body to themselves for 60 seconds to throw a ball; after that anyone can try, until it disappears after 3 minutes." },
+            { 'p', "The pop-up cards can be turned off in Options, Interface (Show event pop-up cards); the chat messages still show." },
+        } },
         { key = 'bosses', title = 'World bosses', portrait = 9, body = {
             { 'p', "Now and then a world boss appears, and a hint is announced every 10 minutes while it lives. Deal at least 10% of its damage for a reward: 2 gold bars, with small chances of a rare candy, plates, its artifact or a mastery stone. One reward a week; /boss shows your wait." },
             { 'commands', { "/boss" } },
