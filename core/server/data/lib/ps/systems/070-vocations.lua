@@ -17,7 +17,8 @@
 -- The Ranger radar popup (game_radar) talks JSON on EXTENDED_IDS.RADAR:
 --   server -> client  {type = "status", enabled, rank, title, range, cooldown, wait, legendaryWait, unlocks, open}
 --                     {type = "scan", ...the status fields, center = {x, y, z}, live, blips = {{id, x, y, z, kind, exact,
---                      distance, direction, band, name, look, types}, ...}}
+--                      distance, direction, band, name, look, types}, ...}, total}: at most MAX_BLIPS blips,
+--                      spread over the range; total is how many Pokemon the scan found
 --                     {type = "error", text, wait}
 --                     {type = "live", blips = {{id, x, y, z}}, gone = {ids}}: from liveRank, every liveMs for
 --                      liveSeconds after a scan, the exact blips that moved and the ones that are gone
@@ -942,6 +943,34 @@ Vocations.radarState = function(cid)
                          shiny = perks.shinyRank, legendary = perks.legendaryRank } }
 end
 
+local SPREAD_RINGS = 4 -- the rings drawn on the radar
+
+-- The nearest-first list reordered so the blips cap keeps Pokemon in every ring and direction: one
+-- from each ring and direction in turn, nearest first, instead of only the closest crowd
+local function spread(list, range)
+    local buckets, order = {}, {}
+    for _, entry in ipairs(list) do
+        local ring = math.min(SPREAD_RINGS, math.floor(entry.distance * SPREAD_RINGS / math.max(1, range)) + 1)
+        local key = ring .. ":" .. entry.direction
+        if (not buckets[key]) then
+            buckets[key] = {}
+            order[#order + 1] = key
+        end
+        table.insert(buckets[key], entry)
+    end
+    local out, round = {}, 1
+    while (#out < #list) do
+        for _, key in ipairs(order) do
+            local entry = buckets[key][round]
+            if (entry) then
+                out[#out + 1] = entry
+            end
+        end
+        round = round + 1
+    end
+    return out
+end
+
 -- One scan for the popup (the recharge already started): the state plus center and blips
 Vocations.radarScan = function(cid)
     local rank = rangerRank(cid)
@@ -959,19 +988,21 @@ Vocations.radarScan = function(cid)
             blips[#blips + 1] = blip(center, entry, kindOf(entry), rank, range)
         end
     end
-    -- the rare finds first, so the cap only drops the farthest regular Pokemon
+    -- the rare finds first, so the cap only drops regular Pokemon
     if (legendaryReady(cid, rank, found)) then
         add(found.legendary, function() return "legendary" end)
     end
     if (rank >= perks.shinyRank) then
         add(found.shiny, function() return "shiny" end)
     end
-    add(found.regular, function(entry)
+    local total = #blips + #found.regular
+    add(spread(found.regular, range), function(entry)
         return rank >= perks.speciesRank and rarity(entry.name) or "unknown"
     end)
     local data = Vocations.radarState(cid)
     data.type = "scan"
     data.center = { x = center.x, y = center.y, z = center.z }
+    data.total = total
     data.live = rank >= perks.liveRank or nil
     -- long names and types can still pass the engine's string limit with MAX_BLIPS blips
     JSON.encodeWithin(data, "blips", blips)
