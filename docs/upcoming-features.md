@@ -1233,11 +1233,36 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     06:00 restart (`dailyRestartTime`).
   - **Events stack** and multiply, also with the trainer's own boosts (EXP, loot, catch and
     egg boosts).
-  - **Holidays are automatic:** Christmas and Halloween for sure (their content exists,
-    `051-christmasEvent`, `037-halloweenEvent`). Suggested: New Year, Lunar New Year,
-    Valentine's (Luvdisc), Pokémon Day (February 27), Easter (`030-easterEvent`), the summer
-    festival (`055-julyVacationEvent`), the Harvest Moon, full-moon Clefairy nights and the
-    server anniversary.
+  - **Holidays are automatic**, chosen list below. Each one starts and ends at the 06:00
+    restart unless noted, and the bonuses are first suggestions to tune. Dates in brackets
+    are 2027's, worked out by the same rules the calendar will use.
+
+    | Holiday | When | What happens |
+    |---|---|---|
+    | New Year | Dec 31 to Jan 2 | 1.5x EXP, fireworks at midnight (server time), a New Year gift bag on login |
+    | Lunar New Year | 3 days from the second new moon after the winter solstice (Feb 6) | 1.5x loot, red envelope gift (money), Gyarados and Dragon-type spawns up |
+    | Valentine's | Feb 13 to 15 | Luvdisc spawns in the sea and while fishing, 2x breeding (Day Care egg chance), heart gift |
+    | Pokémon Day | Feb 27, one day (a Saturday in 2027) | 2x shiny, every Kanto starter can be caught at higher rates, a cake gift |
+    | Easter | Good Friday to Easter Monday (Mar 26 to 29) | the existing egg hunt, Easter monsters and Delicious Machine (`030-easterEvent`) |
+    | Summer festival | July 1 to 31 | the existing reward chests (`055-julyVacationEvent`), 1.5x fishing catch, Water-type spawns up |
+    | Harvest Moon | 3 days centred on the full moon nearest the autumn equinox (Sep 14 to 16) | 2x berry drops from wild Pokémon, berries heal 50% more, Grass and Bug spawns up |
+    | Full-moon Clefairy nights | every full moon, 20:00 to 06:00 server time (13 nights in 2026) | Clefairy and Clefable spawn at Mt. Moon, a small chance of a Moon Stone from them |
+    | Server anniversary | the launch date each year, 3 days | 2x EXP, 2x shiny, an anniversary gift with the year on it |
+    | Halloween | Oct 24 to Nov 1 | the existing Halloween quests and cauldron (`037-halloweenEvent`), Ghost spawns up |
+    | Christmas | Dec 18 to Dec 27 | the existing presents, Grinch and sleigh (`051-christmasEvent`), Ice spawns up |
+
+    - Moon phases come from the standard astronomical formula (Meeus, accurate to minutes),
+      not from a 29.5-day average, which can be off by a day. Easter uses the Western
+      computus.
+    - Easter, the summer festival, Halloween and Christmas have no start dates of their
+      own; the calendar turns each one on and off by its rule, and staff can still force
+      one on or off.
+    - Berries are only food today (there are no berry trees), so the Harvest Moon raises
+      berry drops and how much they heal.
+    - The anniversary needs the server's launch date. The old PSoul anniversary content
+      (cake monsters, surprise bag, see section 13) stays off; this is a new, smaller event.
+    - Overlaps stack like any other event: a full moon during Halloween, or a weekend 2x
+      EXP during New Year, multiply.
   - Times show in the player's own time zone.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
