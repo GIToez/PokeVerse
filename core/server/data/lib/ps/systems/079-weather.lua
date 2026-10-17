@@ -102,6 +102,15 @@ Weather.ZONE_RULES = {
     ["Fallarbor"] = { odds = { fog = 1.6 } },
     ["Fortree"] = { odds = { rain = 1.5 } },
     ["Lavender"] = { odds = { fog = 1.8 } },
+    -- Johto (calm until the region goes live)
+    ["New Bark"] = { odds = { windy = 1.8 } },
+    ["Violet"] = { odds = { windy = 1.4 } },
+    ["Azalea"] = { odds = { rain = 1.5 } },
+    ["Ecruteak"] = { odds = { fog = 1.8 } },
+    ["Olivine"] = { odds = { windy = 1.5, rain = 1.2 } },
+    ["Cianwood"] = { odds = { rain = 1.3, thunderstorm = 1.5, windy = 1.3 } },
+    ["Mahogany"] = { odds = { snow = 1.6, hail = 1.5 } },
+    ["Blackthorn"] = { odds = { snow = 1.3, windy = 1.5 } },
     ["Tutorial"] = { none = true },
 }
 

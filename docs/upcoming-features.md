@@ -1445,7 +1445,9 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       temperate, Hoenn warm, the Orange Islands tropical and Desert Island 92 a desert; some
       towns change the odds (sandstorms at Mauville and Pewter, fog at Lavender and
       Fallarbor, rain at Fortree, sun at Lavaridge and Cinnabar). Johto's zones are listed
-      but stay calm until `live = true`; the Tutorial has no weather.
+      but stay calm until `live = true`, with their odds ready: wind at New Bark, Violet,
+      Olivine and Blackthorn, rain at Azalea, fog at Ecruteak, storms at Cianwood, snow and
+      hail at Mahogany and snow at Blackthorn. The Tutorial has no weather.
       - Each zone's weather lasts 20 to 60 minutes, rolled from the climate's odds for the
         season. The roll is a seeded hash of the zone and the time, so every Lua state gets the
         same answer without sharing anything; only staff weather is stored (global storage 7151).
