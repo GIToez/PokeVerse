@@ -655,10 +655,12 @@ PIECES = [{(0, 0): a, (1, 0): b} for a, b in [(18103, 18104), (1662, 1663), (129
              (8156, 8157, 8159, 8158), (3624, 3625, 3626, 3627), (3628, 3629, 3630, 3631), (1300, 1301, 1302, 1303),
              (7004, 7005, 7006, 7007), (7008, 7009, 7010, 7011), (7012, 7013, 7014, 7015)]]
 PIECE_OF = {sid: (shape, off) for shape in PIECES for off, sid in shape.items()}
-# The Pokémon Center's walls, roof, awning and upper floor. In Kanto some buildings stand against a
-# Pokémon Center, and their box takes in a strip of it that looks like a center left half built.
-PC_PIECES = ({23965, 23966, 23978, 23983, 24076, 24121, 24122, 24146, 24151, 24158, 24163, 24166, 24167, 24170,
-              24235, 24236, 24242, 24244, 24246, 24249, 24250, 24311, 24312}
+# The Pokémon Center's walls, roof, awning and floors (Pallet's and the larger one of Cinnabar and
+# Fuchsia). In Kanto some buildings stand against a Pokémon Center, and their box takes in a strip of
+# it that looks like a center left half built.
+PC_PIECES = ({23965, 23966, 23968, 23972, 23978, 23983, 24076, 24121, 24122, 24146, 24151, 24158, 24163, 24166,
+              24167, 24170, 24227, 24235, 24236, 24242, 24244, 24246, 24249, 24250, 24311, 24312, 24318}
+             | set(range(24079, 24082))
              | set(range(24023, 24028)) | set(range(24036, 24040)) | set(range(24046, 24051))
              | set(range(24085, 24101)) | set(range(24104, 24113)) | set(range(24114, 24117))
              | set(range(24177, 24181)) | set(range(24189, 24194)) | set(range(24443, 24447)))
@@ -1095,7 +1097,7 @@ class Prefab:
                 elif dz == 0 and name != 'mart' and (dx in (0, self.w - 1) or dy in (0, self.h - 1)):
                     drop = {FLY_BARRIER}
                 kept = [b for b, i in zip(blobs, firsts) if i not in drop]
-                if (dz < 0 and tile.ground in PC_PIECES) or (tile.ground is None and not kept):
+                if tile.ground in PC_PIECES or (tile.ground is None and not kept):
                     del self.tiles[(dx, dy, dz)]
                 elif len(kept) < len(blobs):
                     self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
