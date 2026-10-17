@@ -89,7 +89,7 @@ void MonsterType::reset()
 uint16_t Monsters::getLootRandom(Player* owner)
 {
 	double extraChance = (owner ? owner->getExtraLootChance() : 0);
-    return (uint16_t)std::ceil((double)random_range(0, MAX_LOOTCHANCE) / (g_config.getDouble(ConfigManager::RATE_LOOT) + extraChance));
+    return (uint16_t)std::ceil((double)random_range(0, MAX_LOOTCHANCE) / ((g_config.getDouble(ConfigManager::RATE_LOOT) + extraChance) * g_game.getLootEventMultiplier()));
 }
 
 void MonsterType::dropLoot(Container* corpse)

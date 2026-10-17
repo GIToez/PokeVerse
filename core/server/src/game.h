@@ -634,6 +634,8 @@ class Game
 		void setExperienceEventMultiplier(double value) {experienceEventMultiplier = value;}
 		double getShinyEventMultiplier() const {return shinyEventMultiplier;}
 		void setShinyEventMultiplier(double value) {shinyEventMultiplier = value;}
+		double getLootEventMultiplier() const {return lootEventMultiplier;}
+		void setLootEventMultiplier(double value) {lootEventMultiplier = value;}
 
 		inline StageList::const_iterator getFirstStage() const {return stages.begin();}
 		inline StageList::const_iterator getLastStage() const {return stages.end();}
@@ -734,6 +736,7 @@ class Game
 		uint32_t lastStageLevel;
 		double experienceEventMultiplier;
 		double shinyEventMultiplier;
+		double lootEventMultiplier;
 
 		Highscore highscoreStorage[9];
 		time_t lastHighscoreCheck;

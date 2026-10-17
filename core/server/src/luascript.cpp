@@ -2464,6 +2464,12 @@ void LuaScriptInterface::registerFunctions()
 	//setShinyEventMultiplier(multiplier)
 	lua_register(m_luaState, "setShinyEventMultiplier", LuaScriptInterface::luaSetShinyEventMultiplier);
 
+	//getLootEventMultiplier()
+	lua_register(m_luaState, "getLootEventMultiplier", LuaScriptInterface::luaGetLootEventMultiplier);
+
+	//setLootEventMultiplier(multiplier)
+	lua_register(m_luaState, "setLootEventMultiplier", LuaScriptInterface::luaSetLootEventMultiplier);
+
 	//getDataDir()
 	lua_register(m_luaState, "getDataDir", LuaScriptInterface::luaGetDataDir);
 
@@ -11765,6 +11771,25 @@ int32_t LuaScriptInterface::luaSetShinyEventMultiplier(lua_State* L)
 		multiplier = 1.0;
 
 	g_game.setShinyEventMultiplier(multiplier);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetLootEventMultiplier(lua_State* L)
+{
+	//getLootEventMultiplier()
+	lua_pushnumber(L, g_game.getLootEventMultiplier());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetLootEventMultiplier(lua_State* L)
+{
+	//setLootEventMultiplier(multiplier)
+	double multiplier = popFloatNumber(L);
+	if(multiplier < 1.0)
+		multiplier = 1.0;
+
+	g_game.setLootEventMultiplier(multiplier);
 	lua_pushboolean(L, true);
 	return 1;
 }

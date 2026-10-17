@@ -632,6 +632,8 @@ class LuaScriptInterface
 		static int32_t luaSetExperienceEventMultiplier(lua_State* L);
 		static int32_t luaGetShinyEventMultiplier(lua_State* L);
 		static int32_t luaSetShinyEventMultiplier(lua_State* L);
+		static int32_t luaGetLootEventMultiplier(lua_State* L);
+		static int32_t luaSetLootEventMultiplier(lua_State* L);
 		static int32_t luaDoCreatureChangeOutfit(lua_State* L);
 		static int32_t luaSetCreatureOutfit(lua_State* L);
 		static int32_t luaGetCreatureOutfit(lua_State* L);
