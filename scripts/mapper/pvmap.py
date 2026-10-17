@@ -142,6 +142,33 @@ def read_region_raw(path, x0, y0, x1, y1, floors=range(16), data=None):
     return tiles
 
 
+def read_tiles_raw(path, positions, data=None):
+    """Returns {(x, y, z): RawTile} for the given positions that have a tile, kept byte for byte."""
+    if data is None:
+        data = open(path, 'rb').read()
+    positions = set(positions)
+    tiles = {}
+    area = None
+    cur = None
+    for ev, t, depth, a, b, _ in walk(data):
+        if ev == 'open':
+            if t == TILE_AREA:
+                area = struct.unpack_from('<HHB', unescape(data[a:b]), 0)
+            elif t in (TILE, HOUSETILE):
+                p = unescape(data[a:b])
+                pos = (area[0] + p[0], area[1] + p[1], area[2])
+                if pos in positions:
+                    _, _, house_id, flags, item = parse_tile_props(p, t == HOUSETILE)
+                    cur = RawTile(house_id, flags, item, b)
+                    tiles[pos] = cur
+                else:
+                    cur = None
+        elif t in (TILE, HOUSETILE) and cur is not None:
+            cur.children = data[cur.children:b - 1]
+            cur = None
+    return tiles
+
+
 def read_tiles(path, positions, data=None):
     """Returns {(x, y, z): [server item ids]} for the given positions that have a tile."""
     if data is None:
