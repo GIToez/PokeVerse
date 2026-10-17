@@ -16,6 +16,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Daycare.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.HELD_ITEM) then
         PokemonHeldItem.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.ADMIN) then
+        Admin.onClientMessage(cid, buffer)
     end
     return true
 end

@@ -61,7 +61,8 @@ EXTENDED_IDS = {
     FISHING = 26, -- JSON Angler fishing guide: what bites in each region at each skill (Fishing.openGuide)
     TRAINER_CARD = 27, -- JSON Trainer Card: a trainer's profile, and the card's settings for its owner (TrainerCard)
     DAYCARE = 28, -- JSON Day Care window: the two slots, the egg slot and the breeding status (Daycare)
-    HELD_ITEM = 29 -- JSON give or take a held item from the swap bar (PokemonHeldItem.onClientMessage)
+    HELD_ITEM = 29, -- JSON give or take a held item from the swap bar (PokemonHeldItem.onClientMessage)
+    ADMIN = 30 -- JSON Admin window for staff: server events and staff tools (Admin)
 }
 
 TOURNAMENT_TYPES = {}

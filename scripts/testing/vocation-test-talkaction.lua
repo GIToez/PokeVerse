@@ -572,6 +572,50 @@ local function testShinyEvent(cid)
     check("shiny event: off cancels it", ShinyEvent.stop() and getShinyEventMultiplier() == 1 and not ShinyEvent.get())
 end
 
+local function testAdmin(cid)
+    local sent, broadcasts = {}, {}
+    local opcode, access, broadcast = doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage
+    local level = 0
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.ADMIN) then
+            sent[#sent + 1] = JSON.decode(buffer)
+        end
+        return true
+    end
+    getPlayerAccess = function() return level end
+    doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
+    local function ask(data)
+        sent = {}
+        Admin.onClientMessage(cid, JSON.encode(data))
+        return sent
+    end
+    local ok, err = pcall(function()
+        ShinyEvent.stop()
+        check("admin: players below God get nothing", #ask({ action = "hello" }) == 0 and not Admin.allowed(cid))
+        ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
+        check("admin: players below God can't start events", not ShinyEvent.get())
+        level = Admin.ACCESS
+        local state = ask({ action = "hello" })[1]
+        check("admin: staff get the four events", state and state.type == "state" and #(state.events or {}) == 4)
+        ask({ action = "start", event = "shiny", multiplier = 7, minutes = 30 })
+        check("admin: odd multipliers are refused", not ShinyEvent.get() and sent[1] and sent[1].ok == false)
+        ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
+        local multiplier, endsAt = ShinyEvent.get()
+        check("admin: Start runs the shiny event", multiplier == 2 and math.abs(endsAt - os.time() - 1800) <= 1, multiplier)
+        check("admin: the window shows it running", sent[2] and sent[2].events[2].multiplier == 2)
+        ask({ action = "stop", event = "shiny" })
+        check("admin: Stop cancels it", not ShinyEvent.get() and getShinyEventMultiplier() == 1)
+        ask({ action = "broadcast", text = "  Hello trainers  " })
+        check("admin: broadcast is sent with the staff name", broadcasts[#broadcasts] == getCreatureName(cid) .. ": Hello trainers",
+            broadcasts[#broadcasts])
+    end)
+    doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage = opcode, access, broadcast
+    ShinyEvent.stop()
+    if (not ok) then
+        error(err)
+    end
+end
+
 local function testHeldItems(cid)
     local CHARCOAL, DRAGON_FANG = 23515, 23516
     local ball = newBall(cid, "Pidgey", 30)
@@ -1321,7 +1365,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
