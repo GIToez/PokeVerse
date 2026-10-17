@@ -1432,20 +1432,18 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       spawns and raids) used to run all year or not at all; it now only runs on its dates.
     - Not built from the first plan: the "spawns up" for types (Dragon, Water, Grass, Ghost,
       Ice), fireworks at midnight and higher starter catch rates.
-- **Seasons (concept, waiting for approval):** spring, summer, autumn and winter set by
-  the event calendar, each with its own Pokémon and look.
-  - **When:** two options to choose from.
-    - Real seasons (northern hemisphere): spring from the March equinox, summer from the
-      June solstice, autumn from the September equinox, winter from the December solstice,
-      at the 06:00 restart. Easy to explain, but the same spawns for three months.
-    - Monthly, as in Pokémon Black and White: January spring, February summer, March autumn,
-      April winter, then again (each season about 3 times a year). More variety.
-    - Either way the calendar shows the season as a long band, the banner names it, and
-      staff can force one (`/calendar season winter`) for testing or an event.
+- **Seasons and weather (agreed October 2026, not built yet):**
+  - **Seasons follow the real calendar** (northern hemisphere), not a sped-up cycle, so it's
+    never summer at Christmas. Spring starts at the March equinox, summer at the June
+    solstice, autumn at the September equinox and winter at the December solstice. The
+    event calendar already works out these dates (`EventCalendar.seasonTime` in
+    `077-eventCalendar.lua`). The season changes at the 06:00 restart after the date.
+    The calendar shows it as a long band, the banner names it, and staff can force one
+    (`/calendar season winter`) to test or for an event.
   - **Seasonal Pokémon:** a table of swaps applied in the C++ spawner (`Spawn::spawnMonster`,
-    where the shiny roll is): in winter, some share of a species' spawns becomes another
-    one, so they keep sensible places and the map's spawn file doesn't change. The shiny
-    roll still applies. First ideas, all already in the game:
+    where the shiny roll is). In winter, some share of a species' spawns becomes another
+    species, so the swapped Pokémon spawn in sensible places and the map's spawn file
+    doesn't change. The shiny roll still applies. First ideas, all already in the game:
     - Spring: Hoppip, Skiploom, Jumpluff, Oddish line and Bellossom, Ledyba, Volbeat and
       Illumise, Lotad, Surskit.
     - Summer: Sunkern and Sunflora, Wingull and Pelipper, Corsola, Mantine, Remoraid,
@@ -1454,25 +1452,61 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       Misdreavus, Hoothoot and Noctowl, Houndour, Phanpy.
     - Winter: Swinub and Piloswine, Snorunt and Glalie, Sneasel, Delibird, Smoochum and
       Jynx, Seel and Dewgong, Shellder and Cloyster, Spheal, Lapras.
-    - Castform's form could follow the season (Snowy in winter, Sunny in summer).
     - These count for the Pokepedia, tasks and the radar like any other spawn.
-  - **Map changes:** in three layers, cheapest first.
-    - **Weather (client only):** the client already has Snow, Rain and Fog map shaders
-      (`game_shaders`) and area effects (`game_environment`). Snowfall outdoors in winter,
-      rain showers in spring, falling leaves in autumn (a new particle effect), sun haze in
-      summer. No map work.
-    - **Seasonal decorations (server, at the restart):** placed and removed by script at
-      fixed spots, like the Clefairy spawns: snowmen and snowy fir trees in towns in winter,
-      flowers in spring, pumpkins and leaf heaps in autumn.
-    - **Snowy ground (server, at the restart):** a mapper's copy of chosen areas (towns and
-      routes) in their winter look, turned by a script (`scripts/mapper`, which already
-      reads the map and has auto-borders) into a patch of tile changes. The server applies
-      the patch at the restart when winter starts and takes it back when it ends. The snow
-      grounds and snow borders are already in the item data, so the client needs nothing
-      new. Areas with no winter copy stay as they are. This is the big piece of work (map
-      editing), so it can come after the first two.
+  - **Weather all year, weighted by the season.** Weather is random all year round, not
+    only in its season. The season only changes the odds (snow is common in winter, rare
+    in late autumn and never in summer).
+    - Kinds: clear, sunny (harsh sun, heat haze), rain, thunderstorm (rain with lightning
+      flashes and thunder), fog, snow, hail, sandstorm (only in desert areas and on rocky
+      routes) and windy (leaves or petals blowing, depending on the season).
+    - Zones: the outdoor Kanto areas are grouped into a few weather zones (by area name, as
+      on the area banner), so it can rain on Route 1 while Cerulean is sunny. Buildings,
+      caves and dungeons have no weather. Each zone rolls its next weather every 20 to 60
+      minutes, using that season's odds and the zone's own rules (no snow at sea in
+      summer, sandstorms only where there's sand).
+    - Client: the existing map shaders (`game_shaders`: Rain, Snow, Fog, Heat) plus new
+      particle effects (raindrops, snowflakes, leaves, lightning flashes on the screen,
+      thunder sounds) only outdoors. There's a weather icon next to the area name; hover
+      it to see the weather and the effects that apply. The server sends the zone's
+      weather on login and when you enter a new zone (a new extended opcode).
+    - Player options: show weather effects (on, light, off), weather sounds, and flashing
+      lightning (off for people sensitive to flashes). Options only change the look; the
+      gameplay effects still apply.
+  - **Weather settings that change other systems.** All in one config table on the server
+    (`CONFIG.effects[weather]`), so each effect can be tuned or turned off without touching
+    code:
+    - Battle (like the main games): rain makes Water moves 20% stronger and Fire moves 20%
+      weaker; harsh sun does the opposite. Thunderstorms make Electric moves 20% stronger.
+      Hail and sandstorms deal a little damage every few seconds to Pokémon that aren't
+      Ice (hail) or Rock, Ground or Steel (sandstorm). Fog lowers the accuracy of ranged
+      moves a little.
+    - Spawns: each weather has a list of species that spawn more often, through the same
+      swap table as the seasons (Water and Bug types in rain, Electric types in
+      thunderstorms, Ghost types in fog, Ice types in snow and hail, Ground types in
+      sandstorms, Fire and Grass types in sun).
+    - Castform changes form to match the weather (Rainy, Sunny or Snowy).
+    - Fishing: rain and thunderstorms make bites a little faster.
+    - Ranger radar: fog cuts its range by a quarter.
+    - Events: staff can set the weather for one zone or everywhere for a while
+      (`/weather <zone|all> <kind> <time>`, `/weather status`, `/weather off`), and
+      holidays or events can set it too (snow on Christmas Day, fog on Halloween night).
+      Daily tasks and quests can ask for a weather ("catch a Water type in the rain").
+  - **Seasonal decorations (server, at the restart):** placed and removed by script at
+    fixed spots, like the Clefairy spawns: snowmen and snowy fir trees in towns in winter,
+    a Christmas tree in each town over Christmas, jack-o'-lanterns at Halloween, flowers
+    in spring and leaf heaps in autumn.
+  - **Not planned for now:** changing the map itself (snowy ground or new tiles in winter).
+    It could come later as a mapper's winter copy of chosen areas, applied at the restart.
   - **Season events:** a holiday can depend on the season (the Harvest Moon is already the
     autumn full moon), and staff events can be limited to a season.
+  - **Build order:**
+    1. The season in the calendar, with the staff command.
+    2. Basic weather: zones, the timer, the client effects and icon, the options and
+       `/weather`.
+    3. Decorations.
+    4. Battle effects.
+    5. Spawn swaps, first for weather, then for seasons, and Castform.
+    6. Fishing, radar, tasks.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 100x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
