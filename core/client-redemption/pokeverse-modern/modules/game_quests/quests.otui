@@ -13,13 +13,40 @@ QuestMuted < QuestText
 QuestTab < FishingTab
   width: 128
 
-QuestGroup < UILabel
-  ttf-font: /fonts/ttf/arialb.ttf
-  ttf-font-size: 12
-  color: #ffd75a
-  height: 20
-  text-offset: 2 3
-  phantom: true
+QuestGroup < UIButton
+  height: 22
+  focusable: false
+  $hover:
+    background-color: #ffffff10
+
+  UIWidget
+    id: arrow
+    size: 7 7
+    image-source: /images/ui/icon-arrow7x7-down
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 4
+    phantom: true
+    $on:
+      image-source: /images/ui/icon-arrow7x7-right
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.left: arrow.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  QuestMuted
+    id: count
+    text-auto-resize: true
+    anchors.left: title.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
 
 QuestRow < UIButton
   height: 46

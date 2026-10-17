@@ -2,8 +2,8 @@
 -- the server answers with the quests under way ({type = "active"}) for the tracker, and the marks over the
 -- NPCs ({type = "marks"}, icons.lua). Opening the window asks for {action = "list"}: every quest the
 -- trainer has started, can start now or later, and has done. Quest notices ({type = "notice"}) are drawn
--- by notices.lua and keep the rows here up to date. The tracked quests are kept per character in
--- g_settings ('QuestLog').
+-- by notices.lua and keep the rows here up to date. The tracked quests and the folded categories are kept
+-- per character in g_settings ('QuestLog').
 IMAGES = '/modules/game_quests/images/'
 
 local CATEGORIES = { 'Main story', 'Gyms', 'Getting started', 'Side quests', 'Daily', 'Addons', 'Events' }
@@ -20,6 +20,7 @@ local order = {} -- ids in the server's order
 local tab = 'active'
 local selected -- id
 local tracked = {} -- id -> true
+local collapsed = {} -- "<tab>:<category>" -> true, the categories folded away in that tab
 local loaded = false -- the full list came at least once
 
 local function send(data)
@@ -36,7 +37,7 @@ local function settingsKey()
 end
 
 local function loadTracked()
-    tracked = {}
+    tracked, collapsed = {}, {}
     local node = g_settings.getNode('QuestLog') or {}
     local mine = node[settingsKey()]
     if type(mine) == 'table' and type(mine.tracked) == 'table' then
@@ -46,16 +47,25 @@ local function loadTracked()
             end
         end
     end
+    if type(mine) == 'table' and type(mine.collapsed) == 'table' then
+        for _, key in pairs(mine.collapsed) do
+            collapsed[tostring(key)] = true
+        end
+    end
 end
 
 local function saveTracked()
-    local list = {}
+    local list, folded = {}, {}
     for id in pairs(tracked) do
         list[#list + 1] = id
     end
     table.sort(list)
+    for key in pairs(collapsed) do
+        folded[#folded + 1] = key
+    end
+    table.sort(folded)
     local node = g_settings.getNode('QuestLog') or {}
-    node[settingsKey()] = { tracked = list }
+    node[settingsKey()] = { tracked = list, collapsed = folded }
     g_settings.setNode('QuestLog', node)
     g_settings.save()
 end
@@ -333,12 +343,30 @@ local function drawList()
                 end
                 return false
             end)
+            local key = tab .. ':' .. category
+            -- a search shows every match, folded or not
+            local folded = collapsed[key] and filter == ''
             local header = g_ui.createWidget('QuestGroup', list)
-            header:setText(tr(category))
+            header.title:setText(tr(category))
+            header.count:setText(string.format('(%d)', #rows))
+            header.arrow:setOn(folded)
+            header:setTooltip(folded and tr('Click to show these quests') or tr('Click to hide these quests'))
+            header.onClick = function()
+                collapsed[key] = not collapsed[key] or nil
+                saveTracked()
+                local scroll = window.listScroll and window.listScroll:getValue()
+                drawList()
+                if scroll then
+                    window.list:getLayout():update()
+                    window.listScroll:setValue(scroll)
+                end
+            end
             for _, row in ipairs(rows) do
                 first = first or row.id
                 keep = keep or (row.id == selected and row.id)
-                addRow(list, row)
+                if not folded then
+                    addRow(list, row)
+                end
             end
         end
     end
