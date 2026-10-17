@@ -1495,6 +1495,17 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
         and skull candles. Winter: snowmen, snowy dead trees and heaps of snow (not in the
         tropics or the desert). Spring: flowers. Autumn: pumpkins, wheat, hay and mushrooms.
         Summer has none.
+      - Every other holiday has its own set too, and it goes up on its own when the holiday
+        starts: New Year (party cakes, a Pikachu doll, teddy bears, roses), Lunar New Year (red
+        lanterns, a dragon flag, red roses), Valentine's (heart pillows, roses, teddy bears),
+        Pokemon Day (Pokemon dolls around a Pikachu), Easter (eggs and tulips), Summer
+        Festival (sunflowers, sea stars, Lapras and Seel dolls), Harvest Moon (pumpkins,
+        wheat, hay, moon flowers), Clefairy Night (Chansey and Jigglypuff dolls, moon
+        flowers, meadow stars) and Anniversary (a party cake by the temple, Mew, Pikachu and
+        Bulbasaur dolls, roses).
+      - When two holidays overlap, the first in this order wins: Christmas, Halloween, New
+        Year, Lunar New Year, Valentine's, Pokemon Day, Easter, Anniversary, Summer
+        Festival, Harvest Moon, Clefairy Night. A holiday's set always beats the season's.
     - Tests: the season, weather and decoration parts of the vocation test talkaction.
   - **Seasons follow the real calendar** (northern hemisphere), not a sped-up cycle, so it's
     never summer at Christmas. Spring starts at the March equinox, summer at the June

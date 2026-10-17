@@ -1913,9 +1913,18 @@ end
 
 local function testDecorations(cid)
     local D = Decorations
-    local holiday = EventCalendar.isActive("christmas") and "christmas" or EventCalendar.isActive("halloween") and "halloween"
-    check("Decorations: the set follows the holidays, then the season", D.theme() == (holiday or EventCalendar.seasonId()),
+    local holiday = D.holidayTheme()
+    local season = D.SETS[EventCalendar.seasonId()] and EventCalendar.seasonId() or nil
+    check("Decorations: the set follows the holidays, then the season", D.theme() == (holiday or season),
         tostring(D.theme()))
+    local mapped, missing = {}, {}
+    for _, entry in ipairs(D.HOLIDAYS) do
+        mapped[entry[1]] = D.SETS[entry[2]] and #D.SETS[entry[2]].items > 0
+    end
+    for _, h in ipairs(EventCalendar.HOLIDAYS) do
+        if (not mapped[h.id]) then missing[#missing + 1] = h.id end
+    end
+    check("Decorations: every calendar holiday has its own set", #missing == 0, table.concat(missing, ","))
     local viridian = Weather.getZone(1)
     local spots = viridian and D.spotsFor(viridian) or {}
     check("Decorations: spots around Viridian's temple", #spots >= 3, #spots)

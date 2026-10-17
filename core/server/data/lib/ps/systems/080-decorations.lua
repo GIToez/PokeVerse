@@ -29,23 +29,54 @@ Decorations.SETS = {
     christmas = { name = "Christmas", first = 2105, items = { 6502, 7171, 7173, 486 },
                   noSnow = { 2105, 6502 } }, -- for tropical and desert towns
     halloween = { name = "Halloween", items = { 2097, 2096, 5812, 2097 } },
+    newyear = { name = "New Year", first = 6280, items = { 6280, 12256, 2746, 2112 } },
+    lunarnewyear = { name = "Lunar New Year", items = { 11200, 1435, 11200, 2744 } },
+    valentines = { name = "Valentine's", items = { 1685, 2744, 2112, 2762 } },
+    pokemonday = { name = "Pokemon Day", first = 12256, items = { 12271, 12270, 12263, 12272, 12258 } },
+    easter = { name = "Easter", items = { 12154, 2749, 2750, 12154, 2751 } },
+    summerfestival = { name = "Summer Festival", items = { 2753, 5417, 12258, 12257 } },
+    harvestmoon = { name = "Harvest Moon", items = { 2096, 2739, 3848, 2740 } },
+    clefairy = { name = "Clefairy Night", items = { 12268, 12270, 2740, 4152 } },
+    anniversary = { name = "Anniversary", first = 6280, items = { 12254, 12256, 2744, 12271 } },
     winter = { name = "Winter", items = { 7171, 7173, 2697, 486 }, climates = { temperate = true, warm = true } },
     spring = { name = "Spring", items = { 2749, 2750, 2751, 2753, 6226, 6230 } },
     autumn = { name = "Autumn", items = { 2096, 2739, 3848, 4183, 2737 } },
 }
 
--- The holidays with their own set, before the season's
-Decorations.HOLIDAYS = { "christmas", "halloween" }
+-- Every calendar holiday and its set, first match wins when two overlap; a holiday's set comes
+-- before the season's
+Decorations.HOLIDAYS = {
+    { "christmas", "christmas" },
+    { "halloween", "halloween" },
+    { "newyear", "newyear" },
+    { "lunarnewyear", "lunarnewyear" },
+    { "valentines", "valentines" },
+    { "pokemonday", "pokemonday" },
+    { "easter", "easter" },
+    { "anniversary", "anniversary" },
+    { "summer", "summerfestival" }, -- the holiday id "summer" is also a season id
+    { "harvestmoon", "harvestmoon" },
+    { "clefairy", "clefairy" },
+}
+
+-- The set of the first active holiday, or nil
+function Decorations.holidayTheme()
+    for _, entry in ipairs(Decorations.HOLIDAYS) do
+        if (EventCalendar.isActive(entry[1])) then
+            return entry[2]
+        end
+    end
+    return nil
+end
 
 -- The set that should be up now: its id, or nil
 function Decorations.theme()
     if (not Decorations.CONFIG.enabled) then
         return nil
     end
-    for _, id in ipairs(Decorations.HOLIDAYS) do
-        if (EventCalendar.isActive(id)) then
-            return id
-        end
+    local holiday = Decorations.holidayTheme()
+    if (holiday) then
+        return holiday
     end
     local season = EventCalendar.seasonId()
     return Decorations.SETS[season] and season or nil
