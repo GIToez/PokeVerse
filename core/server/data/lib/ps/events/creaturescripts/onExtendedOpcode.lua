@@ -20,6 +20,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Admin.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.QUEST) then
         Quests.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.MOVE_INFO) then
+        MoveInfo.onClientMessage(cid, buffer)
     end
     return true
 end

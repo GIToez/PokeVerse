@@ -186,6 +186,25 @@ function getElementMultipler(attackerType, defenderType, defenderCid)
     return elements[attackerType][defenderType] or 1.0
 end
 
+SKILL_ELEMENT_MULTIPLIER_MAX = 2.5
+
+-- The move's type against both of the defender's types, capped (a double weakness is 2.5x, not 4x)
+function getSkillElementMultiplier(fromCid, toCid, skillName)
+    local multiplier = 1
+    for _, pType in pairs(getPokemonTypes(toCid)) do
+        multiplier = multiplier * getElementMultipler(getPokemonSkillDamageType(skillName), pType, toCid)
+    end
+
+    if (multiplier > SKILL_ELEMENT_MULTIPLIER_MAX) then
+        multiplier = SKILL_ELEMENT_MULTIPLIER_MAX
+
+    elseif (multiplier == 0 and
+            doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.SCRAPPY, toCid, skillName)) then
+        multiplier = 1.0
+    end
+    return multiplier
+end
+
 --[[local function getDamageFormula(attackerLevel, attackerAttackStat, attackPower, defenderDefenseStat, stab, typeModifiers)
 	local randomNumber = math.random(217, 255)
 	return ((((((((2*attackerLevel/5+2)*attackerAttackStat*attackPower)/defenderDefenseStat)/50)+2)*stab)*typeModifiers/10)*randomNumber)--/255
@@ -210,21 +229,9 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
         end
 
         local targetName = getCreatureName(toCid)
-        local elementMultipler = 1
         local damageLevel = 1
         local fromCidLevel, toCidLevel = getMonsterLevel(fromCid), getMonsterLevel(toCid)
-
-        for _, pType in pairs(getPokemonTypes(toCid)) do
-            elementMultipler = elementMultipler * getElementMultipler(getPokemonSkillDamageType(skillName), pType, toCid)
-        end
-
-        if (elementMultipler > 2.5) then
-            elementMultipler = 2.5
-
-        elseif (elementMultipler == 0 and
-                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.SCRAPPY, toCid, skillName)) then
-            elementMultipler = 1.0
-        end
+        local elementMultipler = getSkillElementMultiplier(fromCid, toCid, skillName)
 
         if (doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.WONDER_GUARD, nil, elementMultipler)) then
             return -1

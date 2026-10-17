@@ -63,7 +63,8 @@ EXTENDED_IDS = {
     DAYCARE = 28, -- JSON Day Care window: the two slots, the egg slot and the breeding status (Daycare)
     HELD_ITEM = 29, -- JSON give or take a held item from the swap bar (PokemonHeldItem.onClientMessage)
     ADMIN = 30, -- JSON Admin window for staff: server events and staff tools (Admin)
-    QUEST = 31 -- JSON quest log, quest notices and the NPCs' quest marks (Quests)
+    QUEST = 31, -- JSON quest log, quest notices and the NPCs' quest marks (Quests)
+    MOVE_INFO = 32 -- JSON type matchups on the moves bar and the move cards (MoveInfo)
 }
 
 TOURNAMENT_TYPES = {}

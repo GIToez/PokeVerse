@@ -1138,6 +1138,86 @@ local function testRanger(cid, arena)
     end
 end
 
+-- Type matchups on the moves bar and the move cards (MoveInfo, EXTENDED_IDS.MOVE_INFO)
+local function testMoveInfo(cid, arena)
+    local made, spots = {}, {}
+    for dx = -3, 3 do
+        for dy = -3, 3 do
+            local p = { x = arena.x + dx, y = arena.y + dy, z = arena.z }
+            if ((dx ~= 0 or dy ~= 0) and isFree(cid, p)) then
+                spots[#spots + 1] = p
+            end
+        end
+    end
+    local function make(name)
+        local spot = table.remove(spots, 1)
+        local m = spot and doCreateMonster(name, spot, false)
+        if (m) then
+            made[#made + 1] = m
+        end
+        return m
+    end
+    local geodude, charmander, bulbasaur, charizard, gastly, squirtle =
+        make("Geodude"), make("Charmander"), make("Bulbasaur"), make("Charizard"), make("Gastly"), make("Squirtle")
+    if (not (geodude and charmander and bulbasaur and charizard and gastly and squirtle)) then
+        check("move info: room for the test Pokemon", false)
+    else
+        local m = function(target, move) return MoveInfo.getMultiplier(nil, target, move) end
+        check("matchup: Water Gun vs Geodude is a double weakness, capped at 2.5x", m(geodude, "Water Gun") == 2.5, m(geodude, "Water Gun"))
+        check("matchup: Water Gun vs Charmander is 2x", m(charmander, "Water Gun") == 2, m(charmander, "Water Gun"))
+        check("matchup: Water Gun vs Bulbasaur is 0.5x", m(bulbasaur, "Water Gun") == 0.5, m(bulbasaur, "Water Gun"))
+        check("matchup: Vine Whip vs Charizard is a double resistance (0.25x)", m(charizard, "Vine Whip") == 0.25, m(charizard, "Vine Whip"))
+        check("matchup: Thunder Shock can't touch Geodude", m(geodude, "Thunder Shock") == 0, m(geodude, "Thunder Shock"))
+        check("matchup: Tackle can't touch Gastly", m(gastly, "Tackle") == 0, m(gastly, "Tackle"))
+        check("matchup: Tackle vs Charmander is plain", m(charmander, "Tackle") == 1, m(charmander, "Tackle"))
+        check("matchup: no arrow for a status move", m(charmander, "Growl") == nil)
+        check("damage uses the same multiplier", getSkillElementMultiplier(0, geodude, "Water Gun") == 2.5)
+
+        setPokemonHeldMovePowerModifier(squirtle, 20)
+        setPokemonHeldMovePowerType(squirtle, ELEMENT_WATER, 1)
+        setPokemonHeldMovePowerType(squirtle, EMPTY_STORAGE, 2)
+        local power, boosts = MoveInfo.getPower(cid, squirtle, "Water Gun")
+        check("card: Water Gun on a Squirtle with Mystic Water is 40 x1.1 x1.2", power and math.floor(power + 0.5) == 53 and #boosts == 2,
+            tostring(power) .. " " .. JSON.encode(boosts))
+        local strong = MoveInfo.estimateDamage(squirtle, charmander, "Water Gun", 53, 2)
+        local weak = MoveInfo.estimateDamage(squirtle, charmander, "Water Gun", 53, 0.5)
+        check("card: the damage estimate grows with the matchup", strong and weak and strong > weak and weak >= 1,
+            tostring(strong) .. " " .. tostring(weak))
+        check("card: no damage estimate for an immunity", MoveInfo.estimateDamage(squirtle, gastly, "Tackle", 40, 0) == nil)
+        power, boosts = MoveInfo.getPower(cid, squirtle, "Tackle")
+        check("card: Tackle gets no boosts on a Squirtle", power == getPokemonSkillDamage("Tackle") and #boosts == 0, tostring(power))
+
+        local original, sent = doSendPlayerExtendedOpcode, {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.MOVE_INFO) then
+                sent[#sent + 1] = JSON.decode(buffer)
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(function()
+            MoveInfo.onClientMessage(cid, JSON.encode({ action = "matchup", target = charmander,
+                icons = { getPokemonSkillClientIconId("Water Gun"), getPokemonSkillClientIconId("Growl") } }))
+            MoveInfo.onClientMessage(cid, JSON.encode({ action = "card", icon = getPokemonSkillClientIconId("Water Gun"), target = charmander }))
+            MoveInfo.onClientMessage(cid, "not json")
+        end)
+        doSendPlayerExtendedOpcode = original
+        check("move info: no errors", ok, err)
+        local matchup, card = sent[1], sent[2]
+        check("move info: the matchup reply", matchup and matchup.type == "matchup" and #matchup.moves == 2 and
+            matchup.moves[1].multiplier == 2 and matchup.moves[1].power == 40 and matchup.moves[2].multiplier == nil,
+            matchup and JSON.encode(matchup))
+        check("move info: the card", card and card.type == "card" and card.name == "Water Gun" and card.final == 40 and
+            card.target and card.target.multiplier == 2 and card.target.name == getCreatureName(charmander), card and JSON.encode(card))
+        check("move info: bad messages are ignored", #sent == 2)
+    end
+    for _, m in ipairs(made) do
+        if (isCreature(m)) then
+            doRemoveCreature(m)
+        end
+    end
+end
+
 -- The JSON messages fn sends on EXTENDED_IDS.FISHING
 local function captureFishing(fn)
     local original, sent = doSendPlayerExtendedOpcode, {}
@@ -1489,7 +1569,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
