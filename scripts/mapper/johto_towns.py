@@ -145,7 +145,8 @@ BUILDINGS = {
 FENCE_TOP_LEFT, FENCE_H, FENCE_V, FENCE_BOTTOM_RIGHT = 1533, 1536, 1534, 1535
 STREET_LAMP = 1479
 LANTERN = 3743
-BENCH_S = 1662
+# Kanto's white benches, two tiles each: west and east halves, or north and south halves
+BENCH_W, BENCH_E, BENCH_N, BENCH_S = 18103, 18104, 18105, 18106
 STATUE = 1448
 CAT_STATUE = 1450
 CHERRY_TREE = 10143
@@ -171,6 +172,9 @@ SHOP_STAIRS = [(SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 7), (SOUVENIR_SHOP[0] 
 # Goldenrod's Magnet Train station: the top of its stairway down, off the north avenue
 # (build_johto.UNDERGROUND brings Cerulean's walled stairway, landing and station under it)
 TRAIN_STAIRS = (2330, 660)
+TRAIN_STEPS = 3220
+TRAIN_RAILING = {(-1, -2): 1528, (0, -2): 1524, (1, -2): 1524, (1, -1): 1526, (1, 0): 1526, (1, 1): 1526,
+                 (-1, 2): 1528, (0, 2): 1524, (1, 2): 1530}
 
 
 class Town:
@@ -249,6 +253,14 @@ class Town:
             self.grounds[(x, y)] = ground
         self.taken.add((x, y))
 
+    def bench(self, x, y, upright=False):
+        """A bench from (x, y) one tile east (or, upright, south)."""
+        dx, dy = (0, 1) if upright else (1, 0)
+        if not self.free_tile(x + dx, y + dy):
+            x, y = x - dx, y - dy
+        self.item(x, y, BENCH_N if upright else BENCH_W)
+        self.item(x + dx, y + dy, BENCH_S if upright else BENCH_E)
+
     def fence(self, x0, y0, x1, y1, gates=()):
         ring = {(x0, y0): FENCE_TOP_LEFT, (x1, y1): FENCE_BOTTOM_RIGHT}
         for x in range(x0 + 1, x1 + 1):
@@ -296,8 +308,8 @@ def new_bark(t):
     for x in range(2670, 2680, 3):
         t.item(x, 789, FLOWERS[x % len(FLOWERS)])
     t.item(2674, 795, STATUE)
-    t.item(2671, 799, BENCH_S)
-    t.item(2677, 799, BENCH_S)
+    t.bench(2671, 799)
+    t.bench(2677, 799)
     t.item(2683, 802, SIGN)
     t.fence(2684, 811, 2697, 820, gates=[(2690, 811), (2691, 811)])
     for y in range(813, 819, 2):
@@ -404,7 +416,7 @@ def violet(t):
     t.put('academy', 2516, 570)
     t.fence(2516, 594, 2535, 602, gates=[(2525, 594), (2526, 594)])
     for x in range(2519, 2534, 4):
-        t.item(x, 598, BENCH_S)
+        t.bench(x, 598)
     # the theatre (Comedy Grand Prix) facing the square
     t.put('theatre', 2462, 549)
     for x in range(2464, 2486, 6):
@@ -509,11 +521,19 @@ def goldenrod(t):
     # north of the first street: the Radio Tower and homes
     t.put('radio-tower', 2340, 668)
     t.item(2338, 686, SIGN)
-    # the Magnet Train's stairway down on a cobbled forecourt by the avenue
+    # the Magnet Train's stairway down at the head of the avenue: Cerulean's stone railing round its
+    # two steps, open to the west, on a paved forecourt joined to the avenue
     sx, sy = TRAIN_STAIRS
-    t.ground(sx - 2, sy - 3, sx + 2, sy + 4, 'cobblestone')
-    t.block(sx - 2, sy - 3, sx + 2, sy + 4)
+    t.ground(sx - 13, sy - 6, sx + 3, sy + 5, 'gray stone tiles')
+    t.block(sx - 2, sy - 5, sx + 3, sy + 5)
+    for (dx, dy), railing in TRAIN_RAILING.items():
+        t.item(sx + dx, sy + dy, railing)
+    for dy in (0, 1):
+        t.item(sx, sy + dy)
+        t.raw[(sx, sy + dy)] = TRAIN_STEPS
     t.item(sx - 2, sy - 3, SIGN)
+    for x, y in [(sx - 13, sy - 6), (sx + 3, sy - 6), (sx + 3, sy + 5)]:
+        t.item(x, y, STREET_LAMP)
     t.put('saffron-300', 2276, 674)
     t.put('saffron-305', 2295, 671)
     # north-west block: homes along the first street, then the Pokémon Center, Mart and Gym on the avenue
@@ -567,8 +587,8 @@ def goldenrod(t):
         for y in (726, 734):
             if t.free_tile(x, y) and not 2310 <= x <= 2330:
                 t.item(x, y, STREET_LAMP)
-    for x, y in [(2312, 727), (2328, 727), (2312, 733), (2328, 733)]:
-        t.item(x, y, BENCH_S)
+    for x, y in [(2311, 727), (2328, 727), (2311, 733), (2328, 733)]:
+        t.bench(x, y)
     for cx, cy in [(2315, 725), (2325, 725), (2315, 735), (2325, 735)]:
         for dx, dy in [(0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)]:
             x, y = cx + dx, cy + dy
@@ -600,7 +620,10 @@ def national_park(t):
     for x in range(2296, 2360, 8):
         for y in (584, 592):
             if abs(x - 2325) > 8:
-                t.item(x, y, BENCH_S if (x // 8) % 2 else STREET_LAMP)
+                if (x // 8) % 2:
+                    t.bench(x, y)
+                else:
+                    t.item(x, y, STREET_LAMP)
     for y in range(564, 616, 8):
         for x in (2321, 2329):
             if abs(y - 588) > 8:

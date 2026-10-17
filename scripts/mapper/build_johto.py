@@ -195,6 +195,7 @@ OUTPOSTS = [
     {'name': 'Route 34', 'clear': (2338, 834, 13), 'streets': [[(2314, 841), (2346, 841)]],
      'buildings': [('daycare', 2333, 828)]},
 ]
+ROAD_HALF_WIDTH = (1.6, 3.25)
 GATE_ROAD = [(3049, 700), (3066, 676), (3080, 650), (3094, 628), (3105, 614)]
 ROAD_WOBBLE = {'26': 6, '27': 8, '29': 8, '30': 8, '31': 5, '32': 8, '33': 6, '34': 5, '35': 3, '36': 6,
                'Ilex Forest': 3, '37': 5, '38': 6, '39': 3, '42': 5, '43': 5, '44': 4, '45': 6, '46': 6,
@@ -484,11 +485,12 @@ UNDERGROUND = [
     # the Global Terminal's basement: Celadon's guild hall's, under the same stairs
     {'name': 'Global Terminal basement', 'src': (3722, 461), 'dst': (2326, 780),
      'floors': {8: ((3720, 453, 3737, 471), None, None)}},
-    # Goldenrod's Magnet Train station: Cerulean's, from its walled stairway in the street (floor 7)
-    # down through the landing over the canal to the platform and waiting room; its conductor
-    # (npc/Wade Carrington.xml) stands where Cerulean's does, and both Kanto stations ride here
+    # Goldenrod's Magnet Train station: Cerulean's, from the landing under its walled stairway in the
+    # street (which Goldenrod draws on its own paving, johto_towns.TRAIN_RAILING) over the canal to the
+    # platform and waiting room; its conductor (npc/Wade Carrington.xml) stands where Cerulean's
+    # does, and both Kanto stations ride here
     {'name': 'Magnet Train Station', 'src': (3884, 272), 'dst': T.TRAIN_STAIRS,
-     'floors': {7: ((3883, 270, 3885, 274), None, None), 8: ((3882, 270, 3888, 274), None, None),
+     'floors': {8: ((3882, 270, 3888, 274), None, None),
                 9: ((3878, 255, 3897, 278), None, None)},
      'npcs': [('Wade Carrington', 3888, 269, 9)]},
     # Mahogany's Rocket Hideout, B1F to B4F: Celadon's under the Game Corner, its stairs up under the
@@ -631,10 +633,20 @@ TUFTS = [(6216, 367), (6217, 895), (6218, 888), (6219, 909)]
 FERNS = [(3610, 29), (3611, 31), (3612, 32), (3613, 32), (3614, 32), (3621, 26), (3622, 23), (3623, 27)]
 FLOWERS = [(3648, 7), (3649, 13), (3651, 17), (3652, 10), (3654, 8), (3655, 7), (3656, 13)]
 STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6)]
-# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and most of 7004 to 7019) are quarters
-# of big rocks that take several tiles, and look broken on their own
-ROCK_PIECES = set(range(1297, 1303)) | {7006, 7007, 7009, 7010, 7011, 7015, 7017, 7019}
+# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and 7004 to 7015, and the grass
+# patches 8140 to 8159) are quarters of big rocks and patches that take 2x2 tiles, and look broken on
+# their own
+ROCK_PIECES = set(range(1297, 1303)) | set(range(7004, 7016))
 GRAVEL = list(range(6477, 6489))
+# Things drawn in pieces over two or four tiles (offset from the top-left piece -> item): benches,
+# the big rocks and the grass patches. A building copied with only some of one leaves it out.
+PIECES = [{(0, 0): a, (1, 0): b} for a, b in [(18103, 18104), (1662, 1663), (1292, 1291)]] + \
+         [{(0, 0): a, (0, 1): b} for a, b in [(18105, 18106), (1664, 1665)]] + \
+         [{(0, 0): tl, (1, 0): tr, (0, 1): bl, (1, 1): br} for tl, tr, bl, br in [
+             (8140, 8141, 8143, 8142), (8144, 8145, 8147, 8146), (8148, 8149, 8151, 8150), (8152, 8153, 8155, 8154),
+             (8156, 8157, 8159, 8158), (3624, 3625, 3626, 3627), (3628, 3629, 3630, 3631), (1300, 1301, 1302, 1303),
+             (7004, 7005, 7006, 7007), (7008, 7009, 7010, 7011), (7012, 7013, 7014, 7015)]]
+PIECE_OF = {sid: (shape, off) for shape in PIECES for off, sid in shape.items()}
 # The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
 # (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
 CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
@@ -643,7 +655,7 @@ UNDERGROWTH = [(2767, 30), (2768, 20), (2785, 10), (2786, 10), (4008, 4), (4009,
                (4012, 6), (4013, 6), (4014, 5), (4015, 5), (4018, 5), (2784, 3), (10913, 5), (10914, 5),
                (10915, 5), (2709, 1), (5392, 1), (4167, 1), (4184, 1)]
 FOREST_FLOOR = [(2787, 3), (2788, 2), (2789, 4), (2791, 4), (2793, 3), (4181, 2), (4183, 3), (3811, 2),
-                (3821, 2), (2801, 6), (8166, 6), (8148, 3), (8149, 3), (8150, 3), (8151, 3)] + \
+                (3821, 2), (2801, 6), (8166, 6)] + \
                [(i, 3) for i in range(6220, 6226)] + [(i, 2) for i in range(6476, 6489)]
 WILDFLOWERS = [(4156, 4), (4157, 3), (2762, 2), (2764, 2)] + [(i, 3) for i in range(6226, 6232)]
 # the mountain tiers' rocky tops
@@ -654,7 +666,7 @@ SNOW_FIR, SNOW_DEAD = 2698, 2697
 # Mt. Silver's: pines and firs, dead trees, big snowy stones (all blocking) and drifts (not)
 SNOW_TREES = [(SNOW_FIR, 6), (7023, 2), (8139, 2)]
 SNOW_DEAD_TREES = [(SNOW_DEAD, 2), (7020, 1), (7021, 1)]
-SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017) if i not in ROCK_PIECES]
+SNOW_BOULDERS = [(7001, 1), (7016, 1), (7017, 1)]
 SNOW_DRIFTS = [(6609, 6), (7022, 2), (13316, 1)]
 SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)]
 SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7018, 2)]
@@ -1049,8 +1061,27 @@ class Prefab:
             tile = self.tiles[(dx, dy, 0)]
             floor = b'' if tile.ground is not None else pvmap.split_items(tile.children)[0]
             self.tiles[(dx, dy, 0)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, floor)
+        # things in pieces (a bench, a big rock) that the box's edge cuts go: half of one looks broken
+        for (dx, dy, dz), tile in list(self.tiles.items()):
+            blobs = pvmap.split_items(tile.children)
+            kept = [b for b in blobs if not broken_piece(self.tiles, (dx, dy, dz), pvmap.child_item_ids(b)[0])]
+            if len(kept) < len(blobs):
+                self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
+
+
+def broken_piece(tiles, pos, sid):
+    """Whether item sid at pos is a piece of a thing in PIECES with another piece missing."""
+    if sid not in PIECE_OF:
+        return False
+    shape, (ox, oy) = PIECE_OF[sid]
+    x, y, z = pos
+    for (px, py), other in shape.items():
+        t = tiles.get((x - ox + px, y - oy + py, z))
+        if t is None or other not in pvmap.child_item_ids(t.children):
+            return True
+    return False
 
 
 def floor_down_ids(way='down'):
@@ -2505,11 +2536,16 @@ def build(base, out_path):
             if ends:
                 door_path[(name, ox, oy)] = min(ends)
                 road_pts['%s door %d,%d' % (pl['name'], ox, oy)] = [(dx + 0.5, dy), (dx + 0.5, min(ends))]
-    road_d = np.full((f.h, f.w), 1e9)
-    for pts in road_pts.values():
-        road_d = np.minimum(road_d, f.seg_dist(pts))
+    route_d, door_d = np.full((f.h, f.w), 1e9), np.full((f.h, f.w), 1e9)
+    for k, pts in road_pts.items():
+        if ' door ' in k:
+            door_d = np.minimum(door_d, f.seg_dist(pts))
+        else:
+            route_d = np.minimum(route_d, f.seg_dist(pts))
+    road_d = np.minimum(route_d, door_d)
     nroad = f.noise(6)
-    road = road_d + nroad * 2.5 < 2.0
+    # roads wander in width but never narrow to a single tile; a door's path is as wide as the door
+    road = (route_d < np.clip(2.0 - nroad * 2.5, ROAD_HALF_WIDTH[0], ROAD_HALF_WIDTH[1])) | (door_d < 1.0)
     uncut = mount.copy()
     mount &= ~(road_d < 6 + n2 * 4)
     forest &= ~(road_d < 4)
@@ -2683,6 +2719,14 @@ def build(base, out_path):
                 if path is None:
                     print('warning: no path from %s at %d,%d' % (name, ox + ex, oy + ey))
                     continue
+                # the path is three wide, the door in its middle
+                wide = []
+                for k, (iy, ix) in enumerate(path):
+                    ny, nx = path[k + 1] if k + 1 < len(path) else path[k - 1] if k else (iy + 1, ix)
+                    sy, sx = (0, 1) if ny != iy else (1, 0)
+                    wide += [(iy + d * sy, ix + d * sx) for d in (-1, 1)
+                             if walkable[iy + d * sy, ix + d * sx] and terrain[iy + d * sy, ix + d * sx] != BRIDGE]
+                path = path + wide
                 for iy, ix in path:
                     town_ground[(ix + f.x0, iy + f.y0)] = pl['paving']
                     terrain[iy, ix] = PAVE
@@ -2919,6 +2963,14 @@ def build(base, out_path):
     for x, y, j, d in silver_ramps:
         if j > 1 and (x, y, Z + 1 - j) not in bored and hill_ground[y - f.y0, x - f.x0] == SNOW:
             ramp_feet[(x, y, Z + 1 - j)] = ICE_RAMPS[d]
+    # a ramp is two tiles like Kanto's: the climbing piece and its foot on the tile behind it, where
+    # that tile is on the same level
+    ramp_tails = {}
+    for x, y, j, (dx, dy) in ramps:
+        z, tx, ty = Z + 1 - j, x - dx, y - dy
+        if (f.x0 <= tx <= f.x1 and f.y0 <= ty <= f.y1 and height[ty - f.y0, tx - f.x0] == height[y - f.y0, x - f.x0]
+                and (tx, ty, z) not in ramp_feet):
+            ramp_tails[(tx, ty, z)] = ramp_feet[(x, y, z)] + 1
     for x, y, j, (dx, dy) in ramps:
         if j == 1:
             stair_landing |= {(x, y), (x - dx, y - dy)}
@@ -2988,8 +3040,8 @@ def build(base, out_path):
             if any(otb.blocks(i) for i in deco):
                 blocked_spawn[iy, ix] = True
             tiles[(x, y)] = [ground, deco]
-    for (x, y, z), ramp in ramp_feet.items():
-        if z == Z:
+    for (x, y, z), ramp in list(ramp_feet.items()) + list(ramp_tails.items()):
+        if z == Z and (x, y) in tiles:
             tiles[(x, y)] = [tiles[(x, y)][0], [ramp]]
             blocked_spawn[y - f.y0, x - f.x0] = True
     for (x, y, z), items in up_deco.items():
@@ -3288,6 +3340,8 @@ def build(base, out_path):
                 cls, r = hill_ground[iy, ix], hill_rng.random()
                 if (x, y, z) in ramp_feet:
                     deco = [ramp_feet[(x, y, z)]]
+                elif (x, y, z) in ramp_tails:
+                    deco = [ramp_tails[(x, y, z)]]
                 elif (x, y, z) in up_deco:
                     deco = list(up_deco[(x, y, z)])
                 elif inside or (x, y, z) in up_ground or silver_keep[iy, ix]:
@@ -3322,7 +3376,8 @@ def build(base, out_path):
                                       groves[iy, ix] + (0.15 if not country[iy, ix] else 0.0), tufty[iy, ix],
                                       flowery[iy, ix])
                 walk[iy, ix] = (country[iy, ix] and not any(i in gravel for i in border)
-                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet)
+                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet
+                                and (x, y, z) not in ramp_tails)
                 silver_walk[iy, ix] = ((ledges[iy, ix] or inside) and not edge and not deco and not silver_keep[iy, ix]
                                        and up_ground.get((x, y, z)) != 'walkable sea')
             children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
