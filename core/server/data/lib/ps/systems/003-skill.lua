@@ -161,7 +161,7 @@ function doPokemonUseSkill(pokemon, skillName)
 
     if ((not doPokemonSpecialAbilityCheck(pokemon, POKEMON_SPECIAL_ABILITY_IDS.NO_GUARD, nil) and not getCreatureStatus(pokemon, CREATURE_STATUS_IGNORE_ACCURACY) and
             (isMonster(pokemonTarget) and not doPokemonSpecialAbilityCheck(pokemonTarget, POKEMON_SPECIAL_ABILITY_IDS.NO_GUARD, nil)) and
-            not getPokemonSkillIgnoreAccuracy(skillName)) and missAttack(pokemon)) then
+            not getPokemonSkillIgnoreAccuracy(skillName)) and (missAttack(pokemon) or Weather.fogMiss(pokemon, pokemonTarget))) then
         doSendAnimatedText(getCreaturePosition(pokemon), "MISS!", COLOR_WHITE)
         doAddExhaust(pokemon)
         return false

@@ -95,7 +95,21 @@ function MoveInfo.getPower(cid, pokemon, skillName)
             boosts[#boosts + 1] = { label = heldName or __L(cid, "Held item"), value = round(held, 2) }
         end
     end
+
+    local weather, kind = Weather.getMovePowerModifier(pokemon or cid, element)
+    if (weather ~= 1) then
+        power = power * weather
+        boosts[#boosts + 1] = { label = __L(cid, Weather.KINDS[kind].name), value = weather, weather = kind }
+    end
     return power, boosts
+end
+
+-- The weather's part of a move's power: { kind, value }, or nil
+local function weatherBoost(cid, pokemon, skillName)
+    local value, kind = Weather.getMovePowerModifier(pokemon or cid, getPokemonSkillDamageType(skillName))
+    if (value ~= 1 and getPokemonSkillDamage(skillName) > 0) then
+        return { kind = kind, name = Weather.KINDS[kind].name, value = value }
+    end
 end
 
 -- getFinalDamage's formula without the random parts (critical hits) and the abilities; nil for no damage
@@ -131,7 +145,8 @@ local function onMatchup(cid, data)
                 icon = tonumber(icon),
                 power = getPokemonSkillDamage(skillName) > 0 and getPokemonSkillDamage(skillName) or nil,
                 final = power and round(power) or nil,
-                multiplier = target and MoveInfo.getMultiplier(pokemon, target, skillName) or nil
+                multiplier = target and MoveInfo.getMultiplier(pokemon, target, skillName) or nil,
+                weather = weatherBoost(cid, pokemon, skillName)
             }
         end
         if (#moves >= 12) then

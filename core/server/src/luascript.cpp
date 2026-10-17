@@ -2296,6 +2296,12 @@ void LuaScriptInterface::registerFunctions()
 	//doMonsterKeepAwake(cid, ms)
 	lua_register(m_luaState, "doMonsterKeepAwake", LuaScriptInterface::luaDoMonsterKeepAwake);
 
+	//doPlayerSetWeatherLight(cid, percent, color)
+	lua_register(m_luaState, "doPlayerSetWeatherLight", LuaScriptInterface::luaDoPlayerSetWeatherLight);
+
+	//doSetWorldLightHour(minutes)
+	lua_register(m_luaState, "doSetWorldLightHour", LuaScriptInterface::luaDoSetWorldLightHour);
+
 	//getPlayerIdleTime(cid)
 	lua_register(m_luaState, "getPlayerIdleTime", LuaScriptInterface::luaGetPlayerIdleTime);
 
@@ -10628,6 +10634,30 @@ int32_t LuaScriptInterface::luaDoPlayerSetIdleTime(lua_State* L)
 		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
 		lua_pushboolean(L, false);
 	}
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoSetWorldLightHour(lua_State* L)
+{
+	//doSetWorldLightHour(minutes)
+	g_game.setLightHour(popNumber(L));
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoPlayerSetWeatherLight(lua_State* L)
+{
+	//doPlayerSetWeatherLight(cid, percent, color)
+	int32_t color = popNumber(L), percent = popNumber(L);
+	ScriptEnviroment* env = getEnv();
+	if(Player* player = env->getPlayerByUID(popNumber(L)))
+	{
+		player->setWeatherLight(percent, color);
+		lua_pushboolean(L, true);
+	}
+	else
+		lua_pushboolean(L, false);
+
 	return 1;
 }
 

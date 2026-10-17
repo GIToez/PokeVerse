@@ -669,6 +669,8 @@ class LuaScriptInterface
 		static int32_t luaGetCreatureNoMove(lua_State* L);
 		static int32_t luaDoCreatureSetNoMove(lua_State* L);
 		static int32_t luaDoMonsterKeepAwake(lua_State* L);
+		static int32_t luaDoPlayerSetWeatherLight(lua_State* L);
+		static int32_t luaDoSetWorldLightHour(lua_State* L);
 		static int32_t luaGetTownId(lua_State* L);
 		static int32_t luaGetTownName(lua_State* L);
 		static int32_t luaGetTownTemplePosition(lua_State* L);

@@ -648,6 +648,7 @@ class Game
 		const Map* getMap() const {return map;}
 
 		int32_t getLightHour() {return lightHour;}
+		void setLightHour(int32_t minutes);
 		int32_t getRealLightHour();
 		void startDecay(Item* item);
 		
