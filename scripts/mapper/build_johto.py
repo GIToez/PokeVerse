@@ -665,6 +665,7 @@ PC_PIECES = ({23965, 23966, 23968, 23972, 23978, 23983, 24076, 24121, 24122, 241
              | set(range(24085, 24101)) | set(range(24104, 24113)) | set(range(24114, 24117))
              | set(range(24177, 24181)) | set(range(24189, 24194)) | set(range(24443, 24447)))
 PC_LAMP = 12070
+KANTO_SIGNS = {11913, 11916, 11917, 11918}
 # The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
 # (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
 CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
@@ -1086,16 +1087,17 @@ class Prefab:
             if len(kept) < len(blobs):
                 self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
         # a strip of the Pokémon Center next door in Kanto goes, with its lamps and the invisible walls
-        # at its corners (on the box's edge; the Mart has its own), and tiles left empty
+        # at its corners (on the box's edge; the Mart has its own), Kanto's signs to its towns and
+        # routes ("Fuchsia to the East"), and tiles left empty
         if name != 'pokecenter':
             for (dx, dy, dz), tile in list(self.tiles.items()):
                 blobs = pvmap.split_items(tile.children)
                 firsts = [pvmap.child_item_ids(b)[0] for b in blobs]
-                drop = set()
+                drop = set(KANTO_SIGNS)
                 if tile.ground in PC_PIECES or PC_PIECES & set(firsts):
-                    drop = PC_PIECES | {PC_LAMP, FLY_BARRIER}
+                    drop |= PC_PIECES | {PC_LAMP, FLY_BARRIER}
                 elif dz == 0 and name != 'mart' and (dx in (0, self.w - 1) or dy in (0, self.h - 1)):
-                    drop = {FLY_BARRIER}
+                    drop.add(FLY_BARRIER)
                 kept = [b for b, i in zip(blobs, firsts) if i not in drop]
                 if tile.ground in PC_PIECES or (tile.ground is None and not kept):
                     del self.tiles[(dx, dy, dz)]
