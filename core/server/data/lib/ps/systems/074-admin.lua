@@ -5,7 +5,7 @@
 -- JSON on EXTENDED_IDS.ADMIN:
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
 --                     {action = "start", event, multiplier, minutes}, {action = "stop", event},
---                     {action = "broadcast", text}, {action = "save"}, {action = "clean"},
+--                     {action = "broadcast", text, target = "both"|"game"|"discord"}, {action = "save"}, {action = "clean"},
 --                     {action = "decorations", catalog}, {action = "deco_add", set, item}, {action = "deco_remove", set},
 --                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on}
 --   server -> client  {type = "state", access, online, events = {{key, label, command, multiplier, left}}}
@@ -20,8 +20,9 @@
 Admin = {}
 
 Admin.ACCESS = 5
-Admin.MULTIPLIERS = { 1.5, 2, 3, 5 }
-Admin.MINUTES = { 30, 60, 120, 360, 1440, 4320 }
+Admin.MULTIPLIERS = { 1.5, 2, 3, 5, 10 }
+Admin.MINUTES = { 30, 60, 120, 360, 1440, 4320, 10080 }
+Admin.BROADCAST_TARGETS = { both = true, game = true, discord = true }
 
 local EVENTS = {
     { key = "exp", label = "Kill experience", command = "/doubleexp",
@@ -131,9 +132,19 @@ local function broadcast(cid, data)
     elseif (#text > 255) then
         return result(cid, false, "Broadcasts can be at most 255 characters.")
     end
-    doBroadcastMessage(getCreatureName(cid) .. ": " .. text, MESSAGE_STATUS_WARNING)
-    log(cid, "broadcast: " .. text)
-    result(cid, true, "Broadcast sent.")
+    local target = data.target or "both"
+    if (not Admin.BROADCAST_TARGETS[target]) then
+        return result(cid, false, "Pick where to broadcast.")
+    end
+    if (target ~= "discord") then
+        doBroadcastMessage(getCreatureName(cid) .. ": " .. text, MESSAGE_STATUS_WARNING)
+    end
+    if (target ~= "game") then
+        DiscordBridge.onBroadcast("gm", getCreatureName(cid), text)
+    end
+    log(cid, string.format("broadcast (%s): %s", target, text))
+    result(cid, true, ({ both = "Broadcast sent in game and to Discord.", game = "Broadcast sent in game.",
+                         discord = "Broadcast sent to Discord." })[target])
 end
 
 Admin.DECO_ROWS = 7

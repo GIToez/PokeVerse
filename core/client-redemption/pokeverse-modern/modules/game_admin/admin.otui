@@ -44,7 +44,7 @@ AdminEventRow < UIWidget
 
   UIWidget
     id: multipliers
-    size: 206 22
+    size: 246 22
     anchors.top: parent.top
     anchors.left: parent.left
     margin-top: -3
@@ -55,7 +55,7 @@ AdminEventRow < UIWidget
 
   UIWidget
     id: durations
-    size: 306 22
+    size: 346 22
     anchors.top: multipliers.bottom
     anchors.left: multipliers.left
     margin-top: 4
@@ -257,9 +257,41 @@ AdminWindow < UIWindow
       id: title
       !text: tr('Tools')
 
+    UIWidget
+      id: targets
+      size: 290 22
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+      layout:
+        type: horizontalBox
+        spacing: 4
+
+      AdminTab
+        id: both
+        !text: tr('Game + Discord')
+        width: 120
+
+      AdminTab
+        id: game
+        !text: tr('Game only')
+        width: 80
+
+      AdminTab
+        id: discord
+        !text: tr('Discord only')
+        width: 82
+
+    AdminMuted
+      id: targetLabel
+      !text: tr('Broadcast to')
+      text-auto-resize: true
+      anchors.right: targets.left
+      anchors.verticalCenter: title.verticalCenter
+      margin-right: 8
+
     PVField
       id: broadcastText
-      !placeholder: tr('Message to broadcast to everyone online')
+      !placeholder: tr('Message to broadcast')
       anchors.top: title.bottom
       anchors.left: parent.left
       anchors.right: broadcast.left

@@ -585,6 +585,16 @@ local function testAdmin(cid)
     end
     getPlayerAccess = function() return level end
     doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
+    local discord, onBroadcast = {}, DiscordBridge.onBroadcast
+    DiscordBridge.onBroadcast = function(source, author, text) discord[#discord + 1] = source .. "|" .. author .. "|" .. text end
+    local function contains(list, value)
+        for _, v in ipairs(list or {}) do
+            if (v == value) then
+                return true
+            end
+        end
+        return false
+    end
     local function ask(data)
         sent = {}
         Admin.onClientMessage(cid, JSON.encode(data))
@@ -606,11 +616,28 @@ local function testAdmin(cid)
         check("admin: the window shows it running", sent[2] and sent[2].events[2].multiplier == 2)
         ask({ action = "stop", event = "shiny" })
         check("admin: Stop cancels it", not ShinyEvent.get() and getShinyEventMultiplier() == 1)
+        check("admin: the window offers 10x and 7 days", contains(state.multipliers, 10) and contains(state.minutes, 10080))
+        ask({ action = "start", event = "shiny", multiplier = 10, minutes = 10080 })
+        multiplier, endsAt = ShinyEvent.get()
+        check("admin: Start runs 10x for 7 days", multiplier == 10 and math.abs(endsAt - os.time() - 604800) <= 1, multiplier)
+        ShinyEvent.stop()
         ask({ action = "broadcast", text = "  Hello trainers  " })
         check("admin: broadcast is sent with the staff name", broadcasts[#broadcasts] == getCreatureName(cid) .. ": Hello trainers",
             broadcasts[#broadcasts])
+        check("admin: broadcast goes to Discord too by default", discord[#discord] == "gm|" .. getCreatureName(cid) .. "|Hello trainers",
+            discord[#discord])
+        local before, toDiscord = #broadcasts, #discord
+        ask({ action = "broadcast", text = "Game only", target = "game" })
+        check("admin: an in-game broadcast skips Discord", #broadcasts == before + 1 and #discord == toDiscord)
+        ask({ action = "broadcast", text = "Discord only", target = "discord" })
+        check("admin: a Discord broadcast skips the game", #broadcasts == before + 1 and discord[#discord] == "gm|" ..
+            getCreatureName(cid) .. "|Discord only", discord[#discord])
+        ask({ action = "broadcast", text = "Nowhere", target = "moon" })
+        check("admin: an unknown broadcast target is refused", sent[1] and sent[1].ok == false and #broadcasts == before + 1
+            and #discord == toDiscord + 1)
     end)
     doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage = opcode, access, broadcast
+    DiscordBridge.onBroadcast = onBroadcast
     ShinyEvent.stop()
     if (not ok) then
         error(err)
