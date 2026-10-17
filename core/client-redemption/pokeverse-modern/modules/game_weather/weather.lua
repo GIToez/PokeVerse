@@ -106,7 +106,7 @@ local function areaMood(weather)
         return NO_MOOD
     end
     if name:find('Lavender', 1, true) then
-        local thick = weather and '0.6' or '1.0'
+        local thick = weather and '0.85' or '1.0'
         return { name = ' lavender ' .. thick, MOOD = '1.0', HAZE = thick, RADIUS = '0.0', CAVEFLOOR = '1.0',
                  MAPW = '1.0', MAPH = '1.0' }
     end
