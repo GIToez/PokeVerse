@@ -1739,6 +1739,216 @@ local function testCalendar(cid)
     check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
 end
 
+local function testSeasons(cid)
+    local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 12, min = 0, sec = 0 }) end
+    local expected = { spring = { 3, 20, 22 }, summer = { 6, 21, 23 }, autumn = { 9, 22, 24 }, winter = { 12, 21, 23 } }
+    local spans, ok = EventCalendar.seasonSpans(at(2026, 1, 15), at(2026, 12, 31)), true
+    for _, span in ipairs(spans) do
+        local d, want = os.date("*t", span.startsAt), expected[span.season.id]
+        if (d.year == 2026) then
+            ok = ok and d.month == want[1] and d.day >= want[2] and d.day <= want[3] and d.hour == 6 and d.min == 0
+        end
+    end
+    check("Seasons: each starts at the restart after its equinox or solstice", #spans == 5 and ok, #spans)
+    check("Seasons: spans follow each other", spans[1] and spans[1].endsAt == spans[2].startsAt and spans[4].endsAt == spans[5].startsAt)
+    local forced = EventCalendar.getForcedSeason()
+    EventCalendar.setForcedSeason(nil)
+    check("Seasons: by date", EventCalendar.seasonId(at(2026, 11, 1)) == "autumn" and EventCalendar.seasonId(at(2027, 1, 15)) == "winter" and
+        EventCalendar.seasonId(at(2027, 4, 30)) == "spring" and EventCalendar.seasonId(at(2027, 7, 1)) == "summer")
+    EventCalendar.setForcedSeason("winter")
+    local current = EventCalendar.currentSeason(at(2027, 7, 1))
+    check("Seasons: staff can force one", current.season.id == "winter" and current.forced and EventCalendar.seasonId() == "winter")
+    EventCalendar.setForcedSeason(forced and forced.id or nil)
+    check("Seasons: back to automatic", (EventCalendar.getForcedSeason() and EventCalendar.getForcedSeason().id) == (forced and forced.id))
+    local status = EventCalendar.statusData()
+    check("Seasons: the calendar status names the season", status.season and EventCalendar.getSeason(status.season.id) ~= nil and
+        status.season.endsAt > status.now, status.season and status.season.id)
+    local range = EventCalendar.rangeData(at(2026, 9, 1), at(2026, 10, 10))
+    check("Seasons: a month range lists the seasons it crosses", range and range.seasons and #range.seasons == 2, range and range.seasons and #range.seasons)
+end
+
+local function testWeather(cid, arena)
+    local W = Weather
+    local saved = W.readOverrides()
+    W.writeOverrides("m")
+    local function zoneNamed(name)
+        for _, zone in ipairs(W.getZones()) do
+            if (zone.name == name) then return zone end
+        end
+    end
+    local function at(y, m, d, h, mi) return os.time({ year = y, month = m, day = d, hour = h, min = mi or 0, sec = 0 }) end
+    local viridian, desert, johto = zoneNamed("Viridian"), zoneNamed("Desert Island 92"), nil
+    local orange
+    for _, zone in ipairs(W.getZones()) do
+        if (zone.region.id == "johto" and not johto) then johto = zone end
+        if (zone.climate == "tropical" and not orange) then orange = zone end
+    end
+    check("Weather: zones for Kanto, the Orange Islands and the desert", viridian and orange and desert and viridian.region.id == "kanto" and
+        desert.climate == "desert")
+    if (not (viridian and orange and desert)) then
+        W.writeOverrides(saved)
+        return
+    end
+    check("Weather: a town's spot is in its own zone", W.zoneAt(viridian.pos) == viridian)
+    for _, zone in ipairs(W.findZones(cid, "all")) do
+        if (zone.none or not zone.region.live) then
+            check("Weather: 'all' leaves out calm and closed zones", false, zone.name)
+        end
+    end
+    if (johto) then
+        check("Weather: Johto has none until it goes live", W.at(johto).source == "none")
+    end
+
+    local day = at(2026, 10, 20, 0)
+    local changes, ok, last = 0, true, nil
+    for t = day, day + 86400 - 1, 600 do
+        local a, b = W.at(viridian, t), W.at(viridian, t)
+        ok = ok and a.kind == b.kind and a.endsAt == b.endsAt and W.KINDS[a.kind] ~= nil and a.endsAt > t and
+            (a.endsAt - a.startsAt) % (20 * 60) == 0
+        if (a.kind ~= last) then changes, last = changes + 1, a.kind end
+    end
+    check("Weather: the same answer every time, in 20-minute steps", ok)
+    check("Weather: it changes several times a day", changes >= 4 and changes <= 72, changes)
+    local snowy, summerSnow, tropicalSnow, sand, desertTotal = 0, 0, 0, 0, 0
+    for t = at(2026, 1, 1, 6), at(2026, 12, 20, 6), 3 * 3600 + 7 * 60 do
+        local month = os.date("*t", t).month
+        local kind = W.at(viridian, t).kind
+        if (kind == "snow" and (month == 12 or month <= 2)) then snowy = snowy + 1 end
+        if (kind == "snow" and month >= 7 and month <= 8) then summerSnow = summerSnow + 1 end
+        local tropical = W.at(orange, t).kind
+        if (tropical == "snow" or tropical == "hail") then tropicalSnow = tropicalSnow + 1 end
+        local dry = W.at(desert, t).kind
+        desertTotal = desertTotal + 1
+        if (dry == "sandstorm") then sand = sand + 1 end
+    end
+    check("Weather: Kanto snows in winter, never in summer", snowy > 0 and summerSnow == 0, snowy .. " " .. summerSnow)
+    check("Weather: no snow or hail in the tropics", tropicalSnow == 0, tropicalSnow)
+    check("Weather: the desert has sandstorms", sand > desertTotal / 5, sand .. "/" .. desertTotal)
+    local christmas, tropicalChristmas = W.at(viridian, at(2026, 12, 25, 12)), W.at(orange, at(2026, 12, 25, 12))
+    check("Weather: snow on Christmas Day", christmas.kind == "snow" and christmas.source == "holiday")
+    check("Weather: not in the tropics", tropicalChristmas.source ~= "holiday")
+    local halloween, before = W.at(viridian, at(2026, 10, 31, 22)), W.at(viridian, at(2026, 10, 31, 19))
+    check("Weather: fog on Halloween night", halloween.kind == "fog" and halloween.source == "holiday" and before.source ~= "holiday")
+
+    W.setOverride({ viridian.id }, "rain", 5)
+    local staff = W.at(viridian)
+    check("Weather: staff weather wins", staff.kind == "rain" and staff.source == "staff" and math.abs(staff.endsAt - os.time() - 300) <= 2,
+        staff.kind .. " " .. staff.source)
+    W.setOverride({ viridian.id }, "sunny", 5)
+    check("Weather: no harsh sunlight at night, even from staff", W.at(viridian).kind == (W.isNight() and "clear" or "sunny"))
+    W.setOverride({ viridian.id }, nil)
+    check("Weather: clearing staff weather", W.at(viridian).source ~= "staff")
+
+    local spots = {}
+    for radius = 0, 10 do
+        for dx = -radius, radius do
+            for dy = -radius, radius do
+                local p = { x = arena.x + dx, y = arena.y + dy, z = arena.z }
+                if ((math.abs(dx) == radius or math.abs(dy) == radius) and #spots < 2 and isFree(cid, p) and W.isOutdoors(p)) then
+                    spots[#spots + 1] = p
+                end
+            end
+        end
+    end
+    local spot = spots[1]
+    local made = {}
+    local function make(name)
+        local p = table.remove(spots, 1)
+        local m = p and doCreateMonster(name, p, false)
+        if (m) then made[#made + 1] = m end
+        return m
+    end
+    local squirtle, geodude = make("Squirtle"), make("Geodude")
+    check("Weather: an open-sky spot near the arena", squirtle and geodude, spot and (spot.x .. "," .. spot.y .. "," .. spot.z))
+    if (squirtle and geodude) then
+        local zones = { W.zoneAt(getCreaturePosition(squirtle)).id, W.zoneAt(getCreaturePosition(geodude)).id }
+        local function set(kind)
+            W.setOverride(zones, kind, 5)
+            W.forget(squirtle)
+            W.forget(geodude)
+        end
+        set("rain")
+        local value, kind = W.getMovePowerModifier(squirtle, ELEMENT_WATER)
+        check("Weather: rain powers up Water moves", value == 1.2 and kind == "rain", value)
+        check("Weather: and weakens Fire moves", W.getMovePowerModifier(squirtle, ELEMENT_FIRE) == 0.8)
+        check("Weather: and leaves the rest alone", W.getMovePowerModifier(squirtle, ELEMENT_NORMAL) == 1)
+        local power, boosts = MoveInfo.getPower(cid, squirtle, "Water Gun")
+        local boosted = false
+        for _, boost in ipairs(boosts or {}) do boosted = boosted or boost.weather == "rain" end
+        check("Weather: the move card shows the rain boost", boosted and math.floor(power + 0.5) == 53, tostring(power))
+        local data = W.data(cid)
+        check("Weather: the client message", data.type == "weather" and data.kind and data.season == EventCalendar.seasonId())
+        set("sandstorm")
+        local health = getCreatureHealth(squirtle)
+        local lost = W.chip(squirtle)
+        check("Weather: a sandstorm wears Pokemon down", lost > 0 and getCreatureHealth(squirtle) == health - lost, lost)
+        check("Weather: but not Rock types", W.chip(geodude) == 0)
+        doCreatureAddHealth(squirtle, -(getCreatureHealth(squirtle) - 1))
+        check("Weather: never below 1 health", W.chip(squirtle) == 0 and getCreatureHealth(squirtle) == 1)
+        set("fog")
+        local misses = 0
+        for _ = 1, 400 do
+            if (W.fogMiss(squirtle, geodude)) then misses = misses + 1 end
+        end
+        local distance = getDistanceBetween(getCreaturePosition(squirtle), getCreaturePosition(geodude))
+        if (distance < 2) then
+            check("Weather: fog never misses up close", misses == 0, misses)
+        else
+            check("Weather: fog makes about 1 in 10 long-range moves miss", misses >= 15 and misses <= 80, misses)
+        end
+        set("rain")
+        W.CONFIG.battle = false
+        check("Weather: the battle setting turns it off", W.getMovePowerModifier(squirtle, ELEMENT_WATER) == 1)
+        W.CONFIG.battle = true
+        W.setOverride(zones, nil)
+    end
+    for _, m in ipairs(made) do
+        if (isCreature(m)) then doRemoveCreature(m) end
+    end
+    check("Weather: the light reaches players", doPlayerSetWeatherLight(cid, 80, -1) == true and doPlayerSetWeatherLight(0, 80, -1) == false)
+    W.writeOverrides(saved)
+    W.send(cid)
+end
+
+local function testDecorations(cid)
+    local D = Decorations
+    local holiday = EventCalendar.isActive("christmas") and "christmas" or EventCalendar.isActive("halloween") and "halloween"
+    check("Decorations: the set follows the holidays, then the season", D.theme() == (holiday or EventCalendar.seasonId()),
+        tostring(D.theme()))
+    local viridian = Weather.getZone(1)
+    local spots = viridian and D.spotsFor(viridian) or {}
+    check("Decorations: spots around Viridian's temple", #spots >= 3, #spots)
+    local apart, outdoors = true, true
+    for i, a in ipairs(spots) do
+        outdoors = outdoors and Weather.isOutdoors(a)
+        for j = i + 1, #spots do
+            apart = apart and math.max(math.abs(a.x - spots[j].x), math.abs(a.y - spots[j].y)) >= D.CONFIG.spacing
+        end
+    end
+    check("Decorations: under the open sky, 3 tiles apart", apart and outdoors)
+    local set, props = D.SETS[D.theme() or ""], {}
+    if (set and viridian) then
+        local ids = {}
+        for _, id in ipairs(set.items) do ids[id] = true end
+        if (set.first) then ids[set.first] = true end
+        local r = D.CONFIG.maxDistance
+        for x = viridian.pos.x - r, viridian.pos.x + r do
+            for y = viridian.pos.y - r, viridian.pos.y + r do
+                local pos = { x = x, y = y, z = viridian.pos.z }
+                local ground = getTileThingByPos({ x = x, y = y, z = pos.z, stackpos = 0 })
+                for id in pairs((ground and ground.itemid and ground.itemid > 0) and ids or {}) do
+                    local item = getTileItemById(pos, id)
+                    if (item and item.uid and item.uid > 0 and getItemAttribute(item.uid, "scriptprotected") == true) then
+                        props[#props + 1] = pos
+                    end
+                end
+            end
+        end
+        check("Decorations: the set is up in Viridian, script protected so players can't move it", #props >= 3, #props)
+        check("Decorations: a tile with a prop is no longer a spot", props[1] and not D.isSpot(props[1]))
+    end
+end
+
 local function testLegendaries(cid, friend, arena)
     local W = WildLegendaries
     local MON, KEY = W.MON, W.KEY
@@ -2010,6 +2220,14 @@ function onSay(cid, words, param, channel)
         return true
     end
     doTeleportThing(cid, arena, false)
+    -- clear skies everywhere, so rain or a sandstorm can't change the numbers the other tests expect
+    local weather = Weather.readOverrides()
+    Weather.writeOverrides("m")
+    local everywhere = {}
+    for _, zone in ipairs(Weather.getZones()) do
+        everywhere[#everywhere + 1] = zone.id
+    end
+    Weather.setOverride(everywhere, "clear", 10)
     for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
         doRemoveItem(ball.uid)
     end
@@ -2017,7 +2235,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
@@ -2036,6 +2254,7 @@ function onSay(cid, words, param, channel)
     become(cid, nil)
     testCatcherThrows(cid, arena)
     addEvent(function()
+        Weather.writeOverrides(weather)
         if (isPlayer(cid)) then
             become(cid, nil)
             say(string.format("done %d passed, %d failed", passed, failed))
