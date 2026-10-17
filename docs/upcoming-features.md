@@ -1508,6 +1508,22 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       - When two holidays overlap, the first in this order wins: Christmas, Halloween, New
         Year, Lunar New Year, Valentine's, Pokemon Day, Easter, Anniversary, Summer
         Festival, Harvest Moon, Clefairy Night. A holiday's set always beats the season's.
+      - **Props placed by hand** (God accounts): stand facing a tile or a wall and save a prop
+        for a set, with `/deco add <set> <prop name or id>` or the Admin window's
+        Decorations tab (pick the set and the prop, press Place in front of me). Each one is
+        a row in the `decoration_spots` table (set, tile, item, who and when), so it survives
+        restarts and updates and goes up every time its set is up, next to the automatic
+        props; there's no config file to edit. Wall props (Christmas wreath, red and blue
+        garlands, skull, purple, red, blue and white tapestries) hang on walls with a hook;
+        everything else stands on a tile a player could walk on, never on a house or a
+        depot tile. A tile holds one prop per set: saving another replaces it.
+      - `/deco` shows the set up now, the town's automatic props and the props saved within
+        12 tiles (a prop that no longer fits, for example after a map change, is flagged).
+        `/deco remove [set]` deletes the prop on the tile you face, `/deco list`,
+        `/deco sets` and `/deco items <set>` list them, `/deco preview <set> [minutes]` puts
+        a set up for everyone for a while (30 minutes by default, `/deco preview off` ends
+        it) and `/deco auto <on|off>` leaves a town to its hand-placed props only. The Admin
+        window has a button for each.
     - Tests: the season, weather and decoration parts of the vocation test talkaction.
   - **Seasons follow the real calendar** (northern hemisphere), not a sped-up cycle, so it's
     never summer at Christmas. Spring starts at the March equinox, summer at the June
@@ -1611,9 +1627,11 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
 - **Admin window:** done. A crown button on the top bar, only for God accounts (access 5),
   opens a window to start, replace or stop the four events above (1.5x to 5x, 30 minutes to
   3 days), broadcast a message, save the server, clean the map, and put common staff
-  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. The server checks
-  the access on every action and logs it. Code: `data/lib/ps/systems/074-admin.lua`
-  (opcode 30), `modules/game_admin`.
+  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. A Decorations tab
+  saves props by hand for a set on the tile or wall you face, removes them, previews a set
+  and turns a town's automatic props on or off, and lists the props saved near you (see
+  Decorations above). The server checks the access on every action and logs it. Code:
+  `data/lib/ps/systems/074-admin.lua` (opcode 30), `modules/game_admin`.
 
 ## 16. Reports and feature requests to Discord forums
 

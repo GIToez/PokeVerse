@@ -6,13 +6,14 @@
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
 --                     {action = "start", event, multiplier, minutes}, {action = "stop", event},
 --                     {action = "broadcast", text}, {action = "save"}, {action = "clean"},
---                     {action = "decorations"}, {action = "deco_add", set, item}, {action = "deco_remove", set},
+--                     {action = "decorations", catalog}, {action = "deco_add", set, item}, {action = "deco_remove", set},
 --                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on}
 --   server -> client  {type = "state", access, online, events = {{key, label, command, multiplier, left}}}
 --                     {type = "result", ok, text}
---                     {type = "decorations", sets = {{id, name}}, items = {[set] = {{id, client, name, wall}}},
---                      theme, preview = {set, left}, town = {name, auto}, radius,
---                      spots = {{set, item, client, name, x, y, z, by, valid, why}}}
+--                     {type = "decorations", sets = {{id, name}}, theme, preview = {set, left}, town = {name, auto},
+--                      radius, total, spots = {{set, item, client, name, x, y, z, by, valid, why}}} (the nearest
+--                      Admin.DECO_ROWS), and with catalog one {type = "deco_items", set, items = {{id, client, name,
+--                      wall}}} per set first (a message over 8 KB is dropped)
 -- Decorations are placed on the tile the staff member faces, like /deco.
 -- Nothing is sent to anyone below Admin.ACCESS, so their client never shows the button.
 
@@ -135,19 +136,25 @@ local function broadcast(cid, data)
     result(cid, true, "Broadcast sent.")
 end
 
-Admin.sendDecorations = function(cid)
-    local sets, items = {}, {}
+Admin.DECO_ROWS = 7
+
+Admin.sendDecorations = function(cid, catalog)
+    local sets = {}
     for _, id in ipairs(Decorations.setIds()) do
         sets[#sets + 1] = { id = id, name = Decorations.SETS[id].name }
-        items[id] = {}
-        for _, item in ipairs(Decorations.catalog(id)) do
-            local info = getItemInfo(item.id)
-            items[id][#items[id] + 1] = { id = item.id, client = info and info.clientId or 0, name = item.name, wall = item.wall }
+        if (catalog) then
+            local items = {}
+            for _, item in ipairs(Decorations.catalog(id)) do
+                local info = getItemInfo(item.id)
+                items[#items + 1] = { id = item.id, client = info and info.clientId or 0, name = item.name, wall = item.wall }
+            end
+            send(cid, { type = "deco_items", set = id, items = items })
         end
     end
     local pos = getCreaturePosition(cid)
-    local spots = {}
-    for _, entry in ipairs(Decorations.spotsNear(pos, Decorations.NEARBY)) do
+    local near, spots = Decorations.spotsNear(pos, Decorations.NEARBY), {}
+    for index = 1, math.min(#near, Admin.DECO_ROWS) do
+        local entry = near[index]
         local spot, info = entry.spot, getItemInfo(entry.spot.itemid)
         spots[#spots + 1] = { set = spot.set, item = spot.itemid, client = info and info.clientId or 0,
                               name = Decorations.itemName(spot.itemid), x = spot.pos.x, y = spot.pos.y, z = spot.pos.z,
@@ -155,10 +162,10 @@ Admin.sendDecorations = function(cid)
     end
     local zone = Weather.zoneAt(pos)
     local preview, endsAt = Decorations.getPreview()
-    send(cid, { type = "decorations", sets = sets, items = items, theme = Decorations.theme(),
+    send(cid, { type = "decorations", sets = sets, theme = Decorations.theme(),
                 preview = preview and { set = preview, left = endsAt - os.time() } or nil,
                 town = zone and { name = zone.name, auto = not Decorations.getNoAuto()[zone.id] } or nil,
-                radius = Decorations.NEARBY, spots = spots, previewMinutes = Decorations.PREVIEW_MINUTES })
+                radius = Decorations.NEARBY, total = #near, spots = spots, previewMinutes = Decorations.PREVIEW_MINUTES })
 end
 
 local function decoFront(cid)
@@ -235,7 +242,7 @@ Admin.onClientMessage = function(cid, buffer)
     local action = data.action
     if (DECORATION_ACTIONS[action]) then
         DECORATION_ACTIONS[action](cid, data)
-        return Admin.sendDecorations(cid)
+        return Admin.sendDecorations(cid, action == "decorations" and data.catalog == true)
     elseif (action == "hello" or action == "refresh") then
         -- falls through to the state below
     elseif (action == "start") then

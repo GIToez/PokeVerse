@@ -89,7 +89,6 @@ AdminCommand < FishingTab
 
 AdminDecoItem < FishingTab
   size: 132 40
-  text: ''
 
   UIItem
     id: item

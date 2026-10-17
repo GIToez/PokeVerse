@@ -2026,11 +2026,12 @@ local function testHandDecorations(cid)
     end
     check("Decorations: a tree doesn't go on a wall", not D.checkSpot(wall, 2105))
 
-    local sent, level = {}, Admin.ACCESS
+    local sent, level, largest = {}, Admin.ACCESS, 0
     local opcode, access = doSendPlayerExtendedOpcode, getPlayerAccess
     doSendPlayerExtendedOpcode = function(target, id, buffer)
         if (id == EXTENDED_IDS.ADMIN) then
             sent[#sent + 1] = JSON.decode(buffer)
+            largest = math.max(largest, #buffer)
         end
         return true
     end
@@ -2052,8 +2053,11 @@ local function testHandDecorations(cid)
         check("Decorations: the Admin window saves a wreath on the wall you face", answer[1] and answer[1].ok
             and #D.getSpots() == count + 1 and saved and saved.x == wall.x and saved.y == wall.y and saved.valid,
             answer[1] and answer[1].text)
-        check("Decorations: the window lists every set and its props", state and #state.sets == #D.setIds()
-            and state.items and state.items.christmas and state.items.christmas[1].client > 0)
+        local catalog = ask({ action = "decorations", catalog = true })
+        local christmas = catalog[1] and catalog[1].type == "deco_items" and catalog[1].set == "christmas" and catalog[1].items
+        check("Decorations: the window gets every set and its props", #catalog == #D.setIds() + 1 and christmas
+            and christmas[1].client > 0 and catalog[#catalog].type == "decorations" and #catalog[#catalog].sets == #D.setIds())
+        check("Decorations: each message fits the 8 KB extended opcode limit", largest < 8000, largest)
         ask({ action = "deco_add", set = "christmas", item = 6503 })
         local spots = D.spotsNear(wall, 0)
         check("Decorations: a second prop for the set replaces the first", #D.getSpots() == count + 1 and spots[1]

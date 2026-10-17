@@ -3,7 +3,8 @@
 -- button stays hidden for everyone else. Actions: refresh, start {event, multiplier, minutes}, stop {event},
 -- broadcast {text}, save, clean; {type = "result", ok, text} answers them. The server checks the access again.
 -- The Decorations tab: decorations, deco_add {set, item}, deco_remove {set}, deco_preview {set, minutes},
--- deco_auto {on}; {type = "decorations"} answers each with the sets, their props and the props saved nearby.
+-- deco_auto {on}; {type = "decorations"} answers each with the sets and the props saved nearby, and the first
+-- request (catalog = true) also gets one {type = "deco_items", set, items} per set.
 local IMAGES = '/modules/game_admin/images/'
 local OK_COLOR = '#7ee08f'
 local BAD_COLOR = '#ff8a8a'
@@ -38,9 +39,8 @@ local picks = {} -- per event: { multiplier, minutes }
 local tickEvent
 local broadcasting = false -- the next result answers a broadcast
 local tab = 'events'
-local deco = { data = nil, set = nil, item = nil, askedAt = 0 }
+local deco = { data = nil, items = {}, set = nil, item = nil, askedAt = 0 }
 local DECO_REFRESH_SECONDS = 5
-local DECO_ROWS = 7
 
 local function send(data)
     local protocol = g_game.getProtocolGame()
@@ -74,7 +74,7 @@ end
 
 local function askDecorations()
     deco.askedAt = g_clock.seconds()
-    send({ action = 'decorations' })
+    send({ action = 'decorations', catalog = next(deco.items) == nil })
 end
 
 local function setName(id)
@@ -87,8 +87,8 @@ local function setName(id)
 end
 
 local function fillDecoItems()
-    local panel, data = window.decorations, deco.data
-    local items = data.items[deco.set] or {}
+    local panel = window.decorations
+    local items = deco.items[deco.set] or {}
     local found = false
     for _, item in ipairs(items) do
         found = found or item.id == deco.item
@@ -114,7 +114,7 @@ end
 local function fillDecorations(data)
     deco.data = data
     local panel = window.decorations
-    if not deco.set or not data.items[deco.set] then
+    if not deco.set or not deco.items[deco.set] then
         deco.set = data.theme or (data.sets[1] and data.sets[1].id)
     end
 
@@ -160,11 +160,8 @@ local function fillDecorations(data)
 
     panel.spotsTitle:setText(tr('Saved within %d tiles of you', tonumber(data.radius) or 0))
     panel.spots:destroyChildren()
-    local spots = data.spots or {}
-    for index, spot in ipairs(spots) do
-        if index > DECO_ROWS then
-            break
-        end
+    local spots, total = data.spots or {}, tonumber(data.total) or 0
+    for _, spot in ipairs(spots) do
         local row = g_ui.createWidget('AdminDecoRow', panel.spots)
         row.item:setItemId(tonumber(spot.client) or 0)
         row.text:setText(tr('%s: %s at %d, %d, %d', setName(spot.set), spot.name, spot.x, spot.y, spot.z))
@@ -179,9 +176,9 @@ local function fillDecorations(data)
     if #spots == 0 then
         local row = g_ui.createWidget('AdminMuted', panel.spots)
         row:setText(tr('None yet: pick a set and a prop, face a tile or a wall and press Place.'))
-    elseif #spots > DECO_ROWS then
+    elseif total > #spots then
         local row = g_ui.createWidget('AdminMuted', panel.spots)
-        row:setText(tr('and %d more (/deco list shows them all)', #spots - DECO_ROWS))
+        row:setText(tr('and %d more (/deco list shows them all)', total - #spots))
     end
 end
 
@@ -342,6 +339,8 @@ local function onAdmin(protocol, opcode, buffer)
     if data.type == 'state' then
         fill(data)
         button:setVisible(true)
+    elseif data.type == 'deco_items' and data.set then
+        deco.items[data.set] = data.items or {}
     elseif data.type == 'decorations' then
         fillDecorations(data)
     elseif data.type == 'result' and data.text then
@@ -364,6 +363,7 @@ local function onGameEnd()
     window.tools.result:setText('')
     window.decorations.result:setText('')
     deco.data = nil
+    deco.items = {}
 end
 
 local function fillCommands()
