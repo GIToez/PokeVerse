@@ -631,10 +631,20 @@ TUFTS = [(6216, 367), (6217, 895), (6218, 888), (6219, 909)]
 FERNS = [(3610, 29), (3611, 31), (3612, 32), (3613, 32), (3614, 32), (3621, 26), (3622, 23), (3623, 27)]
 FLOWERS = [(3648, 7), (3649, 13), (3651, 17), (3652, 10), (3654, 8), (3655, 7), (3656, 13)]
 STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6)]
-# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and most of 7004 to 7019) are quarters
-# of big rocks that take several tiles, and look broken on their own
-ROCK_PIECES = set(range(1297, 1303)) | {7006, 7007, 7009, 7010, 7011, 7015, 7017, 7019}
+# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and 7004 to 7015, and the grass
+# patches 8140 to 8159) are quarters of big rocks and patches that take 2x2 tiles, and look broken on
+# their own
+ROCK_PIECES = set(range(1297, 1303)) | set(range(7004, 7016))
 GRAVEL = list(range(6477, 6489))
+# Things drawn in pieces over two or four tiles (offset from the top-left piece -> item): benches,
+# the big rocks and the grass patches. A building copied with only some of one leaves it out.
+PIECES = [{(0, 0): a, (1, 0): b} for a, b in [(18103, 18104), (1662, 1663), (1292, 1291)]] + \
+         [{(0, 0): a, (0, 1): b} for a, b in [(18105, 18106), (1664, 1665)]] + \
+         [{(0, 0): tl, (1, 0): tr, (0, 1): bl, (1, 1): br} for tl, tr, bl, br in [
+             (8140, 8141, 8143, 8142), (8144, 8145, 8147, 8146), (8148, 8149, 8151, 8150), (8152, 8153, 8155, 8154),
+             (8156, 8157, 8159, 8158), (3624, 3625, 3626, 3627), (3628, 3629, 3630, 3631), (1300, 1301, 1302, 1303),
+             (7004, 7005, 7006, 7007), (7008, 7009, 7010, 7011), (7012, 7013, 7014, 7015)]]
+PIECE_OF = {sid: (shape, off) for shape in PIECES for off, sid in shape.items()}
 # The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
 # (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
 CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
@@ -643,7 +653,7 @@ UNDERGROWTH = [(2767, 30), (2768, 20), (2785, 10), (2786, 10), (4008, 4), (4009,
                (4012, 6), (4013, 6), (4014, 5), (4015, 5), (4018, 5), (2784, 3), (10913, 5), (10914, 5),
                (10915, 5), (2709, 1), (5392, 1), (4167, 1), (4184, 1)]
 FOREST_FLOOR = [(2787, 3), (2788, 2), (2789, 4), (2791, 4), (2793, 3), (4181, 2), (4183, 3), (3811, 2),
-                (3821, 2), (2801, 6), (8166, 6), (8148, 3), (8149, 3), (8150, 3), (8151, 3)] + \
+                (3821, 2), (2801, 6), (8166, 6)] + \
                [(i, 3) for i in range(6220, 6226)] + [(i, 2) for i in range(6476, 6489)]
 WILDFLOWERS = [(4156, 4), (4157, 3), (2762, 2), (2764, 2)] + [(i, 3) for i in range(6226, 6232)]
 # the mountain tiers' rocky tops
@@ -654,7 +664,7 @@ SNOW_FIR, SNOW_DEAD = 2698, 2697
 # Mt. Silver's: pines and firs, dead trees, big snowy stones (all blocking) and drifts (not)
 SNOW_TREES = [(SNOW_FIR, 6), (7023, 2), (8139, 2)]
 SNOW_DEAD_TREES = [(SNOW_DEAD, 2), (7020, 1), (7021, 1)]
-SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017) if i not in ROCK_PIECES]
+SNOW_BOULDERS = [(7001, 1), (7016, 1), (7017, 1)]
 SNOW_DRIFTS = [(6609, 6), (7022, 2), (13316, 1)]
 SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)]
 SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7018, 2)]
@@ -1049,8 +1059,27 @@ class Prefab:
             tile = self.tiles[(dx, dy, 0)]
             floor = b'' if tile.ground is not None else pvmap.split_items(tile.children)[0]
             self.tiles[(dx, dy, 0)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, floor)
+        # things in pieces (a bench, a big rock) that the box's edge cuts go: half of one looks broken
+        for (dx, dy, dz), tile in list(self.tiles.items()):
+            blobs = pvmap.split_items(tile.children)
+            kept = [b for b in blobs if not broken_piece(self.tiles, (dx, dy, dz), pvmap.child_item_ids(b)[0])]
+            if len(kept) < len(blobs):
+                self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
+
+
+def broken_piece(tiles, pos, sid):
+    """Whether item sid at pos is a piece of a thing in PIECES with another piece missing."""
+    if sid not in PIECE_OF:
+        return False
+    shape, (ox, oy) = PIECE_OF[sid]
+    x, y, z = pos
+    for (px, py), other in shape.items():
+        t = tiles.get((x - ox + px, y - oy + py, z))
+        if t is None or other not in pvmap.child_item_ids(t.children):
+            return True
+    return False
 
 
 def floor_down_ids(way='down'):
