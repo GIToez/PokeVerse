@@ -29,6 +29,7 @@ local progress
 local showingAll = false
 local button, dot
 local barEvent
+local perksEvent
 local TOOL_BUTTONS = {
     radar = { text = 'Open Radar', icon = 'perk_radar' },
     fishing = { text = 'Open Fishing Guide', icon = 'perk_fish' },
@@ -214,6 +215,14 @@ local function fillRanks(data)
     panel.track.fill:setWidth(math.floor(trackWidth * (data.rank - 1) / (data.maxRank - 1)))
 end
 
+-- perk rows are 30 tall with 4 between them
+local function fitScroll(list, scroll)
+    local overflow = list:getChildCount() * 34 - 4 > list:getHeight()
+    scroll:setVisible(overflow)
+    list:setMarginRight(overflow and 16 or 0)
+    scroll:setValue(0)
+end
+
 local function fillNext(data)
     local panel = progressWindow.nextPanel
     panel.list:destroyChildren()
@@ -256,11 +265,7 @@ local function fillNext(data)
             for _, goal in ipairs(goals) do
                 setBar(goal.bar, goal.have, goal.need)
             end
-            local rows = panel.list:getChildCount()
-            local overflow = rows * 34 - 4 > panel.list:getHeight()
-            panel.nextScroll:setVisible(overflow)
-            panel.list:setMarginRight(overflow and 16 or 0)
-            panel.nextScroll:setValue(0)
+            fitScroll(panel.list, panel.nextScroll)
         end
     end, 50)
 end
@@ -353,6 +358,13 @@ local function fillProgress(data)
     for _, perk in ipairs(data.perks or {}) do
         perkRow(w.perksPanel.list, perk)
     end
+    removeEvent(perksEvent)
+    perksEvent = scheduleEvent(function()
+        perksEvent = nil
+        if progressWindow then
+            fitScroll(progressWindow.perksPanel.list, progressWindow.perksPanel.perksScroll)
+        end
+    end, 50)
     fillRanks(data)
     fillNext(data)
     fillAll(data)
@@ -500,6 +512,8 @@ local function onGameEnd()
     progress = nil
     removeEvent(barEvent)
     barEvent = nil
+    removeEvent(perksEvent)
+    perksEvent = nil
     setDot(false)
     if window then
         window:hide()

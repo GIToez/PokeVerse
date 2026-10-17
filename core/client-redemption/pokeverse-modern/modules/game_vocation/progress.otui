@@ -31,6 +31,7 @@ VocationBadge < UILabel
   ttf-font-size: 10
   color: #ffffff
   text-auto-resize: true
+  text-align: center
   text-offset: 0 1
   padding: 2 7 2 7
   height: 16
@@ -349,17 +350,25 @@ VocationProgressWindow < UIWindow
       anchors.top: parent.top
       anchors.left: parent.left
 
-    UIWidget
+    ScrollablePanel
       id: list
+      vertical-scrollbar: perksScroll
       anchors.top: heading.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
       margin-top: 8
-      phantom: true
       layout:
         type: verticalBox
         spacing: 4
+
+    GtsScrollBar
+      id: perksScroll
+      step: 34
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: parent.right
+      visible: false
 
   VocationPanel
     id: nextPanel
