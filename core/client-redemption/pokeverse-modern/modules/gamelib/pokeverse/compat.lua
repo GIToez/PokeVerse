@@ -156,6 +156,7 @@ ExtendedIds.HeldItem = 29
 ExtendedIds.Admin = 30
 ExtendedIds.Quest = 31
 ExtendedIds.MoveInfo = 32
+ExtendedIds.Calendar = 33
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

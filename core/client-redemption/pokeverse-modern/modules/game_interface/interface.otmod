@@ -61,6 +61,7 @@ Module
     - game_tutorial
     - game_effects
     - game_time
+    - game_calendar
     - game_environment
     - game_dollcase
     - game_badgecase
