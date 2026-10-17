@@ -2919,6 +2919,14 @@ def build(base, out_path):
     for x, y, j, d in silver_ramps:
         if j > 1 and (x, y, Z + 1 - j) not in bored and hill_ground[y - f.y0, x - f.x0] == SNOW:
             ramp_feet[(x, y, Z + 1 - j)] = ICE_RAMPS[d]
+    # a ramp is two tiles like Kanto's: the climbing piece and its foot on the tile behind it, where
+    # that tile is on the same level
+    ramp_tails = {}
+    for x, y, j, (dx, dy) in ramps:
+        z, tx, ty = Z + 1 - j, x - dx, y - dy
+        if (f.x0 <= tx <= f.x1 and f.y0 <= ty <= f.y1 and height[ty - f.y0, tx - f.x0] == height[y - f.y0, x - f.x0]
+                and (tx, ty, z) not in ramp_feet):
+            ramp_tails[(tx, ty, z)] = ramp_feet[(x, y, z)] + 1
     for x, y, j, (dx, dy) in ramps:
         if j == 1:
             stair_landing |= {(x, y), (x - dx, y - dy)}
@@ -2988,8 +2996,8 @@ def build(base, out_path):
             if any(otb.blocks(i) for i in deco):
                 blocked_spawn[iy, ix] = True
             tiles[(x, y)] = [ground, deco]
-    for (x, y, z), ramp in ramp_feet.items():
-        if z == Z:
+    for (x, y, z), ramp in list(ramp_feet.items()) + list(ramp_tails.items()):
+        if z == Z and (x, y) in tiles:
             tiles[(x, y)] = [tiles[(x, y)][0], [ramp]]
             blocked_spawn[y - f.y0, x - f.x0] = True
     for (x, y, z), items in up_deco.items():
@@ -3288,6 +3296,8 @@ def build(base, out_path):
                 cls, r = hill_ground[iy, ix], hill_rng.random()
                 if (x, y, z) in ramp_feet:
                     deco = [ramp_feet[(x, y, z)]]
+                elif (x, y, z) in ramp_tails:
+                    deco = [ramp_tails[(x, y, z)]]
                 elif (x, y, z) in up_deco:
                     deco = list(up_deco[(x, y, z)])
                 elif inside or (x, y, z) in up_ground or silver_keep[iy, ix]:
@@ -3322,7 +3332,8 @@ def build(base, out_path):
                                       groves[iy, ix] + (0.15 if not country[iy, ix] else 0.0), tufty[iy, ix],
                                       flowery[iy, ix])
                 walk[iy, ix] = (country[iy, ix] and not any(i in gravel for i in border)
-                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet)
+                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet
+                                and (x, y, z) not in ramp_tails)
                 silver_walk[iy, ix] = ((ledges[iy, ix] or inside) and not edge and not deco and not silver_keep[iy, ix]
                                        and up_ground.get((x, y, z)) != 'walkable sea')
             children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
