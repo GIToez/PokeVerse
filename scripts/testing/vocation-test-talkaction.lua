@@ -576,14 +576,15 @@ end
 local function testAdmin(cid)
     local sent, broadcasts = {}, {}
     local opcode, access, broadcast = doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage
-    local level = 0
+    local level, largest = 0, 0
     doSendPlayerExtendedOpcode = function(target, id, buffer)
         if (id == EXTENDED_IDS.ADMIN) then
             sent[#sent + 1] = JSON.decode(buffer)
+            largest = math.max(largest, #buffer)
         end
         return true
     end
-    getPlayerAccess = function() return level end
+    getPlayerAccess = function(pid) return pid == cid and level or access(pid) end
     doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
     local discord, onBroadcast = {}, DiscordBridge.onBroadcast
     DiscordBridge.onBroadcast = function(source, author, text) discord[#discord + 1] = source .. "|" .. author .. "|" .. text end
@@ -602,12 +603,93 @@ local function testAdmin(cid)
     end
     local ok, err = pcall(function()
         ShinyEvent.stop()
-        check("admin: players below God get nothing", #ask({ action = "hello" }) == 0 and not Admin.allowed(cid))
+        check("admin: players get nothing", #ask({ action = "hello" }) == 0 and not Admin.allowed(cid))
         ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
-        check("admin: players below God can't start events", not ShinyEvent.get())
+        check("admin: players can't start events", not ShinyEvent.get())
+
+        level = 1
+        local tutor = ask({ action = "hello" })[1]
+        check("admin: a tutor gets the window without the world settings", tutor and tutor.type == "state" and tutor.access == 1
+            and tutor.world == nil)
+        ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
+        check("admin: a tutor can't start events", not ShinyEvent.get() and sent[1] and sent[1].ok == false)
+        local function commandWords()
+            local words = {}
+            for _, message in ipairs(ask({ action = "commands" })) do
+                for _, entry in ipairs(message.commands or {}) do
+                    words[entry.words] = entry
+                end
+            end
+            return words
+        end
+        local words = commandWords()
+        check("admin: a tutor's command list has /chatban but not /kick", words["/chatban"] ~= nil and words["/kick"] == nil)
+        local talked = {}
+        local execute = doCreatureExecuteTalkAction
+        doCreatureExecuteTalkAction = function(pid, text) talked[#talked + 1] = text return true end
+        ask({ action = "command", text = "/kick Vocation Friend" })
+        check("admin: a tutor can't run /kick from the window", #talked == 0 and sent[1] and sent[1].ok == false
+            and sent[1].text:find("access 3") ~= nil, sent[1] and sent[1].text)
+        ask({ action = "ban", name = "Vocation Friend", days = 1, reason = 5 })
+        check("admin: a tutor can't ban", sent[1] and sent[1].ok == false and sent[1].text:find("Bans need") ~= nil)
+        local list = ask({ action = "players", filter = "vocation t" })[1]
+        check("admin: the player search finds the tester", list and list.type == "players" and list.total == 1
+            and list.players[1].name == getCreatureName(cid) and #(list.towns or {}) > 0, list and list.total)
+        list = ask({ action = "players", filter = "zzzz" })[1]
+        check("admin: the player search can find nobody", list and list.total == 0 and #list.players == 0)
+
         level = Admin.ACCESS
+        words = commandWords()
+        check("admin: God's command list has /kick with its usage", words["/kick"] and words["/kick"].group == "Players"
+            and words["/kick"].usage == "/kick <player>" and words["/reload"] ~= nil)
+        ask({ action = "command", text = "  /goto Vocation Friend " })
+        check("admin: the window runs a command as typed", talked[#talked] == "/goto Vocation Friend" and sent[1].ok == true,
+            talked[#talked])
+        ask({ action = "command", text = "/nosuchcommand" })
+        check("admin: an unknown command is refused", #talked == 1 and sent[1].ok == false)
+        ask({ action = "save" })
+        check("admin: Save server runs /save", talked[#talked] == "/save")
+        doCreatureExecuteTalkAction = execute
+        ask({ action = "command", text = "/online" })
+        check("admin: a real command runs", sent[1] and sent[1].ok == true, sent[1] and sent[1].text)
+
+        local banned, removed = {}, {}
+        local addBan, isBanned, remove, logout = doAddAccountBanishment, isAccountBanished, doRemoveCreature, doSetDiscordLogoutReason
+        doAddAccountBanishment = function(...) banned[#banned + 1] = { ... } return true end
+        isAccountBanished = function() return false end
+        doRemoveCreature = function(pid) removed[#removed + 1] = pid return true end
+        doSetDiscordLogoutReason = function() return true end
+        local banOk, banErr = pcall(function()
+            local friend = getPlayerByName("Vocation Friend")
+            ask({ action = "ban", name = "Vocation Friend", days = 7, reason = 5, comment = "  spam  " })
+            local args = banned[1] or {}
+            check("admin: Ban bans the account for 7 days", friend and args[1] == getPlayerAccountId(friend)
+                and args[2] == getPlayerGUID(friend) and math.abs(args[3] - os.time() - 7 * 86400) <= 1 and args[4] == 5
+                and args[5] == ACTION_BANISHMENT and args[6] == "spam" and args[7] == getPlayerGUID(cid), tostring(args[3]))
+            check("admin: the banned player is disconnected", removed[1] == friend and sent[1] and sent[1].ok == true
+                and sent[2] and sent[2].type == "bans")
+            ask({ action = "ban", name = "Vocation Friend", days = 0, reason = 12 })
+            check("admin: a ban for good is a deletion", banned[2] and banned[2][3] == -1 and banned[2][5] == ACTION_DELETION)
+            ask({ action = "ban", name = "Vocation Friend", days = 2, reason = 5 })
+            check("admin: odd ban lengths are refused", #banned == 2 and sent[1].ok == false)
+            ask({ action = "ban", name = "Vocation Friend", days = 1, reason = 99 })
+            check("admin: odd ban reasons are refused", #banned == 2 and sent[1].ok == false)
+            ask({ action = "ban", name = getCreatureName(cid), days = 1, reason = 5 })
+            check("admin: staff can't ban their own rank", #banned == 2 and sent[1].ok == false)
+            ask({ action = "ban", name = "Nobody Called This", days = 1, reason = 5 })
+            check("admin: banning an unknown name is refused", #banned == 2 and sent[1].ok == false)
+        end)
+        doAddAccountBanishment, isAccountBanished, doRemoveCreature, doSetDiscordLogoutReason = addBan, isBanned, remove, logout
+        if (not banOk) then
+            error(banErr)
+        end
+        local bans = ask({ action = "bans" })[1]
+        check("admin: the window lists the banned accounts", bans and bans.type == "bans" and type(bans.bans) == "table")
+        check("admin: every message fits in 8 KB", largest < 8000, largest)
         local state = ask({ action = "hello" })[1]
         check("admin: staff get the four events", state and state.type == "state" and #(state.events or {}) == 4)
+        check("admin: God gets the world settings", state.world and #(state.world.kinds or {}) == 9
+            and #(state.world.legendaries or {}) > 0 and #(state.world.holidays or {}) > 0)
         ask({ action = "start", event = "shiny", multiplier = 7, minutes = 30 })
         check("admin: odd multipliers are refused", not ShinyEvent.get() and sent[1] and sent[1].ok == false)
         ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })

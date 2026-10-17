@@ -1,24 +1,42 @@
--- The Admin window (client game_admin): the server events and a few staff tools, for staff with
--- Admin.ACCESS (the access the event commands need in talkactions.xml). Every request checks the
--- access again, so the window is only a shortcut for what the commands already allow.
+-- The Admin window (client game_admin) for every staff member (access 1 and up). Each tab and action
+-- needs the access of the commands behind it: the window runs most of them as the talkactions
+-- themselves ({action = "command"}, so talkactions.xml decides), and checks the access of the rest here
+-- (events, decorations and the world settings Admin.ACCESS, bans Admin.BAN_ACCESS).
 --
 -- JSON on EXTENDED_IDS.ADMIN:
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
 --                     {action = "start", event, multiplier, minutes}, {action = "stop", event},
 --                     {action = "broadcast", text, target = "both"|"game"|"discord"}, {action = "save"}, {action = "clean"},
 --                     {action = "decorations", catalog}, {action = "deco_add", set, item}, {action = "deco_remove", set},
---                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on}
---   server -> client  {type = "state", access, online, events = {{key, label, command, multiplier, left}}}
+--                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on},
+--                     {action = "command", text} (a talkaction, run with the staff member's own access),
+--                     {action = "players", filter}, {action = "ban", name, days (0: for good), reason, comment},
+--                     {action = "bans"}, {action = "commands"}
+--   server -> client  {type = "state", access, online, events = {{key, label, command, multiplier, left}}, multipliers,
+--                      minutes, access, banAccess, banDays, banReasons = {{id, name}}, world = {kinds, regions,
+--                      holidays, seasons, legendaries}}
 --                     {type = "result", ok, text}
 --                     {type = "decorations", sets = {{id, name}}, theme, preview = {set, left}, town = {name, auto},
 --                      radius, total, spots = {{set, item, client, name, x, y, z, by, valid, why}}} (the nearest
 --                      Admin.DECO_ROWS), and with catalog one {type = "deco_items", set, items = {{id, client, name,
 --                      wall}}} per set first (a message over 8 KB is dropped)
+--                     {type = "players", total, players = {{name, level, access, place, x, y, z}}, towns = {{id, name}}}
+--                     {type = "bans", bans = {{account, names, reason, comment, by, left}}} (left -1: for good)
+--                     {type = "commands", part, parts, commands = {{words, access, group, usage, help}}}
 -- Decorations are placed on the tile the staff member faces, like /deco.
--- Nothing is sent to anyone below Admin.ACCESS, so their client never shows the button.
+-- Nothing is sent to players below Admin.STAFF_ACCESS, so their client never shows the button.
 
 Admin = {}
 
+Admin.STAFF_ACCESS = 1
+Admin.EVENTS_ACCESS = 3 -- sees the Events tab (broadcasts); starting events needs Admin.ACCESS
+Admin.BROADCAST_ACCESS = 3
+Admin.BAN_ACCESS = 3
+Admin.BAN_DAYS = { 1, 3, 7, 30, 0 }
+Admin.BAN_REASONS = { 4, 5, 6, 10, 11, 12, 14, 15, 19 } -- ids of getBanReason
+Admin.PLAYER_ROWS = 40
+Admin.BAN_ROWS = 8
+Admin.COMMANDS_PER_MESSAGE = 20
 Admin.ACCESS = 5
 Admin.MULTIPLIERS = { 1.5, 2, 3, 5, 10 }
 Admin.MINUTES = { 30, 60, 120, 360, 1440, 4320, 10080 }
@@ -74,7 +92,33 @@ local function log(cid, text)
 end
 
 Admin.allowed = function(cid)
-    return isPlayer(cid) and getPlayerAccess(cid) >= Admin.ACCESS
+    return isPlayer(cid) and getPlayerAccess(cid) >= Admin.STAFF_ACCESS
+end
+
+local function hasAccess(cid, access)
+    return getPlayerAccess(cid) >= access
+end
+
+local function worldInfo()
+    local kinds, regions, holidays, seasons, legendaries = {}, {}, {}, {}, {}
+    for _, id in ipairs(Weather.KIND_IDS) do
+        kinds[#kinds + 1] = { id = id, name = Weather.KINDS[id].name }
+    end
+    for _, region in ipairs(Weather.REGIONS) do
+        if (region.live) then
+            regions[#regions + 1] = { id = region.id, name = region.name }
+        end
+    end
+    for _, holiday in ipairs(EventCalendar.HOLIDAYS) do
+        holidays[#holidays + 1] = { id = holiday.id, name = holiday.name }
+    end
+    for _, season in ipairs(EventCalendar.SEASONS) do
+        seasons[#seasons + 1] = { id = season.id, name = season.name }
+    end
+    for _, species in ipairs(WildLegendaries.SPECIES) do
+        legendaries[#legendaries + 1] = species.name
+    end
+    return { kinds = kinds, regions = regions, holidays = holidays, seasons = seasons, legendaries = legendaries }
 end
 
 Admin.sendState = function(cid)
@@ -84,8 +128,14 @@ Admin.sendState = function(cid)
         events[#events + 1] = { key = event.key, label = event.label, command = event.command,
                                 multiplier = multiplier, left = multiplier and endsAt - os.time() or nil }
     end
+    local reasons = {}
+    for _, id in ipairs(Admin.BAN_REASONS) do
+        reasons[#reasons + 1] = { id = id, name = getBanReason(id) }
+    end
     send(cid, { type = "state", access = getPlayerAccess(cid), online = #getPlayersOnline(), events = events,
-                multipliers = Admin.MULTIPLIERS, minutes = Admin.MINUTES })
+                multipliers = Admin.MULTIPLIERS, minutes = Admin.MINUTES, eventsAccess = Admin.ACCESS,
+                broadcastAccess = Admin.BROADCAST_ACCESS, banAccess = Admin.BAN_ACCESS, banDays = Admin.BAN_DAYS,
+                banReasons = reasons, world = hasAccess(cid, Admin.ACCESS) and worldInfo() or nil })
 end
 
 -- The client's hello can go out before the opcode handshake, so staff also get the state pushed after login.
@@ -241,6 +291,241 @@ end
 local DECORATION_ACTIONS = { decorations = function() end, deco_add = decoAdd, deco_remove = decoRemove,
                              deco_preview = decoPreview, deco_auto = decoAuto }
 
+-- The Commands tab: every talkaction from access 1 up, with its group, usage and what it does
+Admin.COMMAND_HELP = {
+    ["/goto"] = { "Players", "/goto <player | x,y,z | waypoint>", "Teleport to a player, a position or a waypoint" },
+    ["/c"] = { "Players", "/c <player>", "Bring a player (or creature) to you" },
+    ["/send"] = { "Players", "/send <player>;<player | x,y,z>", "Send a player somewhere" },
+    ["/town"] = { "Players", "/town <town>[,<player>]", "Teleport you (or a player) to a town's temple" },
+    ["/kick"] = { "Players", "/kick <player>", "Disconnect a player" },
+    ["/mkick"] = { "Players", "/mkick <range x>,<range y>[,multifloor]", "Disconnect every player around you" },
+    ["/chatban"] = { "Players", "/chatban <player>", "Mute a player in every chat channel for 60 minutes" },
+    ["/info"] = { "Players", "/info <player>", "Character and account details" },
+    ["/notations"] = { "Players", "/notations <player | account>", "Notations on the account" },
+    ["/baninfo"] = { "Players", "/baninfo <player | account>", "Why and until when an account is banned" },
+    ["/unban"] = { "Players", "/unban <player | account>", "Lift an account ban, IP ban or namelock" },
+    ["/mc"] = { "Players", "/mc", "Players online from the same IP" },
+    ["/gmcheck"] = { "Players", "/gmcheck", "Check the players online" },
+    ["/online"] = { "Players", "/online", "Players online and their levels" },
+    ["/promote"] = { "Players", "/promote <player>", "Move a player one staff group up" },
+    ["/demote"] = { "Players", "/demote <player>", "Move a player one staff group down" },
+    ["/pstats"] = { "Players", "/pstats <player>", "A player's Pokemon stats" },
+    ["/vocation"] = { "Players", "/vocation <player> ...", "See or change a trainer's vocation and rank" },
+    ["/addskill"] = { "Players", "/addskill <player>, <skill>[, amount]", "Add skill levels" },
+    ["/addoutfit"] = { "Players", "/addoutfit <player>, <outfit>", "Give a player an outfit" },
+    ["/sendplayeruniqueitem"] = { "Players", "/sendplayeruniqueitem <player>, <item>", "Send a player a unique item" },
+    ["/storage"] = { "Players", "/storage <player>, <key>[, value]", "Read or set a player storage" },
+    ["/gethouse"] = { "Players", "/gethouse <player>", "The house a player owns" },
+    ["/t"] = { "Moving", "/t", "Teleport to your temple" },
+    ["/a"] = { "Moving", "/a <tiles>", "Step that many tiles forward" },
+    ["/wp"] = { "Moving", "/wp", "The waypoints" },
+    ["/cliport"] = { "Moving", "/cliport", "Teleport where you click on the map" },
+    ["/ghost"] = { "Staff", "/ghost", "Turn invisible, or visible again" },
+    ["/squelch"] = { "Staff", "/squelch", "Ignore private messages" },
+    ["/reports"] = { "Staff", "/reports", "Open rule violation reports" },
+    ["/b"] = { "Staff", "/b <message>", "Broadcast with your name (in game and to Discord)" },
+    ["/bc"] = { "Staff", "/bc <color> <message>", "Broadcast in a colour" },
+    ["/i"] = { "World", "/i <item id | name>[, count]", "Create an item" },
+    ["/m"] = { "World", "/m <monster>", "Summon a monster" },
+    ["/n"] = { "World", "/n <npc>", "Summon an NPC" },
+    ["/s"] = { "World", "/s <pokemon>", "Summon a wild Pokemon" },
+    ["/r"] = { "World", "/r", "Remove the thing in front of you" },
+    ["/createnpc"] = { "World", "/createnpc <name>", "Create an NPC" },
+    ["/attr"] = { "World", "/attr <attribute> <value>", "Change the item in front of you" },
+    ["/owner"] = { "World", "/owner <player>", "Set the owner of the house you stand in" },
+    ["/newtype"] = { "World", "/newtype <monster>", "Turn into a monster" },
+    ["/z"] = { "World", "/z <effect>", "Show a magic effect" },
+    ["/x"] = { "World", "/x <projectile>", "Show a projectile" },
+    ["/y"] = { "World", "/y <color> <text>", "Show animated text" },
+    ["/weather"] = { "World", "/weather [<zone|region|all|here> <kind> [minutes] | auto | off | time <day|night>]", "Weather and the game clock" },
+    ["/legendary"] = { "World", "/legendary status | spawn <name> [here] | end <name> | next <duration>", "Wild legendaries" },
+    ["/raid"] = { "World", "/raid <name>", "Start a raid" },
+    ["/deco"] = { "World", "/deco sets | items | add | remove | list | preview | auto", "Hand-placed decorations" },
+    ["/mypokemon"] = { "World", "/mypokemon <pokemon> [level]", "Give yourself a Pokemon" },
+    ["/pokemonexp"] = { "World", "/pokemonexp <amount>", "EXP for the Pokemon out" },
+    ["/doubleexp"] = { "Events", "/doubleexp <multiplier> <duration> | stop", "Kill experience event" },
+    ["/bonusshiny"] = { "Events", "/bonusshiny <multiplier> <duration> | stop", "Shiny chance event" },
+    ["/bonusdaycare"] = { "Events", "/bonusdaycare <multiplier> <duration> | stop", "Day Care training EXP event" },
+    ["/bonusbreeding"] = { "Events", "/bonusbreeding <multiplier> <duration> | stop", "Day Care egg chance event" },
+    ["/calendar"] = { "Events", "/calendar [list | add ... | remove <n> | holiday <id> on|off|auto | season <name|auto>]", "Calendar events, holidays and seasons" },
+    ["/save"] = { "Server", "/save [minutes]", "Save the server (or every N minutes)" },
+    ["/clean"] = { "Server", "/clean [minutes | tile]", "Remove the items lying on the map" },
+    ["/restart"] = { "Server", "/restart [<minutes> | cancel | announce | daily <HH:MM>|off|default]", "Restarts" },
+    ["/shutdown"] = { "Server", "/shutdown [<minutes> | stop]", "Shut the server down" },
+    ["/closeserver"] = { "Server", "/closeserver", "Close the server to players" },
+    ["/openserver"] = { "Server", "/openserver", "Open the server to players again" },
+    ["/reload"] = { "Server", "/reload <talkactions | actions | npcs | monsters | config | all ...>", "Reload scripts and data" },
+    ["/mode"] = { "Server", "/mode <nopvp | pvp | pvpenforced>", "The world's PvP type" },
+    ["/config"] = { "Server", "/config <key>", "Read a config.lua value" },
+    ["/serverdiag"] = { "Server", "/serverdiag", "Server diagnostics" },
+}
+
+-- talkactions.xml's commands from access 1 up, by words
+local function talkactions()
+    local list = {}
+    for _, entry in ipairs(getTalkActionList() or {}) do
+        if (entry.access >= Admin.STAFF_ACCESS and not entry.hide) then
+            list[entry.words:lower()] = entry
+        end
+    end
+    return list
+end
+
+local function trim(text)
+    return (tostring(text or ""):gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+Admin.sendCommands = function(cid)
+    local access, commands = getPlayerAccess(cid), {}
+    for words, entry in pairs(talkactions()) do
+        if (entry.access <= access) then
+            local help = Admin.COMMAND_HELP[words] or {}
+            commands[#commands + 1] = { words = entry.words, access = entry.access, group = help[1] or "Other",
+                                        usage = help[2] or entry.words, help = help[3] or entry.description or "" }
+        end
+    end
+    table.sort(commands, function(a, b) return a.words < b.words end)
+    local parts = math.max(1, math.ceil(#commands / Admin.COMMANDS_PER_MESSAGE))
+    for part = 1, parts do
+        local chunk = {}
+        for index = (part - 1) * Admin.COMMANDS_PER_MESSAGE + 1, math.min(#commands, part * Admin.COMMANDS_PER_MESSAGE) do
+            chunk[#chunk + 1] = commands[index]
+        end
+        send(cid, { type = "commands", part = part, parts = parts, commands = chunk })
+    end
+end
+
+local function runCommand(cid, data)
+    local text = trim(data.text)
+    local words = (text:match("^(%S+)") or ""):lower()
+    if (text == "") then
+        return result(cid, false, "Type a command.")
+    elseif (#text > 255) then
+        return result(cid, false, "Commands can be at most 255 characters.")
+    end
+    local entry = talkactions()[words]
+    if (not entry) then
+        return result(cid, false, string.format("There is no staff command %s.", words))
+    elseif (entry.access > getPlayerAccess(cid)) then
+        return result(cid, false, string.format("%s needs access %d.", entry.words, entry.access))
+    end
+    log(cid, "ran " .. text)
+    if (not doCreatureExecuteTalkAction(cid, text)) then
+        return result(cid, false, "Couldn't run " .. text .. ".")
+    end
+    result(cid, true, string.format("Ran %s. Its answer is in the Server Log.", text))
+end
+
+local function isVisible(cid, pid)
+    return not isPlayerGhost(pid) or getPlayerGhostAccess(pid) <= getPlayerGhostAccess(cid)
+end
+
+local function towns()
+    local list = {}
+    for id = 1, 100 do
+        local name = getTownName(id)
+        if (name and name ~= "") then
+            list[#list + 1] = { id = id, name = name }
+        end
+    end
+    return list
+end
+
+local function sendPlayers(cid, data)
+    local filter, rows = trim(data.filter):lower(), {}
+    for _, pid in ipairs(getPlayersOnline()) do
+        local name = getCreatureName(pid)
+        if (isVisible(cid, pid) and (filter == "" or name:lower():find(filter, 1, true))) then
+            local pos = getCreaturePosition(pid)
+            local zone = Weather.zoneAt(pos)
+            rows[#rows + 1] = { name = name, level = getPlayerLevel(pid), access = getPlayerAccess(pid),
+                                place = zone and zone.name or nil, x = pos.x, y = pos.y, z = pos.z }
+        end
+    end
+    table.sort(rows, function(a, b) return a.name:lower() < b.name:lower() end)
+    local total = #rows
+    for index = #rows, Admin.PLAYER_ROWS + 1, -1 do
+        rows[index] = nil
+    end
+    send(cid, { type = "players", total = total, players = rows, towns = towns() })
+end
+
+local function accountNames(account)
+    local names = {}
+    local query = db.getResult(string.format("SELECT `name` FROM `players` WHERE `account_id` = %d ORDER BY `level` DESC LIMIT 3;", account))
+    if (query:getID() ~= -1) then
+        repeat
+            names[#names + 1] = query:getDataString("name")
+        until (not query:next())
+        query:free()
+    end
+    return names
+end
+
+Admin.sendBans = function(cid)
+    local bans = getBanList(BAN_ACCOUNT) or {}
+    table.sort(bans, function(a, b) return a.added > b.added end)
+    local rows = {}
+    for index = 1, math.min(#bans, Admin.BAN_ROWS) do
+        local ban = bans[index]
+        rows[#rows + 1] = { account = ban.value, names = accountNames(ban.value), reason = getBanReason(ban.reason),
+                            comment = ban.comment, by = ban.adminId ~= 0 and getPlayerNameByGUID(ban.adminId, false, false) or "",
+                            left = ban.expires <= 0 and -1 or ban.expires - os.time() }
+    end
+    send(cid, { type = "bans", total = #bans, bans = rows })
+end
+
+-- the access of a character, online or not
+local function characterAccess(name, guid)
+    local pid = getPlayerByName(name)
+    if (pid) then
+        return getPlayerAccess(pid)
+    end
+    local access = 0
+    local query = db.getResult(string.format("SELECT `group_id` FROM `players` WHERE `id` = %d;", guid))
+    if (query:getID() ~= -1) then
+        local group = getGroupInfo(query:getDataInt("group_id"))
+        access = group and group.access or 0
+        query:free()
+    end
+    return access
+end
+
+local function banAccount(cid, data)
+    local name, days, reason = trim(data.name), tonumber(data.days), tonumber(data.reason)
+    local comment = trim(data.comment):sub(1, 200)
+    if (name == "") then
+        return result(cid, false, "Type or pick the player to ban.")
+    elseif (not contains(Admin.BAN_DAYS, days) or not contains(Admin.BAN_REASONS, reason)) then
+        return result(cid, false, "Pick how long and why.")
+    end
+    local guid = getPlayerGUIDByName(name)
+    local account = guid and getAccountIdByName(name) or 0
+    if (not guid or account == 0) then
+        return result(cid, false, string.format("There is no player called %s.", name))
+    elseif (characterAccess(name, guid) >= getPlayerAccess(cid)) then
+        return result(cid, false, string.format("You can't ban %s.", name))
+    elseif (isAccountBanished(account)) then
+        return result(cid, false, string.format("%s's account is already banned (/baninfo %s).", name, name))
+    end
+    local expires = days == 0 and -1 or os.time() + days * 86400
+    if (not doAddAccountBanishment(account, guid, expires, reason, days == 0 and ACTION_DELETION or ACTION_BANISHMENT,
+            comment, getPlayerGUID(cid))) then
+        return result(cid, false, "The ban couldn't be saved.")
+    end
+    local kicked = 0
+    for _, pid in ipairs(getPlayersOnline()) do
+        if (getPlayerAccountId(pid) == account) then
+            doSetDiscordLogoutReason(pid, "kick")
+            doRemoveCreature(pid)
+            kicked = kicked + 1
+        end
+    end
+    local length = days == 0 and "for good" or string.format("for %d day%s", days, days == 1 and "" or "s")
+    log(cid, string.format("banned %s's account %s (%s) %s", name, length, getBanReason(reason), comment))
+    result(cid, true, string.format("%s's account is banned %s%s.", name, length, kicked > 0 and " and was disconnected" or ""))
+end
+
 Admin.onClientMessage = function(cid, buffer)
     if (not Admin.allowed(cid)) then
         return
@@ -252,24 +537,43 @@ Admin.onClientMessage = function(cid, buffer)
 
     local action = data.action
     if (DECORATION_ACTIONS[action]) then
+        if (not hasAccess(cid, Admin.ACCESS)) then
+            return result(cid, false, "Decorations need access " .. Admin.ACCESS .. ".")
+        end
         DECORATION_ACTIONS[action](cid, data)
         return Admin.sendDecorations(cid, action == "decorations" and data.catalog == true)
+    elseif (action == "command") then
+        return runCommand(cid, data)
+    elseif (action == "players") then
+        return sendPlayers(cid, data)
+    elseif (action == "commands") then
+        return Admin.sendCommands(cid)
+    elseif (action == "bans" or action == "ban") then
+        if (not hasAccess(cid, Admin.BAN_ACCESS)) then
+            return result(cid, false, "Bans need access " .. Admin.BAN_ACCESS .. ".")
+        end
+        if (action == "ban") then
+            banAccount(cid, data)
+        end
+        return Admin.sendBans(cid)
     elseif (action == "hello" or action == "refresh") then
         -- falls through to the state below
-    elseif (action == "start") then
-        startEvent(cid, data)
-    elseif (action == "stop") then
-        stopEvent(cid, data)
+    elseif (action == "start" or action == "stop") then
+        if (not hasAccess(cid, Admin.ACCESS)) then
+            return result(cid, false, "Events need access " .. Admin.ACCESS .. ".")
+        end
+        if (action == "start") then
+            startEvent(cid, data)
+        else
+            stopEvent(cid, data)
+        end
     elseif (action == "broadcast") then
+        if (not hasAccess(cid, Admin.BROADCAST_ACCESS)) then
+            return result(cid, false, "Broadcasts need access " .. Admin.BROADCAST_ACCESS .. ".")
+        end
         broadcast(cid, data)
-    elseif (action == "save") then
-        doSaveServer()
-        log(cid, "saved the server")
-        result(cid, true, "Server saved.")
-    elseif (action == "clean") then
-        local count = doCleanMap()
-        log(cid, "cleaned the map")
-        result(cid, true, string.format("Map cleaned: %d items removed.", count or 0))
+    elseif (action == "save" or action == "clean") then
+        return runCommand(cid, { text = "/" .. action })
     else
         return
     end
