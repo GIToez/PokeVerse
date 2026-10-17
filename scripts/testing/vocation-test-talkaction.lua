@@ -495,7 +495,8 @@ local function throwAt(cid, pos, pokemon, after)
     end
     doTargetCombatHealth(cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
     addEvent(function()
-        local corpse = getTileItemByType(pos, ITEM_TYPE_CONTAINER)
+        -- its own body: other tests running at the same time leave bodies on these tiles too
+        local corpse = getTileItemById(pos, getMonsterInfo(pokemon).lookCorpse)
         if (not isPlayer(cid) or not isItem(corpse)) then
             check("catch test: corpse", false)
             return
@@ -1832,7 +1833,8 @@ local function testLegendaries(cid, friend, arena)
         local hasArticuno = false
         for _, s in ipairs(list) do hasArticuno = hasArticuno or s.name == "Articuno" end
         check("Legendary: the one out is not eligible", #list == 20 and not hasArticuno, #list)
-        local m = W.spawn(mewtwo, { x = arena.x + 1, y = arena.y, z = arena.z }, "the test arena", "test")
+        -- north of the arena: the Catcher throws, running at the same time, use the tiles east and south
+        local m = W.spawn(mewtwo, { x = arena.x, y = arena.y - 1, z = arena.z }, "the test arena", "test")
         spawned[#spawned + 1] = m
         check("Legendary: a second one can come", isMonster(m))
         check("Legendary: at most two alive", #W.eligible() == 0 and W.blocked(os.time()) ~= nil)
@@ -1923,6 +1925,7 @@ local function testLegendaries(cid, friend, arena)
             return kills
         end
         local points = defeats()
+        doCreatureSetNoMove(m, true)
         local pos = getCreaturePosition(m)
         -- reward shares only count damage from a trainer's Pokemon
         local pets = {}
@@ -1957,7 +1960,6 @@ local function testLegendaries(cid, friend, arena)
             local cd = W.getCooldowns()["Mewtwo"]
             check("Legendary defeat: tier 2 cooldown", cd and math.abs(cd - os.time() - W.getPopulation().cooldown[2]) <= 3)
             check("Legendary defeat: the encounter is closed", #W.getActive() == 0, #W.getActive())
-            -- it can still walk for the second or two it takes to die
             local corpse, bodyPos
             for radius = 0, 4 do
                 for dx = -radius, radius do
