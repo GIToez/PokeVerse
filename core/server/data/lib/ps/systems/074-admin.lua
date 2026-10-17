@@ -410,7 +410,8 @@ local function runCommand(cid, data)
         return result(cid, false, string.format("%s needs access %d.", entry.words, entry.access))
     end
     log(cid, "ran " .. text)
-    if (not doCreatureExecuteTalkAction(cid, text)) then
+    -- access is checked above; the engine's own check reads the group directly, not getPlayerAccess
+    if (not doCreatureExecuteTalkAction(cid, text, 1)) then
         return result(cid, false, "Couldn't run " .. text .. ".")
     end
     result(cid, true, string.format("Ran %s. Its answer is in the Server Log.", text))
