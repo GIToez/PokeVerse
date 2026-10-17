@@ -654,6 +654,14 @@ PIECES = [{(0, 0): a, (1, 0): b} for a, b in [(18103, 18104), (1662, 1663), (129
              (8156, 8157, 8159, 8158), (3624, 3625, 3626, 3627), (3628, 3629, 3630, 3631), (1300, 1301, 1302, 1303),
              (7004, 7005, 7006, 7007), (7008, 7009, 7010, 7011), (7012, 7013, 7014, 7015)]]
 PIECE_OF = {sid: (shape, off) for shape in PIECES for off, sid in shape.items()}
+# The Pokémon Center's walls, roof, awning and upper floor. In Kanto some buildings stand against a
+# Pokémon Center, and their box takes in a strip of it that looks like a center left half built.
+PC_PIECES = ({23965, 23966, 23978, 23983, 24076, 24121, 24122, 24146, 24151, 24158, 24163, 24166, 24167, 24170,
+              24235, 24236, 24242, 24244, 24246, 24249, 24250, 24311, 24312}
+             | set(range(24023, 24028)) | set(range(24036, 24040)) | set(range(24046, 24051))
+             | set(range(24085, 24101)) | set(range(24104, 24113)) | set(range(24114, 24117))
+             | set(range(24177, 24181)) | set(range(24189, 24194)) | set(range(24443, 24447)))
+PC_LAMP = 12070
 # The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
 # (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
 CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
@@ -1074,6 +1082,22 @@ class Prefab:
             kept = [b for b in blobs if not broken_piece(self.tiles, (dx, dy, dz), pvmap.child_item_ids(b)[0])]
             if len(kept) < len(blobs):
                 self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
+        # a strip of the Pokémon Center next door in Kanto goes, with its lamps and the invisible walls
+        # at its corners (on the box's edge; the Mart has its own), and tiles left empty
+        if name != 'pokecenter':
+            for (dx, dy, dz), tile in list(self.tiles.items()):
+                blobs = pvmap.split_items(tile.children)
+                firsts = [pvmap.child_item_ids(b)[0] for b in blobs]
+                drop = set()
+                if tile.ground in PC_PIECES or PC_PIECES & set(firsts):
+                    drop = PC_PIECES | {PC_LAMP, FLY_BARRIER}
+                elif dz == 0 and name != 'mart' and (dx in (0, self.w - 1) or dy in (0, self.h - 1)):
+                    drop = {FLY_BARRIER}
+                kept = [b for b, i in zip(blobs, firsts) if i not in drop]
+                if (dz < 0 and tile.ground in PC_PIECES) or (tile.ground is None and not kept):
+                    del self.tiles[(dx, dy, dz)]
+                elif len(kept) < len(blobs):
+                    self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
 
