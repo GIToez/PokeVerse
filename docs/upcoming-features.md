@@ -1459,8 +1459,11 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     - Kinds: clear, sunny (harsh sun, heat haze), rain, thunderstorm (rain with lightning
       flashes and thunder), fog, snow, hail, sandstorm (only in desert areas and on rocky
       routes) and windy (leaves or petals blowing, depending on the season).
-    - Zones: the outdoor Kanto areas are grouped into a few weather zones (by area name, as
-      on the area banner), so it can rain on Route 1 while Cerulean is sunny. Buildings,
+    - Regions: every region gets weather, not only Kanto. Kanto, Hoenn and the Orange
+      Islands come first, since they're live, and Johto gets its zones when it goes live.
+      The zone list is per region, so adding a region is a data change, not new code.
+    - Zones: each region's outdoor areas are grouped into a few weather zones (by area
+      name, as on the area banner), so it can rain on Route 1 while Cerulean is sunny. Buildings,
       caves and dungeons have no weather. Each zone rolls its next weather every 20 to 60
       minutes, using that season's odds and the zone's own rules (no snow at sea in
       summer, sandstorms only where there's sand).
@@ -1480,6 +1483,10 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       Hail and sandstorms deal a little damage every few seconds to Pokémon that aren't
       Ice (hail) or Rock, Ground or Steel (sandstorm). Fog lowers the accuracy of ranged
       moves a little.
+    - Moves bar: a move that the weather makes stronger (or weaker) gets a small weather
+      icon on its slot (a raindrop, sun or lightning bolt, green for stronger, red for
+      weaker), next to the type matchup arrow. Hovering it says why ("Rain: Water moves
+      +20%"), and the shift-click move card shows the weather in its power breakdown.
     - Spawns: each weather has a list of species that spawn more often, through the same
       swap table as the seasons (Water and Bug types in rain, Electric types in
       thunderstorms, Ghost types in fog, Ice types in snow and hail, Ground types in
@@ -1501,12 +1508,13 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     autumn full moon), and staff events can be limited to a season.
   - **Build order:**
     1. The season in the calendar, with the staff command.
-    2. Basic weather: zones, the timer, the client effects and icon, the options and
-       `/weather`.
-    3. Decorations.
-    4. Battle effects.
+    2. Basic weather: zones for Kanto, Hoenn and the Orange Islands, the timer, the client
+       effects and icon, the options and `/weather`.
+    3. Decorations, in every live region.
+    4. Battle effects, with the weather icons on the moves bar.
     5. Spawn swaps, first for weather, then for seasons, and Castform.
     6. Fishing, radar, tasks.
+    7. Johto's zones and decorations when Johto goes live.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 100x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
