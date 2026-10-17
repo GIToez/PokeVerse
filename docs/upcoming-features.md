@@ -1107,13 +1107,13 @@ From the `#notes` channel:
 
       | Online | Gap to the next spawn | About per day | Cooldown tier 1 / tier 2 |
       | --- | --- | --- | --- |
-      | 1–4 (under the minimum) | 16–24 h | about 1 | 30 h / 4 days |
+      | 0–4 | 16–24 h | about 1 | 30 h / 4 days |
       | 5–14 | 4–8 h | 4 | 30 h / 4 days |
       | 15–39 | 3–6 h | 5–6 | 24 h / 3 days |
       | 40 or more | 2–4 h | 8 | 16 h / 2 days |
 
-      Below 5 online they still spawn, slowly, so the Discord post can pull players in;
-      with nobody online nothing spawns. The thresholds are settings. The species is drawn from
+      Below 5 online they still spawn, slowly, even with nobody online, so the Discord post
+      can pull players in. The thresholds are settings. The species is drawn from
       those off cooldown, tier 1 three times as likely as tier 2. The cooldown counts from
       when it is beaten, caught or flies off. No spawns in the 2 hours before the 06:00
       restart, and one still alive at the restart counts as fled with no cooldown. The next
@@ -1152,7 +1152,8 @@ From the `#notes` channel:
       no new build); (2) notifications and the Discord threads; (3) boss health, damage
       shares and rewards; (4) the world map pin and the radar check (client release);
       (5) tuning on live.
-  - **Still open:** for the bird dungeons, one bird per trainer or each of the three once.
+  - **The bird dungeons stay as they are:** they are the end of the Ancient Times quest,
+    one bird per trainer, once, and not a repeatable raid.
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper
     floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
     the test now also tries nearer spots.
