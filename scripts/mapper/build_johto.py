@@ -163,6 +163,18 @@ FENCE_JOIN = (3247, 221, 235)  # down from the line's east end to Kanto's coast 
 FENCE_OPEN = [(3120, 590, 3169, 1035), (2946, 1035, 3168, 1035), (2946, 1036, 2946, 1309),
               (2641, 1309, 2945, 1309), (2640, 1309, 2640, 1339), (2167, 809, 2167, 1339)]
 HOENN_TOP = 809
+# The Silver-Indigo range north of Mt. Silver and the Indigo Plateau is closed to Fly too: lines
+# (POCKET_LINES) from the coast fence to Mt. Silver's no-fly zone and from there to the plateau's
+# shut in the pocket round POCKET_INSIDE. The range's ledges and Kanto's hills are walkable tiles
+# the walls on empty tiles leave open, so everything in POCKET_BOX a flyer could land on and walk
+# into the pocket across gets the wall too, but never what is walked to from POCKET_TOWNS (ground,
+# ramps, holes and ladders), and never underground.
+POCKET_LINES = [[(2843, 256), (2843, 345)], [(2955, 466), (3072, 545)]]
+POCKET_INSIDE = (2990, 300)
+POCKET_BOX = (2700, 170, 3330, 720)
+POCKET_TOWNS = [(2723, 387), (3306, 298), (3295, 563), (2925, 531)]  # Blackthorn, Pewter, Viridian, Mt. Silver's center
+LADDERS_UP = {384, 418, 1386, 3678, 5543, 8599, 10035, 22832, 22833}
+LADDERS_DOWN = {430, 1369, 8580}
 BUOY, BUOY_NS, BUOY_EW = 7575, 7576, 7577
 BUOYS = set(range(7575, 7582))
 
@@ -1683,6 +1695,149 @@ def johto_fence(data, new_tiles, removed):
             else:
                 add[pos] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
     return add, drop
+
+
+def stair_line(a, b):
+    """The tiles from a to b, 4-connected."""
+    (x, y), (x1, y1) = a, b
+    out = [(x, y)]
+    while (x, y) != (x1, y1):
+        dx, dy = x1 - x, y1 - y
+        if dx and abs(dx) * abs(y1 - a[1]) >= abs(dy) * abs(x1 - a[0]):
+            x += 1 if dx > 0 else -1
+        else:
+            y += 1 if dy > 0 else -1
+        out.append((x, y))
+    return out
+
+
+def seal_pocket(data, new_tiles, removed):
+    """The walls that close the pocket in POCKET_LINES to Fly: {(x, y, z): RawTile}."""
+    x0, y0, x1, y1 = POCKET_BOX
+    W, H = x1 - x0 + 1, y1 - y0 + 1
+    tiles = pvmap.read_region(None, x0, y0, x1, y1, floors=range(16), data=data)
+    for p in removed:
+        tiles.pop(p, None)
+    for (x, y, z), t in new_tiles.items():
+        if x0 <= x <= x1 and y0 <= y <= y1:
+            tiles[(x, y, z)] = ([t.ground] if t.ground is not None else []) + pvmap.child_item_ids(t.children)
+    otb = pvmap.Otb(os.path.join(ROOT, 'core/server/data/items/items.otb'))
+    dat = pvmap.Dat(os.path.join(ROOT, 'core/client-legacy/data/things/data.dat'))
+    ground, blocks = {}, {}
+    for ids in tiles.values():
+        for i in ids:
+            if i not in blocks:
+                th = dat.things.get(otb.client_id(i))
+                ground[i], blocks[i] = bool(th and 0 in th[0]), otb.blocks(i)
+    ways = {w: floor_down_ids(w) for w in ('down', 'north', 'south', 'east', 'west', 'southEx', 'eastEx')}
+    step = {'north': (0, -1), 'south': (0, 1), 'east': (1, 0), 'west': (-1, 0), 'southEx': (0, 1), 'eastEx': (1, 0)}
+    empty = np.ones((16, H, W), bool)
+    walk = np.zeros((16, H, W), bool)
+    barrier = np.zeros((H, W), bool)
+    links = collections.defaultdict(list)
+    for (x, y, z), ids in tiles.items():
+        c = (z, y - y0, x - x0)
+        empty[c] = False
+        if FLY_BARRIER in ids and z <= Z:
+            barrier[c[1:]] = True
+        if ids and ground[ids[0]] and not any(blocks[i] for i in ids):
+            walk[c] = True
+        for i in ids:
+            if i in ways['down'] or i in LADDERS_DOWN:
+                links[c].append((z + 1, 0, 0))
+            elif i in LADDERS_UP:
+                links[c].append((z - 1, 1, 0))
+            for w, (dx, dy) in step.items():
+                if i in ways[w]:
+                    links[c].append((z - 1, dy, dx))
+    near = {}
+    for c, ts in links.items():
+        out = [(tz, c[1] + dy + a, c[2] + dx + b) for tz, dy, dx in ts if 0 <= tz < 16
+               for a in (-1, 0, 1) for b in (-1, 0, 1)]
+        out = [n for n in out if 0 <= n[1] < H and 0 <= n[2] < W and walk[n]]
+        if out:
+            near[c] = out
+            walk[c] = True
+
+    def nbrs(c, air):
+        z, y, x = c
+        out = [(z, y + dy, x + dx) for dy in (-1, 0, 1) for dx in (-1, 0, 1) if dy or dx]
+        if air:
+            if z > 0 and empty[z - 1, y, x]:
+                out.append((z - 1, y, x))
+            if z < Z and empty[c]:
+                out.append((z + 1, y, x))
+        return [n for n in out + near.get(c, []) if 0 <= n[1] < H and 0 <= n[2] < W]
+
+    # what walkers get to from the towns
+    walked = np.zeros_like(walk)
+    todo = collections.deque()
+    for tx, ty in POCKET_TOWNS:
+        for c in [(Z, ty - y0 + dy, tx - x0 + dx) for dy in range(-6, 7) for dx in range(-6, 7)]:
+            if walk[c] and not walked[c]:
+                walked[c] = True
+                todo.append(c)
+    while todo:
+        for n in nbrs(todo.popleft(), False):
+            if walk[n] and not walked[n]:
+                walked[n] = True
+                todo.append(n)
+    # the pocket: shut in by the walls, the no-fly zones and the lines
+    lines = {p for line in POCKET_LINES for a, b in zip(line, line[1:]) for p in stair_line(a, b)}
+    sf, r = silver_radius()
+    ys, xs = np.nonzero(r < silver_ring(SILVER['base'])[1] + NO_FLY_SILVER)
+    keep = (ys + sf.y0 - y0 >= 0) & (ys + sf.y0 - y0 < H) & (xs + sf.x0 - x0 >= 0) & (xs + sf.x0 - x0 < W)
+    barrier[ys[keep] + sf.y0 - y0, xs[keep] + sf.x0 - x0] = True
+    for bx0, by0, bx1, by1 in NO_FLY_BOXES.values():
+        barrier[max(by0 - y0, 0):by1 - y0 + 1, max(bx0 - x0, 0):bx1 - x0 + 1] = True
+    for x, y in lines:
+        barrier[y - y0, x - x0] = True
+    img = Image.fromarray(barrier.astype(np.uint8)).copy()
+    ImageDraw.floodfill(img, (POCKET_INSIDE[0] - x0, POCKET_INSIDE[1] - y0), 2)
+    pocket = np.asarray(img) == 2
+    ok = empty | walk
+    ok[Z + 1:] = False
+    walls = set()
+    for x, y in lines:
+        for z in range(Z + 1):
+            c = (z, y - y0, x - x0)
+            if ok[c] and not walked[c]:
+                ok[c] = False
+                walls.add(c)
+    start = (Z - 1, POCKET_INSIDE[1] - y0, POCKET_INSIDE[0] - x0)
+    while True:
+        prev = {start: None}
+        todo = collections.deque([start])
+        leak = None
+        while todo and leak is None:
+            c = todo.popleft()
+            for n in nbrs(c, True):
+                if n in prev or not ok[n]:
+                    continue
+                prev[n] = c
+                if walked[n] or (empty[n] and not pocket[n[1:]]) or n[1] in (0, H - 1) or n[2] in (0, W - 1):
+                    leak = c
+                    break
+                todo.append(n)
+        if leak is None:
+            break
+        z, y, x = leak
+        shut = [(z, yy, xx) for yy in range(max(y - 2, 0), min(y + 3, H)) for xx in range(max(x - 2, 0), min(x + 3, W))
+                if pocket[yy, xx] or (abs(yy - y) <= 1 and abs(xx - x) <= 1)]
+        shut = [c for c in shut if ok[c] and not walked[c]]
+        assert shut, 'the pocket cannot be shut at %s without walling a walked tile' % ((x + x0, y + y0, z),)
+        for c in shut:
+            ok[c] = False
+            walls.add(c)
+    pos = [(x + x0, y + y0, z) for z, y, x in walls]
+    old = pvmap.read_tiles_raw(None, [p for p in pos if p in tiles and p not in new_tiles], data=data)
+    wall = pvmap.item_node(FLY_BARRIER)
+    out = {}
+    for p in pos:
+        t = new_tiles.get(p) or old.get(p)
+        out[p] = (pvmap.RawTile(t.house_id, t.flags, t.ground, t.children + wall) if p in tiles and t
+                  else pvmap.RawTile(0, 0, None, wall))
+    return out
 
 
 def plan_silver(f, mlevel, open_sky):
@@ -3670,6 +3825,9 @@ def build(base, out_path):
     fence, unfenced = johto_fence(data, new_tiles, set(PASS_DROP + gym_drops))
     new_tiles.update(fence)
     print('Johto fence: %d tiles walled or opened, %d emptied' % (len(fence), len(unfenced)))
+    sealed = seal_pocket(data, new_tiles, set(PASS_DROP + gym_drops + unfenced))
+    new_tiles.update(sealed)
+    print('Silver-Indigo pocket: %d invisible walls' % len(sealed))
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
     cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP + gym_drops + unfenced, towns=towns)
     write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs, data)
