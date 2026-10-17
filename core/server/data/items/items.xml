@@ -35885,6 +35885,12 @@
 		<attribute key="weight" value="0" />
 		<attribute key="containerOnlyAttribute" value="10002" />
 	</item>
+	<item id="30152" article="a" name="lucky egg">
+		<attribute key="description" value="When held, the Pokemon gains 50% more experience from the wild Pokemon it defeats." />
+	</item>
+	<item id="30153" article="an" name="exp share">
+		<attribute key="description" value="When held by a Pokemon on your belt that is not out, it shares half of the experience your Pokemon out earns. Several holders split that half." />
+	</item>
 	
 	<item id="30001" name="water" />
 	<item id="30002" name="blood" />

@@ -750,6 +750,63 @@ local function testQuests(cid)
     end
 end
 
+local function testExpItems(cid)
+    local LUCKY_EGG, EXP_SHARE = 30152, 30153
+    local function gain(ball, amount)
+        local before = getBallPokemonExp(ball.uid)
+        doPlayerPokemonAddExperience(cid, nil, amount, true, ball)
+        return getBallPokemonExp(ball.uid) - before
+    end
+    local created = {}
+    local function holding(itemId)
+        local ball = newBall(cid, "Pidgey", 30)
+        created[#created + 1] = ball
+        if (itemId) then
+            PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, itemId, 1)))
+        end
+        return ball
+    end
+    become(cid, nil)
+
+    local plain, egg = holding(), holding(LUCKY_EGG)
+    local base, lucky = gain(plain, 200), gain(egg, 200)
+    check("Lucky Egg: +50% battle EXP", base > 0 and math.abs(lucky - base * 1.5) <= 1, base .. " -> " .. lucky)
+    check("Lucky Egg: held item name and description", PokemonHeldItem.getHeldName(HELD_IDS.LUCKY_EGG) == "Lucky Egg" and
+        PokemonHeldItem.getBallDescription(egg.uid) == "Lucky Egg (+50% experience from wild Pokemon)",
+        PokemonHeldItem.getBallDescription(egg.uid))
+    local before = getBallPokemonExp(egg.uid)
+    doPlayerPokemonAddExperience(cid, nil, 200, false, egg)
+    check("Lucky Egg: only battle EXP", getBallPokemonExp(egg.uid) - before == 200)
+
+    local earner, a, b, fainted, other = holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding()
+    setBallPokemonLastHp(fainted.uid, 0)
+    local belt = { earner, a, b, fainted, other }
+    local exp = {}
+    for _, ball in ipairs(belt) do
+        exp[ball.uid] = getBallPokemonExp(ball.uid)
+    end
+    local realBelt, realItems = getPlayerBelt, getContainerItems
+    getPlayerBelt = function() return 1 end
+    getContainerItems = function() return belt end
+    local ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
+    local function gained(ball) return getBallPokemonExp(ball.uid) - exp[ball.uid] end
+    local half = gain(holding(), 50)
+    check("Exp Share: two holders on the belt split the 50% pool", ok and holders == 2 and gained(a) == half and
+        gained(b) == half and half > 0, tostring(holders) .. " " .. gained(a) .. "/" .. half)
+    check("Exp Share: nothing for the earner, a fainted holder or a Pokemon without one",
+        gained(earner) == 0 and gained(fainted) == 0 and gained(other) == 0)
+    belt = { earner, a, other }
+    exp[a.uid] = getBallPokemonExp(a.uid)
+    ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
+    local full = gain(holding(), 100)
+    check("Exp Share: a single holder gets the whole 50%", ok and holders == 1 and gained(a) == full, gained(a) .. "/" .. full)
+    getPlayerBelt, getContainerItems = realBelt, realItems
+
+    for _, ball in ipairs(created) do
+        doRemoveItem(ball.uid)
+    end
+end
+
 local function testHeldItems(cid)
     local CHARCOAL, DRAGON_FANG = 23515, 23516
     local ball = newBall(cid, "Pidgey", 30)
@@ -791,6 +848,7 @@ local function testHeldItems(cid)
     doPlayerRemoveItem(cid, DRAGON_FANG, 1)
     doPlayerRemoveItem(cid, 2148, 1)
     doRemoveItem(ball.uid)
+    testExpItems(cid)
 end
 
 local function testDaycare(cid)

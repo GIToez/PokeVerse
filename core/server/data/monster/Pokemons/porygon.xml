@@ -30,4 +30,4 @@
 		<voice sentence="PORYGON!"/>
 	</voices>
 	
-<loot><item id="17944" countmax="1" chance="100"/><item id="12232" countmax="1" chance="100"/><item id="17382" countmax="1" chance="5"/><item id="18915" countmax="1" chance="5"/><item id="17363" countmax="1" chance="10"/></loot></monster>
+<loot><item id="17944" countmax="1" chance="100"/><item id="12232" countmax="1" chance="100"/><item id="17382" countmax="1" chance="5"/><item id="18915" countmax="1" chance="5"/><item id="17363" countmax="1" chance="10"/><item id="30153" countmax="1" chance="300"/></loot></monster>

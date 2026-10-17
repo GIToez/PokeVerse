@@ -44,8 +44,13 @@ HELD_IDS.POWER_BELT = 24
 HELD_IDS.POWER_LENS = 25
 HELD_IDS.POWER_BAND = 26
 HELD_IDS.POWER_ANKLET = 27
+HELD_IDS.LUCKY_EGG = 28
+HELD_IDS.EXP_SHARE = 29
 
 POWER_ITEM_EV_BONUS = 8
+LUCKY_EGG_EXP_RATE = 1.5
+-- Exp Share holders on the belt split this much of the EXP the Pokemon out earns; it keeps all of its own
+EXP_SHARE_POOL = 0.5
 
 local HELDS = {}
 
@@ -179,6 +184,11 @@ for stat, power in ipairs(POWER_ITEMS) do
         summary = string.format("%s (+%d %s EVs per wild Pokemon)", power[2], POWER_ITEM_EV_BONUS, POWER_STAT_NAMES[stat])
     })
 end
+
+addStatHeld(HELD_IDS.LUCKY_EGG, "Lucky Egg", 30152,
+    { expRate = LUCKY_EGG_EXP_RATE, summary = "Lucky Egg (+50% experience from wild Pokemon)" })
+addStatHeld(HELD_IDS.EXP_SHARE, "Exp Share", 30153,
+    { expShare = true, summary = "Exp Share (shares the experience of the Pokemon out while on the belt)" })
 
 local HELD_BY_ITEMID = {}
 for id, held in pairs(HELDS) do
@@ -333,6 +343,50 @@ end
 PokemonHeldItem.hasEverstone = function(ballUid)
     local held = getBallHeldDefinition(ballUid)
     return held and held.everstone or false
+end
+
+PokemonHeldItem.getExpRate = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.expRate or 1
+end
+
+PokemonHeldItem.hasExpShare = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.expShare or false
+end
+
+-- Balls on the belt holding an Exp Share that can take experience: not the earner, not fainted
+PokemonHeldItem.getExpShareBalls = function(cid, earnerBallUid)
+    local belt = getPlayerBelt(cid)
+    local balls = {}
+    if (not belt) then
+        return balls
+    end
+    for _, item in ipairs(getContainerItems(belt)) do
+        local lastHp = tonumber(getBallPokemonLastHp(item.uid))
+        if (item.uid ~= earnerBallUid and isBallWithPokemon(item.uid) and PokemonHeldItem.hasExpShare(item.uid) and
+                not getBallFromNpc(item.uid) and not (lastHp and lastHp <= 0)) then
+            balls[#balls + 1] = item
+        end
+    end
+    return balls
+end
+
+-- Called with the kill EXP (before rates) the earner got; each holder's share then gets its own rates.
+-- Holders also gain the defeated Pokemon's EVs, as in the games.
+PokemonHeldItem.shareExperience = function(cid, gainExp, earnerBallUid, target)
+    local balls = PokemonHeldItem.getExpShareBalls(cid, earnerBallUid)
+    if (#balls == 0 or gainExp <= 0) then
+        return 0
+    end
+    local share = gainExp * EXP_SHARE_POOL / #balls
+    for _, ball in ipairs(balls) do
+        doPlayerPokemonAddExperience(cid, nil, share, nil, ball)
+        if (target) then
+            PokemonStats.onDefeated(cid, ball, target)
+        end
+    end
+    return #balls
 end
 
 PokemonHeldItem.getMovePowerModifier = function(cid, moveType)

@@ -620,3 +620,7 @@ items:
     image: /images/items/trainer_belt
   28794:
     image: /images/items/master_ball_empty
+  28795:
+    image: /images/items/lucky_egg
+  28796:
+    image: /images/items/exp_share

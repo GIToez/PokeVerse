@@ -53,7 +53,7 @@ GTS.CATEGORIES = {
         19057, 19061 } },
     { name = "Medicine", items = { 12244, 12247, 12245, 12246, 12248, 12249, 12250, 13653, 13819 } },
     { name = "Evolution Stones", items = range(18083, 18088) },
-    { name = "Held Items", items = join(range(23513, 23531), range(30137, 30144)) },
+    { name = "Held Items", items = join(range(23513, 23531), range(30137, 30144), range(30152, 30153)) },
     { name = "Berries", items = join(range(13182, 13186), range(14766, 14770), range(30145, 30150)) },
     { name = "Berry Seeds", items = join(range(13176, 13180), range(14791, 14795)) },
     { name = "Vitamins", items = range(23450, 23457, { [23454] = true }) },

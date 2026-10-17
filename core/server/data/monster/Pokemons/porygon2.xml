@@ -29,4 +29,4 @@
 		<voice sentence="PORYYGOONNN2!"/>
 	</voices>
 	
-<loot><item id="14500" countmax="1" chance="75000"/><item id="14516" countmax="1" chance="30000"/><item id="14518" countmax="3" chance="75000"/><item id="17807" countmax="1" chance="15000"/><item id="12232" countmax="1" chance="100"/><item id="18032" countmax="1" chance="100"/><item id="18089" countmax="1" chance="20"/><item id="17382" countmax="1" chance="10"/><item id="18915" countmax="1" chance="10"/><item id="18926" countmax="1" chance="10"/><item id="23527" countmax="1" chance="10"/></loot></monster>
+<loot><item id="14500" countmax="1" chance="75000"/><item id="14516" countmax="1" chance="30000"/><item id="14518" countmax="3" chance="75000"/><item id="17807" countmax="1" chance="15000"/><item id="12232" countmax="1" chance="100"/><item id="18032" countmax="1" chance="100"/><item id="18089" countmax="1" chance="20"/><item id="17382" countmax="1" chance="10"/><item id="18915" countmax="1" chance="10"/><item id="18926" countmax="1" chance="10"/><item id="23527" countmax="1" chance="10"/><item id="30153" countmax="1" chance="500"/></loot></monster>

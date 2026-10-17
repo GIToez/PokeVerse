@@ -30,4 +30,4 @@
 		<voice sentence="CHANSEY!!"/>
 	</voices>
 	
-<loot><item id="12154" countmax="1" chance="0"/><item id="12232" countmax="1" chance="50"/><item id="12268" countmax="1" chance="100"/><item id="17346" countmax="1" chance="10"/><item id="17370" countmax="1" chance="10"/><item id="18926" countmax="1" chance="10"/></loot></monster>
+<loot><item id="12154" countmax="1" chance="0"/><item id="12232" countmax="1" chance="50"/><item id="12268" countmax="1" chance="100"/><item id="17346" countmax="1" chance="10"/><item id="17370" countmax="1" chance="10"/><item id="18926" countmax="1" chance="10"/><item id="30152" countmax="1" chance="2000"/></loot></monster>
