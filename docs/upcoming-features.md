@@ -46,12 +46,13 @@ so. Items marked **To decide** need an answer before work starts.
    Oak's and Red's portraits; everyone without one shows their outfit, no new portraits are
    made), the blue words as buttons, big Yes/No for questions. The NPCs tab stays as it is: it
    still opens when an NPC talks, keeps the history, and is where answers are typed.
-4. **Mission notices**: started, updated and complete, from the server.
-5. **NPC role icons**: mission, trade, duel, travel, bank and so on, from what each NPC really
-   does; NPCs with several roles rotate their icons every second. The mission icon is per
-   player: it only shows when that player has a mission they can start or hand in there
-   (level, earlier quests and cooldown checked by the server). (The battle icon the server
-   sends today has no picture in the client.)
+4. **Mission notices** (built, see [the quest log](#quest-log-notices-and-npc-icons)):
+   a banner when a quest starts or is done, a small card for progress and when the goal is
+   reached.
+5. **NPC role icons** (built): quest, battle, shop, travel, bank, healing and daycare, from
+   what each NPC really does; NPCs with several rotate them. The quest icon is per player:
+   it only shows when that player has a quest they can start or hand in there (level,
+   earlier quests and cooldown checked by the server). Needs the new client build.
 6. The NPCs with their own scripts, town by town.
 7. [Vocations](#6-vocations), replacing the old vocations.
 8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
@@ -467,10 +468,44 @@ files and 338 NPC scripts (`core/server/data/npc`).
    - When several NPCs answer a "hi", the closest one keeps the window.
    - Long answers wrap inside the window and the buttons wrap to more rows.
    - The role line ("Gym Leader, Pewter City") is a client list for the NPCs with portraits.
-   - The mission notices still need the server.
+   - The mission notices are built (below).
 2. A checker that lists every NPC whose responses are not clickable.
 3. Convert the NPCs, quests and tasks town by town. Quests and the task boards show up in
    the quest log.
+
+### Quest log, notices and NPC icons
+
+**Built** (server `data/lib/ps/systems/075-quests.lua`, opcode 31; client
+`pokeverse-modern/modules/game_quests`, which replaces Redemption's Tibia quest log):
+
+- **Quest log** (top bar button or L): Active, Available and Completed tabs with counts, a
+  search (quest, NPC, town), and groups: Main story, Gyms, Getting started, Side quests,
+  Daily, Addons, Events. Every NPC quest in `002-quest.lua` is listed; the names and
+  descriptions come from `XML/quests.xml` ("Kanto Main #01 - A new mystery!", "Part 1 of 5"),
+  and quests without one are "<NPC>'s request #n". Available lists what the NPCs offer now;
+  quests from a higher level are greyed with the level, and quests of NPCs that aren't on the
+  map (events) only show once started.
+- **Details:** the giver's portrait (or outfit) and nearest town, Go there (the Pokepedia's
+  route), Track, the objective with a progress bar (defeat, catch, bring items, bring a
+  Pokémon, Pokédex count), the rewards with their item pictures and EXP, the level needed,
+  and "daily: again after the server restart".
+- **Tracker:** a started quest is tracked on its own (the Pokepedia's tracker panel); a
+  finished goal gets a Go button that walks back to the NPC. Untrack in the window or with
+  the line's X.
+- **Notices:** "Quest started" and "Quest complete!" banners (with the rewards), and a card
+  at the top right of the map for progress: every step up to 10, then every tenth of the way
+  and the last three ("Defeat 30 Golem 12 / 30"), and a green "Done! Go back to Noah". The
+  old "Defeat Task ... step complete" chat lines only go to old clients.
+- **NPC icons:** a badge next to the name plate. Gold "!" a quest to start, grey "?" one under
+  way, gold "?" one to hand in (per trainer, from the server), then crossed swords (battle),
+  coin bag (shop), ship wheel (travel), coin (bank), pink cross (Nurse Joy) and egg (Day
+  Care). NPCs with several show them in turn. The roles come from the NPC files
+  (`scripts/make-npc-roles.py` writes `npc_roles.lua`; run it again after adding NPCs), the
+  art from `scripts/art/quest_ui.py`. The server's static quest bubble is replaced by the
+  trainer's own mark. The badges need the new client build (`Creature:setIcon`); older
+  builds keep the server's icons.
+- Marks refresh when a quest starts, finishes or reaches its goal, at level-up and when the
+  log opens; a "bring items" quest shows "?" gold only after one of those.
 
 ## 4. Website
 
@@ -1189,7 +1224,21 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
 - **Event calendar:** one calendar that shows the upcoming events (double EXP, double
   shiny, holiday events, tournaments): in a game window, on the website, and posted by
   the Discord bot. Staff add events with a date, time and length, and they start and
-  stop on their own.
+  stop on their own. Concept v2 (waiting for approval before it is built):
+  - The month grid is drawn by code for any year (no picture per month), with the moon
+    phase on each day; Easter is computed, Lunar New Year and the Harvest Moon come from the
+    moon phases.
+  - Rules instead of dates: once, every weekend, the nth weekend of a month, every year on a
+    date, or a computed holiday. A **weekend** runs from Friday's 06:00 restart to Monday's
+    06:00 restart (`dailyRestartTime`).
+  - **Events stack** and multiply, also with the trainer's own boosts (EXP, loot, catch and
+    egg boosts).
+  - **Holidays are automatic:** Christmas and Halloween for sure (their content exists,
+    `051-christmasEvent`, `037-halloweenEvent`). Suggested: New Year, Lunar New Year,
+    Valentine's (Luvdisc), Pokémon Day (February 27), Easter (`030-easterEvent`), the summer
+    festival (`055-julyVacationEvent`), the Harvest Moon, full-moon Clefairy nights and the
+    server anniversary.
+  - Times show in the player's own time zone.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
