@@ -79,6 +79,17 @@ CHANNELS[CHANNEL_6X6_PLAYER] = function(cid)
 end
 ]]
 function onJoinChannel(cid, channel, users)
+    if (channel == WildLegendaries.CONFIG.channelId) then
+        addEvent(function(cid)
+            if (isPlayer(cid)) then
+                for _, line in ipairs(WildLegendaries.describe(false)) do
+                    doPlayerSendChannelMessage(cid, "", line, TALKTYPE_CHANNEL_O, channel)
+                end
+            end
+        end, 500, cid)
+        return true
+    end
+
     if (channel == CHANNEL_HELP) then
         addEvent(function(cid)
             if (isCreature(cid)) then

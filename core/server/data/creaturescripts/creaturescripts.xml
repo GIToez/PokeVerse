@@ -52,6 +52,9 @@
 	<event type="prepareDeath" name="dungeonEvolve" event="script" value="../../lib/ps/events/creaturescripts/dungeons/dungeonEvolve.lua" />
 	<!-- Boss -->
 	<event type="prepareDeath" name="bossReward" event="script" value="../../lib/ps/events/creaturescripts/boss/bossReward.lua" />
+	<!-- Wild legendaries (WildLegendaries) -->
+	<event type="statschange" name="wildLegendaryHit" event="script" value="../../lib/ps/events/creaturescripts/wildLegendaryHit.lua" />
+	<event type="death" name="wildLegendaryDeath" event="script" value="../../lib/ps/events/creaturescripts/wildLegendaryDeath.lua" />
 	<!-- Ranger Club -->
 	<event type="prepareDeath" name="rangerClubBoss" event="script" value="../../lib/ps/events/creaturescripts/rangerClub/boss.lua" />
 	<event type="prepareDeath" name="rangerClubBossEvolve" event="script" value="../../lib/ps/events/creaturescripts/rangerClub/bossEvolve.lua" />

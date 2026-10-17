@@ -52,6 +52,13 @@ GLOBAL_STORAGES = {
     SHINY_EVENT_MULTIPLIER = 7112, -- /bonusshiny: shiny chance x100 (ShinyEvent)
     SHINY_EVENT_END = 7113,
     EVENT_CALENDAR_FORCED = 7120, -- 7120 to 7139: a holiday forced on (1) or off (0) with /calendar holiday (EventCalendar)
+    LEGENDARY_NEXT_AT = 7140, -- wild legendaries (WildLegendaries): unix time of the next spawn
+    LEGENDARY_GAP_FROM = 7141, -- when the current gap started (the last spawn)
+    LEGENDARY_GAP_ROLL = 7142, -- where in the population's gap range the next spawn falls, 0 to 1000
+    LEGENDARY_COOLDOWNS = 7143, -- "m;Articuno=<unix time>;...": when each species may come again
+    LEGENDARY_ACTIVE = 7144, -- "m;<encounter>=<cid>:<species>;...": the encounters out now
+    LEGENDARY_SEQUENCE = 7145, -- last encounter id
+    LEGENDARY_RECENT = 7146, -- "m;<species>=<unix time>:<encounter>": defeats whose body may still be caught
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

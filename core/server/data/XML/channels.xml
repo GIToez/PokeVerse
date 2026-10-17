@@ -27,6 +27,7 @@
 	<!-- <channel id="12" name="Game-Chat[ALL]" logged="yes" level="10" muted="2" conditionId="4" conditionMessage="You're muted on this channel."/> -->
 	<!-- <channel id="12" name="Quest Service" logged="yes" level="10" muted="120" conditionId="5" conditionMessage="You may only place one message in two minutes."/> -->
 	<channel id="13" name="Tournament" logged="yes" level="10" locked="1"/>
+	<channel id="14" name="Legendaries" locked="1"/>
 	<channel id="65533" name="TV Channel"/>
 	<channel id="65535" name="Private Chat Channel"/>
 	
