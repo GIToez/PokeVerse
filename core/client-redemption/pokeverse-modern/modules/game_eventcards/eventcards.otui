@@ -1,0 +1,195 @@
+EventBanner < UIWidget
+  size: 600 112
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+  image-source: /modules/game_levelup/images/banner
+  image-border: 12
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: rays
+    size: 120 120
+    image-source: /modules/game_levelup/images/rays
+    image-smooth: true
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    margin-left: -2
+    phantom: true
+
+  UIWidget
+    id: picture
+    size: 88 88
+    image-smooth: true
+    anchors.centerIn: rays
+    phantom: true
+    visible: false
+
+  UICreature
+    id: creature
+    size: 72 72
+    anchors.centerIn: rays
+    creature-center: true
+    phantom: true
+    visible: false
+
+  UIWidget
+    anchors.left: parent.left
+    anchors.top: parent.top
+    size: 12 12
+    margin: 10 0 0 12
+    image-source: /modules/game_levelup/images/sparkle
+    phantom: true
+
+  UIWidget
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    size: 12 12
+    margin: 0 10 12 0
+    image-source: /modules/game_levelup/images/sparkle
+    phantom: true
+
+  Label
+    id: name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 8 0 0 120
+    ttf-font: pixelify-sans
+    ttf-font-size: 26
+    ttf-stroke: 2 #0b1530
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: highlight
+    anchors.top: name.top
+    anchors.left: name.right
+    margin-left: 8
+    ttf-font: pixelify-sans
+    ttf-font-size: 26
+    ttf-stroke: 2 #3a2205
+    color: #ffd75a
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: subtitle
+    font: Verdana Bold-11px
+    color: #c8d8f0
+    anchors.top: name.bottom
+    anchors.left: name.left
+    anchors.right: parent.right
+    margin: 2 16 0 0
+    text-auto-resize: false
+    height: 14
+    phantom: true
+
+  UIWidget
+    id: chips
+    anchors.left: subtitle.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 12 12 0
+    height: 34
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 5
+
+EventChip < UIWidget
+  size: 96 34
+  image-source: /modules/game_levelup/images/chip
+  image-border: 6
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 16 16
+    image-smooth: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  Label
+    id: label
+    font: Verdana-8px-antialiased
+    color: #b8c4dc
+    anchors.top: parent.top
+    anchors.left: icon.right
+    anchors.right: parent.right
+    margin: 4 4 0 5
+    height: 11
+    phantom: true
+
+  Label
+    id: value
+    font: Verdana Bold-11px
+    color: #ffffff
+    anchors.left: label.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 4 3 0
+    height: 14
+    phantom: true
+
+EventCardStack < UIWidget
+  width: 300
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 64
+  margin-right: 12
+  phantom: true
+  focusable: false
+  layout:
+    type: verticalBox
+    spacing: 4
+    fit-children: true
+
+EventCard < UIWidget
+  height: 54
+  image-source: /modules/game_levelup/images/banner
+  image-border: 12
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: frame
+    size: 42 42
+    image-source: /modules/game_levelup/images/chip
+    image-border: 6
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 7
+    phantom: true
+
+  UIWidget
+    id: picture
+    size: 38 38
+    image-smooth: true
+    anchors.centerIn: frame
+    phantom: true
+
+  Label
+    id: title
+    font: Verdana Bold-11px
+    color: #ffd75a
+    anchors.top: parent.top
+    anchors.left: frame.right
+    anchors.right: parent.right
+    margin: 8 10 0 8
+    height: 14
+    phantom: true
+
+  Label
+    id: text
+    font: Verdana-8px-antialiased
+    color: #c8d8f0
+    anchors.top: title.bottom
+    anchors.left: title.left
+    anchors.right: parent.right
+    margin: 2 10 0 0
+    height: 24
+    text-wrap: true
+    phantom: true

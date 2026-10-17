@@ -62,6 +62,7 @@ Module
     - game_effects
     - game_time
     - game_calendar
+    - game_eventcards
     - game_environment
     - game_dollcase
     - game_badgecase

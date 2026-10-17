@@ -1,0 +1,8 @@
+Module
+  name: game_eventcards
+  description: PokeVerse pop-up cards: a big banner for big moments (a wild legendary appears, your reward) and small cards for the rest
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ eventcards, legendary ]
+  @onLoad: init()
+  @onUnload: terminate()

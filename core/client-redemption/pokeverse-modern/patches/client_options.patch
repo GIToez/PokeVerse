@@ -104,7 +104,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1190,12 @@
+@@ -1170,4 +1190,13 @@
          end
      },
      showInfoBanner = true,
@@ -116,6 +116,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +            end
 +        end
 +    },
++    showEventCards                    = true, -- PokeVerse pop-up cards (game_eventcards)
  }
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
@@ -733,13 +734,25 @@ diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/c
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,6 +53,17 @@
+@@ -53,6 +53,29 @@
      margin-top: 7
      height: 22
  
 +    OptionCheckBoxMarked
 +      id: displayMapGuides
 +      !text: tr('Show guide marks on the minimap')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: showEventCards
++      !text: tr('Show event pop-up cards')
++      !tooltip: tr('Banners and cards for wild legendaries and other events. The chat messages still show.')
 +
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
