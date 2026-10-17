@@ -3,5 +3,7 @@ function onThink(interval, lastExecution, thinkInterval)
 	Daycare.onThink()
 	ShinyEvent.onThink()
 	WildLegendaries.onThink()
+	Weather.onThink()
+	Decorations.onThink()
 	return ServerExpEvent.onThink()
 end
