@@ -104,7 +104,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1190,13 @@
+@@ -1170,4 +1190,39 @@
          end
      },
      showInfoBanner = true,
@@ -117,6 +117,32 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +        end
 +    },
 +    showEventCards                    = true, -- PokeVerse pop-up cards (game_eventcards)
++    -- PokeVerse weather (game_weather)
++    weatherEffects                    = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_weather and modules.game_weather.refresh then
++                modules.game_weather.refresh()
++            end
++        end
++    },
++    weatherLight                      = {
++        value = false,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_weather and modules.game_weather.refresh then
++                modules.game_weather.refresh()
++            end
++        end
++    },
++    weatherSounds                     = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_weather and modules.game_weather.refresh then
++                modules.game_weather.refresh()
++            end
++        end
++    },
++    weatherLightning                  = true,
  }
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
@@ -734,7 +760,7 @@ diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/c
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,6 +53,29 @@
+@@ -53,6 +53,77 @@
      margin-top: 7
      height: 22
  
@@ -753,6 +779,54 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: showEventCards
 +      !text: tr('Show event pop-up cards')
 +      !tooltip: tr('Banners and cards for wild legendaries and other events. The chat messages still show.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: weatherEffects
++      !text: tr('Show weather on the map')
++      !tooltip: tr('Rain, storms, snow, hail, fog, sandstorms, wind and sun where the sky is open. The weather still changes the light and the battles.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: weatherLight
++      !text: tr('Lighter weather effects')
++      !tooltip: tr('Fewer raindrops and snowflakes, and a lighter fog and sandstorm.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: weatherSounds
++      !text: tr('Weather sounds')
++      !tooltip: tr('Rain, wind and thunder, at the Ambience volume.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: weatherLightning
++      !text: tr('Lightning flashes')
++      !tooltip: tr('The white flash of lightning in thunderstorms.')
 +
 +  SmallReversedQtPanel
 +    anchors.left: parent.left

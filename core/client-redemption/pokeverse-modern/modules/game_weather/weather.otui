@@ -1,0 +1,28 @@
+// The weather badge beside the clock (artwork: scripts/art/weather_ui.py) and the lightning flash over the map
+
+WeatherBadge < UIWidget
+  height: 20
+  focusable: false
+
+  UIWidget
+    id: icon
+    size: 18 18
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: label
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 4
+    phantom: true
+
+WeatherFlash < UIWidget
+  background-color: #e8eeff
+  opacity: 0
+  phantom: true
+  focusable: false

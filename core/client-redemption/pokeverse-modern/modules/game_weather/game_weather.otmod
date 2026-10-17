@@ -1,0 +1,8 @@
+Module
+  name: game_weather
+  description: PokeVerse weather: rain, storms, snow, hail, fog, sandstorms, wind and sun on the map, the lightning, the sounds and the badge beside the clock
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ weather ]
+  @onLoad: init()
+  @onUnload: terminate()

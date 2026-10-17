@@ -236,6 +236,13 @@ local function updateEnergy()
             slot.matchup:setImageSource(IMAGES .. badge)
         end
 
+        local weather = info.weather
+        slot.weather:setVisible(weather ~= nil)
+        if weather then
+            slot.weather:setOn(weather.value < 1)
+            slot.weather.icon:setImageSource('/modules/game_weather/images/weather_' .. weather.kind .. '_small')
+        end
+
         local lines = { slot.moveName }
         if info.power then
             if info.final and info.final ~= info.power then
@@ -249,6 +256,11 @@ local function updateEnergy()
         end
         if words and target then
             lines[#lines + 1] = tr('%s vs %s (x%s)', words, plainName(target:getName()), formatMultiplier(info.multiplier))
+        end
+        if weather then
+            local percent = math.floor((weather.value - 1) * 100 + 0.5)
+            lines[#lines + 1] = weather.value > 1 and tr('%s: %d%% stronger', weather.name, percent)
+                or tr('%s: %d%% weaker', weather.name, -percent)
         end
         lines[#lines + 1] = tr('Click to use, Shift+click for the move card')
         slot:setTooltip(table.concat(lines, '\n'))
@@ -266,6 +278,11 @@ local function requestMoveInfo()
     if #icons > 0 then
         send({ action = 'matchup', target = attackedId(), icons = icons })
     end
+end
+
+-- the weather changed (game_weather): the boosts with it
+function refreshMatchup()
+    requestMoveInfo()
 end
 
 function closeCard()
@@ -404,7 +421,10 @@ local function onMoveInfo(protocol, opcode, buffer)
             moveInfo[tonumber(move.icon)] = {
                 power = tonumber(move.power),
                 final = tonumber(move.final),
-                multiplier = fresh and tonumber(move.multiplier) or nil
+                multiplier = fresh and tonumber(move.multiplier) or nil,
+                weather = type(move.weather) == 'table' and tonumber(move.weather.value) and {
+                    kind = tostring(move.weather.kind), name = tostring(move.weather.name or ''),
+                    value = tonumber(move.weather.value) } or nil
             }
         end
         updateEnergy()

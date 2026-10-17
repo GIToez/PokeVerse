@@ -63,6 +63,28 @@ MoveSlot < UIWidget
     margin-top: 2
     margin-right: 2
 
+  // the weather boosts (green) or weakens (red) the move (game_weather)
+  UIWidget
+    id: weather
+    size: 16 16
+    phantom: true
+    visible: false
+    background-color: #0a1420d0
+    border-width: 1
+    border-color: #8ef09a
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    margin-bottom: 2
+    margin-left: 2
+    $on:
+      border-color: #ff8a8a
+
+    UIWidget
+      id: icon
+      size: 12 12
+      phantom: true
+      anchors.centerIn: parent
+
 MoveCardLine < Label
   font: verdana-11px-antialised
   color: #d8e4e4

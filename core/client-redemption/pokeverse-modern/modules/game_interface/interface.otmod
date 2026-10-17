@@ -61,6 +61,7 @@ Module
     - game_tutorial
     - game_effects
     - game_time
+    - game_weather
     - game_calendar
     - game_eventcards
     - game_environment
