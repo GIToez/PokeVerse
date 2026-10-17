@@ -1027,15 +1027,62 @@ From the `#notes` channel:
   no tasks yet, until the next login. The boards are now read from the database every
   time, and the server test picks tasks and hooks Pokémon in one session.
 
-- **To go over: legendary spawning and roaming.** Today legendaries only come from scripts
-  (quest bosses, the wave arena, world bosses and events such as `048-anniversaryEvent.lua`);
-  they are not in the map spawns, and there is no roaming system yet. Things to decide: where
-  and how often legendaries spawn, whether some roam between routes (and how the Ranger radar
-  shows them; it already gives legendaries only a direction and distance band, from rank 5,
-  with a 10-minute cooldown), how long they stay, and who can catch them. Related: the radar
-  test's Articuno did not spawn when the test spot was a small upper floor (5017, 790, 6 on
-  Tutorial Island), because no tile 12–16 tiles away was walkable; the test now also tries
-  nearer spots.
+- **Legendary spawning (audited October 2026, read only).** There is no wild legendary
+  system: no legendary can be met or caught in the wild today.
+  - **Map spawns:** none. Not one of the 21 legendaries (or their shiny forms) is in
+    `world/map-spawn.xml` (26,959 spawns).
+  - **What creates legendaries:**
+    - The three bird dungeons (`legendaryOrbs.lua`, `028-dungeons.lua`) spawn Boss Zapdos,
+      Boss Moltres and Boss Articuno (Boss Articuno turns into Frozen Boss Articuno). On
+      death they leave a reward chest (doll, Deepsoul Stone, 5 feathers), never a corpse,
+      so they can't be caught. All three share one storage (8370), so each trainer can do
+      **one bird, once, ever**.
+    - The New Island quest's Mewtwo is an NPC; using the Master Ball prototype spawns
+      Final Mewtwo, a boss.
+    - The Ranger radar test spawns an Articuno. That's the only plain legendary created
+      anywhere, and it's in the test only.
+    - The world bosses (`021-boss.lua`, every 3 days) are renamed regular Pokémon
+      ("Winged Wisdom" is a Pidgeot), not legendaries.
+    - The wave arena, citizens and the doll case exclude legendaries; the old Pokémon shop
+      price list (100,000 each) is commented out.
+  - **The plain legendary monsters are ordinary:** level 100 with normal-looking stats
+    (a wild Articuno has about the health of a wild Dragonite), corpse, no boss behaviour.
+    Gen 1 has shiny forms; the Gen 3 shiny forms are commented out in `monsters.xml`.
+  - **Catching is effectively impossible:** a catch needs the Pokémon's `chance` worth of
+    "tries" (each ball thrown adds its catch rate: Ultra 3, Safari 4). The catch can't
+    happen before 25% of that. Articuno, Zapdos, Moltres and Mewtwo have chance 10,000:
+    at least 834 Ultra Balls, about 3,300 to be likely, and each throw needs its own
+    defeat. The other 17 have 100,000, ten times that. Only the Master Ball
+    (`guaranteedCatch`) would catch one, on the first try.
+  - **What already expects wild legendaries:** the Ranger radar (rank 5, a direction and
+    distance band, 10-minute cooldown), the Discord bridge (posts legendary spawns, 5
+    minutes apart per species), the Pokepedia (legendary tier: 1, 5 and 15 defeats or
+    catches, $15,000) and the highscores (Caught Articuno and others). For 17 of the 21 the
+    Pokepedia goals can't be reached, and the bird bosses likely don't count as defeats
+    (their death is cancelled before the kill events run).
+  - **To decide (proposal):**
+    - **Where:** each legendary gets one or a few lore spots (Articuno at the Seafoam
+      Islands, Zapdos at the Power Plant, Moltres at Victory Road, the Johto beasts roaming
+      Johto routes, Lugia at the Whirl Islands, Ho-Oh at the Bell Tower, Celebi at Ilex
+      Forest), from a table in one new file rather than the map spawns.
+    - **How often:** a chance check every few minutes, at most one of each species alive
+      at a time, a cooldown after it's beaten or caught (for example 6 to 24 hours), and a
+      server message plus the Discord post when one appears.
+    - **Roaming:** Raikou, Entei, Suicune (and Latias and Latios) move to another route
+      every few minutes, so the Ranger radar's direction and distance band matter; they
+      flee after a few turns of battle, as in the games.
+    - **Strength:** a legendary boss version for the wild one (much more health, a group
+      fight), and the corpse belongs to whoever did the most damage.
+    - **Catching:** a catch `chance` that can be reached in a few dozen tries spread over
+      encounters (tries are kept per species, so failed throws on earlier encounters
+      still count). Whether the Master Ball works on them, or legendaries need their own
+      ball.
+    - **Limits:** whether a trainer can catch each legendary only once, and whether they
+      can be traded on the GTS.
+    - **The bird dungeons:** one bird per trainer, or each of the three once.
+  - Related: the radar test's Articuno did not spawn when the test spot was a small upper
+    floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
+    the test now also tries nearer spots.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.
@@ -1278,6 +1325,47 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       spawns and raids) used to run all year or not at all; it now only runs on its dates.
     - Not built from the first plan: the "spawns up" for types (Dragon, Water, Grass, Ghost,
       Ice), fireworks at midnight and higher starter catch rates.
+- **Seasons (concept, waiting for approval):** spring, summer, autumn and winter set by
+  the event calendar, each with its own Pokémon and look.
+  - **When:** two options to choose from.
+    - Real seasons (northern hemisphere): spring from the March equinox, summer from the
+      June solstice, autumn from the September equinox, winter from the December solstice,
+      at the 06:00 restart. Easy to explain, but the same spawns for three months.
+    - Monthly, as in Pokémon Black and White: January spring, February summer, March autumn,
+      April winter, then again (each season about 3 times a year). More variety.
+    - Either way the calendar shows the season as a long band, the banner names it, and
+      staff can force one (`/calendar season winter`) for testing or an event.
+  - **Seasonal Pokémon:** a table of swaps applied in the C++ spawner (`Spawn::spawnMonster`,
+    where the shiny roll is): in winter, some share of a species' spawns becomes another
+    one, so they keep sensible places and the map's spawn file doesn't change. The shiny
+    roll still applies. First ideas, all already in the game:
+    - Spring: Hoppip, Skiploom, Jumpluff, Oddish line and Bellossom, Ledyba, Volbeat and
+      Illumise, Lotad, Surskit.
+    - Summer: Sunkern and Sunflora, Wingull and Pelipper, Corsola, Mantine, Remoraid,
+      Chinchou, Tropius; more Water types at sea.
+    - Autumn: Seedot, Shroomish, Pineco and Forretress, Teddiursa, Stantler, Murkrow,
+      Misdreavus, Hoothoot and Noctowl, Houndour, Phanpy.
+    - Winter: Swinub and Piloswine, Snorunt and Glalie, Sneasel, Delibird, Smoochum and
+      Jynx, Seel and Dewgong, Shellder and Cloyster, Spheal, Lapras.
+    - Castform's form could follow the season (Snowy in winter, Sunny in summer).
+    - These count for the Pokepedia, tasks and the radar like any other spawn.
+  - **Map changes:** in three layers, cheapest first.
+    - **Weather (client only):** the client already has Snow, Rain and Fog map shaders
+      (`game_shaders`) and area effects (`game_environment`). Snowfall outdoors in winter,
+      rain showers in spring, falling leaves in autumn (a new particle effect), sun haze in
+      summer. No map work.
+    - **Seasonal decorations (server, at the restart):** placed and removed by script at
+      fixed spots, like the Clefairy spawns: snowmen and snowy fir trees in towns in winter,
+      flowers in spring, pumpkins and leaf heaps in autumn.
+    - **Snowy ground (server, at the restart):** a mapper's copy of chosen areas (towns and
+      routes) in their winter look, turned by a script (`scripts/mapper`, which already
+      reads the map and has auto-borders) into a patch of tile changes. The server applies
+      the patch at the restart when winter starts and takes it back when it ends. The snow
+      grounds and snow borders are already in the item data, so the client needs nothing
+      new. Areas with no winter copy stay as they are. This is the big piece of work (map
+      editing), so it can come after the first two.
+  - **Season events:** a holiday can depend on the season (the Harvest Moon is already the
+    autumn full moon), and staff events can be limited to a season.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
