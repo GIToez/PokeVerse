@@ -53,10 +53,60 @@ function g_game.evolvePokemon()
   g_game.useInventoryItem(EVOLVE_ICON_ITEMID)
 end
 
+-- True while a text field has the focus (the chat, a search box, a window's name field...).
+function Keybind.isTyping()
+  local widget = rootWidget:getFocusedChild()
+  while widget do
+    if widget:getClassName() == 'UITextEdit' and widget:isEnabled() and widget:isVisible() then
+      return true
+    end
+    widget = widget:getFocusedChild()
+  end
+  return false
+end
+
+local function typesText(keyCode)
+  local modifiers = g_keyboard.getModifiers()
+  return keyCode and keyCode >= KeySpace and keyCode <= KeyTilde
+    and (modifiers == KeyboardNoModifier or modifiers == KeyboardShiftModifier)
+end
+
+-- With the chat off letters are keybinds, but a focused text field still gets them as text.
+-- Key up stays unguarded so a held walk key always stops.
+local function guardCallbacks(callbacks)
+  if not callbacks or callbacks.guarded then
+    return callbacks
+  end
+  local guarded = { guarded = true }
+  for i, entry in ipairs(callbacks) do
+    local callback = entry.callback
+    if entry.type == KEY_UP or type(callback) ~= 'function' then
+      guarded[i] = entry
+    else
+      guarded[i] = { type = entry.type, alone = entry.alone, callback = function(widget, keyCode, ...)
+        if typesText(keyCode) and Keybind.isTyping() then
+          return false
+        end
+        return callback(widget, keyCode, ...)
+      end }
+    end
+  end
+  return guarded
+end
+
+local hotkeyCallback = Keybind.hotkeyCallback
+function Keybind.hotkeyCallback(hotkeyId, chatMode)
+  local modifiers = g_keyboard.getModifiers()
+  if (modifiers == KeyboardNoModifier or modifiers == KeyboardShiftModifier) and Keybind.isTyping() then
+    return
+  end
+  return hotkeyCallback(hotkeyId, chatMode)
+end
+
 -- Keybind has no change event; every rebind and chat mode switch binds the keys again.
 local keybindBind = Keybind.bind
 function Keybind.bind(category, action, callbacks, widget)
-  keybindBind(category, action, callbacks, widget)
+  keybindBind(category, action, guardCallbacks(callbacks), widget)
   signalcall(Keybind.onBind, category, action)
 end
 
