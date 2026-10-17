@@ -715,6 +715,31 @@ local function testQuests(cid)
         check("quests: the list has the quest under way with its progress", found and found.state == "active" and
             found.need == need, found and found.state)
         check("quests: the list is split into fragments", #rows > 20 and list[2] and list[2].type == "marks", #rows)
+
+        local hidden, story
+        for _, row in ipairs(rows) do
+            hidden = hidden or (row.hidden and row)
+            story = story or (row.id == first.storage and row)
+        end
+        check("quests: the story always shows", story and not story.hidden and story.name ~= nil)
+        check("quests: an unmet NPC's quest is ???", hidden and hidden.name == nil and hidden.npc == nil and
+            hidden.rewards == nil and hidden.place and hidden.place.x == nil and hidden.category ~= "Main story",
+            hidden and JSON.encode(hidden))
+        if (hidden) then
+            local npc = Quests.getEntry(hidden.id).npc
+            saved[Quests.metKey(npc)] = getCreatureStorage(cid, Quests.metKey(npc))
+            Quests.onMeet(cid, npc)
+            local met = messages()
+            check("quests: meeting the NPC tells the client", met[1] and met[1].type == "found" and met[1].npc == npc)
+            Quests.onClientMessage(cid, JSON.encode({ action = "list" }))
+            local again
+            for _, row in ipairs((messages()[1] or {}).quests or {}) do
+                again = again or (row.id == hidden.id and row)
+            end
+            check("quests: then its quests show in full", again and not again.hidden and again.npc == npc, again and JSON.encode(again))
+            Quests.onMeet(cid, npc)
+            check("quests: meeting again sends nothing", #messages() == 0)
+        end
     end)
     doSendPlayerExtendedOpcode = opcode
     for storage, value in pairs(saved) do

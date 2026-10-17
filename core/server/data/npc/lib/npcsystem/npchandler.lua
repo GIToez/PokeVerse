@@ -390,6 +390,9 @@ if(NpcHandler == nil) then
                     self:say(msg)
                     self:addFocus(cid)
                     self:say(msg, cid)
+                    if (Quests and Quests.onMeet) then
+                        Quests.onMeet(cid, getCreatureName(getNpcId()))
+                    end
                 end
             end
         end

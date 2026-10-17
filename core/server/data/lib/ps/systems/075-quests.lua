@@ -12,6 +12,8 @@
 --   { type = "active", quests = { row, ... } }: only the started ones, after the hello
 --   { type = "notice", kind = "started" | "progress" | "ready" | "complete", ... }
 --   { type = "marks", npcs = { [npc name] = "available" | "active" | "ready" } }
+--   { type = "found", npc }: the trainer met a quest NPC, so its quests are no longer "???" in the log.
+--     An undiscovered row is { id, hidden = true, state, category, level, daily, place = { town } }.
 
 Quests = {}
 
@@ -366,13 +368,59 @@ local function questState(cid, entry, currents, onlyActive)
     return Quests.stateOf(cid, entry.quest, current or nil)
 end
 
+-- Undiscovered quests: until the trainer has talked to the NPC (or done one of its quests), the log only
+-- shows "???" with the town, the category and the level. The story and the first steps always show.
+local ALWAYS_SHOWN = { ["Main story"] = true, ["Getting started"] = true }
+local MET_STORAGE_BASE = 60000000 -- + a hash of the NPC's name, up to 999999
+
+function Quests.metKey(npcName)
+    local hash = 5381
+    for i = 1, #npcName do
+        hash = (hash * 33 + npcName:byte(i)) % 1000000
+    end
+    return MET_STORAGE_BASE + hash
+end
+
+Quests.hasMet = function(cid, npcName)
+    return tonumber(getCreatureStorage(cid, Quests.metKey(npcName))) == 1
+end
+
+-- an NPC greeted the trainer (NpcHandler:greet)
+Quests.onMeet = function(cid, npcName)
+    if (not isPlayer(cid) or not npcName or not getAllNpcQuests()[npcName] or Quests.hasMet(cid, npcName)) then
+        return
+    end
+    setPlayerStorageValue(cid, Quests.metKey(npcName), 1)
+    if (Quests.isClient(cid)) then
+        send(cid, { type = "found", npc = npcName })
+    end
+end
+
+local function hiddenRow(entry, state)
+    local place = Quests.placeOf(entry.npc)
+    return { id = entry.id, hidden = true, state = state, category = entry.category, level = entry.quest.requiredLevel,
+             daily = entry.quest.daily and true or nil, place = place and { town = place.town } or nil }
+end
+
 Quests.getList = function(cid, onlyActive)
-    local list, currents = {}, {}
-    for _, entry in ipairs(getCatalog()) do
-        local state = questState(cid, entry, currents, onlyActive)
+    local list, currents, states, seen = {}, {}, {}, {}
+    local catalog = getCatalog()
+    for index, entry in ipairs(catalog) do
+        states[index] = questState(cid, entry, currents, onlyActive)
+        if (states[index] == "active" or states[index] == "done") then
+            seen[entry.npc] = true
+        end
+    end
+    for index, entry in ipairs(catalog) do
+        local state = states[index]
         -- quests from NPCs that aren't on the map now (events) only show once started
         if (state and (state == "active" or state == "done" or Quests.placeOf(entry.npc))) then
-            list[#list + 1] = row(cid, entry, state)
+            if (state == "active" or state == "done" or ALWAYS_SHOWN[entry.category] or seen[entry.npc] or
+                    Quests.hasMet(cid, entry.npc)) then
+                list[#list + 1] = row(cid, entry, state)
+            else
+                list[#list + 1] = hiddenRow(entry, state)
+            end
         end
     end
     return list
