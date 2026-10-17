@@ -1,6 +1,6 @@
 void main(void)
 {
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec4 game = gameColor();
   vec2 p = world();
   float drift = fbm(p * 2.5 + vec2(u_Time * 0.025, u_Time * 0.008));
   float wisps = fbm(p * 5.0 - vec2(u_Time * 0.04, 0.0));

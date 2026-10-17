@@ -3,9 +3,38 @@ uniform sampler2D u_Tex0;
 varying vec2 v_TexCoord;
 uniform vec2 u_WalkOffset;
 
-// STRENGTH (1 full, 0.5 light) and FALL (the sign that makes things fall down the screen) are filled in by weather.lua
+// STRENGTH (1 full, 0.5 light), FALL (the sign that makes things fall down the screen) and STYLE
+// (0 off, 1 vibrant, 2 toon) are filled in by weather.lua
 const float strength = STRENGTH;
 const float fall = FALL;
+const float style = STYLE;
+const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+
+// the visual style: vibrant is more colour and a little contrast; toon also pulls the shades
+// toward a few steps of brightness, keeping each colour's hue
+vec3 styled(vec3 c)
+{
+  if (style < 0.5)
+    return c;
+  float l = dot(c, LUMA);
+  c = clamp(mix(vec3(l), c, style > 1.5 ? 1.3 : 1.25), 0.0, 1.0);
+  c = mix(c, c * c * (3.0 - 2.0 * c), 0.3);
+  if (style > 1.5) {
+    l = max(dot(c, LUMA), 0.001);
+    float bands = 6.0;
+    float f = l * bands;
+    // a soft staircase: flat steps with smooth risers, so textures that sit on a step's edge don't blotch
+    float q = (floor(f) + smoothstep(0.25, 0.75, fract(f))) / bands;
+    c = clamp(c * mix(1.0, q / l, 0.7), 0.0, 1.0);
+  }
+  return c;
+}
+
+vec4 gameColor()
+{
+  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  return vec4(styled(game.rgb), game.a);
+}
 
 float hash(vec2 p)
 {

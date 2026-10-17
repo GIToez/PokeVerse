@@ -1,6 +1,6 @@
 void main(void)
 {
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec4 game = gameColor();
   vec2 p = world();
   float lines = 0.0;
   for (int i = 0; i < 3; i++) {

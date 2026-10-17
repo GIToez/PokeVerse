@@ -3,7 +3,8 @@
 -- also dims or tints the day and night light itself. This module draws the weather on the map (a map
 -- shader, only where the sky is open over the trainer), flashes lightning, plays the weather sounds
 -- and shows the badge beside the clock. Options: weatherEffects, weatherLight (fewer drops and flakes),
--- weatherSounds, weatherLightning.
+-- weatherSounds, weatherLightning, and visualStyle (off, vibrant, toon), which the same map shader
+-- draws everywhere, under a roof and underground too.
 local badge, flash
 local current -- the last "weather" message
 local offset = 0 -- server clock - local clock
@@ -21,6 +22,8 @@ local KINDS_WITH_SHADER = { rain = true, thunderstorm = true, snow = true, hail 
                             windy = true, sunny = true }
 local LOOPS = { rain = 'rain_01', thunderstorm = 'rain_01', windy = 'wind_low_01', sandstorm = 'wind_high_01',
                 hail = 'wind_low_01' }
+local STYLES = { 'vibrant', 'toon' }
+local STYLE_LEVELS = { off = 0, vibrant = 1, toon = 2 }
 local ELEMENT_NAMES = { [0] = 'Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 'Fire',
                         'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy' }
 
@@ -39,6 +42,11 @@ local function effectsLevel()
         return 0
     end
     return option('weatherLight', false) and 1 or 2
+end
+
+-- 0 off, 1 vibrant, 2 toon
+local function visualStyle()
+    return STYLE_LEVELS[option('visualStyle', 'off')] or 0
 end
 
 local function send(data)
@@ -81,13 +89,13 @@ end
 
 local commonCode
 
-local function shaderName(kind, level)
-    return 'Weather - ' .. kind .. (level == 1 and ' (light)' or '')
+local function shaderName(kind, level, style)
+    return 'Weather - ' .. kind .. (level == 1 and ' (light)' or '') .. (style > 0 and ' ' .. STYLES[style] or '')
 end
 
 -- the engine compiles it on its next frame: the name is usable from then on (returns true when new)
-local function ensureShader(kind, level)
-    local name = shaderName(kind, level)
+local function ensureShader(kind, level, style)
+    local name = shaderName(kind, level, style)
     if shaders[name] then
         return name, false
     end
@@ -96,6 +104,7 @@ local function ensureShader(kind, level)
     end
     local body = g_resources.readFileContents(DIR .. 'shaders/' .. kind .. '.frag')
     local code = (commonCode .. '\n' .. body):gsub('STRENGTH', level == 1 and '0.5' or '1.0'):gsub('FALL', FALL)
+        :gsub('STYLE', style .. '.0')
     g_shaders.createFragmentShaderFromCode(name, code)
     g_shaders.setupMapShader(name)
     shaders[name] = true
@@ -329,11 +338,13 @@ end
 local function apply()
     local kind = getKind()
     local level = effectsLevel()
-    if not g_game.isOnline() or not outdoors or level == 0 or not KINDS_WITH_SHADER[kind] then
-        setShader(nil)
+    local style = visualStyle()
+    if g_game.isOnline() and outdoors and level > 0 and KINDS_WITH_SHADER[kind] then
+        setShader(ensureShader(kind, level, style))
+    elseif g_game.isOnline() and style > 0 then
+        setShader(ensureShader('clear', 2, style))
     else
-        local name, new = ensureShader(kind, level)
-        setShader(name, new)
+        setShader(nil)
     end
 
     if g_game.isOnline() and outdoors and option('weatherSounds', true) then
@@ -439,10 +450,13 @@ end
 
 function init()
     g_ui.importStyle('weather')
+    local style = visualStyle()
     for kind in pairs(KINDS_WITH_SHADER) do
-        ensureShader(kind, 2)
-        ensureShader(kind, 1)
+        ensureShader(kind, 2, style)
+        ensureShader(kind, 1, style)
     end
+    ensureShader('clear', 2, 1)
+    ensureShader('clear', 2, 2)
     badge = g_ui.createWidget('WeatherBadge', modules.game_interface.getRootPanel())
     badge:setId('weatherBadge')
     badge:hide()
