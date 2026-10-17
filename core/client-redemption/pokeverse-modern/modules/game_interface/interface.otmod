@@ -70,5 +70,6 @@ Module
     - game_tips
     - game_poll
     - game_lootlist
+    - game_menukeys
   @onLoad: init()
   @onUnload: terminate()

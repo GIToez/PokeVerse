@@ -479,7 +479,7 @@ local function bindKeys()
             { type = KEY_DOWN, callback = function() useMove(index) end }
         })
     end
-    Keybind.new(KEYBIND_CATEGORY, ORDER_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'R' }, '')
+    Keybind.new(KEYBIND_CATEGORY, ORDER_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'E' }, '')
     Keybind.bind(KEYBIND_CATEGORY, ORDER_ACTION, { { type = KEY_DOWN, callback = useOrder } })
     Keybind.new(KEYBIND_CATEGORY, DEX_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'X' }, '')
     Keybind.bind(KEYBIND_CATEGORY, DEX_ACTION, { { type = KEY_DOWN, callback = useDexOnTarget } })

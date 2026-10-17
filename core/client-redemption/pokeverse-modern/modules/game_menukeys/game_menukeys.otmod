@@ -1,0 +1,8 @@
+Module
+  name: game_menukeys
+  description: PokeVerse keybinds for the top bar windows (trainer card, tasks, calendar and the rest)
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ menukeys ]
+  @onLoad: init()
+  @onUnload: terminate()

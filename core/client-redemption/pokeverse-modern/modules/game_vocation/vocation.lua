@@ -10,7 +10,7 @@
 -- The U key is the vocation key: it opens the trainer's vocation tool (the Ranger radar, the Angler
 -- fishing guide; those modules call registerTool(id, {enabled = fn, toggle = fn})), and without one
 -- it asks the server for this window with {action = "open"}. Below level 20 the window opens with
--- its buttons greyed out.
+-- its buttons greyed out. V only opens or closes this window.
 local IMAGES = '/modules/game_vocation/images/'
 local ERROR_COLOR = '#ff8a80'
 local MUTED_COLOR = '#96aacd'
@@ -23,6 +23,7 @@ local selected
 local messageEvent
 local tools = {}
 local TOOL_ACTION = 'Vocation: window or vocation tool'
+local WINDOW_ACTION = 'Show/hide the vocation window'
 local progressWindow
 local progress
 local showingAll = false
@@ -427,6 +428,12 @@ local function onToolKey()
     send({ action = 'open' })
 end
 
+local function onWindowKey()
+    if not typing() and g_game.isOnline() then
+        toggleWindow()
+    end
+end
+
 function close()
     if window and window:isVisible() then
         window:hide()
@@ -529,12 +536,15 @@ function init()
     connect(g_game, { onGameEnd = onGameEnd })
     Keybind.new('Windows', TOOL_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'U' }, '')
     Keybind.bind('Windows', TOOL_ACTION, { { type = KEY_DOWN, callback = onToolKey } })
+    Keybind.new('Windows', WINDOW_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'V' }, '')
+    Keybind.bind('Windows', WINDOW_ACTION, { { type = KEY_DOWN, callback = onWindowKey } })
 end
 
 function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Vocation)
     disconnect(g_game, { onGameEnd = onGameEnd })
     Keybind.delete('Windows', TOOL_ACTION)
+    Keybind.delete('Windows', WINDOW_ACTION)
     removeEvent(messageEvent)
     removeEvent(barEvent)
     if window then
