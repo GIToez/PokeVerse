@@ -1107,12 +1107,13 @@ From the `#notes` channel:
 
       | Online | Gap to the next spawn | About per day | Cooldown tier 1 / tier 2 |
       | --- | --- | --- | --- |
-      | Under the minimum | none | 0 | – |
-      | Minimum to 14 | 4–8 h | 4 | 30 h / 4 days |
+      | 1–4 (under the minimum) | 16–24 h | about 1 | 30 h / 4 days |
+      | 5–14 | 4–8 h | 4 | 30 h / 4 days |
       | 15–39 | 3–6 h | 5–6 | 24 h / 3 days |
       | 40 or more | 2–4 h | 8 | 16 h / 2 days |
 
-      The minimum is 5 on live and 1 while testing (a setting). The species is drawn from
+      Below 5 online they still spawn, slowly, so the Discord post can pull players in;
+      with nobody online nothing spawns. The thresholds are settings. The species is drawn from
       those off cooldown, tier 1 three times as likely as tier 2. The cooldown counts from
       when it is beaten, caught or flies off. No spawns in the 2 hours before the 06:00
       restart, and one still alive at the restart counts as fled with no cooldown. The next
@@ -1131,7 +1132,10 @@ From the `#notes` channel:
       - Discord: one thread per encounter with the spawn, sightings and end (new bridge
         event kinds; the bridge's 5-minute limit per species doesn't apply to them).
       - The Ranger radar (rank 5) stays the exact tracker.
-    - **Fight:** boss health: 4–5 trainers around level 80 beat a tier 1 in about 5 minutes,
+    - **Fight:** the wild one is the plain species (same name, stats, moves and type from
+      its monster file), with its health raised by the spawner for that encounter only. A
+      caught one has the normal stats of its species; a test checks that the boost doesn't
+      carry over. Boss health: 4–5 trainers around level 80 beat a tier 1 in about 5 minutes,
       a level 100 trainer alone in about 15–20 with potions. Tier 2 has about twice that.
       Signature moves, with area attacks that punish groups standing together.
     - **Rewards:** everyone with at least 10% of the damage gets the Pokepedia defeat, Rare
