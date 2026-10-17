@@ -1432,7 +1432,70 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       spawns and raids) used to run all year or not at all; it now only runs on its dates.
     - Not built from the first plan: the "spawns up" for types (Dragon, Water, Grass, Ghost,
       Ice), fireworks at midnight and higher starter catch rates.
-- **Seasons and weather (agreed October 2026, not built yet):**
+- **Seasons and weather (agreed October 2026; build steps 1 to 4 done):**
+  - **Built so far** (needs the new server build and a client release):
+    - **Seasons:** `EventCalendar.currentSeason` / `seasonId` in `077-eventCalendar.lua`. The
+      season starts at the 06:00 restart after its equinox or solstice (2026: Mar 21, Jun 22,
+      Sep 23, Dec 22), and its start is announced. `/calendar` names it, and
+      `/calendar season <spring|summer|autumn|winter|auto>` forces one. The calendar window
+      shows the season in its header, a coloured band under every day and an icon on the
+      day a season begins; the banner tooltips name it.
+    - **Weather** (`lib/ps/systems/079-weather.lua`): every town with a temple in a live
+      region is a zone, and a spot belongs to the nearest town of its region. Kanto is
+      temperate, Hoenn warm, the Orange Islands tropical and Desert Island 92 a desert; some
+      towns change the odds (sandstorms at Mauville and Pewter, fog at Lavender and
+      Fallarbor, rain at Fortree, sun at Lavaridge and Cinnabar). Johto's zones are listed
+      but stay calm until `live = true`; the Tutorial has no weather.
+      - Each zone's weather lasts 20 to 60 minutes, rolled from the climate's odds for the
+        season. The roll is a seeded hash of the zone and the time, so every Lua state gets the
+        same answer without sharing anything; only staff weather is stored (global storage 7151).
+      - Snow on Christmas Day (not in the tropics or the desert) and fog on Halloween night.
+        There's no harsh sunlight at night: it's "Clear night" instead.
+      - `/weather` (or `/weather status`) shows the season, the zone you stand in, and the
+        weather of every zone. `/weather <town|region|all|here> <kind> [minutes]` sets it,
+        `... auto` gives it back to the roll, and `/weather off` clears all staff weather.
+        `/weather time <day|night|dawn|dusk|HH:MM>` moves the game clock, to test the light.
+      - Clients get it on extended opcode 35 (`{type = "weather", ...}`) at login and when it
+        changes.
+    - **Light:** each weather lets a share of the day or night light through and can tint it
+      (`KINDS[kind].light`): rain 80%, thunderstorms 62% with a blue tint, fog 85%, hail
+      80%, sandstorms 84% with a sand tint, snow 106%, harsh sun 110%. The server sends it per
+      player (`doPlayerSetWeatherLight`, applied in `ProtocolGame::AddWorldLight`), so the
+      night stays dark and a storm makes the day dim. Characters with the `HasFullLight`
+      flag (gods) and clients with the Lights option off don't see the darkening.
+    - **Client** (`modules/game_weather`): a map shader for each weather (rain, thunderstorm,
+      snow, hail, fog, sandstorm, strong winds, harsh sunlight), drawn only where the sky is
+      open over the player (no floor above, the same rule as the server). Thunderstorms flash
+      the screen and play thunder; rain, storms and wind have looping sounds. A weather icon
+      sits next to the area name; its tooltip gives the zone, the time left, the move changes,
+      the chip damage or fog note, and the season.
+      - Options (Interface): Show weather on the map, Lighter weather effects (half
+        strength), Weather sounds (at the Ambience volume) and Lightning flashes. They only
+        change the look; the light and the battle effects still apply.
+    - **Battle** (outdoors only; `Weather.CONFIG` turns each part off):
+      - Move power: harsh sun Fire x1.2, Grass x1.1, Water x0.8; rain Water x1.2, Fire x0.8;
+        thunderstorms Electric x1.2, Water x1.1, Fire x0.8; fog Ghost and Dark x1.1; strong
+        winds Flying x1.2; snow Ice x1.2, Fire x0.9; hail Ice x1.2; sandstorms Rock x1.2,
+        Ground x1.1. Applied in `004-skillDamage.lua` after held items.
+      - Hail and sandstorms take 3% of max health every 10 seconds from trainers' Pokémon
+        (never the last point). Ice types are immune to hail; Rock, Ground and Steel types to
+        sandstorms.
+      - Fog: moves used from 2 or more tiles away miss 10% of the time.
+      - Moves bar: a move the weather changes gets a small weather icon on its slot (green
+        border for stronger, red for weaker) with "Rain: 20% stronger" in the tooltip. The
+        shift-click move card lists the weather in its power breakdown.
+    - **Decorations** (`lib/ps/systems/080-decorations.lua`): up to 6 props around each live
+      town's temple, put down at startup and swapped within a minute or two when the season
+      or a holiday changes. Spots are picked by script: open sky, nothing on the tile, and
+      every tile within 2 walkable, so a prop never closes a path or stands at a door; props
+      stand 3 tiles apart. They're script protected (players can't move or pick them up, and
+      `/clean` leaves them), and nothing is saved, so a restart starts from a clean map.
+      - Christmas: a Christmas tree on the spot nearest the temple, a wreath, snowmen and
+        heaps of snow (no snow in tropical and desert towns). Halloween: jack-o'-lanterns
+        and skull candles. Winter: snowmen, snowy dead trees and heaps of snow (not in the
+        tropics or the desert). Spring: flowers. Autumn: pumpkins, wheat, hay and mushrooms.
+        Summer has none.
+    - Tests: the season, weather and decoration parts of the vocation test talkaction.
   - **Seasons follow the real calendar** (northern hemisphere), not a sped-up cycle, so it's
     never summer at Christmas. Spring starts at the March equinox, summer at the June
     solstice, autumn at the September equinox and winter at the December solstice. The
@@ -1506,7 +1569,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     It could come later as a mapper's winter copy of chosen areas, applied at the restart.
   - **Season events:** a holiday can depend on the season (the Harvest Moon is already the
     autumn full moon), and staff events can be limited to a season.
-  - **Build order:**
+  - **Build order** (1 to 4 done):
     1. The season in the calendar, with the staff command.
     2. Basic weather: zones for Kanto, Hoenn and the Orange Islands, the timer, the client
        effects and icon, the options and `/weather`.
