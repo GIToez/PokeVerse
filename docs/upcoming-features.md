@@ -1011,6 +1011,13 @@ From the `#notes` channel:
   and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade is no
   longer needed. Polkadot Bow boosts Normal moves by 10% (as on Bulbapedia; Silk Scarf is the
   full 20%).
+- **Lucky Egg and Exp Share (built):** the Lucky Egg gives its holder +50% EXP from defeating
+  wild Pokémon. Exp Share holders on the belt that are not out and not fainted split a pool of
+  50% of the EXP the active Pokémon earns (and get its EVs). Both are rare drops or event
+  prizes only, never in a shop: Lucky Egg from Chansey (0.3%), Blissey (0.5%) and shiny
+  Chansey (2%), Easter eggs and the July rare chest; Exp Share from Porygon (0.3%), Porygon2
+  (0.5%) and the July legendary chest; both from anniversary surprise bags. They can be traded
+  on the GTS.
 - **World boss repeats (fixed):** a typo in the storage key meant the server never knew which
   boss spawned last, so the same one could come twice in a row.
 - **Fishing tasks don't count up (fixed):** the server runs actions, creature events and
@@ -1121,10 +1128,11 @@ for PokeVerse later. Do not delete it.
   `quest_chief*` and `quest_prophetSlowking` NPCs, `legendaryChest.lua`), achievements,
   Pokémon addons and the Logan NPC. The old psoul.net links (welcome popup, server URL,
   owner email) are already gone; the rest is still on.
-- **Anniversary and birthday events:** about 38 files, including the global event
-  (`globalevents/scripts/start.lua`, `lib/ps/events/globalevents/anniversary.lua`), the
-  cake monsters (`monster/Events/Anniversary`), the surprise bag, the magic flame, and the
-  `event_anniversary` and `event_birthday` NPCs.
+- **Anniversary and birthday events:** done differently. The anniversary content (the cake
+  raid, the surprise bags, the magic flame) now only runs during the anniversary on the event
+  calendar (Oct 3 to 5), and the Easter, July, Halloween and Christmas content only on their
+  dates (see section 15). Before, the surprise bags dropped all year and the hourly
+  anniversary raid failed (`executeRaid` did not exist).
 - Switch them off in one place where possible (a config flag), so turning them back on is
   easy.
 
@@ -1221,49 +1229,55 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   `game_dailylogin`**):** a 7-day streak that repeats: a reward for each day in a row, rare
   candy on day 7, then it starts again at day 1. A missed day resets the streak. A red flag
   on the top menu button shows while today's reward is unclaimed.
-- **Event calendar:** one calendar that shows the upcoming events (double EXP, double
-  shiny, holiday events, tournaments): in a game window, on the website, and posted by
-  the Discord bot. Staff add events with a date, time and length, and they start and
-  stop on their own. Concept v2 (waiting for approval before it is built):
-  - The month grid is drawn by code for any year (no picture per month), with the moon
-    phase on each day; Easter is computed, Lunar New Year and the Harvest Moon come from the
-    moon phases.
-  - Rules instead of dates: once, every weekend, the nth weekend of a month, every year on a
-    date, or a computed holiday. A **weekend** runs from Friday's 06:00 restart to Monday's
-    06:00 restart (`dailyRestartTime`).
-  - **Events stack** and multiply, also with the trainer's own boosts (EXP, loot, catch and
-    egg boosts).
-  - **Holidays are automatic**, chosen list below. Each one starts and ends at the 06:00
-    restart unless noted, and the bonuses are first suggestions to tune. Dates in brackets
-    are 2027's, worked out by the same rules the calendar will use.
+- **Event calendar (built,** `lib/ps/systems/077-eventCalendar.lua`, `/calendar`, client
+  `game_calendar`**):** holidays, staff events and the moon on one calendar. Still to build:
+  the website page and the Discord bot posts.
+  - **Banner:** next to the clock on the top bar (or under the HUD). While an event runs it
+    shows the event in its colour and the time left (`Anniversary: 1d 4h left`, `+1 more`
+    when several run); when nothing runs it counts down to the next one
+    (`Next: Halloween in 7d 1h`). The tooltip has the details; a click opens the window.
+  - **Window:** a month grid (Monday first) drawn by code for any month, with the moon phase
+    on each day, the events as coloured strips, and a list of the month's events beside it.
+    Clicking a day lists that day's events. Times show in the player's own time zone.
+  - **Rules instead of dates:** once, every weekend, the nth or last weekend of a month,
+    every year on a date, or a computed holiday. A **weekend** runs from Friday's 06:00
+    restart to Monday's 06:00 restart. Staff events are rows of the `event_calendar` table
+    (`schemas/pokeverse-extensions.sql`), added in game:
+    - `/calendar` lists the next 30 days, `/calendar list` the staff events,
+      `/calendar remove <n>` removes one.
+    - `/calendar add once 2026-11-06 18:00 2d exp=2 Double Friday`,
+      `/calendar add weekend exp=1.5 Double Weekend`, `/calendar add weekend last loot=2 Loot Weekend`,
+      `/calendar add yearly 12-24 18:00 1d shiny=2 Christmas Eve`.
+    - Bonuses: `exp`, `shiny`, `loot`, `breeding` (Day Care egg chance) and `fishing` (bites),
+      above 1x and up to 10x each.
+    - `/calendar holiday <id> on|off|auto` forces a holiday on or off, or back to its dates.
+    - Changes take effect within a minute; starts and ends are broadcast.
+  - **Events stack** and multiply, also with `/doubleexp`, `/bonusshiny` and the trainer's
+    own boosts. Loot needs the new server build (`setLootEventMultiplier`).
+  - **Holidays are automatic.** Each one starts and ends at the 06:00 restart unless noted.
+    Dates in brackets are 2027's.
 
     | Holiday | When | What happens |
     |---|---|---|
-    | New Year | Dec 31 to Jan 2 | 1.5x EXP, fireworks at midnight (server time), a New Year gift bag on login |
-    | Lunar New Year | 3 days from the second new moon after the winter solstice (Feb 6) | 1.5x loot, red envelope gift (money), Gyarados and Dragon-type spawns up |
-    | Valentine's | Feb 13 to 15 | Luvdisc spawns in the sea and while fishing, 2x breeding (Day Care egg chance), heart gift |
-    | Pokémon Day | Feb 27, one day (a Saturday in 2027) | 2x shiny, every Kanto starter can be caught at higher rates, a cake gift |
-    | Easter | Good Friday to Easter Monday (Mar 26 to 29) | the existing egg hunt, Easter monsters and Delicious Machine (`030-easterEvent`) |
-    | Summer festival | July 1 to 31 | the existing reward chests (`055-julyVacationEvent`), 1.5x fishing catch, Water-type spawns up |
-    | Harvest Moon | 3 days centred on the full moon nearest the autumn equinox (Sep 14 to 16) | 2x berry drops from wild Pokémon, berries heal 50% more, Grass and Bug spawns up |
-    | Full-moon Clefairy nights | every full moon, 20:00 to 06:00 server time (13 nights in 2026) | Clefairy and Clefable spawn at Mt. Moon, a small chance of a Moon Stone from them |
-    | Server anniversary | the launch date each year, 3 days | 2x EXP, 2x shiny, an anniversary gift with the year on it |
-    | Halloween | Oct 24 to Nov 1 | the existing Halloween quests and cauldron (`037-halloweenEvent`), Ghost spawns up |
-    | Christmas | Dec 18 to Dec 27 | the existing presents, Grinch and sleigh (`051-christmasEvent`), Ice spawns up |
+    | New Year | Dec 31 to Jan 2 | 1.5x EXP, a gift on login ($10,000 and a rare candy) |
+    | Lunar New Year | 3 days from the second new moon after the winter solstice (Feb 6) | 1.5x loot, a red envelope on login ($8,888) |
+    | Valentine's | Feb 13 to 15 | 2x Day Care egg chance, 1 in 4 fishing bites are Luvdisc, a rare candy |
+    | Pokémon Day | Feb 27, one day | 2x shiny, a rare candy |
+    | Easter | Good Friday to Easter Monday (Mar 26 to 29) | the existing egg drops and Easter spawns (`030-easterEvent`) |
+    | Summer Festival | July 1 to 31 | 1.5x fishing bites, the existing reward chests (`055-julyVacationEvent`) |
+    | Harvest Moon | the day before the full moon nearest the autumn equinox to the day after (Sep 14 to 16) | berry trees grow twice as fast and give up to 8 berries, 5% of wild Pokémon drop a berry, seed boxes give twice the seeds |
+    | Clefairy Night | every full moon, 20:00 to 06:00 server time | 2 Clefairy and a Clefable at 8 spots in Mt. Moon, 2% Moon Stone from each |
+    | Anniversary | Oct 3 to 5 (the anniversary is Oct 4) | 2x EXP, 2x shiny, the old anniversary content (cake raid, surprise bags, see section 13), a gift on login (a cake and a rare candy) |
+    | Halloween | Oct 24 to Nov 1 | the existing Halloween drops and spawns, and a Halloween raid every 45 minutes |
+    | Christmas | Dec 18 to 27 | the existing presents and Christmas spawns, and a Christmas raid every 35 minutes |
 
-    - Moon phases come from the standard astronomical formula (Meeus, accurate to minutes),
-      not from a 29.5-day average, which can be off by a day. Easter uses the Western
-      computus.
-    - Easter, the summer festival, Halloween and Christmas have no start dates of their
-      own; the calendar turns each one on and off by its rule, and staff can still force
-      one on or off.
-    - Berries are only food today (there are no berry trees), so the Harvest Moon raises
-      berry drops and how much they heal.
-    - The anniversary needs the server's launch date. The old PSoul anniversary content
-      (cake monsters, surprise bag, see section 13) stays off; this is a new, smaller event.
-    - Overlaps stack like any other event: a full moon during Halloween, or a weekend 2x
-      EXP during New Year, multiply.
-  - Times show in the player's own time zone.
+    - Moon phases use the standard astronomical formula (Meeus), accurate to minutes. Easter
+      uses the Western computus.
+    - Each holiday gift is given once per occurrence, at login or when the holiday starts.
+    - The old holiday content (Easter, July, anniversary, Halloween and Christmas drops,
+      spawns and raids) used to run all year or not at all; it now only runs on its dates.
+    - Not built from the first plan: the "spawns up" for types (Dragon, Water, Grass, Ghost,
+      Ice), fireworks at midnight and higher starter catch rates.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
