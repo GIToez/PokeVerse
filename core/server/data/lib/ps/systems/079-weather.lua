@@ -267,14 +267,51 @@ function Weather.getOverrides()
     if (now - overridesAt >= CACHE_SECONDS) then
         overridesAt = now
         overrides = {}
-        for id, kind, endsAt in Weather.readOverrides():gmatch("(%d+)=(%a+):(%d+)") do
+        for kind, endsAt, ids in Weather.readOverrides():gmatch("(%a+):(%d+)=([%d,%-]+)") do
             endsAt = tonumber(endsAt)
             if (Weather.KINDS[kind] and (endsAt == 0 or endsAt > now)) then
-                overrides[tonumber(id)] = { kind = kind, endsAt = endsAt }
+                for part in ids:gmatch("[^,]+") do
+                    local first, last = part:match("^(%d+)%-(%d+)$")
+                    first = tonumber(first or part)
+                    for id = first, tonumber(last or first) do
+                        overrides[id] = { kind = kind, endsAt = endsAt }
+                    end
+                end
             end
         end
     end
     return overrides
+end
+
+-- "m;<kind>:<until>=<zone ids>;...", the ids as runs ("1-12,15"), so "/weather all" fits the
+-- 255 characters of global_storage
+local function encodeOverrides(list)
+    local groups, keys = {}, {}
+    for id, entry in pairs(list) do
+        local key = entry.kind .. ":" .. entry.endsAt
+        if (not groups[key]) then
+            groups[key] = {}
+            keys[#keys + 1] = key
+        end
+        table.insert(groups[key], id)
+    end
+    table.sort(keys)
+    local parts = { "m" }
+    for _, key in ipairs(keys) do
+        local ids, runs = groups[key], {}
+        table.sort(ids)
+        local i = 1
+        while (i <= #ids) do
+            local j = i
+            while (ids[j + 1] == ids[j] + 1) do
+                j = j + 1
+            end
+            runs[#runs + 1] = (j > i) and (ids[i] .. "-" .. ids[j]) or tostring(ids[i])
+            i = j + 1
+        end
+        parts[#parts + 1] = key .. "=" .. table.concat(runs, ",")
+    end
+    return table.concat(parts, ";")
 end
 
 -- The stored form of every override, to put back later with Weather.writeOverrides
@@ -284,9 +321,13 @@ end
 
 function Weather.writeOverrides(value)
     doSetStorage(GLOBAL_STORAGES.WEATHER_OVERRIDES, value)
+    overridesAt = -1
+    if (#value > 255) then
+        print("[Weather] Too many different staff weathers to keep across a restart; they last until then.")
+        return
+    end
     db.executeQuery(string.format("REPLACE INTO `global_storage` (`key`, `world_id`, `value`) VALUES (%d, %d, %s);",
         GLOBAL_STORAGES.WEATHER_OVERRIDES, getConfigValue("worldId") or 0, db.escapeString(value)))
-    overridesAt = -1
 end
 
 -- Set (kind) or clear (nil) staff weather on zones; minutes nil or 0: until staff clear it
@@ -297,11 +338,7 @@ function Weather.setOverride(zoneIds, kind, minutes)
     for _, id in ipairs(zoneIds) do
         current[id] = kind and { kind = kind, endsAt = endsAt } or nil
     end
-    local parts = { "m" }
-    for id, entry in pairs(current) do
-        parts[#parts + 1] = string.format("%d=%s:%d", id, entry.kind, entry.endsAt)
-    end
-    Weather.writeOverrides(table.concat(parts, ";"))
+    Weather.writeOverrides(encodeOverrides(current))
 end
 
 -- A zone's weather at a time: { kind, startsAt, endsAt, source = "natural"|"holiday"|"staff", holiday }

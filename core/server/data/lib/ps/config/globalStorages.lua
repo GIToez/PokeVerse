@@ -60,7 +60,7 @@ GLOBAL_STORAGES = {
     LEGENDARY_SEQUENCE = 7145, -- last encounter id
     LEGENDARY_RECENT = 7146, -- "m;<species>=<unix time>:<encounter>": defeats whose body may still be caught
     EVENT_CALENDAR_SEASON = 7150, -- a season forced with /calendar season (1 spring to 4 winter), anything else automatic
-    WEATHER_OVERRIDES = 7151, -- "m;<zone>=<kind>:<until>;...": weather staff set with /weather (Weather)
+    WEATHER_OVERRIDES = 7151, -- "m;<kind>:<until>=<zone runs>;...": weather staff set with /weather (Weather)
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

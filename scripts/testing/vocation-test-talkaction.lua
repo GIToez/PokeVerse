@@ -1854,6 +1854,19 @@ local function testWeather(cid, arena)
     check("Weather: no harsh sunlight at night, even from staff", W.at(viridian).kind == (W.isNight() and "clear" or "sunny"))
     W.setOverride({ viridian.id }, nil)
     check("Weather: clearing staff weather", W.at(viridian).source ~= "staff")
+    local allIds = {}
+    for _, zone in ipairs(W.getZones()) do allIds[#allIds + 1] = zone.id end
+    local pins = W.readOverrides()
+    W.setOverride(allIds, "rain", 5)
+    W.setOverride({ viridian.id }, "fog", 5)
+    local stored, pinned = W.readOverrides(), 0
+    for _, id in ipairs(allIds) do
+        local entry = W.getOverrides()[id]
+        if (entry and entry.kind == (id == viridian.id and "fog" or "rain")) then pinned = pinned + 1 end
+    end
+    check("Weather: staff weather on every zone fits the database and reads back", #stored <= 255 and pinned == #allIds,
+        #stored .. " chars, " .. pinned .. "/" .. #allIds)
+    W.writeOverrides(pins)
 
     -- CI starts on the Tutorial Island, which has no weather: test in Viridian then
     local arenaZone = W.zoneAt(arena)
