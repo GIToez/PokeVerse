@@ -1082,48 +1082,73 @@ From the `#notes` channel:
     Pokepedia goals can't be reached, and the bird bosses likely don't count as defeats
     (their death is cancelled before the kill events run).
   - **Decided (October 2026):** wild legendaries are separate from the dungeon and quest
-    bosses and live on the main map. All of them roam. They are built for group fights but a
-    high-level trainer can beat one alone. The catch chances stay as they are for now.
-  - **Spawning plan (proposal, not built):** one new system file with a table per species
-    (area, anchor points, tier), not the map spawns.
-    - **Pool:** only species whose region is on the live map. Kanto now: Articuno, Zapdos,
-      Moltres, Mewtwo, Mew. The Johto ones join when the Johto map is live, Hoenn's when
-      Hoenn exists.
+    bosses and live on the main map. All of them roam, and all 21 visit Kanto until their own
+    region is live. They are built for group fights, but a high-level trainer can beat one
+    alone. Level 50 is recommended, not required. The catch chances stay as they are for now.
+    Trainers can catch more than one, and can trade them on the GTS.
+  - **Plan (agreed, not built):** one new system file (`systems/0xx-wildLegendaries.lua`)
+    with a table per species, not the map spawns.
     - **Tiers:** tier 1 is the birds, the beasts, the Regis and Latias/Latios. Tier 2 is
       Mewtwo, Mew, Lugia, Ho-Oh, Celebi, Kyogre, Groudon, Rayquaza, Jirachi and Deoxys.
-    - **How many:** at most 2 legendaries alive in the world at once, never two of the same
-      species, and at most one tier 2.
-    - **How often:** a check every 5 minutes. When a species comes off cooldown it gets a
-      random spawn time in the next 0–12 hours, which can't be predicted but always arrives
-      (a plain chance per check gives droughts and streaks). Two spawns are at least 2 hours
-      apart, and none happen with fewer than 5 trainers online. The times are kept in global
-      storages so a restart doesn't reset them.
-    - **Cooldown per species** from when it is beaten, caught or leaves: tier 1 18–30
-      hours, tier 2 3–5 days. When it leaves without being beaten, half of that.
-    - **Time in the world:** 45 minutes (tier 1), 60 minutes (tier 2). After that it flies
-      off with "Articuno flew away", unless someone hit it in the last minute.
-    - **Roaming:** each species has 8–15 anchor points in its area, for example Articuno on
-      the Seafoam Islands and the routes around them. It wanders near an anchor and every
-      3–5 minutes moves to another one, far from the last. While it's being hit it doesn't
-      move. It flees once, at 50% health, to another anchor with the health it has left, so
-      the group has to find it again.
-    - **Finding it:** a vague server message when it appears ("A freezing wind blows over
-      the Seafoam Islands"), the Discord post, and a "sighting" message to trainers within
-      about 30 tiles when it reaches a new anchor. The Ranger radar (rank 5, direction and
-      distance band) is the real tracker.
-    - **Strength:** the wild version gets boss-level health, tuned so 4–5 trainers around
-      level 80 beat it in about 5 minutes and a level 100 trainer alone in about 15–20
-      minutes with potions. Trainers under a minimum level (proposed 50) can't attack it.
-    - **Rewards:** everyone who did at least 10% of the damage gets the Pokepedia defeat and
-      a participation reward. The trainer (or party) with the most damage gets the corpse for
-      the catch throw for 60 seconds, then anyone can throw.
-    - **Catch note:** with today's numbers (one throw per defeat, chances of 10,000 and
-      100,000) only a Master Ball catches one in practice. This is fine for now and can be
-      looked at again once they spawn.
-  - **Still to decide:** whether the Johto and Hoenn legendaries visit Kanto until their
-    region is live; the minimum level; the participation reward; whether a trainer can catch
-    each legendary only once and trade it on the GTS; and for the bird dungeons, one bird per
-    trainer or each of the three once.
+    - **Where:** one pool of anchor points spread over all of Kanto: outdoor, walkable and
+      reachable without Surf, and checked with a tile-check script like the raid points. Each
+      species also has a home area that fits it (Articuno and Regice the Seafoam Islands,
+      Zapdos and Registeel the Power Plant, Moltres, Entei and Groudon Cinnabar's volcano,
+      Raikou Routes 11–12, Suicune the rivers and lakes, Regirock Rock Tunnel, Latias and
+      Latios the coasts, Mewtwo Cerulean Cave, Mew the Cinnabar Mansion, Lugia and Kyogre
+      the southern shores, Ho-Oh and Rayquaza the Indigo Plateau, Celebi Viridian Forest,
+      Jirachi and Deoxys Mt. Moon). Spawns and moves pick the home area half the time and any
+      point in Kanto the other half, so they can turn up anywhere. Other regions' points join
+      the pool when those maps are live.
+    - **Limits:** at most 2 alive at once, never two of the same species, never two tier 2.
+    - **Population scaling:** the gap between spawns and the cooldowns depend on the
+      trainers online. The gap is worked out at each spawn and checked again every 5 minutes,
+      so it gets shorter when the server fills up:
+
+      | Online | Gap to the next spawn | About per day | Cooldown tier 1 / tier 2 |
+      | --- | --- | --- | --- |
+      | Under the minimum | none | 0 | – |
+      | Minimum to 14 | 4–8 h | 4 | 30 h / 4 days |
+      | 15–39 | 3–6 h | 5–6 | 24 h / 3 days |
+      | 40 or more | 2–4 h | 8 | 16 h / 2 days |
+
+      The minimum is 5 on live and 1 while testing (a setting). The species is drawn from
+      those off cooldown, tier 1 three times as likely as tier 2. The cooldown counts from
+      when it is beaten, caught or flies off. No spawns in the 2 hours before the 06:00
+      restart, and one still alive at the restart counts as fled with no cooldown. The next
+      spawn time and the cooldowns are kept in global storages.
+    - **Time in the world:** 90 minutes (tier 1), 120 minutes (tier 2). It doesn't fly off
+      while someone has hit it in the last 2 minutes.
+    - **Roaming:** it wanders near its anchor point and moves to another one far away every
+      4–6 minutes (Latias and Latios every 2–3). It stays put while being hit. At 50% health
+      (tier 2 also at 25%) it flees to another point with the health it has left. Left alone
+      for 3 minutes, it slowly heals back to full.
+    - **Notifications:**
+      - Spawn: server-wide, with the area and "Recommended for trainers level 50+".
+      - Each move: "Articuno was spotted near Route 20" in a Legendary chat tab, plus a
+        last-seen pin on the Pokepedia world map.
+      - Fleeing at 50% or 25%, and the end (beaten, caught, or flew away): server-wide.
+      - Discord: one thread per encounter with the spawn, sightings and end (new bridge
+        event kinds; the bridge's 5-minute limit per species doesn't apply to them).
+      - The Ranger radar (rank 5) stays the exact tracker.
+    - **Fight:** boss health: 4–5 trainers around level 80 beat a tier 1 in about 5 minutes,
+      a level 100 trainer alone in about 15–20 with potions. Tier 2 has about twice that.
+      Signature moves, with area attacks that punish groups standing together.
+    - **Rewards:** everyone with at least 10% of the damage gets the Pokepedia defeat, Rare
+      Candy (item 14463) and money. First amounts: tier 1 one Rare Candy and $5,000, tier 2
+      two Rare Candies and $10,000. The trainer or party with the most damage has the body to
+      themselves for 60 seconds for the catch throw, then anyone can throw. Caught
+      legendaries are not marked unique, so the GTS takes them. Highscores and achievements
+      count wild catches.
+    - **Staff:** `/legendary status`, `/legendary spawn <name>`, `/legendary end <name>`,
+      `/legendary next 5m`.
+    - **Tests:** the limits, the cooldowns and population scaling, roaming, the flee, the
+      damage shares and rewards, and the notifications.
+    - **Order:** (1) spawner, pool, limits, timers, roaming and staff commands (server Lua,
+      no new build); (2) notifications and the Discord threads; (3) boss health, damage
+      shares and rewards; (4) the world map pin and the radar check (client release);
+      (5) tuning on live.
+  - **Still open:** for the bird dungeons, one bird per trainer or each of the three once.
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper
     floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
     the test now also tries nearer spots.
