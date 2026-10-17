@@ -22,6 +22,7 @@ Decorations.CONFIG = {
     clearance = 2, -- tiles around a spot that must be walkable (2: nothing next to a door, a wall or a bench)
     spacing = 3,
     checkInterval = 60, -- seconds between looks at the season and the holidays
+    zoneDelay = 100, -- ms between towns while a set goes down
 }
 
 -- climates: the climates a set is for (nil: all); first: a centrepiece on the spot nearest the temple
@@ -228,34 +229,50 @@ function Decorations.clear()
     current = nil
 end
 
--- Put a set's props down in every live town (nil: take them all away); how many went down
-function Decorations.place(theme)
-    Decorations.clear()
-    current = theme
+-- Put a set's props down in one town; how many went down
+function Decorations.placeZone(theme, zone)
     local set = theme and Decorations.SETS[theme]
-    if (not set) then
-        return 0
+    local items, first = nil, nil
+    if (set and not zone.none and zone.region.live) then
+        items, first = itemsFor(set, zone)
     end
-    for _, zone in ipairs(Weather.getZones()) do
-        local items, first = nil, nil
-        if (not zone.none and zone.region.live) then
-            items, first = itemsFor(set, zone)
-        end
-        if (items) then
-            for index, pos in ipairs(Decorations.spotsFor(zone)) do
-                local itemid = (index == 1 and first) or items[(index + zone.id) % #items + 1]
-                local info = tileInfo(pos)
-                if (info and info.creatures == 0 and info.downItems == 0) then
-                    local uid = doCreateItem(itemid, 1, pos)
-                    if (uid and uid > 0) then
-                        doItemSetAttribute(uid, "scriptprotected", true)
-                        placed[#placed + 1] = { pos = pos, itemid = itemid }
-                    end
-                end
+    local count = 0
+    for index, pos in ipairs(items and Decorations.spotsFor(zone) or {}) do
+        local itemid = (index == 1 and first) or items[(index + zone.id) % #items + 1]
+        local info = tileInfo(pos)
+        if (info and info.creatures == 0 and info.downItems == 0) then
+            local uid = doCreateItem(itemid, 1, pos)
+            if (uid and uid > 0) then
+                doItemSetAttribute(uid, "scriptprotected", true)
+                placed[#placed + 1] = { pos = pos, itemid = itemid }
+                count = count + 1
             end
         end
     end
-    return #placed
+    return count
+end
+
+local generation = 0
+
+local function placeNext(theme, index, gen)
+    local zones = Weather.getZones()
+    if (gen ~= generation or not zones[index]) then
+        return
+    end
+    Decorations.placeZone(theme, zones[index])
+    addEvent(placeNext, Decorations.CONFIG.zoneDelay, theme, index + 1, gen)
+end
+
+-- Put a set's props down in every live town (nil: take them all away). Each town goes down in its
+-- own event: a script call registers every thing it reads and looks each new one up in that list,
+-- so searching every town in one call takes minutes and blocks the server.
+function Decorations.place(theme)
+    Decorations.clear()
+    generation = generation + 1
+    current = theme
+    if (theme and Decorations.SETS[theme]) then
+        addEvent(placeNext, 0, theme, 1, generation)
+    end
 end
 
 function Decorations.getPlaced()
