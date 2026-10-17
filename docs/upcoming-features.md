@@ -1388,7 +1388,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   - **Season events:** a holiday can depend on the season (the Harvest Moon is already the
     autumn full moon), and staff events can be limited to a season.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
-  `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
+  `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 100x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
   (`data/lib/ps/systems/058-serverExpEvent.lua`).
 - **Shiny event:** done. `/bonusshiny 2x 2h` makes every shiny roll that many times more
@@ -1399,7 +1399,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   new server build.
 - **Day Care events:** done. `/bonusdaycare 3x 2h` multiplies the training EXP Pokémon
   get in the Day Care, and `/bonusbreeding 2x 1d` multiplies the daily early egg chance
-  (from day 7). Same arguments as `/doubleexp` (up to 10x, 1 minute to 7 days, `off`,
+  (from day 7). Same arguments as `/doubleexp` (up to 100x, 1 minute to 7 days, `off`,
   `status`); `/expevent` lists them too. Training EXP only counts the minutes that
   overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
   `talkactions/scripts/daycareevent.lua`.
