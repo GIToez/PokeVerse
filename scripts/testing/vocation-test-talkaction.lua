@@ -1267,6 +1267,8 @@ local function testRanger(cid, arena)
         b.band == legendBand and b.direction == legendDirection, b and JSON.encode(b))
     data = Vocations.radarScan(cid)
     check("popup rank 5: legendaries keep their cooldown", not blipOf(data, articuno))
+    check("popup scan counts every Pokemon found", tonumber(data.total) and data.total >= #data.blips and
+        data.total >= 2, data.total)
     local encoded = JSON.encode(data)
     local ok, decoded = pcall(JSON.decode, encoded)
     check("popup scan encodes to JSON", ok and decoded.type == "scan" and decoded.center.x == data.center.x and

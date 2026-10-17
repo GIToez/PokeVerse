@@ -1,7 +1,7 @@
 -- The Ranger radar popup. The server (Vocations.radar in the server lib) talks JSON on ExtendedIds.Radar:
 -- {type = "status", enabled, rank, title, range, cooldown, wait, unlocks, open} says whether the trainer has a
--- radar (the top bar button only shows for Rangers), {type = "scan", ...the status fields, center, blips} is
--- one scan and {type = "error", text, wait} a refused one. The popup sends {action = "hello"} and
+-- radar (the top bar button only shows for Rangers), {type = "scan", ...the status fields, center, blips, total} is
+-- one scan (total counts the Pokemon past the blips cap too) and {type = "error", text, wait} a refused one. The popup sends {action = "hello"} and
 -- {action = "scan"}. Blips stay where the scan saw them, except from the live rank (scan.live): then exact
 -- blips follow their Pokemon, from the game map while they are on screen and from the server's
 -- {type = "live", blips, gone} otherwise, while the popup is open or tracking ({action = "live", on}).
@@ -366,7 +366,12 @@ local function refreshStatusLine()
     local text = tr('%s, rank %d', status.title or '', status.rank or 1) .. '  \183  ' ..
         tr('Range %d tiles', status.range or 0)
     if status.scanned then
-        text = text .. '  \183  ' .. tr('%d found', countVisible())
+        local shown = countVisible()
+        if status.total and status.total > #blips and filter.mode == 'all' then
+            text = text .. '  \183  ' .. tr('%d of %d shown', shown, status.total)
+        else
+            text = text .. '  \183  ' .. tr('%d found', shown)
+        end
     end
     window.subtitle:setText(text)
 end
@@ -642,10 +647,10 @@ function stop()
 end
 
 local function applyStatus(data)
-    local scanned, live = status.scanned, status.live
+    local scanned, live, total = status.scanned, status.live, status.total
     status = { enabled = data.enabled == true, rank = tonumber(data.rank), title = data.title,
                range = tonumber(data.range), cooldown = tonumber(data.cooldown), unlocks = data.unlocks or {},
-               scanned = scanned, live = live }
+               scanned = scanned, live = live, total = total }
     readyAt = g_clock.seconds() + (tonumber(data.wait) or 0)
     if button then
         button:setVisible(status.enabled)
@@ -709,6 +714,7 @@ local function onRadar(protocol, opcode, buffer)
         applyStatus(data)
         status.scanned = true
         status.live = data.live == true
+        status.total = tonumber(data.total)
         liveWanted = status.live or nil
         buildBlips(type(data.blips) == 'table' and data.blips or {})
         refreshStatusLine()
