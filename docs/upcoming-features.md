@@ -990,6 +990,27 @@ From the `#notes` channel:
   clicked; an entry now refreshes when the creature's name (and so its level) changes.
 - **WASD double step (fixed):** binding the walk keys again after a relog stacked their
   handlers, so one press walked twice.
+- **Default key bindings (done):** every key below is a Settings > Controls entry. The
+  letter keys only work with the chat off, and they don't fire while a text field (a search
+  box, a name field) has the focus.
+
+  | Key | Action |
+  | --- | --- |
+  | W A S D | Walk (Movement). The diagonals (Q E Z C before) have no key; players can add them |
+  | Ctrl + W A S D | Turn (Ctrl + arrows too). Clear All Texts keeps Ctrl+W only with the chat open |
+  | Q / Z | Fly or levitate up / down a floor (`/up`, `/down`) |
+  | E | Order (was R) |
+  | X | Pokedex on the target |
+  | V | Vocation window |
+  | U | Vocation tool (radar, fishing guide), or the window without one |
+  | C | Your Trainer Card |
+  | T | Tasks |
+  | P / L / M | Pokepedia / Quest Log / big map |
+  | 1–0, -, = and F1–F6 | Moves and calling Pokémon (unchanged) |
+
+  The calendar, daily login reward, tracker, minimap, inventory, options, store and admin
+  panel have an entry under Windows with no default key. Arrows, numpad and Ctrl + arrows stay
+  fixed. R is free.
 - **Switching Pokémon (done):** the trainer is protected until the next Pokémon is out (at
   most 1.5 seconds), not in duels or trainer battles.
 - **Bugged stairs (fixed, check on live):** stairs that land on more stairs sent two full map
