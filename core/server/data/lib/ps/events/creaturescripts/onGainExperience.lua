@@ -12,8 +12,11 @@ function onGainExperience(cid, gainExp, referenceItem, target)
         Pokepedia.onDefeated(cid, target)
     elseif (isPokemonOnline(cid)) then
         doPlayerPokemonAddExperience(cid, getPlayerPokemon(cid), gainExp, nil, referenceItem)
-        PokemonStats.onDefeated(cid, getPlayerBall(cid), target)
-        PokemonHeldItem.shareExperience(cid, gainExp, getPlayerBall(cid).uid, target)
+        local ball = getPlayerBall(cid)
+        PokemonStats.onDefeated(cid, ball, target)
+        if (isItem(ball)) then
+            PokemonHeldItem.shareExperience(cid, gainExp, ball.uid, target)
+        end
         Tasks.onDefeated(cid, target)
         Vocations.onDefeated(cid, target)
         Pokepedia.onDefeated(cid, target)
