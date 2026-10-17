@@ -638,6 +638,21 @@ local function testHeldItems(cid)
     _, err = PokemonHeldItem.take(cid, ball.uid)
     check("held: nothing to take", err == "This Pokemon isn't holding an item.", err)
 
+    local POLKADOT_BOW = 23525
+    PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, POLKADOT_BOW, 1)))
+    local setModifier, setType = setPokemonHeldMovePowerModifier, setPokemonHeldMovePowerType
+    local modifier, types = nil, {}
+    setPokemonHeldMovePowerModifier = function(_, v) modifier = v end
+    setPokemonHeldMovePowerType = function(_, v, slot) types[slot] = v end
+    local applied = pcall(PokemonHeldItem.onPokemonCall, cid, ball)
+    setPokemonHeldMovePowerModifier, setPokemonHeldMovePowerType = setModifier, setType
+    check("held: Polkadot Bow boosts Normal moves by 10%", applied and modifier == 10 and types[1] == ELEMENT_NORMAL and
+        types[2] == EMPTY_STORAGE, tostring(modifier))
+    check("held: Polkadot Bow description", PokemonHeldItem.getBallDescription(ball.uid) == "Polkadot Bow: Normal moves +10%",
+        PokemonHeldItem.getBallDescription(ball.uid))
+    PokemonHeldItem.take(cid, ball.uid)
+    doPlayerRemoveItem(cid, POLKADOT_BOW, 1)
+
     doPlayerRemoveItem(cid, CHARCOAL, 1)
     doPlayerRemoveItem(cid, DRAGON_FANG, 1)
     doPlayerRemoveItem(cid, 2148, 1)

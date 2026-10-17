@@ -3,7 +3,7 @@ if (PokemonHeldItem) then
 end
 
 -- Held items: one per Pokemon, kept on its ball. The type items boost one type of moves by a fixed
--- HELD_TYPE_BOOST (no levels, no experience); the Elemental Stone boosts the two types it was
+-- HELD_TYPE_BOOST (Polkadot Bow 10%; no levels, no experience); the Elemental Stone boosts the two types it was
 -- charged with. The breeding and EV items only matter to the Day Care and EV gain (PokemonStats).
 --
 -- Trainers give and take them themselves: drag the item onto a Pokemon on the swap bar, or use it
@@ -49,22 +49,23 @@ POWER_ITEM_EV_BONUS = 8
 
 local HELDS = {}
 
-local function setBoost(pokemon, types)
-    setPokemonHeldMovePowerModifier(pokemon, #types > 0 and HELD_TYPE_BOOST or 0)
+local function setBoost(pokemon, types, percent)
+    setPokemonHeldMovePowerModifier(pokemon, #types > 0 and (percent or HELD_TYPE_BOOST) or 0)
     for slot = 1, 2 do
         setPokemonHeldMovePowerType(pokemon, types[slot] or EMPTY_STORAGE, slot)
     end
 end
 
-local function addTypeHeld(heldId, name, itemId, element)
+local function addTypeHeld(heldId, name, itemId, element, percent)
+    percent = percent or HELD_TYPE_BOOST
     HELDS[heldId] = {
         name = name,
         itemId = itemId,
         onApply = function(pokemon, ballUid)
-            setBoost(pokemon, { element })
+            setBoost(pokemon, { element }, percent)
         end,
         getDescription = function(uid)
-            return string.format("%s: %s moves +%d%%", name, ELEMENT_NAMES[element], HELD_TYPE_BOOST)
+            return string.format("%s: %s moves +%d%%", name, ELEMENT_NAMES[element], percent)
         end
     }
 end
@@ -88,17 +89,8 @@ addTypeHeld(HELD_IDS.SOFT_SAND, "Soft Sand", 23529, ELEMENT_GROUND)
 addTypeHeld(HELD_IDS.SPELL_TAG, "Spell Tag", 23530, ELEMENT_GHOST)
 addTypeHeld(HELD_IDS.TWISTED_SPOON, "Twisted Spoon", 23531, ELEMENT_PSYCHIC)
 
--- Silk Scarf already boosts Normal moves and Pink Bow Fairy moves
-HELDS[HELD_IDS.POLKADOT_BOW] = {
-    name = "Polkadot Bow",
-    itemId = 23525,
-    onApply = function(pokemon, ballUid)
-        setBoost(pokemon, {})
-    end,
-    getDescription = function(uid)
-        return "Polkadot Bow: no effect"
-    end
-}
+-- As in the games, the weaker Normal item: Silk Scarf is the full boost
+addTypeHeld(HELD_IDS.POLKADOT_BOW, "Polkadot Bow", 23525, ELEMENT_NORMAL, 10)
 
 local function stoneElements(ballUid)
     local elements = {}

@@ -26244,7 +26244,7 @@
 		<attribute key="rareEffect" value="1" />
 	</item>
 	<item id="23525" article="a" name="held polkadot bow">
-		<attribute key="description" value="Boosts the power of ???-type moves when held." />
+		<attribute key="description" value="Boosts the power of Normal-type moves by 10% when held." />
 		<attribute key="rareEffect" value="1" />
 	</item>
 	<item id="23526" article="a" name="held sharp beak" sellprice="40000">
