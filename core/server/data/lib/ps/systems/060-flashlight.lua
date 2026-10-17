@@ -41,5 +41,18 @@ function Flashlight.update(cid)
         else
             doRemoveCondition(cid, CONDITION_LIGHT)
         end
+        Flashlight.sendState(cid)
     end, 0)
+end
+
+-- Tells the client what lights the trainer, for the dark caves (game_weather): EXTENDED_IDS.WEATHER JSON
+-- {type = "light", flashlight, pokemon}, pokemon being the id of the Pokemon using Flash, or 0. The client
+-- stops counting that Pokemon once it is out of sight, so recalling it needs no message.
+function Flashlight.sendState(cid)
+    if (not isPlayer(cid) or not getPlayerUsingOtClient(cid)) then
+        return
+    end
+    local pokemon = getPlayerPokemon(cid)
+    local flash = pokemon and isCreature(pokemon) and hasCondition(pokemon, CONDITION_LIGHT) and pokemon or 0
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.WEATHER, JSON.encode({ type = "light", flashlight = Flashlight.isEquipped(cid), pokemon = flash }))
 end

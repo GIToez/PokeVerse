@@ -561,6 +561,7 @@ function light(cid)
 	doCreatureSay(cid, string.format(__L(cid, "%s, turn on the lights!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
 	doAddCondition(pokemon, lightCondition)
 	doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_GREEN_BUFF)
+	Flashlight.sendState(cid)
 end
 
 function deLight(cid)
@@ -569,6 +570,7 @@ function deLight(cid)
 	doCreatureSay(cid, string.format(__L(cid, "%s, turn off the lights!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
 	doRemoveCondition(pokemon, CONDITION_LIGHT)
 	doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_GREEN_BUFF)
+	Flashlight.sendState(cid)
 end
 
 local function checkDig(cid, itemEx, toPosition, ticks)

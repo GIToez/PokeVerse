@@ -11,7 +11,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  local SHADER_FADE = 0.5
  
  local DATA_INDEX = {}
-@@ -166,37 +163,130 @@
+@@ -166,37 +163,132 @@
  table.merge(SOUNDS, SOUNDS1)
  table.merge(SOUNDS, SOUNDS2)
  
@@ -48,6 +48,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  -- Vars
  local rcSoundChannel, playingSound, playingEffect, effectsEnabled, labelWindow, labelEvent, locationLabel
 +local customArea, bannerAnimation
++local areaName = '' -- untranslated, for game_weather's area moods
 +local bannerShownAt = {}
  local environmentEnabled = true
  
@@ -123,13 +124,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
          end)
 +    end, BANNER_FADE_IN + BANNER_DURATION)
 +end
- 
--        labelEvent = scheduleEvent(function()
--            g_effects.fadeOut(labelWindow, MESSAGE_LABEL_FADE_DURATION)
--            labelEvent = scheduleEvent(function()
--                labelWindow:hide()
--            end, MESSAGE_LABEL_FADE_DURATION + 1)
--        end, MESSAGE_LABEL_DURATION)
++
 +local function hideBanner()
 +    if (labelEvent) then
 +        removeEvent(labelEvent)
@@ -141,7 +136,13 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +    end
 +    labelWindow:hide()
 +end
-+
+ 
+-        labelEvent = scheduleEvent(function()
+-            g_effects.fadeOut(labelWindow, MESSAGE_LABEL_FADE_DURATION)
+-            labelEvent = scheduleEvent(function()
+-                labelWindow:hide()
+-            end, MESSAGE_LABEL_FADE_DURATION + 1)
+-        end, MESSAGE_LABEL_DURATION)
 +local function checkMessage(data)
 +    -- inside one of our areas its name stays up, the legacy area around it stays quiet
 +    if (customArea and data ~= customArea) then
@@ -149,6 +150,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +    end
  
 +    if (data[DATA_INDEX.MESSAGE]) then
++        areaName = data[DATA_INDEX.MESSAGE]
 +        local text = tr(data[DATA_INDEX.MESSAGE])
          modules.game_time.setLocation(text)
 +        showBanner(text)
@@ -158,7 +160,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      end
  end
  
-@@ -225,18 +315,88 @@
+@@ -225,18 +317,88 @@
  local function playEffect(effect)
      if (playingEffect ~= effect) then
          local map = modules.game_interface.getMapPanel()
@@ -249,7 +251,18 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      local checkList, stop
      if (playingSound and isInPos(newPos, playingSound.fromPos, playingSound.toPos)) then
          if (playingSound.closePriorities) then
-@@ -322,12 +482,14 @@
+@@ -306,6 +468,10 @@
+     end
+ end
+ 
++function getAreaName()
++    return areaName
++end
++
+ function setDisplay(v)
+     environmentEnabled = v
+     if (environmentEnabled) then
+@@ -322,12 +488,15 @@
  -- Hooks
  function onOnline()
      stopSound()
@@ -261,11 +274,12 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      resetEffect()
 -    labelWindow:hide()
 +    customArea = nil
++    areaName = ''
 +    hideBanner()
  end
  
  function onPositionChange(cid, newPos, oldPos)
-@@ -345,23 +507,9 @@
+@@ -345,23 +514,9 @@
  function onInit()
      rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
  
@@ -291,7 +305,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      labelWindow:hide()
  
      connect(g_game, {
-@@ -388,5 +536,6 @@
+@@ -388,5 +543,6 @@
          onPositionChange = onPositionChange
      })
  

@@ -4,7 +4,10 @@
 -- shader, only where the sky is open over the trainer), flashes lightning, plays the weather sounds
 -- and shows the badge beside the clock. Options: weatherEffects, weatherLight (fewer drops and flakes),
 -- weatherSounds, weatherLightning, and visualStyle (off, vibrant, toon), which the same map shader
--- draws everywhere, under a roof and underground too.
+-- draws everywhere, under a roof and underground too. areaMoods adds the area's mood to it: a purple
+-- haze in Lavender Town (thinner under weather), and caves on the surface floors dark but for a circle
+-- around the trainer, wider with the Flashlight or a Pokemon using Flash (the engine already darkens
+-- the floors below the surface). The server sends {type = "light", flashlight, pokemon} for that.
 local badge, flash
 local current -- the last "weather" message
 local offset = 0 -- server clock - local clock
@@ -12,6 +15,8 @@ local shaders = {} -- [kind .. strength] = registered
 local activeShader
 local outdoors = false
 local loopChannel, loopFile
+local lit = { flashlight = false, pokemon = 0 }
+local moodKey = ''
 local lightningEvent, flashEvent, checkEvent, placeEvent, matchupEvent
 
 local DIR = '/modules/game_weather/'
@@ -25,6 +30,8 @@ local LOOPS = { rain = 'rain_01', thunderstorm = 'rain_01', windy = 'wind_low_01
                 hail = 'wind_low_01' }
 local STYLES = { 'vibrant', 'toon' }
 local STYLE_LEVELS = { off = 0, vibrant = 1, toon = 2 }
+local CAVE_THEMES = { cave = true, volcano = true, mountain = true }
+local NO_MOOD = { name = '', MOOD = '0.0', HAZE = '0.0', RADIUS = '0.0', CAVEFLOOR = '1.0', MAPW = '1.0', MAPH = '1.0' }
 local ELEMENT_NAMES = { [0] = 'Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 'Fire',
                         'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy' }
 
@@ -86,17 +93,53 @@ local function isOutdoors(pos)
     return true
 end
 
+-- the mood of the area the trainer is in, for the map shader (NO_MOOD for none)
+local function areaMood(weather)
+    local environment = modules.game_environment
+    local banner = environment and environment.AREA_BANNER
+    local player = g_game.getLocalPlayer()
+    if not option('areaMoods', true) or not banner or not player or not environment.getAreaName then
+        return NO_MOOD
+    end
+    local name = environment.getAreaName()
+    if name == '' or banner.isBuilding(name) then
+        return NO_MOOD
+    end
+    if name:find('Lavender', 1, true) then
+        local thick = weather and '0.6' or '1.0'
+        return { name = ' lavender ' .. thick, MOOD = '1.0', HAZE = thick, RADIUS = '0.0', CAVEFLOOR = '1.0',
+                 MAPW = '1.0', MAPH = '1.0' }
+    end
+    if outdoors or player:getPosition().z > 7 or not CAVE_THEMES[banner.theme(name)] then
+        return NO_MOOD
+    end
+    local map = modules.game_interface.getMapPanel()
+    local tiles = map and map:getVisibleDimension()
+    if not tiles then
+        return NO_MOOD
+    end
+    local bright = lit.flashlight or (lit.pokemon ~= 0 and g_map.getCreatureById(lit.pokemon) ~= nil)
+    local ambient = (tonumber(option('ambientLight', 0)) or 0) / 100
+    local floor = math.floor(math.max(bright and 0.3 or 0.12, ambient) * 20 + 0.5) / 20
+    local radius = bright and '5.5' or '2.5'
+    local w, h = tiles.width + 3, tiles.height + 3
+    return { name = string.format(' cave %s %.2f %dx%d', radius, floor, w, h), MOOD = '2.0', HAZE = '0.0',
+             RADIUS = radius, CAVEFLOOR = string.format('%.2f', floor), MAPW = w .. '.0', MAPH = h .. '.0' }
+end
+
 -- shaders
 
 local commonCode
 
-local function shaderName(kind, level, style)
+local function shaderName(kind, level, style, mood)
     return 'Weather - ' .. kind .. (level == 1 and ' (light)' or '') .. (style > 0 and ' ' .. STYLES[style] or '')
+        .. mood.name
 end
 
 -- the engine compiles it on its next frame: the name is usable from then on (returns true when new)
-local function ensureShader(kind, level, style)
-    local name = shaderName(kind, level, style)
+local function ensureShader(kind, level, style, mood)
+    mood = mood or NO_MOOD
+    local name = shaderName(kind, level, style, mood)
     if shaders[name] then
         return name, false
     end
@@ -106,6 +149,9 @@ local function ensureShader(kind, level, style)
     local body = g_resources.readFileContents(DIR .. 'shaders/' .. kind .. '.frag')
     local code = (commonCode .. '\n' .. body):gsub('STRENGTH', level == 1 and '0.5' or '1.0'):gsub('FALL', FALL)
         :gsub('STYLE', style .. '.0')
+    for _, key in ipairs({ 'MOOD', 'HAZE', 'RADIUS', 'CAVEFLOOR', 'MAPW', 'MAPH' }) do
+        code = code:gsub(key, mood[key])
+    end
     g_shaders.createFragmentShaderFromCode(name, code)
     g_shaders.setupMapShader(name)
     shaders[name] = true
@@ -344,10 +390,13 @@ local function apply()
     local kind = getKind()
     local level = effectsLevel()
     local style = visualStyle()
-    if g_game.isOnline() and outdoors and level > 0 and KINDS_WITH_SHADER[kind] then
-        setShader(ensureShader(kind, level, style))
-    elseif g_game.isOnline() and style > 0 then
-        setShader(ensureShader('clear', 2, style))
+    local weather = g_game.isOnline() and outdoors and level > 0 and KINDS_WITH_SHADER[kind]
+    local mood = g_game.isOnline() and areaMood(weather) or NO_MOOD
+    moodKey = mood.name
+    if weather then
+        setShader(ensureShader(kind, level, style, mood))
+    elseif g_game.isOnline() and (style > 0 or mood ~= NO_MOOD) then
+        setShader(ensureShader('clear', 2, style, mood))
     else
         setShader(nil)
     end
@@ -389,9 +438,26 @@ local function checkOutdoors()
     end
 end
 
+-- the area name changes in game_environment's own step handler, the light when Flash's Pokemon goes
+local function checkMood()
+    if not g_game.isOnline() then
+        return
+    end
+    local kind = getKind()
+    if areaMood(outdoors and effectsLevel() > 0 and KINDS_WITH_SHADER[kind]).name ~= moodKey then
+        apply()
+    end
+end
+
+local moodEvent
 local function onPositionChange(creature, newPos, oldPos)
     if creature:isLocalPlayer() then
         checkOutdoors()
+        removeEvent(moodEvent)
+        moodEvent = scheduleEvent(function()
+            moodEvent = nil
+            checkMood()
+        end, 50)
     end
 end
 
@@ -404,7 +470,10 @@ local function onWeather(protocol, opcode, buffer)
     if data.now then
         offset = data.now - os.time()
     end
-    if data.type == 'weather' then
+    if data.type == 'light' then
+        lit = { flashlight = data.flashlight == true, pokemon = tonumber(data.pokemon) or 0 }
+        checkMood()
+    elseif data.type == 'weather' then
         local changed = not current or current.kind ~= data.kind
         current = data
         local player = g_game.getLocalPlayer()
@@ -427,6 +496,8 @@ end
 local function onGameEnd()
     current = nil
     outdoors = false
+    lit = { flashlight = false, pokemon = 0 }
+    moodKey = ''
     removeEvent(placeEvent)
     placeEvent = nil
     setShader(nil)
@@ -482,6 +553,7 @@ function init()
     checkEvent = cycleEvent(function()
         if g_game.isOnline() then
             checkOutdoors()
+            checkMood()
             if current and badge and badge:isVisible() then
                 badge:setTooltip(badgeTooltip())
             end
@@ -504,6 +576,7 @@ function terminate()
     removeEvent(placeEvent)
     removeEvent(flashEvent)
     removeEvent(matchupEvent)
+    removeEvent(moodEvent)
     stopLightning()
     activeShader = nil
     removeEvent(shaderEvent)

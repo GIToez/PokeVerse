@@ -104,7 +104,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1190,55 @@
+@@ -1170,4 +1190,63 @@
          end
      },
      showInfoBanner = true,
@@ -148,6 +148,14 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +        action = function(value, options, controller, panels, extraWidgets)
 +            if modules.game_creaturefx and modules.game_creaturefx.refreshAll then
 +                modules.game_creaturefx.refreshAll()
++            end
++        end
++    },
++    areaMoods                         = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_weather and modules.game_weather.refresh then
++                modules.game_weather.refresh()
 +            end
 +        end
 +    },
@@ -791,7 +799,7 @@ diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/c
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,6 +53,112 @@
+@@ -53,6 +53,124 @@
      margin-top: 7
      height: 22
  
@@ -893,6 +901,18 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: pokemonEffects
 +      !text: tr('Shiny and status effects on Pokemon')
 +      !tooltip: tr('Shiny Pokemon shimmer, and burned, frozen, paralysed, poisoned, asleep or confused Pokemon show it.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: areaMoods
++      !text: tr('Dark caves and Lavender Town haze')
++      !tooltip: tr('Caves are dark but for a circle around you, wider with the Flashlight or a Pokemon using Flash. Lavender Town is grey and misty.')
 +
 +  SmallReversedQtPanel
 +    anchors.left: parent.left

@@ -2,12 +2,21 @@ uniform float u_Time;
 uniform sampler2D u_Tex0;
 varying vec2 v_TexCoord;
 uniform vec2 u_WalkOffset;
+uniform vec2 u_MapCenterCoord; // where the trainer stands
 
 // STRENGTH (1 full, 0.5 light), FALL (the sign that makes things fall down the screen) and STYLE
 // (0 off, 1 vibrant, 2 toon) are filled in by weather.lua
 const float strength = STRENGTH;
 const float fall = FALL;
 const float style = STYLE;
+// MOOD (0 none, 1 Lavender haze, 2 dark cave) and its settings are filled in by weather.lua too: HAZE is
+// how thick the haze is (thinner under weather), RADIUS the lit circle in tiles, CAVEFLOOR the
+// brightness outside it, MAPW x MAPH the tiles in the map texture
+const float mood = MOOD;
+const float haze = HAZE;
+const float radius = RADIUS;
+const float caveFloor = CAVEFLOOR;
+const vec2 mapTiles = vec2(MAPW, MAPH);
 const vec3 LUMA = vec3(0.299, 0.587, 0.114);
 
 // the visual style: vibrant is more colour and a little contrast; toon also pulls the shades
@@ -28,12 +37,6 @@ vec3 styled(vec3 c)
     c = clamp(c * mix(1.0, q / l, 0.7), 0.0, 1.0);
   }
   return c;
-}
-
-vec4 gameColor()
-{
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
-  return vec4(styled(game.rgb), game.a);
 }
 
 float hash(vec2 p)
@@ -67,6 +70,38 @@ float fbm(vec2 p)
 vec2 world()
 {
   return (v_TexCoord + u_WalkOffset) * vec2(1.4, 1.0);
+}
+
+// Lavender Town: greyer and purple, with mist drifting through and the edges of the screen dimmed
+vec3 lavenderHaze(vec3 c)
+{
+  float l = dot(c, LUMA);
+  c = mix(c, vec3(l), 0.6 * haze);
+  c = mix(c, c * vec3(0.84, 0.7, 1.12), haze);
+  c = mix(c, vec3(0.42, 0.36, 0.52), 0.12 * haze);
+  float mist = fbm(world() * 2.5 + vec2(u_Time * 0.03, -u_Time * 0.015));
+  c = mix(c, vec3(0.62, 0.52, 0.8), 0.32 * haze * smoothstep(0.35, 0.8, mist));
+  vec2 v = (v_TexCoord - u_MapCenterCoord) * vec2(1.0, 0.75);
+  return c * (1.0 - 0.35 * haze * smoothstep(0.2, 0.6, length(v)));
+}
+
+// a cave: dark but for a softly flickering circle of light around the trainer
+vec3 caveDark(vec3 c)
+{
+  float r = length((v_TexCoord - u_MapCenterCoord) * mapTiles) + 0.1 * sin(u_Time * 2.3) + 0.05 * sin(u_Time * 5.7);
+  float light = 1.0 - smoothstep(radius * 0.45, radius, r);
+  return mix(c * vec3(0.85, 0.9, 1.05) * caveFloor, c * vec3(1.04, 1.0, 0.94), light);
+}
+
+vec4 gameColor()
+{
+  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec3 c = styled(game.rgb);
+  if (mood > 1.5)
+    c = caveDark(c);
+  else if (mood > 0.5)
+    c = lavenderHaze(c);
+  return vec4(c, game.a);
 }
 
 // rain: one streak per column, columns at random speeds
