@@ -616,6 +616,115 @@ local function testAdmin(cid)
     end
 end
 
+local function testQuests(cid)
+    local sent = {}
+    local opcode = doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.QUEST) then
+            sent[#sent + 1] = buffer
+        end
+        return true
+    end
+    -- the fragments of each message joined back, as the client does
+    local function messages()
+        local list, pieces = {}, {}
+        for _, buffer in ipairs(sent) do
+            local id, index, count, piece = buffer:match("^#(%d+):(%d+):(%d+):(.*)$")
+            if (id) then
+                pieces[id] = pieces[id] or {}
+                pieces[id][tonumber(index)] = piece
+                if (#pieces[id] == tonumber(count)) then
+                    list[#list + 1] = JSON.decode(table.concat(pieces[id]))
+                end
+            else
+                list[#list + 1] = JSON.decode(buffer)
+            end
+        end
+        sent = {}
+        return list
+    end
+    local first = getNpcQuests("Assistant Guyli")[1]
+    local defeat
+    for _, quests in pairs(getAllNpcQuests()) do
+        for _, quest in ipairs(quests) do
+            if (not defeat and quest.questType == 3 and quest.counterStorage and quest.questRequest[2] >= 20) then
+                defeat = quest
+            end
+        end
+    end
+    local saved = { [first.storage] = getCreatureStorage(cid, first.storage),
+                    [defeat.storage] = getCreatureStorage(cid, defeat.storage),
+                    [defeat.counterStorage] = getCreatureStorage(cid, defeat.counterStorage),
+                    [playersStorages.questClient] = getCreatureStorage(cid, playersStorages.questClient) }
+    local ok, err = pcall(function()
+        local entry = Quests.getEntry(first.storage)
+        check("quests: the catalog has the NPCs' quests", Quests.getEntry(defeat.storage) ~= nil and entry ~= nil)
+        check("quests: names come from quests.xml", entry.name == "Kanto Main #01 - A new mystery!" and entry.step == "Part 1 of 5" and
+            entry.category == "Main story", tostring(entry.name) .. " / " .. tostring(entry.step))
+        check("quests: braces are left out", not tostring(entry.text):find("[{}]"), entry.text)
+        check("quests: defeat objective", Quests.objective(defeat):find("^Defeat %d+ ") ~= nil, Quests.objective(defeat))
+
+        doCreatureSetStorage(cid, first.storage, QUEST_STATUS.STARTED)
+        check("quests: a started quest is active", Quests.stateOf(cid, first, first) == "active")
+        doCreatureSetStorage(cid, first.storage, QUEST_STATUS.FINISHED)
+        check("quests: a finished quest is done", Quests.stateOf(cid, first, nil) == "done")
+        doCreatureSetStorage(cid, first.storage, QUEST_STATUS.UNSTARTED)
+        check("quests: an offered quest is available", Quests.stateOf(cid, first, first) == "available" and
+            getNpcCurrentQuest(cid, "Assistant Guyli") == first)
+
+        Quests.onLogin(cid)
+        check("quests: old clients keep the chat lines", not Quests.onProgress(cid, defeat, 1, 30) and #sent == 0)
+        doCreatureSetStorage(cid, defeat.storage, QUEST_STATUS.STARTED)
+        Quests.onClientMessage(cid, JSON.encode({ action = "hello" }))
+        local hello = messages()
+        local active = hello[1] and hello[1].type == "active" and hello[1].quests or {}
+        check("quests: hello sends the active quests", #active >= 1 and active[#active].state == "active", #active)
+        check("quests: hello sends the NPC marks", hello[2] and hello[2].type == "marks" and
+            hello[2].npcs["Assistant Guyli"] == "available")
+
+        local need, shown = defeat.questRequest[2], {}
+        for count = 1, need do
+            if (Quests.onProgress(cid, defeat, count, need)) then
+                for _, message in ipairs(messages()) do
+                    if (message.type == "notice") then
+                        shown[#shown + 1] = message.kind == "ready" and "ready" or message.have
+                    end
+                end
+            end
+        end
+        local step = need / 10
+        local expected = {}
+        for count = 1, need - 1 do
+            if (count >= need - 3 or math.floor(count / step) > math.floor((count - 1) / step)) then
+                expected[#expected + 1] = count
+            end
+        end
+        expected[#expected + 1] = "ready"
+        check("quests: progress at every tenth and the last three", table.concat(shown, ",") == table.concat(expected, ","),
+            table.concat(shown, ","))
+
+        Quests.onClientMessage(cid, JSON.encode({ action = "list" }))
+        local list = messages()
+        local rows = list[1] and list[1].type == "list" and list[1].quests or {}
+        local found
+        for _, row in ipairs(rows) do
+            if (row.id == defeat.storage) then
+                found = row
+            end
+        end
+        check("quests: the list has the quest under way with its progress", found and found.state == "active" and
+            found.need == need, found and found.state)
+        check("quests: the list is split into fragments", #rows > 20 and list[2] and list[2].type == "marks", #rows)
+    end)
+    doSendPlayerExtendedOpcode = opcode
+    for storage, value in pairs(saved) do
+        doCreatureSetStorage(cid, storage, value)
+    end
+    if (not ok) then
+        error(err)
+    end
+end
+
 local function testHeldItems(cid)
     local CHARCOAL, DRAGON_FANG = 23515, 23516
     local ball = newBall(cid, "Pidgey", 30)
@@ -1380,7 +1489,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
