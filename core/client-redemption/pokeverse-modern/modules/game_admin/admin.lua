@@ -1,7 +1,7 @@
 -- The Admin window for staff (server lib Admin, 074-admin.lua). The client says {action = "hello"} at login;
 -- the server answers {type = "state", access, online, events, multipliers, minutes} only to staff, so the top bar
 -- button stays hidden for everyone else. Actions: refresh, start {event, multiplier, minutes}, stop {event},
--- broadcast {text}, save, clean; {type = "result", ok, text} answers them. The server checks the access again.
+-- broadcast {text, target = both/game/discord}, save, clean; {type = "result", ok, text} answers them. The server checks the access again.
 -- The Decorations tab: decorations, deco_add {set, item}, deco_remove {set}, deco_preview {set, minutes},
 -- deco_auto {on}; {type = "decorations"} answers each with the sets and the props saved nearby, and the first
 -- request (catalog = true) also gets one {type = "deco_items", set, items} per set.
@@ -38,6 +38,7 @@ local receivedAt = 0
 local picks = {} -- per event: { multiplier, minutes }
 local tickEvent
 local broadcasting = false -- the next result answers a broadcast
+local broadcastTarget = 'both' -- 'both', 'game' or 'discord'
 local tab = 'events'
 local deco = { data = nil, items = {}, set = nil, item = nil, askedAt = 0 }
 local DECO_REFRESH_SECONDS = 5
@@ -394,9 +395,19 @@ function init()
     fillCommands()
 
     local tools = window.tools
+    local function pickTarget(target)
+        broadcastTarget = target
+        for _, widget in ipairs(tools.targets:getChildren()) do
+            widget:setOn(widget:getId() == target)
+        end
+    end
+    for _, widget in ipairs(tools.targets:getChildren()) do
+        widget.onClick = function() pickTarget(widget:getId()) end
+    end
+    pickTarget(broadcastTarget)
     tools.broadcast.onClick = function()
         broadcasting = true
-        send({ action = 'broadcast', text = tools.broadcastText:getText() })
+        send({ action = 'broadcast', text = tools.broadcastText:getText(), target = broadcastTarget })
     end
     tools.broadcastText.onKeyPress = function(self, keyCode)
         if keyCode == KeyEnter or keyCode == KeyReturn then
