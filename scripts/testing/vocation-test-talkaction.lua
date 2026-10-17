@@ -767,6 +767,21 @@ local function testExpItems(cid)
         end
         return ball
     end
+    -- the test balls can't go to the depot: a full bag leaves no room for the next one
+    local function drop(...)
+        for _, ball in ipairs({ ... }) do
+            doRemoveItem(ball.uid)
+            for i, made in ipairs(created) do
+                if (made == ball) then table.remove(created, i) break end
+            end
+        end
+    end
+    local function probe(amount)
+        local ball = holding()
+        local gained = gain(ball, amount)
+        drop(ball)
+        return gained
+    end
     become(cid, nil)
 
     local plain, egg = holding(), holding(LUCKY_EGG)
@@ -778,7 +793,9 @@ local function testExpItems(cid)
     local before = getBallPokemonExp(egg.uid)
     doPlayerPokemonAddExperience(cid, nil, 200, false, egg)
     check("Lucky Egg: only battle EXP", getBallPokemonExp(egg.uid) - before == 200)
+    drop(plain, egg)
 
+    local half, full = probe(50), probe(100)
     local earner, a, b, fainted, other = holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding()
     setBallPokemonLastHp(fainted.uid, 0)
     local belt = { earner, a, b, fainted, other }
@@ -791,7 +808,6 @@ local function testExpItems(cid)
     getContainerItems = function() return belt end
     local ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
     local function gained(ball) return getBallPokemonExp(ball.uid) - exp[ball.uid] end
-    local half = gain(holding(), 50)
     check("Exp Share: two holders on the belt split the 50% pool", ok and holders == 2 and gained(a) == half and
         gained(b) == half and half > 0, tostring(holders) .. " " .. gained(a) .. "/" .. half)
     check("Exp Share: nothing for the earner, a fainted holder or a Pokemon without one",
@@ -799,7 +815,6 @@ local function testExpItems(cid)
     belt = { earner, a, other }
     exp[a.uid] = getBallPokemonExp(a.uid)
     ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
-    local full = gain(holding(), 100)
     check("Exp Share: a single holder gets the whole 50%", ok and holders == 1 and gained(a) == full, gained(a) .. "/" .. full)
     getPlayerBelt, getContainerItems = realBelt, realItems
 
@@ -1840,11 +1855,14 @@ local function testWeather(cid, arena)
     W.setOverride({ viridian.id }, nil)
     check("Weather: clearing staff weather", W.at(viridian).source ~= "staff")
 
+    -- CI starts on the Tutorial Island, which has no weather: test in Viridian then
+    local arenaZone = W.zoneAt(arena)
+    local center = (arenaZone and not arenaZone.none and arenaZone.region.live) and arena or viridian.pos
     local spots = {}
-    for radius = 0, 10 do
+    for radius = 0, 12 do
         for dx = -radius, radius do
             for dy = -radius, radius do
-                local p = { x = arena.x + dx, y = arena.y + dy, z = arena.z }
+                local p = { x = center.x + dx, y = center.y + dy, z = center.z }
                 if ((math.abs(dx) == radius or math.abs(dy) == radius) and #spots < 2 and isFree(cid, p) and W.isOutdoors(p)) then
                     spots[#spots + 1] = p
                 end
