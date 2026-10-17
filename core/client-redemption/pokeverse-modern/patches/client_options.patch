@@ -104,7 +104,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1190,39 @@
+@@ -1170,4 +1190,63 @@
          end
      },
      showInfoBanner = true,
@@ -143,6 +143,30 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +        end
 +    },
 +    weatherLightning                  = true,
++    pokemonEffects                    = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_creaturefx and modules.game_creaturefx.refreshAll then
++                modules.game_creaturefx.refreshAll()
++            end
++        end
++    },
++    areaMoods                         = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_weather and modules.game_weather.refresh then
++                modules.game_weather.refresh()
++            end
++        end
++    },
++    visualStyle                       = {
++        value = 'off',
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_weather and modules.game_weather.refresh then
++                modules.game_weather.refresh()
++            end
++        end
++    },
  }
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
@@ -233,7 +257,22 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -293,6 +294,73 @@
+@@ -243,6 +244,14 @@
+         setOption('framesRarity', comboBox:getCurrentOption().data)
+     end
+ 
++    local visualStyleCombobox = panels.interface:recursiveGetChildById('visualStyle')
++    for _, v in ipairs({ { 'Off', 'off' }, { 'Vibrant', 'vibrant' }, { 'Toon', 'toon' } }) do
++        visualStyleCombobox:addOption(tr(v[1]), v[2])
++    end
++    visualStyleCombobox.onOptionChange = function(comboBox, option)
++        setOption('visualStyle', comboBox:getCurrentOption().data)
++    end
++
+     local profileCombobox = panels.misc:recursiveGetChildById('profile')
+ 
+     for i = 1, 10 do
+@@ -293,6 +302,73 @@
  
      setupComboBox()
  
@@ -307,7 +346,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +590,8 @@
+@@ -522,6 +598,8 @@
  end
  
  function controller:onGameStart()
@@ -316,7 +355,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -631,6 +701,7 @@
+@@ -631,6 +709,7 @@
  end
  
  function hide()
@@ -324,7 +363,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      controller.ui:hide()
      if extraWidgets.optionsButton then
          extraWidgets.optionsButton:setOn(false)
-@@ -646,15 +717,8 @@
+@@ -646,15 +725,8 @@
          hide()
          return
      end
@@ -342,7 +381,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      end
      show()
      updateKeybinds()
-@@ -672,182 +736,166 @@
+@@ -672,182 +744,166 @@
      -- TODO: Implement Show Advanced Options functionality in the near future
  end
  
@@ -660,7 +699,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function createCategory(text, icon, openPanel, subCategories)
-@@ -930,13 +978,17 @@
+@@ -930,13 +986,17 @@
      end
  end
  
@@ -679,7 +718,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-@@ -951,19 +1003,15 @@
+@@ -951,19 +1011,15 @@
      if not controller.ui:isVisible() then
          show()
      end
@@ -760,7 +799,7 @@ diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/c
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,6 +53,77 @@
+@@ -53,6 +53,124 @@
      margin-top: 7
      height: 22
  
@@ -827,6 +866,53 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: weatherLightning
 +      !text: tr('Lightning flashes')
 +      !tooltip: tr('The white flash of lightning in thunderstorms.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 32
++
++    Label
++      !text: tr('Visual style:')
++      anchors.left: parent.left
++      margin-left: 18
++      color: #c0c0c0ff
++      anchors.verticalCenter: parent.verticalCenter
++
++    QtComboBox
++      id: visualStyle
++      width: 120
++      margin-left: 10
++      anchors.verticalCenter: prev.verticalCenter
++      anchors.left: prev.right
++      mouse-scroll: false
++      !tooltip: tr('Vibrant: brighter, richer colours. Toon: also flattens the shading into a few tones, like a cartoon.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: pokemonEffects
++      !text: tr('Shiny and status effects on Pokemon')
++      !tooltip: tr('Shiny Pokemon shimmer, and burned, frozen, paralysed, poisoned, asleep or confused Pokemon show it.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: areaMoods
++      !text: tr('Dark caves and Lavender Town haze')
++      !tooltip: tr('Caves are dark but for a circle around you, wider with the Flashlight or a Pokemon using Flash. Lavender Town is grey and misty.')
 +
 +  SmallReversedQtPanel
 +    anchors.left: parent.left

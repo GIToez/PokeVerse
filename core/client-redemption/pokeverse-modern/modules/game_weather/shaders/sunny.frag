@@ -1,6 +1,6 @@
 void main(void)
 {
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec4 game = gameColor();
   vec2 p = world();
   float rays = pow(max(0.0, sin((p.x * 0.8 + p.y) * 7.0 + u_Time * 0.25)), 10.0);
   rays *= 0.5 + 0.5 * noise(vec2(p.x * 3.0 + u_Time * 0.1, p.y * 3.0));

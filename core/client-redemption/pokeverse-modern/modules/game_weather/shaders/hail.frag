@@ -1,6 +1,6 @@
 void main(void)
 {
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec4 game = gameColor();
   vec2 p = world();
   p.x += p.y * 0.1;
   float hail = flakeLayer(p, 14.0, 1.6, 0.085, 0.05, 0.0);

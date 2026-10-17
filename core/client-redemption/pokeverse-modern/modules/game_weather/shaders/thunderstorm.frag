@@ -1,6 +1,6 @@
 void main(void)
 {
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec4 game = gameColor();
   vec2 p = world();
   p.x += p.y * 0.12;
   float rain = rainLayer(p, 80.0, 2.3, 0.14, 1.0);

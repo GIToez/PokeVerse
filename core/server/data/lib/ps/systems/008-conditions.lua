@@ -990,6 +990,25 @@ local CONDITIONS = {
     }
 }
 
+-- The statuses the client draws on the creature itself (game_creaturefx); everyone who can see it is told
+local SHOWN_STATUSES = {
+    [CREATURE_STATUS_BURN] = true, [CREATURE_STATUS_FREEZE] = true, [CREATURE_STATUS_PARALYSIS] = true,
+    [CREATURE_STATUS_POISON] = true, [CREATURE_STATUS_BADPOISON] = true, [CREATURE_STATUS_SLEEP] = true,
+    [CREATURE_STATUS_CONFUSION] = true
+}
+
+local function sendShownStatus(cid, status, ms)
+    if (not SHOWN_STATUSES[status] or not isCreature(cid)) then
+        return
+    end
+    local buffer = string.format("%d,%d,%d", cid, status, ms)
+    for _, spectator in ipairs(getSpectators(getCreaturePosition(cid), 9, 7, false) or {}) do
+        if (isPlayer(spectator)) then
+            doSendPlayerExtendedOpcode(spectator, EXTENDED_IDS.CREATURE_STATUS, buffer)
+        end
+    end
+end
+
 function getCreatureStatus(cid, status)
     if (CONDITIONS[status]) then
         return CONDITIONS[status].onGet(cid)
@@ -1001,6 +1020,7 @@ end
 function doCreatureRemoveStatus(cid, status)
     if (CONDITIONS[status]) then
         CONDITIONS[status].onRemove(cid)
+        sendShownStatus(cid, status, 0)
         if (CONDITIONS[status].icon) then
             local master = getCreatureMaster(cid)
             if (isPlayer(master)) then
@@ -1092,6 +1112,9 @@ function doCreatureAddStatus(cid, status, var, caster)
 
     if (CONDITIONS[status]) then
         local condition = CONDITIONS[status].onAdd(cid, var, caster, badStatus)
+        if (condition) then
+            sendShownStatus(cid, status, CONDITION_DURATIONS[condition] and CONDITION_DURATIONS[condition] * 1000 or CONDITION_TICKS[status] or 0)
+        end
         if (condition and CONDITIONS[status].icon) then
             local master = getCreatureMaster(cid)
             if (isPlayer(master)) then

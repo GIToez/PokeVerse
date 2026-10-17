@@ -1,6 +1,6 @@
 void main(void)
 {
-  vec4 game = texture2D(u_Tex0, v_TexCoord);
+  vec4 game = gameColor();
   vec2 p = world();
   float dust = fbm(vec2(p.x * 2.2 - u_Time * 0.45, p.y * 5.0 + sin(p.x * 3.0 + u_Time) * 0.2));
   float gusts = fbm(vec2(p.x * 6.0 - u_Time * 1.2, p.y * 14.0));

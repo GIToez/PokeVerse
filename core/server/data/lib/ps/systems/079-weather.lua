@@ -519,6 +519,7 @@ function Weather.onClientMessage(cid, buffer)
     local ok, data = pcall(JSON.decode, buffer)
     if (ok and type(data) == "table" and data.action == "status") then
         Weather.send(cid)
+        Flashlight.sendState(cid)
     end
 end
 
