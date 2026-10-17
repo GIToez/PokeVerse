@@ -172,6 +172,9 @@ SHOP_STAIRS = [(SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 7), (SOUVENIR_SHOP[0] 
 # Goldenrod's Magnet Train station: the top of its stairway down, off the north avenue
 # (build_johto.UNDERGROUND brings Cerulean's walled stairway, landing and station under it)
 TRAIN_STAIRS = (2330, 660)
+TRAIN_STEPS = 3220
+TRAIN_RAILING = {(-1, -2): 1528, (0, -2): 1524, (1, -2): 1524, (1, -1): 1526, (1, 0): 1526, (1, 1): 1526,
+                 (-1, 2): 1528, (0, 2): 1524, (1, 2): 1530}
 
 
 class Town:
@@ -518,11 +521,19 @@ def goldenrod(t):
     # north of the first street: the Radio Tower and homes
     t.put('radio-tower', 2340, 668)
     t.item(2338, 686, SIGN)
-    # the Magnet Train's stairway down on a cobbled forecourt by the avenue
+    # the Magnet Train's stairway down at the head of the avenue: Cerulean's stone railing round its
+    # two steps, open to the west, on a paved forecourt joined to the avenue
     sx, sy = TRAIN_STAIRS
-    t.ground(sx - 2, sy - 3, sx + 2, sy + 4, 'cobblestone')
-    t.block(sx - 2, sy - 3, sx + 2, sy + 4)
+    t.ground(sx - 13, sy - 6, sx + 3, sy + 5, 'gray stone tiles')
+    t.block(sx - 2, sy - 5, sx + 3, sy + 5)
+    for (dx, dy), railing in TRAIN_RAILING.items():
+        t.item(sx + dx, sy + dy, railing)
+    for dy in (0, 1):
+        t.item(sx, sy + dy)
+        t.raw[(sx, sy + dy)] = TRAIN_STEPS
     t.item(sx - 2, sy - 3, SIGN)
+    for x, y in [(sx - 13, sy - 6), (sx + 3, sy - 6), (sx + 3, sy + 5)]:
+        t.item(x, y, STREET_LAMP)
     t.put('saffron-300', 2276, 674)
     t.put('saffron-305', 2295, 671)
     # north-west block: homes along the first street, then the Pokémon Center, Mart and Gym on the avenue

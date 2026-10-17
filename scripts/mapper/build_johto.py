@@ -485,11 +485,12 @@ UNDERGROUND = [
     # the Global Terminal's basement: Celadon's guild hall's, under the same stairs
     {'name': 'Global Terminal basement', 'src': (3722, 461), 'dst': (2326, 780),
      'floors': {8: ((3720, 453, 3737, 471), None, None)}},
-    # Goldenrod's Magnet Train station: Cerulean's, from its walled stairway in the street (floor 7)
-    # down through the landing over the canal to the platform and waiting room; its conductor
-    # (npc/Wade Carrington.xml) stands where Cerulean's does, and both Kanto stations ride here
+    # Goldenrod's Magnet Train station: Cerulean's, from the landing under its walled stairway in the
+    # street (which Goldenrod draws on its own paving, johto_towns.TRAIN_RAILING) over the canal to the
+    # platform and waiting room; its conductor (npc/Wade Carrington.xml) stands where Cerulean's
+    # does, and both Kanto stations ride here
     {'name': 'Magnet Train Station', 'src': (3884, 272), 'dst': T.TRAIN_STAIRS,
-     'floors': {7: ((3883, 270, 3885, 274), None, None), 8: ((3882, 270, 3888, 274), None, None),
+     'floors': {8: ((3882, 270, 3888, 274), None, None),
                 9: ((3878, 255, 3897, 278), None, None)},
      'npcs': [('Wade Carrington', 3888, 269, 9)]},
     # Mahogany's Rocket Hideout, B1F to B4F: Celadon's under the Game Corner, its stairs up under the
