@@ -2293,6 +2293,9 @@ void LuaScriptInterface::registerFunctions()
 	//doCreatureSetNoMove(cid, block)
 	lua_register(m_luaState, "doCreatureSetNoMove", LuaScriptInterface::luaDoCreatureSetNoMove);
 
+	//doMonsterKeepAwake(cid, ms)
+	lua_register(m_luaState, "doMonsterKeepAwake", LuaScriptInterface::luaDoMonsterKeepAwake);
+
 	//getPlayerIdleTime(cid)
 	lua_register(m_luaState, "getPlayerIdleTime", LuaScriptInterface::luaGetPlayerIdleTime);
 
@@ -10625,6 +10628,24 @@ int32_t LuaScriptInterface::luaDoPlayerSetIdleTime(lua_State* L)
 		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
 		lua_pushboolean(L, false);
 	}
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoMonsterKeepAwake(lua_State* L)
+{
+	//doMonsterKeepAwake(cid, ms)
+	uint32_t ms = popNumber(L);
+	ScriptEnviroment* env = getEnv();
+	Creature* creature = env->getCreatureByUID(popNumber(L));
+	Monster* monster = creature ? creature->getMonster() : NULL;
+	if(monster && !monster->isSummon())
+	{
+		monster->keepAwake(ms);
+		lua_pushboolean(L, true);
+	}
+	else
+		lua_pushboolean(L, false);
+
 	return 1;
 }
 

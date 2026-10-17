@@ -53,6 +53,7 @@ Monster::Monster(MonsterType* _mType):
 	Creature()
 {        
     isIdle = true;
+	awakeUntil = 0;
 	isMasterInRange = false;
 	teleportToMaster = false;
 	mType = _mType;
@@ -670,11 +671,17 @@ void Monster::updateIdleStatus()
 			if((!isMasterInRange && !teleportToMaster) || (getMaster()->getMonster() && getMaster()->getMonster()->getIdleStatus()))
 				idle = true;
 		}
-		else if(targetList.empty())
+		else if(targetList.empty() && OTSYS_TIME() >= awakeUntil)
 			idle = true;
 	}
 
 	setIdle(idle);
+}
+
+void Monster::keepAwake(uint32_t ms)
+{
+	awakeUntil = std::max(awakeUntil, OTSYS_TIME() + (int64_t)ms);
+	updateIdleStatus();
 }
 
 void Monster::onAddCondition(ConditionType_t type, bool hadCondition)

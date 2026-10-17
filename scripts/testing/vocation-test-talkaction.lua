@@ -1063,7 +1063,7 @@ local function testRanger(cid, arena)
     text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     local pidgeyDirection, pidgeyDistance = where(pidgey)
     check("rank 3 radar names species and direction",
-        text:find("Pidgey %(" .. pidgeyDirection .. ", " .. pidgeyDistance .. " tiles%)") ~= nil, text)
+        text:find("Pidgey (" .. pidgeyDirection .. ", " .. pidgeyDistance .. " tiles)", 1, true) ~= nil, text)
     check("rank 3 radar still hides the shiny", not text:find("shiny Rattata"))
 
     become(cid, "ranger", 4)
@@ -1183,8 +1183,17 @@ local function testRanger(cid, arena)
         not Vocations.radarLiveUpdate(cid))
     become(cid, "ranger", 3)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    local keepAwake, awake = doMonsterKeepAwake, {}
+    doMonsterKeepAwake = keepAwake and function(id, ms)
+        awake[id] = ms
+        return keepAwake(id, ms)
+    end
     got = captureRadar(function() Vocations.radarPopupScan(cid) end)
+    doMonsterKeepAwake = keepAwake
     check("live radar: rank 3 scans are live", got[1] and got[1].type == "scan" and got[1].live == true)
+    check("live radar: the tracked Pokemon keep walking with no trainer in view",
+        keepAwake and awake[pidgey] == Vocations.PERKS.ranger.liveSeconds * 1000 and keepAwake(pidgey, 1) and not keepAwake(cid, 1),
+        keepAwake and tostring(awake[pidgey]) or "doMonsterKeepAwake missing: old server build")
     got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
     check("live radar: nothing sent for a Pokemon that stayed", not pidgeyIn(got, "blips"))
     local from = getCreaturePosition(pidgey)
