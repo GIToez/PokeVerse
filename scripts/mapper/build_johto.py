@@ -137,6 +137,13 @@ PASS_DROP = [(3092, 595, 6), (3092, 596, 6)]
 # Counters (green balconies) that closed the Elite Four building's west and south doors.
 INDIGO_OPEN = [(3110, y) for y in range(593, 597)] + [(x, 598) for x in range(3112, 3117)]
 BALCONIES = set(range(14379, 14384))
+# No-fly zones. Players' own Fly makes a fly tile only where the map has no tile (movements/fly.lua),
+# so every empty tile in them, on every floor, gets the invisible wall Kanto is fenced in with:
+# nobody flies onto the Indigo Plateau behind the League building or onto Mt. Silver (NO_FLY_SILVER
+# tiles out from its foot, past the 6 wide wall round it), nor takes off there. Both are walked into.
+FLY_BARRIER = 13501
+NO_FLY_BOXES = {'Indigo Plateau': (3068, 346, 3156, 580)}
+NO_FLY_SILVER = 8
 
 # Prefabs: source box (on the building's ground floor), that floor, the door's first column in the
 # bottom wall (doors are two tiles wide) and NPCs to copy. Pallet Town: Pokémon Center, Oak's lab,
@@ -1489,6 +1496,28 @@ def silver_ring(j):
     return (0, s) if j == SILVER['top'] else (s + (SILVER['top'] - 1 - j) * w, s + (SILVER['top'] - j) * w)
 
 
+def silver_radius():
+    """How far out on Mt. Silver's lobed rings each tile is (the noise field and the radii over BOX)."""
+    sf = Field(107)
+    cx, cy = SILVER['center']
+    r = np.hypot(sf.X - cx, sf.Y - cy) * (1 + sf.noise(SILVER['lobes']) * SILVER['stretch']) + sf.noise(10) * SILVER['wobble']
+    return sf, r
+
+
+def no_fly_tiles(data, new_tiles, removed):
+    """Invisible walls on the empty tiles of the no-fly zones, every floor from the ground up."""
+    sf, r = silver_radius()
+    ys, xs = np.nonzero(r < silver_ring(SILVER['base'])[1] + NO_FLY_SILVER)
+    cells = set(zip((xs + sf.x0).tolist(), (ys + sf.y0).tolist()))
+    for x0, y0, x1, y1 in NO_FLY_BOXES.values():
+        cells |= {(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)}
+    xs, ys = [x for x, _ in cells], [y for _, y in cells]
+    old = pvmap.read_region(None, min(xs), min(ys), max(xs), max(ys), floors=range(Z + 1), data=data)
+    wall = pvmap.item_node(FLY_BARRIER)
+    return {(x, y, z): pvmap.RawTile(0, 0, None, wall) for x, y in cells for z in range(Z + 1)
+            if (x, y, z) not in new_tiles and ((x, y, z) not in old or (x, y, z) in removed)}
+
+
 def plan_silver(f, mlevel, open_sky):
     """Mt. Silver as the games' climb (HeartGold and SoulSilver): the cave's 1F comes up inside the
     mountain to the lower mountainside, a valley round the peak; ledges round the cone, one ring per
@@ -1501,8 +1530,7 @@ def plan_silver(f, mlevel, open_sky):
     cx, cy = SILVER['center']
     top, wall = SILVER['top'], SILVER['wall']
     rng = np.random.default_rng(SILVER['caves_seed'] + 1)
-    sf = Field(107)
-    r = np.hypot(X - cx, Y - cy) * (1 + sf.noise(SILVER['lobes']) * SILVER['stretch']) + sf.noise(10) * SILVER['wobble']
+    sf, r = silver_radius()
     s, w = SILVER['summit'], SILVER['ring']
     cone = np.where(r < s, top, top - 1 - np.floor((r - s) / w)).astype(int)
     _, foot = silver_ring(SILVER['base'])
@@ -3463,6 +3491,9 @@ def build(base, out_path):
     write_areas(AREAS_PATH, first, area_of, f.x0, f.y0, (0, Z))
 
     data = open(base, 'rb').read()
+    no_fly = no_fly_tiles(data, new_tiles, set(PASS_DROP + gym_drops))
+    new_tiles.update(no_fly)
+    print('no-fly zones: %d invisible walls' % len(no_fly))
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
     cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP + gym_drops, towns=towns)
     write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs, data)
