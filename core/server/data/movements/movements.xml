@@ -40,6 +40,7 @@
 		<movement type="stepIn" itemid="14813" event="script" value="../../lib/ps/events/movements/gyms/vermilionTeleport.lua" />
 		<movement type="stepIn" itemid="14807" event="script" value="../../lib/ps/events/movements/gyms/saffronTeleport.lua" />
 		<movement type="stepIn" actionid="46000" event="script" value="../../lib/ps/events/movements/gyms/brokenPlank.lua" />
+		<movement type="stepIn" fromaid="46001" toaid="46002" event="script" value="../../lib/ps/events/movements/gyms/liftPlatform.lua" />
 		<movement type="stepIn" itemid="18132" event="script" value="../../lib/ps/events/movements/battleTowerTeleport.lua" />
 		
 		<movevent type="StepOut" itemid="5111" event="script" value="closingdoor.lua"/>

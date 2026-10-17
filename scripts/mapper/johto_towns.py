@@ -138,14 +138,21 @@ BUILDINGS = {
     'battle-hall': {'box': (3910, 255, 3929, 273), 'entries': [(8, 18), (9, 18), (17, 2)], 'enclosed': True,
                     'rent': False},
     'battle-castle': {'box': (3957, 454, 3981, 469), 'entries': [(7, 13), (8, 13)], 'enclosed': True, 'rent': False},
+    # The fly taxi's stand: Vermilion's bird stable, fenced, open to the south, four stalls of hay
+    # along the back. Only its ground floor (`flat`): the box's floor above takes in the next house's roof.
+    'taxi-stand': {'box': (4000, 633, 4012, 642), 'walled': False, 'door': 3, 'rent': False, 'flat': True},
 }
+# In the stand: where the taxi waits and where the others' passengers land (as at Vermilion's), and
+# its sign outside the gate.
+TAXI_SPOT, TAXI_LANDING, TAXI_SIGN = (5, 7), (6, 8), (2, 10)
 
 # Decoration (item ids), none of which players can pick up or move. Fences go like Pallet's: a post
 # in the top-left corner, rails along the top and bottom, side pieces and a post bottom-right.
 FENCE_TOP_LEFT, FENCE_H, FENCE_V, FENCE_BOTTOM_RIGHT = 1533, 1536, 1534, 1535
 STREET_LAMP = 1479
 LANTERN = 3743
-BENCH_S = 1662
+# Kanto's white benches, two tiles each: west and east halves, or north and south halves
+BENCH_W, BENCH_E, BENCH_N, BENCH_S = 18103, 18104, 18105, 18106
 STATUE = 1448
 CAT_STATUE = 1450
 CHERRY_TREE = 10143
@@ -157,8 +164,9 @@ WOOD_PILES = [5546, 8581]
 HAY = [3848, 3849, 3850, 3851]
 SCARECROW = 13491
 BOAT = 3587
-SIGN = 1429
-STREET_SIGN = 1438
+# Kanto's own sign, not Tibia's wooden ones (those are only for exits indoors): the red-striped one
+# that names its routes and places ("Rock Tunnel", "Metro", "Poketáxi").
+SIGN = 11913
 PC_SIGN, MART_SIGN = 11887, 11888
 FURNACES = [8684, 8686, 8688, 8690]
 MILL_WHEEL = (1379, 1380)
@@ -171,6 +179,9 @@ SHOP_STAIRS = [(SOUVENIR_SHOP[0] + 10, SOUVENIR_SHOP[1] + 7), (SOUVENIR_SHOP[0] 
 # Goldenrod's Magnet Train station: the top of its stairway down, off the north avenue
 # (build_johto.UNDERGROUND brings Cerulean's walled stairway, landing and station under it)
 TRAIN_STAIRS = (2330, 660)
+TRAIN_STEPS = 3220
+TRAIN_RAILING = {(-1, -2): 1528, (0, -2): 1524, (1, -2): 1524, (1, -1): 1526, (1, 0): 1526, (1, 1): 1526,
+                 (-1, 2): 1528, (0, 2): 1524, (1, 2): 1530}
 
 
 class Town:
@@ -186,6 +197,7 @@ class Town:
         self.ponds = []  # (x, y, r)
         self.islets = []  # (x, y, r)
         self.decor = {}  # (x, y) -> list of item ids
+        self.texts = {}  # (x, y) -> what the sign there says
         self.grounds = {}  # (x, y) -> brush name forced under the decoration
         self.taken = set()
         self.npcs = []
@@ -239,6 +251,16 @@ class Town:
             y += h + gap
         return y
 
+    def taxi_stand(self, x, y):
+        """The fly taxi's stand, its top-left corner at (x, y) and its gate on the south side."""
+        if self.put('taxi-stand', x, y):
+            self.sign(x + TAXI_SIGN[0], y + TAXI_SIGN[1], 'Poketáxi')
+            # the trodden yard in front of the stalls, out through the gate (the copy leaves Kanto's
+            # dirt out with the plain ground)
+            w, h = self.sizes['taxi-stand']
+            self.ground(x + 1, y + 4, x + w - 2, y + h - 2, 'dirt')
+            self.ground(x + 3, y + h - 1, x + w - 4, y + h - 1, 'dirt')
+
     def block(self, x0, y0, x1, y1):
         self.taken |= {(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)}
 
@@ -248,6 +270,18 @@ class Town:
         if ground:
             self.grounds[(x, y)] = ground
         self.taken.add((x, y))
+
+    def sign(self, x, y, text):
+        self.item(x, y, SIGN)
+        self.texts[(x, y)] = text
+
+    def bench(self, x, y, upright=False):
+        """A bench from (x, y) one tile east (or, upright, south)."""
+        dx, dy = (0, 1) if upright else (1, 0)
+        if not self.free_tile(x + dx, y + dy):
+            x, y = x - dx, y - dy
+        self.item(x, y, BENCH_N if upright else BENCH_W)
+        self.item(x + dx, y + dy, BENCH_S if upright else BENCH_E)
 
     def fence(self, x0, y0, x1, y1, gates=()):
         ring = {(x0, y0): FENCE_TOP_LEFT, (x1, y1): FENCE_BOTTOM_RIGHT}
@@ -296,9 +330,9 @@ def new_bark(t):
     for x in range(2670, 2680, 3):
         t.item(x, 789, FLOWERS[x % len(FLOWERS)])
     t.item(2674, 795, STATUE)
-    t.item(2671, 799, BENCH_S)
-    t.item(2677, 799, BENCH_S)
-    t.item(2683, 802, SIGN)
+    t.bench(2671, 799)
+    t.bench(2677, 799)
+    t.sign(2683, 802, "Prof. Elm's Pokemon Lab")
     t.fence(2684, 811, 2697, 820, gates=[(2690, 811), (2691, 811)])
     for y in range(813, 819, 2):
         for x in range(2686, 2696):
@@ -368,7 +402,7 @@ def cherrygrove(t):
     t.put('viridian-198', 2556, 800)
     t.put('viridian-208', 2534, 840)
     t.put('police-box', 2610, 821)
-    t.item(2608, 833, STREET_SIGN)
+    t.sign(2608, 833, 'Police Box')
     t.put('guide-gent', 2612, 841)
     # cherry trees along the river
     for y in range(795, 860, 6):
@@ -399,12 +433,13 @@ def violet(t):
     t.item(2507, 562, PC_SIGN)
     t.put('mart', 2520, 553)
     t.item(2530, 562, MART_SIGN)
+    t.taxi_stand(2541, 548)
     t.put('gym', 2470, 570)
     # the Academy and its fenced schoolyard across the street
     t.put('academy', 2516, 570)
     t.fence(2516, 594, 2535, 602, gates=[(2525, 594), (2526, 594)])
     for x in range(2519, 2534, 4):
-        t.item(x, 598, BENCH_S)
+        t.bench(x, 598)
     # the theatre (Comedy Grand Prix) facing the square
     t.put('theatre', 2462, 549)
     for x in range(2464, 2486, 6):
@@ -468,9 +503,9 @@ def azalea(t):
     t.item(2409, 1073, CAT_STATUE)
     for x in (2403, 2409):
         t.item(x, 1079, FLOWERS[x % len(FLOWERS)])
-    t.item(2402, 1081, SIGN)
+    t.sign(2402, 1081, 'Slowpoke Well')
     for x, y in [(2380, 1037), (2410, 1037), (2397, 1066)]:
-        t.item(x, y, STREET_SIGN)
+        t.sign(x, y, 'Slowpoke crossing!\nMind the Slowpoke on the road.')
     # homes
     t.put('cerulean-272', 2384, 1008)
     t.put('cerulean-276', 2370, 1044)
@@ -508,12 +543,20 @@ def goldenrod(t):
         t.item(x, y, STREET_LAMP)
     # north of the first street: the Radio Tower and homes
     t.put('radio-tower', 2340, 668)
-    t.item(2338, 686, SIGN)
-    # the Magnet Train's stairway down on a cobbled forecourt by the avenue
+    t.sign(2338, 686, 'Goldenrod Radio Tower')
+    # the Magnet Train's stairway down at the head of the avenue: Cerulean's stone railing round its
+    # two steps, open to the west, on a paved forecourt joined to the avenue
     sx, sy = TRAIN_STAIRS
-    t.ground(sx - 2, sy - 3, sx + 2, sy + 4, 'cobblestone')
-    t.block(sx - 2, sy - 3, sx + 2, sy + 4)
-    t.item(sx - 2, sy - 3, SIGN)
+    t.ground(sx - 13, sy - 6, sx + 3, sy + 5, 'gray stone tiles')
+    t.block(sx - 2, sy - 5, sx + 3, sy + 5)
+    for (dx, dy), railing in TRAIN_RAILING.items():
+        t.item(sx + dx, sy + dy, railing)
+    for dy in (0, 1):
+        t.item(sx, sy + dy)
+        t.raw[(sx, sy + dy)] = TRAIN_STEPS
+    t.sign(sx - 2, sy - 3, 'Magnet Train\nto Saffron City')
+    for x, y in [(sx - 13, sy - 6), (sx + 3, sy - 6), (sx + 3, sy + 5)]:
+        t.item(x, y, STREET_LAMP)
     t.put('saffron-300', 2276, 674)
     t.put('saffron-305', 2295, 671)
     # north-west block: homes along the first street, then the Pokémon Center, Mart and Gym on the avenue
@@ -524,6 +567,7 @@ def goldenrod(t):
     t.put('mart', 2289, 717)
     t.item(2298, 726, MART_SIGN)
     t.put('gym', 2301, 713)
+    t.taxi_stand(2255, 711)
     # north-east block: homes, the department store and the Game Corner
     t.put('celadon-249', 2326, 694)
     t.put('celadon-260', 2347, 694)
@@ -567,8 +611,8 @@ def goldenrod(t):
         for y in (726, 734):
             if t.free_tile(x, y) and not 2310 <= x <= 2330:
                 t.item(x, y, STREET_LAMP)
-    for x, y in [(2312, 727), (2328, 727), (2312, 733), (2328, 733)]:
-        t.item(x, y, BENCH_S)
+    for x, y in [(2311, 727), (2328, 727), (2311, 733), (2328, 733)]:
+        t.bench(x, y)
     for cx, cy in [(2315, 725), (2325, 725), (2315, 735), (2325, 735)]:
         for dx, dy in [(0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)]:
             x, y = cx + dx, cy + dy
@@ -600,7 +644,10 @@ def national_park(t):
     for x in range(2296, 2360, 8):
         for y in (584, 592):
             if abs(x - 2325) > 8:
-                t.item(x, y, BENCH_S if (x // 8) % 2 else STREET_LAMP)
+                if (x // 8) % 2:
+                    t.bench(x, y)
+                else:
+                    t.item(x, y, STREET_LAMP)
     for y in range(564, 616, 8):
         for x in (2321, 2329):
             if abs(y - 588) > 8:
@@ -669,10 +716,11 @@ def ecruteak(t):
     t.put('fuchsia-369', 2282, 358)
     t.put('fuchsia-370', 2299, 360)
     t.put('burned-tower', 2338, 355)
-    t.item(2336, 373, SIGN)
+    t.sign(2336, 373, 'Burned Tower')
     t.put('fuchsia-371', 2362, 358)
     # main street, north side: a home, the Pokémon Center and Mart, the Gym and homes east of the avenue
     t.put('fuchsia-372', 2270, 393)
+    t.taxi_stand(2255, 394)
     t.put('pokecenter', 2285, 399)
     t.item(2283, 407, PC_SIGN)
     t.put('mart', 2296, 398)
@@ -737,6 +785,7 @@ def olivine(t):
     t.item(2104, 497, PC_SIGN)
     t.put('mart', 2117, 488)
     t.item(2126, 497, MART_SIGN)
+    t.taxi_stand(2120, 473)
     t.put('gym', 2145, 484)
     t.put('vermilion-334', 2161, 484)
     t.put('vermilion-337', 2176, 484)
@@ -749,7 +798,7 @@ def olivine(t):
     t.put('vermilion-341', 2146, 528)
     t.put('vermilion-342', 2163, 528)
     t.put('lighthouse', 2076, 536)
-    t.item(2098, 557, SIGN)
+    t.sign(2098, 557, 'Glitter Lighthouse')
     # the S.S. Aqua's pier, between the two homes; the ship (build_johto.py's SHIP) moors at its end
     t.boardwalk = ([(2161, 526), (2161, 571)], 1)
     t.pier = ([(2100, 500), (2074, 500)], 1)
@@ -824,6 +873,7 @@ def mahogany(t):
     t.item(2525, 389, PC_SIGN)
     t.put('mart', 2537, 380)
     t.item(2546, 389, MART_SIGN)
+    t.taxi_stand(2512, 376)
     t.put('lavender-308', 2555, 378)
     t.put('souvenir-shop', *SOUVENIR_SHOP)
     t.stairs_down += SHOP_STAIRS
@@ -894,7 +944,7 @@ def safari_zone(t):
     rng = _rng(47)
     t.streets += [([(1772, 570), (1830, 570)], 2), ([(1810, 570), (1810, 546)], 1)]
     t.put('safari-gate', 1787, 552)
-    t.item(1806, 568, SIGN)
+    t.sign(1806, 568, 'Safari Zone')
     x0, y0, x1, y1 = 1752, 470, 1838, 546
     t.areas.append((x0 + 1, y0 + 1, x1 - 1, y1 - 1))
     t.fence(x0, y0, x1, y1, gates=[(1809, y1), (1810, y1), (1811, y1)])
@@ -980,7 +1030,7 @@ def battle_frontier(t):
         if abs(y - py) > 8:
             t.item(px - 3, y, STREET_LAMP)
             t.item(px + 3, y, STREET_LAMP)
-    t.item(2050, py - 3, SIGN)
+    t.sign(2050, py - 3, 'Battle Frontier\nRoute 38 to the East')
 
 
 SACRED_FLAME = [7504, 7505, 7506, 7507]  # the fire shrine, 2x2: top left, top right, bottom left, bottom right
@@ -1044,7 +1094,7 @@ def dragon_holy_land(t):
 def lake_slowpoke(t):
     """The Slowpoke Temple's court on Lake Slowpoke's north shore, with Slowpoke statues."""
     _shrine(t, 2640, 424, 4, 3, statue=CAT_STATUE)
-    t.item(2636, 428, SIGN)
+    t.sign(2636, 428, 'Slowpoke Temple')
 
 
 def snowtop(t):

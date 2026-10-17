@@ -3,7 +3,7 @@
 	<health now="100" max="100"/>
 	<look type="630" head="82" body="101" legs="115" feet="76" addons="0"/>
 	<parameters>
-		<parameter key="message_greet" value="Keep your eyes on the planks! My birds don't need a floor, but you do."/>
+		<parameter key="message_greet" value="Falkner says the path is the bird's way up. My birds don't need a path at all!"/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

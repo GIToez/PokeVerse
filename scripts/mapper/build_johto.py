@@ -137,6 +137,13 @@ PASS_DROP = [(3092, 595, 6), (3092, 596, 6)]
 # Counters (green balconies) that closed the Elite Four building's west and south doors.
 INDIGO_OPEN = [(3110, y) for y in range(593, 597)] + [(x, 598) for x in range(3112, 3117)]
 BALCONIES = set(range(14379, 14384))
+# No-fly zones. Players' own Fly makes a fly tile only where the map has no tile (movements/fly.lua),
+# so every empty tile in them, on every floor, gets the invisible wall Kanto is fenced in with:
+# nobody flies onto the Indigo Plateau behind the League building or onto Mt. Silver (NO_FLY_SILVER
+# tiles out from its foot, past the 6 wide wall round it), nor takes off there. Both are walked into.
+FLY_BARRIER = 13501
+NO_FLY_BOXES = {'Indigo Plateau': (3068, 346, 3156, 580)}
+NO_FLY_SILVER = 8
 
 # Prefabs: source box (on the building's ground floor), that floor, the door's first column in the
 # bottom wall (doors are two tiles wide) and NPCs to copy. Pallet Town: Pokémon Center, Oak's lab,
@@ -155,20 +162,21 @@ PREFABS = {
 for _name, _spec in T.BUILDINGS.items():
     PREFABS[_name] = dict({'z': Z, 'walled': True, 'rent': True}, **_spec)
 # Towns, laid out in johto_towns.py, paved like their Kanto mirror. The temple is set in front of the
-# Pokémon Center and the clearing (x, y, r) around the layout. `taxi`: the fly taxi NPC (npc/scripts/travels.lua),
-# standing 4 tiles east of the temple; the other taxis land on the tile between.
-TAXI_EAST = 4
+# Pokémon Center and the clearing (x, y, r) around the layout. `taxi`: the fly taxi NPC
+# (npc/scripts/travels.lua) in the town's stand (johto_towns.TAXI_SPOT). Like Kanto, where only the
+# five cities have one, only the big towns are flown to: the small ones (New Bark, Cherrygrove,
+# Azalea), Cianwood over the sea and Blackthorn past the Ice Path are reached on foot or by boat.
 TOWNS_BUILT = [
-    {'town_id': 50, 'name': 'New Bark', 'taxi': 'Hollis Brandt', 'paving': 'dirt'},
-    {'town_id': 51, 'name': 'Cherrygrove', 'taxi': 'Corin Maddox', 'paving': 'gray stone tiles', 'core': 7},
+    {'town_id': 50, 'name': 'New Bark', 'paving': 'dirt'},
+    {'town_id': 51, 'name': 'Cherrygrove', 'paving': 'gray stone tiles', 'core': 7},
     {'town_id': 52, 'name': 'Violet', 'taxi': 'Wendell Price', 'paving': 'dark cobblestone', 'core': 3},
-    {'town_id': 53, 'name': 'Azalea', 'taxi': 'Silas Thorne', 'paving': 'cobblestone', 'core': 4},
+    {'town_id': 53, 'name': 'Azalea', 'paving': 'cobblestone', 'core': 4},
     {'town_id': 54, 'name': 'Goldenrod', 'taxi': 'Desmond Reyes', 'paving': 'gray stone tiles', 'core': 6},
     {'town_id': 55, 'name': 'Ecruteak', 'taxi': 'Rowan Ashby', 'paving': 'dirt', 'core': 5},
     {'town_id': 56, 'name': 'Olivine', 'taxi': 'Marlon Kessler', 'paving': 'gray stone tiles', 'core': 5},
-    {'town_id': 57, 'name': 'Cianwood', 'taxi': 'Griffin Ward', 'paving': 'dirt', 'core': 4},
+    {'town_id': 57, 'name': 'Cianwood', 'paving': 'dirt', 'core': 4},
     {'town_id': 58, 'name': 'Mahogany', 'taxi': 'Tobias Lindqvist', 'paving': 'dirt', 'core': 4},
-    {'town_id': 59, 'name': 'Blackthorn', 'taxi': 'Everett Crane', 'paving': 'dark cobblestone', 'core': 4},
+    {'town_id': 59, 'name': 'Blackthorn', 'paving': 'dark cobblestone', 'core': 4},
 ]
 # Places laid out like towns that are not towns (no temple): `lawn` grounds their open ground with
 # lawn, `spawns` lets the wild Pokémon of that table onto it.
@@ -195,6 +203,7 @@ OUTPOSTS = [
     {'name': 'Route 34', 'clear': (2338, 834, 13), 'streets': [[(2314, 841), (2346, 841)]],
      'buildings': [('daycare', 2333, 828)]},
 ]
+ROAD_HALF_WIDTH = (1.6, 3.25)
 GATE_ROAD = [(3049, 700), (3066, 676), (3080, 650), (3094, 628), (3105, 614)]
 ROAD_WOBBLE = {'26': 6, '27': 8, '29': 8, '30': 8, '31': 5, '32': 8, '33': 6, '34': 5, '35': 3, '36': 6,
                'Ilex Forest': 3, '37': 5, '38': 6, '39': 3, '42': 5, '43': 5, '44': 4, '45': 6, '46': 6,
@@ -335,13 +344,17 @@ AREA_GYMS = {'Violet': 'Zephyr Gym', 'Azalea': 'Hive Gym', 'Goldenrod': 'Plain G
 # floor below, '=' a plank,
 # 'x' a cracked plank (it gives way under players and mends, gyms/brokenPlank.lua), '^' and 'v'
 # escalators up and down (a '^' takes players to the tile north of it a floor up, where a 'v' over
-# it brings them back to the tile south of it). npcs: (name, dx, dy, z) from the gym's corner.
+# it brings them back to the tile south of it), 'g' glass floor, 'U' and 'D' a wooden lift up and
+# down (gyms/liftPlatform.lua; a 'U' carries players to the tile north of it a floor up, a 'D' to
+# the tile south of it a floor down). npcs: (name, dx, dy, z) from the gym's corner.
 # restyle swaps item ids over the whole building, so every floor is in one style (None takes the item out).
 GYM_PLANKS = (9224, 9227, 9228, 9230)
 GYM_CRACKED = 9231
 GYM_CRACKED_AID = 46000
 GYM_FLOOR = 9146
 GYM_UP, GYM_DOWN = 14420, 14418
+GYM_GLASS = 671
+GYM_LIFT, GYM_LIFT_UP_AID, GYM_LIFT_DOWN_AID = 446, 46001, 46002
 # the sign by the door, where Kanto's gyms have theirs (Viridian's at its box's corner + (8, 13)),
 # reading the gym's name
 GYM_SIGN, GYM_SIGN_AT = 11914, (8, 13)
@@ -350,30 +363,28 @@ GYM_SIGN, GYM_SIGN_AT = 11914, (8, 13)
 GYM_WOODEN = {9146: 405, 1111: 6839, 1112: 6840, 1113: 6841, 1115: 6843, 5303: 7027, 5304: 7028,
               1582: 1583, 1584: 1585, 1586: 1587, 1588: 1589, 1124: 1207, 1125: 1208, 1515: None}
 GYM_PLANS = {
-    # Zephyr Gym: two plank walkways over the hall up to Falkner's arena; the short ways are cracked
-    # and drop players back into the open hall
+    # Zephyr Gym (HGSS): a lift from the hall up to a plank path that winds in an S over the open
+    # hall to Falkner's platform by the back windows, a Bird Keeper at each end of the S; the glass
+    # walkway round the edge gets past both of them. The floor above is only the roof's attic.
     'Violet': {
         'floors': {
             7: ["............",
-                ".._________."] + ["____________"] * 9,
-            6: ["======  ====",
-                "=.  =   =  .",
-                "=   =   =   ",
-                "x   ==x===x=",
-                "=   == =   =",
-                "=  ===x=   x",
-                "x  =   ==  =",
-                "=  ==  ==  =",
-                "=   =   =  x",
-                "^x===   =x=^",
-                "=====   ===="],
-            5: [" .......... "] * 7 + [
-                "     ==     ",
-                "===x=x==x===",
-                "v =  ==  = v",
-                "  ========  "],
+                ".___________"] + ["____________"] * 6 + [
+                "_____UU_____"] + ["____________"] * 2,
+            6: ["gggg====gggg",
+                "g   ====   g",
+                "g     =    g",
+                "g  =====   g",
+                "g  =       g",
+                "g ======== g",
+                "g        = g",
+                "ggggg===== g",
+                "g    DD    g",
+                "g          g",
+                "gggggggggggg"],
+            5: ["____________"] * 11,
         },
-        'npcs': [('Falkner', 6, 2, 5), ('Rod Haskell', 6, 5, 6), ('Abe Whitlock', 9, 7, 6)],
+        'npcs': [('Falkner', 6, 1, 6), ('Rod Haskell', 3, 6, 6), ('Abe Whitlock', 8, 4, 6)],
         'restyle': GYM_WOODEN,
     },
 }
@@ -482,11 +493,12 @@ UNDERGROUND = [
     # the Global Terminal's basement: Celadon's guild hall's, under the same stairs
     {'name': 'Global Terminal basement', 'src': (3722, 461), 'dst': (2326, 780),
      'floors': {8: ((3720, 453, 3737, 471), None, None)}},
-    # Goldenrod's Magnet Train station: Cerulean's, from its walled stairway in the street (floor 7)
-    # down through the landing over the canal to the platform and waiting room; its conductor
-    # (npc/Wade Carrington.xml) stands where Cerulean's does, and both Kanto stations ride here
+    # Goldenrod's Magnet Train station: Cerulean's, from the landing under its walled stairway in the
+    # street (which Goldenrod draws on its own paving, johto_towns.TRAIN_RAILING) over the canal to the
+    # platform and waiting room; its conductor (npc/Wade Carrington.xml) stands where Cerulean's
+    # does, and both Kanto stations ride here
     {'name': 'Magnet Train Station', 'src': (3884, 272), 'dst': T.TRAIN_STAIRS,
-     'floors': {7: ((3883, 270, 3885, 274), None, None), 8: ((3882, 270, 3888, 274), None, None),
+     'floors': {8: ((3882, 270, 3888, 274), None, None),
                 9: ((3878, 255, 3897, 278), None, None)},
      'npcs': [('Wade Carrington', 3888, 269, 9)]},
     # Mahogany's Rocket Hideout, B1F to B4F: Celadon's under the Game Corner, its stairs up under the
@@ -629,10 +641,31 @@ TUFTS = [(6216, 367), (6217, 895), (6218, 888), (6219, 909)]
 FERNS = [(3610, 29), (3611, 31), (3612, 32), (3613, 32), (3614, 32), (3621, 26), (3622, 23), (3623, 27)]
 FLOWERS = [(3648, 7), (3649, 13), (3651, 17), (3652, 10), (3654, 8), (3655, 7), (3656, 13)]
 STONES = [(3607, 11), (3615, 6), (3616, 12), (1285, 6)]
-# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and most of 7004 to 7019) are quarters
-# of big rocks that take several tiles, and look broken on their own
-ROCK_PIECES = set(range(1297, 1303)) | {7006, 7007, 7009, 7010, 7011, 7015, 7017, 7019}
+# Route 1 also has 1300 and 1301, but those (like 1297 to 1302 and 7004 to 7015, and the grass
+# patches 8140 to 8159) are quarters of big rocks and patches that take 2x2 tiles, and look broken on
+# their own
+ROCK_PIECES = set(range(1297, 1303)) | set(range(7004, 7016))
 GRAVEL = list(range(6477, 6489))
+# Things drawn in pieces over two or four tiles (offset from the top-left piece -> item): benches,
+# the big rocks and the grass patches. A building copied with only some of one leaves it out.
+PIECES = [{(0, 0): a, (1, 0): b} for a, b in [(18103, 18104), (1662, 1663), (1292, 1291)]] + \
+         [{(0, 0): a, (0, 1): b} for a, b in [(18105, 18106), (1664, 1665)]] + \
+         [{(0, 0): tl, (1, 0): tr, (0, 1): bl, (1, 1): br} for tl, tr, bl, br in [
+             (8140, 8141, 8143, 8142), (8144, 8145, 8147, 8146), (8148, 8149, 8151, 8150), (8152, 8153, 8155, 8154),
+             (8156, 8157, 8159, 8158), (3624, 3625, 3626, 3627), (3628, 3629, 3630, 3631), (1300, 1301, 1302, 1303),
+             (7004, 7005, 7006, 7007), (7008, 7009, 7010, 7011), (7012, 7013, 7014, 7015)]]
+PIECE_OF = {sid: (shape, off) for shape in PIECES for off, sid in shape.items()}
+# The Pokémon Center's walls, roof, awning and floors (Pallet's and the larger one of Cinnabar and
+# Fuchsia). In Kanto some buildings stand against a Pokémon Center, and their box takes in a strip of
+# it that looks like a center left half built.
+PC_PIECES = ({23965, 23966, 23968, 23972, 23978, 23983, 24076, 24121, 24122, 24146, 24151, 24158, 24163, 24166,
+              24167, 24170, 24227, 24235, 24236, 24242, 24244, 24246, 24249, 24250, 24311, 24312, 24318}
+             | set(range(24079, 24082))
+             | set(range(24023, 24028)) | set(range(24036, 24040)) | set(range(24046, 24051))
+             | set(range(24085, 24101)) | set(range(24104, 24113)) | set(range(24114, 24117))
+             | set(range(24177, 24181)) | set(range(24189, 24194)) | set(range(24443, 24447)))
+PC_LAMP = 12070
+KANTO_SIGNS = {11913, 11916, 11917, 11918}
 # The woods: stands of firs or of broadleaf trees, undergrowth (all blocking) and the forest floor
 # (none blocking): mushrooms, stumps, branches, debris, fern leaves and grass.
 CONIFERS = [(2700, 50), (2768, 60), (2711, 35)]
@@ -641,7 +674,7 @@ UNDERGROWTH = [(2767, 30), (2768, 20), (2785, 10), (2786, 10), (4008, 4), (4009,
                (4012, 6), (4013, 6), (4014, 5), (4015, 5), (4018, 5), (2784, 3), (10913, 5), (10914, 5),
                (10915, 5), (2709, 1), (5392, 1), (4167, 1), (4184, 1)]
 FOREST_FLOOR = [(2787, 3), (2788, 2), (2789, 4), (2791, 4), (2793, 3), (4181, 2), (4183, 3), (3811, 2),
-                (3821, 2), (2801, 6), (8166, 6), (8148, 3), (8149, 3), (8150, 3), (8151, 3)] + \
+                (3821, 2), (2801, 6), (8166, 6)] + \
                [(i, 3) for i in range(6220, 6226)] + [(i, 2) for i in range(6476, 6489)]
 WILDFLOWERS = [(4156, 4), (4157, 3), (2762, 2), (2764, 2)] + [(i, 3) for i in range(6226, 6232)]
 # the mountain tiers' rocky tops
@@ -652,7 +685,7 @@ SNOW_FIR, SNOW_DEAD = 2698, 2697
 # Mt. Silver's: pines and firs, dead trees, big snowy stones (all blocking) and drifts (not)
 SNOW_TREES = [(SNOW_FIR, 6), (7023, 2), (8139, 2)]
 SNOW_DEAD_TREES = [(SNOW_DEAD, 2), (7020, 1), (7021, 1)]
-SNOW_BOULDERS = [(i, 1) for i in range(7004, 7017) if i not in ROCK_PIECES]
+SNOW_BOULDERS = [(7001, 1), (7016, 1), (7017, 1)]
 SNOW_DRIFTS = [(6609, 6), (7022, 2), (13316, 1)]
 SILVER_ROCKS = [(3607, 6), (3608, 4), (3609, 4), (3615, 4), (3616, 6), (1296, 3), (1304, 3)]
 SNOW_STONES = [(6999, 3), (7000, 3), (7002, 2), (7003, 2), (7018, 2)]
@@ -1024,7 +1057,7 @@ class Prefab:
                         todo.append(p)
             loose = outside
         for (x, y, z), tile in keep.items():
-            if z > self.base_z:
+            if z > self.base_z or (spec.get('flat') and z < self.base_z):
                 continue
             ux0, uy0, ux1, uy1 = upper_box(spec['box'], self.base_z - z)
             if not (ux0 <= x <= ux1 and uy0 <= y <= uy1):
@@ -1047,8 +1080,44 @@ class Prefab:
             tile = self.tiles[(dx, dy, 0)]
             floor = b'' if tile.ground is not None else pvmap.split_items(tile.children)[0]
             self.tiles[(dx, dy, 0)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, floor)
+        # things in pieces (a bench, a big rock) that the box's edge cuts go: half of one looks broken
+        for (dx, dy, dz), tile in list(self.tiles.items()):
+            blobs = pvmap.split_items(tile.children)
+            kept = [b for b in blobs if not broken_piece(self.tiles, (dx, dy, dz), pvmap.child_item_ids(b)[0])]
+            if len(kept) < len(blobs):
+                self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
+        # a strip of the Pokémon Center next door in Kanto goes, with its lamps and the invisible walls
+        # at its corners (on the box's edge; the Mart has its own), Kanto's signs to its towns and
+        # routes ("Fuchsia to the East"), and tiles left empty
+        if name != 'pokecenter':
+            for (dx, dy, dz), tile in list(self.tiles.items()):
+                blobs = pvmap.split_items(tile.children)
+                firsts = [pvmap.child_item_ids(b)[0] for b in blobs]
+                drop = set(KANTO_SIGNS)
+                if tile.ground in PC_PIECES or PC_PIECES & set(firsts):
+                    drop |= PC_PIECES | {PC_LAMP, FLY_BARRIER}
+                elif dz == 0 and name != 'mart' and (dx in (0, self.w - 1) or dy in (0, self.h - 1)):
+                    drop.add(FLY_BARRIER)
+                kept = [b for b, i in zip(blobs, firsts) if i not in drop]
+                if tile.ground in PC_PIECES or (tile.ground is None and not kept):
+                    del self.tiles[(dx, dy, dz)]
+                elif len(kept) < len(blobs):
+                    self.tiles[(dx, dy, dz)] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
         self.npcs = [(n, x - x0, y - y0) for n, x, y in spec.get('npcs', [])]
         self.footprint = {(dx, dy) for (dx, dy, dz) in self.tiles if dz == 0}
+
+
+def broken_piece(tiles, pos, sid):
+    """Whether item sid at pos is a piece of a thing in PIECES with another piece missing."""
+    if sid not in PIECE_OF:
+        return False
+    shape, (ox, oy) = PIECE_OF[sid]
+    x, y, z = pos
+    for (px, py), other in shape.items():
+        t = tiles.get((x - ox + px, y - oy + py, z))
+        if t is None or other not in pvmap.child_item_ids(t.children):
+            return True
+    return False
 
 
 def floor_down_ids(way='down'):
@@ -1088,7 +1157,7 @@ def gym_puzzles(places, prefab_tiles, npcs, gym):
         if plan is None:
             continue
         (ox, oy), = [(x, y) for name, x, y in place['buildings'] if name == 'gym']
-        cracked = []
+        cracked, lifts = [], []
         for z, rows in plan['floors'].items():
             for dy, row in enumerate(rows):
                 for dx, ch in enumerate(row):
@@ -1115,6 +1184,11 @@ def gym_puzzles(places, prefab_tiles, npcs, gym):
                         cracked.append(pos)
                     elif ch in '^v':
                         ground, items = GYM_FLOOR, pvmap.item_node(GYM_UP if ch == '^' else GYM_DOWN)
+                    elif ch == 'g':
+                        ground, items = GYM_GLASS, b''
+                    elif ch in 'UD':
+                        ground, items = None, pvmap.item_node(GYM_LIFT, GYM_LIFT_UP_AID if ch == 'U' else GYM_LIFT_DOWN_AID)
+                        lifts.append((pos, (pos[0], pos[1] - 1, z - 1) if ch == 'U' else (pos[0], pos[1] + 1, z + 1)))
                     else:
                         raise ValueError('%s gym plan: unknown tile %r' % (place['name'], ch))
                     prefab_tiles[pos] = pvmap.RawTile(shell.house_id, shell.flags, ground, items)
@@ -1129,6 +1203,8 @@ def gym_puzzles(places, prefab_tiles, npcs, gym):
         for x, y, z in cracked:
             assert any((x, y, zz) in prefab_tiles for zz in range(z + 1, Z + 1)), \
                 '%s gym: nothing under the cracked plank at %s' % (place['name'], (x, y, z))
+        for pos, to in lifts:
+            assert to in prefab_tiles, '%s gym: the lift at %s goes nowhere' % (place['name'], pos)
         for name, dx, dy, z in plan['npcs']:
             assert (ox + dx, oy + dy, z) in prefab_tiles, '%s gym: %s stands over a drop' % (place['name'], name)
             npcs.append((name, ox + dx, oy + dy, z))
@@ -1449,6 +1525,28 @@ def silver_ring(j):
     return (0, s) if j == SILVER['top'] else (s + (SILVER['top'] - 1 - j) * w, s + (SILVER['top'] - j) * w)
 
 
+def silver_radius():
+    """How far out on Mt. Silver's lobed rings each tile is (the noise field and the radii over BOX)."""
+    sf = Field(107)
+    cx, cy = SILVER['center']
+    r = np.hypot(sf.X - cx, sf.Y - cy) * (1 + sf.noise(SILVER['lobes']) * SILVER['stretch']) + sf.noise(10) * SILVER['wobble']
+    return sf, r
+
+
+def no_fly_tiles(data, new_tiles, removed):
+    """Invisible walls on the empty tiles of the no-fly zones, every floor from the ground up."""
+    sf, r = silver_radius()
+    ys, xs = np.nonzero(r < silver_ring(SILVER['base'])[1] + NO_FLY_SILVER)
+    cells = set(zip((xs + sf.x0).tolist(), (ys + sf.y0).tolist()))
+    for x0, y0, x1, y1 in NO_FLY_BOXES.values():
+        cells |= {(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)}
+    xs, ys = [x for x, _ in cells], [y for _, y in cells]
+    old = pvmap.read_region(None, min(xs), min(ys), max(xs), max(ys), floors=range(Z + 1), data=data)
+    wall = pvmap.item_node(FLY_BARRIER)
+    return {(x, y, z): pvmap.RawTile(0, 0, None, wall) for x, y in cells for z in range(Z + 1)
+            if (x, y, z) not in new_tiles and ((x, y, z) not in old or (x, y, z) in removed)}
+
+
 def plan_silver(f, mlevel, open_sky):
     """Mt. Silver as the games' climb (HeartGold and SoulSilver): the cave's 1F comes up inside the
     mountain to the lower mountainside, a valley round the peak; ledges round the cone, one ring per
@@ -1461,8 +1559,7 @@ def plan_silver(f, mlevel, open_sky):
     cx, cy = SILVER['center']
     top, wall = SILVER['top'], SILVER['wall']
     rng = np.random.default_rng(SILVER['caves_seed'] + 1)
-    sf = Field(107)
-    r = np.hypot(X - cx, Y - cy) * (1 + sf.noise(SILVER['lobes']) * SILVER['stretch']) + sf.noise(10) * SILVER['wobble']
+    sf, r = silver_radius()
     s, w = SILVER['summit'], SILVER['ring']
     cone = np.where(r < s, top, top - 1 - np.floor((r - s) / w)).astype(int)
     _, foot = silver_ring(SILVER['base'])
@@ -2496,11 +2593,16 @@ def build(base, out_path):
             if ends:
                 door_path[(name, ox, oy)] = min(ends)
                 road_pts['%s door %d,%d' % (pl['name'], ox, oy)] = [(dx + 0.5, dy), (dx + 0.5, min(ends))]
-    road_d = np.full((f.h, f.w), 1e9)
-    for pts in road_pts.values():
-        road_d = np.minimum(road_d, f.seg_dist(pts))
+    route_d, door_d = np.full((f.h, f.w), 1e9), np.full((f.h, f.w), 1e9)
+    for k, pts in road_pts.items():
+        if ' door ' in k:
+            door_d = np.minimum(door_d, f.seg_dist(pts))
+        else:
+            route_d = np.minimum(route_d, f.seg_dist(pts))
+    road_d = np.minimum(route_d, door_d)
     nroad = f.noise(6)
-    road = road_d + nroad * 2.5 < 2.0
+    # roads wander in width but never narrow to a single tile; a door's path is as wide as the door
+    road = (route_d < np.clip(2.0 - nroad * 2.5, ROAD_HALF_WIDTH[0], ROAD_HALF_WIDTH[1])) | (door_d < 1.0)
     uncut = mount.copy()
     mount &= ~(road_d < 6 + n2 * 4)
     forest &= ~(road_d < 4)
@@ -2533,6 +2635,7 @@ def build(base, out_path):
     for pl in laid_out:
         key = pl.get('town_id', pl['name'])
         t = layouts[key]
+        sign_texts.update(t.texts)
         for n, x, y in t.buildings:
             if n == 'gym':
                 sign = (x + GYM_SIGN_AT[0], y + GYM_SIGN_AT[1])
@@ -2674,6 +2777,14 @@ def build(base, out_path):
                 if path is None:
                     print('warning: no path from %s at %d,%d' % (name, ox + ex, oy + ey))
                     continue
+                # the path is three wide, the door in its middle
+                wide = []
+                for k, (iy, ix) in enumerate(path):
+                    ny, nx = path[k + 1] if k + 1 < len(path) else path[k - 1] if k else (iy + 1, ix)
+                    sy, sx = (0, 1) if ny != iy else (1, 0)
+                    wide += [(iy + d * sy, ix + d * sx) for d in (-1, 1)
+                             if walkable[iy + d * sy, ix + d * sx] and terrain[iy + d * sy, ix + d * sx] != BRIDGE]
+                path = path + wide
                 for iy, ix in path:
                     town_ground[(ix + f.x0, iy + f.y0)] = pl['paving']
                     terrain[iy, ix] = PAVE
@@ -2788,7 +2899,12 @@ def build(base, out_path):
             terrain[y0 + p.h:end, door:door + 2] = DIRT
             clear[y0 + p.h:end, door - 1:door + 3] = True
     for place in TOWNS_BUILT:
-        npcs.append((place['taxi'], place['temple'][0] + TAXI_EAST, place['temple'][1], Z))
+        stands = [(x, y) for n, x, y in place['buildings'] if n == 'taxi-stand']
+        assert bool(stands) == ('taxi' in place), '%s: a taxi needs its stand' % place['name']
+        for x, y in stands:
+            npcs.append((place['taxi'], x + T.TAXI_SPOT[0], y + T.TAXI_SPOT[1], Z))
+            print('%s: %s at %d,%d, landing %d,%d' % (place['name'], place['taxi'], x + T.TAXI_SPOT[0],
+                                                     y + T.TAXI_SPOT[1], x + T.TAXI_LANDING[0], y + T.TAXI_LANDING[1]))
     # windmills: the wheel goes on the middle of the roof's front row
     roof = [(dx, dy) for (dx, dy, dz) in prefabs['windmill'].tiles if dz == -1]
     front = max(dy for _, dy in roof)
@@ -2910,6 +3026,14 @@ def build(base, out_path):
     for x, y, j, d in silver_ramps:
         if j > 1 and (x, y, Z + 1 - j) not in bored and hill_ground[y - f.y0, x - f.x0] == SNOW:
             ramp_feet[(x, y, Z + 1 - j)] = ICE_RAMPS[d]
+    # a ramp is two tiles like Kanto's: the climbing piece and its foot on the tile behind it, where
+    # that tile is on the same level
+    ramp_tails = {}
+    for x, y, j, (dx, dy) in ramps:
+        z, tx, ty = Z + 1 - j, x - dx, y - dy
+        if (f.x0 <= tx <= f.x1 and f.y0 <= ty <= f.y1 and height[ty - f.y0, tx - f.x0] == height[y - f.y0, x - f.x0]
+                and (tx, ty, z) not in ramp_feet):
+            ramp_tails[(tx, ty, z)] = ramp_feet[(x, y, z)] + 1
     for x, y, j, (dx, dy) in ramps:
         if j == 1:
             stair_landing |= {(x, y), (x - dx, y - dy)}
@@ -2979,8 +3103,8 @@ def build(base, out_path):
             if any(otb.blocks(i) for i in deco):
                 blocked_spawn[iy, ix] = True
             tiles[(x, y)] = [ground, deco]
-    for (x, y, z), ramp in ramp_feet.items():
-        if z == Z:
+    for (x, y, z), ramp in list(ramp_feet.items()) + list(ramp_tails.items()):
+        if z == Z and (x, y) in tiles:
             tiles[(x, y)] = [tiles[(x, y)][0], [ramp]]
             blocked_spawn[y - f.y0, x - f.x0] = True
     for (x, y, z), items in up_deco.items():
@@ -3111,7 +3235,7 @@ def build(base, out_path):
             optional = center is not mountain and mountain in nb and (x, y) not in stair_landing
             border = brushes.borders_for(center, nb, optional=optional)
         children = b''.join(pvmap.item_node(i) for i in [ground] + border) + b''.join(
-            pvmap.item_node(i, text=sign_texts.get((x, y)) if i == GYM_SIGN else None) for i in deco)
+            pvmap.item_node(i, text=sign_texts.get((x, y)) if i in (T.SIGN, GYM_SIGN) else None) for i in deco)
         new_tiles[(x, y, Z)] = pvmap.RawTile(0, 0, None, children)
     # Kanto tiles touching the new ones get their borders redone; everything else on them stays.
     ring = set()
@@ -3279,6 +3403,8 @@ def build(base, out_path):
                 cls, r = hill_ground[iy, ix], hill_rng.random()
                 if (x, y, z) in ramp_feet:
                     deco = [ramp_feet[(x, y, z)]]
+                elif (x, y, z) in ramp_tails:
+                    deco = [ramp_tails[(x, y, z)]]
                 elif (x, y, z) in up_deco:
                     deco = list(up_deco[(x, y, z)])
                 elif inside or (x, y, z) in up_ground or silver_keep[iy, ix]:
@@ -3313,7 +3439,8 @@ def build(base, out_path):
                                       groves[iy, ix] + (0.15 if not country[iy, ix] else 0.0), tufty[iy, ix],
                                       flowery[iy, ix])
                 walk[iy, ix] = (country[iy, ix] and not any(i in gravel for i in border)
-                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet)
+                                and not any(otb.blocks(i) for i in deco) and (x, y, z) not in ramp_feet
+                                and (x, y, z) not in ramp_tails)
                 silver_walk[iy, ix] = ((ledges[iy, ix] or inside) and not edge and not deco and not silver_keep[iy, ix]
                                        and up_ground.get((x, y, z)) != 'walkable sea')
             children = b''.join(pvmap.item_node(i) for i in [ground] + border + deco)
@@ -3399,6 +3526,9 @@ def build(base, out_path):
     write_areas(AREAS_PATH, first, area_of, f.x0, f.y0, (0, Z))
 
     data = open(base, 'rb').read()
+    no_fly = no_fly_tiles(data, new_tiles, set(PASS_DROP + gym_drops))
+    new_tiles.update(no_fly)
+    print('no-fly zones: %d invisible walls' % len(no_fly))
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
     cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP + gym_drops, towns=towns)
     write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs, data)
