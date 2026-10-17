@@ -1729,6 +1729,248 @@ local function testCalendar(cid)
     check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
 end
 
+local function testLegendaries(cid, friend, arena)
+    local W = WildLegendaries
+    local MON, KEY = W.MON, W.KEY
+    local saved = {}
+    for name, key in pairs(KEY) do
+        saved[key] = getStorage(key)
+    end
+    for _, a in ipairs(W.getActive()) do
+        if (isMonster(a.cid)) then
+            W.finish(a.cid, "restart")
+        end
+    end
+    W.clearCooldowns()
+
+    local bad, total = {}, 0
+    local function scan(points, label)
+        local good = 0
+        for _, p in ipairs(points) do
+            total = total + 1
+            if (W.isGoodPoint({ x = p[1], y = p[2], z = p[3] })) then
+                good = good + 1
+            elseif (#bad < 5) then
+                bad[#bad + 1] = string.format("%s %d,%d,%d", label, p[1], p[2], p[3])
+            end
+        end
+        return good
+    end
+    local roamGood = scan(LEGENDARY_ANCHORS.ROAM, "roam")
+    check("Legendary: at least 95% of the Kanto points are good ground", roamGood >= #LEGENDARY_ANCHORS.ROAM * 0.95,
+        roamGood .. "/" .. #LEGENDARY_ANCHORS.ROAM .. " " .. table.concat(bad, "; "))
+    local homesOk, homeDetail = true, {}
+    for _, species in ipairs(W.SPECIES) do
+        local points = LEGENDARY_ANCHORS.HOMES[species.home]
+        local good = points and scan(points, species.home) or 0
+        if (good < 3) then
+            homesOk = false
+            homeDetail[#homeDetail + 1] = species.name .. " " .. good
+        end
+    end
+    check("Legendary: every species has a home area with good points", homesOk, table.concat(homeDetail, ", "))
+    check("Legendary: 21 species, 11 tier 1", #W.SPECIES == 21 and #(function()
+        local t = {} for _, s in ipairs(W.SPECIES) do if (s.tier == 1) then t[#t + 1] = s end end return t end)() == 11)
+
+    check("Legendary: population rows", W.getPopulation(0).gap[1] == 16 * 3600 and W.getPopulation(3).gap[2] == 8 * 3600 and
+        W.getPopulation(20).cooldown[1] == 24 * 3600 and W.getPopulation(60).gap[1] == 2 * 3600)
+    local now = os.time()
+    local nextAt = W.scheduleNext(now, true)
+    local row = W.getPopulation()
+    check("Legendary: the next spawn falls in the population's gap", nextAt - now >= row.gap[1] and nextAt - now <= row.gap[2],
+        nextAt - now)
+    W.setNextSpawn(now + 100 * 3600)
+    check("Legendary: a busier server brings the next spawn forward", W.scheduleNext(now, false) <= now + row.gap[2])
+
+    local tier1 = 0
+    for i = 1, 4000 do
+        if (W.pickSpecies(W.SPECIES).tier == 1) then tier1 = tier1 + 1 end
+    end
+    check("Legendary: tier 1 is three times as likely", tier1 / 4000 > 0.73 and tier1 / 4000 < 0.80, tier1 / 4000)
+
+    local broadcasts, cards, events = {}, {}, {}
+    local broadcast, opcode, otc, emit = doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient, DiscordBridge.emitLegendary
+    local getScheduled = ServerRestart.getScheduled
+    doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.LEGENDARY and target == cid) then cards[#cards + 1] = JSON.decode(buffer) end
+        return true
+    end
+    getPlayerUsingOtClient = function() return true end
+    DiscordBridge.emitLegendary = function(event) events[#events + 1] = event end
+    local spawned = {}
+    local ok, err = pcall(function()
+        local articuno = W.getSpecies("articuno")
+        local mewtwo = W.getSpecies("Mewtwo")
+        local a = W.spawn(articuno, nil, nil, "test")
+        spawned[#spawned + 1] = a
+        check("Legendary: spawns on a Kanto point", isMonster(a) and W.isEncounter(a), a)
+        check("Legendary: spawn broadcast with the recommended level",
+            (broadcasts[#broadcasts] or ""):find("A wild Articuno has appeared near .+ Recommended for trainers level 50%+") ~= nil,
+            broadcasts[#broadcasts])
+        check("Legendary: spawn card and Discord event", cards[#cards] and cards[#cards].type == "spawn" and
+            cards[#cards].species == "Articuno" and events[#events] and events[#events].event == "spawn" and
+            events[#events].encounterId == getCreatureStorage(a, MON.ENCOUNTER))
+        local plain = doCreateMonster("Articuno", arena, false, false)
+        check("Legendary: health raised 30x for the fight only", isMonster(plain) and
+            getCreatureMaxHealth(a) == getCreatureMaxHealth(plain) * W.CONFIG.healthMultiplier[1],
+            getCreatureMaxHealth(a) .. " vs " .. (isMonster(plain) and getCreatureMaxHealth(plain) or 0))
+        if (isMonster(plain)) then doRemoveCreature(plain) end
+        local again, why = W.spawn(articuno)
+        check("Legendary: never two of the same species", not again and why ~= nil)
+
+        local list = W.eligible()
+        local hasArticuno = false
+        for _, s in ipairs(list) do hasArticuno = hasArticuno or s.name == "Articuno" end
+        check("Legendary: the one out is not eligible", #list == 20 and not hasArticuno, #list)
+        local m = W.spawn(mewtwo, { x = arena.x + 1, y = arena.y, z = arena.z }, "the test arena", "test")
+        spawned[#spawned + 1] = m
+        check("Legendary: a second one can come", isMonster(m))
+        check("Legendary: at most two alive", #W.eligible() == 0 and W.blocked(os.time()) ~= nil)
+        W.finish(a, "staff")
+        local tier2 = false
+        for _, s in ipairs(W.eligible()) do tier2 = tier2 or s.tier == 2 end
+        check("Legendary: never two tier 2", not tier2 and #W.eligible() > 0)
+        check("Legendary: sent away by staff, no cooldown", not isMonster(a) and not W.getCooldowns()["Articuno"] and
+            (broadcasts[#broadcasts] or ""):find("flew away") ~= nil)
+        ServerRestart.getScheduled = function() return os.time() + 3600, 1 end
+        check("Legendary: no spawns in the 2 hours before a restart", (W.blocked(os.time()) or ""):find("restart") ~= nil)
+        ServerRestart.getScheduled = getScheduled
+
+        -- roaming, flee, heal and time up on a fresh Articuno
+        a = W.spawn(articuno, nil, nil, "test")
+        spawned[#spawned + 1] = a
+        local t = os.time()
+        local from = getCreaturePosition(a)
+        doCreatureSetStorage(a, MON.NEXT_MOVE, t - 1)
+        doCreatureSetStorage(a, MON.LAST_HIT, t)
+        W.upkeep(a, t)
+        check("Legendary: stays put while being hit", getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureStorage(a, MON.NEXT_MOVE) == t + 30)
+        doCreatureSetStorage(a, MON.NEXT_MOVE, t - 1)
+        doCreatureSetStorage(a, MON.LAST_HIT, 0)
+        from = getCreaturePosition(a)
+        W.upkeep(a, t)
+        check("Legendary: roams to another point", not getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureStorage(a, MON.NEXT_MOVE) >= t + 240 and events[#events].event == "sighting",
+            events[#events] and events[#events].event)
+
+        local max = getCreatureMaxHealth(a)
+        local hit = getCreatureHealth(a) - math.floor(max * 0.45)
+        W.onHit(a, hit)
+        doCreatureAddHealth(a, -hit)
+        check("Legendary: flees at 50% health", getCreatureStorage(a, MON.FLEE_PENDING) == 1 and getCreatureStorage(a, MON.FLEE_STAGE) == 1)
+        from = getCreaturePosition(a)
+        W.upkeep(a, t)
+        check("Legendary: the flee moves it and keeps its health", not getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureHealth(a) == max - hit and (broadcasts[#broadcasts] or ""):find("fled") ~= nil, broadcasts[#broadcasts])
+        W.onHit(a, 1)
+        check("Legendary: tier 1 flees only once", getCreatureStorage(a, MON.FLEE_PENDING) == 0)
+
+        doCreatureSetStorage(a, MON.LAST_HIT, t - 200)
+        doCreatureSetStorage(a, MON.LAST_HEAL, 0)
+        doCreatureSetStorage(a, MON.NEXT_MOVE, t + 600)
+        local before = getCreatureHealth(a)
+        W.upkeep(a, t)
+        check("Legendary: heals back slowly when left alone", getCreatureHealth(a) - before == math.ceil(max * 0.05),
+            getCreatureHealth(a) - before)
+
+        doCreatureSetStorage(a, MON.ENDS_AT, t - 1)
+        doCreatureSetStorage(a, MON.LAST_HIT, t - 30)
+        W.upkeep(a, t)
+        check("Legendary: doesn't fly off while hit in the last 2 minutes", isMonster(a))
+        doCreatureSetStorage(a, MON.LAST_HIT, t - 200)
+        W.upkeep(a, t)
+        local cooldown = W.getCooldowns()["Articuno"]
+        check("Legendary: flies off when time is up, with the cooldown", not isMonster(a) and cooldown and
+            math.abs(cooldown - t - W.getPopulation().cooldown[1]) <= 2, cooldown and (cooldown - t))
+        check("Legendary: Articuno is not eligible on cooldown", (function()
+            for _, s in ipairs(W.eligible()) do if (s.name == "Articuno") then return false end end return true end)())
+
+        local cardTypes = {}
+        for _, c in ipairs(cards) do cardTypes[c.type] = true end
+        check("Legendary: cards for spawn, sighting, flee and end", cardTypes.spawn and cardTypes.flee and cardTypes["end"])
+    end)
+    doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient = broadcast, opcode, otc
+    DiscordBridge.emitLegendary, ServerRestart.getScheduled = emit, getScheduled
+    if (not ok) then
+        check("Legendary: ran without errors", false, err)
+    end
+
+    -- A real defeat: the tester does almost all the damage, the friend 3%
+    local m = spawned[2]
+    if (isMonster(m)) then
+        local candies, money = getPlayerItemCount(cid, W.CONFIG.rareCandyId), getPlayerMoney(cid)
+        local friendMoney = isPlayer(friend) and getPlayerMoney(friend) or 0
+        local function defeats()
+            local r = db.getResult(string.format("SELECT `kills` FROM `player_dex_kills` WHERE `player_id` = %d AND `species` = 'Mewtwo'",
+                getPlayerGUID(cid)))
+            if (r:getID() == -1) then return 0 end
+            local kills = r:getDataInt("kills")
+            r:free()
+            return kills
+        end
+        local points = defeats()
+        local pos = getCreaturePosition(m)
+        -- reward shares only count damage from a trainer's Pokemon
+        local pets = {}
+        local function pet(master)
+            local p = doCreateMonster("Snorlax", { x = arena.x + 1, y = arena.y + 1, z = arena.z }, false)
+            if (isMonster(p)) then
+                doConvinceCreature(master, p)
+                pets[#pets + 1] = p
+            end
+            return p
+        end
+        if (isPlayer(friend)) then
+            local fp = pet(friend)
+            if (isMonster(fp)) then
+                local share = -math.floor(getCreatureHealth(m) * 0.03)
+                doTargetCombatHealth(fp, m, COMBAT_PHYSICALDAMAGE, share, share, CONST_ME_NONE)
+            end
+        end
+        local tp = pet(cid)
+        doTargetCombatHealth(isMonster(tp) and tp or cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
+        addEvent(function()
+            for _, p in ipairs(pets) do
+                if (isMonster(p)) then doRemoveCreature(p) end
+            end
+            if (not isPlayer(cid)) then return end
+            check("Legendary defeat: Rare Candies and money for 10% of the damage",
+                getPlayerItemCount(cid, W.CONFIG.rareCandyId) - candies == 2 and getPlayerMoney(cid) - money == 10000,
+                (getPlayerItemCount(cid, W.CONFIG.rareCandyId) - candies) .. " / " .. (getPlayerMoney(cid) - money))
+            check("Legendary defeat: nothing below 10%", not isPlayer(friend) or getPlayerMoney(friend) == friendMoney)
+            check("Legendary defeat: one Pokepedia defeat", defeats() == points + 1, defeats() - points)
+            local cd = W.getCooldowns()["Mewtwo"]
+            check("Legendary defeat: tier 2 cooldown", cd and math.abs(cd - os.time() - W.getPopulation().cooldown[2]) <= 3)
+            check("Legendary defeat: the encounter is closed", #W.getActive() == 0, #W.getActive())
+            local corpse = getTileItemByType(pos, ITEM_TYPE_CONTAINER)
+            check("Legendary defeat: the body lasts 3 minutes and belongs to the top damage dealer", isItem(corpse) and
+                (getItemAttribute(corpse.uid, "duration") or 0) > 150000 and getItemAttribute(corpse.uid, "corpseowner") == getPlayerGUID(cid),
+                isItem(corpse) and tostring(getItemAttribute(corpse.uid, "duration")))
+            if (isItem(corpse)) then
+                W.releaseBody(pos, corpse.itemid, "Mewtwo")
+                check("Legendary defeat: after the window anyone may throw", not getItemAttribute(corpse.uid, "corpseowner"))
+                doRemoveItem(corpse.uid)
+            end
+            local said = {}
+            local b = doBroadcastMessage
+            doBroadcastMessage = function(text) said[#said + 1] = text return true end
+            W.onCatch(cid, "Mewtwo")
+            doBroadcastMessage = b
+            check("Legendary defeat: a catch right after is announced", (said[1] or ""):find("caught the wild Mewtwo") ~= nil, said[1])
+            for key, value in pairs(saved) do
+                doSetStorage(key, value)
+            end
+        end, 3000)
+    else
+        check("Legendary defeat: Mewtwo out", false)
+        for key, value in pairs(saved) do
+            doSetStorage(key, value)
+        end
+    end
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -1748,7 +1990,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
