@@ -114,27 +114,31 @@ end
 
 local shaderEvent
 
-local function setShader(name, delay)
+-- the engine ignores a switch while it is fading out the same shader, and a shader it is still
+-- compiling counts as none: wait for both
+local function pushShader(tries)
+    shaderEvent = nil
+    local map = modules.game_interface.getMapPanel()
+    if not map then
+        return
+    end
+    local name = activeShader or ''
+    if tries > 0 and (map:isSwitchingShader() or (name ~= '' and not g_shaders.getShader(name))) then
+        shaderEvent = scheduleEvent(function()
+            pushShader(tries - 1)
+        end, 100)
+        return
+    end
+    map:setShader(name, SHADER_FADE, SHADER_FADE)
+end
+
+local function setShader(name)
     if activeShader == name then
         return
     end
     activeShader = name
     removeEvent(shaderEvent)
-    shaderEvent = nil
-    if delay then
-        shaderEvent = scheduleEvent(function()
-            shaderEvent = nil
-            local map = modules.game_interface.getMapPanel()
-            if map and activeShader == name then
-                map:setShader(name, SHADER_FADE, SHADER_FADE)
-            end
-        end, 200)
-        return
-    end
-    local map = modules.game_interface.getMapPanel()
-    if map then
-        map:setShader(name or '', SHADER_FADE, SHADER_FADE)
-    end
+    pushShader(50)
 end
 
 -- sounds
@@ -500,9 +504,10 @@ function terminate()
     removeEvent(placeEvent)
     removeEvent(flashEvent)
     removeEvent(matchupEvent)
-    removeEvent(shaderEvent)
     stopLightning()
-    setShader(nil)
+    activeShader = nil
+    removeEvent(shaderEvent)
+    pushShader(0)
     playLoop(nil)
     if badge then
         badge:destroy()
