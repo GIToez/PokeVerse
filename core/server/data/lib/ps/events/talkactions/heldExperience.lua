@@ -1,4 +1,4 @@
 function onSay(cid, words, param)
-    PokemonHeldItem.doSendPlayerExpMessage(cid)
+    PokemonHeldItem.doSendPlayerHeldMessage(cid)
 	return true
 end

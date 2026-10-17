@@ -1468,6 +1468,9 @@ void LuaScriptInterface::registerFunctions()
 	//getPlayerSlotItem(cid, slot)
 	lua_register(m_luaState, "getPlayerSlotItem", LuaScriptInterface::luaGetPlayerSlotItem);
 
+	//getPlayerItemFromClientPos(cid, pos)
+	lua_register(m_luaState, "getPlayerItemFromClientPos", LuaScriptInterface::luaGetPlayerItemFromClientPos);
+
 	//getPlayerWeapon(cid[, ignoreAmmo = false])
 	lua_register(m_luaState, "getPlayerWeapon", LuaScriptInterface::luaGetPlayerWeapon);
 
@@ -2460,6 +2463,12 @@ void LuaScriptInterface::registerFunctions()
 
 	//setShinyEventMultiplier(multiplier)
 	lua_register(m_luaState, "setShinyEventMultiplier", LuaScriptInterface::luaSetShinyEventMultiplier);
+
+	//getLootEventMultiplier()
+	lua_register(m_luaState, "getLootEventMultiplier", LuaScriptInterface::luaGetLootEventMultiplier);
+
+	//setLootEventMultiplier(multiplier)
+	lua_register(m_luaState, "setLootEventMultiplier", LuaScriptInterface::luaSetLootEventMultiplier);
 
 	//getDataDir()
 	lua_register(m_luaState, "getDataDir", LuaScriptInterface::luaGetDataDir);
@@ -6372,6 +6381,38 @@ int32_t LuaScriptInterface::luaGetPlayerSlotItem(lua_State* L)
 		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushThing(L, NULL, 0);
 	}
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetPlayerItemFromClientPos(lua_State* L)
+{
+	//getPlayerItemFromClientPos(cid, pos)
+	//	pos as the client sends it: {x = 0xFFFF, y = slot or 0x40 | container id, z = container slot}.
+	//	Only items the player carries (equipment, or containers in it); nothing else.
+	PositionEx pos;
+	popPosition(L, pos);
+
+	ScriptEnviroment* env = getEnv();
+	Player* player = env->getPlayerByUID(popNumber(L));
+	if(!player)
+	{
+		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushThing(L, NULL, 0);
+		return 1;
+	}
+
+	Item* item = NULL;
+	if(pos.x == 0xFFFF)
+	{
+		if(Thing* thing = g_game.internalGetThing(player, pos, pos.z))
+			item = thing->getItem();
+	}
+
+	if(item && item->getHoldingPlayer() == player)
+		pushThing(L, item, env->addThing(item));
+	else
+		pushThing(L, NULL, 0);
+
 	return 1;
 }
 
@@ -11730,6 +11771,25 @@ int32_t LuaScriptInterface::luaSetShinyEventMultiplier(lua_State* L)
 		multiplier = 1.0;
 
 	g_game.setShinyEventMultiplier(multiplier);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetLootEventMultiplier(lua_State* L)
+{
+	//getLootEventMultiplier()
+	lua_pushnumber(L, g_game.getLootEventMultiplier());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetLootEventMultiplier(lua_State* L)
+{
+	//setLootEventMultiplier(multiplier)
+	double multiplier = popFloatNumber(L);
+	if(multiplier < 1.0)
+		multiplier = 1.0;
+
+	g_game.setLootEventMultiplier(multiplier);
 	lua_pushboolean(L, true);
 	return 1;
 }

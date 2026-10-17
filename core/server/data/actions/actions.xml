@@ -77,7 +77,7 @@
 	<action itemid="11967-11968" event="script" value="../../lib/ps/events/actions/slotMachine.lua" />
 	<action itemid="12100-12104;23498-23502" event="script" value="../../lib/ps/events/actions/changeItems.lua" />
 	<action itemid="23513-23531" event="script" value="../../lib/ps/events/actions/heldItem.lua" allowfaruse="1" />
-	<action itemid="30137-30144" event="script" value="../../lib/ps/events/actions/heldItem.lua" allowfaruse="1" />
+	<action itemid="30137-30144;30152-30153" event="script" value="../../lib/ps/events/actions/heldItem.lua" allowfaruse="1" />
 	<action itemid="30145-30150" event="script" value="../../lib/ps/events/actions/evBerry.lua" allowfaruse="1" />
 	<action itemid="19775" event="script" value="../../lib/ps/events/actions/pokeTransformation.lua" />
 	<action itemid="23948;27764-27772" event="script" value="../../lib/ps/events/actions/tmBox.lua" />

@@ -3,20 +3,16 @@
 	<!-- EVENTS -->
 		<!-- ANNIVERSARY -->
 			<raid name="Anniversary" enabled="no" file="events/anniversary.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-		<!-- HALLOWEEN
-			<raid name="Halloween Suramoon" file="events/halloweenSuramoon.xml" interval2="35" margin="35" reftype="block" ref="yes" />
-		
-			<raid name="Halloween" file="events/halloween.xml" interval2="30" margin="30" reftype="block" ref="yes" />
-			<raid name="Halloween Caldron" file="events/halloweenPot.xml" interval2="25" margin="25" reftype="block" ref="yes" />
-	     -->
-		
-		<!-- CHRISTMAS -->
-		<!-- <raid name="christmasGrinchInvasion" file="events/christmasGrinchInvasion.xml" interval2="35" margin="35" reftype="block" ref="yes" /> -->
-		<!--	<raid name="christmasStolenPresent" file="events/christmasStolenPresent.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-			<raid name="christmasRocketBots" file="events/christmasRocketBots.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-			<raid name="christmasRunawayStantler" file="events/christmasRunawayStantler.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-		-->
-		
+		<!-- HALLOWEEN (EventCalendar starts these while Halloween runs) -->
+			<raid name="Halloween Suramoon" enabled="no" file="events/halloweenSuramoon.xml" interval2="35" margin="35" reftype="block" ref="yes" />
+			<raid name="Halloween" enabled="no" file="events/halloween.xml" interval2="30" margin="30" reftype="block" ref="yes" />
+			<raid name="Halloween Caldron" enabled="no" file="events/halloweenPot.xml" interval2="25" margin="25" reftype="block" ref="yes" />
+
+		<!-- CHRISTMAS (EventCalendar starts these while Christmas runs) -->
+			<raid name="christmasGrinchInvasion" enabled="no" file="events/christmasGrinchInvasion.xml" interval2="35" margin="35" reftype="block" ref="yes" />
+			<raid name="christmasStolenPresent" enabled="no" file="events/christmasStolenPresent.xml" interval2="2" margin="30" reftype="block" ref="yes" />
+			<raid name="christmasRocketBots" enabled="no" file="events/christmasRocketBots.xml" interval2="2" margin="30" reftype="block" ref="yes" />
+			<raid name="christmasRunawayStantler" enabled="no" file="events/christmasRunawayStantler.xml" interval2="2" margin="30" reftype="block" ref="yes" />
 		
 	<!--
 		executed on average once every 2 minutes

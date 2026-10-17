@@ -26,6 +26,17 @@ QuickCallSlot < UIWidget
     anchors.left: parent.left
     margin-left: 3
 
+  UIItem
+    id: held
+    size: 16 16
+    virtual: true
+    phantom: true
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+
   Label
     id: health
     font: verdana-11px-antialised

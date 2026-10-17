@@ -1,0 +1,8 @@
+Module
+  name: game_calendar
+  description: PokeVerse event calendar: the running event (or the next one) beside the clock, and a month of holidays, weekend events and moons
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ calendar ]
+  @onLoad: init()
+  @onUnload: terminate()

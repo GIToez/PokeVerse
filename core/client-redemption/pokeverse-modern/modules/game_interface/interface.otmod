@@ -14,7 +14,6 @@ Module
     - game_inventory
     - game_mainpanel
     - game_hotkeys
-    - game_questlog
     - game_textmessage
     - game_console
     - game_actionbar
@@ -54,12 +53,15 @@ Module
     - game_radar
     - game_fishing
     - game_daycare
+    - game_admin
+    - game_quests
     - game_tmchoose
     - game_statusbar
     - game_duelmessage
     - game_tutorial
     - game_effects
     - game_time
+    - game_calendar
     - game_environment
     - game_dollcase
     - game_badgecase

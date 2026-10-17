@@ -40,6 +40,7 @@ local CHESTS_REWARDS = {
     [RARE_CHEST_ITEMID] = {
         random = {
             { itemId = 27767, count = 1, unique = false, chance = 3000 }, -- TM Box level 40
+            { itemId = 30152, count = 1, unique = false, chance = 1000 }, -- Lucky Egg 1%
             { itemId = 29129, count = 1, unique = false }, -- Mastery Ball Box
             { itemId = 29127, count = 1, unique = false }, -- Paint Ticket Box Raro
             { itemId = 23949, count = 1, unique = false }, -- Vitamin Box
@@ -53,6 +54,7 @@ local CHESTS_REWARDS = {
     [LEGENDARY_CHEST_ITEMID] = {
         random = {
             { itemId = 27768, count = 1, unique = false, chance = 3000 }, -- TM Box level 60
+            { itemId = 30153, count = 1, unique = false, chance = 2000 }, -- Exp Share 2%
             { itemId = 29126, count = 1, unique = false }, -- Seal Box Raro
             { itemId = 29124, count = 1, unique = false }, -- Doll Box Raro
             { itemId = 29133, count = 1, unique = false }, -- Paint Ticket Box Legendary

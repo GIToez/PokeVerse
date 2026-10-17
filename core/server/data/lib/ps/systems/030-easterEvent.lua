@@ -37,6 +37,7 @@ EasterEvent.ThisIsEaster.EASTER_EGG_ITEMID = 18794
 EasterEvent.ThisIsEaster.EASTER_EGG_DROP_CHANCE = 40000 -- 40%
 
 EasterEvent.ThisIsEaster.REWARDS = {
+    {itemid = 30152, count = 1, chance = 300, unique = nil}, -- lucky egg
     {itemid = 25405, count = 1, chance = 500, unique = nil}, -- choco curtain
     {itemid = 25406, count = 1, chance = 500, unique = nil}, -- dream curtain
     {itemid = 25407, count = 1, chance = 500, unique = nil}, -- enigma curtain

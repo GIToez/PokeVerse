@@ -26,6 +26,8 @@ AnniversaryEvent.MINION_KILL_REQ_COUNT = 60
 
 AnniversaryEvent.SURPRISE_BAG_REWARDS = {
     { itemid = 27935, count = 1, chance = 20000, unique = true }, -- anniversary token
+    { itemid = 30152, count = 1, chance = 300, unique = nil }, -- lucky egg
+    { itemid = 30153, count = 1, chance = 300, unique = nil }, -- exp share
 
     { itemid = 27937, count = 1, chance = 500, unique = nil }, -- PSoul backpack
     { itemid = 27847, count = 1, chance = 500, unique = nil }, -- e backpack

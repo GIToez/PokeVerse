@@ -2,7 +2,17 @@ if (PokemonHeldItem) then
     return
 end
 
+-- Held items: one per Pokemon, kept on its ball. The type items boost one type of moves by a fixed
+-- HELD_TYPE_BOOST (Polkadot Bow 10%; no levels, no experience); the Elemental Stone boosts the two types it was
+-- charged with. The breeding and EV items only matter to the Day Care and EV gain (PokemonStats).
+--
+-- Trainers give and take them themselves: drag the item onto a Pokemon on the swap bar, or use it
+-- on the ball ("Use with"); "Take held item" on the swap bar gives it back (EXTENDED_IDS.HELD_ITEM,
+-- PokemonHeldItem.onClientMessage). A Pokemon that is out gets the change at once.
+
 PokemonHeldItem = {}
+
+HELD_TYPE_BOOST = 20 -- percent, for the type items and the Elemental Stone
 
 -- Constants
 HELD_IDS = {}
@@ -26,371 +36,6 @@ HELD_IDS.SOFT_SAND = 16
 HELD_IDS.SPELL_TAG = 17
 HELD_IDS.TWISTED_SPOON = 18
 HELD_IDS.ELEMENTAL_STONE = 19
-
-local MAX_LEVEL = 7
-
-local EXP_TABLE = {
-    getExperienceForLevel(20), getExperienceForLevel(30), getExperienceForLevel(40), getExperienceForLevel(50),
-    getExperienceForLevel(55), getExperienceForLevel(60), getExperienceForLevel(65)
-}
-
-local HELDS = {}
-HELDS[HELD_IDS.BLACK_BELT] = {
-    name = "Black Belt",
-    itemId = 23513,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.BLACK_BELT].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_FIGHT)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.BLACK_BELT].name, " +",
-            HELDS[HELD_IDS.BLACK_BELT].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.BLACK_GLASSES] = {
-    name = "Black Glasses",
-    itemId = 23514,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.BLACK_GLASSES].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_DARK)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.BLACK_GLASSES].name, " +",
-            HELDS[HELD_IDS.BLACK_GLASSES].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.CHARCOAL] = {
-    name = "Charcoal",
-    itemId = 23515,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.CHARCOAL].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_FIRE)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.CHARCOAL].name, " +",
-            HELDS[HELD_IDS.CHARCOAL].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.DRAGON_FANG] = {
-    name = "Dragon Fang",
-    itemId = 23516,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.DRAGON_FANG].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_DRAGON)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.DRAGON_FANG].name, " +",
-            HELDS[HELD_IDS.DRAGON_FANG].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.HARD_STONE] = {
-    name = "Hard Stone",
-    itemId = 23517,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.HARD_STONE].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_ROCK)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.HARD_STONE].name, " +",
-            HELDS[HELD_IDS.HARD_STONE].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.MAGNET] = {
-    name = "Magnet",
-    itemId = 23518,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.MAGNET].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_ELECTRIC)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.MAGNET].name, " +",
-            HELDS[HELD_IDS.MAGNET].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.METAL_COAT] = {
-    name = "Metal Coat",
-    itemId = 23519,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.METAL_COAT].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_STEEL)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.METAL_COAT].name, " +",
-            HELDS[HELD_IDS.METAL_COAT].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.MIRACLE_SEED] = {
-    name = "Miracle Seed",
-    itemId = 23520,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.MIRACLE_SEED].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_GRASS)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.MIRACLE_SEED].name, " +",
-            HELDS[HELD_IDS.MIRACLE_SEED].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.MYSTIC_WATER] = {
-    name = "Mystic Water",
-    itemId = 23521,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.MYSTIC_WATER].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_WATER)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.MYSTIC_WATER].name, " +",
-            HELDS[HELD_IDS.MYSTIC_WATER].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.NEVER_MELT_ICE] = {
-    name = "Never Melt Ice",
-    itemId = 23522,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.NEVER_MELT_ICE].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_ICE)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.NEVER_MELT_ICE].name, " +",
-            HELDS[HELD_IDS.NEVER_MELT_ICE].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.PINK_BOW] = {
-    name = "Pink Bow",
-    itemId = 23523,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.PINK_BOW].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_FAIRY)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.PINK_BOW].name, " +",
-            HELDS[HELD_IDS.PINK_BOW].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.POISON_BARB] = {
-    name = "Poison Barb",
-    itemId = 23524,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.POISON_BARB].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_POISON)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.POISON_BARB].name, " +",
-            HELDS[HELD_IDS.POISON_BARB].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.POLKADOT_BOW] = {
-    name = "Polkadot Bow",
-    itemId = 23525,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        -- Unused Held
-        --setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.POLKADOT_BOW].values[level])
-        --setPokemonHeldMovePowerType(cid, ELEMENT_NORMAL)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.POLKADOT_BOW].name, " +",
-            HELDS[HELD_IDS.POLKADOT_BOW].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.SHARP_BEAK] = {
-    name = "Sharp Beak",
-    itemId = 23526,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.SHARP_BEAK].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_FLYING)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.SHARP_BEAK].name, " +",
-            HELDS[HELD_IDS.SHARP_BEAK].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.SILK_SCARF] = {
-    name = "Silk Scarf",
-    itemId = 23527,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.SILK_SCARF].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_NORMAL)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.SILK_SCARF].name, " +",
-            HELDS[HELD_IDS.SILK_SCARF].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.SILVER_POWDER] = {
-    name = "Silver Powder",
-    itemId = 23528,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.SILVER_POWDER].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_BUG)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.SILVER_POWDER].name, " +",
-            HELDS[HELD_IDS.SILVER_POWDER].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.SOFT_SAND] = {
-    name = "Soft Sand",
-    itemId = 23529,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.SOFT_SAND].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_GROUND)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.SOFT_SAND].name, " +",
-            HELDS[HELD_IDS.SOFT_SAND].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.SPELL_TAG] = {
-    name = "Spell Tag",
-    itemId = 23530,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.SPELL_TAG].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_GHOST)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.SPELL_TAG].name, " +",
-            HELDS[HELD_IDS.SPELL_TAG].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.TWISTED_SPOON] = {
-    name = "Twisted Spoon",
-    itemId = 23531,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.TWISTED_SPOON].values[level])
-        setPokemonHeldMovePowerType(cid, ELEMENT_PSYCHIC)
-    end,
-    getDescription = function(uid)
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.TWISTED_SPOON].name, " +",
-            HELDS[HELD_IDS.TWISTED_SPOON].values[level], "%")
-    end
-}
-
-HELDS[HELD_IDS.ELEMENTAL_STONE] = {
-    name = "Elemental Stone",
-    itemId = 25048,
-    values = {5, 7, 10, 13, 15, 18, 20},
-    onApply = function(cid, level, ballUid)
-        setPokemonHeldMovePowerModifier(cid, HELDS[HELD_IDS.ELEMENTAL_STONE].values[level])
-
-        local heldVariables = getBallHeldVariables(ballUid)
-        if (not heldVariables or not isString(heldVariables)) then
-            return
-        end
-
-        local elements = string.explode(heldVariables, ";")
-        for slot, v in pairs(elements) do
-            setPokemonHeldMovePowerType(cid, tonumber(v), slot) -- todo
-        end
-    end,
-    getDescription = function(uid)
-        local str = {}
-        local heldVariables = getBallHeldVariables(uid)
-        if (heldVariables and isString(heldVariables)) then
-            for slot, type in pairs(string.explode(heldVariables, ";")) do
-                type = tonumber(type)
-                str[#str + 1] = ELEMENT_NAMES[type]
-                str[#str + 1] = " / "
-            end
-            str[#str] = nil
-        end
-
-        local level = getBallHeldLevel(uid)
-        return string.concat("Level ", level, " ", HELDS[HELD_IDS.ELEMENTAL_STONE].name, " +",
-            HELDS[HELD_IDS.ELEMENTAL_STONE].values[level], "% ", table.concat(str))
-    end,
-    onInstall = function(ballUid, heldUid)
-        local vars = {}
-        local slot1 = getItemAttribute(heldUid, ITEM_ATTRIBUTES.ELEMENTAL_STONE_SLOT1)
-        if (slot1) then
-            vars[#vars + 1] = slot1
-            vars[#vars + 1] = ";"
-        end
-        
-        local slot2 = getItemAttribute(heldUid, ITEM_ATTRIBUTES.ELEMENTAL_STONE_SLOT2)
-        if (slot2) then
-            vars[#vars + 1] = slot2
-            vars[#vars + 1] = ";"
-        end
-        
-        vars[#vars] = nil
-        setBallHeldVariables(ballUid, tostring(table.concat(vars)))
-    end,
-    getName = function(ballUid)
-        local str = {"Elemental Stone (" }
-        local heldVariables = getBallHeldVariables(ballUid)
-        if (heldVariables and isString(heldVariables)) then
-            for slot, type in pairs(string.explode(heldVariables, ";")) do
-                type = tonumber(type)
-                str[#str + 1] = ELEMENT_NAMES[type]
-                str[#str + 1] = " / "
-            end
-            str[#str] = ")"
-        end
-        return table.concat(str)
-    end,
-    canInstall = function(ballUid, heldUid)
-        return getItemAttribute(heldUid, ITEM_ATTRIBUTES.ELEMENTAL_STONE_SLOT1)
-    end
-}
-
--- Breeding and EV training items: no levels and no move power, they only matter to EV gain and
--- the Day Care (PokemonStats)
 HELD_IDS.DESTINY_KNOT = 20
 HELD_IDS.EVERSTONE = 21
 HELD_IDS.POWER_WEIGHT = 22
@@ -399,15 +44,120 @@ HELD_IDS.POWER_BELT = 24
 HELD_IDS.POWER_LENS = 25
 HELD_IDS.POWER_BAND = 26
 HELD_IDS.POWER_ANKLET = 27
+HELD_IDS.LUCKY_EGG = 28
+HELD_IDS.EXP_SHARE = 29
 
 POWER_ITEM_EV_BONUS = 8
+LUCKY_EGG_EXP_RATE = 1.5
+-- Exp Share holders on the belt split this much of the EXP the Pokemon out earns; it keeps all of its own
+EXP_SHARE_POOL = 0.5
 
+local HELDS = {}
+
+local function setBoost(pokemon, types, percent)
+    setPokemonHeldMovePowerModifier(pokemon, #types > 0 and (percent or HELD_TYPE_BOOST) or 0)
+    for slot = 1, 2 do
+        setPokemonHeldMovePowerType(pokemon, types[slot] or EMPTY_STORAGE, slot)
+    end
+end
+
+local function addTypeHeld(heldId, name, itemId, element, percent)
+    percent = percent or HELD_TYPE_BOOST
+    HELDS[heldId] = {
+        name = name,
+        itemId = itemId,
+        onApply = function(pokemon, ballUid)
+            setBoost(pokemon, { element }, percent)
+        end,
+        getDescription = function(uid)
+            return string.format("%s: %s moves +%d%%", name, ELEMENT_NAMES[element], percent)
+        end
+    }
+end
+
+addTypeHeld(HELD_IDS.BLACK_BELT, "Black Belt", 23513, ELEMENT_FIGHT)
+addTypeHeld(HELD_IDS.BLACK_GLASSES, "Black Glasses", 23514, ELEMENT_DARK)
+addTypeHeld(HELD_IDS.CHARCOAL, "Charcoal", 23515, ELEMENT_FIRE)
+addTypeHeld(HELD_IDS.DRAGON_FANG, "Dragon Fang", 23516, ELEMENT_DRAGON)
+addTypeHeld(HELD_IDS.HARD_STONE, "Hard Stone", 23517, ELEMENT_ROCK)
+addTypeHeld(HELD_IDS.MAGNET, "Magnet", 23518, ELEMENT_ELECTRIC)
+addTypeHeld(HELD_IDS.METAL_COAT, "Metal Coat", 23519, ELEMENT_STEEL)
+addTypeHeld(HELD_IDS.MIRACLE_SEED, "Miracle Seed", 23520, ELEMENT_GRASS)
+addTypeHeld(HELD_IDS.MYSTIC_WATER, "Mystic Water", 23521, ELEMENT_WATER)
+addTypeHeld(HELD_IDS.NEVER_MELT_ICE, "Never Melt Ice", 23522, ELEMENT_ICE)
+addTypeHeld(HELD_IDS.PINK_BOW, "Pink Bow", 23523, ELEMENT_FAIRY)
+addTypeHeld(HELD_IDS.POISON_BARB, "Poison Barb", 23524, ELEMENT_POISON)
+addTypeHeld(HELD_IDS.SHARP_BEAK, "Sharp Beak", 23526, ELEMENT_FLYING)
+addTypeHeld(HELD_IDS.SILK_SCARF, "Silk Scarf", 23527, ELEMENT_NORMAL)
+addTypeHeld(HELD_IDS.SILVER_POWDER, "Silver Powder", 23528, ELEMENT_BUG)
+addTypeHeld(HELD_IDS.SOFT_SAND, "Soft Sand", 23529, ELEMENT_GROUND)
+addTypeHeld(HELD_IDS.SPELL_TAG, "Spell Tag", 23530, ELEMENT_GHOST)
+addTypeHeld(HELD_IDS.TWISTED_SPOON, "Twisted Spoon", 23531, ELEMENT_PSYCHIC)
+
+-- As in the games, the weaker Normal item: Silk Scarf is the full boost
+addTypeHeld(HELD_IDS.POLKADOT_BOW, "Polkadot Bow", 23525, ELEMENT_NORMAL, 10)
+
+local function stoneElements(ballUid)
+    local elements = {}
+    local heldVariables = getBallHeldVariables(ballUid)
+    if (heldVariables and isString(heldVariables)) then
+        for _, v in pairs(string.explode(heldVariables, ";")) do
+            elements[#elements + 1] = tonumber(v)
+        end
+    end
+    return elements
+end
+
+local function stoneElementNames(ballUid)
+    local names = {}
+    for _, element in ipairs(stoneElements(ballUid)) do
+        names[#names + 1] = ELEMENT_NAMES[element]
+    end
+    return table.concat(names, " / ")
+end
+
+HELDS[HELD_IDS.ELEMENTAL_STONE] = {
+    name = "Elemental Stone",
+    itemId = 25048,
+    onApply = function(pokemon, ballUid)
+        setBoost(pokemon, stoneElements(ballUid))
+    end,
+    getDescription = function(uid)
+        return string.format("Elemental Stone: %s moves +%d%%", stoneElementNames(uid), HELD_TYPE_BOOST)
+    end,
+    onInstall = function(ballUid, heldUid)
+        local vars = {}
+        for _, attribute in ipairs({ ITEM_ATTRIBUTES.ELEMENTAL_STONE_SLOT1, ITEM_ATTRIBUTES.ELEMENTAL_STONE_SLOT2 }) do
+            local element = getItemAttribute(heldUid, attribute)
+            if (element) then
+                vars[#vars + 1] = element
+            end
+        end
+        setBallHeldVariables(ballUid, table.concat(vars, ";"))
+    end,
+    -- the stone comes back uncharged with its plates, to be charged again
+    onTake = function(cid, ballUid)
+        doPlayerSafeAddItem(cid, HELDS[HELD_IDS.ELEMENTAL_STONE].itemId, 1, true)
+        for _, element in ipairs(stoneElements(ballUid)) do
+            doPlayerSafeAddItem(cid, PLATE_ITEMID_BY_TYPE[element], 1, true)
+        end
+    end,
+    getName = function(ballUid)
+        return "Elemental Stone (" .. stoneElementNames(ballUid) .. ")"
+    end,
+    canInstall = function(ballUid, heldUid)
+        return getItemAttribute(heldUid, ITEM_ATTRIBUTES.ELEMENTAL_STONE_SLOT1)
+    end
+}
+
+-- Breeding and EV training items: no move power, they only matter to EV gain and the Day Care
 local function addStatHeld(heldId, name, itemId, values)
     HELDS[heldId] = {
         name = name,
         itemId = itemId,
-        noLevels = true,
-        onApply = function(cid, level, ballUid) end,
+        onApply = function(pokemon, ballUid)
+            setBoost(pokemon, {})
+        end,
         getDescription = function(uid)
             return HELDS[heldId].summary
         end
@@ -435,6 +185,11 @@ for stat, power in ipairs(POWER_ITEMS) do
     })
 end
 
+addStatHeld(HELD_IDS.LUCKY_EGG, "Lucky Egg", 30152,
+    { expRate = LUCKY_EGG_EXP_RATE, summary = "Lucky Egg (+50% experience from wild Pokemon)" })
+addStatHeld(HELD_IDS.EXP_SHARE, "Exp Share", 30153,
+    { expShare = true, summary = "Exp Share (shares the experience of the Pokemon out while on the belt)" })
+
 local HELD_BY_ITEMID = {}
 for id, held in pairs(HELDS) do
     HELD_BY_ITEMID[held.itemId] = id
@@ -442,13 +197,23 @@ end
 
 local FIRST_ELEMENTAL_STONE = 24724
 local LAST_ELEMENTAL_STONE = 25047
-for i = FIRST_ELEMENTAL_STONE, LAST_ELEMENTAL_STONE do -- Ugly hack
+for i = FIRST_ELEMENTAL_STONE, LAST_ELEMENTAL_STONE do -- the charged stones
     HELD_BY_ITEMID[i] = HELD_IDS.ELEMENTAL_STONE
 end
 
--- Vars
+local function getBallHeldDefinition(ballUid)
+    local heldId = getBallHeld(ballUid)
+    return heldId and HELDS[heldId] or nil
+end
 
--- Local
+-- The Pokemon of this ball when it is out
+local function summonOf(cid, ballUid)
+    local ball = getPlayerBall(cid)
+    if (isItem(ball) and ball.uid == ballUid and isPokemonOnline(cid)) then
+        return getPlayerPokemon(cid)
+    end
+    return nil
+end
 
 -- Global
 PokemonHeldItem.getHeldItemId = function(heldId)
@@ -467,110 +232,92 @@ PokemonHeldItem.getHeldName = function(heldId, ballUid)
     return HELDS[heldId].name
 end
 
-PokemonHeldItem.onGainExperience = function(player, pokemon, ball, expAmount)
-    if (expAmount < 1) then
-        return
-    end
-
-    local heldId = getBallHeld(ball.uid)
-    if (not heldId or (HELDS[heldId] and HELDS[heldId].noLevels)) then
-        return
-    end
-
-    local currentLevel = getBallHeldLevel(ball.uid)
-    if (currentLevel >= MAX_LEVEL) then
-        return
-    end
-
-    local oldExperience = getBallHeldExperience(ball.uid)
-    local newExperience = oldExperience + expAmount
-    local nextLevelExp = EXP_TABLE[currentLevel]--((50 * (currentLevel) * (currentLevel) * (currentLevel)) - (150 * (currentLevel) * (currentLevel)) + (400 * (currentLevel))) / 3
-    local gainLevel = 0
-
-    setBallHeldExperience(ball.uid, newExperience)
-
-    while (newExperience >= nextLevelExp) do
-        gainLevel = gainLevel + 1
-        nextLevelExp = EXP_TABLE[currentLevel + gainLevel]--((50 * (currentLevel + gainLevel) * (currentLevel + gainLevel) * (currentLevel + gainLevel)) - (150 * (currentLevel + gainLevel) * (currentLevel + gainLevel)) + (400 * (currentLevel + gainLevel))) / 3
-    end
-
-    if ((gainLevel + currentLevel) > MAX_LEVEL) then
-        gainLevel = MAX_LEVEL - currentLevel
-    end
-
-    if (gainLevel > 0) then
-        local pokemonPosition = getCreaturePosition(pokemon and pokemon or player)
-        local pokemonNickname = getBallPokemonNickname(ball.uid)
-        local newLevel = currentLevel + gainLevel
-
-        if (pokemonNickname ~= nil and pokemonNickname ~= -1) then
-            doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE,
-                string.format(__L(player, "Congratulations! Your %s held item advanced from level %s to level %s."), pokemonNickname, currentLevel, newLevel))
-        else
-            doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE,
-                string.format(__L(player, "Congratulations! Your %s held item advanced from level %s to level %s."), getBallPokemonName(ball.uid), currentLevel, newLevel))
-        end
-
-        doSendMagicEffect(pokemonPosition, EFFECT_GREEN_BUFF)
-        doSendMagicEffect(pokemonPosition, EFFECT_LEVEL_UP)
-
-        setBallHeldLevel(ball.uid, newLevel)
-        if (pokemon) then
-            HELDS[heldId].onApply(pokemon, newLevel, ball.uid)
-        end
-    end
+PokemonHeldItem.isHeldItem = function(itemId)
+    return HELD_BY_ITEMID[itemId] ~= nil
 end
 
-PokemonHeldItem.onUse = function(cid, item, fromPosition, itemEx, toPosition)
-    local heldId = HELD_BY_ITEMID[item.itemid]
-    if (not heldId or not isItem(itemEx) or not isBallWithPokemon(itemEx.uid)) then
-        doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
-        return true
-
-    elseif (isPokemonOnline(cid)) then
-        doPlayerSendCancel(cid, "You can't do that while your Pokemon is out of its ball.")
-        return true
-
-    elseif (fromPosition.x ~= CONTAINER_POSITION or toPosition.x ~= CONTAINER_POSITION) then -- TODO: This doesnt mean that the player is carring the item or no
-        doPlayerSendCancel(cid, "You must pick up this item first.")
-        return true
-
-    elseif (getBallHeld(itemEx.uid)) then
-        doPlayerSendCancel(cid, "Your Pokemon already have got a Held Item.")
-        return true
+-- Gives back the item a ball holds and empties it. Returns the name of the item, or nil and why not.
+PokemonHeldItem.take = function(cid, ballUid)
+    local heldId = getBallHeld(ballUid)
+    if (not heldId) then
+        return nil, "This Pokemon isn't holding an item."
+    elseif (isEvolving(cid)) then
+        return nil, "Wait until your Pokemon has evolved."
     end
 
     local held = HELDS[heldId]
-    if (not held) then
-        log(LOG_TYPES.ERROR, "PokemonHeldItem.onUse - Unknown heldId", getCreatureName(cid), item, fromPosition,
-            itemEx, toPosition, heldId)
-        doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
-        return true
+    local name = PokemonHeldItem.getHeldName(heldId, ballUid) or "held item"
+    if (held and held.onTake) then
+        held.onTake(cid, ballUid)
+    elseif (held) then
+        doPlayerSafeAddItem(cid, held.itemId, 1, true)
     end
 
-    if (held.canInstall and not held.canInstall(itemEx.uid, item.uid)) then
-        doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
-        return true
+    setBallHeld(ballUid, nil, true)
+    setBallHeldVariables(ballUid, "")
+    doBallUpdateDescription(ballUid)
+    local pokemon = summonOf(cid, ballUid)
+    if (pokemon) then
+        setBoost(pokemon, {})
     end
-
-    setBallHeld(itemEx.uid, heldId)
-    setBallHeldExperience(itemEx.uid, 0)
-    setBallHeldLevel(itemEx.uid, 1)
-    
-    if (held.onInstall) then
-        held.onInstall(itemEx.uid, item.uid)
-    end
-    
-    doBallUpdateDescription(itemEx.uid)
-    doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your Pokemon received the %s held item!"), held.name))
-    doRemoveItem(item.uid, 1)
-    return true
+    PokemonHeldItem.sendBar(cid)
+    return name
 end
 
-local function getBallHeldDefinition(ballUid)
-    local heldId = getBallHeld(ballUid)
-    return heldId and HELDS[heldId] or nil
+-- Puts the held item (an item the trainer carries) on the ball's Pokemon; an item it held already
+-- comes back. Returns the name of the item, or nil and why not.
+PokemonHeldItem.give = function(cid, ballUid, item)
+    local heldId = HELD_BY_ITEMID[item.itemid]
+    local held = heldId and HELDS[heldId]
+    if (not held) then
+        return nil, "Only held items can be given to a Pokemon."
+    elseif (not isBallWithPokemon(ballUid)) then
+        return nil, "Give it to a Pokemon."
+    elseif (isEvolving(cid)) then
+        return nil, "Wait until your Pokemon has evolved."
+    elseif (held.canInstall and not held.canInstall(ballUid, item.uid)) then
+        return nil, "Charge the Elemental Stone with a plate first."
+    end
+
+    if (getBallHeld(ballUid)) then
+        PokemonHeldItem.take(cid, ballUid)
+    end
+
+    setBallHeld(ballUid, heldId)
+    if (held.onInstall) then
+        held.onInstall(ballUid, item.uid)
+    end
+    doRemoveItem(item.uid, 1)
+    doBallUpdateDescription(ballUid)
+
+    local pokemon = summonOf(cid, ballUid)
+    if (pokemon) then
+        held.onApply(pokemon, ballUid)
+    end
+    PokemonHeldItem.sendBar(cid)
+    return PokemonHeldItem.getHeldName(heldId, ballUid)
+end
+
+-- "Use with" a held item on a Pokemon's ball
+PokemonHeldItem.onUse = function(cid, item, fromPosition, itemEx, toPosition)
+    if (not isItem(itemEx) or not isBallWithPokemon(itemEx.uid)) then
+        doPlayerSendCancel(cid, "Use it on a Pokemon's ball, or drag it onto a Pokemon on the swap bar.")
+        return true
+
+    elseif (fromPosition.x ~= CONTAINER_POSITION or toPosition.x ~= CONTAINER_POSITION) then
+        doPlayerSendCancel(cid, "You must pick up this item first.")
+        return true
+    end
+
+    local name, err = PokemonHeldItem.give(cid, itemEx.uid, item)
+    if (not name) then
+        doPlayerSendCancel(cid, err)
+        return true
+    end
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your %s is now holding %s."),
+        getBallPokemonName(itemEx.uid), name))
+    return true
 end
 
 -- { stat, amount } for a Power item, nil otherwise
@@ -598,35 +345,68 @@ PokemonHeldItem.hasEverstone = function(ballUid)
     return held and held.everstone or false
 end
 
+PokemonHeldItem.getExpRate = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.expRate or 1
+end
+
+PokemonHeldItem.hasExpShare = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.expShare or false
+end
+
+-- Balls on the belt holding an Exp Share that can take experience: not the earner, not fainted
+PokemonHeldItem.getExpShareBalls = function(cid, earnerBallUid)
+    local belt = getPlayerBelt(cid)
+    local balls = {}
+    if (not belt) then
+        return balls
+    end
+    for _, item in ipairs(getContainerItems(belt)) do
+        local lastHp = tonumber(getBallPokemonLastHp(item.uid))
+        if (item.uid ~= earnerBallUid and isBallWithPokemon(item.uid) and PokemonHeldItem.hasExpShare(item.uid) and
+                not getBallFromNpc(item.uid) and not (lastHp and lastHp <= 0)) then
+            balls[#balls + 1] = item
+        end
+    end
+    return balls
+end
+
+-- Called with the kill EXP (before rates) the earner got; each holder's share then gets its own rates.
+-- Holders also gain the defeated Pokemon's EVs, as in the games.
+PokemonHeldItem.shareExperience = function(cid, gainExp, earnerBallUid, target)
+    local balls = PokemonHeldItem.getExpShareBalls(cid, earnerBallUid)
+    if (#balls == 0 or gainExp <= 0) then
+        return 0
+    end
+    local share = gainExp * EXP_SHARE_POOL / #balls
+    for _, ball in ipairs(balls) do
+        doPlayerPokemonAddExperience(cid, nil, share, nil, ball)
+        if (target) then
+            PokemonStats.onDefeated(cid, ball, target)
+        end
+    end
+    return #balls
+end
+
 PokemonHeldItem.getMovePowerModifier = function(cid, moveType)
-    local continue = nil
     for slot = 1, 2 do
         local type = getPokemonHeldMovePowerType(cid, slot)
         if (type ~= EMPTY_STORAGE and type == moveType) then
-            continue = true
+            return 1 + (getPokemonHeldMovePowerModifier(cid) / 100)
         end
     end
-
-    if (continue) then
-        return 1 + (getPokemonHeldMovePowerModifier(cid) / 100)
-    end
-
     return 1
 end
 
 PokemonHeldItem.onPokemonCall = function(pokemon, ball)
-    local heldId = getBallHeld(ball.uid)
-    if (not heldId) then
-        return
-    end
-
-    if (not HELDS[heldId]) then
-        log(LOG_TYPES.ERROR, "PokemonHeldItem.onPokemonCall - Unknown heldId", heldId,
+    local held = getBallHeldDefinition(ball.uid)
+    if (held) then
+        held.onApply(pokemon, ball.uid)
+    elseif (getBallHeld(ball.uid)) then
+        log(LOG_TYPES.ERROR, "PokemonHeldItem.onPokemonCall - Unknown heldId", getBallHeld(ball.uid),
             getCreatureName(getCreatureMaster(pokemon)))
-        return
     end
-
-    HELDS[heldId].onApply(pokemon, getBallHeldLevel(ball.uid), ball.uid)
 end
 
 PokemonHeldItem.getBallDescription = function(uid)
@@ -643,43 +423,109 @@ PokemonHeldItem.getBallDescription = function(uid)
     return HELDS[heldId].getDescription(uid)
 end
 
-PokemonHeldItem.doResetBall = function(ball, cid)
-    local heldId = getBallHeld(ball.uid)
-    if (heldId and heldId == HELD_IDS.ELEMENTAL_STONE) then
-        local heldVariables = getBallHeldVariables(ball.uid)
-        if (heldVariables and isString(heldVariables)) then
-            for slot, type in pairs(string.explode(heldVariables, ";")) do
-                type = tonumber(type)
-                doPlayerSafeAddItem(cid, PLATE_ITEMID_BY_TYPE[type], 1, true)
+-- /held: what the Pokemon in the ball slot holds
+PokemonHeldItem.doSendPlayerHeldMessage = function(cid)
+    local ball = getPlayerBall(cid)
+    if (not isItem(ball) or not isBallWithPokemon(ball.uid)) then
+        doPlayerSendCancel(cid, "First put your Pokemon's ball in the ball slot.")
+    elseif (not getBallHeld(ball.uid)) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid,
+            "Your %s isn't holding an item. Drag a held item onto it on the swap bar to give it one."), getBallPokemonName(ball.uid)))
+    else
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your %s is holding %s."),
+            getBallPokemonName(ball.uid), PokemonHeldItem.getBallDescription(ball.uid)))
+    end
+end
+
+-- What each Pokemon on the swap bar holds, for its icon and tooltip
+PokemonHeldItem.sendBar = function(cid)
+    local items = {}
+    for _, ball in pairs(getPlayerAllBallsWithPokemon(cid)) do
+        local number = tonumber(getFastcallNumber(ball.uid))
+        local heldId = getBallHeld(ball.uid)
+        if (number and heldId and HELDS[heldId]) then
+            local info = getItemInfo(HELDS[heldId].itemId)
+            items[#items + 1] = { number = number, name = PokemonHeldItem.getHeldName(heldId, ball.uid),
+                                  text = PokemonHeldItem.getBallDescription(ball.uid), client = info and info.clientId or 0 }
+        end
+    end
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.HELD_ITEM, JSON.encode({ type = "bar", items = items }))
+end
+
+local function clientIdOf(itemId)
+    local info = getItemInfo(itemId)
+    return info and info.clientId or nil
+end
+
+-- The client's bag view can be sorted differently from the server's container, so the position is
+-- only trusted when the item there has the client id that was dragged; otherwise any carried held
+-- item with that client id is used.
+local function findDraggedItem(cid, dragged)
+    local clientId = tonumber(dragged.id)
+    local item = getPlayerItemFromClientPos(cid, { x = tonumber(dragged.x) or 0, y = tonumber(dragged.y) or 0,
+                                                   z = tonumber(dragged.z) or 0, stackpos = 0 })
+    if (isItem(item) and (not clientId or clientIdOf(item.itemid) == clientId)) then
+        return item
+    end
+    if (not clientId) then
+        return nil
+    end
+    for itemId in pairs(HELD_BY_ITEMID) do
+        if (clientIdOf(itemId) == clientId) then
+            local found = getPlayerItemById(cid, true, itemId)
+            if (isItem(found)) then
+                return found
             end
         end
     end
-
-    setBallHeld(ball.uid, nil, true)
-    setBallHeldLevel(ball.uid, 0)
-    setBallHeldExperience(ball.uid, 0)
-    setBallHeldVariables(ball.uid, "")
-    doBallUpdateDescription(ball.uid)
+    return nil
 end
 
-PokemonHeldItem.doSendPlayerExpMessage = function(cid)
-    local ball = getPlayerBall(cid)
+-- Swap bar (client game_pokebar), JSON on EXTENDED_IDS.HELD_ITEM:
+--   {action = "refresh"}                                     -> {type = "bar", items = {{number, name, text, client}}}
+--   {action = "give", number = <swap bar number>, item = {x, y, z, id = <client id>}}
+--   {action = "take", number = <swap bar number>}            (both answer with the bar too)
+PokemonHeldItem.onClientMessage = function(cid, buffer)
+    local ok, data = pcall(JSON.decode, buffer)
+    if (not ok or type(data) ~= "table") then
+        return
+    end
+    if (data.action == "refresh") then
+        PokemonHeldItem.sendBar(cid)
+        return
+    end
+    if (isExhaust(cid)) then
+        doPlayerSendCancel(cid, "You're exhausted.")
+        return
+    end
+    local ballUid = getFastcallBall(cid, data.number)
+    if (not ballUid) then
+        doPlayerSendCancel(cid, "That Pokemon isn't with you.")
+        return
+    end
 
-    if (not isItem(ball)) then
-        doPlayerSendCancel(cid, "First get your Pokemon ball at the right slot.")
+    if (data.action == "give" and type(data.item) == "table") then
+        local item = findDraggedItem(cid, data.item)
+        if (not isItem(item)) then
+            doPlayerSendCancel(cid, "You must pick up this item first.")
+            return
+        end
+        local name, err = PokemonHeldItem.give(cid, ballUid, item)
+        if (not name) then
+            doPlayerSendCancel(cid, err)
+            return
+        end
+        doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your %s is now holding %s."),
+            getBallPokemonName(ballUid), name))
 
-    elseif (not getBallHeld(ball.uid)) then
-        doPlayerSendCancel(cid, "Your Pokemon doesn't have a Held item.")
-
-    elseif (getBallHeldDefinition(ball.uid) and getBallHeldDefinition(ball.uid).noLevels) then
-        doPlayerSendCancel(cid, "Your Pokemon's Held item has no levels.")
-
-    else
-        local heldLevel = getBallHeldLevel(ball.uid)
-        local heldExperience = getBallHeldExperience(ball.uid)
-        local totalExpToNextLevel = EXP_TABLE[heldLevel] and EXP_TABLE[heldLevel] or 0
-        local totalExpToCurrentLevel = EXP_TABLE[heldLevel - 1] and EXP_TABLE[heldLevel - 1] or 0
-
-        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Your Pokemon Held item is at level %s and has %s experience points, he needs more %s(%s%%) experience points to advance to level %s."), heldLevel, heldExperience, (totalExpToNextLevel - heldExperience), 100 - math.ceil((heldExperience - totalExpToCurrentLevel) / ((totalExpToNextLevel - totalExpToCurrentLevel) / 100)), heldLevel + 1))
+    elseif (data.action == "take") then
+        local name, err = PokemonHeldItem.take(cid, ballUid)
+        if (not name) then
+            doPlayerSendCancel(cid, err)
+            return
+        end
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "You took the %s from your %s."),
+            name, getBallPokemonName(ballUid)))
     end
 end

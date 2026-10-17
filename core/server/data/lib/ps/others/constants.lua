@@ -60,7 +60,12 @@ EXTENDED_IDS = {
     RADAR = 25, -- JSON Ranger radar popup: scans, cooldown and whether the trainer has a radar (Vocations.radar)
     FISHING = 26, -- JSON Angler fishing guide: what bites in each region at each skill (Fishing.openGuide)
     TRAINER_CARD = 27, -- JSON Trainer Card: a trainer's profile, and the card's settings for its owner (TrainerCard)
-    DAYCARE = 28 -- JSON Day Care window: the two slots, the egg slot and the breeding status (Daycare)
+    DAYCARE = 28, -- JSON Day Care window: the two slots, the egg slot and the breeding status (Daycare)
+    HELD_ITEM = 29, -- JSON give or take a held item from the swap bar (PokemonHeldItem.onClientMessage)
+    ADMIN = 30, -- JSON Admin window for staff: server events and staff tools (Admin)
+    QUEST = 31, -- JSON quest log, quest notices and the NPCs' quest marks (Quests)
+    MOVE_INFO = 32, -- JSON type matchups on the moves bar and the move cards (MoveInfo)
+    CALENDAR = 33 -- JSON event calendar: what runs now, what comes next, and the events of a month (EventCalendar)
 }
 
 TOURNAMENT_TYPES = {}

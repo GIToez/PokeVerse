@@ -1,0 +1,258 @@
+// The Admin window (the frame comes from game_dailytasks, the panels and tabs from game_fishing,
+// the buttons and the text field from client_entergame)
+
+AdminText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+AdminMuted < AdminText
+  color: #96aacd
+
+AdminTab < FishingTab
+  size: 46 22
+  ttf-font-size: 11
+
+AdminEventRow < UIWidget
+  height: 60
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  padding: 7 10 7 12
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 13
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  AdminMuted
+    id: command
+    text-auto-resize: true
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+
+  AdminText
+    id: status
+    text-auto-resize: true
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+
+  UIWidget
+    id: multipliers
+    size: 206 22
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -3
+    margin-left: 236
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+  UIWidget
+    id: durations
+    size: 306 22
+    anchors.top: multipliers.bottom
+    anchors.left: multipliers.left
+    margin-top: 4
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+  PVGreenButton
+    id: start
+    !text: tr('Start')
+    size: 76 28
+    ttf-font-size: 12
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: -3
+
+  PVRedButton
+    id: stop
+    !text: tr('Stop')
+    size: 76 28
+    ttf-font-size: 12
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: -3
+
+AdminCommand < FishingTab
+  height: 26
+  text-auto-resize: false
+  ttf-font-size: 11
+  color: #dce6ff
+
+AdminWindow < UIWindow
+  size: 760 702
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_admin.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 34 34
+    image-source: /modules/game_admin/images/icon_admin
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -2
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Admin')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  AdminMuted
+    id: subtitle
+    !text: tr('Server events and staff tools. Only staff accounts see this window.')
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_admin.hide()
+
+  AdminText
+    id: online
+    text-auto-resize: true
+    anchors.right: closeButton.left
+    anchors.verticalCenter: closeButton.verticalCenter
+    margin-right: 14
+
+  FishingPanel
+    id: events
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 16
+    height: 314
+
+    FishingPanelTitle
+      id: title
+      !text: tr('Server events')
+
+    AdminMuted
+      id: hint
+      !text: tr('Starting an event replaces the one running. Everyone online sees a broadcast.')
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+
+    UIWidget
+      id: rows
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      layout:
+        type: verticalBox
+        spacing: 6
+
+  FishingPanel
+    id: tools
+    anchors.top: events.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    height: 104
+
+    FishingPanelTitle
+      id: title
+      !text: tr('Tools')
+
+    PVField
+      id: broadcastText
+      !placeholder: tr('Message to broadcast to everyone online')
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: broadcast.left
+      margin: 8 8 0 0
+      padding-left: 10
+      max-length: 255
+
+    PVBlueButton
+      id: broadcast
+      !text: tr('Broadcast')
+      size: 110 34
+      ttf-font-size: 12
+      anchors.top: title.bottom
+      anchors.right: parent.right
+      margin-top: 8
+
+    PVBlueButton
+      id: save
+      !text: tr('Save server')
+      size: 130 28
+      ttf-font-size: 12
+      anchors.top: broadcastText.bottom
+      anchors.left: parent.left
+      margin-top: 8
+
+    PVBlueButton
+      id: clean
+      !text: tr('Clean map')
+      size: 130 28
+      ttf-font-size: 12
+      anchors.top: save.top
+      anchors.left: save.right
+      margin-left: 8
+
+    AdminText
+      id: result
+      text-auto-resize: true
+      anchors.left: clean.right
+      anchors.verticalCenter: clean.verticalCenter
+      margin-left: 14
+
+  FishingPanel
+    id: commands
+    anchors.top: tools.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+
+    FishingPanelTitle
+      id: title
+      !text: tr('Commands')
+
+    AdminMuted
+      id: hint
+      !text: tr('Click one to put it in the chat line.')
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+
+    UIWidget
+      id: list
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      layout:
+        type: grid
+        cell-size: 165 26
+        cell-spacing: 6
+        flow: true

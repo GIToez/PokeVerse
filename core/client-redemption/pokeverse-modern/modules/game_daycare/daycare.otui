@@ -534,9 +534,10 @@ DaycareWindow < UIWindow
 
     GtsScrollBar
       id: listScroll
-      anchors.top: list.top
-      anchors.bottom: list.bottom
+      anchors.top: rules.bottom
+      anchors.bottom: parent.bottom
       anchors.right: parent.right
+      margin-top: 6
 
     DaycareMuted
       id: none
@@ -549,9 +550,10 @@ DaycareWindow < UIWindow
 
   FishingPanel
     id: plates
-    anchors.top: deposit.top
+    anchors.top: compatibility.bottom
     anchors.right: parent.right
     anchors.bottom: parent.bottom
+    margin-top: 10
     width: 230
 
     DaycarePanelTitle

@@ -20,7 +20,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
     if (msgcontains(msg, 'remove') or msgcontains(msg, 'held') or msgcontains(msg, 'remover')) then
-        selfSay("I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that. {Yes} or {No}", cid)
+        selfSay("I can {remove} the held item of the Pokemon in your ball slot and give it back to you. Do you want that? {Yes} or {No}", cid)
         talkState[talkUser] = TALKSTATE_CONFIRM
 
     elseif (talkState[talkUser] == TALKSTATE_CONFIRM) then
@@ -38,9 +38,8 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 selfSay("Your Pokemon doesn't have any held item.", cid)
 
             else
-                doPlayerSafeAddItem(cid, PokemonHeldItem.getHeldItemId(getBallHeld(ball.uid)), 1, true)
-                PokemonHeldItem.doResetBall(ball, cid)
-                selfSay(__L(cid, "Done!"), cid)
+                PokemonHeldItem.take(cid, ball.uid)
+                selfSay(__L(cid, "Done! Next time you can do it yourself: right-click your Pokemon on the swap bar and pick {Take held item}."), cid)
             end
 
         else

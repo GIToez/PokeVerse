@@ -21,6 +21,13 @@ local PORTRAITS = {
     ['Erika'] = LEADERS .. 'erika', ['Koga'] = LEADERS .. 'koga', ['Sabrina'] = LEADERS .. 'sabrina',
     ['Blaine'] = LEADERS .. 'blaine', ['Giovanni'] = LEADERS .. 'giovanni',
     ['Professor Oak'] = '/images/portraits/professor_oak', ['Red'] = '/images/portraits/red',
+    ['Nurse Joy'] = '/images/portraits/nurse_joy',
+    ['Jenny'] = '/images/portraits/officer_jenny', ['Bill'] = '/images/portraits/bill',
+    ['Mr. Fuji'] = '/images/portraits/mr_fuji', ['Gary Oak'] = '/images/portraits/gary_oak',
+    ['Daisy Oak'] = '/images/portraits/daisy_oak', ['Jessie'] = '/images/portraits/jessie',
+    ['James'] = '/images/portraits/james', ['Jessie and James'] = '/images/portraits/jessie_and_james',
+    ['Lorelei'] = '/images/portraits/lorelei', ['Bruno'] = '/images/portraits/bruno',
+    ['Agatha'] = '/images/portraits/agatha', ['Lance'] = '/images/portraits/lance',
 }
 
 local ROLES = {
@@ -29,6 +36,12 @@ local ROLES = {
     ['Koga'] = 'Gym Leader, Fuchsia City', ['Sabrina'] = 'Gym Leader, Saffron City',
     ['Blaine'] = 'Gym Leader, Cinnabar Island', ['Giovanni'] = 'Gym Leader, Viridian City',
     ['Professor Oak'] = 'Pokemon Professor, Pallet Town', ['Red'] = 'Trainer Guide',
+    ['Nurse Joy'] = 'Pokemon Center',
+    ['Jenny'] = 'Officer', ['Bill'] = 'Pokemon Maniac', ['Mr. Fuji'] = 'Lavender Town',
+    ['Gary Oak'] = "Professor Oak's grandson", ['Daisy Oak'] = 'Pallet Town',
+    ['Jessie'] = 'Team Rocket', ['James'] = 'Team Rocket', ['Jessie and James'] = 'Team Rocket',
+    ['Lorelei'] = 'Elite Four, Ice', ['Bruno'] = 'Elite Four, Fighting', ['Agatha'] = 'Elite Four, Ghost',
+    ['Lance'] = 'Elite Four, Dragon',
 }
 
 local window
@@ -263,6 +276,11 @@ local function stopChecking()
         removeEvent(checkEvent)
         checkEvent = nil
     end
+end
+
+-- the drawn portrait of a famous NPC, or nil (the quest log shows the outfit then)
+function getPortrait(name)
+    return PORTRAITS[name]
 end
 
 function hide()

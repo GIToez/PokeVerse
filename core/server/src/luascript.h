@@ -513,6 +513,7 @@ class LuaScriptInterface
 		static int32_t luaGetPlayerFreeCap(lua_State* L);
 		static int32_t luaGetPlayerLight(lua_State* L);
 		static int32_t luaGetPlayerSlotItem(lua_State* L);
+		static int32_t luaGetPlayerItemFromClientPos(lua_State* L);
 		static int32_t luaGetPlayerWeapon(lua_State* L);
 		static int32_t luaGetPlayerItemById(lua_State* L);
 		static int32_t luaGetPlayerItemByIdWithAttribute(lua_State* L);
@@ -631,6 +632,8 @@ class LuaScriptInterface
 		static int32_t luaSetExperienceEventMultiplier(lua_State* L);
 		static int32_t luaGetShinyEventMultiplier(lua_State* L);
 		static int32_t luaSetShinyEventMultiplier(lua_State* L);
+		static int32_t luaGetLootEventMultiplier(lua_State* L);
+		static int32_t luaSetLootEventMultiplier(lua_State* L);
 		static int32_t luaDoCreatureChangeOutfit(lua_State* L);
 		static int32_t luaSetCreatureOutfit(lua_State* L);
 		static int32_t luaGetCreatureOutfit(lua_State* L);

@@ -572,6 +572,285 @@ local function testShinyEvent(cid)
     check("shiny event: off cancels it", ShinyEvent.stop() and getShinyEventMultiplier() == 1 and not ShinyEvent.get())
 end
 
+local function testAdmin(cid)
+    local sent, broadcasts = {}, {}
+    local opcode, access, broadcast = doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage
+    local level = 0
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.ADMIN) then
+            sent[#sent + 1] = JSON.decode(buffer)
+        end
+        return true
+    end
+    getPlayerAccess = function() return level end
+    doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
+    local function ask(data)
+        sent = {}
+        Admin.onClientMessage(cid, JSON.encode(data))
+        return sent
+    end
+    local ok, err = pcall(function()
+        ShinyEvent.stop()
+        check("admin: players below God get nothing", #ask({ action = "hello" }) == 0 and not Admin.allowed(cid))
+        ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
+        check("admin: players below God can't start events", not ShinyEvent.get())
+        level = Admin.ACCESS
+        local state = ask({ action = "hello" })[1]
+        check("admin: staff get the four events", state and state.type == "state" and #(state.events or {}) == 4)
+        ask({ action = "start", event = "shiny", multiplier = 7, minutes = 30 })
+        check("admin: odd multipliers are refused", not ShinyEvent.get() and sent[1] and sent[1].ok == false)
+        ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
+        local multiplier, endsAt = ShinyEvent.get()
+        check("admin: Start runs the shiny event", multiplier == 2 and math.abs(endsAt - os.time() - 1800) <= 1, multiplier)
+        check("admin: the window shows it running", sent[2] and sent[2].events[2].multiplier == 2)
+        ask({ action = "stop", event = "shiny" })
+        check("admin: Stop cancels it", not ShinyEvent.get() and getShinyEventMultiplier() == 1)
+        ask({ action = "broadcast", text = "  Hello trainers  " })
+        check("admin: broadcast is sent with the staff name", broadcasts[#broadcasts] == getCreatureName(cid) .. ": Hello trainers",
+            broadcasts[#broadcasts])
+    end)
+    doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage = opcode, access, broadcast
+    ShinyEvent.stop()
+    if (not ok) then
+        error(err)
+    end
+end
+
+local function testQuests(cid)
+    local sent = {}
+    local opcode = doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.QUEST) then
+            sent[#sent + 1] = buffer
+        end
+        return true
+    end
+    -- the fragments of each message joined back, as the client does
+    local function messages()
+        local list, pieces = {}, {}
+        for _, buffer in ipairs(sent) do
+            local id, index, count, piece = buffer:match("^#(%d+):(%d+):(%d+):(.*)$")
+            if (id) then
+                pieces[id] = pieces[id] or {}
+                pieces[id][tonumber(index)] = piece
+                if (#pieces[id] == tonumber(count)) then
+                    list[#list + 1] = JSON.decode(table.concat(pieces[id]))
+                end
+            else
+                list[#list + 1] = JSON.decode(buffer)
+            end
+        end
+        sent = {}
+        return list
+    end
+    local first = getNpcQuests("Assistant Guyli")[1]
+    local defeat
+    for _, quests in pairs(getAllNpcQuests()) do
+        for _, quest in ipairs(quests) do
+            if (not defeat and quest.questType == 3 and quest.counterStorage and quest.questRequest[2] >= 20) then
+                defeat = quest
+            end
+        end
+    end
+    local saved = { [first.storage] = getCreatureStorage(cid, first.storage),
+                    [defeat.storage] = getCreatureStorage(cid, defeat.storage),
+                    [defeat.counterStorage] = getCreatureStorage(cid, defeat.counterStorage),
+                    [playersStorages.questClient] = getCreatureStorage(cid, playersStorages.questClient) }
+    local ok, err = pcall(function()
+        local entry = Quests.getEntry(first.storage)
+        check("quests: the catalog has the NPCs' quests", Quests.getEntry(defeat.storage) ~= nil and entry ~= nil)
+        check("quests: names come from quests.xml", entry.name == "Kanto Main #01 - A new mystery!" and entry.step == "Part 1 of 5" and
+            entry.category == "Main story", tostring(entry.name) .. " / " .. tostring(entry.step))
+        check("quests: braces are left out", not tostring(entry.text):find("[{}]"), entry.text)
+        check("quests: defeat objective", Quests.objective(defeat):find("^Defeat %d+ ") ~= nil, Quests.objective(defeat))
+
+        doCreatureSetStorage(cid, first.storage, QUEST_STATUS.STARTED)
+        check("quests: a started quest is active", Quests.stateOf(cid, first, first) == "active")
+        doCreatureSetStorage(cid, first.storage, QUEST_STATUS.FINISHED)
+        check("quests: a finished quest is done", Quests.stateOf(cid, first, nil) == "done")
+        doCreatureSetStorage(cid, first.storage, QUEST_STATUS.UNSTARTED)
+        check("quests: an offered quest is available", Quests.stateOf(cid, first, first) == "available" and
+            getNpcCurrentQuest(cid, "Assistant Guyli") == first)
+
+        Quests.onLogin(cid)
+        check("quests: old clients keep the chat lines", not Quests.onProgress(cid, defeat, 1, 30) and #sent == 0)
+        doCreatureSetStorage(cid, defeat.storage, QUEST_STATUS.STARTED)
+        Quests.onClientMessage(cid, JSON.encode({ action = "hello" }))
+        local hello = messages()
+        local active = hello[1] and hello[1].type == "active" and hello[1].quests or {}
+        check("quests: hello sends the active quests", #active >= 1 and active[#active].state == "active", #active)
+        check("quests: hello sends the NPC marks", hello[2] and hello[2].type == "marks" and
+            hello[2].npcs["Assistant Guyli"] == "available")
+
+        local need, shown = defeat.questRequest[2], {}
+        for count = 1, need do
+            if (Quests.onProgress(cid, defeat, count, need)) then
+                for _, message in ipairs(messages()) do
+                    if (message.type == "notice") then
+                        shown[#shown + 1] = message.kind == "ready" and "ready" or message.have
+                    end
+                end
+            end
+        end
+        local step = need / 10
+        local expected = {}
+        for count = 1, need - 1 do
+            if (count >= need - 3 or math.floor(count / step) > math.floor((count - 1) / step)) then
+                expected[#expected + 1] = count
+            end
+        end
+        expected[#expected + 1] = "ready"
+        check("quests: progress at every tenth and the last three", table.concat(shown, ",") == table.concat(expected, ","),
+            table.concat(shown, ","))
+
+        Quests.onClientMessage(cid, JSON.encode({ action = "list" }))
+        local list = messages()
+        local rows = list[1] and list[1].type == "list" and list[1].quests or {}
+        local found
+        for _, row in ipairs(rows) do
+            if (row.id == defeat.storage) then
+                found = row
+            end
+        end
+        check("quests: the list has the quest under way with its progress", found and found.state == "active" and
+            found.need == need, found and found.state)
+        check("quests: the list is split into fragments", #rows > 20 and list[2] and list[2].type == "marks", #rows)
+
+        local hidden, story
+        for _, row in ipairs(rows) do
+            hidden = hidden or (row.hidden and row)
+            story = story or (row.id == first.storage and row)
+        end
+        check("quests: the story always shows", story and not story.hidden and story.name ~= nil)
+        check("quests: an unmet NPC's quest is ???", hidden and hidden.name == nil and hidden.npc == nil and
+            hidden.rewards == nil and hidden.place and hidden.place.x == nil and hidden.category ~= "Main story",
+            hidden and JSON.encode(hidden))
+        if (hidden) then
+            local npc = Quests.getEntry(hidden.id).npc
+            saved[Quests.metKey(npc)] = getCreatureStorage(cid, Quests.metKey(npc))
+            Quests.onMeet(cid, npc)
+            local met = messages()
+            check("quests: meeting the NPC tells the client", met[1] and met[1].type == "found" and met[1].npc == npc)
+            Quests.onClientMessage(cid, JSON.encode({ action = "list" }))
+            local again
+            for _, row in ipairs((messages()[1] or {}).quests or {}) do
+                again = again or (row.id == hidden.id and row)
+            end
+            check("quests: then its quests show in full", again and not again.hidden and again.npc == npc, again and JSON.encode(again))
+            Quests.onMeet(cid, npc)
+            check("quests: meeting again sends nothing", #messages() == 0)
+        end
+    end)
+    doSendPlayerExtendedOpcode = opcode
+    for storage, value in pairs(saved) do
+        doCreatureSetStorage(cid, storage, value)
+    end
+    if (not ok) then
+        error(err)
+    end
+end
+
+local function testExpItems(cid)
+    local LUCKY_EGG, EXP_SHARE = 30152, 30153
+    local function gain(ball, amount)
+        local before = getBallPokemonExp(ball.uid)
+        doPlayerPokemonAddExperience(cid, nil, amount, true, ball)
+        return getBallPokemonExp(ball.uid) - before
+    end
+    local created = {}
+    local function holding(itemId)
+        local ball = newBall(cid, "Pidgey", 30)
+        created[#created + 1] = ball
+        if (itemId) then
+            PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, itemId, 1)))
+        end
+        return ball
+    end
+    become(cid, nil)
+
+    local plain, egg = holding(), holding(LUCKY_EGG)
+    local base, lucky = gain(plain, 200), gain(egg, 200)
+    check("Lucky Egg: +50% battle EXP", base > 0 and math.abs(lucky - base * 1.5) <= 1, base .. " -> " .. lucky)
+    check("Lucky Egg: held item name and description", PokemonHeldItem.getHeldName(HELD_IDS.LUCKY_EGG) == "Lucky Egg" and
+        PokemonHeldItem.getBallDescription(egg.uid) == "Lucky Egg (+50% experience from wild Pokemon)",
+        PokemonHeldItem.getBallDescription(egg.uid))
+    local before = getBallPokemonExp(egg.uid)
+    doPlayerPokemonAddExperience(cid, nil, 200, false, egg)
+    check("Lucky Egg: only battle EXP", getBallPokemonExp(egg.uid) - before == 200)
+
+    local earner, a, b, fainted, other = holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding()
+    setBallPokemonLastHp(fainted.uid, 0)
+    local belt = { earner, a, b, fainted, other }
+    local exp = {}
+    for _, ball in ipairs(belt) do
+        exp[ball.uid] = getBallPokemonExp(ball.uid)
+    end
+    local realBelt, realItems = getPlayerBelt, getContainerItems
+    getPlayerBelt = function() return 1 end
+    getContainerItems = function() return belt end
+    local ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
+    local function gained(ball) return getBallPokemonExp(ball.uid) - exp[ball.uid] end
+    local half = gain(holding(), 50)
+    check("Exp Share: two holders on the belt split the 50% pool", ok and holders == 2 and gained(a) == half and
+        gained(b) == half and half > 0, tostring(holders) .. " " .. gained(a) .. "/" .. half)
+    check("Exp Share: nothing for the earner, a fainted holder or a Pokemon without one",
+        gained(earner) == 0 and gained(fainted) == 0 and gained(other) == 0)
+    belt = { earner, a, other }
+    exp[a.uid] = getBallPokemonExp(a.uid)
+    ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
+    local full = gain(holding(), 100)
+    check("Exp Share: a single holder gets the whole 50%", ok and holders == 1 and gained(a) == full, gained(a) .. "/" .. full)
+    getPlayerBelt, getContainerItems = realBelt, realItems
+
+    for _, ball in ipairs(created) do
+        doRemoveItem(ball.uid)
+    end
+end
+
+local function testHeldItems(cid)
+    local CHARCOAL, DRAGON_FANG = 23515, 23516
+    local ball = newBall(cid, "Pidgey", 30)
+    local charcoal = getThing(doPlayerAddItem(cid, CHARCOAL, 1))
+    local fang = getThing(doPlayerAddItem(cid, DRAGON_FANG, 1))
+    local before = getPlayerItemCount(cid, CHARCOAL)
+
+    local name = PokemonHeldItem.give(cid, ball.uid, charcoal)
+    check("held: giving Charcoal", name == "Charcoal" and getBallHeld(ball.uid) == HELD_IDS.CHARCOAL and
+        getPlayerItemCount(cid, CHARCOAL) == before - 1, name)
+    name = PokemonHeldItem.give(cid, ball.uid, fang)
+    check("held: giving Dragon Fang swaps the Charcoal back", name == "Dragon Fang" and
+        getBallHeld(ball.uid) == HELD_IDS.DRAGON_FANG and getPlayerItemCount(cid, CHARCOAL) == before, name)
+    local _, err = PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, 2148, 1)))
+    check("held: only held items can be given", err == "Only held items can be given to a Pokemon.", err)
+    local fangs = getPlayerItemCount(cid, DRAGON_FANG)
+    name = PokemonHeldItem.take(cid, ball.uid)
+    check("held: taking it back", name == "Dragon Fang" and not getBallHeld(ball.uid) and
+        getPlayerItemCount(cid, DRAGON_FANG) == fangs + 1, name)
+    _, err = PokemonHeldItem.take(cid, ball.uid)
+    check("held: nothing to take", err == "This Pokemon isn't holding an item.", err)
+
+    local POLKADOT_BOW = 23525
+    PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, POLKADOT_BOW, 1)))
+    local setModifier, setType = setPokemonHeldMovePowerModifier, setPokemonHeldMovePowerType
+    local modifier, types = nil, {}
+    setPokemonHeldMovePowerModifier = function(_, v) modifier = v end
+    setPokemonHeldMovePowerType = function(_, v, slot) types[slot] = v end
+    local applied = pcall(PokemonHeldItem.onPokemonCall, cid, ball)
+    setPokemonHeldMovePowerModifier, setPokemonHeldMovePowerType = setModifier, setType
+    check("held: Polkadot Bow boosts Normal moves by 10%", applied and modifier == 10 and types[1] == ELEMENT_NORMAL and
+        types[2] == EMPTY_STORAGE, tostring(modifier))
+    check("held: Polkadot Bow description", PokemonHeldItem.getBallDescription(ball.uid) == "Polkadot Bow: Normal moves +10%",
+        PokemonHeldItem.getBallDescription(ball.uid))
+    PokemonHeldItem.take(cid, ball.uid)
+    doPlayerRemoveItem(cid, POLKADOT_BOW, 1)
+
+    doPlayerRemoveItem(cid, CHARCOAL, 1)
+    doPlayerRemoveItem(cid, DRAGON_FANG, 1)
+    doPlayerRemoveItem(cid, 2148, 1)
+    doRemoveItem(ball.uid)
+    testExpItems(cid)
+end
+
 local function testDaycare(cid)
     local said = {}
     local callbacks = {}
@@ -942,6 +1221,86 @@ local function testRanger(cid, arena)
     end
 end
 
+-- Type matchups on the moves bar and the move cards (MoveInfo, EXTENDED_IDS.MOVE_INFO)
+local function testMoveInfo(cid, arena)
+    local made, spots = {}, {}
+    for dx = -3, 3 do
+        for dy = -3, 3 do
+            local p = { x = arena.x + dx, y = arena.y + dy, z = arena.z }
+            if ((dx ~= 0 or dy ~= 0) and isFree(cid, p)) then
+                spots[#spots + 1] = p
+            end
+        end
+    end
+    local function make(name)
+        local spot = table.remove(spots, 1)
+        local m = spot and doCreateMonster(name, spot, false)
+        if (m) then
+            made[#made + 1] = m
+        end
+        return m
+    end
+    local geodude, charmander, bulbasaur, charizard, gastly, squirtle =
+        make("Geodude"), make("Charmander"), make("Bulbasaur"), make("Charizard"), make("Gastly"), make("Squirtle")
+    if (not (geodude and charmander and bulbasaur and charizard and gastly and squirtle)) then
+        check("move info: room for the test Pokemon", false)
+    else
+        local m = function(target, move) return MoveInfo.getMultiplier(nil, target, move) end
+        check("matchup: Water Gun vs Geodude is a double weakness, capped at 2.5x", m(geodude, "Water Gun") == 2.5, m(geodude, "Water Gun"))
+        check("matchup: Water Gun vs Charmander is 2x", m(charmander, "Water Gun") == 2, m(charmander, "Water Gun"))
+        check("matchup: Water Gun vs Bulbasaur is 0.5x", m(bulbasaur, "Water Gun") == 0.5, m(bulbasaur, "Water Gun"))
+        check("matchup: Vine Whip vs Charizard is a double resistance (0.25x)", m(charizard, "Vine Whip") == 0.25, m(charizard, "Vine Whip"))
+        check("matchup: Thunder Shock can't touch Geodude", m(geodude, "Thunder Shock") == 0, m(geodude, "Thunder Shock"))
+        check("matchup: Tackle can't touch Gastly", m(gastly, "Tackle") == 0, m(gastly, "Tackle"))
+        check("matchup: Tackle vs Charmander is plain", m(charmander, "Tackle") == 1, m(charmander, "Tackle"))
+        check("matchup: no arrow for a status move", m(charmander, "Growl") == nil)
+        check("damage uses the same multiplier", getSkillElementMultiplier(0, geodude, "Water Gun") == 2.5)
+
+        setPokemonHeldMovePowerModifier(squirtle, 20)
+        setPokemonHeldMovePowerType(squirtle, ELEMENT_WATER, 1)
+        setPokemonHeldMovePowerType(squirtle, EMPTY_STORAGE, 2)
+        local power, boosts = MoveInfo.getPower(cid, squirtle, "Water Gun")
+        check("card: Water Gun on a Squirtle with Mystic Water is 40 x1.1 x1.2", power and math.floor(power + 0.5) == 53 and #boosts == 2,
+            tostring(power) .. " " .. JSON.encode(boosts))
+        local strong = MoveInfo.estimateDamage(squirtle, charmander, "Water Gun", 53, 2)
+        local weak = MoveInfo.estimateDamage(squirtle, charmander, "Water Gun", 53, 0.5)
+        check("card: the damage estimate grows with the matchup", strong and weak and strong > weak and weak >= 1,
+            tostring(strong) .. " " .. tostring(weak))
+        check("card: no damage estimate for an immunity", MoveInfo.estimateDamage(squirtle, gastly, "Tackle", 40, 0) == nil)
+        power, boosts = MoveInfo.getPower(cid, squirtle, "Tackle")
+        check("card: Tackle gets no boosts on a Squirtle", power == getPokemonSkillDamage("Tackle") and #boosts == 0, tostring(power))
+
+        local original, sent = doSendPlayerExtendedOpcode, {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.MOVE_INFO) then
+                sent[#sent + 1] = JSON.decode(buffer)
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(function()
+            MoveInfo.onClientMessage(cid, JSON.encode({ action = "matchup", target = charmander,
+                icons = { getPokemonSkillClientIconId("Water Gun"), getPokemonSkillClientIconId("Growl") } }))
+            MoveInfo.onClientMessage(cid, JSON.encode({ action = "card", icon = getPokemonSkillClientIconId("Water Gun"), target = charmander }))
+            MoveInfo.onClientMessage(cid, "not json")
+        end)
+        doSendPlayerExtendedOpcode = original
+        check("move info: no errors", ok, err)
+        local matchup, card = sent[1], sent[2]
+        check("move info: the matchup reply", matchup and matchup.type == "matchup" and #matchup.moves == 2 and
+            matchup.moves[1].multiplier == 2 and matchup.moves[1].power == 40 and matchup.moves[2].multiplier == nil,
+            matchup and JSON.encode(matchup))
+        check("move info: the card", card and card.type == "card" and card.name == "Water Gun" and card.final == 40 and
+            card.target and card.target.multiplier == 2 and card.target.name == getCreatureName(charmander), card and JSON.encode(card))
+        check("move info: bad messages are ignored", #sent == 2)
+    end
+    for _, m in ipairs(made) do
+        if (isCreature(m)) then
+            doRemoveCreature(m)
+        end
+    end
+end
+
 -- The JSON messages fn sends on EXTENDED_IDS.FISHING
 local function captureFishing(fn)
     local original, sent = doSendPlayerExtendedOpcode, {}
@@ -1274,6 +1633,102 @@ local function testOutfits(cid)
     Vocations.updateOutfit(cid)
 end
 
+local function testCalendar(cid)
+    local function date(time) return os.date("%Y-%m-%d %H:%M", time) end
+    local function day(time) return os.date("%Y-%m-%d", time) end
+    local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 0, min = 0, sec = 0 }) end
+
+    local e1, e2 = { EventCalendar.easter(2026) }, { EventCalendar.easter(2027) }
+    check("Calendar: Easter Sunday", e1[1] == 4 and e1[2] == 5 and e2[1] == 3 and e2[2] == 28, table.concat(e1, "-") .. " " .. table.concat(e2, "-"))
+    local l1, l2 = { EventCalendar.lunarNewYear(2026) }, { EventCalendar.lunarNewYear(2027) }
+    check("Calendar: Lunar New Year", table.concat(l1, "-") == "2026-2-17" and table.concat(l2, "-") == "2027-2-6",
+        table.concat(l1, "-") .. " " .. table.concat(l2, "-"))
+    check("Calendar: Harvest Moon is the full moon nearest the September equinox",
+        day(EventCalendar.harvestMoon(2026)) == "2026-09-26" and day(EventCalendar.harvestMoon(2027)) == "2027-09-15",
+        day(EventCalendar.harvestMoon(2026)) .. " " .. day(EventCalendar.harvestMoon(2027)))
+
+    local anniversary
+    for _, event in ipairs(EventCalendar.getEvents(at(2027, 9, 1), at(2027, 11, 1))) do
+        if (event.holiday and event.holiday.id == "anniversary") then
+            anniversary = event
+        end
+    end
+    check("Calendar: the anniversary runs Oct 3-5 from the 06:00 restart",
+        anniversary and date(anniversary.startsAt) == "2027-10-03 06:00" and date(anniversary.endsAt) == "2027-10-06 06:00",
+        anniversary and date(anniversary.startsAt) .. " - " .. date(anniversary.endsAt))
+    local fullMoons, nights = 0, 0
+    for _, phase in ipairs(EventCalendar.moonPhases(at(2027, 1, 1), at(2028, 1, 1) - 1)) do
+        fullMoons = fullMoons + (phase.full and 1 or 0)
+    end
+    for _, event in ipairs(EventCalendar.getEvents(at(2027, 1, 1), at(2028, 1, 1) - 1)) do
+        if (event.holiday and event.holiday.id == "clefairy") then
+            nights = nights + 1
+            check("Calendar: Clefairy Night runs 20:00-06:00", os.date("%H:%M", event.startsAt) == "20:00" and
+                event.endsAt - event.startsAt == 10 * 3600, date(event.startsAt))
+            if (nights >= 1) then break end
+        end
+    end
+    check("Calendar: 12 or 13 full moons a year", fullMoons == 12 or fullMoons == 13, fullMoons)
+
+    local bonuses = EventCalendar.parseBonuses("exp=2,shiny=1.5x")
+    check("Calendar: bonuses parse", bonuses and bonuses.exp == 2 and bonuses.shiny == 1.5)
+    check("Calendar: bad bonuses are refused", not EventCalendar.parseBonuses("exp=1") and not EventCalendar.parseBonuses("exp=11") and
+        not EventCalendar.parseBonuses("gold=2") and not EventCalendar.parseBonuses("Big Weekend"))
+    local once = EventCalendar.parseAdd("once 2026-11-06 18:00 2d exp=2 Double Friday")
+    check("Calendar: /calendar add once", once and once.rule == "once" and date(once.startsAt) == "2026-11-06 18:00" and
+        once.length == 2 * 86400 and once.name == "Double Friday" and once.bonusText == "exp=2")
+    local last = EventCalendar.parseAdd("weekend last loot=2 Loot Weekend")
+    check("Calendar: /calendar add weekend last", last and last.rule == "nthweekend" and last.nth == -1 and last.bonuses.loot == 2 and
+        last.name == "Loot Weekend")
+    check("Calendar: /calendar add refuses bad input", not EventCalendar.parseAdd("daily exp=2 X") and
+        not EventCalendar.parseAdd("once 2026-11-06 18:00 40d exp=2 X") and not EventCalendar.parseAdd("weekend exp=2"))
+
+    local now = os.time()
+    local base = EventCalendar.multiplier("exp")
+    EventCalendar.addStaffEvent({ rule = "once", startsAt = now - 60, length = 3600, nth = 0, bonusText = "exp=2", name = "VT Staff" }, "vt")
+    local staff
+    for _, event in ipairs(EventCalendar.getStaffEvents()) do
+        if (event.name == "VT Staff") then staff = event end
+    end
+    check("Calendar: a running staff event multiplies EXP", staff and EventCalendar.multiplier("exp") == base * 2,
+        base .. " -> " .. EventCalendar.multiplier("exp"))
+    check("Calendar: removing a staff event", staff and EventCalendar.removeStaffEvent(staff.id) and EventCalendar.multiplier("exp") == base)
+    EventCalendar.addStaffEvent({ rule = "weekend", startsAt = 0, length = 0, nth = 0, bonusText = "loot=1.5", name = "VT Weekend" }, "vt")
+    local weekends, okWeekends = 0, true
+    for _, event in ipairs(EventCalendar.getEvents(at(2026, 11, 1), at(2026, 12, 1))) do
+        if (event.name == "VT Weekend") then
+            weekends = weekends + 1
+            okWeekends = okWeekends and os.date("%w %H:%M", event.startsAt) == "5 06:00" and event.endsAt - event.startsAt == 3 * 86400
+        end
+    end
+    check("Calendar: weekend events run Friday 06:00 to Monday 06:00", weekends >= 4 and okWeekends, weekends)
+    for _, event in ipairs(EventCalendar.getStaffEvents()) do
+        if (event.name == "VT Weekend") then EventCalendar.removeStaffEvent(event.id) end
+    end
+
+    local forced = EventCalendar.getForced("harvestmoon")
+    EventCalendar.setForced("harvestmoon", true)
+    check("Calendar: forcing the Harvest Moon on", EventCalendar.isActive("harvestmoon") and EventCalendar.hasFlag("berries") and
+        EventCalendar.berryMaxCount(3) == 8 and EventCalendar.berryStageInterval(600) == 300 and EventCalendar.seedCount(2) == 4)
+    EventCalendar.setForced("harvestmoon", forced)
+    check("Calendar: back to automatic", EventCalendar.isActive("harvestmoon") == nil and EventCalendar.berryMaxCount(3) == 3)
+    local halloween = EventCalendar.getForced("halloween")
+    EventCalendar.setForced("halloween", false)
+    local listed = false
+    for _, event in ipairs(EventCalendar.getEvents(at(2026, 10, 25), at(2026, 10, 30))) do
+        listed = listed or (event.holiday and event.holiday.id == "halloween")
+    end
+    check("Calendar: forcing a holiday off hides it", not listed)
+    EventCalendar.setForced("halloween", halloween)
+
+    local status = EventCalendar.statusData()
+    check("Calendar: status has the next event", status.type == "status" and status.next and status.next.startsAt > status.now,
+        status.next and status.next.name)
+    local range = EventCalendar.rangeData(at(2026, 9, 28), at(2026, 11, 9))
+    check("Calendar: a month range lists events and moons", range and #range.events > 0 and #range.moons >= 2)
+    check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -1293,7 +1748,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "shiny event", testShinyEvent }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

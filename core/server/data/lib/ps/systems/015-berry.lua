@@ -517,7 +517,7 @@ local function doBerryTreeGrow(itemid, position)
 
             if (getBerryTreeNextStage(nextStage)) then
                 local tree = TREES[TREE_BY_ITEMID[itemid]]
-                addBerryTreeGrow(nextStage, position, tree.stageInterval)
+                addBerryTreeGrow(nextStage, position, EventCalendar.berryStageInterval(tree.stageInterval))
             end
         end
     else
@@ -547,7 +547,7 @@ function onCreatureUseBerryTree(cid, item, fromPosition, itemEx, toPosition)
     end
 
     if (table.find(TREES[tree].fruitStages, item.itemid)) then -- Last stage
-        local count = getRandom(1, TREES[tree].berryMaxCount)
+        local count = getRandom(1, EventCalendar.berryMaxCount(TREES[tree].berryMaxCount))
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "You picked %sx %s."), count, getItemNameById(TREES[tree].berryItemid)))
         doPlayerAddItem(cid, TREES[tree].berryItemid, count, true)
         doSendMagicEffect(toPosition, EFFECT_ROOTS)
@@ -687,7 +687,7 @@ function onCreatureUseWateringCanFull(cid, item, fromPosition, itemEx, toPositio
     doCreateItem(tree.stages[itemEx.itemid], 1, toPosition)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "The soil was wet. The berry tree is growing now, come back later.")
     doTransformItem(item.uid, WATERING_CANS[item.itemid])
-    addBerryTreeGrow(tree.stages[itemEx.itemid], toPosition, tree.stageInterval)
+    addBerryTreeGrow(tree.stages[itemEx.itemid], toPosition, EventCalendar.berryStageInterval(tree.stageInterval))
     return true
 end
 

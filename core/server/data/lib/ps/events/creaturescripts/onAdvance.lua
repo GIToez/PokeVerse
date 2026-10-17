@@ -5,6 +5,7 @@ function onAdvance(cid, skill, oldLevel, newLevel)
         if (newLevel > oldLevel) then
             LevelUpBanner.sendTrainer(cid, oldLevel, newLevel)
             Vocations.sendTrial(cid)
+            Quests.onLevelUp(cid)
         end
 
     elseif (skill == PLAYER_SKILL_FISHING) then

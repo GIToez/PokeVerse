@@ -13,7 +13,7 @@
 		<talkaction words="/autoloot" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/autoLoot.lua" description="Automatic loot from corpses."/>
 		<talkaction words="/dv" hidden="yes" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/dexView.lua"/>
 		<talkaction words="/exp" event="script" value="../../lib/ps/events/talkactions/pokemonExperience.lua" description="Show information about your Pokemon experience." />
-		<talkaction words="/held" event="script" value="../../lib/ps/events/talkactions/heldExperience.lua" description="Show information about your Pokemon Held item experience." />
+		<talkaction words="/held" event="script" value="../../lib/ps/events/talkactions/heldExperience.lua" description="Show the held item of the Pokemon in your ball slot." />
 		<talkaction words="/love" event="script" value="../../lib/ps/events/talkactions/love.lua" description="Show a love emoticon."/>
 		<talkaction words="t1;t2;t3;t4" event="script" value="../../lib/ps/events/talkactions/turn.lua" description="Turn your Pokemon direction."/>
 		<talkaction words="/autoWalk" case-sensitive="no" event="script" value="../../lib/ps/events/talkactions/autoWalk.lua" description="Automatic walk's straight."/>
@@ -66,6 +66,7 @@
 	<talkaction log="yes" words="/doubleexp" access="5" event="script" value="doubleexp.lua"/>
 	<talkaction log="yes" words="/bonusdaycare;/bonusbreeding" access="5" event="script" value="daycareevent.lua"/>
 	<talkaction log="yes" words="/bonusshiny" access="5" event="script" value="bonusshiny.lua"/>
+	<talkaction log="yes" words="/calendar" access="5" event="script" value="calendar.lua"/>
 	<talkaction log="yes" words="/mode" access="5" event="script" value="mode.lua"/>
 	<talkaction log="yes" words="/createnpc" access="5" event="script" value="createNpc.lua"/>
 	<talkaction log="yes" words="/mypokemon" access="5" event="script" value="pokemon.lua"/>

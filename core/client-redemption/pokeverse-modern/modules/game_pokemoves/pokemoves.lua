@@ -1,5 +1,7 @@
 -- Moves bar: the legacy game_pokemoves in the PokeVerse HUD style.
--- Same server commands (m1..m12 to use a move, /sd for its description); movable, horizontal or vertical.
+-- Same server commands (m1..m12 to use a move); movable, horizontal or vertical. Each move shows how it
+-- does against the attacked Pokemon (an arrow badge), and Shift+click opens its card with the boosted
+-- power (ExtendedIds.MoveInfo; the server works the numbers out).
 pokemonMovesWindow = nil
 
 local HORIZONTAL = 0
@@ -9,6 +11,14 @@ local SLOT_SIZE = 40
 
 local orientation = HORIZONTAL
 local moveEnergy = {} -- move icon item id -> energy cost (ExtendedIds.MoveEnergy)
+local moveInfo = {} -- move icon item id -> { power, final, multiplier } (ExtendedIds.MoveInfo)
+local moveCard
+local closeCard
+
+local IMAGES = '/modules/game_pokemoves/images/'
+local ELEMENTS = { [0] = 'Normal', 'Fight', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel',
+    'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy' }
+local CATEGORIES = { [0] = 'Physical', 'Special', 'Status' }
 
 local MOVE_COUNT = 12
 local KEYBIND_CATEGORY = 'Pokemon'
@@ -119,6 +129,7 @@ end
 
 function hide()
     pokemonMovesWindow:hide()
+    closeCard()
 end
 
 local function stopCooldown(slot)
@@ -129,6 +140,7 @@ local function stopCooldown(slot)
 end
 
 function reset()
+    closeCard()
     for _, slot in ipairs(slots()) do
         stopCooldown(slot)
         slot:destroy()
@@ -163,26 +175,253 @@ function onPokemonMoveCooldown(itemId, cooldown)
     end
 end
 
--- moves the Pokemon has too little energy for are dimmed, with their cost in red
+local function send(data)
+    local protocol = g_game.getProtocolGame()
+    if protocol and g_game.isOnline() then
+        protocol:sendExtendedJSONOpcode(ExtendedIds.MoveInfo, data)
+    end
+end
+
+local function attackedId()
+    local target = g_game.getAttackingCreature()
+    return target and target:getId() or 0
+end
+
+-- wild Pokemon are named "Charmander [30]": the level shows on the name plate already
+local function plainName(name)
+    return (name or ''):gsub('%s*%[%d+%]$', '')
+end
+
+local function formatMultiplier(multiplier)
+    return string.format('%g', multiplier)
+end
+
+-- the badge and words for a type multiplier (the server caps a double weakness at 2.5x); nil for a plain hit
+local function matchupStyle(multiplier)
+    if multiplier == nil or multiplier == 1 then
+        return nil
+    elseif multiplier == 0 then
+        return 'matchup_immune', tr('No effect'), '#c4cad4'
+    elseif multiplier >= 2.5 then
+        return 'matchup_double_strong', tr('Double weakness'), '#8ef09a'
+    elseif multiplier > 1 then
+        return 'matchup_strong', tr('Super effective'), '#8ef09a'
+    elseif multiplier <= 0.25 then
+        return 'matchup_double_weak', tr('Double resistance'), '#ff8a8a'
+    end
+    return 'matchup_weak', tr('Not very effective'), '#ff8a8a'
+end
+
+-- moves the Pokemon has too little energy for are dimmed, with their cost in red; the badge shows the
+-- matchup against the attacked Pokemon
 local function updateEnergy()
     if not pokemonMovesWindow then
         return
     end
     local player = g_game.getLocalPlayer()
     local energy = player and player:getMana() or 0
+    local target = g_game.getAttackingCreature()
     for _, slot in ipairs(slots()) do
         local cost = moveEnergy[slot.icon:getItemId()]
+        local info = moveInfo[slot.icon:getItemId()] or {}
         local short = cost ~= nil and cost > energy
         slot.energy:setVisible(cost ~= nil and cost > 0)
         slot.energy:setText(cost or '')
         slot.energy:setOn(short)
         slot.icon:setOpacity(short and 0.35 or 1)
+
+        local badge, words = matchupStyle(info.multiplier)
+        slot.matchup:setVisible(badge ~= nil)
+        if badge then
+            slot.matchup:setImageSource(IMAGES .. badge)
+        end
+
         local lines = { slot.moveName }
+        if info.power then
+            if info.final and info.final ~= info.power then
+                lines[#lines + 1] = tr('Power: %d (%d with boosts)', info.power, info.final)
+            else
+                lines[#lines + 1] = tr('Power: %d', info.power)
+            end
+        end
         if cost and cost > 0 then
             lines[#lines + 1] = short and tr('Energy: %d (you have %d)', cost, energy) or tr('Energy: %d', cost)
         end
-        lines[#lines + 1] = tr('Click to use, Shift+click for details')
+        if words and target then
+            lines[#lines + 1] = tr('%s vs %s (x%s)', words, plainName(target:getName()), formatMultiplier(info.multiplier))
+        end
+        lines[#lines + 1] = tr('Click to use, Shift+click for the move card')
         slot:setTooltip(table.concat(lines, '\n'))
+    end
+end
+
+local function requestMoveInfo()
+    if not pokemonMovesWindow or not g_game.isOnline() then
+        return
+    end
+    local icons = {}
+    for _, slot in ipairs(slots()) do
+        icons[#icons + 1] = slot.icon:getItemId()
+    end
+    if #icons > 0 then
+        send({ action = 'matchup', target = attackedId(), icons = icons })
+    end
+end
+
+function closeCard()
+    if moveCard then
+        moveCard:destroy()
+        moveCard = nil
+    end
+end
+
+local function requestCard(icon)
+    if moveCard and moveCard.moveIcon == icon then
+        closeCard()
+        return
+    end
+    send({ action = 'card', icon = icon, target = attackedId() })
+end
+
+-- anchored over the moves bar (beside it when it is vertical), so it follows the bar and its own height;
+-- below or on the other side when there is no room
+local function placeCard()
+    if not moveCard then
+        return
+    end
+    local bar = pokemonMovesWindow
+    local root = modules.game_interface.getRootPanel()
+    local id = bar:getId()
+    moveCard:breakAnchors()
+    if orientation == HORIZONTAL then
+        moveCard:addAnchor(AnchorHorizontalCenter, id, AnchorHorizontalCenter)
+        if bar:getY() - root:getY() > moveCard:getHeight() + 12 then
+            moveCard:addAnchor(AnchorBottom, id, AnchorTop)
+            moveCard:setMarginBottom(6)
+        else
+            moveCard:addAnchor(AnchorTop, id, AnchorBottom)
+            moveCard:setMarginTop(6)
+        end
+    else
+        moveCard:addAnchor(AnchorVerticalCenter, id, AnchorVerticalCenter)
+        if root:getX() + root:getWidth() - (bar:getX() + bar:getWidth()) > moveCard:getWidth() + 12 then
+            moveCard:addAnchor(AnchorLeft, id, AnchorRight)
+            moveCard:setMarginLeft(6)
+        else
+            moveCard:addAnchor(AnchorRight, id, AnchorLeft)
+            moveCard:setMarginRight(6)
+        end
+    end
+end
+
+local function showCard(data)
+    closeCard()
+    if not pokemonMovesWindow or not pokemonMovesWindow:isVisible() then
+        return
+    end
+    moveCard = g_ui.createWidget('MoveCard', modules.game_interface.getRootPanel())
+    moveCard.moveIcon = tonumber(data.icon)
+
+    local header = moveCard.header
+    header.iconFrame.icon:setItemId(tonumber(data.icon) or 0)
+    header.name:setText(data.name or '')
+    header.close.onClick = closeCard
+    local element, category = tonumber(data.element), tonumber(data.category)
+    if element and ELEMENTS[element] then
+        header.element:setImageSource('/images/types/' .. element)
+        header.element:setTooltip(tr(ELEMENTS[element]))
+    else
+        header.element:hide()
+    end
+    if category and CATEGORIES[category] then
+        header.category:setImageSource('/images/moveCategories/' .. category)
+        header.category:setTooltip(tr(CATEGORIES[category]))
+    else
+        header.category:hide()
+    end
+
+    local parts = {}
+    if data.power and data.power ~= '--' and data.power ~= '0' then
+        parts[#parts + 1] = tr('Power %s', data.power)
+    end
+    if data.energy then
+        parts[#parts + 1] = tr('Energy %d', data.energy)
+    end
+    if data.cooldown then
+        parts[#parts + 1] = tr('Cooldown %ds', data.cooldown)
+    end
+    if data.range then
+        parts[#parts + 1] = tr('Range %d', data.range)
+    end
+    moveCard.details:setText(table.concat(parts, '  '))
+    moveCard.description:setText(data.description or '')
+    moveCard.description:setVisible((data.description or '') ~= '')
+
+    local boosts = data.boosts or {}
+    for _, boost in ipairs(boosts) do
+        local row = g_ui.createWidget('MoveCardBoost', moveCard.boosts)
+        row.label:setText(boost.label or '')
+        row.value:setText(tr('x%s', formatMultiplier(tonumber(boost.value) or 1)))
+    end
+    moveCard.boosts:setVisible(#boosts > 0)
+    moveCard.final:setVisible(data.final ~= nil and #boosts > 0)
+    if data.final then
+        moveCard.final:setText(tr('Power with boosts: %d', data.final))
+    end
+
+    local matchup = data.target
+    moveCard.matchupRow:setVisible(matchup ~= nil)
+    if matchup then
+        local multiplier = tonumber(matchup.multiplier) or 1
+        local badge, words, color = matchupStyle(multiplier)
+        moveCard.matchupRow.badge:setVisible(badge ~= nil)
+        if badge then
+            moveCard.matchupRow.badge:setImageSource(IMAGES .. badge)
+        end
+        moveCard.matchupRow.text:setText(tr('%s vs %s (x%s)', words or tr('Normal damage'), plainName(matchup.name),
+            formatMultiplier(multiplier)))
+        moveCard.matchupRow.text:setColor(color or '#d8e4e4')
+    end
+    moveCard.estimate:setVisible(data.estimate ~= nil)
+    if data.estimate then
+        moveCard.estimate:setText(tr('About %d damage a hit (more on a critical hit)', data.estimate))
+    end
+    moveCard.separator:setVisible(#boosts > 0 or matchup ~= nil)
+
+    moveCard:getLayout():update()
+    placeCard()
+end
+
+local function onMoveInfo(protocol, opcode, buffer)
+    local ok, data = pcall(json.decode, buffer)
+    if not ok or type(data) ~= 'table' then
+        return
+    end
+    if data.type == 'matchup' then
+        local fresh = tonumber(data.target) == attackedId()
+        moveInfo = {}
+        for _, move in ipairs(data.moves or {}) do
+            moveInfo[tonumber(move.icon)] = {
+                power = tonumber(move.power),
+                final = tonumber(move.final),
+                multiplier = fresh and tonumber(move.multiplier) or nil
+            }
+        end
+        updateEnergy()
+    elseif data.type == 'card' then
+        showCard(data)
+    end
+end
+
+local function onAttackingCreatureChange()
+    for _, info in pairs(moveInfo) do
+        info.multiplier = nil
+    end
+    updateEnergy()
+    requestMoveInfo()
+    if moveCard then
+        local icon = moveCard.moveIcon
+        send({ action = 'card', icon = icon, target = attackedId() })
     end
 end
 
@@ -296,7 +535,7 @@ function onPokemonMoves(iconItemId, moves)
                 return false
             end
             if g_keyboard.isShiftPressed() then
-                g_game.talkChannel(MessageModes.Say, 0, '/sd ' .. v)
+                requestCard(v)
             else
                 useMove(k)
             end
@@ -306,6 +545,7 @@ function onPokemonMoves(iconItemId, moves)
     updateEnergy()
     applyOrientation()
     show()
+    requestMoveInfo()
 end
 
 function onPokemonMovesClose()
@@ -325,6 +565,7 @@ function onOffline()
     hide()
     reset()
     moveEnergy = {}
+    moveInfo = {}
 end
 
 function onInit()
@@ -334,11 +575,13 @@ function onInit()
         onPokemonMoveCooldown = onPokemonMoveCooldown,
         onPokemonMoves = onPokemonMoves,
         onPokemonMovesClose = onPokemonMovesClose,
-        onPokemonMovesOpen = onPokemonMovesOpen
+        onPokemonMovesOpen = onPokemonMovesOpen,
+        onAttackingCreatureChange = onAttackingCreatureChange
     })
 
     connect(LocalPlayer, { onManaChange = onManaChange })
     ProtocolGame.registerExtendedOpcode(ExtendedIds.MoveEnergy, onMoveEnergy)
+    ProtocolGame.registerExtendedOpcode(ExtendedIds.MoveInfo, onMoveInfo)
 
     pokemonMovesWindow = g_ui.loadUI('pokemoves', modules.game_interface.getRootPanel())
     orientation = g_settings.getNumber('pokeverse-moves-orientation', HORIZONTAL)
@@ -381,10 +624,13 @@ function onTerminate()
         onPokemonMoveCooldown = onPokemonMoveCooldown,
         onPokemonMoves = onPokemonMoves,
         onPokemonMovesClose = onPokemonMovesClose,
-        onPokemonMovesOpen = onPokemonMovesOpen
+        onPokemonMovesOpen = onPokemonMovesOpen,
+        onAttackingCreatureChange = onAttackingCreatureChange
     })
     disconnect(LocalPlayer, { onManaChange = onManaChange })
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.MoveEnergy)
+    ProtocolGame.unregisterExtendedOpcode(ExtendedIds.MoveInfo)
+    closeCard()
     for _, slot in ipairs(slots()) do
         stopCooldown(slot)
     end

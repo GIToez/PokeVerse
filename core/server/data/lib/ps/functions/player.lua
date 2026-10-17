@@ -470,11 +470,10 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
         local pokemonName = getBallPokemonName(ball.uid)
         local maxExtraPoints = isShinyName(pokemonName) and (POKEMON_EXTRA_POINT_MAX - 10) or POKEMON_EXTRA_POINT_MAX
 
-        PokemonHeldItem.onGainExperience(player, pokemon, ball, expAmount)
-
         if (currentLevel < POKEMON_LEVEL_MAX or currentExtraPoints < maxExtraPoints) then
-            if (multiplier) then -- Kill experience: stage (config/experience.lua), personal bonus, Ace Trainer, server event
+            if (multiplier) then -- Kill experience: stage (config/experience.lua), Lucky Egg, personal bonus, Ace Trainer, server event
                 expAmount = expAmount * getPokemonExpStageRate(currentLevel) * POKEMON_EXP_RATE
+                expAmount = expAmount * PokemonHeldItem.getExpRate(ball.uid)
                 expAmount = expAmount + math.floor(expAmount * getPlayerExtraExpRate(player))
                 local aceBonus = Vocations.perk(player, "ace", "battleExp")
                 if (aceBonus and not Vocations.inBattle(player)) then
@@ -505,7 +504,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
             if (gainLevel > 0) then
                 if (currentLevel < POKEMON_LEVEL_MAX) then
                     local pokemonPosition = getCreaturePosition(pokemon and pokemon or player)
-                    local maxEnergy = getCreatureMaxMana(player)
+                    local maxEnergy = pokemon and getCreatureMaxMana(player) or getBallPokemonMaxEnergy(ball.uid)
                     local energy = getCreatureMana(player)
                     local pokemonNickname = getBallPokemonNickname(ball.uid)
                     local pokemonExtraPoints = getBallPokemonExtraPoints(ball.uid) + gainLevel

@@ -1,0 +1,290 @@
+// The event calendar: the banner next to the clock on the top bar and the month window (artwork:
+// scripts/art/calendar_ui.py; the frame comes from game_dailytasks, the panels and rows from game_fishing,
+// the buttons from client_entergame and the scroll bar from game_gts)
+
+CalendarText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+CalendarMuted < CalendarText
+  color: #96aacd
+
+CalendarBanner < UIButton
+  height: 20
+  focusable: false
+  $hover:
+    opacity: 0.85
+
+  UIWidget
+    id: icon
+    size: 16 16
+    image-source: /modules/game_calendar/images/icon_calendar_small
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: label
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+    phantom: true
+
+CalendarWeekday < CalendarMuted
+  text-align: center
+  height: 16
+
+// one event on a day of the grid
+CalendarStrip < UILabel
+  font: verdana-11px-antialised
+  color: #ffffff
+  height: 13
+  text-offset: 3 0
+  phantom: true
+
+CalendarDay < UIButton
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  padding: 3 3 3 3
+  $hover !checked:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+
+  UILabel
+    id: number
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 1 3 0 3
+    phantom: true
+
+  UIWidget
+    id: moon
+    size: 14 14
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 1 2 0 0
+
+  UIWidget
+    id: strips
+    anchors.top: number.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 2
+    phantom: true
+    layout:
+      type: verticalBox
+      spacing: 1
+
+// an event in the list beside the grid
+CalendarEvent < UIWidget
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  padding: 6 10 7 10
+  phantom: true
+
+  UIWidget
+    id: dot
+    size: 8 8
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 4
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: dot.right
+    margin-left: 6
+    phantom: true
+
+  CalendarMuted
+    id: when
+    text-auto-resize: false
+    anchors.top: name.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 14
+    margin-top: 3
+
+  CalendarText
+    id: description
+    text-wrap: true
+    text-auto-resize: true
+    anchors.top: when.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 3
+
+CalendarWindow < UIWindow
+  size: 880 600
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_calendar.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 34 34
+    image-source: /modules/game_calendar/images/icon_calendar
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -2
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Event Calendar')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  CalendarMuted
+    id: subtitle
+    !text: tr('Holidays, weekend events and the moon. Click a day to see its events.')
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_calendar.hide()
+
+  PVBlueButton
+    id: prevMonth
+    !text: '<'
+    size: 34 28
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    margin-top: 14
+    @onClick: modules.game_calendar.changeMonth(-1)
+
+  UILabel
+    id: month
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 16
+    color: #ffd75a
+    text-align: center
+    anchors.top: prevMonth.top
+    anchors.bottom: prevMonth.bottom
+    anchors.left: prevMonth.right
+    width: 220
+    phantom: true
+
+  PVBlueButton
+    id: nextMonth
+    !text: '>'
+    size: 34 28
+    anchors.top: prevMonth.top
+    anchors.left: month.right
+    @onClick: modules.game_calendar.changeMonth(1)
+
+  PVBlueButton
+    id: today
+    !text: tr('Today')
+    size: 80 28
+    anchors.top: prevMonth.top
+    anchors.left: nextMonth.right
+    margin-left: 8
+    @onClick: modules.game_calendar.showToday()
+
+  UIWidget
+    id: weekdays
+    anchors.top: prevMonth.bottom
+    anchors.left: parent.left
+    margin-top: 10
+    size: 550 16
+    phantom: true
+    layout:
+      type: grid
+      cell-size: 76 16
+      cell-spacing: 3
+      flow: true
+
+  UIWidget
+    id: grid
+    anchors.top: weekdays.bottom
+    anchors.left: parent.left
+    margin-top: 4
+    size: 550 400
+    layout:
+      type: grid
+      cell-size: 76 64
+      cell-spacing: 3
+      flow: true
+
+  FishingPanel
+    id: side
+    anchors.top: prevMonth.top
+    anchors.left: grid.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 14
+    padding: 10 10 10 10
+
+    FishingPanelTitle
+      id: sideTitle
+      !text: tr('This month')
+
+    ScrollablePanel
+      id: events
+      anchors.top: sideTitle.bottom
+      anchors.left: parent.left
+      anchors.right: eventsScroll.left
+      anchors.bottom: zone.top
+      margin: 8 4 8 0
+      vertical-scrollbar: eventsScroll
+      layout:
+        type: verticalBox
+        spacing: 4
+
+    GtsScrollBar
+      id: eventsScroll
+      anchors.top: sideTitle.bottom
+      anchors.bottom: zone.top
+      anchors.right: parent.right
+      margin: 8 0 8 0
+
+    CalendarMuted
+      id: empty
+      text-wrap: true
+      text-auto-resize: true
+      text-align: center
+      anchors.top: events.top
+      anchors.left: events.left
+      anchors.right: events.right
+      margin-top: 40
+      visible: false
+
+    CalendarMuted
+      id: zone
+      text-wrap: true
+      text-auto-resize: true
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom

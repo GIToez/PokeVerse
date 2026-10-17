@@ -46,12 +46,13 @@ so. Items marked **To decide** need an answer before work starts.
    Oak's and Red's portraits; everyone without one shows their outfit, no new portraits are
    made), the blue words as buttons, big Yes/No for questions. The NPCs tab stays as it is: it
    still opens when an NPC talks, keeps the history, and is where answers are typed.
-4. **Mission notices**: started, updated and complete, from the server.
-5. **NPC role icons**: mission, trade, duel, travel, bank and so on, from what each NPC really
-   does; NPCs with several roles rotate their icons every second. The mission icon is per
-   player: it only shows when that player has a mission they can start or hand in there
-   (level, earlier quests and cooldown checked by the server). (The battle icon the server
-   sends today has no picture in the client.)
+4. **Mission notices** (built, see [the quest log](#quest-log-notices-and-npc-icons)):
+   a banner when a quest starts or is done, a small card for progress and when the goal is
+   reached.
+5. **NPC role icons** (built): quest, battle, shop, travel, bank, healing and daycare, from
+   what each NPC really does; NPCs with several rotate them. The quest icon is per player:
+   it only shows when that player has a quest they can start or hand in there (level,
+   earlier quests and cooldown checked by the server). Needs the new client build.
 6. The NPCs with their own scripts, town by town.
 7. [Vocations](#6-vocations), replacing the old vocations.
 8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
@@ -467,10 +468,44 @@ files and 338 NPC scripts (`core/server/data/npc`).
    - When several NPCs answer a "hi", the closest one keeps the window.
    - Long answers wrap inside the window and the buttons wrap to more rows.
    - The role line ("Gym Leader, Pewter City") is a client list for the NPCs with portraits.
-   - The mission notices still need the server.
+   - The mission notices are built (below).
 2. A checker that lists every NPC whose responses are not clickable.
 3. Convert the NPCs, quests and tasks town by town. Quests and the task boards show up in
    the quest log.
+
+### Quest log, notices and NPC icons
+
+**Built** (server `data/lib/ps/systems/075-quests.lua`, opcode 31; client
+`pokeverse-modern/modules/game_quests`, which replaces Redemption's Tibia quest log):
+
+- **Quest log** (top bar button or L): Active, Available and Completed tabs with counts, a
+  search (quest, NPC, town), and groups: Main story, Gyms, Getting started, Side quests,
+  Daily, Addons, Events. Every NPC quest in `002-quest.lua` is listed; the names and
+  descriptions come from `XML/quests.xml` ("Kanto Main #01 - A new mystery!", "Part 1 of 5"),
+  and quests without one are "<NPC>'s request #n". Available lists what the NPCs offer now;
+  quests from a higher level are greyed with the level, and quests of NPCs that aren't on the
+  map (events) only show once started.
+- **Details:** the giver's portrait (or outfit) and nearest town, Go there (the Pokepedia's
+  route), Track, the objective with a progress bar (defeat, catch, bring items, bring a
+  Pokémon, Pokédex count), the rewards with their item pictures and EXP, the level needed,
+  and "daily: again after the server restart".
+- **Tracker:** a started quest is tracked on its own (the Pokepedia's tracker panel); a
+  finished goal gets a Go button that walks back to the NPC. Untrack in the window or with
+  the line's X.
+- **Notices:** "Quest started" and "Quest complete!" banners (with the rewards), and a card
+  at the top right of the map for progress: every step up to 10, then every tenth of the way
+  and the last three ("Defeat 30 Golem 12 / 30"), and a green "Done! Go back to Noah". The
+  old "Defeat Task ... step complete" chat lines only go to old clients.
+- **NPC icons:** a badge next to the name plate. Gold "!" a quest to start, grey "?" one under
+  way, gold "?" one to hand in (per trainer, from the server), then crossed swords (battle),
+  coin bag (shop), ship wheel (travel), coin (bank), pink cross (Nurse Joy) and egg (Day
+  Care). NPCs with several show them in turn. The roles come from the NPC files
+  (`scripts/make-npc-roles.py` writes `npc_roles.lua`; run it again after adding NPCs), the
+  art from `scripts/art/quest_ui.py`. The server's static quest bubble is replaced by the
+  trainer's own mark. The badges need the new client build (`Creature:setIcon`); older
+  builds keep the server's icons.
+- Marks refresh when a quest starts, finishes or reaches its goal, at level-up and when the
+  log opens; a "bring items" quest shows "?" gold only after one of those.
 
 ## 4. Website
 
@@ -969,6 +1004,20 @@ From the `#notes` channel:
 - **Slot machine pairs (fixed):** two matching symbols paid by the reel's position, so every
   pair paid 0 coins; they now pay a third of the symbol's payout (Great and Ultra Ball 1,
   Master Ball 3, Amulet Coin 10). A $100 spin returns 0.81 coins on average, not 0.12.
+- **Held items (redone):** held items no longer gain levels or EXP; a type item (Charcoal,
+  Dragon Fang and the rest) is a flat +20% to that type's moves. Drag one from the bag onto a
+  Pokémon on the swap bar to give it (or "Use with" its ball); dropping another on it swaps
+  them. A small icon in the slot's corner shows what it holds, the slot's tooltip names it,
+  and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade is no
+  longer needed. Polkadot Bow boosts Normal moves by 10% (as on Bulbapedia; Silk Scarf is the
+  full 20%).
+- **Lucky Egg and Exp Share (built):** the Lucky Egg gives its holder +50% EXP from defeating
+  wild Pokémon. Exp Share holders on the belt that are not out and not fainted split a pool of
+  50% of the EXP the active Pokémon earns (and get its EVs). Both are rare drops or event
+  prizes only, never in a shop: Lucky Egg from Chansey (0.3%), Blissey (0.5%) and shiny
+  Chansey (2%), Easter eggs and the July rare chest; Exp Share from Porygon (0.3%), Porygon2
+  (0.5%) and the July legendary chest; both from anniversary surprise bags. They can be traded
+  on the GTS.
 - **World boss repeats (fixed):** a typo in the storage key meant the server never knew which
   boss spawned last, so the same one could come twice in a row.
 - **Fishing tasks don't count up (fixed):** the server runs actions, creature events and
@@ -978,15 +1027,62 @@ From the `#notes` channel:
   no tasks yet, until the next login. The boards are now read from the database every
   time, and the server test picks tasks and hooks Pokémon in one session.
 
-- **To go over: legendary spawning and roaming.** Today legendaries only come from scripts
-  (quest bosses, the wave arena, world bosses and events such as `048-anniversaryEvent.lua`);
-  they are not in the map spawns, and there is no roaming system yet. Things to decide: where
-  and how often legendaries spawn, whether some roam between routes (and how the Ranger radar
-  shows them; it already gives legendaries only a direction and distance band, from rank 5,
-  with a 10-minute cooldown), how long they stay, and who can catch them. Related: the radar
-  test's Articuno did not spawn when the test spot was a small upper floor (5017, 790, 6 on
-  Tutorial Island), because no tile 12–16 tiles away was walkable; the test now also tries
-  nearer spots.
+- **Legendary spawning (audited October 2026, read only).** There is no wild legendary
+  system: no legendary can be met or caught in the wild today.
+  - **Map spawns:** none. Not one of the 21 legendaries (or their shiny forms) is in
+    `world/map-spawn.xml` (26,959 spawns).
+  - **What creates legendaries:**
+    - The three bird dungeons (`legendaryOrbs.lua`, `028-dungeons.lua`) spawn Boss Zapdos,
+      Boss Moltres and Boss Articuno (Boss Articuno turns into Frozen Boss Articuno). On
+      death they leave a reward chest (doll, Deepsoul Stone, 5 feathers), never a corpse,
+      so they can't be caught. All three share one storage (8370), so each trainer can do
+      **one bird, once, ever**.
+    - The New Island quest's Mewtwo is an NPC; using the Master Ball prototype spawns
+      Final Mewtwo, a boss.
+    - The Ranger radar test spawns an Articuno. That's the only plain legendary created
+      anywhere, and it's in the test only.
+    - The world bosses (`021-boss.lua`, every 3 days) are renamed regular Pokémon
+      ("Winged Wisdom" is a Pidgeot), not legendaries.
+    - The wave arena, citizens and the doll case exclude legendaries; the old Pokémon shop
+      price list (100,000 each) is commented out.
+  - **The plain legendary monsters are ordinary:** level 100 with normal-looking stats
+    (a wild Articuno has about the health of a wild Dragonite), corpse, no boss behaviour.
+    Gen 1 has shiny forms; the Gen 3 shiny forms are commented out in `monsters.xml`.
+  - **Catching is effectively impossible:** a catch needs the Pokémon's `chance` worth of
+    "tries" (each ball thrown adds its catch rate: Ultra 3, Safari 4). The catch can't
+    happen before 25% of that. Articuno, Zapdos, Moltres and Mewtwo have chance 10,000:
+    at least 834 Ultra Balls, about 3,300 to be likely, and each throw needs its own
+    defeat. The other 17 have 100,000, ten times that. Only the Master Ball
+    (`guaranteedCatch`) would catch one, on the first try.
+  - **What already expects wild legendaries:** the Ranger radar (rank 5, a direction and
+    distance band, 10-minute cooldown), the Discord bridge (posts legendary spawns, 5
+    minutes apart per species), the Pokepedia (legendary tier: 1, 5 and 15 defeats or
+    catches, $15,000) and the highscores (Caught Articuno and others). For 17 of the 21 the
+    Pokepedia goals can't be reached, and the bird bosses likely don't count as defeats
+    (their death is cancelled before the kill events run).
+  - **To decide (proposal):**
+    - **Where:** each legendary gets one or a few lore spots (Articuno at the Seafoam
+      Islands, Zapdos at the Power Plant, Moltres at Victory Road, the Johto beasts roaming
+      Johto routes, Lugia at the Whirl Islands, Ho-Oh at the Bell Tower, Celebi at Ilex
+      Forest), from a table in one new file rather than the map spawns.
+    - **How often:** a chance check every few minutes, at most one of each species alive
+      at a time, a cooldown after it's beaten or caught (for example 6 to 24 hours), and a
+      server message plus the Discord post when one appears.
+    - **Roaming:** Raikou, Entei, Suicune (and Latias and Latios) move to another route
+      every few minutes, so the Ranger radar's direction and distance band matter; they
+      flee after a few turns of battle, as in the games.
+    - **Strength:** a legendary boss version for the wild one (much more health, a group
+      fight), and the corpse belongs to whoever did the most damage.
+    - **Catching:** a catch `chance` that can be reached in a few dozen tries spread over
+      encounters (tries are kept per species, so failed throws on earlier encounters
+      still count). Whether the Master Ball works on them, or legendaries need their own
+      ball.
+    - **Limits:** whether a trainer can catch each legendary only once, and whether they
+      can be traded on the GTS.
+    - **The bird dungeons:** one bird per trainer, or each of the three once.
+  - Related: the radar test's Articuno did not spawn when the test spot was a small upper
+    floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
+    the test now also tries nearer spots.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.
@@ -1079,10 +1175,11 @@ for PokeVerse later. Do not delete it.
   `quest_chief*` and `quest_prophetSlowking` NPCs, `legendaryChest.lua`), achievements,
   Pokémon addons and the Logan NPC. The old psoul.net links (welcome popup, server URL,
   owner email) are already gone; the rest is still on.
-- **Anniversary and birthday events:** about 38 files, including the global event
-  (`globalevents/scripts/start.lua`, `lib/ps/events/globalevents/anniversary.lua`), the
-  cake monsters (`monster/Events/Anniversary`), the surprise bag, the magic flame, and the
-  `event_anniversary` and `event_birthday` NPCs.
+- **Anniversary and birthday events:** done differently. The anniversary content (the cake
+  raid, the surprise bags, the magic flame) now only runs during the anniversary on the event
+  calendar (Oct 3 to 5), and the Easter, July, Halloween and Christmas content only on their
+  dates (see section 15). Before, the surprise bags dropped all year and the hourly
+  anniversary raid failed (`executeRaid` did not exist).
 - Switch them off in one place where possible (a config flag), so turning them back on is
   easy.
 
@@ -1179,10 +1276,96 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   `game_dailylogin`**):** a 7-day streak that repeats: a reward for each day in a row, rare
   candy on day 7, then it starts again at day 1. A missed day resets the streak. A red flag
   on the top menu button shows while today's reward is unclaimed.
-- **Event calendar:** one calendar that shows the upcoming events (double EXP, double
-  shiny, holiday events, tournaments): in a game window, on the website, and posted by
-  the Discord bot. Staff add events with a date, time and length, and they start and
-  stop on their own.
+- **Event calendar (built,** `lib/ps/systems/077-eventCalendar.lua`, `/calendar`, client
+  `game_calendar`**):** holidays, staff events and the moon on one calendar. Still to build:
+  the website page and the Discord bot posts.
+  - **Banner:** next to the clock on the top bar (or under the HUD). While an event runs it
+    shows the event in its colour and the time left (`Anniversary: 1d 4h left`, `+1 more`
+    when several run); when nothing runs it counts down to the next one
+    (`Next: Halloween in 7d 1h`). The tooltip has the details; a click opens the window.
+  - **Window:** a month grid (Monday first) drawn by code for any month, with the moon phase
+    on each day, the events as coloured strips, and a list of the month's events beside it.
+    Clicking a day lists that day's events. Times show in the player's own time zone.
+  - **Rules instead of dates:** once, every weekend, the nth or last weekend of a month,
+    every year on a date, or a computed holiday. A **weekend** runs from Friday's 06:00
+    restart to Monday's 06:00 restart. Staff events are rows of the `event_calendar` table
+    (`schemas/pokeverse-extensions.sql`), added in game:
+    - `/calendar` lists the next 30 days, `/calendar list` the staff events,
+      `/calendar remove <n>` removes one.
+    - `/calendar add once 2026-11-06 18:00 2d exp=2 Double Friday`,
+      `/calendar add weekend exp=1.5 Double Weekend`, `/calendar add weekend last loot=2 Loot Weekend`,
+      `/calendar add yearly 12-24 18:00 1d shiny=2 Christmas Eve`.
+    - Bonuses: `exp`, `shiny`, `loot`, `breeding` (Day Care egg chance) and `fishing` (bites),
+      above 1x and up to 10x each.
+    - `/calendar holiday <id> on|off|auto` forces a holiday on or off, or back to its dates.
+    - Changes take effect within a minute; starts and ends are broadcast.
+  - **Events stack** and multiply, also with `/doubleexp`, `/bonusshiny` and the trainer's
+    own boosts. Loot needs the new server build (`setLootEventMultiplier`).
+  - **Holidays are automatic.** Each one starts and ends at the 06:00 restart unless noted.
+    Dates in brackets are 2027's.
+
+    | Holiday | When | What happens |
+    |---|---|---|
+    | New Year | Dec 31 to Jan 2 | 1.5x EXP, a gift on login ($10,000 and a rare candy) |
+    | Lunar New Year | 3 days from the second new moon after the winter solstice (Feb 6) | 1.5x loot, a red envelope on login ($8,888) |
+    | Valentine's | Feb 13 to 15 | 2x Day Care egg chance, 1 in 4 fishing bites are Luvdisc, a rare candy |
+    | Pokémon Day | Feb 27, one day | 2x shiny, a rare candy |
+    | Easter | Good Friday to Easter Monday (Mar 26 to 29) | the existing egg drops and Easter spawns (`030-easterEvent`) |
+    | Summer Festival | July 1 to 31 | 1.5x fishing bites, the existing reward chests (`055-julyVacationEvent`) |
+    | Harvest Moon | the day before the full moon nearest the autumn equinox to the day after (Sep 14 to 16) | berry trees grow twice as fast and give up to 8 berries, 5% of wild Pokémon drop a berry, seed boxes give twice the seeds |
+    | Clefairy Night | every full moon, 20:00 to 06:00 server time | 2 Clefairy and a Clefable at 8 spots in Mt. Moon, 2% Moon Stone from each |
+    | Anniversary | Oct 3 to 5 (the anniversary is Oct 4) | 2x EXP, 2x shiny, the old anniversary content (cake raid, surprise bags, see section 13), a gift on login (a cake and a rare candy) |
+    | Halloween | Oct 24 to Nov 1 | the existing Halloween drops and spawns, and a Halloween raid every 45 minutes |
+    | Christmas | Dec 18 to 27 | the existing presents and Christmas spawns, and a Christmas raid every 35 minutes |
+
+    - Moon phases use the standard astronomical formula (Meeus), accurate to minutes. Easter
+      uses the Western computus.
+    - Each holiday gift is given once per occurrence, at login or when the holiday starts.
+    - The old holiday content (Easter, July, anniversary, Halloween and Christmas drops,
+      spawns and raids) used to run all year or not at all; it now only runs on its dates.
+    - Not built from the first plan: the "spawns up" for types (Dragon, Water, Grass, Ghost,
+      Ice), fireworks at midnight and higher starter catch rates.
+- **Seasons (concept, waiting for approval):** spring, summer, autumn and winter set by
+  the event calendar, each with its own Pokémon and look.
+  - **When:** two options to choose from.
+    - Real seasons (northern hemisphere): spring from the March equinox, summer from the
+      June solstice, autumn from the September equinox, winter from the December solstice,
+      at the 06:00 restart. Easy to explain, but the same spawns for three months.
+    - Monthly, as in Pokémon Black and White: January spring, February summer, March autumn,
+      April winter, then again (each season about 3 times a year). More variety.
+    - Either way the calendar shows the season as a long band, the banner names it, and
+      staff can force one (`/calendar season winter`) for testing or an event.
+  - **Seasonal Pokémon:** a table of swaps applied in the C++ spawner (`Spawn::spawnMonster`,
+    where the shiny roll is): in winter, some share of a species' spawns becomes another
+    one, so they keep sensible places and the map's spawn file doesn't change. The shiny
+    roll still applies. First ideas, all already in the game:
+    - Spring: Hoppip, Skiploom, Jumpluff, Oddish line and Bellossom, Ledyba, Volbeat and
+      Illumise, Lotad, Surskit.
+    - Summer: Sunkern and Sunflora, Wingull and Pelipper, Corsola, Mantine, Remoraid,
+      Chinchou, Tropius; more Water types at sea.
+    - Autumn: Seedot, Shroomish, Pineco and Forretress, Teddiursa, Stantler, Murkrow,
+      Misdreavus, Hoothoot and Noctowl, Houndour, Phanpy.
+    - Winter: Swinub and Piloswine, Snorunt and Glalie, Sneasel, Delibird, Smoochum and
+      Jynx, Seel and Dewgong, Shellder and Cloyster, Spheal, Lapras.
+    - Castform's form could follow the season (Snowy in winter, Sunny in summer).
+    - These count for the Pokepedia, tasks and the radar like any other spawn.
+  - **Map changes:** in three layers, cheapest first.
+    - **Weather (client only):** the client already has Snow, Rain and Fog map shaders
+      (`game_shaders`) and area effects (`game_environment`). Snowfall outdoors in winter,
+      rain showers in spring, falling leaves in autumn (a new particle effect), sun haze in
+      summer. No map work.
+    - **Seasonal decorations (server, at the restart):** placed and removed by script at
+      fixed spots, like the Clefairy spawns: snowmen and snowy fir trees in towns in winter,
+      flowers in spring, pumpkins and leaf heaps in autumn.
+    - **Snowy ground (server, at the restart):** a mapper's copy of chosen areas (towns and
+      routes) in their winter look, turned by a script (`scripts/mapper`, which already
+      reads the map and has auto-borders) into a patch of tile changes. The server applies
+      the patch at the restart when winter starts and takes it back when it ends. The snow
+      grounds and snow borders are already in the item data, so the client needs nothing
+      new. Areas with no winter copy stay as they are. This is the big piece of work (map
+      editing), so it can come after the first two.
+  - **Season events:** a holiday can depend on the season (the Harvest Moon is already the
+    autumn full moon), and staff events can be limited to a season.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
@@ -1200,6 +1383,12 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
   `talkactions/scripts/daycareevent.lua`.
 - Both events are announced in game and on Discord, and show on the calendar.
+- **Admin window:** done. A crown button on the top bar, only for God accounts (access 5),
+  opens a window to start, replace or stop the four events above (1.5x to 5x, 30 minutes to
+  3 days), broadcast a message, save the server, clean the map, and put common staff
+  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. The server checks
+  the access on every action and logs it. Code: `data/lib/ps/systems/074-admin.lua`
+  (opcode 30), `modules/game_admin`.
 
 ## 16. Reports and feature requests to Discord forums
 

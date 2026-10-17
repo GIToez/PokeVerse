@@ -152,6 +152,11 @@ ExtendedIds.Radar = 25
 ExtendedIds.Fishing = 26
 ExtendedIds.TrainerCard = 27
 ExtendedIds.Daycare = 28
+ExtendedIds.HeldItem = 29
+ExtendedIds.Admin = 30
+ExtendedIds.Quest = 31
+ExtendedIds.MoveInfo = 32
+ExtendedIds.Calendar = 33
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

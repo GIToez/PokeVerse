@@ -53,6 +53,163 @@ MoveSlot < UIWidget
     $on:
       color: #ff6b74
 
+  UIWidget
+    id: matchup
+    size: 14 14
+    phantom: true
+    visible: false
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+
+MoveCardLine < Label
+  font: verdana-11px-antialised
+  color: #d8e4e4
+  text-wrap: true
+  text-auto-resize: true
+  phantom: true
+
+MoveCardBoost < UIWidget
+  height: 16
+  phantom: true
+
+  Label
+    id: label
+    font: verdana-11px-antialised
+    color: #d8e4e4
+    anchors.left: parent.left
+    anchors.right: value.left
+    anchors.verticalCenter: parent.verticalCenter
+    text-elide: true
+    phantom: true
+
+  Label
+    id: value
+    font: verdana-11px-antialised
+    color: #8ef09a
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+MoveCard < UIWidget
+  width: 310
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  padding: 10
+  focusable: false
+  layout:
+    type: verticalBox
+    fit-children: true
+    spacing: 4
+
+  UIWidget
+    id: header
+    height: 40
+    phantom: true
+
+    UIWidget
+      id: iconFrame
+      size: 40 40
+      image-source: /modules/game_pokehud/images/slot
+      image-border: 6
+      anchors.left: parent.left
+      anchors.top: parent.top
+      phantom: true
+
+      UIItem
+        id: icon
+        size: 32 32
+        virtual: true
+        phantom: true
+        anchors.centerIn: parent
+
+    Label
+      id: name
+      font: verdana-11px-rounded
+      color: #ffd75a
+      anchors.top: parent.top
+      anchors.left: iconFrame.right
+      anchors.right: close.left
+      margin-left: 8
+      margin-top: 2
+      text-elide: true
+      phantom: true
+
+    UIWidget
+      id: element
+      size: 18 18
+      image-smooth: true
+      anchors.left: name.left
+      anchors.bottom: parent.bottom
+      margin-bottom: 1
+
+    UIWidget
+      id: category
+      size: 18 18
+      image-smooth: true
+      anchors.left: element.right
+      anchors.bottom: element.bottom
+      margin-left: 4
+
+    PVCloseButton
+      id: close
+      size: 20 20
+      anchors.top: parent.top
+      anchors.right: parent.right
+
+  MoveCardLine
+    id: details
+    color: #8fdcff
+
+  MoveCardLine
+    id: description
+
+  UIWidget
+    id: separator
+    height: 1
+    background-color: #ffffff30
+    phantom: true
+
+  UIWidget
+    id: boosts
+    phantom: true
+    layout:
+      type: verticalBox
+      fit-children: true
+      spacing: 1
+
+  MoveCardLine
+    id: final
+    font: verdana-11px-rounded
+    color: #ffffff
+
+  UIWidget
+    id: matchupRow
+    height: 16
+    phantom: true
+
+    UIWidget
+      id: badge
+      size: 14 14
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    Label
+      id: text
+      font: verdana-11px-antialised
+      color: #d8e4e4
+      anchors.left: badge.right
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 5
+      text-elide: true
+
+  MoveCardLine
+    id: estimate
+    color: #ffd75a
+
 UIWindow
   id: movesWindow
   image-source: /modules/game_pokehud/images/panel

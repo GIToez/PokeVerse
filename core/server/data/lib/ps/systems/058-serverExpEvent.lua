@@ -32,7 +32,7 @@ end
 local function clear()
     store(KEY_MULTIPLIER, 0)
     store(KEY_END, 0)
-    setExperienceEventMultiplier(1)
+    setExperienceEventMultiplier(EventCalendar.multiplier("exp"))
 end
 
 function ServerExpEvent.formatMultiplier(multiplier)
@@ -102,7 +102,7 @@ function ServerExpEvent.start(multiplier, seconds)
     local replaced = ServerExpEvent.get()
     store(KEY_MULTIPLIER, math.floor(multiplier * 100 + 0.5))
     store(KEY_END, os.time() + seconds)
-    setExperienceEventMultiplier(multiplier)
+    setExperienceEventMultiplier(multiplier * EventCalendar.multiplier("exp"))
     doBroadcastMessage(string.format("%s %s kill experience for trainers and Pokemon for the next %s!",
         replaced and "The experience event changed:" or "Experience event started:",
         ServerExpEvent.formatMultiplier(multiplier), ServerExpEvent.formatDuration(seconds)), MESSAGE_STATUS_WARNING)
@@ -155,8 +155,9 @@ function ServerExpEvent.onThink()
     end
 
     running = multiplier
-    if (getExperienceEventMultiplier() ~= (multiplier or 1)) then
-        setExperienceEventMultiplier(multiplier or 1)
+    local total = (multiplier or 1) * EventCalendar.multiplier("exp")
+    if (getExperienceEventMultiplier() ~= total) then
+        setExperienceEventMultiplier(total)
     end
     return true
 end

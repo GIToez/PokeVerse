@@ -1,0 +1,8 @@
+Module
+  name: game_admin
+  description: PokeVerse Admin window: server events and staff tools, shown only to staff
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ admin ]
+  @onLoad: init()
+  @onUnload: terminate()

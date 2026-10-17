@@ -26244,7 +26244,7 @@
 		<attribute key="rareEffect" value="1" />
 	</item>
 	<item id="23525" article="a" name="held polkadot bow">
-		<attribute key="description" value="Boosts the power of ???-type moves when held." />
+		<attribute key="description" value="Boosts the power of Normal-type moves by 10% when held." />
 		<attribute key="rareEffect" value="1" />
 	</item>
 	<item id="23526" article="a" name="held sharp beak" sellprice="40000">
@@ -35884,6 +35884,12 @@
 		<attribute key="slotType" value="body" />
 		<attribute key="weight" value="0" />
 		<attribute key="containerOnlyAttribute" value="10002" />
+	</item>
+	<item id="30152" article="a" name="lucky egg">
+		<attribute key="description" value="When held, the Pokemon gains 50% more experience from the wild Pokemon it defeats." />
+	</item>
+	<item id="30153" article="an" name="exp share">
+		<attribute key="description" value="When held by a Pokemon on your belt that is not out, it shares half of the experience your Pokemon out earns. Several holders split that half." />
 	</item>
 	
 	<item id="30001" name="water" />
