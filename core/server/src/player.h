@@ -737,6 +737,11 @@ class Player : public Creature, public Cylinder
 			{if(client) client->sendTradeItemRequest(player, item, ack);}
 		void sendTradeClose() const
 			{if(client) client->sendCloseTrade();}
+		// the weather's share of the world light (Weather in 079-weather.lua): a percentage and a color, -1 none
+		int32_t weatherLightPercent;
+		int32_t weatherLightColor;
+		void setWeatherLight(int32_t percent, int32_t color);
+
 		void sendWorldLight(LightInfo& lightInfo) /* TV */
 			{if(!watchingTV && client) client->sendWorldLight(lightInfo);}
 		void sendChannelsDialog()

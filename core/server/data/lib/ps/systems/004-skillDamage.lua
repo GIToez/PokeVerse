@@ -279,6 +279,8 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
             skillDamage = skillDamage * PokemonHeldItem.getMovePowerModifier(fromCid, getPokemonSkillDamageType(skillName))
         end
 
+        skillDamage = skillDamage * Weather.getMovePowerModifier(fromCid, getPokemonSkillDamageType(skillName))
+
         if (getPokemonSkillCategory(skillName) == MOVE_CATEGORY.PHYSICAL) then
             resultDamage = ((skillDamage * elementMultipler) * ((fromCidLevel + 10) * 0.2)) + (getPokemonAtk(fromCid, fromCidLevel) - getPokemonDef(toCid, toCidLevel))
         else -- SPECIAL and STATUS

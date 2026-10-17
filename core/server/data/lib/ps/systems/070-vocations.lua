@@ -1050,6 +1050,10 @@ local function trackLive(cid, rank, blips)
         if (b.exact and b.id) then
             state.blips[b.id] = { x = b.x, y = b.y, z = b.z }
             count = count + 1
+            -- wild Pokemon with no trainer in view stand still, so the blips would never move
+            if (doMonsterKeepAwake) then
+                doMonsterKeepAwake(b.id, Vocations.PERKS.ranger.liveSeconds * 1000)
+            end
         end
     end
     if (count > 0) then

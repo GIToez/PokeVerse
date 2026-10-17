@@ -141,6 +141,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
 
     onCaughtPokemon(cid, {name = pokemonName, level = pokemonLevel}, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
+    WildLegendaries.onCatch(cid, pokemonName)
     DiscordBridge.onCatch(cid, {name = pokemonName, level = pokemonLevel, sex = pokemonSex,
         ball = ballsNames[newBall] or newBall, ballUid = ballUid, extraPoints = 0, safari = getSafariZone(cid) and true or false})
 end
@@ -160,6 +161,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
 
     onCaughtPokemon(cid, {name = pokemonName, level = pokemonLevel}, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
+    WildLegendaries.onCatch(cid, pokemonName)
     DiscordBridge.onCatch(cid, {name = pokemonName, level = pokemonLevel, sex = pokemonSex,
         ball = "safari", ballUid = ballUid, extraPoints = 0, safari = true})
 end
@@ -186,6 +188,7 @@ pokemonSpecialAbilitie, wastedBallsMsg)
 
     onCaughtPokemon(cid, {name = pokemonName, level = 8}, 1)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
+    WildLegendaries.onCatch(cid, pokemonName)
     DiscordBridge.onCatch(cid, {name = pokemonName, level = 8, sex = pokemonSex, ball = "soul", ballUid = ballUid,
         extraPoints = 0, safari = false})
 end

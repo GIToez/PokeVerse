@@ -61,7 +61,9 @@ Module
     - game_tutorial
     - game_effects
     - game_time
+    - game_weather
     - game_calendar
+    - game_eventcards
     - game_environment
     - game_dollcase
     - game_badgecase
@@ -70,5 +72,6 @@ Module
     - game_tips
     - game_poll
     - game_lootlist
+    - game_menukeys
   @onLoad: init()
   @onUnload: terminate()

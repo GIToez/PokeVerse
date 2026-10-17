@@ -45,6 +45,8 @@ class Monster : public Creature
 		Monster(MonsterType* _mType);
 
 	public:
+		// keeps a wild monster walking with no trainer in view, for the Ranger radar's live blips
+		void keepAwake(uint32_t ms);
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 		static uint32_t monsterCount;
 #endif
@@ -176,6 +178,7 @@ class Monster : public Creature
 		int32_t targetChangeCooldown;
 		bool resetTicks;
 		bool isIdle;
+		int64_t awakeUntil;
 		bool extraMeleeAttack;
 		bool canWalkEverywhere;
 

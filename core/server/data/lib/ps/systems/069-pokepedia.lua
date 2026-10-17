@@ -910,9 +910,19 @@ Pokepedia.onDefeated = function(cid, target)
     if (not isPlayer(cid) or not isCreature(target) or not PokemonStats.isWildPokemon(target)) then
         return
     end
+    -- wild legendaries count only for trainers with 10% of the damage (WildLegendaries.onDeath)
+    if (WildLegendaries and WildLegendaries.isEncounter(target)) then
+        return
+    end
     local name = getCreatureName(target):gsub("^Shiny ", "")
     -- event forms ("Easter Bulbasaur") only count when caught
     if (BASE[name]) then
+        addPoints(cid, name, 1, 0)
+    end
+end
+
+Pokepedia.onLegendaryDefeated = function(cid, name)
+    if (isPlayer(cid) and BASE[name]) then
         addPoints(cid, name, 1, 0)
     end
 end

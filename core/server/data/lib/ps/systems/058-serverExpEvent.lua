@@ -13,7 +13,7 @@ local KEY_MULTIPLIER = GLOBAL_STORAGES.EXP_EVENT_MULTIPLIER -- multiplier x100, 
 local KEY_END = GLOBAL_STORAGES.EXP_EVENT_END               -- unix time the event ends
 
 ServerExpEvent.DEFAULT_MULTIPLIER = 2
-ServerExpEvent.MAX_MULTIPLIER = 10
+ServerExpEvent.MAX_MULTIPLIER = 100
 ServerExpEvent.MIN_SECONDS = 60
 ServerExpEvent.MAX_SECONDS = 7 * 24 * 60 * 60
 

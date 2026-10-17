@@ -4544,8 +4544,11 @@ void ProtocolGame::AddCreatureOutfit(NetworkMessage_ptr msg, const Creature* cre
 void ProtocolGame::AddWorldLight(NetworkMessage_ptr msg, const LightInfo& lightInfo)
 {
 	msg->AddByte(0x82);
-	msg->AddByte((player->hasCustomFlag(PlayerCustomFlag_HasFullLight) ? 0xFF : lightInfo.level));
-	msg->AddByte(lightInfo.color);
+	if(player->hasCustomFlag(PlayerCustomFlag_HasFullLight))
+		msg->AddByte(0xFF);
+	else
+		msg->AddByte((uint8_t)std::min<int32_t>(0xFF, lightInfo.level * player->weatherLightPercent / 100));
+	msg->AddByte(player->weatherLightColor >= 0 ? (uint8_t)player->weatherLightColor : lightInfo.color);
 }
 
 void ProtocolGame::AddCreatureLight(NetworkMessage_ptr msg, const Creature* creature)

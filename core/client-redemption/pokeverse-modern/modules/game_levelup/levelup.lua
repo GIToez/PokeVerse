@@ -353,6 +353,10 @@ local function onLevelUp(protocol, opcode, buffer)
     schedule(showNext, 100)
 end
 
+function isShowing()
+    return stack ~= nil
+end
+
 function init()
     g_ui.importStyle('levelup')
     ProtocolGame.registerExtendedOpcode(ExtendedIds.LevelUp, onLevelUp)

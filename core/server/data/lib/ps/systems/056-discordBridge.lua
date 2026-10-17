@@ -188,8 +188,8 @@ end
 local lastScriptSpawn = {}
 
 local function onSpawn(cid, source)
-    if (not isMonster(cid)) then
-        return
+    if (not isMonster(cid) or (WildLegendaries and WildLegendaries.creating)) then
+        return -- wild legendaries send their own "legendary" events
     end
 
     local master = getCreatureMaster(cid)
@@ -238,6 +238,28 @@ end
 function DiscordBridge.onSpawn(cid, source)
     if (DiscordBridge.isEnabled()) then
         safeCall("onSpawn", onSpawn, cid, source or "script")
+    end
+end
+
+-- Wild legendaries (078-wildLegendaries.lua): one encounterId per encounter, so the bot can keep
+-- one thread per encounter. event = "spawn", "sighting", "flee", "end" (reason "defeated",
+-- "fled", "staff", "restart", "vanished") or "caught".
+local function onLegendary(event)
+    event.kind = "legendary"
+    if (event.species) then
+        event.dexNumber = event.dexNumber or getPokemonNumberByName(event.species)
+    end
+    if (event.position) then
+        local town = getNearestTown(event.position)
+        event.position = {x = event.position.x, y = event.position.y, z = event.position.z}
+        event.nearestTown = town and town.name or nil
+    end
+    DiscordBridge.emit(event)
+end
+
+function DiscordBridge.emitLegendary(event)
+    if (DiscordBridge.isEnabled()) then
+        safeCall("emitLegendary", onLegendary, event)
     end
 end
 

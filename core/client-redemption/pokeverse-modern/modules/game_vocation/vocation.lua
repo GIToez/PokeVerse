@@ -10,7 +10,7 @@
 -- The U key is the vocation key: it opens the trainer's vocation tool (the Ranger radar, the Angler
 -- fishing guide; those modules call registerTool(id, {enabled = fn, toggle = fn})), and without one
 -- it asks the server for this window with {action = "open"}. Below level 20 the window opens with
--- its buttons greyed out.
+-- its buttons greyed out. V only opens or closes this window.
 local IMAGES = '/modules/game_vocation/images/'
 local ERROR_COLOR = '#ff8a80'
 local MUTED_COLOR = '#96aacd'
@@ -23,11 +23,13 @@ local selected
 local messageEvent
 local tools = {}
 local TOOL_ACTION = 'Vocation: window or vocation tool'
+local WINDOW_ACTION = 'Show/hide the vocation window'
 local progressWindow
 local progress
 local showingAll = false
 local button, dot
 local barEvent
+local perksEvent
 local TOOL_BUTTONS = {
     radar = { text = 'Open Radar', icon = 'perk_radar' },
     fishing = { text = 'Open Fishing Guide', icon = 'perk_fish' },
@@ -213,12 +215,23 @@ local function fillRanks(data)
     panel.track.fill:setWidth(math.floor(trackWidth * (data.rank - 1) / (data.maxRank - 1)))
 end
 
+-- the rows and 4 between them
+local function fitScroll(list, scroll)
+    local height = -4
+    for _, child in ipairs(list:getChildren()) do
+        height = height + child:getHeight() + 4
+    end
+    local overflow = height > list:getHeight()
+    scroll:setVisible(overflow)
+    list:setMarginRight(overflow and 16 or 0)
+    scroll:setValue(0)
+end
+
 local function fillNext(data)
     local panel = progressWindow.nextPanel
     panel.list:destroyChildren()
     local next = data.next
-    panel.goals:destroyChildren()
-    for _, id in ipairs({ 'levelText', 'levelValue', 'levelBar', 'goals', 'newAt' }) do
+    for _, id in ipairs({ 'levelText', 'levelValue', 'levelBar', 'list' }) do
         panel[id]:setVisible(next ~= nil)
     end
     panel.topRank:setVisible(next == nil)
@@ -236,14 +249,15 @@ local function fillNext(data)
     panel.levelValue:setColor(reached and '#6fe08a' or '#ffffff')
     local goals = {}
     for _, goal in ipairs((next.trial or {}).goals or {}) do
-        local row = g_ui.createWidget('VocationGoal', panel.goals)
+        local row = g_ui.createWidget('VocationGoal', panel.list)
         local have, need = tonumber(goal.have) or 0, tonumber(goal.need) or 0
         row.text:setText(goal.text or '')
         row.value:setText(have >= need and tr('%d / %d  \183  done', have, need) or string.format('%d / %d', have, need))
         row.value:setColor(have >= need and '#6fe08a' or '#ffffff')
         goals[#goals + 1] = { bar = row.bar, have = have, need = need }
     end
-    panel.newAt:setText(tr('New at rank %d', next.rank or 0))
+    local heading = g_ui.createWidget('VocationListHeading', panel.list)
+    heading:setText(tr('New at rank %d', next.rank or 0))
     for _, gain in ipairs(next.gains or {}) do
         perkRow(panel.list, gain, true)
     end
@@ -255,11 +269,7 @@ local function fillNext(data)
             for _, goal in ipairs(goals) do
                 setBar(goal.bar, goal.have, goal.need)
             end
-            local rows = panel.list:getChildCount()
-            local overflow = rows * 34 - 4 > panel.list:getHeight()
-            panel.nextScroll:setVisible(overflow)
-            panel.list:setMarginRight(overflow and 16 or 0)
-            panel.nextScroll:setValue(0)
+            fitScroll(panel.list, panel.nextScroll)
         end
     end, 50)
 end
@@ -352,6 +362,13 @@ local function fillProgress(data)
     for _, perk in ipairs(data.perks or {}) do
         perkRow(w.perksPanel.list, perk)
     end
+    removeEvent(perksEvent)
+    perksEvent = scheduleEvent(function()
+        perksEvent = nil
+        if progressWindow then
+            fitScroll(progressWindow.perksPanel.list, progressWindow.perksPanel.perksScroll)
+        end
+    end, 50)
     fillRanks(data)
     fillNext(data)
     fillAll(data)
@@ -427,6 +444,12 @@ local function onToolKey()
     send({ action = 'open' })
 end
 
+local function onWindowKey()
+    if not typing() and g_game.isOnline() then
+        toggleWindow()
+    end
+end
+
 function close()
     if window and window:isVisible() then
         window:hide()
@@ -493,6 +516,8 @@ local function onGameEnd()
     progress = nil
     removeEvent(barEvent)
     barEvent = nil
+    removeEvent(perksEvent)
+    perksEvent = nil
     setDot(false)
     if window then
         window:hide()
@@ -529,12 +554,15 @@ function init()
     connect(g_game, { onGameEnd = onGameEnd })
     Keybind.new('Windows', TOOL_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'U' }, '')
     Keybind.bind('Windows', TOOL_ACTION, { { type = KEY_DOWN, callback = onToolKey } })
+    Keybind.new('Windows', WINDOW_ACTION, { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'V' }, '')
+    Keybind.bind('Windows', WINDOW_ACTION, { { type = KEY_DOWN, callback = onWindowKey } })
 end
 
 function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Vocation)
     disconnect(g_game, { onGameEnd = onGameEnd })
     Keybind.delete('Windows', TOOL_ACTION)
+    Keybind.delete('Windows', WINDOW_ACTION)
     removeEvent(messageEvent)
     removeEvent(barEvent)
     if window then

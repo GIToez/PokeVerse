@@ -80,9 +80,17 @@ local function addChips(body, style, list)
     return chips
 end
 
+local PICTURES_PER_ROW = 8
+
 local function addPictures(body, list, draw)
-    local row = g_ui.createWidget('WikiPictures', body)
-    for _, entry in ipairs(list) do
+    local row
+    for index, entry in ipairs(list) do
+        if (index - 1) % PICTURES_PER_ROW == 0 then
+            row = g_ui.createWidget('WikiPictures', body)
+            if index > 1 then
+                row:setMarginTop(2)
+            end
+        end
         local picture = g_ui.createWidget('WikiPicture', row)
         draw(picture.frame, entry[1])
         picture.caption:setText(entry[2] or '')

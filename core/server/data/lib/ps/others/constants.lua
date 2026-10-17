@@ -65,7 +65,9 @@ EXTENDED_IDS = {
     ADMIN = 30, -- JSON Admin window for staff: server events and staff tools (Admin)
     QUEST = 31, -- JSON quest log, quest notices and the NPCs' quest marks (Quests)
     MOVE_INFO = 32, -- JSON type matchups on the moves bar and the move cards (MoveInfo)
-    CALENDAR = 33 -- JSON event calendar: what runs now, what comes next, and the events of a month (EventCalendar)
+    CALENDAR = 33, -- JSON event calendar: what runs now, what comes next, and the events of a month (EventCalendar)
+    LEGENDARY = 34, -- JSON wild legendary cards: {type = "spawn"|"sighting"|"flee"|"end"|"caught"|"reward", species, ...} (WildLegendaries)
+    WEATHER = 35 -- JSON weather where the trainer stands: {type = "weather", zone, kind, outdoors, ...} (Weather)
 }
 
 TOURNAMENT_TYPES = {}

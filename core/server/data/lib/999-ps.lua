@@ -26,6 +26,7 @@ dofile(PS_LIB_CONFIG_DIR .. "globalStorages.lua")
 dofile(PS_LIB_CONFIG_DIR .. "experience.lua")
 dofile(PS_LIB_CONFIG_DIR .. "evYields.lua")
 dofile(PS_LIB_CONFIG_DIR .. "pokepedia.lua")
+dofile(PS_LIB_CONFIG_DIR .. "legendaryAnchors.lua")
 
 -- Functions
 	-- Balls

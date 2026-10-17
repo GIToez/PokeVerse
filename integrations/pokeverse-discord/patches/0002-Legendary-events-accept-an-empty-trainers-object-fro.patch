@@ -1,0 +1,41 @@
+From 8ea26ebd18ec16611ade1330933d852e5c84687b Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 17 Oct 2026 07:11:59 +0000
+Subject: [PATCH 2/2] Legendary events: accept an empty trainers object from
+ the server's JSON encoder
+
+---
+ src/integrations/pokeverse/protocol.ts | 3 ++-
+ tests/unit/legendaryEncounters.test.ts | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/integrations/pokeverse/protocol.ts b/src/integrations/pokeverse/protocol.ts
+index a0e7daf..4a60deb 100644
+--- a/src/integrations/pokeverse/protocol.ts
++++ b/src/integrations/pokeverse/protocol.ts
+@@ -86,7 +86,8 @@ export const legendaryEventSchema = z.object({
+   healthPercent: z.number().nullish(),
+   /** Unknown future reasons are kept as plain strings. */
+   reason: z.string().nullish(),
+-  trainers: z.array(z.string()).nullish(),
++  /** The game's JSON encoder writes an empty list as {}. */
++  trainers: z.preprocess((value) => (value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0 ? [] : value), z.array(z.string()).nullish()),
+   topTrainer: z.string().nullish(),
+   trainer: z.string().nullish(),
+ });
+diff --git a/tests/unit/legendaryEncounters.test.ts b/tests/unit/legendaryEncounters.test.ts
+index 664c7d1..25b870a 100644
+--- a/tests/unit/legendaryEncounters.test.ts
++++ b/tests/unit/legendaryEncounters.test.ts
+@@ -41,6 +41,8 @@ describe("wild legendary encounters", () => {
+     expect(gameEventSchema.parse(SPAWN)).toMatchObject({ kind: "legendary", event: "spawn", encounterId: 31 });
+     expect(gameEventSchema.parse({ kind: "legendary", event: "end", reason: "defeated", encounterId: 31, species: "Articuno",
+       trainers: ["Ash"], topTrainer: "Ash" })).toMatchObject({ reason: "defeated" });
++    expect(gameEventSchema.parse({ kind: "legendary", event: "end", reason: "defeated", encounterId: 31, species: "Articuno",
++      trainers: {} })).toMatchObject({ trainers: [] });
+   });
+ 
+   it("posts the spawn in #legendary-spawns and opens a thread for the encounter", async () => {
+-- 
+2.43.0
+

@@ -24,6 +24,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         MoveInfo.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.CALENDAR) then
         EventCalendar.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.WEATHER) then
+        Weather.onClientMessage(cid, buffer)
     end
     return true
 end

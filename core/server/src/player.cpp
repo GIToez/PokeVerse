@@ -95,6 +95,8 @@ Player::Player(const std::string& _name, ProtocolGame* p):
 	extraLootChance = 0;
 	stamina = STAMINA_MAX;
 	lastLoad = lastPing = lastPong = OTSYS_TIME();
+	weatherLightPercent = 100;
+	weatherLightColor = -1;
 	nickname = _name;
 	afkMessage = "";
 
@@ -5562,4 +5564,18 @@ void Player::useStamina(int64_t value) {
     CreatureEventList events = getCreatureEvents(CREATURE_EVENT_STAMINA_CHANGE);
 		for(CreatureEventList::iterator it = events.begin(); it != events.end(); ++it)
 			(*it)->executeStaminaChange(this, getStamina(), value);
+}
+
+void Player::setWeatherLight(int32_t percent, int32_t color)
+{
+	percent = std::max<int32_t>(10, std::min<int32_t>(200, percent));
+	color = std::max<int32_t>(-1, std::min<int32_t>(215, color));
+	if(percent == weatherLightPercent && color == weatherLightColor)
+		return;
+
+	weatherLightPercent = percent;
+	weatherLightColor = color;
+	LightInfo lightInfo;
+	g_game.getWorldLightInfo(lightInfo);
+	sendWorldLight(lightInfo);
 }

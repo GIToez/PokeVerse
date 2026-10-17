@@ -26,7 +26,63 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      Keybind.new("Chat", "Send current chat line", { [CHAT_MODE.ON] = "Enter", [CHAT_MODE.OFF] = "" }, "")
      Keybind.bind("Chat", "Send current chat line", {
          {
-@@ -592,16 +592,15 @@
+@@ -372,42 +372,6 @@
+     switchChat(not consoleToggleChat.isChecked)
+ end
+ 
+-local function unbindMovingKeys()
+-    local gameWalk = modules.game_walk
+-    gameWalk.unbindWalkKey('W')
+-    gameWalk.unbindWalkKey('D')
+-    gameWalk.unbindWalkKey('S')
+-    gameWalk.unbindWalkKey('A')
+-
+-    gameWalk.unbindWalkKey('E')
+-    gameWalk.unbindWalkKey('Q')
+-    gameWalk.unbindWalkKey('C')
+-    gameWalk.unbindWalkKey('Z')
+-
+-    gameWalk.unbindTurnKey('Control+W')
+-    gameWalk.unbindTurnKey('Control+D')
+-    gameWalk.unbindTurnKey('Control+S')
+-    gameWalk.unbindTurnKey('Control+A')
+-end
+-
+-local function bindMovingKeys()
+-    local gameWalk = modules.game_walk
+-    gameWalk.bindWalkKey('W', North)
+-    gameWalk.bindWalkKey('D', East)
+-    gameWalk.bindWalkKey('S', South)
+-    gameWalk.bindWalkKey('A', West)
+-
+-    gameWalk.bindWalkKey('E', NorthEast)
+-    gameWalk.bindWalkKey('Q', NorthWest)
+-    gameWalk.bindWalkKey('C', SouthEast)
+-    gameWalk.bindWalkKey('Z', SouthWest)
+-
+-    gameWalk.bindTurnKey('Control+W', North)
+-    gameWalk.bindTurnKey('Control+D', East)
+-    gameWalk.bindTurnKey('Control+S', South)
+-    gameWalk.bindTurnKey('Control+A', West)
+-end
+-
+ function switchChat(enabled)
+     -- enabled should be true if we enabling the chat and false if disabling it
+     -- consoleToggleChat:setChecked(not consoleToggleChat.isChecked)
+@@ -417,12 +381,10 @@
+     end
+ 
+     if enabled then
+-        unbindMovingKeys()
+         consoleToggleChat:setTooltip(tr('Disable chat mode, allow to walk using WASD'))
+         Keybind.setChatMode(CHAT_MODE.ON)
+     else
+         walkAfterSend = false -- leaving chat -> clear temporary state (covers manual button toggle too)
+-        bindMovingKeys()
+         consoleToggleChat:setTooltip(tr('Enable chat mode'))
+         Keybind.setChatMode(CHAT_MODE.OFF)
+     end
+@@ -592,16 +554,15 @@
      local player = g_game.getLocalPlayer()
      local message = consoleTextEdit:getText()
      if tab == defaultTab or tab == serverTab then
@@ -44,7 +100,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  
      if tab.isOnRedMessage then
          tab:setColor('#dfdfdfff')
-@@ -829,12 +828,17 @@
+@@ -829,12 +790,17 @@
      return tab
  end
  
@@ -63,7 +119,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          return
      end
  
-@@ -895,11 +899,20 @@
+@@ -895,11 +861,20 @@
      return consoleTabBar:getCurrentTab()
  end
  
@@ -85,7 +141,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      return tab
  end
  
-@@ -1459,7 +1472,7 @@
+@@ -1459,7 +1434,7 @@
          menu:addSeparator()
      end
  
@@ -94,7 +150,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          menu:addOption(tr('Close'), function()
              removeTab(channelName)
          end)
-@@ -1733,6 +1746,9 @@
+@@ -1733,6 +1708,9 @@
          local speaktype = SpeakTypesSettings[speaktypedesc]
          local player = g_game.getLocalPlayer()
          g_game.talkPrivate(speaktype.speakType, name, message)
@@ -104,7 +160,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          if not dontAdd then
              message = applyMessagePrefixies(g_game.getCharacterName(), player:getLevel(), message)
              addPrivateText(message, speaktype, tabname, isPrivateCommand, g_game.getCharacterName())
-@@ -1796,6 +1812,8 @@
+@@ -1796,6 +1774,8 @@
      return message
  end
  
@@ -113,7 +169,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function onTalk(name, level, mode, message, channelId, creaturePos)
      if mode == MessageModes.GamemasterBroadcast then
          modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
-@@ -1837,25 +1855,22 @@
+@@ -1837,25 +1817,22 @@
          local staticText = StaticText.create()
          local staticMessage = message
          if isNpcMode then
@@ -152,7 +208,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      end
  
      local defaultMessage = mode <= 3 and true or false
-@@ -2337,8 +2352,35 @@
+@@ -2337,8 +2314,35 @@
      end
  end
  

@@ -1313,7 +1313,7 @@ bool Game::playerMoveItem(uint32_t playerId, const Position& fromPos,
 		return false;
 	}
 
-	if(!player->hasCustomFlag(PlayerCustomFlag_CanPushAllItems) && (!item->isPushable() || (item->isLoadedFromMap() &&
+	if(!player->hasCustomFlag(PlayerCustomFlag_CanPushAllItems) && (!item->isPushable() || item->isScriptProtected() || (item->isLoadedFromMap() &&
 		(item->getUniqueId() != 0 || (item->getActionId() != 0 && item->getContainer())))))
 	{
 		player->sendCancelMessage(RET_NOTMOVEABLE);
@@ -5267,6 +5267,20 @@ void Game::checkLight()
 		for(AutoList<Player>::iterator it = Player::autoList.begin(); it != Player::autoList.end(); ++it)
 			it->second->sendWorldLight(lightInfo);
 	}
+}
+
+void Game::setLightHour(int32_t minutes)
+{
+	lightHour = ((minutes % 1440) + 1440) % 1440;
+	lastLightCheck = time(NULL);
+	bool day = lightHour >= SUNRISE && lightHour < SUNSET;
+	lightLevel = day ? LIGHT_LEVEL_DAY : LIGHT_LEVEL_NIGHT;
+	lightState = day ? LIGHT_STATE_DAY : LIGHT_STATE_NIGHT;
+
+	LightInfo lightInfo;
+	getWorldLightInfo(lightInfo);
+	for(AutoList<Player>::iterator it = Player::autoList.begin(); it != Player::autoList.end(); ++it)
+		it->second->sendWorldLight(lightInfo);
 }
 
 void Game::getWorldLightInfo(LightInfo& lightInfo)

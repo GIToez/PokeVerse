@@ -31,6 +31,7 @@ VocationBadge < UILabel
   ttf-font-size: 10
   color: #ffffff
   text-auto-resize: true
+  text-align: center
   text-offset: 0 1
   padding: 2 7 2 7
   height: 16
@@ -75,6 +76,13 @@ VocationGoal < UIWidget
     anchors.left: parent.left
     anchors.right: parent.right
     margin-top: 4
+
+// "New at rank N" between the goals and the next rank's perks in the scrolling list
+VocationListHeading < VocationText
+  height: 24
+  text-auto-resize: false
+  text-align: bottomLeft
+  color: #96aacd
 
 // One perk: the tick, the perk's icon, its name and its value (or the badge of a next-rank gain)
 VocationPerkRow < UIWidget
@@ -179,7 +187,7 @@ VocationRankSection < UIWidget
     spacing: 4
 
 VocationProgressWindow < UIWindow
-  size: 880 704
+  size: 880 664
   image-source: /modules/game_dailytasks/images/window
   image-border: 24
   padding: 22 26 22 26
@@ -349,17 +357,25 @@ VocationProgressWindow < UIWindow
       anchors.top: parent.top
       anchors.left: parent.left
 
-    UIWidget
+    ScrollablePanel
       id: list
+      vertical-scrollbar: perksScroll
       anchors.top: heading.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
       margin-top: 8
-      phantom: true
       layout:
         type: verticalBox
         spacing: 4
+
+    GtsScrollBar
+      id: perksScroll
+      step: 34
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.right: parent.right
+      visible: false
 
   VocationPanel
     id: nextPanel
@@ -394,31 +410,15 @@ VocationProgressWindow < UIWindow
       anchors.right: parent.right
       margin-top: 4
 
-    UIWidget
-      id: goals
-      anchors.top: levelBar.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      phantom: true
-      layout:
-        type: verticalBox
-        fit-children: true
-
-    VocationText
-      id: newAt
-      color: #96aacd
-      anchors.top: goals.bottom
-      anchors.left: parent.left
-      margin-top: 12
-
+    // the rank-up goals, "New at rank N" and the next rank's perks scroll together
     ScrollablePanel
       id: list
       vertical-scrollbar: nextScroll
-      anchors.top: newAt.bottom
+      anchors.top: levelBar.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: parent.bottom
-      margin-top: 6
+      margin-top: 4
       layout:
         type: verticalBox
         spacing: 4

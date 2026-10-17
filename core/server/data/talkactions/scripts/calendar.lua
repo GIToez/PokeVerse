@@ -6,8 +6,9 @@
 -- /calendar add yearly 11-06 18:00 1d exp=2,shiny=2 Name every year on that date
 -- /calendar remove <number>
 -- /calendar holiday <id> on | off | auto force a holiday on or off, or back to its dates
+-- /calendar season [spring|summer|autumn|winter|auto]   what season it is, or force one (auto: back to the dates)
 -- Bonuses: exp, shiny, loot, breeding, fishing (above 1x, up to 10x), joined with commas.
-local USAGE = "Usage: /calendar | list | add <once|weekend|yearly> ... <bonuses> <name> | remove <number> | holiday <id> on|off|auto"
+local USAGE = "Usage: /calendar | list | add <once|weekend|yearly> ... <bonuses> <name> | remove <number> | holiday <id> on|off|auto | season [name|auto]"
 
 local function reply(cid, text)
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
@@ -27,6 +28,9 @@ function onSay(cid, words, param, channel)
 	local now = os.time()
 
 	if (command == "") then
+		local season = EventCalendar.currentSeason(now)
+		reply(cid, string.format("Season: %s%s.", season.season.name, season.forced and " (forced by staff)"
+			or " until " .. os.date("%Y-%m-%d %H:%M", season.endsAt)))
 		for _, event in ipairs(EventCalendar.getEvents(now, now + 30 * 24 * 60 * 60)) do
 			local running = event.startsAt <= now
 			reply(cid, string.format("%s %s: %s to %s. %s", running and "[now]" or "-", event.name,
@@ -71,6 +75,21 @@ function onSay(cid, words, param, channel)
 		reply(cid, string.format("%s is now %s (in effect within a minute).", EventCalendar.getHoliday(id).name,
 			mode == "auto" and "back to its dates" or ("forced " .. mode)))
 		print(string.format("> Event calendar: %s set %s to %s", getCreatureName(cid), id, mode))
+	elseif (command == "season") then
+		local mode = rest:lower()
+		if (mode == "") then
+			local season = EventCalendar.currentSeason(now)
+			reply(cid, string.format("It is %s%s, from %s to %s.", season.season.name, season.forced and " (forced by staff)" or "",
+				os.date("%Y-%m-%d %H:%M", season.startsAt), os.date("%Y-%m-%d %H:%M", season.endsAt)))
+			return true
+		elseif (mode ~= "auto" and not EventCalendar.getSeason(mode)) then
+			reply(cid, "Usage: /calendar season [spring|summer|autumn|winter|auto].")
+			return true
+		end
+		EventCalendar.setForcedSeason(mode ~= "auto" and mode or nil)
+		reply(cid, mode == "auto" and "The season follows the dates again (in effect within a second)."
+			or string.format("The season is now forced to %s (in effect within a second).", EventCalendar.getSeason(mode).name))
+		print(string.format("> Event calendar: %s set the season to %s", getCreatureName(cid), mode))
 	else
 		reply(cid, USAGE)
 	end

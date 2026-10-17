@@ -990,6 +990,27 @@ From the `#notes` channel:
   clicked; an entry now refreshes when the creature's name (and so its level) changes.
 - **WASD double step (fixed):** binding the walk keys again after a relog stacked their
   handlers, so one press walked twice.
+- **Default key bindings (done):** every key below is a Settings > Controls entry. The
+  letter keys only work with the chat off, and they don't fire while a text field (a search
+  box, a name field) has the focus.
+
+  | Key | Action |
+  | --- | --- |
+  | W A S D | Walk (Movement). The diagonals (Q E Z C before) have no key; players can add them |
+  | Ctrl + W A S D | Turn (Ctrl + arrows too). Clear All Texts keeps Ctrl+W only with the chat open |
+  | Q / Z | Fly or levitate up / down a floor (`/up`, `/down`) |
+  | E | Order (was R) |
+  | X | Pokedex on the target |
+  | V | Vocation window |
+  | U | Vocation tool (radar, fishing guide), or the window without one |
+  | C | Your Trainer Card |
+  | T | Tasks |
+  | P / L / M | Pokepedia / Quest Log / big map |
+  | 1–0, -, = and F1–F6 | Moves and calling Pokémon (unchanged) |
+
+  The calendar, daily login reward, tracker, minimap, inventory, options, store and admin
+  panel have an entry under Windows with no default key. Arrows, numpad and Ctrl + arrows stay
+  fixed. R is free.
 - **Switching Pokémon (done):** the trainer is protected until the next Pokémon is out (at
   most 1.5 seconds), not in duels or trainer battles.
 - **Bugged stairs (fixed, check on live):** stairs that land on more stairs sent two full map
@@ -1060,26 +1081,112 @@ From the `#notes` channel:
     catches, $15,000) and the highscores (Caught Articuno and others). For 17 of the 21 the
     Pokepedia goals can't be reached, and the bird bosses likely don't count as defeats
     (their death is cancelled before the kill events run).
-  - **To decide (proposal):**
-    - **Where:** each legendary gets one or a few lore spots (Articuno at the Seafoam
-      Islands, Zapdos at the Power Plant, Moltres at Victory Road, the Johto beasts roaming
-      Johto routes, Lugia at the Whirl Islands, Ho-Oh at the Bell Tower, Celebi at Ilex
-      Forest), from a table in one new file rather than the map spawns.
-    - **How often:** a chance check every few minutes, at most one of each species alive
-      at a time, a cooldown after it's beaten or caught (for example 6 to 24 hours), and a
-      server message plus the Discord post when one appears.
-    - **Roaming:** Raikou, Entei, Suicune (and Latias and Latios) move to another route
-      every few minutes, so the Ranger radar's direction and distance band matter; they
-      flee after a few turns of battle, as in the games.
-    - **Strength:** a legendary boss version for the wild one (much more health, a group
-      fight), and the corpse belongs to whoever did the most damage.
-    - **Catching:** a catch `chance` that can be reached in a few dozen tries spread over
-      encounters (tries are kept per species, so failed throws on earlier encounters
-      still count). Whether the Master Ball works on them, or legendaries need their own
-      ball.
-    - **Limits:** whether a trainer can catch each legendary only once, and whether they
-      can be traded on the GTS.
-    - **The bird dungeons:** one bird per trainer, or each of the three once.
+  - **Decided (October 2026):** wild legendaries are separate from the dungeon and quest
+    bosses and live on the main map. All of them roam, and all 21 visit Kanto until their own
+    region is live. They are built for group fights, but a high-level trainer can beat one
+    alone. Level 50 is recommended, not required. The catch chances stay as they are for now.
+    Trainers can catch more than one, and can trade them on the GTS.
+  - **Plan (agreed, steps 1–3 built):** one new system file (`systems/078-wildLegendaries.lua`)
+    with a table per species, not the map spawns.
+    - **Tiers:** tier 1 is the birds, the beasts, the Regis and Latias/Latios. Tier 2 is
+      Mewtwo, Mew, Lugia, Ho-Oh, Celebi, Kyogre, Groudon, Rayquaza, Jirachi and Deoxys.
+    - **Where:** one pool of anchor points spread over all of Kanto: outdoor, walkable and
+      reachable without Surf, and checked with a tile-check script like the raid points. Each
+      species also has a home area that fits it (Articuno and Regice the Seafoam Islands,
+      Zapdos and Registeel the Power Plant, Moltres, Entei and Groudon Cinnabar's volcano,
+      Raikou Routes 11–12, Suicune the rivers and lakes, Regirock Rock Tunnel, Latias and
+      Latios the coasts, Mewtwo Cerulean Cave, Mew the Cinnabar Mansion, Lugia and Kyogre
+      the southern shores, Ho-Oh and Rayquaza the Indigo Plateau, Celebi Viridian Forest,
+      Jirachi and Deoxys Mt. Moon). Spawns and moves pick the home area half the time and any
+      point in Kanto the other half, so they can turn up anywhere. Other regions' points join
+      the pool when those maps are live.
+    - **Limits:** at most 2 alive at once, never two of the same species, never two tier 2.
+    - **Population scaling:** the gap between spawns and the cooldowns depend on the
+      trainers online. The gap is worked out at each spawn and checked again every 5 minutes,
+      so it gets shorter when the server fills up:
+
+      | Online | Gap to the next spawn | About per day | Cooldown tier 1 / tier 2 |
+      | --- | --- | --- | --- |
+      | 0–4 | 16–24 h | about 1 | 30 h / 4 days |
+      | 5–14 | 4–8 h | 4 | 30 h / 4 days |
+      | 15–39 | 3–6 h | 5–6 | 24 h / 3 days |
+      | 40 or more | 2–4 h | 8 | 16 h / 2 days |
+
+      Below 5 online they still spawn, slowly, even with nobody online, so the Discord post
+      can pull players in. The thresholds are settings. The species is drawn from
+      those off cooldown, tier 1 three times as likely as tier 2. The cooldown counts from
+      when it is beaten, caught or flies off. No spawns in the 2 hours before the 06:00
+      restart, and one still alive at the restart counts as fled with no cooldown. The next
+      spawn time and the cooldowns are kept in global storages.
+    - **Time in the world:** 90 minutes (tier 1), 120 minutes (tier 2). It doesn't fly off
+      while someone has hit it in the last 2 minutes.
+    - **Roaming:** it wanders near its anchor point and moves to another one far away every
+      4–6 minutes (Latias and Latios every 2–3). It stays put while being hit. At 50% health
+      (tier 2 also at 25%) it flees to another point with the health it has left. Left alone
+      for 3 minutes, it slowly heals back to full.
+    - **Notifications:**
+      - Spawn: server-wide, with the area and "Recommended for trainers level 50+".
+      - Each move: "Articuno was spotted near Route 20" in a Legendary chat tab, plus a
+        last-seen pin on the Pokepedia world map.
+      - Fleeing at 50% or 25%, and the end (beaten, caught, or flew away): server-wide.
+      - Discord: one thread per encounter with the spawn, sightings and end (new bridge
+        event kinds; the bridge's 5-minute limit per species doesn't apply to them).
+      - The Ranger radar (rank 5) stays the exact tracker.
+    - **Fight:** the wild one is the plain species (same name, stats, moves and type from
+      its monster file), with its health raised by the spawner for that encounter only. A
+      caught one has the normal stats of its species; a test checks that the boost doesn't
+      carry over. Boss health: 4–5 trainers around level 80 beat a tier 1 in about 5 minutes,
+      a level 100 trainer alone in about 15–20 with potions. Tier 2 has about twice that.
+      Signature moves, with area attacks that punish groups standing together.
+    - **Rewards:** everyone with at least 10% of the damage gets the Pokepedia defeat, Rare
+      Candy (item 14463) and money. First amounts: tier 1 one Rare Candy and $5,000, tier 2
+      two Rare Candies and $10,000. The trainer or party with the most damage has the body to
+      themselves for 60 seconds for the catch throw, then anyone can throw. Caught
+      legendaries are not marked unique, so the GTS takes them. Highscores and achievements
+      count wild catches.
+    - **Staff:** `/legendary status`, `/legendary spawn <name>`, `/legendary end <name>`,
+      `/legendary next 5m`.
+    - **Tests:** the limits, the cooldowns and population scaling, roaming, the flee, the
+      damage shares and rewards, and the notifications.
+    - **Order:** (1) spawner, pool, limits, timers, roaming and staff commands (server Lua,
+      no new build); (2) notifications and the Discord threads; (3) boss health, damage
+      shares and rewards; (4) the world map pin and the radar check (client release);
+      (5) tuning on live.
+    - **Built (steps 1–3 on the server, plus the client cards and the Discord threads):**
+      - `systems/078-wildLegendaries.lua` with all the settings in `WildLegendaries.CONFIG`.
+        The `serverExpEvent` globalevent runs it every second; the `wildLegendaryHit` and
+        `wildLegendaryDeath` creature events record hits and hand out the rewards. The next
+        spawn, the cooldowns and the open encounters are global storages 7140–7146.
+      - Anchor points: `config/legendaryAnchors.lua`, made by
+        `scripts/make-legendary-anchors.py` from the area names and the map spawns (no
+        water species' spawns, outdoor only for the Kanto pool): 1,150 Kanto points plus
+        the 13 home areas. A move looks for a free tile up to 3 tiles from the point.
+      - The 5-trainer population row is set to 1 while we test.
+      - Health: 30 times (tier 1) and 60 times (tier 2) the monster file's health, for the
+        encounter only. Signature moves and area attacks are not built yet.
+      - Notifications: server-wide messages, a locked **Legendaries** chat channel (id 14,
+        shows what's out when you open it), Discord `legendary` events (see
+        `docs/discord-bridge.md`) and pop-up card data on extended opcode 34
+        (`EXTENDED_IDS.LEGENDARY`: `spawn`, `sighting`, `flee`, `end`, `caught` and the
+        personal `reward`). The world map pin comes with step 4.
+      - Client cards (`game_eventcards`): a big banner for the spawn (strength tier,
+        recommended level, time until it flies off) and for your reward (Rare Candies,
+        money, the Pokepedia defeat), and small cards top right for sightings (one per
+        species every 5 minutes), flees, the end and catches. They wait for the level-up
+        and evolution banners. Options > Interface > "Show event pop-up cards" turns them
+        off; the chat messages still show. The 10% damage rule is explained in the
+        Pokepedia wiki ("Wild legendaries") instead of on the banner.
+      - Discord: the bot keeps one post and thread per encounter in `#legendary-spawns`.
+        The bot repo can't be pushed from here, so the change is kept as patches in
+        `integrations/pokeverse-discord/` (it needs two new bot permissions).
+      - The body: the monster's own corpse, kept 3 minutes; the top damage dealer has it
+        alone for 60 seconds. Only damage from a trainer's Pokémon (or balls) counts toward
+        the share. Mewtwo's monster file had no corpse; it now uses "fainted mewtwo".
+      - Staff: `/legendary status`, `spawn <name> [here]`, `end <name>`, `next <time>`
+        (`30s`, `5m`, `2h`, `1d`) and `cooldowns clear [name]`.
+      - Tests: the legendary part of the vocation test talkaction, with a real Mewtwo defeat.
+  - **The bird dungeons stay as they are:** they are the end of the Ancient Times quest,
+    one bird per trainer, once, and not a repeatable raid.
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper
     floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
     the test now also tries nearer spots.
@@ -1325,20 +1432,110 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       spawns and raids) used to run all year or not at all; it now only runs on its dates.
     - Not built from the first plan: the "spawns up" for types (Dragon, Water, Grass, Ghost,
       Ice), fireworks at midnight and higher starter catch rates.
-- **Seasons (concept, waiting for approval):** spring, summer, autumn and winter set by
-  the event calendar, each with its own Pokémon and look.
-  - **When:** two options to choose from.
-    - Real seasons (northern hemisphere): spring from the March equinox, summer from the
-      June solstice, autumn from the September equinox, winter from the December solstice,
-      at the 06:00 restart. Easy to explain, but the same spawns for three months.
-    - Monthly, as in Pokémon Black and White: January spring, February summer, March autumn,
-      April winter, then again (each season about 3 times a year). More variety.
-    - Either way the calendar shows the season as a long band, the banner names it, and
-      staff can force one (`/calendar season winter`) for testing or an event.
+- **Seasons and weather (agreed October 2026; build steps 1 to 4 done):**
+  - **Built so far** (needs the new server build and a client release):
+    - **Seasons:** `EventCalendar.currentSeason` / `seasonId` in `077-eventCalendar.lua`. The
+      season starts at the 06:00 restart after its equinox or solstice (2026: Mar 21, Jun 22,
+      Sep 23, Dec 22), and its start is announced. `/calendar` names it, and
+      `/calendar season <spring|summer|autumn|winter|auto>` forces one. The calendar window
+      shows the season in its header, a coloured band under every day and an icon on the
+      day a season begins; the banner tooltips name it.
+    - **Weather** (`lib/ps/systems/079-weather.lua`): every town with a temple in a live
+      region is a zone, and a spot belongs to the nearest town of its region. Kanto is
+      temperate, Hoenn warm, the Orange Islands tropical and Desert Island 92 a desert; some
+      towns change the odds (sandstorms at Mauville and Pewter, fog at Lavender and
+      Fallarbor, rain at Fortree, sun at Lavaridge and Cinnabar). Johto's zones are listed
+      but stay calm until `live = true`, with their odds ready: wind at New Bark, Violet,
+      Olivine and Blackthorn, rain at Azalea, fog at Ecruteak, storms at Cianwood, snow and
+      hail at Mahogany and snow at Blackthorn. The Tutorial has no weather.
+      - Each zone's weather lasts 20 to 60 minutes, rolled from the climate's odds for the
+        season. The roll is a seeded hash of the zone and the time, so every Lua state gets the
+        same answer without sharing anything; only staff weather is stored (global storage 7151).
+      - Snow on Christmas Day (not in the tropics or the desert) and fog on Halloween night.
+        There's no harsh sunlight at night: it's "Clear night" instead.
+      - `/weather` (or `/weather status`) shows the season, the zone you stand in, and the
+        weather of every zone. `/weather <town|region|all|here> <kind> [minutes]` sets it,
+        `... auto` gives it back to the roll, and `/weather off` clears all staff weather.
+        `/weather time <day|night|dawn|dusk|HH:MM>` moves the game clock, to test the light.
+      - Clients get it on extended opcode 35 (`{type = "weather", ...}`) at login and when it
+        changes.
+    - **Light:** each weather lets a share of the day or night light through and can tint it
+      (`KINDS[kind].light`): rain 80%, thunderstorms 62% with a blue tint, fog 85%, hail
+      80%, sandstorms 84% with a sand tint, snow 106%, harsh sun 110%. The server sends it per
+      player (`doPlayerSetWeatherLight`, applied in `ProtocolGame::AddWorldLight`), so the
+      night stays dark and a storm makes the day dim. Characters with the `HasFullLight`
+      flag (gods) and clients with the Lights option off don't see the darkening.
+    - **Client** (`modules/game_weather`): a map shader for each weather (rain, thunderstorm,
+      snow, hail, fog, sandstorm, strong winds, harsh sunlight), drawn only where the sky is
+      open over the player (no floor above, the same rule as the server). Thunderstorms flash
+      the screen and play thunder; rain, storms and wind have looping sounds. A weather icon
+      sits next to the area name; its tooltip gives the zone, the time left, the move changes,
+      the chip damage or fog note, and the season.
+      - Options (Interface): Show weather on the map, Lighter weather effects (half
+        strength), Weather sounds (at the Ambience volume) and Lightning flashes. They only
+        change the look; the light and the battle effects still apply.
+    - **Battle** (outdoors only; `Weather.CONFIG` turns each part off):
+      - Move power: harsh sun Fire x1.2, Grass x1.1, Water x0.8; rain Water x1.2, Fire x0.8;
+        thunderstorms Electric x1.2, Water x1.1, Fire x0.8; fog Ghost and Dark x1.1; strong
+        winds Flying x1.2; snow Ice x1.2, Fire x0.9; hail Ice x1.2; sandstorms Rock x1.2,
+        Ground x1.1. Applied in `004-skillDamage.lua` after held items.
+      - Hail and sandstorms take 3% of max health every 10 seconds from trainers' Pokémon
+        (never the last point). Ice types are immune to hail; Rock, Ground and Steel types to
+        sandstorms.
+      - Fog: moves used from 2 or more tiles away miss 10% of the time.
+      - Moves bar: a move the weather changes gets a small weather icon on its slot (green
+        border for stronger, red for weaker) with "Rain: 20% stronger" in the tooltip. The
+        shift-click move card lists the weather in its power breakdown.
+    - **Decorations** (`lib/ps/systems/080-decorations.lua`): up to 6 props around each live
+      town's temple, put down at startup and swapped within a minute or two when the season
+      or a holiday changes. Spots are picked by script: open sky, nothing on the tile, and
+      every tile within 2 walkable, so a prop never closes a path or stands at a door; props
+      stand 3 tiles apart. They're script protected (players can't move or pick them up, and
+      `/clean` leaves them), and nothing is saved, so a restart starts from a clean map.
+      - Christmas: a Christmas tree on the spot nearest the temple, a wreath, snowmen and
+        heaps of snow (no snow in tropical and desert towns). Halloween: jack-o'-lanterns
+        and skull candles. Winter: snowmen, snowy dead trees and heaps of snow (not in the
+        tropics or the desert). Spring: flowers. Autumn: pumpkins, wheat, hay and mushrooms.
+        Summer has none.
+      - Every other holiday has its own set too, and it goes up on its own when the holiday
+        starts: New Year (party cakes, a Pikachu doll, teddy bears, roses), Lunar New Year (red
+        lanterns, a dragon flag, red roses), Valentine's (heart pillows, roses, teddy bears),
+        Pokemon Day (Pokemon dolls around a Pikachu), Easter (eggs and tulips), Summer
+        Festival (sunflowers, sea stars, Lapras and Seel dolls), Harvest Moon (pumpkins,
+        wheat, hay, moon flowers), Clefairy Night (Chansey and Jigglypuff dolls, moon
+        flowers, meadow stars) and Anniversary (a party cake by the temple, Mew, Pikachu and
+        Bulbasaur dolls, roses).
+      - When two holidays overlap, the first in this order wins: Christmas, Halloween, New
+        Year, Lunar New Year, Valentine's, Pokemon Day, Easter, Anniversary, Summer
+        Festival, Harvest Moon, Clefairy Night. A holiday's set always beats the season's.
+      - **Props placed by hand** (God accounts): stand facing a tile or a wall and save a prop
+        for a set, with `/deco add <set> <prop name or id>` or the Admin window's
+        Decorations tab (pick the set and the prop, press Place in front of me). Each one is
+        a row in the `decoration_spots` table (set, tile, item, who and when), so it survives
+        restarts and updates and goes up every time its set is up, next to the automatic
+        props; there's no config file to edit. Wall props (Christmas wreath, red and blue
+        garlands, skull, purple, red, blue and white tapestries) hang on walls with a hook;
+        everything else stands on a tile a player could walk on, never on a house or a
+        depot tile. A tile holds one prop per set: saving another replaces it.
+      - `/deco` shows the set up now, the town's automatic props and the props saved within
+        12 tiles (a prop that no longer fits, for example after a map change, is flagged).
+        `/deco remove [set]` deletes the prop on the tile you face, `/deco list`,
+        `/deco sets` and `/deco items <set>` list them, `/deco preview <set> [minutes]` puts
+        a set up for everyone for a while (30 minutes by default, `/deco preview off` ends
+        it) and `/deco auto <on|off>` leaves a town to its hand-placed props only. The Admin
+        window has a button for each.
+    - Tests: the season, weather and decoration parts of the vocation test talkaction.
+  - **Seasons follow the real calendar** (northern hemisphere), not a sped-up cycle, so it's
+    never summer at Christmas. Spring starts at the March equinox, summer at the June
+    solstice, autumn at the September equinox and winter at the December solstice. The
+    event calendar already works out these dates (`EventCalendar.seasonTime` in
+    `077-eventCalendar.lua`). The season changes at the 06:00 restart after the date.
+    The calendar shows it as a long band, the banner names it, and staff can force one
+    (`/calendar season winter`) to test or for an event.
   - **Seasonal Pokémon:** a table of swaps applied in the C++ spawner (`Spawn::spawnMonster`,
-    where the shiny roll is): in winter, some share of a species' spawns becomes another
-    one, so they keep sensible places and the map's spawn file doesn't change. The shiny
-    roll still applies. First ideas, all already in the game:
+    where the shiny roll is). In winter, some share of a species' spawns becomes another
+    species, so the swapped Pokémon spawn in sensible places and the map's spawn file
+    doesn't change. The shiny roll still applies. First ideas, all already in the game:
     - Spring: Hoppip, Skiploom, Jumpluff, Oddish line and Bellossom, Ledyba, Volbeat and
       Illumise, Lotad, Surskit.
     - Summer: Sunkern and Sunflora, Wingull and Pelipper, Corsola, Mantine, Remoraid,
@@ -1347,27 +1544,71 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
       Misdreavus, Hoothoot and Noctowl, Houndour, Phanpy.
     - Winter: Swinub and Piloswine, Snorunt and Glalie, Sneasel, Delibird, Smoochum and
       Jynx, Seel and Dewgong, Shellder and Cloyster, Spheal, Lapras.
-    - Castform's form could follow the season (Snowy in winter, Sunny in summer).
     - These count for the Pokepedia, tasks and the radar like any other spawn.
-  - **Map changes:** in three layers, cheapest first.
-    - **Weather (client only):** the client already has Snow, Rain and Fog map shaders
-      (`game_shaders`) and area effects (`game_environment`). Snowfall outdoors in winter,
-      rain showers in spring, falling leaves in autumn (a new particle effect), sun haze in
-      summer. No map work.
-    - **Seasonal decorations (server, at the restart):** placed and removed by script at
-      fixed spots, like the Clefairy spawns: snowmen and snowy fir trees in towns in winter,
-      flowers in spring, pumpkins and leaf heaps in autumn.
-    - **Snowy ground (server, at the restart):** a mapper's copy of chosen areas (towns and
-      routes) in their winter look, turned by a script (`scripts/mapper`, which already
-      reads the map and has auto-borders) into a patch of tile changes. The server applies
-      the patch at the restart when winter starts and takes it back when it ends. The snow
-      grounds and snow borders are already in the item data, so the client needs nothing
-      new. Areas with no winter copy stay as they are. This is the big piece of work (map
-      editing), so it can come after the first two.
+  - **Weather all year, weighted by the season.** Weather is random all year round, not
+    only in its season. The season only changes the odds (snow is common in winter, rare
+    in late autumn and never in summer).
+    - Kinds: clear, sunny (harsh sun, heat haze), rain, thunderstorm (rain with lightning
+      flashes and thunder), fog, snow, hail, sandstorm (only in desert areas and on rocky
+      routes) and windy (leaves or petals blowing, depending on the season).
+    - Regions: every region gets weather, not only Kanto. Kanto, Hoenn and the Orange
+      Islands come first, since they're live, and Johto gets its zones when it goes live.
+      The zone list is per region, so adding a region is a data change, not new code.
+    - Zones: each region's outdoor areas are grouped into a few weather zones (by area
+      name, as on the area banner), so it can rain on Route 1 while Cerulean is sunny. Buildings,
+      caves and dungeons have no weather. Each zone rolls its next weather every 20 to 60
+      minutes, using that season's odds and the zone's own rules (no snow at sea in
+      summer, sandstorms only where there's sand).
+    - Client: the existing map shaders (`game_shaders`: Rain, Snow, Fog, Heat) plus new
+      particle effects (raindrops, snowflakes, leaves, lightning flashes on the screen,
+      thunder sounds) only outdoors. There's a weather icon next to the area name; hover
+      it to see the weather and the effects that apply. The server sends the zone's
+      weather on login and when you enter a new zone (a new extended opcode).
+    - Player options: show weather effects (on, light, off), weather sounds, and flashing
+      lightning (off for people sensitive to flashes). Options only change the look; the
+      gameplay effects still apply.
+  - **Weather settings that change other systems.** All in one config table on the server
+    (`CONFIG.effects[weather]`), so each effect can be tuned or turned off without touching
+    code:
+    - Battle (like the main games): rain makes Water moves 20% stronger and Fire moves 20%
+      weaker; harsh sun does the opposite. Thunderstorms make Electric moves 20% stronger.
+      Hail and sandstorms deal a little damage every few seconds to Pokémon that aren't
+      Ice (hail) or Rock, Ground or Steel (sandstorm). Fog lowers the accuracy of ranged
+      moves a little.
+    - Moves bar: a move that the weather makes stronger (or weaker) gets a small weather
+      icon on its slot (a raindrop, sun or lightning bolt, green for stronger, red for
+      weaker), next to the type matchup arrow. Hovering it says why ("Rain: Water moves
+      +20%"), and the shift-click move card shows the weather in its power breakdown.
+    - Spawns: each weather has a list of species that spawn more often, through the same
+      swap table as the seasons (Water and Bug types in rain, Electric types in
+      thunderstorms, Ghost types in fog, Ice types in snow and hail, Ground types in
+      sandstorms, Fire and Grass types in sun).
+    - Castform changes form to match the weather (Rainy, Sunny or Snowy).
+    - Fishing: rain and thunderstorms make bites a little faster.
+    - Ranger radar: fog cuts its range by a quarter.
+    - Events: staff can set the weather for one zone or everywhere for a while
+      (`/weather <zone|all> <kind> <time>`, `/weather status`, `/weather off`), and
+      holidays or events can set it too (snow on Christmas Day, fog on Halloween night).
+      Daily tasks and quests can ask for a weather ("catch a Water type in the rain").
+  - **Seasonal decorations (server, at the restart):** placed and removed by script at
+    fixed spots, like the Clefairy spawns: snowmen and snowy fir trees in towns in winter,
+    a Christmas tree in each town over Christmas, jack-o'-lanterns at Halloween, flowers
+    in spring and leaf heaps in autumn.
+  - **Not planned for now:** changing the map itself (snowy ground or new tiles in winter).
+    It could come later as a mapper's winter copy of chosen areas, applied at the restart.
   - **Season events:** a holiday can depend on the season (the Harvest Moon is already the
     autumn full moon), and staff events can be limited to a season.
+  - **Build order** (1 to 4 done):
+    1. The season in the calendar, with the staff command.
+    2. Basic weather: zones for Kanto, Hoenn and the Orange Islands, the timer, the client
+       effects and icon, the options and `/weather`.
+    3. Decorations, in every live region.
+    4. Battle effects, with the weather icons on the moves bar.
+    5. Spawn swaps, first for weather, then for seasons, and Castform.
+    6. Fishing, radar, tasks.
+    7. Johto's zones and decorations when Johto goes live.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
-  `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 10x, from 1 minute
+  `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 100x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too
   (`data/lib/ps/systems/058-serverExpEvent.lua`).
 - **Shiny event:** done. `/bonusshiny 2x 2h` makes every shiny roll that many times more
@@ -1378,7 +1619,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   new server build.
 - **Day Care events:** done. `/bonusdaycare 3x 2h` multiplies the training EXP Pokémon
   get in the Day Care, and `/bonusbreeding 2x 1d` multiplies the daily early egg chance
-  (from day 7). Same arguments as `/doubleexp` (up to 10x, 1 minute to 7 days, `off`,
+  (from day 7). Same arguments as `/doubleexp` (up to 100x, 1 minute to 7 days, `off`,
   `status`); `/expevent` lists them too. Training EXP only counts the minutes that
   overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
   `talkactions/scripts/daycareevent.lua`.
@@ -1386,9 +1627,11 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
 - **Admin window:** done. A crown button on the top bar, only for God accounts (access 5),
   opens a window to start, replace or stop the four events above (1.5x to 5x, 30 minutes to
   3 days), broadcast a message, save the server, clean the map, and put common staff
-  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. The server checks
-  the access on every action and logs it. Code: `data/lib/ps/systems/074-admin.lua`
-  (opcode 30), `modules/game_admin`.
+  commands (`/goto`, `/c`, `/i`, `/kick`, `/reload` ...) in the chat line. A Decorations tab
+  saves props by hand for a set on the tile or wall you face, removes them, previews a set
+  and turns a town's automatic props on or off, and lists the props saved near you (see
+  Decorations above). The server checks the access on every action and logs it. Code:
+  `data/lib/ps/systems/074-admin.lua` (opcode 30), `modules/game_admin`.
 
 ## 16. Reports and feature requests to Discord forums
 

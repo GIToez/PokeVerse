@@ -495,7 +495,8 @@ local function throwAt(cid, pos, pokemon, after)
     end
     doTargetCombatHealth(cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
     addEvent(function()
-        local corpse = getTileItemByType(pos, ITEM_TYPE_CONTAINER)
+        -- its own body: other tests running at the same time leave bodies on these tiles too
+        local corpse = getTileItemById(pos, getMonsterInfo(pokemon).lookCorpse)
         if (not isPlayer(cid) or not isItem(corpse)) then
             check("catch test: corpse", false)
             return
@@ -584,6 +585,16 @@ local function testAdmin(cid)
     end
     getPlayerAccess = function() return level end
     doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
+    local discord, onBroadcast = {}, DiscordBridge.onBroadcast
+    DiscordBridge.onBroadcast = function(source, author, text) discord[#discord + 1] = source .. "|" .. author .. "|" .. text end
+    local function contains(list, value)
+        for _, v in ipairs(list or {}) do
+            if (v == value) then
+                return true
+            end
+        end
+        return false
+    end
     local function ask(data)
         sent = {}
         Admin.onClientMessage(cid, JSON.encode(data))
@@ -605,11 +616,28 @@ local function testAdmin(cid)
         check("admin: the window shows it running", sent[2] and sent[2].events[2].multiplier == 2)
         ask({ action = "stop", event = "shiny" })
         check("admin: Stop cancels it", not ShinyEvent.get() and getShinyEventMultiplier() == 1)
+        check("admin: the window offers 10x and 7 days", contains(state.multipliers, 10) and contains(state.minutes, 10080))
+        ask({ action = "start", event = "shiny", multiplier = 10, minutes = 10080 })
+        multiplier, endsAt = ShinyEvent.get()
+        check("admin: Start runs 10x for 7 days", multiplier == 10 and math.abs(endsAt - os.time() - 604800) <= 1, multiplier)
+        ShinyEvent.stop()
         ask({ action = "broadcast", text = "  Hello trainers  " })
         check("admin: broadcast is sent with the staff name", broadcasts[#broadcasts] == getCreatureName(cid) .. ": Hello trainers",
             broadcasts[#broadcasts])
+        check("admin: broadcast goes to Discord too by default", discord[#discord] == "gm|" .. getCreatureName(cid) .. "|Hello trainers",
+            discord[#discord])
+        local before, toDiscord = #broadcasts, #discord
+        ask({ action = "broadcast", text = "Game only", target = "game" })
+        check("admin: an in-game broadcast skips Discord", #broadcasts == before + 1 and #discord == toDiscord)
+        ask({ action = "broadcast", text = "Discord only", target = "discord" })
+        check("admin: a Discord broadcast skips the game", #broadcasts == before + 1 and discord[#discord] == "gm|" ..
+            getCreatureName(cid) .. "|Discord only", discord[#discord])
+        ask({ action = "broadcast", text = "Nowhere", target = "moon" })
+        check("admin: an unknown broadcast target is refused", sent[1] and sent[1].ok == false and #broadcasts == before + 1
+            and #discord == toDiscord + 1)
     end)
     doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage = opcode, access, broadcast
+    DiscordBridge.onBroadcast = onBroadcast
     ShinyEvent.stop()
     if (not ok) then
         error(err)
@@ -766,6 +794,21 @@ local function testExpItems(cid)
         end
         return ball
     end
+    -- the test balls can't go to the depot: a full bag leaves no room for the next one
+    local function drop(...)
+        for _, ball in ipairs({ ... }) do
+            doRemoveItem(ball.uid)
+            for i, made in ipairs(created) do
+                if (made == ball) then table.remove(created, i) break end
+            end
+        end
+    end
+    local function probe(amount)
+        local ball = holding()
+        local gained = gain(ball, amount)
+        drop(ball)
+        return gained
+    end
     become(cid, nil)
 
     local plain, egg = holding(), holding(LUCKY_EGG)
@@ -777,7 +820,9 @@ local function testExpItems(cid)
     local before = getBallPokemonExp(egg.uid)
     doPlayerPokemonAddExperience(cid, nil, 200, false, egg)
     check("Lucky Egg: only battle EXP", getBallPokemonExp(egg.uid) - before == 200)
+    drop(plain, egg)
 
+    local half, full = probe(50), probe(100)
     local earner, a, b, fainted, other = holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding(EXP_SHARE), holding()
     setBallPokemonLastHp(fainted.uid, 0)
     local belt = { earner, a, b, fainted, other }
@@ -790,7 +835,6 @@ local function testExpItems(cid)
     getContainerItems = function() return belt end
     local ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
     local function gained(ball) return getBallPokemonExp(ball.uid) - exp[ball.uid] end
-    local half = gain(holding(), 50)
     check("Exp Share: two holders on the belt split the 50% pool", ok and holders == 2 and gained(a) == half and
         gained(b) == half and half > 0, tostring(holders) .. " " .. gained(a) .. "/" .. half)
     check("Exp Share: nothing for the earner, a fainted holder or a Pokemon without one",
@@ -798,7 +842,6 @@ local function testExpItems(cid)
     belt = { earner, a, other }
     exp[a.uid] = getBallPokemonExp(a.uid)
     ok, holders = pcall(PokemonHeldItem.shareExperience, cid, 200, earner.uid)
-    local full = gain(holding(), 100)
     check("Exp Share: a single holder gets the whole 50%", ok and holders == 1 and gained(a) == full, gained(a) .. "/" .. full)
     getPlayerBelt, getContainerItems = realBelt, realItems
 
@@ -1063,7 +1106,8 @@ local function testRanger(cid, arena)
     text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     local pidgeyDirection, pidgeyDistance = where(pidgey)
     check("rank 3 radar names species and direction",
-        text:find("Pidgey %(" .. pidgeyDirection .. ", " .. pidgeyDistance .. " tiles%)") ~= nil, text)
+        -- a wild Pidgey nearby joins the test one's group ("Pidgey x2 (...)"); the nearest gives the direction
+        text:find("Pidgey[ x%d]* %(" .. pidgeyDirection:gsub("%-", "%%-") .. ", " .. pidgeyDistance .. " tiles%)") ~= nil, text)
     check("rank 3 radar still hides the shiny", not text:find("shiny Rattata"))
 
     become(cid, "ranger", 4)
@@ -1183,8 +1227,17 @@ local function testRanger(cid, arena)
         not Vocations.radarLiveUpdate(cid))
     become(cid, "ranger", 3)
     setPlayerStorageValue(cid, playersStorages.vocationRadarAt, 0)
+    local keepAwake, awake = doMonsterKeepAwake, {}
+    doMonsterKeepAwake = keepAwake and function(id, ms)
+        awake[id] = ms
+        return keepAwake(id, ms)
+    end
     got = captureRadar(function() Vocations.radarPopupScan(cid) end)
+    doMonsterKeepAwake = keepAwake
     check("live radar: rank 3 scans are live", got[1] and got[1].type == "scan" and got[1].live == true)
+    check("live radar: the tracked Pokemon keep walking with no trainer in view",
+        keepAwake and awake[pidgey] == Vocations.PERKS.ranger.liveSeconds * 1000 and keepAwake(pidgey, 1) and not keepAwake(cid, 1),
+        keepAwake and tostring(awake[pidgey]) or "doMonsterKeepAwake missing: old server build")
     got = captureRadar(function() Vocations.radarLiveUpdate(cid) end)
     check("live radar: nothing sent for a Pokemon that stayed", not pidgeyIn(got, "blips"))
     local from = getCreaturePosition(pidgey)
@@ -1729,6 +1782,629 @@ local function testCalendar(cid)
     check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
 end
 
+local function testSeasons(cid)
+    local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 12, min = 0, sec = 0 }) end
+    local expected = { spring = { 3, 20, 22 }, summer = { 6, 21, 23 }, autumn = { 9, 22, 24 }, winter = { 12, 21, 23 } }
+    local spans, ok = EventCalendar.seasonSpans(at(2026, 1, 15), at(2026, 12, 31)), true
+    for _, span in ipairs(spans) do
+        local d, want = os.date("*t", span.startsAt), expected[span.season.id]
+        if (d.year == 2026) then
+            ok = ok and d.month == want[1] and d.day >= want[2] and d.day <= want[3] and d.hour == 6 and d.min == 0
+        end
+    end
+    check("Seasons: each starts at the restart after its equinox or solstice", #spans == 5 and ok, #spans)
+    check("Seasons: spans follow each other", spans[1] and spans[1].endsAt == spans[2].startsAt and spans[4].endsAt == spans[5].startsAt)
+    local forced = EventCalendar.getForcedSeason()
+    EventCalendar.setForcedSeason(nil)
+    check("Seasons: by date", EventCalendar.seasonId(at(2026, 11, 1)) == "autumn" and EventCalendar.seasonId(at(2027, 1, 15)) == "winter" and
+        EventCalendar.seasonId(at(2027, 4, 30)) == "spring" and EventCalendar.seasonId(at(2027, 7, 1)) == "summer")
+    EventCalendar.setForcedSeason("winter")
+    local current = EventCalendar.currentSeason(at(2027, 7, 1))
+    check("Seasons: staff can force one", current.season.id == "winter" and current.forced and EventCalendar.seasonId() == "winter")
+    EventCalendar.setForcedSeason(forced and forced.id or nil)
+    check("Seasons: back to automatic", (EventCalendar.getForcedSeason() and EventCalendar.getForcedSeason().id) == (forced and forced.id))
+    local status = EventCalendar.statusData()
+    check("Seasons: the calendar status names the season", status.season and EventCalendar.getSeason(status.season.id) ~= nil and
+        status.season.endsAt > status.now, status.season and status.season.id)
+    local range = EventCalendar.rangeData(at(2026, 9, 1), at(2026, 10, 10))
+    check("Seasons: a month range lists the seasons it crosses", range and range.seasons and #range.seasons == 2, range and range.seasons and #range.seasons)
+end
+
+local function testWeather(cid, arena)
+    local W = Weather
+    local saved = W.readOverrides()
+    W.writeOverrides("m")
+    local function zoneNamed(name)
+        for _, zone in ipairs(W.getZones()) do
+            if (zone.name == name) then return zone end
+        end
+    end
+    local function at(y, m, d, h, mi) return os.time({ year = y, month = m, day = d, hour = h, min = mi or 0, sec = 0 }) end
+    local viridian, desert, johto = zoneNamed("Viridian"), zoneNamed("Desert Island 92"), nil
+    local orange
+    for _, zone in ipairs(W.getZones()) do
+        if (zone.region.id == "johto" and not johto) then johto = zone end
+        if (zone.climate == "tropical" and not orange) then orange = zone end
+    end
+    check("Weather: zones for Kanto, the Orange Islands and the desert", viridian and orange and desert and viridian.region.id == "kanto" and
+        desert.climate == "desert")
+    if (not (viridian and orange and desert)) then
+        W.writeOverrides(saved)
+        return
+    end
+    check("Weather: a town's spot is in its own zone", W.zoneAt(viridian.pos) == viridian)
+    for _, zone in ipairs(W.findZones(cid, "all")) do
+        if (zone.none or not zone.region.live) then
+            check("Weather: 'all' leaves out calm and closed zones", false, zone.name)
+        end
+    end
+    if (johto) then
+        check("Weather: Johto has none until it goes live", W.at(johto).source == "none")
+    end
+
+    local day = at(2026, 10, 20, 0)
+    local changes, ok, last = 0, true, nil
+    for t = day, day + 86400 - 1, 600 do
+        local a, b = W.at(viridian, t), W.at(viridian, t)
+        ok = ok and a.kind == b.kind and a.endsAt == b.endsAt and W.KINDS[a.kind] ~= nil and a.endsAt > t and
+            (a.endsAt - a.startsAt) % (20 * 60) == 0
+        if (a.kind ~= last) then changes, last = changes + 1, a.kind end
+    end
+    check("Weather: the same answer every time, in 20-minute steps", ok)
+    check("Weather: it changes several times a day", changes >= 4 and changes <= 72, changes)
+    local snowy, summerSnow, tropicalSnow, sand, desertTotal = 0, 0, 0, 0, 0
+    for t = at(2026, 1, 1, 6), at(2026, 12, 20, 6), 3 * 3600 + 7 * 60 do
+        local month = os.date("*t", t).month
+        local kind = W.at(viridian, t).kind
+        if (kind == "snow" and (month == 12 or month <= 2)) then snowy = snowy + 1 end
+        if (kind == "snow" and month >= 7 and month <= 8) then summerSnow = summerSnow + 1 end
+        local tropical = W.at(orange, t).kind
+        if (tropical == "snow" or tropical == "hail") then tropicalSnow = tropicalSnow + 1 end
+        local dry = W.at(desert, t).kind
+        desertTotal = desertTotal + 1
+        if (dry == "sandstorm") then sand = sand + 1 end
+    end
+    check("Weather: Kanto snows in winter, never in summer", snowy > 0 and summerSnow == 0, snowy .. " " .. summerSnow)
+    check("Weather: no snow or hail in the tropics", tropicalSnow == 0, tropicalSnow)
+    check("Weather: the desert has sandstorms", sand > desertTotal / 5, sand .. "/" .. desertTotal)
+    local christmas, tropicalChristmas = W.at(viridian, at(2026, 12, 25, 12)), W.at(orange, at(2026, 12, 25, 12))
+    check("Weather: snow on Christmas Day", christmas.kind == "snow" and christmas.source == "holiday")
+    check("Weather: not in the tropics", tropicalChristmas.source ~= "holiday")
+    local halloween, before = W.at(viridian, at(2026, 10, 31, 22)), W.at(viridian, at(2026, 10, 31, 19))
+    check("Weather: fog on Halloween night", halloween.kind == "fog" and halloween.source == "holiday" and before.source ~= "holiday")
+
+    W.setOverride({ viridian.id }, "rain", 5)
+    local staff = W.at(viridian)
+    check("Weather: staff weather wins", staff.kind == "rain" and staff.source == "staff" and math.abs(staff.endsAt - os.time() - 300) <= 2,
+        staff.kind .. " " .. staff.source)
+    W.setOverride({ viridian.id }, "sunny", 5)
+    check("Weather: no harsh sunlight at night, even from staff", W.at(viridian).kind == (W.isNight() and "clear" or "sunny"))
+    W.setOverride({ viridian.id }, nil)
+    check("Weather: clearing staff weather", W.at(viridian).source ~= "staff")
+    local allIds = {}
+    for _, zone in ipairs(W.getZones()) do allIds[#allIds + 1] = zone.id end
+    local pins = W.readOverrides()
+    W.setOverride(allIds, "rain", 5)
+    W.setOverride({ viridian.id }, "fog", 5)
+    local stored, pinned = W.readOverrides(), 0
+    for _, id in ipairs(allIds) do
+        local entry = W.getOverrides()[id]
+        if (entry and entry.kind == (id == viridian.id and "fog" or "rain")) then pinned = pinned + 1 end
+    end
+    check("Weather: staff weather on every zone fits the database and reads back", #stored <= 255 and pinned == #allIds,
+        #stored .. " chars, " .. pinned .. "/" .. #allIds)
+    W.writeOverrides(pins)
+
+    -- CI starts on the Tutorial Island, which has no weather: test in Viridian then
+    local arenaZone = W.zoneAt(arena)
+    local center = (arenaZone and not arenaZone.none and arenaZone.region.live) and arena or viridian.pos
+    local spots = {}
+    for radius = 0, 12 do
+        for dx = -radius, radius do
+            for dy = -radius, radius do
+                local p = { x = center.x + dx, y = center.y + dy, z = center.z }
+                if ((math.abs(dx) == radius or math.abs(dy) == radius) and #spots < 2 and isFree(cid, p) and W.isOutdoors(p)) then
+                    spots[#spots + 1] = p
+                end
+            end
+        end
+    end
+    local spot = spots[1]
+    local made = {}
+    local function make(name)
+        local p = table.remove(spots, 1)
+        local m = p and doCreateMonster(name, p, false)
+        if (m) then made[#made + 1] = m end
+        return m
+    end
+    local squirtle, geodude = make("Squirtle"), make("Geodude")
+    check("Weather: an open-sky spot near the arena", squirtle and geodude, spot and (spot.x .. "," .. spot.y .. "," .. spot.z))
+    if (squirtle and geodude) then
+        local zones = { W.zoneAt(getCreaturePosition(squirtle)).id, W.zoneAt(getCreaturePosition(geodude)).id }
+        local function set(kind)
+            W.setOverride(zones, kind, 5)
+            W.forget(squirtle)
+            W.forget(geodude)
+        end
+        set("rain")
+        local value, kind = W.getMovePowerModifier(squirtle, ELEMENT_WATER)
+        check("Weather: rain powers up Water moves", value == 1.2 and kind == "rain", value)
+        check("Weather: and weakens Fire moves", W.getMovePowerModifier(squirtle, ELEMENT_FIRE) == 0.8)
+        check("Weather: and leaves the rest alone", W.getMovePowerModifier(squirtle, ELEMENT_NORMAL) == 1)
+        local power, boosts = MoveInfo.getPower(cid, squirtle, "Water Gun")
+        local boosted = false
+        for _, boost in ipairs(boosts or {}) do boosted = boosted or boost.weather == "rain" end
+        check("Weather: the move card shows the rain boost", boosted and math.floor(power + 0.5) == 53, tostring(power))
+        local data = W.data(cid)
+        check("Weather: the client message", data.type == "weather" and data.kind and data.season == EventCalendar.seasonId())
+        set("sandstorm")
+        local health = getCreatureHealth(squirtle)
+        local lost = W.chip(squirtle)
+        check("Weather: a sandstorm wears Pokemon down", lost > 0 and getCreatureHealth(squirtle) == health - lost, lost)
+        check("Weather: but not Rock types", W.chip(geodude) == 0)
+        doCreatureAddHealth(squirtle, -(getCreatureHealth(squirtle) - 1))
+        check("Weather: never below 1 health", W.chip(squirtle) == 0 and getCreatureHealth(squirtle) == 1)
+        set("fog")
+        local misses = 0
+        for _ = 1, 400 do
+            if (W.fogMiss(squirtle, geodude)) then misses = misses + 1 end
+        end
+        local distance = getDistanceBetween(getCreaturePosition(squirtle), getCreaturePosition(geodude))
+        if (distance < 2) then
+            check("Weather: fog never misses up close", misses == 0, misses)
+        else
+            check("Weather: fog makes about 1 in 10 long-range moves miss", misses >= 15 and misses <= 80, misses)
+        end
+        set("rain")
+        W.CONFIG.battle = false
+        check("Weather: the battle setting turns it off", W.getMovePowerModifier(squirtle, ELEMENT_WATER) == 1)
+        W.CONFIG.battle = true
+        W.setOverride(zones, nil)
+    end
+    for _, m in ipairs(made) do
+        if (isCreature(m)) then doRemoveCreature(m) end
+    end
+    check("Weather: the light reaches players", doPlayerSetWeatherLight(cid, 80, -1) == true and doPlayerSetWeatherLight(0, 80, -1) == false)
+    W.writeOverrides(saved)
+    W.send(cid)
+end
+
+local function testDecorations(cid)
+    local D = Decorations
+    local holiday = D.holidayTheme()
+    local season = D.SETS[EventCalendar.seasonId()] and EventCalendar.seasonId() or nil
+    check("Decorations: the set follows the holidays, then the season", D.theme() == (holiday or season),
+        tostring(D.theme()))
+    local mapped, missing = {}, {}
+    for _, entry in ipairs(D.HOLIDAYS) do
+        mapped[entry[1]] = D.SETS[entry[2]] and #D.SETS[entry[2]].items > 0
+    end
+    for _, h in ipairs(EventCalendar.HOLIDAYS) do
+        if (not mapped[h.id]) then missing[#missing + 1] = h.id end
+    end
+    check("Decorations: every calendar holiday has its own set", #missing == 0, table.concat(missing, ","))
+    local viridian = Weather.getZone(1)
+    local spots = viridian and D.spotsFor(viridian) or {}
+    check("Decorations: spots around Viridian's temple", #spots >= 3, #spots)
+    local apart, outdoors = true, true
+    for i, a in ipairs(spots) do
+        outdoors = outdoors and Weather.isOutdoors(a)
+        for j = i + 1, #spots do
+            apart = apart and math.max(math.abs(a.x - spots[j].x), math.abs(a.y - spots[j].y)) >= D.CONFIG.spacing
+        end
+    end
+    check("Decorations: under the open sky, 3 tiles apart", apart and outdoors)
+    local set, props = D.SETS[D.theme() or ""], {}
+    if (set and viridian) then
+        local ids = {}
+        for _, id in ipairs(set.items) do ids[id] = true end
+        if (set.first) then ids[set.first] = true end
+        local r = D.CONFIG.maxDistance
+        for x = viridian.pos.x - r, viridian.pos.x + r do
+            for y = viridian.pos.y - r, viridian.pos.y + r do
+                local pos = { x = x, y = y, z = viridian.pos.z }
+                local ground = getTileThingByPos({ x = x, y = y, z = pos.z, stackpos = 0 })
+                for id in pairs((ground and ground.itemid and ground.itemid > 0) and ids or {}) do
+                    local item = getTileItemById(pos, id)
+                    if (item and item.uid and item.uid > 0 and getItemAttribute(item.uid, "scriptprotected") == true) then
+                        props[#props + 1] = pos
+                    end
+                end
+            end
+        end
+        check("Decorations: the set is up in Viridian, script protected so players can't move it", #props >= 3, #props)
+        check("Decorations: a tile with a prop is no longer a spot", props[1] and not D.isSpot(props[1]))
+    end
+end
+
+local function testHandDecorations(cid)
+    local D = Decorations
+    local viridian = Weather.getZone(1)
+    check("Decorations: sets by id or name", D.findSet("Valentine's") == "valentines" and D.findSet("pokemon day") == "pokemonday"
+        and not D.findSet("nope"))
+    local garland, why = D.findItem("christmas", "garland")
+    check("Decorations: props by name or id", D.findItem("christmas", "wreath") == 6502 and D.findItem("christmas", "2105") == 2105
+        and not D.findItem("christmas", "99999") and not garland and tostring(why):find("Which one"), why)
+
+    -- a wall with a hook to stand by, and a clear tile, near Viridian's temple
+    local wall, stand, dir, floor
+    local steps = { { 0, 1, NORTH }, { 0, -1, SOUTH }, { 1, 0, WEST }, { -1, 0, EAST } }
+    for dx = -16, 16 do
+        for dy = -16, 16 do
+            local pos = { x = viridian.pos.x + dx, y = viridian.pos.y + dy, z = viridian.pos.z }
+            if (not wall and D.hasHook(pos) and D.checkSpot(pos, 6502)) then
+                for _, step in ipairs(steps) do
+                    local near = { x = pos.x + step[1], y = pos.y + step[2], z = pos.z }
+                    if (not wall and not D.hasHook(near) and D.checkSpot(near, 2105)) then
+                        wall, stand, dir = pos, near, step[3]
+                    end
+                end
+            end
+            local tile = getTileInfo(pos)
+            if (not floor and math.abs(dx) > 3 and not D.hasHook(pos) and D.checkSpot(pos, 2105) and tile
+                and tile.downItems == 0 and tile.creatures == 0) then
+                floor = pos
+            end
+        end
+    end
+    check("Decorations: a hook wall and a clear tile near Viridian's temple", wall and floor)
+    if (not wall or not floor) then
+        return
+    end
+    check("Decorations: a tree doesn't go on a wall", not D.checkSpot(wall, 2105))
+
+    local sent, level, largest = {}, Admin.ACCESS, 0
+    local opcode, access = doSendPlayerExtendedOpcode, getPlayerAccess
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.ADMIN) then
+            sent[#sent + 1] = JSON.decode(buffer)
+            largest = math.max(largest, #buffer)
+        end
+        return true
+    end
+    getPlayerAccess = function() return level end
+    local function ask(data)
+        sent = {}
+        Admin.onClientMessage(cid, JSON.encode(data))
+        return sent
+    end
+    local back = getCreaturePosition(cid)
+    local preview, viridianOff = D.getPreview(), D.getNoAuto()[viridian.id] == true
+    local count = #D.getSpots()
+    local ok, err = pcall(function()
+        doTeleportThing(cid, stand, false)
+        doCreatureSetLookDir(cid, dir)
+        local answer = ask({ action = "deco_add", set = "christmas", item = 6502 })
+        local state = answer[2]
+        local saved = state and state.spots and state.spots[1]
+        check("Decorations: the Admin window saves a wreath on the wall you face", answer[1] and answer[1].ok
+            and #D.getSpots() == count + 1 and saved and saved.x == wall.x and saved.y == wall.y and saved.valid,
+            answer[1] and answer[1].text)
+        local catalog = ask({ action = "decorations", catalog = true })
+        local christmas = catalog[1] and catalog[1].type == "deco_items" and catalog[1].set == "christmas" and catalog[1].items
+        check("Decorations: the window gets every set and its props", #catalog == #D.setIds() + 1 and christmas
+            and christmas[1].client > 0 and catalog[#catalog].type == "decorations" and #catalog[#catalog].sets == #D.setIds())
+        check("Decorations: each message fits the 8 KB extended opcode limit", largest < 8000, largest)
+        ask({ action = "deco_add", set = "christmas", item = 6503 })
+        local spots = D.spotsNear(wall, 0)
+        check("Decorations: a second prop for the set replaces the first", #D.getSpots() == count + 1 and spots[1]
+            and spots[1].spot.itemid == 6503)
+        level = 0
+        ask({ action = "deco_add", set = "halloween", item = 5616 })
+        check("Decorations: players below God can't save props", #D.getSpots() == count + 1)
+        level = Admin.ACCESS
+        check("Decorations: a tree for Christmas on a clear tile", D.addSpot("christmas", floor, 2105, "test")
+            and #D.getSpots() == count + 2)
+        ask({ action = "deco_preview", set = "christmas", minutes = 5 })
+        check("Decorations: preview puts the set up", D.theme() == "christmas" and D.getPreview() == "christmas")
+        doTeleportThing(cid, viridian.pos, false)
+        ask({ action = "deco_auto", on = false })
+        check("Decorations: Viridian's automatic props can be turned off", D.getNoAuto()[viridian.id] == true)
+    end)
+    doSendPlayerExtendedOpcode, getPlayerAccess = opcode, access
+    doTeleportThing(cid, back, false)
+    if (not ok) then
+        error(err)
+    end
+
+    local function protectedAt(pos, itemid)
+        local item = getTileItemById(pos, itemid)
+        return item and item.uid and item.uid > 0 and getItemAttribute(item.uid, "scriptprotected") == true
+    end
+    -- the automatic props of the set up now around Viridian's temple (this script's spotsFor was worked
+    -- out with the props already down, so it names other tiles)
+    local function autoProps()
+        local set, ids, n = D.SETS[D.theme() or ""], {}, 0
+        for _, itemid in ipairs(set and set.items or {}) do ids[itemid] = true end
+        if (set and set.first) then ids[set.first] = true end
+        local r = D.CONFIG.maxDistance
+        for x = viridian.pos.x - r, viridian.pos.x + r do
+            for y = viridian.pos.y - r, viridian.pos.y + r do
+                local pos = { x = x, y = y, z = viridian.pos.z }
+                local ground = getTileThingByPos({ x = x, y = y, z = pos.z, stackpos = 0 })
+                for itemid in pairs((ground and ground.itemid and ground.itemid > 0) and ids or {}) do
+                    n = n + (protectedAt(pos, itemid) and not (x == floor.x and y == floor.y) and 1 or 0)
+                end
+            end
+        end
+        return n
+    end
+    addEvent(function()
+        check("Decorations: the saved wreath and tree go up with the set", protectedAt(wall, 6503) and protectedAt(floor, 2105))
+        check("Decorations: with automatic props off, only the saved ones are in Viridian", autoProps() == 0, autoProps())
+        D.removeSpots(wall, "christmas")
+        D.removeSpots(floor)
+        D.setAuto(viridian.id, not viridianOff)
+        if (not preview) then
+            D.setPreview(nil)
+        end
+        check("Decorations: removing deletes the rows", #D.getSpots() == count, #D.getSpots() - count)
+        addEvent(function()
+            check("Decorations: removed props come down", not protectedAt(wall, 6503) and not protectedAt(floor, 2105))
+            check("Decorations: the automatic props come back", autoProps() >= 3, autoProps())
+        end, 4000)
+    end, 3000)
+end
+
+local function testLegendaries(cid, friend, arena)
+    local W = WildLegendaries
+    local MON, KEY = W.MON, W.KEY
+    local saved = {}
+    for name, key in pairs(KEY) do
+        saved[key] = getStorage(key)
+    end
+    for _, a in ipairs(W.getActive()) do
+        if (isMonster(a.cid)) then
+            W.finish(a.cid, "restart")
+        end
+    end
+    W.clearCooldowns()
+
+    local bad, total = {}, 0
+    local function scan(points, label)
+        local good = 0
+        for _, p in ipairs(points) do
+            total = total + 1
+            if (W.isGoodPoint({ x = p[1], y = p[2], z = p[3] })) then
+                good = good + 1
+            elseif (#bad < 5) then
+                bad[#bad + 1] = string.format("%s %d,%d,%d", label, p[1], p[2], p[3])
+            end
+        end
+        return good
+    end
+    local roamGood = scan(LEGENDARY_ANCHORS.ROAM, "roam")
+    check("Legendary: at least 95% of the Kanto points are good ground", roamGood >= #LEGENDARY_ANCHORS.ROAM * 0.95,
+        roamGood .. "/" .. #LEGENDARY_ANCHORS.ROAM .. " " .. table.concat(bad, "; "))
+    local homesOk, homeDetail = true, {}
+    for _, species in ipairs(W.SPECIES) do
+        local points = LEGENDARY_ANCHORS.HOMES[species.home]
+        local good = points and scan(points, species.home) or 0
+        if (good < 3) then
+            homesOk = false
+            homeDetail[#homeDetail + 1] = species.name .. " " .. good
+        end
+    end
+    check("Legendary: every species has a home area with good points", homesOk, table.concat(homeDetail, ", "))
+    check("Legendary: 21 species, 11 tier 1", #W.SPECIES == 21 and #(function()
+        local t = {} for _, s in ipairs(W.SPECIES) do if (s.tier == 1) then t[#t + 1] = s end end return t end)() == 11)
+
+    check("Legendary: population rows", W.getPopulation(0).gap[1] == 16 * 3600 and W.getPopulation(3).gap[2] == 8 * 3600 and
+        W.getPopulation(20).cooldown[1] == 24 * 3600 and W.getPopulation(60).gap[1] == 2 * 3600)
+    local now = os.time()
+    local nextAt = W.scheduleNext(now, true)
+    local row = W.getPopulation()
+    check("Legendary: the next spawn falls in the population's gap", nextAt - now >= row.gap[1] and nextAt - now <= row.gap[2],
+        nextAt - now)
+    W.setNextSpawn(now + 100 * 3600)
+    check("Legendary: a busier server brings the next spawn forward", W.scheduleNext(now, false) <= now + row.gap[2])
+
+    local tier1 = 0
+    for i = 1, 4000 do
+        if (W.pickSpecies(W.SPECIES).tier == 1) then tier1 = tier1 + 1 end
+    end
+    check("Legendary: tier 1 is three times as likely", tier1 / 4000 > 0.73 and tier1 / 4000 < 0.80, tier1 / 4000)
+
+    local broadcasts, cards, events = {}, {}, {}
+    local broadcast, opcode, otc, emit = doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient, DiscordBridge.emitLegendary
+    local getScheduled = ServerRestart.getScheduled
+    doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
+    doSendPlayerExtendedOpcode = function(target, id, buffer)
+        if (id == EXTENDED_IDS.LEGENDARY and target == cid) then cards[#cards + 1] = JSON.decode(buffer) end
+        return true
+    end
+    getPlayerUsingOtClient = function() return true end
+    DiscordBridge.emitLegendary = function(event) events[#events + 1] = event end
+    local spawned = {}
+    local ok, err = pcall(function()
+        local articuno = W.getSpecies("articuno")
+        local mewtwo = W.getSpecies("Mewtwo")
+        local a = W.spawn(articuno, nil, nil, "test")
+        spawned[#spawned + 1] = a
+        check("Legendary: spawns on a Kanto point", isMonster(a) and W.isEncounter(a), a)
+        check("Legendary: spawn broadcast with the recommended level",
+            (broadcasts[#broadcasts] or ""):find("A wild Articuno has appeared near .+ Recommended for trainers level 50%+") ~= nil,
+            broadcasts[#broadcasts])
+        check("Legendary: spawn card and Discord event", cards[#cards] and cards[#cards].type == "spawn" and
+            cards[#cards].species == "Articuno" and events[#events] and events[#events].event == "spawn" and
+            events[#events].encounterId == getCreatureStorage(a, MON.ENCOUNTER))
+        local plain = doCreateMonster("Articuno", arena, false, false)
+        check("Legendary: health raised 30x for the fight only", isMonster(plain) and
+            getCreatureMaxHealth(a) == getCreatureMaxHealth(plain) * W.CONFIG.healthMultiplier[1],
+            getCreatureMaxHealth(a) .. " vs " .. (isMonster(plain) and getCreatureMaxHealth(plain) or 0))
+        if (isMonster(plain)) then doRemoveCreature(plain) end
+        local again, why = W.spawn(articuno)
+        check("Legendary: never two of the same species", not again and why ~= nil)
+
+        local list = W.eligible()
+        local hasArticuno = false
+        for _, s in ipairs(list) do hasArticuno = hasArticuno or s.name == "Articuno" end
+        check("Legendary: the one out is not eligible", #list == 20 and not hasArticuno, #list)
+        -- north of the arena: the Catcher throws, running at the same time, use the tiles east and south
+        local m = W.spawn(mewtwo, { x = arena.x, y = arena.y - 1, z = arena.z }, "the test arena", "test")
+        spawned[#spawned + 1] = m
+        check("Legendary: a second one can come", isMonster(m))
+        check("Legendary: at most two alive", #W.eligible() == 0 and W.blocked(os.time()) ~= nil)
+        W.finish(a, "staff")
+        local tier2 = false
+        for _, s in ipairs(W.eligible()) do tier2 = tier2 or s.tier == 2 end
+        check("Legendary: never two tier 2", not tier2 and #W.eligible() > 0)
+        check("Legendary: sent away by staff, no cooldown", not isMonster(a) and not W.getCooldowns()["Articuno"] and
+            (broadcasts[#broadcasts] or ""):find("flew away") ~= nil)
+        ServerRestart.getScheduled = function() return os.time() + 3600, 1 end
+        check("Legendary: no spawns in the 2 hours before a restart", (W.blocked(os.time()) or ""):find("restart") ~= nil)
+        ServerRestart.getScheduled = getScheduled
+
+        -- roaming, flee, heal and time up on a fresh Articuno
+        a = W.spawn(articuno, nil, nil, "test")
+        spawned[#spawned + 1] = a
+        local t = os.time()
+        local from = getCreaturePosition(a)
+        doCreatureSetStorage(a, MON.NEXT_MOVE, t - 1)
+        doCreatureSetStorage(a, MON.LAST_HIT, t)
+        W.upkeep(a, t)
+        check("Legendary: stays put while being hit", getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureStorage(a, MON.NEXT_MOVE) == t + 30)
+        doCreatureSetStorage(a, MON.NEXT_MOVE, t - 1)
+        doCreatureSetStorage(a, MON.LAST_HIT, 0)
+        from = getCreaturePosition(a)
+        W.upkeep(a, t)
+        check("Legendary: roams to another point", not getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureStorage(a, MON.NEXT_MOVE) >= t + 240 and events[#events].event == "sighting",
+            events[#events] and events[#events].event)
+
+        local max = getCreatureMaxHealth(a)
+        local hit = getCreatureHealth(a) - math.floor(max * 0.45)
+        W.onHit(a, hit)
+        doCreatureAddHealth(a, -hit)
+        check("Legendary: flees at 50% health", getCreatureStorage(a, MON.FLEE_PENDING) == 1 and getCreatureStorage(a, MON.FLEE_STAGE) == 1)
+        from = getCreaturePosition(a)
+        W.upkeep(a, t)
+        check("Legendary: the flee moves it and keeps its health", not getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureHealth(a) == max - hit and (broadcasts[#broadcasts] or ""):find("fled") ~= nil, broadcasts[#broadcasts])
+        W.onHit(a, 1)
+        check("Legendary: tier 1 flees only once", getCreatureStorage(a, MON.FLEE_PENDING) == 0)
+
+        doCreatureSetStorage(a, MON.LAST_HIT, t - 200)
+        doCreatureSetStorage(a, MON.LAST_HEAL, 0)
+        doCreatureSetStorage(a, MON.NEXT_MOVE, t + 600)
+        local before = getCreatureHealth(a)
+        W.upkeep(a, t)
+        check("Legendary: heals back slowly when left alone", getCreatureHealth(a) - before == math.ceil(max * 0.05),
+            getCreatureHealth(a) - before)
+
+        doCreatureSetStorage(a, MON.ENDS_AT, t - 1)
+        doCreatureSetStorage(a, MON.LAST_HIT, t - 30)
+        W.upkeep(a, t)
+        check("Legendary: doesn't fly off while hit in the last 2 minutes", isMonster(a))
+        doCreatureSetStorage(a, MON.LAST_HIT, t - 200)
+        W.upkeep(a, t)
+        local cooldown = W.getCooldowns()["Articuno"]
+        check("Legendary: flies off when time is up, with the cooldown", not isMonster(a) and cooldown and
+            math.abs(cooldown - t - W.getPopulation().cooldown[1]) <= 2, cooldown and (cooldown - t))
+        check("Legendary: Articuno is not eligible on cooldown", (function()
+            for _, s in ipairs(W.eligible()) do if (s.name == "Articuno") then return false end end return true end)())
+
+        local cardTypes = {}
+        for _, c in ipairs(cards) do cardTypes[c.type] = true end
+        check("Legendary: cards for spawn, sighting, flee and end", cardTypes.spawn and cardTypes.flee and cardTypes["end"])
+    end)
+    doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient = broadcast, opcode, otc
+    DiscordBridge.emitLegendary, ServerRestart.getScheduled = emit, getScheduled
+    if (not ok) then
+        check("Legendary: ran without errors", false, err)
+    end
+
+    -- A real defeat: the tester does almost all the damage, the friend 3%
+    local m = spawned[2]
+    if (isMonster(m)) then
+        local candies, money = getPlayerItemCount(cid, W.CONFIG.rareCandyId), getPlayerMoney(cid)
+        local friendMoney = isPlayer(friend) and getPlayerMoney(friend) or 0
+        -- auto loot would add the body's loot money on top of the reward
+        local autoLoot = getPlayerAutoLoot(cid)
+        setPlayerAutoLoot(cid, false)
+        local function defeats()
+            local r = db.getResult(string.format("SELECT `kills` FROM `player_dex_kills` WHERE `player_id` = %d AND `species` = 'Mewtwo'",
+                getPlayerGUID(cid)))
+            if (r:getID() == -1) then return 0 end
+            local kills = r:getDataInt("kills")
+            r:free()
+            return kills
+        end
+        local points = defeats()
+        doCreatureSetNoMove(m, true)
+        local pos = getCreaturePosition(m)
+        -- reward shares only count damage from a trainer's Pokemon
+        local pets = {}
+        local function pet(master)
+            local p = doCreateMonster("Snorlax", { x = arena.x + 1, y = arena.y + 1, z = arena.z }, false)
+            if (isMonster(p)) then
+                doConvinceCreature(master, p)
+                pets[#pets + 1] = p
+            end
+            return p
+        end
+        if (isPlayer(friend)) then
+            local fp = pet(friend)
+            if (isMonster(fp)) then
+                local share = -math.floor(getCreatureHealth(m) * 0.03)
+                doTargetCombatHealth(fp, m, COMBAT_PHYSICALDAMAGE, share, share, CONST_ME_NONE)
+            end
+        end
+        local tp = pet(cid)
+        doTargetCombatHealth(isMonster(tp) and tp or cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
+        addEvent(function()
+            for _, p in ipairs(pets) do
+                if (isMonster(p)) then doRemoveCreature(p) end
+            end
+            if (not isPlayer(cid)) then return end
+            setPlayerAutoLoot(cid, autoLoot)
+            check("Legendary defeat: Rare Candies and money for 10% of the damage",
+                getPlayerItemCount(cid, W.CONFIG.rareCandyId) - candies == 2 and getPlayerMoney(cid) - money == 10000,
+                (getPlayerItemCount(cid, W.CONFIG.rareCandyId) - candies) .. " / " .. (getPlayerMoney(cid) - money))
+            check("Legendary defeat: nothing below 10%", not isPlayer(friend) or getPlayerMoney(friend) == friendMoney)
+            check("Legendary defeat: one Pokepedia defeat", defeats() == points + 1, defeats() - points)
+            local cd = W.getCooldowns()["Mewtwo"]
+            check("Legendary defeat: tier 2 cooldown", cd and math.abs(cd - os.time() - W.getPopulation().cooldown[2]) <= 3)
+            check("Legendary defeat: the encounter is closed", #W.getActive() == 0, #W.getActive())
+            local corpse, bodyPos
+            for radius = 0, 4 do
+                for dx = -radius, radius do
+                    for dy = -radius, radius do
+                        local at = { x = pos.x + dx, y = pos.y + dy, z = pos.z }
+                        local found = not corpse and getTileItemById(at, 11538) -- fainted mewtwo
+                        if (found and isItem(found)) then
+                            corpse, bodyPos = found, at
+                        end
+                    end
+                end
+            end
+            check("Legendary defeat: the body lasts 3 minutes and belongs to the top damage dealer", isItem(corpse) and
+                (getItemAttribute(corpse.uid, "duration") or 0) > 150000 and getItemAttribute(corpse.uid, "corpseowner") == getPlayerGUID(cid),
+                isItem(corpse) and tostring(getItemAttribute(corpse.uid, "duration")) or "no body")
+            if (isItem(corpse)) then
+                W.releaseBody(bodyPos, corpse.itemid, "Mewtwo")
+                check("Legendary defeat: after the window anyone may throw", not getItemAttribute(corpse.uid, "corpseowner"))
+                doRemoveItem(corpse.uid)
+            end
+            local said = {}
+            local b = doBroadcastMessage
+            doBroadcastMessage = function(text) said[#said + 1] = text return true end
+            W.onCatch(cid, "Mewtwo")
+            doBroadcastMessage = b
+            check("Legendary defeat: a catch right after is announced", (said[1] or ""):find("caught the wild Mewtwo") ~= nil, said[1])
+            for key, value in pairs(saved) do
+                doSetStorage(key, value)
+            end
+        end, 3000)
+    else
+        check("Legendary defeat: Mewtwo out", false)
+        for key, value in pairs(saved) do
+            doSetStorage(key, value)
+        end
+    end
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -1741,6 +2417,14 @@ function onSay(cid, words, param, channel)
         return true
     end
     doTeleportThing(cid, arena, false)
+    -- clear skies everywhere, so rain or a sandstorm can't change the numbers the other tests expect
+    local weather = Weather.readOverrides()
+    Weather.writeOverrides("m")
+    local everywhere = {}
+    for _, zone in ipairs(Weather.getZones()) do
+        everywhere[#everywhere + 1] = zone.id
+    end
+    Weather.setOverride(everywhere, "clear", 10)
     for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
         doRemoveItem(ball.uid)
     end
@@ -1748,7 +2432,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
@@ -1767,6 +2451,7 @@ function onSay(cid, words, param, channel)
     become(cid, nil)
     testCatcherThrows(cid, arena)
     addEvent(function()
+        Weather.writeOverrides(weather)
         if (isPlayer(cid)) then
             become(cid, nil)
             say(string.format("done %d passed, %d failed", passed, failed))

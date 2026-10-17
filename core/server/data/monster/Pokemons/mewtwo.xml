@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Mewtwo" nameDescription="a Mewtwo" shiny="Shiny Mewtwo" race="blood" experience="17" speed="330" manacost="0" minLevel="100" maxLevel="100" sex="2">
 	<health now="106" max="106"/>
-	<look type="501" head="0" body="0" legs="0" feet="0" corpse="0"/>
+	<look type="501" head="0" body="0" legs="0" feet="0" corpse="11538"/>
 	<targetchange interval="5000" chance="8"/>
 	<strategy attack="100" defense="0"/>
 	<flags>
