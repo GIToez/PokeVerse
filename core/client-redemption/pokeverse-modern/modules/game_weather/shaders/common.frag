@@ -48,7 +48,7 @@ float rainLayer(vec2 p, float columns, float speed, float len, float seed)
   float h = hash(vec2(column, seed));
   float y = fract(p.y * 1.6 - fall * u_Time * speed * (0.8 + 0.4 * h) + h * 7.0);
   float x = fract(p.x * columns) - 0.5;
-  return smoothstep(0.14, 0.0, abs(x)) * smoothstep(len, 0.0, y) * smoothstep(0.0, 0.015, y) * step(0.3, h);
+  return (1.0 - smoothstep(0.0, 0.14, abs(x))) * (1.0 - smoothstep(0.0, len, y)) * smoothstep(0.0, 0.015, y) * step(0.3, h);
 }
 
 // snow and hail: one flake in some cells, swaying as it falls
@@ -61,5 +61,5 @@ float flakeLayer(vec2 p, float scale, float speed, float size, float sway, float
   vec2 f = fract(p) - 0.5;
   float h = hash(cell + seed);
   vec2 o = (vec2(hash(cell + 1.7 + seed), hash(cell + 4.3 + seed)) - 0.5) * 0.6;
-  return smoothstep(size, size * 0.35, length(f - o)) * step(0.45, h);
+  return (1.0 - smoothstep(size * 0.35, size, length(f - o))) * step(0.45, h);
 }
