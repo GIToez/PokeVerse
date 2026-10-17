@@ -1152,7 +1152,7 @@ From the `#notes` channel:
       no new build); (2) notifications and the Discord threads; (3) boss health, damage
       shares and rewards; (4) the world map pin and the radar check (client release);
       (5) tuning on live.
-    - **Built (steps 1–3, server only):**
+    - **Built (steps 1–3 on the server, plus the client cards and the Discord threads):**
       - `systems/078-wildLegendaries.lua` with all the settings in `WildLegendaries.CONFIG`.
         The `serverExpEvent` globalevent runs it every second; the `wildLegendaryHit` and
         `wildLegendaryDeath` creature events record hits and hand out the rewards. The next
@@ -1168,9 +1168,17 @@ From the `#notes` channel:
         shows what's out when you open it), Discord `legendary` events (see
         `docs/discord-bridge.md`) and pop-up card data on extended opcode 34
         (`EXTENDED_IDS.LEGENDARY`: `spawn`, `sighting`, `flee`, `end`, `caught` and the
-        personal `reward`). The client cards (a big banner for the spawn and the reward,
-        small cards for the rest, with an Options switch to turn them off) and the world
-        map pin come with step 4.
+        personal `reward`). The world map pin comes with step 4.
+      - Client cards (`game_eventcards`): a big banner for the spawn (strength tier,
+        recommended level, time until it flies off) and for your reward (Rare Candies,
+        money, the Pokepedia defeat), and small cards top right for sightings (one per
+        species every 5 minutes), flees, the end and catches. They wait for the level-up
+        and evolution banners. Options > Interface > "Show event pop-up cards" turns them
+        off; the chat messages still show. The 10% damage rule is explained in the
+        Pokepedia wiki ("Wild legendaries") instead of on the banner.
+      - Discord: the bot keeps one post and thread per encounter in `#legendary-spawns`.
+        The bot repo can't be pushed from here, so the change is kept as patches in
+        `integrations/pokeverse-discord/` (it needs two new bot permissions).
       - The body: the monster's own corpse, kept 3 minutes; the top damage dealer has it
         alone for 60 seconds. Only damage from a trainer's Pokémon (or balls) counts toward
         the share. Mewtwo's monster file had no corpse; it now uses "fainted mewtwo".

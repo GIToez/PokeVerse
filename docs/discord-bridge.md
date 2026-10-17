@@ -127,7 +127,8 @@ Notes:
 - Legendary: one `encounterId` per wild legendary, so the bot can keep one thread per
   encounter. Wild legendaries never send a `spawn` event, and the 5-minute limit per
   species does not apply. `caught` is sent when someone catches the species within 5
-  minutes of its defeat.
+  minutes of its defeat. `trainers` is left out when nobody reached 10% (the server's JSON
+  encoder would write an empty list as `{}`).
 - Spawn `source`: `spawn` (map spawn system and raids, `onMonsterSpawn`), `script`
   (`doCreateMonster`: quests, bosses, events), `fishing`, `headbutt`. `startup` is `true`
   for monsters placed while the server was starting. Script spawns of the same species are

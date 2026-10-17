@@ -1,0 +1,897 @@
+From 7c58eba9c8121ff5b2efcda5beb6c8f473dba010 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 17 Oct 2026 06:36:27 +0000
+Subject: [PATCH 1/2] Wild legendaries: one post and thread per encounter in
+ #legendary-spawns
+
+---
+ README.md                                     |   1 +
+ docs/DISCORD_CONFIGURATION.md                 |   8 +-
+ docs/GAME_INTEGRATION.md                      |  19 ++
+ docs/TESTING.md                               |   3 +
+ src/bot/discordAdapter.ts                     |  45 ++-
+ src/bot/integration.ts                        |  15 +
+ src/bot/ports.ts                              |   8 +
+ src/integrations/pokeverse/protocol.ts        |  32 +++
+ .../legendaries/legendaryEncounters.ts        | 263 ++++++++++++++++++
+ src/setup/channels.ts                         |   6 +-
+ src/utils/stateStore.ts                       |  20 +-
+ tests/helpers/fakes.ts                        |  44 +++
+ tests/unit/channelSetup.test.ts               |   6 +-
+ tests/unit/legendaryEncounters.test.ts        | 137 +++++++++
+ 14 files changed, 597 insertions(+), 10 deletions(-)
+ create mode 100644 src/services/legendaries/legendaryEncounters.ts
+ create mode 100644 tests/unit/legendaryEncounters.test.ts
+
+diff --git a/README.md b/README.md
+index 1b87d95..a4ad770 100644
+--- a/README.md
++++ b/README.md
+@@ -13,6 +13,7 @@ Discord is down, gameplay is not affected.
+ | Two-way chat between `#game-chat` and the in-game Game-Chat channel (`[Discord] Jim: hi` / `[Game] RedTrainer: hi`) | `#game-chat` |
+ | Confirmed catch announcements, modes `all`, `rare_only`, `shiny_legendary_only`, `off` | `#pokemon-catches` |
+ | Shiny and legendary spawn alerts (a shiny legendary is announced once) | `#shiny-spawns`, `#legendary-spawns` |
++| Wild legendary encounters: one post and thread each, with sightings, flees and the end | `#legendary-spawns` |
+ | GM broadcasts, restart/global save warnings, manual announcements | `#game-announcements` |
+ | One live status message (online/offline, players, uptime, restarts) | `#server-status` |
+ | `/trainer`, `/pokemon` (autocomplete and artwork from the game), `/server` | anywhere, `#bot-commands` suggested |
+diff --git a/docs/DISCORD_CONFIGURATION.md b/docs/DISCORD_CONFIGURATION.md
+index 60b2153..d94e827 100644
+--- a/docs/DISCORD_CONFIGURATION.md
++++ b/docs/DISCORD_CONFIGURATION.md
+@@ -38,7 +38,7 @@ node dist/bot.cjs invite          # or: configure-discord-dev.bat prints it
+ ```
+ 
+ The link uses the scopes `bot applications.commands` and exactly these permissions
+-(integer `402770960`). **Administrator is not requested.**
++(integer `309640416272`). **Administrator is not requested.**
+ 
+ | Permission | Why |
+ | --- | --- |
+@@ -50,13 +50,15 @@ The link uses the scopes `bot applications.commands` and exactly these permissio
+ | Manage Channels | Create the "PokeVerse Integration" and private "Admin Logs" categories and their channels |
+ | Manage Roles | Create the Verified Trainer and Ace Trainer roles and give/remove them on link changes |
+ | Manage Nicknames | Set a linked member's server nickname to their main character |
++| Create Public Threads | One thread per wild legendary in `#legendary-spawns` |
++| Send Messages in Threads | Post the legendary's sightings and end in its thread |
+ 
+ Manage Channels is only needed for automatic setup. If you prefer, create the channels
+ yourself, assign them with `/pokeverse channel`, and remove the permission afterwards.
+ Manage Roles and Manage Nicknames are only needed with account linking (`LINKING_ENABLED`).
+ 
+-An already invited bot keeps its old permissions: add Manage Roles and Manage Nicknames to
+-the bot's role (**Server Settings > Roles > PokeVerse**) or open the new invite link.
++An already invited bot keeps its old permissions: add Manage Roles, Manage Nicknames,
++Create Public Threads and Send Messages in Threads to the bot's role (**Server Settings > Roles > PokeVerse**) or open the new invite link.
+ 
+ ### Role order
+ 
+diff --git a/docs/GAME_INTEGRATION.md b/docs/GAME_INTEGRATION.md
+index c1bfbd3..88f7ed6 100644
+--- a/docs/GAME_INTEGRATION.md
++++ b/docs/GAME_INTEGRATION.md
+@@ -232,6 +232,7 @@ server -> {"type":"response","requestId":"1","ok":true,"result":{...}}
+ | `chat` | `#game-chat` as `[Game] Name: text` |
+ | `catch` | `#pokemon-catches` (filtered by catch mode) |
+ | `spawn` | `#shiny-spawns` / `#legendary-spawns` |
++| `legendary` | `#legendary-spawns`: one post and thread per wild legendary encounter |
+ | `broadcast` | `#game-announcements` |
+ | `restart_warning` | `#game-announcements` |
+ | `server_state` | `#server-status` message |
+@@ -327,6 +328,24 @@ artwork. Shiny and legendary catches are highlighted. Modes: `all`, `rare_only`,
+ - Monsters placed during server startup are not announced unless `SPAWN_ANNOUNCE_STARTUP=true`.
+ - Quest bosses that recreate themselves are reported at most once per 5 minutes per species.
+ 
++### Wild legendaries
++
++The game's wild legendaries (`078-wildLegendaries.lua`) send `legendary` events instead of
++`spawn` events, each with the game's `encounterId`:
++
++- `spawn`: a post in `#legendary-spawns` (species, area, tier, when it flies off, artwork)
++  and a public thread on it, named `Articuno near Seafoam Islands #31`.
++- `sighting` and `flee`: one line each in the thread.
++- `end` (`defeated`, `fled`, `staff`, `restart`, `vanished`) and `caught`: a line in the
++  thread, and the post is edited with the outcome. The thread is archived, except after a
++  defeat, which is left open for the catch (it archives itself after an hour).
++- Encounters are saved in the state file (`legendaryEncounters`, kept a day), so a bot
++  restart keeps posting into the same thread. Without thread permissions the updates go
++  to the channel itself.
++- `SPAWN_LEGENDARY_ENABLED` and `SPAWN_LOCATION_MODE` apply. Events for an encounter the bot
++  never saw (spawned while it was offline) are skipped, and so are spawns that have already
++  flown off.
++
+ ### Legendary list
+ 
+ `Articuno, Zapdos, Moltres, Mewtwo, Mew, Raikou, Entei, Suicune, Lugia, Ho-Oh, Celebi,
+diff --git a/docs/TESTING.md b/docs/TESTING.md
+index ce96baa..f2ca6af 100644
+--- a/docs/TESTING.md
++++ b/docs/TESTING.md
+@@ -30,6 +30,9 @@ runs the game's own server test and then `scripts/live-test.sh`.
+   duplicates, stale events.
+ - Spawns: routing (a shiny legendary posts once, to the configured channel), location modes,
+   startup and source filters, duplicate IDs and repeated creatures.
++- Wild legendaries: the post and thread per encounter, sightings, flee and end in the thread,
++  the post edited with the outcome, the thread left open after a defeat for the catch, a bot
++  restart, no thread permission, duplicates, unknown and stale encounters.
+ - Announcements: GM/staff broadcasts, restart warnings and cancellation, manual posts.
+ - Status: one message edited in place, recreated when deleted, offline on disconnect,
+   restart detection across bot restarts.
+diff --git a/src/bot/discordAdapter.ts b/src/bot/discordAdapter.ts
+index 90d6fd7..e557f89 100644
+--- a/src/bot/discordAdapter.ts
++++ b/src/bot/discordAdapter.ts
+@@ -15,6 +15,8 @@ import {
+   type MessageCreateOptions,
+   type MessageEditOptions,
+   type TextChannel,
++  type ThreadChannel,
++  ThreadAutoArchiveDuration,
+ } from "discord.js";
+ import type { StateStore } from "../utils/stateStore.js";
+ import type { ChannelPurpose } from "../utils/stateStore.js";
+@@ -29,6 +31,7 @@ import type {
+   PermissionName,
+   PermissionOverwriteSpec,
+   RoleInfo,
++  ThreadSink,
+ } from "./ports.js";
+ 
+ function toBits(names: PermissionName[]): bigint {
+@@ -78,7 +81,7 @@ function toEditOptions(message: OutgoingMessage): MessageEditOptions {
+ }
+ 
+ export class TextChannelSink implements ChannelSink {
+-  constructor(private readonly channel: TextChannel) {}
++  constructor(protected readonly channel: TextChannel | ThreadChannel) {}
+ 
+   get id(): string {
+     return this.channel.id;
+@@ -116,6 +119,46 @@ export class TextChannelSink implements ChannelSink {
+       throw error;
+     }
+   }
++
++  async startThread(messageId: string, name: string): Promise<ThreadSink> {
++    const channel = this.channel;
++    if (channel.isThread()) {
++      throw new Error("Threads can't have threads");
++    }
++    const message = await channel.messages.fetch(messageId);
++    const thread = await message.startThread({ name: name.slice(0, 100), autoArchiveDuration: ThreadAutoArchiveDuration.OneHour });
++    return new ThreadChannelSink(thread);
++  }
++
++  async thread(threadId: string): Promise<ThreadSink | undefined> {
++    const channel = this.channel;
++    if (channel.isThread()) {
++      return undefined;
++    }
++    try {
++      const thread = await (channel as TextChannel).threads.fetch(threadId);
++      return thread ? new ThreadChannelSink(thread) : undefined;
++    } catch (error) {
++      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownChannel) {
++        return undefined;
++      }
++      throw error;
++    }
++  }
++}
++
++/** A thread the bot started; sending to an archived thread reopens it. */
++export class ThreadChannelSink extends TextChannelSink implements ThreadSink {
++  constructor(private readonly threadChannel: ThreadChannel) {
++    super(threadChannel);
++  }
++
++  async archive(): Promise<void> {
++    if (!this.threadChannel.archived) {
++      await this.threadChannel.setArchived(true, "Wild legendary encounter ended");
++    }
++  }
++
+ }
+ 
+ function isUnknownMember(error: unknown): boolean {
+diff --git a/src/bot/integration.ts b/src/bot/integration.ts
+index 862bb23..49b373f 100644
+--- a/src/bot/integration.ts
++++ b/src/bot/integration.ts
+@@ -13,6 +13,7 @@ import { CatchAnnouncer } from "../services/catches/catchAnnouncer.js";
+ import { ChatRelay } from "../services/chat/chatRelay.js";
+ import { ArtworkResolver } from "../services/pokemon/artwork.js";
+ import { PokemonAutocomplete } from "../services/pokemon/pokemonLookup.js";
++import { LegendaryEncounters } from "../services/legendaries/legendaryEncounters.js";
+ import { SpawnAnnouncer } from "../services/spawns/spawnAnnouncer.js";
+ import { StatusService } from "../services/status/statusService.js";
+ import { ChannelSetup } from "../setup/channelSetup.js";
+@@ -46,6 +47,7 @@ export class GameIntegration {
+   readonly chat: ChatRelay;
+   readonly catches: CatchAnnouncer;
+   readonly spawns: SpawnAnnouncer;
++  readonly legendaries: LegendaryEncounters;
+   readonly announcer: Announcer;
+   readonly status: StatusService;
+   readonly setup: ChannelSetup;
+@@ -113,6 +115,16 @@ export class GameIntegration {
+       metrics,
+       now: options.now,
+     });
++    this.legendaries = new LegendaryEncounters({
++      config: config.spawns,
++      channels,
++      store,
++      queue: this.queues.spawns!,
++      artwork: this.artwork,
++      logger: logger.child({ component: "legendaries" }),
++      metrics,
++      now: options.now,
++    });
+     this.announcer = new Announcer({
+       broadcasts: config.announcements.broadcasts,
+       restartWarnings: config.announcements.restartWarnings,
+@@ -252,6 +264,9 @@ export class GameIntegration {
+         case "spawn":
+           this.spawns.handle({ ...envelope, event });
+           break;
++        case "legendary":
++          this.legendaries.handle({ ...envelope, event });
++          break;
+         case "broadcast":
+           this.announcer.handleBroadcast({ ...envelope, event });
+           break;
+diff --git a/src/bot/ports.ts b/src/bot/ports.ts
+index d0a2bac..ce750ab 100644
+--- a/src/bot/ports.ts
++++ b/src/bot/ports.ts
+@@ -35,6 +35,14 @@ export interface ChannelSink {
+   edit(messageId: string, message: OutgoingMessage): Promise<boolean>;
+   /** Deletes a message sent by the bot. Resolves false if it no longer exists. */
+   delete(messageId: string): Promise<boolean>;
++  /** Starts a public thread on one of the bot's messages (text channels only). */
++  startThread?(messageId: string, name: string): Promise<ThreadSink>;
++  /** A thread of this channel, or undefined if it was deleted. */
++  thread?(threadId: string): Promise<ThreadSink | undefined>;
++}
++
++export interface ThreadSink extends ChannelSink {
++  archive(): Promise<void>;
+ }
+ 
+ export interface ChannelDirectory {
+diff --git a/src/integrations/pokeverse/protocol.ts b/src/integrations/pokeverse/protocol.ts
+index ec5b6eb..a0e7daf 100644
+--- a/src/integrations/pokeverse/protocol.ts
++++ b/src/integrations/pokeverse/protocol.ts
+@@ -61,6 +61,36 @@ export const spawnEventSchema = z.object({
+   nearestTown: z.string().nullish(),
+ });
+ 
++/**
++ * Wild legendaries (game: 078-wildLegendaries.lua). One `encounterId` per legendary, from
++ * its spawn to its end, so the bot can keep one thread per encounter.
++ */
++export const LEGENDARY_EVENTS = ["spawn", "sighting", "flee", "end", "caught"] as const;
++export const LEGENDARY_END_REASONS = ["defeated", "fled", "staff", "restart", "vanished"] as const;
++
++export const legendaryEventSchema = z.object({
++  kind: z.literal("legendary"),
++  event: z.enum(LEGENDARY_EVENTS),
++  encounterId: z.number().nullish(),
++  species: z.string(),
++  dexNumber: z.number().nullish(),
++  tier: z.number().nullish(),
++  area: z.string().nullish(),
++  position: position.nullish(),
++  nearestTown: z.string().nullish(),
++  /** Unix seconds when it flies off if nobody beats it (spawn). */
++  endsAt: z.number().nullish(),
++  /** "schedule", "staff" or "test" (spawn). */
++  source: z.string().nullish(),
++  health: z.number().nullish(),
++  healthPercent: z.number().nullish(),
++  /** Unknown future reasons are kept as plain strings. */
++  reason: z.string().nullish(),
++  trainers: z.array(z.string()).nullish(),
++  topTrainer: z.string().nullish(),
++  trainer: z.string().nullish(),
++});
++
+ export const broadcastEventSchema = z.object({
+   kind: z.literal("broadcast"),
+   source: z.string(),
+@@ -132,6 +162,7 @@ export const gameEventSchema = z.discriminatedUnion("kind", [
+   chatEventSchema,
+   catchEventSchema,
+   spawnEventSchema,
++  legendaryEventSchema,
+   broadcastEventSchema,
+   restartWarningEventSchema,
+   serverStateEventSchema,
+@@ -159,6 +190,7 @@ export const responseSchema = z.object({
+ export type ChatEvent = z.infer<typeof chatEventSchema>;
+ export type CatchEvent = z.infer<typeof catchEventSchema>;
+ export type SpawnEvent = z.infer<typeof spawnEventSchema>;
++export type LegendaryEvent = z.infer<typeof legendaryEventSchema>;
+ export type BroadcastEvent = z.infer<typeof broadcastEventSchema>;
+ export type RestartWarningEvent = z.infer<typeof restartWarningEventSchema>;
+ export type ServerStateEvent = z.infer<typeof serverStateEventSchema>;
+diff --git a/src/services/legendaries/legendaryEncounters.ts b/src/services/legendaries/legendaryEncounters.ts
+new file mode 100644
+index 0000000..0e7d056
+--- /dev/null
++++ b/src/services/legendaries/legendaryEncounters.ts
+@@ -0,0 +1,263 @@
++import type { APIEmbed } from "discord.js";
++import type { BotConfig } from "../../config/load.js";
++import type { ChannelDirectory, ChannelSink, OutgoingMessage } from "../../bot/ports.js";
++import type { GameEventEnvelope, LegendaryEvent } from "../../integrations/pokeverse/protocol.js";
++import { RecentKeys } from "../../utils/dedupe.js";
++import type { DeliveryQueue } from "../../utils/deliveryQueue.js";
++import { padDex } from "../../utils/format.js";
++import type { Logger } from "../../utils/logger.js";
++import type { Metrics } from "../../utils/metrics.js";
++import type { LegendaryEncounterRecord, StateStore } from "../../utils/stateStore.js";
++import { COLORS, embedMessage, plain } from "../embeds.js";
++import type { ArtworkResolver } from "../pokemon/artwork.js";
++
++export interface LegendaryEncountersOptions {
++  config: BotConfig["spawns"];
++  channels: ChannelDirectory;
++  store: StateStore;
++  queue: DeliveryQueue;
++  artwork: ArtworkResolver;
++  logger: Logger;
++  metrics: Metrics;
++  now?: () => number;
++}
++
++export type LegendaryDecision =
++  | { action: "post" }
++  | { action: "skip"; reason: "disabled" | "no_encounter" | "stale" | "duplicate" | "unknown_encounter" };
++
++/** Encounters are forgotten this long after they started (the longest one lasts 2 hours). */
++export const ENCOUNTER_RETENTION_SECONDS = 24 * 3600;
++
++const END_LINES: Record<string, (species: string, event: LegendaryEvent) => string> = {
++  defeated: (species, event) => {
++    const trainers = event.trainers ?? [];
++    const by = trainers.length > 0 ? ` by ${trainers.map(plain).join(", ")}` : "";
++    const top = event.topTrainer ? ` **${plain(event.topTrainer)}** has 60 seconds to throw a ball first.` : "";
++    return `⚔️ The wild **${species}** was defeated${by}!${top}`;
++  },
++  fled: (species) => `🕊️ The wild **${species}** flew away.`,
++  staff: (species) => `The wild **${species}** was sent away by staff.`,
++  restart: (species) => `The wild **${species}** left before the server restart.`,
++  vanished: (species) => `The wild **${species}** vanished.`,
++};
++
++const OUTCOMES: Record<string, string> = {
++  defeated: "Defeated",
++  fled: "Flew away",
++  staff: "Sent away by staff",
++  restart: "Left before the restart",
++  vanished: "Vanished",
++  caught: "Caught",
++};
++
++export function describeArea(event: LegendaryEvent, mode: BotConfig["spawns"]["locationMode"]): string | undefined {
++  if (mode === "none") {
++    return undefined;
++  }
++  const place = event.area ?? (event.nearestTown ? `near ${event.nearestTown}` : undefined);
++  if (mode === "coordinates" && event.position) {
++    const coordinates = `${event.position.x}, ${event.position.y}, ${event.position.z}`;
++    return place ? `${place} (${coordinates})` : coordinates;
++  }
++  return place;
++}
++
++export function threadName(record: Pick<LegendaryEncounterRecord, "species" | "area">, encounterId: number): string {
++  return `${record.species}${record.area ? ` near ${record.area}` : ""} #${encounterId}`.slice(0, 100);
++}
++
++/** The post in the legendary channel; edited with the outcome when the encounter ends. */
++export function buildEncounterEmbed(record: LegendaryEncounterRecord, outcome?: { reason: string; detail?: string }): APIEmbed {
++  const fields: NonNullable<APIEmbed["fields"]> = [];
++  if (record.tier) {
++    fields.push({ name: "Tier", value: record.tier >= 2 ? "Tier 2" : "Tier 1", inline: true });
++  }
++  if (record.location) {
++    fields.push({ name: "Spawned", value: plain(record.location), inline: true });
++  }
++  if (outcome) {
++    fields.push({ name: "Outcome", value: outcome.detail ? `${OUTCOMES[outcome.reason] ?? plain(outcome.reason)}: ${outcome.detail}` : (OUTCOMES[outcome.reason] ?? plain(outcome.reason)), inline: false });
++  } else if (record.endsAt) {
++    fields.push({ name: "Flies off", value: `<t:${Math.floor(record.endsAt)}:R> unless it is beaten`, inline: true });
++  }
++  const species = plain(record.species);
++  return {
++    author: { name: "Wild legendary" },
++    title: outcome ? `👑 ${record.species}: ${OUTCOMES[outcome.reason] ?? outcome.reason}` : `👑 A wild ${record.species} appeared!`,
++    description: outcome
++      ? `The encounter is over. The thread below has the whole chase.`
++      : `**${species}** appeared${record.area ? ` near **${plain(record.area)}**` : ""}! Recommended for trainers level 50+. It roams Kanto: follow the thread for sightings.`,
++    color: outcome ? COLORS.neutral : COLORS.legendary,
++    fields,
++    footer: record.dexNumber ? { text: `Pokédex #${padDex(record.dexNumber)}` } : undefined,
++    timestamp: new Date(record.startedAt * 1000).toISOString(),
++  };
++}
++
++export function threadLine(event: LegendaryEvent, location: string | undefined): string | undefined {
++  const species = plain(event.species);
++  const where = location ? ` near **${plain(location)}**` : "";
++  switch (event.event) {
++    case "sighting":
++      return `📍 **${species}** was spotted${where}.`;
++    case "flee": {
++      const health = event.healthPercent !== null && event.healthPercent !== undefined ? ` with ${Math.round(event.healthPercent)}% health` : "";
++      return `💨 **${species}** fled${where}${health}!`;
++    }
++    case "end":
++      return (END_LINES[event.reason ?? ""] ?? ((name: string) => `The wild **${name}** is gone.`))(species, event);
++    case "caught":
++      return `🎉 **${plain(event.trainer ?? "A trainer")}** caught the wild **${species}**!`;
++    default:
++      return undefined;
++  }
++}
++
++/**
++ * One post per wild legendary in #legendary-spawns, with a thread for its sightings, flees and
++ * end. The encounters are saved, so a bot restart keeps posting into the same thread.
++ */
++export class LegendaryEncounters {
++  private readonly seen = new RecentKeys(5000);
++  /** Spawns queued but not posted yet, so updates right behind them aren't dropped. */
++  private readonly queuedSpawns = new RecentKeys(100);
++  private readonly now: () => number;
++
++  constructor(private readonly options: LegendaryEncountersOptions) {
++    this.now = options.now ?? Date.now;
++  }
++
++  private nowSeconds(): number {
++    return Math.floor(this.now() / 1000);
++  }
++
++  decide(envelope: GameEventEnvelope<LegendaryEvent>): LegendaryDecision {
++    const event = envelope.event;
++    if (!this.options.config.legendaryEnabled) {
++      return { action: "skip", reason: "disabled" };
++    }
++    if (event.encounterId === null || event.encounterId === undefined) {
++      return { action: "skip", reason: "no_encounter" };
++    }
++    const known = this.options.store.get().legendaryEncounters[String(event.encounterId)];
++    if (event.event === "spawn") {
++      if (event.endsAt && event.endsAt < this.nowSeconds()) {
++        return { action: "skip", reason: "stale" };
++      }
++    } else if (!known && !this.queuedSpawns.has(String(event.encounterId))) {
++      return { action: "skip", reason: "unknown_encounter" };
++    } else if (event.event === "sighting" && this.nowSeconds() - envelope.time > this.options.config.maxEventAgeSeconds) {
++      return { action: "skip", reason: "stale" };
++    }
++    if (!this.seen.add(envelope.id)) {
++      return { action: "skip", reason: "duplicate" };
++    }
++    return { action: "post" };
++  }
++
++  handle(envelope: GameEventEnvelope<LegendaryEvent>): LegendaryDecision {
++    const decision = this.decide(envelope);
++    const { metrics, queue } = this.options;
++    if (decision.action === "skip") {
++      metrics.increment(`legendaries.skipped.${decision.reason}`);
++      return decision;
++    }
++    const event = envelope.event;
++    if (event.event === "spawn") {
++      this.queuedSpawns.add(String(event.encounterId));
++    }
++    queue.enqueue(`legendary ${event.event} ${envelope.id}`, () =>
++      event.event === "spawn" ? this.postSpawn(envelope) : this.postUpdate(envelope));
++    return decision;
++  }
++
++  private async postSpawn(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
++    const { channels, store, artwork, metrics, logger } = this.options;
++    const event = envelope.event;
++    const channel = channels.get("legendarySpawns");
++    if (!channel) {
++      metrics.increment("legendaries.no_channel");
++      return;
++    }
++    const encounterId = event.encounterId!;
++    const record: LegendaryEncounterRecord = {
++      channelId: channel.id,
++      messageId: "",
++      species: event.species,
++      dexNumber: event.dexNumber ?? undefined,
++      tier: event.tier ?? undefined,
++      area: event.area ?? undefined,
++      location: describeArea(event, this.options.config.locationMode),
++      endsAt: event.endsAt ?? undefined,
++      startedAt: envelope.time,
++    };
++    record.messageId = await channel.send(embedMessage(buildEncounterEmbed(record), artwork.resolve(event.dexNumber), "image"));
++    if (channel.startThread) {
++      try {
++        const thread = await channel.startThread(record.messageId, threadName(record, encounterId));
++        record.threadId = thread.id;
++      } catch (error) {
++        metrics.increment("legendaries.thread_failed");
++        logger.warn("Could not start the legendary thread; updates go to the channel", { encounterId, error });
++      }
++    }
++    const cutoff = this.nowSeconds() - ENCOUNTER_RETENTION_SECONDS;
++    store.update((state) => {
++      for (const [id, saved] of Object.entries(state.legendaryEncounters)) {
++        if (saved.startedAt < cutoff) {
++          delete state.legendaryEncounters[id];
++        }
++      }
++      state.legendaryEncounters[String(encounterId)] = record;
++    });
++    metrics.increment("legendaries.spawn");
++    logger.info("Announced wild legendary", { encounterId, species: event.species, thread: record.threadId });
++  }
++
++  private async postUpdate(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
++    const { store, metrics } = this.options;
++    const event = envelope.event;
++    const key = String(event.encounterId);
++    const record = store.get().legendaryEncounters[key];
++    const channel = this.options.channels.get("legendarySpawns");
++    if (!record || !channel) {
++      metrics.increment("legendaries.no_channel");
++      return;
++    }
++    const line = threadLine(event, describeArea(event, this.options.config.locationMode));
++    if (!line) {
++      return;
++    }
++    const thread = record.threadId && channel.thread ? await channel.thread(record.threadId) : undefined;
++    const target: ChannelSink = thread ?? channel;
++    await target.send({ content: thread ? line : `${line} (encounter #${key})` });
++    metrics.increment(`legendaries.${event.event}`);
++
++    const ended = event.event === "end" || event.event === "caught";
++    if (!ended) {
++      return;
++    }
++    const reason = event.event === "caught" ? "caught" : (event.reason ?? "vanished");
++    const detail = event.event === "caught"
++      ? (event.trainer ? plain(event.trainer) : undefined)
++      : reason === "defeated" && event.trainers && event.trainers.length > 0 ? event.trainers.map(plain).join(", ") : undefined;
++    const message: OutgoingMessage = embedMessage(buildEncounterEmbed(record, { reason, detail }), this.options.artwork.resolve(record.dexNumber), "image");
++    if (channel.id === record.channelId) {
++      await channel.edit(record.messageId, message);
++    }
++    store.update((state) => {
++      const saved = state.legendaryEncounters[key];
++      if (saved) {
++        saved.endedAt = this.nowSeconds();
++      }
++    });
++    // A defeat can still be followed by the catch; the thread then archives itself after an hour.
++    if (thread && reason !== "defeated") {
++      await thread.archive().catch((error: unknown) => {
++        metrics.increment("legendaries.archive_failed");
++        this.options.logger.warn("Could not archive the legendary thread", { encounterId: key, error });
++      });
++    }
++  }
++}
+diff --git a/src/setup/channels.ts b/src/setup/channels.ts
+index 06f4adc..d5d3426 100644
+--- a/src/setup/channels.ts
++++ b/src/setup/channels.ts
+@@ -47,9 +47,9 @@ export const CHANNEL_DEFINITIONS: readonly ChannelDefinition[] = [
+   {
+     purpose: "legendarySpawns",
+     name: "legendary-spawns",
+-    topic: "Legendary Pokemon sightings.",
++    topic: "Legendary Pokemon sightings, one thread per wild legendary.",
+     readOnly: true,
+-    required: [...POST, "AttachFiles"],
++    required: [...POST, "AttachFiles", "CreatePublicThreads", "SendMessagesInThreads"],
+     group: "main",
+   },
+   {
+@@ -104,6 +104,8 @@ export const REQUIRED_GUILD_PERMISSIONS: PermissionName[] = [
+   "ManageChannels",
+   "ManageRoles",
+   "ManageNicknames",
++  "CreatePublicThreads",
++  "SendMessagesInThreads",
+ ];
+ 
+ /** Guild permissions only needed for account linking (roles and nicknames). */
+diff --git a/src/utils/stateStore.ts b/src/utils/stateStore.ts
+index 61b836a..941b8f8 100644
+--- a/src/utils/stateStore.ts
++++ b/src/utils/stateStore.ts
+@@ -18,6 +18,22 @@ export type ChannelPurpose = (typeof CHANNEL_PURPOSES)[number];
+ export const CATCH_MODES = ["all", "rare_only", "shiny_legendary_only", "off"] as const;
+ export type CatchMode = (typeof CATCH_MODES)[number];
+ 
++const legendaryEncounterSchema = z.object({
++  channelId: z.string(),
++  messageId: z.string(),
++  threadId: z.string().optional(),
++  species: z.string(),
++  dexNumber: z.number().optional(),
++  tier: z.number().optional(),
++  area: z.string().optional(),
++  location: z.string().optional(),
++  endsAt: z.number().optional(),
++  startedAt: z.number(),
++  endedAt: z.number().optional(),
++});
++
++export type LegendaryEncounterRecord = z.infer<typeof legendaryEncounterSchema>;
++
+ const stateSchema = z.object({
+   version: z.literal(1),
+   profile: z.string(),
+@@ -36,6 +52,8 @@ const stateSchema = z.object({
+    * unlink without the privileged members intent. Value: the nickname the bot set, or "".
+    */
+   linkedMembers: z.record(z.string()).default({}),
++  /** Wild legendary encounters with a Discord post, by the game's encounter id. */
++  legendaryEncounters: z.record(legendaryEncounterSchema).default({}),
+ });
+ 
+ export type BotState = z.infer<typeof stateSchema>;
+@@ -56,7 +74,7 @@ export class StateStore {
+ 
+   private load(): BotState {
+     if (!existsSync(this.file)) {
+-      return { version: 1, profile: this.profile, channels: {}, roles: {}, linkedMembers: {} };
++      return { version: 1, profile: this.profile, channels: {}, roles: {}, linkedMembers: {}, legendaryEncounters: {} };
+     }
+     const parsed = stateSchema.parse(JSON.parse(readFileSync(this.file, "utf8")));
+     if (parsed.profile !== this.profile) {
+diff --git a/tests/helpers/fakes.ts b/tests/helpers/fakes.ts
+index 4db0fa5..cd72d96 100644
+--- a/tests/helpers/fakes.ts
++++ b/tests/helpers/fakes.ts
+@@ -13,6 +13,7 @@ import type {
+   PermissionName,
+   PermissionOverwriteSpec,
+   RoleInfo,
++  ThreadSink,
+ } from "../../src/bot/ports.js";
+ import { loadConfig, type BotConfig } from "../../src/config/load.js";
+ import type { ChannelSetup, SetupReport } from "../../src/setup/channelSetup.js";
+@@ -116,6 +117,47 @@ export class FakeChannel implements ChannelSink {
+   contents(): string[] {
+     return this.sent.map((item) => item.message.content ?? "");
+   }
++
++  readonly threads = new Map<string, FakeThread>();
++  failThreads = false;
++
++  async startThread(messageId: string, name: string): Promise<ThreadSink> {
++    if (this.failThreads || !this.existing.has(messageId)) {
++      throw new Error("Missing Permissions");
++    }
++    const thread = new FakeThread(`${this.id}-t${this.threads.size + 1}`, name, messageId);
++    this.threads.set(thread.id, thread);
++    return thread;
++  }
++
++  async thread(threadId: string): Promise<ThreadSink | undefined> {
++    return this.threads.get(threadId);
++  }
++
++  thread0(): FakeThread {
++    const thread = [...this.threads.values()][0];
++    if (!thread) {
++      throw new Error(`no thread in ${this.id}`);
++    }
++    return thread;
++  }
++}
++
++export class FakeThread extends FakeChannel implements ThreadSink {
++  archived = false;
++
++  constructor(id: string, readonly name: string, readonly starterId: string) {
++    super(id);
++  }
++
++  override async send(message: OutgoingMessage): Promise<string> {
++    this.archived = false;
++    return super.send(message);
++  }
++
++  async archive(): Promise<void> {
++    this.archived = true;
++  }
+ }
+ 
+ export class FakeChannels implements ChannelDirectory {
+@@ -147,6 +189,8 @@ export const ALL_PERMISSIONS: PermissionName[] = [
+   "AttachFiles",
+   "ReadMessageHistory",
+   "ManageChannels",
++  "CreatePublicThreads",
++  "SendMessagesInThreads",
+ ];
+ 
+ export interface CreatedChannel extends GuildChannelInfo {
+diff --git a/tests/unit/channelSetup.test.ts b/tests/unit/channelSetup.test.ts
+index 0bc47f4..fe37c42 100644
+--- a/tests/unit/channelSetup.test.ts
++++ b/tests/unit/channelSetup.test.ts
+@@ -105,7 +105,7 @@ describe("channel setup", () => {
+     guild.permissions = ["ViewChannel", "SendMessages", "EmbedLinks", "ReadMessageHistory"];
+     const report = await setup().setup.run(guild);
+     expect(report.ok).toBe(false);
+-    expect(report.missingGuildPermissions).toEqual(["AttachFiles", "ManageChannels"]);
++    expect(report.missingGuildPermissions).toEqual(["AttachFiles", "ManageChannels", "CreatePublicThreads", "SendMessagesInThreads"]);
+     expect(report.channels.every((channel) => channel.action === "failed")).toBe(true);
+     expect(guild.created).toHaveLength(0);
+     expect(formatSetupReport(report)).toContain("Missing server permissions: AttachFiles, ManageChannels");
+@@ -167,8 +167,8 @@ describe("invite link", () => {
+     const bits = requiredPermissionBits();
+     expect(bits & 0x8n).toBe(0n);
+     // View Channel, Send Messages, Embed Links, Attach Files, Read Message History, Manage Channels,
+-    // Manage Roles, Manage Nicknames
+-    expect(bits).toBe(0x400n | 0x800n | 0x4000n | 0x8000n | 0x10000n | 0x10n | 0x10000000n | 0x8000000n);
++    // Manage Roles, Manage Nicknames, Create Public Threads, Send Messages in Threads
++    expect(bits).toBe(0x400n | 0x800n | 0x4000n | 0x8000n | 0x10000n | 0x10n | 0x10000000n | 0x8000000n | 0x800000000n | 0x4000000000n);
+     const url = new URL(inviteUrl("123456789012345678", DEV_GUILD));
+     expect(url.searchParams.get("scope")).toBe("bot applications.commands");
+     expect(url.searchParams.get("permissions")).toBe(bits.toString());
+diff --git a/tests/unit/legendaryEncounters.test.ts b/tests/unit/legendaryEncounters.test.ts
+new file mode 100644
+index 0000000..664c7d1
+--- /dev/null
++++ b/tests/unit/legendaryEncounters.test.ts
+@@ -0,0 +1,137 @@
++import { describe, expect, it } from "vitest";
++import type { LegendaryEvent } from "../../src/integrations/pokeverse/protocol.js";
++import { gameEventSchema } from "../../src/integrations/pokeverse/protocol.js";
++import { LegendaryEncounters, threadLine } from "../../src/services/legendaries/legendaryEncounters.js";
++import { ArtworkResolver } from "../../src/services/pokemon/artwork.js";
++import { DeliveryQueue } from "../../src/utils/deliveryQueue.js";
++import { silentLogger } from "../../src/utils/logger.js";
++import { Metrics } from "../../src/utils/metrics.js";
++import { FakeChannels, envelope, makeConfig, makeStore } from "../helpers/fakes.js";
++
++const NOW = Math.floor(Date.now() / 1000);
++
++const SPAWN: LegendaryEvent = {
++  kind: "legendary",
++  event: "spawn",
++  encounterId: 31,
++  species: "Articuno",
++  dexNumber: 144,
++  tier: 1,
++  area: "Seafoam Islands",
++  position: { x: 3570, y: 981, z: 7 },
++  nearestTown: "Fuchsia",
++  endsAt: NOW + 5400,
++  source: "schedule",
++  health: 27000,
++};
++
++function setup(overrides: Record<string, string> = {}, store = makeStore()) {
++  const config = makeConfig(overrides);
++  const channels = new FakeChannels();
++  const metrics = new Metrics();
++  const queue = new DeliveryQueue({ name: "spawns", maxSize: 50, maxAttempts: 1, retryDelayMs: 1, logger: silentLogger, metrics });
++  const make = () => new LegendaryEncounters({
++    config: config.spawns, channels, store, queue, artwork: new ArtworkResolver(undefined), logger: silentLogger, metrics,
++  });
++  return { legendaries: make(), make, channels, queue, store, metrics, channel: channels.channel("legendarySpawns") };
++}
++
++describe("wild legendary encounters", () => {
++  it("parses the game's legendary events", () => {
++    expect(gameEventSchema.parse(SPAWN)).toMatchObject({ kind: "legendary", event: "spawn", encounterId: 31 });
++    expect(gameEventSchema.parse({ kind: "legendary", event: "end", reason: "defeated", encounterId: 31, species: "Articuno",
++      trainers: ["Ash"], topTrainer: "Ash" })).toMatchObject({ reason: "defeated" });
++  });
++
++  it("posts the spawn in #legendary-spawns and opens a thread for the encounter", async () => {
++    const { legendaries, channel, queue, store } = setup();
++    expect(legendaries.handle(envelope(SPAWN))).toEqual({ action: "post" });
++    await queue.idle();
++    expect(channel.sent).toHaveLength(1);
++    const embed = channel.sent[0]!.message.embeds![0]!;
++    expect(embed.title).toBe("👑 A wild Articuno appeared!");
++    expect(embed.description).toContain("Seafoam Islands");
++    expect(embed.description).toContain("level 50+");
++    expect(embed.fields!.find((field) => field.name === "Flies off")!.value).toContain(`<t:${SPAWN.endsAt}:R>`);
++    const thread = channel.thread0();
++    expect(thread.name).toBe("Articuno near Seafoam Islands #31");
++    expect(thread.starterId).toBe(channel.sent[0]!.id);
++    expect(store.get().legendaryEncounters["31"]).toMatchObject({ species: "Articuno", threadId: thread.id });
++  });
++
++  it("sends sightings, the flee and the end into the thread, then closes it", async () => {
++    const { legendaries, channel, queue } = setup();
++    legendaries.handle(envelope(SPAWN));
++    legendaries.handle(envelope({ ...SPAWN, event: "sighting", area: "Route 20" }));
++    legendaries.handle(envelope({ ...SPAWN, event: "flee", area: "Route 19", healthPercent: 49.6 }));
++    legendaries.handle(envelope({ kind: "legendary", event: "end", reason: "fled", encounterId: 31, species: "Articuno" }));
++    await queue.idle();
++    const thread = channel.thread0();
++    expect(thread.contents()).toEqual([
++      "📍 **Articuno** was spotted near **Route 20**.",
++      "💨 **Articuno** fled near **Route 19** with 50% health!",
++      "🕊️ The wild **Articuno** flew away.",
++    ]);
++    expect(channel.sent).toHaveLength(1);
++    expect(channel.edits[0]!.message.embeds![0]!.title).toBe("👑 Articuno: Flew away");
++    expect(thread.archived).toBe(true);
++  });
++
++  it("keeps the thread open after a defeat for the catch", async () => {
++    const { legendaries, channel, queue } = setup();
++    legendaries.handle(envelope(SPAWN));
++    legendaries.handle(envelope({ kind: "legendary", event: "end", reason: "defeated", encounterId: 31, species: "Articuno",
++      trainers: ["Ash", "Misty"], topTrainer: "Ash" }));
++    await queue.idle();
++    const thread = channel.thread0();
++    expect(thread.contents()[0]).toBe("⚔️ The wild **Articuno** was defeated by Ash, Misty! **Ash** has 60 seconds to throw a ball first.");
++    expect(thread.archived).toBe(false);
++    expect(channel.edits.at(-1)!.message.embeds![0]!.fields!.at(-1)!.value).toBe("Defeated: Ash, Misty");
++
++    legendaries.handle(envelope({ kind: "legendary", event: "caught", encounterId: 31, species: "Articuno", trainer: "Ash" }));
++    await queue.idle();
++    expect(thread.contents()[1]).toBe("🎉 **Ash** caught the wild **Articuno**!");
++    expect(channel.edits.at(-1)!.message.embeds![0]!.title).toBe("👑 Articuno: Caught");
++    expect(thread.archived).toBe(true);
++  });
++
++  it("keeps posting into the same thread after a bot restart", async () => {
++    const first = setup();
++    first.legendaries.handle(envelope(SPAWN));
++    await first.queue.idle();
++    const again = first.make();
++    again.handle(envelope({ ...SPAWN, event: "sighting", area: "Route 20" }));
++    await first.queue.idle();
++    expect(first.channel.thread0().contents()).toHaveLength(1);
++  });
++
++  it("posts in the channel when the thread can't be made", async () => {
++    const { legendaries, channel, queue, metrics } = setup();
++    channel.failThreads = true;
++    legendaries.handle(envelope(SPAWN));
++    legendaries.handle(envelope({ ...SPAWN, event: "sighting", area: "Route 20" }));
++    await queue.idle();
++    expect(channel.contents()[1]).toBe("📍 **Articuno** was spotted near **Route 20**. (encounter #31)");
++    expect(metrics.snapshot()["legendaries.thread_failed"]).toBe(1);
++  });
++
++  it("skips duplicates, unknown encounters, old spawns and disabled alerts", async () => {
++    const { legendaries, queue } = setup();
++    const spawn = envelope(SPAWN);
++    expect(legendaries.handle(spawn).action).toBe("post");
++    expect(legendaries.handle(spawn)).toEqual({ action: "skip", reason: "duplicate" });
++    await queue.idle();
++    expect(legendaries.handle(envelope({ ...SPAWN, event: "sighting", encounterId: 99 }))).toEqual({ action: "skip", reason: "unknown_encounter" });
++    expect(legendaries.handle(envelope({ ...SPAWN, encounterId: 32, endsAt: NOW - 10 }))).toEqual({ action: "skip", reason: "stale" });
++    expect(legendaries.handle(envelope({ ...SPAWN, encounterId: null }))).toEqual({ action: "skip", reason: "no_encounter" });
++    expect(setup({ SPAWN_LEGENDARY_ENABLED: "false" }).legendaries.handle(envelope(SPAWN))).toEqual({ action: "skip", reason: "disabled" });
++  });
++
++  it("words every end reason", () => {
++    const end = (reason: string) => threadLine({ kind: "legendary", event: "end", reason, species: "Mew" }, undefined);
++    expect(end("staff")).toBe("The wild **Mew** was sent away by staff.");
++    expect(end("restart")).toBe("The wild **Mew** left before the server restart.");
++    expect(end("vanished")).toBe("The wild **Mew** vanished.");
++    expect(end("something new")).toBe("The wild **Mew** is gone.");
++  });
++});
+-- 
+2.43.0
+
