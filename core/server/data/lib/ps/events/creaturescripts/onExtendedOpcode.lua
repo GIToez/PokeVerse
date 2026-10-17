@@ -22,6 +22,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Quests.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.MOVE_INFO) then
         MoveInfo.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.CALENDAR) then
+        EventCalendar.onClientMessage(cid, buffer)
     end
     return true
 end

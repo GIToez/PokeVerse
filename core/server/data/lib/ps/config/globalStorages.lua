@@ -51,6 +51,7 @@ GLOBAL_STORAGES = {
     BREEDING_EVENT_END = 7111,
     SHINY_EVENT_MULTIPLIER = 7112, -- /bonusshiny: shiny chance x100 (ShinyEvent)
     SHINY_EVENT_END = 7113,
+    EVENT_CALENDAR_FORCED = 7120, -- 7120 to 7139: a holiday forced on (1) or off (0) with /calendar holiday (EventCalendar)
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

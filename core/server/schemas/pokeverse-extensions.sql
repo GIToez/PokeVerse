@@ -899,3 +899,21 @@ CREATE TABLE IF NOT EXISTS `player_dex_kills` (
   PRIMARY KEY (`player_id`, `species`),
   CONSTRAINT `player_dex_kills_player` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Event calendar (lib/ps/systems/077-eventCalendar.lua): the events staff add with /calendar. The
+-- holidays are rules in the code and have no rows. rule is once, yearly (starts_at's date and time
+-- every year), weekend or nthweekend (nth: 1-5, -1 = the last); bonuses is like "exp=2,shiny=1.5".
+-- Rollback: DROP TABLE `event_calendar`; no existing table was changed.
+CREATE TABLE IF NOT EXISTS `event_calendar` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `world_id` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `name` VARCHAR(40) NOT NULL,
+  `rule` VARCHAR(16) NOT NULL,
+  `starts_at` INT NOT NULL DEFAULT 0,
+  `length` INT NOT NULL DEFAULT 0,
+  `nth` TINYINT NOT NULL DEFAULT 0,
+  `bonuses` VARCHAR(255) NOT NULL,
+  `created_by` VARCHAR(255) NOT NULL DEFAULT '',
+  `created_at` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

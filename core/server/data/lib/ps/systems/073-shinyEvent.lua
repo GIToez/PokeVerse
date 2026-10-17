@@ -25,7 +25,7 @@ end
 local function clear()
     store(KEY_MULTIPLIER, 0)
     store(KEY_END, 0)
-    setShinyEventMultiplier(1)
+    setShinyEventMultiplier(EventCalendar.multiplier("shiny"))
 end
 
 -- Returns the multiplier and end time of the running event, or nil.
@@ -46,7 +46,7 @@ function ShinyEvent.start(multiplier, seconds)
     local replaced = ShinyEvent.get()
     store(KEY_MULTIPLIER, math.floor(multiplier * 100 + 0.5))
     store(KEY_END, os.time() + seconds)
-    setShinyEventMultiplier(multiplier)
+    setShinyEventMultiplier(multiplier * EventCalendar.multiplier("shiny"))
     doBroadcastMessage(string.format("%s %s shiny chance for wild, fished, headbutted and hatched Pokemon for the next %s!",
         replaced and "The shiny event changed:" or "Shiny event started:",
         ServerExpEvent.formatMultiplier(multiplier), ServerExpEvent.formatDuration(seconds)), MESSAGE_STATUS_WARNING)
@@ -99,7 +99,8 @@ function ShinyEvent.onThink()
     end
 
     running = multiplier
-    if (getShinyEventMultiplier() ~= (multiplier or 1)) then
-        setShinyEventMultiplier(multiplier or 1)
+    local total = (multiplier or 1) * EventCalendar.multiplier("shiny")
+    if (getShinyEventMultiplier() ~= total) then
+        setShinyEventMultiplier(total)
     end
 end

@@ -1633,6 +1633,102 @@ local function testOutfits(cid)
     Vocations.updateOutfit(cid)
 end
 
+local function testCalendar(cid)
+    local function date(time) return os.date("%Y-%m-%d %H:%M", time) end
+    local function day(time) return os.date("%Y-%m-%d", time) end
+    local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 0, min = 0, sec = 0 }) end
+
+    local e1, e2 = { EventCalendar.easter(2026) }, { EventCalendar.easter(2027) }
+    check("Calendar: Easter Sunday", e1[1] == 4 and e1[2] == 5 and e2[1] == 3 and e2[2] == 28, table.concat(e1, "-") .. " " .. table.concat(e2, "-"))
+    local l1, l2 = { EventCalendar.lunarNewYear(2026) }, { EventCalendar.lunarNewYear(2027) }
+    check("Calendar: Lunar New Year", table.concat(l1, "-") == "2026-2-17" and table.concat(l2, "-") == "2027-2-6",
+        table.concat(l1, "-") .. " " .. table.concat(l2, "-"))
+    check("Calendar: Harvest Moon is the full moon nearest the September equinox",
+        day(EventCalendar.harvestMoon(2026)) == "2026-09-26" and day(EventCalendar.harvestMoon(2027)) == "2027-09-15",
+        day(EventCalendar.harvestMoon(2026)) .. " " .. day(EventCalendar.harvestMoon(2027)))
+
+    local anniversary
+    for _, event in ipairs(EventCalendar.getEvents(at(2027, 9, 1), at(2027, 11, 1))) do
+        if (event.holiday and event.holiday.id == "anniversary") then
+            anniversary = event
+        end
+    end
+    check("Calendar: the anniversary runs Oct 3-5 from the 06:00 restart",
+        anniversary and date(anniversary.startsAt) == "2027-10-03 06:00" and date(anniversary.endsAt) == "2027-10-06 06:00",
+        anniversary and date(anniversary.startsAt) .. " - " .. date(anniversary.endsAt))
+    local fullMoons, nights = 0, 0
+    for _, phase in ipairs(EventCalendar.moonPhases(at(2027, 1, 1), at(2028, 1, 1) - 1)) do
+        fullMoons = fullMoons + (phase.full and 1 or 0)
+    end
+    for _, event in ipairs(EventCalendar.getEvents(at(2027, 1, 1), at(2028, 1, 1) - 1)) do
+        if (event.holiday and event.holiday.id == "clefairy") then
+            nights = nights + 1
+            check("Calendar: Clefairy Night runs 20:00-06:00", os.date("%H:%M", event.startsAt) == "20:00" and
+                event.endsAt - event.startsAt == 10 * 3600, date(event.startsAt))
+            if (nights >= 1) then break end
+        end
+    end
+    check("Calendar: 12 or 13 full moons a year", fullMoons == 12 or fullMoons == 13, fullMoons)
+
+    local bonuses = EventCalendar.parseBonuses("exp=2,shiny=1.5x")
+    check("Calendar: bonuses parse", bonuses and bonuses.exp == 2 and bonuses.shiny == 1.5)
+    check("Calendar: bad bonuses are refused", not EventCalendar.parseBonuses("exp=1") and not EventCalendar.parseBonuses("exp=11") and
+        not EventCalendar.parseBonuses("gold=2") and not EventCalendar.parseBonuses("Big Weekend"))
+    local once = EventCalendar.parseAdd("once 2026-11-06 18:00 2d exp=2 Double Friday")
+    check("Calendar: /calendar add once", once and once.rule == "once" and date(once.startsAt) == "2026-11-06 18:00" and
+        once.length == 2 * 86400 and once.name == "Double Friday" and once.bonusText == "exp=2")
+    local last = EventCalendar.parseAdd("weekend last loot=2 Loot Weekend")
+    check("Calendar: /calendar add weekend last", last and last.rule == "nthweekend" and last.nth == -1 and last.bonuses.loot == 2 and
+        last.name == "Loot Weekend")
+    check("Calendar: /calendar add refuses bad input", not EventCalendar.parseAdd("daily exp=2 X") and
+        not EventCalendar.parseAdd("once 2026-11-06 18:00 40d exp=2 X") and not EventCalendar.parseAdd("weekend exp=2"))
+
+    local now = os.time()
+    local base = EventCalendar.multiplier("exp")
+    EventCalendar.addStaffEvent({ rule = "once", startsAt = now - 60, length = 3600, nth = 0, bonusText = "exp=2", name = "VT Staff" }, "vt")
+    local staff
+    for _, event in ipairs(EventCalendar.getStaffEvents()) do
+        if (event.name == "VT Staff") then staff = event end
+    end
+    check("Calendar: a running staff event multiplies EXP", staff and EventCalendar.multiplier("exp") == base * 2,
+        base .. " -> " .. EventCalendar.multiplier("exp"))
+    check("Calendar: removing a staff event", staff and EventCalendar.removeStaffEvent(staff.id) and EventCalendar.multiplier("exp") == base)
+    EventCalendar.addStaffEvent({ rule = "weekend", startsAt = 0, length = 0, nth = 0, bonusText = "loot=1.5", name = "VT Weekend" }, "vt")
+    local weekends, okWeekends = 0, true
+    for _, event in ipairs(EventCalendar.getEvents(at(2026, 11, 1), at(2026, 12, 1))) do
+        if (event.name == "VT Weekend") then
+            weekends = weekends + 1
+            okWeekends = okWeekends and os.date("%w %H:%M", event.startsAt) == "5 06:00" and event.endsAt - event.startsAt == 3 * 86400
+        end
+    end
+    check("Calendar: weekend events run Friday 06:00 to Monday 06:00", weekends >= 4 and okWeekends, weekends)
+    for _, event in ipairs(EventCalendar.getStaffEvents()) do
+        if (event.name == "VT Weekend") then EventCalendar.removeStaffEvent(event.id) end
+    end
+
+    local forced = EventCalendar.getForced("harvestmoon")
+    EventCalendar.setForced("harvestmoon", true)
+    check("Calendar: forcing the Harvest Moon on", EventCalendar.isActive("harvestmoon") and EventCalendar.hasFlag("berries") and
+        EventCalendar.berryMaxCount(3) == 8 and EventCalendar.berryStageInterval(600) == 300 and EventCalendar.seedCount(2) == 4)
+    EventCalendar.setForced("harvestmoon", forced)
+    check("Calendar: back to automatic", EventCalendar.isActive("harvestmoon") == nil and EventCalendar.berryMaxCount(3) == 3)
+    local halloween = EventCalendar.getForced("halloween")
+    EventCalendar.setForced("halloween", false)
+    local listed = false
+    for _, event in ipairs(EventCalendar.getEvents(at(2026, 10, 25), at(2026, 10, 30))) do
+        listed = listed or (event.holiday and event.holiday.id == "halloween")
+    end
+    check("Calendar: forcing a holiday off hides it", not listed)
+    EventCalendar.setForced("halloween", halloween)
+
+    local status = EventCalendar.statusData()
+    check("Calendar: status has the next event", status.type == "status" and status.next and status.next.startsAt > status.now,
+        status.next and status.next.name)
+    local range = EventCalendar.rangeData(at(2026, 9, 28), at(2026, 11, 9))
+    check("Calendar: a month range lists events and moons", range and #range.events > 0 and #range.moons >= 2)
+    check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -1652,7 +1748,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

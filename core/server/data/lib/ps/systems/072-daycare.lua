@@ -289,7 +289,7 @@ Daycare.eggChance = function(cid)
     local chance = isPremium(cid) and Vocations.perk(cid, "breeder", "earlyEgg") or Daycare.EGG_EARLY_CHANCE
     chance = chance + getPlayerExtraEggRateValue(cid) / 100
     local multiplier = Daycare.getEvent("breeding")
-    return math.min(1, chance * (multiplier or 1))
+    return math.min(1, chance * (multiplier or 1) * EventCalendar.multiplier("breeding"))
 end
 
 -- One roll for every day of the wait from day 7 that hasn't had one, or the egg from day 14

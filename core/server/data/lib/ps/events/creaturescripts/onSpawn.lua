@@ -1,10 +1,14 @@
 function onMonsterSpawn(cid)
-    --[[if (EasterEvent.OnSpawn(cid)) then
+    if (EventCalendar.isActive("easter") and EasterEvent.OnSpawn(cid)) then
         return
-    end]]
+    end
     AnniversaryEvent.onSpawn(cid)
---    ChristmasEvent.onSpawn(cid)
---    HalloweenEvent.onSpawn(cid)
+    if (EventCalendar.isActive("christmas") and ChristmasEvent.onSpawn(cid)) then
+        return
+    end
+    if (EventCalendar.isActive("halloween") and HalloweenEvent.onSpawn(cid)) then
+        return
+    end
 
     setMonsterSpecialAbility(cid, getPokemonRandomSpecialAbility(getCreatureName(cid)))
     setWildPokemonEvolvable(cid, getRandom(0, 3) == 1)

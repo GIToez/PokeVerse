@@ -4,10 +4,19 @@ function onKill(cid, target, lastHit)
         doQuestDefeat(cid, name)
         if (lastHit) then
             RangerClub.onPlayerKill(cid, name)
---            HalloweenEvent.onPlayerKill(cid, target, lastHit)
-            AnniversaryEvent.onPlayerKill(cid, target, lastHit)
-            --EasterEvent.ThisIsEaster.onPlayerKill(cid, target, lastHit)
---            ChristmasEvent.onPlayerKill(cid, target, lastHit)
+            EventCalendar.onPlayerKill(cid, target)
+            if (EventCalendar.isActive("halloween")) then
+                HalloweenEvent.onPlayerKill(cid, target, lastHit)
+            end
+            if (EventCalendar.isActive("anniversary")) then
+                AnniversaryEvent.onPlayerKill(cid, target, lastHit)
+            end
+            if (EventCalendar.isActive("easter")) then
+                EasterEvent.ThisIsEaster.onPlayerKill(cid, target, lastHit)
+            end
+            if (EventCalendar.isActive("christmas")) then
+                ChristmasEvent.onPlayerKill(cid, target, lastHit)
+            end
         end
     end
 	return true

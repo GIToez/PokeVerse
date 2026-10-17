@@ -293,7 +293,7 @@ end
 
 local function getPlayerFishingFormula(cid, rodId)
     local luck = Vocations.perk(cid, "angler", "fastBiteRank") and Vocations.PERKS.angler.fastBiteLuck or 0
-    return getPlayerSkill(cid, SKILL_FISHING) / 200 + 0.85 * math.random() + luck
+    return (getPlayerSkill(cid, SKILL_FISHING) / 200 + 0.85 * math.random() + luck) * EventCalendar.multiplier("fishing")
 end
 
 -- Fishing skill tries for a hooked Pokemon: 1, plus the Angler's bonus as a chance of more
@@ -332,6 +332,9 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
         elseif (ticksToStart <= 0 and (getPlayerFishingFormula(cid, rod) > 1.0 or tries >= 3)) then
             local fishablePokemons = getPlayerFishinablePokemons(cid, getPlayerPokemon(cid), rod)
             local randomFishablePokemon = table.random(fishablePokemons)
+            if (EventCalendar.hasFlag("luvdisc") and getRandom(1, 4) == 1) then
+                randomFishablePokemon = { name = "Luvdisc", maxAmount = 2 }
+            end
             local fishName = randomFishablePokemon.name
 
             local maxAmount = RODS[rod].allowMultiple and randomFishablePokemon.maxAmount or 1

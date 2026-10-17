@@ -1,4 +1,6 @@
 function onThink()
-	AnniversaryEvent.doStartEvent()
+	if (EventCalendar.isActive("anniversary")) then
+		AnniversaryEvent.doStartEvent()
+	end
 	return true
 end

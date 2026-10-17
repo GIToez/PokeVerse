@@ -64,7 +64,8 @@ EXTENDED_IDS = {
     HELD_ITEM = 29, -- JSON give or take a held item from the swap bar (PokemonHeldItem.onClientMessage)
     ADMIN = 30, -- JSON Admin window for staff: server events and staff tools (Admin)
     QUEST = 31, -- JSON quest log, quest notices and the NPCs' quest marks (Quests)
-    MOVE_INFO = 32 -- JSON type matchups on the moves bar and the move cards (MoveInfo)
+    MOVE_INFO = 32, -- JSON type matchups on the moves bar and the move cards (MoveInfo)
+    CALENDAR = 33 -- JSON event calendar: what runs now, what comes next, and the events of a month (EventCalendar)
 }
 
 TOURNAMENT_TYPES = {}
