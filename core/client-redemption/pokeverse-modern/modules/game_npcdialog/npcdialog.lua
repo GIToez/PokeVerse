@@ -21,6 +21,7 @@ local PORTRAITS = {
     ['Erika'] = LEADERS .. 'erika', ['Koga'] = LEADERS .. 'koga', ['Sabrina'] = LEADERS .. 'sabrina',
     ['Blaine'] = LEADERS .. 'blaine', ['Giovanni'] = LEADERS .. 'giovanni',
     ['Professor Oak'] = '/images/portraits/professor_oak', ['Red'] = '/images/portraits/red',
+    ['Nurse Joy'] = '/images/portraits/nurse_joy',
 }
 
 local ROLES = {
@@ -29,6 +30,7 @@ local ROLES = {
     ['Koga'] = 'Gym Leader, Fuchsia City', ['Sabrina'] = 'Gym Leader, Saffron City',
     ['Blaine'] = 'Gym Leader, Cinnabar Island', ['Giovanni'] = 'Gym Leader, Viridian City',
     ['Professor Oak'] = 'Pokemon Professor, Pallet Town', ['Red'] = 'Trainer Guide',
+    ['Nurse Joy'] = 'Pokemon Center',
 }
 
 local window
