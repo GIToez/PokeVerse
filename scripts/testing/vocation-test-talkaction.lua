@@ -1064,7 +1064,8 @@ local function testRanger(cid, arena)
     text = captureMessages(function() asTextClient(function() return Vocations.radar(cid, "") end) end)
     local pidgeyDirection, pidgeyDistance = where(pidgey)
     check("rank 3 radar names species and direction",
-        text:find("Pidgey (" .. pidgeyDirection .. ", " .. pidgeyDistance .. " tiles)", 1, true) ~= nil, text)
+        -- a wild Pidgey nearby joins the test one's group ("Pidgey x2 (...)"); the nearest gives the direction
+        text:find("Pidgey[ x%d]* %(" .. pidgeyDirection:gsub("%-", "%%-") .. ", " .. pidgeyDistance .. " tiles%)") ~= nil, text)
     check("rank 3 radar still hides the shiny", not text:find("shiny Rattata"))
 
     become(cid, "ranger", 4)
