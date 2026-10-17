@@ -46,7 +46,7 @@ import sys
 import zlib
 
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import autoborder  # noqa: E402
@@ -144,6 +144,27 @@ BALCONIES = set(range(14379, 14384))
 FLY_BARRIER = 13501
 NO_FLY_BOXES = {'Indigo Plateau': (3068, 346, 3156, 580)}
 NO_FLY_SILVER = 8
+# Johto's fence, like Kanto's round its coast: on the ground floor's water a line of buoys with the
+# invisible wall, on every empty tile above that the wall alone, never underground. It goes
+# FENCE_OFF tiles off the coast (bays closed over FENCE_BAY) round the north and west of the land in
+# FENCE_LAND from Kanto's coast fence north of Pewter, then straight down west of Cianwood to
+# Hoenn's fence, and across the channel between Hoenn and the Orange Islands (FENCE_SOUTH), far
+# enough out that nobody flying along it sees past the map's water. Two old walled squares in the
+# sea north of the Indigo Plateau (FENCE_SKIP) stay outside. The straight fences between Johto and
+# Kanto (south of the Indigo Plateau), Hoenn and the Orange Islands come out (FENCE_OPEN: Kanto's
+# west fence, the line from south of New Bark to the Orange Islands' corner, Hoenn's east edge and
+# the top 30 tiles of the Orange Islands' west edge; Hoenn's top edge from Cianwood's line goes too),
+# so one flies and surfs between them; the Indigo Plateau and Mt. Silver stay no-fly.
+FENCE_LAND = (1650, 20, 3246, 1309)
+FENCE_SKIP = (2975, 0, 3140, 180)
+FENCE_OFF, FENCE_BAY = 12, 20
+FENCE_SOUTH = (2168, 2639, 1340)
+FENCE_JOIN = (3247, 221, 235)  # down from the line's east end to Kanto's coast fence
+FENCE_OPEN = [(3120, 590, 3169, 1035), (2946, 1035, 3168, 1035), (2946, 1036, 2946, 1309),
+              (2641, 1309, 2945, 1309), (2640, 1309, 2640, 1339), (2167, 809, 2167, 1339)]
+HOENN_TOP = 809
+BUOY, BUOY_NS, BUOY_EW = 7575, 7576, 7577
+BUOYS = set(range(7575, 7582))
 
 # Prefabs: source box (on the building's ground floor), that floor, the door's first column in the
 # bottom wall (doors are two tiles wide) and NPCs to copy. Pallet Town: Pokémon Center, Oak's lab,
@@ -976,6 +997,13 @@ def grow(mask, r):
     return mask | (distance(~mask) <= r)
 
 
+def fill_holes(mask):
+    """The mask with every pocket it closes in (not joined to the edge, 4 ways) filled."""
+    img = Image.fromarray(np.pad(~mask, 1, constant_values=True).astype(np.uint8)).copy()
+    ImageDraw.floodfill(img, (0, 0), 2)
+    return (np.asarray(img) != 2)[1:-1, 1:-1]
+
+
 def local_mean(v, weight, r):
     """Mean of v over the weighted cells of the (2r + 1)-square round each cell."""
     def box(a):
@@ -1545,6 +1573,116 @@ def no_fly_tiles(data, new_tiles, removed):
     wall = pvmap.item_node(FLY_BARRIER)
     return {(x, y, z): pvmap.RawTile(0, 0, None, wall) for x, y in cells for z in range(Z + 1)
             if (x, y, z) not in new_tiles and ((x, y, z) not in old or (x, y, z) in removed)}
+
+
+def sea_ids():
+    br = autoborder.Brushes()
+    return {i for name in ('sea', 'walkable sea') for i, _ in br.by_name[name].items}
+
+
+def first_id(tile):
+    if tile.ground is not None:
+        return tile.ground
+    ids = pvmap.child_item_ids(tile.children)
+    return ids[0] if ids else None
+
+
+def fence_line(data, new_tiles, sea):
+    """The tiles of Johto's fence (see FENCE_LAND): (x, y) in a 4-connected line, no diagonal gaps."""
+    x0, y0, x1, y1 = FENCE_LAND
+    ox = x0 - FENCE_OFF - FENCE_BAY - 40  # the grid's first column; the land box's left edge is well in
+    H, W = y1 + FENCE_OFF + FENCE_BAY + 40, x1 + 2 - ox
+    land = np.ones((H, W), bool)
+    land[:y0] = False
+    area = None
+    for ev, t, depth, a, b, _ in pvmap.walk(data):
+        if ev == 'open' and t == pvmap.TILE_AREA:
+            area = struct.unpack_from('<HHB', pvmap.unescape(data[a:b]), 0)
+        elif ev == 'open' and t in (pvmap.TILE, pvmap.HOUSETILE) and area[2] == Z:
+            p = pvmap.unescape(data[a:b])
+            x, y = area[0] + p[0] - ox, area[1] + p[1]
+            if y0 <= y < H and 0 <= x < W:
+                item = pvmap.parse_tile_props(p, t == pvmap.HOUSETILE)[4]
+                if item is None:
+                    m = re.match(rb'\xfe\x06(..)', pvmap.unescape(data[b:b + 6]), re.S)
+                    item = struct.unpack('<H', m.group(1))[0] if m else None
+                if item in sea:
+                    land[y, x] = False
+    for (x, y, z), tile in new_tiles.items():
+        if z == Z and y0 <= y < H and 0 <= x - ox < W:
+            land[y, x - ox] = first_id(tile) not in sea
+    near = np.zeros_like(land)
+    near[y0:y1 + 1, x0 - ox:x1 - ox + 1] = land[y0:y1 + 1, x0 - ox:x1 - ox + 1]
+    sx0, sy0, sx1, sy1 = FENCE_SKIP
+    near[sy0:sy1 + 1, sx0 - ox:sx1 - ox + 1] = False
+    zone = grow(near, FENCE_OFF)
+    zone = fill_holes(~grow(~grow(zone, FENCE_BAY), FENCE_BAY))
+    # west of Cianwood straight down to Hoenn's top edge, the sea between them inside
+    xw = int(np.nonzero(zone[:HOENN_TOP].any(0))[0].min())
+    yw = int(np.nonzero(zone[:HOENN_TOP, xw])[0].mean())
+    zone[yw:, xw:] = True
+    zone = fill_holes(zone)
+    out = np.pad(~zone, 1, constant_values=True)
+    edge = zone & np.logical_or.reduce([out[1 + dy:out.shape[0] - 1 + dy, 1 + dx:out.shape[1] - 1 + dx]
+                                        for dy in (-1, 0, 1) for dx in (-1, 0, 1)])
+    Y, X = np.mgrid[0:H, 0:W]
+    X += ox
+    edge &= (Y < HOENN_TOP) & (X <= x1)
+    edge &= (X < x1 - 5) | (Y < 260)
+    ys, xs = np.nonzero(edge)
+    cells = set(zip((xs + ox).tolist(), ys.tolist()))
+    fx0, fx1, fy = FENCE_SOUTH
+    cells |= {(x, fy) for x in range(fx0, fx1 + 1)}
+    jx, jy0, jy1 = FENCE_JOIN
+    cells |= {(jx, y) for y in range(jy0, jy1 + 1)}
+    xw += ox
+    return cells, xw
+
+
+def johto_fence(data, new_tiles, removed):
+    """Johto's fence and the walls between Johto, Kanto, Hoenn and the Orange Islands that come out:
+    (tiles to add or change, tiles to drop). Only the ground floor and up."""
+    sea = sea_ids()
+    cells, xw = fence_line(data, new_tiles, sea)
+    opened = {(x, y) for bx0, by0, bx1, by1 in FENCE_OPEN + [(xw + 1, HOENN_TOP, 2167, HOENN_TOP)]
+              for x in range(bx0, bx1 + 1) for y in range(by0, by1 + 1)}
+    cells -= opened
+    floors = range(Z + 1)
+    old = pvmap.read_tiles_raw(None, [(x, y, z) for x, y in cells | opened for z in floors], data=data)
+    wall = pvmap.item_node(FLY_BARRIER)
+    add, drop = {}, []
+    for x, y in cells:
+        for z in floors:
+            pos = (x, y, z)
+            tile = new_tiles.get(pos) or (None if pos in removed else old.get(pos))
+            if tile is None:
+                add[pos] = pvmap.RawTile(0, 0, None, wall)
+            elif FLY_BARRIER in pvmap.child_item_ids(tile.children):
+                continue
+            elif z < Z:
+                add[pos] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, tile.children + wall)
+            elif first_id(tile) in sea:
+                ns, ew = ((x, y - 1) in cells or (x, y + 1) in cells), ((x - 1, y) in cells or (x + 1, y) in cells)
+                buoy = BUOY_NS if ns and not ew else BUOY_EW if ew and not ns else BUOY
+                add[pos] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground,
+                                         tile.children + pvmap.item_node(buoy) + wall)
+    for x, y in opened:
+        for z in floors:
+            pos = (x, y, z)
+            tile = new_tiles.get(pos) or old.get(pos)
+            if tile is None:
+                continue
+            blobs = pvmap.split_items(tile.children)
+            kept = [b for b in blobs if pvmap.child_item_ids(b)[0] != FLY_BARRIER
+                    and not (z == Z and pvmap.child_item_ids(b)[0] in BUOYS)]
+            if len(kept) == len(blobs):
+                continue
+            if tile.ground is None and not kept:
+                new_tiles.pop(pos, None)
+                drop.append(pos)
+            else:
+                add[pos] = pvmap.RawTile(tile.house_id, tile.flags, tile.ground, b''.join(kept))
+    return add, drop
 
 
 def plan_silver(f, mlevel, open_sky):
@@ -3529,8 +3667,11 @@ def build(base, out_path):
     no_fly = no_fly_tiles(data, new_tiles, set(PASS_DROP + gym_drops))
     new_tiles.update(no_fly)
     print('no-fly zones: %d invisible walls' % len(no_fly))
+    fence, unfenced = johto_fence(data, new_tiles, set(PASS_DROP + gym_drops))
+    new_tiles.update(fence)
+    print('Johto fence: %d tiles walled or opened, %d emptied' % (len(fence), len(unfenced)))
     towns = [(t['town_id'], t['name'], *t['temple'], Z) for t in TOWNS_BUILT]
-    cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP + gym_drops, towns=towns)
+    cut = pvmap.write_map(data, out_path, new_tiles, remove=PASS_DROP + gym_drops + unfenced, towns=towns)
     write_spawns(os.path.join(os.path.dirname(out_path), 'map-spawn.xml'), spawns, npcs, data)
     write_houses(os.path.join(os.path.dirname(out_path), 'map-house.xml'), new_houses)
     print('wrote %s: %d new or changed tiles (%d Kanto tiles replaced, %d re-bordered), %d spawns, %d houses'
