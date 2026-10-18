@@ -70,7 +70,7 @@ TITLE_FONT = FONT
 TITLE = 'POKEVERSE'
 
 # 0 draws the globe solid with a drop shadow; otherwise how opaque the floor paint is
-PAINT = 0.0
+PAINT = 0.85
 PAINT_TEXTURE = 0.6  # how much of the tiles' light and dark shows through the paint
 
 
