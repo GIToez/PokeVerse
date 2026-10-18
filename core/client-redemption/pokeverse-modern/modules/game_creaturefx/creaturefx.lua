@@ -76,10 +76,12 @@ end
 
 function refreshAll()
     local player = g_game.getLocalPlayer()
-    if not player then
+    -- no position while logging in, until the server places the player
+    local position = player and player:getPosition()
+    if not position then
         return
     end
-    for _, creature in ipairs(g_map.getSpectators(player:getPosition(), true)) do
+    for _, creature in ipairs(g_map.getSpectators(position, true)) do
         refresh(creature)
     end
 end

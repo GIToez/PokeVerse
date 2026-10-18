@@ -234,7 +234,7 @@ end
 local function findSummon()
     local player = g_game.getLocalPlayer()
     summon = nil
-    if player then
+    if player and player:getPosition() then
         for _, creature in pairs(g_map.getSpectators(player:getPosition(), false)) do
             if creature:isLocalPlayerSummon() then
                 summon = creature
