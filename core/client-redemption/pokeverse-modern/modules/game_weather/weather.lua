@@ -20,8 +20,10 @@ local moodKey = ''
 local lightningEvent, flashEvent, checkEvent, placeEvent, matchupEvent
 
 local DIR = '/modules/game_weather/'
-local SHADER_FADE = 1.5
-local SOUND_FADE = 2
+-- seconds; the engine fades the old shader out and only then the new one in, and holds any switch
+-- asked for meanwhile, so long fades make stepping in and out of a door lag behind
+local SHADER_FADE = 0.25
+local SOUND_FADE = 0.5
 -- the map texture's v runs up the screen, so things fall toward smaller v
 local FALL = '-1.0'
 local KINDS_WITH_SHADER = { rain = true, thunderstorm = true, snow = true, hail = true, fog = true, sandstorm = true,
