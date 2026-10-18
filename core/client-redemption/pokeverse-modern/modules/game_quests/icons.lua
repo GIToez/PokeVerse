@@ -88,12 +88,9 @@ local function applyAll()
         apply(entry.creature)
     end
     -- NPCs on screen before the marks came
-    local player = g_game.getLocalPlayer()
-    if player and player:getPosition() then
-        for _, creature in ipairs(g_map.getSpectators(player:getPosition(), true)) do
-            if creature:isNpc() then
-                apply(creature)
-            end
+    for _, creature in ipairs(getCreaturesAroundPlayer(true)) do
+        if creature:isNpc() then
+            apply(creature)
         end
     end
 end

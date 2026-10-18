@@ -232,14 +232,11 @@ end
 
 -- the server renames a Pokemon (its level) without the client seeing it appear again
 local function findSummon()
-    local player = g_game.getLocalPlayer()
     summon = nil
-    if player and player:getPosition() then
-        for _, creature in pairs(g_map.getSpectators(player:getPosition(), false)) do
-            if creature:isLocalPlayerSummon() then
-                summon = creature
-                break
-            end
+    for _, creature in ipairs(getCreaturesAroundPlayer()) do
+        if creature:isLocalPlayerSummon() then
+            summon = creature
+            break
         end
     end
     updateSummon()

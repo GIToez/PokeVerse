@@ -227,10 +227,7 @@ end
 -- the summon is out when one of the creatures around is ours; using the ball in the ball slot (the feet slot) calls it back
 local function recallPokemon()
     local player = g_game.getLocalPlayer()
-    if not player or not player:getPosition() then
-        return
-    end
-    for _, creature in ipairs(g_map.getSpectators(player:getPosition(), false)) do
+    for _, creature in ipairs(getCreaturesAroundPlayer()) do
         if creature:isLocalPlayerSummon() then
             local ball = player:getInventoryItem(InventorySlotFeet)
             if ball then

@@ -28,6 +28,7 @@ Module
     dofiles 'ui'
 
     dofile 'pokeverse/compat'
+    dofile 'pokeverse/spectators'
     dofile 'pokeverse/pokemon'
     dofile 'pokeverse/moves'
     dofile 'pokeverse/items'
