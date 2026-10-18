@@ -10,7 +10,8 @@ end
 -- breeding through Daycare, fishing through Fishing. The old holiday content (Easter, the summer
 -- festival, the anniversary, Halloween and Christmas) only runs while its holiday is on.
 --
--- Holidays start and end at the daily restart (RESTART_HOUR, server time) unless noted. Moon
+-- Holidays start and end at EVENT_HOUR (06:00 server time, when most players are around; the
+-- daily restart is at midnight and does not move them) unless noted. Moon
 -- phases use Meeus' formula (Astronomical Algorithms, ch. 49), equinoxes and solstices ch. 27,
 -- Easter the Western computus. Staff can force a holiday on or off with /calendar holiday.
 --
@@ -22,7 +23,7 @@ end
 EventCalendar = {}
 
 local DAY, HOUR = 24 * 60 * 60, 60 * 60
-local RESTART_HOUR = 6
+local EVENT_HOUR = 6
 local CACHE_SECONDS = 60
 local MAX_RANGE = 62 * DAY
 
@@ -40,17 +41,17 @@ local FORCED_KEY_BASE = GLOBAL_STORAGES.EVENT_CALENDAR_FORCED -- + index: 1 forc
 ---------------------------------------------------------------------------------------------------
 
 local function at(year, month, day, hour, minute)
-    return os.time({ year = year, month = month, day = day, hour = hour or RESTART_HOUR, min = minute or 0, sec = 0 })
+    return os.time({ year = year, month = month, day = day, hour = hour or EVENT_HOUR, min = minute or 0, sec = 0 })
 end
 
 local function dateOf(time)
     return os.date("*t", time)
 end
 
--- The restart that opens the day `time` falls on (server time), shifted by `days`
-local function restartOf(time, days)
+-- The EVENT_HOUR that opens the day `time` falls on (server time), shifted by `days`
+local function dayStartOf(time, days)
     local d = dateOf(time)
-    return at(d.year, d.month, d.day + (days or 0), RESTART_HOUR)
+    return at(d.year, d.month, d.day + (days or 0), EVENT_HOUR)
 end
 
 local function jdToUnix(jd)
@@ -171,7 +172,7 @@ end
 local function nightAround(time)
     local d = dateOf(time - HOUR + 12 * HOUR)
     local starts = at(d.year, d.month, d.day - 1, 20)
-    return starts, at(d.year, d.month, d.day, RESTART_HOUR)
+    return starts, at(d.year, d.month, d.day, EVENT_HOUR)
 end
 
 local function days(year, month, day, count)
@@ -217,7 +218,7 @@ EventCalendar.HOLIDAYS = {
       description = "Berry trees grow twice as fast and give up to 8 berries, wild Pokemon drop more berries and seed boxes give twice the seeds.",
       dates = function(year)
           local moon = EventCalendar.harvestMoon(year)
-          return moon and { { restartOf(moon, -1), restartOf(moon, 2) } } or {}
+          return moon and { { dayStartOf(moon, -1), dayStartOf(moon, 2) } } or {}
       end },
     { id = "clefairy", name = "Clefairy Night", color = "#f0b0d0", clefairy = true, night = true,
       description = "Full moon: Clefairy and Clefable gather in Mt. Moon, and may drop a Moon Stone.",
@@ -281,7 +282,7 @@ EventCalendar.setForced = function(id, value)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Seasons (northern, real time): each one starts at the restart after its equinox or solstice
+-- Seasons (northern, real time): each one starts at the EVENT_HOUR after its equinox or solstice
 ---------------------------------------------------------------------------------------------------
 
 EventCalendar.SEASONS = {
@@ -303,8 +304,8 @@ end
 
 local function seasonStart(year, index)
     local moment = EventCalendar.seasonTime(year, index)
-    local restart = restartOf(moment)
-    return restart >= moment and restart or restartOf(moment, 1)
+    local start = dayStartOf(moment)
+    return start >= moment and start or dayStartOf(moment, 1)
 end
 
 -- The natural seasons that overlap from..to: { season, startsAt, endsAt }
@@ -415,12 +416,12 @@ end
 
 EventCalendar.getStaffEvents = loadStaffEvents
 
--- Friday's restart to Monday's restart, for the weekend whose Friday is on `friday` (a date table)
+-- Friday's EVENT_HOUR to Monday's, for the weekend whose Friday is on `friday` (a date table)
 local function weekendOf(friday)
     return { at(friday.year, friday.month, friday.day), at(friday.year, friday.month, friday.day + 3) }
 end
 
--- The weekends that take turns, Friday restart to Monday restart, counted from the weekend of
+-- The weekends that take turns, Friday to Monday at EVENT_HOUR, counted from the weekend of
 -- `first`: the ones of `year` where this event's turn of `turns` comes up
 local function weekendTurns(year, first, turns, turn)
     local list = {}

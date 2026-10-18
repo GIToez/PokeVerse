@@ -1790,7 +1790,7 @@ local function testCalendar(cid)
             anniversary = event
         end
     end
-    check("Calendar: the anniversary runs Oct 3-5 from the 06:00 restart",
+    check("Calendar: the anniversary runs Oct 3-5 from 06:00",
         anniversary and date(anniversary.startsAt) == "2027-10-03 06:00" and date(anniversary.endsAt) == "2027-10-06 06:00",
         anniversary and date(anniversary.startsAt) .. " - " .. date(anniversary.endsAt))
     local fullMoons, nights = 0, 0
@@ -1876,7 +1876,7 @@ local function testSeasons(cid)
             ok = ok and d.month == want[1] and d.day >= want[2] and d.day <= want[3] and d.hour == 6 and d.min == 0
         end
     end
-    check("Seasons: each starts at the restart after its equinox or solstice", #spans == 5 and ok, #spans)
+    check("Seasons: each starts at 06:00 after its equinox or solstice", #spans == 5 and ok, #spans)
     check("Seasons: spans follow each other", spans[1] and spans[1].endsAt == spans[2].startsAt and spans[4].endsAt == spans[5].startsAt)
     local forced = EventCalendar.getForcedSeason()
     EventCalendar.setForcedSeason(nil)
