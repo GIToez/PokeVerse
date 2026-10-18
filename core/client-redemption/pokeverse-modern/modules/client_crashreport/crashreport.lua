@@ -1,11 +1,12 @@
 -- When the Windows client crashes it saves crashreport.log in the client's folder (win32crashhandler.cpp),
--- with the backtrace and the last log lines, and every start keeps the last session's log as
+-- with the backtrace and the last log lines, and a minidump crashreport.dmp; every start keeps the last session's log as
 -- pokeverse-previous.log. On the next start this offers to copy the report. A session that ended without
 -- terminate() running (a crash the handler didn't catch, a freeze that was killed) is spotted by the marker
 -- it leaves behind, and then the end of the previous log is offered instead. Not on mobile, where the system
 -- kills the app all the time.
 local REPORT = '/crashreport.log'
 local SHOWN = '/crashreport-previous.log'
+local DUMP = '/crashreport.dmp'
 local MARKER = '/session.running'
 local LOG_LINES = 200
 
@@ -66,10 +67,17 @@ local function check(unclean)
         local report = g_resources.readFileContents(REPORT)
         g_resources.writeFileContents(SHOWN, report)
         g_resources.deleteFile(REPORT)
-        offer(tr('PokeVerse crashed'),
-            tr('PokeVerse crashed last time and saved a crash report.\nCopy it and post it so the crash can be fixed.'),
-            report, g_resources.getWriteDir())
+        local message = tr('PokeVerse crashed last time and saved a crash report.\nCopy it and post it so the crash can be fixed.')
+        if g_resources.fileExists(DUMP) then
+            message = message .. '\n\n' .. tr('Please also post the file crashreport.dmp from its folder (Open folder).')
+        end
+        offer(tr('PokeVerse crashed'), message, report, g_resources.getWriteDir())
         return
+    end
+
+    -- the dump of a crash that was already offered
+    if g_resources.fileExists(DUMP) then
+        g_resources.deleteFile(DUMP)
     end
 
     if unclean and not g_platform.isMobile() then
