@@ -129,6 +129,8 @@ public:
 
     void fireOldMessages();
     void setLogFile(std::string_view file);
+    void flush();
+    std::string getRecentLog(std::size_t lines) const;
     void setOnLog(const OnLogCallback& onLog) { m_onLog = onLog; }
     void setLevel(const Fw::LogLevel level) { m_level = level; }
     Fw::LogLevel getLevel() { return m_level; }

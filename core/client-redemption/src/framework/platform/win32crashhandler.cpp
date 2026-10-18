@@ -39,6 +39,14 @@
 #endif
 
 #include <framework/core/graphicalapplication.h>
+#include <framework/core/logger.h>
+#include <framework/core/resourcemanager.h>
+
+#include <atomic>
+#include <csignal>
+#include <cstdlib>
+#include <fstream>
+#include <sstream>
 
 const char* getExceptionName(const DWORD exceptionCode)
 {
@@ -69,74 +77,68 @@ const char* getExceptionName(const DWORD exceptionCode)
     return "Unknown exception";
 }
 
-void Stacktrace(LPEXCEPTION_POINTERS e, std::stringstream& ss)
+
+void Stacktrace(const LPEXCEPTION_POINTERS e, std::stringstream& ss)
 {
-    STACKFRAME sf;
-    HANDLE process, thread;
-    ULONG_PTR dwModBase, Disp;
-    BOOL more = FALSE;
-    DWORD machineType;
-    int count = 0;
-    char modname[MAX_PATH];
-    char symBuffer[sizeof(IMAGEHLP_SYMBOL) + 255];
+    const HANDLE process = GetCurrentProcess();
+    const HANDLE thread = GetCurrentThread();
 
-    auto* pSym = (PIMAGEHLP_SYMBOL)symBuffer;
-
-    ZeroMemory(&sf, sizeof(sf));
+    // StackWalk64 rewrites the context as it walks
+    CONTEXT context = *e->ContextRecord;
+    STACKFRAME64 sf{};
 #ifdef _WIN64
-    sf.AddrPC.Offset = e->ContextRecord->Rip;
-    sf.AddrStack.Offset = e->ContextRecord->Rsp;
-    sf.AddrFrame.Offset = e->ContextRecord->Rbp;
-    machineType = IMAGE_FILE_MACHINE_AMD64;
+    const DWORD machineType = IMAGE_FILE_MACHINE_AMD64;
+    sf.AddrPC.Offset = context.Rip;
+    sf.AddrStack.Offset = context.Rsp;
+    sf.AddrFrame.Offset = context.Rbp;
 #else
-    sf.AddrPC.Offset = e->ContextRecord->Eip;
-    sf.AddrStack.Offset = e->ContextRecord->Esp;
-    sf.AddrFrame.Offset = e->ContextRecord->Ebp;
-    machineType = IMAGE_FILE_MACHINE_I386;
+    const DWORD machineType = IMAGE_FILE_MACHINE_I386;
+    sf.AddrPC.Offset = context.Eip;
+    sf.AddrStack.Offset = context.Esp;
+    sf.AddrFrame.Offset = context.Ebp;
 #endif
-
     sf.AddrPC.Mode = AddrModeFlat;
     sf.AddrStack.Mode = AddrModeFlat;
     sf.AddrFrame.Mode = AddrModeFlat;
 
-    process = GetCurrentProcess();
-    thread = GetCurrentThread();
+    alignas(IMAGEHLP_SYMBOL64) char symBuffer[sizeof(IMAGEHLP_SYMBOL64) + 256];
+    auto* symbol = reinterpret_cast<PIMAGEHLP_SYMBOL64>(symBuffer);
 
-    while (true) {
-        more = StackWalk(machineType, process, thread, &sf, e->ContextRecord, nullptr, SymFunctionTableAccess, SymGetModuleBase, nullptr);
-        if (!more || sf.AddrFrame.Offset == 0)
+    for (int count = 0; count < 64; ++count) {
+        if (!StackWalk64(machineType, process, thread, &sf, &context, nullptr, SymFunctionTableAccess64, SymGetModuleBase64, nullptr))
+            break;
+        if (sf.AddrPC.Offset == 0)
             break;
 
-        dwModBase = SymGetModuleBase(process, sf.AddrPC.Offset);
-        if (dwModBase)
-            GetModuleFileName(reinterpret_cast<HINSTANCE>(dwModBase), modname, MAX_PATH);
-        else {
-#ifdef _MSC_VER
-            strcpy_s(modname, sizeof(modname), "Unknown");
-#else
-            strncpy(modname, "Unknown", sizeof(modname));
-            modname[sizeof(modname) - 1] = '\0';
-#endif
+        const DWORD64 address = sf.AddrPC.Offset;
+        const DWORD64 moduleBase = SymGetModuleBase64(process, address);
+
+        std::string module = "unknown";
+        if (moduleBase) {
+            char modulePath[MAX_PATH] = {};
+            if (GetModuleFileNameA(reinterpret_cast<HMODULE>(moduleBase), modulePath, MAX_PATH)) {
+                module = modulePath;
+                if (const auto slash = module.find_last_of("\\/"); slash != std::string::npos)
+                    module = module.substr(slash + 1);
+            }
         }
 
-        Disp = 0;
-        pSym->SizeOfStruct = sizeof(symBuffer);
-        pSym->MaxNameLength = 254;
+        // module+offset stays readable without symbols: it can be looked up against the build's .pdb
+        ss << fmt::format("    {}: {}+0x{:X}", count, module, address - moduleBase);
 
-        if (SymGetSymFromAddr(process, sf.AddrPC.Offset, &Disp, pSym))
-            ss << fmt::format("    {}: {}({}+%#0lx) [0x%016lX]\n", count, modname, pSym->Name, Disp, sf.AddrPC.Offset);
-        else
-            ss << fmt::format("    {}: {} [0x%016lX]\n", count, modname, sf.AddrPC.Offset);
-        ++count;
+        ZeroMemory(symBuffer, sizeof(symBuffer));
+        symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
+        symbol->MaxNameLength = 255;
+        DWORD64 displacement = 0;
+        if (SymGetSymFromAddr64(process, address, &displacement, symbol))
+            ss << fmt::format(" ({}+0x{:X})", symbol->Name, displacement);
+        ss << "\n";
     }
-    GlobalFree(pSym);
 }
 
-LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
+std::string crashReportHeader(const std::string_view what)
 {
-    SymInitialize(GetCurrentProcess(), nullptr, TRUE);
-
-    std::string crashReport = fmt::format(
+    return fmt::format(
         "== application crashed\n"
         "app name: {}\n"
         "app version: {}\n"
@@ -145,9 +147,7 @@ LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
         "build type: {}\n"
         "build revision: {} ({})\n"
         "crash date: {}\n"
-        "exception: {} (0x{:08X})\n"
-        "exception address: 0x{:08X}\n"
-        "  backtrace:\n",
+        "{}\n",
         g_app.getName(),
         g_app.getVersion(),
         g_app.getBuildCompiler(), g_app.getBuildArch(),
@@ -155,50 +155,79 @@ LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
         g_app.getBuildType(),
         g_app.getBuildRevision(), g_app.getBuildCommit(),
         stdext::date_time_string(),
-        getExceptionName(e->ExceptionRecord->ExceptionCode), e->ExceptionRecord->ExceptionCode,
-        reinterpret_cast<std::uintptr_t>(e->ExceptionRecord->ExceptionAddress)
+        what
     );
+}
+
+// the client's own folder, where client_crashreport finds it on the next start
+void saveCrashReport(const std::string& report)
+{
+    g_logger.flush();
+
+    std::string dir = g_resources.getWriteDir();
+    if (dir.empty()) {
+        char cwd[MAX_PATH];
+        const DWORD len = GetCurrentDirectoryA(sizeof(cwd), cwd);
+        if (len > 0 && len < sizeof(cwd))
+            dir = std::string(cwd) + "\\";
+    }
+    std::string fileName = dir + "crashreport.log";
+
+    const std::string contents = fmt::format("{}\n== last log lines\n{}", report, g_logger.getRecentLog(200));
+
+    bool saved = false;
+    {
+        std::ofstream fout(stdext::utf8_to_latin1(fileName), std::ios::out | std::ios::trunc);
+        if (fout.is_open()) {
+            fout << contents;
+            saved = fout.good();
+        }
+    }
+
+    const std::string msg = saved
+        ? fmt::format("PokeVerse has crashed.\n\nA crash report was saved to:\n{}\n\nWhen you open PokeVerse again it will offer to copy the report so you can post it.", fileName)
+        : std::string("PokeVerse has crashed.\n\nThe crash report could not be saved.");
+    MessageBoxA(nullptr, msg.c_str(), "PokeVerse crashed", MB_OK | MB_ICONERROR);
+}
+
+LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
+{
+    static std::atomic_flag handling;
+    if (handling.test_and_set())
+        return EXCEPTION_CONTINUE_SEARCH;
+
+    SymSetOptions(SymGetOptions() | SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
+    SymInitialize(GetCurrentProcess(), nullptr, TRUE);
 
     std::stringstream oss;
-    oss << crashReport;
+    oss << crashReportHeader(fmt::format(
+        "exception: {} (0x{:08X})\n"
+        "exception address: 0x{:X}\n"
+        "  backtrace:",
+        getExceptionName(e->ExceptionRecord->ExceptionCode), e->ExceptionRecord->ExceptionCode,
+        reinterpret_cast<std::uintptr_t>(e->ExceptionRecord->ExceptionAddress)));
     Stacktrace(e, oss);
-    oss << "\n";
 
     SymCleanup(GetCurrentProcess());
 
-    g_logger.info(oss.str());
-
-    char dir[MAX_PATH];
-    DWORD len = GetCurrentDirectory(sizeof(dir), dir);
-    if (len == 0 || len >= sizeof(dir)) {
-        g_logger.error("Failed to get current directory for crash report");
-        return EXCEPTION_CONTINUE_SEARCH;
-    }
-
-    std::string fileName = fmt::format("{}\\crashreport.log", dir);
-
-    std::ofstream fout(fileName, std::ios::out | std::ios::app);
-    if (fout.is_open()) {
-        fout << oss.str();
-        fout.close();
-        g_logger.info("Crash report saved to file {}", fileName);
-    } else {
-        g_logger.error("Failed to save crash report to {}", fileName);
-    }
-
-    std::string msg = fmt::format(
-        "The application has crashed.\n\n"
-        "A crash report has been written to:\n{}",
-        fileName
-    );
-    MessageBoxA(nullptr, msg.c_str(), "Application crashed", MB_OK | MB_ICONERROR);
-
+    saveCrashReport(oss.str());
     return EXCEPTION_CONTINUE_SEARCH;
+}
+
+void AbortHandler(int)
+{
+    static std::atomic_flag handling;
+    if (!handling.test_and_set())
+        saveCrashReport(crashReportHeader("exception: abort (std::terminate, failed assert or a fatal runtime error)"));
+
+    signal(SIGABRT, SIG_DFL);
+    std::abort();
 }
 
 void installCrashHandler()
 {
     SetUnhandledExceptionFilter(ExceptionHandler);
+    signal(SIGABRT, AbortHandler);
 }
 
 #endif

@@ -25,6 +25,7 @@
 #include "eventdispatcher.h"
 #include "framework/platform/platform.h"
 
+#include <filesystem>
 #include <iostream>
 
 #if defined(ANDROID)
@@ -128,6 +129,19 @@ namespace
     {
         static std::shared_ptr<spdlog::sinks::sink> s_fileSink;
         return s_fileSink;
+    }
+
+    // pokeverse.log -> pokeverse-previous.log
+    void keepPreviousLog(const std::string& file)
+    {
+        std::error_code ec;
+        const std::filesystem::path path(file);
+        if (!std::filesystem::is_regular_file(path, ec))
+            return;
+
+        auto previous = path;
+        previous.replace_filename(path.stem().string() + "-previous" + path.extension().string());
+        std::filesystem::copy_file(path, previous, std::filesystem::copy_options::overwrite_existing, ec);
     }
 }
 
@@ -248,6 +262,10 @@ void Logger::setLogFile(const std::string_view file)
     auto& spdLogger = getSpdLogger();
     if (spdLogger) {
         try {
+            // the sink truncates the file, and the last session's log is what a crash report needs
+            if (!getSpdLogFileSink())
+                keepPreviousLog(stdext::utf8_to_latin1(file));
+
             auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(stdext::utf8_to_latin1(file), true);
             fileSink->set_pattern(std::string{ getFilePattern() });
 
@@ -272,4 +290,33 @@ void Logger::setLogFile(const std::string_view file)
         return;
     }
     m_outFile.flush();
+}
+
+void Logger::flush()
+{
+    if (const auto& spdLogger = getSpdLogger())
+        spdLogger->flush();
+    if (m_outFile.is_open())
+        m_outFile.flush();
+}
+
+std::string Logger::getRecentLog(const std::size_t lines) const
+{
+    std::string out;
+    const std::size_t first = m_logMessages.size() > lines ? m_logMessages.size() - lines : 0;
+    for (std::size_t i = first; i < m_logMessages.size(); ++i) {
+        const auto& logMessage = m_logMessages[i];
+        const auto when = static_cast<std::time_t>(logMessage.when);
+        std::tm ts{};
+#ifdef _WIN32
+        localtime_s(&ts, &when);
+#else
+        localtime_r(&when, &ts);
+#endif
+        char stamp[16];
+        if (std::strftime(stamp, sizeof(stamp), "%H:%M:%S", &ts) == 0)
+            stamp[0] = '\0';
+        out += fmt::format("[{}] {}{}\n", stamp, s_logPrefixes[static_cast<std::size_t>(logMessage.level)], logMessage.message);
+    }
+    return out;
 }
