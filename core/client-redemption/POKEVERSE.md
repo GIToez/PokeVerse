@@ -7,4 +7,5 @@ PokeVerse changes on top. The first commit that added this folder is a byte-for-
 PokeVerse change, so `git diff <baseline>.. -- core/client-redemption` shows all of them.
 
 `README.md` and the rest of the upstream documentation are kept as they are.
-See [docs/phase3-redemption.md](../../docs/phase3-redemption.md) for what was changed and why.
+[docs/engine-changes.md](../../docs/engine-changes.md) lists every engine change and why;
+[docs/phase3-redemption.md](../../docs/phase3-redemption.md) explains how the client is put together.

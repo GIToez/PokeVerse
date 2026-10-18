@@ -21,6 +21,8 @@ PokeVerse (see the Phase 4 plan).
 
 ## Engine changes
 
+The full list, file by file, is in [engine-changes.md](engine-changes.md). In short:
+
 All PokeVerse behaviour in the engine is behind the `GamePokeVerse` feature, which the
 PokeVerse things loader turns on together with the 8.54 protocol (version 313, login port
 7564, game port 8548).
