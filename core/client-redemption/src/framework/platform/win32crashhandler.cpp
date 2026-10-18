@@ -29,13 +29,20 @@
 
 #pragma warning (push)
 #pragma warning (disable:4091) // warning C4091: 'typedef ': ignored on left of '' when no variable is declared
-#include <dbghelp.h>
+#include <imagehlp.h>
 #pragma warning (pop)
 
 #else
 
-#include <dbghelp.h>
+#include <imagehlp.h>
 
+#endif
+
+// MiniDumpWriteDump without dbghelp.h, which clashes with the imagehlp.h of other files in the unity build
+#if __has_include(<minidumpapiset.h>)
+#include <minidumpapiset.h>
+#else
+#include <dbghelp.h>
 #endif
 
 #include <framework/core/graphicalapplication.h>
