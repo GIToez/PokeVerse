@@ -967,12 +967,14 @@ TilePtr MapView::getTopTile(Position tilePos) const
 
 void MapView::setShader(const std::string_view name, const float fadein, const float fadeout)
 {
-    const auto& shader = g_shaders.getShader(name);
+    // looked up in the event, which runs after a createFragmentShaderFromCode queued before this call
+    g_mainDispatcher.addEvent([=, this, name = std::string(name)] {
+        const auto& shader = g_shaders.getShader(name);
 
-    if (m_shader == shader)
-        return;
+        // while fading out, the shader that will be drawn next is m_nextShader, not m_shader
+        if ((m_shaderSwitchDone ? m_shader : m_nextShader) == shader)
+            return;
 
-    g_mainDispatcher.addEvent([=, this] {
         if (fadeout > 0.0f && m_shader) {
             m_nextShader = shader;
             m_shaderSwitchDone = false;

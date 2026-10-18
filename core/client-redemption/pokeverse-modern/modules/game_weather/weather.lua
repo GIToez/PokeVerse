@@ -138,7 +138,7 @@ local function shaderName(kind, level, style, mood)
         .. mood.name
 end
 
--- the engine compiles it on its next frame: the name is usable from then on (returns true when new)
+-- the engine compiles it on its next frame, before a map:setShader made after this (returns true when new)
 local function ensureShader(kind, level, style, mood)
     mood = mood or NO_MOOD
     local name = shaderName(kind, level, style, mood)
@@ -160,24 +160,11 @@ local function ensureShader(kind, level, style, mood)
     return name, true
 end
 
-local shaderEvent
-
--- the engine ignores a switch while it is fading out the same shader, and a shader it is still
--- compiling counts as none: wait for both
-local function pushShader(tries)
-    shaderEvent = nil
+local function pushShader()
     local map = modules.game_interface.getMapPanel()
-    if not map then
-        return
+    if map then
+        map:setShader(activeShader or '', SHADER_FADE, SHADER_FADE)
     end
-    local name = activeShader or ''
-    if tries > 0 and (map:isSwitchingShader() or (name ~= '' and not g_shaders.getShader(name))) then
-        shaderEvent = scheduleEvent(function()
-            pushShader(tries - 1)
-        end, 100)
-        return
-    end
-    map:setShader(name, SHADER_FADE, SHADER_FADE)
 end
 
 local function setShader(name)
@@ -185,8 +172,7 @@ local function setShader(name)
         return
     end
     activeShader = name
-    removeEvent(shaderEvent)
-    pushShader(50)
+    pushShader()
 end
 
 -- sounds
@@ -606,8 +592,7 @@ function terminate()
     removeEvent(moodEvent)
     stopLightning()
     activeShader = nil
-    removeEvent(shaderEvent)
-    pushShader(0)
+    pushShader()
     playLoop(nil)
     if badge then
         badge:destroy()
