@@ -1514,7 +1514,10 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
         a row in the `decoration_spots` table (set, tile, item, who and when), so it survives
         restarts and updates and goes up every time its set is up, next to the automatic
         props; there's no config file to edit. Wall props (Christmas wreath, red and blue
-        garlands, skull, purple, red, blue and white tapestries) hang on walls with a hook;
+        garlands, skull, purple, red, blue and white tapestries) hang on walls with a hook,
+        from the side the prop shows on: a wall running east-west from the south, one running
+        north-south from the east. The Pokemon Center walls have hooks too (set with
+        `scripts/item-hooks.py`, in items.otb and the client's data.dat);
         everything else stands on a tile a player could walk on, never on a house or a
         depot tile. A tile holds one prop per set: saving another replaces it.
       - `/deco` shows the set up now, the town's automatic props and the props saved within

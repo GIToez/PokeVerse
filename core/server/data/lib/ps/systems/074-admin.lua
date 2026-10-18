@@ -240,7 +240,7 @@ local function decoAdd(cid, data)
         return result(cid, false, "Pick a set and a prop.")
     end
     local pos = decoFront(cid)
-    local ok, replaced = Decorations.addSpot(setId, pos, itemid, getCreatureName(cid))
+    local ok, replaced = Decorations.addSpot(setId, pos, itemid, getCreatureName(cid), getCreaturePosition(cid))
     if (not ok) then
         return result(cid, false, replaced)
     end

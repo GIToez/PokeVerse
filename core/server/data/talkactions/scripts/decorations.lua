@@ -91,7 +91,7 @@ function onSay(cid, words, param)
 			return true
 		end
 		local pos = front(cid)
-		local ok, result = Decorations.addSpot(setId, pos, itemid, getCreatureName(cid))
+		local ok, result = Decorations.addSpot(setId, pos, itemid, getCreatureName(cid), getCreaturePosition(cid))
 		if (not ok) then
 			reply(cid, result)
 			return true
