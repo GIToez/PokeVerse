@@ -19,40 +19,32 @@ const float caveFloor = CAVEFLOOR;
 const vec2 mapTiles = vec2(MAPW, MAPH);
 const vec3 LUMA = vec3(0.299, 0.587, 0.114);
 
-// toon, in the look of the anime: flat clean fills (the sprite's speckle smoothed away inside a
-// shape, its edges kept), bright saturated colour, soft cel shading in three tones, a little
-// shine on the brightest parts and ink lines on the outlines in a dark shade of the colour
+// toon, in the look of the anime: bright saturated colour, soft cel shading in three tones, a
+// little shine on the brightest parts and a single pixel black line around shapes. The sprite's
+// own pixels are kept so a Pokemon's eyes and markings stay sharp
 vec3 toon(vec3 c, vec2 uv)
 {
   // one sprite pixel of the map texture (mapTiles is the texture in tiles of 32 pixels)
   vec2 px = 1.0 / (mapTiles * 32.0);
   float l0 = dot(c, LUMA);
-  vec3 sum = c;
-  float weight = 1.0;
-  float n[9];
-  for (int i = 0; i < 9; i++) {
-    vec2 o = vec2(float(i - (i / 3) * 3) - 1.0, float(i / 3) - 1.0);
-    vec3 s = texture2D(u_Tex0, uv + o * px).rgb;
-    float ls = dot(s, LUMA);
-    n[i] = ls;
-    float w = (i == 4) ? 0.0 : 1.0 - smoothstep(0.04, 0.14, abs(ls - l0));
-    sum += s * w;
-    weight += w;
+  // the four sides that are much brighter: some of them is an edge, all four is a lone speck
+  float brighter = 0.0;
+  for (int i = 0; i < 4; i++) {
+    vec2 o = i < 2 ? vec2(float(i * 2 - 1), 0.0) : vec2(0.0, float(i * 2 - 5));
+    brighter += step(0.28, dot(texture2D(u_Tex0, uv + o * px).rgb, LUMA) - l0);
   }
-  c = sum / weight;
 
-  float l = dot(c, LUMA);
-  c = pow(clamp(mix(vec3(l), c, 1.4), 0.0, 1.0), vec3(0.88));
-  l = max(dot(c, LUMA), 0.001);
+  c = pow(clamp(mix(vec3(l0), c, 1.35), 0.0, 1.0), vec3(0.9));
+  float l = max(dot(c, LUMA), 0.001);
   float f = l * 3.0;
   float q = (floor(f) + smoothstep(0.4, 0.6, fract(f))) / 3.0 + 0.04;
-  c = clamp(c * mix(1.0, q / l, 0.55), 0.0, 1.0);
-  c += (1.0 - c) * 0.12 * smoothstep(0.7, 0.95, dot(c, LUMA));
+  c = clamp(c * mix(1.0, q / l, 0.35), 0.0, 1.0);
+  c += (1.0 - c) * 0.1 * smoothstep(0.7, 0.95, dot(c, LUMA));
 
-  float gx = (n[2] + 2.0 * n[5] + n[8]) - (n[0] + 2.0 * n[3] + n[6]);
-  float gy = (n[6] + 2.0 * n[7] + n[8]) - (n[0] + 2.0 * n[1] + n[2]);
-  float edge = smoothstep(0.38, 0.85, sqrt(gx * gx + gy * gy)) * 0.85;
-  return mix(c, c * 0.3, edge);
+  // only the darker pixel of a big jump in brightness, and only its four sides, so the line is
+  // one pixel wide and follows the shape instead of every shade inside it; pale shading next to
+  // white and lone specks are left as they are, or the line breaks up into dots
+  return brighter > 0.5 && brighter < 3.5 && l0 < 0.5 ? vec3(0.04) : c;
 }
 
 // the visual style: vibrant is more colour and a little contrast; toon is above
