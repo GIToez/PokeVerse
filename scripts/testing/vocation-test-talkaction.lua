@@ -2064,7 +2064,7 @@ local function testDecorations(cid)
         mapped[entry[1]] = D.SETS[entry[2]] and #D.SETS[entry[2]].items > 0
     end
     for _, h in ipairs(EventCalendar.HOLIDAYS) do
-        if (not mapped[h.id] and not h.noDecorations) then missing[#missing + 1] = h.id end
+        if (not mapped[h.id]) then missing[#missing + 1] = h.id end
     end
     check("Decorations: every calendar holiday has its own set", #missing == 0, table.concat(missing, ","))
     local viridian = Weather.getZone(1)

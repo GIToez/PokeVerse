@@ -2,8 +2,9 @@ if (EventCalendar) then
     return
 end
 
--- The event calendar: the holidays, which follow rules and run on their own, and the events staff
--- add with /calendar (event_calendar table). Every running event's bonuses multiply together and
+-- The event calendar: the holidays, which follow rules and run on their own, the server events
+-- (bonus events on a schedule, such as the double weekends) and the events staff add with
+-- /calendar (event_calendar table). Every running event's bonuses multiply together and
 -- with the staff events of /doubleexp and /bonusshiny: exp and shiny go through the C++ event
 -- multipliers (ServerExpEvent.onThink, ShinyEvent.onThink), loot through setLootEventMultiplier,
 -- breeding through Daycare, fishing through Fishing. The old holiday content (Easter, the summer
@@ -177,30 +178,6 @@ local function days(year, month, day, count)
     return { { at(year, month, day), at(year, month, day + count) } }
 end
 
--- The double weekends take turns, one each Friday restart to Monday restart, counted from the
--- first of them; slot is the turn (0 the first). They are only bonuses (noDecorations), so the
--- town keeps its season's decorations
-local DOUBLE_WEEKEND_FIRST = { year = 2026, month = 10, day = 16 }
-local DOUBLE_WEEKEND_TURNS = 4
-
-local function doubleWeekends(year, slot)
-    local list, first = {}, DOUBLE_WEEKEND_FIRST
-    local firstNoon = at(first.year, first.month, first.day, 12)
-    for day = 1, 366 do
-        local d = dateOf(at(year, 1, day, 12))
-        if (d.year ~= year) then
-            break
-        end
-        local noon = at(d.year, d.month, d.day, 12)
-        -- rounded, so a clock change in between doesn't shift the count
-        local weeks = math.floor((noon - firstNoon) / (7 * DAY) + 0.5)
-        if (d.wday == 6 and noon >= firstNoon and weeks % DOUBLE_WEEKEND_TURNS == slot) then
-            list[#list + 1] = { at(d.year, d.month, d.day), at(d.year, d.month, d.day + 3) }
-        end
-    end
-    return list
-end
-
 ---------------------------------------------------------------------------------------------------
 -- Holidays
 ---------------------------------------------------------------------------------------------------
@@ -263,18 +240,6 @@ EventCalendar.HOLIDAYS = {
     { id = "christmas", name = "Christmas", color = "#60d080", content = "christmas",
       description = "Presents from wild Pokemon, and Christmas Pokemon in the wild.",
       dates = function(year) return days(year, 12, 18, 10) end },
-    { id = "doubleexp", name = "Double EXP Weekend", color = "#70c0f0",
-      description = "2x kill EXP all weekend.",
-      bonuses = { exp = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 0) end },
-    { id = "doubleshiny", name = "Double Shiny Weekend", color = "#f0d850",
-      description = "2x shiny chance all weekend.",
-      bonuses = { shiny = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 1) end },
-    { id = "doubleeggs", name = "Double Egg Weekend", color = "#f0a0c0",
-      description = "2x Day Care egg chance all weekend.",
-      bonuses = { breeding = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 2) end },
-    { id = "doubleloot", name = "Double Loot Weekend", color = "#a0e080",
-      description = "2x loot all weekend.",
-      bonuses = { loot = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 3) end },
 }
 
 local HOLIDAY_BY_ID = {}
@@ -455,6 +420,46 @@ local function weekendOf(friday)
     return { at(friday.year, friday.month, friday.day), at(friday.year, friday.month, friday.day + 3) }
 end
 
+-- The weekends that take turns, Friday restart to Monday restart, counted from the weekend of
+-- `first`: the ones of `year` where this event's turn of `turns` comes up
+local function weekendTurns(year, first, turns, turn)
+    local list = {}
+    local firstNoon = at(first.year, first.month, first.day, 12)
+    for day = 1, 366 do
+        local d = dateOf(at(year, 1, day, 12))
+        if (d.year ~= year) then
+            break
+        end
+        local noon = at(d.year, d.month, d.day, 12)
+        -- rounded, so a clock change in between doesn't shift the count
+        local weeks = math.floor((noon - firstNoon) / (7 * DAY) + 0.5)
+        if (d.wday == 6 and noon >= firstNoon and weeks % turns == turn) then
+            list[#list + 1] = weekendOf(d)
+        end
+    end
+    return list
+end
+
+-- Server events: bonus events the calendar runs on its own, next to the ones staff add, with no
+-- holiday content, gifts or decorations. dates(year) returns the {starts, ends} of the occurrences
+-- that start in that year. For now the four double events take turns on the weekends
+local ROTATION_FIRST = { year = 2026, month = 10, day = 16 }
+
+local function rotation(turn)
+    return function(year) return weekendTurns(year, ROTATION_FIRST, 4, turn) end
+end
+
+EventCalendar.SERVER_EVENTS = {
+    { id = "doubleexp", name = "Double EXP", color = "#70c0f0", description = "2x kill EXP.",
+      bonuses = { exp = 2 }, dates = rotation(0) },
+    { id = "doubleshiny", name = "Double Shiny", color = "#f0d850", description = "2x shiny chance.",
+      bonuses = { shiny = 2 }, dates = rotation(1) },
+    { id = "doubleeggs", name = "Double Eggs", color = "#f0a0c0", description = "2x Day Care egg chance.",
+      bonuses = { breeding = 2 }, dates = rotation(2) },
+    { id = "doubleloot", name = "Double Loot", color = "#a0e080", description = "2x loot.",
+      bonuses = { loot = 2 }, dates = rotation(3) },
+}
+
 -- The Fridays of a month
 local function fridays(year, month)
     local list = {}
@@ -601,7 +606,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 -- Every event that overlaps [from, to], by start time:
--- { key, id, name, description, color, startsAt, endsAt, bonuses, holiday, staff, forced }
+-- { key, id, name, description, color, startsAt, endsAt, bonuses, holiday, server, staff, forced }
 function EventCalendar.getEvents(from, to)
     local list = {}
     local first, last = dateOf(from).year - 1, dateOf(to).year
@@ -625,6 +630,17 @@ function EventCalendar.getEvents(from, to)
             list[#list + 1] = { key = holiday.id .. ":forced", holiday = holiday, name = holiday.name,
                                 description = holiday.description, color = holiday.color, startsAt = now,
                                 endsAt = now + DAY, bonuses = holiday.bonuses or {}, forced = true }
+        end
+    end
+    for _, server in ipairs(EventCalendar.SERVER_EVENTS) do
+        for year = first, last do
+            for _, dates in ipairs(server.dates(year)) do
+                if (dates[1] < to and dates[2] > from) then
+                    list[#list + 1] = { key = server.id .. ":" .. dates[1], server = server, name = server.name,
+                                        description = server.description, color = server.color, startsAt = dates[1],
+                                        endsAt = dates[2], bonuses = server.bonuses }
+                end
+            end
         end
     end
     for _, event in ipairs(loadStaffEvents()) do
@@ -729,7 +745,8 @@ local function eventData(event)
             bonuses[#bonuses + 1] = { kind = kind, label = EventCalendar.BONUS_LABELS[kind], value = event.bonuses[kind] }
         end
     end
-    return { key = event.key, id = event.holiday and event.holiday.id or ("staff" .. event.id), name = event.name,
+    local id = event.holiday and event.holiday.id or event.server and event.server.id or ("staff" .. event.id)
+    return { key = event.key, id = id, name = event.name,
              description = event.description, color = event.color, startsAt = event.startsAt, endsAt = event.endsAt,
              bonuses = bonuses, holiday = event.holiday ~= nil, night = event.holiday and event.holiday.night or false,
              forced = event.forced or false }
