@@ -110,7 +110,8 @@ namespace
 
             auto logger = std::make_shared<spdlog::logger>("otclient", sink);
             logger->set_level(spdlog::level::trace);
-            logger->flush_on(spdlog::level::warn);
+            // every line, so a crash the crash handler never sees still leaves the log up to it
+            logger->flush_on(spdlog::level::trace);
             spdlog::set_default_logger(logger);
 
             return logger;
