@@ -382,7 +382,6 @@ set(SOURCE_FILES
         framework/platform/androidwindow.h
         framework/platform/platform.cpp
         framework/platform/platformwindow.cpp
-        framework/platform/unixcrashhandler.cpp
         framework/platform/unixplatform.cpp
         framework/platform/win32crashhandler.cpp
         framework/platform/win32platform.cpp

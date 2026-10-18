@@ -57,6 +57,10 @@
 #include <sstream>
 #include <stdlib.h>
 
+#include "crashhandler.h"
+
+namespace {
+
 constexpr DWORD STATUS_HEAP_CORRUPTION_CODE = 0xC0000374;
 constexpr DWORD STATUS_STACK_BUFFER_OVERRUN_CODE = 0xC0000409;
 
@@ -315,6 +319,8 @@ void TerminateHandler()
     }
     reportAndExit(what);
 }
+
+} // namespace
 
 void installCrashHandler()
 {
