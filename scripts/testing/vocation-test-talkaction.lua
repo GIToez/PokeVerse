@@ -1784,16 +1784,14 @@ local function testCalendar(cid)
         day(EventCalendar.harvestMoon(2026)) == "2026-09-26" and day(EventCalendar.harvestMoon(2027)) == "2027-09-15",
         day(EventCalendar.harvestMoon(2026)) .. " " .. day(EventCalendar.harvestMoon(2027)))
 
-    local restartMinutes = ServerRestart.getDaily() or 0
-    local restart = string.format("%02d:%02d", math.floor(restartMinutes / 60), restartMinutes % 60)
     local anniversary
     for _, event in ipairs(EventCalendar.getEvents(at(2027, 9, 1), at(2027, 11, 1))) do
         if (event.holiday and event.holiday.id == "anniversary") then
             anniversary = event
         end
     end
-    check("Calendar: the anniversary runs Oct 3-5 from the " .. restart .. " restart",
-        anniversary and date(anniversary.startsAt) == "2027-10-03 " .. restart and date(anniversary.endsAt) == "2027-10-06 " .. restart,
+    check("Calendar: the anniversary runs Oct 3-5 from the 06:00 restart",
+        anniversary and date(anniversary.startsAt) == "2027-10-03 06:00" and date(anniversary.endsAt) == "2027-10-06 06:00",
         anniversary and date(anniversary.startsAt) .. " - " .. date(anniversary.endsAt))
     local fullMoons, nights = 0, 0
     for _, phase in ipairs(EventCalendar.moonPhases(at(2027, 1, 1), at(2028, 1, 1) - 1)) do
@@ -1837,10 +1835,10 @@ local function testCalendar(cid)
     for _, event in ipairs(EventCalendar.getEvents(at(2026, 11, 1), at(2026, 12, 1))) do
         if (event.name == "VT Weekend") then
             weekends = weekends + 1
-            okWeekends = okWeekends and os.date("%w %H:%M", event.startsAt) == "5 " .. restart and event.endsAt - event.startsAt == 3 * 86400
+            okWeekends = okWeekends and os.date("%w %H:%M", event.startsAt) == "5 06:00" and event.endsAt - event.startsAt == 3 * 86400
         end
     end
-    check("Calendar: weekend events run Friday to Monday at the " .. restart .. " restart", weekends >= 4 and okWeekends, weekends)
+    check("Calendar: weekend events run Friday 06:00 to Monday 06:00", weekends >= 4 and okWeekends, weekends)
     for _, event in ipairs(EventCalendar.getStaffEvents()) do
         if (event.name == "VT Weekend") then EventCalendar.removeStaffEvent(event.id) end
     end
@@ -1871,12 +1869,11 @@ end
 local function testSeasons(cid)
     local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 12, min = 0, sec = 0 }) end
     local expected = { spring = { 3, 20, 22 }, summer = { 6, 21, 23 }, autumn = { 9, 22, 24 }, winter = { 12, 21, 23 } }
-    local restart = ServerRestart.getDaily() or 0
     local spans, ok = EventCalendar.seasonSpans(at(2026, 1, 15), at(2026, 12, 31)), true
     for _, span in ipairs(spans) do
         local d, want = os.date("*t", span.startsAt), expected[span.season.id]
         if (d.year == 2026) then
-            ok = ok and d.month == want[1] and d.day >= want[2] and d.day <= want[3] and d.hour * 60 + d.min == restart
+            ok = ok and d.month == want[1] and d.day >= want[2] and d.day <= want[3] and d.hour == 6 and d.min == 0
         end
     end
     check("Seasons: each starts at the restart after its equinox or solstice", #spans == 5 and ok, #spans)

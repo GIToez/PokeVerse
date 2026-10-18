@@ -1115,7 +1115,7 @@ From the `#notes` channel:
       Below 5 online they still spawn, slowly, even with nobody online, so the Discord post
       can pull players in. The thresholds are settings. The species is drawn from
       those off cooldown, tier 1 three times as likely as tier 2. The cooldown counts from
-      when it is beaten, caught or flies off. No spawns in the 2 hours before the daily
+      when it is beaten, caught or flies off. No spawns in the 2 hours before the 06:00
       restart, and one still alive at the restart counts as fled with no cooldown. The next
       spawn time and the cooldowns are kept in global storages.
     - **Time in the world:** 90 minutes (tier 1), 120 minutes (tier 2). It doesn't fly off
@@ -1394,8 +1394,8 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     on each day, the events as coloured strips, and a list of the month's events beside it.
     Clicking a day lists that day's events. Times show in the player's own time zone.
   - **Rules instead of dates:** once, every weekend, the nth or last weekend of a month,
-    every year on a date, or a computed holiday. A **weekend** runs from Friday's daily
-    restart to Monday's (midnight Pacific on the live server). Staff events are rows of the `event_calendar` table
+    every year on a date, or a computed holiday. A **weekend** runs from Friday's 06:00
+    restart to Monday's 06:00 restart. Staff events are rows of the `event_calendar` table
     (`schemas/pokeverse-extensions.sql`), added in game:
     - `/calendar` lists the next 30 days, `/calendar list` the staff events,
       `/calendar remove <n>` removes one.
@@ -1408,7 +1408,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     - Changes take effect within a minute; starts and ends are broadcast.
   - **Events stack** and multiply, also with `/doubleexp`, `/bonusshiny` and the trainer's
     own boosts. Loot needs the new server build (`setLootEventMultiplier`).
-  - **Holidays are automatic.** Each one starts and ends at the daily restart (midnight) unless noted.
+  - **Holidays are automatic.** Each one starts and ends at the 06:00 restart unless noted.
     Dates in brackets are 2027's.
 
     | Holiday | When | What happens |
@@ -1435,7 +1435,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
 - **Seasons and weather (agreed October 2026; build steps 1 to 4 done):**
   - **Built so far** (needs the new server build and a client release):
     - **Seasons:** `EventCalendar.currentSeason` / `seasonId` in `077-eventCalendar.lua`. The
-      season starts at the daily restart after its equinox or solstice (2026: Mar 21, Jun 22,
+      season starts at the 06:00 restart after its equinox or solstice (2026: Mar 21, Jun 22,
       Sep 23, Dec 22), and its start is announced. `/calendar` names it, and
       `/calendar season <spring|summer|autumn|winter|auto>` forces one. The calendar window
       shows the season in its header, a coloured band under every day and an icon on the
@@ -1529,7 +1529,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     never summer at Christmas. Spring starts at the March equinox, summer at the June
     solstice, autumn at the September equinox and winter at the December solstice. The
     event calendar already works out these dates (`EventCalendar.seasonTime` in
-    `077-eventCalendar.lua`). The season changes at the daily restart after the date.
+    `077-eventCalendar.lua`). The season changes at the 06:00 restart after the date.
     The calendar shows it as a long band, the banner names it, and staff can force one
     (`/calendar season winter`) to test or for an event.
   - **Seasonal Pokémon:** a table of swaps applied in the C++ spawner (`Spawn::spawnMonster`,
