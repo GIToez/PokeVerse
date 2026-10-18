@@ -115,5 +115,6 @@ playersStorages = {
     daycareClient = base + 112, -- 1 while the trainer's client has the Day Care window (it says hello at login)
     daycareEgg = base + 113, -- the egg waiting in the Day Care's egg slot: "e<count>|<species>|<IVs>|<nature id>" (Daycare)
     questClient = base + 114, -- 1 while the trainer's client has the quest log and notices (it says hello at login)
+    pokemonShopClient = base + 115, -- 1 while the trainer's client has the Pokemon shop window (it says hello at login)
     -- tournamentWeekWinnerStorage = base + 65
 }

@@ -68,7 +68,8 @@ EXTENDED_IDS = {
     CALENDAR = 33, -- JSON event calendar: what runs now, what comes next, and the events of a month (EventCalendar)
     LEGENDARY = 34, -- JSON wild legendary cards: {type = "spawn"|"sighting"|"flee"|"end"|"caught"|"reward", species, ...} (WildLegendaries)
     WEATHER = 35, -- JSON weather where the trainer stands: {type = "weather", zone, kind, outdoors, ...} (Weather)
-    CREATURE_STATUS = 36 -- "creatureId,status,ms": a status the client draws on a creature, ms 0 when it ends early (doCreatureAddStatus)
+    CREATURE_STATUS = 36, -- "creatureId,status,ms": a status the client draws on a creature, ms 0 when it ends early (doCreatureAddStatus)
+    POKEMON_SHOP = 37 -- JSON Pokemon shop window: the party, the PC boxes and selling them to Ron and Joel Morris (PokemonShop)
 }
 
 TOURNAMENT_TYPES = {}

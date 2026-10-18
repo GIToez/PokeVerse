@@ -191,6 +191,9 @@ local function boxNames(guid)
     return names
 end
 
+PC.boxCounts = boxCounts
+PC.boxNames = boxNames
+
 -- a ball into a box (the first free slot of box, or of the first box with room); the caller removes it
 local function storeBall(guid, uid, box, slot)
     if (box) then
