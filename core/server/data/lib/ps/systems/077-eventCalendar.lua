@@ -178,7 +178,8 @@ local function days(year, month, day, count)
 end
 
 -- The double weekends take turns, one each Friday restart to Monday restart, counted from the
--- first of them; slot is the turn (0 the first)
+-- first of them; slot is the turn (0 the first). They are only bonuses (noDecorations), so the
+-- town keeps its season's decorations
 local DOUBLE_WEEKEND_FIRST = { year = 2026, month = 10, day = 16 }
 local DOUBLE_WEEKEND_TURNS = 4
 
@@ -264,16 +265,16 @@ EventCalendar.HOLIDAYS = {
       dates = function(year) return days(year, 12, 18, 10) end },
     { id = "doubleexp", name = "Double EXP Weekend", color = "#70c0f0",
       description = "2x kill EXP all weekend.",
-      bonuses = { exp = 2 }, dates = function(year) return doubleWeekends(year, 0) end },
+      bonuses = { exp = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 0) end },
     { id = "doubleshiny", name = "Double Shiny Weekend", color = "#f0d850",
       description = "2x shiny chance all weekend.",
-      bonuses = { shiny = 2 }, dates = function(year) return doubleWeekends(year, 1) end },
+      bonuses = { shiny = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 1) end },
     { id = "doubleeggs", name = "Double Egg Weekend", color = "#f0a0c0",
       description = "2x Day Care egg chance all weekend.",
-      bonuses = { breeding = 2 }, dates = function(year) return doubleWeekends(year, 2) end },
+      bonuses = { breeding = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 2) end },
     { id = "doubleloot", name = "Double Loot Weekend", color = "#a0e080",
       description = "2x loot all weekend.",
-      bonuses = { loot = 2 }, dates = function(year) return doubleWeekends(year, 3) end },
+      bonuses = { loot = 2 }, noDecorations = true, dates = function(year) return doubleWeekends(year, 3) end },
 }
 
 local HOLIDAY_BY_ID = {}
