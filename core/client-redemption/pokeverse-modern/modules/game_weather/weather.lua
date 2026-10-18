@@ -456,6 +456,8 @@ local function onPositionChange(creature, newPos, oldPos)
         removeEvent(moodEvent)
         moodEvent = scheduleEvent(function()
             moodEvent = nil
+            -- after a teleport the floors above arrive after the move, so look for a roof again
+            checkOutdoors()
             checkMood()
         end, 50)
     end
