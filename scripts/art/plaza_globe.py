@@ -69,6 +69,10 @@ LOGO_BLUE_DARK = (30, 50, 120)
 TITLE_FONT = FONT
 TITLE = 'POKEVERSE'
 
+# 0 draws the globe solid with a drop shadow; otherwise how opaque the floor paint is
+PAINT = 0.0
+PAINT_TEXTURE = 0.6  # how much of the tiles' light and dark shows through the paint
+
 
 def read_room():
     """The map tiles of the room around the plaza."""
@@ -179,9 +183,11 @@ def globe_layer(size, center, r):
     glow = glow.filter(ImageFilter.GaussianBlur(R * 0.22))
     img.alpha_composite(glow)
 
-    shadow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(shadow).ellipse((cx - R + 4 * K, cy - R + 7 * K, cx + R + 4 * K, cy + R + 7 * K), fill=(0, 0, 0, 90))
-    img.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(3 * K)))
+    if not PAINT:
+        shadow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(shadow).ellipse((cx - R + 4 * K, cy - R + 7 * K, cx + R + 4 * K, cy + R + 7 * K),
+                                       fill=(0, 0, 0, 90))
+        img.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(3 * K)))
 
     ball = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(ball)
@@ -283,6 +289,14 @@ def build(sheet, floor):
 
     globe = globe_layer(new.size, GLOBE_CENTER, GLOBE_RADIUS)
     g = np.array(globe)
+    if PAINT:
+        # painted on: the tiles' grout and shading come through the paint
+        f = np.array(floor)[..., :3].astype(float)
+        lum = f.mean(axis=2, keepdims=True)
+        detail = np.clip(lum / max(lum[inside].mean(), 1), 0.6, 1.25)
+        rgb = g[..., :3].astype(float) * (1 - PAINT_TEXTURE + PAINT_TEXTURE * detail)
+        g[..., :3] = np.clip(rgb, 0, 255).astype(np.uint8)
+        g[..., 3] = (g[..., 3] * PAINT).astype(np.uint8)
     g[..., 3] = (g[..., 3] * inside).astype(np.uint8)
     new.alpha_composite(Image.fromarray(g))
     return new
