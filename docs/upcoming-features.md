@@ -1319,7 +1319,7 @@ is changed yet.
 | Hunting tasks | $10 + $2 × the species' level per kill, + up to 30% by rank: a Small hunt (100 kills) of a level 30 species pays about $7,000 | `moneyFor`, `064-huntingTasks.lua` |
 | Daily tasks (3 tasks + the all-done bonus) | Beginner about $3,200, Hard $19,500, Extreme $48,000 a day | `TASK_DIFFICULTIES`, `062-dailyTasks.lua` |
 | Weekly tasks (5 tasks + bonus) | Beginner about $18,000, Hard $110,000, Extreme $270,000 a week | the same table, money × 4 |
-| Selling Pokémon to the NPC | catch difficulty × $10 (× 2 for shinies) + $5 a level | `getPokemonPrice`, `npc/scripts/shop_pokemonShop.lua` |
+| Selling Pokémon to the NPC | catch difficulty × $10 (× 2 for shinies) + $5 a level, from the party or straight from the PC boxes in the Pokémon Trade window | `getPokemonPrice`, `PokemonShop` (`081-pokemonShop.lua`, client `game_pokemonshop`) |
 
 **Money going out**
 
