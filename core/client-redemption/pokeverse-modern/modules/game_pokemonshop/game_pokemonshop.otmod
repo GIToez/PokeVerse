@@ -1,0 +1,8 @@
+Module
+  name: game_pokemonshop
+  description: PokeVerse Pokemon Trade: sell Pokemon from the party and the PC boxes to Ron and Joel Morris
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ pokemonshop ]
+  @onLoad: init()
+  @onUnload: terminate()

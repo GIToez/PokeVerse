@@ -1,0 +1,547 @@
+// The Pokemon Trade window (the frame comes from game_dailytasks, panels, tabs, rows, portraits, checks and locks
+// from game_fishing, the icons from game_vocation, the buttons and fields from client_entergame, the scroll bar
+// from game_gts and the faces are the Pokemon bar's)
+
+ShopText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+ShopMuted < ShopText
+  color: #96aacd
+
+ShopBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+ShopFace < UIWidget
+  size: 40 40
+  image-source: /modules/game_fishing/images/portrait
+  phantom: true
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.centerIn: parent
+    virtual: true
+    phantom: true
+
+  UIWidget
+    id: portrait
+    anchors.fill: parent
+    margin: 3
+    phantom: true
+
+ShopCard < UIButton
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked !on:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+  $on:
+    image-source: /modules/game_fishing/images/row_locked
+
+  ShopFace
+    id: face
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+
+  ShopBold
+    id: name
+    color: #ffd75a
+    anchors.left: face.right
+    anchors.top: parent.top
+    margin: 8 0 0 8
+
+  ShopMuted
+    id: level
+    text-auto-resize: false
+    anchors.left: name.left
+    anchors.right: parent.right
+    anchors.top: name.bottom
+    margin: 2 6 0 0
+    height: 14
+
+  ShopBold
+    id: price
+    color: #7ee08f
+    anchors.left: name.left
+    anchors.top: level.bottom
+    margin-top: 1
+
+  UIWidget
+    id: lock
+    size: 12 12
+    image-source: /modules/game_fishing/images/lock
+    anchors.left: name.left
+    anchors.top: level.bottom
+    margin-top: 3
+    phantom: true
+    visible: false
+
+  ShopText
+    id: reason
+    color: #ff8a8a
+    text-auto-resize: true
+    anchors.left: lock.right
+    anchors.verticalCenter: lock.verticalCenter
+    margin-left: 4
+    visible: false
+
+  UIWidget
+    id: check
+    size: 16 16
+    image-source: /modules/game_fishing/images/check
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 6 6 0 0
+    phantom: true
+    visible: false
+
+  $on:
+    opacity: 0.75
+
+ShopBasketRow < UIWidget
+  height: 40
+  phantom: false
+
+  ShopFace
+    id: face
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  ShopBold
+    id: name
+    anchors.left: face.right
+    anchors.top: parent.top
+    margin: 3 0 0 8
+
+  ShopMuted
+    id: where
+    text-auto-resize: false
+    height: 14
+    anchors.left: name.right
+    anchors.right: price.left
+    anchors.bottom: name.bottom
+    margin: 0 6 0 6
+
+  ShopMuted
+    id: math
+    text-auto-resize: true
+    anchors.left: name.left
+    anchors.top: name.bottom
+    margin-top: 2
+
+  UIButton
+    id: remove
+    size: 16 16
+    text: x
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ff8a8a
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    focusable: false
+    $hover:
+      color: #ffb4b4
+
+  ShopBold
+    id: price
+    color: #7ee08f
+    anchors.right: remove.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+
+  UIWidget
+    id: line
+    height: 1
+    background-color: #2a3a5a
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+ShopNote < UIWidget
+  height: 16
+  phantom: true
+
+  UIWidget
+    id: icon
+    size: 14 14
+    image-source: /modules/game_vocation/images/perk_star
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  ShopMuted
+    id: text
+    text-auto-resize: true
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+PokemonShopWindow < UIWindow
+  size: 900 600
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_pokemonshop.close()
+
+  UIWidget
+    id: headerIcon
+    size: 32 32
+    image-source: /modules/game_vocation/images/perk_ball
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Pokemon Trade')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  ShopMuted
+    id: subtitle
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 2
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_pokemonshop.close()
+
+  FishingPanel
+    id: moneyPanel
+    size: 160 40
+    padding: 4 10 4 10
+    anchors.top: parent.top
+    anchors.right: closeButton.left
+    margin: -4 12 0 0
+
+    ShopMuted
+      id: caption
+      !text: tr('Your money')
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    UILabel
+      id: money
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.top: caption.bottom
+      anchors.left: parent.left
+      margin-top: 1
+      phantom: true
+
+  FishingPanel
+    id: basket
+    width: 262
+    anchors.top: moneyPanel.bottom
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 14
+
+    UILabel
+      id: title
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffffff
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 2
+      phantom: true
+
+    UIButton
+      id: clear
+      !text: tr('Clear')
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 12
+      color: #60aaff
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+      focusable: false
+      $hover:
+        color: #a0ccff
+      $disabled:
+        color: #4a5a7a
+
+    ScrollablePanel
+      id: list
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: total.top
+      margin: 8 4 8 0
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 2
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: title.bottom
+      anchors.bottom: total.top
+      anchors.right: parent.right
+      margin: 8 0 8 0
+
+    ShopMuted
+      id: empty
+      !text: tr('Click Pokemon on the left to put them here.')
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 12
+
+    ShopBold
+      id: totalCaption
+      !text: tr('Total')
+      color: #96aacd
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.verticalCenter: total.verticalCenter
+
+    UILabel
+      id: total
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 22
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.bottom: note1.top
+      margin-bottom: 8
+      phantom: true
+
+    ShopNote
+      id: note1
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: note2.top
+      margin-bottom: 4
+
+    ShopNote
+      id: note2
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: sell.top
+      margin-bottom: 12
+
+    PVGreenButton
+      id: sell
+      height: 38
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  FishingTab
+    id: partyTab
+    width: 160
+    anchors.top: basket.top
+    anchors.left: parent.left
+
+  FishingTab
+    id: pcTab
+    width: 160
+    anchors.top: basket.top
+    anchors.left: partyTab.right
+    margin-left: 6
+
+  UIButton
+    id: sort
+    width: 90
+    height: 28
+    image-source: /modules/game_fishing/images/tab
+    image-border: 8
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #dce6ff
+    anchors.top: basket.top
+    anchors.right: basket.left
+    margin-right: 14
+    focusable: false
+    $hover:
+      color: #ffffff
+
+  PVField
+    id: search
+    height: 28
+    padding: 6 8 6 8
+    !placeholder: tr('Search...')
+    anchors.top: basket.top
+    anchors.left: pcTab.right
+    anchors.right: sort.left
+    margin: 0 6 0 10
+
+  UIWidget
+    id: boxBar
+    height: 34
+    anchors.top: partyTab.bottom
+    anchors.left: parent.left
+    anchors.right: basket.left
+    margin: 8 14 0 0
+    phantom: true
+
+    PVBlueButton
+      id: prev
+      text: <
+      size: 30 30
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    PVBlueButton
+      id: next
+      text: >
+      size: 30 30
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+
+    UILabel
+      id: title
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 13
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.top: parent.top
+      phantom: true
+
+    ShopMuted
+      id: count
+      text-auto-resize: true
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.top: title.bottom
+      margin-top: 2
+
+  ScrollablePanel
+    id: grid
+    anchors.top: boxBar.bottom
+    anchors.left: parent.left
+    anchors.right: gridScroll.left
+    anchors.bottom: addCheap.top
+    margin: 8 4 10 0
+    vertical-scrollbar: gridScroll
+    layout:
+      type: grid
+      cell-size: 172 62
+      cell-spacing: 6
+      flow: true
+
+  GtsScrollBar
+    id: gridScroll
+    anchors.top: boxBar.bottom
+    anchors.bottom: addCheap.top
+    anchors.right: basket.left
+    margin: 8 14 10 0
+
+  ShopMuted
+    id: none
+    text-wrap: true
+    text-auto-resize: true
+    text-align: center
+    anchors.top: grid.top
+    anchors.left: grid.left
+    anchors.right: grid.right
+    margin-top: 60
+
+  PVBlueButton
+    id: addCheap
+    width: 210
+    height: 32
+    ttf-font-size: 12
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+  ShopMuted
+    id: addCheapNote
+    text-wrap: true
+    text-auto-resize: true
+    anchors.left: addCheap.right
+    anchors.right: basket.left
+    anchors.verticalCenter: addCheap.verticalCenter
+    margin: 0 14 0 10
+
+PokemonShopConfirm < UIWindow
+  size: 400 214
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 24 22 24
+  focusable: true
+  @onEscape: modules.game_pokemonshop.cancelConfirm()
+
+  UILabel
+    id: title
+    !text: tr('Sell for good?')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 17
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  ShopText
+    id: text
+    text-wrap: true
+    text-auto-resize: true
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+  PVField
+    id: field
+    height: 32
+    padding: 6 10 6 10
+    !placeholder: tr('Type SELL')
+    anchors.top: text.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 12
+
+  PVRedButton
+    id: confirm
+    !text: tr('Sell')
+    height: 32
+    ttf-font-size: 13
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-right: 5
+
+  PVBlueButton
+    id: cancel
+    !text: tr('Keep them')
+    height: 32
+    ttf-font-size: 13
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 5
+    @onClick: modules.game_pokemonshop.cancelConfirm()
