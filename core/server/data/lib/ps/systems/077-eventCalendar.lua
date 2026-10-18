@@ -177,6 +177,29 @@ local function days(year, month, day, count)
     return { { at(year, month, day), at(year, month, day + count) } }
 end
 
+-- The double weekends take turns, one each Friday restart to Monday restart, counted from the
+-- first of them; slot is the turn (0 the first)
+local DOUBLE_WEEKEND_FIRST = { year = 2026, month = 10, day = 16 }
+local DOUBLE_WEEKEND_TURNS = 4
+
+local function doubleWeekends(year, slot)
+    local list, first = {}, DOUBLE_WEEKEND_FIRST
+    local firstNoon = at(first.year, first.month, first.day, 12)
+    for day = 1, 366 do
+        local d = dateOf(at(year, 1, day, 12))
+        if (d.year ~= year) then
+            break
+        end
+        local noon = at(d.year, d.month, d.day, 12)
+        -- rounded, so a clock change in between doesn't shift the count
+        local weeks = math.floor((noon - firstNoon) / (7 * DAY) + 0.5)
+        if (d.wday == 6 and noon >= firstNoon and weeks % DOUBLE_WEEKEND_TURNS == slot) then
+            list[#list + 1] = { at(d.year, d.month, d.day), at(d.year, d.month, d.day + 3) }
+        end
+    end
+    return list
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Holidays
 ---------------------------------------------------------------------------------------------------
@@ -239,6 +262,18 @@ EventCalendar.HOLIDAYS = {
     { id = "christmas", name = "Christmas", color = "#60d080", content = "christmas",
       description = "Presents from wild Pokemon, and Christmas Pokemon in the wild.",
       dates = function(year) return days(year, 12, 18, 10) end },
+    { id = "doubleexp", name = "Double EXP Weekend", color = "#70c0f0",
+      description = "2x kill EXP all weekend.",
+      bonuses = { exp = 2 }, dates = function(year) return doubleWeekends(year, 0) end },
+    { id = "doubleshiny", name = "Double Shiny Weekend", color = "#f0d850",
+      description = "2x shiny chance all weekend.",
+      bonuses = { shiny = 2 }, dates = function(year) return doubleWeekends(year, 1) end },
+    { id = "doubleeggs", name = "Double Egg Weekend", color = "#f0a0c0",
+      description = "2x Day Care egg chance all weekend.",
+      bonuses = { breeding = 2 }, dates = function(year) return doubleWeekends(year, 2) end },
+    { id = "doubleloot", name = "Double Loot Weekend", color = "#a0e080",
+      description = "2x loot all weekend.",
+      bonuses = { loot = 2 }, dates = function(year) return doubleWeekends(year, 3) end },
 }
 
 local HOLIDAY_BY_ID = {}
