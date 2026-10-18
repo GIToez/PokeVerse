@@ -388,6 +388,26 @@ end
 
 -- applying it
 
+-- toon's outlines need the size of the map texture, which the cave mood already carries
+local function withMapSize(mood)
+    if mood.MAPW ~= '1.0' then
+        return mood
+    end
+    local map = modules.game_interface.getMapPanel()
+    local tiles = map and map:getVisibleDimension()
+    if not tiles then
+        return mood
+    end
+    local sized = {}
+    for k, v in pairs(mood) do
+        sized[k] = v
+    end
+    local w, h = tiles.width + 3, tiles.height + 3
+    sized.MAPW, sized.MAPH = w .. '.0', h .. '.0'
+    sized.name = mood.name .. string.format(' %dx%d', w, h)
+    return sized
+end
+
 local function apply()
     local kind = getKind()
     local level = effectsLevel()
@@ -395,6 +415,9 @@ local function apply()
     local weather = g_game.isOnline() and outdoors and level > 0 and KINDS_WITH_SHADER[kind]
     local mood = g_game.isOnline() and areaMood(weather) or NO_MOOD
     moodKey = mood.name
+    if style == STYLE_LEVELS.toon then
+        mood = withMapSize(mood)
+    end
     if weather then
         setShader(ensureShader(kind, level, style, mood))
     elseif g_game.isOnline() and (style > 0 or mood ~= NO_MOOD) then

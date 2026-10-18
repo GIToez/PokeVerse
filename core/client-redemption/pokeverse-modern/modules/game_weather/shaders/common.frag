@@ -11,7 +11,7 @@ const float fall = FALL;
 const float style = STYLE;
 // MOOD (0 none, 1 Lavender haze, 2 dark cave) and its settings are filled in by weather.lua too: HAZE is
 // how thick the haze is (thinner under weather), RADIUS the lit circle in tiles, CAVEFLOOR the
-// brightness outside it, MAPW x MAPH the tiles in the map texture
+// brightness outside it, MAPW x MAPH the tiles in the map texture (also set for toon's outlines)
 const float mood = MOOD;
 const float haze = HAZE;
 const float radius = RADIUS;
@@ -19,24 +19,52 @@ const float caveFloor = CAVEFLOOR;
 const vec2 mapTiles = vec2(MAPW, MAPH);
 const vec3 LUMA = vec3(0.299, 0.587, 0.114);
 
-// the visual style: vibrant is more colour and a little contrast; toon also pulls the shades
-// toward a few steps of brightness, keeping each colour's hue
-vec3 styled(vec3 c)
+// toon, in the look of the anime: flat clean fills (the sprite's speckle smoothed away inside a
+// shape, its edges kept), bright saturated colour, soft cel shading in three tones, a little
+// shine on the brightest parts and ink lines on the outlines in a dark shade of the colour
+vec3 toon(vec3 c, vec2 uv)
+{
+  // one sprite pixel of the map texture (mapTiles is the texture in tiles of 32 pixels)
+  vec2 px = 1.0 / (mapTiles * 32.0);
+  float l0 = dot(c, LUMA);
+  vec3 sum = c;
+  float weight = 1.0;
+  float n[9];
+  for (int i = 0; i < 9; i++) {
+    vec2 o = vec2(float(i - (i / 3) * 3) - 1.0, float(i / 3) - 1.0);
+    vec3 s = texture2D(u_Tex0, uv + o * px).rgb;
+    float ls = dot(s, LUMA);
+    n[i] = ls;
+    float w = (i == 4) ? 0.0 : 1.0 - smoothstep(0.04, 0.14, abs(ls - l0));
+    sum += s * w;
+    weight += w;
+  }
+  c = sum / weight;
+
+  float l = dot(c, LUMA);
+  c = pow(clamp(mix(vec3(l), c, 1.4), 0.0, 1.0), vec3(0.88));
+  l = max(dot(c, LUMA), 0.001);
+  float f = l * 3.0;
+  float q = (floor(f) + smoothstep(0.4, 0.6, fract(f))) / 3.0 + 0.04;
+  c = clamp(c * mix(1.0, q / l, 0.55), 0.0, 1.0);
+  c += (1.0 - c) * 0.12 * smoothstep(0.7, 0.95, dot(c, LUMA));
+
+  float gx = (n[2] + 2.0 * n[5] + n[8]) - (n[0] + 2.0 * n[3] + n[6]);
+  float gy = (n[6] + 2.0 * n[7] + n[8]) - (n[0] + 2.0 * n[1] + n[2]);
+  float edge = smoothstep(0.38, 0.85, sqrt(gx * gx + gy * gy)) * 0.85;
+  return mix(c, c * 0.3, edge);
+}
+
+// the visual style: vibrant is more colour and a little contrast; toon is above
+vec3 styled(vec3 c, vec2 uv)
 {
   if (style < 0.5)
     return c;
+  if (style > 1.5)
+    return toon(c, uv);
   float l = dot(c, LUMA);
-  c = clamp(mix(vec3(l), c, style > 1.5 ? 1.3 : 1.25), 0.0, 1.0);
-  c = mix(c, c * c * (3.0 - 2.0 * c), 0.3);
-  if (style > 1.5) {
-    l = max(dot(c, LUMA), 0.001);
-    float bands = 6.0;
-    float f = l * bands;
-    // a soft staircase: flat steps with smooth risers, so textures that sit on a step's edge don't blotch
-    float q = (floor(f) + smoothstep(0.25, 0.75, fract(f))) / bands;
-    c = clamp(c * mix(1.0, q / l, 0.7), 0.0, 1.0);
-  }
-  return c;
+  c = clamp(mix(vec3(l), c, 1.25), 0.0, 1.0);
+  return mix(c, c * c * (3.0 - 2.0 * c), 0.3);
 }
 
 float hash(vec2 p)
@@ -96,7 +124,7 @@ vec3 caveDark(vec3 c)
 vec4 gameColor()
 {
   vec4 game = texture2D(u_Tex0, v_TexCoord);
-  vec3 c = styled(game.rgb);
+  vec3 c = styled(game.rgb, v_TexCoord);
   if (mood > 1.5)
     c = caveDark(c);
   else if (mood > 0.5)
