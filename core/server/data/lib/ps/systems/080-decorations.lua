@@ -358,13 +358,15 @@ function Decorations.findItem(setId, text)
     return nil, "No prop called \"" .. text .. "\". /deco items " .. setId .. " lists them, or give an item id."
 end
 
--- A wall a prop can hang on
-function Decorations.hasHook(pos)
+-- A wall a prop can hang on. With `from`, only a hook on the side seen from there: a prop hangs on
+-- a horizontal wall's south face and a vertical wall's east face.
+function Decorations.hasHook(pos, from)
     local info = getTileInfo(pos)
     for stackpos = 0, (info and info.things or 1) - 1 do
         local thing = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = stackpos })
         local item = thing and thing.itemid and thing.itemid > 0 and getItemInfo(thing.itemid)
-        if (item and (item.horizontal or item.vertical)) then
+        if (item and (item.horizontal or item.vertical) and (not from or
+                (item.horizontal and from.y == pos.y + 1) or (item.vertical and from.x == pos.x + 1))) then
             return true
         end
     end
@@ -372,8 +374,9 @@ function Decorations.hasHook(pos)
 end
 
 -- A prop fits here: a wall prop on a wall with a hook, anything else (and a wall prop off a wall)
--- on a tile a creature could stand on. The prop itself standing there doesn't count.
-function Decorations.checkSpot(pos, itemid)
+-- on a tile a creature could stand on. The prop itself standing there doesn't count. `from` is
+-- where whoever places it stands.
+function Decorations.checkSpot(pos, itemid, from)
     local item = getItemInfo(itemid)
     if (not item) then
         return false, "There is no item " .. tostring(itemid) .. "."
@@ -383,8 +386,10 @@ function Decorations.checkSpot(pos, itemid)
         return false, "There is no floor there."
     elseif (tile.house or tile.depot) then
         return false, "That tile belongs to a house or a depot."
-    elseif (item.hangable and Decorations.hasHook(pos)) then
+    elseif (item.hangable and Decorations.hasHook(pos, from)) then
         return true
+    elseif (item.hangable and from and Decorations.hasHook(pos)) then
+        return false, "Its hook is on the other side: wall props hang on the south or east face of a wall."
     elseif (not checkWalkable(pos, itemid)) then
         return false, item.hangable and "Face a wall with a hook or a clear tile." or
             "That tile is blocked: a wall, water, stairs or something solid."
@@ -421,12 +426,12 @@ function Decorations.getSpots()
 end
 
 -- Save a prop for a set on a tile (it replaces the set's prop there); true and whether it replaced
--- one, or false and why
-function Decorations.addSpot(setId, pos, itemid, author)
+-- one, or false and why. `from` is where the author stands.
+function Decorations.addSpot(setId, pos, itemid, author, from)
     if (not Decorations.SETS[setId]) then
         return false, "There is no decoration set " .. tostring(setId) .. "."
     end
-    local ok, why = Decorations.checkSpot(pos, itemid)
+    local ok, why = Decorations.checkSpot(pos, itemid, from)
     if (not ok) then
         return false, why
     end
