@@ -15,7 +15,7 @@ local PRIORITY = { freeze = 6, sleep = 5, paralysis = 4, burn = 3, poison = 2, c
 
 local statuses = {} -- [creatureId] = { [effect] = ends at (g_clock.millis) }
 local shaded = {} -- [creatureId] = true while this module has a shader on it
-local tickEvent
+local tickEvent, sweepEvent
 
 local function shaderName(effect, variant)
     return 'Pokemon - ' .. effect .. ' ' .. variant
@@ -141,8 +141,23 @@ local function onOutfitChange(creature)
     refresh(creature)
 end
 
+-- When the server sends a creature the client already has (around login, or coming back into
+-- view), the engine puts the server's shader on it, none, without telling Lua: so look again
+-- now and then
+local function startSweep()
+    removeEvent(sweepEvent)
+    sweepEvent = cycleEvent(refreshAll, 1000)
+end
+
+local function onGameStart()
+    scheduleEvent(refreshAll, 300)
+    startSweep()
+end
+
 local function onGameEnd()
     stopTick()
+    removeEvent(sweepEvent)
+    sweepEvent = nil
     statuses = {}
     shaded = {}
 end
@@ -151,17 +166,20 @@ function init()
     compileShaders()
     ProtocolGame.registerExtendedOpcode(ExtendedIds.CreatureStatus, onCreatureStatus)
     connect(Creature, { onAppear = onAppear, onDisappear = onDisappear, onOutfitChange = onOutfitChange })
-    connect(g_game, { onGameEnd = onGameEnd })
+    connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
         scheduleEvent(refreshAll, 100)
+        startSweep()
     end
 end
 
 function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.CreatureStatus)
     disconnect(Creature, { onAppear = onAppear, onDisappear = onDisappear, onOutfitChange = onOutfitChange })
-    disconnect(g_game, { onGameEnd = onGameEnd })
+    disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     stopTick()
+    removeEvent(sweepEvent)
+    sweepEvent = nil
     for id in pairs(shaded) do
         local creature = g_map.getCreatureById(id)
         if creature then
