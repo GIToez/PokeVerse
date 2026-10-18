@@ -956,7 +956,7 @@ Not fixed yet:
 - **Soul Coins (decided: the premium currency).** Players buy them with real money and
   spend them on Premium time, outfits, addons and similar. Not built: buying them (the Store
   says "coming soon"), and the Store items to spend them on. Today the Soul Coin and bank
-  NPCs stand only in the Orange Islands and the Trading Area, and about 17 Soul Coin and bank
+  NPCs stand only in the Orange Islands and the Union Room, and about 17 Soul Coin and bank
   NPC files are never placed; check which of them still fit a bought currency.
 - **Vital mastery:** its "longer buffs" perk makes buffs shorter (13 s instead of 20 s).
   The masteries go with the [vocations](#6-vocations), so it may not need a fix.

@@ -10923,7 +10923,7 @@
   "npc": "npc/scripts/tutorial_quests.lua",
   "where": "10 NPCs",
   "text": "The Frontier Island gives trainers the opportunity to test their ability as a Pokemon Master with some challenges. It can be accessed directly from the Trading Area, its a place to visit with friends. There you can earn Frontier Tokens, which opens the possibility to purchase some unique items at the island.",
-  "rewrite": "The Frontier Island gives trainers the chance to test their skill as a Pokemon Master with some challenges. It can be reached directly from the Trading Area, and it's a place to visit with friends. There you can earn Frontier Tokens, which let you buy some unique items on the island.",
+  "rewrite": "The Frontier Island gives trainers the chance to test their skill as a Pokemon Master with some challenges. It can be reached directly from the Union Room, and it's a place to visit with friends. There you can earn Frontier Tokens, which let you buy some unique items on the island.",
   "problem": "'its' typo; 'opens' agreement"
  },
  {

@@ -163,7 +163,7 @@ WikiData = {
             { 'p', "EVs come only from defeating wild Pokemon, following each species' official yield." },
             { 'h', "Seeing them" },
             { 'p', "Look at the ball, open the Pokedex Stat Overview on your Pokemon, or read a GTS listing (it shows the Nature and IV total)." },
-            { 'h', "Josh Pillberg, Trading Area (say trade)" },
+            { 'h', "Josh Pillberg, Union Room (say trade)" },
             { 'table', {
                 { "Item", "Price", "Effect" },
                 { "Power items", "$25,000", "+8 EVs in their stat per wild defeat" },
@@ -180,7 +180,7 @@ WikiData = {
                 "A TM can't replace Tackle, an egg move or another TM move.",
                 "Some TMs (Bide, Counter, Double Team, Mimic, Nightmare, Reflect, Rest, Selfdestruct, Softboiled, Substitute) make the Pokemon unique to you.",
             } },
-            { 'p', "Curt Raeburn in the Trading Area and Catherin Dana in Lilycove remove a TM move for free (a unique TM comes back, others are lost), move a TM to another slot, and buy TMs." },
+            { 'p', "Curt Raeburn in the Union Room and Catherin Dana in Lilycove remove a TM move for free (a unique TM comes back, others are lost), move a TM to another slot, and buy TMs." },
             { 'p', "TMs come from gym leaders, the tournament and casino shops, quests and events." },
             { 'see', { 'gyms', 'tournaments', 'casino' } },
         } },
@@ -197,7 +197,7 @@ WikiData = {
                 { "PP Up", "Max energy 5 / 8 / 10%" },
                 { "PP Max", "Max energy 10% (once)" },
             } },
-            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Josh Pillberg in the Trading Area resets them for 1 soul coin. The casino merchants sell them for poke coins." },
+            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Josh Pillberg in the Union Room resets them for 1 soul coin. The casino merchants sell them for poke coins." },
         } },
         { key = 'held', title = 'Held items', item = 22170, body = {
             { 'p', "A held item boosts one type of moves by 20% (Charcoal Fire, Mystic Water Water, Dragon Fang Dragon, and so on). An Elemental Stone boosts the two types it was charged with. Each Pokemon holds one item." },
@@ -427,7 +427,7 @@ WikiData = {
             { 'p', "Bets go from $50 to $30,000; the winners get twice their stake and a draw gives it back. You can't duel in a protection zone or with a Pokemon out." },
         } },
         { key = 'bank', title = 'Bank', item = 3043, body = {
-            { 'p', "Bank NPCs answer balance, deposit, withdraw, transfer and history. Emmet Cash is in the Trading Area, and the Orange Islands have bankers in Hamlin, Kumquat, Pummelo, Shamouti, Ascorbia, Tangelo, Mikan, Moro and Trovitopolis." },
+            { 'p', "Bank NPCs answer balance, deposit, withdraw, transfer and history. Emmet Cash is in the Union Room, and the Orange Islands have bankers in Hamlin, Kumquat, Pummelo, Shamouti, Ascorbia, Tangelo, Mikan, Moro and Trovitopolis." },
             { 'p', "The GTS, house rent and Pokepedia purchases use your bank balance." },
         } },
         { key = 'guilds', title = 'Guilds', item = 6499, body = {
@@ -475,7 +475,7 @@ WikiData = {
             { 'p', "Beat Lorelei, Bruno, Agatha and Lance, then the Champion, who uses the last winner's team. Winning gives the Pokemon League trophy, an announcement, and your team becomes the next Champion." },
         } },
         { key = 'tournaments', title = 'Tournaments', item = 13000, body = {
-            { 'p', "Joey in the Trading Area runs them: say tournaments, then join and the name. Later say enter to go in. Entry is free, and you can enter once a day." },
+            { 'p', "Joey in the Union Room runs them: say tournaments, then join and the name. Later say enter to go in. Entry is free, and you can enter once a day." },
             { 'table', {
                 { "Tournament", "Levels", "When" },
                 { "Starter", "20-40", "Mon-Fri 18:00" },
@@ -487,7 +487,7 @@ WikiData = {
             { 'p', "To join, your trainer level must be at least the lowest Pokemon level plus 5 (Starter from 25, Titan from 85); Epic needs trainer level 50 and Mastery 85. Normal brackets need exactly 6 Pokemon within the levels and no duplicates. Epic brackets hand you random level 100 Pokemon, so carry none. Every battle pays tokens, and winning pays money and more tokens; Joey's token shop has TMs, outfits and more. The week's best gets the gold tournament trophy." },
         } },
         { key = 'mastery', title = 'Masteries', item = 17406, body = {
-            { 'p', "A mastery makes your Pokemon of its types hit harder. Join at the leader in the Trading Area's mastery wing: level 85, Premium, element plates worth 100 points of its types, and a win against the leader's assistant." },
+            { 'p', "A mastery makes your Pokemon of its types hit harder. Join at the leader in the Union Room's mastery wing: level 85, Premium, element plates worth 100 points of its types, and a win against the leader's assistant." },
             { 'table', {
                 { "Rank", "Level", "Attack bonus" },
                 { "1", "85", "0%" },
@@ -763,7 +763,7 @@ WikiData = {
             { 'p', "Premium trainers can also run two hunting tasks at once. Guilds, tournaments, duels, the Safari Zone, TMs, gyms and the Elite Four are free." },
         } },
         { key = 'soulcoins', title = 'Soul coins', item = 6499, body = {
-            { 'p', "Soul coin NPCs are in the Orange Islands and the Trading Area (Richard). They sell:" },
+            { 'p', "Soul coin NPCs are in the Orange Islands and the Union Room (Richard). They sell:" },
             { 'table', {
                 { "For", "Soul coins" },
                 { "Premium, 30 days", "10" },

@@ -9,7 +9,7 @@ local BUILDING_WORDS = {
     "Pokemon Center", "Pokemon Mart", "Pokemon Market", "Pokemon Buyer", "House", "Shop", "Store",
     "Hotel", "Bank", "Post", "Bar", "Parlor", "Pizzeria", "Juices", "Fast Food", "Fast Foof",
     "Daycare", "Cassino", "Kennel", "Iglu", "TM's", "Held Itens", "Vitamins", "Item Market",
-    "Museum", "Laboratory", "Committee", "Club", "Trading Area", "Waiting Area", "Aquarium",
+    "Museum", "Laboratory", "Committee", "Club", "Union Room", "Waiting Area", "Aquarium",
     "Mastery - ", "Academy", "Theater", "Terminal", "Game Corner", "Pharmacy", "Research", "Police",
     "Windmill", "Office",
 }

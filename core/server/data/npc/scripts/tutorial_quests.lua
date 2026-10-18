@@ -122,7 +122,7 @@ end
 -- Ranger Helper
 NPCS["Gray"] = function(cid, type, msg)
     if (msgcontains(msg, 'frontier')) then
-        npcHandler:sayStory(string.createStory("The Frontier Island gives trainers the chance to test their skill as a Pokemon Master with some challenges. It can be reached directly from the Trading Area, and it's a place to visit with friends. There you can earn Frontier Tokens, which let you buy some unique items on the island."), cid)
+        npcHandler:sayStory(string.createStory("The Frontier Island gives trainers the chance to test their skill as a Pokemon Master with some challenges. It can be reached directly from the Union Room, and it's a place to visit with friends. There you can earn Frontier Tokens, which let you buy some unique items on the island."), cid)
 
     elseif (msgcontains(msg, 'ranger')) then
         npcHandler:sayStory(string.createStory("The Ranger Club is a place for trainers who seek adventure. At the Ranger Club you will have the chance to advance in Ranks and become a successful Ranger. There are several missions that give you points to move up in ranks. Each mission gives you rewards and the chance to face a Pokemon Boss. What are you waiting for? Each city has a representative of the Ranger Club!"), cid)
