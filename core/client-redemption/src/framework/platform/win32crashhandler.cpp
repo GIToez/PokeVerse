@@ -29,12 +29,12 @@
 
 #pragma warning (push)
 #pragma warning (disable:4091) // warning C4091: 'typedef ': ignored on left of '' when no variable is declared
-#include <imagehlp.h>
+#include <dbghelp.h>
 #pragma warning (pop)
 
 #else
 
-#include <imagehlp.h>
+#include <dbghelp.h>
 
 #endif
 
@@ -49,6 +49,9 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+
+constexpr DWORD STATUS_HEAP_CORRUPTION_CODE = 0xC0000374;
+constexpr DWORD STATUS_STACK_BUFFER_OVERRUN_CODE = 0xC0000409;
 
 const char* getExceptionName(const DWORD exceptionCode)
 {
@@ -75,6 +78,8 @@ const char* getExceptionName(const DWORD exceptionCode)
         case EXCEPTION_INVALID_DISPOSITION:      return "Invalid disposition";
         case EXCEPTION_GUARD_PAGE:               return "Guard page";
         case EXCEPTION_INVALID_HANDLE:           return "Invalid handle";
+        case STATUS_HEAP_CORRUPTION_CODE:        return "Heap corruption";
+        case STATUS_STACK_BUFFER_OVERRUN_CODE:   return "Stack buffer overrun";
     }
     return "Unknown exception";
 }
@@ -161,11 +166,9 @@ std::string crashReportHeader(const std::string_view what)
     );
 }
 
-// the client's own folder, where client_crashreport finds it on the next start
-void saveCrashReport(const std::string& report, const bool showBox = true)
+// the client's own folder, where client_crashreport finds the report on the next start
+std::string crashReportDir()
 {
-    g_logger.flush();
-
     std::string dir = g_resources.getWriteDir();
     if (dir.empty()) {
         char cwd[MAX_PATH];
@@ -173,7 +176,31 @@ void saveCrashReport(const std::string& report, const bool showBox = true)
         if (len > 0 && len < sizeof(cwd))
             dir = std::string(cwd) + "\\";
     }
-    std::string fileName = dir + "crashreport.log";
+    return dir;
+}
+
+// crashreport.dmp: the threads' stacks and the memory they point at, for the debugger with the build's .pdb
+void saveMiniDump(const LPEXCEPTION_POINTERS e)
+{
+    const std::string fileName = crashReportDir() + "crashreport.dmp";
+    const HANDLE file = CreateFileA(stdext::utf8_to_latin1(fileName).c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file == INVALID_HANDLE_VALUE)
+        return;
+
+    MINIDUMP_EXCEPTION_INFORMATION info{};
+    info.ThreadId = GetCurrentThreadId();
+    info.ExceptionPointers = e;
+    info.ClientPointers = FALSE;
+    const auto type = static_cast<MINIDUMP_TYPE>(MiniDumpWithIndirectlyReferencedMemory | MiniDumpScanMemory | MiniDumpWithThreadInfo);
+    MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, type, &info, nullptr, nullptr);
+    CloseHandle(file);
+}
+
+void saveCrashReport(const std::string& report, const bool showBox = true)
+{
+    g_logger.flush();
+
+    std::string fileName = crashReportDir() + "crashreport.log";
 
     const std::string contents = fmt::format("{}\n== last log lines\n{}", report, g_logger.getRecentLog(200));
 
@@ -189,16 +216,20 @@ void saveCrashReport(const std::string& report, const bool showBox = true)
     if (!showBox)
         return;
     const std::string msg = saved
-        ? fmt::format("PokeVerse has crashed.\n\nA crash report was saved to:\n{}\n\nWhen you open PokeVerse again it will offer to copy the report so you can post it.", fileName)
+        ? fmt::format("PokeVerse has crashed.\n\nA crash report was saved to:\n{}\n\nWhen you open PokeVerse again it will offer to copy the report so you can post it. Please post crashreport.dmp from the same folder too.", fileName)
         : std::string("PokeVerse has crashed.\n\nThe crash report could not be saved.");
     MessageBoxA(nullptr, msg.c_str(), "PokeVerse crashed", MB_OK | MB_ICONERROR);
 }
 
-LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
+std::atomic_flag s_handlingException;
+
+void reportException(const LPEXCEPTION_POINTERS e)
 {
-    static std::atomic_flag handling;
-    if (handling.test_and_set())
-        return EXCEPTION_CONTINUE_SEARCH;
+    if (s_handlingException.test_and_set())
+        return;
+
+    // first: it needs the least of a heap that may be corrupted
+    saveMiniDump(e);
 
     SymSetOptions(SymGetOptions() | SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
     SymInitialize(GetCurrentProcess(), nullptr, TRUE);
@@ -215,6 +246,21 @@ LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
     SymCleanup(GetCurrentProcess());
 
     saveCrashReport(oss.str());
+}
+
+LONG CALLBACK ExceptionHandler(const LPEXCEPTION_POINTERS e)
+{
+    reportException(e);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
+// the heap manager ends the process on a corrupted heap without calling the unhandled exception
+// filter; vectored handlers still see it. Every other exception may be handled further down.
+LONG CALLBACK FatalExceptionHandler(const LPEXCEPTION_POINTERS e)
+{
+    const DWORD code = e->ExceptionRecord->ExceptionCode;
+    if (code == STATUS_HEAP_CORRUPTION_CODE || code == STATUS_STACK_BUFFER_OVERRUN_CODE)
+        reportException(e);
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
@@ -270,6 +316,10 @@ void installCrashHandler()
     SetThreadStackGuarantee(&guarantee);
 
     SetUnhandledExceptionFilter(ExceptionHandler);
+    static PVOID fatalHandler = nullptr;
+    if (fatalHandler)
+        RemoveVectoredExceptionHandler(fatalHandler);
+    fatalHandler = AddVectoredExceptionHandler(1, FatalExceptionHandler);
     signal(SIGABRT, AbortHandler);
     _set_invalid_parameter_handler(InvalidParameterHandler);
     _set_purecall_handler(PureCallHandler);
