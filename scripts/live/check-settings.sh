@@ -109,8 +109,8 @@ case "${PV_DAILY_RESTART:-true}" in
   true|false) report OK LIVE_DAILY_RESTART "${PV_DAILY_RESTART:-true}" ;;
   *) report FAIL LIVE_DAILY_RESTART "must be true or false" ;;
 esac
-if [[ "${PV_DAILY_TIME:-06:00}" =~ ^([01][0-9]|2[0-3]):[0-5][0-9]$ ]]; then
-  report OK LIVE_DAILY_RESTART_TIME "${PV_DAILY_TIME:-06:00}"
+if [[ "${PV_DAILY_TIME:-00:00}" =~ ^([01][0-9]|2[0-3]):[0-5][0-9]$ ]]; then
+  report OK LIVE_DAILY_RESTART_TIME "${PV_DAILY_TIME:-00:00}"
 else
   report FAIL LIVE_DAILY_RESTART_TIME "must be HH:MM (24 hours), e.g. 06:00"
 fi
