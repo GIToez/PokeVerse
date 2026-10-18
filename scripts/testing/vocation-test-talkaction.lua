@@ -1074,6 +1074,123 @@ local function testDaycare(cid)
     doPlayerRemoveMoney(cid, getPlayerMoney(cid))
 end
 
+local function testPokemonShop(cid)
+    local guid = getPlayerGUID(cid)
+    local sent = {}
+    local originalSend, originalNear = doSendPlayerExtendedOpcode, PokemonShop.nearNpc
+    doSendPlayerExtendedOpcode = function(to, opcode, text)
+        if (to == cid and opcode == EXTENDED_IDS.POKEMON_SHOP) then
+            sent[#sent + 1] = JSON.decode(text)
+        end
+        return originalSend(to, opcode, text)
+    end
+    local near = "Ron"
+    PokemonShop.nearNpc = function() return near, "Talk to Ron or Joel Morris to sell Pokemon." end
+    local function last(kind)
+        for i = #sent, 1, -1 do
+            if (sent[i].type == kind) then
+                return sent[i]
+            end
+        end
+    end
+    local function message(data)
+        sent = {}
+        PokemonShop.onClientMessage(cid, JSON.encode(data))
+        return last("result"), last("shop")
+    end
+    local function find(list, name)
+        for _, entry in ipairs(list or {}) do
+            if (entry.name == name) then
+                return entry
+            end
+        end
+    end
+    local function clear()
+        for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+            doRemoveItem(ball.uid)
+        end
+        db.executeQuery("DELETE FROM `pc_boxes` WHERE `player_id` = " .. guid)
+    end
+
+    local ok, err = pcall(function()
+        clear()
+        check("shop: species price plus $5 a level", PokemonShop.priceOf("Pidgey", 10) == PokemonShop.basePrice("Pidgey") + 50 and
+            PokemonShop.basePrice("Not a Pokemon") == 0, PokemonShop.priceOf("Pidgey", 10))
+
+        PokemonShop.onLogin(cid)
+        check("shop: clients without the window keep the conversation", PokemonShop.open(cid, "Ron") == false)
+        message({ action = "hello" })
+        newBall(cid, "Pidgey", 10)
+        sent = {}
+        check("shop: the greeting opens the window", PokemonShop.open(cid, "Ron") and last("shop") ~= nil)
+        local only = find(last("shop").party, "Pidgey")
+        check("shop: the last Pokemon carried can't be sold", only and only.blocked ~= nil and only.price == PokemonShop.priceOf("Pidgey", 10),
+            only and only.blocked)
+
+        newBall(cid, "Rattata", 6)
+        newBall(cid, "Caterpie", 4)
+        local tm = newBall(cid, "Zubat", 12)
+        setBallTm(tm.uid, 1, 1, TM_IDS.MEGA_PUNCH)
+        newBall(cid, "Shiny Pidgey", 10)
+        for _, name in ipairs({ "Zubat", "Caterpie" }) do
+            for index, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+                if (getBallPokemonName(ball.uid) == name) then
+                    PC.deposit(cid, index, 1, nil, name)
+                    break
+                end
+            end
+        end
+        local _, shop = message({ action = "refresh" })
+        local caterpie, zubat = find(shop and shop.list, "Caterpie"), find(shop and shop.list, "Zubat")
+        local rattata, shinyRow = find(shop and shop.party, "Rattata"), find(shop and shop.party, "Shiny Pidgey")
+        check("shop: the PC box lists its Pokemon", shop and shop.box == 1 and caterpie and zubat and #shop.boxes == 1 and
+            shop.boxes[1].count == 2, shop and JSON.encode(shop.boxes))
+        check("shop: a Pokemon that knows a TM is locked", zubat and zubat.blocked ~= nil, zubat and zubat.blocked)
+        check("shop: shinies are marked rare", shinyRow and shinyRow.rare == true and rattata and not rattata.rare)
+
+        near = nil
+        local result = message({ action = "sell", keys = { rattata.key } })
+        check("shop: nothing is sold away from the NPC", result and not result.ok and last("close") and
+            #getPlayerAllBallsWithPokemon(cid) == 3)
+        near = "Ron"
+
+        result = message({ action = "sell", keys = { zubat.key } })
+        check("shop: a locked Pokemon is refused", result and not result.ok and (result.text or ""):find("Zubat") ~= nil,
+            result and result.text)
+        result = message({ action = "sell", keys = { rattata.key, shinyRow.key } })
+        check("shop: rare Pokemon need SELL typed", result and not result.ok and result.rare and result.rare[1] == "Shiny Pidgey" and
+            #getPlayerAllBallsWithPokemon(cid) == 3, result and result.text)
+        local party = getPlayerAllBallsWithPokemon(cid)
+        local all = {}
+        for index, ball in ipairs(party) do
+            all[#all + 1] = string.format("p|%d|%s|%d", index, getBallPokemonName(ball.uid), getBallPokemonLevel(ball.uid))
+        end
+        result = message({ action = "sell", keys = all, confirm = "SELL" })
+        check("shop: one Pokemon always stays with the trainer", result and not result.ok and #getPlayerAllBallsWithPokemon(cid) == 3,
+            result and result.text)
+
+        local money = getPlayerMoney(cid)
+        local expected = PokemonShop.priceOf("Rattata", 6) + PokemonShop.priceOf("Shiny Pidgey", 10) + PokemonShop.priceOf("Caterpie", 4)
+        result, shop = message({ action = "sell", keys = { rattata.key, shinyRow.key, caterpie.key }, confirm = "SELL", box = 1 })
+        local stored = db.getResult("SELECT COUNT(*) AS `n` FROM `pc_boxes` WHERE `player_id` = " .. guid)
+        local left = stored:getID() ~= -1 and stored:getDataInt("n") or -1
+        if (stored:getID() ~= -1) then
+            stored:free()
+        end
+        check("shop: party and PC Pokemon sell together for their prices", result and result.ok and result.total == expected and
+            getPlayerMoney(cid) - money == expected and #getPlayerAllBallsWithPokemon(cid) == 1 and left == 1,
+            result and (result.text .. " / " .. tostring(getPlayerMoney(cid) - money) .. " of " .. expected .. ", " .. left .. " in the PC"))
+        check("shop: the window gets the new lists", shop and #shop.party == 1 and #shop.list == 1)
+        result = message({ action = "sell", keys = { caterpie.key } })
+        check("shop: a Pokemon sold already is refused", result and not result.ok, result and result.text)
+    end)
+    doSendPlayerExtendedOpcode, PokemonShop.nearNpc = originalSend, originalNear
+    check("shop checks ran without errors", ok, err)
+    clear()
+    PokemonShop.onLogin(cid)
+    doPlayerRemoveMoney(cid, getPlayerMoney(cid))
+end
+
 -- Runs fn as if the tester played without the PokeVerse client (the radar answers in text there;
 -- this test client counts as OTClient)
 local function asTextClient(fn)
@@ -2516,7 +2633,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
