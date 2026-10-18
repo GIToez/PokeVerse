@@ -3,7 +3,8 @@
 void main(void)
 {
   vec4 c = sprite();
-  float t = fract(u_Time / 2.2 + phase);
+  // often enough that a shiny coming out of its ball glints within a moment
+  float t = fract(u_Time / 1.4 + phase);
   float sweep = t / 0.35;
   float d = (gl_FragCoord.x + gl_FragCoord.y) / 90.0;
   float band = (1.0 - smoothstep(0.0, 0.16, abs(fract(d - sweep) - 0.5))) * step(t, 0.35);
