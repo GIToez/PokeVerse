@@ -6,7 +6,6 @@ NpcSystem.parseParameters(npcHandler)
 local talkState = {}
 local TALKSTATE_SELLING = 1
 local TALKSTATE_SELL_ALL = 2
-local cashIncreasedPerLevel = 5
 local lastPokemon = {}
 --[[
 local prices = {
@@ -187,40 +186,14 @@ local balls = {
 }
 ]]
 
-local REQUIREMENTS = {}
--- Valencia
+-- Modern clients get the window (PokemonShop in lib/ps/systems/081-pokemonShop.lua); the conversation below is
+-- for the others, with the same price and rules.
+local function isSellable(cid, ball)
+    return PokemonShop.blockReason(cid, ball, true) == nil
+end
 
--- Pummelo
-
--- Pinkan
-
--- Tarroco
-
--- Hamlin
-
--- Kumquat
-
--- Butwal
-
--- Navel
-
--- Mandarin North
-REQUIREMENTS["Joel Morris"] = function(cid) return getPlayerOrangeArchipelagoAccess(cid) >= 4 end
-
--- Ascorbia
-
--- Seven Grapefruit
-
--- Moro
-
--- Shamouti
-
--- Murcott
-
--- Mandarin South
-
-local function isSellable(ball)
-    return getBallTm(ball, 1) == TM_IDS.NONE and getBallTm(ball, 2) == TM_IDS.NONE
+local function priceOf(ball)
+    return PokemonShop.priceOf(getBallPokemonName(ball), getBallPokemonLevel(ball))
 end
 
 function onCreatureAppear(cid) npcHandler:onCreatureAppear(cid) end
@@ -236,6 +209,10 @@ function creatureSayCallback(cid, type, msg)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	msg = string.lower(msg)
+	if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello') or msgcontains(msg, 'sell') or msgcontains(msg, 'pokemon'))
+	        and PokemonShop.open(cid, getNpcName())) then
+		return true
+	end
 	msg = string.capitalise(msg)
 
 	if (msgcontains(msg, 'pokemon') or msgcontains(msg, 'pokemons')) then
@@ -256,15 +233,14 @@ function creatureSayCallback(cid, type, msg)
             for _, ball in pairs(getPlayerAllBallsWithPokemon(cid)) do
                 if (getItemUniqueOwner(ball.uid) == ITEM_UNIQUE_OWNER_NONE and
                         getBallPokemonName(ball.uid) == lastPokemon[talkUser]) then
-                    if (not isSellable(ball.uid)) then
+                    if (not isSellable(cid, ball.uid)) then
                         selfSay("You can't sell a Pokemon that has learned a TM, remove the TM first!", cid)
                         lastPokemon[talkUser] = nil
                         talkState[talkUser] = nil
                         return true
                     end
 
-                    doPlayerAddMoney(cid, getPokemonPrice(lastPokemon[talkUser]) +
-                            (getBallPokemonLevel(ball.uid) * cashIncreasedPerLevel))
+                    doPlayerAddMoney(cid, priceOf(ball.uid))
 					doRemoveItem(ball.uid)
                     doPlayerAddStatistic(cid, PLAYER_STATISTIC_IDS.SELL_POKEMON, 1)
 					selfSay("Oh, thanks!", cid)
@@ -283,12 +259,11 @@ function creatureSayCallback(cid, type, msg)
         elseif (talkState[talkUser] == TALKSTATE_SELL_ALL) then
             local amount = 0
             for _, ball in pairs(getPlayerAllBallsWithPokemon(cid)) do
-                if (not isSellable(ball.uid)) then
+                if (not isSellable(cid, ball.uid)) then
                     selfSay("You can't sell a Pokemon that has learned a TM, remove the TM first!", cid)
 
                 elseif (getItemUniqueOwner(ball.uid) == ITEM_UNIQUE_OWNER_NONE) then
-                    local newAmount = amount + (getPokemonPrice(getBallPokemonName(ball.uid)) +
-                            (getBallPokemonLevel(ball.uid) * cashIncreasedPerLevel))
+                    local newAmount = amount + priceOf(ball.uid)
 
                     if (doRemoveItem(ball.uid)) then
                         amount = newAmount
@@ -326,8 +301,7 @@ function creatureSayCallback(cid, type, msg)
                     offert[#offert + 1] = getBallPokemonExtraPoints(ball.uid)
                     offert[#offert + 1] = "]"
                     offert[#offert + 1] = ", "
-                    amount = amount + (getPokemonPrice(getBallPokemonName(ball.uid)) + (getBallPokemonLevel(ball.uid)
-                            * cashIncreasedPerLevel))
+                    amount = amount + priceOf(ball.uid)
                 end
             end
 
@@ -345,7 +319,7 @@ function creatureSayCallback(cid, type, msg)
             lastPokemon[talkUser] = nil
 
         elseif (isPokemonName(msg)) then
-            selfSay(string.format(__L(cid, "Do you want to sell your %s for %s dollars plus %s dollars for each level? {Yes} or {No}"), msg, getPokemonPrice(msg), cashIncreasedPerLevel), cid)
+            selfSay(string.format(__L(cid, "Do you want to sell your %s for %s dollars plus %s dollars for each level? {Yes} or {No}"), msg, PokemonShop.basePrice(msg), PokemonShop.PRICE_PER_LEVEL), cid)
 		    lastPokemon[talkUser] = msg
 
         else
@@ -363,11 +337,21 @@ npcHandler:addModule(FocusModule:new())
 
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     if (npcHandler:isInRange(cid)) then
-        if (REQUIREMENTS[getNpcName()] and not REQUIREMENTS[getNpcName()](cid)) then
+        local shop = PokemonShop.NPCS[getNpcName()]
+        if (shop and shop.allowed and not shop.allowed(cid)) then
             selfSay("You do not have enough access to trade here!", cid)
             return false
         end
+        PokemonShop.open(cid, getNpcName())
 	end
 	lastPokemon[cid] = nil
     return true
 end)
+
+local function closeWindow(cid)
+    PokemonShop.close(cid)
+    return true
+end
+
+-- not on farewell: the NPC says goodbye to trainers idle in the conversation while they browse the window
+npcHandler:setCallback(CALLBACK_CREATURE_DISAPPEAR, closeWindow)
