@@ -10,7 +10,8 @@ end
 -- breeding through Daycare, fishing through Fishing. The old holiday content (Easter, the summer
 -- festival, the anniversary, Halloween and Christmas) only runs while its holiday is on.
 --
--- Holidays start and end at the daily restart (RESTART_HOUR, server time) unless noted. Moon
+-- Holidays start and end at the daily restart (ServerRestart.getDaily, server time; midnight while
+-- the daily restart is off) unless noted. Moon
 -- phases use Meeus' formula (Astronomical Algorithms, ch. 49), equinoxes and solstices ch. 27,
 -- Easter the Western computus. Staff can force a holiday on or off with /calendar holiday.
 --
@@ -22,7 +23,7 @@ end
 EventCalendar = {}
 
 local DAY, HOUR = 24 * 60 * 60, 60 * 60
-local RESTART_HOUR = 6
+local NIGHT_ENDS = 6 -- night events run 20:00 to 06:00 whatever the restart time
 local CACHE_SECONDS = 60
 local MAX_RANGE = 62 * DAY
 
@@ -39,8 +40,18 @@ local FORCED_KEY_BASE = GLOBAL_STORAGES.EVENT_CALENDAR_FORCED -- + index: 1 forc
 -- Dates
 ---------------------------------------------------------------------------------------------------
 
+local function restartMinutes()
+    local minutes = ServerRestart and ServerRestart.getDaily()
+    return minutes or 0
+end
+
+-- no hour: the daily restart of that day
 local function at(year, month, day, hour, minute)
-    return os.time({ year = year, month = month, day = day, hour = hour or RESTART_HOUR, min = minute or 0, sec = 0 })
+    if (not hour) then
+        local minutes = restartMinutes()
+        hour, minute = math.floor(minutes / 60), minutes % 60
+    end
+    return os.time({ year = year, month = month, day = day, hour = hour, min = minute or 0, sec = 0 })
 end
 
 local function dateOf(time)
@@ -50,7 +61,7 @@ end
 -- The restart that opens the day `time` falls on (server time), shifted by `days`
 local function restartOf(time, days)
     local d = dateOf(time)
-    return at(d.year, d.month, d.day + (days or 0), RESTART_HOUR)
+    return at(d.year, d.month, d.day + (days or 0))
 end
 
 local function jdToUnix(jd)
@@ -171,7 +182,7 @@ end
 local function nightAround(time)
     local d = dateOf(time - HOUR + 12 * HOUR)
     local starts = at(d.year, d.month, d.day - 1, 20)
-    return starts, at(d.year, d.month, d.day, RESTART_HOUR)
+    return starts, at(d.year, d.month, d.day, NIGHT_ENDS)
 end
 
 local function days(year, month, day, count)
