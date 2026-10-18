@@ -95,7 +95,9 @@ function getPlayerRespect(cid)
 end
 
 function getPlayerBackPosition(cid)
-    local t = string.explode(getCreatureStorage(cid, playersStorages.tradeBackPosition), ";")
+    -- unset storage is the number -1, e.g. for trainers who logged in inside the room
+    local stored = getCreatureStorage(cid, playersStorages.tradeBackPosition)
+    local t = type(stored) == "string" and string.explode(stored, ";")
     if (t) then
         local pos = { x = t[2], y = t[3], z = t[4] }
         if (isWalkable(cid, pos)) then
