@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """The Union Room plaza: a GTS-style globe on the octagon floor of the old Trading Area.
 
-The plaza (map 4717-4725, 135-142, floor 7, and two more copies nearby) is one picture cut
-into one-tile floor overlays (items 27864-27936). This keeps the octagon wall of the old
-picture, clears its inside so the real floor tiles show through and draws the globe there.
+The plaza (map 4717-4725, 135-142, floor 7) is one picture cut into one-tile floor overlays
+(items 27864-27936). Two seasonal copies of the room (origins in COPIES) stand on dirt, so the
+inside of the octagon is painted with the room's floor tile rather than left see-through. This
+keeps the octagon wall of the old picture, repaints its inside and draws the globe there.
 
     plaza_globe.py --mockup out.png      the room rendered with the new plaza, for review
     plaza_globe.py --before out.png      the same room as it is now
+    plaza_globe.py --move-teleporters    moves the two return teleporters (action id 100) from
+                                         above the middle to the west and east of the globe, in
+                                         every copy of the room (map.otbm; does nothing when done)
 
 Writes art/sprites/plaza/sheet.png (the new plaza) and sheet_original.png.
 """
@@ -32,12 +36,16 @@ FONT = os.path.join(ROOT, 'core/client-redemption/pokeverse-modern/data/fonts/tt
 OUT = os.path.join(ROOT, 'art/sprites/plaza')
 
 ORIGIN = (4717, 135, 7)  # top-left tile of the plaza
+COPIES = [ORIGIN, (4630, 124, 7), (4657, 106, 7)]
 TILES = (9, 8)
 PLAZA_ITEMS = range(27864, 27937)
-TELEPORTERS = range(11905, 11908)  # the exit teleporters on plaza tiles (4, 2) and (5, 2)
-# where the globe goes on the plaza sheet: below the teleporters, so they stay in view
-GLOBE_CENTER = (140, 146)
-GLOBE_RADIUS = 44
+FLOOR = 20073  # the room's floor tile, under the plaza
+TELEPORTERS = range(11905, 11908)
+# plaza tiles of the two return teleporters: where they were, and where they go
+TELEPORTER_MOVES = [((4, 2), (1, 3)), ((5, 2), (7, 3))]
+# on the plaza sheet: the middle of tile (4, 3), where TRADE_ROOM_POSITION lands trainers
+GLOBE_CENTER = (144, 112)
+GLOBE_RADIUS = 46
 ROOM = (4708, 130, 4732, 150)  # the room around it, for the renders
 
 K = 4  # supersampling for the drawing
@@ -219,31 +227,43 @@ def globe_layer(size, center, r):
     arrows = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     a = ImageDraw.Draw(arrows)
     ar = R * 1.22
-    # on the sides only: the teleporters stand just above the globe
     arrow_arc(a, (cx, cy), ar, 125, 235, int(3.6 * K), CYAN, BLUE_DARK)
     arrow_arc(a, (cx, cy), ar, 305, 415, int(3.6 * K), CYAN, BLUE_DARK)
     img.alpha_composite(arrows)
 
-    # the name: POKEVERSE arched over the teleporters, UNION ROOM under the globe
-    font = ImageFont.truetype(FONT, int(12 * K))
+    # POKEVERSE arched over the globe, UNION ROOM straight across under it
     d = ImageDraw.Draw(img)
-    img.alpha_composite(arc_text(d, 'POKEVERSE', (cx, cy), R * 2.2, 270, font, (255, 214, 64), INK))
-    img.alpha_composite(arc_text(d, 'UNION ROOM', (cx, cy), R * 1.5, 90, font, WHITE, INK, clockwise=False))
+    big = ImageFont.truetype(FONT, int(26 * K))
+    img.alpha_composite(arc_text(d, 'POKEVERSE', (cx, cy), R * 1.82, 270, big, (255, 214, 64), INK))
+    small = ImageFont.truetype(FONT, int(16 * K))
+    d.text((cx, cy + R * 1.58), 'UNION ROOM', font=small, fill=WHITE, anchor='mm',
+           stroke_width=2 * K, stroke_fill=INK)
 
-    small = img.resize(size, Image.LANCZOS)
-    arr = np.array(small)
+    arr = np.array(img.resize(size, Image.LANCZOS))
     # crisp edges for the pixel look; keep the glow soft
     solid = arr[..., 3] > 150
     arr[..., 3] = np.where(solid, 255, arr[..., 3] // 2)
     return Image.fromarray(arr)
 
 
-def build(sheet):
+def floor_sheet(otb, dat, spr):
+    """The room's floor tile over the whole plaza, in the pattern it has at ORIGIN."""
+    attrs, w, h, layers, pxn, pyn, pzn, frames, sprites = dat.things[otb.client_id(FLOOR)]
+    x0, y0, z = ORIGIN
+    out = Image.new('RGBA', (TILES[0] * 32, TILES[1] * 32), (0, 0, 0, 0))
+    for dy in range(TILES[1]):
+        for dx in range(TILES[0]):
+            idx = (((z % pzn) * pyn + (y0 + dy) % pyn) * pxn + (x0 + dx) % pxn) * layers
+            out.paste(Image.frombytes('RGBA', (32, 32), spr.rgba(sprites[idx])), (dx * 32, dy * 32))
+    return out
+
+
+def build(sheet, floor):
     wall = wall_mask(sheet)
     alpha = np.array(sheet)[..., 3] > 0
     inside = alpha & ~wall
     out = np.array(sheet).copy()
-    out[inside] = 0
+    out[inside] = np.array(floor)[inside]
     new = Image.fromarray(out)
     new.alpha_composite(inner_shadow(inside))
 
@@ -267,18 +287,52 @@ def render_room(r, tiles, sprites=None, sheet=None):
     return r.render(tiles, rx0, ry0, rx1, ry1, ORIGIN[2], False)
 
 
+def move_teleporters():
+    """Moves the return teleporters in every copy of the room; returns how many moved."""
+    data = open(MAP, 'rb').read()
+    wanted = [(ox + dx, oy + dy, z) for ox, oy, z in COPIES for move in TELEPORTER_MOVES for dx, dy in move]
+    raw = pvmap.read_tiles_raw(MAP, wanted, data)
+    changed, moved = {}, 0
+    for ox, oy, z in COPIES:
+        for (fx, fy), (tx, ty) in TELEPORTER_MOVES:
+            src, dst = (ox + fx, oy + fy, z), (ox + tx, oy + ty, z)
+            blobs = pvmap.split_items(raw[src].children)
+            ids = pvmap.child_item_ids(raw[src].children)
+            keep = [b for b, i in zip(blobs, ids) if i not in TELEPORTERS]
+            gone = [b for b, i in zip(blobs, ids) if i in TELEPORTERS]
+            if not gone:
+                continue
+            raw[src].children = b''.join(keep)
+            raw[dst].children += b''.join(gone)
+            changed[src], changed[dst] = raw[src], raw[dst]
+            moved += len(gone)
+    if changed:
+        tmp = MAP + '.tmp'
+        pvmap.write_map(data, tmp, changed)
+        os.replace(tmp, MAP)
+    return moved
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--mockup')
     ap.add_argument('--before')
+    ap.add_argument('--move-teleporters', action='store_true')
     args = ap.parse_args()
 
+    if args.move_teleporters:
+        print('moved %d teleporters' % move_teleporters())
     otb, dat, spr = pvmap.Otb(ITEMS), pvmap.Dat(DAT), pvmap.Spr(SPR)
     tiles = read_room()
-    sheet, sprites = plaza_sheet(tiles, otb, dat, spr)
-    new = build(sheet)
     os.makedirs(OUT, exist_ok=True)
-    sheet.save(os.path.join(OUT, 'sheet_original.png'))
+    original = os.path.join(OUT, 'sheet_original.png')
+    sheet, sprites = plaza_sheet(tiles, otb, dat, spr)
+    # once data.spr carries the new plaza, the old picture is only in sheet_original.png
+    if os.path.exists(original):
+        sheet = Image.open(original).convert('RGBA')
+    else:
+        sheet.save(original)
+    new = build(sheet, floor_sheet(otb, dat, spr))
     new.save(os.path.join(OUT, 'sheet.png'))
     if args.mockup or args.before:
         r = Renderer(ITEMS, DAT, SPR)
