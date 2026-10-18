@@ -180,6 +180,15 @@ jobs:
           path: bin-windows/
           if-no-files-found: error
 
+      # RelWithDebInfo writes otclient.pdb next to the exe: the module+offset lines of a crash
+      # report are looked up against the one from the same run
+      - uses: actions/upload-artifact@v4
+        with:
+          name: redemption-windows-pdb
+          path: core/client-redemption/build/windows-release/bin/*.pdb
+          if-no-files-found: warn
+          retention-days: 90
+
   android:
     name: Build (Android)
     runs-on: ubuntu-24.04
