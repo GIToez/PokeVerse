@@ -36,7 +36,15 @@ local function previousLogTail()
     return table.concat(lines, '\n')
 end
 
-local function offer(title, message, text)
+-- Explorer opens Documents instead of a path with forward slashes
+local function openFolder(dir)
+    if g_app.getOs() == 'windows' then
+        dir = dir:gsub('/', '\\')
+    end
+    g_platform.openDir(dir)
+end
+
+local function offer(title, message, text, folder)
     closeBox()
     local function copy()
         g_window.setClipboardText(text)
@@ -46,7 +54,7 @@ local function offer(title, message, text)
     local buttons = { { text = tr('Copy report'), callback = copy } }
     if not g_platform.isMobile() then
         buttons[#buttons + 1] = { text = tr('Open folder'), callback = function()
-            g_platform.openDir(g_resources.getWriteDir())
+            openFolder(folder)
         end }
     end
     buttons[#buttons + 1] = { text = tr('Close'), callback = closeBox }
@@ -60,7 +68,7 @@ local function check(unclean)
         g_resources.deleteFile(REPORT)
         offer(tr('PokeVerse crashed'),
             tr('PokeVerse crashed last time and saved a crash report.\nCopy it and post it so the crash can be fixed.'),
-            report)
+            report, g_resources.getWriteDir())
         return
     end
 
@@ -69,7 +77,7 @@ local function check(unclean)
         if log and log ~= '' then
             offer(tr('PokeVerse closed unexpectedly'),
                 tr('PokeVerse did not close properly last time.\nIf it crashed or froze, copy the end of its log and post it.'),
-                log)
+                log, g_resources.getUserDir())
         end
     end
 end
