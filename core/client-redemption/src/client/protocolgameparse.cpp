@@ -4289,7 +4289,9 @@ CreaturePtr ProtocolGame::getCreature(const InputMessagePtr& msg, int type) cons
             creature->setPassable(!unpass);
             creature->setLight(light);
             creature->setMasterId(masterId);
-            creature->setShader(shader);
+            // without the feature the server sends no shader, so keep the one Lua put on (PokeVerse shiny shimmer, statuses)
+            if (g_game.getFeature(Otc::GameCreatureShader))
+                creature->setShader(shader);
             creature->clearTemporaryAttachedEffects();
             std::unordered_set<uint16_t> currentAttachedEffectIds;
             for (const auto& attachedEffect : creature->getAttachedEffects()) {
