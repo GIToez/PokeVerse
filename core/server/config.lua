@@ -364,4 +364,4 @@
 	-- systemd starts it again (live server only, see docs/live-server.md). The time is the
 	-- server's local time (24-hour HH:MM). Staff can change or cancel it in game with /restart.
 	dailyRestartEnabled = false
-	dailyRestartTime = "06:00"
+	dailyRestartTime = "00:00"

@@ -512,7 +512,7 @@ set_managed_block() {
 }
 
 cmd_configure() {
-  local host="" daily_restart=true daily_time=06:00 timezone="" server_name="" kv
+  local host="" daily_restart=true daily_time=00:00 timezone="" server_name="" kv
   for kv in "$@"; do
     case "$kv" in
       host=*) host=${kv#host=} ;;

@@ -17,7 +17,7 @@
 #   PV_SERVER_PACKAGE  pokeverse-server-linux.tar.gz (verify, deploy)
 #   PV_BOT_PACKAGE     pokeverse-discord-linux-x64.tar.gz (deploy, discord-deploy; optional)
 #   PV_PUBLIC_HOST     address players connect to (default PV_HOST)
-#   PV_DAILY_RESTART   true/false (default true), PV_DAILY_TIME HH:MM (default 06:00),
+#   PV_DAILY_RESTART   true/false (default true), PV_DAILY_TIME HH:MM (default 00:00),
 #   PV_TIMEZONE        e.g. America/New_York (default: the server's time zone)
 #   PV_SERVER_NAME     world name on the character list (default LeafGreen)
 #   PV_WARNING_MINUTES warning before a restart when players are online (default 5)
@@ -34,7 +34,7 @@ PV_SSH_PORT=${PV_SSH_PORT:-22}
 PV_SSH_USER=${PV_SSH_USER:-pokeverse}
 PV_PUBLIC_HOST=${PV_PUBLIC_HOST:-$PV_HOST}
 PV_DAILY_RESTART=${PV_DAILY_RESTART:-true}
-PV_DAILY_TIME=${PV_DAILY_TIME:-06:00}
+PV_DAILY_TIME=${PV_DAILY_TIME:-00:00}
 PV_TIMEZONE=${PV_TIMEZONE:-}
 PV_SERVER_NAME=${PV_SERVER_NAME:-LeafGreen}
 PV_WARNING_MINUTES=${PV_WARNING_MINUTES:-5}

@@ -87,7 +87,7 @@ jobs:
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
       PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
       PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
-      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '00:00' }}
       PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE || secrets.LIVE_TIMEZONE }}
       PV_SERVER_NAME: ${{ vars.LIVE_SERVER_NAME || 'LeafGreen' }}
       DISCORD_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
@@ -272,7 +272,7 @@ jobs:
       PV_SSH_HOST_KEY: ${{ secrets.OVH_SSH_HOST_KEY }}
       PV_PUBLIC_HOST: ${{ vars.LIVE_SERVER_HOST || secrets.LIVE_SERVER_HOST || vars.OVH_HOST || secrets.OVH_HOST || '40.160.145.24' }}
       PV_DAILY_RESTART: ${{ vars.LIVE_DAILY_RESTART || secrets.LIVE_DAILY_RESTART || 'true' }}
-      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '06:00' }}
+      PV_DAILY_TIME: ${{ vars.LIVE_DAILY_RESTART_TIME || secrets.LIVE_DAILY_RESTART_TIME || '00:00' }}
       PV_TIMEZONE: ${{ vars.LIVE_TIMEZONE || secrets.LIVE_TIMEZONE }}
       PV_SERVER_NAME: ${{ vars.LIVE_SERVER_NAME || 'LeafGreen' }}
       PV_WARNING_MINUTES: ${{ inputs.warning_minutes || '5' }}

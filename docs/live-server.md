@@ -55,7 +55,7 @@ secret; secrets are hidden in the logs):
 | Secret | `DISCORD_BOT_TOKEN` | token of the **production** bot application |
 | Variable | `OVH_HOST` | optional, server IP address (default `40.160.145.24`, the current OVH server) |
 | Variable | `LIVE_TIMEZONE` | e.g. `America/Los_Angeles` (server clock for the daily restart) |
-| Variable | `LIVE_DAILY_RESTART_TIME` | optional, `HH:MM`, default `06:00` |
+| Variable | `LIVE_DAILY_RESTART_TIME` | optional, `HH:MM`, default `00:00` (midnight in `LIVE_TIMEZONE`) |
 | Variable | `LIVE_DAILY_RESTART` | optional, `false` turns the daily restart off |
 | Variable | `LIVE_SERVER_HOST` | optional, a domain name players connect to (default `OVH_HOST`) |
 | Variable | `LIVE_SERVER_NAME` | optional, world name on the character list (default `LeafGreen`; up to 20 letters, digits or spaces) |
