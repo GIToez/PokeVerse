@@ -24,6 +24,8 @@
 
 #include "declarations.h"
 
+#include <shared_mutex>
+
  //@bindsingleton g_shaders
 class ShaderManager
 {
@@ -61,12 +63,15 @@ public:
 
     PainterShaderProgramPtr getShader(std::string_view name);
     PainterShaderProgramPtr getShaderById(const uint8_t id) const {
+        std::shared_lock lock(m_mutex);
         return id > 0 && id <= m_shadersVector.size() ? m_shadersVector[id - 1] : nullptr;
     }
 
 private:
     void putShader(std::string name, const PainterShaderProgramPtr& shader);
 
+    // shaders are added on the main thread and looked up from Lua and the draw threads
+    mutable std::shared_mutex m_mutex;
     stdext::map<std::string, PainterShaderProgramPtr> m_shaders;
     std::vector<PainterShaderProgramPtr> m_shadersVector;
 };

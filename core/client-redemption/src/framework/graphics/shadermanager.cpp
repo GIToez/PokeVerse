@@ -45,15 +45,26 @@ void ShaderManager::init() { PainterShaderProgram::release(); }
 void ShaderManager::terminate() { clear(); }
 
 void ShaderManager::clear() {
+    std::unique_lock lock(m_mutex);
     m_shaders.clear();
     m_shadersVector.clear();
 }
 
 void ShaderManager::putShader(std::string name, const PainterShaderProgramPtr& shader) {
-    if (m_shaders.try_emplace(std::move(name), shader).second) {
-        m_shadersVector.emplace_back(shader);
-        shader->m_id = m_shadersVector.size();
+    std::unique_lock lock(m_mutex);
+    if (m_shaders.contains(name))
+        return;
+
+    // things keep the id in a byte
+    if (m_shadersVector.size() >= UINT8_MAX) {
+        lock.unlock();
+        g_logger.error("Unable to add shader '{}': there are already {} shaders", name, UINT8_MAX);
+        return;
     }
+
+    m_shaders.emplace(std::move(name), shader);
+    m_shadersVector.emplace_back(shader);
+    shader->m_id = m_shadersVector.size();
 }
 
 void ShaderManager::createShader(const std::string_view name, bool useFramebuffer)
@@ -176,7 +187,8 @@ void ShaderManager::addMultiTexture(const std::string_view name, const std::stri
 
 PainterShaderProgramPtr ShaderManager::getShader(const std::string_view name)
 {
-    const auto it = m_shaders.find(name.data());
+    std::shared_lock lock(m_mutex);
+    const auto it = m_shaders.find(std::string(name));
     if (it != m_shaders.end())
         return it->second;
 
