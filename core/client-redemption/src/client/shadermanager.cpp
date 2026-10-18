@@ -34,7 +34,7 @@ void ShaderManager::terminate() { m_shaders.clear(); }
 
 void ShaderManager::createShader(const std::string_view name, bool useFramebuffer)
 {
-    g_mainDispatcher.addEvent([this, name = name.data(), useFramebuffer] {
+    g_mainDispatcher.addEvent([this, name = std::string(name), useFramebuffer] {
         const auto& shader = std::make_shared<PainterShaderProgram>();
         shader->setUseFramebuffer(useFramebuffer);
         m_shaders[name] = shader;
@@ -45,7 +45,7 @@ void ShaderManager::createShader(const std::string_view name, bool useFramebuffe
 void ShaderManager::createFragmentShader(const std::string_view name, const std::string_view file, bool useFramebuffer)
 {
     const auto& filePath = g_resources.resolvePath(file.data());
-    g_mainDispatcher.addEvent([this, name = name.data(), filePath, useFramebuffer] {
+    g_mainDispatcher.addEvent([this, name = std::string(name), filePath, useFramebuffer] {
         const auto& shader = std::make_shared<PainterShaderProgram>();
         shader->setUseFramebuffer(useFramebuffer);
         if (!shader)
@@ -70,7 +70,7 @@ void ShaderManager::createFragmentShader(const std::string_view name, const std:
 
 void ShaderManager::createFragmentShaderFromCode(const std::string_view name, const std::string_view code, bool useFramebuffer)
 {
-    g_mainDispatcher.addEvent([this, name = name.data(), code = code.data(), useFramebuffer] {
+    g_mainDispatcher.addEvent([this, name = std::string(name), code = std::string(code), useFramebuffer] {
         const auto& shader = std::make_shared<PainterShaderProgram>();
         shader->setUseFramebuffer(useFramebuffer);
         if (!shader)
@@ -93,7 +93,7 @@ void ShaderManager::createFragmentShaderFromCode(const std::string_view name, co
 
 void ShaderManager::setupItemShader(const std::string_view name)
 {
-    g_mainDispatcher.addEvent([&, name = name.data()] {
+    g_mainDispatcher.addEvent([&, name = std::string(name)] {
         const auto& shader = getShader(name);
         if (!shader) return;
         shader->bindUniformLocation(ITEM_ID_UNIFORM, "u_ItemId");
@@ -102,7 +102,7 @@ void ShaderManager::setupItemShader(const std::string_view name)
 
 void ShaderManager::setupOutfitShader(const std::string_view name)
 {
-    g_mainDispatcher.addEvent([&, name = name.data()] {
+    g_mainDispatcher.addEvent([&, name = std::string(name)] {
         const auto& shader = getShader(name);
         if (!shader) return;
         shader->bindUniformLocation(OUTFIT_ID_UNIFORM, "u_OutfitId");
@@ -111,7 +111,7 @@ void ShaderManager::setupOutfitShader(const std::string_view name)
 
 void ShaderManager::setupMountShader(const std::string_view name)
 {
-    g_mainDispatcher.addEvent([&, name = name.data()] {
+    g_mainDispatcher.addEvent([&, name = std::string(name)] {
         const auto& shader = getShader(name);
         if (!shader) return;
         shader->bindUniformLocation(MOUNT_ID_UNIFORM, "u_MountId");
@@ -120,7 +120,7 @@ void ShaderManager::setupMountShader(const std::string_view name)
 
 void ShaderManager::setupMapShader(const std::string_view name)
 {
-    g_mainDispatcher.addEvent([&, name = name.data()] {
+    g_mainDispatcher.addEvent([&, name = std::string(name)] {
         const auto& shader = getShader(name);
         if (!shader) return;
         shader->bindUniformLocation(MAP_CENTER_COORD, "u_MapCenterCoord");
@@ -132,7 +132,7 @@ void ShaderManager::setupMapShader(const std::string_view name)
 
 void ShaderManager::setupTextShader(const std::string_view name)
 {
-    g_mainDispatcher.addEvent([&, name = name.data()] {
+    g_mainDispatcher.addEvent([&, name = std::string(name)] {
         const auto& shader = getShader(name);
         if (!shader) return;
         shader->bindUniformLocation(TEXT_OFFSET_UNIFORM, "u_Offset");
@@ -143,7 +143,7 @@ void ShaderManager::setupTextShader(const std::string_view name)
 void ShaderManager::addMultiTexture(const std::string_view name, const std::string_view file)
 {
     const auto& filePath = g_resources.resolvePath(file.data());
-    g_mainDispatcher.addEvent([&, name = name.data(), filePath] {
+    g_mainDispatcher.addEvent([&, name = std::string(name), filePath] {
         const auto& shader = getShader(name);
         if (!shader) return;
         shader->addMultiTexture(filePath);
