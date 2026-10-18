@@ -135,4 +135,6 @@ void installCrashHandler()
     sigaction(SIGABRT, &sa, nullptr);  // process aborted (asserts)
 }
 
+void reportFatalError(std::string_view) {}
+
 #endif

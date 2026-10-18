@@ -28,12 +28,28 @@
 #endif
 
 #include <framework/core/resourcemanager.h>
+#include <framework/platform/crashhandler.h>
 
 #ifdef OTC_USE_LUA51
 int luaopen_bit32(lua_State* L);
 #endif
 
 LuaInterface g_lua;
+
+namespace
+{
+    // an error outside any protected call: without this Lua ends the process without a word
+    int luaPanic(lua_State* L)
+    {
+        const char* message = lua_tostring(L, -1);
+        const std::string what = fmt::format("Lua panic: {}", message ? message : "(no message)");
+#ifdef CRASH_HANDLER
+        reportFatalError(what);
+#endif
+        g_logger.fatal(what);
+        return 0;
+    }
+}
 
 void LuaInterface::init()
 {
@@ -790,6 +806,7 @@ void LuaInterface::createLuaState()
     L = luaL_newstate();
     if (!L)
         g_logger.fatal("Unable to create lua state");
+    lua_atpanic(L, luaPanic);
 
     // load lua standard libraries
     luaL_openlibs(L);

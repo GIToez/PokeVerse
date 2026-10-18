@@ -45,6 +45,7 @@
 #include <emscripten/emscripten.h>
 #endif
 #include <framework/html/htmlmanager.h>
+#include <framework/platform/crashhandler.h>
 #include <framework/platform/platformwindow.h>
 
 GraphicalApplication g_app;
@@ -90,6 +91,11 @@ void GraphicalApplication::init(std::vector<std::string>& args, ApplicationConte
 #ifdef FRAMEWORK_SOUND
     // initialize sound
     g_sounds.init();
+#endif
+
+#ifdef CRASH_HANDLER
+    // the GL driver and sound libraries loaded above can put their own crash filter in place
+    installCrashHandler();
 #endif
 
     m_mapProcessFrameCounter.init();

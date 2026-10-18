@@ -23,5 +23,9 @@
 #pragma once
 
 #ifdef CRASH_HANDLER
+#include <string_view>
+
 void installCrashHandler();
+// a crash report for an error the process is about to exit on (a Lua panic)
+void reportFatalError(std::string_view what);
 #endif

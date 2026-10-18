@@ -45,8 +45,10 @@
 #include <atomic>
 #include <csignal>
 #include <cstdlib>
+#include <exception>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 
 const char* getExceptionName(const DWORD exceptionCode)
 {
@@ -160,7 +162,7 @@ std::string crashReportHeader(const std::string_view what)
 }
 
 // the client's own folder, where client_crashreport finds it on the next start
-void saveCrashReport(const std::string& report)
+void saveCrashReport(const std::string& report, const bool showBox = true)
 {
     g_logger.flush();
 
@@ -184,6 +186,8 @@ void saveCrashReport(const std::string& report)
         }
     }
 
+    if (!showBox)
+        return;
     const std::string msg = saved
         ? fmt::format("PokeVerse has crashed.\n\nA crash report was saved to:\n{}\n\nWhen you open PokeVerse again it will offer to copy the report so you can post it.", fileName)
         : std::string("PokeVerse has crashed.\n\nThe crash report could not be saved.");
@@ -224,10 +228,59 @@ void AbortHandler(int)
     std::abort();
 }
 
+// the C runtime ends the process on these without an exception the filter would see
+[[noreturn]] void reportAndExit(const std::string_view what)
+{
+    static std::atomic_flag handling;
+    if (!handling.test_and_set())
+        saveCrashReport(crashReportHeader(what));
+    TerminateProcess(GetCurrentProcess(), 3);
+    std::abort();
+}
+
+void InvalidParameterHandler(const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, uintptr_t)
+{
+    reportAndExit("exception: invalid parameter passed to a C runtime function");
+}
+
+void PureCallHandler()
+{
+    reportAndExit("exception: pure virtual function call");
+}
+
+void TerminateHandler()
+{
+    std::string what = "exception: std::terminate";
+    if (const auto current = std::current_exception()) {
+        try {
+            std::rethrow_exception(current);
+        } catch (const std::exception& e) {
+            what = fmt::format("exception: uncaught C++ exception: {}", e.what());
+        } catch (...) {
+            what = "exception: uncaught C++ exception";
+        }
+    }
+    reportAndExit(what);
+}
+
 void installCrashHandler()
 {
+    // room for the filter to run when the main thread's stack overflows
+    ULONG guarantee = 128 * 1024;
+    SetThreadStackGuarantee(&guarantee);
+
     SetUnhandledExceptionFilter(ExceptionHandler);
     signal(SIGABRT, AbortHandler);
+    _set_invalid_parameter_handler(InvalidParameterHandler);
+    _set_purecall_handler(PureCallHandler);
+    std::set_terminate(TerminateHandler);
+}
+
+void reportFatalError(const std::string_view what)
+{
+    static std::atomic_flag handling;
+    if (!handling.test_and_set())
+        saveCrashReport(crashReportHeader(fmt::format("fatal error: {}", what)), false);
 }
 
 #endif
