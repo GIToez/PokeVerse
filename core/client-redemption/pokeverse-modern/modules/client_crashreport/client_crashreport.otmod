@@ -1,0 +1,9 @@
+Module
+  name: client_crashreport
+  description: After a crash, offers to copy the crash report or the last session's log so it can be posted
+  author: PokeVerse
+  reloadable: false
+  sandboxed: true
+  scripts: [ crashreport ]
+  @onLoad: init()
+  @onUnload: terminate()
