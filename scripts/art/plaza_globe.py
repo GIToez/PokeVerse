@@ -59,6 +59,15 @@ WHITE_SHADE = (196, 202, 214)
 CYAN = (110, 214, 255)
 BLUE = (52, 132, 236)
 BLUE_DARK = (24, 70, 160)
+LOGO_YELLOW = (255, 203, 5)
+LOGO_BLUE = (54, 106, 190)
+LOGO_BLUE_DARK = (30, 50, 120)
+
+# The title wants the fan-made "Pokemon Solid" font (dafont.com/pokemon.font). Its license is
+# not stated, so it is not kept in the repo; pass it with --title-font. Only the pixels it
+# draws end up in the game.
+TITLE_FONT = FONT
+TITLE = 'POKEVERSE'
 
 
 def read_room():
@@ -117,27 +126,31 @@ def inner_shadow(inside):
     return Image.fromarray(out)
 
 
-def arc_text(draw, text, center, radius, start_deg, font, fill, outline, clockwise=True):
-    """Letters along a circle, centered on start_deg (0 is east, 90 south)."""
-    widths = [draw.textlength(ch, font=font) for ch in text]
-    total = sum(widths)
+def arc_text(draw, text, center, radius, start_deg, font, passes, clockwise=True, tracking=0.0):
+    """Letters along a circle, centered on start_deg (0 is east, 90 south).
+
+    passes is [(color, stroke_width)], drawn widest first over every letter, so one letter's
+    outline never covers its neighbour's fill."""
+    widths = [draw.textlength(ch, font=font) + tracking for ch in text]
+    total = sum(widths) - tracking
     span = total / radius
-    angle = math.radians(start_deg) - (span / 2 if clockwise else -span / 2)
+    start = math.radians(start_deg) - (span / 2 if clockwise else -span / 2)
     layer = Image.new('RGBA', draw.im.size, (0, 0, 0, 0))
-    for ch, wch in zip(text, widths):
-        step = wch / radius
-        mid = angle + (step / 2 if clockwise else -step / 2)
-        cx = center[0] + math.cos(mid) * radius
-        cy = center[1] + math.sin(mid) * radius
-        size = int(font.size * 2)
-        glyph = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-        g = ImageDraw.Draw(glyph)
-        g.text((size / 2, size / 2), ch, font=font, fill=fill, anchor='mm',
-               stroke_width=max(1, font.size // 6), stroke_fill=outline)
-        rot = -math.degrees(mid) - (90 if clockwise else -90)
-        glyph = glyph.rotate(rot, resample=Image.BICUBIC)
-        layer.alpha_composite(glyph, (int(cx - size / 2), int(cy - size / 2)))
-        angle += step if clockwise else -step
+    size = int(font.size * 2.4)
+    for color, stroke in passes:
+        angle = start
+        for ch, wch in zip(text, widths):
+            step = wch / radius
+            mid = angle + (step / 2 if clockwise else -step / 2)
+            cx = center[0] + math.cos(mid) * radius
+            cy = center[1] + math.sin(mid) * radius
+            glyph = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+            ImageDraw.Draw(glyph).text((size / 2, size / 2), ch, font=font, fill=color, anchor='mm',
+                                       stroke_width=stroke, stroke_fill=color)
+            rot = -math.degrees(mid) - (90 if clockwise else -90)
+            glyph = glyph.rotate(rot, resample=Image.BICUBIC)
+            layer.alpha_composite(glyph, (int(cx - size / 2), int(cy - size / 2)))
+            angle += step if clockwise else -step
     return layer
 
 
@@ -231,10 +244,11 @@ def globe_layer(size, center, r):
     arrow_arc(a, (cx, cy), ar, 305, 415, int(3.6 * K), CYAN, BLUE_DARK)
     img.alpha_composite(arrows)
 
-    # POKEVERSE arched over the globe, UNION ROOM straight across under it
+    # PokéVerse arched over the globe in the Pokémon logo style, UNION ROOM straight across under it
     d = ImageDraw.Draw(img)
-    big = ImageFont.truetype(FONT, int(26 * K))
-    img.alpha_composite(arc_text(d, 'POKEVERSE', (cx, cy), R * 1.82, 270, big, (255, 214, 64), INK))
+    big = ImageFont.truetype(TITLE_FONT, int(30 * K))
+    passes = [(LOGO_BLUE_DARK, int(3.2 * K)), (LOGO_BLUE, int(2 * K)), (LOGO_YELLOW, 0)]
+    img.alpha_composite(arc_text(d, TITLE, (cx, cy), R * 1.86, 270, big, passes, tracking=-1.5 * K))
     small = ImageFont.truetype(FONT, int(16 * K))
     d.text((cx, cy + R * 1.58), 'UNION ROOM', font=small, fill=WHITE, anchor='mm',
            stroke_width=2 * K, stroke_fill=INK)
@@ -318,7 +332,11 @@ def main():
     ap.add_argument('--mockup')
     ap.add_argument('--before')
     ap.add_argument('--move-teleporters', action='store_true')
+    ap.add_argument('--title-font', help='Pokemon Solid.ttf; the title falls back to Pixelify Sans')
     args = ap.parse_args()
+    global TITLE_FONT, TITLE
+    if args.title_font:
+        TITLE_FONT, TITLE = args.title_font, 'PokéVerse'
 
     if args.move_teleporters:
         print('moved %d teleporters' % move_teleporters())
