@@ -415,3 +415,49 @@ class Spr:
             j += n
         self.cache[sid] = bytes(px)
         return self.cache[sid]
+
+
+def encode_sprite(rgba):
+    """32*32*4 RGBA bytes as a .spr sprite: color key, size, then (transparent, colored) runs."""
+    alpha = rgba[3::4]
+    runs = bytearray()
+    i = 0
+    while i < 1024:
+        t = i
+        while t < 1024 and alpha[t] == 0:
+            t += 1
+        if t == 1024:
+            break
+        c = t
+        while c < 1024 and alpha[c] != 0:
+            c += 1
+        runs += struct.pack('<HH', t - i, c - t) + rgba[t * 4:c * 4]
+        i = c
+    return b'\xff\x00\xff' + struct.pack('<H', len(runs)) + bytes(runs)
+
+
+def write_sprites(path, out, sprites):
+    """Copies a .spr to out with the given {sprite id: RGBA bytes} replaced.
+
+    The new sprites go on the end of the file and their offsets point there; the old bytes stay
+    behind unused, so every other sprite keeps its offset."""
+    with open(path, 'rb') as src, open(out, 'wb') as dst:
+        count = struct.unpack('<II', src.read(8))[1]
+        src.seek(0)
+        while True:
+            chunk = src.read(1 << 24)
+            if not chunk:
+                break
+            dst.write(chunk)
+        end = dst.tell()
+        offsets = {}
+        for sid in sorted(sprites):
+            if not 0 < sid <= count:
+                raise ValueError('sprite %d is not in the file' % sid)
+            offsets[sid] = end
+            data = encode_sprite(sprites[sid])
+            dst.write(data)
+            end += len(data)
+        for sid, off in offsets.items():
+            dst.seek(8 + (sid - 1) * 4)
+            dst.write(struct.pack('<I', off))

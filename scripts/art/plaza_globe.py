@@ -327,11 +327,37 @@ def move_teleporters():
     return moved
 
 
+def write_spr(sprites, sheet):
+    """Replaces the plaza sprites in data.spr with their tiles of the sheet."""
+    if len(set(sprites.values())) != len(sprites):
+        raise SystemExit('two plaza tiles share a sprite; they cannot get different art')
+    new = {sprite: sheet.crop((dx * 32, dy * 32, dx * 32 + 32, dy * 32 + 32)).tobytes()
+           for (dx, dy), sprite in sprites.items()}
+    # data.spr is hard linked into other checkouts, so write a new file rather than edit it
+    tmp = SPR + '.tmp'
+    pvmap.write_sprites(SPR, tmp, new)
+    check = pvmap.Spr(tmp)
+    for sprite, px in new.items():
+        want = np.frombuffer(px, np.uint8).reshape(-1, 4).copy()
+        want[want[:, 3] == 0] = 0  # .spr keeps no color for transparent pixels
+        if (check.rgba(sprite) or bytes(4096)) != want.tobytes():
+            raise SystemExit('sprite %d did not read back the same' % sprite)
+    old = pvmap.Spr(SPR)
+    for sprite in range(1, old.count + 1, 97):
+        if sprite not in new and old.rgba(sprite) != check.rgba(sprite):
+            raise SystemExit('sprite %d changed though it is not part of the plaza' % sprite)
+    old.f.close()
+    check.f.close()
+    os.replace(tmp, SPR)
+    print('wrote %d plaza sprites into data.spr' % len(new))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--mockup')
     ap.add_argument('--before')
     ap.add_argument('--move-teleporters', action='store_true')
+    ap.add_argument('--write-spr', action='store_true', help='put the new plaza into data.spr')
     ap.add_argument('--title-font', help='Pokemon Solid.ttf; the title falls back to Pixelify Sans')
     args = ap.parse_args()
     global TITLE_FONT, TITLE
@@ -352,6 +378,9 @@ def main():
         sheet.save(original)
     new = build(sheet, floor_sheet(otb, dat, spr))
     new.save(os.path.join(OUT, 'sheet.png'))
+    if args.write_spr:
+        write_spr(sprites, new)
+        spr = pvmap.Spr(SPR)
     if args.mockup or args.before:
         r = Renderer(ITEMS, DAT, SPR)
         if args.before:
