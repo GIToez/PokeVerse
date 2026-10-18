@@ -27,7 +27,12 @@
 
 #ifdef __has_include
 
-#if defined(OTC_USE_LUA51)
+#if defined(OTC_LUA51_CXX)
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+#define LUAJIT_VERSION "Lua 5.1"
+#elif defined(OTC_USE_LUA51)
 #include <lua.hpp>
 #define LUAJIT_VERSION "Lua 5.1"
 #elif __has_include("luajit/lua.hpp")

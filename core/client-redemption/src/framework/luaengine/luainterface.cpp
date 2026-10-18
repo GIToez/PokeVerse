@@ -674,9 +674,9 @@ int LuaInterface::luaErrorHandler(lua_State* L)
     return 1;
 }
 
-// lua_error longjmps. With MSVC that unwinds the C++ frames it jumps over, and from inside a catch
-// block it destroys the block's objects a second time (heap corruption): it is only raised after the
-// call has returned, with nothing left to destroy.
+// With Lua built as C (LuaJIT, the browser build) lua_error longjmps. With MSVC that unwinds the C++
+// frames it jumps over, and from inside a catch block it destroys the block's objects a second time
+// (heap corruption): it is only raised after the call has returned, with nothing left to destroy.
 int LuaInterface::luaCppFunctionCallback(lua_State* L)
 {
     // < 0: it failed and left the error message on the stack
@@ -707,9 +707,14 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
             g_lua.pushString(fmt::format("C++ std::exception: {}", g_lua.traceback(e.what())));
         } catch (...) {
             --g_lua.m_cppCallbackDepth;
+#ifdef OTC_LUA51_CXX
+            // Lua built as C++ raises its errors with throw: one raised inside the call already has its message
+            throw;
+#else
             while (g_lua.stackSize() > 0)
                 g_lua.pop();
             g_lua.pushString(g_lua.traceback("Unknown C++ exception"));
+#endif
         }
         return -1;
     }();

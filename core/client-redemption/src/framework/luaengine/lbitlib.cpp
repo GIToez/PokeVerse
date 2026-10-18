@@ -32,10 +32,15 @@
 
 #define LUA_LIB
 
+#ifdef OTC_LUA51_CXX
+#include <lua.h>
+#include <lauxlib.h>
+#else
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 }
+#endif
 
 /* ----- adapted from lua-5.2.0 luaconf.h: ----- */
 

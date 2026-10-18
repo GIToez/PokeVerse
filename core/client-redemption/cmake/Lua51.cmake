@@ -20,9 +20,17 @@ list(REMOVE_ITEM LUA51_SOURCES
   "${lua51_SOURCE_DIR}/src/luac.c"
   "${lua51_SOURCE_DIR}/src/print.c")
 
+# Compiled as C++, Lua raises errors with throw instead of longjmp, so an error passing through
+# C++ frames (a C++ function called from Lua, a catch block) runs their destructors. The headers
+# must then be included without extern "C" (OTC_LUA51_CXX).
+set_source_files_properties(${LUA51_SOURCES} PROPERTIES LANGUAGE CXX)
 add_library(lua51 STATIC ${LUA51_SOURCES})
-set_target_properties(lua51 PROPERTIES LINKER_LANGUAGE C POSITION_INDEPENDENT_CODE ON)
+set_target_properties(lua51 PROPERTIES LINKER_LANGUAGE CXX POSITION_INDEPENDENT_CODE ON)
 target_include_directories(lua51 PUBLIC "${lua51_SOURCE_DIR}/src" "${lua51_SOURCE_DIR}/etc")
+target_compile_definitions(lua51 PUBLIC OTC_LUA51_CXX)
+if(MSVC)
+  target_compile_options(lua51 PRIVATE /EHsc)
+endif()
 if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
   target_compile_definitions(lua51 PRIVATE LUA_USE_POSIX LUA_USE_DLOPEN)
   target_link_libraries(lua51 PRIVATE ${CMAKE_DL_LIBS})

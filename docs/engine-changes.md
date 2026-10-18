@@ -67,9 +67,9 @@ Rules for new engine changes:
 
 | Where | What |
 | --- | --- |
-| `cmake/Lua51.cmake`, `src/CMakeLists.txt` | PUC Lua 5.1.5 (`OPTIONS_USE_LUA51`, on) instead of LuaJIT, so table iteration order (and list order in the UI) is the same as the legacy client. Built as C, linked with the client's C runtime on Windows, without FORTIFY on Android. |
-| `framework/luaengine/lbitlib.cpp` | Legacy `bit32`. |
-| `framework/luaengine/luainterface.cpp/.h` | A failed C++ call raises its Lua error only after the `catch` block has ended. Lua 5.1 built as C raises errors with `longjmp`; jumping out of an MSVC `catch` freed the exception's strings twice (heap corruption `0xC0000374`). Lua panics write a crash report. |
+| `cmake/Lua51.cmake`, `src/CMakeLists.txt` | PUC Lua 5.1.5 (`OPTIONS_USE_LUA51`, on) instead of LuaJIT, so table iteration order (and list order in the UI) is the same as the legacy client. Built as C++ (`OTC_LUA51_CXX`), so `lua_error` throws instead of `longjmp` and C++ frames it passes through are unwound properly; linked with the client's C runtime on Windows, without FORTIFY on Android. |
+| `framework/luaengine/lbitlib.cpp` | Legacy `bit32` (headers without `extern "C"` when Lua is C++). |
+| `framework/luaengine/luainterface.cpp/.h` | A failed C++ call raises its Lua error only after the `catch` block has ended. With Lua built as C (LuaJIT, the browser build) errors `longjmp`, and jumping out of an MSVC `catch` freed the exception's strings twice (heap corruption `0xC0000374`). With Lua built as C++, a Lua error raised inside a C++ call is re-thrown as it is. Lua panics write a crash report. |
 
 ## Platform
 
