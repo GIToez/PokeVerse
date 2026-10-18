@@ -333,7 +333,9 @@ jobs:
                   --release-dir release --release-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG")
           python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
           python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary PokeVerse "${common[@]}"
-          python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}" \
+            --apk bin-android/PokeVerse-Android.apk \
+            --apk-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG/PokeVerse-Android.apk"
           du -sh site release
 
       # the PokeVerse-Clients site is the website too: its pages sit next to updater/
@@ -362,6 +364,9 @@ jobs:
           assert m["url"] == f"{pages}/updater/files/{os.environ['TAG']}", m["url"]
           for url in m["urls"].values():
               assert url.startswith(f"https://github.com/{repo}/releases/download/"), url
+          if name == "android":
+              assert m["apk"]["url"] == f"https://github.com/{repo}/releases/download/{os.environ['TAG']}/PokeVerse-Android.apk", m["apk"]
+              print(f"android: engine {m['apk']['engine']}")
           print(f"{name}: the manifest points at {pages} and the {repo} releases")
           EOF
           done

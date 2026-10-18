@@ -33,6 +33,21 @@ work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 "$root/scripts/assemble-redemption-client.sh" "${opts[@]}" "$work/client"
 
+# Which engine this APK carries. The updater cannot replace the engine on Android, so when the
+# Android manifest names another engine it offers the new APK instead of putting files made
+# for that engine on this one. It changes only with what goes into the native library or the
+# app around it, so releases that change only Lua and data still update in place.
+engine_paths=(core/client-redemption/src core/client-redemption/android core/client-redemption/cmake
+  core/client-redemption/overlay-ports core/client-redemption/CMakeLists.txt core/client-redemption/CMakePresets.json
+  core/client-redemption/vcpkg.json core/client-redemption/vcpkg-configuration.json
+  core/client-redemption/build_luajit_android.sh core/client-redemption/setup_android_deps.sh scripts/build-android-client.sh)
+engine=$(cd "$root" && for p in "${engine_paths[@]}"; do git rev-parse "HEAD:$p" 2>/dev/null || echo "none"; done | sha1sum | cut -c1-12)
+if [ -n "$(cd "$root" && git status --porcelain -- "${engine_paths[@]}" 2>/dev/null)" ]; then
+  engine="$engine-dirty"
+fi
+echo "$engine" > "$work/client/engine.txt"
+echo "Android engine: $engine"
+
 mkdir -p "$android/app/src/main/assets"
 rm -f "$android/app/src/main/assets/data.zip"
 (cd "$work/client" && zip -qr -X "$android/app/src/main/assets/data.zip" .)
