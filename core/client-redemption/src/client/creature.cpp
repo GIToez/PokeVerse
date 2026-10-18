@@ -954,13 +954,15 @@ void Creature::setDirection(const Otc::Direction direction)
 
 void Creature::setOutfit(const Outfit& outfit, bool fireEvent)
 {
-    if (m_outfit == outfit)
-        return;
-
+    // before comparing: an outfit from Lua has no category, and a new creature's empty outfit would
+    // otherwise equal { type = 0 } and keep the category no thing type has
     Outfit newOutfit = outfit;
     if (newOutfit.isInvalid()) {
         newOutfit.setCategory(newOutfit.getAuxId() > 0 ? ThingCategoryItem : ThingCategoryCreature);
     }
+
+    if (m_outfit == newOutfit)
+        return;
 
     const Outfit oldOutfit = m_outfit;
 
