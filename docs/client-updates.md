@@ -9,7 +9,7 @@ Nothing runs on our own servers for this, and there is no PHP.
   and every file under 95 MB (`updater/files/<release>/...`). Pages does not accept files
   over 100 MB.
 - **GitHub Releases** host the larger files (the 308 MB `data.spr`, and the executable if it
-  is too big) plus the first-install downloads, `PokeVerse-Windows.zip`,
+  is too big) plus the first-install downloads, `PokeVerse-Setup.exe`, `PokeVerse-Windows.zip`,
   `PokeVerse-Linux.tar.gz` and `PokeVerse-Android.apk`.
 - The workflow is `.github/workflows/client-release.yml` (Actions → **Client release**).
 
@@ -98,6 +98,12 @@ of files are about 600 MB, under the 1 GB Pages size limit.
 - **Windows and Linux:** the executable updates itself under the same name, so shortcuts
   keep working. The running file is renamed to `PokeVerse.exe.old` (`PokeVerse.old` on Linux),
   the new one is written in its place, and the old copy is deleted on a later start.
+- **Settings on Windows** (options, hotkeys, the remembered account, the log) are in
+  `%APPDATA%\PokeVerse\`. Earlier engines nested them as `%APPDATA%\pokeverse\pokeverse\pokeverse\`;
+  the first start of the new engine moves them up and removes the empty folders.
+  Remembered passwords keep working, because their key still uses the old folder's name. Rolling back to an
+  older engine would start with default settings, since it looks in the old folder. Linux keeps
+  `~/.local/share/pokeverse/.pokeverse/`.
 - **Linux:** players start the game with `PokeVerse.sh` (or by double-clicking
   `PokeVerse.desktop` in the game folder). The launcher changes to the game folder, starts
   `./PokeVerse`, and keeps a "PokeVerse" entry with the icon in the app menu
