@@ -100,11 +100,6 @@ local function refreshLabels()
     button:setTooltip(labelsOn() and tr('Hide the names of places') or tr('Show the names of places'))
 end
 
--- "Orange Islands" as "O R A N G E   I S L A N D S"
-local function spaced(text)
-    return (text:upper():gsub('(%S)', '%1 '):gsub('%s+$', ''))
-end
-
 local function drawLabels()
     for _, label in ipairs(labelWidgets) do
         label:destroy()
@@ -125,7 +120,7 @@ local function drawLabels()
     end
     for _, region in ipairs(map.getRegions()) do
         if region.position then
-            add('region', spaced(tr(region.name)), region.position)
+            add('region', tr(region.name), region.position)
         end
     end
     for _, label in ipairs(map.getLabels()) do
@@ -657,7 +652,7 @@ local function drawPlaces()
             end
 
             local header = g_ui.createWidget('PpGroupRow', list)
-            header.name:setText(tr(info.name):upper())
+            header.name:setText(tr(info.name))
             header.name:setColor('#ffd75a')
             header.note:setText(tostring(region.count))
             header.icon:setImageSource(Pp.IMAGES .. 'icon_map')
@@ -672,8 +667,10 @@ local function drawPlaces()
             end, openAll)
             header.rows = {}
             for _, town in ipairs(towns) do
+                town:setMarginLeft(14)
                 header.rows[#header.rows + 1] = town
                 for _, row in ipairs(town.rows) do
+                    row:setMarginLeft(28)
                     header.rows[#header.rows + 1] = row
                 end
             end
