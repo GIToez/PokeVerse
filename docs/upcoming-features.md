@@ -31,15 +31,34 @@ so. Items marked **To decide** need an answer before work starts.
 - Pokemon [minimap marks](#minimap-marks-built) in place of Tibia's flags.
 - The new top menu bar (grouped icons, Store button) and one hotkey system for items and moves.
 - [Slot machine and world boss fixes](#11-bug-fixes-and-small-ideas).
+- [Vocations](#6-vocations): six to choose from at level 20, five ranks with rank-up trials,
+  vocation outfits and the Rookie starter, the Ranger radar and the Angler Fishing Guide.
+- The NPC dialogue window, the 1634 rewritten NPC lines, the quest log, quest notices, NPC role
+  badges and chat portraits for the famous NPCs ([section 3](#3-npc-dialogue-quests-and-tasks)).
+- The Trainer Card (also in Discord's /trainer), the Day Care window, held items given by
+  dragging, and the Pokemon Trade window (sell Pokemon to Ron and Joel Morris).
+- The [event calendar](#15-daily-login-rewards-and-events) with holidays, seasons and weather,
+  rotating server events, seasonal decorations (automatic and placed by hand) and wild
+  legendaries (work in progress).
+- The Admin window for all staff, and event boosts up to 10x for 7 days.
+- Visual styles (Off, Vibrant, Toon), shiny and status effects on Pokemon, and the Union Room
+  plaza.
+- Johto, still being built: air and sea travel, the Magnet Train, signs, the region fence and
+  Zephyr Gym.
+- Keys: M the Pokepedia map, P the Trainer Card, C the calendar. First-visit hints (Pokemon
+  Center, Mart, Day Care and more) with a Settings switch and a wiki page.
+- The anniversary cake town only opens during the Anniversary (staff test it with
+  `/anniversary show`), and the Troca chat channel is now Trade.
+- Crash fixes on Windows (the shader list, Lua errors inside C++) and saved crash reports.
 
 **Next, in order (agreed October 15):**
 
-1. **Updater** (in progress): four files at a time, written to disk every 25 so an interrupted
+1. **Updater** (built): four files at a time, written to disk every 25 so an interrupted
    update resumes, "File X of N, MB left" and the speed; the client's own files come last.
    On Android the game keeps running in the background with a notification ("PokeVerse is
    updating in the background", or still connected while logged in). No "update the client
    first" step. The map pictures stay as they are.
-2. **NPC fixes** from the [NPC audit](npc-audit.md): the shared code (battles, travel, quests,
+2. **NPC fixes** (built) from the [NPC audit](npc-audit.md): the shared code (battles, travel, quests,
    Ranger Club, bank), greetings that hide what the NPC answers to, and missing {yes}/{no}.
    NPCs that only have one line are their own category, not a problem.
 3. **[NPC dialogue window](#3-npc-dialogue-quests-and-tasks)** (built): portrait (the leaders',
@@ -54,9 +73,13 @@ so. Items marked **To decide** need an answer before work starts.
    it only shows when that player has a quest they can start or hand in there (level,
    earlier quests and cooldown checked by the server). Needs the new client build.
 6. The NPCs with their own scripts, town by town.
-7. [Vocations](#6-vocations), replacing the old vocations.
+7. [Vocations](#6-vocations) (built).
 8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
 9. [Factions](#10-factions).
+10. The [modernization audit](modernization-audit.md): the old keyword systems get windows,
+    in its ranked order (Poke Mart, Nurse Joy menu, travel picker, bank, and the rest).
+
+Items 1 to 5 and 7 are done.
 
 Alongside, as small separate changes: what's left of the
 [bug fixes and small ideas](#11-bug-fixes-and-small-ideas) (hunting task time limit),
@@ -731,7 +754,7 @@ do not change.
   `scripts/art/vocation-banners`.
 - **Built: ranks and perks.** Every number is in `Vocations.PERKS` (`070-vocations.lua`).
   A new vocation starts at rank 1; `Vocations.rankUp(cid)` gives the next rank when the
-  trainer's level allows it, for the rank-up quests and tasks to call (they don't exist yet).
+  trainer's level allows it and the rank-up trial below is done.
   The title shows when others look at the trainer ("Vocation: Catcher, Rookie Catcher
   (rank 1)") and in the vocation window. No perk works in a duel, the PvP arena or an NPC
   battle.
@@ -1290,6 +1313,11 @@ for PokeVerse later. Do not delete it.
   calendar (Oct 3 to 5), and the Easter, July, Halloween and Christmas content only on their
   dates (see section 15). Before, the surprise bags dropped all year and the hourly
   anniversary raid failed (`executeRaid` did not exist).
+  The cake town itself is closed too: its only way in, the sign and teleport in the Union Room,
+  is only there during the Anniversary. When it ends, players in the town are sent back, the
+  cakes are removed and the town is put back. Staff can show the entrance to test it
+  (`/anniversary show [minutes]`, `hide`) or force the whole event (`/anniversary on|off|auto`),
+  also from the Admin window's Server tab.
 - Switch them off in one place where possible (a config flag), so turning them back on is
   easy.
 
@@ -1700,6 +1728,63 @@ becomes a post in a Discord forum channel, with tags.
 - The shortcut buttons keep working for look and follow.
 - Then a phone UI pass: button sizes, the joystick, and windows that don't fit the
   screen.
+
+## 18. Ideas (not agreed)
+
+Features other Pokemon games and MMOs have that PokeVerse doesn't yet. All are **To decide**.
+Sizes are rough: small is a few files on one side, large touches the server, client and map.
+
+Already in the game, so not listed here: gym rematches (pay the leader again), TV broadcasting
+to watch a player, parties with shared EXP, guilds and guild halls, the VIP list, parcels and
+letters, referrals, Pokedex achievements (1, 50, 100, 200 and 251 species), nicknames at the
+soul coin NPCs, Fly, world bosses, wild legendaries and legendary dungeons, the Elite Four, the
+Frontier Island battle tower, tournaments, duels with bets, Safari, fishing, Headbutt, eggs,
+berries and the GTS. Making some of those nicer is in the
+[modernization audit](modernization-audit.md) instead.
+
+**Johto**
+- **Bug-Catching Contest** in the National Park (Tue, Thu and Sat): 20 minutes with lent Sport
+  Balls and one Pokemon, judged by species, level, IVs and HP left, with prizes for the top
+  three. Builds on the Safari check-in and the event calendar. Medium.
+- **Kurt's Apricorn balls:** pick Apricorns from trees around Johto (the berry code) and the
+  Azalea ball maker turns them into Level, Lure, Moon, Fast, Friend, Heavy and Love Balls, each
+  with its own catch rule. The Kurt in the game today is a newspaper quest. Medium.
+- **Ruins of Alph:** the Unown slide puzzles, each opening a chamber where more Unown forms
+  appear. Medium.
+- **Red on Mt. Silver:** a post-game duel after the 16 badges, with a weekly rematch. Red exists
+  today only as the tutorial guide. Small, with the gym leader code.
+
+**Battle**
+- **Ranked PvP ladder:** queue from a window, Elo seasons that follow the calendar's seasons,
+  season rewards (an outfit, a ball paint, a title) and the ladder on the website and in
+  Discord. The tournaments today only have fixed times and a highscore. Large.
+- **Co-op raid dens:** a party of 2 to 4 against one strong Pokemon with shields and a timer,
+  and everyone who helped gets one catch try. World bosses are free-for-all with no catch.
+  The dens rotate with the calendar. Large.
+
+**Collecting**
+- **Real Pokedex rewards:** items at the Pokedex achievements (they only give points now), a
+  shiny charm for the full dex, and a reward for each region's dex. Small.
+- **Shiny chains:** a Poke Radar chain in grass and a fishing streak that raise the shiny
+  chance. Medium.
+- **Move tutors and a move relearner**, in the move manager from the modernization audit.
+  Medium.
+- **Mystery Gift codes:** staff make codes in the Admin window that players redeem for items,
+  Pokemon or outfits, for Discord giveaways. Small.
+- **Season pass:** a free and a premium track per season, filled by the daily and weekly
+  tasks. Premium uses soul coins, so it needs the Store first. Large.
+
+**World**
+- **Team Rocket takeovers:** a calendar event where Rocket holds a town, with waves of grunts,
+  an Executive boss and a reward bar for the whole town. Today the grunts only wander near
+  their hideouts. Medium.
+- **Voltorb Flip** at the Game Corner, next to the slot machines. Small.
+- **Photo mode:** hide the UI, add a frame and save the picture for Discord. Small.
+- **Pokemon that follow you** in towns, just for looks. Medium, mostly client work.
+
+**Quality of life**
+- **Sort and bulk actions** in the PC and the bag (sort by number, level or type; release or
+  move several at once). Small.
 
 ## Going private
 
