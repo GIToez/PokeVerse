@@ -50,6 +50,10 @@ so. Items marked **To decide** need an answer before work starts.
 - The anniversary cake town only opens during the Anniversary (staff test it with
   `/anniversary show`), and the Troca chat channel is now Trade.
 - Crash fixes on Windows (the shader list, Lua errors inside C++) and saved crash reports.
+- The old client's red ring under the target again (or a Poke Ball ring, or Tibia's square),
+  Poke Ball corners for the mouse-over crosshair, both in Options > Interface.
+- Names on the Pokepedia map by zoom (regions, cities, routes, landmarks) with an Aa toggle,
+  and the Places list grouped by region with routes, landmarks and a region filter.
 
 **Next, in order (agreed October 15):**
 
@@ -245,7 +249,7 @@ together rather than as two separate features.
 | Client path + auto-walk | `LocalPlayer::autoWalk`, `Game::autoWalk`, 127-step packets, continue-walk when the path ends before the destination (`localplayer.cpp`). |
 | Minimap click walk | `modules/gamelib/ui/uiminimap.lua` (`autowalk = true`). |
 | Full map (protocol 854) | `game_minimap/minimap.lua` `fullscreen()` — **does not** center on the player when opened; it restores `oldPos` from the last session. Side panel minimap already follows the player when `fullMapView` is false. |
-| Town names + guide marks | `pokeverse-modern/modules/game_minimap/pokeverse.lua` (`MAP_COMPOSITIONS`, `GUIDES`, coord copy label). |
+| Town names + guide marks | `pokeverse-modern/modules/game_minimap/map_labels.lua` (`MAP_REGIONS`, `MAP_LABELS`, written by `scripts/mapper/build_map_labels.py`) and `pokeverse.lua` (`GUIDES`, coord copy label). |
 | Cyclopedia map | Not shipped (stripped in `assemble-redemption-client.sh`); **M** uses fullscreen minimap, not Tibia 13 cyclopedia. |
 
 ### Auto-walk: symptoms and likely causes
@@ -289,7 +293,7 @@ status line (“Walking…”) and clearer cancel. Optional: small `game_nav` mo
 
 **Phase D — Routes**
 
-- A **route** is an ordered list of stops: waypoint refs, town labels from `MAP_COMPOSITIONS`,
+- A **route** is an ordered list of stops: waypoint refs, town labels from `MAP_LABELS`,
   or a raw clicked tile.
 - UI: build route from waypoints, show polyline + per-leg distance, checklist of stops.
 - **Navigation controller** (client Lua): current stop index, on `onPositionChange` mark stop
