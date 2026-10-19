@@ -405,6 +405,58 @@ void GraphicalApplication::doScreenshot(std::string file)
     });
 }
 
+void GraphicalApplication::doScaledScreenshot(std::string file, int maxWidth)
+{
+    if (file.empty()) {
+        file = "screenshot.png";
+    }
+
+    g_mainDispatcher.addEvent([file, maxWidth] {
+        auto resolution = g_graphics.getViewportSize();
+        const int width = resolution.width();
+        const int height = resolution.height();
+        auto pixels = std::make_shared<std::vector<uint8_t>>(width * height * 4 * sizeof(GLubyte), 0);
+        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels->data());
+
+        g_asyncDispatcher->detach_task([resolution, pixels, file, maxWidth] {
+            try {
+                Image image(resolution, 4, pixels->data());
+                image.flipVertically();
+                image.setOpacity(255);
+                const int step = maxWidth > 0 ? std::max(1, (resolution.width() + maxWidth - 1) / maxWidth) : 1;
+                if (step == 1) {
+                    image.savePNG(file);
+                    return;
+                }
+                const Size size(resolution.width() / step, resolution.height() / step);
+                Image small(size, 4);
+                const int area = step * step;
+                for (int y = 0; y < size.height(); ++y) {
+                    for (int x = 0; x < size.width(); ++x) {
+                        int sum[4] = { 0, 0, 0, 0 };
+                        for (int dy = 0; dy < step; ++dy) {
+                            for (int dx = 0; dx < step; ++dx) {
+                                const uint8_t* pixel = image.getPixel(x * step + dx, y * step + dy);
+                                for (int c = 0; c < 4; ++c) {
+                                    sum[c] += pixel[c];
+                                }
+                            }
+                        }
+                        uint8_t out[4];
+                        for (int c = 0; c < 4; ++c) {
+                            out[c] = static_cast<uint8_t>(sum[c] / area);
+                        }
+                        small.setPixel(x, y, out);
+                    }
+                }
+                small.savePNG(file);
+            } catch (stdext::exception& e) {
+                g_logger.error(std::string("Can't do screenshot: ") + e.what());
+            }
+        });
+    });
+}
+
 void GraphicalApplication::doMapScreenshot(std::string fileName)
 {
     if (m_drawEvents) m_drawEvents->doMapScreenshot(fileName);
