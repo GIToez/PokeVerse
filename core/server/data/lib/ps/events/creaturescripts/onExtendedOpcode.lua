@@ -28,6 +28,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Weather.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.POKEMON_SHOP) then
         PokemonShop.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.HINTS) then
+        Hints.onClientMessage(cid, buffer)
     end
     return true
 end

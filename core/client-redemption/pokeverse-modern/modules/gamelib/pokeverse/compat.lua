@@ -211,6 +211,7 @@ ExtendedIds.Legendary = 34
 ExtendedIds.Weather = 35
 ExtendedIds.CreatureStatus = 36
 ExtendedIds.PokemonShop = 37
+ExtendedIds.Hints = 38
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

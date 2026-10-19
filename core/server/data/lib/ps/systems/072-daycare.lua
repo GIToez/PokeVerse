@@ -590,7 +590,11 @@ Daycare.open = function(cid)
     if (not Daycare.enabled(cid)) then
         return false
     end
-    return Daycare.sendState(cid)
+    if (not Daycare.sendState(cid)) then
+        return false
+    end
+    Hints.show(cid, "daycare")
+    return true
 end
 
 -- The egg slot after rolling, for the NPCs' conversation
