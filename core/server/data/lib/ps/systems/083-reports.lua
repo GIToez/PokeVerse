@@ -547,9 +547,11 @@ Reports.update = function(id, status, note, author, source)
         return row, nil, false
     end
     local now = os.time()
+    -- out of "duplicate" means it is its own report again
+    local duplicateOf = status == "duplicate" and row.duplicate_of or 0
     db.executeQuery(string.format("UPDATE `reports` SET `status` = %s, `staff_note` = %s, `handled_by` = %s, " ..
-        "`updated_at` = %d, `reporter_seen` = 0 WHERE `id` = %d;", db.escapeString(status),
-        db.escapeString(note ~= "" and note or row.staff_note), db.escapeString(author), now, row.id))
+        "`updated_at` = %d, `reporter_seen` = 0, `duplicate_of` = %d WHERE `id` = %d;", db.escapeString(status),
+        db.escapeString(note ~= "" and note or row.staff_note), db.escapeString(author), now, duplicateOf, row.id))
     addEvent(row.id, author, source, status ~= row.status and status or "", note)
     local previous = row.status
     row = getRow(id)
