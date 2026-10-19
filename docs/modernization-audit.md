@@ -30,6 +30,7 @@ old keyword dialogue left as the fallback for older clients.
 | 10 | Name Rater and the Store | Now and then | Large (Store) |
 | 11 | Houses tab | Now and then | Medium |
 | 12 | Stock OTClient modules cleanup | Never (cost only) | Small |
+| 13 | Social windows (friends, guild, mail, rematch stars, watch) | Daily | Medium each |
 
 ## 1. Poke Mart buy window
 
@@ -139,18 +140,21 @@ missing, in the Sell Shop's style.
 ## 10. Name Rater and the Store
 
 **Now.**
-- **Name Rater:** there is none. Jayma Deniece (`default.lua`) only talks about nicknames, and the
-  `POKEMON_NEW_NICKNAME` storage in `lib/ps/config/storages.lua` is defined but never used.
-- **Store:** Soul Coins exist (see `docs/upcoming-features.md`), but nothing sells them or the Premium
-  items. Stock `game_store` is not loaded.
+- **Name Rater:** the soul coin NPCs (`npc/scripts/soulTrade.lua`) give a nickname for 1 soul coin.
+  You say {nick change}, type the name and confirm, and it renames the ball in your ball slot. There is
+  no window: the name is checked only after it is typed, and players can't see which Pokemon gets it.
+- **Store:** the same NPCs sell Premium, addons, a guild, a sex change, bless, a nickname, stamina and
+  egg move capsules for soul coins, all by keyword. Buying soul coins isn't built (see
+  `docs/upcoming-features.md`), and stock `game_store` is not loaded.
 
 **Target.**
-- **Name Rater:** an NPC window that renames a Pokemon in the bag, with a name filter and the price.
-- **Store:** a PokeVerse Store window for Soul Coins (Premium time, outfits, addons) built on the PC
-  inbox for delivery.
+- **Name Rater:** a window at the soul coin NPCs: pick the Pokemon from the bag or party, type the name
+  (checked as you type) and see the price.
+- **Store:** one Store window (the top bar's Store button) for everything the soul coin NPCs sell, with
+  delivery through the PC inbox, and buying soul coins once payments exist.
 
-**Files.** A new system in `data/lib/ps/systems/` and a client module for each. The Store needs payment and the website first
-(`docs/website.md`).
+**Files.** `npc/scripts/soulTrade.lua`, a new system in `data/lib/ps/systems/` and a client module.
+Buying soul coins needs payments and the website first (`docs/website.md`).
 
 ## 11. Houses tab
 
@@ -184,6 +188,19 @@ and gives fewer errors from Tibia opcodes the server never sends.
 
 **Files.** `scripts/assemble-redemption-client.sh`, then the Windows, Linux and Android packaging
 scripts to check nothing else expects those folders.
+
+## 13. Social windows for what already exists
+
+These work today through chat commands or Tibia windows. Each one could get a window:
+- **Friends:** a Friends window to replace the VIP list, with online status, a party invite and party
+  chat. Parties and shared EXP already work (TFS parties, `experienceShareRadius` in `config.lua`).
+- **Guilds:** a Guild window to replace the Guild channel's `!invite`, `!kick` and the other commands,
+  with the guild tag on the Trainer Card.
+- **Mail:** send items and money through the PC inbox, in place of parcels and letters from the Mart.
+- **Gym rematches:** they already exist (pay the leader again). Rematch wins could show as stars on
+  the badges in the Trainer Card.
+- **Watching duels:** TV broadcasting (`/tvname`, `/tvlist` and the other commands) lets players watch a
+  trainer. A "Watch" button on duels and tournament matches could use it.
 
 ## Open follow-up: walls 874, 4471 and 4474 in two Marts
 
