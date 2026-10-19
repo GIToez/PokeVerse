@@ -1,82 +1,5 @@
--- PokeVerse world map: the map picture, city names (full map only) and the guide NPC marks
-
-local MAP_COMPOSITIONS = {}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Viridian", position = {x = 3296, y = 560, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Pallet", position = {x = 3292, y = 799, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Pewter", position = {x = 3305, y = 296, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cerulean", position = {x = 3888, y = 305, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Saffron", position = {x = 3938, y = 478, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Celadon", position = {x = 3700, y = 437, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Lavender", position = {x = 4191, y = 557, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Vermilion", position = {x = 3952, y = 637, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fuchsia", position = {x = 3863, y = 845, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cinnabar", position = {x = 3357, y = 1035, z = 7}}
-
--- Johto (each town's middle in scripts/mapper/build_johto.py's area sections)
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "New Bark", position = {x = 2721, y = 812, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cherrygrove", position = {x = 2550, y = 829, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Violet", position = {x = 2498, y = 569, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Azalea", position = {x = 2398, y = 1040, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Goldenrod", position = {x = 2315, y = 731, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Ecruteak", position = {x = 2331, y = 399, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Olivine", position = {x = 2132, y = 513, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cianwood", position = {x = 1926, y = 657, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mahogany", position = {x = 2553, y = 384, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Blackthorn", position = {x = 2744, y = 376, z = 7}}
-
---[[MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Grassland", position = {x = 3025, y = 887, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Waterland", position = {x = 2899, y = 715, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fireland", position = {x = 2975, y = 413, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Frontier Island", position = {x = 3769, y = 117, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Psyland", position = {x = 4008, y = 127, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Flyland", position = {x = 3731, y = 389, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Iceland", position = {x = 3799, y = 713, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Ghostland", position = {x = 3582, y = 915, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Normaland", position = {x = 3367, y = 946, z = 7} }]]
-
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Hamlin", position = {x = 3473, y = 1493, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Tarroco", position = {x = 3235, y = 1490, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Kumquat", position = {x = 3516, y = 1674, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Pummelo", position = {x = 3062, y = 1658, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Millsweet", position = {x = 3071, y = 1905, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Desert Island", position = {x = 2823, y = 1819, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mandarin Island North", position = {x = 2966, y = 2197, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mikan", position = {x = 2719, y = 2408, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Sunburst", position = {x = 3025, y = 2551, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Tangelo", position = {x = 2726, y = 2780, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Valencia", position = {x = 2985, y = 2949, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Pinkan", position = {x = 3265, y = 2784, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fairchild", position = {x = 3473, y = 2496, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mandarin Island South", position = {x = 3542, y = 3234, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Trovita", position = {x = 3339, y = 3191, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Shamouti", position = {x = 3524, y = 1937, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Cleopatra", position = {x = 3923, y = 1945, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Butwal", position = {x = 4102, y = 1777, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Ascorbia", position = {x = 4430, y = 1705, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Navel", position = {x = 4402, y = 2249, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Desert Island", position = {x = 4145, y = 2351, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Seven Grapefruit", position = {x = 4332, y = 2630, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Moro", position = {x = 4178, y = 2934, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Golden", position = {x = 3904, y = 3030, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Murcott", position = {x = 4121, y = 3233, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Desert Island", position = {x = 4001, y = 3458, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Kinow", position = {x = 3827, y = 2633, z = 7} }
-
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Littleroot", position = {x = 513, y = 1832, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Oldale", position = {x = 519, y = 1709, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Petalburg", position = {x = 396, y = 1689, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Rustboro", position = {x = 256, y = 1506, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Dewford", position = {x = 408, y = 2005, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Slateport", position = {x = 728, y = 1787, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mauville", position = {x = 777, y = 1451, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Verdanturf", position = {x = 544, y = 1510, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fallarbor", position = {x = 475, y = 1143, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Lavaridge", position = {x = 572, y = 1326, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Fortree", position = {x = 996, y = 1151, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Lilycove", position = {x = 1354, y = 1313, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Mossdeep", position = {x = 1732, y = 1429, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Sootopolis", position = {x = 1576, y = 1547, z = 7}}
-MAP_COMPOSITIONS[#MAP_COMPOSITIONS + 1] = {text = "Pacifidlog", position = {x = 1311, y = 1762, z = 7}}
+-- PokeVerse world map: the map picture, city names (full map only) and the guide NPC marks.
+-- The names and regions are map_labels.lua's (scripts/mapper/build_map_labels.py).
 
 MAPMARK_TICK = 0
 MAPMARK_QUESTION = 1
@@ -414,16 +337,18 @@ function PokeverseMap.load(minimap)
         label:destroy()
     end
     cityLabels = {}
-    for _, composition in pairs(MAP_COMPOSITIONS) do
-        local label = g_ui.createWidget('MinimapFlag')
-        minimap:insertChild(1, label)
-        label.pos = composition.position
-        label:setText(composition.text)
-        label:setFont('sans-bold-16px')
-        label:setTextAutoResize(true)
-        label:setVisible(minimap.fullMapView == true)
-        minimap:centerInPosition(label, label.pos)
-        cityLabels[#cityLabels + 1] = label
+    for _, city in ipairs(MAP_LABELS) do
+        if city.kind == 'city' then
+            local label = g_ui.createWidget('MinimapFlag')
+            minimap:insertChild(1, label)
+            label.pos = city.position
+            label:setText(city.name)
+            label:setFont('sans-bold-16px')
+            label:setTextAutoResize(true)
+            label:setVisible(minimap.fullMapView == true)
+            minimap:centerInPosition(label, label.pos)
+            cityLabels[#cityLabels + 1] = label
+        end
     end
 
     if modules.client_options and modules.client_options.getOption then
@@ -435,16 +360,48 @@ function PokeverseMap.load(minimap)
     end
 end
 
--- the Pokepedia map's Places list: { { name, town, position, type, icon } }, towns have no type
+-- the region a position is in: MAP_REGIONS' boxes in order, the rest is Kanto
+function PokeverseMap.regionAt(pos)
+    for _, region in ipairs(MAP_REGIONS) do
+        if region.from and pos.x >= region.from.x and pos.x <= region.to.x and pos.y >= region.from.y and
+            pos.y <= region.to.y then
+            return region.id
+        end
+    end
+    return 'kanto'
+end
+
+function PokeverseMap.getRegions()
+    return MAP_REGIONS
+end
+
+function PokeverseMap.getLabels()
+    return MAP_LABELS
+end
+
+-- the Pokepedia map's Places list: { { name, town, region, kind, position, type, icon } }. Towns
+-- (kind 'town'), routes and landmarks have no type; a route's or landmark's town is its group's name.
 function PokeverseMap.getPlaces()
     local places = {}
-    for _, composition in ipairs(MAP_COMPOSITIONS) do
-        places[#places + 1] = { name = composition.text, town = composition.text, position = composition.position }
+    local townRegion = {}
+    for _, label in ipairs(MAP_LABELS) do
+        local place = { name = label.name, region = label.region, kind = label.kind, position = label.position }
+        if label.kind == 'city' then
+            place.kind = 'town'
+            place.town = label.name
+            townRegion[label.name] = label.region
+        elseif label.kind == 'route' then
+            place.town = tr('Routes')
+        else
+            place.town = tr('Landmarks')
+        end
+        places[#places + 1] = place
     end
     for town, marks in pairs(GUIDES) do
+        local region = townRegion[town] or (marks[1] and PokeverseMap.regionAt(marks[1].position)) or 'kanto'
         for _, mark in ipairs(marks) do
-            places[#places + 1] = { name = tr(mark.description), town = town, position = mark.position, type = mark.type,
-                icon = mark.icon }
+            places[#places + 1] = { name = tr(mark.description), town = town, region = region, position = mark.position,
+                type = mark.type, icon = mark.icon }
         end
     end
     return places
