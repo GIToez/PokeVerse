@@ -12,6 +12,7 @@
 --   { 'image', path, width, height, caption }
 --   { 'table', { { heading, ... }, { cell, ... }, ... } }
 --   { 'see', { topic key, ... } }    buttons to other topics
+--   { 'hints' }                      the first-visit hints, each with a button that shows it again
 WikiTab = {}
 
 local page
@@ -200,6 +201,33 @@ function BLOCKS.see(body, block)
             button:setWidth(math.max(80, button:getTextSize().width + 24))
             button.onClick = function() WikiTab.open(key) end
         end
+    end
+end
+
+-- every first-visit hint (game_hints) with a button that shows it again
+function BLOCKS.hints(body, block)
+    local hints = modules.game_hints
+    if not hints or not hints.getHints then
+        return
+    end
+    for _, hint in ipairs(hints.getHints()) do
+        local row = g_ui.createWidget('WikiLinks', body)
+        row:setMarginTop(4)
+        local button = g_ui.createWidget('TkSmallBlueButton', row)
+        button:setText(tr('Show'))
+        button:setWidth(70)
+        button.onClick = function() hints.replay(hint.key) end
+        local label = g_ui.createWidget('TkText', row)
+        label:setText(tr(hint.title) .. (hints.hasSeen(hint.key) and '' or ('  (' .. tr('not seen yet') .. ')')))
+        label:setMarginTop(5)
+    end
+    local links = g_ui.createWidget('WikiLinks', body)
+    local again = g_ui.createWidget('TkSmallBlueButton', links)
+    again:setText(tr('Show every hint again as I explore'))
+    again:setWidth(again:getTextSize().width + 24)
+    again.onClick = function()
+        hints.resetSeen()
+        modules.game_textmessage.displayGameMessage(tr('Every hint will show again the next time you walk into its place.'))
     end
 end
 

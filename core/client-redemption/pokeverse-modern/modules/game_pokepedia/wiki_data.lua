@@ -133,6 +133,12 @@ WikiData = {
             } },
             { 'tip', "Balls holding a Pokemon can't be item hotkeys: F1 to F6 call them." },
         } },
+        { key = 'hints', title = 'First-visit hints', portrait = 113, body = {
+            { 'p', "The first time you walk into a Pokemon Center, a Mart, the Day Care and a few other places, a card tells you what the place is for. Each hint shows once per character." },
+            { 'hints' },
+            { 'tip', "Turn the hints off with Don't show hints on a card, or in Settings > Interface." },
+            { 'see', { 'center', 'daycare' } },
+        } },
         { key = 'rotate', title = 'Turning your Pokemon', portrait = 7, body = {
             { 'p', "With your Pokemon out, say t1 to face it north, t2 east, t3 south and t4 west." },
             { 'commands', { "t1", "t2", "t3", "t4" } },
@@ -259,7 +265,7 @@ WikiData = {
 
     { key = 'abilities', name = 'Pokemon abilities', item = 645, topics = {
         { key = 'abilities', title = 'Overview', portrait = 18, body = {
-            { 'p', "Abilities are used with an order (R or the order icon) unless the topic says otherwise. Epic balls can't use them." },
+            { 'p', "Abilities are used with an order (E or the order icon) unless the topic says otherwise. Epic balls can't use them." },
             { 'table', {
                 { "Free", "Premium" },
                 { "Ride, Dig, Cut, Rock Smash", "Fly, Levitate, Surf, Dive" },
