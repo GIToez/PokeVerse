@@ -51,6 +51,14 @@ THEMES = {
         slot='#ffffff', slot_alpha=0.06, slot_edge=None, radius=6, shadow=False, headers=False,
         ring_bg='#ffffff22', chip='#00000088', chip_text='#e8ecf4', button='#7fb2ff', button_text='#06101f',
         socket='round', bar_panel=False, glyph_bg='#101827', select='#7fb2ff', select_text='#06101f'),
+    # C's see-through layout in A's colours, with the text made readable over any map
+    'd': dict(
+        name='D. Glass HUD', body='#0e1729', body_alpha=0.72, edge='#375284', edge_alpha=0.5, header=None,
+        header_alpha=0, title='#eef2ff', accent='#d9aa3b', text='#eef2ff', muted='#b4c2dc',
+        slot='#0a121f', slot_alpha=0.55, slot_edge=None, radius=7, shadow=False, headers=False,
+        ring_bg='#ffffff26', chip='#060a14', chip_text='#eef2ff', button='#d9aa3b', button_text='#1a1406',
+        socket='round', bar_panel=False, glyph_bg='#13203a', select='#d9aa3b', select_text='#1a1406',
+        tab_title=('#eef2ff', 11, False), outline=True, count_chip=True, equipment=(0, 1, 3, 2)),
 }
 
 TYPE_COLORS = {'fire': '#f08a3c', 'flying': '#8fb6f0', 'dragon': '#8c6cf0', 'normal': '#b8b2a0',
@@ -88,8 +96,8 @@ def text(x, y, s, size=11, color='#fff', weight='normal', anchor='start', opacit
             f'text-anchor="{anchor}" opacity="{opacity}">{escape(s)}</text>')
 
 
-def rect(x, y, w, h, r, fill, opacity=1.0, stroke=None, sw=1):
-    s = f' stroke="{stroke}" stroke-width="{sw}"' if stroke else ''
+def rect(x, y, w, h, r, fill, opacity=1.0, stroke=None, sw=1, stroke_opacity=1.0):
+    s = f' stroke="{stroke}" stroke-width="{sw}" stroke-opacity="{stroke_opacity}"' if stroke else ''
     return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{r}" fill="{fill}" fill-opacity="{opacity}"{s}/>'
 
 
@@ -135,7 +143,7 @@ class Painter:
         t = self.t
         if t['shadow']:
             self.add(rect(x + 1, y + 3, w, h, t['radius'], '#000', 0.35))
-        self.add(rect(x, y, w, h, t['radius'], t['body'], t['body_alpha'], t['edge']))
+        self.add(rect(x, y, w, h, t['radius'], t['body'], t['body_alpha'], t['edge'], 1, t.get('edge_alpha', 1.0)))
         if not title:
             return y
         if t['headers']:
@@ -151,10 +159,13 @@ class Painter:
             self.window_buttons(x + w - 8, y + 12, t['title'])
             return y + hh
         # Minimal: a small icon tab, the title in the body
+        color, size, upper = t.get('tab_title', (t['muted'], 9, True))
         self.add(rect(x + 6, y + 6, 18, 18, 5, t['glyph_bg'], 0.9), glyph(icon, x + 8, y + 8, 14, stroke=t['accent']),
-                 text(x + 30, y + 19, title.upper(), 9, t['muted'], 'bold'))
+                 text(x + 30, y + 19, title.upper() if upper else title, size, color, 'bold'))
+        if 'tab_title' in t:
+            self.add(rect(x + 30, y + 23, 22, 2, 1, t['accent']))
         self.window_buttons(x + w - 8, y + 15, t['muted'], small=True)
-        return y + 26
+        return y + 28 if 'tab_title' in t else y + 26
 
     def window_buttons(self, right, cy, color, small=False):
         r = 6 if not small else 5
@@ -183,6 +194,8 @@ class Painter:
         if item is not None:
             self.add(image(item, x + (s - item.width) / 2, y + (s - item.height) / 2))
         if count is not None:
+            if t.get('count_chip'):
+                self.add(rect(x + s - 7 - 6 * len(str(count)), y + s - 13, 6 * len(str(count)) + 6, 12, 6, t['chip'], 0.85))
             self.add(text(x + s - 3, y + s - 3, str(count), 9, t['text'], 'bold', 'end'))
 
     def chip(self, x, y, label, value, w):
@@ -214,8 +227,8 @@ class Painter:
             bx = x + 6 + i * 52
             self.add(rect(bx, top + 6, 48, 46, 7, t['slot'], t.get('slot_alpha', 1.0), t['slot_edge']),
                      image(cut(shot, INVENTORY[key], 24), bx + 12, top + 9), text(bx + 24, top + 48, label, 9, t['text'], 'bold', 'middle'))
-        for i, c in enumerate(EQUIPMENT):
-            self.slot(x + 6 + i * 39, top + 58, 35, cut(shot, c, 30))
+        for i, k in enumerate(t.get('equipment', range(4))):
+            self.slot(x + 6 + i * 39, top + 58, 35, cut(shot, EQUIPMENT[k], 30))
         self.chip(x + 6, top + 99, 'Balls', '10,000', 76)
         self.chip(x + 86, top + 99, 'Respect', '0', 74)
         y += 150 + 8
@@ -340,14 +353,40 @@ class Painter:
                          text(x + s - 4, y0 + s, str(cost), 8, '#e8dcff', 'bold', 'end'))
 
 
-def mockup(key, shot, portraits, icons):
+def with_outline(parts):
+    """Every text twice: a dark stroked copy under the fill, like the game's outlined fonts."""
+    out = []
+    for part in parts:
+        if '<text ' in part:
+            for chunk in part.split('</text>'):
+                if '<text ' not in chunk:
+                    out.append(chunk)
+                    continue
+                pre, tag = chunk.split('<text ', 1)
+                out.append(pre)
+                fill = tag.split('fill="', 1)[1].split('"', 1)[0].lstrip('#')
+                if len(fill) == 6 and sum(int(fill[i:i + 2], 16) for i in (0, 2, 4)) < 3 * 110:
+                    # dark text sits on a solid gold button, it needs no outline
+                    out.append('<text ' + tag + '</text>')
+                    continue
+                outline = '<text ' + tag.replace('fill="', 'data-fill="', 1)
+                outline = outline.replace('<text ', '<text fill="none" stroke="#05080f" stroke-opacity="0.85" '
+                                          'stroke-width="2.6" stroke-linejoin="round" ', 1)
+                out.append(outline + '</text>' + '<text ' + tag + '</text>')
+        else:
+            out.append(part)
+    return out
+
+
+def mockup(key, shot, portraits, icons, background=None):
     t = THEMES[key]
     p = Painter(t, shot)
     p.right_column()
     p.popup()
     p.swap_bar(portraits)
     p.moves_bar(icons)
-    body = image(backdrop(shot), 0, 0) + ''.join(p.out)
+    parts = with_outline(p.out) if t.get('outline') else p.out
+    body = image(backdrop(background or shot), 0, 0) + ''.join(parts)
     svg = f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}">{body}</svg>'
     png = cairosvg.svg2png(bytestring=svg.encode(), output_width=W, output_height=H)
     img = Image.open(io.BytesIO(png)).convert('RGB')
@@ -361,6 +400,7 @@ def mockup(key, shot, portraits, icons):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--shot', required=True, help='the 1920x1080 forest battle screenshot')
+    ap.add_argument('--bright', help='another 1920x1080 shot (a bright town) to put behind direction D')
     ap.add_argument('--out', default=str(REPO / 'build/ui-concept'))
     args = ap.parse_args()
     out = Path(args.out)
@@ -401,9 +441,13 @@ def main():
         img = mockup(key, shot, portraits, icons)
         img.save(out / f'concept-{key}.png', optimize=True)
         shots.append(img)
+    if args.bright:
+        # same UI over a bright scene: the hardest case for see-through panels
+        bright = Image.open(args.bright).convert('RGBA')
+        mockup('d', shot, portraits, icons, bright).save(out / 'concept-d-bright.png', optimize=True)
 
     # one row per direction: the whole screen and its right column at twice the size
-    board = Image.new('RGB', (1280 + 360 + 30, 3 * 730 + 10), (16, 24, 32))
+    board = Image.new('RGB', (1280 + 360 + 30, len(THEMES) * 730 + 10), (16, 24, 32))
     for i, (key, img) in enumerate(zip(THEMES, shots)):
         board.paste(img.resize((1280, 720), Image.LANCZOS), (10, 10 + i * 730))
         board.paste(img.crop((1740, 26, 1920, 386)).resize((360, 720), Image.LANCZOS), (1300, 10 + i * 730))
