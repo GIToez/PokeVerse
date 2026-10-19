@@ -1,5 +1,5 @@
 HTTP = {
-  timeout = 10, -- connect + TLS; a first start behind a firewall prompt or slow DNS takes seconds
+  timeout = 60, -- connect + TLS; a first start behind a firewall prompt or slow DNS takes seconds
   websocketTimeout = 15,
   agent = "Mozilla/5.0",
   imageId = 1000,

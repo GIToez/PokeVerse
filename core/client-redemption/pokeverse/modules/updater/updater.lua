@@ -23,7 +23,7 @@ Updater = {}
 Updater.maxRetries = 5
 Updater.parallel = 4
 Updater.batchSize = 25
-Updater.manifestTimeouts = { 10, 25 } -- seconds per attempt to reach the manifest
+Updater.manifestTimeouts = { 60, 60 } -- seconds per attempt to reach the manifest
 
 -- files the updater needs to start; never written half way, always after the rest
 local CORE = { "^/init%.lua$", "^/modules/corelib/", "^/modules/updater/", "^/modules/client_locales/",
