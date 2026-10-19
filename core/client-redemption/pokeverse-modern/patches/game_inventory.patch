@@ -1,3 +1,47 @@
+diff -ruN pristine/modules/game_inventory/inventory.lua modules/game_inventory/inventory.lua
+--- a/modules/game_inventory/inventory.lua
++++ b/modules/game_inventory/inventory.lua
+@@ -26,6 +26,32 @@
+     [InventorySlotAmmo] = function(ui) return ui.tools, ui.tools.tools end
+ }
+ 
++-- the Order, Pokedex and Badges sprites have their name drawn under the picture; their tiles show the
++-- picture cut above it (scripts/art/inventory_tiles.py) and a label, over the item kept for clicks and drags
++local TILE_ICONS = {
++    [645] = 'inv-order', [11597] = 'inv-order',     -- server 7730, 13206
++    [11242] = 'inv-pokedex',                        -- server 12281
++    [11241] = 'inv-badges-kanto',                   -- server 12280
++    [17270] = 'inv-badges-orange',                  -- server 18623
++}
++
++local function updateTile(slotPanel, item)
++    local icon = slotPanel:getChildById('pokeverseTileIcon')
++    if not icon then
++        return
++    end
++    local name = item and TILE_ICONS[item:getId()]
++    slotPanel.item:setSize(slotPanel:getSize())
++    slotPanel.item:setOpacity(name and 0 or 1)
++    icon:setVisible(name ~= nil)
++    if name then
++        icon:setImageSource('/images/pokeverse-ui/' .. name)
++    end
++    local label = slotPanel:getChildById('pokeverseTileLabel')
++    label:setText(tr(slotPanel.pokeverseTile))
++    label:setVisible(name ~= nil)
++end
++
+ local function isPlayerMonk()
+     local player = g_game.getLocalPlayer()
+     if not player then
+@@ -146,6 +172,7 @@
+     slotPanel.item:setShowDuration(g_game.getFeature(GameThingClock) and modules.client_options.getOption('showExpiryInInvetory'))
+     slotPanel.item:setShowCharges(g_game.getFeature(GameThingCounter) and modules.client_options.getOption('showExpiryInInvetory'))
+     ItemsDatabase.setTier(slotPanel.item, item)
++    updateTile(slotPanel, item)
+ 
+     if slot == InventorySlotLeft then
+         if item and modules.game_proficiency then
 diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/inventory.otui
 --- a/modules/game_inventory/inventory.otui
 +++ b/modules/game_inventory/inventory.otui
@@ -7,8 +51,8 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
    phantom: false
 -  height: 162
 -  &panelHeight: 162
-+  height: 120
-+  &panelHeight: 120
++  height: 130
++  &panelHeight: 130
    on: true
  
    $!on:
@@ -185,7 +229,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.top: changeSize.bottom
        anchors.left: changeSize.left
        margin-top: 3
-@@ -271,13 +316,15 @@
+@@ -271,13 +316,37 @@
  
      MainInventoryItem
        id: helmet
@@ -197,6 +241,28 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 +      margin-top: 4
 +      margin-left: 6
        &slotPosition: {x = 65535, y = 1, z = 0}
++      size: 48 44
++      &pokeverseTile: 'Order'
++
++      UIWidget
++        id: pokeverseTileIcon
++        anchors.horizontalCenter: parent.horizontalCenter
++        anchors.bottom: parent.verticalCenter
++        margin-bottom: -6
++        image-auto-resize: true
++        phantom: true
++        visible: false
++
++      Label
++        id: pokeverseTileLabel
++        anchors.horizontalCenter: parent.horizontalCenter
++        anchors.bottom: parent.bottom
++        margin-bottom: 3
++        font: verdana-10px-rounded
++        color: #eef2ff
++        text-auto-resize: true
++        phantom: true
++        visible: false
  
      MainInventoryItem
        id: backpack
@@ -204,7 +270,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.top: amulet.top
        anchors.left: helmet.right
        margin-left: 3
-@@ -285,110 +332,109 @@
+@@ -285,110 +354,153 @@
  
      MainInventoryItem
        id: sword
@@ -215,6 +281,28 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 +      anchors.left: helmet.right
 +      margin-left: 3
        &slotPosition: {x = 65535, y = 6, z = 0}
++      size: 48 44
++      &pokeverseTile: 'Pokedex'
++
++      UIWidget
++        id: pokeverseTileIcon
++        anchors.horizontalCenter: parent.horizontalCenter
++        anchors.bottom: parent.verticalCenter
++        margin-bottom: -6
++        image-auto-resize: true
++        phantom: true
++        visible: false
++
++      Label
++        id: pokeverseTileLabel
++        anchors.horizontalCenter: parent.horizontalCenter
++        anchors.bottom: parent.bottom
++        margin-bottom: 3
++        font: verdana-10px-rounded
++        color: #eef2ff
++        text-auto-resize: true
++        phantom: true
++        visible: false
  
      MainInventoryItem
        id: ring
@@ -266,6 +354,28 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 +      anchors.left: sword.right
 +      margin-left: 3
        &slotPosition: {x = 65535, y = 5, z = 0}
++      size: 48 44
++      &pokeverseTile: 'Badges'
++
++      UIWidget
++        id: pokeverseTileIcon
++        anchors.horizontalCenter: parent.horizontalCenter
++        anchors.bottom: parent.verticalCenter
++        margin-bottom: -6
++        image-auto-resize: true
++        phantom: true
++        visible: false
++
++      Label
++        id: pokeverseTileLabel
++        anchors.horizontalCenter: parent.horizontalCenter
++        anchors.bottom: parent.bottom
++        margin-bottom: 3
++        font: verdana-10px-rounded
++        color: #eef2ff
++        text-auto-resize: true
++        phantom: true
++        visible: false
  
      MainInventoryItem
        id: tools
@@ -372,7 +482,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
  
    UIWidget
      id: offPanel
-@@ -421,7 +467,7 @@
+@@ -421,7 +533,7 @@
        size: 30 44
  
        Label
@@ -381,7 +491,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
          text.align: center
          font: cipsoftFont
          anchors.horizontalCenter: parent.horizontalCenter
-@@ -441,7 +487,7 @@
+@@ -441,7 +553,7 @@
          color: #c0c0c0ff
  
        Label
