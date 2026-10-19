@@ -10,6 +10,7 @@ MessageBoxButton < UIButton
   image-source: /modules/client_entergame/images/button_blue
   image-border: 8
   height: 30
+  opacity: 1.0
   $hover !disabled:
     image-source: /modules/client_entergame/images/button_blue_hover
   $pressed:

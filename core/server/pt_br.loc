@@ -2042,7 +2042,7 @@ Hint: Type 'account' to manage your account and if you want to start over then t
 his@sua
 His favorite food is Onigiri, please bring me 20. Thanks for helping me.@Sua comida favorita é Onigiri. Obrigado por me ajudar.
 Go to Mikan Island and see the woodworker. His name is Woodworker Courts Ted.@Seu nome é Woodworker Courts Ted.
-Hi |PLAYERNAME|! I'm in trouble, for sure. I forgot to pack the catalog the {Professor} asked for.@Oi |PLAYERNAME|! Estou com problemas, com certeza. Eu esqueci de levar o catálogo que o {Professor} pediu.
+Hi |PLAYERNAME|! I'm Professor Oak's assistant. I teach new trainers about fishing and {Headbutting}. Did the {Professor} send you?@Oi |PLAYERNAME|! Eu sou o assistente do Professor Oak. Eu ensino novos treinadores sobre pesca e {Headbutting}. O {Professor} te mandou?
 Hi |PLAYERNAME|, have you already made your {inscription} for the {tournaments}? If so, you can try to {enter} now or {exchange} your tournament tokens!@Oi |PLAYERNAME|, já fez a sua {inscrição} no {torneio}? Se assim for, você pode tentar {entrar} agora ou {trocar} seus tournament tokens!
 Hi |PLAYERNAME|, are you looking for computers?@Oi |PLAYERNAME|, você está olhando para os computadores?
 Hi |PLAYERNAME|, are you looking for freezers or TVs?@Oi |PLAYERNAME|, que você está procurando freezers ou TVs?
@@ -2983,7 +2983,7 @@ Now defeat 30 Sunkerns.@Agora derrote 30 Sunkerns.
 Now defeat 40 Tentacool.@Agora derrote 40 Tentacools.
 Now get the GS ball with the Thief Aipom!@Agora pegue a Pokebola GS com o Thief Aipom!
 Now go to the island matching the element. The islands lie around this main island; place the Orb in the correct spot there. Then come to Deepsoul Stone.@Agora vá para a ilha correspondente ao elemento. Vá ao redor dessa ilha principal e deposite o Orb no local correto. Você, então, verá a Deepsoul Stone.
-Now I'll learn how to make barbecue sauce! ... ... You still need to learn some things to get ready. Go talk to my assistant Jofrey, he is out there.@Agora eu vou aprender a fazer molho de churrasco! ... ... Você ainda precisa aprender algumas coisas para ficar pronto. Vá falar com o meu assistente Jofrey, ele está lá fora.
+Now I'll learn how to make barbecue sauce! ... ... You still need to learn some things to get ready. Go talk to my assistant, Jofrey. He is just outside the lab, by the pond to the east.@Agora eu vou aprender a fazer molho de churrasco! ... ... Você ainda precisa aprender algumas coisas para ficar pronto. Vá falar com o meu assistente, Jofrey. Ele está logo fora do laboratório, perto do lago a leste.
 Now I'm a little hungry, bring me a burger I'll tell you something.@Agora eu estou com um pouco de fome, traga-me um burger eu vou te dizer alguma coisa.
 Now I'm a little hungry. Bring me a burger and I'll tell you something. Haha.@Agora eu estou com pouco de fome, traga-me um hambúrguer eu vou te dizer alguma coisa. Haha.
 Now I need the second fruit, will you help me?@Agora eu preciso do segundo fruto, você vai me ajudar?
@@ -5720,7 +5720,7 @@ You won %s and received your reward.@Você venceu %s e recebeu a sua recompensa.
 You won %s poke coin%s@Você ganhou %s poke coin%s
 Don't you dare VAPP go after this REONN evil thing! I will not VAPPP allow it! Our king sacrificed himself VAPOREONN for it. Do you want to use it for evil? {Yes} or {No}@Você não ousaria VAPP ir atrás desta REONN coisa maligna! Eu não VAPPP permitirei! Nosso rei se sacrificou VAPOREONN por isso. Você quer usar ela para o mal? {Sim} ou {Não}
 Yup! Did you bring me the Heracross?@Sim! Você me trouxe o Heracross?
-Yup! Nice. Now you must talk to Dorothy. She will teach you more about Pokeballs. You can find her inside the Oak Lab.@Sim! Muito bem. Agora você deve falar com Dorothy. Ela vai te ensinar mais sobre Pokebolas. Você pode encontrá-la dentro do Laboratório do Oak.
+Yup! Nice. Now you must talk to Doroty. She will teach you more about Pokeballs. You can find her inside the Oak Lab.@Sim! Muito bem. Agora você deve falar com Doroty. Ela vai te ensinar mais sobre Pokebolas. Você pode encontrá-la dentro do Laboratório do Oak.
 Yup! Perfect! But the tasks are not over yet, I need more things.@Sim! Perfeito! Mas as tarefas ainda não acabaram, eu preciso de mais coisas.
 Yup! Thanks!@Sim! Obrigado!
 Yup! You made all the deliveries! Take your money. By the way, I always need help. Come back tomorrow and you can help me again.@Sim! Você poderia realizar todas as entregas! Pegue o seu dinheiro. Aliás, eu sempre preciso de ajuda. Volte amanhã e você pode me ajudar novamente.
@@ -6924,3 +6924,5 @@ A world of dreams and adventures with Pokemon awaits, %s! Go out and explore it!
 Come back to me once you have collected all eight Kanto badges. There is something important I need your help with.@Volte a falar comigo quando tiver coletado as oito insígnias de Kanto. Há algo importante com que preciso da sua ajuda.
 Good choice! Here you go! Go see Professor Oak in his lab, he has some missions that will teach you the basics.@Boa escolha! Lá vai! Vá ver o Professor Oak no laboratório dele, ele tem algumas missões que vão te ensinar o básico.
 I only make gear for Anglers. Come back if you ever choose that vocation.@Eu só faço equipamentos para Anglers. Volte se um dia escolher essa vocação.
+(Ask me about your {task}.)@(Pergunte-me sobre a sua {tarefa}.)
+(I have a {task} for you.)@(Eu tenho uma {tarefa} para você.)

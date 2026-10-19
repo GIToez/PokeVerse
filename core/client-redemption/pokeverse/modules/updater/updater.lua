@@ -7,8 +7,13 @@
 --     "files": { "/init.lua": "<crc32>", ... },
 --     "sizes": { "/init.lua": 1234, ... },              -- bytes, for the progress (optional)
 --     "urls": { "/data/things/data.spr": "https://github.com/.../releases/download/..." },
---     "binary": { "file": "/PokeVerse.exe", "checksum": "<crc32>", "size": 123 }
+--     "binary": { "file": "/PokeVerse.exe", "checksum": "<crc32>", "size": 123 },
+--     "apk": { "engine": "<id>", "url": "https://github.com/.../PokeVerse-Android.apk", "size": 123 }
 --   }
+--
+-- "apk" is Android's: its engine comes with the APK, so when the APK's engine.txt differs the
+-- updater offers the new APK instead of the files. Files of the client's own folder (modules/
+-- and data/) that the manifest no longer has are deleted.
 --
 -- Checksums are lowercase hex CRC32 without leading zeros (g_resources.filesChecksums).
 -- "urls" holds absolute URLs for files that cannot be on Pages (over its 100 MB limit).
@@ -23,11 +28,16 @@ Updater = {}
 Updater.maxRetries = 5
 Updater.parallel = 4
 Updater.batchSize = 25
+Updater.manifestTimeouts = { 60, 60 } -- seconds per attempt to reach the manifest
 
 -- files the updater needs to start; never written half way, always after the rest
 local CORE = { "^/init%.lua$", "^/modules/corelib/", "^/modules/updater/", "^/modules/client_locales/",
                "^/modules/client_styles/", "^/data/styles/" }
 local RESTART = { "init.lua", "corelib", "updater", "otmod" }
+-- files in the client's folder that a release no longer has are deleted: the client loads every
+-- module it finds, so a module a release dropped would keep running on an updated install
+local PRUNE = { "^/modules/", "^/data/" }
+local KEEP = { "^/data/things/" }
 
 local BACKGROUND_NONE, BACKGROUND_UPDATING = 0, 1
 
@@ -238,6 +248,71 @@ local function finish(restart, reloadModules)
   end
 end
 
+local function withSlash(dir)
+  dir = dir:gsub("\\", "/")
+  if dir:sub(-1) ~= "/" then dir = dir .. "/" end
+  return dir
+end
+
+-- deletes them and returns how many, and whether any was a module's
+local function removeStaleFiles(data, localFiles)
+  local workDir = withSlash(g_resources.getWorkDir())
+  local stale, managed = {}, 0
+  for file in pairs(localFiles) do
+    if matchesAny(file, PRUNE) and not matchesAny(file, KEEP) and withSlash(g_resources.getRealDir(file)) == workDir then
+      managed = managed + 1
+      if not data.files[file] then
+        table.insert(stale, file)
+      end
+    end
+  end
+  -- a manifest without most of the client is broken, not a release that dropped most of it
+  if #stale > managed / 4 then
+    g_logger.warning(string.format("Updater: %i of %i client files are not in the manifest, keeping them", #stale, managed))
+    return 0, false
+  end
+
+  local removed, modules = 0, false
+  for _, file in ipairs(stale) do
+    if os.remove(workDir .. file:sub(2)) then
+      removed = removed + 1
+      localFiles[file] = nil
+      if file:find("^/modules/") then modules = true end
+    end
+  end
+  if removed > 0 then
+    g_logger.info(string.format("Updater: removed %i files the release no longer has", removed))
+  end
+  return removed, modules
+end
+
+-- Android cannot replace its engine, which comes with the APK: files made for another engine
+-- would run on this one, so they wait for the new APK. engine.txt is the one this APK unpacked
+local function installedEngine()
+  if not g_resources.fileExists("/engine.txt") then return "" end
+  return (g_resources.readFileContents("/engine.txt"):gsub("%s+", ""))
+end
+
+local function offerApk(apk)
+  setBackgroundTask(BACKGROUND_NONE)
+  updaterWindow.status:setText(tr("A new version of the app is out"))
+  updaterWindow.mainProgress:setPercent(100)
+  local size = tonumber(apk.size) or 0
+  local message = tr("A new version of the PokeVerse app is out. Download and install it to update%s.",
+    size > 0 and " (" .. formatMB(size) .. ")" or "")
+    .. "\n" .. tr("It installs over this one and keeps your settings. Until then you can keep playing this version.")
+  local box
+  local function later()
+    if box then box:destroy() box = nil end
+    Updater.abort()
+  end
+  local function download()
+    g_platform.openUrl(apk.url)
+  end
+  box = displayGeneralBox(tr("Updater"), message,
+    { { text = tr("Download"), callback = download }, { text = tr("Later"), callback = later } }, download, later)
+end
+
 local function updateFiles(data)
   if not updaterWindow then return end
 
@@ -253,12 +328,19 @@ local function updateFiles(data)
     return Updater.error("Invalid data from the updater: " .. json.encode(data, 2))
   end
 
+  if g_app.getOs() == "android" and type(data.apk) == "table" and type(data.apk.engine) == "string"
+      and type(data.apk.url) == "string" and installedEngine() ~= data.apk.engine then
+    return offerApk(data.apk)
+  end
+
   local sizes = type(data.sizes) == "table" and data.sizes or {}
   local localFiles = g_resources.filesChecksums()
+  -- the modules were discovered before the updater ran, so a removed one needs a fresh start
+  local _, removedModules = removeStaleFiles(data, localFiles)
 
   local core = { files = {}, totalBytes = 0, doneBytes = 0 }
   local rest = { files = {}, totalBytes = 0, doneBytes = 0 }
-  local restart, reloadModules = false, false
+  local restart, reloadModules = removedModules, false
   for file, checksum in pairs(data.files) do
     if localFiles[file] ~= checksum then
       local size = tonumber(sizes[file]) or 0
@@ -285,6 +367,9 @@ local function updateFiles(data)
 
   if #core.files == 0 and #rest.files == 0 then
     updaterWindow.mainProgress:setPercent(100)
+    if removedModules then
+      return finish(true, true)
+    end
     scheduledEvent = scheduleEvent(Updater.abort, 20)
     return
   end
@@ -376,26 +461,48 @@ function Updater.check()
   updaterWindow:focus()
   updaterWindow:raise()
 
+  local totalSeconds = 5
+  for _, seconds in ipairs(Updater.manifestTimeouts) do
+    totalSeconds = totalSeconds + seconds
+  end
+
   local updateData = nil
   local function progressUpdater(value)
     removeEvent(scheduledEvent)
     if value == 100 then
-      return Updater.error(tr("Timeout"))
+      return Updater.offline(tr("Timeout"))
     end
     if updateData then
       return updateFiles(updateData)
     end
-    scheduledEvent = scheduleEvent(function() progressUpdater(value + 1) end, 100)
+    scheduledEvent = scheduleEvent(function() progressUpdater(value + 1) end, totalSeconds * 10)
     updaterWindow.mainProgress:setPercent(value)
   end
   progressUpdater(0)
 
-  manifestOperation = HTTP.getJSON(manifestUrl(), function(data, err)
-    if err then
-      return Updater.error(err)
-    end
-    updateData = data
-  end)
+  local function fetchManifest(attempt)
+    local defaultTimeout = HTTP.timeout
+    HTTP.timeout = Updater.manifestTimeouts[attempt]
+    manifestOperation = HTTP.getJSON(manifestUrl(), function(data, err)
+      if not updaterWindow then return end
+      if err then
+        if attempt < #Updater.manifestTimeouts then
+          updaterWindow.status:setText(tr("Server is slow to answer, trying again"))
+          return fetchManifest(attempt + 1)
+        end
+        return Updater.offline(err)
+      end
+      updateData = data
+    end)
+    HTTP.timeout = defaultTimeout
+  end
+  fetchManifest(1)
+end
+
+-- the manifest could not be fetched: nothing was changed, so the current files still work
+function Updater.offline(err)
+  Updater.error(tr("Could not reach the update server.\nPress Ok to play with the files you already have.") ..
+    "\n\n" .. tostring(err))
 end
 
 function Updater.error(message)

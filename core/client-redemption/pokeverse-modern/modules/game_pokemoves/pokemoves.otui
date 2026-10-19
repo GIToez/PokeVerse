@@ -1,9 +1,8 @@
+// The moves bar in the PokeVerse look (docs/ui-redesign.md): a rounded slot with the move's type on its
+// edge, a key chip, an energy chip and a radial cooldown. Images: scripts/art/ui_kit.py.
 MoveSlot < UIWidget
   size: 40 40
-  image-source: /modules/game_pokehud/images/slot
-  image-border: 6
-  $hover:
-    image-source: /modules/game_pokehud/images/slot-hover
+  image-source: /images/pokeverse-ui/move-empty
 
   UIItem
     id: icon
@@ -12,13 +11,14 @@ MoveSlot < UIWidget
     phantom: true
     anchors.centerIn: parent
 
-  ProgressRect
+  // cooldown.png holds 24 frames of 40x40, from just used to almost ready
+  UIWidget
     id: cooldown
-    size: 32 32
+    size: 40 40
     phantom: true
     visible: false
-    percent: 100
-    background-color: #0a1420c0
+    image-source: /images/pokeverse-ui/cooldown
+    image-clip: 0 0 40 40
     anchors.centerIn: parent
 
   Label
@@ -32,24 +32,32 @@ MoveSlot < UIWidget
 
   Label
     id: key
-    font: verdana-11px-antialised
-    color: #d8e4e4
+    font: verdana-11px-rounded
+    color: #eef2ff
     text-auto-resize: true
     phantom: true
+    image-source: /images/pokeverse-ui/chip
+    image-border: 6
+    padding: 0 3 0 4
     anchors.top: parent.top
     anchors.left: parent.left
-    margin-left: 3
+    margin-top: -4
+    margin-left: -3
 
   Label
     id: energy
-    font: verdana-11px-antialised
-    color: #8fdcff
+    font: verdana-11px-rounded
+    color: #e8dcff
     text-auto-resize: true
     phantom: true
     visible: false
+    image-source: /images/pokeverse-ui/chip
+    image-border: 6
+    padding: 0 4 0 4
     anchors.bottom: parent.bottom
     anchors.right: parent.right
-    margin-right: 3
+    margin-bottom: -4
+    margin-right: -3
     $on:
       color: #ff6b74
 
@@ -117,8 +125,8 @@ MoveCardBoost < UIWidget
 
 MoveCard < UIWidget
   width: 310
-  image-source: /modules/game_pokehud/images/panel
-  image-border: 9
+  image-source: /images/pokeverse-ui/panel
+  image-border: 8
   padding: 10
   focusable: false
   layout:
@@ -134,8 +142,7 @@ MoveCard < UIWidget
     UIWidget
       id: iconFrame
       size: 40 40
-      image-source: /modules/game_pokehud/images/slot
-      image-border: 6
+      image-source: /images/pokeverse-ui/move-empty
       anchors.left: parent.left
       anchors.top: parent.top
       phantom: true
@@ -234,8 +241,6 @@ MoveCard < UIWidget
 
 UIWindow
   id: movesWindow
-  image-source: /modules/game_pokehud/images/panel
-  image-border: 9
   padding: 6
   focusable: false
   anchors.bottom: gameMapPanel.bottom

@@ -437,7 +437,8 @@ local function doPlayerSendPokemonSkillWindowData(cid, ballUid, moves, pokemonNa
     local icons, costs = {}, {}
     for _, move in pairs(moves) do
         icons[#icons + 1] = getPokemonSkillClientIconId(move)
-        costs[#costs + 1] = { icon = icons[#icons], energy = getPokemonSkillRequiredEnergy(move) }
+        costs[#costs + 1] = { icon = icons[#icons], energy = getPokemonSkillRequiredEnergy(move),
+                              element = getPokemonSkillDamageType(move) }
     end
 
     doPlayerSendPokemonSkills(cid, getPokemonFastcallPortraitId(pokemonName), icons)

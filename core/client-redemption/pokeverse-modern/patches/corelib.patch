@@ -525,6 +525,106 @@ diff -ruN pristine/modules/corelib/ui/uimessagebox.lua modules/corelib/ui/uimess
      button:setText(text)
      connect(button, {
          onClick = callback
+diff -ruN pristine/modules/corelib/ui/uiminiwindow.lua modules/corelib/ui/uiminiwindow.lua
+--- a/modules/corelib/ui/uiminiwindow.lua
++++ b/modules/corelib/ui/uiminiwindow.lua
+@@ -85,7 +85,80 @@
+     signalcall(self.onMaximize, self)
+ end
+ 
++-- every module declares its own title label (Tibia's 11px font, 2px from the top); the PokeVerse
++-- header is 20px (pokeverse-styles/miniwindow.otui) with an outlined title and a gold underline
++local HEADER_BUTTONS = { 'closeButton', 'minimizeButton', 'toggleFilterButton', 'contextMenuButton', 'newWindowButton',
++    'lockButton' }
++
++local function restyleHeader(window)
++    local header = window:getChildById('miniwindowHeader')
++    local title = window:getChildById('miniwindowTitle')
++    if not header or not title or window:getChildById('miniwindowUnderline') then
++        return
++    end
++    title:setFont('verdana-11px-rounded')
++    title:setColor('#eef2ff')
++    title:setMarginTop(4)
++    title:setHeight(14)
++    local icon = window:getChildById('miniwindowIcon')
++    if icon then
++        icon:setMarginTop(4)
++    end
++    local underline = g_ui.createWidget('UIWidget', window)
++    underline:setId('miniwindowUnderline')
++    underline:setImageSource('/images/pokeverse-ui/title-underline')
++    underline:setSize({ width = 22, height = 2 })
++    underline:setPhantom(true)
++    underline:addAnchor(AnchorTop, 'miniwindowHeader', AnchorTop)
++    underline:addAnchor(AnchorLeft, 'miniwindowTitle', AnchorLeft)
++    underline:setMarginTop(18)
++
++    -- windows with many header buttons (Battle List) fall back to the narrower font, then cut the
++    -- title short; labels here cannot elide by themselves
++    local fullText
++    local function fitTitle()
++        if window:isDestroyed() then
++            return
++        end
++        if not fullText or (title:getText() ~= fullText and not title:getText():find('%.%.$')) then
++            fullText = title:getText()
++        end
++        local buttons = 5
++        for _, id in ipairs(HEADER_BUTTONS) do
++            local button = window:getChildById(id)
++            if button and button:isExplicitlyVisible() then
++                buttons = buttons + button:getWidth() + button:getMarginRight()
++            end
++        end
++        local room = window:getWidth() - buttons - title:getMarginLeft() - 4
++        title:setText(fullText)
++        title:setTooltip(nil)
++        title:setFont('verdana-11px-rounded')
++        if title:getTextSize().width <= room then
++            return
++        end
++        title:setFont('verdana-11px-antialised')
++        local text = fullText
++        while #text > 3 and title:getTextSize().width > room do
++            text = text:sub(1, -2):gsub('%s+$', '')
++            title:setText(text .. '..')
++        end
++        if text ~= fullText then
++            title:setTooltip(fullText)
++        end
++    end
++    for _, id in ipairs(HEADER_BUTTONS) do
++        local button = window:getChildById(id)
++        if button then
++            connect(button, { onVisibilityChange = fitTitle })
++        end
++    end
++    connect(window, { onGeometryChange = fitTitle })
++    fitTitle()
++end
++
+ function UIMiniWindow:setup()
++    restyleHeader(self)
+     self:getChildById('closeButton').onClick = function()
+         self:close()
+     end
+@@ -119,6 +192,7 @@
+ end
+ 
+ function UIMiniWindow:setupOnStart()
++    restyleHeader(self)
+     local char = g_game.getCharacterName()
+     if not char or #char == 0 then
+         return
+@@ -214,6 +288,7 @@
+ end
+ 
+ function UIMiniWindow:onVisibilityChange(visible)
++    restyleHeader(self)
+     self:fitOnParent()
+ end
+ 
 diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsbar.lua
 --- a/modules/corelib/ui/uistatsbar.lua
 +++ b/modules/corelib/ui/uistatsbar.lua
@@ -557,3 +657,16 @@ diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsb
      if self.statsType == 'health' then
          if percent >= 100 then
              self.bar:setImageSource('/images/bars/' ..
+diff -ruN pristine/modules/corelib/ui/uiwidget.lua modules/corelib/ui/uiwidget.lua
+--- a/modules/corelib/ui/uiwidget.lua
++++ b/modules/corelib/ui/uiwidget.lua
+@@ -365,7 +365,8 @@
+         end
+     end
+ 
+-    local focusedWidgets = modules.game_interface.focusReason
++    local gameInterface = modules.game_interface
++    local focusedWidgets = gameInterface and gameInterface.focusReason
+     if not focusedWidgets or table.empty(focusedWidgets) then
+         return true
+     end

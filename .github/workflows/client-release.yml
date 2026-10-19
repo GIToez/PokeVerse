@@ -42,7 +42,8 @@ permissions:
 
 env:
   CLIENTS_REPO: GIToez/PokeVerse-Clients
-  PAGES_URL: https://gitoez.github.io/PokeVerse-Clients
+  # the Pages custom domain; the github.io address only 301-redirects here, one more TLS handshake
+  PAGES_URL: https://pokeverse.quest
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
 
 jobs:
@@ -342,7 +343,9 @@ jobs:
                   --release-dir release --release-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG")
           python3 scripts/make-updater-manifest.py --package pkg/windows --os windows --binary PokeVerse.exe "${common[@]}"
           python3 scripts/make-updater-manifest.py --package pkg/linux --os linux --binary PokeVerse "${common[@]}"
-          python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}"
+          python3 scripts/make-updater-manifest.py --package pkg/android --os android "${common[@]}" \
+            --apk bin-android/PokeVerse-Android.apk \
+            --apk-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG/PokeVerse-Android.apk"
           du -sh site release
 
       # the PokeVerse-Clients site is the website too: its pages sit next to updater/
@@ -371,6 +374,9 @@ jobs:
           assert m["url"] == f"{pages}/updater/files/{os.environ['TAG']}", m["url"]
           for url in m["urls"].values():
               assert url.startswith(f"https://github.com/{repo}/releases/download/"), url
+          if name == "android":
+              assert m["apk"]["url"] == f"https://github.com/{repo}/releases/download/{os.environ['TAG']}/PokeVerse-Android.apk", m["apk"]
+              print(f"android: engine {m['apk']['engine']}")
           print(f"{name}: the manifest points at {pages} and the {repo} releases")
           EOF
           done
@@ -457,7 +463,7 @@ jobs:
           # cache can still hand out the old manifest, and it must find the files it lists
           if git clone -q --depth 1 --branch gh-pages "https://x-access-token:$REPO_TOKEN@github.com/$CLIENTS_REPO.git" old-site &&
              [ -f old-site/updater/windows.json ]; then
-            old=$(python3 -c 'import json,os,sys; u=json.load(open(sys.argv[1]))["url"]; p=os.environ["PAGES_URL"] + "/"; print(u[len(p):] if u.startswith(p) else "")' old-site/updater/windows.json)
+            old=$(python3 -c 'import json,os,sys; u=json.load(open(sys.argv[1]))["url"]; print(next((u[len(p):] for p in (os.environ["PAGES_URL"] + "/", "https://gitoez.github.io/PokeVerse-Clients/") if u.startswith(p)), ""))' old-site/updater/windows.json)
             case "$old" in
               updater/files|updater/files/*)
                 if [ "$old" != "updater/files/$TAG" ] && [ -d "old-site/$old" ]; then

@@ -15,16 +15,18 @@ from PIL import Image, ImageDraw, ImageFilter
 
 SCALE = 4  # drawn large, then scaled down for smooth edges
 
-NAVY = (14, 22, 40, 238)
-NAVY_LIGHT = (24, 36, 60, 245)
-FIELD = (10, 16, 30, 235)
-EDGE = (52, 92, 150, 255)
-GLOW = (64, 170, 255)
+# direction D of docs/ui-redesign.md (scripts/art/ui_kit.py has the same tokens)
+NAVY = (14, 23, 41, 240)
+NAVY_LIGHT = (27, 42, 70, 245)
+FIELD = (8, 14, 26, 235)
+EDGE = (55, 82, 132, 255)
+STAGE = (217, 170, 59)
+SHADOW = (0, 0, 0)
+GOLD = (217, 170, 59, 255)
 WHITE = (236, 242, 255, 255)
 MUTED = (150, 170, 205, 255)
 YELLOW = ((255, 214, 64), (244, 170, 20))
 GREEN = ((62, 200, 120), (28, 150, 82))
-CARD_GREEN = ((40, 150, 110), (22, 96, 76))
 
 
 def canvas(w, h):
@@ -302,14 +304,14 @@ def draw_badge(size=44):
     """The pokeball emblem on top of the login panel."""
     im = canvas(size, size)
     W = im.width
-    halo = Image.new('RGBA', (W, W), GLOW + (0,))
+    halo = Image.new('RGBA', (W, W), SHADOW + (0,))
     m = Image.new('L', (W, W), 0)
     ImageDraw.Draw(m).ellipse((s(4), s(4), W - s(4), W - s(4)), fill=220)
     halo.putalpha(m.filter(ImageFilter.GaussianBlur(s(3))))
     im.alpha_composite(halo)
     d = ImageDraw.Draw(im)
     d.ellipse((s(6), s(6), W - s(6), W - s(6)), fill=NAVY_LIGHT, outline=EDGE, width=s(1.5))
-    ball = draw_pokeball(20, top=(120, 190, 255, 255), line=(14, 22, 40, 255), bottom=(220, 236, 255, 255))
+    ball = draw_pokeball(20, top=GOLD, line=(14, 22, 40, 255), bottom=(238, 242, 255, 255))
     im.alpha_composite(ball, ((W - ball.width) // 2, (W - ball.height) // 2))
     return im
 
@@ -328,7 +330,7 @@ def draw_party_slot(size=40):
 
 
 def draw_portrait(w=82, h=98):
-    im = glow_frame(w, h, 8, (12, 22, 44, 240), EDGE, GLOW, 5)
+    im = glow_frame(w, h, 8, (12, 22, 44, 240), EDGE, SHADOW, 5)
     W, H = im.width, im.height
     spot = Image.new('RGBA', (W, H), (90, 170, 255, 0))
     m = Image.new('L', (W, H), 0)
@@ -470,7 +472,7 @@ def draw_dot(on, size=8):
     im = icon(size)
     d = ImageDraw.Draw(im)
     if on:
-        d.ellipse((s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)), fill=(110, 210, 255, 255))
+        d.ellipse((s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)), fill=GOLD)
     else:
         d.ellipse((s(1), s(1), s(size - 1), s(size - 1)), outline=(90, 120, 170, 255), width=s(1.2))
     return im
@@ -481,20 +483,20 @@ def draw_stage(w=296, h=200):
     im = glow_frame(w, h, 10, (8, 14, 28, 245), EDGE, None, 0)
     W, H = im.width, im.height
     inside = rounded_mask(W, H, s(10), s(1.5))
-    light = Image.new('RGBA', (W, H), (120, 200, 255, 0))
+    light = Image.new("RGBA", (W, H), (255, 236, 200, 0))
     m = Image.new('L', (W, H), 0)
     ImageDraw.Draw(m).polygon(((W * 0.44, 0), (W * 0.56, 0), (W * 0.72, H * 0.86), (W * 0.28, H * 0.86)), fill=46)
     m = m.filter(ImageFilter.GaussianBlur(s(10)))
     light.putalpha(Image.composite(m, Image.new('L', (W, H), 0), inside))
     im.alpha_composite(light)
     cx, cy, rx, ry = W / 2, H * 0.82, W * 0.26, H * 0.075
-    ring = Image.new('RGBA', (W, H), GLOW + (0,))
+    ring = Image.new('RGBA', (W, H), STAGE + (0,))
     m = Image.new('L', (W, H), 0)
     ImageDraw.Draw(m).ellipse((cx - rx, cy - ry, cx + rx, cy + ry), outline=255, width=s(3))
     ImageDraw.Draw(m).ellipse((cx - rx * 0.7, cy - ry * 0.7, cx + rx * 0.7, cy + ry * 0.7), outline=150, width=s(2))
     ring.putalpha(Image.composite(m.filter(ImageFilter.GaussianBlur(s(2))), Image.new('L', (W, H), 0), inside))
     im.alpha_composite(ring)
-    floor = Image.new('RGBA', (W, H), GLOW + (0,))
+    floor = Image.new('RGBA', (W, H), STAGE + (0,))
     m = Image.new('L', (W, H), 0)
     ImageDraw.Draw(m).ellipse((cx - rx, cy - ry, cx + rx, cy + ry), fill=70)
     floor.putalpha(m.filter(ImageFilter.GaussianBlur(s(6))))
@@ -507,17 +509,11 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
 
     # frames (border = radius + glow, see the otui image-border values)
-    save(glow_frame(64, 64, 12, NAVY, EDGE, GLOW, 8), out, 'panel')  # border 22
+    save(glow_frame(64, 64, 12, NAVY, EDGE, SHADOW, 8), out, 'panel')  # border 22
     save(glow_frame(32, 32, 6, FIELD, (44, 70, 112, 255), None, 0), out, 'field')  # border 8
-    save(glow_frame(32, 32, 6, FIELD, (90, 160, 240, 255), None, 0), out, 'field_focus')
+    save(glow_frame(32, 32, 6, FIELD, GOLD, None, 0), out, 'field_focus')
     save(glow_frame(40, 40, 8, (18, 30, 52, 235), (46, 74, 118, 255), None, 0), out, 'card')  # border 10
-    card = canvas(40, 40)
-    g = vertical_gradient(card.width, card.height, CARD_GREEN[0], CARD_GREEN[1])
-    g.putalpha(rounded_mask(card.width, card.height, s(8)))
-    card.alpha_composite(g)
-    ImageDraw.Draw(card).rounded_rectangle((0, 0, card.width - 1, card.height - 1), s(8), outline=(110, 240, 170, 255),
-                                           width=s(1.6))
-    save(card, out, 'card_selected')
+    save(glow_frame(40, 40, 8, NAVY_LIGHT, GOLD, None, 0), out, 'card_selected')
     save(draw_card_create(), out, 'card_create')  # border 12
     save(brighten(draw_card_create(), 1.4), out, 'card_create_hover')
     save(glow_frame(40, 40, 8, (12, 20, 38, 210), (40, 64, 104, 255), None, 0), out, 'inner')  # border 10
@@ -525,7 +521,7 @@ def main():
     # buttons (border 8)
     for name, im in (('button_yellow', gradient_button(48, 32, 7, YELLOW, (255, 236, 150, 255))),
                      ('button_green', gradient_button(48, 32, 7, GREEN, (150, 255, 190, 255))),
-                     ('button_blue', outline_button(48, 32, 7, (70, 140, 230, 255), (22, 44, 84, 235))),
+                     ('button_blue', outline_button(48, 32, 7, (86, 120, 180, 255), (27, 42, 70, 235))),
                      ('button_red', outline_button(48, 32, 7, (232, 92, 92, 255), (62, 22, 30, 235))),
                      ('button_gold', outline_button(48, 32, 7, (226, 178, 62, 255), (40, 32, 14, 230)))):
         save(im, out, name)
@@ -569,7 +565,7 @@ def main():
     accent = (120, 200, 255, 255)
     save(draw_stage(), out, 'stage')
     save(glow_frame(40, 48, 7, (14, 24, 44, 235), (46, 74, 118, 255), None, 0), out, 'thumb')  # border 9
-    save(glow_frame(40, 48, 7, (20, 44, 70, 245), (110, 210, 255, 255), None, 0), out, 'thumb_selected')
+    save(glow_frame(40, 48, 7, NAVY_LIGHT, GOLD, None, 0), out, 'thumb_selected')
     for name, left in (('arrow_left', True), ('arrow_right', False)):
         save(draw_arrow(WHITE, left), out, name)
         save(brighten(draw_arrow(WHITE, left), 1.3), out, name + '_hover')

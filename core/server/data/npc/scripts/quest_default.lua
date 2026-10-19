@@ -23,4 +23,15 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	return true
 end)
 
+local greet = npcHandler.greet
+function npcHandler:greet(cid)
+    greet(self, cid)
+    if (cid ~= 0 and self:isFocused(cid)) then
+        local hint = getQuestGreetHint(cid, name)
+        if (hint) then
+            selfSay(hint, cid)
+        end
+    end
+end
+
 npcHandler:addModule(FocusModule:new())

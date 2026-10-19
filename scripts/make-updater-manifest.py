@@ -4,7 +4,7 @@
     scripts/make-updater-manifest.py --package <client dir> --os windows|linux|android
         --site <site dir> --files-url <url of <site>/files> --version <tag>
         [--files-dir <dir>] [--binary otclient.exe] [--release-dir <dir> --release-url <url>]
-        [--max-size 95000000] [--skip <path>]...
+        [--max-size 95000000] [--skip <path>]... [--apk <apk> --apk-url <url>]
 
 Writes <site>/<os>.json and copies every package file into <site>/files/<path>, the
 layout modules/updater/updater.lua expects. --files-dir puts them elsewhere (with --files-url
@@ -13,14 +13,19 @@ back stale from the Pages cache (10 minutes, and it ignores query strings). File
 --max-size (the Pages limit is 100 MB) go to --release-dir instead, to be uploaded as GitHub
 Release assets, and the manifest points at them with absolute URLs under --release-url.
 
+Android can't replace its engine, which comes with the APK: --apk adds {"apk": {engine, url,
+size}}, the engine id read from the APK, so the updater offers the new APK when it differs.
+
 Several platforms can share one site: common files are stored once, and a path that
 already exists with different content is an error.
 """
 import argparse
+import io
 import json
 import os
 import shutil
 import sys
+import zipfile
 import zlib
 
 
@@ -38,6 +43,16 @@ def crc32(path):
 
 def asset_name(rel):
     return rel.replace("/", ".")
+
+
+def apk_engine(apk):
+    """The engine id scripts/build-android-client.sh put in the APK's data.zip (engine.txt)."""
+    with zipfile.ZipFile(apk) as outer:
+        with zipfile.ZipFile(io.BytesIO(outer.read("assets/data.zip"))) as data:
+            engine = data.read("engine.txt").decode().strip()
+    if not engine:
+        sys.exit(f"{apk} has an empty engine.txt")
+    return engine
 
 
 def same_file(a, b):
@@ -58,6 +73,8 @@ def main():
     p.add_argument("--max-size", type=int, default=95_000_000)
     p.add_argument("--skip", action="append", default=[],
                    help="package path left out of the manifest, e.g. a binary the platform cannot replace")
+    p.add_argument("--apk", default="", help="Android: the release's APK, which the files need when its engine differs")
+    p.add_argument("--apk-url", default="", help="Android: where the APK is downloaded")
     args = p.parse_args()
     skip = {s.strip("/") for s in args.skip}
 
@@ -106,6 +123,11 @@ def main():
             sys.exit(f"binary {binary} not found in {package}")
         manifest["binary"] = {"file": "/" + binary, "checksum": crc32(src), "size": os.path.getsize(src)}
         publish(binary, src)
+
+    if args.apk:
+        if not args.apk_url:
+            sys.exit("--apk needs --apk-url")
+        manifest["apk"] = {"engine": apk_engine(args.apk), "url": args.apk_url, "size": os.path.getsize(args.apk)}
 
     if not manifest["urls"]:
         del manifest["urls"]
