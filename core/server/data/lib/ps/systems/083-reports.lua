@@ -452,6 +452,9 @@ local function tellReporter(row, status, note)
         return
     end
     local info = statusOf(row.kind, status)
+    if (row.kind == "player") then
+        note = nil -- what staff did about another player stays with staff
+    end
     local text = string.format("Your report #%d \"%s\" is now: %s.", row.id, row.title, info and info.name or status)
     if (note and note ~= "") then
         text = text .. " Staff: " .. note
@@ -574,6 +577,50 @@ local function sendConfig(cid)
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(
             "[Reports] The team answered %d of your reports. Open the Reports window to see them.", unseen))
     end
+end
+
+Reports.get = getRow
+
+-- The /reports talkaction: the newest open reports, or one of them in full
+Reports.sayList = function(cid)
+    local rows = query(string.format("SELECT `id`, `kind`, `category`, `status`, `title`, `player_name`, " ..
+        "`target_name`, `staff_note`, `reporter_seen`, `created_at`, `updated_at` FROM `reports` WHERE " ..
+        "`world_id` = %d ORDER BY `id` DESC LIMIT 200;", worldId()), SUMMARY_FIELDS)
+    local lines = {}
+    for _, row in ipairs(rows) do
+        local status = statusOf(row.kind, row.status)
+        if (not (status and status.closed) and #lines < 15) then
+            lines[#lines + 1] = string.format("#%d [%s, %s] %s - by %s%s", row.id, row.kind,
+                status and status.name or row.status, row.title, row.player_name,
+                row.target_name ~= "" and (" about " .. row.target_name) or "")
+        end
+    end
+    if (#lines == 0) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "There are no open reports.")
+        return
+    end
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Open reports (newest first, the Reports window " ..
+        "on the top bar has them all):")
+    for _, line in ipairs(lines) do
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, line)
+    end
+end
+
+Reports.sayOne = function(cid, id)
+    local row = getRow(id)
+    if (not row) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "There is no report #" .. id .. ".")
+        return
+    end
+    local status = statusOf(row.kind, row.status)
+    local text = string.format("Report #%d (%s, %s)\n%s\n\nFrom: %s, level %d\n%sPosition: %d, %d, %d %s\n" ..
+        "Sent: %s\n\n%s", row.id, row.kind, status and status.name or row.status, row.title, row.player_name,
+        row.player_level, row.target_name ~= "" and ("About: " .. row.target_name .. "\n") or "", row.posx, row.posy,
+        row.posz, row.area, os.date("%c", row.created_at), row.description)
+    if (row.staff_note ~= "") then
+        text = text .. "\n\nStaff note (" .. row.handled_by .. "): " .. row.staff_note
+    end
+    doPlayerPopupFYI(cid, text)
 end
 
 Reports.onClientMessage = function(cid, buffer)

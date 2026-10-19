@@ -114,7 +114,7 @@
 	<talkaction log="yes" words="/down" access="3" event="script" value="teleportfloor.lua"/>-->
 	<talkaction log="yes" words="/save" access="3" event="script" value="save.lua"/>
 	<talkaction log="yes" words="/clean" access="3" event="script" value="clean.lua"/>
-	<talkaction log="yes" words="/reports" access="3" event="script" value="reports.lua"/>
+	<talkaction log="yes" words="/reports" access="1" event="script" value="reports.lua"/>
 	<talkaction log="yes" access="3" words="/wp" event="script" value="waypoints.lua"/>
 	<talkaction access="3" words="/online" event="script" value="online.lua"/>
 	<talkaction log="yes" words="/info" access="3" event="script" value="playerinfo.lua"/>
