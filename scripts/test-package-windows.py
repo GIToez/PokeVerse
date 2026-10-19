@@ -116,13 +116,17 @@ def send_keys(keys):
 
 
 def run_client(client_dir, env, logs, tag, pkg):
-    # the Redemption client logs to its user folder: %APPDATA%\pokeverse\pokeverse\
-    client_log = os.path.join(os.environ.get("APPDATA", ""), "pokeverse", "pokeverse", "pokeverse.log")
-    if os.path.exists(client_log):
-        os.remove(client_log)
+    # the Redemption client logs to its user folder: %APPDATA%\PokeVerse\ (older clients: %APPDATA%\pokeverse\pokeverse\)
+    appdata = os.environ.get("APPDATA", "")
+    client_logs = [os.path.join(appdata, "PokeVerse", "pokeverse.log"),
+                   os.path.join(appdata, "pokeverse", "pokeverse", "pokeverse.log")]
+    for log in client_logs:
+        if os.path.exists(log):
+            os.remove(log)
     client = subprocess.Popen([os.path.join(client_dir, "PokeVerse.exe")], cwd=client_dir, env=env)
     time.sleep(25)
     alive = client.poll() is None
+    client_log = next((log for log in client_logs if os.path.exists(log)), client_logs[0])
     text = read(client_log)
     # Release builds do not log "Loaded module" (debug level), so look for errors instead.
     errors = [l for l in text.splitlines() if "FATAL" in l or "Unable to load module" in l]
