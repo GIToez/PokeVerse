@@ -42,7 +42,8 @@ permissions:
 
 env:
   CLIENTS_REPO: GIToez/PokeVerse-Clients
-  PAGES_URL: https://gitoez.github.io/PokeVerse-Clients
+  # the Pages custom domain; the github.io address only 301-redirects here, one more TLS handshake
+  PAGES_URL: https://pokeverse.quest
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
 
 jobs:
@@ -457,7 +458,7 @@ jobs:
           # cache can still hand out the old manifest, and it must find the files it lists
           if git clone -q --depth 1 --branch gh-pages "https://x-access-token:$REPO_TOKEN@github.com/$CLIENTS_REPO.git" old-site &&
              [ -f old-site/updater/windows.json ]; then
-            old=$(python3 -c 'import json,os,sys; u=json.load(open(sys.argv[1]))["url"]; p=os.environ["PAGES_URL"] + "/"; print(u[len(p):] if u.startswith(p) else "")' old-site/updater/windows.json)
+            old=$(python3 -c 'import json,os,sys; u=json.load(open(sys.argv[1]))["url"]; print(next((u[len(p):] for p in (os.environ["PAGES_URL"] + "/", "https://gitoez.github.io/PokeVerse-Clients/") if u.startswith(p)), ""))' old-site/updater/windows.json)
             case "$old" in
               updater/files|updater/files/*)
                 if [ "$old" != "updater/files/$TAG" ] && [ -d "old-site/$old" ]; then
