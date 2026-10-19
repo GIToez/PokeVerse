@@ -35,6 +35,9 @@ public:
 
     bool discoverWorkDir(const std::string& existentFile);
     bool setupUserWriteDir(const std::string& appWriteDirName);
+    // Windows: %APPDATA%\<app name>\ is the user dir and the write dir. Elsewhere the same as
+    // setupUserWriteDir("<compact name>/").
+    bool setupAppDataWriteDir();
     void setUserDirOverride(const std::string& path) { m_userDirOverride = path; }
     bool setWriteDir(const std::string& writeDir, bool create = false);
 
@@ -71,6 +74,9 @@ public:
     std::string getRealPath(const std::string& path);
     std::string getBaseDir();
     std::string getUserDir();
+    // the remembered passwords are encrypted with a key made from it, so it must not change
+    // @dontbind
+    std::string getCryptUserDir() { return m_legacyUserDir.empty() ? getUserDir() : m_legacyUserDir; }
     std::string getWriteDir() { return m_writeDir; }
     std::string getWorkDir() { return m_workDir; }
     std::deque<std::string> getSearchPaths() { return m_searchPaths; }
@@ -112,6 +118,8 @@ private:
     std::string m_workDir;
     std::string m_writeDir;
     std::string m_userDirOverride;
+    std::string m_appDataDir;
+    std::string m_legacyUserDir;
     std::filesystem::path m_binaryPath;
     std::deque<std::string> m_searchPaths;
 };

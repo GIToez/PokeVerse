@@ -393,6 +393,72 @@ bool ResourceManager::setupUserWriteDir(const std::string& appWriteDirName)
     return setWriteDir(writeDir);
 }
 
+namespace {
+
+// Moves what is in `from` into `to`; anything `to` already has is kept.
+void moveDirContents(const std::filesystem::path& from, const std::filesystem::path& to)
+{
+    std::error_code ec;
+    std::vector<std::filesystem::path> entries;
+    for (const auto& entry : std::filesystem::directory_iterator(from, ec))
+        entries.push_back(entry.path());
+
+    for (const auto& entry : entries) {
+        const auto target = to / entry.filename();
+        if (std::filesystem::exists(target, ec))
+            continue;
+        std::filesystem::rename(entry, target, ec);
+        if (ec)
+            g_logger.warning("Unable to move '{}' to '{}': {}", entry.generic_string(), target.generic_string(), ec.message());
+    }
+}
+
+}
+
+bool ResourceManager::setupAppDataWriteDir()
+{
+    const std::string appData = g_platform.getAppDataDir();
+    if (appData.empty() || !m_userDirOverride.empty())
+        return setupUserWriteDir(g_app.getCompactName() + "/");
+
+    const std::string& compactName = g_app.getCompactName();
+    // what earlier builds used: PhysFS's pref dir (organization, then app) and a write dir in it
+    m_legacyUserDir = fmt::format("{}\\{}\\{}\\", appData, g_app.getOrganizationName(), compactName);
+
+    const auto toPath = [](const std::string& utf8) {
+        return std::filesystem::path(std::u8string(utf8.begin(), utf8.end()));
+    };
+    const auto dir = toPath(appData) / toPath(std::string(g_app.getName()));
+    const auto legacyOrgDir = toPath(appData) / toPath(g_app.getOrganizationName());
+    const auto legacyDir = legacyOrgDir / toPath(compactName);
+    const auto legacyWriteDir = legacyDir / toPath(compactName);
+
+    std::error_code ec;
+    std::filesystem::create_directories(dir, ec);
+    if (ec) {
+        g_logger.error("Unable to create user directory '{}': {}", dir.generic_string(), ec.message());
+        m_legacyUserDir.clear();
+        return setupUserWriteDir(compactName + "/");
+    }
+
+    // AppData is case-insensitive, so the old folders can sit inside the new one
+    if (std::filesystem::is_directory(legacyWriteDir, ec)) {
+        g_logger.info("Moving the settings from '{}' to '{}'", legacyWriteDir.generic_string(), dir.generic_string());
+        moveDirContents(legacyWriteDir, dir);
+        std::filesystem::remove(legacyWriteDir, ec);
+    }
+    if (std::filesystem::is_directory(legacyDir, ec)) {
+        moveDirContents(legacyDir, dir);
+        std::filesystem::remove(legacyDir, ec);
+        if (!std::filesystem::equivalent(legacyOrgDir, dir, ec) && !ec)
+            std::filesystem::remove(legacyOrgDir, ec);
+    }
+
+    const auto u8 = dir.u8string();
+    m_appDataDir = std::string(u8.begin(), u8.end()) + "\\";
+    return setWriteDir(m_appDataDir);
+}
+
 bool ResourceManager::setWriteDir(const std::string& writeDir, bool)
 {
     if (!PHYSFS_setWriteDir(writeDir.c_str())) {
@@ -751,6 +817,9 @@ std::string ResourceManager::getUserDir()
 #elif defined(__EMSCRIPTEN__)
     return "/user/";
 #else
+    if (!m_appDataDir.empty())
+        return m_appDataDir;
+
     static const char* orgName = g_app.getOrganizationName().data();
     static const char* appName = g_app.getCompactName().data();
 

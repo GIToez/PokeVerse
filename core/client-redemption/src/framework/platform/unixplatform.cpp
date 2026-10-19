@@ -116,6 +116,11 @@ std::string Platform::getCurrentDir()
     return res;
 }
 
+std::string Platform::getAppDataDir()
+{
+    return {};
+}
+
 bool Platform::copyFile(std::string from, std::string to)
 {
     return system(fmt::format("/bin/cp '{}' '{}'", from, to).c_str()) == 0;
