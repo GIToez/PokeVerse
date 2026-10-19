@@ -175,6 +175,34 @@ TkCombo < ComboBox
     margin-right: 9
     phantom: true
 
+// UIComboBox opens its list as <style>PopupMenu, with <style>PopupMenuButton options
+TkComboPopupMenuButton < UIButton
+  height: 22
+  font: verdana-11px-antialised
+  text-align: left
+  text-offset: 10 0
+  color: #e6ecff
+  background-color: alpha
+  $hover !disabled:
+    color: #ffd75a
+    background-color: #2a4a86
+  $disabled:
+    color: #96aacd
+
+TkComboPopupMenu < UIPopupMenu
+  background-color: #101c38f2
+  border-width: 1
+  border-color: #3d5c99
+  padding: 2
+
+TkComboPopupScrollMenuButton < TkComboPopupMenuButton
+
+TkComboPopupScrollMenu < UIPopupScrollMenu
+  background-color: #101c38f2
+  border-width: 1
+  border-color: #3d5c99
+  padding: 2
+
 // difficulty: the picker, then a Start button before the period starts or a note after
 TkPicker < UIWidget
   height: 34

@@ -13,6 +13,9 @@ images/game/crosshair/{pokeball,ring,pokedex}.png
     The mouse-over tile marks (Options > Interface > Crosshair), drawn on top of the tile under
     the mouse (MapView::setCrosshairTexture). They're drawn over everything on the tile, so they
     keep the middle clear.
+cursors/{dex,order}cursor.png
+    The mouse cursors while using the Pokedex or the order on something (cursors/cursors.otml,
+    game_interface startUseWith), 24x24 with the hot spot in the middle.
 
 The classic rings are the legacy client's (client-legacy/data/images/ui/crosshair-*.png) and
 aren't drawn here.
@@ -146,6 +149,59 @@ def pokedex():
     return shrink(im)
 
 
+CURSOR = 24
+
+
+def cursor_canvas():
+    return Image.new('RGBA', (CURSOR * SCALE, CURSOR * SCALE), (0, 0, 0, 0))
+
+
+def dex_cursor():
+    """The Pokedex's use cursor: the scanner frame, small, with a dot on the hot spot."""
+    im = cursor_canvas()
+    d = ImageDraw.Draw(im)
+    c = CURSOR / 2
+    d.rounded_rectangle((s(1.2), s(1.2), s(CURSOR - 1.2), s(CURSOR - 1.2)), radius=s(5),
+                        outline=DARK + (230,), width=s(3.0))
+    d.rounded_rectangle((s(1.8), s(1.8), s(CURSOR - 1.8), s(CURSOR - 1.8)), radius=s(4.4),
+                        outline=RED + (255,), width=s(1.8))
+    for x0, y0, x1, y1 in ((c, 3.5, c, 8), (c, CURSOR - 8, c, CURSOR - 3.5),
+                           (3.5, c, 8, c), (CURSOR - 8, c, CURSOR - 3.5, c)):
+        d.line((s(x0), s(y0), s(x1), s(y1)), fill=DARK + (230,), width=s(2.6))
+        d.line((s(x0), s(y0), s(x1), s(y1)), fill=WHITE + (255,), width=s(1.3))
+    circle(d, c, c, 1.6, fill=DARK + (230,))
+    circle(d, c, c, 0.9, fill=WHITE + (255,))
+    circle(d, 5.2, 5.2, 2.2, fill=DARK + (240,))
+    circle(d, 5.2, 5.2, 1.5, fill=(90, 200, 255, 255))
+    circle(d, 4.7, 4.7, 0.55, fill=WHITE + (255,))
+    return im.resize((CURSOR, CURSOR), Image.LANCZOS)
+
+
+def order_cursor():
+    """The order's use cursor: four arrowheads pointing in at a small Poke Ball on the hot spot."""
+    im = cursor_canvas()
+    d = ImageDraw.Draw(im)
+    c = CURSOR / 2
+    for angle in range(4):
+        # an arrowhead from the edge towards the middle, rotated a quarter turn each time
+        tip, back, half = 6.2, 1.2, 3.4
+        points = [(0, -c + tip), (-half, -c + back), (half, -c + back)]
+        shape = []
+        for x, y in points:
+            rx, ry = [(x, y), (-y, x), (-x, -y), (y, -x)][angle]
+            shape.append((s(c + rx), s(c + ry)))
+        d.polygon(shape, fill=(RED if angle in (0, 1) else WHITE) + (255,), outline=DARK + (240,), width=s(1.0))
+    r = 3.6
+    box = (s(c - r), s(c - r), s(c + r), s(c + r))
+    circle(d, c, c, r + 0.8, fill=DARK + (240,))
+    d.pieslice(box, 180, 360, fill=RED + (255,))
+    d.pieslice(box, 0, 180, fill=WHITE + (255,))
+    d.rectangle((s(c - r), s(c - 0.5), s(c + r), s(c + 0.5)), fill=DARK + (255,))
+    circle(d, c, c, 1.4, fill=DARK + (255,))
+    circle(d, c, c, 0.8, fill=WHITE + (255,))
+    return im.resize((CURSOR, CURSOR), Image.LANCZOS)
+
+
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else (
         Path(__file__).resolve().parents[2] / 'core/client-redemption/pokeverse-modern/data')
@@ -163,6 +219,11 @@ def main():
     corners().save(crosshair / 'pokeball.png')
     thin_ring().save(crosshair / 'ring.png')
     pokedex().save(crosshair / 'pokedex.png')
+
+    cursors = out / 'cursors'
+    cursors.mkdir(parents=True, exist_ok=True)
+    dex_cursor().save(cursors / 'dexcursor.png')
+    order_cursor().save(cursors / 'ordercursor.png')
 
 
 if __name__ == '__main__':

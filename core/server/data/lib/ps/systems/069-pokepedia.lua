@@ -276,8 +276,9 @@ Pokepedia.sendHouses = function(cid)
         local house = all[id]
         local info = getHouseInfo(id, false)
         local owner = info and info.owner or 0
+        local entry = house.entry or {}
         rows[#rows + 1] = { id, house.name, house.townName, house.size, house.beds, house.price,
-            ownerName(house, owner), house.guild and 1 or 0 }
+            ownerName(house, owner), house.guild and 1 or 0, entry.x or 0, entry.y or 0 }
     end
     send(cid, { type = "houses", part = 1, parts = 1, mine = mine, list = JSON.array(rows) }, rows)
 end

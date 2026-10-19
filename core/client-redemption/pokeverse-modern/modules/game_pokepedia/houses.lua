@@ -4,7 +4,7 @@
 HousesTab = {}
 
 local page
-local houses = {} -- { id, name, town, size, beds, price, owner, guild }
+local houses = {} -- { id, name, town, region, size, beds, price, owner, guild }
 local incoming
 local mine = 0
 local selectedId, detail
@@ -13,6 +13,8 @@ local tileWidgets = {}
 local loadedAt = 0
 local confirmBox
 local expandedTowns = {}
+-- region id: open; the player's region starts open
+local expandedRegions
 
 local SIZES = {
     { name = 'Any size' },
@@ -45,8 +47,8 @@ local function matches(house)
     if filter ~= '' and not house.name:lower():find(filter, 1, true) and not house.owner:lower():find(filter, 1, true) then
         return false
     end
-    local town = side.town:getCurrentOption()
-    if town and town.data ~= '' and house.town ~= town.data then
+    local region = side.region:getCurrentOption()
+    if region and region.data ~= '' and house.region ~= region.data then
         return false
     end
     local state = side.state:getCurrentOption()
@@ -87,41 +89,122 @@ local function addHouseRow(list, house)
     return row
 end
 
+local function mapData()
+    local map = modules.game_minimap and modules.game_minimap.PokeverseMap
+    return map and map.getRegions and map or nil
+end
+
+-- the house's entrance places it; without one (an older server) its town's name on the world map does
+local function houseRegion(house, map, townRegions)
+    if house.x > 0 then
+        return map.regionAt({ x = house.x, y = house.y, z = 7 })
+    end
+    return townRegions[house.town] or 'other'
+end
+
+local function placeRegions()
+    local map = mapData()
+    if not map then
+        return
+    end
+    local townRegions = {}
+    for _, label in ipairs(map.getLabels()) do
+        if label.kind == 'city' then
+            townRegions[label.name] = label.region
+        end
+    end
+    for _, house in ipairs(houses) do
+        house.region = houseRegion(house, map, townRegions)
+    end
+end
+
+-- game_minimap may load after the Pokepedia, so the regions are filled in once it has
+local function fillRegions()
+    local combo = page.side.region
+    local map = mapData()
+    if combo.filled or not map then
+        return
+    end
+    combo.filled = true
+    combo:addOption(tr('All regions'), '')
+    for _, region in ipairs(map.getRegions()) do
+        combo:addOption(tr(region.name), region.id)
+    end
+end
+
 local function drawList()
     local side = page.side
     local list = side.list
-    local groups, byTown, count = {}, {}, 0
+    fillRegions()
+    local map = mapData()
+    if #houses > 0 and not houses[1].region then
+        placeRegions()
+    end
+    local regionFilter = (side.region:getCurrentOption() or {}).data or ''
+    if not expandedRegions then
+        expandedRegions = {}
+        local player = g_game.getLocalPlayer()
+        if map and player then
+            expandedRegions[map.regionAt(player:getPosition())] = true
+        end
+    end
+
+    local byRegion, count = {}, 0
     for _, house in ipairs(houses) do
         if matches(house) then
+            local regionId = house.region or 'other'
+            local region = byRegion[regionId]
+            if not region then
+                region = { groups = {}, byTown = {}, count = 0 }
+                byRegion[regionId] = region
+            end
             local town = house.town ~= '' and house.town or tr('Elsewhere')
-            local group = byTown[town]
+            local group = region.byTown[town]
             if not group then
-                group = { key = town, name = town, icon = Pp.IMAGES .. 'icon_house', entries = {}, free = 0 }
-                byTown[town] = group
-                groups[#groups + 1] = group
+                group = { key = regionId .. '/' .. town, name = town, icon = Pp.IMAGES .. 'icon_house', entries = {}, free = 0 }
+                region.byTown[town] = group
+                region.groups[#region.groups + 1] = group
             end
             group.entries[#group.entries + 1] = house
             if house.owner == '' then
                 group.free = group.free + 1
             end
+            region.count = region.count + 1
             count = count + 1
         end
     end
-    table.sort(groups, function(a, b) return a.name < b.name end)
-    for _, group in ipairs(groups) do
-        table.sort(group.entries, function(a, b) return a.sortName < b.sortName end)
-        group.note = group.free > 0 and tr('%d of %d for sale', group.free, #group.entries) or tr('%d houses', #group.entries)
-    end
-    -- a search or a single town shows every match without opening groups by hand
-    local openAll = side.search:getText() ~= '' or #groups == 1
+
+    list:destroyChildren()
+    -- a search shows every match without opening groups by hand
+    local openAll = side.search:getText() ~= ''
     local focus
-    Pp.fillTree(list, groups, expandedTowns, function(parent, house)
-        local row = addHouseRow(parent, house)
-        if house.id == selectedId then
-            focus = row
+    for _, info in ipairs(map and map.getRegions() or { { id = 'other', name = 'Houses' } }) do
+        local region = byRegion[info.id]
+        if region then
+            table.sort(region.groups, function(a, b) return a.name < b.name end)
+            for _, group in ipairs(region.groups) do
+                table.sort(group.entries, function(a, b) return a.sortName < b.sortName end)
+                group.note = group.free > 0 and tr('%d of %d for sale', group.free, #group.entries) or
+                    tr('%d houses', #group.entries)
+            end
+            Pp.addRegionTree(list, {
+                region = info,
+                count = region.count,
+                groups = region.groups,
+                expanded = expandedTowns,
+                regions = expandedRegions,
+                openAll = openAll or #region.groups == 1 and regionFilter ~= '',
+                keepOpen = regionFilter ~= '',
+                addEntry = function(parent, house)
+                    local row = addHouseRow(parent, house)
+                    if house.id == selectedId then
+                        focus = row
+                    end
+                    return row
+                end
+            })
         end
-        return row
-    end, openAll)
+    end
     if count == 0 then
         local hint = g_ui.createWidget('TkMuted', list)
         hint:setText(#houses == 0 and tr('Loading the houses...') or tr('No house matches.'))
@@ -135,34 +218,14 @@ local function drawList()
     end
 end
 
-local function fillTowns()
-    local combo = page.side.town
-    local chosen = combo:getCurrentOption() and combo:getCurrentOption().data or ''
-    local towns, seen = {}, {}
-    for _, house in ipairs(houses) do
-        if house.town ~= '' and not seen[house.town] then
-            seen[house.town] = true
-            towns[#towns + 1] = house.town
-        end
-    end
-    table.sort(towns)
-    combo.onOptionChange = nil
-    combo:clearOptions()
-    combo:addOption(tr('All towns'), '')
-    for _, town in ipairs(towns) do
-        combo:addOption(town, town)
-    end
-    combo:setCurrentOptionByData(chosen, true)
-    combo.onOptionChange = drawList
-end
-
 function Handlers.houses(data)
     if data.part == 1 or not incoming then
         incoming = {}
     end
     for _, row in ipairs(data.list or {}) do
         incoming[#incoming + 1] = { id = row[1], name = tostring(row[2]), town = tostring(row[3]), size = row[4] or 0,
-            beds = row[5] or 0, price = row[6] or 0, owner = tostring(row[7] or ''), guild = row[8] == 1 }
+            beds = row[5] or 0, price = row[6] or 0, owner = tostring(row[7] or ''), guild = row[8] == 1,
+            x = tonumber(row[9]) or 0, y = tonumber(row[10]) or 0 }
         local house = incoming[#incoming]
         -- numbers padded so House #2 sorts before House #10
         house.sortName = house.name:lower():gsub('%d+', function(n) return ('%08d'):format(tonumber(n)) end)
@@ -171,7 +234,7 @@ function Handlers.houses(data)
         houses, incoming = incoming, nil
         mine = data.mine or 0
         loadedAt = g_clock.millis()
-        fillTowns()
+        placeRegions()
         drawList()
     end
 end
@@ -481,10 +544,10 @@ function HousesTab.setup(widget)
     for index, size in ipairs(SIZES) do
         side.size:addOption(tr(size.name), index)
     end
-    side.town:addOption(tr('All towns'), '')
+    fillRegions()
     side.state.onOptionChange = drawList
     side.size.onOptionChange = drawList
-    side.town.onOptionChange = drawList
+    side.region.onOptionChange = drawList
     side.guild.onCheckChange = drawList
     side.list.onChildFocusChange = function(list, focused)
         if focused and focused.house and focused.house.id ~= (detail and detail.id) then
@@ -630,6 +693,7 @@ end
 
 function HousesTab.onGameEnd()
     houses, incoming, mine, selectedId, detail = {}, nil, 0, nil, nil
+    expandedRegions = nil
     loadedAt = 0
     shown.box = nil
     if page then

@@ -26,8 +26,8 @@ so. Items marked **To decide** need an answer before work starts.
   against the code, in place of the Wiki Chat channel.
 - The Pokepedia's [real world map](#real-world-map-built), drawn from the game's sprites and
   updated by each client release, with a list of regions to keep hidden until they launch.
-- Houses tab pictures of each house and floor, towns as groups in the Houses and Places lists,
-  and a filter by kind of place.
+- Houses tab pictures of each house and floor, the Houses and Places lists grouped by region and
+  then town, and filters by region, kind of place, for sale and size.
 - Pokemon [minimap marks](#minimap-marks-built) in place of Tibia's flags.
 - The new top menu bar (grouped icons, Store button) and one hotkey system for items and moves.
 - [Slot machine and world boss fixes](#11-bug-fixes-and-small-ideas).

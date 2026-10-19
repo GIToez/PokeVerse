@@ -701,7 +701,7 @@ HousesPage < UIWidget
       anchors.right: parent.right
 
     TkCombo
-      id: town
+      id: region
       width: 150
       anchors.top: search.bottom
       anchors.left: parent.left
@@ -710,13 +710,13 @@ HousesPage < UIWidget
     TkCombo
       id: state
       width: 104
-      anchors.top: town.top
-      anchors.left: town.right
+      anchors.top: region.top
+      anchors.left: region.right
       margin-left: 6
 
     TkCombo
       id: size
-      anchors.top: town.top
+      anchors.top: region.top
       anchors.left: state.right
       anchors.right: parent.right
       margin-left: 6
@@ -724,7 +724,7 @@ HousesPage < UIWidget
     PVCheckBox
       id: guild
       !text: tr('Guild halls only')
-      anchors.top: town.bottom
+      anchors.top: region.bottom
       anchors.left: parent.left
       margin-top: 8
 
