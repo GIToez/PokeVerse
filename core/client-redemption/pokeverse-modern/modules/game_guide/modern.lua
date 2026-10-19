@@ -5,6 +5,9 @@ local legacyInit = onInit
 
 local POKEBAR_WIDTH = 70
 local MOVES_BAR_SPACE = 100
+-- Red at 1.7x the legacy 137x142; the art is 502x552, so it stays sharp
+local RED_SIZE = { width = 233, height = 256 }
+local BALLOON_OVERLAP = 24
 
 function onInit()
     legacyInit()
@@ -22,6 +25,10 @@ function onInit()
         balloon:setMarginLeft(POKEBAR_WIDTH)
         balloon:setMarginBottom(4)
         balloon:setPhantom(true)
+        local bubble = balloon:getChildById('balloon')
+        balloon:getChildById('character'):setSize(RED_SIZE)
+        balloon:setSize({ width = RED_SIZE.width + bubble:getWidth() - BALLOON_OVERLAP,
+            height = RED_SIZE.height + 8 })
     end
 
     if picture then
