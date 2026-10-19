@@ -59,7 +59,9 @@ round buttons on the right. A title that doesn't fit switches to the narrower fo
 ### Side windows (MiniWindow)
 - [x] MiniWindow base: header, round buttons, see-through body, scrollbar, resize border (`pokeverse-styles/miniwindow.otui`, header in the corelib patch)
 - [x] Side panels: no solid frame, gaps between cards (`GameSidePanel` in the game_interface patch)
-- [x] Inventory (`game_inventory`): Order, Dex, Badges on top, then ring, Pokemon head, Poke Ball, bag
+- [x] Inventory (`game_inventory`): Order, Pokedex, Badges on top, then ring, Pokemon head, Poke Ball, bag.
+  The top three are 48x44 tiles: the sprite's picture without its baked-in name
+  (`scripts/art/inventory_tiles.py`) and the name as a label underneath
 - [x] Battle List, Tracker, Simple pokebag, Trainer belt, Skills: through the MiniWindow base
 - [x] Minimap: hairline frame, round zoom and full map buttons (`automap_buttons`)
 - [x] Battle List rows: muted names, the target in gold, health bars in the kit colours (gamelib patch)
@@ -76,6 +78,12 @@ round buttons on the right. A title that doesn't fit switches to the narrower fo
 - [x] Login, create account, character list and create character (`scripts/art/login_ui.py` on the D
   tokens: shadow instead of the blue glow, gold selection, focus and spotlight)
 - [x] NPC dialog: panel, inset and word buttons (Yes and No stay green and red)
+- [x] NPC shop (`game_npctrade`, the legacy window): offer cards (`pokeverse-ui/offer*`, gold edge when
+  selected), item names wrap, no "0.00 oz" on weightless items, inset panels with muted labels, Buy and Sell
+  tabs, gold Buy and blue Close buttons (`MessageBoxPrimaryButton` / `MessageBoxButton`)
+- [x] Chat (`game_console`): navy card body (`pokeverse-ui/chat-body`, kept at about 88% over the map in
+  fullscreen), inset message list (`chat-buffer`), round icon buttons (`console_buttons`), say mode,
+  channel arrows, read-only button, slim scrollbars and a kit Chat On/Off button
 
 ### Bars
 - [x] Swap bar (`game_pokebar`): round portrait sockets with an HP ring, F-key chip, gold ring on the
