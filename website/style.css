@@ -71,6 +71,10 @@ main > section.wrap > h2:first-child { margin-top: 2rem; }
 .download strong { font-size: 1.2rem; }
 .download span { color: var(--muted); }
 .download:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--gold); }
+.download-card { display: flex; flex-direction: column; gap: .45rem; }
+.download-card > .panel { margin: 0; flex: 1; }
+.download-alt { font-size: .85rem; color: var(--muted); text-align: center; }
+.download-alt:hover { color: var(--gold); }
 .status { display: flex; align-items: center; gap: .55rem; font-weight: 600; }
 .dot { width: .7rem; height: .7rem; border-radius: 50%; background: var(--muted); box-shadow: 0 0 0 4px #9aa5d122; }
 .links { margin: 0; padding-left: 1.1rem; }

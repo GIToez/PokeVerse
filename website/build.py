@@ -310,8 +310,11 @@ class Site:
   <h2>Download</h2>
   <p>Install once: the client updates itself every time it starts.</p>
   <div class="grid-3">
-    <a class="panel download" href="{self.download_url('PokeVerse-Windows.zip')}">
-      <strong>Windows</strong><span>Unzip and run <code>PokeVerse.exe</code>.</span></a>
+    <div class="download-card">
+      <a class="panel download" href="{self.download_url('PokeVerse-Setup.exe')}">
+        <strong>Windows</strong><span>Run the installer. No administrator rights needed.</span></a>
+      <a class="download-alt" href="{self.download_url('PokeVerse-Windows.zip')}">Or get the zip: unzip it and run <code>PokeVerse.exe</code></a>
+    </div>
     <a class="panel download" href="{self.download_url('PokeVerse-Linux.tar.gz')}">
       <strong>Linux</strong><span>Extract and run <code>PokeVerse.sh</code>.</span></a>
     <a class="panel download" href="{self.download_url('PokeVerse-Android.apk')}">

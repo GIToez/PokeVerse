@@ -381,6 +381,15 @@ jobs:
           EOF
           done
 
+      # the same files as the zip, installed into the player's own folder (no administrator
+      # rights), so the updater keeps working afterwards
+      - name: Windows installer
+        run: |
+          sudo apt-get install -y --no-install-recommends nsis
+          # an absolute script path: makensis runs from the script's folder, so ${__FILEDIR__} must not be relative
+          makensis -V2 -DSOURCE="$PWD/pkg/windows" -DOUTFILE="$PWD/release/PokeVerse-Setup.exe" \
+            "$PWD/core/client-redemption/packaging/windows/PokeVerse.nsi"
+
       - name: First-install downloads
         run: |
           (cd pkg && mv windows PokeVerse && zip -qr ../release/PokeVerse-Windows.zip PokeVerse && mv PokeVerse windows)
@@ -450,7 +459,7 @@ jobs:
           gh release view "$TAG" --repo "$CLIENTS_REPO" >/dev/null 2>&1 ||
           gh release create "$TAG" release/* --repo "$CLIENTS_REPO" \
             --title "PokeVerse client $TAG" \
-            --notes "Installed clients update themselves on start. New players: download PokeVerse-Windows.zip, PokeVerse-Linux.tar.gz or PokeVerse-Android.apk."
+            --notes "Installed clients update themselves on start. New players: download PokeVerse-Setup.exe (or PokeVerse-Windows.zip to unzip it yourself), PokeVerse-Linux.tar.gz or PokeVerse-Android.apk."
 
       # gh-pages holds only the latest site: a new single-commit branch replaces it each
       # release, so old game files do not pile up in the repository
