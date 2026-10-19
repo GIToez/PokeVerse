@@ -87,7 +87,8 @@ function PokeVerseEnterGame.init()
     EnterGame.onLabelsUpdated(enterGame)
     -- Redemption sizes its window for the one-server layout; ours is the panel
     field('rememberEmailBox'):setMarginTop(12)
-    adoptRememberedAccount()
+    -- client_serverlist loads after this module (it depends on it); the remember box saves through it
+    addEvent(adoptRememberedAccount)
     layoutPanel()
     connect(g_ui.getRootWidget(), { onGeometryChange = layoutPanel })
     connect(g_ui.getRootWidget(), { onGeometryChange = CharacterList.layoutFrame })
