@@ -1,0 +1,200 @@
+# Modernization audit
+
+The PokeVerse systems that still work the old way: typing keywords to an NPC, or using a stock
+OTClient window. They are ranked by how often players touch them and how much a window would help.
+Each entry gives where the system stands today, what it should become and the files to touch.
+Each one is meant to be its own PR.
+
+The modern pieces to copy from:
+- **Sell Shop:** `game_pokemonshop` on the client, `081-pokemonShop.lua` on the server.
+- **Day Care:** `game_daycare` / `072-daycare.lua`.
+- **PC and GTS:** `game_pc` / `067-pc.lua`, `game_gts` / `066-gts.lua`.
+- **Trainer Card:** `game_trainercard` / `071-trainerCard.lua`.
+
+They all use the same pattern: a sandboxed module in `core/client-redemption/pokeverse-modern/modules/`,
+JSON on its own extended opcode (`EXTENDED_IDS` in `data/lib/ps/others/constants.lua`, `ExtendedIds` in
+`gamelib/compat.lua`), a `hello` at login so the server knows the client can show the window, and the
+old keyword dialogue left as the fallback for older clients.
+
+| Rank | System | Players touch it | Size |
+| --- | --- | --- | --- |
+| 1 | Poke Mart buy window | Every session | Medium |
+| 2 | Nurse Joy menu | Every session | Small |
+| 3 | Travel picker (boats, flying NPCs) | Daily | Small |
+| 4 | Bank window | Daily | Small |
+| 5 | Egg move and TM move manager | Weekly | Medium |
+| 6 | Safari Zone check-in | Weekly | Small |
+| 7 | Ranger Club and Tournament boards | Weekly | Medium |
+| 8 | Berries | Weekly | Medium |
+| 9 | Ball paint | Now and then | Small |
+| 10 | Name Rater and the Store | Now and then | Large (Store) |
+| 11 | Houses tab | Now and then | Medium |
+| 12 | Stock OTClient modules cleanup | Never (cost only) | Small |
+
+## 1. Poke Mart buy window
+
+**Now.** 158 NPCs sell through `module_shop` and the `shop_buyable` / `shop_sellable` lists in their
+XML (the Marts use `npc/scripts/quest_pokemart.lua`). Saying {trade} opens stock OTClient's
+`game_npctrade`. The `pokeverse-modern/patches/game_npctrade.patch` patch only renames the currency to
+Dollars. The window still has Tibia's layout: a plain list, a quantity slider, and Buy and Sell tabs.
+
+**Target.** A Mart window in the Sell Shop's style: item tiles grouped by category (Balls, Potions,
+Revives, Tools), a quantity stepper with x1/x10/x100, the price total and your money, and a cart for
+buying several items at once. Selling stays in the Sell Shop.
+
+**Files.**
+- Client: new `game_mart` (or restyle `game_npctrade` in its patch).
+- Server: the `module_shop` path in `npc/lib/npcsystem/modules.lua`, sending the list as JSON when the
+  client said hello.
+
+## 2. Nurse Joy menu
+
+**Now.** `npc/scripts/nurse_joy.lua` answers to {heal} and {hometown}. Players type or click the blue
+word, and the PC and GTS are separate machines in the Center.
+
+**Target.** Greeting Joy opens a small menu: Heal, Change hometown, and shortcuts to the PC and GTS
+when the player is inside the Center. `game_npcdialog` already shows Joy's portrait.
+
+**Files.** `npc/scripts/nurse_joy.lua`, `game_npcdialog` (a button row under the portrait), `game_pc`
+and `game_gts` (open from the menu).
+
+## 3. Travel picker
+
+**Now.** 12 NPCs use `npc/scripts/travels.lua`: captains and the flying NPCs (NPC Charizard, NPC Pidgeot
+and others). Players have to know the town names and type them; the greeting only lists some.
+
+**Target.** A destination window: each town with its price and travel time, greyed out when a quest or
+badge is missing, with the town's Pokepedia map thumbnail.
+
+**Files.** `npc/scripts/travels.lua` (send the table as JSON), a new `game_travel` module.
+
+## 4. Bank window
+
+**Now.** 19 bank NPCs use `npc/scripts/bank.lua` (with `shop_bank.lua` for one of them):
+{balance}, {deposit}, {deposit all}, {withdraw}, {withdraw all} and {transfer}, each a multi-step
+dialogue with typed amounts.
+
+**Target.** One window: the balance and the money carried, deposit and withdraw boxes with All buttons,
+and transfer with a name box that checks the name before sending.
+
+**Files.** `npc/scripts/bank.lua`, a new `game_bank` module.
+
+## 5. Egg move and TM move manager
+
+**Now.** Three NPC dialogues: `eggmove_regenerator.lua`, `eggmove_remover.lua` and `tm_remover.lua`.
+Teaching a TM uses the legacy `game_tmchoose` window. Players can't see which moves a Pokemon has in each
+slot before choosing.
+
+**Target.** A move manager window: the Pokemon's moves with their Move Info card (`076-moveInfo.lua`
+already sends move data), and Teach, Remove and Restore buttons with the price on each.
+
+**Files.** The three NPC scripts, `018-technicalMachine.lua`, `045-pokemonEgg.lua`, `game_tmchoose`
+(replace), and `game_pokemoves` for the move cards.
+
+## 6. Safari Zone check-in
+
+**Now.** `016-safariZone.lua` and the Safari NPCs (entry, and Hugh with `saffariZoneLeave.lua`).
+Check-in, the time left and the ball count are dialogue lines and text messages, and Hugh sells the
+bait, cookies, stones and traps through the stock trade window.
+
+**Target.** A check-in window (price, time, balls) and a small Safari HUD showing the time left, balls
+and the bait/cookie/stone/trap items as quick buttons.
+
+**Files.** `016-safariZone.lua`, `npc/scripts/saffariZoneLeave.lua`, a new `game_safari` module.
+
+## 7. Ranger Club and Tournament boards
+
+**Now.**
+- `029-rangerClub.lua` and `npc/scripts/rangerClub.lua`: Ranger missions are given and checked by
+  dialogue.
+- `npc/scripts/tournament.lua` (526 lines) and `013-tournamentHighscore.lua`: sign-up, rules and the
+  ladder are all dialogue.
+
+**Target.** Boards in the style of the Tasks window: the open missions or brackets, their rewards and
+progress, and Sign up / Claim buttons. The tournament ladder shows as a ranked list on the board.
+
+**Files.** The scripts above, plus a new tab in `game_dailytasks` or a `game_boards` module.
+
+## 8. Berries
+
+**Now.** `015-berry.lua` (731 lines): planting, watering and harvesting are item uses on the ground,
+with growth shown only as the plant's sprite and a look text.
+
+**Target.** A garden panel on look or use: the berry, its growth stage and time to the next stage, and
+water and fertilizer state. A Pokepedia page lists every berry, where its seed drops and what it does.
+
+**Files.** `015-berry.lua`, a new `game_berries` module (or a card in `game_pokehud`), `wiki_data.lua`.
+
+## 9. Ball paint
+
+**Now.** `npc/scripts/shop_ballPaint.lua` (339 lines): ball paints are bought with tokens and the
+required items by dialogue, without a preview.
+
+**Target.** A paint shop window with a preview of each painted ball, its token price and the items still
+missing, in the Sell Shop's style.
+
+**Files.** `npc/scripts/shop_ballPaint.lua`, `019-ballSeal.lua` (the ball look), a new window in
+`game_pokemonshop` or its own module.
+
+## 10. Name Rater and the Store
+
+**Now.**
+- **Name Rater:** there is none. Jayma Deniece (`default.lua`) only talks about nicknames, and the
+  `POKEMON_NEW_NICKNAME` storage in `lib/ps/config/storages.lua` is defined but never used.
+- **Store:** Soul Coins exist (see `docs/upcoming-features.md`), but nothing sells them or the Premium
+  items. Stock `game_store` is not loaded.
+
+**Target.**
+- **Name Rater:** an NPC window that renames a Pokemon in the bag, with a name filter and the price.
+- **Store:** a PokeVerse Store window for Soul Coins (Premium time, outfits, addons) built on the PC
+  inbox for delivery.
+
+**Files.** A new system in `data/lib/ps/systems/` and a client module for each. The Store needs payment and the website first
+(`docs/website.md`).
+
+## 11. Houses tab
+
+**Now.** 683 houses in `world/map-house.xml`, managed with `/house buy`, `/house sell`, `/house kick`,
+`/house guest` and the other talkactions in `talkactions/talkactions.xml`. Players have to know the
+commands and stand in front of the door.
+
+**Target.** A Houses tab (in the Trainer Card or its own window): your house with its rent and guests,
+and Add guest, Kick and Leave buttons. Houses for sale show on the Pokepedia map.
+
+**Files.** The house talkactions, a new `game_houses` module, and `game_pokepedia` for map marks.
+
+## 12. Stock OTClient modules cleanup
+
+**Now.** The Redemption base still ships Tibia modules PokeVerse never uses. Most aren't loaded, because
+`pokeverse-modern/modules/game_interface/interface.otmod` has its own list, but these load by themselves
+with `autoload: true`:
+- `dev_otui`
+- `game_analyser`
+- `game_cyclopedia`
+- `game_lootsplitter`
+- `game_proficiency`
+- `game_taskboard`
+
+`game_healthcircle` also autoloads but is used and patched.
+
+**Target.** Drop the unused autoloads in `scripts/assemble-redemption-client.sh` (delete them from the
+assembled tree, as it already does for `updater`), and leave out the never-loaded Tibia modules (prey,
+imbuing, forge, wheel, stash, store, quickloot, reward wall and others). This makes the client smaller
+and gives fewer errors from Tibia opcodes the server never sends.
+
+**Files.** `scripts/assemble-redemption-client.sh`, then the Windows, Linux and Android packaging
+scripts to check nothing else expects those folders.
+
+## Open follow-up: walls 874, 4471 and 4474 in two Marts
+
+The Pokemon Center and Mart walls got hooks so wall decorations (wreaths, banners, tapestries) hang on
+them. Three old walls from the original map, 874, 4471 and 4474, still have no hook. They cover only a
+couple of spots in two Marts.
+
+The fix is to run `scripts/item-hooks.py` on `core/server/data/items/items.otb` and
+`core/client-legacy/data/things/data.dat`:
+- `--south` for the walls that run east-west.
+- `--east` for the ones that run north-south.
+
+Then check with `--check`. Players need the client update to see props on them. The clerk's booth
+pieces (24253, 24254 and 24288) are left without hooks on purpose: they're part of the counter.
