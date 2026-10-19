@@ -250,15 +250,17 @@ def sheet(cells, w, pitch, h=None):
     return im
 
 
-def tab(w, h, state, r=4, gold_line=True):
-    """A tab with rounded top corners; state 'normal', 'hover' or 'checked'."""
+def tab(w, h, state, r=3, gold_line=True):
+    """A tab with rounded top corners; state 'normal', 'hover' or 'checked'. The tab styles use
+    image-border 3, so the radius stays 3 and the gold line reaches into the corners' columns:
+    the middle columns are tiled, and a line that stops short of them comes out dashed."""
     im = canvas(w, h)
     d = ImageDraw.Draw(im)
     fill = {'normal': (rgba(FIELD, 0.75)), 'hover': rgba(HOVER, 0.85), 'checked': rgba(RAISED, 0.97)}[state]
     d.rounded_rectangle((0, 0, im.width - 1, im.height - 1 + s(r)), s(r), fill=fill,
                         outline=rgba(EDGE, 0.8 if state == 'checked' else 0.45), width=s(1))
     if state == 'checked' and gold_line:
-        d.rectangle((s(r), im.height - s(2), im.width - 1 - s(r), im.height - 1), fill=rgba(GOLD))
+        d.rectangle((s(r - 1), im.height - s(2), im.width - 1 - s(r - 1), im.height - 1), fill=rgba(GOLD))
     return im
 
 
@@ -301,6 +303,164 @@ def automap_buttons():
                 if row == 2:
                     d.line((cx, cy - s(4), cx, cy + s(4)), fill=ink, width=s(1.8))
     return im
+
+
+# --- chat ---------------------------------------------------------------------------------
+
+def round_icon(d, cx, cy, state, draw):
+    """A 16 px round button: 'normal' (muted icon), 'pressed' (gold disc, dark icon), 'off' (dim)."""
+    r = s(7)
+    fill = {'normal': rgba(TEXT, 0.10), 'pressed': rgba(GOLD, 0.9), 'off': rgba(TEXT, 0.05)}[state]
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=fill)
+    ink = {'normal': rgba(MUTED), 'pressed': rgba(CHIP), 'off': rgba(MUTED, 0.35)}[state]
+    draw(d, cx, cy, ink)
+
+
+def _line(d, cx, cy, ink, *pts, w=1.4):
+    d.line([(cx + s(x), cy + s(y)) for x, y in pts], fill=ink, width=s(w), joint='curve')
+
+
+def icon_folder(d, cx, cy, ink):
+    _line(d, cx, cy, ink, (-4, -2.5), (-1.5, -2.5), (-0.5, -1.5), (4, -1.5), (4, 3), (-4, 3), (-4, -2.5))
+
+
+def icon_message(d, cx, cy, ink):
+    d.rounded_rectangle((cx - s(4), cy - s(3.2), cx + s(4), cy + s(2)), s(1.5), outline=ink, width=s(1.3))
+    _line(d, cx, cy, ink, (-1.5, 2), (-2.5, 4), (0.5, 2))
+
+
+def icon_ignore(d, cx, cy, ink):
+    d.ellipse((cx - s(3.6), cy - s(3.6), cx + s(3.6), cy + s(3.6)), outline=ink, width=s(1.3))
+    _line(d, cx, cy, ink, (-2.5, 2.5), (2.5, -2.5), w=1.3)
+
+
+def icon_close(d, cx, cy, ink):
+    _line(d, cx, cy, ink, (-2.6, -2.6), (2.6, 2.6))
+    _line(d, cx, cy, ink, (-2.6, 2.6), (2.6, -2.6))
+
+
+def icon_lock(locked):
+    def draw(d, cx, cy, ink):
+        d.rounded_rectangle((cx - s(3), cy - s(0.5), cx + s(3), cy + s(3.5)), s(0.8), fill=ink)
+        box = (cx - s(2), cy - s(4), cx + s(2), cy + s(0.5)) if locked else (cx, cy - s(4.2), cx + s(4), cy + s(0.3))
+        d.arc(box, 180, 360, fill=ink, width=s(1.2))
+        if locked:
+            _line(d, cx, cy, ink, (-2, -1.8), (-2, -0.5), w=1.2)
+            _line(d, cx, cy, ink, (2, -1.8), (2, -0.5), w=1.2)
+    return draw
+
+
+def icon_dots(d, cx, cy, ink):
+    for dx in (-2.8, 0, 2.8):
+        d.ellipse((cx + s(dx) - s(1), cy - s(1), cx + s(dx) + s(1), cy + s(1)), fill=ink)
+
+
+def icon_target(d, cx, cy, ink):
+    d.ellipse((cx - s(3.4), cy - s(3.4), cx + s(3.4), cy + s(3.4)), outline=ink, width=s(1.2))
+    d.ellipse((cx - s(1), cy - s(1), cx + s(1), cy + s(1)), fill=ink)
+
+
+def console_buttons():
+    """console_buttons, 48x111: rows channels (0), message (16), ignore (32), close (48),
+    draggable lock (64: unlocked, locked), hide (80), exiva (95: on, pressed, off). Column 0 normal,
+    16 pressed or checked."""
+    im = canvas(48, 111)
+    d = ImageDraw.Draw(im)
+    rows = [(0, icon_folder), (16, icon_message), (32, icon_ignore), (48, icon_close), (80, icon_dots)]
+    for y, draw in rows:
+        for col, state in enumerate(('normal', 'pressed')):
+            round_icon(d, s(16 * col + 8), s(y + 8), state, draw)
+    round_icon(d, s(8), s(72), 'normal', icon_lock(False))
+    round_icon(d, s(24), s(72), 'pressed', icon_lock(True))
+    for col, state in enumerate(('normal', 'pressed', 'off')):
+        round_icon(d, s(16 * col + 8), s(103), state, icon_target)
+    return im
+
+
+def chat_arrows(left):
+    """console_flash_left/right, 54x18: normal, pressed, disabled."""
+    im = canvas(54, 18)
+    d = ImageDraw.Draw(im)
+    k = -1 if left else 1
+    for col, state in enumerate(('normal', 'pressed', 'off')):
+        cx, cy = s(18 * col + 9), s(9)
+        round_icon(d, cx, cy, state, lambda d, cx, cy, ink: _line(d, cx, cy, ink, (-k * 1.3, -2.6), (k * 1.3, 0),
+                                                                     (-k * 1.3, 2.6), w=1.6))
+    return im
+
+
+def say_mode(kind):
+    """console_say/whisper/yell, 36x18: normal, pressed. A speech bubble: whisper small, yell with a !."""
+    im = canvas(36, 18)
+    d = ImageDraw.Draw(im)
+    for col, state in enumerate(('normal', 'pressed')):
+        def draw(d, cx, cy, ink):
+            k = 0.7 if kind == 'whisper' else 1.0
+            d.rounded_rectangle((cx - s(4.5 * k), cy - s(3.5 * k), cx + s(4.5 * k), cy + s(2.2 * k)), s(2 * k),
+                                outline=ink, width=s(1.3))
+            _line(d, cx, cy, ink, (-2 * k, 2.2 * k), (-3 * k, 4.2 * k), (0, 2.2 * k), w=1.2)
+            if kind == 'yell':
+                _line(d, cx, cy, ink, (0, -2.2), (0, -0.2), w=1.4)
+                d.ellipse((cx - s(0.7), cy + s(0.6), cx + s(0.7), cy + s(1.6)), fill=ink)
+        cx, cy = s(18 * col + 9), s(9)
+        r = s(8)
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=rgba(GOLD, 0.9) if col else rgba(RAISED, 0.95),
+                  outline=None if col else rgba(EDGE), width=s(1))
+        draw(d, cx, cy, rgba(CHIP) if col else rgba(TEXT))
+    return im
+
+
+def qt_scrollbar(vertical):
+    """scrollbar_new_vertical (34x78): track (0,0,10,78), up (10,0) up pressed (10,12) down (10,24)
+    down pressed (10,36), 12x12; slider (22,0,12,44), border 7 top and bottom.
+    scrollbar_new_horizontal (78x34) is the same turned: track (0,0,78,10), left (42,10) left pressed
+    (30,10) right (66,10) right pressed (54,10); slider (34,22,44,12)."""
+    im = canvas(34, 78)
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((s(3.5), s(1), s(6.5), s(77)), s(1.5), fill=rgba(TEXT, 0.08))
+    for i, (up, pressed) in enumerate([(True, False), (True, True), (False, False), (False, True)]):
+        cx, cy = s(16), s(12 * i + 6)
+        k = -1 if up else 1
+        _line(d, cx, cy, rgba(GOLD) if pressed else rgba(MUTED, 0.8), (-2.6, -k * 1.3), (0, k * 1.3), (2.6, -k * 1.3))
+    d.rounded_rectangle((s(25), s(1), s(31), s(43)), s(3), fill=rgba(MUTED, 0.75))
+    if vertical:
+        return im
+    # the horizontal sheet: the vertical one turned, with the buttons in their own places
+    h = canvas(78, 34)
+    hd = ImageDraw.Draw(h)
+    hd.rounded_rectangle((s(1), s(3.5), s(77), s(6.5)), s(1.5), fill=rgba(TEXT, 0.08))
+    for x, left, pressed in [(42, True, False), (30, True, True), (66, False, False), (54, False, True)]:
+        cx, cy = s(x + 6), s(16)
+        k = -1 if left else 1
+        _line(hd, cx, cy, rgba(GOLD) if pressed else rgba(MUTED, 0.8), (-k * 1.3, -2.6), (k * 1.3, 0), (-k * 1.3, 2.6))
+    hd.rounded_rectangle((s(35), s(25), s(77), s(31)), s(3), fill=rgba(MUTED, 0.75))
+    return h
+
+
+def read_only_icon():
+    """game/console/readOnly, 96x16: the button that splits the chat into a second, read-only list."""
+    im = card(96, 16, 4, 0.9)
+    d = ImageDraw.Draw(im)
+    ink = rgba(MUTED)
+    cx, cy = s(38), s(8)
+    d.ellipse((cx - s(5), cy - s(3.2), cx + s(5), cy + s(3.2)), outline=ink, width=s(1.2))
+    d.ellipse((cx - s(1.6), cy - s(1.6), cx + s(1.6), cy + s(1.6)), fill=ink)
+    for y, x1 in ((5, 64), (8, 60), (11, 56)):
+        d.line((s(47), s(y), s(x1), s(y)), fill=rgba(MUTED, 0.7), width=s(1.2))
+    return im
+
+
+def chat(ui, kit):
+    save(console_buttons(), ui / 'console_buttons.png')
+    save(chat_arrows(True), ui / 'console_flash_left.png')
+    save(chat_arrows(False), ui / 'console_flash_right.png')
+    for kind in ('say', 'whisper', 'yell'):
+        save(say_mode(kind), ui / f'console_{kind}.png')
+    save(qt_scrollbar(True), ui / 'scrollbar_new_vertical.png')
+    save(qt_scrollbar(False), ui / 'scrollbar_new_horizontal.png')
+    save(read_only_icon(), ui.parent / 'game/console/readOnly.png')
+    save(card(32, 32, 8, 0.9), kit / 'chat-body.png')                         # GameBottomPanel, border 8
+    save(well(24, 24, 6, FIELD, 0.45, 0.35), kit / 'chat-buffer.png')        # the message list, border 6
 
 
 def npc_dialog(out):
@@ -439,6 +599,7 @@ def main():
     save(slot(34), OVERLAY / 'data/images/inventory/containerslot.png')
     save(popup_frame(), OVERLAY / 'modules/game_dailytasks/images/window.png')
     controls(ui)
+    chat(ui, OVERLAY / 'data/images/pokeverse-ui')
     npc_dialog(OVERLAY / 'modules/game_npcdialog/images')
 
     kit = OVERLAY / 'data/images/pokeverse-ui'
@@ -455,6 +616,13 @@ def main():
     save(move_slot(EDGE), kit / 'move-empty.png')
     save(cooldown_wedges(), kit / 'cooldown.png')
     save(lock_badge(), kit / 'lock.png')
+    # the NPC shop's offer boxes (game_npctrade), image-border 6
+    save(well(24, 24, 6, SLOT, 0.8, 0.6), kit / 'offer.png')
+    save(well(24, 24, 6, HOVER, 0.9, 0), kit / 'offer-hover.png')
+    offer = well(24, 24, 6, RAISED, 0.95, 0)
+    ImageDraw.Draw(offer).rounded_rectangle((0, 0, offer.width - 1, offer.height - 1), s(6), outline=rgba(GOLD),
+                                            width=s(1.5))
+    save(offer, kit / 'offer-selected.png')
 
 
 if __name__ == '__main__':
