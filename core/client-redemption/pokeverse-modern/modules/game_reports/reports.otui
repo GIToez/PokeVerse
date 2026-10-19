@@ -410,7 +410,7 @@ ReportsWindow < UIWindow
       id: filters
       anchors.top: parent.top
       anchors.left: parent.left
-      width: 380
+      width: 358
       height: 30
       phantom: true
       layout:
@@ -419,14 +419,14 @@ ReportsWindow < UIWindow
 
       TkCombo
         id: kindFilter
-        size: 120 30
+        size: 112 30
       TkCombo
         id: statusFilter
         size: 120 30
       ReportField
         id: search
         !placeholder: tr('Search')
-        width: 128
+        width: 114
         max-length: 40
 
     ScrollablePanel
@@ -462,9 +462,9 @@ ReportsWindow < UIWindow
 
     UIWidget
       id: pager
-      anchors.left: list.left
-      anchors.right: list.right
+      anchors.left: parent.left
       anchors.bottom: parent.bottom
+      width: 366
       height: 28
       phantom: true
 
@@ -510,14 +510,14 @@ ReportsWindow < UIWindow
       UILabel
         id: name
         ttf-font: /fonts/ttf/arialb.ttf
-        ttf-font-size: 16
+        ttf-font-size: 15
         color: #ffd75a
-        text-auto-resize: false
+        text-wrap: true
+        text-auto-resize: true
         anchors.top: parent.top
         anchors.left: kindIcon.right
         anchors.right: badge.left
         margin: 1 8 0 8
-        height: 20
         phantom: true
 
       FishingBadge
@@ -552,9 +552,11 @@ ReportsWindow < UIWindow
 
       GtsScrollBar
         id: bodyScroll
-        anchors.top: body.top
-        anchors.bottom: body.bottom
+        anchors.top: meta.bottom
+        anchors.bottom: staffBar.top
         anchors.right: parent.right
+        margin-top: 10
+        margin-bottom: 8
 
       ReportMuted
         id: hint

@@ -143,6 +143,22 @@ local function updateCounter()
     fields.counter:setColor(length < limits.textMin and '#96aacd' or '#dce6ff')
 end
 
+local function setPlaceholder(widget, text)
+    widget:mergeStyle({ placeholder = text })
+end
+
+local function fitBody(staff)
+    local details = window.browser.details
+    for _, id in ipairs({ 'body', 'bodyScroll' }) do
+        local widget = details[id]
+        if staff then
+            widget:addAnchor(AnchorBottom, 'staffBar', AnchorTop)
+        else
+            widget:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+        end
+    end
+end
+
 local function setFeedback(text, good)
     local feedback = window.form.fields.feedback
     feedback:setText(text or '')
@@ -167,9 +183,9 @@ local function drawForm()
     fields.target:setVisible(isPlayer)
     fields.statement:setVisible(isPlayer and statement ~= nil)
     fields.statement:setText(statement and tr('The message you report: "%s"', statement) or '')
-    fields.title:setPlaceholder(isPlayer and tr('In a few words, for example: Uses a bot in Viridian Forest')
+    setPlaceholder(fields.title, isPlayer and tr('In a few words, for example: Uses a bot in Viridian Forest')
         or tr('In a few words, for example: Stuck on a rock east of Pewter'))
-    fields.description:setPlaceholder(isPlayer
+    setPlaceholder(fields.description, isPlayer
         and tr('What happened, when and where. Include what was said if it was in the chat.')
         or tr('What did you do, what did you expect, and what happened instead? Can you make it happen again?'))
     fields.send:setEnabled(not sending)
@@ -322,6 +338,10 @@ local function showDetails(report, full)
         elseif report.kind == 'player' and report.closed then
             section(tr('Answer from the team'))
             bodyText(tr('The team looked into it. Thank you for helping keep PokeVerse fair.'))
+        elseif not report.closed and report.status ~= 'open' then
+            section(tr('Answer from the team'))
+            bodyText(tr('The team is on it: %s. You get a message here when it changes.',
+                tr(statusName(report.kind, report.status))))
         elseif not report.closed then
             section(tr('Answer from the team'))
             bodyText(tr('No answer yet. You get a message here and on Discord when it changes.'), 'ReportEvent')
@@ -332,6 +352,7 @@ local function showDetails(report, full)
 
     local staffBar = details.staffBar
     staffBar:setVisible(full and config and config.canEdit or false)
+    fitBody(staffBar:isVisible())
     if full and config and config.canEdit then
         current = report
         local combo = staffBar.statusEdit
@@ -377,7 +398,8 @@ local function drawList()
         local row = g_ui.createWidget('ReportRow', list)
         row.reportId = report.id
         row.icon:setImageSource(IMAGES .. 'kind_' .. (report.kind == 'player' and 'player' or 'bug'))
-        row.name:setText(report.title)
+        row.name:setText(shorten(report.title, 40))
+        row.name:setTooltip(report.title)
         local sub = string.format('#%d  -  %s', report.id, dateText(report.created))
         if tab == 'staff' then
             sub = string.format('#%d  -  %s%s', report.id, report.reporter,
@@ -491,6 +513,9 @@ end
 function selectTab(name)
     if name == 'staff' and not (config and config.staff) then
         name = 'bug'
+    end
+    if name ~= tab and FORM_TABS[name] and not sending then
+        setFeedback('')
     end
     tab = name
     for _, key in ipairs(TABS) do
@@ -678,6 +703,7 @@ function init()
     g_ui.importStyle('/modules/game_gts/gts')
     g_ui.importStyle('reports')
     window = g_ui.createWidget('ReportsWindow', rootWidget)
+    window:setId('reportsWindow')
     window:hide()
     for _, name in ipairs(TABS) do
         window.tabs[name].onClick = function() selectTab(name) end

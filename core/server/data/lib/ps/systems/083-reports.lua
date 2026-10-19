@@ -593,6 +593,19 @@ local function sendList(cid, data)
     send(cid, { type = "list", reports = list, total = total, offset = offset, page = Reports.PAGE })
 end
 
+local function openCount()
+    local closed = {}
+    for _, info in pairs(Reports.KINDS) do
+        for _, status in ipairs(info.statuses) do
+            if (status.closed) then
+                closed[#closed + 1] = db.escapeString(status.key)
+            end
+        end
+    end
+    return DiscordBridge.queryNumber(string.format("SELECT COUNT(*) AS `count` FROM `reports` WHERE `world_id` = %d " ..
+        "AND `status` NOT IN (%s);", worldId(), table.concat(closed, ", ")), "count") or 0
+end
+
 local function sendConfig(cid)
     local kinds = JSON.array()
     for _, key in ipairs(Reports.KIND_ORDER) do
@@ -642,18 +655,6 @@ Reports.destination = function(row, where)
     return { x = row.posx, y = row.posy, z = row.posz }
 end
 
-local function openCount()
-    local closed = {}
-    for _, info in pairs(Reports.KINDS) do
-        for _, status in ipairs(info.statuses) do
-            if (status.closed) then
-                closed[#closed + 1] = db.escapeString(status.key)
-            end
-        end
-    end
-    return DiscordBridge.queryNumber(string.format("SELECT COUNT(*) AS `count` FROM `reports` WHERE `world_id` = %d " ..
-        "AND `status` NOT IN (%s);", worldId(), table.concat(closed, ", ")), "count") or 0
-end
 
 -- The /reports talkaction: the newest open reports, or one of them in full
 Reports.sayList = function(cid)
