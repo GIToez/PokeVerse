@@ -143,7 +143,66 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onZoomChange()
      removeEvent(eventOnCheckCreature)
      eventOnCheckCreature = scheduleEvent(function()
-@@ -2001,7 +2038,7 @@
+@@ -1986,6 +2023,49 @@
+     end
+ end
+ 
++-- PokeVerse: with the battle list closed its rows stop updating, so Tab cycles what is on screen instead
++local function attackNextOnScreen(previous)
++    local player = g_game.getLocalPlayer()
++    local position = player and player:getPosition()
++    if not position then
++        return false
++    end
++    local playerId = player:getId()
++    local candidates = {}
++    for _, creature in ipairs(getCreaturesAroundPlayer()) do
++        if not creature:isLocalPlayer() and creature:isAttackable() and creature:canBeSeen()
++            and creature:getMasterId() ~= playerId then
++            local pos = creature:getPosition()
++            candidates[#candidates + 1] = { creature = creature,
++                distance = math.max(math.abs(pos.x - position.x), math.abs(pos.y - position.y)) }
++        end
++    end
++    if #candidates == 0 then
++        return false
++    end
++    table.sort(candidates, function(a, b)
++        if a.distance ~= b.distance then
++            return a.distance < b.distance
++        end
++        return a.creature:getId() < b.creature:getId()
++    end)
++    local current = g_game.getAttackingCreature()
++    local index = 0
++    for i, entry in ipairs(candidates) do
++        if current and entry.creature:getId() == current:getId() then
++            index = i
++            break
++        end
++    end
++    if previous then
++        index = index <= 1 and #candidates or index - 1
++    else
++        index = index % #candidates + 1
++    end
++    g_game.attack(candidates[index].creature)
++    return true
++end
++
+ function attackNext(previous)
+     local foundTarget = false
+     local firstElement = nil
+@@ -1994,14 +2074,14 @@
+     local nextElement = nil
+ 
+     local mainInstance = BattleListManager.instances[0]
+-    if not mainInstance or not mainInstance.panel then
+-        return
++    if not mainInstance or not mainInstance.panel or not mainInstance.window or not mainInstance.window:isVisible() then
++        return attackNextOnScreen(previous)
+     end
+ 
      local children = mainInstance.panel:getChildren()
  
      for _, battleButton in pairs(mainInstance.panel:getChildren()) do
@@ -152,7 +211,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
              -- select visible first child
              if not firstElement then
                  firstElement = battleButton
-@@ -2381,6 +2418,16 @@
+@@ -2381,6 +2461,16 @@
      end
  end
  
@@ -169,7 +228,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onCreatureAppear(creature) -- Update battleButton once a creature appear (add)
      if creature:isLocalPlayer() then
          addEvent(updateStaticSquare)
-@@ -2609,6 +2656,7 @@
+@@ -2609,6 +2699,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")
