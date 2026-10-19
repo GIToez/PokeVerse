@@ -1,30 +1,42 @@
+// The swap bar in the PokeVerse look (docs/ui-redesign.md): a round socket per Pokemon with its health
+// as a ring, a key chip, and a gold ring on the one that is out. Images: scripts/art/ui_kit.py.
 QuickCallSlot < UIWidget
-  size: 42 56
-  image-source: /modules/game_pokehud/images/slot
-  image-border: 6
+  size: 46 46
+  image-source: /images/pokeverse-ui/socket
   $hover:
-    image-source: /modules/game_pokehud/images/slot-hover
+    image-source: /images/pokeverse-ui/socket-hover
   $on:
-    image-source: /modules/game_pokehud/images/slot-active
+    image-source: /images/pokeverse-ui/socket-active
 
   UIItem
     id: portrait
-    size: 36 36
+    size: 32 32
     virtual: true
     phantom: true
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 3
+    anchors.centerIn: parent
+
+  // ring-<health|mid|low>.png: 21 frames of 46x46, frame i = i/20 of the health
+  UIWidget
+    id: ring
+    size: 46 46
+    phantom: true
+    image-source: /images/pokeverse-ui/ring-health
+    image-clip: 920 0 46 46
+    anchors.centerIn: parent
 
   Label
     id: key
-    font: verdana-11px-antialised
-    color: #d8e4e4
+    font: verdana-11px-rounded
+    color: #eef2ff
     text-auto-resize: true
     phantom: true
+    image-source: /images/pokeverse-ui/chip
+    image-border: 6
+    padding: 0 3 0 4
     anchors.top: parent.top
     anchors.left: parent.left
-    margin-left: 3
+    margin-top: -3
+    margin-left: -4
 
   UIItem
     id: held
@@ -34,23 +46,21 @@ QuickCallSlot < UIWidget
     visible: false
     anchors.top: parent.top
     anchors.right: parent.right
-    margin-top: 2
-    margin-right: 2
+    margin-top: -2
+    margin-right: -2
 
+  // only "FNT" shows; the ring is the health
   Label
     id: health
-    font: verdana-11px-antialised
-    color: #4cdc8c
+    font: verdana-11px-rounded
+    color: #ff6b74
     text-auto-resize: true
     phantom: true
-    anchors.bottom: parent.bottom
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-bottom: 3
+    visible: false
+    anchors.centerIn: parent
 
 UIWindow
   id: pokebar
-  image-source: /modules/game_pokehud/images/panel
-  image-border: 9
   padding: 6
   focusable: false
   anchors.left: gameMapPanel.left
