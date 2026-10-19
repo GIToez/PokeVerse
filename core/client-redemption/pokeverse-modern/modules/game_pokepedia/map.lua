@@ -651,62 +651,28 @@ local function drawPlaces()
                 end
             end
 
-            local header = g_ui.createWidget('PpGroupRow', list)
-            header.name:setText(tr(info.name))
-            header.name:setColor('#ffd75a')
-            header.note:setText(tostring(region.count))
-            header.icon:setImageSource(Pp.IMAGES .. 'icon_map')
-            header.icon:show()
-            header:setMarginTop(8)
-            local towns = Pp.addTree(list, region.groups, expandedTowns, function(rows, place)
-                local row = addPlaceRow(rows, place)
-                if place == selectedPlace then
-                    focus = row
-                end
-                return row
-            end, openAll)
-            header.rows = {}
-            for _, town in ipairs(towns) do
-                town:setMarginLeft(14)
-                header.rows[#header.rows + 1] = town
-                for _, row in ipairs(town.rows) do
-                    row:setMarginLeft(28)
-                    header.rows[#header.rows + 1] = row
-                end
-            end
-            header.apply = function()
-                local open = openAll or regionFilter ~= '' or expandedRegions[info.id] == true
-                header.chevron:setImageSource(Pp.IMAGES .. (open and 'chevron_down' or 'chevron_right'))
-                header:setOn(open)
-                for _, town in ipairs(towns) do
-                    town:setVisible(open)
-                    if open then
-                        town.apply()
-                    else
-                        for _, row in ipairs(town.rows) do
-                            row:setVisible(false)
-                        end
+            Pp.addRegionTree(list, {
+                region = info,
+                count = region.count,
+                groups = region.groups,
+                expanded = expandedTowns,
+                regions = expandedRegions,
+                openAll = openAll,
+                keepOpen = regionFilter ~= '',
+                addEntry = function(rows, place)
+                    local row = addPlaceRow(rows, place)
+                    if place == selectedPlace then
+                        focus = row
                     end
-                end
-            end
-            header.open = function()
-                expandedRegions[info.id] = true
-                header.apply()
-            end
-            header.onMouseRelease = function(widget, mousePos, mouseButton)
-                if mouseButton == MouseLeftButton and widget:containsPoint(mousePos) then
-                    if not openAll and regionFilter == '' then
-                        expandedRegions[info.id] = not expandedRegions[info.id]
-                        header.apply()
-                    end
+                    return row
+                end,
+                onClick = function()
                     if info.position then
                         centerOn(info.position)
                         minimap:setZoom(LABEL_ZOOMS.city)
                     end
                 end
-                return true
-            end
-            header.apply()
+            })
         end
     end
     if count == 0 then

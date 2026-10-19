@@ -451,7 +451,7 @@ WikiData = {
         { key = 'houses', title = 'Houses and guild halls', item = 3043, body = {
             { 'p', "A house needs level 25, Premium, and no other house on your account. The price is $50 a tile, and the weekly rent is the same as the price." },
             { 'steps', {
-                "Find one in the Pokepedia's Houses tab: it shows every house by town, its rooms on every floor, and who lives there.",
+                "Find one in the Pokepedia's Houses tab: it shows every house under its region and town, its rooms on every floor, and who lives there. Pick a region, for sale or rented, and a size to narrow it down.",
                 "Buy it from there, from anywhere (bank first, then your bag), or face its door and say /house buy.",
                 "Rent is paid every week from your bank, or the money in your depot. After 3 warnings you lose the house, and also after 45 days without logging in.",
             } },

@@ -199,6 +199,65 @@ function Pp.addTree(list, groups, expanded, addEntry, openAll)
     return headers
 end
 
+-- A region's header with its Pp.addTree groups indented under it. tree = { region = { id, name },
+-- count, groups, expanded, regions, addEntry, openAll, keepOpen, onClick }: regions[id] keeps which
+-- regions are open; openAll opens the groups too, keepOpen only the region; onClick(region) runs on a
+-- click on the header.
+function Pp.addRegionTree(list, tree)
+    local info = tree.region
+    local header = g_ui.createWidget('PpGroupRow', list)
+    header.name:setText(tr(info.name))
+    header.name:setColor('#ffd75a')
+    header.note:setText(tostring(tree.count))
+    header.icon:setImageSource(Pp.IMAGES .. 'icon_map')
+    header.icon:show()
+    header:setMarginTop(8)
+    local towns = Pp.addTree(list, tree.groups, tree.expanded, tree.addEntry, tree.openAll)
+    header.rows = {}
+    for _, town in ipairs(towns) do
+        town:setMarginLeft(14)
+        header.rows[#header.rows + 1] = town
+        for _, row in ipairs(town.rows) do
+            row:setMarginLeft(28)
+            header.rows[#header.rows + 1] = row
+        end
+    end
+    local fixed = tree.openAll or tree.keepOpen
+    header.apply = function()
+        local open = fixed or tree.regions[info.id] == true
+        header.chevron:setImageSource(Pp.IMAGES .. (open and 'chevron_down' or 'chevron_right'))
+        header:setOn(open)
+        for _, town in ipairs(towns) do
+            town:setVisible(open)
+            if open then
+                town.apply()
+            else
+                for _, row in ipairs(town.rows) do
+                    row:setVisible(false)
+                end
+            end
+        end
+    end
+    header.open = function()
+        tree.regions[info.id] = true
+        header.apply()
+    end
+    header.onMouseRelease = function(widget, mousePos, mouseButton)
+        if mouseButton == MouseLeftButton and widget:containsPoint(mousePos) then
+            if not fixed then
+                tree.regions[info.id] = not tree.regions[info.id]
+                header.apply()
+            end
+            if tree.onClick then
+                tree.onClick(info)
+            end
+        end
+        return true
+    end
+    header.apply()
+    return header
+end
+
 -- opens the group holding a row and scrolls to it
 function Pp.revealRow(list, row)
     for _, header in ipairs(list:getChildren()) do
