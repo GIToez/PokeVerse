@@ -631,6 +631,7 @@ end
 Reports.SHOT_PARTS = 400 -- of up to 3000 characters: about 900 KB of PNG
 Reports.SHOT_PART = 3000
 Reports.SHOT_WINDOW = 600 -- seconds after sending the report
+Reports.SHOT_SLICE = 12000 -- for the bot: a bridge line is at most 16 KB
 local shots = {} -- report id -> next part expected
 
 local function receiveShot(cid, data)
@@ -989,7 +990,7 @@ end)
 DiscordBridge.registerHandler("report.screenshot", function(params)
     local id = tonumber(params.id) or 0
     local offset = math.max(0, math.floor(tonumber(params.offset) or 0))
-    local length = math.min(48000, math.max(1, math.floor(tonumber(params.length) or 48000)))
+    local length = math.min(Reports.SHOT_SLICE, math.max(1, math.floor(tonumber(params.length) or Reports.SHOT_SLICE)))
     local rows = query(string.format("SELECT `done`, CHAR_LENGTH(`data`) AS `total`, SUBSTRING(`data`, %d, %d) AS " ..
         "`slice` FROM `report_screenshots` WHERE `report_id` = %d;", offset + 1, length, id),
         { done = "number", total = "number", slice = "string" })
