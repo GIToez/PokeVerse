@@ -403,6 +403,7 @@ void Application::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_app", "setAnimatedTextScale", &GraphicalApplication::setAnimatedTextScale, &g_app);
     g_lua.bindSingletonFunction("g_app", "setStaticTextScale", &GraphicalApplication::setStaticTextScale, &g_app);
     g_lua.bindSingletonFunction("g_app", "doScreenshot", &GraphicalApplication::doScreenshot, &g_app);
+    g_lua.bindSingletonFunction("g_app", "doScaledScreenshot", &GraphicalApplication::doScaledScreenshot, &g_app);
     g_lua.bindSingletonFunction("g_app", "doMapScreenshot", &GraphicalApplication::doMapScreenshot, &g_app);
 
     // PlatformWindow

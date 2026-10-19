@@ -56,6 +56,7 @@ Module
     - game_pokemonshop
     - game_admin
     - game_quests
+    - game_reports
     - game_tmchoose
     - game_statusbar
     - game_duelmessage

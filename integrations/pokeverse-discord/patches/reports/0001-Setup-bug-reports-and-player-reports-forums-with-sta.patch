@@ -1,0 +1,965 @@
+From fbafeae88b21be2ac77668001dd91f8276dbc849 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Mon, 19 Oct 2026 20:25:00 +0000
+Subject: [PATCH 1/3] Setup: #bug-reports and #player-reports forums with
+ status and category tags (BUG_REPORTS_ENABLED, PLAYER_REPORTS_ENABLED)
+
+---
+ src/bot/discordAdapter.ts           | 150 ++++++++++++++++++++++++++--
+ src/bot/ports.ts                    |  56 ++++++++++-
+ src/config/load.ts                  |  17 ++++
+ src/config/schema.ts                |   5 +
+ src/events/interactionCreate.ts     |   2 +-
+ src/services/reports/reportKinds.ts |  87 ++++++++++++++++
+ src/setup/channelSetup.ts           |  57 ++++++++---
+ src/setup/channels.ts               |  37 ++++++-
+ src/utils/stateStore.ts             |  20 +++-
+ tests/helpers/fakes.ts              | 100 ++++++++++++++++++-
+ tests/unit/channelSetup.test.ts     |   6 +-
+ 11 files changed, 505 insertions(+), 32 deletions(-)
+ create mode 100644 src/services/reports/reportKinds.ts
+
+diff --git a/src/bot/discordAdapter.ts b/src/bot/discordAdapter.ts
+index fc522da..d03e08d 100644
+--- a/src/bot/discordAdapter.ts
++++ b/src/bot/discordAdapter.ts
+@@ -9,6 +9,7 @@ import {
+   PermissionFlagsBits,
+   RESTJSONErrorCodes,
+   type Client,
++  type ForumChannel,
+   type Guild,
+   type GuildBasedChannel,
+   type Role,
+@@ -24,9 +25,15 @@ import type {
+   ChannelAccess,
+   ChannelDirectory,
+   ChannelSink,
++  ForumPostSink,
++  ForumPostSpec,
++  ForumSink,
++  ForumTag,
++  ForumTagSpec,
+   GuildChannelInfo,
+   GuildPort,
+   MemberInfo,
++  OutgoingFile,
+   OutgoingMessage,
+   PermissionName,
+   PermissionOverwriteSpec,
+@@ -47,10 +54,24 @@ function toNames(bits: Readonly<PermissionsBitField> | null | undefined): Permis
+ }
+ 
+ function toInfo(channel: GuildBasedChannel): GuildChannelInfo {
++  if (channel.type === ChannelType.GuildForum) {
++    return {
++      id: channel.id, name: channel.name, kind: "forum", parentId: channel.parentId ?? null, topic: channel.topic,
++      tagNames: channel.availableTags.map((tag) => tag.name),
++    };
++  }
+   const kind = channel.type === ChannelType.GuildCategory ? "category" : channel.type === ChannelType.GuildText ? "text" : "other";
+   return { id: channel.id, name: channel.name, kind, parentId: channel.parentId ?? null, topic: channel.type === ChannelType.GuildText ? channel.topic : undefined };
+ }
+ 
++function toTagData(tag: ForumTagSpec) {
++  return { name: tag.name.slice(0, 20), moderated: tag.moderated, emoji: tag.emoji ? { id: null, name: tag.emoji } : null };
++}
++
++function mentions(message: OutgoingMessage) {
++  return message.mentionUserIds?.length ? { parse: [], users: message.mentionUserIds } : { parse: [] };
++}
++
+ function overwrites(specs: PermissionOverwriteSpec[]) {
+   return specs.map((spec) => ({
+     id: spec.id,
+@@ -60,12 +81,16 @@ function overwrites(specs: PermissionOverwriteSpec[]) {
+   }));
+ }
+ 
++function attachment(file: OutgoingFile): AttachmentBuilder {
++  return new AttachmentBuilder(file.data ?? file.path ?? "", { name: file.name });
++}
++
+ function toCreateOptions(message: OutgoingMessage): MessageCreateOptions {
+   return {
+     content: message.content,
+     embeds: message.embeds,
+-    files: message.files?.map((file) => new AttachmentBuilder(file.path, { name: file.name })),
+-    allowedMentions: { parse: [] },
++    files: message.files?.map(attachment),
++    allowedMentions: mentions(message),
+     flags: message.suppressEmbeds ? MessageFlags.SuppressEmbeds : undefined,
+   };
+ }
+@@ -74,7 +99,7 @@ function toEditOptions(message: OutgoingMessage): MessageEditOptions {
+   return {
+     content: message.content ?? null,
+     embeds: message.embeds ?? [],
+-    files: message.files?.map((file) => new AttachmentBuilder(file.path, { name: file.name })),
++    files: message.files?.map(attachment),
+     attachments: message.files ? undefined : [],
+     allowedMentions: { parse: [] },
+   };
+@@ -149,16 +174,83 @@ export class TextChannelSink implements ChannelSink {
+ 
+ /** A thread the bot started; sending to an archived thread reopens it. */
+ export class ThreadChannelSink extends TextChannelSink implements ThreadSink {
+-  constructor(private readonly threadChannel: ThreadChannel) {
++  constructor(
++    protected readonly threadChannel: ThreadChannel,
++    private readonly archiveReason = "Wild legendary encounter ended",
++  ) {
+     super(threadChannel);
+   }
+ 
+   async archive(): Promise<void> {
+     if (!this.threadChannel.archived) {
+-      await this.threadChannel.setArchived(true, "Wild legendary encounter ended");
++      await this.threadChannel.setArchived(true, this.archiveReason);
+     }
+   }
++}
++
++const REPORT_REASON = "PokeVerse report";
++
++/** A forum post the bot made. */
++export class ForumPostChannelSink extends ThreadChannelSink implements ForumPostSink {
++  constructor(thread: ThreadChannel) {
++    super(thread, "Report closed");
++  }
+ 
++  async update(change: { tagIds?: string[]; name?: string; archived?: boolean }): Promise<void> {
++    const thread = this.threadChannel;
++    if (thread.archived && (change.tagIds !== undefined || change.name !== undefined || change.archived === false)) {
++      await thread.setArchived(false, REPORT_REASON);
++    }
++    const edit: { appliedTags?: string[]; name?: string; reason: string } = { reason: REPORT_REASON };
++    if (change.tagIds !== undefined) {
++      edit.appliedTags = change.tagIds.slice(0, 5);
++    }
++    if (change.name !== undefined && change.name !== thread.name) {
++      edit.name = change.name.slice(0, 100);
++    }
++    if (edit.appliedTags !== undefined || edit.name !== undefined) {
++      await thread.edit(edit);
++    }
++    if (change.archived) {
++      await thread.setArchived(true, REPORT_REASON);
++    }
++  }
++}
++
++export class ForumChannelSink implements ForumSink {
++  constructor(private readonly channel: ForumChannel) {}
++
++  get id(): string {
++    return this.channel.id;
++  }
++
++  tags(): ForumTag[] {
++    return this.channel.availableTags.map((tag) => ({ id: tag.id, name: tag.name }));
++  }
++
++  async createPost(spec: ForumPostSpec): Promise<{ threadId: string; messageId: string }> {
++    const thread = await this.channel.threads.create({
++      name: spec.name.slice(0, 100),
++      message: toCreateOptions(spec.message),
++      appliedTags: spec.tagIds.slice(0, 5),
++      autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
++      reason: REPORT_REASON,
++    });
++    // A forum post's first message has the thread's id.
++    return { threadId: thread.id, messageId: thread.id };
++  }
++
++  async post(threadId: string): Promise<ForumPostSink | undefined> {
++    try {
++      const thread = await this.channel.threads.fetch(threadId);
++      return thread ? new ForumPostChannelSink(thread) : undefined;
++    } catch (error) {
++      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownChannel) {
++        return undefined;
++      }
++      throw error;
++    }
++  }
+ }
+ 
+ function isUnknownMember(error: unknown): boolean {
+@@ -185,6 +277,15 @@ export class DiscordChannelDirectory implements ChannelDirectory {
+     }
+     return new TextChannelSink(channel);
+   }
++
++  forum(purpose: ChannelPurpose): ForumSink | undefined {
++    const id = this.store.getChannelId(purpose);
++    const channel = id ? this.client.channels.cache.get(id) : undefined;
++    if (!channel || channel.type !== ChannelType.GuildForum || channel.guildId !== this.guildId) {
++      return undefined;
++    }
++    return new ForumChannelSink(channel);
++  }
+ }
+ 
+ export class DiscordGuildPort implements GuildPort {
+@@ -239,20 +340,55 @@ export class DiscordGuildPort implements GuildPort {
+     return toInfo(channel);
+   }
+ 
++  async createForumChannel(
++    name: string,
++    parentId: string,
++    topic: string,
++    tags: ForumTagSpec[],
++    specs: PermissionOverwriteSpec[],
++    reason: string,
++  ): Promise<GuildChannelInfo> {
++    const channel = await this.guild.channels.create({
++      name,
++      type: ChannelType.GuildForum,
++      parent: parentId,
++      topic,
++      availableTags: tags.slice(0, 20).map(toTagData),
++      permissionOverwrites: overwrites(specs),
++      reason,
++    });
++    return toInfo(channel);
++  }
++
++  async addForumTags(channelId: string, tags: ForumTagSpec[], reason: string): Promise<string[]> {
++    const channel = await this.guild.channels.fetch(channelId);
++    if (channel?.type !== ChannelType.GuildForum) {
++      return [];
++    }
++    const existing = channel.availableTags;
++    const names = new Set(existing.map((tag) => tag.name.toLowerCase()));
++    const added = tags.filter((tag) => !names.has(tag.name.toLowerCase())).slice(0, Math.max(0, 20 - existing.length));
++    if (added.length === 0) {
++      return [];
++    }
++    await channel.setAvailableTags([...existing, ...added.map(toTagData)], reason);
++    return added.map((tag) => tag.name);
++  }
++
+   botPermissions(): PermissionName[] {
+     return toNames(this.guild.members.me?.permissions);
+   }
+ 
+   async setChannelTopic(channelId: string, topic: string, reason: string): Promise<void> {
+     const channel = await this.guild.channels.fetch(channelId);
+-    if (channel?.type === ChannelType.GuildText) {
++    if (channel?.type === ChannelType.GuildText || channel?.type === ChannelType.GuildForum) {
+       await channel.setTopic(topic, reason);
+     }
+   }
+ 
+   async allowBotInChannel(channelId: string, permissions: PermissionName[], reason: string): Promise<void> {
+     const channel = await this.guild.channels.fetch(channelId);
+-    if (channel?.type === ChannelType.GuildText) {
++    if (channel?.type === ChannelType.GuildText || channel?.type === ChannelType.GuildForum) {
+       await channel.permissionOverwrites.edit(
+         this.botUserId,
+         Object.fromEntries(permissions.map((name) => [name, true])),
+diff --git a/src/bot/ports.ts b/src/bot/ports.ts
+index dfec420..7be61cb 100644
+--- a/src/bot/ports.ts
++++ b/src/bot/ports.ts
+@@ -8,7 +8,9 @@ import type { ChannelPurpose } from "../utils/stateStore.js";
+ 
+ export interface OutgoingFile {
+   name: string;
+-  path: string;
++  /** A file on disk, or the bytes in `data`. */
++  path?: string;
++  data?: Buffer;
+ }
+ 
+ export interface OutgoingMessage {
+@@ -19,6 +21,8 @@ export interface OutgoingMessage {
+   suppressEmbeds?: boolean;
+   /** Buttons (interaction replies only). */
+   buttons?: OutgoingButton[];
++  /** Users this message may ping; every other mention stays silent. */
++  mentionUserIds?: string[];
+ }
+ 
+ export interface OutgoingButton {
+@@ -45,8 +49,42 @@ export interface ThreadSink extends ChannelSink {
+   archive(): Promise<void>;
+ }
+ 
++export interface ForumTag {
++  id: string;
++  name: string;
++}
++
++export interface ForumTagSpec {
++  name: string;
++  emoji?: string;
++  /** Only members with Manage Threads can apply it. */
++  moderated: boolean;
++}
++
++export interface ForumPostSpec {
++  name: string;
++  message: OutgoingMessage;
++  tagIds: string[];
++}
++
++export interface ForumPostSink extends ThreadSink {
++  /** Applies the tags and the name; an archived post is reopened for it and archived again if `archived`. */
++  update(change: { tagIds?: string[]; name?: string; archived?: boolean }): Promise<void>;
++}
++
++export interface ForumSink {
++  readonly id: string;
++  /** The forum's tags right now. */
++  tags(): ForumTag[];
++  createPost(spec: ForumPostSpec): Promise<{ threadId: string; messageId: string }>;
++  /** A post of this forum, or undefined if it was deleted. */
++  post(threadId: string): Promise<ForumPostSink | undefined>;
++}
++
+ export interface ChannelDirectory {
+   get(purpose: ChannelPurpose): ChannelSink | undefined;
++  /** Forum channels (bug and player reports). */
++  forum?(purpose: ChannelPurpose): ForumSink | undefined;
+ }
+ 
+ export type PermissionName = keyof typeof PermissionFlagsBits;
+@@ -54,10 +92,12 @@ export type PermissionName = keyof typeof PermissionFlagsBits;
+ export interface GuildChannelInfo {
+   id: string;
+   name: string;
+-  kind: "category" | "text" | "other";
++  kind: "category" | "text" | "forum" | "other";
+   parentId: string | null;
+-  /** Text channels only. */
++  /** Text and forum channels only. */
+   topic?: string | null;
++  /** Forum channels only: the names of their tags. */
++  tagNames?: string[];
+ }
+ 
+ export interface PermissionOverwriteSpec {
+@@ -108,6 +148,16 @@ export interface GuildPort {
+     overwrites: PermissionOverwriteSpec[],
+     reason: string,
+   ): Promise<GuildChannelInfo>;
++  createForumChannel(
++    name: string,
++    parentId: string,
++    topic: string,
++    tags: ForumTagSpec[],
++    overwrites: PermissionOverwriteSpec[],
++    reason: string,
++  ): Promise<GuildChannelInfo>;
++  /** Adds the tags a forum is missing (by name); existing tags are left alone. Returns the names added. */
++  addForumTags(channelId: string, tags: ForumTagSpec[], reason: string): Promise<string[]>;
+   /** Guild-level permissions of the bot member. */
+   botPermissions(): PermissionName[];
+   /** Effective permissions of the bot in a channel, or undefined if the channel is unknown. */
+diff --git a/src/config/load.ts b/src/config/load.ts
+index 87cb1f6..2c66713 100644
+--- a/src/config/load.ts
++++ b/src/config/load.ts
+@@ -59,6 +59,16 @@ export interface BotConfig {
+     file: string;
+     geoipDatabase: string | undefined;
+   };
++  reports: {
++    /** Bug reports as posts in the public #bug-reports forum. */
++    bugs: boolean;
++    /** Player reports as posts in the private #player-reports forum (Admin Logs). */
++    players: boolean;
++    /** Ping the linked reporter on their bug report's post and its updates. */
++    mentionReporter: boolean;
++    /** A status tag picked on Discord changes the report in the game. */
++    tagSync: boolean;
++  };
+   linking: {
+     enabled: boolean;
+     verifiedRoleName: string;
+@@ -244,6 +254,12 @@ export function loadConfig(options: LoadOptions): BotConfig {
+       file: fromConfigDir(raw.ACTIVITY_FILE ?? `data/activity.${profile}.json`),
+       geoipDatabase: raw.GEOIP_DATABASE ? fromConfigDir(raw.GEOIP_DATABASE) : undefined,
+     },
++    reports: {
++      bugs: raw.BUG_REPORTS_ENABLED,
++      players: raw.PLAYER_REPORTS_ENABLED,
++      mentionReporter: raw.REPORT_MENTION_REPORTER,
++      tagSync: raw.REPORT_TAG_SYNC,
++    },
+     linking: {
+       enabled: raw.LINKING_ENABLED,
+       verifiedRoleName: raw.VERIFIED_ROLE_NAME,
+@@ -284,6 +300,7 @@ export function describeConfig(config: BotConfig): Record<string, unknown> {
+     activityLog: config.activity.enabled
+       ? { ip: config.activity.ipMode, retentionDays: config.activity.retentionDays, geoip: config.activity.geoipDatabase !== undefined }
+       : false,
++    reports: { bugs: config.reports.bugs, players: config.reports.players, tagSync: config.reports.tagSync },
+     linking: config.linking.enabled
+       ? {
+           roles: [
+diff --git a/src/config/schema.ts b/src/config/schema.ts
+index 736ef7a..29c1e70 100644
+--- a/src/config/schema.ts
++++ b/src/config/schema.ts
+@@ -117,6 +117,11 @@ export const envSchema = z.object({
+   ACTIVITY_FILE: optionalString,
+   GEOIP_DATABASE: optionalString,
+ 
++  BUG_REPORTS_ENABLED: bool(true),
++  PLAYER_REPORTS_ENABLED: bool(true),
++  REPORT_MENTION_REPORTER: bool(true),
++  REPORT_TAG_SYNC: bool(true),
++
+   LINKING_ENABLED: bool(true),
+   VERIFIED_ROLE_NAME: z.string().trim().min(1).max(100).default("Verified Trainer"),
+   PREMIUM_ROLE_ENABLED: bool(true),
+diff --git a/src/events/interactionCreate.ts b/src/events/interactionCreate.ts
+index 19a1455..f00b7ec 100644
+--- a/src/events/interactionCreate.ts
++++ b/src/events/interactionCreate.ts
+@@ -64,7 +64,7 @@ function toReply(message: OutgoingMessage): InteractionEditReplyOptions {
+   return {
+     content: message.content ?? null,
+     embeds: message.embeds ?? [],
+-    files: message.files?.map((file) => new AttachmentBuilder(file.path, { name: file.name })),
++    files: message.files?.map((file) => new AttachmentBuilder(file.data ?? file.path ?? "", { name: file.name })),
+     components,
+     allowedMentions: { parse: [] },
+   };
+diff --git a/src/services/reports/reportKinds.ts b/src/services/reports/reportKinds.ts
+new file mode 100644
+index 0000000..832a0c2
+--- /dev/null
++++ b/src/services/reports/reportKinds.ts
+@@ -0,0 +1,87 @@
++import type { ForumTagSpec } from "../../bot/ports.js";
++import type { ChannelPurpose } from "../../utils/stateStore.js";
++
++/**
++ * The game's report kinds (083-reports.lua, Reports.KINDS). The keys are the game's; the names are
++ * the forum tag names (Discord allows 20 characters). A key the bot does not know gets no tag.
++ */
++export interface ReportStatus {
++  key: string;
++  tag: string;
++  emoji: string;
++  closed: boolean;
++}
++
++export interface ReportKind {
++  purpose: ChannelPurpose;
++  statuses: ReportStatus[];
++  categories: Array<{ key: string; tag: string }>;
++}
++
++export const REPORT_KINDS: Record<string, ReportKind> = {
++  bug: {
++    purpose: "bugReports",
++    statuses: [
++      { key: "open", tag: "Open", emoji: "🆕", closed: false },
++      { key: "confirmed", tag: "Confirmed", emoji: "🔎", closed: false },
++      { key: "planned", tag: "Planned", emoji: "📌", closed: false },
++      { key: "in_progress", tag: "In progress", emoji: "🛠️", closed: false },
++      { key: "fixed", tag: "Fixed", emoji: "✅", closed: true },
++      { key: "wont_fix", tag: "Won't fix", emoji: "🚫", closed: true },
++      { key: "duplicate", tag: "Duplicate", emoji: "♻️", closed: true },
++    ],
++    categories: [
++      { key: "client", tag: "Client" },
++      { key: "map", tag: "Map" },
++      { key: "npc", tag: "NPCs and quests" },
++      { key: "pokemon", tag: "Pokemon and moves" },
++      { key: "items", tag: "Items and shops" },
++      { key: "tasks", tag: "Tasks and events" },
++      { key: "other", tag: "Other" },
++    ],
++  },
++  player: {
++    purpose: "playerReports",
++    statuses: [
++      { key: "open", tag: "Open", emoji: "🆕", closed: false },
++      { key: "investigating", tag: "Investigating", emoji: "🔎", closed: false },
++      { key: "action_taken", tag: "Action taken", emoji: "✅", closed: true },
++      { key: "no_action", tag: "No action", emoji: "🚫", closed: true },
++      { key: "duplicate", tag: "Duplicate", emoji: "♻️", closed: true },
++    ],
++    categories: [
++      { key: "cheating", tag: "Cheating or botting" },
++      { key: "bug_abuse", tag: "Bug abuse" },
++      { key: "harassment", tag: "Harassment" },
++      { key: "scam", tag: "Scamming" },
++      { key: "name", tag: "Offensive name" },
++      { key: "spam", tag: "Spam or advertising" },
++      { key: "other", tag: "Other" },
++    ],
++  },
++};
++
++/** Status tags are moderated, so only staff (Manage Threads) can change them; categories are not. */
++export function forumTagsFor(kind: string): ForumTagSpec[] {
++  const info = REPORT_KINDS[kind];
++  if (!info) {
++    return [];
++  }
++  return [
++    ...info.statuses.map((status): ForumTagSpec => ({ name: status.tag, emoji: status.emoji, moderated: true })),
++    ...info.categories.map((category): ForumTagSpec => ({ name: category.tag, moderated: false })),
++  ];
++}
++
++export function statusOf(kind: string, key: string): ReportStatus | undefined {
++  return REPORT_KINDS[kind]?.statuses.find((status) => status.key === key);
++}
++
++export function statusByTag(kind: string, tag: string): ReportStatus | undefined {
++  const name = tag.trim().toLowerCase();
++  return REPORT_KINDS[kind]?.statuses.find((status) => status.tag.toLowerCase() === name);
++}
++
++export function categoryTag(kind: string, key: string): string | undefined {
++  return REPORT_KINDS[kind]?.categories.find((category) => category.key === key)?.tag;
++}
+diff --git a/src/setup/channelSetup.ts b/src/setup/channelSetup.ts
+index 371406c..5ba041f 100644
+--- a/src/setup/channelSetup.ts
++++ b/src/setup/channelSetup.ts
+@@ -8,6 +8,7 @@ import {
+   CHANNEL_DEFINITIONS,
+   definitionFor,
+   LINKING_GUILD_PERMISSIONS,
++  REPORT_GUILD_PERMISSIONS,
+   REQUIRED_GUILD_PERMISSIONS,
+   type ChannelDefinition,
+ } from "./channels.js";
+@@ -60,6 +61,7 @@ export interface SetupOptions {
+   adminRoleIds: string[];
+   adminUserIds: string[];
+   linking: { enabled: boolean; roles: Array<{ key: RoleKey; name: string }> };
++  reports: { bugs: boolean; players: boolean };
+ }
+ 
+ const DEFAULT_OPTIONS: SetupOptions = {
+@@ -67,11 +69,14 @@ const DEFAULT_OPTIONS: SetupOptions = {
+   adminRoleIds: [],
+   adminUserIds: [],
+   linking: { enabled: false, roles: [] },
++  reports: { bugs: false, players: false },
+ };
+ 
+ const REASON = "PokeVerse Discord bot setup";
+ const BOT_POST: PermissionName[] = ["ViewChannel", "SendMessages", "EmbedLinks", "ReadMessageHistory"];
+ const VIEWER: PermissionName[] = ["ViewChannel", "ReadMessageHistory"];
++/** Staff in a private forum answer in the posts and change their status tags. */
++const FORUM_VIEWER: PermissionName[] = [...VIEWER, "SendMessagesInThreads", "ManageThreads"];
+ 
+ function normalizeName(name: string): string {
+   return name.trim().toLowerCase();
+@@ -110,7 +115,9 @@ export class ChannelSetup {
+   }
+ 
+   private definitions(): readonly ChannelDefinition[] {
+-    return CHANNEL_DEFINITIONS.filter((definition) => definition.group === "main" || this.options.activity.enabled);
++    const { activity, reports } = this.options;
++    const enabled = { activity: activity.enabled, bugReports: reports.bugs, playerReports: reports.players };
++    return CHANNEL_DEFINITIONS.filter((definition) => !definition.feature || enabled[definition.feature]);
+   }
+ 
+   run(guild: GuildPort): Promise<SetupReport> {
+@@ -150,14 +157,15 @@ export class ChannelSetup {
+     const channels = await guild.listChannels();
+     const channel = channels.find((item) => item.id === channelId);
+     const definition = definitionFor(purpose);
+-    if (!channel || channel.kind !== "text") {
++    const kind = definition.type ?? "text";
++    if (!channel || channel.kind !== kind) {
+       return {
+         purpose,
+         name: definition.name,
+         channelId: undefined,
+         action: "failed",
+         missingPermissions: [],
+-        error: "That is not a text channel in this server.",
++        error: `That is not a ${kind} channel in this server.`,
+       };
+     }
+     this.store.update((state) => {
+@@ -189,7 +197,7 @@ export class ChannelSetup {
+     const byId = new Map(channels.map((channel) => [channel.id, channel]));
+ 
+     const main = await this.ensureCategory(guild, channels, byId, "categoryId", CATEGORY_NAME, [], canCreate);
+-    const admin = this.options.activity.enabled
++    const admin = this.definitions().some((definition) => definition.group === "admin")
+       ? await this.ensureCategory(guild, channels, byId, "adminCategoryId", ADMIN_CATEGORY_NAME, this.privateOverwrites(guild), canCreate)
+       : { category: undefined, action: "skipped" as ChannelAction };
+ 
+@@ -220,19 +228,21 @@ export class ChannelSetup {
+   }
+ 
+   /** @everyone denied; the bot and authorized viewers allowed. */
+-  private privateOverwrites(guild: GuildPort): PermissionOverwriteSpec[] {
++  private privateOverwrites(guild: GuildPort, definition?: ChannelDefinition): PermissionOverwriteSpec[] {
+     const policy = this.privacyPolicy(guild.botUserId);
++    const forum = definition?.type === "forum";
++    const viewer = forum ? FORUM_VIEWER : VIEWER;
+     return [
+       { id: guild.everyoneRoleId, type: "role", allow: [], deny: ["ViewChannel"] },
+-      { id: guild.botUserId, type: "member", allow: BOT_POST, deny: [] },
+-      ...policy.roleIds.map((id): PermissionOverwriteSpec => ({ id, type: "role", allow: VIEWER, deny: ["SendMessages"] })),
+-      ...policy.userIds.map((id): PermissionOverwriteSpec => ({ id, type: "member", allow: VIEWER, deny: ["SendMessages"] })),
++      { id: guild.botUserId, type: "member", allow: definition ? [...new Set([...BOT_POST, ...definition.required])] : BOT_POST, deny: [] },
++      ...policy.roleIds.map((id): PermissionOverwriteSpec => ({ id, type: "role", allow: viewer, deny: ["SendMessages"] })),
++      ...policy.userIds.map((id): PermissionOverwriteSpec => ({ id, type: "member", allow: viewer, deny: ["SendMessages"] })),
+     ];
+   }
+ 
+   private overwritesFor(definition: ChannelDefinition, guild: GuildPort): PermissionOverwriteSpec[] {
+     if (definition.group === "admin") {
+-      return this.privateOverwrites(guild);
++      return this.privateOverwrites(guild, definition);
+     }
+     const overwrites: PermissionOverwriteSpec[] = [
+       { id: guild.botUserId, type: "member", allow: definition.required, deny: [] },
+@@ -291,15 +301,16 @@ export class ChannelSetup {
+     category: GuildChannelInfo | undefined,
+     canCreate: boolean,
+   ): Promise<ChannelReport> {
++    const kind = definition.type ?? "text";
+     const savedId = this.store.getChannelId(definition.purpose);
+     const saved = savedId ? byId.get(savedId) : undefined;
+-    if (saved && saved.kind === "text") {
++    if (saved && saved.kind === kind) {
+       return this.describeUpdated(guild, definition, saved, "kept");
+     }
+ 
+     const existing = category
+       ? channels.find(
+-          (channel) => channel.kind === "text" && channel.parentId === category.id && normalizeName(channel.name) === definition.name,
++          (channel) => channel.kind === kind && channel.parentId === category.id && normalizeName(channel.name) === definition.name,
+         )
+       : undefined;
+     if (existing) {
+@@ -318,7 +329,10 @@ export class ChannelSetup {
+       };
+     }
+     try {
+-      const created = await guild.createTextChannel(definition.name, category.id, definition.topic, this.overwritesFor(definition, guild), REASON);
++      const overwrites = this.overwritesFor(definition, guild);
++      const created = kind === "forum"
++        ? await guild.createForumChannel(definition.name, category.id, definition.topic, definition.tags ?? [], overwrites, REASON)
++        : await guild.createTextChannel(definition.name, category.id, definition.topic, overwrites, REASON);
+       this.save(definition.purpose, created.id);
+       channels.push(created);
+       byId.set(created.id, created);
+@@ -355,6 +369,16 @@ export class ChannelSetup {
+         channel.topic = definition.topic;
+         updated.push("topic");
+       }
++      const missingTags = (definition.tags ?? []).filter(
++        (tag) => channel.tagNames !== undefined && !channel.tagNames.some((name) => normalizeName(name) === normalizeName(tag.name)),
++      );
++      if (missingTags.length > 0) {
++        const added = await guild.addForumTags(channel.id, missingTags, REASON);
++        if (added.length > 0) {
++          channel.tagNames = [...(channel.tagNames ?? []), ...added];
++          updated.push(`tags (${added.join(", ")})`);
++        }
++      }
+       const serverWide = guild.botPermissions();
+       const restorable = this.missingIn(guild, channel.id, definition.required).filter((name) => serverWide.includes(name));
+       if (restorable.length > 0 && serverWide.includes("ManageRoles")) {
+@@ -485,9 +509,12 @@ export class ChannelSetup {
+     parts: Omit<SetupReport, "guildId" | "missingGuildPermissions" | "ok">,
+   ): SetupReport {
+     const granted = guild.botPermissions();
+-    const needed = this.options.linking.enabled
+-      ? REQUIRED_GUILD_PERMISSIONS
+-      : REQUIRED_GUILD_PERMISSIONS.filter((permission) => !LINKING_GUILD_PERMISSIONS.includes(permission));
++    const { linking, reports } = this.options;
++    const needed = REQUIRED_GUILD_PERMISSIONS.filter(
++      (permission) =>
++        (linking.enabled || !LINKING_GUILD_PERMISSIONS.includes(permission)) &&
++        (reports.bugs || reports.players || !REPORT_GUILD_PERMISSIONS.includes(permission)),
++    );
+     const missingGuildPermissions = granted.includes("Administrator")
+       ? []
+       : needed.filter((permission) => !granted.includes(permission));
+diff --git a/src/setup/channels.ts b/src/setup/channels.ts
+index d609251..c620b27 100644
+--- a/src/setup/channels.ts
++++ b/src/setup/channels.ts
+@@ -1,4 +1,5 @@
+-import type { PermissionName } from "../bot/ports.js";
++import type { ForumTagSpec, PermissionName } from "../bot/ports.js";
++import { forumTagsFor } from "../services/reports/reportKinds.js";
+ import type { ChannelPurpose } from "../utils/stateStore.js";
+ 
+ export const CATEGORY_NAME = "PokeVerse Integration";
+@@ -17,9 +18,15 @@ export interface ChannelDefinition {
+   previousTopics?: string[];
+   /** "admin" channels live in the private Admin Logs category and are verified before every post. */
+   group: "main" | "admin";
++  /** Defaults to a text channel. Forum channels get `tags`, added again by setup when missing. */
++  type?: "text" | "forum";
++  tags?: ForumTagSpec[];
++  /** The config switch the channel belongs to; without one it is always set up. */
++  feature?: "activity" | "bugReports" | "playerReports";
+ }
+ 
+ const POST: PermissionName[] = ["ViewChannel", "SendMessages", "EmbedLinks", "ReadMessageHistory"];
++const FORUM: PermissionName[] = [...POST, "SendMessagesInThreads"];
+ 
+ export const CHANNEL_DEFINITIONS: readonly ChannelDefinition[] = [
+   {
+@@ -86,6 +93,30 @@ export const CHANNEL_DEFINITIONS: readonly ChannelDefinition[] = [
+     readOnly: true,
+     required: POST,
+     group: "admin",
++    feature: "activity",
++  },
++  {
++    purpose: "bugReports",
++    name: "bug-reports",
++    topic: "Bugs reported in the game (Reports window, Ctrl+Z), one post each. The tags show what became of them. " +
++      "Add what you know in a post; report new bugs in the game so the team gets your position and client.",
++    readOnly: true,
++    required: FORUM,
++    group: "main",
++    type: "forum",
++    tags: forumTagsFor("bug"),
++    feature: "bugReports",
++  },
++  {
++    purpose: "playerReports",
++    name: "player-reports",
++    topic: "PRIVATE staff forum of player reports from the game. Change the status tag to answer the report in the game.",
++    readOnly: true,
++    required: FORUM,
++    group: "admin",
++    type: "forum",
++    tags: forumTagsFor("player"),
++    feature: "playerReports",
+   },
+ ];
+ 
+@@ -109,7 +140,11 @@ export const REQUIRED_GUILD_PERMISSIONS: PermissionName[] = [
+   "ManageNicknames",
+   "CreatePublicThreads",
+   "SendMessagesInThreads",
++  "ManageThreads",
+ ];
+ 
++/** Guild permissions only needed for the report forums (status tags are moderated, posts are archived). */
++export const REPORT_GUILD_PERMISSIONS: PermissionName[] = ["ManageThreads"];
++
+ /** Guild permissions only needed for account linking (roles and nicknames). */
+ export const LINKING_GUILD_PERMISSIONS: PermissionName[] = ["ManageRoles", "ManageNicknames"];
+diff --git a/src/utils/stateStore.ts b/src/utils/stateStore.ts
+index 8662427..ac1f15d 100644
+--- a/src/utils/stateStore.ts
++++ b/src/utils/stateStore.ts
+@@ -11,6 +11,8 @@ export const CHANNEL_PURPOSES = [
+   "serverStatus",
+   "botCommands",
+   "playerActivity",
++  "bugReports",
++  "playerReports",
+ ] as const;
+ 
+ export type ChannelPurpose = (typeof CHANNEL_PURPOSES)[number];
+@@ -34,6 +36,20 @@ const legendaryEncounterSchema = z.object({
+ 
+ export type LegendaryEncounterRecord = z.infer<typeof legendaryEncounterSchema>;
+ 
++const reportPostSchema = z.object({
++  kind: z.string(),
++  channelId: z.string(),
++  threadId: z.string(),
++  messageId: z.string(),
++  /** The status the post's tags show; a different status tag picked on Discord is a staff change. */
++  status: z.string(),
++  category: z.string().optional(),
++  closed: z.boolean().optional(),
++  createdAt: z.number(),
++});
++
++export type ReportPostRecord = z.infer<typeof reportPostSchema>;
++
+ const stateSchema = z.object({
+   version: z.literal(1),
+   profile: z.string(),
+@@ -54,6 +70,8 @@ const stateSchema = z.object({
+   linkedMembers: z.record(z.string()).default({}),
+   /** Wild legendary encounters with a Discord post, by the game's encounter id. */
+   legendaryEncounters: z.record(legendaryEncounterSchema).default({}),
++  /** Forum posts of in-game reports, by the game's report id. */
++  reportPosts: z.record(reportPostSchema).default({}),
+ });
+ 
+ export type BotState = z.infer<typeof stateSchema>;
+@@ -74,7 +92,7 @@ export class StateStore {
+ 
+   private load(): BotState {
+     if (!existsSync(this.file)) {
+-      return { version: 1, profile: this.profile, channels: {}, roles: {}, linkedMembers: {}, legendaryEncounters: {} };
++      return { version: 1, profile: this.profile, channels: {}, roles: {}, linkedMembers: {}, legendaryEncounters: {}, reportPosts: {} };
+     }
+     const parsed = stateSchema.parse(JSON.parse(readFileSync(this.file, "utf8")));
+     if (parsed.profile !== this.profile) {
+diff --git a/tests/helpers/fakes.ts b/tests/helpers/fakes.ts
+index 2da3354..0ae710d 100644
+--- a/tests/helpers/fakes.ts
++++ b/tests/helpers/fakes.ts
+@@ -6,6 +6,11 @@ import type {
+   ChannelAccess,
+   ChannelDirectory,
+   ChannelSink,
++  ForumPostSink,
++  ForumPostSpec,
++  ForumSink,
++  ForumTag,
++  ForumTagSpec,
+   GuildChannelInfo,
+   GuildPort,
+   MemberInfo,
+@@ -160,8 +165,75 @@ export class FakeThread extends FakeChannel implements ThreadSink {
+   }
+ }
+ 
++export class FakePost extends FakeThread implements ForumPostSink {
++  tagIds: string[];
++  readonly updates: Array<{ tagIds?: string[]; name?: string; archived?: boolean }> = [];
++
++  constructor(id: string, public postName: string, spec: ForumPostSpec) {
++    super(id, postName, id);
++    this.tagIds = spec.tagIds;
++    this.sent.push({ id, message: spec.message });
++    this.existing.add(id);
++  }
++
++  async update(change: { tagIds?: string[]; name?: string; archived?: boolean }): Promise<void> {
++    this.updates.push(change);
++    if (change.tagIds !== undefined) {
++      this.tagIds = change.tagIds;
++    }
++    if (change.name !== undefined) {
++      this.postName = change.name;
++    }
++    if (change.archived !== undefined) {
++      this.archived = change.archived;
++    }
++  }
++}
++
++export class FakeForum implements ForumSink {
++  readonly posts = new Map<string, FakePost>();
++  private counter = 0;
++
++  constructor(readonly id: string, readonly forumTags: ForumTag[] = []) {}
++
++  static withTags(id: string, specs: ForumTagSpec[]): FakeForum {
++    return new FakeForum(id, specs.map((spec, index) => ({ id: `${id}-tag${index}`, name: spec.name })));
++  }
++
++  tags(): ForumTag[] {
++    return this.forumTags;
++  }
++
++  async createPost(spec: ForumPostSpec): Promise<{ threadId: string; messageId: string }> {
++    const id = `${this.id}-p${++this.counter}`;
++    this.posts.set(id, new FakePost(id, spec.name, spec));
++    return { threadId: id, messageId: id };
++  }
++
++  async post(threadId: string): Promise<ForumPostSink | undefined> {
++    return this.posts.get(threadId);
++  }
++
++  post0(): FakePost {
++    const post = [...this.posts.values()][0];
++    if (!post) {
++      throw new Error(`no post in ${this.id}`);
++    }
++    return post;
++  }
++
++  tagNames(post: FakePost): string[] {
++    return post.tagIds.map((id) => this.forumTags.find((tag) => tag.id === id)?.name ?? id);
++  }
++}
++
+ export class FakeChannels implements ChannelDirectory {
+   readonly channels = new Map<ChannelPurpose, FakeChannel>();
++  readonly forums = new Map<ChannelPurpose, FakeForum>();
++
++  forum(purpose: ChannelPurpose): FakeForum | undefined {
++    return this.forums.get(purpose);
++  }
+ 
+   constructor(
+     purposes: ChannelPurpose[] = ["gameChat", "catches", "shinySpawns", "legendarySpawns", "announcements", "serverStatus", "botCommands", "playerActivity"],
+@@ -223,7 +295,33 @@ export class FakeGuild implements GuildPort {
+   }
+ 
+   async listChannels(): Promise<GuildChannelInfo[]> {
+-    return this.channels.map(({ id, name, kind, parentId, topic }) => ({ id, name, kind, parentId, ...(kind === "text" ? { topic: topic ?? null } : {}) }));
++    return this.channels.map(({ id, name, kind, parentId, topic, tagNames }) => ({
++      id,
++      name,
++      kind,
++      parentId,
++      ...(kind === "text" || kind === "forum" ? { topic: topic ?? null } : {}),
++      ...(kind === "forum" ? { tagNames: [...(tagNames ?? [])] } : {}),
++    }));
++  }
++
++  async createForumChannel(
++    name: string,
++    parentId: string,
++    topic: string,
++    tags: ForumTagSpec[],
++    overwrites: PermissionOverwriteSpec[],
++  ): Promise<GuildChannelInfo> {
++    const info = this.create({ name, kind: "forum", parentId, topic, overwrites, tagNames: tags.map((tag) => tag.name) });
++    return { ...info, tagNames: tags.map((tag) => tag.name) };
++  }
++
++  async addForumTags(channelId: string, tags: ForumTagSpec[]): Promise<string[]> {
++    const channel = this.channels.find((item) => item.id === channelId)!;
++    const names = tags.map((tag) => tag.name);
++    channel.tagNames = [...(channel.tagNames ?? []), ...names];
++    this.channelUpdates.push(`tags ${channelId} ${names.join(",")}`);
++    return names;
+   }
+ 
+   async createCategory(name: string, overwrites: PermissionOverwriteSpec[]): Promise<GuildChannelInfo> {
+diff --git a/tests/unit/channelSetup.test.ts b/tests/unit/channelSetup.test.ts
+index fee8fd8..e2f6c2a 100644
+--- a/tests/unit/channelSetup.test.ts
++++ b/tests/unit/channelSetup.test.ts
+@@ -26,7 +26,7 @@ describe("channel setup", () => {
+     const texts = guild.created.filter((channel) => channel.kind === "text");
+     expect(texts.map((channel) => channel.name)).toEqual(EXPECTED_NAMES);
+     expect(texts.every((channel) => channel.parentId === category.id)).toBe(true);
+-    for (const definition of CHANNEL_DEFINITIONS.filter((item) => item.group === "main")) {
++    for (const definition of CHANNEL_DEFINITIONS.filter((item) => item.group === "main" && !item.feature)) {
+       expect(store.getChannelId(definition.purpose)).toBeDefined();
+     }
+     expect(store.get().guildId).toBe(DEV_GUILD);
+@@ -220,8 +220,8 @@ describe("invite link", () => {
+     const bits = requiredPermissionBits();
+     expect(bits & 0x8n).toBe(0n);
+     // View Channel, Send Messages, Embed Links, Attach Files, Read Message History, Manage Channels,
+-    // Manage Roles, Manage Nicknames, Create Public Threads, Send Messages in Threads
+-    expect(bits).toBe(0x400n | 0x800n | 0x4000n | 0x8000n | 0x10000n | 0x10n | 0x10000000n | 0x8000000n | 0x800000000n | 0x4000000000n);
++    // Manage Roles, Manage Nicknames, Create Public Threads, Send Messages in Threads, Manage Threads
++    expect(bits).toBe(0x400n | 0x800n | 0x4000n | 0x8000n | 0x10000n | 0x10n | 0x10000000n | 0x8000000n | 0x800000000n | 0x4000000000n | 0x400000000n);
+     const url = new URL(inviteUrl("123456789012345678", DEV_GUILD));
+     expect(url.searchParams.get("scope")).toBe("bot applications.commands");
+     expect(url.searchParams.get("permissions")).toBe(bits.toString());
+-- 
+2.43.0
+

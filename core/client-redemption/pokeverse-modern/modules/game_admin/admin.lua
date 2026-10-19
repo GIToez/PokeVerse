@@ -603,8 +603,12 @@ local function buildServer()
         local lines = math.ceil(#section[2] / perRow)
         row:setHeight(lines * 26 + (lines - 1) * 6)
         for _, entry in ipairs(section[2]) do
-            commandButton(row.buttons, 'AdminSectionButton', entry[1], entry[2]:match('^(%S+)'), fixedCommand(entry[2]),
-                (entry[3] and (entry[3] .. ': ') or '') .. entry[2])
+            local widget = commandButton(row.buttons, 'AdminSectionButton', entry[1], entry[2]:match('^(%S+)'),
+                fixedCommand(entry[2]), (entry[3] and (entry[3] .. ': ') or '') .. entry[2])
+            if entry[2] == '/reports' and modules.game_reports then
+                widget:setTooltip(tr('Open the Reports window: every bug and player report, with their status'))
+                widget.onClick = function() modules.game_reports.openStaff() end
+            end
         end
     end
 end

@@ -104,7 +104,7 @@ class DiscordBridge
 
 	private:
 		DiscordBridge(): m_enabled(false), m_connected(false), m_running(false), m_dispatchPending(false),
-			m_maxQueue(2000), m_maxIncoming(500), m_sequence(0), m_sessionSequence(0), m_linkCodeLifetime(600),
+			m_maxQueue(2000), m_maxIncoming(500), m_sequence(0), m_taken(0), m_sessionSequence(0), m_linkCodeLifetime(600),
 			m_acceptor(m_io), m_work(boost::asio::make_work_guard(m_io)) {}
 
 		void networkThread();
@@ -117,6 +117,8 @@ class DiscordBridge
 		bool m_dispatchPending;
 		uint32_t m_maxQueue, m_maxIncoming;
 		uint64_t m_sequence;
+		// incoming messages taken by the globalevent so far
+		uint64_t m_taken;
 		std::string m_secret, m_bootId;
 
 		boost::mutex m_lock;

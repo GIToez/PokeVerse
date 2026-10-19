@@ -1,0 +1,1329 @@
+From 51f7509c6fddbf89010ab2ad33c2427282fc2e76 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Mon, 19 Oct 2026 20:25:00 +0000
+Subject: [PATCH 2/3] Reports: each in-game report is a forum post with its
+ tags, screenshot and updates; a status tag picked on Discord answers it in
+ the game
+
+---
+ .env.development.example               |   9 +
+ .env.production.example                |   9 +
+ docs/DEPLOYMENT.md                     |   4 +
+ docs/DISCORD_CONFIGURATION.md          |  48 ++-
+ docs/GAME_INTEGRATION.md               |   4 +
+ src/bot/app.ts                         |  35 +-
+ src/bot/integration.ts                 |  21 +-
+ src/integrations/pokeverse/gameApi.ts  |  27 ++
+ src/integrations/pokeverse/protocol.ts |  85 +++++
+ src/services/reports/reportForums.ts   | 451 +++++++++++++++++++++++++
+ tests/unit/reports.test.ts             | 370 ++++++++++++++++++++
+ 11 files changed, 1055 insertions(+), 8 deletions(-)
+ create mode 100644 src/services/reports/reportForums.ts
+ create mode 100644 tests/unit/reports.test.ts
+
+diff --git a/.env.development.example b/.env.development.example
+index b512bdb..af5d0db 100644
+--- a/.env.development.example
++++ b/.env.development.example
+@@ -74,6 +74,15 @@ ACTIVITY_FILE=data/activity.development.json
+ # Lookups never leave this machine. Empty = no locations.
+ GEOIP_DATABASE=
+ 
++# --- Report forums (bug and player reports from the game's Reports window) ---
++# #bug-reports (public forum) and #player-reports (private forum in Admin Logs, same viewers
++# as #player-activity). Picking another status tag on a post changes the report in the game.
++BUG_REPORTS_ENABLED=true
++PLAYER_REPORTS_ENABLED=true
++# Ping the linked reporter on their bug report's post and when its status changes
++REPORT_MENTION_REPORTER=true
++REPORT_TAG_SYNC=true
++
+ # --- Account linking (/link with a code from !discord link in game) ---
+ LINKING_ENABLED=true
+ VERIFIED_ROLE_NAME=Verified Trainer
+diff --git a/.env.production.example b/.env.production.example
+index 4cdbbd6..d7fcd31 100644
+--- a/.env.production.example
++++ b/.env.production.example
+@@ -60,6 +60,15 @@ ACTIVITY_FILE=data/activity.production.json
+ # Lookups never leave this machine. Empty = no locations.
+ GEOIP_DATABASE=
+ 
++# --- Report forums (bug and player reports from the game's Reports window) ---
++# #bug-reports (public forum) and #player-reports (private forum in Admin Logs, same viewers
++# as #player-activity). Picking another status tag on a post changes the report in the game.
++BUG_REPORTS_ENABLED=true
++PLAYER_REPORTS_ENABLED=true
++# Ping the linked reporter on their bug report's post and when its status changes
++REPORT_MENTION_REPORTER=true
++REPORT_TAG_SYNC=true
++
+ # --- Account linking (/link with a code from !discord link in game) ---
+ LINKING_ENABLED=true
+ VERIFIED_ROLE_NAME=Verified Trainer
+diff --git a/docs/DEPLOYMENT.md b/docs/DEPLOYMENT.md
+index 3885d89..6d328d8 100644
+--- a/docs/DEPLOYMENT.md
++++ b/docs/DEPLOYMENT.md
+@@ -123,6 +123,10 @@ New settings, all optional, with these defaults when they are not in `.env.produ
+ | `STAFF_ROLES_ENABLED` / `STAFF_ROLE_NAMES` | `true` / `2=Tutor,3=Senior Tutor,4=Gamemaster,5=Community Manager,6=God` | Role of the highest in-game staff group among the account's characters |
+ | `NICKNAME_SYNC` | `true` | Server nickname = main character |
+ | `LINK_RESYNC_MINUTES` | `15` | Periodic check of all links (premium expiry, in-game unlinks) |
++| `BUG_REPORTS_ENABLED` | `true` | `#bug-reports` forum, one post per in-game bug report |
++| `PLAYER_REPORTS_ENABLED` | `true` | Private `#player-reports` forum in Admin Logs (same viewers as `#player-activity`) |
++| `REPORT_MENTION_REPORTER` | `true` | Ping the linked reporter on their bug report's post |
++| `REPORT_TAG_SYNC` | `true` | A status tag picked on Discord changes the report in the game |
+ | `DISCORD_MEMBERS_INTENT` | `false` | Instant role restore on rejoin; needs Server Members Intent in the Developer Portal |
+ 
+ Steps for an existing production install:
+diff --git a/docs/DISCORD_CONFIGURATION.md b/docs/DISCORD_CONFIGURATION.md
+index 91a9eac..da3076a 100644
+--- a/docs/DISCORD_CONFIGURATION.md
++++ b/docs/DISCORD_CONFIGURATION.md
+@@ -38,7 +38,7 @@ node dist/bot.cjs invite          # or: configure-discord-dev.bat prints it
+ ```
+ 
+ The link uses the scopes `bot applications.commands` and exactly these permissions
+-(integer `309640416272`). **Administrator is not requested.**
++(integer `326820285456`). **Administrator is not requested.**
+ 
+ | Permission | Why |
+ | --- | --- |
+@@ -51,14 +51,18 @@ The link uses the scopes `bot applications.commands` and exactly these permissio
+ | Manage Roles | Create the Verified Trainer, Ace Trainer and staff roles and give/remove them on link changes |
+ | Manage Nicknames | Set a linked member's server nickname to their main character |
+ | Create Public Threads | One thread per wild legendary in `#legendary-spawns` |
+-| Send Messages in Threads | Post the legendary's sightings and end in its thread |
++| Send Messages in Threads | Post the legendary's sightings and end in its thread, and report updates in their posts |
++| Manage Threads | Report posts: set their status tags (moderated tags), rename and archive them |
+ 
+ Manage Channels is only needed for automatic setup. If you prefer, create the channels
+ yourself, assign them with `/pokeverse channel`, and remove the permission afterwards.
+-Manage Roles and Manage Nicknames are only needed with account linking (`LINKING_ENABLED`).
++Manage Roles and Manage Nicknames are only needed with account linking (`LINKING_ENABLED`),
++Manage Threads only with the report forums (`BUG_REPORTS_ENABLED`, `PLAYER_REPORTS_ENABLED`).
++Optional: **View Audit Log** lets the bot name the staff member who changed a report's status
++tag (otherwise the game shows "Discord staff").
+ 
+ An already invited bot keeps its old permissions: add Manage Roles, Manage Nicknames,
+-Create Public Threads and Send Messages in Threads to the bot's role (**Server Settings > Roles > PokeVerse**) or open the new invite link.
++Create Public Threads, Send Messages in Threads and Manage Threads to the bot's role (**Server Settings > Roles > PokeVerse**) or open the new invite link.
+ 
+ Then run setup again (`/pokeverse setup`, or `setup` on the command line). For channels
+ that already exist it changes only two things, and reports them as "updated":
+@@ -66,7 +70,9 @@ that already exist it changes only two things, and reports them as "updated":
+ - a topic that is still an earlier default (for example `#legendary-spawns`' old
+   "Legendary Pokemon sightings.") becomes the current one; a topic someone wrote is kept;
+ - permissions the bot needs in a channel, has server-wide, but the channel takes away are
+-  added to the bot's own member overwrite (needs Manage Roles). No other overwrite changes.
++  added to the bot's own member overwrite (needs Manage Roles). No other overwrite changes;
++- a report forum gets back the status and category tags it is missing (by name; tags someone
++  renamed count as missing, tags someone added are kept).
+ 
+ ### Role order
+ 
+@@ -108,8 +114,10 @@ PokeVerse Integration
+   #game-announcements   news, GM broadcasts, restarts    read-only
+   #server-status        one live status message          read-only
+   #bot-commands         /trainer, /pokemon, /server      members can write
+-Admin Logs                                               private (activity log enabled)
++  #bug-reports          forum: one post per bug report   members comment, staff set tags
++Admin Logs                                               private (activity log or player reports)
+   #player-activity      staff-only login/logout/link log read-only, authorized viewers only
++  #player-reports       forum: one post per player report authorized viewers only
+ ```
+ 
+ `Admin Logs` and `#player-activity` are created with `@everyone` denied View Channel, the bot
+@@ -141,6 +149,33 @@ Rules:
+ - A state file that belongs to another guild is refused, so development and production
+   state cannot get mixed up.
+ 
++## Report forums
++
++Bug reports and player reports sent from the game's Reports window (Ctrl+Z, or "Report
++player" on a player or a chat line) become forum posts:
++
++- `#bug-reports` (public): members can read and comment, only the bot creates posts.
++- `#player-reports` (in Admin Logs): private like `#player-activity`, checked before every
++  post. Viewers get View Channel, Read Message History, Send Messages in Threads and Manage
++  Threads in it, so they can answer in the posts and change the tags.
++
++Each post is named `[#12] title` and its first message has the whole report: the reporter
++(level, vocation, and their Discord account when linked), where they stood (and the area),
++the Pokemon out, the client, and for player reports the reported player then, the reported
++chat message and their last channel messages. A screenshot sent with the report is posted
++below it. Status changes, notes, who took the report and merged reports are lines in the
++post; a closed report's post is archived.
++
++Tags: one status tag (Open, Confirmed, Planned, In progress, Fixed, Won't fix, Duplicate for
++bugs; Open, Investigating, Action taken, No action, Duplicate for players) and one category
++tag. The status tags are **moderated**: only members with Manage Threads can pick them. Picking
++another status tag changes the report in the game (`REPORT_TAG_SYNC`), the reporter is told
++in the game and the line in the post says who did it. Taking the status tag off, or a
++change the game refuses, puts the tag back.
++
++A linked reporter is pinged on their bug report's post and when its status changes
++(`REPORT_MENTION_REPORTER`); player reports never ping anyone.
++
+ ## Admin access
+ 
+ `/pokeverse` is hidden from members without **Manage Server** by default (server
+@@ -151,5 +186,6 @@ it; otherwise Manage Server is required.
+ ## Bot messages and mentions
+ 
+ All bot messages are sent with mentions disabled (`allowed_mentions: { parse: [] }`).
++The only exception is the linked reporter of a bug report, on their own post.
+ Relayed chat also has `@everyone`, `@here`, user, role and channel mentions neutralized and
+ Markdown escaped, so game players cannot ping Discord users.
+diff --git a/docs/GAME_INTEGRATION.md b/docs/GAME_INTEGRATION.md
+index 6256adc..823acfc 100644
+--- a/docs/GAME_INTEGRATION.md
++++ b/docs/GAME_INTEGRATION.md
+@@ -244,6 +244,7 @@ server -> {"type":"response","requestId":"1","ok":true,"result":{...}}
+ | `player_logout` (scope `admin`) | `#player-activity` logout embed |
+ | `account_link` (scope `account`) | Removes roles and nickname after an in-game unlink |
+ | `account_characters` (scope `account`) | Re-syncs the member after a character was created or deleted |
++| `report` (player reports: scope `admin`) | `#bug-reports` / `#player-reports` forum posts; `action` is `created`, `updated` (with `change`) or `screenshot` |
+ 
+ | Request | Used by |
+ | --- | --- |
+@@ -259,6 +260,9 @@ server -> {"type":"response","requestId":"1","ok":true,"result":{...}}
+ | `link.setMain` | `/main` |
+ | `link.unlink` | `/unlink`, `/pokeverse unlink` |
+ | `link.list` | Periodic resync (premium expiry, Ace Trainer) and startup |
++| `report.setStatus` | A status tag picked on a report post |
++| `report.get` | A report's current state |
++| `report.screenshot` | The report's screenshot, 12,000 base64 characters at a time |
+ 
+ The bot validates every message with zod schemas (`src/integrations/pokeverse/protocol.ts`)
+ and ignores unknown event kinds, so the game can add events without breaking older bots.
+diff --git a/src/bot/app.ts b/src/bot/app.ts
+index 91a7687..3cf52c9 100644
+--- a/src/bot/app.ts
++++ b/src/bot/app.ts
+@@ -1,4 +1,4 @@
+-import { Client, Events, GatewayIntentBits, type Guild } from "discord.js";
++import { AuditLogEvent, Client, Events, GatewayIntentBits, PermissionFlagsBits, type AnyThreadChannel, type Guild } from "discord.js";
+ import { buildCommandDefinitions } from "../commands/definitions.js";
+ import type { BotConfig } from "../config/load.js";
+ import { createInteractionHandler } from "../events/interactionCreate.js";
+@@ -126,6 +126,7 @@ export class BotApp {
+ 
+     client.on(Events.MessageCreate, createMessageHandler(this.integration.chat, logger.child({ component: "chat" })));
+     client.on(Events.InteractionCreate, createInteractionHandler(this.integration.commands, logger.child({ component: "commands" })));
++    client.on(Events.ThreadUpdate, (before, after) => void this.onThreadUpdate(before, after));
+     client.on(Events.GuildMemberAdd, (member) => {
+       if (member.guild.id === config.discord.guildId && !member.user.bot) {
+         this.integration.onMemberJoin(member.id);
+@@ -135,6 +136,38 @@ export class BotApp {
+     logger.info("PokeVerse Discord bot is running");
+   }
+ 
++  /** A report post's tags changed: the reports service decides if it was a staff answer. */
++  private async onThreadUpdate(before: AnyThreadChannel, after: AnyThreadChannel): Promise<void> {
++    if (after.guildId !== this.config.discord.guildId || !after.parent?.isThreadOnly()) {
++      return;
++    }
++    const tags = [...after.appliedTags].sort();
++    if (tags.join() === [...before.appliedTags].sort().join()) {
++      return;
++    }
++    this.integration.reports.handleTagsChanged({ threadId: after.id, tagIds: tags, by: await this.tagChanger(after) });
++  }
++
++  /** Who changed the thread, from the audit log when the bot may read it. */
++  private async tagChanger(thread: AnyThreadChannel): Promise<string | undefined> {
++    const me = thread.guild.members.me;
++    if (!me?.permissions.has(PermissionFlagsBits.ViewAuditLog)) {
++      return undefined;
++    }
++    try {
++      const logs = await thread.guild.fetchAuditLogs({ type: AuditLogEvent.ThreadUpdate, limit: 5 });
++      const entry = logs.entries.find((item) => item.targetId === thread.id && Date.now() - item.createdTimestamp < 60_000);
++      const executor = entry?.executor;
++      if (!executor || executor.id === this.client.user?.id) {
++        return undefined;
++      }
++      const member = await thread.guild.members.fetch(executor.id).catch(() => undefined);
++      return member?.displayName ?? executor.username ?? undefined;
++    } catch {
++      return undefined;
++    }
++  }
++
+   async stop(): Promise<void> {
+     await this.integration.stop();
+     await this.client.destroy();
+diff --git a/src/bot/integration.ts b/src/bot/integration.ts
+index 5c87343..d09199a 100644
+--- a/src/bot/integration.ts
++++ b/src/bot/integration.ts
+@@ -1,7 +1,7 @@
+ import type { BotConfig } from "../config/load.js";
+ import { CommandRouter } from "../commands/router.js";
+ import { BridgeClient, type ConnectedInfo } from "../integrations/pokeverse/bridgeClient.js";
+-import { createAdminApi, createGameApi, createLinkApi, type GameApi, type LinkApi } from "../integrations/pokeverse/gameApi.js";
++import { createAdminApi, createGameApi, createLinkApi, createReportApi, type GameApi, type LinkApi } from "../integrations/pokeverse/gameApi.js";
+ import { FEATURES, type GameEventEnvelope } from "../integrations/pokeverse/protocol.js";
+ import { LinkCommands } from "../commands/linkCommands.js";
+ import { ActivityLog } from "../services/activity/activityLog.js";
+@@ -14,6 +14,7 @@ import { ChatRelay } from "../services/chat/chatRelay.js";
+ import { ArtworkResolver } from "../services/pokemon/artwork.js";
+ import { PokemonAutocomplete } from "../services/pokemon/pokemonLookup.js";
+ import { LegendaryEncounters } from "../services/legendaries/legendaryEncounters.js";
++import { ReportForums } from "../services/reports/reportForums.js";
+ import { SpawnAnnouncer } from "../services/spawns/spawnAnnouncer.js";
+ import { StatusService } from "../services/status/statusService.js";
+ import { ChannelSetup } from "../setup/channelSetup.js";
+@@ -56,6 +57,7 @@ export class GameIntegration {
+   readonly links: LinkApi;
+   readonly activity: ActivityLog | undefined;
+   readonly linking: LinkService | undefined;
++  readonly reports: ReportForums;
+   private readonly queues: Record<string, DeliveryQueue>;
+   private resyncTimer: NodeJS.Timeout | undefined;
+ 
+@@ -82,6 +84,7 @@ export class GameIntegration {
+       announcements: queue("announcements"),
+       activity: queue("activity"),
+       linking: queue("linking", 1000),
++      reports: queue("reports", 1000),
+     };
+     this.links = createLinkApi(this.bridge);
+ 
+@@ -156,6 +159,19 @@ export class GameIntegration {
+           ...config.linking.staffRoles.map(({ groupId, name }) => ({ key: `staff:${groupId}` as const, name })),
+         ],
+       },
++      reports: { bugs: config.reports.bugs, players: config.reports.players },
++    });
++    this.reports = new ReportForums({
++      config: config.reports,
++      channels,
++      guild: options.guild,
++      policy: (botUserId) => this.setup.privacyPolicy(botUserId),
++      store,
++      api: createReportApi(this.bridge),
++      queue: this.queues.reports!,
++      logger: logger.child({ component: "reports" }),
++      metrics,
++      now: options.now,
+     });
+     this.activity = config.activity.enabled
+       ? new ActivityLog({
+@@ -289,6 +305,9 @@ export class GameIntegration {
+         case "account_characters":
+           this.syncMember(event.discordUserId, "if_changed");
+           break;
++        case "report":
++          this.reports.handle({ ...envelope, event });
++          break;
+       }
+     } catch (error) {
+       this.options.metrics.increment("events.errors");
+diff --git a/src/integrations/pokeverse/gameApi.ts b/src/integrations/pokeverse/gameApi.ts
+index eeacef5..24fa724 100644
+--- a/src/integrations/pokeverse/gameApi.ts
++++ b/src/integrations/pokeverse/gameApi.ts
+@@ -9,6 +9,9 @@ import {
+   linkSummarySchema,
+   pokemonResultSchema,
+   pokemonSearchResultSchema,
++  reportGetResultSchema,
++  reportScreenshotResultSchema,
++  reportSetStatusResultSchema,
+   serverStatusResultSchema,
+   trainerResultSchema,
+   unlinkResultSchema,
+@@ -19,6 +22,9 @@ import {
+   type LinkListResult,
+   type LinkSummary,
+   type PokemonResult,
++  type ReportGetResult,
++  type ReportScreenshotResult,
++  type ReportSetStatusResult,
+   type ServerStatusResult,
+   type TrainerResult,
+ } from "./protocol.js";
+@@ -54,6 +60,15 @@ export interface AdminApi {
+   sessions(): Promise<AdminSessionsResult>;
+ }
+ 
++/** In-game reports: a status tag picked on a forum post answers the report; screenshots are read in slices. */
++export interface ReportApi {
++  readonly connected: boolean;
++  setStatus(id: number, status: string, by: string, note?: string): Promise<ReportSetStatusResult>;
++  get(id: number): Promise<ReportGetResult>;
++  /** Up to `length` base64 characters of the screenshot from `offset` (the game caps a slice). */
++  screenshot(id: number, offset: number, length: number): Promise<ReportScreenshotResult>;
++}
++
+ export function createGameApi(client: BridgeClient): GameApi {
+   return {
+     get connected() {
+@@ -92,3 +107,15 @@ export function createAdminApi(client: BridgeClient): AdminApi {
+     sessions: () => client.request("admin.sessions", {}, adminSessionsResultSchema),
+   };
+ }
++
++export function createReportApi(client: BridgeClient): ReportApi {
++  return {
++    get connected() {
++      return client.connected;
++    },
++    setStatus: (id, status, by, note) =>
++      client.request("report.setStatus", { id, status, by, ...(note ? { note } : {}) }, reportSetStatusResultSchema),
++    get: (id) => client.request("report.get", { id }, reportGetResultSchema),
++    screenshot: (id, offset, length) => client.request("report.screenshot", { id, offset, length }, reportScreenshotResultSchema),
++  };
++}
+diff --git a/src/integrations/pokeverse/protocol.ts b/src/integrations/pokeverse/protocol.ts
+index 3f7debf..031bd52 100644
+--- a/src/integrations/pokeverse/protocol.ts
++++ b/src/integrations/pokeverse/protocol.ts
+@@ -159,6 +159,72 @@ export const accountCharactersEventSchema = z.object({
+   character: z.string(),
+ });
+ 
++/** One in-game report (083-reports.lua). Player reports are admin-scoped. */
++export const reportSchema = z.object({
++  id: z.number().int().positive(),
++  kind: z.string(),
++  kindName: z.string().optional(),
++  category: z.string(),
++  categoryName: z.string().optional(),
++  status: z.string(),
++  statusName: z.string().optional(),
++  closed: z.boolean().optional(),
++  title: z.string(),
++  description: z.string(),
++  reporter: z.object({
++    name: z.string(),
++    level: z.number().optional(),
++    vocation: z.string().nullish(),
++    discordUserId: discordUserId.nullish(),
++  }),
++  position: position.nullish(),
++  area: z.string().nullish(),
++  pokemon: z.string().nullish(),
++  client: z.string().nullish(),
++  target: z
++    .object({
++      name: z.string(),
++      level: z.number().nullish(),
++      online: z.boolean().nullish(),
++      position: position.nullish(),
++      /** Their last channel lines before the report. */
++      chat: z.array(z.object({ at: z.number(), text: z.string() })).nullish(),
++    })
++    .nullish(),
++  statement: z.string().nullish(),
++  createdAt: z.number(),
++  updatedAt: z.number().optional(),
++  /** The staff member who took it. */
++  assignedTo: z.string().nullish(),
++  /** The report this one repeats. */
++  duplicateOf: z.number().int().nullish(),
++  /** How many reports were merged into this one. */
++  duplicates: z.number().int().optional(),
++  /** A screenshot is stored; "report.screenshot" reads it. */
++  screenshot: z.boolean().optional(),
++});
++
++export const reportEventSchema = z.object({
++  kind: z.literal("report"),
++  scope: z.literal("admin").optional(),
++  action: z.string(),
++  report: reportSchema,
++  change: z
++    .object({
++      status: z.string().optional(),
++      previousStatus: z.string().optional(),
++      note: z.string().nullish(),
++      by: z.string().optional(),
++      source: z.string().optional(),
++      assignedTo: z.string().nullish(),
++      /** This report was merged into that one. */
++      duplicateOf: z.number().int().optional(),
++      /** That report was merged into this one. */
++      duplicate: z.number().int().optional(),
++    })
++    .nullish(),
++});
++
+ export const gameEventSchema = z.discriminatedUnion("kind", [
+   chatEventSchema,
+   catchEventSchema,
+@@ -171,6 +237,7 @@ export const gameEventSchema = z.discriminatedUnion("kind", [
+   playerLogoutEventSchema,
+   accountLinkEventSchema,
+   accountCharactersEventSchema,
++  reportEventSchema,
+ ]);
+ 
+ export const eventEnvelopeSchema = z.object({
+@@ -199,6 +266,8 @@ export type PlayerLoginEvent = z.infer<typeof playerLoginEventSchema>;
+ export type PlayerLogoutEvent = z.infer<typeof playerLogoutEventSchema>;
+ export type AccountLinkEvent = z.infer<typeof accountLinkEventSchema>;
+ export type AccountCharactersEvent = z.infer<typeof accountCharactersEventSchema>;
++export type ReportEvent = z.infer<typeof reportEventSchema>;
++export type GameReport = z.infer<typeof reportSchema>;
+ export type GameEvent = z.infer<typeof gameEventSchema>;
+ 
+ export interface GameEventEnvelope<E extends GameEvent = GameEvent> {
+@@ -372,3 +441,19 @@ export type TrainerCard = z.infer<typeof trainerCardSchema>;
+ export type CardPokemon = z.infer<typeof cardPokemonSchema>;
+ export type ServerStatusResult = z.infer<typeof serverStatusResultSchema>;
+ export type BridgeConfigResult = z.infer<typeof bridgeConfigResultSchema>;
++
++export const reportSetStatusResultSchema = z.object({ id: z.number(), status: z.string(), changed: z.boolean() });
++export type ReportSetStatusResult = z.infer<typeof reportSetStatusResultSchema>;
++
++export const reportGetResultSchema = z.object({ found: z.boolean(), report: reportSchema.optional() });
++export type ReportGetResult = z.infer<typeof reportGetResultSchema>;
++
++/** A slice of a report's screenshot: base64 PNG, `total` characters in all. */
++export const reportScreenshotResultSchema = z.object({
++  found: z.boolean(),
++  done: z.boolean().optional(),
++  total: z.number().int().optional(),
++  offset: z.number().int().optional(),
++  data: z.string().optional(),
++});
++export type ReportScreenshotResult = z.infer<typeof reportScreenshotResultSchema>;
+diff --git a/src/services/reports/reportForums.ts b/src/services/reports/reportForums.ts
+new file mode 100644
+index 0000000..48b27e6
+--- /dev/null
++++ b/src/services/reports/reportForums.ts
+@@ -0,0 +1,451 @@
++import type { APIEmbed } from "discord.js";
++import type { BotConfig } from "../../config/load.js";
++import type { ChannelDirectory, ForumPostSink, ForumSink, GuildPort, OutgoingMessage } from "../../bot/ports.js";
++import type { ReportApi } from "../../integrations/pokeverse/gameApi.js";
++import type { GameEventEnvelope, GameReport, ReportEvent } from "../../integrations/pokeverse/protocol.js";
++import { RecentKeys } from "../../utils/dedupe.js";
++import type { DeliveryQueue } from "../../utils/deliveryQueue.js";
++import { discordTimestamp } from "../../utils/format.js";
++import type { Logger } from "../../utils/logger.js";
++import type { Metrics } from "../../utils/metrics.js";
++import type { ReportPostRecord, StateStore } from "../../utils/stateStore.js";
++import { checkPrivacy, type PrivacyPolicy } from "../activity/privacy.js";
++import { COLORS, plain } from "../embeds.js";
++import { categoryTag, REPORT_KINDS, statusByTag, statusOf, type ReportKind } from "./reportKinds.js";
++
++export interface ReportForumsOptions {
++  config: BotConfig["reports"];
++  channels: ChannelDirectory;
++  guild: () => GuildPort | undefined;
++  /** Who may see the private #player-reports forum (as for #player-activity). */
++  policy: (botUserId: string) => PrivacyPolicy;
++  store: StateStore;
++  api: ReportApi;
++  queue: DeliveryQueue;
++  logger: Logger;
++  metrics: Metrics;
++  now?: () => number;
++}
++
++export type ReportDecision =
++  | { action: "post" }
++  | { action: "skip"; reason: "disabled" | "unknown_kind" | "duplicate" };
++
++/** The game sends a slice of at most this many base64 characters (Reports.SHOT_SLICE). */
++export const SCREENSHOT_SLICE = 12000;
++/** Discord's upload limit without boosts is 10 MB; the game's screenshots are far smaller. */
++const SCREENSHOT_MAX_BYTES = 8 * 1024 * 1024;
++const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
++const WARN_INTERVAL_MS = 10 * 60 * 1000;
++const KIND_ICONS: Record<string, string> = { bug: "🐞", player: "🚩" };
++
++function statusColor(report: GameReport): number {
++  switch (report.status) {
++    case "open":
++      return COLORS.info;
++    case "fixed":
++    case "action_taken":
++      return COLORS.success;
++    case "wont_fix":
++    case "no_action":
++    case "duplicate":
++      return COLORS.neutral;
++    default:
++      return COLORS.warning;
++  }
++}
++
++function clip(text: string, max: number): string {
++  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
++}
++
++function where(position: GameReport["position"], area?: string | null): string | undefined {
++  if (!position) {
++    return area ? plain(area) : undefined;
++  }
++  const coordinates = `\`${position.x}, ${position.y}, ${position.z}\``;
++  return area ? `${coordinates} near ${plain(area)}` : coordinates;
++}
++
++export function postName(report: Pick<GameReport, "id" | "title">): string {
++  return clip(`[#${report.id}] ${report.title}`, 100);
++}
++
++function statusText(report: Pick<GameReport, "kind" | "status" | "statusName">): string {
++  const status = statusOf(report.kind, report.status);
++  return status ? `${status.emoji} ${status.tag}` : plain(report.statusName ?? report.status);
++}
++
++/** The post's first message: everything the game knows about the report. */
++export function buildReportEmbed(report: GameReport): APIEmbed {
++  const fields: NonNullable<APIEmbed["fields"]> = [];
++  const reporter = report.reporter;
++  const about = [`**${plain(reporter.name)}**`];
++  if (reporter.level) {
++    about.push(`level ${reporter.level}`);
++  }
++  if (reporter.vocation) {
++    about.push(plain(reporter.vocation));
++  }
++  fields.push({
++    name: "Reporter",
++    value: about.join(", ") + (reporter.discordUserId ? `\n<@${reporter.discordUserId}>` : ""),
++    inline: true,
++  });
++  fields.push({ name: "Status", value: statusText(report), inline: true });
++  fields.push({ name: "Category", value: plain(report.categoryName ?? report.category), inline: true });
++
++  const target = report.target;
++  if (target) {
++    const state = [target.level ? `level ${target.level}` : undefined, target.online ? "online" : target.online === false ? "offline" : undefined]
++      .filter(Boolean)
++      .join(", ");
++    fields.push({ name: "Reported player", value: `**${plain(target.name)}**${state ? ` (${state})` : ""}`, inline: true });
++    const then = where(target.position);
++    if (then) {
++      fields.push({ name: "They stood at", value: then, inline: true });
++    }
++  }
++  const spot = where(report.position, report.area);
++  if (spot) {
++    fields.push({ name: target ? "The reporter stood at" : "Where", value: spot, inline: true });
++  }
++  if (report.pokemon) {
++    fields.push({ name: "Pokemon out", value: clip(plain(report.pokemon), 1024), inline: true });
++  }
++  if (report.statement) {
++    fields.push({ name: "Reported message", value: clip(`> ${plain(report.statement)}`, 1024), inline: false });
++  }
++  if (target?.chat && target.chat.length > 0) {
++    const lines = target.chat.map((line) => `${discordTimestamp(line.at, "t")} ${plain(line.text)}`);
++    fields.push({ name: "Their last channel messages", value: clip(lines.join("\n"), 1024), inline: false });
++  }
++  if (report.client) {
++    fields.push({ name: "Client", value: clip(plain(report.client), 1024), inline: false });
++  }
++  const handling: string[] = [];
++  if (report.assignedTo) {
++    handling.push(`Taken by **${plain(report.assignedTo)}**`);
++  }
++  if (report.duplicateOf) {
++    handling.push(`Same as report #${report.duplicateOf}`);
++  }
++  if (report.duplicates) {
++    handling.push(report.duplicates === 1 ? "1 other report was merged into this one" : `${report.duplicates} other reports were merged into this one`);
++  }
++  if (handling.length > 0) {
++    fields.push({ name: "Team", value: handling.join("\n"), inline: false });
++  }
++  return {
++    author: { name: report.kind === "player" ? "Player report" : "Bug report" },
++    title: clip(`${KIND_ICONS[report.kind] ?? "📝"} ${report.title}`, 256),
++    description: clip(plain(report.description), 4096),
++    color: statusColor(report),
++    fields: fields.slice(0, 25),
++    footer: { text: `Report #${report.id} · staff answer in the game's Reports window or with the status tag` },
++    timestamp: new Date(report.createdAt * 1000).toISOString(),
++  };
++}
++
++/** One line in the post for a change, or undefined when there is nothing to say. */
++export function updateLine(event: ReportEvent, threadOf: (id: number) => string | undefined): string | undefined {
++  const change = event.change ?? {};
++  const report = event.report;
++  const by = change.by ? `**${plain(change.by)}**` : "The team";
++  const onDiscord = change.source === "discord" ? " on Discord" : "";
++  const link = (id: number) => {
++    const thread = threadOf(id);
++    return thread ? `#${id} (<#${thread}>)` : `#${id}`;
++  };
++  if (change.duplicateOf) {
++    return `♻️ ${by} marked this as the same as ${link(change.duplicateOf)}${onDiscord}. Its reporter hears about that one from now on.`;
++  }
++  if (change.duplicate) {
++    return `♻️ ${link(change.duplicate)} is the same as this report; its reporter hears about this one too.`;
++  }
++  const note = change.note ? `\n> ${clip(plain(change.note), 1500).replace(/\n/g, "\n> ")}` : "";
++  if (change.status && change.status !== change.previousStatus) {
++    return `${statusOf(report.kind, change.status)?.emoji ?? "🔄"} ${by} set it to **${statusText({ ...report, status: change.status }).replace(/^\S+ /, "")}**${onDiscord}.${note}`;
++  }
++  if (change.note) {
++    return `💬 ${by}${onDiscord}:${note}`;
++  }
++  if (change.status === undefined) {
++    return report.assignedTo ? `🙋 **${plain(report.assignedTo)}** took this report.` : `${by} let this report go.`;
++  }
++  return undefined;
++}
++
++/**
++ * Each in-game report is a post in #bug-reports (public) or #player-reports (private, Admin Logs):
++ * the first message has the whole report, the tags show its status and category, and changes are
++ * lines in the post. A status tag picked on Discord answers the report in the game.
++ */
++export class ReportForums {
++  private readonly seen = new RecentKeys(5000);
++  private readonly now: () => number;
++  private lastPrivacyWarning = 0;
++
++  constructor(private readonly options: ReportForumsOptions) {
++    this.now = options.now ?? Date.now;
++  }
++
++  private kindOf(kind: string): ReportKind | undefined {
++    const info = REPORT_KINDS[kind];
++    const { bugs, players } = this.options.config;
++    if (!info || (kind === "bug" && !bugs) || (kind === "player" && !players)) {
++      return undefined;
++    }
++    return info;
++  }
++
++  decide(envelope: GameEventEnvelope<ReportEvent>): ReportDecision {
++    const kind = envelope.event.report.kind;
++    if (!REPORT_KINDS[kind]) {
++      return { action: "skip", reason: "unknown_kind" };
++    }
++    if (!this.kindOf(kind)) {
++      return { action: "skip", reason: "disabled" };
++    }
++    if (!this.seen.add(envelope.id)) {
++      return { action: "skip", reason: "duplicate" };
++    }
++    return { action: "post" };
++  }
++
++  handle(envelope: GameEventEnvelope<ReportEvent>): ReportDecision {
++    const decision = this.decide(envelope);
++    if (decision.action === "skip") {
++      this.options.metrics.increment(`reports.skipped.${decision.reason}`);
++      return decision;
++    }
++    const event = envelope.event;
++    this.options.queue.enqueue(`report ${event.action} ${event.report.id}`, () => this.deliver(event));
++    return decision;
++  }
++
++  /** The report's forum, if it exists (and, for player reports, is private right now). */
++  private forumFor(kind: ReportKind): ForumSink | undefined {
++    const { channels, guild, policy, metrics, logger } = this.options;
++    const forum = channels.forum?.(kind.purpose);
++    if (!forum) {
++      metrics.increment("reports.no_channel");
++      return undefined;
++    }
++    if (kind.purpose !== "playerReports") {
++      return forum;
++    }
++    const port = guild();
++    const privacy = port ? checkPrivacy(port.channelAccess(forum.id), policy(port.botUserId)) : undefined;
++    if (!privacy?.private) {
++      metrics.increment("reports.blocked_not_private");
++      if (this.now() - this.lastPrivacyWarning > WARN_INTERVAL_MS) {
++        this.lastPrivacyWarning = this.now();
++        logger.error("#player-reports is not private; player reports are not posted until it is fixed", {
++          problems: privacy?.problems ?? ["the guild is not available"],
++        });
++      }
++      return undefined;
++    }
++    return forum;
++  }
++
++  private tagIds(forum: ForumSink, report: Pick<GameReport, "kind" | "status" | "category">): string[] {
++    const names = [statusOf(report.kind, report.status)?.tag, categoryTag(report.kind, report.category)]
++      .filter((name): name is string => name !== undefined)
++      .map((name) => name.toLowerCase());
++    const tags = forum.tags();
++    return names.map((name) => tags.find((tag) => tag.name.toLowerCase() === name)?.id).filter((id): id is string => id !== undefined);
++  }
++
++  private threadOf(id: number): string | undefined {
++    return this.options.store.get().reportPosts[String(id)]?.threadId;
++  }
++
++  /** Bug reports ping their linked reporter (the report's own post only). */
++  private mention(report: GameReport): string | undefined {
++    return report.kind === "bug" && this.options.config.mentionReporter ? (report.reporter.discordUserId ?? undefined) : undefined;
++  }
++
++  private async deliver(event: ReportEvent): Promise<void> {
++    const { store, metrics } = this.options;
++    const report = event.report;
++    const kind = this.kindOf(report.kind);
++    const forum = kind && this.forumFor(kind);
++    if (!forum) {
++      return;
++    }
++    const key = String(report.id);
++    const record = store.get().reportPosts[key];
++    const post = record && record.channelId === forum.id ? await forum.post(record.threadId) : undefined;
++    if (!post || !record) {
++      await this.createPost(forum, report);
++      metrics.increment(`reports.${event.action === "created" ? "posted" : "reposted"}`);
++      return;
++    }
++
++    store.update((state) => {
++      const saved = state.reportPosts[key];
++      if (saved) {
++        saved.status = report.status;
++        saved.category = report.category;
++        saved.closed = report.closed === true;
++      }
++    });
++    await post.update({ tagIds: this.tagIds(forum, report), name: postName(report), archived: false });
++    await post.edit(record.messageId, { embeds: [buildReportEmbed(report)] });
++    if (event.action === "screenshot") {
++      await this.sendScreenshot(post, report);
++    } else {
++      const line = updateLine(event, (id) => this.threadOf(id));
++      if (line) {
++        const mention = event.change?.status && event.change.status !== event.change.previousStatus ? this.mention(report) : undefined;
++        await post.send(mention ? { content: `<@${mention}> ${line}`, mentionUserIds: [mention] } : { content: line });
++      }
++    }
++    if (report.closed) {
++      await post.archive();
++    }
++    metrics.increment(`reports.${event.action}`);
++  }
++
++  private async createPost(forum: ForumSink, report: GameReport): Promise<void> {
++    const mention = this.mention(report);
++    const message: OutgoingMessage = { embeds: [buildReportEmbed(report)] };
++    if (mention) {
++      message.content = `<@${mention}> thank you for the report! Updates show up in this post.`;
++      message.mentionUserIds = [mention];
++    }
++    const created = await forum.createPost({ name: postName(report), message, tagIds: this.tagIds(forum, report) });
++    const record: ReportPostRecord = {
++      kind: report.kind,
++      channelId: forum.id,
++      threadId: created.threadId,
++      messageId: created.messageId,
++      status: report.status,
++      category: report.category,
++      closed: report.closed === true,
++      createdAt: Math.floor(this.now() / 1000),
++    };
++    this.options.store.update((state) => {
++      state.reportPosts[String(report.id)] = record;
++    });
++    this.options.logger.info("Posted an in-game report", { id: report.id, kind: report.kind, thread: created.threadId });
++    if (!report.screenshot && !report.duplicateOf && !report.closed) {
++      return;
++    }
++    const post = await forum.post(created.threadId);
++    if (!post) {
++      return;
++    }
++    if (report.screenshot) {
++      await this.sendScreenshot(post, report);
++    }
++    if (report.duplicateOf) {
++      await post.send({ content: updateLine({ kind: "report", action: "updated", report, change: { duplicateOf: report.duplicateOf } }, (id) => this.threadOf(id)) });
++    }
++    if (report.closed) {
++      await post.archive();
++    }
++  }
++
++  /** Reads the screenshot from the game in slices; undefined when there is none or it is not a PNG. */
++  async fetchScreenshot(id: number): Promise<Buffer | undefined> {
++    const { api, metrics } = this.options;
++    let encoded = "";
++    let total = Infinity;
++    while (encoded.length < total) {
++      const slice = await api.screenshot(id, encoded.length, SCREENSHOT_SLICE);
++      if (!slice.found || !slice.done || slice.total === undefined || !slice.data) {
++        return undefined;
++      }
++      total = slice.total;
++      encoded += slice.data;
++      if (encoded.length * 0.75 > SCREENSHOT_MAX_BYTES) {
++        metrics.increment("reports.screenshot_too_big");
++        return undefined;
++      }
++    }
++    const png = Buffer.from(encoded, "base64");
++    if (png.length < PNG_SIGNATURE.length || !png.subarray(0, PNG_SIGNATURE.length).equals(PNG_SIGNATURE)) {
++      metrics.increment("reports.screenshot_invalid");
++      return undefined;
++    }
++    return png;
++  }
++
++  private async sendScreenshot(post: ForumPostSink, report: GameReport): Promise<void> {
++    const png = await this.fetchScreenshot(report.id);
++    if (!png) {
++      return;
++    }
++    const name = `report-${report.id}.png`;
++    await post.send({
++      embeds: [{ title: "📸 Screenshot from the game", color: COLORS.neutral, image: { url: `attachment://${name}` } }],
++      files: [{ name, data: png }],
++    });
++    this.options.metrics.increment("reports.screenshot");
++  }
++
++  /** A post's tags changed on Discord: a new status tag answers the report in the game. */
++  handleTagsChanged(change: { threadId: string; tagIds: string[]; by?: string }): void {
++    const found = Object.entries(this.options.store.get().reportPosts).find(([, record]) => record.threadId === change.threadId);
++    if (!found || !this.options.config.tagSync) {
++      return;
++    }
++    const [key, record] = found;
++    this.options.queue.enqueue(`report tags ${key}`, () => this.applyTags(Number(key), record, change));
++  }
++
++  private async applyTags(id: number, record: ReportPostRecord, change: { threadId: string; tagIds: string[]; by?: string }): Promise<void> {
++    const { api, metrics, logger, store } = this.options;
++    const kind = this.kindOf(record.kind);
++    const forum = kind && this.options.channels.forum?.(kind.purpose);
++    if (!forum || forum.id !== record.channelId) {
++      return;
++    }
++    const current = store.get().reportPosts[String(id)] ?? record;
++    const names = new Map(forum.tags().map((tag) => [tag.id, tag.name]));
++    const statuses = change.tagIds.map((tagId) => statusByTag(record.kind, names.get(tagId) ?? "")).filter((status) => status !== undefined);
++    if (statuses.some((status) => status.key === current.status) && statuses.length === 1) {
++      return;
++    }
++    const chosen = statuses.find((status) => status.key !== current.status);
++    const restore = async (reason: string) => {
++      const post = await forum.post(record.threadId);
++      if (post) {
++        await post.update({
++          tagIds: this.tagIds(forum, { kind: record.kind, status: current.status, category: current.category ?? "" }),
++          archived: current.closed === true,
++        });
++        if (reason) {
++          await post.send({ content: `⚠️ ${reason} The status tag was put back.` });
++        }
++      }
++    };
++    if (!chosen) {
++      // the status tag was taken off: a report always shows its status
++      await restore("");
++      return;
++    }
++    if (!api.connected) {
++      metrics.increment("reports.tag_offline");
++      await restore("The game is offline, so the report was not changed.");
++      return;
++    }
++    try {
++      await api.setStatus(id, chosen.key, change.by ?? "Discord staff");
++      store.update((state) => {
++        const saved = state.reportPosts[String(id)];
++        if (saved) {
++          saved.status = chosen.key;
++        }
++      });
++      metrics.increment("reports.tag_applied");
++    } catch (error) {
++      metrics.increment("reports.tag_failed");
++      logger.warn("Could not change a report from its Discord tag", { id, status: chosen.key, error });
++      await restore("The game did not take the change.");
++    }
++  }
++}
+diff --git a/tests/unit/reports.test.ts b/tests/unit/reports.test.ts
+new file mode 100644
+index 0000000..20e3770
+--- /dev/null
++++ b/tests/unit/reports.test.ts
+@@ -0,0 +1,370 @@
++import { join } from "node:path";
++import { describe, expect, it } from "vitest";
++import type { ReportApi } from "../../src/integrations/pokeverse/gameApi.js";
++import { gameEventSchema, type GameReport, type ReportEvent } from "../../src/integrations/pokeverse/protocol.js";
++import { forumTagsFor } from "../../src/services/reports/reportKinds.js";
++import { buildReportEmbed, postName, ReportForums, SCREENSHOT_SLICE, updateLine } from "../../src/services/reports/reportForums.js";
++import { ChannelSetup } from "../../src/setup/channelSetup.js";
++import { ADMIN_CATEGORY_NAME, CATEGORY_NAME } from "../../src/setup/channels.js";
++import { DeliveryQueue } from "../../src/utils/deliveryQueue.js";
++import { silentLogger } from "../../src/utils/logger.js";
++import { Metrics } from "../../src/utils/metrics.js";
++import { StateStore } from "../../src/utils/stateStore.js";
++import { BOT_USER, EVERYONE, FakeChannels, FakeForum, FakeGuild, envelope, makeConfig, tempDir } from "../helpers/fakes.js";
++
++const STAFF_ROLE = "800000000000000001";
++const REPORTER = "900000000000000001";
++const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(20000, 7)]);
++
++function bugReport(overrides: Partial<GameReport> = {}): GameReport {
++  return {
++    id: 12,
++    kind: "bug",
++    kindName: "Bug",
++    category: "map",
++    categoryName: "Map",
++    status: "open",
++    statusName: "Open",
++    closed: false,
++    title: "Stuck between two rocks east of the Pokemon Center",
++    description: "I walked east from the Pokemon Center and got stuck between two rocks.",
++    reporter: { name: "Ash", level: 50, vocation: "Hunter", discordUserId: REPORTER },
++    position: { x: 3290, y: 800, z: 7 },
++    area: "Pallet",
++    client: "linux, version 3.1.2",
++    createdAt: 1_790_000_000,
++    ...overrides,
++  };
++}
++
++function playerReport(overrides: Partial<GameReport> = {}): GameReport {
++  return bugReport({
++    id: 13,
++    kind: "player",
++    kindName: "Player report",
++    category: "harassment",
++    categoryName: "Harassment or insults",
++    title: "Threats in the Help channel",
++    description: "Trainer kept insulting me in the Help channel.",
++    target: { name: "Trainer", level: 30, online: true, position: { x: 3300, y: 810, z: 7 }, chat: [{ at: 1_790_000_000, text: "noob" }] },
++    statement: "give me your pokemon or I will keep killing yours",
++    ...overrides,
++  });
++}
++
++function event(report: GameReport, action = "created", change?: ReportEvent["change"]): ReportEvent {
++  return { kind: "report", ...(report.kind === "player" ? { scope: "admin" as const } : {}), action, report, change };
++}
++
++function fakeApi(png = PNG) {
++  const encoded = png.toString("base64");
++  const calls: string[] = [];
++  const api: ReportApi & { connected: boolean; fail?: Error } = {
++    connected: true,
++    async setStatus(id, status, by) {
++      calls.push(`setStatus ${id} ${status} ${by}`);
++      if (api.fail) {
++        throw api.fail;
++      }
++      return { id, status, changed: true };
++    },
++    async get() {
++      return { found: false };
++    },
++    async screenshot(id, offset, length) {
++      calls.push(`screenshot ${id} ${offset}`);
++      return { found: true, done: true, total: encoded.length, offset, data: encoded.slice(offset, offset + Math.min(length, SCREENSHOT_SLICE)) };
++    },
++  };
++  return { api, calls };
++}
++
++function setup(options: { private?: boolean; mention?: boolean } = {}) {
++  const config = makeConfig(options.mention === false ? { REPORT_MENTION_REPORTER: "false" } : {});
++  const store = new StateStore(join(tempDir(), "state.json"), "development");
++  const channels = new FakeChannels();
++  const bugs = FakeForum.withTags("600000000000000001", forumTagsFor("bug"));
++  const players = FakeForum.withTags("600000000000000002", forumTagsFor("player"));
++  channels.forums.set("bugReports", bugs);
++  channels.forums.set("playerReports", players);
++  store.update((state) => {
++    state.channels.bugReports = bugs.id;
++    state.channels.playerReports = players.id;
++  });
++  const guild = new FakeGuild();
++  guild.accessOverride.set(players.id, {
++    everyoneCanView: options.private === false,
++    roles: [{ id: STAFF_ROLE, name: "Staff", administrator: false, ownBotRole: false }],
++    members: [BOT_USER],
++  });
++  const metrics = new Metrics();
++  const queue = new DeliveryQueue({ name: "reports", maxSize: 50, maxAttempts: 1, retryDelayMs: 1, logger: silentLogger, metrics });
++  const { api, calls } = fakeApi();
++  const forums = new ReportForums({
++    config: config.reports,
++    channels,
++    guild: () => guild,
++    policy: (botUserId) => ({ roleIds: [STAFF_ROLE], userIds: [], botUserId }),
++    store,
++    api,
++    queue,
++    logger: silentLogger,
++    metrics,
++  });
++  return { forums, bugs, players, store, queue, metrics, api, calls };
++}
++
++describe("report forums: setup", () => {
++  function reportsSetup() {
++    const store = new StateStore(join(tempDir(), "state.json"), "development");
++    const channelSetup = new ChannelSetup(store, silentLogger, {
++      activity: { enabled: false, viewerRoleIds: [STAFF_ROLE], viewerUserIds: [] },
++      reports: { bugs: true, players: true },
++    });
++    const guild = new FakeGuild();
++    guild.permissions = [...guild.permissions, "ManageThreads"];
++    guild.addRoleInfo({ id: STAFF_ROLE, name: "Staff" });
++    return { store, channelSetup, guild };
++  }
++
++  it("creates a public bug forum and a private player forum with their tags", async () => {
++    const { store, channelSetup, guild } = reportsSetup();
++    const report = await channelSetup.run(guild);
++    expect(report.ok).toBe(true);
++    const main = guild.created.find((channel) => channel.name === CATEGORY_NAME)!;
++    const admin = guild.created.find((channel) => channel.name === ADMIN_CATEGORY_NAME)!;
++    const bugs = guild.created.find((channel) => channel.name === "bug-reports")!;
++    const players = guild.created.find((channel) => channel.name === "player-reports")!;
++    expect(bugs).toMatchObject({ kind: "forum", parentId: main.id });
++    expect(players).toMatchObject({ kind: "forum", parentId: admin.id });
++    expect(bugs.tagNames).toEqual(expect.arrayContaining(["Open", "Planned", "Fixed", "Map"]));
++    expect(players.tagNames).toEqual(expect.arrayContaining(["Investigating", "Action taken", "Harassment"]));
++    expect([...bugs.tagNames!, ...players.tagNames!].every((name) => name.length <= 20)).toBe(true);
++    expect(players.overwrites).toContainEqual({ id: EVERYONE, type: "role", allow: [], deny: ["ViewChannel"] });
++    expect(players.overwrites).toContainEqual({
++      id: STAFF_ROLE,
++      type: "role",
++      allow: ["ViewChannel", "ReadMessageHistory", "SendMessagesInThreads", "ManageThreads"],
++      deny: ["SendMessages"],
++    });
++    expect(bugs.overwrites).toContainEqual({ id: EVERYONE, type: "role", allow: [], deny: ["SendMessages"] });
++    expect(store.getChannelId("bugReports")).toBe(bugs.id);
++    expect(store.getChannelId("playerReports")).toBe(players.id);
++  });
++
++  it("adds the tags a forum lost and keeps the forum on a re-run", async () => {
++    const { channelSetup, guild } = reportsSetup();
++    await channelSetup.run(guild);
++    const bugs = guild.channels.find((channel) => channel.name === "bug-reports")!;
++    bugs.tagNames = bugs.tagNames!.filter((name) => name !== "Planned");
++    const count = guild.channels.length;
++    const report = await channelSetup.run(guild);
++    expect(guild.channels).toHaveLength(count);
++    expect(bugs.tagNames).toContain("Planned");
++    expect(report.channels.find((channel) => channel.purpose === "bugReports")).toMatchObject({ action: "kept", updated: ["tags (Planned)"] });
++  });
++
++  it("needs Manage Threads only with a report forum", async () => {
++    const off = new ChannelSetup(new StateStore(join(tempDir(), "state.json"), "development"), silentLogger);
++    expect((await off.run(new FakeGuild())).missingGuildPermissions).not.toContain("ManageThreads");
++    const { channelSetup } = reportsSetup();
++    expect((await channelSetup.run(new FakeGuild())).missingGuildPermissions).toContain("ManageThreads");
++  });
++});
++
++describe("report forums: posts", () => {
++  it("posts a bug report with its tags, its spot and a ping for the linked reporter", async () => {
++    const { forums, bugs, store, queue } = setup();
++    expect(forums.handle(envelope(event(bugReport())))).toEqual({ action: "post" });
++    await queue.idle();
++    const post = bugs.post0();
++    expect(post.postName).toBe("[#12] Stuck between two rocks east of the Pokemon Center");
++    expect(bugs.tagNames(post)).toEqual(["Open", "Map"]);
++    const first = post.sent[0]!.message;
++    expect(first.content).toContain(`<@${REPORTER}>`);
++    expect(first.mentionUserIds).toEqual([REPORTER]);
++    const embed = first.embeds![0]!;
++    expect(embed.fields).toContainEqual({ name: "Where", value: "`3290, 800, 7` near Pallet", inline: true });
++    expect(embed.fields!.find((field) => field.name === "Reporter")!.value).toContain("**Ash**, level 50, Hunter");
++    expect(store.get().reportPosts["12"]).toMatchObject({ threadId: post.id, status: "open", category: "map" });
++  });
++
++  it("does not ping when REPORT_MENTION_REPORTER is off", async () => {
++    const { forums, bugs, queue } = setup({ mention: false });
++    forums.handle(envelope(event(bugReport())));
++    await queue.idle();
++    expect(bugs.post0().sent[0]!.message.mentionUserIds).toBeUndefined();
++  });
++
++  it("follows status changes: tags, a line that pings the reporter, archived when closed", async () => {
++    const { forums, bugs, store, queue } = setup();
++    forums.handle(envelope(event(bugReport())));
++    await queue.idle();
++    forums.handle(envelope(event(bugReport({ status: "planned", statusName: "Planned" }), "updated",
++      { status: "planned", previousStatus: "open", note: "Next update", by: "Admin", source: "game" })));
++    await queue.idle();
++    const post = bugs.post0();
++    expect(bugs.tagNames(post)).toEqual(["Planned", "Map"]);
++    const line = post.sent.at(-1)!.message;
++    expect(line.content).toBe(`<@${REPORTER}> 📌 **Admin** set it to **Planned**.\n> Next update`);
++    expect(line.mentionUserIds).toEqual([REPORTER]);
++    expect(post.archived).toBe(false);
++
++    forums.handle(envelope(event(bugReport({ status: "fixed", statusName: "Fixed", closed: true }), "updated",
++      { status: "fixed", previousStatus: "planned", by: "Admin", source: "game" })));
++    await queue.idle();
++    expect(bugs.tagNames(post)).toEqual(["Fixed", "Map"]);
++    expect(post.archived).toBe(true);
++    expect(store.get().reportPosts["12"]).toMatchObject({ status: "fixed", closed: true });
++    expect(post.edits.at(-1)!.message.embeds![0]!.fields).toContainEqual({ name: "Status", value: "✅ Fixed", inline: true });
++  });
++
++  it("says who took a report and links merged reports", async () => {
++    const { forums, bugs, queue } = setup();
++    forums.handle(envelope(event(bugReport())));
++    forums.handle(envelope(event(bugReport({ id: 14, title: "Rocks again" }))));
++    await queue.idle();
++    forums.handle(envelope(event(bugReport({ assignedTo: "Admin" }), "updated", { assignedTo: "Admin", by: "Admin", source: "game" })));
++    forums.handle(envelope(event(bugReport({ id: 14, title: "Rocks again", status: "duplicate", closed: true, duplicateOf: 12 }), "updated",
++      { status: "duplicate", previousStatus: "open", duplicateOf: 12, by: "Admin", source: "game" })));
++    await queue.idle();
++    const [original, duplicate] = [...bugs.posts.values()];
++    expect(original!.contents()).toContain("🙋 **Admin** took this report.");
++    expect(duplicate!.contents().at(-1)).toBe(`<@${REPORTER}> ♻️ **Admin** marked this as the same as #12 (<#${original!.id}>). Its reporter hears about that one from now on.`);
++    expect(duplicate!.archived).toBe(true);
++  });
++
++  it("attaches the screenshot, read from the game in slices", async () => {
++    const { forums, bugs, queue, calls } = setup();
++    forums.handle(envelope(event(bugReport())));
++    await queue.idle();
++    forums.handle(envelope(event(bugReport({ screenshot: true }), "screenshot")));
++    await queue.idle();
++    const sent = bugs.post0().sent.at(-1)!.message;
++    expect(sent.files).toHaveLength(1);
++    expect(sent.files![0]!.name).toBe("report-12.png");
++    expect(sent.files![0]!.data!.equals(PNG)).toBe(true);
++    expect(sent.embeds![0]!.image).toEqual({ url: "attachment://report-12.png" });
++    const slices = calls.filter((call) => call.startsWith("screenshot"));
++    expect(slices.length).toBe(Math.ceil(PNG.toString("base64").length / SCREENSHOT_SLICE));
++    expect(slices[1]).toBe(`screenshot 12 ${SCREENSHOT_SLICE}`);
++  });
++
++  it("drops a screenshot that is not a PNG", async () => {
++    const { forums } = setup();
++    const { api } = fakeApi(Buffer.from("not a png at all"));
++    (forums as unknown as { options: { api: ReportApi } }).options.api = api;
++    expect(await forums.fetchScreenshot(12)).toBeUndefined();
++  });
++
++  it("posts player reports only while the forum is private, and never pings", async () => {
++    const closed = setup({ private: false });
++    closed.forums.handle(envelope(event(playerReport())));
++    await closed.queue.idle();
++    expect(closed.players.posts.size).toBe(0);
++    expect(closed.metrics.get("reports.blocked_not_private")).toBe(1);
++
++    const open = setup();
++    open.forums.handle(envelope(event(playerReport())));
++    await open.queue.idle();
++    const post = open.players.post0();
++    expect(open.players.tagNames(post)).toEqual(["Open", "Harassment"]);
++    const first = post.sent[0]!.message;
++    expect(first.mentionUserIds).toBeUndefined();
++    const fields = first.embeds![0]!.fields!;
++    expect(fields.find((field) => field.name === "Reported player")!.value).toBe("**Trainer** (level 30, online)");
++    expect(fields.find((field) => field.name === "Reported message")!.value).toContain("give me your pokemon");
++    expect(fields.find((field) => field.name === "Their last channel messages")!.value).toContain("noob");
++  });
++
++  it("skips disabled kinds and repeated events", async () => {
++    const config = makeConfig({ BUG_REPORTS_ENABLED: "false" });
++    const { forums, queue, bugs } = setup();
++    (forums as unknown as { options: { config: typeof config.reports } }).options.config = config.reports;
++    expect(forums.handle(envelope(event(bugReport())))).toEqual({ action: "skip", reason: "disabled" });
++    const repeated = envelope(event(playerReport()));
++    expect(forums.handle(repeated)).toEqual({ action: "post" });
++    expect(forums.handle(repeated)).toEqual({ action: "skip", reason: "duplicate" });
++    await queue.idle();
++    expect(bugs.posts.size).toBe(0);
++  });
++});
++
++describe("report forums: status tags picked on Discord", () => {
++  async function posted() {
++    const context = setup();
++    context.forums.handle(envelope(event(bugReport())));
++    await context.queue.idle();
++    const post = context.bugs.post0();
++    const tag = (name: string) => context.bugs.tags().find((item) => item.name === name)!.id;
++    return { ...context, post, tag };
++  }
++
++  it("answers the report in the game with the new status tag", async () => {
++    const { forums, post, tag, calls, queue, store } = await posted();
++    forums.handleTagsChanged({ threadId: post.id, tagIds: [tag("Open"), tag("Confirmed"), tag("Map")], by: "Misty" });
++    await queue.idle();
++    expect(calls).toContain("setStatus 12 confirmed Misty");
++    expect(store.get().reportPosts["12"]!.status).toBe("confirmed");
++  });
++
++  it("ignores the bot's own tag changes", async () => {
++    const { forums, post, tag, calls, queue } = await posted();
++    forums.handleTagsChanged({ threadId: post.id, tagIds: [tag("Open"), tag("Map")] });
++    await queue.idle();
++    expect(calls.filter((call) => call.startsWith("setStatus"))).toEqual([]);
++  });
++
++  it("puts the status tag back when it is taken off or the game says no", async () => {
++    const { forums, post, tag, queue, api, bugs } = await posted();
++    forums.handleTagsChanged({ threadId: post.id, tagIds: [tag("Map")] });
++    await queue.idle();
++    expect(bugs.tagNames(post)).toEqual(["Open", "Map"]);
++
++    api.fail = new Error("That status doesn't exist");
++    forums.handleTagsChanged({ threadId: post.id, tagIds: [tag("Fixed"), tag("Map")], by: "Misty" });
++    await queue.idle();
++    expect(bugs.tagNames(post)).toEqual(["Open", "Map"]);
++    expect(post.contents().at(-1)).toBe("⚠️ The game did not take the change. The status tag was put back.");
++
++    api.fail = undefined;
++    api.connected = false;
++    forums.handleTagsChanged({ threadId: post.id, tagIds: [tag("Fixed"), tag("Map")] });
++    await queue.idle();
++    expect(post.contents().at(-1)).toBe("⚠️ The game is offline, so the report was not changed. The status tag was put back.");
++  });
++
++  it("does nothing with REPORT_TAG_SYNC off", async () => {
++    const { forums, post, tag, calls, queue } = await posted();
++    (forums as unknown as { options: { config: { tagSync: boolean } } }).options.config.tagSync = false;
++    forums.handleTagsChanged({ threadId: post.id, tagIds: [tag("Fixed"), tag("Map")] });
++    await queue.idle();
++    expect(calls.filter((call) => call.startsWith("setStatus"))).toEqual([]);
++  });
++});
++
++describe("report protocol", () => {
++  it("parses the game's report event", () => {
++    const parsed = gameEventSchema.parse({
++      kind: "report",
++      scope: "admin",
++      action: "updated",
++      report: {
++        ...playerReport(),
++        reporter: { name: "Ash", level: 50 },
++        assignedTo: "Admin",
++        duplicates: 2,
++        screenshot: false,
++      },
++      change: { assignedTo: "Admin", by: "Admin", source: "game" },
++    });
++    expect(parsed.kind).toBe("report");
++  });
++
++  it("names posts and lines plainly", () => {
++    expect(postName({ id: 3, title: "x".repeat(200) })).toHaveLength(100);
++    expect(buildReportEmbed(bugReport({ title: "Uses *bots*" })).title).toBe("🐞 Uses *bots*");
++    expect(updateLine(event(bugReport(), "updated", { note: "Thanks", by: "GM_Ash", source: "discord" }), () => undefined))
++      .toBe("💬 **GM\\_Ash** on Discord:\n> Thanks");
++  });
++});
+-- 
+2.43.0
+

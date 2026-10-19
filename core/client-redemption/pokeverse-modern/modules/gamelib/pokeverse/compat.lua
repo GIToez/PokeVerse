@@ -212,6 +212,7 @@ ExtendedIds.Weather = 35
 ExtendedIds.CreatureStatus = 36
 ExtendedIds.PokemonShop = 37
 ExtendedIds.Hints = 38
+ExtendedIds.Report = 39
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

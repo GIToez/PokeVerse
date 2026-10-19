@@ -30,6 +30,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         PokemonShop.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.HINTS) then
         Hints.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.REPORT) then
+        Reports.onClientMessage(cid, buffer)
     end
     return true
 end

@@ -720,7 +720,8 @@ function MapTab.showPosition(pos, text)
     centerOn(pos)
 end
 
--- marks for a list of spots (a Pokemon's spawn areas), centred on the nearest one
+-- marks for a list of spots (a Pokemon's spawn areas, the staff's open reports), centred on the nearest
+-- one; an entry may bring its own icon (an image path), size and onClick instead of walking there
 function MapTab.showPositions(list, text)
     show('map')
     clearList(shownMarks)
@@ -729,12 +730,16 @@ function MapTab.showPositions(list, text)
     local best, bestDistance
     for _, entry in ipairs(list) do
         local pos = toPosition(entry)
-        local mark = newMark(Pp.IMAGES .. 'mark_spawn', 16)
+        local mark = newMark(entry.icon or (Pp.IMAGES .. 'mark_spawn'), entry.size or 16)
         mark:setTooltip(entry.text or text or '')
         placeMark(mark, pos)
         mark.onMouseRelease = function(widget, mousePos, mouseButton)
             if mouseButton == MouseLeftButton then
-                Navigation.goTo(pos, entry.text or text)
+                if entry.onClick then
+                    entry.onClick(entry)
+                else
+                    Navigation.goTo(pos, entry.text or text)
+                end
             end
             return true
         end

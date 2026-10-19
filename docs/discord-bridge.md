@@ -113,6 +113,7 @@ detect restarts and de-duplicate deliveries.
 | `player_logout` | `Game::removeCreature` for a player with an open session | `scope` (`admin`), `sessionId`, `character`, `level`, `accountId`, `loginTime`, `logoutTime`, `duration` (seconds), `reason` (optional), `playersOnline` |
 | `account_link` | in-game `!discord unlink confirm` | `scope` (`account`), `action` (`unlinked`), `source` (`game`), `discordUserId` |
 | `account_characters` | character created or deleted through the account service, for linked accounts only | `scope` (`account`), `discordUserId`, `change` (`created`, `deleted`), `character` |
+| `report` | the Reports window and the staff reader (`083-reports.lua`) | `scope` (`admin` for player reports), `action` (`created`, `updated`, `screenshot`), `report` (below), `change` (`updated` only): `status`, `previousStatus`, `note`, `by`, `source` (`game`, `discord`), `assignedTo` (a take; absent when let go), `duplicateOf` (this report was merged into that one), `duplicate` (that report was merged into this one) |
 
 Notes:
 
@@ -175,8 +176,9 @@ server -> {"type":"response","requestId":"...","ok":true,"result":{...}}
 Error codes: `invalid_params`, `unknown_method`, `internal`, plus the linking codes below.
 Requests that are not valid JSON objects are logged and ignored.
 
-All handlers are read-only except `chat.send`, which only displays a message, and the
-`link.*` requests, which only change `discord_account_links`.
+All handlers are read-only except `chat.send`, which only displays a message, the
+`link.*` requests, which only change `discord_account_links`, and `report.setStatus`, which only
+changes that report.
 
 | Method | Params | Result |
 | --- | --- | --- |
@@ -193,6 +195,16 @@ All handlers are read-only except `chat.send`, which only displays a message, an
 | `link.setMain` | `discordUserId`, `character` | link summary |
 | `link.unlink` | `discordUserId` | `unlinked` (`false` when there was no link) |
 | `link.list` | `offset`, `limit` (max 200) | `links[]` (link summaries), `nextOffset` (absent on the last page) |
+| `report.setStatus` | `id`, `status`, `note` (optional), `by` | `id`, `status`, `changed`. The game records `<by> (Discord)` and tells the reporter (and the reporters of its duplicates). Unknown ids and statuses fail with `invalid_params`. |
+| `report.get` | `id` | `{found:false}` or `found`, `report` |
+| `report.screenshot` | `id`, `offset`, `length` (max 12000) | `{found:false}` or `found`, `done` (the upload finished), `total`, `offset`, `data` (that slice of the base64 PNG). Slices stay under the 16 KB line limit. |
+
+A `report` has `id`, `kind` (`bug`, `player`), `kindName`, `category`, `categoryName`, `status`,
+`statusName`, `closed`, `title`, `description`, `reporter {name, level, vocation, discordUserId}`
+(`discordUserId` when the account is linked), `createdAt`, `updatedAt`, `position {x,y,z}`, `area`,
+`pokemon`, `client`, `statement`, `assignedTo`, `duplicateOf`, `duplicates` (how many were merged
+into it) and `screenshot` (an uploaded screenshot is waiting). Player reports also have `target
+{name, level, online, position, chat}`, where `chat` is the reported chat line.
 
 In `trainer.lookup`, `vocation` is the vocation the trainer chose (Ace Trainer, Catcher, ...; `Trainer`
 before choosing) and `mastery` the engine vocation when it is a mastery. `card` is the Trainer Card,

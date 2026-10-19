@@ -150,7 +150,20 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          menu:addOption(tr('Close'), function()
              removeTab(channelName)
          end)
-@@ -1733,6 +1708,9 @@
+@@ -1519,6 +1494,12 @@
+                         addIgnoredPlayer(creatureName)
+                     end)
+                 end
++                if modules.game_reports then
++                    menu:addOption(tr('Report player'), function()
++                        local message = text and text:match('^.-:%s(.+)')
++                        modules.game_reports.openPlayer(creatureName, message)
++                    end)
++                end
+                 menu:addSeparator()
+             end
+             if modules.game_ruleviolation.hasWindowAccess() then
+@@ -1733,6 +1714,9 @@
          local speaktype = SpeakTypesSettings[speaktypedesc]
          local player = g_game.getLocalPlayer()
          g_game.talkPrivate(speaktype.speakType, name, message)
@@ -160,7 +173,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          if not dontAdd then
              message = applyMessagePrefixies(g_game.getCharacterName(), player:getLevel(), message)
              addPrivateText(message, speaktype, tabname, isPrivateCommand, g_game.getCharacterName())
-@@ -1796,6 +1774,8 @@
+@@ -1796,6 +1780,8 @@
      return message
  end
  
@@ -169,7 +182,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function onTalk(name, level, mode, message, channelId, creaturePos)
      if mode == MessageModes.GamemasterBroadcast then
          modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
-@@ -1837,25 +1817,22 @@
+@@ -1837,25 +1823,22 @@
          local staticText = StaticText.create()
          local staticMessage = message
          if isNpcMode then
@@ -208,7 +221,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      end
  
      local defaultMessage = mode <= 3 and true or false
-@@ -2337,8 +2314,35 @@
+@@ -2337,8 +2320,35 @@
      end
  end
  
@@ -244,7 +257,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  
      local clientVersion = g_game.getClientVersion()
      if clientVersion < 862 then
-@@ -2504,8 +2508,8 @@
+@@ -2504,8 +2514,8 @@
          end
      end
      consoleTabBar:getCurrentTab().tabPanel:getChildById('consoleBuffer'):setImageSource(
