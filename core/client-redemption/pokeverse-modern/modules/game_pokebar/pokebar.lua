@@ -4,12 +4,14 @@ pokemonBar = nil
 
 local HORIZONTAL = 0
 local VERTICAL = 1
-local SPACING = 4
+local SPACING = 6
+local SLOT_SIZE = 46
+local RING_STEPS = 20 -- ring-*.png frames (scripts/art/ui_kit.py)
 
 local orientation = VERTICAL
 local activeSlot
 
-local HEALTH_COLORS = { [0] = '#4cdc8c', [1] = '#e8d24c', [2] = '#e8505a' }
+local HEALTH_RINGS = { [0] = 'health', [1] = 'mid', [2] = 'low' }
 
 local KEYBIND_CATEGORY = 'Pokemon'
 local CALL_KEYS = 6
@@ -73,7 +75,7 @@ local function applyOrientation()
     pokemonBar:setLayout(layout)
 
     local count = math.max(#slots(), 1)
-    local slotWidth, slotHeight = 42, 56
+    local slotWidth, slotHeight = SLOT_SIZE, SLOT_SIZE
     local padding = pokemonBar:getPaddingLeft() + pokemonBar:getPaddingRight()
     if orientation == HORIZONTAL then
         pokemonBar:setSize({ width = padding + count * slotWidth + (count - 1) * SPACING, height = padding + slotHeight })
@@ -205,6 +207,13 @@ local function reset()
     applyOrientation()
 end
 
+-- the health ring: the colour the server picked for the text, the share of the circle the percent
+local function setRing(slot, color, percent)
+    local frame = math.max(0, math.min(RING_STEPS, math.ceil(percent / 100 * RING_STEPS)))
+    slot.ring:setImageSource('/images/pokeverse-ui/ring-' .. (HEALTH_RINGS[color] or 'health'))
+    slot.ring:setImageClip({ x = frame * SLOT_SIZE, y = 0, width = SLOT_SIZE, height = SLOT_SIZE })
+end
+
 local function updateSlot(slot, textColor, text)
     -- "USE" only marks the Pokemon that is out; it is not its health
     if text == tr('USE') then
@@ -219,9 +228,11 @@ local function updateSlot(slot, textColor, text)
         activeSlot = nil
     end
 
-    slot.health:setColor(HEALTH_COLORS[textColor] or '#ffffff')
-    slot.portrait:setOpacity(text == 'FNT' and 0.4 or 1)
+    local fainted = text == 'FNT'
+    slot.portrait:setOpacity(fainted and 0.4 or 1)
     slot.health:setText(text)
+    slot.health:setVisible(fainted)
+    setRing(slot, textColor, fainted and 0 or tonumber(tostring(text):match('(%d+)%%')) or 100)
 end
 
 -- the summon is out when one of the creatures around is ours; using the ball in the ball slot (the feet slot) calls it back
@@ -342,8 +353,8 @@ function onCreatureHealthPercentChange(creature, health)
     if creature:isLocalPlayerSummon() and activeSlot then
         local percent = creature:getHealthPercent()
         local color = percent >= 80 and 0 or (percent >= 40 and 1 or 2)
-        activeSlot.health:setColor(HEALTH_COLORS[color])
         activeSlot.health:setText(percent .. '%')
+        setRing(activeSlot, color, percent)
     end
 end
 

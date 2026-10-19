@@ -17,38 +17,39 @@ the size), `concept-<a|b|c>.png` and `detail-<a|b|c>.png` (the popup and both ba
 | B. Trainer Gear | Red Poke Ball headers over white bodies, ball-socket slots. Brighter and more "Pokemon", but loud next to the map and the HUD. |
 | C. Minimal HUD | Translucent dark cards with no header bar: a small icon tab and the title in capitals. Quiet, but harder to tell windows apart. |
 
-**Chosen: A.** It matches the HUD, the Pokepedia, quests and tasks windows, which already use the
-navy and gold palette, so one kit covers everything. The tokens below live in `scripts/art/ui_kit.py`,
-so B or C stay one rerun away.
+**Chosen: D**, a mix of A and C: C's see-through cards with A's navy and gold, light text with a dark
+outline so it reads over the map, and the inventory Poke Ball next to the Pokemon head. The tokens
+live in `scripts/art/ui_kit.py` (the concept itself is `ui_concept.py --theme d`), so a change of colour
+or opacity is one rerun away.
 
-## Tokens (A)
+## Tokens (D)
 
 | Token | Value | Use |
 | --- | --- | --- |
-| body | `#0e1729` at 90% | card and window fill |
-| header | `#13203a` at 95% | header band |
-| edge | `#375284` | 1 px card edge |
-| accent | `#d9aa3b` | title underline, the active Pokemon, selection, the primary button |
-| text | `#e8ecf4` | text |
-| muted | `#96aacd` | labels, hints |
-| slot | `#0a121f`, edge `#2c4470` | item and move slots |
-| chip | `#1b2a46` | key chips, level badges, counters |
-| health | `#43c271`; low `#e0566a` | HP bars and rings |
-| energy | `#9366ed` | energy cost chips |
-| radius | 8 (cards), 6 (slots), 10 (move slots) | |
-| type edges | fire `#f08a3c`, water `#4f9cf0`, grass `#5cc46a`, electric `#f2cf3a`, flying `#8fb6f0`, dragon `#8c6cf0` ... | move slots |
+| body | `#0e1729` at 72% (side cards), solid (popups) | card and window fill |
+| edge | `#375284` at 50% | 1 px card edge |
+| accent | `#d9aa3b` | title underline, the active Pokemon, the primary button |
+| text | `#eef2ff` | titles and text |
+| muted | `#b4c2dc` | labels, hints |
+| slot | `#0a121f` at 55% | item and move slots |
+| chip | `#060a14` | key chips, energy cost, counters |
+| hover | `#283e68` | hovered buttons and sockets |
+| radius | 7 (side cards), 6 (popups), 9 (move slots) | |
+| type edges | one colour per element (`TYPE_COLORS`) | move slots |
 
-Header: 24 px with the window's line icon and a bold 11 px title, a 2 px gold underline under the
-icon, and three round buttons on the right (minimise, menu, close). The menu holds lock, filters and
-"open in new window", which are separate tiny buttons today.
+Header: 20 px with the window's icon, the title in verdana 11 rounded with a 22 px gold underline, and
+round buttons on the right. A title that doesn't fit switches to the narrower font, then is cut with
+".." and shows the full name as a tooltip.
 
 ## How it is applied
 
 - `scripts/art/ui_kit.py` draws every 9-slice image from the tokens. The images that the engine's own
   styles use (`miniwindow_body`, `miniwindow_header`, `miniwindow_buttons`, `scrollbar`, `buttons`,
-  `panel`) are written under their Redemption names in
+  `item`, `window`) are written under their Redemption names in
   `core/client-redemption/pokeverse-modern/data/images/ui/`; the PokeVerse ones go to
   `pokeverse-modern/data/images/pokeverse-ui/`.
+- The header widgets are created by each module, so `UIMiniWindow` (corelib patch) restyles the
+  title, icon and underline in Lua.
 - `pokeverse-modern/data/pokeverse-styles/` loads after Redemption's `/styles/`
   (`modules/client_styles/styles.lua`), so a `MiniWindow`, `MainWindow` or `GameSidePanel` defined
   there replaces the default in every module at once.
@@ -56,28 +57,36 @@ icon, and three round buttons on the right (minimise, menu, close). The menu hol
 ## Replacement checklist
 
 ### Side windows (MiniWindow)
-- [ ] MiniWindow base: header, buttons, body, scrollbar, resize border (`pokeverse-styles/miniwindow.otui`)
-- [ ] Side panels: no solid frame, gaps between cards (`GameSidePanel`, `pokeverse-styles/sidepanel.otui`)
-- [ ] Minimap (`game_minimap`, PhantomMiniWindow): rounded frame, coordinate chip, zoom pill
-- [ ] Inventory (`game_inventory`): Order, Dex, Badges as labelled tiles, new slots, Balls and Respect chips
-- [ ] Battle List (`game_battle`): rows with HP bars and level badges, target in gold
-- [ ] Tracker (`game_pokepedia/tracker.otui`)
-- [ ] Simple pokebag and Trainer belt (`game_containers` ContainerWindow; `game_pokehud/belt.lua`)
-- [ ] Skills (`game_skills`)
-- [ ] Health info and main options panel (`game_healthinfo`, `game_mainpanel`, PhantomMiniWindow)
-- [ ] VIP list, trade window, and the Redemption trackers if reachable (analyser, prey, bestiary, imbuements, quest log, task board)
+- [x] MiniWindow base: header, round buttons, see-through body, scrollbar, resize border (`pokeverse-styles/miniwindow.otui`, header in the corelib patch)
+- [x] Side panels: no solid frame, gaps between cards (`GameSidePanel` in the game_interface patch)
+- [x] Inventory (`game_inventory`): Order, Pokedex, Badges on top, then ring, Pokemon head, Poke Ball, bag.
+  The top three are 48x44 tiles: the sprite's picture without its baked-in name
+  (`scripts/art/inventory_tiles.py`) and the name as a label underneath
+- [x] Battle List, Tracker, Simple pokebag, Trainer belt, Skills: through the MiniWindow base
+- [x] Minimap: hairline frame, round zoom and full map buttons (`automap_buttons`)
+- [x] Battle List rows: muted names, the target in gold, health bars in the kit colours (gamelib patch)
+- [x] VIP list, trade window and the Redemption trackers: through the MiniWindow base and the controls
 
 ### Popups
-- [ ] One shared `PvWindow` style; move the modules that point at `game_dailytasks/images/window` to it:
-  dailytasks, pokepedia, quests, fishing, calendar, daycare, vocation, trainercard, badgecase, radar,
-  admin, pokemonshop, hotkeys, hints, client_options
-- [ ] Move `game_pc`, `game_gts`, `game_dailylogin` off `MainWindow`
-- [ ] Base `MainWindow` / `StaticMainWindow` / `Window` for anything else (Redemption leftovers, message boxes)
-- [ ] Controls: Button, ScrollBar, TabBar, ComboBox, TextEdit, CheckBox, ProgressBar (`pokeverse-styles/controls.otui`)
-- [ ] Message boxes and top menu (`pokeverse-styles/messageboxes.otui`, `topmenu.otui`)
+- [x] The shared window image (`game_dailytasks/images/window`) used by dailytasks, pokepedia, quests,
+  fishing, calendar, daycare, vocation, trainercard, badgecase, radar, admin, pokemonshop, hotkeys,
+  hints, client_options
+- [x] `MainWindow` / `Window` (`/images/ui/window`): PC, GTS, daily login, message boxes, Redemption leftovers
+- [x] Buttons and scrollbars (`pokeverse-styles/controls.otui`, `buttons`, `scrollbar`)
+- [x] Tabs, chat tabs, combo boxes, text fields, check boxes, radio buttons, flat panels, frames, popup
+  menus, progress bars: same sheets redrawn, 1 px borders raised in `pokeverse-styles/controls.otui`
+- [x] Login, create account, character list and create character (`scripts/art/login_ui.py` on the D
+  tokens: shadow instead of the blue glow, gold selection, focus and spotlight)
+- [x] NPC dialog: panel, inset and word buttons (Yes and No stay green and red)
+- [x] NPC shop (`game_npctrade`, the legacy window): offer cards (`pokeverse-ui/offer*`, gold edge when
+  selected), item names wrap, no "0.00 oz" on weightless items, inset panels with muted labels, Buy and Sell
+  tabs, gold Buy and blue Close buttons (`MessageBoxPrimaryButton` / `MessageBoxButton`)
+- [x] Chat (`game_console`): navy card body (`pokeverse-ui/chat-body`, kept at about 88% over the map in
+  fullscreen), inset message list (`chat-buffer`), round icon buttons (`console_buttons`), say mode,
+  channel arrows, read-only button, slim scrollbars and a kit Chat On/Off button
 
 ### Bars
-- [ ] Swap bar (`game_pokebar`): round portrait sockets with an HP ring, F-key chip, gold ring on the
-  Pokemon that's out, faded when fainted
-- [ ] Moves bar (`game_pokemoves`): rounded slots with a type edge, key chip, energy cost chip, lock
-  badge with the level, radial cooldown with the seconds
+- [x] Swap bar (`game_pokebar`): round portrait sockets with an HP ring, F-key chip, gold ring on the
+  Pokemon that's out, "FNT" when fainted
+- [x] Moves bar (`game_pokemoves`): rounded slots with the move's type edge (the server sends the
+  element with the energy costs), key chip, energy cost chip, cooldown sweep

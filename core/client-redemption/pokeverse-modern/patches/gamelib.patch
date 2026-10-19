@@ -66,3 +66,64 @@ diff -ruN pristine/modules/gamelib/protocollogin.lua modules/gamelib/protocollog
      end
  
      signalcall(self.onCharacterList, self, characters, account)
+diff -ruN pristine/modules/gamelib/ui/uicreaturebutton.lua modules/gamelib/ui/uicreaturebutton.lua
+--- a/modules/gamelib/ui/uicreaturebutton.lua
++++ b/modules/gamelib/ui/uicreaturebutton.lua
+@@ -1,45 +1,46 @@
+ -- @docclass
+ UICreatureButton = extends(UIWidget, 'UICreatureButton')
+ 
++-- PokeVerse look (docs/ui-redesign.md): muted names, the target in gold, health in the kit colours
+ local CreatureButtonColors = {
+     onIdle = {
+-        notHovered = '#888888',
++        notHovered = '#b4c2dc',
+         hovered = '#FFFFFF'
+     },
+     onTargeted = {
+-        notHovered = '#FF0000',
+-        hovered = '#FF8888'
++        notHovered = '#d9aa3b',
++        hovered = '#f2cb6a'
+     },
+     onFollowed = {
+-        notHovered = '#00FF00',
+-        hovered = '#88FF88'
++        notHovered = '#43c271',
++        hovered = '#8be0a8'
+     }
+ }
+ 
+ local LifeBarColors = {} -- Must be sorted by percentAbove
+ table.insert(LifeBarColors, {
+     percentAbove = 92,
+-    color = '#00BC00'
++    color = '#43c271'
+ })
+ table.insert(LifeBarColors, {
+     percentAbove = 60,
+-    color = '#50A150'
++    color = '#5cb86a'
+ })
+ table.insert(LifeBarColors, {
+     percentAbove = 30,
+-    color = '#A1A100'
++    color = '#e6b33a'
+ })
+ table.insert(LifeBarColors, {
+     percentAbove = 8,
+-    color = '#BF0A0A'
++    color = '#e0566a'
+ })
+ table.insert(LifeBarColors, {
+     percentAbove = 3,
+-    color = '#910F0F'
++    color = '#c8444f'
+ })
+ table.insert(LifeBarColors, {
+     percentAbove = -1,
+-    color = '#850C0C'
++    color = '#a83a44'
+ })
+ 
+ function UICreatureButton.create()

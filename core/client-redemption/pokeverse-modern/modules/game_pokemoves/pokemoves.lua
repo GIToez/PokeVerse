@@ -11,6 +11,7 @@ local SLOT_SIZE = 40
 
 local orientation = HORIZONTAL
 local moveEnergy = {} -- move icon item id -> energy cost (ExtendedIds.MoveEnergy)
+local moveElement = {} -- move icon item id -> element (ELEMENTS index), for the slot's type edge
 local moveInfo = {} -- move icon item id -> { power, final, multiplier } (ExtendedIds.MoveInfo)
 local moveCard
 local closeCard
@@ -19,6 +20,8 @@ local IMAGES = '/modules/game_pokemoves/images/'
 local ELEMENTS = { [0] = 'Normal', 'Fight', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel',
     'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy' }
 local CATEGORIES = { [0] = 'Physical', 'Special', 'Status' }
+local KIT = '/images/pokeverse-ui/'
+local COOLDOWN_FRAMES = 24 -- cooldown.png, 40x40 each
 
 local MOVE_COUNT = 12
 local KEYBIND_CATEGORY = 'Pokemon'
@@ -154,7 +157,8 @@ local function updateCooldown(slot, timeStart, timeEnd)
         stopCooldown(slot)
         return
     end
-    slot.cooldown:setPercent((now - timeStart) / (timeEnd - timeStart) * 100)
+    local frame = math.min(COOLDOWN_FRAMES - 1, math.floor((now - timeStart) / (timeEnd - timeStart) * COOLDOWN_FRAMES))
+    slot.cooldown:setImageClip({ x = frame * SLOT_SIZE, y = 0, width = SLOT_SIZE, height = SLOT_SIZE })
     slot.timer:setText(string.format('%.0f', timeEnd - now))
     slot.timer:setColor(timeEnd - now > 3.9 and '#ffffff' or '#e8505a')
     slot.cooldownEvent = scheduleEvent(function()
@@ -223,6 +227,8 @@ local function updateEnergy()
     local target = g_game.getAttackingCreature()
     for _, slot in ipairs(slots()) do
         local cost = moveEnergy[slot.icon:getItemId()]
+        local element = ELEMENTS[moveElement[slot.icon:getItemId()]]
+        slot:setImageSource(KIT .. 'move-' .. (element and (element == 'Fight' and 'fighting' or element:lower()) or 'empty'))
         local info = moveInfo[slot.icon:getItemId()] or {}
         local short = cost ~= nil and cost > energy
         slot.energy:setVisible(cost ~= nil and cost > 0)
@@ -450,9 +456,10 @@ local function onMoveEnergy(protocol, opcode, buffer)
     if not ok or type(costs) ~= 'table' then
         return
     end
-    moveEnergy = {}
+    moveEnergy, moveElement = {}, {}
     for _, move in ipairs(costs) do
         moveEnergy[tonumber(move.icon)] = tonumber(move.energy)
+        moveElement[tonumber(move.icon)] = tonumber(move.element)
     end
     updateEnergy()
 end
