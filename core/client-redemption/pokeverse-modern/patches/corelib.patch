@@ -557,3 +557,16 @@ diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsb
      if self.statsType == 'health' then
          if percent >= 100 then
              self.bar:setImageSource('/images/bars/' ..
+diff -ruN pristine/modules/corelib/ui/uiwidget.lua modules/corelib/ui/uiwidget.lua
+--- a/modules/corelib/ui/uiwidget.lua
++++ b/modules/corelib/ui/uiwidget.lua
+@@ -365,7 +365,8 @@
+         end
+     end
+ 
+-    local focusedWidgets = modules.game_interface.focusReason
++    local gameInterface = modules.game_interface
++    local focusedWidgets = gameInterface and gameInterface.focusReason
+     if not focusedWidgets or table.empty(focusedWidgets) then
+         return true
+     end
