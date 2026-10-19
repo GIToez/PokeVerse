@@ -32,6 +32,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Hints.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.REPORT) then
         Reports.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.PING) then
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.PING, string.sub(buffer, 1, 16))
     end
     return true
 end

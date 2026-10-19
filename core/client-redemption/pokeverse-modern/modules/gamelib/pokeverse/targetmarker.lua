@@ -18,12 +18,22 @@ local RINGS = {
     },
 }
 
--- UICreatureButton's colours, not hovered and hovered
-local STATES = {
-    ['#FF0000'] = 'target', ['#FF8888'] = 'target',
-    ['#00FF00'] = 'follow', ['#88FF88'] = 'follow',
-    ['#888888'] = 'idle', ['#FFFFFF'] = 'idle',
-}
+-- UICreatureButton's colours (the Battle List restyle in gamelib.patch picks them), not hovered and hovered
+local KINDS = { onTargeted = 'target', onFollowed = 'follow', onIdle = 'idle' }
+local states
+
+local function stateOf(color)
+    if not states then
+        states = {}
+        local colors = UICreatureButton and UICreatureButton.getCreatureButtonColors() or {}
+        for kind, state in pairs(KINDS) do
+            for _, value in pairs(colors[kind] or {}) do
+                states[tostring(value):upper()] = state
+            end
+        end
+    end
+    return states[tostring(color):upper()]
+end
 
 local style = 'classic'
 local nativeShow = Creature.showStaticSquare
@@ -33,7 +43,7 @@ local marked = {}
 
 local function apply(creature, color)
     local rings = RINGS[style]
-    local state = STATES[tostring(color):upper()]
+    local state = stateOf(color)
     if rings and state then
         nativeHide(creature)
         creature:setCrosshairTexture(rings[state])
