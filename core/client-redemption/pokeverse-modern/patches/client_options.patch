@@ -104,7 +104,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1190,63 @@
+@@ -1170,4 +1190,64 @@
          end
      },
      showInfoBanner = true,
@@ -117,6 +117,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +        end
 +    },
 +    showEventCards                    = true, -- PokeVerse pop-up cards (game_eventcards)
++    showHints                         = true, -- PokeVerse first-visit hints (game_hints)
 +    -- PokeVerse weather (game_weather)
 +    weatherEffects                    = {
 +        value = true,
@@ -832,7 +833,7 @@ diff -ruN pristine/modules/client_options/styles/graphics/graphics.otui modules/
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,6 +53,101 @@
+@@ -53,6 +53,113 @@
      margin-top: 7
      height: 22
  
@@ -851,6 +852,18 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: showEventCards
 +      !text: tr('Show event pop-up cards')
 +      !tooltip: tr('Banners and cards for wild legendaries and other events. The chat messages still show.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: showHints
++      !text: tr('Show first-visit hints')
++      !tooltip: tr('A card with what a place is for the first time you walk into a Pokemon Center, a Mart, the Day Care and more. The Wiki tab of the Pokepedia shows them again.')
 +
 +  SmallReversedQtPanel
 +    anchors.left: parent.left

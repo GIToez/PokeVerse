@@ -1,0 +1,8 @@
+Module
+  name: game_hints
+  description: PokeVerse first-visit hints: a short card the first time a trainer walks into a Pokemon Center, a Mart, the Day Care and other places
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ hints ]
+  @onLoad: init()
+  @onUnload: terminate()

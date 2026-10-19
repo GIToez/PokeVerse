@@ -1,0 +1,84 @@
+// The first-visit hint card, above the chat (the frame comes from game_dailytasks, the portrait chip
+// from game_levelup and the buttons from client_entergame)
+
+HintLine < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-wrap: true
+  text-auto-resize: true
+  phantom: true
+
+HintCard < UIWidget
+  width: 470
+  height: 120
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 16 18 14 18
+  focusable: false
+
+  UIWidget
+    id: frame
+    size: 72 72
+    image-source: /modules/game_levelup/images/chip
+    image-border: 6
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  // the portraits are 96x96 with a wide transparent margin
+  UIWidget
+    id: portrait
+    size: 112 112
+    image-smooth: true
+    anchors.centerIn: frame
+    phantom: true
+
+  UILabel
+    id: kicker
+    !text: tr('First visit')
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: frame.right
+    margin-left: 14
+    margin-top: -2
+    phantom: true
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 18
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.top: kicker.bottom
+    anchors.left: kicker.left
+    margin-top: 1
+    phantom: true
+
+  UIWidget
+    id: lines
+    anchors.top: title.bottom
+    anchors.left: title.left
+    anchors.right: parent.right
+    margin-top: 6
+    phantom: true
+    layout:
+      type: verticalBox
+      spacing: 4
+      fit-children: true
+
+  PVGreenButton
+    id: gotIt
+    !text: tr('Got it')
+    size: 90 26
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+
+  PVBlueButton
+    id: stop
+    !text: tr("Don't show hints")
+    size: 140 26
+    anchors.right: gotIt.left
+    anchors.bottom: parent.bottom
+    margin-right: 8
