@@ -305,7 +305,14 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          })
          gameMapPanel:fill('parent')
          gameRootPanel:fill('parent')
-@@ -1882,6 +2038,7 @@
+@@ -1876,12 +2032,13 @@
+         gameLeftExtraPanel:setOn(false)
+         gameLeftExtraPanel:setVisible(false)
+         gameMapPanel:setOn(true)
+-        gameBottomPanel:setImageColor('#ffffff88')
++        gameBottomPanel:setImageColor('#ffffffe0')
+     end
+ 
      applyMobileMargins()
      currentViewMode = mode
      applyExtendedViewLayout(mode == 2)
@@ -391,6 +398,17 @@ diff -ruN pristine/modules/game_interface/gameinterface.otui modules/game_interf
  
  SelectColumnButton < CheckBox
    visible: false
+@@ -13,8 +12,8 @@
+     opacity: 1
+ 
+ GameBottomPanel < UIWindow
+-  image-source: /images/ui/background_dark
+-  image-repeated: true
++  image-source: /images/pokeverse-ui/chat-body
++  image-border: 8
+   draggable:false
+ 
+   ResizeBorder
 diff -ruN pristine/modules/game_interface/widgets/statsbar.lua modules/game_interface/widgets/statsbar.lua
 --- a/modules/game_interface/widgets/statsbar.lua
 +++ b/modules/game_interface/widgets/statsbar.lua

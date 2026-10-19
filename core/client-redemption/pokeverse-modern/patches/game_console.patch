@@ -244,10 +244,32 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  
      local clientVersion = g_game.getClientVersion()
      if clientVersion < 862 then
+@@ -2504,8 +2508,8 @@
+         end
+     end
+     consoleTabBar:getCurrentTab().tabPanel:getChildById('consoleBuffer'):setImageSource(
+-        "/images/ui/3pixel_frame_borderimage")
+-    gameBottomPanel:setImageSource("/images/ui/background_dark")
++        "/images/pokeverse-ui/chat-buffer")
++    gameBottomPanel:setImageSource("/images/pokeverse-ui/chat-body")
+     gameBottomPanel:setPhantom(false)
+ end
+ 
 diff -ruN pristine/modules/game_console/console.otui modules/game_console/console.otui
 --- a/modules/game_console/console.otui
 +++ b/modules/game_console/console.otui
-@@ -154,9 +154,10 @@
+@@ -129,8 +129,8 @@
+   ScrollablePanel
+     id: consoleBuffer
+     anchors.fill: parent
+-    image-source: /images/ui/3pixel_frame_borderimage
+-    image-border: 4
++    image-source: /images/pokeverse-ui/chat-buffer
++    image-border: 6
+     padding: 1
+     padding-right: 12
+     padding-left: 4
+@@ -154,35 +154,34 @@
      margin-bottom: 4
  
  ConsoleTabBarButton < UIButton
@@ -255,11 +277,12 @@ diff -ruN pristine/modules/game_console/console.otui modules/game_console/consol
 +  size: 78 18
    image-source: /images/ui/console_button
    image-clip: 0 18 96 18
+-  color: #7f7f7fff
 +  image-border: 3
-   color: #7f7f7fff
++  color: #8d9bb8
    text-offset: 0 -1
    font: verdana-11px-rounded
-@@ -164,9 +165,9 @@
+   anchors.top: parent.top
    anchors.left: parent.left
    padding: 5
    tab-spacing: 0
@@ -272,7 +295,36 @@ diff -ruN pristine/modules/game_console/console.otui modules/game_console/consol
  
    $checked:
      image-clip: 0 0 96 18
-@@ -241,8 +242,8 @@
+-    color: #dfdfdfff
++    color: #eef2ff
+ 
+   $on !checked:
+     image-clip: 0 18 96 18
+-    color: #7f7f7fff
++    color: #8d9bb8
+ 
+ Panel
+   id: consolePanel
+   anchors.fill: parent
+ 
+   UIWidget
+-    image-source: /images/ui/2pixel_up_frame_borderimage
+-    image-border: 3
+     anchors.fill: parent
+     margin-top: 16
+     focusable: false
+@@ -215,8 +214,8 @@
+       id: panel
+       anchors.fill: parent
+       vertical-scrollbar: consoleScrollBarReadOnlyPanel
+-      image-source: /images/ui/3pixel_frame_borderimage
+-      image-border: 4
++      image-source: /images/pokeverse-ui/chat-buffer
++      image-border: 6
+       padding: 1
+       padding-right: 12
+       padding-left: 4
+@@ -241,8 +240,8 @@
      id: consoleTabBar
      anchors.left: parent.left
      anchors.bottom: consoleContentPanel.top
@@ -283,7 +335,7 @@ diff -ruN pristine/modules/game_console/console.otui modules/game_console/consol
      margin-left: 18
      margin-bottom: -7
      tab-spacing: 2
-@@ -256,7 +257,7 @@
+@@ -256,7 +255,7 @@
      anchors.top: consoleTabBar.top
      size: 18 18
      enabled: false
@@ -292,7 +344,7 @@ diff -ruN pristine/modules/game_console/console.otui modules/game_console/consol
  
      $disabled:
        image-clip: 36 0 18 18
-@@ -276,7 +277,7 @@
+@@ -276,7 +275,7 @@
      margin-right: 1
      size: 0 18
      enabled: false
@@ -301,3 +353,35 @@ diff -ruN pristine/modules/game_console/console.otui modules/game_console/consol
  
      $disabled:
        image-clip: 36 0 18 18
+@@ -468,8 +467,9 @@
+     shift-navigation: true
+     max-length: 255
+     height: 18
++    color: #eef2ff
+     placeholder:  "Type here to chat"
+-    placeholder-color: #707070
++    placeholder-color: #7d8db0
+     @onTextChange: onTextChange(self:getText())
+ 
+   TopToggleButton
+@@ -479,8 +479,18 @@
+     margin-bottom: 3
+     margin-right: 3
+     size: 64 18
+-    color: #c0c0c0ff
+-    font: cipsoftFont
++    image-source: /images/ui/buttons
++    image-clip: 0 0 43 20
++    image-border: 5
++    text-offset: 0 0
++    color: #eef2ff
++    font: verdana-11px-rounded
++    $pressed:
++      image-clip: 0 20 43 20
++      text-offset: 1 1
++    $checked:
++      image-clip: 0 20 43 20
++      color: #d9aa3b
+     !text: tr('Chat Off')
+     &isChecked: false
+     @onClick: toggleChat()
