@@ -6,19 +6,23 @@
 --   client -> server  {action = "hello"}                                   (at login)
 --                     {action = "submit", kind, category, title, description, target, statement, client}
 --                     {action = "mine"}
---   staff            {action = "list", kind, status, query, offset}
---                     {action = "get", id}
+--                     {action = "shot", id, i, n, data}           (the screenshot, base64 PNG in parts)
+--   staff            {action = "list", kind, status, assigned, query, offset}
+--                     {action = "get", id} / {action = "getShot", id} / {action = "marks"}
 --                     {action = "status", id, status, note}
+--                     {action = "assign", id, to}  (to: "me" or "")  / {action = "duplicate", id, of}
 --                     {action = "goto", id, where}       (where: report, target, reporter, targetNow)
 --   server -> client  {type = "config", kinds, staff, canEdit}
 --                     {type = "submitted", id} / {type = "error", text}
 --                     {type = "mine", reports}
 --                     {type = "list", reports, total, offset} / {type = "report", report}
 --                     {type = "changed", id, title, status, note}     (to the reporter)
+--                     {type = "shotSaved", id} / {type = "shot", id, i, n, data} / {type = "marks", marks}
 --
 -- Discord: a new report sends {kind = "report", action = "created", report}; a status change or a note sends
--- {kind = "report", action = "updated", report, change}. Player reports are "admin" scoped. The bot answers
--- tags changed on Discord with the "report.setStatus" request.
+-- {kind = "report", action = "updated", report, change}; a finished screenshot sends action = "screenshot" (the
+-- bot reads it with "report.screenshot"). Player reports are "admin" scoped. The bot answers tags changed on
+-- Discord with the "report.setStatus" request.
 
 Reports = {}
 
@@ -83,13 +87,16 @@ local FIELDS = {
     player_level = "number", target_id = "number", target_name = "string", statement = "string",
     posx = "number", posy = "number", posz = "number", area = "string", pokemon = "string",
     client = "string", context = "string", staff_note = "string", handled_by = "string",
-    reporter_seen = "number", created_at = "number", updated_at = "number",
+    assigned_to = "string", duplicate_of = "number", reporter_seen = "number", created_at = "number",
+    updated_at = "number",
 }
 local SUMMARY_FIELDS = {
     id = "number", kind = "string", category = "string", status = "string", title = "string",
     player_name = "string", target_name = "string", staff_note = "string", reporter_seen = "number",
-    created_at = "number", updated_at = "number",
+    assigned_to = "string", duplicate_of = "number", created_at = "number", updated_at = "number",
 }
+local SUMMARY_COLUMNS = "`id`, `kind`, `category`, `status`, `title`, `player_name`, `target_name`, `staff_note`, " ..
+    "`reporter_seen`, `assigned_to`, `duplicate_of`, `created_at`, `updated_at`"
 local EVENT_FIELDS = { at = "number", author = "string", source = "string", status = "string", note = "string" }
 
 local recent = {} -- account id -> { times of the reports sent }
@@ -259,6 +266,16 @@ local function addEvent(id, author, source, status, note)
         db.escapeString(status or ""), db.escapeString(note or "")))
 end
 
+local function duplicatesOf(id)
+    return query(string.format("SELECT `id`, `player_name` FROM `reports` WHERE `duplicate_of` = %d ORDER BY `id`;",
+        tonumber(id) or 0), { id = "number", player_name = "string" })
+end
+
+local function shotOf(id)
+    return query(string.format("SELECT `parts`, `received`, `done` FROM `report_screenshots` WHERE `report_id` = %d;",
+        tonumber(id) or 0), { parts = "number", received = "number", done = "number" })[1]
+end
+
 local function summary(row)
     local status = statusOf(row.kind, row.status)
     return {
@@ -266,6 +283,8 @@ local function summary(row)
         reporter = row.player_name, target = row.target_name ~= "" and row.target_name or nil,
         note = row.staff_note ~= "" and row.staff_note or nil, created = row.created_at, updated = row.updated_at,
         closed = status and status.closed == true or false, unseen = row.reporter_seen == 0 or nil,
+        assignedTo = row.assigned_to ~= "" and row.assigned_to or nil,
+        duplicateOf = row.duplicate_of > 0 and row.duplicate_of or nil,
     }
 end
 
@@ -286,6 +305,13 @@ local function details(row)
         events[#events + 1] = event
     end
     data.events = events
+    local duplicates = JSON.array()
+    for _, dup in ipairs(duplicatesOf(row.id)) do
+        duplicates[#duplicates + 1] = { id = dup.id, reporter = dup.player_name }
+    end
+    data.duplicates = duplicates
+    local shot = shotOf(row.id)
+    data.screenshot = shot ~= nil and shot.done == 1
     data.online = getPlayerByName(row.player_name) ~= nil
     if (row.target_name ~= "") then
         data.targetOnline = getPlayerByName(row.target_name) ~= nil
@@ -341,6 +367,11 @@ local function bridgeReport(row)
         report.position = { x = row.posx, y = row.posy, z = row.posz }
     end
     report.statement = row.statement ~= "" and row.statement or nil
+    report.assignedTo = row.assigned_to ~= "" and row.assigned_to or nil
+    report.duplicateOf = row.duplicate_of > 0 and row.duplicate_of or nil
+    report.duplicates = #duplicatesOf(row.id)
+    local shot = shotOf(row.id)
+    report.screenshot = shot ~= nil and shot.done == 1
     return report
 end
 
@@ -479,7 +510,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 -- Tells the reporter, now or at their next login
-local function tellReporter(row, status, note)
+local function tellReporter(row, status, note, original)
     local reporter = getPlayerByName(row.player_name)
     if (not reporter) then
         return
@@ -489,6 +520,10 @@ local function tellReporter(row, status, note)
         note = nil -- what staff did about another player stays with staff
     end
     local text = string.format("Your report #%d \"%s\" is now: %s.", row.id, row.title, info and info.name or status)
+    if (original) then
+        text = string.format("Your report #%d \"%s\" is the same as #%d, which is now: %s.", row.id, row.title,
+            original, info and info.name or status)
+    end
     if (note and note ~= "") then
         text = text .. " Staff: " .. note
     end
@@ -522,7 +557,148 @@ Reports.update = function(id, status, note, author, source)
         status = status, previousStatus = previous, note = note ~= "" and note or nil, by = author, source = source,
     })
     tellReporter(row, status, note)
+    if (status ~= previous) then
+        db.executeQuery(string.format("UPDATE `reports` SET `reporter_seen` = 0 WHERE `duplicate_of` = %d;", row.id))
+        for _, dup in ipairs(duplicatesOf(row.id)) do
+            local dupRow = getRow(dup.id)
+            if (dupRow) then
+                tellReporter(dupRow, status, note, row.id)
+            end
+        end
+    end
     return row, nil, true
+end
+
+-- Takes a report ("" to let it go). Returns the row, or nil and the reason.
+Reports.assign = function(id, name, author, source)
+    local row = getRow(id)
+    if (not row) then
+        return nil, "There is no such report."
+    end
+    name = clean(name, 32)
+    if (name == row.assigned_to) then
+        return row
+    end
+    db.executeQuery(string.format("UPDATE `reports` SET `assigned_to` = %s, `updated_at` = %d WHERE `id` = %d;",
+        db.escapeString(name), os.time(), row.id))
+    addEvent(row.id, author, source, "", name ~= "" and ("Took the report: " .. name) or "Let the report go")
+    row = getRow(id)
+    emit("updated", row, { assignedTo = name ~= "" and name or nil, by = author, source = source })
+    return row
+end
+
+-- Marks a report as the same as another one; its reporter hears about the other one from then on.
+Reports.markDuplicate = function(id, of, author, source)
+    local row = getRow(id)
+    local original = getRow(of)
+    if (not row or not original) then
+        return nil, "There is no such report."
+    end
+    for _ = 1, 5 do
+        if (original.duplicate_of > 0) then
+            original = getRow(original.duplicate_of) or original
+        end
+    end
+    if (original.id == row.id) then
+        return nil, "A report can't be the same as itself."
+    end
+    if (original.kind ~= row.kind) then
+        return nil, "Both reports must be of the same kind."
+    end
+    local previous = row.status
+    db.executeQuery(string.format("UPDATE `reports` SET `status` = 'duplicate', `duplicate_of` = %d, `handled_by` = %s, " ..
+        "`updated_at` = %d, `reporter_seen` = 0 WHERE `id` = %d;", original.id, db.escapeString(author), os.time(),
+        row.id))
+    db.executeQuery(string.format("UPDATE `reports` SET `duplicate_of` = %d WHERE `duplicate_of` = %d;", original.id,
+        row.id))
+    local note = string.format("Same as #%d", original.id)
+    addEvent(row.id, author, source, "duplicate", note)
+    addEvent(original.id, author, source, "", string.format("#%d from %s is the same", row.id, row.player_name))
+    row = getRow(id)
+    emit("updated", row, { status = "duplicate", previousStatus = previous, note = note, duplicateOf = original.id,
+        by = author, source = source })
+    emit("updated", original, { duplicate = row.id, by = author, source = source })
+    tellReporter(row, original.status, nil, original.id)
+    return row
+end
+
+---------------------------------------------------------------------------------------------------
+-- Screenshots
+---------------------------------------------------------------------------------------------------
+
+Reports.SHOT_PARTS = 400 -- of up to 3000 characters: about 900 KB of PNG
+Reports.SHOT_PART = 3000
+Reports.SHOT_WINDOW = 600 -- seconds after sending the report
+local shots = {} -- report id -> next part expected
+
+local function receiveShot(cid, data)
+    local id, part, parts = tonumber(data.id), tonumber(data.i), tonumber(data.n)
+    local chunk = type(data.data) == "string" and data.data or ""
+    if (not id or not part or not parts or parts < 1 or parts > Reports.SHOT_PARTS or part < 1 or part > parts
+        or #chunk == 0 or #chunk > Reports.SHOT_PART + 100 or chunk:find("[^%w%+/=]")) then
+        return
+    end
+    local row = getRow(id)
+    if (not row or row.account_id ~= getPlayerAccountId(cid) or os.time() - row.created_at > Reports.SHOT_WINDOW) then
+        return
+    end
+    if (part == 1) then
+        if (shotOf(id)) then
+            return
+        end
+        db.executeQuery(string.format("INSERT INTO `report_screenshots` (`report_id`, `parts`, `received`, `data`) " ..
+            "VALUES (%d, %d, 0, '');", id, parts))
+        shots[id] = 1
+    end
+    if (shots[id] ~= part) then
+        return
+    end
+    db.executeQuery(string.format("UPDATE `report_screenshots` SET `data` = CONCAT(`data`, %s), `received` = %d, " ..
+        "`done` = %d WHERE `report_id` = %d;", db.escapeString(chunk), part, part == parts and 1 or 0, id))
+    if (part < parts) then
+        shots[id] = part + 1
+        return
+    end
+    shots[id] = nil
+    send(cid, { type = "shotSaved", id = id })
+    emit("screenshot", getRow(id) or row)
+end
+
+local function sendShot(cid, id)
+    local rows = query(string.format("SELECT `data` FROM `report_screenshots` WHERE `report_id` = %d AND `done` = 1;",
+        tonumber(id) or 0), { data = "string" })
+    local data = rows[1] and rows[1].data
+    if (not data or data == "") then
+        return fail(cid, "That report has no screenshot.")
+    end
+    local size = Reports.SHOT_PART
+    local parts = math.ceil(#data / size)
+    for part = 1, parts do
+        send(cid, { type = "shot", id = tonumber(id), i = part, n = parts, data = data:sub((part - 1) * size + 1,
+            part * size) })
+    end
+end
+
+-- Open reports with a position, for the staff map
+local function sendMarks(cid)
+    local closed = {}
+    for _, info in pairs(Reports.KINDS) do
+        for _, status in ipairs(info.statuses) do
+            if (status.closed) then
+                closed[#closed + 1] = db.escapeString(status.key)
+            end
+        end
+    end
+    local rows = query(string.format("SELECT `id`, `kind`, `status`, `title`, `posx`, `posy`, `posz` FROM `reports` " ..
+        "WHERE `world_id` = %d AND `status` NOT IN (%s) AND `posx` > 0 ORDER BY `id` DESC LIMIT 300;", worldId(),
+        table.concat(closed, ", ")), { id = "number", kind = "string", status = "string", title = "string",
+        posx = "number", posy = "number", posz = "number" })
+    local marks = JSON.array()
+    for _, row in ipairs(rows) do
+        marks[#marks + 1] = { id = row.id, kind = row.kind, status = row.status, title = row.title, x = row.posx,
+            y = row.posy, z = row.posz }
+    end
+    send(cid, { type = "marks", marks = marks })
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -530,8 +706,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 local function sendMine(cid)
-    local rows = query(string.format("SELECT `id`, `kind`, `category`, `status`, `title`, `player_name`, " ..
-        "`target_name`, `staff_note`, `reporter_seen`, `created_at`, `updated_at` FROM `reports` WHERE " ..
+    local rows = query(string.format("SELECT " .. SUMMARY_COLUMNS .. " FROM `reports` WHERE " ..
         "`account_id` = %d AND `world_id` = %d ORDER BY `id` DESC LIMIT %d;", getPlayerAccountId(cid), worldId(),
         Reports.MINE), SUMMARY_FIELDS)
     local list = JSON.array()
@@ -540,6 +715,15 @@ local function sendMine(cid)
         if (row.kind == "player") then
             entry.note = nil -- what staff did about another player stays with staff
         end
+        if (row.duplicate_of > 0) then
+            local original = getRow(row.duplicate_of)
+            if (original) then
+                entry.original = { id = original.id, status = original.status,
+                    closed = (statusOf(original.kind, original.status) or {}).closed == true }
+                entry.closed = entry.original.closed
+            end
+        end
+        entry.assignedTo = nil
         list[#list + 1] = entry
     end
     send(cid, { type = "mine", reports = list })
@@ -570,6 +754,11 @@ local function sendList(cid, data)
     elseif (type(data.status) == "string" and data.status ~= "" and data.status ~= "all") then
         where[#where + 1] = "`status` = " .. db.escapeString(clean(data.status, 16))
     end
+    if (data.assigned == "me") then
+        where[#where + 1] = "`assigned_to` = " .. db.escapeString(getCreatureName(cid))
+    elseif (data.assigned == "none") then
+        where[#where + 1] = "`assigned_to` = ''"
+    end
     local search = clean(data.query, 40)
     if (search ~= "") then
         local id = tonumber((search:gsub("^#", "")))
@@ -581,8 +770,7 @@ local function sendList(cid, data)
     local clause = table.concat(where, " AND ")
     local total = DiscordBridge.queryNumber("SELECT COUNT(*) AS `count` FROM `reports` WHERE " .. clause .. ";",
         "count") or 0
-    local rows = query(string.format("SELECT `id`, `kind`, `category`, `status`, `title`, `player_name`, " ..
-        "`target_name`, `staff_note`, `reporter_seen`, `created_at`, `updated_at` FROM `reports` WHERE %s " ..
+    local rows = query(string.format("SELECT " .. SUMMARY_COLUMNS .. " FROM `reports` WHERE %s " ..
         "ORDER BY `id` DESC LIMIT %d OFFSET %d;", clause, Reports.PAGE, offset), SUMMARY_FIELDS)
     local list = JSON.array()
     for _, row in ipairs(rows) do
@@ -658,8 +846,7 @@ end
 
 -- The /reports talkaction: the newest open reports, or one of them in full
 Reports.sayList = function(cid)
-    local rows = query(string.format("SELECT `id`, `kind`, `category`, `status`, `title`, `player_name`, " ..
-        "`target_name`, `staff_note`, `reporter_seen`, `created_at`, `updated_at` FROM `reports` WHERE " ..
+    local rows = query(string.format("SELECT " .. SUMMARY_COLUMNS .. " FROM `reports` WHERE " ..
         "`world_id` = %d ORDER BY `id` DESC LIMIT 200;", worldId()), SUMMARY_FIELDS)
     local lines = {}
     for _, row in ipairs(rows) do
@@ -716,8 +903,14 @@ Reports.onClientMessage = function(cid, buffer)
         end
     elseif (action == "mine") then
         sendMine(cid)
+    elseif (action == "shot") then
+        receiveShot(cid, data)
     elseif (not Reports.canView(cid)) then
         return
+    elseif (action == "getShot") then
+        sendShot(cid, data.id)
+    elseif (action == "marks") then
+        sendMarks(cid)
     elseif (action == "list") then
         sendList(cid, data)
     elseif (action == "get") then
@@ -731,6 +924,21 @@ Reports.onClientMessage = function(cid, buffer)
         fail(cid, "Only Gamemasters and up can answer reports.")
     elseif (action == "status") then
         local row, reason = Reports.update(data.id, data.status, data.note, getCreatureName(cid), "game")
+        if (row) then
+            send(cid, { type = "report", report = details(row) })
+        else
+            fail(cid, reason)
+        end
+    elseif (action == "assign") then
+        local row, reason = Reports.assign(data.id, data.to == "me" and getCreatureName(cid) or "", getCreatureName(cid),
+            "game")
+        if (row) then
+            send(cid, { type = "report", report = details(row) })
+        else
+            fail(cid, reason)
+        end
+    elseif (action == "duplicate") then
+        local row, reason = Reports.markDuplicate(data.id, tonumber(data.of) or 0, getCreatureName(cid), "game")
         if (row) then
             send(cid, { type = "report", report = details(row) })
         else
@@ -774,4 +982,18 @@ DiscordBridge.registerHandler("report.get", function(params)
         return { found = false }
     end
     return { found = true, report = bridgeReport(row) }
+end)
+
+DiscordBridge.registerHandler("report.screenshot", function(params)
+    local id = tonumber(params.id) or 0
+    local offset = math.max(0, math.floor(tonumber(params.offset) or 0))
+    local length = math.min(48000, math.max(1, math.floor(tonumber(params.length) or 48000)))
+    local rows = query(string.format("SELECT `done`, CHAR_LENGTH(`data`) AS `total`, SUBSTRING(`data`, %d, %d) AS " ..
+        "`slice` FROM `report_screenshots` WHERE `report_id` = %d;", offset + 1, length, id),
+        { done = "number", total = "number", slice = "string" })
+    local row = rows[1]
+    if (not row) then
+        return { found = false }
+    end
+    return { found = true, done = row.done == 1, total = row.total, offset = offset, data = row.slice }
 end)

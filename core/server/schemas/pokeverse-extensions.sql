@@ -940,7 +940,8 @@ CREATE TABLE IF NOT EXISTS `decoration_spots` (
 -- Reports window. Staff read and answer them in the same window; the Discord bridge posts each one
 -- in a forum (docs/reports.md). `client` is what the reporter's client said about itself (system,
 -- version, renderer, window size); never an IP address.
--- Rollback: DROP TABLE `report_events`; DROP TABLE `reports`; no existing table was changed.
+-- Rollback: DROP TABLE `report_screenshots`; DROP TABLE `report_events`; DROP TABLE `reports`; no existing
+-- table was changed.
 CREATE TABLE IF NOT EXISTS `reports` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `world_id` TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -965,12 +966,15 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `context` TEXT NOT NULL,
   `staff_note` TEXT NOT NULL,
   `handled_by` VARCHAR(255) NOT NULL DEFAULT '',
+  `assigned_to` VARCHAR(255) NOT NULL DEFAULT '',
+  `duplicate_of` INT UNSIGNED NOT NULL DEFAULT 0,
   `reporter_seen` TINYINT NOT NULL DEFAULT 1,
   `created_at` INT NOT NULL DEFAULT 0,
   `updated_at` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `reports_status` (`world_id`, `kind`, `status`),
-  KEY `reports_account` (`account_id`)
+  KEY `reports_account` (`account_id`),
+  KEY `reports_duplicate` (`duplicate_of`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Every status change and staff note on a report, oldest first. `source` is game or discord.
@@ -984,5 +988,17 @@ CREATE TABLE IF NOT EXISTS `report_events` (
   `note` TEXT NOT NULL,
   PRIMARY KEY (`id`),
   KEY `report_events_report` (`report_id`),
+  FOREIGN KEY (`report_id`) REFERENCES `reports` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- The screenshot sent with a report: a PNG as base64 text, received in parts from the client. The bot
+-- reads it in slices for the Discord post, and staff can view it in the Reports window.
+CREATE TABLE IF NOT EXISTS `report_screenshots` (
+  `report_id` INT UNSIGNED NOT NULL,
+  `parts` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  `received` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  `done` TINYINT NOT NULL DEFAULT 0,
+  `data` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`report_id`),
   FOREIGN KEY (`report_id`) REFERENCES `reports` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
