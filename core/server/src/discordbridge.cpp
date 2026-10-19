@@ -301,6 +301,7 @@ StringVec DiscordBridge::takeIncoming(uint32_t max)
 	{
 		messages.push_back(m_incoming.front());
 		m_incoming.pop_front();
+		++m_taken;
 	}
 
 	return messages;
@@ -433,10 +434,12 @@ void DiscordBridge::onIncoming(const std::string& line)
 void DiscordBridge::dispatchIncoming()
 {
 	size_t before = 0;
+	uint64_t taken = 0;
 	{
 		boost::mutex::scoped_lock lock(m_lock);
 		m_dispatchPending = false;
 		before = m_incoming.size();
+		taken = m_taken;
 	}
 
 	if(g_globalEvents)
@@ -445,7 +448,8 @@ void DiscordBridge::dispatchIncoming()
 	bool schedule = false;
 	{
 		boost::mutex::scoped_lock lock(m_lock);
-		if(before > 0 && m_incoming.size() >= before)
+		// Messages that arrive while the globalevent runs are not a sign that it took none.
+		if(before > 0 && m_taken == taken)
 		{
 			// Nothing consumed: no onDiscordBridge globalevent is registered (or it failed).
 			m_stats.rejected += m_incoming.size();
