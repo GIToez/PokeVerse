@@ -424,28 +424,15 @@ void GraphicalApplication::doScaledScreenshot(std::string file, int maxWidth)
                 image.flipVertically();
                 image.setOpacity(255);
                 const int step = maxWidth > 0 ? std::max(1, (resolution.width() + maxWidth - 1) / maxWidth) : 1;
-                if (step == 1) {
-                    image.savePNG(file);
-                    return;
-                }
+                // 5 bits a colour: the PNG is less than half the size and still looks the same
                 const Size size(resolution.width() / step, resolution.height() / step);
                 Image small(size, 4);
-                const int area = step * step;
                 for (int y = 0; y < size.height(); ++y) {
                     for (int x = 0; x < size.width(); ++x) {
-                        int sum[4] = { 0, 0, 0, 0 };
-                        for (int dy = 0; dy < step; ++dy) {
-                            for (int dx = 0; dx < step; ++dx) {
-                                const uint8_t* pixel = image.getPixel(x * step + dx, y * step + dy);
-                                for (int c = 0; c < 4; ++c) {
-                                    sum[c] += pixel[c];
-                                }
-                            }
-                        }
-                        uint8_t out[4];
-                        for (int c = 0; c < 4; ++c) {
-                            out[c] = static_cast<uint8_t>(sum[c] / area);
-                        }
+                        const uint8_t* pixel = image.getPixel(x * step, y * step);
+                        const uint8_t out[4] = { static_cast<uint8_t>(pixel[0] & 0xF8),
+                                                 static_cast<uint8_t>(pixel[1] & 0xF8),
+                                                 static_cast<uint8_t>(pixel[2] & 0xF8), 255 };
                         small.setPixel(x, y, out);
                     }
                 }

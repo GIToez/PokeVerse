@@ -132,7 +132,7 @@ public:
     }
     void setDrawEvents(const ApplicationDrawEventsPtr& drawEvents) { m_drawEvents = drawEvents; }
     void doScreenshot(std::string file);
-    // Saves the screen shrunk to at most maxWidth pixels wide (box filter, whole steps), for reports.
+    // Saves the screen shrunk to at most maxWidth pixels wide (whole steps, 5 bits a colour), for reports.
     void doScaledScreenshot(std::string file, int maxWidth);
     void doMapScreenshot(std::string file);
 #ifdef __EMSCRIPTEN__
