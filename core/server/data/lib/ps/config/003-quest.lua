@@ -6828,7 +6828,7 @@ QUESTS_CONFIG = {
     ["Shelley"] = {
         {
             storage = 8495,
-            talk_questStarting = "Notice that on the tables next to me are the machines that catalog Pokemon: the Pokedex. When trainers start their journey, they receive their own Pokedex. It is an important device that stores all the information about the Pokemon you own. Here you will find your Pokemon's Stats, its attacks (Moves) and their strengths and weaknesses. Extra information such as Egg Group, HMs, the Pokemon description and so on is also very important and is explained in the Wiki tab of the Pokepedia (press P). Copy that?",
+            talk_questStarting = "Notice that on the tables next to me are the machines that catalog Pokemon: the Pokedex. When trainers start their journey, they receive their own Pokedex. It is an important device that stores all the information about the Pokemon you own. Here you will find your Pokemon's Stats, its attacks (Moves) and their strengths and weaknesses. Extra information such as Egg Group, HMs, the Pokemon description and so on is also very important and is explained in the Wiki tab of the Pokepedia (press M). Copy that?",
             talk_questStarted = "Now take your Pokedex and use it on the Psyduck. Just \"Use\" the Pokedex and then select the Pokemon. Check the details and come back to talk to me.",
             talk_questFinishing = "Did you get the Psyduck's information?",
             talk_questFinished = "Great, let's {CONTINUE}",
@@ -6856,7 +6856,7 @@ QUESTS_CONFIG = {
             storage = 8497,
             talk_questStarting = "HMs are special moves your Pokemon can use on the map to perform a specific action. If your Pokemon has the Surf HM, it can travel through water with you. Just use the ORDER button in the Inventory at the water's edge.",
             talk_questStarted = "To fly through the air, just use a Pokemon with the Fly HM. Use ORDER on your character and your Pokemon will fly with you. To go up and down, say \"/up\" and \"/down\". I can {continue} when you feel ready.",
-            talk_questFinishing = "To see which HMs your Pokemon has, use the Pokedex on your Pokemon. For a more detailed explanation, read the Wiki tab of the Pokepedia (press P).",
+            talk_questFinishing = "To see which HMs your Pokemon has, use the Pokedex on your Pokemon. For a more detailed explanation, read the Wiki tab of the Pokepedia (press M).",
             talk_questFinished = "Now go through the next door into the next room. Your goal in the next room is to talk to all NPCs. Once you're done, talk to Oak's Assistant at the end and you'll be ready for your journey.",
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",

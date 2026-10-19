@@ -1,7 +1,7 @@
 local GLOBALMESSAGES = {
 	{"Never share your account details with anyone. The PokeVerse staff will never ask for your password and never gives away items or Pokemon."},
 	{"Think twice before using any kind of bot or hack on your character. It will not be tolerated and your character will be deleted. Play fair."},
-	{"Do you need information about the game? Ask in the Help channel or read the Wiki tab of the Pokepedia (press P)."},
+	{"Do you need information about the game? Ask in the Help channel or read the Wiki tab of the Pokepedia (press M)."},
 	{"Enjoying the game? Invite your friends to play! It is more fun together and it helps keep the project alive."},
 	{"Have a message, comment or suggestion for the PokeVerse developers? Let the staff know in the Help channel."},
 }

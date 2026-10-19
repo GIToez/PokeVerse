@@ -58,7 +58,7 @@ function onLogin(cid)
 				doPlayerAddLevel(cid, 4)
 				--setPlayerGotStarterPokemon(cid, true)
 			else
-				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "This is your first login on PokeVerse! Welcome! Remember that if you need help you can read the Wiki tab of the Pokepedia (press P) or ask in the Help channel.")
+				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "This is your first login on PokeVerse! Welcome! Remember that if you need help you can read the Wiki tab of the Pokepedia (press M) or ask in the Help channel.")
 				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You are on the Beginner Island, a place made for new players. Talk to Professor Tommy to start your journey.")
 				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_RED, "You are not required to stay on this island. Anytime you want to leave, go to Professor Tommy and talk about 'skip beginner island', even though you are no pokemon he will give you one.")
 			end
@@ -95,7 +95,7 @@ function onLogin(cid)
 		doPlayerEnsureBelt(cid)
 		doPlayerEnforcePokemonLimit(cid)
 
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, "If you need some help, read the Wiki tab of the Pokepedia (press P) or ask in the Help channel.")
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, "If you need some help, read the Wiki tab of the Pokepedia (press M) or ask in the Help channel.")
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
 
         doPlayerRemoveFrontierBalls(cid)

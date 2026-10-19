@@ -665,7 +665,7 @@ Vocations.choose = function(cid, key)
         return result(cid, false, "You already have a vocation.")
     end
     if (getPlayerStorageValue(cid, WINDOW) ~= 1) then
-        return result(cid, false, "Press U to open the vocation window.")
+        return result(cid, false, "Press V to open the vocation window.")
     end
     if (getPlayerLevel(cid) < Vocations.MIN_LEVEL) then
         return result(cid, false, string.format(__L(cid, "You need trainer level %d to choose a vocation."),

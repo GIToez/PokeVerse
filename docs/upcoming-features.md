@@ -340,7 +340,7 @@ packets. The Cyclopedia module itself stays out of the client (it unloads below 
 - **Wiki (built):** see [section 9](#9-in-game-wiki-and-tutorial).
 - **Later, Help:** "what to do next" hints from the tutorial, pointing at routes on the map.
 
-**Agreed keys:** M opens the map tab, P opens the Pokepedia.
+**Agreed keys:** M opens the Pokepedia on its map tab; the top bar button opens it too. (P was the Pokepedia key at first; it now opens the Trainer Card.)
 
 ### Pokédex knowledge levels (like Tibia's bestiary)
 
@@ -938,7 +938,7 @@ categories, with search, pictures, tables and links between topics). Every topic
 against the code: most of the old Wiki Chat text was out of date (controls, berries, banks,
 houses, guilds, tournaments, the Safari Zone, TMs, the daycare) and is corrected. The Wiki Chat
 channel is switched off (`channels.xml`), and the texts that pointed to it now say "the Wiki
-tab of the Pokepedia (press P)".
+tab of the Pokepedia (press M)".
 
 Still to do:
 
@@ -1003,13 +1003,16 @@ From the `#notes` channel:
   | X | Pokedex on the target |
   | V | Vocation window |
   | U | Vocation tool (radar, fishing guide), or the window without one |
-  | C | Your Trainer Card |
+  | P | Your Trainer Card (was C) |
+  | C | Event calendar |
   | T | Tasks |
-  | P / L / M | Pokepedia / Quest Log / big map |
+  | L / M | Quest Log / Pokepedia on its map (P opened the Pokepedia before) |
   | 1–0, -, = and F1–F6 | Moves and calling Pokémon (unchanged) |
 
-  The calendar, daily login reward, tracker, minimap, inventory, options, store and admin
-  panel have an entry under Windows with no default key. Arrows, numpad and Ctrl + arrows stay
+  The daily login reward, tracker, Pokepedia (other than M), minimap, inventory, options,
+  store and admin panel have an entry under Windows with no default key. Tab attacks the next
+  target: the battle list's next entry, or with the battle list closed the nearest attackable
+  creature on screen. Arrows, numpad and Ctrl + arrows stay
   fixed. R is free.
 - **Switching Pokémon (done):** the trainer is protected until the next Pokémon is out (at
   most 1.5 seconds), not in duels or trainer battles.

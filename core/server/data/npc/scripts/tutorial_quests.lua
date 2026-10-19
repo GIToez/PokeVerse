@@ -89,7 +89,7 @@ end
 -- Daycare Helper
 NPCS["Carlton"] = function(cid, type, msg)
     if (msgcontains(msg, 'daycare')) then
-        npcHandler:sayStory(string.createStory("The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without having it in your current team. It was designed for trainers who don't have much time or want to train Pokemon besides the six they carry. You can leave two Pokemon in the Daycare, which gives the system a second use: if a trainer leaves a compatible male and female Pokemon at the Daycare, they may produce a Pokemon Egg. If you get an Egg, you must hatch it. Once it hatches you will have a very good Pokemon in your hands. To learn more, ask other players, the Help channel or the Wiki tab of the Pokepedia (press P). Good luck trainer!"), cid)
+        npcHandler:sayStory(string.createStory("The Pokemon Daycare is a place where you can leave your Pokemon to gain experience without having it in your current team. It was designed for trainers who don't have much time or want to train Pokemon besides the six they carry. You can leave two Pokemon in the Daycare, which gives the system a second use: if a trainer leaves a compatible male and female Pokemon at the Daycare, they may produce a Pokemon Egg. If you get an Egg, you must hatch it. Once it hatches you will have a very good Pokemon in your hands. To learn more, ask other players, the Help channel or the Wiki tab of the Pokepedia (press M). Good luck trainer!"), cid)
 
     else
         selfSay("Do you know about the {POKEMON DAYCARE}?", cid)
@@ -102,7 +102,7 @@ NPCS["Cletis"] = function(cid, type, msg)
         npcHandler:sayStory(string.createStory("A TM (Technical Machine) can teach your Pokemon a move it can't normally learn. Just find a TM like this one beside me and use it on your Pokemon's Poke Ball. Then choose which move the TM move will replace. Remember that PokeVerse follows the official data of the Pokemon universe, so this system has some rules too."), cid)
 
     elseif (msgcontains(msg, 'vitamin') or msgcontains(msg, 'vitamina')) then
-        npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defense and Speed. Each Pokemon has a limit on how much a Stat can be raised by vitamins: 10 vitamins in total and 3 of each kind. To learn more, visit the Help channel or the Wiki tab of the Pokepedia (press P)."), cid)
+        npcHandler:sayStory(string.createStory("Vitamins are designed to increase the Stats of your Pokemon. The Stats are: HP, Attack, Defense, Special Attack, Special Defense and Speed. Each Pokemon has a limit on how much a Stat can be raised by vitamins: 10 vitamins in total and 3 of each kind. To learn more, visit the Help channel or the Wiki tab of the Pokepedia (press M)."), cid)
 
     else
         selfSay("Do you know about {TMS} or {VITAMINS}?", cid)
@@ -135,7 +135,7 @@ end
 -- Soul Coin Trader
 NPCS["Jimi"] = function(cid, type, msg)
     if (msgcontains(msg, 'soul')) then
-        npcHandler:sayStory(string.createStory("These are the game's virtual currency. With them you can get a Premium Account, which gives access to various locations on the map and full use of your Pokemon. They are not required to play, but if you want the full experience be sure to get some. You can buy them from other players or by donating to the project through the official site. It's a symbolic way to keep PokeVerse online for your enjoyment. They have several uses, so to see more details read the Wiki tab of the Pokepedia (press P) or ask in the Help channel."), cid)
+        npcHandler:sayStory(string.createStory("These are the game's virtual currency. With them you can get a Premium Account, which gives access to various locations on the map and full use of your Pokemon. They are not required to play, but if you want the full experience be sure to get some. You can buy them from other players or by donating to the project through the official site. It's a symbolic way to keep PokeVerse online for your enjoyment. They have several uses, so to see more details read the Wiki tab of the Pokepedia (press M) or ask in the Help channel."), cid)
 
     else
         selfSay("Do you know what a {SOUL COIN} is?", cid)

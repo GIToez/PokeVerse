@@ -95,7 +95,7 @@ function onJoinChannel(cid, channel, users)
             if (isCreature(cid)) then
                 doPlayerSendChannelMessage(cid, "", "Looking for help? Ask your question here and a tutor or another player will help you.", TALKTYPE_CHANNEL_RN, channel)
                 doPlayerSendChannelMessage(cid, "", "Type /commands to view the commands.", TALKTYPE_CHANNEL_RN, channel)
-                doPlayerSendChannelMessage(cid, "", "Before asking, take a look at the Wiki tab of the Pokepedia (press P)!", TALKTYPE_CHANNEL_RN, channel)
+                doPlayerSendChannelMessage(cid, "", "Before asking, take a look at the Wiki tab of the Pokepedia (press M)!", TALKTYPE_CHANNEL_RN, channel)
                 --
                 if (not isTutor(cid)) then
                     local msg = {}
