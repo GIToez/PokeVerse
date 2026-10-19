@@ -7,5 +7,6 @@ function onTalkChannel(cid, channelId, message)
     end
 
     DiscordBridge.onTalkChannel(cid, channelId, message)
+    Reports.onChannelMessage(cid, channelId, message)
     return true
 end

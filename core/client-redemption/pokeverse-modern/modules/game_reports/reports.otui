@@ -151,6 +151,10 @@ ReportEvent < UILabel
   text-auto-resize: true
   phantom: false
 
+ReportGoButton < PVBlueButton
+  size: 96 28
+  ttf-font-size: 11
+
 ReportsWindow < UIWindow
   size: 880 610
   image-source: /modules/game_dailytasks/images/window
@@ -568,7 +572,7 @@ ReportsWindow < UIWindow
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        height: 72
+        height: 108
         phantom: true
         visible: false
 
@@ -593,22 +597,48 @@ ReportsWindow < UIWindow
           size: 110 30
           ttf-font-size: 12
           anchors.left: parent.left
-          anchors.bottom: parent.bottom
+          anchors.top: statusEdit.bottom
+          margin-top: 6
           @onClick: modules.game_reports.saveStatus()
 
-        PVBlueButton
-          id: goThere
-          !text: tr('Go there')
-          size: 110 30
-          ttf-font-size: 12
-          anchors.left: save.right
+        ReportGoButton
+          id: goReport
+          !text: tr('Report spot')
+          !tooltip: tr('Where the report was sent from')
+          anchors.left: parent.left
+          anchors.bottom: parent.bottom
+          @onClick: modules.game_reports.goThere('report')
+
+        ReportGoButton
+          id: goTarget
+          !text: tr('Player then')
+          !tooltip: tr('Where the reported player stood when the report was sent')
+          anchors.left: goReport.right
           anchors.bottom: parent.bottom
           margin-left: 6
-          @onClick: modules.game_reports.goThere()
+          @onClick: modules.game_reports.goThere('target')
+
+        ReportGoButton
+          id: goTargetNow
+          !text: tr('Player now')
+          !tooltip: tr('Where the reported player is now')
+          anchors.left: goTarget.right
+          anchors.bottom: parent.bottom
+          margin-left: 6
+          @onClick: modules.game_reports.goThere('targetNow')
+
+        ReportGoButton
+          id: goReporter
+          !text: tr('Reporter now')
+          !tooltip: tr('Where the player who sent it is now')
+          anchors.left: goTargetNow.right
+          anchors.bottom: parent.bottom
+          margin-left: 6
+          @onClick: modules.game_reports.goThere('reporter')
 
         ReportMuted
           id: staffInfo
           text-auto-resize: true
           anchors.verticalCenter: save.verticalCenter
-          anchors.left: goThere.right
+          anchors.left: save.right
           margin-left: 10

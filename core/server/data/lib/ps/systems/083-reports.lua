@@ -9,7 +9,7 @@
 --   staff            {action = "list", kind, status, query, offset}
 --                     {action = "get", id}
 --                     {action = "status", id, status, note}
---                     {action = "goto", id}
+--                     {action = "goto", id, where}       (where: report, target, reporter, targetNow)
 --   server -> client  {type = "config", kinds, staff, canEdit}
 --                     {type = "submitted", id} / {type = "error", text}
 --                     {type = "mine", reports}
@@ -93,6 +93,34 @@ local SUMMARY_FIELDS = {
 local EVENT_FIELDS = { at = "number", author = "string", source = "string", status = "string", note = "string" }
 
 local recent = {} -- account id -> { times of the reports sent }
+local chats = {} -- player guid -> { {at, channel, text} }, the newest last
+local CHAT_KEEP, CHAT_AGE = 10, 900
+local PRIVATE_CHANNELS = { [CHANNEL_STAFF or 2] = true, [CHANNEL_COUNSELOR or 4] = true }
+
+-- Called for every channel message (onTalkChannel): a player report sends the reported player's last lines.
+Reports.onChannelMessage = function(cid, channelId, message)
+    if (not isPlayer(cid) or PRIVATE_CHANNELS[channelId]) then
+        return
+    end
+    local guid = getPlayerGUID(cid)
+    local lines = chats[guid] or {}
+    lines[#lines + 1] = { at = os.time(), channel = channelId, text = tostring(message):sub(1, 255) }
+    if (#lines > CHAT_KEEP) then
+        table.remove(lines, 1)
+    end
+    chats[guid] = lines
+end
+
+local function recentChatOf(guid)
+    local list = JSON.array()
+    local cutoff = os.time() - CHAT_AGE
+    for _, line in ipairs(chats[guid] or {}) do
+        if (line.at >= cutoff) then
+            list[#list + 1] = line
+        end
+    end
+    return list
+end
 
 local function worldId()
     return getConfigValue("worldId") or 0
@@ -308,6 +336,7 @@ local function bridgeReport(row)
             report.target.level = context.target.level
             report.target.online = context.target.online
             report.target.position = context.target.position
+            report.target.chat = context.target.chat
         end
         report.position = { x = row.posx, y = row.posy, z = row.posz }
     end
@@ -396,6 +425,10 @@ Reports.create = function(cid, data)
         end
         local target = getPlayerByName(targetName)
         context.target = { online = target ~= nil }
+        local lines = recentChatOf(targetId)
+        if (#lines > 0) then
+            context.target.chat = lines
+        end
         if (target) then
             local pos = getCreaturePosition(target)
             context.target.level = getPlayerLevel(target)
@@ -568,18 +601,59 @@ local function sendConfig(cid)
     end
     local unseen = DiscordBridge.queryNumber(string.format("SELECT COUNT(*) AS `count` FROM `reports` WHERE " ..
         "`account_id` = %d AND `reporter_seen` = 0;", getPlayerAccountId(cid)), "count") or 0
+    local staff = Reports.canView(cid)
+    local open = staff and openCount() or nil
     send(cid, {
-        type = "config", kinds = kinds, staff = Reports.canView(cid), canEdit = Reports.canEdit(cid),
-        unseen = unseen, limits = { titleMin = Reports.TITLE_MIN, titleMax = Reports.TITLE_MAX,
+        type = "config", kinds = kinds, staff = staff, canEdit = Reports.canEdit(cid),
+        unseen = unseen, open = open, limits = { titleMin = Reports.TITLE_MIN, titleMax = Reports.TITLE_MAX,
         textMin = Reports.TEXT_MIN, textMax = Reports.TEXT_MAX, noteMax = Reports.NOTE_MAX },
     })
     if (unseen > 0) then
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(
             "[Reports] The team answered %d of your reports. Open the Reports window to see them.", unseen))
     end
+    if (open and open > 0) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(
+            "[Reports] %d open report%s. Open the Reports window (All reports) or say /reports.", open,
+            open == 1 and "" or "s"))
+    end
 end
 
 Reports.get = getRow
+
+-- Where "Go there" takes staff: "report" (where it was sent), "target" (where the reported player stood
+-- then), "reporter" or "targetNow" (where that player is now, when online)
+Reports.destination = function(row, where)
+    if (where == "target") then
+        local context = row.context ~= "" and JSON.decode(row.context)
+        local pos = type(context) == "table" and type(context.target) == "table" and context.target.position
+        if (type(pos) ~= "table") then
+            return nil, "The reported player was offline when the report was sent."
+        end
+        return { x = pos.x, y = pos.y, z = pos.z }
+    elseif (where == "reporter" or where == "targetNow") then
+        local name = where == "reporter" and row.player_name or row.target_name
+        local player = name ~= "" and getPlayerByName(name)
+        if (not player) then
+            return nil, string.format("%s is not online.", name ~= "" and name or "The player")
+        end
+        return getCreaturePosition(player)
+    end
+    return { x = row.posx, y = row.posy, z = row.posz }
+end
+
+local function openCount()
+    local closed = {}
+    for _, info in pairs(Reports.KINDS) do
+        for _, status in ipairs(info.statuses) do
+            if (status.closed) then
+                closed[#closed + 1] = db.escapeString(status.key)
+            end
+        end
+    end
+    return DiscordBridge.queryNumber(string.format("SELECT COUNT(*) AS `count` FROM `reports` WHERE `world_id` = %d " ..
+        "AND `status` NOT IN (%s);", worldId(), table.concat(closed, ", ")), "count") or 0
+end
 
 -- The /reports talkaction: the newest open reports, or one of them in full
 Reports.sayList = function(cid)
@@ -663,10 +737,15 @@ Reports.onClientMessage = function(cid, buffer)
         end
     elseif (action == "goto") then
         local row = getRow(data.id)
-        if (row) then
-            doTeleportThing(cid, { x = row.posx, y = row.posy, z = row.posz })
-            doSendMagicEffect(getCreaturePosition(cid), CONST_ME_TELEPORT)
+        if (not row) then
+            return fail(cid, "There is no such report.")
         end
+        local pos, reason = Reports.destination(row, data.where)
+        if (not pos) then
+            return fail(cid, reason)
+        end
+        doTeleportThing(cid, pos)
+        doSendMagicEffect(getCreaturePosition(cid), CONST_ME_TELEPORT)
     end
 end
 

@@ -270,10 +270,23 @@ local function showDetails(report, full)
             section(tr('Reported message'))
             bodyText('"' .. report.statement .. '"')
         end
-        section(tr('Where'))
+        section(report.target and tr('Where the reporter stood') or tr('Where'))
         local pos = report.position or {}
         bodyText(string.format('%d, %d, %d%s', pos.x or 0, pos.y or 0, pos.z or 0,
             report.area and ('  -  ' .. report.area) or ''))
+        local target = report.context and report.context.target
+        if report.target and type(target) == 'table' then
+            section(tr('The reported player then'))
+            local where = type(target.position) == 'table' and string.format('%d, %d, %d', target.position.x,
+                target.position.y, target.position.z) or tr('offline')
+            bodyText(target.level and tr('Level %d, at %s', target.level, where) or where)
+            if type(target.chat) == 'table' and #target.chat > 0 then
+                section(tr('Their last channel messages'))
+                for _, line in ipairs(target.chat) do
+                    bodyText(string.format('%s  %s', os.date('%H:%M', line.at), line.text), 'ReportEvent')
+                end
+            end
+        end
         if report.pokemon then
             section(tr('Pokemon out'))
             bodyText(report.pokemon)
@@ -329,6 +342,10 @@ local function showDetails(report, full)
         end
         combo:setCurrentOptionByData(report.status, true)
         staffBar.note:clearText()
+        local target = report.context and report.context.target
+        staffBar.goTarget:setEnabled(type(target) == 'table' and type(target.position) == 'table')
+        staffBar.goTargetNow:setEnabled(report.target ~= nil and report.targetOnline == true)
+        staffBar.goReporter:setEnabled(report.online == true)
         staffBar.staffInfo:setText(report.handledBy and tr('Last answered by %s', report.handledBy) or '')
     end
 end
@@ -463,9 +480,9 @@ function saveStatus()
            note = staffBar.note:getText() })
 end
 
-function goThere()
+function goThere(where)
     if current then
-        send({ action = 'goto', id = current.id })
+        send({ action = 'goto', id = current.id, where = where or 'report' })
     end
 end
 
@@ -561,7 +578,13 @@ local function onConfig(data)
     end
     window.tabs.staff:setVisible(config.staff)
     if button then
-        button:setTooltip(data.unseen and data.unseen > 0 and tr('Reports (%d answered)', data.unseen) or tr('Reports'))
+        local tip = tr('Reports')
+        if data.open and data.open > 0 then
+            tip = tr('Reports (%d open)', data.open)
+        elseif data.unseen and data.unseen > 0 then
+            tip = tr('Reports (%d answered)', data.unseen)
+        end
+        button:setTooltip(tip)
     end
     if isVisible() then
         selectTab(tab)
