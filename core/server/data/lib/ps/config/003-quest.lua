@@ -212,7 +212,7 @@ QUESTS_CONFIG = {
             talk_questStarting = "Good to know that you are busy with your journey. I need a hand with some things. Can you help me?",
             talk_questStarted = "I placed an order at the Pallet PokeMart. Please pick it up for me. We will see if you are a good trainer.",
             talk_questFinishing = "Did my order arrive?",
-            talk_questFinished = "Now I'll learn how to make barbecue sauce! ... ... You still need to learn some things to get ready. Go talk to my assistant Jofrey, he is out there.",
+            talk_questFinished = "Now I'll learn how to make barbecue sauce! ... ... You still need to learn some things to get ready. Go talk to my assistant, Jofrey. He is just outside the lab, by the pond to the east.",
             talk_questFinishFail = "No... you haven't done it yet.",
             talk_questDone = "Thanks, but, I have no missions for you now.",
             questType = QUEST_TYPE.BRING_ITEMS,
@@ -226,6 +226,9 @@ QUESTS_CONFIG = {
                 doCreatureSetStorage(cid, 8500, QUEST_STATUS.STARTED)
                 doPlayerAddMapMark(cid, { x = 3286, y = 804, z = 7 }, MAPMARK_EXCLAMATION, "Pallet PokeMart")
                 doPlayerAddMapMark(cid, { x = 3324, y = 822, z = 6 }, MAPMARK_EXCLAMATION, "Stairs to Pallet")
+            end,
+            onEnd = function(cid)
+                doPlayerAddMapMark(cid, { x = 3349, y = 814, z = 6 }, MAPMARK_EXCLAMATION, "Assistant Jofrey")
             end,
         },
         {
@@ -6942,7 +6945,7 @@ QUESTS_CONFIG = {
             talk_questStarting = "Yes, today I will teach you about Headbutting, are you ready?",
             talk_questStarted = "Ok, Headbutt works like fishing, but instead of using a rod on the water, you will use your Pokemon's Headbutt ability on a nest tree! Take this Caterpie and go east, you will find some Nest Trees. Just release your Pokemon and use the Order command on the Nest Tree.",
             talk_questFinishing = "Did you hook and defeat the Pokemon?",
-            talk_questFinished = "Yup! Nice. Now you must talk to Dorothy. She will teach you more about Pokeballs. You can find her inside the Oak Lab.",
+            talk_questFinished = "Yup! Nice. Now you must talk to Doroty. She will teach you more about Pokeballs. You can find her inside the Oak Lab.",
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardExp = 0,
@@ -7004,7 +7007,7 @@ QUESTS_CONFIG = {
                 end
                 return false
             end,
-            canStart = function(cid) return getCreatureStorage(cid, 8498) == QUEST_STATUS.FINISHED end,
+            canStart = function(cid) return getCreatureStorage(cid, 8502) == QUEST_STATUS.FINISHED end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 12157, count = 50, unique = true } }, -- empty poke ball
             questStartItems = { 17436, 1 }, -- burst seal
             canFinish = function(cid)

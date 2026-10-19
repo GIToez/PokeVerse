@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="1314" head="86" legs="115"/>
 	<parameters>
-		<parameter key="message_greet" value="Hi |PLAYERNAME|! I'm in trouble, for sure. I forgot to pack the catalog the {Professor} asked for."/>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|! I'm Professor Oak's assistant. I teach new trainers about fishing and {Headbutting}. Did the {Professor} send you?"/>
 	</parameters>
 </npc>

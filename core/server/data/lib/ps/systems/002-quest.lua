@@ -622,3 +622,25 @@ function getNpcCurrentQuest(pid, npcName)
     selfSay = say
     return ok and quest or nil
 end
+
+-- Said after the greeting so the client shows a {task} option; most quest NPCs' greetings name no keyword
+function getQuestGreetHint(pid, npcName)
+    if (not QUESTS[npcName]) then
+        return nil
+    end
+    local say = selfSay
+    selfSay = function() end
+    local ok, quest = pcall(getCurrentQuest, pid, npcName)
+    selfSay = say
+    if (not ok or not quest) then
+        return nil
+    end
+    local status = getQuestStatus(pid, quest)
+    if (status == QUEST_STATUS.STARTED) then
+        return "(Ask me about your {task}.)"
+    end
+    if (quest.daily and status > 100000 and status > getGlobalStorageValue(GLOBAL_STORAGES.SERVER_START_TIME)) then
+        return nil
+    end
+    return "(I have a {task} for you.)"
+end
