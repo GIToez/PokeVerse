@@ -386,8 +386,9 @@ jobs:
       - name: Windows installer
         run: |
           sudo apt-get install -y --no-install-recommends nsis
+          # an absolute script path: makensis runs from the script's folder, so ${__FILEDIR__} must not be relative
           makensis -V2 -DSOURCE="$PWD/pkg/windows" -DOUTFILE="$PWD/release/PokeVerse-Setup.exe" \
-            core/client-redemption/packaging/windows/PokeVerse.nsi
+            "$PWD/core/client-redemption/packaging/windows/PokeVerse.nsi"
 
       - name: First-install downloads
         run: |
