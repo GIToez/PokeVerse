@@ -93,6 +93,24 @@ URL from it, so old clients need no change. The publish keeps the previous relea
 one more release, for clients that still get the old manifest from the cache. Two releases
 of files are about 600 MB, under the 1 GB Pages size limit.
 
+## Windows installer
+
+`PokeVerse-Setup.exe` (NSIS, `core/client-redemption/packaging/windows/PokeVerse.nsi`) is only
+another way to unpack the zip; the website offers the zip below it as a backup. It installs
+the same files, and nothing else updates them afterwards except the updater:
+
+- It installs to `%LOCALAPPDATA%\Programs\PokeVerse` without administrator rights. Another folder
+  can be picked, but it always ends in `PokeVerse`, and Program Files and Windows are refused:
+  the updater could not write there.
+- It adds a Start menu shortcut and, if the box is ticked, a desktop shortcut, plus an entry in
+  Installed apps. The entry has no version, because the updater changes the files.
+- Uninstalling removes the game folder and the shortcuts. It asks before deleting the settings
+  in `%APPDATA%\PokeVerse` (No by default, and always No with `/S`).
+- Running an older installer over a newer game is harmless: the next start downloads what differs.
+- The release job builds it on Linux (`apt install nsis`); `scripts/art/installer_art.py` draws
+  its side picture.
+- It is not code-signed, so Windows SmartScreen shows "unknown publisher", the same as for the exe.
+
 ## Platform notes
 
 - **Windows and Linux:** the executable updates itself under the same name, so shortcuts
