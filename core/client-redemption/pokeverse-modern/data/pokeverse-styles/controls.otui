@@ -1,0 +1,5 @@
+// Shared controls in the PokeVerse look (docs/ui-redesign.md). Images: scripts/art/ui_kit.py.
+
+// buttons.png has rounded corners; styles derived from Button that set their own image keep theirs
+Button < Button
+  image-border: 5
