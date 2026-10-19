@@ -26,7 +26,7 @@ or opacity is one rerun away.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| body | `#0e1729` at 72% (side cards), 94% (popups) | card and window fill |
+| body | `#0e1729` at 72% (side cards), solid (popups) | card and window fill |
 | edge | `#375284` at 50% | 1 px card edge |
 | accent | `#d9aa3b` | title underline, the active Pokemon, the primary button |
 | text | `#eef2ff` | titles and text |
@@ -61,9 +61,9 @@ round buttons on the right. A title that doesn't fit switches to the narrower fo
 - [x] Side panels: no solid frame, gaps between cards (`GameSidePanel` in the game_interface patch)
 - [x] Inventory (`game_inventory`): Order, Dex, Badges on top, then ring, Pokemon head, Poke Ball, bag
 - [x] Battle List, Tracker, Simple pokebag, Trainer belt, Skills: through the MiniWindow base
-- [ ] Minimap: rounded frame, coordinate chip, zoom pill
-- [ ] Battle List rows: HP bars and level badges, target in gold
-- [ ] VIP list, trade window, and the Redemption trackers if reachable
+- [x] Minimap: hairline frame, round zoom and full map buttons (`automap_buttons`)
+- [x] Battle List rows: muted names, the target in gold, health bars in the kit colours (gamelib patch)
+- [x] VIP list, trade window and the Redemption trackers: through the MiniWindow base and the controls
 
 ### Popups
 - [x] The shared window image (`game_dailytasks/images/window`) used by dailytasks, pokepedia, quests,
@@ -71,8 +71,11 @@ round buttons on the right. A title that doesn't fit switches to the narrower fo
   hints, client_options
 - [x] `MainWindow` / `Window` (`/images/ui/window`): PC, GTS, daily login, message boxes, Redemption leftovers
 - [x] Buttons and scrollbars (`pokeverse-styles/controls.otui`, `buttons`, `scrollbar`)
-- [ ] TabBar, ComboBox, TextEdit, CheckBox, ProgressBar
-- [ ] Login, create-character and background screens
+- [x] Tabs, chat tabs, combo boxes, text fields, check boxes, radio buttons, flat panels, frames, popup
+  menus, progress bars: same sheets redrawn, 1 px borders raised in `pokeverse-styles/controls.otui`
+- [x] Login, create account, character list and create character (`scripts/art/login_ui.py` on the D
+  tokens: shadow instead of the blue glow, gold selection, focus and spotlight)
+- [x] NPC dialog: panel, inset and word buttons (Yes and No stay green and red)
 
 ### Bars
 - [x] Swap bar (`game_pokebar`): round portrait sockets with an HP ring, F-key chip, gold ring on the
