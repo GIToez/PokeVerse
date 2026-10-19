@@ -71,7 +71,73 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
      end
  
      addEvent(function()
-@@ -827,6 +839,14 @@
+@@ -525,6 +537,23 @@
+     end
+ end
+ 
++-- PokeVerse: the cursor while picking a target; the order (head slot) and the Pokedex (left hand)
++-- have their own
++local grabCursor = 'target'
++
++local function useWithCursor(thing)
++    local player = g_game.getLocalPlayer()
++    if player and thing:isItem() then
++        for slot, cursor in pairs({ [InventorySlotHead] = 'order', [InventorySlotLeft] = 'dex' }) do
++            local item = player:getInventoryItem(slot)
++            if item and item:getId() == thing:getId() then
++                return cursor
++            end
++        end
++    end
++    return 'target'
++end
++
+ function onMouseGrabberRelease(self, mousePosition, mouseButton)
+     if selectedThing == nil then
+         return false
+@@ -545,7 +574,7 @@
+     if modules.client_options and modules.client_options.getOption('nativeCursor') then
+         g_window.restoreMouseCursor()
+     else
+-        g_mouse.popCursor('target')
++        g_mouse.popCursor(grabCursor)
+     end
+     self:ungrabMouse()
+     return true
+@@ -593,6 +622,12 @@
+         if selectedThing then
+             selectedThing = thing
+             selectedType = 'use'
++            local cursor = useWithCursor(thing)
++            if cursor ~= grabCursor and not (modules.client_options and modules.client_options.getOption('nativeCursor')) then
++                g_mouse.popCursor(grabCursor)
++                grabCursor = cursor
++                g_mouse.pushCursor(grabCursor)
++            end
+         end
+         return
+     end
+@@ -603,7 +638,8 @@
+     if modules.client_options and modules.client_options.getOption('nativeCursor') then
+         g_window.setSystemCursor('cross')
+     else
+-        g_mouse.pushCursor('target')
++        grabCursor = useWithCursor(thing)
++        g_mouse.pushCursor(grabCursor)
+     end
+ end
+ 
+@@ -625,7 +661,8 @@
+     if modules.client_options and modules.client_options.getOption('nativeCursor') then
+         g_window.setSystemCursor('cross')
+     else
+-        g_mouse.pushCursor('target')
++        grabCursor = 'target'
++        g_mouse.pushCursor(grabCursor)
+     end
+ end
+ 
+@@ -827,6 +864,14 @@
                      g_game.partyLeave()
                  end)
              end
@@ -86,7 +152,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          else
              local localPosition = localPlayer:getPosition()
              if not classic and not mobile then
-@@ -862,6 +882,13 @@
+@@ -862,6 +907,13 @@
                  end
              end
  
@@ -100,7 +166,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
              if creatureThing:isPlayer() then
                  menu:addSeparator()
                  local creatureName = creatureThing:getName()
-@@ -928,6 +955,14 @@
+@@ -928,6 +980,14 @@
                          end)
                      end
                  end
@@ -115,7 +181,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
              end
          end
  
-@@ -1075,6 +1110,9 @@
+@@ -1075,6 +1135,9 @@
                  -- For containers in the world (not inside another container), quickloot
                  g_game.sendQuickLoot(1, useThing)
                  return true
@@ -125,7 +191,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
              end
          elseif useThing:isMultiUse() then
              startUseWith(useThing)
-@@ -1809,6 +1847,98 @@
+@@ -1809,6 +1872,98 @@
  
  function nextViewMode()
      setupViewMode((currentViewMode + 1) % 3)
@@ -224,7 +290,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function setupViewMode(mode)
-@@ -1857,10 +1987,11 @@
+@@ -1857,10 +2012,11 @@
      elseif mode == 2 then
          local limit = limitedZoom and not g_game.isGM()
          gameMapPanel:setLimitVisibleRange(limit)
@@ -239,7 +305,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          })
          gameMapPanel:fill('parent')
          gameRootPanel:fill('parent')
-@@ -1882,6 +2013,7 @@
+@@ -1882,6 +2038,7 @@
      applyMobileMargins()
      currentViewMode = mode
      applyExtendedViewLayout(mode == 2)
@@ -247,7 +313,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function limitZoom()
-@@ -1960,6 +2092,22 @@
+@@ -1960,6 +2117,22 @@
      end
  end
  
@@ -270,7 +336,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  function applyExtendedViewLayout(extendedView)
      if extendedView == isExtendedViewActive then return end
      isExtendedViewActive = extendedView
-@@ -1991,6 +2139,19 @@
+@@ -1991,6 +2164,19 @@
          gameMainRightPanel:setImageColor('alpha')
          gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
          gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
@@ -290,7 +356,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          gameLeftActionPanel:setImageSource(nil)
          gameRightActionPanel:setImageSource(nil)
          gameLeftActionPanel:setBorderWidthRight(0)
-@@ -2011,6 +2172,10 @@
+@@ -2011,6 +2197,10 @@
  
          -- Reset bottom panel
          gameBottomPanel:setDraggable(false)
@@ -301,7 +367,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  
          -- Set anchors
          if not g_platform.isMobile() then
-@@ -2039,6 +2204,9 @@
+@@ -2039,6 +2229,9 @@
          modules.game_inventory.extendedView(extendedView)
          modules.client_topmenu.extendedView(extendedView)
          modules.game_mainpanel.toggleExtendedViewButtons(extendedView)

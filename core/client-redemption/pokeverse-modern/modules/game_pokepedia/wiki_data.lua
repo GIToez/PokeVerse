@@ -132,7 +132,7 @@ WikiData = {
                 "Press the key you want. Keys already in use are flagged, and you can swap them.",
             } },
             { 'tip', "Balls holding a Pokemon can't be item hotkeys: F1 to F6 call them." },
-            { 'p', "Your target has a red ring under it (green while you follow). Settings > Interface changes it to a Poke Ball ring or a square, and the mouse-over crosshair to Poke Ball corners, a Pokedex scanner, a soft ring or the classic square." },
+            { 'p', "Your target has a red ring under it (green while you follow). Settings > Interface changes it to a Poke Ball ring or a square, and the mouse-over crosshair to Poke Ball corners, a Pokedex scanner, a soft ring or the classic square. Using your Pokedex or your order on something turns the mouse into a Pokedex frame or Poke Ball arrows until you pick." },
         } },
         { key = 'hints', title = 'First-visit hints', portrait = 113, body = {
             { 'p', "The first time you walk into a Pokemon Center, a Mart, the Day Care and a few other places, a card tells you what the place is for. Each hint shows once per character." },
