@@ -142,7 +142,7 @@ std::string Crypt::getCryptKey(const bool useMachineUUID) const
     const uuids::uuid& uuid = useMachineUUID ? m_machineUUID : default_uuid;
 
     const uuids::uuid u = uuids::uuid_name_generator(uuid)(
-        g_app.getCompactName() + g_platform.getCPUName() + g_platform.getOSName() + g_resources.getUserDir()
+        g_app.getCompactName() + g_platform.getCPUName() + g_platform.getOSName() + g_resources.getCryptUserDir()
     );
 
     const std::size_t hash = std::hash<uuids::uuid>{}(u);

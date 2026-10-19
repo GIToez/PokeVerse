@@ -73,6 +73,11 @@ std::string Platform::getCurrentDir()
     return std::filesystem::current_path();
 }
 
+std::string Platform::getAppDataDir()
+{
+    return {};
+}
+
 bool Platform::copyFile(std::string from, std::string to)
 {
     return std::filesystem::copy_file(from, to);

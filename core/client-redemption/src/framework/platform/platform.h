@@ -43,6 +43,8 @@ public:
     bool killProcess(std::string_view name);
     std::string getTempPath();
     std::string getCurrentDir();
+    // the roaming AppData folder on Windows, without a trailing separator; empty elsewhere
+    std::string getAppDataDir();
     bool copyFile(std::string from, std::string to);
     bool fileExists(std::string file);
     bool removeFile(std::string file);

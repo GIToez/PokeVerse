@@ -259,6 +259,7 @@ void Application::registerLuaFunctions()
     g_lua.registerSingletonClass("g_resources");
     g_lua.bindSingletonFunction("g_resources", "addSearchPath", &ResourceManager::addSearchPath, &g_resources);
     g_lua.bindSingletonFunction("g_resources", "setupUserWriteDir", &ResourceManager::setupUserWriteDir, &g_resources);
+    g_lua.bindSingletonFunction("g_resources", "setupAppDataWriteDir", &ResourceManager::setupAppDataWriteDir, &g_resources);
     g_lua.bindSingletonFunction("g_resources", "setWriteDir", &ResourceManager::setWriteDir, &g_resources);
     g_lua.bindSingletonFunction("g_resources", "searchAndAddPackages", &ResourceManager::searchAndAddPackages, &g_resources);
     g_lua.bindSingletonFunction("g_resources", "removeSearchPath", &ResourceManager::removeSearchPath, &g_resources);

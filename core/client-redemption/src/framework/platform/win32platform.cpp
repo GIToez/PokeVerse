@@ -29,8 +29,10 @@
 #include <psapi.h>
 #include <windows.h>
 #include <shellapi.h>
+#include <shlobj.h>
 
 #pragma comment(lib, "psapi.lib")
+#pragma comment(lib, "shell32.lib")
 
 void Platform::init(std::vector<std::string>& args)
 {
@@ -115,6 +117,15 @@ std::string Platform::getCurrentDir()
     stdext::replace_all(ret, "\\", "/");
     ret += "/";
     return ret;
+}
+
+std::string Platform::getAppDataDir()
+{
+    // the same call PhysFS makes for its pref dir
+    wchar_t path[MAX_PATH];
+    if (!SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, path)))
+        return {};
+    return stdext::utf16_to_utf8(path);
 }
 
 bool Platform::fileExists(std::string file)

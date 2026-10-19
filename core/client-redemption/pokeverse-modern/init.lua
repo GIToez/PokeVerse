@@ -21,7 +21,12 @@ g_app.hasUpdater = function()
   return Services.updater and Services.updater ~= "" and g_modules.getModule("updater") ~= nil
 end
 
-g_resources.setupUserWriteDir(g_app.getCompactName() .. "/")
+-- Windows: settings in %APPDATA%\PokeVerse\ (older engines nest it as pokeverse\pokeverse\pokeverse)
+if g_resources.setupAppDataWriteDir then
+  g_resources.setupAppDataWriteDir()
+else
+  g_resources.setupUserWriteDir(g_app.getCompactName() .. "/")
+end
 
 g_logger.setLogFile(g_resources.getUserDir() .. g_app.getCompactName() .. ".log")
 g_logger.info(os.date("== application started at %b %d %Y %X"))
