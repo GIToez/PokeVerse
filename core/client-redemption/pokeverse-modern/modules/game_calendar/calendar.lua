@@ -108,10 +108,7 @@ local function seasonLine()
     if not season then
         return nil
     end
-    if season.forced then
-        return tr('Season: %s', season.name)
-    end
-    return tr('Season: %s, until %s', season.name, os.date('%d %b', season.endsAt))
+    return tr('Season: %s', season.name)
 end
 
 local function withSeason(text)
@@ -263,7 +260,7 @@ local function drawGrid()
     if season then
         window:recursiveGetChildById('seasonIcon'):setImageSource('/modules/game_weather/images/season_' .. season.id)
         local label = window:recursiveGetChildById('seasonLabel')
-        label:setText(season.forced and tr('%s (set by staff)', season.name) or tr('%s until %s', season.name, os.date('%d %B', season.endsAt)))
+        label:setText(season.forced and tr('%s (set by staff)', season.name) or season.name)
         label:setColor(season.color or '#dce6ff')
     end
     local grid = window:recursiveGetChildById('grid')
