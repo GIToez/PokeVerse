@@ -9,8 +9,10 @@ Writes core/client-redemption/pokeverse-modern/modules/game_minimap/map_labels.l
 Cities are listed below (the middle of each town). Routes and landmarks come from the area
 names the area banner uses (client-legacy's sounds1.lua and sounds2.lua, moved east by the same
 2351 tiles game_environment moves them, and game_environment/areas_johto.lua): each name is drawn
-in the middle of its largest rectangle on the ground floor. Routes are every "Route NN"; landmarks
-are the names in LANDMARKS. PLACES overrides a spot or adds a name the areas don't have.
+in the middle of its largest rectangle on the ground floor (floors 5 and 6 for a route that only has
+raised ground, such as the Cycling Road). Routes are every "Route NN" (a suffix such as " - Cycling
+Road" is dropped); landmarks are the names in LANDMARKS. PLACES overrides a spot or adds a name the
+areas don't have: the routes with no area, placed between the places Bulbapedia says they connect.
 
 Regions are the server's boxes (079-weather.lua's Weather.REGIONS, the same order: Johto's box
 overlaps Hoenn's sea); Kanto is the rest. Past x = OTHER_X are the event and instance areas (the
@@ -35,6 +37,7 @@ HIDDEN = os.path.join(HERE, 'hidden-regions.txt')
 
 LEGACY_OFFSET_X = 2351
 OTHER_X = 4690
+ROUTE = re.compile(r'^Route 0*(\d+)(?: - .*)?$')
 
 # id, name, box (x1, y1, x2, y2) or None for the rest
 REGIONS = [
@@ -98,7 +101,49 @@ LANDMARKS = {
 }
 
 # name: (kind, x, y): moves a name, or adds one the areas don't have
-PLACES = {}
+PLACES = {
+    # Kanto
+    'Route 2': ('route', 3300, 425),  # Viridian - Pewter
+    'Route 17': ('route', 3620, 680),  # the Cycling Road bridge
+    'Route 18': ('route', 3740, 800),  # Cycling Road - Fuchsia
+    'Route 20': ('route', 3460, 990),  # sea, Cinnabar - Seafoam Islands - Fuchsia
+    'Route 21': ('route', 3305, 910),  # sea, Pallet - Cinnabar
+    # Hoenn
+    'Route 101': ('route', 515, 1772),  # Littleroot - Oldale
+    'Route 102': ('route', 455, 1702),  # Oldale - Petalburg
+    'Route 103': ('route', 575, 1625),  # Oldale - Route 110
+    'Route 104': ('route', 250, 1610),  # Petalburg - Rustboro - Route 105
+    'Route 105': ('route', 150, 1790),  # sea, Route 104 - Route 106
+    'Route 106': ('route', 250, 1955),  # sea, Route 105 - Dewford
+    'Route 107': ('route', 500, 2015),  # sea, Dewford - Route 108
+    'Route 108': ('route', 635, 1960),  # sea, Route 107 - Route 109
+    'Route 109': ('route', 720, 1900),  # Slateport's beach and sea
+    'Route 110': ('route', 745, 1600),  # Slateport - Mauville - Route 103
+    'Route 111': ('route', 800, 1290),  # Mauville - Route 112 - Route 113, the desert
+    'Route 112': ('route', 680, 1375),  # Route 111 - Lavaridge - Mt. Chimney
+    'Route 113': ('route', 620, 1150),  # Route 111 - Fallarbor
+    'Route 114': ('route', 320, 1130),  # Fallarbor - Meteor Falls
+    'Route 115': ('route', 195, 1385),  # Meteor Falls - Rustboro
+    'Route 116': ('route', 370, 1465),  # Rustboro - Rusturf Tunnel
+    'Route 117': ('route', 660, 1485),  # Verdanturf - Mauville
+    'Route 118': ('route', 950, 1455),  # Mauville - Route 119 - Route 123
+    'Route 119': ('route', 985, 1300),  # Route 118 - Fortree
+    'Route 120': ('route', 1120, 1200),  # Fortree - Route 121
+    'Route 121': ('route', 1235, 1330),  # Route 120 - Lilycove - Route 122
+    'Route 122': ('route', 1250, 1445),  # sea, Route 121 - Route 123
+    'Route 123': ('route', 1100, 1525),  # Route 122 - Route 118
+    'Route 124': ('route', 1550, 1335),  # sea, Lilycove - Mossdeep - Route 126
+    'Route 125': ('route', 1735, 1345),  # sea, Mossdeep - Shoal Cave
+    'Route 126': ('route', 1455, 1505),  # sea around Sootopolis
+    'Route 127': ('route', 1720, 1550),  # sea, Mossdeep - Route 126 - Route 128
+    'Route 128': ('route', 1785, 1700),  # sea, Route 127 - Ever Grande
+    'Route 129': ('route', 1650, 1855),  # sea, Route 128 - Route 130
+    'Route 130': ('route', 1500, 1890),  # sea, Route 129 - Route 131
+    'Route 131': ('route', 1420, 1780),  # sea, Route 130 - Pacifidlog
+    'Route 132': ('route', 1180, 1780),  # sea, Pacifidlog - Route 133
+    'Route 133': ('route', 1020, 1810),  # sea, Route 132 - Route 134
+    'Route 134': ('route', 880, 1835),  # sea, Route 133 - Slateport
+}
 
 
 def read_hidden(path):
@@ -154,11 +199,17 @@ def read_areas():
     except FileNotFoundError:
         sys.exit('needs lua (5.1) on the PATH')
     areas = collections.defaultdict(list)
+    raised = collections.defaultdict(list)
     for line in text.splitlines():
         name, *coords = line.split('\t')
         x0, y0, z0, x1, y1, z1 = (int(v) for v in coords)
         if z0 <= 7 <= z1:
             areas[name].append((min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)))
+        elif z1 >= 5 and z0 <= 6 and ROUTE.match(name):
+            raised[name].append((min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)))
+    for name, rects in raised.items():
+        if name not in areas:
+            areas[name] = rects
     return areas
 
 
@@ -185,7 +236,7 @@ def main():
     for name, x, y in CITIES:
         labels.append(('city', name, x, y))
     for name, rects in read_areas().items():
-        route = re.match(r'^Route 0*(\d+)$', name)
+        route = ROUTE.match(name)
         if route:
             labels.append(('route', 'Route %s' % route.group(1)) + spot(rects))
         elif name in LANDMARKS:
