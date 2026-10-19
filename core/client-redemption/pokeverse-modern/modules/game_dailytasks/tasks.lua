@@ -127,7 +127,7 @@ local function updateBadge()
         badge:setVisible(total > 0)
     end
     if button then
-        button:setTooltip(total > 0 and tr('Tasks (%d to claim)', total) or tr('Tasks'))
+        button:setTooltip(total > 0 and tr('Tasks (T) - %d to claim', total) or tr('Tasks (T)'))
     end
 end
 
@@ -505,7 +505,7 @@ function init()
     end
     showTab('daily')
 
-    button = modules.client_topmenu.addRightGameToggleButton('dailyTasksButton', tr('Tasks'),
+    button = modules.client_topmenu.addRightGameToggleButton('dailyTasksButton', tr('Tasks (T)'),
         '/images/options/button_taskboard', toggle)
     if button then
         badge = g_ui.createWidget('UILabel', button)

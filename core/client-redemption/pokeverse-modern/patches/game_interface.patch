@@ -21,6 +21,15 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  
      updateSidePanelButtons()
      applyMobileMargins()
+@@ -201,7 +205,7 @@
+     end
+     panelsRadioGroup:selectWidget(panelsList[1].checkbox)
+ 
+-    logoutButton = modules.client_topmenu.addTopRightToggleButton('logoutButton', tr('Exit'), '/images/topbuttons/logout',
++    logoutButton = modules.client_topmenu.addTopRightToggleButton('logoutButton', tr('Exit (Ctrl+L)'), '/images/topbuttons/logout',
+         tryLogout, true)
+ 
+     gameMapPanel.onClick = toggleInternalFocus
 @@ -251,11 +255,13 @@
      Keybind.bind("Misc", "Logout", {
          {

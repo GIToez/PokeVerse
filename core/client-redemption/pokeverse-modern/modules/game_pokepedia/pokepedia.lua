@@ -415,13 +415,14 @@ function init()
     showTab('map')
     window:hide()
 
-    button = modules.client_topmenu.addRightGameToggleButton('pokepediaButton', tr('Pokepedia (P)'),
+    button = modules.client_topmenu.addRightGameToggleButton('pokepediaButton', tr('Pokepedia (M)'),
         Pp.IMAGES .. 'button_pokepedia', toggle)
     trackerButton = modules.client_topmenu.addRightGameToggleButton('pokepediaTrackerButton', tr('Tracker'),
         Pp.IMAGES .. 'button_tracker', function() Tracker.toggle() end)
     Tracker.setButton(trackerButton)
 
-    Keybind.new('Windows', 'Show/hide the Pokepedia', { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'P' }, '')
+    -- M (game_minimap) opens it on the map; this one starts unbound
+    Keybind.new('Windows', 'Show/hide the Pokepedia', '', '')
     Keybind.bind('Windows', 'Show/hide the Pokepedia', { { type = KEY_DOWN, callback = onToggleKey } })
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Pokepedia, onPokepedia)

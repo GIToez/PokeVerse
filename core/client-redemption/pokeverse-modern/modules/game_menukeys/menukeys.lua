@@ -21,9 +21,9 @@ local function visibleButton(id)
 end
 
 local keybinds = {
-    { 'Show/hide your Trainer Card', 'C', call('game_trainercard', 'toggle') },
+    { 'Show/hide your Trainer Card', 'P', call('game_trainercard', 'toggle') },
     { 'Show/hide Tasks', 'T', call('game_dailytasks', 'toggle') },
-    { 'Show/hide the event calendar', '', call('game_calendar', 'toggle') },
+    { 'Show/hide the event calendar', 'C', call('game_calendar', 'toggle') },
     { 'Show/hide the daily login reward', '', call('game_dailylogin', 'toggle') },
     { 'Show/hide the Pokepedia tracker', '', call('game_pokepedia', 'Tracker.toggle') },
     { 'Show/hide the minimap', '', call('game_minimap', 'toggle') },

@@ -144,17 +144,17 @@ local function updateBanner()
         for _, event in ipairs(active) do
             tips[#tips + 1] = eventTooltip(event)
         end
-        banner:setTooltip(withSeason(table.concat(tips, '\n\n')) .. '\n\n' .. tr('Click to open the calendar.'))
+        banner:setTooltip(withSeason(table.concat(tips, '\n\n')) .. '\n\n' .. tr('Click or press C to open the calendar.'))
         refresh = #active < #(status.active or {})
     elseif status.next then
         label:setText(tr('Next: %s in %s', status.next.name, formatLeft(status.next.startsAt - t)))
         label:setColor('#96aacd')
         banner:setTooltip(withSeason(tr('No event is running.') .. '\n\n' .. eventTooltip(status.next)) .. '\n\n' ..
-            tr('Click to open the calendar.'))
+            tr('Click or press C to open the calendar.'))
     else
         label:setText(tr('Event calendar'))
         label:setColor('#96aacd')
-        banner:setTooltip(withSeason(tr('Event calendar')) .. '\n\n' .. tr('Click to open the calendar.'))
+        banner:setTooltip(withSeason(tr('Event calendar')) .. '\n\n' .. tr('Click or press C to open the calendar.'))
     end
     refresh = refresh or (#active == 0 and status.next and status.next.startsAt <= t)
     banner:setWidth(banner:getChildById('icon'):getWidth() + label:getMarginLeft() + label:getWidth() + 2)

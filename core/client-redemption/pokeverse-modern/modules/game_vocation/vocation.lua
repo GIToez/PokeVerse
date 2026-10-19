@@ -152,9 +152,9 @@ local function setDot(visible, choose)
     end
     if button then
         if visible then
-            button:setTooltip(choose and tr('Vocation (choose your vocation!)') or tr('Vocation (rank up ready!)'))
+            button:setTooltip(choose and tr('Vocation (V) - choose your vocation!') or tr('Vocation (V) - rank up ready!'))
         else
-            button:setTooltip(tr('Vocation'))
+            button:setTooltip(tr('Vocation (V)'))
         end
     end
 end
@@ -534,7 +534,7 @@ function init()
     window:hide()
     progressWindow = g_ui.createWidget('VocationProgressWindow', rootWidget)
     progressWindow:hide()
-    button = modules.client_topmenu.addRightGameToggleButton('vocationButton', tr('Vocation'),
+    button = modules.client_topmenu.addRightGameToggleButton('vocationButton', tr('Vocation (V)'),
         IMAGES .. 'button_vocation', toggleWindow)
     if button then
         -- the same badge as the Tasks button's count

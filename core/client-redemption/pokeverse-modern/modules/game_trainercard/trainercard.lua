@@ -954,7 +954,7 @@ function init()
     g_ui.importStyle('trainercard')
     window = g_ui.createWidget('TrainerCardWindow', rootWidget)
     window:hide()
-    button = modules.client_topmenu.addRightGameToggleButton('trainerCardButton', tr('Trainer Card'),
+    button = modules.client_topmenu.addRightGameToggleButton('trainerCardButton', tr('Trainer Card (P)'),
         IMAGES .. 'button_trainercard', toggle)
     ProtocolGame.registerExtendedOpcode(ExtendedIds.TrainerCard, onMessage)
     connect(g_game, { onGameStart = hello, onGameEnd = onGameEnd })
