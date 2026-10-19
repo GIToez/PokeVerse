@@ -2606,6 +2606,69 @@ local function testLegendaries(cid, friend, arena)
     end
 end
 
+local function testHints(cid)
+    local sent, original = {}, doSendPlayerExtendedOpcode
+    local function capture(fn)
+        sent = {}
+        doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+            if (opcode == EXTENDED_IDS.HINTS) then
+                local data = JSON.decode(buffer)
+                sent[#sent + 1] = data
+                sent[data.type] = data
+                return true
+            end
+            return original(target, opcode, buffer)
+        end
+        local ok, err = pcall(fn)
+        doSendPlayerExtendedOpcode = original
+        if (not ok) then
+            check("Hints ran without errors", false, err)
+        end
+    end
+    local savedSeen = getPlayerStorageValue(cid, playersStorages.hintsSeen)
+    local savedClient = getPlayerStorageValue(cid, playersStorages.hintsClient)
+
+    check("Hints: opcode 38 on both sides", EXTENDED_IDS.HINTS == 38)
+    check("Hints: storages are free", playersStorages.hintsSeen ~= nil and playersStorages.hintsClient ~= nil and
+        playersStorages.hintsSeen ~= playersStorages.hintsClient)
+    setPlayerStorageValue(cid, playersStorages.hintsSeen, -1)
+    Hints.onLogin(cid)
+    capture(function() Hints.show(cid, "daycare") end)
+    check("Hints: nothing is sent before the client says hello", #sent == 0 and not Hints.enabled(cid))
+
+    capture(function() Hints.onClientMessage(cid, '{"action":"hello"}') end)
+    check("Hints: hello sends the seen list, empty at first", Hints.enabled(cid) and sent.seen ~= nil and
+        #sent.seen.seen == 0, JSON.encode(sent))
+
+    capture(function() Hints.show(cid, "daycare") end)
+    check("Hints: an unseen hint is shown", sent.show ~= nil and sent.show.key == "daycare", JSON.encode(sent))
+    capture(function() Hints.show(cid, "nope") end)
+    check("Hints: unknown keys are ignored", #sent == 0)
+
+    capture(function()
+        Hints.onClientMessage(cid, '{"action":"seen","key":"daycare"}')
+        Hints.onClientMessage(cid, '{"action":"seen","key":"center"}')
+        Hints.onClientMessage(cid, '{"action":"seen","key":"center"}')
+        Hints.onClientMessage(cid, '{"action":"seen","key":"nope"}')
+        Hints.onClientMessage(cid, 'not json')
+    end)
+    check("Hints: seen keys are kept as bits", Hints.hasSeen(cid, "daycare") and Hints.hasSeen(cid, "center") and
+        not Hints.hasSeen(cid, "mart") and Hints.mask(cid) == 1 + 8, tostring(Hints.mask(cid)))
+    capture(function() Hints.show(cid, "daycare") end)
+    check("Hints: a seen hint isn't shown again", #sent == 0)
+
+    capture(function() Hints.onClientMessage(cid, '{"action":"hello"}') end)
+    local list = sent.seen and table.concat(sent.seen.seen, ",") or ""
+    check("Hints: hello after a relog sends what was seen", list == "center,daycare", list)
+
+    Hints.onLogin(cid)
+    capture(function() Hints.onClientMessage(cid, '{"action":"reset"}') end)
+    check("Hints: reset clears every hint", Hints.mask(cid) == 0 and sent.seen ~= nil and #sent.seen.seen == 0)
+
+    setPlayerStorageValue(cid, playersStorages.hintsSeen, savedSeen)
+    setPlayerStorageValue(cid, playersStorages.hintsClient, savedClient)
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -2633,7 +2696,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", testShinyEvent }, { "admin", testAdmin }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
