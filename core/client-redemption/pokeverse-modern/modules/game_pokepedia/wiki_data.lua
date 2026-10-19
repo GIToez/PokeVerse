@@ -27,7 +27,7 @@ WikiData = {
             { 'see', { 'hotkeys', 'autowalk' } },
         } },
         { key = 'pokebar', title = 'Calling your Pokemon', portrait = 25, body = {
-            { 'p', "The pokebar at the left of the game screen holds the six Pokemon you carry. A slot shows its Pokemon's health, and FNT when it has fainted." },
+            { 'p', "The pokebar at the left of the game screen holds the six Pokemon you carry, each in a round socket with its key (F1 to F6) on a chip. The ring around a socket is its Pokemon's health: green, then yellow, then red as it drops. The Pokemon that is out has a gold ring, and a fainted one fades and shows FNT." },
             { 'steps', {
                 "Press F1 to F6, or left-click a slot, to call that Pokemon out. Calling another one switches them.",
                 "Ctrl+click a slot to call your Pokemon back.",
@@ -40,9 +40,10 @@ WikiData = {
         { key = 'moves', title = 'Using moves', portrait = 4, body = {
             { 'p', "The moves bar shows the moves of the Pokemon that is out, in up to 12 slots. Click a slot to use it, or press its key." },
             { 'keys', { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" } },
-            { 'p', "In WASD mode press the plain key; while the chat is open press Ctrl and the key. Hover a slot to see the move and its energy cost; slots dim when your Pokemon lacks the energy. Shift+click a slot to read the move's description." },
+            { 'p', "In WASD mode press the plain key; while the chat is open press Ctrl and the key. Each slot is coloured by the move's type and shows its key and energy cost on small chips. After a move is used, a sweep runs around its slot until it is ready again. The icon dims when your Pokemon lacks the energy, and a weather icon on a slot means the weather where you stand makes that move stronger or weaker." },
+            { 'p', "Hover a slot to see the move and its energy cost. Shift+click a slot to read the move's description." },
             { 'tip', "Saying m1 to m16 in the chat also uses a move." },
-            { 'see', { 'energy', 'controls' } },
+            { 'see', { 'energy', 'weather', 'controls' } },
         } },
         { key = 'order', title = 'Giving orders', item = 645, body = {
             { 'p', "An order tells your Pokemon to do something where you click. Press E in WASD mode, or use the order icon, then click the target." },
@@ -143,6 +144,11 @@ WikiData = {
         { key = 'rotate', title = 'Turning your Pokemon', portrait = 7, body = {
             { 'p', "With your Pokemon out, say t1 to face it north, t2 east, t3 south and t4 west." },
             { 'commands', { "t1", "t2", "t3", "t4" } },
+        } },
+        { key = 'screen', title = 'Screen options', item = 3484, body = {
+            { 'p', "Settings > General > Show connection ping shows your ping to the server at the top left of the game screen, with a green, yellow or red mark: under 250 ms is fine, and over 500 ms you will feel the lag." },
+            { 'p', "Settings > Interface has the target marker, the mouse-over crosshair, the first-visit hints and the weather options. Settings > Graphics has the visual style." },
+            { 'see', { 'hotkeys', 'weather', 'hints' } },
         } },
     } },
 
@@ -355,6 +361,26 @@ WikiData = {
             { 'p', "A balloon flies between Viridian and Saffron ($300), flying taxis link Saffron, Celadon, Cerulean, Lavender and Vermilion ($100 to $150), and a train runs between Pewter and Cerulean ($200)." },
             { 'see', { 'teleport', 'fly' } },
         } },
+        { key = 'weather', title = 'Weather and seasons', portrait = 351, body = {
+            { 'p', "Each town and the routes around it have their own weather, which changes every 20 to 60 minutes. The badge beside the clock in the top bar shows the weather where you stand; hover it for what it does. Johto's skies are always calm." },
+            { 'table', {
+                { "Weather", "Moves" },
+                { "Sunny", "Fire x1.2, Grass x1.1, Water x0.8" },
+                { "Rain", "Water x1.2, Fire x0.8" },
+                { "Thunderstorm", "Electric x1.2, Water x1.1, Fire x0.8" },
+                { "Fog", "Ghost and Dark x1.1, misses" },
+                { "Windy", "Flying x1.2" },
+                { "Snow", "Ice x1.2, Fire x0.9" },
+                { "Hail", "Ice x1.2" },
+                { "Sandstorm", "Rock x1.2, Ground x1.1" },
+            } },
+            { 'p', "In fog, moves used from 2 or more tiles away miss 10% of the time. Hail and sandstorms chip 3% of a Pokemon's health every 10 seconds, never the last of it. Ice Pokemon don't mind hail; Rock, Ground and Steel Pokemon don't mind sand. The moves bar marks the moves the weather changes." },
+            { 'p', "Weather only falls outdoors. A sunny sky turns clear at night, Christmas Day brings snow and Halloween night brings fog." },
+            { 'h', "Seasons" },
+            { 'p', "Spring, summer, autumn and winter start on the real equinoxes and solstices, at 06:00 server time, and change how likely each kind of weather is. The whole server hears when a new season comes." },
+            { 'tip', "Settings > Interface turns the weather on the map, lighter effects, weather sounds and lightning flashes on or off. The weather still counts in battle with them off." },
+            { 'see', { 'moves', 'calendar', 'screen' } },
+        } },
         { key = 'pokemart', title = 'Poke Marts', item = 11118, body = {
             { 'p', "Say hi, then trade." },
             { 'table', {
@@ -426,13 +452,52 @@ WikiData = {
         } },
         { key = 'trade', title = 'Trading', item = 3043, body = {
             { 'p', "Right-click the item, choose Trade with..., click the trainer, check both offers and accept. Unique items, and bags holding them, can't be traded." },
-            { 'see', { 'gts' } },
+            { 'see', { 'gts', 'sellpokemon' } },
+        } },
+        { key = 'sellpokemon', title = 'Selling Pokemon', portrait = 52, body = {
+            { 'p', "Ron in the Trade Room and Joel Morris in Mandarin Island North buy Pokemon. Joel only trades with trainers who can travel there. Say hi within 5 tiles of them and the Pokemon Trade window opens." },
+            { 'steps', {
+                "Pick Pokemon from the Party tab or from any of your PC boxes in the PC Storage tab. Search and sort by price, level or name.",
+                "Each one you click goes into the basket on the right, with its price and the total.",
+                "Press Sell. Up to 30 Pokemon go in one sale.",
+            } },
+            { 'p', "A Pokemon's price is its species price plus $5 for each level. The species price comes from how hard it is to catch, and shinies are worth double. Hover a card to see the Nature, the IVs and how the price adds up. Held items go back to your bag." },
+            { 'p', "Some Pokemon can't be sold: bound ones, ones that know a TM, one that is out of its ball, and your last Pokemon. Shinies and Pokemon with 5 or more perfect IVs ask you to type SELL first." },
+            { 'tip', "Add everything under $500 fills the basket with your cheap Pokemon, skipping shinies, 5+ perfect IVs and locked ones." },
+            { 'p', "Walking more than 5 tiles away closes the window." },
+            { 'see', { 'gts', 'ivs', 'pc' } },
         } },
         { key = 'unique', title = 'Unique items', item = 11118, body = {
             { 'p', "Unique items belong to one trainer: only they can carry them, they can't be traded, and they can only be put on the floor inside a house. Their look text says so." },
         } },
         { key = 'vip', title = 'VIP list and messages', portrait = 35, body = {
             { 'p', "Right-click a trainer and choose Add to VIP list; the VIP button in the top bar shows who is online. Choose Message to send them a private message." },
+        } },
+        { key = 'discord', title = 'Discord', portrait = 137, body = {
+            { 'p', "Link your account to our Discord server to show your Trainer Card there and hear back about your reports." },
+            { 'steps', {
+                "Say !discord link in the game. You get a code like ABCD-EFGH that works for 10 minutes.",
+                "In Discord, type /link code:ABCD-EFGH.",
+            } },
+            { 'commands', { "!discord link", "!discord status", "!discord unlink" } },
+            { 'p', "The link is for your whole account. You can ask for a new code every 30 seconds, up to 5 an hour. !discord status shows what is linked, and !discord unlink, then !discord unlink confirm within 60 seconds, removes it." },
+            { 'p', "On Discord, /trainer shows a Trainer Card and keeps the privacy settings of the card. Premium trainers get the Ace Trainer role." },
+            { 'tip', "Never give your code to anyone: whoever uses it links your account to their Discord." },
+            { 'see', { 'reports', 'premium' } },
+        } },
+        { key = 'reports', title = 'Reports', portrait = 233, body = {
+            { 'p', "Press Ctrl+Z, or the Reports button in the top bar, to tell the team about a bug or a player breaking the rules." },
+            { 'table', {
+                { "Tab", "For" },
+                { "Report a bug", "Anything broken in the game" },
+                { "Report a player", "Cheating, insults, scams, spam" },
+                { "My reports", "Your reports and the answers" },
+            } },
+            { 'p', "Bugs can be in the client and windows, the map, NPCs and quests, Pokemon and moves, items and shops, or tasks and events. Player reports cover cheating or botting, bug abuse, harassment, scams, offensive names and spam." },
+            { 'p', "Give a short title and say what happened. A screenshot of your screen is attached unless you untick it, and your position goes along too. To report something said in the chat, right-click the message and pick Report player: the message is sent with it." },
+            { 'p', "Player reports are only seen by staff. You can send up to 4 reports an hour and 12 a day." },
+            { 'tip', "Every report becomes a post on our Discord. With your account linked, you are tagged on it and hear back there too." },
+            { 'see', { 'discord' } },
         } },
         { key = 'duels', title = 'Player duels', item = 11420, body = {
             { 'p', "Right-click a trainer and choose Invite to Duel, or Accept Duel when they invited you. Pick how many Pokemon each side uses (1 to 6), the team size up to 6 against 6, and whether to bet." },
@@ -741,6 +806,30 @@ WikiData = {
                 { "6", "2 Revives" },
                 { "7", "1 Rare Candy" },
             } },
+        } },
+        { key = 'calendar', title = 'Events and holidays', item = 12796, body = {
+            { 'p', "Press C, or the calendar in the top bar, to see what runs now, what comes next and every event of the month. Events start and end at 06:00 server time (Pacific); the calendar shows the times in your own time zone." },
+            { 'keys', { "C" } },
+            { 'h', "Weekends" },
+            { 'p', "From Friday 06:00 to Monday 06:00 there is a weekend bonus, taking turns each week: Double EXP, Double Shiny, Double Eggs, then Double Loot. Bonuses that run at the same time multiply." },
+            { 'h', "Holidays" },
+            { 'table', {
+                { "Holiday", "What" },
+                { "New Year, Dec 31 (3 days)", "EXP x1.5, $10,000, a Rare Candy" },
+                { "Lunar New Year (3 days)", "Loot x1.5 and $8,888" },
+                { "Valentine's, Feb 13 (3 days)", "Eggs x2, more Luvdisc, a Rare Candy" },
+                { "Pokemon Day, Feb 27", "Shiny x2 and a Rare Candy" },
+                { "Easter, from Good Friday (4 days)", "Easter eggs from wild Pokemon" },
+                { "Summer Festival, July", "Fishing x1.5, chests for playing" },
+                { "Harvest Moon", "Berries grow twice as fast" },
+                { "Clefairy Night, full moons", "Clefairy at Mt. Moon, Moon Stones" },
+                { "Anniversary, Oct 3 (3 days)", "EXP x2, Shiny x2, cake invasion" },
+                { "Halloween, Oct 24 (9 days)", "Quests, the cauldron, spooky Pokemon" },
+                { "Christmas, Dec 18 (10 days)", "Presents, Christmas Pokemon" },
+            } },
+            { 'p', "Holiday gifts arrive in your bag when you log in, once per holiday. The Summer Festival gives a chest after 1, 2 and 3 hours of play. Harvest Moon runs around the full moon nearest the autumn equinox: berry trees give up to 8 berries, wild Pokemon drop more and seed boxes give twice the seeds. Clefairy Night lasts from 20:00 to 06:00, and the Clefairy and Clefable at Mt. Moon may drop a Moon Stone." },
+            { 'p', "During a holiday, towns put up decorations near the temple." },
+            { 'see', { 'weather', 'login' } },
         } },
         { key = 'quests', title = 'Quests', portrait = 25, body = {
             { 'p', "Quest NPCs answer quest, mission, task or help. Steps ask you to bring items or Pokemon, register species, or defeat or catch a number of Pokemon, and can need a level or an earlier step. The Quest Log follows your progress." },
