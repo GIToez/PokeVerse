@@ -631,3 +631,149 @@ AnniversaryEvent.doResetState = function()
     AnniversaryEvent.setMinionKillCount(0)
     AnniversaryEvent.setEventState(AnniversaryEvent.EVENT_STATES.UNSTARTED)
 end
+
+-- The cake town is only open while the Anniversary holiday runs (EventCalendar, or /anniversary on).
+-- Its only way in is the sign and teleport in the Union Room: the map has them, and they are taken
+-- away while the holiday is off, like a decoration. The town's own teleports all lead back to EXIT_POS.
+AnniversaryEvent.ENTRANCE = {
+    sign = { pos = { x = 4721, y = 132, z = 7 }, itemid = 1438, text = "Event Anniversary" },
+    teleport = { pos = { x = 4721, y = 133, z = 7 }, itemid = 17440, dest = { x = 5285, y = 302, z = 7 } },
+}
+AnniversaryEvent.EXIT_POS = { x = 4721, y = 138, z = 7 }
+AnniversaryEvent.AREA = { center = { x = 5307, y = 315 }, rangeX = 45, rangeY = 45, floors = { 5, 6, 7 } }
+
+AnniversaryEvent.isEntranceOpen = function()
+    return isItem(getTileItemById(AnniversaryEvent.ENTRANCE.teleport.pos, AnniversaryEvent.ENTRANCE.teleport.itemid))
+end
+
+AnniversaryEvent.setEntrance = function(open)
+    local sign, teleport = AnniversaryEvent.ENTRANCE.sign, AnniversaryEvent.ENTRANCE.teleport
+    local signItem = getTileItemById(sign.pos, sign.itemid)
+    local teleportItem = getTileItemById(teleport.pos, teleport.itemid)
+    if (open) then
+        if (not isItem(signItem)) then
+            local uid = doCreateItem(sign.itemid, 1, sign.pos)
+            if (uid) then
+                doItemSetAttribute(uid, "text", sign.text)
+            end
+        end
+        if (not isItem(teleportItem)) then
+            doCreateTeleport(teleport.itemid, teleport.dest, teleport.pos)
+        end
+    else
+        if (isItem(signItem)) then
+            doRemoveItem(signItem.uid)
+        end
+        if (isItem(teleportItem)) then
+            doRemoveItem(teleportItem.uid)
+        end
+    end
+end
+
+-- Everything in the cake town: players are sent back to the Union Room, the cakes removed
+local function forEachInArea(fn)
+    local area = AnniversaryEvent.AREA
+    for _, z in ipairs(area.floors) do
+        for _, creature in ipairs(getSpectators({ x = area.center.x, y = area.center.y, z = z }, area.rangeX, area.rangeY) or {}) do
+            fn(creature)
+        end
+    end
+end
+
+-- reset: clear the invasion but leave the players and the entrance alone
+AnniversaryEvent.close = function(reset)
+    local players = 0
+    forEachInArea(function(creature)
+        if (isPlayer(creature)) then
+            if (reset) then
+                return
+            end
+            doTeleportThing(creature, AnniversaryEvent.EXIT_POS, false)
+            doSendMagicEffect(AnniversaryEvent.EXIT_POS, EFFECT_TELEPORT)
+            doPlayerSendTextMessage(creature, MESSAGE_STATUS_CONSOLE_BLUE, "The cake town is closed until the next Anniversary.")
+            players = players + 1
+        elseif (isMonster(creature) and CAKES_HP[getCreatureName(creature)] and not isPlayer(getCreatureMaster(creature))) then
+            doRemoveCreature(creature)
+        end
+    end)
+
+    if (AnniversaryEvent.getEventState() ~= AnniversaryEvent.EVENT_STATES.UNSTARTED) then
+        AnniversaryEvent.undoCenarionTransformation()
+    end
+    for _, group in pairs(MAGIC_FLAME_POSITIONS) do
+        for _, pos in pairs(group) do
+            local flame = getTileItemById(pos, MAGIC_FLAME_ITEMID)
+            if (isItem(flame)) then
+                doRemoveItem(flame.uid)
+            end
+        end
+    end
+    if (not isItem(getTileItemById(AnniversaryEvent.STATIC_BIG_CAKE_POS, STATIC_BIG_CAKE_ITEMID))) then
+        doCreateItem(STATIC_BIG_CAKE_ITEMID, 1, AnniversaryEvent.STATIC_BIG_CAKE_POS)
+    end
+    AnniversaryEvent.doResetState()
+    if (not reset) then
+        AnniversaryEvent.setEntrance(false)
+    end
+    return players
+end
+
+AnniversaryEvent.open = function()
+    AnniversaryEvent.setEntrance(true)
+    AnniversaryEvent.doStartEvent()
+end
+
+-- Staff can show the entrance for a while without the holiday (/anniversary show), to test it
+AnniversaryEvent.PREVIEW_MINUTES = 30
+AnniversaryEvent.PREVIEW_MAX_MINUTES = 24 * 60
+local KEY_PREVIEW = GLOBAL_STORAGES.ANNIVERSARY_PREVIEW
+
+-- When the preview ends (0: until /anniversary hide), or nil
+AnniversaryEvent.getPreview = function()
+    local endsAt = tonumber(tostring(getStorage(KEY_PREVIEW) or ""):match("^m;(%d+)$"))
+    if (endsAt and (endsAt == 0 or endsAt > os.time())) then
+        return endsAt
+    end
+    return nil
+end
+
+AnniversaryEvent.setPreview = function(minutes)
+    local value = minutes and string.format("m;%d", minutes == 0 and 0 or os.time() + minutes * 60) or "m;"
+    doSetStorage(KEY_PREVIEW, value)
+    db.executeQuery(string.format("REPLACE INTO `global_storage` (`key`, `world_id`, `value`) VALUES (%d, %d, %s);",
+        KEY_PREVIEW, getConfigValue("worldId") or 0, db.escapeString(value)))
+end
+
+-- "event" (the holiday runs), "preview" (only the entrance, for staff) or "off"
+AnniversaryEvent.mode = function()
+    if (EventCalendar.isActive("anniversary")) then
+        return "event"
+    end
+    return AnniversaryEvent.getPreview() and "preview" or "off"
+end
+
+-- Called every second by EventCalendar.onThink, and by /anniversary with now = true. Every Lua
+-- state keeps its own `synced`; open and close are safe to repeat, so the states agree.
+local synced = nil
+AnniversaryEvent.sync = function(now)
+    local mode = AnniversaryEvent.mode()
+    if (mode == synced and not now) then
+        return mode
+    end
+    local startup = synced == nil and not now
+    local was = synced
+    synced = mode
+    if (mode == "event") then
+        AnniversaryEvent.open()
+    elseif (mode == "preview") then
+        if (was == "event") then
+            AnniversaryEvent.close(true)
+        end
+        AnniversaryEvent.setEntrance(true)
+    elseif (startup) then
+        AnniversaryEvent.setEntrance(false)
+    else
+        return mode, AnniversaryEvent.close()
+    end
+    return mode
+end
