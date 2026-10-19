@@ -1,18 +1,16 @@
-local BUG_REPORT_LOG_DIR = LOGS_DIR .. "reports/"
-
+-- The client's plain bug report (clients without the Reports window): a bug report with no category,
+-- titled with the start of the text (lib/ps/systems/083-reports.lua)
 function onReportBug(cid, comment)
-    local logFile = io.open(BUG_REPORT_LOG_DIR .. tostring(getPlayerName(cid)) .. ".log", "a+")
-    if (logFile) then
-        local pos = getPlayerPosition(cid)
-        logFile:write(string.concat("[", getPlayerName(cid), "][", os.date("%a %b %d %X %Y", os.time()),
-            "][X: ", pos.x, ", Y:", pos.y, ", Z:", pos.z, "][", doConvertIntegerToIp(getPlayerIp(cid)),
-            "] :\n", comment, "\n\n"))
-        logFile:close()
-    else
-        log(LOG_TYPES.WARNING, string.concat("Unable to log bug report. (cid: ", cid, ", comment: ",
-            comment, ")"))
+    local text = tostring(comment or "")
+    local title = text:match("^%s*([^\n]+)") or ""
+    if (#title > 60) then
+        title = title:sub(1, 57) .. "..."
     end
-    doPlayerSendCancel(cid, "The report was sent, thank you!")
-    doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.REPORT_BUG)
+    local id, reason = Reports.create(cid, { kind = "bug", category = "other", title = title, description = text })
+    if (id) then
+        doPlayerSendCancel(cid, string.format("Bug report #%d was sent, thank you!", id))
+    else
+        doPlayerSendCancel(cid, reason)
+    end
     return true
 end
