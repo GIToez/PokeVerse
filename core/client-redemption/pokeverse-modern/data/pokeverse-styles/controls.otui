@@ -1,5 +1,48 @@
 // Shared controls in the PokeVerse look (docs/ui-redesign.md). Images: scripts/art/ui_kit.py.
+// Styles already derived from these in /styles/ keep their own copy, so they are listed too.
 
 // buttons.png has rounded corners; styles derived from Button that set their own image keep theirs
 Button < Button
   image-border: 5
+
+TextEdit < TextEdit
+  image-border: 4
+  selection-background-color: #375284
+  selection-color: #ffffff
+
+PasswordTextEdit < PasswordTextEdit
+  image-border: 4
+
+MultilineTextEdit < MultilineTextEdit
+  image-border: 4
+
+AccTextEdit < AccTextEdit
+  image-border: 4
+
+FlatPanel < FlatPanel
+  image-border: 4
+
+ScrollableFlatPanel < ScrollableFlatPanel
+  image-border: 4
+
+LightFlatPanel < LightFlatPanel
+  image-border: 4
+
+ComboBoxPopupMenu < ComboBoxPopupMenu
+  image-border: 4
+
+ComboBoxPopupScrollMenu < ComboBoxPopupScrollMenu
+  image-border: 4
+
+LifeProgressBar < LifeProgressBar
+  border: 1 #060a14
+
+ComboBoxPopupMenuButton < ComboBoxPopupMenuButton
+  $hover !disabled:
+    color: #ffffff
+    background-color: #283e68
+
+ComboBoxPopupScrollMenuButton < ComboBoxPopupScrollMenuButton
+  $hover !disabled:
+    color: #ffffff
+    background-color: #283e68

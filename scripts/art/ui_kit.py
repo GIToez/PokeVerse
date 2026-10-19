@@ -7,9 +7,13 @@ edge, gold accent) drawn into the images the client's shared styles use.
 Writes under core/client-redemption/pokeverse-modern:
   data/images/ui/            Redemption's names, so every style that uses them changes at once:
                              miniwindow_body, miniwindow_header, miniwindow_buttons, scrollbar,
-                             buttons, item, window
+                             buttons, item, window, and the controls (text fields, combo boxes,
+                             check boxes, tabs, chat tabs, small buttons, flat panels, frames,
+                             popup menus, progress bars)
+  data/images/automap/       automap_buttons (the minimap zoom and full map buttons)
   data/images/inventory/     containerslot
   modules/game_dailytasks/images/window   the popup frame 15 PokeVerse windows share
+  modules/game_npcdialog/images           panel, inset, word and goodbye buttons
   data/images/pokeverse-ui/  the PokeVerse pieces: sockets, chips, the move slot and its type edges
 
 Frames are 9-slice images; the border each style must use is noted next to it.
@@ -28,7 +32,7 @@ OVERLAY = REPO / 'core/client-redemption/pokeverse-modern'
 # the tokens (docs/ui-redesign.md)
 BODY = (14, 23, 41)
 SIDE_ALPHA = 0.72      # side windows: the map shows through
-WINDOW_ALPHA = 0.94    # popups hold more text and stack over each other, so barely see-through
+WINDOW_ALPHA = 1.0     # popups hold text and stack over each other, so text behind must not show
 EDGE = (55, 82, 132)
 EDGE_ALPHA = 0.5
 GOLD = (217, 170, 59)
@@ -168,6 +172,181 @@ def popup_frame():
     return card(64, 64, 10, WINDOW_ALPHA)
 
 
+# --- controls -----------------------------------------------------------------------------
+# Same size and state layout as the sheets they replace, so no style has to move a clip.
+
+FIELD = (8, 14, 26)
+FIELD_ALPHA = 0.85
+RAISED = (27, 42, 70)
+
+
+def well(w, h, r=3, fill=FIELD, alpha=FIELD_ALPHA, edge=0.6):
+    """An inset box: text fields, list and panel wells."""
+    im = canvas(w, h)
+    ImageDraw.Draw(im).rounded_rectangle((0, 0, im.width - 1, im.height - 1), s(r), fill=rgba(fill, alpha),
+                                         outline=rgba(EDGE, edge) if edge else None, width=s(1))
+    return im
+
+
+def frame_only(w, h, r=3, alpha=0.6):
+    im = canvas(w, h)
+    ImageDraw.Draw(im).rounded_rectangle((0, 0, im.width - 1, im.height - 1), s(r), outline=rgba(EDGE, alpha),
+                                         width=s(1))
+    return im
+
+
+def chevron(d, cx, cy, color, size=3.0):
+    d.line([(cx - s(size), cy - s(size / 2)), (cx, cy + s(size / 2)), (cx + s(size), cy - s(size / 2))],
+           fill=color, width=s(1.4), joint='curve')
+
+
+def combobox(w, h, rows, arrow=21, r=3):
+    """ComboBox sheets: rows of (state) bands h tall, then the popup background band.
+    states: 'normal', 'open', 'on'."""
+    im = canvas(w, h * (len(rows) + 1))
+    d = ImageDraw.Draw(im)
+    for i, state in enumerate(rows):
+        y0, y1 = s(h * i), s(h * (i + 1)) - 1
+        fill = HOVER if state == 'open' else FIELD
+        edge = rgba(GOLD, 0.9) if state == 'open' else rgba(EDGE, 0.7)
+        d.rounded_rectangle((0, y0, im.width - 1, y1), s(r), fill=rgba(fill, 0.92), outline=edge, width=s(1))
+        ax = im.width - s(arrow / 2) - s(1)
+        d.line((im.width - s(arrow), y0 + s(4), im.width - s(arrow), y1 - s(4)), fill=rgba(EDGE, 0.5), width=s(1))
+        if state != 'on':
+            chevron(d, ax, (y0 + y1) // 2, rgba(GOLD if state == 'open' else MUTED))
+    y0 = s(h * len(rows))
+    d.rounded_rectangle((0, y0, im.width - 1, im.height - 1), s(r), fill=rgba(BODY, 0.97), outline=rgba(EDGE),
+                        width=s(1))
+    return im
+
+
+def check_box(size, state, round_=False):
+    """state: 'off', 'on', 'on-disabled'."""
+    im = canvas(size, size)
+    d = ImageDraw.Draw(im)
+    box = (s(0.5), s(0.5), im.width - 1 - s(0.5), im.height - 1 - s(0.5))
+    on = state != 'off'
+    fill = rgba(GOLD, 0.45 if state == 'on-disabled' else 1) if on else rgba(FIELD, 0.9)
+    edge = None if on else rgba(MUTED, 0.6)
+    if round_:
+        d.ellipse(box, fill=rgba(FIELD, 0.9), outline=rgba(GOLD if on else MUTED, 1 if on else 0.6), width=s(1.2))
+        if on:
+            k = size * 0.27
+            d.ellipse((s(k), s(k), im.width - s(k), im.height - s(k)), fill=fill)
+        return im
+    d.rounded_rectangle(box, s(size * 0.25), fill=fill, outline=edge, width=s(1))
+    if on:
+        u = size / 12
+        d.line([(s(3 * u), s(6.2 * u)), (s(5.2 * u), s(8.4 * u)), (s(9.2 * u), s(3.8 * u))], fill=rgba(CHIP),
+               width=s(1.6 * u), joint='curve')
+    return im
+
+
+def sheet(cells, w, pitch, h=None):
+    """Stack images vertically every `pitch` px."""
+    im = canvas(w, pitch * (len(cells) - 1) + (h or pitch))
+    for i, cell in enumerate(cells):
+        im.alpha_composite(cell, (0, s(pitch * i)))
+    return im
+
+
+def tab(w, h, state, r=4, gold_line=True):
+    """A tab with rounded top corners; state 'normal', 'hover' or 'checked'."""
+    im = canvas(w, h)
+    d = ImageDraw.Draw(im)
+    fill = {'normal': (rgba(FIELD, 0.75)), 'hover': rgba(HOVER, 0.85), 'checked': rgba(RAISED, 0.97)}[state]
+    d.rounded_rectangle((0, 0, im.width - 1, im.height - 1 + s(r)), s(r), fill=fill,
+                        outline=rgba(EDGE, 0.8 if state == 'checked' else 0.45), width=s(1))
+    if state == 'checked' and gold_line:
+        d.rectangle((s(r), im.height - s(2), im.width - 1 - s(r), im.height - 1), fill=rgba(GOLD))
+    return im
+
+
+def small_button(w, h, state, r=4):
+    im = canvas(w, h)
+    fill = {'normal': rgba(RAISED, 0.95), 'hover': rgba(HOVER, 0.95), 'pressed': rgba((20, 31, 54), 0.95)}[state]
+    edge = rgba(GOLD) if state == 'pressed' else rgba(EDGE)
+    ImageDraw.Draw(im).rounded_rectangle((0, 0, im.width - 1, im.height - 1), s(r), fill=fill, outline=edge,
+                                         width=s(1))
+    return im
+
+
+def progress_frame(w=80, h=16):
+    """Drawn over the bar's background-color fill, so the inside stays clear."""
+    im = canvas(w, h)
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, im.width - 1, im.height - 1), s(2), outline=rgba(CHIP, 0.9), width=s(1.5))
+    d.rounded_rectangle((s(1), s(1), im.width - 1 - s(1), im.height // 2), s(1.5), fill=(255, 255, 255, 28))
+    return im
+
+
+def automap_buttons():
+    """automap_buttons, 40x60: rows full map, zoom out, zoom in; column 0 normal, column 20 pressed."""
+    im = canvas(40, 60)
+    d = ImageDraw.Draw(im)
+    for col in range(2):
+        for row in range(3):
+            x0, y0 = s(20 * col), s(20 * row)
+            d.rounded_rectangle((x0 + s(1), y0 + s(1), x0 + s(19) - 1, y0 + s(19) - 1), s(5),
+                                fill=rgba(HOVER if col else RAISED, 0.95), outline=rgba(GOLD if col else EDGE),
+                                width=s(1))
+            cx, cy, ink = x0 + s(10), y0 + s(10), rgba(TEXT)
+            if row == 0:
+                pts = [(-5, -3.5), (-1.7, -5), (1.7, -3.5), (5, -5), (5, 3.5), (1.7, 5), (-1.7, 3.5), (-5, 5)]
+                d.polygon([(cx + s(x), cy + s(y)) for x, y in pts], outline=ink, width=s(1.3))
+                d.line((cx - s(1.7), cy - s(5), cx - s(1.7), cy + s(3.5)), fill=ink, width=s(1.1))
+                d.line((cx + s(1.7), cy - s(3.5), cx + s(1.7), cy + s(5)), fill=ink, width=s(1.1))
+            else:
+                d.line((cx - s(4), cy, cx + s(4), cy), fill=ink, width=s(1.8))
+                if row == 2:
+                    d.line((cx, cy - s(4), cx, cy + s(4)), fill=ink, width=s(1.8))
+    return im
+
+
+def npc_dialog(out):
+    """game_npcdialog: panel (border 10), inset (border 6), word and goodbye buttons (20x22, border 7).
+    Yes and No keep their green and red."""
+    save(card(32, 32, 8, 0.96), out / 'panel.png')
+    save(well(20, 20, 5), out / 'inset.png')
+    for name in ('word', 'goodbye'):
+        save(small_button(20, 22, 'normal', 6), out / f'{name}.png')
+        save(small_button(20, 22, 'hover', 6), out / f'{name}-hover.png')
+
+
+def controls(ui):
+    save(well(32, 32, 3), ui / 'textedit.png')                       # TextEdit, border 4 in controls.otui
+    save(combobox(98, 20, ['normal', 'open', 'on']), ui / 'combobox_square.png')
+    save(combobox(91, 20, ['normal', 'open', 'on'], 22), ui / 'combobox_new.png')
+    save(combobox(91, 23, ['normal', 'open', 'on']), ui / 'combobox_rounded.png')
+    save(sheet([check_box(12, s_) for s_ in ('off', 'on', 'on-disabled')], 12, 12), ui / 'checkbox.png')
+    save(sheet([check_box(12, s_, True) for s_ in ('off', 'on', 'on-disabled')], 12, 12), ui / 'checkboxcircle.png')
+    save(sheet([check_box(12, s_, True) for s_ in ('off', 'on')], 12, 12), ui / 'checkbox_round.png')
+    save(sheet([check_box(13, s_) for s_ in ('off', 'on', 'on-disabled')], 14, 13, 14), ui / 'newcheckbox.png')
+    save(check_box(12, 'off'), ui / 'checkbox-unchecked.png')
+    save(check_box(12, 'on'), ui / 'checkbox-checked.png')
+    save(check_box(12, 'on-disabled'), ui / 'checkbox-checked-disabled.png')
+    save(sheet([tab(96, 18, st) for st in ('normal', 'hover', 'checked')], 96, 18, 21), ui / 'tabbutton_square.png')
+    save(sheet([tab(22, 23, st) for st in ('normal', 'hover', 'checked')], 22, 23), ui / 'tabbutton_rounded.png')
+    save(sheet([tab(114, 21, st, gold_line=False) for st in ('normal', 'checked')], 114, 21),
+         ui / 'tabbutton_new_shadowed.png')
+    save(sheet([tab(96, 18, 'checked'), tab(96, 18, 'normal')], 96, 18), ui / 'console_button.png')
+    for name in ('button', 'button_rounded'):
+        save(sheet([small_button(22, 23, st) for st in ('normal', 'hover', 'pressed')], 22, 23), ui / f'{name}.png')
+    save(small_button(98, 40, 'normal'), ui / 'button-9grid-idle.png')
+    save(small_button(98, 40, 'pressed'), ui / 'button-9grid-pressed.png')
+    save(well(32, 32, 3, alpha=0.55, edge=0.45), ui / 'panel_flat.png')       # border 4 in controls.otui
+    save(well(32, 32, 3, RAISED, 0.6, 0.45), ui / 'panel_lightflat.png')
+    save(well(100, 100, 3, alpha=0.5, edge=0.5), ui / '2pixel_up_frame_borderimage.png')
+    save(frame_only(100, 100, 2), ui / '2pixel_up_frame_borderimage_dark.png')
+    save(frame_only(96, 96, 1), ui / '1pixel-down-frame.png')
+    save(frame_only(96, 96, 1, 0.8), ui / '1pixel_down_frame.png')           # the minimap frame
+    save(automap_buttons(), ui.parent / 'automap/automap_buttons.png')
+    save(card(102, 102, 4, 0.97), ui / '3pixel_frame_borderimage.png')        # popup menus, border 4
+    save(card(256, 256, 4, WINDOW_ALPHA), ui / 'window_new.png')
+    save(card(256, 239, 4, WINDOW_ALPHA), ui / 'window_headless.png')
+    save(progress_frame(), ui / 'progressbar.png')
+
+
 # --- PokeVerse pieces ---------------------------------------------------------------------
 
 def socket(size, state='normal'):
@@ -259,6 +438,8 @@ def main():
     save(window(), ui / 'window.png')
     save(slot(34), OVERLAY / 'data/images/inventory/containerslot.png')
     save(popup_frame(), OVERLAY / 'modules/game_dailytasks/images/window.png')
+    controls(ui)
+    npc_dialog(OVERLAY / 'modules/game_npcdialog/images')
 
     kit = OVERLAY / 'data/images/pokeverse-ui'
     save(underline(), kit / 'title-underline.png')
