@@ -65,6 +65,75 @@ local function newMark(image, size, phantom)
     return mark
 end
 
+-- the map's names (game_minimap's map_labels.lua): the regions zoomed out, then the cities, the
+-- routes and the landmarks as the map zooms in; only on the ground floor, where they are
+local LABELS_SETTING = 'pokepedia-map-labels'
+local LABEL_STYLES = { region = 'PpMapRegionLabel', city = 'PpMapLabel', route = 'PpMapRouteLabel',
+    landmark = 'PpMapLandmarkLabel' }
+-- the zoom each kind shows from; the regions show below the cities' zoom
+local LABEL_ZOOMS = { city = -1, route = 0, landmark = 1 }
+local SURFACE = 7
+local labelWidgets = {}
+
+local function mapData()
+    local map = modules.game_minimap and modules.game_minimap.PokeverseMap
+    return map and map.getLabels and map or nil
+end
+
+local function labelsOn()
+    return g_settings.getBoolean(LABELS_SETTING, true)
+end
+
+local function refreshLabels()
+    local cam = camera()
+    local shown = labelsOn() and cam ~= nil and cam.z == SURFACE
+    local zoom = minimap:getZoom()
+    for _, label in ipairs(labelWidgets) do
+        if label.kind == 'region' then
+            label:setVisible(shown and zoom < LABEL_ZOOMS.city)
+        else
+            label:setVisible(shown and zoom >= LABEL_ZOOMS[label.kind])
+        end
+    end
+    local button = page.mapFrame.controls.labels
+    button:setColor(labelsOn() and '#ffd75a' or '#6f7f99')
+    button:setTooltip(labelsOn() and tr('Hide the names of places') or tr('Show the names of places'))
+end
+
+-- "Orange Islands" as "O R A N G E   I S L A N D S"
+local function spaced(text)
+    return (text:upper():gsub('(%S)', '%1 '):gsub('%s+$', ''))
+end
+
+local function drawLabels()
+    for _, label in ipairs(labelWidgets) do
+        label:destroy()
+    end
+    labelWidgets = {}
+    local map = mapData()
+    if not map then
+        return
+    end
+    local function add(kind, text, pos)
+        local label = g_ui.createWidget(LABEL_STYLES[kind])
+        minimap:insertChild(1, label)
+        label:setText(text)
+        label.kind = kind
+        label.pos = pos
+        minimap:centerInPosition(label, pos)
+        labelWidgets[#labelWidgets + 1] = label
+    end
+    for _, region in ipairs(map.getRegions()) do
+        if region.position then
+            add('region', spaced(tr(region.name)), region.position)
+        end
+    end
+    for _, label in ipairs(map.getLabels()) do
+        add(label.kind, tr(label.name), label.position)
+    end
+    refreshLabels()
+end
+
 local function refreshVisibility()
     local z = camera().z
     for _, list in ipairs({ waypointMarks, stopMarks, dots, shownMarks }) do
@@ -81,6 +150,7 @@ local function refreshVisibility()
     end
     page.mapFrame.controls.floor:setText(Pp.floorName(z))
     page.mapFrame.controls.floor:setTooltip(tr('Floor %d', z))
+    refreshLabels()
 end
 
 local function updatePlayerMark()
@@ -412,22 +482,15 @@ local function getPlaces()
     if places then
         return places
     end
-    local map = modules.game_minimap and modules.game_minimap.PokeverseMap
-    places = map and map.getPlaces and map.getPlaces() or {}
-    table.sort(places, function(a, b)
-        if (a.type == nil) ~= (b.type == nil) then
-            return a.type == nil
-        end
-        if a.town ~= b.town then
-            return a.town < b.town
-        end
-        return a.name < b.name
-    end)
+    local map = mapData()
+    places = map and map.getPlaces() or {}
     return places
 end
 
-local selectedPlace
+local selectedPlace, selectPlace
 local expandedTowns = {}
+-- region id: open; the player's region starts open
+local expandedRegions
 
 -- the guide marks only carry a name, so the kind comes from the words in it (first match wins)
 local KINDS = {
@@ -436,12 +499,15 @@ local KINDS = {
     { id = 'shop', name = 'Shops and banks', words = { 'mart', 'bank', 'shop', 'store' } },
     { id = 'gym', name = 'Gyms', words = { 'gym' } },
     { id = 'club', name = 'Guilds and clubs', words = { 'guild', 'ranger', 'club' } },
+    { id = 'route', name = 'Routes' },
+    { id = 'landmark', name = 'Landmarks' },
     { id = 'other', name = 'Other places' },
 }
 
+-- towns, routes and landmarks carry their kind; a guide mark's comes from its name
 local function placeKind(place)
     if not place.type then
-        return 'town'
+        return place.kind or 'town'
     end
     if not place.kind then
         local name = place.name:lower()
@@ -461,64 +527,199 @@ local function placeKind(place)
     return place.kind
 end
 
+local function groupIcon(kind)
+    if kind == 'route' then
+        return Pp.IMAGES .. 'icon_route'
+    elseif kind == 'landmark' then
+        return Pp.IMAGES .. 'icon_map'
+    end
+    return '/modules/client_entergame/images/town'
+end
+
+-- zooms in to at least zoom, never out
+local function zoomTo(zoom)
+    if minimap:getZoom() < zoom then
+        minimap:setZoom(zoom)
+    end
+end
+
 local function addPlaceRow(list, place)
     local row = g_ui.createWidget('PpPlaceRow', list)
-    row.icon:setImageSource(place.type and iconPath(place.icon or place.type) or '/modules/client_entergame/images/town')
+    local kind = placeKind(place)
+    row.icon:setImageSource(place.type and iconPath(place.icon or place.type) or groupIcon(kind))
     local size = place.type and iconSize(place.icon or place.type) or 12
     row.icon:setSize({ width = size, height = size })
-    row.name:setText(place.type and place.name or tr('Town centre'))
+    row.name:setText(kind == 'town' and tr('Town centre') or place.name)
     row.town:setText('')
-    row:setTooltip(Pp.formatPosition(place.position))
+    row:setTooltip(tr('%s. Click to show it, double-click to walk there.', Pp.formatPosition(place.position)))
     row.place = place
+    row.onClick = function() selectPlace(place) end
     row.onDoubleClick = function() Navigation.goTo(place.position, place.name) end
     return row
 end
 
+-- the order inside a region: its towns by name, then the routes, then the landmarks
+local GROUP_ORDER = { town = 0, route = 1, landmark = 2 }
+
+local function routeNumber(place)
+    return tonumber(place.name:match('(%d+)$')) or 0
+end
+
+-- game_minimap may load after the Pokepedia, so the regions are filled in once it has
+local function fillRegions()
+    local combo = page.side.placesPanel.region
+    local map = mapData()
+    if combo.filled or not map then
+        return
+    end
+    combo.filled = true
+    combo:addOption(tr('All regions'), '')
+    for _, region in ipairs(map.getRegions()) do
+        combo:addOption(tr(region.name), region.id)
+    end
+end
+
 local function drawPlaces()
     local panel = page.side.placesPanel
+    fillRegions()
     local filter = panel.search:getText():lower()
     local kind = (panel.kind:getCurrentOption() or {}).data or ''
-    local groups, byTown, count = {}, {}, 0
+    local regionFilter = (panel.region:getCurrentOption() or {}).data or ''
+    local openAll = filter ~= '' or kind ~= ''
+    local map = mapData()
+    if not expandedRegions then
+        expandedRegions = {}
+        local player = g_game.getLocalPlayer()
+        if map and player then
+            expandedRegions[map.regionAt(player:getPosition())] = true
+        end
+    end
+
+    local byRegion, count = {}, 0
     for _, place in ipairs(getPlaces()) do
-        local wanted = kind == '' or placeKind(place) == kind
+        local wanted = (kind == '' or placeKind(place) == kind) and (regionFilter == '' or place.region == regionFilter)
         if wanted and (filter == '' or place.name:lower():find(filter, 1, true) or place.town:lower():find(filter, 1, true)) then
-            local group = byTown[place.town]
+            local region = byRegion[place.region]
+            if not region then
+                region = { groups = {}, byTown = {}, count = 0 }
+                byRegion[place.region] = region
+            end
+            local group = region.byTown[place.town]
             if not group then
-                group = { key = place.town, name = place.town, icon = '/modules/client_entergame/images/town', entries = {} }
-                byTown[place.town] = group
-                groups[#groups + 1] = group
+                local groupKind = place.type and 'town' or placeKind(place)
+                group = { key = place.region .. '/' .. place.town, name = place.town, kind = groupKind,
+                    icon = groupIcon(groupKind), entries = {} }
+                region.byTown[place.town] = group
+                region.groups[#region.groups + 1] = group
             end
             group.entries[#group.entries + 1] = place
+            region.count = region.count + 1
             count = count + 1
         end
     end
-    table.sort(groups, function(a, b) return a.name < b.name end)
-    for _, group in ipairs(groups) do
-        -- the town itself first, then its places by name
-        table.sort(group.entries, function(a, b)
-            if (a.type == nil) ~= (b.type == nil) then
-                return a.type == nil
-            end
-            return a.name < b.name
-        end)
-        group.note = tostring(#group.entries)
-    end
+
+    local list = panel.list
+    list:destroyChildren()
     local focus
-    Pp.fillTree(panel.list, groups, expandedTowns, function(list, place)
-        local row = addPlaceRow(list, place)
-        if place == selectedPlace then
-            focus = row
+    for _, info in ipairs(map and map.getRegions() or {}) do
+        local region = byRegion[info.id]
+        if region then
+            table.sort(region.groups, function(a, b)
+                if a.kind ~= b.kind then
+                    return (GROUP_ORDER[a.kind] or 0) < (GROUP_ORDER[b.kind] or 0)
+                end
+                return a.name < b.name
+            end)
+            for _, group in ipairs(region.groups) do
+                -- the town itself first, then its places by name; routes by number
+                table.sort(group.entries, function(a, b)
+                    local aTown, bTown = placeKind(a) == 'town', placeKind(b) == 'town'
+                    if aTown ~= bTown then
+                        return aTown
+                    end
+                    if group.kind == 'route' then
+                        return routeNumber(a) < routeNumber(b)
+                    end
+                    return a.name < b.name
+                end)
+                group.note = tostring(#group.entries)
+                if group.kind == 'town' then
+                    for _, entry in ipairs(group.entries) do
+                        if placeKind(entry) == 'town' then
+                            group.onClick = function()
+                                centerOn(entry.position)
+                                zoomTo(1)
+                            end
+                            break
+                        end
+                    end
+                end
+            end
+
+            local header = g_ui.createWidget('PpGroupRow', list)
+            header.name:setText(tr(info.name):upper())
+            header.name:setColor('#ffd75a')
+            header.note:setText(tostring(region.count))
+            header.icon:setImageSource(Pp.IMAGES .. 'icon_map')
+            header.icon:show()
+            header:setMarginTop(8)
+            local towns = Pp.addTree(list, region.groups, expandedTowns, function(rows, place)
+                local row = addPlaceRow(rows, place)
+                if place == selectedPlace then
+                    focus = row
+                end
+                return row
+            end, openAll)
+            header.rows = {}
+            for _, town in ipairs(towns) do
+                header.rows[#header.rows + 1] = town
+                for _, row in ipairs(town.rows) do
+                    header.rows[#header.rows + 1] = row
+                end
+            end
+            header.apply = function()
+                local open = openAll or regionFilter ~= '' or expandedRegions[info.id] == true
+                header.chevron:setImageSource(Pp.IMAGES .. (open and 'chevron_down' or 'chevron_right'))
+                header:setOn(open)
+                for _, town in ipairs(towns) do
+                    town:setVisible(open)
+                    if open then
+                        town.apply()
+                    else
+                        for _, row in ipairs(town.rows) do
+                            row:setVisible(false)
+                        end
+                    end
+                end
+            end
+            header.open = function()
+                expandedRegions[info.id] = true
+                header.apply()
+            end
+            header.onMouseRelease = function(widget, mousePos, mouseButton)
+                if mouseButton == MouseLeftButton and widget:containsPoint(mousePos) then
+                    if not openAll and regionFilter == '' then
+                        expandedRegions[info.id] = not expandedRegions[info.id]
+                        header.apply()
+                    end
+                    if info.position then
+                        centerOn(info.position)
+                        minimap:setZoom(LABEL_ZOOMS.city)
+                    end
+                end
+                return true
+            end
+            header.apply()
         end
-        return row
-    end, filter ~= '' or kind ~= '')
+    end
     if count == 0 then
-        local hint = g_ui.createWidget('TkMuted', panel.list)
+        local hint = g_ui.createWidget('TkMuted', list)
         hint:setText(tr('Nothing matches.'))
         hint:setMarginLeft(6)
         hint:setMarginTop(6)
     end
     if focus then
-        Pp.revealRow(panel.list, focus)
+        Pp.revealRow(list, focus)
     end
 end
 
@@ -528,6 +729,13 @@ local function setFocus(pos, text)
     end
     focusMark:setTooltip(text or '')
     placeMark(focusMark, pos)
+end
+
+selectPlace = function(place)
+    selectedPlace = place
+    setFocus(place.position, place.name)
+    centerOn(place.position)
+    zoomTo(place.type and 2 or 1)
 end
 
 -- the tabs and the other pages
@@ -673,6 +881,7 @@ local function setupMinimap()
     minimap.onZoomChange = function(widget, zoom)
         removeEvent(zoomEvent)
         zoomEvent = scheduleEvent(drawDots, 50)
+        refreshLabels()
     end
 
     local controls = page.mapFrame.controls
@@ -685,12 +894,17 @@ local function setupMinimap()
     controls.floorDown.onClick = function() minimap:floorDown(1); refreshVisibility() end
     controls.zoomIn.onClick = function() minimap:zoomIn() end
     controls.zoomOut.onClick = function() minimap:zoomOut() end
+    controls.labels.onClick = function()
+        g_settings.set(LABELS_SETTING, not labelsOn())
+        refreshLabels()
+    end
     controls.view.onClick = function()
         g_settings.set(REAL_MAP_SETTING, not g_settings.getBoolean(REAL_MAP_SETTING, true))
         applyView()
     end
     minimap:setFloorSeparatorOpacity(GROUND_OPACITY)
     applyView()
+    drawLabels()
     page.mapFrame.pokedexButton.onClick = function() Pp.send({ action = 'pokedex' }) end
     page.mapFrame.pokedexButton:setTooltip(tr('Open your Pokedex'))
 end
@@ -737,11 +951,11 @@ function MapTab.setup(widget)
         placesPanel.kind:addOption(tr(kind.name), kind.id)
     end
     placesPanel.kind.onOptionChange = drawPlaces
+    fillRegions()
+    placesPanel.region.onOptionChange = drawPlaces
     placesPanel.list.onChildFocusChange = function(list, focused)
-        if focused and focused.place then
-            selectedPlace = focused.place
-            setFocus(focused.place.position, focused.place.name)
-            centerOn(focused.place.position)
+        if focused and focused.place and focused.place ~= selectedPlace then
+            selectPlace(focused.place)
         end
     end
     local buttons = placesPanel.buttons
@@ -809,6 +1023,9 @@ end
 function MapTab.onShow()
     if not g_game.isOnline() then
         return
+    end
+    if #labelWidgets == 0 then
+        drawLabels()
     end
     if page.side.placesPanel.list:getChildCount() == 0 then
         drawPlaces()
