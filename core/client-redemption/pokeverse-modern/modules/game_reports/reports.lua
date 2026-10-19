@@ -29,6 +29,23 @@ local selected -- id
 local staffQuery = { kind = 'all', status = 'active', query = '', offset = 0 }
 local staffTotal, staffPage = 0, 30
 local current -- the report open in the staff details
+local direct = false -- the staff details show a report that may not be in the list (from the map, a link)
+local revealEvent
+
+-- The form's screenshot is taken as the window opens (before it shows), shrunk by g_app.doScaledScreenshot,
+-- and sent after the report in base64 parts the server joins (Reports.SHOT_PART, SHOT_PARTS).
+local SHOT_WIDTH = 960
+local SHOT_PART = 3000
+local SHOT_MAX_PARTS = 400
+local UPLOAD_PER_TICK, UPLOAD_TICK = 10, 100
+local PNG_END = '\73\69\78\68\174\66\96\130' -- the IEND chunk: the file is complete
+local shot = {} -- {file, data, taking, failed}
+local shotCount = 0
+local shotPoll
+local upload -- {id, encoded, n, i, event}
+local download -- {id, parts, got, row}
+local viewer
+local setFeedback
 
 local function send(data)
     local protocol = g_game.getProtocolGame()
@@ -127,6 +144,171 @@ local function drawInfo()
     end
 end
 
+-- the screenshot ------------------------------------------------------------------------------------------
+
+local function shotSupported()
+    return g_app.doScaledScreenshot ~= nil
+end
+
+local function shotWanted()
+    return shotSupported() and window.form.info.shotCheck:isChecked()
+end
+
+local function readPng(file)
+    local ok, data = pcall(g_resources.readFileContents, file)
+    if ok and type(data) == 'string' and #data > 24 and data:sub(-8) == PNG_END then
+        return data
+    end
+end
+
+local function pngSize(data)
+    local function word(at)
+        local a, b, c, d = data:byte(at, at + 3)
+        return ((a * 256 + b) * 256 + c) * 256 + d
+    end
+    return word(17), word(21)
+end
+
+local function deleteFile(file)
+    if file and g_resources.fileExists(file) then
+        pcall(g_resources.deleteFile, file)
+    end
+end
+
+local function drawShot()
+    local info = window.form.info
+    local frame = info.shotFrame
+    local supported = shotSupported()
+    info.shotCheck:setEnabled(supported)
+    info.retake:setEnabled(supported and info.shotCheck:isChecked() and not sending and not shot.taking)
+    local ready = shotWanted() and shot.data ~= nil
+    frame.image:setVisible(ready)
+    if ready then
+        frame.image:setImageSource(shot.file)
+    end
+    frame.none:setVisible(not ready)
+    local text = tr('No screenshot')
+    if not supported then
+        text = tr('Update the client to send screenshots')
+    elseif shot.taking then
+        text = tr('Taking...')
+    elseif shot.failed and info.shotCheck:isChecked() then
+        text = tr('The screenshot did not work')
+    end
+    frame.none:setText(text)
+end
+
+local function dropShot()
+    removeEvent(shotPoll)
+    shotPoll = nil
+    deleteFile(shot.file)
+    shot = {}
+end
+
+-- takes the screen as it is now; the window must be hidden until the next frame
+local function takeShot()
+    dropShot()
+    if not shotSupported() then
+        return
+    end
+    shotCount = shotCount + 1
+    local file = string.format('/report_shot_%d.png', shotCount)
+    shot = { file = file, taking = true }
+    g_app.doScaledScreenshot(file, SHOT_WIDTH)
+    local tries = 0
+    local function poll()
+        shotPoll = nil
+        tries = tries + 1
+        local data = g_resources.fileExists(file) and readPng(file)
+        if not data and tries < 40 then
+            shotPoll = scheduleEvent(poll, 100)
+            return
+        end
+        shot.taking = nil
+        if data and math.ceil(#data * 4 / 3 / SHOT_PART) <= SHOT_MAX_PARTS then
+            shot.data = data
+        else
+            shot.failed = true
+        end
+        if window then
+            drawShot()
+        end
+    end
+    shotPoll = scheduleEvent(poll, 100)
+end
+
+local function reveal()
+    window:show()
+    window:raise()
+    window:focus()
+end
+
+function retakeShot()
+    if not window or sending then
+        return
+    end
+    window:hide()
+    takeShot()
+    drawShot()
+    removeEvent(revealEvent)
+    revealEvent = scheduleEvent(function()
+        revealEvent = nil
+        if window and g_game.isOnline() then
+            reveal()
+        end
+    end, 80)
+end
+
+function onShotCheck()
+    if not window then
+        return
+    end
+    if shotWanted() and not shot.data and not shot.taking then
+        retakeShot()
+    end
+    drawShot()
+end
+
+local function stopUpload()
+    if upload then
+        removeEvent(upload.event)
+    end
+    upload = nil
+end
+
+local function startUpload(id, data)
+    stopUpload()
+    local encoded = base64.encode(data)
+    upload = { id = id, encoded = encoded, n = math.ceil(#encoded / SHOT_PART), i = 0 }
+    local function tick()
+        upload.event = nil
+        for _ = 1, UPLOAD_PER_TICK do
+            upload.i = upload.i + 1
+            local i = upload.i
+            send({ action = 'shot', id = id, i = i, n = upload.n,
+                   data = encoded:sub((i - 1) * SHOT_PART + 1, i * SHOT_PART) })
+            if i >= upload.n then
+                break
+            end
+        end
+        if window then
+            setFeedback(tr('Report #%d was sent. Sending the screenshot: %d%%', id,
+                math.floor(upload.i * 100 / upload.n)), true)
+        end
+        if upload.i < upload.n then
+            upload.event = scheduleEvent(tick, UPLOAD_TICK)
+        else
+            upload.event = scheduleEvent(function()
+                upload = nil
+                if window then
+                    setFeedback(tr('Report #%d was sent, but the screenshot did not arrive.', id))
+                end
+            end, 15000)
+        end
+    end
+    tick()
+end
+
 local function onPositionChange()
     if isVisible() and FORM_TABS[tab] then
         drawInfo()
@@ -159,7 +341,7 @@ local function fitBody(staff)
     end
 end
 
-local function setFeedback(text, good)
+setFeedback = function(text, good)
     local feedback = window.form.fields.feedback
     feedback:setText(text or '')
     feedback:setColor(good and '#7ee0a3' or '#ffb4b4')
@@ -191,6 +373,7 @@ local function drawForm()
     fields.send:setEnabled(not sending)
     updateCounter()
     drawInfo()
+    drawShot()
 end
 
 function clearForm()
@@ -210,7 +393,9 @@ function submit()
     local fields = window.form.fields
     local option = fields.category:getCurrentOption()
     sending = true
+    shot.send = shotWanted() and shot.data ~= nil and not shot.used
     fields.send:setEnabled(false)
+    drawShot()
     setFeedback(tr('Sending...'), true)
     removeEvent(sendTimeout)
     sendTimeout = scheduleEvent(function()
@@ -230,6 +415,7 @@ function submit()
         target = tab == 'player' and fields.target:getText() or nil,
         statement = tab == 'player' and statement or nil,
         client = clientInfo(),
+        screenshot = shot.send or nil,
     })
 end
 
@@ -258,6 +444,13 @@ local function bodyText(text, style)
     return label
 end
 
+local function link(text, id)
+    local label = g_ui.createWidget('ReportLinkLabel', window.browser.details.body)
+    label:setText(text)
+    label.onClick = function() openStaffReport(id) end
+    return label
+end
+
 local function showDetails(report, full)
     local details = window.browser.details
     details.hint:setVisible(false)
@@ -280,6 +473,23 @@ local function showDetails(report, full)
         section(tr('From'))
         bodyText(tr('%s, level %d (%s)', report.reporter, report.level or 0,
             report.online and tr('online') or tr('offline')))
+        section(tr('Taken by'))
+        bodyText(report.assignedTo or tr('Nobody yet'), report.assignedTo and 'ReportBody' or 'ReportEvent')
+        if report.duplicateOf then
+            section(tr('Same as'))
+            link(tr('#%d: its reporter hears about that one. Open it', report.duplicateOf), report.duplicateOf)
+        end
+        if report.duplicates and #report.duplicates > 0 then
+            section(tr('Also reported by (they hear about this one)'))
+            for _, dup in ipairs(report.duplicates) do
+                link(string.format('#%d  %s', dup.id, dup.reporter), dup.id)
+            end
+        end
+        if report.screenshot then
+            section(tr('Screenshot'))
+            local row = g_ui.createWidget('ReportShotRow', window.browser.details.body)
+            row.view.onClick = function() requestShot(report.id, row) end
+        end
         section(tr('Description'))
         bodyText(report.description)
         if report.statement then
@@ -332,7 +542,11 @@ local function showDetails(report, full)
             end
         end
     else
-        if report.note then
+        if report.original then
+            section(tr('Answer from the team'))
+            bodyText(tr('Someone reported this before you, as #%d: %s. You hear about that one from now on.',
+                report.original.id, tr(statusName(report.kind, report.original.status))))
+        elseif report.note then
             section(tr('Answer from the team'))
             bodyText(report.note)
         elseif report.kind == 'player' and report.closed then
@@ -367,12 +581,18 @@ local function showDetails(report, full)
         staffBar.goTarget:setEnabled(type(target) == 'table' and type(target.position) == 'table')
         staffBar.goTargetNow:setEnabled(report.target ~= nil and report.targetOnline == true)
         staffBar.goReporter:setEnabled(report.online == true)
-        staffBar.staffInfo:setText(report.handledBy and tr('Last answered by %s', report.handledBy) or '')
+        local me = g_game.getCharacterName()
+        staffBar.take:setText(report.assignedTo == me and tr('Let it go')
+            or report.assignedTo and tr('Take over') or tr('Take it'))
+        staffBar.take:setTooltip(report.assignedTo and report.assignedTo ~= me
+            and tr('%s has it; take it from them', report.assignedTo) or tr('Tell the team you are on this one'))
+        staffBar.duplicateOf:setText(report.duplicateOf and tostring(report.duplicateOf) or '')
     end
 end
 
 local function selectRow(id)
     selected = id
+    direct = false
     for _, row in ipairs(window.browser.list:getChildren()) do
         row:setChecked(row.reportId == id)
     end
@@ -404,6 +624,11 @@ local function drawList()
         if tab == 'staff' then
             sub = string.format('#%d  -  %s%s', report.id, report.reporter,
                 report.target and (' > ' .. report.target) or '')
+            if report.duplicateOf then
+                sub = sub .. tr('  -  same as #%d', report.duplicateOf)
+            elseif report.assignedTo then
+                sub = sub .. tr('  -  taken by %s', report.assignedTo)
+            end
         elseif report.target then
             sub = sub .. '  -  ' .. report.target
         end
@@ -426,8 +651,12 @@ local function drawList()
     for _, report in ipairs(rows) do
         found = found or report.id == selected
     end
-    if found then
+    if found and not direct then
         selectRow(selected)
+    elseif direct then
+        for _, row in ipairs(list:getChildren()) do
+            row:setChecked(row.reportId == selected)
+        end
     elseif rows[1] and tab == 'mine' then
         selectRow(rows[1].id)
     else
@@ -436,8 +665,13 @@ local function drawList()
     end
 end
 
+-- "Taken by me" and "Not taken" sit with the statuses and mean the reports not closed
+local TAKEN_FILTERS = { takenByMe = 'me', notTaken = 'none' }
+
 local function requestStaffList()
-    send({ action = 'list', kind = staffQuery.kind ~= 'all' and staffQuery.kind or nil, status = staffQuery.status,
+    local assigned = TAKEN_FILTERS[staffQuery.status]
+    send({ action = 'list', kind = staffQuery.kind ~= 'all' and staffQuery.kind or nil,
+           status = assigned and 'active' or staffQuery.status, assigned = assigned,
            query = staffQuery.query, offset = staffQuery.offset })
 end
 
@@ -471,7 +705,9 @@ function fillStatusFilter()
     combo:addOption(tr('Not closed'), 'active')
     combo:addOption(tr('Closed'), 'closed')
     combo:addOption(tr('All'), 'all')
-    local seen = {}
+    combo:addOption(tr('Taken by me'), 'takenByMe')
+    combo:addOption(tr('Not taken'), 'notTaken')
+    local seen = { takenByMe = true, notTaken = true }
     for _, key in ipairs(config.order) do
         if staffQuery.kind == 'all' or staffQuery.kind == key then
             for _, status in ipairs(config.kinds[key].statuses) do
@@ -508,6 +744,146 @@ function goThere(where)
     end
 end
 
+function toggleTake()
+    if current then
+        send({ action = 'assign', id = current.id,
+               to = current.assignedTo == g_game.getCharacterName() and '' or 'me' })
+    end
+end
+
+function mergeDuplicate()
+    if not current then
+        return
+    end
+    local of = tonumber(window.browser.details.staffBar.duplicateOf:getText():match('%d+') or '')
+    if not of then
+        displayErrorBox(tr('Reports'), tr('Write the number of the report this one repeats, for example 12.'))
+        return
+    end
+    send({ action = 'duplicate', id = current.id, of = of })
+end
+
+-- opens a report in "All reports", whatever the list shows
+function openStaffReport(id)
+    if not (config and config.staff) then
+        return
+    end
+    if tab ~= 'staff' or not isVisible() then
+        show('staff')
+    else
+        window:raise()
+    end
+    selected, direct = id, true
+    for _, row in ipairs(window.browser.list:getChildren()) do
+        row:setChecked(row.reportId == id)
+    end
+    clearDetails(tr('Loading...'))
+    send({ action = 'get', id = id })
+end
+
+local function closeViewer()
+    if viewer then
+        local file = viewer.file
+        viewer:destroy()
+        viewer = nil
+        deleteFile(file)
+    end
+end
+
+local function openViewer(id, file, png)
+    closeViewer()
+    viewer = g_ui.createWidget('ReportShotWindow', rootWidget)
+    viewer.file = file
+    viewer.onDestroy = function(widget)
+        if viewer == widget then
+            viewer = nil
+            deleteFile(file)
+        end
+    end
+    viewer.title:setText(tr('Screenshot of report #%d', id))
+    local width, height = pngSize(png)
+    local root = rootWidget:getSize()
+    local scale = math.min(1, (root.width - 120) / width, (root.height - 150) / height)
+    local w, h = math.floor(width * scale), math.floor(height * scale)
+    viewer.frame:setSize({ width = w + 8, height = h + 8 })
+    viewer.frame.image:setImageSource(file)
+    viewer:setSize({ width = math.max(w + 56, 320), height = h + 92 })
+    viewer:centerIn('parent')
+    viewer:raise()
+    viewer:focus()
+end
+
+function requestShot(id, row)
+    download = { id = id, parts = {}, got = 0, row = row }
+    if row then
+        row.view:setEnabled(false)
+        row.progress:setText(tr('Loading...'))
+    end
+    send({ action = 'getShot', id = id })
+end
+
+local function onShotPart(data)
+    if not download or download.id ~= data.id or type(data.data) ~= 'string' then
+        return
+    end
+    local i, n = tonumber(data.i) or 0, tonumber(data.n) or 0
+    if i < 1 or i > n then
+        return
+    end
+    if not download.parts[i] then
+        download.parts[i] = data.data
+        download.got = download.got + 1
+    end
+    local row = download.row
+    local alive = row and not row:isDestroyed()
+    if alive then
+        row.progress:setText(tr('Loading: %d%%', math.floor(download.got * 100 / math.max(1, n))))
+    end
+    if download.got < n then
+        return
+    end
+    local encoded = table.concat(download.parts, '', 1, n)
+    download = nil
+    if alive then
+        row.view:setEnabled(true)
+        row.progress:setText('')
+    end
+    local ok, png = pcall(base64.decode, encoded)
+    shotCount = shotCount + 1
+    local file = string.format('/report_view_%d_%d.png', data.id, shotCount)
+    if not ok or type(png) ~= 'string' or png:sub(-8) ~= PNG_END or not g_resources.writeFileContents(file, png) then
+        displayErrorBox(tr('Reports'), tr('The screenshot could not be opened.'))
+        return
+    end
+    openViewer(data.id, file, png)
+end
+
+function showMarks()
+    send({ action = 'marks' })
+end
+
+local function onMarks(marks)
+    local pokepedia = modules.game_pokepedia
+    if not (pokepedia and pokepedia.MapTab and pokepedia.MapTab.showPositions) then
+        displayErrorBox(tr('Reports'), tr('The world map is not available.'))
+        return
+    end
+    if #marks == 0 then
+        displayInfoBox(tr('Reports'), tr('No open report has a position.'))
+        return
+    end
+    local list = {}
+    for _, mark in ipairs(marks) do
+        list[#list + 1] = {
+            x = mark.x, y = mark.y, z = mark.z, size = 18,
+            icon = IMAGES .. 'kind_' .. (mark.kind == 'player' and 'player' or 'bug'),
+            text = string.format('#%d  %s (%s)', mark.id, shorten(mark.title, 40), tr(statusName(mark.kind, mark.status))),
+            onClick = function() openStaffReport(mark.id) end,
+        }
+    end
+    pokepedia.MapTab.showPositions(list, tr('Report'))
+end
+
 -- tabs ----------------------------------------------------------------------------------------------------
 
 function selectTab(name)
@@ -523,6 +899,8 @@ function selectTab(name)
     end
     window.form:setVisible(FORM_TABS[name] == true)
     window.browser:setVisible(not FORM_TABS[name])
+    window.mapButton:setVisible(name == 'staff')
+    direct = false
     if FORM_TABS[name] then
         drawForm()
         window.form.fields.title:focus()
@@ -545,16 +923,29 @@ function show(name)
     if not config then
         send({ action = 'hello' })
     end
-    window:show()
-    window:raise()
-    window:focus()
-    selectTab(name or (FORM_TABS[tab] and tab) or 'bug')
+    name = name or (FORM_TABS[tab] and tab) or 'bug'
+    local opening = not window:isVisible() and not revealEvent
+    if opening and FORM_TABS[name] and shotWanted() and not upload then
+        -- the screen without this window, taken before it shows
+        takeShot()
+        revealEvent = scheduleEvent(function()
+            revealEvent = nil
+            if window and g_game.isOnline() then
+                reveal()
+            end
+        end, 80)
+    elseif not revealEvent then
+        reveal()
+    end
+    selectTab(name)
     if button then
         button:setOn(true)
     end
 end
 
 function hide()
+    removeEvent(revealEvent)
+    revealEvent = nil
     if window then
         window:hide()
     end
@@ -631,13 +1022,41 @@ local function onReport(protocol, opcode, buffer)
         fields.description:clearText()
         fields.target:clearText()
         statement = nil
+        local png = shot.send and shot.data
+        if png then
+            shot.used = true
+            startUpload(data.id, png)
+        end
         drawForm()
-        setFeedback(tr('Report #%d was sent. Thank you! Follow it in My reports.', data.id), true)
+        if not png then
+            setFeedback(tr('Report #%d was sent. Thank you! Follow it in My reports.', data.id), true)
+        end
+    elseif data.type == 'shotSaved' then
+        if upload and upload.id == data.id then
+            stopUpload()
+            if shot.send then
+                dropShot()
+            end
+            if isVisible() and FORM_TABS[tab] then
+                drawShot()
+            end
+            setFeedback(tr('Report #%d and its screenshot were sent. Thank you! Follow it in My reports.', data.id),
+                true)
+        end
     elseif data.type == 'error' then
         sending = false
         removeEvent(sendTimeout)
+        if download then
+            local row = download.row
+            if row and not row:isDestroyed() then
+                row.view:setEnabled(true)
+                row.progress:setText('')
+            end
+            download = nil
+        end
         if isVisible() and FORM_TABS[tab] then
             window.form.fields.send:setEnabled(true)
+            drawShot()
             setFeedback(data.text)
         elseif isVisible() then
             displayErrorBox(tr('Reports'), data.text)
@@ -657,10 +1076,16 @@ local function onReport(protocol, opcode, buffer)
     elseif data.type == 'report' then
         if tab == 'staff' and data.report and data.report.id == selected then
             showDetails(data.report, true)
+            local moved = false
             for i, report in ipairs(rows) do
                 if report.id == data.report.id then
                     rows[i].status = data.report.status
+                    moved = report.assignedTo ~= data.report.assignedTo or report.duplicateOf ~= data.report.duplicateOf
                 end
+            end
+            if moved then
+                direct = true
+                requestStaffList()
             end
             for _, row in ipairs(window.browser.list:getChildren()) do
                 if row.reportId == data.report.id then
@@ -672,6 +1097,10 @@ local function onReport(protocol, opcode, buffer)
         if isVisible() and tab == 'mine' then
             send({ action = 'mine' })
         end
+    elseif data.type == 'shot' then
+        onShotPart(data)
+    elseif data.type == 'marks' then
+        onMarks(data.marks or {})
     elseif data.type == 'new' then
         if isVisible() and tab == 'staff' and staffQuery.offset == 0 then
             requestStaffList()
@@ -695,6 +1124,10 @@ local function onGameEnd()
     helloEvent = nil
     hide()
     config = nil
+    stopUpload()
+    dropShot()
+    closeViewer()
+    download, direct = nil, false
 end
 
 function init()
@@ -737,7 +1170,11 @@ function terminate()
     removeEvent(helloEvent)
     removeEvent(searchEvent)
     removeEvent(sendTimeout)
-    helloEvent, searchEvent, sendTimeout = nil, nil, nil
+    removeEvent(revealEvent)
+    helloEvent, searchEvent, sendTimeout, revealEvent = nil, nil, nil, nil
+    stopUpload()
+    dropShot()
+    closeViewer()
     for _, widget in ipairs({ button, window }) do
         if widget then
             widget:destroy()

@@ -225,6 +225,17 @@ ReportsWindow < UIWindow
       !text: tr('All reports')
       visible: false
 
+  PVBlueButton
+    id: mapButton
+    !text: tr('Open reports on the map')
+    !tooltip: tr('Every open report with a position, on the world map; click one to read it')
+    size: 190 28
+    ttf-font-size: 12
+    anchors.top: tabs.top
+    anchors.right: parent.right
+    visible: false
+    @onClick: modules.game_reports.showMarks()
+
   // sending a report -------------------------------------------------------------------------------------
 
   UIWidget
@@ -364,7 +375,7 @@ ReportsWindow < UIWindow
         anchors.left: parent.left
         anchors.right: parent.right
         margin-top: 10
-        height: 180
+        height: 150
         layout:
           type: verticalBox
           spacing: 6
@@ -393,6 +404,49 @@ ReportsWindow < UIWindow
         anchors.left: parent.left
         anchors.right: parent.right
         margin-top: 10
+
+      PVCheckBox
+        id: shotCheck
+        !text: tr('Attach a screenshot')
+        anchors.left: parent.left
+        anchors.bottom: shotFrame.top
+        margin-bottom: 8
+        checked: true
+        @onCheckChange: modules.game_reports.onShotCheck()
+
+      UIWidget
+        id: shotFrame
+        size: 160 90
+        image-source: /modules/client_entergame/images/field
+        image-border: 8
+        padding: 3
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+        UIWidget
+          id: image
+          anchors.fill: parent
+          phantom: true
+
+        ReportMuted
+          id: none
+          text-wrap: true
+          text-auto-resize: true
+          text-align: center
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.verticalCenter: parent.verticalCenter
+
+      PVBlueButton
+        id: retake
+        !text: tr('Retake')
+        !tooltip: tr('Hides this window for a moment and takes the screen again')
+        size: 84 28
+        ttf-font-size: 12
+        anchors.left: shotFrame.right
+        anchors.bottom: shotFrame.bottom
+        margin-left: 10
+        @onClick: modules.game_reports.retakeShot()
 
   // the lists ---------------------------------------------------------------------------------------------
 
@@ -638,9 +692,102 @@ ReportsWindow < UIWindow
           margin-left: 6
           @onClick: modules.game_reports.goThere('reporter')
 
-        ReportMuted
-          id: staffInfo
-          text-auto-resize: true
-          anchors.verticalCenter: save.verticalCenter
+        PVBlueButton
+          id: take
+          !text: tr('Take it')
+          !tooltip: tr('Tell the team you are on this one')
+          size: 100 30
+          ttf-font-size: 12
           anchors.left: save.right
-          margin-left: 10
+          anchors.top: save.top
+          margin-left: 6
+          @onClick: modules.game_reports.toggleTake()
+
+        ReportField
+          id: duplicateOf
+          !placeholder: tr('Same as #')
+          !tooltip: tr('The number of the report this one repeats; its reporter then hears about that one')
+          anchors.left: take.right
+          anchors.right: merge.left
+          anchors.top: save.top
+          margin-left: 6
+          margin-right: 4
+          max-length: 8
+
+        PVBlueButton
+          id: merge
+          !text: tr('Merge')
+          size: 80 30
+          ttf-font-size: 12
+          anchors.right: parent.right
+          anchors.top: save.top
+          @onClick: modules.game_reports.mergeDuplicate()
+
+// a screenshot sent with a report, as big as the screen allows
+ReportShotWindow < UIWindow
+  size: 1000 610
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 20 24 22 24
+  draggable: true
+  focusable: true
+  @onEscape: self:destroy()
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 16
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: self:getParent():destroy()
+
+  UIWidget
+    id: frame
+    image-source: /modules/client_entergame/images/field
+    image-border: 8
+    padding: 4
+    anchors.top: closeButton.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 10
+
+    UIWidget
+      id: image
+      anchors.fill: parent
+      phantom: true
+
+ReportShotRow < UIWidget
+  height: 34
+  margin-top: 4
+  phantom: true
+
+  PVBlueButton
+    id: view
+    !text: tr('View screenshot')
+    size: 170 28
+    ttf-font-size: 12
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  ReportMuted
+    id: progress
+    text-auto-resize: true
+    anchors.verticalCenter: view.verticalCenter
+    anchors.left: view.right
+    margin-left: 10
+
+ReportLinkLabel < UILabel
+  font: verdana-11px-antialised
+  color: #8fc1ff
+  text-wrap: true
+  text-auto-resize: true
+  $hover:
+    color: #ffd75a
