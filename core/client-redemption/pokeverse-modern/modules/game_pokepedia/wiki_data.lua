@@ -132,6 +132,7 @@ WikiData = {
                 "Press the key you want. Keys already in use are flagged, and you can swap them.",
             } },
             { 'tip', "Balls holding a Pokemon can't be item hotkeys: F1 to F6 call them." },
+            { 'p', "Your target has a red ring under it (green while you follow). Settings > Interface changes it to a Poke Ball ring or a square, and the mouse-over crosshair to Poke Ball corners, a Pokedex scanner, a soft ring or the classic square." },
         } },
         { key = 'hints', title = 'First-visit hints', portrait = 113, body = {
             { 'p', "The first time you walk into a Pokemon Center, a Mart, the Day Care and a few other places, a card tells you what the place is for. Each hint shows once per character." },
@@ -328,7 +329,8 @@ WikiData = {
 
     { key = 'world', name = 'Getting around', item = 3484, topics = {
         { key = 'autowalk', title = 'The Pokepedia map', item = 3484, body = {
-            { 'p', "Press M to open the Pokepedia on its map. Left-click a spot and your trainer walks there; right-click to add waypoints or stops to a route. The Places list has every town with its Pokemon Center, shops, travel and gyms, and a filter by kind." },
+            { 'p', "Press M to open the Pokepedia on its map. Left-click a spot and your trainer walks there; right-click to add waypoints or stops to a route. The Places list groups every town, route and landmark under its region (Kanto, Johto, Orange Islands, Hoenn) with the Pokemon Center, shops, travel and gyms of each town. Pick a region or a kind to filter it, and click a region, town or place to move the map there." },
+            { 'p', "The map names regions when zoomed out, then cities, then routes and landmarks as you zoom in. The Aa button turns the names on or off." },
             { 'p', "The walk pauses in fights and while you talk to an NPC, waits at floor changes, and stops when you walk with the keys." },
             { 'see', { 'marks', 'travel' } },
         } },

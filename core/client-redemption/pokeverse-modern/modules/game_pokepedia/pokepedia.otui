@@ -178,6 +178,31 @@ PpMapMark < UIWidget
   size: 16 16
   focusable: false
 
+// the map's names (map.lua drawLabels): regions, cities, routes and landmarks
+PpMapLabel < UILabel
+  phantom: true
+  focusable: false
+  text-auto-resize: true
+  ttf-font: /fonts/ttf/verdana-bold.ttf
+  ttf-font-size: 13
+  ttf-stroke: 2 #101828
+  color: #ffffff
+
+PpMapRegionLabel < PpMapLabel
+  ttf-font-size: 24
+  ttf-stroke: 3 #101828
+  color: #ffe678
+
+PpMapRouteLabel < PpMapLabel
+  ttf-font: /fonts/ttf/Verdana-BoldItalic.ttf
+  ttf-font-size: 11
+  color: #ffeca8
+
+PpMapLandmarkLabel < PpMapLabel
+  ttf-font: /fonts/ttf/Verdana-Italic.ttf
+  ttf-font-size: 11
+  color: #bee6ff
+
 PpRouteDot < UIWidget
   size: 6 6
   image-source: /modules/game_pokepedia/images/route_dot
@@ -338,11 +363,19 @@ MapPage < UIWidget
         anchors.right: parent.right
 
       TkCombo
-        id: kind
+        id: region
+        width: 130
         anchors.top: search.bottom
         anchors.left: parent.left
+        margin-top: 6
+
+      TkCombo
+        id: kind
+        anchors.top: search.bottom
+        anchors.left: region.right
         anchors.right: parent.right
         margin-top: 6
+        margin-left: 4
 
       PpList
         id: list
@@ -538,7 +571,7 @@ MapPage < UIWidget
     UIWidget
       id: controls
       width: 48
-      height: 252
+      height: 282
       anchors.top: parent.top
       anchors.right: parent.right
       margin: 6
@@ -603,12 +636,21 @@ MapPage < UIWidget
         margin-top: 2
 
       PpIconButton
-        id: view
-        icon-size: 16 16
-        visible: false
+        id: labels
+        text: Aa
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 12
         anchors.top: zoomOut.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         margin-top: 10
+
+      PpIconButton
+        id: view
+        icon-size: 16 16
+        visible: false
+        anchors.top: labels.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin-top: 2
 
     UILabel
       id: coords

@@ -140,11 +140,17 @@ function Pp.portrait(number)
     return '/images/staticPortraits/' .. number
 end
 
--- A list of groups that open and close: groups = { { key, name, note, icon, item, entries } }.
+-- A list of groups that open and close: groups = { { key, name, note, icon, item, entries, onClick } }.
 -- addEntry(list, entry, group) makes an entry's row; expanded[key] keeps which groups are open, and
 -- an open search opens them all. Hiding rows keeps the scroll position, so a group opens in place.
+-- onClick(group) runs on a click on the group's header, besides opening or closing it.
 function Pp.fillTree(list, groups, expanded, addEntry, openAll)
     list:destroyChildren()
+    return Pp.addTree(list, groups, expanded, addEntry, openAll)
+end
+
+-- Pp.fillTree's groups added after the list's rows
+function Pp.addTree(list, groups, expanded, addEntry, openAll)
     local headers = {}
     for _, group in ipairs(groups) do
         local header = g_ui.createWidget('PpGroupRow', list)
@@ -176,9 +182,14 @@ function Pp.fillTree(list, groups, expanded, addEntry, openAll)
             header.apply()
         end
         header.onMouseRelease = function(widget, mousePos, mouseButton)
-            if mouseButton == MouseLeftButton and widget:containsPoint(mousePos) and not openAll then
-                expanded[group.key] = not expanded[group.key]
-                header.apply()
+            if mouseButton == MouseLeftButton and widget:containsPoint(mousePos) then
+                if not openAll then
+                    expanded[group.key] = not expanded[group.key]
+                    header.apply()
+                end
+                if group.onClick then
+                    group.onClick(group)
+                end
             end
             return true
         end

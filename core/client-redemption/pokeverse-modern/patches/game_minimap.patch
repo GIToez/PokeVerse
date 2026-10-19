@@ -68,6 +68,6 @@ diff -ruN pristine/modules/game_minimap/minimap.otmod modules/game_minimap/minim
    website: https://github.com/edubart/otclient
    sandboxed: true
 -  scripts: [ minimap ]
-+  scripts: [ minimap, pokeverse ]
++  scripts: [ minimap, map_labels, pokeverse ]
    @onLoad: mapController:init()
    @onUnload: mapController:terminate()

@@ -66,7 +66,35 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          end
      },
      openMaximized                     = false,
-@@ -519,7 +537,8 @@
+@@ -315,7 +333,7 @@
+         end
+     },
+     crosshair                         = {
+-        value = 'default',
++        value = 'pokeball', -- PokeVerse: the Poke Ball corners
+         action = function(value, options, controller, panels, extraWidgets)
+             local crossPath = '/images/game/crosshair/'
+             local newValue = value
+@@ -324,7 +342,17 @@
+             end
+ 
+             panels.gameMapPanel:setCrosshairTexture(newValue and crossPath .. newValue or nil)
+-            panels.interface:recursiveGetChildById('crosshair'):setCurrentOptionByData(newValue, true)
++            panels.interface:recursiveGetChildById('crosshair'):setCurrentOptionByData(value, true)
++        end
++    },
++    -- PokeVerse: the mark under the attacked, followed or hovered creature (gamelib pokeverse/targetmarker)
++    targetMarker                      = {
++        value = 'classic',
++        action = function(value, options, controller, panels, extraWidgets)
++            if TargetMarker then
++                TargetMarker.setStyle(value)
++            end
++            panels.interface:recursiveGetChildById('targetMarker'):setCurrentOptionByData(value, true)
+         end
+     },
+     nativeCursor = {
+@@ -519,7 +547,8 @@
          end
      },
      showLeftPanel                     = {
@@ -76,7 +104,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              if not modules.game_interface then
                  return
-@@ -915,7 +934,7 @@
+@@ -915,7 +944,7 @@
          end
          },
      soundMusic = {
@@ -85,7 +113,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          aux = true,
          event = nil,
          action = function(value, options, controller, panels, extraWidgets)
-@@ -951,7 +970,7 @@
+@@ -951,7 +980,7 @@
          end
      },
      soundAmbience = {
@@ -94,7 +122,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              panels.soundPanel:recursiveGetChildById('soundAmbience'):setText(tr('Ambience Volume: %d %%', value))
              if g_sounds then
-@@ -1002,7 +1021,8 @@
+@@ -1002,7 +1031,8 @@
          end,
      },
      actionBarShowBottom1 = {
@@ -104,7 +132,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1190,64 @@
+@@ -1170,4 +1200,64 @@
          end
      },
      showInfoBanner = true,
@@ -258,7 +286,33 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -243,6 +244,14 @@
+@@ -190,14 +191,23 @@
+     local mouseControlModeCombobox = panels.generalPanel:recursiveGetChildById('mouseControlMode')
+     local lootControlModeCombobox = panels.generalPanel:recursiveGetChildById('lootControlMode')
+ 
+-    for k, v in pairs({ { 'Disabled', 'disabled' }, { 'Default', 'default' }, { 'Full', 'full' }, { 'Animation', 'animation' } }) do
+-        crosshairCombo:addOption(v[1], v[2])
++    for _, v in ipairs({ { 'Poke Ball corners', 'pokeball' }, { 'Pokedex scanner', 'pokedex' }, { 'Soft ring', 'ring' },
++        { 'Classic', 'default' }, { 'Full', 'full' }, { 'Animation', 'animation' }, { 'Disabled', 'disabled' } }) do
++        crosshairCombo:addOption(tr(v[1]), v[2])
+     end
+ 
+     crosshairCombo.onOptionChange = function(comboBox, option)
+         setOption('crosshair', comboBox:getCurrentOption().data)
+     end
+ 
++    local targetMarkerCombo = panels.interface:recursiveGetChildById('targetMarker')
++    for _, v in ipairs({ { 'Classic ring', 'classic' }, { 'Poke Ball ring', 'pokeball' }, { 'Square', 'square' } }) do
++        targetMarkerCombo:addOption(tr(v[1]), v[2])
++    end
++    targetMarkerCombo.onOptionChange = function(comboBox, option)
++        setOption('targetMarker', comboBox:getCurrentOption().data)
++    end
++
+     mouseControlModeCombobox:addOption('Regular Controls', 0)
+     mouseControlModeCombobox:addOption('Classic Controls', 1)
+     mouseControlModeCombobox:addOption('Left Smart-Click', 2)
+@@ -243,6 +253,14 @@
          setOption('framesRarity', comboBox:getCurrentOption().data)
      end
  
@@ -273,7 +327,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      local profileCombobox = panels.misc:recursiveGetChildById('profile')
  
      for i = 1, 10 do
-@@ -293,6 +302,73 @@
+@@ -293,6 +311,81 @@
  
      setupComboBox()
  
@@ -343,11 +397,19 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +        g_settings.set('pokeverseLayoutVersion', 4)
 +        g_settings.save()
 +    end
++    -- Redemption's blue crosshair was the default before the Poke Ball corners
++    if layoutVersion < 5 then
++        if g_settings.getString('crosshair', 'default') == 'default' then
++            g_settings.set('crosshair', options.crosshair.value)
++        end
++        g_settings.set('pokeverseLayoutVersion', 5)
++        g_settings.save()
++    end
 +
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +598,8 @@
+@@ -522,6 +615,8 @@
  end
  
  function controller:onGameStart()
@@ -356,7 +418,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -631,6 +709,7 @@
+@@ -631,6 +726,7 @@
  end
  
  function hide()
@@ -364,7 +426,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      controller.ui:hide()
      if extraWidgets.optionsButton then
          extraWidgets.optionsButton:setOn(false)
-@@ -646,15 +725,8 @@
+@@ -646,15 +742,8 @@
          hide()
          return
      end
@@ -382,7 +444,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      end
      show()
      updateKeybinds()
-@@ -672,182 +744,166 @@
+@@ -672,182 +761,166 @@
      -- TODO: Implement Show Advanced Options functionality in the near future
  end
  
@@ -530,11 +592,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local pages = button and pagesOf(button) or {}
 +    if not pages[index] then
 +        return
-     end
++    end
 +    selectedPage = index
 +    for i, widget in ipairs(controller.ui.optionsSubTabBar:getChildren()) do
 +        widget:setChecked(i == index)
-+    end
+     end
 +    showPage(pages[index])
 +end
  
@@ -549,7 +611,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local button = buttons[id]
 +    if not button then
 +        return
-+    end
+     end
 +    selectedTab = id
 +    for i, widget in ipairs(controller.ui.optionsTabBar:getChildren()) do
 +        widget:setChecked(i == id)
@@ -575,7 +637,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local width = math.floor((bar:getWidth() - 8 * (count - 1)) / count)
 +    for _, tab in ipairs(bar:getChildren()) do
 +        tab:setWidth(width)
-     end
++    end
 +end
  
 -    return subWidget
@@ -700,7 +762,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function createCategory(text, icon, openPanel, subCategories)
-@@ -930,13 +986,17 @@
+@@ -930,13 +1003,17 @@
      end
  end
  
@@ -719,7 +781,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-@@ -951,19 +1011,15 @@
+@@ -951,19 +1028,15 @@
      if not controller.ui:isVisible() then
          show()
      end
@@ -947,3 +1009,40 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
      $mobile:
        height: 0
        margin-top: 0
+@@ -117,11 +224,35 @@
+ 
+     QtComboBox
+       id: crosshair
+-      width: 120
++      width: 140
++      margin-left: 10
++      anchors.verticalCenter: prev.verticalCenter
++      anchors.left: prev.right
++      mouse-scroll: false
++      !tooltip: tr('The mark on the tile under the mouse.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 32
++
++    Label
++      !text: tr('Target marker:')
++      anchors.left: parent.left
++      margin-left: 18
++      color: #c0c0c0ff
++      anchors.verticalCenter: parent.verticalCenter
++
++    QtComboBox
++      id: targetMarker
++      width: 140
+       margin-left: 10
+       anchors.verticalCenter: prev.verticalCenter
+       anchors.left: prev.right
+       mouse-scroll: false
++      !tooltip: tr('The ring under the Pokemon or player you attack (red) or follow (green).')
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
