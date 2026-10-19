@@ -7,22 +7,47 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
    phantom: false
 -  height: 162
 -  &panelHeight: 162
-+  height: 112
-+  &panelHeight: 112
++  height: 120
++  &panelHeight: 120
    on: true
  
    $!on:
-@@ -60,8 +60,27 @@
-       $pressed !disabled:
-         image-clip: 12 0 12 12
+@@ -46,22 +46,53 @@
+     anchors.fill: parent
+     phantom: true
  
+-    Button
++    UIButton
+       id: changeSize
+-      image-source: /images/inventory/min_button_small
+-      image-clip: 0 0 12 12
++      image-source: /images/ui/miniwindow_buttons
++      image-clip: 0 0 14 14
+       anchors.top: parent.top
+-      anchors.left: parent.left
+-      margin-left: 8
+-      margin-top: 5
+-      size: 12 12
++      anchors.right: parent.right
++      margin-right: 5
++      margin-top: 4
++      size: 14 14
+       @onClick: changeInventorySize()
+ 
+-      $pressed !disabled:
+-        image-clip: 12 0 12 12
++      $hover:
++        image-clip: 0 14 14 14
++      $pressed:
++        image-clip: 0 28 14 14
++
 +    UIWidget
 +      id: pokeverseIcon
 +      image-source: /images/topbuttons/inventory
 +      size: 13 14
-+      anchors.left: changeSize.right
++      anchors.left: parent.left
 +      anchors.verticalCenter: changeSize.verticalCenter
-+      margin-left: 5
++      margin-left: 6
 +      phantom: true
 +
 +    Label
@@ -30,17 +55,27 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 +      !text: tr('Inventory')
 +      anchors.left: pokeverseIcon.right
 +      anchors.verticalCenter: changeSize.verticalCenter
-+      margin-left: 4
-+      font: verdana-11px-antialised
-+      color: #e0e0e0
++      margin-left: 5
++      font: verdana-11px-rounded
++      color: #eef2ff
++      text-auto-resize: true
 +
++    UIWidget
++      id: pokeverseUnderline
++      image-source: /images/pokeverse-ui/title-underline
++      size: 22 2
++      anchors.left: pokeverseTitle.left
++      anchors.top: pokeverseTitle.bottom
++      margin-top: 1
++      phantom: true
+ 
      Button
        id: blessings
 +      visible: false
        image-source: /images/inventory/button_blessings_grey
        image-clip: 0 0 12 12
        anchors.top: changeSize.top
-@@ -94,6 +113,7 @@
+@@ -94,6 +125,7 @@
  
      TopToggleButton
        id: standPosture
@@ -48,7 +83,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /images/inventory/buttons_general
        image-clip: 0 0 20 20
        anchors.right: parent.right
-@@ -111,6 +131,7 @@
+@@ -111,6 +143,7 @@
  
      TopToggleButton
        id: followPosture
@@ -56,7 +91,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /images/inventory/buttons_general
        image-clip: 0 20 20 20
        anchors.right: standPosture.right
-@@ -127,6 +148,7 @@
+@@ -127,6 +160,7 @@
          image-clip: 20 20 20 20
      UICheckBox
        id: expert
@@ -64,7 +99,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /data/images/inventory/button-expert-up
        anchors.right: standPosture.right
        anchors.top: followPosture.bottom
-@@ -143,6 +165,7 @@
+@@ -143,6 +177,7 @@
  
      UICheckBox
        id: pvp
@@ -72,7 +107,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /images/game/combatmodes/onPanel
        size: 44 21
        image-clip: 0 0 44 21
-@@ -160,6 +183,7 @@
+@@ -160,6 +195,7 @@
  
      WhiteHandBox
        id: whiteHandBox
@@ -80,7 +115,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.right: parent.right
        anchors.top: pvp.bottom
        margin-right: 8
-@@ -167,6 +191,7 @@
+@@ -167,6 +203,7 @@
  
      RedFistBox
        id: redFistBox
@@ -88,7 +123,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.right: whiteHandBox.right
        anchors.top: whiteHandBox.bottom
        margin-right: -1
-@@ -174,18 +199,21 @@
+@@ -174,18 +211,21 @@
  
      WhiteDoveBox
        id: whiteDoveBox
@@ -110,7 +145,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /images/inventory/buttons_general
        image-clip: 0 40 20 20
        anchors.right: standPosture.left
-@@ -203,6 +231,7 @@
+@@ -203,6 +243,7 @@
  
      TopToggleButton
        id: balanced
@@ -118,7 +153,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /images/inventory/buttons_general
        image-clip: 0 80 20 20
        anchors.right: attack.right
-@@ -220,6 +249,7 @@
+@@ -220,6 +261,7 @@
  
      TopToggleButton
        id: defense
@@ -126,7 +161,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        image-source: /images/inventory/buttons_general
        image-clip: 0 60 20 20
        anchors.right: attack.right
-@@ -237,6 +267,7 @@
+@@ -237,6 +279,7 @@
  
      TopToggleButton
        id: stop
@@ -134,7 +169,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        !text: tr('Stop')
        anchors.left: defense.left
        anchors.right: standPosture.right
-@@ -250,6 +281,7 @@
+@@ -250,6 +293,7 @@
  
      Panel
        id: icons
@@ -142,7 +177,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        size: 108 18
        padding: 2
  
-@@ -264,6 +296,7 @@
+@@ -264,6 +308,7 @@
  
      MainInventoryItem
        id: amulet
@@ -150,7 +185,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.top: changeSize.bottom
        anchors.left: changeSize.left
        margin-top: 3
-@@ -271,13 +304,15 @@
+@@ -271,13 +316,15 @@
  
      MainInventoryItem
        id: helmet
@@ -169,15 +204,16 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
        anchors.top: amulet.top
        anchors.left: helmet.right
        margin-left: 3
-@@ -285,110 +320,109 @@
+@@ -285,110 +332,109 @@
  
      MainInventoryItem
        id: sword
 -      anchors.top: amulet.bottom
 -      anchors.left: amulet.left
-+      anchors.top: helmet.bottom
-+      anchors.left: helmet.left
-       margin-top: 3
+-      margin-top: 3
++      anchors.top: helmet.top
++      anchors.left: helmet.right
++      margin-left: 3
        &slotPosition: {x = 65535, y = 6, z = 0}
  
      MainInventoryItem
@@ -185,9 +221,9 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.top: sword.bottom
 -      anchors.left: amulet.left
 -      margin-top: 3
-+      anchors.top: helmet.top
-+      anchors.right: legs.left
-+      margin-right: 3
++      anchors.top: helmet.bottom
++      anchors.left: helmet.left
++      margin-top: 4
        &slotPosition: {x = 65535, y = 9, z = 0}
  
      MainInventoryItem
@@ -206,17 +242,19 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.top: armor.bottom
 -      anchors.left: helmet.left
 -      margin-top: 3
-+      anchors.top: helmet.top
-+      anchors.right: parent.right
-+      margin-right: 6
++      anchors.top: ring.top
++      anchors.left: ring.right
++      margin-left: 3
        &slotPosition: {x = 65535, y = 7, z = 0}
  
      MainInventoryItem
        id: boots
-       anchors.top: legs.bottom
+-      anchors.top: legs.bottom
 -      anchors.left: helmet.left
-+      anchors.right: legs.right
-       margin-top: 3
+-      margin-top: 3
++      anchors.top: ring.top
++      anchors.left: legs.right
++      margin-left: 3
        &slotPosition: {x = 65535, y = 8, z = 0}
  
      MainInventoryItem
@@ -225,7 +263,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.left: backpack.left
 -      margin-top: 3
 +      anchors.top: helmet.top
-+      anchors.left: helmet.right
++      anchors.left: sword.right
 +      margin-left: 3
        &slotPosition: {x = 65535, y = 5, z = 0}
  
@@ -234,9 +272,9 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.top: shield.bottom
 -      anchors.left: backpack.left
 -      margin-top: 3
-+      anchors.top: boots.top
-+      anchors.right: boots.left
-+      margin-right: 3
++      anchors.top: ring.top
++      anchors.left: boots.right
++      margin-left: 3
        &slotPosition: {x = 65535, y = 10, z = 0}
  
      UIWidget
@@ -247,8 +285,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.left: amulet.left
 -      anchors.right: amulet.right
 -      anchors.bottom: boots.bottom
--      anchors.top: ring.bottom
-+      anchors.top: sword.bottom
+       anchors.top: ring.bottom
 +      anchors.right: parent.right
        margin-top: 3
 -
@@ -271,16 +308,16 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -        anchors.horizontalCenter: parent.horizontalCenter
 -        anchors.bottom: parent.bottom
 -        color: #c0c0c0ff
-+        font: verdana-11px-antialised
-+        color: #e0e0e0
++        font: verdana-11px-rounded
++        color: #eef2ff
 +        anchors.right: parent.right
 +        anchors.verticalCenter: parent.verticalCenter
 +        text-auto-resize: true
 +
 +      Label
 +        !text: tr('Respect') .. ':'
-+        font: verdana-11px-antialised
-+        color: #e0e0e0
++        font: verdana-11px-rounded
++        color: #eef2ff
 +        anchors.right: soul.left
 +        anchors.verticalCenter: parent.verticalCenter
 +        margin-right: 3
@@ -296,7 +333,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -      anchors.right: backpack.right
 -      anchors.bottom: boots.bottom
 -      anchors.top: tools.bottom
-+      anchors.top: sword.bottom
++      anchors.top: ring.bottom
 +      anchors.left: parent.left
        margin-top: 3
 +      margin-left: 8
@@ -311,8 +348,8 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -        color: #c0c0c0ff
 -        margin-top: 1
 +        !text: tr('Balls') .. ':'
-+        font: verdana-11px-antialised
-+        color: #e0e0e0
++        font: verdana-11px-rounded
++        color: #eef2ff
 +        anchors.left: parent.left
 +        anchors.verticalCenter: parent.verticalCenter
 +        text-auto-resize: true
@@ -325,8 +362,8 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
 -        anchors.horizontalCenter: parent.horizontalCenter
 -        anchors.bottom: parent.bottom
 -        color: #c0c0c0ff
-+        font: verdana-11px-antialised
-+        color: #e0e0e0
++        font: verdana-11px-rounded
++        color: #eef2ff
 +        anchors.left: prev.right
 +        anchors.verticalCenter: parent.verticalCenter
 +        margin-left: 3
@@ -335,7 +372,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
  
    UIWidget
      id: offPanel
-@@ -421,7 +455,7 @@
+@@ -421,7 +467,7 @@
        size: 30 44
  
        Label
@@ -344,7 +381,7 @@ diff -ruN pristine/modules/game_inventory/inventory.otui modules/game_inventory/
          text.align: center
          font: cipsoftFont
          anchors.horizontalCenter: parent.horizontalCenter
-@@ -441,7 +475,7 @@
+@@ -441,7 +487,7 @@
          color: #c0c0c0ff
  
        Label
