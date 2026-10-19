@@ -152,6 +152,11 @@ def survey(underground=False):
             if z <= GROUND or underground:
                 key = (z, x // CHUNK, y // CHUNK)
                 chunks[key] = chunks.get(key, 0) + 1
+            if z < GROUND:
+                # the ground floor picture is drawn with the floors above, so a piece with only raised
+                # tiles (Fortree's treetops) still needs one
+                key = (GROUND, x // CHUNK, y // CHUNK)
+                chunks[key] = chunks.get(key, 0) + 1
             if t == pvmap.HOUSETILE:
                 house_id = struct.unpack_from('<I', p, 2)[0]
                 houses.setdefault(house_id, []).append((x, y, z))
