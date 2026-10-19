@@ -64,6 +64,7 @@ GLOBAL_STORAGES = {
     DECORATIONS_VERSION = 7152, -- bumped when staff change decorations, so the globalevent puts them up again
     DECORATIONS_PREVIEW = 7153, -- "m;<set>:<until>": a decoration set staff preview with /deco preview
     DECORATIONS_NO_AUTO = 7154, -- "m;<zone ids>": towns staff decorate by hand only (/deco auto off)
+    ANNIVERSARY_PREVIEW = 7155, -- "m;<until>": the Union Room entrance to the cake town shown with /anniversary show (AnniversaryEvent)
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

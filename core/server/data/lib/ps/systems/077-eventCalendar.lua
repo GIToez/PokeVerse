@@ -1000,6 +1000,7 @@ function EventCalendar.onThink()
         despawnClefairy()
     end
     running = keys
+    AnniversaryEvent.sync()
 
     for id, raid in pairs(EventCalendar.RAIDS) do
         if (not EventCalendar.isActive(id)) then

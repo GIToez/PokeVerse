@@ -338,6 +338,7 @@ Admin.COMMAND_HELP = {
     ["/x"] = { "World", "/x <projectile>", "Show a projectile" },
     ["/y"] = { "World", "/y <color> <text>", "Show animated text" },
     ["/weather"] = { "World", "/weather [<zone|region|all|here> <kind> [minutes] | auto | off | time <day|night>]", "Weather and the game clock" },
+    ["/anniversary"] = { "World", "/anniversary [show [minutes] | hide | on | off | auto | start | boss | reset]", "The Anniversary and its cake town" },
     ["/legendary"] = { "World", "/legendary status | spawn <name> [here] | end <name> | next <duration>", "Wild legendaries" },
     ["/raid"] = { "World", "/raid <name>", "Start a raid" },
     ["/deco"] = { "World", "/deco sets | items | add | remove | list | preview | auto", "Hand-placed decorations" },
