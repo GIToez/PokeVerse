@@ -1691,7 +1691,14 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
 An in-game window to send a bug report, a feature request or a player report. Each one
 becomes a post in a Discord forum channel, with tags.
 
-- **Today:** the client's bug report (`onReportBug`,
+- **Done (bug and player reports):**
+  - The Reports window has Bug, Player and My reports, with an optional screenshot. The staff reader has filters (status, kind, taken by me, not taken), a teleport to the spot, notes and statuses, Take, Merge as duplicate (both reporters get the answer) and a screenshot viewer.
+  - The staff world map shows open reports as marks.
+  - The bot posts each report in `#bug-reports` or the private `#player-reports` forum. It pings the linked reporter, attaches the screenshot and adds a line for every update.
+  - A status tag picked on Discord answers the report in game.
+  - Bot patches: [`integrations/pokeverse-discord`](../integrations/pokeverse-discord/README.md#report-forums).
+  - Feature requests and voting are still to do.
+- **Before:** the client's bug report (`onReportBug`,
   `data/lib/ps/events/creaturescripts/onReportBug.lua`) only writes to a log file on the
   server, together with the player's IP address. Nobody sees it unless they read the file.
 - **In-game window:** pick the kind (bug, feature request, player report), a category

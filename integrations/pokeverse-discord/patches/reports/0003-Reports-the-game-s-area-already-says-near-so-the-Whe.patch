@@ -1,0 +1,53 @@
+From 18d74cfb793ab93c37b3b82f1c4cbd6f5ca71388 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Mon, 19 Oct 2026 20:33:42 +0000
+Subject: [PATCH 3/3] Reports: the game's area already says near, so the Where
+ field doesn't repeat it
+
+---
+ src/services/reports/reportForums.ts | 6 +++++-
+ tests/unit/reports.test.ts           | 4 ++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/src/services/reports/reportForums.ts b/src/services/reports/reportForums.ts
+index 48b27e6..0d18372 100644
+--- a/src/services/reports/reportForums.ts
++++ b/src/services/reports/reportForums.ts
+@@ -64,7 +64,11 @@ function where(position: GameReport["position"], area?: string | null): string |
+     return area ? plain(area) : undefined;
+   }
+   const coordinates = `\`${position.x}, ${position.y}, ${position.z}\``;
+-  return area ? `${coordinates} near ${plain(area)}` : coordinates;
++  if (!area) {
++    return coordinates;
++  }
++  const text = plain(area);
++  return /^near\s/i.test(text) ? `${coordinates} ${text}` : `${coordinates} near ${text}`;
+ }
+ 
+ export function postName(report: Pick<GameReport, "id" | "title">): string {
+diff --git a/tests/unit/reports.test.ts b/tests/unit/reports.test.ts
+index 20e3770..d741fc8 100644
+--- a/tests/unit/reports.test.ts
++++ b/tests/unit/reports.test.ts
+@@ -30,7 +30,7 @@ function bugReport(overrides: Partial<GameReport> = {}): GameReport {
+     description: "I walked east from the Pokemon Center and got stuck between two rocks.",
+     reporter: { name: "Ash", level: 50, vocation: "Hunter", discordUserId: REPORTER },
+     position: { x: 3290, y: 800, z: 7 },
+-    area: "Pallet",
++    area: "near Pallet, Kanto",
+     client: "linux, version 3.1.2",
+     createdAt: 1_790_000_000,
+     ...overrides,
+@@ -184,7 +184,7 @@ describe("report forums: posts", () => {
+     expect(first.content).toContain(`<@${REPORTER}>`);
+     expect(first.mentionUserIds).toEqual([REPORTER]);
+     const embed = first.embeds![0]!;
+-    expect(embed.fields).toContainEqual({ name: "Where", value: "`3290, 800, 7` near Pallet", inline: true });
++    expect(embed.fields).toContainEqual({ name: "Where", value: "`3290, 800, 7` near Pallet, Kanto", inline: true });
+     expect(embed.fields!.find((field) => field.name === "Reporter")!.value).toContain("**Ash**, level 50, Hunter");
+     expect(store.get().reportPosts["12"]).toMatchObject({ threadId: post.id, status: "open", category: "map" });
+   });
+-- 
+2.43.0
+
