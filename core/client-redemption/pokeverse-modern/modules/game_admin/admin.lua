@@ -56,9 +56,9 @@ local SERVER_SECTIONS = {
                        { 'Legendaries', '/legendary status' }, { 'Anniversary', '/anniversary status' } } },
     { 'Anniversary', { { 'Show entrance', '/anniversary show', 'Show the Union Room sign and teleport for 30 minutes, to test the cake town' },
                        { 'Hide entrance', '/anniversary hide' },
-                       { 'On', '/anniversary on', 'Force the Anniversary on: bonuses, gifts and the cake town' },
-                       { 'Off', '/anniversary off', 'Force it off: the Union Room entrance hides and the town empties' },
-                       { 'Auto', '/anniversary auto', 'Back to its dates' },
+                       { 'Event on', '/anniversary on', 'Force the Anniversary on: bonuses, gifts and the cake town' },
+                       { 'Event off', '/anniversary off', 'Force it off: the Union Room entrance hides and the town empties' },
+                       { 'Event auto', '/anniversary auto', 'Back to its dates' },
                        { 'Start invasion', '/anniversary start' }, { 'Boss', '/anniversary boss', 'Bring out the Mad Big Cake' },
                        { 'Reset', '/anniversary reset', 'Clear the invasion' } } },
 }
