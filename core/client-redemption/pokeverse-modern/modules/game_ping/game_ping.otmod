@@ -1,0 +1,8 @@
+Module
+  name: game_ping
+  description: PokeVerse ping: measures the round trip to the server for Options > General > Show connection ping
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ ping ]
+  @onLoad: init()
+  @onUnload: terminate()

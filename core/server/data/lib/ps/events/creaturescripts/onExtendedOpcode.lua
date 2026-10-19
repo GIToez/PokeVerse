@@ -30,6 +30,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         PokemonShop.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.HINTS) then
         Hints.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.PING) then
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.PING, string.sub(buffer, 1, 16))
     end
     return true
 end

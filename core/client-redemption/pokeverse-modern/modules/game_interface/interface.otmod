@@ -67,6 +67,7 @@ Module
     - game_calendar
     - game_eventcards
     - game_hints
+    - game_ping
     - game_environment
     - game_dollcase
     - game_badgecase
