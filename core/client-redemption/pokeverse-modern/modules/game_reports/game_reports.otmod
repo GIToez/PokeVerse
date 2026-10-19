@@ -1,0 +1,8 @@
+Module
+  name: game_reports
+  description: PokeVerse reports: bug reports and player reports, the reporter's own tickets and the staff log
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ reports ]
+  @onLoad: init()
+  @onUnload: terminate()

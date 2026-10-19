@@ -1,0 +1,614 @@
+// The Reports window (artwork: scripts/art/reports_ui.py; the frame comes from game_dailytasks, the panels,
+// rows, tabs and badges from game_fishing, the fields and buttons from client_entergame, the dropdowns from
+// game_dailytasks and the scroll bar from game_gts)
+
+ReportText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+ReportMuted < ReportText
+  color: #96aacd
+
+ReportLabel < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+ReportTab < FishingTab
+  width: 150
+
+ReportField < PVField
+  height: 30
+  padding: 8 10 8 10
+
+ReportCombo < TkCombo
+  height: 30
+  width: 280
+
+ReportMultiline < UITextEdit
+  image-source: /modules/client_entergame/images/field
+  image-border: 8
+  font: verdana-11px-antialised
+  color: #e6ecff
+  placeholder-color: #7d8db0
+  selection-color: #ffffff
+  selection-background-color: #3d6fb8
+  multiline: true
+  text-wrap: true
+  text-align: topLeft
+  padding: 9 10 9 10
+  change-cursor-image: false
+  $focus:
+    image-source: /modules/client_entergame/images/field_focus
+
+ReportBadge < FishingBadge
+  anchors.right: parent.right
+  anchors.verticalCenter: parent.verticalCenter
+
+ReportRow < UIButton
+  height: 46
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+
+  UIWidget
+    id: icon
+    size: 22 22
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 9
+    phantom: true
+
+  UILabel
+    id: name
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ffffff
+    text-auto-resize: false
+    anchors.top: parent.top
+    anchors.left: icon.right
+    anchors.right: badge.left
+    margin: 7 8 0 9
+    height: 16
+    phantom: true
+
+  ReportMuted
+    id: sub
+    text-auto-resize: false
+    anchors.top: name.bottom
+    anchors.left: name.left
+    anchors.right: parent.right
+    margin: 2 10 0 0
+    height: 14
+
+  UIWidget
+    id: dot
+    size: 8 8
+    image-source: /images/options/badge_dot
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: 5 0 0 5
+    phantom: true
+    visible: false
+
+  ReportBadge
+    id: badge
+    anchors.top: parent.top
+    anchors.verticalCenter: none
+    margin: 7 9 0 0
+
+ReportInfoLine < UIWidget
+  height: 32
+  phantom: true
+
+  UILabel
+    id: key
+    font: verdana-11px-antialised
+    color: #96aacd
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: value
+    font: verdana-11px-antialised
+    color: #ffffff
+    text-auto-resize: false
+    anchors.top: key.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 2
+    height: 14
+    phantom: true
+
+ReportSectionTitle < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffd75a
+  text-auto-resize: true
+  margin-top: 8
+  phantom: true
+
+ReportBody < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-wrap: true
+  text-auto-resize: true
+  phantom: false
+
+ReportEvent < UILabel
+  font: verdana-11px-antialised
+  color: #b4c2dc
+  text-wrap: true
+  text-auto-resize: true
+  phantom: false
+
+ReportsWindow < UIWindow
+  size: 880 610
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_reports.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 34 34
+    image-source: /modules/game_reports/images/icon_reports
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -2
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Reports')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  ReportMuted
+    id: subtitle
+    !text: tr('Tell the team about a bug or a player breaking the rules. Every report reaches the staff and our Discord.')
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_reports.hide()
+
+  UIWidget
+    id: tabs
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 14
+    height: 28
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+    ReportTab
+      id: bug
+      !text: tr('Report a bug')
+    ReportTab
+      id: player
+      !text: tr('Report a player')
+    ReportTab
+      id: mine
+      !text: tr('My reports')
+    ReportTab
+      id: staff
+      !text: tr('All reports')
+      visible: false
+
+  // sending a report -------------------------------------------------------------------------------------
+
+  UIWidget
+    id: form
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 14
+    phantom: true
+
+    UIWidget
+      id: fields
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      width: 520
+      phantom: true
+
+      ReportLabel
+        id: categoryLabel
+        !text: tr('What is it about?')
+        anchors.top: parent.top
+        anchors.left: parent.left
+
+      ReportCombo
+        id: category
+        anchors.top: categoryLabel.bottom
+        anchors.left: parent.left
+        margin-top: 6
+
+      ReportLabel
+        id: targetLabel
+        !text: tr('Player name')
+        anchors.top: categoryLabel.top
+        anchors.left: category.right
+        margin-left: 12
+
+      ReportField
+        id: target
+        !placeholder: tr('Who are you reporting?')
+        anchors.top: category.top
+        anchors.left: category.right
+        anchors.right: parent.right
+        margin-left: 12
+        max-length: 30
+
+      ReportMuted
+        id: statement
+        text-wrap: true
+        text-auto-resize: true
+        anchors.top: category.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 8
+        visible: false
+
+      ReportLabel
+        id: titleLabel
+        !text: tr('Title')
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        margin-top: 12
+
+      ReportField
+        id: title
+        anchors.top: titleLabel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 6
+        max-length: 80
+
+      ReportLabel
+        id: descriptionLabel
+        !text: tr('What happened?')
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        margin-top: 12
+
+      ReportMuted
+        id: counter
+        text-auto-resize: true
+        anchors.verticalCenter: descriptionLabel.verticalCenter
+        anchors.right: parent.right
+
+      ReportMultiline
+        id: description
+        anchors.top: descriptionLabel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: send.top
+        margin-top: 6
+        margin-bottom: 12
+        max-length: 1500
+
+      PVYellowButton
+        id: send
+        !text: tr('Send report')
+        size: 170 34
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        @onClick: modules.game_reports.submit()
+
+      PVBlueButton
+        id: clear
+        !text: tr('Clear')
+        size: 110 34
+        anchors.left: send.right
+        anchors.bottom: parent.bottom
+        margin-left: 8
+        @onClick: modules.game_reports.clearForm()
+
+      ReportText
+        id: feedback
+        text-wrap: true
+        text-auto-resize: true
+        anchors.verticalCenter: send.verticalCenter
+        anchors.left: clear.right
+        anchors.right: parent.right
+        margin-left: 12
+
+    FishingPanel
+      id: info
+      anchors.top: parent.top
+      anchors.left: fields.right
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 18
+      padding: 14 16 12 16
+
+      FishingPanelTitle
+        !text: tr('Sent with your report')
+
+      UIWidget
+        id: lines
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 10
+        height: 180
+        layout:
+          type: verticalBox
+          spacing: 6
+
+      PVSeparator
+        anchors.top: lines.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 8
+
+      ReportText
+        id: tip
+        text-wrap: true
+        text-auto-resize: true
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 10
+
+      ReportMuted
+        id: discord
+        !text: tr('Each report becomes a post on our Discord. If your account is linked (!discord link), you are tagged on it and hear back there too.')
+        text-wrap: true
+        text-auto-resize: true
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 10
+
+  // the lists ---------------------------------------------------------------------------------------------
+
+  UIWidget
+    id: browser
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+    phantom: true
+    visible: false
+
+    UIWidget
+      id: filters
+      anchors.top: parent.top
+      anchors.left: parent.left
+      width: 380
+      height: 30
+      phantom: true
+      layout:
+        type: horizontalBox
+        spacing: 6
+
+      TkCombo
+        id: kindFilter
+        size: 120 30
+      TkCombo
+        id: statusFilter
+        size: 120 30
+      ReportField
+        id: search
+        !placeholder: tr('Search')
+        width: 128
+        max-length: 40
+
+    ScrollablePanel
+      id: list
+      anchors.top: filters.bottom
+      anchors.left: parent.left
+      anchors.bottom: pager.top
+      width: 366
+      margin-top: 8
+      margin-bottom: 6
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 4
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: list.bottom
+      anchors.left: list.right
+      margin-left: 4
+
+    ReportMuted
+      id: empty
+      text-wrap: true
+      text-auto-resize: true
+      text-align: center
+      anchors.top: list.top
+      anchors.left: list.left
+      anchors.right: list.right
+      margin: 60 16 0 16
+      visible: false
+
+    UIWidget
+      id: pager
+      anchors.left: list.left
+      anchors.right: list.right
+      anchors.bottom: parent.bottom
+      height: 28
+      phantom: true
+
+      PVBlueButton
+        id: prev
+        !text: tr('Newer')
+        size: 80 28
+        ttf-font-size: 12
+        anchors.left: parent.left
+        anchors.top: parent.top
+        @onClick: modules.game_reports.page(-1)
+
+      ReportMuted
+        id: pageLabel
+        text-auto-resize: true
+        anchors.centerIn: parent
+
+      PVBlueButton
+        id: next
+        !text: tr('Older')
+        size: 80 28
+        ttf-font-size: 12
+        anchors.right: parent.right
+        anchors.top: parent.top
+        @onClick: modules.game_reports.page(1)
+
+    FishingPanel
+      id: details
+      anchors.top: parent.top
+      anchors.left: listScroll.right
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-left: 12
+      padding: 14 16 12 16
+
+      UIWidget
+        id: kindIcon
+        size: 22 22
+        anchors.top: parent.top
+        anchors.left: parent.left
+        phantom: true
+
+      UILabel
+        id: name
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 16
+        color: #ffd75a
+        text-auto-resize: false
+        anchors.top: parent.top
+        anchors.left: kindIcon.right
+        anchors.right: badge.left
+        margin: 1 8 0 8
+        height: 20
+        phantom: true
+
+      FishingBadge
+        id: badge
+        anchors.top: parent.top
+        anchors.right: parent.right
+        margin-top: 2
+
+      ReportMuted
+        id: meta
+        text-auto-resize: false
+        anchors.top: name.bottom
+        anchors.left: name.left
+        anchors.right: parent.right
+        margin-top: 3
+        height: 14
+
+      ScrollablePanel
+        id: body
+        anchors.top: meta.bottom
+        anchors.left: parent.left
+        anchors.right: bodyScroll.left
+        anchors.bottom: staffBar.top
+        margin-top: 10
+        margin-bottom: 8
+        margin-right: 4
+        vertical-scrollbar: bodyScroll
+        layout:
+          type: verticalBox
+          spacing: 3
+          fit-children: false
+
+      GtsScrollBar
+        id: bodyScroll
+        anchors.top: body.top
+        anchors.bottom: body.bottom
+        anchors.right: parent.right
+
+      ReportMuted
+        id: hint
+        text-wrap: true
+        text-auto-resize: true
+        text-align: center
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin: 120 20 0 20
+        visible: false
+
+      UIWidget
+        id: staffBar
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: 72
+        phantom: true
+        visible: false
+
+        TkCombo
+          id: statusEdit
+          size: 150 30
+          anchors.top: parent.top
+          anchors.left: parent.left
+
+        ReportField
+          id: note
+          !placeholder: tr('Note for the reporter (optional)')
+          anchors.top: parent.top
+          anchors.left: statusEdit.right
+          anchors.right: parent.right
+          margin-left: 6
+          max-length: 500
+
+        PVYellowButton
+          id: save
+          !text: tr('Save')
+          size: 110 30
+          ttf-font-size: 12
+          anchors.left: parent.left
+          anchors.bottom: parent.bottom
+          @onClick: modules.game_reports.saveStatus()
+
+        PVBlueButton
+          id: goThere
+          !text: tr('Go there')
+          size: 110 30
+          ttf-font-size: 12
+          anchors.left: save.right
+          anchors.bottom: parent.bottom
+          margin-left: 6
+          @onClick: modules.game_reports.goThere()
+
+        ReportMuted
+          id: staffInfo
+          text-auto-resize: true
+          anchors.verticalCenter: save.verticalCenter
+          anchors.left: goThere.right
+          margin-left: 10
