@@ -336,7 +336,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  function applyExtendedViewLayout(extendedView)
      if extendedView == isExtendedViewActive then return end
      isExtendedViewActive = extendedView
-@@ -1991,6 +2164,19 @@
+@@ -1991,6 +2164,17 @@
          gameMainRightPanel:setImageColor('alpha')
          gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
          gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
@@ -348,15 +348,13 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
 +            gameBottomPanel:setHeight(170)
 +            layoutFloatingChat()
 +        end
-+        -- PokeVerse: the panels over the map are see-through
-+        for _, panel in ipairs({ gameBottomPanel, gameLeftPanel, gameRightPanel }) do
-+            panel:setOpacity(FLOATING_PANEL_OPACITY)
-+        end
++        -- PokeVerse: the chat over the map is see-through; the side windows are see-through cards already
++        gameBottomPanel:setOpacity(FLOATING_PANEL_OPACITY)
 +        bottomSplitter:setVisible(false)
          gameLeftActionPanel:setImageSource(nil)
          gameRightActionPanel:setImageSource(nil)
          gameLeftActionPanel:setBorderWidthRight(0)
-@@ -2011,6 +2197,10 @@
+@@ -2011,6 +2195,10 @@
  
          -- Reset bottom panel
          gameBottomPanel:setDraggable(false)
@@ -367,7 +365,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  
          -- Set anchors
          if not g_platform.isMobile() then
-@@ -2039,6 +2229,9 @@
+@@ -2039,6 +2227,9 @@
          modules.game_inventory.extendedView(extendedView)
          modules.client_topmenu.extendedView(extendedView)
          modules.game_mainpanel.toggleExtendedViewButtons(extendedView)
@@ -377,6 +375,22 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
      end)
  end
  
+diff -ruN pristine/modules/game_interface/gameinterface.otui modules/game_interface/gameinterface.otui
+--- a/modules/game_interface/gameinterface.otui
++++ b/modules/game_interface/gameinterface.otui
+@@ -1,10 +1,9 @@
+ GameSidePanel < UIMiniWindowContainer
+-  image-source: /images/ui/2pixel_up_frame_borderimage
+-  image-border: 4
+   width: 176
++  padding: 3 2 3 2
+   layout:
+     type: verticalBox
+-    //spacing: 1
++    spacing: 4
+ 
+ SelectColumnButton < CheckBox
+   visible: false
 diff -ruN pristine/modules/game_interface/widgets/statsbar.lua modules/game_interface/widgets/statsbar.lua
 --- a/modules/game_interface/widgets/statsbar.lua
 +++ b/modules/game_interface/widgets/statsbar.lua
