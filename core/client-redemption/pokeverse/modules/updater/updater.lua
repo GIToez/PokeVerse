@@ -23,6 +23,7 @@ Updater = {}
 Updater.maxRetries = 5
 Updater.parallel = 4
 Updater.batchSize = 25
+Updater.manifestTimeouts = { 10, 25 } -- seconds per attempt to reach the manifest
 
 -- files the updater needs to start; never written half way, always after the rest
 local CORE = { "^/init%.lua$", "^/modules/corelib/", "^/modules/updater/", "^/modules/client_locales/",
@@ -376,26 +377,48 @@ function Updater.check()
   updaterWindow:focus()
   updaterWindow:raise()
 
+  local totalSeconds = 5
+  for _, seconds in ipairs(Updater.manifestTimeouts) do
+    totalSeconds = totalSeconds + seconds
+  end
+
   local updateData = nil
   local function progressUpdater(value)
     removeEvent(scheduledEvent)
     if value == 100 then
-      return Updater.error(tr("Timeout"))
+      return Updater.offline(tr("Timeout"))
     end
     if updateData then
       return updateFiles(updateData)
     end
-    scheduledEvent = scheduleEvent(function() progressUpdater(value + 1) end, 100)
+    scheduledEvent = scheduleEvent(function() progressUpdater(value + 1) end, totalSeconds * 10)
     updaterWindow.mainProgress:setPercent(value)
   end
   progressUpdater(0)
 
-  manifestOperation = HTTP.getJSON(manifestUrl(), function(data, err)
-    if err then
-      return Updater.error(err)
-    end
-    updateData = data
-  end)
+  local function fetchManifest(attempt)
+    local defaultTimeout = HTTP.timeout
+    HTTP.timeout = Updater.manifestTimeouts[attempt]
+    manifestOperation = HTTP.getJSON(manifestUrl(), function(data, err)
+      if not updaterWindow then return end
+      if err then
+        if attempt < #Updater.manifestTimeouts then
+          updaterWindow.status:setText(tr("Server is slow to answer, trying again"))
+          return fetchManifest(attempt + 1)
+        end
+        return Updater.offline(err)
+      end
+      updateData = data
+    end)
+    HTTP.timeout = defaultTimeout
+  end
+  fetchManifest(1)
+end
+
+-- the manifest could not be fetched: nothing was changed, so the current files still work
+function Updater.offline(err)
+  Updater.error(tr("Could not reach the update server.\nPress Ok to play with the files you already have.") ..
+    "\n\n" .. tostring(err))
 end
 
 function Updater.error(message)
