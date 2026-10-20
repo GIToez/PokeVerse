@@ -135,7 +135,7 @@ EventChip < UIWidget
     phantom: true
 
 EventCardStack < UIWidget
-  width: 300
+  width: 360
   anchors.top: parent.top
   anchors.right: parent.right
   margin-top: 64
@@ -148,7 +148,7 @@ EventCardStack < UIWidget
     fit-children: true
 
 EventCard < UIWidget
-  height: 54
+  height: 66
   image-source: /modules/game_levelup/images/banner
   image-border: 12
   phantom: true
@@ -156,7 +156,7 @@ EventCard < UIWidget
 
   UIWidget
     id: frame
-    size: 42 42
+    size: 50 50
     image-source: /modules/game_levelup/images/chip
     image-border: 6
     anchors.left: parent.left
@@ -166,7 +166,7 @@ EventCard < UIWidget
 
   UIWidget
     id: picture
-    size: 38 38
+    size: 46 46
     image-smooth: true
     anchors.centerIn: frame
     phantom: true
@@ -178,18 +178,18 @@ EventCard < UIWidget
     anchors.top: parent.top
     anchors.left: frame.right
     anchors.right: parent.right
-    margin: 8 10 0 8
+    margin: 9 10 0 10
     height: 14
     phantom: true
 
   Label
     id: text
-    font: Verdana-8px-antialiased
-    color: #c8d8f0
+    font: verdana-11px-antialised
+    color: #dce8ff
     anchors.top: title.bottom
     anchors.left: title.left
     anchors.right: parent.right
-    margin: 2 10 0 0
-    height: 24
+    margin: 3 10 0 0
+    height: 30
     text-wrap: true
     phantom: true
