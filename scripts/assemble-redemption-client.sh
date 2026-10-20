@@ -68,7 +68,7 @@ redemption_skip=(client_assets client_bottommenu client_debug_info dev_otui game
   game_paperdolls game_playermount game_proficiency game_rewardwall game_spelllist game_stash
   game_taskboard game_unjustifiedpoints game_inspect game_quickloot
   game_shop game_store game_cyclopedia game_analyser game_lootsplitter game_notifications
-  game_questlog)
+  game_questlog game_ruleviolation)
 # files of skipped modules that kept modules still use (the skills window's resistance icons)
 redemption_keep=(game_cyclopedia/images/bestiary/icons)
 # PokeVerse modules taken from the legacy client, replacing a Redemption module of the same name
