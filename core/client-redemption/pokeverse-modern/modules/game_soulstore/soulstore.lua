@@ -8,7 +8,7 @@ local ICONS = '/modules/game_vocation/images/perk_'
 local CATEGORY_ICONS = { featured = 'star', premium = 'crown', addons = 'heart', outfits = 'outfit',
                          services = 'guide', items = 'up', guild = 'ranks', referral = 'heart' }
 local KIND_ICONS = { premium = 'crown', sex = 'outfit', nickname = 'title', unnickname = 'back', vitamins = 'up',
-                     bless = 'heal', guild = 'ranks', rank = 'ranks', referral = 'heart' }
+                     guild = 'ranks', rank = 'ranks', referral = 'heart' }
 local MAX_COUNT = 100
 local PREMIUM_PERKS = {
     'Fly, Levitate, Surf, Dive, Waterfall, Strength, Rock Climb and Teleport',

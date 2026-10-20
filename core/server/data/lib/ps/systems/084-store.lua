@@ -35,7 +35,7 @@ Store.CATEGORIES = {
 }
 
 -- kind: "premium" (days), "item" (itemId), "outfit" (outfitId from XML/outfits.xml), "sex", "nickname",
--- "unnickname", "vitamins", "bless", "guild", "rank" and "referral" (below). look/looks are what the window draws:
+-- "unnickname", "vitamins", "guild", "rank" and "referral" (below). look/looks are what the window draws:
 -- a Pokemon or one look per sex (female, male). use is the datalog_coin_uses id the NPCs logged the same thing with.
 Store.OFFERS = {
     { id = "premium30", category = "premium", kind = "premium", days = 30, price = 15, use = 1, name = "30 days Premium",
@@ -67,13 +67,11 @@ Store.OFFERS = {
       description = "The Pokemon in your ball slot goes back to its species name." },
     { id = "vitamins", category = "services", kind = "vitamins", price = 1, use = 10, name = "Vitamin Reset",
       description = "Removes every vitamin from the Pokemon in your ball slot, so you can give it new ones." },
-    { id = "bless", category = "services", kind = "bless", price = 1, use = 4, name = "Blessing",
-      description = "You lose less experience when you faint, until the next time you do." },
     { id = "sex", category = "services", kind = "sex", price = 3, use = 2, name = "Sex Change",
       description = "Changes your trainer from male to female, or back." },
 
     { id = "stamina", category = "items", kind = "item", itemId = 13971, price = 1, use = 6, stack = true,
-      name = "Stamina Recover", description = "A drink that recovers 10 hours of stamina." },
+      name = "Spirit Tonic", description = "Restores 10 hours of Trainer Spirit. It works below 30 hours, and can't take you past 40." },
     { id = "eggmove", category = "items", kind = "item", itemId = 28915, price = 1, use = 11, stack = true,
       name = "Egg Move Capsule", description = "Teaches a Pokemon one of its egg moves." },
 
@@ -312,8 +310,6 @@ local function blocker(cid, offer, text)
         return "You already have this outfit."
     elseif (kind == "referral" and Referral.getPoints(cid) < offer.price) then
         return string.format(__L(cid, "You need %d referral points for this."), offer.price)
-    elseif (kind == "bless" and getPlayerBlessing(cid, 5)) then
-        return "You are already blessed."
     elseif (kind == "nickname" or kind == "unnickname" or kind == "vitamins") then
         local ball = getPlayerBall(cid)
         if (not isItem(ball) or not isBallWithPokemon(ball.uid)) then
@@ -361,10 +357,6 @@ local function deliver(cid, offer, count, text)
         return doPlayerSafeAddItem(cid, offer.itemId, count, false) ~= false
     elseif (kind == "outfit") then
         doPlayerAddOutfitId(cid, offer.outfitId, 0)
-    elseif (kind == "bless") then
-        for bless = 1, 5 do
-            doPlayerAddBlessing(cid, bless)
-        end
     elseif (kind == "sex") then
         doPlayerSetSex(cid, getPlayerSex(cid) == PLAYERSEX_FEMALE and PLAYERSEX_MALE or PLAYERSEX_FEMALE)
     elseif (kind == "nickname" or kind == "unnickname") then
@@ -393,7 +385,6 @@ local DONE = {
     item = "You got %s. It is in your bag, or in your depot if the bag was full.",
     outfit = "The %s outfit is yours. Pick it in the outfit window.",
     sex = "Your trainer's sex has been changed.",
-    bless = "You are blessed.",
     referral = "You got the %s for referral points.",
     nickname = "Your Pokemon is now called %s.",
     unnickname = "Your Pokemon's nickname was removed.",

@@ -854,6 +854,20 @@ WikiData = {
                 { "95", "Elite Four" },
             } },
         } },
+        { key = 'spirit', title = 'Trainer Spirit', item = 12297, body = {
+            { 'p', "Trainer Spirit is the bar under Skills. It goes down while you hunt and comes back while you are logged out. The more you have, the more trainer EXP you get; running out never lowers your experience." },
+            { 'table', {
+                { "Trainer Spirit", "Name", "Free", "Premium" },
+                { "41 to 42 hours", "Fired Up", "+25%", "+50%" },
+                { "35 to 41 hours", "Pumped", "+20%", "+20%" },
+                { "20 to 35 hours", "Focused", "+15%", "+15%" },
+                { "10 to 20 hours", "Steady", "+10%", "+10%" },
+                { "1 to 10 hours", "Winding Down", "+5%", "+5%" },
+                { "Under 1 hour", "Worn Out", "none", "none" },
+            } },
+            { 'p', "Hover the bar to see every boost you have now: Trainer Spirit, XP potions, server events, a Lucky Egg and the Ace Trainer perk. A Spirit Tonic (Store, 1 Soul Coin) restores 10 hours when you are below 30." },
+            { 'see', { 'premium', 'soulcoins' } },
+        } },
         { key = 'premium', title = 'Premium', item = 6499, body = {
             { 'p', "Premium costs 15 Soul Coins for 30 days, or 40 for 90 days, in the Store. It is needed for:" },
             { 'steps', {
@@ -871,8 +885,8 @@ WikiData = {
                 { "Pokemon addon, trainer outfit", "15" },
                 { "Create a guild", "5" },
                 { "Sex change", "3" },
-                { "Blessing, nickname, vitamin reset", "1 each" },
-                { "Stamina recover, egg move capsule, guild rank", "1 each" },
+                { "Nickname, vitamin reset", "1 each" },
+                { "Spirit Tonic, egg move capsule, guild rank", "1 each" },
             } },
             { 'p', "A purchase uses your balance first, then Soul Coins in your bag. Withdraw turns balance into coins to trade, and Deposit puts them back. History lists the account's last 50." },
             { 'p', "Referral Rewards in the Store are paid with referral points: 5 for each friend who reaches level 30 and buys Premium." },

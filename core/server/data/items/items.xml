@@ -20548,8 +20548,8 @@
 	<item fromid="13921" toid="13970" article="a" name="pokemon portrait">
 		<attribute key="slotType" value="legs" />
 	</item>
-	<item id="13971" name="stamina recover">
-		<attribute key="description" value="This powerful drink can recover 10 hours of stamina." />
+	<item id="13971" article="a" name="spirit tonic">
+		<attribute key="description" value="A fizzy drink that restores 10 hours of Trainer Spirit. It works below 30 hours." />
 	</item>
 	<item id="13972" article="a" name="moon stone fragment">
 		<attribute key="description" value="It is as black as the night sky." />
