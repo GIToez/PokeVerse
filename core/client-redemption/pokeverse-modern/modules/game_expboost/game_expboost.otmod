@@ -1,0 +1,8 @@
+Module
+  name: game_expboost
+  description: PokeVerse experience boosts on the stamina bar: stamina, XP boosts, Lucky Egg and server events
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ expboost ]
+  @onLoad: init()
+  @onUnload: terminate()

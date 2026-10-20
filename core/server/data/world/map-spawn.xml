@@ -7671,9 +7671,10 @@
     <monster name="Shroomish" x="0" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Breloom" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Lenard.xml is kept)
   <spawn centerx="3246" centery="1459" centerz="4" radius="1">
     <npc name="Lenard" x="-1" y="-1" z="4" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="507" centery="1461" centerz="4" radius="1">
     <monster name="Makuhita" x="0" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
@@ -17232,9 +17233,10 @@
   <spawn centerx="2765" centery="2831" centerz="5" radius="1">
     <npc name="Wilf Mortimer" x="-1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Rafe.xml is kept)
   <spawn centerx="2745" centery="2832" centerz="5" radius="1">
     <npc name="Rafe" x="1" y="0" z="5" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="4187" centery="2891" centerz="5" radius="1">
     <monster name="Golem" x="1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
@@ -17466,9 +17468,10 @@
     <monster name="Snubbull" x="1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Granbull" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Gyles.xml is kept)
   <spawn centerx="3492" centery="3246" centerz="5" radius="1">
     <npc name="Gyles" x="-1" y="0" z="5" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="4148" centery="3250" centerz="5" radius="1">
     <monster name="Forretress" x="-1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Ledyba" x="1" y="0" z="5" spawntime="60" level="0"/>
@@ -24179,9 +24182,10 @@
   <spawn centerx="855" centery="1471" centerz="6" radius="1">
     <monster name="Mightyena" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Elliot.xml is kept)
   <spawn centerx="3441" centery="1472" centerz="6" radius="1">
     <npc name="Elliot" x="0" y="1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="454" centery="1473" centerz="6" radius="1">
     <monster name="Loudred" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -25473,9 +25477,10 @@
     <monster name="Manectric" x="-1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Electrike" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Lou.xml is kept)
   <spawn centerx="3527" centery="1667" centerz="6" radius="1">
     <npc name="Lou" x="0" y="1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="4440" centery="1667" centerz="6" radius="1">
     <monster name="Clefable" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -25610,9 +25615,10 @@
   <spawn centerx="944" centery="1700" centerz="6" radius="1">
     <monster name="Electrike" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Easton.xml is kept)
   <spawn centerx="3052" centery="1700" centerz="6" radius="1">
     <npc name="Easton" x="0" y="-1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="961" centery="1701" centerz="6" radius="1">
     <monster name="Electrike" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -25816,9 +25822,10 @@
   <spawn centerx="4094" centery="1745" centerz="6" radius="1">
     <monster name="Hoothoot" x="1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Erik.xml is kept)
   <spawn centerx="4411" centery="1745" centerz="6" radius="1">
     <npc name="Erik" x="-1" y="0" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="358" centery="1746" centerz="6" radius="1">
     <monster name="Taillow" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -25840,9 +25847,10 @@
   <spawn centerx="3467" centery="1762" centerz="6" radius="1">
     <npc name="Captain Hamilton Justice" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Selby.xml is kept)
   <spawn centerx="4138" centery="1762" centerz="6" radius="1">
     <npc name="Selby" x="0" y="1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="598" centery="1763" centerz="6" radius="1">
     <monster name="Swalot" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -26279,9 +26287,10 @@
   <spawn centerx="3950" centery="1917" centerz="6" radius="1">
     <monster name="Caterpie" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Curtis.xml is kept)
   <spawn centerx="3541" centery="1918" centerz="6" radius="1">
     <npc name="Curtis" x="0" y="1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="3912" centery="1918" centerz="6" radius="1">
     <monster name="Yanma" x="1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -27067,9 +27076,10 @@
   <spawn centerx="2968" centery="2254" centerz="6" radius="1">
     <npc name="Keir Jez" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Cree.xml is kept)
   <spawn centerx="2983" centery="2254" centerz="6" radius="1">
     <npc name="Cree" x="0" y="-1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="4448" centery="2257" centerz="6" radius="1">
     <npc name="Irene Jaylyn" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -27386,9 +27396,10 @@
   <spawn centerx="2670" centery="2447" centerz="6" radius="1">
     <monster name="Mankey" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Carlisle.xml is kept)
   <spawn centerx="2709" centery="2451" centerz="6" radius="1">
     <npc name="Carlisle" x="1" y="0" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="3525" centery="2454" centerz="6" radius="1">
     <monster name="Pidgey" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Spearow" x="-1" y="1" z="6" spawntime="60" level="0"/>
@@ -27809,9 +27820,10 @@
   <spawn centerx="4514" centery="2669" centerz="6" radius="1">
     <monster name="Wartortle" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Cairo.xml is kept)
   <spawn centerx="4386" centery="2680" centerz="6" radius="1">
     <npc name="Cairo" x="1" y="0" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="4575" centery="2687" centerz="6" radius="1">
     <monster name="Wartortle" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -28254,9 +28266,10 @@
   <spawn centerx="3030" centery="2967" centerz="6" radius="1">
     <monster name="Ariados" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Roscoe.xml is kept)
   <spawn centerx="4160" centery="2970" centerz="6" radius="1">
     <npc name="Roscoe" x="0" y="1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="3044" centery="2971" centerz="6" radius="1">
     <monster name="Ariados" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -28566,9 +28579,10 @@
     <monster name="Houndour" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Houndoom" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Tobias.xml is kept)
   <spawn centerx="3588" centery="3180" centerz="6" radius="1">
     <npc name="Tobias" x="-1" y="0" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="3449" centery="3181" centerz="6" radius="1">
     <monster name="Houndoom" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -28582,9 +28596,10 @@
   <spawn centerx="3558" centery="3183" centerz="6" radius="1">
     <monster name="Mankey" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Selwyn.xml is kept)
   <spawn centerx="4187" centery="3185" centerz="6" radius="1">
     <npc name="Selwyn" x="-1" y="0" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="3568" centery="3187" centerz="6" radius="1">
     <monster name="Mankey" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
@@ -29254,9 +29269,10 @@
     <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
     <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
+  <!-- Soul Coin trader, replaced by the Store (data/npc/Richard.xml is kept)
   <spawn centerx="4733" centery="129" centerz="7" radius="1">
     <npc name="Richard" x="1" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="5519" centery="130" centerz="7" radius="1">
     <monster name="Rocket Grunt Main" x="-1" y="-1" z="7" spawntime="300" level="0"/>
   </spawn>

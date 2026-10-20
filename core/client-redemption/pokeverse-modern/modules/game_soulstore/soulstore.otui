@@ -1,0 +1,636 @@
+// The Store, laid out like Redemption's game_store: categories on the left, offers in the middle, the picked
+// offer on the right and the Soul Coin balance on top (the frame comes from game_dailytasks, panels, tabs and rows
+// from game_fishing, the icons from game_vocation, the buttons and fields from client_entergame, the scroll bar
+// from game_gts)
+
+StoreText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+StoreMuted < StoreText
+  color: #96aacd
+
+StoreBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+StoreCoin < UIItem
+  size: 32 32
+  virtual: true
+  phantom: true
+
+StoreCategory < UIButton
+  height: 30
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !on:
+    image-source: /modules/game_fishing/images/row_hover
+  $on:
+    image-source: /modules/game_fishing/images/row_on
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+
+  StoreBold
+    id: name
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+
+  StoreMuted
+    id: count
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+
+StoreOfferCard < UIButton
+  height: 52
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+
+  UIWidget
+    id: frame
+    size: 40 40
+    image-source: /modules/game_fishing/images/portrait
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+    UIItem
+      id: item
+      size: 32 32
+      anchors.centerIn: parent
+      virtual: true
+      phantom: true
+
+    UICreature
+      id: creature
+      size: 40 40
+      anchors.centerIn: parent
+      phantom: true
+
+    UIWidget
+      id: icon
+      size: 24 24
+      anchors.centerIn: parent
+      phantom: true
+
+  StoreBold
+    id: name
+    color: #ffd75a
+    anchors.left: frame.right
+    anchors.top: parent.top
+    margin: 9 0 0 8
+
+  StoreMuted
+    id: note
+    text-auto-resize: false
+    anchors.left: name.left
+    anchors.right: price.left
+    anchors.top: name.bottom
+    margin: 3 6 0 0
+    height: 14
+
+  StoreBold
+    id: price
+    color: #7ee08f
+    ttf-font-size: 13
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+
+  StoreMuted
+    id: was
+    text-auto-resize: true
+    anchors.right: price.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+
+StoreHistoryRow < UIWidget
+  height: 34
+  phantom: true
+
+  StoreBold
+    id: text
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 2
+
+  StoreMuted
+    id: when
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.top: text.bottom
+    margin-top: 2
+
+  StoreBold
+    id: amount
+    ttf-font-size: 13
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: line
+    height: 1
+    background-color: #2a3a5a
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+SoulStoreWindow < UIWindow
+  size: 920 600
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_soulstore.close()
+
+  UIWidget
+    id: headerIcon
+    size: 32 32
+    image-source: /modules/game_vocation/images/perk_crown
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Store')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  StoreMuted
+    id: subtitle
+    !text: tr('Spend Soul Coins on Premium, addons, outfits and services')
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 2
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_soulstore.close()
+
+  PVBlueButton
+    id: deposit
+    !text: tr('Deposit')
+    size: 84 30
+    ttf-font-size: 12
+    anchors.right: closeButton.left
+    anchors.top: parent.top
+    margin: 2 14 0 0
+
+  PVBlueButton
+    id: withdraw
+    !text: tr('Withdraw')
+    size: 84 30
+    ttf-font-size: 12
+    anchors.right: deposit.left
+    anchors.top: parent.top
+    margin: 2 6 0 0
+
+  FishingPanel
+    id: bank
+    size: 190 42
+    padding: 4 10 4 10
+    anchors.top: parent.top
+    anchors.right: withdraw.left
+    margin: -4 10 0 0
+
+    StoreCoin
+      id: coin
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    StoreMuted
+      id: caption
+      !text: tr('Soul Coins')
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: coin.right
+      margin-left: 6
+
+    UILabel
+      id: balance
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 15
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.top: caption.bottom
+      anchors.left: caption.left
+      margin-top: 1
+      phantom: true
+
+    StoreMuted
+      id: bag
+      text-auto-resize: true
+      anchors.left: balance.right
+      anchors.bottom: balance.bottom
+      margin: 0 0 1 6
+
+  FishingPanel
+    id: categoriesPanel
+    width: 200
+    anchors.top: bank.bottom
+    anchors.left: parent.left
+    anchors.bottom: footer.top
+    margin: 14 0 10 0
+
+    PVField
+      id: search
+      height: 28
+      padding: 6 8 6 8
+      !placeholder: tr('Search the Store...')
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+    UIWidget
+      id: categories
+      anchors.top: search.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 10
+      layout:
+        type: verticalBox
+        spacing: 4
+
+  FishingPanel
+    id: detail
+    width: 300
+    anchors.top: categoriesPanel.top
+    anchors.right: parent.right
+    anchors.bottom: categoriesPanel.bottom
+
+    UILabel
+      id: title
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 15
+      color: #ffffff
+      text-align: center
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 20
+      phantom: true
+
+    StoreMuted
+      id: subtitle
+      text-align: center
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 14
+      margin-top: 2
+
+    UIWidget
+      id: preview
+      height: 120
+      image-source: /modules/game_fishing/images/panel
+      image-border: 10
+      anchors.top: subtitle.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      phantom: true
+
+      UICreature
+        id: creature
+        size: 110 110
+        anchors.centerIn: parent
+        phantom: true
+
+      UIItem
+        id: item
+        size: 64 64
+        anchors.centerIn: parent
+        virtual: true
+        phantom: true
+
+      UIWidget
+        id: icon
+        size: 48 48
+        anchors.centerIn: parent
+        phantom: true
+
+    StoreText
+      id: description
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: preview.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+
+    StoreMuted
+      id: info
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: description.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+    PVField
+      id: textField
+      height: 30
+      padding: 6 8 6 8
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: countBar.top
+      margin-bottom: 8
+      max-length: 20
+
+    UIWidget
+      id: countBar
+      height: 30
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: buy.top
+      margin-bottom: 8
+      phantom: true
+
+      StoreMuted
+        id: caption
+        !text: tr('How many')
+        text-auto-resize: true
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+
+      PVBlueButton
+        id: plus
+        text: +
+        size: 30 30
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+
+      UILabel
+        id: count
+        ttf-font: /fonts/ttf/arialb.ttf
+        ttf-font-size: 14
+        color: #ffffff
+        text-align: center
+        width: 44
+        anchors.right: plus.left
+        anchors.verticalCenter: parent.verticalCenter
+        phantom: true
+
+      PVBlueButton
+        id: minus
+        text: -
+        size: 30 30
+        anchors.right: count.left
+        anchors.verticalCenter: parent.verticalCenter
+
+    PVGreenButton
+      id: buy
+      height: 38
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  UIWidget
+    id: offersPanel
+    anchors.top: categoriesPanel.top
+    anchors.left: categoriesPanel.right
+    anchors.right: detail.left
+    anchors.bottom: categoriesPanel.bottom
+    margin: 0 12 0 12
+    image-source: /modules/game_fishing/images/panel
+    image-border: 10
+    padding: 9 10 9 10
+
+    UILabel
+      id: title
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffffff
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      phantom: true
+
+    StoreMuted
+      id: count
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+
+    ScrollablePanel
+      id: list
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: parent.bottom
+      margin: 10 4 0 0
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 4
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: title.bottom
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      margin-top: 10
+
+    StoreMuted
+      id: empty
+      text-wrap: true
+      text-auto-resize: true
+      text-align: center
+      anchors.top: list.top
+      anchors.left: list.left
+      anchors.right: list.right
+      margin-top: 60
+
+  UIWidget
+    id: footer
+    height: 32
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+    StoreMuted
+      id: note
+      !text: tr('Purchases use your Soul Coin balance first, then the coins in your bag. Every purchase is in History.')
+      text-auto-resize: true
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    PVBlueButton
+      id: close
+      !text: tr('Close')
+      size: 90 32
+      ttf-font-size: 13
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      @onClick: modules.game_soulstore.close()
+
+    PVBlueButton
+      id: history
+      !text: tr('History')
+      size: 90 32
+      ttf-font-size: 13
+      anchors.right: close.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
+
+SoulStoreDialog < UIWindow
+  size: 380 196
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 24 22 24
+  focusable: true
+  @onEscape: modules.game_soulstore.closeDialog()
+
+  UILabel
+    id: title
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 17
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  StoreText
+    id: text
+    text-wrap: true
+    text-auto-resize: true
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+  PVField
+    id: field
+    height: 32
+    padding: 6 10 6 10
+    anchors.top: text.bottom
+    anchors.left: parent.left
+    anchors.right: all.left
+    margin: 12 8 0 0
+
+  PVBlueButton
+    id: all
+    !text: tr('All')
+    size: 60 32
+    ttf-font-size: 12
+    anchors.top: text.bottom
+    anchors.right: parent.right
+    margin-top: 12
+
+  PVGreenButton
+    id: confirm
+    height: 32
+    ttf-font-size: 13
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-right: 5
+
+  PVBlueButton
+    id: cancel
+    !text: tr('Cancel')
+    height: 32
+    ttf-font-size: 13
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 5
+    @onClick: modules.game_soulstore.closeDialog()
+
+SoulStoreHistory < UIWindow
+  size: 460 440
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 24 22 24
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_soulstore.closeHistory()
+
+  UILabel
+    id: title
+    !text: tr('Store history')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 17
+    color: #ffffff
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  StoreMuted
+    id: subtitle
+    !text: tr('Your account\'s last 50 purchases, withdraws and deposits')
+    text-auto-resize: true
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    margin-top: 2
+
+  ScrollablePanel
+    id: list
+    anchors.top: subtitle.bottom
+    anchors.left: parent.left
+    anchors.right: listScroll.left
+    anchors.bottom: close.top
+    margin: 12 6 12 0
+    vertical-scrollbar: listScroll
+    layout:
+      type: verticalBox
+      spacing: 2
+
+  GtsScrollBar
+    id: listScroll
+    anchors.top: subtitle.bottom
+    anchors.bottom: close.top
+    anchors.right: parent.right
+    margin: 12 0 12 0
+
+  StoreMuted
+    id: empty
+    !text: tr('Nothing yet.')
+    text-auto-resize: true
+    anchors.centerIn: list
+
+  PVBlueButton
+    id: close
+    !text: tr('Close')
+    size: 90 32
+    ttf-font-size: 13
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_soulstore.closeHistory()

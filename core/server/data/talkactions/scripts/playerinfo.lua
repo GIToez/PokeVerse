@@ -28,7 +28,7 @@ function onSay(cid, words, param, channel)
 			"\nGold Bar - " .. getPlayerItemCount(pid, 2160) .. ", Note of Hundred Dollar - " .. getPlayerItemCount(pid, 2152) .. ", Dollar - " .. getPlayerItemCount(pid, 2148) ..
 			"\nBalance: " .. getPlayerBalance(pid) ..
 			"\nPosition: [X - " .. pos.x .. " | Y - " .. pos.y .. " | Z - " .. pos.z .. "]" ..
-		"\nStamina: " .. table.concat(string.timediff(getPlayerStamina(cid) * 60, cid)) ..
+		"\nTrainer Spirit: " .. table.concat(string.timediff(getPlayerStamina(cid) * 60, cid)) ..
 		"\nOnline Time: " .. table.concat(string.timediff(os.time() - getPlayerLastLogin(pid), cid)) ..
 		"\n\nInformation about account" ..
 		"\nName: " .. getPlayerAccount(pid) ..

@@ -981,10 +981,11 @@ Still to do:
 Not fixed yet:
 
 - **Soul Coins (decided: the premium currency).** Players buy them with real money and
-  spend them on Premium time, outfits, addons and similar. Not built: buying them (the Store
-  says "coming soon"), and the Store items to spend them on. Today the Soul Coin and bank
-  NPCs stand only in the Orange Islands and the Union Room, and about 17 Soul Coin and bank
-  NPC files are never placed; check which of them still fit a bought currency.
+  spend them in the Store (built: `game_soulstore` and `lib/ps/systems/084-store.lua`). It has
+  everything the 23 Soul Coin NPCs sold, plus the first Trainer Outfits (Business, Rider,
+  Shiny Poke Maniac, 15 each) and their referral rewards. The 16 of those NPCs that were on the
+  map are commented out in `map-spawn.xml`; their files stay. Josh Pillberg stays for his EV
+  shop; his vitamin reset moved to the Store. Not built: buying Soul Coins with money.
 - **Vital mastery:** its "longer buffs" perk makes buffs shorter (13 s instead of 20 s).
   The masteries go with the [vocations](#6-vocations), so it may not need a fix.
 - **Surprise boxes** only spawn in the west of the map (Hoenn), never in Kanto or the Orange

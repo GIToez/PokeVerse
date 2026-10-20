@@ -1,0 +1,8 @@
+Module
+  name: game_soulstore
+  description: PokeVerse Store: Premium, Pokemon addons, trainer outfits and services for Soul Coins
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ soulstore ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -7,7 +7,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 
 	else
 		if (getPlayerStamina(cid) + RECOVER >= RECOVER_MAX) then
-			doPlayerSendCancel(cid, "You can not recover more stamina, the maximum allowed is 40 hours.")
+			doPlayerSendCancel(cid, "A Spirit Tonic only works below 30 hours of Trainer Spirit. It can't take you past 40 hours.")
 
 		else
 			doPlayerAddStamina(cid, RECOVER)

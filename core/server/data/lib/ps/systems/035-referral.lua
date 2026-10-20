@@ -103,6 +103,9 @@ local function doRecordReferralFriends(referralAccount, friendAccount)
 end
 
 -- Global
+Referral.OPTIONS = OPTIONS
+Referral.getPoints = getPlayerAccountReferralPoints
+
 Referral.getRewardByName = function(s)
     return OPTIONS[string.lower(s)]
 end

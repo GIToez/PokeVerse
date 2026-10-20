@@ -32,6 +32,10 @@ function onExtendedOpcode(cid, opcode, buffer)
         Hints.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.REPORT) then
         Reports.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.STORE) then
+        Store.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.EXP_BOOST) then
+        ExpBoost.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.AUTO_LOOT) then
         local enabled = buffer == "1"
         setPlayerAutoLoot(cid, enabled)

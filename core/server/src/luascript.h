@@ -746,6 +746,7 @@ class LuaScriptInterface
 		static int32_t luaGetPlayerPvpArenaTeam(lua_State* L);
 		static int32_t luaDoNpcSetOpponent(lua_State* L);
 		static int32_t luaGetPlayerExtraExpRate(lua_State* L);
+		static int32_t luaGetPlayerStaminaExperienceRate(lua_State* L);
 		static int32_t luaSetPlayerExtraExpRate(lua_State* L);
 		static int32_t luaGetPlayerExtraLootRate(lua_State* L);
 		static int32_t luaSetPlayerExtraLootRate(lua_State* L);

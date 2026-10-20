@@ -2659,6 +2659,9 @@ void LuaScriptInterface::registerFunctions()
 	//getPlayerExtraExpRate(cid)
 	lua_register(m_luaState, "getPlayerExtraExpRate", LuaScriptInterface::luaGetPlayerExtraExpRate);
 
+	//getPlayerStaminaExperienceRate(cid)
+	lua_register(m_luaState, "getPlayerStaminaExperienceRate", LuaScriptInterface::luaGetPlayerStaminaExperienceRate);
+
 	//setPlayerExtraExpRate(cid, value)
 	lua_register(m_luaState, "setPlayerExtraExpRate", LuaScriptInterface::luaSetPlayerExtraExpRate);
 
@@ -13004,6 +13007,20 @@ int32_t LuaScriptInterface::luaGetPlayerExtraExpRate(lua_State* L)
     ScriptEnviroment* env = getEnv();
     if(Player* player = env->getPlayerByUID(popNumber(L)))
         lua_pushnumber(L, player->getExtraExpRate());
+    else
+    {
+        errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int32_t LuaScriptInterface::luaGetPlayerStaminaExperienceRate(lua_State* L)
+{
+    //getPlayerStaminaExperienceRate(cid)
+    ScriptEnviroment* env = getEnv();
+    if(Player* player = env->getPlayerByUID(popNumber(L)))
+        lua_pushnumber(L, player->getStaminaExperienceRate());
     else
     {
         errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));

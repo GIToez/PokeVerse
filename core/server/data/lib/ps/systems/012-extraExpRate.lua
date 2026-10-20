@@ -5,6 +5,7 @@ local function doExtraExpRateReset(pid)
 		setPlayerExtraExpRateValue(pid, 0)
 		doPlayerSendTextMessage(pid, MESSAGE_STATUS_CONSOLE_BLUE, "Your bonus experience has ended.")
 		doSendMagicEffect(getCreaturePosition(pid), EFFECT_RED_BUFF)
+		ExpBoost.send(pid)
 	end
 end
 
@@ -30,5 +31,6 @@ function doExtraExpRateStart(pid, seconds, value)
 	doPlayerSendTextMessage(pid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pid, "Your %s%% bonus experience has started. Duration: %s minutes."), math.round(value * 100), math.floor(seconds / 60)))
 	doSendMagicEffect(getCreaturePosition(pid), EFFECT_RED_BUFF)
 	addEvent(doExtraExpRateReset, seconds * 1000, pid)
+	ExpBoost.send(pid)
 	return true
 end
