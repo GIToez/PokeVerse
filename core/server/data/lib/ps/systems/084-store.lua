@@ -8,7 +8,7 @@
 -- The window talks JSON on EXTENDED_IDS.STORE:
 --   client -> server  {action = "open"}, {action = "buy", offer, count, text}, {action = "withdraw", amount},
 --                     {action = "deposit", amount}, {action = "history"}
---   server -> client  {type = "store", balance, bag, premiumDays, sex, ball, guild, categories, offers}
+--   server -> client  {type = "store", balance, coin, bag, points, premiumDays, sex, ball, guild, categories, offers}
 --                     {type = "result", ok, text}
 --                     {type = "history", list}
 
@@ -31,11 +31,12 @@ Store.CATEGORIES = {
     { id = "services", name = "Services", icon = "services" },
     { id = "items", name = "Consumables", icon = "items" },
     { id = "guild", name = "Guild", icon = "guild" },
+    { id = "referral", name = "Referral Rewards", icon = "referral" },
 }
 
 -- kind: "premium" (days), "item" (itemId), "outfit" (outfitId from XML/outfits.xml), "sex", "nickname",
--- "unnickname", "vitamins", "guild", "rank". look/looks are what the window draws: a Pokemon or one look per sex
--- (female, male). use is the datalog_coin_uses id the NPCs logged the same thing with.
+-- "unnickname", "vitamins", "bless", "guild", "rank" and "referral" (below). look/looks are what the window draws:
+-- a Pokemon or one look per sex (female, male). use is the datalog_coin_uses id the NPCs logged the same thing with.
 Store.OFFERS = {
     { id = "premium30", category = "premium", kind = "premium", days = 30, price = 15, use = 1, name = "30 days Premium",
       description = "Premium for the whole account, shared by its 3 characters. Added to the days you have left." },
@@ -66,6 +67,8 @@ Store.OFFERS = {
       description = "The Pokemon in your ball slot goes back to its species name." },
     { id = "vitamins", category = "services", kind = "vitamins", price = 1, use = 10, name = "Vitamin Reset",
       description = "Removes every vitamin from the Pokemon in your ball slot, so you can give it new ones." },
+    { id = "bless", category = "services", kind = "bless", price = 1, use = 4, name = "Blessing",
+      description = "You lose less experience when you faint, until the next time you do." },
     { id = "sex", category = "services", kind = "sex", price = 3, use = 2, name = "Sex Change",
       description = "Changes your trainer from male to female, or back." },
 
@@ -79,6 +82,35 @@ Store.OFFERS = {
     { id = "rank", category = "guild", kind = "rank", price = 1, use = 9, name = "New Guild Rank",
       description = "Adds a rank to your guild. Leaders only; give it to a member with /setrank name, rank." },
 }
+
+-- Referral Rewards are paid with the account's referral points (Referral.onPlayerBuy takes them), not Soul
+-- Coins: 5 points for each friend who reaches level 30 and buys Premium.
+local REFERRAL_DESCRIPTIONS = {
+    ["hunter outfit"] = "The Hunter trainer outfit.",
+    ["pikachu backpack"] = "A Pikachu to carry on your back.",
+    ["doll box"] = "A box with a random Pokemon doll.",
+    ["rare seal box"] = "A box with a rare ball seal.",
+}
+do
+    local rewards = {}
+    for key, option in pairs(Referral.OPTIONS) do
+        rewards[#rewards + 1] = { key = key, option = option }
+    end
+    table.sort(rewards, function(a, b)
+        if (a.option.points ~= b.option.points) then
+            return a.option.points > b.option.points
+        end
+        return a.key < b.key
+    end)
+    for _, reward in ipairs(rewards) do
+        local option = reward.option
+        local name = option.name:gsub("(%a)(%w*)", function(first, rest) return first:upper() .. rest end)
+        Store.OFFERS[#Store.OFFERS + 1] = { id = "referral_" .. reward.key:gsub("%s", "_"), category = "referral",
+            kind = "referral", referral = reward.key, price = option.points, points = true, itemId = option.itemId,
+            looks = option.outfits, name = name,
+            description = REFERRAL_DESCRIPTIONS[reward.key] or "Paid with referral points." }
+    end
+end
 
 local byId = {}
 for _, offer in ipairs(Store.OFFERS) do
@@ -190,7 +222,12 @@ local function guildInfo(cid)
 end
 
 local function hasOutfit(cid, offer)
-    return canPlayerWearOutfitId(cid, offer.outfitId, 0)
+    if (offer.outfitId) then
+        return canPlayerWearOutfitId(cid, offer.outfitId, 0)
+    end
+    local looks = offer.looks or {}
+    local look = getPlayerSex(cid) == PLAYERSEX_FEMALE and looks[1] or looks[2]
+    return look ~= nil and canPlayerWearOutfit(cid, look, 0)
 end
 
 local function offerList(cid)
@@ -198,7 +235,8 @@ local function offerList(cid)
     for _, offer in ipairs(Store.OFFERS) do
         local entry = { id = offer.id, category = offer.category, featured = offer.featured or nil, kind = offer.kind,
                         name = __L(cid, offer.name), price = offer.price, was = offer.was, look = offer.look,
-                        looks = offer.looks, pokemon = offer.pokemon, stack = offer.stack or nil, days = offer.days }
+                        looks = offer.looks, pokemon = offer.pokemon, stack = offer.stack or nil, days = offer.days,
+                        points = offer.points }
         entry.description = __L(cid, offer.description)
         if (offer.kind == "guild") then
             entry.description = string.format(entry.description, getConfigValue("levelToFormGuild"))
@@ -206,7 +244,7 @@ local function offerList(cid)
         if (offer.itemId) then
             entry.item = getItemClientId(offer.itemId) or 0
         end
-        if (offer.kind == "outfit" and hasOutfit(cid, offer)) then
+        if ((offer.kind == "outfit" or (offer.kind == "referral" and offer.looks)) and hasOutfit(cid, offer)) then
             entry.owned = true
         end
         list[#list + 1] = entry
@@ -223,8 +261,8 @@ local function categoryList(cid)
 end
 
 Store.sendState = function(cid)
-    send(cid, { type = "store", balance = Store.getBalance(getPlayerAccountId(cid)),
-                bag = getPlayerItemCount(cid, Store.COIN_ID), premiumDays = getPlayerPremiumDays(cid),
+    send(cid, { type = "store", balance = Store.getBalance(getPlayerAccountId(cid)), coin = getItemClientId(Store.COIN_ID),
+                bag = getPlayerItemCount(cid, Store.COIN_ID), points = Referral.getPoints(cid), premiumDays = getPlayerPremiumDays(cid),
                 sex = getPlayerSex(cid), ball = ballInfo(cid), guild = guildInfo(cid),
                 categories = categoryList(cid), offers = offerList(cid),
                 nick = { min = Store.NICK_MIN, max = Store.NICK_MAX } })
@@ -270,8 +308,12 @@ end
 -- Why this purchase can't happen, or nil. text is the name the offer asks for.
 local function blocker(cid, offer, text)
     local kind = offer.kind
-    if (kind == "outfit" and hasOutfit(cid, offer)) then
+    if ((kind == "outfit" or (kind == "referral" and offer.looks)) and hasOutfit(cid, offer)) then
         return "You already have this outfit."
+    elseif (kind == "referral" and Referral.getPoints(cid) < offer.price) then
+        return string.format(__L(cid, "You need %d referral points for this."), offer.price)
+    elseif (kind == "bless" and getPlayerBlessing(cid, 5)) then
+        return "You are already blessed."
     elseif (kind == "nickname" or kind == "unnickname" or kind == "vitamins") then
         local ball = getPlayerBall(cid)
         if (not isItem(ball) or not isBallWithPokemon(ball.uid)) then
@@ -319,6 +361,10 @@ local function deliver(cid, offer, count, text)
         return doPlayerSafeAddItem(cid, offer.itemId, count, false) ~= false
     elseif (kind == "outfit") then
         doPlayerAddOutfitId(cid, offer.outfitId, 0)
+    elseif (kind == "bless") then
+        for bless = 1, 5 do
+            doPlayerAddBlessing(cid, bless)
+        end
     elseif (kind == "sex") then
         doPlayerSetSex(cid, getPlayerSex(cid) == PLAYERSEX_FEMALE and PLAYERSEX_MALE or PLAYERSEX_FEMALE)
     elseif (kind == "nickname" or kind == "unnickname") then
@@ -347,6 +393,8 @@ local DONE = {
     item = "You got %s. It is in your bag, or in your depot if the bag was full.",
     outfit = "The %s outfit is yours. Pick it in the outfit window.",
     sex = "Your trainer's sex has been changed.",
+    bless = "You are blessed.",
+    referral = "You got the %s for referral points.",
     nickname = "Your Pokemon is now called %s.",
     unnickname = "Your Pokemon's nickname was removed.",
     vitamins = "Your Pokemon's vitamins were reset.",
@@ -364,6 +412,16 @@ Store.buy = function(cid, id, count, text)
     local why = blocker(cid, offer, text)
     if (why) then
         return result(cid, false, why)
+    end
+    if (offer.kind == "referral") then
+        if (not Referral.onPlayerBuy(cid, Referral.OPTIONS[offer.referral])) then
+            Store.sendState(cid)
+            return result(cid, false, "That didn't work. Check your referral points and try again.")
+        end
+        log(cid, string.format("%s (%d referral points)", offer.name, offer.price), 0)
+        print(string.format("> Store: %s took %s for %d referral points", getCreatureName(cid), offer.name, offer.price))
+        Store.sendState(cid)
+        return result(cid, true, DONE.referral, offer.name)
     end
     local price = offer.price * count
     local ok, payWhy = pay(cid, price)

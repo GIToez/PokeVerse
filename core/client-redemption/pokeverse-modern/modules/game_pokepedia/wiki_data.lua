@@ -214,7 +214,7 @@ WikiData = {
                 { "PP Up", "Max energy 5 / 8 / 10%" },
                 { "PP Max", "Max energy 10% (once)" },
             } },
-            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Josh Pillberg in the Union Room resets them for 1 soul coin. The casino merchants sell them for poke coins." },
+            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. The Store resets them for 1 Soul Coin (Services). The casino merchants sell them for poke coins." },
         } },
         { key = 'held', title = 'Held items', item = 22170, body = {
             { 'p', "A held item boosts one type of moves by 20% (Charcoal Fire, Mystic Water Water, Dragon Fang Dragon, and so on). An Elemental Stone boosts the two types it was charged with. Each Pokemon holds one item." },
@@ -241,7 +241,7 @@ WikiData = {
             { 'p', "Hoes, watering cans and seeds are sold by the farmers in the Kanto towns." },
         } },
         { key = 'nickname', title = 'Nicknames', item = 6499, body = {
-            { 'p', "At a soul coin NPC, put the Pokemon's ball in your Poke Ball slot and say nick change, then the name (4 to 20 letters), then yes. It costs 1 soul coin; nick remove clears it." },
+            { 'p', "Put the Pokemon's ball in your Poke Ball slot, open the Store (Services), type the name (4 to 20 letters) and buy Pokemon Nickname for 1 Soul Coin. Remove Nickname is free." },
             { 'see', { 'soulcoins' } },
         } },
         { key = 'seals', title = 'Ball seals', item = 15744, body = {
@@ -508,7 +508,7 @@ WikiData = {
             { 'p', "The GTS, house rent and Pokepedia purchases use your bank balance." },
         } },
         { key = 'guilds', title = 'Guilds', item = 6499, body = {
-            { 'p', "Create one at a soul coin NPC: say guild, the name (4 to 20 letters) and yes. You need level 30 and 5 soul coins; no Premium. A custom rank costs 1 soul coin." },
+            { 'p', "Create one in the Store (Guild): type the name (4 to 20 letters) and buy it. You need level 30 and 5 Soul Coins; no Premium. A new rank costs 1 Soul Coin." },
             { 'p', "Run it from the Guild channel with commands starting with ! or /: invite, revoke, kick, promote, demote, setrankname, passleadership, setmotd, leave and disband. Accept an invitation with !joinguild and the guild's name." },
             { 'commands', { "!invite name", "!joinguild guild" } },
             { 'see', { 'houses', 'soulcoins' } },
@@ -855,7 +855,7 @@ WikiData = {
             } },
         } },
         { key = 'premium', title = 'Premium', item = 6499, body = {
-            { 'p', "Premium costs 10 soul coins for 30 days at a soul coin NPC. It is needed for:" },
+            { 'p', "Premium costs 15 Soul Coins for 30 days, or 40 for 90 days, in the Store. It is needed for:" },
             { 'steps', {
                 "Fly, Levitate, Surf, Dive, Waterfall, Strength, Rock Climb and Teleport.",
                 "Houses, beds, the Day Care, masteries and outfit addons.",
@@ -863,18 +863,19 @@ WikiData = {
             } },
             { 'p', "Premium trainers can also run two hunting tasks at once. Guilds, tournaments, duels, the Safari Zone, TMs, gyms and the Elite Four are free." },
         } },
-        { key = 'soulcoins', title = 'Soul coins', item = 6499, body = {
-            { 'p', "Soul coin NPCs are in the Orange Islands and the Union Room (Richard). They sell:" },
+        { key = 'soulcoins', title = 'Soul coins and the Store', item = 6499, body = {
+            { 'p', "Soul Coins are spent in the Store: the Store button on the top bar. Your balance belongs to the account and is shared by its characters." },
             { 'table', {
                 { "For", "Soul coins" },
-                { "Premium, 30 days", "10" },
-                { "Pokemon addon", "15" },
+                { "Premium, 30 / 90 days", "15 / 40" },
+                { "Pokemon addon, trainer outfit", "15" },
                 { "Create a guild", "5" },
                 { "Sex change", "3" },
-                { "Bless, nickname, stamina", "1 each" },
-                { "Guild rank, egg move capsule", "1 each" },
+                { "Blessing, nickname, vitamin reset", "1 each" },
+                { "Stamina recover, egg move capsule, guild rank", "1 each" },
             } },
-            { 'p', "They also keep your account's soul coins: say balance or withdraw." },
+            { 'p', "A purchase uses your balance first, then Soul Coins in your bag. Withdraw turns balance into coins to trade, and Deposit puts them back. History lists the account's last 50." },
+            { 'p', "Referral Rewards in the Store are paid with referral points: 5 for each friend who reaches level 30 and buys Premium." },
         } },
         { key = 'casino', title = 'Slot machines and casino', item = 22154, body = {
             { 'p', "From level 15 a spin costs $100, up to 90 spins a day. Three of a kind pays poke coins: 1 for leftovers up to 30 for amulet coins." },

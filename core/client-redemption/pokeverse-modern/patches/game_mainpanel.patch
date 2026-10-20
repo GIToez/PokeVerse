@@ -1,7 +1,7 @@
 diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/mainpanel.lua
 --- a/modules/game_mainpanel/mainpanel.lua
 +++ b/modules/game_mainpanel/mainpanel.lua
-@@ -171,20 +171,22 @@
+@@ -171,20 +171,24 @@
  optionsController:setUI('mainoptionspanel', modules.game_interface.getMainRightPanel())
  
  function optionsController:onInit()
@@ -18,7 +18,9 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
  
  function toggleStore()
 -    if  g_game.getFeature(GameIngameStore) then
-+    if g_game.getFeature(GameIngameStore) and modules.game_store then
++    if modules.game_soulstore then
++        modules.game_soulstore.toggle() -- PokeVerse Store, on ExtendedIds.Store
++    elseif g_game.getFeature(GameIngameStore) and modules.game_store then
          modules.game_store.toggle() -- cipsoft packets
 -    else
 +    elseif modules.game_shop then
@@ -28,7 +30,7 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
      end
  end
  
-@@ -263,6 +265,49 @@
+@@ -263,6 +267,49 @@
      return optionsController.ui.onPanel.options:recursiveGetChildById(id)
  end
  
@@ -78,7 +80,7 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
  function toggleExtendedViewButtons(extended)
      local optionsPanel = optionsController.ui.onPanel.options
      local specialsPanel = optionsController.ui.onPanel.store
-@@ -282,6 +327,7 @@
+@@ -282,6 +329,7 @@
                  rightGamePanel:addChild(button)
              end
          end
@@ -86,7 +88,7 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
          optionsController.ui:hide()
          optionsController.ui:setHeight(0)
      else
-@@ -295,6 +341,12 @@
+@@ -295,6 +343,12 @@
                  end
              end
          end
