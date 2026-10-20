@@ -32,5 +32,6 @@ Module
     dofile 'pokeverse/pokemon'
     dofile 'pokeverse/moves'
     dofile 'pokeverse/items'
+    dofile 'pokeverse/balls'
     dofile 'pokeverse/types'
     dofile 'pokeverse/targetmarker'
