@@ -210,6 +210,27 @@ jobs:
         with:
           packages: ndk;29.0.13599879 cmake;3.22.1 platforms;android-36
 
+      # private repositories get smaller runners: the unity C++ files compiled in parallel run
+      # out of memory and the runner dies ("The operation was canceled"). The swap needs disk,
+      # so the preinstalled tools this job doesn't use are removed first.
+      - name: Disk and swap for the compiler
+        run: |
+          df -h / /mnt || true
+          free -h
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/node_modules /opt/ghc /usr/local/.ghcup \
+            /usr/local/share/boost /usr/local/share/powershell /usr/local/share/chromium \
+            /opt/hostedtoolcache/CodeQL /opt/hostedtoolcache/go /opt/hostedtoolcache/PyPy \
+            /usr/share/swift /usr/local/julia* /opt/az /opt/microsoft || true
+          sudo docker image prune -af > /dev/null 2>&1 || true
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile /swapfile
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          df -h / || true
+          free -h
+
       - name: vcpkg baseline
         run: |
           echo "VCPKG_COMMIT=$(python3 -c 'import json;print(json.load(open("core/client-redemption/vcpkg.json"))["builtin-baseline"])')" >> "$GITHUB_ENV"

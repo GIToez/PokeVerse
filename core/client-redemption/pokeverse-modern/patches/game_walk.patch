@@ -108,7 +108,24 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
  end
  
  --- Sets up game-related events for the WalkController.
-@@ -284,8 +366,10 @@
+@@ -269,7 +351,15 @@
+     })
+ 
+     modules.game_interface.getRootPanel().onFocusChange = stopSmartWalk
+-    modules.game_joystick.addOnJoystickMoveListener(function(dir) g_game.walk(dir) end)
++    -- the joystick asks every 20 ms while held: walk() steps only when the last step is done, as the keys do;
++    -- nil when it is let go drops a step still waiting
++    modules.game_joystick.addOnJoystickMoveListener(function(dir)
++        if dir then
++            walk(dir)
++        else
++            cancelWalkEvent()
++        end
++    end)
+ 
+     if not g_game.isOfficialTibia() then
+         g_game.enableFeature(GameForceFirstAutoWalkStep)
+@@ -284,8 +374,10 @@
  end
  
  --- Utility functions for binding and unbinding keys.

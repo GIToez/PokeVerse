@@ -327,6 +327,81 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      gameBottomPanel:setPhantom(false)
  end
  
+@@ -2530,19 +2497,22 @@
+     if extendedViewButtonToggleChat then
+         return
+     end
+-    local mapPanel = modules.game_interface.getMapPanel()
+-    local stringNameMobileOrPc = g_platform.isMobile() and "GameAction" or "MainToggleButton"
+-    extendedViewButtonToggleChat = g_ui.createWidget(stringNameMobileOrPc, mapPanel)
++    local mobile = g_platform.isMobile()
++    -- PokeVerse: on mobile the buttons sit at the bottom of the screen left of the attack/follow/look/use
++    -- shortcuts; on the map's bottom right they were under the side panels, which float over the map
++    local parent = mobile and modules.game_interface.getRootPanel() or modules.game_interface.getMapPanel()
++    local stringNameMobileOrPc = mobile and "GameAction" or "MainToggleButton"
++    extendedViewButtonToggleChat = g_ui.createWidget(stringNameMobileOrPc, parent)
+     extendedViewButtonToggleChat:setId("test")
+-    local hightMobileWidget = 0
+-    if g_platform.isMobile() then
+-        hightMobileWidget = modules.game_joystick.getPanel():getHeight()
++    if mobile then
+         extendedViewButtonToggleChat.image:setImageSource("/images/game/mobile/chat")
++        extendedViewButtonToggleChat.image:setOpacity(1)
++        extendedViewButtonToggleChat:setSize("56 56")
++        local shortcuts = modules.game_shortcuts and modules.game_shortcuts.getPanel()
+         extendedViewButtonToggleChat:addAnchor(AnchorRight, "parent", AnchorRight)
+-        extendedViewButtonToggleChat:setMarginBottom(hightMobileWidget)
+-        extendedViewButtonToggleChat:setMarginRight(15)
+-        extendedViewButtonToggleChat:setMarginBottom(hightMobileWidget)
+-        extendedViewButtonToggleChat:setSize("60 60")
++        extendedViewButtonToggleChat:setMarginRight((shortcuts and shortcuts:getWidth() or 0) + 16)
++        extendedViewButtonToggleChat:setMarginBottom(12)
++        extendedViewButtonToggleChat:setTooltip(tr('Show the chat'))
+     else
+         extendedViewButtonToggleChat:setIcon("/images/game/npcicons/icon_chat")
+         extendedViewButtonToggleChat:setMarginBottom(10)
+@@ -2553,19 +2523,22 @@
+     extendedViewButtonToggleChat.onClick = function(a, b)
+         extendedViewHide(modules.game_interface.currentViewMode ~= 2)
+     end
+-    extendedViewButtonShowAlphaChat = g_ui.createWidget(stringNameMobileOrPc, mapPanel)
++    extendedViewButtonShowAlphaChat = g_ui.createWidget(stringNameMobileOrPc, parent)
+     extendedViewButtonShowAlphaChat:setIcon("/images/game/npcicons/icon_chat")
+-    extendedViewButtonShowAlphaChat:addAnchor(AnchorBottom, "parent", AnchorBottom)
+-    if g_platform.isMobile() then
+-        extendedViewButtonShowAlphaChat:setMarginBottom(hightMobileWidget)
+-        extendedViewButtonShowAlphaChat:setSize("60 60")
+-        extendedViewButtonShowAlphaChat:addAnchor(AnchorRight, "test", AnchorLeft)
++    if mobile then
++        extendedViewButtonShowAlphaChat:setSize("56 56")
++        extendedViewButtonShowAlphaChat:setIconSize({ width = 32, height = 32 })
++        extendedViewButtonShowAlphaChat:addAnchor(AnchorBottom, "test", AnchorTop)
++        extendedViewButtonShowAlphaChat:addAnchor(AnchorHorizontalCenter, "test", AnchorHorizontalCenter)
++        extendedViewButtonShowAlphaChat:setMarginBottom(8)
++        extendedViewButtonShowAlphaChat:setTooltip(tr('See the chat through the map'))
+     else
++        extendedViewButtonShowAlphaChat:addAnchor(AnchorBottom, "parent", AnchorBottom)
+         extendedViewButtonShowAlphaChat:setSize("30 23")
+-        extendedViewButtonShowAlphaChat:addAnchor(AnchorLeft, "test", AnchorRight)
+         extendedViewButtonShowAlphaChat:setMarginBottom(10)
++        extendedViewButtonShowAlphaChat:addAnchor(AnchorLeft, "test", AnchorRight)
++        extendedViewButtonShowAlphaChat:setMarginLeft(5)
+     end
+-    extendedViewButtonShowAlphaChat:setMarginLeft(5)
+     extendedViewButtonShowAlphaChat.onClick = function(a, b)
+         if extendedViewButtonShowAlphaChat:isOn() then
+             extendedViewButtonShowAlphaChat:setOn(false)
+@@ -2574,6 +2547,10 @@
+         end
+         extendedViewCanSee(extendedViewButtonShowAlphaChat:isOn())
+     end
++    if mobile then
++        extendedViewButtonToggleChat:raise()
++        extendedViewButtonShowAlphaChat:raise()
++    end
+ end
+ 
+ function destroyButtonChat()
 diff -ruN pristine/modules/game_console/console.otui modules/game_console/console.otui
 --- a/modules/game_console/console.otui
 +++ b/modules/game_console/console.otui

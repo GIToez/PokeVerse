@@ -538,6 +538,8 @@ local function delegateDrag(slot)
     end
 end
 
+local HOLD_FOR_INFO_MS = 500
+
 function onPokemonMoves(iconItemId, moves)
     reset()
     for k, v in pairs(moves) do
@@ -549,6 +551,7 @@ function onPokemonMoves(iconItemId, moves)
         delegateDrag(slot)
         slot.onMousePress = function(self)
             self.pressPosition = pokemonMovesWindow:getPosition()
+            self.pressTime = g_clock.millis()
             return false
         end
         slot.onMouseRelease = function(self, mousePos, button)
@@ -560,6 +563,10 @@ function onPokemonMoves(iconItemId, moves)
             local moved = p and (p.x ~= pokemonMovesWindow:getX() or p.y ~= pokemonMovesWindow:getY())
             if button ~= MouseLeftButton or moved or not self:containsPoint(mousePos) then
                 return false
+            end
+            -- on mobile holding a slot shows its tooltip (corelib tooltip.lua); letting go does not use it
+            if g_platform.isMobile() and self.pressTime and g_clock.millis() - self.pressTime >= HOLD_FOR_INFO_MS then
+                return true
             end
             if g_keyboard.isShiftPressed() then
                 requestCard(v)
