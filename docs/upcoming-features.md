@@ -1832,7 +1832,8 @@ Planned October 20, for going public. Nothing here is built yet.
 - **Logins** lock for a while after 10 wrong tries from one IP; nothing locks per account.
 - **Soul Coins** are an account balance (`accounts.soulcoins`) and an item (6500). Nothing in
   the game adds to the balance. 23 NPCs use `soulTrade.lua` (Premium, Pokemon addons, sex
-  change, nickname, bless, stamina, guild), paid with the item.
+  change, nickname, stamina, egg move capsule, guild), paid with the item; the full list is
+  under phase 3.
 - **The Store button** says "coming soon". There is no PayPal or donation link anywhere.
 
 ### Decided
@@ -1913,11 +1914,12 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
    - New tables for the codes (stored hashed, 15 minutes, 5 tries) and a security log of
      logins, failures and changes, which staff can look up in the Admin window.
    - Privacy Policy and Terms (with a refund policy and a minimum age) on the website.
-3. **The Store** (can be tested with coins given by staff; after the Poke Mart window,
-   whose tiles and cart it reuses):
-   - The Store window from the top bar: Premium, Outfits and addons, Pokemon addons,
-     Services (name and sex change, nickname, bless, stamina, vitamin reset) and Guild.
-     Items that need a choice, such as a Pokemon to nickname, ask for it in the window.
+3. **The Store** (can be tested with coins given by staff):
+   - The Store window from the top bar, laid out like Redemption's own store (categories
+     on the left, the offers in the middle, the chosen offer on the right) in the PokeVerse
+     colours. Categories: Premium, Pokemon Addons, Outfits (empty until outfits are
+     priced), Services, Consumables and Guild. Offers that need a choice, such as a Pokemon
+     to nickname or a guild name, ask for it in the window.
    - A Soul Coin bank strip at the top: the balance, Withdraw and Deposit (in place of the
      NPCs' withdraw), Buy Soul Coins (from phase 4) and the purchase history. The Bank
      window from the modernization audit can show the same strip.
@@ -1926,6 +1928,26 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
    - One catalog on the server; each purchase takes the coins and gives the item in one
      step, so coins can't be spent twice.
    - The 23 Soul Coin NPCs removed.
+   - **Everything Soul Coins buy today**, all of it moving to the Store (from
+     `npc/scripts/soulTrade.lua` and Josh Pillberg's `vitamin_reset.lua`):
+
+     | Offer | Today | Store |
+     |---|---|---|
+     | Premium | 10 SC for 30 days | 15 SC for 30 days, 40 SC for 90 days |
+     | Sex change | 3 SC | 3 SC |
+     | Pokemon nickname (the ball slot's Pokemon, 4 to 20 letters) | 1 SC | 1 SC |
+     | Remove a nickname | free | free |
+     | Vitamin reset (Josh Pillberg) | 1 SC | 1 SC |
+     | Stamina recover (10 hours of stamina) | 1 SC | 1 SC |
+     | Egg move capsule | 1 SC | 1 SC |
+     | Create a guild (level 30) | 5 SC | 5 SC |
+     | New guild rank (leaders) | 1 SC | 1 SC |
+     | Pokemon addons: Fossilized Kabutops, Aerodactyl, Armaldo and Omastar, Greybeard Costume (Slowking) | 15 SC each | 15 SC each |
+
+     Bless (1 SC) and hometown change (5 SC) are switched off in the NPC script and stay
+     out. The NPCs' **referral** rewards (paint tickets, hunter outfit, rare seal box,
+     Pikachu backpack, doll box) cost referral points, not Soul Coins, and are not part of
+     this.
 4. **Buying Soul Coins with PayPal** (needs the PayPal Business account):
    - Buy Soul Coins in the Store makes a one-time code for the account (like the Discord
      `/link` codes) and opens `account.pokeverse.quest/buy` with it. No website login.
