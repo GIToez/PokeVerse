@@ -53,6 +53,7 @@ Module
     - game_fishing
     - game_daycare
     - game_pokemonshop
+    - game_mart
     - game_admin
     - game_quests
     - game_reports
