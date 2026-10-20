@@ -1,0 +1,48 @@
+name: Clean up artifacts
+
+# Artifacts only carry builds from one job to the next inside a run. A private repository gets
+# little free artifact storage, and when it is full every upload fails (and with it the client
+# release and the server deploy), so artifacts older than a few hours go, biggest first.
+# GITHUB_TOKEN allows about 1,000 API calls an hour, so a big backlog takes a few runs.
+on:
+  workflow_dispatch:
+    inputs:
+      keep_hours:
+        description: Keep artifacts younger than this many hours (a release or deploy run can still need them)
+        default: '6'
+  schedule:
+    - cron: '23 */6 * * *'
+
+permissions:
+  actions: write
+
+concurrency:
+  group: cleanup-artifacts
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Delete old artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEEP_HOURS: ${{ inputs.keep_hours || '6' }}
+          MAX_DELETES: 900
+        run: |
+          cutoff=$(date -u -d "-$KEEP_HOURS hours" +%s)
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+            --jq '.artifacts[] | select(.expired == false) | [.id, .size_in_bytes, .created_at, .name] | @tsv' > artifacts.tsv
+          # the newest few Windows symbol files stay for reading crash reports
+          sort -t$'\t' -k3,3r artifacts.tsv | awk -F'\t' '$4 == "redemption-windows-pdb"' | head -3 | cut -f1 > keep.txt
+          deleted=0; freed=0
+          while IFS=$'\t' read -r id size created name; do
+            [ "$(date -u -d "$created" +%s)" -lt "$cutoff" ] || continue
+            grep -qx "$id" keep.txt && continue
+            if [ "$deleted" -ge "$MAX_DELETES" ]; then break; fi
+            if gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$id" --silent; then
+              deleted=$((deleted + 1)); freed=$((freed + size))
+            fi
+          done < <(sort -t$'\t' -k2,2nr artifacts.tsv)
+          left=$(( $(wc -l < artifacts.tsv) - deleted ))
+          printf 'Deleted %d artifacts (%.1f GB); %d left.\n' "$deleted" "$(awk -v b="$freed" 'BEGIN { print b / 1e9 }')" "$left" | tee -a "$GITHUB_STEP_SUMMARY"
