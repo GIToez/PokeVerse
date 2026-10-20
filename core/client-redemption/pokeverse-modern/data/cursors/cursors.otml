@@ -43,7 +43,10 @@ Cursors
     hot-spot: 5 0
   dex:
     image: dexcursor
-    hot-spot: 12 12
+    hot-spot: 24 24
   order:
     image: ordercursor
-    hot-spot: 12 12
+    hot-spot: 24 24
+  ball:
+    image: ballcursor
+    hot-spot: 24 24
