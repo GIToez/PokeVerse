@@ -1917,9 +1917,24 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
 3. **The Store** (can be tested with coins given by staff):
    - The Store window from the top bar, laid out like Redemption's own store (categories
      on the left, the offers in the middle, the chosen offer on the right) in the PokeVerse
-     colours. Categories: Premium, Pokemon Addons, Outfits (empty until outfits are
-     priced), Services, Consumables and Guild. Offers that need a choice, such as a Pokemon
-     to nickname or a guild name, ask for it in the window.
+     colours. Categories: Featured (first: discounts, limited editions and the holiday
+     outfits while their event runs), Premium, Pokemon Addons, Trainer Outfits, Services,
+     Consumables and Guild. Offers that need a choice, such as a Pokemon to nickname or a
+     guild name, ask for it in the window.
+   - **Trainer Outfits, the candidates** (**To decide:** which ones and their prices). In
+     `XML/outfits.xml` but with no way to get them in the game today:
+     - Rocket, Business, Rider and Shiny Poke Maniac: nothing gives them.
+     - Epic: needs storage 7065, which nothing sets.
+     - Poke Maniac: the reward of Snap's quest, and Snap is not placed on the map.
+     - Wak Lady / Wak Lord: the quest that gave it is commented out.
+     - Pirate #1, #3 and #4: rewards of Calico, Javy Dones and Ed Blackhood, none of them
+       placed on the map. Pirate #2 (Nagumo Harbor, who appears during the pirate quest)
+       can still be earned.
+   - **Holiday outfits for Featured** (earned today with event tokens, drops or event
+     rewards, only while the event runs): Halloween #1 to #7, Phantomaniac, Halloween
+     Monster, Christmas #1 to #3, Santa Grinch, Elfin, Helper Grinch, Easter #1, Explorer
+     (anniversary), and the Azurill/Blastoise and Pikachu/Charizard costumes (anniversary).
+     **To decide:** sold only in the Store, or in the Store as well as by the event.
    - A Soul Coin bank strip at the top: the balance, Withdraw and Deposit (in place of the
      NPCs' withdraw), Buy Soul Coins (from phase 4) and the purchase history. The Bank
      window from the modernization audit can show the same strip.
