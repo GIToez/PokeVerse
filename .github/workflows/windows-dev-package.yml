@@ -85,12 +85,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ci-mesa
+          retention-days: 1
           path: ci-mesa/
-          retention-days: 3
 
       - uses: actions/upload-artifact@v4
         with:
           name: PokeVerse-Windows-Dev
+          retention-days: 3
           path: dist/
           if-no-files-found: error
           compression-level: 9
@@ -150,6 +151,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: redemption-windows-bin
+          retention-days: 1
           path: bin-windows/
           if-no-files-found: error
 
@@ -179,6 +181,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: PokeVerse-Windows-Dev
+          retention-days: 3
           path: dist/
           if-no-files-found: error
           compression-level: 9
@@ -218,6 +221,7 @@ jobs:
         if: always()
         with:
           name: test-logs-windows
+          retention-days: 3
           path: ${{ runner.temp }}\test-logs
 
   test-server-linux:

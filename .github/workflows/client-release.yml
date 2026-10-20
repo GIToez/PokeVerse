@@ -122,6 +122,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: redemption-linux-bin
+          retention-days: 1
           path: bin-linux/
           if-no-files-found: error
 
@@ -178,6 +179,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: redemption-windows-bin
+          retention-days: 1
           path: bin-windows/
           if-no-files-found: error
 
@@ -186,9 +188,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: redemption-windows-pdb
+          retention-days: 14
           path: core/client-redemption/build/windows-release/bin/*.pdb
           if-no-files-found: warn
-          retention-days: 90
 
   android:
     name: Build (Android)
@@ -284,6 +286,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: redemption-android-apk
+          retention-days: 1
           path: bin-android/
           if-no-files-found: error
           compression-level: 0
@@ -421,12 +424,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: client-release
+          retention-days: 1
           path: release/
           compression-level: 0
 
       - uses: actions/upload-artifact@v4
         with:
           name: clients-site
+          retention-days: 1
           path: site/
           compression-level: 0
 
