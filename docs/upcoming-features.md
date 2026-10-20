@@ -98,7 +98,9 @@ players install the APK for real), a phone UI pass, and a security check of the 
 server (open ports, SSH, firewall).
 
 Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
-buying Soul Coins (the premium currency) and the Store items they pay for, and putting Johto in `scripts/mapper/hidden-regions.txt` while
+[accounts, Soul Coins and the Store](#19-accounts-soul-coins-and-the-store) (email
+verification, account recovery, buying Soul Coins with PayPal, and the Store in place of the
+Soul Coin NPCs), and putting Johto in `scripts/mapper/hidden-regions.txt` while
 it is built, so the map doesn't show it before launch.
 
 ## 1. New depot
@@ -984,7 +986,8 @@ Not fixed yet:
   spend them on Premium time, outfits, addons and similar. Not built: buying them (the Store
   says "coming soon"), and the Store items to spend them on. Today the Soul Coin and bank
   NPCs stand only in the Orange Islands and the Union Room, and about 17 Soul Coin and bank
-  NPC files are never placed; check which of them still fit a bought currency.
+  NPC files are never placed. Planned in
+  [section 19](#19-accounts-soul-coins-and-the-store): the Store replaces all of them.
 - **Vital mastery:** its "longer buffs" perk makes buffs shorter (13 s instead of 20 s).
   The masteries go with the [vocations](#6-vocations), so it may not need a fix.
 - **Surprise boxes** only spawn in the west of the map (Hoenn), never in Kanto or the Orange
@@ -1796,6 +1799,116 @@ berries and the GTS. Making some of those nicer is in the
 **Quality of life**
 - **Sort and bulk actions** in the PC and the bag (sort by number, level or type; release or
   move several at once). Small.
+
+## 19. Accounts, Soul Coins and the Store
+
+Planned October 20, for going public. Nothing here is built yet.
+
+### Today
+
+- **Creating an account** asks only for an account name and a password (3 accounts per IP
+  per hour). The `accounts.email` column exists but is never filled. There is no email,
+  verification, password reset or 2FA; the only recovery is the Account Manager's recovery
+  key.
+- **Passwords** are stored as plain SHA-256 with no salt (`encryptionType` in
+  `core/server/config.lua`). The password is sent encrypted (RSA), so only the storage is weak.
+- **Logins** lock for a while after 10 wrong tries from one IP; nothing locks per account.
+- **Soul Coins** are an account balance (`accounts.soulcoins`) and an item (6500). Nothing in
+  the game adds to the balance. 23 NPCs use `soulTrade.lua` (Premium, Pokemon addons, sex
+  change, nickname, bless, stamina, guild), paid with the item.
+- **The Store button** says "coming soon". There is no PayPal or donation link anywhere.
+
+### Decided
+
+- **Email is required.** One email per account (an account already holds 3 characters).
+  New accounts type a 6-digit code from the email into the create-account window before they
+  can play, with Resend code and Change email buttons. Signups not verified within 24 hours
+  are deleted, which frees the name and the email.
+- **Existing accounts** get a window at login to add and verify an email. It can be skipped
+  for 7 days, then it is needed to enter the game.
+- **Buying Soul Coins needs a verified email.**
+- **Email is sent through a free Gmail address** made for the game, with an App Password
+  (`smtp.gmail.com`, port 587). It can move to Google Workspace later (Business Starter, $7
+  a month on a yearly plan or $8.40 monthly, one user plus free aliases) for mail from
+  `@pokeverse.quest`; only the account service's settings change. A free Gmail address sends
+  to about 500 people a day.
+- **PayPal only.** No Google Play: the Android app stays a download from the website, GitHub
+  and itch. Soul Coins are sold as digital goods with PayPal Checkout on a PayPal Business
+  account, not with a Donate button (PayPal's donation tools are not for things given in
+  return).
+- **Soul Coins can be sold to other players,** so players who don't buy them can still get
+  them. The Store turns the balance into the coin item and back; the item trades and sells
+  on the market like any item.
+- **The Soul Coin NPCs are removed** in favour of the Store, along with their mentions in
+  the wiki and quest hints. The vitamin reset (Josh Pillberg, 1 SC) moves to the Store too.
+- **Premium:** 15 SC for 30 days and 40 SC for 90 days. Other Store prices stay as the NPCs
+  have them unless changed.
+- **Coin packs,** cheaper per coin the bigger they are:
+
+| Pack | Price | Per coin | Discount |
+| --- | --- | --- | --- |
+| 15 SC | $7.50 | $0.50 | none |
+| 40 SC | $18.00 | $0.45 | 10% |
+| 85 SC | $36.00 | $0.42 | 15% |
+| 160 SC | $64.00 | $0.40 | 20% |
+
+At these prices 30 days of Premium is $6 to $7.50, against about €10 in Tibia. The smallest
+pack stays at $7.50 or more because PayPal takes roughly 3.5% plus about 50 cents on each
+payment. Packs and prices live in one list on the server, so they can change without a
+client update.
+
+### Phases
+
+1. **Password security** (server only, needs nothing new): passwords stored with Argon2id
+   (libsodium, on the Linux and Windows server builds), each old password upgraded the next
+   time that player logs in. At least 8 characters and no very common passwords. An account
+   locks for 15 minutes after 10 wrong passwords from any IP.
+2. **Accounts and email** (needs the Gmail address):
+   - A small account service on the OVH server, reached only on the server itself like the
+     Discord bridge, and through Cloudflare at `account.pokeverse.quest` for PayPal later.
+   - Email and Confirm email when creating an account, and the verification code.
+   - Forgot password on the login screen: a code by email, then the new password, in the
+     app. The answer is the same whether the account exists or not. The recovery key stays
+     as a backup.
+   - An Account window in the app: change password, change email (needs the password and a
+     code sent to the old email), resend the code, and whether a recovery key and a Discord
+     link are set. It replaces the Account Manager's password and recovery key keywords.
+   - Emails when the password or email changes.
+   - New tables for the codes (stored hashed, 15 minutes, 5 tries) and a security log of
+     logins, failures and changes, which staff can look up in the Admin window.
+   - Privacy Policy and Terms (with a refund policy and a minimum age) on the website.
+3. **The Store** (can be tested with coins given by staff):
+   - The Store window from the top bar: Premium, Outfits and addons, Pokemon addons,
+     Services (name and sex change, nickname, bless, stamina, vitamin reset) and Guild.
+     Items that need a choice, such as a Pokemon to nickname, ask for it in the window.
+   - The balance, Buy Soul Coins, the coin exchange (balance to item and back) and the
+     purchase history.
+   - One catalog on the server; each purchase takes the coins and gives the item in one
+     step, so coins can't be spent twice.
+   - The 23 Soul Coin NPCs removed.
+4. **Buying Soul Coins with PayPal** (needs the PayPal Business account):
+   - Buy Soul Coins in the Store makes a one-time code for the account (like the Discord
+     `/link` codes) and opens `account.pokeverse.quest/buy` with it. No website login.
+   - The page shows the packs and PayPal's buttons. When PayPal confirms the payment, the
+     service checks the message really came from PayPal and adds the coins, once per
+     payment even if PayPal sends it twice. The player gets a message in game and a receipt
+     by email.
+   - Bought coins can be spent in the Store at once, but can't be turned into the item or
+     traded for 7 days, when most payment reversals happen.
+   - A refund or chargeback takes the coins back. Below zero, spending is blocked and staff
+     are told; reversing a payment on purpose is a ban under the Terms.
+   - Every purchase, exchange and coin trade is logged.
+   - Built and tested on PayPal's sandbox before real money.
+5. **Later, optional:** authenticator-app 2FA and emails for logins from a new device.
+
+### Needed before starting
+
+- Phases 1 and 3 need nothing.
+- Phase 2: a Gmail address for the game, with 2-Step Verification and an App Password,
+  added to Cloud Agents > Secrets in the Cursor Dashboard and to the live server's settings.
+  Access to the `pokeverse.quest` DNS, ideally on Cloudflare.
+- Phase 4: a PayPal Business account and a PayPal developer app (sandbox and live keys),
+  added the same way.
 
 ## Going private
 
