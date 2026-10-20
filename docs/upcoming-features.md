@@ -1831,7 +1831,7 @@ Planned October 20, for going public. Nothing here is built yet.
 - **Existing accounts** get a window at login to add and verify an email. It can be skipped
   for 7 days, then it is needed to enter the game.
 - **Buying Soul Coins needs a verified email.**
-- **Email is sent through a free Gmail address** made for the game, with an App Password
+- **Email is sent through `thepokeversemmo@gmail.com`**, a free Gmail address made for the game, with an App Password
   (`smtp.gmail.com`, port 587). It can move to Google Workspace later (Business Starter, $7
   a month on a yearly plan or $8.40 monthly, one user plus free aliases) for mail from
   `@pokeverse.quest`; only the account service's settings change. A free Gmail address sends
