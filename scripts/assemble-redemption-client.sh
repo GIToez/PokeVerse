@@ -69,6 +69,8 @@ redemption_skip=(client_assets client_bottommenu client_debug_info dev_otui game
   game_taskboard game_unjustifiedpoints game_inspect game_quickloot
   game_shop game_store game_cyclopedia game_analyser game_lootsplitter game_notifications
   game_questlog)
+# files of skipped modules that kept modules still use (the skills window's resistance icons)
+redemption_keep=(game_cyclopedia/images/bestiary/icons)
 # PokeVerse modules taken from the legacy client, replacing a Redemption module of the same name
 legacy_modules=(game_advanceeffect game_badgecase game_combatcontrols game_dollcase
   game_duelmessage game_effects game_environment game_guide game_lootlist game_market game_pokebar game_pokedex
@@ -130,6 +132,10 @@ else
   cp -r "$redemption/modules/." "$out/modules/"
   for m in "${redemption_skip[@]}" "${legacy_modules[@]}"; do
     rm -rf "${out:?}/modules/$m"
+  done
+  for f in "${redemption_keep[@]}"; do
+    mkdir -p "$out/modules/$(dirname "$f")"
+    cp -r "$redemption/modules/$f" "$out/modules/$f"
   done
   for m in "${legacy_modules[@]}"; do
     cp -r "$legacy/modules/$m" "$out/modules/"
