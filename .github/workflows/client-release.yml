@@ -210,6 +210,18 @@ jobs:
         with:
           packages: ndk;29.0.13599879 cmake;3.22.1 platforms;android-36
 
+      # private repositories get 2-core, 7 GB runners: the unity C++ files compiled in parallel
+      # run out of memory and the runner dies ("The operation was canceled") without the swap
+      - name: Swap for the compiler
+        run: |
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile
+          sudo fallocate -l 12G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+
       - name: vcpkg baseline
         run: |
           echo "VCPKG_COMMIT=$(python3 -c 'import json;print(json.load(open("core/client-redemption/vcpkg.json"))["builtin-baseline"])')" >> "$GITHUB_ENV"
