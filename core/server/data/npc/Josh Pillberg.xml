@@ -5,7 +5,7 @@
 	<parameters>
 		<parameter key="idletime" value="180" />
 		<parameter key="module_shop" value="1"/>
-		<parameter key="message_greet" value="Hello |PLAYERNAME|. I can {reset} your Pokemon vitamins, and I {trade} items for EV training and breeding!"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. I {trade} items for EV training and breeding! Vitamin {resets} are in the Store now."/>
 		<parameter key="shop_buyable" value="
 		destiny knot, 30137, 50000;
 		everstone, 30138, 15000;

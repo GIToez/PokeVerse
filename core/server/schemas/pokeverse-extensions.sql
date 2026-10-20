@@ -1002,3 +1002,16 @@ CREATE TABLE IF NOT EXISTS `report_screenshots` (
   PRIMARY KEY (`report_id`),
   FOREIGN KEY (`report_id`) REFERENCES `reports` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- What the account's Soul Coins went on in the Store, and its withdraws and deposits (Store.sendHistory).
+-- amount is negative for coins spent or withdrawn.
+CREATE TABLE IF NOT EXISTS `store_history` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` INT UNSIGNED NOT NULL,
+  `player_id` INT UNSIGNED NOT NULL,
+  `date` BIGINT NOT NULL,
+  `amount` INT NOT NULL,
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `store_history_account` (`account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

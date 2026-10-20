@@ -72,7 +72,8 @@ EXTENDED_IDS = {
     POKEMON_SHOP = 37, -- JSON Pokemon shop window: the party, the PC boxes and selling them to Ron and Joel Morris (PokemonShop)
     HINTS = 38, -- JSON first-visit hints: which ones the trainer has seen, and hints the server shows (Hints)
     REPORT = 39, -- JSON Reports window: bug and player reports, the trainer's own and the staff list (Reports)
-    PING = 40 -- the client's ping: the server sends the buffer straight back (the protocol's own ping is the keep-alive)
+    PING = 40, -- the client's ping: the server sends the buffer straight back (the protocol's own ping is the keep-alive)
+    STORE = 41 -- JSON Store window: the Soul Coin balance, the offers, buying, withdraw and deposit (Store)
 }
 
 TOURNAMENT_TYPES = {}
