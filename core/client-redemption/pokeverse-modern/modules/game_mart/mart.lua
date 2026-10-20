@@ -4,9 +4,10 @@
 --
 -- Buy: click the tiles to fill a cart, then Buy; the money and the capacity are checked first.
 -- Sell: every item this NPC buys is listed, the ones in the bag bright with an amount to type, the rest
--- grayed out at 0 (the "Only items I have" filter hides them). Sell sells the amounts entered; the small
+-- grayed out at 0 (the "Only show items I have" switch hides them). Sell sells the amounts entered; the small
 -- Sell all does what the legacy window's did: sells everything this NPC buys from the bag (no NPC buys
--- anything a shop sells, so in practice that is the Pokemon drops).
+-- anything a shop sells, so in practice that is the Pokemon drops), except what is ticked Keep. Keep is
+-- remembered per NPC and holds the amount at 0 too, so a kept item can't be sold by accident.
 -- The server takes at most 100 of an item per request and the sell amount is a byte, so every trade goes
 -- in steps of 100, a little apart.
 local STEP = 100
@@ -15,6 +16,7 @@ local MAX_LINE = 1000
 local LAST_INVENTORY = 10
 local BAD_COLOR = '#ff8a8a'
 local ONLY_OWNED_SETTING = 'martOnlyOwned'
+local KEEP_NODE = 'mart_keep'
 
 local CATEGORIES = {
     { id = 'balls', name = 'Balls' }, { id = 'potions', name = 'Potions' }, { id = 'tools', name = 'Tools' },
@@ -162,6 +164,21 @@ local function freeCapacity()
     return player and player:getFreeCapacity() or 0
 end
 
+-- Keep ----------------------------------------------------------------------------------------------
+
+local function isKept(entry)
+    local all = g_settings.getNode(KEEP_NODE) or {}
+    return ((all[npcName or ''] or {})[tostring(entry.id)]) == true
+end
+
+local function setKept(entry, kept)
+    local all = g_settings.getNode(KEEP_NODE) or {}
+    local mine = all[npcName or ''] or {}
+    mine[tostring(entry.id)] = kept or nil
+    all[npcName or ''] = mine
+    g_settings.setNode(KEEP_NODE, all)
+end
+
 -- Cart --------------------------------------------------------------------------------------------------
 
 local function cart()
@@ -214,7 +231,7 @@ local function pruneSellCart()
     local list = carts.sell
     for index = #list, 1, -1 do
         local line = list[index]
-        line.count = math.min(line.count, owned(line.entry))
+        line.count = isKept(line.entry) and 0 or math.min(line.count, owned(line.entry))
         if line.count <= 0 then
             table.remove(list, index)
         end
@@ -285,7 +302,7 @@ local function sellAllList()
     local list, count, total = {}, 0, 0
     for _, entry in ipairs(sellList) do
         local amount = owned(entry)
-        if amount > 0 then
+        if amount > 0 and not isKept(entry) then
             list[#list + 1] = { entry = entry, count = amount }
             count, total = count + amount, total + amount * entry.price
         end
@@ -361,21 +378,13 @@ end
 
 local function fillSellFilters(mine)
     window.chips:destroyChildren()
-    local all = g_ui.createWidget('MartChip', window.chips)
-    local onlyOwned = g_settings.getBoolean(ONLY_OWNED_SETTING)
-    all:setText(tr('All items') .. '  ' .. #sellList)
-    all:setOn(not onlyOwned)
-    all:setTooltip(tr('Everything %s buys', npcName or tr('this shop')))
-    all.onClick = function()
-        g_settings.set(ONLY_OWNED_SETTING, false)
-        refresh()
-    end
-    local owned = g_ui.createWidget('MartChip', window.chips)
-    owned:setText(tr('Only items I have') .. '  ' .. #mine)
-    owned:setOn(onlyOwned)
-    owned.onClick = function()
-        g_settings.set(ONLY_OWNED_SETTING, true)
-        refresh()
+    local switch = g_ui.createWidget('MartSwitch', window.chips)
+    switch:setText(tr('Only items I have (%d)', #mine))
+    switch:setChecked(g_settings.getBoolean(ONLY_OWNED_SETTING))
+    switch:setTooltip(tr('On: only what is in your bag. Off: everything %s buys.', npcName or tr('this shop')))
+    switch.onCheckChange = function(widget, checked)
+        g_settings.set(ONLY_OWNED_SETTING, checked)
+        addEvent(refresh) -- the switch is rebuilt
     end
 end
 
@@ -452,8 +461,26 @@ local function fillSellList()
             row:setOn(have == 0)
             row:setChecked(amount > 0)
             row.amount:setText(tostring(amount))
-            for _, control in ipairs({ row.amount, row.minus, row.plus, row.max }) do
-                control:setEnabled(have > 0)
+            local function lockControls()
+                local open = have > 0 and not isKept(entry)
+                for _, control in ipairs({ row.amount, row.minus, row.plus, row.max }) do
+                    control:setEnabled(open)
+                end
+            end
+            lockControls()
+            row.keep:setChecked(isKept(entry))
+            row.keep.onCheckChange = function(widget, checked)
+                if checked == isKept(entry) then
+                    return
+                end
+                setKept(entry, checked)
+                if checked then
+                    row.amount:setText('0')
+                    setSellAmount(entry, 0, row)
+                else
+                    fillCart()
+                end
+                lockControls()
             end
             row.amount.onTextChange = function(widget, text)
                 local digits = text:gsub('%D', '')
@@ -475,8 +502,8 @@ local function fillSellList()
             row.minus.onClick = function() step(g_keyboard.isShiftPressed() and -10 or -1) end
             row.plus.onClick = function() step(g_keyboard.isShiftPressed() and 10 or 1) end
             row.max.onClick = function() row.amount:setText(tostring(owned(entry))) end
-            row:setTooltip(tooltip(entry, have > 0 and tr('You have %d. Type how many to sell, or use - + and Max.', have)
-                or tr('You have none of these.')))
+            row:setTooltip(tooltip(entry, have > 0 and tr('You have %d. Type how many to sell, or use - + and Max. ' ..
+                'Keep locks it so neither Sell nor Sell all sells it.', have) or tr('You have none of these.')))
             row.onMouseRelease = onItemMouseRelease(entry)
         end
     end
@@ -535,7 +562,7 @@ fillCart = function()
         panel.confirm:setText(selling and tr('Sell') or tr('Buy'))
     end
     panel.confirm:addAnchor(AnchorBottom, selling and 'sellAll' or 'hint', AnchorTop)
-    panel.hint:setText(selling and tr('Sell all sells everything %s buys from your bag.', npcName or tr('this shop'))
+    panel.hint:setText(selling and tr('Sell all sells everything %s buys from your bag, except what you keep.', npcName or tr('this shop'))
         or tr('Click a tile to add 1. Shift+click adds 10, Ctrl+click adds 100.'))
 
     panel.sellAll:setVisible(selling)
@@ -548,6 +575,7 @@ fillCart = function()
             lines[#lines + 1] = tr('%d %s (%s)', line.count, line.entry.name, dollars(line.count * line.entry.price))
         end
         lines[#lines + 1] = tr('Total: %s', dollars(value))
+        lines[#lines + 1] = tr('Items ticked Keep stay in your bag.')
         panel.sellAll:setTooltip(count > 0 and table.concat(lines, '\n') or nil)
     end
 end

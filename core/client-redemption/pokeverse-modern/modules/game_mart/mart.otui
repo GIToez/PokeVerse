@@ -38,11 +38,26 @@ MartChip < UIButton
   ttf-font-size: 11
   color: #96aacd
   text-auto-resize: true
+  text-offset: 0 1
   focusable: false
   $hover !on:
     color: #dce6ff
   $on:
     image-source: /modules/game_fishing/images/tab_on
+    color: #ffffff
+
+MartSwitch < UICheckBox
+  height: 16
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  text-offset: 36 0
+  image-source: /modules/client_options/images/switch_off
+  image-size: 28 16
+  focusable: false
+  margin-top: 4
+  $checked:
+    image-source: /modules/client_options/images/switch_on
     color: #ffffff
 
 MartTile < UIButton
@@ -233,13 +248,20 @@ MartSellRow < UIWidget
     anchors.top: name.bottom
     margin-top: 2
 
+  PVCheckBox
+    id: keep
+    !text: tr('Keep')
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+
   MartBold
     id: total
     color: #7ee08f
     text-auto-resize: false
     text-align: right
-    width: 64
-    anchors.right: parent.right
+    width: 60
+    anchors.right: keep.left
     anchors.verticalCenter: parent.verticalCenter
     margin-right: 10
 
@@ -315,10 +337,10 @@ MartBigStat < UIWidget
     phantom: true
 
 MartWindow < UIWindow
-  size: 900 600
+  size: 900 620
   image-source: /modules/game_dailytasks/images/window
   image-border: 24
-  padding: 22 26 22 26
+  padding: 30 26 22 26
   draggable: true
   focusable: true
   @onEscape: modules.game_mart.close()
@@ -340,7 +362,7 @@ MartWindow < UIWindow
     text-auto-resize: true
     anchors.left: headerIcon.right
     anchors.top: parent.top
-    margin: -3 0 0 10
+    margin: 0 0 0 10
     phantom: true
 
   MartMuted
@@ -389,7 +411,7 @@ MartWindow < UIWindow
     anchors.top: moneyPanel.bottom
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-top: 14
+    margin-top: 22
 
     UILabel
       id: title
@@ -491,12 +513,14 @@ MartWindow < UIWindow
   FishingTab
     id: buyTab
     width: 140
+    text-offset: 0 1
     anchors.top: cart.top
     anchors.left: parent.left
 
   FishingTab
     id: sellTab
     width: 140
+    text-offset: 0 1
     anchors.top: cart.top
     anchors.left: buyTab.right
     margin-left: 6
