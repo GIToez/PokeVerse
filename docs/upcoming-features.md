@@ -1811,7 +1811,11 @@ Planned October 20, for going public. Nothing here is built yet.
   verification, password reset or 2FA; the only recovery is the Account Manager's recovery
   key.
 - **Passwords** are stored as plain SHA-256 with no salt (`encryptionType` in
-  `core/server/config.lua`). The password is sent encrypted (RSA), so only the storage is weak.
+  `core/server/config.lua`).
+- **The login encryption key is the default Open Tibia RSA key,** whose private half is
+  public (`core/server/src/otserv.cpp`, and `OTSERV_RSA` in the client's
+  `modules/gamelib/const.lua`). Anyone who records a player's login traffic can read the
+  password.
 - **Logins** lock for a while after 10 wrong tries from one IP; nothing locks per account.
 - **Soul Coins** are an account balance (`accounts.soulcoins`) and an item (6500). Nothing in
   the game adds to the balance. 23 NPCs use `soulTrade.lua` (Premium, Pokemon addons, sex
