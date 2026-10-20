@@ -1,20 +1,20 @@
 -- The Poke Mart window. It takes over every NPC shop from game_npctrade's legacy window (which stays hidden
--- while this module is loaded): onOpenNpcTrade fills it, onPlayerGoods keeps the money and the bag counts
--- current and onCloseNpcTrade closes it.
+-- while this module is loaded): onOpenNpcTrade fills it with what that NPC sells and buys, onPlayerGoods
+-- keeps the money and the bag counts current and onCloseNpcTrade closes it.
 --
--- Buy keeps a cart; Buy all checks the money and the capacity first and then buys line by line. Sell lists
--- what the NPC buys from the bag; Sell all sells everything not ticked Keep (remembered per NPC; anything a
--- shop sells starts kept, so only the Pokemon drops go by default) and clicking a row sells that item.
+-- Buy: click the tiles to fill a cart, then Buy; the money and the capacity are checked first.
+-- Sell: every item this NPC buys is listed, the ones in the bag bright with an amount to type, the rest
+-- grayed out at 0 (the "Only items I have" filter hides them). Sell sells the amounts entered; the small
+-- Sell all does what the legacy window's did: sells everything this NPC buys from the bag (no NPC buys
+-- anything a shop sells, so in practice that is the Pokemon drops).
 -- The server takes at most 100 of an item per request and the sell amount is a byte, so every trade goes
 -- in steps of 100, a little apart.
 local STEP = 100
 local STEP_MS = 120
 local MAX_LINE = 1000
 local LAST_INVENTORY = 10
-local KEEP_NODE = 'mart_keep'
-local OK_COLOR = '#7ee08f'
 local BAD_COLOR = '#ff8a8a'
-local MUTED_COLOR = '#96aacd'
+local ONLY_OWNED_SETTING = 'martOnlyOwned'
 
 local CATEGORIES = {
     { id = 'balls', name = 'Balls' }, { id = 'potions', name = 'Potions' }, { id = 'tools', name = 'Tools' },
@@ -29,7 +29,7 @@ local category = 'all'
 local buyList, sellList = {}, {}
 local goods = {} -- client item id -> count in the bag
 local money = 0
-local cart = {} -- { entry, count }, in the order they were added
+local carts = { buy = {}, sell = {} } -- { entry, count }, in the order they were added
 local npcName
 local lastNpc
 local queue, queueEvent = {}, nil
@@ -107,6 +107,19 @@ local function busy()
     return queueEvent ~= nil
 end
 
+-- the server answers every step with the goods and the inventory changes; rebuilding the list (a shop can
+-- buy 250 items) for each of those slows the steps down, so those wait until the steps are done
+local refreshEvent
+local function requestRefresh()
+    if refreshEvent or busy() then
+        return
+    end
+    refreshEvent = scheduleEvent(function()
+        refreshEvent = nil
+        refresh()
+    end, 50)
+end
+
 local function pump()
     local step = table.remove(queue, 1)
     if not step or not g_game.isOnline() or not window:isVisible() then
@@ -139,6 +152,7 @@ local function equipped(id)
     return count
 end
 
+-- what can be sold: equipped items stay on, as in the legacy window
 local function owned(entry)
     return math.max(0, (goods[entry.id] or 0) - equipped(entry.id))
 end
@@ -148,33 +162,14 @@ local function freeCapacity()
     return player and player:getFreeCapacity() or 0
 end
 
--- Keep --------------------------------------------------------------------------------------------------
-
-local function keepTable()
-    local all = g_settings.getNode(KEEP_NODE) or {}
-    return all[npcName or ''] or {}
-end
-
-local function isKept(entry)
-    local value = keepTable()[tostring(entry.id)]
-    if value == nil then
-        return infoOf(entry.id).c ~= nil
-    end
-    return value
-end
-
-local function setKept(entry, kept)
-    local all = g_settings.getNode(KEEP_NODE) or {}
-    local mine = all[npcName or ''] or {}
-    mine[tostring(entry.id)] = kept
-    all[npcName or ''] = mine
-    g_settings.setNode(KEEP_NODE, all)
-end
-
 -- Cart --------------------------------------------------------------------------------------------------
 
-local function cartLine(entry)
-    for index, line in ipairs(cart) do
+local function cart()
+    return carts[tab]
+end
+
+local function cartLine(entry, list)
+    for index, line in ipairs(list or cart()) do
         if line.entry == entry then
             return line, index
         end
@@ -184,25 +179,46 @@ end
 
 local function cartTotal()
     local total, weight = 0, 0
-    for _, line in ipairs(cart) do
+    for _, line in ipairs(cart()) do
         total = total + line.entry.price * line.count
         weight = weight + line.entry.weight * line.count
     end
     return total, weight
 end
 
+local function lineMax(entry)
+    return tab == 'sell' and owned(entry) or MAX_LINE
+end
+
 local function addToCart(entry, amount)
-    local line = cartLine(entry)
+    local list = cart()
+    local line, index = cartLine(entry)
     if not line then
         line = { entry = entry, count = 0 }
-        cart[#cart + 1] = line
+        list[#list + 1] = line
+        index = #list
     end
-    line.count = math.max(0, math.min(MAX_LINE, line.count + amount))
+    local most = lineMax(entry)
+    if amount > 0 and line.count >= most and tab == 'sell' then
+        failure(tr('You only have %d %s.', most, entry.name))
+    end
+    line.count = math.max(0, math.min(most, line.count + amount))
     if line.count == 0 then
-        local _, index = cartLine(entry)
-        table.remove(cart, index)
+        table.remove(list, index)
     end
     refresh()
+end
+
+-- the sell cart can't hold more than the bag does, after a sale or a trade elsewhere
+local function pruneSellCart()
+    local list = carts.sell
+    for index = #list, 1, -1 do
+        local line = list[index]
+        line.count = math.min(line.count, owned(line.entry))
+        if line.count <= 0 then
+            table.remove(list, index)
+        end
+    end
 end
 
 local function clickAmount()
@@ -214,10 +230,20 @@ local function clickAmount()
     return 1
 end
 
-local function buyAll()
-    if busy() or #cart == 0 then
-        return
+local function sendSteps(entry, amount, selling)
+    local ptr = entry.ptr
+    while amount > 0 do
+        local step = math.min(STEP, amount)
+        if selling then
+            push(function() g_game.sellItem(ptr, step, true) end)
+        else
+            push(function() g_game.buyItem(ptr, step, false, false) end)
+        end
+        amount = amount - step
     end
+end
+
+local function buyCart()
     local total, weight = cartTotal()
     if total > money then
         failure(tr('You need %s more for this cart.', dollars(total - money)))
@@ -228,70 +254,54 @@ local function buyAll()
         failure(tr('This cart weighs %.2f oz and you can carry %.2f oz more.', weight, cap))
         return
     end
-    for _, line in ipairs(cart) do
-        local ptr, left = line.entry.ptr, line.count
-        while left > 0 do
-            local amount = math.min(STEP, left)
-            push(function() g_game.buyItem(ptr, amount, false, false) end)
-            left = left - amount
-        end
+    for _, line in ipairs(carts.buy) do
+        sendSteps(line.entry, line.count, false)
     end
-    cart = {}
+    carts.buy = {}
+end
+
+local function sellCart()
+    pruneSellCart()
+    for _, line in ipairs(carts.sell) do
+        sendSteps(line.entry, line.count, true)
+    end
+    carts.sell = {}
+end
+
+local function confirmCart()
+    if busy() or #cart() == 0 then
+        return
+    end
+    if tab == 'sell' then
+        sellCart()
+    else
+        buyCart()
+    end
     refresh()
 end
 
--- Selling -----------------------------------------------------------------------------------------------
-
-local function sellEntry(entry, amount)
-    local ptr = entry.ptr
-    while amount > 0 do
-        local step = math.min(STEP, amount)
-        push(function() g_game.sellItem(ptr, step, true) end)
-        amount = amount - step
-    end
-end
-
-local function sellOne(entry)
-    if busy() then
-        return
-    end
-    local amount = owned(entry)
-    if amount > 0 then
-        sellEntry(entry, amount)
-        refresh()
-    end
-end
-
-local function sellSummary()
-    local count, kinds, keptKinds, value = 0, 0, 0, 0
+-- everything this NPC buys out of the bag, like the legacy window's Sell all
+local function sellAllList()
+    local list, count, total = {}, 0, 0
     for _, entry in ipairs(sellList) do
         local amount = owned(entry)
         if amount > 0 then
-            if isKept(entry) then
-                keptKinds = keptKinds + 1
-            else
-                count, kinds, value = count + amount, kinds + 1, value + amount * entry.price
-            end
+            list[#list + 1] = { entry = entry, count = amount }
+            count, total = count + amount, total + amount * entry.price
         end
     end
-    return count, kinds, keptKinds, value
+    return list, count, total
 end
 
 local function sellAll()
     if busy() then
         return
     end
-    local any = false
-    for _, entry in ipairs(sellList) do
-        local amount = owned(entry)
-        if amount > 0 and not isKept(entry) then
-            sellEntry(entry, amount)
-            any = true
-        end
+    local list = sellAllList()
+    for _, line in ipairs(list) do
+        sendSteps(line.entry, line.count, true)
     end
-    if not any then
-        failure(tr('Nothing to sell: everything here is kept.'))
-    end
+    carts.sell = {}
     refresh()
 end
 
@@ -315,12 +325,22 @@ local function onItemMouseRelease(entry)
     end
 end
 
-local function fillChips()
+local function sellable()
+    local list = {}
+    for _, entry in ipairs(sellList) do
+        if owned(entry) > 0 then
+            list[#list + 1] = entry
+        end
+    end
+    table.sort(list, function(a, b) return owned(a) * a.price > owned(b) * b.price end)
+    return list
+end
+
+local function fillChips(list)
     window.chips:destroyChildren()
-    local counts, all = {}, 0
-    for _, entry in ipairs(buyList) do
+    local counts = {}
+    for _, entry in ipairs(list) do
         counts[entry.cat] = (counts[entry.cat] or 0) + 1
-        all = all + 1
     end
     local function chip(id, name, count)
         local widget = g_ui.createWidget('MartChip', window.chips)
@@ -331,7 +351,7 @@ local function fillChips()
             refresh()
         end
     end
-    chip('all', 'All', all)
+    chip('all', 'All', #list)
     for _, cat in ipairs(CATEGORIES) do
         if counts[cat.id] then
             chip(cat.id, cat.name, counts[cat.id])
@@ -339,10 +359,30 @@ local function fillChips()
     end
 end
 
-local function fillGrid()
+local function fillSellFilters(mine)
+    window.chips:destroyChildren()
+    local all = g_ui.createWidget('MartChip', window.chips)
+    local onlyOwned = g_settings.getBoolean(ONLY_OWNED_SETTING)
+    all:setText(tr('All items') .. '  ' .. #sellList)
+    all:setOn(not onlyOwned)
+    all:setTooltip(tr('Everything %s buys', npcName or tr('this shop')))
+    all.onClick = function()
+        g_settings.set(ONLY_OWNED_SETTING, false)
+        refresh()
+    end
+    local owned = g_ui.createWidget('MartChip', window.chips)
+    owned:setText(tr('Only items I have') .. '  ' .. #mine)
+    owned:setOn(onlyOwned)
+    owned.onClick = function()
+        g_settings.set(ONLY_OWNED_SETTING, true)
+        refresh()
+    end
+end
+
+local function fillGrid(list)
     window.grid:destroyChildren()
     local shown = 0
-    for _, entry in ipairs(buyList) do
+    for _, entry in ipairs(list) do
         if (category == 'all' or entry.cat == category) and matches(entry) then
             local tile = g_ui.createWidget('MartTile', window.grid)
             tile.face.item:setItemId(entry.id)
@@ -361,16 +401,103 @@ local function fillGrid()
         end
     end
     window.none:setVisible(shown == 0)
-    window.none:setText(#buyList == 0 and tr('%s doesn\'t sell anything. Try the Sell tab.', npcName or tr('This shop'))
+    window.none:setText(#list == 0 and tr('%s doesn\'t sell anything. Try the Sell tab.', npcName or tr('This shop'))
         or tr('Nothing here matches your search.'))
 end
 
-local function fillCart()
+local fillCart
+
+-- the amount typed in a Sell row goes straight in the cart; the list isn't rebuilt so the field keeps focus
+local function setSellAmount(entry, amount, row)
+    local list = carts.sell
+    local line, index = cartLine(entry, list)
+    amount = math.max(0, math.min(owned(entry), amount))
+    if amount > 0 and not line then
+        list[#list + 1] = { entry = entry, count = amount }
+    elseif line and amount == 0 then
+        table.remove(list, index)
+    elseif line then
+        line.count = amount
+    end
+    if row then
+        row:setChecked(amount > 0)
+        row.total:setText(amount > 0 and dollars(amount * entry.price) or '')
+    end
+    fillCart()
+end
+
+local function fillSellList()
+    window.sellList:destroyChildren()
+    local mine, others = {}, {}
+    local onlyOwned = g_settings.getBoolean(ONLY_OWNED_SETTING)
+    for _, entry in ipairs(sellList) do
+        local have = owned(entry) > 0
+        if matches(entry) and (have or not onlyOwned) then
+            local into = have and mine or others
+            into[#into + 1] = entry
+        end
+    end
+    table.sort(mine, function(a, b) return owned(a) * a.price > owned(b) * b.price end)
+    table.sort(others, function(a, b) return a.name < b.name end)
+    for _, group in ipairs({ mine, others }) do
+        for _, entry in ipairs(group) do
+            local row = g_ui.createWidget('MartSellRow', window.sellList)
+            local have = owned(entry)
+            local line = cartLine(entry, carts.sell)
+            local amount = line and line.count or 0
+            row.face.item:setItemId(entry.id)
+            row.name:setText(entry.name)
+            row.owned:setText(tr('In your bag: %d  \183  %s each', have, dollars(entry.price)))
+            row.total:setText(amount > 0 and dollars(amount * entry.price) or '')
+            row:setOn(have == 0)
+            row:setChecked(amount > 0)
+            row.amount:setText(tostring(amount))
+            for _, control in ipairs({ row.amount, row.minus, row.plus, row.max }) do
+                control:setEnabled(have > 0)
+            end
+            row.amount.onTextChange = function(widget, text)
+                local digits = text:gsub('%D', '')
+                if digits ~= text then
+                    widget:setText(digits)
+                    return
+                end
+                local value = tonumber(digits) or 0
+                if value > owned(entry) then
+                    widget:setText(tostring(owned(entry)))
+                    return
+                end
+                setSellAmount(entry, value, row)
+            end
+            local function step(by)
+                local now = tonumber(row.amount:getText()) or 0
+                row.amount:setText(tostring(math.max(0, math.min(owned(entry), now + by))))
+            end
+            row.minus.onClick = function() step(g_keyboard.isShiftPressed() and -10 or -1) end
+            row.plus.onClick = function() step(g_keyboard.isShiftPressed() and 10 or 1) end
+            row.max.onClick = function() row.amount:setText(tostring(owned(entry))) end
+            row:setTooltip(tooltip(entry, have > 0 and tr('You have %d. Type how many to sell, or use - + and Max.', have)
+                or tr('You have none of these.')))
+            row.onMouseRelease = onItemMouseRelease(entry)
+        end
+    end
+    window.none:setVisible(#mine + #others == 0)
+    if #sellList == 0 then
+        window.none:setText(tr('%s doesn\'t buy anything.', npcName or tr('This shop')))
+    elseif window.search:getText() ~= '' then
+        window.none:setText(tr('Nothing here matches your search.'))
+    else
+        window.none:setText(tr('You have nothing %s buys.', npcName or tr('this shop')))
+    end
+end
+
+fillCart = function()
     local panel = window.cart
-    panel.title:setText(tr('Cart (%d)', #cart))
-    panel.clear:setEnabled(#cart > 0)
+    local selling = tab == 'sell'
+    local list = cart()
+    panel.title:setText(selling and tr('Selling (%d)', #list) or tr('Cart (%d)', #list))
+    panel.clear:setEnabled(#list > 0)
     panel.list:destroyChildren()
-    for _, line in ipairs(cart) do
+    for _, line in ipairs(list) do
         local row = g_ui.createWidget('MartCartRow', panel.list)
         local entry = line.entry
         row.face.item:setItemId(entry.id)
@@ -382,86 +509,47 @@ local function fillCart()
         row.add10.onClick = function() addToCart(entry, 10) end
         row.add100.onClick = function() addToCart(entry, 100) end
         row.remove.onClick = function() addToCart(entry, -line.count) end
-        row:setTooltip(tooltip(entry, tr('%s each', dollars(entry.price))))
+        row:setTooltip(tooltip(entry, selling and tr('%s each, you have %d', dollars(entry.price), owned(entry))
+            or tr('%s each', dollars(entry.price))))
     end
-    panel.empty:setVisible(#cart == 0)
+    panel.empty:setVisible(#list == 0)
+    panel.empty:setText(selling and tr('Enter how many of each item to sell on the left.')
+        or tr('Click an item on the left to put it in your cart.'))
+
     local total = cartTotal()
-    panel.total.caption:setText(tr('Total'))
+    panel.total.caption:setText(selling and tr('You get') or tr('Total'))
     panel.total.value:setText(dollars(total))
     panel.after.caption:setText(tr('Money after'))
-    panel.after.value:setText(total > money and tr('%s short', dollars(total - money)) or dollars(money - total))
-    panel.after.value:setColor(total > money and BAD_COLOR or '#ffffff')
-    panel.buy:setEnabled(#cart > 0 and not busy())
-    panel.buy:setText(busy() and tr('Buying...') or tr('Buy all'))
-    panel.hint:setText(tr('Click a tile to add 1. Shift+click adds 10, Ctrl+click adds 100.'))
-end
-
-local function fillSellList()
-    window.sellList:destroyChildren()
-    local shown = {}
-    for _, entry in ipairs(sellList) do
-        if owned(entry) > 0 and matches(entry) then
-            shown[#shown + 1] = entry
-        end
+    if selling then
+        panel.after.value:setText(dollars(money + total))
+        panel.after.value:setColor('#ffffff')
+    else
+        panel.after.value:setText(total > money and tr('%s short', dollars(total - money)) or dollars(money - total))
+        panel.after.value:setColor(total > money and BAD_COLOR or '#ffffff')
     end
-    table.sort(shown, function(a, b)
-        local ka, kb = isKept(a), isKept(b)
-        if ka ~= kb then
-            return kb
-        end
-        return owned(a) * a.price > owned(b) * b.price
-    end)
-    for _, entry in ipairs(shown) do
-        local row = g_ui.createWidget('MartSellRow', window.sellList)
-        local amount, kept = owned(entry), isKept(entry)
-        row.face.item:setItemId(entry.id)
-        row.name:setText(entry.name)
-        row.owned:setText(tr('In your bag: %d', amount))
-        row.each:setText(tr('%s each', dollars(entry.price)))
-        row.total:setText(kept and tr('kept') or dollars(amount * entry.price))
-        row.total:setColor(kept and MUTED_COLOR or OK_COLOR)
-        row:setOn(kept)
-        row.keep:setChecked(kept)
-        row.keep.onCheckChange = function(widget, checked)
-            if checked ~= isKept(entry) then
-                setKept(entry, checked)
-                addEvent(refresh) -- this row is rebuilt
-            end
-        end
-        row:setTooltip(tooltip(entry, tr('Click to sell all %d for %s.', amount, dollars(amount * entry.price))))
-        row.onClick = function() sellOne(entry) end
-        row.onMouseRelease = onItemMouseRelease(entry)
-    end
-    window.none:setVisible(#shown == 0)
-    window.none:setText(window.search:getText() ~= '' and tr('Nothing here matches your search.')
-        or tr('You have nothing %s buys.', npcName or tr('this shop')))
-end
 
-local function fillSellPanel()
-    local panel = window.sellPanel
-    local count, kinds, keptKinds, value = sellSummary()
-    panel.text:setText(tr('Sells every item in your bag that %s buys, except the ones you keep.',
-        npcName or tr('this shop')))
-    panel.text2:setText(tr('Kept items stay kept here next time. Things the shops sell start kept, so Sell all ' ..
-        'only takes what your Pokemon find.'))
-    panel.items.caption:setText(tr('Items'))
-    panel.items.value:setText(thousands(count))
-    panel.kept.caption:setText(tr('Kept'))
-    panel.kept.value:setText(keptKinds == 1 and tr('1 kind') or tr('%d kinds', keptKinds))
-    panel.get.caption:setText(tr('You get'))
-    panel.get.value:setText(dollars(value))
-    panel.sellAll:setEnabled(count > 0 and not busy())
-    panel.sellAll:setText(busy() and tr('Selling...') or tr('Sell all (%s)', thousands(count)))
-end
-
-local function sellableKinds()
-    local kinds = 0
-    for _, entry in ipairs(sellList) do
-        if owned(entry) > 0 then
-            kinds = kinds + 1
-        end
+    panel.confirm:setEnabled(#list > 0 and not busy())
+    if busy() then
+        panel.confirm:setText(selling and tr('Selling...') or tr('Buying...'))
+    else
+        panel.confirm:setText(selling and tr('Sell') or tr('Buy'))
     end
-    return kinds
+    panel.confirm:addAnchor(AnchorBottom, selling and 'sellAll' or 'hint', AnchorTop)
+    panel.hint:setText(selling and tr('Sell all sells everything %s buys from your bag.', npcName or tr('this shop'))
+        or tr('Click a tile to add 1. Shift+click adds 10, Ctrl+click adds 100.'))
+
+    panel.sellAll:setVisible(selling)
+    if selling then
+        local all, count, value = sellAllList()
+        panel.sellAll:setEnabled(count > 0 and not busy())
+        panel.sellAll:setText(tr('Sell all (%s)', thousands(count)))
+        local lines = { tr('Sells everything %s buys from your bag:', npcName or tr('this shop')) }
+        for _, line in ipairs(all) do
+            lines[#lines + 1] = tr('%d %s (%s)', line.count, line.entry.name, dollars(line.count * line.entry.price))
+        end
+        lines[#lines + 1] = tr('Total: %s', dollars(value))
+        panel.sellAll:setTooltip(count > 0 and table.concat(lines, '\n') or nil)
+    end
 end
 
 refresh = function()
@@ -469,30 +557,28 @@ refresh = function()
         return
     end
     g_tooltip.hide()
+    pruneSellCart()
+    local selling = tab == 'sell'
+    local mine = sellable()
     window.moneyPanel.money:setText(dollars(money))
     window.buyTab:setText(tr('Buy (%d)', #buyList))
-    window.sellTab:setText(tr('Sell (%d)', sellableKinds()))
-    window.buyTab:setOn(tab == 'buy')
-    window.sellTab:setOn(tab == 'sell')
+    window.sellTab:setText(tr('Sell (%d)', #mine))
+    window.buyTab:setOn(not selling)
+    window.sellTab:setOn(selling)
     window.buyTab:setEnabled(#buyList > 0)
     window.sellTab:setEnabled(#sellList > 0)
-    local buying = tab == 'buy'
-    window.chips:setVisible(buying)
-    window.grid:setVisible(buying)
-    window.gridScroll:setVisible(buying)
-    window.cart:setVisible(buying)
-    window.sellList:setVisible(not buying)
-    window.sellScroll:setVisible(not buying)
-    window.sellPanel:setVisible(not buying)
-    window.none:addAnchor(AnchorTop, buying and 'chips' or 'buyTab', AnchorBottom)
-    if buying then
-        fillChips()
-        fillGrid()
-        fillCart()
-    else
+    window.grid:setVisible(not selling)
+    window.gridScroll:setVisible(not selling)
+    window.sellList:setVisible(selling)
+    window.sellScroll:setVisible(selling)
+    if selling then
+        fillSellFilters(mine)
         fillSellList()
-        fillSellPanel()
+    else
+        fillChips(buyList)
+        fillGrid(buyList)
     end
+    fillCart()
 end
 
 -- Window ------------------------------------------------------------------------------------------------
@@ -500,6 +586,10 @@ end
 local function stop()
     if queueEvent then
         removeEvent(queueEvent)
+    end
+    if refreshEvent then
+        removeEvent(refreshEvent)
+        refreshEvent = nil
     end
     queue, queueEvent = {}, nil
 end
@@ -509,7 +599,7 @@ local function hideWindow()
     if window then
         window:hide()
     end
-    cart = {}
+    carts = { buy = {}, sell = {} }
 end
 
 function close()
@@ -545,7 +635,7 @@ local function onOpenNpcTrade(items)
     end
     local wasOpen = window:isVisible()
     if not wasOpen or npcName ~= lastNpc then
-        cart, category = {}, 'all'
+        carts, category = { buy = {}, sell = {} }, 'all'
         tab = #buyList > 0 and 'buy' or 'sell'
         window.search:setText('')
         local root = rootWidget:getSize()
@@ -569,12 +659,7 @@ local function onPlayerGoods(playerMoney, items)
         local id = item[1]:getId()
         goods[id] = (goods[id] or 0) + item[2]
     end
-    for index = #cart, 1, -1 do
-        if cart[index].count <= 0 then
-            table.remove(cart, index)
-        end
-    end
-    refresh()
+    requestRefresh()
 end
 
 local function onTalk(name, level, mode)
@@ -591,7 +676,7 @@ end
 
 local function setTab(name)
     if tab ~= name then
-        tab = name
+        tab, category = name, 'all'
         window.search:setText('')
         refresh()
     end
@@ -614,11 +699,11 @@ function init()
     window.sellTab.onClick = function() setTab('sell') end
     window.search.onTextChange = function() refresh() end
     window.cart.clear.onClick = function()
-        cart = {}
+        carts[tab] = {}
         refresh()
     end
-    window.cart.buy.onClick = buyAll
-    window.sellPanel.sellAll.onClick = sellAll
+    window.cart.confirm.onClick = confirmCart
+    window.cart.sellAll.onClick = sellAll
 
     connect(g_game, {
         onOpenNpcTrade = onOpenNpcTrade,
@@ -628,7 +713,7 @@ function init()
         onTalk = onTalk,
         onGameEnd = onGameEnd,
     })
-    connect(LocalPlayer, { onFreeCapacityChange = refresh, onInventoryChange = refresh })
+    connect(LocalPlayer, { onFreeCapacityChange = requestRefresh, onInventoryChange = requestRefresh })
 end
 
 function terminate()
@@ -640,7 +725,7 @@ function terminate()
         onTalk = onTalk,
         onGameEnd = onGameEnd,
     })
-    disconnect(LocalPlayer, { onFreeCapacityChange = refresh, onInventoryChange = refresh })
+    disconnect(LocalPlayer, { onFreeCapacityChange = requestRefresh, onInventoryChange = requestRefresh })
     stop()
     if window then
         window:destroy()
