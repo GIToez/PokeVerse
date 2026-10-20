@@ -1,6 +1,6 @@
 -- Experience boosts for the stamina bar's tooltip: what multiplies the trainer's and the Pokemon's kill experience
 -- right now. Trainer EXP gets stamina (Player::getStaminaExperienceRate), the personal bonus (XP Boost Potion,
--- cakes, Stone of Knowledge...) and the server event; Pokemon EXP gets the held Lucky Egg, the personal bonus,
+-- cakes, Stone of Knowledge...) and the server event; Pokemon EXP gets the held Lucky Egg, stamina, the personal bonus,
 -- the Ace Trainer perk and the server event (doPlayerPokemonAddExperience).
 --
 -- The client talks JSON on EXTENDED_IDS.EXP_BOOST:
@@ -38,7 +38,7 @@ ExpBoost.state = function(cid)
              premium = isPremium(cid) or nil, personal = { rate = round(personal), left = left }, event = round(event),
              pokemon = { name = pokemonName, luckyEgg = round(luckyEgg) }, ace = ace > 0 and round(ace) or nil,
              trainer = round(stamina * (1 + personal) * event),
-             pokemonTotal = round(luckyEgg * (1 + personal) * (1 + ace) * event) }
+             pokemonTotal = round(luckyEgg * stamina * (1 + personal) * (1 + ace) * event) }
 end
 
 ExpBoost.send = function(cid)

@@ -855,7 +855,7 @@ WikiData = {
             } },
         } },
         { key = 'spirit', title = 'Trainer Spirit', item = 12297, body = {
-            { 'p', "Trainer Spirit is the bar under Skills. It goes down while you hunt and comes back while you are logged out. The more you have, the more trainer EXP you get; running out never lowers your experience." },
+            { 'p', "Trainer Spirit is the bar under Skills. It goes down while you hunt and comes back while you are logged out. The more you have, the more EXP you and your Pokemon get; running out never lowers your experience." },
             { 'table', {
                 { "Trainer Spirit", "Name", "Free", "Premium" },
                 { "41 to 42 hours", "Fired Up", "+25%", "+50%" },

@@ -86,7 +86,7 @@ function staminaColor(stamina)
 end
 
 local function tierLines()
-    local lines = { tr('Trainer Spirit bonus to trainer EXP:') }
+    local lines = { tr('Trainer Spirit bonus to trainer and Pokemon EXP:') }
     for index, tier in ipairs(TIERS) do
         local upper = index == 1 and 42 or TIERS[index - 1][1]
         local text = tier[2] == tier[3] and percent(tier[2])
@@ -102,7 +102,7 @@ function staminaTooltip(stamina)
     local hours, minutes = math.floor(stamina / 60), stamina % 60
     local rate = staminaRate(stamina)
     local lines = { tr('Trainer Spirit: %s, %d hours and %d minutes left.', staminaName(stamina), hours, minutes) }
-    lines[#lines + 1] = rate > 1 and tr('It gives your trainer %s EXP now.', percent(rate))
+    lines[#lines + 1] = rate > 1 and tr('It gives your trainer and Pokemon %s EXP now.', percent(rate))
         or tr('No bonus right now.')
     if hours >= 41 and not premium() then
         lines[#lines + 1] = tr('Premium trainers get +50%% here instead of +25%%.')
@@ -126,11 +126,14 @@ function staminaTooltip(stamina)
     if state then
         local pokemon = state.pokemon or {}
         local lucky, ace = pokemon.luckyEgg or 1, state.ace or 0
-        local total = lucky * (1 + personal) * (1 + ace) * event
+        local total = lucky * rate * (1 + personal) * (1 + ace) * event
         lines[#lines + 1] = pokemon.name and tr('Pokemon EXP %s (%s)', multiplier(total), pokemon.name)
             or tr('Pokemon EXP %s', multiplier(total))
         if lucky ~= 1 then
             lines[#lines + 1] = tr('  Lucky Egg %s', percent(lucky))
+        end
+        if rate > 1 then
+            lines[#lines + 1] = tr('  Trainer Spirit %s', percent(rate))
         end
         if personal > 0 then
             lines[#lines + 1] = tr('  XP boost %s', percent(1 + personal))
