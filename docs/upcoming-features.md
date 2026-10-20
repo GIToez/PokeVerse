@@ -1863,10 +1863,17 @@ client update.
 
 ### Phases
 
-1. **Password security** (server only, needs nothing new): passwords stored with Argon2id
-   (libsodium, on the Linux and Windows server builds), each old password upgraded the next
-   time that player logs in. At least 8 characters and no very common passwords. An account
-   locks for 15 minutes after 10 wrong passwords from any IP.
+1. **Password security** (needs nothing new):
+   - **A PokeVerse RSA key (agreed).** A new key pair for the live server. The private half
+     lives only on the live server, in a file the server reads at start (outside the
+     repository, like the other live secrets); local test servers keep a test key. The
+     clients get the new public half. Old clients can't log in once the server switches, so
+     the Client release goes out first and the Live server deploy right after; the updater
+     doesn't use the key, so players update as usual and then log in.
+   - Passwords stored with Argon2id (libsodium, on the Linux and Windows server builds),
+     each old password upgraded the next time that player logs in.
+   - At least 8 characters and no very common passwords. An account locks for 15 minutes
+     after 10 wrong passwords from any IP.
 2. **Accounts and email** (needs the Gmail address):
    - A small account service on the OVH server, reached only on the server itself like the
      Discord bridge, and through Cloudflare at `account.pokeverse.quest` for PayPal later.
