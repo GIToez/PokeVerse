@@ -24,10 +24,6 @@ ReportField < PVField
   height: 30
   padding: 8 10 8 10
 
-ReportCombo < TkCombo
-  height: 30
-  width: 280
-
 ReportMultiline < UITextEdit
   image-source: /modules/client_entergame/images/field
   image-border: 8
@@ -261,8 +257,10 @@ ReportsWindow < UIWindow
         anchors.top: parent.top
         anchors.left: parent.left
 
-      ReportCombo
+      TkCombo
         id: category
+        height: 30
+        width: 280
         anchors.top: categoryLabel.bottom
         anchors.left: parent.left
         margin-top: 6

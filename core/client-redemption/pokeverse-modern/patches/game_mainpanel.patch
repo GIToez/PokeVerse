@@ -1,7 +1,7 @@
 diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/mainpanel.lua
 --- a/modules/game_mainpanel/mainpanel.lua
 +++ b/modules/game_mainpanel/mainpanel.lua
-@@ -171,7 +171,7 @@
+@@ -171,20 +171,22 @@
  optionsController:setUI('mainoptionspanel', modules.game_interface.getMainRightPanel())
  
  function optionsController:onInit()
@@ -10,7 +10,10 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
      false, 8)
  
      if not optionPanel then
-@@ -181,10 +181,12 @@
++        -- no Control Buttons page in the settings: the PokeVerse top bar orders its buttons itself (sortTopBar)
+         optionPanel = g_ui.loadUI('option_control_buttons', modules.client_options:getPanel())
+-        modules.client_options.addButton("Interface", "Control Buttons", optionPanel, function() initControlButtons() end)
+     end
  end
  
  function toggleStore()
