@@ -66,17 +66,18 @@ PpTrackerLine < UIWidget
     id: claim
     !text: tr('Claim')
     font: verdana-11px-rounded
-    color: #2a1e00
-    width: 40
-    height: 14
-    image-source: /modules/game_dailytasks/images/button_claim
+    color: #ffffff
+    width: 44
+    height: 16
+    image-source: /modules/client_entergame/images/button_green
     image-border: 6
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-bottom: 1
     visible: false
     $hover:
-      image-source: /modules/game_dailytasks/images/button_claim_hover
+      image-source: /modules/client_entergame/images/button_green_hover
+    $pressed:
+      image-source: /modules/client_entergame/images/button_green_pressed
 
 PpTrackerHeading < UILabel
   font: verdana-11px-rounded
