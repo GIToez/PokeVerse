@@ -86,8 +86,12 @@ so. Items marked **To decide** need an answer before work starts.
       shop NPCs still opens Tibia's trade window, only renamed to Dollars. The new window is
       in the Sell Shop's style: item tiles by category (Balls, Potions, Revives, Tools), a
       quantity stepper with x1/x10/x100, the total and your money, and a cart to buy several
-      items at once; selling stays in the Sell Shop
-      ([details](modernization-audit.md#1-poke-mart-buy-window)). Its tiles, categories,
+      items at once ([details](modernization-audit.md#1-poke-mart-buy-window)). The server
+      checks money and bag space for the whole cart first. A Sell tab keeps **Sell all**
+      (mostly for monster drops): it lists what the NPC buys from your bag, shows the count
+      and total, and a **Keep** tick on each item leaves it out (remembered per NPC); a
+      row still sells just that item. Selling Pokemon stays in the Sell Shop. On Android
+      the tiles are bigger and the cart slides up from the bottom. Its tiles, categories,
       quantities and cart are what the
       [Store](#19-accounts-soul-coins-and-the-store) needs too, so the Mart comes before
       the Store and the Store reuses them.
@@ -1849,9 +1853,17 @@ Planned October 20, for going public. Nothing here is built yet.
   and itch. Soul Coins are sold as digital goods with PayPal Checkout on a PayPal Business
   account, not with a Donate button (PayPal's donation tools are not for things given in
   return).
-- **Soul Coins can be sold to other players,** so players who don't buy them can still get
-  them. The Store turns the balance into the coin item and back; the item trades and sells
-  on the market like any item.
+- **Soul Coins work like a bank,** as they always have: bought coins go onto the account's
+  balance (`accounts.soulcoins`, shared by its 3 characters), and **Withdraw** turns them
+  into the coin item (6500) in the bag. **Deposit** (new) puts coin items back on the
+  balance. The item trades and sells on the market like any item, so players who don't buy
+  coins can still get them. Balances players have today stay as they are.
+- **The balance changes in one database step (agreed fix).** Today's withdraw reads the
+  balance and then writes it back, so anything else changing it in between is lost (for
+  example coins bought with PayPal landing at that moment). Withdraw, deposit, Store
+  purchases and the PayPal credit each check and change the balance in a single update that
+  can't go below zero. Only one character per account can be online
+  (`onePlayerOnlinePerAccount`), except staff accounts.
 - **The Soul Coin NPCs are removed** in favour of the Store, along with their mentions in
   the wiki and quest hints. The vitamin reset (Josh Pillberg, 1 SC) moves to the Store too.
 - **Premium:** 15 SC for 30 days and 40 SC for 90 days. Other Store prices stay as the NPCs
@@ -1871,6 +1883,10 @@ payment. Packs and prices live in one list on the server, so they can change wit
 client update.
 
 ### Phases
+
+**Build order (agreed October 20):** the
+[Poke Mart window](#order) (item 10) first, then the Store (phase 3), then
+phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its own PR.
 
 1. **Password security** (needs nothing new):
    - **A PokeVerse RSA key (agreed).** A new key pair for the live server. The private half
@@ -1902,8 +1918,11 @@ client update.
    - The Store window from the top bar: Premium, Outfits and addons, Pokemon addons,
      Services (name and sex change, nickname, bless, stamina, vitamin reset) and Guild.
      Items that need a choice, such as a Pokemon to nickname, ask for it in the window.
-   - The balance, Buy Soul Coins, the coin exchange (balance to item and back) and the
-     purchase history.
+   - A Soul Coin bank strip at the top: the balance, Withdraw and Deposit (in place of the
+     NPCs' withdraw), Buy Soul Coins (from phase 4) and the purchase history. The Bank
+     window from the modernization audit can show the same strip.
+   - Purchases take the balance first, then coin items in the bag, so nobody has to
+     withdraw to shop.
    - One catalog on the server; each purchase takes the coins and gives the item in one
      step, so coins can't be spent twice.
    - The 23 Soul Coin NPCs removed.
@@ -1914,8 +1933,8 @@ client update.
      service checks the message really came from PayPal and adds the coins, once per
      payment even if PayPal sends it twice. The player gets a message in game and a receipt
      by email.
-   - Bought coins can be spent in the Store at once, but can't be turned into the item or
-     traded for 7 days, when most payment reversals happen.
+   - Bought coins can be spent in the Store at once, but can't be withdrawn (so can't be
+     traded) for 7 days, when most payment reversals happen.
    - A refund or chargeback takes the coins back. Below zero, spending is blocked and staff
      are told; reversing a payment on purpose is a ban under the Terms.
    - Every purchase, exchange and coin trade is logged.
@@ -1925,7 +1944,7 @@ client update.
 ### Needed before starting
 
 - Phases 1 and 3 need nothing.
-- Phase 2: `thepokeversemmo@gmail.com` with 2-Step Verification and an App Password. In this
+- Phase 2 (the GitHub part is done): `thepokeversemmo@gmail.com` with 2-Step Verification and an App Password. In this
   repository's Settings > Secrets and variables > Actions: the variable `GMAIL_ADDRESS`
   (`thepokeversemmo@gmail.com`) and the secret `GMAIL_APP_PASSWORD` (the 16 letters, no
   spaces); the Live server workflow copies them to the server, as it does the bot token. The
