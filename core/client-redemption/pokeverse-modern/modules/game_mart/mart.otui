@@ -1,0 +1,619 @@
+// The Poke Mart window (the frame comes from game_dailytasks, panels, tabs, rows, portraits and badges from
+// game_fishing, the icon from game_vocation, the buttons, fields and checkboxes from client_entergame and the
+// scroll bar from game_gts)
+
+MartText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+MartMuted < MartText
+  color: #96aacd
+
+MartBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+MartFace < UIWidget
+  size: 40 40
+  image-source: /modules/game_fishing/images/portrait
+  phantom: true
+
+  UIItem
+    id: item
+    size: 32 32
+    anchors.centerIn: parent
+    virtual: true
+    phantom: true
+
+MartChip < UIButton
+  height: 24
+  padding: 0 12 0 12
+  image-source: /modules/game_fishing/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #96aacd
+  text-auto-resize: true
+  focusable: false
+  $hover !on:
+    color: #dce6ff
+  $on:
+    image-source: /modules/game_fishing/images/tab_on
+    color: #ffffff
+
+MartTile < UIButton
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked !on:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+  $on:
+    image-source: /modules/game_fishing/images/row_locked
+    opacity: 0.6
+
+  MartFace
+    id: face
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+
+  MartBold
+    id: name
+    color: #ffd75a
+    ttf-font-size: 11
+    text-auto-resize: false
+    text-align: center
+    height: 16
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: face.bottom
+    margin: 4 4 0 4
+
+  MartBold
+    id: price
+    color: #7ee08f
+    text-auto-resize: false
+    text-align: center
+    height: 15
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: name.bottom
+
+  MartMuted
+    id: info
+    text-align: center
+    height: 14
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: price.bottom
+    margin: 0 4 0 4
+
+  UILabel
+    id: badge
+    height: 16
+    padding: 0 6 0 6
+    background-color: #2f6fd0
+    border-width: 1
+    border-color: #6fa8ff
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #ffffff
+    text-align: center
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 6 6 0 0
+    phantom: true
+    visible: false
+
+MartStep < PVBlueButton
+  height: 18
+  width: 20
+  ttf-font-size: 11
+  focusable: false
+
+MartCartRow < UIWidget
+  height: 46
+
+  MartFace
+    id: face
+    size: 34 34
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIButton
+    id: remove
+    size: 16 16
+    text: x
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #ff8a8a
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    focusable: false
+    $hover:
+      color: #ffb4b4
+
+  MartBold
+    id: price
+    color: #7ee08f
+    anchors.right: remove.left
+    anchors.top: parent.top
+    margin: 4 6 0 0
+
+  MartBold
+    id: name
+    color: #ffd75a
+    text-auto-resize: false
+    height: 15
+    anchors.left: face.right
+    anchors.right: price.left
+    anchors.top: parent.top
+    margin: 4 6 0 8
+
+  MartStep
+    id: minus
+    text: -
+    anchors.left: name.left
+    anchors.top: name.bottom
+    margin-top: 5
+
+  MartText
+    id: count
+    width: 28
+    text-align: center
+    anchors.left: minus.right
+    anchors.verticalCenter: minus.verticalCenter
+
+  MartStep
+    id: plus
+    text: +
+    anchors.left: count.right
+    anchors.top: minus.top
+
+  MartStep
+    id: add10
+    text: +10
+    width: 32
+    anchors.left: plus.right
+    anchors.top: minus.top
+    margin-left: 4
+
+  MartStep
+    id: add100
+    text: +100
+    width: 38
+    anchors.left: add10.right
+    anchors.top: minus.top
+    margin-left: 4
+
+  UIWidget
+    id: line
+    height: 1
+    background-color: #2a3a5a
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+MartSellRow < UIButton
+  height: 44
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !on:
+    image-source: /modules/game_fishing/images/row_hover
+  $on:
+    image-source: /modules/game_fishing/images/row_locked
+
+  MartFace
+    id: face
+    size: 36 36
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+
+  MartBold
+    id: name
+    color: #ffd75a
+    anchors.left: face.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+
+  PVCheckBox
+    id: keep
+    !text: tr('Keep')
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 10
+
+  MartBold
+    id: total
+    color: #7ee08f
+    anchors.right: keep.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 14
+
+  MartMuted
+    id: each
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 160
+
+  MartText
+    id: owned
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 250
+
+MartStat < UIWidget
+  height: 18
+  phantom: true
+
+  MartMuted
+    id: caption
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  MartBold
+    id: value
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+MartBigStat < UIWidget
+  height: 28
+  phantom: true
+
+  MartMuted
+    id: caption
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  UILabel
+    id: value
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+MartWindow < UIWindow
+  size: 900 600
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_mart.close()
+
+  UIWidget
+    id: headerIcon
+    size: 32 32
+    image-source: /modules/game_vocation/images/perk_ball
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Poke Mart')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  MartMuted
+    id: subtitle
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 2
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_mart.close()
+
+  FishingPanel
+    id: moneyPanel
+    size: 160 40
+    padding: 4 10 4 10
+    anchors.top: parent.top
+    anchors.right: closeButton.left
+    margin: -4 12 0 0
+
+    MartMuted
+      id: caption
+      !text: tr('Your money')
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    UILabel
+      id: money
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.top: caption.bottom
+      anchors.left: parent.left
+      margin-top: 1
+      phantom: true
+
+  FishingPanel
+    id: cart
+    width: 262
+    anchors.top: moneyPanel.bottom
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 14
+
+    UILabel
+      id: title
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffffff
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 2
+      phantom: true
+
+    UIButton
+      id: clear
+      !text: tr('Clear')
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 12
+      color: #60aaff
+      text-auto-resize: true
+      anchors.right: parent.right
+      anchors.verticalCenter: title.verticalCenter
+      focusable: false
+      $hover:
+        color: #a0ccff
+      $disabled:
+        color: #4a5a7a
+
+    ScrollablePanel
+      id: list
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: total.top
+      margin: 8 4 8 0
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 2
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: title.bottom
+      anchors.bottom: total.top
+      anchors.right: parent.right
+      margin: 8 0 8 0
+
+    MartMuted
+      id: empty
+      !text: tr('Click an item on the left to put it in your cart.')
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 12
+
+    MartBigStat
+      id: total
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: after.top
+      margin-bottom: 4
+
+    MartStat
+      id: after
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: buy.top
+      margin-bottom: 10
+
+    PVGreenButton
+      id: buy
+      height: 38
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: hint.top
+      margin-bottom: 6
+
+    MartMuted
+      id: hint
+      text-wrap: true
+      text-auto-resize: true
+      text-align: center
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  FishingPanel
+    id: sellPanel
+    width: 262
+    anchors.top: moneyPanel.bottom
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 14
+    visible: false
+
+    UILabel
+      id: title
+      !text: tr('Sell all')
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 14
+      color: #ffffff
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: 2
+      phantom: true
+
+    MartText
+      id: text
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+
+    MartMuted
+      id: text2
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: text.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+
+    MartStat
+      id: items
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: kept.top
+      margin-bottom: 2
+
+    MartStat
+      id: kept
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: get.top
+      margin-bottom: 2
+
+    MartBigStat
+      id: get
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: sellAll.top
+      margin-bottom: 10
+
+    PVGoldButton
+      id: sellAll
+      height: 38
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: hint.top
+      margin-bottom: 6
+
+    MartMuted
+      id: hint
+      !text: tr('Click a row to sell just that item.')
+      text-wrap: true
+      text-auto-resize: true
+      text-align: center
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  FishingTab
+    id: buyTab
+    width: 140
+    anchors.top: cart.top
+    anchors.left: parent.left
+
+  FishingTab
+    id: sellTab
+    width: 140
+    anchors.top: cart.top
+    anchors.left: buyTab.right
+    margin-left: 6
+
+  PVField
+    id: search
+    height: 28
+    padding: 6 8 6 8
+    !placeholder: tr('Search...')
+    anchors.top: cart.top
+    anchors.left: sellTab.right
+    anchors.right: cart.left
+    margin: 0 14 0 10
+
+  UIWidget
+    id: chips
+    height: 24
+    anchors.top: buyTab.bottom
+    anchors.left: parent.left
+    anchors.right: cart.left
+    margin: 10 14 0 0
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+  ScrollablePanel
+    id: grid
+    anchors.top: chips.bottom
+    anchors.left: parent.left
+    anchors.right: gridScroll.left
+    anchors.bottom: parent.bottom
+    margin: 10 4 0 0
+    vertical-scrollbar: gridScroll
+    layout:
+      type: grid
+      cell-size: 134 106
+      cell-spacing: 6
+      flow: true
+
+  ScrollablePanel
+    id: sellList
+    anchors.top: buyTab.bottom
+    anchors.left: parent.left
+    anchors.right: gridScroll.left
+    anchors.bottom: parent.bottom
+    margin: 10 4 0 0
+    vertical-scrollbar: sellScroll
+    visible: false
+    layout:
+      type: verticalBox
+      spacing: 4
+
+  GtsScrollBar
+    id: gridScroll
+    anchors.top: chips.bottom
+    anchors.bottom: parent.bottom
+    anchors.right: cart.left
+    margin: 10 14 0 0
+
+  GtsScrollBar
+    id: sellScroll
+    anchors.top: buyTab.bottom
+    anchors.bottom: parent.bottom
+    anchors.right: cart.left
+    margin: 10 14 0 0
+    visible: false
+
+  MartMuted
+    id: none
+    text-wrap: true
+    text-auto-resize: true
+    text-align: center
+    anchors.top: chips.bottom
+    anchors.left: parent.left
+    anchors.right: cart.left
+    margin: 70 20 0 0
