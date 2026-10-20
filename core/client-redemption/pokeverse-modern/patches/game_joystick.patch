@@ -1,0 +1,218 @@
+diff -ruN pristine/modules/game_joystick/joystick.lua modules/game_joystick/joystick.lua
+--- a/modules/game_joystick/joystick.lua
++++ b/modules/game_joystick/joystick.lua
+@@ -5,6 +5,64 @@
+ local firstStep = true
+ local moveListener
+ 
++-- PokeVerse: hold the middle of the pad still to pick it up, drag it and let go; the spot is kept as a
++-- fraction of the free screen so it stays put across rotations and resolutions
++local HOLD_TO_MOVE_MS = 600
++local HOLD_SLOP = 12
++local POSITION_KEY = 'joystickPos'
++local holdEvent
++local pressPoint
++local moving = false
++local grabOffset
++
++local function inMiddle()
++  return math.abs(keypadMousePos.x - 0.5) < 0.15 and math.abs(keypadMousePos.y - 0.5) < 0.15
++end
++
++local function clampPosition(x, y)
++  local area = overlay:getRect()
++  x = math.max(area.x, math.min(area.x + area.width - keypad:getWidth(), x))
++  y = math.max(area.y, math.min(area.y + area.height - keypad:getHeight(), y))
++  return x, y
++end
++
++local function applySavedPosition()
++  local saved = g_settings.getNode(POSITION_KEY)
++  if type(saved) ~= 'table' or not tonumber(saved.x) or not tonumber(saved.y) then
++    return
++  end
++  local area = overlay:getRect()
++  local x = area.x + tonumber(saved.x) * math.max(0, area.width - keypad:getWidth())
++  local y = area.y + tonumber(saved.y) * math.max(0, area.height - keypad:getHeight())
++  keypad:breakAnchors()
++  keypad:setPosition({ x = math.floor(x), y = math.floor(y) })
++end
++
++local function savePosition()
++  local area = overlay:getRect()
++  local freeWidth = math.max(1, area.width - keypad:getWidth())
++  local freeHeight = math.max(1, area.height - keypad:getHeight())
++  local pos = keypad:getPosition()
++  g_settings.setNode(POSITION_KEY, { x = (pos.x - area.x) / freeWidth, y = (pos.y - area.y) / freeHeight })
++  g_settings.save()
++end
++
++local function setMoving(value)
++  moving = value
++  keypad:setOn(value)
++  keypad:setImageColor(value and '#ffd75a' or '#ffffff')
++end
++
++function resetPosition()
++  g_settings.remove(POSITION_KEY)
++  g_settings.save()
++  if keypad then
++    keypad:breakAnchors()
++    keypad:addAnchor(AnchorBottom, 'parent', AnchorBottom)
++    keypad:addAnchor(AnchorLeft, 'parent', AnchorLeft)
++  end
++end
++
+ function init()
+   if not g_platform.isMobile() then return end
+ 
+@@ -16,6 +74,11 @@
+     onMouseRelease = onKeypadTouchRelease,  
+     onMouseMove = onKeypadTouchMove
+   })
++  overlay.onGeometryChange = function()
++    if not moving then
++      applySavedPosition()
++    end
++  end
+ 
+   connect(g_game, {
+     onGameStart = onGameStart,
+@@ -27,6 +90,7 @@
+   if not g_platform.isMobile() then return end
+ 
+   removeEvent(keypadUpdateEvent)
++  removeEvent(holdEvent)
+ 
+   disconnect(keypad, {
+     onMousePress = onKeypadTouchPress,
+@@ -42,6 +106,7 @@
+   overlay:destroy()
+   overlay = nil
+   keypadUpdateEvent = nil
++  holdEvent = nil
+ end
+ 
+ function hide()
+@@ -55,6 +120,7 @@
+ function onGameStart()
+   keypad:raise()
+   keypad:show()
++  applySavedPosition()
+ end
+ 
+ function onGameEnd()
+@@ -65,11 +131,40 @@
+   moveListener = callback
+ end
+ 
++local function setKeypadMousePos(widget, pos)
++  keypadMousePos = {x=(pos.x - widget:getPosition().x) / widget:getWidth(), 
++                    y=(pos.y - widget:getPosition().y) / widget:getHeight()}
++end
++
++local function stopWalking()
++  removeEvent(keypadUpdateEvent)
++  keypadUpdateEvent = nil
++  keypad.pointer:setMarginTop(0)
++  keypad.pointer:setMarginLeft(0)
++  if moveListener then
++    moveListener(nil)
++  end
++end
++
+ function onKeypadTouchPress(widget, pos, button)
+   if button ~= MouseLeftButton then return false end
+ 
+-  keypadMousePos = {x=(pos.x - widget:getPosition().x) / widget:getWidth(), 
+-                    y=(pos.y - widget:getPosition().y) / widget:getHeight()}
++  setKeypadMousePos(widget, pos)
++  pressPoint = { x = pos.x, y = pos.y }
++  removeEvent(holdEvent)
++  holdEvent = scheduleEvent(function()
++    holdEvent = nil
++    local now = g_window.getMousePosition()
++    if g_mouse.isPressed(MouseLeftButton) and inMiddle()
++        and math.abs(now.x - pressPoint.x) <= HOLD_SLOP and math.abs(now.y - pressPoint.y) <= HOLD_SLOP then
++      stopWalking()
++      local at = keypad:getPosition()
++      grabOffset = { x = now.x - at.x, y = now.y - at.y }
++      keypad:breakAnchors()
++      keypad:setPosition(at)
++      setMoving(true)
++    end
++  end, HOLD_TO_MOVE_MS)
+ 
+   firstStep = true
+   executeWalk()
+@@ -78,8 +173,12 @@
+ end
+ 
+ function onKeypadTouchMove(widget, pos, offset)
+-  keypadMousePos = {x=(pos.x - widget:getPosition().x) / widget:getWidth(), 
+-                    y=(pos.y - widget:getPosition().y) / widget:getHeight()}
++  if moving then
++    local x, y = clampPosition(pos.x - grabOffset.x, pos.y - grabOffset.y)
++    keypad:setPosition({ x = x, y = y })
++    return true
++  end
++  setKeypadMousePos(widget, pos)
+ 
+   return true
+ end
+@@ -87,15 +186,19 @@
+ function onKeypadTouchRelease(widget, pos, button)
+   if button ~= MouseLeftButton then return false end
+ 
+-  keypadMousePos = {x=(pos.x - widget:getPosition().x) / widget:getWidth(), 
+-                    y=(pos.y - widget:getPosition().y) / widget:getHeight()}
++  removeEvent(holdEvent)
++  holdEvent = nil
++  if moving then
++    setMoving(false)
++    savePosition()
++    return true
++  end
++
++  setKeypadMousePos(widget, pos)
+ 
+   firstStep = false
+   executeWalk()
+-  removeEvent(keypadUpdateEvent)
+-
+-  keypad.pointer:setMarginTop(0)
+-  keypad.pointer:setMarginLeft(0)
++  stopWalking()
+ 
+   return true
+ end
+@@ -104,6 +207,10 @@
+   removeEvent(keypadUpdateEvent)
+   keypadUpdateEvent = nil
+ 
++  if moving then
++    return
++  end
++
+   if not g_mouse.isPressed(MouseLeftButton) then
+     keypad.pointer:setMarginTop(0)
+     keypad.pointer:setMarginLeft(0)
+@@ -155,4 +262,4 @@
+ 
+ function getPanel()
+   return keypad
+-end
+\ No newline at end of file
++end
+diff -ruN pristine/modules/game_joystick/joystick.otui modules/game_joystick/joystick.otui
+--- a/modules/game_joystick/joystick.otui
++++ b/modules/game_joystick/joystick.otui
+@@ -8,6 +8,8 @@
+     size: 175 150
+     anchors.bottom: parent.bottom
+     anchors.left: parent.left
++    margin-left: 24
++    margin-bottom: 24
+     phantom: false
+     focusable: true
+     visible: false
