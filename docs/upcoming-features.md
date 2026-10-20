@@ -82,6 +82,15 @@ so. Items marked **To decide** need an answer before work starts.
 9. [Factions](#10-factions).
 10. The [modernization audit](modernization-audit.md): the old keyword systems get windows,
     in its ranked order (Poke Mart, Nurse Joy menu, travel picker, bank, and the rest).
+    - **Poke Mart window first (not built, added October 20).** Today {trade} at the 158
+      shop NPCs still opens Tibia's trade window, only renamed to Dollars. The new window is
+      in the Sell Shop's style: item tiles by category (Balls, Potions, Revives, Tools), a
+      quantity stepper with x1/x10/x100, the total and your money, and a cart to buy several
+      items at once; selling stays in the Sell Shop
+      ([details](modernization-audit.md#1-poke-mart-buy-window)). Its tiles, categories,
+      quantities and cart are what the
+      [Store](#19-accounts-soul-coins-and-the-store) needs too, so the Mart comes before
+      the Store and the Store reuses them.
 
 Items 1 to 5 and 7 are done.
 
@@ -1888,7 +1897,8 @@ client update.
    - New tables for the codes (stored hashed, 15 minutes, 5 tries) and a security log of
      logins, failures and changes, which staff can look up in the Admin window.
    - Privacy Policy and Terms (with a refund policy and a minimum age) on the website.
-3. **The Store** (can be tested with coins given by staff):
+3. **The Store** (can be tested with coins given by staff; after the Poke Mart window,
+   whose tiles and cart it reuses):
    - The Store window from the top bar: Premium, Outfits and addons, Pokemon addons,
      Services (name and sex change, nickname, bless, stamina, vitamin reset) and Guild.
      Items that need a choice, such as a Pokemon to nickname, ask for it in the window.
