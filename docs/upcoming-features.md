@@ -1915,9 +1915,13 @@ client update.
 ### Needed before starting
 
 - Phases 1 and 3 need nothing.
-- Phase 2: a Gmail address for the game, with 2-Step Verification and an App Password,
-  added to Cloud Agents > Secrets in the Cursor Dashboard and to the live server's settings.
-  Access to the `pokeverse.quest` DNS, ideally on Cloudflare.
+- Phase 2: `thepokeversemmo@gmail.com` with 2-Step Verification and an App Password. In this
+  repository's Settings > Secrets and variables > Actions: the variable `GMAIL_ADDRESS`
+  (`thepokeversemmo@gmail.com`) and the secret `GMAIL_APP_PASSWORD` (the 16 letters, no
+  spaces); the Live server workflow copies them to the server, as it does the bot token. The
+  same two in Cloud Agents > Secrets in the Cursor Dashboard to send test emails while
+  building. Changing the Gmail password cancels the App Password: make a new one and update
+  the secret. Access to the `pokeverse.quest` DNS, ideally on Cloudflare.
 - Phase 4: a PayPal Business account and a PayPal developer app (sandbox and live keys),
   added the same way.
 
