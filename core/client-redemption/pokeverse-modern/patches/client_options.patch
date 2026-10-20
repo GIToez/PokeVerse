@@ -1,7 +1,22 @@
 diff -ruN pristine/modules/client_options/data_options.lua modules/client_options/data_options.lua
 --- a/modules/client_options/data_options.lua
 +++ b/modules/client_options/data_options.lua
-@@ -28,7 +28,7 @@
+@@ -2,6 +2,14 @@
+ local otherPlayersSubChannelsSaved = nil
+ local consoleMessagesSubChannelsSaved = nil
+ 
++-- slider 0 follows the screen's display density
++local function scaleLabel(name, sliderValue, scale)
++    if sliderValue == 0 then
++        return tr('%s: auto (%sx)', tr(name), math.floor(scale * 100 + 0.5) / 100)
++    end
++    return tr('%s: %sx', tr(name), math.floor(scale * 100 + 0.5) / 100)
++end
++
+ return {
+     vsync                             = {
+         value = true,
+@@ -28,7 +36,7 @@
          end
      },
      classicControl                    = {
@@ -10,7 +25,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              -- Update the mouseControlMode based on this option
              -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
-@@ -61,7 +61,7 @@
+@@ -61,7 +69,7 @@
          end
      },
      smartLeftClick                    = {
@@ -19,7 +34,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              -- Update the mouseControlMode based on this option
              -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
-@@ -94,7 +94,7 @@
+@@ -94,7 +102,7 @@
          end
      },
      mouseControlMode                  = {
@@ -28,7 +43,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              -- Update the underlying options values first
              -- 0 = Regular Controls, 1 = Classic Controls, 2 = Left Smart-Click
-@@ -156,8 +156,24 @@
+@@ -156,8 +164,16 @@
              end, 50)
          end
      },
@@ -36,14 +51,6 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 -    smartWalk                         = false,
 +    returnDisablesChat                = true, -- the legacy PokeVerse chat: Enter opens a one-message chat in WASD mode
 +    smartWalk                         = true,
-+    dashWalk                          = {
-+        value = true,
-+        action = function(value, options, controller, panels, extraWidgets)
-+            if g_game.isOnline() then
-+                g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, value and '1' or '0')
-+            end
-+        end
-+    },
 +    autoLoot                          = {
 +        value = true,
 +        action = function(value, options, controller, panels, extraWidgets)
@@ -94,6 +101,37 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          end
      },
      nativeCursor = {
+@@ -476,8 +504,8 @@
+                 value = value / 2
+             end
+             g_app.setCreatureInformationScale(math.max(value + 0.5, 1))
+-            panels.interfaceHUD:recursiveGetChildById('creatureInformationScale'):setText(string.format(
+-                'Creature Information Scale: %sx', math.max(value + 0.5, 1)))
++            panels.interfaceHUD:recursiveGetChildById('creatureInformationScale'):setText(
++                scaleLabel('Creature Information Scale', options.creatureInformationScale.value, math.max(value + 0.5, 1)))
+         end
+     },
+     staticTextScale                   = {
+@@ -489,8 +517,8 @@
+                 value = value / 2
+             end
+             g_app.setStaticTextScale(math.max(value + 0.5, 1))
+-            panels.interfaceHUD:recursiveGetChildById('staticTextScale'):setText(string.format('Message Scale: %sx',
+-                math.max(value + 0.5, 1)))
++            panels.interfaceHUD:recursiveGetChildById('staticTextScale'):setText(
++                scaleLabel('Message Scale', options.staticTextScale.value, math.max(value + 0.5, 1)))
+         end
+     },
+     animatedTextScale                 = {
+@@ -503,7 +531,7 @@
+             end
+             g_app.setAnimatedTextScale(math.max(value + 0.5, 1))
+             panels.interfaceHUD:recursiveGetChildById('animatedTextScale'):setText(
+-                tr('Animated Message Scale: %sx', math.max(value + 0.5, 1)))
++                scaleLabel('Animated Message Scale', options.animatedTextScale.value, math.max(value + 0.5, 1)))
+         end
+     },
+     -- The side panel options are the single source of truth for the left/right
 @@ -519,7 +547,8 @@
          end
      },
@@ -104,7 +142,33 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              if not modules.game_interface then
                  return
-@@ -915,7 +944,7 @@
+@@ -639,24 +668,7 @@
+         end
+     },
+     showExpiryOnUnusedItems           = true,
+-    framesRarity                      = {
+-        value = 'frames',
+-        event = nil,
+-        action = function(value, options, controller, panels, extraWidgets)
+-            local newValue = value
+-            if newValue == 'None' then
+-                newValue = nil
+-            end
+-            panels.interface:recursiveGetChildById('frames'):setCurrentOptionByData(newValue, true)
+-            if options.framesRarity.event ~= nil then
+-                removeEvent(options.framesRarity.event)
+-            end
+-            options.framesRarity.event = scheduleEvent(function()
+-                modules.game_containers.reloadContainers()
+-                options.framesRarity.event = nil
+-            end, 100)
+-        end
+-    },
++    framesRarity                      = 'frames',
+     autoSwitchPreset                  = false,
+     listKeybindsPanel                 = {
+         action = function(value, options, controller, panels, extraWidgets)
+@@ -915,7 +927,7 @@
          end
          },
      soundMusic = {
@@ -113,7 +177,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          aux = true,
          event = nil,
          action = function(value, options, controller, panels, extraWidgets)
-@@ -951,7 +980,7 @@
+@@ -951,7 +963,7 @@
          end
      },
      soundAmbience = {
@@ -122,7 +186,23 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              panels.soundPanel:recursiveGetChildById('soundAmbience'):setText(tr('Ambience Volume: %d %%', value))
              if g_sounds then
-@@ -1002,7 +1031,8 @@
+@@ -966,7 +978,6 @@
+     soundItems = {
+         value = 100,
+         action = function(value, options, controller, panels, extraWidgets)
+-            panels.soundPanel:recursiveGetChildById('soundItems'):setText(tr('Item Volume: %d %%', value))
+             if g_sounds then
+                 local channel = g_sounds.getChannel(SoundChannels.Item)
+                 if channel then
+@@ -979,7 +990,6 @@
+     soundEventVolume = {
+         value = 100,
+         action = function(value, options, controller, panels, extraWidgets)
+-            panels.soundPanel:recursiveGetChildById('soundEventVolume'):setText(tr('Event Volume: %d %%', value))
+             if g_sounds then
+                 local channel = g_sounds.getChannel(SoundChannels.Event)
+                 if channel then
+@@ -1002,7 +1012,8 @@
          end,
      },
      actionBarShowBottom1 = {
@@ -132,10 +212,11 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1170,4 +1200,64 @@
+@@ -1169,5 +1180,64 @@
+            g_client.setBossAreaCreatureEffectAlpha(value / 100)
          end
      },
-     showInfoBanner = true,
+-    showInfoBanner = true,
 +    displayMapGuides                  = {
 +        value = true,
 +        action = function(value, options, controller, panels, extraWidgets)
@@ -229,7 +310,13 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      open = "interface",
      subCategories = { {
          text = "HUD",
-@@ -54,7 +59,7 @@
+@@ -48,13 +53,10 @@
+     }, {
+         text = "Console",
+         open = "interfaceConsole"
+-    }, {
+-        text = "Action Bars",
+-        open = "actionbars"
      } }
  }, {
      text = "Graphics",
@@ -238,26 +325,25 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      open = "graphicsPanel",
      subCategories = { {
          text = "Effects",
-@@ -62,7 +67,7 @@
+@@ -62,32 +64,18 @@
      } }
  }, {
      text = "Sound",
 -    icon = "/images/icons/icon_sound",
-+    icon = "/modules/game_hotkeys/images/icon_sound",
-     open = "soundPanel",
-     subCategories = {{
-         text = "Battle Sounds",
-@@ -70,24 +75,20 @@
-     }, {
-         text = "UI Sounds",
-         open = "iuSoundPanel"
+-    open = "soundPanel",
+-    subCategories = {{
+-        text = "Battle Sounds",
+-        open = "battleSoundsPanel"
+-    }, {
+-        text = "UI Sounds",
+-        open = "iuSoundPanel"
 -    }} 
-+    }}
++    icon = "/modules/game_hotkeys/images/icon_sound",
++    open = "soundPanel"
  }, {
-     text = "Misc.",
+-    text = "Misc.",
 -    icon = "/images/icons/icon_misc",
-+    icon = "/modules/game_hotkeys/images/icon_dots",
-     open = "misc",
+-    open = "misc",
 -    subCategories = { --[[ {
 -        text = "GamePlay",
 -        open = "GamePlay"
@@ -265,10 +351,13 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 -        text = "Screenshots",
 -        open = "Screenshots"
 -    }, ]] {
-+    subCategories = { {
-         text = "Help",
-         open = "miscHelp"
-     } }
+-        text = "Help",
+-        open = "miscHelp"
+-    } }
++    text = "Help",
++    icon = "/modules/game_hotkeys/images/icon_dots",
++    open = "miscHelp",
++    mainText = "Help"
  } }
  
  -- LuaFormatter on
@@ -277,7 +366,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  local extraWidgets = {
      audioButton = nil,
      optionsButton = nil,
-@@ -175,7 +176,7 @@
+@@ -175,7 +163,7 @@
          setOption('soundMaster', restoreVolume)
      else
          options.soundMaster.lastVolume = current
@@ -286,7 +375,13 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -190,14 +191,23 @@
+@@ -184,20 +172,28 @@
+     local crosshairCombo = panels.interface:recursiveGetChildById('crosshair')
+     local antialiasingModeCombobox = panels.graphicsPanel:recursiveGetChildById('antialiasingMode')
+     local floorViewModeCombobox = panels.graphicsEffectsPanel:recursiveGetChildById('floorViewMode')
+-    local framesRarityCombobox = panels.interface:recursiveGetChildById('frames')
+     local vocationPresetsCombobox = panels.keybindsPanel:recursiveGetChildById('list')
+     local listKeybindsPanel = panels.keybindsPanel:recursiveGetChildById('list')
      local mouseControlModeCombobox = panels.generalPanel:recursiveGetChildById('mouseControlMode')
      local lootControlModeCombobox = panels.generalPanel:recursiveGetChildById('lootControlMode')
  
@@ -312,22 +407,25 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      mouseControlModeCombobox:addOption('Regular Controls', 0)
      mouseControlModeCombobox:addOption('Classic Controls', 1)
      mouseControlModeCombobox:addOption('Left Smart-Click', 2)
-@@ -243,6 +253,14 @@
-         setOption('framesRarity', comboBox:getCurrentOption().data)
+@@ -235,12 +231,12 @@
+         setOption('floorViewMode', comboBox:getCurrentOption().data)
      end
  
+-    for k, v in pairs({ { 'None', 'none' }, { 'Frames', 'frames' }, { 'Corners', 'corners' } }) do
+-        framesRarityCombobox:addOption(v[1], v[2])
 +    local visualStyleCombobox = panels.graphicsPanel:recursiveGetChildById('visualStyle')
 +    for _, v in ipairs({ { 'Off', 'off' }, { 'Vibrant', 'vibrant' }, { 'Toon', 'toon' } }) do
 +        visualStyleCombobox:addOption(tr(v[1]), v[2])
-+    end
+     end
+-
+-    framesRarityCombobox.onOptionChange = function(comboBox, option)
+-        setOption('framesRarity', comboBox:getCurrentOption().data)
 +    visualStyleCombobox.onOptionChange = function(comboBox, option)
 +        setOption('visualStyle', comboBox:getCurrentOption().data)
-+    end
-+
-     local profileCombobox = panels.misc:recursiveGetChildById('profile')
+     end
  
-     for i = 1, 10 do
-@@ -293,6 +311,81 @@
+     local profileCombobox = panels.misc:recursiveGetChildById('profile')
+@@ -293,6 +289,81 @@
  
      setupComboBox()
  
@@ -376,7 +474,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    -- the PokeVerse control defaults (Left Smart-Click, smart and dash walking) replace earlier ones once
 +    if layoutVersion < 2 then
 +        resetToDefaults({ 'classicControl', 'smartLeftClick', 'mouseControlMode', 'returnDisablesChat', 'smartWalk',
-+            'dashWalk', 'autoChaseOverride', 'moveStack', 'openMaximized', 'displayText', 'showPing', 'hotkeyDelay',
++            'autoChaseOverride', 'moveStack', 'openMaximized', 'displayText', 'showPing', 'hotkeyDelay',
 +            'walkTurnDelay', 'walkTeleportDelay', 'walkStairsDelay' })
 +        g_settings.set('pokeverseLayoutVersion', 2)
 +        g_settings.save()
@@ -409,16 +507,15 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +615,8 @@
+@@ -522,6 +593,7 @@
  end
  
  function controller:onGameStart()
-+    g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.DashWalking, getOption('dashWalk') and '1' or '0')
 +    g_game.getProtocolGame():sendExtendedOpcode(ExtendedIds.AutoLoot, getOption('autoLoot') and '1' or '0')
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -631,6 +726,7 @@
+@@ -631,6 +703,7 @@
  end
  
  function hide()
@@ -426,7 +523,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      controller.ui:hide()
      if extraWidgets.optionsButton then
          extraWidgets.optionsButton:setOn(false)
-@@ -646,15 +742,8 @@
+@@ -646,15 +719,8 @@
          hide()
          return
      end
@@ -444,7 +541,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      end
      show()
      updateKeybinds()
-@@ -672,182 +761,166 @@
+@@ -672,182 +738,166 @@
      -- TODO: Implement Show Advanced Options functionality in the near future
  end
  
@@ -762,7 +859,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function createCategory(text, icon, openPanel, subCategories)
-@@ -930,13 +1003,17 @@
+@@ -930,13 +980,17 @@
      end
  end
  
@@ -781,7 +878,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-@@ -951,19 +1028,15 @@
+@@ -951,19 +1005,15 @@
      if not controller.ui:isVisible() then
          show()
      end
@@ -811,22 +908,10 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/client_options/styles/controls/general.otui
 --- a/modules/client_options/styles/controls/general.otui
 +++ b/modules/client_options/styles/controls/general.otui
-@@ -129,6 +129,30 @@
+@@ -129,6 +129,18 @@
        height: 22
  
        OptionCheckBox
-+        id: dashWalk
-+        !text: tr('Enable dash walking')
-+        !tooltip: tr('Will boost your walk on high speed characters')
-+
-+    SmallReversedQtPanel
-+      anchors.left: parent.left
-+      anchors.right: parent.right
-+      anchors.top: prev.bottom
-+      margin-top: 7
-+      height: 22
-+
-+      OptionCheckBox
 +        id: autoLoot
 +        !text: tr('Auto loot')
 +        !tooltip: tr('Loot from Pokemon you defeat goes straight to your bag')
@@ -842,7 +927,7 @@ diff -ruN pristine/modules/client_options/styles/controls/general.otui modules/c
          id: openMaximized
          !text: tr('Open containers maximized')
  
-@@ -216,16 +240,6 @@
+@@ -216,16 +228,6 @@
            local value = modules.client_options.getOption('walkStairsDelay')
            self:setText(tr('Walk delay after turn: %dms', value))
  
@@ -895,14 +980,24 @@ diff -ruN pristine/modules/client_options/styles/graphics/graphics.otui modules/
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,6 +53,113 @@
+@@ -53,17 +53,21 @@
      margin-top: 7
      height: 22
  
+-    $mobile:
+-      height: 0
+-      margin-top: 0
+-      visible: false
+-  
+-    OptionCheckBox
+-      id: showLeftPanel
+-      !text: tr('Show left panel')
 +    OptionCheckBoxMarked
 +      id: displayMapGuides
 +      !text: tr('Show guide marks on the minimap')
-+
+ 
+-      $mobile:
+-        visible: false
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
@@ -914,13 +1009,18 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: showEventCards
 +      !text: tr('Show event pop-up cards')
 +      !tooltip: tr('Banners and cards for wild legendaries and other events. The chat messages still show.')
-+
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
-+    margin-top: 7
-+    height: 22
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+@@ -71,41 +75,119 @@
+     anchors.top: prev.bottom
+     margin-top: 7
+     height: 22
+-  
+-    OptionCheckBox
+-      id: showRightExtraPanel
+-      !text: tr('Show an extra right panel')
+-      
 +
 +    OptionCheckBoxMarked
 +      id: showHints
@@ -963,26 +1063,34 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      !text: tr('Weather sounds')
 +      !tooltip: tr('Rain, wind and thunder, at the Ambience volume.')
 +
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
 +    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
+     height: 22
+-    margin-top: 5
+ 
+     OptionCheckBoxMarked
+-      id: showSpellGroupCooldowns
+-      !text: tr('Show spell group cooldowns')
+-      !tooltip: tr('Can be enabled only in version 8.7x or higher')
 +      id: weatherLightning
 +      !text: tr('Lightning flashes')
 +      !tooltip: tr('The white flash of lightning in thunderstorms.')
-+
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
 +    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
+     height: 22
+-    margin-top: 5
+ 
+     OptionCheckBoxMarked
+-      id: showInfoBanner
+-      !text: tr('Show Info Banner')
+-      !tooltip: tr('Tick this box to display an info banner for certain in-game events.')
 +      id: pokemonEffects
 +      !text: tr('Shiny and status effects on Pokemon')
 +      !tooltip: tr('Shiny Pokemon shimmer, and burned, frozen, paralysed, poisoned, asleep or confused Pokemon show it.')
@@ -1006,36 +1114,71 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +    margin-top: 7
 +    height: 22
 +
-     $mobile:
-       height: 0
-       margin-top: 0
-@@ -117,11 +224,35 @@
++    $mobile:
++      height: 0
++      margin-top: 0
++      visible: false
++  
++    OptionCheckBox
++      id: showLeftPanel
++      !text: tr('Show left panel')
  
-     QtComboBox
-       id: crosshair
--      width: 120
-+      width: 140
-+      margin-left: 10
-+      anchors.verticalCenter: prev.verticalCenter
-+      anchors.left: prev.right
-+      mouse-scroll: false
-+      !tooltip: tr('The mark on the tile under the mouse.')
-+
++      $mobile:
++        visible: false
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
+     margin-top: 7
++    height: 22
++  
++    OptionCheckBox
++      id: showRightExtraPanel
++      !text: tr('Show an extra right panel')
++      
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
 +    anchors.top: prev.bottom
 +    margin-top: 7
+     height: 32
+   
+     Label
+@@ -117,63 +199,33 @@
+ 
+     QtComboBox
+       id: crosshair
+-      width: 120
++      width: 140
+       margin-left: 10
+       anchors.verticalCenter: prev.verticalCenter
+       anchors.left: prev.right
+       mouse-scroll: false
++      !tooltip: tr('The mark on the tile under the mouse.')
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
+     margin-top: 7
+-    height: 86
 +    height: 32
-+
-+    Label
+ 
+     Label
+-      !text: 'Colourise Loot Value: '
 +      !text: tr('Target marker:')
-+      anchors.left: parent.left
+       anchors.left: parent.left
+-      anchors.top: parent.top
+-      margin-left: 10
+-      margin-top: -25
 +      margin-left: 18
-+      color: #c0c0c0ff
-+      anchors.verticalCenter: parent.verticalCenter
-+
-+    QtComboBox
+       color: #c0c0c0ff
+       anchors.verticalCenter: parent.verticalCenter
+ 
+     QtComboBox
+-      id: frames
+-      width: 120
 +      id: targetMarker
 +      width: 140
        margin-left: 10
@@ -1044,5 +1187,277 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
        mouse-scroll: false
 +      !tooltip: tr('The ring under the Pokemon or player you attack (red) or follow (green).')
  
-   SmallReversedQtPanel
+-      
+-    UIWidget
+-      id: toolTipWidget
+-      image-source: /images/icons/show_gui_help_grey
+-      size: 12 12  
+-      anchors.right: parent.right
+-      margin-right: 3
+-      !tooltip: tr('If you select Frames or Corners, your loot will be marked with \ndifferent colours in loot messages, containers and the Bestiary.\n\nThe colour depends on the loot value, which can be determined in\n the Items Cyclopedia, either using the NPC buy value, the average\n Market price or your own preferred value.')
+-      
+-    OptionCheckBoxMarked
+-      id: showExpiryInInvetory
+-      anchors.top: frames.bottom
+-      margin-top: 5
+-      !text: tr('Show Expiry In Inventory')
+-      !tooltip: tr('Check this box to see how much time or how many charges are left \non your equipped items')
+-
+-    OptionCheckBoxMarked
+-      id: showExpiryInContainers
+-      anchors.top: prev.bottom
+-      margin-top: 5
+-      !text: tr('Show Expiry In Containers')
+-      !tooltip: tr('Check this box to see how mmuch time or how many charges the \nitems in your open containers have left')
+-
+-    OptionCheckBoxMarked
+-      id: showExpiryOnUnusedItems
+-      anchors.top: prev.bottom
+-      margin-top: 5
+-      !text: tr('Show Expiry On Unused Items')
+-      !tooltip: tr('Check this box to see how much time or how many charges are left\n on items that have not been used yet')
+-      enabled: false
+diff -ruN pristine/modules/client_options/styles/interface/HUD.otui modules/client_options/styles/interface/HUD.otui
+--- a/modules/client_options/styles/interface/HUD.otui
++++ b/modules/client_options/styles/interface/HUD.otui
+@@ -42,19 +42,7 @@
+     
+       OptionCheckBox
+         id: displayMana
+-        !text: tr('Display player mana bar')
+-  
+-    SmallReversedQtPanel
+-      anchors.left: parent.left
+-      anchors.right: parent.right
+-      anchors.top: prev.bottom
+-      margin-top: 7
+-      height: 22
+-  
+-      OptionCheckBoxMarked
+-        id: displayHarmony
+-        !text: tr('Display player Harmony bar')
+-        !tooltip: tr('Can be enabled only in version 15.00 or higher')
++        !text: tr('Display Pokemon Energy bar')
+   
+     SmallReversedQtPanel
+       anchors.left: parent.left
+@@ -244,26 +232,6 @@
+ 
+  
+   
+-    SmallReversedQtPanel
+-      anchors.left: parent.left
+-      anchors.right: parent.right
+-      anchors.top: conditionsList.bottom
+-      margin-top: 7
+-      height: 22
+-      OptionCheckBox
+-        !text: tr('Show Customisable Status Bars')
+-        !tooltip: tr('Check this box to show the status bars for your character\'s most \nimportant attributes: their health and their mana. \nIf you have enabled this option and you right-click on the status \nbars field, a menu will open up which allows you to individualise \nyour status bars even further: \n* You can switch your status bars to one of the four sides \naround your game window. \n* You can display your status bars in different styles. \n* Additionally, you can decide to show the progress bars for \none, several or all of your skills or your experience level. If \nyou place your mouse pointer on one of the bars, a tooltip \nwill open up which shows your progress to the next skill or \nlevel in percent.')
+-  
+-  
+-    SmallReversedQtPanel
+-      anchors.left: parent.left
+-      anchors.right: parent.right
+-      anchors.top: prev.bottom
+-      margin-top: 7
+-      height: 22
+-      OptionCheckBox
+-        !text: tr('Show Status Bars')
+-        !tooltip: tr('Check this box to show your character\'s status bars for mana and \nhealth in the sidebar.')
+ 
+   VerticalScrollBar
+     id: hudScrollBar
+diff -ruN pristine/modules/client_options/styles/misc/help.otui modules/client_options/styles/misc/help.otui
+--- a/modules/client_options/styles/misc/help.otui
++++ b/modules/client_options/styles/misc/help.otui
+@@ -1,55 +1,67 @@
++HelpRow < SmallReversedQtPanel
++  anchors.left: parent.left
++  anchors.right: parent.right
++  anchors.top: prev.bottom
++  margin-top: 7
++  height: 40
++
+ UIWidget
+   anchors.fill: parent
+   visible: false
+-  SmallReversedQtPanel
+-    anchors.left: parent.left
+-    anchors.right: parent.right
++
++  HelpRow
+     anchors.top: parent.top
+-    height: 60
++    margin-top: 0
+ 
+-    QtButton
+-      !text: tr('Wiki')
++    OptButton
++      id: pokepediaButton
++      !text: tr('Pokepedia')
++      width: 150
+       anchors.left: parent.left
+-      anchors.top: parent.top
+-      size: 130 20
+-      margin-bottom: 10
+-      margin-right: 10
+-      @onClick: g_platform.openUrl("https://github.com/mehah/otclient/wiki")
+-
+-    QtButton
+-      !text: tr('Info')
+-      size: 130 20
+-      margin-top: 5
+-     
+-      anchors.top: prev.bottom
++      anchors.verticalCenter: parent.verticalCenter
++      margin-left: 6
++      @onClick: |
++        if g_game.isOnline() and modules.game_pokepedia then
++          modules.client_options.hide()
++          modules.game_pokepedia.show()
++        end
++
++    OptMuted
++      !text: tr('The in-game guide to Pokemon, places, items and systems.')
++      anchors.left: prev.right
++      anchors.verticalCenter: parent.verticalCenter
++      margin-left: 12
++
++  HelpRow
++    OptButton
++      !text: tr('Change language')
++      width: 150
+       anchors.left: parent.left
++      anchors.verticalCenter: parent.verticalCenter
++      margin-left: 6
++      @onClick: modules.client_locales.createWindow()
+ 
+-      @onClick: g_platform.openUrl("https://github.com/mehah/otclient/wiki")
++    OptMuted
++      !text: tr('Pick the language of the windows and messages.')
++      anchors.left: prev.right
++      anchors.verticalCenter: parent.verticalCenter
++      margin-left: 12
+ 
+-  SmallReversedQtPanel
+-    anchors.left: parent.left
+-    anchors.right: parent.right
+-    anchors.top: prev.bottom
+-    height: 55
+-    margin-top: 5
+-
+-    QtButton
+-      !text: tr('Clear Cache')
+-      size: 130 20
+-      margin-bottom: 10
+-      margin-right: 10
++  HelpRow
++    OptRedButton
++      !text: tr('Reset all settings')
++      width: 150
+       anchors.left: parent.left
+-      anchors.top: parent.top
++      anchors.verticalCenter: parent.verticalCenter
++      margin-left: 6
+       @onClick: |
+         g_settings.clear()
+         controller:scheduleEvent(function()
+           g_app.restart()
+         end, 1000)
+-    QtButton
+-      !text: tr('Change language')
+-      size: 130 20
+-      margin-top: 5
+-      anchors.top: prev.bottom
+-      anchors.left: parent.left
+-      @onClick: |
+-        modules.client_locales.createWindow()
++
++    OptMuted
++      !text: tr('Every setting, key binding and window position back to the defaults; the client restarts.')
++      anchors.left: prev.right
++      anchors.verticalCenter: parent.verticalCenter
++      margin-left: 12
+diff -ruN pristine/modules/client_options/styles/misc/misc.otui modules/client_options/styles/misc/misc.otui
+--- a/modules/client_options/styles/misc/misc.otui
++++ b/modules/client_options/styles/misc/misc.otui
+@@ -5,18 +5,7 @@
      anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: parent.top
+-    height: 22
+-
+-    OptionCheckBox
+-      id: autoChaseOverride
+-      !text: tr('Allow auto chase override')
+-
+-  SmallReversedQtPanel
+-    anchors.left: parent.left
+-    anchors.right: parent.right
+-    anchors.top: prev.bottom
+     height: 55
+-    margin-top: 10
+     Label
+       text: Client user features profile
+       anchors.left: parent.left
+diff -ruN pristine/modules/client_options/styles/sound/sound.otui modules/client_options/styles/sound/sound.otui
+--- a/modules/client_options/styles/sound/sound.otui
++++ b/modules/client_options/styles/sound/sound.otui
+@@ -83,55 +83,3 @@
+       @onSetup: |
+         local value = modules.client_options.getOption('soundAmbience')
+         self:setText(tr('Ambience Volume: %d %%', value))
+-
+-  SmallReversedQtPanel
+-    anchors.left: parent.left
+-    anchors.right: parent.right
+-    anchors.top: prev.bottom
+-    margin-top: 7
+-    height: 55
+-
+-    OptionScaleScroll
+-      id: soundItems
+-      margin-top: 1
+-      anchors.top: parent.top
+-      anchors.left: parent.left
+-      anchors.right: parent.right
+-      &minimumScrollValue: 1
+-      &maximumScrollValue: 100
+-      &scrollSize: 21
+-      margin-left: -15
+-      @onSetup: |
+-        local value = modules.client_options.getOption('soundItems')
+-        self:setText(tr('Item Volume: %d %%', value))
+-
+-    OptionCheckBox
+-      id: soundFoodAndBeverages
+-      !text: tr('Food and Beverages')
+-      anchors.top: prev.bottom
+-
+-    OptionCheckBox
+-      id: soundMoveItem
+-      !text: tr('Move Item')
+-      anchors.top: prev.bottom
+-
+-  SmallReversedQtPanel
+-    anchors.left: parent.left
+-    anchors.right: parent.right
+-    anchors.top: prev.bottom
+-    margin-top: 7
+-    height: 33
+-
+-    OptionScaleScroll
+-      id: soundEventVolume
+-      margin-top: 5
+-      anchors.top: parent.top
+-      anchors.left: parent.left
+-      anchors.right: parent.right
+-      &minimumScrollValue: 1
+-      &maximumScrollValue: 100
+-      &scrollSize: 21
+-      margin-left: -15
+-      @onSetup: |
+-        local value = modules.client_options.getOption('soundEventVolume')
+-        self:setText(tr('Event Volume: %d %%', value))
+\ No newline at end of file

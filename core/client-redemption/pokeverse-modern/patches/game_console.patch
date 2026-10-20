@@ -100,7 +100,48 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  
      if tab.isOnRedMessage then
          tab:setColor('#dfdfdfff')
-@@ -829,12 +790,17 @@
+@@ -672,10 +633,6 @@
+ 
+     destroyOwnChannelNameWindows()
+ 
+-    if g_game.getClientVersion() < 862 then
+-        Keybind.delete("Dialogs", "Open Rule Violation")
+-    end
+-
+     if readOnlyModeEnabled then
+         toggleReadOnlyMode()
+     end
+@@ -779,29 +736,6 @@
+     g_game.joinChannel(helpChannel)
+ end
+ 
+-function openPlayerReportRuleViolationWindow()
+-    if violationWindow or violationReportTab then
+-        return
+-    end
+-    violationWindow = g_ui.loadUI('violationwindow', rootWidget)
+-    violationWindow.onEscape = function()
+-        violationWindow:destroy()
+-        violationWindow = nil
+-    end
+-    violationWindow.onEnter = function()
+-        local text = violationWindow:getChildById('text'):getText()
+-        g_game.talkChannel(MessageModes.RVRChannel, 0, text)
+-        violationReportTab = addTab(tr('Report Rule') .. '...', true)
+-        addTabText(tr('Please wait patiently for a gamemaster to reply') .. '.', SpeakTypesSettings.privateRed,
+-            violationReportTab)
+-        addTabText(applyMessagePrefixies(g_game.getCharacterName(), 0, text), SpeakTypesSettings.say,
+-            violationReportTab, g_game.getCharacterName())
+-        violationReportTab.locked = true
+-        violationWindow:destroy()
+-        violationWindow = nil
+-    end
+-end
+-
+ function addTab(name, focus)
+     local tab = getTab(name)
+     if tab then -- is channel already open
+@@ -829,12 +763,17 @@
      return tab
  end
  
@@ -119,7 +160,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          return
      end
  
-@@ -895,11 +861,20 @@
+@@ -895,11 +834,20 @@
      return consoleTabBar:getCurrentTab()
  end
  
@@ -141,7 +182,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      return tab
  end
  
-@@ -1459,7 +1434,7 @@
+@@ -1459,7 +1407,7 @@
          menu:addSeparator()
      end
  
@@ -150,10 +191,16 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          menu:addOption(tr('Close'), function()
              removeTab(channelName)
          end)
-@@ -1519,6 +1494,12 @@
+@@ -1519,12 +1467,12 @@
                          addIgnoredPlayer(creatureName)
                      end)
                  end
+-                menu:addSeparator()
+-            end
+-            if modules.game_ruleviolation.hasWindowAccess() then
+-                menu:addOption(tr('Rule Violation'), function()
+-                    modules.game_ruleviolation.show(creatureName, text:match('.+%:%s(.+)'))
+-                end)
 +                if modules.game_reports then
 +                    menu:addOption(tr('Report player'), function()
 +                        local message = text and text:match('^.-:%s(.+)')
@@ -162,8 +209,8 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
 +                end
                  menu:addSeparator()
              end
-             if modules.game_ruleviolation.hasWindowAccess() then
-@@ -1733,6 +1714,9 @@
+ 
+@@ -1733,6 +1681,9 @@
          local speaktype = SpeakTypesSettings[speaktypedesc]
          local player = g_game.getLocalPlayer()
          g_game.talkPrivate(speaktype.speakType, name, message)
@@ -173,7 +220,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          if not dontAdd then
              message = applyMessagePrefixies(g_game.getCharacterName(), player:getLevel(), message)
              addPrivateText(message, speaktype, tabname, isPrivateCommand, g_game.getCharacterName())
-@@ -1796,6 +1780,8 @@
+@@ -1796,6 +1747,8 @@
      return message
  end
  
@@ -182,7 +229,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function onTalk(name, level, mode, message, channelId, creaturePos)
      if mode == MessageModes.GamemasterBroadcast then
          modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
-@@ -1837,25 +1823,22 @@
+@@ -1837,25 +1790,22 @@
          local staticText = StaticText.create()
          local staticMessage = message
          if isNpcMode then
@@ -221,7 +268,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      end
  
      local defaultMessage = mode <= 3 and true or false
-@@ -2337,8 +2320,35 @@
+@@ -2337,20 +2287,37 @@
      end
  end
  
@@ -256,8 +303,20 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
 +    loginChannelsUntil = g_clock.millis() + 5000
  
      local clientVersion = g_game.getClientVersion()
-     if clientVersion < 862 then
-@@ -2504,8 +2514,8 @@
+-    if clientVersion < 862 then
+-        Keybind.new("Dialogs", "Open Rule Violation", "Ctrl+R", "")
+-        local gameRootPanel = modules.game_interface.getRootPanel()
+-        Keybind.bind("Dialogs", "Open Rule Violation", {
+-          {
+-            type = KEY_DOWN,
+-            callback = openPlayerReportRuleViolationWindow,
+-          }
+-        }, gameRootPanel)
+-    end
+     if clientVersion > 1100 then
+         local active = g_game.canExivaOptions()
+         local widget = consolePanel:getChildById('exivaOption')
+@@ -2504,8 +2471,8 @@
          end
      end
      consoleTabBar:getCurrentTab().tabPanel:getChildById('consoleBuffer'):setImageSource(

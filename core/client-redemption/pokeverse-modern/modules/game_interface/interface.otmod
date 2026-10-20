@@ -27,7 +27,6 @@ Module
     - game_playertrade
     - game_bugreport
     - game_playerdeath
-    - game_ruleviolation
     - game_market
     - game_modaldialog
     - game_shaders

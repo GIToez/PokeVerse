@@ -51,6 +51,17 @@ diff -ruN pristine/modules/game_healthcircle/game_healthcircle.lua modules/game_
 diff -ruN pristine/modules/game_healthcircle/option_healthcircle.otui modules/game_healthcircle/option_healthcircle.otui
 --- a/modules/game_healthcircle/option_healthcircle.otui
 +++ b/modules/game_healthcircle/option_healthcircle.otui
+@@ -27,8 +27,8 @@
+   
+     OptionCheckBoxMarked
+       id: manaCheckBox
+-      !text: tr('Mana circle')
+-      !tooltip: tr('Show mana blue circle.')
++      !text: tr('Energy circle')
++      !tooltip: tr('Show the blue Pokemon Energy circle.')
+       @onCheckChange: |
+         if self:isChecked() then
+           modules.game_healthcircle.setManaCircle(true)
 @@ -64,7 +64,7 @@
      OptionCheckBoxMarked
        id: skillCheckBox
