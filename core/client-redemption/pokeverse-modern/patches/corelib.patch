@@ -670,3 +670,76 @@ diff -ruN pristine/modules/corelib/ui/uiwidget.lua modules/corelib/ui/uiwidget.l
      if not focusedWidgets or table.empty(focusedWidgets) then
          return true
      end
+diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
+--- a/modules/corelib/ui/tooltip.lua
++++ b/modules/corelib/ui/tooltip.lua
+@@ -72,7 +72,69 @@
+     end
+ end
+ 
++-- PokeVerse: a touch is a hover, so on mobile a tap showed the tooltip and left it up; there it shows
++-- after the finger is held on the widget and goes when it is lifted
++local TOUCH_HOLD_MS = 500
++local touchEvent
++
++local function hasTooltip(widget)
++    return widget.tooltip or widget.specialtooltip or widget.parseColoreDisplay
++end
++
++local function hideCurrent()
++    local widget = currentHoveredWidget
++    if not widget then
++        return
++    end
++    if widget.tooltip or widget.parseColoreDisplay then
++        g_tooltip.hide()
++    end
++    if widget.specialtooltip then
++        g_tooltip.hideSpecial()
++    end
++    currentHoveredWidget = nil
++end
++
++local function watchTouchRelease()
++    touchEvent = scheduleEvent(function()
++        touchEvent = nil
++        if g_mouse.isPressed() and currentHoveredWidget then
++            watchTouchRelease()
++        else
++            hideCurrent()
++        end
++    end, 100)
++end
++
++local function onTouchHoverChange(widget, hovered)
++    removeEvent(touchEvent)
++    touchEvent = nil
++    hideCurrent()
++    if not hovered or not hasTooltip(widget) then
++        return
++    end
++    touchEvent = scheduleEvent(function()
++        touchEvent = nil
++        if widget:isDestroyed() or not widget:isHovered() or not g_mouse.isPressed() then
++            return
++        end
++        if widget.tooltip then
++            g_tooltip.display(widget.tooltip)
++        elseif widget.specialtooltip then
++            g_tooltip.displaySpecial(widget.specialtooltip)
++        else
++            g_tooltip.parseColoreDisplay(widget.parseColoreDisplay)
++        end
++        currentHoveredWidget = widget
++        watchTouchRelease()
++    end, TOUCH_HOLD_MS)
++end
++
+ local function onWidgetHoverChange(widget, hovered)
++    if g_platform.isMobile() then
++        onTouchHoverChange(widget, hovered)
++        return
++    end
+     if hovered then
+         if widget.tooltip and not g_mouse.isPressed() then
+             g_tooltip.display(widget.tooltip)
