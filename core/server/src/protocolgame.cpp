@@ -2315,6 +2315,19 @@ void ProtocolGame::sendContainer(uint32_t cid, const Container* container, bool 
 void ProtocolGame::sendShop(const ShopInfoList& shop)
 {
 	NetworkMessage_ptr msg = getOutputBuffer();
+	// a big shop (Alison's is about 8 KB) doesn't fit after other packets, and what doesn't fit is
+	// dropped, so the client can't read the list: start a new message instead
+	size_t size = 2;
+	uint32_t count = 0;
+	for(ShopInfoList::const_iterator it = shop.begin(); it != shop.end() && count < 255; ++it, ++count)
+		size += 17 + it->itemName.size();
+
+	if(msg && !msg->hasSpace(size))
+	{
+		flushOutputBuffer();
+		msg = getOutputBuffer();
+	}
+
 	if(msg)
 	{
 #ifdef __LOG_PACKETS__
@@ -2346,6 +2359,13 @@ void ProtocolGame::sendCloseShop()
 void ProtocolGame::sendGoods(const ShopInfoList& shop)
 {
 	NetworkMessage_ptr msg = getOutputBuffer();
+	// the opcode, the money, the count and up to 255 items of 3 bytes
+	if(msg && !msg->hasSpace(6 + 255 * 3))
+	{
+		flushOutputBuffer();
+		msg = getOutputBuffer();
+	}
+
 	if(msg)
 	{
 #ifdef __LOG_PACKETS__

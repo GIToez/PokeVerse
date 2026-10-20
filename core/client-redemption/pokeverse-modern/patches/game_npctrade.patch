@@ -21,7 +21,18 @@ diff -ruN pristine/modules/game_npctrade/controllers/npc_legacy_ui.lua modules/g
  local CURRENCY_DECIMAL = false
  local WEIGHT_UNIT = 'oz'
  local LAST_INVENTORY = 10
-@@ -339,7 +339,7 @@
+@@ -100,6 +100,10 @@
+ end
+ 
+ function controllerNpcTrader:legacy_show()
++    -- PokeVerse's Poke Mart window (game_mart) shows the shops instead
++    if modules.game_mart then
++        return
++    end
+     if g_game.isOnline() and npcWindow then
+         if tradeItems[BUY] and #tradeItems[BUY] > 0 then
+             radioTabs:selectWidget(buyTab)
+@@ -339,7 +343,7 @@
          local text = ''
          local name = item.name
          text = text .. name
@@ -30,7 +41,7 @@ diff -ruN pristine/modules/game_npctrade/controllers/npc_legacy_ui.lua modules/g
              local weight = string.format('%.2f', item.weight) .. ' ' .. WEIGHT_UNIT
              text = text .. '\n' .. weight
          end
-@@ -505,8 +505,8 @@
+@@ -505,8 +509,8 @@
              amount = getSellQuantityLegacy(data.ptr)
              if amount > 0 then
                  if data and amount > 0 then
@@ -41,7 +52,7 @@ diff -ruN pristine/modules/game_npctrade/controllers/npc_legacy_ui.lua modules/g
  
                      total = total + (data.price * amount)
                      if first then
-@@ -517,7 +517,7 @@
+@@ -517,7 +521,7 @@
          end
      end
      if info ~= '' then
@@ -50,7 +61,7 @@ diff -ruN pristine/modules/game_npctrade/controllers/npc_legacy_ui.lua modules/g
          sellAllButton:setTooltip(info)
      else
          sellAllButton:setEnabled(false)
-@@ -526,9 +526,9 @@
+@@ -526,9 +530,9 @@
  
  function formatCurrency(amount)
      if CURRENCY_DECIMAL then

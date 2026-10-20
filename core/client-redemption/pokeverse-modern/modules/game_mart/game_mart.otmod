@@ -1,0 +1,8 @@
+Module
+  name: game_mart
+  description: PokeVerse Poke Mart: buy with a cart and sell with Sell all and Keep, for every NPC shop
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ mart_items, mart ]
+  @onLoad: init()
+  @onUnload: terminate()
