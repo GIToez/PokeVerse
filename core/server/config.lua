@@ -274,15 +274,12 @@
 	-- rateStaminaGain is divider of every logged out second, eg:
 	-- 60000 / 3 = 20000 milliseconds, what gives 20 stamina seconds for 1 minute being logged off.
 	-- rateStaminaThresholdGain is divider for the premium stamina.
-	-- staminaRatingLimit* is in minutes.
+	-- staminaRatingLimitTop (minutes): above it, logged-off stamina comes back rateStaminaThresholdGain times slower.
+	-- The experience bonus of each stamina level is in Player::getStaminaExperienceRate.
 	rateStaminaLoss = 1
 	rateStaminaGain = 3
 	rateStaminaThresholdGain = 12
 	staminaRatingLimitTop = 41 * 60
-	staminaRatingLimitBottom = 14 * 60
-	rateStaminaAboveNormal = 1.5
-	rateStaminaUnderNormal = 0.5
-	staminaThresholdOnlyPremium = true
 
 	-- Party
 	-- NOTE: experienceShareLevelDifference is float number.

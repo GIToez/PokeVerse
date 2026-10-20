@@ -4000,23 +4000,25 @@ bool Player::rateExperience(double& gainExp, bool fromMonster)
 	// then the server-wide experience event multiplies the result
 	gainExp *= rates[SKILL__LEVEL] * g_game.getExperienceStage(level,
 		vocation->getExperienceMultiplier()) * (1.0 + extraExpRate) * g_game.getExperienceEventMultiplier();
-	if(!hasFlag(PlayerFlag_HasInfiniteStamina))
-	{
-		int32_t minutes = getStaminaMinutes();
-		if(minutes >= g_config.getNumber(ConfigManager::STAMINA_LIMIT_TOP))
-		{
-			if(isPremium() || !g_config.getNumber(ConfigManager::STAMINA_BONUS_PREMIUM))
-				gainExp *= g_config.getDouble(ConfigManager::RATE_STAMINA_ABOVE);
-		}
-		else if(minutes < (g_config.getNumber(ConfigManager::STAMINA_LIMIT_BOTTOM)) && minutes > 0)
-			gainExp *= g_config.getDouble(ConfigManager::RATE_STAMINA_UNDER);
-		else if(minutes <= 0)
-			gainExp = 0;
-	}
-	else if(isPremium() || !g_config.getNumber(ConfigManager::STAMINA_BONUS_PREMIUM))
-		gainExp *= g_config.getDouble(ConfigManager::RATE_STAMINA_ABOVE);
-
+	gainExp *= getStaminaExperienceRate();
 	return true;
+}
+
+// PS: stamina only rewards: more of it left is a bigger bonus, and none left is plain experience, never less
+double Player::getStaminaExperienceRate() const
+{
+	uint32_t hours = hasFlag(PlayerFlag_HasInfiniteStamina) ? 42 : getStaminaMinutes() / 60;
+	if(hours >= 41)
+		return isPremium() ? 1.5 : 1.25;
+	if(hours >= 35)
+		return 1.2;
+	if(hours >= 20)
+		return 1.15;
+	if(hours >= 10)
+		return 1.1;
+	if(hours >= 1)
+		return 1.05;
+	return 1.0;
 }
 
 void Player::onGainExperience(double& gainExp, bool fromMonster, bool multiplied, Item* referenceItem, Creature* target)

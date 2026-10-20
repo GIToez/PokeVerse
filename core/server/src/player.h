@@ -950,6 +950,7 @@ class Player : public Creature, public Cylinder
         void setPvpArenaHotFrags(uint16_t _pvpArenaHotFrags) {pvpArenaHotFrags = _pvpArenaHotFrags;}
         
         float getExtraExpRate() const {return extraExpRate;}
+        double getStaminaExperienceRate() const;
         void setExtraExpRate(float value) {extraExpRate = value;}
         
         bool getTournamentReady() const {return tournamentReady;}
