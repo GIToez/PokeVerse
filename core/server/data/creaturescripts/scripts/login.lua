@@ -143,6 +143,7 @@ function onLogin(cid)
             setPlayerMasteryDungeon(cid, 0)
         end
 
+        ExpBoost.onLogin(cid)
         doExtraExpRateCheck(cid)
         ServerExpEvent.onLogin(cid)
         Daycare.onLogin(cid)

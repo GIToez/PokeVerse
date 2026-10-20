@@ -1,3 +1,22 @@
+diff -ruN pristine/modules/game_skills/skills.lua modules/game_skills/skills.lua
+--- a/modules/game_skills/skills.lua
++++ b/modules/game_skills/skills.lua
+@@ -1182,6 +1182,15 @@
+     local hours = math.floor(stamina / 60)
+     local minutes = stamina % 60
+     local percent = math.floor(100 * stamina / (42 * 60))
++
++    -- PokeVerse: the stamina bonus and every other experience boost (game_expboost)
++    local boost = modules.game_expboost
++    if boost and boost.staminaTooltip then
++        boost.onStaminaChanged()
++        setSkillValue('stamina', boost.staminaText(stamina, formatTime(stamina)))
++        setSkillPercent('stamina', percent, boost.staminaTooltip(stamina), boost.staminaColor(stamina))
++        return
++    end
+     
+     setSkillValue('stamina', formatTime(stamina))
+     
 diff -ruN pristine/modules/game_skills/skills.otui modules/game_skills/skills.otui
 --- a/modules/game_skills/skills.otui
 +++ b/modules/game_skills/skills.otui
@@ -26,6 +45,15 @@ diff -ruN pristine/modules/game_skills/skills.otui modules/game_skills/skills.ot
        SkillValueLabel
  
      SkillButton
+@@ -191,7 +191,7 @@
+     SkillButton
+       id: stamina
+       SkillNameLabel
+-        !text: tr('Stamina')
++        !text: tr('Trainer Spirit')
+       SkillValueLabel
+       RedPercentPanel
+ 
 @@ -209,10 +209,10 @@
      SkillButton
        id: magiclevel
@@ -107,6 +135,15 @@ diff -ruN pristine/modules/game_skills/skills.otui modules/game_skills/skills.ot
        SkillPercentPanel
  
      SkillButton
+@@ -656,7 +638,7 @@
+ 
+   SkillsSubMenuOption
+     id: showStamina
+-    !text: tr('Stamina')
++    !text: tr('Trainer Spirit')
+ 
+   SkillsSubMenuOption
+     id: showOfflineTraining
 @@ -664,31 +646,31 @@
  
    SkillsSubMenuOption

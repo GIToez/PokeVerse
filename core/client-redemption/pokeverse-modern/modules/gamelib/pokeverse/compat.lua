@@ -215,6 +215,7 @@ ExtendedIds.Hints = 38
 ExtendedIds.Report = 39
 ExtendedIds.Ping = 40
 ExtendedIds.Store = 41
+ExtendedIds.ExpBoost = 42
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

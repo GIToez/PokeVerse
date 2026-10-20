@@ -33,6 +33,7 @@ local function clear()
     store(KEY_MULTIPLIER, 0)
     store(KEY_END, 0)
     setExperienceEventMultiplier(EventCalendar.multiplier("exp"))
+    if (ExpBoost) then ExpBoost.sendAll() end
 end
 
 function ServerExpEvent.formatMultiplier(multiplier)
@@ -103,6 +104,7 @@ function ServerExpEvent.start(multiplier, seconds)
     store(KEY_MULTIPLIER, math.floor(multiplier * 100 + 0.5))
     store(KEY_END, os.time() + seconds)
     setExperienceEventMultiplier(multiplier * EventCalendar.multiplier("exp"))
+    if (ExpBoost) then ExpBoost.sendAll() end
     doBroadcastMessage(string.format("%s %s kill experience for trainers and Pokemon for the next %s!",
         replaced and "The experience event changed:" or "Experience event started:",
         ServerExpEvent.formatMultiplier(multiplier), ServerExpEvent.formatDuration(seconds)), MESSAGE_STATUS_WARNING)
@@ -158,6 +160,7 @@ function ServerExpEvent.onThink()
     local total = (multiplier or 1) * EventCalendar.multiplier("exp")
     if (getExperienceEventMultiplier() ~= total) then
         setExperienceEventMultiplier(total)
+        if (ExpBoost) then ExpBoost.sendAll() end
     end
     return true
 end
