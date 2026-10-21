@@ -13,6 +13,8 @@ on:
       - core/database/**
       - scripts/live/**
       - scripts/account-test.py
+      - scripts/account-email-test.py
+      - scripts/testing/fake-smtp.py
       - scripts/protocol-test.py
       - .github/workflows/live-server.yml
   pull_request:
@@ -21,6 +23,8 @@ on:
       - core/database/**
       - scripts/live/**
       - scripts/account-test.py
+      - scripts/account-email-test.py
+      - scripts/testing/fake-smtp.py
       - scripts/protocol-test.py
       - .github/workflows/live-server.yml
   workflow_dispatch:
@@ -96,6 +100,8 @@ jobs:
       DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS || secrets.DISCORD_ADMIN_USER_IDS }}
       DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS || secrets.DISCORD_ADMIN_ROLE_IDS }}
       PV_RSA_PRIVATE_KEY: ${{ secrets.POKEVERSE_RSA_PRIVATE_KEY }}
+      PV_MAIL_USER: ${{ vars.GMAIL_ADDRESS || secrets.GMAIL_ADDRESS }}
+      PV_MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -290,6 +296,8 @@ jobs:
       DISCORD_ADMIN_USER_IDS: ${{ vars.DISCORD_ADMIN_USER_IDS || secrets.DISCORD_ADMIN_USER_IDS }}
       DISCORD_ADMIN_ROLE_IDS: ${{ vars.DISCORD_ADMIN_ROLE_IDS || secrets.DISCORD_ADMIN_ROLE_IDS }}
       PV_RSA_PRIVATE_KEY: ${{ secrets.POKEVERSE_RSA_PRIVATE_KEY }}
+      PV_MAIL_USER: ${{ vars.GMAIL_ADDRESS || secrets.GMAIL_ADDRESS }}
+      PV_MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
     steps:
       - name: Check restore confirmation
         if: env.ACTION == 'restore' && inputs.confirm != 'RESTORE'

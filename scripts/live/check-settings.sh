@@ -139,6 +139,29 @@ else
   report OK POKEVERSE_RSA_PRIVATE_KEY "matches the clients' key"
 fi
 
+# Account emails
+if ! is_set PV_MAIL_USER && ! is_set PV_MAIL_PASSWORD; then
+  report INFO GMAIL_ADDRESS "not set: account emails stay off (no signup codes, no Forgot password)"
+else
+  if ! is_set PV_MAIL_USER; then
+    report FAIL GMAIL_ADDRESS "variable missing: the Gmail address that sends account emails"
+  elif [[ "$PV_MAIL_USER" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+    report OK GMAIL_ADDRESS "$PV_MAIL_USER"
+  else
+    report FAIL GMAIL_ADDRESS "not an email address"
+  fi
+  mail_password=${PV_MAIL_PASSWORD// /}
+  if ! is_set PV_MAIL_PASSWORD; then
+    report FAIL GMAIL_APP_PASSWORD "secret missing: a Google app password (Google Account > Security > App passwords)"
+  elif [[ "$mail_password" =~ ^[a-zA-Z]{16}$ ]]; then
+    report OK GMAIL_APP_PASSWORD "set (16 letters, like a Google app password)"
+  elif [[ "$mail_password" =~ ^[A-Za-z0-9!#$%\&*+,./:\;=?@^_~-]{8,128}$ ]]; then
+    report WARN GMAIL_APP_PASSWORD "set, but a Google app password is 16 letters (is this the account password?)"
+  else
+    report FAIL GMAIL_APP_PASSWORD "too short, or has characters that are not allowed (quotes, backslashes)"
+  fi
+fi
+
 # Discord bot
 snowflake='^[0-9]{17,20}$'
 bot_needed=false

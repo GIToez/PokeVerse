@@ -27,6 +27,9 @@
 #   DISCORD_ADMIN_ROLE_IDS   production bot settings (the bot is skipped without a token)
 #   PV_RSA_PRIVATE_KEY the private login key, PEM (GitHub secret POKEVERSE_RSA_PRIVATE_KEY; verify, deploy)
 #   PV_RSA_PUBLIC      its public modulus, which the clients have (default scripts/live/rsa-public.txt)
+#   PV_MAIL_USER       account email sender (GitHub variable GMAIL_ADDRESS) and PV_MAIL_PASSWORD its
+#                      app password (GitHub secret GMAIL_APP_PASSWORD); without both, emails are off
+#   PV_SMTP_HOST, PV_SMTP_PORT, PV_SMTP_CA_FILE  mail server (default smtp.gmail.com:587, system CAs)
 set -euo pipefail
 
 action=${1:?action}
@@ -157,11 +160,34 @@ check_rsa_key() {
   echo "Login key matches the clients' key"
 }
 
+check_mail() {
+  if [ -n "${PV_MAIL_USER:-}" ] && [ -z "${PV_MAIL_PASSWORD:-}" ]; then fail "GMAIL_ADDRESS is set but the secret GMAIL_APP_PASSWORD is not"; fi
+  if [ -z "${PV_MAIL_USER:-}" ] && [ -n "${PV_MAIL_PASSWORD:-}" ]; then fail "the secret GMAIL_APP_PASSWORD is set but the variable GMAIL_ADDRESS is not"; fi
+  return 0
+}
+
+mail_summary() {
+  if [ -n "${PV_MAIL_USER:-}" ]; then
+    echo "required, sent as $PV_MAIL_USER through ${PV_SMTP_HOST:-smtp.gmail.com}:${PV_SMTP_PORT:-587}"
+  else
+    echo "off (GMAIL_ADDRESS and GMAIL_APP_PASSWORD are not set)"
+  fi
+}
+
 configure() {
   step "Live settings"
   check_rsa_key
+  check_mail
   printf '%s\n' "$PV_RSA_PRIVATE_KEY" | tr -d '\r' \
     | remote "$(printf '%q ' "$REMOTE/releases/$server_release/tools/pokeverse-ctl" set-rsa-key)"
+  # The app password goes through stdin, never through the command line.
+  {
+    printf 'SMTP_HOST=%s\n' "${PV_SMTP_HOST:-}"
+    printf 'SMTP_PORT=%s\n' "${PV_SMTP_PORT:-}"
+    printf 'SMTP_USER=%s\n' "${PV_MAIL_USER:-}"
+    printf 'SMTP_PASSWORD=%s\n' "${PV_MAIL_PASSWORD:-}"
+    printf 'SMTP_CA_FILE=%s\n' "${PV_SMTP_CA_FILE:-}"
+  } | tr -d '\r' | remote "$(printf '%q ' "$REMOTE/releases/$server_release/tools/pokeverse-ctl" set-mail)"
   remote_ctl "$REMOTE/releases/$server_release/tools/pokeverse-ctl" configure \
     "host=$PV_PUBLIC_HOST" "daily_restart=$PV_DAILY_RESTART" "daily_time=$PV_DAILY_TIME" "timezone=$PV_TIMEZONE" \
     "server_name=$PV_SERVER_NAME"
@@ -220,6 +246,8 @@ case "$action" in
     echo "Daily restart:           $PV_DAILY_RESTART at $PV_DAILY_TIME ${PV_TIMEZONE:-(server time zone)}"
     echo "Discord bot:             $([ -n "${DISCORD_TOKEN:-}" ] && echo "token set, guild ${DISCORD_GUILD_ID:-<missing>}" || echo "no token (skipped)")"
     echo "Login key:               PokeVerse key only"
+    echo "Account emails:          $(mail_summary)"
+    check_mail
     [[ "$PV_DAILY_TIME" =~ ^([01][0-9]|2[0-3]):[0-5][0-9]$ ]] || fail "LIVE_DAILY_RESTART_TIME must be HH:MM"
     if [ -n "${DISCORD_TOKEN:-}" ] && [ -z "${DISCORD_GUILD_ID:-}" ]; then fail "DISCORD_GUILD_ID is required with a bot token"; fi
     endstep
