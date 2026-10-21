@@ -5,6 +5,7 @@
 --   { 'h', text }                    a heading
 --   { 'steps', { text, ... } }       numbered steps
 --   { 'tip', text }                  a gold note in a card
+--   { 'premium' }                    the gold PREMIUM badge; clicking it opens the Premium topic
 --   { 'keys', { key, ... } }         keyboard keys
 --   { 'commands', { command, ... } } chat commands
 --   { 'items', { { client id, caption }, ... } }
@@ -33,6 +34,9 @@ end
 
 local function blockText(block)
     local kind, value = block[1], block[2]
+    if kind == 'premium' then
+        return 'Premium'
+    end
     if type(value) == 'string' then
         return value
     end
@@ -126,6 +130,16 @@ function BLOCKS.tip(body, block)
     tip.text:setText(block[2])
     tip.minHeight = 28
     fitHeight(tip, tip.text, 14)
+end
+
+function BLOCKS.premium(body, block)
+    local premium = g_ui.createWidget('WikiPremium', body)
+    premium:setTooltip(tr('Open %s', tr('Premium')))
+    premium.onHoverChange = function(widget, hovered)
+        widget.badge:setOn(hovered)
+        widget.how:setOn(hovered)
+    end
+    premium.onClick = function() WikiTab.open('premium') end
 end
 
 function BLOCKS.keys(body, block)
