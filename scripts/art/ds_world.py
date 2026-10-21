@@ -15,6 +15,7 @@ and anything that can be picked up (potions, balls, berries keep their icons).
 The original data.spr is tagged backup/data-spr-before-ds-style.
 """
 import argparse
+import collections
 import os
 import pickle
 import struct
@@ -35,6 +36,7 @@ GROUND, BORDER, PICKUPABLE = 0, 1, 17
 # the Pokemon Center and Mart and the custom building art around them, already in the style
 REFERENCE = set(range(22084, 23251)) | {11873, 18746}
 CACHE = '/tmp/ds_world_items.pkl'
+BEDS = '/tmp/ds_world_beds.pkl'
 
 GRASS = [(56, 112, 80), (96, 176, 88), (112, 184, 80), (120, 192, 112), (128, 208, 112), (152, 224, 120)]
 PATH = [(152, 120, 96), (176, 152, 104), (200, 184, 128), (208, 192, 136), (216, 200, 136), (232, 220, 168)]
@@ -48,6 +50,11 @@ OUTLINE = {'green': (16, 48, 32), 'wood': (48, 28, 20), 'dirt': (48, 28, 20), 's
            'water': (16, 48, 96), 'yellow': (96, 56, 16), 'red': (72, 16, 24)}
 OBJECT_RAMPS = {'green': FOLIAGE, 'wood': TRUNK, 'dirt': TRUNK, 'stone': ROCK, 'water': WATER,
                 'yellow': GOLD, 'red': RED}
+
+
+ICE = [(72, 128, 168), (120, 184, 216), (168, 220, 240), (208, 240, 250), (240, 252, 255)]
+OBJECT_RAMPS['ice'] = ICE
+OUTLINE['ice'] = (48, 96, 128)
 
 
 def classify(rgb):
@@ -291,6 +298,7 @@ def paint_object(img):
     if not op.any():
         return a
     mat = despeckle(classify(a[..., :3].astype(float)), op)
+    mat[(mat == 'water') & (blurf(lum(a[..., :3].astype(float)) / 255, 1.5, pad=4) > 0.55)] = 'ice'
     out = a.astype(float)
     for k in set(mat[op].tolist()):
         sel = op & (mat == k)
@@ -330,6 +338,32 @@ def map_items():
     return cids
 
 
+def border_beds():
+    """{border client id: Counter of the ground client ids it is laid on}."""
+    if os.path.exists(BEDS) and os.path.getmtime(BEDS) > os.path.getmtime(h.MAP):
+        return pickle.load(open(BEDS, 'rb'))
+    otb, dat = pvmap.Otb(h.ITEMS), pvmap.Dat(h.DAT)
+    data = open(h.MAP, 'rb').read()
+    beds = collections.defaultdict(collections.Counter)
+    ground = None
+    for ev, typ, depth, a, b, _ in pvmap.walk(data):
+        if ev != 'open':
+            continue
+        if typ in (pvmap.TILE, pvmap.HOUSETILE):
+            item = pvmap.parse_tile_props(pvmap.unescape(data[a:b]), typ == pvmap.HOUSETILE)[4]
+            ground = otb.client_id(item) if item is not None else None
+        elif typ == pvmap.ITEM and depth == 4:
+            cid = otb.client_id(struct.unpack_from('<H', pvmap.unescape(data[a:a + 4]), 0)[0])
+            t = dat.things.get(cid)
+            if t and GROUND in t[0]:
+                ground = cid
+            elif t and BORDER in t[0] and ground is not None:
+                beds[cid][ground] += 1
+    beds = dict(beds)
+    pickle.dump(beds, open(BEDS, 'wb'))
+    return beds
+
+
 def house_sprites(dat):
     art = h.originals(dat, None)
     h.STYLE.update({'tile': 'tiles', 'width': 16, 'eave': 3,
@@ -348,27 +382,41 @@ NOT_NATURAL = {194, 482, 484, 489, 490, 970, 971, 972, 973, 978, 1152, 6171, 734
                13067, 15377, 15379, 15380, 20328, 20375, 20376, 20377} | set(range(8308, 8317))
 
 
+def grass_ground(t, rgba):
+    px = [rgba(s) for s in t[8] if s and rgba(s) is not None]
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in px]).astype(float)
+    return (classify(px[None])[0] == 'green').mean() > 0.6
+
+
 def natural(t, rgba):
     """Grass, dirt and water ground; paving, floors, roofs, snow and lava stay as they are."""
     px = [img[img[..., 3] > 0][:, :3] for img in (rgba(s) for s in t[8] if s) if img is not None]
     px = np.concatenate(px).astype(float) if px else np.zeros((0, 3))
     if len(px) == 0:
         return False
+    mat = classify(px[None])[0]
+    wet = mat == 'water'
+    ice = wet.any() and lum(px[wet]).mean() >= 140          # light cyan is ice, not water
+    deep = wet & ~ice
+    shore = 0.1 <= deep.mean() <= 0.9 and (~deep & (mat != 'green')).mean() >= 0.1
     if GROUND in t[0]:
         mean = px.mean(0)
-        mat = classify(px[None])[0]
-        if (mat == 'green').mean() > 0.6 or (mat == 'water').mean() > 0.6:
+        if shore:
+            return 'mixed'
+        if (mat == 'green').mean() > 0.6 or deep.mean() > 0.6:
             return True
         return min(np.linalg.norm(mean - np.array(ref)) for ref in NATURAL) < 28 and px.std(0).mean() < 30
-    mat = classify(px[None])[0]
-    if (mat == 'green').mean() >= 0.15 or (mat == 'water').mean() >= 0.15:
+    if (mat == 'green').mean() >= 0.15:
         return True
+    if deep.mean() >= 0.15:
+        return 'mixed'
     return np.linalg.norm(px.mean(0) - np.array(NATURAL[0])) < 28
 
 
 ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
 COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
 WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192, 132)]  # logs and planks
+SNOW = [(168, 184, 216), (200, 216, 236), (224, 234, 246), (240, 246, 252), (252, 254, 255)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
 HUT_ROOF = range(9409, 9416)                     # the far slope of the small huts beside the Pokemon Centers
 # rims and ridges laid over the flat roof tiles
@@ -443,6 +491,26 @@ def paint_roof_edge(a):
     return out
 
 
+def recolor_ground(a):
+    """Shore and snow edges: every pixel keeps its place, only the colours move onto the DS ramps."""
+    rgb = a[..., :3].astype(float)
+    op = a[..., 3] > 0
+    L = smooth(lum(rgb), op.all())
+    mat = classify(rgb)
+    out = a.copy()
+    water = op & (mat == 'water') & (L < 140)
+    out[water, :3] = np.array(WATER)[np.searchsorted([60, 110, 170], L[water]) + 1]
+    foam = op & ~water & (L >= 170) & (mat != 'yellow')
+    out[foam, :3] = np.array(SNOW)[np.searchsorted([185, 205, 225, 240], L[foam])]
+    green = op & (mat == 'green')
+    out[green, :3] = np.array(GRASS)[np.searchsorted([60, 90, 120, 150], L[green]) + 1]
+    sand = op & ~water & ~foam & ~green & np.isin(mat, ['yellow', 'wood', 'red'])
+    out[sand, :3] = np.array(PATH)[np.searchsorted([90, 130, 160, 190, 215], L[sand])]
+    rest = op & ~water & ~foam & ~green & ~sand
+    out[rest, :3] = np.array(COBBLE)[np.searchsorted([70, 100, 130, 160], L[rest])]
+    return out
+
+
 def made_ground(t, rgba):
     """{sid: art} for a non-natural ground or border item."""
     lo, hi, mean = tone(t, rgba)
@@ -451,11 +519,15 @@ def made_ground(t, rgba):
         return {}
     sat = (mean.max() - mean.min()) / max(mean.max(), 1)
     ramp = None
-    if sat < 0.12:
-        ramp = ROAD if m > 150 else COBBLE
-    elif m < 60:
+    if sat < 0.12 and m > 200:
+        ramp = SNOW
+    elif sat < 0.12:
+        base = ROAD if m > 150 else COBBLE
+        f = np.clip(m / (175 if m > 150 else 135), 0.6, 1.15)   # darker stone stays darker
+        ramp = [tuple(int(min(255, v * f)) for v in c) for c in base]
+    elif m < 60 and sat < 0.35:
         ramp = ROCKY
-    elif sat > 0.3 and m < 150 and mean[0] > mean[1] > mean[2]:
+    elif sat > 0.3 and m < 150 and mean[0] > mean[1] > mean[2] and mean[1] > 0.55 * mean[0]:
         ramp = WOODEN
     return {sid: paint_floor(rgba(sid), lo, hi, mean, ramp) for sid in t[8] if sid and rgba(sid) is not None}
 
@@ -479,6 +551,21 @@ def build():
             raw[sid] = np.frombuffer(px, np.uint8).reshape(32, 32, 4).copy() if px else None
         return raw[sid]
 
+    beds = border_beds()
+
+    grassy = {}
+
+    def on_grass(cid):
+        """Grass edges laid over other grass have no dirt to sink into."""
+        bed = beds.get(cid)
+        if not bed:
+            return False
+        for g in bed:
+            if g not in grassy:
+                t = dat.things.get(g)
+                grassy[g] = bool(t) and any(s and rgba(s) is not None for s in t[8]) and grass_ground(t, rgba)
+        return sum(n for g, n in bed.items() if grassy[g]) >= 0.7 * sum(bed.values())
+
     grounds, objects = [], []
     for cid in sorted(items):
         t = dat.things.get(cid)
@@ -496,6 +583,10 @@ def build():
             art = {sid: np.dstack([PAVING[cid], rgba(sid)[..., 3]]).astype(np.uint8) for sid in free}
         elif cid in ROOF_TILES:
             art = {sid: paint_flat_roof(rgba(sid)) for sid in free}
+        elif cid not in NOT_NATURAL and natural(t, rgba) == 'mixed':
+            art = {sid: recolor_ground(rgba(sid)) for sid in free}
+        elif cid not in NOT_NATURAL and BORDER in t[0] and natural(t, rgba) and on_grass(cid):
+            art = {sid: recolor_ground(rgba(sid)) for sid in free}
         elif cid not in NOT_NATURAL and natural(t, rgba):
             art = {sid: paint_ground(rgba(sid)) for sid in free}
         else:
