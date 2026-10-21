@@ -2035,8 +2035,14 @@ void LuaScriptInterface::registerFunctions()
 	//doRevokeDiscordLinkCodes(accountId)
 	lua_register(m_luaState, "doRevokeDiscordLinkCodes", LuaScriptInterface::luaDoRevokeDiscordLinkCodes);
 
-	//doDiscordBoosterDeposit(discordUserId, accountId, boostSince, week)
+	//doDiscordBoosterDeposit(discordUserId, accountId, boostSince, week, serverBoosts)
 	lua_register(m_luaState, "doDiscordBoosterDeposit", LuaScriptInterface::luaDoDiscordBoosterDeposit);
+
+	//getDiscordBoostPerks()
+	lua_register(m_luaState, "getDiscordBoostPerks", LuaScriptInterface::luaGetDiscordBoostPerks);
+
+	//setDiscordBoostLevel(level)
+	lua_register(m_luaState, "setDiscordBoostLevel", LuaScriptInterface::luaSetDiscordBoostLevel);
 
 	//doSetDiscordLogoutReason(cid, reason)
 	lua_register(m_luaState, "doSetDiscordLogoutReason", LuaScriptInterface::luaDoSetDiscordLogoutReason);
@@ -6271,6 +6277,8 @@ int32_t LuaScriptInterface::luaGetDiscordBridgeInfo(lua_State* L)
 	setField(L, "loyalty", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY));
 	setField(L, "yearlyEvery", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_YEARLY_EVERY));
 	setField(L, "yearly", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_YEARLY));
+	setField(L, "communityEvery", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_COMMUNITY_EVERY));
+	setField(L, "communityMax", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_COMMUNITY_MAX));
 	pushTable(L);
 	return 1;
 }
@@ -6319,15 +6327,17 @@ int32_t LuaScriptInterface::luaDoRevokeDiscordLinkCodes(lua_State* L)
 
 int32_t LuaScriptInterface::luaDoDiscordBoosterDeposit(lua_State* L)
 {
-	//doDiscordBoosterDeposit(discordUserId, accountId, boostSince, week)
-	//returns {deposited, week, weekly, loyalty, yearly, total}, or nil and an error code
+	//doDiscordBoosterDeposit(discordUserId, accountId, boostSince, week, serverBoosts)
+	//returns {deposited, week, weekly, loyalty, yearly, community, total}, or nil and an error code
+	int32_t serverBoosts = (int32_t)popNumber(L);
 	int32_t week = (int32_t)popNumber(L);
 	int64_t boostSince = popNumber(L);
 	uint32_t accountId = (uint32_t)popNumber(L);
 	std::string discordUserId = popString(L), error;
 	DiscordBoosterReward reward;
-	std::string status = week < 1 || boostSince <= 0 || !accountId ? "" :
-		DiscordBridge::getInstance()->depositBoosterWeek(discordUserId, accountId, (uint64_t)boostSince, week, reward, error);
+	std::string status = week < 1 || boostSince <= 0 || serverBoosts < 0 || !accountId ? "" :
+		DiscordBridge::getInstance()->depositBoosterWeek(discordUserId, accountId, (uint64_t)boostSince, week,
+			serverBoosts, reward, error);
 	if(status.empty())
 	{
 		lua_pushnil(L);
@@ -6341,7 +6351,33 @@ int32_t LuaScriptInterface::luaDoDiscordBoosterDeposit(lua_State* L)
 	setField(L, "weekly", reward.weekly);
 	setField(L, "loyalty", reward.loyalty);
 	setField(L, "yearly", reward.yearly);
+	setField(L, "community", reward.community);
 	setField(L, "total", reward.total);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaGetDiscordBoostPerks(lua_State* L)
+{
+	//getDiscordBoostPerks()
+	//returns {enabled, level, expPercent, catchPercent, shinyPercent, exp, catch, shiny}; the last three are
+	//the multipliers in effect right now
+	lua_newtable(L);
+	setFieldBool(L, "enabled", g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOST_PERKS));
+	setField(L, "level", g_game.getDiscordBoostLevel());
+	setField(L, "expPercent", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOST_PERK_EXP_PERCENT));
+	setField(L, "catchPercent", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOST_PERK_CATCH_PERCENT));
+	setField(L, "shinyPercent", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOST_PERK_SHINY_PERCENT));
+	setFieldFloat(L, "exp", g_game.getDiscordBoostExpMultiplier());
+	setFieldFloat(L, "catch", g_game.getDiscordBoostCatchMultiplier());
+	setFieldFloat(L, "shiny", g_game.getDiscordBoostShinyMultiplier());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetDiscordBoostLevel(lua_State* L)
+{
+	//setDiscordBoostLevel(level)
+	g_game.setDiscordBoostLevel((int32_t)popNumber(L));
+	lua_pushboolean(L, true);
 	return 1;
 }
 

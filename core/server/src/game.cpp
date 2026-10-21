@@ -90,6 +90,7 @@ Game::Game()
 	experienceEventMultiplier = 1.0;
 	shinyEventMultiplier = 1.0;
 	lootEventMultiplier = 1.0;
+	discordBoostLevel = 0;
 	for(int32_t i = 0; i < 3; i++)
 		globalSaveMessage[i] = false;
 
@@ -6075,6 +6076,32 @@ std::string Game::getSearchString(const Position fromPos, const Position toPos, 
 	}
 
 	return ss.str();
+}
+
+namespace
+{
+	double discordBoostMultiplier(int32_t level, int32_t needed, uint32_t percent)
+	{
+		if(level < needed || !g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOST_PERKS))
+			return 1.0;
+
+		return 1.0 + g_config.getNumber(percent) / 100.0;
+	}
+}
+
+double Game::getDiscordBoostExpMultiplier() const
+{
+	return discordBoostMultiplier(discordBoostLevel, 1, ConfigManager::DISCORD_BRIDGE_BOOST_PERK_EXP_PERCENT);
+}
+
+double Game::getDiscordBoostCatchMultiplier() const
+{
+	return discordBoostMultiplier(discordBoostLevel, 2, ConfigManager::DISCORD_BRIDGE_BOOST_PERK_CATCH_PERCENT);
+}
+
+double Game::getDiscordBoostShinyMultiplier() const
+{
+	return discordBoostMultiplier(discordBoostLevel, 3, ConfigManager::DISCORD_BRIDGE_BOOST_PERK_SHINY_PERCENT);
 }
 
 double Game::getExperienceStage(uint32_t level, double divider/* = 1.*/)

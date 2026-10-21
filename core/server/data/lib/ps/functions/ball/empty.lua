@@ -86,7 +86,13 @@ function getCatchChance(cid, pokemonName, ballId, pokemonLevel)
     return getRandom(1, max)
 end
 
--- A normal throw: the roll, then the Catcher's second chance on a miss
+-- The chance a roll of getRandom(1, max) <= rate catches, 0 to 1
+function getCatchRollChance(rate, max)
+    return math.min(1, math.floor(rate) / math.max(1, math.floor(max)))
+end
+
+-- A normal throw: the roll, then the Catcher's second chance on a miss, then the Discord server
+-- boost perk's roll, which multiplies the final chance (Catcher included) once
 local function rollCatch(cid, pokemonName, ballName, ballId, pokemonLevel)
     local max = getCatchRollMax(cid, pokemonName, ballId, pokemonLevel)
     if (not max) then
@@ -96,7 +102,11 @@ local function rollCatch(cid, pokemonName, ballName, ballId, pokemonLevel)
     if (getRandom(1, max) <= rate) then
         return true
     end
-    return Vocations.catchSecondChance(cid, math.min(1, math.floor(rate) / math.max(1, math.floor(max))))
+    local chance = getCatchRollChance(rate, max)
+    if (Vocations.catchSecondChance(cid, chance)) then
+        return true
+    end
+    return DiscordBoostPerks.catchBonusRoll(math.min(1, chance * (1 + (Vocations.perk(cid, "catcher", "catchChance") or 0))))
 end
 
 function catchMiss(cid, ballName, ballItemid, pokemon, wastedBallsMsg)
