@@ -31,7 +31,7 @@ All settings (defaults in `config.lua`):
 | `discordBridgePlayerSessions` | `true` | Send admin-only `player_login`/`player_logout` events (the bot's private `#player-activity` channel). |
 | `discordBridgeSessionIps` | `true` | Include the player's IPv4 address in `player_login`. Set `false` to never send IPs to the bot. |
 | `discordBridgeAccountLinking` | `true` | Allow Discord account linking (`!discord` in game, `link.*` requests). |
-| `discordBridgeBoosterRewards` | `false` | Pay Soul Coins to server boosters with a linked account (`booster.*` requests). Needs `discordBridgeAccountLinking`. |
+| `discordBridgeBoosterRewards` | `true` | Pay Soul Coins to server boosters with a linked account (`booster.*` requests). Needs `discordBridgeAccountLinking`. |
 | `discordBridgeBoosterWeekly` | `1` | Soul Coins for every completed boost week. |
 | `discordBridgeBoosterLoyaltyEvery` | `4` | Every this many weeks the loyalty bonus is added (`0` = never). |
 | `discordBridgeBoosterLoyalty` | `1` | The loyalty bonus. |
@@ -309,8 +309,8 @@ Trainer lookup details:
 
 ## Booster rewards
 
-Server boosters earn Soul Coins on their linked game account (off by default,
-`discordBridgeBoosterRewards`; it also needs account linking). The bot watches who boosts
+Server boosters earn Soul Coins on their linked game account (`discordBridgeBoosterRewards`,
+on in `config.lua`; it also needs account linking, and the server's built-in default is off). The bot watches who boosts
 and, for each completed week of a boost, sends `booster.week` with the Discord user, the
 streak start (`boostSince`, Discord's "boosting since" time) and the week number. Removing
 or moving the boost ends a streak; the next boost has a new `boostSince`.

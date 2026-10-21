@@ -594,7 +594,7 @@ WikiData = {
             } },
             { 'p', "In Discord, /booster shows your streak, the weeks paid, the Soul Coins received and when the next week is due." },
             { 'p', "The weeks count from the day your current boost started. Removing the boost or moving it to another server ends the streak, and a new boost starts again at week 1. A week is only ever paid once." },
-            { 'tip', "Booster rewards start when the team switches them on; until then /booster is not in Discord." },
+            { 'tip', "Boosted before you linked? Link now: the weeks you complete from then on are paid." },
             { 'see', { 'discordlink', 'soulcoins', 'premium' } },
         } },
     } },
