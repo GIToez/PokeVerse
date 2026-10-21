@@ -17733,9 +17733,10 @@
   <spawn centerx="4735" centery="130" centerz="6" radius="1">
     <npc name="Curt Raeburn" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
+  <!-- Held item remover, retired: players take held items off themselves (data/npc/Mitchell Meade.xml is kept)
   <spawn centerx="4709" centery="140" centerz="6" radius="1">
     <npc name="Mitchell Meade" x="0" y="1" z="6" spawntime="60" level="0"/>
-  </spawn>
+  </spawn> -->
   <spawn centerx="5850" centery="140" centerz="6" radius="1">
     <npc name="Lunatticous Ubilam" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>

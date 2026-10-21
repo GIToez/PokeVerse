@@ -15,7 +15,20 @@ ALTER TABLE `accounts`
   ADD COLUMN IF NOT EXISTS `client_id` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS `soulcoins` INT NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS `referral` INT UNSIGNED NOT NULL DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS `referral_points` INT NOT NULL DEFAULT 0;
+  ADD COLUMN IF NOT EXISTS `referral_points` INT NOT NULL DEFAULT 0,
+  -- wrong passwords in a row and the end of the lockout they cause (IOLoginData::checkPassword)
+  ADD COLUMN IF NOT EXISTS `login_failures` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS `login_locked_until` BIGINT NOT NULL DEFAULT 0,
+  -- account email (src/accountemail.cpp): `email` is verified when `email_verified` is 1.
+  -- `signup_pending` accounts were created with an email that is not verified yet; they
+  -- cannot play and are deleted after 24 hours. `email_deadline` is when an older account
+  -- without a verified email stops getting into the game (0: not seen since emails began).
+  ADD COLUMN IF NOT EXISTS `email_verified` TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS `signup_pending` TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS `created_at` BIGINT NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS `email_deadline` BIGINT NOT NULL DEFAULT 0;
+
+CREATE INDEX IF NOT EXISTS `email` ON `accounts` (`email`);
 
 ALTER TABLE `players`
   ADD COLUMN IF NOT EXISTS `hidden` TINYINT(1) NOT NULL DEFAULT 0,
@@ -757,6 +770,41 @@ CREATE TABLE IF NOT EXISTS `discord_account_links` (
   KEY `main_player_id` (`main_player_id`),
   CONSTRAINT `discord_account_links_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `discord_account_links_main` FOREIGN KEY (`main_player_id`) REFERENCES `players` (`id`) ON DELETE SET NULL
+) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------------
+-- Account emails and security log (src/accountemail.cpp)
+-- ---------------------------------------------------------------------------
+-- One live code per account and purpose (1 verify `email`, 2 password reset, 3 email change:
+-- the code sent to the old email, `email` the new one). Only a SHA-256 of the code is kept;
+-- it expires after 15 minutes or 5 wrong tries.
+-- Rollback: DROP TABLE `account_codes`, `account_security_log`; the account columns above
+-- can stay.
+CREATE TABLE IF NOT EXISTS `account_codes` (
+  `account_id` INT NOT NULL,
+  `purpose` TINYINT UNSIGNED NOT NULL,
+  `code_hash` CHAR(64) NOT NULL,
+  `email` VARCHAR(255) NOT NULL DEFAULT '',
+  `created_at` BIGINT NOT NULL,
+  `expires_at` BIGINT NOT NULL,
+  `tries` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`account_id`, `purpose`),
+  KEY `email` (`email`),
+  CONSTRAINT `account_codes_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- Logins, wrong passwords, lockouts and account changes, kept for 180 days.
+CREATE TABLE IF NOT EXISTS `account_security_log` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` INT NOT NULL,
+  `time` BIGINT NOT NULL,
+  `ip` INT UNSIGNED NOT NULL DEFAULT 0,
+  `event` VARCHAR(32) NOT NULL,
+  `detail` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `account_time` (`account_id`, `time`),
+  KEY `time` (`time`),
+  CONSTRAINT `account_security_log_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------------

@@ -122,6 +122,46 @@ else
   report FAIL LIVE_TIMEZONE "unknown time zone '$PV_TIMEZONE' (example: America/Los_Angeles)"
 fi
 
+# Login key
+key_needed=false
+case "$action" in verify|deploy) key_needed=true ;; esac
+if ! is_set PV_RSA_PRIVATE_KEY; then
+  if $key_needed; then
+    report FAIL POKEVERSE_RSA_PRIVATE_KEY "secret missing (needed for $action): the private login key, see docs/live-server.md"
+  else
+    report WARN POKEVERSE_RSA_PRIVATE_KEY "not set: deployments need it"
+  fi
+elif ! modulus=$(printf '%s\n' "$PV_RSA_PRIVATE_KEY" | tr -d '\r' | python3 "$(dirname "$0")/rsa-key.py" modulus 2>&1); then
+  report FAIL POKEVERSE_RSA_PRIVATE_KEY "$modulus"
+elif [ "$modulus" != "${PV_RSA_PUBLIC:-$(cat "$(dirname "$0")/rsa-public.txt")}" ]; then
+  report FAIL POKEVERSE_RSA_PRIVATE_KEY "a valid key, but not the one in the clients (scripts/live/rsa-public.txt)"
+else
+  report OK POKEVERSE_RSA_PRIVATE_KEY "matches the clients' key"
+fi
+
+# Account emails
+if ! is_set PV_MAIL_USER && ! is_set PV_MAIL_PASSWORD; then
+  report INFO GMAIL_ADDRESS "not set: account emails stay off (no signup codes, no Forgot password)"
+else
+  if ! is_set PV_MAIL_USER; then
+    report FAIL GMAIL_ADDRESS "variable missing: the Gmail address that sends account emails"
+  elif [[ "$PV_MAIL_USER" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+    report OK GMAIL_ADDRESS "$PV_MAIL_USER"
+  else
+    report FAIL GMAIL_ADDRESS "not an email address"
+  fi
+  mail_password=${PV_MAIL_PASSWORD// /}
+  if ! is_set PV_MAIL_PASSWORD; then
+    report FAIL GMAIL_APP_PASSWORD "secret missing: a Google app password (Google Account > Security > App passwords)"
+  elif [[ "$mail_password" =~ ^[a-zA-Z]{16}$ ]]; then
+    report OK GMAIL_APP_PASSWORD "set (16 letters, like a Google app password)"
+  elif [[ "$mail_password" =~ ^[A-Za-z0-9!#$%\&*+,./:\;=?@^_~-]{8,128}$ ]]; then
+    report WARN GMAIL_APP_PASSWORD "set, but a Google app password is 16 letters (is this the account password?)"
+  else
+    report FAIL GMAIL_APP_PASSWORD "too short, or has characters that are not allowed (quotes, backslashes)"
+  fi
+fi
+
 # Discord bot
 snowflake='^[0-9]{17,20}$'
 bot_needed=false

@@ -14,6 +14,8 @@ bot_pkg=${2:+$(realpath "$2")}
 bot_release=${3:-}
 root=$(cd "$(dirname "$0")/../.." && pwd)
 work=$(mktemp -d)
+smtp_pid=""
+trap '[ -z "$smtp_pid" ] || kill "$smtp_pid" 2>/dev/null || true' EXIT
 ctl() { sudo -u pokeverse /opt/pokeverse/current/tools/pokeverse-ctl "$@"; }
 journal() { sudo journalctl -u pokeverse-server.service --no-pager "$@"; }
 step() { echo; echo "::group::REHEARSAL: $*"; }
@@ -22,7 +24,7 @@ fail() {
   echo "::error::REHEARSAL FAILED: $*"
   journal -n 200 || true
   echo "--- $(date) ($(TZ=${PV_TIMEZONE:-UTC} date +%H:%M:%S) ${PV_TIMEZONE:-UTC}), NRestarts $(restarts)"
-  sudo sed -n '/BEGIN DEPLOYMENT SETTINGS/,/END DEPLOYMENT SETTINGS/p' /opt/pokeverse/shared/config.local.lua || true
+  sudo sed -n '/BEGIN DEPLOYMENT SETTINGS/,/END DEPLOYMENT SETTINGS/{s/^smtpPassword = .*/smtpPassword = (hidden)/;p}' /opt/pokeverse/shared/config.local.lua || true
   sudo cat /opt/pokeverse/shared/server.env 2>/dev/null || true
   # ServerRestart's keys in GLOBAL_STORAGES (as of the last save)
   sudo mariadb pokeverse -e "SELECT * FROM global_storage WHERE \`key\` BETWEEN 7100 AND 7105" || true
@@ -66,7 +68,25 @@ export PV_SSH_KEY PV_SSH_HOST_KEY
 export PV_SERVER_PACKAGE=$server_pkg
 export PV_TIMEZONE=America/Los_Angeles
 export PV_WARNING_MINUTES=0
+# A throwaway login key; the test logins below encrypt with it like an updated client.
+openssl genrsa -out "$work/rsa.pem" 1024 2>/dev/null
+PV_RSA_PRIVATE_KEY=$(cat "$work/rsa.pem")
+PV_RSA_PUBLIC=$(python3 "$root/scripts/live/rsa-key.py" modulus < "$work/rsa.pem")
+export PV_RSA_PRIVATE_KEY PV_RSA_PUBLIC PV_RSA_MODULUS=$PV_RSA_PUBLIC
 deploy() { "$root/scripts/live/deploy.sh" "$@"; }
+
+# Account emails go to a local SMTP server with STARTTLS and a password, like Gmail.
+mail=/tmp/pokeverse-rehearsal-mail
+rm -rf "$mail" && mkdir -p "$mail/box" && chmod 755 "$mail"
+openssl req -x509 -newkey rsa:2048 -nodes -days 2 -subj /CN=localhost -addext subjectAltName=DNS:localhost \
+  -keyout "$mail/key.pem" -out "$mail/cert.pem" 2>/dev/null
+# The service has its own /tmp (PrivateTmp), so its CA file lives under /opt/pokeverse.
+sudo install -m 644 "$mail/cert.pem" /opt/pokeverse/rehearsal-smtp-ca.pem
+python3 -u "$root/scripts/testing/fake-smtp.py" --port 2526 --mailbox "$mail/box" --cert "$mail/cert.pem" --key "$mail/key.pem" \
+  --user rehearsal@pokeverse.test --password rehearsal-app-pass > "$work/smtp.log" 2>&1 &
+smtp_pid=$!
+export PV_MAIL_USER=rehearsal@pokeverse.test PV_MAIL_PASSWORD=rehearsal-app-pass
+export PV_SMTP_HOST=localhost PV_SMTP_PORT=2526 PV_SMTP_CA_FILE=/opt/pokeverse/rehearsal-smtp-ca.pem
 
 step "Wrong host key is refused"
 if PV_SSH_HOST_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBadBadBadBadBadBadBadBadBadBadBadBadBadBadBad" deploy status; then
@@ -75,6 +95,8 @@ fi
 endstep
 
 step "verify on a fresh server"
+if PV_RSA_PRIVATE_KEY=$(openssl genrsa 1024 2>/dev/null) deploy verify; then fail "verify accepted a login key the clients do not have"; fi
+if PV_RSA_PRIVATE_KEY="" deploy verify; then fail "verify passed without a login key"; fi
 deploy verify
 endstep
 
@@ -114,6 +136,42 @@ pos=$(pt "${player[@]}" --walk east | tee /dev/stderr | sed -n 's/^POSITION //p'
 [ -n "$pos" ] || fail "no position"
 endstep
 
+step "login key and password lockout"
+[ "$(sudo stat -c %a /opt/pokeverse/shared/rsa.key)" = 600 ] || fail "the login key is not private"
+journal | grep -q "RSA key loaded from /opt/pokeverse/shared/rsa.key" || fail "the server did not load the login key"
+if PV_RSA_MODULUS="" pt "${player[@]}" --walk west --timeout 10 > /dev/null; then fail "the server accepted the open OpenTibia key"; fi
+pt "${player[@]}" --walk west > /dev/null || fail "login with the login key failed"
+[ "$(sudo mariadb -N pokeverse -e "SELECT password LIKE 'pbkdf2-sha256\$%' FROM accounts WHERE name = 'rehearsal'")" = 1 ] \
+  || fail "the SHA-256 password was not rehashed at login"
+sudo mariadb pokeverse -e "CALL pokeverse_create_account('rehearsallock', 'rehearsal1'); CALL pokeverse_create_character('rehearsallock', 'Rehearsal Lock', 1);" >/dev/null
+# 6 seconds apart: faster failures from one IP trip loginTries (retryTimeout 5 seconds) first
+for _ in $(seq 9); do pt --account rehearsallock --password wrong --character x --expect-login-failure > /dev/null; sleep 6; done
+pt --account rehearsallock --password wrong --character x --expect-login-failure | grep -q "locked for 15 minutes" \
+  || fail "ten wrong passwords did not lock the account"
+sleep 6
+pt --account rehearsallock --password rehearsal1 --character x --expect-login-failure | grep -q "locked" \
+  || fail "the right password got into a locked account"
+endstep
+
+step "account emails: signup code, Forgot password, password and email changes, the 7-day window"
+[ "$(sudo stat -c %a /opt/pokeverse/shared/mail.env)" = 600 ] || fail "the mail settings are not private"
+sudo grep -q '^emailRequired = true' /opt/pokeverse/shared/config.local.lua || fail "emailRequired was not turned on"
+journal | grep -q "Account emails go through localhost:2526" || fail "the server is not sending account emails"
+sleep 6
+python3 -u "$root/scripts/account-email-test.py" --mailbox "$mail/box" --sql "sudo mariadb pokeverse" \
+  || { cat "$work/smtp.log"; fail "the account email test failed"; }
+[ "$(sudo mariadb -N pokeverse -e "SELECT email_verified FROM accounts WHERE name = 'pvhealthcheck'")" = 1 ] \
+  || fail "the health check account is not marked verified (it would be locked out after 7 days)"
+codes=$(python3 -c 'import glob, json, re, sys
+for f in glob.glob(sys.argv[1] + "/*.json"):
+    for c in re.findall(r"\b\d{6}\b", json.load(open(f))["subject"]): print(c)' "$mail/box" | sort -u)
+[ -n "$codes" ] || fail "no codes in the mailbox"
+journal > "$work/journal.txt"
+for code in $codes; do
+  ! grep -qw "$code" "$work/journal.txt" || fail "a code from an email reached the server log"
+done
+endstep
+
 step "GM /restart 1 with warnings, saved and started again by systemd"
 before=$(restarts)
 pt "${player[@]}" --walk south --stay-online 200 > "$work/hold.log" 2>&1 &
@@ -142,6 +200,8 @@ endstep
 step "daily restart (time zone $PV_TIMEZONE)"
 daily=$(TZ=$PV_TIMEZONE date -d "+4 min" +%H:%M)
 ctl configure host=127.0.0.1 daily_restart=true "daily_time=$daily" "timezone=$PV_TIMEZONE"
+sudo grep -q '^-- END DEPLOYMENT SETTINGS' /opt/pokeverse/shared/config.local.lua && sudo grep -q '^sqlPass = ' /opt/pokeverse/shared/config.local.lua \
+  || fail "rewriting the deployment settings damaged the rest of config.local.lua"
 deploy restart
 before=$(restarts)
 pt "${gm[@]}" --say "/restart" | grep -i "restart" || true

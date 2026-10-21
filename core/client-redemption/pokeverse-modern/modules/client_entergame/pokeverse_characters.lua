@@ -213,6 +213,7 @@ function CharacterList.onCreate(window)
     end })
     local list = window:getChildById('characters')
     CharacterList.onCharacterFocus(list:getFocusedChild())
+    addEvent(PokeVerseAccount.remindEmail)
 end
 
 -- Logs in again for the updated character list, with focusName selected.
@@ -603,6 +604,10 @@ function CharacterList.doCreateCharacter()
             if not message then
                 CharacterList.showCreateCharacter()
             elseif not success then
+                if PokeVerseAccount.handleMarker(message, { name = G.account, password = G.password,
+                        onDone = CharacterList.showCreateCharacter, onLater = CharacterList.showCreateCharacter }) then
+                    return
+                end
                 connect(displayErrorBox(tr('Create Character'), message), { onOk = CharacterList.showCreateCharacter })
             else
                 createCharacterWindow:destroy()

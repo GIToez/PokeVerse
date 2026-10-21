@@ -332,6 +332,20 @@ bool ConfigManager::load()
 	m_confNumber[DISCORD_BRIDGE_QUEUE_SIZE] = getGlobalNumber("discordBridgeQueueSize", 2000);
 	m_confNumber[DISCORD_BRIDGE_LINK_CODE_LIFETIME] = getGlobalNumber("discordBridgeLinkCodeLifetime", 600);
 	m_confNumber[MAX_CHARACTERS_PER_ACCOUNT] = getGlobalNumber("maxCharactersPerAccount", 3);
+	m_confString[RSA_KEY_FILE] = getGlobalString("rsaKeyFile", "");
+	m_confNumber[PASSWORD_HASH_ITERATIONS] = getGlobalNumber("passwordHashIterations", 60000);
+	m_confNumber[LOGIN_LOCKOUT_ATTEMPTS] = getGlobalNumber("loginLockoutAttempts", 10);
+	m_confNumber[LOGIN_LOCKOUT_MINUTES] = getGlobalNumber("loginLockoutMinutes", 15);
+	m_confBool[EMAIL_REQUIRED] = getGlobalBool("emailRequired", false);
+	m_confNumber[EMAIL_GRACE_DAYS] = getGlobalNumber("emailGraceDays", 7);
+	m_confString[SMTP_HOST] = getGlobalString("smtpHost", "");
+	m_confNumber[SMTP_PORT] = getGlobalNumber("smtpPort", 587);
+	m_confBool[SMTP_STARTTLS] = getGlobalBool("smtpStartTls", true);
+	m_confString[SMTP_USER] = getGlobalString("smtpUser", "");
+	m_confString[SMTP_PASSWORD] = getGlobalString("smtpPassword", "");
+	m_confString[SMTP_FROM] = getGlobalString("smtpFrom", "");
+	m_confString[SMTP_FROM_NAME] = getGlobalString("smtpFromName", "PokeVerse");
+	m_confString[SMTP_CA_FILE] = getGlobalString("smtpCaFile", "");
 
 	m_loaded = true;
 	return true;

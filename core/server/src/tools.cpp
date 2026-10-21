@@ -18,12 +18,16 @@
 #include <iostream>
 #include <iomanip>
 #include <climits>
+#include <set>
 
 #include "tools.h"
 #include "md5.h"
 #include "sha1.h"
 
 #include <openssl/sha.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <openssl/crypto.h>
 
 #include "vocation.h"
 #include "configmanager.h"
@@ -151,6 +155,81 @@ bool encryptTest(std::string plain, std::string& hash)
 	std::transform(hash.begin(), hash.end(), hash.begin(), upchar);
 	_encrypt(plain, true);
 	return plain == hash;
+}
+
+// "pbkdf2-sha256$<iterations>$<salt hex>$<hash hex>"; older accounts keep an unsalted
+// encryptionType hash until their next login.
+static const std::string PASSWORD_HASH_PREFIX = "pbkdf2-sha256$";
+
+static std::string toHex(const uint8_t* data, size_t size)
+{
+	static const char digits[] = "0123456789abcdef";
+	std::string out;
+	out.reserve(size * 2);
+	for(size_t i = 0; i < size; ++i)
+	{
+		out += digits[data[i] >> 4];
+		out += digits[data[i] & 15];
+	}
+
+	return out;
+}
+
+static bool pbkdf2(const std::string& plain, const std::string& salt, int32_t iterations, uint8_t* out, size_t size)
+{
+	return PKCS5_PBKDF2_HMAC(plain.c_str(), plain.length(), (const uint8_t*)salt.c_str(), salt.length(),
+		iterations, EVP_sha256(), size, out) == 1;
+}
+
+std::string hashPassword(const std::string& plain)
+{
+	int32_t iterations = std::max<int32_t>(10000, g_config.getNumber(ConfigManager::PASSWORD_HASH_ITERATIONS));
+	uint8_t saltBytes[16], hash[32];
+	if(RAND_bytes(saltBytes, sizeof(saltBytes)) != 1)
+		return "";
+
+	std::string salt = toHex(saltBytes, sizeof(saltBytes));
+	if(!pbkdf2(plain, salt, iterations, hash, sizeof(hash)))
+		return "";
+
+	std::ostringstream ss;
+	ss << PASSWORD_HASH_PREFIX << iterations << "$" << salt << "$" << toHex(hash, sizeof(hash));
+	return ss.str();
+}
+
+bool passwordMatches(const std::string& plain, const std::string& stored, bool& upgrade)
+{
+	upgrade = false;
+	if(stored.compare(0, PASSWORD_HASH_PREFIX.length(), PASSWORD_HASH_PREFIX) != 0)
+	{
+		std::string legacy = stored;
+		if(!encryptTest(plain, legacy))
+			return false;
+
+		upgrade = true;
+		return true;
+	}
+
+	size_t iterationsEnd = stored.find('$', PASSWORD_HASH_PREFIX.length());
+	if(iterationsEnd == std::string::npos)
+		return false;
+
+	size_t saltEnd = stored.find('$', iterationsEnd + 1);
+	if(saltEnd == std::string::npos)
+		return false;
+
+	int32_t iterations = atoi(stored.substr(PASSWORD_HASH_PREFIX.length(), iterationsEnd - PASSWORD_HASH_PREFIX.length()).c_str());
+	std::string salt = stored.substr(iterationsEnd + 1, saltEnd - iterationsEnd - 1), expected = stored.substr(saltEnd + 1);
+	uint8_t hash[32];
+	if(iterations < 1 || expected.length() != sizeof(hash) * 2 || !pbkdf2(plain, salt, iterations, hash, sizeof(hash)))
+		return false;
+
+	std::string actual = toHex(hash, sizeof(hash));
+	if(CRYPTO_memcmp(actual.c_str(), expected.c_str(), actual.length()) != 0)
+		return false;
+
+	upgrade = iterations < g_config.getNumber(ConfigManager::PASSWORD_HASH_ITERATIONS);
+	return true;
 }
 
 void replaceString(std::string& text, const std::string key, const std::string value)
@@ -497,6 +576,26 @@ bool isValidAccountName(std::string text)
 	}
 
 	return true;
+}
+
+bool isCommonPassword(std::string text)
+{
+	static const std::set<std::string> common = {
+		"password", "password1", "password12", "password123", "passw0rd", "p@ssw0rd", "12345678", "123456789",
+		"1234567890", "0123456789", "87654321", "11111111", "00000000", "88888888", "12341234", "11223344",
+		"123123123", "147258369", "qwertyuiop", "qwerty12", "qwerty123", "1qaz2wsx", "zaq12wsx", "1q2w3e4r",
+		"1q2w3e4r5t", "123qweasd", "qweasdzxc", "asdfghjk", "asdfghjkl", "zxcvbnm1", "abc12345", "abcd1234",
+		"iloveyou", "sunshine", "princess", "football", "baseball", "welcome1", "trustno1", "superman",
+		"starwars", "letmein1", "michael1", "jennifer", "computer", "internet", "whatever", "dragon12",
+		"monkey12", "shadow12", "master12", "killer12", "google123", "minecraft", "fortnite", "roblox123",
+		"pokemon1", "pokemon12", "pokemon123", "pikachu1", "pikachu123", "charizard", "pokeverse", "pokeverse1"
+	};
+	toLowerCaseString(text);
+	if(common.count(text))
+		return true;
+
+	// one character over and over
+	return text.find_first_not_of(text[0]) == std::string::npos;
 }
 
 bool isValidPassword(std::string text)

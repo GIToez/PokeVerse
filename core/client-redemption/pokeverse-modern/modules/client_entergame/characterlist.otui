@@ -192,6 +192,18 @@ UIWidget
       anchors.horizontalCenter: parent.horizontalCenter
       margin-left: 12
 
+    PVBlueButton
+      id: accountButton
+      !text: tr('Account')
+      !tooltip: tr('Your email and password')
+      ttf-font-size: 12
+      width: 96
+      height: 26
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-top: -5
+      @onClick: PokeVerseAccount.openAccount()
+
     PVCloseButton
       id: closeButton
       !tooltip: tr('Back to login')

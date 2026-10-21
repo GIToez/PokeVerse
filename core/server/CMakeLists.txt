@@ -43,7 +43,7 @@ target_link_directories(pokeverse-server PRIVATE
   ${LUA_LIBRARY_DIRS} ${GMP_LIBRARY_DIRS} ${SQLITE_LIBRARY_DIRS} ${MARIADB_LIBRARY_DIRS})
 target_link_libraries(pokeverse-server PRIVATE
   Boost::system Boost::filesystem Boost::thread Boost::regex
-  LibXml2::LibXml2 OpenSSL::Crypto Threads::Threads
+  LibXml2::LibXml2 OpenSSL::SSL OpenSSL::Crypto Threads::Threads
   ${LUA_LIBRARIES} ${GMP_LIBRARIES} ${SQLITE_LIBRARIES} ${MARIADB_LIBRARIES})
 if(WIN32)
   target_link_libraries(pokeverse-server PRIVATE ws2_32 wsock32 mswsock)

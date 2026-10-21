@@ -75,7 +75,8 @@ EXTENDED_IDS = {
     PING = 40, -- the client's ping: the server sends the buffer straight back (the protocol's own ping is the keep-alive)
     STORE = 41, -- JSON Store window: the Soul Coin balance, the offers, buying, withdraw and deposit (Store)
     EXP_BOOST = 42, -- JSON experience boosts for the stamina bar: stamina, personal bonus, server event, Lucky Egg (ExpBoost)
-    BANK = 43 -- JSON Bank window: balance, money carried, deposit, withdraw, transfer and history (Bank)
+    POKEDEX_DETAILS = 43, -- JSON Pokedex Details tab, sent just before the Pokedex entry (getDexDetails in 010-pokedex.lua)
+    BANK = 44 -- JSON Bank window: balance, money carried, deposit, withdraw, transfer and history (Bank)
 }
 
 TOURNAMENT_TYPES = {}
