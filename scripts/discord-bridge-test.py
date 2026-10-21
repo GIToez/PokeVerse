@@ -8,6 +8,9 @@ Runs against a live server started with the bridge enabled. Uses real game clien
   "/bridgetest" (scripts/test-server-linux.sh does that in its temporary copy).
   --link-test needs an account with two characters (--linker) and a server started with
   a short discordBridgeLinkCodeLifetime (--code-lifetime) so expiry can be checked.
+  --booster-test needs discordBridgeBoosterRewards = true with the default amounts, an
+  unlinked account (--booster) and database access (--sql) to move times into the past.
+  --booster-disabled only checks that booster requests are refused (feature off).
 """
 import argparse
 import hashlib
@@ -16,7 +19,9 @@ import importlib.util
 import json
 import os
 import re
+import shlex
 import socket
+import subprocess
 import struct
 import sys
 import threading
@@ -166,6 +171,8 @@ class Player:
 DISCORD_A = "1234567890123456789"   # above 2^53: must survive without precision loss
 DISCORD_B = "98765432109876543210"
 DISCORD_C = "11111111111111111"
+DISCORD_D = "22222222222222222222"
+WEEK = 7 * 24 * 3600
 
 
 def logout_event(b, character, timeout=15):
@@ -305,6 +312,100 @@ def link_tests(b, args, boot, listener, speaker, trainer, speaker_name):
     check("repeated wrong codes lock the Discord user", codes == ["invalid_code"] * 5 + ["locked"], str(codes))
 
 
+def booster_tests(b, args):
+    def sql(statement):
+        out = subprocess.run(shlex.split(args.sql) + ["-N", "-e", statement], check=True, capture_output=True, text=True)
+        return out.stdout.strip()
+
+    def week(discord_id, since, n):
+        return b.request("booster.week", {"discordUserId": discord_id, "boostSince": since, "week": n})
+
+    def error(r):
+        return r and not r["ok"] and r["error"]["code"]
+
+    account, password, character = args.booster.split(":", 2)
+    check("welcome lists boosterRewards", "boosterRewards" in b.welcome.get("features", []), str(b.welcome))
+    r = b.request("booster.rules")
+    check("booster.rules returns the configured amounts", r and r["ok"] and r["result"] ==
+          {"weekly": 1, "loyaltyEvery": 4, "loyalty": 1, "yearlyEvery": 52, "yearly": 15}, str(r))
+
+    now = int(time.time())
+    since = now - 60 * WEEK
+    for params, name in (({"discordUserId": "12ab", "boostSince": since, "week": 2}, "a bad Discord id"),
+                         ({"discordUserId": DISCORD_D, "boostSince": 0, "week": 2}, "boostSince 0"),
+                         ({"discordUserId": DISCORD_D, "boostSince": now + 3600, "week": 2}, "a future boostSince"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 0}, "week 0"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 5201}, "week 5201"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 2.5}, "a fractional week"),
+                         ({"discordUserId": DISCORD_D, "boostSince": str(since), "week": 2}, "boostSince as text")):
+        r = b.request("booster.week", params)
+        check("booster.week rejects " + name, error(r) == "invalid_params", str(r))
+    check("booster.week refuses an unlinked user", error(week(DISCORD_D, since, 2)) == "not_linked")
+    r = b.request("booster.week", {"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "total": 1000})
+    check("amounts in the request are ignored (still not_linked)", error(r) == "not_linked", str(r))
+
+    booster = Player(args, account, password, character)
+    booster.collect(1.5)
+    code, text = booster.link_code()
+    r = b.request("link.redeem", {"discordUserId": DISCORD_D, "code": code})
+    check("booster account links", r and r["ok"], str(r))
+    account_id = sql("SELECT id FROM accounts WHERE name = '%s'" % account)
+    sql("UPDATE discord_account_links SET linked_at = %d WHERE account_id = %s" % (now - int(58.5 * WEEK), account_id))
+
+    def coins():
+        return int(sql("SELECT soulcoins FROM accounts WHERE id = %s" % account_id))
+
+    start = coins()
+    check("a week completed before the link is refused", error(week(DISCORD_D, since, 1)) == "before_link")
+    check("a week that is not complete is refused", error(week(DISCORD_D, since, 61)) == "not_due")
+    check("not_due comes before before_link", error(week(DISCORD_D, now - 1000, 1)) == "not_due")
+    r = week(DISCORD_D, since, 2)
+    check("a due week deposits 1 Soul Coin", r and r["ok"] and r["result"] ==
+          {"deposited": True, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "total": 1}, str(r))
+    check("soulcoins rose by the total", coins() == start + 1, "%d -> %d" % (start, coins()))
+    booster.collect(1)
+    check("the online character is thanked in game",
+          booster.received(b"Thank you for boosting the PokeVerse Discord! 1 Soul Coin was added to your account"))
+    r = week(DISCORD_D, since, 2)
+    check("the same week again is not paid twice", r and r["ok"] and r["result"] ==
+          {"deposited": False, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "total": 1}, str(r))
+    check("soulcoins unchanged after the repeat", coins() == start + 1)
+    r = week(DISCORD_D, since, 4)
+    check("week 4 pays 2 (weekly + loyalty)", r and r["ok"] and r["result"]["deposited"] and r["result"]["total"] == 2
+          and r["result"]["loyalty"] == 1, str(r))
+    r = week(DISCORD_D, since, 52)
+    check("week 52 pays 17 (weekly + loyalty + yearly)", r and r["ok"] and r["result"]["deposited"]
+          and (r["result"]["weekly"], r["result"]["loyalty"], r["result"]["yearly"], r["result"]["total"]) == (1, 1, 15, 17),
+          str(r))
+    check("soulcoins rose by 1 + 2 + 17", coins() == start + 20, "%d -> %d" % (start, coins()))
+
+    check("an older streak is refused", error(week(DISCORD_D, now - 100 * WEEK, 50)) == "stale_streak")
+    check("a streak that started before the last payout is refused",
+          error(week(DISCORD_D, since + 10, 59)) == "stale_streak")
+    sql("UPDATE discord_booster_rewards SET created_at = created_at - %d WHERE discord_user_id = '%s'" % (2 * WEEK, DISCORD_D))
+    fresh = now - WEEK - 100
+    r = week(DISCORD_D, fresh, 1)
+    check("a new streak that started after the last payout is paid", r and r["ok"] and r["result"]["deposited"]
+          and r["result"]["total"] == 1, str(r))
+    check("the replaced streak is now stale", error(week(DISCORD_D, since, 56)) == "stale_streak")
+    check("soulcoins total after the new streak", coins() == start + 21, "%d -> %d" % (start, coins()))
+    rows = sql("SELECT COUNT(*), SUM(total) FROM discord_booster_rewards WHERE discord_user_id = '%s'" % DISCORD_D)
+    check("the ledger holds one row per paid week", rows.split() == ["4", "21"], rows)
+
+    r = b.request("link.unlink", {"discordUserId": DISCORD_D})
+    check("booster account unlinks", r and r["ok"] and r["result"] == {"unlinked": True}, str(r))
+    check("after unlinking, weeks are not_linked", error(week(DISCORD_D, fresh, 1)) == "not_linked")
+    booster.close()
+
+
+def booster_disabled_tests(b):
+    check("welcome has no boosterRewards when off", "boosterRewards" not in b.welcome.get("features", []), str(b.welcome))
+    r = b.request("booster.rules")
+    check("booster.rules is disabled when off", r and not r["ok"] and r["error"]["code"] == "disabled", str(r))
+    r = b.request("booster.week", {"discordUserId": DISCORD_D, "boostSince": int(time.time()) - 2 * WEEK, "week": 1})
+    check("booster.week is disabled when off", r and not r["ok"] and r["error"]["code"] == "disabled", str(r))
+
+
 def account_request(args, action, account, password, name):
     spec = importlib.util.spec_from_file_location("account_test", os.path.join(here, "account-test.py"))
     at = importlib.util.module_from_spec(spec)
@@ -327,7 +428,23 @@ def main():
     ap.add_argument("--linker", default="bridgelink:secret:Link Alpha:Link Beta",
                     help="account:password:first character:second character (account linking checks)")
     ap.add_argument("--code-lifetime", type=int, default=0, help="discordBridgeLinkCodeLifetime of the server")
+    ap.add_argument("--booster-test", action="store_true", help="booster reward checks (feature on)")
+    ap.add_argument("--booster", default="bridgebooster:secret:Booster Trainer",
+                    help="account:password:character of an unlinked account (booster reward checks)")
+    ap.add_argument("--booster-disabled", action="store_true", help="only check that booster requests are refused")
+    ap.add_argument("--sql", default="", help="mysql command line for the database, for --booster-test")
     args = ap.parse_args()
+
+    if args.booster_disabled:
+        b = Bridge(args.host, args.bridge_port, args.secret)
+        check("welcome after valid auth", b.welcome and b.welcome.get("type") == "welcome", str(b.welcome))
+        booster_disabled_tests(b)
+        print()
+        if failures:
+            print("FAIL: %d check(s) failed: %s" % (len(failures), ", ".join(failures)))
+            return 1
+        print("PASS: booster rewards are off.")
+        return 0
 
     # Authentication
     bad = Bridge(args.host, args.bridge_port, None)
@@ -464,6 +581,8 @@ def main():
 
     if args.link_test:
         link_tests(b, args, boot, listener, speaker, trainer, speaker_name)
+    if args.booster_test:
+        booster_tests(b, args)
 
     # Reconnect: a second authenticated client replaces the first.
     listener.close()
