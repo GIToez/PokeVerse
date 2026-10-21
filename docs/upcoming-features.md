@@ -95,6 +95,13 @@ so. Items marked **To decide** need an answer before work starts.
       quantities and cart are what the
       [Store](#19-accounts-soul-coins-and-the-store) needs too, so the Mart comes before
       the Store and the Store reuses them.
+    - **Bank window (built, added October 21).** Greeting any of the 19 bank NPCs opens it
+      (`game_bank`, `lib/ps/systems/086-bank.lua`): the balance and the money carried, Deposit
+      and Withdraw with +1,000/+10,000/+100,000 and All, Transfer with a name check that says
+      when the name is one of your own characters (allowed, with no cap) and a confirmation,
+      and History with the last 20 deposits, withdrawals and transfers. Every action needs the
+      trainer within 4 tiles of the banker; walking away closes the window. The keywords still
+      work for older clients.
 
 Items 1 to 5 and 7 are done.
 

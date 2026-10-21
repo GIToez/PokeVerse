@@ -120,7 +120,10 @@ function creatureSayCallback(cid, type, msg)
   local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
   msg = string.lower(msg)
 
-  if (msgcontains(msg, 'history') or msgcontains(msg, 'historico')) then
+  if (msgcontains(msg, 'bank') and Bank.open(cid, getNpcId())) then
+    talkState[talkUser] = STATES.NONE
+
+  elseif (msgcontains(msg, 'history') or msgcontains(msg, 'historico')) then
     doPlayerShowBankHistory(cid)
 
   elseif (msgcontains(msg, 'balance') or msgcontains(msg, 'saldo')) then
@@ -281,6 +284,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
         selfSay("You do not have enough access to trade here!", cid)
         return false
       end
+      Bank.open(cid, getNpcId())
     end
     return true
   end)
