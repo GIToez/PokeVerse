@@ -331,6 +331,19 @@ WikiData = {
             { 'p', "Say /d1 or /d2 to recall a saved form." },
             { 'commands', { "/d1", "/d2" } },
         } },
+        { key = 'strength', title = 'Strength', portrait = 68, body = {
+            { 'p', "Premium. Order on a heavy boulder: your Pokemon walks up to it and pushes it one tile, away from where it stands. The tile behind the boulder has to be free." },
+        } },
+        { key = 'waterfall', title = 'Waterfall', portrait = 130, body = {
+            { 'p', "Premium. Surf up next to a waterfall and order on it: your Pokemon carries you up (or down) the falls to the water at the other end." },
+            { 'see', { 'surf' } },
+        } },
+        { key = 'rockclimb', title = 'Rock Climb', portrait = 9, body = {
+            { 'p', "Premium. Order on a rock wall with handholds: your Pokemon walks to it and climbs, taking you up or down to the floor at the other end." },
+        } },
+        { key = 'blink', title = 'Blink', portrait = 63, body = {
+            { 'p', "Order on a free tile your Pokemon can see: it teleports there at once. It can't blink while asleep. Wait 10 seconds between blinks (7 with the mastery bonus)." },
+        } },
     } },
 
     { key = 'world', name = 'Getting around', item = 3484, topics = {

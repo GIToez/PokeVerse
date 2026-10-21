@@ -436,11 +436,65 @@ local function getEggMovesText(pokemonName, pid)
   end
 end
 
+-- Every evolution step in the species' family (Gastly to Haunter, Haunter to Gengar), so the entry can
+-- show where the species sits in its chain
+local function getDexEvolutionSteps(pokemonName, pid)
+  local steps = JSON.array()
+  for _, from in ipairs(getPokemonFamilies(pokemonName)) do
+    if (isPokemonName(from)) then
+      for _, evolution in ipairs(getPokemonEvolutions(from) or {}) do
+        local items = JSON.array()
+        for _, itemId in ipairs(evolution.requiredItems or {}) do
+          items[#items + 1] = getItemNameById(itemId)
+        end
+        steps[#steps + 1] = {from = from, to = evolution.name, level = evolution.requiredLevel,
+          time = evolution.requiredTime and __L(pid, WORLD_LIGHT_STATE_NAMES[evolution.requiredTime]) or nil,
+          items = items}
+      end
+    end
+  end
+  return steps
+end
+
+local function namesOf(list, nameOf)
+  local names = JSON.array()
+  for _, value in ipairs(list or {}) do
+    names[#names + 1] = nameOf and nameOf(value) or value
+  end
+  return names
+end
+
+-- The Details tab as data for the Redemption client, which lays it out in sections (game_pokedex
+-- entry.lua). Same knowledge rules as the text: what the trainer doesn't know yet is left out.
+local function getDexDetails(pid, pokemonName, pokemon, info)
+  local details = {
+    number = getPokemonNumberByName(pokemonName),
+    name = pokemonName,
+    types = namesOf(getPokemonTypes(pokemon, pokemonName)),
+    known = info.level,
+    evolutions = getDexEvolutionSteps(pokemonName, pid)
+  }
+  if (info.level >= 1) then
+    details.abilities = namesOf(getPokemonAbilities(pokemonName))
+    details.eggGroups = namesOf(getPokemonEggGroups(pokemonName), function(group) return POKEMON_EGG_GROUP_NAMES[group] end)
+    details.specialAbilities = namesOf(getPokemonSpecialAbilities(pokemonName), getPokemonSpecialAbilityName)
+    details.eggMoves = namesOf(getPokemonEggMoves(pokemonName), function(move)
+      return {name = move, type = getPokemonSkillDamageType(move)}
+    end)
+  end
+  if (info.level >= 2) then
+    details.evYield = PokemonStats.getEvYieldText(pokemonName)
+  end
+  return details
+end
+
+local function doSendDexDetails(pid, details)
+  doSendPlayerExtendedOpcode(pid, EXTENDED_IDS.POKEDEX_DETAILS, JSON.encode(details))
+end
+
 local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
   local sheet
-  local details = {}
-  local moves = {}
-  local effectiveness = {}
+  local entry = getDexDetails(pid, pokemonName, info.pokemon, info)
 
   local lines = {}
   if (detailed) then
@@ -461,6 +515,12 @@ local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
       lines[#lines + 1] = string.format(__L(pid, "\nTransform Memory:\n%s"), transformMemory)
     end
     sheet = PokemonStats.getStatSheet(ball.uid, pokemonName, pokemonLevel)
+    entry.own = {level = pokemonLevel, experience = pokemonExperience, toNextLevel = nextLevelExp - pokemonExperience,
+      health = pokemonHealth, maxHealth = pokemonMaxHealth, energy = pokemonEnergy, maxEnergy = pokemonMaxEnergy}
+    entry.specialAbility = info.specialAbilities
+    entry.vitamins = Vitamin.getBallDescription(ball.uid)
+    entry.held = PokemonHeldItem.getBallDescription(ball.uid)
+    entry.transformMemory = transformMemory
 
   else
     local min = getMonsterInfo(pokemonName).minLevel
@@ -468,9 +528,19 @@ local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
 
     lines[#lines + 1] = string.format(__L(pid, "Pokemon: %s\nType: %s\nCommon Wild Level: %s\nCaughts: %s\n%s currently.\nDescription:\n%s\n\nEvolution:\n%s\nAbilities:\n%s\n\nEgg Groups:\n%s\n\nSpecial Abilities:\n%s\n\nEgg Moves - %s"), pokemonName, info.types, (min ~= max and (min .. " - " .. max) or (min)), getPlayerPokemonCaughts(pid, pokemonName), getPlayerWastedBallsMessage(pid, getPokemonNumberByName(pokemonName)), __L(pid, getPokemonDescription(pokemonName)), info.evolution, info.abilities, info.eggGroups, info.specialAbilities, info.eggMoves)
 
+    entry.description = __L(pid, getPokemonDescription(pokemonName))
+
     if (pokemonBall) then
       lines[#lines + 1] = string.format(__L(pid, "\n\nVitamins:\n%s\n\nHeld:\n%s"), Vitamin.getBallDescription(pokemonBall.uid), PokemonHeldItem.getBallDescription(pokemonBall.uid))
       sheet = PokemonStats.getStatSheet(pokemonBall.uid, getBallPokemonName(pokemonBall.uid), getBallPokemonLevel(pokemonBall.uid))
+      entry.own = {level = getBallPokemonLevel(pokemonBall.uid)}
+      entry.vitamins = Vitamin.getBallDescription(pokemonBall.uid)
+      entry.held = PokemonHeldItem.getBallDescription(pokemonBall.uid)
+    else
+      entry.wild = {minLevel = min, maxLevel = max, caught = getPlayerPokemonCaughts(pid, pokemonName),
+        wasted = getPlayerWastedBallsMessage(pid, getPokemonNumberByName(pokemonName))}
+      local knowledge = Pokepedia.getKnowledge(pid, pokemonName)
+      entry.knowledge = knowledge and {level = knowledge.level, points = knowledge.points, next = knowledge.next}
     end
   end
 
@@ -481,6 +551,8 @@ local function doSendDexInfo(pid, pokemonName, detailed, info, pokemonBall)
     lines[#lines + 1] = "\n\n" .. PokemonStats.getStatSheetText(sheet)
   end
   lines[#lines + 1] = info.knowledge
+  entry.sheet = sheet
+  doSendDexDetails(pid, entry)
 
   doPlayerSendPokedexInfo(pid, getPokemonNumberByName(pokemonName), table.concat(lines), info.skills,
     info.typeEffectiveness, getPokemonFamiliesString(pokemonName))
@@ -546,7 +618,7 @@ function doPokedexItemView(pid, pokemonName, detailed--[[ = false]], itemId, pok
 
   -- a wild Pokemon's entry shows what the trainer knows about the species (Pokepedia knowledge
   -- levels); their own Pokemon show everything. Types and matchups are never hidden.
-  local info = {}
+  local info = {pokemon = pokemon}
   info.level, info.knowledge = 3, ""
   if (not detailed and not pokemonBall) then
     info.level = math.max(0, Pokepedia.getDexLevel(pid, pokemonName))

@@ -230,6 +230,7 @@ ExtendedIds.Report = 39
 ExtendedIds.Ping = 40
 ExtendedIds.Store = 41
 ExtendedIds.ExpBoost = 42
+ExtendedIds.PokedexDetails = 43
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v
