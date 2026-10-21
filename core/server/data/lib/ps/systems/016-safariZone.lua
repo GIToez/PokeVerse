@@ -262,7 +262,9 @@ function onCreatureUseSafariBall(cid, item, fromPosition, itemEx, toPosition)
     doPlayerIncreaseWastedBalls(cid, getPokemonNumberByName(pokemonName), item.itemid)
     RangerClub.onPlayerKill(cid, pokemonName)
 
-	if (getCatchChance(cid, pokemonName, item.itemid, pokemonLevel) <= getBallCatchRate("safari")) then
+	local rollMax, safariRate = getCatchRollMax(cid, pokemonName, item.itemid, pokemonLevel), getBallCatchRate("safari")
+	if (rollMax and (getRandom(1, rollMax) <= safariRate
+            or DiscordBoostPerks.catchBonusRoll(getCatchRollChance(safariRate, rollMax)))) then
 		doSendMagicEffect(toPosition, balls["safari"].effects.catch)
 		addEvent(catchPokemonWithSafariBall, 5500, cid, toPosition, pokemonName, balls["safari"].charged,
             pokemonSex, pokemonLevel, pokemonSpecialAbility, getPlayerWastedBallsMessage(cid, getPokemonNumberByName(pokemonName)) .. __L(cid, " to catch it."))

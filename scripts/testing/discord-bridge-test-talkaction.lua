@@ -6,6 +6,8 @@
 --   /bridgetest catch <pokemon>  real kill + ultra ball throw; catch boost so it succeeds
 --   /bridgetest miss <pokemon>   real kill + ultra ball throw without boost (fresh trainers always miss)
 --   /bridgetest spawn <monster>  creates a wild monster through doCreateMonster
+--   /bridgetest perks            the Discord server boost perks as the game code applies them (JSON)
+--   /bridgetest killexp <pokemon> real kill; replies with the trainer experience it gave
 
 local function isFree(cid, pos)
     -- getTileInfo logs an error for positions without a tile.
@@ -54,7 +56,39 @@ local function throwBall(cid, pos, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "bridgetest: ball thrown")
 end
 
+local function reply(cid, text)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
+end
+
+local function catchRate(chance, trials)
+    local caught = 0
+    for _ = 1, trials do
+        if (math.random() < chance or DiscordBoostPerks.catchBonusRoll(chance)) then
+            caught = caught + 1
+        end
+    end
+    return caught / trials
+end
+
+local function perks(cid)
+    local p = getDiscordBoostPerks()
+    reply(cid, "bridgetest perks " .. JSON.encode({level = p.level, exp = p.exp, catch = p.catch, shiny = p.shiny,
+        catch40 = DiscordBoostPerks.catchChance(0.4), catch99 = DiscordBoostPerks.catchChance(0.99),
+        catch100 = DiscordBoostPerks.catchChance(1), catchRolled40 = catchRate(0.4, 200000),
+        shiny4096 = ShinyEvent.chance(4096), describe = DiscordBoostPerks.describe() or ""}))
+end
+
+local function reportExp(cid, before)
+    if (isPlayer(cid)) then
+        reply(cid, "bridgetest killexp " .. (getPlayerExperience(cid) - before))
+    end
+end
+
 function onSay(cid, words, param, channel)
+    if (param == "perks") then
+        perks(cid)
+        return true
+    end
     local action, name = param:match("^(%a+)%s+(.+)$")
     if (not action) then
         doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "bridgetest: usage catch|miss|spawn <name>")
@@ -67,6 +101,24 @@ function onSay(cid, words, param, channel)
         return true
     end
     doTeleportThing(cid, playerPos, false)
+
+    if (action == "killexp") then
+        local m = doCreateMonster(name, monsterPos, false)
+        if (not isMonster(m)) then
+            reply(cid, "bridgetest: can't create " .. name)
+            return true
+        end
+        -- Same experience for every kill: a fixed monster level, and a trainer in the flat level
+        -- 31-50 stage that one kill can't level up.
+        setMonsterLevel(m, 10)
+        if (getPlayerLevel(cid) < 40) then
+            doPlayerAddExperience(cid, getExperienceForLevel(40) - getPlayerExperience(cid))
+        end
+        local before = getPlayerExperience(cid)
+        doTargetCombatHealth(cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
+        addEvent(reportExp, 1000, cid, before)
+        return true
+    end
 
     if (action == "spawn") then
         local m = doCreateMonster(name, monsterPos, false)

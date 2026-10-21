@@ -65,6 +65,8 @@ GLOBAL_STORAGES = {
     DECORATIONS_PREVIEW = 7153, -- "m;<set>:<until>": a decoration set staff preview with /deco preview
     DECORATIONS_NO_AUTO = 7154, -- "m;<zone ids>": towns staff decorate by hand only (/deco auto off)
     ANNIVERSARY_PREVIEW = 7155, -- "m;<until>": the Union Room entrance to the cake town shown with /anniversary show (AnniversaryEvent)
+    DISCORD_BOOST_LEVEL = 7156, -- the Discord server boost level 0-3 the bridge last sent (DiscordBoostPerks)
+    DISCORD_BOOST_COUNT = 7157, -- the Discord server's boost count sent with it
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

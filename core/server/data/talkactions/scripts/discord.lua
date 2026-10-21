@@ -1,4 +1,4 @@
--- !discord link | status | unlink | help
+-- !discord link | status | unlink | perks | help
 -- Links the account of the speaking character to Discord (see 061-discordAccounts.lua).
 -- Everything is sent only to the speaker; the command text is never shown to others.
 
@@ -18,7 +18,8 @@ local function showHelp(cid, words)
     say(cid, string.concat("Discord account linking:\n",
         words, " link - get a one-time code, then use /link in the PokeVerse Discord server\n",
         words, " status - show whether this account is linked\n",
-        words, " unlink - remove the link (asks for confirmation)"))
+        words, " unlink - remove the link (asks for confirmation)\n",
+        words, " perks - show the server boost perks everyone gets right now"))
 end
 
 local function requestCode(cid, accountId)
@@ -77,7 +78,20 @@ local function unlink(cid, accountId, confirm)
     say(cid, "This account is no longer linked to Discord.")
 end
 
+local function showPerks(cid)
+    if (not DiscordBoostPerks.isEnabled()) then
+        say(cid, "Server boost perks are not available on this server.")
+        return
+    end
+    say(cid, DiscordBoostPerks.describe() or
+        "No server boost perks right now. Boosting the PokeVerse Discord to Level 1 unlocks perks for everyone.")
+end
+
 function onSay(cid, words, param, channel)
+    if (string.lower(param or ""):match("^%s*perks%s*$")) then
+        showPerks(cid)
+        return true
+    end
     if (not DiscordAccounts.isEnabled()) then
         say(cid, "Discord linking is not available on this server.")
         return true

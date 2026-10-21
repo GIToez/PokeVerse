@@ -307,7 +307,8 @@ bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& p
 {
 	Monster* monster = NULL;
 //    if (mType->shiny != "" && random_range(0, g_config.getNumber(ConfigManager::SHINY_APPEAR_CHANCE)) == 0)
-    int32_t shinyChance = std::max<int32_t>(1, (int32_t)(g_config.getNumber(ConfigManager::SHINY_APPEAR_CHANCE) / g_game.getShinyEventMultiplier()));
+    int32_t shinyChance = std::max<int32_t>(1, (int32_t)(g_config.getNumber(ConfigManager::SHINY_APPEAR_CHANCE)
+        / (g_game.getShinyEventMultiplier() * g_game.getDiscordBoostShinyMultiplier())));
     if (random_range(0, shinyChance) == 0) {
         monster = Monster::createMonster("Shiny " + mType->name);
     }

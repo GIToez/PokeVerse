@@ -636,6 +636,14 @@ class Game
 		void setShinyEventMultiplier(double value) {shinyEventMultiplier = value;}
 		double getLootEventMultiplier() const {return lootEventMultiplier;}
 		void setLootEventMultiplier(double value) {lootEventMultiplier = value;}
+		// PS: Discord server boost perks (systems/089-discordBoostPerks.lua). The level (0-3) comes
+		// from the bridge; each multiplier is 1.0 when discordBridgeBoostPerks is off or the level
+		// is below the perk's. Applied once, on top of every other bonus.
+		int32_t getDiscordBoostLevel() const {return discordBoostLevel;}
+		void setDiscordBoostLevel(int32_t value) {discordBoostLevel = std::max(0, std::min(3, value));}
+		double getDiscordBoostExpMultiplier() const;
+		double getDiscordBoostCatchMultiplier() const;
+		double getDiscordBoostShinyMultiplier() const;
 
 		inline StageList::const_iterator getFirstStage() const {return stages.begin();}
 		inline StageList::const_iterator getLastStage() const {return stages.end();}
@@ -738,6 +746,7 @@ class Game
 		double experienceEventMultiplier;
 		double shinyEventMultiplier;
 		double lootEventMultiplier;
+		int32_t discordBoostLevel;
 
 		Highscore highscoreStorage[9];
 		time_t lastHighscoreCheck;

@@ -386,13 +386,22 @@
 	discordBridgeAccountLinking = true
 	-- Soul Coins for server boosters with a linked account (needs account linking). Every
 	-- completed 7 days of continuous boosting pays Weekly, every LoyaltyEvery-th week adds
-	-- Loyalty and every YearlyEvery-th week adds Yearly (0 turns a bonus off).
+	-- Loyalty and every YearlyEvery-th week adds Yearly (0 turns a bonus off). Loyalty weeks also
+	-- add the community bonus: +1 per CommunityEvery server boosts, at most CommunityMax.
 	discordBridgeBoosterRewards = true
 	discordBridgeBoosterWeekly = 1
 	discordBridgeBoosterLoyaltyEvery = 4
 	discordBridgeBoosterLoyalty = 1
 	discordBridgeBoosterYearlyEvery = 52
 	discordBridgeBoosterYearly = 15
+	discordBridgeBoosterCommunityEvery = 5
+	discordBridgeBoosterCommunityMax = 5
+	-- Server boost perks for everyone online, by the Discord server's boost level (the bot sends
+	-- it; the last level is kept across restarts). Each level keeps the perks below it.
+	discordBridgeBoostPerks = false
+	discordBridgeBoostPerkExpPercent = 5 -- level 1 and up: kill experience
+	discordBridgeBoostPerkCatchPercent = 5 -- level 2 and up: catch chance (a multiplier, 40% becomes 42%)
+	discordBridgeBoostPerkShinyPercent = 10 -- level 3: shiny chance (1 in 4,096 becomes about 1 in 3,724)
 
 	-- Daily game server restart with in-game warnings (30, 15, 10, 5 and 1 minutes, then 30 and
 	-- 10 seconds). Players, Pokemon, items and the world are saved before the server stops;

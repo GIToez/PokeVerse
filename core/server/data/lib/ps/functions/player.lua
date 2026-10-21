@@ -474,7 +474,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
         local maxExtraPoints = isShinyName(pokemonName) and (POKEMON_EXTRA_POINT_MAX - 10) or POKEMON_EXTRA_POINT_MAX
 
         if (currentLevel < POKEMON_LEVEL_MAX or currentExtraPoints < maxExtraPoints) then
-            if (multiplier) then -- Kill experience: stage (config/experience.lua), Lucky Egg, Trainer Spirit, personal bonus, Ace Trainer, server event
+            if (multiplier) then -- Kill experience: stage (config/experience.lua), Lucky Egg, Trainer Spirit, personal bonus, Ace Trainer, server event, Discord boost perk
                 expAmount = expAmount * getPokemonExpStageRate(currentLevel) * POKEMON_EXP_RATE
                 expAmount = expAmount * PokemonHeldItem.getExpRate(ball.uid)
                 expAmount = expAmount * (getPlayerStaminaExperienceRate(player) or 1)
@@ -483,7 +483,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                 if (aceBonus and not Vocations.inBattle(player)) then
                     expAmount = expAmount + math.floor(expAmount * aceBonus)
                 end
-                expAmount = math.floor(expAmount * getExperienceEventMultiplier())
+                expAmount = math.floor(expAmount * getExperienceEventMultiplier() * DiscordBoostPerks.expMultiplier())
             end
 
             local oldExperience = getBallPokemonExp(ball.uid)

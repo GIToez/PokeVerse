@@ -37,6 +37,12 @@ All settings (defaults in `config.lua`):
 | `discordBridgeBoosterLoyalty` | `1` | The loyalty bonus. |
 | `discordBridgeBoosterYearlyEvery` | `52` | Every this many weeks the yearly bonus is added (`0` = never). |
 | `discordBridgeBoosterYearly` | `15` | The yearly bonus. |
+| `discordBridgeBoosterCommunityEvery` | `5` | On loyalty weeks, +1 Soul Coin per this many server boosts (`0` = no community bonus). |
+| `discordBridgeBoosterCommunityMax` | `5` | The most the community bonus can pay in one week. |
+| `discordBridgeBoostPerks` | `false` | Server-wide perks for everyone online by the Discord server's boost level (`boost.level`). |
+| `discordBridgeBoostPerkExpPercent` | `5` | Level 1 and up: kill experience +this % (`0` = no perk). |
+| `discordBridgeBoostPerkCatchPercent` | `5` | Level 2 and up: catch chance x(1 + this/100) (`0` = no perk). |
+| `discordBridgeBoostPerkShinyPercent` | `10` | Level 3: shiny chance x(1 + this/100) (`0` = no perk). |
 
 On startup the server prints either `>> Discord bridge listening on 127.0.0.1:7199 ...` or
 the reason it is disabled.
@@ -62,6 +68,8 @@ workflow gives the same secret to the production bot. See [`live-server.md`](liv
   code that writes the `discord_account_links` table.
 - `data/lib/ps/systems/087-discordBoosters.lua`: booster reward requests. The ledger row
   and the Soul Coins are written by `DiscordBridge::depositBoosterWeek` in C++.
+- `data/lib/ps/systems/089-discordBoostPerks.lua`: the server boost level (`boost.level`) and
+  its perks; the multipliers are `Game::getDiscordBoost*Multiplier` in C++.
 - `data/talkactions/scripts/discord.lua`: the in-game `!discord` command.
 - `data/lib/013-json.lua`: JSON encoder/decoder for Lua 5.1.
 
@@ -79,7 +87,7 @@ display become `?`.
 server -> {"type":"hello","protocol":1,"nonce":"<64 hex chars>"}
 client -> {"type":"auth","hmac":"<hex HMAC-SHA256(secret, nonce)>"}
 server -> {"type":"welcome","protocol":1,"bootId":"<id>","serverName":"PokeVerse","queued":N,
-           "features":["playerSessions","accountLinking","boosterRewards"]}
+           "features":["playerSessions","accountLinking","boosterRewards","boostPerks"]}
        or {"type":"error","code":"auth_failed"} and the connection is closed
 ```
 
@@ -89,7 +97,7 @@ The client must authenticate within 10 seconds.
 
 The protocol version stays `1`: everything added later is optional. `features` lists the
 optional parts the server has switched on (`playerSessions`, `accountLinking`,
-`boosterRewards`; the last only when account linking is on too). Servers
+`boosterRewards`, only when account linking is on too, and `boostPerks`). Servers
 built before these features send no `features` field; clients must treat a missing field
 as an empty list and keep using the rest of the protocol. Clients must ignore event kinds
 and fields they do not know. Unknown request methods are answered with `unknown_method`.
@@ -182,13 +190,14 @@ server -> {"type":"response","requestId":"...","ok":true,"result":{...}}
        or {"type":"response","requestId":"...","ok":false,"error":{"code":"...","message":"..."}}
 ```
 
-Error codes: `invalid_params`, `unknown_method`, `internal`, plus the linking and booster
-codes below.
+Error codes: `invalid_params`, `unknown_method`, `internal`, plus the linking, booster and
+boost perk codes below.
 Requests that are not valid JSON objects are logged and ignored.
 
 All handlers are read-only except `chat.send`, which only displays a message, the
 `link.*` requests, which only change `discord_account_links`, `report.setStatus`, which only
-changes that report, and `booster.week`, which only adds a ledger row and the Soul Coins it pays.
+changes that report, `booster.week`, which only adds a ledger row and the Soul Coins it pays, and
+`boost.level`, which only stores the server boost level.
 
 | Method | Params | Result |
 | --- | --- | --- |
@@ -205,8 +214,9 @@ changes that report, and `booster.week`, which only adds a ledger row and the So
 | `link.setMain` | `discordUserId`, `character` | link summary |
 | `link.unlink` | `discordUserId` | `unlinked` (`false` when there was no link) |
 | `link.list` | `offset`, `limit` (max 200) | `links[]` (link summaries), `nextOffset` (absent on the last page) |
-| `booster.rules` | - | `weekly`, `loyaltyEvery`, `loyalty`, `yearlyEvery`, `yearly` (the config values) |
-| `booster.week` | `discordUserId`, `boostSince` (unix seconds), `week` (1-5200) | `deposited`, `week`, `weekly`, `loyalty`, `yearly`, `total` ([Booster rewards](#booster-rewards)) |
+| `booster.rules` | - | `weekly`, `loyaltyEvery`, `loyalty`, `yearlyEvery`, `yearly`, `communityEvery`, `communityMax` (the config values), `perks[] {level, text}` (the [server boost perks](#server-boost-perks); empty when they are off) |
+| `booster.week` | `discordUserId`, `boostSince` (unix seconds), `week` (1-5200), `serverBoosts` (0-1000) | `deposited`, `week`, `weekly`, `loyalty`, `yearly`, `community`, `total` ([Booster rewards](#booster-rewards)) |
+| `boost.level` | `level` (0-3), `boosts` (0-1000) | `level`, `perks[]` (the texts of the perks active at that level) ([Server boost perks](#server-boost-perks)) |
 | `report.setStatus` | `id`, `status`, `note` (optional), `by` | `id`, `status`, `changed`. The game records `<by> (Discord)` and tells the reporter (and the reporters of its duplicates). Unknown ids and statuses fail with `invalid_params`. |
 | `report.get` | `id` | `{found:false}` or `found`, `report` |
 | `report.screenshot` | `id`, `offset`, `length` (max 12000) | `{found:false}` or `found`, `done` (the upload finished), `total`, `offset`, `data` (that slice of the base64 PNG). Slices stay under the 16 KB line limit. |
@@ -312,7 +322,8 @@ Trainer lookup details:
 Server boosters earn Soul Coins on their linked game account (`discordBridgeBoosterRewards`,
 on in `config.lua`; it also needs account linking, and the server's built-in default is off). The bot watches who boosts
 and, for each completed week of a boost, sends `booster.week` with the Discord user, the
-streak start (`boostSince`, Discord's "boosting since" time) and the week number. Removing
+streak start (`boostSince`, Discord's "boosting since" time), the week number and the
+server's current boost count (`serverBoosts`). Removing
 or moving the boost ends a streak; the next boost has a new `boostSince`.
 
 The game owns the amounts and the ledger. Requests carry no amounts (any extra fields are
@@ -320,18 +331,23 @@ ignored); week `n` pays:
 
 - `weekly` = `discordBridgeBoosterWeekly`
 - `loyalty` = `discordBridgeBoosterLoyalty` when `n` is a multiple of `discordBridgeBoosterLoyaltyEvery`
+- `community` = `min(discordBridgeBoosterCommunityMax, floor(serverBoosts / discordBridgeBoosterCommunityEvery))`
+  on loyalty weeks (the same weeks as `loyalty`), 0 on other weeks or when either setting is 0
 - `yearly` = `discordBridgeBoosterYearly` when `n` is a multiple of `discordBridgeBoosterYearlyEvery`
 - `total` = the sum
 
-With the defaults: 1 a week, 2 every 4th week, 17 in week 52 (1 + 1 + 15, as 52 is also a
-4th week).
+With the defaults: 1 a week, 2 every 4th week plus 1 per 5 server boosts (at most 5), and in
+week 52 1 + 1 + 15 + the community bonus (52 is also a 4th week). With 14 server boosts week 4
+pays 1 + 1 + 2 = 4; with 100 the community bonus stops at 5. The boost count only sets the
+community bonus, which the config caps; a request without `serverBoosts` (a bot from before
+the bonus) counts as 0.
 
 `booster.week` checks, in this order:
 
 | Code | When |
 | --- | --- |
 | `disabled` | booster rewards (or account linking) are off; `booster.rules` answers the same |
-| `invalid_params` | `discordUserId` is not a snowflake, `boostSince` is not an integer > 0 or is in the future, `week` is not an integer from 1 to 5200 |
+| `invalid_params` | `discordUserId` is not a snowflake, `boostSince` is not an integer > 0 or is in the future, `week` is not an integer from 1 to 5200, `serverBoosts` is not an integer from 0 to 1000 |
 | `not_linked` | the Discord user has no `discord_account_links` row |
 | `not_due` | `boostSince + week * 604800` is more than 300 seconds (clock skew) in the future |
 | (already paid) | a ledger row for this user, `boostSince` and `week` exists: the stored amounts come back with `deposited:false`, nothing is paid |
@@ -358,11 +374,47 @@ and Soul Coins already paid stay on the accounts):
 | `account_id` | the account that was paid (`ON DELETE CASCADE`) |
 | `boost_since` | streak start, unix seconds |
 | `week` | week of the streak |
-| `weekly`, `loyalty`, `yearly`, `total` | the amounts paid |
+| `weekly`, `loyalty`, `yearly`, `community`, `total` | the amounts paid |
+| `server_boosts` | the boost count the bot reported for that week |
 | `created_at` | payout time, unix seconds |
 
 `UNIQUE (discord_user_id, boost_since, week)` makes payouts idempotent: retries, a lost bot
-state file or two bots racing never pay a week twice.
+state file or two bots racing never pay a week twice. Ledgers created before the community
+bonus get `community` and `server_boosts` from an `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`
+in the same script (undo: `ALTER TABLE discord_booster_rewards DROP COLUMN community, DROP
+COLUMN server_boosts`).
+
+## Server boost perks
+
+While the PokeVerse Discord has server boost level 1 or more, everyone online gets perks
+(`discordBridgeBoostPerks`, off by default). Each level keeps the perks below it:
+
+| Level | Perk (defaults) | Applied |
+| --- | --- | --- |
+| 1 | +5% experience | Kill experience of trainers (`Player::rateExperience`) and Pokemon (`doPlayerPokemonAddExperience`), the same gains the experience event multiplies. Quest, catch, Pokedex and item experience and Rare Candies are fixed amounts and stay as they are. |
+| 2 | +5% catch rate | The final catch chance of a throw, the Catcher perk included, times 1.05 (40% becomes 42%, never above a sure catch): `rollCatch` in `ball/empty.lua` and the Safari Zone. Guaranteed catches (Master Ball) skip the roll and are unchanged. |
+| 3 | +10% shiny spawn rate | The shiny chance times 1.1 (1 in 4,096 becomes about 1 in 3,724): map spawns (`Spawn::spawnMonster`) and every roll through `ShinyEvent.chance` (fishing, headbutt, script spawns, eggs, incubators, abilities). |
+
+Each multiplier is applied once, after every other bonus (stages, stamina, Premium, personal
+boosts, Lucky Egg, Ace Trainer, the experience and shiny events and the event calendar), so
+it never compounds with itself. The experience tooltip (`085-expBoost.lua`) includes it as
+`discordBoost`.
+
+The bot sends `boost.level` when it connects and whenever the level changes. The level is
+the only input; the percentages come from the config, and a perk set to `0` is left out.
+
+| Code | When |
+| --- | --- |
+| `disabled` | the perks are off |
+| `invalid_params` | `level` is not an integer from 0 to 3 or `boosts` is not an integer from 0 to 1000 |
+
+The level is kept in global storage (key 7156, the boost count in 7157), written to the
+database at once, so the perks survive a restart and keep working while the bot is
+disconnected. Only `boost.level` changes it; there is no command for it. Changes are logged
+(`> Discord boost perks: server boost level 1 -> 2 (7 boosts).`) and broadcast in game ("The
+PokeVerse Discord reached Server Boost Level 2! Everyone now gets +5% experience and +5% catch
+rate." or "...dropped to Server Boost Level 1. ..."). Players see the active perks at login
+and with `!discord perks`.
 
 ## Testing
 
@@ -376,7 +428,13 @@ fallback after a deletion, and unlinking from both sides. With `--booster-test` 
 booster rewards: the rules, parameter checks, `not_linked`, `not_due`, `before_link`,
 deposits (1, then 2 in week 4 and 17 in week 52) with the `soulcoins` balance and the
 in-game message, repeats that pay nothing, `stale_streak` for old and replayed streaks, and
-a new streak after the last payout. After a restart with the feature off,
-`--booster-disabled` checks the `disabled` answers. The `/bridgetest`
+a new streak after the last payout, and the community bonus (week 4 with 14 server boosts
+pays 4, 100 boosts cap it at 5, week 52 pays 19). With `--boost-test` it checks the boost
+perks: `boost.level` parameter checks, each level's perks, the in-game broadcasts, the
+multipliers through the game code (`/bridgetest perks`: experience, catch 40% -> 42% and a
+200,000-throw roll, sure catches, shiny 1 in 4096 -> 3723), a real kill giving 5% more
+trainer experience, `!discord perks`, and the level after a bridge reconnect. After a
+restart with both features off, `--booster-disabled` checks the `disabled` answers, and the
+script checks the stored level came back. The `/bridgetest`
 talkaction it needs (`scripts/testing/`) is copied only into the temporary test server and
 is never part of the game data. `scripts/test-lua-json.lua` covers the JSON library.

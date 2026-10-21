@@ -6,13 +6,16 @@
 -- (config) and the ledger `discord_booster_rewards` (schemas/pokeverse-extensions.sql), so a
 -- retry, a lost bot state file or a replayed old streak never pays twice. The ledger row and
 -- the Soul Coins are written together in C++ (doDiscordBoosterDeposit, src/discordbridge.cpp)
--- inside one transaction; never read-modify-write `soulcoins` here.
+-- inside one transaction; never read-modify-write `soulcoins` here. On loyalty weeks the
+-- community bonus adds +1 per discordBridgeBoosterCommunityEvery server boosts the bot reports,
+-- capped at discordBridgeBoosterCommunityMax.
 
 DiscordBoosters = {}
 
 local WEEK = 7 * 24 * 60 * 60
 local CLOCK_SKEW = 300
 local MAX_WEEK = 5200
+local MAX_SERVER_BOOSTS = 1000
 
 local fail = DiscordBridge.fail
 local queryRows = DiscordBridge.queryRows
@@ -39,11 +42,13 @@ local function validDiscordUserId(id)
     return type(id) == "string" and id:match("^%d+$") ~= nil and #id >= 17 and #id <= 20
 end
 
-local REWARD_FIELDS = {week = "number", weekly = "number", loyalty = "number", yearly = "number", total = "number"}
+local REWARD_FIELDS = {week = "number", weekly = "number", loyalty = "number", yearly = "number", community = "number",
+    total = "number"}
 
 local function storedWeek(discordUserId, boostSince, week)
     return queryRows(string.concat("SELECT `week`, IFNULL(`weekly`, 0) AS `weekly`, IFNULL(`loyalty`, 0) AS `loyalty`, ",
-        "IFNULL(`yearly`, 0) AS `yearly`, IFNULL(`total`, 0) AS `total` FROM `discord_booster_rewards` ",
+        "IFNULL(`yearly`, 0) AS `yearly`, IFNULL(`community`, 0) AS `community`, IFNULL(`total`, 0) AS `total` ",
+        "FROM `discord_booster_rewards` ",
         "WHERE `discord_user_id` = ", db.escapeString(discordUserId), " AND `boost_since` = ", string.format("%d", boostSince),
         " AND `week` = ", week, " LIMIT 1;"), REWARD_FIELDS)[1]
 end
@@ -81,19 +86,28 @@ end
 
 local function reply(reward, deposited)
     return {deposited = deposited, week = reward.week, weekly = reward.weekly, loyalty = reward.loyalty,
-        yearly = reward.yearly, total = reward.total}
+        yearly = reward.yearly, community = reward.community or 0, total = reward.total}
 end
 
 local function handleRules()
     requireEnabled()
     local rules = info().booster or {}
+    local perks = JSON.array()
+    if (DiscordBoostPerks and DiscordBoostPerks.isEnabled()) then
+        for _, perk in ipairs(DiscordBoostPerks.list()) do
+            perks[#perks + 1] = perk
+        end
+    end
     return {weekly = rules.weekly or 0, loyaltyEvery = rules.loyaltyEvery or 0, loyalty = rules.loyalty or 0,
-        yearlyEvery = rules.yearlyEvery or 0, yearly = rules.yearly or 0}
+        yearlyEvery = rules.yearlyEvery or 0, yearly = rules.yearly or 0, communityEvery = rules.communityEvery or 0,
+        communityMax = rules.communityMax or 0, perks = perks}
 end
 
 local function handleWeek(params)
     requireEnabled()
     local discordUserId, boostSince, week = params.discordUserId, params.boostSince, params.week
+    -- A bot from before the community bonus sends no count; that only loses the bonus.
+    local serverBoosts = params.serverBoosts == nil and 0 or params.serverBoosts
     local now = os.time()
     if (not validDiscordUserId(discordUserId)) then
         fail("invalid_params", "invalid Discord user id")
@@ -103,6 +117,9 @@ local function handleWeek(params)
     end
     if (not isInteger(week) or week < 1 or week > MAX_WEEK) then
         fail("invalid_params", string.format("week must be an integer from 1 to %d", MAX_WEEK))
+    end
+    if (not isInteger(serverBoosts) or serverBoosts < 0 or serverBoosts > MAX_SERVER_BOOSTS) then
+        fail("invalid_params", string.format("serverBoosts must be an integer from 0 to %d", MAX_SERVER_BOOSTS))
     end
 
     local link = DiscordAccounts.getLinkByDiscordUser(discordUserId)
@@ -127,7 +144,7 @@ local function handleWeek(params)
         fail("stale_streak", "that boost streak was replaced by a newer one")
     end
 
-    local reward, err = doDiscordBoosterDeposit(discordUserId, link.account_id, boostSince, week)
+    local reward, err = doDiscordBoosterDeposit(discordUserId, link.account_id, boostSince, week, serverBoosts)
     if (not reward) then
         fail(err or "internal", "the reward could not be deposited")
     end

@@ -779,8 +779,12 @@ CREATE TABLE IF NOT EXISTS `discord_account_links` (
 -- time Discord reports as "boosting since") and week. The unique key is what stops a week
 -- from being paid twice; the row and the `accounts`.`soulcoins` deposit are written in one
 -- transaction (src/discordbridge.cpp). The amounts are the ones paid, from the config.
+-- `community` is the community bonus paid on loyalty weeks and `server_boosts` the server's
+-- boost count the bot reported for that week (the bonus is capped by the config, not by it).
 -- Rollback: DROP TABLE `discord_booster_rewards`; no other table refers to it and no existing
--- table was changed. Soul Coins already deposited stay on the accounts.
+-- table was changed. Soul Coins already deposited stay on the accounts. To undo only the
+-- community columns: ALTER TABLE `discord_booster_rewards` DROP COLUMN `community`,
+-- DROP COLUMN `server_boosts`.
 CREATE TABLE IF NOT EXISTS `discord_booster_rewards` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `discord_user_id` VARCHAR(20) NOT NULL,
@@ -790,6 +794,8 @@ CREATE TABLE IF NOT EXISTS `discord_booster_rewards` (
   `weekly` INT NOT NULL DEFAULT 0,
   `loyalty` INT NOT NULL DEFAULT 0,
   `yearly` INT NOT NULL DEFAULT 0,
+  `community` INT NOT NULL DEFAULT 0,
+  `server_boosts` INT NOT NULL DEFAULT 0,
   `total` INT NOT NULL DEFAULT 0,
   `created_at` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
@@ -798,6 +804,11 @@ CREATE TABLE IF NOT EXISTS `discord_booster_rewards` (
   KEY `account_id` (`account_id`),
   CONSTRAINT `discord_booster_rewards_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB;
+
+-- Ledgers created before the community bonus.
+ALTER TABLE `discord_booster_rewards`
+  ADD COLUMN IF NOT EXISTS `community` INT NOT NULL DEFAULT 0 AFTER `yearly`,
+  ADD COLUMN IF NOT EXISTS `server_boosts` INT NOT NULL DEFAULT 0 AFTER `community`;
 
 -- ---------------------------------------------------------------------------
 -- Account emails and security log (src/accountemail.cpp)
