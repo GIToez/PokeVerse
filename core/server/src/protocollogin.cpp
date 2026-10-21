@@ -36,6 +36,7 @@
 
 #include "polls.h"
 #include "outfit.h"
+#include "accountemail.h"
 #include "town.h"
 
 extern ConfigManager g_config;
@@ -155,7 +156,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 
 	Account account = IOLoginData::getInstance()->loadAccount(id);
 	uint32_t lockedSeconds = 0;
-	PasswordCheck_t check = IOLoginData::getInstance()->checkPassword(id, password, account.password, lockedSeconds);
+	PasswordCheck_t check = IOLoginData::getInstance()->checkPassword(id, password, account.password, lockedSeconds, clientIp);
 	if(check != PASSWORD_OK)
 	{
 		ConnectionManager::getInstance()->addAttempt(clientIp, protocolId, false);
@@ -197,6 +198,13 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 		return false;
 	}
 
+	std::string emailBlock = AccountEmail::loginBlock(account.number);
+	if(!emailBlock.empty())
+	{
+		disconnectClient(0x0A, emailBlock.c_str());
+		return false;
+	}
+
 	//Remove premium days
 	IOLoginData::getInstance()->removePremium(account);
 	// OTClient gets an empty character list so the player can create a character from the client.
@@ -208,6 +216,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	}
 
 	ConnectionManager::getInstance()->addAttempt(clientIp, protocolId, true);
+	AccountEmail::log(account.number, clientIp, "login");
 	if(OutputMessage_ptr output = OutputMessagePool::getInstance()->getOutputMessage(this, false))
 	{
 		TRACK_MESSAGE(output);

@@ -12,6 +12,7 @@ work="$(mktemp -d)"
 db="mariadb --no-defaults --protocol=tcp -h127.0.0.1 -P3307"
 server_pid=""
 db_pid=""
+smtp_pid=""
 
 stop_process() {
   kill "$1" 2>/dev/null || return 0
@@ -26,6 +27,7 @@ cleanup() {
     kill -9 "$server_pid" 2>/dev/null || true
     wait "$server_pid" 2>/dev/null || true
   fi
+  [ -n "$smtp_pid" ] && stop_process "$smtp_pid"
   [ -n "$db_pid" ] && stop_process "$db_pid"
   if [ "${KEEP_WORK:-0}" != 1 ]; then rm -rf "$work"; else echo "Work directory kept: $work"; fi
 }
@@ -81,14 +83,22 @@ sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value=
 cp "$root/scripts/testing/vocation-test-talkaction.lua" "$work/server/data/talkactions/scripts/vocationtest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/vocationtest" event="script" value="vocationtest.lua"/>\n</talkactions>#' \
   "$work/server/data/talkactions/talkactions.xml"
-(cd "$work/server" && exec "./$(basename "$binary")" >"$work/server.log" 2>&1) &
-server_pid=$!
-for _ in $(seq 180); do
-  grep -q "server Online!" "$work/server.log" 2>/dev/null && break
-  kill -0 "$server_pid" 2>/dev/null || { tail -50 "$work/server.log"; echo "FAIL: server exited during startup"; exit 1; }
-  sleep 1
-done
-grep -q "server Online!" "$work/server.log" || { tail -50 "$work/server.log"; echo "FAIL: server did not start"; exit 1; }
+start_server() {
+  (cd "$work/server" && exec "./$(basename "$binary")" >"$work/server.log" 2>&1) &
+  server_pid=$!
+  for _ in $(seq 180); do
+    grep -q "server Online!" "$work/server.log" 2>/dev/null && break
+    kill -0 "$server_pid" 2>/dev/null || { tail -50 "$work/server.log"; echo "FAIL: server exited during startup"; exit 1; }
+    sleep 1
+  done
+  grep -q "server Online!" "$work/server.log" || { tail -50 "$work/server.log"; echo "FAIL: server did not start"; exit 1; }
+}
+stop_server() {
+  kill -INT "$server_pid"
+  for _ in $(seq 60); do kill -0 "$server_pid" 2>/dev/null || break; sleep 1; done
+  server_pid=""
+}
+start_server
 grep -E "Global address|Local ports|server Online" "$work/server.log"
 grep -q "Global address: 127.0.0.1" "$work/server.log" || { echo "FAIL: server is not bound to 127.0.0.1"; exit 1; }
 grep -q "Discord bridge listening on 127.0.0.1:7199" "$work/server.log" || { echo "FAIL: Discord bridge did not start"; exit 1; }
@@ -296,7 +306,39 @@ grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort 
 if grep -q "MYSQL ERROR" "$work/server.log"; then echo "FAIL: database errors in server log"; exit 1; fi
 
 step "Stopping the server"
-kill -INT "$server_pid"
-for _ in $(seq 60); do kill -0 "$server_pid" 2>/dev/null || break; sleep 1; done
-server_pid=""
-echo "PASS: database setup, server start, login, character creation, game login, movement and Discord bridge verified."
+stop_server
+
+step "Account emails (emailRequired, STARTTLS to a local SMTP server)"
+mkdir -p "$work/mail/box"
+openssl req -x509 -newkey rsa:2048 -nodes -days 2 -subj /CN=localhost -addext subjectAltName=DNS:localhost \
+  -keyout "$work/mail/key.pem" -out "$work/mail/cert.pem" 2>/dev/null
+python3 -u "$root/scripts/testing/fake-smtp.py" --port 2526 --mailbox "$work/mail/box" --cert "$work/mail/cert.pem" \
+  --key "$work/mail/key.pem" --user ci@pokeverse.test --password ci-app-password > "$work/smtp.log" 2>&1 &
+smtp_pid=$!
+cat >> "$work/server/config.local.lua" <<LUA
+emailRequired = true
+smtpHost = "localhost"
+smtpPort = 2526
+smtpStartTls = true
+smtpUser = "ci@pokeverse.test"
+smtpPassword = "ci-app-password"
+smtpFrom = "ci@pokeverse.test"
+smtpCaFile = "$work/mail/cert.pem"
+LUA
+mv "$work/server.log" "$work/server-1.log"
+start_server
+grep -q "Account emails go through localhost:2526" "$work/server.log" || { echo "FAIL: the mailer did not start"; exit 1; }
+python3 "$root/scripts/account-email-test.py" --mailbox "$work/mail/box" --sql "$db -upokeverse -ppokeverse pokeverse" \
+  || { tail -40 "$work/server.log"; cat "$work/smtp.log"; echo "FAIL: account email test"; exit 1; }
+python3 "$root/scripts/protocol-test.py" --account test --password test --character Trainer --walk east \
+  || { echo "FAIL: an older account must keep playing during its 7 days"; exit 1; }
+codes=$(python3 -c 'import glob, json, re, sys
+for f in glob.glob(sys.argv[1] + "/*.json"):
+    for c in re.findall(r"\b\d{6}\b", json.load(open(f))["subject"]): print(c)' "$work/mail/box" | sort -u)
+[ -n "$codes" ] || { echo "FAIL: no codes in the mailbox"; exit 1; }
+for code in $codes; do
+  ! grep -qw "$code" "$work/server.log" || { echo "FAIL: a code from an email reached the server log"; exit 1; }
+done
+if grep -q "MYSQL ERROR" "$work/server.log"; then grep "MYSQL ERROR" "$work/server.log" | sort | uniq -c; echo "FAIL: database errors in server log"; exit 1; fi
+stop_server
+echo "PASS: database setup, server start, login, character creation, game login, movement, Discord bridge and account emails verified."

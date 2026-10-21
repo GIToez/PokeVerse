@@ -32,6 +32,7 @@
 #include "vocation.h"
 
 #include "configmanager.h"
+#include "accountemail.h"
 #include "game.h"
 
 extern ConfigManager g_config;
@@ -316,7 +317,7 @@ bool IOLoginData::setPassword(uint32_t accountId, std::string newPassword)
 }
 
 PasswordCheck_t IOLoginData::checkPassword(uint32_t accountId, const std::string& password, const std::string& stored,
-	uint32_t& lockedSeconds)
+	uint32_t& lockedSeconds, uint32_t ip)
 {
 	lockedSeconds = 0;
 	Database* db = Database::getInstance();
@@ -363,6 +364,7 @@ PasswordCheck_t IOLoginData::checkPassword(uint32_t accountId, const std::string
 		query << "UPDATE `accounts` SET `login_failures` = `login_failures` + 1 WHERE `id` = " << accountId;
 
 	db->executeQuery(query.str());
+	AccountEmail::log(accountId, ip, lockedSeconds ? "locked" : "wrong_password");
 	return lockedSeconds ? PASSWORD_LOCKED : PASSWORD_WRONG;
 }
 

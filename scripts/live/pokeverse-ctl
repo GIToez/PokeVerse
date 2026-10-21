@@ -16,6 +16,7 @@
 #   pokeverse-ctl configure key=value ...    host=, daily_restart=true|false, daily_time=HH:MM, timezone=,
 #                                            server_name=
 #   pokeverse-ctl set-rsa-key                install the private login key (PEM on stdin)
+#   pokeverse-ctl set-mail                   account email settings (KEY=VALUE on stdin, empty turns emails off)
 #   pokeverse-ctl set-group <character> <group id>
 #   pokeverse-ctl set-premium <character> <days|unlimited>   premium of the character's account (0 ends it)
 #   pokeverse-ctl restore <backup file> --yes  replace the database with a backup (safety backup first)
@@ -35,6 +36,7 @@ SERVER_ENV=$SHARED/server.env
 HEALTH_ENV=$SHARED/health.env
 HEALTH_POSITION=$SHARED/health-position
 RSA_KEY=$SHARED/rsa.key
+MAIL_ENV=$SHARED/mail.env
 RESTART_REQUEST=$SHARED/restart-request
 MYCNF=$PV_HOME/.my.cnf
 DB_NAME=pokeverse
@@ -121,6 +123,13 @@ cmd_verify() {
     ok "login key installed"
   else
     bad "$RSA_KEY is damaged; deploy again to rewrite it"
+  fi
+  if [ ! -f "$MAIL_ENV" ]; then
+    warn "account emails are off (written from GMAIL_ADDRESS and GMAIL_APP_PASSWORD by the next deployment)"
+  elif [ "$(stat -c %a "$MAIL_ENV")" != 600 ]; then
+    bad "$MAIL_ENV must have mode 600"
+  else
+    ok "account emails go through $(sed -n 's/^SMTP_HOST=//p' "$MAIL_ENV") as $(sed -n 's/^SMTP_USER=//p' "$MAIL_ENV")"
   fi
   if grep -q "^-- BEGIN DEPLOYMENT SETTINGS" "$CONFIG" 2>/dev/null; then
     local host
@@ -290,6 +299,9 @@ ensure_health_account() (
     rm -f "$HEALTH_POSITION"
     log "Created the health check character '$HEALTH_CHARACTER'"
   fi
+  # With emailRequired the account would be locked out 7 days after its first login.
+  dbq "UPDATE accounts SET email_verified = 1, signup_pending = 0 WHERE name = '$HEALTH_ACCOUNT'" \
+    || die "cannot update the health check account"
 )
 
 install_release() (
@@ -555,7 +567,8 @@ dailyRestartEnabled = $daily_restart
 dailyRestartTime = \"$daily_time\"
 restartRequestFile = \"$RESTART_REQUEST\"
 ${server_name:+serverName = \"$server_name\"
-}$([ -f "$RSA_KEY" ] && printf 'rsaKeyFile = "%s"\n' "$RSA_KEY")"
+}$([ -f "$RSA_KEY" ] && printf 'rsaKeyFile = "%s"\n' "$RSA_KEY")
+$(mail_settings)"
   if [ -n "$timezone" ]; then
     printf 'TZ=%s\n' "$timezone" > "$SERVER_ENV"
   else
@@ -566,6 +579,67 @@ ${server_name:+serverName = \"$server_name\"
     log "Login key: PokeVerse key only"
   else
     log "Login key: none installed, the server uses the open OpenTibia key"
+  fi
+  if [ -f "$MAIL_ENV" ]; then
+    log "Account emails: required, sent through $(mail_value SMTP_HOST):$(mail_value SMTP_PORT) as $(mail_value SMTP_USER)"
+  else
+    log "Account emails: off"
+  fi
+}
+
+mail_value() { sed -n "s/^$1=//p" "$MAIL_ENV" | tail -1; }
+
+# Lua settings for config.local.lua; set-mail only stores values that need no escaping.
+mail_settings() {
+  [ -f "$MAIL_ENV" ] || return 0
+  local ca
+  ca=$(mail_value SMTP_CA_FILE)
+  printf 'emailRequired = true\nsmtpHost = "%s"\nsmtpPort = %s\nsmtpStartTls = true\nsmtpUser = "%s"\nsmtpPassword = "%s"\nsmtpFrom = "%s"\n' \
+    "$(mail_value SMTP_HOST)" "$(mail_value SMTP_PORT)" "$(mail_value SMTP_USER)" "$(mail_value SMTP_PASSWORD)" "$(mail_value SMTP_USER)"
+  [ -n "$ca" ] && printf 'smtpCaFile = "%s"\n' "$ca"
+  return 0
+}
+
+# SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and SMTP_CA_FILE arrive on stdin (the password is
+# never on the command line). Without SMTP_USER and SMTP_PASSWORD emails are turned off.
+cmd_set_mail() {
+  local line key value host=smtp.gmail.com port=587 user="" password="" ca="" tmp
+  while IFS= read -r line || [ -n "$line" ]; do
+    line=${line%$'\r'}
+    [ -n "$line" ] || continue
+    key=${line%%=*}
+    value=${line#*=}
+    case "$key" in
+      SMTP_HOST) [ -n "$value" ] && host=$value ;;
+      SMTP_PORT) [ -n "$value" ] && port=$value ;;
+      SMTP_USER) user=$value ;;
+      SMTP_PASSWORD) password=${value// /} ;;
+      SMTP_CA_FILE) ca=$value ;;
+      *) die "unknown mail setting: $key" ;;
+    esac
+  done
+  if [ -z "$user" ] && [ -z "$password" ]; then
+    rm -f "$MAIL_ENV"
+    log "Account emails: off (no mail settings)"
+    return
+  fi
+  [[ "$user" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || die "the mail address is not valid"
+  [ -n "$password" ] || die "the mail password is missing"
+  [[ "$password" =~ ^[A-Za-z0-9!#$%\&*+,./:\;=?@^_~-]{8,128}$ ]] || die "the mail password has characters that are not allowed (quotes, backslashes)"
+  [[ "$host" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || die "invalid mail server: $host"
+  [[ "$port" =~ ^[0-9]{1,5}$ ]] && [ "$port" -ge 1 ] && [ "$port" -le 65535 ] || die "invalid mail port: $port"
+  if [ -n "$ca" ]; then
+    [[ "$ca" =~ ^/[A-Za-z0-9._/-]+$ ]] && [ -r "$ca" ] || die "cannot read the mail CA file: $ca"
+  fi
+  tmp=$(mktemp "$SHARED/.mail.XXXXXX")
+  chmod 600 "$tmp"
+  printf 'SMTP_HOST=%s\nSMTP_PORT=%s\nSMTP_USER=%s\nSMTP_PASSWORD=%s\nSMTP_CA_FILE=%s\n' "$host" "$port" "$user" "$password" "$ca" > "$tmp"
+  if cmp -s "$tmp" "$MAIL_ENV"; then
+    rm -f "$tmp"
+    log "Mail settings unchanged"
+  else
+    mv "$tmp" "$MAIL_ENV"
+    log "Mail settings saved (the server uses them on its next start)"
   fi
 }
 
@@ -762,6 +836,7 @@ case "$command" in
   status) cmd_status ;;
   configure) cmd_configure "$@" ;;
   set-rsa-key) cmd_set_rsa_key ;;
+  set-mail) cmd_set_mail ;;
   set-group) cmd_set_group "$@" ;;
   set-premium) cmd_set_premium "$@" ;;
   restore) cmd_restore "$@" ;;
