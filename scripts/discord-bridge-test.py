@@ -10,7 +10,9 @@ Runs against a live server started with the bridge enabled. Uses real game clien
   a short discordBridgeLinkCodeLifetime (--code-lifetime) so expiry can be checked.
   --booster-test needs discordBridgeBoosterRewards = true with the default amounts, an
   unlinked account (--booster) and database access (--sql) to move times into the past.
-  --booster-disabled only checks that booster requests are refused (feature off).
+  --boost-test needs discordBridgeBoostPerks = true with the default percentages and the
+  /bridgetest talkaction; it leaves the server boost level at 2 for the restart check.
+  --booster-disabled only checks that booster and boost perk requests are refused (features off).
 """
 import argparse
 import hashlib
@@ -317,8 +319,9 @@ def booster_tests(b, args):
         out = subprocess.run(shlex.split(args.sql) + ["-N", "-e", statement], check=True, capture_output=True, text=True)
         return out.stdout.strip()
 
-    def week(discord_id, since, n):
-        return b.request("booster.week", {"discordUserId": discord_id, "boostSince": since, "week": n})
+    def week(discord_id, since, n, boosts=0):
+        return b.request("booster.week", {"discordUserId": discord_id, "boostSince": since, "week": n,
+                                          "serverBoosts": boosts})
 
     def error(r):
         return r and not r["ok"] and r["error"]["code"]
@@ -326,8 +329,9 @@ def booster_tests(b, args):
     account, password, character = args.booster.split(":", 2)
     check("welcome lists boosterRewards", "boosterRewards" in b.welcome.get("features", []), str(b.welcome))
     r = b.request("booster.rules")
-    check("booster.rules returns the configured amounts", r and r["ok"] and r["result"] ==
-          {"weekly": 1, "loyaltyEvery": 4, "loyalty": 1, "yearlyEvery": 52, "yearly": 15}, str(r))
+    check("booster.rules returns the configured amounts and perks", r and r["ok"] and r["result"] ==
+          {"weekly": 1, "loyaltyEvery": 4, "loyalty": 1, "yearlyEvery": 52, "yearly": 15, "communityEvery": 5,
+           "communityMax": 5, "perks": PERKS if args.boost_test else []}, str(r))
 
     now = int(time.time())
     since = now - 60 * WEEK
@@ -337,11 +341,20 @@ def booster_tests(b, args):
                          ({"discordUserId": DISCORD_D, "boostSince": since, "week": 0}, "week 0"),
                          ({"discordUserId": DISCORD_D, "boostSince": since, "week": 5201}, "week 5201"),
                          ({"discordUserId": DISCORD_D, "boostSince": since, "week": 2.5}, "a fractional week"),
-                         ({"discordUserId": DISCORD_D, "boostSince": str(since), "week": 2}, "boostSince as text")):
+                         ({"discordUserId": DISCORD_D, "boostSince": str(since), "week": 2}, "boostSince as text"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "serverBoosts": -1},
+                          "serverBoosts -1"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "serverBoosts": 1001},
+                          "serverBoosts 1001"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "serverBoosts": 2.5},
+                          "fractional serverBoosts"),
+                         ({"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "serverBoosts": "3"},
+                          "serverBoosts as text")):
         r = b.request("booster.week", params)
         check("booster.week rejects " + name, error(r) == "invalid_params", str(r))
     check("booster.week refuses an unlinked user", error(week(DISCORD_D, since, 2)) == "not_linked")
-    r = b.request("booster.week", {"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "total": 1000})
+    r = b.request("booster.week", {"discordUserId": DISCORD_D, "boostSince": since, "week": 2, "serverBoosts": 0,
+                                   "total": 1000, "community": 1000})
     check("amounts in the request are ignored (still not_linked)", error(r) == "not_linked", str(r))
 
     booster = Player(args, account, password, character)
@@ -359,25 +372,33 @@ def booster_tests(b, args):
     check("a week completed before the link is refused", error(week(DISCORD_D, since, 1)) == "before_link")
     check("a week that is not complete is refused", error(week(DISCORD_D, since, 61)) == "not_due")
     check("not_due comes before before_link", error(week(DISCORD_D, now - 1000, 1)) == "not_due")
-    r = week(DISCORD_D, since, 2)
-    check("a due week deposits 1 Soul Coin", r and r["ok"] and r["result"] ==
-          {"deposited": True, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "total": 1}, str(r))
+    r = week(DISCORD_D, since, 2, 14)
+    check("a due week deposits 1 Soul Coin (no community bonus off loyalty weeks)", r and r["ok"] and r["result"] ==
+          {"deposited": True, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "community": 0, "total": 1}, str(r))
     check("soulcoins rose by the total", coins() == start + 1, "%d -> %d" % (start, coins()))
     booster.collect(1)
     check("the online character is thanked in game",
           booster.received(b"Thank you for boosting the PokeVerse Discord! 1 Soul Coin was added to your Soul Coin balance (spend it in the Store)."))
-    r = week(DISCORD_D, since, 2)
+    r = week(DISCORD_D, since, 2, 500)
     check("the same week again is not paid twice", r and r["ok"] and r["result"] ==
-          {"deposited": False, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "total": 1}, str(r))
+          {"deposited": False, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "community": 0, "total": 1}, str(r))
     check("soulcoins unchanged after the repeat", coins() == start + 1)
-    r = week(DISCORD_D, since, 4)
-    check("week 4 pays 2 (weekly + loyalty)", r and r["ok"] and r["result"]["deposited"] and r["result"]["total"] == 2
-          and r["result"]["loyalty"] == 1, str(r))
-    r = week(DISCORD_D, since, 52)
-    check("week 52 pays 17 (weekly + loyalty + yearly)", r and r["ok"] and r["result"]["deposited"]
-          and (r["result"]["weekly"], r["result"]["loyalty"], r["result"]["yearly"], r["result"]["total"]) == (1, 1, 15, 17),
-          str(r))
-    check("soulcoins rose by 1 + 2 + 17", coins() == start + 20, "%d -> %d" % (start, coins()))
+    r = week(DISCORD_D, since, 4, 14)
+    check("week 4 with 14 server boosts pays 1 + 1 + 2 = 4", r and r["ok"] and r["result"] ==
+          {"deposited": True, "week": 4, "weekly": 1, "loyalty": 1, "yearly": 0, "community": 2, "total": 4}, str(r))
+    r = week(DISCORD_D, since, 4, 100)
+    check("week 4 again keeps the stored amounts", r and r["ok"] and not r["result"]["deposited"]
+          and r["result"]["community"] == 2 and r["result"]["total"] == 4, str(r))
+    r = week(DISCORD_D, since, 8, 100)
+    check("week 8 with 100 server boosts caps the community bonus at 5", r and r["ok"] and r["result"] ==
+          {"deposited": True, "week": 8, "weekly": 1, "loyalty": 1, "yearly": 0, "community": 5, "total": 7}, str(r))
+    r = week(DISCORD_D, since, 52, 14)
+    check("week 52 with 14 server boosts pays 1 + 1 + 15 + 2 = 19", r and r["ok"] and r["result"] ==
+          {"deposited": True, "week": 52, "weekly": 1, "loyalty": 1, "yearly": 15, "community": 2, "total": 19}, str(r))
+    check("soulcoins rose by 1 + 4 + 7 + 19", coins() == start + 31, "%d -> %d" % (start, coins()))
+    stored = sql("SELECT CONCAT(community, ',', server_boosts) FROM discord_booster_rewards "
+                 "WHERE discord_user_id = '%s' AND week = 8" % DISCORD_D)
+    check("the ledger keeps the community bonus and the reported boost count", stored == "5,100", stored)
 
     check("an older streak is refused", error(week(DISCORD_D, now - 100 * WEEK, 50)) == "stale_streak")
     check("a streak that started before the last payout is refused",
@@ -388,9 +409,9 @@ def booster_tests(b, args):
     check("a new streak that started after the last payout is paid", r and r["ok"] and r["result"]["deposited"]
           and r["result"]["total"] == 1, str(r))
     check("the replaced streak is now stale", error(week(DISCORD_D, since, 56)) == "stale_streak")
-    check("soulcoins total after the new streak", coins() == start + 21, "%d -> %d" % (start, coins()))
+    check("soulcoins total after the new streak", coins() == start + 32, "%d -> %d" % (start, coins()))
     rows = sql("SELECT COUNT(*), SUM(total) FROM discord_booster_rewards WHERE discord_user_id = '%s'" % DISCORD_D)
-    check("the ledger holds one row per paid week", rows.split() == ["4", "21"], rows)
+    check("the ledger holds one row per paid week", rows.split() == ["5", "32"], rows)
 
     r = b.request("link.unlink", {"discordUserId": DISCORD_D})
     check("booster account unlinks", r and r["ok"] and r["result"] == {"unlinked": True}, str(r))
@@ -398,12 +419,106 @@ def booster_tests(b, args):
     booster.close()
 
 
+PERKS = [{"level": 1, "text": "+5% experience"}, {"level": 2, "text": "+5% catch rate"},
+         {"level": 3, "text": "+10% shiny spawn rate"}]
+
+
+def boost_tests(b, args):
+    """Server boost perks. Returns the bridge connection still open at the end."""
+    def error(r):
+        return r and not r["ok"] and r["error"]["code"]
+
+    def level(n, boosts):
+        return b.request("boost.level", {"level": n, "boosts": boosts})
+
+    def perks():
+        m = re.search(r"bridgetest perks (\{.*?\})(?:\x00|$|[^\x20-\x7e])", trainer.command("/bridgetest perks", 3))
+        return json.loads(m.group(1)) if m else {}
+
+    def kill_exp():
+        m = re.search(r"bridgetest killexp (\d+)", trainer.command("/bridgetest killexp Rattata", 2.5))
+        return int(m.group(1)) if m else 0
+
+    check("welcome lists boostPerks", "boostPerks" in b.welcome.get("features", []), str(b.welcome))
+    for params, name in (({"level": 4, "boosts": 20}, "level 4"), ({"level": -1, "boosts": 0}, "level -1"),
+                         ({"level": 1.5, "boosts": 3}, "a fractional level"), ({"level": "2", "boosts": 7}, "level as text"),
+                         ({"level": 2, "boosts": -1}, "boosts -1"), ({"level": 2, "boosts": 1001}, "boosts 1001"),
+                         ({"level": 2}, "missing boosts")):
+        check("boost.level rejects " + name, error(b.request("boost.level", params)) == "invalid_params")
+
+    account, password, character = args.listener.split(":", 2)
+    trainer = Player(args, account, password, character)
+    trainer.collect(1.5)
+
+    r = level(0, 1)
+    check("boost.level 0 has no perks", r and r["ok"] and r["result"] == {"level": 0, "perks": []}, str(r))
+    p = perks()
+    check("level 0 multiplies nothing", p.get("level") == 0 and (p.get("exp"), p.get("catch"), p.get("shiny")) == (1, 1, 1)
+          and p.get("catch40") == 0.4 and p.get("shiny4096") == 4096, str(p))
+    base = kill_exp()
+    check("a kill gives trainer experience at level 0", base >= 20, str(base))
+
+    trainer.collect(0.5)
+    r = level(1, 3)
+    check("boost.level 1 returns its perk", r and r["ok"] and r["result"] == {"level": 1, "perks": ["+5% experience"]},
+          str(r))
+    trainer.collect(1)
+    check("level 1 is broadcast in game",
+          trainer.received(b"The PokeVerse Discord reached Server Boost Level 1! Everyone now gets +5% experience."))
+    p = perks()
+    check("level 1: experience x1.05 only", p.get("level") == 1 and p.get("exp") == 1.05 and p.get("catch") == 1
+          and p.get("shiny") == 1 and p.get("catch40") == 0.4 and p.get("shiny4096") == 4096, str(p))
+    boosted = kill_exp()
+    check("level 1: the same kill gives 5% more trainer experience",
+          base > 0 and int(base * 1.05) - 1 <= boosted <= int(base * 1.05) + 1, "%d -> %d" % (base, boosted))
+
+    r = level(2, 7)
+    check("boost.level 2 returns two perks", r and r["ok"] and r["result"] ==
+          {"level": 2, "perks": ["+5% experience", "+5% catch rate"]}, str(r))
+    p = perks()
+    check("level 2: experience and catch x1.05, catch 40% -> 42%", p.get("level") == 2 and p.get("exp") == 1.05
+          and p.get("catch") == 1.05 and abs(p.get("catch40", 0) - 0.42) < 1e-9 and p.get("shiny4096") == 4096, str(p))
+    check("level 2: a sure catch stays a sure catch and nothing goes above it",
+          p.get("catch100") == 1 and p.get("catch99") == 1, str(p))
+    check("level 2: the catch roll lands at about 42%", abs(p.get("catchRolled40", 0) - 0.42) < 0.005, str(p))
+
+    r = level(3, 14)
+    check("boost.level 3 returns all perks", r and r["ok"] and r["result"] ==
+          {"level": 3, "perks": [x["text"] for x in PERKS]}, str(r))
+    p = perks()
+    check("level 3: shiny x1.1, 1 in 4096 becomes 1 in 3723", p.get("level") == 3 and p.get("shiny") == 1.1
+          and p.get("shiny4096") == 3723 and p.get("exp") == 1.05 and p.get("catch") == 1.05, str(p))
+    text = trainer.command("!discord perks")
+    check("!discord perks lists the active perks", "PokeVerse Discord Server Boost Level 3: everyone gets +5% experience, "
+          "+5% catch rate and +10% shiny spawn rate." in text, text[-300:])
+    r = level(3, 15)
+    trainer.collect(1)
+    check("the same level again is answered but not broadcast", r and r["ok"] and r["result"]["level"] == 3
+          and sum(pk.count(b"reached Server Boost Level 3!") for pk in trainer.packets) == 1, str(r))
+
+    r = level(2, 9)
+    trainer.collect(1)
+    check("a lower level is broadcast as a drop", trainer.received(
+        b"The PokeVerse Discord dropped to Server Boost Level 2. Everyone now gets +5% experience and +5% catch rate."))
+
+    b2 = Bridge(args.host, args.bridge_port, args.secret)
+    p = perks()
+    check("the level survives a bridge reconnect", p.get("level") == 2 and p.get("catch") == 1.05, str(p))
+    b2.pump(1)
+    trainer.close()
+    return b2
+
+
 def booster_disabled_tests(b):
     check("welcome has no boosterRewards when off", "boosterRewards" not in b.welcome.get("features", []), str(b.welcome))
     r = b.request("booster.rules")
     check("booster.rules is disabled when off", r and not r["ok"] and r["error"]["code"] == "disabled", str(r))
-    r = b.request("booster.week", {"discordUserId": DISCORD_D, "boostSince": int(time.time()) - 2 * WEEK, "week": 1})
+    r = b.request("booster.week", {"discordUserId": DISCORD_D, "boostSince": int(time.time()) - 2 * WEEK, "week": 1,
+                                   "serverBoosts": 0})
     check("booster.week is disabled when off", r and not r["ok"] and r["error"]["code"] == "disabled", str(r))
+    check("welcome has no boostPerks when off", "boostPerks" not in b.welcome.get("features", []), str(b.welcome))
+    r = b.request("boost.level", {"level": 1, "boosts": 2})
+    check("boost.level is disabled when off", r and not r["ok"] and r["error"]["code"] == "disabled", str(r))
 
 
 def account_request(args, action, account, password, name):
@@ -431,7 +546,9 @@ def main():
     ap.add_argument("--booster-test", action="store_true", help="booster reward checks (feature on)")
     ap.add_argument("--booster", default="bridgebooster:secret:Booster Trainer",
                     help="account:password:character of an unlinked account (booster reward checks)")
-    ap.add_argument("--booster-disabled", action="store_true", help="only check that booster requests are refused")
+    ap.add_argument("--boost-test", action="store_true", help="server boost perk checks (feature on)")
+    ap.add_argument("--booster-disabled", action="store_true",
+                    help="only check that booster and boost perk requests are refused")
     ap.add_argument("--sql", default="", help="mysql command line for the database, for --booster-test")
     args = ap.parse_args()
 
@@ -443,7 +560,7 @@ def main():
         if failures:
             print("FAIL: %d check(s) failed: %s" % (len(failures), ", ".join(failures)))
             return 1
-        print("PASS: booster rewards are off.")
+        print("PASS: booster rewards and boost perks are off.")
         return 0
 
     # Authentication
@@ -600,6 +717,13 @@ def main():
     except (socket.timeout, OSError):
         old = "timeout"
     check("previous session closed on reconnect", old is None, str(old))
+    if args.boost_test:
+        b3 = boost_tests(b2, args)
+        try:
+            old = b2.read(timeout=3)
+        except (socket.timeout, OSError):
+            old = "timeout"
+        check("boost test reconnect replaced the session", old is None and b3.welcome.get("bootId") == boot, str(old))
 
     print()
     if failures:

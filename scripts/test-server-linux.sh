@@ -76,6 +76,7 @@ discordBridgeEnabled = true
 discordBridgeSecret = "$bridge_secret"
 discordBridgeLinkCodeLifetime = 8
 discordBridgeBoosterRewards = true
+discordBridgeBoostPerks = true
 LUA
 cp "$root/scripts/testing/discord-bridge-test-talkaction.lua" "$work/server/data/talkactions/scripts/bridgetest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value="bridgetest.lua"/>\n</talkactions>#' \
@@ -112,16 +113,18 @@ python3 "$root/scripts/protocol-test.py" --account newuser --password secret --c
 python3 "$root/scripts/protocol-test.py" --account newuser --password secret --character "Bag Trainer" --walk east,south
 sleep 3
 
+# Before the bridge tests: those leave a server boost level on for the restart check.
+step "Vocation tests"
+python3 "$root/scripts/vocation-test.py" --tester "voctester:secret:Vocation Tester" --friend "vocfriend:secret:Vocation Friend"
+sleep 3
+
 step "Discord bridge tests"
 python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --catch-test \
   --listener "bridgetrainer:secret:Bridge Trainer" --speaker "bridgestaff:secret:Bridge Staff" --staff-character "Bridge Staff" \
   --link-test --linker "bridgelink:secret:Link Alpha:Link Beta" --code-lifetime 8 \
-  --booster-test --booster "bridgebooster:secret:Booster Trainer" --sql "$db -upokeverse -ppokeverse pokeverse"
+  --booster-test --booster "bridgebooster:secret:Booster Trainer" --sql "$db -upokeverse -ppokeverse pokeverse" \
+  --boost-test
 lua5.1 "$root/scripts/test-lua-json.lua"
-sleep 3
-
-step "Vocation tests"
-python3 "$root/scripts/vocation-test.py" --tester "voctester:secret:Vocation Tester" --friend "vocfriend:secret:Vocation Friend"
 sleep 3
 
 step "Database checks"
@@ -154,7 +157,11 @@ case " $kit " in *" 10:12282 "*) ;; *) echo "FAIL: Bag Trainer's bag was not mov
 links=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM discord_account_links")
 [ "$links" = 0 ] || { echo "FAIL: the bridge test should leave no Discord links, found $links"; exit 1; }
 boosted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(a.soulcoins, ',', COUNT(r.id), ',', SUM(r.total)) FROM accounts a JOIN discord_booster_rewards r ON r.account_id = a.id WHERE a.name = 'bridgebooster' GROUP BY a.id")
-[ "$boosted" = "21,4,21" ] || { echo "FAIL: the booster account should hold 21 Soul Coins from 4 ledger rows (soulcoins,rows,total: $boosted)"; exit 1; }
+[ "$boosted" = "32,5,32" ] || { echo "FAIL: the booster account should hold 32 Soul Coins from 5 ledger rows (soulcoins,rows,total: $boosted)"; exit 1; }
+boost_level=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT value FROM global_storage WHERE \`key\` = 7156")
+[ "$boost_level" = 2 ] || { echo "FAIL: the server boost level should be stored as 2, got '$boost_level'"; exit 1; }
+grep -q "> Discord boost perks: server boost level 2 -> 3 (14 boosts)." "$work/server.log" \
+  || { echo "FAIL: boost level changes are not logged"; exit 1; }
 ! grep -qE "1234567890123456789|98765432109876543210|11111111111111111|22222222222222222222" "$work/server.log" \
   || { echo "FAIL: a Discord user id reached the server log"; exit 1; }
 deleted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT deleted FROM players WHERE name = 'Link Beta'")
@@ -323,6 +330,7 @@ python3 -u "$root/scripts/testing/fake-smtp.py" --port 2526 --mailbox "$work/mai
 smtp_pid=$!
 cat >> "$work/server/config.local.lua" <<LUA
 discordBridgeBoosterRewards = false
+discordBridgeBoostPerks = false
 emailRequired = true
 smtpHost = "localhost"
 smtpPort = 2526
@@ -336,6 +344,9 @@ mv "$work/server.log" "$work/server-1.log"
 start_server
 grep -q "Account emails go through localhost:2526" "$work/server.log" || { echo "FAIL: the mailer did not start"; exit 1; }
 python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --booster-disabled
+for _ in $(seq 10); do grep -q "> Discord boost perks: server boost level 2 restored" "$work/server.log" && break; sleep 1; done
+grep -q "> Discord boost perks: server boost level 2 restored (perks are off in config.lua)." "$work/server.log" \
+  || { echo "FAIL: the server boost level was not restored after the restart"; exit 1; }
 python3 "$root/scripts/account-email-test.py" --mailbox "$work/mail/box" --sql "$db -upokeverse -ppokeverse pokeverse" \
   || { tail -40 "$work/server.log"; cat "$work/smtp.log"; echo "FAIL: account email test"; exit 1; }
 python3 "$root/scripts/protocol-test.py" --account test --password test --character Trainer --walk east \
