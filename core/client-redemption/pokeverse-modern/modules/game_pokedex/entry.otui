@@ -1,0 +1,355 @@
+// The Details tab in sections (entry.lua), inside the legacy Pokedex screen
+
+DexDetailsPanel < ScrollablePanel
+  padding: 4 8 10 6
+  layout:
+    type: verticalBox
+
+DexDetailsScroll < VerticalScrollBar
+  step: 24
+  pixels-scroll: true
+
+DexHero < UIWidget
+  height: 22
+  phantom: true
+  layout:
+    type: horizontalBox
+    spacing: 6
+
+DexHeroName < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 15
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+DexHeroNumber < UILabel
+  font: verdana-11px-antialised
+  color: #7f8aa3
+  text-auto-resize: true
+  margin-top: 4
+  phantom: true
+
+DexTypeBadge < UIWidget
+  size: 49 14
+  margin-top: 4
+  phantom: true
+
+DexText < UILabel
+  font: verdana-11px-antialised
+  color: #d9dde8
+  text-wrap: true
+  text-vertical-auto-resize: true
+  text-align: topLeft
+  margin-top: 4
+  phantom: true
+
+DexMuted < DexText
+  color: #98a2b8
+
+DexQuote < DexText
+  font: verdana-11px-antialised-italic
+  color: #b9c2d6
+  background-color: #111829
+  border-width-left: 3
+  border-color: #3a4f80
+  text-offset: 8 3
+  margin-top: 6
+
+DexHeading < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #f2c14e
+  height: 18
+  text-align: bottomLeft
+  border-width-bottom: 1
+  border-color: #2c3a5e
+  margin-top: 12
+  phantom: true
+
+  UILabel
+    id: hint
+    font: verdana-11px-antialised
+    color: #6f7a93
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 2
+    phantom: true
+
+DexChain < UIWidget
+  height: 20
+  margin-top: 6
+  phantom: true
+  layout:
+    type: horizontalBox
+    spacing: 4
+
+DexChip < UILabel
+  font: verdana-11px-antialised
+  color: #aeb7cc
+  height: 18
+  text-auto-resize: true
+  text-align: center
+  padding: 0 7 0 7
+  background-color: #121a2d
+  border-width: 1
+  border-color: #2c3a5e
+  phantom: true
+
+DexChipCurrent < DexChip
+  color: #ffffff
+  background-color: #24203a
+  border-color: #f2c14e
+
+DexChainStep < UILabel
+  font: verdana-11px-antialised
+  color: #6f7a93
+  height: 18
+  text-auto-resize: true
+  text-align: center
+  phantom: true
+
+DexAbility < UIWidget
+  margin-top: 3
+  border-width: 1
+  border-color: alpha
+  focusable: false
+
+  $hover:
+    background-color: #17223b
+    border-color: #3a5898
+
+  UIWidget
+    id: ball
+    size: 11 11
+    image-source: /modules/game_pokedex/images/ability-ball
+    image-smooth: true
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 5
+    margin-top: 5
+    phantom: true
+
+  UILabel
+    id: name
+    font: Verdana-11px-lowspace-underline
+    color: #6fb4ff
+    text-auto-resize: true
+    anchors.left: ball.right
+    anchors.top: parent.top
+    margin-left: 7
+    margin-top: 3
+    phantom: true
+
+  UILabel
+    id: premium
+    font: verdana-11px-antialised
+    color: #f2c14e
+    background-color: #3d2f0b
+    text: PREMIUM
+    text-auto-resize: true
+    padding: 0 4 0 4
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+    phantom: true
+
+  UILabel
+    id: open
+    font: verdana-11px-antialised
+    color: #6fb4ff
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-right: 6
+    phantom: true
+
+  UILabel
+    id: how
+    font: verdana-11px-antialised
+    color: #98a2b8
+    text-wrap: true
+    text-vertical-auto-resize: true
+    text-align: topLeft
+    anchors.left: name.left
+    anchors.right: parent.right
+    anchors.top: name.bottom
+    margin-right: 6
+    margin-top: 1
+    phantom: true
+
+DexMoveGrid < UIWidget
+  margin-top: 5
+  phantom: true
+  layout:
+    type: grid
+    cell-size: 196 18
+    cell-spacing: 2
+    flow: true
+    fit-children: true
+
+DexMove < UIWidget
+  phantom: true
+
+  UIWidget
+    id: type
+    size: 49 14
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: name
+    font: verdana-11px-antialised
+    color: #d9dde8
+    text-auto-resize: true
+    anchors.left: type.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+DexPair < UIWidget
+  margin-top: 2
+  phantom: true
+
+  UILabel
+    id: key
+    font: verdana-11px-antialised
+    color: #8c96ad
+    width: 116
+    anchors.left: parent.left
+    anchors.top: parent.top
+    text-auto-resize: false
+    phantom: true
+
+  UILabel
+    id: value
+    font: verdana-11px-antialised
+    color: #e8ecf5
+    text-wrap: true
+    text-vertical-auto-resize: true
+    text-align: topLeft
+    anchors.left: key.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    phantom: true
+
+DexMeter < UIWidget
+  height: 16
+  margin-top: 3
+  phantom: true
+
+  UILabel
+    id: label
+    font: verdana-11px-antialised
+    color: #8c96ad
+    width: 116
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: note
+    font: verdana-11px-antialised
+    color: #6f7a93
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UIWidget
+    id: track
+    height: 6
+    background-color: #1b2338
+    anchors.left: label.right
+    anchors.right: note.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 8
+    phantom: true
+
+    UIWidget
+      id: fill
+      background-color: #6fb4ff
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      phantom: true
+
+DexStatRow < UIWidget
+  height: 18
+  border-width-top: 1
+  border-color: #161e31
+  phantom: true
+
+  UILabel
+    id: name
+    font: verdana-11px-antialised
+    color: #aeb7cc
+    width: 86
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 2
+    phantom: true
+
+  UILabel
+    id: value
+    font: verdana-11px-antialised
+    color: #ffffff
+    width: 44
+    text-align: right
+    anchors.left: name.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: iv
+    font: verdana-11px-antialised
+    color: #aeb7cc
+    width: 38
+    text-align: right
+    anchors.left: value.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: ev
+    font: verdana-11px-antialised
+    color: #aeb7cc
+    width: 38
+    text-align: right
+    anchors.left: iv.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UILabel
+    id: effect
+    font: verdana-11px-antialised
+    color: #aeb7cc
+    width: 52
+    text-align: right
+    anchors.left: ev.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UIWidget
+    id: track
+    height: 5
+    background-color: #1b2338
+    anchors.left: effect.right
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 10
+    margin-right: 2
+    phantom: true
+
+    UIWidget
+      id: fill
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      phantom: true
+
+DexStatHead < DexStatRow
+  border-width-top: 0
+  margin-top: 4
