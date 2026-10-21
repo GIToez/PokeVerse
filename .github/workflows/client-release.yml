@@ -294,6 +294,9 @@ jobs:
   package:
     name: Packages and updater site
     needs: [linux, windows, android]
+    # a failed Linux build (its toolchain PPA goes down) does not hold back Windows and Android:
+    # the Linux package then keeps the engine of the last published release, with the new files
+    if: always() && needs.windows.result == 'success' && needs.android.result == 'success' && contains(fromJSON('["success", "failure"]'), needs.linux.result)
     runs-on: ubuntu-24.04
     env:
       LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
@@ -305,9 +308,21 @@ jobs:
           lfs: true
 
       - uses: actions/download-artifact@v4
+        if: needs.linux.result == 'success'
         with:
           name: redemption-linux-bin
           path: bin-linux
+
+      - name: Previous Linux engine
+        if: needs.linux.result != 'success'
+        run: |
+          mkdir -p bin-linux "$RUNNER_TEMP/linux-prev"
+          curl -fsSL --retry 5 -o "$RUNNER_TEMP/linux-prev.tar.gz" \
+            "https://github.com/$CLIENTS_REPO/releases/latest/download/PokeVerse-Linux.tar.gz"
+          tar -xzf "$RUNNER_TEMP/linux-prev.tar.gz" -C "$RUNNER_TEMP/linux-prev" PokeVerse/PokeVerse
+          mv "$RUNNER_TEMP/linux-prev/PokeVerse/PokeVerse" bin-linux/PokeVerse
+          echo "::warning::The Linux build failed, so the Linux package keeps the engine of the last release"
+          echo "The Linux build failed: the Linux package keeps the engine of the last release, with this release's files" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/download-artifact@v4
         with:
@@ -456,7 +471,7 @@ jobs:
   publish:
     name: Publish release and update
     needs: package
-    if: github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
+    if: always() && needs.package.result == 'success' && github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     # the Website workflow also replaces PokeVerse-Clients gh-pages
     concurrency:
