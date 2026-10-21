@@ -66,6 +66,11 @@ export PV_SSH_KEY PV_SSH_HOST_KEY
 export PV_SERVER_PACKAGE=$server_pkg
 export PV_TIMEZONE=America/Los_Angeles
 export PV_WARNING_MINUTES=0
+# A throwaway login key; the test logins below encrypt with it like an updated client.
+openssl genrsa -out "$work/rsa.pem" 1024 2>/dev/null
+PV_RSA_PRIVATE_KEY=$(cat "$work/rsa.pem")
+PV_RSA_PUBLIC=$(python3 "$root/scripts/live/rsa-key.py" modulus < "$work/rsa.pem")
+export PV_RSA_PRIVATE_KEY PV_RSA_PUBLIC PV_RSA_MODULUS=$PV_RSA_PUBLIC
 deploy() { "$root/scripts/live/deploy.sh" "$@"; }
 
 step "Wrong host key is refused"
@@ -75,6 +80,8 @@ fi
 endstep
 
 step "verify on a fresh server"
+if PV_RSA_PRIVATE_KEY=$(openssl genrsa 1024 2>/dev/null) deploy verify; then fail "verify accepted a login key the clients do not have"; fi
+if PV_RSA_PRIVATE_KEY="" deploy verify; then fail "verify passed without a login key"; fi
 deploy verify
 endstep
 
@@ -112,6 +119,21 @@ player=(--account rehearsal --password rehearsal1 --character "Rehearsal Trainer
 gm=(--account rehearsalgm --password rehearsal1 --character "Rehearsal Admin")
 pos=$(pt "${player[@]}" --walk east | tee /dev/stderr | sed -n 's/^POSITION //p')
 [ -n "$pos" ] || fail "no position"
+endstep
+
+step "login key and password lockout"
+[ "$(sudo stat -c %a /opt/pokeverse/shared/rsa.key)" = 600 ] || fail "the login key is not private"
+journal | grep -q "RSA key loaded from /opt/pokeverse/shared/rsa.key" || fail "the server did not load the login key"
+if PV_RSA_MODULUS="" pt "${player[@]}" --walk west --timeout 10 > /dev/null; then fail "the server accepted the open OpenTibia key"; fi
+pt "${player[@]}" --walk west > /dev/null || fail "login with the login key failed"
+[ "$(sudo mariadb -N pokeverse -e "SELECT password LIKE 'pbkdf2-sha256\$%' FROM accounts WHERE name = 'rehearsal'")" = 1 ] \
+  || fail "the SHA-256 password was not rehashed at login"
+sudo mariadb pokeverse -e "CALL pokeverse_create_account('rehearsallock', 'rehearsal1'); CALL pokeverse_create_character('rehearsallock', 'Rehearsal Lock', 1);" >/dev/null
+for _ in 1 2 3 4; do pt --account rehearsallock --password wrong --character x --expect-login-failure > /dev/null; done
+pt --account rehearsallock --password wrong --character x --expect-login-failure | grep -q "locked for 15 minutes" \
+  || fail "five wrong passwords did not lock the account"
+pt --account rehearsallock --password rehearsal1 --character x --expect-login-failure | grep -q "locked" \
+  || fail "the right password got into a locked account"
 endstep
 
 step "GM /restart 1 with warnings, saved and started again by systemd"

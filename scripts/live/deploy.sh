@@ -25,6 +25,8 @@
 #                      PV_CHARACTER / PV_PREMIUM_DAYS (set-premium: days or unlimited)
 #   DISCORD_TOKEN, DISCORD_APPLICATION_ID, DISCORD_GUILD_ID, DISCORD_ADMIN_USER_IDS,
 #   DISCORD_ADMIN_ROLE_IDS   production bot settings (the bot is skipped without a token)
+#   PV_RSA_PRIVATE_KEY the private login key, PEM (GitHub secret POKEVERSE_RSA_PRIVATE_KEY; verify, deploy)
+#   PV_RSA_PUBLIC      its public modulus, which the clients have (default scripts/live/rsa-public.txt)
 set -euo pipefail
 
 action=${1:?action}
@@ -38,6 +40,7 @@ PV_DAILY_TIME=${PV_DAILY_TIME:-00:00}
 PV_TIMEZONE=${PV_TIMEZONE:-}
 PV_SERVER_NAME=${PV_SERVER_NAME:-LeafGreen}
 PV_WARNING_MINUTES=${PV_WARNING_MINUTES:-5}
+PV_RSA_PUBLIC=${PV_RSA_PUBLIC:-$(cat "$root/scripts/live/rsa-public.txt")}
 REMOTE=/opt/pokeverse
 CTL=$REMOTE/current/tools/pokeverse-ctl
 
@@ -143,8 +146,22 @@ upload_bot() {
   endstep
 }
 
+# The clients encrypt the login with the public half; a different key would lock every player out.
+check_rsa_key() {
+  [ -n "${PV_RSA_PRIVATE_KEY:-}" ] || fail "the secret POKEVERSE_RSA_PRIVATE_KEY is not set (docs/live-server.md, login key)"
+  local modulus
+  modulus=$(printf '%s\n' "$PV_RSA_PRIVATE_KEY" | tr -d '\r' | python3 "$root/scripts/live/rsa-key.py" modulus) \
+    || fail "POKEVERSE_RSA_PRIVATE_KEY is not a valid login key"
+  [ "$modulus" = "$PV_RSA_PUBLIC" ] \
+    || fail "POKEVERSE_RSA_PRIVATE_KEY does not match the clients' key (scripts/live/rsa-public.txt)"
+  echo "Login key matches the clients' key"
+}
+
 configure() {
   step "Live settings"
+  check_rsa_key
+  printf '%s\n' "$PV_RSA_PRIVATE_KEY" | tr -d '\r' \
+    | remote "$(printf '%q ' "$REMOTE/releases/$server_release/tools/pokeverse-ctl" set-rsa-key)"
   remote_ctl "$REMOTE/releases/$server_release/tools/pokeverse-ctl" configure \
     "host=$PV_PUBLIC_HOST" "daily_restart=$PV_DAILY_RESTART" "daily_time=$PV_DAILY_TIME" "timezone=$PV_TIMEZONE" \
     "server_name=$PV_SERVER_NAME"
@@ -180,7 +197,7 @@ for port in (7564, 8548):
     socket.create_connection((host, port), timeout=15).close()
     print("port %d reachable" % port)
 PY
-  python3 "$root/scripts/protocol-test.py" --host "$PV_PUBLIC_HOST" --account "probe$RANDOM$RANDOM" \
+  PV_RSA_MODULUS=$PV_RSA_PUBLIC python3 "$root/scripts/protocol-test.py" --host "$PV_PUBLIC_HOST" --account "probe$RANDOM$RANDOM" \
     --password "not-a-real-account" --character x --expect-login-failure \
     || fail "the login server did not answer correctly from outside"
   endstep
@@ -188,6 +205,7 @@ PY
 
 case "$action" in
   verify)
+    check_rsa_key
     check_ssh
     upload_server
     step "Preflight checks"
@@ -201,6 +219,7 @@ case "$action" in
     echo "Players will connect to: $PV_PUBLIC_HOST"
     echo "Daily restart:           $PV_DAILY_RESTART at $PV_DAILY_TIME ${PV_TIMEZONE:-(server time zone)}"
     echo "Discord bot:             $([ -n "${DISCORD_TOKEN:-}" ] && echo "token set, guild ${DISCORD_GUILD_ID:-<missing>}" || echo "no token (skipped)")"
+    echo "Login key:               PokeVerse key only"
     [[ "$PV_DAILY_TIME" =~ ^([01][0-9]|2[0-3]):[0-5][0-9]$ ]] || fail "LIVE_DAILY_RESTART_TIME must be HH:MM"
     if [ -n "${DISCORD_TOKEN:-}" ] && [ -z "${DISCORD_GUILD_ID:-}" ]; then fail "DISCORD_GUILD_ID is required with a bot token"; fi
     endstep
@@ -208,6 +227,7 @@ case "$action" in
     echo "VERIFIED: SSH, server setup, database, backup/restore and settings are ready for deployment."
     ;;
   deploy)
+    check_rsa_key
     check_ssh
     upload_server
     configure
