@@ -119,5 +119,7 @@ playersStorages = {
     hintsSeen = base + 116, -- the first-visit hints the trainer has seen, a sum of 2^(index in Hints.KEYS - 1) (Hints)
     hintsClient = base + 117, -- 1 while the trainer's client has the first-visit hints (it says hello at login)
     expBoostClient = base + 118, -- 1 while the trainer's client shows the experience boosts (it asks at login)
+    bankClient = base + 119, -- 1 while the trainer's client has the Bank window (it says hello at login)
+    bankNpc = base + 120, -- the name of the bank NPC whose window the trainer has open (Bank)
     -- tournamentWeekWinnerStorage = base + 65
 }

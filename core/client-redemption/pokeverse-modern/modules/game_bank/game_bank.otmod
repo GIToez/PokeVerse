@@ -1,0 +1,8 @@
+Module
+  name: game_bank
+  description: PokeVerse Bank window: the balance, the money carried, deposit, withdraw, transfer and history
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ bank ]
+  @onLoad: init()
+  @onUnload: terminate()

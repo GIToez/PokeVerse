@@ -21,7 +21,7 @@ old keyword dialogue left as the fallback for older clients.
 | 1 | Poke Mart buy window | Every session | Medium |
 | 2 | Nurse Joy menu | Every session | Small |
 | 3 | Travel picker (boats, flying NPCs) | Daily | Small |
-| 4 | Bank window | Daily | Small |
+| 4 | Bank window (built) | Daily | Small |
 | 5 | Egg move and TM move manager | Weekly | Medium |
 | 6 | Safari Zone check-in | Weekly | Small |
 | 7 | Ranger Club and Tournament boards | Weekly | Medium |
@@ -70,6 +70,9 @@ badge is missing, with the town's Pokepedia map thumbnail.
 **Files.** `npc/scripts/travels.lua` (send the table as JSON), a new `game_travel` module.
 
 ## 4. Bank window
+
+**Built (October 21):** `game_bank` and `lib/ps/systems/086-bank.lua`; greeting a bank NPC
+opens it. Transfers have no cap and may go to the trainer's own characters.
 
 **Now.** 19 bank NPCs use `npc/scripts/bank.lua` (with `shop_bank.lua` for one of them):
 {balance}, {deposit}, {deposit all}, {withdraw}, {withdraw all} and {transfer}, each a multi-step
