@@ -65,7 +65,7 @@ function onLogin(cid)
 			
 			--doPlayerAddTownMarks(cid, getTownName(getPlayerTown(cid)))
 			--doPlayerSendTip(cid, TIP_IDS.WELCOME)
-			doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Hello %s! Welcome to PokeVerse, a MMORPG loyal in the Pokemon series. You are boarding a world filled with many adventures and discoveries."), getCreatureName(cid)))
+			doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Hello %s! Welcome to PokeVerse, a world full of adventures and discoveries. Walk with W A S D or the arrow keys, or left-click the ground where you want to go."), getCreatureName(cid)))
 			doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "keyboard")
 			--addEvent(function(cid)
 				--if (isCreature(cid)) then
