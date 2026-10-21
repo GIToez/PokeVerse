@@ -1,0 +1,316 @@
+// The Bank window (the frame comes from game_dailytasks, panels and tabs from game_fishing, the buttons and
+// fields from client_entergame, the scroll bar from game_gts)
+
+BankText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+BankMuted < BankText
+  color: #96aacd
+
+BankBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+BankTab < UIButton
+  height: 30
+  image-source: /modules/game_fishing/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #96aacd
+  text-offset: 0 1
+  focusable: false
+  $hover !on:
+    color: #dce6ff
+  $on:
+    image-source: /modules/game_fishing/images/tab_on
+    color: #ffffff
+
+BankStat < FishingPanel
+  height: 58
+  padding: 8 12 8 12
+
+  BankMuted
+    id: caption
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  UILabel
+    id: value
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 18
+    color: #ffd75a
+    text-auto-resize: true
+    anchors.top: caption.bottom
+    anchors.left: parent.left
+    margin-top: 3
+    phantom: true
+
+BankQuick < PVBlueButton
+  height: 28
+  ttf-font-size: 12
+
+BankHistoryRow < UIWidget
+  height: 36
+  phantom: true
+
+  BankBold
+    id: text
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 3
+
+  BankMuted
+    id: when
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.top: text.bottom
+    margin-top: 2
+
+  BankBold
+    id: amount
+    ttf-font-size: 13
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: line
+    height: 1
+    background-color: #2a3a5a
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+BankWindow < UIWindow
+  size: 560 520
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 26 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_bank.close()
+
+  UIItem
+    id: headerIcon
+    size: 32 32
+    item-id: 3031
+    item-count: 100
+    virtual: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Bank')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  BankMuted
+    id: subtitle
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 2
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_bank.close()
+
+  BankStat
+    id: balance
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    margin: 18 6 0 0
+
+  BankStat
+    id: carried
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    margin: 18 0 0 6
+
+  UIWidget
+    id: tabs
+    height: 30
+    anchors.top: balance.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 14
+    layout:
+      type: grid
+      cell-size: 122 30
+      cell-spacing: 6
+      flow: true
+
+    BankTab
+      id: deposit
+      !text: tr('Deposit')
+    BankTab
+      id: withdraw
+      !text: tr('Withdraw')
+    BankTab
+      id: transfer
+      !text: tr('Transfer')
+    BankTab
+      id: history
+      !text: tr('History')
+
+  FishingPanel
+    id: form
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 8
+    padding: 14 16 14 16
+
+    BankMuted
+      id: nameCaption
+      !text: tr('Send to')
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    PVField
+      id: name
+      height: 32
+      padding: 6 10 6 10
+      anchors.top: nameCaption.bottom
+      anchors.left: parent.left
+      anchors.right: check.left
+      margin: 4 8 0 0
+
+    PVBlueButton
+      id: check
+      !text: tr('Check')
+      size: 80 32
+      ttf-font-size: 12
+      anchors.top: nameCaption.bottom
+      anchors.right: parent.right
+      margin-top: 4
+
+    BankText
+      id: nameStatus
+      text-auto-resize: true
+      anchors.top: name.bottom
+      anchors.left: parent.left
+      margin-top: 4
+
+    BankMuted
+      id: amountCaption
+      !text: tr('How much')
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    PVField
+      id: amount
+      height: 32
+      padding: 6 10 6 10
+      anchors.top: amountCaption.bottom
+      anchors.left: parent.left
+      anchors.right: all.left
+      margin: 4 8 0 0
+
+    PVBlueButton
+      id: all
+      !text: tr('All')
+      size: 80 32
+      ttf-font-size: 12
+      anchors.top: amountCaption.bottom
+      anchors.right: parent.right
+      margin-top: 4
+
+    UIWidget
+      id: quick
+      height: 28
+      anchors.top: amount.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      layout:
+        type: grid
+        cell-size: 112 28
+        cell-spacing: 6
+        flow: true
+
+      BankQuick
+        id: q1000
+        !text: '+1,000'
+      BankQuick
+        id: q10000
+        !text: '+10,000'
+      BankQuick
+        id: q100000
+        !text: '+100,000'
+      BankQuick
+        id: clear
+        !text: tr('Clear')
+
+    BankMuted
+      id: note
+      text-wrap: true
+      text-auto-resize: true
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: action.top
+      margin-bottom: 10
+
+    PVGreenButton
+      id: action
+      height: 40
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  FishingPanel
+    id: historyPanel
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 8
+    padding: 10 12 10 12
+
+    ScrollablePanel
+      id: list
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: parent.bottom
+      margin-right: 6
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 2
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
+    BankMuted
+      id: empty
+      !text: tr('No deposits, withdrawals or transfers yet.')
+      text-auto-resize: true
+      anchors.centerIn: list

@@ -1563,6 +1563,11 @@ function getPokemonFamiliesString(pokemonName)
     return POKEMONS[pokemonName].familiesString
 end
 
+-- the species' family in evolution order (Gastly, Haunter, Gengar)
+function getPokemonFamilies(pokemonName)
+    return POKEMONS[pokemonName] and POKEMONS[pokemonName].families or {}
+end
+
 function getPokemonEggMoves(pokemonName)
     return POKEMONS[pokemonName].eggMoves and POKEMONS[pokemonName].eggMoves or {}
 end

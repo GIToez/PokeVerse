@@ -361,6 +361,16 @@ UIWindow
         modules.client_options.hide()
 
     OptButton
+      id: account
+      !text: tr('Account')
+      !tooltip: tr('Your email and password')
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      @onClick: |
+        modules.client_options.hide()
+        PokeVerseAccount.openAccount()
+
+    OptButton
       id: cancel
       !text: tr('Close')
       anchors.right: save.left

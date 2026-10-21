@@ -1,7 +1,43 @@
 diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
 --- a/modules/game_battle/battle.lua
 +++ b/modules/game_battle/battle.lua
-@@ -250,7 +250,7 @@
+@@ -33,9 +33,34 @@
+     ["sortAscByHitPoints"] = false,
+     ["sortDescByHitPoints"] = false,
+     ["sortAscByName"] = false,
+-    ["sortDescByName"] = false
++    ["sortDescByName"] = false,
++    ["sortAscByLevel"] = false,
++    ["sortDescByLevel"] = false
+ }
+ 
++-- PokeVerse: Pokemon names end in their level ("Rattata [5]"); trainers and NPCs have none
++local function creatureLevel(creature)
++    return tonumber(creature:getName():match(' %[(%d+)%]$')) or 0
++end
++
++-- PokeVerse: the rows that stay on top whatever the sort, in order: the trainer's own Pokemon, then
++-- the one the Ranger radar is tracking
++local function pinnedButtons(instance)
++    local pinned = {}
++    for _, button in pairs(instance.battleButtons) do
++        if button.creature and button.creature:isLocalPlayerSummon() then
++            pinned[#pinned + 1] = button
++        end
++    end
++    local nameplates = modules.game_pokehud and modules.game_pokehud.Nameplates
++    local trackedId = nameplates and nameplates.getTracked and nameplates.getTracked()
++    local tracked = trackedId and instance.battleButtons[trackedId]
++    if tracked and not (tracked.creature and tracked.creature:isLocalPlayerSummon()) then
++        pinned[#pinned + 1] = tracked
++    end
++    return pinned
++end
++
+ -- Battle List Manager
+ local BattleListManager = {
+     instances = {},
+@@ -250,7 +275,7 @@
      instance:updateTitle()
      
      local hideButtons = {}
@@ -10,7 +46,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      for i, v in ipairs(options) do
          hideButtons[v] = newWindow:recursiveGetChildById(v)
          if hideButtons[v] then
-@@ -370,8 +370,8 @@
+@@ -370,8 +395,8 @@
      -- Set initial scrollbar position for new instances (filters visible by default)
      local scrollbar = newWindow:getChildById('miniwindowScrollBar')
      if scrollbar then
@@ -21,7 +57,16 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      end
      
      if g_game.isOnline() then
-@@ -1030,6 +1030,31 @@
+@@ -588,6 +613,8 @@
+                 return 'health'
+             elseif filterName:find("Name") then
+                 return 'name'
++            elseif filterName:find("Level") then
++                return 'level'
+             end
+         end
+     end
+@@ -1030,6 +1057,31 @@
      end
  end
  
@@ -53,7 +98,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function BattleListInstance:doCreatureFitFilters(creature)
      if creature:isLocalPlayer() then
          return false
-@@ -1064,16 +1089,7 @@
+@@ -1064,16 +1116,7 @@
                 (i == 'hideNPCs' and creature:isNpc()) or
                 (i == 'hideMonsters' and creature:isMonster()) or
                 (i == 'hideSkulls' and (creature:isPlayer() and creature:getSkull() == SkullNone)) or
@@ -71,7 +116,46 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
                 (i == 'hideKnights' and creature:isPlayer() and creature:isKnight()) or
                 (i == 'hidePaladins' and creature:isPlayer() and creature:isPaladin()) or
                 (i == 'hideDruids' and creature:isPlayer() and creature:isDruid()) or
-@@ -1359,9 +1375,11 @@
+@@ -1110,6 +1153,7 @@
+         newCreature.id = creatureId
+         newCreature.name = creature:getName():lower()
+         newCreature.healthpercent = creature:getHealthPercent()
++        newCreature.level = creatureLevel(creature)
+         newCreature.distance = getDistanceBetween(g_game.getLocalPlayer():getPosition(), creature:getPosition())
+         newCreature.age = self.lastAge + 1
+         self.lastAge = self.lastAge + 1
+@@ -1145,6 +1189,9 @@
+         else
+             self.panel:insertChild((#self.binaryTree - newIndex + 1), battleButton)
+         end
++        if #pinnedButtons(self) > 0 then
++            self:correctBattleButtons()
++        end
+     end
+     
+     battleButton:setVisible(canBeSeen(creature))
+@@ -1214,6 +1261,10 @@
+             return {
+                 age = battleButton.age
+             }
++        elseif orderType == 'level' then
++            return {
++                level = battleButton.level
++            }
+         else
+             return {
+                 name = battleButton.name
+@@ -1243,6 +1294,9 @@
+             end
+         end
+     end
++    for i, button in ipairs(pinnedButtons(self)) do
++        self.panel:moveChildToIndex(button, i)
++    end
+     return true
+ end
+ 
+@@ -1359,9 +1413,11 @@
      connect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
      connect(Creature, {
          onSkullChange = updateCreatureSkull,
@@ -83,7 +167,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          onPositionChange = onCreaturePositionChange,
          onAppear = onCreatureAppear,
          onDisappear = onCreatureDisappear
-@@ -1384,9 +1402,11 @@
+@@ -1384,9 +1440,11 @@
      disconnect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
      disconnect(Creature, {
          onSkullChange = updateCreatureSkull,
@@ -95,7 +179,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          onPositionChange = onCreaturePositionChange,
          onAppear = onCreatureAppear,
          onDisappear = onCreatureDisappear
-@@ -1478,6 +1498,8 @@
+@@ -1478,6 +1536,8 @@
      -- Setup keybind
      Keybind.new("Windows", "Show/hide battle list", "Ctrl+B", "")
      Keybind.bind("Windows", "Show/hide battle list", {{ type = KEY_DOWN, callback = toggle }})
@@ -104,7 +188,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  
      -- Setup scrollbar - use default MiniWindow behavior
      local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
-@@ -1497,13 +1519,13 @@
+@@ -1497,13 +1557,13 @@
          -- Set initial scrollbar position when filters are visible
          local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
          if scrollbar then
@@ -121,10 +205,27 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      for i, v in ipairs(options) do
          hideButtons[v] = battleWindow:recursiveGetChildById(v)
      end
-@@ -1765,6 +1787,21 @@
+@@ -1633,6 +1693,8 @@
+         comparatorA, comparatorB = a.age, type(b) == 'table' and b.age or b
+     elseif sortType == 'name' then
+         comparatorA, comparatorB = (a.name):lower(), type(b) == 'table' and (b.name):lower() or b
++    elseif sortType == 'level' then
++        comparatorA, comparatorB = a.level, type(b) == 'table' and b.level or b
+     end
+ 
+     if comparatorA == nil or comparatorB == nil then
+@@ -1765,6 +1827,29 @@
      end
  end
  
++function refreshTracked()
++    for _, instance in pairs(BattleListManager.instances) do
++        if instance.panel then
++            instance:correctBattleButtons()
++        end
++    end
++end
++
 +local partyFilterEvent = nil
 +
 +function refreshPartyFilter()
@@ -143,7 +244,18 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onZoomChange()
      removeEvent(eventOnCheckCreature)
      eventOnCheckCreature = scheduleEvent(function()
-@@ -1986,6 +2023,49 @@
+@@ -1915,6 +2000,10 @@
+             return {
+                 age = battleButton.age
+             }
++        elseif orderType == 'level' then
++            return {
++                level = battleButton.level
++            }
+         else
+             return {
+                 name = battleButton.name
+@@ -1986,6 +2075,49 @@
      end
  end
  
@@ -193,7 +305,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function attackNext(previous)
      local foundTarget = false
      local firstElement = nil
-@@ -1994,14 +2074,14 @@
+@@ -1994,14 +2126,14 @@
      local nextElement = nil
  
      local mainInstance = BattleListManager.instances[0]
@@ -211,7 +323,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
              -- select visible first child
              if not firstElement then
                  firstElement = battleButton
-@@ -2381,6 +2461,16 @@
+@@ -2381,6 +2513,16 @@
      end
  end
  
@@ -228,7 +340,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onCreatureAppear(creature) -- Update battleButton once a creature appear (add)
      if creature:isLocalPlayer() then
          addEvent(updateStaticSquare)
-@@ -2609,6 +2699,7 @@
+@@ -2609,6 +2751,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")
@@ -480,3 +592,19 @@ diff -ruN pristine/modules/game_battle/battle.otui modules/game_battle/battle.ot
    Panel
      height: 18
      anchors.top: filterPanel.bottom
+@@ -377,4 +220,12 @@
+ 
+   BattleListMenuOption
+     id: sortDescByName
+-    !text: tr('Sort Descending by Name')
+\ No newline at end of file
++    !text: tr('Sort Descending by Name')
++
++  BattleListMenuOption
++    id: sortAscByLevel
++    !text: tr('Sort Ascending by Level')
++
++  BattleListMenuOption
++    id: sortDescByLevel
++    !text: tr('Sort Descending by Level')
+\ No newline at end of file

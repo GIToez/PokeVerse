@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Draws the Ranger radar popup artwork (game_radar): the radar disc and its direction cone, the
-blips, the player and target rings, the arrow on the game map, the minimap flag and the panels.
+blips, the player and target rings, the arrow on the game map, the minimap flag, the battle list mark
+and the panels.
 
     scripts/art/radar_ui.py <out dir>
 
@@ -250,6 +251,21 @@ def header_icon(size=30):
     return im
 
 
+def battle_mark(size=11):
+    """The tracked Pokemon's mark in the battle list: a small radar with its sweep and a target dot."""
+    im = canvas(size, size)
+    d = ImageDraw.Draw(im)
+    c = size / 2
+    d.ellipse((s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)), fill=(16, 34, 62, 255), outline=(110, 190, 255, 255),
+              width=s(1))
+    d.pieslice((s(1.5), s(1.5), s(size - 1.5), s(size - 1.5)), -90, -30, fill=YELLOW + (150,))
+    a = math.radians(-30)
+    d.line((s(c), s(c), s(c + math.cos(a) * (c - 1.5)), s(c + math.sin(a) * (c - 1.5))), fill=YELLOW + (255,),
+           width=s(1))
+    d.ellipse((s(c + 0.6), s(c + 0.8), s(c + 3.4), s(c + 3.6)), fill=(255, 92, 92, 255))
+    return im
+
+
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else (
         Path(__file__).resolve().parents[2] / 'core/client-redemption/pokeverse-modern/modules/game_radar/images')
@@ -275,6 +291,7 @@ def main():
     save(draw_lock((150, 170, 205, 255)), out, 'lock')
     save(badge(), out, 'badge')  # border 5, tinted per type with image-color
     save(header_icon(), out, 'icon_radar')
+    save(battle_mark(), out, 'battle_mark')
 
 
 if __name__ == '__main__':

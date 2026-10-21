@@ -36,6 +36,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Store.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.EXP_BOOST) then
         ExpBoost.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.BANK) then
+        Bank.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.AUTO_LOOT) then
         local enabled = buffer == "1"
         setPlayerAutoLoot(cid, enabled)

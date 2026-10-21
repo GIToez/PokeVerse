@@ -14,11 +14,13 @@ Module
     dofile 'characterlist'
     dofile 'pokeverse_entergame'
     dofile 'pokeverse_characters'
+    dofile 'pokeverse_account'
     EnterGame.init()
     CharacterList.init()
     PokeVerseEnterGame.init()
 
   @onUnload: |
+    PokeVerseAccount.terminate()
     PokeVerseEnterGame.terminate()
     EnterGame.terminate()
     CharacterList.terminate()

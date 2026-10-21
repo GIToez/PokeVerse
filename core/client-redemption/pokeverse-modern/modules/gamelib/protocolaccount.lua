@@ -12,6 +12,16 @@ AccountRequestCreateAccount = 1
 AccountRequestCreateCharacter = 2
 AccountRequestDeleteCharacter = 3
 AccountRequestServerStatus = 4 -- answered with the number of players online
+-- account emails (server src/protocolaccount.h): the strings after the password are request.texts
+AccountRequestVerifyEmail = 5 -- texts: code
+AccountRequestResendCode = 6
+AccountRequestSetEmail = 7 -- texts: email (accounts without a verified email)
+AccountRequestRecoverRequest = 8 -- account: the account name or the email, no password
+AccountRequestRecoverReset = 9 -- password: the new password; texts: code
+AccountRequestChangePassword = 10 -- texts: new password
+AccountRequestEmailChangeRequest = 11 -- texts: new email
+AccountRequestEmailChangeConfirm = 12 -- texts: code sent to the old email, code sent to the new one
+AccountRequestAccountInfo = 13 -- answered with key=value lines
 
 local ProtocolAccountId = 0x0B
 local AccountReplySuccess = 0x0B
@@ -61,6 +71,10 @@ function ProtocolAccount:onConnect()
     msg:addU8(outfit.feet or 0)
   elseif request.action == AccountRequestDeleteCharacter then
     msg:addString(request.name)
+  else
+    for _, text in ipairs(request.texts or {}) do
+      msg:addString(text)
+    end
   end
 
   local paddingBytes = g_crypt.rsaGetSize() - (msg:getMessageSize() - offset)

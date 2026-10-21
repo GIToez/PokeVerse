@@ -81,8 +81,8 @@ so. Items marked **To decide** need an answer before work starts.
 8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
 9. [Factions](#10-factions).
 10. The [modernization audit](modernization-audit.md): the old keyword systems get windows,
-    in its ranked order (Poke Mart, Nurse Joy menu, travel picker, bank, and the rest).
-    - **Poke Mart window first (not built, added October 20).** Today {trade} at the 158
+    in its ranked order (Poke Mart, bank, travel picker and the rest; Nurse Joy needs no menu).
+    - **Poke Mart window first (built, PR #161).** Today {trade} at the 158
       shop NPCs still opens Tibia's trade window, only renamed to Dollars. The new window is
       in the Sell Shop's style: item tiles by category (Balls, Potions, Revives, Tools), a
       quantity stepper with x1/x10/x100, the total and your money, and a cart to buy several
@@ -95,6 +95,13 @@ so. Items marked **To decide** need an answer before work starts.
       quantities and cart are what the
       [Store](#19-accounts-soul-coins-and-the-store) needs too, so the Mart comes before
       the Store and the Store reuses them.
+    - **Bank window (built, added October 21).** Greeting any of the 19 bank NPCs opens it
+      (`game_bank`, `lib/ps/systems/086-bank.lua`): the balance and the money carried, Deposit
+      and Withdraw with +1,000/+10,000/+100,000 and All, Transfer with a name check that says
+      when the name is one of your own characters (allowed, with no cap) and a confirmation,
+      and History with the last 20 deposits, withdrawals and transfers. Every action needs the
+      trainer within 4 tiles of the banker; walking away closes the window. The keywords still
+      work for older clients.
 
 Items 1 to 5 and 7 are done.
 
@@ -1076,8 +1083,8 @@ From the `#notes` channel:
   Dragon Fang and the rest) is a flat +20% to that type's moves. Drag one from the bag onto a
   Pokémon on the swap bar to give it (or "Use with" its ball); dropping another on it swaps
   them. A small icon in the slot's corner shows what it holds, the slot's tooltip names it,
-  and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade is no
-  longer needed. Polkadot Bow boosts Normal moves by 10% (as on Bulbapedia; Silk Scarf is the
+  and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade, who
+  took held items off, is off the map (his spawn is commented out in `map-spawn.xml`). Polkadot Bow boosts Normal moves by 10% (as on Bulbapedia; Silk Scarf is the
   full 20%).
 - **Lucky Egg and Exp Share (built):** the Lucky Egg gives its holder +50% EXP from defeating
   wild Pokémon. Exp Share holders on the belt that are not out and not fainted split a pool of
@@ -1816,7 +1823,9 @@ berries and the GTS. Making some of those nicer is in the
 
 ## 19. Accounts, Soul Coins and the Store
 
-Planned October 20, for going public. Phase 3, the Store, is built (PR #163); the rest is not.
+Planned October 20, for going public. Phase 3, the Store, is built (PR #163), phase 1,
+password security, in PR #167, and phase 2, accounts and email, in the PR after it. Phase 4,
+buying Soul Coins, is not.
 
 ### Today
 
@@ -1890,7 +1899,11 @@ client update.
 [Poke Mart window](#order) (item 10) first, then the Store (phase 3), then
 phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its own PR.
 
-1. **Password security** (needs nothing new):
+1. **Password security** (built, PR #167; [live-server.md](live-server.md#login-key) has the
+   details). The live server accepts only the PokeVerse key; local servers keep the open key.
+   Passwords use PBKDF2-SHA256 from OpenSSL, which the server already links (decided October
+   21). Argon2id stays a possible later change: it needs libsodium on every server build and
+   running `bootstrap-ovh.sh` again on the live server. As planned:
    - **A PokeVerse RSA key (agreed).** A new key pair for the live server. The private half
      lives only on the live server, in a file the server reads at start (outside the
      repository, like the other live secrets); local test servers keep a test key. The
@@ -1901,8 +1914,13 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
      each old password upgraded the next time that player logs in.
    - At least 8 characters and no very common passwords. An account locks for 15 minutes
      after 10 wrong passwords from any IP.
-2. **Accounts and email** (needs the Gmail address):
-   - A small account service on the OVH server, reached only on the server itself like the
+2. **Accounts and email** (built; [live-server.md](live-server.md#account-emails) has the
+   details). It lives in the game server's account protocol, which already creates accounts,
+   with a mail thread that sends through Gmail; `account.pokeverse.quest` comes with
+   phase 4. Still to do: the security log lookup in the Admin window, removing the Account
+   Manager's password and recovery key keywords, and the Privacy Policy and Terms. As
+   planned:
+   - ~~A small account service on the OVH server~~, reached only on the server itself like the
      Discord bridge, and through Cloudflare at `account.pokeverse.quest` for PayPal later.
    - Email and Confirm email when creating an account, and the verification code.
    - Forgot password on the login screen: a code by email, then the new password, in the
@@ -1984,13 +2002,13 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
 ### Needed before starting
 
 - Phases 1 and 3 need nothing.
-- Phase 2 (the GitHub part is done): `thepokeversemmo@gmail.com` with 2-Step Verification and an App Password. In this
+- Phase 2 (done): `thepokeversemmo@gmail.com` with 2-Step Verification and an App Password. In this
   repository's Settings > Secrets and variables > Actions: the variable `GMAIL_ADDRESS`
-  (`thepokeversemmo@gmail.com`) and the secret `GMAIL_APP_PASSWORD` (the 16 letters, no
-  spaces); the Live server workflow copies them to the server, as it does the bot token. The
-  same two in Cloud Agents > Secrets in the Cursor Dashboard to send test emails while
-  building. Changing the Gmail password cancels the App Password: make a new one and update
-  the secret. Access to the `pokeverse.quest` DNS, ideally on Cloudflare.
+  (`thepokeversemmo@gmail.com`) and the secret `GMAIL_APP_PASSWORD` (the 16 letters); the
+  Live server workflow copies them to the server, as it does the bot token. The tests use a
+  local SMTP server (`scripts/testing/fake-smtp.py`), so the Cursor Dashboard needs neither.
+  Changing the Gmail password cancels the App Password: make a new one and update the
+  secret. Access to the `pokeverse.quest` DNS, ideally on Cloudflare (phase 4).
 - Phase 4: a PayPal Business account and a PayPal developer app (sandbox and live keys),
   added the same way.
 

@@ -195,3 +195,34 @@ PVIconText < UILabel
 PVModal < PVPanel
   anchors.centerIn: parent
   focusable: true
+
+// a text button, such as Forgot password
+PVLink < UIButton
+  font: verdana-11px-antialised
+  color: #96aacd
+  text-auto-resize: true
+  $hover:
+    color: #ffd75a
+  $pressed:
+    opacity: 0.7
+
+// the account email windows (pokeverse_account.lua): a title, a message, then the fields
+// and buttons the window is opened with, one under the other
+PVFormWindow < PVModal
+  width: 340
+  layout:
+    type: verticalBox
+    fit-children: true
+    spacing: 10
+
+  PVTitle
+    id: title
+    text-align: center
+    text-auto-resize: false
+    height: 24
+
+  PVText
+    id: message
+    text-wrap: true
+    text-align: center
+    margin-bottom: 6

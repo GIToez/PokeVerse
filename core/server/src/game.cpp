@@ -58,6 +58,8 @@
 
 #include "tools.h"
 #include "discordbridge.h"
+#include "mailer.h"
+#include "accountemail.h"
 
 #ifndef WINDOWS
 #include <unistd.h>
@@ -123,6 +125,7 @@ void Game::start(ServiceManager* servicer)
         boost::bind(&Game::checkPartyDuels, this)));
     Scheduler::getInstance().addEvent(createSchedulerTask(EVENT_LOGONLINEPLAYERSINTERVAL,
         boost::bind(&Game::logOnlinePlayers, this)));
+	Scheduler::getInstance().addEvent(createSchedulerTask(60000, boost::bind(&AccountEmail::cleanup)));
 /*    Scheduler::getInstance().addEvent(createSchedulerTask(EVENT_LOGPINGINTERVAL,
         boost::bind(&Game::logPing, this))); */
 
@@ -6708,6 +6711,7 @@ void Game::globalSave()
 void Game::shutdown()
 {
 	DiscordBridge::getInstance()->stop();
+	Mailer::getInstance()->stop();
     std::cout << "Preparing";
     if (g_config.getBool(ConfigManager::LOG_MAP_ITEMS)) {
         logMapItems();

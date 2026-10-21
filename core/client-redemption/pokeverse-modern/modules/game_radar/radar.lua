@@ -249,6 +249,14 @@ end
 
 local liveWanted -- what the server was last told about the live updates
 
+-- the battle list marks the tracked Pokemon (game_pokehud nameplates.lua)
+local function markTarget()
+    local nameplates = modules.game_pokehud and modules.game_pokehud.Nameplates
+    if nameplates and nameplates.setTracked then
+        nameplates.setTracked(target and target.id or nil)
+    end
+end
+
 local function setLive(on)
     on = on and status.live == true
     if liveWanted ~= on then
@@ -259,6 +267,7 @@ end
 
 local function stopTracking()
     target = nil
+    markTarget()
     layoutKey = nil
     clearFlag()
     hideArrow()
@@ -435,6 +444,7 @@ local function selectBlip(blip)
         other.widget:setChecked(other == blip)
     end
     target = blip
+    markTarget()
     layoutKey = nil
     clearFlag()
     refreshTarget()
@@ -484,6 +494,7 @@ local function buildBlips(list)
     else
         hideArrow()
     end
+    markTarget()
     refreshTarget()
 end
 
