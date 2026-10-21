@@ -38,7 +38,7 @@ function ShinyEvent.get()
 end
 
 -- The "1 in chance" to roll right now: getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0. The
--- Discord server boost perk (088-discordBoostPerks.lua) multiplies on top of the event.
+-- Discord server boost perk (089-discordBoostPerks.lua) multiplies on top of the event.
 function ShinyEvent.chance(chance)
     return math.max(1, math.floor(chance / (getShinyEventMultiplier() * DiscordBoostPerks.shinyMultiplier())))
 end

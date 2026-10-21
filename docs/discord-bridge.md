@@ -68,7 +68,7 @@ workflow gives the same secret to the production bot. See [`live-server.md`](liv
   code that writes the `discord_account_links` table.
 - `data/lib/ps/systems/087-discordBoosters.lua`: booster reward requests. The ledger row
   and the Soul Coins are written by `DiscordBridge::depositBoosterWeek` in C++.
-- `data/lib/ps/systems/088-discordBoostPerks.lua`: the server boost level (`boost.level`) and
+- `data/lib/ps/systems/089-discordBoostPerks.lua`: the server boost level (`boost.level`) and
   its perks; the multipliers are `Game::getDiscordBoost*Multiplier` in C++.
 - `data/talkactions/scripts/discord.lua`: the in-game `!discord` command.
 - `data/lib/013-json.lua`: JSON encoder/decoder for Lua 5.1.

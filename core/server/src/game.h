@@ -636,7 +636,7 @@ class Game
 		void setShinyEventMultiplier(double value) {shinyEventMultiplier = value;}
 		double getLootEventMultiplier() const {return lootEventMultiplier;}
 		void setLootEventMultiplier(double value) {lootEventMultiplier = value;}
-		// PS: Discord server boost perks (systems/088-discordBoostPerks.lua). The level (0-3) comes
+		// PS: Discord server boost perks (systems/089-discordBoostPerks.lua). The level (0-3) comes
 		// from the bridge; each multiplier is 1.0 when discordBridgeBoostPerks is off or the level
 		// is below the perk's. Applied once, on top of every other bonus.
 		int32_t getDiscordBoostLevel() const {return discordBoostLevel;}
