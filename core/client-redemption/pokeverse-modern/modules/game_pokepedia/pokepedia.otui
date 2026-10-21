@@ -1624,6 +1624,10 @@ WikiTableCell < UILabel
 WikiTableHeadCell < WikiTableCell
   color: #ffd75a
 
+WikiYellowButton < PVYellowButton
+  ttf-font-size: 12
+  height: 24
+
 WikiLinks < UIWidget
   height: 24
   margin-top: 14

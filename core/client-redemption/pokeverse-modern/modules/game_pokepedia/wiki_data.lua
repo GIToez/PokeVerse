@@ -494,18 +494,6 @@ WikiData = {
         { key = 'vip', title = 'VIP list and messages', portrait = 35, body = {
             { 'p', "Right-click a trainer and choose Add to VIP list; the VIP button in the top bar shows who is online. Choose Message to send them a private message." },
         } },
-        { key = 'discord', title = 'Discord', portrait = 137, body = {
-            { 'p', "Link your account to our Discord server to show your Trainer Card there and hear back about your reports." },
-            { 'steps', {
-                "Say !discord link in the game. You get a code like ABCD-EFGH that works for 10 minutes.",
-                "In Discord, type /link code:ABCD-EFGH.",
-            } },
-            { 'commands', { "!discord link", "!discord status", "!discord unlink" } },
-            { 'p', "The link is for your whole account. You can ask for a new code every 30 seconds, up to 5 an hour. !discord status shows what is linked, and !discord unlink, then !discord unlink confirm within 60 seconds, removes it." },
-            { 'p', "On Discord, /trainer shows a Trainer Card and keeps the privacy settings of the card. Premium trainers get the Ace Trainer role." },
-            { 'tip', "Never give your code to anyone: whoever uses it links your account to their Discord." },
-            { 'see', { 'reports', 'premium' } },
-        } },
         { key = 'reports', title = 'Reports', portrait = 233, body = {
             { 'p', "Press Ctrl+Z, or the Reports button in the top bar, to tell the team about a bug or a player breaking the rules." },
             { 'table', {
@@ -547,6 +535,69 @@ WikiData = {
         } },
     } },
 
+    { key = 'community', name = 'Discord', item = 6499, topics = {
+        { key = 'discord', title = 'The Discord server', portrait = 137, body = {
+            { 'p', "The PokeVerse Discord is where the game and the players meet: news, help, events and a chat that is also in the game." },
+            { 'discordlink' },
+            { 'table', {
+                { "Channel", "What is there" },
+                { "#game-chat", "The game's Global EN chat, both ways" },
+                { "#pokemon-catches", "Catches as they happen" },
+                { "#shiny-spawns, #legendary-spawns", "Shiny and legendary Pokemon that appear" },
+                { "#game-announcements", "News, events and restarts" },
+                { "#server-status", "Online or not, and how many play" },
+                { "#bug-reports", "One post for each bug report" },
+                { "#bot-commands", "/trainer, /pokemon and /server" },
+            } },
+            { 'p', "What you write in #game-chat shows in the Global EN channel as [Discord] and your name, and Global EN shows in #game-chat. Global EN needs level 10." },
+            { 'p', "In #bot-commands, /trainer shows anyone's Trainer Card (with their privacy settings), /pokemon a Pokemon's data and /server the server status." },
+            { 'see', { 'discordlink', 'boosting', 'reports' } },
+        } },
+        { key = 'discordlink', title = 'Linking your account', portrait = 233, body = {
+            { 'p', "Link your game account to your Discord user to get the Verified Trainer role, your main character as your Discord name, replies about your reports and booster rewards. Premium accounts also get the Ace Trainer role." },
+            { 'discordlink' },
+            { 'steps', {
+                "Press Get my link code above, or Link Discord in your Account window (Settings > Account, or Account on the character list), or say !discord link in the game.",
+                "You get a code like ABCD-EFGH. It works once, for 10 minutes. Copy command copies /link code:ABCD-EFGH for you.",
+                "Paste it into any channel of the PokeVerse Discord and send it.",
+            } },
+            { 'p', "The link is for your whole account: every character on it. A new code can be asked for every 30 seconds, up to 5 an hour." },
+            { 'h', "In the game" },
+            { 'commands', { "!discord link", "!discord status", "!discord unlink" } },
+            { 'p', "!discord status shows what is linked and since when. !discord unlink, then !discord unlink confirm within 60 seconds, removes the link." },
+            { 'h', "In Discord" },
+            { 'table', {
+                { "Command", "Does" },
+                { "/account", "Your link, main character and Premium days" },
+                { "/characters", "Your characters, levels and who is online" },
+                { "/main", "Picks the character used as your Discord name" },
+                { "/sync", "Fixes your roles and name now" },
+                { "/unlink", "Removes the link" },
+            } },
+            { 'p', "Your main character starts as the first character you made; if it is deleted, the next one takes over. Lost your Discord user? Log in to the game, unlink, and link the new one: logging in is the proof that the account is yours." },
+            { 'tip', "Never give your code to anyone: whoever uses it links your account to their Discord." },
+            { 'see', { 'discord', 'boosting', 'premium' } },
+        } },
+        { key = 'boosting', title = 'Boosting and rewards', item = 6499, body = {
+            { 'p', "Boosting the PokeVerse Discord server with Discord Nitro earns Soul Coins on your linked account, for as long as the boost lasts." },
+            { 'table', {
+                { "When", "Soul Coins" },
+                { "Every 7 days of boosting", "1" },
+                { "Every 4th week", "+1 loyalty bonus" },
+                { "Week 52, 104 and every year after", "+15 yearly bonus" },
+            } },
+            { 'p', "So 4 weeks give 5 Soul Coins, and a full year of boosting gives 80: 52 weekly, 13 loyalty and the 15 yearly bonus." },
+            { 'steps', {
+                "Link your account first. Weeks completed before the link are not paid.",
+                "Boost the server. Each completed week is paid, posted in #booster-rewards, and your online characters get a thank-you message.",
+                "The Soul Coins go to your account's Soul Coin balance, ready for the Store.",
+            } },
+            { 'p', "In Discord, /booster shows your streak, the weeks paid, the Soul Coins received and when the next week is due." },
+            { 'p', "The weeks count from the day your current boost started. Removing the boost or moving it to another server ends the streak, and a new boost starts again at week 1. A week is only ever paid once." },
+            { 'tip', "Booster rewards start when the team switches them on; until then /booster is not in Discord." },
+            { 'see', { 'discordlink', 'soulcoins', 'premium' } },
+        } },
+    } },
     { key = 'battle', name = 'Battles and challenges', item = 11420, topics = {
         { key = 'npcduels', title = 'NPC trainers and respect', portrait = 95, body = {
             { 'p', "Say hi, then battle (or fight, or duel), then yes. Each trainer has its own rules: a minimum level, respect points to have or to pay, and money only if that trainer bets." },

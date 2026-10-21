@@ -505,15 +505,20 @@ local function describe(info)
 end
 
 local function joinDiscordButton()
-    return { text = tr('Join Discord'), style = 'PVBlueButton', onClick = function() g_platform.openUrl(DISCORD_INVITE_URL) end }
+    return { text = tr('Join Discord'), style = 'PVBlueButton', onClick = function() PokeVerseAccount.joinDiscord() end }
 end
 
--- A one-time code for /link in the Discord server; Copy command puts "/link code:<code>" on the clipboard
-openDiscordLink = function()
+-- A one-time code for /link in the Discord server; Copy command puts "/link code:<code>" on the clipboard.
+-- onBack replaces going back to the Account window (the Pokepedia passes closeForm).
+openDiscordLink = function(onBack)
+    local back = onBack or openAccount
+    if not G.account or G.account == '' or not G.password then
+        return showInfo(tr('Link Discord'), tr('Log in first to manage your account.'))
+    end
     send({ action = AccountRequestDiscordCode, account = G.account, password = G.password }, function(success, reply)
-        if not reply then return openAccount() end
+        if not reply then return back() end
         if not success then
-            return showError(tr('Link Discord'), reply, openAccount)
+            return showError(tr('Link Discord'), reply, back)
         end
         local command = '/link code:' .. reply
         PokeVerseAccount.openForm({
@@ -526,7 +531,7 @@ openDiscordLink = function()
                         widget:setText(tr('Copied!'))
                     end },
                     joinDiscordButton() } },
-                { text = tr('Back'), style = 'PVBlueButton', onClick = function() openAccount() end },
+                { text = onBack and tr('Close') or tr('Back'), style = 'PVBlueButton', onClick = function() back() end },
             },
         })
     end)
@@ -568,6 +573,11 @@ openAccount = function()
     end)
 end
 PokeVerseAccount.openAccount = openAccount
+PokeVerseAccount.openDiscordLink = openDiscordLink
+PokeVerseAccount.closeForm = closeForm
+function PokeVerseAccount.joinDiscord()
+    g_platform.openUrl(DISCORD_INVITE_URL)
+end
 
 -- Once per account and client run, after the character list: older accounts without a
 -- verified email are asked to add one while their days last.
