@@ -11,7 +11,7 @@ HiddenWidget < UIWidget
 
 PVPanel
   id: enterGame
-  size: 340 446
+  size: 340 466
   anchors.centerIn: parent
   color: alpha
   focusable: true
@@ -98,13 +98,21 @@ PVPanel
       size: 18 18
       margin-right: 24
 
+  PVLink
+    id: forgotPasswordButton
+    !text: tr('Forgot password?')
+    anchors.top: prev.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    @onClick: PokeVerseAccount.openForgotPassword(self:getParent():getChildById('accountNameTextEdit'):getText())
+
   PVBlueButton
     id: createAccountButton
     !text: tr('Create Account')
     anchors.top: prev.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 10
+    margin-top: 8
     text-offset: 12 0
     @onClick: EnterGame.showCreateAccount()
 

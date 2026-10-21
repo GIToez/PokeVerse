@@ -126,16 +126,30 @@ function g_game.getProtocolVersionForClient(client)
   return client
 end
 
+-- The public half of the live server's login key (scripts/live/rsa-public.txt; the server keeps the
+-- private half in rsaKeyFile). Local and LAN servers have no private key and use the open OTSERV_RSA.
+POKEVERSE_RSA = '1370212124277828241391014579465689169715776223351497970034338772' ..
+  '2934560134687802832439342361963057476393284893871131732860435658' ..
+  '2172586513605952870081552071314463015892547516009731659457467234' ..
+  '7447192739775193466847117351663138559610791329703090765978219150' ..
+  '36331377901836590004001817446365041607212123021152273'
+
+local function isLocalHost(host)
+  host = host:lower()
+  if host == 'localhost' or host:find('^127%.') or host:find('^10%.') or host:find('^192%.168%.') then
+    return true
+  end
+  local second = tonumber(host:match('^172%.(%d+)%.'))
+  return second ~= nil and second >= 16 and second <= 31
+end
+
 -- The legacy entergame calls this before setClientVersion, so Redemption's 7.60 hack
 -- (custom OS 2) would fire; the server only reads the locale byte from OTClient OS ids.
 function g_game.chooseRsa(host)
-  if G.currentRsa ~= CIPSOFT_RSA and G.currentRsa ~= OTSERV_RSA then
-    return
-  end
   if G.currentRsa == CIPSOFT_RSA then
     g_game.setCustomOs(-1)
   end
-  g_game.setRsa(OTSERV_RSA)
+  g_game.setRsa(isLocalHost(host or '') and OTSERV_RSA or POKEVERSE_RSA)
 end
 
 function Position.isIn(pos, fromPos, toPos)
@@ -216,6 +230,7 @@ ExtendedIds.Report = 39
 ExtendedIds.Ping = 40
 ExtendedIds.Store = 41
 ExtendedIds.ExpBoost = 42
+ExtendedIds.PokedexDetails = 43
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

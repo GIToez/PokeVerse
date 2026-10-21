@@ -1,52 +1,67 @@
 Cursors
   default:
     image: default_tibia
-    hot-spot: 0 0
+    hot-spot: 1 1
   window:
-    image: default_window
-    hot-spot: 0 0
+    image: default_tibia
+    hot-spot: 1 1
   walk:
     image: walkcursor
-    hot-spot: 0 0
-  talk:
-    image: talkcursor
-    hot-spot: 0 0
+    hot-spot: 1 1
   attack:
     image: attackcursor
-    hot-spot: 0 0
-  quicklootcursor:
-    image: quicklootcursor
-    hot-spot: 0 0
+    hot-spot: 1 1
+  talk:
+    image: talkcursor
+    hot-spot: 1 1
   containercursor:
     image: containercursor
-    hot-spot: 0 0
-  lookcursor:
-    image: lookcursor
-    hot-spot: 0 0
-  target:
-    image: targetcursor
-    hot-spot: 9 9
-  horizontal:
-    image: horizontalcursor
-    hot-spot: 9 4
-  vertical:
-    image: verticalcursor
-    hot-spot: 4 9
-  text:
-    image: textcursor
-    hot-spot: 4 9
-  pointerbutton:
-    image: pointerbutton
-    hot-spot: 5 0
+    hot-spot: 1 1
+  quicklootcursor:
+    image: quicklootcursor
+    hot-spot: 1 1
   pointinghand:
     image: pointinghand
-    hot-spot: 5 0
+    hot-spot: 1 1
+  lookcursor:
+    image: lookcursor
+    hot-spot: 1 1
+  pointerbutton:
+    image: pointerbutton
+    hot-spot: 10 1
+  text:
+    image: textcursor
+    hot-spot: 10 19
+  horizontal:
+    image: horizontalcursor
+    hot-spot: 20 20
+  vertical:
+    image: verticalcursor
+    hot-spot: 20 20
+  target:
+    image: targetcursor
+    hot-spot: 20 20
+  ball:
+    image: ballcursor
+    hot-spot: 24 24
   dex:
     image: dexcursor
     hot-spot: 24 24
   order:
     image: ordercursor
     hot-spot: 24 24
-  ball:
-    image: ballcursor
+  potion:
+    image: potioncursor
+    hot-spot: 24 24
+  revive:
+    image: revivecursor
+    hot-spot: 24 24
+  antidote:
+    image: antidotecursor
+    hot-spot: 24 24
+  elixir:
+    image: elixircursor
+    hot-spot: 24 24
+  energy:
+    image: energycursor
     hot-spot: 24 24

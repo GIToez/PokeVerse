@@ -17,10 +17,25 @@ import sys
 import time
 import zlib
 
-# Standard OpenTibia RSA public key (same as server src/otserv.cpp and client modules/gamelib/const.lua).
-RSA_N = int(
+# Standard OpenTibia RSA public key (server src/otserv.cpp without rsaKeyFile, client OTSERV_RSA).
+OPEN_RSA_N = int(
     "109120132967399429278860960508995541528237502902798129123468757937266291492576446330739696001110603907230888610072655818825358503429057592827629436413108566029093628212635953836686562675849720620786279431090218017681061521755056710823876476444260558147179707119674283982419152118103759076030616683978566631413"
 )
+
+
+def login_modulus():
+    """PV_RSA_MODULUS, else the modulus of the server key file PV_RSA_KEY_FILE (p, q and d, the server's
+    rsaKeyFile), else the open key that local servers use."""
+    if os.environ.get("PV_RSA_MODULUS"):
+        return int(os.environ["PV_RSA_MODULUS"])
+    if os.environ.get("PV_RSA_KEY_FILE"):
+        with open(os.environ["PV_RSA_KEY_FILE"]) as f:
+            p, q = (int(v) for v in f.read().split()[:2])
+        return p * q
+    return OPEN_RSA_N
+
+
+RSA_N = login_modulus()
 RSA_E = 65537
 CLIENT_OS = 0x0A  # CLIENTOS_OTCLIENT_WINDOWS
 CLIENT_VERSION = 314

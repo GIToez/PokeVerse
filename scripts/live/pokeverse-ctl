@@ -15,6 +15,8 @@
 #   pokeverse-ctl status                     releases, services, players online, backups, disk
 #   pokeverse-ctl configure key=value ...    host=, daily_restart=true|false, daily_time=HH:MM, timezone=,
 #                                            server_name=
+#   pokeverse-ctl set-rsa-key                install the private login key (PEM on stdin)
+#   pokeverse-ctl set-mail                   account email settings (KEY=VALUE on stdin, empty turns emails off)
 #   pokeverse-ctl set-group <character> <group id>
 #   pokeverse-ctl set-premium <character> <days|unlimited>   premium of the character's account (0 ends it)
 #   pokeverse-ctl restore <backup file> --yes  replace the database with a backup (safety backup first)
@@ -33,6 +35,8 @@ CONFIG=$SHARED/config.local.lua
 SERVER_ENV=$SHARED/server.env
 HEALTH_ENV=$SHARED/health.env
 HEALTH_POSITION=$SHARED/health-position
+RSA_KEY=$SHARED/rsa.key
+MAIL_ENV=$SHARED/mail.env
 RESTART_REQUEST=$SHARED/restart-request
 MYCNF=$PV_HOME/.my.cnf
 DB_NAME=pokeverse
@@ -110,6 +114,22 @@ cmd_verify() {
     [ "${#secret}" -ge 16 ] && ok "Discord bridge secret configured" || bad "discordBridgeSecret missing or shorter than 16 characters"
   else
     bad "$CONFIG is missing (run bootstrap-ovh.sh)"
+  fi
+  if [ ! -f "$RSA_KEY" ]; then
+    warn "no login key yet (written from POKEVERSE_RSA_PRIVATE_KEY by the next deployment)"
+  elif [ "$(stat -c %a "$RSA_KEY")" != 600 ]; then
+    bad "$RSA_KEY must have mode 600"
+  elif python3 "$TOOLS/rsa-key.py" modulus --key-file "$RSA_KEY" >/dev/null; then
+    ok "login key installed"
+  else
+    bad "$RSA_KEY is damaged; deploy again to rewrite it"
+  fi
+  if [ ! -f "$MAIL_ENV" ]; then
+    warn "account emails are off (written from GMAIL_ADDRESS and GMAIL_APP_PASSWORD by the next deployment)"
+  elif [ "$(stat -c %a "$MAIL_ENV")" != 600 ]; then
+    bad "$MAIL_ENV must have mode 600"
+  else
+    ok "account emails go through $(sed -n 's/^SMTP_HOST=//p' "$MAIL_ENV") as $(sed -n 's/^SMTP_USER=//p' "$MAIL_ENV")"
   fi
   if grep -q "^-- BEGIN DEPLOYMENT SETTINGS" "$CONFIG" 2>/dev/null; then
     local host
@@ -279,6 +299,9 @@ ensure_health_account() (
     rm -f "$HEALTH_POSITION"
     log "Created the health check character '$HEALTH_CHARACTER'"
   fi
+  # With emailRequired the account would be locked out 7 days after its first login.
+  dbq "UPDATE accounts SET email_verified = 1, signup_pending = 0 WHERE name = '$HEALTH_ACCOUNT'" \
+    || die "cannot update the health check account"
 )
 
 install_release() (
@@ -353,6 +376,10 @@ cmd_health() (
   sleep 3
   server_active || { log "the game server stopped right after starting"; return 1; }
 
+  # releases from before the login key ignore rsaKeyFile (a rollback) and keep the open key
+  if [ -f "$RSA_KEY" ] && grep -q '^rsaKeyFile = ' "$CONFIG" && grep -qa rsaKeyFile "$CURRENT/pokeverse-server"; then
+    export PV_RSA_KEY_FILE=$RSA_KEY
+  fi
   args=(--account "$HEALTH_ACCOUNT" --password "$HEALTH_PASSWORD" --character "$HEALTH_CHARACTER"
         --walk east,west --game-host 127.0.0.1)
   if [ -s "$HEALTH_POSITION" ]; then args+=(--expect-position "$(cat "$HEALTH_POSITION")"); fi
@@ -503,6 +530,8 @@ cmd_restore() {
 set_managed_block() {
   local block=$1 tmp
   tmp=$(mktemp "$SHARED/.config.XXXXXX")
+  # The END marker must start a line, or the next rewrite would drop everything after it.
+  [ -z "$block" ] || [ "${block: -1}" = $'\n' ] || block+=$'\n'
   PV_BLOCK=$block awk '
     /^-- BEGIN DEPLOYMENT SETTINGS/ { print; printf "%s", ENVIRON["PV_BLOCK"]; skip = 1; next }
     /^-- END DEPLOYMENT SETTINGS/ { skip = 0 }
@@ -538,13 +567,98 @@ dailyRestartEnabled = $daily_restart
 dailyRestartTime = \"$daily_time\"
 restartRequestFile = \"$RESTART_REQUEST\"
 ${server_name:+serverName = \"$server_name\"
-}"
+}$([ -f "$RSA_KEY" ] && printf 'rsaKeyFile = "%s"\n' "$RSA_KEY")
+$(mail_settings)"
   if [ -n "$timezone" ]; then
     printf 'TZ=%s\n' "$timezone" > "$SERVER_ENV"
   else
     rm -f "$SERVER_ENV"
   fi
   log "Settings: ${server_name:+world $server_name, }public address $host, daily restart $daily_restart at $daily_time ${timezone:-server time ($(date +%Z))}"
+  if [ -f "$RSA_KEY" ]; then
+    log "Login key: PokeVerse key only"
+  else
+    log "Login key: none installed, the server uses the open OpenTibia key"
+  fi
+  if [ -f "$MAIL_ENV" ]; then
+    log "Account emails: required, sent through $(mail_value SMTP_HOST):$(mail_value SMTP_PORT) as $(mail_value SMTP_USER)"
+  else
+    log "Account emails: off"
+  fi
+}
+
+mail_value() { sed -n "s/^$1=//p" "$MAIL_ENV" | tail -1; }
+
+# Lua settings for config.local.lua; set-mail only stores values that need no escaping.
+mail_settings() {
+  [ -f "$MAIL_ENV" ] || return 0
+  local ca
+  ca=$(mail_value SMTP_CA_FILE)
+  printf 'emailRequired = true\nsmtpHost = "%s"\nsmtpPort = %s\nsmtpStartTls = true\nsmtpUser = "%s"\nsmtpPassword = "%s"\nsmtpFrom = "%s"\n' \
+    "$(mail_value SMTP_HOST)" "$(mail_value SMTP_PORT)" "$(mail_value SMTP_USER)" "$(mail_value SMTP_PASSWORD)" "$(mail_value SMTP_USER)"
+  [ -n "$ca" ] && printf 'smtpCaFile = "%s"\n' "$ca"
+  return 0
+}
+
+# SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and SMTP_CA_FILE arrive on stdin (the password is
+# never on the command line). Without SMTP_USER and SMTP_PASSWORD emails are turned off.
+cmd_set_mail() {
+  local line key value host=smtp.gmail.com port=587 user="" password="" ca="" tmp
+  while IFS= read -r line || [ -n "$line" ]; do
+    line=${line%$'\r'}
+    [ -n "$line" ] || continue
+    key=${line%%=*}
+    value=${line#*=}
+    case "$key" in
+      SMTP_HOST) [ -n "$value" ] && host=$value ;;
+      SMTP_PORT) [ -n "$value" ] && port=$value ;;
+      SMTP_USER) user=$value ;;
+      SMTP_PASSWORD) password=${value// /} ;;
+      SMTP_CA_FILE) ca=$value ;;
+      *) die "unknown mail setting: $key" ;;
+    esac
+  done
+  if [ -z "$user" ] && [ -z "$password" ]; then
+    rm -f "$MAIL_ENV"
+    log "Account emails: off (no mail settings)"
+    return
+  fi
+  [[ "$user" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || die "the mail address is not valid"
+  [ -n "$password" ] || die "the mail password is missing"
+  [[ "$password" =~ ^[A-Za-z0-9!#$%\&*+,./:\;=?@^_~-]{8,128}$ ]] || die "the mail password has characters that are not allowed (quotes, backslashes)"
+  [[ "$host" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || die "invalid mail server: $host"
+  [[ "$port" =~ ^[0-9]{1,5}$ ]] && [ "$port" -ge 1 ] && [ "$port" -le 65535 ] || die "invalid mail port: $port"
+  if [ -n "$ca" ]; then
+    [[ "$ca" =~ ^/[A-Za-z0-9._/-]+$ ]] && [ -r "$ca" ] || die "cannot read the mail CA file: $ca"
+  fi
+  tmp=$(mktemp "$SHARED/.mail.XXXXXX")
+  chmod 600 "$tmp"
+  printf 'SMTP_HOST=%s\nSMTP_PORT=%s\nSMTP_USER=%s\nSMTP_PASSWORD=%s\nSMTP_CA_FILE=%s\n' "$host" "$port" "$user" "$password" "$ca" > "$tmp"
+  if cmp -s "$tmp" "$MAIL_ENV"; then
+    rm -f "$tmp"
+    log "Mail settings unchanged"
+  else
+    mv "$tmp" "$MAIL_ENV"
+    log "Mail settings saved (the server uses them on its next start)"
+  fi
+}
+
+# The private login key arrives as PEM on stdin (never on the command line) and is stored as p, q and d.
+cmd_set_rsa_key() {
+  local tmp
+  tmp=$(mktemp "$SHARED/.rsa.XXXXXX")
+  chmod 600 "$tmp"
+  if ! python3 "$TOOLS/rsa-key.py" server-key > "$tmp"; then
+    rm -f "$tmp"
+    die "the login key is not a valid 1024-bit RSA key"
+  fi
+  if cmp -s "$tmp" "$RSA_KEY"; then
+    rm -f "$tmp"
+    log "Login key unchanged"
+  else
+    mv "$tmp" "$RSA_KEY"
+    log "Login key installed (the server loads it on its next start)"
+  fi
 }
 
 cmd_set_group() {
@@ -721,11 +835,13 @@ case "$command" in
   health) cmd_health ;;
   status) cmd_status ;;
   configure) cmd_configure "$@" ;;
+  set-rsa-key) cmd_set_rsa_key ;;
+  set-mail) cmd_set_mail ;;
   set-group) cmd_set_group "$@" ;;
   set-premium) cmd_set_premium "$@" ;;
   restore) cmd_restore "$@" ;;
   logs) show_server_log ;;
   discord-deploy) cmd_discord_deploy "$@" ;;
   discord) cmd_discord "$@" ;;
-  *) sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+  *) sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
 esac

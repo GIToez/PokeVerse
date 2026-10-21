@@ -59,7 +59,19 @@ diff -ruN pristine/modules/client_entergame/characterlist.lua modules/client_ent
 diff -ruN pristine/modules/client_entergame/entergame.lua modules/client_entergame/entergame.lua
 --- a/modules/client_entergame/entergame.lua
 +++ b/modules/client_entergame/entergame.lua
-@@ -154,6 +154,9 @@
+@@ -46,6 +46,11 @@
+         return
+     end
+ 
++    -- PokeVerse: a login refused for the account's email opens the email window instead
++    if not errorCode and EnterGame.onLoginRefused and EnterGame.onLoginRefused(message) then
++        return
++    end
++
+     if not errorCode then
+         EnterGame.clearAccountFields()
+     end
+@@ -154,6 +159,9 @@
          enterGame:getChildById('emailLabel'):setText("Acc Name:")
          enterGame:getChildById('rememberEmailBox'):setText("Remember password:")
      end
@@ -69,7 +81,7 @@ diff -ruN pristine/modules/client_entergame/entergame.lua modules/client_enterga
  end
  
  local function loadServerListModule()
-@@ -303,14 +306,16 @@
+@@ -303,14 +311,16 @@
  end
  
  function EnterGame.hidePanels()

@@ -17,6 +17,8 @@
 #include "otpch.h"
 #include "rsa.h"
 
+#include <fstream>
+
 RSA::RSA()
 {
 	m_keySet = false;
@@ -42,17 +44,47 @@ RSA::~RSA()
 
 bool RSA::setKey(const std::string& file)
 {
-	//loads p, q and d from a file
-	FILE* f = fopen(file.c_str(), "r");
-	if(!f)
+	// p, q and d in decimal, one per line
+	std::ifstream in(file.c_str());
+	std::string p, q, d;
+	if(!std::getline(in, p) || !std::getline(in, q) || !std::getline(in, d))
 		return false;
 
-	char p[512], q[512], d[512];
-	delete fgets(p, 512, f);
-	delete fgets(q, 512, f);
-	delete fgets(d, 512, f);
-	setKey(p, q, d);
-	return true;
+	mpz_t check;
+	mpz_init(check);
+	bool valid = !mpz_set_str(check, p.c_str(), 10) && !mpz_set_str(check, q.c_str(), 10)
+		&& !mpz_set_str(check, d.c_str(), 10);
+	mpz_clear(check);
+	if(!valid)
+		return false;
+
+	setKey(p.c_str(), q.c_str(), d.c_str());
+	if(getKeySize() != 128)
+		return false;
+
+	// the clients encrypt with e = 65537: a block must come back unchanged
+	char block[128];
+	memset(block, 0, sizeof(block));
+	for(int32_t i = 1; i < 128; ++i)
+		block[i] = (char)(i * 37 + 11);
+
+	mpz_t m, e, c;
+	mpz_init(m);
+	mpz_init_set_ui(e, 65537);
+	mpz_init(c);
+	mpz_import(m, 128, 1, 1, 0, 0, block);
+	mpz_powm(c, m, e, m_mod);
+
+	char encrypted[128];
+	size_t count = (mpz_sizeinbase(c, 2) + 7) / 8;
+	memset(encrypted, 0, 128 - count);
+	mpz_export(&encrypted[128 - count], NULL, 1, 1, 0, 0, c);
+	mpz_clear(m);
+	mpz_clear(e);
+	mpz_clear(c);
+
+	decrypt(encrypted, 128);
+	return !memcmp(encrypted, block, 128);
 }
 
 void RSA::setKey(const char* p, const char* q, const char* d)

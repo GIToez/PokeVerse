@@ -136,6 +136,24 @@ def draw_lock(color):
     return im
 
 
+def draw_mail(color):
+    im = icon()
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((s(1.5), s(3.5), s(14.5), s(12.5)), s(1.5), outline=color, width=s(1.5))
+    d.line((s(2.5), s(4.5), s(8), s(8.8), s(13.5), s(4.5)), fill=color, width=s(1.5), joint='curve')
+    return im
+
+
+def draw_key(color):
+    im = icon()
+    d = ImageDraw.Draw(im)
+    d.ellipse((s(1.5), s(4.5), s(8.5), s(11.5)), outline=color, width=s(1.7))
+    d.line((s(8.2), s(8), s(14.5), s(8)), fill=color, width=s(1.7))
+    d.line((s(12.5), s(8), s(12.5), s(11)), fill=color, width=s(1.6))
+    d.line((s(14.2), s(8), s(14.2), s(10.5)), fill=color, width=s(1.4))
+    return im
+
+
 def draw_eye(color, crossed):
     im = icon(18)
     d = ImageDraw.Draw(im)
@@ -531,6 +549,8 @@ def main():
     # icons
     save(draw_user(MUTED), out, 'icon_user')
     save(draw_lock(MUTED), out, 'icon_lock')
+    save(draw_mail(MUTED), out, 'icon_mail')
+    save(draw_key(MUTED), out, 'icon_key')
     eye = canvas(18, 36)
     eye.alpha_composite(draw_eye(MUTED, False), (0, 0))
     eye.alpha_composite(draw_eye(WHITE, True), (0, s(18)))

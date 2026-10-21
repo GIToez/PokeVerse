@@ -44,7 +44,8 @@ pt.Connection = PacedConnection
 
 
 def request(args, action, account, password, name=None, sex=None, outfit=None):
-    """Sends one account request and returns (success, message). outfit is (lookType, head, body, legs, feet)."""
+    """Sends one account request and returns (success, message). name may be a tuple of strings
+    (requests with more than one); outfit is (lookType, head, body, legs, feet)."""
     success, message = _request(args, action, account, password, name, sex, outfit)
     if not success and pt.FLOOD_MESSAGE in message:
         print("  login flood protection active; retrying in %ds" % pt.FLOOD_WAIT, flush=True)
@@ -65,8 +66,8 @@ def _request(args, action, account, password, name, sex, outfit):
     try:
         key = pt.new_xtea_key()
         block = b"\x00" + struct.pack("<4I", *key) + bytes([action]) + pt.pstr(account) + pt.pstr(password)
-        if name is not None:
-            block += pt.pstr(name)
+        for text in (name if isinstance(name, tuple) else () if name is None else (name,)):
+            block += pt.pstr(text)
         if sex is not None:
             block += bytes([sex])
         if outfit is not None:
@@ -151,6 +152,10 @@ def main():
             c.expect("create duplicate account", request(args, ACTION_CREATE_ACCOUNT, account, password), False)
             c.expect("create account with short password",
                      request(args, ACTION_CREATE_ACCOUNT, "x" + account, "abc"), False)
+            c.expect("create account with a 7-character password",
+                     request(args, ACTION_CREATE_ACCOUNT, "x" + account, "abcdefg"), False)
+            c.expect("create account with a common password",
+                     request(args, ACTION_CREATE_ACCOUNT, "x" + account, "Pokemon123"), False)
         c.expect("create character with wrong password",
                  request(args, ACTION_CREATE_CHARACTER, account, "wrong" + password, character, 1), False)
         c.expect("create character with invalid name",
