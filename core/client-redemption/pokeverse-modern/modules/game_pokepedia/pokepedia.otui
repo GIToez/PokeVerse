@@ -1501,6 +1501,38 @@ WikiKey < UILabel
 WikiCommand < WikiKey
   color: #8fe08f
 
+WikiPremium < UIWidget
+  height: 18
+  margin-top: 8
+
+  UILabel
+    id: badge
+    font: verdana-11px-antialised
+    color: #f2c14e
+    background-color: #3d2f0b
+    text: PREMIUM
+    text-auto-resize: true
+    padding: 0 4 0 4
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+    $on:
+      color: #ffe08a
+      background-color: #5a4510
+
+  UILabel
+    id: how
+    font: verdana-11px-antialised
+    color: #b98f2e
+    !text: tr('How to get Premium >')
+    text-auto-resize: true
+    anchors.left: badge.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    phantom: true
+    $on:
+      color: #f2c14e
+
 WikiChips < UIWidget
   height: 22
   margin-top: 8

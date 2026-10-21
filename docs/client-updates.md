@@ -35,13 +35,13 @@ the test builds never update.
 3. Optional: set the repository variable `LIVE_SERVER_HOST` (Settings → Secrets and
    variables → Actions → Variables) if the live server address changes. Without it the
    workflow uses the current OVH address.
-4. Android signing key (once, then keep it safe: Android only installs a new APK over an
-   old one when both are signed with the same key). Create it with
+4. Android signing key (done October 2026; keep the keystore safe: Android only installs a
+   new APK over an old one when both are signed with the same key). It was created with
    `keytool -genkeypair -v -keystore pokeverse.keystore -alias pokeverse -keyalg RSA -keysize 4096 -validity 10000`,
    then add these repository secrets: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 pokeverse.keystore`),
    `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` (`pokeverse`) and `ANDROID_KEY_PASSWORD`.
-   Without them the APK is signed with a throwaway debug key, which is fine for testing but
-   means players would have to uninstall before installing the next APK.
+   Without them the APK would be signed with a throwaway debug key, and players would have
+   to uninstall before installing the next APK. Only make a new key if the keystore is lost.
 
 ## Publishing an update
 

@@ -40,7 +40,8 @@ class NetworkMessage;
 //   ACTION_EMAIL_CHANGE_CONFIRM: String code sent to the old email, String code sent to the new one
 // ACTION_SERVER_STATUS needs no account; it is answered with the number of players online.
 // ACTION_ACCOUNT_INFO is answered with "key=value" lines (accountemail.h has the markers
-// other answers may start with).
+// other answers may start with). ACTION_DISCORD_CODE is answered with a Discord link code, the
+// same one-time code "!discord link" gives in the game.
 // Reply (XTEA): U8 0x0A error or 0x0B success, String message. The connection is then closed.
 class ProtocolAccount : public Protocol
 {
@@ -59,7 +60,8 @@ class ProtocolAccount : public Protocol
 			ACTION_CHANGE_PASSWORD = 10,
 			ACTION_EMAIL_CHANGE_REQUEST = 11,
 			ACTION_EMAIL_CHANGE_CONFIRM = 12,
-			ACTION_ACCOUNT_INFO = 13
+			ACTION_ACCOUNT_INFO = 13,
+			ACTION_DISCORD_CODE = 14
 		};
 
 		virtual void onRecvFirstMessage(NetworkMessage& msg) {parseFirstPacket(msg);}
@@ -101,5 +103,6 @@ class ProtocolAccount : public Protocol
 		std::string emailChangeRequest(const Request& request, uint32_t accountId, bool& success);
 		std::string emailChangeConfirm(const Request& request, uint32_t accountId, bool& success);
 		std::string accountInfo(uint32_t accountId, bool& success);
+		std::string discordCode(uint32_t accountId, bool& success);
 };
 #endif

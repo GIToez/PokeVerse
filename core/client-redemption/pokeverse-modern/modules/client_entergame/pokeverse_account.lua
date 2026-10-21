@@ -8,6 +8,7 @@ local VERIFY_MARKER = '#verify-email#'
 local ADD_MARKER = '#add-email#'
 local CHANGE_MARKER = '#change-email#'
 local MAX_EMAIL = 50
+local DISCORD_INVITE_URL = 'https://discord.gg/P88WNBB56E'
 
 local form
 local reminded = {}
@@ -43,8 +44,8 @@ local function emailProblem(email, repeated)
 end
 
 --[[ spec: title, message, fields = { { id, placeholder, password, max, text, icon } },
-     buttons = { { text, style, onClick = function(values) } }; Enter presses the first button,
-     Escape the last one. ]]
+     buttons = { { text, style, onClick = function(values, widget) } }; an entry { row = { button, button } }
+     puts two buttons side by side. Enter presses the first button, Escape the last one. ]]
 function PokeVerseAccount.openForm(spec)
     closeForm()
     form = g_ui.createWidget('PVFormWindow', g_ui.getRootWidget())
@@ -74,18 +75,38 @@ function PokeVerseAccount.openForm(spec)
     end
 
     local buttons = {}
-    for i, button in ipairs(spec.buttons) do
-        local widget = g_ui.createWidget(button.style or (i == 1 and 'PVYellowButton' or 'PVBlueButton'), form)
+    local function addButton(button, parent, defaultStyle)
+        local widget = g_ui.createWidget(button.style or defaultStyle, parent)
         widget:setText(button.text)
-        if i == 1 then
-            widget:setMarginTop(8)
-        end
         widget.onClick = function()
             if form == window then
-                button.onClick(values())
+                button.onClick(values(), widget)
             end
         end
         table.insert(buttons, widget)
+        return widget
+    end
+    for i, button in ipairs(spec.buttons) do
+        local defaultStyle = i == 1 and 'PVYellowButton' or 'PVBlueButton'
+        local first
+        if button.row then
+            first = g_ui.createWidget('PVButtonRow', form)
+            local left = addButton(button.row[1], first, defaultStyle)
+            left:addAnchor(AnchorTop, 'parent', AnchorTop)
+            left:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+            left:addAnchor(AnchorRight, 'parent', AnchorHorizontalCenter)
+            left:setMarginRight(5)
+            local right = addButton(button.row[2], first, 'PVBlueButton')
+            right:addAnchor(AnchorTop, 'parent', AnchorTop)
+            right:addAnchor(AnchorLeft, 'parent', AnchorHorizontalCenter)
+            right:addAnchor(AnchorRight, 'parent', AnchorRight)
+            right:setMarginLeft(5)
+        else
+            first = addButton(button, form, defaultStyle)
+        end
+        if i == 1 then
+            first:setMarginTop(8)
+        end
     end
     form.onEnter = function() buttons[1].onClick() end
     form.onEscape = function() buttons[#buttons].onClick() end
@@ -354,7 +375,7 @@ local function currentAccount(onDone)
     return { name = G.account, password = G.password, onDone = onDone, onLater = onDone }
 end
 
-local openAccount
+local openAccount, openDiscordLink
 
 local function openChangePassword(values)
     values = values or {}
@@ -483,6 +504,34 @@ local function describe(info)
     return table.concat(lines, '\n')
 end
 
+local function joinDiscordButton()
+    return { text = tr('Join Discord'), style = 'PVBlueButton', onClick = function() g_platform.openUrl(DISCORD_INVITE_URL) end }
+end
+
+-- A one-time code for /link in the Discord server; Copy command puts "/link code:<code>" on the clipboard
+openDiscordLink = function()
+    send({ action = AccountRequestDiscordCode, account = G.account, password = G.password }, function(success, reply)
+        if not reply then return openAccount() end
+        if not success then
+            return showError(tr('Link Discord'), reply, openAccount)
+        end
+        local command = '/link code:' .. reply
+        PokeVerseAccount.openForm({
+            title = tr('Link Discord'),
+            message = tr('Your code is %s\n\nCopy the command and paste it into any channel of the PokeVerse Discord server. The code works once and expires in 10 minutes. Never share it with anyone.', reply),
+            buttons = {
+                { row = {
+                    { text = tr('Copy command'), style = 'PVYellowButton', onClick = function(_, widget)
+                        g_window.setClipboardText(command)
+                        widget:setText(tr('Copied!'))
+                    end },
+                    joinDiscordButton() } },
+                { text = tr('Back'), style = 'PVBlueButton', onClick = function() openAccount() end },
+            },
+        })
+    end)
+end
+
 -- The Account window: what the account has, and the changes.
 openAccount = function()
     if not G.account or G.account == '' or not G.password then
@@ -507,6 +556,13 @@ openAccount = function()
             end })
         end
         table.insert(buttons, { text = tr('Change password'), style = 'PVBlueButton', onClick = function() openChangePassword() end })
+        if info.discord == '1' then
+            table.insert(buttons, joinDiscordButton())
+        else
+            table.insert(buttons, { row = {
+                { text = tr('Link Discord'), style = 'PVBlueButton', onClick = function() openDiscordLink() end },
+                joinDiscordButton() } })
+        end
         table.insert(buttons, { text = tr('Close'), style = 'PVBlueButton', onClick = closeForm })
         PokeVerseAccount.openForm({ title = tr('Your Account'), message = describe(info), buttons = buttons })
     end)

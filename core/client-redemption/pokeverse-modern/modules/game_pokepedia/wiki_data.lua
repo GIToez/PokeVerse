@@ -273,6 +273,7 @@ WikiData = {
     { key = 'abilities', name = 'Pokemon abilities', item = 645, topics = {
         { key = 'abilities', title = 'Overview', portrait = 18, body = {
             { 'p', "Abilities are used with an order (E or the order icon) unless the topic says otherwise. Epic balls can't use them." },
+            { 'premium' },
             { 'table', {
                 { "Free", "Premium" },
                 { "Ride, Dig, Cut, Rock Smash", "Fly, Levitate, Surf, Dive" },
@@ -285,18 +286,22 @@ WikiData = {
             { 'p', "Order on yourself to get on your Pokemon, and again to get off. No Premium needed." },
         } },
         { key = 'fly', title = 'Fly and Levitate', portrait = 6, body = {
-            { 'p', "Premium. Order on yourself to take off; say /up and /down to change floors, and order on yourself again to land. Not during a fight or a duel. Levitate works the same way." },
+            { 'premium' },
+            { 'p', "Order on yourself to take off; say /up and /down to change floors, and order on yourself again to land. Not during a fight or a duel. Levitate works the same way." },
             { 'commands', { "/up", "/down" } },
         } },
         { key = 'surf', title = 'Surf', portrait = 131, body = {
-            { 'p', "Premium. Order on the edge of the water to start surfing, and on the shore to land." },
+            { 'premium' },
+            { 'p', "Order on the edge of the water to start surfing, and on the shore to land." },
         } },
         { key = 'dive', title = 'Dive', item = 11674, body = {
-            { 'p', "Premium. Wear an oxygen mask in the key item slot, surf on a Pokemon that knows Dive and move onto a whirlpool. Underwater you are faster; leave by an exit and you come back up surfing." },
+            { 'premium' },
+            { 'p', "Wear an oxygen mask in the key item slot, surf on a Pokemon that knows Dive and move onto a whirlpool. Underwater you are faster; leave by an exit and you come back up surfing." },
             { 'p', "Alex, north-east of Cerulean, sells the oxygen mask for $2,000." },
         } },
         { key = 'teleport', title = 'Teleport', portrait = 65, body = {
-            { 'p', "Premium. With a Pokemon that knows Teleport out, say /teleport and pick where to go: towns you can reach, your home, your house or your guild hall. Not underwater, in a fight, a duel or the PvP arena." },
+            { 'premium' },
+            { 'p', "With a Pokemon that knows Teleport out, say /teleport and pick where to go: towns you can reach, your home, your house or your guild hall. Not underwater, in a fight, a duel or the PvP arena." },
             { 'table', {
                 { "Pokemon", "Wait between teleports" },
                 { "Abra", "30 minutes" },
@@ -332,14 +337,17 @@ WikiData = {
             { 'commands', { "/d1", "/d2" } },
         } },
         { key = 'strength', title = 'Strength', portrait = 68, body = {
-            { 'p', "Premium. Order on a heavy boulder: your Pokemon walks up to it and pushes it one tile, away from where it stands. The tile behind the boulder has to be free." },
+            { 'premium' },
+            { 'p', "Order on a heavy boulder: your Pokemon walks up to it and pushes it one tile, away from where it stands. The tile behind the boulder has to be free." },
         } },
         { key = 'waterfall', title = 'Waterfall', portrait = 130, body = {
-            { 'p', "Premium. Surf up next to a waterfall and order on it: your Pokemon carries you up (or down) the falls to the water at the other end." },
+            { 'premium' },
+            { 'p', "Surf up next to a waterfall and order on it: your Pokemon carries you up (or down) the falls to the water at the other end." },
             { 'see', { 'surf' } },
         } },
         { key = 'rockclimb', title = 'Rock Climb', portrait = 9, body = {
-            { 'p', "Premium. Order on a rock wall with handholds: your Pokemon walks to it and climbs, taking you up or down to the floor at the other end." },
+            { 'premium' },
+            { 'p', "Order on a rock wall with handholds: your Pokemon walks to it and climbs, taking you up or down to the floor at the other end." },
         } },
         { key = 'blink', title = 'Blink', portrait = 63, body = {
             { 'p', "Order on a free tile your Pokemon can see: it teleports there at once. It can't blink while asleep. Wait 10 seconds between blinks (7 with the mastery bonus)." },

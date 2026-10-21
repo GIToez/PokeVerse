@@ -205,6 +205,7 @@ void ProtocolAccount::handleRequest(Request request)
 		case ACTION_EMAIL_CHANGE_REQUEST:
 		case ACTION_EMAIL_CHANGE_CONFIRM:
 		case ACTION_ACCOUNT_INFO:
+		case ACTION_DISCORD_CODE:
 			break;
 		default:
 			reply(false, "Unknown request.");
@@ -284,6 +285,8 @@ std::string ProtocolAccount::handleAccountRequest(const Request& request, uint32
 			return emailChangeConfirm(request, accountId, success);
 		case ACTION_ACCOUNT_INFO:
 			return accountInfo(accountId, success);
+		case ACTION_DISCORD_CODE:
+			return discordCode(accountId, success);
 		default:
 			break;
 	}
@@ -646,6 +649,31 @@ std::string ProtocolAccount::accountInfo(uint32_t accountId, bool& success)
 		<< "discord=" << (state.discord ? 1 : 0);
 	success = true;
 	return ss.str();
+}
+
+std::string ProtocolAccount::discordCode(uint32_t accountId, bool& success)
+{
+	success = false;
+	AccountEmail::State state;
+	if(!AccountEmail::loadState(accountId, state))
+		return "Your account could not be loaded, please try again.";
+
+	if(state.discord)
+		return "This account is already linked to Discord. Say !discord unlink in the game first to link another Discord user.";
+
+	std::string error;
+	std::string code = DiscordBridge::getInstance()->createLinkCode(accountId, error);
+	if(code.empty())
+	{
+		if(error == "rate_limited")
+			return "You asked for a code too recently. Please wait a moment and try again.";
+		if(error == "disabled")
+			return "Discord linking is disabled on this server.";
+		return "A code could not be created right now. Please try again later.";
+	}
+
+	success = true;
+	return code;
 }
 
 std::string ProtocolAccount::createCharacter(uint32_t accountId, std::string name, uint8_t sex, const Outfit_t& outfit, bool& success)
