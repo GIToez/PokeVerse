@@ -518,6 +518,8 @@ cmd_restore() {
 set_managed_block() {
   local block=$1 tmp
   tmp=$(mktemp "$SHARED/.config.XXXXXX")
+  # The END marker must start a line, or the next rewrite would drop everything after it.
+  [ -z "$block" ] || [ "${block: -1}" = $'\n' ] || block+=$'\n'
   PV_BLOCK=$block awk '
     /^-- BEGIN DEPLOYMENT SETTINGS/ { print; printf "%s", ENVIRON["PV_BLOCK"]; skip = 1; next }
     /^-- END DEPLOYMENT SETTINGS/ { skip = 0 }
