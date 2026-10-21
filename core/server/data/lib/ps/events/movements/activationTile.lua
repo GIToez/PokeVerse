@@ -1182,6 +1182,7 @@ local ACTS_ONLY_PLAYER = {
         return true
     end,
     [307] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Your first Pokemon battle! Left-click a wild Pokemon to make it your target. Then order your Pokemon to use its moves: click a move on the moves bar at the bottom, or press its key, 1, 2 and so on."))
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "005-target")
         return true
     end,
