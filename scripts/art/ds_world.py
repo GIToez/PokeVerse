@@ -368,12 +368,14 @@ def natural(t, rgba):
 
 ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
 COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
+WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192, 132)]  # logs and planks
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
 HUT_ROOF = range(9409, 9416)                     # the far slope of the small huts beside the Pokemon Centers
-ROOF_EDGES = range(8621, 8633)                   # rims and ridges laid over the flat roof tiles
+# rims and ridges laid over the flat roof tiles
+ROOF_EDGES = list(range(8621, 8633)) + [1157, 1160, 1162, 1163, 1164, 1165, 1166, 1167, 1170, 1172, 1173, 1174, 1175, 1176]
 ROOF_TILES = {1158, 1159, 1161, 1168, 1169, 1171, 8619, 8620}
 STEPS = [0.12, 0.38, 0.62, 0.85]
-LIFT = [0.55, 0.8, 0.95, 1.08, 1.22]
+LIFT = [0.6, 0.82, 1.0, 1.14, 1.28]
 
 
 def tone(t, rgba):
@@ -453,6 +455,8 @@ def made_ground(t, rgba):
         ramp = ROAD if m > 150 else COBBLE
     elif m < 60:
         ramp = ROCKY
+    elif sat > 0.3 and m < 150 and mean[0] > mean[1] > mean[2]:
+        ramp = WOODEN
     return {sid: paint_floor(rgba(sid), lo, hi, mean, ramp) for sid in t[8] if sid and rgba(sid) is not None}
 
 
