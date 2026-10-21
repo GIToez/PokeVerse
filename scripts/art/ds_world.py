@@ -369,6 +369,8 @@ def natural(t, rgba):
 ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
 COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
+HUT_ROOF = range(9409, 9416)                     # the far slope of the small huts beside the Pokemon Centers
+ROOF_EDGES = range(8621, 8633)                   # rims and ridges laid over the flat roof tiles
 ROOF_TILES = {1158, 1159, 1161, 1168, 1169, 1171, 8619, 8620}
 STEPS = [0.12, 0.38, 0.62, 0.85]
 LIFT = [0.55, 0.8, 0.95, 1.08, 1.22]
@@ -431,6 +433,14 @@ def paint_flat_roof(a):
     return out
 
 
+def paint_roof_edge(a):
+    out = paint_flat_roof(a)
+    op = a[..., 3] > 0
+    rim = op & ~(shift(op, 1, 0, True) & shift(op, -1, 0, True) & shift(op, 0, 1, True) & shift(op, 0, -1, True))
+    out[rim, :3] = h.STYLE['roof'][1]
+    return out
+
+
 def made_ground(t, rgba):
     """{sid: art} for a non-natural ground or border item."""
     lo, hi, mean = tone(t, rgba)
@@ -487,6 +497,20 @@ def build():
         else:
             art = made_ground(t, rgba)
         new.update({sid: img for sid, img in art.items() if sid in free})
+    for cid in ROOF_EDGES:
+        for sid in dat.things[cid][8]:
+            if sid and sid not in new and rgba(sid) is not None:
+                new[sid] = paint_roof_edge(rgba(sid))
+    for cid in HUT_ROOF:
+        t = dat.things[cid]
+        art = {sid: rgba(sid) for sid in t[8] if sid and sid not in new and rgba(sid) is not None}
+        open_edges = np.dstack([np.full((t[2] * 32, t[1] * 32), 9, np.uint8), np.zeros((t[2] * 32, t[1] * 32), np.uint8)])
+        for pat, img in h.compose(t, art).items():
+            done = h.paint_roof(img, False, -1, open_edges)
+            for pp, idx, x, y in h.layout(t):
+                sid = t[8][idx] if idx < len(t[8]) else 0
+                if pp == pat and sid in art:
+                    new[sid] = done[y:y + 32, x:x + 32].copy()
     for t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
