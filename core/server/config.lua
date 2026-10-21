@@ -384,6 +384,15 @@
 	discordBridgeSessionIps = true
 	-- Discord account linking (!discord link in game, /link in Discord).
 	discordBridgeAccountLinking = true
+	-- Soul Coins for server boosters with a linked account (needs account linking). Every
+	-- completed 7 days of continuous boosting pays Weekly, every LoyaltyEvery-th week adds
+	-- Loyalty and every YearlyEvery-th week adds Yearly (0 turns a bonus off).
+	discordBridgeBoosterRewards = false
+	discordBridgeBoosterWeekly = 1
+	discordBridgeBoosterLoyaltyEvery = 4
+	discordBridgeBoosterLoyalty = 1
+	discordBridgeBoosterYearlyEvery = 52
+	discordBridgeBoosterYearly = 15
 
 	-- Daily game server restart with in-game warnings (30, 15, 10, 5 and 1 minutes, then 30 and
 	-- 10 seconds). Players, Pokemon, items and the world are saved before the server stops;

@@ -14,6 +14,7 @@
 --   { 'table', { { heading, ... }, { cell, ... }, ... } }
 --   { 'see', { topic key, ... } }    buttons to other topics
 --   { 'hints' }                      the first-visit hints, each with a button that shows it again
+--   { 'discordlink' }                Get my link code (the Account window's Link Discord) and Join Discord
 WikiTab = {}
 
 local page
@@ -216,6 +217,23 @@ function BLOCKS.see(body, block)
             button.onClick = function() WikiTab.open(key) end
         end
     end
+end
+
+function BLOCKS.discordlink(body, block)
+    local account = PokeVerseAccount
+    if not account or not account.openDiscordLink then
+        return
+    end
+    local links = g_ui.createWidget('WikiLinks', body)
+    local code = g_ui.createWidget('WikiYellowButton', links)
+    code:setText(tr('Get my link code'))
+    code:setWidth(code:getTextSize().width + 28)
+    code:setTooltip(tr('Shows a one-time code and copies the /link command for Discord'))
+    code.onClick = function() account.openDiscordLink(account.closeForm) end
+    local join = g_ui.createWidget('TkSmallBlueButton', links)
+    join:setText(tr('Join Discord'))
+    join:setWidth(join:getTextSize().width + 28)
+    join.onClick = function() account.joinDiscord() end
 end
 
 -- every first-visit hint (game_hints) with a button that shows it again

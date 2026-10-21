@@ -494,18 +494,6 @@ WikiData = {
         { key = 'vip', title = 'VIP list and messages', portrait = 35, body = {
             { 'p', "Right-click a trainer and choose Add to VIP list; the VIP button in the top bar shows who is online. Choose Message to send them a private message." },
         } },
-        { key = 'discord', title = 'Discord', portrait = 137, body = {
-            { 'p', "Link your account to our Discord server to show your Trainer Card there and hear back about your reports." },
-            { 'steps', {
-                "Say !discord link in the game. You get a code like ABCD-EFGH that works for 10 minutes.",
-                "In Discord, type /link code:ABCD-EFGH.",
-            } },
-            { 'commands', { "!discord link", "!discord status", "!discord unlink" } },
-            { 'p', "The link is for your whole account. You can ask for a new code every 30 seconds, up to 5 an hour. !discord status shows what is linked, and !discord unlink, then !discord unlink confirm within 60 seconds, removes it." },
-            { 'p', "On Discord, /trainer shows a Trainer Card and keeps the privacy settings of the card. Premium trainers get the Ace Trainer role." },
-            { 'tip', "Never give your code to anyone: whoever uses it links your account to their Discord." },
-            { 'see', { 'reports', 'premium' } },
-        } },
         { key = 'reports', title = 'Reports', portrait = 233, body = {
             { 'p', "Press Ctrl+Z, or the Reports button in the top bar, to tell the team about a bug or a player breaking the rules." },
             { 'table', {
@@ -547,6 +535,69 @@ WikiData = {
         } },
     } },
 
+    { key = 'community', name = 'Discord', item = 6499, topics = {
+        { key = 'discord', title = 'The Discord server', portrait = 137, body = {
+            { 'p', "The PokeVerse Discord is where the game and the players meet: news, help, events and a chat that is also in the game." },
+            { 'discordlink' },
+            { 'table', {
+                { "Channel", "What is there" },
+                { "#game-chat", "The game's Global EN chat, both ways" },
+                { "#pokemon-catches", "Catches as they happen" },
+                { "#shiny-spawns, #legendary-spawns", "Shiny and legendary Pokemon that appear" },
+                { "#game-announcements", "News, events and restarts" },
+                { "#server-status", "Online or not, and how many play" },
+                { "#bug-reports", "One post for each bug report" },
+                { "#bot-commands", "/trainer, /pokemon and /server" },
+            } },
+            { 'p', "What you write in #game-chat shows in the Global EN channel as [Discord] and your name, and Global EN shows in #game-chat. Global EN needs level 10." },
+            { 'p', "In #bot-commands, /trainer shows anyone's Trainer Card (with their privacy settings), /pokemon a Pokemon's data and /server the server status." },
+            { 'see', { 'discordlink', 'boosting', 'reports' } },
+        } },
+        { key = 'discordlink', title = 'Linking your account', portrait = 233, body = {
+            { 'p', "Link your game account to your Discord user to get the Verified Trainer role, your main character as your Discord name, replies about your reports and booster rewards. Premium accounts also get the Ace Trainer role." },
+            { 'discordlink' },
+            { 'steps', {
+                "Press Get my link code above, or Link Discord in your Account window (Settings > Account, or Account on the character list), or say !discord link in the game.",
+                "You get a code like ABCD-EFGH. It works once, for 10 minutes. Copy command copies /link code:ABCD-EFGH for you.",
+                "Paste it into any channel of the PokeVerse Discord and send it.",
+            } },
+            { 'p', "The link is for your whole account: every character on it. A new code can be asked for every 30 seconds, up to 5 an hour." },
+            { 'h', "In the game" },
+            { 'commands', { "!discord link", "!discord status", "!discord unlink" } },
+            { 'p', "!discord status shows what is linked and since when. !discord unlink, then !discord unlink confirm within 60 seconds, removes the link." },
+            { 'h', "In Discord" },
+            { 'table', {
+                { "Command", "Does" },
+                { "/account", "Your link, main character and Premium days" },
+                { "/characters", "Your characters, levels and who is online" },
+                { "/main", "Picks the character used as your Discord name" },
+                { "/sync", "Fixes your roles and name now" },
+                { "/unlink", "Removes the link" },
+            } },
+            { 'p', "Your main character starts as the first character you made; if it is deleted, the next one takes over. Lost your Discord user? Log in to the game, unlink, and link the new one: logging in is the proof that the account is yours." },
+            { 'tip', "Never give your code to anyone: whoever uses it links your account to their Discord." },
+            { 'see', { 'discord', 'boosting', 'premium' } },
+        } },
+        { key = 'boosting', title = 'Boosting and rewards', item = 6499, body = {
+            { 'p', "Boosting the PokeVerse Discord server with Discord Nitro earns Soul Coins on your linked account, for as long as the boost lasts." },
+            { 'table', {
+                { "When", "Soul Coins" },
+                { "Every 7 days of boosting", "1" },
+                { "Every 4th week", "+1 loyalty bonus" },
+                { "Week 52, 104 and every year after", "+15 yearly bonus" },
+            } },
+            { 'p', "So 4 weeks give 5 Soul Coins, and a full year of boosting gives 80: 52 weekly, 13 loyalty and the 15 yearly bonus." },
+            { 'steps', {
+                "Link your account first. Weeks completed before the link are not paid.",
+                "Boost the server. Each completed week is paid, posted in #booster-rewards, and your online characters get a thank-you message.",
+                "The Soul Coins go to your account's Soul Coin balance, ready for the Store.",
+            } },
+            { 'p', "In Discord, /booster shows your streak, the weeks paid, the Soul Coins received and when the next week is due." },
+            { 'p', "The weeks count from the day your current boost started. Removing the boost or moving it to another server ends the streak, and a new boost starts again at week 1. A week is only ever paid once." },
+            { 'tip', "Booster rewards start when the team switches them on; until then /booster is not in Discord." },
+            { 'see', { 'discordlink', 'soulcoins', 'premium' } },
+        } },
+    } },
     { key = 'battle', name = 'Battles and challenges', item = 11420, topics = {
         { key = 'npcduels', title = 'NPC trainers and respect', portrait = 95, body = {
             { 'p', "Say hi, then battle (or fight, or duel), then yes. Each trainer has its own rules: a minimum level, respect points to have or to pay, and money only if that trainer bets." },
@@ -918,6 +969,48 @@ WikiData = {
         } },
         { key = 'dolls', title = 'Doll case', item = 22120, body = {
             { 'p', "Bill near Cerulean gives the doll case for his quest. Use it on a Pokemon doll to file it, and on yourself to see how many of the 250 you have." },
+        } },
+    } },
+    { key = 'legal', name = 'Terms of Service', item = 3484, topics = {
+        { key = 'terms', title = 'Terms of Service', item = 3484, body = {
+            { 'p', "By creating an account or playing PokeVerse you agree to these terms. If you don't agree, please don't play." },
+            { 'h', "Your account" },
+            { 'p', "You are responsible for your account and everything done on it. Keep your password and email safe and don't share them; staff will never ask for your password. One person may have more than one account, but accounts may not be sold, traded or given away." },
+            { 'h', "Playing fair" },
+            { 'p', "No cheating, bots, macros that play for you, modified clients that give an advantage, or abuse of bugs: report bugs instead. No harassment, hate speech, threats, scams, spam, or offensive names. Don't pretend to be staff. Trading items or Pokemon for real money or for things outside the game is not allowed." },
+            { 'h', "What staff can do" },
+            { 'p', "Breaking these terms can lead to a warning, a mute, removal of items, Pokemon or Soul Coins gained unfairly, or a temporary or permanent ban of your accounts. Staff decide case by case; you can appeal through our Discord." },
+            { 'h', "The game can change" },
+            { 'p', "PokeVerse is developed all the time: Pokemon, items, prices, rewards and features can be changed, rebalanced or removed, and the server can be down for maintenance. We do our best to keep your progress, but the game is provided as it is, without guarantees." },
+            { 'h', "Changes to these terms" },
+            { 'p', "These terms can be updated; big changes are announced in #game-announcements. Playing after a change means you accept the new terms." },
+            { 'tip', "PokeVerse is a fan project. It is not made, endorsed or supported by Nintendo, Game Freak, Creatures or The Pokemon Company. Pokemon and its names belong to their owners." },
+            { 'see', { 'purchases', 'privacy', 'reports' } },
+        } },
+        { key = 'purchases', title = 'Soul Coins and purchases', item = 6499, body = {
+            { 'p', "Soul Coins are a virtual currency for use in PokeVerse only. Whether you buy them, earn them by boosting our Discord or get them in the game:" },
+            { 'steps', {
+                "Soul Coins and everything bought with them (Premium, outfits, services) are a license to use them in the game. They are not your property, have no real-world value and can't be exchanged back for money.",
+                "Purchases are final and not refundable, except where the law requires it. Contact staff on Discord if something went wrong with a purchase.",
+                "Soul Coins can't be sold or traded for real money or anything outside the game.",
+                "Soul Coins and items gained through bugs, chargebacks, fraud or breaking the rules can be removed, and the account can be banned.",
+                "A banned or closed account loses its Soul Coins and purchases, without a refund.",
+                "Prices, rewards and what the Store sells can change.",
+            } },
+            { 'p', "If you are under 18, ask a parent or guardian before buying anything." },
+            { 'see', { 'soulcoins', 'boosting', 'terms' } },
+        } },
+        { key = 'privacy', title = 'Privacy', item = 3484, body = {
+            { 'p', "We keep only what the game needs to run:" },
+            { 'steps', {
+                "Your account name, a protected copy of your password (never the password itself) and your email, for logging in and account recovery.",
+                "Your characters and progress, and your IP address and login times, for security and to stop cheating.",
+                "Reports you send, with their screenshot and position.",
+                "If you link Discord: your Discord user id, to give your roles, rewards and report replies. Unlinking removes the link.",
+            } },
+            { 'p', "We don't sell your data or show your email, IP address or account name to other players. Staff see what they need to look after the game and handle reports." },
+            { 'p', "To have your account and its data deleted, ask staff on Discord from the Discord user linked to it, or log in and contact staff in the game." },
+            { 'see', { 'terms', 'discordlink' } },
         } },
     } },
 }

@@ -60,7 +60,7 @@ echo "Bag Trainer gets the old item layout (bag in the hidden slot 3, no duel ic
 $db -upokeverse -ppokeverse pokeverse -e "DELETE i FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'Bag Trainer' AND i.pid = 3;
   UPDATE player_items i JOIN players p ON p.id = i.player_id SET i.pid = 3 WHERE p.name = 'Bag Trainer' AND i.pid = 10;"
 # Characters used only by the Discord bridge test (each logs in once per run).
-$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1);"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('bridgebooster', 'secret'); CALL pokeverse_create_character('bridgebooster', 'Booster Trainer', 0); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1);"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -75,6 +75,7 @@ cat > "$work/server/config.local.lua" <<LUA
 discordBridgeEnabled = true
 discordBridgeSecret = "$bridge_secret"
 discordBridgeLinkCodeLifetime = 8
+discordBridgeBoosterRewards = true
 LUA
 cp "$root/scripts/testing/discord-bridge-test-talkaction.lua" "$work/server/data/talkactions/scripts/bridgetest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value="bridgetest.lua"/>\n</talkactions>#' \
@@ -114,7 +115,8 @@ sleep 3
 step "Discord bridge tests"
 python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --catch-test \
   --listener "bridgetrainer:secret:Bridge Trainer" --speaker "bridgestaff:secret:Bridge Staff" --staff-character "Bridge Staff" \
-  --link-test --linker "bridgelink:secret:Link Alpha:Link Beta" --code-lifetime 8
+  --link-test --linker "bridgelink:secret:Link Alpha:Link Beta" --code-lifetime 8 \
+  --booster-test --booster "bridgebooster:secret:Booster Trainer" --sql "$db -upokeverse -ppokeverse pokeverse"
 lua5.1 "$root/scripts/test-lua-json.lua"
 sleep 3
 
@@ -151,6 +153,10 @@ case " $kit " in *" 10:12282 "*) ;; *) echo "FAIL: Bag Trainer's bag was not mov
 
 links=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM discord_account_links")
 [ "$links" = 0 ] || { echo "FAIL: the bridge test should leave no Discord links, found $links"; exit 1; }
+boosted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(a.soulcoins, ',', COUNT(r.id), ',', SUM(r.total)) FROM accounts a JOIN discord_booster_rewards r ON r.account_id = a.id WHERE a.name = 'bridgebooster' GROUP BY a.id")
+[ "$boosted" = "21,4,21" ] || { echo "FAIL: the booster account should hold 21 Soul Coins from 4 ledger rows (soulcoins,rows,total: $boosted)"; exit 1; }
+! grep -qE "1234567890123456789|98765432109876543210|11111111111111111|22222222222222222222" "$work/server.log" \
+  || { echo "FAIL: a Discord user id reached the server log"; exit 1; }
 deleted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT deleted FROM players WHERE name = 'Link Beta'")
 [ "$deleted" = 1 ] || { echo "FAIL: Link Beta should be soft-deleted by the bridge test"; exit 1; }
 
@@ -316,6 +322,7 @@ python3 -u "$root/scripts/testing/fake-smtp.py" --port 2526 --mailbox "$work/mai
   --key "$work/mail/key.pem" --user ci@pokeverse.test --password ci-app-password > "$work/smtp.log" 2>&1 &
 smtp_pid=$!
 cat >> "$work/server/config.local.lua" <<LUA
+discordBridgeBoosterRewards = false
 emailRequired = true
 smtpHost = "localhost"
 smtpPort = 2526
@@ -328,6 +335,7 @@ LUA
 mv "$work/server.log" "$work/server-1.log"
 start_server
 grep -q "Account emails go through localhost:2526" "$work/server.log" || { echo "FAIL: the mailer did not start"; exit 1; }
+python3 "$root/scripts/discord-bridge-test.py" --secret "$bridge_secret" --booster-disabled
 python3 "$root/scripts/account-email-test.py" --mailbox "$work/mail/box" --sql "$db -upokeverse -ppokeverse pokeverse" \
   || { tail -40 "$work/server.log"; cat "$work/smtp.log"; echo "FAIL: account email test"; exit 1; }
 python3 "$root/scripts/protocol-test.py" --account test --password test --character Trainer --walk east \
