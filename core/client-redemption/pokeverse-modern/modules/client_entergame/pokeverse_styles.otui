@@ -119,6 +119,9 @@ PVBlueButton < PVButton
   $pressed:
     image-source: /modules/client_entergame/images/button_blue_pressed
 
+PVButtonRow < UIWidget
+  height: 34
+
 PVRedButton < PVButton
   image-source: /modules/client_entergame/images/button_red
   color: #ffb4b4

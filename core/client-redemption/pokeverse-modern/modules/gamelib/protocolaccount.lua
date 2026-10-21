@@ -22,6 +22,7 @@ AccountRequestChangePassword = 10 -- texts: new password
 AccountRequestEmailChangeRequest = 11 -- texts: new email
 AccountRequestEmailChangeConfirm = 12 -- texts: code sent to the old email, code sent to the new one
 AccountRequestAccountInfo = 13 -- answered with key=value lines
+AccountRequestDiscordCode = 14 -- answered with a Discord link code, as !discord link gives in the game
 
 local ProtocolAccountId = 0x0B
 local AccountReplySuccess = 0x0B
