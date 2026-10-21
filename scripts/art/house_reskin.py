@@ -31,6 +31,7 @@ DAT = os.path.join(ROOT, 'core/client-legacy/data/things/data.dat')
 SPR = os.path.join(ROOT, 'core/client-legacy/data/things/data.spr')
 OUT = os.path.join(ROOT, 'art/sprites/house')
 VIEW = (3318, 797, 3352, 824)  # two Pallet houses and the Pokemon Center, floor 7
+TOWN = (3232, 772, 3350, 850)  # all of Pallet, where the roof outline is measured
 
 # client ids
 ROOF_ITEMS = [8620] + list(range(8633, 8643)) + list(range(5033, 5041)) + list(range(9416, 9424))
@@ -57,9 +58,19 @@ PLASTER = [(214, 196, 166), (236, 222, 196), (248, 240, 220), (255, 251, 236)]
 ROOF_DEEP = [(84, 30, 26), (122, 40, 30), (150, 52, 36), (176, 64, 44), (202, 90, 62), (224, 124, 94)]
 PLASTER_WARM = [(206, 182, 144), (226, 206, 170), (240, 224, 192), (250, 240, 214)]
 WOOD_DEEP = [(70, 36, 24), (104, 56, 32), (136, 78, 44), (166, 102, 60), (196, 134, 84)]
-STYLE = {'tile': 'shakes', 'width': 16, 'roof': ROOF_DEEP, 'eave': 3, 'walls': 'bevel',
-         'plaster': PLASTER_WARM, 'wood': WOOD_DEEP, 'siding': False, 'east': -1}
+# FireRed/LeafGreen, from pret/pokefirered: the Pallet Town house roof (primary palette 2), its
+# pinkish wood (palette 1), window glass (palette 3) and the blue-grey it outlines with
+# the body sits on (205, 82, 74) as in the game; (140, 28, 38) is a step under its darkest red
+ROOF_FRLG = [(90, 57, 65), (140, 28, 38), (172, 32, 41), (205, 82, 74), (222, 106, 98), (238, 148, 115)]
+WOOD_FRLG = [(90, 57, 65), (123, 74, 74), (148, 106, 106), (189, 148, 139), (222, 197, 164)]
+PLASTER_FRLG = [(222, 197, 164), (238, 213, 197), (246, 238, 222), (255, 250, 242)]
+WHITE_FRLG = [(172, 189, 205), (205, 222, 238), (230, 238, 238), (246, 246, 255)]
+GLASS_FRLG = [(49, 98, 164), (98, 164, 222), (156, 213, 255), (246, 246, 255)]
+OUTLINE_FRLG = (65, 74, 106)
 GLASS = [(70, 104, 150), (116, 166, 214), (172, 214, 244), (236, 248, 255)]
+STYLE = {'tile': 'shakes', 'width': 16, 'roof': ROOF_DEEP, 'eave': 3, 'walls': 'bevel',
+         'plaster': PLASTER_WARM, 'wood': WOOD_DEEP, 'siding': False, 'east': -1,
+         'outline': OUTLINE, 'glass': GLASS}
 
 
 def lum(rgb):
@@ -163,7 +174,7 @@ def shingle_shade(u, t, row):
     return k
 
 
-def paint_roof(rgba, vertical, tone):
+def paint_roof(rgba, vertical, tone, edges):
     rgb = rgba[..., :3].astype(float)
     a = rgba[..., 3] > 0
     r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
@@ -172,17 +183,7 @@ def paint_roof(rgba, vertical, tone):
     shingle = a & (median(np.clip(hue, 0, 40), 5) < 13.5)
     L = lum(rgb)
     edge = a & grow(~a, 2)
-    # later pieces overlap earlier ones from the south-east, so only a piece's bottom and right
-    # edges are the roof's outline; its top and left edges lie on other shingles
-    H, W = a.shape
-    below = np.full((H, W), 9)
-    for d in range(3, 0, -1):
-        hole = np.ones((H, W), bool)
-        hole[:H - d] = ~a[d:]
-        below[a & hole] = d
-    right = np.zeros((H, W), bool)
-    right[:, :W - 1] = ~a[:, 1:]
-    right[:, W - 1] = True
+    below, right = edges[..., 0], edges[..., 1] > 0
     pal = STYLE['roof']
     out = rgba.copy()
     for y, x in zip(*np.nonzero(a)):
@@ -197,7 +198,7 @@ def paint_roof(rgba, vertical, tone):
             c = pal[int(np.clip(k, 0, len(pal) - 1))]
         else:
             v = L[y, x]
-            c = OUTLINE if v < 38 and edge[y, x] else WOOD[int(np.searchsorted([70, 100, 128, 150], v))]
+            c = STYLE['outline'] if v < 38 and edge[y, x] else STYLE['wood'][int(np.searchsorted([70, 100, 128, 150], v))]
         out[y, x, :3] = c
     return out
 
@@ -212,13 +213,13 @@ def paint_dormer(rgba):
     for y, x in zip(*np.nonzero(a)):
         v = L[y, x]
         if v < 34:
-            c = OUTLINE
+            c = STYLE['outline']
         elif hue[y, x] < 13.5 and r[y, x] > 1.8 * g[y, x]:
-            c = ROOF[int(np.searchsorted(ROOF_CUTS, v))]
+            c = STYLE['roof'][int(np.searchsorted(ROOF_CUTS, v))]
         elif v > 165:
-            c = PLASTER[2 if v > 210 else 1]
+            c = STYLE['plaster'][2 if v > 210 else 1]
         else:
-            c = WOOD[int(np.searchsorted([70, 100, 128, 150], v))]
+            c = STYLE['wood'][int(np.searchsorted([70, 100, 128, 150], v))]
         out[y, x, :3] = c
     return out
 
@@ -248,7 +249,7 @@ def paint_wall(rgba, window, cid):
             k = 2 if L[y, x] > 200 else 1
             if d % 9 in (3, 4):
                 k = 3
-            c = GLASS[k]
+            c = STYLE['glass'][k]
         elif plaster[y, x]:
             k = 3 if Ls[y, x] > 232 else 2 if Ls[y, x] > 196 else 1
             if STYLE['siding']:
@@ -262,7 +263,7 @@ def paint_wall(rgba, window, cid):
                 k = min(k, 1)
             c = STYLE['plaster'][int(np.clip(k + shade, 0, 3))]
         elif dark[y, x]:
-            c = OUTLINE
+            c = STYLE['outline']
         else:
             k = int(np.searchsorted([64, 92, 112], Ls[y, x]))
             if y == 0 or not a[y - 1, x]:
@@ -280,10 +281,10 @@ def paint_wall(rgba, window, cid):
 
 def jobs():
     """(items, painter) in order; a sprite shared by several items takes the first one's paint."""
-    return [(DORMERS, lambda im, cid: paint_dormer(im)),
-            (ROOF_ITEMS, lambda im, cid: paint_roof(im, cid in VERTICAL_ROOF, TONES.get(cid, 0))),
-            (WINDOW_ITEMS, lambda im, cid: paint_wall(im, True, cid)),
-            (WALL_ITEMS, lambda im, cid: paint_wall(im, False, cid))]
+    return [(DORMERS, lambda im, cid, e: paint_dormer(im)),
+            (ROOF_ITEMS, lambda im, cid, e: paint_roof(im, cid in VERTICAL_ROOF, TONES.get(cid, 0), e)),
+            (WINDOW_ITEMS, lambda im, cid, e: paint_wall(im, True, cid)),
+            (WALL_ITEMS, lambda im, cid, e: paint_wall(im, False, cid))]
 
 
 def sprite_ids(dat):
@@ -326,12 +327,149 @@ def originals(dat, spr):
     return art
 
 
+class LabelRenderer(Renderer):
+    """Renders like the client and records which sprite pixel ends up on top at every pixel."""
+
+    def draw_tile(self, img, items, x, y, z, px, py):
+        things = []
+        for sid in items:
+            thing = self.dat.things.get(self.otb.client_id(sid))
+            if thing:
+                things.append(thing)
+        common = [t for t in things if self.layer_of(t[0]) == 3]
+        ordered = ([t for t in things if self.layer_of(t[0]) in (0, 1, 2)] + common[::-1]
+                   + [t for t in things if self.layer_of(t[0]) == 4])
+        elevation = 0
+        H, W = self.sid.shape
+        for attrs, w, h, layers, pxn, pyn, pzn, frames, sprites in ordered:
+            dx, dy = attrs.get(25, (0, 0))
+            xp, yp, zp = x % pxn, y % pyn, z % pzn
+            for layer in range(layers):
+                for hy in range(h):
+                    for wx in range(w):
+                        idx = ((((zp * pyn + yp) * pxn + xp) * layers + layer) * h + hy) * w + wx
+                        sid = sprites[idx] if idx < len(sprites) else 0
+                        if not sid or sid not in self.alpha:
+                            continue
+                        ox, oy = px - wx * 32 - dx - elevation, py - hy * 32 - dy - elevation
+                        x0, y0, x1, y1 = max(ox, 0), max(oy, 0), min(ox + 32, W), min(oy + 32, H)
+                        if x0 >= x1 or y0 >= y1:
+                            continue
+                        m = self.alpha[sid][y0 - oy:y1 - oy, x0 - ox:x1 - ox]
+                        self.sid[y0:y1, x0:x1][m] = sid
+                        self.pix[y0:y1, x0:x1][m] = self.index[y0 - oy:y1 - oy, x0 - ox:x1 - ox][m]
+            if 26 in attrs:
+                elevation = min(24, elevation + attrs[26])
+
+    def label(self, tiles, x0, y0, x1, y1, floor, alpha):
+        margin = floor + 2
+        w, h = (x1 - x0 + 1 + margin) * 32, (y1 - y0 + 1 + margin) * 32
+        self.alpha = alpha
+        self.index = np.arange(1024).reshape(32, 32)
+        self.sid = np.zeros((h, w), np.int64)
+        self.pix = np.zeros((h, w), np.int64)
+        for z in range(floor, -1, -1):
+            shift = (floor - z) * 32
+            for y in range(y0 - 2, y1 + margin + 1):
+                for x in range(x0 - 2, x1 + margin + 1):
+                    items = tiles.get((x, y, z))
+                    if items:
+                        self.draw_tile(None, items, x, y, z, (x - x0 + margin) * 32 - shift,
+                                       (y - y0 + margin) * 32 - shift)
+        return self.sid, self.pix
+
+
+def measure_eaves(dat, art, tiles, box):
+    """For every roof sprite pixel, how often what lies 1-3 px below it, or right of it, is not
+    roof when it is drawn on the map. Roof pieces overlap and butt against each other, so a
+    piece's own edge says little; only the town shows which edges are the roof's outline."""
+    roof, slope = set(), {}
+    for cid in ROOF_ITEMS + DORMERS:
+        for s in dat.things[cid][8]:
+            if s in art:
+                roof.add(s)
+                slope.setdefault(s, (cid in VERTICAL_ROOF, TONES.get(cid, 0)))
+    classes = sorted(set(slope.values()))
+    alpha = {sid: art[sid][..., 3] > 0 for sid in art}
+    r = LabelRenderer(ITEMS, DAT, SPR)
+    sid, pix = r.label(tiles, *box, 7, alpha)
+    is_roof = np.isin(sid, list(roof))
+    # a different slope below counts as open too: that is where one roof overhangs another
+    cls = np.full(sid.shape, -1)
+    for s, c in slope.items():
+        cls[sid == s] = classes.index(c)
+    H, W = sid.shape
+    seen = {s: np.zeros(1024) for s in roof}
+    hits = {s: np.zeros((4, 1024)) for s in roof}  # open below at 1, 2, 3 px; open to the right
+    ys, xs = np.nonzero(is_roof)
+    keys = sid[ys, xs]
+    pixel = pix[ys, xs]
+    here = cls[ys, xs]
+    opens = []
+    for d in (1, 2, 3):
+        yy = np.minimum(ys + d, H - 1)
+        opens.append(~is_roof[yy, xs] | (cls[yy, xs] != here))
+    xx = np.minimum(xs + 1, W - 1)
+    opens.append(~is_roof[ys, xx] | (cls[ys, xx] != here))
+    for s in roof:
+        m = keys == s
+        if not m.any():
+            continue
+        np.add.at(seen[s], pixel[m], 1)
+        for k in range(4):
+            np.add.at(hits[s][k], pixel[m][opens[k][m]], 1)
+    eaves = {}
+    for s in roof:
+        frac = hits[s] / np.maximum(seen[s], 1)
+        below = np.full(1024, 9, np.uint8)
+        for d in (3, 2, 1):
+            below[frac[d - 1] > 0.5] = d
+        eaves[s] = np.stack([below.reshape(32, 32), (frac[3] > 0.5).reshape(32, 32).astype(np.uint8)], -1)
+    return eaves
+
+
+def save_eaves(eaves):
+    ids = [int(x) for x in open(os.path.join(OUT, 'sprites.txt')).read().split()]
+    sheet = np.zeros((((len(ids) + 15) // 16) * 32, 16 * 32, 3), np.uint8)
+    for i, sid in enumerate(ids):
+        if sid in eaves:
+            y, x = (i // 16) * 32, (i % 16) * 32
+            sheet[y:y + 32, x:x + 32, 0] = eaves[sid][..., 0] * 28
+            sheet[y:y + 32, x:x + 32, 1] = eaves[sid][..., 1] * 255
+            sheet[y:y + 32, x:x + 32, 2] = 255
+    Image.fromarray(sheet, 'RGB').save(os.path.join(OUT, 'eaves.png'))
+
+
+def load_eaves():
+    """{sprite: 32x32x2} of roof sprites: rows below that are open (1-3, 9 for none), open right."""
+    path = os.path.join(OUT, 'eaves.png')
+    if not os.path.exists(path):
+        return {}
+    ids = [int(x) for x in open(os.path.join(OUT, 'sprites.txt')).read().split()]
+    sheet = np.array(Image.open(path).convert('RGB'))
+    out = {}
+    for i, sid in enumerate(ids):
+        cell = sheet[(i // 16) * 32:(i // 16) * 32 + 32, (i % 16) * 32:(i % 16) * 32 + 32]
+        if cell[0, 0, 2]:
+            out[sid] = np.stack([cell[..., 0] // 28, cell[..., 1] // 255], -1)
+    return out
+
+
 def build(dat, art):
+    eaves = load_eaves()
+    blank = np.dstack([np.full((32, 32), 9, np.uint8), np.zeros((32, 32), np.uint8)])
     new = {}
     for items, painter in jobs():
         for cid in items:
             thing = dat.things[cid]
-            pats = {p: painter(img, cid) for p, img in compose(thing, art).items()}
+            w, h = thing[1], thing[2]
+            edge = {}
+            for p, idx, x, y in layout(thing):
+                e = edge.setdefault(p, np.dstack([np.full((h * 32, w * 32), 9, np.uint8),
+                                                  np.zeros((h * 32, w * 32), np.uint8)]))
+                sid = thing[8][idx] if idx < len(thing[8]) else 0
+                e[y:y + 32, x:x + 32] = eaves.get(sid, blank)
+            pats = {p: painter(img, cid, edge[p]) for p, img in compose(thing, art).items()}
             for p, idx, x, y in layout(thing):
                 sid = thing[8][idx] if idx < len(thing[8]) else 0
                 if sid in art and sid not in new:
@@ -376,9 +514,15 @@ def main():
     ap.add_argument('--before')
     ap.add_argument('--mockup')
     ap.add_argument('--write-spr', action='store_true', help='put the new roofs and walls into data.spr')
+    ap.add_argument('--measure-eaves', action='store_true',
+                    help='find the roof outline on the Pallet houses (map.otbm), into eaves.png')
     args = ap.parse_args()
     dat, spr = pvmap.Dat(DAT), pvmap.Spr(SPR)
     art = originals(dat, spr)
+    if args.measure_eaves:
+        x0, y0, x1, y1 = TOWN
+        tiles = pvmap.read_region(MAP, x0 - 2, y0 - 2, x1 + 10, y1 + 10, range(0, 8))
+        save_eaves(measure_eaves(dat, art, tiles, TOWN))
     new = build(dat, art)
     if args.before or args.mockup:
         tiles = read_view()
