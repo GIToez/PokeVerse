@@ -303,11 +303,15 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function setupViewMode(mode)
-@@ -1857,10 +2015,11 @@
+@@ -1857,10 +2015,15 @@
      elseif mode == 2 then
          local limit = limitedZoom and not g_game.isGM()
          gameMapPanel:setLimitVisibleRange(limit)
 -        gameMapPanel:setZoom(11)
++        -- PokeVerse: phones are wider than 23x13, and the server sends no more than 23 columns, so filling the
++        -- width would cut rows; keeping the shape shows all 13, with the side panels in the strips beside the map.
++        -- Set before the dimension: the kept ratio is taken from the dimension at the time it is set
++        gameMapPanel:setKeepAspectRatio(g_platform.isMobile())
 +        -- PokeVerse: the server sends 23x15 visible tiles (setup.otml viewport 11 7); 13 rows fill a 16:9 screen
 +        gameMapPanel:setZoom(13)
          gameMapPanel:setVisibleDimension({
@@ -318,7 +322,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          })
          gameMapPanel:fill('parent')
          gameRootPanel:fill('parent')
-@@ -1876,12 +2035,13 @@
+@@ -1876,12 +2039,13 @@
          gameLeftExtraPanel:setOn(false)
          gameLeftExtraPanel:setVisible(false)
          gameMapPanel:setOn(true)
@@ -333,7 +337,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  end
  
  function limitZoom()
-@@ -1960,6 +2120,22 @@
+@@ -1960,6 +2124,22 @@
      end
  end
  
@@ -356,7 +360,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  function applyExtendedViewLayout(extendedView)
      if extendedView == isExtendedViewActive then return end
      isExtendedViewActive = extendedView
-@@ -1991,6 +2167,17 @@
+@@ -1991,6 +2171,17 @@
          gameMainRightPanel:setImageColor('alpha')
          gameBottomPanel:addAnchor(AnchorTop, 'gameBottomActionPanel', AnchorBottom)
          gameBottomPanel:addAnchor(AnchorBottom, 'parent', AnchorBottom)
@@ -374,7 +378,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
          gameLeftActionPanel:setImageSource(nil)
          gameRightActionPanel:setImageSource(nil)
          gameLeftActionPanel:setBorderWidthRight(0)
-@@ -2011,6 +2198,10 @@
+@@ -2011,6 +2202,10 @@
  
          -- Reset bottom panel
          gameBottomPanel:setDraggable(false)
@@ -385,7 +389,7 @@ diff -ruN pristine/modules/game_interface/gameinterface.lua modules/game_interfa
  
          -- Set anchors
          if not g_platform.isMobile() then
-@@ -2039,6 +2230,9 @@
+@@ -2039,6 +2234,9 @@
          modules.game_inventory.extendedView(extendedView)
          modules.client_topmenu.extendedView(extendedView)
          modules.game_mainpanel.toggleExtendedViewButtons(extendedView)
