@@ -1,6 +1,7 @@
 -- Name plates over creatures (drawn by the engine) and the Pokedex mark on wild Pokemon:
 -- a mini Pokedex once the species is registered, a Poke Ball once one is caught.
--- The same mark follows the wild Pokemon's name in the battle list.
+-- The same mark follows the wild Pokemon's name in the battle list, with the Ranger radar's mark on
+-- the Pokemon it is tracking.
 Nameplates = {}
 
 local DEX_UNKNOWN = 0
@@ -15,8 +16,11 @@ local ICON_IMAGES = {
     [ICON_CAUGHT] = '/modules/game_pokehud/images/plate-caught'
 }
 
+local RADAR_MARK = '/modules/game_radar/images/battle_mark'
+
 local speciesIcons = {}
 local summonOwners = {}
+local trackedId -- the creature the Ranger radar is tracking (game_radar)
 local battleButtons = setmetatable({}, { __mode = 'k' })
 local originalSetup = nil
 
@@ -39,6 +43,25 @@ local function speciesKey(name)
     return (name:gsub(' %[%d+%]$', '')):lower()
 end
 
+local function markWidget(button, id, size)
+    local mark = button:getChildById(id)
+    if not mark and button:getChildById('label') then
+        mark = g_ui.createWidget('UIWidget', button)
+        mark:setId(id)
+        mark:setSize({ width = size, height = size })
+        mark:setPhantom(true)
+        mark:setMarginLeft(3)
+    end
+    return mark
+end
+
+local function placeMark(mark, after)
+    mark:breakAnchors()
+    mark:addAnchor(AnchorLeft, after, AnchorRight)
+    mark:addAnchor(AnchorVerticalCenter, 'label', AnchorVerticalCenter)
+end
+
+-- after the name: the Pokedex mark, then the Ranger radar's mark on the Pokemon it is tracking
 local function updateButtonMark(button)
     local creature = button.creature
     local icon = ICON_NONE
@@ -51,24 +74,28 @@ local function updateButtonMark(button)
         if mark then
             mark:hide()
         end
-        return
+    else
+        mark = markWidget(button, 'pokedexMark', 9)
+        if mark then
+            placeMark(mark, 'label')
+            mark:setImageSource(ICON_IMAGES[icon])
+            mark:show()
+        end
     end
 
-    if not mark then
-        local label = button:getChildById('label')
-        if not label then
-            return
+    local radar = button:getChildById('radarMark')
+    if not creature or creature:getId() ~= trackedId then
+        if radar then
+            radar:hide()
         end
-        mark = g_ui.createWidget('UIWidget', button)
-        mark:setId('pokedexMark')
-        mark:setSize({ width = 9, height = 9 })
-        mark:setPhantom(true)
-        mark:addAnchor(AnchorLeft, 'label', AnchorRight)
-        mark:addAnchor(AnchorVerticalCenter, 'label', AnchorVerticalCenter)
-        mark:setMarginLeft(3)
+        return
     end
-    mark:setImageSource(ICON_IMAGES[icon])
-    mark:show()
+    radar = markWidget(button, 'radarMark', 11)
+    if radar then
+        placeMark(radar, mark and mark:isVisible() and 'pokedexMark' or 'label')
+        radar:setImageSource(RADAR_MARK)
+        radar:show()
+    end
 end
 
 local function refreshBattleList()
@@ -130,11 +157,26 @@ function Nameplates.getSummonOwner(creatureId)
     return summonOwners[creatureId]
 end
 
+function Nameplates.getTracked()
+    return trackedId
+end
+
+function Nameplates.setTracked(creatureId)
+    if trackedId ~= creatureId then
+        trackedId = creatureId
+        refreshBattleList()
+        if modules.game_battle and modules.game_battle.refreshTracked then
+            modules.game_battle.refreshTracked()
+        end
+    end
+end
+
 local function onGameEnd()
     Creature.clearPlateSpeciesIcons()
     Creature.clearPlateOwners()
     speciesIcons = {}
     summonOwners = {}
+    trackedId = nil
 end
 
 function Nameplates.init()
@@ -162,9 +204,11 @@ function Nameplates.terminate()
     end
     for button in pairs(battleButtons) do
         if not button:isDestroyed() then
-            local mark = button:getChildById('pokedexMark')
-            if mark then
-                mark:destroy()
+            for _, id in ipairs({ 'pokedexMark', 'radarMark' }) do
+                local mark = button:getChildById(id)
+                if mark then
+                    mark:destroy()
+                end
             end
         end
     end
@@ -174,4 +218,5 @@ function Nameplates.terminate()
     Creature.clearPlateOwners()
     speciesIcons = {}
     summonOwners = {}
+    trackedId = nil
 end
