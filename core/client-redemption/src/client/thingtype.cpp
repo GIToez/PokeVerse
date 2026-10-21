@@ -31,6 +31,8 @@
 #include "framework/core/asyncdispatcher.h"
 #include "framework/core/filestream.h"
 #include "framework/graphics/drawpoolmanager.h"
+
+#include <sstream>
 #include "framework/graphics/image.h"
 #include "framework/otml/otmlnode.h"
 #include <framework/core/graphicalapplication.h>
@@ -739,7 +741,16 @@ void ThingType::unserializeOtml(const OTMLNodePtr& node)
             m_opacity = node2->value<float>();
         else if (node2->tag() == "image")
             m_customImage = node2->value();
-        else if (node2->tag() == "full-ground") {
+        else if (node2->tag() == "image-frames") {
+            // "<folder> <count> [<life ms>]": animation phase p draws <folder>/<p % count>.png. With a
+            // life, an effect loops for that long and the same effect sent to its tile again extends it.
+            std::istringstream in(node2->value());
+            int life = 0;
+            in >> m_customFrames >> m_customFrameCount >> life;
+            m_customFrameLife = static_cast<uint16_t>(std::clamp(life, 0, 60000));
+            if (m_customFrameCount <= 0)
+                m_customFrames.clear();
+        } else if (node2->tag() == "full-ground") {
             if (node2->value<bool>())
                 m_flags &= ~ThingFlagAttrFullGround;
             else
@@ -872,10 +883,20 @@ void ThingType::loadTexture(const int animationPhase)
         numLayers = 5;
     }
 
-    const bool useCustomImage = animationPhase == 0 && !m_customImage.empty();
     const int indexSize = textureLayers * m_numPatternX * m_numPatternY * m_numPatternZ;
     const auto& textureSize = getBestTextureDimension(m_size.width(), m_size.height(), indexSize);
-    const auto& fullImage = useCustomImage ? Image::load(m_customImage) : std::make_shared<Image>(textureSize * g_gameConfig.getSpriteSize());
+    ImagePtr customImage;
+    if (!m_customFrames.empty())
+        customImage = Image::load(fmt::format("{}/{}", m_customFrames, animationPhase % m_customFrameCount));
+    else if (animationPhase == 0 && !m_customImage.empty())
+        customImage = Image::load(m_customImage);
+    const Size spritePixels = m_size * g_gameConfig.getSpriteSize();
+    if (customImage && (customImage->getWidth() < spritePixels.width() || customImage->getHeight() < spritePixels.height()))
+        customImage = nullptr;
+    const bool useCustomImage = customImage != nullptr;
+    const auto& fullImage = useCustomImage ? customImage : std::make_shared<Image>(textureSize * g_gameConfig.getSpriteSize());
+    if (useCustomImage && !m_customFrames.empty())
+        fullImage->setTransparentPixel(true);
     const bool protobufSupported = g_game.isUsingProtobuf();
 
     static Color maskColors[] = { Color::red, Color::green, Color::blue, Color::yellow };

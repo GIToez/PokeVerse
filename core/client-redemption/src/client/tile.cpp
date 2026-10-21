@@ -301,6 +301,15 @@ void Tile::addThing(const ThingPtr& thing, int stackPos)
 
         const auto& newEffect = thing->static_self_cast<Effect>();
 
+        if (newEffect->isLooping()) {
+            for (const auto& prevEffect : *m_effects) {
+                if (prevEffect->getId() == newEffect->getId() && prevEffect->canDraw()) {
+                    prevEffect->refresh();
+                    return;
+                }
+            }
+        }
+
         const bool mustOptimize = g_app.mustOptimize() || g_app.isForcedEffectOptimization();
 
         for (const auto& prevEffect : *m_effects) {

@@ -114,6 +114,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
                 doCreatureSetStorage(cid, FIRST_POKEMON_STORAGE, QUEST_STATUS.FINISHED)
                 --                          selfSay("Here is, congratulations! Now which city you want to start out? {Viridian}, {Pewter}, {Cerulean}, {Saffron}, {Celadon}, {Vermilion} or {Fuchsia}.", cid)
                 selfSay("Good choice! Congratulations, here is your first {Pokemon}! Now, let's see if you're able to call him out of the Pokeball.", cid)
+                doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Press F1, or left-click the first slot of the pokebar on the left, to call your Pokemon out. Then say hi to Professor Oak again."))
                 doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "002-callPokemon")
                 doCreatureSetStorage(cid, 8751, QUEST_STATUS.STARTED) -- Prof Oak quest auto-start
                 npcHandler.talkState[cid] = nil

@@ -193,6 +193,8 @@ public:
 
     // additional
     float getOpacity() { return m_opacity; }
+    int getCustomFrameCount() const { return m_customFrames.empty() ? 0 : m_customFrameCount; }
+    uint16_t getCustomFrameLife() const { return m_customFrameLife; }
     void setPathable(bool var);
     int getExactHeight();
     const TexturePtr& getTexture(int animationPhase);
@@ -268,6 +270,9 @@ private:
     float m_opacity{ 1.f };
 
     std::string m_customImage;
+    std::string m_customFrames;
+    int m_customFrameCount{ 0 };
+    uint16_t m_customFrameLife{ 0 };
 
     std::vector<uint32_t> m_spritesIndex;
     std::vector<TextureData> m_textureData;

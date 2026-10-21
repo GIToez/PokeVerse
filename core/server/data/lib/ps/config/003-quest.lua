@@ -166,6 +166,7 @@ QUESTS_CONFIG = {
             startPosition = {x = 5020, y = 788, z = 7},
             finishPosition = {x = 5020, y = 788, z = 7},
             onEnd = function(cid)
+                doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Press X and left-click your Pokemon to open its Pokedex entry. Then say hi to Professor Oak again."))
                 doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "003-pokedex")
                 doPlayerStartQuest(cid, nil, "Professor Oak", 8752)
             end
@@ -183,8 +184,7 @@ QUESTS_CONFIG = {
             finishPosition = {x = 5020, y = 788, z = 7},
             onEnd = function(cid)
                 doPlayerStartQuest(cid, nil, "Professor Oak", 8753)
-                doSendMagicEffect({x = 5025, y = 785, z = 7}, EFFECT_TUTORIAL_ARROW)
-                doSendMagicEffect({x = 5025, y = 785, z = 7}, EFFECT_TUTORIAL_SQUARE)
+                NavMarker.show(cid, {x = 5025, y = 785, z = 7})
             end
         },
         {
@@ -199,7 +199,9 @@ QUESTS_CONFIG = {
             questRequest = { "Rattata", 5 },
             startPosition = {x = 5020, y = 788, z = 7},
             finishPosition = {x = 5020, y = 788, z = 7},
+            onEnd = function(cid) NavMarker.show(cid, TUTORIAL_LAB_EXIT) end,
             onStart = function(cid)
+                doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "The basement is under the sewer grate east of Oak. Walk next to it, right-click it and choose Use, or Ctrl+click it."))
                 doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "004-sewer")
                 Flashlight.give(cid)
             end,

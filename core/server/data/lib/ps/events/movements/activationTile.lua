@@ -1130,14 +1130,14 @@ local ACTS_ONLY_PLAYER = {
     end,
     [300] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #1
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "001-door")
-        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "My name is Red and I will be your guide on these first steps in the Pokemon world. Now exit your room and look for the exit of the house."))
-        doSendMagicEffect({x = 5007, y = 808, z = 7}, EFFECT_TUTORIAL_ARROW)
-        doSendMagicEffect({x = 5007, y = 808, z = 7}, EFFECT_TUTORIAL_SQUARE)
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "My name is Red and I will be your guide on your first steps in the Pokemon world. Leave your room and find the way out of the house: follow the arrows on the floor. Left-click a door to open it."))
+        NavMarker.route(cid, { {x = 5004, y = 806, z = 6}, {x = 5007, y = 802, z = 6}, {x = 5007, y = 808, z = 7} })
         return true
     end,
     [301] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #2
-        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Very well! Now go to the lab of Prof. Oak to acquire your first Pokemon."), getCreatureName(cid)))
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Very well! Now go to Professor Oak's lab to get your first Pokemon. The arrows show the way."), getCreatureName(cid)))
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "") -- Hide
+        NavMarker.show(cid, TUTORIAL_LAB_DOOR)
         return true
     end,
     [302] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #3
@@ -1146,13 +1146,14 @@ local ACTS_ONLY_PLAYER = {
             if (isNpc(oak)) then
                 doCreatureSay(oak, string.format(__L(cid, "Hello %s, welcome to my lab! My name is Oak, I'm a researcher fascinated by the Pokemon world... I see that your big day has arrived, are you ready to receive your first Pokemon?"), getCreatureName(cid)), TALKTYPE_SAY)
             end
-            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, "") -- Hide
+            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Walk up to Professor Oak and say hi: press Enter, type hi and press Enter again, or left-click him. Answer by clicking the blue words in his window."))
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "009-talk")
+            NavMarker.clear(cid)
         end
         return true
     end,
     [305] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #4
-        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Now pay close attention! You will enter your first Pokemon battle! First you must select your target, according to the image. After that, you must order your Pokemon, making it use his moves against the target you have selected. You can do this by clicking on the Move Window OR using the hotkeys F1, F2, F3, and so on."))
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Your first Pokemon battle! Left-click a wild Pokemon to make it your target. Then order your Pokemon to use its moves: click a move on the moves bar at the bottom, or press its key, 1, 2 and so on."))
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "005-target")
         return true
     end,
@@ -1162,7 +1163,10 @@ local ACTS_ONLY_PLAYER = {
             doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "You should speak to Professor Oak before proceeding.")
             return false
         end
-        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "You've made great progress, congratulations! Now do as Professor said, go to PokeMart to negotiate with the seller."))
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "You've made great progress, congratulations! Now do as the Professor said: go to the PokeMart and sell your items. Follow the arrows."))
+        if (getCreatureStorage(cid, 8755) ~= QUEST_STATUS.FINISHED) then
+            NavMarker.show(cid, TUTORIAL_MART)
+        end
         return true
     end,
     [306] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #6
@@ -1178,15 +1182,20 @@ local ACTS_ONLY_PLAYER = {
         return true
     end,
     [307] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Your first Pokemon battle! Left-click a wild Pokemon to make it your target. Then order your Pokemon to use its moves: click a move on the moves bar at the bottom, or press its key, 1, 2 and so on."))
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "005-target")
         return true
     end,
     [308] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial
         if (getCreatureStorage(cid, 8755) ~= QUEST_STATUS.FINISHED) then -- Gameplay Tutorial Sell Quest
+            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "Say hi to the seller and then trade to open his shop. Sell the items Professor Oak gave you."))
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "010-trade")
         else
-            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "You did it, congratulations! Now go north, I'm waiting for you."))
-            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "") -- hide
+            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "You did it, congratulations! Before you meet me up north, learn your toolkit on the top bar. With the chat closed, press M for the Pokepedia, T for Tasks, L for the Quest Log and P for your Trainer Card."))
+            doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "011-toolkit")
+            if (not NavMarker.get(cid)) then
+                NavMarker.show(cid, TUTORIAL_RED)
+            end
         end
         return true
     end,

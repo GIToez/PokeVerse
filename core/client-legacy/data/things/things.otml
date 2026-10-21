@@ -532,6 +532,10 @@ effects:
     opacity:0.9
   666:
     opacity:0.9
+  939:
+    image-frames: /images/effects/tutorial_ring 16 2500
+  940:
+    image-frames: /images/effects/tutorial_chevrons 16 2500
 missiles:
   2:
     opacity:0.7
