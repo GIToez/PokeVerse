@@ -151,6 +151,10 @@ def main():
             c.expect("create duplicate account", request(args, ACTION_CREATE_ACCOUNT, account, password), False)
             c.expect("create account with short password",
                      request(args, ACTION_CREATE_ACCOUNT, "x" + account, "abc"), False)
+            c.expect("create account with a 7-character password",
+                     request(args, ACTION_CREATE_ACCOUNT, "x" + account, "abcdefg"), False)
+            c.expect("create account with a common password",
+                     request(args, ACTION_CREATE_ACCOUNT, "x" + account, "Pokemon123"), False)
         c.expect("create character with wrong password",
                  request(args, ACTION_CREATE_CHARACTER, account, "wrong" + password, character, 1), False)
         c.expect("create character with invalid name",

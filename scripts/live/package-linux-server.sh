@@ -28,7 +28,7 @@ cp "$root/core/server/schemas/pokeverse-extensions.sql" "$pkg/sql/10-pokeverse-e
 cp "$root/core/database/20-world-defaults.sql" "$root/core/database/30-account-tools.sql" "$pkg/sql/"
 
 cp "$root/scripts/live/pokeverse-ctl" "$root/scripts/live/bootstrap-ovh.sh" \
-   "$root/scripts/protocol-test.py" "$root/scripts/account-test.py" "$pkg/tools/"
+   "$root/scripts/protocol-test.py" "$root/scripts/account-test.py" "$root/scripts/live/rsa-key.py" "$pkg/tools/"
 cp "$root/scripts/live/systemd/"* "$pkg/tools/systemd/"
 chmod +x "$pkg/pokeverse-server" "$pkg/tools/pokeverse-ctl" "$pkg/tools/bootstrap-ovh.sh"
 

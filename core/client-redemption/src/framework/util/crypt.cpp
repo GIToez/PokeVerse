@@ -191,6 +191,10 @@ void Crypt::rsaSetPublicKey(const std::string& n, const std::string& e)
     mpz_set_str(m_n, n.data(), 10);
     mpz_set_str(m_e, e.data(), 10);
 #else
+    // a fresh key: OpenSSL keeps the Montgomery context of the previous n cached, so replacing
+    // n with RSA_set0_key would go on encrypting for the old key once a login has used it
+    RSA_free(m_rsa);
+    m_rsa = RSA_new();
     BIGNUM* bn = nullptr, * be = nullptr;
     BN_dec2bn(&bn, n.data());
     BN_dec2bn(&be, e.data());

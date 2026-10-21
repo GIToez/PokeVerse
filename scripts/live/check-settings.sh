@@ -122,6 +122,23 @@ else
   report FAIL LIVE_TIMEZONE "unknown time zone '$PV_TIMEZONE' (example: America/Los_Angeles)"
 fi
 
+# Login key
+key_needed=false
+case "$action" in verify|deploy) key_needed=true ;; esac
+if ! is_set PV_RSA_PRIVATE_KEY; then
+  if $key_needed; then
+    report FAIL POKEVERSE_RSA_PRIVATE_KEY "secret missing (needed for $action): the private login key, see docs/live-server.md"
+  else
+    report WARN POKEVERSE_RSA_PRIVATE_KEY "not set: deployments need it"
+  fi
+elif ! modulus=$(printf '%s\n' "$PV_RSA_PRIVATE_KEY" | tr -d '\r' | python3 "$(dirname "$0")/rsa-key.py" modulus 2>&1); then
+  report FAIL POKEVERSE_RSA_PRIVATE_KEY "$modulus"
+elif [ "$modulus" != "${PV_RSA_PUBLIC:-$(cat "$(dirname "$0")/rsa-public.txt")}" ]; then
+  report FAIL POKEVERSE_RSA_PRIVATE_KEY "a valid key, but not the one in the clients (scripts/live/rsa-public.txt)"
+else
+  report OK POKEVERSE_RSA_PRIVATE_KEY "matches the clients' key"
+fi
+
 # Discord bot
 snowflake='^[0-9]{17,20}$'
 bot_needed=false

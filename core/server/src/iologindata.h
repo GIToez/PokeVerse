@@ -25,6 +25,13 @@
 #include "account.h"
 #include "group.h"
 
+enum PasswordCheck_t
+{
+	PASSWORD_OK,
+	PASSWORD_WRONG,
+	PASSWORD_LOCKED
+};
+
 enum DeleteCharacter_t
 {
 	DELETE_INTERNAL,
@@ -66,6 +73,11 @@ class IOLoginData
 
 		bool getPassword(uint32_t accountId, std::string& password, std::string name = "");
 		bool setPassword(uint32_t accountId, std::string newPassword);
+		// Counts wrong passwords (loginLockoutAttempts in a row lock the account for loginLockoutMinutes)
+		// and rehashes old hashes; lockedSeconds is set for PASSWORD_LOCKED.
+		PasswordCheck_t checkPassword(uint32_t accountId, const std::string& password, const std::string& stored,
+			uint32_t& lockedSeconds);
+		static std::string lockedMessage(uint32_t lockedSeconds);
 		bool validRecoveryKey(uint32_t accountId, std::string recoveryKey);
 		bool setRecoveryKey(uint32_t accountId, std::string newRecoveryKey);
 

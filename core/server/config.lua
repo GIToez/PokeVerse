@@ -124,6 +124,18 @@
 	mysqlWriteTimeout = 10
 	encryptionType = "sha256"
 
+	-- Login security
+	-- NOTE: passwords are stored salted (PBKDF2-SHA256, passwordHashIterations rounds). Accounts with an
+	-- older encryptionType hash are rehashed the next time they log in.
+	-- loginLockoutAttempts wrong passwords in a row lock the account for loginLockoutMinutes (0 attempts: never).
+	-- rsaKeyFile holds the private login key (p, q and d, one per line; the live server writes it from the
+	-- GitHub secret POKEVERSE_RSA_PRIVATE_KEY). Without it the server uses the open OpenTibia key, which the
+	-- client uses for local and LAN addresses only.
+	passwordHashIterations = 60000
+	loginLockoutAttempts = 10
+	loginLockoutMinutes = 15
+	rsaKeyFile = ""
+
 	-- Deathlist
 	deathListEnabled = false
 	deathListRequiredTime = 1 * 60 * 1000

@@ -12,7 +12,7 @@ PVModal
 
   PVMuted
     id: hint
-    !text: tr('Account name: 3 to 25 letters or numbers.\nPassword: 6 to 29 characters.')
+    !text: tr('Account name: 3 to 25 letters or numbers.\nPassword: 8 to 29 characters, not a common one.')
     text-align: center
     anchors.top: prev.bottom
     anchors.horizontalCenter: parent.horizontalCenter
