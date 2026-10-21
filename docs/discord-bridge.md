@@ -31,6 +31,12 @@ All settings (defaults in `config.lua`):
 | `discordBridgePlayerSessions` | `true` | Send admin-only `player_login`/`player_logout` events (the bot's private `#player-activity` channel). |
 | `discordBridgeSessionIps` | `true` | Include the player's IPv4 address in `player_login`. Set `false` to never send IPs to the bot. |
 | `discordBridgeAccountLinking` | `true` | Allow Discord account linking (`!discord` in game, `link.*` requests). |
+| `discordBridgeBoosterRewards` | `false` | Pay Soul Coins to server boosters with a linked account (`booster.*` requests). Needs `discordBridgeAccountLinking`. |
+| `discordBridgeBoosterWeekly` | `1` | Soul Coins for every completed boost week. |
+| `discordBridgeBoosterLoyaltyEvery` | `4` | Every this many weeks the loyalty bonus is added (`0` = never). |
+| `discordBridgeBoosterLoyalty` | `1` | The loyalty bonus. |
+| `discordBridgeBoosterYearlyEvery` | `52` | Every this many weeks the yearly bonus is added (`0` = never). |
+| `discordBridgeBoosterYearly` | `15` | The yearly bonus. |
 
 On startup the server prints either `>> Discord bridge listening on 127.0.0.1:7199 ...` or
 the reason it is disabled.
@@ -54,6 +60,8 @@ workflow gives the same secret to the production bot. See [`live-server.md`](liv
   character created/deleted notice for linked accounts.
 - `data/lib/ps/systems/061-discordAccounts.lua`: account linking requests. It is the only
   code that writes the `discord_account_links` table.
+- `data/lib/ps/systems/087-discordBoosters.lua`: booster reward requests. The ledger row
+  and the Soul Coins are written by `DiscordBridge::depositBoosterWeek` in C++.
 - `data/talkactions/scripts/discord.lua`: the in-game `!discord` command.
 - `data/lib/013-json.lua`: JSON encoder/decoder for Lua 5.1.
 
@@ -71,7 +79,7 @@ display become `?`.
 server -> {"type":"hello","protocol":1,"nonce":"<64 hex chars>"}
 client -> {"type":"auth","hmac":"<hex HMAC-SHA256(secret, nonce)>"}
 server -> {"type":"welcome","protocol":1,"bootId":"<id>","serverName":"PokeVerse","queued":N,
-           "features":["playerSessions","accountLinking"]}
+           "features":["playerSessions","accountLinking","boosterRewards"]}
        or {"type":"error","code":"auth_failed"} and the connection is closed
 ```
 
@@ -80,7 +88,8 @@ The client must authenticate within 10 seconds.
 ### Compatibility
 
 The protocol version stays `1`: everything added later is optional. `features` lists the
-optional parts the server has switched on (`playerSessions`, `accountLinking`). Servers
+optional parts the server has switched on (`playerSessions`, `accountLinking`,
+`boosterRewards`; the last only when account linking is on too). Servers
 built before these features send no `features` field; clients must treat a missing field
 as an empty list and keep using the rest of the protocol. Clients must ignore event kinds
 and fields they do not know. Unknown request methods are answered with `unknown_method`.
@@ -173,12 +182,13 @@ server -> {"type":"response","requestId":"...","ok":true,"result":{...}}
        or {"type":"response","requestId":"...","ok":false,"error":{"code":"...","message":"..."}}
 ```
 
-Error codes: `invalid_params`, `unknown_method`, `internal`, plus the linking codes below.
+Error codes: `invalid_params`, `unknown_method`, `internal`, plus the linking and booster
+codes below.
 Requests that are not valid JSON objects are logged and ignored.
 
 All handlers are read-only except `chat.send`, which only displays a message, the
-`link.*` requests, which only change `discord_account_links`, and `report.setStatus`, which only
-changes that report.
+`link.*` requests, which only change `discord_account_links`, `report.setStatus`, which only
+changes that report, and `booster.week`, which only adds a ledger row and the Soul Coins it pays.
 
 | Method | Params | Result |
 | --- | --- | --- |
@@ -195,6 +205,8 @@ changes that report.
 | `link.setMain` | `discordUserId`, `character` | link summary |
 | `link.unlink` | `discordUserId` | `unlinked` (`false` when there was no link) |
 | `link.list` | `offset`, `limit` (max 200) | `links[]` (link summaries), `nextOffset` (absent on the last page) |
+| `booster.rules` | - | `weekly`, `loyaltyEvery`, `loyalty`, `yearlyEvery`, `yearly` (the config values) |
+| `booster.week` | `discordUserId`, `boostSince` (unix seconds), `week` (1-5200) | `deposited`, `week`, `weekly`, `loyalty`, `yearly`, `total` ([Booster rewards](#booster-rewards)) |
 | `report.setStatus` | `id`, `status`, `note` (optional), `by` | `id`, `status`, `changed`. The game records `<by> (Discord)` and tells the reporter (and the reporters of its duplicates). Unknown ids and statuses fail with `invalid_params`. |
 | `report.get` | `id` | `{found:false}` or `found`, `report` |
 | `report.screenshot` | `id`, `offset`, `length` (max 12000) | `{found:false}` or `found`, `done` (the upload finished), `total`, `offset`, `data` (that slice of the base64 PNG). Slices stay under the 16 KB line limit. |
@@ -295,6 +307,63 @@ Trainer lookup details:
   the counts are the skill levels.
 - `recent` lists up to 5 achievement names, never secret achievements.
 
+## Booster rewards
+
+Server boosters earn Soul Coins on their linked game account (off by default,
+`discordBridgeBoosterRewards`; it also needs account linking). The bot watches who boosts
+and, for each completed week of a boost, sends `booster.week` with the Discord user, the
+streak start (`boostSince`, Discord's "boosting since" time) and the week number. Removing
+or moving the boost ends a streak; the next boost has a new `boostSince`.
+
+The game owns the amounts and the ledger. Requests carry no amounts (any extra fields are
+ignored); week `n` pays:
+
+- `weekly` = `discordBridgeBoosterWeekly`
+- `loyalty` = `discordBridgeBoosterLoyalty` when `n` is a multiple of `discordBridgeBoosterLoyaltyEvery`
+- `yearly` = `discordBridgeBoosterYearly` when `n` is a multiple of `discordBridgeBoosterYearlyEvery`
+- `total` = the sum
+
+With the defaults: 1 a week, 2 every 4th week, 17 in week 52 (1 + 1 + 15, as 52 is also a
+4th week).
+
+`booster.week` checks, in this order:
+
+| Code | When |
+| --- | --- |
+| `disabled` | booster rewards (or account linking) are off; `booster.rules` answers the same |
+| `invalid_params` | `discordUserId` is not a snowflake, `boostSince` is not an integer > 0 or is in the future, `week` is not an integer from 1 to 5200 |
+| `not_linked` | the Discord user has no `discord_account_links` row |
+| `not_due` | `boostSince + week * 604800` is more than 300 seconds (clock skew) in the future |
+| (already paid) | a ledger row for this user, `boostSince` and `week` exists: the stored amounts come back with `deposited:false`, nothing is paid |
+| `before_link` | the week was completed before the link's `linked_at` |
+| `stale_streak` | the user was already paid for a streak with a newer `boostSince`, or this is a different streak that started before the user's last payout (an old streak sent again) |
+
+Otherwise the week is paid in one database transaction: the ledger row is inserted first
+(`INSERT IGNORE`; a duplicate key means another request paid it, and the stored row is
+returned with `deposited:false`), then `accounts.soulcoins = soulcoins + total` for the
+linked account. If the update fails the ledger row is rolled back. Soul Coins are never
+read and written back from Lua. Online characters of the account are told "Thank you for
+boosting the PokeVerse Discord! N Soul Coins were added to your account (withdraw them at the
+bank)." The Soul Coins go to the account balance, like Store purchases. The server log
+records the week, amount and account id, never the Discord id.
+
+Database: `discord_booster_rewards` in `schemas/pokeverse-extensions.sql` (`CREATE TABLE IF
+NOT EXISTS`; rollback is `DROP TABLE discord_booster_rewards`, no existing table is changed,
+and Soul Coins already paid stay on the accounts):
+
+| Column | Meaning |
+| --- | --- |
+| `id` | `AUTO_INCREMENT` key |
+| `discord_user_id` | the booster (`VARCHAR(20)`) |
+| `account_id` | the account that was paid (`ON DELETE CASCADE`) |
+| `boost_since` | streak start, unix seconds |
+| `week` | week of the streak |
+| `weekly`, `loyalty`, `yearly`, `total` | the amounts paid |
+| `created_at` | payout time, unix seconds |
+
+`UNIQUE (discord_user_id, boost_since, week)` makes payouts idempotent: retries, a lost bot
+state file or two bots racing never pay a week twice.
+
 ## Testing
 
 `scripts/test-server-linux.sh` (also run in CI) starts a server with the bridge enabled and
@@ -303,6 +372,11 @@ authentication, all requests, chat in both directions, loop prevention, a real c
 real failed throw, shiny/legendary spawn events, reconnects, player session events and
 logout reasons (`logout`, `kick`, `connection_lost`), and the whole linking flow: in-game
 codes, redeeming, wrong, reused and expired codes, the lockout, main character selection and
-fallback after a deletion, and unlinking from both sides. The `/bridgetest`
+fallback after a deletion, and unlinking from both sides. With `--booster-test` it checks
+booster rewards: the rules, parameter checks, `not_linked`, `not_due`, `before_link`,
+deposits (1, then 2 in week 4 and 17 in week 52) with the `soulcoins` balance and the
+in-game message, repeats that pay nothing, `stale_streak` for old and replayed streaks, and
+a new streak after the last payout. After a restart with the feature off,
+`--booster-disabled` checks the `disabled` answers. The `/bridgetest`
 talkaction it needs (`scripts/testing/`) is copied only into the temporary test server and
 is never part of the game data. `scripts/test-lua-json.lua` covers the JSON library.
