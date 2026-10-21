@@ -18,6 +18,7 @@ import argparse
 import collections
 import os
 import pickle
+import re
 import struct
 import sys
 
@@ -35,6 +36,9 @@ from render import Renderer  # noqa: E402
 GROUND, BORDER, PICKUPABLE = 0, 1, 17
 # the Pokemon Center and Mart and the custom building art around them, already in the style
 REFERENCE = set(range(22084, 23251)) | {11873, 18746}
+# server ids from here on are PokeVerse's own art (signs, machines, furniture, statues), already modern
+CUSTOM_FROM = 11390
+ITEMS_XML = os.path.join(os.path.dirname(h.ITEMS), 'items.xml')
 CACHE = '/tmp/ds_world_items.pkl'
 BEDS = '/tmp/ds_world_beds.pkl'
 
@@ -338,6 +342,22 @@ def map_items():
     return cids
 
 
+def custom_art(otb):
+    """Client ids of PokeVerse's own items, except nature, which follows the world style."""
+    out = set()
+    for line in open(ITEMS_XML, encoding='utf-8', errors='replace'):
+        m = re.search(r'<item (?:fromid="(\d+)" toid="(\d+)"|id="(\d+)")[^>]*name="([^"]*)"', line)
+        if not m:
+            continue
+        a = int(m.group(1) or m.group(3))
+        b = int(m.group(2) or a)
+        if b < CUSTOM_FROM or re.search(r'\b(tree|bush|grass|hedge)\b', m.group(4), re.I):
+            continue
+        out.update(otb.client_id(i) for i in range(max(a, CUSTOM_FROM), b + 1))
+    out.discard(None)
+    return out - set(PAVING)
+
+
 def border_beds():
     """{border client id: Counter of the ground client ids it is laid on}."""
     if os.path.exists(BEDS) and os.path.getmtime(BEDS) > os.path.getmtime(h.MAP):
@@ -538,10 +558,11 @@ def build():
     new = dict(house_sprites(dat))
     new.update({sid: np.array(im) for sid, im in box_reskin.sprites().items()})
     items = map_items()
+    custom = custom_art(pvmap.Otb(h.ITEMS))
     keep = set()
     for cid in items:
         t = dat.things.get(cid)
-        if t and (cid in REFERENCE or PICKUPABLE in t[0]):
+        if t and (cid in REFERENCE or cid in custom or PICKUPABLE in t[0]):
             keep.update(s for s in t[8] if s)
     raw = {}
 
@@ -569,7 +590,7 @@ def build():
     grounds, objects = [], []
     for cid in sorted(items):
         t = dat.things.get(cid)
-        if not t or cid in REFERENCE or PICKUPABLE in t[0]:
+        if not t or cid in REFERENCE or cid in custom or PICKUPABLE in t[0]:
             continue
         if GROUND in t[0] or BORDER in t[0]:
             grounds.append((cid, t))
