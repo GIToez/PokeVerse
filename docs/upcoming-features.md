@@ -113,9 +113,9 @@ the [event calendar and double shiny](#15-daily-login-rewards-and-events),
 [live status and Discord card](#4-website), the level-up banner that lists what just unlocked,
 and the Android phone UI pass.
 
-Also open: the [Android signing key](client-updates.md#one-time-setup) (needed before
-players install the APK for real), a phone UI pass, and a security check of the live
-server (open ports, SSH, firewall).
+Also open: a phone UI pass and a security check of the live server (open ports, SSH,
+firewall). The [Android signing key](client-updates.md#one-time-setup) is set up: client
+releases sign the APK with `ANDROID_KEYSTORE_BASE64`.
 
 Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
 [accounts, Soul Coins and the Store](#19-accounts-soul-coins-and-the-store) (email
