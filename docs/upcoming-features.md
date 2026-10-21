@@ -81,8 +81,8 @@ so. Items marked **To decide** need an answer before work starts.
 8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
 9. [Factions](#10-factions).
 10. The [modernization audit](modernization-audit.md): the old keyword systems get windows,
-    in its ranked order (Poke Mart, Nurse Joy menu, travel picker, bank, and the rest).
-    - **Poke Mart window first (not built, added October 20).** Today {trade} at the 158
+    in its ranked order (Poke Mart, bank, travel picker and the rest; Nurse Joy needs no menu).
+    - **Poke Mart window first (built, PR #161).** Today {trade} at the 158
       shop NPCs still opens Tibia's trade window, only renamed to Dollars. The new window is
       in the Sell Shop's style: item tiles by category (Balls, Potions, Revives, Tools), a
       quantity stepper with x1/x10/x100, the total and your money, and a cart to buy several
@@ -1076,8 +1076,8 @@ From the `#notes` channel:
   Dragon Fang and the rest) is a flat +20% to that type's moves. Drag one from the bag onto a
   Pokémon on the swap bar to give it (or "Use with" its ball); dropping another on it swaps
   them. A small icon in the slot's corner shows what it holds, the slot's tooltip names it,
-  and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade is no
-  longer needed. Polkadot Bow boosts Normal moves by 10% (as on Bulbapedia; Silk Scarf is the
+  and Alt+click (or right-click > Take held item) gives it back, so Mitchell Meade, who
+  took held items off, is off the map (his spawn is commented out in `map-spawn.xml`). Polkadot Bow boosts Normal moves by 10% (as on Bulbapedia; Silk Scarf is the
   full 20%).
 - **Lucky Egg and Exp Share (built):** the Lucky Egg gives its holder +50% EXP from defeating
   wild Pokémon. Exp Share holders on the belt that are not out and not fainted split a pool of
