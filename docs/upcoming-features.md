@@ -54,6 +54,16 @@ so. Items marked **To decide** need an answer before work starts.
   Poke Ball corners for the mouse-over crosshair, both in Options > Interface.
 - Names on the Pokepedia map by zoom (regions, cities, routes, landmarks) with an Aa toggle,
   and the Places list grouped by region with routes, landmarks and a region filter.
+- [Accounts, login security and the Store](#19-accounts-soul-coins-and-the-store): signup
+  email codes, Forgot password, the Account window (with Link Discord and Join Discord),
+  PBKDF2 passwords, account lockout, the PokeVerse login key, and the Store in place of the
+  Soul Coin NPCs.
+- The Poke Mart and Bank windows ([modernization audit](modernization-audit.md)).
+- The battle list sorts by level, keeps your own Pokemon first and the radar's target second;
+  the Pokédex Details tab; Pokemon mouse cursors; the gold Premium badge in the Pokepedia;
+  held item icons that no longer flicker.
+- Android: the map keeps 23x13 tiles and the game stays in landscape; the APK is signed with
+  the release key.
 
 **Next, in order (agreed October 15):**
 
@@ -82,8 +92,8 @@ so. Items marked **To decide** need an answer before work starts.
 9. [Factions](#10-factions).
 10. The [modernization audit](modernization-audit.md): the old keyword systems get windows,
     in its ranked order (Poke Mart, bank, travel picker and the rest; Nurse Joy needs no menu).
-    - **Poke Mart window first (built, PR #161).** Today {trade} at the 158
-      shop NPCs still opens Tibia's trade window, only renamed to Dollars. The new window is
+    - **Poke Mart window first (built, PR #161).** {trade} at the 158 shop NPCs opens it on
+      the Redemption client; older clients keep Tibia's trade window, renamed to Dollars. The window is
       in the Sell Shop's style: item tiles by category (Balls, Potions, Revives, Tools), a
       quantity stepper with x1/x10/x100, the total and your money, and a cart to buy several
       items at once ([details](modernization-audit.md#1-poke-mart-buy-window)). The server
@@ -118,10 +128,10 @@ firewall). The [Android signing key](client-updates.md#one-time-setup) is set up
 releases sign the APK with `ANDROID_KEYSTORE_BASE64`.
 
 Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
-[accounts, Soul Coins and the Store](#19-accounts-soul-coins-and-the-store) (email
-verification, account recovery, buying Soul Coins with PayPal, and the Store in place of the
-Soul Coin NPCs), and putting Johto in `scripts/mapper/hidden-regions.txt` while
-it is built, so the map doesn't show it before launch.
+buying Soul Coins with PayPal ([phase 4](#19-accounts-soul-coins-and-the-store); accounts and
+email, login security and the Store are built, and the Soul Coin NPCs are off the map), the
+[travel picker](modernization-audit.md#3-travel-picker), and putting Johto in
+`scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
 ## 1. New depot
 
@@ -134,8 +144,8 @@ classic container. The client talks over extended opcode JSON, not chat commands
 - A Pokémon in a Poké box is a database row with its ball's attributes (`pc_boxes`), the
   same way the GTS and the Day Care keep them, not an item in a container. Nothing about
   the Pokémon changes, and it takes no depot space.
-- Throwing a ball is not refused when every box is full: the Pokémon goes to the inbox,
-  which has no limit, so it is still never lost.
+- Throwing a ball is refused ("Your Poke boxes are full.") when the bag has no room and
+  every box is full. Deliveries still go to the inbox when the boxes are full.
 - Deliveries still call `doPlayerAddDepotItem`. For PC players, stacks go straight to the
   inbox; Pokémon and other items are marked, put in the depot chest and moved right after
   the script that delivered them is done (it may still use the item). Mail and parcels
@@ -272,7 +282,7 @@ together rather than as two separate features.
 | Minimap click walk | `modules/gamelib/ui/uiminimap.lua` (`autowalk = true`). |
 | Full map (protocol 854) | `game_minimap/minimap.lua` `fullscreen()` — **does not** center on the player when opened; it restores `oldPos` from the last session. Side panel minimap already follows the player when `fullMapView` is false. |
 | Town names + guide marks | `pokeverse-modern/modules/game_minimap/map_labels.lua` (`MAP_REGIONS`, `MAP_LABELS`, written by `scripts/mapper/build_map_labels.py`) and `pokeverse.lua` (`GUIDES`, coord copy label). |
-| Cyclopedia map | Not shipped (stripped in `assemble-redemption-client.sh`); **M** uses fullscreen minimap, not Tibia 13 cyclopedia. |
+| Cyclopedia map | Not shipped (stripped in `assemble-redemption-client.sh`); **M** opens the Pokepedia's Map tab (the fullscreen minimap only when the Pokepedia is missing). |
 
 ### Auto-walk: symptoms and likely causes
 
@@ -338,8 +348,8 @@ status line (“Walking…”) and clearer cancel. Optional: small `game_nav` mo
 
 **Built (phases B to F)** (server `lib/ps/systems/069-pokepedia.lua`, client `game_pokepedia`):
 the window with the Map, Houses, Pokédex and Items tabs, waypoints and routes, Pokédex
-knowledge levels and the tracker panel, as agreed below. P opens the window and M the Map tab
-(not while typing). Choices made:
+knowledge levels and the tracker panel, as agreed below. M opens the Map tab (not while
+typing); the window itself has no key by default (Settings > Controls). Choices made:
 
 - Waypoints and the route are saved per character on the client (`g_settings`). A route walks
   its stops in order; a battle or an NPC talk pauses it, and walking somewhere else stops it.
@@ -362,7 +372,7 @@ packets. The Cyclopedia module itself stays out of the client (it unloads below 
 - **Map:** the world map from the phases above (centred on the player, floors, mark filters,
   Places search, waypoints and routes). M opens this tab directly.
 - **Houses:** replaces the `/house` commands, the way Tibia's house tab works.
-  - Today: 577 houses (8 guild halls) in `data/world/map-house.xml`; price is 50 per tile
+  - Today: 683 houses (8 guild halls) in `data/world/map-house.xml`; price is 50 per tile
     and the weekly rent equals the price (`config.lua`); level 25, premium, one house per
     player; buying needs the player to face the door (`TalkAction::houseBuy`).
   - List with search and filters (town, free or rented, size, guild hall); details: size,
@@ -378,10 +388,11 @@ packets. The Cyclopedia module itself stays out of the client (it unloads below 
     trade window. In the tab: the owner enters the name and a price, the buyer gets a confirm
     window, and the money and the house change hands in one step, anywhere. The buyer must
     meet the buy rules (level, premium, no house on the account).
-  - Fix with it: `TalkAction::houseSell` checks premium the wrong way round
-    (`!tradePartner->isPremium() && !HOUSE_NEED_PREMIUM`).
+  - Fixed with it: `TalkAction::houseSell` checked premium the wrong way round.
 - **Pokédex:** opens the current Pokédex window (asks the server, which opens it as today
-  through `doPlayerSendPokedexOpen`). No rebuild.
+  through `doPlayerSendPokedexOpen`). Its Details tab (built October 21) shows each species
+  in sections, gated by Pokédex knowledge, from `getDexDetails` in `010-pokedex.lua` on
+  `EXTENDED_IDS.POKEDEX_DETAILS` (43).
 - **Items (agreed):** everything sold in shops is listed from the start; everything else (rare
   drops, held items, quest and event items) shows as "???" until the player has had one in
   the bag or depot or looked at one, with a count per category ("Held items 4/32").
@@ -476,8 +487,8 @@ under the zoom switches back to the minimap. The HUD minimap is unchanged.
   pixels per tile (and coarser copies for zooming out) in the format of Redemption's satellite
   map (`satellitemap.cpp`), which draws only what is on screen. Underground floors are left
   out and show the explored minimap; house pictures still cover every floor. The local
-  preview (`scripts/render-map.sh`) still draws the underground, for mapping. The client got a 4 pixels per tile level and keeps at
-  most 64 chunks in memory (both need the next client binary).
+  preview (`scripts/render-map.sh`) still draws the underground, for mapping. The client has a 4 pixels per tile level and keeps at
+  most 64 chunks in memory.
 - The client release renders it and caches it; after a map change only the pieces that
   changed are drawn again (about 12 minutes for the whole map on 4 cores, a few minutes
   after a small change). About 120 MB with the house pictures, downloaded once.
@@ -498,8 +509,8 @@ gym in a new town needs its badge added to the script and to `pokeverse.lua`.
 
 ## 3. NPC dialogue, quests and tasks
 
-Many NPCs from the old system are missing the blue clickable responses. There are 906 NPC
-files and 338 NPC scripts (`core/server/data/npc`).
+Many NPCs from the old system are missing the blue clickable responses. There are 910 NPC
+files and 339 NPC scripts (`core/server/data/npc`).
 
 1. One modern dialogue window for every NPC: name and portrait, blue clickable responses,
    and a notice when a quest is accepted or a task updated. **Window built**
@@ -585,7 +596,7 @@ soon"), the Discord card, and the pages below.
     receives.
   - Countdown to the next restart.
   - Patch notes for each client release.
-  - Vocation pages and GTS listings, once those exist.
+  - Vocation pages and GTS listings (both are in the game; the site pages are still to do).
   - A better download section: detect the player's platform, show the version, and tell
     Android players to open the link in Chrome (the GitHub app catches `github.com` links).
 - **Later, with a domain:** rankings (level, catches, shinies) and trainer profiles.
@@ -685,8 +696,8 @@ must wait 15 days before the next one. That is about 10 days for the first egg a
 25 days between eggs, which is far too long. Agreed for everyone: the egg is guaranteed after 14 days (per player, the pair must have
 trained for 24 hours), with a chance of getting it sooner. Early chance (agreed): from day 7,
 one roll a day at 10%, so about half of players get their egg before day 14. Breeders
-roll 11–15% by rank, so at the top rank about two thirds get it early. The NPC's "fifteen
-days" message is hard-coded and needs updating too.
+roll 11–15% by rank, so at the top rank about two thirds get it early. The NPC's messages
+say day 14.
 
 **Ranger**: tracking wild Pokémon with a radar.
 
@@ -765,7 +776,8 @@ do not change.
   second egg.
   The early egg chance is from day 7 at 10% a day, and Breeders get 11–15%.
   Ranger specials are event Pokémon, such as Christmas Pikachu.
-- **Proposed:** the rank levels and the other percentages.
+- **Proposed:** the rank-up trial goal counts. The rank levels and perk percentages are in
+  `Vocations.RANK_LEVELS` and `Vocations.PERKS`.
 - **Built: the vocation window** (client `game_vocation`, server `Vocations` in
   `data/lib/ps/systems/070-vocations.lua`, `EXTENDED_IDS.VOCATION`). A scrolling grid of
   cards, three per row, each with a picture, the vocation's icon, name, tagline and three
@@ -899,7 +911,7 @@ do not change.
   - "Trainer since" counts from the first login after the card was added, because the
     `players` table has no creation date.
   - Artwork: `scripts/art/trainercard_ui.py`.
-  - Later: the card in the Discord bot.
+  - Discord's /trainer shows the card, also for offline trainers (`056-discordBridge.lua`).
 
 ### To decide
 
@@ -942,9 +954,9 @@ Keeping the masteries would mean at least removing or replacing that bonus.
   confirmation before the permanent choice.
 - Rank-up quests and tasks in the task list, and a banner at each rank-up (reusing the
   level-up banners).
-- All values (levels, percentages) in one config table, so tuning is a one-line change.
 - Server tests that check the bonuses never touch combat stats and never apply in PvP.
-- Vocation and rank in the Discord bot's trainer lookup, and vocation pages on the website.
+- Vocation pages on the website. (Done: the values are in one table, `Vocations.PERKS` and
+  `RANK_LEVELS`; Discord's trainer lookup shows the vocation and rank.)
 
 ## 7. Pokémon storage
 
@@ -957,8 +969,8 @@ Pokémon offers to sell, from the Pokémon Center computer. Offers are held unti
 cancelled or expire (7 days), sellers are paid into the bank less a 1% tax even when offline,
 at most 30 offers each, Pokémon with face icons, and a history of the player's trades. The
 Pokémon and item market NPCs are retired and their listings moved over. Not built yet: price
-history ("last sold for"), the bank history window, staff tools beyond opening it anywhere,
-and Discord posts.
+history ("last sold for"), GTS sales in the Bank window's History (it lists deposits,
+withdrawals and transfers), staff tools beyond opening it anywhere, and Discord posts.
 
 Replaces the player marketplace. Built on the existing market module (the legacy
 `game_market`; Redemption has one too) and extended:
@@ -970,8 +982,7 @@ Replaces the player marketplace. Built on the existing market module (the legacy
 - **Escrow:** a listed item or Pokémon leaves the seller's inventory, and comes back if the
   listing expires or is cancelled. This prevents duplicates.
 - **Payment:** sales go straight to the seller's bank balance, so they work offline. The
-  bank (`npc/scripts/bank.lua`, `datalog_bank_transactions`) gets an upgrade: a history
-  window that shows GTS sales.
+  Bank window (built) has a History tab; GTS sales are not written to it yet.
 - Listing fee, a maximum number of listings per player, and an expiry time.
 - Price history ("last sold for").
 - Safety:
@@ -982,7 +993,7 @@ Replaces the player marketplace. Built on the existing market module (the legacy
 
 ## 9. In-game wiki and tutorial
 
-**Wiki built:** the Pokepedia's Wiki tab (`game_pokepedia/wiki_data.lua`, 76 topics in 7
+**Wiki built:** the Pokepedia's Wiki tab (`game_pokepedia/wiki_data.lua`, 96 topics in 8
 categories, with search, pictures, tables and links between topics). Every topic was checked
 against the code: most of the old Wiki Chat text was out of date (controls, berries, banks,
 houses, guilds, tournaments, the Safari Zone, TMs, the daycare) and is corrected. The Wiki Chat
@@ -1016,8 +1027,8 @@ Not fixed yet:
   the Lilycove TM NPC are there too.
 - **Sandboards** work in the code but can't be obtained.
 - The per-tournament trophy is switched off; only the weekly trophy is given.
-- Not checked: where the slot machines are, what Rocket Grunts give, and whether the Quest
-  Log lists PokeVerse quests.
+- Checked since: the slot machines are Eugene Oliver's in Celadon and Dusty Kaylyn's in
+  Mauville, and the Quest Log lists PokeVerse quests. Still not checked: what Rocket Grunts give.
 
 ## 10. Factions
 
@@ -1039,6 +1050,18 @@ From the `#notes` channel:
   climbing rocks.
 - **Battle list (fixed):** a Pokémon's level did not update until one of the filters was
   clicked; an entry now refreshes when the creature's name (and so its level) changes.
+- **Battle list sorting (done):** sort by level up or down; your own Pokémon is always
+  first and the one the Ranger radar tracks second, with a radar mark on its row
+  (`patches/game_battle.patch`, `game_pokehud/nameplates.lua`).
+- **Mouse cursors (done):** Pokémon-themed map cursors a size up from the stock ones, and
+  potion, revive, antidote, elixir and energy cursors while using those on a Pokémon
+  (`pokeverse-modern/data/cursors`).
+- **Held item icons (fixed):** the eight held items, the Lucky Egg and the Exp Share no
+  longer swap pictures (their `data.dat` entries are still images now).
+- **Premium badge in the Pokepedia (done):** the Premium ability pages show the Pokédex's
+  gold PREMIUM badge, which opens the Premium topic.
+- **Discord from the Account window (done):** Link Discord shows a code with Copy command
+  (`/link code:...` on the clipboard) and Join Discord.
 - **WASD double step (fixed):** binding the walk keys again after a relog stacked their
   handlers, so one press walked twice.
 - **Default key bindings (done):** every key below is a Settings > Controls entry. The
@@ -1761,8 +1784,11 @@ becomes a post in a Discord forum channel, with tags.
   have to wait to see if a second one follows, so walking and attacking would feel slow.
 - **Volume buttons (done):** they control the phone's media volume.
 - The shortcut buttons keep working for look and follow.
-- Then a phone UI pass: button sizes, the joystick, and windows that don't fit the
-  screen.
+- **Map shape (done):** the map keeps 23x13 tiles on wide phones, and the game stays in
+  landscape (`sensorLandscape`).
+- **Joystick (done):** hold its middle to drag it anywhere (kept per device); Reset joystick
+  on the Help page puts it back. The chat buttons sit clear of the move bar.
+- Still to do in the phone UI pass: button sizes and windows that don't fit the screen.
 
 ## 18. Ideas (not agreed)
 
@@ -1807,7 +1833,7 @@ berries and the GTS. Making some of those nicer is in the
 - **Mystery Gift codes:** staff make codes in the Admin window that players redeem for items,
   Pokemon or outfits, for Discord giveaways. Small.
 - **Season pass:** a free and a premium track per season, filled by the daily and weekly
-  tasks. Premium uses soul coins, so it needs the Store first. Large.
+  tasks. Premium uses soul coins (the Store is built). Large.
 
 **World**
 - **Team Rocket takeovers:** a calendar event where Rocket holds a town, with waves of grunts,
@@ -1823,11 +1849,22 @@ berries and the GTS. Making some of those nicer is in the
 
 ## 19. Accounts, Soul Coins and the Store
 
-Planned October 20, for going public. Phase 3, the Store, is built (PR #163), phase 1,
-password security, in PR #167, and phase 2, accounts and email, in the PR after it. Phase 4,
-buying Soul Coins, is not.
+Planned October 20, for going public. Phases 1 to 3 are built: password security (PR #167),
+accounts and email (PR #168) and the Store (PR #163). Phase 4, buying Soul Coins, is not.
 
-### Today
+### Now
+
+- **Signing up** needs an email and the 6-digit code sent to it; older accounts have 7 days
+  to add one. Forgot password is on the login screen, and the Account window (character list)
+  changes the password or the email and links Discord. Mail goes through Gmail on the live
+  server (`GMAIL_ADDRESS`, `GMAIL_APP_PASSWORD`).
+- **Passwords** use PBKDF2-SHA256, upgraded at each player's next login. The live server uses
+  the PokeVerse login key; 10 wrong passwords in a row lock the account for 15 minutes.
+- **The Store** (`game_soulstore`, `084-store.lua`) sells everything the Soul Coin NPCs did,
+  with Withdraw and Deposit. The Soul Coin NPCs are off the map (commented out in
+  `map-spawn.xml`). Buying Soul Coins with PayPal is not built.
+
+### Before (October 20)
 
 - **Creating an account** asks only for an account name and a password (3 accounts per IP
   per hour). The `accounts.email` column exists but is never filled. There is no email,
@@ -1910,8 +1947,8 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
      clients get the new public half. Old clients can't log in once the server switches, so
      the Client release goes out first and the Live server deploy right after; the updater
      doesn't use the key, so players update as usual and then log in.
-   - Passwords stored with Argon2id (libsodium, on the Linux and Windows server builds),
-     each old password upgraded the next time that player logs in.
+   - Passwords upgraded the next time each player logs in (built with PBKDF2-SHA256, see
+     above; the plan said Argon2id).
    - At least 8 characters and no very common passwords. An account locks for 15 minutes
      after 10 wrong passwords from any IP.
 2. **Accounts and email** (built; [live-server.md](live-server.md#account-emails) has the
@@ -1963,7 +2000,7 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
      withdraw to shop.
    - One catalog on the server; each purchase takes the coins and gives the item in one
      step, so coins can't be spent twice.
-   - The 23 Soul Coin NPCs removed.
+   - The 23 Soul Coin NPCs removed (done: their spawns are commented out in `map-spawn.xml`).
    - **Everything Soul Coins buy today**, all of it moving to the Store (from
      `npc/scripts/soulTrade.lua` and Josh Pillberg's `vitamin_reset.lua`):
 
@@ -2001,7 +2038,7 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
 
 ### Needed before starting
 
-- Phases 1 and 3 need nothing.
+- Phases 1 to 3 are built and needed nothing else.
 - Phase 2 (done): `thepokeversemmo@gmail.com` with 2-Step Verification and an App Password. In this
   repository's Settings > Secrets and variables > Actions: the variable `GMAIL_ADDRESS`
   (`thepokeversemmo@gmail.com`) and the secret `GMAIL_APP_PASSWORD` (the 16 letters); the

@@ -27,14 +27,18 @@ old keyword dialogue left as the fallback for older clients.
 | 7 | Ranger Club and Tournament boards | Weekly | Medium |
 | 8 | Berries | Weekly | Medium |
 | 9 | Ball paint | Now and then | Small |
-| 10 | Name Rater and the Store | Now and then | Large (Store) |
-| 11 | Houses tab | Now and then | Medium |
-| 12 | Stock OTClient modules cleanup | Never (cost only) | Small |
+| 10 | Name Rater and the Store (Store built) | Now and then | Large (Store) |
+| 11 | Houses tab (built) | Now and then | Medium |
+| 12 | Stock OTClient modules cleanup (done) | Never (cost only) | Small |
 | 13 | Social windows (friends, guild, mail, rematch stars, watch) | Daily | Medium each |
 
 ## 1. Poke Mart buy window
 
-**Now.** 158 NPCs sell through `module_shop` and the `shop_buyable` / `shop_sellable` lists in their
+**Built (PR #161):** `game_mart` takes over {trade} on the Redemption client, with the cart and a
+Sell tab with Sell all and Keep ([upcoming-features.md](upcoming-features.md#order) has the details).
+Older clients keep the renamed trade window. What follows is the audit from before.
+
+**Before.** 158 NPCs sell through `module_shop` and the `shop_buyable` / `shop_sellable` lists in their
 XML (the Marts use `npc/scripts/quest_pokemart.lua`). Saying {trade} opens stock OTClient's
 `game_npctrade`. The `pokeverse-modern/patches/game_npctrade.patch` patch only renames the currency to
 Dollars. The window still has Tibia's layout: a plain list, a quantity slider, and Buy and Sell tabs.
@@ -75,16 +79,17 @@ badge is missing, with the town's Pokepedia map thumbnail.
 ## 4. Bank window
 
 **Built (October 21):** `game_bank` and `lib/ps/systems/086-bank.lua`; greeting a bank NPC
-opens it. Transfers have no cap and may go to the trainer's own characters.
+opens it (`EXTENDED_IDS.BANK`, 44). Deposit, Withdraw, Transfer (no cap, may go to the trainer's own
+characters) and History. The keywords stay for older clients. What follows is the audit from before.
 
-**Now.** 19 bank NPCs use `npc/scripts/bank.lua` (with `shop_bank.lua` for one of them):
+**Before.** 19 bank NPCs use `npc/scripts/bank.lua` (with `shop_bank.lua` for one of them):
 {balance}, {deposit}, {deposit all}, {withdraw}, {withdraw all} and {transfer}, each a multi-step
 dialogue with typed amounts.
 
 **Target.** One window: the balance and the money carried, deposit and withdraw boxes with All buttons,
 and transfer with a name box that checks the name before sending.
 
-**Files.** `npc/scripts/bank.lua`, a new `game_bank` module.
+**Files.** `npc/scripts/bank.lua`, `game_bank`, `lib/ps/systems/086-bank.lua`.
 
 ## 5. Egg move and TM move manager
 
@@ -145,7 +150,13 @@ missing, in the Sell Shop's style.
 
 ## 10. Name Rater and the Store
 
-**Now.**
+**Built: the Store** (`game_soulstore`, `lib/ps/systems/084-store.lua`, PR #163), from the top bar's
+Store button: everything the Soul Coin NPCs sold, nickname and remove nickname included, with Withdraw
+and Deposit. The Soul Coin NPCs are off the map. Still to do: a Name Rater window that picks the
+Pokemon and checks the name as it is typed, and buying soul coins (phase 4 in
+[upcoming-features.md](upcoming-features.md#19-accounts-soul-coins-and-the-store)).
+
+**Before.**
 - **Name Rater:** the soul coin NPCs (`npc/scripts/soulTrade.lua`) give a nickname for 1 soul coin.
   You say {nick change}, type the name and confirm, and it renames the ball in your ball slot. There is
   no window: the name is checked only after it is typed, and players can't see which Pokemon gets it.
@@ -164,7 +175,11 @@ Buying soul coins needs payments and the website first (`docs/website.md`).
 
 ## 11. Houses tab
 
-**Now.** 683 houses in `world/map-house.xml`, managed with `/house buy`, `/house sell`, `/house kick`,
+**Built:** the Pokepedia's Houses tab (`game_pokepedia/houses.lua`, `069-pokepedia.lua`): buy, leave,
+guests and sub-owners, and transfers, with pictures of each house and floor. The talkactions stay as a
+fallback. What follows is the audit from before.
+
+**Before.** 683 houses in `world/map-house.xml`, managed with `/house buy`, `/house sell`, `/house kick`,
 `/house guest` and the other talkactions in `talkactions/talkactions.xml`. Players have to know the
 commands and stand in front of the door.
 
@@ -175,7 +190,10 @@ and Add guest, Kick and Leave buttons. Houses for sale show on the Pokepedia map
 
 ## 12. Stock OTClient modules cleanup
 
-**Now.** The Redemption base still ships Tibia modules PokeVerse never uses. Most aren't loaded, because
+**Done:** `scripts/assemble-redemption-client.sh` (`redemption_skip`) deletes the modules below and the
+never-loaded Tibia ones from the assembled client. Their source folders still say `autoload: true`.
+
+**Before.** The Redemption base still ships Tibia modules PokeVerse never uses. Most aren't loaded, because
 `pokeverse-modern/modules/game_interface/interface.otmod` has its own list, but these load by themselves
 with `autoload: true`:
 - `dev_otui`
