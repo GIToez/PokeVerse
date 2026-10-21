@@ -387,7 +387,7 @@
 	-- Soul Coins for server boosters with a linked account (needs account linking). Every
 	-- completed 7 days of continuous boosting pays Weekly, every LoyaltyEvery-th week adds
 	-- Loyalty and every YearlyEvery-th week adds Yearly (0 turns a bonus off).
-	discordBridgeBoosterRewards = false
+	discordBridgeBoosterRewards = true
 	discordBridgeBoosterWeekly = 1
 	discordBridgeBoosterLoyaltyEvery = 4
 	discordBridgeBoosterLoyalty = 1

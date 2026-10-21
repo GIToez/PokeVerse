@@ -1,6 +1,6 @@
 -- Discord booster rewards: Soul Coins for every 7 days of continuous server boosting, paid to
--- the game account linked to the booster (061-discordAccounts.lua). Off by default
--- (discordBridgeBoosterRewards); needs discordBridgeAccountLinking too.
+-- the game account linked to the booster (061-discordAccounts.lua). Switched by
+-- discordBridgeBoosterRewards; needs discordBridgeAccountLinking too.
 --
 -- The bot only says which boost week of which streak is complete. The game owns the amounts
 -- (config) and the ledger `discord_booster_rewards` (schemas/pokeverse-extensions.sql), so a
