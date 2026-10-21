@@ -93,6 +93,7 @@ bool isPasswordCharacter(char character);
 
 bool isValidAccountName(std::string text);
 bool isValidPassword(std::string text);
+bool isCommonPassword(std::string text);
 bool isValidName(std::string text, bool forceUppercaseOnFirstLetter = true);
 bool isNumbers(std::string text);
 

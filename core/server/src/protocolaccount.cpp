@@ -217,11 +217,14 @@ std::string ProtocolAccount::createAccount(uint32_t clientIp, const std::string&
 	if(!isValidAccountName(account))
 		return "The account name may only contain letters and numbers.";
 
-	if(password.length() < 6 || password.length() > 29)
-		return "The password must be 6 to 29 characters long.";
+	if(password.length() < 8 || password.length() > 29)
+		return "The password must be 8 to 29 characters long.";
 
 	if(!isValidPassword(password))
 		return "The password contains characters that are not allowed.";
+
+	if(isCommonPassword(password))
+		return "That password is too common, please choose another one.";
 
 	if(asLowerCaseString(password) == account)
 		return "The password must be different from the account name.";

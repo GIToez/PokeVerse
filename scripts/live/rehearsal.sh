@@ -129,9 +129,11 @@ pt "${player[@]}" --walk west > /dev/null || fail "login with the login key fail
 [ "$(sudo mariadb -N pokeverse -e "SELECT password LIKE 'pbkdf2-sha256\$%' FROM accounts WHERE name = 'rehearsal'")" = 1 ] \
   || fail "the SHA-256 password was not rehashed at login"
 sudo mariadb pokeverse -e "CALL pokeverse_create_account('rehearsallock', 'rehearsal1'); CALL pokeverse_create_character('rehearsallock', 'Rehearsal Lock', 1);" >/dev/null
-for _ in 1 2 3 4; do pt --account rehearsallock --password wrong --character x --expect-login-failure > /dev/null; done
+# 6 seconds apart: faster failures from one IP trip loginTries (retryTimeout 5 seconds) first
+for _ in $(seq 9); do pt --account rehearsallock --password wrong --character x --expect-login-failure > /dev/null; sleep 6; done
 pt --account rehearsallock --password wrong --character x --expect-login-failure | grep -q "locked for 15 minutes" \
-  || fail "five wrong passwords did not lock the account"
+  || fail "ten wrong passwords did not lock the account"
+sleep 6
 pt --account rehearsallock --password rehearsal1 --character x --expect-login-failure | grep -q "locked" \
   || fail "the right password got into a locked account"
 endstep

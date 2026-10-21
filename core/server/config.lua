@@ -132,7 +132,7 @@
 	-- GitHub secret POKEVERSE_RSA_PRIVATE_KEY). Without it the server uses the open OpenTibia key, which the
 	-- client uses for local and LAN addresses only.
 	passwordHashIterations = 60000
-	loginLockoutAttempts = 5
+	loginLockoutAttempts = 10
 	loginLockoutMinutes = 15
 	rsaKeyFile = ""
 

@@ -18,6 +18,7 @@
 #include <iostream>
 #include <iomanip>
 #include <climits>
+#include <set>
 
 #include "tools.h"
 #include "md5.h"
@@ -575,6 +576,26 @@ bool isValidAccountName(std::string text)
 	}
 
 	return true;
+}
+
+bool isCommonPassword(std::string text)
+{
+	static const std::set<std::string> common = {
+		"password", "password1", "password12", "password123", "passw0rd", "p@ssw0rd", "12345678", "123456789",
+		"1234567890", "0123456789", "87654321", "11111111", "00000000", "88888888", "12341234", "11223344",
+		"123123123", "147258369", "qwertyuiop", "qwerty12", "qwerty123", "1qaz2wsx", "zaq12wsx", "1q2w3e4r",
+		"1q2w3e4r5t", "123qweasd", "qweasdzxc", "asdfghjk", "asdfghjkl", "zxcvbnm1", "abc12345", "abcd1234",
+		"iloveyou", "sunshine", "princess", "football", "baseball", "welcome1", "trustno1", "superman",
+		"starwars", "letmein1", "michael1", "jennifer", "computer", "internet", "whatever", "dragon12",
+		"monkey12", "shadow12", "master12", "killer12", "google123", "minecraft", "fortnite", "roblox123",
+		"pokemon1", "pokemon12", "pokemon123", "pikachu1", "pikachu123", "charizard", "pokeverse", "pokeverse1"
+	};
+	toLowerCaseString(text);
+	if(common.count(text))
+		return true;
+
+	// one character over and over
+	return text.find_first_not_of(text[0]) == std::string::npos;
 }
 
 bool isValidPassword(std::string text)

@@ -334,7 +334,7 @@ bool ConfigManager::load()
 	m_confNumber[MAX_CHARACTERS_PER_ACCOUNT] = getGlobalNumber("maxCharactersPerAccount", 3);
 	m_confString[RSA_KEY_FILE] = getGlobalString("rsaKeyFile", "");
 	m_confNumber[PASSWORD_HASH_ITERATIONS] = getGlobalNumber("passwordHashIterations", 60000);
-	m_confNumber[LOGIN_LOCKOUT_ATTEMPTS] = getGlobalNumber("loginLockoutAttempts", 5);
+	m_confNumber[LOGIN_LOCKOUT_ATTEMPTS] = getGlobalNumber("loginLockoutAttempts", 10);
 	m_confNumber[LOGIN_LOCKOUT_MINUTES] = getGlobalNumber("loginLockoutMinutes", 15);
 
 	m_loaded = true;

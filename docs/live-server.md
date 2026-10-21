@@ -170,7 +170,7 @@ and release the clients together with the deployment (old clients cannot log in 
 - Passwords are stored salted (PBKDF2-SHA256, `passwordHashIterations` rounds, default
   60000) as `pbkdf2-sha256$<rounds>$<salt>$<hash>`. Accounts from before this have an
   unsalted SHA-256 hash, which is replaced at the account's next login.
-- 5 wrong passwords in a row (`loginLockoutAttempts`) lock the account for 15 minutes
+- 10 wrong passwords in a row (`loginLockoutAttempts`) lock the account for 15 minutes
   (`loginLockoutMinutes`), at the login screen, when entering the game and for character
   creation. During the lock the right password is refused too. A correct login resets the
   count. To unlock an account early:
