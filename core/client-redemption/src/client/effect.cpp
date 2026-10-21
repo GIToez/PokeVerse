@@ -29,6 +29,7 @@
 #include "map.h"
 #include "thingtype.h"
 #include "thingtypemanager.h"
+#include "framework/core/clock.h"
 #include "framework/core/eventdispatcher.h"
 #include "framework/graphics/drawpoolmanager.h"
 #include "framework/graphics/shadermanager.h"
@@ -43,7 +44,10 @@ void Effect::draw(const Point& dest, const bool drawThings, LightView* lightView
         return;
 
     int animationPhase = 0;
-    if (canAnimate()) {
+    if (isLooping()) {
+        // the shared clock keeps a refreshed or re-sent copy on the same frame
+        animationPhase = static_cast<int>(g_clock.millis() / g_gameConfig.getEffectTicksPerFrame()) % getThingType()->getCustomFrameCount();
+    } else if (canAnimate()) {
         if (g_game.getFeature(Otc::GameEnhancedAnimations)) {
             const auto* animator = getThingType()->getIdleAnimator();
             if (!animator)
@@ -102,9 +106,28 @@ void Effect::draw(const Point& dest, const bool drawThings, LightView* lightView
     thingType->draw(dest, 0, xPattern, yPattern, 0, animationPhase, Color::white, drawThings, lightView);
 }
 
+bool Effect::isLooping() const
+{
+    const auto* thingType = getThingType();
+    return thingType && thingType->getCustomFrameCount() > 0 && thingType->getCustomFrameLife() > 0;
+}
+
+void Effect::scheduleRemoval(const int delay)
+{
+    g_dispatcher.scheduleEvent([self = asEffect()] {
+        const auto left = static_cast<int>(self->m_duration) - static_cast<int>(self->m_animationTimer.ticksElapsed());
+        if (left > 0)
+            self->scheduleRemoval(left);
+        else
+            g_map.removeThing(self);
+    }, delay);
+}
+
 void Effect::onAppear()
 {
-    if (g_game.getFeature(Otc::GameEnhancedAnimations)) {
+    if (isLooping()) {
+        m_duration = getThingType()->getCustomFrameLife();
+    } else if (g_game.getFeature(Otc::GameEnhancedAnimations)) {
         const auto* animator = getThingType()->getIdleAnimator();
         if (!animator)
             return;
@@ -126,10 +149,8 @@ void Effect::onAppear()
 
     m_animationTimer.restart();
 
-    if (!m_permanent) {
-        // schedule removal
-        g_dispatcher.scheduleEvent([self = asEffect()] { g_map.removeThing(self); }, m_duration);
-    }
+    if (!m_permanent)
+        scheduleRemoval(m_duration);
 }
 
 bool Effect::waitFor(const EffectPtr& effect)

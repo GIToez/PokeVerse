@@ -37,6 +37,8 @@ public:
     bool isEffect() const override { return true; }
     bool isPermanent() const { return m_permanent; }
     bool waitFor(const EffectPtr&);
+    bool isLooping() const;
+    void refresh() { m_animationTimer.restart(); }
 
     EffectPtr asEffect() { return static_self_cast<Effect>(); }
 
@@ -45,6 +47,8 @@ protected:
     ThingType* getThingType() const override;
 
 private:
+    void scheduleRemoval(int delay);
+
     Timer m_animationTimer;
 
     uint16_t m_duration{ 0 };

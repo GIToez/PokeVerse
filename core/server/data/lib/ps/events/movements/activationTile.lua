@@ -1131,13 +1131,13 @@ local ACTS_ONLY_PLAYER = {
     [300] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #1
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "001-door")
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "My name is Red and I will be your guide on these first steps in the Pokemon world. Now exit your room and look for the exit of the house."))
-        doSendMagicEffect({x = 5007, y = 808, z = 7}, EFFECT_TUTORIAL_ARROW)
-        doSendMagicEffect({x = 5007, y = 808, z = 7}, EFFECT_TUTORIAL_SQUARE)
+        NavMarker.route(cid, { {x = 5004, y = 806, z = 6}, {x = 5007, y = 802, z = 6}, {x = 5007, y = 808, z = 7} })
         return true
     end,
     [301] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #2
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, string.format(__L(cid, "Very well! Now go to the lab of Prof. Oak to acquire your first Pokemon."), getCreatureName(cid)))
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "") -- Hide
+        NavMarker.show(cid, TUTORIAL_LAB_DOOR)
         return true
     end,
     [302] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #3
@@ -1148,6 +1148,7 @@ local ACTS_ONLY_PLAYER = {
             end
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, "") -- Hide
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "009-talk")
+            NavMarker.clear(cid)
         end
         return true
     end,
@@ -1163,6 +1164,9 @@ local ACTS_ONLY_PLAYER = {
             return false
         end
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "You've made great progress, congratulations! Now do as Professor said, go to PokeMart to negotiate with the seller."))
+        if (getCreatureStorage(cid, 8755) ~= QUEST_STATUS.FINISHED) then
+            NavMarker.show(cid, TUTORIAL_MART)
+        end
         return true
     end,
     [306] = function(cid, item, position, lastPosition, fromPosition, toPosition, actor) -- Gameplay Tutorial #6
@@ -1187,6 +1191,9 @@ local ACTS_ONLY_PLAYER = {
         else
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_TEXT, __L(cid, "You did it, congratulations! Now go north, I'm waiting for you."))
             doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "") -- hide
+            if (not NavMarker.get(cid)) then
+                NavMarker.show(cid, TUTORIAL_RED)
+            end
         end
         return true
     end,

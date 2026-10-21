@@ -183,8 +183,7 @@ QUESTS_CONFIG = {
             finishPosition = {x = 5020, y = 788, z = 7},
             onEnd = function(cid)
                 doPlayerStartQuest(cid, nil, "Professor Oak", 8753)
-                doSendMagicEffect({x = 5025, y = 785, z = 7}, EFFECT_TUTORIAL_ARROW)
-                doSendMagicEffect({x = 5025, y = 785, z = 7}, EFFECT_TUTORIAL_SQUARE)
+                NavMarker.show(cid, {x = 5025, y = 785, z = 7})
             end
         },
         {
@@ -199,6 +198,7 @@ QUESTS_CONFIG = {
             questRequest = { "Rattata", 5 },
             startPosition = {x = 5020, y = 788, z = 7},
             finishPosition = {x = 5020, y = 788, z = 7},
+            onEnd = function(cid) NavMarker.show(cid, TUTORIAL_LAB_EXIT) end,
             onStart = function(cid)
                 doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "004-sewer")
                 Flashlight.give(cid)
