@@ -56,6 +56,10 @@ std::string transformToSHA256(std::string plainText, bool upperCase);
 void _encrypt(std::string& str, bool upperCase);
 bool encryptTest(std::string plain, std::string& hash);
 
+std::string hashPassword(const std::string& plain);
+// upgrade: the stored hash is unsalted or weaker than passwordHashIterations
+bool passwordMatches(const std::string& plain, const std::string& stored, bool& upgrade);
+
 void replaceString(std::string& text, const std::string key, const std::string value);
 void trim_right(std::string& source, const std::string& t);
 void trim_left(std::string& source, const std::string& t);

@@ -560,10 +560,15 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 	}
 
 	std::string hash;
-	if(!IOLoginData::getInstance()->getPassword(id, hash, character) || !encryptTest(password, hash))
+	uint32_t lockedSeconds = 0;
+	PasswordCheck_t check = PASSWORD_WRONG;
+	if(IOLoginData::getInstance()->getPassword(id, hash, character))
+		check = IOLoginData::getInstance()->checkPassword(id, password, hash, lockedSeconds);
+
+	if(check != PASSWORD_OK)
 	{
 		ConnectionManager::getInstance()->addAttempt(getIP(), protocolId, false);
-		disconnectClient(0x14, "Invalid password.");
+		disconnectClient(0x14, check == PASSWORD_LOCKED ? IOLoginData::lockedMessage(lockedSeconds).c_str() : "Invalid password.");
 		return false;
 	}
 

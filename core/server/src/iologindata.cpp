@@ -304,12 +304,75 @@ bool IOLoginData::getPassword(uint32_t accountId, std::string& password, std::st
 
 bool IOLoginData::setPassword(uint32_t accountId, std::string newPassword)
 {
-	_encrypt(newPassword, false);
+	newPassword = hashPassword(newPassword);
+	if(newPassword.empty())
+		return false;
+
 	Database* db = Database::getInstance();
 
 	DBQuery query;
 	query << "UPDATE `accounts` SET `password` = " << db->escapeString(newPassword) << " WHERE `id` = " << accountId << db->getUpdateLimiter();
 	return db->executeQuery(query.str());
+}
+
+PasswordCheck_t IOLoginData::checkPassword(uint32_t accountId, const std::string& password, const std::string& stored,
+	uint32_t& lockedSeconds)
+{
+	lockedSeconds = 0;
+	Database* db = Database::getInstance();
+	DBQuery query;
+	query << "SELECT `login_failures`, `login_locked_until` FROM `accounts` WHERE `id` = " << accountId << " LIMIT 1";
+
+	DBResult* result;
+	if(!(result = db->storeQuery(query.str())))
+		return PASSWORD_WRONG;
+
+	int32_t failures = result->getDataInt("login_failures");
+	int64_t lockedUntil = result->getDataLong("login_locked_until"), now = time(NULL);
+	result->free();
+	if(lockedUntil > now)
+	{
+		lockedSeconds = lockedUntil - now;
+		return PASSWORD_LOCKED;
+	}
+
+	query.str("");
+	bool upgrade = false;
+	if(passwordMatches(password, stored, upgrade))
+	{
+		std::string hash = upgrade ? hashPassword(password) : "";
+		if(!hash.empty())
+			query << "UPDATE `accounts` SET `password` = " << db->escapeString(hash) << ", `login_failures` = 0 WHERE `id` = " << accountId;
+		else if(failures > 0)
+			query << "UPDATE `accounts` SET `login_failures` = 0 WHERE `id` = " << accountId;
+
+		if(!query.str().empty())
+			db->executeQuery(query.str());
+
+		return PASSWORD_OK;
+	}
+
+	int32_t attempts = g_config.getNumber(ConfigManager::LOGIN_LOCKOUT_ATTEMPTS);
+	if(attempts > 0 && failures + 1 >= attempts)
+	{
+		lockedSeconds = std::max<int32_t>(1, g_config.getNumber(ConfigManager::LOGIN_LOCKOUT_MINUTES)) * 60;
+		query << "UPDATE `accounts` SET `login_failures` = 0, `login_locked_until` = " << now + lockedSeconds << " WHERE `id` = " << accountId;
+		std::cout << "> Account " << accountId << " locked for " << lockedSeconds / 60 << " minutes after " << attempts << " wrong passwords." << std::endl;
+	}
+	else
+		query << "UPDATE `accounts` SET `login_failures` = `login_failures` + 1 WHERE `id` = " << accountId;
+
+	db->executeQuery(query.str());
+	return lockedSeconds ? PASSWORD_LOCKED : PASSWORD_WRONG;
+}
+
+std::string IOLoginData::lockedMessage(uint32_t lockedSeconds)
+{
+	uint32_t minutes = (lockedSeconds + 59) / 60;
+	std::ostringstream ss;
+	ss << "Too many wrong passwords. This account is locked for " << minutes << (minutes == 1 ? " minute" : " minutes")
+		<< ", try again later.";
+	return ss.str();
 }
 
 bool IOLoginData::validRecoveryKey(uint32_t accountId, std::string recoveryKey)
@@ -341,7 +404,10 @@ bool IOLoginData::setRecoveryKey(uint32_t accountId, std::string newRecoveryKey)
 
 uint64_t IOLoginData::createAccount(std::string name, std::string password)
 {
-	_encrypt(password, false);
+	password = hashPassword(password);
+	if(password.empty())
+		return 0;
+
 	Database* db = Database::getInstance();
 
 	DBQuery query;

@@ -168,10 +168,12 @@ void ProtocolAccount::handleRequest(uint32_t clientIp, uint8_t action, std::stri
 	}
 
 	Account acc = IOLoginData::getInstance()->loadAccount(accountId);
-	if(!encryptTest(password, acc.password))
+	uint32_t lockedSeconds = 0;
+	PasswordCheck_t check = IOLoginData::getInstance()->checkPassword(accountId, password, acc.password, lockedSeconds);
+	if(check != PASSWORD_OK)
 	{
 		ConnectionManager::getInstance()->addAttempt(clientIp, protocolId, false);
-		reply(false, "Invalid password.");
+		reply(false, check == PASSWORD_LOCKED ? IOLoginData::lockedMessage(lockedSeconds) : "Invalid password.");
 		return;
 	}
 
