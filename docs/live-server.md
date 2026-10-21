@@ -54,6 +54,8 @@ secret; secrets are hidden in the logs):
 | Secret | `OVH_SSH_HOST_KEY` | printed at the end of step 2 (`ssh-ed25519 AAAA...`) |
 | Secret | `DISCORD_BOT_TOKEN` | token of the **production** bot application |
 | Secret | `POKEVERSE_RSA_PRIVATE_KEY` | the private login key, see [Login key](#login-key) (required for `verify` and `deploy`) |
+| Secret | `GMAIL_APP_PASSWORD` | Google app password of the account that sends account emails, see [Account emails](#account-emails) |
+| Variable | `GMAIL_ADDRESS` | that Gmail address (`thepokeversemmo@gmail.com`) |
 | Variable | `OVH_HOST` | optional, server IP address (default `40.160.145.24`, the current OVH server) |
 | Variable | `LIVE_TIMEZONE` | e.g. `America/Los_Angeles` (server clock for the daily restart) |
 | Variable | `LIVE_DAILY_RESTART_TIME` | optional, `HH:MM`, default `00:00` (midnight in `LIVE_TIMEZONE`) |
@@ -136,8 +138,8 @@ them too.
 Every push and pull request builds both packages and runs the rehearsal, which installs
 everything on a fresh Ubuntu 24.04 machine and tests login, character creation, movement,
 saved positions, GM restarts with warnings, crash recovery, the daily restart, an update
-with a player online, automatic rollback of a broken release, backup and restore, and the
-bot deployment. A live `verify`/`deploy` only runs after its rehearsal passed.
+with a player online, automatic rollback of a broken release, backup and restore, account
+emails through a local SMTP server, and the bot deployment. A live `verify`/`deploy` only runs after its rehearsal passed.
 
 ## Login key
 
@@ -176,6 +178,31 @@ and release the clients together with the deployment (old clients cannot log in 
   count. To unlock an account early:
   `UPDATE accounts SET login_locked_until = 0 WHERE name = '...';`
 
+## Account emails
+
+With `GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD` set, `deploy` turns on `emailRequired` and sends
+account emails through `smtp.gmail.com:587` (STARTTLS, the certificate is checked):
+
+- New accounts need an email and the 6-digit code sent to it before they can play. Signups
+  that are not confirmed within 24 hours are deleted (only if they have no characters).
+- Accounts from before this keep playing for 7 days (`emailGraceDays`) from their next
+  login, then they must add an email first. The client asks for it after the character list.
+- "Forgot password?" on the login screen, and the Account window (character list and
+  Settings) for password and email changes. Codes are valid 15 minutes and 5 tries; changes
+  send a notice to the account's email.
+- Codes are stored hashed and never written to the log. Logins, wrong passwords, resets and
+  changes are kept in `account_security_log` for 180 days.
+
+Gmail setup (once): turn on 2-Step Verification for the account, then Google Account >
+Security > App passwords, create one named PokeVerse, and paste the 16 letters into the
+secret `GMAIL_APP_PASSWORD` (spaces are fine). Gmail sends up to about 500 emails a day.
+`deploy` passes the password over stdin and stores it in `shared/mail.env` and
+`config.local.lua` (both mode 600). Without both settings, emails stay off and nobody is
+asked for one.
+
+The health check account is always marked verified. To let someone in by hand:
+`UPDATE accounts SET email_verified = 1, signup_pending = 0 WHERE name = '...';`
+
 ## Restarts
 
 - The game server runs as the systemd service `pokeverse-server`. systemd restarts it after
@@ -212,6 +239,7 @@ GM commands (Gamemaster and above):
   releases/                            last releases (for rollback)
   shared/config.local.lua              live settings, database password (never overwritten)
   shared/rsa.key                       private login key (p, q, d; from POKEVERSE_RSA_PRIVATE_KEY)
+  shared/mail.env                      Gmail sender and app password (from GMAIL_ADDRESS, GMAIL_APP_PASSWORD)
   shared/logs/                         game server logs
   backups/                             database backups
   discord/current, discord/shared/     Discord bot release and its settings (.env.production)
