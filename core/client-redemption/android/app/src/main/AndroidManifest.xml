@@ -36,7 +36,7 @@
         <activity
             android:name="com.otclient.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:exported="true" >
 
             <intent-filter>
