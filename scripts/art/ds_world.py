@@ -356,11 +356,94 @@ def natural(t, rgba):
         return False
     if GROUND in t[0]:
         mean = px.mean(0)
+        mat = classify(px[None])[0]
+        if (mat == 'green').mean() > 0.6 or (mat == 'water').mean() > 0.6:
+            return True
         return min(np.linalg.norm(mean - np.array(ref)) for ref in NATURAL) < 28 and px.std(0).mean() < 30
     mat = classify(px[None])[0]
     if (mat == 'green').mean() >= 0.15 or (mat == 'water').mean() >= 0.15:
         return True
     return np.linalg.norm(px.mean(0) - np.array(NATURAL[0])) < 28
+
+
+ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
+COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
+ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
+ROOF_TILES = {1158, 1159, 1161, 1168, 1169, 1171, 8619, 8620}
+STEPS = [0.12, 0.38, 0.62, 0.85]
+LIFT = [0.55, 0.8, 0.95, 1.08, 1.22]
+
+
+def tone(t, rgba):
+    """Luminance range and mean colour over all of an item's sprites, so its variants share the same steps."""
+    px = [img[img[..., 3] > 0][:, :3] for img in (rgba(s) for s in t[8] if s) if img is not None]
+    px = np.concatenate(px).astype(float)
+    L = lum(px)
+    return np.percentile(L, 5), np.percentile(L, 95), px.mean(0)
+
+
+def smooth(a, full, size=3):
+    r = size // 2
+    p = np.pad(a, [(r, r), (r, r)] + [(0, 0)] * (a.ndim - 2), mode='wrap' if full else 'edge')
+    st = np.stack([p[dy:dy + 32, dx:dx + 32] for dy in range(size) for dx in range(size)])
+    return np.median(st, 0)
+
+
+def paint_floor(a, lo, hi, mean, ramp=None):
+    """Paving, floors and other made ground: the original pattern in flat cel steps."""
+    rgb = a[..., :3].astype(float)
+    full = (a[..., 3] > 0).all()
+    k = np.searchsorted(STEPS, np.clip((smooth(lum(rgb), full) - lo) / max(hi - lo, 1), 0, 1))
+    out = a.copy()
+    if ramp is not None:
+        out[..., :3] = np.array(ramp)[k]
+    else:
+        base = smooth(rgb, full)
+        want = lum(mean) * np.array(LIFT)[k]
+        out[..., :3] = np.clip(base * (want / np.maximum(lum(base), 1))[..., None], 0, 255)
+    return out
+
+
+def paving(ramp, w, hgt, stagger, seed):
+    """Seamless stone paving: flat faces, a lit top-left rim, a shaded bottom-right rim and dark grout."""
+    y, x = np.mgrid[0:32, 0:32]
+    u = (x + (w // 2) * ((y // hgt) % 2) * stagger) % w
+    v = y % hgt
+    k = np.full((32, 32), 2)
+    k[(u == w - 2) | (v == hgt - 2)] = 1
+    k[(u == 0) | (v == 0)] = 3
+    k[(u == w - 1) | (v == hgt - 1)] = 0
+    k[grain(seed, 0.03) & (k == 2)] = 1
+    k[grain(seed + 1, 0.02) & (k == 2)] = 3
+    return np.array(ramp)[k]
+
+
+PAVING = {429: paving(ROAD, 16, 16, False, 11), 10790: paving(ROAD, 16, 16, False, 13)}
+PAVING.update({cid: paving(COBBLE, 16, 8, True, 20 + cid) for cid in range(500, 505)})
+
+
+def paint_flat_roof(a):
+    out = a.copy()
+    pal = h.STYLE['roof']
+    for y in range(32):
+        for x in range(32):
+            out[y, x, :3] = pal[int(np.clip(h.shingle_shade(x, y % 8, y // 8), 0, len(pal) - 1))]
+    return out
+
+
+def made_ground(t, rgba):
+    """{sid: art} for a non-natural ground or border item."""
+    lo, hi, mean = tone(t, rgba)
+    m = lum(mean)
+    if m < 15:
+        return {}
+    sat = (mean.max() - mean.min()) / max(mean.max(), 1)
+    ramp = None
+    if sat < 0.12:
+        ramp = ROAD if m > 150 else COBBLE
+    elif m < 60:
+        ramp = ROCKY
+    return {sid: paint_floor(rgba(sid), lo, hi, mean, ramp) for sid in t[8] if sid and rgba(sid) is not None}
 
 
 def build():
@@ -388,16 +471,22 @@ def build():
         if not t or cid in REFERENCE or PICKUPABLE in t[0]:
             continue
         if GROUND in t[0] or BORDER in t[0]:
-            if cid not in NOT_NATURAL:
-                grounds.append(t)
+            grounds.append((cid, t))
         else:
             objects.append(t)
-    for t in grounds:
-        if not natural(t, rgba):
+    for cid, t in grounds:
+        free = [sid for sid in t[8] if sid and sid not in new and sid not in keep and rgba(sid) is not None]
+        if not free:
             continue
-        for sid in t[8]:
-            if sid and sid not in new and sid not in keep and rgba(sid) is not None:
-                new[sid] = paint_ground(rgba(sid))
+        if cid in PAVING:
+            art = {sid: np.dstack([PAVING[cid], rgba(sid)[..., 3]]).astype(np.uint8) for sid in free}
+        elif cid in ROOF_TILES:
+            art = {sid: paint_flat_roof(rgba(sid)) for sid in free}
+        elif cid not in NOT_NATURAL and natural(t, rgba):
+            art = {sid: paint_ground(rgba(sid)) for sid in free}
+        else:
+            art = made_ground(t, rgba)
+        new.update({sid: img for sid, img in art.items() if sid in free})
     for t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
