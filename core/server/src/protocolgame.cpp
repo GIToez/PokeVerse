@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "protocolgame.h"
+#include "accountemail.h"
 #include "textlogger.h"
 
 #include "waitlist.h"
@@ -563,7 +564,7 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 	uint32_t lockedSeconds = 0;
 	PasswordCheck_t check = PASSWORD_WRONG;
 	if(IOLoginData::getInstance()->getPassword(id, hash, character))
-		check = IOLoginData::getInstance()->checkPassword(id, password, hash, lockedSeconds);
+		check = IOLoginData::getInstance()->checkPassword(id, password, hash, lockedSeconds, getIP());
 
 	if(check != PASSWORD_OK)
 	{
@@ -593,6 +594,13 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 			(deletion ? "." : formatDateShort(ban.expires, true).c_str()));
 
 		disconnectClient(0x14, buffer);
+		return false;
+	}
+
+	std::string emailBlock = AccountEmail::loginBlock(id);
+	if(!emailBlock.empty())
+	{
+		disconnectClient(0x14, emailBlock.c_str());
 		return false;
 	}
 

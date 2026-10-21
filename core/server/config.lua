@@ -136,6 +136,23 @@
 	loginLockoutMinutes = 15
 	rsaKeyFile = ""
 
+	-- Account emails
+	-- NOTE: emailRequired: new accounts verify an email with a 6-digit code before they can play, and older
+	-- accounts without one get emailGraceDays to add it. Codes, password resets and change notices are sent
+	-- through smtpHost (Gmail: smtp.gmail.com, port 587, smtpStartTls, an App Password); without smtpHost
+	-- they are printed in the server console. smtpCaFile replaces the system certificates (tests only).
+	-- The live server writes these from GMAIL_ADDRESS and GMAIL_APP_PASSWORD (docs/live-server.md).
+	emailRequired = false
+	emailGraceDays = 7
+	smtpHost = ""
+	smtpPort = 587
+	smtpStartTls = true
+	smtpUser = ""
+	smtpPassword = ""
+	smtpFrom = ""
+	smtpFromName = "PokeVerse"
+	smtpCaFile = ""
+
 	-- Deathlist
 	deathListEnabled = false
 	deathListRequiredTime = 1 * 60 * 1000

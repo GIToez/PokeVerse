@@ -62,6 +62,12 @@ class ConfigManager
 			DISCORD_BRIDGE_HOST,
 			DISCORD_BRIDGE_SECRET,
 			RSA_KEY_FILE,
+			SMTP_HOST,
+			SMTP_USER,
+			SMTP_PASSWORD,
+			SMTP_FROM,
+			SMTP_FROM_NAME,
+			SMTP_CA_FILE,
 			LAST_STRING_CONFIG /* this must be the last one */
 		};
 
@@ -177,6 +183,8 @@ class ConfigManager
 			PASSWORD_HASH_ITERATIONS,
 			LOGIN_LOCKOUT_ATTEMPTS,
 			LOGIN_LOCKOUT_MINUTES,
+			SMTP_PORT,
+			EMAIL_GRACE_DAYS,
 			LAST_NUMBER_CONFIG /* this must be the last one */
 		};
 
@@ -289,6 +297,8 @@ class ConfigManager
 			DISCORD_BRIDGE_PLAYER_SESSIONS,
 			DISCORD_BRIDGE_SESSION_IPS,
 			DISCORD_BRIDGE_ACCOUNT_LINKING,
+			SMTP_STARTTLS,
+			EMAIL_REQUIRED,
 			LAST_BOOL_CONFIG /* this must be the last one */
 		};
 
