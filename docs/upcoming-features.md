@@ -1893,9 +1893,9 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
 
 1. **Password security** (built, PR #167; [live-server.md](live-server.md#login-key) has the
    details). The live server accepts only the PokeVerse key; local servers keep the open key.
-   Passwords use PBKDF2-SHA256 from OpenSSL, which the server already links, instead of
-   Argon2id: Argon2id needs libsodium on every server build and running `bootstrap-ovh.sh`
-   again on the live server. **To decide:** switch to Argon2id. As planned:
+   Passwords use PBKDF2-SHA256 from OpenSSL, which the server already links (decided October
+   21). Argon2id stays a possible later change: it needs libsodium on every server build and
+   running `bootstrap-ovh.sh` again on the live server. As planned:
    - **A PokeVerse RSA key (agreed).** A new key pair for the live server. The private half
      lives only on the live server, in a file the server reads at start (outside the
      repository, like the other live secrets); local test servers keep a test key. The
