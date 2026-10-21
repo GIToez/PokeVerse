@@ -491,11 +491,11 @@ def write_spr(new):
     old = pvmap.Spr(SPR)
     for sid in range(1, old.count + 1, 97):
         if sid not in px and old.rgba(sid) != check.rgba(sid):
-            raise SystemExit('sprite %d changed though it is not part of the houses' % sid)
+            raise SystemExit('sprite %d changed though it was not repainted' % sid)
     old.f.close()
     check.f.close()
     os.replace(tmp, SPR)
-    print('wrote %d house sprites into data.spr' % len(px))
+    print('wrote %d sprites into data.spr' % len(px))
 
 
 def read_view():
