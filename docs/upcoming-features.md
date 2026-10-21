@@ -1933,6 +1933,10 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
      - Pirate #1, #3 and #4: rewards of Calico, Javy Dones and Ed Blackhood, none of them
        placed on the map. Pirate #2 (Nagumo Harbor, who appears during the pirate quest)
        can still be earned.
+   - **Ace Trainer**, a new Store-only outfit (male) with two add-ons, a cap and a backpack:
+     drawn in `art/sprites/outfits/ace_trainer` by `scripts/art/outfit_ace_trainer.py` on the
+     Rider body, with the usual colour masks. **To do:** add its sprites to `data.spr`, a look
+     type in `data.dat` and `XML/outfits.xml` (`addons="3"`), and a female version.
    - **Holiday outfits for Featured** (earned today with event tokens, drops or event
      rewards, only while the event runs): Halloween #1 to #7, Phantomaniac, Halloween
      Monster, Christmas #1 to #3, Santa Grinch, Elfin, Helper Grinch, Easter #1, Explorer
