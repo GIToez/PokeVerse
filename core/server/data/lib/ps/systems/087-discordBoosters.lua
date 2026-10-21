@@ -71,7 +71,7 @@ end
 
 local function notifyAccount(accountId, total)
     local message = string.concat("Thank you for boosting the PokeVerse Discord! ", coinsText(total),
-        " added to your account (withdraw them at the bank).")
+        " added to your Soul Coin balance (spend ", total == 1 and "it" or "them", " in the Store).")
     for _, cid in ipairs(getPlayersOnline()) do
         if (getPlayerAccountId(cid) == accountId) then
             doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, message)

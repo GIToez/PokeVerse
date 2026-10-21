@@ -343,8 +343,8 @@ Otherwise the week is paid in one database transaction: the ledger row is insert
 returned with `deposited:false`), then `accounts.soulcoins = soulcoins + total` for the
 linked account. If the update fails the ledger row is rolled back. Soul Coins are never
 read and written back from Lua. Online characters of the account are told "Thank you for
-boosting the PokeVerse Discord! N Soul Coins were added to your account (withdraw them at the
-bank)." The Soul Coins go to the account balance, like Store purchases. The server log
+boosting the PokeVerse Discord! N Soul Coins were added to your Soul Coin balance (spend them
+in the Store)." The Soul Coins go to the account balance that the Store uses. The server log
 records the week, amount and account id, never the Discord id.
 
 Database: `discord_booster_rewards` in `schemas/pokeverse-extensions.sql` (`CREATE TABLE IF
