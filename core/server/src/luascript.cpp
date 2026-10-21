@@ -2035,6 +2035,9 @@ void LuaScriptInterface::registerFunctions()
 	//doRevokeDiscordLinkCodes(accountId)
 	lua_register(m_luaState, "doRevokeDiscordLinkCodes", LuaScriptInterface::luaDoRevokeDiscordLinkCodes);
 
+	//doDiscordBoosterDeposit(discordUserId, accountId, boostSince, week)
+	lua_register(m_luaState, "doDiscordBoosterDeposit", LuaScriptInterface::luaDoDiscordBoosterDeposit);
+
 	//doSetDiscordLogoutReason(cid, reason)
 	lua_register(m_luaState, "doSetDiscordLogoutReason", LuaScriptInterface::luaDoSetDiscordLogoutReason);
 
@@ -6260,6 +6263,15 @@ int32_t LuaScriptInterface::luaGetDiscordBridgeInfo(lua_State* L)
 	setFieldFloat(L, "rejected", (double)stats.rejected);
 	setFieldFloat(L, "connections", (double)stats.connections);
 	setFieldBool(L, "accountLinking", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING));
+	setFieldBool(L, "boosterRewards", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING)
+		&& g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOSTER_REWARDS));
+	createTable(L, "booster");
+	setField(L, "weekly", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_WEEKLY));
+	setField(L, "loyaltyEvery", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY_EVERY));
+	setField(L, "loyalty", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY));
+	setField(L, "yearlyEvery", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_YEARLY_EVERY));
+	setField(L, "yearly", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_YEARLY));
+	pushTable(L);
 	return 1;
 }
 
@@ -6302,6 +6314,34 @@ int32_t LuaScriptInterface::luaDoRevokeDiscordLinkCodes(lua_State* L)
 	//doRevokeDiscordLinkCodes(accountId)
 	DiscordBridge::getInstance()->revokeLinkCodes((uint32_t)popNumber(L));
 	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoDiscordBoosterDeposit(lua_State* L)
+{
+	//doDiscordBoosterDeposit(discordUserId, accountId, boostSince, week)
+	//returns {deposited, week, weekly, loyalty, yearly, total}, or nil and an error code
+	int32_t week = (int32_t)popNumber(L);
+	int64_t boostSince = popNumber(L);
+	uint32_t accountId = (uint32_t)popNumber(L);
+	std::string discordUserId = popString(L), error;
+	DiscordBoosterReward reward;
+	std::string status = week < 1 || boostSince <= 0 || !accountId ? "" :
+		DiscordBridge::getInstance()->depositBoosterWeek(discordUserId, accountId, (uint64_t)boostSince, week, reward, error);
+	if(status.empty())
+	{
+		lua_pushnil(L);
+		lua_pushstring(L, error.empty() ? "invalid_params" : error.c_str());
+		return 2;
+	}
+
+	lua_newtable(L);
+	setFieldBool(L, "deposited", status == "deposited");
+	setField(L, "week", reward.week);
+	setField(L, "weekly", reward.weekly);
+	setField(L, "loyalty", reward.loyalty);
+	setField(L, "yearly", reward.yearly);
+	setField(L, "total", reward.total);
 	return 1;
 }
 

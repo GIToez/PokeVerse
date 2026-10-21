@@ -25,6 +25,7 @@
 
 #include "discordbridge.h"
 #include "configmanager.h"
+#include "database.h"
 #include "globalevent.h"
 #include "tasks.h"
 
@@ -392,7 +393,12 @@ void DiscordBridge::onAuthenticated(DiscordBridgeSession_ptr session)
 		first = false;
 	}
 	if(g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING))
+	{
 		welcome << (first ? "" : ",") << "\"accountLinking\"";
+		first = false;
+		if(g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOSTER_REWARDS))
+			welcome << ",\"boosterRewards\"";
+	}
 
 	welcome << "]}";
 	session->send(welcome.str());
@@ -803,6 +809,127 @@ uint32_t DiscordBridge::consumeLinkCode(const std::string& code, const std::stri
 
 	m_redeemFailures.erase(discordUserId);
 	return accountId;
+}
+
+DiscordBoosterReward DiscordBridge::boosterRewardFor(int32_t week)
+{
+	DiscordBoosterReward reward;
+	reward.week = week;
+	reward.weekly = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_WEEKLY);
+	int32_t every = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY_EVERY);
+	if(every > 0 && week % every == 0)
+		reward.loyalty = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY);
+
+	every = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_YEARLY_EVERY);
+	if(every > 0 && week % every == 0)
+		reward.yearly = g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_YEARLY);
+
+	reward.total = reward.weekly + reward.loyalty + reward.yearly;
+	return reward;
+}
+
+namespace
+{
+	bool loadBoosterRow(Database* db, const std::string& key, DiscordBoosterReward& reward)
+	{
+		DBQuery query;
+		query << "SELECT `week`, IFNULL(`weekly`, 0) AS `weekly`, IFNULL(`loyalty`, 0) AS `loyalty`, IFNULL(`yearly`, 0) AS `yearly`, "
+			<< "IFNULL(`total`, 0) AS `total` FROM `discord_booster_rewards` WHERE " << key << " LIMIT 1";
+		DBResult* result = db->storeQuery(query.str());
+		if(!result)
+			return false;
+
+		reward.week = result->getDataInt("week");
+		reward.weekly = result->getDataInt("weekly");
+		reward.loyalty = result->getDataInt("loyalty");
+		reward.yearly = result->getDataInt("yearly");
+		reward.total = result->getDataInt("total");
+		result->free();
+		return true;
+	}
+
+	int64_t lastRowCount(Database* db)
+	{
+		DBResult* result = db->storeQuery("SELECT ROW_COUNT() AS `count`");
+		if(!result)
+			return -1;
+
+		int64_t count = result->getDataLong("count");
+		result->free();
+		return count;
+	}
+}
+
+std::string DiscordBridge::depositBoosterWeek(const std::string& discordUserId, uint32_t accountId, uint64_t boostSince,
+	int32_t week, DiscordBoosterReward& reward, std::string& error)
+{
+	if(!g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOSTER_REWARDS) || !g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING))
+	{
+		error = "disabled";
+		return "";
+	}
+
+	Database* db = Database::getInstance();
+	DBQuery query;
+	std::ostringstream key;
+	key << "`discord_user_id` = " << db->escapeString(discordUserId) << " AND `boost_since` = " << boostSince
+		<< " AND `week` = " << week;
+
+	reward = boosterRewardFor(week);
+	{
+		DBTransaction trans(db);
+		if(!trans.begin())
+		{
+			error = "internal";
+			return "";
+		}
+
+		// IGNORE turns a duplicate key (a concurrent or repeated request) into zero inserted
+		// rows instead of an error, so the existing ledger row is returned below.
+		query << "INSERT IGNORE INTO `discord_booster_rewards` (`discord_user_id`, `account_id`, `boost_since`, `week`, "
+			<< "`weekly`, `loyalty`, `yearly`, `total`, `created_at`) VALUES (" << db->escapeString(discordUserId) << ", "
+			<< accountId << ", " << boostSince << ", " << week << ", " << reward.weekly << ", " << reward.loyalty << ", "
+			<< reward.yearly << ", " << reward.total << ", " << time(NULL) << ")";
+		if(!db->executeQuery(query.str()))
+		{
+			std::cout << "[Error - DiscordBridge::depositBoosterWeek] Could not record a booster reward." << std::endl;
+			error = "internal";
+			return "";
+		}
+
+		int64_t inserted = lastRowCount(db);
+		if(inserted == 1)
+		{
+			if(reward.total > 0)
+			{
+				query.str("");
+				query << "UPDATE `accounts` SET `soulcoins` = `soulcoins` + " << reward.total << " WHERE `id` = " << accountId;
+				if(!db->executeQuery(query.str()) || lastRowCount(db) != 1)
+				{
+					std::cout << "[Error - DiscordBridge::depositBoosterWeek] Could not deposit a booster reward on account "
+						<< accountId << "; the ledger row was rolled back." << std::endl;
+					error = "internal";
+					return "";
+				}
+			}
+
+			if(!trans.commit())
+			{
+				error = "internal";
+				return "";
+			}
+
+			return "deposited";
+		}
+	}
+
+	if(loadBoosterRow(db, key.str(), reward))
+		return "duplicate";
+
+	std::cout << "[Error - DiscordBridge::depositBoosterWeek] Could not record a booster reward for account "
+		<< accountId << "." << std::endl;
+	error = "internal";
+	return "";
 }
 
 void DiscordBridge::revokeLinkCodes(uint32_t accountId)

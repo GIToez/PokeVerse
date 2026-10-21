@@ -773,6 +773,33 @@ CREATE TABLE IF NOT EXISTS `discord_account_links` (
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------------
+-- Discord booster rewards (087-discordBoosters.lua, docs/discord-bridge.md)
+-- ---------------------------------------------------------------------------
+-- The ledger of paid boost weeks: one row per Discord user, streak (`boost_since`, the unix
+-- time Discord reports as "boosting since") and week. The unique key is what stops a week
+-- from being paid twice; the row and the `accounts`.`soulcoins` deposit are written in one
+-- transaction (src/discordbridge.cpp). The amounts are the ones paid, from the config.
+-- Rollback: DROP TABLE `discord_booster_rewards`; no other table refers to it and no existing
+-- table was changed. Soul Coins already deposited stay on the accounts.
+CREATE TABLE IF NOT EXISTS `discord_booster_rewards` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `discord_user_id` VARCHAR(20) NOT NULL,
+  `account_id` INT NOT NULL,
+  `boost_since` BIGINT UNSIGNED NOT NULL,
+  `week` INT NOT NULL,
+  `weekly` INT NOT NULL DEFAULT 0,
+  `loyalty` INT NOT NULL DEFAULT 0,
+  `yearly` INT NOT NULL DEFAULT 0,
+  `total` INT NOT NULL DEFAULT 0,
+  `created_at` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discord_booster_week` (`discord_user_id`, `boost_since`, `week`),
+  KEY `discord_user_id` (`discord_user_id`),
+  KEY `account_id` (`account_id`),
+  CONSTRAINT `discord_booster_rewards_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------------
 -- Account emails and security log (src/accountemail.cpp)
 -- ---------------------------------------------------------------------------
 -- One live code per account and purpose (1 verify `email`, 2 password reset, 3 email change:

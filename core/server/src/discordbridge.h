@@ -34,6 +34,13 @@ class Player;
 class DiscordBridgeSession;
 typedef boost::shared_ptr<DiscordBridgeSession> DiscordBridgeSession_ptr;
 
+struct DiscordBoosterReward
+{
+	DiscordBoosterReward(): week(0), weekly(0), loyalty(0), yearly(0), total(0) {}
+
+	int32_t week, weekly, loyalty, yearly, total;
+};
+
 struct DiscordBridgeStats
 {
 	DiscordBridgeStats(): queued(0), sent(0), dropped(0), received(0), rejected(0), connections(0) {}
@@ -91,6 +98,14 @@ class DiscordBridge
 		std::string createLinkCode(uint32_t accountId, std::string& error);
 		uint32_t consumeLinkCode(const std::string& code, const std::string& discordUserId, std::string& error);
 		void revokeLinkCodes(uint32_t accountId);
+		// Booster rewards, dispatcher thread. The amounts for a boost week come from the config
+		// only. depositBoosterWeek records the week in discord_booster_rewards and adds the
+		// total to accounts.soulcoins in one transaction; the ledger's unique key makes it
+		// idempotent. Returns "deposited", "duplicate" (reward then holds the stored amounts)
+		// or an empty string with a reason code in error.
+		static DiscordBoosterReward boosterRewardFor(int32_t week);
+		std::string depositBoosterWeek(const std::string& discordUserId, uint32_t accountId, uint64_t boostSince,
+			int32_t week, DiscordBoosterReward& reward, std::string& error);
 		// Dispatcher thread. Tells the bot that a linked account created or deleted a character.
 		void onAccountCharactersChanged(uint32_t accountId, const std::string& change, const std::string& name);
 

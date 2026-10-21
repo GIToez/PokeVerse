@@ -326,11 +326,17 @@ bool ConfigManager::load()
 	m_confBool[DISCORD_BRIDGE_PLAYER_SESSIONS] = getGlobalBool("discordBridgePlayerSessions", true);
 	m_confBool[DISCORD_BRIDGE_SESSION_IPS] = getGlobalBool("discordBridgeSessionIps", true);
 	m_confBool[DISCORD_BRIDGE_ACCOUNT_LINKING] = getGlobalBool("discordBridgeAccountLinking", true);
+	m_confBool[DISCORD_BRIDGE_BOOSTER_REWARDS] = getGlobalBool("discordBridgeBoosterRewards", false);
 	m_confString[DISCORD_BRIDGE_HOST] = getGlobalString("discordBridgeHost", "127.0.0.1");
 	m_confString[DISCORD_BRIDGE_SECRET] = getGlobalString("discordBridgeSecret", "");
 	m_confNumber[DISCORD_BRIDGE_PORT] = getGlobalNumber("discordBridgePort", 7199);
 	m_confNumber[DISCORD_BRIDGE_QUEUE_SIZE] = getGlobalNumber("discordBridgeQueueSize", 2000);
 	m_confNumber[DISCORD_BRIDGE_LINK_CODE_LIFETIME] = getGlobalNumber("discordBridgeLinkCodeLifetime", 600);
+	m_confNumber[DISCORD_BRIDGE_BOOSTER_WEEKLY] = std::max(0, getGlobalNumber("discordBridgeBoosterWeekly", 1));
+	m_confNumber[DISCORD_BRIDGE_BOOSTER_LOYALTY_EVERY] = std::max(0, getGlobalNumber("discordBridgeBoosterLoyaltyEvery", 4));
+	m_confNumber[DISCORD_BRIDGE_BOOSTER_LOYALTY] = std::max(0, getGlobalNumber("discordBridgeBoosterLoyalty", 1));
+	m_confNumber[DISCORD_BRIDGE_BOOSTER_YEARLY_EVERY] = std::max(0, getGlobalNumber("discordBridgeBoosterYearlyEvery", 52));
+	m_confNumber[DISCORD_BRIDGE_BOOSTER_YEARLY] = std::max(0, getGlobalNumber("discordBridgeBoosterYearly", 15));
 	m_confNumber[MAX_CHARACTERS_PER_ACCOUNT] = getGlobalNumber("maxCharactersPerAccount", 3);
 	m_confString[RSA_KEY_FILE] = getGlobalString("rsaKeyFile", "");
 	m_confNumber[PASSWORD_HASH_ITERATIONS] = getGlobalNumber("passwordHashIterations", 60000);
