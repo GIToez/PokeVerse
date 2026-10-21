@@ -365,7 +365,7 @@ def booster_tests(b, args):
     check("soulcoins rose by the total", coins() == start + 1, "%d -> %d" % (start, coins()))
     booster.collect(1)
     check("the online character is thanked in game",
-          booster.received(b"Thank you for boosting the PokeVerse Discord! 1 Soul Coin was added to your account"))
+          booster.received(b"Thank you for boosting the PokeVerse Discord! 1 Soul Coin was added to your Soul Coin balance (spend it in the Store)."))
     r = week(DISCORD_D, since, 2)
     check("the same week again is not paid twice", r and r["ok"] and r["result"] ==
           {"deposited": False, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "total": 1}, str(r))
