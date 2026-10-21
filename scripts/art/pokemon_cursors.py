@@ -10,6 +10,9 @@ board-use-with.png  the use-with cursors (Poke Ball, Pokedex and Order are today
 cursors.gif         every cursor animating at 3x
 files/<name>.png    the cursors as animated PNGs, named like the files in data/cursors
 
+With --install the cursors and cursors.otml also go to pokeverse-modern/data/cursors, which the
+assembled client copies over Redemption's own.
+
 The arrow cursors keep the click on the arrow's tip, so aiming feels the same as today. The ring cursors
 (target and the potions) click in the middle, like the Poke Ball cursor.
 """
@@ -25,6 +28,8 @@ TODAY_MODERN = REPO / 'core/client-redemption/pokeverse-modern/data/cursors'
 S = 8
 FRAMES = 8
 FRAME_MS = 110
+# the 32x32 drawings ship at 40x40: the stock cursors (23 to 32 pixels) are hard to see on the map
+OUTPUT_SIZE = {32: 40}
 
 DARK = (11, 18, 34)
 RED = (226, 52, 52)
@@ -65,7 +70,8 @@ def finish(im, size, shadow=True):
         base.alpha_composite(sh, (s(0.8), s(1.1)))
         base.alpha_composite(im)
         im = base
-    return im.resize((size, size), Image.LANCZOS)
+    out = OUTPUT_SIZE.get(size, size)
+    return im.resize((out, out), Image.LANCZOS)
 
 
 def circle(d, cx, cy, r, **kw):
@@ -491,24 +497,30 @@ def animated(fn, n=FRAMES):
     return lambda: [fn(i / n) for i in range(n)]
 
 
+def hot(x, y, size=32):
+    """A hot spot drawn on the size grid, where the shipped file is bigger."""
+    k = OUTPUT_SIZE.get(size, size) / size
+    return (round(x * k), round(y * k))
+
+
 # name, today's file, today's directory, frames, hot spot, when it shows
 MAP_CURSORS = [
-    ('default', 'default_tibia', TODAY, static(default), (1, 1), 'Everywhere else'),
-    ('walk', 'walkcursor', TODAY, animated(walk), (1, 1), 'Map: a tile you can walk to'),
-    ('attack', 'attackcursor', TODAY, animated(attack), (1, 1), 'Map: a wild Pokemon you can attack'),
-    ('talk', 'talkcursor', TODAY, animated(talk), (1, 1), 'Map: an NPC'),
-    ('containercursor', 'containercursor', TODAY, animated(container), (1, 1), 'Map: a bag, chest or body to open'),
-    ('quicklootcursor', 'quicklootcursor', TODAY, animated(quickloot), (1, 1), 'Map: a body with quick loot'),
-    ('pointinghand', 'pointinghand', TODAY, animated(use), (1, 1), 'Map: something to use (doors, levers)'),
-    ('lookcursor', 'lookcursor', TODAY, animated(look), (1, 1), 'Look (defined, unused today)'),
-    ('pointerbutton', 'pointerbutton', TODAY, static(pointerbutton), (8, 1), 'Hovering a button'),
-    ('text', 'textcursor', TODAY, static(text_beam), (8, 15), 'Hovering a text field'),
-    ('horizontal', 'horizontalcursor', TODAY, static(resize_arrow(False)), (16, 16), 'Resizing a panel sideways'),
-    ('vertical', 'verticalcursor', TODAY, static(resize_arrow(True)), (16, 16), 'Resizing a panel up or down'),
+    ('default', 'default_tibia', TODAY, static(default), hot(1, 1), 'Everywhere else'),
+    ('walk', 'walkcursor', TODAY, animated(walk), hot(1, 1), 'Map: a tile you can walk to'),
+    ('attack', 'attackcursor', TODAY, animated(attack), hot(1, 1), 'Map: a wild Pokemon you can attack'),
+    ('talk', 'talkcursor', TODAY, animated(talk), hot(1, 1), 'Map: an NPC'),
+    ('containercursor', 'containercursor', TODAY, animated(container), hot(1, 1), 'Map: a bag, chest or body to open'),
+    ('quicklootcursor', 'quicklootcursor', TODAY, animated(quickloot), hot(1, 1), 'Map: a body with quick loot'),
+    ('pointinghand', 'pointinghand', TODAY, animated(use), hot(1, 1), 'Map: something to use (doors, levers)'),
+    ('lookcursor', 'lookcursor', TODAY, animated(look), hot(1, 1), 'Look (defined, unused today)'),
+    ('pointerbutton', 'pointerbutton', TODAY, static(pointerbutton), hot(8, 1), 'Hovering a button'),
+    ('text', 'textcursor', TODAY, static(text_beam), hot(8, 15), 'Hovering a text field'),
+    ('horizontal', 'horizontalcursor', TODAY, static(resize_arrow(False)), hot(16, 16), 'Resizing a panel sideways'),
+    ('vertical', 'verticalcursor', TODAY, static(resize_arrow(True)), hot(16, 16), 'Resizing a panel up or down'),
 ]
 
 USE_CURSORS = [
-    ('target', 'targetcursor', TODAY, animated(target), (16, 16), 'Use with... any other item'),
+    ('target', 'targetcursor', TODAY, animated(target), hot(16, 16), 'Use with... any other item'),
     ('ball', 'ballcursor', TODAY_MODERN, None, (24, 24), 'Use with... a Poke Ball (kept)'),
     ('dex', 'dexcursor', TODAY_MODERN, None, (24, 24), 'Use with... the Pokedex (kept)'),
     ('order', 'ordercursor', TODAY_MODERN, None, (24, 24), 'Use with... the Order (kept)'),
@@ -618,6 +630,21 @@ def build_gif(rows, out):
     imgs[0].save(out, save_all=True, append_images=imgs[1:], duration=FRAME_MS, loop=0)
 
 
+# the cursors.otml name of each cursor; "window" is the arrow over windows, the same as the default
+OTML_NAMES = {'default': ['default', 'window']}
+
+
+def install(rows):
+    lines = ['Cursors']
+    for name, old, old_dir, make, hot_spot, _, frames_ in rows:
+        image = old or name + 'cursor'
+        if make:
+            save_apng(frames_, TODAY_MODERN / f'{image}.png')
+        for otml_name in OTML_NAMES.get(name, [name]):
+            lines += [f'  {otml_name}:', f'    image: {image}', f'    hot-spot: {hot_spot[0]} {hot_spot[1]}']
+    (TODAY_MODERN / 'cursors.otml').write_text('\n'.join(lines) + '\n')
+
+
 def resolve(rows):
     out = []
     for name, old, old_dir, make, hot, when in rows:
@@ -630,6 +657,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--shot', required=True, help='game screenshot for the real-size previews')
     ap.add_argument('--out', default=str(REPO / 'build/pokemon-cursors'))
+    ap.add_argument('--install', action='store_true', help='write the cursors into pokeverse-modern/data/cursors')
     args = ap.parse_args()
     out = Path(args.out)
     (out / 'files').mkdir(parents=True, exist_ok=True)
@@ -646,6 +674,8 @@ def main():
                 'Poke Ball, Pokedex and Order stay as they are. Each potion gets its own ring; the click is '
                 'in the middle.', out / 'board-use-with.png')
     build_gif(map_rows + use_rows, out / 'cursors.gif')
+    if args.install:
+        install(map_rows + use_rows)
     print(f'wrote {out}')
 
 
