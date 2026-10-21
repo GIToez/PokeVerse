@@ -253,7 +253,7 @@ void Mailer::send(const std::string& to, const std::string& subject, const std::
 		boost::unique_lock<boost::mutex> lock(m_lock);
 		if(m_queue.size() >= MAX_QUEUE)
 		{
-			std::cout << "[Warning - Mailer] Too many emails waiting, dropped: " << subject << std::endl;
+			std::cout << "[Warning - Mailer] Too many emails waiting, dropped: " << subject.substr(0, subject.find(':')) << std::endl;
 			return;
 		}
 
@@ -291,16 +291,18 @@ void Mailer::run()
 			continue;
 		}
 
+		// the codes are in the subjects; the log keeps the part before them
+		const std::string shown = mail.subject.substr(0, mail.subject.find(':'));
 		std::string error;
 		for(int32_t attempt = 1; attempt <= ATTEMPTS; ++attempt)
 		{
 			if(deliver(mail, error))
 			{
-				std::cout << "> Email sent: " << mail.subject << std::endl;
+				std::cout << "> Email sent: " << shown << std::endl;
 				break;
 			}
 
-			std::cout << "[Warning - Mailer] Could not send \"" << mail.subject << "\" (attempt " << attempt << " of "
+			std::cout << "[Warning - Mailer] Could not send \"" << shown << "\" (attempt " << attempt << " of "
 				<< ATTEMPTS << "): " << error << std::endl;
 			if(attempt < ATTEMPTS)
 			{

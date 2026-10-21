@@ -467,7 +467,7 @@ std::string ProtocolAccount::verifyEmail(const Request& request, uint32_t accoun
 	AccountEmail::log(accountId, request.ip, "email_verified");
 	success = true;
 	if(state.pending)
-		return "Your email is verified and your account is ready. Log in to create your first character.";
+		return "Your email is verified and your account is ready. Have fun!";
 
 	return "Your email is verified. Thank you!";
 }

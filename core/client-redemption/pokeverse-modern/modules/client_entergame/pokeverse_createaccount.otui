@@ -1,6 +1,6 @@
 PVModal
   id: createAccountWindow
-  size: 340 330
+  size: 340 432
   @onEnter: EnterGame.doCreateAccount()
   @onEscape: EnterGame.hideCreateAccount()
 
@@ -12,7 +12,7 @@ PVModal
 
   PVMuted
     id: hint
-    !text: tr('Account name: 3 to 25 letters or numbers.\nPassword: 8 to 29 characters, not a common one.')
+    !text: tr('Account name: 3 to 25 letters or numbers.\nPassword: 8 to 29 characters, not a common one.\nWe send a code to your email to finish.')
     text-align: center
     anchors.top: prev.bottom
     anchors.horizontalCenter: parent.horizontalCenter
@@ -29,6 +29,30 @@ PVModal
 
     PVFieldIcon
       image-source: /modules/client_entergame/images/icon_user
+
+  PVField
+    id: emailTextEdit
+    placeholder: Email
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    max-length: 50
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_mail
+
+  PVField
+    id: emailRepeatTextEdit
+    placeholder: Repeat Email
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    max-length: 50
+
+    PVFieldIcon
+      image-source: /modules/client_entergame/images/icon_mail
 
   PVPasswordField
     id: passwordTextEdit

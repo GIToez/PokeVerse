@@ -5,7 +5,7 @@ PokeVerseEnterGame = {}
 
 local WEBSITE_URL = 'https://pokeverse.quest'
 local STATUS_INTERVAL = 60000
-local PANEL_SIZE = { width = 340, height = 446 }
+local PANEL_SIZE = { width = 340, height = 466 }
 local LOGO_HEIGHT = 96
 local BOB_PERIOD = 3200 -- ms
 local BOB_HEIGHT = 4 -- px
@@ -28,7 +28,13 @@ local function server()
     return field('serverHostTextEdit'):getText(), tonumber(field('serverPortTextEdit'):getText())
 end
 
+EnterGame.getServer = server
+
+-- In game the client version and key are already the server's (and cannot change while online).
 local function prepareProtocol()
+    if g_game.isOnline() then
+        return
+    end
     local host = server()
     local version = tonumber(field('clientComboBox'):getText()) or 854
     g_game.setClientVersion(version)
@@ -251,6 +257,13 @@ function EnterGame.accountRequest(request, onDone)
     protocolAccount:request(host, port, request)
 end
 
+-- Puts a plain account name and password in the login fields (EnterGame.setPassword decrypts).
+function EnterGame.fillLogin(account, password)
+    field('accountNameTextEdit'):setText(account)
+    field('accountPasswordTextEdit'):setText(password)
+    field('accountPasswordTextEdit'):focus()
+end
+
 -- Logs in again with the account in use, for a fresh character list.
 function EnterGame.loginAccount(account, password)
     field('accountNameTextEdit'):setText(account)
@@ -286,6 +299,8 @@ function EnterGame.doCreateAccount()
     local account = createAccountWindow:getChildById('accountNameTextEdit'):getText():trim():lower()
     local password = createAccountWindow:getChildById('passwordTextEdit'):getText()
     local repeated = createAccountWindow:getChildById('passwordRepeatTextEdit'):getText()
+    local email = createAccountWindow:getChildById('emailTextEdit'):getText():trim():lower()
+    local repeatedEmail = createAccountWindow:getChildById('emailRepeatTextEdit'):getText():trim():lower()
 
     local function retry(message)
         local errorBox = displayErrorBox(tr('Create Account'), message)
@@ -297,8 +312,13 @@ function EnterGame.doCreateAccount()
         retry(tr('The passwords do not match.'))
         return
     end
+    if email ~= repeatedEmail then
+        retry(tr('The emails do not match.'))
+        return
+    end
 
-    EnterGame.accountRequest({ action = AccountRequestCreateAccount, account = account, password = password },
+    EnterGame.accountRequest({ action = AccountRequestCreateAccount, account = account, password = password,
+                               texts = { email } },
         function(success, message)
             if not message then
                 EnterGame.showCreateAccount()
@@ -306,13 +326,7 @@ function EnterGame.doCreateAccount()
                 retry(message)
             else
                 destroyCreateAccount()
-                local infoBox = displayInfoBox(tr('Create Account'), message)
-                connect(infoBox, { onOk = function()
-                    EnterGame.show()
-                    field('accountNameTextEdit'):setText(account)
-                    field('accountPasswordTextEdit'):setText(password)
-                    field('accountPasswordTextEdit'):focus()
-                end })
+                PokeVerseAccount.afterSignup(account, password, message)
             end
         end)
 end
