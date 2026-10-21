@@ -166,6 +166,8 @@ endstep
 step "daily restart (time zone $PV_TIMEZONE)"
 daily=$(TZ=$PV_TIMEZONE date -d "+4 min" +%H:%M)
 ctl configure host=127.0.0.1 daily_restart=true "daily_time=$daily" "timezone=$PV_TIMEZONE"
+sudo grep -q '^-- END DEPLOYMENT SETTINGS' /opt/pokeverse/shared/config.local.lua && sudo grep -q '^sqlPass = ' /opt/pokeverse/shared/config.local.lua \
+  || fail "rewriting the deployment settings damaged the rest of config.local.lua"
 deploy restart
 before=$(restarts)
 pt "${gm[@]}" --say "/restart" | grep -i "restart" || true
