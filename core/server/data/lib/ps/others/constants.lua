@@ -2065,7 +2065,7 @@ EFFECT_TUTORIAL_ARROW = 939
 -- Tutorial Island stops for NavMarker
 TUTORIAL_LAB_DOOR = {x = 5020, y = 792, z = 7}
 TUTORIAL_LAB_EXIT = {x = 5020, y = 784, z = 7}
-TUTORIAL_MART = {x = 5020, y = 757, z = 7}
+TUTORIAL_MART = {x = 5020, y = 758, z = 7}
 TUTORIAL_RED = {x = 5031, y = 750, z = 7}
 
 EFFECT_MEW = 977
