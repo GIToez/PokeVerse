@@ -493,7 +493,11 @@ under the zoom switches back to the minimap. The HUD minimap is unchanged.
   changed are drawn again (about 12 minutes for the whole map on 4 cores, a few minutes
   after a small change). About 120 MB with the house pictures, downloaded once.
 - **Hidden regions:** a region listed in `scripts/mapper/hidden-regions.txt` is left out of
-  the map and the house pictures until its line is removed and a client is published.
+  the map and the house pictures until its line is removed and a client is published. Its
+  `bounds` line (0,0 - 4650,3530) leaves out everything outside: the instances, Beginner
+  Island and the tutorial island.
+- A piece is drawn again only when its tiles or the sprites of the items on it change, so new
+  art redraws just the pieces that show it. Only main saves the render to the Actions cache.
 - `scripts/render-map.sh [client folder]` renders it locally, hidden regions included, to
   check a region while it is built.
 - Still to do: places where the map has no tiles show the minimap's sea colour on the ground
@@ -571,7 +575,8 @@ files and 339 NPC scripts (`core/server/data/npc`).
 
 Static site on the PokeVerse-Clients `gh-pages` branch ([website.md](website.md)).
 
-**Built:** home and downloads, Pokédex and moves pages from the game data, and a Discord
+**Built:** home and downloads, Pokédex and moves pages from the game data, the world map
+(the Pokepedia's, with the names of places by zoom, updated by each client release), and a Discord
 button with the game's invite. Still to do: the live server status (the panel says "coming
 soon"), the Discord card, and the pages below.
 
