@@ -46,12 +46,16 @@ GRASS = [(56, 112, 80), (96, 176, 88), (112, 184, 80), (120, 192, 112), (128, 20
 PATH = [(152, 120, 96), (176, 152, 104), (200, 184, 128), (208, 192, 136), (216, 200, 136), (232, 220, 168)]
 DIRT = [(104, 68, 40), (120, 82, 48), (132, 92, 54), (144, 100, 60), (152, 108, 66), (168, 124, 80)]
 WATER = [(32, 96, 160), (40, 128, 192), (64, 168, 224), (112, 196, 236), (200, 216, 216), (240, 248, 248)]
-FOLIAGE = [(14, 72, 64), (24, 96, 64), (50, 135, 99), (72, 164, 86), (104, 192, 88), (150, 222, 110)]
+FOLIAGE = [(16, 64, 48), (28, 100, 56), (44, 136, 64), (72, 168, 72), (116, 196, 84), (168, 224, 108)]
+# a few leaf colourings, picked per tree type, so a forest is not one green
+LEAF_RAMPS = [FOLIAGE,
+              [(20, 66, 44), (34, 104, 52), (54, 140, 60), (86, 172, 66), (132, 200, 80), (184, 228, 108)],
+              [(14, 62, 52), (24, 96, 62), (40, 132, 72), (64, 164, 80), (104, 192, 92), (156, 220, 120)]]
 TRUNK = [(72, 48, 32), (104, 72, 48), (144, 104, 72), (184, 136, 96), (210, 170, 124)]
 ROCK = [(72, 80, 96), (104, 112, 136), (128, 152, 160), (160, 192, 200), (200, 216, 216), (236, 244, 244)]
 GOLD = [(150, 96, 20), (216, 160, 48), (240, 216, 104), (252, 240, 160)]
 RED = [(112, 24, 32), (168, 40, 40), (216, 72, 56), (240, 120, 96), (250, 180, 160)]
-OUTLINE = {'green': (16, 48, 32), 'wood': (48, 28, 20), 'dirt': (48, 28, 20), 'stone': (48, 56, 64),
+OUTLINE = {'green': (20, 60, 40), 'wood': (48, 28, 20), 'dirt': (48, 28, 20), 'stone': (48, 56, 64),
            'water': (16, 48, 96), 'yellow': (96, 56, 16), 'red': (72, 16, 24)}
 OBJECT_RAMPS = {'green': FOLIAGE, 'wood': TRUNK, 'dirt': TRUNK, 'stone': ROCK, 'water': WATER,
                 'yellow': GOLD, 'red': RED}
@@ -61,7 +65,9 @@ ICE = [(72, 128, 168), (120, 184, 216), (168, 220, 240), (208, 240, 250), (240, 
 OBJECT_RAMPS['ice'] = ICE
 OBJECT_RAMPS['water'] = [(24, 36, 96), (36, 64, 152), (52, 104, 200), (84, 148, 224), (140, 196, 240), (216, 236, 248)]
 OBJECT_RAMPS['crimson'] = [(40, 10, 14), (72, 16, 20), (104, 24, 26), (136, 36, 32), (168, 56, 44), (200, 92, 64)]
-OUTLINE['crimson'] = (32, 8, 12)
+CRIMSON = OBJECT_RAMPS['crimson']
+OUTLINE['crimson'] = CRIMSON[1]          # pieces overlap on the slopes; a black rim would draw a seam
+CRIMSON_CUTS = [18, 28, 36, 44, 58]
 OUTLINE['ice'] = (48, 96, 128)
 
 
@@ -287,19 +293,19 @@ def relight(img, sel, kind, ramp=None):
     n = np.clip((Ls - lo) / max(hi - lo, 1e-3), 0, 1)
     vol = np.pad(blurf(w, 3.0, pad=8), 2, mode='edge')
     lightdir = vol[4:, 4:] - vol[:-4, :-4]
-    s = (0.12 + 0.62 * n + 0.9 * lightdir) if kind == 'green' else (0.08 + 0.8 * n + 0.5 * lightdir)
+    s = (0.1 + 0.7 * n + 0.9 * lightdir) if kind == 'green' else (0.08 + 0.8 * n + 0.5 * lightdir)
     if kind == 'stone':
         s = 0.05 + 0.62 * n + 0.5 * lightdir
     if kind == 'green':
         # each leaf clump lit on its top-left rim, shaded on the far side
         p = np.pad(Ls, 2, mode='edge')
-        s = s + 1.4 * (Ls - p[:-4, :-4])
+        s = s + 1.6 * (Ls - p[:-4, :-4])
     out = np.zeros(img.shape[:2] + (3,))
     out[...] = ramp_at(ramp, s, steps=True)
     return out
 
 
-def paint_object(img):
+def paint_object(img, leaves=FOLIAGE):
     """A whole multi-tile item at once, so the shading runs across its sprites without seams."""
     a = img.copy()
     op = a[..., 3] > 0
@@ -309,14 +315,24 @@ def paint_object(img):
     cyan = hue_of(a[..., :3].astype(float)) < 205
     mat[(mat == 'water') & cyan & (blurf(lum(a[..., :3].astype(float)) / 255, 1.5, pad=4) > 0.55)] = 'ice'
     px = a[op][:, :3].astype(float)
-    if lum(px.mean(0)) < 95 and px[:, 0].mean() > 1.8 * px[:, 1].mean():    # dark red rock stays dark red
-        mat[op & np.isin(mat, ['wood', 'dirt', 'red', 'yellow'])] = 'crimson'
     out = a.astype(float)
+    if lum(px.mean(0)) < 95 and px[:, 0].mean() > 1.8 * px[:, 1].mean():    # dark red rock stays dark red
+        rgb = a[..., :3].astype(float)
+        mx = rgb.max(-1)
+        sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+        hue = hue_of(rgb)
+        glow = op & (hue >= 15) & (hue <= 50) & (sat > 0.6) & (mx > 140)     # lava cracks keep their glow
+        mat[op & ~glow & np.isin(mat, ['wood', 'dirt', 'red', 'yellow'])] = 'crimson'
+        mat[glow] = 'other'
+        rock = op & (mat == 'crimson')
+        # one fixed map for every red rock piece and the red rock floor, so neighbours meet without seams
+        out[rock, :3] = np.array(CRIMSON)[np.searchsorted(CRIMSON_CUTS, lum(rgb)[rock])]
+        out = despeckle_px(np.clip(out, 0, 255).astype(np.uint8), rock, False).astype(float)
     for k in set(mat[op].tolist()):
         sel = op & (mat == k)
-        if k == 'other' or sel.sum() < 3:
+        if k in ('other', 'crimson') or sel.sum() < 3:
             continue
-        out[sel, :3] = relight(a, sel, k)[sel]
+        out[sel, :3] = relight(a, sel, k, leaves if k == 'green' else None)[sel]
     edge = op & (shift(~op, 1, 0) | shift(~op, 0, 1) | shift(~op, -1, 0) | shift(~op, 0, -1))
     small = op.sum() < 260
     for k, c in OUTLINE.items():
@@ -418,6 +434,14 @@ def ds_pixels(a, cave=False, crumbs=False):
         out[sel, :3] = np.array(ramp)[np.searchsorted(cuts, L[sel])]
         done = done | sel
 
+    rmx = raw.max(-1)
+    rsat = (rmx - raw.min(-1)) / np.maximum(rmx, 1)
+    rhue = hue_of(raw)
+    glow = op & (rhue >= 15) & (rhue <= 55) & (rsat > 0.6) & (rmx > 120)     # lava cracks in dark ground
+    if glow.sum() > 0.3 * max(op.sum(), 1) or lum(raw[op].mean(0)) >= 55:
+        glow[:] = False                                                     # lava itself takes the map
+    out[glow, :3] = raw[glow]
+    done = done | glow
     put((hue >= 185) & (hue <= 250) & (sat > 0.35) & (L < 150), WATER[1:4], [45, 125])
     put((hue >= 165) & (hue <= 215) & (sat > 0.12) & (L >= 150), [ICE[1], ICE[2], ICE[4]], [160, 228])
     put((hue >= 65) & (hue <= 165) & (sat > 0.25), GRASS, [50, 80, 110, 150, 185])
@@ -427,7 +451,7 @@ def ds_pixels(a, cave=False, crumbs=False):
         earth = earth | ((hue < 12) & (sat >= 0.25) & (sat <= 0.78) & (L < 100))
     put(earth & (L < 235), DS_EARTH, EARTH_CUTS)
     red_rock = ((hue < 12) | (hue >= 345)) & (sat >= 0.6) & (sat <= 0.92) & (mx < 150) & (L < 60)
-    put(red_rock, OBJECT_RAMPS['crimson'][1:5], [28, 36, 44])
+    put(red_rock, CRIMSON, CRIMSON_CUTS)
     rest = ~done
     if rest.any():
         v = mx[rest] / 255
@@ -435,7 +459,9 @@ def ds_pixels(a, cave=False, crumbs=False):
         q = lv[np.searchsorted((lv[:-1] + lv[1:]) / 2, v)]
         col = np.clip(rgb[rest] * (q / np.maximum(v, 1e-3))[:, None], 0, 255)
         out[rest, :3] = (col // 8 * 8).astype(np.uint8)   # snap so near-equal shades merge into one flat colour
-    return despeckle_px(out, op, full)
+    out = despeckle_px(out, op, full)
+    out[glow, :3] = raw[glow]                             # thin cracks would read as specks
+    return out
 
 
 def hue_of(rgb):
@@ -621,9 +647,10 @@ def made_ground(t, rgba, like=None):
 
 
 def box_blur(a, full, n=3):
+    H, W = a.shape[:2]
     for _ in range(n):
         p = np.pad(a, [(1, 1), (1, 1)] + [(0, 0)] * (a.ndim - 2), mode='wrap' if full else 'edge')
-        a = sum(p[dy:dy + 32, dx:dx + 32] for dy in range(3) for dx in range(3)) / 9
+        a = sum(p[dy:dy + H, dx:dx + W] for dy in range(3) for dx in range(3)) / 9
     return a
 
 
@@ -724,7 +751,7 @@ def build():
         if GROUND in t[0] or BORDER in t[0]:
             grounds.append((cid, t))
         else:
-            objects.append(t)
+            objects.append((cid, t))
     for cid, t in grounds:
         free = [sid for sid in t[8] if sid and sid not in new and sid not in keep and rgba(sid) is not None]
         if not free:
@@ -766,13 +793,13 @@ def build():
                 sid = t[8][idx] if idx < len(t[8]) else 0
                 if pp == pat and sid in art:
                     new[sid] = done[y:y + 32, x:x + 32].copy()
-    for t in objects:
+    for cid, t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
             continue
         art = {s: rgba(s) for s in sprites if s and rgba(s) is not None}
         for p, img in h.compose(t, art).items():
-            done = paint_object(img)
+            done = paint_object(img, LEAF_RAMPS[cid // 64 % len(LEAF_RAMPS)])   # neighbouring ids are one tree family
             for pp, idx, x, y in h.layout(t):
                 sid = sprites[idx] if idx < len(sprites) else 0
                 if pp == p and sid in art and sid not in new and sid not in keep:
