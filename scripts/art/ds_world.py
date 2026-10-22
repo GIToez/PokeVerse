@@ -810,27 +810,32 @@ def _morph(m, r, grow):
     return out
 
 
-def round_mask(m, r):
-    """Opening then closing with a disc, so both outer and inner corners round off. The tile's own border
-    counts as solid, so edges that run on into the next tile stay straight."""
-    p = 2 * r + 2
-    pm = np.pad(m, p, mode='edge')
-    o = _morph(_morph(pm, r, False), r, True)
-    return _morph(_morph(o, r, True), r, False)[p:-p, p:-p]
-
-
 LIP_FADE = (96, 56, 24)
+_y, _x = np.mgrid[0:32, 0:32]
+CHIPS = np.random.default_rng(7).integers(0, 4, (11, 11))[_y // 3, _x // 3]   # 3px chips, 0-3px deep
+
+
+def chip(m):
+    """Bite rocky notches out of the lip's outline. Erosion treats the tile border as solid, so edges
+    that run on into the next tile keep meeting it."""
+    depth = np.zeros(m.shape, int)
+    cur = m
+    for k in range(1, 5):
+        depth[cur] = k
+        cur = _morph(cur, 1, False)
+    depth[cur] = 5
+    return drop_specks(m & ~(depth <= CHIPS), 6)
 
 
 def clean_lip(a, mean=104):
-    """Tibia's ragged stone edge as one smooth ledge with rounded corners: the loose pixels go, the gaps take
+    """Tibia's ragged stone edge as one chipped rocky ledge: the loose pixels go, the gaps take
     the stone beside them, the gravel takes the rocks' darker steps, the lip gets their dark rim, lit along its
     top and left, and a see-through shade fades from the rim into the ground below."""
     op = a[..., 3] > 0
     if op.all():
         return ds_pixels(a)
     img = gravel(a, mean)
-    lip = round_mask(drop_specks(blurf(op.astype(float), 0.6, pad=4) > 0.5, 12), 5)
+    lip = chip(drop_specks(blurf(op.astype(float), 0.6, pad=4) > 0.5, 12))
     out = img.copy()
     for _ in range(8):
         gap = lip & ~(out[..., 3] > 0)
