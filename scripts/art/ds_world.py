@@ -151,12 +151,18 @@ def water_texture():
 
 
 DARK_GRASS = {106, 108, 109}                 # Tibia's darker grass patches, some with flowers
-JUNGLE_GRASS = range(1054, 1066)              # leafy grass clumps laid along those patches
+JUNGLE_RAMP = [GRASS[1], GRASS[2], GRASS[4], GRASS[5], (176, 232, 136)]
+JUNGLE_FLOOR = 1019                           # Tibia's leafy jungle grass
+JUNGLE_GRASS = range(1054, 1066)              # its edges where it meets the lawn
 # hedge bushes Tibia cuts into edge pieces, [top left, top right, bottom left, bottom right]; painted whole
 # like the trees, so the pieces shade as one bush
 HEDGES = [(4434, 4435, 4437, 4436), (4438, 4439, 4441, 4440), (4442, 4443, 4556, 4444),
           (4557, 4558, 4604, 4603), (4605, 4606, 4608, 4607), (4745,), (4746,)]
 ROCK_PATH = range(7062, 7067)                 # dark rock path; its edges 7080-7089 take the shared map too
+# jungle dirt and the dark mud beside it, more saturated than Tibia's other dirt
+MUD = {1020, 1021} | set(range(10228, 10236)) | set(range(10248, 10260))
+# the white and cream arena lines at every gym, on sprites Tibia items share
+ARENA = range(11612, 11628)
 
 
 def paint_dark_grass(a):
@@ -173,16 +179,20 @@ def paint_dark_grass(a):
     return out
 
 
-def paint_jungle_grass(a):
-    """A leafy grass clump: the lawn's own texture, so the tile it covers does not show as a block,
-    with only its darkest leaf strokes kept as a few darker blades."""
+def paint_jungle_grass(a, mean, edge=False):
+    """Leafy jungle grass in its own drawing, its shades moved onto the lawn's greens around the jungle
+    grass's mean, so on average it is the lawn's colour and a tile of it does not show as a block.
+    On the edges, the part that is lawn (bluer green) takes the lawn texture."""
     op = a[..., 3] > 0
-    L = smooth(lum(a[..., :3].astype(float)), False)
+    rgb = a[..., :3].astype(float)
+    d = lum(rgb) - mean
     out = a.copy()
-    out[op, :3] = TEX['green'][op]
-    out[op & (L < 45), :3] = GRASS[2]
-    out[op & (L < 30), :3] = GRASS[1]
-    return despeckle_px(out, op, False)
+    # pixel for pixel, no smoothing, so the leaves keep their drawing; no darkest step, which reads as specks
+    out[op, :3] = np.array(JUNGLE_RAMP)[np.searchsorted([-30, -12, 10, 28], d[op])]
+    if edge:
+        lawn = op & (hue_of(box_blur(rgb, op.all(), 2)) >= 90)
+        out[lawn, :3] = TEX['green'][lawn]
+    return out
 
 
 def dark_grass_texture():
@@ -460,7 +470,7 @@ def map_usage():
     return out
 
 
-def ds_pixels(a, cave=False, crumbs=False):
+def ds_pixels(a, cave=False, crumbs=False, mud=False):
     """Ground and edges off the textures: one fixed colour map for every item, so each original colour
     lands on the same DS colour wherever it is and neighbouring pieces stay seamless."""
     op = a[..., 3] > 0
@@ -492,7 +502,7 @@ def ds_pixels(a, cave=False, crumbs=False):
     put((hue >= 165) & (hue <= 215) & (sat > 0.12) & (L >= 150), [ICE[1], ICE[2], ICE[4]], [160, 228])
     put((hue >= 65) & (hue <= 165) & (sat > 0.25), GRASS, [50, 80, 110, 150, 185])
     put(sat < 0.15, GRAYS[:5] + [SNOW[1], SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
-    earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= 0.78)
+    earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= (0.97 if mud else 0.78))
     if crumbs:      # Tibia's dark dirt crumbs run redder than its dirt
         earth = earth | ((hue < 12) & (sat >= 0.25) & (sat <= 0.78) & (L < 100))
     put(earth & (L < 235), DS_EARTH, EARTH_CUTS)
@@ -766,6 +776,7 @@ def build():
     for cid, t in dat.things.items():
         (keep if cid in REFERENCE or cid in custom else tibia).update(s for s in t[8] if s)
     keep -= tibia - {s for c in REFERENCE if c in dat.things for s in dat.things[c][8]}
+    keep |= {s for c in ARENA if c in dat.things for s in dat.things[c][8] if s}
     raw = {}
 
     def rgba(sid):
@@ -811,7 +822,13 @@ def build():
         elif cid in DARK_GRASS:
             art = {sid: paint_dark_grass(rgba(sid)) for sid in free}
         elif cid in JUNGLE_GRASS:
-            art = {sid: paint_jungle_grass(rgba(sid)) for sid in free}
+            mean = lum(tone(dat.things[JUNGLE_FLOOR], rgba)[2])
+            art = {sid: paint_jungle_grass(rgba(sid), mean, True) for sid in free}
+        elif cid == JUNGLE_FLOOR:
+            mean = lum(tone(t, rgba)[2])
+            art = {sid: paint_jungle_grass(rgba(sid), mean) for sid in free}
+        elif cid in MUD:
+            art = {sid: ds_pixels(rgba(sid), mud=True) for sid in free}
         elif cid in ROCK_PATH:
             art = {sid: ds_pixels(rgba(sid)) for sid in free}
         else:
