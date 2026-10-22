@@ -39,7 +39,7 @@ All settings (defaults in `config.lua`):
 | `discordBridgeBoosterYearly` | `15` | The yearly bonus. |
 | `discordBridgeBoosterCommunityEvery` | `5` | On loyalty weeks, +1 Soul Coin per this many server boosts (`0` = no community bonus). |
 | `discordBridgeBoosterCommunityMax` | `5` | The most the community bonus can pay in one week. |
-| `discordBridgeBoostPerks` | `false` | Server-wide perks for everyone online by the Discord server's boost level (`boost.level`). |
+| `discordBridgeBoostPerks` | `true` | Server-wide perks for everyone online by the Discord server's boost level (`boost.level`). |
 | `discordBridgeBoostPerkExpPercent` | `5` | Level 1 and up: kill experience +this % (`0` = no perk). |
 | `discordBridgeBoostPerkCatchPercent` | `5` | Level 2 and up: catch chance x(1 + this/100) (`0` = no perk). |
 | `discordBridgeBoostPerkShinyPercent` | `10` | Level 3: shiny chance x(1 + this/100) (`0` = no perk). |
@@ -387,7 +387,7 @@ COLUMN server_boosts`).
 ## Server boost perks
 
 While the PokeVerse Discord has server boost level 1 or more, everyone online gets perks
-(`discordBridgeBoostPerks`, off by default). Each level keeps the perks below it:
+(`discordBridgeBoostPerks`, on in `config.lua`; the server's built-in default is off). Each level keeps the perks below it:
 
 | Level | Perk (defaults) | Applied |
 | --- | --- | --- |
