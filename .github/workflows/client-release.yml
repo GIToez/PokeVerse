@@ -76,6 +76,7 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
 
       - uses: actions/cache/restore@v4
+        id: vcpkg-cache
         with:
           path: vcpkg-cache
           key: vcpkg-linux2204-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
@@ -112,9 +113,11 @@ jobs:
           fi
           echo "Needs glibc $glibc or newer"
 
-      # saved even when the build fails, so the libraries built so far are not lost
+      # saved even when the build fails, so the libraries built so far are not lost; not saved again
+      # after a restore for the same vcpkg.json, or every run adds another full copy and the
+      # repository's 10 GB of caches pushes out the others (the map pictures)
       - uses: actions/cache/save@v4
-        if: always()
+        if: always() && !startsWith(steps.vcpkg-cache.outputs.cache-matched-key, format('vcpkg-linux2204-{0}-', hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**')))
         with:
           path: vcpkg-cache
           key: vcpkg-linux2204-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
@@ -143,6 +146,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\vcpkg-cache" | Out-Null
 
       - uses: actions/cache/restore@v4
+        id: vcpkg-cache
         with:
           path: vcpkg-cache
           key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
@@ -169,9 +173,11 @@ jobs:
           Rename-Item "$env:GITHUB_WORKSPACE\bin-windows\otclient.exe" PokeVerse.exe
           Get-ChildItem build\windows-release\bin\*.dll -ErrorAction SilentlyContinue | Copy-Item -Destination "$env:GITHUB_WORKSPACE\bin-windows\"
 
-      # saved even when the build fails, so the libraries built so far are not lost
+      # saved even when the build fails, so the libraries built so far are not lost; not saved again
+      # after a restore for the same vcpkg.json, or every run adds another full copy and the
+      # repository's 10 GB of caches pushes out the others (the map pictures)
       - uses: actions/cache/save@v4
-        if: always()
+        if: always() && !startsWith(steps.vcpkg-cache.outputs.cache-matched-key, format('vcpkg-windows-{0}-', hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**')))
         with:
           path: vcpkg-cache
           key: vcpkg-windows-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
@@ -239,6 +245,7 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
 
       - uses: actions/cache/restore@v4
+        id: vcpkg-cache
         with:
           path: vcpkg-cache
           key: vcpkg-android-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
@@ -276,9 +283,11 @@ jobs:
           scripts/build-android-client.sh --host "$LIVE_HOST" --updater "$PAGES_URL/updater/" \
             --discord "$DISCORD_URL" bin-android/PokeVerse-Android.apk
 
-      # saved even when the build fails, so the libraries built so far are not lost
+      # saved even when the build fails, so the libraries built so far are not lost; not saved again
+      # after a restore for the same vcpkg.json, or every run adds another full copy and the
+      # repository's 10 GB of caches pushes out the others (the map pictures)
       - uses: actions/cache/save@v4
-        if: always()
+        if: always() && !startsWith(steps.vcpkg-cache.outputs.cache-matched-key, format('vcpkg-android-{0}-', hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**')))
         with:
           path: vcpkg-cache
           key: vcpkg-android-${{ hashFiles('core/client-redemption/vcpkg.json', 'core/client-redemption/cmake/triplets/**') }}-${{ github.run_id }}
@@ -340,10 +349,12 @@ jobs:
 
       # the Pokepedia's pictures of the map, rendered again only when the map, the items, the sprites
       # or the hidden regions change; after a change the last render is restored and only the pieces
-      # that changed are drawn again. scripts/assemble-redemption-client.sh adds them to the packages
+      # that changed are drawn again. scripts/assemble-redemption-client.sh adds them to the packages.
+      # Only main saves it: a pull request's caches can't be read from main, so a render saved
+      # there would be drawn again in full by the next release
       - name: Map pictures cache
         id: map-pictures
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             build/map-pictures
@@ -357,6 +368,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends python3-pil
           python3 scripts/mapper/render_pokepedia.py --jobs "$(nproc)"
+
+      - uses: actions/cache/save@v4
+        if: steps.map-pictures.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+        with:
+          path: |
+            build/map-pictures
+            build/map-pictures-state.json
+          key: map-pictures-${{ hashFiles('core/server/data/world/map.otbm', 'core/server/data/items/items.otb', 'core/client-legacy/data/things/data.dat', 'core/client-legacy/data/things/data.spr', 'scripts/mapper/pvmap.py', 'scripts/mapper/render.py', 'scripts/mapper/render_pokepedia.py', 'scripts/mapper/hidden-regions.txt') }}
 
       - name: Assemble live packages
         env:
@@ -387,7 +406,8 @@ jobs:
             --apk-url "https://github.com/$CLIENTS_REPO/releases/download/$TAG/PokeVerse-Android.apk"
           du -sh site release
 
-      # the PokeVerse-Clients site is the website too: its pages sit next to updater/
+      # the PokeVerse-Clients site is the website too: its pages sit next to updater/. Its map
+      # page gets the tiles of the map pictures above, so each release publishes the current map
       - name: Website
         env:
           TAG: ${{ steps.version.outputs.tag }}
@@ -395,9 +415,9 @@ jobs:
           PAGES_DOMAIN: ${{ vars.PAGES_DOMAIN || 'pokeverse.quest' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends lua5.1
+          sudo apt-get install -y --no-install-recommends lua5.1 python3-pil
           python3 website/build.py --out site --downloads-repo "$CLIENTS_REPO" --release-tag "$TAG" \
-            --discord-url "$DISCORD_URL" --cname "$PAGES_DOMAIN"
+            --discord-url "$DISCORD_URL" --cname "$PAGES_DOMAIN" --map build/map-pictures
 
       - name: Check the updater URLs
         env:

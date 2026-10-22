@@ -19,11 +19,12 @@ still cover every floor. --underground draws floors 8-15 too, one floor at a tim
 chunks), for previews while mapping.
 
 A piece is only drawn again when its tiles change: <out>-state.json keeps a hash of each piece's
-tiles (and of the sprites), so a map change redraws just the pieces it touches. Files that no
-longer match a piece are removed.
+tiles and of the sprites of the items on them, so a map or art change redraws just the pieces it
+touches. Files that no longer match a piece are removed.
 
 The regions in hidden-regions.txt (next to this script) are left out of both, until they are
-removed from the list; --show-hidden draws them anyway, for previews.
+removed from the list, and so is everything outside its bounds; --show-hidden draws them anyway,
+for previews.
 
 The pictures are not kept in the repository: the client release renders them (the last render and
 its state are cached, so a release only draws what changed), and scripts/assemble-redemption-client.sh copies
@@ -68,10 +69,12 @@ PIXELS = CHUNK * SCALE
 WORLD_VERSION = 1
 GROUND = 7
 COLORS = 256
+MAX_POS = 65535
 
 _renderer = None
 _map = None
 _hidden = []
+_items = {}
 
 
 def renderer():
@@ -108,13 +111,24 @@ def read_hidden(path):
         if not m:
             sys.exit('%s:%d: expected "name: x1,y1 - x2,y2", got: %s' % (path, number, line))
         x1, y1, x2, y2 = (int(v) for v in m.groups()[1:])
-        regions.append((m.group(1).strip(), min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2)))
+        name = m.group(1).strip()
+        x1, y1, x2, y2 = min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2)
+        if name.lower() != 'bounds':
+            regions.append((name, x1, y1, x2, y2))
+            continue
+        # everything outside the bounds, as the rectangles around them
+        for box in ((0, 0, x1 - 1, MAX_POS), (x2 + 1, 0, MAX_POS, MAX_POS),
+                    (0, 0, MAX_POS, y1 - 1), (0, y2 + 1, MAX_POS, MAX_POS)):
+            if box[0] <= box[2] and box[1] <= box[3]:
+                regions.append(('outside the bounds',) + box)
     return regions
 
 
-def set_hidden(regions):
-    global _hidden
+def set_hidden(regions, items=None):
+    global _hidden, _items
     _hidden = regions
+    if items is not None:
+        _items = items
 
 
 def hidden(x, y):
@@ -262,13 +276,40 @@ def read_chunk(path):
 
 
 def inputs_digest():
-    """What every piece depends on besides its own tiles: the sprites and the way they're drawn."""
+    """What every piece depends on besides its own tiles and items: the way they're drawn."""
     h = hashlib.sha1(b'world %d' % WORLD_VERSION)
-    for path in (OTB, DAT, SPR, render.__file__):
+    for path in (render.__file__, pvmap.__file__):
         with open(path, 'rb') as f:
-            for block in iter(lambda: f.read(1 << 20), b''):
-                h.update(block)
+            h.update(f.read())
     return h.hexdigest()
+
+
+def item_digests():
+    """{server id: hash} of everything an item's picture depends on: its client id, its data.dat
+    entry and the pixels of its sprites, so a changed sprite only redraws the pieces that show it."""
+    otb, dat = pvmap.Otb(OTB), pvmap.Dat(DAT)
+    sprites = {}
+    with open(SPR, 'rb') as f:
+        _, count = struct.unpack('<II', f.read(8))
+        offsets = struct.unpack('<%dI' % count, f.read(4 * count))
+
+        def sprite(sid):
+            if sid not in sprites:
+                raw = b''
+                if 0 < sid <= count and offsets[sid - 1]:
+                    f.seek(offsets[sid - 1] + 3)
+                    raw = f.read(struct.unpack('<H', f.read(2))[0])
+                sprites[sid] = hashlib.sha1(raw).digest()
+            return sprites[sid]
+
+        digests = {}
+        for sid, (cid, _, _) in otb.items.items():
+            thing = dat.things.get(cid)
+            h = hashlib.sha1(repr((cid, thing[:8] if thing else None)).encode())
+            for s in (thing[8] if thing else ()):
+                h.update(sprite(s))
+            digests[sid] = h.hexdigest()[:16]
+    return digests
 
 
 def piece_box(cx, cy):
@@ -316,8 +357,10 @@ def render_band(args):
     for z, cx in keys:
         part = {k: v for k, v in columns.get(cx, {}).items() if k[2] in floors_for(z)}
         bx0, by0, bx1, by1 = piece_box(cx, cy)
-        h = hashlib.sha1(repr((sorted(part.items()), [reg for reg in _hidden if reg[1] <= bx1 + 10 and
-                               bx0 - 2 <= reg[3] and reg[2] <= by1 + 10 and by0 - 2 <= reg[4]])).encode())
+        items = sorted({sid for ids in part.values() for sid in ids})
+        h = hashlib.sha1(repr((sorted(part.items()), [(sid, _items.get(sid)) for sid in items],
+                               [reg for reg in _hidden if reg[1] <= bx1 + 10 and bx0 - 2 <= reg[3] and
+                                reg[2] <= by1 + 10 and by0 - 2 <= reg[4]])).encode())
         digest = h.hexdigest()
         path = os.path.join(out, 'world', chunk_name(8, z, cx, cy))
         drawn = known.get('8/%d/%d/%d' % (z, cx, cy)) != digest or not os.path.exists(path)
@@ -343,6 +386,7 @@ def build_level(args):
 
 def world_main(out, jobs, chunks, width, height, state_path):
     inputs = inputs_digest()
+    items = item_digests()
     state = {}
     if os.path.exists(state_path):
         state = json.load(open(state_path))
@@ -361,7 +405,7 @@ def world_main(out, jobs, chunks, width, height, state_path):
     current = {}
     changed = {8: set()}
     count = drawn = 0
-    with Pool(jobs, initializer=set_hidden, initargs=(_hidden,)) as pool:
+    with Pool(jobs, initializer=set_hidden, initargs=(_hidden, items)) as pool:
         for part in pool.imap_unordered(render_band, work):
             for z, cx, cy, digest, was_drawn in part:
                 current['8/%d/%d/%d' % (z, cx, cy)] = digest
