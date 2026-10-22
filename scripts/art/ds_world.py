@@ -150,6 +150,43 @@ def water_texture():
     return ramp_at(WATER, s, steps=True)
 
 
+# Tibia's darker grass patches, some with flowers; on the lawn's flat green their tile-grid outline
+# shows at any other shade, so they take the lawn itself and keep only the flowers
+DARK_GRASS = {106, 108, 109}
+JUNGLE_GRASS = range(1054, 1066)              # leafy grass clumps laid along those patches
+# hedge bushes Tibia cuts into edge pieces, [top left, top right, bottom left, bottom right]; painted whole
+# like the trees, so the pieces shade as one bush
+HEDGES = [(4434, 4435, 4437, 4436), (4438, 4439, 4441, 4440), (4442, 4443, 4556, 4444),
+          (4557, 4558, 4604, 4603), (4605, 4606, 4608, 4607), (4745,), (4746,)]
+ROCK_PATH = range(7062, 7067)                 # dark rock path; its edges 7080-7089 take the shared map too
+
+
+def paint_dark_grass(a):
+    """A darker grass patch as plain lawn, its flowers kept as bright dots."""
+    out = a.copy()
+    out[..., :3] = TEX['green']
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    flower = (sat > 0.4) & ((hue < 60) | (hue > 250)) & (mx > 90)
+    out[flower & ((hue > 250) | (hue < 20)), :3] = (216, 120, 224)
+    out[flower & (hue >= 20) & (hue < 60), :3] = (248, 224, 88)
+    return out
+
+
+def paint_jungle_grass(a):
+    """A leafy grass clump: the lawn's own texture, so the tile it covers does not show as a block,
+    with only its darkest leaf strokes kept as a few darker blades."""
+    op = a[..., 3] > 0
+    L = smooth(lum(a[..., :3].astype(float)), False)
+    out = a.copy()
+    out[op, :3] = TEX['green'][op]
+    out[op & (L < 45), :3] = GRASS[2]
+    out[op & (L < 30), :3] = GRASS[1]
+    return despeckle_px(out, op, False)
+
+
 TEX = {'green': grass_texture(), 'dirt': dirt_texture(), 'wood': dirt_texture(), 'water': water_texture()}
 
 
@@ -740,13 +777,15 @@ def build():
         for g in bed:
             if g not in grassy:
                 t = dat.things.get(g)
-                grassy[g] = bool(t) and any(s and rgba(s) is not None for s in t[8]) and grass_ground(t, rgba)
+                grassy[g] = g in DARK_GRASS or (bool(t) and any(s and rgba(s) is not None for s in t[8])
+                                                 and grass_ground(t, rgba))
         return sum(n for g, n in bed.items() if grassy[g]) >= 0.7 * sum(bed.values())
 
     grounds, objects = [], []
+    hedge = {cid for parts in HEDGES for cid in parts}
     for cid in sorted(dat.things):
         t = dat.things[cid]
-        if cid in REFERENCE or cid in custom:
+        if cid in REFERENCE or cid in custom or cid in hedge:
             continue
         if GROUND in t[0] or BORDER in t[0]:
             grounds.append((cid, t))
@@ -760,6 +799,12 @@ def build():
             art = {sid: np.dstack([PAVING[cid], rgba(sid)[..., 3]]).astype(np.uint8) for sid in free}
         elif cid in ROOF_TILES:
             art = {sid: paint_flat_roof(rgba(sid)) for sid in free}
+        elif cid in DARK_GRASS:
+            art = {sid: paint_dark_grass(rgba(sid)) for sid in free}
+        elif cid in JUNGLE_GRASS:
+            art = {sid: paint_jungle_grass(rgba(sid)) for sid in free}
+        elif cid in ROCK_PATH:
+            art = {sid: ds_pixels(rgba(sid)) for sid in free}
         else:
             cave = under.get(cid, 0) > 0.7
             kind = natural(t, rgba) if cid not in NOT_NATURAL else False
@@ -793,6 +838,17 @@ def build():
                 sid = t[8][idx] if idx < len(t[8]) else 0
                 if pp == pat and sid in art:
                     new[sid] = done[y:y + 32, x:x + 32].copy()
+    for parts in HEDGES:
+        sids = [dat.things[cid][8][0] for cid in parts]
+        if any(sid in keep or rgba(sid) is None for sid in sids):
+            continue
+        n = 2 if len(sids) == 4 else 1
+        whole = np.zeros((32 * n, 32 * n, 4), np.uint8)
+        for i, sid in enumerate(sids):
+            whole[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32] = rgba(sid)
+        done = paint_object(whole, LEAF_RAMPS[parts[0] // 64 % len(LEAF_RAMPS)])
+        for i, sid in enumerate(sids):
+            new[sid] = done[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32].copy()
     for cid, t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
