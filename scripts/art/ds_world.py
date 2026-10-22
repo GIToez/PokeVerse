@@ -11,6 +11,7 @@ and anything that can be picked up (potions, balls, berries keep their icons).
 
     ds_world.py --preview out.png [--box x0,y0,x1,y1]   render with the new art, data.spr untouched
     ds_world.py --write-spr                             put the new art into data.spr
+    add --clumped to either for the shelved round-lump tree crowns
 
 The original data.spr is tagged backup/data-spr-before-ds-style.
 """
@@ -412,6 +413,27 @@ def paint_object(img, leaves=FOLIAGE):
 
 TREE_CUTS = [24, 40, 62, 88, 116, 146]
 BARK_CUTS = [40, 70, 105, 145]
+# the shelved HGSS-shaped look (--clumped): tree crowns melted into round lumps lit from the top,
+# on the same leaf ramps with a dark rim; it softens trees next to the hard-lined Center and Mart
+CLUMPED = False
+CLUMP_BANDS = [14, 38, 66, 88]
+
+
+def crown(leaf):
+    """A tree crown rather than a sprig or a bush edge: big and mostly filled in."""
+    ys, xs = np.nonzero(leaf)
+    if len(ys) < 150:
+        return False
+    return len(ys) / ((np.ptp(ys) + 1) * (np.ptp(xs) + 1)) > 0.5
+
+
+def clump(L, leaf, leaves):
+    fill = np.where(leaf, L, L[leaf].mean()).clip(0, 255).astype(np.uint8)
+    S = np.asarray(Image.fromarray(fill).filter(ImageFilter.GaussianBlur(1.6)), float)
+    rows = np.nonzero(leaf.any(1))[0]
+    S += (1 - (np.arange(L.shape[0])[:, None] - rows[0]) / max(1, rows[-1] - rows[0])) * 28
+    bands = np.digitize(S[leaf], np.percentile(S[leaf], CLUMP_BANDS))
+    return np.array([leaves[0], leaves[1], leaves[2], leaves[3], leaves[5]])[bands]
 
 
 def plant_like(img):
@@ -438,7 +460,11 @@ def paint_plant(img, leaves=FOLIAGE):
     leaf = op & (((hue > 50) & (hue < 180) & (sat > 0.15)) | (mx < 40))
     bark = op & ~leaf & (hue >= 10) & (hue <= 50) & (sat > 0.2) & (mx < 200)
     shade = tuple(int(c * 0.62) for c in leaves[0])
-    a[leaf, :3] = np.array([shade] + list(leaves))[np.searchsorted(TREE_CUTS, L[leaf])]
+    if CLUMPED and crown(leaf):
+        a[leaf, :3] = clump(L, leaf, leaves)
+        a[leaf & (shift(~op, 1, 0) | shift(~op, -1, 0) | shift(~op, 0, 1) | shift(~op, 0, -1)), :3] = shade
+    else:
+        a[leaf, :3] = np.array([shade] + list(leaves))[np.searchsorted(TREE_CUTS, L[leaf])]
     a[bark, :3] = np.array(TRUNK)[np.searchsorted(BARK_CUTS, L[bark])]
     if op.sum() >= 260:
         sh = shift(op, 3, 2) & ~op
@@ -1193,7 +1219,10 @@ def main():
     ap.add_argument('--preview')
     ap.add_argument('--box', default=','.join(map(str, h.VIEW)))
     ap.add_argument('--write-spr', action='store_true', help='put the new art into data.spr')
+    ap.add_argument('--clumped', action='store_true', help='the shelved round-lump tree crowns')
     args = ap.parse_args()
+    global CLUMPED
+    CLUMPED = args.clumped
     new = build()
     print('%d sprites repainted' % len(new))
     if args.preview:
