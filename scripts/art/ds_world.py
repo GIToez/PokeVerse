@@ -44,13 +44,18 @@ BEDS = '/tmp/ds_world_beds.pkl'
 
 GRASS = [(56, 112, 80), (96, 176, 88), (112, 184, 80), (120, 192, 112), (128, 208, 112), (152, 224, 120)]
 PATH = [(152, 120, 96), (176, 152, 104), (200, 184, 128), (208, 192, 136), (216, 200, 136), (232, 220, 168)]
+DIRT = [(104, 68, 40), (120, 82, 48), (132, 92, 54), (144, 100, 60), (152, 108, 66), (168, 124, 80)]
 WATER = [(32, 96, 160), (40, 128, 192), (64, 168, 224), (112, 196, 236), (200, 216, 216), (240, 248, 248)]
-FOLIAGE = [(14, 72, 64), (24, 96, 64), (50, 135, 99), (72, 164, 86), (104, 192, 88), (150, 222, 110)]
+FOLIAGE = [(16, 64, 48), (28, 100, 56), (44, 136, 64), (72, 168, 72), (116, 196, 84), (168, 224, 108)]
+# a few leaf colourings, picked per tree type, so a forest is not one green
+LEAF_RAMPS = [FOLIAGE,
+              [(20, 66, 44), (34, 104, 52), (54, 140, 60), (86, 172, 66), (132, 200, 80), (184, 228, 108)],
+              [(14, 62, 52), (24, 96, 62), (40, 132, 72), (64, 164, 80), (104, 192, 92), (156, 220, 120)]]
 TRUNK = [(72, 48, 32), (104, 72, 48), (144, 104, 72), (184, 136, 96), (210, 170, 124)]
 ROCK = [(72, 80, 96), (104, 112, 136), (128, 152, 160), (160, 192, 200), (200, 216, 216), (236, 244, 244)]
 GOLD = [(150, 96, 20), (216, 160, 48), (240, 216, 104), (252, 240, 160)]
 RED = [(112, 24, 32), (168, 40, 40), (216, 72, 56), (240, 120, 96), (250, 180, 160)]
-OUTLINE = {'green': (16, 48, 32), 'wood': (48, 28, 20), 'dirt': (48, 28, 20), 'stone': (48, 56, 64),
+OUTLINE = {'green': (20, 60, 40), 'wood': (48, 28, 20), 'dirt': (48, 28, 20), 'stone': (48, 56, 64),
            'water': (16, 48, 96), 'yellow': (96, 56, 16), 'red': (72, 16, 24)}
 OBJECT_RAMPS = {'green': FOLIAGE, 'wood': TRUNK, 'dirt': TRUNK, 'stone': ROCK, 'water': WATER,
                 'yellow': GOLD, 'red': RED}
@@ -60,7 +65,9 @@ ICE = [(72, 128, 168), (120, 184, 216), (168, 220, 240), (208, 240, 250), (240, 
 OBJECT_RAMPS['ice'] = ICE
 OBJECT_RAMPS['water'] = [(24, 36, 96), (36, 64, 152), (52, 104, 200), (84, 148, 224), (140, 196, 240), (216, 236, 248)]
 OBJECT_RAMPS['crimson'] = [(40, 10, 14), (72, 16, 20), (104, 24, 26), (136, 36, 32), (168, 56, 44), (200, 92, 64)]
-OUTLINE['crimson'] = (32, 8, 12)
+CRIMSON = OBJECT_RAMPS['crimson']
+OUTLINE['crimson'] = CRIMSON[1]          # pieces overlap on the slopes; a black rim would draw a seam
+CRIMSON_CUTS = [18, 28, 36, 44, 58]
 OUTLINE['ice'] = (48, 96, 128)
 
 
@@ -125,11 +132,11 @@ def grass_texture():
     return ramp_at(GRASS, s, steps=True)
 
 
-def path_texture():
-    s = np.full((32, 32), 0.55)                   # PATH[3], the sheet's (208, 192, 136)
+def dirt_texture():
+    s = np.full((32, 32), 0.55)                   # DIRT[3], the shared colour map's dirt (144, 100, 60)
     s[grain(3, 0.12)] = 0.4
     s[grain(4, 0.06)] = 0.7
-    return ramp_at(PATH, s, steps=True)
+    return ramp_at(DIRT, s, steps=True)
 
 
 def water_texture():
@@ -143,7 +150,68 @@ def water_texture():
     return ramp_at(WATER, s, steps=True)
 
 
-TEX = {'green': grass_texture(), 'dirt': path_texture(), 'wood': path_texture(), 'water': water_texture()}
+DARK_GRASS = {106, 108, 109}                 # Tibia's darker grass patches, some with flowers
+JUNGLE_RAMP = [(64, 136, 72), (88, 160, 80), (104, 176, 88), (128, 200, 104), (160, 224, 120)]   # a step under the lawn
+JUNGLE_FLOOR = 1019                           # Tibia's leafy jungle grass
+JUNGLE_GRASS = range(1054, 1066)              # its edges where it meets the lawn
+# hedge bushes Tibia cuts into edge pieces, [top left, top right, bottom left, bottom right]; painted whole
+# like the trees, so the pieces shade as one bush
+HEDGES = [(4434, 4435, 4437, 4436), (4438, 4439, 4441, 4440), (4442, 4443, 4556, 4444),
+          (4557, 4558, 4604, 4603), (4605, 4606, 4608, 4607), (4745,), (4746,)]
+ROCK_PATH = range(7062, 7067)                 # dark rock path; its edges 7080-7089 take the shared map too
+# jungle dirt and the dark mud beside it, more saturated than Tibia's other dirt
+MUD = {1020, 1021} | set(range(10228, 10236)) | set(range(10248, 10260))
+# the mountain tops' gravel and stone ground, shaded like their edges
+MOUNTAIN_TOP = set(range(4394, 4411)) | {1128}
+# grass a Pokemon can Cut (server 2782, 3985) and what is left once cut (2781, 3984): recoloured pixel for
+# pixel, so players still know the tall blades and flowers as the grass to cut
+CUT_GRASS = {3695, 3696, 3701, 3702}
+GRAVEL_PATCHES = range(1081, 1087)            # loose stone patches laid on the grass at the mountains' feet
+# the white and cream arena lines at every gym, on sprites Tibia items share
+ARENA = range(11612, 11628)
+
+
+def paint_dark_grass(a):
+    """A darker grass patch, its flowers kept as bright dots."""
+    out = a.copy()
+    out[..., :3] = DARK_GRASS_TEX
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    flower = (sat > 0.4) & ((hue < 60) | (hue > 250)) & (mx > 90)
+    out[flower & ((hue > 250) | (hue < 20)), :3] = (216, 120, 224)
+    out[flower & (hue >= 20) & (hue < 60), :3] = (248, 224, 88)
+    return out
+
+
+def paint_jungle_grass(a, mean, edge=False):
+    """Leafy jungle grass in its own drawing, its shades moved onto the lawn's greens around the jungle
+    grass's mean, so on average it is the lawn's colour and a tile of it does not show as a block.
+    On the edges, the part that is lawn (bluer green) takes the lawn texture."""
+    op = a[..., 3] > 0
+    rgb = a[..., :3].astype(float)
+    d = lum(rgb) - mean
+    out = a.copy()
+    # pixel for pixel, no smoothing, so the leaves keep their drawing; no darkest step, which reads as specks
+    out[op, :3] = np.array(JUNGLE_RAMP)[np.searchsorted([-30, -12, 10, 28], d[op])]
+    if edge:
+        lawn = op & (hue_of(box_blur(rgb, op.all(), 2)) >= 90)
+        out[lawn, :3] = TEX['green'][lawn]
+    return out
+
+
+def dark_grass_texture():
+    """The lawn's pattern in deeper greens, for the darker patches the lawn edges lie over."""
+    lawn = grass_texture()
+    out = np.empty_like(lawn)
+    for light, dark in zip(GRASS, [(48, 104, 72), (64, 136, 72), (72, 144, 72), (88, 160, 80), (96, 168, 80), (112, 184, 80)]):
+        out[(lawn == light).all(-1)] = dark
+    return out
+
+
+DARK_GRASS_TEX = dark_grass_texture()
+TEX = {'green': grass_texture(), 'dirt': dirt_texture(), 'wood': dirt_texture(), 'water': water_texture()}
 
 
 def shift(m, dy, dx, fill=False):
@@ -187,7 +255,8 @@ def drop_specks(m, size=8):
 
 
 FRINGE = [(64, 144, 80), (96, 176, 88)]          # grass edge: dark rim, then mid green
-SUNK = [(152, 120, 96, 255), (176, 144, 104, 230), (192, 168, 116, 150)]  # dirt under the grass lip
+# shade under the grass lip; see-through, since the same edges lie on dirt and on the darker grass
+SUNK = [(24, 12, 8, 122), (24, 12, 8, 62), (24, 12, 8, 21)]
 
 
 def paint_ground(a):
@@ -286,19 +355,19 @@ def relight(img, sel, kind, ramp=None):
     n = np.clip((Ls - lo) / max(hi - lo, 1e-3), 0, 1)
     vol = np.pad(blurf(w, 3.0, pad=8), 2, mode='edge')
     lightdir = vol[4:, 4:] - vol[:-4, :-4]
-    s = (0.12 + 0.62 * n + 0.9 * lightdir) if kind == 'green' else (0.08 + 0.8 * n + 0.5 * lightdir)
+    s = (0.1 + 0.7 * n + 0.9 * lightdir) if kind == 'green' else (0.08 + 0.8 * n + 0.5 * lightdir)
     if kind == 'stone':
         s = 0.05 + 0.62 * n + 0.5 * lightdir
     if kind == 'green':
         # each leaf clump lit on its top-left rim, shaded on the far side
         p = np.pad(Ls, 2, mode='edge')
-        s = s + 1.4 * (Ls - p[:-4, :-4])
+        s = s + 1.6 * (Ls - p[:-4, :-4])
     out = np.zeros(img.shape[:2] + (3,))
     out[...] = ramp_at(ramp, s, steps=True)
     return out
 
 
-def paint_object(img):
+def paint_object(img, leaves=FOLIAGE):
     """A whole multi-tile item at once, so the shading runs across its sprites without seams."""
     a = img.copy()
     op = a[..., 3] > 0
@@ -308,14 +377,24 @@ def paint_object(img):
     cyan = hue_of(a[..., :3].astype(float)) < 205
     mat[(mat == 'water') & cyan & (blurf(lum(a[..., :3].astype(float)) / 255, 1.5, pad=4) > 0.55)] = 'ice'
     px = a[op][:, :3].astype(float)
-    if lum(px.mean(0)) < 95 and px[:, 0].mean() > 1.8 * px[:, 1].mean():    # dark red rock stays dark red
-        mat[op & np.isin(mat, ['wood', 'dirt', 'red', 'yellow'])] = 'crimson'
     out = a.astype(float)
+    if lum(px.mean(0)) < 95 and px[:, 0].mean() > 1.8 * px[:, 1].mean():    # dark red rock stays dark red
+        rgb = a[..., :3].astype(float)
+        mx = rgb.max(-1)
+        sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+        hue = hue_of(rgb)
+        glow = op & (hue >= 15) & (hue <= 50) & (sat > 0.6) & (mx > 140)     # lava cracks keep their glow
+        mat[op & ~glow & np.isin(mat, ['wood', 'dirt', 'red', 'yellow'])] = 'crimson'
+        mat[glow] = 'other'
+        rock = op & (mat == 'crimson')
+        # one fixed map for every red rock piece and the red rock floor, so neighbours meet without seams
+        out[rock, :3] = np.array(CRIMSON)[np.searchsorted(CRIMSON_CUTS, lum(rgb)[rock])]
+        out = despeckle_px(np.clip(out, 0, 255).astype(np.uint8), rock, False).astype(float)
     for k in set(mat[op].tolist()):
         sel = op & (mat == k)
-        if k == 'other' or sel.sum() < 3:
+        if k in ('other', 'crimson') or sel.sum() < 3:
             continue
-        out[sel, :3] = relight(a, sel, k)[sel]
+        out[sel, :3] = relight(a, sel, k, leaves if k == 'green' else None)[sel]
     edge = op & (shift(~op, 1, 0) | shift(~op, 0, 1) | shift(~op, -1, 0) | shift(~op, 0, -1))
     small = op.sum() < 260
     for k, c in OUTLINE.items():
@@ -397,7 +476,7 @@ def map_usage():
     return out
 
 
-def ds_pixels(a, cave=False):
+def ds_pixels(a, cave=False, crumbs=False, mud=False):
     """Ground and edges off the textures: one fixed colour map for every item, so each original colour
     lands on the same DS colour wherever it is and neighbouring pieces stay seamless."""
     op = a[..., 3] > 0
@@ -417,12 +496,24 @@ def ds_pixels(a, cave=False):
         out[sel, :3] = np.array(ramp)[np.searchsorted(cuts, L[sel])]
         done = done | sel
 
+    rmx = raw.max(-1)
+    rsat = (rmx - raw.min(-1)) / np.maximum(rmx, 1)
+    rhue = hue_of(raw)
+    glow = op & (rhue >= 15) & (rhue <= 55) & (rsat > 0.6) & (rmx > 120)     # lava cracks in dark ground
+    if glow.sum() > 0.3 * max(op.sum(), 1) or lum(raw[op].mean(0)) >= 55:
+        glow[:] = False                                                     # lava itself takes the map
+    out[glow, :3] = raw[glow]
+    done = done | glow
     put((hue >= 185) & (hue <= 250) & (sat > 0.35) & (L < 150), WATER[1:4], [45, 125])
     put((hue >= 165) & (hue <= 215) & (sat > 0.12) & (L >= 150), [ICE[1], ICE[2], ICE[4]], [160, 228])
     put((hue >= 65) & (hue <= 165) & (sat > 0.25), GRASS, [50, 80, 110, 150, 185])
-    put(sat < 0.15, GRAYS[:5] + [SNOW[1], SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
-    earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= 0.78)
-    put(earth & (L < 235), DS_EARTH, [45, 60, 100, 140, 228])
+    put(sat < 0.15, STONE + [SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
+    earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= (0.97 if mud else 0.78))
+    if crumbs:      # Tibia's dark dirt crumbs run redder than its dirt
+        earth = earth | ((hue < 12) & (sat >= 0.25) & (sat <= 0.78) & (L < 100))
+    put(earth & (L < 235), DS_EARTH, EARTH_CUTS)
+    red_rock = ((hue < 12) | (hue >= 345)) & (sat >= 0.6) & (sat <= 0.92) & (mx < 150) & (L < 60)
+    put(red_rock, CRIMSON, CRIMSON_CUTS)
     rest = ~done
     if rest.any():
         v = mx[rest] / 255
@@ -430,7 +521,9 @@ def ds_pixels(a, cave=False):
         q = lv[np.searchsorted((lv[:-1] + lv[1:]) / 2, v)]
         col = np.clip(rgb[rest] * (q / np.maximum(v, 1e-3))[:, None], 0, 255)
         out[rest, :3] = (col // 8 * 8).astype(np.uint8)   # snap so near-equal shades merge into one flat colour
-    return despeckle_px(out, op, full)
+    out = despeckle_px(out, op, full)
+    out[glow, :3] = raw[glow]                             # thin cracks would read as specks
+    return out
 
 
 def hue_of(rgb):
@@ -493,16 +586,22 @@ def natural(t, rgba):
 ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
 COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
 WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192, 132)]  # logs and planks
-GRAYS = [(48, 48, 64), (80, 80, 100), (112, 112, 136), (144, 144, 168), (176, 176, 198), (208, 208, 224),
-         (236, 238, 248)]
-DS_EARTH = [(152, 120, 96), (176, 152, 104), (208, 192, 136), (216, 200, 136), (232, 220, 168), (244, 236, 196)]
+# grey ground and edges on the rocks' own ramp, so stone floors, ledges and the rocks on them match
+STONE = [(48, 56, 64)] + ROCK[:5]
+# dark steps for dirt, close to Tibia's own brown so paths, crumbs and cave floors agree; light steps for sand
+# dirt gets close steps, so a lighter gravel patch or a darker trampled one keeps its tone instead of
+# merging into the floor around it
+DS_EARTH = [(72, 46, 30), (92, 60, 36), (112, 76, 44), (128, 88, 52), (144, 100, 60), (156, 112, 68),
+            (170, 126, 80), (186, 146, 96), (232, 220, 168), (244, 236, 196)]
+EARTH_CUTS = [36, 46, 56, 63, 70, 80, 95, 140, 228]
 CAVE = [(56, 36, 28), (84, 56, 40), (112, 76, 52), (140, 100, 68), (168, 128, 88), (196, 160, 112)]
 SNOW = [(168, 184, 216), (200, 216, 236), (224, 234, 246), (240, 246, 252), (252, 254, 255)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
-HUT_ROOF = range(9409, 9416)                     # the far slope of the small huts beside the Pokemon Centers
+HUT_ROOF = range(9408, 9416)                     # the far slope of the small huts beside the Pokemon Centers
 # rims and ridges laid over the flat roof tiles
-ROOF_EDGES = list(range(8621, 8633)) + [1157, 1160, 1162, 1163, 1164, 1165, 1166, 1167, 1170, 1172, 1173, 1174, 1175, 1176]
+ROOF_EDGES = list(range(8621, 8633)) + [8643, 8644] + [1157, 1160, 1162, 1163, 1164, 1165, 1166, 1167, 1170, 1172, 1173, 1174, 1175, 1176]
 ROOF_TILES = {1158, 1159, 1161, 1168, 1169, 1171, 8619, 8620}
+MADE_EDGES = {cid: 7593 for cid in range(7605, 7617)}     # {edge: its ground}, Pewter's brown cobble
 STEPS = [0.12, 0.38, 0.62, 0.85]
 LIFT = [0.6, 0.82, 1.0, 1.14, 1.28]
 
@@ -592,9 +691,10 @@ def recolor_ground(a):
     return out
 
 
-def made_ground(t, rgba):
-    """{sid: art} for town floors with a hand-tuned ramp (dark stone, wood), else None."""
-    lo, hi, mean = tone(t, rgba)
+def made_ground(t, rgba, like=None):
+    """{sid: art} for town floors with a hand-tuned ramp (dark stone, wood), else None;
+    edges pass their ground as like, to be shaded in its exact steps."""
+    lo, hi, mean = tone(like or t, rgba)
     m = lum(mean)
     sat = (mean.max() - mean.min()) / max(mean.max(), 1)
     if m < 60 and sat < 0.35:
@@ -609,9 +709,10 @@ def made_ground(t, rgba):
 
 
 def box_blur(a, full, n=3):
+    H, W = a.shape[:2]
     for _ in range(n):
         p = np.pad(a, [(1, 1), (1, 1)] + [(0, 0)] * (a.ndim - 2), mode='wrap' if full else 'edge')
-        a = sum(p[dy:dy + 32, dx:dx + 32] for dy in range(3) for dx in range(3)) / 9
+        a = sum(p[dy:dy + H, dx:dx + W] for dy in range(3) for dx in range(3)) / 9
     return a
 
 
@@ -653,9 +754,157 @@ def dirt_like(t, rgba):
     return (m == 'water').mean() < 0.6 and (m == 'green').mean() < 0.6
 
 
+def dark_dirt(t, rgba):
+    """Dark brown earth overall, as Tibia's dirt crumbs and dark dirt edges are."""
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
+    mean = px.mean(0)
+    sat = (mean.max() - mean.min()) / max(mean.max(), 1)
+    return 5 <= hue_of(mean[None])[0] <= 25 and 0.3 <= sat <= 0.75 and lum(mean) < 110
+
+
 def grass_edge(t, rgba):
     px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
     return (classify(px[None])[0] == 'green').mean() >= 0.15
+
+
+def stone_edge(t, rgba):
+    """Grey stone edges, a ledge laid over grass or dirt."""
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
+    mx = px.max(-1)
+    return ((mx - px.min(-1)) / np.maximum(mx, 1) < 0.15).mean() > 0.7
+
+
+def paint_cut_grass(a):
+    """Tall grass in its own drawing on the leaf greens; its orange flowers stay bright."""
+    op = a[..., 3] > 0
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    L = lum(rgb)
+    out = a.copy()
+    out[op, :3] = np.array(FOLIAGE)[np.searchsorted([25, 45, 65, 90, 125], L[op])]
+    flower = op & (hue >= 15) & (hue <= 55) & (sat > 0.55) & (mx > 140)
+    out[flower, :3] = np.where((L[flower] > 170)[:, None], (252, 224, 96), (248, 152, 40))
+    return out
+
+
+def gravel(a, mean):
+    """Stone ground in the edges' gravel steps, around its own mean so a lighter stone still matches them."""
+    op = a[..., 3] > 0
+    full = op.all()
+    out = a.copy()
+    L = lum(0.6 * a[..., :3].astype(float) + 0.4 * box_blur(a[..., :3].astype(float), full, 1))
+    out[op, :3] = np.array(STONE[1:5])[np.searchsorted([mean - 24, mean + 11, mean + 46], L[op])]
+    return despeckle_px(out, op, full, 1)       # one pass: the gravel keeps its speckle
+
+
+def _morph(m, r, grow):
+    y, x = np.mgrid[-r:r + 1, -r:r + 1]
+    out = np.zeros_like(m) if grow else np.ones_like(m)
+    H, W = m.shape
+    pm = np.pad(m, r, mode='edge')
+    for dy, dx in zip(*np.nonzero(x * x + y * y <= r * r + r)):
+        sh = pm[dy:dy + H, dx:dx + W]
+        out = (out | sh) if grow else (out & sh)
+    return out
+
+
+LIP_FADE = ((64, 0.45), (36, 0.2), (14, 0.0))   # shade alpha, share of loose gravel, per pixel out from the lip
+_y, _x = np.mgrid[0:32, 0:32]
+CHIPS = np.minimum(np.random.default_rng(11).integers(0, 4, (16, 16)), 2)[_y // 2, _x // 2]   # 2px notches, mostly shallow
+SCATTER = np.random.default_rng(5).random((32, 32))
+
+
+def chip(m):
+    """Bite shallow notches out of the lip's outline. Erosion treats the tile border as solid, so edges
+    that run on into the next tile keep meeting it."""
+    depth = np.zeros(m.shape, int)
+    cur = m
+    for k in range(1, 4):
+        depth[cur] = k
+        cur = _morph(cur, 1, False)
+    depth[cur] = 4
+    return drop_specks(m & ~(depth <= CHIPS), 4)
+
+
+def clean_lip(a, mean=104):
+    """Tibia's ragged stone edge as a soft, slightly chipped ledge: the loose pixels go, the gaps take the
+    stone beside them, the gravel takes the rocks' darker steps, the lip gets a soft rim lit along its top and
+    left, and a see-through shade with loose gravel in it fades from the rim into the ground below."""
+    op = a[..., 3] > 0
+    if op.all():
+        return ds_pixels(a)
+    img = gravel(a, mean)
+    lip = chip(drop_specks(blurf(op.astype(float), 0.6, pad=4) > 0.5, 12))
+    out = img.copy()
+    for _ in range(8):
+        gap = lip & ~(out[..., 3] > 0)
+        if not gap.any():
+            break
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            src = np.roll(out, (dy, dx), (0, 1))
+            take = gap & (src[..., 3] > 0) & ~(out[..., 3] > 0)
+            out[take] = src[take]
+    full = out.copy()
+    out[~lip] = 0
+    rim = lip & ~(shift(lip, 1, 0, True) & shift(lip, -1, 0, True) & shift(lip, 0, 1, True) & shift(lip, 0, -1, True))
+    lit = lip & ~rim & (shift(rim & ~shift(lip, 1, 0, True), 1, 0) | shift(rim & ~shift(lip, 0, 1, True), 0, 1))
+    out[lit, :3] = STONE[4]
+    out[rim, :3] = STONE[1]
+    out[lip, 3] = 255
+    near = lip
+    for al, share in LIP_FADE:
+        ring = _morph(near, 1, True) & ~near
+        out[ring] = (24, 32, 40, al)
+        loose = ring & (SCATTER < share) & (full[..., 3] > 0)
+        out[loose, :3] = STONE[2]
+        out[loose, 3] = 255
+        near = near | ring
+    return out
+
+
+SAND = [(150, 110, 52), (190, 148, 72), (220, 180, 96), (236, 204, 120), (246, 224, 152), (252, 240, 188)]
+# Tibia pieces kept in their own drawing, each family on one of our ramps with shared steps so its parts
+# match: {name: (server ids, base ramp, ramps for reddish and greenish pixels)}
+REPAINT = {
+    'dungeon walls': (range(9118, 9130), STONE, {'green': FOLIAGE}),
+    'dirt walls': ([*range(5631, 5639), 5647, *range(5649, 5652)], CAVE, {}),
+    'cave stone walls': ([*range(5639, 5647), 5648], STONE, {}),
+    'brown rocks': ([*range(5747, 5755), *range(5866, 5869)], CAVE, {}),
+    'shingle roofs': ([*range(940, 945), *range(9535, 9542), *range(9088, 9100)], WOODEN, {'red': RED}),
+    'log roofs': ([*range(945, 962), *range(9224, 9233)], WOODEN, {'red': RED}),
+    'dark cobbles': (range(10492, 10499), DIRT, {}),
+    'sandstone': ([419], SAND, {}),
+    'rush wood': ([11096], TRUNK, {}),
+}
+
+
+def repaint(a, mean, ramps, contrast=1.3):
+    """The original drawing pixel for pixel on our ramps: hue picks the ramp, and the step is the one nearest
+    the pixel's brightness, pushed a little away from the family's mean so the grain survives the fewer steps."""
+    op = a[..., 3] > 0
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    L = mean + (lum(rgb) - mean) * contrast
+    out = a.copy()
+
+    def step(ramp, sel):
+        rl = lum(np.array(ramp, float))
+        return np.array(ramp)[np.abs(L[sel][:, None] - rl[None]).argmin(1)]
+
+    kinds = {'red': (sat > 0.45) & ((hue < 18) | (hue > 340)),
+             'green': (sat > 0.25) & (hue > 70) & (hue < 170)}
+    rest = op.copy()
+    for kind, sel in kinds.items():
+        if kind in ramps:
+            sel = sel & op
+            out[sel, :3] = step(ramps[kind], sel)
+            rest &= ~sel
+    out[rest, :3] = step(ramps['base'], rest)
+    return out
 
 
 def dirt_ground(t, rgba):
@@ -673,6 +922,7 @@ def build():
     for cid, t in dat.things.items():
         (keep if cid in REFERENCE or cid in custom else tibia).update(s for s in t[8] if s)
     keep -= tibia - {s for c in REFERENCE if c in dat.things for s in dat.things[c][8]}
+    keep |= {s for c in ARENA if c in dat.things for s in dat.things[c][8] if s}
     raw = {}
 
     def rgba(sid):
@@ -693,18 +943,20 @@ def build():
         for g in bed:
             if g not in grassy:
                 t = dat.things.get(g)
-                grassy[g] = bool(t) and any(s and rgba(s) is not None for s in t[8]) and grass_ground(t, rgba)
+                grassy[g] = g in DARK_GRASS or (bool(t) and any(s and rgba(s) is not None for s in t[8])
+                                                 and grass_ground(t, rgba))
         return sum(n for g, n in bed.items() if grassy[g]) >= 0.7 * sum(bed.values())
 
     grounds, objects = [], []
+    hedge = {cid for parts in HEDGES for cid in parts}
     for cid in sorted(dat.things):
         t = dat.things[cid]
-        if cid in REFERENCE or cid in custom:
+        if cid in REFERENCE or cid in custom or cid in hedge:
             continue
         if GROUND in t[0] or BORDER in t[0]:
             grounds.append((cid, t))
         else:
-            objects.append(t)
+            objects.append((cid, t))
     for cid, t in grounds:
         free = [sid for sid in t[8] if sid and sid not in new and sid not in keep and rgba(sid) is not None]
         if not free:
@@ -713,6 +965,21 @@ def build():
             art = {sid: np.dstack([PAVING[cid], rgba(sid)[..., 3]]).astype(np.uint8) for sid in free}
         elif cid in ROOF_TILES:
             art = {sid: paint_flat_roof(rgba(sid)) for sid in free}
+        elif cid in DARK_GRASS:
+            art = {sid: paint_dark_grass(rgba(sid)) for sid in free}
+        elif cid in JUNGLE_GRASS:
+            mean = lum(tone(dat.things[JUNGLE_FLOOR], rgba)[2])
+            art = {sid: paint_jungle_grass(rgba(sid), mean, True) for sid in free}
+        elif cid == JUNGLE_FLOOR:
+            mean = lum(tone(t, rgba)[2])
+            art = {sid: paint_jungle_grass(rgba(sid), mean) for sid in free}
+        elif cid in MUD:
+            art = {sid: ds_pixels(rgba(sid), mud=True) for sid in free}
+        elif cid in MOUNTAIN_TOP:
+            mean = lum(tone(t, rgba)[2])
+            art = {sid: gravel(rgba(sid), mean) for sid in free}
+        elif cid in ROCK_PATH:
+            art = {sid: ds_pixels(rgba(sid)) for sid in free}
         else:
             cave = under.get(cid, 0) > 0.7
             kind = natural(t, rgba) if cid not in NOT_NATURAL else False
@@ -725,9 +992,14 @@ def build():
                 art = {sid: paint_ground(rgba(sid)) for sid in free}
             elif kind is True and GROUND in t[0] and not dirt_like(t, rgba):
                 art = {sid: paint_ground(rgba(sid)) for sid in free}
-            elif kind is False and GROUND in t[0] and not cave:
+            elif kind is False and not cave and GROUND in t[0]:
                 art = made_ground(t, rgba)
-            art = art or {sid: ds_pixels(rgba(sid), cave) for sid in free}
+            elif cid in MADE_EDGES:
+                art = made_ground(t, rgba, dat.things[MADE_EDGES[cid]])
+            crumbs = not cave and BORDER in t[0] and dark_dirt(t, rgba)
+            if not art and BORDER in t[0] and not cave and stone_edge(t, rgba):
+                art = {sid: clean_lip(rgba(sid)) for sid in free}
+            art = art or {sid: ds_pixels(rgba(sid), cave, crumbs) for sid in free}
         new.update({sid: img for sid, img in art.items() if sid in free})
     for cid in ROOF_EDGES:
         for sid in dat.things[cid][8]:
@@ -743,17 +1015,47 @@ def build():
                 sid = t[8][idx] if idx < len(t[8]) else 0
                 if pp == pat and sid in art:
                     new[sid] = done[y:y + 32, x:x + 32].copy()
-    for t in objects:
+    for parts in HEDGES:
+        sids = [dat.things[cid][8][0] for cid in parts]
+        if any(sid in keep or rgba(sid) is None for sid in sids):
+            continue
+        n = 2 if len(sids) == 4 else 1
+        whole = np.zeros((32 * n, 32 * n, 4), np.uint8)
+        for i, sid in enumerate(sids):
+            whole[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32] = rgba(sid)
+        done = paint_object(whole, LEAF_RAMPS[parts[0] // 64 % len(LEAF_RAMPS)])
+        for i, sid in enumerate(sids):
+            new[sid] = done[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32].copy()
+    for cid in CUT_GRASS:
+        for sid in dat.things[cid][8]:
+            if sid and sid not in new and sid not in keep and rgba(sid) is not None:
+                new[sid] = paint_cut_grass(rgba(sid))
+    for cid in GRAVEL_PATCHES:
+        t = dat.things[cid]
+        mean = lum(tone(t, rgba)[2])
+        for sid in t[8]:
+            if sid and sid not in new and sid not in keep and rgba(sid) is not None:
+                new[sid] = clean_lip(rgba(sid), mean)
+    for cid, t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
             continue
         art = {s: rgba(s) for s in sprites if s and rgba(s) is not None}
         for p, img in h.compose(t, art).items():
-            done = paint_object(img)
+            done = paint_object(img, LEAF_RAMPS[cid // 64 % len(LEAF_RAMPS)])   # neighbouring ids are one tree family
             for pp, idx, x, y in h.layout(t):
                 sid = sprites[idx] if idx < len(sprites) else 0
                 if pp == p and sid in art and sid not in new and sid not in keep:
                     new[sid] = done[y:y + 32, x:x + 32].copy()
+    otb = pvmap.Otb(h.ITEMS)
+    for ids, base, extra in REPAINT.values():
+        things = [dat.things.get(otb.client_id(i)) for i in ids]
+        sids = {s for t in things if t for s in t[8] if s and s not in keep and rgba(s) is not None}
+        if not sids:
+            continue
+        mean = lum(np.concatenate([rgba(s)[rgba(s)[..., 3] > 0][:, :3] for s in sids]).astype(float)).mean()
+        for s in sids:
+            new[s] = repaint(rgba(s), mean, {'base': base, **extra})
     spr.f.close()
     return new
 
