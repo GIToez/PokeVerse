@@ -799,16 +799,40 @@ def gravel(a, mean):
     return despeckle_px(out, op, full, 1)       # one pass: the gravel keeps its speckle
 
 
+def _morph(m, r, grow):
+    y, x = np.mgrid[-r:r + 1, -r:r + 1]
+    out = np.zeros_like(m) if grow else np.ones_like(m)
+    H, W = m.shape
+    pm = np.pad(m, r, mode='edge')
+    for dy, dx in zip(*np.nonzero(x * x + y * y <= r * r + r)):
+        sh = pm[dy:dy + H, dx:dx + W]
+        out = (out | sh) if grow else (out & sh)
+    return out
+
+
+def round_mask(m, r):
+    """Opening then closing with a disc, so both outer and inner corners round off. The tile's own border
+    counts as solid, so edges that run on into the next tile stay straight."""
+    p = 2 * r + 2
+    pm = np.pad(m, p, mode='edge')
+    o = _morph(_morph(pm, r, False), r, True)
+    return _morph(_morph(o, r, True), r, False)[p:-p, p:-p]
+
+
+LIP_FADE = (96, 56, 24)
+
+
 def clean_lip(a, mean=104):
-    """Tibia's ragged stone edge as one smooth ledge: the loose pixels go, the gaps take the stone beside
-    them, the gravel takes the rocks' darker steps, and the lip gets their dark rim, lit along its top and left."""
+    """Tibia's ragged stone edge as one smooth ledge with rounded corners: the loose pixels go, the gaps take
+    the stone beside them, the gravel takes the rocks' darker steps, the lip gets their dark rim, lit along its
+    top and left, and a see-through shade fades from the rim into the ground below."""
     op = a[..., 3] > 0
     if op.all():
         return ds_pixels(a)
     img = gravel(a, mean)
-    lip = drop_specks(blurf(op.astype(float), 0.6, pad=4) > 0.5, 12)
+    lip = round_mask(drop_specks(blurf(op.astype(float), 0.6, pad=4) > 0.5, 12), 5)
     out = img.copy()
-    for _ in range(3):
+    for _ in range(8):
         gap = lip & ~(out[..., 3] > 0)
         if not gap.any():
             break
@@ -822,6 +846,11 @@ def clean_lip(a, mean=104):
     out[lit, :3] = STONE[4]
     out[rim, :3] = STONE[0]
     out[lip, 3] = 255
+    near = lip
+    for al in LIP_FADE:
+        ring = _morph(near, 1, True) & ~near
+        out[ring] = (24, 32, 40, al)
+        near = near | ring
     return out
 
 
