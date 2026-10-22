@@ -163,6 +163,9 @@ ROCK_PATH = range(7062, 7067)                 # dark rock path; its edges 7080-7
 MUD = {1020, 1021} | set(range(10228, 10236)) | set(range(10248, 10260))
 # the mountain tops' gravel and stone ground, shaded like their edges
 MOUNTAIN_TOP = set(range(4394, 4411)) | {1128}
+# grass a Pokemon can Cut (server 2782, 3985) and what is left once cut (2781, 3984): recoloured pixel for
+# pixel, so players still know the tall blades and flowers as the grass to cut
+CUT_GRASS = {3695, 3696, 3701, 3702}
 GRAVEL_PATCHES = range(1081, 1087)            # loose stone patches laid on the grass at the mountains' feet
 # the white and cream arena lines at every gym, on sprites Tibia items share
 ARENA = range(11612, 11628)
@@ -771,6 +774,21 @@ def stone_edge(t, rgba):
     return ((mx - px.min(-1)) / np.maximum(mx, 1) < 0.15).mean() > 0.7
 
 
+def paint_cut_grass(a):
+    """Tall grass in its own drawing on the leaf greens; its orange flowers stay bright."""
+    op = a[..., 3] > 0
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    L = lum(rgb)
+    out = a.copy()
+    out[op, :3] = np.array(FOLIAGE)[np.searchsorted([25, 45, 65, 90, 125], L[op])]
+    flower = op & (hue >= 15) & (hue <= 55) & (sat > 0.55) & (mx > 140)
+    out[flower, :3] = np.where((L[flower] > 170)[:, None], (252, 224, 96), (248, 152, 40))
+    return out
+
+
 def gravel(a, mean):
     """Stone ground in the edges' gravel steps, around its own mean so a lighter stone still matches them."""
     op = a[..., 3] > 0
@@ -926,6 +944,10 @@ def build():
         done = paint_object(whole, LEAF_RAMPS[parts[0] // 64 % len(LEAF_RAMPS)])
         for i, sid in enumerate(sids):
             new[sid] = done[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32].copy()
+    for cid in CUT_GRASS:
+        for sid in dat.things[cid][8]:
+            if sid and sid not in new and sid not in keep and rgba(sid) is not None:
+                new[sid] = paint_cut_grass(rgba(sid))
     for cid in GRAVEL_PATCHES:
         t = dat.things[cid]
         mean = lum(tone(t, rgba)[2])
