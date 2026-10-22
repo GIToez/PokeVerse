@@ -8,4 +8,9 @@
 # For example:
 #   Johto: 100,100 - 1500,1200
 #
+# A "bounds" line is the other way round: only the tiles inside it are drawn.
+#
 # scripts/render-map.sh draws them anyway, to preview a region while it is being built.
+
+# east of 4650 and south of 3530 are the instances, Beginner Island and the tutorial island
+bounds: 0,0 - 4650,3530
