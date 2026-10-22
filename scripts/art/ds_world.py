@@ -150,9 +150,7 @@ def water_texture():
     return ramp_at(WATER, s, steps=True)
 
 
-# Tibia's darker grass patches, some with flowers; on the lawn's flat green their tile-grid outline
-# shows at any other shade, so they take the lawn itself and keep only the flowers
-DARK_GRASS = {106, 108, 109}
+DARK_GRASS = {106, 108, 109}                 # Tibia's darker grass patches, some with flowers
 JUNGLE_GRASS = range(1054, 1066)              # leafy grass clumps laid along those patches
 # hedge bushes Tibia cuts into edge pieces, [top left, top right, bottom left, bottom right]; painted whole
 # like the trees, so the pieces shade as one bush
@@ -162,9 +160,9 @@ ROCK_PATH = range(7062, 7067)                 # dark rock path; its edges 7080-7
 
 
 def paint_dark_grass(a):
-    """A darker grass patch as plain lawn, its flowers kept as bright dots."""
+    """A darker grass patch, its flowers kept as bright dots."""
     out = a.copy()
-    out[..., :3] = TEX['green']
+    out[..., :3] = DARK_GRASS_TEX
     rgb = a[..., :3].astype(float)
     mx = rgb.max(-1)
     sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
@@ -187,6 +185,16 @@ def paint_jungle_grass(a):
     return despeckle_px(out, op, False)
 
 
+def dark_grass_texture():
+    """The lawn's pattern in deeper greens, for the darker patches the lawn edges lie over."""
+    lawn = grass_texture()
+    out = np.empty_like(lawn)
+    for light, dark in zip(GRASS, [(48, 104, 72), (64, 136, 72), (72, 144, 72), (88, 160, 80), (96, 168, 80), (112, 184, 80)]):
+        out[(lawn == light).all(-1)] = dark
+    return out
+
+
+DARK_GRASS_TEX = dark_grass_texture()
 TEX = {'green': grass_texture(), 'dirt': dirt_texture(), 'wood': dirt_texture(), 'water': water_texture()}
 
 
@@ -231,7 +239,8 @@ def drop_specks(m, size=8):
 
 
 FRINGE = [(64, 144, 80), (96, 176, 88)]          # grass edge: dark rim, then mid green
-SUNK = [(88, 56, 36, 255), (112, 76, 44, 230), (128, 88, 52, 150)]  # dirt under the grass lip
+# shade under the grass lip; see-through, since the same edges lie on dirt and on the darker grass
+SUNK = [(24, 12, 8, 122), (24, 12, 8, 62), (24, 12, 8, 21)]
 
 
 def paint_ground(a):
