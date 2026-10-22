@@ -1,0 +1,242 @@
+{
+"P1-1": [
+"Ninetales (Alolan)",
+"walk",
+"high"
+],
+"P1-2": [
+"effect: lava rocks",
+"effect",
+"high"
+],
+"P1-3": [
+"Blastoise (Mega)",
+"walk",
+"high"
+],
+"P1-4": [
+"Gengar (Mega)",
+"walk",
+"medium"
+],
+"P1-5": [
+"Lucario",
+"walk",
+"high"
+],
+"P1-6": [
+"Golem",
+"walk",
+"medium"
+],
+"P1-7": [
+"?",
+"walk",
+"low"
+],
+"P1-8": [
+"?",
+"walk",
+"low"
+],
+"P1-9": [
+"Noivern?",
+"walk",
+"low"
+],
+"P1-10": [
+"Noivern?",
+"fly",
+"low"
+],
+"P1-11": [
+"Mantine?",
+"walk",
+"low"
+],
+"P1-12": [
+"Mantine?",
+"surf",
+"low"
+],
+"P1-13": [
+"?",
+"walk",
+"low"
+],
+"P1-14": [
+"Avalugg?",
+"walk",
+"low"
+],
+"P1-15": [
+"Avalugg?",
+"ride",
+"low"
+],
+"P1-16": [
+"Charmander (dark recolour)",
+"walk",
+"medium"
+],
+"P1-17": [
+"Charmander (dark recolour)",
+"walk",
+"medium"
+],
+"P1-18": [
+"?",
+"walk",
+"low"
+],
+"P1-19": [
+"?",
+"walk",
+"low"
+],
+"P1-20": [
+"Machop (dark recolour)",
+"walk",
+"low"
+],
+"P1-21": [
+"Machoke (dark recolour)",
+"walk",
+"low"
+],
+"P1-22": [
+"?",
+"walk",
+"low"
+],
+"P1-23": [
+"Charizard",
+"walk",
+"high"
+],
+"P1-24": [
+"Beedrill (Mega)",
+"walk",
+"high"
+],
+"P1-25": [
+"Pidgeot (Mega)?",
+"walk",
+"low"
+],
+"P1-26": [
+"player outfit",
+"outfit",
+"medium"
+],
+"P1-27": [
+"Gengar (aura)",
+"walk",
+"medium"
+],
+"P1-28": [
+"Blastoise (Mega)",
+"surf",
+"high"
+],
+"P1-29": [
+"Aerodactyl (Mega)?",
+"fly",
+"low"
+],
+"P1-30": [
+"?",
+"walk",
+"low"
+],
+"P1-31": [
+"Camerupt (Mega)",
+"walk",
+"high"
+],
+"P1-32": [
+"?",
+"walk",
+"low"
+],
+"P1-33": [
+"?",
+"walk",
+"low"
+],
+"P1-34": [
+"?",
+"walk",
+"low"
+],
+"P1-35": [
+"?",
+"walk",
+"low"
+],
+"P1-36": [
+"?",
+"walk",
+"low"
+],
+"P1-37": [
+"?",
+"surf",
+"low"
+],
+"P1-38": [
+"effect: blue swirl",
+"effect",
+"medium"
+],
+"P1-39": [
+"player outfit",
+"outfit",
+"medium"
+],
+"P1-40": [
+"Volcanion",
+"walk",
+"high"
+],
+"P1-41": [
+"Volcanion",
+"walk",
+"high"
+],
+"P1-42": [
+"Virizion",
+"walk",
+"high"
+],
+"P1-43": [
+"Virizion",
+"ride",
+"high"
+],
+"P1-44": [
+"Terrakion",
+"ride",
+"high"
+],
+"P1-45": [
+"Cobalion",
+"walk",
+"high"
+],
+"P1-46": [
+"Terrakion",
+"walk",
+"high"
+],
+"P1-47": [
+"Cobalion",
+"ride",
+"high"
+],
+"P1-48": [
+"Chansey",
+"walk",
+"medium"
+]
+}

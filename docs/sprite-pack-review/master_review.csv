@@ -1,0 +1,3187 @@
+Code,Page,Name (my guess),Use,Confidence,Dex,Gen,Colourable,YOUR NAME / FIX,YOUR USE / FIX,Files
+P1-1,1,Ninetales (Alolan),walk,high,38,7,,,,outfit_11_.png
+P1-2,1,effect: lava rocks,effect,high,,,,,,outfit_12_.png
+P1-3,1,Blastoise (Mega),walk,high,9,6,,,,outfit_14_.png
+P1-4,1,Gengar (Mega),walk,medium,94,6,,,,outfit_15_.png
+P1-5,1,Lucario,walk,high,448,4,,,,outfit_16_.png
+P1-6,1,Golem,walk,medium,76,1,,,,outfit_17_.png
+P1-7,1,?,walk,low,,,,,,outfit_18_.png
+P1-8,1,?,walk,low,,,,,,outfit_19_.png
+P1-9,1,Noivern?,walk,low,715,6,,,,outfit_20_.png
+P1-10,1,Noivern?,fly,low,715,6,,,,outfit_21_.png
+P1-11,1,Mantine?,walk,low,226,2,,,,outfit_23_.png
+P1-12,1,Mantine?,surf,low,226,2,,,,outfit_24_.png
+P1-13,1,?,walk,low,,,,,,outfit_25_.png
+P1-14,1,Avalugg?,walk,low,713,6,,,,outfit_26_.png
+P1-15,1,Avalugg?,ride,low,713,6,,,,outfit_27_.png
+P1-16,1,Charmander (dark recolour),walk,medium,4,1,,,,outfit_28_.png
+P1-17,1,Charmander (dark recolour),walk,medium,4,1,,,,outfit_29_.png
+P1-18,1,?,walk,low,,,,,,outfit_30_.png
+P1-19,1,?,walk,low,,,,,,outfit_31_.png
+P1-20,1,Machop (dark recolour),walk,low,66,1,,,,outfit_32_.png outfit_469_.png
+P1-21,1,Machoke (dark recolour),walk,low,67,1,,,,outfit_33_.png outfit_6888_.png
+P1-22,1,?,walk,low,,,,,,outfit_77_.png
+P1-23,1,Charizard,walk,high,6,1,,,,outfit_78_.png
+P1-24,1,Beedrill (Mega),walk,high,15,6,,,,outfit_79_.png
+P1-25,1,Pidgeot (Mega)?,walk,low,18,6,,,,outfit_80_.png
+P1-26,1,player outfit,outfit,medium,,,,,,outfit_81_.png
+P1-27,1,Gengar (aura),walk,medium,94,1,,,,outfit_82_.png
+P1-28,1,Blastoise (Mega),surf,high,9,6,,,,outfit_83_.png
+P1-29,1,Aerodactyl (Mega)?,fly,low,142,6,,,,outfit_84_.png outfit_7142_.png
+P1-30,1,?,walk,low,,,,,,outfit_85_.png outfit_7555_.png
+P1-31,1,Camerupt (Mega),walk,high,323,6,,,,outfit_86_.png
+P1-32,1,?,walk,low,,,,,,outfit_87_.png
+P1-33,1,?,walk,low,,,,,,outfit_89_.png
+P1-34,1,?,walk,low,,,,,,outfit_90_.png
+P1-35,1,?,walk,low,,,,,,outfit_91_.png
+P1-36,1,?,walk,low,,,,,,outfit_93_.png
+P1-37,1,?,surf,low,,,,,,outfit_96_.png
+P1-38,1,effect: blue swirl,effect,medium,,,,,,outfit_267_.png
+P1-39,1,player outfit,outfit,medium,,,,,,outfit_302_.png
+P1-40,1,Volcanion,walk,high,721,6,,,,outfit_303_.png outfit_305_.png
+P1-41,1,Volcanion,walk,high,721,6,,,,outfit_304_.png
+P1-42,1,Virizion,walk,high,640,5,,,,outfit_306_.png
+P1-43,1,Virizion,ride,high,640,5,,,,outfit_307_.png
+P1-44,1,Terrakion,ride,high,639,5,,,,outfit_308_.png
+P1-45,1,Cobalion,walk,high,638,5,,,,outfit_309_.png
+P1-46,1,Terrakion,walk,high,639,5,,,,outfit_310_.png
+P1-47,1,Cobalion,ride,high,638,5,,,,outfit_311_.png
+P1-48,1,Chansey,walk,medium,113,1,,,,outfit_355_.png
+P2-1,2,Arbok,walk,high,24,1,,,,outfit_359_.png outfit_5875_.png
+P2-2,2,Aerodactyl,walk,high,142,1,,,,outfit_361_.png outfit_1574_.png
+P2-3,2,Lickitung,walk,high,108,1,,,,outfit_362_.png
+P2-4,2,Flareon,walk,high,136,1,,,,outfit_365_.png
+P2-5,2,Doduo,walk,high,84,1,,,,outfit_377_.png
+P2-6,2,Ditto,walk,high,132,1,,,,outfit_379_.png
+P2-7,2,Metapod?,walk,low,11,1,,,,outfit_382_.png
+P2-8,2,Caterpie?,walk,low,10,1,,,,outfit_383_.png
+P2-9,2,Butterfree,walk,high,12,1,,,,outfit_391_.png outfit_1206_.png
+P2-10,2,Slowbro,walk,high,80,1,,,,outfit_392_.png
+P2-11,2,Staryu,walk,high,120,1,,,,outfit_393_.png
+P2-12,2,Beedrill,walk,high,15,1,,,,outfit_396_.png outfit_1209_.png
+P2-13,2,Exeggutor,walk,high,103,1,,,,outfit_397_.png
+P2-14,2,Gastly,walk,high,92,1,,,,outfit_399_.png
+P2-15,2,Snorlax,walk,high,143,1,,,,outfit_402_.png outfit_1337_.png
+P2-16,2,Venonat?,walk,low,48,1,,,,outfit_403_.png
+P2-17,2,Pinsir,walk,high,127,1,,,,outfit_404_.png outfit_1321_.png
+P2-18,2,Spearow?,walk,low,21,1,,,,outfit_408_.png
+P2-19,2,Pikachu,walk,high,25,1,,,,outfit_410_.png outfit_7363_.png
+P2-20,2,Kakuna,walk,high,14,1,,,,outfit_411_.png
+P2-21,2,Vulpix,walk,high,37,1,,,,outfit_413_.png
+P2-22,2,Haunter,walk,high,93,1,,,,outfit_416_.png
+P2-23,2,Nidoran F?,walk,low,,,,,,outfit_417_.png
+P2-24,2,Slowpoke,walk,high,79,1,,,,outfit_426_.png
+P2-25,2,Nidorino,walk,high,33,1,,,,outfit_429_.png
+P2-26,2,Wartortle,walk,medium,8,1,,,,outfit_430_.png
+P2-27,2,Diglett,walk,high,50,1,,,,outfit_433_.png
+P2-28,2,Dugtrio,walk,high,51,1,,,,outfit_434_.png
+P2-29,2,Paras?,walk,low,46,1,,,,outfit_435_.png
+P2-30,2,Venomoth?,walk,low,49,1,,,,outfit_436_.png
+P2-31,2,Arcanine,walk,high,59,1,,,,outfit_439_.png
+P2-32,2,Parasect,walk,high,47,1,,,,outfit_446_.png
+P2-33,2,Tentacool?,walk,low,72,1,,,,outfit_447_.png outfit_1266_.png outfit_4459_.png
+P2-34,2,Shellder?,walk,low,90,1,,,,outfit_448_.png outfit_5109_.png
+P2-35,2,Kabuto,walk,medium,140,1,,,,outfit_449_.png outfit_5885_.png
+P2-36,2,Seel,walk,medium,86,1,,,,outfit_452_.png
+P2-37,2,Eevee,walk,high,133,1,,,,outfit_453_.png outfit_5859_.png
+P2-38,2,Primeape,walk,medium,57,1,,,,outfit_454_.png
+P2-39,2,Poliwhirl,walk,high,61,1,,,,outfit_455_.png
+P2-40,2,Tentacruel,walk,high,73,1,,,,outfit_459_.png outfit_1267_.png
+P2-41,2,Charmander,walk,high,4,1,,,,outfit_460_.png outfit_1252_.png
+P2-42,2,Poliwag,walk,medium,60,1,,,,outfit_462_.png outfit_5893_.png
+P2-43,2,Ninetales,walk,high,38,1,,,,outfit_465_.png
+P2-44,2,Kadabra,walk,medium,64,1,,,,outfit_466_.png
+P2-45,2,Dodrio,walk,high,85,1,,,,outfit_471_.png
+P2-46,2,Ninetales,ride,medium,38,1,,,,outfit_480_.png outfit_4569_.png
+P2-47,2,Dodrio,ride,high,85,1,,,,outfit_484_.png
+P2-48,2,Dodrio,ride,high,85,1,,,,outfit_486_.png
+P3-1,3,Poliwag?,walk,low,60,1,,,,outfit_488_.png outfit_5896_.png
+P3-2,3,Scyther,walk,high,123,1,,,,outfit_496_.png outfit_849_.png
+P3-3,3,Charmander,walk,medium,4,1,,,,outfit_498_.png
+P3-4,3,Charmeleon,walk,medium,5,1,,,,outfit_499_.png
+P3-5,3,?,walk,low,,,,,,outfit_500_.png
+P3-6,3,Jigglypuff?,walk,low,39,1,,,,outfit_501_.png
+P3-7,3,npc: swimmer,other,medium,,,,,,outfit_527_.png
+P3-8,3,npc: swimmer (camo)?,other,low,,,,,,outfit_529_.png
+P3-9,3,Lapras,surf,medium,131,1,,,,outfit_537_.png
+P3-10,3,?,surf,low,,,,,,outfit_539_.png outfit_5883_.png
+P3-11,3,?,surf,low,,,,,,outfit_541_.png outfit_5880_.png
+P3-12,3,Jolteon,walk,high,135,1,,,,outfit_546_.png
+P3-13,3,Kangaskhan,walk,medium,115,1,,,,outfit_549_.png outfit_5887_.png
+P3-14,3,Rhydon,walk,medium,112,1,,,,outfit_551_.png
+P3-15,3,Nidoking,ride,high,34,1,,,,outfit_552_.png outfit_553_.png
+P3-16,3,Kangaskhan,ride,medium,115,1,,,,outfit_554_.png
+P3-17,3,Poliwag?,walk,low,60,1,,,,outfit_563_.png outfit_5895_.png
+P3-18,3,Grimer,walk,high,88,1,,,,outfit_565_.png
+P3-19,3,Vaporeon,walk,high,134,1,,,,outfit_566_.png
+P3-20,3,Magnemite,walk,high,81,1,,,,outfit_568_.png
+P3-21,3,Rapidash,walk,high,78,1,,,,outfit_571_.png
+P3-22,3,Koffing,walk,high,109,1,,,,outfit_579_.png
+P3-23,3,Weezing,walk,high,110,1,,,,outfit_582_.png outfit_1507_.png
+P3-24,3,npc: diver/swimmer?,dive,low,,,,,,outfit_589_.png
+P3-25,3,Kingler,walk,medium,99,1,,,,outfit_596_.png
+P3-26,3,?,walk,low,,,,,,outfit_597_.png
+P3-27,3,Starmie,walk,high,121,1,,,,outfit_600_.png
+P3-28,3,npc: swimmer?,dive,low,,,,,,outfit_603_.png
+P3-29,3,Mr. Mime?,walk,low,,,,,,outfit_607_.png
+P3-30,3,effect: small dark marks,effect,low,,,,,,outfit_611_.png
+P3-31,3,effect: pink marks,effect,low,,,,,,outfit_612_.png
+P3-32,3,player outfit,outfit,low,,,,,,outfit_622_.png outfit_5850_.png
+P3-33,3,Squirtle,walk,medium,7,1,,,,outfit_624_.png
+P3-34,3,Squirtle,surf,low,7,1,,,,outfit_629_.png outfit_5894_.png
+P3-35,3,effect: small marks,effect,low,,,,,,outfit_641_.png
+P3-36,3,effect: Onix ghost outline?,effect,low,,,,,,outfit_643_.png
+P3-37,3,Onix (crystal),ride,medium,95,1,,,,outfit_644_.png
+P3-38,3,Squirtle (sunglasses),walk,high,7,1,,,,outfit_647_.png
+P3-39,3,Squirtle (sunglasses),walk,high,7,1,,,,outfit_648_.png
+P3-40,3,Snorlax,ride,medium,143,1,,,,outfit_651_.png
+P3-41,3,Snorlax (Christmas),walk,high,143,1,,,,outfit_653_.png
+P3-42,3,Cubone?,walk,low,104,1,,,,outfit_654_.png
+P3-43,3,Bellsprout (Christmas)?,walk,low,69,1,,,,outfit_657_.png
+P3-44,3,Psyduck (Christmas),walk,medium,54,1,,,,outfit_658_.png
+P3-45,3,Seel (Christmas)?,walk,low,86,1,,,,outfit_659_.png
+P3-46,3,Pikachu (Christmas),walk,high,25,1,,,,outfit_660_.png
+P3-47,3,Gengar,walk,medium,94,1,,,,outfit_665_.png
+P3-48,3,Gengar,walk,high,94,1,,,,outfit_666_.png outfit_1019_.png outfit_1020_.png
+P4-1,4,? (small pink mount with rider),ride,low,,,,,,outfit_667_.png
+P4-2,4,Tentacruel (red recolour),walk,medium,73,1,,,,outfit_668_.png
+P4-3,4,Shellder?,walk,low,90,1,,,,outfit_669_.png
+P4-4,4,Chikorita,walk,high,152,2,,,,outfit_670_.png
+P4-5,4,Bayleef,walk,high,153,2,,,,outfit_671_.png
+P4-6,4,Cyndaquil,walk,high,155,2,,,,outfit_673_.png
+P4-7,4,Cyndaquil,walk,medium,155,2,,,,outfit_674_.png
+P4-8,4,Quilava,walk,medium,156,2,,,,outfit_676_.png
+P4-9,4,Typhlosion,walk,high,157,2,,,,outfit_678_.png
+P4-10,4,Totodile,walk,medium,158,2,,,,outfit_679_.png
+P4-11,4,Croconaw,walk,medium,159,2,,,,outfit_680_.png
+P4-12,4,Noctowl,walk,medium,164,2,,,,outfit_683_.png
+P4-13,4,Lanturn,walk,medium,171,2,,,,outfit_690_.png outfit_1582_.png
+P4-14,4,Pichu,walk,high,172,2,,,,outfit_692_.png outfit_7366_.png outfit_7367_.png
+P4-15,4,Smoochum?,walk,low,238,2,,,,outfit_700_.png
+P4-16,4,Magby,walk,medium,240,2,,,,outfit_737_.png
+P4-17,4,Hitmonchan,walk,high,107,1,,,,outfit_837_.png
+P4-18,4,Tentacruel (green recolour),walk,medium,73,1,,,,outfit_875_.png
+P4-19,4,Hitmonlee,walk,high,106,1,,,,outfit_877_.png
+P4-20,4,Hitmonlee,walk,high,106,1,,,,outfit_878_.png
+P4-21,4,Cleffa?,walk,low,173,2,,,,outfit_885_.png
+P4-22,4,Smeargle?,walk,low,235,2,,,,outfit_887_.png
+P4-23,4,Natu?,walk,low,177,2,,,,outfit_888_.png
+P4-24,4,Xatu,walk,medium,178,2,,,,outfit_889_.png
+P4-25,4,Mareep,walk,medium,179,2,,,,outfit_891_.png
+P4-26,4,Blissey?,walk,low,242,2,,,,outfit_892_.png
+P4-27,4,Azurill?,walk,low,298,3,,,,outfit_907_.png outfit_6495_.png
+P4-28,4,Shellder?,walk,low,90,1,,,,outfit_910_.png
+P4-29,4,Steelix,walk,high,208,2,,,,outfit_911_.png outfit_2701_.png
+P4-30,4,Scizor,walk,high,212,2,,,,outfit_912_.png outfit_7266_.png
+P4-31,4,Teddiursa,walk,medium,216,2,,,,outfit_913_.png
+P4-32,4,Heracross,walk,high,214,2,,,,outfit_915_.png outfit_1198_.png outfit_1448_.png outfit_3427_.png
+P4-33,4,Sneasel?,walk,low,215,2,,,,outfit_917_.png outfit_1022_.png
+P4-34,4,Ariados?,walk,low,168,2,,,,outfit_918_.png
+P4-35,4,Espeon,walk,high,196,2,,,,outfit_919_.png
+P4-36,4,Umbreon,walk,high,197,2,,,,outfit_920_.png
+P4-37,4,Wooper,walk,medium,194,2,,,,outfit_922_.png
+P4-38,4,Quagsire,walk,high,195,2,,,,outfit_923_.png
+P4-39,4,Wobbuffet,walk,high,202,2,,,,outfit_924_.png
+P4-40,4,Corsola,walk,high,222,2,,,,outfit_926_.png
+P4-41,4,Octillery,walk,high,224,2,,,,outfit_931_.png outfit_1021_.png
+P4-42,4,Delibird,walk,high,225,2,,,,outfit_937_.png outfit_6340_.png outfit_6571_.png
+P4-43,4,Phanpy,walk,medium,231,2,,,,outfit_941_.png
+P4-44,4,? (blank),other,low,,,,,,outfit_943_.png
+P4-45,4,Miltank,walk,high,241,2,,,,outfit_946_.png
+P4-46,4,Tyranitar,walk,high,248,2,,,,outfit_954_.png outfit_2703_.png
+P4-47,4,Unown,walk,high,201,2,,,,outfit_966_.png
+P4-48,4,Unown,walk,high,201,2,,,,outfit_967_.png
+P5-1,5,Unown,walk,high,201,2,,,,outfit_968_.png
+P5-2,5,Unown,walk,high,201,2,,,,outfit_969_.png
+P5-3,5,Unown,walk,high,201,2,,,,outfit_970_.png
+P5-4,5,Unown,walk,high,201,2,,,,outfit_971_.png
+P5-5,5,Unown,walk,high,201,2,,,,outfit_972_.png
+P5-6,5,Octillery,surf,low,224,2,,,,outfit_992_.png
+P5-7,5,?,surf,low,,,,,,outfit_993_.png
+P5-8,5,Steelix,ride,high,208,2,,,,outfit_997_.png outfit_2705_.png
+P5-9,5,Phanpy?,walk,low,231,2,,,,outfit_1004_.png
+P5-10,5,Swinub?,walk,low,220,2,,,,outfit_1006_.png
+P5-11,5,Blastoise?,surf,low,9,1,,,,outfit_1009_.png
+P5-12,5,player outfit (dive pose),dive,low,,,,,,outfit_1010_.png
+P5-13,5,player outfit (dive pose),dive,low,,,,,,outfit_1011_.png
+P5-14,5,player outfit (dive pose),dive,low,,,,,,outfit_1012_.png
+P5-15,5,player outfit (dive pose),dive,low,,,,,,outfit_1014_.png
+P5-16,5,player outfit (dive pose),dive,low,,,,,,outfit_1017_.png
+P5-17,5,effect: small marks,effect,low,,,,,,outfit_1027_.png
+P5-18,5,effect: small marks,effect,low,,,,,,outfit_1028_.png
+P5-19,5,effect: small marks,effect,low,,,,,,outfit_1029_.png
+P5-20,5,player outfit (dive pose),dive,low,,,,,,outfit_1031_.png
+P5-21,5,vehicle: orange raft/board,other,low,,,,,,outfit_1041_.png
+P5-22,5,Pidgeotto,walk,medium,17,1,,,,outfit_1042_.png outfit_3541_.png outfit_7272_.png
+P5-23,5,Pidgeotto,walk,low,17,1,,,,outfit_1043_.png outfit_3542_.png
+P5-24,5,?,walk,low,,,,,,outfit_1052_.png
+P5-25,5,Blastoise,walk,high,9,1,,,,outfit_1074_.png outfit_2096_.png
+P5-26,5,Kingdra (red recolour)?,walk,low,230,2,,,,outfit_1085_.png
+P5-27,5,player outfit (dive pose),dive,low,,,,,,outfit_1134_.png
+P5-28,5,player outfit (dive pose),dive,low,,,,,,outfit_1139_.png
+P5-29,5,?,walk,low,,,,,,outfit_1143_.png
+P5-30,5,player outfit (dive pose),dive,low,,,,,,outfit_1163_.png
+P5-31,5,player outfit (dive pose),dive,low,,,,,,outfit_1182_.png outfit_6898_.png
+P5-32,5,?,walk,low,,,,,,outfit_1186_.png
+P5-33,5,player outfit (dive pose),dive,low,,,,,,outfit_1187_.png
+P5-34,5,effect: red rings around shell?,effect,low,,,,,,outfit_1195_.png outfit_5945_.png
+P5-35,5,effect: red rings around shell?,effect,low,,,,,,outfit_1196_.png
+P5-36,5,Venusaur,walk,high,3,1,,,,outfit_1197_.png
+P5-37,5,Tyranitar?,ride,low,248,2,,,,outfit_1199_.png outfit_3562_.png
+P5-38,5,?,walk,low,,,,,,outfit_1213_.png
+P5-39,5,?,walk,low,,,,,,outfit_1214_.png
+P5-40,5,?,walk,low,,,,,,outfit_1216_.png
+P5-41,5,?,walk,low,,,,,,outfit_1220_.png
+P5-42,5,Nidoking (dark recolour),walk,medium,34,1,,,,outfit_1228_.png outfit_3097_.png
+P5-43,5,?,walk,low,,,,,,outfit_1235_.png
+P5-44,5,?,walk,low,,,,,,outfit_1236_.png
+P5-45,5,Hoppip?,walk,low,187,2,,,,outfit_1237_.png
+P5-46,5,Vileplume,walk,medium,45,1,,,,outfit_1239_.png outfit_3587_.png outfit_7268_.png
+P5-47,5,?,walk,low,,,,,,outfit_1240_.png
+P5-48,5,Parasect (green recolour),walk,medium,47,1,,,,outfit_1241_.png
+P6-1,6,?,walk,low,,,,,,outfit_1242_.png
+P6-2,6,Butterfree (blue recolour)?,walk,low,12,1,,,,outfit_1243_.png outfit_3111_.png
+P6-3,6,Butterfree (blue recolour)?,fly,low,12,1,,,,outfit_1244_.png
+P6-4,6,Arcanine (shiny),walk,medium,59,1,,,,outfit_1253_.png
+P6-5,6,Mewtwo?,walk,low,150,1,,,,outfit_1257_.png
+P6-6,6,?,walk,low,,,,,,outfit_1258_.png outfit_3594_.png
+P6-7,6,?,walk,low,,,,,,outfit_1259_.png
+P6-8,6,Golem (purple recolour),walk,medium,76,1,,,,outfit_1270_.png
+P6-9,6,?,walk,low,,,,,,outfit_1277_.png
+P6-10,6,Diglett (recolour)?,walk,low,50,1,,,,outfit_1282_.png
+P6-11,6,Muk (brown recolour),walk,medium,89,1,,,,outfit_1283_.png outfit_1453_.png
+P6-12,6,Gengar (shiny),walk,medium,94,1,,,,outfit_1288_.png outfit_3604_.png outfit_7612_.png outfit_7722_.png
+P6-13,6,?,walk,low,,,,,,outfit_1291_.png
+P6-14,6,Krabby (blue recolour)?,walk,low,98,1,,,,outfit_1292_.png outfit_3606_.png
+P6-15,6,Kingler (shiny),walk,medium,99,1,,,,outfit_1293_.png
+P6-16,6,Voltorb (green recolour),walk,medium,100,1,,,,outfit_1294_.png outfit_3608_.png
+P6-17,6,Electrode (white recolour),walk,medium,101,1,,,,outfit_1295_.png outfit_3609_.png
+P6-18,6,Cubone (recolour)?,walk,low,104,1,,,,outfit_1298_.png
+P6-19,6,Marowak (recolour),walk,medium,105,1,,,,outfit_1299_.png
+P6-20,6,Tangela (green recolour),walk,medium,114,1,,,,outfit_1308_.png
+P6-21,6,?,walk,low,,,,,,outfit_1310_.png
+P6-22,6,?,walk,low,,,,,,outfit_1311_.png
+P6-23,6,Aerodactyl (teal recolour),walk,medium,142,1,,,,outfit_1317_.png outfit_3077_.png outfit_3616_.png outfit_4495_.png
+P6-24,6,Jynx (recolour),walk,medium,124,1,,,,outfit_1318_.png
+P6-25,6,Electabuzz (recolour)?,walk,low,125,1,,,,outfit_1319_.png
+P6-26,6,Horsea (shiny)?,walk,low,116,1,,,,outfit_1323_.png
+P6-27,6,Gyarados (shiny),walk,high,130,1,,,,outfit_1324_.png
+P6-28,6,Vaporeon (purple recolour),walk,medium,134,1,,,,outfit_1328_.png outfit_6339_.png
+P6-29,6,Jolteon (recolour),walk,medium,135,1,,,,outfit_1329_.png
+P6-30,6,Flareon,walk,high,136,1,,,,outfit_1330_.png
+P6-31,6,Aerodactyl (pink recolour),walk,medium,142,1,,,,outfit_1336_.png outfit_5933_.png
+P6-32,6,Dratini (shiny)?,walk,low,147,1,,,,outfit_1341_.png
+P6-33,6,Dragonair (shiny),walk,medium,148,1,,,,outfit_1342_.png outfit_3628_.png
+P6-34,6,Dragonite (red recolour)?,walk,low,149,1,,,,outfit_1343_.png
+P6-35,6,?,fly,low,,,,,,outfit_1348_.png
+P6-36,6,Venusaur,ride,medium,3,1,,,,outfit_1349_.png
+P6-37,6,Arcanine (shiny),ride,medium,59,1,,,,outfit_1354_.png
+P6-38,6,?,surf,low,,,,,,outfit_1364_.png outfit_4460_.png
+P6-39,6,Charizard (dark recolour)?,walk,low,6,1,,,,outfit_1371_.png
+P6-40,6,player outfit,outfit,low,,,,,,outfit_1376_.png
+P6-41,6,Gyarados (shiny),surf,medium,130,1,,,,outfit_1381_.png
+P6-42,6,Vaporeon (purple recolour),surf,medium,134,1,,,,outfit_1383_.png
+P6-43,6,Snorlax,ride,medium,143,1,,,,outfit_1386_.png
+P6-44,6,Voltorb (green recolour),walk,medium,100,1,,,,outfit_1387_.png
+P6-45,6,Electrode (white recolour),walk,medium,101,1,,,,outfit_1388_.png outfit_3643_.png
+P6-46,6,effect: sand tornado,effect,medium,,,,,,outfit_1398_.png
+P6-47,6,Steelix (white recolour),walk,medium,208,2,,,,outfit_1401_.png
+P6-48,6,item: black rock/ball?,other,low,,,,,,outfit_1403_.png
+P7-1,7,Moltres (recolour)?,walk,low,146,1,,,,outfit_1406_.png
+P7-2,7,player outfit (dive pose),dive,low,,,,,,outfit_1420_.png
+P7-3,7,effect: ghost outline of serpent,effect,low,,,,,,outfit_1445_.png
+P7-4,7,Xatu (recolour)?,walk,low,178,2,,,,outfit_1446_.png outfit_1536_.png outfit_1537_.png outfit_7265_.png
+P7-5,7,Wobbuffet?,walk,low,202,2,,,,outfit_1447_.png
+P7-6,7,Ursaring,walk,high,217,2,,,,outfit_1449_.png outfit_1954_.png
+P7-7,7,effect: tiny marks,effect,low,,,,,,outfit_1450_.png
+P7-8,7,? (blank),other,low,,,,,,outfit_1451_.png
+P7-9,7,"player outfit (dive pose, ghostly)",dive,low,,,,,,outfit_1452_.png outfit_6567_.png
+P7-10,7,Zebstrika?,walk,low,523,5,,,,outfit_1460_.png
+P7-11,7,Magmar?,ride,low,126,1,,,,outfit_1461_.png outfit_1502_.png
+P7-12,7,Dragonair (shiny),surf,low,148,1,,,,outfit_1464_.png
+P7-13,7,?,walk,low,,,,,,outfit_1472_.png
+P7-14,7,Gengar (aura)?,walk,low,94,1,,,,outfit_1475_.png outfit_3681_.png
+P7-15,7,?,ride,low,,,,,,outfit_1476_.png
+P7-16,7,Lapras (recolour)?,surf,low,131,1,,,,outfit_1478_.png
+P7-17,7,player outfit (dive pose),dive,low,,,,,,outfit_1485_.png
+P7-18,7,Ninetales (Alolan),ride,medium,38,7,,,,outfit_1487_.png
+P7-19,7,Ninetales (Alolan),walk,medium,38,7,,,,outfit_1488_.png
+P7-20,7,Espeon,walk,medium,196,2,,,,outfit_1489_.png
+P7-21,7,Espeon (recolour)?,walk,low,196,2,,,,outfit_1490_.png
+P7-22,7,Mudkip?,walk,low,258,3,,,,outfit_1491_.png
+P7-23,7,Stantler,walk,medium,234,2,,,,outfit_1492_.png
+P7-24,7,Ariados (recolour)?,walk,low,168,2,,,,outfit_1493_.png
+P7-25,7,?,walk,low,,,,,,outfit_1494_.png outfit_3698_.png
+P7-26,7,Dodrio (recolour),walk,medium,85,1,,,,outfit_1495_.png
+P7-27,7,Dodrio (recolour),ride,medium,85,1,,,,outfit_1496_.png
+P7-28,7,Golem (gold recolour)?,walk,low,76,1,,,,outfit_1499_.png
+P7-29,7,Gligar?,walk,low,207,2,,,,outfit_1500_.png
+P7-30,7,Gligar?,walk,low,207,2,,,,outfit_1501_.png outfit_4034_.png
+P7-31,7,Magmar,walk,medium,126,1,,,,outfit_1503_.png
+P7-32,7,?,walk,low,,,,,,outfit_1505_.png
+P7-33,7,?,walk,low,,,,,,outfit_1506_.png
+P7-34,7,?,fly,low,,,,,,outfit_1508_.png outfit_1510_.png
+P7-35,7,Goldeen (recolour)?,surf,low,118,1,,,,outfit_1509_.png outfit_1511_.png
+P7-36,7,Yanma?,fly,low,193,2,,,,outfit_1512_.png
+P7-37,7,Yanma (recolour)?,fly,low,193,2,,,,outfit_1513_.png
+P7-38,7,?,walk,low,,,,,,outfit_1524_.png
+P7-39,7,Feraligatr,walk,medium,160,2,,,,outfit_1525_.png
+P7-40,7,Feraligatr,surf,medium,160,2,,,,outfit_1526_.png
+P7-41,7,?,walk,low,,,,,,outfit_1527_.png
+P7-42,7,Machamp (dark recolour)?,walk,low,68,1,,,,outfit_1528_.png outfit_1565_.png
+P7-43,7,?,ride,low,,,,,,outfit_1529_.png
+P7-44,7,?,walk,low,,,,,,outfit_1530_.png
+P7-45,7,Girafarig?,ride,low,203,2,,,,outfit_1532_.png outfit_3185_.png
+P7-46,7,Girafarig?,walk,low,203,2,,,,outfit_1533_.png outfit_3151_.png
+P7-47,7,Typhlosion,walk,high,157,2,,,,outfit_1534_.png
+P7-48,7,?,walk,low,,,,,,outfit_1561_.png outfit_5222_.png outfit_7720_.png
+P8-1,8,?,walk,low,,,,,,outfit_1562_.png outfit_1605_.png outfit_3629_.png
+P8-2,8,?,walk,low,,,,,,outfit_1563_.png
+P8-3,8,Gastly (red recolour)?,walk,low,92,1,,,,outfit_1564_.png
+P8-4,8,?,walk,low,,,,,,outfit_1566_.png
+P8-5,8,?,walk,low,,,,,,outfit_1568_.png
+P8-6,8,?,walk,low,,,,,,outfit_1569_.png
+P8-7,8,Mew (shadow recolour)?,walk,low,151,1,,,,outfit_1570_.png
+P8-8,8,Rhyperior (recolour)?,walk,low,464,4,,,,outfit_1572_.png
+P8-9,8,Stantler,ride,medium,234,2,,,,outfit_1580_.png
+P8-10,8,effect: fire ring,effect,medium,,,,,,outfit_1581_.png outfit_1586_.png outfit_1587_.png
+P8-11,8,?,walk,low,,,,,,outfit_1583_.png
+P8-12,8,Venomoth (recolour)?,fly,low,49,1,,,,outfit_1584_.png
+P8-13,8,Electivire,walk,medium,466,4,,,,outfit_1590_.png outfit_1612_.png outfit_2266_.png outfit_3740_.png
+P8-14,8,Latios,fly,medium,381,3,,,,outfit_1591_.png
+P8-15,8,?,fly,low,,,,,,outfit_1592_.png
+P8-16,8,?,ride,low,,,,,,outfit_1594_.png
+P8-17,8,?,walk,low,,,,,,outfit_1595_.png
+P8-18,8,Magmortar,walk,medium,467,4,,,,outfit_1598_.png outfit_1613_.png outfit_2267_.png
+P8-19,8,Lugia,walk,high,249,2,,,,outfit_1600_.png
+P8-20,8,Rayquaza (shiny),walk,medium,384,3,,,,outfit_1606_.png
+P8-21,8,?,walk,low,,,,,,outfit_1607_.png
+P8-22,8,?,walk,low,,,,,,outfit_1608_.png
+P8-23,8,Snorlax (white recolour),walk,medium,143,1,,,,outfit_1609_.png
+P8-24,8,Zekrom,walk,medium,644,5,,,,outfit_1610_.png
+P8-25,8,Typhlosion,walk,high,157,2,,,,outfit_1611_.png
+P8-26,8,?,walk,low,,,,,,outfit_1629_.png
+P8-27,8,Articuno?,walk,low,144,1,,,,outfit_1644_.png outfit_7437_.png
+P8-28,8,Moltres?,walk,low,146,1,,,,outfit_1645_.png outfit_7438_.png
+P8-29,8,Zapdos?,walk,low,145,1,,,,outfit_1646_.png outfit_7439_.png
+P8-30,8,effect: small brown marks,effect,low,,,,,,outfit_1647_.png
+P8-31,8,npc: trainer?,other,low,,,,,,outfit_1650_.png
+P8-32,8,?,walk,low,,,,,,outfit_1651_.png outfit_1827_.png outfit_3843_.png outfit_7134_.png
+P8-33,8,?,walk,low,,,,,,outfit_1652_.png outfit_3967_.png
+P8-34,8,Wailmer,walk,medium,320,3,,,,outfit_1653_.png
+P8-35,8,Wailord,walk,high,321,3,,,,outfit_1655_.png
+P8-36,8,Wailord,surf,medium,321,3,,,,outfit_1656_.png
+P8-37,8,Blastoise (Mega),walk,medium,9,6,,,,outfit_1657_.png outfit_6260_.png outfit_7137_.png
+P8-38,8,Venusaur (Mega),walk,medium,3,6,,,,outfit_1658_.png
+P8-39,8,player outfit (dive pose),dive,low,,,,,,outfit_1670_.png
+P8-40,8,Diancie?,walk,low,719,6,,,,outfit_1683_.png
+P8-41,8,Swampert (Mega)?,walk,low,260,6,,,,outfit_1684_.png outfit_7156_.png
+P8-42,8,Shuppet (recolour)?,walk,low,353,3,,,,outfit_1708_.png
+P8-43,8,vehicle: wooden glider?,other,low,,,,,,outfit_1713_.png
+P8-44,8,Grovyle,walk,medium,253,3,,,,outfit_1727_.png
+P8-45,8,Duskull?,walk,low,355,3,,,,outfit_1749_.png outfit_1779_.png
+P8-46,8,Dusknoir?,walk,low,477,4,,,,outfit_1769_.png outfit_1834_.png outfit_6499_.png outfit_7332_.png outfit_8576_.png
+P8-47,8,?,walk,low,,,,,,outfit_1774_.png outfit_6269_.png
+P8-48,8,Rhyperior,walk,medium,464,4,,,,outfit_1789_.png outfit_7423_.png outfit_8546_.png
+P9-1,9,Lucario,walk,high,448,4,,,,outfit_1797_.png
+P9-2,9,Rotom (Heat),walk,medium,479,4,,,,outfit_1798_.png
+P9-3,9,Rotom (Wash),walk,medium,479,4,,,,outfit_1799_.png
+P9-4,9,Rotom (Fan),walk,medium,479,4,,,,outfit_1800_.png
+P9-5,9,Rotom (Frost),walk,medium,479,4,,,,outfit_1801_.png
+P9-6,9,Rotom (Mow),walk,medium,479,4,,,,outfit_1802_.png
+P9-7,9,?,walk,low,,,,,,outfit_1803_.png
+P9-8,9,Phione?,walk,low,489,4,,,,outfit_1810_.png
+P9-9,9,Zangoose?,walk,low,335,3,,,,outfit_1811_.png outfit_2179_.png
+P9-10,9,Magnezone,walk,high,462,4,,,,outfit_1815_.png
+P9-11,9,Magmortar,walk,medium,467,4,,,,outfit_1816_.png
+P9-12,9,Honchkrow,walk,medium,430,4,,,,outfit_1849_.png
+P9-13,9,Gengar (Mega),walk,high,94,6,,,,outfit_1851_.png outfit_1867_.png outfit_6525_.png outfit_7133_.png outfit_7138_.png
+P9-14,9,Charizard (Mega X),walk,high,6,6,,,,outfit_1852_.png outfit_7125_.png
+P9-15,9,Tyranitar (Mega)?,walk,medium,248,6,,,,outfit_1854_.png outfit_7131_.png
+P9-16,9,Charizard (Mega Y),walk,high,6,6,,,,outfit_1855_.png outfit_7130_.png
+P9-17,9,"Charizard (Mega X, recolour)",walk,medium,6,6,,,,outfit_1856_.png
+P9-18,9,Blaziken (Mega),walk,medium,257,6,,,,outfit_1857_.png outfit_7154_.png
+P9-19,9,Ampharos (Mega),walk,medium,181,6,,,,outfit_1858_.png outfit_2134_.png
+P9-20,9,Mawile (Mega)?,walk,low,303,6,,,,outfit_1859_.png outfit_7554_.png
+P9-21,9,Mawile (Mega)?,walk,low,303,6,,,,outfit_1860_.png outfit_7550_.png
+P9-22,9,Mawile (Mega)?,walk,low,303,6,,,,outfit_1861_.png outfit_7559_.png
+P9-23,9,Mawile (Mega)?,walk,low,303,6,,,,outfit_1862_.png outfit_7558_.png
+P9-24,9,Venusaur (Mega),walk,high,3,6,,,,outfit_1863_.png outfit_6261_.png
+P9-25,9,Gliscor,walk,medium,472,4,,,,outfit_1870_.png outfit_6522_.png
+P9-26,9,Gliscor,walk,medium,472,4,,,,outfit_1871_.png
+P9-27,9,?,walk,low,,,,,,outfit_1873_.png
+P9-28,9,?,walk,low,,,,,,outfit_1874_.png outfit_2702_.png outfit_3414_.png outfit_6346_.png
+P9-29,9,? (fire aura),walk,low,,,,,,outfit_1875_.png
+P9-30,9,Charizard (Mega Y),walk,high,6,6,,,,outfit_1877_.png
+P9-31,9,Charizard (Mega Y),walk,high,6,6,,,,outfit_1878_.png outfit_6256_.png
+P9-32,9,Charizard (Mega X),walk,high,6,6,,,,outfit_1880_.png
+P9-33,9,Charizard (Mega X),walk,high,6,6,,,,outfit_1881_.png
+P9-34,9,Sceptile (Mega),walk,medium,254,6,,,,outfit_1882_.png
+P9-35,9,player outfit (dive pose)?,dive,low,,,,,,outfit_1884_.png
+P9-36,9,?,walk,low,,,,,,outfit_1885_.png
+P9-37,9,Lapras,surf,medium,131,1,,,,outfit_1886_.png
+P9-38,9,Lapras (recolour),surf,low,131,1,,,,outfit_1887_.png
+P9-39,9,Lapras (recolour),walk,low,131,1,,,,outfit_1888_.png
+P9-40,9,Gallade,walk,medium,475,4,,,,outfit_1889_.png
+P9-41,9,?,ride,low,,,,,,outfit_1890_.png
+P9-42,9,?,walk,low,,,,,,outfit_1891_.png
+P9-43,9,Scizor (Mega),walk,medium,212,6,,,,outfit_1892_.png
+P9-44,9,Arcanine,walk,high,59,1,,,,outfit_1893_.png
+P9-45,9,Aggron (Mega),walk,medium,306,6,,,,outfit_1894_.png
+P9-46,9,Abomasnow (Mega),walk,medium,460,6,,,,outfit_1895_.png
+P9-47,9,Charizard (Mega Y),walk,high,6,6,,,,outfit_1896_.png
+P9-48,9,Charizard (Mega Y),fly,medium,6,6,,,,outfit_1897_.png
+P10-1,10,?,walk,low,,,,,,outfit_1898_.png
+P10-2,10,?,walk,low,,,,,,outfit_1899_.png
+P10-3,10,?,ride,low,,,,,,outfit_1901_.png
+P10-4,10,item: shell/rock?,other,low,,,,,,outfit_1903_.png
+P10-5,10,?,walk,low,,,,,,outfit_1904_.png
+P10-6,10,Blastoise (costume)?,walk,low,9,1,,,,outfit_1905_.png
+P10-7,10,? (knight costume),walk,low,,,,,,outfit_1906_.png
+P10-8,10,Snorlax (Christmas)?,walk,medium,143,1,,,,outfit_1907_.png
+P10-9,10,?,walk,low,,,,,,outfit_1908_.png
+P10-10,10,?,walk,low,,,,,,outfit_1909_.png
+P10-11,10,?,ride,low,,,,,,outfit_1910_.png
+P10-12,10,?,walk,low,,,,,,outfit_1911_.png
+P10-13,10,?,walk,low,,,,,,outfit_1912_.png
+P10-14,10,? (cow costume),walk,low,,,,,,outfit_1913_.png
+P10-15,10,? (cow costume),walk,low,,,,,,outfit_1914_.png
+P10-16,10,? (pink costume),walk,low,,,,,,outfit_1915_.png
+P10-17,10,?,walk,low,,,,,,outfit_1916_.png
+P10-18,10,? (feather headdress costume),walk,low,,,,,,outfit_1917_.png
+P10-19,10,?,walk,low,,,,,,outfit_1918_.png
+P10-20,10,?,walk,low,,,,,,outfit_1919_.png
+P10-21,10,?,walk,low,,,,,,outfit_1920_.png
+P10-22,10,player outfit (Meganium costume),outfit,medium,,,,,,outfit_1921_.png
+P10-23,10,player outfit (Meganium costume),outfit,medium,,,,,,outfit_1922_.png
+P10-24,10,player outfit,outfit,medium,,,,,,outfit_1924_.png
+P10-25,10,Feraligatr (costume)?,walk,low,160,2,,,,outfit_1925_.png
+P10-26,10,Typhlosion (costume)?,walk,low,157,2,,,,outfit_1926_.png
+P10-27,10,Typhlosion (costume)?,walk,low,157,2,,,,outfit_1927_.png
+P10-28,10,player outfit,outfit,medium,,,,,,outfit_1928_.png
+P10-29,10,Stantler (Christmas),walk,medium,234,2,,,,outfit_1931_.png
+P10-30,10,Stantler (Christmas),walk,medium,234,2,,,,outfit_1932_.png
+P10-31,10,Ursaring (recolour)?,walk,low,217,2,,,,outfit_1933_.png
+P10-32,10,Gardevoir?,walk,low,282,3,,,,outfit_1934_.png
+P10-33,10,?,walk,low,,,,,,outfit_1935_.png
+P10-34,10,Swampert (Mega)?,walk,low,260,6,,,,outfit_1936_.png
+P10-35,10,? (lying figure),other,low,,,,,,outfit_1950_.png
+P10-36,10,? (lying figure),other,low,,,,,,outfit_1951_.png
+P10-37,10,? (lying figure),other,low,,,,,,outfit_1952_.png
+P10-38,10,? (lying figure),other,low,,,,,,outfit_1953_.png
+P10-39,10,Ursaring (pink recolour)?,walk,low,217,2,,,,outfit_1955_.png
+P10-40,10,?,walk,low,,,,,,outfit_1977_.png outfit_7348_.png
+P10-41,10,?,ride,low,,,,,,outfit_1978_.png outfit_7368_.png
+P10-42,10,?,walk,low,,,,,,outfit_1980_.png outfit_7357_.png
+P10-43,10,Pichu?,walk,low,172,2,,,,outfit_1983_.png
+P10-44,10,?,walk,low,,,,,,outfit_1993_.png outfit_2631_.png
+P10-45,10,Gardevoir (recolour)?,walk,low,282,3,,,,outfit_1999_.png
+P10-46,10,npc: green-haired girl?,other,low,,,,,,outfit_2009_.png
+P10-47,10,?,ride,low,,,,,,outfit_2014_.png
+P10-48,10,Typhlosion (costume)?,walk,low,157,2,,,,outfit_2018_.png
+P11-1,11,? (with balloons),walk,low,,,,,,outfit_2023_.png outfit_2024_.png
+P11-2,11,vehicle: red sleigh/cart?,other,low,,,,,,outfit_2028_.png
+P11-3,11,effect: red marks,effect,low,,,,,,outfit_2029_.png
+P11-4,11,effect: small marks,effect,low,,,,,,outfit_2030_.png
+P11-5,11,Luxray?,walk,low,405,4,,,,outfit_2044_.png outfit_3776_.png outfit_6158_.png outfit_6159_.png outfit_6461_.png
+P11-6,11,?,walk,low,,,,,,outfit_2048_.png
+P11-7,11,?,walk,low,,,,,,outfit_2053_.png
+P11-8,11,?,ride,low,,,,,,outfit_2054_.png
+P11-9,11,?,walk,low,,,,,,outfit_2055_.png
+P11-10,11,effect: Pokemon outline,effect,low,,,,,,outfit_2057_.png
+P11-11,11,Kangaskhan (Mega),walk,medium,115,6,,,,outfit_2060_.png
+P11-12,11,Aerodactyl (Mega),walk,medium,142,6,,,,outfit_2061_.png
+P11-13,11,Altaria (Mega),walk,medium,334,6,,,,outfit_2062_.png
+P11-14,11,Ampharos (Mega),walk,medium,181,6,,,,outfit_2063_.png
+P11-15,11,?,walk,low,,,,,,outfit_2064_.png
+P11-16,11,Glalie (Mega),walk,medium,362,6,,,,outfit_2066_.png
+P11-17,11,Absol (Mega),walk,medium,359,6,,,,outfit_2068_.png outfit_7123_.png
+P11-18,11,Sableye (Mega),walk,medium,302,6,,,,outfit_2070_.png
+P11-19,11,Sceptile (Mega),walk,medium,254,6,,,,outfit_2071_.png outfit_7122_.png
+P11-20,11,Scizor (Mega),walk,medium,212,6,,,,outfit_2072_.png
+P11-21,11,Audino (Mega)?,walk,low,531,6,,,,outfit_2073_.png
+P11-22,11,? (fire),walk,low,,,,,,outfit_2074_.png
+P11-23,11,Garchomp (Mega),walk,medium,445,6,,,,outfit_2077_.png outfit_7155_.png
+P11-24,11,Pidgeot (Mega)?,walk,low,18,6,,,,outfit_2080_.png
+P11-25,11,Pidgeot (Mega),walk,medium,18,6,,,,outfit_2081_.png outfit_7147_.png
+P11-26,11,Chansey (nurse),walk,medium,113,1,,,,outfit_2086_.png
+P11-27,11,Blaziken (Mega),walk,medium,257,6,,,,outfit_2091_.png
+P11-28,11,Blaziken (Mega),walk,medium,257,6,,,,outfit_2092_.png
+P11-29,11,Ampharos (Mega),walk,medium,181,6,,,,outfit_2094_.png outfit_2135_.png
+P11-30,11,Ampharos (Mega),walk,medium,181,6,,,,outfit_2095_.png outfit_2136_.png
+P11-31,11,Sableye?,walk,low,302,3,,,,outfit_2100_.png
+P11-32,11,Lucario (Mega),walk,medium,448,6,,,,outfit_2118_.png
+P11-33,11,Lucario,walk,medium,448,4,,,,outfit_2119_.png outfit_4217_.png
+P11-34,11,?,walk,low,,,,,,outfit_2129_.png
+P11-35,11,Sableye,walk,low,302,3,,,,outfit_2130_.png
+P11-36,11,Steelix (Mega),walk,medium,208,6,,,,outfit_2138_.png outfit_7153_.png
+P11-37,11,?,walk,low,,,,,,outfit_2139_.png
+P11-38,11,?,walk,low,,,,,,outfit_2140_.png
+P11-39,11,Absol?,walk,low,359,3,,,,outfit_2141_.png
+P11-40,11,Grotle,walk,medium,388,4,,,,outfit_2147_.png
+P11-41,11,Chimchar,walk,medium,390,4,,,,outfit_2148_.png
+P11-42,11,Monferno,walk,medium,391,4,,,,outfit_2149_.png
+P11-43,11,Piplup,walk,medium,393,4,,,,outfit_2150_.png
+P11-44,11,Prinplup,walk,medium,394,4,,,,outfit_2151_.png
+P11-45,11,Turtwig,walk,medium,387,4,,,,outfit_2152_.png
+P11-46,11,?,walk,low,,,,,,outfit_2158_.png
+P11-47,11,Absol,walk,medium,359,3,,,,outfit_2159_.png
+P11-48,11,?,walk,low,,,,,,outfit_2161_.png
+P12-1,12,Mew?,walk,low,151,1,,,,outfit_2162_.png
+P12-2,12,? (electric aura),effect,low,,,,,,outfit_2163_.png
+P12-3,12,Weavile,walk,medium,461,4,,,,outfit_2164_.png
+P12-4,12,?,walk,low,,,,,,outfit_2165_.png outfit_2166_.png
+P12-5,12,Torchic,walk,medium,255,3,,,,outfit_2167_.png
+P12-6,12,Seedot?,walk,low,273,3,,,,outfit_2168_.png
+P12-7,12,?,walk,low,,,,,,outfit_2171_.png
+P12-8,12,? (aura),walk,low,,,,,,outfit_2172_.png
+P12-9,12,Groudon?,walk,low,383,3,,,,outfit_2173_.png outfit_2175_.png
+P12-10,12,Steelix (Mega),ride,medium,208,6,,,,outfit_2176_.png
+P12-11,12,Rapidash (shiny),walk,medium,78,1,,,,outfit_2178_.png
+P12-12,12,?,walk,low,,,,,,outfit_2180_.png outfit_7120_.png
+P12-13,12,Gengar,walk,high,94,1,,,,outfit_2182_.png
+P12-14,12,Jigglypuff,walk,high,39,1,,,,outfit_2184_.png
+P12-15,12,?,walk,low,,,,,,outfit_2185_.png
+P12-16,12,Onix (crystal),ride,medium,95,1,,,,outfit_2187_.png
+P12-17,12,?,walk,low,,,,,,outfit_2188_.png
+P12-18,12,Ninetales (recolour),walk,low,38,1,,,,outfit_2189_.png
+P12-19,12,Ninetales (orange recolour),walk,medium,38,1,,,,outfit_2190_.png
+P12-20,12,Ninetales (red recolour),walk,medium,38,1,,,,outfit_2191_.png
+P12-21,12,Ninetales,walk,high,38,1,,,,outfit_2192_.png
+P12-22,12,Ninetales,walk,high,38,1,,,,outfit_2193_.png
+P12-23,12,Ninetales (costume),walk,low,38,1,,,,outfit_2194_.png
+P12-24,12,Ninetales (recolour),ride,low,38,1,,,,outfit_2195_.png
+P12-25,12,Ninetales (orange recolour),ride,medium,38,1,,,,outfit_2196_.png
+P12-26,12,Ninetales (red recolour),ride,medium,38,1,,,,outfit_2197_.png
+P12-27,12,Ninetales,ride,high,38,1,,,,outfit_2198_.png
+P12-28,12,Ninetales,ride,high,38,1,,,,outfit_2199_.png
+P12-29,12,Ninetales (costume),ride,low,38,1,,,,outfit_2200_.png
+P12-30,12,?,walk,low,,,,,,outfit_2214_.png
+P12-31,12,?,walk,low,,,,,,outfit_2215_.png
+P12-32,12,Beautifly?,walk,low,267,3,,,,outfit_2218_.png
+P12-33,12,?,walk,low,,,,,,outfit_2220_.png
+P12-34,12,?,walk,low,,,,,,outfit_2221_.png
+P12-35,12,?,walk,low,,,,,,outfit_2222_.png
+P12-36,12,?,walk,low,,,,,,outfit_2223_.png
+P12-37,12,Skitty,walk,medium,300,3,,,,outfit_2237_.png
+P12-38,12,?,walk,low,,,,,,outfit_2240_.png
+P12-39,12,?,walk,low,,,,,,outfit_2245_.png
+P12-40,12,?,walk,low,,,,,,outfit_2247_.png
+P12-41,12,Azurill,walk,medium,298,3,,,,outfit_2254_.png
+P12-42,12,Porygon2,walk,medium,137,1,,,,outfit_2255_.png
+P12-43,12,?,walk,low,,,,,,outfit_2256_.png outfit_2257_.png outfit_2901_.png
+P12-44,12,Scyther?,walk,low,123,1,,,,outfit_2264_.png
+P12-45,12,Scyther (aura)?,walk,low,123,1,,,,outfit_2265_.png
+P12-46,12,Charizard (dark recolour)?,walk,low,6,1,,,,outfit_2268_.png
+P12-47,12,?,walk,low,,,,,,outfit_2269_.png
+P12-48,12,?,walk,low,,,,,,outfit_2270_.png outfit_5873_.png outfit_5899_.png
+P13-1,13,Kadabra?,walk,low,64,1,,,,outfit_2271_.png
+P13-2,13,effect: small pink sprite,effect,low,,,,,,outfit_2272_.png
+P13-3,13,effect: small pink sprite,effect,low,,,,,,outfit_2273_.png
+P13-4,13,?,walk,low,,,,,,outfit_2355_.png
+P13-5,13,?,walk,low,,,,,,outfit_2460_.png
+P13-6,13,Gardevoir (costume)?,walk,low,282,3,,,,outfit_2588_.png
+P13-7,13,Gallade?,walk,low,475,4,,,,outfit_2589_.png
+P13-8,13,?,walk,low,,,,,,outfit_2590_.png
+P13-9,13,Gallade?,walk,low,475,4,,,,outfit_2591_.png
+P13-10,13,?,walk,low,,,,,,outfit_2601_.png
+P13-11,13,Meganium (costume)?,walk,low,154,6,,,,outfit_2606_.png
+P13-12,13,? (Christmas costume),walk,low,,,,,,outfit_2614_.png
+P13-13,13,? (Christmas costume),walk,low,,,,,,outfit_2617_.png
+P13-14,13,npc: box-headed figure?,other,low,,,,,,outfit_2639_.png
+P13-15,13,?,walk,low,,,,,,outfit_2640_.png outfit_2641_.png
+P13-16,13,?,walk,low,,,,,,outfit_2642_.png outfit_2643_.png outfit_2644_.png outfit_2645_.png outfit_7467_.png
+P13-17,13,?,walk,low,,,,,,outfit_2646_.png
+P13-18,13,Delibird?,walk,low,225,2,,,,outfit_2647_.png
+P13-19,13,?,walk,low,,,,,,outfit_2658_.png
+P13-20,13,Absol?,walk,low,359,3,,,,outfit_2659_.png
+P13-21,13,Mismagius?,walk,low,429,4,,,,outfit_2660_.png outfit_2672_.png
+P13-22,13,?,ride,low,,,,,,outfit_2661_.png
+P13-23,13,? (Halloween),walk,low,,,,,,outfit_2662_.png
+P13-24,13,?,walk,low,,,,,,outfit_2663_.png outfit_2666_.png
+P13-25,13,?,walk,low,,,,,,outfit_2664_.png
+P13-26,13,?,walk,low,,,,,,outfit_2665_.png
+P13-27,13,Yveltal?,fly,low,717,6,,,,outfit_2667_.png outfit_5321_.png
+P13-28,13,Yveltal?,walk,low,717,6,,,,outfit_2668_.png outfit_5322_.png
+P13-29,13,?,walk,low,,,,,,outfit_2669_.png
+P13-30,13,effect: small sprite,effect,low,,,,,,outfit_2670_.png
+P13-31,13,?,other,low,,,,,,outfit_2671_.png
+P13-32,13,?,walk,low,,,,,,outfit_2673_.png
+P13-33,13,?,fly,low,,,,,,outfit_2674_.png
+P13-34,13,? (Christmas costume),walk,low,,,,,,outfit_2675_.png
+P13-35,13,Stantler (costume)?,walk,low,234,2,,,,outfit_2676_.png
+P13-36,13,? (snowman costume),walk,low,,,,,,outfit_2677_.png outfit_2679_.png
+P13-37,13,?,walk,low,,,,,,outfit_2678_.png
+P13-38,13,Ludicolo?,walk,low,272,3,,,,outfit_2681_.png
+P13-39,13,Ludicolo?,surf,low,272,3,,,,outfit_2682_.png
+P13-40,13,Braviary?,walk,low,628,5,,,,outfit_2683_.png
+P13-41,13,Braviary?,walk,low,628,5,,,,outfit_2684_.png
+P13-42,13,Braviary?,fly,low,628,5,,,,outfit_2685_.png
+P13-43,13,Trevenant (Christmas)?,walk,low,709,6,,,,outfit_2686_.png outfit_2687_.png
+P13-44,13,?,walk,low,,,,,,outfit_2688_.png
+P13-45,13,?,walk,low,,,,,,outfit_2689_.png
+P13-46,13,?,walk,low,,,,,,outfit_2690_.png
+P13-47,13,?,walk,low,,,,,,outfit_2691_.png
+P13-48,13,?,walk,low,,,,,,outfit_2692_.png outfit_6400_.png
+P14-1,14,?,walk,low,,,,,,outfit_2693_.png
+P14-2,14,Arceus (recolour)?,walk,low,493,4,,,,outfit_2694_.png
+P14-3,14,Arceus?,walk,medium,493,4,,,,outfit_2695_.png outfit_5950_.png
+P14-4,14,Absol (recolour)?,walk,low,359,3,,,,outfit_2696_.png
+P14-5,14,?,walk,low,,,,,,outfit_2697_.png
+P14-6,14,Arbok (dark recolour)?,walk,low,24,1,,,,outfit_2698_.png
+P14-7,14,Arbok?,walk,low,24,1,,,,outfit_2699_.png
+P14-8,14,?,walk,low,,,,,,outfit_2700_.png
+P14-9,14,?,fly,low,,,,,,outfit_2704_.png
+P14-10,14,?,fly,low,,,,,,outfit_2706_.png
+P14-11,14,Mewtwo (ghost recolour)?,walk,low,150,1,,,,outfit_2707_.png
+P14-12,14,player outfit,outfit,medium,,,,,,outfit_2708_.png
+P14-13,14,player outfit,outfit,medium,,,,,,outfit_2709_.png
+P14-14,14,item: pumpkin,other,medium,,,,,,outfit_2714_.png outfit_2726_.png
+P14-15,14,Venusaur (Halloween),ride,medium,3,1,,,,outfit_2715_.png outfit_6071_.png outfit_6072_.png
+P14-16,14,Venusaur (Halloween),ride,medium,3,1,,,,outfit_2716_.png outfit_6073_.png outfit_6074_.png
+P14-17,14,Charizard (Halloween skeleton),walk,medium,6,1,,,,outfit_2717_.png
+P14-18,14,Charizard (Halloween skeleton),walk,medium,6,1,,,,outfit_2718_.png outfit_4229_.png
+P14-19,14,Gengar (aura),walk,medium,94,1,,,,outfit_2719_.png
+P14-20,14,Gengar (green aura),walk,medium,94,1,,,,outfit_2720_.png
+P14-21,14,Gengar (costume),walk,medium,94,1,,,,outfit_2721_.png
+P14-22,14,Gengar (vampire costume)?,walk,low,94,1,,,,outfit_2722_.png outfit_2723_.png
+P14-23,14,player outfit,outfit,medium,,,,,,outfit_2724_.png
+P14-24,14,player outfit,outfit,medium,,,,,,outfit_2727_.png
+P14-25,14,player outfit,outfit,low,,,,,,outfit_2728_.png
+P14-26,14,Gardevoir (costume)?,walk,low,282,3,,,,outfit_2729_.png
+P14-27,14,?,other,low,,,,,,outfit_2730_.png
+P14-28,14,player outfit,outfit,low,,,,,,outfit_2731_.png
+P14-29,14,?,other,low,,,,,,outfit_2732_.png
+P14-30,14,player outfit,outfit,medium,,,,,,outfit_2741_.png
+P14-31,14,player outfit,outfit,medium,,,,,,outfit_2759_.png
+P14-32,14,player outfit,outfit,medium,,,,,,outfit_2761_.png
+P14-33,14,player outfit,outfit,medium,,,,,,outfit_2767_.png
+P14-34,14,player outfit,outfit,medium,,,,,,outfit_2768_.png
+P14-35,14,player outfit,outfit,medium,,,,,,outfit_2769_.png
+P14-36,14,player outfit,outfit,medium,,,,,,outfit_2770_.png
+P14-37,14,player outfit,outfit,medium,,,,,,outfit_2771_.png
+P14-38,14,player outfit,outfit,medium,,,,,,outfit_2784_.png
+P14-39,14,player outfit,outfit,medium,,,,,,outfit_2785_.png
+P14-40,14,player outfit,outfit,medium,,,,,,outfit_2789_.png
+P14-41,14,player outfit,outfit,medium,,,,,,outfit_2790_.png
+P14-42,14,player outfit,outfit,medium,,,,,,outfit_2791_.png
+P14-43,14,player outfit,outfit,medium,,,,,,outfit_2792_.png
+P14-44,14,player outfit,outfit,medium,,,,,,outfit_2793_.png
+P14-45,14,player outfit,outfit,medium,,,,,,outfit_2794_.png
+P14-46,14,?,walk,low,,,,,,outfit_2795_.png
+P14-47,14,?,walk,low,,,,,,outfit_2796_.png
+P14-48,14,?,walk,low,,,,,,outfit_2797_.png
+P15-1,15,?,walk,low,,,,,,outfit_2798_.png
+P15-2,15,?,walk,low,,,,,,outfit_2799_.png
+P15-3,15,Rhyhorn?,ride,low,111,1,,,,outfit_2801_.png
+P15-4,15,Rhyhorn?,walk,low,111,1,,,,outfit_2802_.png
+P15-5,15,Mismagius?,walk,low,429,4,,,,outfit_2803_.png outfit_5865_.png
+P15-6,15,Abra?,walk,low,63,1,,,,outfit_2804_.png
+P15-7,15,?,walk,low,,,,,,outfit_2805_.png outfit_3964_.png outfit_5910_.png
+P15-8,15,effect: small sprite,effect,low,,,,,,outfit_2806_.png
+P15-9,15,player outfit,outfit,low,,,,,,outfit_2807_.png
+P15-10,15,player outfit,outfit,low,,,,,,outfit_2808_.png outfit_5838_.png
+P15-11,15,player outfit,outfit,medium,,,,,,outfit_2810_.png
+P15-12,15,player outfit,outfit,medium,,,,,,outfit_2888_.png
+P15-13,15,player outfit,outfit,medium,,,,,,outfit_2889_.png
+P15-14,15,player outfit,outfit,medium,,,,,,outfit_2890_.png
+P15-15,15,player outfit,outfit,medium,,,,,,outfit_2891_.png
+P15-16,15,player outfit,outfit,medium,,,,,,outfit_2892_.png
+P15-17,15,player outfit (witch on broom)?,outfit,low,,,,,,outfit_2893_.png
+P15-18,15,Slowpoke?,walk,low,79,1,,,,outfit_2895_.png
+P15-19,15,player outfit,outfit,medium,,,,,,outfit_2896_.png
+P15-20,15,?,walk,low,,,,,,outfit_2897_.png
+P15-21,15,player outfit,outfit,medium,,,,,,outfit_2898_.png
+P15-22,15,Mewtwo?,walk,low,150,1,,,,outfit_2902_.png
+P15-23,15,? (skeleton costume),walk,low,,,,,,outfit_2903_.png
+P15-24,15,Charmeleon (recolour)?,walk,low,5,1,,,,outfit_2904_.png
+P15-25,15,Trevenant (Christmas)?,walk,low,709,6,,,,outfit_2905_.png
+P15-26,15,Typhlosion (costume)?,walk,low,157,2,,,,outfit_2906_.png
+P15-27,15,Dragonite (dark recolour)?,walk,low,149,1,,,,outfit_2907_.png
+P15-28,15,?,walk,low,,,,,,outfit_2908_.png
+P15-29,15,?,walk,low,,,,,,outfit_2909_.png
+P15-30,15,?,walk,low,,,,,,outfit_2910_.png
+P15-31,15,Nidoking (recolour)?,walk,low,34,1,,,,outfit_2911_.png
+P15-32,15,?,walk,low,,,,,,outfit_2912_.png
+P15-33,15,Gyarados (dragon costume)?,walk,low,130,1,,,,outfit_2913_.png
+P15-34,15,?,walk,low,,,,,,outfit_2914_.png
+P15-35,15,?,walk,low,,,,,,outfit_2915_.png
+P15-36,15,?,walk,low,,,,,,outfit_2917_.png
+P15-37,15,?,walk,low,,,,,,outfit_2918_.png
+P15-38,15,Gyarados (dragon costume)?,surf,low,130,1,,,,outfit_2919_.png
+P15-39,15,Dragonite (dark recolour)?,walk,low,149,1,,,,outfit_2921_.png
+P15-40,15,Dragonite (dark recolour)?,walk,low,149,1,,,,outfit_2922_.png
+P15-41,15,?,walk,low,,,,,,outfit_2923_.png
+P15-42,15,Charmeleon (recolour)?,walk,low,5,1,,,,outfit_2924_.png
+P15-43,15,? (skeleton costume),walk,low,,,,,,outfit_2925_.png
+P15-44,15,?,walk,low,,,,,,outfit_2926_.png
+P15-45,15,?,walk,low,,,,,,outfit_2927_.png
+P15-46,15,"Gyarados (dragon costume, blue)?",walk,low,130,1,,,,outfit_2928_.png
+P15-47,15,"Gyarados (dragon costume, blue)?",surf,low,130,1,,,,outfit_2929_.png
+P15-48,15,?,walk,low,,,,,,outfit_2930_.png
+P16-1,16,player outfit,outfit,medium,,,,,,outfit_2932_.png
+P16-2,16,player outfit,outfit,medium,,,,,,outfit_2935_.png
+P16-3,16,player outfit,outfit,medium,,,,,,outfit_2955_.png
+P16-4,16,?,walk,low,,,,,,outfit_2956_.png outfit_4785_.png outfit_4787_.png
+P16-5,16,?,ride,low,,,,,,outfit_2957_.png outfit_4778_.png outfit_4786_.png outfit_4788_.png
+P16-6,16,player outfit,outfit,medium,,,,,,outfit_3000_.png outfit_5742_.png
+P16-7,16,player outfit,outfit,medium,,,,,,outfit_3001_.png outfit_5743_.png
+P16-8,16,player outfit,outfit,medium,,,,,,outfit_3002_.png outfit_5744_.png
+P16-9,16,player outfit,outfit,medium,,,,,,outfit_3003_.png
+P16-10,16,player outfit,outfit,medium,,,,,,outfit_3004_.png
+P16-11,16,player outfit,outfit,medium,,,,,,outfit_3007_.png
+P16-12,16,player outfit,outfit,medium,,,,,,outfit_3008_.png
+P16-13,16,player outfit,outfit,medium,,,,,,outfit_3009_.png
+P16-14,16,player outfit,outfit,medium,,,,,,outfit_3010_.png
+P16-15,16,player outfit,outfit,medium,,,,,,outfit_3023_.png
+P16-16,16,player outfit,outfit,medium,,,,,,outfit_3024_.png
+P16-17,16,player outfit,outfit,medium,,,,,,outfit_3025_.png
+P16-18,16,player outfit,outfit,medium,,,,,,outfit_3026_.png
+P16-19,16,player outfit,outfit,medium,,,,,,outfit_3027_.png
+P16-20,16,player outfit,outfit,medium,,,,,,outfit_3028_.png
+P16-21,16,player outfit,outfit,medium,,,,,,outfit_3029_.png
+P16-22,16,player outfit,outfit,medium,,,,,,outfit_3030_.png
+P16-23,16,?,walk,low,,,,,,outfit_3032_.png
+P16-24,16,?,walk,low,,,,,,outfit_3033_.png
+P16-25,16,?,walk,low,,,,,,outfit_3049_.png
+P16-26,16,?,walk,low,,,,,,outfit_3050_.png
+P16-27,16,item: case/chest?,other,low,,,,,,outfit_3051_.png
+P16-28,16,Pangoro?,walk,low,675,6,,,,outfit_3053_.png
+P16-29,16,player outfit,outfit,low,,,,,,outfit_3061_.png
+P16-30,16,Chansey,walk,medium,113,1,,,,outfit_3066_.png
+P16-31,16,Ekans,walk,medium,23,1,,,,outfit_3069_.png
+P16-32,16,Arbok?,walk,low,24,1,,,,outfit_3070_.png
+P16-33,16,Aerodactyl,walk,medium,142,1,,,,outfit_3072_.png
+P16-34,16,Lickitung?,walk,low,108,1,,,,outfit_3073_.png
+P16-35,16,Arcanine,ride,medium,59,1,,,,outfit_3074_.png
+P16-36,16,?,walk,low,,,,,,outfit_3081_.png
+P16-37,16,?,walk,low,,,,,,outfit_3082_.png
+P16-38,16,Venusaur,walk,high,3,1,,,,outfit_3084_.png outfit_3575_.png
+P16-39,16,Doduo,walk,medium,84,1,,,,outfit_3088_.png
+P16-40,16,player outfit,outfit,low,,,,,,outfit_3091_.png outfit_5461_.png outfit_5463_.png
+P16-41,16,Pidgey?,walk,low,16,1,,,,outfit_3092_.png
+P16-42,16,Metapod,walk,medium,11,1,,,,outfit_3093_.png
+P16-43,16,Arbok,walk,medium,24,1,,,,outfit_3101_.png
+P16-44,16,Butterfree,walk,medium,12,1,,,,outfit_3102_.png outfit_3576_.png outfit_5657_.png outfit_5658_.png
+P16-45,16,Slowbro,walk,medium,80,1,,,,outfit_3103_.png
+P16-46,16,Abra?,walk,low,63,1,,,,outfit_3105_.png outfit_7293_.png
+P16-47,16,Zubat,walk,medium,41,1,,,,outfit_3106_.png outfit_3584_.png
+P16-48,16,Raichu,walk,medium,26,1,,,,outfit_3112_.png outfit_3582_.png
+P17-1,17,Rattata,walk,medium,19,1,,,,outfit_3116_.png
+P17-2,17,Pidgey?,walk,low,16,1,,,,outfit_3119_.png
+P17-3,17,Horsea,walk,medium,116,1,,,,outfit_3120_.png
+P17-4,17,Pikachu,walk,high,25,1,,,,outfit_3121_.png
+P17-5,17,Dragonair,walk,high,148,1,,,,outfit_3123_.png
+P17-6,17,Wigglytuff,walk,high,40,1,,,,outfit_3126_.png outfit_4185_.png
+P17-7,17,Persian?,walk,medium,53,1,,,,outfit_3131_.png outfit_3580_.png
+P17-8,17,Nidorina,walk,medium,30,1,,,,outfit_3133_.png
+P17-9,17,Slowpoke,walk,high,79,1,,,,outfit_3137_.png
+P17-10,17,Graveler,walk,medium,75,1,,,,outfit_3139_.png
+P17-11,17,Nidoqueen,walk,high,31,1,,,,outfit_3141_.png
+P17-12,17,Dugtrio?,walk,low,51,1,,,,outfit_3144_.png
+P17-13,17,Vileplume,walk,high,45,1,,,,outfit_3146_.png
+P17-14,17,Beedrill,walk,high,15,1,,,,outfit_3149_.png outfit_3610_.png
+P17-15,17,Parasect,walk,high,47,1,,,,outfit_3153_.png outfit_3589_.png
+P17-16,17,Kabuto,walk,medium,140,1,,,,outfit_3156_.png
+P17-17,17,Seel?,walk,low,86,1,,,,outfit_3159_.png
+P17-18,17,Eevee,walk,high,133,1,,,,outfit_3160_.png
+P17-19,17,Primeape?,walk,medium,57,1,,,,outfit_3161_.png
+P17-20,17,Poliwrath,walk,high,62,1,,,,outfit_3162_.png outfit_5868_.png
+P17-21,17,Meowth,walk,medium,52,1,,,,outfit_3163_.png outfit_4484_.png
+P17-22,17,Dewgong,walk,high,87,1,,,,outfit_3168_.png
+P17-23,17,Poliwag?,walk,low,60,1,,,,outfit_3169_.png
+P17-24,17,Machoke,walk,medium,67,1,,,,outfit_3171_.png
+P17-25,17,Machamp,walk,high,68,1,,,,outfit_3179_.png outfit_4612_.png outfit_5182_.png
+P17-26,17,Golbat,walk,high,42,1,,,,outfit_3180_.png outfit_3585_.png
+P17-27,17,Rapidash,ride,high,78,1,,,,outfit_3187_.png
+P17-28,17,Venusaur,ride,high,3,1,,,,outfit_3191_.png outfit_3634_.png outfit_5227_.png
+P17-29,17,Poliwrath?,surf,low,62,1,,,,outfit_3194_.png
+P17-30,17,player outfit,outfit,medium,,,,,,outfit_3229_.png
+P17-31,17,player outfit,outfit,medium,,,,,,outfit_3230_.png
+P17-32,17,effect: small sprite,effect,low,,,,,,outfit_3236_.png
+P17-33,17,Vaporeon,surf,medium,134,1,,,,outfit_3239_.png
+P17-34,17,Omastar,walk,high,139,1,,,,outfit_3240_.png
+P17-35,17,Zapdos,walk,high,145,1,,,,outfit_3247_.png
+P17-36,17,Charmander,walk,high,4,1,,,,outfit_3250_.png
+P17-37,17,Clefairy?,walk,low,35,1,,,,outfit_3251_.png
+P17-38,17,Farfetch'd?,walk,low,83,1,,,,outfit_3254_.png
+P17-39,17,Poliwhirl,walk,medium,61,1,,,,outfit_3259_.png
+P17-40,17,Grimer,walk,medium,88,1,,,,outfit_3261_.png outfit_3601_.png
+P17-41,17,Kadabra,walk,medium,64,1,,,,outfit_3265_.png outfit_3596_.png
+P17-42,17,Alakazam,walk,medium,65,1,,,,outfit_3266_.png
+P17-43,17,Rapidash,walk,high,78,1,,,,outfit_3267_.png
+P17-44,17,Magneton,walk,high,82,1,,,,outfit_3270_.png
+P17-45,17,Koffing,walk,high,109,1,,,,outfit_3274_.png
+P17-46,17,Weezing,walk,high,110,1,,,,outfit_3277_.png
+P17-47,17,Kingler,walk,high,99,1,,,,outfit_3291_.png outfit_3607_.png
+P17-48,17,effect: small sprite,effect,low,,,,,,outfit_3297_.png
+P18-1,18,player outfit,outfit,medium,,,,,,outfit_3301_.png
+P18-2,18,?,ride,low,,,,,,outfit_3302_.png
+P18-3,18,?,walk,low,,,,,,outfit_3304_.png
+P18-4,18,Moltres,walk,high,146,1,,,,outfit_3310_.png
+P18-5,18,?,ride,low,,,,,,outfit_3311_.png outfit_4453_.png
+P18-6,18,player outfit,outfit,medium,,,,,,outfit_3315_.png
+P18-7,18,Squirtle?,walk,low,7,1,,,,outfit_3318_.png
+P18-8,18,Seadra (recolour)?,walk,low,117,1,,,,outfit_3321_.png outfit_3615_.png
+P18-9,18,Articuno,walk,high,144,1,,,,outfit_3328_.png
+P18-10,18,item: gold coins?,other,low,,,,,,outfit_3329_.png outfit_7292_.png
+P18-11,18,Snorlax,ride,medium,143,1,,,,outfit_3345_.png
+P18-12,18,Hitmonlee,walk,medium,106,1,,,,outfit_3346_.png
+P18-13,18,npc: Santa-costumed figure?,other,low,,,,,,outfit_3347_.png
+P18-14,18,Jynx (Christmas)?,walk,low,124,1,,,,outfit_3357_.png
+P18-15,18,Haunter,walk,medium,93,1,,,,outfit_3360_.png outfit_3525_.png
+P18-16,18,Bayleef?,walk,low,153,2,,,,outfit_3364_.png
+P18-17,18,Meganium,walk,high,154,6,,,,outfit_3365_.png
+P18-18,18,Croconaw,walk,medium,159,2,,,,outfit_3373_.png
+P18-19,18,Noctowl,walk,medium,164,2,,,,outfit_3376_.png
+P18-20,18,player outfit,outfit,low,,,,,,outfit_3380_.png
+P18-21,18,?,walk,low,,,,,,outfit_3394_.png
+P18-22,18,Togetic?,walk,low,176,2,,,,outfit_3400_.png
+P18-23,18,?,walk,low,,,,,,outfit_3413_.png outfit_3695_.png
+P18-24,18,Ursaring,walk,medium,217,2,,,,outfit_3426_.png
+P18-25,18,Smeargle?,walk,low,235,2,,,,outfit_3454_.png
+P18-26,18,player outfit,outfit,medium,,,,,,outfit_3504_.png
+P18-27,18,?,other,low,,,,,,outfit_3509_.png outfit_3660_.png
+P18-28,18,Forretress?,walk,low,205,2,,,,outfit_3514_.png
+P18-29,18,Meganium,ride,high,154,6,,,,outfit_3535_.png
+P18-30,18,?,other,low,,,,,,outfit_3536_.png
+P18-31,18,Stantler,ride,medium,234,2,,,,outfit_3537_.png
+P18-32,18,effect: small sprite,effect,low,,,,,,outfit_3538_.png
+P18-33,18,Piloswine,ride,medium,221,2,,,,outfit_3539_.png
+P18-34,18,?,walk,low,,,,,,outfit_3543_.png
+P18-35,18,Hitmonchan,walk,medium,107,1,,,,outfit_3554_.png outfit_3555_.png
+P18-36,18,Hitmonchan,walk,medium,107,1,,,,outfit_3556_.png
+P18-37,18,Hitmonchan,walk,medium,107,1,,,,outfit_3557_.png
+P18-38,18,?,walk,low,,,,,,outfit_3572_.png
+P18-39,18,Ledian?,walk,low,166,2,,,,outfit_3577_.png
+P18-40,18,?,walk,low,,,,,,outfit_3583_.png
+P18-41,18,Arcanine (recolour)?,walk,low,59,1,,,,outfit_3593_.png
+P18-42,18,?,walk,low,,,,,,outfit_3599_.png
+P18-43,18,?,walk,low,,,,,,outfit_3600_.png
+P18-44,18,?,walk,low,,,,,,outfit_3605_.png
+P18-45,18,?,walk,low,,,,,,outfit_3619_.png
+P18-46,18,?,walk,low,,,,,,outfit_3620_.png
+P18-47,18,Snorlax,walk,high,143,1,,,,outfit_3626_.png
+P18-48,18,Dunsparce,walk,medium,206,2,,,,outfit_3627_.png
+P19-1,19,Noctowl,fly,medium,164,2,,,,outfit_3630_.png
+P19-2,19,player outfit,outfit,low,,,,,,outfit_3631_.png
+P19-3,19,Arcanine (recolour)?,ride,low,59,1,,,,outfit_3635_.png
+P19-4,19,Gliscor?,fly,low,472,4,,,,outfit_3638_.png outfit_5925_.png
+P19-5,19,Dragonite,fly,medium,149,1,,,,outfit_3639_.png
+P19-6,19,player outfit,outfit,low,,,,,,outfit_3640_.png
+P19-7,19,?,ride,low,,,,,,outfit_3642_.png
+P19-8,19,item: blue orb?,other,low,,,,,,outfit_3644_.png
+P19-9,19,Xatu?,walk,low,178,2,,,,outfit_3655_.png outfit_4014_.png outfit_4015_.png
+P19-10,19,effect: small sprite,effect,low,,,,,,outfit_3657_.png
+P19-11,19,Forretress?,walk,low,205,2,,,,outfit_3664_.png
+P19-12,19,Dragonair (recolour)?,fly,low,148,1,,,,outfit_3672_.png
+P19-13,19,Fearow?,fly,low,22,1,,,,outfit_3677_.png
+P19-14,19,Fearow?,fly,low,22,1,,,,outfit_3678_.png
+P19-15,19,?,fly,low,,,,,,outfit_3679_.png
+P19-16,19,?,ride,low,,,,,,outfit_3682_.png
+P19-17,19,Lapras (recolour)?,walk,low,131,1,,,,outfit_3683_.png
+P19-18,19,Espeon,walk,medium,196,2,,,,outfit_3693_.png
+P19-19,19,Espeon (recolour)?,walk,low,196,2,,,,outfit_3694_.png outfit_6357_.png
+P19-20,19,?,walk,low,,,,,,outfit_3703_.png
+P19-21,19,Aipom?,walk,low,190,2,,,,outfit_3704_.png
+P19-22,19,Bidoof?,walk,low,399,4,,,,outfit_3705_.png
+P19-23,19,Bibarel?,walk,low,400,4,,,,outfit_3706_.png
+P19-24,19,?,walk,low,,,,,,outfit_3707_.png outfit_7303_.png
+P19-25,19,Unown?,walk,low,201,2,,,,outfit_3708_.png
+P19-26,19,?,walk,low,,,,,,outfit_3709_.png outfit_7509_.png
+P19-27,19,?,surf,low,,,,,,outfit_3710_.png
+P19-28,19,Charmander?,walk,low,4,1,,,,outfit_3711_.png outfit_7508_.png
+P19-29,19,?,surf,low,,,,,,outfit_3712_.png
+P19-30,19,?,walk,low,,,,,,outfit_3713_.png
+P19-31,19,Lopunny,walk,medium,428,4,,,,outfit_3714_.png outfit_4956_.png
+P19-32,19,?,walk,low,,,,,,outfit_3715_.png
+P19-33,19,?,walk,low,,,,,,outfit_3716_.png
+P19-34,19,?,walk,low,,,,,,outfit_3717_.png
+P19-35,19,?,walk,low,,,,,,outfit_3718_.png
+P19-36,19,?,walk,low,,,,,,outfit_3719_.png
+P19-37,19,?,walk,low,,,,,,outfit_3720_.png
+P19-38,19,?,walk,low,,,,,,outfit_3721_.png
+P19-39,19,?,walk,low,,,,,,outfit_3722_.png
+P19-40,19,Cherubi,walk,medium,420,4,,,,outfit_3723_.png
+P19-41,19,?,walk,low,,,,,,outfit_3724_.png
+P19-42,19,?,walk,low,,,,,,outfit_3725_.png
+P19-43,19,Infernape,walk,medium,392,4,,,,outfit_3728_.png
+P19-44,19,?,walk,low,,,,,,outfit_3729_.png
+P19-45,19,?,walk,low,,,,,,outfit_3730_.png
+P19-46,19,?,walk,low,,,,,,outfit_3731_.png
+P19-47,19,?,ride,low,,,,,,outfit_3732_.png
+P19-48,19,Cresselia,walk,medium,488,4,,,,outfit_3733_.png
+P20-1,20,?,walk,low,,,,,,outfit_3734_.png outfit_7296_.png
+P20-2,20,Darkrai,walk,high,491,4,,,,outfit_3736_.png
+P20-3,20,Drifloon,walk,medium,425,4,,,,outfit_3737_.png
+P20-4,20,Drifblim,walk,medium,426,4,,,,outfit_3738_.png
+P20-5,20,Drifblim,fly,medium,426,4,,,,outfit_3739_.png
+P20-6,20,Heatran?,walk,low,485,4,,,,outfit_3741_.png
+P20-7,20,Skorupi?,walk,low,451,4,,,,outfit_3742_.png
+P20-8,20,Shinx?,walk,low,403,4,,,,outfit_3743_.png
+P20-9,20,?,surf,low,,,,,,outfit_3744_.png
+P20-10,20,?,surf,low,,,,,,outfit_3745_.png
+P20-11,20,Gible?,walk,low,443,4,,,,outfit_3746_.png
+P20-12,20,Gabite,walk,medium,444,4,,,,outfit_3747_.png
+P20-13,20,Garchomp,walk,high,445,4,,,,outfit_3748_.png
+P20-14,20,Glameow?,walk,low,431,4,,,,outfit_3749_.png
+P20-15,20,Purugly,walk,medium,432,4,,,,outfit_3750_.png outfit_7465_.png
+P20-16,20,Riolu?,walk,low,447,4,,,,outfit_3751_.png
+P20-17,20,Honchkrow,walk,medium,430,4,,,,outfit_3752_.png outfit_7269_.png
+P20-18,20,Leafeon,walk,medium,470,4,,,,outfit_3753_.png
+P20-19,20,Glaceon,walk,medium,471,4,,,,outfit_3754_.png
+P20-20,20,Honchkrow,fly,medium,430,4,,,,outfit_3755_.png
+P20-21,20,Luxray,ride,medium,405,4,,,,outfit_3756_.png
+P20-22,20,Pachirisu?,walk,low,417,4,,,,outfit_3757_.png
+P20-23,20,Phione?,walk,low,489,4,,,,outfit_3758_.png
+P20-24,20,Manaphy?,walk,low,490,4,,,,outfit_3759_.png
+P20-25,20,?,surf,low,,,,,,outfit_3762_.png
+P20-26,20,?,surf,low,,,,,,outfit_3763_.png
+P20-27,20,Empoleon,walk,high,395,4,,,,outfit_3764_.png
+P20-28,20,Empoleon?,surf,low,395,4,,,,outfit_3765_.png
+P20-29,20,Piplup?,walk,low,393,4,,,,outfit_3766_.png
+P20-30,20,?,walk,low,,,,,,outfit_3768_.png
+P20-31,20,?,walk,low,,,,,,outfit_3769_.png
+P20-32,20,Grotle?,walk,low,388,4,,,,outfit_3770_.png
+P20-33,20,?,walk,low,,,,,,outfit_3771_.png
+P20-34,20,Buizel,walk,medium,418,4,,,,outfit_3772_.png
+P20-35,20,Floatzel?,surf,low,419,4,,,,outfit_3773_.png
+P20-36,20,Torterra?,surf,low,389,4,,,,outfit_3774_.png
+P20-37,20,Shinx?,walk,low,403,4,,,,outfit_3775_.png
+P20-38,20,Luxio?,walk,low,404,4,,,,outfit_3778_.png
+P20-39,20,Skorupi,walk,medium,451,4,,,,outfit_3779_.png
+P20-40,20,Drapion,walk,medium,452,4,,,,outfit_3781_.png
+P20-41,20,Togekiss,walk,medium,468,4,,,,outfit_3782_.png
+P20-42,20,Togekiss,fly,medium,468,4,,,,outfit_3783_.png
+P20-43,20,Abomasnow,walk,high,460,4,,,,outfit_3784_.png
+P20-44,20,Staravia,walk,medium,397,4,,,,outfit_3785_.png
+P20-45,20,Staraptor,fly,medium,398,4,,,,outfit_3786_.png
+P20-46,20,?,walk,low,,,,,,outfit_3787_.png
+P20-47,20,Tangrowth,walk,medium,465,4,,,,outfit_3788_.png
+P20-48,20,Rhyperior?,walk,low,464,4,,,,outfit_3789_.png
+P21-1,21,Starly?,walk,low,396,4,,,,outfit_3790_.png
+P21-2,21,?,walk,low,,,,,,outfit_3791_.png
+P21-3,21,?,walk,low,,,,,,outfit_3792_.png
+P21-4,21,Mesprit?,walk,low,481,4,,,,outfit_3793_.png
+P21-5,21,Azelf?,walk,low,482,4,,,,outfit_3794_.png
+P21-6,21,Grotle,walk,medium,388,4,,,,outfit_3795_.png outfit_7324_.png
+P21-7,21,Snover,walk,medium,459,4,,,,outfit_3796_.png
+P21-8,21,?,walk,low,,,,,,outfit_3797_.png outfit_8154_.png
+P21-9,21,?,walk,low,,,,,,outfit_3798_.png
+P21-10,21,?,walk,low,,,,,,outfit_3799_.png
+P21-11,21,Bastiodon?,walk,low,411,4,,,,outfit_3800_.png
+P21-12,21,Mamoswine,walk,high,473,4,,,,outfit_3801_.png
+P21-13,21,Lickilicky,walk,medium,463,4,,,,outfit_3802_.png
+P21-14,21,?,walk,low,,,,,,outfit_3804_.png
+P21-15,21,?,walk,low,,,,,,outfit_3805_.png
+P21-16,21,Munchlax?,walk,low,446,4,,,,outfit_3806_.png
+P21-17,21,Bastiodon?,ride,low,411,4,,,,outfit_3807_.png
+P21-18,21,Torterra,walk,high,389,4,,,,outfit_3808_.png
+P21-19,21,effect: small sprite,effect,low,,,,,,outfit_3809_.png
+P21-20,21,?,walk,low,,,,,,outfit_3810_.png
+P21-21,21,?,walk,low,,,,,,outfit_3811_.png
+P21-22,21,Chatot,walk,medium,441,4,,,,outfit_3812_.png
+P21-23,21,Shaymin,walk,medium,492,4,,,,outfit_3813_.png
+P21-24,21,?,walk,low,,,,,,outfit_3814_.png
+P21-25,21,Hippowdon,walk,high,450,4,,,,outfit_3815_.png
+P21-26,21,?,walk,low,,,,,,outfit_3816_.png
+P21-27,21,?,walk,low,,,,,,outfit_3817_.png
+P21-28,21,Rhyperior (recolour)?,walk,low,464,4,,,,outfit_3818_.png
+P21-29,21,?,walk,low,,,,,,outfit_3819_.png
+P21-30,21,Gallade,walk,medium,475,4,,,,outfit_3821_.png
+P21-31,21,?,walk,low,,,,,,outfit_3822_.png
+P21-32,21,Weavile (recolour)?,walk,low,461,4,,,,outfit_3823_.png
+P21-33,21,?,walk,low,,,,,,outfit_3824_.png
+P21-34,21,Magnezone,walk,medium,462,4,,,,outfit_3825_.png outfit_4481_.png
+P21-35,21,Rhyperior (dark recolour)?,walk,low,464,4,,,,outfit_3828_.png outfit_7384_.png
+P21-36,21,?,walk,low,,,,,,outfit_3830_.png
+P21-37,21,?,walk,low,,,,,,outfit_3831_.png
+P21-38,21,?,walk,low,,,,,,outfit_3835_.png outfit_4052_.png
+P21-39,21,?,walk,low,,,,,,outfit_3836_.png
+P21-40,21,?,walk,low,,,,,,outfit_3840_.png
+P21-41,21,?,walk,low,,,,,,outfit_3842_.png
+P21-42,21,?,walk,low,,,,,,outfit_3844_.png
+P21-43,21,?,walk,low,,,,,,outfit_3847_.png
+P21-44,21,Altaria,walk,high,334,3,,,,outfit_3853_.png
+P21-45,21,?,walk,low,,,,,,outfit_3854_.png
+P21-46,21,Blaziken,walk,medium,257,3,,,,outfit_3856_.png
+P21-47,21,?,walk,low,,,,,,outfit_3857_.png
+P21-48,21,?,walk,low,,,,,,outfit_3859_.png
+P22-1,22,Plusle?,walk,low,311,3,,,,outfit_3863_.png
+P22-2,22,Exploud,walk,medium,295,3,,,,outfit_3866_.png
+P22-3,22,Gallade (recolour)?,walk,low,475,4,,,,outfit_3868_.png outfit_6099_.png
+P22-4,22,?,walk,low,,,,,,outfit_3870_.png
+P22-5,22,Sableye,walk,medium,302,3,,,,outfit_3873_.png
+P22-6,22,Grovyle,walk,medium,253,3,,,,outfit_3874_.png outfit_7328_.png
+P22-7,22,Kirlia?,walk,low,281,3,,,,outfit_3876_.png
+P22-8,22,Loudred,walk,medium,294,3,,,,outfit_3879_.png
+P22-9,22,effect: small sprite,effect,low,,,,,,outfit_3880_.png
+P22-10,22,?,walk,low,,,,,,outfit_3882_.png
+P22-11,22,?,walk,low,,,,,,outfit_3883_.png
+P22-12,22,Numel,walk,medium,322,3,,,,outfit_3886_.png
+P22-13,22,Mightyena,walk,medium,262,3,,,,outfit_3888_.png outfit_6109_.png outfit_7270_.png
+P22-14,22,Pelipper,walk,high,279,3,,,,outfit_3889_.png
+P22-15,22,Trapinch?,walk,low,328,3,,,,outfit_3890_.png outfit_4053_.png
+P22-16,22,Minun?,walk,low,312,3,,,,outfit_3891_.png
+P22-17,22,Poochyena?,walk,low,261,3,,,,outfit_3892_.png
+P22-18,22,Ralts?,walk,low,280,3,,,,outfit_3893_.png
+P22-19,22,Regice,walk,medium,378,3,,,,outfit_3897_.png
+P22-20,22,Duskull?,walk,low,355,3,,,,outfit_3901_.png outfit_6526_.png
+P22-21,22,?,walk,low,,,,,,outfit_3902_.png
+P22-22,22,Sealeo?,walk,low,364,3,,,,outfit_3904_.png
+P22-23,22,Seviper,walk,medium,336,3,,,,outfit_3905_.png
+P22-24,22,Sharpedo,walk,high,319,3,,,,outfit_3906_.png outfit_7370_.png
+P22-25,22,Spheal,walk,medium,363,3,,,,outfit_3909_.png
+P22-26,22,?,walk,low,,,,,,outfit_3912_.png
+P22-27,22,Swablu,walk,medium,333,3,,,,outfit_3917_.png
+P22-28,22,Ninjask,walk,medium,291,3,,,,outfit_3921_.png
+P22-29,22,Zangoose,walk,medium,335,3,,,,outfit_3922_.png
+P22-30,22,Zangoose?,ride,low,335,3,,,,outfit_3932_.png
+P22-31,22,Aggron,ride,medium,306,3,,,,outfit_3933_.png
+P22-32,22,Lairon?,ride,low,305,3,,,,outfit_3936_.png
+P22-33,22,Manectric,ride,medium,310,3,,,,outfit_3937_.png
+P22-34,22,?,ride,low,,,,,,outfit_3939_.png
+P22-35,22,Altaria,fly,medium,334,3,,,,outfit_3941_.png
+P22-36,22,Camerupt,ride,medium,323,3,,,,outfit_3942_.png
+P22-37,22,Ludicolo?,surf,low,272,3,,,,outfit_3944_.png
+P22-38,22,Mightyena,ride,medium,262,3,,,,outfit_3945_.png outfit_7599_.png
+P22-39,22,Pelipper,fly,medium,279,3,,,,outfit_3946_.png outfit_7642_.png
+P22-40,22,Spheal?,surf,low,363,3,,,,outfit_3948_.png
+P22-41,22,Tropius,ride,medium,357,3,,,,outfit_3950_.png outfit_4063_.png
+P22-42,22,?,walk,low,,,,,,outfit_3953_.png
+P22-43,22,Torkoal?,ride,low,324,3,,,,outfit_3956_.png
+P22-44,22,vehicle: bicycle,ride,medium,,,,,,outfit_3957_.png
+P22-45,22,Glalie,walk,medium,362,3,,,,outfit_3959_.png
+P22-46,22,?,walk,low,,,,,,outfit_3960_.png
+P22-47,22,?,walk,low,,,,,,outfit_3961_.png outfit_7380_.png
+P22-48,22,?,walk,low,,,,,,outfit_3969_.png
+P23-1,23,Treecko?,walk,low,252,3,,,,outfit_3970_.png
+P23-2,23,Roserade,walk,medium,407,4,,,,outfit_3973_.png outfit_7334_.png
+P23-3,23,?,walk,low,,,,,,outfit_3974_.png outfit_7440_.png
+P23-4,23,Castform (rainy)?,walk,low,351,3,,,,outfit_3975_.png
+P23-5,23,Castform (sunny)?,walk,low,351,3,,,,outfit_3976_.png outfit_7441_.png
+P23-6,23,?,walk,low,,,,,,outfit_3977_.png
+P23-7,23,Duskull?,walk,low,355,3,,,,outfit_3979_.png outfit_4470_.png
+P23-8,23,Corphish,walk,medium,341,3,,,,outfit_3982_.png
+P23-9,23,?,walk,low,,,,,,outfit_3983_.png
+P23-10,23,?,walk,low,,,,,,outfit_3985_.png
+P23-11,23,?,walk,low,,,,,,outfit_3986_.png
+P23-12,23,?,ride,low,,,,,,outfit_3987_.png
+P23-13,23,?,walk,low,,,,,,outfit_3988_.png outfit_4042_.png
+P23-14,23,Taillow?,walk,low,276,3,,,,outfit_3989_.png
+P23-15,23,Duskull?,walk,low,355,3,,,,outfit_3991_.png outfit_4038_.png
+P23-16,23,Milotic,walk,medium,350,3,,,,outfit_3992_.png outfit_4204_.png
+P23-17,23,Torchic,walk,medium,255,3,,,,outfit_3993_.png
+P23-18,23,Lotad,walk,medium,270,3,,,,outfit_3995_.png outfit_4448_.png
+P23-19,23,Lombre,walk,medium,271,3,,,,outfit_3996_.png
+P23-20,23,?,walk,low,,,,,,outfit_3999_.png
+P23-21,23,?,walk,low,,,,,,outfit_4000_.png
+P23-22,23,?,walk,low,,,,,,outfit_4001_.png
+P23-23,23,Baltoy?,walk,low,343,3,,,,outfit_4002_.png
+P23-24,23,?,walk,low,,,,,,outfit_4004_.png
+P23-25,23,?,walk,low,,,,,,outfit_4011_.png
+P23-26,23,?,walk,low,,,,,,outfit_4012_.png
+P23-27,23,?,walk,low,,,,,,outfit_4013_.png
+P23-28,23,?,walk,low,,,,,,outfit_4016_.png
+P23-29,23,?,walk,low,,,,,,outfit_4017_.png
+P23-30,23,?,walk,low,,,,,,outfit_4019_.png
+P23-31,23,?,walk,low,,,,,,outfit_4020_.png
+P23-32,23,Combusken?,walk,low,256,3,,,,outfit_4021_.png
+P23-33,23,?,walk,low,,,,,,outfit_4026_.png
+P23-34,23,Milotic,walk,medium,350,3,,,,outfit_4027_.png
+P23-35,23,Milotic,surf,medium,350,3,,,,outfit_4028_.png
+P23-36,23,?,surf,low,,,,,,outfit_4029_.png
+P23-37,23,Wailord,walk,high,321,3,,,,outfit_4032_.png
+P23-38,23,Wailord,surf,medium,321,3,,,,outfit_4033_.png
+P23-39,23,?,surf,low,,,,,,outfit_4035_.png
+P23-40,23,Aggron (dark recolour)?,walk,low,306,3,,,,outfit_4036_.png
+P23-41,23,Aggron (dark recolour)?,ride,low,306,3,,,,outfit_4037_.png
+P23-42,23,?,walk,low,,,,,,outfit_4039_.png
+P23-43,23,?,walk,low,,,,,,outfit_4040_.png
+P23-44,23,?,walk,low,,,,,,outfit_4041_.png
+P23-45,23,?,ride,low,,,,,,outfit_4043_.png
+P23-46,23,?,walk,low,,,,,,outfit_4044_.png
+P23-47,23,Metagross (dark recolour)?,walk,low,376,3,,,,outfit_4045_.png
+P23-48,23,Metagross (dark recolour)?,ride,low,376,3,,,,outfit_4046_.png
+P24-1,24,Klink?,walk,low,599,5,,,,outfit_4047_.png
+P24-2,24,Salamence (shiny),walk,medium,373,3,,,,outfit_4049_.png
+P24-3,24,Shelgon?,walk,low,372,3,,,,outfit_4050_.png
+P24-4,24,Treecko?,walk,low,252,3,,,,outfit_4051_.png
+P24-5,24,Delibird?,walk,low,225,2,,,,outfit_4054_.png
+P24-6,24,Comfey?,walk,low,764,7,,,,outfit_4055_.png
+P24-7,24,Abomasnow (Mega),walk,medium,460,6,,,,outfit_4056_.png
+P24-8,24,Snover?,walk,low,459,4,,,,outfit_4057_.png
+P24-9,24,Tangela (shiny)?,walk,low,114,1,,,,outfit_4058_.png
+P24-10,24,Palkia,walk,medium,484,4,,,,outfit_4060_.png
+P24-11,24,Tropius (shiny)?,walk,low,357,3,,,,outfit_4062_.png
+P24-12,24,Regigigas,walk,high,486,4,,,,outfit_4064_.png
+P24-13,24,Giratina,walk,high,487,4,,,,outfit_4065_.png
+P24-14,24,Frillish?,walk,low,592,5,,,,outfit_4066_.png
+P24-15,24,Tentacool?,walk,low,72,1,,,,outfit_4067_.png
+P24-16,24,Shroomish?,walk,low,285,3,,,,outfit_4070_.png
+P24-17,24,npc: trainer?,other,low,,,,,,outfit_4071_.png
+P24-18,24,Charmander?,walk,low,4,1,,,,outfit_4074_.png
+P24-19,24,npc: trainer?,other,low,,,,,,outfit_4075_.png
+P24-20,24,Golurk,walk,medium,623,5,,,,outfit_4076_.png
+P24-21,24,?,walk,low,,,,,,outfit_4077_.png
+P24-22,24,Duskull?,walk,low,355,3,,,,outfit_4078_.png
+P24-23,24,Murkrow?,walk,low,198,2,,,,outfit_4079_.png
+P24-24,24,Gligar?,walk,low,207,2,,,,outfit_4080_.png
+P24-25,24,?,walk,low,,,,,,outfit_4081_.png
+P24-26,24,Abomasnow?,walk,low,460,4,,,,outfit_4082_.png
+P24-27,24,Arceus?,walk,low,493,4,,,,outfit_4083_.png
+P24-28,24,?,walk,low,,,,,,outfit_4084_.png
+P24-29,24,Abomasnow?,walk,low,460,4,,,,outfit_4085_.png
+P24-30,24,Altaria,walk,medium,334,3,,,,outfit_4087_.png
+P24-31,24,Kricketot?,walk,low,401,4,,,,outfit_4088_.png
+P24-32,24,Latios?,walk,low,381,3,,,,outfit_4089_.png
+P24-33,24,Dialga,walk,medium,483,4,,,,outfit_4090_.png
+P24-34,24,Voltorb?,walk,low,100,1,,,,outfit_4091_.png
+P24-35,24,Venusaur (Mega),walk,high,3,6,,,,outfit_4093_.png
+P24-36,24,Kyurem,walk,medium,646,5,,,,outfit_4094_.png
+P24-37,24,Combusken?,walk,low,256,3,,,,outfit_4095_.png
+P24-38,24,?,walk,low,,,,,,outfit_4096_.png
+P24-39,24,Treecko?,walk,low,252,3,,,,outfit_4097_.png
+P24-40,24,Kyogre,walk,medium,382,3,,,,outfit_4098_.png
+P24-41,24,Groudon (Primal),walk,medium,383,6,,,,outfit_4099_.png
+P24-42,24,Timburr?,walk,low,532,5,,,,outfit_4100_.png
+P24-43,24,?,walk,low,,,,,,outfit_4101_.png
+P24-44,24,?,walk,low,,,,,,outfit_4102_.png
+P24-45,24,Audino?,walk,low,531,5,,,,outfit_4103_.png
+P24-46,24,?,walk,low,,,,,,outfit_4104_.png outfit_4521_.png
+P24-47,24,Seviper (recolour)?,walk,low,336,3,,,,outfit_4105_.png
+P24-48,24,Wigglytuff (shiny)?,walk,low,40,1,,,,outfit_4106_.png
+P25-1,25,Milotic,walk,medium,350,3,,,,outfit_4107_.png
+P25-2,25,Milotic,surf,medium,350,3,,,,outfit_4108_.png
+P25-3,25,Clefairy (costume)?,walk,low,35,1,,,,outfit_4109_.png
+P25-4,25,Piplup?,walk,low,393,4,,,,outfit_4110_.png
+P25-5,25,?,walk,low,,,,,,outfit_4111_.png
+P25-6,25,Gengar (Mega)?,walk,low,94,6,,,,outfit_4112_.png
+P25-7,25,Arceus,walk,high,493,4,,,,outfit_4115_.png
+P25-8,25,Blitzle,walk,medium,522,5,,,,outfit_4116_.png
+P25-9,25,Tauros?,walk,low,128,1,,,,outfit_4117_.png
+P25-10,25,?,walk,low,,,,,,outfit_4124_.png
+P25-11,25,?,walk,low,,,,,,outfit_4125_.png
+P25-12,25,?,walk,low,,,,,,outfit_4126_.png
+P25-13,25,Zoroark?,walk,low,571,5,,,,outfit_4127_.png
+P25-14,25,Charizard (Mega X),fly,medium,6,6,,,,outfit_4128_.png
+P25-15,25,?,walk,low,,,,,,outfit_4129_.png
+P25-16,25,Zygarde?,walk,low,718,6,,,,outfit_4130_.png
+P25-17,25,Joltik?,walk,low,595,5,,,,outfit_4136_.png
+P25-18,25,Pichu?,walk,low,172,2,,,,outfit_4137_.png
+P25-19,25,Zorua?,walk,low,570,5,,,,outfit_4138_.png
+P25-20,25,?,walk,low,,,,,,outfit_4145_.png outfit_7144_.png
+P25-21,25,Foongus?,walk,low,590,5,,,,outfit_4146_.png
+P25-22,25,?,walk,low,,,,,,outfit_4149_.png
+P25-23,25,Darumaka?,walk,low,554,5,,,,outfit_4150_.png
+P25-24,25,?,walk,low,,,,,,outfit_4151_.png
+P25-25,25,?,walk,low,,,,,,outfit_4152_.png
+P25-26,25,Marill?,walk,low,183,2,,,,outfit_4154_.png
+P25-27,25,Phantump?,walk,low,708,6,,,,outfit_4155_.png
+P25-28,25,Murkrow?,walk,low,198,2,,,,outfit_4156_.png
+P25-29,25,Hippopotas?,walk,low,449,4,,,,outfit_4157_.png
+P25-30,25,Horsea?,walk,low,116,1,,,,outfit_4158_.png
+P25-31,25,?,walk,low,,,,,,outfit_4159_.png
+P25-32,25,?,walk,low,,,,,,outfit_4160_.png
+P25-33,25,Cutiefly?,walk,low,742,7,,,,outfit_4161_.png
+P25-34,25,?,walk,low,,,,,,outfit_4162_.png
+P25-35,25,Furret?,walk,low,162,2,,,,outfit_4163_.png
+P25-36,25,Murkrow?,walk,low,198,2,,,,outfit_4164_.png
+P25-37,25,Sableye?,walk,low,302,3,,,,outfit_4165_.png
+P25-38,25,Alakazam (costume)?,walk,low,65,1,,,,outfit_4166_.png
+P25-39,25,Alakazam (costume)?,walk,low,65,1,,,,outfit_4167_.png outfit_4171_.png
+P25-40,25,Alakazam (Halloween)?,walk,low,65,1,,,,outfit_4168_.png outfit_4169_.png outfit_4172_.png outfit_4173_.png
+P25-41,25,? (costume),walk,low,,,,,,outfit_4170_.png
+P25-42,25,Tropius (shiny)?,walk,low,357,3,,,,outfit_4176_.png
+P25-43,25,Guzzlord?,walk,low,799,7,,,,outfit_4177_.png
+P25-44,25,Guzzlord?,walk,low,799,7,,,,outfit_4178_.png
+P25-45,25,?,walk,low,,,,,,outfit_4179_.png
+P25-46,25,?,walk,low,,,,,,outfit_4180_.png
+P25-47,25,Tangela (costume)?,walk,low,114,1,,,,outfit_4181_.png
+P25-48,25,Clefairy (costume)?,walk,low,35,1,,,,outfit_4182_.png
+P26-1,26,Shiftry?,walk,low,275,3,,,,outfit_4183_.png
+P26-2,26,Regigigas (recolour)?,walk,low,486,4,,,,outfit_4196_.png
+P26-3,26,Aerodactyl (recolour)?,walk,low,142,1,,,,outfit_4197_.png
+P26-4,26,Aerodactyl (recolour)?,fly,low,142,1,,,,outfit_4198_.png
+P26-5,26,?,walk,low,,,,,,outfit_4199_.png
+P26-6,26,?,walk,low,,,,,,outfit_4200_.png
+P26-7,26,?,other,low,,,,,,outfit_4201_.png
+P26-8,26,?,walk,low,,,,,,outfit_4208_.png
+P26-9,26,Togekiss,walk,medium,468,4,,,,outfit_4209_.png
+P26-10,26,Togekiss,fly,medium,468,4,,,,outfit_4210_.png
+P26-11,26,Slaking?,walk,low,289,3,,,,outfit_4211_.png
+P26-12,26,?,walk,low,,,,,,outfit_4213_.png
+P26-13,26,Sceptile (recolour)?,walk,low,254,3,,,,outfit_4214_.png outfit_4482_.png outfit_5898_.png outfit_6010_.png
+P26-14,26,Lapras (shiny),walk,medium,131,1,,,,outfit_4215_.png
+P26-15,26,Lapras (shiny),surf,medium,131,1,,,,outfit_4216_.png
+P26-16,26,Blissey,walk,medium,242,2,,,,outfit_4218_.png
+P26-17,26,Guzzlord?,walk,low,799,7,,,,outfit_4220_.png
+P26-18,26,Tropius (shiny)?,walk,low,357,3,,,,outfit_4221_.png
+P26-19,26,Guzzlord?,walk,low,799,7,,,,outfit_4223_.png
+P26-20,26,Tropius (shiny)?,walk,low,357,3,,,,outfit_4225_.png
+P26-21,26,Tropius (shiny)?,walk,low,357,3,,,,outfit_4226_.png
+P26-22,26,Charizard (costume)?,walk,low,6,1,,,,outfit_4227_.png
+P26-23,26,Blastoise (recolour),walk,medium,9,1,,,,outfit_4232_.png outfit_4236_.png
+P26-24,26,Blastoise,walk,medium,9,1,,,,outfit_4233_.png outfit_4237_.png
+P26-25,26,Blastoise (recolour),walk,medium,9,1,,,,outfit_4234_.png outfit_4238_.png
+P26-26,26,Blastoise,surf,medium,9,1,,,,outfit_4240_.png outfit_4242_.png outfit_4244_.png outfit_4246_.png
+P26-27,26,?,walk,low,,,,,,outfit_4247_.png
+P26-28,26,?,other,low,,,,,,outfit_4258_.png
+P26-29,26,?,other,low,,,,,,outfit_4259_.png
+P26-30,26,effect: ?,effect,low,,,,,,outfit_4260_.png
+P26-31,26,?,walk,low,,,,,,outfit_4261_.png
+P26-32,26,?,ride,low,,,,,,outfit_4262_.png
+P26-33,26,Gengar,walk,high,94,1,,,,outfit_4265_.png outfit_6500_.png
+P26-34,26,Bulbasaur,walk,medium,1,1,,,,outfit_4267_.png
+P26-35,26,Charmander,walk,medium,4,1,,,,outfit_4268_.png
+P26-36,26,Squirtle,walk,medium,7,1,,,,outfit_4269_.png
+P26-37,26,vehicle: bicycle,ride,medium,,,,,,outfit_4270_.png
+P26-38,26,vehicle: bicycle?,ride,low,,,,,,outfit_4271_.png
+P26-39,26,effect: dirt?,effect,low,,,,,,outfit_4272_.png
+P26-40,26,Gengar (costume),walk,medium,94,1,,,,outfit_4273_.png outfit_4275_.png
+P26-41,26,Scyther (shiny)?,walk,low,123,1,,,,outfit_4277_.png
+P26-42,26,Milotic,walk,medium,350,3,,,,outfit_4279_.png
+P26-43,26,Milotic,surf,medium,350,3,,,,outfit_4280_.png
+P26-44,26,Lapras (shiny)?,surf,low,131,1,,,,outfit_4281_.png
+P26-45,26,Lapras (shiny)?,walk,low,131,1,,,,outfit_4282_.png
+P26-46,26,?,other,low,,,,,,outfit_4289_.png
+P26-47,26,?,other,low,,,,,,outfit_4290_.png
+P26-48,26,?,other,low,,,,,,outfit_4291_.png
+P27-1,27,player outfit?,outfit,low,,,,,,outfit_4292_.png
+P27-2,27,Oshawott,walk,medium,501,5,,,,outfit_4330_.png
+P27-3,27,effect: water splash?,effect,low,,,,,,outfit_4331_.png
+P27-4,27,Samurott,walk,medium,503,5,,,,outfit_4332_.png
+P27-5,27,Snivy,walk,medium,495,5,,,,outfit_4333_.png
+P27-6,27,?,other,low,,,,,,outfit_4334_.png
+P27-7,27,Rayquaza,walk,medium,384,3,,,,outfit_4335_.png
+P27-8,27,Tepig,walk,medium,498,5,,,,outfit_4336_.png
+P27-9,27,Pignite,walk,medium,499,5,,,,outfit_4337_.png
+P27-10,27,Emboar,walk,medium,500,5,,,,outfit_4338_.png
+P27-11,27,Emboar (recolour),walk,medium,500,5,,,,outfit_4339_.png
+P27-12,27,Samurott (recolour)?,walk,low,503,5,,,,outfit_4340_.png
+P27-13,27,Rayquaza (recolour),walk,low,384,3,,,,outfit_4341_.png
+P27-14,27,Latios,walk,medium,381,3,,,,outfit_4342_.png
+P27-15,27,Latios,fly,medium,381,3,,,,outfit_4343_.png
+P27-16,27,Latias,walk,medium,380,3,,,,outfit_4344_.png
+P27-17,27,Latias,fly,medium,380,3,,,,outfit_4345_.png
+P27-18,27,player outfit?,outfit,low,,,,,,outfit_4385_.png
+P27-19,27,Feraligatr (recolour)?,walk,low,160,2,,,,outfit_4390_.png
+P27-20,27,Feraligatr (costume)?,walk,low,160,2,,,,outfit_4392_.png
+P27-21,27,?,walk,low,,,,,,outfit_4427_.png
+P27-22,27,player outfit?,outfit,low,,,,,,outfit_4432_.png
+P27-23,27,?,walk,low,,,,,,outfit_4438_.png
+P27-24,27,?,walk,low,,,,,,outfit_4439_.png outfit_4537_.png
+P27-25,27,?,walk,low,,,,,,outfit_4440_.png
+P27-26,27,Chansey (recolour)?,walk,low,113,1,,,,outfit_4442_.png
+P27-27,27,Chansey,walk,medium,113,1,,,,outfit_4443_.png
+P27-28,27,Paras?,walk,low,46,1,,,,outfit_4444_.png
+P27-29,27,Ekans (recolour)?,walk,low,23,1,,,,outfit_4445_.png
+P27-30,27,?,walk,low,,,,,,outfit_4446_.png
+P27-31,27,?,walk,low,,,,,,outfit_4447_.png
+P27-32,27,?,walk,low,,,,,,outfit_4449_.png
+P27-33,27,?,walk,low,,,,,,outfit_4450_.png
+P27-34,27,Magby?,walk,low,240,2,,,,outfit_4451_.png
+P27-35,27,Magby?,walk,low,240,2,,,,outfit_4452_.png
+P27-36,27,Staryu (recolour)?,walk,low,120,1,,,,outfit_4454_.png
+P27-37,27,Tyranitar,walk,medium,248,2,,,,outfit_4455_.png
+P27-38,27,Tyranitar,walk,medium,248,2,,,,outfit_4456_.png
+P27-39,27,Tyranitar (costume),walk,medium,248,2,,,,outfit_4457_.png outfit_4514_.png
+P27-40,27,Tyranitar,walk,medium,248,2,,,,outfit_4458_.png
+P27-41,27,?,walk,low,,,,,,outfit_4461_.png
+P27-42,27,?,walk,low,,,,,,outfit_4462_.png
+P27-43,27,Weezing (Galarian),walk,medium,110,8,,,,outfit_4463_.png
+P27-44,27,Weezing (Galarian),walk,medium,110,8,,,,outfit_4464_.png
+P27-45,27,Weezing (Galarian),walk,medium,110,8,,,,outfit_4465_.png
+P27-46,27,Arbok (recolour)?,walk,low,24,1,,,,outfit_4467_.png
+P27-47,27,?,walk,low,,,,,,outfit_4469_.png
+P27-48,27,Typhlosion,walk,medium,157,2,,,,outfit_4472_.png
+P28-1,28,Tyranitar (recolour),walk,medium,248,2,,,,outfit_4473_.png
+P28-2,28,"Tyranitar (recolour, costume)",walk,medium,248,2,,,,outfit_4474_.png
+P28-3,28,"Tyranitar (recolour, costume)",walk,medium,248,2,,,,outfit_4475_.png
+P28-4,28,?,walk,low,,,,,,outfit_4478_.png
+P28-5,28,?,walk,low,,,,,,outfit_4479_.png
+P28-6,28,Croconaw (costume)?,walk,low,159,2,,,,outfit_4483_.png
+P28-7,28,?,walk,low,,,,,,outfit_4485_.png
+P28-8,28,?,walk,low,,,,,,outfit_4489_.png
+P28-9,28,?,walk,low,,,,,,outfit_4490_.png
+P28-10,28,?,walk,low,,,,,,outfit_4491_.png
+P28-11,28,Tangela (shiny)?,walk,low,114,1,,,,outfit_4493_.png
+P28-12,28,Grovyle?,walk,low,253,3,,,,outfit_4496_.png outfit_4497_.png
+P28-13,28,Grovyle?,walk,low,253,3,,,,outfit_4498_.png
+P28-14,28,Tentacruel (costume)?,walk,low,73,1,,,,outfit_4502_.png
+P28-15,28,Tentacruel (costume)?,walk,low,73,1,,,,outfit_4503_.png
+P28-16,28,Tentacruel (costume)?,walk,low,73,1,,,,outfit_4504_.png
+P28-17,28,?,walk,low,,,,,,outfit_4505_.png
+P28-18,28,Muk,walk,medium,89,1,,,,outfit_4506_.png
+P28-19,28,Torkoal?,walk,low,324,3,,,,outfit_4507_.png
+P28-20,28,Torkoal (costume)?,walk,low,324,3,,,,outfit_4508_.png
+P28-21,28,Nidoking (costume),walk,medium,34,1,,,,outfit_4513_.png
+P28-22,28,?,walk,low,,,,,,outfit_4516_.png
+P28-23,28,?,walk,low,,,,,,outfit_4517_.png
+P28-24,28,?,walk,low,,,,,,outfit_4518_.png
+P28-25,28,?,walk,low,,,,,,outfit_4520_.png
+P28-26,28,Butterfree,walk,medium,12,1,,,,outfit_4522_.png
+P28-27,28,Beautifly?,walk,low,267,3,,,,outfit_4523_.png
+P28-28,28,"Tyranitar (recolour, costume)",walk,medium,248,2,,,,outfit_4524_.png
+P28-29,28,"Tyranitar (recolour, costume)",walk,medium,248,2,,,,outfit_4525_.png
+P28-30,28,Typhlosion (costume),walk,medium,157,2,,,,outfit_4526_.png
+P28-31,28,?,walk,low,,,,,,outfit_4527_.png
+P28-32,28,Slaking (costume)?,walk,low,289,3,,,,outfit_4528_.png
+P28-33,28,Grovyle (costume)?,walk,low,253,3,,,,outfit_4529_.png
+P28-34,28,Salamence,walk,high,373,3,,,,outfit_4530_.png
+P28-35,28,Salamence (recolour)?,walk,low,373,3,,,,outfit_4531_.png
+P28-36,28,?,walk,low,,,,,,outfit_4532_.png
+P28-37,28,Milotic (recolour),walk,medium,350,3,,,,outfit_4533_.png
+P28-38,28,?,surf,low,,,,,,outfit_4534_.png
+P28-39,28,?,surf,low,,,,,,outfit_4535_.png
+P28-40,28,Gardevoir,walk,high,282,3,,,,outfit_4536_.png
+P28-41,28,Blaziken?,walk,low,257,3,,,,outfit_4538_.png
+P28-42,28,?,walk,low,,,,,,outfit_4539_.png
+P28-43,28,?,walk,low,,,,,,outfit_4540_.png
+P28-44,28,?,walk,low,,,,,,outfit_4541_.png
+P28-45,28,Pikachu,walk,medium,25,1,,,,outfit_4542_.png
+P28-46,28,Pikachu,walk,medium,25,1,,,,outfit_4543_.png outfit_4544_.png outfit_4546_.png
+P28-47,28,Pikachu (costume),walk,medium,25,1,,,,outfit_4545_.png
+P28-48,28,Pikachu (recolour)?,walk,low,25,1,,,,outfit_4547_.png
+P29-1,29,Gardevoir (shiny),walk,medium,282,3,,,,outfit_4548_.png
+P29-2,29,Gardevoir (shiny),walk,medium,282,3,,,,outfit_4549_.png
+P29-3,29,Slaking (costume)?,walk,low,289,3,,,,outfit_4550_.png
+P29-4,29,?,walk,low,,,,,,outfit_4551_.png
+P29-5,29,Dragonite (recolour)?,fly,low,149,1,,,,outfit_4552_.png
+P29-6,29,Dragonite (recolour)?,fly,low,149,1,,,,outfit_4553_.png
+P29-7,29,Dragonite (recolour)?,fly,low,149,1,,,,outfit_4554_.png
+P29-8,29,Dragonite (recolour)?,fly,low,149,1,,,,outfit_4555_.png
+P29-9,29,Dragonite (recolour)?,fly,low,149,1,,,,outfit_4556_.png
+P29-10,29,Dragonite (recolour)?,fly,low,149,1,,,,outfit_4557_.png
+P29-11,29,Dragonite (recolour)?,walk,low,149,1,,,,outfit_4558_.png
+P29-12,29,Dragonite (recolour)?,walk,low,149,1,,,,outfit_4559_.png
+P29-13,29,Dragonite (recolour)?,walk,low,149,1,,,,outfit_4560_.png
+P29-14,29,Dragonite (recolour)?,walk,low,149,1,,,,outfit_4561_.png
+P29-15,29,Dragonite (recolour)?,walk,low,149,1,,,,outfit_4562_.png
+P29-16,29,Dragonite (recolour)?,walk,low,149,1,,,,outfit_4563_.png
+P29-17,29,?,walk,low,,,,,,outfit_4564_.png
+P29-18,29,?,walk,low,,,,,,outfit_4565_.png
+P29-19,29,?,walk,low,,,,,,outfit_4566_.png
+P29-20,29,Ninetales,walk,medium,38,1,,,,outfit_4568_.png
+P29-21,29,?,walk,low,,,,,,outfit_4571_.png
+P29-22,29,?,walk,low,,,,,,outfit_4572_.png
+P29-23,29,Charizard (black recolour),fly,medium,6,1,,,,outfit_4573_.png
+P29-24,29,Charizard (black recolour),walk,low,6,1,,,,outfit_4574_.png
+P29-25,29,Charizard (black recolour),fly,medium,6,1,,,,outfit_4575_.png
+P29-26,29,Charizard (black recolour),walk,low,6,1,,,,outfit_4576_.png
+P29-27,29,?,walk,low,,,,,,outfit_4577_.png
+P29-28,29,?,walk,low,,,,,,outfit_4578_.png
+P29-29,29,?,walk,low,,,,,,outfit_4579_.png
+P29-30,29,?,walk,low,,,,,,outfit_4583_.png
+P29-31,29,?,walk,low,,,,,,outfit_4584_.png
+P29-32,29,?,walk,low,,,,,,outfit_4585_.png
+P29-33,29,Venusaur (recolour),walk,medium,3,1,,,,outfit_4586_.png
+P29-34,29,Venusaur (recolour),ride,medium,3,1,,,,outfit_4587_.png
+P29-35,29,Scyther (shiny)?,walk,low,123,1,,,,outfit_4589_.png
+P29-36,29,Charizard,walk,high,6,1,,,,outfit_4605_.png
+P29-37,29,Charizard,fly,high,6,1,,,,outfit_4606_.png
+P29-38,29,Charizard,fly,medium,6,1,,,,outfit_4607_.png
+P29-39,29,Charizard,fly,high,6,1,,,,outfit_4608_.png
+P29-40,29,Machoke (costume)?,walk,low,67,1,,,,outfit_4611_.png
+P29-41,29,?,walk,low,,,,,,outfit_4615_.png
+P29-42,29,Dragonair (recolour)?,walk,low,148,1,,,,outfit_4618_.png
+P29-43,29,Dragonair (recolour)?,surf,low,148,1,,,,outfit_4619_.png
+P29-44,29,?,walk,low,,,,,,outfit_4639_.png
+P29-45,29,?,fly,low,,,,,,outfit_4640_.png
+P29-46,29,?,walk,low,,,,,,outfit_4662_.png
+P29-47,29,?,walk,low,,,,,,outfit_4663_.png
+P29-48,29,?,walk,low,,,,,,outfit_4664_.png
+P30-1,30,?,walk,low,,,,,,outfit_4693_.png
+P30-2,30,?,walk,low,,,,,,outfit_4694_.png
+P30-3,30,Dragonite (shiny),walk,medium,149,1,,,,outfit_4695_.png
+P30-4,30,Dragonite (shiny),fly,medium,149,1,,,,outfit_4696_.png outfit_5965_.png
+P30-5,30,Dragonite (recolour),walk,medium,149,1,,,,outfit_4697_.png
+P30-6,30,Dragonite (recolour),fly,medium,149,1,,,,outfit_4698_.png
+P30-7,30,Dragonite (shiny),walk,medium,149,1,,,,outfit_4699_.png
+P30-8,30,Tropius (recolour),walk,medium,357,3,,,,outfit_4779_.png outfit_4789_.png
+P30-9,30,Tropius (recolour),fly,medium,357,3,,,,outfit_4780_.png outfit_4790_.png
+P30-10,30,Tropius,walk,medium,357,3,,,,outfit_4781_.png outfit_4791_.png
+P30-11,30,Tropius,fly,medium,357,3,,,,outfit_4782_.png
+P30-12,30,Tropius (shiny),walk,medium,357,3,,,,outfit_4783_.png
+P30-13,30,Tropius (shiny),fly,medium,357,3,,,,outfit_4784_.png
+P30-14,30,Tropius (shiny),fly,low,357,3,,,,outfit_4792_.png
+P30-15,30,player outfit?,outfit,low,,,,,,outfit_4793_.png
+P30-16,30,Chandelure,walk,medium,609,5,,,,outfit_4808_.png outfit_4910_.png outfit_7881_.png
+P30-17,30,?,walk,low,,,,,,outfit_4809_.png
+P30-18,30,?,walk,low,,,,,,outfit_4810_.png
+P30-19,30,Tepig,walk,high,498,5,,,,outfit_4811_.png
+P30-20,30,Cofagrigus,walk,medium,563,5,,,,outfit_4812_.png outfit_7352_.png
+P30-21,30,?,walk,low,,,,,,outfit_4813_.png
+P30-22,30,Snivy,walk,high,495,5,,,,outfit_4814_.png
+P30-23,30,Servine,walk,medium,496,5,,,,outfit_4815_.png
+P30-24,30,Serperior,walk,high,497,5,,,,outfit_4816_.png outfit_4817_.png
+P30-25,30,Pignite,walk,high,499,5,,,,outfit_4819_.png
+P30-26,30,Emboar,walk,high,500,5,,,,outfit_4820_.png outfit_7737_.png outfit_8536_.png
+P30-27,30,Emboar (recolour),walk,medium,500,5,,,,outfit_4821_.png
+P30-28,30,Oshawott,walk,high,501,5,,,,outfit_4822_.png
+P30-29,30,Dewott,walk,medium,502,5,,,,outfit_4823_.png
+P30-30,30,Samurott,walk,high,503,5,,,,outfit_4824_.png
+P30-31,30,Patrat,walk,medium,504,5,,,,outfit_4825_.png
+P30-32,30,Herdier,walk,medium,507,5,,,,outfit_4827_.png
+P30-33,30,Lillipup,walk,medium,506,5,,,,outfit_4828_.png
+P30-34,30,Stoutland,walk,medium,508,5,,,,outfit_4829_.png
+P30-35,30,Purrloin,walk,medium,509,5,,,,outfit_4830_.png
+P30-36,30,Liepard,walk,medium,510,5,,,,outfit_4831_.png outfit_4832_.png
+P30-37,30,Pansage,walk,medium,511,5,,,,outfit_4833_.png
+P30-38,30,Simisage,walk,medium,512,5,,,,outfit_4834_.png
+P30-39,30,Pansear,walk,medium,513,5,,,,outfit_4835_.png
+P30-40,30,Simisear,walk,medium,514,5,,,,outfit_4836_.png
+P30-41,30,Panpour,walk,medium,515,5,,,,outfit_4837_.png
+P30-42,30,Simipour,ride,low,516,5,,,,outfit_4838_.png
+P30-43,30,Simipour,walk,medium,516,5,,,,outfit_4839_.png
+P30-44,30,Blitzle,walk,medium,522,5,,,,outfit_4840_.png
+P30-45,30,Zebstrika,walk,high,523,5,,,,outfit_4841_.png outfit_4842_.png
+P30-46,30,Zebstrika,ride,high,523,5,,,,outfit_4843_.png outfit_4844_.png
+P30-47,30,Roggenrola,walk,medium,524,5,,,,outfit_4845_.png
+P30-48,30,Boldore,walk,medium,525,5,,,,outfit_4846_.png
+P31-1,31,Gigalith,walk,high,526,5,,,,outfit_4847_.png
+P31-2,31,Gigalith,ride,high,526,5,,,,outfit_4848_.png
+P31-3,31,Woobat,walk,medium,527,5,,,,outfit_4849_.png
+P31-4,31,Swoobat,walk,medium,528,5,,,,outfit_4850_.png
+P31-5,31,Drilbur,walk,medium,529,5,,,,outfit_4851_.png
+P31-6,31,Excadrill,walk,high,530,5,,,,outfit_4852_.png outfit_7959_.png
+P31-7,31,Audino,walk,high,531,5,,,,outfit_4853_.png
+P31-8,31,Tympole,walk,medium,535,5,,,,outfit_4854_.png
+P31-9,31,?,surf,low,,,,,,outfit_4855_.png
+P31-10,31,Palpitoad,walk,medium,536,5,,,,outfit_4856_.png
+P31-11,31,Palpitoad,surf,medium,536,5,,,,outfit_4857_.png
+P31-12,31,Seismitoad,walk,high,537,5,,,,outfit_4858_.png outfit_4860_.png
+P31-13,31,Seismitoad,surf,medium,537,5,,,,outfit_4859_.png outfit_7786_.png
+P31-14,31,Throh,walk,high,538,5,,,,outfit_4861_.png outfit_7477_.png
+P31-15,31,Sawk,walk,high,539,5,,,,outfit_4862_.png outfit_7789_.png
+P31-16,31,Swadloon,walk,medium,541,5,,,,outfit_4863_.png
+P31-17,31,Sewaddle,walk,medium,540,5,,,,outfit_4864_.png
+P31-18,31,Leavanny,walk,medium,542,5,,,,outfit_4865_.png
+P31-19,31,Petilil,walk,medium,548,5,,,,outfit_4866_.png
+P31-20,31,Lilligant,walk,high,549,5,,,,outfit_4867_.png outfit_4868_.png
+P31-21,31,Darumaka,walk,medium,554,5,,,,outfit_4869_.png
+P31-22,31,Darmanitan,walk,high,555,5,,,,outfit_4870_.png outfit_4871_.png
+P31-23,31,Scraggy,walk,low,559,5,,,,outfit_4872_.png
+P31-24,31,Sigilyph,walk,high,561,5,,,,outfit_4873_.png
+P31-25,31,Scrafty,walk,medium,560,5,,,,outfit_4874_.png
+P31-26,31,?,walk,low,,,,,,outfit_4875_.png outfit_7356_.png
+P31-27,31,Tirtouga,walk,medium,564,5,,,,outfit_4877_.png outfit_7359_.png
+P31-28,31,Carracosta,walk,high,565,5,,,,outfit_4878_.png outfit_7369_.png
+P31-29,31,Archen,walk,medium,566,5,,,,outfit_4879_.png outfit_7511_.png
+P31-30,31,Archeops,walk,medium,567,5,,,,outfit_4880_.png outfit_7510_.png
+P31-31,31,Trubbish,walk,medium,568,5,,,,outfit_4881_.png
+P31-32,31,Garbodor,walk,high,569,5,,,,outfit_4882_.png
+P31-33,31,Zorua,walk,high,570,5,,,,outfit_4883_.png outfit_7496_.png outfit_8517_.png
+P31-34,31,Zoroark,walk,high,571,5,,,,outfit_4884_.png outfit_4950_.png
+P31-35,31,Gothita,walk,medium,574,5,,,,outfit_4885_.png
+P31-36,31,Gothorita,walk,medium,575,5,,,,outfit_4886_.png
+P31-37,31,Gothitelle,walk,medium,576,5,,,,outfit_4887_.png outfit_8578_.png
+P31-38,31,Solosis,walk,medium,577,5,,,,outfit_4888_.png
+P31-39,31,Duosion,walk,medium,578,5,,,,outfit_4889_.png
+P31-40,31,Deerling,walk,high,585,5,,,,outfit_4891_.png
+P31-41,31,Deerling,walk,high,585,5,,,,outfit_4892_.png
+P31-42,31,Deerling,walk,high,585,5,,,,outfit_4893_.png
+P31-43,31,Deerling,walk,high,585,5,,,,outfit_4894_.png
+P31-44,31,Sawsbuck,walk,high,586,5,,,,outfit_4895_.png
+P31-45,31,Sawsbuck,walk,high,586,5,,,,outfit_4896_.png
+P31-46,31,Sawsbuck,walk,high,586,5,,,,outfit_4897_.png
+P31-47,31,Sawsbuck,walk,high,586,5,,,,outfit_4898_.png
+P31-48,31,Joltik,walk,medium,595,5,,,,outfit_4899_.png
+P32-1,32,Galvantula,walk,medium,596,5,,,,outfit_4900_.png
+P32-2,32,Galvantula,ride,medium,596,5,,,,outfit_4901_.png
+P32-3,32,Ferroseed,walk,medium,597,5,,,,outfit_4902_.png
+P32-4,32,Ferrothorn,walk,medium,598,5,,,,outfit_4903_.png
+P32-5,32,Ferrothorn,ride,low,598,5,,,,outfit_4904_.png
+P32-6,32,Tynamo?,walk,low,602,5,,,,outfit_4905_.png
+P32-7,32,Eelektrik,walk,medium,603,5,,,,outfit_4906_.png
+P32-8,32,Litwick,walk,medium,607,5,,,,outfit_4907_.png
+P32-9,32,?,walk,low,,,,,,outfit_4908_.png
+P32-10,32,Cubchoo,walk,medium,613,5,,,,outfit_4911_.png
+P32-11,32,Beartic,walk,high,614,5,,,,outfit_4912_.png outfit_4913_.png
+P32-12,32,Cryogonal,walk,medium,615,5,,,,outfit_4914_.png
+P32-13,32,Druddigon?,walk,low,621,5,,,,outfit_4915_.png
+P32-14,32,Golett,walk,medium,622,5,,,,outfit_4916_.png
+P32-15,32,Golurk,walk,high,623,5,,,,outfit_4917_.png outfit_7901_.png
+P32-16,32,Bouffalant,walk,high,626,5,,,,outfit_4918_.png
+P32-17,32,Bouffalant,ride,high,626,5,,,,outfit_4919_.png
+P32-18,32,Deino?,walk,low,633,5,,,,outfit_4920_.png
+P32-19,32,Zweilous?,walk,low,634,5,,,,outfit_4921_.png
+P32-20,32,player outfit,outfit,medium,,,,,,outfit_4922_.png outfit_4951_.png outfit_7284_.png
+P32-21,32,player outfit,outfit,medium,,,,,,outfit_4923_.png outfit_4952_.png
+P32-22,32,Larvesta,walk,medium,636,5,,,,outfit_4924_.png
+P32-23,32,Volcarona,walk,medium,637,5,,,,outfit_4925_.png outfit_4926_.png
+P32-24,32,Samurott,surf,medium,503,5,,,,outfit_4927_.png
+P32-25,32,Volcarona,walk,low,637,5,,,,outfit_4928_.png
+P32-26,32,Golurk,fly,medium,623,5,,,,outfit_4929_.png outfit_7923_.png
+P32-27,32,Sigilyph,walk,medium,561,5,,,,outfit_4930_.png
+P32-28,32,Sigilyph,fly,medium,561,5,,,,outfit_4931_.png
+P32-29,32,Volcarona (shiny)?,fly,low,637,5,,,,outfit_4932_.png
+P32-30,32,Swoobat,walk,medium,528,5,,,,outfit_4933_.png
+P32-31,32,Swoobat,fly,medium,528,5,,,,outfit_4934_.png
+P32-32,32,Deerling?,ride,low,585,5,,,,outfit_4935_.png
+P32-33,32,Deerling?,ride,low,585,5,,,,outfit_4936_.png
+P32-34,32,Deerling?,ride,low,585,5,,,,outfit_4937_.png
+P32-35,32,Deerling?,ride,low,585,5,,,,outfit_4938_.png
+P32-36,32,Liepard,ride,medium,510,5,,,,outfit_4939_.png
+P32-37,32,Liepard (recolour),ride,medium,510,5,,,,outfit_4940_.png
+P32-38,32,Palpitoad?,surf,low,536,5,,,,outfit_4941_.png
+P32-39,32,?,ride,low,,,,,,outfit_4942_.png
+P32-40,32,Tympole?,surf,low,535,5,,,,outfit_4943_.png
+P32-41,32,Seismitoad?,surf,low,537,5,,,,outfit_4944_.png
+P32-42,32,Darmanitan,ride,medium,555,5,,,,outfit_4945_.png outfit_4946_.png
+P32-43,32,player outfit,outfit,medium,,,,,,outfit_4947_.png outfit_4953_.png
+P32-44,32,Stoutland,ride,medium,508,5,,,,outfit_4948_.png
+P32-45,32,?,surf,low,,,,,,outfit_4949_.png
+P32-46,32,Lopunny?,ride,low,428,4,,,,outfit_4954_.png
+P32-47,32,Lopunny?,ride,low,428,4,,,,outfit_4955_.png
+P32-48,32,Lopunny?,ride,low,428,4,,,,outfit_4957_.png outfit_4958_.png
+P33-1,33,Sawsbuck,ride,high,586,5,,,,outfit_4959_.png
+P33-2,33,Deerling?,ride,low,585,5,,,,outfit_4960_.png
+P33-3,33,Archeops?,walk,low,567,5,,,,outfit_4961_.png
+P33-4,33,Sawsbuck,ride,high,586,5,,,,outfit_4962_.png
+P33-5,33,Sawsbuck,ride,high,586,5,,,,outfit_4963_.png
+P33-6,33,Stoutland,ride,medium,508,5,,,,outfit_4965_.png
+P33-7,33,Serperior,ride,medium,497,5,,,,outfit_4966_.png outfit_4968_.png
+P33-8,33,Zoroark?,ride,low,571,5,,,,outfit_4969_.png
+P33-9,33,Pikachu (balloons),walk,medium,25,1,,,,outfit_4971_.png
+P33-10,33,Pikachu (balloons),fly,medium,25,1,,,,outfit_4972_.png outfit_4976_.png
+P33-11,33,Pikachu,walk,medium,25,1,,,,outfit_4973_.png
+P33-12,33,Pikachu,surf,medium,25,1,,,,outfit_4974_.png
+P33-13,33,Raichu (balloons)?,walk,low,26,1,,,,outfit_4975_.png
+P33-14,33,Raichu?,walk,low,26,1,,,,outfit_4977_.png
+P33-15,33,Raichu?,surf,low,26,1,,,,outfit_4978_.png
+P33-16,33,Raichu,walk,medium,26,1,,,,outfit_4979_.png outfit_6003_.png
+P33-17,33,Raichu (Alolan),walk,medium,26,7,,,,outfit_4980_.png
+P33-18,33,Raichu (balloons),walk,medium,26,1,,,,outfit_4981_.png
+P33-19,33,Raichu (balloons),fly,medium,26,1,,,,outfit_4982_.png
+P33-20,33,Raichu,walk,medium,26,1,,,,outfit_4983_.png
+P33-21,33,Raichu,surf,medium,26,1,,,,outfit_4984_.png
+P33-22,33,Raichu (balloons),walk,medium,26,1,,,,outfit_4985_.png
+P33-23,33,Raichu (balloons),fly,medium,26,1,,,,outfit_4986_.png
+P33-24,33,Raichu,walk,medium,26,1,,,,outfit_4987_.png
+P33-25,33,Raichu,surf,medium,26,1,,,,outfit_4988_.png
+P33-26,33,Noctowl,walk,medium,164,2,,,,outfit_4989_.png
+P33-27,33,Noctowl,fly,medium,164,2,,,,outfit_4990_.png
+P33-28,33,Noctowl (recolour),walk,medium,164,2,,,,outfit_4991_.png
+P33-29,33,Noctowl (recolour),fly,medium,164,2,,,,outfit_4992_.png
+P33-30,33,Noctowl (recolour),walk,medium,164,2,,,,outfit_4993_.png
+P33-31,33,Noctowl (recolour),fly,medium,164,2,,,,outfit_4994_.png
+P33-32,33,Noctowl (recolour),walk,medium,164,2,,,,outfit_4995_.png
+P33-33,33,Noctowl (recolour),fly,medium,164,2,,,,outfit_4996_.png
+P33-34,33,Machoke (shiny)?,walk,low,67,1,,,,outfit_4999_.png
+P33-35,33,? (decorated elephant),walk,low,,,,,,outfit_5039_.png
+P33-36,33,? (decorated elephant),walk,low,,,,,,outfit_5040_.png
+P33-37,33,"? (decorated elephant, costume)",walk,low,,,,,,outfit_5041_.png outfit_5044_.png
+P33-38,33,? (decorated elephant),walk,low,,,,,,outfit_5042_.png
+P33-39,33,? (decorated elephant),walk,low,,,,,,outfit_5043_.png
+P33-40,33,? (decorated elephant),ride,low,,,,,,outfit_5045_.png
+P33-41,33,? (decorated elephant),ride,low,,,,,,outfit_5046_.png
+P33-42,33,"? (decorated elephant, costume)",ride,low,,,,,,outfit_5047_.png outfit_5050_.png
+P33-43,33,? (decorated elephant),ride,low,,,,,,outfit_5048_.png
+P33-44,33,? (decorated elephant),ride,low,,,,,,outfit_5049_.png
+P33-45,33,?,walk,low,,,,,,outfit_5051_.png
+P33-46,33,?,walk,low,,,,,,outfit_5052_.png
+P33-47,33,?,walk,low,,,,,,outfit_5054_.png
+P33-48,33,?,walk,low,,,,,,outfit_5055_.png
+P34-1,34,?,ride,low,,,,,,outfit_5057_.png
+P34-2,34,?,ride,low,,,,,,outfit_5058_.png
+P34-3,34,? (gold recolour),ride,low,,,,,,outfit_5059_.png
+P34-4,34,?,ride,low,,,,,,outfit_5060_.png
+P34-5,34,?,ride,low,,,,,,outfit_5061_.png
+P34-6,34,? (gold recolour),ride,low,,,,,,outfit_5062_.png
+P34-7,34,Togekiss (costume)?,walk,low,468,4,,,,outfit_5063_.png
+P34-8,34,Togekiss (costume)?,walk,low,468,4,,,,outfit_5064_.png
+P34-9,34,Togekiss (recolour)?,fly,low,468,4,,,,outfit_5066_.png
+P34-10,34,Togekiss?,fly,low,468,4,,,,outfit_5067_.png
+P34-11,34,Togekiss?,fly,low,468,4,,,,outfit_5068_.png
+P34-12,34,Togekiss (costume)?,walk,low,468,4,,,,outfit_5069_.png
+P34-13,34,Togekiss (costume)?,walk,low,468,4,,,,outfit_5070_.png
+P34-14,34,Togekiss?,walk,low,468,4,,,,outfit_5071_.png
+P34-15,34,Togekiss?,fly,low,468,4,,,,outfit_5072_.png
+P34-16,34,?,walk,low,,,,,,outfit_5073_.png
+P34-17,34,?,walk,low,,,,,,outfit_5084_.png
+P34-18,34,player outfit,outfit,medium,,,,,,outfit_5091_.png
+P34-19,34,?,walk,low,,,,,,outfit_5098_.png
+P34-20,34,Arbok (recolour)?,walk,low,24,1,,,,outfit_5107_.png
+P34-21,34,Tauros?,ride,low,128,1,,,,outfit_5112_.png
+P34-22,34,Tauros?,ride,low,128,1,,,,outfit_5113_.png
+P34-23,34,player outfit,outfit,medium,,,,,,outfit_5146_.png
+P34-24,34,player outfit,outfit,medium,,,,,,outfit_5147_.png
+P34-25,34,player outfit,outfit,medium,,,,,,outfit_5148_.png
+P34-26,34,player outfit,outfit,medium,,,,,,outfit_5149_.png
+P34-27,34,player outfit,outfit,medium,,,,,,outfit_5150_.png
+P34-28,34,player outfit,outfit,medium,,,,,,outfit_5151_.png
+P34-29,34,player outfit,outfit,medium,,,,,,outfit_5152_.png
+P34-30,34,player outfit,outfit,medium,,,,,,outfit_5153_.png
+P34-31,34,player outfit,outfit,medium,,,,,,outfit_5156_.png
+P34-32,34,player outfit,outfit,medium,,,,,,outfit_5157_.png
+P34-33,34,player outfit,outfit,medium,,,,,,outfit_5158_.png
+P34-34,34,player outfit,outfit,medium,,,,,,outfit_5159_.png
+P34-35,34,player outfit,outfit,medium,,,,,,outfit_5160_.png
+P34-36,34,player outfit,outfit,medium,,,,,,outfit_5161_.png
+P34-37,34,player outfit,outfit,medium,,,,,,outfit_5162_.png
+P34-38,34,player outfit,outfit,medium,,,,,,outfit_5183_.png
+P34-39,34,player outfit,outfit,medium,,,,,,outfit_5184_.png
+P34-40,34,player outfit,outfit,medium,,,,,,outfit_5185_.png
+P34-41,34,player outfit,outfit,medium,,,,,,outfit_5186_.png
+P34-42,34,player outfit (Team Rocket)?,outfit,low,,,,,,outfit_5187_.png
+P34-43,34,Luxray?,walk,low,405,4,,,,outfit_5188_.png
+P34-44,34,Yveltal?,walk,low,717,6,,,,outfit_5189_.png
+P34-45,34,Snorlax (costume),walk,medium,143,1,,,,outfit_5190_.png
+P34-46,34,Fletchinder?,walk,low,662,6,,,,outfit_5191_.png
+P34-47,34,?,walk,low,,,,,,outfit_5192_.png
+P34-48,34,player outfit,outfit,medium,,,,,,outfit_5193_.png
+P35-1,35,player outfit,outfit,medium,,,,,,outfit_5194_.png
+P35-2,35,player outfit,outfit,medium,,,,,,outfit_5195_.png
+P35-3,35,player outfit,outfit,medium,,,,,,outfit_5196_.png
+P35-4,35,player outfit,outfit,medium,,,,,,outfit_5197_.png
+P35-5,35,?,walk,low,,,,,,outfit_5198_.png
+P35-6,35,vehicle: blue kart?,ride,low,,,,,,outfit_5223_.png
+P35-7,35,Venusaur,walk,high,3,1,,,,outfit_5226_.png
+P35-8,35,Venusaur (recolour),walk,medium,3,1,,,,outfit_5228_.png
+P35-9,35,Venusaur,ride,medium,3,1,,,,outfit_5229_.png
+P35-10,35,Gyarados (shiny)?,walk,low,130,1,,,,outfit_5299_.png
+P35-11,35,player outfit (fishing),outfit,medium,,,,,,outfit_5301_.png
+P35-12,35,player outfit (fishing),outfit,medium,,,,,,outfit_5302_.png
+P35-13,35,player outfit (fishing),outfit,medium,,,,,,outfit_5303_.png
+P35-14,35,player outfit (fishing),outfit,medium,,,,,,outfit_5304_.png
+P35-15,35,player outfit (fishing),outfit,medium,,,,,,outfit_5305_.png
+P35-16,35,player outfit (fishing),outfit,medium,,,,,,outfit_5306_.png
+P35-17,35,Necrozma (Ultra)?,walk,low,800,7,,,,outfit_5307_.png
+P35-18,35,?,walk,low,,,,,,outfit_5310_.png
+P35-19,35,Snorlax (recolour)?,walk,low,143,1,,,,outfit_5311_.png
+P35-20,35,?,walk,low,,,,,,outfit_5312_.png
+P35-21,35,Aerodactyl (recolour)?,walk,low,142,1,,,,outfit_5313_.png
+P35-22,35,Aerodactyl (recolour)?,fly,low,142,1,,,,outfit_5314_.png
+P35-23,35,Rayquaza (shiny),walk,medium,384,3,,,,outfit_5315_.png
+P35-24,35,Rayquaza (shiny),fly,medium,384,3,,,,outfit_5316_.png
+P35-25,35,?,walk,low,,,,,,outfit_5317_.png
+P35-26,35,?,ride,low,,,,,,outfit_5318_.png
+P35-27,35,?,walk,low,,,,,,outfit_5319_.png
+P35-28,35,?,walk,low,,,,,,outfit_5320_.png
+P35-29,35,effect: yellow mushrooms?,effect,low,,,,,,outfit_5324_.png
+P35-30,35,?,walk,low,,,,,,outfit_5328_.png
+P35-31,35,?,walk,low,,,,,,outfit_5329_.png outfit_5330_.png
+P35-32,35,Ninetales (Alolan),ride,medium,38,7,,,,outfit_5331_.png
+P35-33,35,Ninetales (Alolan),walk,medium,38,7,,,,outfit_5332_.png
+P35-34,35,Ninetales (costume)?,ride,low,38,1,,,,outfit_5333_.png
+P35-35,35,Ninetales (costume)?,ride,low,38,1,,,,outfit_5334_.png
+P35-36,35,player outfit,outfit,medium,,,,,,outfit_5448_.png
+P35-37,35,Arcanine?,walk,low,59,1,,,,outfit_5452_.png outfit_7350_.png
+P35-38,35,player outfit,outfit,low,,,,,,outfit_5462_.png
+P35-39,35,player outfit,outfit,medium,,,,,,outfit_5483_.png
+P35-40,35,item: poke ball cannon?,other,low,,,,,,outfit_5484_.png outfit_5485_.png
+P35-41,35,Ninetales,walk,medium,38,1,,,,outfit_5486_.png outfit_6683_.png
+P35-42,35,Ninetales,ride,medium,38,1,,,,outfit_5487_.png outfit_6682_.png
+P35-43,35,Zebstrika?,walk,low,523,5,,,,outfit_5488_.png
+P35-44,35,Zebstrika?,ride,low,523,5,,,,outfit_5489_.png
+P35-45,35,Rapidash (recolour)?,walk,low,78,1,,,,outfit_5490_.png
+P35-46,35,Rapidash (recolour)?,ride,low,78,1,,,,outfit_5491_.png
+P35-47,35,Rapidash (Galarian)?,walk,low,78,8,,,,outfit_5492_.png
+P35-48,35,Rapidash (Galarian)?,ride,low,78,8,,,,outfit_5493_.png
+P36-1,36,Chansey (costume),walk,medium,113,1,,,,outfit_5497_.png
+P36-2,36,Scyther (costume)?,walk,low,123,1,,,,outfit_5506_.png
+P36-3,36,player outfit,outfit,medium,,,,,,outfit_5516_.png
+P36-4,36,?,walk,low,,,,,,outfit_5517_.png
+P36-5,36,player outfit,outfit,medium,,,,,,outfit_5521_.png
+P36-6,36,player outfit,outfit,medium,,,,,,outfit_5522_.png
+P36-7,36,player outfit,outfit,medium,,,,,,outfit_5523_.png
+P36-8,36,player outfit (barrel)?,outfit,low,,,,,,outfit_5524_.png
+P36-9,36,player outfit,outfit,medium,,,,,,outfit_5525_.png
+P36-10,36,Ariados (recolour)?,walk,low,168,2,,,,outfit_5534_.png
+P36-11,36,effect: white feather?,effect,low,,,,,,outfit_5535_.png outfit_5536_.png outfit_5537_.png
+P36-12,36,effect: grey feather?,effect,low,,,,,,outfit_5538_.png
+P36-13,36,Espeon (recolour)?,walk,low,196,2,,,,outfit_5577_.png
+P36-14,36,Umbreon?,walk,low,197,2,,,,outfit_5578_.png
+P36-15,36,Eevee?,walk,low,133,1,,,,outfit_5582_.png
+P36-16,36,Charizard,walk,high,6,1,,,,outfit_5592_.png
+P36-17,36,Charizard (dark recolour),walk,medium,6,1,,,,outfit_5593_.png
+P36-18,36,Rayquaza,walk,medium,384,3,,,,outfit_5594_.png
+P36-19,36,Lugia,walk,high,249,2,,,,outfit_5595_.png
+P36-20,36,Graveler?,walk,low,75,1,,,,outfit_5596_.png
+P36-21,36,Muk (recolour)?,walk,low,89,1,,,,outfit_5597_.png
+P36-22,36,item: brown shell?,other,low,,,,,,outfit_5598_.png
+P36-23,36,item: blue shell?,other,low,,,,,,outfit_5601_.png
+P36-24,36,effect: vines?,effect,low,,,,,,outfit_5603_.png outfit_7427_.png
+P36-25,36,Gengar,walk,medium,94,1,,,,outfit_5605_.png
+P36-26,36,?,walk,low,,,,,,outfit_5606_.png
+P36-27,36,Vaporeon?,walk,low,134,1,,,,outfit_5610_.png
+P36-28,36,player outfit,outfit,medium,,,,,,outfit_5611_.png
+P36-29,36,player outfit,outfit,medium,,,,,,outfit_5625_.png
+P36-30,36,Squirtle (sunglasses),walk,medium,7,1,,,,outfit_5628_.png
+P36-31,36,Squirtle (sunglasses),walk,medium,7,1,,,,outfit_5629_.png
+P36-32,36,?,effect,low,,,,,,outfit_5632_.png
+P36-33,36,Squirtle,walk,medium,7,1,,,,outfit_5633_.png
+P36-34,36,Squirtle (sunglasses),walk,medium,7,1,,,,outfit_5634_.png
+P36-35,36,player outfit,outfit,medium,,,,,,outfit_5643_.png
+P36-36,36,player outfit,outfit,medium,,,,,,outfit_5644_.png
+P36-37,36,player outfit,outfit,medium,,,,,,outfit_5645_.png
+P36-38,36,Gengar (recolour),walk,medium,94,1,,,,outfit_5647_.png
+P36-39,36,?,walk,low,,,,,,outfit_5648_.png
+P36-40,36,Wartortle,walk,medium,8,1,,,,outfit_5653_.png
+P36-41,36,Butterfree (recolour)?,walk,low,12,1,,,,outfit_5659_.png
+P36-42,36,Arbok,walk,medium,24,1,,,,outfit_5670_.png outfit_5671_.png
+P36-43,36,Nidoqueen (recolour)?,walk,low,31,1,,,,outfit_5674_.png
+P36-44,36,Victreebel?,walk,low,71,1,,,,outfit_5679_.png
+P36-45,36,Koffing?,walk,low,109,1,,,,outfit_5682_.png
+P36-46,36,vehicle: black car,ride,medium,,,,,,outfit_5696_.png
+P36-47,36,player outfit,outfit,medium,,,,,,outfit_5697_.png
+P36-48,36,?,walk,low,,,,,,outfit_5700_.png
+P37-1,37,vehicle: brown car,ride,high,,,,,,outfit_5701_.png
+P37-2,37,vehicle: green car,ride,high,,,,,,outfit_5702_.png
+P37-3,37,vehicle: yellow car,ride,high,,,,,,outfit_5703_.png
+P37-4,37,vehicle: blue car,ride,high,,,,,,outfit_5704_.png
+P37-5,37,vehicle: light blue car,ride,high,,,,,,outfit_5705_.png
+P37-6,37,vehicle: yellow/white taxi car,ride,high,,,,,,outfit_5706_.png
+P37-7,37,vehicle: red car,ride,high,,,,,,outfit_5707_.png
+P37-8,37,vehicle: blue (striped) car,ride,high,,,,,,outfit_5708_.png
+P37-9,37,vehicle: dark green car,ride,high,,,,,,outfit_5709_.png
+P37-10,37,player outfit,outfit,medium,,,,,,outfit_5730_.png
+P37-11,37,player outfit,outfit,medium,,,,,,outfit_5731_.png
+P37-12,37,player outfit,outfit,medium,,,,,,outfit_5732_.png
+P37-13,37,player outfit,outfit,medium,,,,,,outfit_5733_.png
+P37-14,37,player outfit,outfit,medium,,,,,,outfit_5734_.png
+P37-15,37,player outfit,outfit,medium,,,,,,outfit_5735_.png
+P37-16,37,player outfit,outfit,medium,,,,,,outfit_5736_.png
+P37-17,37,player outfit,outfit,medium,,,,,,outfit_5737_.png
+P37-18,37,player outfit,outfit,medium,,,,,,outfit_5738_.png
+P37-19,37,player outfit,outfit,medium,,,,,,outfit_5739_.png
+P37-20,37,player outfit,outfit,medium,,,,,,outfit_5740_.png
+P37-21,37,player outfit,outfit,medium,,,,,,outfit_5741_.png
+P37-22,37,player outfit,outfit,medium,,,,,,outfit_5747_.png
+P37-23,37,item: pizza slice?,other,low,,,,,,outfit_5748_.png
+P37-24,37,player outfit?,outfit,low,,,,,,outfit_5749_.png
+P37-25,37,player outfit?,outfit,low,,,,,,outfit_5750_.png
+P37-26,37,player outfit,outfit,medium,,,,,,outfit_5751_.png
+P37-27,37,player outfit,outfit,medium,,,,,,outfit_5752_.png
+P37-28,37,player outfit,outfit,medium,,,,,,outfit_5753_.png
+P37-29,37,player outfit,outfit,medium,,,,,,outfit_5754_.png
+P37-30,37,player outfit,outfit,medium,,,,,,outfit_5755_.png
+P37-31,37,player outfit,outfit,medium,,,,,,outfit_5756_.png
+P37-32,37,player outfit,outfit,medium,,,,,,outfit_5757_.png
+P37-33,37,player outfit,outfit,medium,,,,,,outfit_5758_.png
+P37-34,37,player outfit,outfit,medium,,,,,,outfit_5759_.png
+P37-35,37,player outfit,outfit,medium,,,,,,outfit_5763_.png
+P37-36,37,player outfit,outfit,medium,,,,,,outfit_5764_.png
+P37-37,37,player outfit,outfit,medium,,,,,,outfit_5765_.png
+P37-38,37,player outfit,outfit,medium,,,,,,outfit_5766_.png
+P37-39,37,player outfit,outfit,medium,,,,,,outfit_5767_.png
+P37-40,37,player outfit,outfit,medium,,,,,,outfit_5768_.png
+P37-41,37,player outfit,outfit,medium,,,,,,outfit_5769_.png
+P37-42,37,player outfit,outfit,medium,,,,,,outfit_5770_.png
+P37-43,37,?,walk,low,,,,,,outfit_5771_.png
+P37-44,37,npc: clown,other,medium,,,,,,outfit_5773_.png
+P37-45,37,player outfit?,outfit,low,,,,,,outfit_5774_.png
+P37-46,37,player outfit?,outfit,low,,,,,,outfit_5775_.png
+P37-47,37,player outfit?,outfit,low,,,,,,outfit_5776_.png
+P37-48,37,player outfit?,outfit,low,,,,,,outfit_5777_.png
+P38-1,38,player outfit,outfit,low,,,,,,outfit_5778_.png
+P38-2,38,player outfit,outfit,low,,,,,,outfit_5779_.png
+P38-3,38,player outfit,outfit,low,,,,,,outfit_5780_.png
+P38-4,38,item: crude joke object?,other,low,,,,,,outfit_5783_.png
+P38-5,38,player outfit (Vaporeon costume),outfit,medium,,,,,,outfit_5784_.png
+P38-6,38,player outfit (Glaceon costume),outfit,medium,,,,,,outfit_5785_.png
+P38-7,38,player outfit (Umbreon costume),outfit,medium,,,,,,outfit_5786_.png
+P38-8,38,player outfit (Espeon costume),outfit,medium,,,,,,outfit_5787_.png
+P38-9,38,player outfit (Flareon costume),outfit,medium,,,,,,outfit_5788_.png
+P38-10,38,player outfit (Leafeon costume),outfit,medium,,,,,,outfit_5789_.png
+P38-11,38,player outfit (Jolteon costume),outfit,medium,,,,,,outfit_5790_.png
+P38-12,38,player outfit (Eevee costume),outfit,medium,,,,,,outfit_5791_.png
+P38-13,38,player outfit,outfit,medium,,,,,,outfit_5792_.png
+P38-14,38,player outfit,outfit,medium,,,,,,outfit_5793_.png
+P38-15,38,player outfit,outfit,medium,,,,,,outfit_5794_.png
+P38-16,38,player outfit,outfit,medium,,,,,,outfit_5795_.png
+P38-17,38,player outfit,outfit,medium,,,,,,outfit_5796_.png
+P38-18,38,player outfit,outfit,medium,,,,,,outfit_5797_.png
+P38-19,38,player outfit,outfit,low,,,,,,outfit_5798_.png
+P38-20,38,player outfit (Tyranitar? costume),outfit,low,,,,,,outfit_5799_.png
+P38-21,38,player outfit (chicken costume),outfit,medium,,,,,,outfit_5800_.png
+P38-22,38,player outfit (Zapdos costume),outfit,medium,,,,,,outfit_5801_.png
+P38-23,38,player outfit (Mew costume),outfit,medium,,,,,,outfit_5802_.png
+P38-24,38,player outfit (Mewtwo costume),outfit,medium,,,,,,outfit_5803_.png
+P38-25,38,player outfit (Articuno costume),outfit,medium,,,,,,outfit_5812_.png
+P38-26,38,player outfit (Moltres costume),outfit,medium,,,,,,outfit_5813_.png
+P38-27,38,player outfit (bird? costume),outfit,low,,,,,,outfit_5814_.png
+P38-28,38,player outfit,outfit,medium,,,,,,outfit_5815_.png
+P38-29,38,player outfit,outfit,medium,,,,,,outfit_5816_.png
+P38-30,38,player outfit,outfit,medium,,,,,,outfit_5817_.png
+P38-31,38,player outfit,outfit,medium,,,,,,outfit_5818_.png
+P38-32,38,Gardevoir,walk,high,282,3,,,,outfit_5821_.png outfit_6973_.png
+P38-33,38,Manectric?,walk,low,310,3,,,,outfit_5823_.png
+P38-34,38,Manectric?,ride,low,310,3,,,,outfit_5824_.png
+P38-35,38,?,walk,low,,,,,,outfit_5825_.png
+P38-36,38,?,ride,low,,,,,,outfit_5826_.png
+P38-37,38,Mismagius?,walk,low,429,4,,,,outfit_5827_.png
+P38-38,38,Whiscash?,walk,low,340,3,,,,outfit_5828_.png outfit_6801_.png outfit_8070_.png
+P38-39,38,Torkoal?,walk,low,324,3,,,,outfit_5829_.png outfit_6885_.png
+P38-40,38,?,walk,low,,,,,,outfit_5830_.png
+P38-41,38,Bronzong?,walk,low,437,4,,,,outfit_5831_.png
+P38-42,38,Absol (recolour)?,walk,low,359,3,,,,outfit_5832_.png outfit_7349_.png
+P38-43,38,Absol (recolour)?,ride,low,359,3,,,,outfit_5833_.png
+P38-44,38,Regigigas?,walk,low,486,4,,,,outfit_5837_.png
+P38-45,38,effect: whirlwind,effect,medium,,,,,,outfit_5839_.png
+P38-46,38,npc: kid with blue cap?,other,low,,,,,,outfit_5840_.png
+P38-47,38,?,walk,low,,,,,,outfit_5841_.png
+P38-48,38,player outfit?,outfit,low,,,,,,outfit_5843_.png
+P39-1,39,?,fly,low,,,,,,outfit_5848_.png
+P39-2,39,Manectric?,ride,low,310,3,,,,outfit_5849_.png
+P39-3,39,Lapras (recolour)?,surf,low,131,1,,,,outfit_5851_.png
+P39-4,39,?,ride,low,,,,,,outfit_5852_.png
+P39-5,39,Camerupt (Mega),walk,medium,323,6,,,,outfit_5853_.png
+P39-6,39,?,walk,low,,,,,,outfit_5854_.png outfit_7146_.png
+P39-7,39,Absol (recolour)?,walk,low,359,3,,,,outfit_5855_.png outfit_7148_.png
+P39-8,39,Braviary?,walk,low,628,5,,,,outfit_5856_.png
+P39-9,39,Muk (recolour)?,walk,low,89,1,,,,outfit_5857_.png outfit_5944_.png
+P39-10,39,Eevee (recolour)?,walk,low,133,1,,,,outfit_5858_.png
+P39-11,39,Shellder?,walk,low,90,1,,,,outfit_5860_.png outfit_6449_.png
+P39-12,39,Absol?,walk,low,359,3,,,,outfit_5861_.png
+P39-13,39,Lapras (recolour)?,walk,low,131,1,,,,outfit_5862_.png
+P39-14,39,Lickitung (recolour)?,walk,low,108,1,,,,outfit_5863_.png
+P39-15,39,Manectric?,walk,low,310,3,,,,outfit_5864_.png outfit_6735_.png
+P39-16,39,Omanyte,walk,medium,138,1,,,,outfit_5866_.png
+P39-17,39,Omastar?,walk,low,139,1,,,,outfit_5867_.png
+P39-18,39,Mankey,walk,medium,56,1,,,,outfit_5869_.png
+P39-19,39,effect: small purple?,effect,low,,,,,,outfit_5870_.png
+P39-20,39,Wigglytuff,walk,medium,40,1,,,,outfit_5871_.png
+P39-21,39,?,walk,low,,,,,,outfit_5872_.png
+P39-22,39,player outfit,outfit,medium,,,,,,outfit_5874_.png
+P39-23,39,effect: blue energy sphere,effect,medium,,,,,,outfit_5876_.png
+P39-24,39,Roggenrola?,walk,low,524,5,,,,outfit_5877_.png
+P39-25,39,Starmie?,walk,low,121,1,,,,outfit_5878_.png outfit_6887_.png
+P39-26,39,Clefairy,walk,medium,35,1,,,,outfit_5879_.png
+P39-27,39,?,surf,low,,,,,,outfit_5881_.png
+P39-28,39,Mantine (recolour)?,fly,low,226,2,,,,outfit_5882_.png
+P39-29,39,Glalie?,walk,low,362,3,,,,outfit_5886_.png outfit_5979_.png
+P39-30,39,Monferno?,walk,low,391,4,,,,outfit_5888_.png
+P39-31,39,?,walk,low,,,,,,outfit_5891_.png
+P39-32,39,?,effect,low,,,,,,outfit_5892_.png
+P39-33,39,?,walk,low,,,,,,outfit_5897_.png outfit_6861_.png
+P39-34,39,Gyarados (recolour)?,walk,low,130,1,,,,outfit_5900_.png
+P39-35,39,"Sharpedo (Mega, shiny)?",walk,low,319,6,,,,outfit_5902_.png
+P39-36,39,?,ride,low,,,,,,outfit_5903_.png
+P39-37,39,Turtonator?,walk,low,776,7,,,,outfit_5905_.png
+P39-38,39,Turtonator?,ride,low,776,7,,,,outfit_5906_.png
+P39-39,39,?,walk,low,,,,,,outfit_5907_.png
+P39-40,39,?,walk,low,,,,,,outfit_5908_.png
+P39-41,39,?,walk,low,,,,,,outfit_5909_.png
+P39-42,39,Kirlia,walk,medium,281,3,,,,outfit_5911_.png outfit_5921_.png
+P39-43,39,vehicle: flying nimbus cloud,ride,medium,,,,,,outfit_5912_.png
+P39-44,39,Kingdra?,walk,low,230,2,,,,outfit_5913_.png
+P39-45,39,Golurk (gold)?,walk,low,623,5,,,,outfit_5914_.png
+P39-46,39,Machamp (recolour)?,walk,low,68,1,,,,outfit_5917_.png
+P39-47,39,Kirlia (recolour)?,walk,low,281,3,,,,outfit_5918_.png outfit_6901_.png
+P39-48,39,Gallade?,walk,low,475,4,,,,outfit_5919_.png
+P40-1,40,?,walk,low,,,,,,outfit_5920_.png
+P40-2,40,?,fly,low,,,,,,outfit_5922_.png
+P40-3,40,Scyther (recolour)?,walk,low,123,1,,,,outfit_5923_.png
+P40-4,40,Mewtwo?,walk,low,150,1,,,,outfit_5924_.png
+P40-5,40,player outfit,outfit,low,,,,,,outfit_5926_.png
+P40-6,40,Gengar (green aura)?,walk,low,94,1,,,,outfit_5928_.png
+P40-7,40,Tentacruel (recolour)?,surf,low,73,1,,,,outfit_5929_.png
+P40-8,40,?,surf,low,,,,,,outfit_5930_.png
+P40-9,40,Pidgeot (recolour)?,fly,low,18,1,,,,outfit_5931_.png
+P40-10,40,Scyther (recolour)?,walk,low,123,1,,,,outfit_5932_.png
+P40-11,40,Charizard (dark recolour)?,walk,low,6,1,,,,outfit_5934_.png
+P40-12,40,?,walk,low,,,,,,outfit_5935_.png
+P40-13,40,Gengar (dark recolour)?,walk,low,94,1,,,,outfit_5937_.png
+P40-14,40,Graveler (recolour)?,walk,low,75,1,,,,outfit_5938_.png
+P40-15,40,?,walk,low,,,,,,outfit_5939_.png
+P40-16,40,Pidgeot (recolour)?,fly,low,18,1,,,,outfit_5940_.png
+P40-17,40,?,walk,low,,,,,,outfit_5941_.png
+P40-18,40,Corsola?,walk,low,222,2,,,,outfit_5942_.png
+P40-19,40,Tentacruel (recolour)?,walk,low,73,1,,,,outfit_5943_.png
+P40-20,40,player outfit,outfit,low,,,,,,outfit_5946_.png
+P40-21,40,Pidgeot (recolour)?,walk,low,18,1,,,,outfit_5947_.png outfit_6002_.png
+P40-22,40,Pidgeot (dark recolour)?,walk,low,18,1,,,,outfit_5948_.png outfit_6001_.png
+P40-23,40,Zangoose (recolour)?,walk,low,335,3,,,,outfit_5949_.png
+P40-24,40,Zangoose (recolour)?,walk,low,335,3,,,,outfit_5951_.png outfit_6404_.png
+P40-25,40,Honchkrow?,walk,low,430,4,,,,outfit_5952_.png
+P40-26,40,Honchkrow?,ride,low,430,4,,,,outfit_5953_.png
+P40-27,40,player outfit,outfit,low,,,,,,outfit_5954_.png
+P40-28,40,?,walk,low,,,,,,outfit_5955_.png
+P40-29,40,Zoroark?,walk,low,571,5,,,,outfit_5956_.png
+P40-30,40,?,ride,low,,,,,,outfit_5957_.png
+P40-31,40,?,ride,low,,,,,,outfit_5958_.png
+P40-32,40,?,walk,low,,,,,,outfit_5959_.png
+P40-33,40,Crobat (recolour)?,walk,low,169,2,,,,outfit_5960_.png
+P40-34,40,Crobat (recolour)?,fly,low,169,2,,,,outfit_5961_.png
+P40-35,40,Crobat (recolour)?,walk,low,169,2,,,,outfit_5962_.png
+P40-36,40,Crobat (recolour)?,fly,low,169,2,,,,outfit_5963_.png
+P40-37,40,?,walk,low,,,,,,outfit_5964_.png
+P40-38,40,?,walk,low,,,,,,outfit_5966_.png
+P40-39,40,Torchic,walk,medium,255,3,,,,outfit_5967_.png
+P40-40,40,Torchic,walk,low,255,3,,,,outfit_5968_.png
+P40-41,40,?,walk,low,,,,,,outfit_5969_.png
+P40-42,40,?,ride,low,,,,,,outfit_5970_.png
+P40-43,40,?,walk,low,,,,,,outfit_5971_.png
+P40-44,40,?,ride,low,,,,,,outfit_5972_.png
+P40-45,40,effect: green aura?,effect,low,,,,,,outfit_5977_.png
+P40-46,40,Diggersby?,walk,low,660,6,,,,outfit_5978_.png
+P40-47,40,Teddiursa?,walk,low,216,2,,,,outfit_5980_.png
+P40-48,40,Rayquaza,fly,medium,384,3,,,,outfit_5981_.png
+P41-1,41,?,walk,low,,,,,,outfit_5983_.png
+P41-2,41,?,walk,low,,,,,,outfit_5984_.png
+P41-3,41,?,surf,low,,,,,,outfit_5986_.png
+P41-4,41,Kartana?,walk,low,798,7,,,,outfit_5987_.png
+P41-5,41,Lapras (recolour)?,walk,low,131,1,,,,outfit_5989_.png
+P41-6,41,Primeape (recolour)?,walk,low,57,1,,,,outfit_5990_.png
+P41-7,41,?,walk,low,,,,,,outfit_5991_.png
+P41-8,41,Machamp (recolour)?,walk,low,68,1,,,,outfit_5993_.png
+P41-9,41,Absol (recolour)?,walk,low,359,3,,,,outfit_5994_.png
+P41-10,41,Absol (recolour)?,ride,low,359,3,,,,outfit_5995_.png
+P41-11,41,?,walk,low,,,,,,outfit_5999_.png
+P41-12,41,?,walk,low,,,,,,outfit_6000_.png
+P41-13,41,?,walk,low,,,,,,outfit_6004_.png outfit_6008_.png outfit_6009_.png
+P41-14,41,Sandslash (recolour)?,walk,low,28,1,,,,outfit_6005_.png
+P41-15,41,Sandslash (recolour)?,walk,low,28,1,,,,outfit_6006_.png
+P41-16,41,Sandslash (recolour)?,walk,low,28,1,,,,outfit_6007_.png
+P41-17,41,Gligar?,walk,low,207,2,,,,outfit_6011_.png
+P41-18,41,Gligar?,walk,low,207,2,,,,outfit_6012_.png
+P41-19,41,Xatu?,fly,low,178,2,,,,outfit_6013_.png
+P41-20,41,?,walk,low,,,,,,outfit_6014_.png
+P41-21,41,Sudowoodo (recolour)?,walk,low,185,2,,,,outfit_6017_.png outfit_7475_.png
+P41-22,41,Sudowoodo (recolour)?,walk,low,185,2,,,,outfit_6018_.png
+P41-23,41,?,walk,low,,,,,,outfit_6020_.png
+P41-24,41,? (fire aura),walk,low,,,,,,outfit_6021_.png
+P41-25,41,player outfit,outfit,low,,,,,,outfit_6022_.png
+P41-26,41,?,walk,low,,,,,,outfit_6023_.png
+P41-27,41,?,walk,low,,,,,,outfit_6024_.png
+P41-28,41,Snorlax,walk,medium,143,1,,,,outfit_6026_.png outfit_7089_.png outfit_7468_.png
+P41-29,41,?,walk,low,,,,,,outfit_6032_.png outfit_6035_.png
+P41-30,41,?,walk,low,,,,,,outfit_6044_.png
+P41-31,41,?,walk,low,,,,,,outfit_6045_.png
+P41-32,41,?,ride,low,,,,,,outfit_6046_.png
+P41-33,41,Ninetales (recolour)?,ride,low,38,1,,,,outfit_6047_.png
+P41-34,41,Ninetales (recolour)?,ride,low,38,1,,,,outfit_6048_.png
+P41-35,41,?,walk,low,,,,,,outfit_6049_.png
+P41-36,41,?,walk,low,,,,,,outfit_6050_.png
+P41-37,41,Togekiss?,fly,low,468,4,,,,outfit_6051_.png
+P41-38,41,Altaria (recolour)?,ride,low,334,3,,,,outfit_6052_.png
+P41-39,41,npc: witch?,other,low,,,,,,outfit_6053_.png
+P41-40,41,Machoke (recolour)?,walk,low,67,1,,,,outfit_6054_.png
+P41-41,41,Primeape (recolour)?,walk,low,57,1,,,,outfit_6055_.png
+P41-42,41,?,walk,low,,,,,,outfit_6056_.png
+P41-43,41,Pyroar?,ride,low,668,6,,,,outfit_6057_.png
+P41-44,41,Pyroar?,ride,low,668,6,,,,outfit_6058_.png
+P41-45,41,Pyroar?,ride,low,668,6,,,,outfit_6059_.png
+P41-46,41,Pyroar?,walk,low,668,6,,,,outfit_6060_.png
+P41-47,41,Giratina (recolour)?,walk,low,487,4,,,,outfit_6061_.png
+P41-48,41,Slowbro?,walk,low,80,1,,,,outfit_6062_.png
+P42-1,42,?,walk,low,,,,,,outfit_6063_.png
+P42-2,42,?,walk,low,,,,,,outfit_6064_.png
+P42-3,42,npc: Dr. Eggman,other,medium,,,,,,outfit_6065_.png
+P42-4,42,?,ride,low,,,,,,outfit_6066_.png
+P42-5,42,?,walk,low,,,,,,outfit_6067_.png
+P42-6,42,Entei (recolour)?,ride,low,244,2,,,,outfit_6068_.png
+P42-7,42,Entei (recolour)?,walk,low,244,2,,,,outfit_6069_.png
+P42-8,42,Reshiram?,walk,low,643,5,,,,outfit_6070_.png
+P42-9,42,Murkrow,walk,medium,198,2,,,,outfit_6075_.png
+P42-10,42,effect: tiny dark marks?,effect,low,,,,,,outfit_6076_.png
+P42-11,42,?,walk,low,,,,,,outfit_6077_.png
+P42-12,42,Glaceon,walk,medium,471,4,,,,outfit_6078_.png outfit_6415_.png
+P42-13,42,Lucario (Mega)?,walk,low,448,6,,,,outfit_6080_.png outfit_6081_.png
+P42-14,42,?,walk,low,,,,,,outfit_6082_.png outfit_6083_.png
+P42-15,42,effect: shadow tendrils?,effect,low,,,,,,outfit_6084_.png outfit_6085_.png outfit_6086_.png
+P42-16,42,Sylveon,walk,medium,700,6,,,,outfit_6087_.png outfit_6117_.png outfit_6647_.png
+P42-17,42,Prinplup,walk,medium,394,4,,,,outfit_6088_.png outfit_6458_.png
+P42-18,42,Empoleon,walk,medium,395,4,,,,outfit_6089_.png outfit_6090_.png outfit_6106_.png outfit_6457_.png
+P42-19,42,Gogoat (recolour)?,walk,low,673,6,,,,outfit_6091_.png
+P42-20,42,Gogoat?,walk,low,673,6,,,,outfit_6092_.png
+P42-21,42,?,walk,low,,,,,,outfit_6093_.png outfit_6094_.png
+P42-22,42,Infernape,walk,medium,392,4,,,,outfit_6095_.png outfit_6463_.png outfit_6520_.png outfit_6959_.png
+P42-23,42,Infernape (recolour),walk,medium,392,4,,,,outfit_6096_.png outfit_6519_.png
+P42-24,42,Torkoal,walk,medium,324,3,,,,outfit_6097_.png
+P42-25,42,Torterra,walk,medium,389,4,,,,outfit_6098_.png
+P42-26,42,?,fly,low,,,,,,outfit_6101_.png
+P42-27,42,?,walk,low,,,,,,outfit_6103_.png outfit_6104_.png outfit_6460_.png
+P42-28,42,Luxray,walk,medium,405,4,,,,outfit_6107_.png
+P42-29,42,Luxray (recolour)?,walk,low,405,4,,,,outfit_6108_.png
+P42-30,42,?,walk,low,,,,,,outfit_6110_.png
+P42-31,42,Sharpedo (recolour)?,walk,low,319,3,,,,outfit_6111_.png outfit_6874_.png
+P42-32,42,Ninetales (recolour)?,ride,low,38,1,,,,outfit_6112_.png
+P42-33,42,Zoroark,walk,medium,571,5,,,,outfit_6113_.png
+P42-34,42,npc: chef?,other,low,,,,,,outfit_6114_.png outfit_6614_.png outfit_7070_.png outfit_7470_.png
+P42-35,42,?,walk,low,,,,,,outfit_6115_.png outfit_6902_.png outfit_7444_.png
+P42-36,42,?,walk,low,,,,,,outfit_6116_.png outfit_6697_.png outfit_7520_.png
+P42-37,42,Muk (recolour)?,walk,low,89,1,,,,outfit_6118_.png outfit_6615_.png outfit_7071_.png outfit_7471_.png
+P42-38,42,Solrock,walk,medium,338,3,,,,outfit_6119_.png
+P42-39,42,Lunatone,walk,medium,337,3,,,,outfit_6120_.png outfit_6122_.png
+P42-40,42,Lunatone (recolour)?,walk,low,337,3,,,,outfit_6121_.png
+P42-41,42,?,walk,low,,,,,,outfit_6123_.png
+P42-42,42,Snorlax (recolour),walk,medium,143,1,,,,outfit_6124_.png
+P42-43,42,effect: fire,effect,medium,,,,,,outfit_6125_.png
+P42-44,42,Staryu?,walk,low,120,1,,,,outfit_6126_.png
+P42-45,42,npc: Bomberman?,other,low,,,,,,outfit_6127_.png
+P42-46,42,npc: Bomberman?,other,low,,,,,,outfit_6128_.png
+P42-47,42,npc: Bomberman?,other,low,,,,,,outfit_6129_.png
+P42-48,42,npc: Bomberman?,other,low,,,,,,outfit_6130_.png
+P43-1,43,effect: red swirl?,effect,low,,,,,,outfit_6132_.png
+P43-2,43,Gliscor?,walk,low,472,4,,,,outfit_6133_.png
+P43-3,43,Charizard (Mega X),walk,medium,6,6,,,,outfit_6134_.png
+P43-4,43,Abomasnow (Mega)?,walk,low,460,6,,,,outfit_6136_.png outfit_7152_.png
+P43-5,43,?,walk,low,,,,,,outfit_6137_.png
+P43-6,43,"Gyarados (Mega, recolour)?",walk,low,130,6,,,,outfit_6139_.png
+P43-7,43,Slowbro (Mega)?,walk,low,80,6,,,,outfit_6140_.png
+P43-8,43,Ferrothorn?,walk,low,598,5,,,,outfit_6141_.png
+P43-9,43,Conkeldurr,walk,medium,534,5,,,,outfit_6143_.png outfit_7586_.png
+P43-10,43,Conkeldurr (recolour)?,walk,low,534,5,,,,outfit_6144_.png outfit_7779_.png
+P43-11,43,Crustle,walk,medium,558,5,,,,outfit_6145_.png
+P43-12,43,Crustle?,walk,low,558,5,,,,outfit_6146_.png
+P43-13,43,Dwebble?,walk,low,557,5,,,,outfit_6147_.png
+P43-14,43,Galvantula,walk,medium,596,5,,,,outfit_6148_.png outfit_6708_.png
+P43-15,43,Galvantula,walk,medium,596,5,,,,outfit_6149_.png
+P43-16,43,Golurk (recolour)?,walk,low,623,5,,,,outfit_6152_.png outfit_6910_.png
+P43-17,43,Klinklang,walk,medium,601,5,,,,outfit_6157_.png outfit_7597_.png
+P43-18,43,Staraptor,walk,medium,398,4,,,,outfit_6161_.png
+P43-19,43,Golurk (recolour)?,walk,low,623,5,,,,outfit_6165_.png
+P43-20,43,Golurk?,walk,low,623,5,,,,outfit_6166_.png outfit_6168_.png
+P43-21,43,?,walk,low,,,,,,outfit_6167_.png
+P43-22,43,Genesect?,walk,low,649,5,,,,outfit_6172_.png outfit_6173_.png outfit_6174_.png outfit_6175_.png outfit_6176_.png outfit_6177_.png
+P43-23,43,?,walk,low,,,,,,outfit_6178_.png
+P43-24,43,?,walk,low,,,,,,outfit_6179_.png
+P43-25,43,player outfit,outfit,medium,,,,,,outfit_6180_.png
+P43-26,43,vehicle: red kart,ride,medium,,,,,,outfit_6181_.png
+P43-27,43,player outfit,outfit,medium,,,,,,outfit_6182_.png
+P43-28,43,player outfit?,outfit,low,,,,,,outfit_6183_.png
+P43-29,43,Charizard,walk,high,6,1,,,,outfit_6184_.png
+P43-30,43,?,walk,low,,,,,,outfit_6185_.png
+P43-31,43,Metagross (recolour)?,walk,low,376,3,,,,outfit_6186_.png outfit_6190_.png
+P43-32,43,Metagross?,walk,low,376,3,,,,outfit_6187_.png outfit_6189_.png
+P43-33,43,Metagross?,ride,low,376,3,,,,outfit_6188_.png
+P43-34,43,item: golden sword?,other,low,,,,,,outfit_6191_.png
+P43-35,43,item: wooden sword?,other,low,,,,,,outfit_6192_.png outfit_6193_.png outfit_6194_.png outfit_6195_.png
+P43-36,43,?,walk,low,,,,,,outfit_6197_.png outfit_7489_.png
+P43-37,43,Exeggutor (Alolan),walk,high,103,7,,,,outfit_6198_.png outfit_7490_.png
+P43-38,43,?,walk,low,,,,,,outfit_6199_.png outfit_7494_.png
+P43-39,43,Gulpin?,walk,low,316,3,,,,outfit_6200_.png outfit_7486_.png
+P43-40,43,Absol (recolour)?,walk,low,359,3,,,,outfit_6201_.png outfit_7485_.png
+P43-41,43,Ninetales (Alolan),walk,medium,38,7,,,,outfit_6202_.png outfit_7483_.png
+P43-42,43,?,walk,low,,,,,,outfit_6203_.png outfit_7488_.png
+P43-43,43,Raticate (Alolan)?,walk,low,20,7,,,,outfit_6204_.png outfit_7491_.png
+P43-44,43,?,walk,low,,,,,,outfit_6205_.png outfit_7493_.png
+P43-45,43,effect: ice crystals,effect,medium,,,,,,outfit_6206_.png outfit_7492_.png
+P43-46,43,?,walk,low,,,,,,outfit_6207_.png
+P43-47,43,?,walk,low,,,,,,outfit_6208_.png
+P43-48,43,Qwilfish (Hisuian)?,walk,low,211,8,,,,outfit_6209_.png
+P44-1,44,Overqwil?,walk,low,904,8,,,,outfit_6210_.png
+P44-2,44,Audino (Mega)?,walk,low,531,6,,,,outfit_6211_.png outfit_8170_.png
+P44-3,44,?,walk,low,,,,,,outfit_6243_.png
+P44-4,44,player outfit,outfit,low,,,,,,outfit_6244_.png outfit_6248_.png outfit_6251_.png
+P44-5,44,item: grey speaker boxes?,other,low,,,,,,outfit_6245_.png outfit_6249_.png outfit_6252_.png
+P44-6,44,player outfit,outfit,low,,,,,,outfit_6246_.png
+P44-7,44,effect: blue grid boxes?,effect,low,,,,,,outfit_6247_.png
+P44-8,44,?,walk,low,,,,,,outfit_6250_.png
+P44-9,44,?,effect,low,,,,,,outfit_6253_.png
+P44-10,44,Lopunny,walk,medium,428,4,,,,outfit_6254_.png outfit_7028_.png
+P44-11,44,Lopunny,walk,medium,428,4,,,,outfit_6255_.png
+P44-12,44,Charizard (dark recolour),walk,medium,6,1,,,,outfit_6257_.png
+P44-13,44,Charizard (dark recolour),walk,medium,6,1,,,,outfit_6258_.png
+P44-14,44,Charizard (dark recolour),walk,medium,6,1,,,,outfit_6259_.png
+P44-15,44,Metagross (recolour)?,walk,low,376,3,,,,outfit_6262_.png outfit_6266_.png outfit_7553_.png outfit_7557_.png
+P44-16,44,Gliscor?,walk,low,472,4,,,,outfit_6263_.png
+P44-17,44,Metagross (recolour)?,walk,low,376,3,,,,outfit_6264_.png outfit_6265_.png
+P44-18,44,item: purple boxes?,other,low,,,,,,outfit_6267_.png
+P44-19,44,Raichu,walk,medium,26,1,,,,outfit_6268_.png outfit_6273_.png outfit_7484_.png
+P44-20,44,?,walk,low,,,,,,outfit_6270_.png outfit_7449_.png
+P44-21,44,?,walk,low,,,,,,outfit_6271_.png
+P44-22,44,?,ride,low,,,,,,outfit_6272_.png
+P44-23,44,? (costume),walk,low,,,,,,outfit_6277_.png
+P44-24,44,Salamence (recolour)?,walk,low,373,3,,,,outfit_6278_.png
+P44-25,44,Kricketot?,walk,low,401,4,,,,outfit_6279_.png
+P44-26,44,Kricketot?,walk,low,401,4,,,,outfit_6281_.png
+P44-27,44,?,effect,low,,,,,,outfit_6282_.png
+P44-28,44,Dragonite,walk,medium,149,1,,,,outfit_6283_.png
+P44-29,44,effect: faint outline?,effect,low,,,,,,outfit_6284_.png
+P44-30,44,Pachirisu,walk,medium,417,4,,,,outfit_6314_.png outfit_6605_.png outfit_6894_.png
+P44-31,44,effect: blue ice spikes,effect,medium,,,,,,outfit_6317_.png
+P44-32,44,?,walk,low,,,,,,outfit_6318_.png
+P44-33,44,effect: pink crystal?,effect,low,,,,,,outfit_6321_.png
+P44-34,44,?,walk,low,,,,,,outfit_6322_.png
+P44-35,44,Gliscor (recolour)?,walk,low,472,4,,,,outfit_6323_.png
+P44-36,44,Zekrom?,walk,low,644,5,,,,outfit_6327_.png outfit_6360_.png
+P44-37,44,Gliscor (recolour)?,walk,low,472,4,,,,outfit_6328_.png
+P44-38,44,Gliscor (recolour)?,walk,low,472,4,,,,outfit_6329_.png
+P44-39,44,Gliscor (recolour)?,walk,low,472,4,,,,outfit_6330_.png
+P44-40,44,?,walk,low,,,,,,outfit_6331_.png
+P44-41,44,?,walk,low,,,,,,outfit_6332_.png
+P44-42,44,?,walk,low,,,,,,outfit_6333_.png
+P44-43,44,?,walk,low,,,,,,outfit_6334_.png
+P44-44,44,Ninetales (recolour)?,walk,low,38,1,,,,outfit_6335_.png
+P44-45,44,Houndoom?,walk,low,229,2,,,,outfit_6336_.png
+P44-46,44,?,walk,low,,,,,,outfit_6337_.png
+P44-47,44,?,other,low,,,,,,outfit_6341_.png
+P44-48,44,Espeon (recolour)?,walk,low,196,2,,,,outfit_6344_.png
+P45-1,45,Lapras (recolour)?,walk,low,131,1,,,,outfit_6345_.png
+P45-2,45,?,walk,low,,,,,,outfit_6347_.png
+P45-3,45,Gastly?,walk,low,92,1,,,,outfit_6348_.png
+P45-4,45,?,walk,low,,,,,,outfit_6350_.png
+P45-5,45,?,walk,low,,,,,,outfit_6351_.png
+P45-6,45,?,walk,low,,,,,,outfit_6352_.png
+P45-7,45,Nidoqueen (recolour)?,walk,low,31,1,,,,outfit_6353_.png
+P45-8,45,Vaporeon,walk,medium,134,1,,,,outfit_6354_.png
+P45-9,45,Ludicolo (recolour)?,walk,low,272,3,,,,outfit_6355_.png
+P45-10,45,Seismitoad?,walk,low,537,5,,,,outfit_6358_.png
+P45-11,45,effect: gold sparkles?,effect,low,,,,,,outfit_6361_.png outfit_6798_.png outfit_6941_.png
+P45-12,45,player outfit,outfit,medium,,,,,,outfit_6362_.png
+P45-13,45,player outfit,outfit,medium,,,,,,outfit_6363_.png
+P45-14,45,player outfit,outfit,medium,,,,,,outfit_6364_.png
+P45-15,45,player outfit,outfit,medium,,,,,,outfit_6365_.png
+P45-16,45,player outfit,outfit,medium,,,,,,outfit_6366_.png
+P45-17,45,player outfit,outfit,medium,,,,,,outfit_6367_.png
+P45-18,45,player outfit,outfit,medium,,,,,,outfit_6368_.png
+P45-19,45,player outfit,outfit,medium,,,,,,outfit_6369_.png
+P45-20,45,player outfit,outfit,medium,,,,,,outfit_6370_.png
+P45-21,45,player outfit,outfit,medium,,,,,,outfit_6371_.png
+P45-22,45,effect: pink?,effect,low,,,,,,outfit_6372_.png
+P45-23,45,?,walk,low,,,,,,outfit_6379_.png outfit_7514_.png
+P45-24,45,?,walk,low,,,,,,outfit_6387_.png
+P45-25,45,player outfit?,outfit,low,,,,,,outfit_6389_.png
+P45-26,45,Snorlax (Christmas hat),walk,medium,143,1,,,,outfit_6390_.png
+P45-27,45,Zebstrika,walk,medium,523,5,,,,outfit_6394_.png
+P45-28,45,item: stone statue?,other,low,,,,,,outfit_6397_.png
+P45-29,45,?,walk,low,,,,,,outfit_6406_.png
+P45-30,45,Excadrill,walk,medium,530,5,,,,outfit_6409_.png outfit_7515_.png outfit_7584_.png
+P45-31,45,Absol (Mega),walk,medium,359,6,,,,outfit_6414_.png
+P45-32,45,Leafeon,walk,medium,470,4,,,,outfit_6416_.png outfit_6424_.png
+P45-33,45,Zebstrika (recolour)?,walk,low,523,5,,,,outfit_6418_.png
+P45-34,45,Beartic,walk,medium,614,5,,,,outfit_6419_.png
+P45-35,45,Blaziken (recolour)?,walk,low,257,3,,,,outfit_6420_.png
+P45-36,45,Simisage?,walk,low,512,5,,,,outfit_6421_.png
+P45-37,45,?,walk,low,,,,,,outfit_6422_.png
+P45-38,45,?,walk,low,,,,,,outfit_6429_.png
+P45-39,45,Cubchoo?,walk,low,613,5,,,,outfit_6430_.png
+P45-40,45,Darumaka,walk,medium,554,5,,,,outfit_6431_.png
+P45-41,45,?,walk,low,,,,,,outfit_6432_.png
+P45-42,45,Gurdurr,walk,medium,533,5,,,,outfit_6433_.png
+P45-43,45,Probopass?,walk,low,476,4,,,,outfit_6434_.png
+P45-44,45,?,walk,low,,,,,,outfit_6435_.png
+P45-45,45,Timburr?,walk,low,532,5,,,,outfit_6439_.png
+P45-46,45,?,walk,low,,,,,,outfit_6440_.png
+P45-47,45,Cradily?,walk,low,346,3,,,,outfit_6441_.png
+P45-48,45,Darmanitan,walk,medium,555,5,,,,outfit_6444_.png
+P46-1,46,Spheal?,walk,low,363,3,,,,outfit_6445_.png
+P46-2,46,?,walk,low,,,,,,outfit_6446_.png outfit_7502_.png
+P46-3,46,Zebstrika,ride,medium,523,5,,,,outfit_6447_.png
+P46-4,46,?,walk,low,,,,,,outfit_6448_.png outfit_7501_.png
+P46-5,46,Lickitung,walk,medium,108,1,,,,outfit_6450_.png
+P46-6,46,Haxorus (recolour)?,walk,low,612,5,,,,outfit_6453_.png outfit_6456_.png
+P46-7,46,?,walk,low,,,,,,outfit_6454_.png outfit_6893_.png
+P46-8,46,Pelipper?,walk,low,279,3,,,,outfit_6455_.png
+P46-9,46,Torterra,walk,high,389,4,,,,outfit_6459_.png
+P46-10,46,?,walk,low,,,,,,outfit_6470_.png
+P46-11,46,Ludicolo (costume)?,walk,low,272,3,,,,outfit_6473_.png
+P46-12,46,?,walk,low,,,,,,outfit_6474_.png
+P46-13,46,Shiftry?,walk,low,275,3,,,,outfit_6475_.png
+P46-14,46,Tropius,walk,medium,357,3,,,,outfit_6476_.png
+P46-15,46,Tropius (recolour)?,walk,low,357,3,,,,outfit_6477_.png
+P46-16,46,Dialga (recolour)?,walk,low,483,4,,,,outfit_6479_.png
+P46-17,46,?,walk,low,,,,,,outfit_6480_.png
+P46-18,46,Aggron?,walk,low,306,3,,,,outfit_6481_.png
+P46-19,46,?,walk,low,,,,,,outfit_6482_.png
+P46-20,46,?,walk,low,,,,,,outfit_6483_.png
+P46-21,46,Lapras (recolour),walk,medium,131,1,,,,outfit_6484_.png
+P46-22,46,Lapras (recolour),surf,medium,131,1,,,,outfit_6485_.png
+P46-23,46,Luxray?,walk,low,405,4,,,,outfit_6486_.png
+P46-24,46,Luxray?,ride,low,405,4,,,,outfit_6487_.png
+P46-25,46,?,walk,low,,,,,,outfit_6489_.png
+P46-26,46,Staryu?,walk,low,120,1,,,,outfit_6490_.png
+P46-27,46,?,walk,low,,,,,,outfit_6491_.png
+P46-28,46,Munna?,walk,low,517,5,,,,outfit_6492_.png
+P46-29,46,?,walk,low,,,,,,outfit_6493_.png
+P46-30,46,?,walk,low,,,,,,outfit_6494_.png
+P46-31,46,Empoleon,walk,high,395,4,,,,outfit_6496_.png
+P46-32,46,Gallade,walk,high,475,4,,,,outfit_6497_.png
+P46-33,46,Rapidash (winged costume)?,walk,low,78,1,,,,outfit_6498_.png outfit_7516_.png
+P46-34,46,?,walk,low,,,,,,outfit_6501_.png
+P46-35,46,npc: human in red?,other,low,,,,,,outfit_6502_.png outfit_7088_.png
+P46-36,46,Rapidash (winged costume)?,walk,low,78,1,,,,outfit_6508_.png
+P46-37,46,Snorlax (Halloween),walk,medium,143,1,,,,outfit_6509_.png
+P46-38,46,Snorlax (Halloween),walk,medium,143,1,,,,outfit_6510_.png
+P46-39,46,?,walk,low,,,,,,outfit_6511_.png
+P46-40,46,?,walk,low,,,,,,outfit_6513_.png
+P46-41,46,Empoleon (recolour),walk,medium,395,4,,,,outfit_6514_.png outfit_7517_.png
+P46-42,46,Torterra (Halloween),walk,medium,389,4,,,,outfit_6515_.png
+P46-43,46,?,walk,low,,,,,,outfit_6516_.png
+P46-44,46,?,walk,low,,,,,,outfit_6517_.png
+P46-45,46,?,walk,low,,,,,,outfit_6518_.png
+P46-46,46,Tyranitar (recolour)?,walk,low,248,2,,,,outfit_6521_.png outfit_6960_.png
+P46-47,46,?,walk,low,,,,,,outfit_6523_.png
+P46-48,46,Muk,walk,medium,89,1,,,,outfit_6524_.png
+P47-1,47,Magnezone?,ride,low,462,4,,,,outfit_6527_.png
+P47-2,47,Rapidash (winged costume)?,walk,low,78,1,,,,outfit_6531_.png
+P47-3,47,? (Christmas costume),walk,low,,,,,,outfit_6535_.png
+P47-4,47,player outfit,outfit,low,,,,,,outfit_6536_.png
+P47-5,47,Pikachu,walk,high,25,1,,,,outfit_6539_.png
+P47-6,47,player outfit,outfit,medium,,,,,,outfit_6540_.png
+P47-7,47,player outfit,outfit,medium,,,,,,outfit_6541_.png
+P47-8,47,player outfit,outfit,medium,,,,,,outfit_6542_.png
+P47-9,47,player outfit,outfit,medium,,,,,,outfit_6543_.png
+P47-10,47,vehicle: bicycle,ride,medium,,,,,,outfit_6544_.png outfit_6554_.png
+P47-11,47,vehicle: bicycle,ride,medium,,,,,,outfit_6545_.png
+P47-12,47,player outfit,outfit,medium,,,,,,outfit_6546_.png
+P47-13,47,player outfit,outfit,medium,,,,,,outfit_6547_.png
+P47-14,47,vehicle: bicycle,ride,medium,,,,,,outfit_6548_.png outfit_6555_.png
+P47-15,47,player outfit,outfit,medium,,,,,,outfit_6551_.png
+P47-16,47,vehicle: bicycle,ride,medium,,,,,,outfit_6552_.png outfit_6553_.png outfit_6558_.png outfit_6559_.png
+P47-17,47,vehicle: bicycle,ride,medium,,,,,,outfit_6556_.png
+P47-18,47,vehicle: motorcycle,ride,medium,,,,,,outfit_6557_.png
+P47-19,47,Lugia?,surf,low,249,2,,,,outfit_6565_.png
+P47-20,47,Lugia?,surf,low,249,2,,,,outfit_6566_.png
+P47-21,47,effect: rock spikes,effect,medium,,,,,,outfit_6572_.png
+P47-22,47,effect: small rocks,effect,low,,,,,,outfit_6573_.png
+P47-23,47,?,walk,low,,,,,,outfit_6574_.png
+P47-24,47,?,walk,low,,,,,,outfit_6575_.png
+P47-25,47,?,walk,low,,,,,,outfit_6576_.png
+P47-26,47,?,walk,low,,,,,,outfit_6577_.png
+P47-27,47,?,walk,low,,,,,,outfit_6580_.png
+P47-28,47,Cradily?,walk,low,346,3,,,,outfit_6581_.png
+P47-29,47,Cradily?,walk,low,346,3,,,,outfit_6582_.png
+P47-30,47,?,walk,low,,,,,,outfit_6583_.png
+P47-31,47,?,walk,low,,,,,,outfit_6584_.png
+P47-32,47,?,walk,low,,,,,,outfit_6585_.png
+P47-33,47,?,walk,low,,,,,,outfit_6586_.png outfit_6587_.png outfit_6588_.png
+P47-34,47,?,walk,low,,,,,,outfit_6590_.png
+P47-35,47,Shiftry?,walk,low,275,3,,,,outfit_6593_.png
+P47-36,47,Shiftry (costume)?,walk,low,275,3,,,,outfit_6594_.png
+P47-37,47,Shiftry?,walk,low,275,3,,,,outfit_6595_.png
+P47-38,47,Crawdaunt (costume)?,walk,low,342,3,,,,outfit_6596_.png
+P47-39,47,?,walk,low,,,,,,outfit_6597_.png
+P47-40,47,?,walk,low,,,,,,outfit_6598_.png
+P47-41,47,Crawdaunt (pirate costume)?,walk,low,342,3,,,,outfit_6599_.png
+P47-42,47,Tropius (recolour)?,walk,low,357,3,,,,outfit_6600_.png
+P47-43,47,Tropius?,fly,low,357,3,,,,outfit_6601_.png
+P47-44,47,?,walk,low,,,,,,outfit_6602_.png outfit_7518_.png
+P47-45,47,?,walk,low,,,,,,outfit_6603_.png outfit_7519_.png
+P47-46,47,?,walk,low,,,,,,outfit_6604_.png
+P47-47,47,?,walk,low,,,,,,outfit_6606_.png
+P47-48,47,npc: armoured knight?,other,low,,,,,,outfit_6609_.png
+P48-1,48,? (cake costume),walk,low,,,,,,outfit_6610_.png
+P48-2,48,Camerupt (Mega) (recolour)?,walk,low,323,6,,,,outfit_6611_.png
+P48-3,48,Camerupt (Mega)?,walk,low,323,6,,,,outfit_6612_.png
+P48-4,48,Camerupt (Mega)?,walk,low,323,6,,,,outfit_6613_.png
+P48-5,48,?,walk,low,,,,,,outfit_6616_.png outfit_7072_.png
+P48-6,48,?,walk,low,,,,,,outfit_6617_.png outfit_7073_.png
+P48-7,48,player outfit?,outfit,low,,,,,,outfit_6618_.png
+P48-8,48,?,walk,low,,,,,,outfit_6619_.png
+P48-9,48,Tentacruel,walk,medium,73,1,,,,outfit_6620_.png
+P48-10,48,?,walk,low,,,,,,outfit_6621_.png
+P48-11,48,Larvitar?,walk,low,246,2,,,,outfit_6622_.png
+P48-12,48,?,walk,low,,,,,,outfit_6623_.png
+P48-13,48,Wingull?,walk,low,278,3,,,,outfit_6624_.png
+P48-14,48,?,walk,low,,,,,,outfit_6625_.png outfit_7360_.png
+P48-15,48,?,walk,low,,,,,,outfit_6626_.png outfit_7361_.png
+P48-16,48,Tropius (recolour)?,walk,low,357,3,,,,outfit_6627_.png
+P48-17,48,Tropius (recolour)?,walk,low,357,3,,,,outfit_6628_.png
+P48-18,48,?,walk,low,,,,,,outfit_6629_.png
+P48-19,48,?,walk,low,,,,,,outfit_6630_.png
+P48-20,48,?,walk,low,,,,,,outfit_6631_.png
+P48-21,48,?,walk,low,,,,,,outfit_6632_.png
+P48-22,48,?,walk,low,,,,,,outfit_6633_.png
+P48-23,48,Noctowl (recolour)?,walk,low,164,2,,,,outfit_6635_.png
+P48-24,48,Noctowl (recolour)?,walk,low,164,2,,,,outfit_6637_.png
+P48-25,48,Tropius?,fly,low,357,3,,,,outfit_6638_.png
+P48-26,48,Primeape,walk,medium,57,1,,,,outfit_6639_.png outfit_7472_.png
+P48-27,48,Camerupt (Mega) (recolour)?,ride,low,323,6,,,,outfit_6645_.png
+P48-28,48,Camerupt (Mega)?,ride,low,323,6,,,,outfit_6646_.png
+P48-29,48,?,ride,low,,,,,,outfit_6648_.png
+P48-30,48,?,ride,low,,,,,,outfit_6650_.png
+P48-31,48,?,ride,low,,,,,,outfit_6651_.png
+P48-32,48,?,ride,low,,,,,,outfit_6652_.png
+P48-33,48,Camerupt (Mega)?,walk,low,323,6,,,,outfit_6653_.png
+P48-34,48,Camerupt (Mega)?,ride,low,323,6,,,,outfit_6654_.png
+P48-35,48,Camerupt (Mega) (shiny)?,walk,low,323,6,,,,outfit_6655_.png
+P48-36,48,Shiftry (costume)?,walk,low,275,3,,,,outfit_6656_.png
+P48-37,48,?,walk,low,,,,,,outfit_6657_.png
+P48-38,48,?,walk,low,,,,,,outfit_6658_.png
+P48-39,48,?,walk,low,,,,,,outfit_6659_.png outfit_7454_.png
+P48-40,48,?,walk,low,,,,,,outfit_6661_.png
+P48-41,48,Abomasnow (costume)?,walk,low,460,4,,,,outfit_6662_.png outfit_7473_.png
+P48-42,48,?,walk,low,,,,,,outfit_6663_.png
+P48-43,48,?,walk,low,,,,,,outfit_6664_.png
+P48-44,48,Ninetales (recolour),walk,medium,38,1,,,,outfit_6665_.png
+P48-45,48,Ninetales (Alolan)?,walk,medium,38,7,,,,outfit_6666_.png
+P48-46,48,Pichu?,walk,low,172,2,,,,outfit_6668_.png
+P48-47,48,?,ride,low,,,,,,outfit_6669_.png
+P48-48,48,?,ride,low,,,,,,outfit_6670_.png
+P49-1,49,Honchkrow?,walk,low,430,4,,,,outfit_6672_.png outfit_7469_.png
+P49-2,49,?,fly,low,,,,,,outfit_6673_.png
+P49-3,49,Yveltal?,fly,low,717,6,,,,outfit_6674_.png
+P49-4,49,?,fly,low,,,,,,outfit_6675_.png
+P49-5,49,player outfit,outfit,medium,,,,,,outfit_6676_.png
+P49-6,49,?,walk,low,,,,,,outfit_6677_.png
+P49-7,49,?,walk,low,,,,,,outfit_6679_.png outfit_7075_.png
+P49-8,49,Camerupt (Mega) (recolour)?,walk,low,323,6,,,,outfit_6680_.png outfit_7481_.png
+P49-9,49,Camerupt (Mega) (recolour)?,ride,low,323,6,,,,outfit_6681_.png
+P49-10,49,Ninetales (costume),walk,medium,38,1,,,,outfit_6684_.png
+P49-11,49,Ninetales (costume),walk,medium,38,1,,,,outfit_6685_.png
+P49-12,49,?,walk,low,,,,,,outfit_6686_.png outfit_7076_.png
+P49-13,49,?,walk,low,,,,,,outfit_6687_.png outfit_7077_.png
+P49-14,49,Chandelure (recolour),walk,medium,609,5,,,,outfit_6688_.png
+P49-15,49,Chandelure (Halloween),walk,medium,609,5,,,,outfit_6689_.png outfit_7527_.png
+P49-16,49,?,walk,low,,,,,,outfit_6690_.png outfit_7526_.png
+P49-17,49,?,walk,low,,,,,,outfit_6691_.png
+P49-18,49,Drapion (costume)?,walk,low,452,4,,,,outfit_6692_.png outfit_7524_.png
+P49-19,49,Drapion (costume)?,walk,low,452,4,,,,outfit_6693_.png outfit_7523_.png
+P49-20,49,Samurott?,walk,low,503,5,,,,outfit_6694_.png outfit_7522_.png
+P49-21,49,Samurott?,walk,low,503,5,,,,outfit_6696_.png outfit_7521_.png
+P49-22,49,?,walk,low,,,,,,outfit_6698_.png
+P49-23,49,?,walk,low,,,,,,outfit_6699_.png
+P49-24,49,?,walk,low,,,,,,outfit_6700_.png
+P49-25,49,player outfit,outfit,low,,,,,,outfit_6704_.png
+P49-26,49,Wobbuffet?,walk,low,202,2,,,,outfit_6705_.png
+P49-27,49,? (shield costume),walk,low,,,,,,outfit_6706_.png
+P49-28,49,?,walk,low,,,,,,outfit_6711_.png
+P49-29,49,?,walk,low,,,,,,outfit_6712_.png
+P49-30,49,Zebstrika (recolour)?,walk,low,523,5,,,,outfit_6713_.png outfit_7082_.png outfit_7456_.png
+P49-31,49,Zebstrika (recolour)?,walk,low,523,5,,,,outfit_6714_.png outfit_7457_.png
+P49-32,49,?,walk,low,,,,,,outfit_6715_.png
+P49-33,49,Abomasnow (recolour)?,walk,low,460,4,,,,outfit_6716_.png
+P49-34,49,? (mushroom costume),walk,low,,,,,,outfit_6717_.png
+P49-35,49,?,walk,low,,,,,,outfit_6718_.png
+P49-36,49,?,walk,low,,,,,,outfit_6719_.png
+P49-37,49,? (king costume),walk,low,,,,,,outfit_6720_.png
+P49-38,49,?,walk,low,,,,,,outfit_6721_.png
+P49-39,49,?,walk,low,,,,,,outfit_6722_.png
+P49-40,49,?,outfit,low,,,,,,outfit_6723_.png outfit_8429_.png outfit_8430_.png
+P49-41,49,Hippowdon?,walk,low,450,4,,,,outfit_6724_.png outfit_7583_.png
+P49-42,49,?,walk,low,,,,,,outfit_6725_.png
+P49-43,49,?,walk,low,,,,,,outfit_6729_.png
+P49-44,49,?,walk,low,,,,,,outfit_6730_.png
+P49-45,49,?,ride,low,,,,,,outfit_6731_.png
+P49-46,49,?,walk,low,,,,,,outfit_6732_.png
+P49-47,49,?,walk,low,,,,,,outfit_6733_.png outfit_7458_.png
+P49-48,49,player outfit,outfit,low,,,,,,outfit_6734_.png
+P50-1,50,?,walk,low,,,,,,outfit_6737_.png
+P50-2,50,?,walk,low,,,,,,outfit_6738_.png
+P50-3,50,Onix (recolour)?,walk,medium,95,1,,,,outfit_6739_.png outfit_7362_.png outfit_7394_.png
+P50-4,50,? (wizard costume),walk,low,,,,,,outfit_6740_.png
+P50-5,50,?,walk,low,,,,,,outfit_6741_.png outfit_7091_.png
+P50-6,50,?,walk,low,,,,,,outfit_6742_.png
+P50-7,50,?,walk,low,,,,,,outfit_6743_.png
+P50-8,50,? (Christmas costume),walk,low,,,,,,outfit_6745_.png outfit_7460_.png
+P50-9,50,? (bat costume),walk,low,,,,,,outfit_6746_.png
+P50-10,50,?,walk,low,,,,,,outfit_6747_.png
+P50-11,50,?,walk,low,,,,,,outfit_6748_.png
+P50-12,50,?,walk,low,,,,,,outfit_6749_.png
+P50-13,50,?,walk,low,,,,,,outfit_6750_.png
+P50-14,50,?,walk,low,,,,,,outfit_6751_.png
+P50-15,50,?,walk,low,,,,,,outfit_6752_.png
+P50-16,50,Kingdra (recolour)?,walk,low,230,2,,,,outfit_6753_.png
+P50-17,50,Kingdra?,walk,low,230,2,,,,outfit_6754_.png
+P50-18,50,?,walk,low,,,,,,outfit_6755_.png outfit_7461_.png
+P50-19,50,?,walk,low,,,,,,outfit_6756_.png
+P50-20,50,Kingdra (recolour)?,walk,low,230,2,,,,outfit_6757_.png
+P50-21,50,Kingdra?,walk,low,230,2,,,,outfit_6758_.png
+P50-22,50,?,walk,low,,,,,,outfit_6759_.png
+P50-23,50,?,walk,low,,,,,,outfit_6761_.png outfit_7092_.png
+P50-24,50,?,walk,low,,,,,,outfit_6764_.png outfit_7462_.png
+P50-25,50,?,walk,low,,,,,,outfit_6765_.png outfit_7463_.png
+P50-26,50,? (dinosaur costume),walk,low,,,,,,outfit_6766_.png
+P50-27,50,Pelipper,fly,low,279,3,,,,outfit_6770_.png
+P50-28,50,Onix (recolour)?,ride,low,95,1,,,,outfit_6771_.png
+P50-29,50,?,walk,low,,,,,,outfit_6772_.png
+P50-30,50,Pelipper (costume)?,walk,low,279,3,,,,outfit_6774_.png
+P50-31,50,Sunflora,walk,medium,192,2,,,,outfit_6775_.png
+P50-32,50,Pelipper,walk,medium,279,3,,,,outfit_6776_.png
+P50-33,50,Pelipper,walk,medium,279,3,,,,outfit_6777_.png
+P50-34,50,Pelipper,walk,medium,279,3,,,,outfit_6778_.png
+P50-35,50,?,walk,low,,,,,,outfit_6779_.png
+P50-36,50,Latios,walk,medium,381,3,,,,outfit_6783_.png
+P50-37,50,Latios,walk,medium,381,3,,,,outfit_6784_.png
+P50-38,50,Latias,walk,medium,380,3,,,,outfit_6785_.png
+P50-39,50,player outfit,outfit,low,,,,,,outfit_6787_.png
+P50-40,50,player outfit,outfit,low,,,,,,outfit_6789_.png
+P50-41,50,Haxorus (recolour)?,walk,low,612,5,,,,outfit_6790_.png outfit_7455_.png
+P50-42,50,Haxorus (recolour)?,walk,low,612,5,,,,outfit_6791_.png
+P50-43,50,player outfit?,outfit,low,,,,,,outfit_6792_.png
+P50-44,50,player outfit?,outfit,low,,,,,,outfit_6793_.png
+P50-45,50,? (dinosaur costume),ride,low,,,,,,outfit_6795_.png
+P50-46,50,?,walk,low,,,,,,outfit_6797_.png outfit_7466_.png
+P50-47,50,?,walk,low,,,,,,outfit_6806_.png
+P50-48,50,?,walk,low,,,,,,outfit_6807_.png
+P51-1,51,?,ride,low,,,,,,outfit_6811_.png
+P51-2,51,?,ride,low,,,,,,outfit_6812_.png
+P51-3,51,?,walk,low,,,,,,outfit_6814_.png
+P51-4,51,Zoroark,walk,high,571,5,,,,outfit_6816_.png outfit_7479_.png outfit_8574_.png
+P51-5,51,?,walk,low,,,,,,outfit_6817_.png
+P51-6,51,?,walk,low,,,,,,outfit_6818_.png
+P51-7,51,Cresselia,walk,medium,488,4,,,,outfit_6819_.png
+P51-8,51,Cresselia,walk,medium,488,4,,,,outfit_6820_.png
+P51-9,51,?,walk,low,,,,,,outfit_6821_.png
+P51-10,51,Gogoat?,walk,low,673,6,,,,outfit_6824_.png
+P51-11,51,effect: ?,effect,low,,,,,,outfit_6825_.png
+P51-12,51,Darkrai,walk,high,491,4,,,,outfit_6826_.png
+P51-13,51,Darkrai,walk,high,491,4,,,,outfit_6827_.png
+P51-14,51,Darkrai,walk,high,491,4,,,,outfit_6828_.png
+P51-15,51,Gallade (recolour)?,walk,low,475,4,,,,outfit_6831_.png outfit_7450_.png
+P51-16,51,Gallade (recolour)?,walk,low,475,4,,,,outfit_6832_.png
+P51-17,51,Gardevoir (recolour),walk,medium,282,3,,,,outfit_6833_.png outfit_7452_.png
+P51-18,51,Gardevoir (recolour),walk,medium,282,3,,,,outfit_6834_.png outfit_7453_.png
+P51-19,51,?,walk,low,,,,,,outfit_6839_.png
+P51-20,51,?,other,low,,,,,,outfit_6843_.png
+P51-21,51,Darkrai,walk,high,491,4,,,,outfit_6846_.png
+P51-22,51,?,walk,low,,,,,,outfit_6848_.png
+P51-23,51,Raichu?,walk,low,26,1,,,,outfit_6858_.png
+P51-24,51,Raichu?,walk,low,26,1,,,,outfit_6859_.png
+P51-25,51,Raichu?,walk,low,26,1,,,,outfit_6860_.png
+P51-26,51,Raichu (recolour)?,walk,low,26,1,,,,outfit_6862_.png
+P51-27,51,?,walk,low,,,,,,outfit_6863_.png
+P51-28,51,?,walk,low,,,,,,outfit_6864_.png
+P51-29,51,Steelix (Mega),walk,medium,208,6,,,,outfit_6865_.png
+P51-30,51,Steelix (Mega),ride,medium,208,6,,,,outfit_6866_.png
+P51-31,51,?,ride,low,,,,,,outfit_6867_.png
+P51-32,51,?,walk,low,,,,,,outfit_6868_.png
+P51-33,51,Darkrai,walk,high,491,4,,,,outfit_6869_.png
+P51-34,51,?,other,low,,,,,,outfit_6870_.png
+P51-35,51,?,walk,low,,,,,,outfit_6871_.png
+P51-36,51,?,walk,low,,,,,,outfit_6873_.png
+P51-37,51,?,walk,low,,,,,,outfit_6875_.png
+P51-38,51,Gulpin?,walk,low,316,3,,,,outfit_6876_.png
+P51-39,51,?,walk,low,,,,,,outfit_6877_.png
+P51-40,51,Klinklang,walk,medium,601,5,,,,outfit_6878_.png
+P51-41,51,Klinklang,walk,medium,601,5,,,,outfit_6879_.png
+P51-42,51,?,walk,low,,,,,,outfit_6881_.png
+P51-43,51,?,walk,low,,,,,,outfit_6886_.png
+P51-44,51,?,walk,low,,,,,,outfit_6889_.png
+P51-45,51,Garchomp (recolour)?,walk,low,445,4,,,,outfit_6891_.png
+P51-46,51,?,walk,low,,,,,,outfit_6892_.png
+P51-47,51,?,walk,low,,,,,,outfit_6899_.png outfit_7504_.png
+P51-48,51,Gardevoir (costume)?,walk,low,282,3,,,,outfit_6909_.png
+P52-1,52,?,walk,low,,,,,,outfit_6911_.png
+P52-2,52,?,walk,low,,,,,,outfit_6912_.png
+P52-3,52,?,walk,low,,,,,,outfit_6922_.png
+P52-4,52,?,walk,low,,,,,,outfit_6924_.png
+P52-5,52,?,walk,low,,,,,,outfit_6930_.png
+P52-6,52,player outfit?,outfit,low,,,,,,outfit_6931_.png
+P52-7,52,?,walk,low,,,,,,outfit_6932_.png
+P52-8,52,Snorlax (recolour)?,walk,low,143,1,,,,outfit_6935_.png
+P52-9,52,?,walk,low,,,,,,outfit_6936_.png
+P52-10,52,?,other,low,,,,,,outfit_6938_.png
+P52-11,52,?,fly,low,,,,,,outfit_6939_.png outfit_7585_.png
+P52-12,52,?,fly,low,,,,,,outfit_6940_.png
+P52-13,52,?,walk,low,,,,,,outfit_6942_.png
+P52-14,52,?,walk,low,,,,,,outfit_6943_.png
+P52-15,52,?,walk,low,,,,,,outfit_6944_.png
+P52-16,52,?,walk,low,,,,,,outfit_6946_.png
+P52-17,52,?,walk,low,,,,,,outfit_6947_.png outfit_7445_.png
+P52-18,52,?,walk,low,,,,,,outfit_6948_.png outfit_7446_.png
+P52-19,52,? (Christmas costume),walk,low,,,,,,outfit_6949_.png
+P52-20,52,Gengar (recolour)?,walk,low,94,1,,,,outfit_6950_.png
+P52-21,52,? (reindeer costume),walk,low,,,,,,outfit_6951_.png outfit_7447_.png
+P52-22,52,? (Christmas costume),walk,low,,,,,,outfit_6952_.png outfit_7448_.png
+P52-23,52,Munchlax (recolour)?,walk,low,446,4,,,,outfit_6970_.png outfit_6971_.png
+P52-24,52,?,walk,low,,,,,,outfit_6972_.png
+P52-25,52,?,walk,low,,,,,,outfit_6974_.png
+P52-26,52,?,walk,low,,,,,,outfit_6975_.png
+P52-27,52,?,walk,low,,,,,,outfit_6976_.png
+P52-28,52,Garchomp (recolour)?,walk,low,445,4,,,,outfit_6977_.png
+P52-29,52,player outfit,outfit,medium,,,,,,outfit_6978_.png
+P52-30,52,player outfit,outfit,medium,,,,,,outfit_6979_.png
+P52-31,52,player outfit,outfit,medium,,,,,,outfit_6980_.png
+P52-32,52,player outfit,outfit,medium,,,,,,outfit_6981_.png
+P52-33,52,Gogoat?,ride,low,673,6,,,,outfit_6986_.png outfit_7018_.png
+P52-34,52,Mamoswine?,ride,low,473,4,,,,outfit_6987_.png
+P52-35,52,?,walk,low,,,,,,outfit_6990_.png
+P52-36,52,?,ride,low,,,,,,outfit_6991_.png
+P52-37,52,Pyroar?,ride,low,668,6,,,,outfit_6992_.png
+P52-38,52,Gogoat?,ride,low,673,6,,,,outfit_6994_.png
+P52-39,52,player outfit?,outfit,low,,,,,,outfit_6999_.png outfit_7000_.png
+P52-40,52,?,walk,low,,,,,,outfit_7001_.png outfit_7581_.png
+P52-41,52,?,ride,low,,,,,,outfit_7002_.png outfit_7005_.png outfit_7006_.png
+P52-42,52,?,ride,low,,,,,,outfit_7003_.png
+P52-43,52,?,ride,low,,,,,,outfit_7004_.png
+P52-44,52,?,ride,low,,,,,,outfit_7007_.png
+P52-45,52,?,ride,low,,,,,,outfit_7008_.png
+P52-46,52,Pelipper?,ride,low,279,3,,,,outfit_7009_.png
+P52-47,52,?,ride,low,,,,,,outfit_7010_.png
+P52-48,52,?,walk,low,,,,,,outfit_7011_.png
+P53-1,53,?,fly,low,,,,,,outfit_7012_.png
+P53-2,53,? (dinosaur costume),ride,low,,,,,,outfit_7013_.png
+P53-3,53,Zebstrika,ride,medium,523,5,,,,outfit_7014_.png
+P53-4,53,Zebstrika (recolour)?,ride,low,523,5,,,,outfit_7015_.png
+P53-5,53,Zebstrika (recolour)?,ride,low,523,5,,,,outfit_7016_.png
+P53-6,53,?,ride,low,,,,,,outfit_7017_.png
+P53-7,53,?,walk,low,,,,,,outfit_7020_.png
+P53-8,53,?,walk,low,,,,,,outfit_7021_.png
+P53-9,53,?,walk,low,,,,,,outfit_7024_.png outfit_7025_.png outfit_7026_.png
+P53-10,53,?,walk,low,,,,,,outfit_7027_.png
+P53-11,53,player outfit?,outfit,low,,,,,,outfit_7029_.png
+P53-12,53,Solrock,walk,medium,338,3,,,,outfit_7030_.png
+P53-13,53,Solrock,walk,medium,338,3,,,,outfit_7031_.png
+P53-14,53,Solrock (recolour),walk,medium,338,3,,,,outfit_7032_.png outfit_7033_.png
+P53-15,53,Lunatone,walk,medium,337,3,,,,outfit_7034_.png
+P53-16,53,Lunatone,walk,medium,337,3,,,,outfit_7035_.png
+P53-17,53,Lunatone,walk,medium,337,3,,,,outfit_7036_.png
+P53-18,53,?,walk,low,,,,,,outfit_7037_.png
+P53-19,53,?,walk,low,,,,,,outfit_7038_.png
+P53-20,53,?,walk,low,,,,,,outfit_7039_.png outfit_7040_.png
+P53-21,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7045_.png
+P53-22,53,?,walk,low,,,,,,outfit_7046_.png
+P53-23,53,?,walk,low,,,,,,outfit_7047_.png
+P53-24,53,?,walk,low,,,,,,outfit_7048_.png
+P53-25,53,Honchkrow?,walk,low,430,4,,,,outfit_7049_.png
+P53-26,53,Honchkrow?,walk,low,430,4,,,,outfit_7050_.png
+P53-27,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7051_.png
+P53-28,53,Pyroar?,walk,low,668,6,,,,outfit_7053_.png
+P53-29,53,Pyroar?,ride,low,668,6,,,,outfit_7055_.png
+P53-30,53,?,walk,low,,,,,,outfit_7056_.png
+P53-31,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7062_.png
+P53-32,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7063_.png
+P53-33,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7064_.png
+P53-34,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7065_.png
+P53-35,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7066_.png
+P53-36,53,Pelipper (costume)?,walk,low,279,3,,,,outfit_7067_.png
+P53-37,53,?,walk,low,,,,,,outfit_7068_.png
+P53-38,53,?,walk,low,,,,,,outfit_7069_.png
+P53-39,53,?,ride,low,,,,,,outfit_7074_.png
+P53-40,53,?,walk,low,,,,,,outfit_7078_.png
+P53-41,53,?,walk,low,,,,,,outfit_7079_.png
+P53-42,53,?,walk,low,,,,,,outfit_7080_.png
+P53-43,53,Zebstrika (recolour)?,walk,low,523,5,,,,outfit_7083_.png
+P53-44,53,Mewtwo?,walk,low,150,1,,,,outfit_7087_.png
+P53-45,53,? (wizard costume),walk,low,,,,,,outfit_7090_.png
+P53-46,53,Lugia,walk,high,249,2,,,,outfit_7093_.png
+P53-47,53,?,walk,low,,,,,,outfit_7096_.png outfit_7099_.png
+P53-48,53,Hoopa (Unbound)?,walk,low,720,6,,,,outfit_7097_.png
+P54-1,54,Solgaleo,walk,high,791,7,,,,outfit_7098_.png
+P54-2,54,Hoopa (Unbound) (recolour)?,walk,low,720,6,,,,outfit_7100_.png
+P54-3,54,Snorlax (costume),walk,medium,143,1,,,,outfit_7103_.png
+P54-4,54,?,walk,low,,,,,,outfit_7105_.png
+P54-5,54,Dragonite?,walk,low,149,1,,,,outfit_7116_.png
+P54-6,54,item: cage,other,medium,,,,,,outfit_7117_.png
+P54-7,54,item: cage,other,medium,,,,,,outfit_7118_.png
+P54-8,54,item: cage,other,medium,,,,,,outfit_7119_.png
+P54-9,54,Scyther?,walk,low,123,1,,,,outfit_7121_.png
+P54-10,54,?,walk,low,,,,,,outfit_7124_.png
+P54-11,54,?,walk,low,,,,,,outfit_7126_.png
+P54-12,54,?,walk,low,,,,,,outfit_7127_.png
+P54-13,54,?,walk,low,,,,,,outfit_7128_.png
+P54-14,54,?,walk,low,,,,,,outfit_7129_.png
+P54-15,54,Blastoise (recolour)?,surf,low,9,1,,,,outfit_7132_.png
+P54-16,54,Gengar (recolour)?,walk,low,94,1,,,,outfit_7135_.png
+P54-17,54,Venusaur (recolour),walk,medium,3,1,,,,outfit_7136_.png
+P54-18,54,?,walk,low,,,,,,outfit_7139_.png
+P54-19,54,?,walk,low,,,,,,outfit_7140_.png
+P54-20,54,?,ride,low,,,,,,outfit_7141_.png
+P54-21,54,?,walk,low,,,,,,outfit_7143_.png
+P54-22,54,Charizard (Mega X)?,walk,low,6,6,,,,outfit_7145_.png
+P54-23,54,?,walk,low,,,,,,outfit_7149_.png
+P54-24,54,?,walk,low,,,,,,outfit_7150_.png
+P54-25,54,?,walk,low,,,,,,outfit_7151_.png
+P54-26,54,?,walk,low,,,,,,outfit_7157_.png outfit_7506_.png outfit_8090_.png
+P54-27,54,?,walk,low,,,,,,outfit_7158_.png
+P54-28,54,Zapdos (mini)?,walk,low,145,1,,,,outfit_7159_.png
+P54-29,54,Moltres (mini)?,walk,low,146,1,,,,outfit_7160_.png
+P54-30,54,Articuno (mini)?,walk,low,144,1,,,,outfit_7161_.png
+P54-31,54,?,walk,low,,,,,,outfit_7162_.png
+P54-32,54,?,walk,low,,,,,,outfit_7163_.png outfit_7428_.png
+P54-33,54,Ponyta (Galarian),walk,medium,77,8,,,,outfit_7164_.png outfit_7429_.png
+P54-34,54,Rapidash (Galarian),walk,medium,78,8,,,,outfit_7165_.png outfit_7430_.png
+P54-35,54,Weezing (Galarian),walk,high,110,8,,,,outfit_7166_.png
+P54-36,54,?,walk,low,,,,,,outfit_7197_.png
+P54-37,54,Eevee,walk,medium,133,1,,,,outfit_7198_.png
+P54-38,54,?,walk,low,,,,,,outfit_7199_.png
+P54-39,54,?,walk,low,,,,,,outfit_7258_.png
+P54-40,54,?,walk,low,,,,,,outfit_7259_.png
+P54-41,54,?,walk,low,,,,,,outfit_7262_.png
+P54-42,54,Darkrai (recolour)?,walk,low,491,4,,,,outfit_7263_.png
+P54-43,54,?,walk,low,,,,,,outfit_7264_.png
+P54-44,54,?,walk,low,,,,,,outfit_7267_.png
+P54-45,54,?,walk,low,,,,,,outfit_7271_.png
+P54-46,54,?,fly,low,,,,,,outfit_7274_.png
+P54-47,54,?,ride,low,,,,,,outfit_7275_.png
+P54-48,54,?,walk,low,,,,,,outfit_7276_.png
+P55-1,55,?,walk,low,,,,,,outfit_7277_.png
+P55-2,55,?,walk,low,,,,,,outfit_7278_.png
+P55-3,55,?,walk,low,,,,,,outfit_7279_.png
+P55-4,55,?,walk,low,,,,,,outfit_7280_.png outfit_7305_.png
+P55-5,55,?,walk,low,,,,,,outfit_7281_.png
+P55-6,55,?,walk,low,,,,,,outfit_7282_.png
+P55-7,55,?,walk,low,,,,,,outfit_7283_.png
+P55-8,55,player outfit?,outfit,low,,,,,,outfit_7285_.png
+P55-9,55,?,walk,low,,,,,,outfit_7286_.png
+P55-10,55,?,ride,low,,,,,,outfit_7287_.png
+P55-11,55,?,walk,low,,,,,,outfit_7288_.png
+P55-12,55,Golurk (recolour)?,ride,low,623,5,,,,outfit_7289_.png
+P55-13,55,Golurk (recolour)?,walk,low,623,5,,,,outfit_7290_.png
+P55-14,55,?,walk,low,,,,,,outfit_7291_.png
+P55-15,55,?,walk,low,,,,,,outfit_7294_.png
+P55-16,55,Lucario (recolour)?,walk,low,448,4,,,,outfit_7295_.png
+P55-17,55,?,walk,low,,,,,,outfit_7297_.png
+P55-18,55,?,walk,low,,,,,,outfit_7298_.png
+P55-19,55,?,walk,low,,,,,,outfit_7299_.png
+P55-20,55,?,walk,low,,,,,,outfit_7300_.png
+P55-21,55,Zoroark (recolour)?,walk,low,571,5,,,,outfit_7301_.png
+P55-22,55,?,walk,low,,,,,,outfit_7302_.png outfit_7884_.png
+P55-23,55,Charizard (recolour)?,walk,low,6,1,,,,outfit_7304_.png
+P55-24,55,?,walk,low,,,,,,outfit_7306_.png
+P55-25,55,?,walk,low,,,,,,outfit_7307_.png
+P55-26,55,?,walk,low,,,,,,outfit_7308_.png
+P55-27,55,?,walk,low,,,,,,outfit_7310_.png
+P55-28,55,?,walk,low,,,,,,outfit_7311_.png
+P55-29,55,Rayquaza (recolour)?,walk,low,384,3,,,,outfit_7314_.png
+P55-30,55,?,walk,low,,,,,,outfit_7315_.png
+P55-31,55,?,walk,low,,,,,,outfit_7316_.png
+P55-32,55,Gengar (Mega) (recolour)?,walk,low,94,6,,,,outfit_7317_.png
+P55-33,55,Camerupt (Mega) (recolour)?,walk,low,323,6,,,,outfit_7319_.png
+P55-34,55,?,walk,low,,,,,,outfit_7320_.png
+P55-35,55,?,walk,low,,,,,,outfit_7321_.png outfit_7770_.png
+P55-36,55,?,ride,low,,,,,,outfit_7322_.png outfit_7771_.png
+P55-37,55,?,walk,low,,,,,,outfit_7323_.png
+P55-38,55,Grotle?,ride,low,388,4,,,,outfit_7325_.png
+P55-39,55,Grotle?,ride,low,388,4,,,,outfit_7326_.png
+P55-40,55,?,walk,low,,,,,,outfit_7327_.png
+P55-41,55,?,walk,low,,,,,,outfit_7329_.png
+P55-42,55,?,walk,low,,,,,,outfit_7336_.png outfit_7365_.png
+P55-43,55,?,walk,low,,,,,,outfit_7337_.png
+P55-44,55,?,ride,low,,,,,,outfit_7338_.png
+P55-45,55,?,walk,low,,,,,,outfit_7340_.png outfit_7341_.png
+P55-46,55,?,walk,low,,,,,,outfit_7342_.png outfit_7343_.png
+P55-47,55,?,walk,low,,,,,,outfit_7344_.png
+P55-48,55,?,walk,low,,,,,,outfit_7345_.png
+P56-1,56,Absol (Mega)?,walk,low,359,6,,,,outfit_7347_.png
+P56-2,56,?,walk,low,,,,,,outfit_7351_.png
+P56-3,56,?,walk,low,,,,,,outfit_7353_.png
+P56-4,56,Chandelure (recolour),walk,medium,609,5,,,,outfit_7354_.png outfit_7476_.png
+P56-5,56,Lopunny (recolour)?,walk,low,428,4,,,,outfit_7355_.png
+P56-6,56,?,walk,low,,,,,,outfit_7358_.png
+P56-7,56,?,walk,low,,,,,,outfit_7364_.png
+P56-8,56,player outfit,outfit,medium,,,,,,outfit_7371_.png
+P56-9,56,player outfit,outfit,medium,,,,,,outfit_7372_.png
+P56-10,56,player outfit,outfit,medium,,,,,,outfit_7373_.png
+P56-11,56,player outfit,outfit,medium,,,,,,outfit_7374_.png
+P56-12,56,player outfit,outfit,medium,,,,,,outfit_7375_.png
+P56-13,56,?,walk,low,,,,,,outfit_7376_.png
+P56-14,56,?,ride,low,,,,,,outfit_7381_.png
+P56-15,56,?,walk,low,,,,,,outfit_7382_.png
+P56-16,56,?,walk,low,,,,,,outfit_7383_.png
+P56-17,56,?,walk,low,,,,,,outfit_7385_.png
+P56-18,56,?,walk,low,,,,,,outfit_7386_.png
+P56-19,56,?,walk,low,,,,,,outfit_7387_.png
+P56-20,56,?,ride,low,,,,,,outfit_7388_.png
+P56-21,56,Zoroark (recolour)?,walk,low,571,5,,,,outfit_7389_.png
+P56-22,56,?,walk,low,,,,,,outfit_7390_.png
+P56-23,56,player outfit?,outfit,low,,,,,,outfit_7391_.png
+P56-24,56,player outfit?,outfit,low,,,,,,outfit_7392_.png
+P56-25,56,Gengar (shadow)?,walk,low,94,1,,,,outfit_7393_.png
+P56-26,56,Articuno (shadow)?,walk,low,144,1,,,,outfit_7395_.png
+P56-27,56,?,walk,low,,,,,,outfit_7396_.png
+P56-28,56,Zapdos (shadow)?,walk,low,145,1,,,,outfit_7397_.png
+P56-29,56,?,walk,low,,,,,,outfit_7398_.png
+P56-30,56,Lugia (shadow)?,surf,low,249,2,,,,outfit_7399_.png
+P56-31,56,?,walk,low,,,,,,outfit_7400_.png
+P56-32,56,?,outfit,low,,,,,,outfit_7401_.png
+P56-33,56,Zapdos,walk,medium,145,1,,,,outfit_7402_.png
+P56-34,56,Articuno,walk,medium,144,1,,,,outfit_7403_.png
+P56-35,56,?,walk,low,,,,,,outfit_7404_.png outfit_7432_.png
+P56-36,56,Suicune (recolour),walk,medium,245,2,,,,outfit_7405_.png
+P56-37,56,Raikou (recolour)?,walk,low,243,2,,,,outfit_7406_.png
+P56-38,56,Entei?,walk,low,244,2,,,,outfit_7407_.png
+P56-39,56,Entei (recolour)?,walk,low,244,2,,,,outfit_7408_.png
+P56-40,56,? (witch costume),walk,low,,,,,,outfit_7409_.png
+P56-41,56,?,walk,low,,,,,,outfit_7410_.png
+P56-42,56,Xerneas,walk,medium,716,6,,,,outfit_7411_.png
+P56-43,56,?,other,low,,,,,,outfit_7412_.png
+P56-44,56,? (wizard costume),walk,low,,,,,,outfit_7413_.png
+P56-45,56,?,walk,low,,,,,,outfit_7414_.png
+P56-46,56,Gengar (shadow)?,walk,low,94,1,,,,outfit_7415_.png
+P56-47,56,?,walk,low,,,,,,outfit_7416_.png
+P56-48,56,Regigigas,walk,medium,486,4,,,,outfit_7417_.png
+P57-1,57,effect: blue egg in electric aura,effect,low,,,,,,outfit_7419_.png
+P57-2,57,player outfit,outfit,low,,,,,,outfit_7420_.png
+P57-3,57,Mismagius?,walk,low,429,4,,,,outfit_7421_.png
+P57-4,57,?,walk,low,,,,,,outfit_7424_.png
+P57-5,57,?,walk,low,,,,,,outfit_7425_.png
+P57-6,57,?,walk,low,,,,,,outfit_7426_.png
+P57-7,57,Regirock?,walk,low,377,3,,,,outfit_7433_.png outfit_8083_.png
+P57-8,57,Registeel,walk,medium,379,3,,,,outfit_7434_.png outfit_8081_.png
+P57-9,57,Regice,walk,medium,378,3,,,,outfit_7435_.png outfit_8082_.png
+P57-10,57,Regirock?,walk,low,377,3,,,,outfit_7436_.png
+P57-11,57,?,walk,low,,,,,,outfit_7442_.png
+P57-12,57,Suicune?,walk,low,245,2,,,,outfit_7443_.png
+P57-13,57,?,walk,low,,,,,,outfit_7451_.png
+P57-14,57,?,walk,low,,,,,,outfit_7459_.png
+P57-15,57,?,walk,low,,,,,,outfit_7464_.png
+P57-16,57,Suicune? (recolour),walk,low,245,2,,,,outfit_7474_.png
+P57-17,57,Drapion?,walk,low,452,4,,,,outfit_7478_.png outfit_7580_.png
+P57-18,57,Yveltal?,walk,low,717,6,,,,outfit_7482_.png outfit_7552_.png
+P57-19,57,Skorupi?,walk,low,451,4,,,,outfit_7487_.png
+P57-20,57,Skorupi?,walk,low,451,4,,,,outfit_7495_.png
+P57-21,57,?,walk,low,,,,,,outfit_7497_.png
+P57-22,57,?,walk,low,,,,,,outfit_7498_.png
+P57-23,57,Luxray,walk,medium,405,4,,,,outfit_7499_.png outfit_7595_.png
+P57-24,57,Shinx,walk,medium,403,4,,,,outfit_7500_.png
+P57-25,57,?,walk,low,,,,,,outfit_7503_.png
+P57-26,57,?,walk,low,,,,,,outfit_7505_.png
+P57-27,57,?,walk,low,,,,,,outfit_7507_.png
+P57-28,57,Silvally,walk,medium,773,7,,,,outfit_7512_.png
+P57-29,57,?,walk,low,,,,,,outfit_7513_.png
+P57-30,57,?,walk,low,,,,,,outfit_7525_.png
+P57-31,57,Beedrill (recolour)?,walk,low,15,1,,,,outfit_7556_.png
+P57-32,57,?,walk,low,,,,,,outfit_7582_.png
+P57-33,57,?,ride,low,,,,,,outfit_7589_.png
+P57-34,57,effect: green ghostly aura?,effect,low,,,,,,outfit_7590_.png
+P57-35,57,?,other,low,,,,,,outfit_7591_.png
+P57-36,57,?,ride,low,,,,,,outfit_7592_.png
+P57-37,57,?,walk,low,,,,,,outfit_7593_.png
+P57-38,57,Ponyta (Galarian)?,walk,low,77,8,,,,outfit_7602_.png
+P57-39,57,Dartrix,walk,medium,723,7,,,,outfit_7603_.png
+P57-40,57,Decidueye,walk,medium,724,7,,,,outfit_7604_.png
+P57-41,57,?,other,low,,,,,,outfit_7605_.png
+P57-42,57,Cinderace,walk,medium,815,8,,,,outfit_7606_.png
+P57-43,57,Greninja (Ash)?,walk,medium,658,6,,,,outfit_7607_.png outfit_7609_.png
+P57-44,57,Greninja,walk,medium,658,6,,,,outfit_7608_.png outfit_8028_.png
+P57-45,57,?,walk,low,,,,,,outfit_7610_.png
+P57-46,57,?,walk,low,,,,,,outfit_7611_.png
+P57-47,57,Snorlax (recolour)?,walk,low,143,1,,,,outfit_7613_.png
+P57-48,57,?,walk,low,,,,,,outfit_7614_.png
+P58-1,58,?,walk,low,,,,,,outfit_7615_.png
+P58-2,58,?,walk,low,,,,,,outfit_7616_.png
+P58-3,58,Diancie?,walk,low,719,6,,,,outfit_7617_.png
+P58-4,58,effect: black shadow?,effect,low,,,,,,outfit_7618_.png
+P58-5,58,Ursaring (recolour)?,walk,low,217,2,,,,outfit_7619_.png
+P58-6,58,Timburr?,walk,low,532,5,,,,outfit_7621_.png
+P58-7,58,Gurdurr,walk,medium,533,5,,,,outfit_7622_.png
+P58-8,58,Swanna?,walk,low,581,5,,,,outfit_7625_.png
+P58-9,58,Keldeo,walk,medium,647,5,,,,outfit_7626_.png
+P58-10,58,?,walk,low,,,,,,outfit_7627_.png
+P58-11,58,Vileplume,walk,medium,45,1,,,,outfit_7633_.png
+P58-12,58,Vileplume (recolour),walk,medium,45,1,,,,outfit_7634_.png
+P58-13,58,player outfit,outfit,low,,,,,,outfit_7636_.png
+P58-14,58,effect: cyan ghost head?,effect,low,,,,,,outfit_7638_.png outfit_7639_.png outfit_7640_.png outfit_7641_.png
+P58-15,58,?,walk,low,,,,,,outfit_7644_.png outfit_7645_.png
+P58-16,58,?,surf,low,,,,,,outfit_7646_.png outfit_7647_.png
+P58-17,58,Jirachi,walk,medium,385,3,,,,outfit_7648_.png
+P58-18,58,?,walk,low,,,,,,outfit_7654_.png
+P58-19,58,?,walk,low,,,,,,outfit_7694_.png
+P58-20,58,?,walk,low,,,,,,outfit_7710_.png
+P58-21,58,Absol (recolour)?,walk,low,359,3,,,,outfit_7712_.png outfit_8173_.png
+P58-22,58,Arceus,walk,high,493,4,,,,outfit_7713_.png
+P58-23,58,Arceus (recolour),walk,medium,493,4,,,,outfit_7714_.png
+P58-24,58,Venusaur,walk,medium,3,1,,,,outfit_7718_.png
+P58-25,58,Venusaur,ride,medium,3,1,,,,outfit_7719_.png
+P58-26,58,Charizard (Mega X),walk,medium,6,6,,,,outfit_7721_.png
+P58-27,58,Gengar (recolour)?,walk,low,94,1,,,,outfit_7723_.png
+P58-28,58,?,walk,low,,,,,,outfit_7724_.png
+P58-29,58,?,walk,low,,,,,,outfit_7725_.png
+P58-30,58,?,walk,low,,,,,,outfit_7726_.png
+P58-31,58,?,walk,low,,,,,,outfit_7727_.png
+P58-32,58,effect: dark orb in ring?,effect,low,,,,,,outfit_7728_.png
+P58-33,58,Victini,walk,medium,494,5,,,,outfit_7729_.png
+P58-34,58,?,walk,low,,,,,,outfit_7757_.png
+P58-35,58,?,walk,low,,,,,,outfit_7758_.png
+P58-36,58,Starly?,walk,low,396,4,,,,outfit_7759_.png
+P58-37,58,Starly?,walk,low,396,4,,,,outfit_7760_.png
+P58-38,58,Staravia?,walk,low,397,4,,,,outfit_7761_.png
+P58-39,58,Staraptor?,walk,low,398,4,,,,outfit_7762_.png
+P58-40,58,Zebstrika,walk,medium,523,5,,,,outfit_7764_.png outfit_7765_.png
+P58-41,58,Swalot?,walk,low,317,3,,,,outfit_7790_.png
+P58-42,58,?,walk,low,,,,,,outfit_7793_.png
+P58-43,58,?,walk,low,,,,,,outfit_7794_.png
+P58-44,58,?,walk,low,,,,,,outfit_7795_.png
+P58-45,58,?,walk,low,,,,,,outfit_7796_.png
+P58-46,58,Whimsicott?,walk,low,547,5,,,,outfit_7797_.png outfit_7798_.png
+P58-47,58,?,walk,low,,,,,,outfit_7802_.png outfit_7803_.png
+P58-48,58,?,walk,low,,,,,,outfit_7804_.png
+P59-1,59,Krookodile,walk,medium,553,5,,,,outfit_7805_.png outfit_7807_.png
+P59-2,59,Krokorok,walk,medium,552,5,,,,outfit_7806_.png
+P59-3,59,Maractus,walk,medium,556,5,,,,outfit_7811_.png outfit_7812_.png
+P59-4,59,Crustle,walk,high,558,5,,,,outfit_7813_.png
+P59-5,59,Dwebble,walk,medium,557,5,,,,outfit_7814_.png
+P59-6,59,Minccino,walk,medium,572,5,,,,outfit_7828_.png
+P59-7,59,Cinccino,walk,medium,573,5,,,,outfit_7829_.png
+P59-8,59,Ducklett?,walk,low,580,5,,,,outfit_7836_.png
+P59-9,59,?,walk,low,,,,,,outfit_7837_.png
+P59-10,59,Vanillish,walk,medium,583,5,,,,outfit_7839_.png
+P59-11,59,Vanillite,walk,medium,582,5,,,,outfit_7840_.png
+P59-12,59,Vanilluxe,walk,medium,584,5,,,,outfit_7841_.png
+P59-13,59,Emolga,walk,medium,587,5,,,,outfit_7850_.png
+P59-14,59,Karrablast,walk,medium,588,5,,,,outfit_7851_.png
+P59-15,59,Escavalier,walk,medium,589,5,,,,outfit_7852_.png outfit_7853_.png
+P59-16,59,Foongus,walk,medium,590,5,,,,outfit_7854_.png
+P59-17,59,Amoonguss,walk,high,591,5,,,,outfit_7855_.png
+P59-18,59,Frillish (female),walk,medium,592,5,,,,outfit_7856_.png
+P59-19,59,Frillish (male),walk,medium,592,5,,,,outfit_7857_.png
+P59-20,59,Jellicent (female),walk,high,593,5,,,,outfit_7858_.png
+P59-21,59,Jellicent (male),walk,high,593,5,,,,outfit_7859_.png
+P59-22,59,Jellicent (female),surf,high,593,5,,,,outfit_7860_.png
+P59-23,59,Jellicent (male),surf,high,593,5,,,,outfit_7861_.png
+P59-24,59,Alomomola,walk,medium,594,5,,,,outfit_7862_.png
+P59-25,59,Klink,walk,medium,599,5,,,,outfit_7869_.png
+P59-26,59,Klang,walk,medium,600,5,,,,outfit_7870_.png
+P59-27,59,Klinklang,walk,medium,601,5,,,,outfit_7871_.png
+P59-28,59,Tynamo,walk,medium,602,5,,,,outfit_7872_.png
+P59-29,59,Elgyem,walk,medium,605,5,,,,outfit_7875_.png
+P59-30,59,Beheeyem,walk,medium,606,5,,,,outfit_7876_.png
+P59-31,59,Fraxure?,walk,low,611,5,,,,outfit_7882_.png
+P59-32,59,Axew?,walk,low,610,5,,,,outfit_7883_.png
+P59-33,59,Beartic,walk,high,614,5,,,,outfit_7888_.png
+P59-34,59,Shelmet,walk,medium,616,5,,,,outfit_7890_.png
+P59-35,59,Accelgor,walk,medium,617,5,,,,outfit_7892_.png outfit_7893_.png
+P59-36,59,Stunfisk,walk,medium,618,5,,,,outfit_7894_.png outfit_7896_.png
+P59-37,59,Stunfisk,surf,low,618,5,,,,outfit_7895_.png
+P59-38,59,Mienfoo,walk,medium,619,5,,,,outfit_7897_.png
+P59-39,59,Mienshao,walk,medium,620,5,,,,outfit_7898_.png
+P59-40,59,Pawniard,walk,medium,624,5,,,,outfit_7902_.png
+P59-41,59,Bisharp,walk,medium,625,5,,,,outfit_7903_.png
+P59-42,59,Rufflet,walk,medium,627,5,,,,outfit_7906_.png
+P59-43,59,Braviary,walk,medium,628,5,,,,outfit_7907_.png
+P59-44,59,Braviary?,walk,low,628,5,,,,outfit_7908_.png
+P59-45,59,Vullaby,walk,medium,629,5,,,,outfit_7909_.png
+P59-46,59,Mandibuzz,walk,medium,630,5,,,,outfit_7910_.png
+P59-47,59,Heatmor?,walk,low,631,5,,,,outfit_7911_.png
+P59-48,59,Durant,walk,medium,632,5,,,,outfit_7912_.png
+P60-1,60,Volcarona?,fly,low,637,5,,,,outfit_7918_.png
+P60-2,60,Volcarona? (recolour),fly,low,637,5,,,,outfit_7919_.png
+P60-3,60,Swanna?,fly,low,581,5,,,,outfit_7921_.png
+P60-4,60,Volcarona?,fly,low,637,5,,,,outfit_7922_.png
+P60-5,60,Volcarona? (recolour),fly,low,637,5,,,,outfit_7926_.png
+P60-6,60,Unfezant?,fly,low,521,5,,,,outfit_7927_.png
+P60-7,60,Unfezant (female)?,fly,low,521,5,,,,outfit_7928_.png
+P60-8,60,?,ride,low,,,,,,outfit_7937_.png
+P60-9,60,Crustle,ride,medium,558,5,,,,outfit_7938_.png
+P60-10,60,Jellicent (female)?,surf,low,593,5,,,,outfit_7947_.png
+P60-11,60,Jellicent (male)?,surf,low,593,5,,,,outfit_7948_.png
+P60-12,60,?,surf,low,,,,,,outfit_7949_.png
+P60-13,60,?,surf,low,,,,,,outfit_7951_.png outfit_7954_.png
+P60-14,60,player outfit,outfit,low,,,,,,outfit_7953_.png
+P60-15,60,Swanna,surf,medium,581,5,,,,outfit_7956_.png
+P60-16,60,?,walk,low,,,,,,outfit_7978_.png
+P60-17,60,Pyroar?,ride,low,668,6,,,,outfit_7980_.png
+P60-18,60,player outfit,outfit,low,,,,,,outfit_7981_.png
+P60-19,60,player outfit,outfit,low,,,,,,outfit_7982_.png
+P60-20,60,player outfit,outfit,low,,,,,,outfit_7983_.png
+P60-21,60,player outfit,outfit,low,,,,,,outfit_7984_.png
+P60-22,60,?,walk,low,,,,,,outfit_7988_.png
+P60-23,60,player outfit,outfit,medium,,,,,,outfit_7989_.png outfit_7993_.png
+P60-24,60,player outfit?,outfit,low,,,,,,outfit_7990_.png
+P60-25,60,?,walk,low,,,,,,outfit_7991_.png
+P60-26,60,?,walk,low,,,,,,outfit_7994_.png
+P60-27,60,Rhyperior?,walk,low,464,4,,,,outfit_7997_.png
+P60-28,60,Rhydon?,walk,low,112,1,,,,outfit_7998_.png
+P60-29,60,effect: yellow sparks?,effect,low,,,,,,outfit_7999_.png
+P60-30,60,?,walk,low,,,,,,outfit_8009_.png
+P60-31,60,Gyarados (recolour)?,walk,low,130,1,,,,outfit_8010_.png
+P60-32,60,Gyarados (recolour)?,surf,low,130,1,,,,outfit_8011_.png
+P60-33,60,?,walk,low,,,,,,outfit_8012_.png
+P60-34,60,Feraligatr?,walk,low,160,2,,,,outfit_8013_.png outfit_8026_.png
+P60-35,60,Feraligatr?,walk,low,160,2,,,,outfit_8014_.png
+P60-36,60,?,walk,low,,,,,,outfit_8015_.png
+P60-37,60,Dragonite (recolour),walk,medium,149,1,,,,outfit_8018_.png
+P60-38,60,Dragonite,ride,medium,149,1,,,,outfit_8019_.png
+P60-39,60,?,walk,low,,,,,,outfit_8020_.png
+P60-40,60,?,walk,low,,,,,,outfit_8021_.png
+P60-41,60,Gengar (aura),walk,medium,94,1,,,,outfit_8022_.png
+P60-42,60,?,walk,low,,,,,,outfit_8023_.png
+P60-43,60,?,walk,low,,,,,,outfit_8024_.png
+P60-44,60,?,walk,low,,,,,,outfit_8025_.png
+P60-45,60,item: golden egg?,other,low,,,,,,outfit_8027_.png
+P60-46,60,?,other,low,,,,,,outfit_8029_.png
+P60-47,60,?,walk,low,,,,,,outfit_8030_.png
+P60-48,60,Scyther (recolour)?,walk,low,123,1,,,,outfit_8032_.png
+P61-1,61,?,walk,low,,,,,,outfit_8033_.png
+P61-2,61,?,walk,low,,,,,,outfit_8034_.png
+P61-3,61,?,walk,low,,,,,,outfit_8035_.png
+P61-4,61,Abomasnow (recolour)?,walk,low,460,4,,,,outfit_8036_.png
+P61-5,61,Gyarados (Mega shiny)?,walk,low,130,6,,,,outfit_8037_.png
+P61-6,61,Gengar (Mega recolour)?,walk,low,94,6,,,,outfit_8038_.png
+P61-7,61,Gliscor (recolour)?,walk,low,472,4,,,,outfit_8039_.png
+P61-8,61,Gliscor (recolour)?,walk,low,472,4,,,,outfit_8040_.png
+P61-9,61,Gliscor (recolour)?,walk,low,472,4,,,,outfit_8041_.png
+P61-10,61,Sunflora,walk,medium,192,2,,,,outfit_8042_.png
+P61-11,61,Gliscor (recolour)?,walk,low,472,4,,,,outfit_8043_.png
+P61-12,61,Umbreon (recolour),walk,medium,197,2,,,,outfit_8044_.png
+P61-13,61,Ditto (recolour)?,walk,low,132,1,,,,outfit_8045_.png
+P61-14,61,?,walk,low,,,,,,outfit_8046_.png
+P61-15,61,?,walk,low,,,,,,outfit_8047_.png
+P61-16,61,?,walk,low,,,,,,outfit_8048_.png
+P61-17,61,?,walk,low,,,,,,outfit_8049_.png
+P61-18,61,Metagross (recolour)?,walk,low,376,3,,,,outfit_8050_.png
+P61-19,61,Metagross (Mega)?,walk,low,376,6,,,,outfit_8051_.png
+P61-20,61,?,walk,low,,,,,,outfit_8052_.png
+P61-21,61,Blastoise (recolour)?,walk,low,9,1,,,,outfit_8053_.png
+P61-22,61,Gallade?,walk,low,475,4,,,,outfit_8054_.png
+P61-23,61,Rayquaza,walk,medium,384,3,,,,outfit_8055_.png
+P61-24,61,?,walk,low,,,,,,outfit_8056_.png
+P61-25,61,?,walk,low,,,,,,outfit_8057_.png
+P61-26,61,Heatran?,walk,low,485,4,,,,outfit_8059_.png
+P61-27,61,Heatran (recolour)?,walk,low,485,4,,,,outfit_8060_.png
+P61-28,61,player outfit,outfit,low,,,,,,outfit_8085_.png
+P61-29,61,player outfit,outfit,low,,,,,,outfit_8086_.png
+P61-30,61,Absol (Mega),walk,medium,359,6,,,,outfit_8087_.png
+P61-31,61,Absol (Mega),ride,medium,359,6,,,,outfit_8088_.png
+P61-32,61,?,ride,low,,,,,,outfit_8091_.png
+P61-33,61,?,walk,low,,,,,,outfit_8093_.png
+P61-34,61,?,walk,low,,,,,,outfit_8094_.png
+P61-35,61,?,walk,low,,,,,,outfit_8095_.png
+P61-36,61,?,walk,low,,,,,,outfit_8096_.png
+P61-37,61,?,walk,low,,,,,,outfit_8097_.png
+P61-38,61,?,walk,low,,,,,,outfit_8098_.png
+P61-39,61,?,walk,low,,,,,,outfit_8100_.png
+P61-40,61,?,fly,low,,,,,,outfit_8101_.png
+P61-41,61,?,walk,low,,,,,,outfit_8102_.png
+P61-42,61,?,walk,low,,,,,,outfit_8103_.png
+P61-43,61,?,fly,low,,,,,,outfit_8104_.png
+P61-44,61,?,walk,low,,,,,,outfit_8105_.png
+P61-45,61,?,walk,low,,,,,,outfit_8106_.png outfit_8174_.png
+P61-46,61,?,walk,low,,,,,,outfit_8119_.png
+P61-47,61,Sharpedo (Mega)?,walk,low,319,6,,,,outfit_8120_.png outfit_8175_.png
+P61-48,61,?,walk,low,,,,,,outfit_8121_.png
+P62-1,62,player outfit,outfit,low,,,,,,outfit_8122_.png outfit_8171_.png
+P62-2,62,player outfit (spiky hair)?,outfit,low,,,,,,outfit_8123_.png
+P62-3,62,player outfit (spiky hair)?,outfit,low,,,,,,outfit_8124_.png
+P62-4,62,player outfit (spiky hair)?,outfit,low,,,,,,outfit_8125_.png
+P62-5,62,player outfit (spiky hair)?,outfit,low,,,,,,outfit_8126_.png
+P62-6,62,player outfit,outfit,low,,,,,,outfit_8127_.png
+P62-7,62,Mewtwo (armored)?,walk,low,150,1,,,,outfit_8128_.png
+P62-8,62,npc: mermaid?,outfit,low,,,,,,outfit_8129_.png
+P62-9,62,npc: mermaid?,outfit,low,,,,,,outfit_8130_.png
+P62-10,62,Venusaur (Mega),walk,medium,3,6,,,,outfit_8144_.png
+P62-11,62,Blastoise (recolour)?,walk,low,9,1,,,,outfit_8145_.png
+P62-12,62,Charizard (Mega X),walk,medium,6,6,,,,outfit_8146_.png
+P62-13,62,Charizard (Mega Y)?,walk,low,6,6,,,,outfit_8147_.png
+P62-14,62,Scorbunny,walk,medium,813,8,,,,outfit_8153_.png
+P62-15,62,?,walk,low,,,,,,outfit_8172_.png
+P62-16,62,?,walk,low,,,,,,outfit_8176_.png
+P62-17,62,?,walk,low,,,,,,outfit_8181_.png outfit_8182_.png
+P62-18,62,?,walk,low,,,,,,outfit_8183_.png outfit_8184_.png
+P62-19,62,Feraligatr (Mega)?,walk,low,160,6,,,,outfit_8185_.png
+P62-20,62,Feraligatr (Mega)?,walk,low,160,6,,,,outfit_8186_.png
+P62-21,62,?,walk,low,,,,,,outfit_8187_.png outfit_8188_.png
+P62-22,62,?,walk,low,,,,,,outfit_8189_.png outfit_8190_.png
+P62-23,62,Meganium (Mega)?,walk,low,154,6,,,,outfit_8191_.png outfit_8192_.png
+P62-24,62,?,walk,low,,,,,,outfit_8193_.png outfit_8194_.png
+P62-25,62,?,walk,low,,,,,,outfit_8195_.png outfit_8196_.png
+P62-26,62,Typhlosion?,walk,low,157,2,,,,outfit_8197_.png outfit_8198_.png
+P62-27,62,player outfit,outfit,low,,,,,,outfit_8199_.png
+P62-28,62,effect: purple aura,effect,low,,,,,,outfit_8200_.png
+P62-29,62,?,walk,low,,,,,,outfit_8215_.png
+P62-30,62,Charizard (Mega X)?,walk,low,6,6,,,,outfit_8217_.png
+P62-31,62,Charizard (Mega X)?,ride,low,6,6,,,,outfit_8218_.png
+P62-32,62,?,walk,low,,,,,,outfit_8221_.png
+P62-33,62,player outfit?,outfit,low,,,,,,outfit_8222_.png
+P62-34,62,player outfit?,outfit,low,,,,,,outfit_8227_.png
+P62-35,62,player outfit?,outfit,low,,,,,,outfit_8228_.png
+P62-36,62,player outfit?,outfit,low,,,,,,outfit_8229_.png
+P62-37,62,player outfit?,outfit,low,,,,,,outfit_8230_.png
+P62-38,62,Charizard (Mega X)?,walk,low,6,6,,,,outfit_8231_.png
+P62-39,62,Charizard (Mega X)?,ride,low,6,6,,,,outfit_8232_.png
+P62-40,62,Charizard,walk,medium,6,1,,,,outfit_8233_.png
+P62-41,62,Charizard,walk,medium,6,1,,,,outfit_8234_.png
+P62-42,62,?,walk,low,,,,,,outfit_8235_.png
+P62-43,62,?,walk,low,,,,,,outfit_8237_.png outfit_8238_.png
+P62-44,62,?,walk,low,,,,,,outfit_8239_.png outfit_8240_.png
+P62-45,62,player outfit?,outfit,low,,,,,,outfit_8242_.png
+P62-46,62,?,walk,low,,,,,,outfit_8243_.png
+P62-47,62,?,walk,low,,,,,,outfit_8244_.png
+P62-48,62,?,walk,low,,,,,,outfit_8246_.png
+P63-1,63,?,walk,low,,,,,,outfit_8248_.png
+P63-2,63,?,walk,low,,,,,,outfit_8249_.png
+P63-3,63,?,walk,low,,,,,,outfit_8250_.png outfit_8251_.png
+P63-4,63,vehicle: pink cart?,other,low,,,,,,outfit_8255_.png
+P63-5,63,Dragonite (recolour)?,walk,low,149,1,,,,outfit_8260_.png
+P63-6,63,Dragonite (Mega)?,walk,low,149,6,,,,outfit_8261_.png
+P63-7,63,Dragonite (Mega)?,ride,low,149,6,,,,outfit_8262_.png
+P63-8,63,Dragonite (Mega)? (red aura),walk,low,149,6,,,,outfit_8263_.png
+P63-9,63,item: golden vase with plant?,other,low,,,,,,outfit_8264_.png
+P63-10,63,vehicle: yellow kart,other,medium,,,,,,outfit_8265_.png
+P63-11,63,vehicle: blue kart,other,medium,,,,,,outfit_8266_.png
+P63-12,63,vehicle: red kart,other,medium,,,,,,outfit_8267_.png
+P63-13,63,Charizard (Mega Y)?,walk,low,6,6,,,,outfit_8268_.png
+P63-14,63,Charizard (Mega Y)?,walk,low,6,6,,,,outfit_8269_.png outfit_8271_.png
+P63-15,63,Charizard (Mega X)?,walk,low,6,6,,,,outfit_8270_.png
+P63-16,63,Charizard (Mega X),walk,medium,6,6,,,,outfit_8272_.png
+P63-17,63,player outfit,outfit,low,,,,,,outfit_8274_.png
+P63-18,63,effect: fire wings,effect,medium,,,,,,outfit_8275_.png
+P63-19,63,effect: smoke cloud,effect,medium,,,,,,outfit_8276_.png
+P63-20,63,effect: white wings,effect,medium,,,,,,outfit_8277_.png
+P63-21,63,effect: brown wings,effect,medium,,,,,,outfit_8278_.png
+P63-22,63,effect: golden ring,effect,medium,,,,,,outfit_8280_.png
+P63-23,63,vehicle: mech?,ride,low,,,,,,outfit_8281_.png
+P63-24,63,vehicle: mech?,ride,low,,,,,,outfit_8282_.png
+P63-25,63,player outfit,outfit,low,,,,,,outfit_8283_.png
+P63-26,63,player outfit,outfit,low,,,,,,outfit_8284_.png
+P63-27,63,player outfit,outfit,low,,,,,,outfit_8285_.png
+P63-28,63,Metagross (Mega),walk,medium,376,6,,,,outfit_8286_.png
+P63-29,63,Metagross (Mega),ride,medium,376,6,,,,outfit_8287_.png
+P63-30,63,Metagross (Mega recolour),walk,medium,376,6,,,,outfit_8288_.png
+P63-31,63,Metagross (Mega recolour),ride,medium,376,6,,,,outfit_8289_.png
+P63-32,63,Metagross (Mega recolour),walk,medium,376,6,,,,outfit_8290_.png
+P63-33,63,Metagross (Mega recolour),ride,medium,376,6,,,,outfit_8291_.png
+P63-34,63,?,other,low,,,,,,outfit_8292_.png
+P63-35,63,?,other,low,,,,,,outfit_8293_.png
+P63-36,63,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8294_.png outfit_8296_.png
+P63-37,63,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8295_.png
+P63-38,63,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8297_.png
+P63-39,63,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8298_.png
+P63-40,63,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8299_.png
+P63-41,63,?,walk,low,,,,,,outfit_8300_.png
+P63-42,63,?,walk,low,,,,,,outfit_8301_.png outfit_8302_.png
+P63-43,63,?,walk,low,,,,,,outfit_8303_.png
+P63-44,63,?,walk,low,,,,,,outfit_8304_.png
+P63-45,63,?,walk,low,,,,,,outfit_8305_.png
+P63-46,63,?,walk,low,,,,,,outfit_8306_.png
+P63-47,63,?,walk,low,,,,,,outfit_8307_.png
+P63-48,63,?,walk,low,,,,,,outfit_8308_.png
+P64-1,64,?,ride,low,,,,,,outfit_8309_.png
+P64-2,64,?,ride,low,,,,,,outfit_8310_.png
+P64-3,64,?,ride,low,,,,,,outfit_8311_.png
+P64-4,64,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8312_.png
+P64-5,64,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8313_.png
+P64-6,64,?,walk,low,,,,,,outfit_8314_.png
+P64-7,64,?,walk,low,,,,,,outfit_8315_.png
+P64-8,64,?,walk,low,,,,,,outfit_8316_.png
+P64-9,64,?,walk,low,,,,,,outfit_8317_.png
+P64-10,64,?,walk,low,,,,,,outfit_8318_.png
+P64-11,64,?,walk,low,,,,,,outfit_8319_.png
+P64-12,64,?,walk,low,,,,,,outfit_8320_.png
+P64-13,64,?,walk,low,,,,,,outfit_8321_.png
+P64-14,64,?,walk,low,,,,,,outfit_8322_.png
+P64-15,64,?,walk,low,,,,,,outfit_8323_.png outfit_8324_.png
+P64-16,64,?,walk,low,,,,,,outfit_8325_.png
+P64-17,64,?,ride,low,,,,,,outfit_8326_.png outfit_8327_.png
+P64-18,64,?,ride,low,,,,,,outfit_8328_.png
+P64-19,64,Milotic (recolour)?,walk,low,350,3,,,,outfit_8329_.png outfit_8330_.png outfit_8331_.png
+P64-20,64,Milotic (recolour)?,walk,low,350,3,,,,outfit_8332_.png outfit_8333_.png
+P64-21,64,?,walk,low,,,,,,outfit_8334_.png
+P64-22,64,?,ride,low,,,,,,outfit_8335_.png
+P64-23,64,?,walk,low,,,,,,outfit_8336_.png outfit_8337_.png
+P64-24,64,?,walk,low,,,,,,outfit_8338_.png outfit_8340_.png
+P64-25,64,?,walk,low,,,,,,outfit_8339_.png outfit_8341_.png
+P64-26,64,? (Christmas costume),walk,low,,,,,,outfit_8342_.png outfit_8424_.png
+P64-27,64,? (Christmas costume),walk,low,,,,,,outfit_8343_.png
+P64-28,64,? (Christmas costume),ride,low,,,,,,outfit_8344_.png outfit_8345_.png
+P64-29,64,? (Christmas costume),ride,low,,,,,,outfit_8346_.png
+P64-30,64,?,walk,low,,,,,,outfit_8348_.png
+P64-31,64,?,ride,low,,,,,,outfit_8349_.png
+P64-32,64,?,walk,low,,,,,,outfit_8350_.png
+P64-33,64,?,ride,low,,,,,,outfit_8351_.png
+P64-34,64,?,walk,low,,,,,,outfit_8352_.png outfit_8353_.png outfit_8354_.png
+P64-35,64,Mamoswine (recolour)?,walk,low,473,4,,,,outfit_8355_.png outfit_8357_.png
+P64-36,64,Mamoswine (recolour)?,ride,low,473,4,,,,outfit_8356_.png outfit_8358_.png
+P64-37,64,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8359_.png
+P64-38,64,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8360_.png
+P64-39,64,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8361_.png
+P64-40,64,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8362_.png
+P64-41,64,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8363_.png
+P64-42,64,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8364_.png
+P64-43,64,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8365_.png
+P64-44,64,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8366_.png
+P64-45,64,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8367_.png
+P64-46,64,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8368_.png
+P64-47,64,Metagross (Mega recolour)?,walk,low,376,6,,,,outfit_8369_.png
+P64-48,64,Metagross (Mega recolour)?,ride,low,376,6,,,,outfit_8370_.png
+P65-1,65,?,walk,low,,,,,,outfit_8371_.png outfit_8373_.png
+P65-2,65,?,walk,low,,,,,,outfit_8375_.png
+P65-3,65,?,walk,low,,,,,,outfit_8377_.png
+P65-4,65,?,walk,low,,,,,,outfit_8379_.png
+P65-5,65,?,walk,low,,,,,,outfit_8381_.png
+P65-6,65,?,walk,low,,,,,,outfit_8383_.png
+P65-7,65,? (Christmas costume),walk,low,,,,,,outfit_8385_.png outfit_8389_.png
+P65-8,65,? (Christmas costume),ride,low,,,,,,outfit_8387_.png
+P65-9,65,? (Christmas costume),ride,low,,,,,,outfit_8391_.png
+P65-10,65,?,walk,low,,,,,,outfit_8423_.png
+P65-11,65,effect: red triangle?,effect,low,,,,,,outfit_8428_.png
+P65-12,65,?,walk,low,,,,,,outfit_8431_.png
+P65-13,65,?,walk,low,,,,,,outfit_8432_.png
+P65-14,65,?,walk,low,,,,,,outfit_8433_.png outfit_8435_.png
+P65-15,65,?,walk,low,,,,,,outfit_8434_.png outfit_8436_.png
+P65-16,65,?,walk,low,,,,,,outfit_8437_.png outfit_8438_.png outfit_8439_.png
+P65-17,65,?,walk,low,,,,,,outfit_8440_.png
+P65-18,65,npc: Among Us crewmate?,walk,low,,,,,,outfit_8441_.png
+P65-19,65,npc: Among Us crewmate?,walk,low,,,,,,outfit_8442_.png outfit_8443_.png
+P65-20,65,?,walk,low,,,,,,outfit_8444_.png
+P65-21,65,?,walk,low,,,,,,outfit_8445_.png outfit_8446_.png
+P65-22,65,?,walk,low,,,,,,outfit_8447_.png
+P65-23,65,?,ride,low,,,,,,outfit_8448_.png outfit_8449_.png
+P65-24,65,?,ride,low,,,,,,outfit_8450_.png
+P65-25,65,?,walk,low,,,,,,outfit_8451_.png outfit_8452_.png outfit_8453_.png
+P65-26,65,?,walk,low,,,,,,outfit_8454_.png
+P65-27,65,?,walk,low,,,,,,outfit_8455_.png outfit_8456_.png
+P65-28,65,? (Stitch costume),walk,low,,,,,,outfit_8457_.png
+P65-29,65,? (Stitch costume),walk,low,,,,,,outfit_8458_.png
+P65-30,65,?,walk,low,,,,,,outfit_8461_.png
+P65-31,65,?,walk,low,,,,,,outfit_8463_.png outfit_8464_.png
+P65-32,65,?,walk,low,,,,,,outfit_8465_.png
+P65-33,65,?,ride,low,,,,,,outfit_8466_.png
+P65-34,65,?,walk,low,,,,,,outfit_8467_.png
+P65-35,65,?,ride,low,,,,,,outfit_8468_.png
+P65-36,65,?,walk,low,,,,,,outfit_8469_.png
+P65-37,65,?,walk,low,,,,,,outfit_8470_.png
+P65-38,65,?,walk,low,,,,,,outfit_8471_.png
+P65-39,65,?,walk,low,,,,,,outfit_8472_.png
+P65-40,65,?,walk,low,,,,,,outfit_8473_.png
+P65-41,65,effect: black ghost?,effect,low,,,,,,outfit_8474_.png
+P65-42,65,?,walk,low,,,,,,outfit_8475_.png outfit_8477_.png
+P65-43,65,?,walk,low,,,,,,outfit_8476_.png outfit_8478_.png
+P65-44,65,?,walk,low,,,,,,outfit_8479_.png
+P65-45,65,?,walk,low,,,,,,outfit_8480_.png
+P65-46,65,vehicle: UFO?,other,low,,,,,,outfit_8481_.png
+P65-47,65,vehicle: UFO?,ride,low,,,,,,outfit_8482_.png
+P65-48,65,?,walk,low,,,,,,outfit_8483_.png
+P66-1,66,?,walk,low,,,,,,outfit_8484_.png
+P66-2,66,?,ride,low,,,,,,outfit_8485_.png
+P66-3,66,?,ride,low,,,,,,outfit_8486_.png
+P66-4,66,?,ride,low,,,,,,outfit_8487_.png
+P66-5,66,?,walk,low,,,,,,outfit_8488_.png
+P66-6,66,player outfit,outfit,low,,,,,,outfit_8489_.png
+P66-7,66,?,walk,low,,,,,,outfit_8490_.png
+P66-8,66,player outfit,outfit,low,,,,,,outfit_8491_.png
+P66-9,66,player outfit,outfit,low,,,,,,outfit_8492_.png
+P66-10,66,player outfit,outfit,low,,,,,,outfit_8493_.png
+P66-11,66,Snorlax (recolour)?,walk,low,143,1,,,,outfit_8494_.png outfit_8495_.png
+P66-12,66,Snorlax (recolour)?,ride,low,143,1,,,,outfit_8496_.png outfit_8497_.png
+P66-13,66,player outfit,outfit,low,,,,,,outfit_8498_.png
+P66-14,66,?,walk,low,,,,,,outfit_8499_.png
+P66-15,66,?,walk,low,,,,,,outfit_8500_.png
+P66-16,66,?,walk,low,,,,,,outfit_8501_.png outfit_8502_.png outfit_8538_.png
+P66-17,66,?,walk,low,,,,,,outfit_8503_.png
+P66-18,66,?,walk,low,,,,,,outfit_8504_.png
+P66-19,66,npc: wizard?,other,low,,,,,,outfit_8505_.png
+P66-20,66,?,walk,low,,,,,,outfit_8506_.png
+P66-21,66,?,walk,low,,,,,,outfit_8507_.png
+P66-22,66,?,walk,low,,,,,,outfit_8508_.png
+P66-23,66,?,walk,low,,,,,,outfit_8509_.png
+P66-24,66,?,walk,low,,,,,,outfit_8510_.png
+P66-25,66,?,walk,low,,,,,,outfit_8511_.png
+P66-26,66,?,walk,low,,,,,,outfit_8512_.png
+P66-27,66,player outfit?,outfit,low,,,,,,outfit_8513_.png
+P66-28,66,vehicle: mech?,ride,low,,,,,,outfit_8514_.png
+P66-29,66,vehicle: mech?,ride,low,,,,,,outfit_8515_.png
+P66-30,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8516_.png
+P66-31,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8518_.png
+P66-32,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8519_.png outfit_8520_.png
+P66-33,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8521_.png
+P66-34,66,?,walk,low,,,,,,outfit_8522_.png outfit_8523_.png outfit_8524_.png
+P66-35,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8525_.png
+P66-36,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8526_.png
+P66-37,66,Zoroark (recolour)?,walk,low,571,5,,,,outfit_8527_.png
+P66-38,66,?,walk,low,,,,,,outfit_8528_.png
+P66-39,66,?,ride,low,,,,,,outfit_8529_.png
+P66-40,66,?,ride,low,,,,,,outfit_8530_.png
+P66-41,66,?,ride,low,,,,,,outfit_8531_.png
+P66-42,66,?,ride,low,,,,,,outfit_8532_.png
+P66-43,66,?,ride,low,,,,,,outfit_8533_.png
+P66-44,66,?,walk,low,,,,,,outfit_8537_.png
+P66-45,66,?,walk,low,,,,,,outfit_8539_.png
+P66-46,66,?,ride,low,,,,,,outfit_8540_.png
+P66-47,66,?,ride,low,,,,,,outfit_8541_.png
+P66-48,66,?,walk,low,,,,,,outfit_8542_.png
+P67-1,67,?,walk,low,,,,,,outfit_8543_.png
+P67-2,67,?,walk,low,,,,,,outfit_8544_.png
+P67-3,67,?,walk,low,,,,,,outfit_8545_.png
+P67-4,67,Tangela (recolour)?,walk,low,114,1,,,,outfit_8547_.png
+P67-5,67,?,walk,low,,,,,,outfit_8548_.png outfit_8550_.png
+P67-6,67,?,ride,low,,,,,,outfit_8549_.png outfit_8551_.png
+P67-7,67,?,walk,low,,,,,,outfit_8552_.png outfit_8554_.png
+P67-8,67,?,ride,low,,,,,,outfit_8553_.png outfit_8555_.png
+P67-9,67,?,ride,low,,,,,,outfit_8557_.png
+P67-10,67,?,walk,low,,,,,,outfit_8558_.png outfit_8559_.png
+P67-11,67,?,ride,low,,,,,,outfit_8564_.png
+P67-12,67,?,ride,low,,,,,,outfit_8565_.png
+P67-13,67,?,ride,low,,,,,,outfit_8566_.png
+P67-14,67,?,other,low,,,,,,outfit_8571_.png
+P67-15,67,Pikachu (recolour)?,walk,low,25,1,,,,outfit_8572_.png
+P67-16,67,Raichu?,walk,low,26,1,,,,outfit_8573_.png
+P67-17,67,?,walk,low,,,,,,outfit_8575_.png
+P67-18,67,?,walk,low,,,,,,outfit_8577_.png
