@@ -2,7 +2,7 @@
 """Builds the PokeVerse website (home and downloads, Pokédex, moves) as static files.
 
     python3 website/build.py --out <dir> [--downloads-repo GIToez/PokeVerse-Clients]
-        [--release-tag client-57] [--discord-url https://discord.gg/...]
+        [--release-tag client-57] [--discord-url https://discord.gg/...] [--map build/map-pictures]
 
 Everything comes from the repository: Pokémon and moves from the server config (through
 export-game-data.lua, which needs lua5.1), wild levels and drops from the monster files,
@@ -24,6 +24,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from sprites import ItemImages, encode_png  # noqa: E402
+import worldmap  # noqa: E402
+
+LEAFLET = "https://unpkg.com/leaflet@1.9.4/dist/leaflet"
+LEAFLET_CSS_SRI = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+LEAFLET_JS_SRI = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 
 CONFIG = os.path.join(ROOT, "core/server/data/lib/ps/config")
 MONSTERS = os.path.join(ROOT, "core/server/data/monster/Pokemons")
@@ -124,8 +129,9 @@ def load_monsters():
 
 
 class Site:
-    def __init__(self, out, downloads_repo, release_tag, discord_url):
+    def __init__(self, out, downloads_repo, release_tag, discord_url, map_dir=""):
         self.out = out
+        self.map_dir = map_dir
         self.downloads_repo = downloads_repo
         self.release_tag = release_tag
         self.discord_url = discord_url
@@ -181,11 +187,12 @@ class Site:
 
     # -- layout ----------------------------------------------------------------
 
-    def page(self, rel, title, body, active="", description=""):
+    def page(self, rel, title, body, active="", description="", head="", scripts=""):
         depth = rel.count("/")
         up = "../" * depth
         nav = [("index.html", "Home", "home"), ("pokedex/index.html", "Pokédex", "pokedex"),
-               ("moves/index.html", "Moves", "moves"), ("index.html#download", "Download", "download")]
+               ("moves/index.html", "Moves", "moves"), ("map/index.html", "Map", "map"),
+               ("index.html#download", "Download", "download")]
         links = "".join('<a href="%s%s"%s>%s</a>' % (up, href, ' class="active"' if key == active else "", text)
                         for href, text, key in nav)
         if self.discord_url:
@@ -201,7 +208,7 @@ class Site:
 <meta name="description" content="{esc(meta)}">
 <link rel="icon" href="{up}img/icon.png">
 <link rel="stylesheet" href="{up}assets/style.css">
-</head>
+{head}</head>
 <body>
 <header class="top"><div class="wrap">
 <a class="brand" href="{up}index.html"><img src="{up}img/icon.png" alt="" width="28" height="28"><span>PokeVerse</span></a>
@@ -215,7 +222,7 @@ class Site:
 <p>Data straight from the game{(', as of ' + esc(self.release_tag)) if self.release_tag else ''}.</p>
 </div></footer>
 <script src="{up}assets/site.js"></script>
-</body>
+{scripts}</body>
 </html>
 """)
 
@@ -267,12 +274,13 @@ class Site:
                                portrait, sprite)
         self.write_pokedex(cards)
         self.write_home(len(species), len(moves))
+        self.write_map()
         print("website: %d Pokémon, %d moves, %d item pictures in %s"
               % (len(species), len(moves), len(self.written_items), self.out))
 
     def copy_assets(self):
         os.makedirs(os.path.join(self.out, "assets"), exist_ok=True)
-        for file in ("style.css", "site.js"):
+        for file in ("style.css", "site.js", "map.js"):
             shutil.copyfile(os.path.join(HERE, file), os.path.join(self.out, "assets", file))
         os.makedirs(os.path.join(self.out, "img"), exist_ok=True)
         shutil.copyfile(os.path.join(ROOT, "core/client-redemption/data/images/clienticon.png"),
@@ -334,6 +342,7 @@ class Site:
     <ul class="links">
       <li><a href="pokedex/index.html">Pokédex</a>: types, stats, evolutions, moves, drops and wild levels</li>
       <li><a href="moves/index.html">Moves</a>: power, energy, cooldown and what each one does</li>
+      <li><a href="map/index.html">World map</a>: Kanto, Johto, Hoenn and the Orange Islands, with every city and route</li>
     </ul>
   </div>
 </section>
@@ -524,6 +533,29 @@ class Site:
 """
         self.page("moves/index.html", "Moves", body, "moves")
 
+    def write_map(self):
+        """map/index.html, and map/tiles from the Pokepedia's render when --map is given (without
+        it, the Website workflow keeps the tiles already published)."""
+        if self.map_dir:
+            count = worldmap.write_tiles(self.map_dir, os.path.join(self.out, "map/tiles"))
+            print("website: %d map tiles" % count)
+        data = {"bounds": worldmap.load_bounds() or [0, 0, 4095, 4095], "labels": worldmap.load_labels()}
+        # "</" can't end the script element early
+        data_json = json.dumps(data, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
+        body = f"""
+<section class="map-page">
+  <div id="world-map" class="world-map" aria-label="World map"></div>
+  <script type="application/json" id="map-data">{data_json}</script>
+  <noscript><p class="wrap muted">The map needs JavaScript.</p></noscript>
+</section>
+"""
+        head = f'<link rel="stylesheet" href="{LEAFLET}.css" integrity="{LEAFLET_CSS_SRI}" crossorigin="">\n'
+        scripts = (f'<script src="{LEAFLET}.js" integrity="{LEAFLET_JS_SRI}" crossorigin=""></script>\n'
+                   '<script src="../assets/map.js"></script>\n')
+        self.page("map/index.html", "World map", body, "map",
+                  "The PokeVerse world map: Kanto, Johto, Hoenn and the Orange Islands, with every city, route and landmark.",
+                  head, scripts)
+
 
 def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -531,6 +563,7 @@ def main():
     p.add_argument("--downloads-repo", default="GIToez/PokeVerse-Clients")
     p.add_argument("--release-tag", default="")
     p.add_argument("--discord-url", default="")
+    p.add_argument("--map", default="", help="render_pokepedia.py's output (build/map-pictures): adds the map's tiles")
     # GitHub Pages keeps a branch site's custom domain in this file: a published branch without
     # it loses the domain
     p.add_argument("--cname", default="", help="custom domain of the Pages site, e.g. pokeverse.quest")
@@ -538,7 +571,7 @@ def main():
     if args.discord_url and not args.discord_url.startswith("https://"):
         sys.exit("--discord-url must be an https URL")
     out = os.path.abspath(args.out)
-    Site(out, args.downloads_repo, args.release_tag, args.discord_url).build()
+    Site(out, args.downloads_repo, args.release_tag, args.discord_url, args.map).build()
     if args.cname:
         with open(os.path.join(out, "CNAME"), "w") as f:
             f.write(args.cname.strip() + "\n")

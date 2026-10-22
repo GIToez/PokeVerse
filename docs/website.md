@@ -9,6 +9,9 @@ from `updater/`. It is static and read-only: no logins, no server of its own.
   with types, stats, evolutions, moves by level, egg moves, TMs, field and special
   abilities, wild levels, HP, experience and drops. Search and type and generation filters.
 - **Moves:** every move with type, category, power, energy, cooldown and effect.
+- **Map:** the Pokepedia's world map (surface only), with zoom and pan. Like in the game, the
+  region names show zoomed out, then the cities, the routes and the landmarks as it zooms in;
+  the Aa button hides them. The address keeps the spot (`map/index.html#zoom/x/y`) to share it.
 
 Everything is generated from the repository by `website/build.py`:
 
@@ -18,18 +21,25 @@ Everything is generated from the repository by `website/build.py`:
 - Portraits, in-game sprites, move icons and item pictures drawn from the client's
   `data.spr` through `items.otb` and `data.dat` (`website/sprites.py`).
 
-Build it locally (needs `lua5.1` and the LFS files):
+- The map's tiles from `scripts/mapper/render_pokepedia.py`'s pictures (`--map`, lossless
+  WebP, about 50 MB), so the hidden regions and the bounds in `hidden-regions.txt` apply;
+  the names from game_minimap's `map_labels.lua`. Leaflet draws it (from unpkg).
 
-    python3 website/build.py --out /tmp/site
+Build it locally (needs `lua5.1` and the LFS files; `--map` needs Pillow and a render):
+
+    python3 website/build.py --out /tmp/site [--map build/map-pictures]
     python3 -m http.server -d /tmp/site 8000
 
 ## Publishing
 
 - Every published **Client release** rebuilds the website into the PokeVerse-Clients site
-  together with the updater, so game data on the site matches the latest client.
+  together with the updater, so game data on the site matches the latest client. Its map
+  tiles come from the release's map render, so a map change reaches the site with the
+  next published client.
 - The **Website** workflow (`.github/workflows/website.yml`) republishes only the website
   when `website/` changes on `main`, or when started by hand (for example to show new
-  server data without a client release). It keeps `updater/` as it is. Pull requests
+  server data without a client release). It keeps `updater/` as it is, and takes the map
+  tiles from the last render Client release saved on main (or keeps the published ones). Pull requests
   build the site and attach it as the `website` artifact.
 - The Discord button links to the same invite as the game's top menu
   (`https://discord.gg/P88WNBB56E`); the repository variable `DISCORD_INVITE_URL` overrides it

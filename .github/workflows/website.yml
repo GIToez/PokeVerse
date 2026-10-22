@@ -11,10 +11,12 @@ on:
     branches: [main]
     paths:
       - website/**
+      - core/client-redemption/pokeverse-modern/modules/game_minimap/map_labels.lua
       - .github/workflows/website.yml
   pull_request:
     paths:
       - website/**
+      - core/client-redemption/pokeverse-modern/modules/game_minimap/map_labels.lua
       - .github/workflows/website.yml
   workflow_dispatch:
 
@@ -40,6 +42,18 @@ jobs:
                 python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])' 2>/dev/null || true)
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
+      # the last map pictures Client release saved on main, for the map page's tiles. Without
+      # them, publishing keeps the tiles already on the site
+      - name: Map pictures
+        id: map-pictures
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/map-pictures
+            build/map-pictures-state.json
+          key: map-pictures-website
+          restore-keys: map-pictures-
+
       - name: Build
         env:
           TAG: ${{ steps.current.outputs.tag }}
@@ -47,9 +61,11 @@ jobs:
           PAGES_DOMAIN: ${{ vars.PAGES_DOMAIN || 'pokeverse.quest' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends lua5.1
+          sudo apt-get install -y --no-install-recommends lua5.1 python3-pil
+          map=()
+          if [ -d build/map-pictures/world ]; then map=(--map build/map-pictures); fi
           python3 website/build.py --out website-out --downloads-repo "$CLIENTS_REPO" --release-tag "$TAG" \
-            --discord-url "$DISCORD_URL" --cname "$PAGES_DOMAIN"
+            --discord-url "$DISCORD_URL" --cname "$PAGES_DOMAIN" "${map[@]}"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -81,6 +97,10 @@ jobs:
             exit 0
           fi
           cd pages
+          if [ ! -d ../website-out/map/tiles ] && [ -d map/tiles ]; then
+            mkdir -p ../website-out/map && mv map/tiles ../website-out/map/tiles
+            echo "Kept the published map tiles" >> "$GITHUB_STEP_SUMMARY"
+          fi
           find . -mindepth 1 -maxdepth 1 ! -name .git ! -name updater -exec rm -rf {} +
           cp -r ../website-out/. .
           # without it, GitHub Pages runs the branch through Jekyll

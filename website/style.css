@@ -127,6 +127,24 @@ a.chip:hover { border-color: var(--gold); text-decoration: none; }
 .list tr.target { background: #ffd34e22; }
 .moves td:nth-child(3) a { font-weight: 600; white-space: nowrap; }
 
+/* world map: the labels like game_pokepedia's PpMapLabel styles */
+.map-page { margin: 0; }
+.world-map, .world-map.leaflet-container { height: calc(100vh - 57px); min-height: 420px; background: #0a1430; }
+.world-map .map-tiles img { image-rendering: pixelated; }
+.map-label { width: 0; height: 0; pointer-events: none; }
+.map-label span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap;
+  font: bold 13px Verdana, "DejaVu Sans", sans-serif; color: #fff;
+  -webkit-text-stroke: 4px #101828; paint-order: stroke fill; }
+.map-label.region span { font-size: 24px; color: #ffe678; -webkit-text-stroke-width: 6px; letter-spacing: .04em; }
+.map-label.route span { font-size: 11px; font-style: italic; color: #ffeca8; }
+.map-label.landmark span { font-size: 11px; font-weight: normal; font-style: italic; color: #bee6ff; }
+.map-toggle { font-weight: 800; color: #1b1300 !important; }
+.map-toggle.off { color: #9aa5d1 !important; text-decoration: line-through; }
+.map-coords { background: #0b1026cc; color: var(--text); font: 12px/1.4 ui-monospace, monospace; padding: .1rem .45rem; border-radius: 6px; min-height: 1.4em; }
+.map-coords:empty { display: none; }
+.map-empty { position: absolute; z-index: 500; top: 45%; width: 100%; text-align: center; color: var(--muted); }
+body:has(.map-page) footer { margin-top: 0; }
+
 footer { border-top: 1px solid var(--line); margin-top: 2.5rem; padding: 1.2rem 0 2rem; color: var(--muted); font-size: .9rem; }
 footer p { margin: .3rem 0; }
 
