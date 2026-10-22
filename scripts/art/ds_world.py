@@ -161,6 +161,9 @@ HEDGES = [(4434, 4435, 4437, 4436), (4438, 4439, 4441, 4440), (4442, 4443, 4556,
 ROCK_PATH = range(7062, 7067)                 # dark rock path; its edges 7080-7089 take the shared map too
 # jungle dirt and the dark mud beside it, more saturated than Tibia's other dirt
 MUD = {1020, 1021} | set(range(10228, 10236)) | set(range(10248, 10260))
+# the mountain tops' gravel and stone ground, shaded like their edges
+MOUNTAIN_TOP = set(range(4394, 4411)) | {1128}
+GRAVEL_PATCHES = range(1081, 1087)            # loose stone patches laid on the grass at the mountains' feet
 # the white and cream arena lines at every gym, on sprites Tibia items share
 ARENA = range(11612, 11628)
 
@@ -768,17 +771,24 @@ def stone_edge(t, rgba):
     return ((mx - px.min(-1)) / np.maximum(mx, 1) < 0.15).mean() > 0.7
 
 
-def clean_lip(a):
+def gravel(a, mean):
+    """Stone ground in the edges' gravel steps, around its own mean so a lighter stone still matches them."""
+    op = a[..., 3] > 0
+    full = op.all()
+    out = a.copy()
+    L = lum(0.6 * a[..., :3].astype(float) + 0.4 * box_blur(a[..., :3].astype(float), full, 1))
+    out[op, :3] = np.array(STONE[1:5])[np.searchsorted([mean - 24, mean + 11, mean + 46], L[op])]
+    return despeckle_px(out, op, full, 1)       # one pass: the gravel keeps its speckle
+
+
+def clean_lip(a, mean=104):
     """Tibia's ragged stone edge as one smooth ledge: the loose pixels go, the gaps take the stone beside
     them, the gravel takes the rocks' darker steps, and the lip gets their dark rim, lit along its top and left."""
     op = a[..., 3] > 0
     if op.all():
         return ds_pixels(a)
-    img = a.copy()
-    L = lum(box_blur(a[..., :3].astype(float), False, 1))
-    img[op, :3] = np.array(STONE[1:5])[np.searchsorted([80, 115, 150], L[op])]
-    img = despeckle_px(img, op, False)
-    lip = drop_specks(blurf(op.astype(float), 1.0, pad=4) > 0.5, 12)
+    img = gravel(a, mean)
+    lip = drop_specks(blurf(op.astype(float), 0.6, pad=4) > 0.5, 12)
     out = img.copy()
     for _ in range(3):
         gap = lip & ~(out[..., 3] > 0)
@@ -865,6 +875,9 @@ def build():
             art = {sid: paint_jungle_grass(rgba(sid), mean) for sid in free}
         elif cid in MUD:
             art = {sid: ds_pixels(rgba(sid), mud=True) for sid in free}
+        elif cid in MOUNTAIN_TOP:
+            mean = lum(tone(t, rgba)[2])
+            art = {sid: gravel(rgba(sid), mean) for sid in free}
         elif cid in ROCK_PATH:
             art = {sid: ds_pixels(rgba(sid)) for sid in free}
         else:
@@ -913,6 +926,12 @@ def build():
         done = paint_object(whole, LEAF_RAMPS[parts[0] // 64 % len(LEAF_RAMPS)])
         for i, sid in enumerate(sids):
             new[sid] = done[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32].copy()
+    for cid in GRAVEL_PATCHES:
+        t = dat.things[cid]
+        mean = lum(tone(t, rgba)[2])
+        for sid in t[8]:
+            if sid and sid not in new and sid not in keep and rgba(sid) is not None:
+                new[sid] = clean_lip(rgba(sid), mean)
     for cid, t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
