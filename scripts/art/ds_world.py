@@ -16,6 +16,7 @@ The original data.spr is tagged backup/data-spr-before-ds-style.
 """
 import argparse
 import collections
+import json
 import os
 import pickle
 import re
@@ -927,6 +928,7 @@ REPAINT = {
 TRACES = {**dict(zip(range(18136, 18140), range(351, 355))),
           **dict(zip(range(18140, 18156), range(4526, 4542))),
           18156: 231}
+FOOTPRINT_SETS = os.path.join(HERE, 'footprints.json')   # written by scripts/add-footprints.py
 # a trainer's left and right shoe, sole and heel; the right one is the left mirrored
 SHOE = [".##..",
         "####.",
@@ -938,15 +940,26 @@ SHOE = [".##..",
         ".###.",
         ".###.",
         "..##."]
+OVAL = [".##.",
+        "####",
+        "####",
+        "####",
+        ".##."]
+# style -> (shape, x, y, mirrored) for each print on the tile
+PRINT_STYLES = {
+    'shoe': [(SHOE, 18, 3, False), (SHOE, 8, 16, True)],
+    'paw': [(OVAL, 9, 5, False), (OVAL, 16, 8, False), (OVAL, 9, 18, False), (OVAL, 16, 21, False)],
+}
 
 
-def draw_prints(ground):
-    """Two shoe prints pressed into a ground of mean colour `ground`: a darker sole, its top and left walls
-    in shadow, and a light lip along the bottom where the ground was pushed up."""
-    shoe = np.array([[c == '#' for c in r] for r in SHOE])
+def draw_prints(ground, style='shoe'):
+    """Prints pressed into a ground of mean colour `ground`: a darker sole, its top and left walls in shadow,
+    and a light lip along the bottom where the ground was pushed up."""
     b = np.asarray(ground, float)
     a = np.zeros((32, 32, 4), np.uint8)
-    for (x0, y0), m in (((18, 3), shoe), ((8, 16), shoe[:, ::-1])):
+    for rows, x0, y0, mirrored in PRINT_STYLES[style]:
+        m = np.array([[c == '#' for c in r] for r in rows])
+        m = m[:, ::-1] if mirrored else m
         sel = np.zeros((32, 32), bool)
         sel[y0:y0 + m.shape[0], x0:x0 + m.shape[1]] = m
         wall = sel & ~(shift(sel, 0, 1) & shift(sel, 1, 0))
@@ -955,6 +968,16 @@ def draw_prints(ground):
         a[wall] = (*np.round(b * 0.64), 255)
         a[lip] = (*np.round(np.minimum(255, b * 1.06 + 6)), 255)
     return a
+
+
+def footprint_items():
+    """{trace server id: (ground server id, style)} for the original traces and every added set."""
+    sets = json.load(open(FOOTPRINT_SETS))
+    out = {t: (g, 'shoe') for t, g in TRACES.items()}
+    for name, s in sets['sets'].items():
+        for ground, item in s['items'].items():
+            out.setdefault(item['server'], (sets['grounds'][ground]['grounds'][0], s['style']))
+    return out
 
 
 def repaint(a, mean, ramps, contrast=1.3):
@@ -1134,7 +1157,10 @@ def build():
         mean = lum(np.concatenate([rgba(s)[rgba(s)[..., 3] > 0][:, :3] for s in sids]).astype(float)).mean()
         for s in sids:
             new[s] = repaint(rgba(s), mean, {'base': base, **extra})
-    for trace, ground in TRACES.items():
+    traces = footprint_items()
+    trace_cids = {otb.client_id(i) for i in traces}
+    elsewhere = {s for cid, t in dat.things.items() if cid not in trace_cids for s in t[8]}
+    for trace, (ground, style) in traces.items():
         t, g = dat.things.get(otb.client_id(trace)), dat.things.get(otb.client_id(ground))
         if not t or not g or t[3] != 2:
             continue
@@ -1142,11 +1168,11 @@ def build():
             under, prints = t[8][2 * k], t[8][2 * k + 1]
             x, y = k % t[4], k // t[4] % t[5]
             same = g[8][y % g[5] * g[4] + x % g[4]]
-            if under and under != same and same in new:
+            if under and under not in elsewhere and same in new:
                 new[under] = new[same]
             if prints:
                 tone_of = np.concatenate([new[g_][new[g_][..., 3] > 0][:, :3] for g_ in g[8] if g_ in new])
-                new[prints] = draw_prints(tone_of.mean(0))
+                new[prints] = draw_prints(tone_of.mean(0), style)
     spr.f.close()
     return new
 
