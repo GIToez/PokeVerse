@@ -44,6 +44,7 @@ BEDS = '/tmp/ds_world_beds.pkl'
 
 GRASS = [(56, 112, 80), (96, 176, 88), (112, 184, 80), (120, 192, 112), (128, 208, 112), (152, 224, 120)]
 PATH = [(152, 120, 96), (176, 152, 104), (200, 184, 128), (208, 192, 136), (216, 200, 136), (232, 220, 168)]
+DIRT = [(104, 68, 40), (120, 82, 48), (132, 92, 54), (144, 100, 60), (152, 108, 66), (168, 124, 80)]
 WATER = [(32, 96, 160), (40, 128, 192), (64, 168, 224), (112, 196, 236), (200, 216, 216), (240, 248, 248)]
 FOLIAGE = [(14, 72, 64), (24, 96, 64), (50, 135, 99), (72, 164, 86), (104, 192, 88), (150, 222, 110)]
 TRUNK = [(72, 48, 32), (104, 72, 48), (144, 104, 72), (184, 136, 96), (210, 170, 124)]
@@ -125,11 +126,11 @@ def grass_texture():
     return ramp_at(GRASS, s, steps=True)
 
 
-def path_texture():
-    s = np.full((32, 32), 0.55)                   # PATH[3], the sheet's (208, 192, 136)
+def dirt_texture():
+    s = np.full((32, 32), 0.55)                   # DIRT[3], the shared colour map's dirt (144, 100, 60)
     s[grain(3, 0.12)] = 0.4
     s[grain(4, 0.06)] = 0.7
-    return ramp_at(PATH, s, steps=True)
+    return ramp_at(DIRT, s, steps=True)
 
 
 def water_texture():
@@ -143,7 +144,7 @@ def water_texture():
     return ramp_at(WATER, s, steps=True)
 
 
-TEX = {'green': grass_texture(), 'dirt': path_texture(), 'wood': path_texture(), 'water': water_texture()}
+TEX = {'green': grass_texture(), 'dirt': dirt_texture(), 'wood': dirt_texture(), 'water': water_texture()}
 
 
 def shift(m, dy, dx, fill=False):
@@ -187,7 +188,7 @@ def drop_specks(m, size=8):
 
 
 FRINGE = [(64, 144, 80), (96, 176, 88)]          # grass edge: dark rim, then mid green
-SUNK = [(152, 120, 96, 255), (176, 144, 104, 230), (192, 168, 116, 150)]  # dirt under the grass lip
+SUNK = [(88, 56, 36, 255), (112, 76, 44, 230), (128, 88, 52, 150)]  # dirt under the grass lip
 
 
 def paint_ground(a):
@@ -497,7 +498,8 @@ COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198,
 WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192, 132)]  # logs and planks
 GRAYS = [(48, 48, 64), (80, 80, 100), (112, 112, 136), (144, 144, 168), (176, 176, 198), (208, 208, 224),
          (236, 238, 248)]
-DS_EARTH = [(152, 120, 96), (176, 152, 104), (208, 192, 136), (216, 200, 136), (232, 220, 168), (244, 236, 196)]
+# dark steps for dirt, close to Tibia's own brown so paths, crumbs and cave floors agree; light steps for sand
+DS_EARTH = [(80, 52, 32), (112, 76, 44), (144, 100, 60), (176, 136, 88), (232, 220, 168), (244, 236, 196)]
 CAVE = [(56, 36, 28), (84, 56, 40), (112, 76, 52), (140, 100, 68), (168, 128, 88), (196, 160, 112)]
 SNOW = [(168, 184, 216), (200, 216, 236), (224, 234, 246), (240, 246, 252), (252, 254, 255)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
