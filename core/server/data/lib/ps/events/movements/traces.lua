@@ -28,8 +28,9 @@ local TRACES = {
 }
 
 function onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, actor)
-    if (isPlayer(cid) and not isPlayerGhost(cid, true) and not isBiking(cid)) then
-        if (item.itemid == SAND_ITEMID and Sandboard.isUsing(cid)) then
+    local walker = isNpc(cid) or (isPlayer(cid) and not isPlayerGhost(cid, true) and not isBiking(cid))
+    if (walker) then
+        if (isPlayer(cid) and item.itemid == SAND_ITEMID and Sandboard.isUsing(cid)) then
             Sandboard.onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, actor)
         end
 
