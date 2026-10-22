@@ -52,6 +52,8 @@ FOLIAGE = [(16, 64, 48), (28, 100, 56), (44, 136, 64), (72, 168, 72), (116, 196,
 LEAF_RAMPS = [FOLIAGE,
               [(20, 66, 44), (34, 104, 52), (54, 140, 60), (86, 172, 66), (132, 200, 80), (184, 228, 108)],
               [(14, 62, 52), (24, 96, 62), (40, 132, 72), (64, 164, 80), (104, 192, 92), (156, 220, 120)]]
+# trees that turn into another tree, by server id: they take that tree's leaves so the colour holds
+LEAF_FAMILY = {12295: 2703}     # the rustling nest tree becomes 12296, which draws the plum tree
 TRUNK = [(72, 48, 32), (104, 72, 48), (144, 104, 72), (184, 136, 96), (210, 170, 124)]
 ROCK = [(72, 80, 96), (104, 112, 136), (128, 152, 160), (160, 192, 200), (200, 216, 216), (236, 244, 244)]
 GOLD = [(150, 96, 20), (216, 160, 48), (240, 216, 104), (252, 240, 160)]
@@ -1136,19 +1138,20 @@ def build():
         for sid in t[8]:
             if sid and sid not in new and sid not in keep and rgba(sid) is not None:
                 new[sid] = clean_lip(rgba(sid), mean)
+    otb = pvmap.Otb(h.ITEMS)
+    family = {otb.client_id(a): otb.client_id(b) for a, b in LEAF_FAMILY.items()}
     for cid, t in objects:
         sprites = t[8]
         if all(not s or s in new or s in keep for s in sprites):
             continue
         art = {s: rgba(s) for s in sprites if s and rgba(s) is not None}
         for p, img in h.compose(t, art).items():
-            leaves = LEAF_RAMPS[cid // 64 % len(LEAF_RAMPS)]   # neighbouring ids are one tree family
+            leaves = LEAF_RAMPS[family.get(cid, cid) // 64 % len(LEAF_RAMPS)]   # neighbouring ids are one tree family
             done = (paint_plant if plant_like(img) else paint_object)(img, leaves)
             for pp, idx, x, y in h.layout(t):
                 sid = sprites[idx] if idx < len(sprites) else 0
                 if pp == p and sid in art and sid not in new and sid not in keep:
                     new[sid] = done[y:y + 32, x:x + 32].copy()
-    otb = pvmap.Otb(h.ITEMS)
     for ids, base, extra in REPAINT.values():
         things = [dat.things.get(otb.client_id(i)) for i in ids]
         sids = {s for t in things if t for s in t[8] if s and s not in keep and rgba(s) is not None}
