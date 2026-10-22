@@ -920,20 +920,41 @@ REPAINT = {
     'hay': ([3848, 3849, 3850, 3851, 5555, 5556], SAND, {'green': FOLIAGE}),
     'debris': (range(6476, 6489), CAVE, {}),
     'mailbox': ([2593], STONE, {'red': RED}),
+    'speckled stones': ([*range(8740, 8744), 3666, 3668, 3670], STONE, {}),
 }
 
 # walking turns a ground into its trace: layer 0 is a copy of the ground, layer 1 the prints
-TRACES = {**{t: (g, DIRT[:3]) for t, g in zip(range(18136, 18140), range(351, 355))},
-          **{t: (g, GRASS[1:4]) for t, g in zip(range(18140, 18156), range(4526, 4542))},
-          18156: (231, SAND[1:4])}
+TRACES = {**dict(zip(range(18136, 18140), range(351, 355))),
+          **dict(zip(range(18140, 18156), range(4526, 4542))),
+          18156: 231}
+# a trainer's left and right shoe, sole and heel; the right one is the left mirrored
+SHOE = [".##..",
+        "####.",
+        "#####",
+        "#####",
+        ".####",
+        ".###.",
+        ".....",
+        ".###.",
+        ".###.",
+        "..##."]
 
 
-def paint_prints(a, ramp):
-    """Prints just under the ground they are pressed into, faint like the originals."""
-    op = a[..., 3] > 0
-    if not op.any():
-        return a
-    return repaint(a, lum(a[op][:, :3].astype(float)).mean(), {'base': ramp}, contrast=1.0)
+def draw_prints(ground):
+    """Two shoe prints pressed into a ground of mean colour `ground`: a darker sole, its top and left walls
+    in shadow, and a light lip along the bottom where the ground was pushed up."""
+    shoe = np.array([[c == '#' for c in r] for r in SHOE])
+    b = np.asarray(ground, float)
+    a = np.zeros((32, 32, 4), np.uint8)
+    for (x0, y0), m in (((18, 3), shoe), ((8, 16), shoe[:, ::-1])):
+        sel = np.zeros((32, 32), bool)
+        sel[y0:y0 + m.shape[0], x0:x0 + m.shape[1]] = m
+        wall = sel & ~(shift(sel, 0, 1) & shift(sel, 1, 0))
+        lip = shift(sel, 1, 0) & ~sel
+        a[sel] = (*np.round(b * 0.80), 255)
+        a[wall] = (*np.round(b * 0.64), 255)
+        a[lip] = (*np.round(np.minimum(255, b * 1.06 + 6)), 255)
+    return a
 
 
 def repaint(a, mean, ramps, contrast=1.3):
@@ -1113,7 +1134,7 @@ def build():
         mean = lum(np.concatenate([rgba(s)[rgba(s)[..., 3] > 0][:, :3] for s in sids]).astype(float)).mean()
         for s in sids:
             new[s] = repaint(rgba(s), mean, {'base': base, **extra})
-    for trace, (ground, ramp) in TRACES.items():
+    for trace, ground in TRACES.items():
         t, g = dat.things.get(otb.client_id(trace)), dat.things.get(otb.client_id(ground))
         if not t or not g or t[3] != 2:
             continue
@@ -1123,8 +1144,9 @@ def build():
             same = g[8][y % g[5] * g[4] + x % g[4]]
             if under and under != same and same in new:
                 new[under] = new[same]
-            if prints and rgba(prints) is not None:
-                new[prints] = paint_prints(rgba(prints), ramp)
+            if prints:
+                tone_of = np.concatenate([new[g_][new[g_][..., 3] > 0][:, :3] for g_ in g[8] if g_ in new])
+                new[prints] = draw_prints(tone_of.mean(0))
     spr.f.close()
     return new
 
