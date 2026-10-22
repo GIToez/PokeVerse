@@ -58,6 +58,9 @@ OBJECT_RAMPS = {'green': FOLIAGE, 'wood': TRUNK, 'dirt': TRUNK, 'stone': ROCK, '
 
 ICE = [(72, 128, 168), (120, 184, 216), (168, 220, 240), (208, 240, 250), (240, 252, 255)]
 OBJECT_RAMPS['ice'] = ICE
+OBJECT_RAMPS['water'] = [(24, 36, 96), (36, 64, 152), (52, 104, 200), (84, 148, 224), (140, 196, 240), (216, 236, 248)]
+OBJECT_RAMPS['crimson'] = [(40, 10, 14), (72, 16, 20), (104, 24, 26), (136, 36, 32), (168, 56, 44), (200, 92, 64)]
+OUTLINE['crimson'] = (32, 8, 12)
 OUTLINE['ice'] = (48, 96, 128)
 
 
@@ -302,7 +305,11 @@ def paint_object(img):
     if not op.any():
         return a
     mat = despeckle(classify(a[..., :3].astype(float)), op)
-    mat[(mat == 'water') & (blurf(lum(a[..., :3].astype(float)) / 255, 1.5, pad=4) > 0.55)] = 'ice'
+    cyan = hue_of(a[..., :3].astype(float)) < 205
+    mat[(mat == 'water') & cyan & (blurf(lum(a[..., :3].astype(float)) / 255, 1.5, pad=4) > 0.55)] = 'ice'
+    px = a[op][:, :3].astype(float)
+    if lum(px.mean(0)) < 95 and px[:, 0].mean() > 1.8 * px[:, 1].mean():    # dark red rock stays dark red
+        mat[op & np.isin(mat, ['wood', 'dirt', 'red', 'yellow'])] = 'crimson'
     out = a.astype(float)
     for k in set(mat[op].tolist()):
         sel = op & (mat == k)
@@ -344,34 +351,37 @@ def map_items():
 
 def custom_art(otb):
     """Client ids of PokeVerse's own items, except nature, which follows the world style."""
-    out = set()
+    nature = set()
     for line in open(ITEMS_XML, encoding='utf-8', errors='replace'):
         m = re.search(r'<item (?:fromid="(\d+)" toid="(\d+)"|id="(\d+)")[^>]*name="([^"]*)"', line)
-        if not m:
-            continue
-        a = int(m.group(1) or m.group(3))
-        b = int(m.group(2) or a)
-        if b < CUSTOM_FROM or re.search(r'\b(tree|bush|grass|hedge)\b', m.group(4), re.I):
-            continue
-        out.update(otb.client_id(i) for i in range(max(a, CUSTOM_FROM), b + 1))
+        if m and re.search(r'\b(tree|bush|grass|hedge)\b', m.group(4), re.I):
+            a = int(m.group(1) or m.group(3))
+            nature.update(range(a, int(m.group(2) or a) + 1))
+    out = {otb.client_id(i) for i in otb.items if i >= CUSTOM_FROM and i not in nature}
+    tibia = {otb.client_id(i) for i in otb.items if i < CUSTOM_FROM}    # custom entries reusing Tibia art
     out.discard(None)
-    return out - set(PAVING)
+    return out - tibia - set(PAVING)
 
 
-def border_beds():
-    """{border client id: Counter of the ground client ids it is laid on}."""
+def map_usage():
+    """({border client id: Counter of the grounds it is laid on}, {client id: share of uses below floor 7})."""
     if os.path.exists(BEDS) and os.path.getmtime(BEDS) > os.path.getmtime(h.MAP):
         return pickle.load(open(BEDS, 'rb'))
     otb, dat = pvmap.Otb(h.ITEMS), pvmap.Dat(h.DAT)
     data = open(h.MAP, 'rb').read()
     beds = collections.defaultdict(collections.Counter)
-    ground = None
+    under, total = collections.Counter(), collections.Counter()
+    ground = area = None
     for ev, typ, depth, a, b, _ in pvmap.walk(data):
         if ev != 'open':
             continue
+        if typ == pvmap.TILE_AREA:
+            area = struct.unpack_from('<HHB', pvmap.unescape(data[a:b]), 0)
+            continue
+        cid = None
         if typ in (pvmap.TILE, pvmap.HOUSETILE):
             item = pvmap.parse_tile_props(pvmap.unescape(data[a:b]), typ == pvmap.HOUSETILE)[4]
-            ground = otb.client_id(item) if item is not None else None
+            ground = cid = otb.client_id(item) if item is not None else None
         elif typ == pvmap.ITEM and depth == 4:
             cid = otb.client_id(struct.unpack_from('<H', pvmap.unescape(data[a:a + 4]), 0)[0])
             t = dat.things.get(cid)
@@ -379,9 +389,56 @@ def border_beds():
                 ground = cid
             elif t and BORDER in t[0] and ground is not None:
                 beds[cid][ground] += 1
-    beds = dict(beds)
-    pickle.dump(beds, open(BEDS, 'wb'))
-    return beds
+        if cid is not None:
+            total[cid] += 1
+            under[cid] += area[2] > 7
+    out = dict(beds), {c: under[c] / total[c] for c in total}
+    pickle.dump(out, open(BEDS, 'wb'))
+    return out
+
+
+def ds_pixels(a, cave=False):
+    """Ground and edges off the textures: one fixed colour map for every item, so each original colour
+    lands on the same DS colour wherever it is and neighbouring pieces stay seamless."""
+    op = a[..., 3] > 0
+    full = op.all()
+    raw = a[..., :3].astype(float)
+    rgb = 0.5 * raw + 0.5 * box_blur(raw, full, 1)
+    L = lum(rgb)
+    mx, mn = rgb.max(-1), rgb.min(-1)
+    sat = (mx - mn) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    out = a.copy()
+    done = ~op
+
+    def put(sel, ramp, cuts):
+        nonlocal done
+        sel = sel & ~done
+        out[sel, :3] = np.array(ramp)[np.searchsorted(cuts, L[sel])]
+        done = done | sel
+
+    put((hue >= 185) & (hue <= 250) & (sat > 0.35) & (L < 150), WATER[1:4], [45, 125])
+    put((hue >= 165) & (hue <= 215) & (sat > 0.12) & (L >= 150), [ICE[1], ICE[2], ICE[4]], [160, 228])
+    put((hue >= 65) & (hue <= 165) & (sat > 0.25), GRASS, [50, 80, 110, 150, 185])
+    put(sat < 0.15, GRAYS[:5] + [SNOW[1], SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
+    earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= 0.78)
+    put(earth & (L < 235), DS_EARTH, [45, 60, 100, 140, 228])
+    rest = ~done
+    if rest.any():
+        v = mx[rest] / 255
+        lv = np.array([0.24, 0.38, 0.52, 0.66, 0.8, 0.92, 1.0])
+        q = lv[np.searchsorted((lv[:-1] + lv[1:]) / 2, v)]
+        col = np.clip(rgb[rest] * (q / np.maximum(v, 1e-3))[:, None], 0, 255)
+        out[rest, :3] = (col // 8 * 8).astype(np.uint8)   # snap so near-equal shades merge into one flat colour
+    return despeckle_px(out, op, full)
+
+
+def hue_of(rgb):
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    mx, mn = rgb.max(-1), rgb.min(-1)
+    d = np.maximum(mx - mn, 1e-6)
+    hh = np.where(mx == r, ((g - b) / d) % 6, np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4))
+    return np.where(mx - mn < 1e-6, 0, hh * 60)
 
 
 def house_sprites(dat):
@@ -436,6 +493,10 @@ def natural(t, rgba):
 ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
 COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
 WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192, 132)]  # logs and planks
+GRAYS = [(48, 48, 64), (80, 80, 100), (112, 112, 136), (144, 144, 168), (176, 176, 198), (208, 208, 224),
+         (236, 238, 248)]
+DS_EARTH = [(152, 120, 96), (176, 152, 104), (208, 192, 136), (216, 200, 136), (232, 220, 168), (244, 236, 196)]
+CAVE = [(56, 36, 28), (84, 56, 40), (112, 76, 52), (140, 100, 68), (168, 128, 88), (196, 160, 112)]
 SNOW = [(168, 184, 216), (200, 216, 236), (224, 234, 246), (240, 246, 252), (252, 254, 255)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
 HUT_ROOF = range(9409, 9416)                     # the far slope of the small huts beside the Pokemon Centers
@@ -532,24 +593,73 @@ def recolor_ground(a):
 
 
 def made_ground(t, rgba):
-    """{sid: art} for a non-natural ground or border item."""
+    """{sid: art} for town floors with a hand-tuned ramp (dark stone, wood), else None."""
     lo, hi, mean = tone(t, rgba)
     m = lum(mean)
-    if m < 15:
-        return {}
     sat = (mean.max() - mean.min()) / max(mean.max(), 1)
-    ramp = None
-    if sat < 0.12 and m > 200:
-        ramp = SNOW
-    elif sat < 0.12:
-        base = ROAD if m > 150 else COBBLE
-        f = np.clip(m / (175 if m > 150 else 135), 0.6, 1.15)   # darker stone stays darker
-        ramp = [tuple(int(min(255, v * f)) for v in c) for c in base]
-    elif m < 60 and sat < 0.35:
+    if m < 60 and sat < 0.35:
         ramp = ROCKY
-    elif sat > 0.3 and m < 150 and mean[0] > mean[1] > mean[2] and mean[1] > 0.55 * mean[0]:
+    elif sat > 0.3 and m < 175 and mean[0] > mean[1] > mean[2] and mean[1] > 0.55 * mean[0]:
         ramp = WOODEN
-    return {sid: paint_floor(rgba(sid), lo, hi, mean, ramp) for sid in t[8] if sid and rgba(sid) is not None}
+    else:
+        return None
+    return {sid: despeckle_px(paint_floor(rgba(sid), lo, hi, mean, ramp), rgba(sid)[..., 3] > 0,
+                              (rgba(sid)[..., 3] > 0).all())
+            for sid in t[8] if sid and rgba(sid) is not None}
+
+
+def box_blur(a, full, n=3):
+    for _ in range(n):
+        p = np.pad(a, [(1, 1), (1, 1)] + [(0, 0)] * (a.ndim - 2), mode='wrap' if full else 'edge')
+        a = sum(p[dy:dy + 32, dx:dx + 32] for dy in range(3) for dx in range(3)) / 9
+    return a
+
+
+def majority(img, op, full, passes=2):
+    """Each pixel takes the colour most of its 3x3 neighbours have: no lone specks, clean flat shapes."""
+    key = img[..., 0].astype(np.int64) << 16 | img[..., 1].astype(np.int64) << 8 | img[..., 2]
+    for _ in range(passes):
+        vals = np.unique(key[op])
+        if len(vals) < 2:
+            break
+        counts = np.stack([box_blur(((key == v) & op).astype(float), full, 1) for v in vals])
+        best = vals[counts.argmax(0)]
+        key = np.where(op, best, key)
+    out = img.copy()
+    out[..., 0], out[..., 1], out[..., 2] = key >> 16 & 255, key >> 8 & 255, key & 255
+    return out
+
+
+def despeckle_px(img, op, full, passes=2):
+    """Pixels with fewer than two same-coloured neighbours take the commonest colour around them;
+    one-pixel lines survive, lone specks do not."""
+    key = img[..., 0].astype(np.int64) << 16 | img[..., 1].astype(np.int64) << 8 | img[..., 2]
+    for _ in range(passes):
+        vals = np.unique(key[op])
+        if len(vals) < 2:
+            break
+        counts = np.stack([box_blur(((key == v) & op).astype(float), full, 1) * 9 for v in vals])
+        own = np.take_along_axis(counts, np.searchsorted(vals, key)[None].clip(0, len(vals) - 1), 0)[0]
+        key = np.where(op & (own < 2.5), vals[counts.argmax(0)], key)
+    out = img.copy()
+    out[..., 0], out[..., 1], out[..., 2] = key >> 16 & 255, key >> 8 & 255, key & 255
+    return out
+
+
+def dirt_like(t, rgba):
+    """Natural earth (not grass, not water): drawn with the shared colour map so every variant matches."""
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
+    m = classify(px[None])[0]
+    return (m == 'water').mean() < 0.6 and (m == 'green').mean() < 0.6
+
+
+def grass_edge(t, rgba):
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
+    return (classify(px[None])[0] == 'green').mean() >= 0.15
+
+
+def dirt_ground(t, rgba):
+    return not grass_ground(t, rgba)
 
 
 def build():
@@ -559,11 +669,10 @@ def build():
     new.update({sid: np.array(im) for sid, im in box_reskin.sprites().items()})
     items = map_items()
     custom = custom_art(pvmap.Otb(h.ITEMS))
-    keep = set()
-    for cid in items:
-        t = dat.things.get(cid)
-        if t and (cid in REFERENCE or cid in custom or PICKUPABLE in t[0]):
-            keep.update(s for s in t[8] if s)
+    keep, tibia = set(), set()
+    for cid, t in dat.things.items():
+        (keep if cid in REFERENCE or cid in custom else tibia).update(s for s in t[8] if s)
+    keep -= tibia - {s for c in REFERENCE if c in dat.things for s in dat.things[c][8]}
     raw = {}
 
     def rgba(sid):
@@ -572,7 +681,7 @@ def build():
             raw[sid] = np.frombuffer(px, np.uint8).reshape(32, 32, 4).copy() if px else None
         return raw[sid]
 
-    beds = border_beds()
+    beds, under = map_usage()
 
     grassy = {}
 
@@ -588,9 +697,9 @@ def build():
         return sum(n for g, n in bed.items() if grassy[g]) >= 0.7 * sum(bed.values())
 
     grounds, objects = [], []
-    for cid in sorted(items):
-        t = dat.things.get(cid)
-        if not t or cid in REFERENCE or cid in custom or PICKUPABLE in t[0]:
+    for cid in sorted(dat.things):
+        t = dat.things[cid]
+        if cid in REFERENCE or cid in custom:
             continue
         if GROUND in t[0] or BORDER in t[0]:
             grounds.append((cid, t))
@@ -604,14 +713,21 @@ def build():
             art = {sid: np.dstack([PAVING[cid], rgba(sid)[..., 3]]).astype(np.uint8) for sid in free}
         elif cid in ROOF_TILES:
             art = {sid: paint_flat_roof(rgba(sid)) for sid in free}
-        elif cid not in NOT_NATURAL and natural(t, rgba) == 'mixed':
-            art = {sid: recolor_ground(rgba(sid)) for sid in free}
-        elif cid not in NOT_NATURAL and BORDER in t[0] and natural(t, rgba) and on_grass(cid):
-            art = {sid: recolor_ground(rgba(sid)) for sid in free}
-        elif cid not in NOT_NATURAL and natural(t, rgba):
-            art = {sid: paint_ground(rgba(sid)) for sid in free}
         else:
-            art = made_ground(t, rgba)
+            cave = under.get(cid, 0) > 0.7
+            kind = natural(t, rgba) if cid not in NOT_NATURAL else False
+            kind = kind if kind == 'mixed' else bool(kind)
+            edge = BORDER in t[0] and grass_edge(t, rgba)
+            art = None
+            if kind is True and edge:
+                art = {sid: (recolor_ground if on_grass(cid) else paint_ground)(rgba(sid)) for sid in free}
+            elif kind is True and GROUND in t[0] and grass_ground(t, rgba):
+                art = {sid: paint_ground(rgba(sid)) for sid in free}
+            elif kind is True and GROUND in t[0] and not dirt_like(t, rgba):
+                art = {sid: paint_ground(rgba(sid)) for sid in free}
+            elif kind is False and GROUND in t[0] and not cave:
+                art = made_ground(t, rgba)
+            art = art or {sid: ds_pixels(rgba(sid), cave) for sid in free}
         new.update({sid: img for sid, img in art.items() if sid in free})
     for cid in ROOF_EDGES:
         for sid in dat.things[cid][8]:
