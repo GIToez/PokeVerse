@@ -407,6 +407,42 @@ def paint_object(img, leaves=FOLIAGE):
 
 
 
+TREE_CUTS = [24, 40, 62, 88, 116, 146]
+BARK_CUTS = [40, 70, 105, 145]
+
+
+def plant_like(img):
+    """Trees, bushes and other plants: mostly leaf green once the outline is left out."""
+    op = img[..., 3] > 0
+    rgb = img[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    body = op & (mx > 40)
+    return body.sum() >= 12 and ((hue > 60) & (hue < 170) & (sat > 0.2))[body].mean() > 0.45
+
+
+def paint_plant(img, leaves=FOLIAGE):
+    """A plant in its own drawing: every leaf, branch and berry where Tibia drew it, the leaves on the
+    family's greens and the wood on our bark, so clumps keep their shape instead of melting together."""
+    a = img.copy()
+    op = a[..., 3] > 0
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    L = lum(rgb)
+    leaf = op & (((hue > 50) & (hue < 180) & (sat > 0.15)) | (mx < 40))
+    bark = op & ~leaf & (hue >= 10) & (hue <= 50) & (sat > 0.2) & (mx < 200)
+    shade = tuple(int(c * 0.62) for c in leaves[0])
+    a[leaf, :3] = np.array([shade] + list(leaves))[np.searchsorted(TREE_CUTS, L[leaf])]
+    a[bark, :3] = np.array(TRUNK)[np.searchsorted(BARK_CUTS, L[bark])]
+    if op.sum() >= 260:
+        sh = shift(op, 3, 2) & ~op
+        a[sh] = (24, 48, 32, 70)
+    return a
+
+
 def map_items():
     """Client ids of every item placed on the map, top-level items of each tile."""
     if os.path.exists(CACHE) and os.path.getmtime(CACHE) > os.path.getmtime(h.MAP):
@@ -1023,7 +1059,7 @@ def build():
         whole = np.zeros((32 * n, 32 * n, 4), np.uint8)
         for i, sid in enumerate(sids):
             whole[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32] = rgba(sid)
-        done = paint_object(whole, LEAF_RAMPS[parts[0] // 64 % len(LEAF_RAMPS)])
+        done = paint_plant(whole, LEAF_RAMPS[parts[0] // 64 % len(LEAF_RAMPS)])
         for i, sid in enumerate(sids):
             new[sid] = done[i // n * 32:i // n * 32 + 32, i % n * 32:i % n * 32 + 32].copy()
     for cid in CUT_GRASS:
@@ -1042,7 +1078,8 @@ def build():
             continue
         art = {s: rgba(s) for s in sprites if s and rgba(s) is not None}
         for p, img in h.compose(t, art).items():
-            done = paint_object(img, LEAF_RAMPS[cid // 64 % len(LEAF_RAMPS)])   # neighbouring ids are one tree family
+            leaves = LEAF_RAMPS[cid // 64 % len(LEAF_RAMPS)]   # neighbouring ids are one tree family
+            done = (paint_plant if plant_like(img) else paint_object)(img, leaves)
             for pp, idx, x, y in h.layout(t):
                 sid = sprites[idx] if idx < len(sprites) else 0
                 if pp == p and sid in art and sid not in new and sid not in keep:
