@@ -903,6 +903,7 @@ def clean_lip(a, mean=104):
 SAND = [(150, 110, 52), (190, 148, 72), (220, 180, 96), (236, 204, 120), (246, 224, 152), (252, 240, 188)]
 # Tibia pieces kept in their own drawing, each family on one of our ramps with shared steps so its parts
 # match: {name: (server ids, base ramp, ramps for reddish and greenish pixels)}
+PROP_WOOD = [(44, 24, 16)] + WOODEN     # carts and logs are drawn darker than planks and roofs
 REPAINT = {
     'dungeon walls': (range(9118, 9130), STONE, {'green': FOLIAGE}),
     'dirt walls': ([*range(5631, 5639), 5647, *range(5649, 5652)], CAVE, {}),
@@ -913,7 +914,26 @@ REPAINT = {
     'dark cobbles': (range(10492, 10499), DIRT, {}),
     'sandstone': ([419], SAND, {}),
     'rush wood': ([11096], TRUNK, {}),
+    'carts and wagons': ([5544, 5546, 5547, 5548, 8581, *range(8728, 8740)], PROP_WOOD, {'red': RED, 'green': FOLIAGE}),
+    'bundles of logs': (range(8744, 8748), PROP_WOOD, {}),
+    'planks': ([6474, 6475], PROP_WOOD, {}),
+    'hay': ([3848, 3849, 3850, 3851, 5555, 5556], SAND, {'green': FOLIAGE}),
+    'debris': (range(6476, 6489), CAVE, {}),
+    'mailbox': ([2593], STONE, {'red': RED}),
 }
+
+# walking turns a ground into its trace: layer 0 is a copy of the ground, layer 1 the prints
+TRACES = {**{t: (g, DIRT[:3]) for t, g in zip(range(18136, 18140), range(351, 355))},
+          **{t: (g, GRASS[1:4]) for t, g in zip(range(18140, 18156), range(4526, 4542))},
+          18156: (231, SAND[1:4])}
+
+
+def paint_prints(a, ramp):
+    """Prints just under the ground they are pressed into, faint like the originals."""
+    op = a[..., 3] > 0
+    if not op.any():
+        return a
+    return repaint(a, lum(a[op][:, :3].astype(float)).mean(), {'base': ramp}, contrast=1.0)
 
 
 def repaint(a, mean, ramps, contrast=1.3):
@@ -1093,6 +1113,18 @@ def build():
         mean = lum(np.concatenate([rgba(s)[rgba(s)[..., 3] > 0][:, :3] for s in sids]).astype(float)).mean()
         for s in sids:
             new[s] = repaint(rgba(s), mean, {'base': base, **extra})
+    for trace, (ground, ramp) in TRACES.items():
+        t, g = dat.things.get(otb.client_id(trace)), dat.things.get(otb.client_id(ground))
+        if not t or not g or t[3] != 2:
+            continue
+        for k in range(len(t[8]) // 2):
+            under, prints = t[8][2 * k], t[8][2 * k + 1]
+            x, y = k % t[4], k // t[4] % t[5]
+            same = g[8][y % g[5] * g[4] + x % g[4]]
+            if under and under != same and same in new:
+                new[under] = new[same]
+            if prints and rgba(prints) is not None:
+                new[prints] = paint_prints(rgba(prints), ramp)
     spr.f.close()
     return new
 
