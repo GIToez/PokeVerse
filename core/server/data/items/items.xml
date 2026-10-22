@@ -35910,4 +35910,17 @@
 	<item id="30027" name="rum" />
 	<item id="30028" name="swamp" />
 	<item id="30035" name="tea" />
+	<!-- pokemon footprints -->
+	<item id="30154" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30155" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30156" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
 </items>

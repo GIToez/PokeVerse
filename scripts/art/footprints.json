@@ -1,0 +1,78 @@
+{
+  "grounds": {
+    "dirt": {
+      "template": 18136,
+      "grounds": [
+        351,
+        352,
+        353,
+        354
+      ]
+    },
+    "grass": {
+      "template": 18140,
+      "grounds": [
+        4526,
+        4527,
+        4528,
+        4529,
+        4530,
+        4531,
+        4532,
+        4533,
+        4534,
+        4535,
+        4536,
+        4537,
+        4538,
+        4539,
+        4540,
+        4541
+      ]
+    },
+    "sand": {
+      "template": 18156,
+      "grounds": [
+        231
+      ]
+    }
+  },
+  "sets": {
+    "trainer": {
+      "style": "shoe",
+      "species": [],
+      "items": {
+        "dirt": {
+          "server": 18136
+        },
+        "grass": {
+          "server": 18140
+        },
+        "sand": {
+          "server": 18156
+        }
+      }
+    },
+    "pokemon": {
+      "style": "paw",
+      "species": [],
+      "items": {
+        "dirt": {
+          "server": 30154,
+          "client": 28797,
+          "sprite": 85
+        },
+        "grass": {
+          "server": 30155,
+          "client": 28798,
+          "sprite": 193
+        },
+        "sand": {
+          "server": 30156,
+          "client": 28799,
+          "sprite": 194
+        }
+      }
+    }
+  }
+}
