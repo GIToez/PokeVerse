@@ -397,7 +397,7 @@ def map_usage():
     return out
 
 
-def ds_pixels(a, cave=False):
+def ds_pixels(a, cave=False, crumbs=False):
     """Ground and edges off the textures: one fixed colour map for every item, so each original colour
     lands on the same DS colour wherever it is and neighbouring pieces stay seamless."""
     op = a[..., 3] > 0
@@ -422,6 +422,8 @@ def ds_pixels(a, cave=False):
     put((hue >= 65) & (hue <= 165) & (sat > 0.25), GRASS, [50, 80, 110, 150, 185])
     put(sat < 0.15, GRAYS[:5] + [SNOW[1], SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
     earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= 0.78)
+    if crumbs:      # Tibia's dark dirt crumbs run redder than its dirt
+        earth = earth | ((hue < 12) & (sat >= 0.25) & (sat <= 0.78) & (L < 100))
     put(earth & (L < 235), DS_EARTH, [45, 60, 100, 140, 228])
     rest = ~done
     if rest.any():
@@ -499,10 +501,11 @@ DS_EARTH = [(152, 120, 96), (176, 152, 104), (208, 192, 136), (216, 200, 136), (
 CAVE = [(56, 36, 28), (84, 56, 40), (112, 76, 52), (140, 100, 68), (168, 128, 88), (196, 160, 112)]
 SNOW = [(168, 184, 216), (200, 216, 236), (224, 234, 246), (240, 246, 252), (252, 254, 255)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
-HUT_ROOF = range(9409, 9416)                     # the far slope of the small huts beside the Pokemon Centers
+HUT_ROOF = range(9408, 9416)                     # the far slope of the small huts beside the Pokemon Centers
 # rims and ridges laid over the flat roof tiles
-ROOF_EDGES = list(range(8621, 8633)) + [1157, 1160, 1162, 1163, 1164, 1165, 1166, 1167, 1170, 1172, 1173, 1174, 1175, 1176]
+ROOF_EDGES = list(range(8621, 8633)) + [8643, 8644] + [1157, 1160, 1162, 1163, 1164, 1165, 1166, 1167, 1170, 1172, 1173, 1174, 1175, 1176]
 ROOF_TILES = {1158, 1159, 1161, 1168, 1169, 1171, 8619, 8620}
+MADE_EDGES = {cid: 7593 for cid in range(7605, 7617)}     # {edge: its ground}, Pewter's brown cobble
 STEPS = [0.12, 0.38, 0.62, 0.85]
 LIFT = [0.6, 0.82, 1.0, 1.14, 1.28]
 
@@ -592,9 +595,10 @@ def recolor_ground(a):
     return out
 
 
-def made_ground(t, rgba):
-    """{sid: art} for town floors with a hand-tuned ramp (dark stone, wood), else None."""
-    lo, hi, mean = tone(t, rgba)
+def made_ground(t, rgba, like=None):
+    """{sid: art} for town floors with a hand-tuned ramp (dark stone, wood), else None;
+    edges pass their ground as like, to be shaded in its exact steps."""
+    lo, hi, mean = tone(like or t, rgba)
     m = lum(mean)
     sat = (mean.max() - mean.min()) / max(mean.max(), 1)
     if m < 60 and sat < 0.35:
@@ -651,6 +655,14 @@ def dirt_like(t, rgba):
     px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
     m = classify(px[None])[0]
     return (m == 'water').mean() < 0.6 and (m == 'green').mean() < 0.6
+
+
+def dark_dirt(t, rgba):
+    """Dark brown earth overall, as Tibia's dirt crumbs and dark dirt edges are."""
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
+    mean = px.mean(0)
+    sat = (mean.max() - mean.min()) / max(mean.max(), 1)
+    return 5 <= hue_of(mean[None])[0] <= 25 and 0.3 <= sat <= 0.75 and lum(mean) < 110
 
 
 def grass_edge(t, rgba):
@@ -725,9 +737,12 @@ def build():
                 art = {sid: paint_ground(rgba(sid)) for sid in free}
             elif kind is True and GROUND in t[0] and not dirt_like(t, rgba):
                 art = {sid: paint_ground(rgba(sid)) for sid in free}
-            elif kind is False and GROUND in t[0] and not cave:
+            elif kind is False and not cave and GROUND in t[0]:
                 art = made_ground(t, rgba)
-            art = art or {sid: ds_pixels(rgba(sid), cave) for sid in free}
+            elif cid in MADE_EDGES:
+                art = made_ground(t, rgba, dat.things[MADE_EDGES[cid]])
+            crumbs = not cave and BORDER in t[0] and dark_dirt(t, rgba)
+            art = art or {sid: ds_pixels(rgba(sid), cave, crumbs) for sid in free}
         new.update({sid: img for sid, img in art.items() if sid in free})
     for cid in ROOF_EDGES:
         for sid in dat.things[cid][8]:
