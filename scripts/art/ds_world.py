@@ -425,7 +425,9 @@ def ds_pixels(a, cave=False, crumbs=False):
     earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= 0.78)
     if crumbs:      # Tibia's dark dirt crumbs run redder than its dirt
         earth = earth | ((hue < 12) & (sat >= 0.25) & (sat <= 0.78) & (L < 100))
-    put(earth & (L < 235), DS_EARTH, [45, 60, 100, 140, 228])
+    put(earth & (L < 235), DS_EARTH, EARTH_CUTS)
+    red_rock = ((hue < 12) | (hue >= 345)) & (sat >= 0.6) & (sat <= 0.92) & (mx < 150) & (L < 60)
+    put(red_rock, OBJECT_RAMPS['crimson'][1:5], [28, 36, 44])
     rest = ~done
     if rest.any():
         v = mx[rest] / 255
@@ -499,7 +501,11 @@ WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192
 GRAYS = [(48, 48, 64), (80, 80, 100), (112, 112, 136), (144, 144, 168), (176, 176, 198), (208, 208, 224),
          (236, 238, 248)]
 # dark steps for dirt, close to Tibia's own brown so paths, crumbs and cave floors agree; light steps for sand
-DS_EARTH = [(80, 52, 32), (112, 76, 44), (144, 100, 60), (176, 136, 88), (232, 220, 168), (244, 236, 196)]
+# dirt gets close steps, so a lighter gravel patch or a darker trampled one keeps its tone instead of
+# merging into the floor around it
+DS_EARTH = [(72, 46, 30), (92, 60, 36), (112, 76, 44), (128, 88, 52), (144, 100, 60), (156, 112, 68),
+            (170, 126, 80), (186, 146, 96), (232, 220, 168), (244, 236, 196)]
+EARTH_CUTS = [36, 46, 56, 63, 70, 80, 95, 140, 228]
 CAVE = [(56, 36, 28), (84, 56, 40), (112, 76, 52), (140, 100, 68), (168, 128, 88), (196, 160, 112)]
 SNOW = [(168, 184, 216), (200, 216, 236), (224, 234, 246), (240, 246, 252), (252, 254, 255)]
 ROCKY = [(72, 56, 48), (116, 96, 82), (144, 124, 102), (168, 148, 120), (192, 174, 144)]    # Pewter's stony ground
