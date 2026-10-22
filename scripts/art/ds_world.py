@@ -864,6 +864,49 @@ def clean_lip(a, mean=104):
     return out
 
 
+SAND = [(150, 110, 52), (190, 148, 72), (220, 180, 96), (236, 204, 120), (246, 224, 152), (252, 240, 188)]
+# Tibia pieces kept in their own drawing, each family on one of our ramps with shared steps so its parts
+# match: {name: (server ids, base ramp, ramps for reddish and greenish pixels)}
+REPAINT = {
+    'dungeon walls': (range(9118, 9130), STONE, {'green': FOLIAGE}),
+    'dirt walls': ([*range(5631, 5639), 5647, *range(5649, 5652)], CAVE, {}),
+    'cave stone walls': ([*range(5639, 5647), 5648], STONE, {}),
+    'brown rocks': ([*range(5747, 5755), *range(5866, 5869)], CAVE, {}),
+    'shingle roofs': ([*range(940, 945), *range(9535, 9542), *range(9088, 9100)], WOODEN, {'red': RED}),
+    'log roofs': ([*range(945, 962), *range(9224, 9233)], WOODEN, {'red': RED}),
+    'dark cobbles': (range(10492, 10499), DIRT, {}),
+    'sandstone': ([419], SAND, {}),
+    'rush wood': ([11096], TRUNK, {}),
+}
+
+
+def repaint(a, mean, ramps, contrast=1.3):
+    """The original drawing pixel for pixel on our ramps: hue picks the ramp, and the step is the one nearest
+    the pixel's brightness, pushed a little away from the family's mean so the grain survives the fewer steps."""
+    op = a[..., 3] > 0
+    rgb = a[..., :3].astype(float)
+    mx = rgb.max(-1)
+    sat = (mx - rgb.min(-1)) / np.maximum(mx, 1)
+    hue = hue_of(rgb)
+    L = mean + (lum(rgb) - mean) * contrast
+    out = a.copy()
+
+    def step(ramp, sel):
+        rl = lum(np.array(ramp, float))
+        return np.array(ramp)[np.abs(L[sel][:, None] - rl[None]).argmin(1)]
+
+    kinds = {'red': (sat > 0.45) & ((hue < 18) | (hue > 340)),
+             'green': (sat > 0.25) & (hue > 70) & (hue < 170)}
+    rest = op.copy()
+    for kind, sel in kinds.items():
+        if kind in ramps:
+            sel = sel & op
+            out[sel, :3] = step(ramps[kind], sel)
+            rest &= ~sel
+    out[rest, :3] = step(ramps['base'], rest)
+    return out
+
+
 def dirt_ground(t, rgba):
     return not grass_ground(t, rgba)
 
@@ -1004,6 +1047,15 @@ def build():
                 sid = sprites[idx] if idx < len(sprites) else 0
                 if pp == p and sid in art and sid not in new and sid not in keep:
                     new[sid] = done[y:y + 32, x:x + 32].copy()
+    otb = pvmap.Otb(h.ITEMS)
+    for ids, base, extra in REPAINT.values():
+        things = [dat.things.get(otb.client_id(i)) for i in ids]
+        sids = {s for t in things if t for s in t[8] if s and s not in keep and rgba(s) is not None}
+        if not sids:
+            continue
+        mean = lum(np.concatenate([rgba(s)[rgba(s)[..., 3] > 0][:, :3] for s in sids]).astype(float)).mean()
+        for s in sids:
+            new[s] = repaint(rgba(s), mean, {'base': base, **extra})
     spr.f.close()
     return new
 
