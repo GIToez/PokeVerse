@@ -398,7 +398,7 @@
 	discordBridgeBoosterCommunityMax = 5
 	-- Server boost perks for everyone online, by the Discord server's boost level (the bot sends
 	-- it; the last level is kept across restarts). Each level keeps the perks below it.
-	discordBridgeBoostPerks = false
+	discordBridgeBoostPerks = true
 	discordBridgeBoostPerkExpPercent = 5 -- level 1 and up: kill experience
 	discordBridgeBoostPerkCatchPercent = 5 -- level 2 and up: catch chance (a multiplier, 40% becomes 42%)
 	discordBridgeBoostPerkShinyPercent = 10 -- level 3: shiny chance (1 in 4,096 becomes about 1 in 3,724)
