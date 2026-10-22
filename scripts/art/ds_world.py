@@ -151,7 +151,7 @@ def water_texture():
 
 
 DARK_GRASS = {106, 108, 109}                 # Tibia's darker grass patches, some with flowers
-JUNGLE_RAMP = [GRASS[1], GRASS[2], GRASS[4], GRASS[5], (176, 232, 136)]
+JUNGLE_RAMP = [(64, 136, 72), (88, 160, 80), (104, 176, 88), (128, 200, 104), (160, 224, 120)]   # a step under the lawn
 JUNGLE_FLOOR = 1019                           # Tibia's leafy jungle grass
 JUNGLE_GRASS = range(1054, 1066)              # its edges where it meets the lawn
 # hedge bushes Tibia cuts into edge pieces, [top left, top right, bottom left, bottom right]; painted whole
@@ -501,7 +501,7 @@ def ds_pixels(a, cave=False, crumbs=False, mud=False):
     put((hue >= 185) & (hue <= 250) & (sat > 0.35) & (L < 150), WATER[1:4], [45, 125])
     put((hue >= 165) & (hue <= 215) & (sat > 0.12) & (L >= 150), [ICE[1], ICE[2], ICE[4]], [160, 228])
     put((hue >= 65) & (hue <= 165) & (sat > 0.25), GRASS, [50, 80, 110, 150, 185])
-    put(sat < 0.15, GRAYS[:5] + [SNOW[1], SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
+    put(sat < 0.15, STONE + [SNOW[2], SNOW[3]], [40, 75, 110, 145, 175, 200, 222])
     earth = (hue >= 12) & (hue <= 50) & (sat >= 0.25) & (sat <= (0.97 if mud else 0.78))
     if crumbs:      # Tibia's dark dirt crumbs run redder than its dirt
         earth = earth | ((hue < 12) & (sat >= 0.25) & (sat <= 0.78) & (L < 100))
@@ -580,8 +580,8 @@ def natural(t, rgba):
 ROAD = [(88, 88, 104), (152, 152, 168), (176, 176, 192), (200, 200, 216), (224, 224, 232)]    # city paving
 COBBLE = [(72, 72, 88), (124, 124, 140), (148, 148, 164), (172, 172, 186), (198, 198, 210)]
 WOODEN = [(80, 44, 28), (132, 84, 48), (172, 118, 70), (206, 154, 96), (232, 192, 132)]  # logs and planks
-GRAYS = [(48, 48, 64), (80, 80, 100), (112, 112, 136), (144, 144, 168), (176, 176, 198), (208, 208, 224),
-         (236, 238, 248)]
+# grey ground and edges on the rocks' own ramp, so stone floors, ledges and the rocks on them match
+STONE = [(48, 56, 64)] + ROCK[:5]
 # dark steps for dirt, close to Tibia's own brown so paths, crumbs and cave floors agree; light steps for sand
 # dirt gets close steps, so a lighter gravel patch or a darker trampled one keeps its tone instead of
 # merging into the floor around it
@@ -761,6 +761,42 @@ def grass_edge(t, rgba):
     return (classify(px[None])[0] == 'green').mean() >= 0.15
 
 
+def stone_edge(t, rgba):
+    """Grey stone edges, a ledge laid over grass or dirt."""
+    px = np.concatenate([p[p[..., 3] > 0][:, :3] for p in (rgba(s) for s in t[8] if s) if p is not None]).astype(float)
+    mx = px.max(-1)
+    return ((mx - px.min(-1)) / np.maximum(mx, 1) < 0.15).mean() > 0.7
+
+
+def clean_lip(a):
+    """Tibia's ragged stone edge as one smooth ledge: the loose pixels go, the gaps take the stone beside
+    them, the gravel takes the rocks' darker steps, and the lip gets their dark rim, lit along its top and left."""
+    op = a[..., 3] > 0
+    if op.all():
+        return ds_pixels(a)
+    img = a.copy()
+    L = lum(box_blur(a[..., :3].astype(float), False, 1))
+    img[op, :3] = np.array(STONE[1:5])[np.searchsorted([80, 115, 150], L[op])]
+    img = despeckle_px(img, op, False)
+    lip = drop_specks(blurf(op.astype(float), 1.0, pad=4) > 0.5, 12)
+    out = img.copy()
+    for _ in range(3):
+        gap = lip & ~(out[..., 3] > 0)
+        if not gap.any():
+            break
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            src = np.roll(out, (dy, dx), (0, 1))
+            take = gap & (src[..., 3] > 0) & ~(out[..., 3] > 0)
+            out[take] = src[take]
+    out[~lip] = 0
+    rim = lip & ~(shift(lip, 1, 0, True) & shift(lip, -1, 0, True) & shift(lip, 0, 1, True) & shift(lip, 0, -1, True))
+    lit = lip & ~rim & (shift(rim & ~shift(lip, 1, 0, True), 1, 0) | shift(rim & ~shift(lip, 0, 1, True), 0, 1))
+    out[lit, :3] = STONE[4]
+    out[rim, :3] = STONE[0]
+    out[lip, 3] = 255
+    return out
+
+
 def dirt_ground(t, rgba):
     return not grass_ground(t, rgba)
 
@@ -848,6 +884,8 @@ def build():
             elif cid in MADE_EDGES:
                 art = made_ground(t, rgba, dat.things[MADE_EDGES[cid]])
             crumbs = not cave and BORDER in t[0] and dark_dirt(t, rgba)
+            if not art and BORDER in t[0] and not cave and stone_edge(t, rgba):
+                art = {sid: clean_lip(rgba(sid)) for sid in free}
             art = art or {sid: ds_pixels(rgba(sid), cave, crumbs) for sid in free}
         new.update({sid: img for sid, img in art.items() if sid in free})
     for cid in ROOF_EDGES:
