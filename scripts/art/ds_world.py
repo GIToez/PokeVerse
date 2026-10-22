@@ -810,27 +810,28 @@ def _morph(m, r, grow):
     return out
 
 
-LIP_FADE = (96, 56, 24)
+LIP_FADE = ((64, 0.45), (36, 0.2), (14, 0.0))   # shade alpha, share of loose gravel, per pixel out from the lip
 _y, _x = np.mgrid[0:32, 0:32]
-CHIPS = np.random.default_rng(7).integers(0, 4, (11, 11))[_y // 3, _x // 3]   # 3px chips, 0-3px deep
+CHIPS = np.minimum(np.random.default_rng(11).integers(0, 4, (16, 16)), 2)[_y // 2, _x // 2]   # 2px notches, mostly shallow
+SCATTER = np.random.default_rng(5).random((32, 32))
 
 
 def chip(m):
-    """Bite rocky notches out of the lip's outline. Erosion treats the tile border as solid, so edges
+    """Bite shallow notches out of the lip's outline. Erosion treats the tile border as solid, so edges
     that run on into the next tile keep meeting it."""
     depth = np.zeros(m.shape, int)
     cur = m
-    for k in range(1, 5):
+    for k in range(1, 4):
         depth[cur] = k
         cur = _morph(cur, 1, False)
-    depth[cur] = 5
-    return drop_specks(m & ~(depth <= CHIPS), 6)
+    depth[cur] = 4
+    return drop_specks(m & ~(depth <= CHIPS), 4)
 
 
 def clean_lip(a, mean=104):
-    """Tibia's ragged stone edge as one chipped rocky ledge: the loose pixels go, the gaps take
-    the stone beside them, the gravel takes the rocks' darker steps, the lip gets their dark rim, lit along its
-    top and left, and a see-through shade fades from the rim into the ground below."""
+    """Tibia's ragged stone edge as a soft, slightly chipped ledge: the loose pixels go, the gaps take the
+    stone beside them, the gravel takes the rocks' darker steps, the lip gets a soft rim lit along its top and
+    left, and a see-through shade with loose gravel in it fades from the rim into the ground below."""
     op = a[..., 3] > 0
     if op.all():
         return ds_pixels(a)
@@ -845,16 +846,20 @@ def clean_lip(a, mean=104):
             src = np.roll(out, (dy, dx), (0, 1))
             take = gap & (src[..., 3] > 0) & ~(out[..., 3] > 0)
             out[take] = src[take]
+    full = out.copy()
     out[~lip] = 0
     rim = lip & ~(shift(lip, 1, 0, True) & shift(lip, -1, 0, True) & shift(lip, 0, 1, True) & shift(lip, 0, -1, True))
     lit = lip & ~rim & (shift(rim & ~shift(lip, 1, 0, True), 1, 0) | shift(rim & ~shift(lip, 0, 1, True), 0, 1))
     out[lit, :3] = STONE[4]
-    out[rim, :3] = STONE[0]
+    out[rim, :3] = STONE[1]
     out[lip, 3] = 255
     near = lip
-    for al in LIP_FADE:
+    for al, share in LIP_FADE:
         ring = _morph(near, 1, True) & ~near
         out[ring] = (24, 32, 40, al)
+        loose = ring & (SCATTER < share) & (full[..., 3] > 0)
+        out[loose, :3] = STONE[2]
+        out[loose, 3] = 255
         near = near | ring
     return out
 
