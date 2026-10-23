@@ -705,6 +705,9 @@ local function testAdmin(cid)
         check("admin: staff get the four events", state and state.type == "state" and #(state.events or {}) == 4)
         check("admin: God gets the world settings", state.world and #(state.world.kinds or {}) == 9
             and #(state.world.legendaries or {}) > 0 and #(state.world.holidays or {}) > 0)
+        check("admin: the Legendaries section gets the species, the sets and the mode", state.world.legendary and
+            #(state.world.legendary.species or {}) == 21 and #(state.world.legendary.sets or {}) == 4 and
+            type(state.world.legendary.manual) == "boolean")
         ask({ action = "start", event = "shiny", multiplier = 7, minutes = 30 })
         check("admin: odd multipliers are refused", not ShinyEvent.get() and sent[1] and sent[1].ok == false)
         ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })
@@ -2373,41 +2376,52 @@ local function testLegendaries(cid, friend, arena)
     for name, key in pairs(KEY) do
         saved[key] = getStorage(key)
     end
-    for _, a in ipairs(W.getActive()) do
-        if (isMonster(a.cid)) then
-            W.finish(a.cid, "restart")
-        end
-    end
-    W.clearCooldowns()
-
-    local bad, total = {}, 0
-    local function scan(points, label)
-        local good = 0
-        for _, p in ipairs(points) do
-            total = total + 1
-            if (W.isGoodPoint({ x = p[1], y = p[2], z = p[3] })) then
-                good = good + 1
-            elseif (#bad < 5) then
-                bad[#bad + 1] = string.format("%s %d,%d,%d", label, p[1], p[2], p[3])
+    local function clearOut(keep)
+        for _, a in ipairs(W.getActive()) do
+            if (isMonster(a.cid) and a.cid ~= keep) then
+                W.finish(a.cid, "restart")
             end
         end
-        return good
     end
-    local roamGood = scan(LEGENDARY_ANCHORS.ROAM, "roam")
-    check("Legendary: at least 95% of the Kanto points are good ground", roamGood >= #LEGENDARY_ANCHORS.ROAM * 0.95,
-        roamGood .. "/" .. #LEGENDARY_ANCHORS.ROAM .. " " .. table.concat(bad, "; "))
-    local homesOk, homeDetail = true, {}
-    for _, species in ipairs(W.SPECIES) do
-        local points = LEGENDARY_ANCHORS.HOMES[species.home]
-        local good = points and scan(points, species.home) or 0
-        if (good < 3) then
-            homesOk = false
-            homeDetail[#homeDetail + 1] = species.name .. " " .. good
+    clearOut()
+    doSetStorage(KEY.PENDING, "m")
+    doSetStorage(KEY.MODE, "auto")
+    W.clearCooldowns()
+
+    local points = W.getPoints()
+    local good, bad, regions = 0, {}, {}
+    for _, p in ipairs(points) do
+        regions[p.region or "?"] = (regions[p.region or "?"] or 0) + 1
+        if (W.isGoodPoint(p)) then
+            good = good + 1
+        elseif (#bad < 5) then
+            bad[#bad + 1] = string.format("%d,%d,%d %s", p.x, p.y, p.z, p.area)
         end
     end
-    check("Legendary: every species has a home area with good points", homesOk, table.concat(homeDetail, ", "))
-    check("Legendary: 21 species, 11 tier 1", #W.SPECIES == 21 and #(function()
-        local t = {} for _, s in ipairs(W.SPECIES) do if (s.tier == 1) then t[#t + 1] = s end end return t end)() == 11)
+    check("Legendary: at least 90% of the points are good ground", good >= #points * 0.9,
+        good .. "/" .. #points .. " " .. table.concat(bad, "; "))
+    check("Legendary: points in all four regions", (regions.kanto or 0) > 500 and (regions.johto or 0) > 500 and
+        (regions.orange or 0) > 500 and (regions.hoenn or 0) > 500, JSON.encode(regions))
+    local thin, tiers = {}, { 0, 0, 0 }
+    for _, s in ipairs(W.SPECIES) do
+        tiers[s.tier] = tiers[s.tier] + 1
+        local habitat = W.getHabitat(s)
+        if (#habitat.all < 10 or (s.homes and #habitat.home == 0)) then
+            thin[#thin + 1] = s.name .. " " .. #habitat.all .. "/" .. #habitat.home
+        end
+        local seen = {}
+        for _, entry in ipairs(habitat.all) do
+            seen[entry.point.region] = true
+        end
+        for _, region in ipairs(s.regions) do
+            if (not seen[region]) then
+                thin[#thin + 1] = s.name .. " none in " .. region
+            end
+        end
+    end
+    check("Legendary: every species has a habitat in each of its regions, with its homes", #thin == 0, table.concat(thin, ", "))
+    check("Legendary: 21 species, 11 legendaries, 6 major, 4 mythicals", #W.SPECIES == 21 and tiers[1] == 11 and
+        tiers[2] == 6 and tiers[3] == 4, table.concat(tiers, "/"))
 
     check("Legendary: population rows", W.getPopulation(0).gap[1] == 16 * 3600 and W.getPopulation(3).gap[2] == 8 * 3600 and
         W.getPopulation(20).cooldown[1] == 24 * 3600 and W.getPopulation(60).gap[1] == 2 * 3600)
@@ -2423,7 +2437,8 @@ local function testLegendaries(cid, friend, arena)
     for i = 1, 4000 do
         if (W.pickSpecies(W.SPECIES).tier == 1) then tier1 = tier1 + 1 end
     end
-    check("Legendary: tier 1 is three times as likely", tier1 / 4000 > 0.73 and tier1 / 4000 < 0.80, tier1 / 4000)
+    check("Legendary: legendaries 6, major 2, mythicals 1", tier1 / 4000 > 0.77 and tier1 / 4000 < 0.84, tier1 / 4000)
+    check("Legendary: mythicals cool down longest", W.cooldownFor(W.getSpecies("Mew")) > W.cooldownFor(W.getSpecies("Lugia")))
 
     local broadcasts, cards, events = {}, {}, {}
     local broadcast, opcode, otc, emit = doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient, DiscordBridge.emitLegendary
@@ -2435,16 +2450,18 @@ local function testLegendaries(cid, friend, arena)
     end
     getPlayerUsingOtClient = function() return true end
     DiscordBridge.emitLegendary = function(event) events[#events + 1] = event end
-    local spawned = {}
+    local function last() return broadcasts[#broadcasts] or "" end
+    local arenaMewtwo
+    local weatherSaved = Weather.readOverrides()
     local ok, err = pcall(function()
         local articuno = W.getSpecies("articuno")
         local mewtwo = W.getSpecies("Mewtwo")
         local a = W.spawn(articuno, nil, nil, "test")
-        spawned[#spawned + 1] = a
-        check("Legendary: spawns on a Kanto point", isMonster(a) and W.isEncounter(a), a)
+        local region = isMonster(a) and Weather.regionAt(getCreaturePosition(a)).id
+        check("Legendary: spawns in its habitat", isMonster(a) and W.isEncounter(a) and
+            (region == "kanto" or region == "orange" or region == "johto"), region)
         check("Legendary: spawn broadcast with the recommended level",
-            (broadcasts[#broadcasts] or ""):find("A wild Articuno has appeared near .+ Recommended for trainers level 50%+") ~= nil,
-            broadcasts[#broadcasts])
+            last():find("A wild Articuno has appeared near .+ Recommended for trainers level 50%+") ~= nil, last())
         check("Legendary: spawn card and Discord event", cards[#cards] and cards[#cards].type == "spawn" and
             cards[#cards].species == "Articuno" and events[#events] and events[#events].event == "spawn" and
             events[#events].encounterId == getCreatureStorage(a, MON.ENCOUNTER))
@@ -2455,29 +2472,167 @@ local function testLegendaries(cid, friend, arena)
         if (isMonster(plain)) then doRemoveCreature(plain) end
         local again, why = W.spawn(articuno)
         check("Legendary: never two of the same species", not again and why ~= nil)
-
         local list = W.eligible()
         local hasArticuno = false
         for _, s in ipairs(list) do hasArticuno = hasArticuno or s.name == "Articuno" end
         check("Legendary: the one out is not eligible", #list == 20 and not hasArticuno, #list)
+
+        -- one mythical at a time, whoever starts it
+        local celebi = W.spawn(W.getSpecies("Celebi"), nil, nil, "test")
+        check("Legendary: a mythical's announcement names no area", isMonster(celebi) and not last():find(" near "), last())
+        local jirachi, why2 = W.spawn(W.getSpecies("Jirachi"), nil, nil, "staff")
+        check("Legendary: never two mythicals", not jirachi and tostring(why2):find("mythical") ~= nil, why2)
+        if (isMonster(celebi)) then W.finish(celebi, "staff") end
+
+        -- Mewtwo's warning, then Mewtwo where it was felt
+        local warned, warnArea = W.warn(mewtwo, "test")
+        check("Legendary: Mewtwo's warning comes first", warned and W.getPending()["Mewtwo"] ~= nil and
+            last():find("psychic disturbance") ~= nil and not W.find("Mewtwo"), last())
+        local mewtwoEligible = false
+        for _, s in ipairs(W.eligible()) do mewtwoEligible = mewtwoEligible or s.name == "Mewtwo" end
+        check("Legendary: a warned Mewtwo is not eligible", not mewtwoEligible)
+        local pending = W.getPending()["Mewtwo"]
+        doSetStorage(KEY.PENDING, string.format("m;Mewtwo=%d:%d:test", os.time() - 1, pending and pending.point or 1))
+        W.runPending(os.time())
+        local wm = W.find("Mewtwo")
+        check("Legendary: after the warning Mewtwo appears there", wm and not W.getPending()["Mewtwo"] and
+            getCreatureStorage(wm, MON.AREA) == warnArea, wm and tostring(getCreatureStorage(wm, MON.AREA)) .. " vs " .. tostring(warnArea))
+        if (wm) then W.finish(wm, "staff") end
+        W.warn(mewtwo, "test")
         -- north of the arena: the Catcher throws, running at the same time, use the tiles east and south
-        local m = W.spawn(mewtwo, { x = arena.x, y = arena.y - 1, z = arena.z }, "the test arena", "test")
-        spawned[#spawned + 1] = m
-        check("Legendary: a second one can come", isMonster(m))
+        arenaMewtwo = W.spawn(mewtwo, { x = arena.x, y = arena.y - 1, z = arena.z }, "the test arena", "test")
+        check("Legendary: a staff spawn replaces the warning", isMonster(arenaMewtwo) and not W.getPending()["Mewtwo"])
         check("Legendary: at most two alive", #W.eligible() == 0 and W.blocked(os.time()) ~= nil)
         W.finish(a, "staff")
-        local tier2 = false
-        for _, s in ipairs(W.eligible()) do tier2 = tier2 or s.tier == 2 end
-        check("Legendary: never two tier 2", not tier2 and #W.eligible() > 0)
         check("Legendary: sent away by staff, no cooldown", not isMonster(a) and not W.getCooldowns()["Articuno"] and
-            (broadcasts[#broadcasts] or ""):find("flew away") ~= nil)
-        ServerRestart.getScheduled = function() return os.time() + 3600, 1 end
-        check("Legendary: no spawns in the 2 hours before a restart", (W.blocked(os.time()) or ""):find("restart") ~= nil)
-        ServerRestart.getScheduled = getScheduled
+            last():find("flew away") ~= nil, last())
 
-        -- roaming, flee, heal and time up on a fresh Articuno
+        -- sets
+        local birds = W.spawnSet(W.getSet("birds"), "test")
+        check("Legendary: the birds come together, one announcement", #birds == 3 and
+            last():find("The legendary birds have appeared together") ~= nil, last())
+        local members, major = 0, false
+        for _, e in ipairs(W.getActive()) do if (e.flags:find("s")) then members = members + 1 end end
+        for _, s in ipairs(W.eligible()) do major = major or s.tier == 2 end
+        check("Legendary: a set doesn't count against the limit", members == 3 and #W.eligible() > 0, #W.eligible())
+        check("Legendary: never two major ones on the schedule", not major)
+        check("Legendary: a set member already out is skipped", #W.spawnSet(W.getSet("birds"), "test") == 0)
+        for _, b in ipairs(birds) do W.finish(b, "staff") end
+
+        local chance = W.CONFIG.setChance
+        W.CONFIG.setChance = 100
+        W.setCooldown("Entei", os.time() + 3600)
+        W.scheduledSpawn(W.getSpecies("Raikou"), "test")
+        W.CONFIG.setChance = chance
+        local raikou, entei, suicune = W.find("Raikou"), W.find("Entei"), W.find("Suicune")
+        check("Legendary: the set roll brings the whole set, the one on cooldown too", raikou and entei and suicune)
+        if (raikou) then
+            local zone = getCreatureStorage(raikou, MON.ZONE)
+            doCreatureSetStorage(raikou, MON.NEXT_MOVE, os.time() - 1)
+            doCreatureSetStorage(raikou, MON.LAST_HIT, 0)
+            W.upkeep(raikou, os.time())
+            local newZone = getCreatureStorage(raikou, MON.ZONE)
+            local allowed = { [zone] = true }
+            for _, z in ipairs(LEGENDARY_ANCHORS.NEIGHBORS[zone] or {}) do allowed[z] = true end
+            check("Legendary: a roamer walks to its zone or the next one", allowed[newZone] and #W.trailOf(raikou) == 1,
+                tostring(zone) .. " -> " .. tostring(newZone))
+
+            local me = getCreaturePosition(cid)
+            doTeleportThing(raikou, { x = me.x + 3, y = me.y + 3, z = me.z }, false)
+            local hint = {}
+            for rank = 1, 5 do
+                hint[rank] = table.concat(W.radarHints(cid, rank), " ")
+            end
+            check("Legendary radar: rank 1 feels something powerful, no name", hint[1]:find("Something powerful") ~= nil and
+                not hint[1]:find("Raikou"), hint[1])
+            check("Legendary radar: rank 2 names it from its signs", hint[2]:find("Raikou is stirring around") ~= nil, hint[2])
+            check("Legendary radar: rank 3 the zones it may run to", hint[3]:find("may run to") ~= nil or
+                hint[3]:find("stays on this island") ~= nil, hint[3])
+            check("Legendary radar: rank 4 the direction and how fresh", hint[4]:find("south%-east of here, signs") ~= nil, hint[4])
+            check("Legendary radar: rank 5 where it came from or is heading", hint[5]:find("heading for") ~= nil or
+                hint[5]:find("came by") ~= nil, hint[5])
+            check("Legendary radar: never the spot", not hint[5]:find("%d+, %d+"), hint[5])
+        end
+        if (entei) then
+            W.finish(entei, "fled")
+            local cd = W.getCooldowns()["Entei"]
+            check("Legendary: a set member's cooldown is set again when it leaves", cd and
+                math.abs(cd - os.time() - W.cooldownFor(W.getSpecies("Entei"))) <= 2)
+        end
+        clearOut(arenaMewtwo)
+
+        -- the Regis sleep until found
+        local regirock = W.spawn(W.getSpecies("Regirock"), nil, nil, "test")
+        check("Legendary: a Regi comes asleep", W.isAsleep(regirock) and last():find("is sleeping somewhere near") ~= nil, last())
+        local blocked = W.onHit(regirock, 100, cid)
+        check("Legendary: the first hit wakes it instead of hurting it", blocked == false and
+            getCreatureStorage(regirock, MON.WAKE_PENDING) == 1)
+        W.upkeep(regirock, os.time())
+        check("Legendary: awake, it stays an hour", isMonster(regirock) and not W.isAsleep(regirock) and
+            math.abs(getCreatureStorage(regirock, MON.ENDS_AT) - os.time() - W.CONFIG.wakeLifetime) <= 2 and
+            last():find(getCreatureName(cid) .. " woke Regirock up", 1, true) ~= nil, last())
+        check("Legendary: awake, hits count", W.onHit(regirock, 1, cid) ~= false)
+        if (isMonster(regirock)) then W.finish(regirock, "staff") end
+
+        -- Mew in disguise
+        local mew = W.spawn(W.getSpecies("Mew"), nil, nil, "test")
+        local encounter = isMonster(mew) and getCreatureStorage(mew, MON.ENCOUNTER)
+        check("Legendary: Mew comes disguised as a local Pokemon", isMonster(mew) and W.isDisguised(mew) and
+            getCreatureName(mew) ~= "Mew" and W.find("Mew") == mew, isMonster(mew) and getCreatureName(mew))
+        check("Legendary: the announcement doesn't say where", not last():find(" near "), last())
+        check("Legendary: the disguise is hidden from the status",
+            not (" " .. table.concat(W.describe(false), " ") .. " "):find("[^%w]Mew[^%w]"), table.concat(W.describe(false), " "))
+        check("Legendary: hitting the disguise reveals it", isMonster(mew) and W.onHit(mew, 50, cid) == false)
+        W.upkeep(mew, os.time())
+        local real = W.find("Mew")
+        check("Legendary: Mew shows its true self, same encounter", real and getCreatureName(real) == "Mew" and
+            not isMonster(mew) and getCreatureStorage(real, MON.ENCOUNTER) == encounter and
+            last():find("found Mew hiding as a wild") ~= nil, last())
+        if (real) then W.finish(real, "staff") end
+        local hidden = W.spawn(W.getSpecies("Mew"), nil, nil, "test")
+        check("Legendary: a Ranger's radar asks for the reveal", hidden and W.requestReveal(hidden, "A Ranger") and
+            getCreatureStorage(hidden, MON.REVEAL_PENDING) == 1)
+        if (hidden and isMonster(hidden)) then W.finish(hidden, "staff") end
+
+        -- Kyogre's rain (staff weather wins, so clear the test's clear skies first)
+        Weather.writeOverrides("m")
+        local kyogre = W.spawn(W.getSpecies("Kyogre"), nil, nil, "test")
+        local home = isMonster(kyogre) and W.weatherZone(getCreatureStorage(kyogre, MON.HOME_ZONE))
+        local rain = home and Weather.getOverrides()[home.id]
+        check("Legendary: Kyogre brings rain to its zone", rain and rain.kind == "rain", home and home.name)
+        if (isMonster(kyogre)) then
+            doCreatureSetStorage(kyogre, MON.NEXT_MOVE, os.time() - 1)
+            W.upkeep(kyogre, os.time())
+            check("Legendary: a territory one stays in its zone", home and getCreatureStorage(kyogre, MON.ZONE) == home.name,
+                tostring(getCreatureStorage(kyogre, MON.ZONE)))
+            W.finish(kyogre, "staff")
+        end
+        check("Legendary: the rain stops when it leaves", home and not Weather.getOverrides()[home.id])
+        Weather.writeOverrides(weatherSaved)
+
+        -- through a restart: back where it was, with its health and time left
         a = W.spawn(articuno, nil, nil, "test")
-        spawned[#spawned + 1] = a
+        local articunoEncounter = getCreatureStorage(a, MON.ENCOUNTER)
+        doCreatureAddHealth(a, -math.floor(getCreatureMaxHealth(a) / 2))
+        local where, left = getCreaturePosition(a), getCreatureStorage(a, MON.ENDS_AT) - os.time()
+        local mewtwoWhere = getCreaturePosition(arenaMewtwo)
+        W.save()
+        check("Legendary: the ones out are saved", tostring(getStorage(KEY.SAVED)):find(articunoEncounter .. "=" ..
+            articuno.index .. "|50|", 1, true) ~= nil, getStorage(KEY.SAVED))
+        local said = #broadcasts
+        doRemoveCreature(a)
+        doRemoveCreature(arenaMewtwo)
+        local back = W.restore()
+        a, arenaMewtwo = W.find("Articuno"), W.find("Mewtwo")
+        check("Legendary: after a restart it is back with its health and time", a and back[articunoEncounter] and
+            getCreatureStorage(a, MON.ENCOUNTER) == articunoEncounter and math.abs(W.healthPercent(a) - 50) <= 1 and
+            getSamePosition(getCreaturePosition(a), where) and
+            math.abs(getCreatureStorage(a, MON.ENDS_AT) - os.time() - left) <= 60,
+            a and (W.healthPercent(a) .. "% " .. (getCreatureStorage(a, MON.ENDS_AT) - os.time()) .. "s"))
+        check("Legendary: restored quietly", #broadcasts == said and arenaMewtwo and
+            getSamePosition(getCreaturePosition(arenaMewtwo), mewtwoWhere))
+
+        -- flying, flee, heal and time up on Articuno
         local t = os.time()
         local from = getCreaturePosition(a)
         doCreatureSetStorage(a, MON.NEXT_MOVE, t - 1)
@@ -2489,19 +2644,21 @@ local function testLegendaries(cid, friend, arena)
         doCreatureSetStorage(a, MON.LAST_HIT, 0)
         from = getCreaturePosition(a)
         W.upkeep(a, t)
-        check("Legendary: roams to another point", not getSamePosition(from, getCreaturePosition(a)) and
-            getCreatureStorage(a, MON.NEXT_MOVE) >= t + 240 and events[#events].event == "sighting",
+        check("Legendary: flies on far", not getSamePosition(from, getCreaturePosition(a)) and
+            getCreatureStorage(a, MON.NEXT_MOVE) >= t + 240 and events[#events].event == "sighting" and
+            getDistanceBetween(from, getCreaturePosition(a)) >= 30,
             events[#events] and events[#events].event)
 
         local max = getCreatureMaxHealth(a)
         local hit = getCreatureHealth(a) - math.floor(max * 0.45)
         W.onHit(a, hit)
         doCreatureAddHealth(a, -hit)
+        local hurt = getCreatureHealth(a)
         check("Legendary: flees at 50% health", getCreatureStorage(a, MON.FLEE_PENDING) == 1 and getCreatureStorage(a, MON.FLEE_STAGE) == 1)
         from = getCreaturePosition(a)
         W.upkeep(a, t)
         check("Legendary: the flee moves it and keeps its health", not getSamePosition(from, getCreaturePosition(a)) and
-            getCreatureHealth(a) == max - hit and (broadcasts[#broadcasts] or ""):find("fled") ~= nil, broadcasts[#broadcasts])
+            getCreatureHealth(a) == hurt and last():find("fled") ~= nil, last())
         W.onHit(a, 1)
         check("Legendary: tier 1 flees only once", getCreatureStorage(a, MON.FLEE_PENDING) == 0)
 
@@ -2525,18 +2682,37 @@ local function testLegendaries(cid, friend, arena)
         check("Legendary: Articuno is not eligible on cooldown", (function()
             for _, s in ipairs(W.eligible()) do if (s.name == "Articuno") then return false end end return true end)())
 
+        W.setManual(true)
+        check("Legendary: manual mode stops the schedule", (W.blocked(os.time()) or ""):find("manual") ~= nil)
+        W.setManual(false)
+        ServerRestart.getScheduled = function() return os.time() + 300, 1 end
+        check("Legendary: no spawns in the 10 minutes before a restart", (W.blocked(os.time()) or ""):find("restart") ~= nil)
+        ServerRestart.getScheduled = getScheduled
+
+        local count = #broadcasts
+        W.onCatch(cid, "Lugia")
+        W.onCatch(cid, "Shiny Raikou")
+        W.onCatch(cid, "Pidgey")
+        check("Legendary: every legendary catch is announced", #broadcasts == count + 2 and
+            (broadcasts[count + 1] or ""):find("caught a Lugia") ~= nil and (broadcasts[count + 2] or ""):find("caught a shiny Raikou") ~= nil,
+            table.concat(broadcasts, " | ", count + 1))
+        W.onReward(cid, "Celebi")
+        check("Legendary: a quest reward is announced", last():find("received Celebi") ~= nil, last())
+
         local cardTypes = {}
         for _, c in ipairs(cards) do cardTypes[c.type] = true end
         check("Legendary: cards for spawn, sighting, flee and end", cardTypes.spawn and cardTypes.flee and cardTypes["end"])
     end)
     doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient = broadcast, opcode, otc
     DiscordBridge.emitLegendary, ServerRestart.getScheduled = emit, getScheduled
+    Weather.writeOverrides(weatherSaved)
+    clearOut(arenaMewtwo)
     if (not ok) then
         check("Legendary: ran without errors", false, err)
     end
 
     -- A real defeat: the tester does almost all the damage, the friend 3%
-    local m = spawned[2]
+    local m = arenaMewtwo
     if (isMonster(m)) then
         local candies, money = getPlayerItemCount(cid, W.CONFIG.rareCandyId), getPlayerMoney(cid)
         local friendMoney = isPlayer(friend) and getPlayerMoney(friend) or 0
