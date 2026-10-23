@@ -142,11 +142,13 @@ local function update()
             local inside = right > area.x and right - size < area.x + area.width and bottom > area.y and
                 bottom - size - LIFT * th < area.y + area.height
             if data.kind == 'dive' then
-                -- the shape covers the tiles up and left of its own; it shows only with sea under all of them
+                -- the shape covers the tiles up and left of its own; it shows only with sea under them,
+                -- leaving out the outer quarter of a big shape, which is mostly its wing tips
                 local tiles = math.max(1, math.ceil(size / tw - 0.25))
+                local edge = math.floor(tiles / 4)
                 local show = inside
-                for ty = 0, tiles - 1 do
-                    for tx = 0, tiles - 1 do
+                for ty = edge, tiles - 1 - edge do
+                    for tx = edge, tiles - 1 - edge do
                         show = show and isWater(x - tx, y - ty, camera.z)
                     end
                 end
@@ -195,7 +197,7 @@ local function startFlight(data)
         flight.sprite = newCreature(data.look)
     end
     local creature = flight.shadow:getCreature()
-    flight.size = math.max(64, math.min(96, creature and creature:getExactSize() or 64))
+    flight.size = math.max(64, math.min(192, creature and creature:getExactSize() or 64))
     flight.shadow:hide()
     if flight.sprite then
         flight.sprite:hide()

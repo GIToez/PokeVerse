@@ -2510,6 +2510,9 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 - **Latias and Latios art:** their looks (1559 and 1560) had no sprites, so a wild one and its
   fly-overs drew nothing. They are now the sprite pack's 96 pixel sheets (`outfit_4344_` and
   `outfit_4342_`, put in by `scripts/dat-set-outfit.py`).
+- **Bigger Lugia:** look 1075 is a 192 pixel sheet (6 by 6 tiles: standing, then 4 flying
+  frames), about twice the old one. Fly-overs and dives draw up to 192 pixels; a dive shows
+  while the sea is under the middle of its shape (not its wing tips).
 - **Bigger effects:** Latias and Latios are drawn at least 64 pixels in a flight and fly 7
   tiles a second instead of 9, so they stay on screen longer. Mewtwo's
   warning bursts every 4 seconds instead of 15, 4 to 10 effects within 5 tiles growing as it
