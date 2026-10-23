@@ -2114,12 +2114,24 @@ Gen 5 for the status heal), and Sun and Moon's jingles, converted to `.ogg` in
 | `evolution_start` | an evolution starts |
 | `pokecenter_heal` | the Pokémon Center heals the team |
 | `item_get`, `key_item_get`, `berry_get`, `egg_get`, `tm_get`, `mega_stone` | an item, key item, berry, egg, TM or Mega Stone is received |
+| `ball_throw`, `ball_absorb`, `ball_drop`, `ball_shake`, `ball_open` | a catch: the throw, the Pokémon pulled in, the ball landing, each wobble, a break-out |
+| `shiny` | a shiny appears |
+| `exp_full` | the experience bar fills |
+| `menu_open`, `menu_select`, `menu_choose`, `menu_error` | menus: open, move, confirm, refused |
+| `nav_open`, `nav_close`, `dex_select` | the Pokédex and other big windows |
+| `pc_open`, `pc_access`, `pc_close` | the PC |
+| `save` | the game saves |
+| `door_enter`, `door_exit`, `bump`, `ledge_jump` | walking: doors, walking into a wall, a ledge hop |
 
-They play on a Battle effects slider, next to Moves.
+| `evolution_done`, `badge_get` | an evolution finishes, a Gym badge is won |
+| `quest_complete`, `quest_failed` | a quest or task is done or failed |
 
-Still to find: the Poké Ball throw, the wobble, the catch click, the break-out, evolution done,
-the shiny sparkle and menu sounds (open, close, select, error). The pack's README points to
-[The Sounds Resource](https://www.sounds-resource.com/3ds/pokemonsunmoon/) for these.
+The ball, shiny, menu, PC and walking sounds are from Pokémon Essentials' audio (DS era); the
+last four jingles are Black and White's. The Black and White and Black 2 and White 2 sound
+effect packs (The Sounds Resource, in the owner's Drive) have the rest of those games' battle,
+menu and field sounds, under numbered names.
+The battle sounds play on a Battle effects slider, next to Moves; the menu, PC and save sounds
+on Interface.
 
 ## 21. Staff groups
 
