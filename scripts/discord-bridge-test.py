@@ -432,8 +432,10 @@ def boost_tests(b, args):
         return b.request("boost.level", {"level": n, "boosts": boosts})
 
     def perks():
-        m = re.search(r"bridgetest perks (\{.*?\})(?:\x00|$|[^\x20-\x7e])", trainer.command("/bridgetest perks", 3))
-        return json.loads(m.group(1)) if m else {}
+        # the reply sits in raw packet bytes, so read one JSON object and ignore whatever follows it
+        text = trainer.command("/bridgetest perks", 3)
+        start = text.find("bridgetest perks {")
+        return json.JSONDecoder().raw_decode(text, start + len("bridgetest perks "))[0] if start >= 0 else {}
 
     def kill_exp():
         m = re.search(r"bridgetest killexp (\d+)", trainer.command("/bridgetest killexp Rattata", 2.5))
