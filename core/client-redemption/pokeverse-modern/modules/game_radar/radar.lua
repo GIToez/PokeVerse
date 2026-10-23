@@ -21,6 +21,8 @@ local PRINT_MS = 90000 -- how long a footprint of the tracked Pokemon stays
 local PRINT_FADE_MS = 30000 -- the end of that, when it fades out
 local PRINT_TICK_MS = 30 -- prints follow the map smoothly while the trainer walks
 local MAX_PRINTS = 40
+local PRINT_SIZE = 0.6 -- of a tile, so the Pokemon and the ground still show around it
+local PRINT_OPACITY = 0.85
 local PRINT_ROTATION = { north = 0, east = 90, south = 180, west = 270 }
 
 local KIND_NAMES = { common = 'Common', uncommon = 'Uncommon', rare = 'Rare', shiny = 'Shiny',
@@ -233,16 +235,22 @@ local function updatePrints()
     end
     local camera = mapPanel:getCameraPosition()
     local area = mapPanel:getRect()
+    -- no print drawn over the Pokemon itself
+    local creature = printsId and g_map.getCreatureById(printsId)
+    local under = creature and creature:getPosition()
     for _, p in ipairs(prints) do
         local rect = camera and p.z == camera.z and mapPanel:getTileRect({ x = p.x, y = p.y, z = p.z })
-        if rect and rect.width > 0 and rect.x >= area.x and rect.y >= area.y and
+        local covered = under and under.x == p.x and under.y == p.y and under.z == p.z
+        if rect and rect.width > 0 and not covered and rect.x >= area.x and rect.y >= area.y and
                 rect.x + rect.width <= area.x + area.width and rect.y + rect.height <= area.y + area.height then
             if p.widget:getParent() ~= mapPanel then
                 p.widget:setParent(mapPanel)
             end
-            p.widget:setRect(rect)
+            local size = math.floor(rect.width * PRINT_SIZE)
+            p.widget:setRect({ x = rect.x + math.floor((rect.width - size) / 2), y = rect.y + math.floor((rect.height - size) / 2),
+                               width = size, height = size })
             local left = PRINT_MS - (now - p.at)
-            p.widget.icon:setOpacity(left < PRINT_FADE_MS and left / PRINT_FADE_MS or 1)
+            p.widget.icon:setOpacity(PRINT_OPACITY * (left < PRINT_FADE_MS and left / PRINT_FADE_MS or 1))
             p.widget:show()
         else
             p.widget:hide()
