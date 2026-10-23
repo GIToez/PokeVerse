@@ -2,7 +2,7 @@
 <outfits>
 	<!-- Vocation outfits: storageId is the vocation storage (playersStorages.vocation), storageValue the
 	     vocation id in Vocations.LIST. Choosing the vocation adds the outfit (Vocations.updateOutfit). -->
-	<outfit id="1" access="5" premium="yes">
+	<outfit id="1" access="3" premium="yes">
 		<list gender="0-3" lookType="535" name="Gamemaster"/>
 	</outfit>
 	

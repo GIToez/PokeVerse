@@ -2091,6 +2091,43 @@ weather loops, the startup tune and the alert, but moves have no sound.
 - **Server:** one extended opcode when a move starts: the sound (move name, or its type and
   kind), the position and the duration in milliseconds.
 
+## 21. Staff groups
+
+Audit (October 2026) of `data/XML/groups.xml`. The groups are TFS's Tibia set: Player (1), Tutor
+(2, access 1), Senior Tutor (3, access 2), Gamemaster (4, access 3), Community Manager (5, access
+4) and God (6, access 5). Groups 7 to 9 are the "can't be attacked" copies of 1 to 3 that
+`setPlayerVulnerable` switches to and back; they stay.
+
+**Fixed:**
+
+- A group's `outfit` replaces the character's look at every login. The Gamemaster's was 75,
+  which is blank in PokeVerse's sprites, so Gamemasters logged in invisible. The Community
+  Manager's (266) and God's (302) were Tibia's staff outfits. All three now wear PokeVerse's
+  Gamemaster outfit (535), which access 3 and up can also choose in the outfit window (it was
+  God only).
+- The Gamemaster had Tibia's "can't pick up items" flag, so every Pokémon portrait the server
+  gives (`doPlayerUpdatePokemonIcons`, each time a Pokémon is called or changed) fell to the
+  floor. The flag is gone.
+
+**Plan: what each group is for** (to agree before changing more flags):
+
+| Group | Access | Job | Plays normally |
+|---|---|---|---|
+| Tutor | 1 | Answers the Help channel, mutes spammers | Yes |
+| Senior Tutor | 2 | Tutor, plus broadcasts, reports and rule violations | Yes |
+| Gamemaster | 3 | Moderation: ghost, teleport, kick, ban, item and creature details | No |
+| Community Manager | 4 | Gamemaster, plus events, boosts, the event calendar and Discord posts | No |
+| God | 5 | Everything: the terminal, houses, server commands | No |
+
+- Groups that don't play normally can't battle, gain experience or get loot, so a staff
+  character stays out of the economy. Staff who want to play use a normal character.
+- Ghost mode by command only (`/ghost`), never on login.
+- Still Tibia's and to remove or replace: Tibia's rule violation reasons and name lock flags,
+  the Portuguese game chat channel opened for Gamemasters on login, and Tibia's VIP and depot
+  limits per group.
+- To check in game: each group's commands in `talkactions.xml` against the table, and the
+  Admin window tabs against the access levels.
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
