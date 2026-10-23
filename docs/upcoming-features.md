@@ -2222,12 +2222,14 @@ species its own habitat, way of moving and signs that it is near.
   region off for maintenance (`/weather region <region> off`), and legendaries leave it alone
   while it is off.
 - **Sets:** the three birds (Articuno, Zapdos, Moltres), the three beasts (Raikou, Entei,
-  Suicune) and the three Regis (Regirock, Regice, Registeel). When one of a set is due to spawn,
-  there is a 25% chance (a setting) that the whole set spawns together, spread over their
-  habitats (the Regis asleep at their locations); otherwise it spawns alone. A set member
-  already out, or still on its cooldown, is left out of a set spawn. Each keeps its own
-  cooldown, and a set doesn't count against the limit on the others. Latias and Latios work the
-  same way as a pair.
+  Suicune) and the three Regis (Regirock, Regice, Registeel). The 25% roll (a setting) happens
+  only when the normal spawn schedule picks an eligible member of a set (off cooldown, not out);
+  staff and event spawns don't roll. On a 25% the whole set spawns together, spread over their
+  habitats (the Regis asleep at their locations); otherwise the picked one spawns alone. A set
+  spawn clears the cooldown of a member still on one so it comes too (a setting, on by
+  default); a member already out is skipped. Each member's cooldown starts again when it is
+  beaten, caught or leaves. A set doesn't count against the limit on the others. Latias and
+  Latios work the same way as a pair.
 - **Never two of the same:** never two of one species out at once, legendary or mythical,
   whatever started it (the schedule, a set, an event or staff).
 - **Never two mythicals:** at most one of Mew, Celebi, Jirachi and Deoxys out at once on the
@@ -2277,8 +2279,8 @@ checked by hand); flyers can go anywhere suitable; ocean roamers only through wa
 1. **Server only:**
    - catch announcements everywhere;
    - habitats and movement styles per species;
-   - the sets (birds, beasts, Regis, Latias and Latios) with the 25% chance, one of each species
-     and one mythical at a time;
+   - the sets (birds, beasts, Regis, Latias and Latios): the 25% roll when the schedule picks a
+     member, clearing the others' cooldowns; one of each species and one mythical at a time;
    - weather links (Raikou, Zapdos, Kyogre);
    - trails of signs with the effects we have;
    - Mew's disguise, Mewtwo's warning, the sleeping Regis;
