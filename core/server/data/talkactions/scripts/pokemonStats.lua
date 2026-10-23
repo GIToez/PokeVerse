@@ -5,10 +5,10 @@
 --   /pstats nature,adamant
 --   /pstats reroll               new random IVs and Nature, EVs back to 0
 --   /pstats Trainer,iv,atk,+1    the same on another online player's ball
--- Gamemasters view anyone's Pokemon but change only their own; Community Managers and Gods change anyone's. Access levels, not group
--- ids, because groups 7 to 9 are player and tutor groups.
-local ACCESS_OWN = 3
-local ACCESS_OTHERS = 4
+-- Gamemasters and Community Managers only view; Gods change anyone's. Access levels, not
+-- group ids, because groups 7 to 9 are player and tutor groups.
+local ACCESS_VIEW = 3
+local ACCESS_CHANGE = 5
 
 local STAT_KEYS = {
     hp = POKEMON_STAT.HP, atk = POKEMON_STAT.ATTACK, def = POKEMON_STAT.DEFENSE,
@@ -46,7 +46,7 @@ local function applyChange(values, stats, amount, max, totalMax)
 end
 
 function onSay(cid, words, param, channel)
-    if (getPlayerAccess(cid) < ACCESS_OWN) then
+    if (getPlayerAccess(cid) < ACCESS_VIEW) then
         return false
     end
 
@@ -54,14 +54,15 @@ function onSay(cid, words, param, channel)
     local target = cid
     local targetPlayer = args[1] and getPlayerByName(string.trim(args[1]))
     if (targetPlayer and isPlayer(targetPlayer)) then
-        if (targetPlayer ~= cid and args[2] and getPlayerAccess(cid) < ACCESS_OTHERS) then
-            reply(cid, "You can only change your own Pokemon.")
-            return true
-        end
         target = targetPlayer
         table.remove(args, 1)
     elseif (args[1] and not ACTIONS[string.trim(args[1]):lower()]) then
         reply(cid, string.format("Player %s is not online.", string.trim(args[1])))
+        return true
+    end
+
+    if (args[1] and string.trim(args[1]) ~= "" and getPlayerAccess(cid) < ACCESS_CHANGE) then
+        reply(cid, "Only Gods change Pokemon stats.")
         return true
     end
 

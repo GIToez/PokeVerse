@@ -27,7 +27,7 @@
 Reports = {}
 
 Reports.VIEW_ACCESS = 1 -- Tutor and up read the reports
-Reports.EDIT_ACCESS = 3 -- Gamemaster and up change the status, add notes and go to the spot
+Reports.EDIT_ACCESS = 2 -- Senior Tutor and up change the status, add notes and go to the spot
 Reports.PAGE = 30
 Reports.TITLE_MIN, Reports.TITLE_MAX = 4, 80
 Reports.TEXT_MIN, Reports.TEXT_MAX = 15, 1500
