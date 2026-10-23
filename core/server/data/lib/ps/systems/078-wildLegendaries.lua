@@ -891,7 +891,7 @@ end
 
 local function sendMeteors(pos, seconds)
     sendFlightData(playersNear(pos, CONFIG.meteorView[1], CONFIG.meteorView[2]),
-        { type = "meteors", seconds = seconds, count = seconds * 2 })
+        { type = "meteors", seconds = seconds, count = seconds * 3 })
 end
 
 -- Falling stars around pos for showerSeconds; the globalevent drops them (runShower) and sends the
