@@ -76,7 +76,8 @@ EXTENDED_IDS = {
     STORE = 41, -- JSON Store window: the Soul Coin balance, the offers, buying, withdraw and deposit (Store)
     EXP_BOOST = 42, -- JSON experience boosts for the stamina bar: stamina, personal bonus, server event, Lucky Egg (ExpBoost)
     POKEDEX_DETAILS = 43, -- JSON Pokedex Details tab, sent just before the Pokedex entry (getDexDetails in 010-pokedex.lua)
-    BANK = 44 -- JSON Bank window: balance, money carried, deposit, withdraw, transfer and history (Bank)
+    BANK = 44, -- JSON Bank window: balance, money carried, deposit, withdraw, transfer and history (Bank)
+    LEGENDARY_FLIGHT = 45 -- JSON {type = "flight"|"shake", ...}: a legendary flying or swimming past, the ground shaking (WildLegendaries)
 }
 
 TOURNAMENT_TYPES = {}
@@ -2062,6 +2063,29 @@ EFFECT_CROSS_THUNDER = 932
 
 EFFECT_TUTORIAL_SQUARE = 938
 EFFECT_TUTORIAL_ARROW = 939
+
+-- Legendary art (scripts/art/legendary_fx.py, data.dat effects added by scripts/dat-add-effects.py)
+EFFECT_LEGENDARY_RAIKOU_SPARKS = 1139
+EFFECT_LEGENDARY_ENTEI_SCORCH = 1140
+EFFECT_LEGENDARY_SUICUNE_MIST = 1141
+EFFECT_LEGENDARY_ARTICUNO_FROST = 1142
+EFFECT_LEGENDARY_ZAPDOS_BOLT = 1143
+EFFECT_LEGENDARY_MOLTRES_FEATHER = 1144
+EFFECT_LEGENDARY_HOOH_RAINBOW = 1145
+EFFECT_LEGENDARY_WATER_RIPPLE = 1146
+EFFECT_LEGENDARY_GROUDON_CRACK = 1147
+EFFECT_LEGENDARY_RAYQUAZA_WIND = 1148
+EFFECT_LEGENDARY_MEWTWO_PSYCHIC = 1149
+EFFECT_LEGENDARY_REGIROCK_ROCKS = 1150
+EFFECT_LEGENDARY_REGICE_FROST = 1151
+EFFECT_LEGENDARY_REGISTEEL_SPARKS = 1152
+EFFECT_LEGENDARY_MEW_SPARKLES = 1153
+EFFECT_LEGENDARY_CELEBI_SPARKLES = 1154
+EFFECT_LEGENDARY_JIRACHI_STAR = 1155
+EFFECT_LEGENDARY_DEOXYS_IMPACT = 1156
+EFFECT_LEGENDARY_TAKEOFF = 1157
+EFFECT_LEGENDARY_LANDING = 1158
+EFFECT_LEGENDARY_MEW_REVEAL = 1159
 -- Tutorial Island stops for NavMarker
 TUTORIAL_LAB_DOOR = {x = 5020, y = 792, z = 7}
 TUTORIAL_LAB_EXIT = {x = 5020, y = 784, z = 7}

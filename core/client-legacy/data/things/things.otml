@@ -536,6 +536,48 @@ effects:
     image-frames: /images/effects/tutorial_ring 16 2500
   940:
     image-frames: /images/effects/tutorial_chevrons 16 2500
+  1140:
+    image-frames: /images/effects/legendary_raikou_sparks 16
+  1141:
+    image-frames: /images/effects/legendary_entei_scorch 16
+  1142:
+    image-frames: /images/effects/legendary_suicune_mist 16
+  1143:
+    image-frames: /images/effects/legendary_articuno_frost 16
+  1144:
+    image-frames: /images/effects/legendary_zapdos_bolt 12
+  1145:
+    image-frames: /images/effects/legendary_moltres_feather 16
+  1146:
+    image-frames: /images/effects/legendary_hooh_rainbow 16
+  1147:
+    image-frames: /images/effects/legendary_water_ripple 12
+  1148:
+    image-frames: /images/effects/legendary_groudon_crack 16
+  1149:
+    image-frames: /images/effects/legendary_rayquaza_wind 12
+  1150:
+    image-frames: /images/effects/legendary_mewtwo_psychic 12
+  1151:
+    image-frames: /images/effects/legendary_regirock_rocks 12
+  1152:
+    image-frames: /images/effects/legendary_regice_frost 16
+  1153:
+    image-frames: /images/effects/legendary_registeel_sparks 12
+  1154:
+    image-frames: /images/effects/legendary_mew_sparkles 16
+  1155:
+    image-frames: /images/effects/legendary_celebi_sparkles 16
+  1156:
+    image-frames: /images/effects/legendary_jirachi_star 16
+  1157:
+    image-frames: /images/effects/legendary_deoxys_impact 16
+  1158:
+    image-frames: /images/effects/legendary_takeoff 10
+  1159:
+    image-frames: /images/effects/legendary_landing 10
+  1160:
+    image-frames: /images/effects/legendary_mew_reveal 12
 missiles:
   2:
     opacity:0.7
