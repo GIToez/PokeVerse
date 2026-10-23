@@ -44,7 +44,10 @@ end
 g_html.addGlobalStyle('/data/styles/html.css')
 g_html.addGlobalStyle('/data/styles/custom.css')
 
-g_resources.searchAndAddPackages('/', '.otpkg', true)
+-- an encrypted (live) client loads only its own files: no packages dropped into its folder
+if not g_app.isEncrypted() then
+  g_resources.searchAndAddPackages('/', '.otpkg', true)
+end
 
 g_configs.loadSettings("/config.otml")
 

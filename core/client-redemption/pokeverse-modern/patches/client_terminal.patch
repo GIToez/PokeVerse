@@ -10,3 +10,28 @@ diff -ruN pristine/modules/client_terminal/terminal.lua modules/client_terminal/
      Keybind.new("Misc.", "Toggle Terminal", "Ctrl+T", "")
      Keybind.bind("Misc.", "Toggle Terminal", {{
          type = KEY_DOWN,
+@@ -369,6 +371,9 @@
+     end
+ end
+ 
++-- 5: God (game_admin's STAFF_NAMES)
++local TERMINAL_ACCESS = 5
++
+ function executeCommand(command)
+     if command == nil or #string.gsub(command, '\n', '') == 0 then
+         return
+@@ -377,6 +382,14 @@
+     -- add command line
+     addLine('> ' .. command, '#ffffff')
+ 
++    -- an encrypted (live) client runs typed Lua only for staff with this access (game_admin's,
++    -- which the server sends to staff only), since Lua can read the decrypted modules and art
++    if g_app.isEncrypted() and not (g_game.isOnline() and modules.game_admin and modules.game_admin.getAccess
++            and modules.game_admin.getAccess() >= TERMINAL_ACCESS) then
++        addLine('Commands are for staff only. Log in with a staff character to use them.', 'red')
++        return
++    end
++
+     -- reset current history index
+     currentHistoryIndex = 0
+ 

@@ -102,6 +102,11 @@ local function access()
     return state and tonumber(state.access) or 0
 end
 
+-- the logged-in staff member's access (0: not staff, or not logged in); client_terminal uses it
+function getAccess()
+    return access()
+end
+
 local function duration(seconds)
     seconds = math.max(0, math.floor(tonumber(seconds) or 0))
     local days, hours, mins = math.floor(seconds / 86400), math.floor(seconds % 86400 / 3600), math.floor(seconds % 3600 / 60)
