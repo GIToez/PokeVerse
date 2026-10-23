@@ -26,6 +26,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 			end
 
 			doSendMagicEffect(pokemonPosition, EFFECT_GREEN_BUFF)
+            Sounds.around(pokemonPosition, "heal_status")
             doSendDistanceShoot(fromPosition, pokemonPosition, PROJECTILE_GRAVEL)
             doCreatureRemoveStatus(pokemon, CREATURE_STATUS_POISON)
             doAddCondition(cid, delay)

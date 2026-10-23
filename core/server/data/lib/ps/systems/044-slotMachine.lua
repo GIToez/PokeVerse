@@ -154,6 +154,7 @@ SlotMachine.onUse = function(cid, item, fromPosition, itemEx, toPosition)
 
             if (coins > 0) then
                 doPlayerSafeAddItem(cid, COIN_ITEMID, coins, false, true, false)
+                Sounds.send(cid, results[1] == results[2] and results[2] == results[3] and "slots_big_win" or "slots_win")
             end
 
             doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, string.format(__L(cid, "You won %s poke coin%s"), coins, (coins > 1 and "s." or ".")))
@@ -168,6 +169,8 @@ SlotMachine.onUse = function(cid, item, fromPosition, itemEx, toPosition)
     end
 
     doPlayerRemoveMoney(cid, PLAY_PRICE)
+    Sounds.send(cid, { { "slots_coin", 0 }, { "slots_stop", ROLL_DELAY - 1600 }, { "slots_stop", ROLL_DELAY - 1000 },
+                       { "slots_stop", ROLL_DELAY - 400 } })
     doAddCondition(cid, EXHAUST_CONDITION)
     PLAYER_PLAY_COUNT_CACHE[playerGuid] = PLAYER_PLAY_COUNT_CACHE[playerGuid] + 1
     doItemSetAttribute(item.uid, NEXTUSEDATE_ATTR, getCurrentTimeInSeconds() + USE_DELAY)

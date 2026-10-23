@@ -342,6 +342,8 @@ showNext = function()
     display(entries)
 end
 
+local lastJingleAt = 0
+
 local function onLevelUp(protocol, opcode, buffer)
     local ok, data = pcall(json.decode, buffer)
     if not ok or type(data) ~= 'table' or not BUILDERS[data.kind] then
@@ -349,6 +351,11 @@ local function onLevelUp(protocol, opcode, buffer)
         return
     end
     table.insert(queue, data)
+    local now = g_clock.millis()
+    if modules.game_sounds and now - lastJingleAt > 1000 then
+        lastJingleAt = now
+        modules.game_sounds.play(data.kind == 'tm' and 'tm_get' or 'level_up')
+    end
     -- the exp message and the trainer level-up arrive together: show them in one stack
     schedule(showNext, 100)
 end

@@ -242,6 +242,7 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
         elseif (doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.ANTICIPATION, nil, elementMultipler)) then
             elementMultipler = elementMultipler * 0.84 -- 1/6
         end
+        Sounds.onHit(fromCid, toCid, elementMultipler)
 
         -- skillDamage = move power
         if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.RIVALRY, nil)) then

@@ -966,7 +966,7 @@ return {
     soundItems = {
         value = 100,
         action = function(value, options, controller, panels, extraWidgets)
-            panels.soundPanel:recursiveGetChildById('soundItems'):setText(tr('Item Volume: %d %%', value))
+            panels.soundPanel:recursiveGetChildById('soundItems'):setText(tr('Battle Effects Volume: %d %%', value))
             if g_sounds then
                 local channel = g_sounds.getChannel(SoundChannels.Item)
                 if channel then

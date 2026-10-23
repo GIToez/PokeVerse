@@ -141,6 +141,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
     end
 
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
+    Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, newBall, pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, getSafariZone(cid), nil,
         nil, pokemonSpecialAbilitie, nil, nil, nil, nil, nil, getPlayerTown(cid) ~= TOWN_IDS.TUTORIAL_ISLAND)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
@@ -163,6 +164,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
     end
 
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
+    Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, "safari", pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, true, nil, nil, pokemonSpecialAbilitie)
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
 	if (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) < PLAYER_SKILL_CATCHING_MAX) then
@@ -183,6 +185,7 @@ pokemonSpecialAbilitie, wastedBallsMsg)
     end
 
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s."), getSexDescription(pokemonSex), pokemonName))
+    Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, "soul", pokemonName, 8, pokemonSex, nil, 0, cid, false, nil, nil, pokemonSpecialAbilitie)
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Now you need to talk with Professor Tommy to start your journey, speak about 'journey'.")
 	doTeleportThing(cid, {x = 4711, y = 678, z = 7}, false)
@@ -278,6 +281,7 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
 
 					if (balls[ballName].guaranteedCatch or rollCatch(cid, pokemonName, ballName, item.itemid, pokemonLevel)) then
                         doSendMagicEffect(toPosition, balls[ballName].effects.catch)
+                        Sounds.onBallThrow(toPosition, true)
 						addEvent(catchPokemon, 5500, cid, toPosition, pokemonName, balls[ballName].charged,
                             pokemonSex, pokemonLevel, pokemonSpecialAbility,
                             getPlayerWastedBallsMessage(cid, getPokemonNumberByName(pokemonName)) .. __L(cid, " to catch it."), getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName)))
@@ -285,6 +289,8 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
 
 					else
 						doSendMagicEffect(toPosition, balls[ballName].effects.catchMiss)
+						Sounds.onBallThrow(toPosition, false)
+						addEvent(Sounds.onCatchMiss, 3600, toPosition)
 						addEvent(catchMiss, 4000, cid, ballsNames[item.itemid], item.itemid, pokemonName,
                             string.format(__L(cid, "%s trying to catch %s."), getPlayerWastedBallsMessage(cid, getPokemonNumberByName(pokemonName)), pokemonName))
 					end

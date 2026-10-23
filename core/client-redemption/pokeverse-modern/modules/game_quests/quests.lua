@@ -544,6 +544,9 @@ function onNotice(data)
         row.state = 'done'
         tracked[id] = nil
         saveTracked()
+        if modules.game_sounds then
+            modules.game_sounds.play('quest_complete')
+        end
     else
         row.state = 'active'
         row.have, row.need = data.have, data.need

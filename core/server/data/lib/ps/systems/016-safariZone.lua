@@ -266,11 +266,14 @@ function onCreatureUseSafariBall(cid, item, fromPosition, itemEx, toPosition)
 	if (rollMax and (getRandom(1, rollMax) <= safariRate
             or DiscordBoostPerks.catchBonusRoll(getCatchRollChance(safariRate, rollMax)))) then
 		doSendMagicEffect(toPosition, balls["safari"].effects.catch)
+		Sounds.onBallThrow(toPosition, true)
 		addEvent(catchPokemonWithSafariBall, 5500, cid, toPosition, pokemonName, balls["safari"].charged,
             pokemonSex, pokemonLevel, pokemonSpecialAbility, getPlayerWastedBallsMessage(cid, getPokemonNumberByName(pokemonName)) .. __L(cid, " to catch it."))
         doPlayerResetWastedBalls(cid, getPokemonNumberByName(pokemonName), getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName)))
 	else
 		doSendMagicEffect(toPosition, balls["safari"].effects.catchMiss)
+		Sounds.onBallThrow(toPosition, false)
+		addEvent(Sounds.onCatchMiss, 3600, toPosition)
 	    addEvent(function(cid, wastedBallMsg)
                     catchMiss(cid, "safari", item.itemid, pokemonName, wastedBallMsg)
                     doSendMagicEffect(toPosition, EFFECT_TELEPORT_UP)

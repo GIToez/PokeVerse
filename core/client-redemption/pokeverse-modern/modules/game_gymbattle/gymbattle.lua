@@ -153,6 +153,9 @@ local function onGym(protocol, opcode, buffer)
     if data.type == 'victory' and modules.game_duelmessage and modules.game_duelmessage.suppress then
         modules.game_duelmessage.suppress(DUEL_MESSAGE_SUPPRESS_MS)
     end
+    if data.type == 'victory' and modules.game_sounds then
+        modules.game_sounds.play('badge_get')
+    end
     table.insert(queue, data)
     showNext()
 end

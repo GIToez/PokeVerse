@@ -196,6 +196,7 @@ local function tryHeal(cid)
             end
         end
 
+        Sounds.send(cid, "pokecenter_heal")
         if (getCity()) then
             selfSay("One second... Alright, all done. Remember that you can also change your {hometown} here. If you want to restore your Pokemon again, just say {heal}.", cid)
         else

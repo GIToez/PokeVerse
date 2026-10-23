@@ -14,6 +14,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 	else
 		doBallHeal(cid, itemEx)
 		doSendMagicEffect(getCreaturePosition(cid), EFFECT_GREEN_BUFF)
+		Sounds.send(cid, "heal_hp")
 		doRemoveItem(item.uid, 1)
 	end
 	return true

@@ -103,7 +103,7 @@ UIWidget
       margin-left: -15
       @onSetup: |
         local value = modules.client_options.getOption('soundItems')
-        self:setText(tr('Item Volume: %d %%', value))
+        self:setText(tr('Battle Effects Volume: %d %%', value))
 
     OptionCheckBox
       id: soundFoodAndBeverages

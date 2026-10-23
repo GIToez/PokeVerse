@@ -1,0 +1,8 @@
+Module
+  name: game_sounds
+  description: PokeVerse battle, catch, jingle and menu sounds from /sounds/effects
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ sounds ]
+  @onLoad: init()
+  @onUnload: terminate()

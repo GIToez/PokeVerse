@@ -3,6 +3,7 @@ function onKill(cid, target, lastHit)
     if (not isSummon(target) and not getPokemonSummon(target)) then
         doQuestDefeat(cid, name)
         if (lastHit) then
+            Sounds.onFaint(getCreaturePosition(target))
             RangerClub.onPlayerKill(cid, name)
             EventCalendar.onPlayerKill(cid, target)
             if (EventCalendar.isActive("halloween")) then

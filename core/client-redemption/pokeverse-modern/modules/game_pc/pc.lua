@@ -833,6 +833,9 @@ function handlers.open(data)
     local root = rootWidget
     window:setSize({ width = math.min(1000, root:getWidth() - 20), height = math.min(620, root:getHeight() - 20) })
     closeLockerContainers()
+    if not window:isVisible() and modules.game_sounds then
+        modules.game_sounds.play('pc_open')
+    end
     window:show()
     window:raise()
     window:focus()
@@ -1055,6 +1058,9 @@ function close()
     stopSparkles()
     if window and window:isVisible() then
         window:hide()
+        if modules.game_sounds then
+            modules.game_sounds.play('pc_close')
+        end
         if g_game.isOnline() then
             send('close')
         end

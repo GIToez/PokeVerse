@@ -54,8 +54,36 @@ local function showForm(look, silhouette)
     end
 end
 
+local music
+
+local function sounds()
+    return modules.game_sounds
+end
+
+local function playMusic()
+    if sounds() then
+        sounds().play('evolution_start')
+        music = sounds().play('evolution')
+    end
+end
+
+-- finished: the "evolved" jingle plays over the music's fade
+local function stopMusic(finished)
+    if not sounds() then
+        return
+    end
+    if music then
+        sounds().fadeOut(music, finished and 1 or 0.3)
+        music = nil
+        if finished then
+            sounds().play('evolution_done')
+        end
+    end
+end
+
 local function closeScene()
     cancelEvents()
+    stopMusic(false)
     if scene then
         scene:destroy()
         scene = nil
@@ -129,8 +157,12 @@ local function onEvolution(protocol, opcode, buffer)
     end
     if data.state == 'start' then
         onStart(data)
-    elseif data.state == 'done' and scene then
-        schedule(fadeOut, LINGER_MS)
+        playMusic()
+    elseif data.state == 'done' then
+        stopMusic(true)
+        if scene then
+            schedule(fadeOut, LINGER_MS)
+        end
     end
 end
 

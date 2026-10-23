@@ -2090,7 +2090,19 @@ weather loops, the startup tune and the alert, but moves have no sound.
 - **Server:** one extended opcode when a move starts: the sound (move name, or its type and
   kind), the position and the duration in milliseconds.
 
-**Battle sounds (files added October 2026, not wired up yet).** The non-move sounds from
+**Battle sounds (wired up October 2026).** The server's `Sounds` (`lib/ps/systems/090-sounds.lua`)
+sends `name:delayMs;name:delayMs` on extended opcode 3 to the trainers who can see it (hits only
+to the two trainers in the fight, at most one every 350 ms per Pokémon); the client's `game_sounds`
+plays them as separate sources so they overlap. Wired: the catch (throw, pull-in, landing, wobbles,
+then the caught jingle or the break-out), send-out, recall, faint (wild and your own), hits by
+effectiveness, statuses and stat changes, Potions, Antidotes and Revives, the Pokémon Center,
+the fishing plop and the slot machine on the server; evolution (music, then the "evolved"
+jingle), level up, TMs, Gym badges, quests done and the PC in the client. Options > Sound's Item
+slider is now "Battle Effects" (the Item channel); the menu, PC and save sounds follow UI.
+Not wired yet: menus, doors and walking, items received, held items and abilities, weather
+damage, low HP, the shiny sparkle and the surf music.
+
+Sources: The non-move sounds from
 BellBlitzKing's "Pokemon SFX Attack Moves & Sound Effects Collection" (Sun and Moon recordings,
 Gen 5 for the status heal), and Sun and Moon's jingles, converted to `.ogg` in
 `core/client-legacy/data/sounds/effects/`:

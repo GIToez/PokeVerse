@@ -94,6 +94,7 @@ local function onHealStart(cid, target, item, targetPosition, playerPosition, fo
     EVENTS[target] = addEvent(onHealEnd, HEALTH_DURATION * 1000, target, HEALTH_POTIONS[item.itemid].msg)
     doSendAnimatedText(targetPosition, "HEAL +" .. HEALTH_POTIONS[item.itemid].msg, COLOR_LIGHTGREEN)
     doSendMagicEffect(targetPosition, EFFECT_GREEN_BUFF)
+    Sounds.around(targetPosition, "heal_hp")
     doSendDistanceShoot(playerPosition, targetPosition, PROJECTILE_GRAVEL)
     doRemoveItem(item.uid, 1)
     if (target ~= cid) then

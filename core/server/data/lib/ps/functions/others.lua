@@ -736,6 +736,7 @@ function doPokemonCall(cid, ball)
             pokemonPosition = getCreaturePosition(cid)
             doTeleportThing(pokemon, pokemonPosition, false)
         end
+        Sounds.onSendOut(pokemonPosition)
 
         local pokemonLevel = getBallPokemonLevel(ball.uid)
         local pokemonExtraPoints = getBallPokemonExtraPoints(ball.uid)

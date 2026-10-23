@@ -47,6 +47,7 @@ function inUseBall(cid, item)
 		doCreatureSay(cid, getCreatureNickname(pokemon) .. ", " .. __L(cid, POKEMON_BACK_MESSAGES[math.random(1, #POKEMON_BACK_MESSAGES)]))
 		doTransformItem(item.uid, balls[ballName].charged)
 		doSendMagicEffect(getCreaturePosition(pokemon), balls[ballName].effects.use)
+		Sounds.onRecall(toPosition, false)
 		setPlayerVulnerable(cid, true)
 		if (not getPlayerDueling(cid) and not getPlayerBattleing(cid)) then
 			doAddCondition(cid, switchProtection)

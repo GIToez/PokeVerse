@@ -28,6 +28,7 @@ function onPrepareDeath(cid)
 
     doTransformItem(ball.uid, balls[ballName].discharged)
     doSendMagicEffect(getCreaturePosition(cid), balls[ballName].effects.use)
+    Sounds.around(pokemonPosition, { { "faint", 0 }, { "recall_fainted", 900 } })
     setPlayerVulnerable(pokemonMaster, true)
     setCreatureMaxMana(pokemonMaster, 0)
     doCreatureAddMana(pokemonMaster, -getCreatureMana(pokemonMaster), false)

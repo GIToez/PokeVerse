@@ -1114,6 +1114,7 @@ function doCreatureAddStatus(cid, status, var, caster)
         local condition = CONDITIONS[status].onAdd(cid, var, caster, badStatus)
         if (condition) then
             sendShownStatus(cid, status, CONDITION_DURATIONS[condition] and CONDITION_DURATIONS[condition] * 1000 or CONDITION_TICKS[status] or 0)
+            Sounds.onStatus(cid, status, badStatus)
         end
         if (condition and CONDITIONS[status].icon) then
             local master = getCreatureMaster(cid)

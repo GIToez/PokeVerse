@@ -625,6 +625,7 @@ Fishing.onFishing = function(cid, item, fromPosition, itemEx, toPosition)
             doCreateItem(FISHING_FLOAT_ID, 1, toPosition)
             doSendDistanceShoot(playerPosition, toPosition, PROJECTILE_GRAVEL)
             doSendMagicEffect(toPosition, EFFECT_WATER_PULSE)
+            Sounds.around(toPosition, { { "fishing_plop", 250 } })
             addEvent(doFishing, 1000, cid, playerPosition, toPosition, item.itemid, 0, delay - 1, RODS[item.itemid].fishingTime)
 
             local outfit = getCreatureOutfit(cid)
