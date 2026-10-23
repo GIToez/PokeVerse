@@ -3,10 +3,12 @@
 
     scripts/dat-set-outfit.py <look> <sheet.png> [<look> <sheet.png> ...]
 
+A look of `new` adds the outfit after the last one and prints the id it got.
+
 The sheet is laid out like the "6500 sprite pokemon" pack (docs/sprite-pack-review): the four
 directions (north, east, south, west) across and the animation frames down, every frame a square
-of 32 to 192 pixels (a whole number of tiles). The outfit becomes one layer of that size with a frame per row, standing
-on its tile's bottom right like the other Pokemon. Its old sprites are left in data.spr; the new
+of 32 to 192 pixels (a whole number of tiles). The outfit becomes one layer of that size with a
+frame per row, standing on its tile's bottom right like the other Pokemon. Its old sprites are left in data.spr; the new
 ones go on sprite ids no thing uses, so nothing else changes. Use it for looks that have no art,
 e.g. Latias (1559) and Latios (1560).
 """
@@ -70,10 +72,20 @@ def main():
         sys.exit(__doc__)
     import house_reskin
     data = bytearray(open(DAT, 'rb').read())
+    pairs = []
+    for look, sheet in zip(args[0::2], args[1::2]):
+        if look == 'new':
+            signature, items, outfits, effects, missiles, _, _ = dat_tool.parse(bytes(data))
+            end = outfit_spans(bytes(data))[-1][1]
+            data[end:end] = bytes([dat_tool.LAST_ATTR, 1, 1, 1, 1, 1, 1, 1]) + bytes(4)
+            data[0:12] = struct.pack('<IHHHH', signature, items, outfits + 1, effects, missiles)
+            look = outfits + 1
+            print('new outfit %d for %s' % (look, os.path.basename(sheet)))
+        pairs.append((int(look), sheet))
     used = footprints.used_sprites(bytes(data))
     free = (s for s in range(1, max(used)) if s not in used)
     new_sprites = {}
-    for look, sheet in sorted(zip((int(v) for v in args[0::2]), args[1::2]), reverse=True):
+    for look, sheet in sorted(pairs, reverse=True):
         spans = outfit_spans(bytes(data))
         if not 1 <= look <= len(spans):
             sys.exit('no outfit %d' % look)
