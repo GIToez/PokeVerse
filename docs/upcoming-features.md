@@ -2079,8 +2079,7 @@ weather loops, the startup tune and the alert, but moves have no sound.
 
 - **Sounds by type first:** about 18 types × 2 or 3 kinds (a hit, a beam or projectile, a buff or
   status move), so 40 to 50 sounds. Then the most used moves get their own sound over time.
-  The sounds are made for PokeVerse (AI generated or from a free sound library), never taken
-  from the official games.
+  The sounds come from the games' recordings (the same Pokemon SFX pack as the battle sounds).
 - **The client shapes the sound, not the file:** each sound is recorded longer than any move
   needs (or loops), with no fade baked in. The server tells the client when a move starts, which
   sound to use and how long the move lasts, from the move's own settings. The client plays the
@@ -2093,7 +2092,8 @@ weather loops, the startup tune and the alert, but moves have no sound.
 
 **Battle sounds (files added October 2026, not wired up yet).** The non-move sounds from
 BellBlitzKing's "Pokemon SFX Attack Moves & Sound Effects Collection" (Sun and Moon recordings,
-Gen 5 for the status heal), converted to `.ogg` in `core/client-legacy/data/sounds/battle/`:
+Gen 5 for the status heal), and Sun and Moon's jingles, converted to `.ogg` in
+`core/client-legacy/data/sounds/effects/`:
 
 | File | Plays when |
 | --- | --- |
@@ -2109,12 +2109,16 @@ Gen 5 for the status heal), converted to `.ogg` in `core/client-legacy/data/soun
 | `low_hp_loop` | the player's Pokémon is low on HP (loops) |
 | `held_item`, `eat_berry`, `ability` | a held item, berry or ability activates |
 | `weather_hail_damage`, `weather_sand_damage`, `leech_seed_damage`, `nightmare_damage` | damage each turn |
+| `catch_success` | a Pokémon is caught |
+| `level_up` | a Pokémon levels up |
+| `evolution_start` | an evolution starts |
+| `pokecenter_heal` | the Pokémon Center heals the team |
+| `item_get`, `key_item_get`, `berry_get`, `egg_get`, `tm_get`, `mega_stone` | an item, key item, berry, egg, TM or Mega Stone is received |
 
 They play on a Battle effects slider, next to Moves.
 
-Still to find: the Poké Ball throw, the wobble, the catch click, the break-out, level up,
-evolution (start and done), the shiny sparkle, the Pokémon Center heal and menu sounds (open,
-close, select, error). The pack's README points to
+Still to find: the Poké Ball throw, the wobble, the catch click, the break-out, evolution done,
+the shiny sparkle and menu sounds (open, close, select, error). The pack's README points to
 [The Sounds Resource](https://www.sounds-resource.com/3ds/pokemonsunmoon/) for these.
 
 ## 21. Staff groups
