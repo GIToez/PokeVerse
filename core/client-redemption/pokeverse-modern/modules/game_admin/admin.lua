@@ -628,12 +628,20 @@ local function fillLegendaryStatus(info)
         end
     end
     for _, a in ipairs(info.active or {}) do
-        local state = a.disguised and tr(' (disguised as %s)', a.disguised) or (a.asleep and tr(' (asleep)') or '')
-        line(tr('%s%s near %s: %d%%, leaves in %s, at %d, %d, %d%s', a.name, state, a.area or '?', tonumber(a.health) or 0,
-            duration(a.left), a.x, a.y, a.z, a.set and tr(', set') or ''), RUNNING_COLOR)
+        if a.flying then
+            line(tr('%s %s over %s: %d%%, lands in %s, leaves in %s%s', a.name, a.area or tr('in the air'), a.zone or '?',
+                tonumber(a.health) or 0, duration(a.landsIn), duration(a.left), a.set and tr(', set') or ''), RUNNING_COLOR)
+        else
+            local state = a.disguised and tr(' (disguised as %s)', a.disguised) or (a.asleep and tr(' (asleep)') or '')
+            line(tr('%s%s near %s: %d%%, leaves in %s, at %d, %d, %d%s', a.name, state, a.area or '?', tonumber(a.health) or 0,
+                duration(a.left), a.x, a.y, a.z, a.set and tr(', set') or ''), RUNNING_COLOR)
+        end
     end
     for _, p in ipairs(info.pending or {}) do
         line(tr('%s: warning, appears in %s', p.name, duration(p.left)), RUNNING_COLOR)
+    end
+    for _, text in ipairs(info.events or {}) do
+        line(text, RUNNING_COLOR)
     end
     if #(info.active or {}) == 0 and #(info.pending or {}) == 0 then
         line(tr('None out right now.'), MUTED_COLOR)
@@ -688,6 +696,10 @@ local function fillLegendaries(info)
         legendaryButton(buttons, 'PVBlueButton', 'Clear its cooldown', withPick('/legendary cooldowns clear %s'))
         legendaryButton(buttons, 'PVBlueButton', 'Show its signs', withPick('/legendary signs %s'),
             'Its signs and trail now, and the spots in the chat')
+        legendaryButton(buttons, 'PVBlueButton', 'Fly-over (me only)', withPick('/legendary flyover %s'),
+            'It crosses your screen; nobody else sees it and nothing spawns')
+        legendaryButton(buttons, 'PVBlueButton', 'Dive-over (me only)', withPick('/legendary flyover %s dive'),
+            'The dark shape under the water, for Lugia and Kyogre')
 
         local special = panel.special
         special:destroyChildren()
@@ -698,6 +710,12 @@ local function fillLegendaries(info)
         legendaryButton(special, 'PVGreenButton', 'Mewtwo warning', fixedCommand('/legendary warn'),
             'The psychic disturbance, then Mewtwo in its habitat')
         legendaryButton(special, 'PVGreenButton', 'Mewtwo warning here', fixedCommand('/legendary warn here'))
+        legendaryButton(special, 'PVGreenButton', 'Groudon, Kyogre, Rayquaza', fixedCommand('/legendary rayquaza'),
+            'Groudon and Kyogre out (if they are not), then Rayquaza comes down to them')
+        legendaryButton(special, 'PVBlueButton', 'Meteor shower here', fixedCommand('/legendary meteors'),
+            "Jirachi's shower at your feet, nothing spawns")
+        legendaryButton(special, 'PVBlueButton', 'Meteor impact here', fixedCommand('/legendary impact'),
+            "Deoxys's impact at your feet, nothing spawns")
         legendaryButton(special, 'PVBlueButton', 'Next spawn in 5 min', fixedCommand('/legendary next 5m'))
         legendaryButton(special, 'PVBlueButton', 'Clear all cooldowns', fixedCommand('/legendary cooldowns clear'))
         legendaryButton(special, 'PVBlueButton', 'Status in chat', fixedCommand('/legendary status'))

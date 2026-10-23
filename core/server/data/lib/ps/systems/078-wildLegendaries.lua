@@ -103,10 +103,10 @@ WildLegendaries.SPECIES = {
     { name = "Rayquaza", tier = 2, style = "fly", regions = { "hoenn", "johto", "kanto" }, places = { "outdoor" },
       tags = { high = 8, mountain = 2 }, strict = true, homes = { "Fortree", "Blackthorn" }, signs = { EFFECT_LEGENDARY_RAYQUAZA_WIND, EFFECT_LEGENDARY_RAYQUAZA_WIND, EFFECT_GREEN_WIND } },
     { name = "Jirachi", tier = 3, style = "meteor", regions = { "kanto", "johto", "orange", "hoenn" },
-      places = { "outdoor" }, tags = { remote = 4, high = 2 }, homes = { "Mt. Moon", "Fallarbor" }, lifetime = 45 * MINUTE,
+      places = { "outdoor" }, tags = { remote = 4, high = 2 }, homes = { "Mt. Moon", "Fallarbor" }, lifetime = 45 * MINUTE, shower = true,
       signs = { EFFECT_LEGENDARY_JIRACHI_STAR, EFFECT_FAILING_STARS }, arrive = { EFFECT_LEGENDARY_JIRACHI_STAR, EFFECT_EARTH_CRATER } },
     { name = "Deoxys", tier = 3, style = "meteor", regions = { "kanto", "johto", "orange", "hoenn" },
-      places = { "outdoor" }, tags = { remote = 4 }, homes = { "Mt. Moon", "Fallarbor" },
+      places = { "outdoor" }, tags = { remote = 4 }, homes = { "Mt. Moon", "Fallarbor" }, impact = true,
       signs = { EFFECT_PURPLE_ELECTRIC_CLOUD }, arrive = { EFFECT_LEGENDARY_DEOXYS_IMPACT, EFFECT_EARTH_CRATER } },
 }
 
@@ -204,6 +204,23 @@ WildLegendaries.CONFIG = {
     flightSightingEvery = 10,   -- at most one "seen flying over" per legendary this often
     shakeRange = 14,            -- Groudon shakes the screens of trainers this close
 
+    -- Events (stage 3)
+    showerSeconds = 20,         -- Jirachi's meteor shower around where it lands
+    showerStars = 3,            -- falling stars a second
+    showerRadius = 7,
+    meteorView = { 20, 16 },    -- trainers this close see the meteors cross their screen
+    impactDelay = 1200,         -- ms: Deoxys's meteor falls, then the impact
+    rayquazaChance = 50,        -- percent, rolled once when Groudon and Kyogre are both out
+    rayquazaDelay = 2 * 60,     -- seconds after that it comes down
+    clashCheckEvery = 10,
+    clashMinutes = 15,          -- the clash weather is set this long and renewed while they stay
+    -- two legendaries in the same zone or next ones: the weather there while they stay
+    clashes = {
+        { "Articuno", "Zapdos", "hail", "a hailstorm breaks out" },
+        { "Articuno", "Moltres", "fog", "the air fills with steam" },
+        { "Groudon", "Kyogre", "thunderstorm", "a great storm breaks out", broadcast = true, calmedBy = "Rayquaza" },
+    },
+
     channelId = 14,             -- data/XML/channels.xml "Legendaries"
 }
 local CONFIG = WildLegendaries.CONFIG
@@ -220,6 +237,8 @@ local KEY = {
     SAVED = GLOBAL_STORAGES.LEGENDARY_SAVED,
     PENDING = GLOBAL_STORAGES.LEGENDARY_PENDING,
     FLIGHTS = GLOBAL_STORAGES.LEGENDARY_FLIGHTS,
+    EVENTS = GLOBAL_STORAGES.LEGENDARY_EVENTS,
+    CLASHES = GLOBAL_STORAGES.LEGENDARY_CLASHES,
 }
 
 -- Creature storage of the legendary itself.
@@ -846,15 +865,81 @@ local function playersNear(pos, rangeX, rangeY)
     return list
 end
 
--- Groudon coming up: the screens around it shake, harder the closer they are
-local function shakeAround(pos)
+-- Groudon coming up, Deoxys's impact: the screens around it shake, harder the closer they are
+local function shakeAround(pos, ms, delay)
     for _, pid in ipairs(playersNear(pos, CONFIG.shakeRange, CONFIG.shakeRange)) do
         local p = getCreaturePosition(pid)
         local d = math.max(math.abs(p.x - pos.x), math.abs(p.y - pos.y))
-        sendFlightData({ pid }, { type = "shake", strength = d <= 5 and 3 or (d <= 9 and 2 or 1), ms = 1600 })
+        sendFlightData({ pid }, { type = "shake", strength = d <= 5 and 3 or (d <= 9 and 2 or 1), ms = ms or 1600,
+            delay = delay })
     end
 end
 WildLegendaries.shakeAround = shakeAround
+
+-- Events: Jirachi's meteor shower, Deoxys's impact ------------------------------------------------
+
+local function setEvent(name, value)
+    local map = readMap(KEY.EVENTS)
+    map[name] = value
+    writeMap(KEY.EVENTS, map)
+end
+
+local function getShower()
+    local x, y, z, untilTime = (readMap(KEY.EVENTS).shower or ""):match("^(%d+),(%d+),(%d+),(%d+)$")
+    return x and { pos = { x = tonumber(x), y = tonumber(y), z = tonumber(z) }, untilTime = tonumber(untilTime) } or nil
+end
+
+local function sendMeteors(pos, seconds)
+    sendFlightData(playersNear(pos, CONFIG.meteorView[1], CONFIG.meteorView[2]),
+        { type = "meteors", seconds = seconds, count = seconds * 2 })
+end
+
+-- Falling stars around pos for showerSeconds; the globalevent drops them (runShower) and sends the
+-- trainers near it the stars across their screen every 5 seconds
+local function startShower(pos)
+    setEvent("shower", string.format("%d,%d,%d,%d", pos.x, pos.y, pos.z, os.time() + CONFIG.showerSeconds))
+    sendMeteors(pos, 5)
+end
+WildLegendaries.startShower = startShower
+WildLegendaries.getShower = getShower
+
+local function runShower(now)
+    local shower = getShower()
+    if (not shower) then
+        return
+    end
+    local left = shower.untilTime - now
+    if (left <= 0) then
+        setEvent("shower", nil)
+        return
+    end
+    for i = 1, CONFIG.showerStars do
+        local r = CONFIG.showerRadius
+        local spot = { x = shower.pos.x + getRandom(-r, r), y = shower.pos.y + getRandom(-r, r), z = shower.pos.z }
+        effectAt(spot, getRandom(1, 4) == 1 and EFFECT_FAILING_STARS or EFFECT_LEGENDARY_JIRACHI_STAR)
+    end
+    if (left % 5 == 0 and left < CONFIG.showerSeconds) then
+        sendMeteors(shower.pos, 5)
+    end
+end
+WildLegendaries.runShower = runShower
+
+-- Deoxys's meteor: it streaks down the screens near it, then the impact and the ground shakes
+local function impact(pos, effects)
+    sendFlightData(playersNear(pos, CONFIG.meteorView[1], CONFIG.meteorView[2]), { type = "meteors", big = true, seconds = 1 })
+    shakeAround(pos, 1400, CONFIG.impactDelay)
+    local function hit()
+        for _, effect in ipairs(effects or { EFFECT_LEGENDARY_DEOXYS_IMPACT, EFFECT_EARTH_CRATER }) do
+            effectAt(pos, effect)
+        end
+    end
+    if (addEvent) then
+        addEvent(hit, CONFIG.impactDelay)
+    else
+        hit()
+    end
+end
+WildLegendaries.impact = impact
 
 -- Encounters -------------------------------------------------------------------------------------
 
@@ -1102,6 +1187,12 @@ local function announceSpawn(species, area, asleep)
     if (species.tier == 3) then
         if (species.style == "disguise") then
             return "Mew is hiding somewhere, disguised as a wild Pokemon. Trainers who find it will see its true self!"
+        elseif (species.shower) then
+            return string.format("A meteor shower lights up the sky... %s came down with it somewhere. Look for falling stars!",
+                species.name)
+        elseif (species.impact) then
+            return string.format("A meteor struck somewhere! Something came with it: %s is out there. Look for its signs!",
+                species.name)
         end
         return string.format("Something mythical has arrived: %s is out there somewhere. Look for its signs!", species.name)
     elseif (asleep) then
@@ -1216,11 +1307,18 @@ function WildLegendaries.spawn(species, pos, area, source, options)
     setActive(encounter, cid, species.name, flags)
 
     if (not options.restored) then
-        for _, effect in ipairs(species.arrive or { (STYLE_TEXT[species.style] or {}).land or EFFECT_TELEPORT_DOWN }) do
-            effectAt(here, effect)
+        if (species.impact) then
+            impact(here, species.arrive)
+        else
+            for _, effect in ipairs(species.arrive or { (STYLE_TEXT[species.style] or {}).land or EFFECT_TELEPORT_DOWN }) do
+                effectAt(here, effect)
+            end
         end
         if (species.quake) then
             shakeAround(here)
+        end
+        if (species.shower) then
+            startShower(here)
         end
     end
     applyWeather(cid, species, monText(cid, MON.HOME_ZONE))
@@ -2162,9 +2260,183 @@ local function runPending(now)
     end
 end
 
+-- Rayquaza: when Groudon and Kyogre are both out it may come down to calm them -------------------
+
+local function encounterOut(name)
+    for _, a in ipairs(getActive()) do
+        if (a.name == name and (isMonster(a.cid) or a.flags:find("f"))) then
+            return a.encounter
+        end
+    end
+    return nil
+end
+
+-- Spawns it a little way off and flies it in next to Groudon (or Kyogre). Returns true or nil and why.
+function WildLegendaries.callRayquaza(source)
+    local species = WildLegendaries.getSpecies("Rayquaza")
+    if (isOut(species.name)) then
+        return nil, "Rayquaza is already out."
+    end
+    local target = WildLegendaries.find("Groudon") or WildLegendaries.find("Kyogre")
+    if (not target) then
+        return nil, "Groudon or Kyogre has to be on the map."
+    end
+    local near = getCreaturePosition(target)
+    local landing = hopFrom(near, 3, 7)
+    if (not landing) then
+        return nil, "No free spot near " .. getCreatureName(target) .. "."
+    end
+    local start = hopFrom(near, 16, 24)
+    local cid = start and WildLegendaries.spawn(species, start, nil, source, { quiet = true })
+    local flying = cid and takeoff(cid, species, landing, "rayquaza")
+    if (not cid) then
+        cid = WildLegendaries.spawn(species, landing, nil, source, { quiet = true })
+        if (not cid) then
+            return nil, "Rayquaza could not be placed."
+        end
+    end
+    broadcast(string.format("Rayquaza is coming down from the sky to calm Groudon and Kyogre near %s!",
+        WildLegendaries.areaAt(landing)))
+    if (not flying) then
+        WildLegendaries.save()
+    end
+    return true
+end
+
+local function runRayquaza(now)
+    local groudon, kyogre = encounterOut("Groudon"), encounterOut("Kyogre")
+    local events = readMap(KEY.EVENTS)
+    if (not groudon or not kyogre) then
+        if (events.rayquaza) then
+            setEvent("rayquaza", nil)
+        end
+        return
+    end
+    local pair = groudon .. ":" .. kyogre
+    local stored, due = (events.rayquaza or ""):match("^(%d+:%d+):(%d+)$")
+    if (stored ~= pair) then
+        due = getRandom(1, 100) <= CONFIG.rayquazaChance and (now + CONFIG.rayquazaDelay) or 0
+        setEvent("rayquaza", pair .. ":" .. due)
+        return
+    end
+    due = tonumber(due)
+    if (due > 0 and now >= due and not isOut("Rayquaza") and WildLegendaries.callRayquaza("event")) then
+        setEvent("rayquaza", pair .. ":0")
+    end
+end
+WildLegendaries.runRayquaza = runRayquaza
+
+-- Clashes: two legendaries in the same zone (or next ones) change the weather there -------------
+
+local function zonesTouch(a, b)
+    if (a == b) then
+        return true
+    end
+    for _, other in ipairs((LEGENDARY_ANCHORS.NEIGHBORS or {})[a] or {}) do
+        if (other == b) then
+            return true
+        end
+    end
+    return false
+end
+
+-- The clash weather every zone should have now: [zone id string] = { kind, clash }
+local function wantedClashes(owned)
+    local want = {}
+    for _, clash in ipairs(CONFIG.clashes) do
+        local kind = clash[3]
+        if (WildLegendaries.findFlight(clash[1]) or WildLegendaries.findFlight(clash[2])) then
+            -- one of them is in the air or under the sea: what it made stays until it lands
+            for id, owner in pairs(owned) do
+                if (owner == kind) then
+                    want[id] = { kind = kind, clash = clash }
+                end
+            end
+        else
+            local a, b = WildLegendaries.find(clash[1]), WildLegendaries.find(clash[2])
+            local calmed = clash.calmedBy and isOut(clash.calmedBy)
+            local za, zb = a and monText(a, MON.ZONE), b and monText(b, MON.ZONE)
+            if (za and zb and not calmed and zonesTouch(za, zb)) then
+                for _, name in ipairs({ za, zb }) do
+                    local zone = weatherZone(name)
+                    if (zone) then
+                        want[tostring(zone.id)] = { kind = kind, clash = clash, zone = zone }
+                    end
+                end
+            end
+        end
+    end
+    return want
+end
+
+function WildLegendaries.runClashes(now)
+    now = now or os.time()
+    local owned = readMap(KEY.CLASHES)
+    local want = wantedClashes(owned)
+    local overrides = Weather.getOverrides()
+    local changed, started, calmed = false, {}, {}
+    for id, wanted in pairs(want) do
+        local current = overrides[tonumber(id)]
+        local ours = owned[id] and current and current.kind == owned[id]
+        local free = not current or ours or (current.kind == "rain" and isOut("Kyogre"))
+        if (free and (not ours or current.kind ~= wanted.kind or
+                (current.endsAt > 0 and current.endsAt - now < CONFIG.clashMinutes * 60 / 3))) then
+            Weather.setOverride({ tonumber(id) }, wanted.kind, CONFIG.clashMinutes)
+            if (owned[id] ~= wanted.kind) then
+                started[wanted.clash] = started[wanted.clash] or wanted.zone
+            end
+            owned[id], changed = wanted.kind, true
+        end
+    end
+    for id, kind in pairs(owned) do
+        if (not want[id]) then
+            local current = overrides[tonumber(id)]
+            if (current and current.kind == kind) then
+                Weather.setOverride({ tonumber(id) }, nil)
+            end
+            owned[id], changed = nil, true
+            for _, clash in ipairs(CONFIG.clashes) do
+                if (clash[3] == kind and clash.calmedBy and isOut(clash.calmedBy)) then
+                    calmed[clash] = true
+                end
+            end
+        end
+    end
+    if (not changed) then
+        return
+    end
+    writeMap(KEY.CLASHES, owned)
+    for clash, zone in pairs(started) do
+        local text = string.format("%s and %s meet near %s: %s!", clash[1], clash[2], zone and zone.name or "?", clash[4])
+        toChannel(text)
+        if (clash.broadcast) then
+            broadcast(text)
+        end
+    end
+    for clash in pairs(calmed) do
+        toChannel(string.format("%s calmed the clash of %s and %s.", clash.calmedBy, clash[1], clash[2]))
+    end
+    -- Kyogre's own rain comes back where the storm was
+    local kyogre = WildLegendaries.find("Kyogre")
+    if (kyogre) then
+        applyWeather(kyogre, WildLegendaries.getSpecies("Kyogre"), monText(kyogre, MON.HOME_ZONE))
+    end
+end
+
+-- The clash weather out now, for the status: list of { kind, zone }
+function WildLegendaries.getClashes()
+    local list = {}
+    for id, kind in pairs(readMap(KEY.CLASHES)) do
+        local zone = Weather.getZone(tonumber(id))
+        list[#list + 1] = { kind = kind, zone = zone and zone.name or id }
+    end
+    table.sort(list, function(a, b) return a.zone < b.zone end)
+    return list
+end
+
 -- Executor state (only used in the globalevent's Lua state).
 local started = false
-local lastGapCheck, lastSpawnTry, lastSave = 0, 0, 0
+local lastGapCheck, lastSpawnTry, lastSave, lastClashCheck = 0, 0, 0, 0
 
 function WildLegendaries.onThink()
     local now = os.time()
@@ -2183,6 +2455,12 @@ function WildLegendaries.onThink()
     end
     runPending(now)
     WildLegendaries.runFlights(now)
+    runShower(now)
+    if (now - lastClashCheck >= CONFIG.clashCheckEvery) then
+        lastClashCheck = now
+        runRayquaza(now)
+        WildLegendaries.runClashes(now)
+    end
 
     if (now - lastGapCheck >= CONFIG.gapCheckInterval) then
         lastGapCheck = now
@@ -2229,6 +2507,25 @@ local function describeOne(a, now, staff)
     return line
 end
 
+-- The events going on, for staff: the meteor shower, Rayquaza's call, the clash weather
+local function eventLines(now)
+    local lines = {}
+    local shower = getShower()
+    if (shower and shower.untilTime > now) then
+        lines[#lines + 1] = string.format("Meteor shower at (%d, %d, %d) for %ds more.", shower.pos.x, shower.pos.y,
+            shower.pos.z, shower.untilTime - now)
+    end
+    local due = tonumber((readMap(KEY.EVENTS).rayquaza or ""):match(":(%d+)$"))
+    if (due and due > 0 and not isOut("Rayquaza")) then
+        lines[#lines + 1] = string.format("Rayquaza comes down to Groudon and Kyogre in %s.",
+            ServerExpEvent.formatDuration(math.max(0, due - now)))
+    end
+    for _, clash in ipairs(WildLegendaries.getClashes()) do
+        lines[#lines + 1] = string.format("Clash weather: %s near %s.", clash.kind, clash.zone)
+    end
+    return lines
+end
+
 -- Status for /legendary status and the Legendaries channel.
 function WildLegendaries.describe(staff)
     local lines, now = {}, os.time()
@@ -2256,6 +2553,9 @@ function WildLegendaries.describe(staff)
             local point = WildLegendaries.getPoints()[pending.point]
             table.insert(lines, string.format("%s's warning near %s, appears in %s.", name, point and point.area or "?",
                 ServerExpEvent.formatDuration(math.max(0, pending.at - now))))
+        end
+        for _, line in ipairs(eventLines(now)) do
+            table.insert(lines, line)
         end
         local online = WildLegendaries.getOnline()
         local row = WildLegendaries.getPopulation(online)
@@ -2319,7 +2619,7 @@ function WildLegendaries.adminState()
     local nextAt = WildLegendaries.getNextSpawn()
     return { manual = WildLegendaries.isManual(), active = active, cooldowns = cooldowns, pending = pending,
              species = species, sets = sets, nextIn = nextAt and math.max(0, nextAt - now) or nil,
-             blocked = WildLegendaries.blocked(now), mythical = mythicalOut() }
+             blocked = WildLegendaries.blocked(now), mythical = mythicalOut(), events = eventLines(now) }
 end
 
 -- Ranger radar hints for the legendaries out in the trainer's region, by rank: zone activity (1), the

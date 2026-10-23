@@ -15,10 +15,13 @@
 -- /legendary next <duration>        move the next scheduled spawn, e.g. /legendary next 5m
 -- /legendary cooldowns clear [name]
 -- /legendary flyover <name> [dive]   a fly-over (or Lugia's shape under the sea) only you see, nothing spawns
+-- /legendary rayquaza               Groudon and Kyogre out (those not out spawn), then Rayquaza comes down to them
+-- /legendary meteors                Jirachi's meteor shower at your feet, nothing spawns
+-- /legendary impact                 Deoxys's meteor impact at your feet, nothing spawns
 -- Durations: s, m, h, d.
 local USAGE = "Usage: /legendary status | spawn <name> [here] | set <birds|beasts|regis|eon> | end <name> | move <name> | " ..
 	"health <name> <percent> | signs <name> | mew [here] | reveal | wake <name> | warn [here] | mode <auto|manual> | " ..
-	"next <duration> | cooldowns clear [name] | flyover <name> [dive]"
+	"next <duration> | cooldowns clear [name] | flyover <name> [dive] | rayquaza | meteors | impact"
 
 local UNITS = { s = 1, m = 60, h = 3600, d = 86400 }
 
@@ -186,6 +189,25 @@ function onSay(cid, words, param, channel)
 		else
 			reply(cid, "Unknown legendary: " .. name)
 		end
+
+	elseif (command == "rayquaza") then
+		for _, name in ipairs({ "Groudon", "Kyogre" }) do
+			if (not WildLegendaries.find(name) and not WildLegendaries.findFlight(name)) then
+				local created, info = WildLegendaries.spawn(WildLegendaries.getSpecies(name), nil, nil, "staff")
+				reply(cid, created and string.format("%s is out near %s.", name, tostring(info)) or info)
+			end
+		end
+		local ok, why = WildLegendaries.callRayquaza("staff")
+		reply(cid, ok and "Rayquaza is on its way down (/legendary status shows where)." or why)
+
+	elseif (command == "meteors") then
+		WildLegendaries.startShower(getCreaturePosition(cid))
+		reply(cid, string.format("A meteor shower falls around you for %ds; nothing spawns.",
+			WildLegendaries.CONFIG.showerSeconds))
+
+	elseif (command == "impact") then
+		WildLegendaries.impact(getCreaturePosition(cid))
+		reply(cid, "A meteor strikes next to you; nothing spawns.")
 
 	elseif (command == "cooldowns" and (args[2] or ""):lower() == "clear") then
 		local species = args[3] and WildLegendaries.getSpecies(table.concat(args, " ", 3))

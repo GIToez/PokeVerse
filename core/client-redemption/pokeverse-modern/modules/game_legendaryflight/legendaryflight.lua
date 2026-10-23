@@ -1,12 +1,14 @@
 -- Wild legendaries seen from the ground (docs/upcoming-features.md, legendary revamp stage 2). The server
 -- (078-wildLegendaries.lua) sends ExtendedIds.LegendaryFlight JSON to the trainers near a flight:
 --   {type = "flight", id, species, look, kind = "fly"|"dive", from, to, elapsed, seconds, circle}
---   {type = "shake", strength = 1 to 3, ms}
+--   {type = "shake", strength = 1 to 3, ms, delay}
+--   {type = "meteors", seconds, count, big}
 -- A flyer is drawn above the map moving from `from` to `to` over `seconds`, raised off the ground and
 -- bobbing, with its own sprite dark and see-through on the ground as its shadow; then it circles down
 -- over `to` for `circle` seconds, when the server puts the real one there. A dive (Lugia, Kyogre) is
 -- only the dark shape, and only over water. Nothing shows under a roof or underground (game_weather's
--- open-sky check); it is drawn the same on every floor. A shake jolts the map for Groudon.
+-- open-sky check); it is drawn the same on every floor. A shake jolts the map for Groudon. Meteors
+-- streak down across the screen (Jirachi's shower; one big one for Deoxys's impact).
 local DIR = '/modules/game_legendaryflight/'
 local FLY_SHADOW = 'Legendary - flight shadow'
 local DIVE_SHADOW = 'Legendary - dive shadow'
@@ -16,9 +18,14 @@ local CIRCLE_RADIUS = 1.6
 local CIRCLE_TURN = 2.2 -- seconds per circle
 local TICK = 30
 
+local METEOR_IMAGE = '/images/effects/legendary_jirachi_star/4'
+local METEOR_MS = { 700, 1100 }
+local BIG_METEOR_MS = 1300
+
 local flights = {} -- [id] = { data, startedAt, sprite, shadow, scale }
 local tickEvent
 local shake = { event = nil, left = 0, top = 0 }
+local meteors = { list = {}, event = nil } -- list of { widget, startAt, ms, from, to, size }
 
 local function mapPanel()
     return modules.game_interface and modules.game_interface.getMapPanel()
@@ -183,6 +190,78 @@ local function startFlight(data)
     update()
 end
 
+local function clearMeteors()
+    removeEvent(meteors.event)
+    meteors.event = nil
+    for _, m in ipairs(meteors.list) do
+        m.widget:destroy()
+    end
+    meteors.list = {}
+end
+
+local function updateMeteors()
+    local map = mapPanel()
+    if not map or not g_game.isOnline() then
+        clearMeteors()
+        return
+    end
+    local now, area = g_clock.millis(), map:getRect()
+    for i = #meteors.list, 1, -1 do
+        local m = meteors.list[i]
+        local t = (now - m.startAt) / m.ms
+        if t >= 1 then
+            m.widget:destroy()
+            table.remove(meteors.list, i)
+        elseif t < 0 then
+            m.widget:hide()
+        else
+            local x = area.x + (m.from.x + (m.to.x - m.from.x) * t) * area.width
+            local y = area.y + (m.from.y + (m.to.y - m.from.y) * t) * area.height
+            m.widget:setRect({ x = math.floor(x - m.size / 2), y = math.floor(y - m.size / 2), width = m.size, height = m.size })
+            m.widget:setOpacity(t < 0.15 and t / 0.15 or (t > 0.8 and (1 - t) / 0.2 or 1))
+            m.widget:show()
+            m.widget:raise()
+        end
+    end
+    if #meteors.list == 0 then
+        removeEvent(meteors.event)
+        meteors.event = nil
+    end
+end
+
+-- Stars falling from the top right toward the bottom left, in screen fractions so the zoom doesn't matter
+local function startMeteors(seconds, total, big)
+    local map = mapPanel()
+    if not map or not openSky() then
+        return
+    end
+    local tile = map:getTileRect(map:getCameraPosition())
+    local tw = (tile and tile.width > 0) and tile.width or 32
+    local now = g_clock.millis()
+    total = math.max(1, math.min(80, tonumber(total) or 12))
+    seconds = math.max(0.5, math.min(30, tonumber(seconds) or 6))
+    for i = 1, (big and 1 or total) do
+        local widget = g_ui.createWidget('LegendaryMeteor', map)
+        widget:setImageSource(METEOR_IMAGE)
+        widget:hide()
+        local m = { widget = widget }
+        if big then
+            m.startAt, m.ms, m.size = now, BIG_METEOR_MS, tw * 4
+            m.from, m.to = { x = 1.05, y = -0.15 }, { x = 0.5, y = 0.45 }
+        else
+            local sx, sy = math.random(30, 115) / 100, math.random(-20, 25) / 100
+            local reach = math.random(35, 60) / 100
+            m.startAt, m.ms, m.size = now + math.random(0, math.floor(seconds * 1000)), math.random(METEOR_MS[1], METEOR_MS[2]),
+                math.floor(tw * math.random(10, 18) / 10)
+            m.from, m.to = { x = sx, y = sy }, { x = sx - reach, y = sy + reach }
+        end
+        table.insert(meteors.list, m)
+    end
+    if not meteors.event then
+        meteors.event = cycleEvent(updateMeteors, TICK)
+    end
+end
+
 local function stopShake()
     removeEvent(shake.event)
     shake.event = nil
@@ -227,12 +306,20 @@ local function onMessage(protocol, opcode, buffer)
     if data.type == 'flight' then
         startFlight(data)
     elseif data.type == 'shake' then
-        startShake(data.strength, data.ms)
+        local delay = tonumber(data.delay) or 0
+        if delay > 0 then
+            scheduleEvent(function() startShake(data.strength, data.ms) end, math.min(delay, 5000))
+        else
+            startShake(data.strength, data.ms)
+        end
+    elseif data.type == 'meteors' then
+        startMeteors(data.seconds, data.count, data.big == true)
     end
 end
 
 local function onGameEnd()
     clearAll()
+    clearMeteors()
     stopShake()
 end
 
@@ -247,6 +334,10 @@ end
 -- for tests and the screenshots: a flight as if the server sent it
 function showFlight(data)
     startFlight(data)
+end
+
+function showMeteors(seconds, total, big)
+    startMeteors(seconds, total, big)
 end
 
 function count()
@@ -268,5 +359,6 @@ function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.LegendaryFlight)
     disconnect(g_game, { onGameEnd = onGameEnd })
     clearAll()
+    clearMeteors()
     stopShake()
 end

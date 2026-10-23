@@ -2,3 +2,7 @@ LegendaryFlyer < UICreature
   phantom: true
   focusable: false
   padding: 0
+
+LegendaryMeteor < UIWidget
+  phantom: true
+  focusable: false
