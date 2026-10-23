@@ -4,7 +4,7 @@
 --                                   second mythical. Regis come asleep, Mew in disguise.
 -- /legendary set <birds|beasts|regis|eon>  the whole set (a member already out is skipped)
 -- /legendary end <name>             send one away without a cooldown
--- /legendary move <name>            move it on now, the way it moves
+-- /legendary move <name>            move it on now, the way it moves (flyers take off, Lugia and Kyogre dive)
 -- /legendary health <name> <percent>
 -- /legendary signs <name>           show its signs and trail now, and tell you the spots
 -- /legendary mew [here]             Mew disguised as a Pokemon of the spot
@@ -14,10 +14,11 @@
 -- /legendary mode <auto|manual>     manual: no scheduled spawns, what is out stays
 -- /legendary next <duration>        move the next scheduled spawn, e.g. /legendary next 5m
 -- /legendary cooldowns clear [name]
+-- /legendary flyover <name> [dive]   a fly-over (or Lugia's shape under the sea) only you see, nothing spawns
 -- Durations: s, m, h, d.
 local USAGE = "Usage: /legendary status | spawn <name> [here] | set <birds|beasts|regis|eon> | end <name> | move <name> | " ..
 	"health <name> <percent> | signs <name> | mew [here] | reveal | wake <name> | warn [here] | mode <auto|manual> | " ..
-	"next <duration> | cooldowns clear [name]"
+	"next <duration> | cooldowns clear [name] | flyover <name> [dive]"
 
 local UNITS = { s = 1, m = 60, h = 3600, d = 86400 }
 
@@ -35,7 +36,9 @@ end
 
 local function findOut(cid, name)
 	local target = WildLegendaries.find(name)
-	if (not target) then
+	if (not target and WildLegendaries.findFlight(name)) then
+		reply(cid, WildLegendaries.getSpecies(name).name .. " is in the air (or under the sea) right now; it lands in a few seconds.")
+	elseif (not target) then
 		reply(cid, (WildLegendaries.getSpecies(name) and WildLegendaries.getSpecies(name).name or tostring(name)) ..
 			" is not out.")
 	end
@@ -80,9 +83,15 @@ function onSay(cid, words, param, channel)
 		reply(cid, #spawned > 0 and string.format("%s: %d out.", set.name, #spawned) or "Every member is out already.")
 
 	elseif (command == "end") then
-		local target = findOut(cid, table.concat(args, " ", 2))
-		if (target) then
-			WildLegendaries.finish(target, "staff")
+		local name = table.concat(args, " ", 2)
+		local flight = WildLegendaries.findFlight(name)
+		if (flight) then
+			WildLegendaries.endFlight(flight, "staff")
+		else
+			local target = findOut(cid, name)
+			if (target) then
+				WildLegendaries.finish(target, "staff")
+			end
 		end
 
 	elseif (command == "move") then
@@ -90,10 +99,9 @@ function onSay(cid, words, param, channel)
 		if (target) then
 			if (WildLegendaries.isDisguised(target) or WildLegendaries.isAsleep(target)) then
 				reply(cid, "It doesn't move while asleep or in disguise.")
-			elseif (WildLegendaries.move(target, "staff")) then
-				reply(cid, string.format("%s moved to %s.", args[2], tostring(getCreatureStorage(target, WildLegendaries.MON.AREA))))
 			else
-				reply(cid, "It has nowhere to go from here (it stays put by its nature, or no free point).")
+				WildLegendaries.requestMove(target)
+				reply(cid, string.format("%s moves on within a second (/legendary status shows where).", getCreatureName(target)))
 			end
 		end
 
@@ -168,6 +176,16 @@ function onSay(cid, words, param, channel)
 		WildLegendaries.setNextSpawn(os.time() + seconds)
 		reply(cid, "Next wild legendary in " .. ServerExpEvent.formatDuration(seconds) .. "." ..
 			(WildLegendaries.isManual() and " (Manual mode: it waits until you switch to auto.)" or ""))
+
+	elseif (command == "flyover") then
+		local dive = args[#args] and args[#args]:lower() == "dive"
+		local name = table.concat(args, " ", 2, dive and (#args - 1) or #args)
+		if (WildLegendaries.flyover(cid, name, dive and "dive" or "fly")) then
+			reply(cid, "A " .. (dive and "swim-by" or "fly-over") .. " of " .. WildLegendaries.getSpecies(name).name ..
+				" crosses your screen now; only you see it.")
+		else
+			reply(cid, "Unknown legendary: " .. name)
+		end
 
 	elseif (command == "cooldowns" and (args[2] or ""):lower() == "clear") then
 		local species = args[3] and WildLegendaries.getSpecies(table.concat(args, " ", 3))

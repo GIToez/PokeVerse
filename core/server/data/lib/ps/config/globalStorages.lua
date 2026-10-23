@@ -71,6 +71,7 @@ GLOBAL_STORAGES = {
     DISCORD_BOOST_LEVEL = 7156, -- the Discord server boost level 0-3 the bridge last sent (DiscordBoostPerks)
     DISCORD_BOOST_COUNT = 7157, -- the Discord server's boost count sent with it
     WEATHER_REGIONS_OFF = 7158, -- "m;<region ids>": regions staff switched off with /weather region (Weather)
+    LEGENDARY_FLIGHTS = 7159, -- "m;<encounter>=<species>|<health %>|x,y,z|x,y,z|<start>|<seconds>|<ends at>|<flags>|<flee stage>|<kind>": legendaries in the air or under the sea
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

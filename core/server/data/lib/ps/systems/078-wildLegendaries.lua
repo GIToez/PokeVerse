@@ -36,39 +36,40 @@ local MINUTE, HOUR, DAY = 60, 3600, 86400
 -- tags: weight added for each tag of a point (base 1); strict: only points with one of its tags
 -- homes: areas or zones; homeShare: percent of the picks made among them
 -- storm: weight in thunderstorms (and faster moves for roamers); trainers: weight where trainers are
--- signs: effects on its trail; arrive: effects when it lands
+-- signs: effects on its trail; arrive: effects when it lands; depart: effect where it leaves
+-- dive: travels under the sea (only its dark shape shows); quake: shakes the screens around it when it comes up
 WildLegendaries.SPECIES = {
     { name = "Articuno", tier = 1, set = "birds", style = "fly", regions = { "kanto", "orange", "johto" },
       places = { "outdoor" }, tags = { cold = 12, high = 2, mountain = 1, water = 1 },
       homes = { "Seafoam Mountain", "Interior Seafoam Mountain", "Within the Iceberg", "Ice Island", "Ice Island Cave", "Mahogany" },
-      signs = { EFFECT_ICE_CRYSTAL_EMERGE, EFFECT_ICE_EMERGE } },
+      signs = { EFFECT_LEGENDARY_ARTICUNO_FROST, EFFECT_LEGENDARY_ARTICUNO_FROST, EFFECT_ICE_CRYSTAL_EMERGE } },
     { name = "Zapdos", tier = 1, set = "birds", style = "fly", regions = { "kanto", "johto", "orange" },
       places = { "outdoor" }, tags = { electric = 12, high = 1, mountain = 1 }, storm = 6,
       homes = { "Power Plant", "Power Plant of Hamlin", "Lightning Island", "Lightning Island Cave" },
-      signs = { EFFECT_LIGHT_THUNDER, EFFECT_ELECTRIC_SPARK } },
+      signs = { EFFECT_LEGENDARY_ZAPDOS_BOLT, EFFECT_LEGENDARY_ZAPDOS_BOLT, EFFECT_LIGHT_THUNDER } },
     { name = "Moltres", tier = 1, set = "birds", style = "fly", regions = { "kanto", "johto", "orange" },
       places = { "outdoor" }, tags = { fire = 12, mountain = 1, high = 1 },
       homes = { "Volcano", "Volcano Cave", "The Volcano Coast", "Ancient Volcano", "Fire Island", "Fire Island Cave", "Fire Mountain", "Cinnabar" },
-      signs = { EFFECT_FIRE, EFFECT_YELLOW_FLAME } },
+      signs = { EFFECT_LEGENDARY_MOLTRES_FEATHER, EFFECT_LEGENDARY_MOLTRES_FEATHER, EFFECT_FIRE } },
     { name = "Raikou", tier = 1, set = "beasts", style = "roam", regions = { "johto", "kanto" },
       places = { "outdoor" }, tags = { electric = 8, remote = 1 }, storm = 6, homes = { "Ecruteak" },
-      signs = { EFFECT_ELECTRIC_SPARK } },
+      signs = { EFFECT_LEGENDARY_RAIKOU_SPARKS, EFFECT_LEGENDARY_RAIKOU_SPARKS, EFFECT_ELECTRIC_SPARK } },
     { name = "Entei", tier = 1, set = "beasts", style = "roam", regions = { "johto", "kanto" },
       places = { "outdoor" }, tags = { fire = 8, mountain = 3, rock = 1 }, homes = { "Ecruteak", "Volcano" },
-      signs = { EFFECT_BURNING, EFFECT_FLAMES } },
+      signs = { EFFECT_LEGENDARY_ENTEI_SCORCH, EFFECT_LEGENDARY_ENTEI_SCORCH, EFFECT_BURNING } },
     { name = "Suicune", tier = 1, set = "beasts", style = "roam", regions = { "johto", "kanto" },
       places = { "outdoor" }, tags = { water = 8, forest = 2 }, homes = { "Ecruteak", "Cianwood" },
-      signs = { EFFECT_SMOKE, EFFECT_OCEAN_BUBBLES } },
+      signs = { EFFECT_LEGENDARY_SUICUNE_MIST, EFFECT_LEGENDARY_SUICUNE_MIST, EFFECT_SMOKE } },
     { name = "Regirock", tier = 1, set = "regis", style = "sleep", regions = { "hoenn", "kanto" },
       places = { "outdoor", "cave" }, tags = { rock = 10, cave = 2 }, strict = true,
-      homes = { "Rock Tunnel", "Stone Mountain", "Dewford" }, signs = { EFFECT_FAILING_ROCKS } },
+      homes = { "Rock Tunnel", "Stone Mountain", "Dewford" }, signs = { EFFECT_LEGENDARY_REGIROCK_ROCKS, EFFECT_FAILING_ROCKS } },
     { name = "Regice", tier = 1, set = "regis", style = "sleep", regions = { "hoenn", "kanto", "johto" },
       places = { "outdoor", "cave" }, tags = { cold = 10, cave = 2 }, strict = true,
       homes = { "Seafoam Mountain", "Interior Seafoam Mountain", "Within the Iceberg", "Mahogany" },
-      signs = { EFFECT_ICE_EMERGE } },
+      signs = { EFFECT_LEGENDARY_REGICE_FROST, EFFECT_ICE_EMERGE } },
     { name = "Registeel", tier = 1, set = "regis", style = "sleep", regions = { "hoenn", "kanto" },
       places = { "outdoor", "cave" }, tags = { steel = 10, cave = 2 }, strict = true,
-      homes = { "Power Plant", "Power Plant of Hamlin", "Dewford" }, signs = { EFFECT_METAL_CLAW } },
+      homes = { "Power Plant", "Power Plant of Hamlin", "Dewford" }, signs = { EFFECT_LEGENDARY_REGISTEEL_SPARKS, EFFECT_METAL_CLAW } },
     { name = "Latias", tier = 1, set = "eon", style = "fly", fast = true,
       regions = { "kanto", "johto", "orange", "hoenn" }, places = { "outdoor" },
       tags = { peaceful = 4, forest = 2 }, trainers = 3, signs = { EFFECT_RED_STARS } },
@@ -77,34 +78,36 @@ WildLegendaries.SPECIES = {
       tags = { remote = 4, mountain = 2 }, trainers = 0.25, signs = { EFFECT_BIG_BLUE_BLINK } },
     { name = "Mewtwo", tier = 2, style = "cave", regions = { "kanto" }, places = { "outdoor", "cave" },
       tags = { remote = 4, cave = 2 }, homes = { "Cerulean Cave" }, homeShare = 80, warning = true,
-      signs = { EFFECT_PURPLE_ENERGIZE, EFFECT_PSYCHIC_TRIANGLE } },
+      signs = { EFFECT_LEGENDARY_MEWTWO_PSYCHIC, EFFECT_LEGENDARY_MEWTWO_PSYCHIC, EFFECT_PURPLE_ENERGIZE } },
     { name = "Mew", tier = 3, style = "disguise", regions = { "kanto", "johto", "orange", "hoenn" },
       places = { "outdoor", "cave" }, tags = { forest = 4, mystic = 4 }, strict = true,
       homes = { "Pokemansion", "Pokemansion - Secret Area", "Fairchild", "Forgotten Temple", "Temple of Illusion" },
-      signs = { EFFECT_PINK_MINICLOUD }, arrive = { EFFECT_BIG_PINK_CLOUD } },
-    { name = "Lugia", tier = 2, style = "sea", regions = { "johto", "orange", "kanto" }, places = { "outdoor" },
+      signs = { EFFECT_LEGENDARY_MEW_SPARKLES, EFFECT_PINK_MINICLOUD }, arrive = { EFFECT_BIG_PINK_CLOUD } },
+    { name = "Lugia", tier = 2, style = "sea", dive = true, regions = { "johto", "orange", "kanto" }, places = { "outdoor" },
       tags = { water = 10 }, strict = true, homes = { "Olivine", "Cianwood", "Shamouti" },
-      signs = { EFFECT_WATER_SPLASH }, arrive = { EFFECT_WATER_SPLASH } },
+      signs = { EFFECT_LEGENDARY_WATER_RIPPLE, EFFECT_LEGENDARY_WATER_RIPPLE, EFFECT_WATER_SPLASH },
+      arrive = { EFFECT_WATER_SPLASH, EFFECT_LEGENDARY_WATER_RIPPLE } },
     { name = "Ho-Oh", tier = 2, style = "fly", regions = { "johto", "kanto" }, places = { "outdoor" },
       tags = { high = 6, mountain = 2 }, homes = { "Ecruteak", "Lavender Tower" },
-      signs = { EFFECT_YELLOW_STAR, EFFECT_BIG_YELLOW_SPARKS } },
+      signs = { EFFECT_LEGENDARY_HOOH_RAINBOW, EFFECT_LEGENDARY_HOOH_RAINBOW, EFFECT_BIG_YELLOW_SPARKS } },
     { name = "Celebi", tier = 3, style = "teleport", regions = { "johto", "kanto" }, places = { "outdoor" },
       tags = { forest = 8 }, strict = true, homes = { "Azalea", "Viridian Forest" },
-      signs = { EFFECT_GREEN_SPARK, EFFECT_LEAVES } },
-    { name = "Kyogre", tier = 2, style = "territory", regions = { "hoenn", "orange" }, places = { "outdoor" },
+      signs = { EFFECT_LEGENDARY_CELEBI_SPARKLES, EFFECT_LEGENDARY_CELEBI_SPARKLES, EFFECT_LEAVES } },
+    { name = "Kyogre", tier = 2, style = "territory", dive = true, regions = { "hoenn", "orange" }, places = { "outdoor" },
       tags = { water = 10 }, strict = true, homes = { "Pacifidlog", "Sootopolis", "Lilycove", "Slateport" },
-      rain = true, signs = { EFFECT_WATER_TORNADO }, arrive = { EFFECT_WATER_TORNADO }, leave = "dived back into the deep" },
-    { name = "Groudon", tier = 2, style = "territory", regions = { "hoenn", "kanto" }, places = { "outdoor", "cave" },
+      rain = true, signs = { EFFECT_LEGENDARY_WATER_RIPPLE, EFFECT_WATER_TORNADO }, arrive = { EFFECT_WATER_TORNADO }, leave = "dived back into the deep" },
+    { name = "Groudon", tier = 2, style = "territory", quake = true, regions = { "hoenn", "kanto" }, places = { "outdoor", "cave" },
       tags = { fire = 6, rock = 4 }, strict = true, homes = { "Lavaridge", "Fallarbor", "Volcano" },
-      signs = { EFFECT_GROUND_SMASH, EFFECT_EARTH_CRATER }, arrive = { EFFECT_BIG_ROCK_EMERGE }, leave = "sank back underground" },
+      signs = { EFFECT_LEGENDARY_GROUDON_CRACK, EFFECT_GROUND_SMASH },
+      arrive = { EFFECT_LEGENDARY_GROUDON_CRACK, EFFECT_BIG_ROCK_EMERGE }, depart = EFFECT_GROUND_SMASH, leave = "sank back underground" },
     { name = "Rayquaza", tier = 2, style = "fly", regions = { "hoenn", "johto", "kanto" }, places = { "outdoor" },
-      tags = { high = 8, mountain = 2 }, strict = true, homes = { "Fortree", "Blackthorn" }, signs = { EFFECT_GREEN_WIND } },
+      tags = { high = 8, mountain = 2 }, strict = true, homes = { "Fortree", "Blackthorn" }, signs = { EFFECT_LEGENDARY_RAYQUAZA_WIND, EFFECT_LEGENDARY_RAYQUAZA_WIND, EFFECT_GREEN_WIND } },
     { name = "Jirachi", tier = 3, style = "meteor", regions = { "kanto", "johto", "orange", "hoenn" },
       places = { "outdoor" }, tags = { remote = 4, high = 2 }, homes = { "Mt. Moon", "Fallarbor" }, lifetime = 45 * MINUTE,
-      signs = { EFFECT_FAILING_STARS }, arrive = { EFFECT_FAILING_STARS, EFFECT_EARTH_CRATER } },
+      signs = { EFFECT_LEGENDARY_JIRACHI_STAR, EFFECT_FAILING_STARS }, arrive = { EFFECT_LEGENDARY_JIRACHI_STAR, EFFECT_EARTH_CRATER } },
     { name = "Deoxys", tier = 3, style = "meteor", regions = { "kanto", "johto", "orange", "hoenn" },
       places = { "outdoor" }, tags = { remote = 4 }, homes = { "Mt. Moon", "Fallarbor" },
-      signs = { EFFECT_PURPLE_ELECTRIC_CLOUD }, arrive = { EFFECT_FAILING_STARS, EFFECT_EARTH_CRATER } },
+      signs = { EFFECT_PURPLE_ELECTRIC_CLOUD }, arrive = { EFFECT_LEGENDARY_DEOXYS_IMPACT, EFFECT_EARTH_CRATER } },
 }
 
 WildLegendaries.SETS = {
@@ -125,7 +128,7 @@ for _, set in ipairs(WildLegendaries.SETS) do
 end
 
 local STYLE_TEXT = {
-    fly = { leave = "flew away", depart = EFFECT_BIG_DUST_UP, land = EFFECT_BIG_DUST_DOWN },
+    fly = { leave = "flew away", depart = EFFECT_LEGENDARY_TAKEOFF, land = EFFECT_LEGENDARY_LANDING },
     roam = { leave = "ran off", depart = EFFECT_BIG_DUST_UP, land = EFFECT_BIG_DUST_DOWN },
     sea = { leave = "dived back into the sea" },
     territory = { leave = "went back to its territory" },
@@ -190,6 +193,17 @@ WildLegendaries.CONFIG = {
     warningEffectEvery = 15,
     revealRank = 4,             -- Ranger rank whose radar finds Mew in disguise
 
+    -- Flights: flyers cross to their next spot in the open, Lugia and Kyogre under the sea
+    flightSpeed = 6,            -- tiles per second
+    fastFlightSpeed = 9,        -- Latias and Latios
+    swimSpeed = 4,
+    flightSeconds = { 8, 60 },  -- shortest and longest crossing; long ones go faster
+    circleSeconds = 4,          -- circling over the landing spot
+    flightView = { 18, 14 },    -- trainers this close to where it is are sent the flight
+    flightSignEvery = 2,
+    flightSightingEvery = 10,   -- at most one "seen flying over" per legendary this often
+    shakeRange = 14,            -- Groudon shakes the screens of trainers this close
+
     channelId = 14,             -- data/XML/channels.xml "Legendaries"
 }
 local CONFIG = WildLegendaries.CONFIG
@@ -205,6 +219,7 @@ local KEY = {
     MODE = GLOBAL_STORAGES.LEGENDARY_MODE,
     SAVED = GLOBAL_STORAGES.LEGENDARY_SAVED,
     PENDING = GLOBAL_STORAGES.LEGENDARY_PENDING,
+    FLIGHTS = GLOBAL_STORAGES.LEGENDARY_FLIGHTS,
 }
 
 -- Creature storage of the legendary itself.
@@ -230,6 +245,7 @@ local MON = {
     DISGUISED = 9118,
     REVEAL_PENDING = 9119,
     FOUND_BY = 9120,     -- who woke or revealed it
+    MOVE_PENDING = 9121, -- staff asked it to move on (the globalevent does it)
 }
 
 -- Storage ---------------------------------------------------------------------------------------
@@ -584,6 +600,13 @@ local function distance(a, b)
     return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
 end
 
+local DIRECTIONS = { "east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east" }
+
+local function directionTo(from, to)
+    local angle = math.deg(math.atan2(to.y - from.y, to.x - from.x)) -- y grows to the south
+    return DIRECTIONS[(math.floor((angle + 22.5) / 45) % 8) + 1]
+end
+
 -- A free tile on or around the point (spawn spots, so a wild Pokemon often stands on them)
 local function spotAt(point, cid)
     for radius = 0, 3 do
@@ -800,6 +823,39 @@ local function pick(list)
     return list and #list > 0 and list[getRandom(1, #list)] or nil
 end
 
+-- Flights and shakes for the modern client (EXTENDED_IDS.LEGENDARY_FLIGHT)
+local function sendFlightData(players, data)
+    if (not EXTENDED_IDS.LEGENDARY_FLIGHT) then
+        return
+    end
+    local payload = JSON.encode(data)
+    for _, pid in ipairs(players) do
+        if (isPlayer(pid) and getPlayerUsingOtClient(pid)) then
+            doSendPlayerExtendedOpcode(pid, EXTENDED_IDS.LEGENDARY_FLIGHT, payload)
+        end
+    end
+end
+
+local function playersNear(pos, rangeX, rangeY)
+    local list = {}
+    for _, cid in ipairs(getSpectators(pos, rangeX, rangeY, true) or {}) do
+        if (isPlayer(cid)) then
+            list[#list + 1] = cid
+        end
+    end
+    return list
+end
+
+-- Groudon coming up: the screens around it shake, harder the closer they are
+local function shakeAround(pos)
+    for _, pid in ipairs(playersNear(pos, CONFIG.shakeRange, CONFIG.shakeRange)) do
+        local p = getCreaturePosition(pid)
+        local d = math.max(math.abs(p.x - pos.x), math.abs(p.y - pos.y))
+        sendFlightData({ pid }, { type = "shake", strength = d <= 5 and 3 or (d <= 9 and 2 or 1), ms = 1600 })
+    end
+end
+WildLegendaries.shakeAround = shakeAround
+
 -- Encounters -------------------------------------------------------------------------------------
 
 local function healthPercent(cid)
@@ -840,13 +896,59 @@ local function mythicalOut(except)
     return nil
 end
 
+-- An encounter in the air or under the sea is in ACTIVE with cid 0 and flag f
 local function isOut(name)
     for _, a in ipairs(getActive()) do
-        if (a.name == name and isMonster(a.cid)) then
+        if (a.name == name and (isMonster(a.cid) or a.flags:find("f"))) then
             return true
         end
     end
     return false
+end
+
+-- Flights: encounter -> { species, health, from, to, start, seconds, endsAt, flags, stage, kind ("a" air, "w" water) }
+local function getFlights()
+    local list = {}
+    for encounter, value in pairs(readMap(KEY.FLIGHTS)) do
+        local index, health, fx, fy, fz, tx, ty, tz, start, seconds, endsAt, flags, stage, kind = value:match(
+            "^(%d+)|(%d+)|(%d+),(%d+),(%d+)|(%d+),(%d+),(%d+)|(%d+)|(%d+)|(%d+)|(%a*)|(%d+)|(%a)$")
+        local species = index and BY_INDEX[tonumber(index)]
+        if (species) then
+            list[tonumber(encounter)] = { encounter = tonumber(encounter), species = species, health = tonumber(health),
+                from = { x = tonumber(fx), y = tonumber(fy), z = tonumber(fz) },
+                to = { x = tonumber(tx), y = tonumber(ty), z = tonumber(tz) }, start = tonumber(start),
+                seconds = tonumber(seconds), endsAt = tonumber(endsAt), flags = flags, stage = tonumber(stage), kind = kind }
+        end
+    end
+    return list
+end
+
+-- Returns false when it doesn't fit in the storage (it then moves the old way)
+local function setFlight(encounter, f)
+    local map = readMap(KEY.FLIGHTS)
+    map[tostring(encounter)] = f and string.format("%d|%d|%d,%d,%d|%d,%d,%d|%d|%d|%d|%s|%d|%s", f.species.index, f.health,
+        f.from.x, f.from.y, f.from.z, f.to.x, f.to.y, f.to.z, f.start, f.seconds, f.endsAt, f.flags, f.stage, f.kind) or nil
+    local length = 1
+    for name, value in pairs(map) do
+        length = length + #name + #value + 2
+    end
+    if (length > 255) then
+        return false
+    end
+    writeMap(KEY.FLIGHTS, map)
+    return true
+end
+
+local function landsAt(f)
+    return f.start + f.seconds + (f.kind == "a" and CONFIG.circleSeconds or 0)
+end
+
+-- Where it is over the map at time t, and how far along (0 to 1)
+local function flightAt(f, t)
+    local progress = math.max(0, math.min(1, (t - f.start) / math.max(1, f.seconds)))
+    return { x = math.floor(f.from.x + (f.to.x - f.from.x) * progress + 0.5),
+             y = math.floor(f.from.y + (f.to.y - f.from.y) * progress + 0.5),
+             z = progress < 0.5 and f.from.z or f.to.z }, progress
 end
 
 -- Pending warnings (Mewtwo): species -> { at, point, source }
@@ -907,6 +1009,11 @@ local function encodeSaved()
             parts[#parts + 1] = string.format("%d=%d|%d|%d,%d,%d|%d|%s", a.encounter, species.index, health,
                 pos.x, pos.y, pos.z, math.max(1, math.ceil((monNumber(a.cid, MON.ENDS_AT) - now) / 60)), flags)
         end
+    end
+    -- one in the air comes back where it was going
+    for encounter, f in pairs(getFlights()) do
+        parts[#parts + 1] = string.format("%d=%d|%d|%d,%d,%d|%d|%s", encounter, f.species.index, f.health,
+            f.to.x, f.to.y, f.to.z, math.max(1, math.ceil((f.endsAt - now) / 60)), f.flags)
     end
     return table.concat(parts, ";")
 end
@@ -1112,6 +1219,9 @@ function WildLegendaries.spawn(species, pos, area, source, options)
         for _, effect in ipairs(species.arrive or { (STYLE_TEXT[species.style] or {}).land or EFFECT_TELEPORT_DOWN }) do
             effectAt(here, effect)
         end
+        if (species.quake) then
+            shakeAround(here)
+        end
     end
     applyWeather(cid, species, monText(cid, MON.HOME_ZONE))
 
@@ -1187,7 +1297,12 @@ end
 
 local function departEffects(species, from, to, hop)
     local style = STYLE_TEXT[species.style] or {}
-    if (hop or not style.depart) then
+    if (species.depart) then
+        effectAt(from, species.depart)
+        for _, effect in ipairs(species.arrive or {}) do
+            effectAt(to, effect)
+        end
+    elseif (hop or not style.depart) then
         effectAt(from, EFFECT_TELEPORT_UP)
         effectAt(to, EFFECT_TELEPORT_DOWN)
     else
@@ -1248,7 +1363,78 @@ local function destination(cid, species, reason)
     return pos, point
 end
 
--- Moves the legendary on. Returns the area or nil.
+-- Flights ----------------------------------------------------------------------------------------
+
+-- What the flights carry that the storage can't (trail, path, home zone, who was sent it), kept in the
+-- Lua state that runs them; a flight landed by another state lands without its trail.
+local flying = {}
+
+local function travelKind(species)
+    if (species.style == "fly") then
+        return "a"
+    elseif (species.dive) then
+        return "w"
+    end
+    return nil
+end
+
+local function flightSeconds(species, kind, from, to)
+    local speed = kind == "w" and CONFIG.swimSpeed or (species.fast and CONFIG.fastFlightSpeed or CONFIG.flightSpeed)
+    local d = math.sqrt((to.x - from.x) ^ 2 + (to.y - from.y) ^ 2)
+    return math.max(CONFIG.flightSeconds[1], math.min(CONFIG.flightSeconds[2], math.ceil(d / speed)))
+end
+
+local function flightData(f, now)
+    return { type = "flight", id = f.encounter, species = f.species.name, look = getLook(f.species.name),
+             kind = f.kind == "w" and "dive" or "fly", from = f.from, to = f.to, elapsed = now - f.start,
+             seconds = f.seconds, circle = f.kind == "a" and CONFIG.circleSeconds or 0 }
+end
+
+-- Sends the flight to the trainers near where it is now that haven't had it
+local function showFlight(f, now, memo)
+    local pos = flightAt(f, now)
+    local fresh = {}
+    for _, pid in ipairs(playersNear(pos, CONFIG.flightView[1], CONFIG.flightView[2])) do
+        if (not memo.sent[pid]) then
+            memo.sent[pid] = true
+            fresh[#fresh + 1] = pid
+        end
+    end
+    if (#fresh > 0) then
+        sendFlightData(fresh, flightData(f, now))
+    end
+end
+
+-- Takes it off the map toward pos. Returns the flight, or nil when it can't go (it moves the old way).
+local function takeoff(cid, species, pos, reason)
+    local kind = travelKind(species)
+    local entry = activeOf(cid)
+    if (not kind or not entry) then
+        return nil
+    end
+    local from, now = getCreaturePosition(cid), os.time()
+    local flags = entry.flags:gsub("f", "")
+    local f = { encounter = entry.encounter, species = species, health = healthPercent(cid), from = from, to = pos,
+                start = now, seconds = flightSeconds(species, kind, from, pos), endsAt = monNumber(cid, MON.ENDS_AT),
+                flags = flags, stage = math.max(0, monNumber(cid, MON.FLEE_STAGE)), kind = kind }
+    if (not setFlight(entry.encounter, f)) then
+        return nil
+    end
+    local memo = { trail = monText(cid, MON.TRAIL), path = monText(cid, MON.PATH), homeZone = monText(cid, MON.HOME_ZONE),
+                   area = monText(cid, MON.AREA), zone = monText(cid, MON.ZONE), sent = {}, sightingAt = now,
+                   signAt = now, reason = reason }
+    flying[entry.encounter] = memo
+    effectAt(from, kind == "a" and ((STYLE_TEXT[species.style] or {}).depart or EFFECT_LEGENDARY_TAKEOFF)
+        or EFFECT_LEGENDARY_WATER_RIPPLE)
+    effectAt(from, pick(species.signs))
+    setActive(entry.encounter, 0, species.name, flags .. "f")
+    doRemoveCreature(cid)
+    showFlight(f, now, memo)
+    return f, memo
+end
+WildLegendaries.takeoff = takeoff
+
+-- Moves the legendary on. Returns the area, or nil and the flight when it took off.
 local function relocate(cid, species, reason)
     local from = getCreaturePosition(cid)
     for try = 1, 4 do
@@ -1256,9 +1442,18 @@ local function relocate(cid, species, reason)
         if (not pos) then
             return nil
         end
+        if (not hop) then
+            local f = takeoff(cid, species, pos, reason)
+            if (f) then
+                return nil, f
+            end
+        end
         doTeleportThing(cid, pos, false)
         if (getSamePosition(getCreaturePosition(cid), pos)) then
             departEffects(species, from, pos, hop)
+            if (species.quake) then
+                shakeAround(pos)
+            end
             if (hop and not point) then
                 -- a short hop keeps its area and zone
                 doCreatureSetStorage(cid, MON.MOVED_AT, os.time())
@@ -1270,6 +1465,149 @@ local function relocate(cid, species, reason)
     return nil
 end
 
+local function announceTakeoff(species, f, memo, reason)
+    local heading = directionTo(f.from, f.to)
+    local mythical = species.tier == 3
+    local where = memo.area or "?"
+    if (reason == "flee") then
+        local how = f.kind == "w" and "dived into the sea" or "took to the sky"
+        broadcast(string.format("%s is hurt and %s, heading %s! It has %d%% health left.", species.name, how, heading, f.health))
+        sendCard(allPlayers(), { type = "flee", species = species.name, health = f.health })
+        discord({ event = "flee", encounterId = f.encounter, species = species.name,
+            area = (not mythical) and where or nil, healthPercent = f.health })
+    elseif (not mythical) then
+        toChannel(string.format(f.kind == "w" and "%s dived near %s, heading %s." or "%s took off from %s, heading %s.",
+            species.name, where, heading))
+    end
+end
+
+-- Puts it back on the map where the flight ends
+local function land(f, now)
+    local memo = flying[f.encounter] or {}
+    flying[f.encounter] = nil
+    setFlight(f.encounter, nil)
+    setActive(f.encounter, nil)
+    local species = f.species
+    local options = { encounter = f.encounter, health = f.health, endsAt = f.endsAt, restored = true, quiet = true,
+                      set = f.flags:find("s") ~= nil, homeZone = (memo.homeZone and memo.homeZone ~= "-") and memo.homeZone or nil }
+    local cid = WildLegendaries.spawn(species, f.to, nil, "flight", options)
+    if (not cid) then
+        cid = WildLegendaries.spawn(species, nil, nil, "flight", options)
+    end
+    if (not cid) then
+        discord({ event = "end", reason = "vanished", encounterId = f.encounter, species = species.name })
+        WildLegendaries.save()
+        return nil
+    end
+    if (memo.trail) then
+        doCreatureSetStorage(cid, MON.TRAIL, memo.trail)
+    end
+    if (memo.path) then
+        doCreatureSetStorage(cid, MON.PATH, memo.path)
+    end
+    doCreatureSetStorage(cid, MON.FLEE_STAGE, f.stage)
+    local here = getCreaturePosition(cid)
+    local area = arrive(cid, species, f.from, here, nil)
+    if (f.kind == "a") then
+        effectAt(here, (STYLE_TEXT[species.style] or {}).land or EFFECT_LEGENDARY_LANDING)
+    else
+        for _, effect in ipairs(species.arrive or { EFFECT_WATER_SPLASH }) do
+            effectAt(here, effect)
+        end
+    end
+    effectAt(here, pick(species.signs))
+    local mythical = species.tier == 3
+    if (memo.reason == "flee") then
+        broadcast(string.format("%s came down near %s with %d%% health.", species.name, mythical and "somewhere" or area,
+            healthPercent(cid)))
+    elseif (not mythical) then
+        toChannel(string.format(f.kind == "w" and "%s surfaced near %s." or "%s landed near %s.", species.name, area))
+        sendCard(channelPlayers(), { type = "sighting", species = species.name, area = area })
+    end
+    discord({ event = "sighting", encounterId = f.encounter, species = species.name, area = (not mythical) and area or nil,
+        position = (not mythical) and here or nil, healthPercent = healthPercent(cid) })
+    WildLegendaries.save()
+    return cid
+end
+WildLegendaries.land = land
+
+-- Every second: who sees each flight, its signs below it, the zones it crosses, and the landing
+function WildLegendaries.runFlights(now)
+    now = now or os.time()
+    for encounter, f in pairs(getFlights()) do
+        local memo = flying[encounter]
+        if (not memo) then
+            memo = { sent = {}, sightingAt = 0, signAt = 0 }
+            flying[encounter] = memo
+        end
+        if (now >= landsAt(f)) then
+            land(f, now)
+        else
+            showFlight(f, now, memo)
+            local pos, progress = flightAt(f, now)
+            if (now - memo.signAt >= CONFIG.flightSignEvery) then
+                memo.signAt = now
+                effectAt(pos, f.kind == "w" and EFFECT_LEGENDARY_WATER_RIPPLE or pick(f.species.signs))
+            end
+            local zone = Weather.zoneAt(pos)
+            if (f.kind == "a" and progress < 1 and zone and zone.name ~= memo.zone and
+                    now - memo.sightingAt >= CONFIG.flightSightingEvery) then
+                memo.zone, memo.sightingAt = zone.name, now
+                if (f.species.tier < 3) then
+                    toChannel(string.format("%s was seen flying over %s, heading %s.", f.species.name, zone.name,
+                        directionTo(f.from, f.to)))
+                    sendCard(channelPlayers(), { type = "sighting", species = f.species.name, area = zone.name })
+                end
+            end
+        end
+    end
+end
+
+-- Ends a flight without landing: reason "staff", "restart" or "fled" (the cooldown starts)
+function WildLegendaries.endFlight(encounter, reason)
+    local f = getFlights()[encounter]
+    if (not f) then
+        return false
+    end
+    local memo = flying[encounter] or {}
+    flying[encounter] = nil
+    setFlight(encounter, nil)
+    setActive(encounter, nil)
+    local species = f.species
+    if (reason == "fled") then
+        WildLegendaries.setCooldown(species.name, os.time() + WildLegendaries.cooldownFor(species))
+    end
+    if (species.rain) then
+        local zone = weatherZone(memo.homeZone or "")
+        local override = zone and Weather.getOverrides()[zone.id]
+        if (override and override.kind == "rain") then
+            Weather.setOverride({ zone.id }, nil)
+        end
+    end
+    if (reason ~= "restart") then
+        local leave = species.leave or (STYLE_TEXT[species.style] or {}).leave or "left"
+        broadcast(string.format("The wild %s %s.", species.name, leave))
+        sendCard(allPlayers(), { type = "end", reason = reason, species = species.name })
+    end
+    discord({ event = "end", reason = reason, encounterId = encounter, species = species.name })
+    WildLegendaries.save()
+    return true
+end
+
+-- A fly-over only this trainer sees, across their screen (staff check the drawing without a spawn)
+function WildLegendaries.flyover(pid, name, kind)
+    local species = WildLegendaries.getSpecies(name)
+    if (not species) then
+        return false
+    end
+    local pos = getCreaturePosition(pid)
+    local f = { encounter = 0, species = species, from = { x = pos.x - 14, y = pos.y + 3, z = pos.z },
+                to = { x = pos.x + 14, y = pos.y - 3, z = pos.z }, start = os.time(), seconds = 6,
+                kind = kind == "dive" and "w" or "a" }
+    sendFlightData({ pid }, flightData(f, f.start))
+    return true
+end
+
 function WildLegendaries.move(cid, reason)
     local entry = activeOf(cid)
     local species = WildLegendaries.getSpecies(entry and entry.name or getCreatureName(cid))
@@ -1277,7 +1615,12 @@ function WildLegendaries.move(cid, reason)
         return false
     end
     doCreatureSetStorage(cid, MON.NEXT_MOVE, os.time() + nextMoveDelay(species, cid))
-    local area = relocate(cid, species, reason)
+    local area, f = relocate(cid, species, reason)
+    if (f) then
+        announceTakeoff(species, f, flying[f.encounter] or {}, reason)
+        WildLegendaries.save()
+        return true
+    end
     if (not area) then
         return false
     end
@@ -1300,6 +1643,15 @@ function WildLegendaries.move(cid, reason)
         area = (not mythical) and area or nil, position = (not mythical) and getCreaturePosition(cid) or nil,
         healthPercent = healthPercent(cid) })
     WildLegendaries.save()
+    return true
+end
+
+-- Staff: the globalevent moves it on within a second
+function WildLegendaries.requestMove(cid)
+    if (not WildLegendaries.isEncounter(cid)) then
+        return false
+    end
+    doCreatureSetStorage(cid, MON.MOVE_PENDING, 1)
     return true
 end
 
@@ -1353,6 +1705,7 @@ function WildLegendaries.reveal(cid, by)
     if (path) then
         doCreatureSetStorage(mew, MON.PATH, path)
     end
+    effectAt(getCreaturePosition(mew), EFFECT_LEGENDARY_MEW_REVEAL)
     effectAt(getCreaturePosition(mew), EFFECT_BIG_PINK_CLOUD)
     broadcast(string.format("%s found Mew hiding as a wild %s! It shows its true self.", by or "A trainer", disguise))
     sendCard(allPlayers(), { type = "sighting", species = species.name })
@@ -1705,6 +2058,11 @@ local function upkeep(cid, now)
         WildLegendaries.move(cid, "flee")
         return
     end
+    if (monNumber(cid, MON.MOVE_PENDING) == 1) then
+        doCreatureSetStorage(cid, MON.MOVE_PENDING, 0)
+        WildLegendaries.move(cid, "staff")
+        return
+    end
     local lastHit = monNumber(cid, MON.LAST_HIT)
     if (now >= monNumber(cid, MON.ENDS_AT) and now - lastHit >= CONFIG.stayWhileHit) then
         WildLegendaries.finish(cid, "fled")
@@ -1734,8 +2092,14 @@ end
 
 -- Closes encounters whose monster is gone (removed by staff tools or a crash).
 local function sweep()
+    local flights = getFlights()
     for _, active in ipairs(getActive()) do
-        local gone = not isMonster(active.cid) or monNumber(active.cid, MON.ENCOUNTER) ~= active.encounter
+        local gone
+        if (active.flags:find("f")) then
+            gone = not flights[active.encounter]
+        else
+            gone = not isMonster(active.cid) or monNumber(active.cid, MON.ENCOUNTER) ~= active.encounter
+        end
         if (gone) then
             setActive(active.encounter, nil)
             discord({ event = "end", reason = "vanished", encounterId = active.encounter, species = active.name })
@@ -1749,6 +2113,7 @@ function WildLegendaries.restore()
     local saved, now = readMap(KEY.SAVED), os.time()
     local before = getActive()
     store(KEY.ACTIVE, "m")
+    store(KEY.FLIGHTS, "m")
     local back = {}
     for encounter, value in pairs(saved) do
         local index, health, x, y, z, minutes, flags = value:match("^(%d+)|(%d+)|(%d+),(%d+),(%d+)|(%d+)|(%a*)$")
@@ -1817,6 +2182,7 @@ function WildLegendaries.onThink()
         end
     end
     runPending(now)
+    WildLegendaries.runFlights(now)
 
     if (now - lastGapCheck >= CONFIG.gapCheckInterval) then
         lastGapCheck = now
@@ -1871,6 +2237,17 @@ function WildLegendaries.describe(staff)
             table.insert(lines, describeOne(a, now, staff))
         end
     end
+    for encounter, f in pairs(getFlights()) do
+        local pos = flightAt(f, now)
+        local zone = Weather.zoneAt(pos)
+        local how = f.kind == "w" and "under the sea near" or "in the air over"
+        if (staff) then
+            table.insert(lines, string.format("#%d %s %s (%d, %d, %d), lands at (%d, %d, %d) in %ds, %d%% health.", encounter,
+                f.species.name, how, pos.x, pos.y, pos.z, f.to.x, f.to.y, f.to.z, math.max(0, landsAt(f) - now), f.health))
+        elseif (f.species.tier < 3) then
+            table.insert(lines, string.format("%s is %s %s.", f.species.name, how, zone and zone.name or "the sea"))
+        end
+    end
     if (#lines == 0) then
         table.insert(lines, "No wild legendary is out right now.")
     end
@@ -1917,6 +2294,13 @@ function WildLegendaries.adminState()
                 disguised = monNumber(a.cid, MON.DISGUISED) == 1 and getCreatureName(a.cid) or nil }
         end
     end
+    for encounter, f in pairs(getFlights()) do
+        local p = flightAt(f, now)
+        local zone = Weather.zoneAt(p)
+        active[#active + 1] = { name = f.species.name, encounter = encounter, area = f.kind == "w" and "under the sea" or "in the air",
+            zone = zone and zone.name or nil, health = f.health, left = math.max(0, f.endsAt - now), x = p.x, y = p.y, z = p.z,
+            set = f.flags:find("s") ~= nil, flying = true, landsIn = math.max(0, landsAt(f) - now) }
+    end
     for name, untilTime in pairs(WildLegendaries.getCooldowns()) do
         if (untilTime > now) then
             cooldowns[#cooldowns + 1] = { name = name, left = untilTime - now }
@@ -1941,13 +2325,6 @@ end
 -- Ranger radar hints for the legendaries out in the trainer's region, by rank: zone activity (1), the
 -- species from its signs (2), the zones it may go to next (3), the direction and how fresh the signs are
 -- (4), the zones it came through and where it is heading (5). Never the exact spot. Mythicals from rank 4.
-local DIRECTIONS = { "east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east" }
-
-local function directionTo(from, to)
-    local angle = math.deg(math.atan2(to.y - from.y, to.x - from.x)) -- y grows to the south
-    return DIRECTIONS[(math.floor((angle + 22.5) / 45) % 8) + 1]
-end
-
 local function listText(items)
     if (#items <= 1) then
         return items[1] or ""
@@ -2010,7 +2387,37 @@ function WildLegendaries.radarHints(cid, rank)
             end
         end
     end
+    for _, f in pairs(getFlights()) do
+        local where = flightAt(f, now)
+        if (f.species.tier < 3 and Weather.regionAt(where) == region) then
+            local zone = Weather.zoneAt(where)
+            local text = string.format("%s is %s %s", rank >= 2 and f.species.name or "Something powerful",
+                f.kind == "w" and "moving under the sea near" or "flying over", zone and zone.name or "the sea")
+            if (rank >= 3) then
+                text = text .. ", heading " .. directionTo(f.from, f.to)
+            end
+            if (rank >= 4) then
+                text = text .. ", " .. directionTo(pos, where) .. " of here"
+            end
+            if (rank >= 5) then
+                local landing = Weather.zoneAt(f.to)
+                text = text .. (landing and (", it will come down around " .. landing.name) or "")
+            end
+            lines[#lines + 1] = text .. "."
+        end
+    end
     return lines
+end
+
+-- The flight of that species, or nil
+function WildLegendaries.findFlight(name)
+    local species = WildLegendaries.getSpecies(name)
+    for encounter, f in pairs(getFlights()) do
+        if (species and f.species == species) then
+            return encounter, f
+        end
+    end
+    return nil
 end
 
 -- Living legendary of that species, or nil (Mew also in disguise).
@@ -2026,6 +2433,10 @@ end
 
 WildLegendaries.getActive = getActive
 WildLegendaries.getPending = getPending
+WildLegendaries.getFlights = getFlights
+WildLegendaries.setFlight = setFlight
+WildLegendaries.flightAt = flightAt
+WildLegendaries.landsAt = landsAt
 WildLegendaries.runPending = runPending
 WildLegendaries.upkeep = upkeep
 WildLegendaries.sweep = sweep
