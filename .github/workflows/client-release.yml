@@ -46,7 +46,7 @@ env:
   # the Pages custom domain; the github.io address only 301-redirects here, one more TLS handshake
   PAGES_URL: https://pokeverse.quest
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
-  # encrypts the modules and images (scripts/encrypt-client.py) and builds the clients that
+  # encrypts the modules, images and sprites (scripts/encrypt-client.py) and builds the clients that
   # read them; without it (forks' pull requests) the clients are built unencrypted
   PV_ENCRYPTION_KEY: ${{ secrets.CLIENT_ENCRYPTION_KEY }}
 

@@ -77,7 +77,12 @@ void FileStream::cache(bool
             return;
 
         // Cache entire file into data buffer
-        m_pos = PHYSFS_tell(m_fileHandle);
+        m_pos = PHYSFS_tell(m_fileHandle) - m_encOffset;
+#if ENABLE_ENCRYPTION == 1
+        if (m_encOffset > 0)
+            useEnc = true;
+        m_encOffset = 0;
+#endif
         PHYSFS_seek(m_fileHandle, 0);
         const int size = PHYSFS_fileLength(m_fileHandle);
         m_data.resize(size);
@@ -98,6 +103,29 @@ void FileStream::cache(bool
         PHYSFS_close(m_fileHandle);
         m_fileHandle = nullptr;
     }
+}
+
+void FileStream::decryptReads()
+{
+#if ENABLE_ENCRYPTION == 1
+    if (m_caching || m_writeable || !m_fileHandle)
+        return;
+
+    const std::string encHeader(ENCRYPTION_HEADER);
+    std::string head(encHeader.size(), '\0');
+    m_encOffset = 0;
+    if (PHYSFS_seek(m_fileHandle, 0) &&
+        PHYSFS_readBytes(m_fileHandle, head.data(), head.size()) == static_cast<PHYSFS_sint64>(head.size()) &&
+        head == encHeader)
+        m_encOffset = encHeader.size();
+    if (!PHYSFS_seek(m_fileHandle, m_encOffset))
+        throwError("seek failed", true);
+#endif
+}
+
+bool FileStream::readHandle(void* buffer, const uint32_t count)
+{
+    return read(buffer, count) == static_cast<int>(count);
 }
 
 void FileStream::close()
@@ -134,9 +162,16 @@ void FileStream::flush()
 int FileStream::read(void* buffer, const uint32_t size, const uint32_t nmemb)
 {
     if (!m_caching) {
+#if ENABLE_ENCRYPTION == 1
+        const PHYSFS_sint64 start = m_encOffset > 0 ? PHYSFS_tell(m_fileHandle) - m_encOffset : 0;
+#endif
         const int res = PHYSFS_readBytes(m_fileHandle, buffer, static_cast<PHYSFS_uint64>(size) * nmemb);
         if (res == -1)
             throwError("read failed", true);
+#if ENABLE_ENCRYPTION == 1
+        if (m_encOffset > 0 && res > 0)
+            ResourceManager::decryptAt(static_cast<uint8_t*>(buffer), res, start);
+#endif
         return res;
     }
     int writePos = 0;
@@ -166,7 +201,7 @@ void FileStream::write(const void* buffer, const uint32_t count)
 void FileStream::seek(const uint32_t pos)
 {
     if (!m_caching) {
-        if (!PHYSFS_seek(m_fileHandle, pos))
+        if (!PHYSFS_seek(m_fileHandle, static_cast<PHYSFS_uint64>(pos) + m_encOffset))
             throwError("seek failed", true);
     } else {
         if (pos > m_data.size())
@@ -183,14 +218,14 @@ void FileStream::skip(const uint32_t len)
 uint32_t FileStream::size() const
 {
     if (!m_caching)
-        return PHYSFS_fileLength(m_fileHandle);
+        return PHYSFS_fileLength(m_fileHandle) - m_encOffset;
     return m_data.size();
 }
 
 uint32_t FileStream::tell() const
 {
     if (!m_caching)
-        return PHYSFS_tell(m_fileHandle);
+        return PHYSFS_tell(m_fileHandle) - m_encOffset;
     return m_pos;
 }
 
@@ -205,7 +240,7 @@ uint8_t FileStream::getU8()
 {
     uint8_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readBytes(m_fileHandle, &v, 1) != 1)
+        if (!readHandle(&v, 1))
             throwError("read failed", true);
     } else {
         if (m_pos + 1 > m_data.size())
@@ -221,7 +256,7 @@ uint16_t FileStream::getU16()
 {
     uint16_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readULE16(m_fileHandle, &v) == 0)
+        if (!readHandle(&v, sizeof(v)))
             throwError("read failed", true);
     } else {
         if (m_pos + 2 > m_data.size())
@@ -237,7 +272,7 @@ uint32_t FileStream::getU32()
 {
     uint32_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readULE32(m_fileHandle, &v) == 0)
+        if (!readHandle(&v, sizeof(v)))
             throwError("read failed", true);
     } else {
         if (m_pos + 4 > m_data.size())
@@ -253,7 +288,7 @@ uint64_t FileStream::getU64()
 {
     uint64_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readULE64(m_fileHandle, (PHYSFS_uint64*)&v) == 0)
+        if (!readHandle(&v, sizeof(v)))
             throwError("read failed", true);
     } else {
         if (m_pos + 8 > m_data.size())
@@ -268,7 +303,7 @@ int8_t FileStream::get8()
 {
     int8_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readBytes(m_fileHandle, &v, 1) != 1)
+        if (!readHandle(&v, 1))
             throwError("read failed", true);
     } else {
         if (m_pos + 1 > m_data.size())
@@ -284,7 +319,7 @@ int16_t FileStream::get16()
 {
     int16_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readSLE16(m_fileHandle, &v) == 0)
+        if (!readHandle(&v, sizeof(v)))
             throwError("read failed", true);
     } else {
         if (m_pos + 2 > m_data.size())
@@ -300,7 +335,7 @@ int32_t FileStream::get32()
 {
     int32_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readSLE32(m_fileHandle, &v) == 0)
+        if (!readHandle(&v, sizeof(v)))
             throwError("read failed", true);
     } else {
         if (m_pos + 4 > m_data.size())
@@ -316,7 +351,7 @@ int64_t FileStream::get64()
 {
     int64_t v = 0;
     if (!m_caching) {
-        if (PHYSFS_readSLE64(m_fileHandle, (PHYSFS_sint64*)&v) == 0)
+        if (!readHandle(&v, sizeof(v)))
             throwError("read failed", true);
     } else {
         if (m_pos + 8 > m_data.size())
@@ -333,7 +368,7 @@ std::string FileStream::getString()
     if (const uint16_t len = getU16(); len > 0 && len < 8192) {
         char buffer[8192];
         if (m_fileHandle) {
-            if (PHYSFS_readBytes(m_fileHandle, buffer, len) == 0)
+            if (!readHandle(buffer, len))
                 throwError("read failed", true);
             else
                 str = { buffer, len };

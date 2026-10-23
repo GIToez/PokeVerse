@@ -56,8 +56,10 @@ void SpriteManager::reload() {
 void SpriteManager::load() {
     m_spritesFiles.resize(g_asyncDispatcher->get_thread_count());
     if (g_app.isLoadingAsyncTexture()) {
-        for (auto& file : m_spritesFiles)
+        for (auto& file : m_spritesFiles) {
             file = std::make_unique<FileStream_m>(g_resources.openFile(m_lastFileName));
+            file->file->decryptReads();
+        }
     } else (m_spritesFiles[0] = std::make_unique<FileStream_m>(g_resources.openFile(m_lastFileName)))->file->cache(true);
 }
 

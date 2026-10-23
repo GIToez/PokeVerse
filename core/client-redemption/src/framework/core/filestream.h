@@ -37,6 +37,9 @@ public:
     ~FileStream();
 
     void cache(bool useEnc = false);
+    // uncached reads of a file that starts with the encryption header: positions and sizes
+    // leave the header out and every read is decrypted where it lands
+    void decryptReads();
     void close();
     void flush();
     void write(const void* buffer, uint32_t count);
@@ -77,10 +80,12 @@ public:
 
 private:
     void throwError(std::string_view message, bool physfsError = false) const;
+    bool readHandle(void* buffer, uint32_t count);
 
     std::string m_name;
     PHYSFS_File* m_fileHandle;
     uint32_t m_pos;
+    uint32_t m_encOffset{ 0 };
     bool m_writeable;
     bool m_caching;
 };
