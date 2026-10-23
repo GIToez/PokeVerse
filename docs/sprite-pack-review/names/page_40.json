@@ -1,0 +1,242 @@
+{
+ "P40-1": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-2": [
+  "?",
+  "fly",
+  "low"
+ ],
+ "P40-3": [
+  "Scyther (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-4": [
+  "Mewtwo?",
+  "walk",
+  "low"
+ ],
+ "P40-5": [
+  "player outfit",
+  "outfit",
+  "low"
+ ],
+ "P40-6": [
+  "Gengar (green aura)?",
+  "walk",
+  "low"
+ ],
+ "P40-7": [
+  "Tentacruel (recolour)?",
+  "surf",
+  "low"
+ ],
+ "P40-8": [
+  "?",
+  "surf",
+  "low"
+ ],
+ "P40-9": [
+  "Pidgeot (recolour)?",
+  "fly",
+  "low"
+ ],
+ "P40-10": [
+  "Scyther (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-11": [
+  "Charizard (dark recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-12": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-13": [
+  "Gengar (dark recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-14": [
+  "Graveler (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-15": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-16": [
+  "Pidgeot (recolour)?",
+  "fly",
+  "low"
+ ],
+ "P40-17": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-18": [
+  "Corsola?",
+  "walk",
+  "low"
+ ],
+ "P40-19": [
+  "Tentacruel (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-20": [
+  "player outfit",
+  "outfit",
+  "low"
+ ],
+ "P40-21": [
+  "Pidgeot (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-22": [
+  "Pidgeot (dark recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-23": [
+  "Zangoose (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-24": [
+  "Zangoose (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-25": [
+  "Honchkrow?",
+  "walk",
+  "low"
+ ],
+ "P40-26": [
+  "Honchkrow?",
+  "ride",
+  "low"
+ ],
+ "P40-27": [
+  "player outfit",
+  "outfit",
+  "low"
+ ],
+ "P40-28": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-29": [
+  "Zoroark?",
+  "walk",
+  "low"
+ ],
+ "P40-30": [
+  "?",
+  "ride",
+  "low"
+ ],
+ "P40-31": [
+  "?",
+  "ride",
+  "low"
+ ],
+ "P40-32": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-33": [
+  "Crobat (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-34": [
+  "Crobat (recolour)?",
+  "fly",
+  "low"
+ ],
+ "P40-35": [
+  "Crobat (recolour)?",
+  "walk",
+  "low"
+ ],
+ "P40-36": [
+  "Crobat (recolour)?",
+  "fly",
+  "low"
+ ],
+ "P40-37": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-38": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-39": [
+  "Torchic",
+  "walk",
+  "medium"
+ ],
+ "P40-40": [
+  "Torchic",
+  "walk",
+  "low"
+ ],
+ "P40-41": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-42": [
+  "?",
+  "ride",
+  "low"
+ ],
+ "P40-43": [
+  "?",
+  "walk",
+  "low"
+ ],
+ "P40-44": [
+  "?",
+  "ride",
+  "low"
+ ],
+ "P40-45": [
+  "effect: green aura?",
+  "effect",
+  "low"
+ ],
+ "P40-46": [
+  "Diggersby?",
+  "walk",
+  "low"
+ ],
+ "P40-47": [
+  "Teddiursa?",
+  "walk",
+  "low"
+ ],
+ "P40-48": [
+  "Rayquaza",
+  "fly",
+  "medium"
+ ]
+}
