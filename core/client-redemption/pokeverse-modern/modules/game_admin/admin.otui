@@ -769,7 +769,7 @@ AdminWindow < UIWindow
       anchors.top: parent.top
       anchors.left: parent.left
       anchors.right: parent.right
-      height: 246
+      height: 278
 
       FishingPanelTitle
         id: title
@@ -857,6 +857,23 @@ AdminWindow < UIWindow
         height: 22
         anchors.top: clockLabel.top
         anchors.left: clockLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      AdminRowLabel
+        id: regionsLabel
+        !text: tr('Regions')
+        anchors.top: clock.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: regions
+        height: 22
+        anchors.top: regionsLabel.top
+        anchors.left: regionsLabel.right
         anchors.right: parent.right
         layout:
           type: horizontalBox

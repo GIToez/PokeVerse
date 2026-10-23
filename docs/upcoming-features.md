@@ -1655,8 +1655,8 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     - Kinds: clear, sunny (harsh sun, heat haze), rain, thunderstorm (rain with lightning
       flashes and thunder), fog, snow, hail, sandstorm (only in desert areas and on rocky
       routes) and windy (leaves or petals blowing, depending on the season).
-    - Regions: every region gets weather, not only Kanto. Kanto, Hoenn and the Orange
-      Islands come first, since they're live, and Johto gets its zones when it goes live.
+    - Regions: every region gets weather, not only Kanto: Kanto, Johto, Hoenn and the
+      Orange Islands (Johto since October 23, when it opened).
       The zone list is per region, so adding a region is a data change, not new code.
     - Zones: each region's outdoor areas are grouped into a few weather zones (by area
       name, as on the area banner), so it can rain on Route 1 while Cerulean is sunny. Buildings,
@@ -1710,7 +1710,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     4. Battle effects, with the weather icons on the moves bar.
     5. Spawn swaps, first for weather, then for seasons, and Castform.
     6. Fishing, radar, tasks.
-    7. Johto's zones and decorations when Johto goes live.
+    7. Johto's zones (done, October 23) and decorations.
 - **Double EXP:** already exists. `/doubleexp 2h` starts 2x for 2 hours, and
   `/doubleexp 5x 1d` starts 5x for a day: any multiplier above 1x up to 100x, from 1 minute
   to 7 days; `/doubleexp off` and `/doubleexp status` too

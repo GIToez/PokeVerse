@@ -3,9 +3,10 @@
 -- /weather <zone|region|all|here> <kind> [minutes]   set the weather (no minutes: until /weather ... auto)
 -- /weather <zone|region|all|here> auto         back to the rolled weather
 -- /weather off                                 clear every weather staff set
+-- /weather region <region> <on|off>            switch a region's weather and decorations on or off (maintenance)
 -- /weather time <day|night|dusk|HH:MM>         move the day and night cycle (to preview the light)
--- Zones are towns ("viridian", "desertisland92"); regions: kanto, hoenn, orange.
-local USAGE = "Usage: /weather | status | <zone|region|all|here> <kind> [minutes] | <zone|region|all|here> auto | off | time <day|night|HH:MM>. Kinds: "
+-- Zones are towns ("viridian", "desertisland92"); regions: kanto, johto, hoenn, orange.
+local USAGE = "Usage: /weather | status | <zone|region|all|here> <kind> [minutes] | <zone|region|all|here> auto | off | time <day|night|HH:MM> | region <region> <on|off>. Kinds: "
 	.. table.concat(Weather.KIND_IDS, ", ") .. "."
 
 local function reply(cid, text)
@@ -44,8 +45,13 @@ function onSay(cid, words, param, channel)
 		reply(cid, string.format("Season: %s. You are in %s (%s), %s.", season.season.name, here and here.name or "no zone",
 			region and region.name or "-", Weather.isOutdoors(getCreaturePosition(cid)) and "outdoors" or "under a roof"))
 		for _, zone in ipairs(Weather.getZones()) do
-			if (not zone.none and zone.region.live and (target == "status" or zone.region == region)) then
+			if (not zone.none and Weather.isRegionOn(zone.region) and (target == "status" or zone.region == region)) then
 				reply(cid, describe(zone))
+			end
+		end
+		for _, other in ipairs(Weather.REGIONS) do
+			if (not Weather.isRegionOn(other)) then
+				reply(cid, other.name .. ": switched off (/weather region " .. other.id .. " on).")
 			end
 		end
 		if (target == "") then
@@ -62,6 +68,21 @@ function onSay(cid, words, param, channel)
 		end
 		doSetWorldLightHour(minutesOfDay)
 		reply(cid, string.format("The game clock is now %02d:%02d.", math.floor(minutesOfDay / 60), minutesOfDay % 60))
+		return true
+	elseif (target == "region") then
+		local region = Weather.getRegion(kind)
+		if (not region or (minutes ~= "on" and minutes ~= "off")) then
+			local ids = {}
+			for _, other in ipairs(Weather.REGIONS) do
+				ids[#ids + 1] = other.id .. (Weather.isRegionOn(other) and "" or " (off)")
+			end
+			reply(cid, "Usage: /weather region <region> <on|off>. Regions: " .. table.concat(ids, ", ") .. ".")
+			return true
+		end
+		Weather.setRegionOn(region.id, minutes == "on")
+		sendAll()
+		reply(cid, string.format("%s: weather and decorations %s.", region.name, minutes == "on" and "on" or "off"))
+		print(string.format("> Weather: %s switched %s %s", getCreatureName(cid), region.name, minutes))
 		return true
 	elseif (target == "off") then
 		local all = {}

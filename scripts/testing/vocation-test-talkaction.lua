@@ -2050,12 +2050,16 @@ local function testWeather(cid, arena)
     end
     check("Weather: a town's spot is in its own zone", W.zoneAt(viridian.pos) == viridian)
     for _, zone in ipairs(W.findZones(cid, "all")) do
-        if (zone.none or not zone.region.live) then
+        if (zone.none or not W.isRegionOn(zone.region)) then
             check("Weather: 'all' leaves out calm and closed zones", false, zone.name)
         end
     end
+    check("Weather: Johto has zones and weather", johto and W.at(johto).source ~= "none")
     if (johto) then
-        check("Weather: Johto has none until it goes live", W.at(johto).source == "none")
+        W.setRegionOn("johto", false)
+        check("Weather: a region switched off has none", W.at(johto).source == "none" and not W.isRegionOn(johto.region))
+        W.setRegionOn("johto", true)
+        check("Weather: switched on again it has weather", W.at(johto).source ~= "none")
     end
 
     local day = at(2026, 10, 20, 0)
@@ -2113,7 +2117,7 @@ local function testWeather(cid, arena)
 
     -- CI starts on the Tutorial Island, which has no weather: test in Viridian then
     local arenaZone = W.zoneAt(arena)
-    local center = (arenaZone and not arenaZone.none and arenaZone.region.live) and arena or viridian.pos
+    local center = (arenaZone and not arenaZone.none and W.isRegionOn(arenaZone.region)) and arena or viridian.pos
     local spots = {}
     for radius = 0, 12 do
         for dx = -radius, radius do

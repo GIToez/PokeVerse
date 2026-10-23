@@ -524,6 +524,21 @@ local function weatherCommand(rest)
     return '/weather ' .. world.target .. ' ' .. rest
 end
 
+-- one switch per region (maintenance): weather and decorations on or off; the state comes back
+-- with every refresh
+local function fillRegions(info)
+    local row = window.world.weather.regions
+    row:destroyChildren()
+    for _, region in ipairs(info.regions or {}) do
+        local on = region.on ~= false
+        commandButton(row, on and 'PVGreenButton' or 'PVRedButton', tr(on and '%s: on' or '%s: off', region.name), '/weather',
+            function()
+                scheduleEvent(function() send({ action = 'refresh' }) end, 500)
+                return string.format('/weather region %s %s', region.id, on and 'off' or 'on')
+            end, on and 'Switch off its weather and decorations, for maintenance' or 'Switch its weather and decorations back on'):setWidth(140)
+    end
+end
+
 local function fillWorld(info)
     local panel = window.world
     local weather = panel.weather
@@ -532,7 +547,7 @@ local function fillWorld(info)
         table.insert(targets, { region.id, region.name })
     end
     table.insert(targets, { 'all', 'Everywhere' })
-    pickRow(weather.targets, targets, world.target, function(value) world.target = value end, 112)
+    pickRow(weather.targets, targets, world.target, function(value) world.target = value end, 96)
 
     local kinds = {}
     for _, kind in ipairs(info.kinds or {}) do
@@ -783,6 +798,9 @@ local function fill(data)
     fillBanPicks()
     if data.world and not world.built then
         fillWorld(data.world)
+    end
+    if data.world then
+        fillRegions(data.world)
     end
     refreshAccess()
     if not commands.byWords then

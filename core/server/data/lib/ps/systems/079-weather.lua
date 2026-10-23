@@ -2,7 +2,7 @@ if (Weather) then
     return
 end
 
--- Weather (docs/upcoming-features.md, "Seasons and weather"). Every live region is split into zones,
+-- Weather (docs/upcoming-features.md, "Seasons and weather"). Every region is split into zones,
 -- one per town: a spot belongs to the nearest town of its region. Each zone's weather changes every
 -- 20 to 60 minutes, rolled from its region's climate and the season (EventCalendar.seasonId).
 --
@@ -86,10 +86,10 @@ Weather.CLIMATES = {
 
 -- Checked in order (Johto's box overlaps Hoenn's open sea); Kanto is everything else on the surface
 Weather.REGIONS = {
-    { id = "johto", name = "Johto", live = false, climate = "temperate", from = { x = 1700, y = 20 }, to = { x = 3048, y = 1270 } },
-    { id = "orange", name = "Orange Islands", live = true, climate = "tropical", from = { x = 2641, y = 1311 }, to = { x = 4647, y = 3486 } },
-    { id = "hoenn", name = "Hoenn", live = true, climate = "warm", from = { x = 48, y = 773 }, to = { x = 2224, y = 2304 } },
-    { id = "kanto", name = "Kanto", live = true, climate = "temperate" },
+    { id = "johto", name = "Johto", climate = "temperate", from = { x = 1700, y = 20 }, to = { x = 3048, y = 1270 } },
+    { id = "orange", name = "Orange Islands", climate = "tropical", from = { x = 2641, y = 1311 }, to = { x = 4647, y = 3486 } },
+    { id = "hoenn", name = "Hoenn", climate = "warm", from = { x = 48, y = 773 }, to = { x = 2224, y = 2304 } },
+    { id = "kanto", name = "Kanto", climate = "temperate" },
 }
 
 -- Towns whose zone differs from its region: climate, or multipliers on the season's odds
@@ -102,7 +102,7 @@ Weather.ZONE_RULES = {
     ["Fallarbor"] = { odds = { fog = 1.6 } },
     ["Fortree"] = { odds = { rain = 1.5 } },
     ["Lavender"] = { odds = { fog = 1.8 } },
-    -- Johto (calm until the region goes live)
+    -- Johto
     ["New Bark"] = { odds = { windy = 1.8 } },
     ["Violet"] = { odds = { windy = 1.4 } },
     ["Azalea"] = { odds = { rain = 1.5 } },
@@ -268,6 +268,54 @@ function Weather.holidayAt(zone, time)
     end
 end
 
+-- Regions staff switched off (/weather region <id> off, for maintenance): no weather and no
+-- decorations there until switched on again. Every region is on otherwise.
+local regionsOff, regionsOffAt = {}, -1
+
+function Weather.getRegionsOff()
+    local now = os.time()
+    if (now - regionsOffAt >= CACHE_SECONDS) then
+        regionsOffAt = now
+        regionsOff = {}
+        for id in tostring(getStorage(GLOBAL_STORAGES.WEATHER_REGIONS_OFF) or ""):gmatch("[^;]+") do
+            if (REGION_BY_ID[id]) then
+                regionsOff[id] = true
+            end
+        end
+    end
+    return regionsOff
+end
+
+function Weather.isRegionOn(region)
+    return region ~= nil and not Weather.getRegionsOff()[region.id]
+end
+
+function Weather.getRegion(id)
+    return REGION_BY_ID[id]
+end
+
+function Weather.setRegionOn(id, on)
+    local off = {}
+    for other in pairs(Weather.getRegionsOff()) do
+        off[other] = true
+    end
+    off[id] = (not on) or nil
+    local parts = { "m" }
+    for _, region in ipairs(Weather.REGIONS) do
+        if (off[region.id]) then
+            parts[#parts + 1] = region.id
+        end
+    end
+    local value = table.concat(parts, ";")
+    doSetStorage(GLOBAL_STORAGES.WEATHER_REGIONS_OFF, value)
+    db.executeQuery(string.format("REPLACE INTO `global_storage` (`key`, `world_id`, `value`) VALUES (%d, %d, %s);",
+        GLOBAL_STORAGES.WEATHER_REGIONS_OFF, getConfigValue("worldId") or 0, db.escapeString(value)))
+    regionsOffAt = -1
+    if (Decorations and Decorations.changed) then
+        Decorations.changed()
+    end
+end
+
 -- Staff weather: { [zone id] = { kind, endsAt } } (endsAt 0: until staff clear it)
 local overrides, overridesAt = {}, -1
 
@@ -353,7 +401,7 @@ end
 -- A zone's weather at a time: { kind, startsAt, endsAt, source = "natural"|"holiday"|"staff", holiday }
 function Weather.at(zone, time)
     time = time or os.time()
-    if (not Weather.CONFIG.enabled or not zone or zone.none or not zone.region.live) then
+    if (not Weather.CONFIG.enabled or not zone or zone.none or not Weather.isRegionOn(zone.region)) then
         return { kind = "clear", startsAt = time, endsAt = time + HOUR, source = "none" }
     end
     local staff = Weather.getOverrides()[zone.id]
@@ -578,7 +626,7 @@ function Weather.findZones(cid, text)
         return zone and { zone } or {}
     end
     for _, zone in ipairs(Weather.getZones()) do
-        if (not zone.none and zone.region.live and (text == "all" or zone.key == text or zone.region.id == text)) then
+        if (not zone.none and Weather.isRegionOn(zone.region) and (text == "all" or zone.key == text or zone.region.id == text)) then
             list[#list + 1] = zone
         end
     end
