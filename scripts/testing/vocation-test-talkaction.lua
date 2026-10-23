@@ -708,6 +708,15 @@ local function testAdmin(cid)
         check("admin: the Legendaries section gets the species, the sets and the mode", state.world.legendary and
             #(state.world.legendary.species or {}) == 21 and #(state.world.legendary.sets or {}) == 4 and
             type(state.world.legendary.manual) == "boolean")
+        local god = level
+        level = Admin.WORLD_ACCESS
+        local manager = ask({ action = "hello" })[1]
+        level = Admin.WORLD_ACCESS - 1
+        local gamemaster = ask({ action = "hello" })[1]
+        level = god
+        check("admin: a Community Manager gets the world settings and the Legendaries section", manager and manager.world
+            and #(manager.world.kinds or {}) == 9 and manager.world.legendary and #(manager.world.legendary.species or {}) == 21)
+        check("admin: below that, no world settings", gamemaster and gamemaster.type == "state" and gamemaster.world == nil)
         ask({ action = "start", event = "shiny", multiplier = 7, minutes = 30 })
         check("admin: odd multipliers are refused", not ShinyEvent.get() and sent[1] and sent[1].ok == false)
         ask({ action = "start", event = "shiny", multiplier = 2, minutes = 30 })

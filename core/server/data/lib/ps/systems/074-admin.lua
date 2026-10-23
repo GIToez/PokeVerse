@@ -1,7 +1,8 @@
 -- The Admin window (client game_admin) for every staff member (access 1 and up). Each tab and action
 -- needs the access of the commands behind it: the window runs most of them as the talkactions
 -- themselves ({action = "command"}, so talkactions.xml decides), and checks the access of the rest here
--- (events Admin.EVENT_START_ACCESS, decorations and the world settings Admin.ACCESS, bans Admin.BAN_ACCESS).
+-- (events Admin.EVENT_START_ACCESS, the world settings and legendaries Admin.WORLD_ACCESS, decorations
+-- Admin.ACCESS, bans Admin.BAN_ACCESS).
 --
 -- JSON on EXTENDED_IDS.ADMIN:
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
@@ -39,6 +40,8 @@ Admin.PLAYER_ROWS = 40
 Admin.BAN_ROWS = 8
 Admin.COMMANDS_PER_MESSAGE = 20
 Admin.ACCESS = 5
+-- the World and Events tabs' settings: the access of /weather, /calendar and /legendary (talkactions.xml)
+Admin.WORLD_ACCESS = 4
 Admin.MULTIPLIERS = { 1.5, 2, 3, 5, 10 }
 Admin.MINUTES = { 30, 60, 120, 360, 1440, 4320, 10080 }
 Admin.BROADCAST_TARGETS = { both = true, game = true, discord = true }
@@ -135,7 +138,7 @@ Admin.sendState = function(cid)
     send(cid, { type = "state", access = getPlayerAccess(cid), online = #getPlayersOnline(), events = events,
                 multipliers = Admin.MULTIPLIERS, minutes = Admin.MINUTES, eventsAccess = Admin.EVENT_START_ACCESS,
                 broadcastAccess = Admin.BROADCAST_ACCESS, banAccess = Admin.BAN_ACCESS, banDays = Admin.BAN_DAYS,
-                banReasons = reasons, world = hasAccess(cid, Admin.ACCESS) and worldInfo() or nil })
+                banReasons = reasons, world = hasAccess(cid, Admin.WORLD_ACCESS) and worldInfo() or nil })
 end
 
 -- The client's hello can go out before the opcode handshake, so staff also get the state pushed after login.
