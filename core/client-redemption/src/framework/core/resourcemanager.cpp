@@ -620,19 +620,9 @@ std::string ResourceManager::readFileContents(const std::string& fileName)
 bool ResourceManager::isProtectedCode(const std::string& fullPath)
 {
     static const std::string extensions[] = { ".lua", ".otui", ".otmod" };
-    if (std::ranges::none_of(extensions, [&](const std::string& ext) { return fullPath.ends_with(ext); }))
-        return false;
-    // the player's own folder (settings and what the client writes) is not the release's
-    const char* realDir = PHYSFS_getRealDir(fullPath.c_str());
-    const char* writeDir = PHYSFS_getWriteDir();
-    if (!realDir || !writeDir)
-        return true;
-    const auto trimmed = [](std::string_view dir) {
-        while (dir.size() > 1 && (dir.back() == '/' || dir.back() == '\\'))
-            dir.remove_suffix(1);
-        return dir;
-    };
-    return trimmed(realDir) != trimmed(writeDir);
+    // the player's own folder counts too: the client writes no code there, and what the updater
+    // stores there is the release's, encrypted
+    return std::ranges::any_of(extensions, [&](const std::string& ext) { return fullPath.ends_with(ext); });
 }
 
 std::string ResourceManager::readFileContentsFromWorkDir(const std::string& fileName)
