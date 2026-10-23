@@ -2123,8 +2123,13 @@ Gen 5 for the status heal), and Sun and Moon's jingles, converted to `.ogg` in
 | `save` | the game saves |
 | `door_enter`, `door_exit`, `bump`, `ledge_jump` | walking: doors, walking into a wall, a ledge hop |
 
+| `evolution` | during an evolution (Black and White's "Evolution", 37 s, fading out from 33 s) |
 | `evolution_done`, `badge_get` | an evolution finishes, a Gym badge is won |
 | `quest_complete`, `quest_failed` | a quest or task is done or failed |
+
+An evolution plays `evolution_start`, then `evolution` from the beginning for as long as the
+evolution lasts (it should end before the track's own fade at 33 s); the client then fades it out
+and plays `evolution_done`.
 
 The ball, shiny, menu, PC and walking sounds are from Pokémon Essentials' audio (DS era); the
 last four jingles are Black and White's. The Black and White and Black 2 and White 2 sound
