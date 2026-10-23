@@ -123,7 +123,7 @@ the [event calendar and double shiny](#15-daily-login-rewards-and-events),
 [live status and Discord card](#4-website), the level-up banner that lists what just unlocked,
 and the Android phone UI pass.
 
-Also open: [move sounds](#20-move-sounds), a phone UI pass and a security check of the live server (open ports, SSH,
+Also open: [move sounds and volume sliders](#20-move-sounds-and-volume-sliders), a phone UI pass and a security check of the live server (open ports, SSH,
 firewall). The [Android signing key](client-updates.md#one-time-setup) is set up: client
 releases sign the APK with `ANDROID_KEYSTORE_BASE64`.
 
@@ -2054,9 +2054,27 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
 - Phase 4: a PayPal Business account and a PayPal developer app (sandbox and live keys),
   added the same way.
 
-## 20. Move sounds
+## 20. Move sounds and volume sliders
 
-Planned for after October 2026 (not started). Today the client plays Pokémon cries, area music,
+Planned for after October 2026 (not started).
+
+**Volume sliders for PokeVerse's sounds.** Options (Sound) still has Redemption's Tibia
+sliders (Master, Music, Ambience, Item, Event, UI), and they don't match what plays: the town
+and route music (`game_environment`) plays on the Ambient channel, so Ambience is the music
+slider; weather loops play on the secondary channel; thunder and Pokémon cries share the Effect
+channel. The Sound tab gets one slider per kind of sound, each with its own channel:
+
+- Master
+- Town and route music
+- Ambience (weather loops, thunder)
+- Moves (see below)
+- Pokémon cries (the Pokédex, and wherever else a cry plays)
+- Interface (clicks, windows, the alert)
+
+Item and Event go (Tibia's), and saved values from the old sliders carry over where they match
+(Ambience to Town and route music). The startup tune follows Town and route music.
+
+**Move sounds.** Today the client plays Pokémon cries, area music,
 weather loops, the startup tune and the alert, but moves have no sound.
 
 - **Sounds by type first:** about 18 types × 2 or 3 kinds (a hit, a beam or projectile, a buff or
@@ -2069,7 +2087,7 @@ weather loops, the startup tune and the alert, but moves have no sound.
   sound and fades it out (the engine's `SoundSource:setFading`) when the move ends. A move made
   shorter or longer later needs no sound edit.
 - **Client:** a small module that plays the move's sound near the Pokémon using it, quieter
-  with distance, with its own volume slider in Options (Audio) and an off switch.
+  with distance, on the Moves slider (0 turns them off).
 - **Server:** one extended opcode when a move starts: the sound (move name, or its type and
   kind), the position and the duration in milliseconds.
 
