@@ -2126,6 +2126,10 @@ Gen 5 for the status heal), and Sun and Moon's jingles, converted to `.ogg` in
 | `exp_gain` | the experience bar filling |
 | `text_blip` | an NPC's text box |
 | `slots_coin`, `slots_stop`, `slots_win`, `slots_big_win` | the slot machine |
+| `fishing_plop` | the lure lands in the water |
+
+Surf music: `sounds/environment/surf_01.ogg` (Black and White's "Surf", 84 s with a fade at the
+end) replaces the area music while the player surfs, and the area music fades back in after.
 
 | `evolution` | during an evolution (Black and White's "Evolution", 37 s, fading out from 33 s) |
 | `evolution_done`, `badge_get` | an evolution finishes, a Gym badge is won |
