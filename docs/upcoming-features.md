@@ -2097,8 +2097,9 @@ plays them as separate sources so they overlap. Wired: the catch (throw, pull-in
 then the caught jingle or the break-out), send-out, recall, faint (wild and your own), hits by
 effectiveness, statuses and stat changes, Potions, Antidotes and Revives, the Pokémon Center,
 the fishing plop and the slot machine on the server; evolution (music, then the "evolved"
-jingle), level up, TMs, Gym badges, quests done and the PC in the client. Options > Sound's Item
-slider is now "Battle Effects" (the Item channel); the menu, PC and save sounds follow UI.
+jingle), level up, TMs, Gym badges, quests done and the PC in the client. They play on the Item
+channel, which has no slider of its own in Options > Sound and follows Master Volume; the menu,
+PC and save sounds follow UI Volume.
 Not wired yet: menus, doors and walking, items received, held items and abilities, weather
 damage, low HP, the shiny sparkle and the surf music.
 

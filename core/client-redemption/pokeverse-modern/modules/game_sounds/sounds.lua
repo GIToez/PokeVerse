@@ -2,7 +2,7 @@
 -- ExtendedIds.Sound (Sounds in the server lib); other modules call play() for what the client
 -- already knows about (evolution, level up, the PC).
 -- Sounds play as their own sources so they can overlap; a channel plays one sound at a time.
--- Battle and game sounds follow the Item channel (Options: Battle Effects Volume), menus the UI channel.
+-- Battle and game sounds follow the Item channel (no slider of its own: Master Volume), menus the UI channel.
 local DIR = '/sounds/effects/'
 local MAX_DELAY_MS = 10000
 
