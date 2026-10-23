@@ -2217,12 +2217,15 @@ species its own habitat, way of moving and signs that it is near.
 
 - **Regions:** Kanto, Johto, the Orange Islands and Hoenn all have regions and towns
   (`Weather.REGIONS`, a zone per town). Habitats are lists of those zones, so legendaries live in
-  their own regions, not only Kanto. Johto is still `live = false` there; its zones join when it
-  is switched on.
-- **Sets:** the three birds (Articuno, Zapdos, Moltres) and the three beasts (Raikou, Entei,
-  Suicune) can be out at the same time, as a set, spread over their habitats. They don't count
+  their own regions, not only Kanto. Johto is open (walk in through the Indigo Plateau, west of
+  Pewter), so its zones are used from the start; its `live = false` in `Weather.REGIONS` is
+  switched on with stage 1 (that also starts its weather).
+- **Sets:** the three birds (Articuno, Zapdos, Moltres), the three beasts (Raikou, Entei,
+  Suicune) and the three Regis (Regirock, Regice, Registeel) can be out at the same time, as a
+  set, spread over their habitats (the Regis asleep at their locations). They don't count
   against the limit on the others, but each still has its own cooldown. Latias and Latios can be
   out together too.
+- **Catch chances** stay as they are (section 11).
 - **Mythicals** (Mew, Celebi, Jirachi, Deoxys): never more than one out on the whole server.
   They are the rarest (lowest chance, longest cooldowns) and the hardest to find: no area in the
   announcement, only faint signs. The Master Ball still catches them; they are hard to find, not
@@ -2308,13 +2311,6 @@ one, so staff can set off any of it for events and for testing:
   check the client drawing without spawning anything).
 - **Status:** what is out and where (staff see exact spots), the sets, the mythical slot, the
   next spawn and the cooldowns.
-
-### To decide
-
-- The Regis: a set like the birds and beasts, or one at a time.
-- Catch chances: wild legendaries still need about 834 or more Ultra Balls (section 11); only
-  the Master Ball catches one in practice.
-- When Johto is switched on in `Weather.REGIONS` (its legendaries wait for it).
 
 ## Going private
 
