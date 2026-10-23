@@ -2204,6 +2204,93 @@ Still to do:
 - Tibia's leftovers: rule violation reasons and name lock flags, the Portuguese game chat channel
   opened for Gamemasters on login, Tibia's VIP and depot limits per group.
 
+## 22. Legendary revamp (plan, not built)
+
+Today every wild legendary ([section 11](#11-bug-fixes-and-small-ideas), "Legendary spawning")
+behaves the same: it appears at a random anchor point, jumps to another far away every few
+minutes and flies off. The revamp keeps what is built (spawn timing by population, cooldowns,
+flee with the health left, healing when left alone, the top damage dealer's 60 seconds on the
+body, rewards by damage share, the chat channel, cards and Discord threads) and gives each
+species its own habitat, way of moving and signs that it is near.
+
+### Decided (October 2026)
+
+- **Regions:** Kanto, Johto, the Orange Islands and Hoenn all have regions and towns
+  (`Weather.REGIONS`, a zone per town). Habitats are lists of those zones, so legendaries live in
+  their own regions, not only Kanto. Johto is still `live = false` there; its zones join when it
+  is switched on.
+- **Sets:** the three birds (Articuno, Zapdos, Moltres) and the three beasts (Raikou, Entei,
+  Suicune) can be out at the same time, as a set, spread over their habitats. They don't count
+  against the limit on the others, but each still has its own cooldown. Latias and Latios can be
+  out together too.
+- **Mythicals** (Mew, Celebi, Jirachi, Deoxys): never more than one out on the whole server.
+  They are the rarest (lowest chance, longest cooldowns) and the hardest to find: no area in the
+  announcement, only faint signs. The Master Ball still catches them; they are hard to find, not
+  hard to catch.
+- **Mew** disguises itself as a Pokémon of the zone it is in, at that zone's levels. When a
+  trainer discovers it (attacks it, or a Ranger's radar picks it out), it shows its true self.
+- **Regis** sleep at one of their locations until a trainer finds them or the time runs out. No
+  puzzle rooms. They don't roam.
+- **Catch announcements:** every catch of a legendary or mythical is announced server-wide,
+  wherever it comes from (wild, dungeon or quest), not only wild catches within 5 minutes.
+- **Announcements and hints** name the area, never the exact spot (mythicals not even the area).
+- **Level cap:** Pokémon stay capped at level 100; extra points remain the progression after it.
+
+### Each species
+
+| Species | Moves | Habitat | Signs |
+| --- | --- | --- | --- |
+| Raikou | Ground roamer, faster in thunderstorms | Open routes, stormy zones | Sparks on its trail |
+| Entei | Ground roamer | Mountains, volcanoes | Scorch marks, heat shimmer |
+| Suicune | Ground roamer, also along waterways | Rivers, lakes, coasts, forests | Mist |
+| Articuno | Flies between zones, lands | Snowy mountains, cold zones | Snow, ice, feathers |
+| Zapdos | Flies, follows thunderstorms | Stormy zones | Lightning |
+| Moltres | Flies | Volcanoes, warm zones | Fire, feathers |
+| Latias | Fast flyer, lands near trainers more often | Peaceful zones, forests | Brief fly-overs |
+| Latios | Faster flyer, avoids busy zones | Wild remote zones, mountains | Brief fly-overs |
+| Lugia | Ocean roamer | Sea zones | Storms, waves; underwater shadow |
+| Ho-Oh | Flies between towers and peaks, circles before landing | Elevated zones | Rainbows, golden sparkles |
+| Kyogre | Stays in its sea territory | Deep water | Heavy rain; underwater shadow |
+| Groudon | Stays in its territory, rises out of the ground | Volcanic, underground | Earthquakes, heat |
+| Rayquaza | Flies, lands at Sky Pillar or a high place | Sky Pillar, peaks | Wind; may appear when Groudon and Kyogre are both out |
+| Mewtwo | Mostly Cerulean Cave, sometimes remote Kanto; short teleports in battle, doesn't flee between zones | Cerulean Cave | Psychic disturbance before it appears |
+| Regirock, Regice, Registeel | Asleep, don't move | One of their locations each | Falling rocks / frost / metallic sparks near it |
+| Mew (mythical) | Disguised as a local Pokémon, teleports to escape | Forests, ruins, islands | Pink sparkles |
+| Celebi (mythical) | Mostly Ilex Forest, sometimes other old forests; short teleports | Forests | Green sparkles, unusual Pokémon near it |
+| Jirachi (mythical) | Lands with a meteor shower, stays a limited time | Meteor landing spots | Falling stars |
+| Deoxys (mythical) | Arrives by meteor impact, changes form in battle | Wild meteor sites | Strange energy at the impact |
+
+Ground roamers walk only to zones next to their own (a zone map made once from the map and
+checked by hand); flyers can go anywhere suitable; ocean roamers only through water zones.
+
+### Stages
+
+1. **Server only:**
+   - catch announcements everywhere;
+   - habitats and movement styles per species;
+   - the birds and beasts as sets, the mythical limit;
+   - weather links (Raikou, Zapdos, Kyogre);
+   - trails of signs with the effects we have;
+   - Mew's disguise, Mewtwo's warning, the sleeping Regis;
+   - active ones kept through a restart with their health;
+   - the Ranger radar by rank: zone activity (1), species from signs (2), next zones (3), direction
+     and freshness (4), recent path and rough destination (5), never exact coordinates.
+2. **Client:** fly-overs. The client draws the Pokémon raised above the map moving along the
+   path the server sends, with a dark copy on the ground as its shadow; the same module draws only
+   the dark copy on water for Lugia and Kyogre. Screen shake for Groudon.
+3. **Events:** meteor showers (Jirachi) and impacts (Deoxys), Rayquaza's appearance, the weather
+   when two legendaries' areas overlap (Articuno and Zapdos, Articuno and Moltres, Groudon and
+   Kyogre), and Deoxys's forms (if we have their sprites).
+
+All times, chances and limits stay in `WildLegendaries.CONFIG`.
+
+### To decide
+
+- The Regis: a set like the birds and beasts, or one at a time.
+- Catch chances: wild legendaries still need about 834 or more Ultra Balls (section 11); only
+  the Master Ball catches one in practice.
+- When Johto is switched on in `Weather.REGIONS` (its legendaries wait for it).
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
