@@ -2226,7 +2226,7 @@ Still to do:
 - Tibia's leftovers: rule violation reasons and name lock flags, the Portuguese game chat channel
   opened for Gamemasters on login, Tibia's VIP and depot limits per group.
 
-## 22. Legendary revamp (stage 1 built)
+## 22. Legendary revamp (stages 1 to 3 built)
 
 Today every wild legendary ([section 11](#11-bug-fixes-and-small-ideas), "Legendary spawning")
 behaves the same: it appears at a random anchor point, jumps to another far away every few
@@ -2436,7 +2436,72 @@ Server Lua only, plus the Admin window in the Redemption client. All settings ar
   warning, Kyogre's rain, the restart save, the flee, manual mode, the catch announcements and
   a real Mewtwo defeat.
 
-Not in stage 1: the fly-overs and shadows (stage 2), the bigger effects, and the stage 3 events.
+Stage 1 left the fly-overs and shadows to stage 2 and the events to stage 3.
+
+### Stage 2 (built)
+
+Server Lua, the new `game_legendaryflight` module and one engine fix in the Redemption client.
+The settings are in `WildLegendaries.CONFIG` under "Flights".
+
+- **Effect art:** 21 new client effects (1140 to 1160) from
+  [#207](https://github.com/GIToez/PokeVerse/pull/207), with server constants, used for the
+  signs, takeoffs and landings.
+- **Flights:** when a flyer moves (the schedule, a flee or staff), it takes off with its takeoff
+  effect and leaves the map. The flight (from, to, start, length, health, flee stage) is kept in
+  global storage (`LEGENDARY_FLIGHTS`), so its position is worked out at any moment. It flies 6
+  tiles a second (Latias and Latios 9), each crossing 8 to 60 seconds, circles for 4 seconds over
+  the landing spot, then lands with its landing effect and can be fought again. It can't be
+  fought in the air, still counts as out, and a flight in progress is saved through a restart
+  with its landing spot. A flyer that flees flies off the same way and lands with the health it
+  had.
+- **Dives:** Lugia and Kyogre swim the same way, 4 tiles a second (Kyogre stays in its zone).
+- **Who sees it:** every second the server finds the trainers within 18 by 14 tiles of where it
+  is and sends each one the flight once, on extended opcode 45 (`LEGENDARY_FLIGHT`, JSON).
+- **Drawing:** the client draws the flyer raised above the map with a bob, moving along the path,
+  and a dark copy of it on the ground as its shadow (an outfit shader), circling before it lands.
+  A dive draws only the dark shape, and only where every tile under it is sea (sea tiles are
+  walkable when surfing, so the module tells water by its ground ids). Nothing shows under a
+  roof or underground. A flight is drawn the same on every floor.
+- **Signs and sightings:** its signs follow the path every 2 seconds, and crossing into a zone is
+  a sighting, at most every 10 seconds: "Articuno was seen flying over Route 5, heading north",
+  in the Legendaries channel, and the Ranger radar picks it up.
+- **Groudon** shakes the screens of trainers within 14 tiles when it comes up and as it moves,
+  harder the closer they are.
+- **Engine fix:** UI creatures drew into a 64 pixel buffer, which cut and smeared the big 3x3
+  legendaries (Ho-Oh is 95 pixels); the buffer now grows with the creature
+  (`Creature::drawOutfitPokeVerse`).
+- **Admin:** **Move it now** is a flight; the status says which ones are in the air and where they
+  land; **Fly-over (me only)** and **Dive-over (me only)** (`/legendary flyover <name> [dive]`)
+  send a flight of the picked species past the staff member only, without spawning anything.
+
+### Stage 3 (built)
+
+- **Jirachi** lands with a meteor shower: 20 seconds of falling stars, 3 a second, within 7
+  tiles, drawn on the screens of trainers within 20 by 16 tiles ("A meteor shower lights up the
+  sky..."). A restart doesn't start it again.
+- **Deoxys** arrives with one big meteor, then the impact effects and a shake 1.2 seconds later
+  ("A meteor struck somewhere!...").
+- **Rayquaza:** when Groudon and Kyogre are both out, a 50% roll, once for that pair. On a hit,
+  2 minutes later Rayquaza comes down from the sky near Groudon (or Kyogre), flying in from 16 to
+  24 tiles away and landing 3 to 7 tiles from it, announced server-wide: "Rayquaza is coming down
+  from the sky to calm Groudon and Kyogre near X!". The pending call is kept through a restart.
+- **Clash weather:** two legendaries in the same zone or next ones change the weather there for
+  15 minutes, renewed while they stay: Articuno and Zapdos bring hail, Articuno and Moltres fog,
+  Groudon and Kyogre a thunderstorm (announced server-wide). Rayquaza calms Groudon and Kyogre's
+  storm, and Kyogre's rain comes back. When they part, the weather goes back. Weather staff set
+  there stays (only rain in Kyogre's zone gives way, since Kyogre may have brought it).
+- **Status:** the shower, the coming Rayquaza and the clash weather show in `/legendary status`
+  and in the Admin window.
+- **Admin:** **Groudon, Kyogre, Rayquaza** (`/legendary rayquaza`: spawns the two if they aren't
+  out and calls Rayquaza now), **Meteor shower here** (`/legendary meteors`) and **Meteor impact
+  here** (`/legendary impact`).
+- **Deoxys's forms** are left out: there is one Deoxys look and no form sprites.
+- **Tests:** the vocation test talkaction covers flights (staff moves, ending one, landing,
+  fleeing with its health, the restart save, who is sent it, the staff-only fly-over), Kyogre's
+  dive staying in its zone, Groudon's shake, Jirachi's shower, Deoxys's impact, the clash
+  weather, and Rayquaza's call, landing and calming the storm.
+
+Later: bigger effects where testing shows they are needed, and Ranger tracking by footprints.
 
 ## Going private
 

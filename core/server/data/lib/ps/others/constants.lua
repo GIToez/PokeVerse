@@ -77,7 +77,7 @@ EXTENDED_IDS = {
     EXP_BOOST = 42, -- JSON experience boosts for the stamina bar: stamina, personal bonus, server event, Lucky Egg (ExpBoost)
     POKEDEX_DETAILS = 43, -- JSON Pokedex Details tab, sent just before the Pokedex entry (getDexDetails in 010-pokedex.lua)
     BANK = 44, -- JSON Bank window: balance, money carried, deposit, withdraw, transfer and history (Bank)
-    LEGENDARY_FLIGHT = 45 -- JSON {type = "flight"|"shake", ...}: a legendary flying or swimming past, the ground shaking (WildLegendaries)
+    LEGENDARY_FLIGHT = 45 -- JSON {type = "flight"|"shake"|"meteors", ...}: a legendary flying or swimming past, the ground shaking, falling meteors (WildLegendaries)
 }
 
 TOURNAMENT_TYPES = {}
