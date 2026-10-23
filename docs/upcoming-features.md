@@ -1278,12 +1278,12 @@ From the `#notes` channel:
   each direction (north, east, south, west) per ground and set in `scripts/add-footprints.py`
   (the prints drawn turned by `ds_world.py`), and `traces.lua` picking it from `fromPosition`
   to `toPosition`.
-- **Ranger tracking leaves footprints (idea, To decide):** wild Pokémon leave no prints, so
+- **Ranger tracking leaves footprints (agreed, not built):** wild Pokémon leave no prints, so
   routes don't fill with tracks. While a Ranger tracks a Pokémon from the radar, that one
   Pokémon leaves prints, from when tracking starts until it stops. Today a rank 1 or 2 radar
-  is a snapshot and the Pokémon walks away from it; its trail would show where it went. Only
-  the Ranger doing the tracking might see them (a client-side effect on the tiles it steps
-  on, from the radar's position updates, instead of changing the ground for everyone).
+  is a snapshot and the Pokémon walks away from it; its trail shows where it went. Only the
+  Ranger doing the tracking sees them: a client-side effect on the tiles it steps on, from
+  the radar's position updates, so the ground doesn't change for anyone else.
   Ties in with the legendary trails of signs (section 22). Needs the directional prints
   above first.
 
