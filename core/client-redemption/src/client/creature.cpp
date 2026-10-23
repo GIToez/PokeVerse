@@ -185,7 +185,7 @@ void Creature::drawOutfitPokeVerse(const Rect& destRect, const bool resize)
 
     const int baseSprite = g_gameConfig.getSpriteSize();
     // big outfits (3x3 legendaries) need a bigger buffer, or the copy reads past its edge
-    const int exactSize = getExactSize();
+    const int exactSize = m_drawFullFrame ? getFullFrameSize() : getExactSize();
     const int fbSize = std::max(2 * baseSprite, (exactSize + baseSprite - 1) / baseSprite * baseSprite);
 
     g_drawPool.bindFrameBuffer(fbSize); {
@@ -1289,6 +1289,14 @@ uint16_t Creature::getCurrentAnimationPhase(const bool mount)
     }
 
     return isDisabledWalkAnimation() ? 0 : m_walkAnimationPhase;
+}
+
+int Creature::getFullFrameSize()
+{
+    const auto& type = getThingType();
+    if (!type)
+        return getExactSize();
+    return std::max({ getExactSize(), type->getWidth() * g_gameConfig.getSpriteSize(), type->getHeight() * g_gameConfig.getSpriteSize() });
 }
 
 int Creature::getExactSize(int layer, int /*xPattern*/, int yPattern, int zPattern, int /*animationPhase*/)

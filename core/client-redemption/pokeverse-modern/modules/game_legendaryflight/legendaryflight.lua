@@ -114,8 +114,12 @@ local function newCreature(look, shader)
     local widget = g_ui.createWidget('LegendaryFlyer', mapPanel())
     widget:setOutfit({ type = look })
     widget:setDirection(2)
+    local creature = widget:getCreature()
+    if creature.setDrawFullFrame then
+        creature:setDrawFullFrame(true)
+    end
     if shader then
-        widget:getCreature():setShader(shader)
+        creature:setShader(shader)
     end
     return widget
 end
@@ -211,7 +215,8 @@ local function startFlight(data)
     local creature = flight.shadow:getCreature()
     local thing = g_things.getThingType(tonumber(data.look), ThingCategoryCreature)
     flight.phases = thing and thing:getAnimationPhases() or 1
-    flight.size = math.max(64, math.min(192, creature and creature:getExactSize() or 64))
+    local frame = creature and (creature.getFullFrameSize and creature:getFullFrameSize() or creature:getExactSize()) or 64
+    flight.size = math.max(64, math.min(192, frame))
     flight.shadow:hide()
     if flight.sprite then
         flight.sprite:hide()

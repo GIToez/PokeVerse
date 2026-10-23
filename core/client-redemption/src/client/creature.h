@@ -185,6 +185,9 @@ public:
     bool isDisabledWalkAnimation() { return m_disableWalkAnimation > 0; }
     // PokeVerse: a creature drawn in a widget never walks, so a script picks its frame (legendary flights)
     void setWalkAnimationPhase(const uint8_t phase) { m_walkAnimationPhase = phase; }
+    // PokeVerse: a widget sizes a creature by its first frame; wider frames (spread wings) would be cut off
+    void setDrawFullFrame(const bool v) { m_drawFullFrame = v; }
+    int getFullFrameSize();
     void setDisableWalkAnimation(const bool v) {
         if (v) ++m_disableWalkAnimation; else {
             if (m_disableWalkAnimation <= 1) m_disableWalkAnimation = 0;
@@ -379,6 +382,7 @@ private:
     uint8_t m_walkedPixels{ 0 };
 
     uint8_t m_exactSize{ 0 };
+    bool m_drawFullFrame{ false };
 
     uint8_t m_disableWalkAnimation{ 0 };
 
