@@ -117,7 +117,8 @@ local function worldInfo()
     for _, species in ipairs(WildLegendaries.SPECIES) do
         legendaries[#legendaries + 1] = species.name
     end
-    return { kinds = kinds, regions = regions, holidays = holidays, seasons = seasons, legendaries = legendaries }
+    return { kinds = kinds, regions = regions, holidays = holidays, seasons = seasons, legendaries = legendaries,
+             legendary = WildLegendaries.adminState() }
 end
 
 Admin.sendState = function(cid)
@@ -338,7 +339,7 @@ Admin.COMMAND_HELP = {
     ["/y"] = { "World", "/y <color> <text>", "Show animated text" },
     ["/weather"] = { "World", "/weather [<zone|region|all|here> <kind> [minutes] | auto | off | time <day|night> | region <region> <on|off>]", "Weather and the game clock" },
     ["/anniversary"] = { "World", "/anniversary [show [minutes] | hide | on | off | auto | start | boss | reset]", "The Anniversary and its cake town" },
-    ["/legendary"] = { "World", "/legendary status | spawn <name> [here] | end <name> | next <duration>", "Wild legendaries" },
+    ["/legendary"] = { "Events", "/legendary status | spawn <name> [here] | set <set> | end | move | health | signs <name> | mew [here] | reveal | wake <name> | warn [here] | mode <auto|manual> | next <duration>", "Wild legendaries" },
     ["/raid"] = { "World", "/raid <name>", "Start a raid" },
     ["/deco"] = { "World", "/deco sets | items | add | remove | list | preview | auto", "Hand-placed decorations" },
     ["/mypokemon"] = { "World", "/mypokemon <pokemon> [level]", "Give yourself a Pokemon" },

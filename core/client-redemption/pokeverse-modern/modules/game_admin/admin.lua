@@ -18,7 +18,7 @@ local DECO_REFRESH_SECONDS = 5
 local PLAYERS_REFRESH_SECONDS = 5
 local BAN_CONFIRM_MS = 4000
 
-local TABS = { 'events', 'players', 'world', 'decorations', 'server', 'commands' }
+local TABS = { 'boosts', 'events', 'players', 'world', 'decorations', 'server', 'commands' }
 local STAFF_NAMES = { 'Tutor', 'Senior Tutor', 'Gamemaster', 'Community Manager', 'God' }
 local COMMAND_GROUPS = { 'Players', 'Moving', 'Staff', 'Events', 'World', 'Server', 'Other' }
 local BAN_REASON_LABELS = { [4] = 'Offensive talk', [5] = 'Spamming', [6] = 'Advertising', [10] = 'Bug abuse',
@@ -85,7 +85,8 @@ local commands = { byWords = nil, list = {}, parts = {} } -- what this staff mem
 local commandButtons = {} -- { widget, words }
 local players = { list = {}, towns = {}, askedAt = 0, searchEvent = nil }
 local banPick = { days = 7, reason = nil, confirmEvent = nil }
-local world = { built = false, target = 'here', kind = 'rain', minutes = 60, legendary = nil, holiday = nil }
+local world = { built = false, target = 'here', kind = 'rain', minutes = 60, holiday = nil }
+local legendary = { built = false, pick = nil }
 
 local function send(data)
     local protocol = g_game.getProtocolGame()
@@ -245,7 +246,7 @@ local function updateStatus()
     end
     local passed = g_clock.seconds() - receivedAt
     local canRun = access() >= (tonumber(state.eventsAccess) or 5)
-    for _, row in ipairs(window.events.eventsPanel.rows:getChildren()) do
+    for _, row in ipairs(window.boosts.eventsPanel.rows:getChildren()) do
         local event = row.event
         local left = event.multiplier and (tonumber(event.left) or 0) - passed
         if left and left > 0 then
@@ -290,7 +291,7 @@ end
 local function fillEvents(data)
     local multipliers = data.multipliers or { 2 }
     local minutes = data.minutes or { 60 }
-    local rows = window.events.eventsPanel.rows
+    local rows = window.boosts.eventsPanel.rows
     rows:destroyChildren()
     for _, event in ipairs(data.events or {}) do
         picks[event.key] = picks[event.key] or { multiplier = 2, minutes = 60 }
@@ -343,7 +344,7 @@ local function pickRow(box, options, current, onPick, width)
 end
 
 local function fillCalendar(info)
-    local panel = window.events.calendar
+    local panel = window.boosts.calendar
     panel.seasons:destroyChildren()
     for _, season in ipairs(info.seasons or {}) do
         local widget = commandButton(panel.seasons, 'AdminTab', season.name, '/calendar',
@@ -582,33 +583,128 @@ local function fillWorld(info)
             'Move the day and night cycle'):setWidth(80)
     end
 
-    local legendaries = panel.legendaries
-    local species = {}
-    for _, name in ipairs(info.legendaries or {}) do
-        table.insert(species, { name, name })
-    end
-    world.legendary = world.legendary or (species[1] and species[1][1])
-    pickRow(legendaries.species, species, world.legendary, function(value) world.legendary = value end)
-    legendaries.buttons:destroyChildren()
-    local function withLegendary(format)
-        return function()
-            return world.legendary and string.format(format, world.legendary), tr('Pick a legendary.')
-        end
-    end
-    commandButton(legendaries.buttons, 'PVGreenButton', 'Spawn somewhere', '/legendary',
-        withLegendary('/legendary spawn %s'), 'On one of its spawn points')
-    commandButton(legendaries.buttons, 'PVGreenButton', 'Spawn at my feet', '/legendary',
-        withLegendary('/legendary spawn %s here'))
-    commandButton(legendaries.buttons, 'PVRedButton', 'Send away', '/legendary', withLegendary('/legendary end %s'),
-        'Without a cooldown')
-    commandButton(legendaries.buttons, 'PVBlueButton', 'Next spawn in 5 min', '/legendary',
-        fixedCommand('/legendary next 5m'))
-    commandButton(legendaries.buttons, 'PVBlueButton', 'Status', '/legendary', fixedCommand('/legendary status'))
-    commandButton(legendaries.buttons, 'PVBlueButton', 'Clear cooldowns', '/legendary',
-        fixedCommand('/legendary cooldowns clear'))
-
     fillCalendar(info)
     world.built = true
+end
+
+-- events: the wild legendaries ------------------------------------------------------------------
+
+local function askState()
+    send({ action = 'refresh' })
+end
+
+-- a /legendary button; the status comes back a moment after it runs
+local function legendaryButton(parent, style, text, build, tooltip)
+    return commandButton(parent, style, text, '/legendary', function()
+        local command, why = build()
+        if command then
+            scheduleEvent(askState, 800)
+        end
+        return command, why
+    end, tooltip)
+end
+
+local function withPick(format)
+    return function()
+        return legendary.pick and string.format(format, legendary.pick), tr('Pick a legendary.')
+    end
+end
+
+local TIER_NAMES = { 'Legendary', 'Major legendary', 'Mythical' }
+
+local function fillLegendaryStatus(info)
+    local panel = window.events.legendaries
+    for _, widget in ipairs(panel.mode:getChildren()) do
+        widget:setOn((widget.manual == true) == (info.manual == true))
+    end
+    local status = panel.status
+    status:destroyChildren()
+    local function line(text, color)
+        local label = g_ui.createWidget('AdminText', status)
+        label:setText(text)
+        label:setTextAutoResize(true)
+        if color then
+            label:setColor(color)
+        end
+    end
+    for _, a in ipairs(info.active or {}) do
+        local state = a.disguised and tr(' (disguised as %s)', a.disguised) or (a.asleep and tr(' (asleep)') or '')
+        line(tr('%s%s near %s: %d%%, leaves in %s, at %d, %d, %d%s', a.name, state, a.area or '?', tonumber(a.health) or 0,
+            duration(a.left), a.x, a.y, a.z, a.set and tr(', set') or ''), RUNNING_COLOR)
+    end
+    for _, p in ipairs(info.pending or {}) do
+        line(tr('%s: warning, appears in %s', p.name, duration(p.left)), RUNNING_COLOR)
+    end
+    if #(info.active or {}) == 0 and #(info.pending or {}) == 0 then
+        line(tr('None out right now.'), MUTED_COLOR)
+    end
+    line(tr('Mythical slot: %s', info.mythical or tr('free')))
+    if info.manual then
+        line(tr('Manual: no scheduled spawns.'), MUTED_COLOR)
+    else
+        line(info.nextIn and tr('Next scheduled spawn in %s%s', duration(info.nextIn),
+            info.blocked and (' (' .. info.blocked .. ')') or '') or tr('No spawn scheduled yet.'))
+    end
+    local cooling = {}
+    for _, c in ipairs(info.cooldowns or {}) do
+        table.insert(cooling, c.name .. ' ' .. duration(c.left))
+    end
+    line(tr('Cooldowns: %s', #cooling > 0 and table.concat(cooling, ', ') or tr('none')), MUTED_COLOR)
+end
+
+local function fillLegendaries(info)
+    local panel = window.events.legendaries
+    if not legendary.built then
+        panel.mode:destroyChildren()
+        for _, entry in ipairs({ { 'Auto', false, 'Spawn on the schedule' },
+                                 { 'Manual', true, 'Only staff start them; what is out stays' } }) do
+            local widget = legendaryButton(panel.mode, 'AdminTab', entry[1],
+                fixedCommand('/legendary mode ' .. (entry[2] and 'manual' or 'auto')), entry[3])
+            widget.manual = entry[2]
+            widget:setWidth(80)
+        end
+        panel.sets:destroyChildren()
+        for _, set in ipairs(info.sets or {}) do
+            legendaryButton(panel.sets, 'AdminTab', set.name, fixedCommand('/legendary set ' .. set.id),
+                'Spawn them together; one already out is skipped'):setWidth(140)
+        end
+
+        local species = {}
+        for _, s in ipairs(info.species or {}) do
+            table.insert(species, { s.name, s.name, tr('%s, moves: %s', tr(TIER_NAMES[tonumber(s.tier)] or ''), s.style or '') })
+        end
+        legendary.pick = legendary.pick or (species[1] and species[1][1])
+        pickRow(panel.species, species, legendary.pick, function(value) legendary.pick = value end)
+
+        local buttons = panel.buttons
+        buttons:destroyChildren()
+        legendaryButton(buttons, 'PVGreenButton', 'Spawn in its habitat', withPick('/legendary spawn %s'),
+            'Regis come asleep, Mew in disguise')
+        legendaryButton(buttons, 'PVGreenButton', 'Spawn at my feet', withPick('/legendary spawn %s here'))
+        legendaryButton(buttons, 'PVRedButton', 'Send away', withPick('/legendary end %s'), 'Without a cooldown')
+        legendaryButton(buttons, 'PVBlueButton', 'Move it now', withPick('/legendary move %s'), 'The way it moves')
+        legendaryButton(buttons, 'PVBlueButton', 'Health 50%', withPick('/legendary health %s 50'))
+        legendaryButton(buttons, 'PVBlueButton', 'Health 100%', withPick('/legendary health %s 100'))
+        legendaryButton(buttons, 'PVBlueButton', 'Clear its cooldown', withPick('/legendary cooldowns clear %s'))
+        legendaryButton(buttons, 'PVBlueButton', 'Show its signs', withPick('/legendary signs %s'),
+            'Its signs and trail now, and the spots in the chat')
+
+        local special = panel.special
+        special:destroyChildren()
+        legendaryButton(special, 'PVGreenButton', 'Mew disguised here', fixedCommand('/legendary mew here'),
+            'Mew as a Pokemon of this spot')
+        legendaryButton(special, 'PVBlueButton', 'Reveal Mew', fixedCommand('/legendary reveal'))
+        legendaryButton(special, 'PVBlueButton', 'Wake the Regi', withPick('/legendary wake %s'), 'Pick a sleeping Regi first')
+        legendaryButton(special, 'PVGreenButton', 'Mewtwo warning', fixedCommand('/legendary warn'),
+            'The psychic disturbance, then Mewtwo in its habitat')
+        legendaryButton(special, 'PVGreenButton', 'Mewtwo warning here', fixedCommand('/legendary warn here'))
+        legendaryButton(special, 'PVBlueButton', 'Next spawn in 5 min', fixedCommand('/legendary next 5m'))
+        legendaryButton(special, 'PVBlueButton', 'Clear all cooldowns', fixedCommand('/legendary cooldowns clear'))
+        legendaryButton(special, 'PVBlueButton', 'Status in chat', fixedCommand('/legendary status'))
+        panel.refresh.onClick = askState
+        legendary.built = true
+    end
+    fillLegendaryStatus(info)
 end
 
 -- server ------------------------------------------------------------------------------------------
@@ -749,7 +845,7 @@ end
 
 local function tabAccess(name)
     local events = tonumber(state and state.eventsAccess) or 5
-    local needs = { events = tonumber(state and state.broadcastAccess) or 3, players = 1, world = events,
+    local needs = { boosts = tonumber(state and state.broadcastAccess) or 3, events = events, players = 1, world = events,
                     decorations = events, server = 3, commands = 1 }
     return needs[name] or 5
 end
@@ -783,8 +879,8 @@ local function refreshAccess()
         window.tabs[id .. 'Tab']:setVisible(access() >= tabAccess(id))
     end
     local canBroadcast = access() >= (tonumber(state.broadcastAccess) or 3)
-    window.events.tools.broadcast:setEnabled(canBroadcast)
-    window.events.tools.broadcastText:setEnabled(canBroadcast)
+    window.boosts.tools.broadcast:setEnabled(canBroadcast)
+    window.boosts.tools.broadcastText:setEnabled(canBroadcast)
     local canBan = access() >= (tonumber(state.banAccess) or 3)
     window.players.player.ban:setEnabled(canBan)
     window.players.bans:setVisible(canBan)
@@ -801,13 +897,16 @@ local function fill(data)
     end
     if data.world then
         fillRegions(data.world)
+        if data.world.legendary then
+            fillLegendaries(data.world.legendary)
+        end
     end
     refreshAccess()
     if not commands.byWords then
         send({ action = 'commands' })
     end
     if not tab or access() < tabAccess(tab) then
-        showTab(tab or 'events')
+        showTab(tab or 'boosts')
     end
 end
 
@@ -841,7 +940,7 @@ function show()
         button:setOn(true)
     end
     send({ action = 'refresh' })
-    showTab(tab or 'events')
+    showTab(tab or 'boosts')
     removeEvent(tickEvent)
     tickEvent = scheduleEvent(tick, TICK_MS)
 end
@@ -887,7 +986,7 @@ local function onAdmin(protocol, opcode, buffer)
     elseif data.type == 'result' and data.text then
         setResult(data.ok, data.text)
         if data.ok and broadcasting then
-            window.events.tools.broadcastText:setText('')
+            window.boosts.tools.broadcastText:setText('')
         end
         broadcasting = false
     end
@@ -908,6 +1007,7 @@ local function onGameEnd()
     commands.byWords, commands.list, commands.parts = nil, {}, {}
     players.list, players.towns = {}, {}
     world.built = false
+    legendary.built = false
     tab = nil
     resetBanButton()
     refreshCommandButtons()
@@ -918,7 +1018,7 @@ function init()
     window = g_ui.createWidget('AdminWindow', rootWidget)
     window:hide()
 
-    local tools = window.events.tools
+    local tools = window.boosts.tools
     local function pickTarget(target)
         broadcastTarget = target
         for _, widget in ipairs(tools.targets:getChildren()) do

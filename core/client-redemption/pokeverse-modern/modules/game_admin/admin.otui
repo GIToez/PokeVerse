@@ -331,39 +331,45 @@ AdminWindow < UIWindow
       spacing: 6
 
     FishingTab
+      id: boostsTab
+      !text: tr('Boosts')
+      width: 96
+      @onClick: modules.game_admin.showTab('boosts')
+
+    FishingTab
       id: eventsTab
       !text: tr('Events')
-      width: 112
+      width: 96
       @onClick: modules.game_admin.showTab('events')
 
     FishingTab
       id: playersTab
       !text: tr('Players')
-      width: 112
+      width: 96
       @onClick: modules.game_admin.showTab('players')
 
     FishingTab
       id: worldTab
       !text: tr('World')
-      width: 112
+      width: 96
       @onClick: modules.game_admin.showTab('world')
 
     FishingTab
       id: decorationsTab
       !text: tr('Decorations')
-      width: 112
+      width: 96
       @onClick: modules.game_admin.showTab('decorations')
 
     FishingTab
       id: serverTab
       !text: tr('Server')
-      width: 112
+      width: 96
       @onClick: modules.game_admin.showTab('server')
 
     FishingTab
       id: commandsTab
       !text: tr('Commands')
-      width: 112
+      width: 96
       @onClick: modules.game_admin.showTab('commands')
 
   AdminText
@@ -374,9 +380,9 @@ AdminWindow < UIWindow
     anchors.right: parent.right
     anchors.bottom: parent.bottom
 
-  // Events: the server events, the calendar and the broadcast
+  // Boosts: the experience and shiny events, the calendar and the broadcast
   AdminPage
-    id: events
+    id: boosts
 
     FishingPanel
       id: eventsPanel
@@ -534,6 +540,134 @@ AdminWindow < UIWindow
         anchors.top: title.bottom
         anchors.right: parent.right
         margin-top: 8
+
+  // Events: every game event, one section each (the wild legendaries for now)
+  AdminPage
+    id: events
+
+    FishingPanel
+      id: legendaries
+      anchors.fill: parent
+
+      FishingPanelTitle
+        id: title
+        !text: tr('Wild legendaries')
+
+      AdminMuted
+        !text: tr('Every button runs a /legendary command.')
+        text-auto-resize: true
+        anchors.right: parent.right
+        anchors.verticalCenter: title.verticalCenter
+
+      AdminRowLabel
+        id: modeLabel
+        !text: tr('Spawns')
+        anchors.top: title.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UIWidget
+        id: mode
+        height: 22
+        anchors.top: modeLabel.top
+        anchors.left: modeLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      AdminRowLabel
+        id: setsLabel
+        !text: tr('Sets')
+        anchors.top: modeLabel.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      UIWidget
+        id: sets
+        height: 22
+        anchors.top: setsLabel.top
+        anchors.left: setsLabel.right
+        anchors.right: parent.right
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      AdminRowLabel
+        id: speciesLabel
+        !text: tr('Pick one')
+        anchors.top: setsLabel.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      UIWidget
+        id: species
+        height: 100
+        anchors.top: speciesLabel.top
+        anchors.left: speciesLabel.right
+        anchors.right: parent.right
+        layout:
+          type: grid
+          cell-size: 98 22
+          cell-spacing: 4
+          flow: true
+
+      UIWidget
+        id: buttons
+        height: 62
+        anchors.top: species.bottom
+        anchors.left: species.left
+        anchors.right: parent.right
+        margin-top: 8
+        layout:
+          type: grid
+          cell-size: 148 28
+          cell-spacing: 6
+          flow: true
+
+      AdminRowLabel
+        id: specialLabel
+        !text: tr('Special')
+        anchors.top: buttons.bottom
+        anchors.left: parent.left
+        margin-top: 8
+
+      UIWidget
+        id: special
+        height: 62
+        anchors.top: specialLabel.top
+        anchors.left: specialLabel.right
+        anchors.right: parent.right
+        layout:
+          type: grid
+          cell-size: 148 28
+          cell-spacing: 6
+          flow: true
+
+      AdminRowLabel
+        id: statusLabel
+        !text: tr('Status')
+        anchors.top: special.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      AdminTab
+        id: refresh
+        !text: tr('Refresh')
+        width: 70
+        anchors.top: statusLabel.top
+        anchors.right: parent.right
+
+      UIWidget
+        id: status
+        anchors.top: statusLabel.top
+        anchors.left: statusLabel.right
+        anchors.right: refresh.left
+        anchors.bottom: parent.bottom
+        margin-right: 8
+        layout:
+          type: verticalBox
+          spacing: 2
 
   // Players: the players online and the banned accounts on the left, the actions on the right
   AdminPage
@@ -760,7 +894,7 @@ AdminWindow < UIWindow
         anchors.right: parent.right
         margin-top: 6
 
-  // World: the weather, the game clock and the wild legendaries
+  // World: the weather and the game clock
   AdminPage
     id: world
 
@@ -878,50 +1012,6 @@ AdminWindow < UIWindow
         layout:
           type: horizontalBox
           spacing: 4
-
-    FishingPanel
-      id: legendaries
-      anchors.top: weather.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.bottom: parent.bottom
-      margin-top: 10
-
-      FishingPanelTitle
-        id: title
-        !text: tr('Wild legendaries')
-
-      AdminMuted
-        !text: tr('Pick one, then spawn it or send it away. /legendary')
-        text-auto-resize: true
-        anchors.right: parent.right
-        anchors.verticalCenter: title.verticalCenter
-
-      UIWidget
-        id: species
-        height: 100
-        anchors.top: title.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        margin-top: 10
-        layout:
-          type: grid
-          cell-size: 106 22
-          cell-spacing: 4
-          flow: true
-
-      UIWidget
-        id: buttons
-        height: 62
-        anchors.top: species.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        margin-top: 10
-        layout:
-          type: grid
-          cell-size: 160 28
-          cell-spacing: 6
-          flow: true
 
   FishingPanel
     id: decorations
