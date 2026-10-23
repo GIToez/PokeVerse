@@ -61,6 +61,7 @@ void AndroidManager::setAndroidManager(JNIEnv* env, jobject androidManager) {
     m_midHideInputPreview = jniEnv->GetMethodID(androidManagerJClass, "hideInputPreview", "()V");
     m_midGetClipboardText = jniEnv->GetMethodID(androidManagerJClass, "getClipboardText", "()Ljava/lang/String;");
     m_midSetClipboardText = jniEnv->GetMethodID(androidManagerJClass, "setClipboardText", "(Ljava/lang/String;)V");
+    m_midOpenUrl = jniEnv->GetMethodID(androidManagerJClass, "openUrl", "(Ljava/lang/String;)V");
     m_midSetUnpackProgress = jniEnv->GetMethodID(androidManagerJClass, "setUnpackProgress", "(I)V");
     m_midHideUnpackProgress = jniEnv->GetMethodID(androidManagerJClass, "hideUnpackProgress", "()V");
     m_midSetBackgroundTask = jniEnv->GetMethodID(androidManagerJClass, "setBackgroundTask", "(ILjava/lang/String;I)V");
@@ -123,6 +124,13 @@ void AndroidManager::setClipboardText(const std::string& text) {
     jstring jText = latin1ToJString(env, text);
     env->CallVoidMethod(m_androidManagerJObject, m_midSetClipboardText, jText);
     env->DeleteLocalRef(jText);
+}
+
+void AndroidManager::openUrl(const std::string& url) {
+    JNIEnv* env = getJNIEnv();
+    jstring jUrl = env->NewStringUTF(url.c_str());
+    env->CallVoidMethod(m_androidManagerJObject, m_midOpenUrl, jUrl);
+    env->DeleteLocalRef(jUrl);
 }
 
 void AndroidManager::unZipAssetData() {
