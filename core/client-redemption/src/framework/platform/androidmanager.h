@@ -48,6 +48,7 @@ public:
 
     std::string getClipboardText();
     void setClipboardText(const std::string& text);
+    void openUrl(const std::string& url);
 
     std::string getStringFromJString(jstring);
     std::string getAppBaseDir();
@@ -76,6 +77,7 @@ private:
     jmethodID m_midHideInputPreview;
     jmethodID m_midGetClipboardText;
     jmethodID m_midSetClipboardText;
+    jmethodID m_midOpenUrl;
     jmethodID m_midSetUnpackProgress;
     jmethodID m_midHideUnpackProgress;
     jmethodID m_midSetBackgroundTask;

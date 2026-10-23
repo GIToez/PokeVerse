@@ -33,6 +33,7 @@
 
 #ifdef ANDROID
 #include <errno.h>
+#include <framework/platform/androidmanager.h>
 #else
 #include <execinfo.h>
 #endif
@@ -151,6 +152,12 @@ bool Platform::openUrl(std::string url, bool now)
 {
     if(url.find("http://") == std::string::npos && url.find("https://") == std::string::npos)
         url.insert(0, "http://");
+
+#ifdef ANDROID
+    // no xdg-open on Android: the app hands the link to the browser (or the APK installer)
+    g_androidManager.openUrl(url);
+    return true;
+#endif
 
     const auto& action = [url] {
 #if defined(__APPLE__)

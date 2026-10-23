@@ -3,8 +3,11 @@ package com.otclient
 import android.Manifest
 import android.app.Activity
 import android.content.ClipData
+import android.content.ActivityNotFoundException
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
@@ -142,6 +145,16 @@ class AndroidManager(
         val clip = clipboard.primaryClip ?: return ""
         if (clip.itemCount == 0) return ""
         return clip.getItemAt(0).coerceToText(context).toString()
+    }
+
+    fun openUrl(url: String) {
+        handler.post {
+            try {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            } catch (e: ActivityNotFoundException) {
+                android.util.Log.w("OTClient", "No app to open $url", e)
+            }
+        }
     }
 
     fun setClipboardText(text: String) {
