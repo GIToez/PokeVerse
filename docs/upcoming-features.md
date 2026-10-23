@@ -64,9 +64,11 @@ so. Items marked **To decide** need an answer before work starts.
   held item icons that no longer flicker.
 - Android: the map keeps 23x13 tiles and the game stays in landscape; the APK is signed with
   the release key.
-- Stage 1 of the [legendary revamp](#22-legendary-revamp-stage-1-built): habitats in all four
+- Stage 1 of the [legendary revamp](#22-legendary-revamp-stages-1-to-3-built): habitats in all four
   regions, a way of moving per species, the sets, trails of signs, Mew's disguise, Mewtwo's
-  warning, the sleeping Regis, the radar by rank, and the new Admin Events tab.
+  warning, the sleeping Regis, the radar by rank, and the new Admin Events tab. Stages 2 and 3:
+  flights and dives drawn on the client, Jirachi's meteor shower, Deoxys's impact, Rayquaza's
+  event and the clash weather.
 
 **Next, in order (agreed October 15):**
 
@@ -1270,7 +1272,7 @@ From the `#notes` channel:
       - Staff: `/legendary status`, `spawn <name> [here]`, `end <name>`, `next <time>`
         (`30s`, `5m`, `2h`, `1d`) and `cooldowns clear [name]`.
       - Tests: the legendary part of the vocation test talkaction, with a real Mewtwo defeat.
-    - **Revamped (stage 1 of [section 22](#22-legendary-revamp-stage-1-built)):** the Kanto-only
+    - **Revamped (stage 1 of [section 22](#22-legendary-revamp-stages-1-to-3-built)):** the Kanto-only
       pool, the half-home rule and the roaming above are replaced by habitats in four regions
       and a way of moving per species; the limits, timers, flee, healing, health, rewards and
       notifications stay. No spawns in the 10 minutes before the daily restart (was 2 hours),
