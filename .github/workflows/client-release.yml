@@ -435,7 +435,8 @@ jobs:
           TAG: ${{ steps.version.outputs.tag }}
         run: |
           for os in windows linux android; do
-            grep -q "^  updater = \"$PAGES_URL/updater/\"," "pkg/$os/init.lua"
+            # init.lua is encrypted
+            python3 scripts/encrypt-client.py --cat "pkg/$os/init.lua" | grep -q "^  updater = \"$PAGES_URL/updater/\","
             python3 - "$os" <<'EOF'
           import json, os, sys
           name = sys.argv[1]

@@ -2,6 +2,7 @@
 """Encrypts an assembled Redemption client's modules and images.
 
     PV_ENCRYPTION_KEY=<key> scripts/encrypt-client.py <client dir>
+    PV_ENCRYPTION_KEY=<key> scripts/encrypt-client.py --cat <file>    prints the file decrypted
 
 The same scheme and header as the engine built with -DPV_ENCRYPTION_KEY=<key>
 (src/framework/core/resourcemanager.cpp, encrypt): the header, then each byte shifted by the
@@ -34,14 +35,31 @@ def encrypt(data, key):
     return bytes(out)
 
 
+def decrypt(data, key):
+    k = key.encode()
+    n = len(k)
+    out = bytearray(len(data))
+    for i, b in enumerate(data):
+        p = k[i % n]
+        out[i] = (b + p - i) & 0xFF if i % 2 else (b - p + i) & 0xFF
+    return bytes(out)
+
+
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) not in (2, 3) or (len(sys.argv) == 3 and sys.argv[1] != "--cat"):
         sys.exit(__doc__)
     key = os.environ.get("PV_ENCRYPTION_KEY", "")
     if not re.fullmatch(r"[A-Za-z0-9]{32,}", key):
         sys.exit("PV_ENCRYPTION_KEY: 32 or more letters and digits")
-    root = sys.argv[1]
     header = header_for(key)
+    if sys.argv[1] == "--cat":
+        with open(sys.argv[2], "rb") as f:
+            data = f.read()
+        if data.startswith(header):
+            data = decrypt(data[len(header):], key)
+        sys.stdout.buffer.write(data)
+        return
+    root = sys.argv[1]
     count = size = 0
     for folder, _, files in os.walk(root):
         for name in files:
