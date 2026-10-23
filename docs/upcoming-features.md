@@ -2507,8 +2507,11 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 
 ### After stage 3 (built)
 
-- **Bigger effects:** Latias and Latios are drawn at least 64 pixels in a flight (their sprite
-  is one tile) and fly 7 tiles a second instead of 9, so they stay on screen longer. Mewtwo's
+- **Latias and Latios art:** their looks (1559 and 1560) had no sprites, so a wild one and its
+  fly-overs drew nothing. They are now the sprite pack's 96 pixel sheets (`outfit_4344_` and
+  `outfit_4342_`, put in by `scripts/dat-set-outfit.py`).
+- **Bigger effects:** Latias and Latios are drawn at least 64 pixels in a flight and fly 7
+  tiles a second instead of 9, so they stay on screen longer. Mewtwo's
   warning bursts every 4 seconds instead of 15, 4 to 10 effects within 5 tiles growing as it
   nears, every second in the last 15 seconds, with a shake around it 15 seconds before it
   appears.
