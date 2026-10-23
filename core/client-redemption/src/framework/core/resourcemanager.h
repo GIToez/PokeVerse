@@ -90,6 +90,8 @@ public:
     std::string decrypt(const std::string& data);
     static uint8_t* decrypt(uint8_t* data, int32_t size);
     void runEncryption(const std::string& password);
+    // with encryption on: a .lua, .otui or .otmod from the client's folder that must be encrypted
+    static bool isProtectedCode(const std::string& fullPath);
     void save_string_into_file(const std::string& contents, const std::string& name);
 
     std::string fileChecksum(const std::string& path);

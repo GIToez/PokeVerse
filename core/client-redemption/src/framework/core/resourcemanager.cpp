@@ -608,10 +608,31 @@ std::string ResourceManager::readFileContents(const std::string& fileName)
         buffer.compare(0, encHeader.size(), encHeader) == 0) {
         buffer = buffer.substr(encHeader.size());
         buffer = decrypt(buffer);
+    } else if (isProtectedCode(fullPath)) {
+        // code the release did not encrypt is someone else's: a module added or swapped in
+        throw Exception("refusing '{}': not part of this client (unencrypted)", fullPath);
     }
 #endif
 
     return buffer;
+}
+
+bool ResourceManager::isProtectedCode(const std::string& fullPath)
+{
+    static const std::string extensions[] = { ".lua", ".otui", ".otmod" };
+    if (std::ranges::none_of(extensions, [&](const std::string& ext) { return fullPath.ends_with(ext); }))
+        return false;
+    // the player's own folder (settings and what the client writes) is not the release's
+    const char* realDir = PHYSFS_getRealDir(fullPath.c_str());
+    const char* writeDir = PHYSFS_getWriteDir();
+    if (!realDir || !writeDir)
+        return true;
+    const auto trimmed = [](std::string_view dir) {
+        while (dir.size() > 1 && (dir.back() == '/' || dir.back() == '\\'))
+            dir.remove_suffix(1);
+        return dir;
+    };
+    return trimmed(realDir) != trimmed(writeDir);
 }
 
 std::string ResourceManager::readFileContentsFromWorkDir(const std::string& fileName)

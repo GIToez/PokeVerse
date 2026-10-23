@@ -45,6 +45,10 @@ engine=$(cd "$root" && for p in "${engine_paths[@]}"; do git rev-parse "HEAD:$p"
 if [ -n "$(cd "$root" && git status --porcelain -- "${engine_paths[@]}" 2>/dev/null)" ]; then
   engine="$engine-dirty"
 fi
+# an engine built with another encryption key can't read the files, so the key is part of it
+if [ -n "${PV_ENCRYPTION_KEY:-}" ]; then
+  engine="$engine-$(printf 'pokeverse-engine:%s' "$PV_ENCRYPTION_KEY" | sha256sum | cut -c1-8)"
+fi
 echo "$engine" > "$work/client/engine.txt"
 echo "Android engine: $engine"
 
