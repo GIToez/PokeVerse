@@ -197,4 +197,10 @@ else
   rm -rf "$out/modules/updater"
 fi
 
+# PV_ENCRYPTION_KEY encrypts the modules and images; the binaries must be built with the same
+# key (-DPV_ENCRYPTION_KEY) or they cannot read them
+if [ -n "${PV_ENCRYPTION_KEY:-}" ]; then
+  python3 "$root/scripts/encrypt-client.py" "$out"
+fi
+
 echo "Redemption client ready: $out${host:+ (server $host)}${port:+ (port $port)}${updater:+ (updater $updater)}"

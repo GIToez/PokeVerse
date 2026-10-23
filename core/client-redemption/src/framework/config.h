@@ -32,15 +32,28 @@ static constexpr float DEFAULT_DISPLAY_DENSITY = 1.f;
 #define SPRITE_SHEET_WIDTH_BYTES 384 * 4
 
 // ENCRYPTION SYSTEM
+// PokeVerse: CMake's PV_ENCRYPTION_KEY turns it on and sets the password and header (the
+// CLIENT_ENCRYPTION_KEY secret in Client release); scripts/encrypt-client.py encrypts the
+// package's files the same way. Files without the header are read as they are.
 // Enable client encryption
+#ifndef ENABLE_ENCRYPTION
 #define ENABLE_ENCRYPTION 0
+#endif
 // Enable client encryption maker/builder.
 // You can compile it once and use this executable to only encrypt client files once with command --encrypt which will be using password below.
 #define ENABLE_ENCRYPTION_BUILDER 0
 // for security reasons make sure you are using password with at last 100+ characters
+#ifdef PV_ENCRYPTION_PASSWORD
+#define ENCRYPTION_PASSWORD AY_OBFUSCATE(PV_ENCRYPTION_PASSWORD)
+#else
 #define ENCRYPTION_PASSWORD AY_OBFUSCATE("SET_YOUR_PASSWORD_HERE")
+#endif
 // do not insert special characters in the header (ONLY UPPERCASE LETTERS, LOWERCASE LETTERS AND NUMBERS) | example: #define ENCRYPTION_HEADER AY_OBFUSCATE("21UsO5ARfRnIScs415BNMab")
+#ifdef PV_ENCRYPTION_HEADER
+#define ENCRYPTION_HEADER AY_OBFUSCATE(PV_ENCRYPTION_HEADER)
+#else
 #define ENCRYPTION_HEADER AY_OBFUSCATE("SET_YOUR_HEADER_HERE")
+#endif
 
 // DISCORD RPC (https://discord.com/developers/applications)
 // Enable Discord Rich Presence

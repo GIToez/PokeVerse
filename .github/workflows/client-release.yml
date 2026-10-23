@@ -16,6 +16,7 @@ on:
       - core/client-legacy/data/**
       - core/client-legacy/modules/**
       - scripts/assemble-redemption-client.sh
+      - scripts/encrypt-client.py
       - scripts/set-client-server.sh
       - scripts/make-updater-manifest.py
       - scripts/build-android-client.sh
@@ -45,6 +46,9 @@ env:
   # the Pages custom domain; the github.io address only 301-redirects here, one more TLS handshake
   PAGES_URL: https://pokeverse.quest
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg-cache,readwrite
+  # encrypts the modules and images (scripts/encrypt-client.py) and builds the clients that
+  # read them; without it (forks' pull requests) the clients are built unencrypted
+  PV_ENCRYPTION_KEY: ${{ secrets.CLIENT_ENCRYPTION_KEY }}
 
 jobs:
   linux:
@@ -93,7 +97,8 @@ jobs:
           # GCC 14's C++ runtime is linked in; players' systems have an older libstdc++
           cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_IPO=OFF -DOPTIONS_ENABLE_CCACHE=OFF \
             "-DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc" \
-            "-DBUILD_COMMIT=${GITHUB_SHA::7}" "-DBUILD_REVISION=${GITHUB_RUN_NUMBER}"
+            "-DBUILD_COMMIT=${GITHUB_SHA::7}" "-DBUILD_REVISION=${GITHUB_RUN_NUMBER}" \
+            "-DPV_ENCRYPTION_KEY=${PV_ENCRYPTION_KEY}"
           cmake --build --preset linux-release
           mkdir -p "$GITHUB_WORKSPACE/bin-linux"
           cp build/linux-release/bin/otclient "$GITHUB_WORKSPACE/bin-linux/PokeVerse"
@@ -164,7 +169,8 @@ jobs:
         shell: pwsh
         run: |
           cmake --preset windows-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_IPO=OFF -DOPTIONS_ENABLE_SCCACHE=OFF `
-            "-DBUILD_COMMIT=$($env:GITHUB_SHA.Substring(0,7))" "-DBUILD_REVISION=$env:GITHUB_RUN_NUMBER"
+            "-DBUILD_COMMIT=$($env:GITHUB_SHA.Substring(0,7))" "-DBUILD_REVISION=$env:GITHUB_RUN_NUMBER" `
+            "-DPV_ENCRYPTION_KEY=$env:PV_ENCRYPTION_KEY"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build --preset windows-release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -346,6 +352,11 @@ jobs:
       - name: Version
         id: version
         run: echo "tag=client-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Encryption key
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
+        run: |
+          [ -n "$PV_ENCRYPTION_KEY" ] || { echo "::error::Add the CLIENT_ENCRYPTION_KEY secret: published clients are encrypted"; exit 1; }
 
       # the Pokepedia's pictures of the map, rendered again only when the map, the items, the sprites
       # or the hidden regions change; after a change the last render is restored and only the pieces

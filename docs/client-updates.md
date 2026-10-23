@@ -42,6 +42,13 @@ the test builds never update.
    `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` (`pokeverse`) and `ANDROID_KEY_PASSWORD`.
    Without them the APK would be signed with a throwaway debug key, and players would have
    to uninstall before installing the next APK. Only make a new key if the keystore is lost.
+5. The repository secret `CLIENT_ENCRYPTION_KEY`: 32 or more letters and digits, for example
+   `openssl rand -hex 32`. The packages' modules (Lua, OTUI, OTML, OTMOD) and PNG pictures are
+   encrypted with it (`scripts/encrypt-client.py`) and the clients are built to read them;
+   `data/things` (the `.spr`, `.dat` and `.otb`) and the map pictures are not. Publishing stops
+   if it is missing. Logs and Lua errors (file, line and traceback) are written as before.
+   Changing the key later works like any engine change: Windows and Linux download the new
+   files and executable together, and Android offers the new APK.
 
 ## Publishing an update
 

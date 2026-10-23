@@ -38,7 +38,9 @@ android {
                     "-DVCPKG_MANIFEST_INSTALL=ON",
                     "-DVCPKG_INSTALL_OPTIONS=--allow-unsupported",
                     "-DBUILD_COMMIT=" + (System.getenv("OTCLIENT_BUILD_COMMIT") ?: ""),
-                    "-DBUILD_REVISION=" + (System.getenv("OTCLIENT_VERSION_CODE") ?: "")
+                    "-DBUILD_REVISION=" + (System.getenv("OTCLIENT_VERSION_CODE") ?: ""),
+                    // the key scripts/encrypt-client.py encrypted data.zip's modules and images with
+                    "-DPV_ENCRYPTION_KEY=" + (System.getenv("PV_ENCRYPTION_KEY") ?: "")
                 )
             }
         }
