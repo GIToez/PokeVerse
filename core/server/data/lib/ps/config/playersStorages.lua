@@ -122,5 +122,6 @@ playersStorages = {
     bankClient = base + 119, -- 1 while the trainer's client has the Bank window (it says hello at login)
     bankNpc = base + 120, -- the name of the bank NPC whose window the trainer has open (Bank)
     vocationTrack = base + 121, -- "m<cid>:<until>" the wild Pokemon a Ranger follows by its footprints (Vocations)
+    forcedOutfit = base + 122, -- "o<forced look>;<type>,<head>,<body>,<legs>,<feet>,<addons>" the trainer's own outfit under a /newtype look
     -- tournamentWeekWinnerStorage = base + 65
 }

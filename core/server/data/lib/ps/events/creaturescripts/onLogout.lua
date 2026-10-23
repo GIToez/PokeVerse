@@ -104,6 +104,7 @@ function onLogout(cid, forceLogout)
     end
     Pokepedia.onLogout(cid)
     Vocations.onLogout(cid)
+    doPlayerRestoreForcedOutfit(cid)
 
     return true
 end

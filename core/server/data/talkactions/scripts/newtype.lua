@@ -1,3 +1,5 @@
+-- /newtype <look>[, player]: puts any look (a Pokemon, or a client outfit like 2591) on a trainer until
+-- they relog or choose an outfit themselves; it isn't added to their outfits
 function onSay(cid, words, param, channel)
 	if(param == '') then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Command requires param.")
@@ -20,14 +22,19 @@ function onSay(cid, words, param, channel)
 		end
 	end
 
-	if(t[1] <= 1 or t[1] == 135 or (t[1] > 160 and t[1] < 192) or t[1] > 351) then
+	if(t[1] < 2 or t[1] > 65535) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Such outfit does not exist.")
 		return true
 	end
 
-	local tmp = getCreatureOutfit(pid)
-	tmp.lookType = t[1]
+	if(getCreatureCondition(pid, CONDITION_OUTFIT)) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, getCreatureName(pid) ..
+			" is flying, riding, surfing or transformed right now. Try again when they are back on foot.")
+		return true
+	end
 
-	doCreatureChangeOutfit(pid, tmp)
+	doPlayerForceOutfit(pid, t[1])
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, getCreatureName(pid) .. " now looks like outfit " .. t[1] ..
+		" until they relog or choose an outfit.")
 	return true
 end

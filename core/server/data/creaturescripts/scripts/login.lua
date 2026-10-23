@@ -17,7 +17,7 @@ local loginMessage = getConfigValue('loginMessage')
 
 local events = {"onDeath", "onKill", "onGainExperience", "onAddContainerItem", "onRemoveContainerItem",
 "onPrepareDeath", "onTarget", "onJoinChannel", "onReportBug", "onTradeRequestAccept", "onStatisticChange",
-"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit", "ExtendedOpcode", "onLook"}
+"onQuestInfo", "Mail", "GuildMotd", "Idle", "onAdvance", "onTextEdit", "onTalkChannel", "onLeaveChannel", "onTournamentStart", "onStaminaChange", "onCustomOutfit", "onOutfit", "ExtendedOpcode", "onLook"}
 
 if (getBooleanFromString(getConfigValue('advancedSave'))) then
     events[#events + 1] = "AdvancedSave"
@@ -32,6 +32,7 @@ function onLogin(cid)
             registerCreatureEvent(cid, v)
         end
         doCreatureSetStorage(cid, playersStorages.playSessionStart, os.time())
+        doPlayerRestoreForcedOutfit(cid)
 
         local lastLogin, str = getPlayerLastLoginSaved(cid), loginMessage
 		if (lastLogin > 0) then

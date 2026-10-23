@@ -369,6 +369,44 @@ function doPlayerUpdateOutfit(cid)
     end
 end
 
+-- A look staff put on a trainer (/newtype) until they relog or choose an outfit themselves. The engine
+-- saves whatever look a trainer has at logout, so their own outfit waits in a storage to be put back.
+function getPlayerForcedOutfit(cid)
+    local forced, own = tostring(getCreatureStorage(cid, playersStorages.forcedOutfit)):match("^o(%d+);(.+)$")
+    if (not forced) then
+        return nil
+    end
+    local t = string.explode(own, ",")
+    return tonumber(forced), { lookType = tonumber(t[1]), lookHead = tonumber(t[2]), lookBody = tonumber(t[3]),
+                               lookLegs = tonumber(t[4]), lookFeet = tonumber(t[5]), lookAddons = tonumber(t[6]) }
+end
+
+function doPlayerForceOutfit(cid, lookType)
+    local outfit = getCreatureOutfit(cid)
+    local _, own = getPlayerForcedOutfit(cid)
+    own = own or outfit
+    doCreatureSetStorage(cid, playersStorages.forcedOutfit, string.format("o%d;%d,%d,%d,%d,%d,%d", lookType, own.lookType,
+        own.lookHead, own.lookBody, own.lookLegs, own.lookFeet, own.lookAddons))
+    outfit.lookType = lookType
+    outfit.lookTypeEx = 0
+    doCreatureChangeOutfit(cid, outfit)
+end
+
+-- Puts the trainer's own outfit back (at logout, or at login after a crash kept the forced one)
+function doPlayerRestoreForcedOutfit(cid)
+    local forced, own = getPlayerForcedOutfit(cid)
+    if (not forced) then
+        return false
+    end
+    setPlayerStorageValue(cid, playersStorages.forcedOutfit, -1)
+    local outfit = getCreatureOutfit(cid)
+    for key, value in pairs(own) do
+        outfit[key] = value
+    end
+    doCreatureChangeOutfit(cid, outfit)
+    return true
+end
+
 function doAddExhaust(cid)
     doAddCondition(cid, delayCondition)
 end

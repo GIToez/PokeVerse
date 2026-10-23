@@ -30,6 +30,7 @@
 	<event type="tournamenthistory" name="onTournamentHistory" event="script" value="../../lib/ps/events/creaturescripts/onTournamentHistory.lua" />
 	<event type="staminachange" name="onStaminaChange" event="script" value="../../lib/ps/events/creaturescripts/onStaminaChange.lua" />
 	<event type="customoutfit" name="onCustomOutfit" event="script" value="../../lib/ps/events/creaturescripts/onCustomOutfit.lua" />
+	<event type="outfit" name="onOutfit" event="script" value="../../lib/ps/events/creaturescripts/onOutfit.lua" />
 	<event type="look" name="onLook" event="script" value="../../lib/ps/events/creaturescripts/onLook.lua" />
 	<!-- Quests -->
 	<event type="think" name="rocketBattle" event="script" value="../../lib/ps/events/creaturescripts/quests/rocketBattle.lua" />
