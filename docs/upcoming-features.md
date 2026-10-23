@@ -2091,6 +2091,32 @@ weather loops, the startup tune and the alert, but moves have no sound.
 - **Server:** one extended opcode when a move starts: the sound (move name, or its type and
   kind), the position and the duration in milliseconds.
 
+**Battle sounds (files added October 2026, not wired up yet).** The non-move sounds from
+BellBlitzKing's "Pokemon SFX Attack Moves & Sound Effects Collection" (Sun and Moon recordings,
+Gen 5 for the status heal), converted to `.ogg` in `core/client-legacy/data/sounds/battle/`:
+
+| File | Plays when |
+| --- | --- |
+| `send_out` | a Pokémon comes out of its ball |
+| `recall`, `recall_fainted` | a Pokémon goes back (alive, fainted) |
+| `forced_retreat` | a Pokémon is forced back (Roar, Whirlwind, Dragon Tail) |
+| `flee` | running from a fight |
+| `faint` | a Pokémon faints |
+| `hit_normal`, `hit_super`, `hit_weak` | damage, by effectiveness |
+| `status_burn`, `status_confused`, `status_frozen`, `status_paralyzed`, `status_poison`, `status_sleep` | a status is inflicted |
+| `stat_up`, `stat_down` | a stat rises or falls |
+| `heal_hp`, `heal_status` | HP healed, status cured |
+| `low_hp_loop` | the player's Pokémon is low on HP (loops) |
+| `held_item`, `eat_berry`, `ability` | a held item, berry or ability activates |
+| `weather_hail_damage`, `weather_sand_damage`, `leech_seed_damage`, `nightmare_damage` | damage each turn |
+
+They play on a Battle effects slider, next to Moves.
+
+Still to find: the Poké Ball throw, the wobble, the catch click, the break-out, level up,
+evolution (start and done), the shiny sparkle, the Pokémon Center heal and menu sounds (open,
+close, select, error). The pack's README points to
+[The Sounds Resource](https://www.sounds-resource.com/3ds/pokemonsunmoon/) for these.
+
 ## 21. Staff groups
 
 Audit (October 2026) of `data/XML/groups.xml`. The groups are TFS's Tibia set: Player (1), Tutor
