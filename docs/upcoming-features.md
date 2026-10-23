@@ -2492,7 +2492,7 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
   there stays (only rain in Kyogre's zone gives way, since Kyogre may have brought it).
 - **Status:** the shower, the coming Rayquaza and the clash weather show in `/legendary status`
   and in the Admin window.
-- **Admin:** **Groudon, Kyogre, Rayquaza** (`/legendary rayquaza`: spawns the two if they aren't
+- **Admin:** **Rayquaza's event** (`/legendary rayquaza`: spawns the two if they aren't
   out and calls Rayquaza now), **Meteor shower here** (`/legendary meteors`) and **Meteor impact
   here** (`/legendary impact`).
 - **Deoxys's forms** are left out: there is one Deoxys look and no form sprites.

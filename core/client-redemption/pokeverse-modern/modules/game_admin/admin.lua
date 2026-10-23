@@ -691,8 +691,8 @@ local function fillLegendaries(info)
         legendaryButton(buttons, 'PVGreenButton', 'Spawn at my feet', withPick('/legendary spawn %s here'))
         legendaryButton(buttons, 'PVRedButton', 'Send away', withPick('/legendary end %s'), 'Without a cooldown')
         legendaryButton(buttons, 'PVBlueButton', 'Move it now', withPick('/legendary move %s'), 'The way it moves')
-        legendaryButton(buttons, 'PVBlueButton', 'Health 50%', withPick('/legendary health %s 50'))
-        legendaryButton(buttons, 'PVBlueButton', 'Health 100%', withPick('/legendary health %s 100'))
+        legendaryButton(buttons, 'PVBlueButton', 'Health 50%%', withPick('/legendary health %s 50'))
+        legendaryButton(buttons, 'PVBlueButton', 'Health 100%%', withPick('/legendary health %s 100'))
         legendaryButton(buttons, 'PVBlueButton', 'Clear its cooldown', withPick('/legendary cooldowns clear %s'))
         legendaryButton(buttons, 'PVBlueButton', 'Show its signs', withPick('/legendary signs %s'),
             'Its signs and trail now, and the spots in the chat')
@@ -710,7 +710,7 @@ local function fillLegendaries(info)
         legendaryButton(special, 'PVGreenButton', 'Mewtwo warning', fixedCommand('/legendary warn'),
             'The psychic disturbance, then Mewtwo in its habitat')
         legendaryButton(special, 'PVGreenButton', 'Mewtwo warning here', fixedCommand('/legendary warn here'))
-        legendaryButton(special, 'PVGreenButton', 'Groudon, Kyogre, Rayquaza', fixedCommand('/legendary rayquaza'),
+        legendaryButton(special, 'PVGreenButton', "Rayquaza's event", fixedCommand('/legendary rayquaza'),
             'Groudon and Kyogre out (if they are not), then Rayquaza comes down to them')
         legendaryButton(special, 'PVBlueButton', 'Meteor shower here', fixedCommand('/legendary meteors'),
             "Jirachi's shower at your feet, nothing spawns")

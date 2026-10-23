@@ -608,21 +608,21 @@ AdminWindow < UIWindow
         anchors.right: parent.right
         layout:
           type: grid
-          cell-size: 98 22
+          cell-size: 97 22
           cell-spacing: 4
           flow: true
 
       UIWidget
         id: buttons
-        height: 62
+        height: 86
         anchors.top: species.bottom
         anchors.left: species.left
         anchors.right: parent.right
         margin-top: 8
         layout:
           type: grid
-          cell-size: 148 28
-          cell-spacing: 6
+          cell-size: 148 26
+          cell-spacing: 4
           flow: true
 
       AdminRowLabel
@@ -634,14 +634,14 @@ AdminWindow < UIWindow
 
       UIWidget
         id: special
-        height: 62
+        height: 86
         anchors.top: specialLabel.top
         anchors.left: specialLabel.right
         anchors.right: parent.right
         layout:
           type: grid
-          cell-size: 148 28
-          cell-spacing: 6
+          cell-size: 148 26
+          cell-spacing: 4
           flow: true
 
       AdminRowLabel
