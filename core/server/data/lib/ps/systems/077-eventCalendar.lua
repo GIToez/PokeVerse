@@ -416,12 +416,15 @@ end
 
 EventCalendar.getStaffEvents = loadStaffEvents
 
--- Friday's EVENT_HOUR to Monday's, for the weekend whose Friday is on `friday` (a date table)
+-- Friday evening to Monday morning (server time), for the weekend whose Friday is on `friday` (a date table)
+local WEEKEND_START_HOUR, WEEKEND_END_HOUR = 17, 5
+
 local function weekendOf(friday)
-    return { at(friday.year, friday.month, friday.day), at(friday.year, friday.month, friday.day + 3) }
+    return { at(friday.year, friday.month, friday.day, WEEKEND_START_HOUR),
+             at(friday.year, friday.month, friday.day + 3, WEEKEND_END_HOUR) }
 end
 
--- The weekends that take turns, Friday to Monday at EVENT_HOUR, counted from the weekend of
+-- The weekends that take turns, Friday evening to Monday morning, counted from the weekend of
 -- `first`: the ones of `year` where this event's turn of `turns` comes up
 local function weekendTurns(year, first, turns, turn)
     local list = {}

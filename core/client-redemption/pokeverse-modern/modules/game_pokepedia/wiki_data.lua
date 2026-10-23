@@ -883,7 +883,7 @@ WikiData = {
             { 'p', "Press C, or the calendar in the top bar, to see what runs now, what comes next and every event of the month. Events start and end at 06:00 server time (Pacific); the calendar shows the times in your own time zone." },
             { 'keys', { "C" } },
             { 'h', "Weekends" },
-            { 'p', "From Friday 06:00 to Monday 06:00 there is a weekend bonus, taking turns each week: Double EXP, Double Shiny, Double Eggs, then Double Loot. Bonuses that run at the same time multiply." },
+            { 'p', "From Friday 17:00 to Monday 05:00 (server time) there is a weekend bonus, taking turns each week: Double EXP, Double Shiny, Double Eggs, then Double Loot. Bonuses that run at the same time multiply." },
             { 'h', "Holidays" },
             { 'table', {
                 { "Holiday", "What" },
