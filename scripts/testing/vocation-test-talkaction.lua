@@ -1967,7 +1967,7 @@ local function testCalendar(cid)
     for _, event in ipairs(EventCalendar.getEvents(at(2026, 11, 1), at(2026, 12, 1))) do
         if (event.name == "VT Weekend") then
             weekends = weekends + 1
-            okWeekends = okWeekends and os.date("%w %H:%M", event.startsAt) == "5 06:00" and event.endsAt - event.startsAt == 3 * 86400
+            okWeekends = okWeekends and os.date("%w %H:%M", event.startsAt) == "5 17:00" and os.date("%w %H:%M", event.endsAt) == "1 05:00"
         end
     end
     check("Calendar: weekend events run Friday 06:00 to Monday 06:00", weekends >= 4 and okWeekends, weekends)

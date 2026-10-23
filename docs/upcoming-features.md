@@ -1481,8 +1481,8 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     on each day, the events as coloured strips, and a list of the month's events beside it.
     Clicking a day lists that day's events. Times show in the player's own time zone.
   - **Rules instead of dates:** once, every weekend, the nth or last weekend of a month,
-    every year on a date, or a computed holiday. A **weekend** runs from Friday 06:00 to
-    Monday 06:00 (server time, Pacific; not tied to the midnight restart). Staff events are rows of the `event_calendar` table
+    every year on a date, or a computed holiday. A **weekend** runs from Friday 17:00 to
+    Monday 05:00 (server time, `LIVE_TIMEZONE`; not tied to the midnight restart). Staff events are rows of the `event_calendar` table
     (`schemas/pokeverse-extensions.sql`), added in game:
     - `/calendar` lists the next 30 days, `/calendar list` the staff events,
       `/calendar remove <n>` removes one.
