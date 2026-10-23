@@ -369,7 +369,7 @@ function doPlayerUpdateOutfit(cid)
     end
 end
 
--- A look staff put on a trainer (/newtype) until they relog or choose an outfit themselves. The engine
+-- A look staff put on a trainer (/forceoutfit) until they relog or choose an outfit themselves. The engine
 -- saves whatever look a trainer has at logout, so their own outfit waits in a storage to be put back.
 function getPlayerForcedOutfit(cid)
     local forced, own = tostring(getCreatureStorage(cid, playersStorages.forcedOutfit)):match("^o(%d+);(.+)$")

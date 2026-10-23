@@ -87,7 +87,8 @@
 	<talkaction log="yes" words="/sendplayeruniqueitem" access="5" event="script" value="../../lib/ps/events/talkactions/sendPlayerUniqueItem.lua" description="Send an unique item to player."/>
 
 	<!-- Community Managers -->
-	<talkaction log="yes" words="/newtype" access="4" event="script" value="newtype.lua"/>
+	<talkaction log="yes" words="/forceoutfit" access="4" event="script" value="forceoutfit.lua"/>
+	<talkaction log="yes" words="/newtype" access="4" hidden="yes" event="script" value="forceoutfit.lua"/>
 	<talkaction log="yes" words="/owner" access="5" event="script" value="owner.lua"/>
 	<talkaction log="yes" words="/storage" access="5" event="script" value="storage.lua"/>
 	<talkaction log="yes" words="/config" access="5" event="script" value="configinfo.lua"/>
