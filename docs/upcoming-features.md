@@ -2284,6 +2284,25 @@ checked by hand); flyers can go anywhere suitable; ocean roamers only through wa
 
 All times, chances and limits stay in `WildLegendaries.CONFIG`.
 
+### Admin controls
+
+The Admin window's World tab already has a Legendaries panel (pick a species: Spawn somewhere,
+Spawn at my feet, Send away, Next spawn in 5 min, Status, Clear cooldowns). Each stage adds its
+buttons there, with a `/legendary` command behind each one, so staff can set off any of it for
+events and for testing:
+
+- **Auto / Manual**, like the weather: Auto spawns on the schedule; Manual stops scheduled spawns
+  so only staff start them, without touching what is already out. Kept through a restart.
+- **Sets:** spawn the bird trio, the beast trio, the Regis or Latias and Latios together.
+- **Per species:** spawn in its habitat or at my feet, send away, move it now (a flight or walk to
+  its next zone), set its health, clear its cooldown, and show its trail and signs.
+- **Special ones:** spawn Mew disguised (here or in a zone) and reveal it, put a Regi to sleep at
+  one of its locations or wake it, Mewtwo's warning, a meteor shower (Jirachi), a meteor impact
+  (Deoxys), Groudon and Kyogre together (Rayquaza's event), and a fly-over seen by me only (to
+  check the client drawing without spawning anything).
+- **Status:** what is out and where (staff see exact spots), the sets, the mythical slot, the
+  next spawn and the cooldowns.
+
 ### To decide
 
 - The Regis: a set like the birds and beasts, or one at a time.
