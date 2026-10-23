@@ -186,15 +186,16 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              panels.soundPanel:recursiveGetChildById('soundAmbience'):setText(tr('Ambience Volume: %d %%', value))
              if g_sounds then
-@@ -966,7 +978,6 @@
+@@ -966,7 +978,7 @@
      soundItems = {
          value = 100,
          action = function(value, options, controller, panels, extraWidgets)
 -            panels.soundPanel:recursiveGetChildById('soundItems'):setText(tr('Item Volume: %d %%', value))
++            panels.soundPanel:recursiveGetChildById('soundItems'):setText(tr('Battle Sounds Volume: %d %%', value))
              if g_sounds then
                  local channel = g_sounds.getChannel(SoundChannels.Item)
                  if channel then
-@@ -979,7 +990,6 @@
+@@ -979,7 +991,6 @@
      soundEventVolume = {
          value = 100,
          action = function(value, options, controller, panels, extraWidgets)
@@ -202,7 +203,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
              if g_sounds then
                  local channel = g_sounds.getChannel(SoundChannels.Event)
                  if channel then
-@@ -1002,7 +1012,8 @@
+@@ -1002,7 +1013,8 @@
          end,
      },
      actionBarShowBottom1 = {
@@ -212,7 +213,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1169,5 +1180,64 @@
+@@ -1169,5 +1181,64 @@
             g_client.setBossAreaCreatureEffectAlpha(value / 100)
          end
      },
@@ -1423,30 +1424,24 @@ diff -ruN pristine/modules/client_options/styles/misc/misc.otui modules/client_o
 diff -ruN pristine/modules/client_options/styles/sound/sound.otui modules/client_options/styles/sound/sound.otui
 --- a/modules/client_options/styles/sound/sound.otui
 +++ b/modules/client_options/styles/sound/sound.otui
-@@ -83,55 +83,3 @@
-       @onSetup: |
-         local value = modules.client_options.getOption('soundAmbience')
-         self:setText(tr('Ambience Volume: %d %%', value))
--
--  SmallReversedQtPanel
--    anchors.left: parent.left
--    anchors.right: parent.right
--    anchors.top: prev.bottom
--    margin-top: 7
+@@ -89,11 +89,10 @@
+     anchors.right: parent.right
+     anchors.top: prev.bottom
+     margin-top: 7
 -    height: 55
 -
--    OptionScaleScroll
--      id: soundItems
++    height: 25
+     OptionScaleScroll
+       id: soundItems
 -      margin-top: 1
--      anchors.top: parent.top
--      anchors.left: parent.left
--      anchors.right: parent.right
--      &minimumScrollValue: 1
--      &maximumScrollValue: 100
--      &scrollSize: 21
--      margin-left: -15
--      @onSetup: |
--        local value = modules.client_options.getOption('soundItems')
++      margin-top: 2
+       anchors.top: parent.top
+       anchors.left: parent.left
+       anchors.right: parent.right
+@@ -103,35 +102,4 @@
+       margin-left: -15
+       @onSetup: |
+         local value = modules.client_options.getOption('soundItems')
 -        self:setText(tr('Item Volume: %d %%', value))
 -
 -    OptionCheckBox
@@ -1480,3 +1475,4 @@ diff -ruN pristine/modules/client_options/styles/sound/sound.otui modules/client
 -        local value = modules.client_options.getOption('soundEventVolume')
 -        self:setText(tr('Event Volume: %d %%', value))
 \ No newline at end of file
++        self:setText(tr('Battle Sounds Volume: %d %%', value))
