@@ -64,6 +64,9 @@ so. Items marked **To decide** need an answer before work starts.
   held item icons that no longer flicker.
 - Android: the map keeps 23x13 tiles and the game stays in landscape; the APK is signed with
   the release key.
+- Stage 1 of the [legendary revamp](#22-legendary-revamp-stage-1-built): habitats in all four
+  regions, a way of moving per species, the sets, trails of signs, Mew's disguise, Mewtwo's
+  warning, the sleeping Regis, the radar by rank, and the new Admin Events tab.
 
 **Next, in order (agreed October 15):**
 
@@ -1267,6 +1270,11 @@ From the `#notes` channel:
       - Staff: `/legendary status`, `spawn <name> [here]`, `end <name>`, `next <time>`
         (`30s`, `5m`, `2h`, `1d`) and `cooldowns clear [name]`.
       - Tests: the legendary part of the vocation test talkaction, with a real Mewtwo defeat.
+    - **Revamped (stage 1 of [section 22](#22-legendary-revamp-stage-1-built)):** the Kanto-only
+      pool, the half-home rule and the roaming above are replaced by habitats in four regions
+      and a way of moving per species; the limits, timers, flee, healing, health, rewards and
+      notifications stay. No spawns in the 10 minutes before the daily restart (was 2 hours),
+      and the ones still out are saved and come back after it.
   - **The bird dungeons stay as they are:** they are the end of the Ancient Times quest,
     one bird per trainer, once, and not a repeatable raid.
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper
@@ -2218,7 +2226,7 @@ Still to do:
 - Tibia's leftovers: rule violation reasons and name lock flags, the Portuguese game chat channel
   opened for Gamemasters on login, Tibia's VIP and depot limits per group.
 
-## 22. Legendary revamp (plan, not built)
+## 22. Legendary revamp (stage 1 built)
 
 Today every wild legendary ([section 11](#11-bug-fixes-and-small-ideas), "Legendary spawning")
 behaves the same: it appears at a random anchor point, jumps to another far away every few
@@ -2364,6 +2372,71 @@ one, so staff can set off any of it for events and for testing:
   check the client drawing without spawning anything).
 - **Status:** what is out and where (staff see exact spots), the sets, the mythical slot, the
   next spawn and the cooldowns.
+
+### Stage 1 (built)
+
+Server Lua only, plus the Admin window in the Redemption client. All settings are in
+`WildLegendaries.CONFIG` (`systems/078-wildLegendaries.lua`).
+
+- **Habitats:** `config/legendaryAnchors.lua` (made by `scripts/make-legendary-anchors.py`) now
+  has 7,652 points over Kanto, Johto, the Orange Islands and Hoenn, each with its area, its zone
+  (town), whether it is outdoor, a cave or indoors, and tags (cold, fire, electric, water, forest,
+  mountain, high, rock, steel, remote, peaceful, mystic), plus the map of which zones touch which.
+  Each species has its regions, the kinds of place it goes, tag weights and home areas
+  (35% of picks by default, Mewtwo 80% in Cerulean Cave). Points in a region switched off by
+  `/weather region <region> off` aren't used.
+- **Ways of moving:** flyers land anywhere in their habitat, far from the last spot; the beasts
+  walk only to a zone next to theirs (Raikou faster in a thunderstorm); Lugia swims the coasts;
+  Kyogre and Groudon stay in the zone they came up in; Mewtwo stays and teleports a short way
+  when hurt; Celebi teleports within its zone and the next ones; Jirachi and Deoxys land with a
+  meteor and stay (Jirachi 45 minutes).
+- **Sets:** when the schedule picks a bird, beast, Regi, Latias or Latios, a 25% roll brings the
+  whole set (members on cooldown too; one already out is skipped). Set members don't count
+  against the limit of 2. Staff can spawn a set with `/legendary set <id>`.
+- **Limits:** never two of a species, never two mythicals, at most one tier 2 among the
+  scheduled ones. The schedule weighs each species 6 (tier 1), 2 (tier 2) or 1 (mythical), and
+  mythicals have 1.5 times the tier 2 cooldown.
+- **Weather:** Zapdos and Raikou are drawn to zones with a thunderstorm; Kyogre brings rain to
+  its zone while it is out (a weather override that ends with it, unless staff set the weather
+  there).
+- **Signs:** every 6 seconds (mythicals 15, Mew in disguise 30) its effects show where it is
+  and on the last 6 spots it left (for 10 minutes): snow and ice for Articuno, sparks for
+  Raikou, pink clouds for Mew and so on. These are effects we already have; the new art from
+  [#207](https://github.com/GIToez/PokeVerse/pull/207) comes with the client.
+- **Mew** appears as a Pokémon of its spot at that spot's level. A hit, or the radar of a
+  Ranger of rank 4 or more, makes it show its true self ("X found Mew hiding as a wild Y!"),
+  with its full health from then on.
+- **Mewtwo:** three minutes of psychic disturbance (purple effects) where it will appear,
+  announced server-wide ("A strange psychic disturbance is building near Cerulean Cave...") and
+  in the Legendaries channel, then it appears there.
+- **Regis** sleep at one of their locations (4 hours). The first hit is blocked and wakes it:
+  "X woke Regirock up near Rock Tunnel!", and it has 60 minutes from then.
+- **Catch announcements:** every legendary or mythical caught anywhere is announced; the wild
+  one still says "caught the wild X", and one given as a quest reward is announced too ("X
+  received Mew as a reward!").
+- **Restarts:** the ones out are saved every 30 seconds (species, health, spot, time left,
+  asleep, disguised) and come back after a restart. No new spawns in the last 10 minutes
+  before it.
+- **Ranger radar:** after a scan, a Ranger gets one line per legendary out in their region, by
+  rank: activity in a zone (1), which species from its signs (2), the zones it may go next (3),
+  the direction and how fresh the signs are (4), and the zones it came through and where it is
+  heading (5). Mythicals only from rank 4. Never the exact spot.
+- **Admin window:** the Events tab is now **Boosts** (experience and shiny events, as before).
+  A new **Events** tab has the Legendaries section: Auto / Manual, the four sets, a species
+  grid, then Spawn in its habitat, Spawn at my feet, Send away, Move it now, Health 50% / 100%,
+  Clear its cooldown, Show its signs, and the special ones (Mew disguised here, Reveal Mew, Wake
+  the Regi, Mewtwo warning, Next spawn in 5 min, Clear all cooldowns); below them the
+  status (what is out, exact spots, the mode, the next spawn and the cooldowns). It is gone
+  from the World tab. Each button runs a `/legendary` command: `status`, `spawn <name> [here]`,
+  `set <birds|beasts|regis|eon>`, `end <name>`, `move <name>`, `health <name> <percent>`,
+  `signs <name>`, `mew [here]`, `reveal`, `wake <name>`, `warn [here]`, `mode <auto|manual>`,
+  `next <duration>` and `cooldowns clear [name]`. Manual mode is kept through a restart.
+- **Tests:** the legendary part of the vocation test talkaction covers the habitats, the sets
+  and their roll, the limits, roaming and the trail, the radar by rank, the Regis, Mew, Mewtwo's
+  warning, Kyogre's rain, the restart save, the flee, manual mode, the catch announcements and
+  a real Mewtwo defeat.
+
+Not in stage 1: the fly-overs and shadows (stage 2), the bigger effects, and the stage 3 events.
 
 ## Going private
 
