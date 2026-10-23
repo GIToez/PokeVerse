@@ -894,6 +894,55 @@ AdminWindow < UIWindow
         anchors.right: parent.right
         margin-top: 6
 
+      AdminMuted
+        id: lookLabel
+        !text: tr('Force a look until they relog or pick an outfit')
+        text-auto-resize: true
+        anchors.top: ban.bottom
+        anchors.left: parent.left
+        margin-top: 10
+
+      UICreature
+        id: lookPreview
+        size: 64 64
+        anchors.top: lookLabel.bottom
+        anchors.left: parent.left
+        margin-top: 4
+        image-source: /images/ui/panel_flat
+        image-border: 1
+        padding: 2
+        phantom: true
+
+      PVField
+        id: look
+        !placeholder: tr('Look no.')
+        size: 80 30
+        anchors.top: lookPreview.top
+        anchors.left: lookPreview.right
+        margin-left: 8
+        padding-left: 10
+        max-length: 5
+
+      UIWidget
+        id: lookButtons
+        anchors.top: look.bottom
+        anchors.left: look.left
+        anchors.right: parent.right
+        height: 28
+        margin-top: 6
+        layout:
+          type: horizontalBox
+          spacing: 4
+
+      AdminMuted
+        id: lookName
+        height: 14
+        text-auto-resize: false
+        anchors.left: look.right
+        anchors.right: parent.right
+        anchors.verticalCenter: look.verticalCenter
+        margin-left: 8
+
   // World: the weather and the game clock
   AdminPage
     id: world
