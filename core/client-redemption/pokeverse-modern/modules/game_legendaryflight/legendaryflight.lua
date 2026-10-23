@@ -17,6 +17,7 @@ local BOB = 0.18 -- tiles up and down while flying
 local CIRCLE_RADIUS = 1.6
 local CIRCLE_TURN = 2.2 -- seconds per circle
 local TICK = 30
+local FRAME_MS = 140 -- each flying or swimming frame
 
 local METEOR_IMAGE = '/images/effects/legendary_jirachi_star/4'
 local METEOR_MS = { 700, 1100 }
@@ -101,6 +102,14 @@ local function isWater(x, y, z)
     return ground ~= nil and WATER[ground:getId()] == true
 end
 
+-- A creature in a widget never walks, so it would stay on its first (standing) frame: loop the moving ones
+local function animate(widget, phases, ms)
+    local creature = widget:getCreature()
+    if creature and creature.setWalkAnimationPhase and phases > 1 then
+        creature:setWalkAnimationPhase(1 + math.floor(ms / FRAME_MS) % (phases - 1))
+    end
+end
+
 local function newCreature(look, shader)
     local widget = g_ui.createWidget('LegendaryFlyer', mapPanel())
     widget:setOutfit({ type = look })
@@ -155,6 +164,7 @@ local function update()
                 flight.shadow:setVisible(show)
                 if show then
                     flight.shadow:setDirection(dir)
+                    animate(flight.shadow, flight.phases, ms)
                     flight.shadow:setRect({ x = right - size, y = bottom - size, width = size, height = size })
                 end
             else
@@ -169,6 +179,8 @@ local function update()
                                             width = spread, height = flat })
                     local lift = (LIFT * height + BOB * math.sin(ms / 260) * height) * th
                     flight.sprite:setDirection(dir)
+                    animate(flight.sprite, flight.phases, ms)
+                    animate(flight.shadow, flight.phases, ms)
                     flight.sprite:setRect({ x = right - size, y = bottom - size - math.floor(lift), width = size, height = size })
                     flight.sprite:raise()
                 end
@@ -197,6 +209,8 @@ local function startFlight(data)
         flight.sprite = newCreature(data.look)
     end
     local creature = flight.shadow:getCreature()
+    local thing = g_things.getThingType(tonumber(data.look), ThingCategoryCreature)
+    flight.phases = thing and thing:getAnimationPhases() or 1
     flight.size = math.max(64, math.min(192, creature and creature:getExactSize() or 64))
     flight.shadow:hide()
     if flight.sprite then

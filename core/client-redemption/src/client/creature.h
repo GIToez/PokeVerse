@@ -183,6 +183,8 @@ public:
     void setCovered(bool covered);
 
     bool isDisabledWalkAnimation() { return m_disableWalkAnimation > 0; }
+    // PokeVerse: a creature drawn in a widget never walks, so a script picks its frame (legendary flights)
+    void setWalkAnimationPhase(const uint8_t phase) { m_walkAnimationPhase = phase; }
     void setDisableWalkAnimation(const bool v) {
         if (v) ++m_disableWalkAnimation; else {
             if (m_disableWalkAnimation <= 1) m_disableWalkAnimation = 0;
