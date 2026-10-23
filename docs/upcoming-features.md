@@ -2296,6 +2296,34 @@ checked by hand); flyers can go anywhere suitable; ocean roamers only through wa
 
 All times, chances and limits stay in `WildLegendaries.CONFIG`.
 
+### Flights (stage 2)
+
+Flyers (the birds, Latias and Latios, Ho-Oh, Rayquaza, and Lugia over land) travel to an
+adjacent zone in the open, crossing what lies between, so trainers can see them go by:
+
+1. **Takeoff:** a takeoff effect, and the creature leaves the map. In the air it can't be fought.
+2. **Route:** the server picks an adjacent zone that fits its habitat and a path into it (zone to
+   zone, from the zone map stage 1 makes), and flies it at a set speed in tiles per second
+   (Latias and Latios faster). The flight is kept in global storage (from, to, start time,
+   speed), so the position at any moment is worked out, not stepped.
+3. **Who sees it:** each second the server finds the outdoor trainers within view of the path
+   and sends each one the flight once (species, look, from, to, start time, speed) on a new
+   extended opcode; their client animates it from there.
+4. **What they see:** a client module draws the Pokémon above the map (`UIMap:getTilePoint`
+   gives the screen spot of a tile), a little higher than the tiles, with a dark copy of it on
+   the ground as its shadow, offset as if high up; its signs (snow, lightning, sparkles) follow
+   the path. Trainers under a roof don't see it. It is drawn the same on every floor.
+5. **Sightings:** crossing a zone counts as a sighting: "Articuno was seen flying over Route 5,
+   heading north" (the area and the direction, never the spot), and the Ranger radar picks it up
+   by rank.
+6. **Landing:** it circles over the new zone for a few seconds, then lands on a valid tile with a
+   landing effect and can be fought again.
+7. **Fleeing:** a flyer that flees takes off the same way, so the chase can be seen.
+
+Lugia uses the same module at sea: while it travels underwater only the dark shape is drawn, on
+the water. A flight crosses only the screens its path goes through; a far-off sight (a speck at
+the screen edge, a cry) is a later idea.
+
 ### Admin controls
 
 The Admin window's World tab already has a Legendaries panel (pick a species: Spawn somewhere,
