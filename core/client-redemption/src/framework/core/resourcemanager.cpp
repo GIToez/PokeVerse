@@ -933,6 +933,22 @@ uint8_t* ResourceManager::decrypt(uint8_t* data, const int32_t size)
     return data;
 }
 
+void ResourceManager::decryptAt(uint8_t* data, const size_t size, const uint64_t start)
+{
+    const auto& password = std::string(ENCRYPTION_PASSWORD);
+    const size_t plen = password.length();
+
+    size_t j = start % plen;
+    for (size_t k = 0; k < size; ++k) {
+        const uint64_t i = start + k;
+        const auto shift = static_cast<uint8_t>(i);
+        const auto p = static_cast<uint8_t>(password[j]);
+        data[k] = (i % 2) ? static_cast<uint8_t>(data[k] + p - shift) : static_cast<uint8_t>(data[k] - p + shift);
+        if (++j >= plen)
+            j = 0;
+    }
+}
+
 void ResourceManager::runEncryption(const std::string& password)
 {
     std::vector<std::string> excludedExtensions = { ".rar",".ogg",".xml",".dll",".exe", ".log",".otb" };

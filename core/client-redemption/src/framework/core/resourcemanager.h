@@ -89,6 +89,8 @@ public:
     std::string encrypt(const std::string& data, const std::string& password);
     std::string decrypt(const std::string& data);
     static uint8_t* decrypt(uint8_t* data, int32_t size);
+    // decrypts a piece that starts `start` bytes into the encrypted data (after the header)
+    static void decryptAt(uint8_t* data, size_t size, uint64_t start);
     void runEncryption(const std::string& password);
     // with encryption on: a .lua, .otui or .otmod from the client's folder that must be encrypted
     static bool isProtectedCode(const std::string& fullPath);
