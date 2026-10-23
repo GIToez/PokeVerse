@@ -2382,6 +2382,20 @@ local function testLegendaries(cid, friend, arena)
                 W.finish(a.cid, "restart")
             end
         end
+        for encounter in pairs(W.getFlights()) do
+            W.endFlight(encounter, "restart")
+        end
+    end
+    -- lands a flight now; returns the legendary back on the map and the flight
+    local function landNow(name)
+        local encounter, f = W.findFlight(name)
+        if (not f) then
+            return nil
+        end
+        f.start = os.time() - f.seconds - 60
+        W.setFlight(encounter, f)
+        W.runFlights(os.time())
+        return W.find(name), f
     end
     clearOut()
     doSetStorage(KEY.PENDING, "m")
@@ -2440,12 +2454,13 @@ local function testLegendaries(cid, friend, arena)
     check("Legendary: legendaries 6, major 2, mythicals 1", tier1 / 4000 > 0.77 and tier1 / 4000 < 0.84, tier1 / 4000)
     check("Legendary: mythicals cool down longest", W.cooldownFor(W.getSpecies("Mew")) > W.cooldownFor(W.getSpecies("Lugia")))
 
-    local broadcasts, cards, events = {}, {}, {}
+    local broadcasts, cards, events, flights = {}, {}, {}, {}
     local broadcast, opcode, otc, emit = doBroadcastMessage, doSendPlayerExtendedOpcode, getPlayerUsingOtClient, DiscordBridge.emitLegendary
     local getScheduled = ServerRestart.getScheduled
     doBroadcastMessage = function(text) broadcasts[#broadcasts + 1] = text return true end
     doSendPlayerExtendedOpcode = function(target, id, buffer)
         if (id == EXTENDED_IDS.LEGENDARY and target == cid) then cards[#cards + 1] = JSON.decode(buffer) end
+        if (id == EXTENDED_IDS.LEGENDARY_FLIGHT and target == cid) then flights[#flights + 1] = JSON.decode(buffer) end
         return true
     end
     getPlayerUsingOtClient = function() return true end
@@ -2603,11 +2618,103 @@ local function testLegendaries(cid, friend, arena)
         if (isMonster(kyogre)) then
             doCreatureSetStorage(kyogre, MON.NEXT_MOVE, os.time() - 1)
             W.upkeep(kyogre, os.time())
-            check("Legendary: a territory one stays in its zone", home and getCreatureStorage(kyogre, MON.ZONE) == home.name,
-                tostring(getCreatureStorage(kyogre, MON.ZONE)))
-            W.finish(kyogre, "staff")
+            local _, dive = W.findFlight("Kyogre")
+            check("Legendary: Kyogre dives to its next spot", not isMonster(kyogre) and dive and dive.kind == "w")
+            kyogre = landNow("Kyogre")
+            check("Legendary: a territory one stays in its zone", kyogre and home and
+                getCreatureStorage(kyogre, MON.ZONE) == home.name,
+                kyogre and tostring(getCreatureStorage(kyogre, MON.ZONE)))
+            if (kyogre) then W.finish(kyogre, "staff") end
         end
         check("Legendary: the rain stops when it leaves", home and not Weather.getOverrides()[home.id])
+        Weather.writeOverrides(weatherSaved)
+
+        -- staff: move it on, end a flight, a fly-over only they see; Groudon shakes the screen
+        local zapdos = W.spawn(W.getSpecies("Zapdos"), nil, nil, "test")
+        check("Legendary: staff move asks the globalevent", zapdos and W.requestMove(zapdos) and
+            getCreatureStorage(zapdos, MON.MOVE_PENDING) == 1)
+        if (zapdos) then W.upkeep(zapdos, os.time()) end
+        local zapdosEncounter, zapdosFlight = W.findFlight("Zapdos")
+        local listed = false
+        for _, e in ipairs(W.adminState().active) do
+            listed = listed or (e.name == "Zapdos" and e.flying and e.landsIn > 0)
+        end
+        check("Legendary: the staff move makes it fly, listed as flying", zapdos and not isMonster(zapdos) and
+            zapdosFlight ~= nil and listed and W.spawn(W.getSpecies("Zapdos")) == nil)
+        check("Legendary: the status says it is in the air", table.concat(W.describe(true), " "):find("Zapdos") ~= nil,
+            table.concat(W.describe(true), " "))
+        check("Legendary: staff end a flight, no cooldown", zapdosEncounter and W.endFlight(zapdosEncounter, "staff") and
+            not W.findFlight("Zapdos") and not W.getCooldowns()["Zapdos"] and last():find("The wild Zapdos") ~= nil, last())
+        flights = {}
+        check("Legendary: a fly-over only staff see", W.flyover(cid, "Lugia", "dive") and #flights == 1 and
+            flights[1].kind == "dive" and flights[1].species == "Lugia" and next(W.getFlights()) == nil and not W.flyover(cid, "Nobody"))
+        flights = {}
+        local groudon = W.spawn(W.getSpecies("Groudon"), { x = arena.x + 2, y = arena.y, z = arena.z }, "the test arena", "test")
+        check("Legendary: Groudon shakes the screens near it", groudon and #flights > 0 and flights[1].type == "shake" and
+            flights[1].strength >= 1, flights[1] and JSON.encode(flights[1]))
+        if (groudon) then W.finish(groudon, "staff") end
+
+        -- Jirachi's meteor shower, Deoxys's impact
+        local spot = { x = arena.x + 2, y = arena.y, z = arena.z }
+        flights = {}
+        local jirachi = W.spawn(W.getSpecies("Jirachi"), spot, "the test arena", "test")
+        local shower = W.getShower()
+        local meteors = false
+        for _, m in ipairs(flights) do meteors = meteors or (m.type == "meteors" and not m.big) end
+        check("Legendary: Jirachi lands with a meteor shower", jirachi and shower and
+            getDistanceBetween(shower.pos, getCreaturePosition(jirachi)) <= 1 and shower.untilTime > os.time() and meteors and
+            last():find("meteor shower") ~= nil, last())
+        if (shower) then W.runShower(shower.untilTime) end
+        check("Legendary: the shower ends", not W.getShower())
+        if (jirachi) then W.finish(jirachi, "staff") end
+        flights = {}
+        local deoxys = W.spawn(W.getSpecies("Deoxys"), spot, "the test arena", "test")
+        local big, shaken = false, false
+        for _, m in ipairs(flights) do
+            big = big or (m.type == "meteors" and m.big)
+            shaken = shaken or (m.type == "shake" and (m.delay or 0) > 0)
+        end
+        check("Legendary: Deoxys comes with a meteor impact", deoxys and big and shaken and last():find("meteor struck") ~= nil,
+            last())
+        if (deoxys) then W.finish(deoxys, "staff") end
+
+        -- Groudon and Kyogre: a storm where they meet, and Rayquaza comes down to calm them
+        Weather.writeOverrides("m")
+        local g = W.spawn(W.getSpecies("Groudon"), nil, nil, "test")
+        local k = W.spawn(W.getSpecies("Kyogre"), nil, nil, "test")
+        local meetZone = k and W.weatherZone(getCreatureStorage(k, MON.ZONE))
+        if (g and k and meetZone) then
+            doCreatureSetStorage(g, MON.ZONE, getCreatureStorage(k, MON.ZONE))
+            W.runClashes(os.time())
+            local storm = Weather.getOverrides()[meetZone.id]
+            check("Legendary: Groudon and Kyogre in one zone bring a great storm", storm and storm.kind == "thunderstorm" and
+                last():find("Groudon and Kyogre meet near") ~= nil and #W.getClashes() == 1, last())
+            check("Legendary: staff see the clash in the status", table.concat(W.adminState().events, " "):find("thunderstorm") ~= nil)
+            local chance = W.CONFIG.rayquazaChance
+            W.CONFIG.rayquazaChance = 100
+            W.runRayquaza(os.time())
+            W.CONFIG.rayquazaChance = chance
+            check("Legendary: Rayquaza is called, comes a little later", not W.find("Rayquaza") and not W.findFlight("Rayquaza") and
+                table.concat(W.describe(true), " "):find("Rayquaza comes down") ~= nil)
+            W.runRayquaza(os.time() + W.CONFIG.rayquazaDelay + 1)
+            check("Legendary: Rayquaza comes down to them", (W.findFlight("Rayquaza") or W.find("Rayquaza")) ~= nil and
+                last():find("Rayquaza is coming down from the sky") ~= nil, last())
+            local ray = W.find("Rayquaza") or landNow("Rayquaza")
+            check("Legendary: Rayquaza lands next to Groudon", ray and getDistanceBetween(getCreaturePosition(ray),
+                getCreaturePosition(g)) <= 10, ray and getDistanceBetween(getCreaturePosition(ray), getCreaturePosition(g)))
+            W.runClashes(os.time())
+            local after = Weather.getOverrides()[meetZone.id]
+            check("Legendary: Rayquaza calms the storm, Kyogre's rain comes back", #W.getClashes() == 0 and
+                (not after or after.kind == "rain"), after and after.kind)
+            if (ray) then W.finish(ray, "staff") end
+            W.runRayquaza(os.time() + 10 * W.CONFIG.rayquazaDelay)
+            check("Legendary: Rayquaza is called once per Groudon and Kyogre", not W.find("Rayquaza") and
+                not W.findFlight("Rayquaza"))
+        else
+            check("Legendary: Groudon and Kyogre spawn for the clash test", false)
+        end
+        clearOut(arenaMewtwo)
+        W.runClashes(os.time())
         Weather.writeOverrides(weatherSaved)
 
         -- through a restart: back where it was, with its health and time left
@@ -2644,21 +2751,44 @@ local function testLegendaries(cid, friend, arena)
         doCreatureSetStorage(a, MON.LAST_HIT, 0)
         from = getCreaturePosition(a)
         W.upkeep(a, t)
-        check("Legendary: flies on far", not getSamePosition(from, getCreaturePosition(a)) and
-            getCreatureStorage(a, MON.NEXT_MOVE) >= t + 240 and events[#events].event == "sighting" and
-            getDistanceBetween(from, getCreaturePosition(a)) >= 30,
-            events[#events] and events[#events].event)
+        local flyEncounter, f = W.findFlight("Articuno")
+        check("Legendary: flies on far, off the map", not isMonster(a) and f and f.kind == "a" and
+            flyEncounter == articunoEncounter and getDistanceBetween(from, f.to) >= 30 and
+            f.seconds >= W.CONFIG.flightSeconds[1] and f.seconds <= W.CONFIG.flightSeconds[2],
+            f and (getDistanceBetween(from, f.to) .. " tiles in " .. f.seconds .. "s"))
+        check("Legendary: still out while flying", W.spawn(articuno) == nil)
+        check("Legendary: a restart mid-flight brings it back where it was going", f and tostring(getStorage(KEY.SAVED)):find(
+            string.format("%d=%d|%d|%d,%d,%d|", articunoEncounter, articuno.index, f.health, f.to.x, f.to.y, f.to.z), 1, true) ~= nil,
+            getStorage(KEY.SAVED))
+        if (f) then
+            flights = {}
+            f.from, f.start = getCreaturePosition(cid), os.time()
+            W.setFlight(flyEncounter, f)
+            W.runFlights(os.time())
+            check("Legendary: the trainers under a flight are sent it once", #flights == 1 and flights[1].type == "flight" and
+                flights[1].species == "Articuno" and flights[1].kind == "fly" and flights[1].circle > 0)
+            W.runFlights(os.time())
+            check("Legendary: not sent twice", #flights == 1, #flights)
+        end
+        a = landNow("Articuno")
+        check("Legendary: lands where it was going, same encounter", a and f and
+            getCreatureStorage(a, MON.ENCOUNTER) == articunoEncounter and getDistanceBetween(getCreaturePosition(a), f.to) <= 3 and
+            not W.findFlight("Articuno") and events[#events].event == "sighting" and math.abs(W.healthPercent(a) - 50) <= 1,
+            a and (W.healthPercent(a) .. "% " .. getDistanceBetween(getCreaturePosition(a), f.to) .. " tiles off"))
 
         local max = getCreatureMaxHealth(a)
         local hit = getCreatureHealth(a) - math.floor(max * 0.45)
         W.onHit(a, hit)
         doCreatureAddHealth(a, -hit)
-        local hurt = getCreatureHealth(a)
+        local hurt = W.healthPercent(a)
         check("Legendary: flees at 50% health", getCreatureStorage(a, MON.FLEE_PENDING) == 1 and getCreatureStorage(a, MON.FLEE_STAGE) == 1)
-        from = getCreaturePosition(a)
         W.upkeep(a, t)
-        check("Legendary: the flee moves it and keeps its health", not getSamePosition(from, getCreaturePosition(a)) and
-            getCreatureHealth(a) == hurt and last():find("fled") ~= nil, last())
+        local _, fled = W.findFlight("Articuno")
+        check("Legendary: the flee takes it to the sky with its health", not isMonster(a) and fled and fled.health == hurt and
+            fled.stage == 1 and last():find("took to the sky") ~= nil, last())
+        a = landNow("Articuno")
+        check("Legendary: it comes down with its health", a and math.abs(W.healthPercent(a) - hurt) <= 1 and
+            getCreatureStorage(a, MON.FLEE_STAGE) == 1 and last():find("came down near") ~= nil, last())
         W.onHit(a, 1)
         check("Legendary: tier 1 flees only once", getCreatureStorage(a, MON.FLEE_PENDING) == 0)
 
