@@ -86,9 +86,19 @@ local function placeAt(data, ms)
     return x, y, math.max(0, shrink), facing(-math.sin(angle), math.cos(angle))
 end
 
+-- client ids of the server's WATER_IDS (constants.lua) through items.otb; sea tiles are walkable
+-- here (surfing), so the ground id is the only way to tell
+local WATER = {}
+for _, range in ipairs({ { 629, 634 }, { 4609, 4614 }, { 4654, 4655 }, { 4809, 4814 }, { 7326, 7326 } }) do
+    for id = range[1], range[2] do
+        WATER[id] = true
+    end
+end
+
 local function isWater(x, y, z)
     local tile = g_map.getTile({ x = math.floor(x + 0.5), y = math.floor(y + 0.5), z = z })
-    return tile == nil or not tile:isWalkable()
+    local ground = tile and tile:getGround()
+    return ground ~= nil and WATER[ground:getId()] == true
 end
 
 local function newCreature(look, shader)
@@ -132,7 +142,14 @@ local function update()
             local inside = right > area.x and right - size < area.x + area.width and bottom > area.y and
                 bottom - size - LIFT * th < area.y + area.height
             if data.kind == 'dive' then
-                local show = inside and isWater(x, y, camera.z)
+                -- the shape covers the tiles up and left of its own; it shows only with sea under all of them
+                local tiles = math.max(1, math.ceil(size / tw - 0.25))
+                local show = inside
+                for ty = 0, tiles - 1 do
+                    for tx = 0, tiles - 1 do
+                        show = show and isWater(x - tx, y - ty, camera.z)
+                    end
+                end
                 flight.shadow:setVisible(show)
                 if show then
                     flight.shadow:setDirection(dir)
@@ -178,7 +195,7 @@ local function startFlight(data)
         flight.sprite = newCreature(data.look)
     end
     local creature = flight.shadow:getCreature()
-    flight.size = math.max(32, math.min(64, creature and creature:getExactSize() or 64))
+    flight.size = math.max(32, math.min(96, creature and creature:getExactSize() or 64))
     flight.shadow:hide()
     if flight.sprite then
         flight.sprite:hide()
@@ -246,13 +263,13 @@ local function startMeteors(seconds, total, big)
         widget:hide()
         local m = { widget = widget }
         if big then
-            m.startAt, m.ms, m.size = now, BIG_METEOR_MS, tw * 4
+            m.startAt, m.ms, m.size = now, BIG_METEOR_MS, tw * 6
             m.from, m.to = { x = 1.05, y = -0.15 }, { x = 0.5, y = 0.45 }
         else
             local sx, sy = math.random(30, 115) / 100, math.random(-20, 25) / 100
             local reach = math.random(35, 60) / 100
             m.startAt, m.ms, m.size = now + math.random(0, math.floor(seconds * 1000)), math.random(METEOR_MS[1], METEOR_MS[2]),
-                math.floor(tw * math.random(10, 18) / 10)
+                math.floor(tw * math.random(25, 40) / 10)
             m.from, m.to = { x = sx, y = sy }, { x = sx - reach, y = sy + reach }
         end
         table.insert(meteors.list, m)
@@ -325,7 +342,7 @@ end
 
 local function compileShaders()
     local code = g_resources.readFileContents(DIR .. 'shadow.frag')
-    g_shaders.createFragmentShaderFromCode(FLY_SHADOW, (code:gsub('ALPHA', '0.38')))
+    g_shaders.createFragmentShaderFromCode(FLY_SHADOW, (code:gsub('ALPHA', '0.5')))
     g_shaders.setupOutfitShader(FLY_SHADOW)
     g_shaders.createFragmentShaderFromCode(DIVE_SHADOW, (code:gsub('ALPHA', '0.55')))
     g_shaders.setupOutfitShader(DIVE_SHADOW)
