@@ -384,6 +384,17 @@ def build_level(args):
     write_chunk(img, os.path.join(out, 'world', chunk_name(lod, z, cx, cy)))
 
 
+def remove_stale(out, lod, current):
+    """Deletes the lod's chunk files that the render no longer has."""
+    keep = {chunk_name(*(int(v) for v in key.split('/'))) for key in current if key.startswith('%d/' % lod)}
+    removed = 0
+    for name in os.listdir(os.path.join(out, 'world')):
+        if name.split('-')[1] == str(lod) and name not in keep:
+            os.remove(os.path.join(out, 'world', name))
+            removed += 1
+    return removed
+
+
 def world_main(out, jobs, chunks, width, height, state_path):
     inputs = inputs_digest()
     items = item_digests()
@@ -404,7 +415,7 @@ def world_main(out, jobs, chunks, width, height, state_path):
     print('world %dx%d tiles: %d pieces in %d rows' % (width, height, total, len(work)))
     current = {}
     changed = {8: set()}
-    count = drawn = 0
+    count = drawn = removed = 0
     with Pool(jobs, initializer=set_hidden, initargs=(_hidden, items)) as pool:
         for part in pool.imap_unordered(render_band, work):
             for z, cx, cy, digest, was_drawn in part:
@@ -417,16 +428,18 @@ def world_main(out, jobs, chunks, width, height, state_path):
 
         lod = 8
         while lod < 64:
+            # a chunk that is gone (hidden now, say) must not be pasted into the coarser lod
+            removed += remove_stale(out, lod, current)
             parent = {}
             for key in current:
                 if key.startswith('%d/' % lod):
                     z, cx, cy = (int(v) for v in key.split('/')[1:])
-                    parent.setdefault((z, cx // 2, cy // 2), []).append(current[key])
+                    parent.setdefault((z, cx // 2, cy // 2), []).append((key, current[key]))
             lod *= 2
             todo = []
             for (z, cx, cy), digests in sorted(parent.items()):
                 key = '%d/%d/%d/%d' % (lod, z, cx, cy)
-                current[key] = hashlib.sha1(repr(sorted(digests)).encode()).hexdigest()
+                current[key] = hashlib.sha1(repr(('children', sorted(digests))).encode()).hexdigest()
                 if known.get(key) != current[key] or not os.path.exists(
                         os.path.join(out, 'world', chunk_name(lod, z, cx, cy))):
                     todo.append((lod, z, cx, cy, out))
@@ -434,7 +447,6 @@ def world_main(out, jobs, chunks, width, height, state_path):
             print('  lod %d: %d chunks, %d drawn' % (lod, len(parent), len(todo)))
 
     wanted = {chunk_name(*(int(v) for v in key.split('/'))) for key in current}
-    removed = 0
     for name in os.listdir(os.path.join(out, 'world')):
         if name not in wanted:
             os.remove(os.path.join(out, 'world', name))
