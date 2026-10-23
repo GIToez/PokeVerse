@@ -625,7 +625,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
     end
 
     if (isInArray(specialDoors, item.itemid)) then
-        if (item.actionid == 100 or (item.actionid ~= 0 and (getPlayerStorageValue(cid, item.actionid) > -1 or getPlayerStorageValue(cid, item.actionid) == -2)) or getPlayerGroupId(cid) == 4 or getPlayerGroupId(cid) == 6) then -- -2 is a fix to work with Battle NPCs
+        if (item.actionid == 100 or (item.actionid ~= 0 and (getPlayerStorageValue(cid, item.actionid) > -1 or getPlayerStorageValue(cid, item.actionid) == -2)) or getPlayerGroupId(cid) == 5 or getPlayerGroupId(cid) == 6) then -- -2 is a fix to work with Battle NPCs
             doorEnter(cid, item, toPosition)
         else
             doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "The door seems to be sealed against unwanted intruders.")

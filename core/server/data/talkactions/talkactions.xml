@@ -62,20 +62,20 @@
 	<talkaction log="yes" words="/openserver" access="5" event="script" value="closeopen.lua"/>
 	<talkaction log="yes" words="/promote;/demote" access="5" event="script" value="promote.lua"/>
 	<talkaction log="yes" words="/shutdown" access="5" event="script" value="shutdown.lua"/>
-	<talkaction log="yes" words="/restart" access="3" event="script" value="restart.lua"/>
-	<talkaction log="yes" words="/doubleexp" access="5" event="script" value="doubleexp.lua"/>
-	<talkaction log="yes" words="/bonusdaycare;/bonusbreeding" access="5" event="script" value="daycareevent.lua"/>
-	<talkaction log="yes" words="/bonusshiny" access="5" event="script" value="bonusshiny.lua"/>
-	<talkaction log="yes" words="/calendar" access="5" event="script" value="calendar.lua"/>
-	<talkaction log="yes" words="/legendary" access="5" event="script" value="legendary.lua"/>
-	<talkaction log="yes" words="/weather" access="5" event="script" value="weather.lua"/>
-	<talkaction log="yes" words="/anniversary" access="5" event="script" value="anniversary.lua"/>
+	<talkaction log="yes" words="/restart" access="5" event="script" value="restart.lua"/>
+	<talkaction log="yes" words="/doubleexp" access="4" event="script" value="doubleexp.lua"/>
+	<talkaction log="yes" words="/bonusdaycare;/bonusbreeding" access="4" event="script" value="daycareevent.lua"/>
+	<talkaction log="yes" words="/bonusshiny" access="4" event="script" value="bonusshiny.lua"/>
+	<talkaction log="yes" words="/calendar" access="4" event="script" value="calendar.lua"/>
+	<talkaction log="yes" words="/legendary" access="4" event="script" value="legendary.lua"/>
+	<talkaction log="yes" words="/weather" access="4" event="script" value="weather.lua"/>
+	<talkaction log="yes" words="/anniversary" access="4" event="script" value="anniversary.lua"/>
 	<talkaction log="yes" words="/deco" access="5" event="script" value="decorations.lua"/>
 	<talkaction log="yes" words="/mode" access="5" event="script" value="mode.lua"/>
 	<talkaction log="yes" words="/createnpc" access="5" event="script" value="createNpc.lua"/>
 	<talkaction log="yes" words="/mypokemon" access="5" event="script" value="pokemon.lua"/>
 	<talkaction log="yes" words="/pstats" access="3" event="script" value="pokemonStats.lua"/>
-	<talkaction log="yes" words="/vocation" access="3" event="script" value="vocation.lua"/>
+	<talkaction log="yes" words="/vocation" access="5" event="script" value="vocation.lua"/>
 	<talkaction log="yes" words="/pokemonexp" access="5" event="script" value="pokemonExp.lua"/>
 	<talkaction log="yes" words="/s" access="5" event="script" value="summon.lua"/>
 	<talkaction log="yes" words="/n" access="5" event="script" value="creature.lua"/>
@@ -88,10 +88,10 @@
 
 	<!-- Community Managers -->
 	<talkaction log="yes" words="/newtype" access="4" event="script" value="newtype.lua"/>
-	<talkaction log="yes" words="/owner" access="4" event="script" value="owner.lua"/>
-	<talkaction log="yes" words="/storage" access="4" event="script" value="storage.lua"/>
-	<talkaction log="yes" words="/config" access="4" event="script" value="configinfo.lua"/>
-	<talkaction log="yes" words="/i" access="4" event="script" value="createitem.lua"/>
+	<talkaction log="yes" words="/owner" access="5" event="script" value="owner.lua"/>
+	<talkaction log="yes" words="/storage" access="5" event="script" value="storage.lua"/>
+	<talkaction log="yes" words="/config" access="5" event="script" value="configinfo.lua"/>
+	<talkaction log="yes" words="/i" access="5" event="script" value="createitem.lua"/>
 	<talkaction access="4" words="/z" event="script" value="magiceffect.lua" description="Show magic effects."/>
 	<talkaction access="4" words="/x" event="script" value="animationeffect.lua" description="Show projectiles."/>
 	<talkaction access="4" words="/y" event="script" value="animatedtext.lua" description="Show animated texts."/>

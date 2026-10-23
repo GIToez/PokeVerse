@@ -1,7 +1,7 @@
 -- The Admin window (client game_admin) for every staff member (access 1 and up). Each tab and action
 -- needs the access of the commands behind it: the window runs most of them as the talkactions
 -- themselves ({action = "command"}, so talkactions.xml decides), and checks the access of the rest here
--- (events, decorations and the world settings Admin.ACCESS, bans Admin.BAN_ACCESS).
+-- (events Admin.EVENT_START_ACCESS, decorations and the world settings Admin.ACCESS, bans Admin.BAN_ACCESS).
 --
 -- JSON on EXTENDED_IDS.ADMIN:
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
@@ -29,7 +29,8 @@
 Admin = {}
 
 Admin.STAFF_ACCESS = 1
-Admin.EVENTS_ACCESS = 3 -- sees the Events tab (broadcasts); starting events needs Admin.ACCESS
+Admin.EVENTS_ACCESS = 3 -- sees the Events tab (broadcasts); starting events needs Admin.EVENT_START_ACCESS
+Admin.EVENT_START_ACCESS = 4 -- Community Managers run the events
 Admin.BROADCAST_ACCESS = 3
 Admin.BAN_ACCESS = 3
 Admin.BAN_DAYS = { 1, 3, 7, 30, 0 }
@@ -133,7 +134,7 @@ Admin.sendState = function(cid)
         reasons[#reasons + 1] = { id = id, name = getBanReason(id) }
     end
     send(cid, { type = "state", access = getPlayerAccess(cid), online = #getPlayersOnline(), events = events,
-                multipliers = Admin.MULTIPLIERS, minutes = Admin.MINUTES, eventsAccess = Admin.ACCESS,
+                multipliers = Admin.MULTIPLIERS, minutes = Admin.MINUTES, eventsAccess = Admin.EVENT_START_ACCESS,
                 broadcastAccess = Admin.BROADCAST_ACCESS, banAccess = Admin.BAN_ACCESS, banDays = Admin.BAN_DAYS,
                 banReasons = reasons, world = hasAccess(cid, Admin.ACCESS) and worldInfo() or nil })
 end
@@ -561,8 +562,8 @@ Admin.onClientMessage = function(cid, buffer)
     elseif (action == "hello" or action == "refresh") then
         -- falls through to the state below
     elseif (action == "start" or action == "stop") then
-        if (not hasAccess(cid, Admin.ACCESS)) then
-            return result(cid, false, "Events need access " .. Admin.ACCESS .. ".")
+        if (not hasAccess(cid, Admin.EVENT_START_ACCESS)) then
+            return result(cid, false, "Events need access " .. Admin.EVENT_START_ACCESS .. ".")
         end
         if (action == "start") then
             startEvent(cid, data)

@@ -2109,24 +2109,32 @@ Audit (October 2026) of `data/XML/groups.xml`. The groups are TFS's Tibia set: P
   gives (`doPlayerUpdatePokemonIcons`, each time a Pokémon is called or changed) fell to the
   floor. The flag is gone.
 
-**Plan: what each group is for** (to agree before changing more flags):
+- Gamemasters, Community Managers and Gods keep the colors they chose: the forced outfit only
+  replaces the look. With look 75 every outfit change was refused (it isn't in `outfits.xml`),
+  so the colors were never saved.
 
-| Group | Access | Job | Plays normally |
+**The groups (agreed October 22):** Senior Tutor is the top group that plays. Gamemasters and up
+are staff characters: they can't battle, gain experience or get loot, so they stay out of the
+economy. Staff who want to play use a normal character on their account.
+
+| Group | Access | Plays | Job |
 |---|---|---|---|
-| Tutor | 1 | Answers the Help channel, mutes spammers | Yes |
-| Senior Tutor | 2 | Tutor, plus broadcasts, reports and rule violations | Yes |
-| Gamemaster | 3 | Moderation: ghost, teleport, kick, ban, item and creature details | No |
-| Community Manager | 4 | Gamemaster, plus events, boosts, the event calendar and Discord posts | No |
-| God | 5 | Everything: the terminal, houses, server commands | No |
+| Tutor | 1 | Yes | Help channel, mutes, reads reports |
+| Senior Tutor | 2 | Yes | Tutor, plus handling reports (status, notes, go to the spot) and broadcasts |
+| Gamemaster | 3 | No | Investigating: ghost, teleport, kick, ban, item and creature details, viewing Pokemon stats |
+| Community Manager | 4 | No | Gamemaster, plus events (double exp, daycare and breeding, shiny, legendaries, weather, calendar, anniversary) and Discord posts |
+| God | 5 | No | Everything: items (`/i`), storages, house owners, server config, Pokemon stats and vocation ranks, restart and shutdown, spawns, the terminal |
 
-- Groups that don't play normally can't battle, gain experience or get loot, so a staff
-  character stays out of the economy. Staff who want to play use a normal character.
-- Ghost mode by command only (`/ghost`), never on login.
-- Still Tibia's and to remove or replace: Tibia's rule violation reasons and name lock flags,
-  the Portuguese game chat channel opened for Gamemasters on login, and Tibia's VIP and depot
-  limits per group.
-- To check in game: each group's commands in `talkactions.xml` against the table, and the
-  Admin window tabs against the access levels.
+Done: `/restart` and the tools that change a player (`/i`, `/storage`, `/owner`, `/config`,
+`/vocation`, changing `/pstats`) need God; the event commands and the Admin window's events need
+Community Manager (`Admin.EVENT_START_ACCESS`); reports are handled from Senior Tutor
+(`Reports.EDIT_ACCESS`); quest doors open for Community Managers and Gods only (not Gamemasters).
+
+Still to do:
+
+- A Gamemaster outfit of their own; until then they wear the Community Manager's (535).
+- Tibia's leftovers: rule violation reasons and name lock flags, the Portuguese game chat channel
+  opened for Gamemasters on login, Tibia's VIP and depot limits per group.
 
 ## Going private
 
