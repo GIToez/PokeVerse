@@ -195,7 +195,7 @@ local function startFlight(data)
         flight.sprite = newCreature(data.look)
     end
     local creature = flight.shadow:getCreature()
-    flight.size = math.max(32, math.min(96, creature and creature:getExactSize() or 64))
+    flight.size = math.max(64, math.min(96, creature and creature:getExactSize() or 64))
     flight.shadow:hide()
     if flight.sprite then
         flight.sprite:hide()

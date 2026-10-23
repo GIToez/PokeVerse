@@ -190,12 +190,15 @@ WildLegendaries.CONFIG = {
     trailSeconds = 10 * MINUTE,
     saveEvery = 30,
     warningSeconds = 180,       -- Mewtwo's psychic disturbance before it appears
-    warningEffectEvery = 15,
+    warningEffectEvery = 4,     -- seconds between bursts, every second in the last warningFinalSeconds
+    warningFinalSeconds = 15,
+    warningBurst = { 4, 10 },   -- effects in a burst, growing as it gets closer
+    warningRadius = 5,
     revealRank = 4,             -- Ranger rank whose radar finds Mew in disguise
 
     -- Flights: flyers cross to their next spot in the open, Lugia and Kyogre under the sea
     flightSpeed = 6,            -- tiles per second
-    fastFlightSpeed = 9,        -- Latias and Latios
+    fastFlightSpeed = 7,        -- Latias and Latios
     swimSpeed = 4,
     flightSeconds = { 8, 60 },  -- shortest and longest crossing; long ones go faster
     circleSeconds = 4,          -- circling over the landing spot
@@ -2252,9 +2255,18 @@ local function runPending(now)
             if (not cid) then
                 WildLegendaries.spawn(species, nil, nil, pending.source, { warned = true })
             end
-        elseif (now % CONFIG.warningEffectEvery == 0) then
-            for i = 1, 3 do
-                effectAt(near(point, 4), pick(species.signs))
+        else
+            local left = pending.at - now
+            if (left <= CONFIG.warningFinalSeconds or now % CONFIG.warningEffectEvery == 0) then
+                local progress = 1 - math.max(0, math.min(1, left / CONFIG.warningSeconds))
+                local low, high = CONFIG.warningBurst[1], CONFIG.warningBurst[2]
+                effectAt(point, species.signs[1])
+                for i = 1, math.floor(low + (high - low) * progress + 0.5) do
+                    effectAt(near(point, CONFIG.warningRadius), pick(species.signs))
+                end
+                if (left == CONFIG.warningFinalSeconds) then
+                    shakeAround(point, 1200)
+                end
             end
         end
     end

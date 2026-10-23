@@ -2451,7 +2451,7 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 - **Flights:** when a flyer moves (the schedule, a flee or staff), it takes off with its takeoff
   effect and leaves the map. The flight (from, to, start, length, health, flee stage) is kept in
   global storage (`LEGENDARY_FLIGHTS`), so its position is worked out at any moment. It flies 6
-  tiles a second (Latias and Latios 9), each crossing 8 to 60 seconds, circles for 4 seconds over
+  tiles a second (Latias and Latios 7), each crossing 8 to 60 seconds, circles for 4 seconds over
   the landing spot, then lands with its landing effect and can be fought again. It can't be
   fought in the air, still counts as out, and a flight in progress is saved through a restart
   with its landing spot. A flyer that flees flies off the same way and lands with the health it
