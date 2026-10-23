@@ -2221,13 +2221,18 @@ species its own habitat, way of moving and signs that it is near.
   Pewter), so its zones are used from the start; its `live = false` in `Weather.REGIONS` is
   switched on with stage 1 (that also starts its weather).
 - **Sets:** the three birds (Articuno, Zapdos, Moltres), the three beasts (Raikou, Entei,
-  Suicune) and the three Regis (Regirock, Regice, Registeel) can be out at the same time, as a
-  set, spread over their habitats (the Regis asleep at their locations). They don't count
-  against the limit on the others, but each still has its own cooldown. Latias and Latios can be
-  out together too.
+  Suicune) and the three Regis (Regirock, Regice, Registeel). When one of a set is due to spawn,
+  there is a 25% chance (a setting) that the whole set spawns together, spread over their
+  habitats (the Regis asleep at their locations); otherwise it spawns alone. A set member
+  already out, or still on its cooldown, is left out of a set spawn. Each keeps its own
+  cooldown, and a set doesn't count against the limit on the others. Latias and Latios work the
+  same way as a pair.
+- **Never two of the same:** never two of one species out at once, legendary or mythical,
+  whatever started it (the schedule, a set, an event or staff).
+- **Never two mythicals:** at most one of Mew, Celebi, Jirachi and Deoxys out at once on the
+  whole server, events and staff spawns included.
 - **Catch chances** stay as they are (section 11).
-- **Mythicals** (Mew, Celebi, Jirachi, Deoxys): never more than one out on the whole server.
-  They are the rarest (lowest chance, longest cooldowns) and the hardest to find: no area in the
+- **Mythicals** (Mew, Celebi, Jirachi, Deoxys): the rarest (lowest chance, longest cooldowns) and the hardest to find: no area in the
   announcement, only faint signs. The Master Ball still catches them; they are hard to find, not
   hard to catch.
 - **Mew** disguises itself as a Pokémon of the zone it is in, at that zone's levels. When a
@@ -2302,7 +2307,9 @@ one, so staff can set off any of it for events and for testing:
 
 - **Auto / Manual**, like the weather: Auto spawns on the schedule; Manual stops scheduled spawns
   so only staff start them, without touching what is already out. Kept through a restart.
-- **Sets:** spawn the bird trio, the beast trio, the Regis or Latias and Latios together.
+- **Sets:** spawn the bird trio, the beast trio, the Regis or Latias and Latios together (the
+  same rules: a member already out is skipped, and staff can't break the one-of-each or
+  one-mythical rules).
 - **Per species:** spawn in its habitat or at my feet, send away, move it now (a flight or walk to
   its next zone), set its health, clear its cooldown, and show its trail and signs.
 - **Special ones:** spawn Mew disguised (here or in a zone) and reveal it, put a Regi to sleep at
