@@ -184,7 +184,9 @@ void Creature::drawOutfitPokeVerse(const Rect& destRect, const bool resize)
         return;
 
     const int baseSprite = g_gameConfig.getSpriteSize();
-    const int fbSize = 2 * baseSprite;
+    // big outfits (3x3 legendaries) need a bigger buffer, or the copy reads past its edge
+    const int exactSize = getExactSize();
+    const int fbSize = std::max(2 * baseSprite, (exactSize + baseSprite - 1) / baseSprite * baseSprite);
 
     g_drawPool.bindFrameBuffer(fbSize); {
         const Point p = Point(fbSize - baseSprite) + getDisplacement();
@@ -193,7 +195,7 @@ void Creature::drawOutfitPokeVerse(const Rect& destRect, const bool resize)
         else if (isHighlighted()) internalDraw(p, getHighlightColor());
     }
 
-    const int srcSize = resize ? getExactSize() : fbSize * 3 / 4;
+    const int srcSize = resize ? exactSize : baseSprite * 3 / 2;
     Rect src(0, 0, srcSize, srcSize);
     src.moveBottomRight(Point(fbSize - 1, fbSize - 1));
     g_drawPool.releaseFrameBuffer(destRect, src);
