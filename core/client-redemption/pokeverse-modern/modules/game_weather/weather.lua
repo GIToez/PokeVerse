@@ -529,6 +529,11 @@ local function onTopMenuVisibility()
     end
 end
 
+-- open sky over the trainer (game_legendaryflight draws flyers only then)
+function isUnderOpenSky()
+    return outdoors
+end
+
 function isBadgeVisible()
     return badge ~= nil and badge:isVisible()
 end

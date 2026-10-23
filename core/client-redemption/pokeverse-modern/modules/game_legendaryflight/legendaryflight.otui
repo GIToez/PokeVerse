@@ -1,0 +1,4 @@
+LegendaryFlyer < UICreature
+  phantom: true
+  focusable: false
+  padding: 0

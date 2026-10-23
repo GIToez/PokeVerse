@@ -1,0 +1,8 @@
+Module
+  name: game_legendaryflight
+  description: PokeVerse wild legendaries seen from the ground: flyers crossing the sky with their shadow, Lugia and Kyogre under the sea, Groudon shaking the screen
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ legendaryflight ]
+  @onLoad: init()
+  @onUnload: terminate()
