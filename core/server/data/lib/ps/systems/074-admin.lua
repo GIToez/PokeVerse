@@ -106,9 +106,7 @@ local function worldInfo()
         kinds[#kinds + 1] = { id = id, name = Weather.KINDS[id].name }
     end
     for _, region in ipairs(Weather.REGIONS) do
-        if (region.live) then
-            regions[#regions + 1] = { id = region.id, name = region.name }
-        end
+        regions[#regions + 1] = { id = region.id, name = region.name, on = Weather.isRegionOn(region) }
     end
     for _, holiday in ipairs(EventCalendar.HOLIDAYS) do
         holidays[#holidays + 1] = { id = holiday.id, name = holiday.name }

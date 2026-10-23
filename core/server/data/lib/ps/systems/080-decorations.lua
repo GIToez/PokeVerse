@@ -522,7 +522,7 @@ end
 function Decorations.placeZone(theme, zone)
     local set = theme and Decorations.SETS[theme]
     local items, first = nil, nil
-    if (set and not zone.none and zone.region.live and not Decorations.getNoAuto()[zone.id]) then
+    if (set and not zone.none and Weather.isRegionOn(zone.region) and not Decorations.getNoAuto()[zone.id]) then
         items, first = itemsFor(set, zone)
     end
     local count = 0
@@ -617,7 +617,7 @@ function Decorations.onThink()
         return
     end
     lastCheck = now
-    local noAuto = tostring(getStorage(KEY_NO_AUTO) or "")
+    local noAuto = tostring(getStorage(KEY_NO_AUTO) or "") .. "|" .. tostring(getStorage(GLOBAL_STORAGES.WEATHER_REGIONS_OFF) or "")
     local theme = Decorations.theme()
     if (not started or theme ~= current or noAuto ~= seenNoAuto) then
         Decorations.place(theme)

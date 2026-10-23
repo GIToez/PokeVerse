@@ -67,6 +67,7 @@ GLOBAL_STORAGES = {
     ANNIVERSARY_PREVIEW = 7155, -- "m;<until>": the Union Room entrance to the cake town shown with /anniversary show (AnniversaryEvent)
     DISCORD_BOOST_LEVEL = 7156, -- the Discord server boost level 0-3 the bridge last sent (DiscordBoostPerks)
     DISCORD_BOOST_COUNT = 7157, -- the Discord server's boost count sent with it
+    WEATHER_REGIONS_OFF = 7158, -- "m;<region ids>": regions staff switched off with /weather region (Weather)
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]
