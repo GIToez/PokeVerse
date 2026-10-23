@@ -566,10 +566,12 @@ end
 -- The calendar's own bonus events (the weekend Double Shiny) would change the shiny numbers
 local function withoutCalendarBonuses(test)
     return function(cid)
-        local multiplier = EventCalendar.multiplier
+        local multiplier, shiny = EventCalendar.multiplier, getShinyEventMultiplier()
         EventCalendar.multiplier = function() return 1 end
+        setShinyEventMultiplier(1)
         local ok, err = pcall(test, cid)
         EventCalendar.multiplier = multiplier
+        setShinyEventMultiplier(shiny)
         if (not ok) then
             error(err, 0)
         end
