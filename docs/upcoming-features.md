@@ -2287,13 +2287,12 @@ All times, chances and limits stay in `WildLegendaries.CONFIG`.
 ### Admin controls
 
 The Admin window's World tab already has a Legendaries panel (pick a species: Spawn somewhere,
-Spawn at my feet, Send away, Next spawn in 5 min, Status, Clear cooldowns). It moves to the
-**Events** tab, which becomes the place for every game event, one section each:
+Spawn at my feet, Send away, Next spawn in 5 min, Status, Clear cooldowns). The tabs change:
 
-- **Boosts:** the experience and shiny events already there;
-- **Legendaries:** below;
-- **Later:** Pokémon swarms, the Bug-Catching Contest and the next events, each with the same
-  Auto / Manual switch and start and stop buttons.
+- **Boosts:** today's Events tab (the experience and shiny events), renamed.
+- **Events (new tab):** every game event, one section each: Legendaries (below), then Pokémon
+  swarms, the Bug-Catching Contest and the next events, each with the same Auto / Manual
+  switch and start and stop buttons. The Legendaries panel moves here from the World tab.
 
 Each stage adds its buttons to the Legendaries section, with a `/legendary` command behind each
 one, so staff can set off any of it for events and for testing:
