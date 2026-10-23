@@ -59,6 +59,9 @@ GLOBAL_STORAGES = {
     LEGENDARY_ACTIVE = 7144, -- "m;<encounter>=<cid>:<species>;...": the encounters out now
     LEGENDARY_SEQUENCE = 7145, -- last encounter id
     LEGENDARY_RECENT = 7146, -- "m;<species>=<unix time>:<encounter>": defeats whose body may still be caught
+    LEGENDARY_MODE = 7147, -- "manual": only staff start wild legendaries (/legendary mode), anything else on the schedule
+    LEGENDARY_SAVED = 7148, -- "m;<encounter>=<species>|<health %>|x,y,z|<minutes left>|<flags>;...": kept through a restart
+    LEGENDARY_PENDING = 7149, -- "m;<species>=<spawn time>:<point>:<source>": a warning before the spawn (Mewtwo)
     EVENT_CALENDAR_SEASON = 7150, -- a season forced with /calendar season (1 spring to 4 winter), anything else automatic
     WEATHER_OVERRIDES = 7151, -- "m;<kind>:<until>=<zone runs>;...": weather staff set with /weather (Weather)
     DECORATIONS_VERSION = 7152, -- bumped when staff change decorations, so the globalevent puts them up again

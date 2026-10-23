@@ -814,14 +814,21 @@ end
 Vocations.scan = function(cid, range, typeId)
     local pos = getCreaturePosition(cid)
     local found = { regular = {}, shiny = {}, legendary = {} }
+    local seesDisguise = Vocations.is(cid, "ranger") and Vocations.getRank(cid) >= WildLegendaries.CONFIG.revealRank
     for _, creature in ipairs(getSpectators(pos, range, range, false) or {}) do
         if (isMonster(creature) and not isSummon(creature)) then
             local name = getCreatureName(creature)
+            -- a Ranger's radar picks Mew out of its disguise
+            local unmasked = seesDisguise and WildLegendaries.isDisguised(creature)
+            if (unmasked) then
+                WildLegendaries.requestReveal(creature, getCreatureName(cid))
+                name = "Mew"
+            end
             if (isPokemon(name) and (not typeId or hasType(name, typeId))) then
                 local where = getCreaturePosition(creature)
                 local entry = { cid = creature, name = name, pos = where, distance = getDistanceBetween(pos, where),
                                 direction = direction(pos, where) }
-                if (DiscordBridge.isLegendary(name) or isSpecial(name)) then
+                if (unmasked or DiscordBridge.isLegendary(name) or isSpecial(name)) then
                     table.insert(found.legendary, entry)
                 elseif (isShinyName(name)) then
                     table.insert(found.shiny, entry)
@@ -1013,6 +1020,13 @@ local function sendRadar(cid, data)
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.RADAR, JSON.encode(data))
 end
 
+-- What the radar picks up of the wild legendaries out in the region, by rank (WildLegendaries.radarHints)
+local function sendLegendaryHints(cid, rank)
+    for _, line in ipairs(WildLegendaries.radarHints(cid, rank)) do
+        reply(cid, "Radar: " .. line)
+    end
+end
+
 -- The live view: per trainer the last scan's exact blips, where they were last sent and until when.
 -- Each update only reads those Pokemon's positions, no new search of the area.
 local live = {}
@@ -1126,6 +1140,7 @@ Vocations.radarPopupScan = function(cid)
     local data = Vocations.radarScan(cid)
     sendRadar(cid, data)
     trackLive(cid, rank, data.blips or {})
+    sendLegendaryHints(cid, rank)
     return true
 end
 
@@ -1210,6 +1225,7 @@ Vocations.radar = function(cid, param)
                 __L(cid, band(entry.distance)), __L(cid, entry.direction), entry.name))
         end
     end
+    sendLegendaryHints(cid, rank)
     return true
 end
 

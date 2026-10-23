@@ -1,52 +1,147 @@
--- Wild legendaries: the 21 legendaries roam Kanto one or two at a time, for group fights
--- (docs/upcoming-features.md, "Legendary spawning").
+-- Wild legendaries: the 21 legendaries and mythicals live in their own habitats across Kanto, Johto,
+-- the Orange Islands and Hoenn, each with its own way of moving and its own signs, for group fights
+-- (docs/upcoming-features.md, "Legendary spawning" and "Legendary revamp").
 --
 -- Talkactions, creature events and globalevents run in separate Lua states, so everything
 -- shared lives in global storage (written to the database at once, like 073-shinyEvent.lua)
 -- and in the legendary's own creature storage. Only the serverExpEvent globalevent
--- (WildLegendaries.onThink) spawns on schedule, moves, heals and ends encounters. The creature
--- events only record hits (wildLegendaryHit) and hand out the rewards (wildLegendaryDeath).
+-- (WildLegendaries.onThink) spawns on schedule, moves, heals, shows signs and ends encounters. The
+-- creature events only record hits (wildLegendaryHit) and hand out the rewards (wildLegendaryDeath);
+-- the radar only asks for Mew's reveal.
 --
 -- The wild one is the plain species from its monster file; only its health is raised, for that
 -- encounter. A caught one has the normal stats of its species.
+--
+-- Points come from LEGENDARY_ANCHORS (scripts/make-legendary-anchors.py): spawn spots of the map
+-- with their area, zone (town) and tags. A species' habitat is the points of its regions and
+-- places, weighted by its tags, and its home areas or zones.
 
 WildLegendaries = {}
 
-local HOUR, DAY = 3600, 86400
+local MINUTE, HOUR, DAY = 60, 3600, 86400
 
+-- tier: 1 legendary, 2 major legendary, 3 mythical (at most one out, no area in the announcements)
+-- set: spawn together on the set roll (WildLegendaries.SETS)
+-- style: how it moves
+--   fly        lands anywhere in its habitat, far from the last spot (planned zone first)
+--   roam       walks to a zone next to its own (LEGENDARY_ANCHORS.NEIGHBORS)
+--   sea        swims along the coasts of its regions
+--   territory  stays in the zone it came up in
+--   cave       stays where it is; short teleports when hurt
+--   sleep      asleep at one of its locations until a trainer wakes it; doesn't move
+--   disguise   looks like a Pokemon of its spot until found; short teleports in its zone after
+--   teleport   short teleports within its zone and the next ones
+--   meteor     lands with a meteor and stays; short teleports when hurt
+-- regions: Weather.REGIONS ids; places: outdoor, cave, indoor (home points count anywhere)
+-- tags: weight added for each tag of a point (base 1); strict: only points with one of its tags
+-- homes: areas or zones; homeShare: percent of the picks made among them
+-- storm: weight in thunderstorms (and faster moves for roamers); trainers: weight where trainers are
+-- signs: effects on its trail; arrive: effects when it lands
 WildLegendaries.SPECIES = {
-    { name = "Articuno", tier = 1, home = "seafoam" },
-    { name = "Zapdos", tier = 1, home = "power_plant" },
-    { name = "Moltres", tier = 1, home = "volcano" },
-    { name = "Raikou", tier = 1, home = "routes_11_12" },
-    { name = "Entei", tier = 1, home = "volcano" },
-    { name = "Suicune", tier = 1, home = "rivers" },
-    { name = "Regirock", tier = 1, home = "rock_tunnel" },
-    { name = "Regice", tier = 1, home = "seafoam" },
-    { name = "Registeel", tier = 1, home = "power_plant" },
-    { name = "Latias", tier = 1, home = "coasts", fast = true },
-    { name = "Latios", tier = 1, home = "coasts", fast = true },
-    { name = "Mewtwo", tier = 2, home = "cerulean_cave" },
-    { name = "Mew", tier = 2, home = "mansion" },
-    { name = "Lugia", tier = 2, home = "southern_shores" },
-    { name = "Ho-Oh", tier = 2, home = "indigo" },
-    { name = "Celebi", tier = 2, home = "viridian_forest" },
-    { name = "Kyogre", tier = 2, home = "southern_shores" },
-    { name = "Groudon", tier = 2, home = "volcano" },
-    { name = "Rayquaza", tier = 2, home = "indigo" },
-    { name = "Jirachi", tier = 2, home = "mt_moon" },
-    { name = "Deoxys", tier = 2, home = "mt_moon" },
+    { name = "Articuno", tier = 1, set = "birds", style = "fly", regions = { "kanto", "orange", "johto" },
+      places = { "outdoor" }, tags = { cold = 12, high = 2, mountain = 1, water = 1 },
+      homes = { "Seafoam Mountain", "Interior Seafoam Mountain", "Within the Iceberg", "Ice Island", "Ice Island Cave", "Mahogany" },
+      signs = { EFFECT_ICE_CRYSTAL_EMERGE, EFFECT_ICE_EMERGE } },
+    { name = "Zapdos", tier = 1, set = "birds", style = "fly", regions = { "kanto", "johto", "orange" },
+      places = { "outdoor" }, tags = { electric = 12, high = 1, mountain = 1 }, storm = 6,
+      homes = { "Power Plant", "Power Plant of Hamlin", "Lightning Island", "Lightning Island Cave" },
+      signs = { EFFECT_LIGHT_THUNDER, EFFECT_ELECTRIC_SPARK } },
+    { name = "Moltres", tier = 1, set = "birds", style = "fly", regions = { "kanto", "johto", "orange" },
+      places = { "outdoor" }, tags = { fire = 12, mountain = 1, high = 1 },
+      homes = { "Volcano", "Volcano Cave", "The Volcano Coast", "Ancient Volcano", "Fire Island", "Fire Island Cave", "Fire Mountain", "Cinnabar" },
+      signs = { EFFECT_FIRE, EFFECT_YELLOW_FLAME } },
+    { name = "Raikou", tier = 1, set = "beasts", style = "roam", regions = { "johto", "kanto" },
+      places = { "outdoor" }, tags = { electric = 8, remote = 1 }, storm = 6, homes = { "Ecruteak" },
+      signs = { EFFECT_ELECTRIC_SPARK } },
+    { name = "Entei", tier = 1, set = "beasts", style = "roam", regions = { "johto", "kanto" },
+      places = { "outdoor" }, tags = { fire = 8, mountain = 3, rock = 1 }, homes = { "Ecruteak", "Volcano" },
+      signs = { EFFECT_BURNING, EFFECT_FLAMES } },
+    { name = "Suicune", tier = 1, set = "beasts", style = "roam", regions = { "johto", "kanto" },
+      places = { "outdoor" }, tags = { water = 8, forest = 2 }, homes = { "Ecruteak", "Cianwood" },
+      signs = { EFFECT_SMOKE, EFFECT_OCEAN_BUBBLES } },
+    { name = "Regirock", tier = 1, set = "regis", style = "sleep", regions = { "hoenn", "kanto" },
+      places = { "outdoor", "cave" }, tags = { rock = 10, cave = 2 }, strict = true,
+      homes = { "Rock Tunnel", "Stone Mountain", "Dewford" }, signs = { EFFECT_FAILING_ROCKS } },
+    { name = "Regice", tier = 1, set = "regis", style = "sleep", regions = { "hoenn", "kanto", "johto" },
+      places = { "outdoor", "cave" }, tags = { cold = 10, cave = 2 }, strict = true,
+      homes = { "Seafoam Mountain", "Interior Seafoam Mountain", "Within the Iceberg", "Mahogany" },
+      signs = { EFFECT_ICE_EMERGE } },
+    { name = "Registeel", tier = 1, set = "regis", style = "sleep", regions = { "hoenn", "kanto" },
+      places = { "outdoor", "cave" }, tags = { steel = 10, cave = 2 }, strict = true,
+      homes = { "Power Plant", "Power Plant of Hamlin", "Dewford" }, signs = { EFFECT_METAL_CLAW } },
+    { name = "Latias", tier = 1, set = "eon", style = "fly", fast = true,
+      regions = { "kanto", "johto", "orange", "hoenn" }, places = { "outdoor" },
+      tags = { peaceful = 4, forest = 2 }, trainers = 3, signs = { EFFECT_RED_STARS } },
+    { name = "Latios", tier = 1, set = "eon", style = "fly", fast = true,
+      regions = { "kanto", "johto", "orange", "hoenn" }, places = { "outdoor" },
+      tags = { remote = 4, mountain = 2 }, trainers = 0.25, signs = { EFFECT_BIG_BLUE_BLINK } },
+    { name = "Mewtwo", tier = 2, style = "cave", regions = { "kanto" }, places = { "outdoor", "cave" },
+      tags = { remote = 4, cave = 2 }, homes = { "Cerulean Cave" }, homeShare = 80, warning = true,
+      signs = { EFFECT_PURPLE_ENERGIZE, EFFECT_PSYCHIC_TRIANGLE } },
+    { name = "Mew", tier = 3, style = "disguise", regions = { "kanto", "johto", "orange", "hoenn" },
+      places = { "outdoor", "cave" }, tags = { forest = 4, mystic = 4 }, strict = true,
+      homes = { "Pokemansion", "Pokemansion - Secret Area", "Fairchild", "Forgotten Temple", "Temple of Illusion" },
+      signs = { EFFECT_PINK_MINICLOUD }, arrive = { EFFECT_BIG_PINK_CLOUD } },
+    { name = "Lugia", tier = 2, style = "sea", regions = { "johto", "orange", "kanto" }, places = { "outdoor" },
+      tags = { water = 10 }, strict = true, homes = { "Olivine", "Cianwood", "Shamouti" },
+      signs = { EFFECT_WATER_SPLASH }, arrive = { EFFECT_WATER_SPLASH } },
+    { name = "Ho-Oh", tier = 2, style = "fly", regions = { "johto", "kanto" }, places = { "outdoor" },
+      tags = { high = 6, mountain = 2 }, homes = { "Ecruteak", "Lavender Tower" },
+      signs = { EFFECT_YELLOW_STAR, EFFECT_BIG_YELLOW_SPARKS } },
+    { name = "Celebi", tier = 3, style = "teleport", regions = { "johto", "kanto" }, places = { "outdoor" },
+      tags = { forest = 8 }, strict = true, homes = { "Azalea", "Viridian Forest" },
+      signs = { EFFECT_GREEN_SPARK, EFFECT_LEAVES } },
+    { name = "Kyogre", tier = 2, style = "territory", regions = { "hoenn", "orange" }, places = { "outdoor" },
+      tags = { water = 10 }, strict = true, homes = { "Pacifidlog", "Sootopolis", "Lilycove", "Slateport" },
+      rain = true, signs = { EFFECT_WATER_TORNADO }, arrive = { EFFECT_WATER_TORNADO }, leave = "dived back into the deep" },
+    { name = "Groudon", tier = 2, style = "territory", regions = { "hoenn", "kanto" }, places = { "outdoor", "cave" },
+      tags = { fire = 6, rock = 4 }, strict = true, homes = { "Lavaridge", "Fallarbor", "Volcano" },
+      signs = { EFFECT_GROUND_SMASH, EFFECT_EARTH_CRATER }, arrive = { EFFECT_BIG_ROCK_EMERGE }, leave = "sank back underground" },
+    { name = "Rayquaza", tier = 2, style = "fly", regions = { "hoenn", "johto", "kanto" }, places = { "outdoor" },
+      tags = { high = 8, mountain = 2 }, strict = true, homes = { "Fortree", "Blackthorn" }, signs = { EFFECT_GREEN_WIND } },
+    { name = "Jirachi", tier = 3, style = "meteor", regions = { "kanto", "johto", "orange", "hoenn" },
+      places = { "outdoor" }, tags = { remote = 4, high = 2 }, homes = { "Mt. Moon", "Fallarbor" }, lifetime = 45 * MINUTE,
+      signs = { EFFECT_FAILING_STARS }, arrive = { EFFECT_FAILING_STARS, EFFECT_EARTH_CRATER } },
+    { name = "Deoxys", tier = 3, style = "meteor", regions = { "kanto", "johto", "orange", "hoenn" },
+      places = { "outdoor" }, tags = { remote = 4 }, homes = { "Mt. Moon", "Fallarbor" },
+      signs = { EFFECT_PURPLE_ELECTRIC_CLOUD }, arrive = { EFFECT_FAILING_STARS, EFFECT_EARTH_CRATER } },
 }
 
-local BY_NAME = {}
-for _, species in ipairs(WildLegendaries.SPECIES) do
+WildLegendaries.SETS = {
+    { id = "birds", name = "The legendary birds", members = { "Articuno", "Zapdos", "Moltres" } },
+    { id = "beasts", name = "The legendary beasts", members = { "Raikou", "Entei", "Suicune" } },
+    { id = "regis", name = "The three Regis", members = { "Regirock", "Regice", "Registeel" } },
+    { id = "eon", name = "Latias and Latios", members = { "Latias", "Latios" } },
+}
+
+local BY_NAME, BY_INDEX, SET_BY_ID = {}, {}, {}
+for index, species in ipairs(WildLegendaries.SPECIES) do
+    species.index = index
     BY_NAME[species.name:lower()] = species
+    BY_INDEX[index] = species
+end
+for _, set in ipairs(WildLegendaries.SETS) do
+    SET_BY_ID[set.id] = set
 end
 
+local STYLE_TEXT = {
+    fly = { leave = "flew away", depart = EFFECT_BIG_DUST_UP, land = EFFECT_BIG_DUST_DOWN },
+    roam = { leave = "ran off", depart = EFFECT_BIG_DUST_UP, land = EFFECT_BIG_DUST_DOWN },
+    sea = { leave = "dived back into the sea" },
+    territory = { leave = "went back to its territory" },
+    cave = { leave = "teleported away" },
+    sleep = { leave = "sank back into a deep sleep and vanished" },
+    disguise = { leave = "slipped away" },
+    teleport = { leave = "vanished" },
+    meteor = { leave = "vanished into the sky" },
+}
+
 WildLegendaries.CONFIG = {
-    maxAlive = 2,
-    maxTier2Alive = 1,
-    tierWeight = { 3, 1 },
+    maxAlive = 2,               -- scheduled ones out at once; set members don't count
+    maxMajorAlive = 1,          -- of those, tier 2
+    tierWeight = { 6, 2, 1 },
+    setChance = 25,             -- percent: the schedule picks a set member and the whole set comes
+    setBringsCooldown = true,   -- set members still on their cooldown come too
 
     -- Trainers online -> gap to the next spawn and the cooldowns. The gap is drawn at each
     -- spawn and checked again every 5 minutes, so it shrinks when the server fills up.
@@ -57,30 +152,43 @@ WildLegendaries.CONFIG = {
         { online = 15, gap = { 3 * HOUR, 6 * HOUR }, cooldown = { 24 * HOUR, 3 * DAY } },
         { online = 40, gap = { 2 * HOUR, 4 * HOUR }, cooldown = { 16 * HOUR, 2 * DAY } },
     },
+    mythicalCooldown = 1.5,     -- times the tier 2 cooldown
     gapCheckInterval = 300,
     retryInterval = 60,         -- when a spawn is due but blocked (limits, restart window)
-    quietBeforeRestart = 2 * HOUR,
+    quietBeforeRestart = 10 * 60,
 
-    lifetime = { 90 * 60, 120 * 60 },
-    stayWhileHit = 120,         -- doesn't fly off while hit within this many seconds
+    lifetime = { 90 * MINUTE, 120 * MINUTE, 60 * MINUTE },
+    sleepLifetime = 4 * HOUR,   -- a Regi asleep
+    wakeLifetime = 60 * MINUTE, -- a Regi once woken
+    stayWhileHit = 120,         -- doesn't leave while hit within this many seconds
     moveEvery = { 4 * 60, 6 * 60 },
     fastMoveEvery = { 2 * 60, 3 * 60 },
     holdWhileHit = 60,          -- doesn't move on while hit within this many seconds
-    minMoveDistance = 120,      -- a move to the Kanto pool goes at least this far
-    homeChance = 50,
-    flee = { { 0.5 }, { 0.5, 0.25 } },
+    minMoveDistance = 120,      -- a flight goes at least this far
+    homeShare = 35,
+    flee = { { 0.5 }, { 0.5, 0.25 }, { 0.5, 0.25 } },
     healAfter = 3 * 60,
     healPercent = 5,            -- of max health every 5 seconds once left alone
 
-    healthMultiplier = { 30, 60 },
+    healthMultiplier = { 30, 60, 60 },
     recommendedLevel = 50,
 
     rewardRatio = 0.1,
-    rewards = { { rareCandy = 1, money = 5000 }, { rareCandy = 2, money = 10000 } },
+    rewards = { { rareCandy = 1, money = 5000 }, { rareCandy = 2, money = 10000 }, { rareCandy = 2, money = 10000 } },
     rareCandyId = 14463,
     bodyOwnerSeconds = 60,
     bodySeconds = 180,
     catchWindow = 300,          -- a catch this long after the defeat is announced as the legendary's
+
+    signEvery = 6,              -- seconds between signs of a legendary
+    faintSignEvery = 15,        -- of a mythical
+    disguiseSignEvery = 30,     -- of Mew in disguise
+    trailLength = 6,            -- spots it left that still show signs
+    trailSeconds = 10 * MINUTE,
+    saveEvery = 30,
+    warningSeconds = 180,       -- Mewtwo's psychic disturbance before it appears
+    warningEffectEvery = 15,
+    revealRank = 4,             -- Ranger rank whose radar finds Mew in disguise
 
     channelId = 14,             -- data/XML/channels.xml "Legendaries"
 }
@@ -94,6 +202,9 @@ local KEY = {
     ACTIVE = GLOBAL_STORAGES.LEGENDARY_ACTIVE,
     SEQUENCE = GLOBAL_STORAGES.LEGENDARY_SEQUENCE,
     RECENT = GLOBAL_STORAGES.LEGENDARY_RECENT,
+    MODE = GLOBAL_STORAGES.LEGENDARY_MODE,
+    SAVED = GLOBAL_STORAGES.LEGENDARY_SAVED,
+    PENDING = GLOBAL_STORAGES.LEGENDARY_PENDING,
 }
 
 -- Creature storage of the legendary itself.
@@ -107,6 +218,18 @@ local MON = {
     AREA = 9106,
     SPAWNED_AT = 9107,
     LAST_HEAL = 9108,
+    ZONE = 9109,         -- the zone (town) it is in
+    HOME_ZONE = 9110,    -- where a territory one stays
+    NEXT_ZONE = 9111,    -- where it goes next
+    TRAIL = 9112,        -- "t;x,y,z,time;..." the spots it left, newest first
+    PATH = 9113,         -- "Zone>Zone>..." the zones it passed, newest last
+    LAST_SIGN = 9114,
+    MOVED_AT = 9115,
+    ASLEEP = 9116,
+    WAKE_PENDING = 9117,
+    DISGUISED = 9118,
+    REVEAL_PENDING = 9119,
+    FOUND_BY = 9120,     -- who woke or revealed it
 }
 
 -- Storage ---------------------------------------------------------------------------------------
@@ -121,7 +244,7 @@ local function store(key, value)
         key, getConfigValue("worldId") or 0, db.escapeString(tostring(value))))
 end
 
--- "c;Articuno=123;Mewtwo=456": a letter first so getStorage never reads it as a number.
+-- "m;Articuno=123;Mewtwo=456": a letter first so getStorage never reads it as a number.
 local function readMap(key)
     local map = {}
     local text = getStorage(key)
@@ -150,32 +273,65 @@ local function monNumber(cid, key)
     return tonumber(getCreatureStorage(cid, key)) or -1
 end
 
--- Active encounters: encounter id -> "cid:Species". Kept in the database so the encounters
--- open at a restart can be closed on the Discord side.
+local function monText(cid, key)
+    local value = getCreatureStorage(cid, key)
+    if (type(value) ~= "string" or tonumber(value)) then
+        return nil
+    end
+    return value
+end
+
+-- Active encounters: encounter id -> "cid:Species:flags" (s: set member, d: Mew in disguise). Kept in
+-- the database so the encounters open at a restart can be put back or closed on the Discord side.
 local function getActive()
     local list = {}
     for encounter, value in pairs(readMap(KEY.ACTIVE)) do
-        local cid, name = value:match("^(%d+):(.+)$")
+        local cid, name, flags = value:match("^(%d+):([^:]+):?(%a*)$")
         if (cid) then
-            table.insert(list, { encounter = tonumber(encounter), cid = tonumber(cid), name = name })
+            table.insert(list, { encounter = tonumber(encounter), cid = tonumber(cid), name = name, flags = flags or "" })
         end
     end
     table.sort(list, function(a, b) return a.encounter < b.encounter end)
     return list
 end
 
-local function setActive(encounter, cid, name)
+local function setActive(encounter, cid, name, flags)
     local map = readMap(KEY.ACTIVE)
-    map[tostring(encounter)] = cid and (cid .. ":" .. name) or nil
+    map[tostring(encounter)] = cid and (cid .. ":" .. name .. ":" .. (flags or "")) or nil
     writeMap(KEY.ACTIVE, map)
 end
 
+local function activeOf(cid)
+    for _, a in ipairs(getActive()) do
+        if (a.cid == cid) then
+            return a
+        end
+    end
+    return nil
+end
+
 function WildLegendaries.getSpecies(name)
-    return name and BY_NAME[tostring(name):lower()] or nil
+    if (not name) then
+        return nil
+    end
+    name = tostring(name):lower():gsub("^shiny ", "")
+    return BY_NAME[name]
+end
+
+function WildLegendaries.getSet(id)
+    return id and SET_BY_ID[tostring(id):lower()] or nil
 end
 
 function WildLegendaries.isEncounter(cid)
     return isMonster(cid) and monNumber(cid, MON.ENCOUNTER) > 0
+end
+
+function WildLegendaries.isDisguised(cid)
+    return isMonster(cid) and monNumber(cid, MON.ENCOUNTER) > 0 and monNumber(cid, MON.DISGUISED) == 1
+end
+
+function WildLegendaries.isAsleep(cid)
+    return isMonster(cid) and monNumber(cid, MON.ENCOUNTER) > 0 and monNumber(cid, MON.ASLEEP) == 1
 end
 
 function WildLegendaries.getCooldowns()
@@ -202,6 +358,15 @@ function WildLegendaries.clearCooldowns(name)
     writeMap(KEY.COOLDOWNS, map)
 end
 
+-- Auto: spawns on the schedule. Manual: only staff start them; what is out stays.
+function WildLegendaries.isManual()
+    return getStorage(KEY.MODE) == "manual"
+end
+
+function WildLegendaries.setManual(manual)
+    store(KEY.MODE, manual and "manual" or "auto")
+end
+
 -- Population -------------------------------------------------------------------------------------
 
 function WildLegendaries.getOnline()
@@ -218,6 +383,14 @@ function WildLegendaries.getPopulation(online)
         end
     end
     return row
+end
+
+function WildLegendaries.cooldownFor(species)
+    local row = WildLegendaries.getPopulation()
+    if (species.tier == 3) then
+        return math.floor(row.cooldown[2] * CONFIG.mythicalCooldown)
+    end
+    return row.cooldown[species.tier]
 end
 
 local function lerp(range, roll)
@@ -270,8 +443,32 @@ for _, id in ipairs(WATER_IDS or {}) do
     WATER[id] = true
 end
 
-local function toPosition(point)
-    return { x = point[1], y = point[2], z = point[3] }
+local points = nil
+
+-- LEGENDARY_ANCHORS.POINTS read once per Lua state: { index, x, y, z, area, zone, tags, spawn, region, place }
+function WildLegendaries.getPoints()
+    if (not points) then
+        points = {}
+        for index, p in ipairs(LEGENDARY_ANCHORS.POINTS) do
+            local tags = {}
+            for tag in p[6]:gmatch("[^,]+") do
+                tags[tag] = true
+            end
+            local region = Weather.regionAt({ x = p[1], y = p[2], z = p[3] })
+            points[index] = { index = index, x = p[1], y = p[2], z = p[3], area = p[4] ~= "" and p[4] or p[5],
+                              named = p[4] ~= "", zone = p[5], tags = tags, spawn = p[7], region = region and region.id,
+                              place = tags.cave and "cave" or (tags.indoor and "indoor" or "outdoor") }
+        end
+    end
+    return points
+end
+
+local function toSet(list)
+    local set = {}
+    for _, value in ipairs(list or {}) do
+        set[value] = true
+    end
+    return set
 end
 
 -- Ground, no water, no protection zone or house. With cid, also room for that creature.
@@ -290,39 +487,251 @@ function WildLegendaries.isGoodPoint(pos, cid)
     return true
 end
 
-local function farEnough(point, from, distance)
-    if (not from) then
-        return true
+-- The habitat of a species, built once per Lua state: { all = { {point, weight} }, home = {...},
+-- zones = { [zone] = weight } }
+local habitats = {}
+
+function WildLegendaries.getHabitat(species)
+    local habitat = habitats[species.name]
+    if (habitat) then
+        return habitat
     end
-    return math.max(math.abs(point[1] - from.x), math.abs(point[2] - from.y)) >= distance
+    habitat = { all = {}, home = {}, zones = {} }
+    local regions, places, homes = toSet(species.regions), toSet(species.places or { "outdoor" }), toSet(species.homes)
+    for _, point in ipairs(WildLegendaries.getPoints()) do
+        if (regions[point.region]) then
+            local home = (point.named and homes[point.area]) or homes[point.zone] or false
+            if (home or places[point.place]) then
+                local weight, matched = 1, false
+                for tag, extra in pairs(species.tags or {}) do
+                    if (point.tags[tag]) then
+                        weight, matched = weight + extra, true
+                    end
+                end
+                if (home or matched or not species.strict) then
+                    local entry = { point = point, weight = weight }
+                    table.insert(habitat.all, entry)
+                    if (home) then
+                        table.insert(habitat.home, entry)
+                    end
+                    habitat.zones[point.zone] = (habitat.zones[point.zone] or 0) + weight
+                end
+            end
+        end
+    end
+    habitats[species.name] = habitat
+    return habitat
 end
 
--- A point for the species: its home area half the time, anywhere in Kanto otherwise.
-function WildLegendaries.pickPoint(species, cid, from)
-    local anchors = LEGENDARY_ANCHORS
-    local home = anchors.HOMES[species.home] or anchors.ROAM
-    for try = 1, 40 do
-        local useHome = getRandom(1, 100) <= CONFIG.homeChance
-        local pool = useHome and home or anchors.ROAM
-        local point = pool[getRandom(1, #pool)]
-        local distance = useHome and 20 or CONFIG.minMoveDistance
-        if (try > 30 or farEnough(point, from, distance)) then
-            -- the points are spawn spots, so a wild Pokemon often stands on them
-            for radius = 0, 3 do
-                for dx = -radius, radius do
-                    for dy = -radius, radius do
-                        if (math.max(math.abs(dx), math.abs(dy)) == radius) then
-                            local pos = { x = point[1] + dx, y = point[2] + dy, z = point[3] }
-                            if (WildLegendaries.isGoodPoint(pos, cid)) then
-                                return pos, point[4]
-                            end
-                        end
+-- Zone weather and trainers, a few seconds old at most
+local zoneCache = { at = -1, kinds = {}, trainers = nil }
+
+local function weatherZone(name)
+    for _, zone in ipairs(Weather.getZones()) do
+        if (zone.name == name) then
+            return zone
+        end
+    end
+    return nil
+end
+WildLegendaries.weatherZone = weatherZone
+
+local function refreshZoneCache()
+    local now = os.time()
+    if (now - zoneCache.at >= 5) then
+        zoneCache = { at = now, kinds = {}, trainers = nil }
+    end
+end
+
+local function zoneWeather(name)
+    refreshZoneCache()
+    if (zoneCache.kinds[name] == nil) then
+        local zone = weatherZone(name)
+        zoneCache.kinds[name] = zone and Weather.at(zone).kind or "clear"
+    end
+    return zoneCache.kinds[name]
+end
+
+local function trainerZones()
+    refreshZoneCache()
+    if (not zoneCache.trainers) then
+        zoneCache.trainers = {}
+        for _, pid in ipairs(getPlayersOnline() or {}) do
+            local zone = Weather.zoneAt(getCreaturePosition(pid))
+            if (zone) then
+                zoneCache.trainers[zone.name] = true
+            end
+        end
+    end
+    return zoneCache.trainers
+end
+
+local function regionOn(id)
+    return Weather.isRegionOn(Weather.getRegion(id))
+end
+
+local function liveWeight(species, point, weight)
+    if (species.storm and zoneWeather(point.zone) == "thunderstorm") then
+        weight = weight * species.storm
+    end
+    if (species.trainers and trainerZones()[point.zone]) then
+        weight = weight * species.trainers
+    end
+    return weight
+end
+
+local function distance(a, b)
+    return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
+end
+
+-- A free tile on or around the point (spawn spots, so a wild Pokemon often stands on them)
+local function spotAt(point, cid)
+    for radius = 0, 3 do
+        for dx = -radius, radius do
+            for dy = -radius, radius do
+                if (math.max(math.abs(dx), math.abs(dy)) == radius) then
+                    local pos = { x = point.x + dx, y = point.y + dy, z = point.z }
+                    if (WildLegendaries.isGoodPoint(pos, cid)) then
+                        return pos
                     end
                 end
             end
         end
     end
     return nil
+end
+
+-- A point of the species' habitat. options: cid (room for it), from + minDistance, zones (a set of zone
+-- names). Returns the tile and the point, or nil.
+function WildLegendaries.pickPoint(species, options)
+    options = options or {}
+    local habitat = WildLegendaries.getHabitat(species)
+    local pools = { habitat.all }
+    if (#habitat.home > 0 and not options.zones and getRandom(1, 100) <= (species.homeShare or CONFIG.homeShare)) then
+        pools = { habitat.home, habitat.all }
+    end
+    local regionsOn = {}
+    for _, region in ipairs(species.regions) do
+        regionsOn[region] = regionOn(region)
+    end
+    for _, pool in ipairs(pools) do
+        local list, total = {}, 0
+        for _, entry in ipairs(pool) do
+            local point = entry.point
+            if (regionsOn[point.region] and (not options.zones or options.zones[point.zone]) and
+                    (not options.from or distance(point, options.from) >= (options.minDistance or 0))) then
+                local weight = liveWeight(species, point, entry.weight)
+                if (weight > 0) then
+                    total = total + weight
+                    list[#list + 1] = { point = point, upTo = total }
+                end
+            end
+        end
+        for try = 1, 8 do
+            if (total <= 0) then
+                break
+            end
+            local roll = math.random() * total
+            local low, high = 1, #list
+            while (low < high) do
+                local middle = math.floor((low + high) / 2)
+                if (list[middle].upTo < roll) then
+                    low = middle + 1
+                else
+                    high = middle
+                end
+            end
+            local point = list[low].point
+            local pos = spotAt(point, options.cid)
+            if (pos) then
+                return pos, point
+            end
+        end
+    end
+    return nil
+end
+
+-- The nearest point to a spot (for its area, zone and local species), within maxDistance
+function WildLegendaries.nearestPoint(pos, maxDistance)
+    local best, bestDistance = nil, nil
+    for _, point in ipairs(WildLegendaries.getPoints()) do
+        if (point.z == pos.z or not best) then
+            local d = distance(point, pos) + math.abs(point.z - pos.z) * 20
+            if (not bestDistance or d < bestDistance) then
+                best, bestDistance = point, d
+            end
+        end
+    end
+    if (maxDistance and bestDistance and bestDistance > maxDistance) then
+        return nil
+    end
+    return best
+end
+
+-- The area a spot is announced as: the map's area name, or its town
+function WildLegendaries.areaAt(pos)
+    local point = WildLegendaries.nearestPoint(pos, 60)
+    if (point) then
+        return point.area, point.zone
+    end
+    local zone = Weather.zoneAt(pos)
+    return zone and zone.name or "an unknown place", zone and zone.name or nil
+end
+
+-- A free tile minRadius to maxRadius tiles away on the same floor (short teleports)
+local function hopFrom(from, minRadius, maxRadius, cid)
+    for try = 1, 30 do
+        local r = getRandom(minRadius, maxRadius)
+        local pos = { x = from.x + getRandom(-r, r), y = from.y + getRandom(-r, r), z = from.z }
+        if (distance(pos, from) >= minRadius and WildLegendaries.isGoodPoint(pos, cid) and
+                (not isSightClear or isSightClear(from, pos, false) or try > 20)) then
+            return pos
+        end
+    end
+    return nil
+end
+
+-- The next zone it heads for: a neighbor for roamers, any zone of its habitat for flyers and swimmers
+local function planZone(species, current)
+    local habitat = WildLegendaries.getHabitat(species)
+    local choices, total = {}, 0
+    local function add(zone, weight)
+        local point = nil
+        for _, entry in ipairs(habitat.all) do
+            if (entry.point.zone == zone) then
+                point = entry.point
+                break
+            end
+        end
+        if (point and weight > 0 and regionOn(point.region)) then
+            weight = liveWeight(species, point, weight)
+            total = total + weight
+            choices[#choices + 1] = { zone = zone, upTo = total }
+        end
+    end
+    if (species.style == "roam") then
+        for _, zone in ipairs((LEGENDARY_ANCHORS.NEIGHBORS or {})[current or ""] or {}) do
+            add(zone, habitat.zones[zone] or 0)
+        end
+    elseif (species.style == "fly" or species.style == "sea") then
+        for zone, weight in pairs(habitat.zones) do
+            if (zone ~= current) then
+                add(zone, weight)
+            end
+        end
+    else
+        return nil
+    end
+    if (total <= 0) then
+        return nil
+    end
+    local roll = math.random() * total
+    for _, choice in ipairs(choices) do
+        if (choice.upTo >= roll) then
+            return choice.zone
+        end
+    end
+    return choices[#choices].zone
 end
 
 -- Notifications ----------------------------------------------------------------------------------
@@ -373,6 +782,7 @@ local function broadcast(text)
     doBroadcastMessage(text, MESSAGE_STATUS_WARNING)
     toChannel(text)
 end
+WildLegendaries.broadcast = broadcast
 
 local function discord(event)
     if (DiscordBridge and DiscordBridge.emitLegendary) then
@@ -380,169 +790,630 @@ local function discord(event)
     end
 end
 
+local function effectAt(pos, effect)
+    if (effect and pos) then
+        doSendMagicEffect(pos, effect)
+    end
+end
+
+local function pick(list)
+    return list and #list > 0 and list[getRandom(1, #list)] or nil
+end
+
 -- Encounters -------------------------------------------------------------------------------------
-
-local function nextMoveDelay(species)
-    local range = species.fast and CONFIG.fastMoveEvery or CONFIG.moveEvery
-    return getRandom(range[1], range[2])
-end
-
-local function boostHealth(cid, species)
-    local health = getCreatureMaxHealth(cid) * CONFIG.healthMultiplier[species.tier]
-    setCreatureMaxHealth(cid, health)
-    doCreatureAddHealth(cid, health)
-end
 
 local function healthPercent(cid)
     return math.floor(getCreatureHealth(cid) * 100 / math.max(1, getCreatureMaxHealth(cid)) + 0.5)
 end
 
--- Creates the legendary. pos/area optional (staff "here"). Returns cid or nil, error.
-function WildLegendaries.spawn(species, pos, area, source)
-    for _, active in ipairs(getActive()) do
-        if (active.name == species.name and isMonster(active.cid)) then
-            return nil, species.name .. " is already out."
+local function nextMoveDelay(species, cid)
+    local range = species.fast and CONFIG.fastMoveEvery or CONFIG.moveEvery
+    local delay = getRandom(range[1], range[2])
+    -- roamers that like storms run faster in them
+    if (cid and species.storm and species.style == "roam") then
+        local zone = monText(cid, MON.ZONE)
+        if (zone and zoneWeather(zone) == "thunderstorm") then
+            delay = math.floor(delay / 2)
         end
     end
-    local explicit = pos ~= nil
+    return delay
+end
+
+local function boostHealth(cid, species, percent)
+    local health = getCreatureMaxHealth(cid) * CONFIG.healthMultiplier[species.tier]
+    setCreatureMaxHealth(cid, health)
+    local target = math.max(1, math.floor(health * (percent or 100) / 100))
+    doCreatureAddHealth(cid, target - getCreatureHealth(cid))
+end
+
+local function lifetimeOf(species)
+    return species.lifetime or CONFIG.lifetime[species.tier]
+end
+
+local function mythicalOut(except)
+    for _, a in ipairs(getActive()) do
+        local s = WildLegendaries.getSpecies(a.name)
+        if (s and s.tier == 3 and a.name ~= except and isMonster(a.cid)) then
+            return a.name
+        end
+    end
+    return nil
+end
+
+local function isOut(name)
+    for _, a in ipairs(getActive()) do
+        if (a.name == name and isMonster(a.cid)) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Pending warnings (Mewtwo): species -> { at, point, source }
+local function getPending()
+    local list = {}
+    for name, value in pairs(readMap(KEY.PENDING)) do
+        local at, point, source = value:match("^(%d+):(%d+):(%a*)$")
+        if (at) then
+            list[name] = { at = tonumber(at), point = tonumber(point), source = source ~= "" and source or "schedule" }
+        end
+    end
+    return list
+end
+
+local function setPending(name, at, pointIndex, source)
+    local map = readMap(KEY.PENDING)
+    map[name] = at and string.format("%d:%d:%s", at, pointIndex, source or "") or nil
+    writeMap(KEY.PENDING, map)
+end
+
+-- Kyogre brings rain to its zone while it is out, unless staff set the weather there
+local function applyWeather(cid, species, zoneName)
+    if (not species.rain or not zoneName) then
+        return
+    end
+    local zone = weatherZone(zoneName)
+    if (zone and not Weather.getOverrides()[zone.id]) then
+        Weather.setOverride({ zone.id }, "rain", math.ceil(math.max(60, monNumber(cid, MON.ENDS_AT) - os.time()) / 60))
+    end
+end
+
+local function clearWeather(cid, species)
+    if (not species or not species.rain) then
+        return
+    end
+    local zone = weatherZone(monText(cid, MON.HOME_ZONE) or monText(cid, MON.ZONE) or "")
+    local override = zone and Weather.getOverrides()[zone.id]
+    if (override and override.kind == "rain") then
+        Weather.setOverride({ zone.id }, nil)
+    end
+end
+
+-- Kept through a restart: every 30 seconds and after each change
+local function encodeSaved()
+    local parts, now = { "m" }, os.time()
+    for _, a in ipairs(getActive()) do
+        local species = WildLegendaries.getSpecies(a.name)
+        if (species and isMonster(a.cid)) then
+            local pos = getCreaturePosition(a.cid)
+            local flags = a.flags:gsub("[dz]", "")
+            if (monNumber(a.cid, MON.DISGUISED) == 1) then
+                flags = flags .. "d"
+            end
+            if (monNumber(a.cid, MON.ASLEEP) == 1) then
+                flags = flags .. "z"
+            end
+            local health = monNumber(a.cid, MON.DISGUISED) == 1 and 100 or healthPercent(a.cid)
+            parts[#parts + 1] = string.format("%d=%d|%d|%d,%d,%d|%d|%s", a.encounter, species.index, health,
+                pos.x, pos.y, pos.z, math.max(1, math.ceil((monNumber(a.cid, MON.ENDS_AT) - now) / 60)), flags)
+        end
+    end
+    return table.concat(parts, ";")
+end
+
+function WildLegendaries.save()
+    local value = encodeSaved()
+    if (#value > 255) then
+        print("> Legendary: too many out to keep across a restart; the last ones are left out.")
+        value = value:sub(1, 255):gsub(";[^;]*$", "")
+    end
+    if (value ~= getStorage(KEY.SAVED)) then
+        store(KEY.SAVED, value)
+    end
+end
+
+local function trailOf(cid)
+    local trail, now = {}, os.time()
+    for x, y, z, at in tostring(monText(cid, MON.TRAIL) or ""):gmatch("(%d+),(%d+),(%d+),(%d+)") do
+        if (now - tonumber(at) <= CONFIG.trailSeconds) then
+            trail[#trail + 1] = { x = tonumber(x), y = tonumber(y), z = tonumber(z), at = tonumber(at) }
+        end
+    end
+    return trail
+end
+WildLegendaries.trailOf = trailOf
+
+local function pathOf(cid)
+    local path = {}
+    for zone in tostring(monText(cid, MON.PATH) or ""):gmatch("[^>]+") do
+        path[#path + 1] = zone
+    end
+    return path
+end
+WildLegendaries.pathOf = pathOf
+
+-- Records where it was and the zone it is in now
+local function arrive(cid, species, from, pos, point)
+    local now = os.time()
+    if (from) then
+        local parts = { string.format("%d,%d,%d,%d", from.x, from.y, from.z, now) }
+        for _, spot in ipairs(trailOf(cid)) do
+            if (#parts < CONFIG.trailLength) then
+                parts[#parts + 1] = string.format("%d,%d,%d,%d", spot.x, spot.y, spot.z, spot.at)
+            end
+        end
+        -- a letter first: getCreatureStorage reads "123,..." as the number 123
+        doCreatureSetStorage(cid, MON.TRAIL, "t;" .. table.concat(parts, ";"))
+    end
+    local area, zone
+    if (point) then
+        area, zone = point.area, point.zone
+    else
+        area, zone = WildLegendaries.areaAt(pos)
+    end
+    doCreatureSetStorage(cid, MON.AREA, area)
+    if (zone) then
+        local path = pathOf(cid)
+        if (path[#path] ~= zone) then
+            path[#path + 1] = zone
+            while (#path > 4) do
+                table.remove(path, 1)
+            end
+            doCreatureSetStorage(cid, MON.PATH, table.concat(path, ">"))
+        end
+        doCreatureSetStorage(cid, MON.ZONE, zone)
+    end
+    doCreatureSetStorage(cid, MON.MOVED_AT, now)
+    local nextZone = planZone(species, zone)
+    doCreatureSetStorage(cid, MON.NEXT_ZONE, nextZone or "-")
+    return area, zone
+end
+
+local function register(cid)
+    registerCreatureEvent(cid, "wildLegendaryHit")
+    registerCreatureEvent(cid, "wildLegendaryDeath")
+end
+
+local function createAt(name, pos)
+    WildLegendaries.creating = true
+    local cid = doCreateMonster(name, pos, false)
+    WildLegendaries.creating = false
+    return isMonster(cid) and cid or nil
+end
+
+local function announceSpawn(species, area, asleep)
+    if (species.tier == 3) then
+        if (species.style == "disguise") then
+            return "Mew is hiding somewhere, disguised as a wild Pokemon. Trainers who find it will see its true self!"
+        end
+        return string.format("Something mythical has arrived: %s is out there somewhere. Look for its signs!", species.name)
+    elseif (asleep) then
+        return string.format("%s is sleeping somewhere near %s. Find it and wake it up! Recommended for trainers level %d+.",
+            species.name, area, CONFIG.recommendedLevel)
+    end
+    return string.format("A wild %s has appeared near %s! Recommended for trainers level %d+.", species.name, area,
+        CONFIG.recommendedLevel)
+end
+
+-- Mew as a Pokemon of its spot. options as for spawn.
+local function spawnDisguised(species, pos, point, source, options)
+    options = options or {}
+    point = point or WildLegendaries.nearestPoint(pos, 40)
+    local disguise = options.disguise or (point and point.spawn)
+    if (not disguise or not getMonsterInfo(disguise) or WildLegendaries.getSpecies(disguise)) then
+        disguise = "Oddish"
+    end
+    local cid = createAt(disguise, pos)
+    if (not cid) then
+        return nil, "The disguise could not be placed."
+    end
+    -- the level of the others of its kind around it
+    for _, other in ipairs(getSpectators(getCreaturePosition(cid), 12, 12, false) or {}) do
+        if (other ~= cid and isMonster(other) and getCreatureName(other) == disguise and not isSummon(other)) then
+            setMonsterLevel(cid, getMonsterLevel(other))
+            break
+        end
+    end
+    return cid, disguise
+end
+
+-- Creates the legendary. pos/area optional (staff "here"). options: set (a set member), quiet (no
+-- announcement), encounter + health + endsAt + restored (put back after a restart), asleep (false: a
+-- Regi awake), disguised (false: Mew as itself), warned (the warning is over). Returns cid or nil, error.
+function WildLegendaries.spawn(species, pos, area, source, options)
+    options = options or {}
+    local givenArea = options.area or area
+    if (isOut(species.name)) then
+        return nil, species.name .. " is already out."
+    end
+    if (species.tier == 3 and mythicalOut(species.name)) then
+        return nil, "A mythical is already out (" .. mythicalOut(species.name) .. ")."
+    end
+    if (not options.warned and getPending()[species.name]) then
+        setPending(species.name, nil)
+    end
+
+    local explicit, point = pos ~= nil, nil
     if (not pos) then
-        pos, area = WildLegendaries.pickPoint(species)
+        pos, point = WildLegendaries.pickPoint(species)
         if (not pos) then
             return nil, "No free point found for " .. species.name .. "."
         end
     end
 
-    WildLegendaries.creating = true
-    local cid = doCreateMonster(species.name, pos, false, false)
-    for try = 1, 5 do
-        if (isMonster(cid) or explicit) then
+    local disguised = species.style == "disguise" and options.disguised ~= false
+    local cid, disguise
+    for try = 1, 6 do
+        if (disguised) then
+            cid, disguise = spawnDisguised(species, pos, point, source, options)
+        else
+            cid = createAt(species.name, pos)
+        end
+        if (cid or explicit) then
             break
         end
-        pos, area = WildLegendaries.pickPoint(species)
-        if (pos) then
-            cid = doCreateMonster(species.name, pos, false, false)
+        pos, point = WildLegendaries.pickPoint(species)
+        if (not pos) then
+            break
         end
     end
-    WildLegendaries.creating = false
-    if (not isMonster(cid)) then
-        return nil, "The monster could not be placed."
+    if (not cid) then
+        return nil, disguise or "The monster could not be placed."
     end
 
     local now = os.time()
-    local encounter = math.max(0, getNumber(KEY.SEQUENCE)) + 1
-    store(KEY.SEQUENCE, encounter)
-    area = area or "an unknown place"
+    local encounter = options.encounter
+    if (not encounter) then
+        encounter = math.max(0, getNumber(KEY.SEQUENCE)) + 1
+        store(KEY.SEQUENCE, encounter)
+    end
+    local asleep = species.style == "sleep" and options.asleep ~= false
+    local endsAt = options.endsAt or (now + (asleep and CONFIG.sleepLifetime or lifetimeOf(species)))
 
-    boostHealth(cid, species)
+    if (not disguised) then
+        boostHealth(cid, species, options.health)
+    end
     doCreatureSetStorage(cid, MON.ENCOUNTER, encounter)
     doCreatureSetStorage(cid, MON.SPAWNED_AT, now)
-    doCreatureSetStorage(cid, MON.ENDS_AT, now + CONFIG.lifetime[species.tier])
+    doCreatureSetStorage(cid, MON.ENDS_AT, endsAt)
     doCreatureSetStorage(cid, MON.NEXT_MOVE, now + nextMoveDelay(species))
     doCreatureSetStorage(cid, MON.FLEE_STAGE, 0)
     doCreatureSetStorage(cid, MON.FLEE_PENDING, 0)
     doCreatureSetStorage(cid, MON.LAST_HIT, 0)
-    doCreatureSetStorage(cid, MON.AREA, area)
-    registerCreatureEvent(cid, "wildLegendaryHit")
-    registerCreatureEvent(cid, "wildLegendaryDeath")
-    setActive(encounter, cid, species.name)
-    doSendMagicEffect(getCreaturePosition(cid), EFFECT_TELEPORT_DOWN)
+    doCreatureSetStorage(cid, MON.LAST_SIGN, 0)
+    doCreatureSetStorage(cid, MON.ASLEEP, asleep and 1 or 0)
+    doCreatureSetStorage(cid, MON.DISGUISED, disguised and 1 or 0)
+    local here = getCreaturePosition(cid)
+    local zone
+    area, zone = arrive(cid, species, nil, here, (not explicit) and point or nil)
+    if (explicit and givenArea) then
+        area = givenArea
+        doCreatureSetStorage(cid, MON.AREA, area)
+    end
+    doCreatureSetStorage(cid, MON.HOME_ZONE, options.homeZone or zone or "-")
+    if (asleep) then
+        doCreatureSetNoMove(cid, true)
+    end
+    register(cid)
+    local flags = (options.set and "s" or "") .. (disguised and "d" or "")
+    setActive(encounter, cid, species.name, flags)
 
-    broadcast(string.format("A wild %s has appeared near %s! Recommended for trainers level %d+.",
-        species.name, area, CONFIG.recommendedLevel))
-    sendCard(allPlayers(), { type = "spawn", species = species.name, tier = species.tier, area = area,
-        level = CONFIG.recommendedLevel, endsAt = now + CONFIG.lifetime[species.tier] })
-    local position = getCreaturePosition(cid)
-    discord({ event = "spawn", encounterId = encounter, species = species.name, tier = species.tier, area = area,
-        position = position, endsAt = now + CONFIG.lifetime[species.tier], source = source or "schedule",
-        health = getCreatureMaxHealth(cid) })
-    print(string.format("> Legendary: %s #%d near %s (%d, %d, %d), %s", species.name, encounter, area,
-        position.x, position.y, position.z, source or "schedule"))
-    return cid
+    if (not options.restored) then
+        for _, effect in ipairs(species.arrive or { (STYLE_TEXT[species.style] or {}).land or EFFECT_TELEPORT_DOWN }) do
+            effectAt(here, effect)
+        end
+    end
+    applyWeather(cid, species, monText(cid, MON.HOME_ZONE))
+
+    if (not options.restored) then
+        if (not options.quiet) then
+            broadcast(announceSpawn(species, area, asleep))
+        end
+        sendCard(allPlayers(), { type = "spawn", species = species.name, tier = species.tier,
+            area = species.tier < 3 and area or nil, level = CONFIG.recommendedLevel, endsAt = endsAt })
+        discord({ event = "spawn", encounterId = encounter, species = species.name, tier = species.tier,
+            area = species.tier < 3 and area or nil, position = species.tier < 3 and here or nil, endsAt = endsAt,
+            source = source or "schedule",
+            health = getCreatureMaxHealth(cid) })
+    end
+    print(string.format("> Legendary: %s #%d near %s (%d, %d, %d), %s%s%s%s", species.name, encounter, tostring(area),
+        here.x, here.y, here.z, source or "schedule", options.restored and ", restored" or "",
+        disguised and (", disguised as " .. tostring(disguise)) or "", asleep and ", asleep" or ""))
+    WildLegendaries.save()
+    return cid, area
 end
 
--- Moves the legendary to another point. Returns the area or nil.
-local function relocate(cid, species)
-    local from = getCreaturePosition(cid)
-    for try = 1, 5 do
-        local pos, area = WildLegendaries.pickPoint(species, cid, from)
-        if (pos) then
-            doTeleportThing(cid, pos, false)
-            if (getSamePosition(getCreaturePosition(cid), pos)) then
-                doSendMagicEffect(from, EFFECT_TELEPORT_UP)
-                doSendMagicEffect(pos, EFFECT_TELEPORT_DOWN)
-                doCreatureSetStorage(cid, MON.AREA, area)
-                return area
+-- The whole set at once (a member already out is skipped). Returns the cids and the announcement.
+function WildLegendaries.spawnSet(set, source)
+    local cooldowns, now = WildLegendaries.getCooldowns(), os.time()
+    local spawned, parts = {}, {}
+    for _, name in ipairs(set.members) do
+        local species = WildLegendaries.getSpecies(name)
+        if (species and not isOut(name) and (CONFIG.setBringsCooldown or (cooldowns[name] or 0) <= now)) then
+            local cid, area = WildLegendaries.spawn(species, nil, nil, source, { set = true, quiet = true })
+            if (cid) then
+                spawned[#spawned + 1] = cid
+                parts[#parts + 1] = name .. " near " .. tostring(area)
             end
+        end
+    end
+    if (#spawned == 0) then
+        return spawned, nil
+    end
+    local list = #parts > 1 and (table.concat(parts, ", ", 1, #parts - 1) .. " and " .. parts[#parts]) or parts[1]
+    local text
+    if (set.id == "regis") then
+        text = string.format("%s are sleeping across the land: %s. Find them and wake them up! Recommended for trainers level %d+.",
+            set.name, list, CONFIG.recommendedLevel)
+    else
+        text = string.format("%s have appeared together! %s. Recommended for trainers level %d+.", set.name, list,
+            CONFIG.recommendedLevel)
+    end
+    broadcast(text)
+    return spawned, text
+end
+
+-- Mewtwo's psychic disturbance, then the spawn at that point. pos optional (staff "here").
+function WildLegendaries.warn(species, source, pos)
+    if (isOut(species.name)) then
+        return false, species.name .. " is already out."
+    end
+    local point
+    if (pos) then
+        point = WildLegendaries.nearestPoint(pos)
+    else
+        local _
+        _, point = WildLegendaries.pickPoint(species)
+    end
+    if (not point) then
+        return false, "No free point found for " .. species.name .. "."
+    end
+    setPending(species.name, os.time() + CONFIG.warningSeconds, point.index, source)
+    broadcast(string.format("A strange psychic disturbance is building near %s... something powerful is coming.", point.area))
+    toChannel(string.format("The disturbance near %s grows stronger. It will break in about %d minutes.", point.area,
+        math.ceil(CONFIG.warningSeconds / 60)))
+    return true, point.area
+end
+
+local function departEffects(species, from, to, hop)
+    local style = STYLE_TEXT[species.style] or {}
+    if (hop or not style.depart) then
+        effectAt(from, EFFECT_TELEPORT_UP)
+        effectAt(to, EFFECT_TELEPORT_DOWN)
+    else
+        effectAt(from, style.depart)
+        effectAt(to, style.land)
+    end
+    effectAt(from, pick(species.signs))
+end
+
+-- Where it goes next, by its style: pos, point (nil for short hops), hop
+local function destination(cid, species, reason)
+    local from = getCreaturePosition(cid)
+    local style = species.style
+    local zone = monText(cid, MON.ZONE)
+    local planned = monText(cid, MON.NEXT_ZONE)
+    planned = planned ~= "-" and planned or nil
+    if (style == "sleep") then
+        return nil
+    elseif (style == "cave" or style == "meteor") then
+        if (style == "meteor" and reason ~= "flee") then
+            return nil
+        end
+        local pos = hopFrom(from, reason == "flee" and 4 or 6, reason == "flee" and 8 or 12, cid)
+        return pos, nil, true
+    elseif (style == "territory") then
+        local home = monText(cid, MON.HOME_ZONE)
+        return WildLegendaries.pickPoint(species, { cid = cid, from = from, minDistance = 15,
+            zones = (home and home ~= "-") and { [home] = true } or nil })
+    elseif (style == "teleport" or style == "disguise") then
+        local zones = { [zone or ""] = true }
+        for _, other in ipairs((LEGENDARY_ANCHORS.NEIGHBORS or {})[zone or ""] or {}) do
+            zones[other] = true
+        end
+        local pos, point = WildLegendaries.pickPoint(species, { cid = cid, from = from, minDistance = 15, zones = zones })
+        return pos, point, true
+    elseif (style == "roam") then
+        local pos, point
+        if (planned) then
+            pos, point = WildLegendaries.pickPoint(species, { cid = cid, from = from, minDistance = 15, zones = { [planned] = true } })
+        end
+        if (not pos) then
+            pos, point = WildLegendaries.pickPoint(species, { cid = cid, from = from, minDistance = 15, zones = { [zone or ""] = true } })
+        end
+        return pos, point
+    end
+    -- fly and sea
+    local minDistance = style == "sea" and 60 or CONFIG.minMoveDistance
+    local pos, point
+    if (planned) then
+        pos, point = WildLegendaries.pickPoint(species, { cid = cid, from = from, minDistance = 30, zones = { [planned] = true } })
+    end
+    if (not pos) then
+        pos, point = WildLegendaries.pickPoint(species, { cid = cid, from = from, minDistance = minDistance })
+    end
+    if (not pos) then
+        pos, point = WildLegendaries.pickPoint(species, { cid = cid })
+    end
+    return pos, point
+end
+
+-- Moves the legendary on. Returns the area or nil.
+local function relocate(cid, species, reason)
+    local from = getCreaturePosition(cid)
+    for try = 1, 4 do
+        local pos, point, hop = destination(cid, species, reason)
+        if (not pos) then
+            return nil
+        end
+        doTeleportThing(cid, pos, false)
+        if (getSamePosition(getCreaturePosition(cid), pos)) then
+            departEffects(species, from, pos, hop)
+            if (hop and not point) then
+                -- a short hop keeps its area and zone
+                doCreatureSetStorage(cid, MON.MOVED_AT, os.time())
+                return monText(cid, MON.AREA) or WildLegendaries.areaAt(pos)
+            end
+            return (arrive(cid, species, from, pos, point))
         end
     end
     return nil
 end
 
 function WildLegendaries.move(cid, reason)
-    local species = WildLegendaries.getSpecies(getCreatureName(cid))
-    if (not species) then
+    local entry = activeOf(cid)
+    local species = WildLegendaries.getSpecies(entry and entry.name or getCreatureName(cid))
+    if (not species or monNumber(cid, MON.DISGUISED) == 1) then
         return false
     end
-    local area = relocate(cid, species)
-    doCreatureSetStorage(cid, MON.NEXT_MOVE, os.time() + nextMoveDelay(species))
+    doCreatureSetStorage(cid, MON.NEXT_MOVE, os.time() + nextMoveDelay(species, cid))
+    local area = relocate(cid, species, reason)
     if (not area) then
         return false
     end
     local encounter = monNumber(cid, MON.ENCOUNTER)
+    local mythical = species.tier == 3
     if (reason == "flee") then
-        broadcast(string.format("%s is hurt and fled! It was last seen near %s with %d%% health.",
-            species.name, area, healthPercent(cid)))
-        sendCard(allPlayers(), { type = "flee", species = species.name, area = area, health = healthPercent(cid) })
-    else
+        if (mythical) then
+            broadcast(string.format("%s is hurt and vanished! It has %d%% health left.", species.name, healthPercent(cid)))
+        else
+            broadcast(string.format("%s is hurt and fled! It was last seen near %s with %d%% health.",
+                species.name, area, healthPercent(cid)))
+        end
+        sendCard(allPlayers(), { type = "flee", species = species.name, area = (not mythical) and area or nil,
+            health = healthPercent(cid) })
+    elseif (not mythical) then
         toChannel(string.format("%s was spotted near %s.", species.name, area))
         sendCard(channelPlayers(), { type = "sighting", species = species.name, area = area })
     end
     discord({ event = reason == "flee" and "flee" or "sighting", encounterId = encounter, species = species.name,
-        area = area, position = getCreaturePosition(cid), healthPercent = healthPercent(cid) })
+        area = (not mythical) and area or nil, position = (not mythical) and getCreaturePosition(cid) or nil,
+        healthPercent = healthPercent(cid) })
+    WildLegendaries.save()
     return true
 end
 
 -- Ends an encounter that is still alive: reason "fled" (time up), "staff" or "restart".
 -- Only "fled" starts the cooldown.
 function WildLegendaries.finish(cid, reason)
-    local name = getCreatureName(cid)
+    local entry = activeOf(cid)
+    local name = entry and entry.name or getCreatureName(cid)
     local species = WildLegendaries.getSpecies(name)
     local encounter = monNumber(cid, MON.ENCOUNTER)
-    local area = monGet(cid, MON.AREA)
+    local area = monText(cid, MON.AREA)
     setActive(encounter, nil)
     if (reason == "fled" and species) then
-        WildLegendaries.setCooldown(species.name, os.time() + WildLegendaries.getPopulation().cooldown[species.tier])
+        WildLegendaries.setCooldown(species.name, os.time() + WildLegendaries.cooldownFor(species))
     end
-    doSendMagicEffect(getCreaturePosition(cid), EFFECT_TELEPORT_UP)
+    clearWeather(cid, species)
+    effectAt(getCreaturePosition(cid), EFFECT_TELEPORT_UP)
     doRemoveCreature(cid)
     if (reason ~= "restart") then
-        broadcast(string.format("The wild %s flew away%s.", name, type(area) == "string" and (" from " .. area) or ""))
+        local leave = (species and species.leave) or (STYLE_TEXT[species and species.style or "fly"] or {}).leave or "left"
+        local where = (area and species and species.tier < 3) and (" from " .. area) or ""
+        broadcast(string.format("The wild %s %s%s.", name, leave, where))
         sendCard(allPlayers(), { type = "end", reason = reason, species = name })
     end
     discord({ event = "end", reason = reason, encounterId = encounter, species = name })
+    WildLegendaries.save()
 end
 
--- Species that may spawn now, with their weights.
+-- Mew shows its true self where its disguise stood. by: who found it.
+function WildLegendaries.reveal(cid, by)
+    local entry = activeOf(cid)
+    if (not entry or monNumber(cid, MON.DISGUISED) ~= 1) then
+        return nil, "That is not Mew in disguise."
+    end
+    local species = WildLegendaries.getSpecies(entry.name)
+    local pos, disguise = getCreaturePosition(cid), getCreatureName(cid)
+    local encounter, endsAt = entry.encounter, monNumber(cid, MON.ENDS_AT)
+    local trail, path = monText(cid, MON.TRAIL), monText(cid, MON.PATH)
+    setActive(encounter, nil)
+    doRemoveCreature(cid)
+    local mew = WildLegendaries.spawn(species, pos, nil, "reveal", { encounter = encounter, disguised = false, quiet = true,
+        restored = true, endsAt = math.max(endsAt, os.time() + 20 * MINUTE) })
+    if (not mew) then
+        discord({ event = "end", reason = "vanished", encounterId = encounter, species = species.name })
+        WildLegendaries.save()
+        return nil, "Mew could not be placed."
+    end
+    if (trail) then
+        doCreatureSetStorage(mew, MON.TRAIL, trail)
+    end
+    if (path) then
+        doCreatureSetStorage(mew, MON.PATH, path)
+    end
+    effectAt(getCreaturePosition(mew), EFFECT_BIG_PINK_CLOUD)
+    broadcast(string.format("%s found Mew hiding as a wild %s! It shows its true self.", by or "A trainer", disguise))
+    sendCard(allPlayers(), { type = "sighting", species = species.name })
+    discord({ event = "sighting", encounterId = encounter, species = species.name, healthPercent = 100 })
+    return mew
+end
+
+-- A Regi wakes up and can be fought; it stays where it slept.
+function WildLegendaries.wake(cid, by)
+    local entry = activeOf(cid)
+    if (not entry or monNumber(cid, MON.ASLEEP) ~= 1) then
+        return false, "That one is not asleep."
+    end
+    doCreatureSetStorage(cid, MON.ASLEEP, 0)
+    doCreatureSetStorage(cid, MON.WAKE_PENDING, 0)
+    doCreatureSetStorage(cid, MON.ENDS_AT, os.time() + CONFIG.wakeLifetime)
+    doCreatureSetNoMove(cid, false)
+    local species = WildLegendaries.getSpecies(entry.name)
+    effectAt(getCreaturePosition(cid), pick(species and species.signs))
+    effectAt(getCreaturePosition(cid), EFFECT_BIG_ROCK_EMERGE)
+    local area = monText(cid, MON.AREA) or "?"
+    broadcast(string.format("%s woke %s up near %s! Recommended for trainers level %d+.", by or "A trainer", entry.name,
+        area, CONFIG.recommendedLevel))
+    discord({ event = "sighting", encounterId = entry.encounter, species = entry.name, area = area,
+        position = getCreaturePosition(cid), healthPercent = healthPercent(cid) })
+    WildLegendaries.save()
+    return true
+end
+
+-- Species that may spawn now on the schedule, with their weights.
 function WildLegendaries.eligible(now)
     now = now or os.time()
-    local active = getActive()
-    if (#active >= CONFIG.maxAlive) then
-        return {}, "two legendaries are out"
-    end
-    local out, tier2 = {}, 0
-    for _, a in ipairs(active) do
+    local alive, major = 0, 0
+    local out = {}
+    for _, a in ipairs(getActive()) do
         out[a.name] = true
         local s = WildLegendaries.getSpecies(a.name)
-        if (s and s.tier == 2) then
-            tier2 = tier2 + 1
+        if (not a.flags:find("s")) then
+            alive = alive + 1
+            if (s and s.tier == 2) then
+                major = major + 1
+            end
         end
     end
+    if (alive >= CONFIG.maxAlive) then
+        return {}, "two legendaries are out"
+    end
+    local pending = getPending()
+    local mythical = mythicalOut()
     local cooldowns = WildLegendaries.getCooldowns()
     local list = {}
     for _, species in ipairs(WildLegendaries.SPECIES) do
-        if (not out[species.name] and (cooldowns[species.name] or 0) <= now and
-                (species.tier == 1 or tier2 < CONFIG.maxTier2Alive)) then
-            table.insert(list, species)
+        if (not out[species.name] and not pending[species.name] and (cooldowns[species.name] or 0) <= now and
+                (species.tier ~= 2 or major < CONFIG.maxMajorAlive) and (species.tier ~= 3 or not mythical)) then
+            local regionsOn = false
+            for _, region in ipairs(species.regions) do
+                regionsOn = regionsOn or regionOn(region)
+            end
+            if (regionsOn) then
+                table.insert(list, species)
+            end
         end
     end
     return list
@@ -568,9 +1439,12 @@ end
 
 -- Why the scheduled spawn can't happen right now, or nil.
 function WildLegendaries.blocked(now)
+    if (WildLegendaries.isManual()) then
+        return "manual mode: only staff start them"
+    end
     local remaining = untilRestart(now)
     if (remaining and remaining < CONFIG.quietBeforeRestart) then
-        return "the daily restart is less than 2 hours away"
+        return "the restart is less than 10 minutes away"
     end
     local list, why = WildLegendaries.eligible(now)
     if (#list == 0) then
@@ -579,20 +1453,38 @@ function WildLegendaries.blocked(now)
     return nil
 end
 
+-- The schedule's spawn: one species, its whole set on the set roll, or Mewtwo's warning
+function WildLegendaries.scheduledSpawn(species, source)
+    source = source or "schedule"
+    if (species.set and getRandom(1, 100) <= CONFIG.setChance) then
+        local set = WildLegendaries.getSet(species.set)
+        local spawned = WildLegendaries.spawnSet(set, source)
+        if (#spawned > 0) then
+            return true
+        end
+    end
+    if (species.warning) then
+        return (WildLegendaries.warn(species, source))
+    end
+    return WildLegendaries.spawn(species, nil, nil, source) ~= nil
+end
+
 -- Defeat, rewards and catch ----------------------------------------------------------------------
 
 -- Called from the wildLegendaryDeath creature event (corpse is not on the map yet).
 function WildLegendaries.onDeath(cid, corpse)
-    local name = getCreatureName(cid)
+    local entry = activeOf(cid)
+    local name = entry and entry.name or getCreatureName(cid)
     local species = WildLegendaries.getSpecies(name)
     local encounter = monNumber(cid, MON.ENCOUNTER)
-    local area = monGet(cid, MON.AREA)
+    local area = monText(cid, MON.AREA)
     local position = getCreaturePosition(cid)
     setActive(encounter, nil)
     if (not species) then
         return
     end
-    WildLegendaries.setCooldown(species.name, os.time() + WildLegendaries.getPopulation().cooldown[species.tier])
+    WildLegendaries.setCooldown(species.name, os.time() + WildLegendaries.cooldownFor(species))
+    clearWeather(cid, species)
 
     local reward = CONFIG.rewards[species.tier]
     local winners, top, topRatio = {}, nil, -1
@@ -635,8 +1527,9 @@ function WildLegendaries.onDeath(cid, corpse)
         #winners > 0 and (" by " .. table.concat(winners, ", ")) or ""))
     sendCard(allPlayers(), { type = "end", reason = "defeated", species = species.name, trainers = winners })
     discord({ event = "end", reason = "defeated", encounterId = encounter, species = species.name,
-        area = type(area) == "string" and area or nil, trainers = #winners > 0 and winners or nil,
+        area = (species.tier < 3) and area or nil, trainers = #winners > 0 and winners or nil,
         topTrainer = top and getCreatureName(top) or nil })
+    WildLegendaries.save()
 end
 
 -- After the top damage dealer's window anyone may throw at the body.
@@ -654,31 +1547,73 @@ function WildLegendaries.releaseBody(position, itemid, name)
     end
 end
 
--- From DiscordBridge.onCatch's caller: a catch of a species defeated in the last minutes.
+-- Every catch of a legendary or mythical is announced, wherever it comes from (from DiscordBridge.onCatch's
+-- callers). One defeated in the wild in the last minutes is announced as that encounter's.
 function WildLegendaries.onCatch(cid, name)
     local species = WildLegendaries.getSpecies(name)
     if (not species) then
         return
     end
+    local trainer = getCreatureName(cid)
+    local shiny = tostring(name):lower():find("^shiny ") ~= nil
     local recent = readMap(KEY.RECENT)
     local at, encounter = tostring(recent[species.name] or ""):match("^(%d+):(%d+)$")
-    if (not at or os.time() - tonumber(at) > CONFIG.catchWindow) then
+    if (at and os.time() - tonumber(at) <= CONFIG.catchWindow) then
+        recent[species.name] = nil
+        writeMap(KEY.RECENT, recent)
+        broadcast(string.format("%s caught the wild %s!", trainer, species.name))
+        sendCard(allPlayers(), { type = "caught", species = species.name, trainer = trainer })
+        discord({ event = "caught", encounterId = tonumber(encounter), species = species.name, trainer = trainer })
         return
     end
-    recent[species.name] = nil
-    writeMap(KEY.RECENT, recent)
-    broadcast(string.format("%s caught the wild %s!", getCreatureName(cid), species.name))
-    sendCard(allPlayers(), { type = "caught", species = species.name, trainer = getCreatureName(cid) })
-    discord({ event = "caught", encounterId = tonumber(encounter), species = species.name, trainer = getCreatureName(cid) })
+    broadcast(string.format("%s caught a%s %s!", trainer, shiny and " shiny" or "", species.name))
+    sendCard(allPlayers(), { type = "caught", species = species.name, trainer = trainer })
 end
 
--- From the wildLegendaryHit creature event.
-function WildLegendaries.onHit(cid, value)
+-- A legendary or mythical given by a quest or an NPC
+function WildLegendaries.onReward(cid, name)
+    local species = WildLegendaries.getSpecies(name)
+    if (species and isPlayer(cid)) then
+        broadcast(string.format("%s received %s as a reward!", getCreatureName(cid), species.name))
+    end
+end
+
+local function trainerOf(attacker)
+    if (not attacker or attacker == 0) then
+        return nil
+    end
+    if (isPlayer(attacker)) then
+        return getCreatureName(attacker)
+    end
+    local master = isCreature(attacker) and getCreatureMaster(attacker)
+    if (master and master ~= attacker and isPlayer(master)) then
+        return getCreatureName(master)
+    end
+    return nil
+end
+
+-- From the wildLegendaryHit creature event; false blocks the damage (a disguise or a sleeper found)
+function WildLegendaries.onHit(cid, value, attacker)
     local now = os.time()
+    if (monNumber(cid, MON.DISGUISED) == 1) then
+        if (monNumber(cid, MON.REVEAL_PENDING) ~= 1) then
+            doCreatureSetStorage(cid, MON.REVEAL_PENDING, 1)
+            doCreatureSetStorage(cid, MON.FOUND_BY, trainerOf(attacker) or "A trainer")
+        end
+        return false
+    end
+    if (monNumber(cid, MON.ASLEEP) == 1) then
+        if (monNumber(cid, MON.WAKE_PENDING) ~= 1) then
+            doCreatureSetStorage(cid, MON.WAKE_PENDING, 1)
+            doCreatureSetStorage(cid, MON.FOUND_BY, trainerOf(attacker) or "A trainer")
+        end
+        return false
+    end
     doCreatureSetStorage(cid, MON.LAST_HIT, now)
-    local species = WildLegendaries.getSpecies(getCreatureName(cid))
-    if (not species) then
-        return
+    local entry = activeOf(cid)
+    local species = WildLegendaries.getSpecies(entry and entry.name or getCreatureName(cid))
+    if (not species or species.style == "sleep") then
+        return true
     end
     local stage = math.max(0, monNumber(cid, MON.FLEE_STAGE))
     local threshold = CONFIG.flee[species.tier][stage + 1]
@@ -686,6 +1621,47 @@ function WildLegendaries.onHit(cid, value)
     if (threshold and left > 0 and left <= getCreatureMaxHealth(cid) * threshold) then
         doCreatureSetStorage(cid, MON.FLEE_STAGE, stage + 1)
         doCreatureSetStorage(cid, MON.FLEE_PENDING, 1)
+    end
+    return true
+end
+
+-- From the radar (another Lua state): the globalevent reveals it within a second
+function WildLegendaries.requestReveal(cid, by)
+    if (WildLegendaries.isDisguised(cid) and monNumber(cid, MON.REVEAL_PENDING) ~= 1) then
+        doCreatureSetStorage(cid, MON.REVEAL_PENDING, 1)
+        doCreatureSetStorage(cid, MON.FOUND_BY, by or "A Ranger")
+        return true
+    end
+    return false
+end
+
+-- Signs ------------------------------------------------------------------------------------------
+
+local function near(pos, radius)
+    return { x = pos.x + getRandom(-radius, radius), y = pos.y + getRandom(-radius, radius), z = pos.z }
+end
+
+-- Its signs around it and on the spots it left (legendaries); faint ones only around it (mythicals)
+function WildLegendaries.showSigns(cid, species, all)
+    local pos = getCreaturePosition(cid)
+    if (monNumber(cid, MON.DISGUISED) == 1) then
+        effectAt(near(pos, 1), pick(species.signs))
+        return
+    end
+    if (monNumber(cid, MON.ASLEEP) == 1) then
+        effectAt(pos, EFFECT_SLEEPING)
+    end
+    effectAt(near(pos, species.tier == 3 and 1 or 3), pick(species.signs))
+    if (species.tier < 3 or all) then
+        local trail = trailOf(cid)
+        if (all) then
+            for _, spot in ipairs(trail) do
+                effectAt(spot, pick(species.signs))
+                effectAt(near(spot, 2), pick(species.signs))
+            end
+        elseif (#trail > 0) then
+            effectAt(near(trail[getRandom(1, #trail)], 2), pick(species.signs))
+        end
     end
 end
 
@@ -695,6 +1671,35 @@ local function upkeep(cid, now)
     if (getCreatureHealth(cid) <= 0) then
         return
     end
+    local entry = activeOf(cid)
+    local species = WildLegendaries.getSpecies(entry and entry.name or getCreatureName(cid))
+    if (not species) then
+        return
+    end
+    local disguised, asleep = monNumber(cid, MON.DISGUISED) == 1, monNumber(cid, MON.ASLEEP) == 1
+    local every = disguised and CONFIG.disguiseSignEvery or (species.tier == 3 and CONFIG.faintSignEvery or CONFIG.signEvery)
+    if (now - monNumber(cid, MON.LAST_SIGN) >= every) then
+        doCreatureSetStorage(cid, MON.LAST_SIGN, now)
+        WildLegendaries.showSigns(cid, species)
+    end
+
+    if (disguised) then
+        if (monNumber(cid, MON.REVEAL_PENDING) == 1) then
+            WildLegendaries.reveal(cid, monText(cid, MON.FOUND_BY))
+        elseif (now >= monNumber(cid, MON.ENDS_AT)) then
+            WildLegendaries.finish(cid, "fled")
+        end
+        return
+    end
+    if (asleep) then
+        if (monNumber(cid, MON.WAKE_PENDING) == 1) then
+            WildLegendaries.wake(cid, monText(cid, MON.FOUND_BY))
+        elseif (now >= monNumber(cid, MON.ENDS_AT)) then
+            WildLegendaries.finish(cid, "fled")
+        end
+        return
+    end
+
     if (monNumber(cid, MON.FLEE_PENDING) == 1) then
         doCreatureSetStorage(cid, MON.FLEE_PENDING, 0)
         WildLegendaries.move(cid, "flee")
@@ -708,6 +1713,8 @@ local function upkeep(cid, now)
     if (now >= monNumber(cid, MON.NEXT_MOVE)) then
         if (now - lastHit < CONFIG.holdWhileHit) then
             doCreatureSetStorage(cid, MON.NEXT_MOVE, now + 30)
+        elseif (species.style == "sleep" or species.style == "meteor") then
+            doCreatureSetStorage(cid, MON.NEXT_MOVE, now + nextMoveDelay(species, cid))
         else
             WildLegendaries.move(cid, "roam")
         end
@@ -725,28 +1732,83 @@ local function upkeep(cid, now)
     end
 end
 
--- Closes encounters whose monster is gone (removed by staff tools, a crash or a restart).
-local function sweep(restart)
+-- Closes encounters whose monster is gone (removed by staff tools or a crash).
+local function sweep()
     for _, active in ipairs(getActive()) do
-        if (restart or not isMonster(active.cid) or getCreatureName(active.cid) ~= active.name) then
+        local gone = not isMonster(active.cid) or monNumber(active.cid, MON.ENCOUNTER) ~= active.encounter
+        if (gone) then
             setActive(active.encounter, nil)
-            discord({ event = "end", reason = restart and "restart" or "vanished", encounterId = active.encounter,
-                species = active.name })
+            discord({ event = "end", reason = "vanished", encounterId = active.encounter, species = active.name })
+        end
+    end
+end
+
+-- After a restart: the ones saved come back where they were, with their health and time left. The
+-- others close on the Discord side.
+function WildLegendaries.restore()
+    local saved, now = readMap(KEY.SAVED), os.time()
+    local before = getActive()
+    store(KEY.ACTIVE, "m")
+    local back = {}
+    for encounter, value in pairs(saved) do
+        local index, health, x, y, z, minutes, flags = value:match("^(%d+)|(%d+)|(%d+),(%d+),(%d+)|(%d+)|(%a*)$")
+        local species = index and BY_INDEX[tonumber(index)]
+        if (species) then
+            local pos = { x = tonumber(x), y = tonumber(y), z = tonumber(z) }
+            local options = { encounter = tonumber(encounter), health = tonumber(health), restored = true,
+                endsAt = now + tonumber(minutes) * 60, set = flags:find("s") ~= nil,
+                asleep = flags:find("z") ~= nil, disguised = flags:find("d") ~= nil }
+            local cid = WildLegendaries.spawn(species, pos, nil, "restart", options)
+            if (not cid) then
+                cid = WildLegendaries.spawn(species, nil, nil, "restart", options)
+            end
+            if (cid) then
+                back[tonumber(encounter)] = true
+            end
+        end
+    end
+    for _, active in ipairs(before) do
+        if (not back[active.encounter]) then
+            discord({ event = "end", reason = "restart", encounterId = active.encounter, species = active.name })
+        end
+    end
+    WildLegendaries.save()
+    return back
+end
+
+local function runPending(now)
+    for name, pending in pairs(getPending()) do
+        local species = WildLegendaries.getSpecies(name)
+        local point = WildLegendaries.getPoints()[pending.point]
+        if (not species or not point) then
+            setPending(name, nil)
+        elseif (now >= pending.at) then
+            setPending(name, nil)
+            local pos = spotAt(point)
+            local cid = WildLegendaries.spawn(species, pos, nil, pending.source, { warned = true, area = point.area })
+            if (not cid) then
+                WildLegendaries.spawn(species, nil, nil, pending.source, { warned = true })
+            end
+        elseif (now % CONFIG.warningEffectEvery == 0) then
+            for i = 1, 3 do
+                effectAt(near(point, 4), pick(species.signs))
+            end
         end
     end
 end
 
 -- Executor state (only used in the globalevent's Lua state).
 local started = false
-local lastGapCheck, lastSpawnTry = 0, 0
+local lastGapCheck, lastSpawnTry, lastSave = 0, 0, 0
 
 function WildLegendaries.onThink()
     local now = os.time()
     if (not started) then
         started = true
-        sweep(true) -- one still alive at the restart counts as fled with no cooldown
+        WildLegendaries.restore()
         scheduleNext(now, false)
-        print("> Legendary: next wild legendary " .. os.date("%Y-%m-%d %H:%M", WildLegendaries.getNextSpawn()))
+        print("> Legendary: next wild legendary " .. os.date("%Y-%m-%d %H:%M", WildLegendaries.getNextSpawn()) ..
+            (WildLegendaries.isManual() and " (manual mode)" or ""))
     end
 
     for _, active in ipairs(getActive()) do
@@ -754,11 +1816,16 @@ function WildLegendaries.onThink()
             upkeep(active.cid, now)
         end
     end
+    runPending(now)
 
     if (now - lastGapCheck >= CONFIG.gapCheckInterval) then
         lastGapCheck = now
-        sweep(false)
+        sweep()
         scheduleNext(now, false)
+    end
+    if (now - lastSave >= CONFIG.saveEvery) then
+        lastSave = now
+        WildLegendaries.save()
     end
 
     local nextAt = WildLegendaries.getNextSpawn()
@@ -766,43 +1833,63 @@ function WildLegendaries.onThink()
         lastSpawnTry = now
         if (not WildLegendaries.blocked(now)) then
             local species = WildLegendaries.pickSpecies(WildLegendaries.eligible(now))
-            if (species and WildLegendaries.spawn(species)) then
+            if (species and WildLegendaries.scheduledSpawn(species)) then
                 scheduleNext(now, true)
             end
         end
     end
 end
 
+-- Status -----------------------------------------------------------------------------------------
+
+local function describeOne(a, now, staff)
+    local cid = a.cid
+    local species = WildLegendaries.getSpecies(a.name)
+    local area = monText(cid, MON.AREA) or "?"
+    local state = ""
+    if (monNumber(cid, MON.DISGUISED) == 1) then
+        state = " disguised as " .. getCreatureName(cid)
+    elseif (monNumber(cid, MON.ASLEEP) == 1) then
+        state = " asleep"
+    end
+    local where = (staff or species.tier < 3) and (" near " .. area) or " somewhere"
+    local line = string.format("%s%s%s, %d%% health, leaves in %s.", a.name, state, where,
+        healthPercent(cid), ServerExpEvent.formatDuration(math.max(0, monNumber(cid, MON.ENDS_AT) - now)))
+    if (staff) then
+        local p = getCreaturePosition(cid)
+        line = string.format("#%d %s (%d, %d, %d) %d/%d HP%s", a.encounter, line, p.x, p.y, p.z,
+            getCreatureHealth(cid), getCreatureMaxHealth(cid), a.flags:find("s") and ", set" or "")
+    end
+    return line
+end
+
 -- Status for /legendary status and the Legendaries channel.
 function WildLegendaries.describe(staff)
     local lines, now = {}, os.time()
-    local active = getActive()
-    for _, a in ipairs(active) do
-        if (isMonster(a.cid)) then
-            local area = monGet(a.cid, MON.AREA)
-            local line = string.format("%s near %s, %d%% health, leaves in %s.", a.name, tostring(area),
-                healthPercent(a.cid), ServerExpEvent.formatDuration(monNumber(a.cid, MON.ENDS_AT) - now))
-            if (staff) then
-                local p = getCreaturePosition(a.cid)
-                line = string.format("#%d %s (%d, %d, %d) %d/%d HP", a.encounter, line, p.x, p.y, p.z,
-                    getCreatureHealth(a.cid), getCreatureMaxHealth(a.cid))
-            end
-            table.insert(lines, line)
+    for _, a in ipairs(getActive()) do
+        if (isMonster(a.cid) and (staff or monNumber(a.cid, MON.DISGUISED) ~= 1)) then
+            table.insert(lines, describeOne(a, now, staff))
         end
     end
     if (#lines == 0) then
         table.insert(lines, "No wild legendary is out right now.")
     end
     if (staff) then
+        for name, pending in pairs(getPending()) do
+            local point = WildLegendaries.getPoints()[pending.point]
+            table.insert(lines, string.format("%s's warning near %s, appears in %s.", name, point and point.area or "?",
+                ServerExpEvent.formatDuration(math.max(0, pending.at - now))))
+        end
         local online = WildLegendaries.getOnline()
         local row = WildLegendaries.getPopulation(online)
         local nextAt = WildLegendaries.getNextSpawn()
-        table.insert(lines, string.format("Online %d: gap %s to %s, cooldowns %s / %s.", online,
+        table.insert(lines, string.format("Mode: %s. Online %d: gap %s to %s, cooldowns %s / %s.",
+            WildLegendaries.isManual() and "manual" or "auto", online,
             ServerExpEvent.formatDuration(row.gap[1]), ServerExpEvent.formatDuration(row.gap[2]),
             ServerExpEvent.formatDuration(row.cooldown[1]), ServerExpEvent.formatDuration(row.cooldown[2])))
+        local blocked = WildLegendaries.blocked(now)
         table.insert(lines, nextAt and string.format("Next spawn %s (in %s)%s.", os.date("%Y-%m-%d %H:%M", nextAt),
-            ServerExpEvent.formatDuration(nextAt - now),
-            WildLegendaries.blocked(now) and (", waiting: " .. WildLegendaries.blocked(now)) or "")
+            ServerExpEvent.formatDuration(math.max(0, nextAt - now)), blocked and (", waiting: " .. blocked) or "")
             or "No spawn scheduled yet.")
         local cooling = {}
         for name, untilTime in pairs(WildLegendaries.getCooldowns()) do
@@ -816,10 +1903,121 @@ function WildLegendaries.describe(staff)
     return lines
 end
 
--- Living legendary of that species, or nil.
-function WildLegendaries.find(name)
+-- For the Admin window's Legendaries section
+function WildLegendaries.adminState()
+    local now = os.time()
+    local active, cooldowns, pending, species, sets = {}, {}, {}, {}, {}
     for _, a in ipairs(getActive()) do
-        if (a.name:lower() == tostring(name):lower() and isMonster(a.cid)) then
+        if (isMonster(a.cid)) then
+            local p = getCreaturePosition(a.cid)
+            active[#active + 1] = { name = a.name, encounter = a.encounter, area = monText(a.cid, MON.AREA),
+                zone = monText(a.cid, MON.ZONE), health = healthPercent(a.cid),
+                left = math.max(0, monNumber(a.cid, MON.ENDS_AT) - now), x = p.x, y = p.y, z = p.z,
+                set = a.flags:find("s") ~= nil, asleep = monNumber(a.cid, MON.ASLEEP) == 1,
+                disguised = monNumber(a.cid, MON.DISGUISED) == 1 and getCreatureName(a.cid) or nil }
+        end
+    end
+    for name, untilTime in pairs(WildLegendaries.getCooldowns()) do
+        if (untilTime > now) then
+            cooldowns[#cooldowns + 1] = { name = name, left = untilTime - now }
+        end
+    end
+    table.sort(cooldowns, function(a, b) return a.name < b.name end)
+    for name, p in pairs(getPending()) do
+        pending[#pending + 1] = { name = name, left = math.max(0, p.at - now) }
+    end
+    for _, s in ipairs(WildLegendaries.SPECIES) do
+        species[#species + 1] = { name = s.name, tier = s.tier, style = s.style, set = s.set }
+    end
+    for _, set in ipairs(WildLegendaries.SETS) do
+        sets[#sets + 1] = { id = set.id, name = set.name }
+    end
+    local nextAt = WildLegendaries.getNextSpawn()
+    return { manual = WildLegendaries.isManual(), active = active, cooldowns = cooldowns, pending = pending,
+             species = species, sets = sets, nextIn = nextAt and math.max(0, nextAt - now) or nil,
+             blocked = WildLegendaries.blocked(now), mythical = mythicalOut() }
+end
+
+-- Ranger radar hints for the legendaries out in the trainer's region, by rank: zone activity (1), the
+-- species from its signs (2), the zones it may go to next (3), the direction and how fresh the signs are
+-- (4), the zones it came through and where it is heading (5). Never the exact spot. Mythicals from rank 4.
+local DIRECTIONS = { "east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east" }
+
+local function directionTo(from, to)
+    local angle = math.deg(math.atan2(to.y - from.y, to.x - from.x)) -- y grows to the south
+    return DIRECTIONS[(math.floor((angle + 22.5) / 45) % 8) + 1]
+end
+
+local function listText(items)
+    if (#items <= 1) then
+        return items[1] or ""
+    end
+    return table.concat(items, ", ", 1, #items - 1) .. " or " .. items[#items]
+end
+
+function WildLegendaries.radarHints(cid, rank)
+    local lines = {}
+    if (rank <= 0) then
+        return lines
+    end
+    local pos = getCreaturePosition(cid)
+    local region = Weather.regionAt(pos)
+    local now = os.time()
+    for _, a in ipairs(getActive()) do
+        local species = WildLegendaries.getSpecies(a.name)
+        if (species and isMonster(a.cid) and monNumber(a.cid, MON.DISGUISED) ~= 1) then
+            local where = getCreaturePosition(a.cid)
+            local mythical = species.tier == 3
+            if (Weather.regionAt(where) == region and (not mythical or rank >= 4)) then
+                local zone = monText(a.cid, MON.ZONE) or "?"
+                local who = rank >= 2 and a.name or "Something powerful"
+                local text
+                if (mythical) then
+                    text = string.format("%s is near, %s of here", rank >= 5 and a.name or "Something mythical",
+                        directionTo(pos, where))
+                else
+                    text = string.format("%s is stirring around %s", who, zone)
+                    if (rank >= 3) then
+                        local style = species.style
+                        if (style == "roam") then
+                            local next = (LEGENDARY_ANCHORS.NEIGHBORS or {})[zone] or {}
+                            text = text .. (#next > 0 and (", it may run to " .. listText(next)) or ", it stays on this island")
+                        elseif (style == "fly" or style == "sea") then
+                            text = text .. ", it may " .. (style == "fly" and "fly" or "swim") .. " far"
+                        elseif (style == "sleep") then
+                            text = text .. ", fast asleep"
+                        else
+                            text = text .. ", it keeps to this place"
+                        end
+                    end
+                    if (rank >= 4) then
+                        local minutes = math.floor(math.max(0, now - monNumber(a.cid, MON.MOVED_AT)) / 60)
+                        text = text .. string.format(", %s of here, signs %s", directionTo(pos, where),
+                            minutes <= 1 and "fresh" or (minutes .. " minutes old"))
+                    end
+                    if (rank >= 5) then
+                        local path = pathOf(a.cid)
+                        if (#path > 1) then
+                            text = text .. ", came by " .. table.concat(path, " > ")
+                        end
+                        local nextZone = monText(a.cid, MON.NEXT_ZONE)
+                        if (nextZone and nextZone ~= "-" and nextZone ~= zone) then
+                            text = text .. ", heading for " .. nextZone
+                        end
+                    end
+                end
+                lines[#lines + 1] = text .. "."
+            end
+        end
+    end
+    return lines
+end
+
+-- Living legendary of that species, or nil (Mew also in disguise).
+function WildLegendaries.find(name)
+    local species = WildLegendaries.getSpecies(name)
+    for _, a in ipairs(getActive()) do
+        if (species and a.name == species.name and isMonster(a.cid)) then
             return a.cid, a
         end
     end
@@ -827,7 +2025,10 @@ function WildLegendaries.find(name)
 end
 
 WildLegendaries.getActive = getActive
+WildLegendaries.getPending = getPending
+WildLegendaries.runPending = runPending
 WildLegendaries.upkeep = upkeep
 WildLegendaries.sweep = sweep
+WildLegendaries.healthPercent = healthPercent
 WildLegendaries.MON = MON
 WildLegendaries.KEY = KEY

@@ -394,6 +394,7 @@ local function doPlayerFinishQuest(pid, quest)
                 else
                     doCreatePokemonBall(pid, "poke", questReward.name, questReward.level, nil, nil, 0, nil, false, 999999)
                 end
+                WildLegendaries.onReward(pid, questReward.name)
 
             elseif (questReward.type == REWARD_TYPE.ADDON) then
                 if (questReward.female) then
