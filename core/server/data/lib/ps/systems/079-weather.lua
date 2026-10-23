@@ -86,7 +86,7 @@ Weather.CLIMATES = {
 
 -- Checked in order (Johto's box overlaps Hoenn's open sea); Kanto is everything else on the surface
 Weather.REGIONS = {
-    { id = "johto", name = "Johto", live = false, climate = "temperate", from = { x = 1700, y = 20 }, to = { x = 3048, y = 1270 } },
+    { id = "johto", name = "Johto", live = true, climate = "temperate", from = { x = 1700, y = 20 }, to = { x = 3048, y = 1270 } },
     { id = "orange", name = "Orange Islands", live = true, climate = "tropical", from = { x = 2641, y = 1311 }, to = { x = 4647, y = 3486 } },
     { id = "hoenn", name = "Hoenn", live = true, climate = "warm", from = { x = 48, y = 773 }, to = { x = 2224, y = 2304 } },
     { id = "kanto", name = "Kanto", live = true, climate = "temperate" },
@@ -102,7 +102,7 @@ Weather.ZONE_RULES = {
     ["Fallarbor"] = { odds = { fog = 1.6 } },
     ["Fortree"] = { odds = { rain = 1.5 } },
     ["Lavender"] = { odds = { fog = 1.8 } },
-    -- Johto (calm until the region goes live)
+    -- Johto
     ["New Bark"] = { odds = { windy = 1.8 } },
     ["Violet"] = { odds = { windy = 1.4 } },
     ["Azalea"] = { odds = { rain = 1.5 } },

@@ -2054,9 +2054,7 @@ local function testWeather(cid, arena)
             check("Weather: 'all' leaves out calm and closed zones", false, zone.name)
         end
     end
-    if (johto) then
-        check("Weather: Johto has none until it goes live", W.at(johto).source == "none")
-    end
+    check("Weather: Johto has zones and weather", johto and W.at(johto).source ~= "none")
 
     local day = at(2026, 10, 20, 0)
     local changes, ok, last = 0, true, nil
