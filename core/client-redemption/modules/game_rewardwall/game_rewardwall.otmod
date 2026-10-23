@@ -1,9 +1,0 @@
-Module
-  name: game_rewardwall
-  description: game_rewardwall
-  author: game_rewardwall
-  website: game_rewardwall
-  scripts: [ game_rewardwall.lua ]
-  sandboxed: true
-  @onLoad: rewardWallController:init()
-  @onUnload: rewardWallController:terminate()

@@ -61,14 +61,9 @@ if [ -n "$updater" ]; then
   [[ "$updater" =~ ^(https://[A-Za-z0-9./_-]+|http://(127\.0\.0\.1|localhost)(:[0-9]+)?/[A-Za-z0-9./_-]*)$ ]] || { echo "invalid updater URL: '$updater' (https, or http on localhost for tests)" >&2; exit 1; }
 fi
 
-# Redemption modules that are Tibia systems PokeVerse does not have, or that a later stage
-# brings in (store, cyclopedia, analysers, notifications)
-redemption_skip=(client_assets client_bottommenu client_debug_info dev_otui game_htmlsample game_soundDebug
-  game_forge game_wheel game_prey game_imbuing game_imbuementtracker game_blessing game_highscore
-  game_paperdolls game_playermount game_proficiency game_rewardwall game_spelllist game_stash
-  game_taskboard game_unjustifiedpoints game_inspect game_quickloot
-  game_shop game_store game_cyclopedia game_analyser game_lootsplitter game_notifications
-  game_questlog game_ruleviolation)
+# Redemption modules kept for a later stage but not shipped yet; the Tibia systems PokeVerse
+# does not have are deleted (references/otclient-redemption has them)
+redemption_skip=(game_analyser game_cyclopedia)
 # files of skipped modules that kept modules still use (the skills window's resistance icons)
 redemption_keep=(game_cyclopedia/images/bestiary/icons)
 # PokeVerse modules taken from the legacy client, replacing a Redemption module of the same name
@@ -80,6 +75,8 @@ legacy_gamelib=(pokemon moves items types)
 # PokeVerse artwork that replaces Redemption's file of the same name
 legacy_data_wins=(images/background.png images/clienticon.png images/game/slots images/game/npcicons
   images/game/combatmodes images/game/skulls)
+# legacy artwork only the --classic layout uses
+legacy_data_skip=(images/game/shop images/trainerCards)
 
 copy_tree() { # <from> <to>: hard links with --link, otherwise a copy; existing files are kept
   if [ "$link" = 1 ]; then cp -al --update=none "$1/." "$2/"; else cp -a --update=none "$1/." "$2/"; fi
@@ -113,7 +110,9 @@ else
   # and Redemption's same-named styles replace the legacy look
   mkdir -p "$out/data/legacy-styles"
   copy_tree "$legacy/data/styles" "$out/data/legacy-styles"
-  (cd "$legacy/data" && find . -path ./styles -prune -o -type f -print) | while read -r f; do
+  skip_prune=()
+  for f in "${legacy_data_skip[@]}"; do skip_prune+=(-path "./$f" -prune -o); done
+  (cd "$legacy/data" && find . -path ./styles -prune -o "${skip_prune[@]}" -type f -print) | while read -r f; do
     [ -e "$out/data/$f" ] && continue
     mkdir -p "$out/data/$(dirname "$f")"
     if [ "$link" = 1 ]; then ln "$legacy/data/$f" "$out/data/$f"; else cp "$legacy/data/$f" "$out/data/$f"; fi
