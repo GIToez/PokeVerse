@@ -2122,6 +2122,10 @@ Gen 5 for the status heal), and Sun and Moon's jingles, converted to `.ogg` in
 | `pc_open`, `pc_access`, `pc_close` | the PC |
 | `save` | the game saves |
 | `door_enter`, `door_exit`, `bump`, `ledge_jump` | walking: doors, walking into a wall, a ledge hop |
+| `stairs`, `bike_bell` | walking: stairs, the bicycle bell |
+| `exp_gain` | the experience bar filling |
+| `text_blip` | an NPC's text box |
+| `slots_coin`, `slots_stop`, `slots_win`, `slots_big_win` | the slot machine |
 
 | `evolution` | during an evolution (Black and White's "Evolution", 37 s, fading out from 33 s) |
 | `evolution_done`, `badge_get` | an evolution finishes, a Gym badge is won |
