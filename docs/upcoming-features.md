@@ -2218,8 +2218,9 @@ species its own habitat, way of moving and signs that it is near.
 - **Regions:** Kanto, Johto, the Orange Islands and Hoenn all have regions and towns
   (`Weather.REGIONS`, a zone per town). Habitats are lists of those zones, so legendaries live in
   their own regions, not only Kanto. Johto is open (walk in through the Indigo Plateau, west of
-  Pewter), so its zones are used from the start; its `live = false` in `Weather.REGIONS` is
-  switched on with stage 1 (that also starts its weather).
+  Pewter), so its zones are used from the start. Every region has weather; staff can switch a
+  region off for maintenance (`/weather region <region> off`), and legendaries leave it alone
+  while it is off.
 - **Sets:** the three birds (Articuno, Zapdos, Moltres), the three beasts (Raikou, Entei,
   Suicune) and the three Regis (Regirock, Regice, Registeel). When one of a set is due to spawn,
   there is a 25% chance (a setting) that the whole set spawns together, spread over their
@@ -2233,8 +2234,8 @@ species its own habitat, way of moving and signs that it is near.
   whole server, events and staff spawns included.
 - **Catch chances** stay as they are (section 11).
 - **Mythicals** (Mew, Celebi, Jirachi, Deoxys): the rarest (lowest chance, longest cooldowns)
-  and the hardest to find: no area in the announcement, only faint signs. The Master Ball still catches them; they are hard to find, not
-  hard to catch.
+  and the hardest to find: no area in the announcement, only faint signs. The Master Ball still
+  catches them; they are hard to find, not hard to catch.
 - **Mew** disguises itself as a Pokémon of the zone it is in, at that zone's levels. When a
   trainer discovers it (attacks it, or a Ranger's radar picks it out), it shows its true self.
 - **Regis** sleep at one of their locations until a trainer finds them or the time runs out. No
@@ -2276,7 +2277,8 @@ checked by hand); flyers can go anywhere suitable; ocean roamers only through wa
 1. **Server only:**
    - catch announcements everywhere;
    - habitats and movement styles per species;
-   - the birds and beasts as sets, the mythical limit;
+   - the sets (birds, beasts, Regis, Latias and Latios) with the 25% chance, one of each species
+     and one mythical at a time;
    - weather links (Raikou, Zapdos, Kyogre);
    - trails of signs with the effects we have;
    - Mew's disguise, Mewtwo's warning, the sleeping Regis;
