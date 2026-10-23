@@ -980,9 +980,13 @@ PRINT_STYLES = {
 }
 
 
-def draw_prints(ground, style='shoe'):
-    """Prints pressed into a ground of mean colour `ground`: a darker sole, its top and left walls in shadow,
-    and a light lip along the bottom where the ground was pushed up."""
+# quarter turns (np.rot90) from the drawn prints, which walk north
+WAYS = {'north': 0, 'east': -1, 'south': 2, 'west': 1}
+
+
+def draw_prints(ground, style='shoe', way='north'):
+    """Prints pressed into a ground of mean colour `ground`, walking `way`: a darker sole, its top and left walls
+    in shadow, and a light lip along the bottom where the ground was pushed up (the light stays put as they turn)."""
     b = np.asarray(ground, float)
     a = np.zeros((32, 32, 4), np.uint8)
     for rows, x0, y0, mirrored in PRINT_STYLES[style]:
@@ -990,6 +994,7 @@ def draw_prints(ground, style='shoe'):
         m = m[:, ::-1] if mirrored else m
         sel = np.zeros((32, 32), bool)
         sel[y0:y0 + m.shape[0], x0:x0 + m.shape[1]] = m
+        sel = np.rot90(sel, WAYS[way])
         wall = sel & ~(shift(sel, 0, 1) & shift(sel, 1, 0))
         lip = shift(sel, 1, 0) & ~sel
         a[sel] = (*np.round(b * 0.80), 255)
@@ -999,13 +1004,43 @@ def draw_prints(ground, style='shoe'):
 
 
 def footprint_items():
-    """{trace server id: (ground server id, style)} for the original traces and every added set."""
+    """{trace server id: (ground server id, style, way)} for the original traces and every added set."""
     sets = json.load(open(FOOTPRINT_SETS))
-    out = {t: (g, 'shoe') for t, g in TRACES.items()}
+    out = {t: (g, 'shoe', 'north') for t, g in TRACES.items()}
     for name, s in sets['sets'].items():
         for ground, item in s['items'].items():
-            out.setdefault(item['server'], (sets['grounds'][ground]['grounds'][0], s['style']))
+            g = sets['grounds'][ground]['grounds'][0]
+            out.setdefault(item['server'], (g, s['style'], 'north'))
+            for way, turned in item.get('turned', {}).items():
+                out[turned['server']] = (g, s['style'], way)
     return out
+
+
+def print_sprites(dat, otb, tone):
+    """{prints sprite: art} of every trace; tone(ground thing) is the mean colour of that ground."""
+    out = {}
+    for trace, (ground, style, way) in footprint_items().items():
+        t, g = dat.things.get(otb.client_id(trace)), dat.things.get(otb.client_id(ground))
+        if not t or not g or t[3] != 2:
+            continue
+        for k in range(len(t[8]) // 2):
+            if t[8][2 * k + 1]:
+                out[t[8][2 * k + 1]] = draw_prints(tone(g), style, way)
+    return out
+
+
+def write_prints():
+    """Draws only the prints into data.spr, on the grounds as they are there now."""
+    dat, spr = pvmap.Dat(h.DAT), pvmap.Spr(h.SPR)
+
+    def tone(g):
+        px = [np.frombuffer(spr.rgba(s), np.uint8).reshape(-1, 4) for s in g[8] if s and spr.rgba(s)]
+        px = np.concatenate(px)
+        return px[px[:, 3] > 0][:, :3].astype(float).mean(0)
+
+    new = print_sprites(dat, pvmap.Otb(h.ITEMS), tone)
+    spr.f.close()
+    h.write_spr(new)
 
 
 def repaint(a, mean, ramps, contrast=1.3):
@@ -1189,19 +1224,18 @@ def build():
     traces = footprint_items()
     trace_cids = {otb.client_id(i) for i in traces}
     elsewhere = {s for cid, t in dat.things.items() if cid not in trace_cids for s in t[8]}
-    for trace, (ground, style) in traces.items():
+    for trace, (ground, _, _) in traces.items():
         t, g = dat.things.get(otb.client_id(trace)), dat.things.get(otb.client_id(ground))
         if not t or not g or t[3] != 2:
             continue
         for k in range(len(t[8]) // 2):
-            under, prints = t[8][2 * k], t[8][2 * k + 1]
+            under = t[8][2 * k]
             x, y = k % t[4], k // t[4] % t[5]
             same = g[8][y % g[5] * g[4] + x % g[4]]
             if under and under not in elsewhere and same in new:
                 new[under] = new[same]
-            if prints:
-                tone_of = np.concatenate([new[g_][new[g_][..., 3] > 0][:, :3] for g_ in g[8] if g_ in new])
-                new[prints] = draw_prints(tone_of.mean(0), style)
+    new.update(print_sprites(dat, otb, lambda g: np.concatenate(
+        [new[s][new[s][..., 3] > 0][:, :3] for s in g[8] if s in new]).mean(0)))
     spr.f.close()
     return new
 
@@ -1220,7 +1254,11 @@ def main():
     ap.add_argument('--box', default=','.join(map(str, h.VIEW)))
     ap.add_argument('--write-spr', action='store_true', help='put the new art into data.spr')
     ap.add_argument('--clumped', action='store_true', help='the shelved round-lump tree crowns')
+    ap.add_argument('--write-prints', action='store_true', help='draw only the footprints into data.spr')
     args = ap.parse_args()
+    if args.write_prints:
+        write_prints()
+        return
     global CLUMPED
     CLUMPED = args.clumped
     new = build()

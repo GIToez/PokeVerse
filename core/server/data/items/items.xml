@@ -35923,4 +35923,77 @@
 		<attribute key="decayTo" value="231" />
 		<attribute key="duration" value="30" />
 	</item>
+	<!-- turned footprints -->
+	<item id="30157" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30158" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30159" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30160" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30161" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30162" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30163" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30164" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30165" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30166" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30167" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30168" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30169" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30170" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30171" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30172" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30173" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30174" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
 </items>

@@ -43,13 +43,64 @@
       "species": [],
       "items": {
         "dirt": {
-          "server": 18136
+          "server": 18136,
+          "turned": {
+            "east": {
+              "server": 30157,
+              "client": 28800,
+              "sprite": 195
+            },
+            "south": {
+              "server": 30158,
+              "client": 28801,
+              "sprite": 196
+            },
+            "west": {
+              "server": 30159,
+              "client": 28802,
+              "sprite": 303
+            }
+          }
         },
         "grass": {
-          "server": 18140
+          "server": 18140,
+          "turned": {
+            "east": {
+              "server": 30160,
+              "client": 28803,
+              "sprite": 305
+            },
+            "south": {
+              "server": 30161,
+              "client": 28804,
+              "sprite": 385
+            },
+            "west": {
+              "server": 30162,
+              "client": 28805,
+              "sprite": 386
+            }
+          }
         },
         "sand": {
-          "server": 18156
+          "server": 18156,
+          "turned": {
+            "east": {
+              "server": 30163,
+              "client": 28806,
+              "sprite": 387
+            },
+            "south": {
+              "server": 30164,
+              "client": 28807,
+              "sprite": 388
+            },
+            "west": {
+              "server": 30165,
+              "client": 28808,
+              "sprite": 476
+            }
+          }
         }
       }
     },
@@ -60,17 +111,68 @@
         "dirt": {
           "server": 30154,
           "client": 28797,
-          "sprite": 85
+          "sprite": 85,
+          "turned": {
+            "east": {
+              "server": 30166,
+              "client": 28809,
+              "sprite": 477
+            },
+            "south": {
+              "server": 30167,
+              "client": 28810,
+              "sprite": 478
+            },
+            "west": {
+              "server": 30168,
+              "client": 28811,
+              "sprite": 484
+            }
+          }
         },
         "grass": {
           "server": 30155,
           "client": 28798,
-          "sprite": 193
+          "sprite": 193,
+          "turned": {
+            "east": {
+              "server": 30169,
+              "client": 28812,
+              "sprite": 518
+            },
+            "south": {
+              "server": 30170,
+              "client": 28813,
+              "sprite": 530
+            },
+            "west": {
+              "server": 30171,
+              "client": 28814,
+              "sprite": 553
+            }
+          }
         },
         "sand": {
           "server": 30156,
           "client": 28799,
-          "sprite": 194
+          "sprite": 194,
+          "turned": {
+            "east": {
+              "server": 30172,
+              "client": 28815,
+              "sprite": 565
+            },
+            "south": {
+              "server": 30173,
+              "client": 28816,
+              "sprite": 566
+            },
+            "west": {
+              "server": 30174,
+              "client": 28817,
+              "sprite": 569
+            }
+          }
         }
       }
     }

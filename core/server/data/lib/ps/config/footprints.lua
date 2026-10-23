@@ -27,9 +27,18 @@ FOOTPRINT_GROUNDS = {
     [231] = "sand",
 }
 
+-- set -> ground -> the way the walker faces -> trace item
 FOOTPRINTS = {
-    trainer = {dirt = 18136, grass = 18140, sand = 18156},
-    pokemon = {dirt = 30154, grass = 30155, sand = 30156},
+    trainer = {
+        dirt = {north = 18136, east = 30157, south = 30158, west = 30159},
+        grass = {north = 18140, east = 30160, south = 30161, west = 30162},
+        sand = {north = 18156, east = 30163, south = 30164, west = 30165},
+    },
+    pokemon = {
+        dirt = {north = 30154, east = 30166, south = 30167, west = 30168},
+        grass = {north = 30155, east = 30169, south = 30170, west = 30171},
+        sand = {north = 30156, east = 30172, south = 30173, west = 30174},
+    },
 }
 
 -- Pokemon with prints of their own; every other Pokemon leaves the "pokemon" set.

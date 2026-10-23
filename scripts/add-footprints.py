@@ -2,6 +2,7 @@
 """Adds a set of footprints: one trace item per ground (dirt, grass, sand) for a kind of walker.
 
     scripts/add-footprints.py <set> <style> [<species> ...]
+    scripts/add-footprints.py --turn
     scripts/add-footprints.py --lua
 
 The sets live in scripts/art/footprints.json. "trainer" (shoe prints, players and NPCs) uses the
@@ -12,7 +13,9 @@ The style names a print drawing in ds_world.PRINT_STYLES.
 Each new item copies its ground's template trace: the same ground layer, with the prints layer
 pointed at a sprite no item uses, which ds_world.py draws. It is appended to data.dat, items.otb
 and items.xml, and the server's footprints table (lib/ps/config/footprints.lua) is written again.
-Run ds_world.py --write-spr afterwards so the new prints are drawn into data.spr.
+The template's prints face north; each set also gets an east, a south and a west item per ground
+(--turn adds the ones a set is missing), drawn turned, so the prints follow the way the walker goes.
+Run ds_world.py --write-prints afterwards so the new prints are drawn into data.spr.
 --lua only writes the table again.
 """
 import importlib.util
@@ -28,6 +31,7 @@ DAT = os.path.join(ROOT, 'core/client-legacy/data/things/data.dat')
 OTB = os.path.join(ROOT, 'core/server/data/items/items.otb')
 XML = os.path.join(ROOT, 'core/server/data/items/items.xml')
 LUA = os.path.join(ROOT, 'core/server/data/lib/ps/config/footprints.lua')
+TURNS = ('east', 'south', 'west')
 
 
 def load(name):
@@ -122,10 +126,15 @@ def write_lua(manifest):
     for ground, info in manifest['grounds'].items():
         lines.append('    -- %s' % ground.capitalize())
         lines += ['    [%d] = "%s",' % (g, ground) for g in info['grounds']]
-    lines += ['}', '', 'FOOTPRINTS = {']
+    lines += ['}', '', '-- set -> ground -> the way the walker faces -> trace item', 'FOOTPRINTS = {']
     for name, s in manifest['sets'].items():
-        items = ', '.join('%s = %d' % (g, s['items'][g]['server']) for g in manifest['grounds'])
-        lines.append('    %s = {%s},' % (name, items))
+        lines.append('    %s = {' % name)
+        for g in manifest['grounds']:
+            item = s['items'][g]
+            ways = [('north', item['server'])] + [(w, item['turned'][w]['server']) for w in TURNS
+                                                  if w in item.get('turned', {})]
+            lines.append('        %s = {%s},' % (g, ', '.join('%s = %d' % w for w in ways)))
+        lines.append('    },')
     lines += ['}', '', '-- Pokemon with prints of their own; every other Pokemon leaves the "pokemon" set.',
               'FOOTPRINT_SPECIES = {']
     for name, s in manifest['sets'].items():
@@ -134,21 +143,9 @@ def write_lua(manifest):
     open(LUA, 'w').write('\n'.join(lines))
 
 
-def main():
-    manifest = json.load(open(MANIFEST))
-    args = sys.argv[1:]
-    if args == ['--lua']:
-        write_lua(manifest)
-        return
-    if len(args) < 2:
-        sys.exit(__doc__)
-    name, style, species = args[0], args[1], args[2:]
-    if name in manifest['sets']:
-        sys.exit('set "%s" already exists' % name)
-    claimed = {sp for s in manifest['sets'].values() for sp in s['species']}
-    if set(species) & claimed:
-        sys.exit('already in a set: %s' % ', '.join(sorted(set(species) & claimed)))
-
+def add_items(templates, label):
+    """A copy of each template trace with its prints layer on a free sprite, appended to data.dat, items.otb
+    and items.xml. Returns one {'server', 'client', 'sprite'} per template, in order."""
     dat = open(DAT, 'rb').read()
     otb = open(OTB, 'rb').read()
     xml = open(XML).read()
@@ -159,9 +156,8 @@ def main():
     if 30000 < server_id < 30100:
         server_id = 30100
     signature, count, outfits, effects, missiles, offsets, items_end = dat_tool.parse(dat)
-    new_things, xml_add, entry = [], [], {}
-    for ground, info in manifest['grounds'].items():
-        template = info['template']
+    new_things, xml_add, entries = [], [], []
+    for template in templates:
         start, end = offsets[otb_ids[template][2]]
         at, layers = sprite_span(dat, start)
         if layers != 2:
@@ -175,21 +171,60 @@ def main():
         client_id = count + len(new_things)
         otb = add_otb_item(otb, template, server_id, client_id)
         xml_add.append(re.sub(r'id="%d"' % template, 'id="%d"' % server_id, xml_block(xml, template), 1))
-        entry[ground] = {'server': server_id, 'client': client_id, 'sprite': sprite}
+        entries.append({'server': server_id, 'client': client_id, 'sprite': sprite})
         server_id += 1
 
     dat = (struct.pack('<IHHHH', signature, count + len(new_things), outfits, effects, missiles)
            + dat[12:items_end] + b''.join(new_things) + dat[items_end:])
     dat_tool.parse(dat)
     otb_items(otb)
-    xml = xml.replace('</items>', '\t<!-- %s footprints -->\n%s</items>' % (name, ''.join(xml_add)))
+    xml = xml.replace('</items>', '\t<!-- %s -->\n%s</items>' % (label, ''.join(xml_add)))
     open(DAT, 'wb').write(dat)
     open(OTB, 'wb').write(otb)
     open(XML, 'w').write(xml)
-    manifest['sets'][name] = {'style': style, 'species': species, 'items': entry}
+    return entries
+
+
+def turn(manifest):
+    """The east, south and west items of every set and ground that has only the north one."""
+    todo = [(name, ground, way) for name, s in manifest['sets'].items() for ground, item in s['items'].items()
+            for way in TURNS if way not in item.get('turned', {})]
+    if not todo:
+        return
+    entries = add_items([manifest['sets'][n]['items'][g]['server'] for n, g, _ in todo], 'turned footprints')
+    for (name, ground, way), e in zip(todo, entries):
+        manifest['sets'][name]['items'][ground].setdefault('turned', {})[way] = e
+        print('%s %s %s: server %d, client %d, prints sprite %d' % (name, ground, way, e['server'], e['client'],
+                                                                    e['sprite']))
+
+
+def main():
+    manifest = json.load(open(MANIFEST))
+    args = sys.argv[1:]
+    if args == ['--lua']:
+        write_lua(manifest)
+        return
+    if args == ['--turn']:
+        turn(manifest)
+        open(MANIFEST, 'w').write(json.dumps(manifest, indent=2) + '\n')
+        write_lua(manifest)
+        return
+    if len(args) < 2:
+        sys.exit(__doc__)
+    name, style, species = args[0], args[1], args[2:]
+    if name in manifest['sets']:
+        sys.exit('set "%s" already exists' % name)
+    claimed = {sp for s in manifest['sets'].values() for sp in s['species']}
+    if set(species) & claimed:
+        sys.exit('already in a set: %s' % ', '.join(sorted(set(species) & claimed)))
+
+    grounds = list(manifest['grounds'])
+    entries = add_items([manifest['grounds'][g]['template'] for g in grounds], '%s footprints' % name)
+    manifest['sets'][name] = {'style': style, 'species': species, 'items': dict(zip(grounds, entries))}
+    turn(manifest)
     open(MANIFEST, 'w').write(json.dumps(manifest, indent=2) + '\n')
     write_lua(manifest)
-    for ground, e in entry.items():
+    for ground, e in zip(grounds, entries):
         print('%s %s: server %d, client %d, prints sprite %d' % (name, ground, e['server'], e['client'], e['sprite']))
 
 

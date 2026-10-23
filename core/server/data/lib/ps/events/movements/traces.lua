@@ -28,13 +28,28 @@ local function footprintSet(cid)
     return nil
 end
 
+local WAYS = { [NORTH] = "north", [EAST] = "east", [SOUTH] = "south", [WEST] = "west" }
+
+-- The way a step went (a diagonal by its longer side, a jump or a turn on the spot by where it faces)
+local function footprintWay(cid, fromPosition, toPosition)
+    local dx, dy = toPosition.x - fromPosition.x, toPosition.y - fromPosition.y
+    if (fromPosition.z ~= toPosition.z or (dx == 0 and dy == 0) or math.max(math.abs(dx), math.abs(dy)) > 1) then
+        return WAYS[getCreatureLookDirection(cid)] or "north"
+    end
+    if (math.abs(dx) > math.abs(dy)) then
+        return dx > 0 and "east" or "west"
+    end
+    return dy > 0 and "south" or "north"
+end
+
 function onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, actor)
     local set = footprintSet(cid)
     if (set == "trainer" and isPlayer(cid) and item.itemid == SAND_ITEMID and Sandboard.isUsing(cid)) then
         Sandboard.onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, actor)
     end
 
-    local trace = set and FOOTPRINTS[set][FOOTPRINT_GROUNDS[item.itemid]]
+    local ways = set and FOOTPRINTS[set][FOOTPRINT_GROUNDS[item.itemid]]
+    local trace = ways and ways[footprintWay(cid, fromPosition, toPosition)]
     if (trace and getRandom(0, 1) == 0) then
         doTransformItem(item.uid, trace)
         doDecayItem(item.uid)
