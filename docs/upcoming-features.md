@@ -2225,10 +2225,10 @@ species its own habitat, way of moving and signs that it is near.
   Suicune) and the three Regis (Regirock, Regice, Registeel). The 25% roll (a setting) happens
   only when the normal spawn schedule picks an eligible member of a set (off cooldown, not out);
   staff and event spawns don't roll. On a 25% the whole set spawns together, spread over their
-  habitats (the Regis asleep at their locations); otherwise the picked one spawns alone. A set
-  spawn clears the cooldown of a member still on one so it comes too (a setting, on by
-  default); a member already out is skipped. Each member's cooldown starts again when it is
-  beaten, caught or leaves. A set doesn't count against the limit on the others. Latias and
+  habitats (the Regis asleep at their locations); otherwise the picked one spawns alone. A
+  member still on its cooldown comes too (a setting, on by default), and its cooldown is set
+  again as usual, like every member's, when its encounter ends (beaten, caught or left); a
+  member already out is skipped. A set doesn't count against the limit on the others. Latias and
   Latios work the same way as a pair.
 - **Never two of the same:** never two of one species out at once, legendary or mythical,
   whatever started it (the schedule, a set, an event or staff).
@@ -2280,7 +2280,7 @@ checked by hand); flyers can go anywhere suitable; ocean roamers only through wa
    - catch announcements everywhere;
    - habitats and movement styles per species;
    - the sets (birds, beasts, Regis, Latias and Latios): the 25% roll when the schedule picks a
-     member, clearing the others' cooldowns; one of each species and one mythical at a time;
+     member, bringing members still on cooldown too; one of each species and one mythical at a time;
    - weather links (Raikou, Zapdos, Kyogre);
    - trails of signs with the effects we have;
    - Mew's disguise, Mewtwo's warning, the sleeping Regis;
