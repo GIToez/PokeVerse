@@ -48,6 +48,12 @@ function onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, a
         Sandboard.onStepIn(cid, item, position, lastPosition, fromPosition, toPosition, actor)
     end
 
+    if (not set and isMonster(cid) and FOOTPRINT_GROUNDS[item.itemid]) then
+        -- wild ones leave prints only on the screens of Rangers tracking them
+        Vocations.sendPrint(cid, position, footprintWay(cid, fromPosition, toPosition))
+        return true
+    end
+
     local ways = set and FOOTPRINTS[set][FOOTPRINT_GROUNDS[item.itemid]]
     local trace = ways and ways[footprintWay(cid, fromPosition, toPosition)]
     if (trace and getRandom(0, 1) == 0) then

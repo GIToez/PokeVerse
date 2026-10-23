@@ -833,6 +833,7 @@ WikiData = {
                 "Use the filters (species, type, rarity, shiny, legendary) to thin out the last scan.",
                 "Click a blip. Target Info shows it and the radar points at it.",
                 "Follow the yellow arrow beside your trainer and the flag on the minimap. Press Stop, or reach it, to end the tracking.",
+                "From rank 2, the Pokemon you track leaves glowing footprints on dirt, grass and sand for 3 minutes, pointing the way it went. They fade after 90 seconds. Shinies and legendaries can't be tracked this way.",
             } },
             { 'see', { 'vocations' } },
         } },

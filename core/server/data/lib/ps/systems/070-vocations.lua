@@ -22,8 +22,12 @@
 --                     {type = "error", text, wait}
 --                     {type = "live", blips = {{id, x, y, z}}, gone = {ids}}: from liveRank, every liveMs for
 --                      liveSeconds after a scan, the exact blips that moved and the ones that are gone
+--                     {type = "print", id, x, y, z, way}: from printsRank, a step of the tracked Pokemon on soft
+--                      ground (way: north, east, south or west); {type = "track", id, seconds} or {type = "track"}
+--                      when a track starts or ends
 --   client -> server  {action = "hello"}, {action = "scan"}, {action = "live", on}: whether the popup
---                     wants the live updates (it is open, or tracking a target)
+--                     wants the live updates (it is open, or tracking a target); {action = "track", id}: follow
+--                     that blip's footprints, {action = "track"} stops
 -- kind is common, uncommon, rare, shiny or legendary ("unknown" before speciesRank). Names and looks
 -- come from speciesRank, types from typeFilterRank; filtering happens in the popup.
 --
@@ -87,6 +91,8 @@ Vocations.PERKS = {
         liveRank = 3, -- exact blips follow their Pokemon after the scan (shinies and legendaries stay vague)
         liveMs = 2000, -- how often the server sends where they went
         liveSeconds = 120, -- how long after a scan
+        printsRank = 2, -- the tracked Pokemon's footprints show on soft ground (dirt, grass, sand)
+        printsSeconds = 180, -- how long a track lasts
         shinyRank = 4,
         legendaryRank = 5, -- legendaries and event Pokemon
         legendaryCooldown = 10 * 60,
@@ -529,6 +535,7 @@ local PERK_ROWS = {
         }
         local unlocks = {
             { p.typeFilterRank, "filter", "filter", "Filter by type" },
+            { p.printsRank, "prints", "map", "Footprints of the Pokemon you track" },
             { p.speciesRank, "species", "compass", "Species, direction, distance" },
             { p.liveRank, "live", "target", "Blips follow the Pokemon live" },
             { p.shinyRank, "shiny", "star", "Shiny Pokemon show on the radar" },
@@ -946,7 +953,8 @@ Vocations.radarState = function(cid)
              range = perks.range[rank], cooldown = perks.cooldown[rank],
              wait = math.max(0, getPlayerStorageValue(cid, RADAR_AT) - now),
              legendaryWait = rank >= perks.legendaryRank and math.max(0, getPlayerStorageValue(cid, LEGENDARY_AT) - now) or nil,
-             unlocks = { type = perks.typeFilterRank, species = perks.speciesRank, rarity = perks.speciesRank,
+             unlocks = { type = perks.typeFilterRank, prints = perks.printsRank, species = perks.speciesRank,
+                         rarity = perks.speciesRank,
                          shiny = perks.shinyRank, legendary = perks.legendaryRank } }
 end
 
@@ -1115,6 +1123,125 @@ Vocations.setRadarLive = function(cid, on)
     end
 end
 
+-- Footprint tracking. The Ranger's storage names the Pokemon and until when, and the Pokemon's storage
+-- lists its trackers, so the footprints movement script (its own Lua state) can find them.
+local TRACK = playersStorages.vocationTrack
+-- Both are strings that start with a letter: the engine reads one starting with a digit as a number.
+local TRACKERS = 9190 -- creature storage of a tracked wild Pokemon: "p<pid>:<until>;..."
+local TRACK_SLACK = 10 -- tiles it may have moved since the scan
+
+local function readTrackers(mon)
+    local list = {}
+    local value = getCreatureStorage(mon, TRACKERS)
+    if (type(value) == "string") then
+        for pid, untilTime in value:gmatch("p(%d+):(%d+)") do
+            list[#list + 1] = { pid = tonumber(pid), untilTime = tonumber(untilTime) }
+        end
+    end
+    return list
+end
+
+local function writeTrackers(mon, list)
+    local parts = {}
+    for _, t in ipairs(list) do
+        parts[#parts + 1] = "p" .. t.pid .. ":" .. t.untilTime
+    end
+    doCreatureSetStorage(mon, TRACKERS, #parts > 0 and table.concat(parts, ";") or -1)
+end
+
+-- The Pokemon a Ranger follows by its footprints and until when, or nil
+Vocations.trackedPrints = function(cid)
+    local id, untilTime = tostring(getPlayerStorageValue(cid, TRACK)):match("^m(%d+):(%d+)$")
+    if (id and tonumber(untilTime) > os.time()) then
+        return tonumber(id), tonumber(untilTime)
+    end
+    return nil
+end
+
+-- The Rangers still following this Pokemon's footprints
+Vocations.printTrackers = function(mon)
+    local now, out, keep = os.time(), {}, {}
+    local list = readTrackers(mon)
+    for _, t in ipairs(list) do
+        if (t.untilTime > now and isPlayer(t.pid) and Vocations.trackedPrints(t.pid) == mon) then
+            out[#out + 1] = t.pid
+            keep[#keep + 1] = t
+        end
+    end
+    if (#keep ~= #list) then
+        writeTrackers(mon, keep)
+    end
+    return out
+end
+
+-- A blip picked in the popup: follow that wild Pokemon's footprints (no id: stop). Shinies and
+-- legendaries stay vague, so they can't be tracked. Returns true or false and why.
+Vocations.trackPrints = function(cid, id)
+    local old = Vocations.trackedPrints(cid)
+    setPlayerStorageValue(cid, TRACK, -1)
+    if (old and isCreature(old)) then
+        local keep = {}
+        for _, t in ipairs(readTrackers(old)) do
+            if (t.pid ~= cid) then
+                keep[#keep + 1] = t
+            end
+        end
+        writeTrackers(old, keep)
+    end
+    id = tonumber(id)
+    if (not id) then
+        if (old) then
+            sendRadar(cid, { type = "track" })
+        end
+        return true
+    end
+    local rank = rangerRank(cid)
+    local perks = Vocations.PERKS.ranger
+    if (rank < perks.printsRank) then
+        return false, "rank"
+    end
+    if (not isMonster(id) or isSummon(id) or isPokemonOfPlayer(id) or isPokemonOfNpc(id)) then
+        return false, "gone"
+    end
+    local name = getCreatureName(id)
+    if (not isPokemon(name) or DiscordBridge.isLegendary(name) or isSpecial(name) or isShinyName(name)
+            or WildLegendaries.isDisguised(id)) then
+        return false, "vague"
+    end
+    local pos, mine = getCreaturePosition(id), getCreaturePosition(cid)
+    if (pos.z ~= mine.z or getDistanceBetween(pos, mine) > perks.range[rank] + TRACK_SLACK) then
+        return false, "far"
+    end
+    local untilTime = os.time() + perks.printsSeconds
+    setPlayerStorageValue(cid, TRACK, "m" .. id .. ":" .. untilTime)
+    local list = {}
+    for _, t in ipairs(readTrackers(id)) do
+        if (t.pid ~= cid and t.untilTime > os.time()) then
+            list[#list + 1] = t
+        end
+    end
+    list[#list + 1] = { pid = cid, untilTime = untilTime }
+    writeTrackers(id, list)
+    if (doMonsterKeepAwake) then
+        doMonsterKeepAwake(id, perks.printsSeconds * 1000)
+    end
+    sendRadar(cid, { type = "track", id = id, seconds = perks.printsSeconds })
+    return true
+end
+
+-- A step of a wild Pokemon on soft ground (events/movements/traces.lua): its trackers see the print
+Vocations.sendPrint = function(mon, pos, way)
+    local trackers = Vocations.printTrackers(mon)
+    if (#trackers == 0) then
+        return 0
+    end
+    local data = JSON.encode({ type = "print", id = mon, x = pos.x, y = pos.y, z = pos.z, way = way })
+    for _, pid in ipairs(trackers) do
+        doSendPlayerExtendedOpcode(pid, EXTENDED_IDS.RADAR, data)
+    end
+    return #trackers
+end
+
 Vocations.sendRadarStatus = function(cid, open)
     if (isPlayer(cid)) then
         local data = Vocations.radarState(cid)
@@ -1241,6 +1368,8 @@ Vocations.onRadarMessage = function(cid, buffer)
         Vocations.sendRadarStatus(cid)
     elseif (action == "live") then
         Vocations.setRadarLive(cid, data.on == true)
+    elseif (action == "track") then
+        Vocations.trackPrints(cid, data.id)
     end
 end
 

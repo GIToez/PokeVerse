@@ -840,7 +840,9 @@ do not change.
     client's own map; for the rest the server re-reads only the scanned Pokémon's positions
     every 2 seconds (no new search of the area), sends only the ones that moved or are gone
     (caught or defeated: the blip goes and tracking stops), and pauses while the popup is
-    closed and nothing is tracked. Without the PokeVerse client
+    closed and nothing is tracked. From rank 2 the tracked Pokémon also leaves footprints
+    that only the Ranger sees (section 11, "Ranger tracking leaves footprints"). Without the
+    PokeVerse client
     `!radar` and `!radar <type>` answer in text as before. Artwork: `scripts/art/radar_ui.py`.
   - Angler: +20% to +100% fishing skill gain. From rank 2 casting the line lists what can
     bite there; from rank 3 the first bite comes after half the rod's wait, and each bite roll
@@ -1282,20 +1284,20 @@ From the `#notes` channel:
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper
     floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
     the test now also tries nearer spots.
-- **Footprints don't turn (to fix later):** prints always point the same way, whichever way
-  the walker went. Each set has one trace item per ground (`lib/ps/config/footprints.lua`)
-  and `events/movements/traces.lua` never looks at the step's direction. The fix: a trace for
-  each direction (north, east, south, west) per ground and set in `scripts/add-footprints.py`
-  (the prints drawn turned by `ds_world.py`), and `traces.lua` picking it from `fromPosition`
-  to `toPosition`.
-- **Ranger tracking leaves footprints (agreed, not built):** wild Pokémon leave no prints, so
-  routes don't fill with tracks. While a Ranger tracks a Pokémon from the radar, that one
-  Pokémon leaves prints, from when tracking starts until it stops. Today a rank 1 or 2 radar
-  is a snapshot and the Pokémon walks away from it; its trail shows where it went. Only the
-  Ranger doing the tracking sees them: a client-side effect on the tiles it steps on, from
-  the radar's position updates, so the ground doesn't change for anyone else.
-  Ties in with the legendary trails of signs (section 22). Needs the directional prints
-  above first.
+- **Footprints turn (built):** each set has a trace item per ground and direction (north,
+  east, south, west) in `lib/ps/config/footprints.lua`; `scripts/add-footprints.py --turn`
+  adds the turned ones (18 items, server ids 30157 to 30174) and `ds_world.py --write-prints`
+  draws them turned into data.spr. `events/movements/traces.lua` picks the direction from
+  `fromPosition` to `toPosition` (a diagonal by its longer side, a jump by where the walker
+  faces).
+- **Ranger tracking leaves footprints (built):** wild Pokémon still leave no prints, so routes
+  don't fill with tracks. From rank 2 (`printsRank`), picking a blip in the radar tracks that
+  Pokémon's footprints for 3 minutes (`printsSeconds`): each step it takes on dirt, grass or
+  sand is sent to the tracking Ranger only (`{type = "print"}` on the radar opcode) and drawn
+  by the radar module as a glowing paw print on that tile, pointing the way it went, fading
+  out after 90 seconds. The ground doesn't change for anyone else, and the Pokémon is kept
+  awake so it walks with nobody in view. Shinies and legendaries stay vague and can't be
+  tracked this way. Stop, a new target or reaching it ends the track.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.
@@ -2503,7 +2505,16 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
   dive staying in its zone, Groudon's shake, Jirachi's shower, Deoxys's impact, the clash
   weather, and Rayquaza's call, landing and calming the storm.
 
-Later: bigger effects where testing shows they are needed, and Ranger tracking by footprints.
+### After stage 3 (built)
+
+- **Bigger effects:** Latias and Latios are drawn at least 64 pixels in a flight (their sprite
+  is one tile) and fly 7 tiles a second instead of 9, so they stay on screen longer. Mewtwo's
+  warning bursts every 4 seconds instead of 15, 4 to 10 effects within 5 tiles growing as it
+  nears, every second in the last 15 seconds, with a shake around it 15 seconds before it
+  appears.
+- **Ranger tracking by footprints** ([section 11](#11-bug-fixes-and-small-ideas)).
+- **Pokepedia:** the Wild legendaries page describes the revamp, with a line for the
+  Rangers' hints by rank.
 
 ## Going private
 

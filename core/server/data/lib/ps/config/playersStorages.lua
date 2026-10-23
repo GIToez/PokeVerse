@@ -121,5 +121,6 @@ playersStorages = {
     expBoostClient = base + 118, -- 1 while the trainer's client shows the experience boosts (it asks at login)
     bankClient = base + 119, -- 1 while the trainer's client has the Bank window (it says hello at login)
     bankNpc = base + 120, -- the name of the bank NPC whose window the trainer has open (Bank)
+    vocationTrack = base + 121, -- "m<cid>:<until>" the wild Pokemon a Ranger follows by its footprints (Vocations)
     -- tournamentWeekWinnerStorage = base + 65
 }

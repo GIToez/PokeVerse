@@ -1495,6 +1495,46 @@ local function testRanger(cid, arena)
     check("live radar: a caught or defeated Pokemon is gone", pidgeyIn(got, "gone") ~= nil, got[1] and JSON.encode(got[1]))
     Vocations.setRadarLive(cid, false)
 
+    -- footprints: from printsRank the tracked blip's steps on soft ground are sent as prints
+    local perks = Vocations.PERKS.ranger
+    check("prints: the status says from which rank", Vocations.radarState(cid).unlocks.prints == perks.printsRank)
+    become(cid, "ranger", perks.printsRank - 1)
+    local tracked, why = Vocations.trackPrints(cid, pikachu)
+    check("prints: not below their rank", not tracked and why == "rank" and Vocations.trackedPrints(cid) == nil, why)
+    become(cid, "ranger", 5)
+    tracked, why = Vocations.trackPrints(cid, shiny)
+    check("prints: shinies stay vague", not tracked and why == "vague", why)
+    if (articuno and isCreature(articuno)) then
+        tracked, why = Vocations.trackPrints(cid, articuno)
+        check("prints: legendaries stay vague", not tracked and why == "vague", why)
+    end
+    become(cid, "ranger", perks.printsRank)
+    doMonsterKeepAwake, awake = keepAwake and function(id, ms)
+        awake[id] = ms
+        return keepAwake(id, ms)
+    end, {}
+    got = captureRadar(function() tracked = Vocations.trackPrints(cid, pikachu) end)
+    doMonsterKeepAwake = keepAwake
+    check("prints: tracking a blip", tracked and Vocations.trackedPrints(cid) == pikachu and got[1] and
+        got[1].type == "track" and got[1].id == pikachu and got[1].seconds == perks.printsSeconds,
+        got[1] and JSON.encode(got[1]))
+    check("prints: the Pokemon keeps walking for the track", not keepAwake or awake[pikachu] == perks.printsSeconds * 1000)
+    local trackers = Vocations.printTrackers(pikachu)
+    check("prints: the Pokemon knows its tracker", #trackers == 1 and trackers[1] == cid)
+    local at = getCreaturePosition(pikachu)
+    got = captureRadar(function() Vocations.sendPrint(pikachu, at, "east") end)
+    check("prints: a step is sent to the tracker", got[1] and got[1].type == "print" and got[1].id == pikachu and
+        got[1].x == at.x and got[1].y == at.y and got[1].z == at.z and got[1].way == "east", got[1] and JSON.encode(got[1]))
+    setPlayerStorageValue(cid, playersStorages.vocationTrack, "m" .. pikachu .. ":" .. (os.time() - 1))
+    got = captureRadar(function() Vocations.sendPrint(pikachu, at, "east") end)
+    check("prints: none once the track is over", #got == 0 and #Vocations.printTrackers(pikachu) == 0)
+    Vocations.trackPrints(cid, pikachu)
+    got = captureRadar(function() tracked = Vocations.trackPrints(cid) end)
+    check("prints: stopping", tracked and Vocations.trackedPrints(cid) == nil and #Vocations.printTrackers(pikachu) == 0 and
+        got[1] and got[1].type == "track" and got[1].id == nil, got[1] and JSON.encode(got[1]))
+    got = captureRadar(function() Vocations.sendPrint(pikachu, at, "north") end)
+    check("prints: nothing sent after stopping", #got == 0)
+
     for _, m in ipairs(made) do
         if (isCreature(m)) then
             doRemoveCreature(m)

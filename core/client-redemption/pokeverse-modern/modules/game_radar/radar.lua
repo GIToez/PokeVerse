@@ -6,7 +6,9 @@
 -- blips follow their Pokemon, from the game map while they are on screen and from the server's
 -- {type = "live", blips, gone} otherwise, while the popup is open or tracking ({action = "live", on}).
 -- Filtering happens here. A tracked target gets the cone on the radar, an arrow beside the trainer on the
--- game map and a flag on the minimap.
+-- game map and a flag on the minimap. From the prints rank the popup also sends {action = "track", id} (or
+-- {action = "track"} to stop), and the server sends {type = "print", id, x, y, z, way} for each step the
+-- Pokemon takes on soft ground, which shows as a glowing footprint on the game map.
 local IMAGES = '/modules/game_radar/images/'
 local RADIUS = 176 -- pixels from the middle of the radar image to its edge (scripts/art/radar_ui.py)
 local TICK_MS = 150
@@ -15,6 +17,11 @@ local SPRITE_LIFT = 0.45 -- tiles: trainer sprites stand on their tile and reach
 local MUTED_COLOR = '#96aacd'
 local ERROR_COLOR = '#ff8a80'
 local MESSAGE_MS = 4000
+local PRINT_MS = 90000 -- how long a footprint of the tracked Pokemon stays
+local PRINT_FADE_MS = 30000 -- the end of that, when it fades out
+local PRINT_TICK_MS = 30 -- prints follow the map smoothly while the trainer walks
+local MAX_PRINTS = 40
+local PRINT_ROTATION = { north = 0, east = 90, south = 180, west = 270 }
 
 local KIND_NAMES = { common = 'Common', uncommon = 'Uncommon', rare = 'Rare', shiny = 'Shiny',
                      legendary = 'Legendary', unknown = 'Unknown' }
@@ -46,7 +53,9 @@ local filter = { mode = 'all' }
 local target -- one of blips
 local flagPos
 local readyAt = 0
-local tickEvent, messageEvent
+local tickEvent, messageEvent, printsEvent
+local prints = {} -- the tracked Pokemon's footprints, oldest first: { widget, x, y, z, way, at }
+local printsId -- the Pokemon the server was asked to send footprints of
 
 local function send(data)
     local protocol = g_game.getProtocolGame()
@@ -195,6 +204,93 @@ local function updateArrow(from, to)
     mapArrow:show()
 end
 
+-- Footprints ---------------------------------------------------------------------------------------
+
+local function clearPrints()
+    for _, p in ipairs(prints) do
+        if not p.widget:isDestroyed() then
+            p.widget:destroy()
+        end
+    end
+    prints = {}
+    removeEvent(printsEvent)
+    printsEvent = nil
+end
+
+-- each print sits on its tile of the game map, fading out at the end of its time
+local function updatePrints()
+    local mapPanel = modules.game_interface and modules.game_interface.getMapPanel()
+    local now = g_clock.millis()
+    while prints[1] and now - prints[1].at >= PRINT_MS do
+        local p = table.remove(prints, 1)
+        if not p.widget:isDestroyed() then
+            p.widget:destroy()
+        end
+    end
+    if not mapPanel or #prints == 0 then
+        clearPrints()
+        return
+    end
+    local camera = mapPanel:getCameraPosition()
+    local area = mapPanel:getRect()
+    for _, p in ipairs(prints) do
+        local rect = camera and p.z == camera.z and mapPanel:getTileRect({ x = p.x, y = p.y, z = p.z })
+        if rect and rect.width > 0 and rect.x >= area.x and rect.y >= area.y and
+                rect.x + rect.width <= area.x + area.width and rect.y + rect.height <= area.y + area.height then
+            if p.widget:getParent() ~= mapPanel then
+                p.widget:setParent(mapPanel)
+            end
+            p.widget:setRect(rect)
+            local left = PRINT_MS - (now - p.at)
+            p.widget.icon:setOpacity(left < PRINT_FADE_MS and left / PRINT_FADE_MS or 1)
+            p.widget:show()
+        else
+            p.widget:hide()
+        end
+    end
+end
+
+local function addPrint(data)
+    local mapPanel = modules.game_interface and modules.game_interface.getMapPanel()
+    if not mapPanel or tonumber(data.id) ~= printsId then
+        return
+    end
+    local p = { x = tonumber(data.x) or 0, y = tonumber(data.y) or 0, z = tonumber(data.z) or 0,
+                way = PRINT_ROTATION[data.way] and data.way or 'north', at = g_clock.millis() }
+    for i = #prints, 1, -1 do
+        local old = prints[i]
+        if old.x == p.x and old.y == p.y and old.z == p.z then
+            old.widget:destroy()
+            table.remove(prints, i)
+        end
+    end
+    p.widget = g_ui.createWidget('RadarPrint', mapPanel)
+    p.widget.icon:setRotation(PRINT_ROTATION[p.way])
+    p.widget:hide()
+    prints[#prints + 1] = p
+    while #prints > MAX_PRINTS do
+        table.remove(prints, 1).widget:destroy()
+    end
+    updatePrints()
+    if not printsEvent then
+        printsEvent = cycleEvent(updatePrints, PRINT_TICK_MS)
+    end
+end
+
+-- Asks the server for the footprints of the tracked Pokemon (nil: none). Shinies and legendaries
+-- stay vague, so only the other blips are tracked by their prints.
+local function trackPrints(blip)
+    local id = blip and blip.id and not blip.band and unlocked('prints') and blip.id or nil
+    if id == printsId then
+        return
+    end
+    if printsId then
+        clearPrints()
+    end
+    printsId = id
+    send(id and { action = 'track', id = id } or { action = 'track' })
+end
+
 -- Radar drawing -----------------------------------------------------------------------------------
 
 local function refreshTarget()
@@ -268,6 +364,7 @@ end
 local function stopTracking()
     target = nil
     markTarget()
+    trackPrints(nil)
     layoutKey = nil
     clearFlag()
     hideArrow()
@@ -445,6 +542,7 @@ local function selectBlip(blip)
     end
     target = blip
     markTarget()
+    trackPrints(blip)
     layoutKey = nil
     clearFlag()
     refreshTarget()
@@ -495,6 +593,7 @@ local function buildBlips(list)
         hideArrow()
     end
     markTarget()
+    trackPrints(target)
     refreshTarget()
 end
 
@@ -735,6 +834,13 @@ local function onRadar(protocol, opcode, buffer)
         tick()
     elseif data.type == 'live' then
         onLive(data)
+    elseif data.type == 'print' then
+        addPrint(data)
+    elseif data.type == 'track' then
+        if data.id and tonumber(data.id) == printsId and window:isVisible() then
+            showMessage(tr('Its footprints show on dirt, grass and sand for %d seconds.', tonumber(data.seconds) or 0),
+                MUTED_COLOR)
+        end
     elseif data.type == 'error' then
         if data.wait then
             readyAt = g_clock.seconds() + (tonumber(data.wait) or 0)
@@ -755,6 +861,8 @@ local function onGameEnd()
     removeEvent(messageEvent)
     messageEvent = nil
     stopTracking()
+    clearPrints()
+    printsId = nil
     clearBlips()
     status = { enabled = false }
     liveWanted = nil
@@ -794,6 +902,7 @@ function terminate()
     removeEvent(tickEvent)
     removeEvent(messageEvent)
     tickEvent, messageEvent = nil, nil
+    clearPrints()
     clearFlag()
     clearBlips()
     destroyArrow()

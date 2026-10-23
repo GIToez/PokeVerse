@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Draws the Ranger radar popup artwork (game_radar): the radar disc and its direction cone, the
-blips, the player and target rings, the arrow on the game map, the minimap flag, the battle list mark
-and the panels.
+blips, the player and target rings, the arrow and the tracked Pokemon's footprints on the game map,
+the minimap flag, the battle list mark and the panels.
 
     scripts/art/radar_ui.py <out dir>
 
 The output goes to core/client-redemption/pokeverse-modern/modules/game_radar/images. The window
 frame is the Tasks window's (game_dailytasks/images/window). Frames are 9-slice images: the otui
-sets image-border to the border noted next to each one. The cone and the map arrow point east;
-the client rotates them.
+sets image-border to the border noted next to each one. The cone and the map arrow point east and
+the footprint north; the client rotates them.
 """
 import math
 import sys
@@ -203,6 +203,31 @@ def map_arrow(size=52):
     return im
 
 
+def map_print(size=32):
+    """A footprint of the tracked Pokemon on the game map, one tile: a pad and three toes walking north."""
+    im = icon(size)
+    W = im.width
+    c = W / 2
+    k = size / 32
+    shapes = [(c, c + s(5 * k), s(6.5 * k), s(5.5 * k))]
+    for dx, dy in ((-7, -4), (0, -8), (7, -4)):
+        shapes.append((c + s(dx * k), c + s(dy * k), s(2.8 * k), s(3.4 * k)))
+
+    def draw(d, grow, fill):
+        for x, y, rx, ry in shapes:
+            d.ellipse((x - rx - grow, y - ry - grow, x + rx + grow, y + ry + grow), fill=fill)
+
+    glow = Image.new('RGBA', im.size, YELLOW + (0,))
+    m = Image.new('L', im.size, 0)
+    draw(ImageDraw.Draw(m), s(1.5), 190)
+    glow.putalpha(blur(m, s(2.5)))
+    im.alpha_composite(glow)
+    d = ImageDraw.Draw(im)
+    draw(d, s(1.1), (90, 60, 0, 255))
+    draw(d, 0, YELLOW + (255,))
+    return im
+
+
 def flag(size=12):
     im = icon(size)
     W = im.width
@@ -283,6 +308,7 @@ def main():
     save(center(), out, 'center')
     save(map_arrow(), out, 'arrow')
     save(flag(), out, 'flag')
+    save(map_print(), out, 'print')
     save(glow_frame(40, 40, 8, (14, 24, 44, 235), EDGE, None, 0), out, 'panel')  # border 10
     save(row((22, 34, 60, 230), (52, 78, 120, 255)), out, 'row')  # border 6
     save(row((30, 46, 80, 240), (86, 124, 186, 255)), out, 'row_hover')  # border 6

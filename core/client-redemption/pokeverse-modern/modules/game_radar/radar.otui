@@ -90,6 +90,17 @@ RadarCompass < UILabel
   text-auto-resize: true
   phantom: true
 
+RadarPrint < UIWidget
+  size: 32 32
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: icon
+    anchors.fill: parent
+    image-source: /modules/game_radar/images/print
+    phantom: true
+
 RadarMapArrow < UIWidget
   size: 52 52
   phantom: true
