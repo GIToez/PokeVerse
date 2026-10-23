@@ -70,12 +70,21 @@ local function catchRate(chance, trials)
     return caught / trials
 end
 
+-- The boost alone: a shiny event or the calendar's weekend Double Shiny would multiply on top
+local function boostShinyChance(chance)
+    local event = getShinyEventMultiplier()
+    setShinyEventMultiplier(1)
+    local result = ShinyEvent.chance(chance)
+    setShinyEventMultiplier(event)
+    return result
+end
+
 local function perks(cid)
     local p = getDiscordBoostPerks()
     reply(cid, "bridgetest perks " .. JSON.encode({level = p.level, exp = p.exp, catch = p.catch, shiny = p.shiny,
         catch40 = DiscordBoostPerks.catchChance(0.4), catch99 = DiscordBoostPerks.catchChance(0.99),
         catch100 = DiscordBoostPerks.catchChance(1), catchRolled40 = catchRate(0.4, 200000),
-        shiny4096 = ShinyEvent.chance(4096), describe = DiscordBoostPerks.describe() or ""}))
+        shiny4096 = boostShinyChance(4096), describe = DiscordBoostPerks.describe() or ""}))
 end
 
 local function reportExp(cid, before)
