@@ -2697,6 +2697,13 @@ local function testLegendaries(cid, friend, arena)
         flights = {}
         check("Legendary: a fly-over only staff see", W.flyover(cid, "Lugia", "dive") and #flights == 1 and
             flights[1].kind == "dive" and flights[1].species == "Lugia" and next(W.getFlights()) == nil and not W.flyover(cid, "Nobody"))
+        -- Route 27: sea from y 836 up to the shore, land past it
+        local seaFrom, inland = { x = 2836, y = 836, z = 7 }, { x = 2836, y = 806, z = 7 }
+        local shore = W.landfall(seaFrom, inland)
+        check("Legendary: a dive comes up at the first shore on its way, not inland", shore and W.isGoodPoint(shore) and
+            shore.y > inland.y + 2 and seaFrom.y - shore.y >= W.CONFIG.landfallMin and math.abs(shore.x - seaFrom.x) <= 3,
+            shore and string.format("%d,%d", shore.x, shore.y))
+        check("Legendary: no shore on a dive over land", W.landfall(inland, { x = inland.x, y = inland.y - 20, z = 7 }) == nil)
         flights = {}
         local groudon = W.spawn(W.getSpecies("Groudon"), { x = arena.x + 2, y = arena.y, z = arena.z }, "the test arena", "test")
         check("Legendary: Groudon shakes the screens near it", groudon and #flights > 0 and flights[1].type == "shake" and

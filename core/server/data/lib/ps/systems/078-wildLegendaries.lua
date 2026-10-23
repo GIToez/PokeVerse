@@ -201,6 +201,7 @@ WildLegendaries.CONFIG = {
     fastFlightSpeed = 7,        -- Latias and Latios
     swimSpeed = 4,
     flightSeconds = { 8, 60 },  -- shortest and longest crossing; long ones go faster
+    landfallMin = 8,            -- a dive surfaces at the first shore at least this far along its way
     circleSeconds = 4,          -- circling over the landing spot
     flightView = { 18, 14 },    -- trainers this close to where it is are sent the flight
     flightSignEvery = 2,
@@ -1479,6 +1480,37 @@ local function travelKind(species)
     return nil
 end
 
+-- Where a dive from `from` toward `to` first reaches the shore, in the same zone as `to`: its shape only
+-- shows over sea, so it comes up where trainers last saw it instead of somewhere inland. Nil when there's none.
+local function landfall(from, to, cid)
+    if (from.z ~= to.z) then
+        return nil
+    end
+    local _, zone = WildLegendaries.areaAt(to)
+    local steps = distance(from, to)
+    local wet = false
+    for i = 1, steps - 1 do
+        local pos = { x = math.floor(from.x + (to.x - from.x) * i / steps + 0.5),
+                      y = math.floor(from.y + (to.y - from.y) * i / steps + 0.5), z = from.z }
+        local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = STACKPOS_GROUND })
+        if (ground and ground.itemid and ground.itemid ~= 0) then
+            if (WATER[ground.itemid]) then
+                wet = true
+            elseif (wet) then
+                wet = false
+                if (i >= CONFIG.landfallMin and select(2, WildLegendaries.areaAt(pos)) == zone) then
+                    local spot = spotAt(pos, cid)
+                    if (spot) then
+                        return spot
+                    end
+                end
+            end
+        end
+    end
+    return nil
+end
+WildLegendaries.landfall = landfall
+
 local function flightSeconds(species, kind, from, to)
     local speed = kind == "w" and CONFIG.swimSpeed or (species.fast and CONFIG.fastFlightSpeed or CONFIG.flightSpeed)
     local d = math.sqrt((to.x - from.x) ^ 2 + (to.y - from.y) ^ 2)
@@ -1514,6 +1546,9 @@ local function takeoff(cid, species, pos, reason)
         return nil
     end
     local from, now = getCreaturePosition(cid), os.time()
+    if (kind == "w") then
+        pos = landfall(from, pos, cid) or pos
+    end
     local flags = entry.flags:gsub("f", "")
     local f = { encounter = entry.encounter, species = species, health = healthPercent(cid), from = from, to = pos,
                 start = now, seconds = flightSeconds(species, kind, from, pos), endsAt = monNumber(cid, MON.ENDS_AT),
