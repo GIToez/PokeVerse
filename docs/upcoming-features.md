@@ -1272,6 +1272,20 @@ From the `#notes` channel:
   - Related: the radar test's Articuno did not spawn when the test spot was a small upper
     floor (5017, 790, 6 on Tutorial Island), because no tile 12–16 tiles away was walkable;
     the test now also tries nearer spots.
+- **Footprints don't turn (to fix later):** prints always point the same way, whichever way
+  the walker went. Each set has one trace item per ground (`lib/ps/config/footprints.lua`)
+  and `events/movements/traces.lua` never looks at the step's direction. The fix: a trace for
+  each direction (north, east, south, west) per ground and set in `scripts/add-footprints.py`
+  (the prints drawn turned by `ds_world.py`), and `traces.lua` picking it from `fromPosition`
+  to `toPosition`.
+- **Ranger tracking leaves footprints (idea, To decide):** wild Pokémon leave no prints, so
+  routes don't fill with tracks. While a Ranger tracks a Pokémon from the radar, that one
+  Pokémon leaves prints, from when tracking starts until it stops. Today a rank 1 or 2 radar
+  is a snapshot and the Pokémon walks away from it; its trail would show where it went. Only
+  the Ranger doing the tracking might see them (a client-side effect on the tiles it steps
+  on, from the radar's position updates, instead of changing the ground for everyone).
+  Ties in with the legendary trails of signs (section 22). Needs the directional prints
+  above first.
 
 The missing clickable responses (gym leaders and others) are part of the
 [NPC dialogue](#3-npc-dialogue-quests-and-tasks) work.
