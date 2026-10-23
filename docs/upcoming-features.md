@@ -2232,8 +2232,8 @@ species its own habitat, way of moving and signs that it is near.
 - **Never two mythicals:** at most one of Mew, Celebi, Jirachi and Deoxys out at once on the
   whole server, events and staff spawns included.
 - **Catch chances** stay as they are (section 11).
-- **Mythicals** (Mew, Celebi, Jirachi, Deoxys): the rarest (lowest chance, longest cooldowns) and the hardest to find: no area in the
-  announcement, only faint signs. The Master Ball still catches them; they are hard to find, not
+- **Mythicals** (Mew, Celebi, Jirachi, Deoxys): the rarest (lowest chance, longest cooldowns)
+  and the hardest to find: no area in the announcement, only faint signs. The Master Ball still catches them; they are hard to find, not
   hard to catch.
 - **Mew** disguises itself as a Pokémon of the zone it is in, at that zone's levels. When a
   trainer discovers it (attacks it, or a Ranger's radar picks it out), it shows its true self.
