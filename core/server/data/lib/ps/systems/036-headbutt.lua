@@ -232,7 +232,7 @@ Headbutt.onHeadbutt = function(cid, itemEx, toPosition)
 
     if (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
             getPathToEx(pokemon, targetPos)) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, headbutt it!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, headbutt it!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         doCreatureWalkToPosition(pokemon, targetPos)
         checkHeadbutt(pokemon, itemEx, toPosition, 20)
         doAddCondition(cid, HEADBUTT_EXHAUST_CONDITION)

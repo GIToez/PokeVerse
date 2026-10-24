@@ -13,7 +13,7 @@ function onSay(cid, words, param, channel)
 		local pokemon = getPlayerPokemon(cid)
 
 		doCreatureSetLookDirection(pokemon, TURNS[words].toDirection)
-		doCreatureSay(cid, string.format(__L(cid, "%s, turn to the %s!"), getCreatureNickname(pokemon), __L(cid, TURNS[words].directionString)), TALKTYPE_MONSTER)
+		BattleText.say(cid, "order", string.format(__L(cid, "%s, turn to the %s!"), getCreatureNickname(pokemon), __L(cid, TURNS[words].directionString)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 	end
 	return true
 end

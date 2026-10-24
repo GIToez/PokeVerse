@@ -2788,28 +2788,29 @@ stack as separate bubbles that float up and fade (C).
 
 ## 25. Announcements: news banner, call-out bubbles, Discord and the calendar
 
-Plan (not started). The aim is that nothing needs adding by hand: a new holiday, weekend event,
+Plan; the call-out bubbles are built. The aim is that nothing needs adding by hand: a new holiday, weekend event,
 staff event or legendary shows up in game, on Discord and in Discord's event calendar on its
 own.
 
-### Calling out and recalling Pokémon
+### Calling out and recalling Pokémon (built)
 
-The [battle text](#24-battle-text-call-out-bubbles-and-hit-numbers) bubbles cover moves only.
-Calling out a Pokémon still uses plain yellow speech: one of 5 random lines like "Pikachu, I
-choose you!" (`doPokemonCall`, `functions/others.lua`). Recalling uses one of 4 lines like
-"Pikachu, back!" (`functions/ball/inUse.lua`).
+The [battle text](#24-battle-text-call-out-bubbles-and-hit-numbers) bubbles covered moves only;
+calling out, recalling and giving orders used plain yellow speech. Now they're bubbles too:
 
-- **Bubbles:** both become bubbles over the trainer, with the trainer's ball as a small icon on
-  the bubble, the nickname in the Pokémon's type colour, and the same random lines. A swap
-  (recall, then call) stacks as two bubbles, like back-to-back moves.
-- **NPC trainers too:** gym leaders, NPC battles and Team Rocket ("Go, X!" and "Back, X!" in
-  `001-npcBattle.lua` and `050-rocketBattle.lua`).
-- **Orders as bubbles:** "X, push it!", "let's climb!", "headbutt it!", "go there!", "shoot
-  there!", and throwing a ball ("Great ball, go!"), each with a small icon (rock, ladder, tree,
-  arrow, ball).
-- **How:** the same `BATTLE_TEXT` opcode gets `summon`, `recall` and `order` messages. The
-  console patch takes their overhead text, like a move call-out, and Local Chat keeps the
-  line. "Battle text: Classic" turns them back to plain text.
+- **Calling out and recalling:** the same random lines ("Gengar, I need your help!", "Gengar,
+  that's enough. Come back!"), in a bubble over the trainer with the trainer's own ball on it
+  (the game's ball sprite, so a Great Ball shows a Great Ball) and the nickname in the
+  Pokémon's type colour. A swap stacks as two bubbles, like back-to-back moves.
+- **NPC trainers too:** gym leaders, NPC battles and Team Rocket ("Go, X!", "Back, X!" and
+  "X, go there!" in `001-npcBattle.lua` and `050-rocketBattle.lua`), with a Poké Ball.
+- **Orders:** all 30 order lines ("push it!", "let's climb!", "headbutt it!", "go there!",
+  "shoot there!", "let's fly!", "I'm tired of surfing!", "turn to the north!" and the rest) and
+  throwing a ball ("Great ball, go!", "Safari ball, go!"). Orders show the trainer's ball; a
+  throw shows the ball thrown.
+- **How:** `BattleText.say` (`091-battleText.lua`) sends a `say` message on the `BATTLE_TEXT`
+  opcode with the exact line, then says it as before. The client draws the bubble and the
+  console patch takes the overhead text, like a move call-out; Local Chat keeps the line.
+  "Battle text: Classic" turns them back to plain text, and old clients see the plain text.
 
 ### The news banner
 
@@ -2982,7 +2983,7 @@ The game's calendar (`077-eventCalendar.lua`) already knows every event ahead of
 
 ### Order of work
 
-1. Call-out and recall bubbles, NPC trainers and orders (game and client only).
+1. Call-out and recall bubbles, NPC trainers and orders (built).
 2. `doBroadcastMessage` categories, the `ANNOUNCEMENT` opcode and the new `game_newsbanner`
    module.
 3. The rotating tips.

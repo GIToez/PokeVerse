@@ -21,6 +21,27 @@ BattleTextBubble < UIWidget
     anchors.centerIn: parent
     margin-top: -1
 
+BattleTextIconBubble < UIWidget
+  phantom: true
+  focusable: false
+  image-source: /modules/game_battletext/images/bubble
+  image-border: 9
+
+  UIItem
+    id: icon
+    phantom: true
+    focusable: false
+    virtual: true
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  BattleTextLabel
+    id: text
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-top: -1
+
 BattleTextTail < UIWidget
   phantom: true
   focusable: false

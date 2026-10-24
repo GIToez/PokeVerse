@@ -461,12 +461,12 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
                     doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
 
                 elseif (onCustomOrder(cid, pokemon, toPosition, itemEx)) then -- Quests actions
-                    doCreatureSay(cid, string.format(__L(cid, "%s, there is!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+                    BattleText.say(cid, "order", string.format(__L(cid, "%s, there is!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
                     return true
 
                 elseif (getPathToEx(pokemon, toPosition)) then
                     doCreatureWalkToPosition(pokemon, toPosition)
-                    doCreatureSay(cid, string.format(__L(cid, "%s, go there!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+                    BattleText.say(cid, "order", string.format(__L(cid, "%s, go there!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 
                 else
                     doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)

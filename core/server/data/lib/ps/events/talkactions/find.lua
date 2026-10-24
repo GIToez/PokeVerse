@@ -27,7 +27,7 @@ function onSay(cid, words, param)
 		else
 			local targetPosition = getCreaturePosition(pid)
 
-			doCreatureSay(cid, string.format(__L(cid, "%s , find it!"), getPlayerPokemonNickname(cid)), TALKTYPE_MONSTER)
+			BattleText.say(cid, "order", string.format(__L(cid, "%s , find it!"), getPlayerPokemonNickname(cid)), { pokemon = getPlayerPokemon(cid), talkType = TALKTYPE_MONSTER })
 			doPlayerAddMapMark(cid, targetPosition, 0, string.format(__L(cid, "%s  last position."), getCreatureName(pid)))
 			doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, param .. " " .. getSearchString(getCreaturePosition(cid), targetPosition, cid, true, true) .. ".")
 			if (requestEnergy) then
