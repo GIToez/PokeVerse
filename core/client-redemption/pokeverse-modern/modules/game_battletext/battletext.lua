@@ -6,8 +6,8 @@
 --   {k = "wild", c = pokemon}                                    then the wild Pokemon's MOVE yell
 --   {k = "hit", c = target, s = "crit"|"super"|"weak"|"immune"}  then the hit's "-N"
 --   {k = "miss", c = attacker, t = target}                       then "MISS!" over the attacker
---   {k = "say", c = speaker, s = kind, x = text, n = nickname, i = ball client id, t = type}  then the speaker says x:
---     calling out or recalling a Pokemon, an order, or throwing a ball, drawn as a bubble with the ball on it
+--   {k = "say", c = speaker, s = kind, x = text, n = nickname, t = type}  then the speaker says x: calling out or
+--     recalling a Pokemon, an order, or throwing a ball, drawn as a bubble like a call-out
 -- In New, g_game.onAnimatedText (protocolgameparse.cpp) swallows the battle words and numbers and draws them
 -- again here; takeOverhead (game_console) swallows the call-outs and wild yells, which stay in Local Chat.
 -- Numbers and outcomes float over the Pokemon, stat changes beside it and statuses under its feet. Back to
@@ -19,7 +19,6 @@ local TICK = 30
 local BUBBLE_MS = 1500
 local MAX_BUBBLES = 3
 local BUBBLE_FONT = { 16, 14, 12 }
-local BUBBLE_ICON = { 32, 28, 24 } -- an item tile; the ball is the middle third of it
 local BUBBLE_ALPHA = { 1, 0.7, 0.45 }
 local BUBBLE_GAP = 3
 local SAY_WAIT_MS = 1500 -- a call-out waits this long for its chat line
@@ -360,15 +359,7 @@ local function setBubbleSlot(bubble, slot)
     label:setColor(INK)
     label:setColoredText(bubble.text)
     label:resizeToText()
-    local width = label:getWidth() + 16
-    if bubble.icon then
-        local size = BUBBLE_ICON[slot]
-        bubble.widget.icon:setSize({ width = size, height = size })
-        bubble.widget.icon:setMarginLeft(-math.floor(size * 0.06))
-        label:setMarginLeft(-math.floor(size * 0.3))
-        width = label:getWidth() + 8 + math.floor(size * 0.64)
-    end
-    bubble.widget:setSize({ width = width, height = label:getHeight() + 10 })
+    bubble.widget:setSize({ width = label:getWidth() + 16, height = label:getHeight() + 10 })
 end
 
 local function typeColor(element)
@@ -390,7 +381,7 @@ local function sayText(text, nick, element)
     return segment(text:sub(1, at - 1), INK) .. segment(nick, typeColor(element)) .. segment(text:sub(at + #nick), INK)
 end
 
-local function addBubble(cid, text, icon)
+local function addBubble(cid, text)
     local map = mapPanel()
     local creature = g_map.getCreatureById(cid)
     if not map or not creature then
@@ -402,16 +393,12 @@ local function addBubble(cid, text, icon)
         bubbles[cid] = trainer
     end
     local bubble = {
-        widget = g_ui.createWidget(icon and 'BattleTextIconBubble' or 'BattleTextBubble', map),
+        widget = g_ui.createWidget('BattleTextBubble', map),
         tail = g_ui.createWidget('BattleTextTail', map),
         text = text,
-        icon = icon,
         born = g_clock.millis(),
         rise = -6,
     }
-    if icon then
-        bubble.widget.icon:setItemId(icon)
-    end
     bubble.widget:hide()
     bubble.tail:hide()
     table.insert(trainer.list, 1, bubble)
@@ -640,8 +627,7 @@ local function onMessage(protocol, opcode, buffer)
         wake()
     elseif data.k == 'say' and type(data.x) == 'string' then
         expectSay(cid, data.x)
-        local icon = tonumber(data.i)
-        addBubble(cid, sayText(data.x, data.n, data.t), icon and icon > 0 and icon or nil)
+        addBubble(cid, sayText(data.x, data.n, data.t))
         wake()
     elseif data.k == 'wild' then
         expectSay(cid, nil)
@@ -672,8 +658,8 @@ function demoHit(pos, kind, value)
     wake()
 end
 
-function demoSay(cid, kind, text, nick, element, icon)
-    addBubble(cid, sayText(text, nick, element), icon)
+function demoSay(cid, text, nick, element)
+    addBubble(cid, sayText(text, nick, element))
     expectSay(cid, text)
     wake()
 end

@@ -5,8 +5,8 @@
 --   {k = "wild", c = pokemon}                                    a wild Pokemon used a move
 --   {k = "hit", c = target, s = "crit"|"super"|"weak"|"immune"}  sent just before the hit's number
 --   {k = "miss", c = attacker, t = target}                       sent just before "MISS!"
---   {k = "say", c = speaker, s = "summon"|"recall"|"order"|"throw", x = text, n = nickname, i = ball client id,
---    t = type}                                                   sent just before the speaker says x
+--   {k = "say", c = speaker, s = "summon"|"recall"|"order"|"throw", x = text, n = nickname, t = type}
+--                                                                sent just before the speaker says x
 BattleText = {}
 
 BattleText.RANGE_X = 9
@@ -31,19 +31,6 @@ function BattleText.callout(trainer, pokemon, skillName)
                     t = ELEMENT_NAMES[getPokemonSkillDamageType(skillName)] or "Normal" })
 end
 
-local function ballClientId(ballName)
-    local ball = balls and balls[ballName or "poke"] or balls and balls["poke"]
-    return ball and getItemClientId(ball.charged) or 0
-end
-
-local function trainerBall(cid)
-    if (not isPlayer(cid)) then
-        return nil
-    end
-    local ball = getPlayerBall(cid)
-    return ball and ball.uid and ball.uid > 0 and ballsNames[ball.itemid] or nil
-end
-
 local function typeName(pokemon, pokemonName)
     local types
     if (isCreature(pokemon)) then
@@ -56,8 +43,7 @@ local function typeName(pokemon, pokemonName)
 end
 
 -- Says text the way doCreatureSay did, after telling the modern clients around it what it is:
--- kind "summon", "recall", "order" or "throw". opts: pokemon (creature) or pokemonName, nick, ball (a balls
--- key; the trainer's own ball when left out), talkType.
+-- kind "summon", "recall", "order" or "throw". opts: pokemon (creature) or pokemonName, nick, talkType.
 function BattleText.say(cid, kind, text, opts)
     opts = opts or {}
     local nick = opts.nick
@@ -65,7 +51,6 @@ function BattleText.say(cid, kind, text, opts)
         nick = getCreatureNickname(opts.pokemon)
     end
     send(cid, { k = "say", c = cid, s = kind, x = text, n = nick or opts.pokemonName,
-                i = ballClientId(opts.ball or trainerBall(cid)),
                 t = (opts.pokemon or opts.pokemonName) and typeName(opts.pokemon, opts.pokemonName) or nil })
     if (opts.talkType) then
         doCreatureSay(cid, text, opts.talkType)

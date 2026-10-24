@@ -2798,15 +2798,13 @@ The [battle text](#24-battle-text-call-out-bubbles-and-hit-numbers) bubbles cove
 calling out, recalling and giving orders used plain yellow speech. Now they're bubbles too:
 
 - **Calling out and recalling:** the same random lines ("Gengar, I need your help!", "Gengar,
-  that's enough. Come back!"), in a bubble over the trainer with the trainer's own ball on it
-  (the game's ball sprite, so a Great Ball shows a Great Ball) and the nickname in the
-  Pokémon's type colour. A swap stacks as two bubbles, like back-to-back moves.
+  that's enough. Come back!"), in a bubble over the trainer like a move call-out, with the
+  nickname in the Pokémon's type colour. A swap stacks as two bubbles, like back-to-back moves.
 - **NPC trainers too:** gym leaders, NPC battles and Team Rocket ("Go, X!", "Back, X!" and
-  "X, go there!" in `001-npcBattle.lua` and `050-rocketBattle.lua`), with a Poké Ball.
+  "X, go there!" in `001-npcBattle.lua` and `050-rocketBattle.lua`).
 - **Orders:** all 30 order lines ("push it!", "let's climb!", "headbutt it!", "go there!",
   "shoot there!", "let's fly!", "I'm tired of surfing!", "turn to the north!" and the rest) and
-  throwing a ball ("Great ball, go!", "Safari ball, go!"). Orders show the trainer's ball; a
-  throw shows the ball thrown.
+  throwing a ball ("Great ball, go!", "Safari ball, go!").
 - **How:** `BattleText.say` (`091-battleText.lua`) sends a `say` message on the `BATTLE_TEXT`
   opcode with the exact line, then says it as before. The client draws the bubble and the
   console patch takes the overhead text, like a move call-out; Local Chat keeps the line.

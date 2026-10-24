@@ -885,7 +885,7 @@ function doPokemonCall(cid, ball)
             addEvent(doSendProjectile, 500, pokemonPosition, cid, balls[ballName].projectile)
             doTransformItem(ball.uid, balls[ballName].inUse)
             doSendMagicEffect(pokemonPosition, balls[ballName].effects.use)
-            BattleText.say(cid, "summon", getCreatureNickname(pokemon) .. ", " .. __L(cid, POKEMON_CALL_MESSAGES[math.random(1, #POKEMON_CALL_MESSAGES)]), { pokemon = pokemon, ball = ballName })
+            BattleText.say(cid, "summon", getCreatureNickname(pokemon) .. ", " .. __L(cid, POKEMON_CALL_MESSAGES[math.random(1, #POKEMON_CALL_MESSAGES)]), { pokemon = pokemon })
 
             addEvent(function()
                 if (isCreature(pokemon)) then

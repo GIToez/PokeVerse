@@ -372,7 +372,7 @@ if (RocketBattle == nil) then
         doSendMagicEffect(spawnPosition, balls["poke"].effects.use)
         registerCreatureEvent(pokemon, "npcPokemonDeath")
         BattleText.say(cid, "summon", string.format(__L(pid, "Go, %s!"), pokemonName),
-            { pokemon = pokemon, nick = pokemonName, ball = "poke", talkType = TALKTYPE_MONSTER })
+            { pokemon = pokemon, nick = pokemonName, talkType = TALKTYPE_MONSTER })
 
         setCreatureSkillLoss(pokemon, true) -- Enable exp
         setMonsterExperienceRate(pokemon, NPC_POKEMON_EXPERIENCE_RATE)
@@ -588,7 +588,7 @@ if (RocketBattle == nil) then
             local npcPokemon = self:getPokemon()
 
             BattleText.say(self.uid, "recall", string.format(__L(pid, "Back, %s!"), getCreatureName(npcPokemon)),
-                { pokemon = npcPokemon, nick = getCreatureName(npcPokemon), ball = "poke", talkType = TALKTYPE_SAY })
+                { pokemon = npcPokemon, nick = getCreatureName(npcPokemon), talkType = TALKTYPE_SAY })
             doSendMagicEffect(getCreaturePosition(npcPokemon), balls["poke"].effects.use)
             doRemoveCreature(npcPokemon)
         end

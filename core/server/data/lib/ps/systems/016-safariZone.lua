@@ -258,7 +258,7 @@ function onCreatureUseSafariBall(cid, item, fromPosition, itemEx, toPosition)
     doRemoveCreature(itemEx.uid)
 	doRemoveItem(item.uid, 1)
 	doSendDistanceShoot(getCreaturePosition(cid), toPosition, balls["safari"].projectile)
-	BattleText.say(cid, "throw", "Safari ball, go!", { ball = "safari", talkType = TALKTYPE_SAY })
+	BattleText.say(cid, "throw", "Safari ball, go!", { talkType = TALKTYPE_SAY })
     doPlayerIncreaseWastedBalls(cid, getPokemonNumberByName(pokemonName), item.itemid)
     RangerClub.onPlayerKill(cid, pokemonName)
 
