@@ -2530,6 +2530,10 @@ Plan (not started). Agreed on October 24: Gen 1 to 6, so the 332 Pokémon from #
 #718 Zygarde (#1 to #386 are in the game). The game will have 718 Pokémon. Gen 7 and later have
 no faces yet. We have permission to use PAdventures' art.
 
+**Full write-up, with every link:** [future-generations.md](future-generations.md). Every walk
+sprite (outfit) is approved one by one before it goes in, and sprites that look better than
+outfits we already have go on a separate list for approval.
+
 [`gen4-6-checklist.csv`](gen4-6-checklist.csv) has one row per Pokémon: what it evolves from
 and how, its PAdventures face, and where its walk sprite comes from.
 
@@ -2556,6 +2560,7 @@ and how, its PAdventures face, and where its walk sprite comes from.
 
 For the 93 that are unsure or not found: search the rest of the PAdventures creature sheets
 (only the species the pack lacked were searched before), then Mystery Dungeon sprites at 2x.
+None go in without approval, one by one.
 
 **What each Pokémon needs (a Gen 3 Pokémon, Treecko, has all of these):**
 
