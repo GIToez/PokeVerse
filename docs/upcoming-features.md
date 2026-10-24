@@ -2533,7 +2533,7 @@ Gen 7 on are not part of this, since there are no faces for them yet.
 
 | Art | Gen 4 (107) | Gen 5 (156) | Gen 6 (69) | Where |
 | --- | --- | --- | --- | --- |
-| Swap bar face | 107 | 156 | 69 | `art/sprites/faces/<dex>.png`, 64x64 from Battle Trozei |
+| Swap bar face | 107 | 156 | 69 | `art/sprites/faces/<dex>/`, 64x64 from Battle Trozei, 4-frame bob |
 | Walk sprite in the 6500 pack (named with high or medium confidence) | 53 | 122 | 3 | `docs/sprite-pack-review/new_species.csv` |
 | Walk sprite from Mystery Dungeon at 2x, like Deoxys | all | all | all | PMDCollab SpriteCollab |
 | Portrait and 3D Pokédex picture | all | all | all | Pokémon Showdown (`gen5/`, `ani/`) |
