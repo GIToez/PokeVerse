@@ -2094,7 +2094,8 @@ are overdone.
   wiki pages, the first-visit hints, the bank, Roscoe's and the other NPC lines, the Discord
   booster rewards, the website and the bot's text. Item numbers, storages and code names
   (`SOUL_COIN`, `soulCoins`) stay the same, so no balance changes.
-- **The art:** the concept is 32x32 with 12 frames. Before it goes in, the turning galaxy is
+- **The art:** the concept is 32x32 with 12 frames (`docs/concepts/verse-orb.png` and
+  `verse-orb-frames.png`). Before it goes in, the turning galaxy is
   cleaned up by hand so it reads well at item size, and it's checked next to the Pokédollar
   in the wallet. The old coin stays until the new art is approved.
 - **Short form:** "Orbs" where space is short ("Costs 5 Orbs").
