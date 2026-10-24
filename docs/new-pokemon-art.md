@@ -61,6 +61,17 @@ outfit given more frames. Licence: credit the listed contributors (see the repo'
 In use: Deoxys (look 1565) is the SpriteCollab #0386 walk animation, frames 0, 2, 4 and 6, at
 2x on a 96 pixel sheet (credited to Chunsoft in SpriteCollab), until it gets its own art.
 
+**PAdventures walk sprites: in our own format, but another server's art.**
+`DistTopic/padventures-sprites` on GitHub is an extraction of the PAdventures client: 8,256
+creature sheets, unnamed, 4 directions with frames side by side. 688 match our outfits tile for
+tile and 1,308 match the 6500 pack; of the rest, the sprites in
+[`sprite-pack-review/padventures_found.csv`](sprite-pack-review/padventures_found.csv) were
+named by comparing them with the Black/White sprites and checked by eye. They cover 61 of the
+109 Gen 4–6 species the pack has no walk sprite for, plus flying Latias, Latios and Rayquaza
+(none for Kyogre). The extraction is CC BY-NC-SA (no commercial use), and the art belongs to
+the PAdventures server, which never released it, so it is a reference rather than something to
+ship as is.
+
 ## Open decisions
 
 - Whether to apply the Gen 7 stat buffs and the other fixes from the stats audit before importing
