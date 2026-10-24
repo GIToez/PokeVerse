@@ -15,6 +15,11 @@
 -- Points come from LEGENDARY_ANCHORS (scripts/make-legendary-anchors.py): spawn spots of the map
 -- with their area, zone (town) and tags. A species' habitat is the points of its regions and
 -- places, weighted by its tags, and its home areas or zones.
+--
+-- Finding one: its signs show around it, on the marks of the way it came (the spot it left and every
+-- routeSpacing tiles of the last stretch), and around the trainers in its area, a few tiles toward it.
+-- Its moves, take-offs, landings and fly-overs reach the Legendary channel and Discord only when a
+-- trainer sees them or they happen close to a town (seenBy).
 
 WildLegendaries = {}
 
@@ -186,8 +191,15 @@ WildLegendaries.CONFIG = {
     signEvery = 6,              -- seconds between signs of a legendary
     faintSignEvery = 15,        -- of a mythical
     disguiseSignEvery = 30,     -- of Mew in disguise
-    trailLength = 6,            -- spots it left that still show signs
+    trailLength = 24,           -- marks of its trail that still show signs (the spots it left and the way it came)
     trailSeconds = 10 * MINUTE,
+    trailView = 12,             -- a mark shows its signs while a trainer is this close
+    routeSpacing = 8,           -- tiles between the marks it leaves on its way to a new spot
+    routeLength = 80,           -- only the last this many tiles of the way are marked
+    areaSignRange = 60,         -- trainers this close (same floor, out of sight) find signs leading to it
+    areaSignEvery = { 6, 20 },  -- seconds between them for each trainer: right outside its sight, at the edge
+    sightRange = { 9, 7 },      -- a trainer this close sees it move or land
+    townSightRange = 35,        -- a town sees it within this many tiles of its centre
     saveEvery = 30,
     warningSeconds = 180,       -- Mewtwo's psychic disturbance before it appears
     warningEffectEvery = 4,     -- seconds between bursts, every second in the last warningFinalSeconds
@@ -869,6 +881,32 @@ local function playersNear(pos, rangeX, rangeY)
     return list
 end
 
+-- Who notices it at pos: the name of a trainer in sight, else the town it is close to (nil, town), else nil.
+-- Moves, take-offs, landings and fly-overs nobody notices aren't reported.
+local function seenBy(pos)
+    for _, pid in ipairs(playersNear(pos, CONFIG.sightRange[1], CONFIG.sightRange[2])) do
+        if (getCreaturePosition(pid).z == pos.z) then
+            return getCreatureName(pid)
+        end
+    end
+    local zone = Weather.zoneAt(pos)
+    if (zone and zone.pos and distance(zone.pos, pos) <= CONFIG.townSightRange) then
+        return nil, zone.name
+    end
+    return nil
+end
+WildLegendaries.seenBy = seenBy
+
+-- "Ash spotted Zapdos near Route 10." / "Zapdos was seen near Route 10, close to Cerulean."
+local function seenText(trainer, town, species, verb, area)
+    if (trainer) then
+        return string.format("%s saw %s %s %s.", trainer, species.name, verb, area)
+    elseif (area == town) then
+        return string.format("%s was seen %s %s.", species.name, verb, area)
+    end
+    return string.format("%s was seen %s %s, close to %s.", species.name, verb, area, town)
+end
+
 -- Groudon coming up, Deoxys's impact: the screens around it shake, harder the closer they are
 local function shakeAround(pos, ms, delay)
     for _, pid in ipairs(playersNear(pos, CONFIG.shakeRange, CONFIG.shakeRange)) do
@@ -1138,11 +1176,30 @@ local function pathOf(cid)
 end
 WildLegendaries.pathOf = pathOf
 
--- Records where it was and the zone it is in now
-local function arrive(cid, species, from, pos, point)
+-- Marks on the last stretch of the way from `from` to `to` on one floor, nearest `to` first
+local function routeMarks(from, to)
+    local marks, d = {}, distance(from, to)
+    if (from.z ~= to.z or d < 2 * CONFIG.routeSpacing) then
+        return marks
+    end
+    for back = CONFIG.routeSpacing, math.min(CONFIG.routeLength, d - CONFIG.routeSpacing), CONFIG.routeSpacing do
+        local t = (d - back) / d
+        marks[#marks + 1] = { x = math.floor(from.x + (to.x - from.x) * t + 0.5),
+                              y = math.floor(from.y + (to.y - from.y) * t + 0.5), z = to.z }
+    end
+    return marks
+end
+WildLegendaries.routeMarks = routeMarks
+
+-- Records where it was, the way it came (travelled: it walked, flew or swam there) and the zone it is in now
+local function arrive(cid, species, from, pos, point, travelled)
     local now = os.time()
     if (from) then
-        local parts = { string.format("%d,%d,%d,%d", from.x, from.y, from.z, now) }
+        local parts = {}
+        for _, mark in ipairs(travelled and routeMarks(from, pos) or {}) do
+            parts[#parts + 1] = string.format("%d,%d,%d,%d", mark.x, mark.y, mark.z, now)
+        end
+        parts[#parts + 1] = string.format("%d,%d,%d,%d", from.x, from.y, from.z, now)
         for _, spot in ipairs(trailOf(cid)) do
             if (#parts < CONFIG.trailLength) then
                 parts[#parts + 1] = string.format("%d,%d,%d,%d", spot.x, spot.y, spot.z, spot.at)
@@ -1595,7 +1652,7 @@ local function relocate(cid, species, reason)
                 doCreatureSetStorage(cid, MON.MOVED_AT, os.time())
                 return monText(cid, MON.AREA) or WildLegendaries.areaAt(pos)
             end
-            return (arrive(cid, species, from, pos, point))
+            return (arrive(cid, species, from, pos, point, not hop))
         end
     end
     return nil
@@ -1612,8 +1669,11 @@ local function announceTakeoff(species, f, memo, reason)
         discord({ event = "flee", encounterId = f.encounter, species = species.name,
             area = (not mythical) and where or nil, healthPercent = f.health })
     elseif (not mythical) then
-        toChannel(string.format(f.kind == "w" and "%s dived near %s, heading %s." or "%s took off from %s, heading %s.",
-            species.name, where, heading))
+        local trainer, town = seenBy(f.from)
+        if (trainer or town) then
+            local text = seenText(trainer, town, species, f.kind == "w" and "diving near" or "taking off from", where)
+            toChannel((text:gsub("%.$", ", heading " .. heading .. ".")))
+        end
     end
 end
 
@@ -1643,7 +1703,7 @@ local function land(f, now)
     end
     doCreatureSetStorage(cid, MON.FLEE_STAGE, f.stage)
     local here = getCreaturePosition(cid)
-    local area = arrive(cid, species, f.from, here, nil)
+    local area = arrive(cid, species, f.from, here, nil, true)
     if (f.kind == "a") then
         effectAt(here, (STYLE_TEXT[species.style] or {}).land or EFFECT_LEGENDARY_LANDING)
     else
@@ -1656,12 +1716,16 @@ local function land(f, now)
     if (memo.reason == "flee") then
         broadcast(string.format("%s came down near %s with %d%% health.", species.name, mythical and "somewhere" or area,
             healthPercent(cid)))
-    elseif (not mythical) then
-        toChannel(string.format(f.kind == "w" and "%s surfaced near %s." or "%s landed near %s.", species.name, area))
-        sendCard(channelPlayers(), { type = "sighting", species = species.name, area = area })
     end
-    discord({ event = "sighting", encounterId = f.encounter, species = species.name, area = (not mythical) and area or nil,
-        position = (not mythical) and here or nil, healthPercent = healthPercent(cid) })
+    local trainer, town = seenBy(here)
+    if (memo.reason == "flee" or trainer or town) then
+        if (memo.reason ~= "flee" and not mythical) then
+            toChannel(seenText(trainer, town, species, f.kind == "w" and "surfacing near" or "landing near", area))
+            sendCard(channelPlayers(), { type = "sighting", species = species.name, area = area })
+        end
+        discord({ event = "sighting", encounterId = f.encounter, species = species.name, area = (not mythical) and area or nil,
+            position = (not mythical) and here or nil, trainer = trainer, healthPercent = healthPercent(cid) })
+    end
     WildLegendaries.save()
     return cid
 end
@@ -1685,13 +1749,17 @@ function WildLegendaries.runFlights(now)
                 memo.signAt = now
                 effectAt(pos, f.kind == "w" and EFFECT_LEGENDARY_WATER_RIPPLE or pick(f.species.signs))
             end
+            -- once per zone, when a trainer under it or the town sees it go over
             local zone = Weather.zoneAt(pos)
-            if (f.kind == "a" and progress < 1 and zone and zone.name ~= memo.zone and
+            local overTown = zone and zone.pos and distance(zone.pos, pos) <= CONFIG.townSightRange
+            local watchers = playersNear(pos, CONFIG.flightView[1], CONFIG.flightView[2])
+            local watcher = watchers[1] and getCreatureName(watchers[1])
+            if (f.kind == "a" and progress < 1 and zone and zone.name ~= memo.zone and (watcher or overTown) and
                     now - memo.sightingAt >= CONFIG.flightSightingEvery) then
                 memo.zone, memo.sightingAt = zone.name, now
                 if (f.species.tier < 3) then
-                    toChannel(string.format("%s was seen flying over %s, heading %s.", f.species.name, zone.name,
-                        directionTo(f.from, f.to)))
+                    local text = seenText(watcher, zone.name, f.species, "flying over", zone.name)
+                    toChannel((text:gsub("%.$", ", heading " .. directionTo(f.from, f.to) .. ".")))
                     sendCard(channelPlayers(), { type = "sighting", species = f.species.name, area = zone.name })
                 end
             end
@@ -1762,6 +1830,11 @@ function WildLegendaries.move(cid, reason)
     end
     local encounter = monNumber(cid, MON.ENCOUNTER)
     local mythical = species.tier == 3
+    local trainer, town = seenBy(getCreaturePosition(cid))
+    if (reason ~= "flee" and not trainer and not town) then
+        WildLegendaries.save()
+        return true
+    end
     if (reason == "flee") then
         if (mythical) then
             broadcast(string.format("%s is hurt and vanished! It has %d%% health left.", species.name, healthPercent(cid)))
@@ -1772,12 +1845,12 @@ function WildLegendaries.move(cid, reason)
         sendCard(allPlayers(), { type = "flee", species = species.name, area = (not mythical) and area or nil,
             health = healthPercent(cid) })
     elseif (not mythical) then
-        toChannel(string.format("%s was spotted near %s.", species.name, area))
+        toChannel(seenText(trainer, town, species, "near", area))
         sendCard(channelPlayers(), { type = "sighting", species = species.name, area = area })
     end
     discord({ event = reason == "flee" and "flee" or "sighting", encounterId = encounter, species = species.name,
         area = (not mythical) and area or nil, position = (not mythical) and getCreaturePosition(cid) or nil,
-        healthPercent = healthPercent(cid) })
+        trainer = reason ~= "flee" and trainer or nil, healthPercent = healthPercent(cid) })
     WildLegendaries.save()
     return true
 end
@@ -2130,7 +2203,37 @@ local function near(pos, radius)
     return { x = pos.x + getRandom(-radius, radius), y = pos.y + getRandom(-radius, radius), z = pos.z }
 end
 
--- Its signs around it and on the spots it left (legendaries); faint ones only around it (mythicals)
+local function hasGround(pos)
+    local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = STACKPOS_GROUND })
+    return ground ~= nil and ground.itemid ~= nil and ground.itemid ~= 0
+end
+
+-- The online trainers and where they are, read once a second
+local trainerSpots = { at = -1, list = {} }
+
+local function trainerPositions()
+    local now = os.time()
+    if (trainerSpots.at ~= now) then
+        local list = {}
+        for _, pid in ipairs(getPlayersOnline() or {}) do
+            list[#list + 1] = { pid = pid, pos = getCreaturePosition(pid) }
+        end
+        trainerSpots = { at = now, list = list }
+    end
+    return trainerSpots.list
+end
+
+local function trainerNear(pos, range)
+    for _, t in ipairs(trainerPositions()) do
+        if (t.pos.z == pos.z and distance(t.pos, pos) <= range) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Its signs around it, and on the marks of its trail a trainer is near (fresh marks each time, older ones now
+-- and then); faint ones only around it (mythicals). all: every mark (staff).
 function WildLegendaries.showSigns(cid, species, all)
     local pos = getCreaturePosition(cid)
     if (monNumber(cid, MON.DISGUISED) == 1) then
@@ -2142,17 +2245,51 @@ function WildLegendaries.showSigns(cid, species, all)
     end
     effectAt(near(pos, species.tier == 3 and 1 or 3), pick(species.signs))
     if (species.tier < 3 or all) then
-        local trail = trailOf(cid)
-        if (all) then
-            for _, spot in ipairs(trail) do
-                effectAt(spot, pick(species.signs))
-                effectAt(near(spot, 2), pick(species.signs))
+        local now = os.time()
+        for _, spot in ipairs(trailOf(cid)) do
+            if (all or (trainerNear(spot, CONFIG.trailView) and
+                    (now - spot.at < CONFIG.trailSeconds / 2 or getRandom(1, 2) == 1))) then
+                effectAt(near(spot, 1), pick(species.signs))
+                if (all) then
+                    effectAt(near(spot, 2), pick(species.signs))
+                end
             end
-        elseif (#trail > 0) then
-            effectAt(near(trail[getRandom(1, #trail)], 2), pick(species.signs))
         end
     end
 end
+
+-- Signs leading the trainers around it to it: for each trainer on its floor within areaSignRange but out of
+-- sight, now and then one a few tiles from them toward it (scattered), more often the closer they are.
+-- Mythicals: half the range, half as often.
+local guided, guidedAt = {}, 0
+
+local function guideSigns(cid, species, now)
+    if (now - guidedAt >= 10 * MINUTE) then
+        guided, guidedAt = {}, now
+    end
+    local pos = getCreaturePosition(cid)
+    local mythical = species.tier == 3
+    local range = mythical and math.floor(CONFIG.areaSignRange / 2) or CONFIG.areaSignRange
+    local low, high = CONFIG.areaSignEvery[1], CONFIG.areaSignEvery[2]
+    local encounter = monNumber(cid, MON.ENCOUNTER)
+    for _, t in ipairs(trainerPositions()) do
+        local d = distance(t.pos, pos)
+        if (t.pos.z == pos.z and d > CONFIG.sightRange[1] and d <= range) then
+            local key = t.pid .. ":" .. encounter
+            local every = (low + (high - low) * d / range) * (mythical and 2 or 1)
+            if (now - (guided[key] or 0) >= every) then
+                guided[key] = now
+                local along = getRandom(3, 5) / d
+                local spot = near({ x = math.floor(t.pos.x + (pos.x - t.pos.x) * along + 0.5),
+                                    y = math.floor(t.pos.y + (pos.y - t.pos.y) * along + 0.5), z = pos.z }, 2)
+                if (hasGround(spot)) then
+                    effectAt(spot, pick(species.signs))
+                end
+            end
+        end
+    end
+end
+WildLegendaries.guideSigns = guideSigns
 
 -- Executor ---------------------------------------------------------------------------------------
 
@@ -2170,6 +2307,9 @@ local function upkeep(cid, now)
     if (now - monNumber(cid, MON.LAST_SIGN) >= every) then
         doCreatureSetStorage(cid, MON.LAST_SIGN, now)
         WildLegendaries.showSigns(cid, species)
+    end
+    if (not disguised) then
+        guideSigns(cid, species, now)
     end
 
     if (disguised) then

@@ -2425,7 +2425,7 @@ Server Lua only, plus the Admin window in the Redemption client. All settings ar
   its zone while it is out (a weather override that ends with it, unless staff set the weather
   there).
 - **Signs:** every 6 seconds (mythicals 15, Mew in disguise 30) its effects show where it is
-  and on the last 6 spots it left (for 10 minutes): snow and ice for Articuno, sparks for
+  and on the last spots it left (for 10 minutes; see "Finding them" below): snow and ice for Articuno, sparks for
   Raikou, pink clouds for Mew and so on. These are effects we already have; the new art from
   [#207](https://github.com/GIToez/PokeVerse/pull/207) comes with the client.
 - **Mew** appears as a Pokémon of its spot at that spot's level. A hit, or the radar of a
@@ -2543,6 +2543,32 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 - **Ranger tracking by footprints** ([section 11](#11-bug-fixes-and-small-ideas)).
 - **Pokepedia:** the Wild legendaries page describes the revamp, with a line for the
   Rangers' hints by rank.
+
+### Finding them (built)
+
+A legendary only walks or flies when its move timer comes up, and between moves it stands
+still, so its signs used to reach only the trainers already on screen with it. The settings are
+in `WildLegendaries.CONFIG`, next to `signEvery`.
+
+- **Signs in its area:** every trainer on its floor within 60 tiles of it, but out of sight,
+  now and then sees one of its signs 3 to 5 tiles away from them toward it, give or take 2
+  tiles. Right outside its sight that's every 6 seconds, and at 60 tiles every 20. Mythicals
+  get this within 30 tiles and half as often, Mew in disguise never, and the sleeping Regis
+  do get it (they never move).
+- **Trails from zone to zone:** a walk, flight or swim to a new spot leaves a mark every 8
+  tiles on the last 80 tiles of the way, plus the spot it left (up to 24 marks, for 10
+  minutes). A mark shows its sign while a trainer is within 12 tiles of it: fresh marks every
+  time, marks older than 5 minutes half the time. Short teleports (Celebi, Mew, the caves)
+  leave only the spot.
+- **Seen, or not reported:** a move, take-off, landing or fly-over goes to the Legendaries
+  channel, its sighting card and Discord only when a trainer within 9 by 7 tiles saw it ("Misty
+  saw Zapdos near Route 10.") or it happened within 35 tiles of a town's centre ("Zapdos was
+  seen near Route 10, close to Cerulean."). The spawn announcement, flees and the end are
+  still sent to everyone.
+- **Area names everywhere:** the anchor points take their area names from the modern
+  client's areas (Johto, Hoenn, the seas, then the legacy Kanto and Orange areas), so
+  announcements, the radar and Discord name the route or landmark instead of "around <town>".
+  Only 246 of the 7652 points have no name, down from 3648.
 
 ## 23. New Pokémon (Gen 4 to 6)
 
