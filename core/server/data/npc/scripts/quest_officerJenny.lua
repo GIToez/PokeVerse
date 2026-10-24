@@ -109,7 +109,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             selfSay("You've done this mission and has the old reward, I can renew your reward. Do you want it?", cid)
             npcHandler.talkState[talkUser] = TALKSTATE_RENEW
         else
-            npcHandler.talkState[talkUser] = doQuestTalkStart(cid, "Officer Jeny")
+            npcHandler.talkState[talkUser] = doQuestTalkStart(cid, "Officer Jenny")
         end
 
 	elseif(msgcontains(msg, 'yes') or msgcontains(msg, 'sim')) then
@@ -118,7 +118,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             npcHandler.talkState[talkUser] = 0
 
         else
-            npcHandler.talkState[talkUser] = doQuestTalkEnd(cid, "Officer Jeny", npcHandler.talkState[talkUser])
+            npcHandler.talkState[talkUser] = doQuestTalkEnd(cid, "Officer Jenny", npcHandler.talkState[talkUser])
         end
 
 	else

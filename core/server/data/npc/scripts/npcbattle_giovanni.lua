@@ -43,7 +43,7 @@ local function doJennyScene(cid, npcId)
         police2 = {x = 5033, y = 574, z = 9}
     }
     local npcs = {
-        jenny = doCreateNpc("Officer Jeny", npcsPos.jenny),
+        jenny = doCreateNpc("Officer Jenny", npcsPos.jenny),
         police1 = doCreateNpc("Police Officer", npcsPos.police1),
         police2 = doCreateNpc("Police Officer", npcsPos.police2)
     }

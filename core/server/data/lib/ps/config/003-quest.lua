@@ -5652,7 +5652,7 @@ QUESTS_CONFIG = {
             rewardExp = 0,
             requiredLevel = 10,
             questType = QUEST_TYPE.CUSTOM,
-            questRequest = function(cid) return getCreatureStorage(cid, 8422) == QUEST_STATUS.FINISHED end, -- Officer Jeny quest #1
+            questRequest = function(cid) return getCreatureStorage(cid, 8422) == QUEST_STATUS.FINISHED end, -- Officer Jenny quest #1
             canStart = function(cid) return getCreatureStorage(cid, 8419) ~= QUEST_STATUS.UNSTARTED end, -- Gary Oak quest #4
         },
         {
@@ -5868,7 +5868,7 @@ QUESTS_CONFIG = {
             blockStart = true
         },
     },
-    ["Officer Jeny"] = {
+    ["Officer Jenny"] = {
         --[[{
             storage = 8563,
             talk_questStarting = "It was like this picture?",
@@ -5947,7 +5947,7 @@ QUESTS_CONFIG = {
                 }
 
                 for _, pos in pairs(POSTERS) do
-                    doPlayerAddMapMark(cid, pos, MAPMARK_EXCLAMATION, "Officer Jeny poster location")
+                    doPlayerAddMapMark(cid, pos, MAPMARK_EXCLAMATION, "Officer Jenny poster location")
                 end
             end
         },
