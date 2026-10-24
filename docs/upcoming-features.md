@@ -2608,6 +2608,95 @@ Noibat, Noivern.
 
 Legendary and mythical: Xerneas, Yveltal, Zygarde.
 
+## 24. Battle text: call-out bubbles and hit numbers
+
+Concept (not started).
+
+**Today.** When a trainer's Pokémon uses a move, the trainer says "Pikachu, Thunderbolt!" as
+orange chat text over their head (`003-skill.lua`, `doCreatureSay`), and a wild Pokémon yells
+the move's name. Damage is the engine's plain number floating up from the target, coloured by
+type. A critical hit is a separate red "CRITICAL!" over the attacker (`004-skillDamage.lua`),
+so it lands on top of the call-out and away from the number it belongs to. Super effective and
+not very effective hits look the same as any other hit.
+
+**Call-outs.**
+
+- **Trainers:** every trainer's call-out (yours, other players', NPC trainers' and gym leaders')
+  is a speech bubble that pops out over the trainer, with its tail pointing at them. It scales in
+  (small, a bit too big, then settled) and stays about 1.5 seconds. It says the Pokémon's
+  nickname, or its species when it has none ("Sparky, Thunderbolt!" or "Pikachu,
+  Thunderbolt!"), and the move's name is in its type's colour. The server's nickname already
+  falls back to the species.
+- **Wild Pokémon:** no bubble. They stop yelling their move's name; their hits still show
+  numbers.
+- **Local Chat** still gets the "Pikachu, Thunderbolt!" line, so the log stays the same.
+
+**Back-to-back moves.** Four ways to show them:
+
+- **A. Replace:** one bubble, and the text swaps with a bounce. It's the cleanest, but earlier
+  moves vanish.
+- **B. Grow:** one bubble gains a line per move, 3 at most. The newest line is full size and
+  coloured; older ones are smaller and grey, and the oldest drops off.
+- **C. Stack bubbles:** each move gets its own bubble, and older ones float up and fade. This is
+  the busiest on screen.
+- **D. Combo count:** the same move again adds x2, x3 instead of a new line. It works with A or
+  B.
+
+Chosen: C. Each call-out is its own bubble and lives about 1.5 seconds. When a new one comes,
+the older ones float up a step, shrink a little and turn see-through, then fade out. A trainer
+has at most 3 at once; a fourth pushes the oldest out early. Moves can come about once a second
+(`BATTLE_ROUND_INTERVAL`), so a trainer in a steady fight usually has 2 showing.
+
+**Hit numbers.** One number per hit, on the target. It pops in, rises and fades, and moves a
+few pixels to the side each time so quick hits don't cover each other. Fast multi-hits still
+add up into one number, like today. Size and style show how good the hit was:
+
+| Hit | Look |
+| --- | --- |
+| Normal | White, outlined |
+| Super effective | Bigger, orange-gold, "SUPER EFFECTIVE" under it |
+| Not very effective | Smaller, grey, "resisted" under it |
+| Critical | Biggest, red-gold with a glow and a burst behind it, "CRIT!" tag, a tiny screen shake |
+| Heal or drain | Green "+35" |
+| Miss, dodge, protect, immune | A tag; see below |
+
+**Outcome tags.** Today a miss, a dodge, a block and a status all look like the same floating
+word, so you can't tell them apart. Each becomes a rounded tag with its own colour and icon:
+
+| Outcome | Tag | Where |
+| --- | --- | --- |
+| The move missed | Grey "MISS" with a swoosh | On the target |
+| The target dodged (evasion abilities, mastery) | Blue "DODGED", and the Pokémon blurs aside | On the target |
+| Protect or Reflect blocked it | Green "PROTECTED" with a shield | On the target |
+| Immune | Dark "NO EFFECT" with a cross | On the target |
+| Status (burn, paralysis, sleep, poison, freeze, confusion, love, flinch) | The status's colour and icon, e.g. yellow "PARALYZED" with a bolt | On the Pokémon it hits |
+| Stat change | Red "ATTACK UP" with an up arrow, blue "ATTACK DOWN" with a down arrow | On the Pokémon it hits |
+| The move failed, or the Pokémon is tired | Purple "FAIL" or "TIRED" | On the user |
+
+**Lanes.** Each kind of text has its own spot around the Pokémon: numbers above it, stat
+changes beside it, statuses under its feet. A hit, a stat drop and a paralysis at the same time
+don't land on top of each other.
+
+**How it would be built.**
+
+- **Server:** `getFinalDamage` already knows whether a hit crit and its type multiplier.
+  `doSkillDamage` passes these on, and one extended opcode tells the trainers who can see the
+  fight: target, amount and kind (normal, super, resisted, crit, heal, miss, immune). The
+  call-out moves to an opcode too (trainer, Pokémon's nickname, move, type) in place of
+  `doCreatureSay`. The engine's own number for Pokémon damage is switched off, so a hit isn't
+  shown twice (`game.cpp`, `combatChangeHealth`).
+- **Client:** a new module (`game_battletext`) draws both as widgets attached to the creature
+  (`creature:attachWidget`), so they follow it as it walks. It also adds the call-out line to
+  Local Chat. It uses the HUD's pixel font (Pixelify Sans). The art is small: a 9-slice bubble,
+  the burst, the crit burst and, if the font's outline isn't enough, a sheet of digits in each
+  style.
+- **Options:** in Options > Interface (HUD), "Battle text: New or Classic". Classic is today's
+  text. There's also "Screen shake on critical hits", on by default.
+
+**Agreed (October 23):** nickname, or species when there's none. Every trainer's call-out shows
+as a bubble; wild Pokémon don't get one. A switch between new and classic. Back-to-back moves
+stack as separate bubbles that float up and fade (C).
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
