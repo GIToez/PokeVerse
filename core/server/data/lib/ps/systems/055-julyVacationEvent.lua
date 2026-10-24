@@ -96,7 +96,7 @@ end
 -- The hunting time and the chests already given are kept on the character for the year, so a
 -- restart doesn't hand the chests out again
 JulyVacationEvent.getHunting = function(cid)
-    local year, spent, received = tostring(getCreatureStorage(cid, playersStorages.summerHunting)):match("^(%d+):(%-?%d+):(%d+)$")
+    local year, spent, received = tostring(getCreatureStorage(cid, playersStorages.summerHunting)):match("^y(%d+):(%-?%d+):(%d+)$")
     if (tonumber(year) ~= tonumber(os.date("%Y"))) then
         return 0, 0
     end
@@ -120,7 +120,7 @@ JulyVacationEvent.onStaminaChange = function(cid, stamina, change)
             doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_RED)
         end
     end
-    doCreatureSetStorage(cid, playersStorages.summerHunting, string.format("%d:%d:%d", tonumber(os.date("%Y")), spent, received))
+    doCreatureSetStorage(cid, playersStorages.summerHunting, string.format("y%d:%d:%d", tonumber(os.date("%Y")), spent, received))
 end
 
 JulyVacationEvent.onPlayerUseRewardChest = function(cid, item)

@@ -123,6 +123,6 @@ playersStorages = {
     bankNpc = base + 120, -- the name of the bank NPC whose window the trainer has open (Bank)
     vocationTrack = base + 121, -- "m<cid>:<until>" the wild Pokemon a Ranger follows by its footprints (Vocations)
     forcedOutfit = base + 122, -- "o<forced look>;<type>,<head>,<body>,<legs>,<feet>,<addons>" the trainer's own outfit under a /forceoutfit look
-    summerHunting = base + 123, -- "<year>:<stamina ms spent>:<chests received, a sum of 2^(index in STAMINA_REWARDS - 1)>" (JulyVacationEvent)
+    summerHunting = base + 123, -- "y<year>:<stamina ms spent>:<chests received, a sum of 2^(index in STAMINA_REWARDS - 1)>" (JulyVacationEvent)
     -- tournamentWeekWinnerStorage = base + 65
 }
