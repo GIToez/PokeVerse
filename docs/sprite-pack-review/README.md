@@ -36,3 +36,31 @@ Pokémon past #386 in the pack (`?` names in `new_species.csv` are low-confidenc
 Sheet layout in the pack: 4 directions (N, E, S, W) across, animation frames down. Sheets that
 are twice as wide have the colour mask column next to each direction; it goes in as the
 outfit's second layer.
+
+## Sorting the Drive folder
+
+`rename_plan.csv` gives every pack sheet in the Drive folder (by file id) a readable name like
+`0452 Drapion - walk #3781.png` (`#3781` is the old `outfit_3781_.png` number, `unsure` marks a
+low-confidence name) and a subfolder:
+
+| Folder | Sheets |
+| --- | --- |
+| 00 Fills a gap in our game | 3 |
+| 01 Already in our game (do not import) | 1,036 |
+| 02 to 06 New Pokemon - Gen 4 to Gen 8 | 668 |
+| 07 Pokemon wearing outfits (costumes) | 156 |
+| 08 Recolours and edits of Pokemon we have | 502 |
+| 09 Other art for Pokemon we have (Gen 1-3) | 656 |
+| 10 Forms (Mega, Alolan, Galarian, Primal) | 189 |
+| 11 Trainer outfits | 863 |
+| 12 Effects | 87 |
+| 13 NPCs, items and other | 58 |
+| 14 Not named yet | 1,206 |
+| 15 Exact duplicates | 1,765 |
+
+Costumes are sheets whose pixels mostly match a plain sprite of the same Pokémon with extra
+pixels added (hats, scarves, outfits). Files that were already renamed by hand are left alone.
+
+`drive_sort.gs` applies it: paste it into a new project at script.google.com, run `sortPack` and
+allow Drive access. It works about five minutes at a time and schedules itself until all files
+are done (it logs its progress under Executions). `undoSort` puts the old names back.
