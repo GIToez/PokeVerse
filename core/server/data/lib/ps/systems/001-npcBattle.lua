@@ -558,7 +558,8 @@ if (NpcBattle == nil) then
         doConvinceCreature(self.uid, pokemon)
         doSendMagicEffect(spawnPosition, balls["poke"].effects.use)
         registerCreatureEvent(pokemon, "npcPokemonDeath")
-        doCreatureSay(self.uid, string.format(__L(pid, "Go, %s!"), pokemonName), TALKTYPE_MONSTER)
+        BattleText.say(self.uid, "summon", string.format(__L(pid, "Go, %s!"), pokemonName),
+            { pokemon = pokemon, nick = pokemonName, talkType = TALKTYPE_MONSTER })
 
         addEvent(function()
             if (isCreature(pokemon)) then
@@ -836,7 +837,8 @@ if (NpcBattle == nil) then
         if (self:isPokemonOnline()) then
             local npcPokemon = self:getPokemon()
 
-            doCreatureSay(self.uid, string.format(__L(pid, "Back, %s!"), getCreatureName(npcPokemon)), TALKTYPE_SAY)
+            BattleText.say(self.uid, "recall", string.format(__L(pid, "Back, %s!"), getCreatureName(npcPokemon)),
+                { pokemon = npcPokemon, nick = getCreatureName(npcPokemon), talkType = TALKTYPE_SAY })
             doSendMagicEffect(getCreaturePosition(npcPokemon), balls["poke"].effects.use)
             doRemoveCreature(npcPokemon)
         end
@@ -1206,7 +1208,8 @@ if (NpcBattle == nil) then
             --doCreatureWalkToPosition(pokemonUid, pos)
 
             if ((os.time() - self.lastOrder) > 4) then
-                doCreatureSay(self.uid, string.format(__L(pid, "%s, go there!"), getCreatureNickname(pokemonUid)), TALKTYPE_MONSTER)
+                BattleText.say(self.uid, "order", string.format(__L(pid, "%s, go there!"), getCreatureNickname(pokemonUid)),
+                    { pokemon = pokemonUid, talkType = TALKTYPE_MONSTER })
                 self.lastOrder = os.time()
             end
         end

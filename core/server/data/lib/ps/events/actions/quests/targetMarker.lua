@@ -93,7 +93,7 @@ local function doShoot(cid, pokemon, target, targetPosition, pokemonPosition)
     end
 
     LAST_SHOOT = os.time()
-    doCreatureSay(cid, string.format(__L(cid, "%s, shoot there!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+    BattleText.say(cid, "order", string.format(__L(cid, "%s, shoot there!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
     doShootTick(cid, pokemon, target, targetPosition, ELEMENT_PROJECTILE[getPokemonTypes(pokemon)[1]], pokemonPosition)
 end
 

@@ -376,7 +376,7 @@ function ride(cid)
     if ((not targetPos and getDistanceBetween(pos, toPosition) <= 1) or
             (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
                     getPathToEx(pokemon, targetPos))) then
-        doCreatureSay(cid, string.format(__L(cid, "%s , let's ride!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s , let's ride!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         if (targetPos) then
             doCreatureWalkToPosition(pokemon, targetPos)
         end
@@ -428,7 +428,7 @@ function fly(cid)
     if ((not targetPos and getDistanceBetween(pos, toPosition) <= 1) or
             (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
                     getPathToEx(pokemon, targetPos))) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, let's fly!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, let's fly!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         if (targetPos) then
             doCreatureWalkToPosition(pokemon, targetPos)
         end
@@ -450,7 +450,7 @@ local function checkSurf(cid, pokemon, newPosition, playerPosition, ticks)
         if (getSamePosition(toPosition, playerPosition)) then -- If the player moves, we cannot secure that this is a mountable position
             if (getDistanceBetween(getCreaturePosition(pokemon), toPosition) < 2) then
                 doTeleportThing(cid, newPosition, false)
-                doCreatureSay(cid, string.format(__L(cid, "%s, let's surf!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+                BattleText.say(cid, "order", string.format(__L(cid, "%s, let's surf!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
                 doBallSaveStats(pokemon, getPlayerBall(cid).uid)
                 doRemoveCreature(pokemon)
                 setSurfingStatus(cid, true)
@@ -479,7 +479,7 @@ function surf(cid, newPosition, toPosition)
     if ((not targetPos and getDistanceBetween(pos, toPosition) <= 1) or
             (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
                     getPathToEx(pokemon, targetPos))) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, let's surf!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, let's surf!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         if (targetPos) then
             doCreatureWalkToPosition(pokemon, targetPos)
         end
@@ -531,7 +531,7 @@ function dive(cid)
         if ((not targetPos and getDistanceBetween(pos, toPosition) <= 1) or
                 (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
                         getPathToEx(pokemon, targetPos))) then
-            doCreatureSay(cid, string.format(__L(cid, "%s, let's dive!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, let's dive!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
             if (targetPos) then
                 doCreatureWalkToPosition(pokemon, targetPos)
             end
@@ -558,7 +558,7 @@ end
 function light(cid)
 	local pokemon = getPlayerPokemon(cid)
 
-	doCreatureSay(cid, string.format(__L(cid, "%s, turn on the lights!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+	BattleText.say(cid, "order", string.format(__L(cid, "%s, turn on the lights!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 	doAddCondition(pokemon, lightCondition)
 	doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_GREEN_BUFF)
 	Flashlight.sendState(cid)
@@ -567,7 +567,7 @@ end
 function deLight(cid)
 	local pokemon = getPlayerPokemon(cid)
 
-	doCreatureSay(cid, string.format(__L(cid, "%s, turn off the lights!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+	BattleText.say(cid, "order", string.format(__L(cid, "%s, turn off the lights!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 	doRemoveCondition(pokemon, CONDITION_LIGHT)
 	doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_GREEN_BUFF)
 	Flashlight.sendState(cid)
@@ -600,7 +600,7 @@ function dig(cid, itemEx, toPosition)
 
     if (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
             getPathToEx(pokemon, targetPos)) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, dig it!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, dig it!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         doCreatureWalkToPosition(pokemon, targetPos)
 	    checkDig(pokemon, itemEx, toPosition, 20)
     else
@@ -632,7 +632,7 @@ function cut(cid, itemEx, toPosition)
 
     if (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
             getPathToEx(pokemon, targetPos)) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, cut it!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, cut it!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         doCreatureWalkToPosition(pokemon, targetPos)
 	    checkCut(pokemon, itemEx, toPosition, 20)
     else
@@ -704,7 +704,7 @@ function rockSmash(cid, itemEx, toPosition)
 
     if (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
             getPathToEx(pokemon, targetPos)) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, smash it!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, smash it!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         doCreatureWalkToPosition(pokemon, targetPos)
 	    checkRockSmash(pokemon, itemEx, toPosition, 20)
     else
@@ -822,7 +822,7 @@ function headbutt(cid, itemEx, toPosition)
 
     if (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
             getPathToEx(pokemon, targetPos)) then
-        doCreatureSay(cid, getCreatureNickname(pokemon) .. ", headbutt it!", TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", getCreatureNickname(pokemon) .. ", headbutt it!", { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         doCreatureWalkToPosition(pokemon, targetPos)
 	    checkHeadbutt(pokemon, itemEx, toPosition, 20)
         doAddCondition(pokemon, HEADBUTT_EXHAUST_CONDITION)
@@ -835,7 +835,7 @@ function blink(cid, toPosition)
 	local pokemon = getPlayerPokemon(cid)
 	local pokemonPosition = getCreaturePosition(pokemon)
 
-	doCreatureSay(cid, string.format(__L(cid, "%s, blink!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+	BattleText.say(cid, "order", string.format(__L(cid, "%s, blink!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 	doTeleportThing(pokemon, toPosition, false)
 	doSendMagicEffect(pokemonPosition, EFFECT_TELEPORT_TWO)
 	doSendMagicEffect(toPosition, EFFECT_TELEPORT_TWO)
@@ -909,7 +909,7 @@ function doAbilitieTransform(cid, pokemon, target, targetName, afterDismount)
 
         if (not afterDismount) then
             doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_DITTO_TRANSFORM)
-            doCreatureSay(cid, string.format(__L(cid, "%s, transform!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, transform!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
             doAddCondition(pokemon, TRANSFORM_EXHAUST_CONDITION)
             doBallSaveTransformMemory(ball.uid, targetName)
             setBallCurrentTransform(ball.uid, targetName)
@@ -947,7 +947,7 @@ function levitate(cid)
     if ((not targetPos and getDistanceBetween(pos, toPosition) <= 1) or
             (targetPos and isSightClear(pos, targetPos, true) and getDistanceBetween(targetPos, toPosition) <= 1 and
                     getPathToEx(pokemon, targetPos))) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, let's levitate!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, let's levitate!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         if (targetPos) then
             doCreatureWalkToPosition(pokemon, targetPos)
         end

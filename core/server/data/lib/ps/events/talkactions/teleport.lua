@@ -209,7 +209,7 @@ function onSay(cid, words, param, channel)
                 doTeleportThing(cid, newPosition, false)
                 doSendMagicEffect(newPosition, EFFECT_TELEPORT_TWO)
                 doCreatureSetStorage(cid, playersStorages.teleport, os.time() + ((time or 30) * 60))
-                doCreatureSay(cid, string.format(__L(cid, "%s, teleport us to %s!"), getPlayerPokemonNickname(cid), message), TALKTYPE_MONSTER)
+                BattleText.say(cid, "order", string.format(__L(cid, "%s, teleport us to %s!"), getPlayerPokemonNickname(cid), message), { pokemon = getPlayerPokemon(cid), talkType = TALKTYPE_MONSTER })
                 setPlayerBlockLogout(cid, false)
 
             else

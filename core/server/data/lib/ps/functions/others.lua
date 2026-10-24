@@ -831,7 +831,7 @@ function doPokemonCall(cid, ball)
         if (isFlying(cid)) then
             doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.ABILITIES)
             setFlyingStatus(cid, false)
-            doCreatureSay(cid, string.format(__L(cid, "%s, I'm tired of flying!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, I'm tired of flying!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 
             local transform = getBallCurrentTransform(ball.uid)
             if (transform) then
@@ -841,7 +841,7 @@ function doPokemonCall(cid, ball)
         elseif (isLevitating(cid)) then
             doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.ABILITIES)
             setLevitatingStatus(cid, false)
-            doCreatureSay(cid, string.format(__L(cid, "%s, I'm tired of levitating!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, I'm tired of levitating!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 
             local transform = getBallCurrentTransform(ball.uid)
             if (transform) then
@@ -851,7 +851,7 @@ function doPokemonCall(cid, ball)
         elseif (isRiding(cid)) then
             doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.ABILITIES)
             setRidingStatus(cid, false)
-            doCreatureSay(cid, string.format(__L(cid, "%s, I'm tired of riding!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, I'm tired of riding!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 
             local transform = getBallCurrentTransform(ball.uid)
             if (transform) then
@@ -861,7 +861,7 @@ function doPokemonCall(cid, ball)
         elseif (isSurfing(cid)) then
             doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.ABILITIES)
             setSurfingStatus(cid, false)
-            doCreatureSay(cid, string.format(__L(cid, "%s, I'm tired of surfing!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, I'm tired of surfing!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 
             local transform = getBallCurrentTransform(ball.uid)
             if (transform) then
@@ -871,7 +871,7 @@ function doPokemonCall(cid, ball)
         elseif (isDiving(cid)) then
             doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.ABILITIES)
             setDivingStatus(cid, false)
-            doCreatureSay(cid, string.format(__L(cid, "%s, I'm tired of diving!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+            BattleText.say(cid, "order", string.format(__L(cid, "%s, I'm tired of diving!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
 
             local transform = getBallCurrentTransform(ball.uid)
             if (transform) then
@@ -885,7 +885,7 @@ function doPokemonCall(cid, ball)
             addEvent(doSendProjectile, 500, pokemonPosition, cid, balls[ballName].projectile)
             doTransformItem(ball.uid, balls[ballName].inUse)
             doSendMagicEffect(pokemonPosition, balls[ballName].effects.use)
-            doCreatureSay(cid, getCreatureNickname(pokemon) .. ", " .. __L(cid, POKEMON_CALL_MESSAGES[math.random(1, #POKEMON_CALL_MESSAGES)]))
+            BattleText.say(cid, "summon", getCreatureNickname(pokemon) .. ", " .. __L(cid, POKEMON_CALL_MESSAGES[math.random(1, #POKEMON_CALL_MESSAGES)]), { pokemon = pokemon })
 
             addEvent(function()
                 if (isCreature(pokemon)) then

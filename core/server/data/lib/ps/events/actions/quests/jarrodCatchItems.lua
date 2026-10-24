@@ -91,7 +91,7 @@ ITEMS[18622] = function(cid, item, fromPosition, itemEx, toPosition) -- Coloured
 
     doRemoveCreature(itemEx.uid)
 	doSendDistanceShoot(getCreaturePosition(cid), toPosition, balls["coloured"].projectile)
-	doCreatureSay(cid, __L(cid, "Coloured ball, go!"), TALKTYPE_SAY)
+	BattleText.say(cid, "throw", __L(cid, "Coloured ball, go!"), { talkType = TALKTYPE_SAY })
 
 	if (getCatchChance(cid, pokemonName, item.itemid, pokemonLevel) <= getBallCatchRate("coloured")) then
 		doSendMagicEffect(toPosition, balls["coloured"].effects.catch)

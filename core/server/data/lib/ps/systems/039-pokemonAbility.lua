@@ -86,7 +86,7 @@ PokemonAbility.onUseWaterfall = function(cid, position, itemEx)
         doTeleportThing(cid, destination)
     end
 
-    doCreatureSay(cid, string.format(__L(cid, "%s, let's go!"), getPlayerPokemonNickname(cid)), TALKTYPE_MONSTER)
+    BattleText.say(cid, "order", string.format(__L(cid, "%s, let's go!"), getPlayerPokemonNickname(cid)), { pokemon = getPlayerPokemon(cid), talkType = TALKTYPE_MONSTER })
 end
 
 PokemonAbility.onUseStrength = function(cid, position, itemEx, pokemon)
@@ -135,7 +135,7 @@ PokemonAbility.onUseStrength = function(cid, position, itemEx, pokemon)
 
     if (targetPos and isSightClear(pokemonPos, targetPos, true) and getDistanceBetween(targetPos, position) <= 1 and
             getPathToEx(pokemon, targetPos)) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, push it!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, push it!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
         doCreatureWalkToPosition(pokemon, targetPos)
         check(pokemon, itemEx, position, 20)
     else
@@ -191,7 +191,7 @@ PokemonAbility.onUseRockClimb = function(cid, position, itemEx, pokemon)
     end
 
     if (doPokemonActAtPosition(pokemon, position, callback)) then
-        doCreatureSay(cid, string.format(__L(cid, "%s, let's climb!"), getCreatureNickname(pokemon)), TALKTYPE_MONSTER)
+        BattleText.say(cid, "order", string.format(__L(cid, "%s, let's climb!"), getCreatureNickname(pokemon)), { pokemon = pokemon, talkType = TALKTYPE_MONSTER })
     else
         doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
     end

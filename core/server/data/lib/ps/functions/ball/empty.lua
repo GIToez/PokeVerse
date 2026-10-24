@@ -265,7 +265,7 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
 					doRemoveItem(corpse.uid)
 					doRemoveItem(item.uid, 1)
 					doSendDistanceShoot(playerPosition, toPosition, balls[ballName].projectile)
-					doCreatureSay(cid, __L(cid, "Soul ball, go!"), TALKTYPE_SAY)
+					BattleText.say(cid, "throw", __L(cid, "Soul ball, go!"), { talkType = TALKTYPE_SAY })
 					catchPokemonWithSoulBall(cid, toPosition, pokemonName, balls[ballName].charged,
                         pokemonSex, pokemonSpecialAbility, getPlayerWastedBallsMessage(cid, getPokemonNumberByName(pokemonName)) .. __L(cid, " to catch it."))
                     doPlayerResetWastedBalls(cid, getPokemonNumberByName(pokemonName))
@@ -277,7 +277,7 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
                     dropCorpseItems(corpse)
                     doRemoveItem(corpse.uid)
 					doSendDistanceShoot(playerPosition, toPosition, balls[ballName].projectile)
-					doCreatureSay(cid, string.format(__L(cid, "%s ball, go!"), ballName:gsub("^%l", string.upper)), TALKTYPE_SAY)
+					BattleText.say(cid, "throw", string.format(__L(cid, "%s ball, go!"), (ballName:gsub("^%l", string.upper))), { talkType = TALKTYPE_SAY })
 
 					if (balls[ballName].guaranteedCatch or rollCatch(cid, pokemonName, ballName, item.itemid, pokemonLevel)) then
                         doSendMagicEffect(toPosition, balls[ballName].effects.catch)

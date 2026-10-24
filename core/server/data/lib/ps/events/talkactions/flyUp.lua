@@ -23,7 +23,7 @@ function onSay(cid, words, param)
 			end
 			doTeleportThing(cid, upPosition)
 			deleteTilesArroundPositionWithId(playerPosition, VOID_TILE_ID)
-			doCreatureSay(cid, string.format(__L(cid, "%s, go up!"), getPlayerPokemonNickname(cid)), TALKTYPE_MONSTER)
+			BattleText.say(cid, "order", string.format(__L(cid, "%s, go up!"), getPlayerPokemonNickname(cid)), { pokemon = getPlayerPokemon(cid), talkType = TALKTYPE_MONSTER })
             doSendMagicEffect(playerPosition, EFFECT_TELEPORT_FRAME)
             doSendMagicEffect(upPosition, EFFECT_TELEPORT_FRAME)
 

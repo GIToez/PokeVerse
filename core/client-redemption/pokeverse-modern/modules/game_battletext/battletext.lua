@@ -6,6 +6,8 @@
 --   {k = "wild", c = pokemon}                                    then the wild Pokemon's MOVE yell
 --   {k = "hit", c = target, s = "crit"|"super"|"weak"|"immune"}  then the hit's "-N"
 --   {k = "miss", c = attacker, t = target}                       then "MISS!" over the attacker
+--   {k = "say", c = speaker, s = kind, x = text, n = nickname, t = type}  then the speaker says x: calling out or
+--     recalling a Pokemon, an order, or throwing a ball, drawn as a bubble like a call-out
 -- In New, g_game.onAnimatedText (protocolgameparse.cpp) swallows the battle words and numbers and draws them
 -- again here; takeOverhead (game_console) swallows the call-outs and wild yells, which stay in Local Chat.
 -- Numbers and outcomes float over the Pokemon, stat changes beside it and statuses under its feet. Back to
@@ -360,7 +362,26 @@ local function setBubbleSlot(bubble, slot)
     bubble.widget:setSize({ width = label:getWidth() + 16, height = label:getHeight() + 10 })
 end
 
-local function addBubble(cid, nick, move, element)
+local function typeColor(element)
+    return TYPE_COLORS[tostring(element or ''):lower()] or TYPE_COLORS.normal
+end
+
+local function segment(text, color)
+    return text ~= '' and string.format('{%s, %s}', text, color) or ''
+end
+
+-- the line as said, with the Pokemon's name in its type's colour
+local function sayText(text, nick, element)
+    text = clean(text)
+    nick = nick and clean(nick) or ''
+    local at = nick ~= '' and text:find(nick, 1, true)
+    if not at then
+        return segment(text, INK)
+    end
+    return segment(text:sub(1, at - 1), INK) .. segment(nick, typeColor(element)) .. segment(text:sub(at + #nick), INK)
+end
+
+local function addBubble(cid, text)
     local map = mapPanel()
     local creature = g_map.getCreatureById(cid)
     if not map or not creature then
@@ -371,11 +392,10 @@ local function addBubble(cid, nick, move, element)
         trainer = { list = {}, pos = creature:getPosition() }
         bubbles[cid] = trainer
     end
-    local color = TYPE_COLORS[tostring(element or ''):lower()] or TYPE_COLORS.normal
     local bubble = {
         widget = g_ui.createWidget('BattleTextBubble', map),
         tail = g_ui.createWidget('BattleTextTail', map),
-        text = string.format('{%s, , %s}{%s, %s}{!, %s}', clean(nick), INK, clean(move), color, INK),
+        text = text,
         born = g_clock.millis(),
         rise = -6,
     }
@@ -388,6 +408,10 @@ local function addBubble(cid, nick, move, element)
     for slot, b in ipairs(trainer.list) do
         setBubbleSlot(b, slot)
     end
+end
+
+local function callText(nick, move, element)
+    return string.format('{%s, , %s}{%s, %s}{!, %s}', clean(nick), INK, clean(move), typeColor(element), INK)
 end
 
 -- where the trainer's sprite is drawn this frame: its tile, eased back toward the one it is walking from
@@ -599,7 +623,11 @@ local function onMessage(protocol, opcode, buffer)
     local now = g_clock.millis()
     if data.k == 'call' then
         expectSay(cid, string.format('%s, %s!', tostring(data.n), tostring(data.m)))
-        addBubble(cid, data.n, data.m, data.t)
+        addBubble(cid, callText(data.n, data.m, data.t))
+        wake()
+    elseif data.k == 'say' and type(data.x) == 'string' then
+        expectSay(cid, data.x)
+        addBubble(cid, sayText(data.x, data.n, data.t))
         wake()
     elseif data.k == 'wild' then
         expectSay(cid, nil)
@@ -620,13 +648,19 @@ end
 
 -- for tests and the screenshots: as if the server sent these
 function demoCallout(cid, nick, move, element)
-    addBubble(cid, nick, move, element)
+    addBubble(cid, callText(nick, move, element))
     expectSay(cid, string.format('%s, %s!', nick, move))
     wake()
 end
 
 function demoHit(pos, kind, value)
     showNumber(pos, kind, value)
+    wake()
+end
+
+function demoSay(cid, text, nick, element)
+    addBubble(cid, sayText(text, nick, element))
+    expectSay(cid, text)
     wake()
 end
 
