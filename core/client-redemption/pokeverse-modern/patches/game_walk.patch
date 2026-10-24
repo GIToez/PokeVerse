@@ -1,24 +1,42 @@
 diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
 --- a/modules/game_walk/walk.lua
 +++ b/modules/game_walk/walk.lua
-@@ -28,6 +28,37 @@
+@@ -11,14 +11,6 @@
+     { "Right",   East },
+     { "Down",    South },
+     { "Left",    West },
+-    { "Numpad8", North },
+-    { "Numpad9", NorthEast },
+-    { "Numpad6", East },
+-    { "Numpad3", SouthEast },
+-    { "Numpad2", South },
+-    { "Numpad1", SouthWest },
+-    { "Numpad4", West },
+-    { "Numpad7", NorthWest },
+ }
+ 
+ local turnKeys = {
+@@ -28,6 +20,40 @@
      { "Control+Left",  West },
  }
  
-+-- PokeVerse: the letter keys are Keybinds (Settings > Controls), only bound with chat off; the
-+-- arrows, numpad and Ctrl+arrows above stay fixed. Diagonals have no default key.
++-- PokeVerse: the letter keys and the numpad are Keybinds (Settings > Controls), so they can be
++-- changed or cleared for hotkeys; the letters are only bound with chat off. The arrows and
++-- Ctrl+arrows above stay fixed.
 +local KEYBIND_CATEGORY = 'Movement'
 +
++-- action, direction, key with chat off, second key (both chat modes)
 +local walkKeybinds = {
-+    { 'Walk north',      North,     'W' },
-+    { 'Walk east',       East,      'D' },
-+    { 'Walk south',      South,     'S' },
-+    { 'Walk west',       West,      'A' },
-+    { 'Walk north-east', NorthEast, '' },
-+    { 'Walk north-west', NorthWest, '' },
-+    { 'Walk south-east', SouthEast, '' },
-+    { 'Walk south-west', SouthWest, '' },
++    { 'Walk north',      North,     'W', 'Numpad8' },
++    { 'Walk east',       East,      'D', 'Numpad6' },
++    { 'Walk south',      South,     'S', 'Numpad2' },
++    { 'Walk west',       West,      'A', 'Numpad4' },
++    { 'Walk north-east', NorthEast, '',  'Numpad9' },
++    { 'Walk north-west', NorthWest, '',  'Numpad7' },
++    { 'Walk south-east', SouthEast, '',  'Numpad3' },
++    { 'Walk south-west', SouthWest, '',  'Numpad1' },
 +}
++local NUMPAD_MIGRATED_SETTING = 'pokeverse-numpad-keybinds'
 +
 +local turnKeybinds = {
 +    { 'Turn north', North, 'Ctrl+W' },
@@ -39,7 +57,7 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
  WalkController = Controller:new()
  
  --- Stops the smart walking process.
-@@ -205,6 +236,55 @@
+@@ -205,6 +231,77 @@
      for _, keyDir in ipairs(turnKeys) do bindTurnKey(keyDir[1], keyDir[2]) end
  end
  
@@ -48,7 +66,7 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
 +
 +    for _, entry in ipairs(walkKeybinds) do
 +        local dir = entry[2]
-+        Keybind.new(KEYBIND_CATEGORY, entry[1], chatOffKey(entry[3]), '')
++        Keybind.new(KEYBIND_CATEGORY, entry[1], chatOffKey(entry[3]), entry[4])
 +        Keybind.bind(KEYBIND_CATEGORY, entry[1], {
 +            { type = KEY_DOWN, alone = true, callback = function(_, keyCode)
 +                g_window.setKeyDelay(keyCode, 1)
@@ -86,6 +104,28 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
 +    end
 +end
 +
++-- Before the numpad was a Keybind it walked on its own, and a walk key changed in Settings saved
++-- an empty second key. Those get their numpad key once, unless something else uses it now.
++local function migrateNumpad()
++    if g_settings.getBoolean(NUMPAD_MIGRATED_SETTING) then
++        return
++    end
++    for _, preset in ipairs(Keybind.presets or {}) do
++        local config = Keybind.configs.keybinds[preset]
++        for _, entry in ipairs(walkKeybinds) do
++            local saved = config and config:getNode(KEYBIND_CATEGORY .. '_' .. entry[1])
++            for _, chatMode in ipairs({ CHAT_MODE.ON, CHAT_MODE.OFF }) do
++                local keys = saved and (saved[tostring(chatMode)] or saved[chatMode])
++                if keys and (keys.secondary or '') == '' and keys.primary ~= entry[4]
++                        and not Keybind.findKeyUser(entry[4], chatMode) then
++                    Keybind.setSecondaryActionKey(KEYBIND_CATEGORY, entry[1], preset, entry[4], chatMode)
++                end
++            end
++        end
++    end
++    g_settings.set(NUMPAD_MIGRATED_SETTING, true)
++end
++
 +local function unbindKeybinds()
 +    for _, list in ipairs({ walkKeybinds, turnKeybinds, floorKeybinds }) do
 +        for _, entry in ipairs(list) do Keybind.delete(KEYBIND_CATEGORY, entry[1]) end
@@ -95,11 +135,12 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
  local function unbindKeys()
      for _, keyDir in ipairs(keys) do unbindWalkKey(keyDir[1]) end
      for _, keyDir in ipairs(turnKeys) do unbindTurnKey(keyDir[1]) end
-@@ -248,10 +328,12 @@
+@@ -248,10 +345,13 @@
  --- Initializes the WalkController.
  function WalkController:onInit()
      bindKeys()
 +    bindKeybinds()
++    migrateNumpad()
  end
  
  function WalkController:onTerminate()
@@ -108,7 +149,7 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
  end
  
  --- Sets up game-related events for the WalkController.
-@@ -269,7 +351,15 @@
+@@ -269,7 +369,15 @@
      })
  
      modules.game_interface.getRootPanel().onFocusChange = stopSmartWalk
@@ -125,7 +166,7 @@ diff -ruN pristine/modules/game_walk/walk.lua modules/game_walk/walk.lua
  
      if not g_game.isOfficialTibia() then
          g_game.enableFeature(GameForceFirstAutoWalkStep)
-@@ -284,8 +374,10 @@
+@@ -284,8 +392,10 @@
  end
  
  --- Utility functions for binding and unbinding keys.
