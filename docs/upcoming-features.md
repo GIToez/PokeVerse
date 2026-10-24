@@ -2526,42 +2526,106 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 
 ## 23. New Pokémon (Gen 4 to 6)
 
-**To add:** the 332 Pokémon from #387 Turtwig to #718 Zygarde, the ones the Battle Trozei face
-sheet covers. The game has #1 to #386 today. Diancie, Hoopa and Volcanion (#719 to #721) and
-Gen 7 on are not part of this, since there are no faces for them yet.
+Plan (not started). Agreed on October 24: Gen 1 to 6, so the 332 Pokémon from #387 Turtwig to
+#718 Zygarde (#1 to #386 are in the game). The game will have 718 Pokémon. Gen 7 and later have
+no faces yet. We have permission to use PAdventures' art.
 
-**Art that is ready:**
+**Full write-up, with every link:** [future-generations.md](future-generations.md). Every walk
+sprite (outfit) is approved one by one before it goes in, and sprites that look better than
+outfits we already have go on a separate list for approval.
 
-| Art | Gen 4 (107) | Gen 5 (156) | Gen 6 (69) | Where |
+[`gen4-6-checklist.csv`](gen4-6-checklist.csv) has one row per Pokémon: what it evolves from
+and how, its PAdventures face, and where its walk sprite comes from.
+
+**Sources:**
+
+- **Stats, types and Pokédex text:** Bulbapedia's numbers. Bulbapedia blocks scripts, so
+  they're read from PokéAPI, which has the same base stats, Pokédex entries and evolutions,
+  and checked against Bulbapedia by hand.
+- **Swap bar faces:** PAdventures' 32x32 heads (items 13825 to 14591), the same size and style
+  as our Gen 1 to 3 faces. All 332 are matched to a Pokédex number. They are still images, so
+  they get our 4-frame bob, and a blink later.
+- **Pokédex:** the 3D pictures. Pokémon Showdown's animated 3D models (`sprites/ani/`) for the
+  big Pokédex picture, like our stills, and PAdventures' 3D Pokédex tiles for the grid.
+- **Portraits:** Showdown's Gen 5 sprites (`sprites/gen5/`), which is what ours are.
+- **Cries:** Showdown (`audio/cries/<name>.mp3`), converted to `.ogg`.
+- **Walk sprites:**
+
+| Walk sprite | Gen 4 | Gen 5 | Gen 6 | Total |
 | --- | --- | --- | --- | --- |
-| Swap bar face | 107 | 156 | 69 | `art/sprites/faces/<dex>/`, 64x64 from Battle Trozei, 4-frame bob |
-| Walk sprite in the 6500 pack (named with high or medium confidence) | 53 | 122 | 3 | `docs/sprite-pack-review/new_species.csv` |
-| Walk sprite from Mystery Dungeon at 2x | all | all | all | PMDCollab SpriteCollab |
-| Portrait and 3D Pokédex picture | all | all | all | Pokémon Showdown (`gen5/`, `ani/`) |
+| 6500 pack, named with high or medium confidence | 53 | 122 | 3 | 178 |
+| PAdventures creature sheet | 18 | 9 | 34 | 61 |
+| 6500 pack, unsure name (check by eye) | 20 | 15 | 11 | 46 |
+| Not found yet | 16 | 10 | 21 | 47 |
 
-See [new-pokemon-art.md](new-pokemon-art.md) for the formats and how each is converted.
+For the 93 that are unsure or not found: search the rest of the PAdventures creature sheets
+(only the species the pack lacked were searched before), then Mystery Dungeon sprites at 2x.
+None go in without approval, one by one.
 
-**What each Pokémon needs:**
+**What each Pokémon needs (a Gen 3 Pokémon, Treecko, has all of these):**
 
-- Server: a `lib/ps/config/pokemon/<name>.lua` config (types, stats, moves, `dexStorage`,
-  description, catch storage, portraits), a monster file in `monster/Pokemons`, its number and
-  name in `pokemonsNumbers.lua` and `pokemonsNames.lua`, and `POKEMON_NUMBER` raised from 386
-  (the Pokédex, the Pokepedia and the trainer card count up to it).
-- Client: the walk sprite as an outfit (`scripts/dat-set-outfit.py new`), the face item, the
-  `staticPortraits`, `pictures` and `pokeicons` images, the cry, and the name in `gamelib/pokemon.lua`.
-  The Pokédex grid works its face ids out from the number (Gen 3 ends where Treecko's swap face
-  starts), so it needs a new id block from #387.
-- Spawns, evolutions, ride, fly, surf and dive outfits where they apply, and loot.
+| Where | File | What |
+| --- | --- | --- |
+| Server | `lib/ps/config/pokemon/<name>.lua` | Types, Attack, Defense, Sp. Atk and Sp. Def (base stats), energy, catch chance, `dexStorage` (10000 + number), `catchStorage` (16000 + number), the 3 face item ids, evolutions, Pokédex text, moves by level, field abilities (Cut, Surf, Fly...), egg groups, egg item, special abilities, TMs and egg moves |
+| Server | `monster/Pokemons/<name>.xml` | HP = base HP, speed = 200 + base Speed, melee every 100000 / base Speed ms, melee attack = base Attack, defense = base Defense, level range by stage (20 to 30 first stage, 85 to 95 final, 100 legendary), look type, corpse, cry text, loot |
+| Server | `monster/Shiny/shiny <name>.xml` | The same, with the shiny look type and corpse |
+| Server | `monster/monsters.xml` | Both monsters listed |
+| Server | `pokemonsNumbers.lua`, `pokemonsNames.lua` | Name to number, number to name, shiny name; `POKEMON_NUMBER` from 386 to 718 |
+| Server | `pokemon.lua` | Shiny face ids, and the egg item to Pokémon list |
+| Server | `items/items.xml` | 2 fainted corpses (fresh, then decayed), 2 shiny corpses, the egg (first stages only) and the doll |
+| Server | `evYields.lua`, `generateLoot.lua`, `pokepedia.lua` | EV yield, loot table, where it lives on the map |
+| Server | `world/map-spawn.xml` | Spawns, once it has a home |
+| Server, if it applies | `others/outfits.lua`, `legendaryAnchors.lua` | Ride, fly, surf and dive outfits; habitats for legendaries |
+| Client art (`data.dat`/`data.spr`) | Outfits | Walk sprite and shiny walk sprite, and ride/fly/surf/dive ones where it has them |
+| Client art | Items | Swap bar face and shiny face (4 frames), Pokédex tile, portrait-slot item, 4 corpses, egg, doll |
+| Client | `images/staticPortraits/<n>.png`, `images/pictures/<n>.png`, `images/pokeicons/<NNN>.png` | Portrait, 3D Pokédex picture, box icon |
+| Client | `sounds/cries/<n>.ogg` | Cry |
+| Client | `modules/gamelib/pokemon.lua` | Name, face item and number |
+| Mapper | `mapper/RME/data/854/creatures.xml` | So spawns can be placed |
+
+**Changes beyond one Pokémon:**
+
+- **New evolutions for 23 Pokémon we have:** Magnezone, Togekiss, Leafeon, Glaceon, Sylveon,
+  Gallade, Froslass, Weavile, Honchkrow, Mismagius, Roserade, Rhyperior, Electivire, Magmortar,
+  Mamoswine, Gliscor, Porygon-Z, Dusknoir, Probopass, Yanmega, Ambipom, Lickilicky and
+  Tangrowth. Their config files get the evolution.
+- **7 babies before Pokémon we have:** Happiny, Bonsly, Mime Jr., Munchlax, Mantyke, Chingling
+  and Budew.
+- **Evolution items:** our evolutions are a level plus an item (trades become a level, and
+  friendship uses the Soothe Bell, like Crobat). The new items needed are the Dawn, Dusk, Shiny
+  and Oval Stones, Razor Claw, Razor Fang, Electirizer, Magmarizer, Protector, Reaper Cloth,
+  Dubious Disc, Whipped Dream and Sachet.
+- **Moves:** each Pokémon gets about 14 moves at set levels, picked from the 455 the game has,
+  the same way the Gen 1 to 3 lists were made. Signature moves that are missing (Roar of Time,
+  Spacial Rend, Shadow Force, Judgment, Blue Flare and the like) are new moves.
+- **Special abilities:** the game has 113. New ones such as Technician, Adaptability, Multiscale
+  or Protean get added, or the closest existing one is used.
+- **Item ids:** the automatic face and Pokédex tile ids (28149 + number and 28013 + number)
+  run into the Gen 3 eggs and faces past #386, so new Pokémon get their own id block. The
+  storages 10387 to 10718 and 16387 to 16718 are free.
+- **Shiny art:** PAdventures' faces are normal colours only. Shiny faces and shiny walk sprites
+  are recoloured using the colours of Showdown's shiny sprites.
+- **Forms:** one form per Pokémon to start (Rotom, Giratina, Shaymin, Deoxys-style forme
+  switching later). Megas are Gen 6 but not part of this.
+
+**Order of work:**
+
+1. A script that reads PokéAPI and writes the config file, both monster files, and the number,
+   name, EV and Pokédex text entries for all 332. Moves, abilities and egg data are filled from
+   lists we check by hand.
+2. Art import: faces, Pokédex tiles, portraits, pictures, box icons and cries for all 332,
+   then the walk sprites as outfits, one generation at a time.
+3. Evolution items, the 23 new evolutions and the 7 babies.
+4. Homes and spawns, region by region, then loot and the Pokepedia.
 
 **To decide:**
 
-- The order: a generation at a time (Sinnoh first), or a few families at a time.
-- Where they live: new regions (Sinnoh, Unova, Kalos) or mixed into Kanto and Johto.
+- Where they live: new regions (Sinnoh, Unova, Kalos) or mixed into Kanto and Johto. Until they
+  have spawns they can only come from eggs, events or admins.
 - The legendaries: in the [legendary revamp](#22-legendary-revamp-stages-1-to-3-built) with
   their own habitats and events, or held back.
-- The faces are 64x64: a bigger swap bar slot for every Pokémon, or new faces shrunk to 32x32 by
-  hand.
-- Stats from PokéAPI with or without the stat audit's fixes ([new-pokemon-art.md](new-pokemon-art.md#open-decisions)).
+- Bulbapedia shows today's base stats, which include the Gen 6 and 7 buffs. Use those, or the
+  stats from when each Pokémon came out.
 
 **Gen 4 (#387 to #493, 107):** Turtwig, Grotle, Torterra, Chimchar, Monferno, Infernape, Piplup,
 Prinplup, Empoleon, Starly, Staravia, Staraptor, Bidoof, Bibarel, Kricketot, Kricketune, Shinx,

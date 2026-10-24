@@ -52,6 +52,11 @@ its face is drawn with an `image-frames: /images/faces/<dex> 4` line in `things.
 folder copied to `data/images/faces/<dex>/`), on a 4-phase face item of 2x2 tiles so it is not
 scaled down, and the swap bar slot sized to match. Gen 7–9 are not on the sheet.
 
+**Chosen instead (October 24): PAdventures' 32x32 faces** (items 13825 to 14591, Gen 1 to 6),
+which are these Trozei drawings cropped to fill the square and cleaned up by hand. They match
+our Gen 1 to 3 faces and fit the current slot. The face for each Pokémon is in
+[`gen4-6-checklist.csv`](gen4-6-checklist.csv).
+
 **In-game walk sprites: Mystery Dungeon sprites are the best fit.** After Gen 5 the games are 3D,
 so there are no official top-down sprites. `PMDCollab/SpriteCollab` has hand-made pixel walk
 animations for every Pokémon through Gen 9, in 8 directions:
