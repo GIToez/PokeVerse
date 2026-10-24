@@ -1,0 +1,670 @@
+From 50149ac33fe4654a1cd4f1155e307d2faae6c9b8 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 24 Oct 2026 16:51:50 +0000
+Subject: [PATCH 2/2] Wild legendaries: one post per set, signs, Regis waking,
+ Mew's reveal, clashes, Rayquaza's calm, rewards and who spotted it
+
+---
+ .../legendaries/legendaryEncounters.ts        | 406 +++++++++++++++---
+ tests/unit/legendaryEncounters.test.ts        |  82 ++++
+ 2 files changed, 440 insertions(+), 48 deletions(-)
+
+diff --git a/src/services/legendaries/legendaryEncounters.ts b/src/services/legendaries/legendaryEncounters.ts
+index 0e7d056..9a150bb 100644
+--- a/src/services/legendaries/legendaryEncounters.ts
++++ b/src/services/legendaries/legendaryEncounters.ts
+@@ -1,13 +1,13 @@
+ import type { APIEmbed } from "discord.js";
+ import type { BotConfig } from "../../config/load.js";
+-import type { ChannelDirectory, ChannelSink, OutgoingMessage } from "../../bot/ports.js";
++import type { ChannelDirectory, ChannelSink, OutgoingMessage, ThreadSink } from "../../bot/ports.js";
+ import type { GameEventEnvelope, LegendaryEvent } from "../../integrations/pokeverse/protocol.js";
+ import { RecentKeys } from "../../utils/dedupe.js";
+ import type { DeliveryQueue } from "../../utils/deliveryQueue.js";
+ import { padDex } from "../../utils/format.js";
+ import type { Logger } from "../../utils/logger.js";
+ import type { Metrics } from "../../utils/metrics.js";
+-import type { LegendaryEncounterRecord, StateStore } from "../../utils/stateStore.js";
++import type { LegendaryEncounterRecord, LegendarySetRecord, StateStore } from "../../utils/stateStore.js";
+ import { COLORS, embedMessage, plain } from "../embeds.js";
+ import type { ArtworkResolver } from "../pokemon/artwork.js";
+ 
+@@ -28,6 +28,10 @@ export type LegendaryDecision =
+ 
+ /** Encounters are forgotten this long after they started (the longest one lasts 2 hours). */
+ export const ENCOUNTER_RETENTION_SECONDS = 24 * 3600;
++const DEFAULT_LEVEL = 50;
++
++/** Posts of their own, without an encounter. */
++const STANDALONE = new Set<LegendaryEvent["event"]>(["sign", "reward"]);
+ 
+ const END_LINES: Record<string, (species: string, event: LegendaryEvent) => string> = {
+   defeated: (species, event) => {
+@@ -49,9 +53,15 @@ const OUTCOMES: Record<string, string> = {
+   restart: "Left before the restart",
+   vanished: "Vanished",
+   caught: "Caught",
++  awake: "Awake",
+ };
+ 
+-export function describeArea(event: LegendaryEvent, mode: BotConfig["spawns"]["locationMode"]): string | undefined {
++function outcomeText(reason: string, detail?: string): string {
++  const name = OUTCOMES[reason] ?? plain(reason);
++  return detail ? `${name}: ${detail}` : name;
++}
++
++export function describeArea(event: Pick<LegendaryEvent, "area" | "nearestTown" | "position">, mode: BotConfig["spawns"]["locationMode"]): string | undefined {
+   if (mode === "none") {
+     return undefined;
+   }
+@@ -67,6 +77,19 @@ export function threadName(record: Pick<LegendaryEncounterRecord, "species" | "a
+   return `${record.species}${record.area ? ` near ${record.area}` : ""} #${encounterId}`.slice(0, 100);
+ }
+ 
++function spawnDescription(record: LegendaryEncounterRecord): string {
++  const species = plain(record.species);
++  const where = record.area ? ` near **${plain(record.area)}**` : "";
++  const level = `Recommended for trainers level ${record.level ?? DEFAULT_LEVEL}+.`;
++  if (record.revealed) {
++    return `A trainer found **${species}** hiding as another Pokémon${where}! It shows its true self. ${level} Follow the thread for sightings.`;
++  }
++  if (record.asleep) {
++    return `**${species}** is sleeping${where}. Wake it up to fight it! ${level}`;
++  }
++  return `**${species}** appeared${where}! ${level} Follow the thread for sightings.`;
++}
++
+ /** The post in the legendary channel; edited with the outcome when the encounter ends. */
+ export function buildEncounterEmbed(record: LegendaryEncounterRecord, outcome?: { reason: string; detail?: string }): APIEmbed {
+   const fields: NonNullable<APIEmbed["fields"]> = [];
+@@ -77,17 +100,15 @@ export function buildEncounterEmbed(record: LegendaryEncounterRecord, outcome?:
+     fields.push({ name: "Spawned", value: plain(record.location), inline: true });
+   }
+   if (outcome) {
+-    fields.push({ name: "Outcome", value: outcome.detail ? `${OUTCOMES[outcome.reason] ?? plain(outcome.reason)}: ${outcome.detail}` : (OUTCOMES[outcome.reason] ?? plain(outcome.reason)), inline: false });
++    fields.push({ name: "Outcome", value: outcomeText(outcome.reason, outcome.detail), inline: false });
+   } else if (record.endsAt) {
+-    fields.push({ name: "Flies off", value: `<t:${Math.floor(record.endsAt)}:R> unless it is beaten`, inline: true });
++    fields.push({ name: record.asleep ? "Wakes up" : "Flies off", value: record.asleep ? `Only when a trainer wakes it` : `<t:${Math.floor(record.endsAt)}:R> unless it is beaten`, inline: true });
+   }
+-  const species = plain(record.species);
++  const title = record.revealed ? `👑 ${record.species} shows its true self!` : record.asleep ? `💤 A wild ${record.species} is sleeping` : `👑 A wild ${record.species} appeared!`;
+   return {
+     author: { name: "Wild legendary" },
+-    title: outcome ? `👑 ${record.species}: ${OUTCOMES[outcome.reason] ?? outcome.reason}` : `👑 A wild ${record.species} appeared!`,
+-    description: outcome
+-      ? `The encounter is over. The thread below has the whole chase.`
+-      : `**${species}** appeared${record.area ? ` near **${plain(record.area)}**` : ""}! Recommended for trainers level 50+. It roams Kanto: follow the thread for sightings.`,
++    title: outcome ? `👑 ${record.species}: ${OUTCOMES[outcome.reason] ?? outcome.reason}` : title,
++    description: outcome ? `The encounter is over. The thread below has the whole chase.` : spawnDescription(record),
+     color: outcome ? COLORS.neutral : COLORS.legendary,
+     fields,
+     footer: record.dexNumber ? { text: `Pokédex #${padDex(record.dexNumber)}` } : undefined,
+@@ -95,12 +116,38 @@ export function buildEncounterEmbed(record: LegendaryEncounterRecord, outcome?:
+   };
+ }
+ 
++/** One post for a set; a line per member, with its outcome once it has one. */
++export function buildSetEmbed(set: LegendarySetRecord): APIEmbed {
++  const over = set.members.every((member) => member.ended);
++  const lines = set.members.map((member) => {
++    const where = member.area ? ` near **${plain(member.area)}**` : "";
++    const state = member.outcome ? `: ${outcomeText(member.outcome, member.detail)}` : "";
++    return `• **${plain(member.species)}**${where}${state}`;
++  });
++  const intro = set.asleep
++    ? `**${plain(set.name)}** are sleeping across the land. Find them and wake them up!`
++    : `**${plain(set.name)}** have appeared together!`;
++  return {
++    author: { name: "Wild legendaries" },
++    title: over ? `👑 ${set.name}: the encounters are over` : set.asleep ? `💤 ${set.name} are sleeping` : `👑 ${set.name} appeared together!`,
++    description: [
++      over ? "Every member's encounter is over. The thread below has the whole chase." : `${intro} Recommended for trainers level ${set.level ?? DEFAULT_LEVEL}+.`,
++      lines.join("\n"),
++    ].join("\n\n").slice(0, 4096),
++    color: over ? COLORS.neutral : COLORS.legendary,
++    timestamp: new Date(set.startedAt * 1000).toISOString(),
++  };
++}
++
+ export function threadLine(event: LegendaryEvent, location: string | undefined): string | undefined {
+   const species = plain(event.species);
+   const where = location ? ` near **${plain(location)}**` : "";
++  const trainer = plain(event.trainer ?? "A trainer");
+   switch (event.event) {
+     case "sighting":
+-      return `📍 **${species}** was spotted${where}.`;
++      return event.trainer
++        ? `📍 **${trainer}** spotted **${species}**${where}.`
++        : `📍 **${species}** was spotted${where}.`;
+     case "flee": {
+       const health = event.healthPercent !== null && event.healthPercent !== undefined ? ` with ${Math.round(event.healthPercent)}% health` : "";
+       return `💨 **${species}** fled${where}${health}!`;
+@@ -108,15 +155,28 @@ export function threadLine(event: LegendaryEvent, location: string | undefined):
+     case "end":
+       return (END_LINES[event.reason ?? ""] ?? ((name: string) => `The wild **${name}** is gone.`))(species, event);
+     case "caught":
+-      return `🎉 **${plain(event.trainer ?? "A trainer")}** caught the wild **${species}**!`;
++      return `🎉 **${trainer}** caught the wild **${species}**!`;
++    case "woke":
++      return `⏰ **${trainer}** woke **${species}** up${where}! It can be fought now.`;
++    case "revealed":
++      return `🎭 **${trainer}** found **${species}** hiding as a wild **${plain(event.disguise ?? "Pokémon")}**! It shows its true self.`;
++    case "clash":
++    case "calm":
++      return `${event.event === "calm" ? "🌈" : "🌩️"} ${plain(event.text ?? `${event.species} and ${event.other ?? "another legendary"} meet${where}!`)}`;
+     default:
+       return undefined;
+   }
+ }
+ 
++function setKey(event: LegendaryEvent): string {
++  return `${event.setId ?? "set"}:${event.members?.[0]?.encounterId ?? 0}`;
++}
++
+ /**
+  * One post per wild legendary in #legendary-spawns, with a thread for its sightings, flees and
+- * end. The encounters are saved, so a bot restart keeps posting into the same thread.
++ * end, and one post for a set that appears together. Signs before a spawn and quest rewards
++ * are posts of their own. The encounters are saved, so a bot restart keeps posting into the
++ * same thread.
+  */
+ export class LegendaryEncounters {
+   private readonly seen = new RecentKeys(5000);
+@@ -132,22 +192,48 @@ export class LegendaryEncounters {
+     return Math.floor(this.now() / 1000);
+   }
+ 
++  private known(encounterId: number | null | undefined): boolean {
++    if (encounterId === null || encounterId === undefined) {
++      return false;
++    }
++    return this.options.store.get().legendaryEncounters[String(encounterId)] !== undefined || this.queuedSpawns.has(String(encounterId));
++  }
++
+   decide(envelope: GameEventEnvelope<LegendaryEvent>): LegendaryDecision {
+     const event = envelope.event;
+     if (!this.options.config.legendaryEnabled) {
+       return { action: "skip", reason: "disabled" };
+     }
+-    if (event.encounterId === null || event.encounterId === undefined) {
++    const stale = this.nowSeconds() - envelope.time > this.options.config.maxEventAgeSeconds;
++    if (STANDALONE.has(event.event)) {
++      if (stale) {
++        return { action: "skip", reason: "stale" };
++      }
++    } else if (event.event === "set") {
++      if (!event.members?.length) {
++        return { action: "skip", reason: "no_encounter" };
++      }
++      if (stale) {
++        return { action: "skip", reason: "stale" };
++      }
++    } else if (event.encounterId === null || event.encounterId === undefined) {
+       return { action: "skip", reason: "no_encounter" };
+-    }
+-    const known = this.options.store.get().legendaryEncounters[String(event.encounterId)];
+-    if (event.event === "spawn") {
++    } else if (event.event === "spawn") {
+       if (event.endsAt && event.endsAt < this.nowSeconds()) {
+         return { action: "skip", reason: "stale" };
+       }
+-    } else if (!known && !this.queuedSpawns.has(String(event.encounterId))) {
+-      return { action: "skip", reason: "unknown_encounter" };
+-    } else if (event.event === "sighting" && this.nowSeconds() - envelope.time > this.options.config.maxEventAgeSeconds) {
++    } else if (event.event === "clash" || event.event === "calm") {
++      if (!this.known(event.encounterId) && !this.known(event.otherEncounterId)) {
++        return { action: "skip", reason: "unknown_encounter" };
++      }
++      if (stale) {
++        return { action: "skip", reason: "stale" };
++      }
++    } else if (!this.known(event.encounterId)) {
++      if (event.event !== "revealed") {
++        return { action: "skip", reason: "unknown_encounter" };
++      }
++    } else if (event.event === "sighting" && stale) {
+       return { action: "skip", reason: "stale" };
+     }
+     if (!this.seen.add(envelope.id)) {
+@@ -164,20 +250,70 @@ export class LegendaryEncounters {
+       return decision;
+     }
+     const event = envelope.event;
+-    if (event.event === "spawn") {
++    const starts = event.event === "spawn" || (event.event === "revealed" && !this.known(event.encounterId));
++    if (starts) {
+       this.queuedSpawns.add(String(event.encounterId));
+     }
+-    queue.enqueue(`legendary ${event.event} ${envelope.id}`, () =>
+-      event.event === "spawn" ? this.postSpawn(envelope) : this.postUpdate(envelope));
++    if (event.event === "set") {
++      for (const member of event.members ?? []) {
++        this.queuedSpawns.add(String(member.encounterId));
++      }
++    }
++    queue.enqueue(`legendary ${event.event} ${envelope.id}`, () => {
++      if (STANDALONE.has(event.event)) {
++        return this.postStandalone(envelope);
++      }
++      if (event.event === "set") {
++        return this.postSet(envelope);
++      }
++      if (event.event === "clash" || event.event === "calm") {
++        return this.postClash(envelope);
++      }
++      return starts ? this.postSpawn(envelope) : this.postUpdate(envelope);
++    });
+     return decision;
+   }
+ 
++  private channel(): ChannelSink | undefined {
++    const channel = this.options.channels.get("legendarySpawns");
++    if (!channel) {
++      this.options.metrics.increment("legendaries.no_channel");
++    }
++    return channel;
++  }
++
++  private async startThread(channel: ChannelSink, messageId: string, name: string, encounterId: number): Promise<string | undefined> {
++    if (!channel.startThread) {
++      return undefined;
++    }
++    try {
++      return (await channel.startThread(messageId, name)).id;
++    } catch (error) {
++      this.options.metrics.increment("legendaries.thread_failed");
++      this.options.logger.warn("Could not start the legendary thread; updates go to the channel", { encounterId, error });
++      return undefined;
++    }
++  }
++
++  private prune(state: ReturnType<StateStore["get"]>): void {
++    const cutoff = this.nowSeconds() - ENCOUNTER_RETENTION_SECONDS;
++    for (const [id, saved] of Object.entries(state.legendaryEncounters)) {
++      if (saved.startedAt < cutoff) {
++        delete state.legendaryEncounters[id];
++      }
++    }
++    for (const [id, saved] of Object.entries(state.legendarySets)) {
++      if (saved.startedAt < cutoff) {
++        delete state.legendarySets[id];
++      }
++    }
++  }
++
+   private async postSpawn(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
+-    const { channels, store, artwork, metrics, logger } = this.options;
++    const { store, artwork, metrics, logger } = this.options;
+     const event = envelope.event;
+-    const channel = channels.get("legendarySpawns");
++    const channel = this.channel();
+     if (!channel) {
+-      metrics.increment("legendaries.no_channel");
+       return;
+     }
+     const encounterId = event.encounterId!;
+@@ -191,28 +327,143 @@ export class LegendaryEncounters {
+       location: describeArea(event, this.options.config.locationMode),
+       endsAt: event.endsAt ?? undefined,
+       startedAt: envelope.time,
++      level: event.level ?? undefined,
++      asleep: event.asleep ?? undefined,
++      revealed: event.event === "revealed" || undefined,
+     };
+     record.messageId = await channel.send(embedMessage(buildEncounterEmbed(record), artwork.resolve(event.dexNumber), "image"));
+-    if (channel.startThread) {
+-      try {
+-        const thread = await channel.startThread(record.messageId, threadName(record, encounterId));
+-        record.threadId = thread.id;
+-      } catch (error) {
+-        metrics.increment("legendaries.thread_failed");
+-        logger.warn("Could not start the legendary thread; updates go to the channel", { encounterId, error });
++    record.threadId = await this.startThread(channel, record.messageId, threadName(record, encounterId), encounterId);
++    store.update((state) => {
++      this.prune(state);
++      state.legendaryEncounters[String(encounterId)] = record;
++    });
++    if (event.event === "revealed" && record.threadId && channel.thread) {
++      const line = threadLine(event, undefined);
++      const thread = await channel.thread(record.threadId);
++      if (line && thread) {
++        await thread.send({ content: line });
+       }
+     }
+-    const cutoff = this.nowSeconds() - ENCOUNTER_RETENTION_SECONDS;
++    metrics.increment(`legendaries.${event.event}`);
++    logger.info("Announced wild legendary", { encounterId, species: event.species, thread: record.threadId });
++  }
++
++  private async postSet(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
++    const { store, metrics, logger } = this.options;
++    const event = envelope.event;
++    const channel = this.channel();
++    if (!channel) {
++      return;
++    }
++    const key = setKey(event);
++    const members = event.members ?? [];
++    const set: LegendarySetRecord = {
++      channelId: channel.id,
++      messageId: "",
++      name: event.setName ?? event.species,
++      level: event.level ?? undefined,
++      asleep: event.asleep ?? undefined,
++      startedAt: envelope.time,
++      members: members.map((member) => ({
++        encounterId: member.encounterId,
++        species: member.species,
++        dexNumber: member.dexNumber ?? undefined,
++        area: describeArea({ area: member.area, position: member.position }, this.options.config.locationMode),
++      })),
++    };
++    set.messageId = await channel.send({ embeds: [buildSetEmbed(set)] });
++    set.threadId = await this.startThread(channel, set.messageId, `${set.name} #${members[0]!.encounterId}`.slice(0, 100), members[0]!.encounterId);
+     store.update((state) => {
+-      for (const [id, saved] of Object.entries(state.legendaryEncounters)) {
+-        if (saved.startedAt < cutoff) {
+-          delete state.legendaryEncounters[id];
+-        }
++      this.prune(state);
++      state.legendarySets[key] = set;
++      for (const member of members) {
++        state.legendaryEncounters[String(member.encounterId)] = {
++          channelId: channel.id,
++          messageId: set.messageId,
++          threadId: set.threadId,
++          species: member.species,
++          dexNumber: member.dexNumber ?? undefined,
++          tier: member.tier ?? undefined,
++          area: member.area ?? undefined,
++          location: describeArea({ area: member.area, position: member.position }, this.options.config.locationMode),
++          endsAt: member.endsAt ?? undefined,
++          startedAt: envelope.time,
++          level: event.level ?? undefined,
++          asleep: event.asleep ?? undefined,
++          set: key,
++        };
+       }
+-      state.legendaryEncounters[String(encounterId)] = record;
+     });
+-    metrics.increment("legendaries.spawn");
+-    logger.info("Announced wild legendary", { encounterId, species: event.species, thread: record.threadId });
++    metrics.increment("legendaries.set");
++    logger.info("Announced a legendary set", { set: key, members: members.map((member) => member.species) });
++  }
++
++  private async threadOf(channel: ChannelSink, record: LegendaryEncounterRecord): Promise<ThreadSink | undefined> {
++    return record.threadId && channel.thread ? channel.thread(record.threadId) : undefined;
++  }
++
++  /** A clash, or Rayquaza on its way: a line in each one's thread (once when they share a set's). */
++  private async postClash(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
++    const event = envelope.event;
++    const channel = this.channel();
++    const line = threadLine(event, describeArea(event, this.options.config.locationMode));
++    if (!channel || !line) {
++      return;
++    }
++    const encounters = this.options.store.get().legendaryEncounters;
++    const records = [event.encounterId, event.otherEncounterId]
++      .map((id) => (id === null || id === undefined ? undefined : encounters[String(id)]))
++      .filter((record): record is LegendaryEncounterRecord => record !== undefined);
++    const threads = new Set<string>();
++    for (const record of records) {
++      if (record.endedAt) {
++        continue;
++      }
++      const thread = await this.threadOf(channel, record);
++      if (thread && !threads.has(thread.id)) {
++        threads.add(thread.id);
++        await thread.send({ content: line });
++      }
++    }
++    if (threads.size === 0) {
++      await channel.send({ content: line });
++    }
++    this.options.metrics.increment(`legendaries.${event.event}`);
++  }
++
++  /** A sign before a spawn, or a legendary given as a quest reward. */
++  private async postStandalone(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
++    const event = envelope.event;
++    const channel = this.channel();
++    if (!channel) {
++      return;
++    }
++    let embed: APIEmbed;
++    if (event.event === "sign") {
++      const where = event.area ? ` near **${plain(event.area)}**` : "";
++      embed = {
++        author: { name: "Strange signs" },
++        title: `🔮 Something powerful is coming${event.area ? ` near ${event.area}` : ""}`.slice(0, 256),
++        description: [
++          plain(event.text ?? `Strange signs are building${where}... something powerful is coming.`),
++          event.endsAt ? `It breaks <t:${Math.floor(event.endsAt)}:R>.` : undefined,
++        ].filter(Boolean).join("\n\n"),
++        color: COLORS.legendary,
++        timestamp: new Date(envelope.time * 1000).toISOString(),
++      };
++      await channel.send({ embeds: [embed] });
++    } else {
++      embed = {
++        author: { name: "Legendary reward" },
++        title: `🎁 ${event.trainer ?? "A trainer"} received ${event.species}!`.slice(0, 256),
++        description: plain(event.text ?? `${event.trainer ?? "A trainer"} received ${event.species} as a reward!`),
++        color: COLORS.legendary,
++        footer: event.dexNumber ? { text: `Pokédex #${padDex(event.dexNumber)}` } : undefined,
++        timestamp: new Date(envelope.time * 1000).toISOString(),
++      };
++      await channel.send(embedMessage(embed, this.options.artwork.resolve(event.dexNumber), "thumbnail"));
++    }
++    this.options.metrics.increment(`legendaries.${event.event}`);
+   }
+ 
+   private async postUpdate(envelope: GameEventEnvelope<LegendaryEvent>): Promise<void> {
+@@ -220,20 +471,37 @@ export class LegendaryEncounters {
+     const event = envelope.event;
+     const key = String(event.encounterId);
+     const record = store.get().legendaryEncounters[key];
+-    const channel = this.options.channels.get("legendarySpawns");
++    const channel = this.channel();
+     if (!record || !channel) {
+-      metrics.increment("legendaries.no_channel");
+       return;
+     }
+     const line = threadLine(event, describeArea(event, this.options.config.locationMode));
+     if (!line) {
+       return;
+     }
+-    const thread = record.threadId && channel.thread ? await channel.thread(record.threadId) : undefined;
++    const thread = await this.threadOf(channel, record);
+     const target: ChannelSink = thread ?? channel;
+     await target.send({ content: thread ? line : `${line} (encounter #${key})` });
+     metrics.increment(`legendaries.${event.event}`);
+ 
++    if (record.set) {
++      await this.updateSet(channel, thread, record, event);
++      return;
++    }
++    if (event.event === "woke") {
++      store.update((state) => {
++        const saved = state.legendaryEncounters[key];
++        if (saved) {
++          saved.asleep = false;
++          saved.endsAt = undefined;
++        }
++      });
++      const awake = { ...record, asleep: false, endsAt: undefined };
++      if (channel.id === record.channelId) {
++        await channel.edit(record.messageId, embedMessage(buildEncounterEmbed(awake), this.options.artwork.resolve(record.dexNumber), "image"));
++      }
++      return;
++    }
+     const ended = event.event === "end" || event.event === "caught";
+     if (!ended) {
+       return;
+@@ -254,10 +522,52 @@ export class LegendaryEncounters {
+     });
+     // A defeat can still be followed by the catch; the thread then archives itself after an hour.
+     if (thread && reason !== "defeated") {
+-      await thread.archive().catch((error: unknown) => {
+-        metrics.increment("legendaries.archive_failed");
+-        this.options.logger.warn("Could not archive the legendary thread", { encounterId: key, error });
+-      });
++      await this.archive(thread, key);
+     }
+   }
++
++  /** A set member woke up or ended: its line on the set's post, and the thread archived once all have ended. */
++  private async updateSet(channel: ChannelSink, thread: ThreadSink | undefined, record: LegendaryEncounterRecord, event: LegendaryEvent): Promise<void> {
++    const { store } = this.options;
++    const ended = event.event === "end" || event.event === "caught";
++    if (!ended && event.event !== "woke") {
++      return;
++    }
++    const reason = event.event === "woke" ? "awake" : event.event === "caught" ? "caught" : (event.reason ?? "vanished");
++    const detail = event.event === "caught" || event.event === "woke"
++      ? (event.trainer ? plain(event.trainer) : undefined)
++      : reason === "defeated" && event.trainers && event.trainers.length > 0 ? event.trainers.map(plain).join(", ") : undefined;
++    let set: LegendarySetRecord | undefined;
++    store.update((state) => {
++      const saved = state.legendarySets[record.set!];
++      const member = saved?.members.find((item) => item.encounterId === event.encounterId);
++      if (saved && member) {
++        member.outcome = reason;
++        member.detail = detail;
++        member.ended = ended || undefined;
++        set = structuredClone(saved);
++      }
++      const encounter = state.legendaryEncounters[String(event.encounterId)];
++      if (encounter && ended) {
++        encounter.endedAt = this.nowSeconds();
++      }
++    });
++    if (!set) {
++      return;
++    }
++    if (channel.id === set.channelId) {
++      await channel.edit(set.messageId, { embeds: [buildSetEmbed(set)] });
++    }
++    const done = set.members.every((member) => member.ended);
++    if (thread && done && reason !== "defeated") {
++      await this.archive(thread, record.set!);
++    }
++  }
++
++  private async archive(thread: ThreadSink, key: string): Promise<void> {
++    await thread.archive().catch((error: unknown) => {
++      this.options.metrics.increment("legendaries.archive_failed");
++      this.options.logger.warn("Could not archive the legendary thread", { encounterId: key, error });
++    });
++  }
+ }
+diff --git a/tests/unit/legendaryEncounters.test.ts b/tests/unit/legendaryEncounters.test.ts
+index 25b870a..30e0088 100644
+--- a/tests/unit/legendaryEncounters.test.ts
++++ b/tests/unit/legendaryEncounters.test.ts
+@@ -65,12 +65,14 @@ describe("wild legendary encounters", () => {
+     const { legendaries, channel, queue } = setup();
+     legendaries.handle(envelope(SPAWN));
+     legendaries.handle(envelope({ ...SPAWN, event: "sighting", area: "Route 20" }));
++    legendaries.handle(envelope({ ...SPAWN, event: "sighting", area: "Route 21", trainer: "Misty" }));
+     legendaries.handle(envelope({ ...SPAWN, event: "flee", area: "Route 19", healthPercent: 49.6 }));
+     legendaries.handle(envelope({ kind: "legendary", event: "end", reason: "fled", encounterId: 31, species: "Articuno" }));
+     await queue.idle();
+     const thread = channel.thread0();
+     expect(thread.contents()).toEqual([
+       "📍 **Articuno** was spotted near **Route 20**.",
++      "📍 **Misty** spotted **Articuno** near **Route 21**.",
+       "💨 **Articuno** fled near **Route 19** with 50% health!",
+       "🕊️ The wild **Articuno** flew away.",
+     ]);
+@@ -136,4 +138,84 @@ describe("wild legendary encounters", () => {
+     expect(end("vanished")).toBe("The wild **Mew** vanished.");
+     expect(end("something new")).toBe("The wild **Mew** is gone.");
+   });
++
++  it("posts a set once, with a line per member, and keeps every member's updates in its thread", async () => {
++    const { legendaries, channel, queue, store } = setup();
++    const set: LegendaryEvent = {
++      kind: "legendary", event: "set", species: "Legendary birds", setId: "birds", setName: "The legendary birds", level: 60,
++      members: [
++        { encounterId: 40, species: "Articuno", dexNumber: 144, area: "Seafoam Islands", endsAt: NOW + 3600 },
++        { encounterId: 41, species: "Zapdos", dexNumber: 145, area: "Power Plant", endsAt: NOW + 3600 },
++      ],
++    };
++    expect(gameEventSchema.parse(set)).toMatchObject({ event: "set" });
++    expect(legendaries.handle(envelope(set))).toEqual({ action: "post" });
++    legendaries.handle(envelope({ kind: "legendary", event: "flee", encounterId: 41, species: "Zapdos", area: "Route 10", healthPercent: 60 }));
++    await queue.idle();
++    expect(channel.sent).toHaveLength(1);
++    const embed = channel.sent[0]!.message.embeds![0]!;
++    expect(embed.title).toBe("👑 The legendary birds appeared together!");
++    expect(embed.description).toContain("level 60+");
++    expect(embed.description).toContain("• **Articuno** near **Seafoam Islands**");
++    expect(embed.description).toContain("• **Zapdos** near **Power Plant**");
++    const thread = channel.thread0();
++    expect(thread.name).toBe("The legendary birds #40");
++    expect(thread.contents()).toEqual(["💨 **Zapdos** fled near **Route 10** with 60% health!"]);
++    expect(store.get().legendaryEncounters["40"]!.set).toBe("birds:40");
++
++    legendaries.handle(envelope({ kind: "legendary", event: "caught", encounterId: 41, species: "Zapdos", trainer: "Ash" }));
++    await queue.idle();
++    expect(channel.edits.at(-1)!.message.embeds![0]!.description).toContain("• **Zapdos** near **Power Plant**: Caught: Ash");
++    expect(thread.archived).toBe(false);
++    legendaries.handle(envelope({ kind: "legendary", event: "end", reason: "fled", encounterId: 40, species: "Articuno" }));
++    await queue.idle();
++    expect(channel.edits.at(-1)!.message.embeds![0]!.title).toBe("👑 The legendary birds: the encounters are over");
++    expect(thread.archived).toBe(true);
++  });
++
++  it("marks a woken Regi of a sleeping set, and a lone sleeper's post", async () => {
++    const { legendaries, channel, queue } = setup();
++    legendaries.handle(envelope({ kind: "legendary", event: "set", species: "Regis", setId: "regis", setName: "The Regis", asleep: true,
++      members: [{ encounterId: 50, species: "Regirock", area: "Rock Tunnel" }] }));
++    legendaries.handle(envelope({ kind: "legendary", event: "woke", encounterId: 50, species: "Regirock", trainer: "Misty", area: "Rock Tunnel" }));
++    await queue.idle();
++    expect(channel.sent[0]!.message.embeds![0]!.title).toBe("💤 The Regis are sleeping");
++    expect(channel.thread0().contents()).toEqual(["⏰ **Misty** woke **Regirock** up near **Rock Tunnel**! It can be fought now."]);
++    expect(channel.edits.at(-1)!.message.embeds![0]!.description).toContain("Rock Tunnel**: Awake: Misty");
++  });
++
++  it("posts Mew showing its true self as the start of its encounter", async () => {
++    const { legendaries, channel, queue } = setup();
++    expect(legendaries.handle(envelope({ kind: "legendary", event: "revealed", encounterId: 60, species: "Mew", dexNumber: 151, trainer: "Brock", disguise: "Ditto" })).action).toBe("post");
++    legendaries.handle(envelope({ kind: "legendary", event: "flee", encounterId: 60, species: "Mew", area: "Route 1" }));
++    await queue.idle();
++    expect(channel.sent[0]!.message.embeds![0]!.title).toBe("👑 Mew shows its true self!");
++    expect(channel.thread0().contents()).toEqual([
++      "🎭 **Brock** found **Mew** hiding as a wild **Ditto**! It shows its true self.",
++      "💨 **Mew** fled near **Route 1**!",
++    ]);
++  });
++
++  it("puts a clash in both legendaries' threads, and posts signs and rewards on their own", async () => {
++    const { legendaries, channel, queue } = setup();
++    legendaries.handle(envelope({ ...SPAWN, encounterId: 70, species: "Groudon", area: "Route 3" }));
++    legendaries.handle(envelope({ ...SPAWN, encounterId: 71, species: "Kyogre", area: "Route 4" }));
++    legendaries.handle(envelope({ kind: "legendary", event: "clash", encounterId: 70, otherEncounterId: 71, species: "Groudon", other: "Kyogre",
++      text: "Groudon and Kyogre meet near Route 3: a storm breaks out!" }));
++    legendaries.handle(envelope({ kind: "legendary", event: "sign", species: "Mewtwo", area: "Cerulean Cave", endsAt: NOW + 600,
++      text: "A strange psychic disturbance is building near Cerulean Cave... something powerful is coming." }));
++    legendaries.handle(envelope({ kind: "legendary", event: "reward", species: "Celebi", dexNumber: 251, trainer: "Gary" }));
++    await queue.idle();
++    const threads = [...channel.threads.values()];
++    expect(threads.map((thread) => thread.contents())).toEqual([
++      ["🌩️ Groudon and Kyogre meet near Route 3: a storm breaks out!"],
++      ["🌩️ Groudon and Kyogre meet near Route 3: a storm breaks out!"],
++    ]);
++    const titles = channel.sent.map((item) => item.message.embeds?.[0]?.title);
++    expect(titles).toContain("🔮 Something powerful is coming near Cerulean Cave");
++    expect(titles).toContain("🎁 Gary received Celebi!");
++    expect(legendaries.handle(envelope({ kind: "legendary", event: "clash", encounterId: 1, otherEncounterId: 2, species: "Groudon" })))
++      .toEqual({ action: "skip", reason: "unknown_encounter" });
++  });
+ });
++
+-- 
+2.43.0
+

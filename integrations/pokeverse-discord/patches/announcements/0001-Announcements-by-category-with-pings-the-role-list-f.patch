@@ -1,0 +1,1810 @@
+From d631c35df86e90ecf38217b77ef1ad68dc3fd975 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 24 Oct 2026 16:51:50 +0000
+Subject: [PATCH 1/2] Announcements by category with pings, the role list for
+ the Admin window, and the event calendar as Discord scheduled events with
+ reminders
+
+---
+ .env.development.example                |  12 ++
+ .env.production.example                 |   5 +
+ docs/DISCORD_CONFIGURATION.md           |   9 +-
+ docs/GAME_INTEGRATION.md                |  48 ++++-
+ src/bot/discordAdapter.ts               |  74 ++++++-
+ src/bot/integration.ts                  |  48 +++++
+ src/bot/ports.ts                        |  29 +++
+ src/config/load.ts                      |  11 +
+ src/config/schema.ts                    |  44 ++++
+ src/integrations/pokeverse/gameApi.ts   |  25 +++
+ src/integrations/pokeverse/protocol.ts  | 134 +++++++++++-
+ src/services/announcements/announcer.ts | 160 ++++++++++++++-
+ src/services/calendar/calendarSync.ts   | 258 ++++++++++++++++++++++++
+ src/setup/channelSetup.ts               |  11 +-
+ src/setup/channels.ts                   |   9 +
+ src/utils/stateStore.ts                 |  48 ++++-
+ tests/helpers/fakes.ts                  |  43 +++-
+ tests/unit/announcer.test.ts            | 156 +++++++++++++-
+ tests/unit/calendarSync.test.ts         | 148 ++++++++++++++
+ tests/unit/channelSetup.test.ts         |   6 +-
+ 20 files changed, 1253 insertions(+), 25 deletions(-)
+ create mode 100644 src/services/calendar/calendarSync.ts
+ create mode 100644 tests/unit/calendarSync.test.ts
+
+diff --git a/.env.development.example b/.env.development.example
+index bbbccf1..b4ead4b 100644
+--- a/.env.development.example
++++ b/.env.development.example
+@@ -56,6 +56,18 @@ SPAWN_MAX_EVENT_AGE_SECONDS=300
+ # --- Announcements and status ---
+ ANNOUNCE_BROADCASTS=true
+ ANNOUNCE_RESTART_WARNINGS=true
++# In-game announcements posted in #game-announcements (event, legendary, server, staff, milestone,
++# news; "none" posts nothing). Staff broadcasts follow ANNOUNCE_BROADCASTS. Tips are never posted.
++ANNOUNCE_CATEGORIES=event,staff,milestone,news
++# category=role pairs: who an announcement pings. "verified" is VERIFIED_ROLE_NAME. Calendar events ping
++# only for holiday and weekend (server) events. @everyone and @here are only for staff (/b @everyone).
++ANNOUNCE_PINGS=event=verified
++# Let staff pick a ping (/b @everyone, @verified, @RoleName, or the Admin window's Ping on Discord)
++ANNOUNCE_STAFF_PINGS=true
++# "Starts in about an hour" in #game-announcements before each calendar event (no ping)
++ANNOUNCE_EVENT_REMINDERS=true
++# The game's event calendar as Discord scheduled events (needs Create Events and Manage Events)
++CALENDAR_SYNC_ENABLED=true
+ STATUS_REFRESH_SECONDS=60
+ 
+ # --- Private staff activity log (#player-activity in the "Admin Logs" category) ---
+diff --git a/.env.production.example b/.env.production.example
+index 959e1d4..1e34530 100644
+--- a/.env.production.example
++++ b/.env.production.example
+@@ -42,6 +42,11 @@ SPAWN_MAX_EVENT_AGE_SECONDS=300
+ 
+ ANNOUNCE_BROADCASTS=true
+ ANNOUNCE_RESTART_WARNINGS=true
++ANNOUNCE_CATEGORIES=event,staff,milestone,news
++ANNOUNCE_PINGS=event=verified
++ANNOUNCE_STAFF_PINGS=true
++ANNOUNCE_EVENT_REMINDERS=true
++CALENDAR_SYNC_ENABLED=true
+ STATUS_REFRESH_SECONDS=60
+ 
+ # --- Private staff activity log (#player-activity in the "Admin Logs" category) ---
+diff --git a/docs/DISCORD_CONFIGURATION.md b/docs/DISCORD_CONFIGURATION.md
+index a8513b5..3321ede 100644
+--- a/docs/DISCORD_CONFIGURATION.md
++++ b/docs/DISCORD_CONFIGURATION.md
+@@ -38,7 +38,7 @@ node dist/bot.cjs invite          # or: configure-discord-dev.bat prints it
+ ```
+ 
+ The link uses the scopes `bot applications.commands` and exactly these permissions
+-(integer `326820285456`). **Administrator is not requested.**
++(integer `17927596395536`). **Administrator is not requested.**
+ 
+ | Permission | Why |
+ | --- | --- |
+@@ -53,16 +53,21 @@ The link uses the scopes `bot applications.commands` and exactly these permissio
+ | Create Public Threads | One thread per wild legendary in `#legendary-spawns` |
+ | Send Messages in Threads | Post the legendary's sightings and end in its thread, and report updates in their posts |
+ | Manage Threads | Report posts: set their status tags (moderated tags), rename and archive them |
++| Mention Everyone | Staff announcements that ping @everyone or @here, and roles that aren't mentionable |
++| Create Events | Put the game's event calendar in the server's Events |
++| Manage Events | Update, start, end and remove those events |
+ 
+ Manage Channels is only needed for automatic setup. If you prefer, create the channels
+ yourself, assign them with `/pokeverse channel`, and remove the permission afterwards.
+ Manage Roles and Manage Nicknames are only needed with account linking (`LINKING_ENABLED`),
+ Manage Threads only with the report forums (`BUG_REPORTS_ENABLED`, `PLAYER_REPORTS_ENABLED`).
++Mention Everyone only for staff pings (`ANNOUNCE_STAFF_PINGS`; without it @everyone isn't offered
++in game), Create Events and Manage Events only for the calendar (`CALENDAR_SYNC_ENABLED`).
+ Optional: **View Audit Log** lets the bot name the staff member who changed a report's status
+ tag (otherwise the game shows "Discord staff").
+ 
+ An already invited bot keeps its old permissions: add Manage Roles, Manage Nicknames,
+-Create Public Threads, Send Messages in Threads and Manage Threads to the bot's role (**Server Settings > Roles > PokeVerse**) or open the new invite link.
++Create Public Threads, Send Messages in Threads, Manage Threads, Mention Everyone, Create Events and Manage Events to the bot's role (**Server Settings > Roles > PokeVerse**) or open the new invite link.
+ 
+ Then run setup again (`/pokeverse setup`, or `setup` on the command line). For channels
+ that already exist it changes only two things, and reports them as "updated":
+diff --git a/docs/GAME_INTEGRATION.md b/docs/GAME_INTEGRATION.md
+index f472ca0..26230cb 100644
+--- a/docs/GAME_INTEGRATION.md
++++ b/docs/GAME_INTEGRATION.md
+@@ -283,6 +283,9 @@ The protocol version stays `1`; everything Phase 2 added is optional. The welcom
+ | Phase 2, both on | Everything. |
+ | No `boosterRewards` feature | Booster rewards are not paid; `/booster` and `/pokeverse status` say the game server does not support them. |
+ | No `boostPerks` feature | The bot does not send the boost level; the info post still lists the planned perks. |
++| No `announcements` feature | Staff broadcasts come from `broadcast` events as before; no category posts or pings, no role list for the Admin window. |
++| `announcements` on | `announcement` events are posted by category and `broadcast` events are ignored (the game still sends them for older bots). |
++| No `calendar` feature | No scheduled events or reminders. |
+ 
+ A Phase 1 bot connected to a Phase 2 server ignores the new event kinds and never sends the
+ new requests, so the two can be upgraded in either order.
+@@ -346,9 +349,20 @@ artwork. Shiny and legendary catches are highlighted. Modes: `all`, `rare_only`,
+ The game's wild legendaries (`078-wildLegendaries.lua`) send `legendary` events instead of
+ `spawn` events, each with the game's `encounterId`:
+ 
+-- `spawn`: a post in `#legendary-spawns` (species, area, tier, when it flies off, artwork)
+-  and a public thread on it, named `Articuno near Seafoam Islands #31`.
+-- `sighting` and `flee`: one line each in the thread.
++- `spawn`: a post in `#legendary-spawns` (species, area, tier, level, when it flies off,
++  artwork) and a public thread on it, named `Articuno near Seafoam Islands #31`. A sleeping
++  Regi says so and has no end time; a disguised Mew sends nothing until it is found.
++- `set`: one post for the whole set (the birds, the beasts, the Regis, Latias and Latios) with
++  a line per member and one thread; each member's later events edit its line and go into that
++  thread, which is archived once every member has ended.
++- `sighting` (with `trainer` when a trainer saw it; the game only sends the moves someone saw
++  or that happened near a town) and `flee`: one line each in the thread.
++- `woke` (a Regi) and `revealed` (Mew: starts its post, with the disguise): a line, and the
++  post is edited.
++- `clash` and `calm` (Groudon and Kyogre, Rayquaza calming them): a line in both encounters'
++  threads, or in the channel when neither has one.
++- `sign` (Mewtwo's psychic disturbance) and `reward` (a legendary given by a quest): a post in
++  the channel, with no thread.
+ - `end` (`defeated`, `fled`, `staff`, `restart`, `vanished`) and `caught`: a line in the
+   thread, and the post is edited with the outcome. The thread is archived, except after a
+   defeat, which is left open for the catch (it archives itself after an hour).
+@@ -364,12 +378,34 @@ The game's wild legendaries (`078-wildLegendaries.lua`) send `legendary` events
+ `Articuno, Zapdos, Moltres, Mewtwo, Mew, Raikou, Entei, Suicune, Lugia, Ho-Oh, Celebi,
+ Regirock, Regice, Registeel, Latias, Latios, Kyogre, Groudon, Rayquaza, Jirachi, Deoxys`,
+ the boss variants `Boss Articuno, Frozen Boss Articuno, Boss Zapdos, Boss Moltres, Final Mewtwo`,
+-and all `Shiny` variants. It is `CONFIG.legendary` in `056-discordBridge.lua`.
++and all `Shiny` variants. It is `CONFIG.legendary` in `056-discordBridge.lua` plus every species
++of the wild legendaries (`WildLegendaries.SPECIES`), sent in `bridge.config`.
+ 
+ ### Announcements and status
+ 
+-- GM `/b` and client broadcasts, `/bc` (staff) and `/shutdown` / global save warnings
+-  (including "cancelled") go to `#game-announcements`. Automatic tips are not forwarded.
++- With the `announcements` feature the game sends every server-wide announcement but the
++  tips as an `announcement` event: `category` (event, legendary, server, staff, milestone,
++  news), `title`, `text`, `full` (the message as shown in game), `source` (the script),
++  `author` (staff), `ping` and `calendar` (`key`, `id`, `state` started/ended, `type`
++  holiday/server/staff). The bot posts the categories in `ANNOUNCE_CATEGORIES` (staff posts
++  follow `ANNOUNCE_BROADCASTS`) as an embed in `#game-announcements`, with an "Event details"
++  link to the Discord event when there is one.
++- Pings: staff pick one with `/b @everyone text`, `@verified`, `@RoleName` (the tag is taken
++  out of the in-game text) or the Admin window's **Ping on Discord**. @everyone and @here are
++  for Gamemasters and up (access 3), and need the bot's Mention Everyone. Otherwise
++  `ANNOUNCE_PINGS` applies (default: calendar holiday and weekend events ping the Verified
++  Trainer role). Role names are matched ignoring case, spaces and punctuation.
++- `announcements.roles` (bot to game, on connect and every 15 minutes): the server's role
++  names (up to 50) and whether the bot may ping @everyone, for the Admin window's list.
++- Calendar: with the `calendar` feature the bot reads the next 30 days (`calendar.range`, at
++  most 60 days) every 15 minutes and keeps a Discord scheduled event per occurrence (staff
++  events forced on in game are skipped): created, edited when the game changes it, started and
++  ended on time, removed when staff remove it, and made again if someone deletes it on
++  Discord. An hour before each start it posts a reminder in `#game-announcements` (no ping).
++  Needs Create Events and Manage Events (`CALENDAR_SYNC_ENABLED`).
++- Without the `announcements` feature: GM `/b` and client broadcasts, `/bc` (staff) and
++  `/shutdown` / global save warnings (including "cancelled") go to `#game-announcements`.
++  Automatic tips are not forwarded.
+ - `#server-status` has one message that the bot edits: online/offline, players, uptime,
+   last restart. It is recreated if someone deletes it. Offline is shown when the bridge
+   disconnects.
+diff --git a/src/bot/discordAdapter.ts b/src/bot/discordAdapter.ts
+index 88e15ae..6e4f70c 100644
+--- a/src/bot/discordAdapter.ts
++++ b/src/bot/discordAdapter.ts
+@@ -4,6 +4,9 @@ import {
+   AttachmentBuilder,
+   ChannelType,
+   DiscordAPIError,
++  GuildScheduledEventEntityType,
++  GuildScheduledEventPrivacyLevel,
++  GuildScheduledEventStatus,
+   MessageFlags,
+   OverwriteType,
+   PermissionFlagsBits,
+@@ -38,6 +41,8 @@ import type {
+   PermissionName,
+   PermissionOverwriteSpec,
+   RoleInfo,
++  ScheduledEventSpec,
++  ScheduledEventStatus,
+   ThreadSink,
+ } from "./ports.js";
+ 
+@@ -69,7 +74,21 @@ function toTagData(tag: ForumTagSpec) {
+ }
+ 
+ function mentions(message: OutgoingMessage) {
+-  return message.mentionUserIds?.length ? { parse: [], users: message.mentionUserIds } : { parse: [] };
++  return {
++    parse: message.mentionEveryone ? ["everyone" as const] : [],
++    ...(message.mentionUserIds?.length ? { users: message.mentionUserIds } : {}),
++    ...(message.mentionRoleIds?.length ? { roles: message.mentionRoleIds } : {}),
++  };
++}
++
++const EVENT_STATUS = {
++  active: GuildScheduledEventStatus.Active,
++  completed: GuildScheduledEventStatus.Completed,
++  canceled: GuildScheduledEventStatus.Canceled,
++} as const satisfies Record<Exclude<ScheduledEventStatus, "scheduled">, GuildScheduledEventStatus>;
++
++function isUnknownEvent(error: unknown): boolean {
++  return error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownGuildScheduledEvent;
+ }
+ 
+ function overwrites(specs: PermissionOverwriteSpec[]) {
+@@ -435,6 +454,7 @@ export class DiscordGuildPort implements GuildPort {
+       managed: role.managed,
+       assignable: !role.managed && me !== null && me.roles.highest.comparePositionTo(role) > 0,
+       administrator: role.permissions.has(PermissionFlagsBits.Administrator),
++      mentionable: role.mentionable,
+     };
+   }
+ 
+@@ -483,4 +503,56 @@ export class DiscordGuildPort implements GuildPort {
+   boosts(): { count: number; level: number } {
+     return { count: this.guild.premiumSubscriptionCount ?? 0, level: this.guild.premiumTier };
+   }
++
++  async createScheduledEvent(spec: ScheduledEventSpec, reason: string): Promise<string> {
++    const event = await this.guild.scheduledEvents.create({
++      name: spec.name.slice(0, 100),
++      description: spec.description.slice(0, 1000),
++      scheduledStartTime: new Date(spec.startsAt),
++      scheduledEndTime: new Date(spec.endsAt),
++      privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
++      entityType: GuildScheduledEventEntityType.External,
++      entityMetadata: { location: spec.location.slice(0, 100) },
++      image: spec.image ? (spec.image.data ?? spec.image.path) : undefined,
++      reason,
++    });
++    return event.id;
++  }
++
++  async editScheduledEvent(
++    eventId: string,
++    change: Partial<ScheduledEventSpec> & { status?: Exclude<ScheduledEventStatus, "scheduled"> },
++    reason: string,
++  ): Promise<boolean> {
++    try {
++      await this.guild.scheduledEvents.edit(eventId, {
++        name: change.name?.slice(0, 100),
++        description: change.description?.slice(0, 1000),
++        scheduledStartTime: change.startsAt !== undefined ? new Date(change.startsAt) : undefined,
++        scheduledEndTime: change.endsAt !== undefined ? new Date(change.endsAt) : undefined,
++        entityMetadata: change.location !== undefined ? { location: change.location.slice(0, 100) } : undefined,
++        image: change.image ? (change.image.data ?? change.image.path) : undefined,
++        status: change.status ? EVENT_STATUS[change.status] : undefined,
++        reason,
++      });
++      return true;
++    } catch (error) {
++      if (isUnknownEvent(error)) {
++        return false;
++      }
++      throw error;
++    }
++  }
++
++  async deleteScheduledEvent(eventId: string): Promise<boolean> {
++    try {
++      await this.guild.scheduledEvents.delete(eventId);
++      return true;
++    } catch (error) {
++      if (isUnknownEvent(error)) {
++        return false;
++      }
++      throw error;
++    }
++  }
+ }
+diff --git a/src/bot/integration.ts b/src/bot/integration.ts
+index 304f216..fedd595 100644
+--- a/src/bot/integration.ts
++++ b/src/bot/integration.ts
+@@ -3,6 +3,7 @@ import { CommandRouter } from "../commands/router.js";
+ import { BridgeClient, type ConnectedInfo } from "../integrations/pokeverse/bridgeClient.js";
+ import {
+   createAdminApi,
++  createAnnouncementApi,
+   createBoosterApi,
+   createGameApi,
+   createLinkApi,
+@@ -18,6 +19,7 @@ import { GeoIp } from "../services/activity/geoip.js";
+ import { LinkService, type NicknameMode, type SyncResult } from "../services/linking/linkService.js";
+ import { Announcer } from "../services/announcements/announcer.js";
+ import { BoosterRewards } from "../services/boosters/boosterRewards.js";
++import { CalendarSync } from "../services/calendar/calendarSync.js";
+ import { CatchAnnouncer } from "../services/catches/catchAnnouncer.js";
+ import { ChatRelay } from "../services/chat/chatRelay.js";
+ import { ArtworkResolver } from "../services/pokemon/artwork.js";
+@@ -59,6 +61,7 @@ export class GameIntegration {
+   readonly spawns: SpawnAnnouncer;
+   readonly legendaries: LegendaryEncounters;
+   readonly announcer: Announcer;
++  readonly calendar: CalendarSync;
+   readonly status: StatusService;
+   readonly setup: ChannelSetup;
+   readonly commands: CommandRouter;
+@@ -70,6 +73,8 @@ export class GameIntegration {
+   readonly boosters: BoosterRewards | undefined;
+   private readonly queues: Record<string, DeliveryQueue>;
+   private resyncTimer: NodeJS.Timeout | undefined;
++  private rolesTimer: NodeJS.Timeout | undefined;
++  private rolesInterval: NodeJS.Timeout | undefined;
+ 
+   constructor(private readonly options: GameIntegrationOptions) {
+     const { config, logger, metrics, store, channels } = options;
+@@ -139,9 +144,29 @@ export class GameIntegration {
+       metrics,
+       now: options.now,
+     });
++    const announcementApi = createAnnouncementApi(this.bridge);
++    this.calendar = new CalendarSync({
++      enabled: config.announcements.calendar,
++      reminders: config.announcements.reminders,
++      api: announcementApi,
++      guild: options.guild,
++      channels,
++      store,
++      queue: this.queues.announcements!,
++      logger: logger.child({ component: "calendar" }),
++      metrics,
++      now: options.now,
++    });
+     this.announcer = new Announcer({
+       broadcasts: config.announcements.broadcasts,
+       restartWarnings: config.announcements.restartWarnings,
++      categories: config.announcements.categories,
++      pings: config.announcements.pings,
++      staffPings: config.announcements.staffPings,
++      verifiedRoleName: config.linking.verifiedRoleName,
++      guild: options.guild,
++      api: announcementApi,
++      calendarLink: (key) => this.calendar.link(key),
+       maxEventAgeSeconds: 600,
+       channels,
+       queue: this.queues.announcements!,
+@@ -172,6 +197,8 @@ export class GameIntegration {
+       },
+       reports: { bugs: config.reports.bugs, players: config.reports.players },
+       boosters: config.boosters.enabled,
++      pings: config.announcements.staffPings,
++      calendar: config.announcements.calendar,
+     });
+     this.reports = new ReportForums({
+       config: config.reports,
+@@ -278,11 +305,25 @@ export class GameIntegration {
+     this.activity?.start();
+     this.linking?.start();
+     this.boosters?.start();
++    this.calendar.start();
++    this.rolesInterval = setInterval(() => this.syncRoles(), 15 * 60_000);
++    this.rolesInterval.unref();
++  }
++
++  /** The Admin window's "Ping on Discord" list. */
++  syncRoles(): void {
++    this.announcer.syncRoles().catch((error: unknown) => {
++      this.options.metrics.increment("announcements.roles_failed");
++      this.options.logger.warn("Could not send the pingable roles to the game", { error });
++    });
+   }
+ 
+   async stop(): Promise<void> {
+     this.status.stop();
+     clearTimeout(this.resyncTimer);
++    clearTimeout(this.rolesTimer);
++    clearInterval(this.rolesInterval);
++    this.calendar.stop();
+     this.activity?.stop();
+     this.linking?.stop();
+     this.boosters?.stop();
+@@ -318,6 +359,9 @@ export class GameIntegration {
+         case "legendary":
+           this.legendaries.handle({ ...envelope, event });
+           break;
++        case "announcement":
++          this.announcer.handleAnnouncement({ ...envelope, event });
++          break;
+         case "broadcast":
+           this.announcer.handleBroadcast({ ...envelope, event });
+           break;
+@@ -380,6 +424,10 @@ export class GameIntegration {
+     });
+     this.activity?.onConnected(info);
+     this.boosters?.onConnected();
++    this.calendar.onConnected(this.options.reconnectSyncDelayMs ?? 5000);
++    clearTimeout(this.rolesTimer);
++    this.rolesTimer = setTimeout(() => this.syncRoles(), this.options.reconnectSyncDelayMs ?? 5000);
++    this.rolesTimer.unref();
+     const linking = this.linking;
+     if (linking) {
+       clearTimeout(this.resyncTimer);
+diff --git a/src/bot/ports.ts b/src/bot/ports.ts
+index a1df18f..bd74cc6 100644
+--- a/src/bot/ports.ts
++++ b/src/bot/ports.ts
+@@ -23,6 +23,10 @@ export interface OutgoingMessage {
+   buttons?: OutgoingButton[];
+   /** Users this message may ping; every other mention stays silent. */
+   mentionUserIds?: string[];
++  /** Roles this message may ping. */
++  mentionRoleIds?: string[];
++  /** The message may ping @everyone and @here. */
++  mentionEveryone?: boolean;
+ }
+ 
+ export interface OutgoingButton {
+@@ -124,6 +128,21 @@ export interface RoleInfo {
+   /** The bot's highest role is above this role, so the bot can assign it. */
+   assignable: boolean;
+   administrator: boolean;
++  /** Anyone can ping it; other roles only ping with Mention Everyone. */
++  mentionable?: boolean;
++}
++
++export type ScheduledEventStatus = "scheduled" | "active" | "completed" | "canceled";
++
++/** A Discord scheduled event the bot made for a game calendar event (an external event, "in PokeVerse"). */
++export interface ScheduledEventSpec {
++  name: string;
++  description: string;
++  /** Unix milliseconds. */
++  startsAt: number;
++  endsAt: number;
++  location: string;
++  image?: OutgoingFile;
+ }
+ 
+ export interface MemberInfo {
+@@ -180,4 +199,14 @@ export interface GuildPort {
+   setNickname(userId: string, nickname: string | null, reason: string): Promise<void>;
+   /** Active server boosts (all members together) and the server boost level, 0-3. */
+   boosts(): { count: number; level: number };
++  /** Returns the event's id. */
++  createScheduledEvent(spec: ScheduledEventSpec, reason: string): Promise<string>;
++  /** Resolves false when the event no longer exists. A started event only takes a new end, name and description. */
++  editScheduledEvent(
++    eventId: string,
++    change: Partial<ScheduledEventSpec> & { status?: Exclude<ScheduledEventStatus, "scheduled"> },
++    reason: string,
++  ): Promise<boolean>;
++  /** Resolves false when the event no longer exists. */
++  deleteScheduledEvent(eventId: string): Promise<boolean>;
+ }
+diff --git a/src/config/load.ts b/src/config/load.ts
+index 7c6067f..b6093eb 100644
+--- a/src/config/load.ts
++++ b/src/config/load.ts
+@@ -48,6 +48,12 @@ export interface BotConfig {
+   announcements: {
+     broadcasts: boolean;
+     restartWarnings: boolean;
++    categories: Set<string>;
++    /** Category -> role name ("verified" is the Verified Trainer role). */
++    pings: Record<string, string>;
++    staffPings: boolean;
++    reminders: boolean;
++    calendar: boolean;
+   };
+   activity: {
+     enabled: boolean;
+@@ -248,6 +254,11 @@ export function loadConfig(options: LoadOptions): BotConfig {
+     announcements: {
+       broadcasts: raw.ANNOUNCE_BROADCASTS,
+       restartWarnings: raw.ANNOUNCE_RESTART_WARNINGS,
++      categories: new Set(raw.ANNOUNCE_CATEGORIES),
++      pings: raw.ANNOUNCE_PINGS,
++      staffPings: raw.ANNOUNCE_STAFF_PINGS,
++      reminders: raw.ANNOUNCE_EVENT_REMINDERS,
++      calendar: raw.CALENDAR_SYNC_ENABLED,
+     },
+     activity: {
+       enabled: raw.ACTIVITY_LOG_ENABLED,
+diff --git a/src/config/schema.ts b/src/config/schema.ts
+index 5653562..34e8da2 100644
+--- a/src/config/schema.ts
++++ b/src/config/schema.ts
+@@ -1,4 +1,5 @@
+ import { z } from "zod";
++import { ANNOUNCEMENT_CATEGORIES } from "../integrations/pokeverse/protocol.js";
+ import { CATCH_MODES } from "../utils/stateStore.js";
+ 
+ export const PROFILES = ["development", "production"] as const;
+@@ -108,6 +109,49 @@ export const envSchema = z.object({
+ 
+   ANNOUNCE_BROADCASTS: bool(true),
+   ANNOUNCE_RESTART_WARNINGS: bool(true),
++  /** Game announcements posted to #game-announcements ("none" for none). Legendaries have #legendary-spawns. */
++  ANNOUNCE_CATEGORIES: z
++    .string()
++    .default("event,staff,milestone,news")
++    .transform((value, context) => {
++      const items = value.split(",").map((part) => part.trim().toLowerCase()).filter(Boolean);
++      if (items.length === 1 && items[0] === "none") {
++        return [];
++      }
++      const unknown = items.filter((item) => !(ANNOUNCEMENT_CATEGORIES as readonly string[]).includes(item));
++      if (unknown.length > 0) {
++        context.addIssue({ code: z.ZodIssueCode.custom, message: `unknown categories ${unknown.join(", ")} (use ${ANNOUNCEMENT_CATEGORIES.join(", ")} or none)` });
++        return z.NEVER;
++      }
++      return [...new Set(items)];
++    }),
++  /**
++   * The role each category pings on its own: "<category>=<role name or verified>" pairs. Events only ping for
++   * holidays and the weekend events, never for bonus events staff start.
++   */
++  ANNOUNCE_PINGS: z
++    .string()
++    .default("event=verified")
++    .transform((value, context) => {
++      const pings: Record<string, string> = {};
++      for (const item of value.split(",").map((part) => part.trim()).filter(Boolean)) {
++        const match = /^([a-z]+)\s*=\s*(.{1,100})$/i.exec(item);
++        const category = match?.[1]?.toLowerCase() ?? "";
++        const role = match?.[2]?.trim() ?? "";
++        if (!match || !(ANNOUNCEMENT_CATEGORIES as readonly string[]).includes(category) || /^@?(everyone|here)$/i.test(role)) {
++          context.addIssue({ code: z.ZodIssueCode.custom, message: `expected "<category>=<role name>" pairs (never everyone or here), got "${item}"` });
++          return z.NEVER;
++        }
++        pings[category] = role;
++      }
++      return pings;
++    }),
++  /** Staff broadcasts may ping the role they name (@everyone only from Gamemasters up; the game checks). */
++  ANNOUNCE_STAFF_PINGS: bool(true),
++  /** A short post an hour before a calendar event starts. */
++  ANNOUNCE_EVENT_REMINDERS: bool(true),
++  /** A Discord scheduled event for each game calendar event of the next 30 days. */
++  CALENDAR_SYNC_ENABLED: bool(true),
+ 
+   ACTIVITY_LOG_ENABLED: bool(true),
+   ACTIVITY_LOG_VIEWER_ROLE_IDS: snowflakeList,
+diff --git a/src/integrations/pokeverse/gameApi.ts b/src/integrations/pokeverse/gameApi.ts
+index fa635a3..041877a 100644
+--- a/src/integrations/pokeverse/gameApi.ts
++++ b/src/integrations/pokeverse/gameApi.ts
+@@ -1,6 +1,8 @@
+ import type { BridgeClient } from "./bridgeClient.js";
+ import {
+   adminSessionsResultSchema,
++  announcementRolesResultSchema,
++  calendarRangeResultSchema,
+   boostLevelResultSchema,
+   boosterRulesResultSchema,
+   boosterWeekResultSchema,
+@@ -23,6 +25,7 @@ import {
+   type BoosterRules,
+   type BoosterWeekResult,
+   type BridgeConfigResult,
++  type CalendarRangeResult,
+   type LinkAccountResult,
+   type LinkCharactersResult,
+   type LinkListResult,
+@@ -66,6 +69,16 @@ export interface AdminApi {
+   sessions(): Promise<AdminSessionsResult>;
+ }
+ 
++/** Announcements and the calendar. */
++export interface AnnouncementApi {
++  readonly connected: boolean;
++  hasFeature(feature: string): boolean;
++  /** Tells the game which Discord roles staff can ping from the Admin window. Resolves with how many it kept. */
++  roles(roles: string[], everyone: boolean): Promise<number>;
++  /** The calendar's events overlapping [from, to] (unix seconds). */
++  calendarRange(from: number, to: number): Promise<CalendarRangeResult>;
++}
++
+ /** In-game reports: a status tag picked on a forum post answers the report; screenshots are read in slices. */
+ export interface ReportApi {
+   readonly connected: boolean;
+@@ -152,3 +165,15 @@ export function createReportApi(client: BridgeClient): ReportApi {
+     screenshot: (id, offset, length) => client.request("report.screenshot", { id, offset, length }, reportScreenshotResultSchema),
+   };
+ }
++
++export function createAnnouncementApi(client: BridgeClient): AnnouncementApi {
++  return {
++    get connected() {
++      return client.connected;
++    },
++    hasFeature: (feature) => client.hasFeature(feature),
++    roles: async (roles, everyone) =>
++      (await client.request("announcements.roles", { roles, everyone }, announcementRolesResultSchema)).roles,
++    calendarRange: (from, to) => client.request("calendar.range", { from, to }, calendarRangeResultSchema),
++  };
++}
+diff --git a/src/integrations/pokeverse/protocol.ts b/src/integrations/pokeverse/protocol.ts
+index 41aa578..4796bab 100644
+--- a/src/integrations/pokeverse/protocol.ts
++++ b/src/integrations/pokeverse/protocol.ts
+@@ -18,9 +18,22 @@ export const welcomeSchema = z.object({
+   features: z.array(z.string()).optional(),
+ });
+ 
+-export const FEATURES = { playerSessions: "playerSessions", accountLinking: "accountLinking", boosterRewards: "boosterRewards", boostPerks: "boostPerks" } as const;
++export const FEATURES = {
++  playerSessions: "playerSessions",
++  accountLinking: "accountLinking",
++  boosterRewards: "boosterRewards",
++  boostPerks: "boostPerks",
++  /** Every server-wide broadcast comes as an `announcement` event; staff broadcasts no longer need `broadcast`. */
++  announcements: "announcements",
++  /** `calendar.range` lists the game's calendar events. */
++  calendar: "calendar",
++} as const;
+ export const errorSchema = z.object({ type: z.literal("error"), code: z.string() });
+ 
++/** The game's JSON encoder writes an empty list as {}. */
++const emptyList = (value: unknown) =>
++  value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0 ? [] : value;
++
+ const position = z.object({ x: z.number(), y: z.number(), z: z.number() });
+ 
+ export const chatEventSchema = z.object({
+@@ -65,9 +78,34 @@ export const spawnEventSchema = z.object({
+  * Wild legendaries (game: 078-wildLegendaries.lua). One `encounterId` per legendary, from
+  * its spawn to its end, so the bot can keep one thread per encounter.
+  */
+-export const LEGENDARY_EVENTS = ["spawn", "sighting", "flee", "end", "caught"] as const;
++export const LEGENDARY_EVENTS = [
++  "spawn", "sighting", "flee", "end", "caught",
++  /** Signs before a spawn (Mewtwo's psychic disturbance); no encounter yet. */
++  "sign",
++  /** A set appearing together (the birds, the beasts, the sleeping Regis): `members`, one encounter each. */
++  "set",
++  /** A trainer woke a sleeping Regi (`trainer`). */
++  "woke",
++  /** Mew showed its true self (`trainer`, `disguise`). */
++  "revealed",
++  /** Two legendaries met (`other`, `otherEncounterId`, `text`), or Rayquaza is coming to calm them (`calm`). */
++  "clash",
++  "calm",
++  /** A legendary given by a quest or an NPC (`trainer`); no encounter. */
++  "reward",
++] as const;
+ export const LEGENDARY_END_REASONS = ["defeated", "fled", "staff", "restart", "vanished"] as const;
+ 
++const legendaryMemberSchema = z.object({
++  encounterId: z.number(),
++  species: z.string(),
++  dexNumber: z.number().nullish(),
++  tier: z.number().nullish(),
++  area: z.string().nullish(),
++  position: position.nullish(),
++  endsAt: z.number().nullish(),
++});
++
+ export const legendaryEventSchema = z.object({
+   kind: z.literal("legendary"),
+   event: z.enum(LEGENDARY_EVENTS),
+@@ -86,10 +124,60 @@ export const legendaryEventSchema = z.object({
+   healthPercent: z.number().nullish(),
+   /** Unknown future reasons are kept as plain strings. */
+   reason: z.string().nullish(),
+-  /** The game's JSON encoder writes an empty list as {}. */
+-  trainers: z.preprocess((value) => (value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0 ? [] : value), z.array(z.string()).nullish()),
++  trainers: z.preprocess(emptyList, z.array(z.string()).nullish()),
+   topTrainer: z.string().nullish(),
+   trainer: z.string().nullish(),
++  /** Recommended trainer level (spawn, set, woke). */
++  level: z.number().nullish(),
++  /** A set member's spawn, or the set itself. */
++  setId: z.string().nullish(),
++  setName: z.string().nullish(),
++  /** Sleeping until a trainer wakes it (spawn, set). */
++  asleep: z.boolean().nullish(),
++  members: z.preprocess(emptyList, z.array(legendaryMemberSchema).nullish()),
++  /** What Mew was hiding as (revealed). */
++  disguise: z.string().nullish(),
++  /** The other legendary of a clash, and its encounter. */
++  other: z.string().nullish(),
++  otherEncounterId: z.number().nullish(),
++  /** The line players saw in game. */
++  text: z.string().nullish(),
++});
++
++/**
++ * Every server-wide broadcast (game: 092-announcements.lua), the same data as the news banner.
++ * Tips never come here.
++ */
++export const ANNOUNCEMENT_CATEGORIES = ["event", "legendary", "server", "staff", "milestone", "news"] as const;
++export type GameAnnouncementCategory = (typeof ANNOUNCEMENT_CATEGORIES)[number];
++
++export const announcementEventSchema = z.object({
++  kind: z.literal("announcement"),
++  /** Unknown future categories are posted as news. */
++  category: z.string(),
++  title: z.string().nullish(),
++  text: z.string(),
++  /** The broadcast as players saw it in game. */
++  full: z.string().nullish(),
++  /** The game script that sent it, like "077-eventCalendar". */
++  source: z.string().nullish(),
++  /** The staff member, for staff broadcasts. */
++  author: z.string().nullish(),
++  /**
++   * Picked by staff: "everyone", "here", "verified" or a role name. The game already dropped
++   * "everyone" and "here" for staff below Gamemaster.
++   */
++  ping: z.string().nullish(),
++  /** A calendar event starting or ending. */
++  calendar: z
++    .object({
++      key: z.string(),
++      id: z.string(),
++      state: z.string(),
++      /** "holiday", "server" (the weekend events) or "staff" (added with /calendar). */
++      type: z.string(),
++    })
++    .nullish(),
+ });
+ 
+ export const broadcastEventSchema = z.object({
+@@ -230,6 +318,7 @@ export const gameEventSchema = z.discriminatedUnion("kind", [
+   catchEventSchema,
+   spawnEventSchema,
+   legendaryEventSchema,
++  announcementEventSchema,
+   broadcastEventSchema,
+   restartWarningEventSchema,
+   serverStateEventSchema,
+@@ -259,6 +348,8 @@ export type ChatEvent = z.infer<typeof chatEventSchema>;
+ export type CatchEvent = z.infer<typeof catchEventSchema>;
+ export type SpawnEvent = z.infer<typeof spawnEventSchema>;
+ export type LegendaryEvent = z.infer<typeof legendaryEventSchema>;
++export type AnnouncementEvent = z.infer<typeof announcementEventSchema>;
++export type LegendaryMember = z.infer<typeof legendaryMemberSchema>;
+ export type BroadcastEvent = z.infer<typeof broadcastEventSchema>;
+ export type RestartWarningEvent = z.infer<typeof restartWarningEventSchema>;
+ export type ServerStateEvent = z.infer<typeof serverStateEventSchema>;
+@@ -494,3 +585,38 @@ export const reportScreenshotResultSchema = z.object({
+   data: z.string().optional(),
+ });
+ export type ReportScreenshotResult = z.infer<typeof reportScreenshotResultSchema>;
++
++/** The Discord roles staff can ping from the game's Admin window (announcements.roles). */
++export const announcementRolesResultSchema = z.object({ roles: z.number().int().min(0) });
++export type AnnouncementRolesResult = z.infer<typeof announcementRolesResultSchema>;
++
++/** One occurrence of a calendar event (game: EventCalendar.rangeData). */
++export const calendarEventSchema = z.object({
++  /** Unique per occurrence, like "halloween:1793491200". */
++  key: z.string(),
++  /** The holiday, server event or "staff<id>" it belongs to. */
++  id: z.string(),
++  name: z.string(),
++  description: z.string().nullish(),
++  color: z.string().nullish(),
++  startsAt: z.number(),
++  endsAt: z.number(),
++  bonuses: z.preprocess(
++    emptyList,
++    z.array(z.object({ kind: z.string(), label: z.string().nullish(), value: z.number() })).default([]),
++  ),
++  holiday: z.boolean().optional(),
++  /** Turned on by staff right now, not planned. */
++  forced: z.boolean().optional(),
++});
++export type CalendarEvent = z.infer<typeof calendarEventSchema>;
++
++export const calendarRangeResultSchema = z.object({
++  from: z.number(),
++  to: z.number(),
++  events: z.preprocess(
++    emptyList,
++    z.array(calendarEventSchema),
++  ),
++});
++export type CalendarRangeResult = z.infer<typeof calendarRangeResultSchema>;
+diff --git a/src/services/announcements/announcer.ts b/src/services/announcements/announcer.ts
+index b117be3..983daac 100644
+--- a/src/services/announcements/announcer.ts
++++ b/src/services/announcements/announcer.ts
+@@ -1,9 +1,12 @@
+ import type { APIEmbed } from "discord.js";
+-import type { ChannelDirectory } from "../../bot/ports.js";
+-import type {
+-  BroadcastEvent,
+-  GameEventEnvelope,
+-  RestartWarningEvent,
++import type { ChannelDirectory, GuildPort, OutgoingMessage, RoleInfo } from "../../bot/ports.js";
++import type { AnnouncementApi } from "../../integrations/pokeverse/gameApi.js";
++import {
++  FEATURES,
++  type AnnouncementEvent,
++  type BroadcastEvent,
++  type GameEventEnvelope,
++  type RestartWarningEvent,
+ } from "../../integrations/pokeverse/protocol.js";
+ import { RecentKeys } from "../../utils/dedupe.js";
+ import type { DeliveryQueue } from "../../utils/deliveryQueue.js";
+@@ -17,6 +20,18 @@ export type AnnouncementCategory = (typeof ANNOUNCEMENT_CATEGORIES)[number];
+ export interface AnnouncerOptions {
+   broadcasts: boolean;
+   restartWarnings: boolean;
++  /** Game announcement categories posted here. */
++  categories?: Set<string>;
++  /** Category -> role name each one pings on its own ("verified": the Verified Trainer role). */
++  pings?: Record<string, string>;
++  /** Staff broadcasts may ping the role they name. */
++  staffPings?: boolean;
++  verifiedRoleName?: string;
++  guild?: () => GuildPort | undefined;
++  /** The game's side: its features, and where the Admin window's ping list goes. */
++  api?: AnnouncementApi;
++  /** A link to the Discord event of a calendar occurrence, when there is one. */
++  calendarLink?: (key: string) => string | undefined;
+   /** Broadcasts/warnings older than this are dropped (queued while the bot was away). */
+   maxEventAgeSeconds: number;
+   channels: ChannelDirectory;
+@@ -97,6 +112,43 @@ export function buildManualAnnouncementEmbed(
+   };
+ }
+ 
++const GAME_STYLE: Record<string, { name: string; emoji: string; color: number }> = {
++  event: { name: "Event", emoji: "⭐", color: 0xf5b82e },
++  legendary: { name: "Legendary", emoji: "✨", color: COLORS.legendary },
++  server: { name: "Server", emoji: "🔧", color: COLORS.danger },
++  staff: { name: "PokeVerse staff", emoji: "📣", color: COLORS.info },
++  milestone: { name: "Milestone", emoji: "🏆", color: COLORS.success },
++  news: { name: "News", emoji: "📰", color: 0x14b8a6 },
++};
++
++export function gameAnnouncementStyle(category: string): { name: string; emoji: string; color: number } {
++  return GAME_STYLE[category] ?? GAME_STYLE.news!;
++}
++
++export function buildGameAnnouncementEmbed(event: AnnouncementEvent, time: number, link?: string): APIEmbed {
++  const style = gameAnnouncementStyle(event.category);
++  const title = event.category === "staff" ? undefined : event.title;
++  const text = plain(event.text);
++  return {
++    author: { name: style.name },
++    title: `${style.emoji} ${plain(title ?? (event.category === "staff" ? "Staff broadcast" : style.name))}`.slice(0, 256),
++    description: (link ? `${text}\n\n[Event details](${link})` : text).slice(0, 4096),
++    color: style.color,
++    footer: event.author ? { text: `From ${event.author}` } : undefined,
++    timestamp: new Date(time * 1000).toISOString(),
++  };
++}
++
++/** Lower case letters and digits only, so "@seniortutor" and "@Senior_Tutor" both find "Senior Tutor". */
++export function roleKey(name: string): string {
++  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
++}
++
++/** Roles staff can ping: not @everyone, not managed, and mentionable unless the bot can mention everyone. */
++export function pingableRoles(roles: RoleInfo[], mentionEveryone: boolean): RoleInfo[] {
++  return roles.filter((role) => !role.managed && (mentionEveryone || role.mentionable !== false));
++}
++
+ /** #game-announcements: GM/staff broadcasts, restart warnings and admin announcements. */
+ export class Announcer {
+   private readonly seen = new RecentKeys(2000);
+@@ -106,7 +158,16 @@ export class Announcer {
+     this.now = options.now ?? Date.now;
+   }
+ 
++  /** A game with announcements sends staff broadcasts as announcements too, so `broadcast` would post them twice. */
++  private get announcementsFromGame(): boolean {
++    return this.options.api?.hasFeature(FEATURES.announcements) ?? false;
++  }
++
+   handleBroadcast(envelope: GameEventEnvelope<BroadcastEvent>): boolean {
++    if (this.announcementsFromGame) {
++      this.options.metrics.increment("announcements.broadcast_replaced");
++      return false;
++    }
+     if (!this.options.broadcasts || !this.accept(envelope)) {
+       return false;
+     }
+@@ -114,6 +175,95 @@ export class Announcer {
+     return true;
+   }
+ 
++  handleAnnouncement(envelope: GameEventEnvelope<AnnouncementEvent>): boolean {
++    const event = envelope.event;
++    if (event.category === "tip") {
++      return false;
++    }
++    const category = GAME_STYLE[event.category] ? event.category : "news";
++    if (category === "staff" ? !this.options.broadcasts : !(this.options.categories?.has(category) ?? false)) {
++      this.options.metrics.increment(`announcements.skipped.${category}`);
++      return false;
++    }
++    if (!this.accept(envelope)) {
++      return false;
++    }
++    const ping = this.pingFor({ ...event, category });
++    const link = event.calendar ? this.options.calendarLink?.(event.calendar.key) : undefined;
++    const embed = buildGameAnnouncementEmbed({ ...event, category }, envelope.time, link);
++    this.options.queue.enqueue(`announcement ${envelope.id}`, async () => {
++      const channel = this.options.channels.get("announcements");
++      if (!channel) {
++        this.options.metrics.increment("announcements.no_channel");
++        return;
++      }
++      const mention = ping ? await this.resolvePing(ping) : undefined;
++      await channel.send({ ...mention, embeds: [embed] });
++      this.options.metrics.increment(`announcements.game.${category}`);
++    });
++    return true;
++  }
++
++  /** The staff member's pick, or the category's own ping (events: only holidays and the weekend events). */
++  pingFor(event: AnnouncementEvent): string | undefined {
++    if (event.ping && this.options.staffPings) {
++      return event.ping;
++    }
++    const role = this.options.pings?.[event.category];
++    if (!role) {
++      return undefined;
++    }
++    if (event.category === "event") {
++      const type = event.calendar?.type;
++      return type === "holiday" || type === "server" ? role : undefined;
++    }
++    return role;
++  }
++
++  /** The message content and allowed mentions for a ping; undefined when the role doesn't exist. */
++  async resolvePing(ping: string): Promise<Pick<OutgoingMessage, "content" | "mentionRoleIds" | "mentionEveryone"> | undefined> {
++    const name = ping.replace(/^@/, "");
++    const guild = this.options.guild?.();
++    const canMentionAll = guild ? guild.botPermissions().some((permission) => permission === "MentionEveryone" || permission === "Administrator") : false;
++    if (/^(everyone|here)$/i.test(name)) {
++      if (!canMentionAll) {
++        this.options.metrics.increment("announcements.ping_not_allowed");
++        this.options.logger.warn("The bot needs Mention Everyone to ping @everyone and @here; posted without the ping");
++        return undefined;
++      }
++      return { content: `@${name.toLowerCase()}`, mentionEveryone: true };
++    }
++    if (!guild) {
++      return undefined;
++    }
++    const wanted = roleKey(/^verified$/i.test(name) ? (this.options.verifiedRoleName ?? "Verified Trainer") : name);
++    const role = (await guild.listRoles()).find((item) => roleKey(item.name) === wanted && !item.managed);
++    if (!role) {
++      this.options.metrics.increment("announcements.ping_unknown_role");
++      this.options.logger.warn("Announcement ping names a role the server doesn't have; posted without the ping", { ping });
++      return undefined;
++    }
++    if (role.mentionable === false && !canMentionAll) {
++      this.options.metrics.increment("announcements.ping_not_allowed");
++      this.options.logger.warn("The role isn't mentionable and the bot lacks Mention Everyone; posted without the ping", { role: role.name });
++      return undefined;
++    }
++    return { content: `<@&${role.id}>`, mentionRoleIds: [role.id] };
++  }
++
++  /** Tells the game which roles the Admin window's "Ping on Discord" list shows. */
++  async syncRoles(): Promise<void> {
++    const { api, guild: getGuild } = this.options;
++    const guild = getGuild?.();
++    if (!api?.connected || !api.hasFeature(FEATURES.announcements) || !guild || !this.options.staffPings) {
++      return;
++    }
++    const everyone = guild.botPermissions().some((permission) => permission === "MentionEveryone" || permission === "Administrator");
++    const roles = pingableRoles(await guild.listRoles(), everyone).map((role) => role.name).slice(0, 50);
++    await api.roles(roles, everyone);
++    this.options.metrics.increment("announcements.roles_synced");
++  }
++
+   handleRestartWarning(envelope: GameEventEnvelope<RestartWarningEvent>): boolean {
+     if (!this.options.restartWarnings || !this.accept(envelope)) {
+       return false;
+diff --git a/src/services/calendar/calendarSync.ts b/src/services/calendar/calendarSync.ts
+new file mode 100644
+index 0000000..085906f
+--- /dev/null
++++ b/src/services/calendar/calendarSync.ts
+@@ -0,0 +1,258 @@
++import type { APIEmbed } from "discord.js";
++import type { ChannelDirectory, GuildPort, ScheduledEventSpec, ScheduledEventStatus } from "../../bot/ports.js";
++import type { AnnouncementApi } from "../../integrations/pokeverse/gameApi.js";
++import { FEATURES, type CalendarEvent } from "../../integrations/pokeverse/protocol.js";
++import type { DeliveryQueue } from "../../utils/deliveryQueue.js";
++import type { Logger } from "../../utils/logger.js";
++import type { Metrics } from "../../utils/metrics.js";
++import type { CalendarEventRecord, StateStore } from "../../utils/stateStore.js";
++import { plain } from "../embeds.js";
++
++export interface CalendarSyncOptions {
++  enabled: boolean;
++  reminders: boolean;
++  api: AnnouncementApi;
++  guild: () => GuildPort | undefined;
++  channels: ChannelDirectory;
++  store: StateStore;
++  queue: DeliveryQueue;
++  logger: Logger;
++  metrics: Metrics;
++  now?: () => number;
++  intervalMs?: number;
++}
++
++/** How far ahead the game's calendar is copied to Discord. */
++export const CALENDAR_DAYS = 30;
++/** The reminder goes out when an event starts within this many seconds. */
++export const REMINDER_SECONDS = 3600;
++/** Discord events can't start in the past: one created late starts this many seconds from now. */
++const LATE_START_SECONDS = 60;
++const LOCATION = "In game: PokeVerse";
++const REASON = "PokeVerse calendar";
++
++function multiplier(value: number): string {
++  return `${Math.round(value * 100) / 100}x`;
++}
++
++/** The Discord event's description: the game's text and its bonuses. */
++export function describeCalendarEvent(event: CalendarEvent): string {
++  const lines = [event.description?.trim() || event.name];
++  if (event.bonuses.length > 0) {
++    lines.push(`Bonuses: ${event.bonuses.map((bonus) => `${multiplier(bonus.value)} ${bonus.label ?? bonus.kind}`).join(", ")}`);
++  }
++  return lines.join("\n\n").slice(0, 1000);
++}
++
++export function eventLink(guildId: string, eventId: string): string {
++  return `https://discord.com/events/${guildId}/${eventId}`;
++}
++
++export function buildReminderEmbed(event: CalendarEvent, link: string | undefined): APIEmbed {
++  const start = Math.floor(event.startsAt);
++  const description = [`Starts <t:${start}:R> (<t:${start}:t>) and runs until <t:${Math.floor(event.endsAt)}:f>.`, plain(describeCalendarEvent(event))];
++  if (link) {
++    description.push(`[Event details](${link})`);
++  }
++  return {
++    author: { name: "Event" },
++    title: `⏰ Starting soon: ${plain(event.name)}`.slice(0, 256),
++    description: description.join("\n\n").slice(0, 4096),
++    color: 0xf5b82e,
++    timestamp: new Date(start * 1000).toISOString(),
++  };
++}
++
++/**
++ * The game's calendar (holidays, the weekend events, staff events) as Discord scheduled events,
++ * keyed by the occurrence's key: new ones are created, changed ones edited, removed ones
++ * deleted, and each is started and finished on time. An hour before one starts, a reminder
++ * goes to #game-announcements.
++ */
++export class CalendarSync {
++  private timer: NodeJS.Timeout | undefined;
++  private startTimer: NodeJS.Timeout | undefined;
++  private running: Promise<void> | undefined;
++  private warnedPermissions = false;
++  private readonly now: () => number;
++
++  constructor(private readonly options: CalendarSyncOptions) {
++    this.now = options.now ?? Date.now;
++  }
++
++  start(): void {
++    if (!this.options.enabled) {
++      return;
++    }
++    this.timer = setInterval(() => void this.sync(), this.options.intervalMs ?? 15 * 60_000);
++    this.timer.unref();
++  }
++
++  stop(): void {
++    clearInterval(this.timer);
++    clearTimeout(this.startTimer);
++  }
++
++  onConnected(delayMs = 5000): void {
++    if (!this.options.enabled) {
++      return;
++    }
++    clearTimeout(this.startTimer);
++    this.startTimer = setTimeout(() => void this.sync(), delayMs);
++    this.startTimer.unref();
++  }
++
++  /** The Discord event of a calendar occurrence. */
++  link(key: string): string | undefined {
++    const guild = this.options.guild();
++    const record = this.options.store.get().calendarEvents[key];
++    return guild && record ? eventLink(guild.id, record.eventId) : undefined;
++  }
++
++  /** One pass; a pass already running is joined instead of starting another. */
++  sync(): Promise<void> {
++    this.running ??= this.run().finally(() => {
++      this.running = undefined;
++    });
++    return this.running;
++  }
++
++  private async run(): Promise<void> {
++    const { api, metrics, logger } = this.options;
++    const guild = this.options.guild();
++    if (!this.options.enabled || !guild || !api.connected || !api.hasFeature(FEATURES.calendar)) {
++      return;
++    }
++    const granted = guild.botPermissions();
++    if (!granted.includes("Administrator") && !granted.includes("ManageEvents")) {
++      if (!this.warnedPermissions) {
++        this.warnedPermissions = true;
++        logger.warn("The calendar sync needs the Manage Events permission (Create Events and Manage Events)");
++      }
++      metrics.increment("calendar.no_permission");
++      return;
++    }
++    const now = Math.floor(this.now() / 1000);
++    let events: CalendarEvent[];
++    try {
++      events = (await api.calendarRange(now, now + CALENDAR_DAYS * 86400)).events;
++    } catch (error) {
++      metrics.increment("calendar.range_failed");
++      logger.warn("Could not read the game's calendar", { error });
++      return;
++    }
++    // Staff turning a holiday on by hand is announced, not planned.
++    const wanted = new Map(events.filter((event) => !event.forced && event.endsAt > now + LATE_START_SECONDS).map((event) => [event.key, event]));
++
++    for (const [key, record] of Object.entries(this.options.store.get().calendarEvents)) {
++      if (!wanted.has(key)) {
++        await this.attempt(key, () => this.retire(guild, key, record, now));
++      }
++    }
++    for (const event of wanted.values()) {
++      await this.attempt(event.key, () => this.apply(guild, event, now));
++    }
++    metrics.increment("calendar.synced");
++  }
++
++  private async attempt(key: string, work: () => Promise<void>): Promise<void> {
++    try {
++      await work();
++    } catch (error) {
++      this.options.metrics.increment("calendar.errors");
++      this.options.logger.warn("Calendar event sync failed", { key, error });
++    }
++  }
++
++  /** Over: finish it. Gone before it ended: staff removed it, so delete it. */
++  private async retire(guild: GuildPort, key: string, record: CalendarEventRecord, now: number): Promise<void> {
++    if (record.endsAt <= now) {
++      if (record.status === "active") {
++        await guild.editScheduledEvent(record.eventId, { status: "completed" }, REASON);
++      }
++      this.options.metrics.increment("calendar.completed");
++    } else {
++      await guild.deleteScheduledEvent(record.eventId);
++      this.options.metrics.increment("calendar.deleted");
++    }
++    this.options.store.update((state) => {
++      delete state.calendarEvents[key];
++    });
++  }
++
++  private async apply(guild: GuildPort, event: CalendarEvent, now: number): Promise<void> {
++    const { store, metrics } = this.options;
++    const description = describeCalendarEvent(event);
++    let record = store.get().calendarEvents[event.key];
++    if (!record) {
++      const startsAt = Math.max(event.startsAt, now + LATE_START_SECONDS);
++      const eventId = await guild.createScheduledEvent(
++        { name: event.name, description, startsAt: startsAt * 1000, endsAt: event.endsAt * 1000, location: LOCATION },
++        REASON,
++      );
++      record = { eventId, name: event.name, description, startsAt: event.startsAt, endsAt: event.endsAt, status: "scheduled" };
++      const created = record;
++      store.update((state) => {
++        state.calendarEvents[event.key] = created;
++      });
++      metrics.increment("calendar.created");
++    } else {
++      const change: Partial<ScheduledEventSpec> & { status?: Exclude<ScheduledEventStatus, "scheduled"> } = {};
++      if (record.name !== event.name) {
++        change.name = event.name;
++      }
++      if (record.description !== description) {
++        change.description = description;
++      }
++      if (record.endsAt !== event.endsAt) {
++        change.endsAt = event.endsAt * 1000;
++      }
++      let status = record.status;
++      if (status === "scheduled" && event.startsAt <= now) {
++        change.status = "active";
++        status = "active";
++      } else if (status === "scheduled" && record.startsAt !== event.startsAt) {
++        change.startsAt = Math.max(event.startsAt, now + LATE_START_SECONDS) * 1000;
++      }
++      if (Object.keys(change).length > 0) {
++        const kept = await guild.editScheduledEvent(record.eventId, change, REASON);
++        if (!kept) {
++          // Deleted on Discord: made again on the next pass.
++          store.update((state) => {
++            delete state.calendarEvents[event.key];
++          });
++          metrics.increment("calendar.lost");
++          return;
++        }
++        record = { ...record, name: event.name, description, startsAt: event.startsAt, endsAt: event.endsAt, status };
++        const edited = record;
++        store.update((state) => {
++          state.calendarEvents[event.key] = edited;
++        });
++        metrics.increment(change.status ? "calendar.started" : "calendar.updated");
++      }
++    }
++    if (this.options.reminders && !record.remindedAt && event.startsAt > now && event.startsAt - now <= REMINDER_SECONDS) {
++      this.remind(guild, event, record.eventId);
++      store.update((state) => {
++        const saved = state.calendarEvents[event.key];
++        if (saved) {
++          saved.remindedAt = now;
++        }
++      });
++    }
++  }
++
++  private remind(guild: GuildPort, event: CalendarEvent, eventId: string): void {
++    const embed = buildReminderEmbed(event, eventLink(guild.id, eventId));
++    this.options.queue.enqueue(`calendar reminder ${event.key}`, async () => {
++      const channel = this.options.channels.get("announcements");
++      if (!channel) {
++        this.options.metrics.increment("calendar.no_channel");
++        return;
++      }
++      await channel.send({ embeds: [embed] });
++      this.options.metrics.increment("calendar.reminded");
++    });
++  }
++}
+diff --git a/src/setup/channelSetup.ts b/src/setup/channelSetup.ts
+index b06048f..34cec9c 100644
+--- a/src/setup/channelSetup.ts
++++ b/src/setup/channelSetup.ts
+@@ -10,6 +10,8 @@ import {
+   LINKING_GUILD_PERMISSIONS,
+   REPORT_GUILD_PERMISSIONS,
+   REQUIRED_GUILD_PERMISSIONS,
++  PING_GUILD_PERMISSIONS,
++  CALENDAR_GUILD_PERMISSIONS,
+   type ChannelDefinition,
+ } from "./channels.js";
+ 
+@@ -64,6 +66,9 @@ export interface SetupOptions {
+   reports: { bugs: boolean; players: boolean };
+   /** The #booster-rewards channel. */
+   boosters?: boolean;
++  /** Staff pings (Mention Everyone) and the calendar sync (Create and Manage Events). */
++  pings?: boolean;
++  calendar?: boolean;
+ }
+ 
+ const DEFAULT_OPTIONS: SetupOptions = {
+@@ -516,11 +521,13 @@ export class ChannelSetup {
+     parts: Omit<SetupReport, "guildId" | "missingGuildPermissions" | "ok">,
+   ): SetupReport {
+     const granted = guild.botPermissions();
+-    const { linking, reports } = this.options;
++    const { linking, reports, pings, calendar } = this.options;
+     const needed = REQUIRED_GUILD_PERMISSIONS.filter(
+       (permission) =>
+         (linking.enabled || !LINKING_GUILD_PERMISSIONS.includes(permission)) &&
+-        (reports.bugs || reports.players || !REPORT_GUILD_PERMISSIONS.includes(permission)),
++        (reports.bugs || reports.players || !REPORT_GUILD_PERMISSIONS.includes(permission)) &&
++        (pings || !PING_GUILD_PERMISSIONS.includes(permission)) &&
++        (calendar || !CALENDAR_GUILD_PERMISSIONS.includes(permission)),
+     );
+     const missingGuildPermissions = granted.includes("Administrator")
+       ? []
+diff --git a/src/setup/channels.ts b/src/setup/channels.ts
+index b70b656..19c4cdf 100644
+--- a/src/setup/channels.ts
++++ b/src/setup/channels.ts
+@@ -154,10 +154,19 @@ export const REQUIRED_GUILD_PERMISSIONS: PermissionName[] = [
+   "CreatePublicThreads",
+   "SendMessagesInThreads",
+   "ManageThreads",
++  "MentionEveryone",
++  "CreateEvents",
++  "ManageEvents",
+ ];
+ 
+ /** Guild permissions only needed for the report forums (status tags are moderated, posts are archived). */
+ export const REPORT_GUILD_PERMISSIONS: PermissionName[] = ["ManageThreads"];
+ 
++/** Only needed for staff pings of @everyone, @here and roles nobody else can ping (ANNOUNCE_STAFF_PINGS). */
++export const PING_GUILD_PERMISSIONS: PermissionName[] = ["MentionEveryone"];
++
++/** Only needed for the calendar's scheduled events (CALENDAR_SYNC_ENABLED). */
++export const CALENDAR_GUILD_PERMISSIONS: PermissionName[] = ["CreateEvents", "ManageEvents"];
++
+ /** Guild permissions only needed for account linking (roles and nicknames). */
+ export const LINKING_GUILD_PERMISSIONS: PermissionName[] = ["ManageRoles", "ManageNicknames"];
+diff --git a/src/utils/stateStore.ts b/src/utils/stateStore.ts
+index 1c866c4..15b6d6d 100644
+--- a/src/utils/stateStore.ts
++++ b/src/utils/stateStore.ts
+@@ -33,10 +33,52 @@ const legendaryEncounterSchema = z.object({
+   endsAt: z.number().optional(),
+   startedAt: z.number(),
+   endedAt: z.number().optional(),
++  /** A member of a set: the key of its post in `legendarySets`. */
++  set: z.string().optional(),
++  level: z.number().optional(),
++  asleep: z.boolean().optional(),
++  /** Mew, found hiding as another Pokemon. */
++  revealed: z.boolean().optional(),
+ });
+ 
+ export type LegendaryEncounterRecord = z.infer<typeof legendaryEncounterSchema>;
+ 
++const legendarySetSchema = z.object({
++  channelId: z.string(),
++  messageId: z.string(),
++  threadId: z.string().optional(),
++  name: z.string(),
++  level: z.number().optional(),
++  asleep: z.boolean().optional(),
++  startedAt: z.number(),
++  members: z.array(z.object({
++    encounterId: z.number(),
++    species: z.string(),
++    dexNumber: z.number().optional(),
++    area: z.string().optional(),
++    /** How it ended, or "awake" for a woken Regi. */
++    outcome: z.string().optional(),
++    detail: z.string().optional(),
++    ended: z.boolean().optional(),
++  })),
++});
++
++export type LegendarySetRecord = z.infer<typeof legendarySetSchema>;
++
++/** A Discord scheduled event the bot made for a game calendar occurrence. */
++const calendarEventSchema = z.object({
++  eventId: z.string(),
++  name: z.string(),
++  description: z.string(),
++  /** Unix seconds, as the game has them (the Discord event may start a minute later when created late). */
++  startsAt: z.number(),
++  endsAt: z.number(),
++  status: z.enum(["scheduled", "active"]),
++  remindedAt: z.number().optional(),
++});
++
++export type CalendarEventRecord = z.infer<typeof calendarEventSchema>;
++
+ const reportPostSchema = z.object({
+   kind: z.string(),
+   channelId: z.string(),
+@@ -86,6 +128,10 @@ const stateSchema = z.object({
+   linkedMembers: z.record(z.string()).default({}),
+   /** Wild legendary encounters with a Discord post, by the game's encounter id. */
+   legendaryEncounters: z.record(legendaryEncounterSchema).default({}),
++  /** One post for a set of legendaries that appeared together, by "<set id>:<first encounter id>". */
++  legendarySets: z.record(legendarySetSchema).default({}),
++  /** Discord scheduled events for the game's calendar, by the occurrence's key. */
++  calendarEvents: z.record(calendarEventSchema).default({}),
+   /** Forum posts of in-game reports, by the game's report id. */
+   reportPosts: z.record(reportPostSchema).default({}),
+   /** Members seen boosting the server, by Discord user id (booster rewards). */
+@@ -114,7 +160,7 @@ export class StateStore {
+ 
+   private load(): BotState {
+     if (!existsSync(this.file)) {
+-      return { version: 1, profile: this.profile, channels: {}, roles: {}, linkedMembers: {}, legendaryEncounters: {}, reportPosts: {}, boosters: {} };
++      return { version: 1, profile: this.profile, channels: {}, roles: {}, linkedMembers: {}, legendaryEncounters: {}, legendarySets: {}, calendarEvents: {}, reportPosts: {}, boosters: {} };
+     }
+     const parsed = stateSchema.parse(JSON.parse(readFileSync(this.file, "utf8")));
+     if (parsed.profile !== this.profile) {
+diff --git a/tests/helpers/fakes.ts b/tests/helpers/fakes.ts
+index 4b80adb..c05d33c 100644
+--- a/tests/helpers/fakes.ts
++++ b/tests/helpers/fakes.ts
+@@ -18,6 +18,8 @@ import type {
+   PermissionName,
+   PermissionOverwriteSpec,
+   RoleInfo,
++  ScheduledEventSpec,
++  ScheduledEventStatus,
+   ThreadSink,
+ } from "../../src/bot/ports.js";
+ import { loadConfig, type BotConfig } from "../../src/config/load.js";
+@@ -424,7 +426,7 @@ export class FakeGuild implements GuildPort {
+   }
+ 
+   async listRoles(): Promise<RoleInfo[]> {
+-    return this.roles.map(({ id, name, managed, assignable, administrator }) => ({ id, name, managed, assignable, administrator }));
++    return this.roles.map(({ id, name, managed, assignable, administrator, mentionable }) => ({ id, name, managed, assignable, administrator, mentionable }));
+   }
+ 
+   async createRole(name: string): Promise<RoleInfo> {
+@@ -476,6 +478,45 @@ export class FakeGuild implements GuildPort {
+   boosts(): { count: number; level: number } {
+     return { count: this.boostCount, level: this.boostLevel };
+   }
++
++  /** Scheduled events by id. */
++  readonly scheduledEvents = new Map<string, ScheduledEventSpec & { status: ScheduledEventStatus }>();
++  readonly eventCalls: string[] = [];
++  failEvents: unknown[] = [];
++
++  private eventOp(call: string): void {
++    this.eventCalls.push(call);
++    const failure = this.failEvents.shift();
++    if (failure) {
++      throw failure;
++    }
++  }
++
++  async createScheduledEvent(spec: ScheduledEventSpec): Promise<string> {
++    this.eventOp(`create ${spec.name}`);
++    const id = `60000000000000${String(++this.counter).padStart(4, "0")}`;
++    this.scheduledEvents.set(id, { ...spec, status: "scheduled" });
++    return id;
++  }
++
++  async editScheduledEvent(
++    eventId: string,
++    change: Partial<ScheduledEventSpec> & { status?: Exclude<ScheduledEventStatus, "scheduled"> },
++  ): Promise<boolean> {
++    this.eventOp(`edit ${eventId}${change.status ? ` ${change.status}` : ""}`);
++    const event = this.scheduledEvents.get(eventId);
++    if (!event) {
++      return false;
++    }
++    const defined = Object.fromEntries(Object.entries(change).filter(([, value]) => value !== undefined));
++    Object.assign(event, defined);
++    return true;
++  }
++
++  async deleteScheduledEvent(eventId: string): Promise<boolean> {
++    this.eventOp(`delete ${eventId}`);
++    return this.scheduledEvents.delete(eventId);
++  }
+ }
+ 
+ export type FakeRole = RoleInfo;
+diff --git a/tests/unit/announcer.test.ts b/tests/unit/announcer.test.ts
+index 863e486..bda698e 100644
+--- a/tests/unit/announcer.test.ts
++++ b/tests/unit/announcer.test.ts
+@@ -3,7 +3,9 @@ import { Announcer, buildRestartWarningEmbed } from "../../src/services/announce
+ import { DeliveryQueue } from "../../src/utils/deliveryQueue.js";
+ import { silentLogger } from "../../src/utils/logger.js";
+ import { Metrics } from "../../src/utils/metrics.js";
+-import { FakeChannels, envelope } from "../helpers/fakes.js";
++import type { AnnouncementApi } from "../../src/integrations/pokeverse/gameApi.js";
++import { FEATURES, gameEventSchema, type AnnouncementEvent, type CalendarRangeResult } from "../../src/integrations/pokeverse/protocol.js";
++import { ALL_PERMISSIONS, FakeChannels, FakeGuild, envelope, makeConfig } from "../helpers/fakes.js";
+ 
+ function setup(options: { broadcasts?: boolean; restartWarnings?: boolean } = {}) {
+   const channels = new FakeChannels();
+@@ -61,3 +63,155 @@ describe("announcements", () => {
+     expect(embed.footer?.text).toBe("Posted by Jim");
+   });
+ });
++
++class FakeAnnouncementApi implements AnnouncementApi {
++  connected = true;
++  features = new Set<string>([FEATURES.announcements, FEATURES.calendar]);
++  readonly sentRoles: Array<{ roles: string[]; everyone: boolean }> = [];
++  hasFeature(feature: string): boolean {
++    return this.features.has(feature);
++  }
++  async roles(roles: string[], everyone: boolean): Promise<number> {
++    this.sentRoles.push({ roles, everyone });
++    return roles.length;
++  }
++  async calendarRange(from: number, to: number): Promise<CalendarRangeResult> {
++    return { from, to, events: [] };
++  }
++}
++
++function gameSetup(overrides: Record<string, string> = {}) {
++  const config = makeConfig(overrides);
++  const channels = new FakeChannels();
++  const metrics = new Metrics();
++  const guild = new FakeGuild();
++  guild.permissions = [...ALL_PERMISSIONS, "MentionEveryone"];
++  const verified = guild.addRoleInfo({ name: "Verified Trainer" });
++  const tutor = guild.addRoleInfo({ name: "Senior Tutor", mentionable: false });
++  guild.addRoleInfo({ name: "PokeVerse", managed: true });
++  const api = new FakeAnnouncementApi();
++  const queue = new DeliveryQueue({ name: "announcements", maxSize: 10, maxAttempts: 1, retryDelayMs: 1, logger: silentLogger, metrics });
++  const announcer = new Announcer({
++    broadcasts: config.announcements.broadcasts,
++    restartWarnings: config.announcements.restartWarnings,
++    categories: config.announcements.categories,
++    pings: config.announcements.pings,
++    staffPings: config.announcements.staffPings,
++    verifiedRoleName: config.linking.verifiedRoleName,
++    guild: () => guild,
++    api,
++    calendarLink: (key) => (key === "weekend:1" ? "https://discord.com/events/1/2" : undefined),
++    maxEventAgeSeconds: 600,
++    channels,
++    queue,
++    logger: silentLogger,
++    metrics,
++  });
++  return { announcer, api, guild, verified, tutor, queue, metrics, channel: channels.channel("announcements") };
++}
++
++const STARTED: AnnouncementEvent = {
++  kind: "announcement",
++  category: "event",
++  title: "Weekend Event has started",
++  text: "Double EXP all weekend. It runs for 2 days",
++  source: "077-eventCalendar",
++  calendar: { key: "weekend:1", id: "weekend", state: "started", type: "server" },
++};
++
++describe("game announcements", () => {
++  it("parses the game's announcement event", () => {
++    expect(gameEventSchema.parse({ ...STARTED, full: "Weekend Event has started: Double EXP" })).toMatchObject({ kind: "announcement", category: "event" });
++  });
++
++  it("posts a calendar event in its colour, links the Discord event and pings Verified Trainer", async () => {
++    const { announcer, channel, queue, verified } = gameSetup();
++    expect(announcer.handleAnnouncement(envelope(STARTED))).toBe(true);
++    await queue.idle();
++    const message = channel.sent[0]!.message;
++    expect(message.content).toBe(`<@&${verified.id}>`);
++    expect(message.mentionRoleIds).toEqual([verified.id]);
++    expect(message.mentionEveryone).toBeFalsy();
++    const embed = message.embeds![0]!;
++    expect(embed.title).toBe("⭐ Weekend Event has started");
++    expect(embed.author?.name).toBe("Event");
++    expect(embed.description).toContain("[Event details](https://discord.com/events/1/2)");
++  });
++
++  it("doesn't ping for bonus events staff start, and posts milestones and news without a ping", async () => {
++    const { announcer, channel, queue } = gameSetup();
++    announcer.handleAnnouncement(envelope({ kind: "announcement", category: "event", title: "Experience event started", text: "2x kill experience", source: "058-serverExpEvent" }));
++    announcer.handleAnnouncement(envelope({ kind: "announcement", category: "milestone", title: "New record", text: "40 players are logged in." }));
++    announcer.handleAnnouncement(envelope({ kind: "announcement", category: "brand-new", text: "Something" }));
++    await queue.idle();
++    expect(channel.sent.map((item) => item.message.content)).toEqual([undefined, undefined, undefined]);
++    expect(channel.sent.map((item) => item.message.embeds![0]!.author?.name)).toEqual(["Event", "Milestone", "News"]);
++  });
++
++  it("leaves legendaries, server notices and tips to their own posts", async () => {
++    const { announcer, channel, queue } = gameSetup();
++    for (const category of ["legendary", "server", "tip"]) {
++      expect(announcer.handleAnnouncement(envelope({ kind: "announcement", category, text: "x" }))).toBe(false);
++    }
++    await queue.idle();
++    expect(channel.sent).toHaveLength(0);
++    const all = gameSetup({ ANNOUNCE_CATEGORIES: "server" });
++    expect(all.announcer.handleAnnouncement(envelope({ kind: "announcement", category: "server", text: "Saving in 1 minute" }))).toBe(true);
++    expect(all.announcer.handleAnnouncement(envelope({ kind: "announcement", category: "event", text: "x" }))).toBe(false);
++  });
++
++  it("pings what staff picked: @everyone, a role by a loose name, or nothing for an unknown role", async () => {
++    const { announcer, channel, queue, tutor } = gameSetup();
++    const staff = { kind: "announcement" as const, category: "staff", title: "GM Oak", text: "Event tonight!", author: "GM Oak" };
++    announcer.handleAnnouncement(envelope({ ...staff, ping: "everyone" }));
++    announcer.handleAnnouncement(envelope({ ...staff, ping: "senior_tutor" }));
++    announcer.handleAnnouncement(envelope({ ...staff, ping: "Nobody" }));
++    await queue.idle();
++    expect(channel.sent[0]!.message).toMatchObject({ content: "@everyone", mentionEveryone: true });
++    expect(channel.sent[1]!.message).toMatchObject({ content: `<@&${tutor.id}>`, mentionRoleIds: [tutor.id] });
++    expect(channel.sent[2]!.message.content).toBeUndefined();
++    const embed = channel.sent[0]!.message.embeds![0]!;
++    expect(embed.title).toBe("📣 Staff broadcast");
++    expect(embed.footer?.text).toBe("From GM Oak");
++  });
++
++  it("posts without the ping when the bot can't mention everyone", async () => {
++    const { announcer, channel, queue, guild, metrics } = gameSetup();
++    guild.permissions = [...ALL_PERMISSIONS];
++    announcer.handleAnnouncement(envelope({ kind: "announcement", category: "staff", text: "x", ping: "here" }));
++    announcer.handleAnnouncement(envelope({ kind: "announcement", category: "staff", text: "y", ping: "Senior Tutor" }));
++    await queue.idle();
++    expect(channel.sent.map((item) => item.message.content)).toEqual([undefined, undefined]);
++    expect(metrics.get("announcements.ping_not_allowed")).toBe(2);
++  });
++
++  it("ignores staff pings when ANNOUNCE_STAFF_PINGS is off", async () => {
++    const { announcer, channel, queue } = gameSetup({ ANNOUNCE_STAFF_PINGS: "false" });
++    announcer.handleAnnouncement(envelope({ kind: "announcement", category: "staff", text: "x", ping: "everyone" }));
++    await queue.idle();
++    expect(channel.sent[0]!.message.content).toBeUndefined();
++  });
++
++  it("drops the old broadcast event when the game sends announcements", () => {
++    const { announcer, api } = gameSetup();
++    expect(announcer.handleBroadcast(envelope({ kind: "broadcast", source: "gm", author: "GM Oak", text: "x" }))).toBe(false);
++    api.features.delete(FEATURES.announcements);
++    expect(announcer.handleBroadcast(envelope({ kind: "broadcast", source: "gm", author: "GM Oak", text: "x" }))).toBe(true);
++  });
++
++  it("sends the pingable roles to the game for the Admin window", async () => {
++    const { announcer, api, guild } = gameSetup();
++    await announcer.syncRoles();
++    expect(api.sentRoles).toEqual([{ roles: ["Verified Trainer", "Senior Tutor"], everyone: true }]);
++    guild.permissions = [...ALL_PERMISSIONS];
++    await announcer.syncRoles();
++    expect(api.sentRoles[1]).toEqual({ roles: ["Verified Trainer"], everyone: false });
++  });
++
++  it("reads the category and ping settings", () => {
++    expect(makeConfig({ ANNOUNCE_PINGS: "event=Events,milestone=verified" }).announcements.pings).toEqual({ event: "Events", milestone: "verified" });
++    expect(() => makeConfig({ ANNOUNCE_PINGS: "event=everyone" })).toThrow();
++    expect(() => makeConfig({ ANNOUNCE_CATEGORIES: "event,tips" })).toThrow();
++    expect([...makeConfig({ ANNOUNCE_CATEGORIES: "none" }).announcements.categories]).toEqual([]);
++  });
++});
+diff --git a/tests/unit/calendarSync.test.ts b/tests/unit/calendarSync.test.ts
+new file mode 100644
+index 0000000..c014258
+--- /dev/null
++++ b/tests/unit/calendarSync.test.ts
+@@ -0,0 +1,148 @@
++import { describe, expect, it } from "vitest";
++import type { AnnouncementApi } from "../../src/integrations/pokeverse/gameApi.js";
++import { FEATURES, type CalendarEvent, type CalendarRangeResult } from "../../src/integrations/pokeverse/protocol.js";
++import { CalendarSync, describeCalendarEvent } from "../../src/services/calendar/calendarSync.js";
++import { DeliveryQueue } from "../../src/utils/deliveryQueue.js";
++import { silentLogger } from "../../src/utils/logger.js";
++import { Metrics } from "../../src/utils/metrics.js";
++import { ALL_PERMISSIONS, FakeChannels, FakeGuild, makeStore } from "../helpers/fakes.js";
++
++const NOW = 1_800_000_000;
++
++class FakeCalendarApi implements AnnouncementApi {
++  connected = true;
++  features = new Set<string>([FEATURES.calendar]);
++  events: CalendarEvent[] = [];
++  readonly ranges: Array<[number, number]> = [];
++  hasFeature(feature: string): boolean {
++    return this.features.has(feature);
++  }
++  async roles(): Promise<number> {
++    return 0;
++  }
++  async calendarRange(from: number, to: number): Promise<CalendarRangeResult> {
++    this.ranges.push([from, to]);
++    return { from, to, events: this.events.map((event) => ({ ...event })) };
++  }
++}
++
++const WEEKEND: CalendarEvent = {
++  key: "weekend:1800086400",
++  id: "weekend",
++  name: "Weekend Event",
++  description: "Double EXP all weekend.",
++  startsAt: NOW + 86400,
++  endsAt: NOW + 86400 * 3,
++  bonuses: [{ kind: "exp", label: "kill EXP", value: 2 }],
++};
++
++function setup(options: { reminders?: boolean; permissions?: string[] } = {}) {
++  let now = NOW * 1000;
++  const guild = new FakeGuild();
++  guild.permissions = (options.permissions ?? [...ALL_PERMISSIONS, "CreateEvents", "ManageEvents"]) as typeof guild.permissions;
++  const api = new FakeCalendarApi();
++  const channels = new FakeChannels();
++  const metrics = new Metrics();
++  const store = makeStore();
++  const queue = new DeliveryQueue({ name: "announcements", maxSize: 10, maxAttempts: 1, retryDelayMs: 1, logger: silentLogger, metrics });
++  const sync = new CalendarSync({
++    enabled: true,
++    reminders: options.reminders ?? true,
++    api,
++    guild: () => guild,
++    channels,
++    store,
++    queue,
++    logger: silentLogger,
++    metrics,
++    now: () => now,
++  });
++  return { sync, api, guild, store, queue, metrics, channel: channels.channel("announcements"), advance: (seconds: number) => (now += seconds * 1000) };
++}
++
++describe("calendar sync", () => {
++  it("describes an event with its bonuses", () => {
++    expect(describeCalendarEvent(WEEKEND)).toBe("Double EXP all weekend.\n\nBonuses: 2x kill EXP");
++  });
++
++  it("makes a Discord event for each calendar event of the next 30 days", async () => {
++    const { sync, api, guild, store } = setup();
++    api.events = [WEEKEND, { ...WEEKEND, key: "halloween:1", id: "halloween", name: "Halloween", bonuses: [], forced: true }];
++    await sync.sync();
++    expect(api.ranges).toEqual([[NOW, NOW + 30 * 86400]]);
++    expect(guild.eventCalls).toEqual(["create Weekend Event"]);
++    const [id, event] = [...guild.scheduledEvents.entries()][0]!;
++    expect(event).toMatchObject({ name: "Weekend Event", startsAt: WEEKEND.startsAt * 1000, endsAt: WEEKEND.endsAt * 1000, location: "In game: PokeVerse" });
++    expect(store.get().calendarEvents[WEEKEND.key]).toMatchObject({ eventId: id, status: "scheduled" });
++    expect(sync.link(WEEKEND.key)).toBe(`https://discord.com/events/${guild.id}/${id}`);
++    await sync.sync();
++    expect(guild.eventCalls).toHaveLength(1);
++  });
++
++  it("edits a changed event, deletes a removed one, starts and finishes on time", async () => {
++    const { sync, api, guild, store, advance } = setup({ reminders: false });
++    const staff: CalendarEvent = { ...WEEKEND, key: "staff3:1", id: "staff3", name: "Staff hunt", bonuses: [] };
++    api.events = [WEEKEND, staff];
++    await sync.sync();
++    const weekendId = store.get().calendarEvents[WEEKEND.key]!.eventId;
++    const staffId = store.get().calendarEvents[staff.key]!.eventId;
++
++    api.events = [{ ...WEEKEND, endsAt: WEEKEND.endsAt + 3600, description: "Triple EXP!" }];
++    await sync.sync();
++    expect(guild.eventCalls.slice(2)).toEqual([`delete ${staffId}`, `edit ${weekendId}`]);
++    expect(guild.scheduledEvents.get(weekendId)).toMatchObject({ endsAt: (WEEKEND.endsAt + 3600) * 1000, description: "Triple EXP!\n\nBonuses: 2x kill EXP" });
++
++    advance(86400 + 10);
++    await sync.sync();
++    expect(guild.eventCalls.at(-1)).toBe(`edit ${weekendId} active`);
++    expect(store.get().calendarEvents[WEEKEND.key]!.status).toBe("active");
++
++    advance(86400 * 3);
++    api.events = [];
++    await sync.sync();
++    expect(guild.eventCalls.at(-1)).toBe(`edit ${weekendId} completed`);
++    expect(store.get().calendarEvents).toEqual({});
++  });
++
++  it("starts an event a minute from now when it's already running, and makes one deleted on Discord again", async () => {
++    const { sync, api, guild, store } = setup({ reminders: false });
++    api.events = [{ ...WEEKEND, startsAt: NOW - 600 }];
++    await sync.sync();
++    const id = store.get().calendarEvents[WEEKEND.key]!.eventId;
++    expect(guild.scheduledEvents.get(id)!.startsAt).toBe((NOW + 60) * 1000);
++    guild.scheduledEvents.delete(id);
++    await sync.sync();
++    expect(store.get().calendarEvents).toEqual({});
++    await sync.sync();
++    expect(Object.keys(store.get().calendarEvents)).toEqual([WEEKEND.key]);
++  });
++
++  it("reminds #game-announcements once, an hour before the start", async () => {
++    const { sync, api, queue, channel, advance } = setup();
++    api.events = [WEEKEND];
++    await sync.sync();
++    advance(86400 - 3000);
++    await sync.sync();
++    await sync.sync();
++    await queue.idle();
++    expect(channel.sent).toHaveLength(1);
++    const embed = channel.sent[0]!.message.embeds![0]!;
++    expect(embed.title).toBe("⏰ Starting soon: Weekend Event");
++    expect(embed.description).toContain(`<t:${WEEKEND.startsAt}:R>`);
++    expect(embed.description).toContain("[Event details](https://discord.com/events/");
++    expect(channel.sent[0]!.message.content).toBeUndefined();
++  });
++
++  it("waits for the permission and the game's calendar", async () => {
++    const noPermission = setup({ permissions: [...ALL_PERMISSIONS] });
++    noPermission.api.events = [WEEKEND];
++    await noPermission.sync.sync();
++    expect(noPermission.guild.eventCalls).toEqual([]);
++    expect(noPermission.metrics.get("calendar.no_permission")).toBe(1);
++
++    const oldGame = setup();
++    oldGame.api.features.clear();
++    await oldGame.sync.sync();
++    expect(oldGame.api.ranges).toEqual([]);
++  });
++});
+diff --git a/tests/unit/channelSetup.test.ts b/tests/unit/channelSetup.test.ts
+index a327591..d3c0f2b 100644
+--- a/tests/unit/channelSetup.test.ts
++++ b/tests/unit/channelSetup.test.ts
+@@ -240,8 +240,10 @@ describe("invite link", () => {
+     const bits = requiredPermissionBits();
+     expect(bits & 0x8n).toBe(0n);
+     // View Channel, Send Messages, Embed Links, Attach Files, Read Message History, Manage Channels,
+-    // Manage Roles, Manage Nicknames, Create Public Threads, Send Messages in Threads, Manage Threads
+-    expect(bits).toBe(0x400n | 0x800n | 0x4000n | 0x8000n | 0x10000n | 0x10n | 0x10000000n | 0x8000000n | 0x800000000n | 0x4000000000n | 0x400000000n);
++    // Manage Roles, Manage Nicknames, Create Public Threads, Send Messages in Threads, Manage Threads,
++    // Mention Everyone, Create Events, Manage Events
++    expect(bits).toBe(0x400n | 0x800n | 0x4000n | 0x8000n | 0x10000n | 0x10n | 0x10000000n | 0x8000000n | 0x800000000n | 0x4000000000n | 0x400000000n |
++      0x20000n | 0x100000000000n | 0x200000000n);
+     const url = new URL(inviteUrl("123456789012345678", DEV_GUILD));
+     expect(url.searchParams.get("scope")).toBe("bot applications.commands");
+     expect(url.searchParams.get("permissions")).toBe(bits.toString());
+-- 
+2.43.0
+

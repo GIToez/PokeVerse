@@ -45,9 +45,30 @@ local CONFIG = {
     searchLimit = 25,
 }
 
-local LEGENDARY = {}
-for _, name in ipairs(CONFIG.legendary) do
-    LEGENDARY[string.lower(name)] = true
+-- CONFIG.legendary plus every wild legendary species. WildLegendaries loads after this file,
+-- so the list is built on first use.
+local legendaryNames, LEGENDARY
+
+local function legendaryList()
+    if (legendaryNames and WildLegendaries) then
+        return legendaryNames
+    end
+    local names, seen = {}, {}
+    local function add(name)
+        local key = string.lower(name)
+        if (not seen[key]) then
+            seen[key] = true
+            names[#names + 1] = name
+        end
+    end
+    for _, name in ipairs(CONFIG.legendary) do
+        add(name)
+    end
+    for _, species in ipairs(WildLegendaries and WildLegendaries.SPECIES or {}) do
+        add(species.name)
+    end
+    legendaryNames, LEGENDARY = names, seen
+    return names
 end
 
 local SHINY_PREFIX = "shiny "
@@ -60,6 +81,7 @@ local function stripShiny(name)
 end
 
 function DiscordBridge.isLegendary(name)
+    legendaryList()
     return name ~= nil and LEGENDARY[string.lower(stripShiny(name))] == true
 end
 
@@ -243,11 +265,19 @@ end
 
 -- Wild legendaries (078-wildLegendaries.lua): one encounterId per encounter, so the bot can keep
 -- one thread per encounter. event = "spawn", "sighting", "flee", "end" (reason "defeated",
--- "fled", "staff", "restart", "vanished") or "caught".
+-- "fled", "staff", "restart", "vanished"), "caught", "woke" and "revealed"; "set" (members, one
+-- encounter each), "clash" and "calm" (encounterId and otherEncounterId); "sign" and "reward" have
+-- no encounter. docs/discord-bridge.md has the fields.
 local function onLegendary(event)
     event.kind = "legendary"
     if (event.species) then
         event.dexNumber = event.dexNumber or getPokemonNumberByName(event.species)
+    end
+    for _, member in ipairs(event.members or {}) do
+        member.dexNumber = member.dexNumber or getPokemonNumberByName(member.species)
+        if (member.position) then
+            member.position = {x = member.position.x, y = member.position.y, z = member.position.z}
+        end
     end
     if (event.position) then
         local town = getNearestTown(event.position)
@@ -267,6 +297,12 @@ end
 
 function DiscordBridge.onBroadcast(source, author, text)
     safeCall("onBroadcast", DiscordBridge.emit, {kind = "broadcast", source = source, author = author, text = text})
+end
+
+-- Every server-wide announcement but the tips (Announcements.toDiscord).
+function DiscordBridge.onAnnouncement(a)
+    safeCall("onAnnouncement", DiscordBridge.emit, {kind = "announcement", category = a.category, title = a.title,
+        text = a.text, full = a.full, source = a.source, author = a.author, ping = a.ping, calendar = a.calendar})
 end
 
 function DiscordBridge.onRestartWarning(reason, minutes, shutdown)
@@ -606,7 +642,7 @@ end
 
 local function handleBridgeConfig()
     local legendary = JSON.array()
-    for _, name in ipairs(CONFIG.legendary) do
+    for _, name in ipairs(legendaryList()) do
         legendary[#legendary + 1] = name
     end
     return {

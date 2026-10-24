@@ -70,3 +70,40 @@ Discord setup:
 - **Manage Channels** is used to create the forums and their tags.
 - The invite permission integer is now `326820285456`.
 - Re-run channel setup after deploying.
+
+## Announcements, pings and the event calendar
+
+- Base commit: `5c88db2770853e8ad22c0d29bbdd0928133b2bba` (bot `main`)
+- Patches: `patches/announcements/0001-*.patch` and `0002-*.patch`
+
+```bash
+git checkout -b announcements 5c88db2770853e8ad22c0d29bbdd0928133b2bba
+git am /path/to/PokeVerse/integrations/pokeverse-discord/patches/announcements/*.patch
+npm ci && npm run check
+```
+
+What they do:
+
+- `announcement` events (the game's `announcements` feature): every server-wide announcement but
+  the tips, posted in `#game-announcements` by category (`ANNOUNCE_CATEGORIES`, default
+  `event,staff,milestone,news`). Old `broadcast` events are ignored while the game sends these.
+- Pings: staff pick one in game with `/b @everyone text`, `@verified` or `@RoleName`, or with
+  the Admin window's **Ping on Discord**. @everyone and @here are for Gamemasters and up. By
+  default holiday and weekend events ping the Verified Trainer role (`ANNOUNCE_PINGS`).
+- The bot sends the game its role names (`announcements.roles`) for the Admin window's list.
+- Event calendar (the `calendar` feature): the next 30 days as Discord scheduled events, kept in
+  sync every 15 minutes, started and ended on time, and a reminder an hour before each start.
+- Wild legendaries: one post and thread for a whole set, Mewtwo's disturbance, Regis waking,
+  Mew's reveal (no post before it), Groudon and Kyogre's clashes and Rayquaza calming them,
+  quest rewards, and the trainer who spotted it.
+
+New settings: `ANNOUNCE_CATEGORIES`, `ANNOUNCE_PINGS`, `ANNOUNCE_STAFF_PINGS`,
+`ANNOUNCE_EVENT_REMINDERS` and `CALENDAR_SYNC_ENABLED` (see `.env.development.example`).
+
+Discord setup:
+
+- New permissions: **Mention Everyone** (staff @everyone pings, and roles that aren't
+  mentionable), **Create Events** and **Manage Events** (the calendar).
+- The invite permission integer is now `17927596395536`.
+- Re-run channel setup after deploying (`/pokeverse setup`); it reports the permissions it
+  is missing.

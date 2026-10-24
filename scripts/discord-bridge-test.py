@@ -526,6 +526,48 @@ def booster_disabled_tests(b):
     check("boost.level is disabled when off", r and not r["ok"] and r["error"]["code"] == "disabled", str(r))
 
 
+def announcement_tests(b, listener, speaker, speaker_name):
+    features = set(b.welcome.get("features", []))
+    check("welcome lists announcements and calendar", {"announcements", "calendar"} <= features, str(b.welcome))
+
+    now = int(time.time())
+    r = b.request("calendar.range", {"from": now, "to": now + 30 * 86400})
+    events = r and r.get("ok") and r["result"].get("events")
+    check("calendar.range lists the next 30 days", events == {} or (isinstance(events, list) and all(
+        {"key", "id", "name", "startsAt", "endsAt"} <= set(e) for e in events)), str(r)[:500])
+    r = b.request("calendar.range", {"from": now, "to": now + 90 * 86400})
+    check("calendar.range refuses more than 60 days", r and not r["ok"] and r["error"]["code"] == "invalid_params",
+          str(r))
+
+    r = b.request("announcements.roles", {"roles": ["Event Pings", "Senior Tutor", 5, ""], "everyone": True})
+    check("announcements.roles keeps the role names", r and r["ok"] and r["result"]["roles"] == 2, str(r))
+    r = b.request("announcements.roles", {"roles": "Event Pings"})
+    check("announcements.roles validates params", r and not r["ok"] and r["error"]["code"] == "invalid_params", str(r))
+
+    marker = "Bridge announcement %d" % now
+    speaker.say("/b @everyone " + marker)
+    e = b.wait_event(lambda ev: ev["kind"] == "announcement" and ev.get("text") == marker, 10)
+    ev = e and e["event"] or {}
+    check("/b sends a staff announcement with the ping", ev.get("category") == "staff" and ev.get("ping") == "everyone"
+          and ev.get("author") == speaker_name and ev.get("title") == speaker_name, str(e))
+    e = b.wait_event(lambda ev: ev["kind"] == "broadcast" and marker in ev.get("text", ""), 5)
+    check("the old broadcast event is still sent, without the tag",
+          e is not None and e["event"]["text"] == marker and e["event"]["author"] == speaker_name, str(e))
+    listener.collect(1.5)
+    check("the tag is taken out of the in-game text",
+          listener.received(marker.encode()) and not listener.received(b"@everyone " + marker.encode()))
+
+    marker = "Bridge role ping %d" % now
+    speaker.say("/b @SeniorTutor " + marker)
+    e = b.wait_event(lambda ev: ev["kind"] == "announcement" and ev.get("text") == marker, 10)
+    check("/b @RoleName pings the role", e is not None and e["event"].get("ping") == "SeniorTutor", str(e))
+
+    marker = "Bridge plain broadcast %d" % now
+    speaker.say("/b " + marker)
+    e = b.wait_event(lambda ev: ev["kind"] == "announcement" and ev.get("text") == marker, 10)
+    check("/b without a tag pings nobody", e is not None and "ping" not in e["event"], str(e))
+
+
 def account_request(args, action, account, password, name):
     spec = importlib.util.spec_from_file_location("account_test", os.path.join(here, "account-test.py"))
     at = importlib.util.module_from_spec(spec)
@@ -660,6 +702,8 @@ def main():
 
     r = b.request("chat.send", {"author": "", "text": "x"})
     check("chat.send validates params", r and not r["ok"], str(r))
+
+    announcement_tests(b, listener, speaker, speaker_name)
 
     if args.catch_test:
         before = b.request("trainer.lookup", {"name": trainer})["result"]["caught"]

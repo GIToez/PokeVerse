@@ -527,10 +527,19 @@ AdminWindow < UIWindow
         !placeholder: tr('Message to broadcast')
         anchors.top: title.bottom
         anchors.left: parent.left
-        anchors.right: broadcast.left
+        anchors.right: ping.left
         margin: 8 8 0 0
         padding-left: 10
         max-length: 255
+
+      ComboBox
+        id: ping
+        width: 150
+        height: 26
+        anchors.right: broadcast.left
+        anchors.verticalCenter: broadcast.verticalCenter
+        margin-right: 8
+        !tooltip: tr('Who the Discord post pings. @everyone and @here are for Gamemasters and up.')
 
       PVBlueButton
         id: broadcast
