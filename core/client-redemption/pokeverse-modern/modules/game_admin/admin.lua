@@ -3,7 +3,7 @@
 -- stays hidden for everyone else. The tabs and buttons follow the staff member's access: most buttons run a
 -- staff command ({action = "command", text}) that the server runs as the talkaction itself, so the command's
 -- access in talkactions.xml decides, and {type = "commands"} lists the commands this staff member can use.
--- Events: start {event, multiplier, minutes}, stop {event}, broadcast {text, target = both/game/discord}.
+-- Events: start {event, multiplier, minutes}, stop {event}, broadcast {text, target = both/game/discord, ping}.
 -- Players: players {filter} -> {type = "players"}, ban {name, days, reason, comment}, bans -> {type = "bans"}.
 -- Decorations: decorations, deco_add {set, item}, deco_remove {set}, deco_preview {set, minutes}, deco_auto {on};
 -- {type = "decorations"} answers each, and the first request (catalog = true) also gets one
@@ -79,6 +79,7 @@ local picks = {} -- per event: { multiplier, minutes }
 local tickEvent
 local broadcasting = false -- the next result answers a broadcast
 local broadcastTarget = 'both' -- 'both', 'game' or 'discord'
+local broadcastPing = '' -- '' (none) or one of state.pings' ids
 local tab
 local deco = { data = nil, items = {}, set = nil, item = nil, askedAt = 0 }
 local commands = { byWords = nil, list = {}, parts = {} } -- what this staff member may run
@@ -899,9 +900,28 @@ local function refreshAccess()
     local canBroadcast = access() >= (tonumber(state.broadcastAccess) or 3)
     window.boosts.tools.broadcast:setEnabled(canBroadcast)
     window.boosts.tools.broadcastText:setEnabled(canBroadcast)
+    window.boosts.tools.ping:setEnabled(canBroadcast and broadcastTarget ~= 'game')
     local canBan = access() >= (tonumber(state.banAccess) or 3)
     window.players.player.ban:setEnabled(canBan)
     window.players.bans:setVisible(canBan)
+end
+
+-- The Discord pings the server lets this staff member pick; the pick stays while it's still offered.
+local function fillPings(pings)
+    local combo = window.boosts.tools.ping
+    combo.onOptionChange = nil
+    combo:clearOptions()
+    combo:addOption(tr('No Discord ping'), '')
+    local kept = false
+    for _, ping in ipairs(type(pings) == 'table' and pings or {}) do
+        combo:addOption(tostring(ping.label or ping.id), tostring(ping.id))
+        kept = kept or tostring(ping.id) == broadcastPing
+    end
+    if not kept then
+        broadcastPing = ''
+    end
+    combo:setCurrentOptionByData(broadcastPing, true)
+    combo.onOptionChange = function(_, _, id) broadcastPing = id or '' end
 end
 
 local function fill(data)
@@ -909,6 +929,7 @@ local function fill(data)
     receivedAt = g_clock.seconds()
     window.online:setText(tr('Players online: %d', tonumber(data.online) or 0))
     fillEvents(data)
+    fillPings(data.pings)
     fillBanPicks()
     if data.world and not world.built then
         fillWorld(data.world)
@@ -1051,12 +1072,16 @@ function init()
         end
     end
     for _, widget in ipairs(tools.targets:getChildren()) do
-        widget.onClick = function() pickTarget(widget:getId()) end
+        widget.onClick = function()
+            pickTarget(widget:getId())
+            tools.ping:setEnabled(broadcastTarget ~= 'game')
+        end
     end
     pickTarget(broadcastTarget)
     tools.broadcast.onClick = function()
         broadcasting = true
-        send({ action = 'broadcast', text = tools.broadcastText:getText(), target = broadcastTarget })
+        send({ action = 'broadcast', text = tools.broadcastText:getText(), target = broadcastTarget,
+               ping = broadcastTarget ~= 'game' and broadcastPing ~= '' and broadcastPing or nil })
     end
     tools.broadcastText.onKeyPress = function(self, keyCode)
         if keyCode == KeyEnter or keyCode == KeyReturn then

@@ -957,6 +957,14 @@ if (not executeRaid) then
 end
 
 local running = nil
+-- For the Discord bot: which occurrence started or ended, and its kind (it pings for holidays and the
+-- weekend events, and links the Discord event made for the occurrence)
+function EventCalendar.announcementTag(event, state)
+    local id = event.holiday and event.holiday.id or event.server and event.server.id or ("staff" .. tostring(event.id))
+    return { key = event.key, id = id, state = state,
+             type = event.holiday and "holiday" or event.server and "server" or "staff" }
+end
+
 local lastStatusKey = nil
 local lastSeason = nil
 local lastRaid = {}
@@ -977,9 +985,11 @@ function EventCalendar.onThink()
     if (running) then
         for key, event in pairs(keys) do
             if (not running[key]) then
-                doBroadcastMessage(string.format("%s has started: %s %s.", event.name, event.description,
-                    event.forced and "It runs until staff end it" or "It runs for " .. ServerExpEvent.formatDuration(event.endsAt - now)),
-                    MESSAGE_STATUS_WARNING)
+                local title = event.name .. " has started"
+                local text = string.format("%s %s.", event.description,
+                    event.forced and "It runs until staff end it" or "It runs for " .. ServerExpEvent.formatDuration(event.endsAt - now))
+                doBroadcastMessage(title .. ": " .. text, MESSAGE_STATUS_WARNING,
+                    { category = "event", title = title, text = text, calendar = EventCalendar.announcementTag(event, "started") })
                 for _, pid in ipairs(getPlayersOnline()) do
                     EventCalendar.giveGifts(pid)
                 end
@@ -987,7 +997,9 @@ function EventCalendar.onThink()
         end
         for key, event in pairs(running) do
             if (not keys[key]) then
-                doBroadcastMessage(string.format("%s has ended.", event.name), MESSAGE_STATUS_WARNING)
+                doBroadcastMessage(string.format("%s has ended.", event.name), MESSAGE_STATUS_WARNING,
+                    { category = "event", title = event.name .. " has ended", text = "Thanks for playing! See the calendar (C) for the next events.",
+                      calendar = EventCalendar.announcementTag(event, "ended") })
             end
         end
     else

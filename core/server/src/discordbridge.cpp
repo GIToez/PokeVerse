@@ -404,6 +404,8 @@ void DiscordBridge::onAuthenticated(DiscordBridgeSession_ptr session)
 		welcome << (first ? "" : ",") << "\"boostPerks\"";
 		first = false;
 	}
+	// every broadcast as an "announcement" event, and the calendar.range request
+	welcome << (first ? "" : ",") << "\"announcements\",\"calendar\"";
 
 	welcome << "]}";
 	session->send(welcome.str());

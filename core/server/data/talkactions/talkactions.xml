@@ -119,7 +119,7 @@
 	<talkaction log="yes" access="3" words="/wp" event="script" value="waypoints.lua"/>
 	<talkaction access="3" words="/online" event="script" value="online.lua"/>
 	<talkaction log="yes" words="/info" access="3" event="script" value="playerinfo.lua"/>
-	<talkaction log="yes" access="3" words="/b" event="script" value="broadcast.lua" description="Broadcast message. (Name visible)"/>
+	<talkaction log="yes" access="3" words="/b" event="script" value="broadcast.lua" description="Broadcast message. (Name visible) Start with @verified, @everyone or @RoleName to ping on Discord."/>
 	<talkaction log="yes" access="3" words="/gmcheck" event="script" value="../../lib/ps/events/talkactions/gmCheck.lua" description="Check players"/>
 
 	<!-- Senior Tutors -->

@@ -7,7 +7,8 @@
 -- JSON on EXTENDED_IDS.ADMIN:
 --   client -> server  {action = "hello"} (at login), {action = "refresh"},
 --                     {action = "start", event, multiplier, minutes}, {action = "stop", event},
---                     {action = "broadcast", text, target = "both"|"game"|"discord"}, {action = "save"}, {action = "clean"},
+--                     {action = "broadcast", text, target = "both"|"game"|"discord", ping}, {action = "save"},
+--                     {action = "clean"},
 --                     {action = "decorations", catalog}, {action = "deco_add", set, item}, {action = "deco_remove", set},
 --                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on},
 --                     {action = "command", text} (a talkaction, run with the staff member's own access),
@@ -15,7 +16,8 @@
 --                     {action = "bans"}, {action = "commands"}
 --   server -> client  {type = "state", access, online, events = {{key, label, command, multiplier, left}}, multipliers,
 --                      minutes, access, banAccess, banDays, banReasons = {{id, name}}, world = {kinds, regions,
---                      holidays, seasons, legendaries}}
+--                      holidays, seasons, legendaries}, pings = {{id, label}} (the Discord pings this staff member
+--                      can pick: Announcements.checkPing values)}
 --                     {type = "result", ok, text}
 --                     {type = "decorations", sets = {{id, name}}, theme, preview = {set, left}, town = {name, auto},
 --                      radius, total, spots = {{set, item, client, name, x, y, z, by, valid, why}}} (the nearest
@@ -131,6 +133,17 @@ Admin.sendState = function(cid)
         events[#events + 1] = { key = event.key, label = event.label, command = event.command,
                                 multiplier = multiplier, left = multiplier and endsAt - os.time() or nil }
     end
+    local pings = { { id = "verified", label = "Verified Trainer" } }
+    local discord = Announcements.pingRoles()
+    for _, role in ipairs(discord.roles) do
+        if (role:lower():gsub("[^%w]", "") ~= "verifiedtrainer") then
+            pings[#pings + 1] = { id = role, label = role }
+        end
+    end
+    if (discord.everyone and getPlayerAccess(cid) >= Announcements.PING_EVERYONE_ACCESS) then
+        pings[#pings + 1] = { id = "here", label = "@here" }
+        pings[#pings + 1] = { id = "everyone", label = "@everyone" }
+    end
     local reasons = {}
     for _, id in ipairs(Admin.BAN_REASONS) do
         reasons[#reasons + 1] = { id = id, name = getBanReason(id) }
@@ -138,7 +151,7 @@ Admin.sendState = function(cid)
     send(cid, { type = "state", access = getPlayerAccess(cid), online = #getPlayersOnline(), events = events,
                 multipliers = Admin.MULTIPLIERS, minutes = Admin.MINUTES, eventsAccess = Admin.EVENT_START_ACCESS,
                 broadcastAccess = Admin.BROADCAST_ACCESS, banAccess = Admin.BAN_ACCESS, banDays = Admin.BAN_DAYS,
-                banReasons = reasons, world = hasAccess(cid, Admin.WORLD_ACCESS) and worldInfo() or nil })
+                banReasons = reasons, world = hasAccess(cid, Admin.WORLD_ACCESS) and worldInfo() or nil, pings = pings })
 end
 
 -- The client's hello can go out before the opcode handshake, so staff also get the state pushed after login.
@@ -189,14 +202,19 @@ local function broadcast(cid, data)
     if (not Admin.BROADCAST_TARGETS[target]) then
         return result(cid, false, "Pick where to broadcast.")
     end
+    local name = getCreatureName(cid)
+    local ping = target ~= "game" and Announcements.checkPing(cid, data.ping) or nil
+    local announcement = { category = "staff", title = name, text = text, author = name, ping = ping,
+                           discord = target ~= "game" }
     if (target ~= "discord") then
-        doBroadcastMessage(getCreatureName(cid) .. ": " .. text, MESSAGE_STATUS_WARNING,
-            { category = "staff", title = getCreatureName(cid), text = text })
+        doBroadcastMessage(name .. ": " .. text, MESSAGE_STATUS_WARNING, announcement)
+    else
+        Announcements.toDiscord(Announcements.resolve(name .. ": " .. text, announcement))
     end
     if (target ~= "game") then
-        DiscordBridge.onBroadcast("gm", getCreatureName(cid), text)
+        DiscordBridge.onBroadcast("gm", name, text)
     end
-    log(cid, string.format("broadcast (%s): %s", target, text))
+    log(cid, string.format("broadcast (%s%s): %s", target, ping and (", ping " .. ping) or "", text))
     result(cid, true, ({ both = "Broadcast sent in game and to Discord.", game = "Broadcast sent in game.",
                          discord = "Broadcast sent to Discord." })[target])
 end
