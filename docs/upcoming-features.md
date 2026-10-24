@@ -2082,6 +2082,24 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
 - Phase 4: a PayPal Business account and a PayPal developer app (sandbox and live keys),
   added the same way.
 
+### Soul Coins become Verse Orbs
+
+**Agreed (October 24):** players see **Verse Orbs**, a small purple glass orb with a galaxy
+turning inside. "Soul Coins" and the coin art come from PSoul, the server we started from.
+Coins were ruled out because they look like Pokédollars, and gems because diamond currencies
+are overdone.
+
+- **Only what players see changes:** the item's name in `items.xml` (item 6500, and 6499 in
+  the client's wallet), its art and animation, the Store, the wallet, the Account window, the
+  wiki pages, the first-visit hints, the bank, Roscoe's and the other NPC lines, the Discord
+  booster rewards, the website and the bot's text. Item numbers, storages and code names
+  (`SOUL_COIN`, `soulCoins`) stay the same, so no balance changes.
+- **The art:** the concept is 32x32 with 12 frames. Before it goes in, the turning galaxy is
+  cleaned up by hand so it reads well at item size, and it's checked next to the Pokédollar
+  in the wallet. The old coin stays until the new art is approved.
+- **Short form:** "Orbs" where space is short ("Costs 5 Orbs").
+- **The PayPal phase** uses the new name from the start.
+
 ## 20. Move sounds and volume sliders
 
 Planned for after October 2026 (not started).
