@@ -2,81 +2,81 @@
 <raid>
 	<announce delay="0" type="warning" message="X-Mas!"/>
 	<!-- Viridian -->
-		<itemspawn ref="yes" id="18747" x="473" y="598" z="7" />
-		<itemspawn ref="yes" id="18747" x="469" y="616" z="7" />
-		<itemspawn ref="yes" id="18747" x="450" y="598" z="7" />
-		<itemspawn ref="yes" id="18747" x="487" y="574" z="7" />
-		<itemspawn ref="yes" id="18747" x="445" y="621" z="7" />
-		<areaspawn ref="yes" centerx="459" centery="573" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3292" y="538" z="7" />
+		<itemspawn ref="yes" id="18747" x="3311" y="547" z="7" />
+		<itemspawn ref="yes" id="18747" x="3314" y="557" z="7" />
+		<itemspawn ref="yes" id="18747" x="3303" y="580" z="7" />
+		<itemspawn ref="yes" id="18747" x="3321" y="578" z="7" />
+		<areaspawn ref="yes" centerx="3295" centery="605" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Cerulean -->
-		<itemspawn ref="yes" id="18747" x="1015" y="219" z="7" />
-		<itemspawn ref="yes" id="18747" x="1016" y="187" z="7" />
-		<itemspawn ref="yes" id="18747" x="988" y="223" z="7" />
-		<itemspawn ref="yes" id="18747" x="1008" y="237" z="7" />
-		<itemspawn ref="yes" id="18747" x="1042" y="239" z="7" />
-		<areaspawn ref="yes" centerx="1049" centery="245" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3871" y="262" z="7" />
+		<itemspawn ref="yes" id="18747" x="3887" y="257" z="7" />
+		<itemspawn ref="yes" id="18747" x="3914" y="272" z="7" />
+		<itemspawn ref="yes" id="18747" x="3925" y="292" z="7" />
+		<itemspawn ref="yes" id="18747" x="3904" y="293" z="7" />
+		<areaspawn ref="yes" centerx="3875" centery="278" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Celadon -->
-		<itemspawn ref="yes" id="18747" x="921" y="388" z="7" />
-		<itemspawn ref="yes" id="18747" x="883" y="389" z="7" />
-		<itemspawn ref="yes" id="18747" x="862" y="394" z="7" />
-		<itemspawn ref="yes" id="18747" x="879" y="420" z="7" />
-		<itemspawn ref="yes" id="18747" x="916" y="436" z="7" />
-		<areaspawn ref="yes" centerx="880" centery="416" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3691" y="415" z="7" />
+		<itemspawn ref="yes" id="18747" x="3693" y="443" z="7" />
+		<itemspawn ref="yes" id="18747" x="3708" y="419" z="7" />
+		<itemspawn ref="yes" id="18747" x="3737" y="434" z="7" />
+		<itemspawn ref="yes" id="18747" x="3720" y="447" z="7" />
+		<areaspawn ref="yes" centerx="3662" centery="420" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Cinnabar -->
-		<itemspawn ref="yes" id="18747" x="406" y="916" z="7" />
-		<itemspawn ref="yes" id="18747" x="432" y="903" z="7" />
-		<itemspawn ref="yes" id="18747" x="414" y="886" z="7" />
-		<itemspawn ref="yes" id="18747" x="400" y="884" z="7" />
-		<itemspawn ref="yes" id="18747" x="386" y="909" z="7" />
-		<areaspawn ref="yes" centerx="435" centery="893" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3367" y="1015" z="7" />
+		<itemspawn ref="yes" id="18747" x="3393" y="1023" z="7" />
+		<itemspawn ref="yes" id="18747" x="3375" y="1032" z="7" />
+		<itemspawn ref="yes" id="18747" x="3355" y="1037" z="7" />
+		<itemspawn ref="yes" id="18747" x="3344" y="1023" z="7" />
+		<areaspawn ref="yes" centerx="3374" centery="1060" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Fuchsia -->
-		<itemspawn ref="yes" id="18747" x="916" y="782" z="6" />
-		<itemspawn ref="yes" id="18747" x="877" y="784" z="6" />
-		<itemspawn ref="yes" id="18747" x="864" y="785" z="7" />
-		<itemspawn ref="yes" id="18747" x="873" y="758" z="7" />
-		<itemspawn ref="yes" id="18747" x="904" y="751" z="7" />
-		<areaspawn ref="yes" centerx="945" centery="759" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3863" y="819" z="7" />
+		<itemspawn ref="yes" id="18747" x="3889" y="817" z="7" />
+		<itemspawn ref="yes" id="18747" x="3899" y="832" z="7" />
+		<itemspawn ref="yes" id="18747" x="3899" y="848" z="7" />
+		<itemspawn ref="yes" id="18747" x="3881" y="855" z="7" />
+		<areaspawn ref="yes" centerx="3827" centery="817" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Lavender -->
-		<itemspawn ref="yes" id="18747" x="1191" y="500" z="7" />
-		<itemspawn ref="yes" id="18747" x="1176" y="500" z="7" />
-		<itemspawn ref="yes" id="18747" x="1201" y="518" z="7" />
-		<itemspawn ref="yes" id="18747" x="1197" y="538" z="7" />
-		<itemspawn ref="yes" id="18747" x="1215" y="489" z="7" />
+		<itemspawn ref="yes" id="18747" x="4172" y="550" z="7" />
+		<itemspawn ref="yes" id="18747" x="4199" y="545" z="7" />
+		<itemspawn ref="yes" id="18747" x="4210" y="541" z="7" />
+		<itemspawn ref="yes" id="18747" x="4208" y="569" z="7" />
+		<itemspawn ref="yes" id="18747" x="4202" y="580" z="7" />
 	<!-- Pewter -->
-		<itemspawn ref="yes" id="18747" x="503" y="296" z="7" />
-		<itemspawn ref="yes" id="18747" x="506" y="271" z="7" />
-		<itemspawn ref="yes" id="18747" x="525" y="273" z="7" />
-		<itemspawn ref="yes" id="18747" x="536" y="273" z="7" />
-		<itemspawn ref="yes" id="18747" x="497" y="244" z="7" />
-		<areaspawn ref="yes" centerx="541" centery="266" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3294" y="262" z="7" />
+		<itemspawn ref="yes" id="18747" x="3308" y="271" z="7" />
+		<itemspawn ref="yes" id="18747" x="3318" y="286" z="7" />
+		<itemspawn ref="yes" id="18747" x="3341" y="285" z="7" />
+		<itemspawn ref="yes" id="18747" x="3332" y="307" z="7" />
+		<areaspawn ref="yes" centerx="3298" centery="332" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Saffron -->
-		<itemspawn ref="yes" id="18747" x="1036" y="448" z="6" />
-		<itemspawn ref="yes" id="18747" x="1062" y="433" z="6" />
-		<itemspawn ref="yes" id="18747" x="1068" y="410" z="6" />
-		<itemspawn ref="yes" id="18747" x="1039" y="392" z="6" />
-		<itemspawn ref="yes" id="18747" x="986" y="389" z="6" />
-		<areaspawn ref="yes" centerx="1043" centery="375" centerz="6" radius="4">
+		<itemspawn ref="yes" id="18747" x="3916" y="453" z="7" />
+		<itemspawn ref="yes" id="18747" x="3960" y="455" z="7" />
+		<itemspawn ref="yes" id="18747" x="3973" y="469" z="7" />
+		<itemspawn ref="yes" id="18747" x="3989" y="478" z="7" />
+		<itemspawn ref="yes" id="18747" x="3982" y="500" z="7" />
+		<areaspawn ref="yes" centerx="3927" centery="445" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 	<!-- Vermilion -->
-		<itemspawn ref="yes" id="18747" x="1008" y="575" z="7" />
-		<itemspawn ref="yes" id="18747" x="1036" y="587" z="7" />
-		<itemspawn ref="yes" id="18747" x="1031" y="626" z="7" />
-		<itemspawn ref="yes" id="18747" x="1029" y="652" z="7" />
-		<itemspawn ref="yes" id="18747" x="1004" y="623" z="7" />
-		<areaspawn ref="yes" centerx="1023" centery="562" centerz="7" radius="4">
+		<itemspawn ref="yes" id="18747" x="3911" y="600" z="7" />
+		<itemspawn ref="yes" id="18747" x="3918" y="615" z="7" />
+		<itemspawn ref="yes" id="18747" x="3947" y="607" z="7" />
+		<itemspawn ref="yes" id="18747" x="3969" y="611" z="7" />
+		<itemspawn ref="yes" id="18747" x="3974" y="621" z="7" />
+		<areaspawn ref="yes" centerx="3937" centery="599" centerz="7" radius="4">
 			<monster name="Team Rocket" amount="1"/>
 		</areaspawn>
 </raid>
