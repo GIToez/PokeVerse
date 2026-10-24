@@ -2594,15 +2594,54 @@ local function testLegendaries(cid, friend, arena)
             local zone = getCreatureStorage(raikou, MON.ZONE)
             doCreatureSetStorage(raikou, MON.NEXT_MOVE, os.time() - 1)
             doCreatureSetStorage(raikou, MON.LAST_HIT, 0)
+            local eventCount = #events
             W.upkeep(raikou, os.time())
             local newZone = getCreatureStorage(raikou, MON.ZONE)
             local allowed = { [zone] = true }
             for _, z in ipairs(LEGENDARY_ANCHORS.NEIGHBORS[zone] or {}) do allowed[z] = true end
-            check("Legendary: a roamer walks to its zone or the next one", allowed[newZone] and #W.trailOf(raikou) == 1,
+            local here, trail = getCreaturePosition(raikou), W.trailOf(raikou)
+            check("Legendary: a roamer walks to its zone or the next one", allowed[newZone] and #trail >= 1,
                 tostring(zone) .. " -> " .. tostring(newZone))
+            check("Legendary: its trail marks the way it came", #trail == 1 or
+                getDistanceBetween(trail[1], here) <= W.CONFIG.routeSpacing + 1, #trail .. " marks")
+            local seer, town = W.seenBy(here)
+            check("Legendary: a move is reported only when a trainer or a town sees it",
+                (#events > eventCount) == (seer ~= nil or town ~= nil), tostring(seer) .. "/" .. tostring(town))
+
+            local marks = W.routeMarks({ x = 100, y = 100, z = 7 }, { x = 140, y = 100, z = 7 })
+            check("Legendary: route marks on the last stretch, nearest the end first", #marks == 4 and marks[1].x == 132 and
+                marks[4].x == 108 and #W.routeMarks({ x = 100, y = 100, z = 7 }, { x = 110, y = 100, z = 6 }) == 0, #marks)
 
             local me = getCreaturePosition(cid)
+            -- the tester counts as 20 to 30 tiles from it for the area signs (not moved: the catch throws
+            -- that follow use the tiles next to the tester)
+            local there, spot = getCreaturePosition(raikou), nil
+            for r = 20, 30 do
+                for _, d in ipairs({ { -r, 0 }, { r, 0 }, { 0, -r }, { 0, r }, { -r, -r }, { r, r }, { -r, r }, { r, -r } }) do
+                    local pos = { x = there.x + d[1], y = there.y + d[2], z = there.z }
+                    if (not spot and W.isGoodPoint(pos)) then spot = pos end
+                end
+            end
+            check("Legendary: found a spot 20 to 30 tiles from it for the area signs", spot ~= nil)
+            if (spot) then
+                local shown, effect, position, online = {}, doSendMagicEffect, getCreaturePosition, getPlayersOnline
+                doSendMagicEffect = function(pos) shown[#shown + 1] = pos return true end
+                getCreaturePosition = function(c) return c == cid and spot or position(c) end
+                getPlayersOnline = function() return { cid } end
+                local ok, err = pcall(W.guideSigns, raikou, W.getSpecies("Raikou"), os.time() + 3600)
+                doSendMagicEffect, getCreaturePosition, getPlayersOnline = effect, position, online
+                check("Legendary: guideSigns runs", ok, err)
+                local s
+                for _, pos in ipairs(shown) do
+                    if (getDistanceBetween(pos, spot) <= 7) then s = pos end
+                end
+                check("Legendary: a trainer in its area sees a sign a few tiles toward it", s and
+                    getDistanceBetween(s, there) < getDistanceBetween(spot, there),
+                    s and (s.x - spot.x .. "," .. s.y - spot.y) or (#shown .. " signs"))
+            end
+
             doTeleportThing(raikou, { x = me.x + 3, y = me.y + 3, z = me.z }, false)
+            check("Legendary: a trainer in sight sees it", W.seenBy(getCreaturePosition(raikou)) == getCreatureName(cid))
             local hint = {}
             for rank = 1, 5 do
                 hint[rank] = table.concat(W.radarHints(cid, rank), " ")
@@ -2826,11 +2865,17 @@ local function testLegendaries(cid, friend, arena)
             W.runFlights(os.time())
             check("Legendary: not sent twice", #flights == 1, #flights)
         end
+        local eventCount = #events
         a = landNow("Articuno")
+        local seer, town
+        if (a) then seer, town = W.seenBy(getCreaturePosition(a)) end
         check("Legendary: lands where it was going, same encounter", a and f and
             getCreatureStorage(a, MON.ENCOUNTER) == articunoEncounter and getDistanceBetween(getCreaturePosition(a), f.to) <= 3 and
-            not W.findFlight("Articuno") and events[#events].event == "sighting" and math.abs(W.healthPercent(a) - 50) <= 1,
+            not W.findFlight("Articuno") and math.abs(W.healthPercent(a) - 50) <= 1,
             a and (W.healthPercent(a) .. "% " .. getDistanceBetween(getCreaturePosition(a), f.to) .. " tiles off"))
+        check("Legendary: a landing is reported only when a trainer or a town sees it", (seer or town) and
+            events[#events].event == "sighting" or (not seer and not town and #events == eventCount),
+            tostring(seer) .. "/" .. tostring(town))
 
         local max = getCreatureMaxHealth(a)
         local hit = getCreatureHealth(a) - math.floor(max * 0.45)
