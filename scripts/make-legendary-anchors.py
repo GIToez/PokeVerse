@@ -6,9 +6,10 @@ Points come from the map spawns (world/map-spawn.xml): a wild land Pokemon spawn
 the tile is walkable ground. Water-type spawns are left out (they sit on water) but count for
 the "water" tag of the points near them. Each point has:
 
-- its area name: the client's music areas (client-legacy sounds1/2.lua, drawn for the old map,
-  2351 tiles further west) cover Kanto and the Orange Islands; elsewhere it is empty and the
-  server says "around <town>";
+- its area name, as the modern client's area banner shows it: Johto's and Hoenn's generated
+  areas, then the legacy music areas (client-legacy sounds1/2.lua, drawn for the old map, 2351
+  tiles further west) for Kanto and the Orange Islands, then the seas and Johto's edges
+  (areas_world.lua); empty only where none of them names the spot ("around <town>");
 - its zone: the nearest town of its region, like Weather.zoneAt (the regions are
   Weather.REGIONS' boxes);
 - tags, from the types of the Pokemon spawning within TAG_RADIUS on its floor, its floor, the
@@ -35,6 +36,7 @@ sys.path.insert(0, os.path.join(ROOT, "scripts", "mapper"))
 import pvmap  # noqa: E402
 
 LEGACY_AREAS = os.path.join(ROOT, "core/client-legacy/modules/game_environment")
+AREAS = os.path.join(ROOT, "core/client-redemption/pokeverse-modern/modules/game_environment")
 MAP_OFFSET_X = 2351
 MAP = os.path.join(ROOT, "core/server/data/world/map.otbm")
 SPAWNS = os.path.join(ROOT, "core/server/data/world/map-spawn.xml")
@@ -122,7 +124,7 @@ def zone_finder(towns):
     return zone_of
 
 
-def read_areas():
+def read_legacy_areas():
     areas = []
     for name in ("sounds1.lua", "sounds2.lua"):
         text = open(os.path.join(LEGACY_AREAS, name), encoding="latin-1").read()
@@ -132,24 +134,58 @@ def read_areas():
             b = {k: int(v) for k, v in re.findall(r'\["([xyz])"\] = (\d+)', m.group(3))}
             areas.append((m.group(1), a["x"] + MAP_OFFSET_X, a["y"], a["z"],
                           b["x"] + MAP_OFFSET_X, b["y"], b["z"]))
+    text = open(os.path.join(AREAS, "sounds_pokeverse.lua"), encoding="utf-8").read()
+    point = r'\{\s*x = (\d+), y = (\d+), z = (\d+)\s*\}'
+    for m in re.finditer(r'from = "([^"]+)", to = "([^"]+)", fromPos = %s, toPos = %s' % (point, point), text):
+        old, new = m.group(1), m.group(2)
+        x0, y0, z0, x1, y1, z1 = map(int, m.groups()[2:])
+        areas = [(new if (a[0] == old and x0 <= a[1] and a[4] <= x1 and y0 <= a[2] and a[5] <= y1
+                          and z0 <= a[3] and a[6] <= z1) else a[0],) + a[1:] for a in areas]
     return areas
 
 
-def area_index(areas, bucket=64):
+def read_generated_areas(name):
+    """{ x0, y0, z0, x1, y1, z1, "name", ... } entries of a generated area file, in order."""
+    text = open(os.path.join(AREAS, name), encoding="utf-8").read()
+    return [(m.group(7),) + tuple(int(v) for v in m.groups()[:6]) for m in re.finditer(
+        r'\{ (\d+), (\d+), (\d+), (\d+), (\d+), (\d+), "([^"]*)"', text)]
+
+
+def area_index(areas, first_wins, bucket=64):
     index = collections.defaultdict(list)
-    for area in areas:
+    for order, area in enumerate(areas):
         for bx in range(area[1] // bucket, area[4] // bucket + 1):
             for by in range(area[2] // bucket, area[5] // bucket + 1):
-                index[(bx, by)].append(area)
+                index[(bx, by)].append((order, area))
 
     def area_of(x, y, z):
         best = None
-        for name, x0, y0, z0, x1, y1, z1 in index[(x // bucket, y // bucket)]:
+        for order, (name, x0, y0, z0, x1, y1, z1) in index[(x // bucket, y // bucket)]:
             if x0 <= x <= x1 and y0 <= y <= y1 and z0 <= z <= z1:
-                size = (x1 - x0 + 1) * (y1 - y0 + 1)
-                if best is None or size < best[0]:
-                    best = (size, name)
+                rank = order if first_wins else (x1 - x0 + 1) * (y1 - y0 + 1)
+                if best is None or rank < best[0]:
+                    best = (rank, name)
         return best[1] if best else None
+
+    return area_of
+
+
+def area_finder():
+    """The area name the modern client shows at a spot (game_environment): its own areas first
+    (Johto, Hoenn; the first containing the spot wins), then the legacy ones (the smallest wins),
+    then the seas and Johto's edges."""
+    lookups = [
+        area_index(read_generated_areas("areas_johto.lua") + read_generated_areas("areas_hoenn.lua"), True),
+        area_index(read_legacy_areas(), False),
+        area_index(read_generated_areas("areas_world.lua"), True),
+    ]
+
+    def area_of(x, y, z):
+        for lookup in lookups:
+            name = lookup(x, y, z)
+            if name:
+                return name
+        return None
 
     return area_of
 
@@ -195,7 +231,7 @@ def thin(points, cell):
 def main():
     towns = read_towns()
     zone_of = zone_finder(towns)
-    area_of = area_index(read_areas())
+    area_of = area_finder()
     types = species_types()
     spawns = read_spawns()
 
@@ -234,7 +270,7 @@ def main():
         zone, distance, region, town_z = zone_of(x, y)
         if not zone:
             continue
-        area = area_of(x, y, z) if region in ("kanto", "orange") else None
+        area = area_of(x, y, z)
         land.append((name, x, y, z, area or "", zone, region, distance, town_z))
     land = sorted(set(land), key=lambda p: (p[1], p[2], p[3], p[0]))
 
