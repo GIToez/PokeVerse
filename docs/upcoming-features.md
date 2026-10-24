@@ -2804,7 +2804,6 @@ inviting friends, suggestions) stay, shortened to fit.
 | --- | --- |
 | Pokepedia | Press M to open the Pokepedia and read the Wiki tab. |
 | Selling | Sell Pokémon you don't want to Ron in the Union Room. |
-| Selling | In the Orange Islands? Joel Morris on Mandarin Island North buys Pokémon too. |
 | Union Room | Every Pokémon Center has a way into the Union Room. Meet other trainers there! |
 | PC | Every locker opens your PC: boxes, stash, inbox and depot. |
 | GTS | Trade Pokémon with other trainers on the GTS. |
