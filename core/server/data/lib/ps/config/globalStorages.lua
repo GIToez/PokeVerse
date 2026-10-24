@@ -75,6 +75,8 @@ GLOBAL_STORAGES = {
     LEGENDARY_EVENTS = 7160, -- "m;shower=x,y,z,<until>;rayquaza=<groudon>:<kyogre>:<due, 0 not coming>": Jirachi's meteor shower and Rayquaza's call
     LEGENDARY_CLASHES = 7161, -- "m;<weather zone id>=<kind>": weather two legendaries make where they meet
     DISCORD_PING_ROLES = 7162, -- JSON {roles = {names}, everyone}: the Discord roles the Admin window can ping, sent by the bot (Announcements)
+    DECORATIONS_ITEMS = 7163, -- "m;<set>:<item ids>;...": props staff added to a set's list (/deco items <set> add)
+    DECORATIONS_SEEDED = 7164, -- the last Decorations.DEFAULT_SPOTS version saved into decoration_spots
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]

@@ -1,6 +1,8 @@
 -- /deco                              the set up now, this town's automatic props and the props saved near you
 -- /deco sets                         every decoration set
 -- /deco items <set>                  the props offered for a set (any item id works too)
+-- /deco items <set> add <id>         add an item to the set's list (the Admin window offers it too)
+-- /deco items <set> remove <id>      take an added item off the list
 -- /deco add <set> <prop name or id>  save a prop on the tile you face; it goes up whenever the set is up
 -- /deco remove [set]                 delete the prop saved on the tile you face (no set: the set up now)
 -- /deco list                         the props saved near you
@@ -8,7 +10,7 @@
 -- /deco auto <on|off>                this town's automatic props around the temple
 -- Wall props (wreaths, garlands, tapestries) hang on the wall you face. See Decorations in
 -- lib/ps/systems/080-decorations.lua.
-local USAGE = "Usage: /deco | sets | items <set> | add <set> <prop> | remove [set] | list | preview <set> [minutes] | preview off | auto <on|off>."
+local USAGE = "Usage: /deco | sets | items <set> [add|remove <id>] | add <set> <prop> | remove [set] | list | preview <set> [minutes] | preview off | auto <on|off>."
 
 local function reply(cid, text)
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
@@ -68,14 +70,39 @@ function onSay(cid, words, param)
 		end
 		reply(cid, "Decoration sets: " .. table.concat(list, ", ") .. ".")
 	elseif (command == "items") then
-		local setId = Decorations.findSet(rest)
+		local setText, change, itemText = rest:match("^(%S*)%s*(%a*)%s*(.-)$")
+		local setId = Decorations.findSet(setText)
+		change = (change or ""):lower()
+		if (not setId) then
+			setId, change = Decorations.findSet(rest), ""
+		end
 		if (not setId) then
 			reply(cid, "Which set? /deco sets lists them.")
+			return true
+		elseif (change == "add" or change == "remove") then
+			local itemid = tonumber(itemText)
+			local ok, why
+			if (change == "add") then
+				ok, why = Decorations.addCustomItem(setId, itemid)
+			else
+				ok, why = Decorations.removeCustomItem(setId, itemid)
+			end
+			if (not ok) then
+				reply(cid, why)
+				return true
+			end
+			print(string.format("> Decorations: %s %s %s %s %s's list", getCreatureName(cid), change == "add" and "added" or "removed",
+				Decorations.itemName(itemid), change == "add" and "to" or "from", setName(setId)))
+			reply(cid, string.format("%s %s (%d) %s %s's list.", change == "add" and "Added" or "Removed", Decorations.itemName(itemid),
+				itemid, change == "add" and "to" or "from", setName(setId)))
+			return true
+		elseif (change ~= "") then
+			reply(cid, "Usage: /deco items <set> [add|remove <item id>].")
 			return true
 		end
 		local list = {}
 		for _, item in ipairs(Decorations.catalog(setId)) do
-			list[#list + 1] = string.format("%s (%d%s)", item.name, item.id, item.wall and ", wall" or "")
+			list[#list + 1] = string.format("%s (%d%s%s)", item.name, item.id, item.wall and ", wall" or "", item.custom and ", added" or "")
 		end
 		reply(cid, setName(setId) .. " props: " .. table.concat(list, ", ") .. ".")
 	elseif (command == "add") then

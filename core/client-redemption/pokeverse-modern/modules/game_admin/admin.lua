@@ -5,7 +5,8 @@
 -- access in talkactions.xml decides, and {type = "commands"} lists the commands this staff member can use.
 -- Events: start {event, multiplier, minutes}, stop {event}, broadcast {text, target = both/game/discord, ping}.
 -- Players: players {filter} -> {type = "players"}, ban {name, days, reason, comment}, bans -> {type = "bans"}.
--- Decorations: decorations, deco_add {set, item}, deco_remove {set}, deco_preview {set, minutes}, deco_auto {on};
+-- Decorations: decorations, deco_add {set, item}, deco_remove {set}, deco_preview {set, minutes}, deco_auto {on},
+-- deco_item_add / deco_item_remove {set, item} (a set's prop list; that set's deco_items comes back);
 -- {type = "decorations"} answers each, and the first request (catalog = true) also gets one
 -- {type = "deco_items", set, items} per set. {type = "result", ok, text} answers the rest.
 local IMAGES = '/modules/game_admin/images/'
@@ -767,19 +768,20 @@ end
 local function fillDecoItems()
     local panel = window.decorations
     local items = deco.items[deco.set] or {}
-    local found = false
+    local selected = nil
     for _, item in ipairs(items) do
-        found = found or item.id == deco.item
+        selected = item.id == deco.item and item or selected
     end
-    if not found then
-        deco.item = items[1] and items[1].id
+    if not selected then
+        selected = items[1]
+        deco.item = selected and selected.id
     end
     panel.items:destroyChildren()
     for _, item in ipairs(items) do
         local widget = g_ui.createWidget('AdminDecoItem', panel.items)
         widget.item:setItemId(tonumber(item.client) or 0)
         widget.name:setText(item.wall and tr('%s (wall)', item.name) or item.name)
-        widget:setTooltip(tr('%s, item %d', item.name, item.id))
+        widget:setTooltip(item.custom and tr('%s, item %d (added to the list)', item.name, item.id) or tr('%s, item %d', item.name, item.id))
         widget:setOn(item.id == deco.item)
         widget.onClick = function()
             deco.item = item.id
@@ -787,6 +789,10 @@ local function fillDecoItems()
         end
     end
     panel.place:setEnabled(deco.item ~= nil)
+    panel.itemRemove:setEnabled(selected ~= nil and selected.custom == true)
+    panel.itemRemove:setTooltip(selected and selected.custom and tr('Take %s off %s\'s list', selected.name, setName(deco.set))
+        or tr('Only the props added to the list can be taken off it'))
+    panel.itemAdd:setTooltip(tr('Add the item id to %s\'s list', setName(deco.set)))
 end
 
 local function fillDecorations(data)
@@ -1191,6 +1197,26 @@ function init()
         end
     end
     decorations.refresh.onClick = askDecorations
+    decorations.itemAdd.onClick = function()
+        local id = tonumber(trim(decorations.itemId:getText()))
+        if not id then
+            setResult(false, tr('Enter an item id.'))
+            return
+        end
+        deco.item = id
+        send({ action = 'deco_item_add', set = deco.set, item = id })
+        decorations.itemId:setText('')
+    end
+    decorations.itemRemove.onClick = function()
+        send({ action = 'deco_item_remove', set = deco.set, item = deco.item })
+    end
+    decorations.itemId.onKeyPress = function(self, keyCode)
+        if keyCode == KeyEnter or keyCode == KeyReturn then
+            decorations.itemAdd.onClick()
+            return true
+        end
+        return false
+    end
 
     button = modules.client_topmenu.addRightGameToggleButton('adminButton', tr('Admin'), IMAGES .. 'button_admin', toggle)
     button:setVisible(false)
