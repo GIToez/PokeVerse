@@ -1333,10 +1333,18 @@ function WildLegendaries.spawn(species, pos, area, source, options)
         end
         sendCard(allPlayers(), { type = "spawn", species = species.name, tier = species.tier,
             area = species.tier < 3 and area or nil, level = CONFIG.recommendedLevel, endsAt = endsAt })
-        discord({ event = "spawn", encounterId = encounter, species = species.name, tier = species.tier,
-            area = species.tier < 3 and area or nil, position = species.tier < 3 and here or nil, endsAt = endsAt,
-            source = source or "schedule",
-            health = getCreatureMaxHealth(cid) })
+        local where = species.tier < 3
+        if (options.set) then
+            -- one Discord post for the whole set (spawnSet)
+            options.member = { encounterId = encounter, species = species.name, tier = species.tier,
+                area = where and area or nil, position = where and here or nil, endsAt = (not asleep) and endsAt or nil }
+        elseif (not disguised) then
+            -- Mew hiding as another Pokemon is posted when a trainer finds it ("revealed")
+            discord({ event = "spawn", encounterId = encounter, species = species.name, tier = species.tier,
+                area = where and area or nil, position = where and here or nil, endsAt = (not asleep) and endsAt or nil,
+                source = source or "schedule", level = CONFIG.recommendedLevel, asleep = asleep or nil,
+                health = getCreatureMaxHealth(cid) })
+        end
     end
     print(string.format("> Legendary: %s #%d near %s (%d, %d, %d), %s%s%s%s", species.name, encounter, tostring(area),
         here.x, here.y, here.z, source or "schedule", options.restored and ", restored" or "",
@@ -1348,14 +1356,16 @@ end
 -- The whole set at once (a member already out is skipped). Returns the cids and the announcement.
 function WildLegendaries.spawnSet(set, source)
     local cooldowns, now = WildLegendaries.getCooldowns(), os.time()
-    local spawned, parts = {}, {}
+    local spawned, parts, members = {}, {}, {}
     for _, name in ipairs(set.members) do
         local species = WildLegendaries.getSpecies(name)
         if (species and not isOut(name) and (CONFIG.setBringsCooldown or (cooldowns[name] or 0) <= now)) then
-            local cid, area = WildLegendaries.spawn(species, nil, nil, source, { set = true, quiet = true })
+            local options = { set = true, quiet = true }
+            local cid, area = WildLegendaries.spawn(species, nil, nil, source, options)
             if (cid) then
                 spawned[#spawned + 1] = cid
                 parts[#parts + 1] = name .. " near " .. tostring(area)
+                members[#members + 1] = options.member
             end
         end
     end
@@ -1372,6 +1382,8 @@ function WildLegendaries.spawnSet(set, source)
             CONFIG.recommendedLevel)
     end
     broadcast(text)
+    discord({ event = "set", species = set.name, setId = set.id, setName = set.name, members = members,
+        asleep = set.id == "regis" or nil, level = CONFIG.recommendedLevel, source = source or "schedule", text = text })
     return spawned, text
 end
 
@@ -1391,7 +1403,10 @@ function WildLegendaries.warn(species, source, pos)
         return false, "No free point found for " .. species.name .. "."
     end
     setPending(species.name, os.time() + CONFIG.warningSeconds, point.index, source)
-    broadcast(string.format("A strange psychic disturbance is building near %s... something powerful is coming.", point.area))
+    local text = string.format("A strange psychic disturbance is building near %s... something powerful is coming.", point.area)
+    broadcast(text)
+    discord({ event = "sign", species = species.name, area = point.area, endsAt = os.time() + CONFIG.warningSeconds,
+        text = text })
     toChannel(string.format("The disturbance near %s grows stronger. It will break in about %d minutes.", point.area,
         math.ceil(CONFIG.warningSeconds / 60)))
     return true, point.area
@@ -1845,7 +1860,10 @@ function WildLegendaries.reveal(cid, by)
     effectAt(getCreaturePosition(mew), EFFECT_BIG_PINK_CLOUD)
     broadcast(string.format("%s found Mew hiding as a wild %s! It shows its true self.", by or "A trainer", disguise))
     sendCard(allPlayers(), { type = "sighting", species = species.name })
-    discord({ event = "sighting", encounterId = encounter, species = species.name, healthPercent = 100 })
+    local area = WildLegendaries.areaAt(getCreaturePosition(mew))
+    discord({ event = "revealed", encounterId = encounter, species = species.name, trainer = by, disguise = disguise,
+        tier = species.tier, area = species.tier < 3 and area or nil, level = CONFIG.recommendedLevel,
+        endsAt = monNumber(mew, MON.ENDS_AT), healthPercent = 100 })
     return mew
 end
 
@@ -1865,8 +1883,8 @@ function WildLegendaries.wake(cid, by)
     local area = monText(cid, MON.AREA) or "?"
     broadcast(string.format("%s woke %s up near %s! Recommended for trainers level %d+.", by or "A trainer", entry.name,
         area, CONFIG.recommendedLevel))
-    discord({ event = "sighting", encounterId = entry.encounter, species = entry.name, area = area,
-        position = getCreaturePosition(cid), healthPercent = healthPercent(cid) })
+    discord({ event = "woke", encounterId = entry.encounter, species = entry.name, trainer = by, area = area,
+        position = getCreaturePosition(cid), healthPercent = healthPercent(cid), level = CONFIG.recommendedLevel })
     WildLegendaries.save()
     return true
 end
@@ -2063,7 +2081,9 @@ end
 function WildLegendaries.onReward(cid, name)
     local species = WildLegendaries.getSpecies(name)
     if (species and isPlayer(cid)) then
-        broadcast(string.format("%s received %s as a reward!", getCreatureName(cid), species.name))
+        local text = string.format("%s received %s as a reward!", getCreatureName(cid), species.name)
+        broadcast(text)
+        discord({ event = "reward", species = species.name, trainer = getCreatureName(cid), text = text })
     end
 end
 
@@ -2342,8 +2362,11 @@ function WildLegendaries.callRayquaza(source)
             return nil, "Rayquaza could not be placed."
         end
     end
-    broadcast(string.format("Rayquaza is coming down from the sky to calm Groudon and Kyogre near %s!",
-        WildLegendaries.areaAt(landing)))
+    local text = string.format("Rayquaza is coming down from the sky to calm Groudon and Kyogre near %s!",
+        WildLegendaries.areaAt(landing))
+    broadcast(text)
+    discord({ event = "calm", species = "Rayquaza", encounterId = encounterOut("Groudon"), other = "Kyogre",
+        otherEncounterId = encounterOut("Kyogre"), area = WildLegendaries.areaAt(landing), text = text })
     if (not flying) then
         WildLegendaries.save()
     end
@@ -2459,9 +2482,14 @@ function WildLegendaries.runClashes(now)
         if (clash.broadcast) then
             broadcast(text)
         end
+        discord({ event = "clash", species = clash[1], encounterId = encounterOut(clash[1]), other = clash[2],
+            otherEncounterId = encounterOut(clash[2]), area = zone and zone.name or nil, text = text })
     end
     for clash in pairs(calmed) do
-        toChannel(string.format("%s calmed the clash of %s and %s.", clash.calmedBy, clash[1], clash[2]))
+        local text = string.format("%s calmed the clash of %s and %s.", clash.calmedBy, clash[1], clash[2])
+        toChannel(text)
+        discord({ event = "calm", species = clash.calmedBy, encounterId = encounterOut(clash[1]), other = clash[2],
+            otherEncounterId = encounterOut(clash[2]), text = text })
     end
     -- Kyogre's own rain comes back where the storm was
     local kyogre = WildLegendaries.find("Kyogre")
