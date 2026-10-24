@@ -243,6 +243,7 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
             elementMultipler = elementMultipler * 0.84 -- 1/6
         end
         Sounds.onHit(fromCid, toCid, elementMultipler)
+        BattleText.onMultiplier(toCid, elementMultipler)
 
         -- skillDamage = move power
         if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.RIVALRY, nil)) then
@@ -303,6 +304,7 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
                 resultDamage = resultDamage *
                         (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.SNIPER, nil) and 1.6 or 1.3)
                 doSendAnimatedText(getCreaturePosition(fromCid), "CRITICAL!", COLOR_RED)
+                BattleText.onCritical(toCid)
 
                 if (doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.ANGER_POINT, nil)) then
                     doCreatureAddStatus(toCid, CREATURE_STATUS_EXTRASPATK, CREATURE_STATUS_VAR_HIGH, fromCid)
@@ -355,6 +357,8 @@ function doSkillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
     local finalDamage, fromCidPos, toCidPos = damage, getCreaturePosition(fromCid), getCreaturePosition(toCid)
     if (not finalDamage) then
         finalDamage = getFinalDamage(fromCid, toCid, skillName, skillBasePower)
+    else
+        BattleText.forget(toCid)
     end
 
     local skillProjectile = getPokemonSkillProjectile(skillName)
@@ -418,6 +422,7 @@ function doSkillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
         end
 
         doSendMagicEffect(toCidPos, getPokemonSkillEffect(skillName))
+        BattleText.hit(toCid)
         doTargetCombatHealth(fromCid, toCid, getPokemonSkillDType(skillName), finalDamage, finalDamage, CONST_ME_NONE)
 
         if (not isCreature(toCid)) then -- The damage killed him?
