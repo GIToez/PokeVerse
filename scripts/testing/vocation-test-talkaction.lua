@@ -2178,6 +2178,29 @@ local function testSummerChests(cid)
     doCreatureSetStorage(cid, playersStorages.summerHunting, saved)
 end
 
+local function testAnniversaryBoss(cid)
+    local cakePos, cakeId = AnniversaryEvent.STATIC_BIG_CAKE_POS, 24707
+    local state, count = AnniversaryEvent.getEventState(), AnniversaryEvent.getMinionKillCount()
+    AnniversaryEvent.setMinionKillCount(AnniversaryEvent.MINION_KILL_REQ_COUNT)
+    AnniversaryEvent.doSummonBoss()
+    local boss = getCreatureByName("Mad Big Cake")
+    check("Anniversary: the boss comes after the minions", isMonster(boss) and
+        AnniversaryEvent.getEventState() == AnniversaryEvent.EVENT_STATES.KILLING_BOSS, AnniversaryEvent.getEventState())
+    if (isMonster(boss)) then
+        doRemoveCreature(boss)
+    end
+    AnniversaryEvent.onBossKill(nil, nil)
+    check("Anniversary: the boss kill resets the invasion", AnniversaryEvent.getMinionKillCount() == 0 and
+        AnniversaryEvent.getEventState() == AnniversaryEvent.EVENT_STATES.UNSTARTED,
+        AnniversaryEvent.getMinionKillCount() .. " " .. AnniversaryEvent.getEventState())
+    check("Anniversary: the big cake is back", isItem(getTileItemById(cakePos, cakeId)))
+    local before = #(getSpectators(cakePos, 30, 30) or {})
+    AnniversaryEvent.onMinionKill(nil, nil)
+    check("Anniversary: no more temple minions after the boss", #(getSpectators(cakePos, 30, 30) or {}) == before)
+    AnniversaryEvent.setMinionKillCount(count)
+    AnniversaryEvent.setEventState(state)
+end
+
 local function testSeasons(cid)
     local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 12, min = 0, sec = 0 }) end
     local expected = { spring = { 3, 20, 22 }, summer = { 6, 21, 23 }, autumn = { 9, 22, 24 }, winter = { 12, 21, 23 } }
@@ -3250,7 +3273,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
