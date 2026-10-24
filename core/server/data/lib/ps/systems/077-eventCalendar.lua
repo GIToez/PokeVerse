@@ -1016,6 +1016,7 @@ function EventCalendar.onThink()
     end
     running = keys
     AnniversaryEvent.sync()
+    HalloweenEvent.syncNpcs()
 
     for id, raid in pairs(EventCalendar.RAIDS) do
         if (not EventCalendar.isActive(id)) then
