@@ -42,13 +42,13 @@ the outline. Two gaps:
   (`PMDCollab/SpriteCollab`, `portrait/<dex>/Normal.png`, 40x40), which are square painted busts
   and do not match.
 
-**Swap bar faces for #387–718: ready in `art/sprites/faces/<dex>.png`.** They are from the Pokémon
-Battle Trozei "Small Pokémon Icons" sheet (spriters-resource.com, 3DS, asset 64891), made by
-`scripts/art/trozei_faces.py`: shrunk to 32x32, cut to 18 flat colours and given a solid dark outline so
-they stay crisp. Our own faces for #1–386 stay; the Trozei ones only fill the gap. A new Pokémon's
-face can be added as an item with `scripts/dat-add-items.py` or drawn from the PNG: copy it to
-`data/images/faces/<dex>/0.png` and give the face item an `image-frames: /images/faces/<dex> 1` line in
-`things.otml` (face items have 4 frames and `image:` only replaces the first). Gen 7–9 are not on the sheet.
+**Swap bar faces for #387–718: ready in `art/sprites/faces/<dex>.png`.** They are the Pokémon
+Battle Trozei "Small Pokémon Icons" (spriters-resource.com, 3DS, asset 64891), cut out by
+`scripts/art/trozei_faces.py` and kept at their own 64x64: shrunk to our 32x32 they look blurry.
+Our own faces for #1–386 stay; these only fill the gap. When a new Pokémon is added its face is
+drawn from the PNG with an `image-frames: /images/faces/<dex> 1` line in `things.otml` (the PNG
+at `data/images/faces/<dex>/0.png`), on a face item of 2x2 tiles so it is not scaled down, and
+the swap bar slot sized to match. Gen 7–9 are not on the sheet.
 
 **In-game walk sprites: Mystery Dungeon sprites are the best fit.** After Gen 5 the games are 3D,
 so there are no official top-down sprites. `PMDCollab/SpriteCollab` has hand-made pixel walk
