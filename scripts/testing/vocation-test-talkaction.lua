@@ -2613,28 +2613,30 @@ local function testLegendaries(cid, friend, arena)
                 marks[4].x == 108 and #W.routeMarks({ x = 100, y = 100, z = 7 }, { x = 110, y = 100, z = 6 }) == 0, #marks)
 
             local me = getCreaturePosition(cid)
-            local far
+            -- the tester goes 14 to 30 tiles west of it for the area signs, then back
+            local there, spot = getCreaturePosition(raikou), nil
             for dx = 30, 14, -1 do
                 for dy = -4, 4 do
-                    local pos = { x = me.x + dx, y = me.y + dy, z = me.z }
-                    if (not far and W.isGoodPoint(pos, raikou)) then far = pos end
+                    local pos = { x = there.x - dx, y = there.y + dy, z = there.z }
+                    if (not spot and W.isGoodPoint(pos, cid)) then spot = pos end
                 end
             end
-            if (far) then doTeleportThing(raikou, far, false) end
-            check("Legendary: found a spot 14 to 30 tiles east for the area signs", far and
-                getSamePosition(getCreaturePosition(raikou), far))
-            if (far and getSamePosition(getCreaturePosition(raikou), far)) then
+            if (spot) then doTeleportThing(cid, spot, false) end
+            check("Legendary: found a spot 14 to 30 tiles from it for the area signs", spot and
+                getSamePosition(getCreaturePosition(cid), spot))
+            if (spot and getSamePosition(getCreaturePosition(cid), spot)) then
                 local shown, effect = {}, doSendMagicEffect
                 doSendMagicEffect = function(pos) shown[#shown + 1] = pos return true end
                 W.guideSigns(raikou, W.getSpecies("Raikou"), os.time() + 3600)
                 doSendMagicEffect = effect
                 local s
                 for _, pos in ipairs(shown) do
-                    if (getDistanceBetween(pos, me) <= 7) then s = pos end
+                    if (getDistanceBetween(pos, spot) <= 7) then s = pos end
                 end
-                check("Legendary: a trainer in its area sees a sign a few tiles toward it", #shown <= 2 and (not s or s.x > me.x),
-                    s and (s.x - me.x .. "," .. s.y - me.y))
+                check("Legendary: a trainer in its area sees a sign a few tiles toward it", s and s.x > spot.x and
+                    getDistanceBetween(s, spot) >= 1, s and (s.x - spot.x .. "," .. s.y - spot.y) or (#shown .. " signs"))
             end
+            doTeleportThing(cid, me, false)
 
             doTeleportThing(raikou, { x = me.x + 3, y = me.y + 3, z = me.z }, false)
             check("Legendary: a trainer in sight sees it", W.seenBy(getCreaturePosition(raikou)) == getCreatureName(cid))

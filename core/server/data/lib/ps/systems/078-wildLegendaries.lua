@@ -2208,23 +2208,17 @@ local function hasGround(pos)
     return ground ~= nil and ground.itemid ~= nil and ground.itemid ~= 0
 end
 
--- The online trainers and where they are, read once a second
-local trainerSpots = { at = -1, list = {} }
-
+-- The online trainers and where they are
 local function trainerPositions()
-    local now = os.time()
-    if (trainerSpots.at ~= now) then
-        local list = {}
-        for _, pid in ipairs(getPlayersOnline() or {}) do
-            list[#list + 1] = { pid = pid, pos = getCreaturePosition(pid) }
-        end
-        trainerSpots = { at = now, list = list }
+    local list = {}
+    for _, pid in ipairs(getPlayersOnline() or {}) do
+        list[#list + 1] = { pid = pid, pos = getCreaturePosition(pid) }
     end
-    return trainerSpots.list
+    return list
 end
 
-local function trainerNear(pos, range)
-    for _, t in ipairs(trainerPositions()) do
+local function trainerNear(trainers, pos, range)
+    for _, t in ipairs(trainers) do
         if (t.pos.z == pos.z and distance(t.pos, pos) <= range) then
             return true
         end
@@ -2245,9 +2239,9 @@ function WildLegendaries.showSigns(cid, species, all)
     end
     effectAt(near(pos, species.tier == 3 and 1 or 3), pick(species.signs))
     if (species.tier < 3 or all) then
-        local now = os.time()
+        local now, trainers = os.time(), trainerPositions()
         for _, spot in ipairs(trailOf(cid)) do
-            if (all or (trainerNear(spot, CONFIG.trailView) and
+            if (all or (trainerNear(trainers, spot, CONFIG.trailView) and
                     (now - spot.at < CONFIG.trailSeconds / 2 or getRandom(1, 2) == 1))) then
                 effectAt(near(spot, 1), pick(species.signs))
                 if (all) then
