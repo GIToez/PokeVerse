@@ -162,6 +162,7 @@ function doPokemonUseSkill(pokemon, skillName)
     if ((not doPokemonSpecialAbilityCheck(pokemon, POKEMON_SPECIAL_ABILITY_IDS.NO_GUARD, nil) and not getCreatureStatus(pokemon, CREATURE_STATUS_IGNORE_ACCURACY) and
             (isMonster(pokemonTarget) and not doPokemonSpecialAbilityCheck(pokemonTarget, POKEMON_SPECIAL_ABILITY_IDS.NO_GUARD, nil)) and
             not getPokemonSkillIgnoreAccuracy(skillName)) and (missAttack(pokemon) or Weather.fogMiss(pokemon, pokemonTarget))) then
+        BattleText.miss(pokemon, pokemonTarget)
         doSendAnimatedText(getCreaturePosition(pokemon), "MISS!", COLOR_WHITE)
         doAddExhaust(pokemon)
         return false
@@ -204,8 +205,10 @@ function doPokemonUseSkill(pokemon, skillName)
 
     if (setCooldown) then
         if (_isPokemonWild) then
+            BattleText.wildMove(pokemon)
             doCreatureSay(pokemon, string.upper(skillName), TALKTYPE_MONSTER_YELL)
         else
+            BattleText.callout(pokemonMaster, pokemon, skillName)
             doCreatureSay(pokemonMaster, getCreatureNickname(pokemon) .. ", " .. skillName .. "!", TALKTYPE_MONSTER)
         end
 

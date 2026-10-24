@@ -2610,9 +2610,9 @@ Legendary and mythical: Xerneas, Yveltal, Zygarde.
 
 ## 24. Battle text: call-out bubbles and hit numbers
 
-Concept (not started).
+Built (October 24). See "How it's built" at the end of this section.
 
-**Today.** When a trainer's Pokémon uses a move, the trainer says "Pikachu, Thunderbolt!" as
+**Before.** When a trainer's Pokémon uses a move, the trainer says "Pikachu, Thunderbolt!" as
 orange chat text over their head (`003-skill.lua`, `doCreatureSay`), and a wild Pokémon yells
 the move's name. Damage is the engine's plain number floating up from the target, coloured by
 type. A critical hit is a separate red "CRITICAL!" over the attacker (`004-skillDamage.lua`),
@@ -2677,25 +2677,30 @@ word, so you can't tell them apart. Each becomes a rounded tag with its own colo
 changes beside it, statuses under its feet. A hit, a stat drop and a paralysis at the same time
 don't land on top of each other.
 
-**How it would be built.**
-
-- **Server:** `getFinalDamage` already knows whether a hit crit and its type multiplier.
-  `doSkillDamage` passes these on, and one extended opcode tells the trainers who can see the
-  fight: target, amount and kind (normal, super, resisted, crit, heal, miss, immune). The
-  call-out moves to an opcode too (trainer, Pokémon's nickname, move, type) in place of
-  `doCreatureSay`. The engine's own number for Pokémon damage is switched off, so a hit isn't
-  shown twice (`game.cpp`, `combatChangeHealth`).
-- **Client:** a new module (`game_battletext`) draws both as widgets attached to the creature
-  (`creature:attachWidget`), so they follow it as it walks. It also adds the call-out line to
-  Local Chat. It uses the HUD's pixel font (Pixelify Sans). The art is small: a 9-slice bubble,
-  the burst, the crit burst and, if the font's outline isn't enough, a sheet of digits in each
-  style.
-- **Options:** in Options > Interface (HUD), "Battle text: New or Classic". Classic is today's
-  text. There's also "Screen shake on critical hits", on by default.
-
 **Agreed (October 23):** nickname, or species when there's none. Every trainer's call-out shows
 as a bubble; wild Pokémon don't get one. A switch between new and classic. Back-to-back moves
 stack as separate bubbles that float up and fade (C).
+
+**How it's built.**
+
+- **Server (`091-battleText.lua`):** extended opcode 46 (`EXTENDED_IDS.BATTLE_TEXT`) sends JSON
+  to the players who can see the fight: a trainer's call-out (trainer, nickname, move, type), a
+  wild Pokémon's move, a miss, and each hit's kind (normal, super, weak, crit, immune) worked
+  out from `getFinalDamage`'s type multiplier and crit roll. The old `doCreatureSay`,
+  "CRITICAL!" and damage numbers are still sent, so older clients and Classic mode don't
+  change.
+- **Engine (`protocolgameparse.cpp`):** each animated text is offered to
+  `g_game.onAnimatedText` first; when the module returns true, the engine doesn't draw it.
+- **Client (`game_battletext`):** draws the bubbles, numbers and tags as widgets over the map
+  in Pixelify Sans. Damage numbers ("-N") take their style from the hit kind, green "+N" is a
+  heal, "CRITICAL!" is dropped (the crit number has its own tag), and known words (MISS!,
+  EVADED, PROTECTED, statuses, "+ATK"/"-DEF" and the rest) become tags. Unknown text stays
+  classic. The console patch lets the module take the call-out's overhead text (and hides a
+  wild Pokémon's yell); Local Chat still gets the line.
+- **Options:** Options > Interface > General has "Battle text: New/Classic" and "Screen shake on
+  critical hits" (on by default).
+- **Immune hits:** a type multiplier of 0 still deals the attack-minus-defense part of the
+  damage, so "NO EFFECT" shows as a small grey number with that caption, not a bare tag.
 
 ## Going private
 

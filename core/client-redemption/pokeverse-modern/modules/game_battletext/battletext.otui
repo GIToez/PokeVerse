@@ -1,0 +1,50 @@
+BattleTextWidget < UIWidget
+  phantom: true
+  focusable: false
+
+BattleTextLabel < UILabel
+  phantom: true
+  focusable: false
+  text-auto-resize: true
+  ttf-font: pixelify-sans
+  ttf-font-size: 16
+  color: #ffffff
+
+BattleTextBubble < UIWidget
+  phantom: true
+  focusable: false
+  image-source: /modules/game_battletext/images/bubble
+  image-border: 9
+
+  BattleTextLabel
+    id: text
+    anchors.centerIn: parent
+    margin-top: -1
+
+BattleTextTail < UIWidget
+  phantom: true
+  focusable: false
+  size: 14 12
+  image-source: /modules/game_battletext/images/tail
+
+BattleTextTag < UIWidget
+  phantom: true
+  focusable: false
+  height: 18
+  image-source: /modules/game_battletext/images/pill
+  image-border: 7
+
+  UIWidget
+    id: icon
+    phantom: true
+    size: 12 12
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
+
+  BattleTextLabel
+    id: text
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 3
+    margin-top: -1
