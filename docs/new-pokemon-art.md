@@ -13,8 +13,8 @@ sources next to our own art, run:
 | Portrait | `images/staticPortraits/<dex>.png` | 96x96 PNG | 1–386 |
 | 3D Pokédex picture | `images/pictures/<dex>.png` | 100x100 PNG still (big Pokémon are bigger) | 1–386 |
 | Box icon | `images/pokeicons/<NNN>.png` | PNG | 1–386 |
-| Swap bar face (`portrait` / `fastcallPortrait`) | item sprite in `data.dat`/`data.spr` | 32x32, 4 hand-drawn frames, dark outline | 1–386 |
-| Dex face (`dexPortrait`) | item sprite | 32x32, 1 frame | 1–386 |
+| Swap bar face (`portrait` / `fastcallPortrait`) | item, drawn from `images/faces/<dex>/0.png` (shinies `faces/shiny/<dex>/0.png`) | 32x32, 1 frame, dark outline | 1–718 |
+| Pokédex grid face | item, drawn from `images/faces/<dex>/0.png` | 32x32, 1 frame | 1–718 |
 | In-game walk sprite (`<look type>`) | outfit in `data.dat`/`data.spr` | 4 directions (N, E, S, W) x 3 frames, 32x32 or 64x64 | 1–386 |
 
 Face ids are not in one block: Gen 1 faces are client items 10635–10785, Gen 2 15999–16098 and
@@ -33,14 +33,12 @@ animated models are the same size and style: `https://play.pokemonshowdown.com/s
 (also `xyani/`). Every Pokémon tried exists (Turtwig, Chespin, Sprigatito, ...). `gen5ani/` is
 missing Gen 6+.
 
-**Swap bar faces: close, needs conversion.** Ours are pixel redraws of the Pokémon Shuffle icons
-(same poses). Shuffle covers up to #809 only; the 256x256 icons are on Bulbagarden Archives as
-`File:Shuffle<NNN>.png`. The preview script shrinks them to 32x32, cuts them to 20 colors and adds
-the outline. Two gaps:
-- the 4-frame idle is a placeholder bob; ours are hand-animated;
-- Gen 8–9 have no Shuffle art. The only full set is the Mystery Dungeon portraits
-  (`PMDCollab/SpriteCollab`, `portrait/<dex>/Normal.png`, 40x40), which are square painted busts
-  and do not match.
+**Swap bar and Pokédex faces: done for #1–718.** They come from the Pokémon Battle Trozei
+"Small Pokémon Icons" sheet (spriters-resource.com, 3DS, asset 64891), shrunk to 32x32 by
+`scripts/art/trozei_faces.py`. That script also recolours them for shinies with the colours of the old shiny faces
+and points the face items at the PNGs in `things.otml` (`image-frames`), so `data.spr` keeps the
+old faces. A new Pokémon only needs its `fastcallPortrait` item to get an `image-frames` line.
+Gen 7–9 are not on the sheet.
 
 **In-game walk sprites: Mystery Dungeon sprites are the best fit.** After Gen 5 the games are 3D,
 so there are no official top-down sprites. `PMDCollab/SpriteCollab` has hand-made pixel walk
@@ -54,5 +52,5 @@ outfit given more frames. Licence: credit the listed contributors (see the repo'
 
 - Whether to apply the Gen 7 stat buffs and the other fixes from the stats audit before importing
   stats for new Pokémon from PokéAPI.
-- Shuffle faces for #387–809 plus a placeholder for Gen 8–9, or commission faces.
+- Faces for Gen 7–9 (not on the Trozei sheet).
 - Pixel-doubled Mystery Dungeon sprites for every new Pokémon, or redraw at our native size.
