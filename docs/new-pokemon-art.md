@@ -60,8 +60,10 @@ animations for every Pokémon through Gen 9, in 8 directions:
 in size and outline. They have more walk frames than our 3, so frames would be picked or the
 outfit given more frames. Licence: credit the listed contributors (see the repo's credits files).
 
-In use: Deoxys (look 1565) is the SpriteCollab #0386 walk animation, frames 0, 2, 4 and 6, at
-2x on a 96 pixel sheet (credited to Chunsoft in SpriteCollab), until it gets its own art.
+In use: Deoxys is the PAdventures art (used with permission): Normal Forme on look 1565 and the
+other formes on new looks, Attack 2592, Defense 2593 and Speed 2594. All four are 3x3 tiles with
+5 walk frames, from PAdventures creatures 45480, 45479, 45481 and 45482. Nothing switches between
+the formes yet.
 
 **PAdventures walk sprites: in our own format, but another server's art.**
 `DistTopic/padventures-sprites` on GitHub is an extraction of the PAdventures client: 8,256

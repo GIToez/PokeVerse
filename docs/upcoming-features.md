@@ -2319,7 +2319,7 @@ checked by hand); flyers can go anywhere suitable; ocean roamers only through wa
    the dark copy on water for Lugia and Kyogre. Screen shake for Groudon.
 3. **Events:** meteor showers (Jirachi) and impacts (Deoxys), Rayquaza's appearance, the weather
    when two legendaries' areas overlap (Articuno and Zapdos, Articuno and Moltres, Groudon and
-   Kyogre), and Deoxys's forms (if we have their sprites).
+   Kyogre), and switching Deoxys between its formes (the sprites are in).
 
 All times, chances and limits stay in `WildLegendaries.CONFIG`.
 
@@ -2500,7 +2500,8 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 - **Admin:** **Rayquaza's event** (`/legendary rayquaza`: spawns the two if they aren't
   out and calls Rayquaza now), **Meteor shower here** (`/legendary meteors`) and **Meteor impact
   here** (`/legendary impact`).
-- **Deoxys's forms** are left out: there is one Deoxys look and no form sprites.
+- **Deoxys's forms**: the sprites are in (Normal on look 1565, Attack 2592, Defense 2593, Speed
+  2594), but nothing switches between them yet.
 - **Tests:** the vocation test talkaction covers flights (staff moves, ending one, landing,
   fleeing with its health, the restart save, who is sent it, the staff-only fly-over), Kyogre's
   dive staying in its zone, Groudon's shake, Jirachi's shower, Deoxys's impact, the clash
@@ -2535,7 +2536,7 @@ Gen 7 on are not part of this, since there are no faces for them yet.
 | --- | --- | --- | --- | --- |
 | Swap bar face | 107 | 156 | 69 | `art/sprites/faces/<dex>/`, 64x64 from Battle Trozei, 4-frame bob |
 | Walk sprite in the 6500 pack (named with high or medium confidence) | 53 | 122 | 3 | `docs/sprite-pack-review/new_species.csv` |
-| Walk sprite from Mystery Dungeon at 2x, like Deoxys | all | all | all | PMDCollab SpriteCollab |
+| Walk sprite from Mystery Dungeon at 2x | all | all | all | PMDCollab SpriteCollab |
 | Portrait and 3D Pokédex picture | all | all | all | Pokémon Showdown (`gen5/`, `ani/`) |
 
 See [new-pokemon-art.md](new-pokemon-art.md) for the formats and how each is converted.
