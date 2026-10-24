@@ -136,7 +136,8 @@ Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-
 buying Soul Coins with PayPal ([phase 4](#19-accounts-soul-coins-and-the-store); accounts and
 email, login security and the Store are built, and the Soul Coin NPCs are off the map), the
 [travel picker](modernization-audit.md#3-travel-picker), the
-[new Pokémon #387 to #718](#23-new-pokémon-gen-4-to-6), and putting Johto in
+[new Pokémon #387 to #718](#23-new-pokémon-gen-4-to-6), the
+[news banner, call-out bubbles and Discord announcements](#25-announcements-news-banner-call-out-bubbles-discord-and-the-calendar), and putting Johto in
 `scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
 ## 1. New depot
