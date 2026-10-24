@@ -2620,12 +2620,28 @@ not very effective hits look the same as any other hit.
 
 **Call-outs.**
 
-- **Trainers:** a speech bubble pops out over the trainer, with its tail pointing at them. It
-  scales in (small, a bit too big, then settled) and stays about 1.5 seconds. The move's name is
-  in its type's colour. A new call-out replaces the trainer's last one rather than stacking.
-- **Wild Pokémon:** they shout the move's name in a spiky yellow burst bubble over themselves.
-- **NPC trainers and gym leaders** use the same bubble as players.
+- **Trainers:** every trainer's call-out (yours, other players', NPC trainers' and gym leaders')
+  is a speech bubble that pops out over the trainer, with its tail pointing at them. It scales in
+  (small, a bit too big, then settled) and stays about 1.5 seconds. It says the Pokémon's
+  nickname, or its species when it has none ("Sparky, Thunderbolt!" or "Pikachu,
+  Thunderbolt!"), and the move's name is in its type's colour. The server's nickname already
+  falls back to the species.
+- **Wild Pokémon:** no bubble. They stop yelling their move's name; their hits still show
+  numbers.
 - **Local Chat** still gets the "Pikachu, Thunderbolt!" line, so the log stays the same.
+
+**Back-to-back moves.** Four ways to show them:
+
+- **A. Replace:** one bubble, and the text swaps with a bounce. It's the cleanest, but earlier
+  moves vanish.
+- **B. Grow:** one bubble gains a line per move, 3 at most. The newest line is full size and
+  coloured; older ones are smaller and grey, and the oldest drops off.
+- **C. Stack bubbles:** each move gets its own bubble, and older ones float up and fade. This is
+  the busiest on screen.
+- **D. Combo count:** the same move again adds x2, x3 instead of a new line. It works with A or
+  B.
+
+Recommended: B with D. The bubble stays about 1.5 seconds after the last move, then fades.
 
 **Hit numbers.** One number per hit, on the target. It pops in, rises and fades, and moves a
 few pixels to the side each time so quick hits don't cover each other. Fast multi-hits still
@@ -2638,11 +2654,24 @@ add up into one number, like today. Size and style show how good the hit was:
 | Not very effective | Smaller, grey, "resisted" under it |
 | Critical | Biggest, red-gold with a glow and a burst behind it, "CRIT!" tag, a tiny screen shake |
 | Heal or drain | Green "+35" |
-| Miss, evaded, protected | A small grey word (MISS, EVADED, PROTECTED) |
-| Immune | "NO EFFECT", grey |
+| Miss, dodge, protect, immune | A tag; see below |
 
-The status words (FLINCH!, TIRED!, IN LOVE, FAIL!) become small coloured tags in the same
-style.
+**Outcome tags.** Today a miss, a dodge, a block and a status all look like the same floating
+word, so you can't tell them apart. Each becomes a rounded tag with its own colour and icon:
+
+| Outcome | Tag | Where |
+| --- | --- | --- |
+| The move missed | Grey "MISS" with a swoosh | On the target |
+| The target dodged (evasion abilities, mastery) | Blue "DODGED", and the Pokémon blurs aside | On the target |
+| Protect or Reflect blocked it | Green "PROTECTED" with a shield | On the target |
+| Immune | Dark "NO EFFECT" with a cross | On the target |
+| Status (burn, paralysis, sleep, poison, freeze, confusion, love, flinch) | The status's colour and icon, e.g. yellow "PARALYZED" with a bolt | On the Pokémon it hits |
+| Stat change | Red "ATTACK UP" with an up arrow, blue "ATTACK DOWN" with a down arrow | On the Pokémon it hits |
+| The move failed, or the Pokémon is tired | Purple "FAIL" or "TIRED" | On the user |
+
+**Lanes.** Each kind of text has its own spot around the Pokémon: numbers above it, stat
+changes beside it, statuses under its feet. A hit, a stat drop and a paralysis at the same time
+don't land on top of each other.
 
 **How it would be built.**
 
@@ -2657,13 +2686,13 @@ style.
   Local Chat. It uses the HUD's pixel font (Pixelify Sans). The art is small: a 9-slice bubble,
   the burst, the crit burst and, if the font's outline isn't enough, a sheet of digits in each
   style.
-- **Options:** "Battle text: new or classic", and "Screen shake on critical hits" (on by
-  default).
+- **Options:** in Options > Interface (HUD), "Battle text: New or Classic". Classic is today's
+  text. There's also "Screen shake on critical hits", on by default.
 
-**To decide:**
+**Agreed (October 23):** nickname, or species when there's none. Every trainer's call-out shows
+as a bubble; wild Pokémon don't get one. A switch between new and classic.
 
-- Whether the bubble shows the Pokémon's nickname or its species.
-- Whether other players' fights show bubbles and numbers, or only yours and the ones you're in.
+**To decide:** which way to show back-to-back moves (A to D above).
 
 ## Going private
 
