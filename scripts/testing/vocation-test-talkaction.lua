@@ -2613,17 +2613,17 @@ local function testLegendaries(cid, friend, arena)
                 marks[4].x == 108 and #W.routeMarks({ x = 100, y = 100, z = 7 }, { x = 110, y = 100, z = 6 }) == 0, #marks)
 
             local me = getCreaturePosition(cid)
-            -- the tester goes 14 to 30 tiles west of it for the area signs, then back
+            -- the tester goes 14 to 30 tiles from it for the area signs, then back
             local there, spot = getCreaturePosition(raikou), nil
-            for dx = 30, 14, -1 do
-                for dy = -4, 4 do
-                    local pos = { x = there.x - dx, y = there.y + dy, z = there.z }
-                    if (not spot and W.isGoodPoint(pos, cid)) then spot = pos end
+            for r = 20, 30 do
+                for _, d in ipairs({ { -r, 0 }, { r, 0 }, { 0, -r }, { 0, r }, { -r, -r }, { r, r }, { -r, r }, { r, -r } }) do
+                    local pos = { x = there.x + d[1], y = there.y + d[2], z = there.z }
+                    if (not spot and W.isGoodPoint(pos)) then spot = pos end
                 end
             end
-            if (spot) then doTeleportThing(cid, spot, false) end
-            check("Legendary: found a spot 14 to 30 tiles from it for the area signs", spot and
-                getSamePosition(getCreaturePosition(cid), spot))
+            if (spot) then doTeleportThing(cid, spot, true) end
+            check("Legendary: found a spot 20 to 30 tiles from it for the area signs", spot and
+                getSamePosition(getCreaturePosition(cid), spot), spot and string.format("%d,%d,%d", spot.x, spot.y, spot.z) or "none")
             if (spot and getSamePosition(getCreaturePosition(cid), spot)) then
                 local shown, effect = {}, doSendMagicEffect
                 doSendMagicEffect = function(pos) shown[#shown + 1] = pos return true end
@@ -2633,8 +2633,9 @@ local function testLegendaries(cid, friend, arena)
                 for _, pos in ipairs(shown) do
                     if (getDistanceBetween(pos, spot) <= 7) then s = pos end
                 end
-                check("Legendary: a trainer in its area sees a sign a few tiles toward it", s and s.x > spot.x and
-                    getDistanceBetween(s, spot) >= 1, s and (s.x - spot.x .. "," .. s.y - spot.y) or (#shown .. " signs"))
+                check("Legendary: a trainer in its area sees a sign a few tiles toward it", s and
+                    getDistanceBetween(s, there) < getDistanceBetween(spot, there),
+                    s and (s.x - spot.x .. "," .. s.y - spot.y) or (#shown .. " signs"))
             end
             doTeleportThing(cid, me, false)
 
