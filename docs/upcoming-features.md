@@ -2739,13 +2739,16 @@ the rotating tips. All of them go through one function, `doBroadcastMessage`
 The banner is for the calendar, events, broadcasts and tips. The pop-up cards for spawns
 (`game_eventcards`, used for legendaries today) stay as they are and aren't touched.
 
-**The look:** a Poké Ball drops in at the top of the screen and pulses twice. It splits open
+**The look:** a Poké Ball drops in at the top centre of the screen, just under the top bar, and
+pulses twice. It splits open
 with a white flash, the two halves slide left and right, and a news banner unrolls between
 them, with the
 category's icon and colour, a title and the text. It stays about 5 seconds (longer for long
 text), rolls back into the ball, and the ball shrinks away. A soft chime plays (muted with the
 sound effects volume). More announcements queue up, one at a time. Hovering keeps it open, and
-clicking opens the full text in chat.
+clicking opens the full text in chat. The banner is about 45% of the game window's width (it
+scales with the window, within a smallest and largest size) and about two lines tall, so it
+never covers the middle of the screen where the player is.
 
 | Category | Colour and icon | For |
 | --- | --- | --- |
@@ -2782,11 +2785,16 @@ white or green text in turn.
 - **More tips:** a longer list (about 40) in its own file, covering hotkeys, the Poképedia,
   Day Care, Union Room, the GTS, tasks, fishing, Soul Coins and Discord linking. Adding a tip is
   one line.
-- **Shown as Tip banners,** one every 15 minutes (a setting), in a shuffled order so the same
-  tip doesn't come back soon. They wait their turn behind other announcements.
+- **Shown as Tip banners, about once an hour** (a setting), in a shuffled order so the same tip
+  doesn't come back soon. They wait their turn behind other announcements.
+- **Never in combat:** a tip that comes up while the player is in a fight (a wild or trainer
+  battle, a duel, a gym, or hit in the last 30 seconds) waits until they've been out of combat
+  for a while. If an hour goes by it's skipped.
+- **A "Turn off tips" button on the Tip banner** turns them off with one click. They can be
+  turned back on, or off, in Options > Interface ("Show tips"). This doesn't touch the other
+  announcements.
 - **Fitting the player, later:** tips can say who they're for (a level range, or players who
   haven't used a feature yet), and each player gets one that fits.
-- **Can be turned off** in Options ("Show tips"), without turning off the other announcements.
 - Not posted to Discord.
 
 ### Discord
@@ -2802,16 +2810,19 @@ Tips are not posted. A setting per category turns posting on or off.
 
 **Pings: roles and @everyone.**
 
-- **The standard pings are Verified Trainer and @everyone.** Verified Trainer is the role the
-  bot already gives linked players (`config.linking.verifiedRoleName`), so no new roles are
-  needed. An event starting and a wild legendary ping Verified Trainer; big ones (a holiday
-  starting, a mythical) ping @everyone; restarts and milestones ping no one. Each category's
-  ping is a bot setting.
+- **Holiday and weekend events ping Verified Trainer** when they start, end or change (a new
+  time or new bonuses). Verified Trainer is the role the bot already gives linked players
+  (`config.linking.verifiedRoleName`), so no new roles are needed. Nothing else pings on its
+  own: legendaries, restarts, milestones and staff bonus events are posted without a ping.
+  Each category's ping is a bot setting.
+- **@everyone is only ever by hand,** by Gamemasters and up (access 3 and up). Nothing
+  automatic pings @everyone.
 - **Staff choose the ping:** `/b @everyone Server event tonight!`, `/b @verified ...`, any other
   role by name (`/b @Premium ...`, checked against the server's roles), or no tag. In game the
   tag is taken out of the text. The admin window's broadcast gets a "Ping on Discord" picker
-  that lists the server's roles. `@everyone` and `@here` only work for staff in groups allowed
-  to use them (a setting), and the bot only allows those mentions on these posts.
+  that lists the server's roles. `@everyone` and `@here` only work for Gamemasters and up; for
+  a Senior Tutor the tag is dropped and the post goes out without the ping. The bot only allows
+  those mentions on these posts.
 - **The bot needs** the Mention Everyone permission for `@everyone` (it already has Manage
   Roles).
 
@@ -2870,8 +2881,6 @@ Steps 4 to 6 need bot changes in PokeVerse-Discord, sent as patches in
 ### To decide
 
 - The banner's colours (a concept is in the PR for this plan).
-- Which events are big enough to ping @everyone.
-- Which staff groups may use `@everyone`.
 - The tip list itself.
 
 ## Going private
