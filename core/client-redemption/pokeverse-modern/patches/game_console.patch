@@ -229,7 +229,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function onTalk(name, level, mode, message, channelId, creaturePos)
      if mode == MessageModes.GamemasterBroadcast then
          modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
-@@ -1837,25 +1790,22 @@
+@@ -1837,25 +1790,25 @@
          local staticText = StaticText.create()
          local staticMessage = message
          if isNpcMode then
@@ -260,7 +260,10 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
 +        -- PokeVerse: the server repeats the greeting as a private NPC message, show it overhead only once
 +        local overheadKey = name .. "\0" .. staticMessage
 +        local now = g_clock.millis()
-+        if not (isNpcMode and lastOverhead.key == overheadKey and now - lastOverhead.time < 1000) then
++        -- PokeVerse: trainers' call-outs and wild Pokemon's move yells are the battle text's, when it draws them
++        local battleText = modules.game_battletext
++        local taken = battleText and battleText.takeOverhead and battleText.takeOverhead(name, mode, message, creaturePos)
++        if not taken and not (isNpcMode and lastOverhead.key == overheadKey and now - lastOverhead.time < 1000) then
 +            staticText:addMessage(name, mode, staticMessage)
 +            g_map.addStaticText(staticText, creaturePos)
 +        end
@@ -268,7 +271,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      end
  
      local defaultMessage = mode <= 3 and true or false
-@@ -2337,20 +2287,37 @@
+@@ -2337,20 +2290,37 @@
      end
  end
  
@@ -316,7 +319,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      if clientVersion > 1100 then
          local active = g_game.canExivaOptions()
          local widget = consolePanel:getChildById('exivaOption')
-@@ -2504,8 +2471,8 @@
+@@ -2504,8 +2474,8 @@
          end
      end
      consoleTabBar:getCurrentTab().tabPanel:getChildById('consoleBuffer'):setImageSource(
@@ -327,7 +330,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      gameBottomPanel:setPhantom(false)
  end
  
-@@ -2530,19 +2497,22 @@
+@@ -2530,19 +2500,22 @@
      if extendedViewButtonToggleChat then
          return
      end
@@ -360,7 +363,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      else
          extendedViewButtonToggleChat:setIcon("/images/game/npcicons/icon_chat")
          extendedViewButtonToggleChat:setMarginBottom(10)
-@@ -2553,19 +2523,22 @@
+@@ -2553,19 +2526,22 @@
      extendedViewButtonToggleChat.onClick = function(a, b)
          extendedViewHide(modules.game_interface.currentViewMode ~= 2)
      end
@@ -391,7 +394,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      extendedViewButtonShowAlphaChat.onClick = function(a, b)
          if extendedViewButtonShowAlphaChat:isOn() then
              extendedViewButtonShowAlphaChat:setOn(false)
-@@ -2574,6 +2547,10 @@
+@@ -2574,6 +2550,10 @@
          end
          extendedViewCanSee(extendedViewButtonShowAlphaChat:isOn())
      end

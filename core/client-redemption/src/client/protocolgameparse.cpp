@@ -2047,6 +2047,10 @@ void ProtocolGame::parseAnimatedText(const InputMessagePtr& msg)
     const uint8_t color = msg->getU8();
     const auto& text = msg->getString();
 
+    // PokeVerse: the battle text module draws some of these itself
+    if (g_lua.callGlobalField<bool>("g_game", "onAnimatedText", text, color, position))
+        return;
+
     g_map.addAnimatedText(std::make_shared<AnimatedText>(text, color), position);
 }
 
