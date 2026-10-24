@@ -1,0 +1,8 @@
+Module
+  name: game_battletext
+  description: PokeVerse battle text: trainers call out their moves in speech bubbles, and hits, misses, dodges and effects each have their own look (Options > Interface, New or Classic)
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ battletext ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -233,6 +233,7 @@ ExtendedIds.ExpBoost = 42
 ExtendedIds.PokedexDetails = 43
 ExtendedIds.Bank = 44
 ExtendedIds.LegendaryFlight = 45
+ExtendedIds.BattleText = 46
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v
