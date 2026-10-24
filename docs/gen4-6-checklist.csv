@@ -1,0 +1,333 @@
+Dex,Name,Gen,Kind,EvolvesFrom,Method,FaceItem,WalkSprite
+387,Turtwig,4,,,,PAdventures item 14249,6500 pack P11-45
+388,Grotle,4,,#387,level 18,PAdventures item 14250,6500 pack P11-40
+389,Torterra,4,,#388,level 32,PAdventures item 14251,6500 pack P20-36
+390,Chimchar,4,,,,PAdventures item 14252,6500 pack P11-41
+391,Monferno,4,,#390,level 14,PAdventures item 14253,6500 pack P11-42
+392,Infernape,4,,#391,level 36,PAdventures item 14254,6500 pack P19-43
+393,Piplup,4,,,,PAdventures item 14255,6500 pack P11-43
+394,Prinplup,4,,#393,level 16,PAdventures item 14256,6500 pack P11-44
+395,Empoleon,4,,#394,level 36,PAdventures item 14257,6500 pack P20-27
+396,Starly,4,,,,PAdventures item 14258,"6500 pack, unsure: P21-1"
+397,Staravia,4,,#396,level 14,PAdventures item 14259,6500 pack P20-44
+398,Staraptor,4,,#397,level 34,PAdventures item 14260,6500 pack P20-45
+399,Bidoof,4,,,,PAdventures item 14261,"6500 pack, unsure: P19-22"
+400,Bibarel,4,,#399,level 15,PAdventures item 14262,"6500 pack, unsure: P19-23"
+401,Kricketot,4,,,,PAdventures item 14263,"6500 pack, unsure: P24-31"
+402,Kricketune,4,,#401,level 10,PAdventures item 14264,PAdventures creature 43054
+403,Shinx,4,,,,PAdventures item 14265,6500 pack P20-8
+404,Luxio,4,,#403,level 15,PAdventures item 14266,"6500 pack, unsure: P20-38"
+405,Luxray,4,,#404,level 30,PAdventures item 14267,6500 pack P11-5
+406,Budew,4,baby,,,PAdventures item 14268,PAdventures creature 48033
+407,Roserade,4,,#315,shiny stone,PAdventures item 14269,6500 pack P23-2
+408,Cranidos,4,,,,PAdventures item 14270,none yet
+409,Rampardos,4,,#408,level 30,PAdventures item 14271,none yet
+410,Shieldon,4,,,,PAdventures item 14272,none yet
+411,Bastiodon,4,,#410,level 30,PAdventures item 14273,"6500 pack, unsure: P21-11"
+412,Burmy,4,,,,PAdventures item 14274,PAdventures creature 43032
+413,Wormadam,4,,#412,"level 20, female",PAdventures item 14275,PAdventures creature 44532
+414,Mothim,4,,#412,"level 20, male",PAdventures item 14276,PAdventures creature 43030
+415,Combee,4,,,,PAdventures item 14277,none yet
+416,Vespiquen,4,,#415,"level 21, female",PAdventures item 14278,PAdventures creature 43102
+417,Pachirisu,4,,,,PAdventures item 14279,6500 pack P20-22
+418,Buizel,4,,,,PAdventures item 14280,6500 pack P20-34
+419,Floatzel,4,,#418,level 26,PAdventures item 14281,PAdventures creature 43046
+420,Cherubi,4,,,,PAdventures item 14282,6500 pack P19-40
+421,Cherrim,4,,#420,level 25,PAdventures item 14283,PAdventures creature 43051
+422,Shellos,4,,,,PAdventures item 14284,none yet
+423,Gastrodon,4,,#422,level 30,PAdventures item 14286,none yet
+424,Ambipom,4,,#190,knows double hit,PAdventures item 14288,none yet
+425,Drifloon,4,,,,PAdventures item 14289,6500 pack P20-3
+426,Drifblim,4,,#425,level 28,PAdventures item 14290,6500 pack P20-4
+427,Buneary,4,,,,PAdventures item 14291,PAdventures creature 47490
+428,Lopunny,4,,#427,friendship,PAdventures item 14292,6500 pack P19-31
+429,Mismagius,4,,#200,dusk stone,PAdventures item 14293,"6500 pack, unsure: P13-21"
+430,Honchkrow,4,,#198,dusk stone,PAdventures item 14294,6500 pack P9-12
+431,Glameow,4,,,,PAdventures item 14295,"6500 pack, unsure: P20-14"
+432,Purugly,4,,#431,level 38,PAdventures item 14296,6500 pack P20-15
+433,Chingling,4,baby,,,PAdventures item 14297,none yet
+434,Stunky,4,,,,PAdventures item 14298,none yet
+435,Skuntank,4,,#434,level 34,PAdventures item 14299,none yet
+436,Bronzor,4,,,,PAdventures item 14300,none yet
+437,Bronzong,4,,#436,level 33,PAdventures item 14301,"6500 pack, unsure: P38-41"
+438,Bonsly,4,baby,,,PAdventures item 14302,PAdventures creature 43471
+439,Mime Jr.,4,baby,,,PAdventures item 14303,PAdventures creature 43474
+440,Happiny,4,baby,,,PAdventures item 14304,PAdventures creature 43476
+441,Chatot,4,,,,PAdventures item 14305,6500 pack P21-22
+442,Spiritomb,4,,,,PAdventures item 14306,PAdventures creature 42265
+443,Gible,4,,,,PAdventures item 14307,"6500 pack, unsure: P20-11"
+444,Gabite,4,,#443,level 24,PAdventures item 14308,6500 pack P20-12
+445,Garchomp,4,,#444,level 48,PAdventures item 14309,6500 pack P20-13
+446,Munchlax,4,baby,,,PAdventures item 14310,"6500 pack, unsure: P21-16"
+447,Riolu,4,baby,,,PAdventures item 14311,"6500 pack, unsure: P20-16"
+448,Lucario,4,,#447,"friendship, day",PAdventures item 14312,6500 pack P1-5
+449,Hippopotas,4,,,,PAdventures item 14313,"6500 pack, unsure: P25-29"
+450,Hippowdon,4,,#449,level 34,PAdventures item 14314,6500 pack P21-25
+451,Skorupi,4,,,,PAdventures item 14315,6500 pack P20-7
+452,Drapion,4,,#451,level 40,PAdventures item 14316,6500 pack P20-40
+453,Croagunk,4,,,,PAdventures item 14317,none yet
+454,Toxicroak,4,,#453,level 37,PAdventures item 14318,none yet
+455,Carnivine,4,,,,PAdventures item 14319,PAdventures creature 43560
+456,Finneon,4,,,,PAdventures item 14320,PAdventures creature 42217
+457,Lumineon,4,,#456,level 31,PAdventures item 14321,none yet
+458,Mantyke,4,baby,,,PAdventures item 14322,none yet
+459,Snover,4,,,,PAdventures item 14323,6500 pack P21-7
+460,Abomasnow,4,,#459,level 40,PAdventures item 14324,6500 pack P20-43
+461,Weavile,4,,#215,"holding razor claw, night",PAdventures item 14325,6500 pack P12-3
+462,Magnezone,4,,#82,at mt coronet,PAdventures item 14326,6500 pack P9-10
+463,Lickilicky,4,,#108,knows rollout,PAdventures item 14327,6500 pack P21-13
+464,Rhyperior,4,,#112,"trade, holding protector",PAdventures item 14328,6500 pack P8-8
+465,Tangrowth,4,,#114,knows ancient power,PAdventures item 14329,6500 pack P20-47
+466,Electivire,4,,#125,"trade, holding electirizer",PAdventures item 14330,6500 pack P8-13
+467,Magmortar,4,,#126,"trade, holding magmarizer",PAdventures item 14331,6500 pack P8-18
+468,Togekiss,4,,#176,shiny stone,PAdventures item 14332,6500 pack P20-41
+469,Yanmega,4,,#193,knows ancient power,PAdventures item 14333,PAdventures creature 42936
+470,Leafeon,4,,#133,at eterna forest,PAdventures item 14334,6500 pack P20-18
+471,Glaceon,4,,#133,at sinnoh route 217,PAdventures item 14335,6500 pack P20-19
+472,Gliscor,4,,#207,"holding razor fang, night",PAdventures item 14336,6500 pack P9-25
+473,Mamoswine,4,,#221,knows ancient power,PAdventures item 14337,6500 pack P21-12
+474,Porygon-Z,4,,#233,"trade, holding dubious disc",PAdventures item 14338,PAdventures creature 41833
+475,Gallade,4,,#281,"dawn stone, male",PAdventures item 14339,6500 pack P9-40
+476,Probopass,4,,#299,at mt coronet,PAdventures item 14340,"6500 pack, unsure: P45-43"
+477,Dusknoir,4,,#356,"trade, holding reaper cloth",PAdventures item 14341,"6500 pack, unsure: P8-46"
+478,Froslass,4,,#361,"dawn stone, female",PAdventures item 14342,PAdventures creature 47294
+479,Rotom,4,,,,PAdventures item 14343,6500 pack P9-2
+480,Uxie,4,legendary,,,PAdventures item 14344,none yet
+481,Mesprit,4,legendary,,,PAdventures item 14345,"6500 pack, unsure: P21-4"
+482,Azelf,4,legendary,,,PAdventures item 14346,"6500 pack, unsure: P21-5"
+483,Dialga,4,legendary,,,PAdventures item 14347,6500 pack P24-33
+484,Palkia,4,legendary,,,PAdventures item 14348,6500 pack P24-10
+485,Heatran,4,legendary,,,PAdventures item 14349,"6500 pack, unsure: P20-6"
+486,Regigigas,4,legendary,,,PAdventures item 14350,6500 pack P24-12
+487,Giratina,4,legendary,,,PAdventures item 14351,6500 pack P24-13
+488,Cresselia,4,legendary,,,PAdventures item 14352,6500 pack P19-48
+489,Phione,4,mythical,,,PAdventures item 14353,"6500 pack, unsure: P9-8"
+490,Manaphy,4,mythical,,,PAdventures item 14354,"6500 pack, unsure: P20-24"
+491,Darkrai,4,mythical,,,PAdventures item 14355,6500 pack P20-2
+492,Shaymin,4,mythical,,,PAdventures item 14356,6500 pack P21-23
+493,Arceus,4,mythical,,,PAdventures item 14358,6500 pack P14-2
+494,Victini,5,mythical,,,PAdventures item 14359,6500 pack P58-33
+495,Snivy,5,,,,PAdventures item 14360,6500 pack P27-5
+496,Servine,5,,#495,level 17,PAdventures item 14361,6500 pack P30-23
+497,Serperior,5,,#496,level 36,PAdventures item 14362,6500 pack P30-24
+498,Tepig,5,,,,PAdventures item 14363,6500 pack P27-8
+499,Pignite,5,,#498,level 17,PAdventures item 14364,6500 pack P27-9
+500,Emboar,5,,#499,level 36,PAdventures item 14365,6500 pack P27-10
+501,Oshawott,5,,,,PAdventures item 14366,6500 pack P27-2
+502,Dewott,5,,#501,level 17,PAdventures item 14367,6500 pack P30-29
+503,Samurott,5,,#502,level 36,PAdventures item 14368,6500 pack P27-4
+504,Patrat,5,,,,PAdventures item 14369,6500 pack P30-31
+505,Watchog,5,,#504,level 20,PAdventures item 14370,none yet
+506,Lillipup,5,,,,PAdventures item 14371,6500 pack P30-33
+507,Herdier,5,,#506,level 16,PAdventures item 14372,6500 pack P30-32
+508,Stoutland,5,,#507,level 32,PAdventures item 14373,6500 pack P30-34
+509,Purrloin,5,,,,PAdventures item 14374,6500 pack P30-35
+510,Liepard,5,,#509,level 20,PAdventures item 14375,6500 pack P30-36
+511,Pansage,5,,,,PAdventures item 14376,6500 pack P30-37
+512,Simisage,5,,#511,leaf stone,PAdventures item 14377,6500 pack P30-38
+513,Pansear,5,,,,PAdventures item 14378,6500 pack P30-39
+514,Simisear,5,,#513,fire stone,PAdventures item 14379,6500 pack P30-40
+515,Panpour,5,,,,PAdventures item 14380,6500 pack P30-41
+516,Simipour,5,,#515,water stone,PAdventures item 14381,6500 pack P30-42
+517,Munna,5,,,,PAdventures item 14382,"6500 pack, unsure: P46-28"
+518,Musharna,5,,#517,moon stone,PAdventures item 14383,none yet
+519,Pidove,5,,,,PAdventures item 14384,none yet
+520,Tranquill,5,,#519,level 21,PAdventures item 14385,none yet
+521,Unfezant,5,,#520,level 32,PAdventures item 14386,"6500 pack, unsure: P60-6"
+522,Blitzle,5,,,,PAdventures item 14387,6500 pack P25-8
+523,Zebstrika,5,,#522,level 27,PAdventures item 14388,6500 pack P7-10
+524,Roggenrola,5,,,,PAdventures item 14389,6500 pack P30-47
+525,Boldore,5,,#524,level 25,PAdventures item 14390,6500 pack P30-48
+526,Gigalith,5,,#525,trade,PAdventures item 14391,6500 pack P31-1
+527,Woobat,5,,,,PAdventures item 14392,6500 pack P31-3
+528,Swoobat,5,,#527,friendship,PAdventures item 14393,6500 pack P31-4
+529,Drilbur,5,,,,PAdventures item 14394,6500 pack P31-5
+530,Excadrill,5,,#529,level 31,PAdventures item 14395,6500 pack P31-6
+531,Audino,5,,,,PAdventures item 14396,6500 pack P24-45
+532,Timburr,5,,,,PAdventures item 14397,"6500 pack, unsure: P24-42"
+533,Gurdurr,5,,#532,level 25,PAdventures item 14398,6500 pack P45-42
+534,Conkeldurr,5,,#533,trade,PAdventures item 14399,6500 pack P43-9
+535,Tympole,5,,,,PAdventures item 14400,6500 pack P31-8
+536,Palpitoad,5,,#535,level 25,PAdventures item 14401,6500 pack P31-10
+537,Seismitoad,5,,#536,level 36,PAdventures item 14402,6500 pack P31-12
+538,Throh,5,,,,PAdventures item 14403,6500 pack P31-14
+539,Sawk,5,,,,PAdventures item 14404,6500 pack P31-15
+540,Sewaddle,5,,,,PAdventures item 14405,6500 pack P31-17
+541,Swadloon,5,,#540,level 20,PAdventures item 14406,6500 pack P31-16
+542,Leavanny,5,,#541,friendship,PAdventures item 14407,6500 pack P31-18
+543,Venipede,5,,,,PAdventures item 14408,none yet
+544,Whirlipede,5,,#543,level 22,PAdventures item 14409,none yet
+545,Scolipede,5,,#544,level 30,PAdventures item 14410,none yet
+546,Cottonee,5,,,,PAdventures item 14411,none yet
+547,Whimsicott,5,,#546,sun stone,PAdventures item 14412,"6500 pack, unsure: P58-46"
+548,Petilil,5,,,,PAdventures item 14413,6500 pack P31-19
+549,Lilligant,5,,#548,sun stone,PAdventures item 14414,6500 pack P31-20
+550,Basculin,5,,,,PAdventures item 14415,PAdventures creature 47718
+551,Sandile,5,,,,PAdventures item 14417,none yet
+552,Krokorok,5,,#551,level 29,PAdventures item 14418,6500 pack P59-2
+553,Krookodile,5,,#552,level 40,PAdventures item 14419,6500 pack P59-1
+554,Darumaka,5,,,,PAdventures item 14420,6500 pack P25-23
+555,Darmanitan,5,,#554,level 35,PAdventures item 14421,6500 pack P31-22
+556,Maractus,5,,,,PAdventures item 14423,6500 pack P59-3
+557,Dwebble,5,,,,PAdventures item 14424,6500 pack P43-13
+558,Crustle,5,,#557,level 34,PAdventures item 14425,6500 pack P43-11
+559,Scraggy,5,,,,PAdventures item 14426,"6500 pack, unsure: P31-23"
+560,Scrafty,5,,#559,level 39,PAdventures item 14427,6500 pack P31-25
+561,Sigilyph,5,,,,PAdventures item 14428,6500 pack P31-24
+562,Yamask,5,,,,PAdventures item 14429,PAdventures creature 42269
+563,Cofagrigus,5,,#562,level 34,PAdventures item 14430,6500 pack P30-20
+564,Tirtouga,5,,,,PAdventures item 14431,6500 pack P31-27
+565,Carracosta,5,,#564,level 37,PAdventures item 14432,6500 pack P31-28
+566,Archen,5,,,,PAdventures item 14433,6500 pack P31-29
+567,Archeops,5,,#566,level 37,PAdventures item 14434,6500 pack P31-30
+568,Trubbish,5,,,,PAdventures item 14435,6500 pack P31-31
+569,Garbodor,5,,#568,level 36,PAdventures item 14436,6500 pack P31-32
+570,Zorua,5,,,,PAdventures item 14437,6500 pack P25-19
+571,Zoroark,5,,#570,level 30,PAdventures item 14438,6500 pack P25-13
+572,Minccino,5,,,,PAdventures item 14439,6500 pack P59-6
+573,Cinccino,5,,#572,shiny stone,PAdventures item 14440,6500 pack P59-7
+574,Gothita,5,,,,PAdventures item 14441,6500 pack P31-35
+575,Gothorita,5,,#574,level 32,PAdventures item 14442,6500 pack P31-36
+576,Gothitelle,5,,#575,level 41,PAdventures item 14443,6500 pack P31-37
+577,Solosis,5,,,,PAdventures item 14444,6500 pack P31-38
+578,Duosion,5,,#577,level 32,PAdventures item 14445,6500 pack P31-39
+579,Reuniclus,5,,#578,level 41,PAdventures item 14446,none yet
+580,Ducklett,5,,,,PAdventures item 14447,"6500 pack, unsure: P59-8"
+581,Swanna,5,,#580,level 35,PAdventures item 14448,6500 pack P58-8
+582,Vanillite,5,,,,PAdventures item 14449,6500 pack P59-11
+583,Vanillish,5,,#582,level 35,PAdventures item 14450,6500 pack P59-10
+584,Vanilluxe,5,,#583,level 47,PAdventures item 14451,6500 pack P59-12
+585,Deerling,5,,,,PAdventures item 14452,6500 pack P31-40
+586,Sawsbuck,5,,#585,level 34,PAdventures item 14453,6500 pack P31-44
+587,Emolga,5,,,,PAdventures item 14454,6500 pack P59-13
+588,Karrablast,5,,,,PAdventures item 14455,6500 pack P59-14
+589,Escavalier,5,,#588,trade,PAdventures item 14456,6500 pack P59-15
+590,Foongus,5,,,,PAdventures item 14457,6500 pack P25-21
+591,Amoonguss,5,,#590,level 39,PAdventures item 14458,6500 pack P59-17
+592,Frillish,5,,,,PAdventures item 14459,6500 pack P24-14
+593,Jellicent,5,,#592,level 40,PAdventures item 14461,6500 pack P59-20
+594,Alomomola,5,,,,PAdventures item 14463,6500 pack P59-24
+595,Joltik,5,,,,PAdventures item 14464,6500 pack P25-17
+596,Galvantula,5,,#595,level 36,PAdventures item 14465,6500 pack P32-1
+597,Ferroseed,5,,,,PAdventures item 14466,6500 pack P32-3
+598,Ferrothorn,5,,#597,level 40,PAdventures item 14467,6500 pack P32-4
+599,Klink,5,,,,PAdventures item 14468,6500 pack P24-1
+600,Klang,5,,#599,level 38,PAdventures item 14469,6500 pack P59-26
+601,Klinklang,5,,#600,level 49,PAdventures item 14470,6500 pack P43-17
+602,Tynamo,5,,,,PAdventures item 14471,6500 pack P32-6
+603,Eelektrik,5,,#602,level 39,PAdventures item 14472,6500 pack P32-7
+604,Eelektross,5,,#603,thunder stone,PAdventures item 14473,PAdventures creature 48165
+605,Elgyem,5,,,,PAdventures item 14474,6500 pack P59-29
+606,Beheeyem,5,,#605,level 42,PAdventures item 14475,6500 pack P59-30
+607,Litwick,5,,,,PAdventures item 14476,6500 pack P32-8
+608,Lampent,5,,#607,level 41,PAdventures item 14477,PAdventures creature 41852
+609,Chandelure,5,,#608,dusk stone,PAdventures item 14478,6500 pack P30-16
+610,Axew,5,,,,PAdventures item 14479,"6500 pack, unsure: P59-32"
+611,Fraxure,5,,#610,level 38,PAdventures item 14480,"6500 pack, unsure: P59-31"
+612,Haxorus,5,,#611,level 48,PAdventures item 14481,"6500 pack, unsure: P46-6"
+613,Cubchoo,5,,,,PAdventures item 14482,6500 pack P32-10
+614,Beartic,5,,#613,level 37,PAdventures item 14483,6500 pack P32-11
+615,Cryogonal,5,,,,PAdventures item 14484,6500 pack P32-12
+616,Shelmet,5,,,,PAdventures item 14485,6500 pack P59-34
+617,Accelgor,5,,#616,trade,PAdventures item 14486,6500 pack P59-35
+618,Stunfisk,5,,,,PAdventures item 14487,6500 pack P59-36
+619,Mienfoo,5,,,,PAdventures item 14488,6500 pack P59-38
+620,Mienshao,5,,#619,level 50,PAdventures item 14489,6500 pack P59-39
+621,Druddigon,5,,,,PAdventures item 14490,"6500 pack, unsure: P32-13"
+622,Golett,5,,,,PAdventures item 14491,6500 pack P32-14
+623,Golurk,5,,#622,level 43,PAdventures item 14492,6500 pack P24-20
+624,Pawniard,5,,,,PAdventures item 14493,6500 pack P59-40
+625,Bisharp,5,,#624,level 52,PAdventures item 14494,6500 pack P59-41
+626,Bouffalant,5,,,,PAdventures item 14495,6500 pack P32-16
+627,Rufflet,5,,,,PAdventures item 14496,6500 pack P59-42
+628,Braviary,5,,#627,level 54,PAdventures item 14497,6500 pack P13-40
+629,Vullaby,5,,,,PAdventures item 14498,6500 pack P59-45
+630,Mandibuzz,5,,#629,level 54,PAdventures item 14499,6500 pack P59-46
+631,Heatmor,5,,,,PAdventures item 14500,"6500 pack, unsure: P59-47"
+632,Durant,5,,,,PAdventures item 14501,6500 pack P59-48
+633,Deino,5,,,,PAdventures item 14502,"6500 pack, unsure: P32-18"
+634,Zweilous,5,,#633,level 50,PAdventures item 14503,"6500 pack, unsure: P32-19"
+635,Hydreigon,5,,#634,level 64,PAdventures item 14504,PAdventures creature 48380
+636,Larvesta,5,,,,PAdventures item 14505,6500 pack P32-22
+637,Volcarona,5,,#636,level 59,PAdventures item 14506,6500 pack P32-23
+638,Cobalion,5,legendary,,,PAdventures item 14507,6500 pack P1-45
+639,Terrakion,5,legendary,,,PAdventures item 14508,6500 pack P1-44
+640,Virizion,5,legendary,,,PAdventures item 14509,6500 pack P1-42
+641,Tornadus,5,legendary,,,PAdventures item 14510,PAdventures creature 45323
+642,Thundurus,5,legendary,,,PAdventures item 14511,PAdventures creature 45283
+643,Reshiram,5,legendary,,,PAdventures item 14512,"6500 pack, unsure: P42-8"
+644,Zekrom,5,legendary,,,PAdventures item 14513,6500 pack P8-24
+645,Landorus,5,legendary,,,PAdventures item 14514,PAdventures creature 43931
+646,Kyurem,5,legendary,,,PAdventures item 14515,6500 pack P24-36
+647,Keldeo,5,mythical,,,PAdventures item 14518,6500 pack P58-9
+648,Meloetta,5,mythical,,,PAdventures item 14519,PAdventures creature 44106
+649,Genesect,5,mythical,,,PAdventures item 14520,"6500 pack, unsure: P43-22"
+650,Chespin,6,,,,PAdventures item 14521,PAdventures creature 43799
+651,Quilladin,6,,#650,level 16,PAdventures item 14522,none yet
+652,Chesnaught,6,,#651,level 36,PAdventures item 14523,none yet
+653,Fennekin,6,,,,PAdventures item 14524,PAdventures creature 43801
+654,Braixen,6,,#653,level 16,PAdventures item 14525,PAdventures creature 43797
+655,Delphox,6,,#654,level 36,PAdventures item 14526,none yet
+656,Froakie,6,,,,PAdventures item 14527,PAdventures creature 42831
+657,Frogadier,6,,#656,level 16,PAdventures item 14528,PAdventures creature 47794
+658,Greninja,6,,#657,level 36,PAdventures item 14529,6500 pack P57-43
+659,Bunnelby,6,,,,PAdventures item 14530,PAdventures creature 42919
+660,Diggersby,6,,#659,level 20,PAdventures item 14531,"6500 pack, unsure: P40-46"
+661,Fletchling,6,,,,PAdventures item 14532,PAdventures creature 44222
+662,Fletchinder,6,,#661,level 17,PAdventures item 14533,"6500 pack, unsure: P34-46"
+663,Talonflame,6,,#662,level 35,PAdventures item 14534,PAdventures creature 45901
+664,Scatterbug,6,,,,PAdventures item 14535,none yet
+665,Spewpa,6,,#664,level 9,PAdventures item 14536,none yet
+666,Vivillon,6,,#665,level 12,PAdventures item 14537,PAdventures creature 43772
+667,Litleo,6,,,,PAdventures item 14538,none yet
+668,Pyroar,6,,#667,level 35,PAdventures item 14539,"6500 pack, unsure: P41-43"
+669,Flabébé,6,,,,PAdventures item 14541,PAdventures creature 44085
+670,Floette,6,,#669,level 19,PAdventures item 14542,none yet
+671,Florges,6,,#670,shiny stone,PAdventures item 14543,PAdventures creature 44083
+672,Skiddo,6,,,,PAdventures item 14544,PAdventures creature 44011
+673,Gogoat,6,,#672,level 32,PAdventures item 14545,"6500 pack, unsure: P42-19"
+674,Pancham,6,,,,PAdventures item 14546,PAdventures creature 44010
+675,Pangoro,6,,#674,level 32,PAdventures item 14547,"6500 pack, unsure: P16-28"
+676,Furfrou,6,,,,PAdventures item 14548,none yet
+677,Espurr,6,,,,PAdventures item 14549,PAdventures creature 43980
+678,Meowstic,6,,#677,"level 25, male",PAdventures item 14550,PAdventures creature 44013
+679,Honedge,6,,,,PAdventures item 14552,PAdventures creature 42263
+680,Doublade,6,,#679,level 35,PAdventures item 14553,none yet
+681,Aegislash,6,,#680,dusk stone,PAdventures item 14554,PAdventures creature 42266
+682,Spritzee,6,,,,PAdventures item 14555,PAdventures creature 45433
+683,Aromatisse,6,,#682,"trade, holding sachet",PAdventures item 14556,PAdventures creature 47800
+684,Swirlix,6,,,,PAdventures item 14557,PAdventures creature 44070
+685,Slurpuff,6,,#684,"trade, holding whipped dream",PAdventures item 14558,PAdventures creature 44066
+686,Inkay,6,,,,PAdventures item 14559,PAdventures creature 45300
+687,Malamar,6,,#686,level 30,PAdventures item 14560,none yet
+688,Binacle,6,,,,PAdventures item 14561,none yet
+689,Barbaracle,6,,#688,level 39,PAdventures item 14562,PAdventures creature 45306
+690,Skrelp,6,,,,PAdventures item 14563,none yet
+691,Dragalge,6,,#690,level 48,PAdventures item 14564,none yet
+692,Clauncher,6,,,,PAdventures item 14565,none yet
+693,Clawitzer,6,,#692,level 37,PAdventures item 14566,none yet
+694,Helioptile,6,,,,PAdventures item 14567,none yet
+695,Heliolisk,6,,#694,sun stone,PAdventures item 14568,none yet
+696,Tyrunt,6,,,,PAdventures item 14569,PAdventures creature 43939
+697,Tyrantrum,6,,#696,"level 39, day",PAdventures item 14570,PAdventures creature 48756
+698,Amaura,6,,,,PAdventures item 14571,PAdventures creature 43723
+699,Aurorus,6,,#698,"level 39, night",PAdventures item 14572,none yet
+700,Sylveon,6,,#133,knows a fairy move,PAdventures item 14573,6500 pack P42-16
+701,Hawlucha,6,,,,PAdventures item 14574,PAdventures creature 44069
+702,Dedenne,6,,,,PAdventures item 14575,PAdventures creature 43755
+703,Carbink,6,,,,PAdventures item 14576,none yet
+704,Goomy,6,,,,PAdventures item 14577,PAdventures creature 47177
+705,Sliggoo,6,,#704,level 40,PAdventures item 14578,PAdventures creature 44727
+706,Goodra,6,,#705,level 50,PAdventures item 14579,PAdventures creature 44724
+707,Klefki,6,,,,PAdventures item 14580,none yet
+708,Phantump,6,,,,PAdventures item 14581,"6500 pack, unsure: P25-27"
+709,Trevenant,6,,#708,trade,PAdventures item 14582,"6500 pack, unsure: P13-43"
+710,Pumpkaboo,6,,,,PAdventures item 14583,PAdventures creature 41875
+711,Gourgeist,6,,#710,trade,PAdventures item 14584,none yet
+712,Bergmite,6,,,,PAdventures item 14585,PAdventures creature 42829
+713,Avalugg,6,,#712,level 37,PAdventures item 14586,"6500 pack, unsure: P1-14"
+714,Noibat,6,,,,PAdventures item 14587,PAdventures creature 44006
+715,Noivern,6,,#714,level 48,PAdventures item 14588,"6500 pack, unsure: P1-9"
+716,Xerneas,6,legendary,,,PAdventures item 14589,6500 pack P56-42
+717,Yveltal,6,legendary,,,PAdventures item 14590,"6500 pack, unsure: P13-27"
+718,Zygarde,6,legendary,,,PAdventures item 14591,"6500 pack, unsure: P25-16"
