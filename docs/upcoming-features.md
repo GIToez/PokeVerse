@@ -135,7 +135,8 @@ releases sign the APK with `ANDROID_KEYSTORE_BASE64`.
 Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
 buying Soul Coins with PayPal ([phase 4](#19-accounts-soul-coins-and-the-store); accounts and
 email, login security and the Store are built, and the Soul Coin NPCs are off the map), the
-[travel picker](modernization-audit.md#3-travel-picker), and putting Johto in
+[travel picker](modernization-audit.md#3-travel-picker), the
+[new Pokémon #387 to #718](#23-new-pokémon-gen-4-to-6), and putting Johto in
 `scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
 ## 1. New depot
@@ -2521,6 +2522,90 @@ The settings are in `WildLegendaries.CONFIG` under "Flights".
 - **Ranger tracking by footprints** ([section 11](#11-bug-fixes-and-small-ideas)).
 - **Pokepedia:** the Wild legendaries page describes the revamp, with a line for the
   Rangers' hints by rank.
+
+## 23. New Pokémon (Gen 4 to 6)
+
+**To add:** the 332 Pokémon from #387 Turtwig to #718 Zygarde, the ones the Battle Trozei face
+sheet covers. The game has #1 to #386 today. Diancie, Hoopa and Volcanion (#719 to #721) and
+Gen 7 on are not part of this, since there are no faces for them yet.
+
+**Art that is ready:**
+
+| Art | Gen 4 (107) | Gen 5 (156) | Gen 6 (69) | Where |
+| --- | --- | --- | --- | --- |
+| Swap bar face | 107 | 156 | 69 | `art/sprites/faces/<dex>.png`, 64x64 from Battle Trozei |
+| Walk sprite in the 6500 pack (named with high or medium confidence) | 53 | 122 | 3 | `docs/sprite-pack-review/new_species.csv` |
+| Walk sprite from Mystery Dungeon at 2x, like Deoxys | all | all | all | PMDCollab SpriteCollab |
+| Portrait and 3D Pokédex picture | all | all | all | Pokémon Showdown (`gen5/`, `ani/`) |
+
+See [new-pokemon-art.md](new-pokemon-art.md) for the formats and how each is converted.
+
+**What each Pokémon needs:**
+
+- Server: a `lib/ps/config/pokemon/<name>.lua` config (types, stats, moves, `dexStorage`,
+  description, catch storage, portraits), a monster file in `monster/Pokemons`, its number and
+  name in `pokemonsNumbers.lua` and `pokemonsNames.lua`, and `POKEMON_NUMBER` raised from 386
+  (the Pokédex, the Pokepedia and the trainer card count up to it).
+- Client: the walk sprite as an outfit (`scripts/dat-set-outfit.py new`), the face item, the
+  `staticPortraits`, `pictures` and `pokeicons` images, the cry, and the name in `gamelib/pokemon.lua`.
+  The Pokédex grid works its face ids out from the number (Gen 3 ends where Treecko's swap face
+  starts), so it needs a new id block from #387.
+- Spawns, evolutions, ride, fly, surf and dive outfits where they apply, and loot.
+
+**To decide:**
+
+- The order: a generation at a time (Sinnoh first), or a few families at a time.
+- Where they live: new regions (Sinnoh, Unova, Kalos) or mixed into Kanto and Johto.
+- The legendaries: in the [legendary revamp](#22-legendary-revamp-stages-1-to-3-built) with
+  their own habitats and events, or held back.
+- The faces are 64x64: a bigger swap bar slot for every Pokémon, or new faces shrunk to 32x32 by
+  hand.
+- Stats from PokéAPI with or without the stat audit's fixes ([new-pokemon-art.md](new-pokemon-art.md#open-decisions)).
+
+**Gen 4 (#387 to #493, 107):** Turtwig, Grotle, Torterra, Chimchar, Monferno, Infernape, Piplup,
+Prinplup, Empoleon, Starly, Staravia, Staraptor, Bidoof, Bibarel, Kricketot, Kricketune, Shinx,
+Luxio, Luxray, Budew, Roserade, Cranidos, Rampardos, Shieldon, Bastiodon, Burmy, Wormadam,
+Mothim, Combee, Vespiquen, Pachirisu, Buizel, Floatzel, Cherubi, Cherrim, Shellos, Gastrodon,
+Ambipom, Drifloon, Drifblim, Buneary, Lopunny, Mismagius, Honchkrow, Glameow, Purugly,
+Chingling, Stunky, Skuntank, Bronzor, Bronzong, Bonsly, Mime Jr., Happiny, Chatot, Spiritomb,
+Gible, Gabite, Garchomp, Munchlax, Riolu, Lucario, Hippopotas, Hippowdon, Skorupi, Drapion,
+Croagunk, Toxicroak, Carnivine, Finneon, Lumineon, Mantyke, Snover, Abomasnow, Weavile,
+Magnezone, Lickilicky, Rhyperior, Tangrowth, Electivire, Magmortar, Togekiss, Yanmega, Leafeon,
+Glaceon, Gliscor, Mamoswine, Porygon-Z, Gallade, Probopass, Dusknoir, Froslass, Rotom.
+
+Legendary and mythical: Uxie, Mesprit, Azelf, Dialga, Palkia, Heatran, Regigigas, Giratina,
+Cresselia, Phione, Manaphy, Darkrai, Shaymin, Arceus.
+
+**Gen 5 (#494 to #649, 156):** Snivy, Servine, Serperior, Tepig, Pignite, Emboar, Oshawott,
+Dewott, Samurott, Patrat, Watchog, Lillipup, Herdier, Stoutland, Purrloin, Liepard, Pansage,
+Simisage, Pansear, Simisear, Panpour, Simipour, Munna, Musharna, Pidove, Tranquill, Unfezant,
+Blitzle, Zebstrika, Roggenrola, Boldore, Gigalith, Woobat, Swoobat, Drilbur, Excadrill, Audino,
+Timburr, Gurdurr, Conkeldurr, Tympole, Palpitoad, Seismitoad, Throh, Sawk, Sewaddle, Swadloon,
+Leavanny, Venipede, Whirlipede, Scolipede, Cottonee, Whimsicott, Petilil, Lilligant, Basculin,
+Sandile, Krokorok, Krookodile, Darumaka, Darmanitan, Maractus, Dwebble, Crustle, Scraggy,
+Scrafty, Sigilyph, Yamask, Cofagrigus, Tirtouga, Carracosta, Archen, Archeops, Trubbish,
+Garbodor, Zorua, Zoroark, Minccino, Cinccino, Gothita, Gothorita, Gothitelle, Solosis, Duosion,
+Reuniclus, Ducklett, Swanna, Vanillite, Vanillish, Vanilluxe, Deerling, Sawsbuck, Emolga,
+Karrablast, Escavalier, Foongus, Amoonguss, Frillish, Jellicent, Alomomola, Joltik, Galvantula,
+Ferroseed, Ferrothorn, Klink, Klang, Klinklang, Tynamo, Eelektrik, Eelektross, Elgyem, Beheeyem,
+Litwick, Lampent, Chandelure, Axew, Fraxure, Haxorus, Cubchoo, Beartic, Cryogonal, Shelmet,
+Accelgor, Stunfisk, Mienfoo, Mienshao, Druddigon, Golett, Golurk, Pawniard, Bisharp, Bouffalant,
+Rufflet, Braviary, Vullaby, Mandibuzz, Heatmor, Durant, Deino, Zweilous, Hydreigon, Larvesta,
+Volcarona.
+
+Legendary and mythical: Victini, Cobalion, Terrakion, Virizion, Tornadus, Thundurus, Reshiram,
+Zekrom, Landorus, Kyurem, Keldeo, Meloetta, Genesect.
+
+**Gen 6 (#650 to #718, 69):** Chespin, Quilladin, Chesnaught, Fennekin, Braixen, Delphox,
+Froakie, Frogadier, Greninja, Bunnelby, Diggersby, Fletchling, Fletchinder, Talonflame,
+Scatterbug, Spewpa, Vivillon, Litleo, Pyroar, Flabébé, Floette, Florges, Skiddo, Gogoat,
+Pancham, Pangoro, Furfrou, Espurr, Meowstic, Honedge, Doublade, Aegislash, Spritzee, Aromatisse,
+Swirlix, Slurpuff, Inkay, Malamar, Binacle, Barbaracle, Skrelp, Dragalge, Clauncher, Clawitzer,
+Helioptile, Heliolisk, Tyrunt, Tyrantrum, Amaura, Aurorus, Sylveon, Hawlucha, Dedenne, Carbink,
+Goomy, Sliggoo, Goodra, Klefki, Phantump, Trevenant, Pumpkaboo, Gourgeist, Bergmite, Avalugg,
+Noibat, Noivern.
+
+Legendary and mythical: Xerneas, Yveltal, Zygarde.
 
 ## Going private
 
