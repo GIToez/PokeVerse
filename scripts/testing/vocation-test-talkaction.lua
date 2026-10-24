@@ -2050,6 +2050,78 @@ local function testCalendar(cid)
     check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
 end
 
+local function testHalloween(cid)
+    local function date(time) return os.date("%Y-%m-%d %H:%M", time) end
+    local function read(path)
+        local file = io.open(path, "r")
+        if (not file) then return nil end
+        local text = file:read("*a")
+        file:close()
+        return text
+    end
+
+    local halloween
+    for _, event in ipairs(EventCalendar.getEvents(os.time({ year = 2026, month = 10, day = 1, hour = 0 }),
+            os.time({ year = 2026, month = 11, day = 30, hour = 0 }))) do
+        if (event.holiday and event.holiday.id == "halloween") then halloween = event end
+    end
+    check("Halloween: runs Oct 24 06:00 to Nov 2 06:00", halloween and date(halloween.startsAt) == "2026-10-24 06:00" and
+        date(halloween.endsAt) == "2026-11-02 06:00", halloween and date(halloween.startsAt) .. " - " .. date(halloween.endsAt))
+
+    local raids = read("data/raids/raids.xml") or ""
+    for _, name in ipairs(EventCalendar.RAIDS.halloween.names) do
+        local line = raids:match('<raid name="' .. name .. '"[^>]*>')
+        check("Halloween: raid " .. name .. " is in raids.xml, off on its own", line and line:find('enabled="no"') ~= nil, line)
+        -- reftype block would hold every raid up until its last ghost or cauldron is gone
+        check("Halloween: raid " .. name .. " doesn't block the others", line and line:find('reftype="single"') ~= nil, line)
+        local text = line and read("data/raids/" .. line:match('file="([^"]+)"'))
+        check("Halloween: raid " .. name .. " has its file", text ~= nil, line)
+        for cx, cy, cz, r, body in (text or ""):gmatch('<areaspawn[^>]-centerx="(%d+)" centery="(%d+)" centerz="(%d+)" radius="(%d+)">(.-)</areaspawn>') do
+            local center, radius, amount = { x = tonumber(cx), y = tonumber(cy), z = tonumber(cz) }, tonumber(r), 0
+            for count in body:gmatch('amount="(%d+)"') do amount = amount + tonumber(count) end
+            local free = 0
+            for dx = -radius, radius do
+                for dy = -radius, radius do
+                    local pos = { x = center.x + dx, y = center.y + dy, z = center.z }
+                    local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+                    local info = getTileInfo(pos)
+                    if (ground and ground.itemid ~= 0 and info and not info.protection and not info.house and
+                            doTileQueryAdd(cid, pos) == RETURNVALUE_NOERROR) then
+                        free = free + 1
+                    end
+                end
+            end
+            local where = string.format("%d,%d,%d", center.x, center.y, center.z)
+            check("Halloween: " .. name .. " spawn " .. where .. " has room for its " .. amount, free >= math.min(amount, (2 * radius + 1) ^ 2),
+                free .. " free")
+            if (name == "Halloween") then
+                local zone = Weather.zoneAt(center)
+                local distance = zone and math.max(math.abs(zone.pos.x - center.x), math.abs(zone.pos.y - center.y))
+                check("Halloween: ghost spawn " .. where .. " is by a Kanto town", zone and zone.region.id == "kanto" and distance <= 150,
+                    zone and (zone.name .. " " .. distance))
+            end
+        end
+        local items, grounded = 0, 0
+        for x, y, z in (text or ""):gmatch('<itemspawn[^>]-x="(%d+)" y="(%d+)" z="(%d+)"') do
+            local ground = getTileThingByPos({ x = tonumber(x), y = tonumber(y), z = tonumber(z), stackpos = 0 })
+            items = items + 1
+            grounded = grounded + ((ground and ground.itemid ~= 0) and 1 or 0)
+        end
+        if (items > 0) then
+            check("Halloween: every cauldron of " .. name .. " is on the map", grounded == items, grounded .. "/" .. items)
+        end
+    end
+
+    local account = getPlayerAccountId(cid)
+    local count, year = getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY), getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR)
+    setPlayerBoughtRareCandy(cid, 15)
+    check("Halloween: the rare candy limit counts this Halloween's buys", getPlayerBoughtRareCandy(cid) == 15, getPlayerBoughtRareCandy(cid))
+    setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR, getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR) - 1)
+    check("Halloween: last Halloween's rare candies don't count", getPlayerBoughtRareCandy(cid) == 0, getPlayerBoughtRareCandy(cid))
+    setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY, count)
+    setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR, year)
+end
+
 local function testSeasons(cid)
     local function at(y, m, d, h) return os.time({ year = y, month = m, day = d, hour = h or 12, min = 0, sec = 0 }) end
     local expected = { spring = { 3, 20, 22 }, summer = { 6, 21, 23 }, autumn = { 9, 22, 24 }, winter = { 12, 21, 23 } }
@@ -3122,7 +3194,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
