@@ -2795,6 +2795,39 @@ white or green text in turn.
   announcements.
 - **Fitting the player, later:** tips can say who they're for (a level range, or players who
   haven't used a feature yet), and each player gets one that fits.
+- **Short:** a tip fits on one line of the banner (about 75 letters).
+
+**Starter list (proposed).** The 5 tips today (account safety, no bots, the Help channel,
+inviting friends, suggestions) stay, shortened to fit.
+
+| Topic | Tip |
+| --- | --- |
+| Pokepedia | Press M to open the Pokepedia and read the Wiki tab. |
+| Selling | Sell Pokémon you don't want to Ron and Joel Morris. |
+| Union Room | Every Pokémon Center has a way into the Union Room. Meet other trainers there! |
+| PC | Every locker opens your PC: boxes, stash, inbox and depot. |
+| GTS | Trade Pokémon with other trainers on the GTS. |
+| Day Care | Leave a Pokémon at the Day Care to train it, or to find an egg. |
+| Held items | Drag a held item onto a Pokémon to give it to them. |
+| Energy | Moves use energy: watch the bar under your Pokémon's health. |
+| Pokédex | Press X to see a Pokémon's Pokédex entry. |
+| Orders | Press E to order your Pokémon: push rocks, cut trees, climb and more. |
+| Flying | Flying or levitating? Press Q to go up a floor and Z to go down. |
+| Targeting | Press Tab to attack the next target. |
+| Keys | Every key can be changed in Settings > Controls. |
+| Tasks | Press T for Tasks: rewards for hunting and catching. |
+| Quests | Press L for your Quest Log. |
+| Calendar | Press C for the calendar: holidays, weekend events and more. |
+| Trainer Card | Press P for your Trainer Card. Show it on Discord with /trainer. |
+| Daily reward | Log in every day: the 7-day login streak gets better each day. |
+| Vocations | At level 20, pick a vocation. Press V to see them. |
+| Vocation tool | Press U for your vocation's tool, like the radar or the Fishing Guide. |
+| Discord | Link Discord in the Account window to get the Verified Trainer role. |
+| Discord events | Join our Discord for event pings and legendary sightings. |
+| Shiny | Shiny Pokémon are stronger. Watch for shiny events on the calendar! |
+| Legendaries | Strange signs mean a legendary is near. Keep your eyes open! |
+| Visual style | Try the Vibrant or Toon visual style in Options. |
+| Store | Soul Coins buy nicknames and more in the Store. |
 - Not posted to Discord.
 
 ### Discord
