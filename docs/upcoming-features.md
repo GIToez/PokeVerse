@@ -3039,6 +3039,37 @@ Steps 4 to 6 need bot changes in PokeVerse-Discord, sent as patches in
 - **Tests:** 252 bot unit tests; `scripts/discord-bridge-test.py` checks the features, the
   announcement event, the `/b` tags, `announcements.roles` and `calendar.range`.
 
+## 26. Holiday events: missing content
+
+From the holiday audit (October 2026). Most of every holiday works: the calendar dates, the
+bonuses, the wild drops and spawns, the raids (moved onto today's map) and the token and
+trade NPCs that are placed. These parts were never put on this map, so they don't run yet:
+
+- **Halloween pirate factions:** Peter Paul tells the story and sends players to the four
+  factions, but the faction NPCs aren't placed.
+  - Entrances: Sea Dragon Ori near 3403,506,7 (north-east of Viridian), Serah Nil near
+    3856,930,7 (south of Fuchsia), Kired near 4009,191,7 (by Bill's, north of Cerulean).
+    Cold Waters (4214,331,7) has no entrance NPC or teleport at all.
+  - On the ships: Barba Roja (Guns, 5749,123,6), Javy Dones (Roses, 5825,218,6), Jack
+    Spearow and Calico (Shadow, 5851,140,6), Nagumo and Sotashi (Sea Dragon, 5798,168,6),
+    Ed Blackhood in his cabin (about 5764,188,6). Ed starts Will Kid's battles and the magic
+    mask reward.
+  - Hector Angel gives the faction rewards (1.5 hours of extra EXP, loot, catch or egg
+    chance once a day); his place is unknown.
+- **Easter:** Snap (starts the Easter quests), the Easter Rabbit and Ralp (golden egg shop)
+  aren't placed. Their old spots, 1520,265,6 and 2001,17,7, are from the old map. The Easter
+  Rabbit Shadow the quest asks for is never spawned. Ralp no longer takes colored eggs.
+- **Summer Festival:** Walter John, who trades the Fragments of The Chosen One from the
+  hunting chests, isn't placed.
+- **Christmas:** Santa Claus, Rundolph and Aldabonero aren't placed, so Santa's delivery quest
+  can't start. Aldabonero's North Pole teleport (3221,1306,7) is marked "TODO POS FIX".
+  Officer Jenny's Christmas quests (radar, cloak, saw) are commented out, but Santa's quest
+  needs the radar, and no Officer Jenny stands at the Christmas village (5423,383,7).
+  `npc/Santa Claus.xml` and `npc/Santa Claus Old.xml` both use the name "Santa Claus".
+- **To decide:** Christmas present #3 always gives 50 Stones of Knowledge, past the cap of 50
+  from wild presents. Hermitwo's potions and Trevor's token shop work all year, not only
+  during Halloween.
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
