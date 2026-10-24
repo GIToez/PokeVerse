@@ -2641,7 +2641,10 @@ not very effective hits look the same as any other hit.
 - **D. Combo count:** the same move again adds x2, x3 instead of a new line. It works with A or
   B.
 
-Recommended: B with D. The bubble stays about 1.5 seconds after the last move, then fades.
+Chosen: C. Each call-out is its own bubble and lives about 1.5 seconds. When a new one comes,
+the older ones float up a step, shrink a little and turn see-through, then fade out. A trainer
+has at most 3 at once; a fourth pushes the oldest out early. Moves can come about once a second
+(`BATTLE_ROUND_INTERVAL`), so a trainer in a steady fight usually has 2 showing.
 
 **Hit numbers.** One number per hit, on the target. It pops in, rises and fades, and moves a
 few pixels to the side each time so quick hits don't cover each other. Fast multi-hits still
@@ -2690,9 +2693,8 @@ don't land on top of each other.
   text. There's also "Screen shake on critical hits", on by default.
 
 **Agreed (October 23):** nickname, or species when there's none. Every trainer's call-out shows
-as a bubble; wild Pokémon don't get one. A switch between new and classic.
-
-**To decide:** which way to show back-to-back moves (A to D above).
+as a bubble; wild Pokémon don't get one. A switch between new and classic. Back-to-back moves
+stack as separate bubbles that float up and fade (C).
 
 ## Going private
 
