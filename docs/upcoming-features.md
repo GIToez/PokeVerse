@@ -2607,6 +2607,64 @@ Noibat, Noivern.
 
 Legendary and mythical: Xerneas, Yveltal, Zygarde.
 
+## 24. Battle text: call-out bubbles and hit numbers
+
+Concept (not started).
+
+**Today.** When a trainer's Pokémon uses a move, the trainer says "Pikachu, Thunderbolt!" as
+orange chat text over their head (`003-skill.lua`, `doCreatureSay`), and a wild Pokémon yells
+the move's name. Damage is the engine's plain number floating up from the target, coloured by
+type. A critical hit is a separate red "CRITICAL!" over the attacker (`004-skillDamage.lua`),
+so it lands on top of the call-out and away from the number it belongs to. Super effective and
+not very effective hits look the same as any other hit.
+
+**Call-outs.**
+
+- **Trainers:** a speech bubble pops out over the trainer, with its tail pointing at them. It
+  scales in (small, a bit too big, then settled) and stays about 1.5 seconds. The move's name is
+  in its type's colour. A new call-out replaces the trainer's last one rather than stacking.
+- **Wild Pokémon:** they shout the move's name in a spiky yellow burst bubble over themselves.
+- **NPC trainers and gym leaders** use the same bubble as players.
+- **Local Chat** still gets the "Pikachu, Thunderbolt!" line, so the log stays the same.
+
+**Hit numbers.** One number per hit, on the target. It pops in, rises and fades, and moves a
+few pixels to the side each time so quick hits don't cover each other. Fast multi-hits still
+add up into one number, like today. Size and style show how good the hit was:
+
+| Hit | Look |
+| --- | --- |
+| Normal | White, outlined |
+| Super effective | Bigger, orange-gold, "SUPER EFFECTIVE" under it |
+| Not very effective | Smaller, grey, "resisted" under it |
+| Critical | Biggest, red-gold with a glow and a burst behind it, "CRIT!" tag, a tiny screen shake |
+| Heal or drain | Green "+35" |
+| Miss, evaded, protected | A small grey word (MISS, EVADED, PROTECTED) |
+| Immune | "NO EFFECT", grey |
+
+The status words (FLINCH!, TIRED!, IN LOVE, FAIL!) become small coloured tags in the same
+style.
+
+**How it would be built.**
+
+- **Server:** `getFinalDamage` already knows whether a hit crit and its type multiplier.
+  `doSkillDamage` passes these on, and one extended opcode tells the trainers who can see the
+  fight: target, amount and kind (normal, super, resisted, crit, heal, miss, immune). The
+  call-out moves to an opcode too (trainer, Pokémon's nickname, move, type) in place of
+  `doCreatureSay`. The engine's own number for Pokémon damage is switched off, so a hit isn't
+  shown twice (`game.cpp`, `combatChangeHealth`).
+- **Client:** a new module (`game_battletext`) draws both as widgets attached to the creature
+  (`creature:attachWidget`), so they follow it as it walks. It also adds the call-out line to
+  Local Chat. It uses the HUD's pixel font (Pixelify Sans). The art is small: a 9-slice bubble,
+  the burst, the crit burst and, if the font's outline isn't enough, a sheet of digits in each
+  style.
+- **Options:** "Battle text: new or classic", and "Screen shake on critical hits" (on by
+  default).
+
+**To decide:**
+
+- Whether the bubble shows the Pokémon's nickname or its species.
+- Whether other players' fights show bubbles and numbers, or only yours and the ones you're in.
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
