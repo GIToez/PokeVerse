@@ -2613,7 +2613,8 @@ local function testLegendaries(cid, friend, arena)
                 marks[4].x == 108 and #W.routeMarks({ x = 100, y = 100, z = 7 }, { x = 110, y = 100, z = 6 }) == 0, #marks)
 
             local me = getCreaturePosition(cid)
-            -- the tester goes 14 to 30 tiles from it for the area signs, then back
+            -- the tester counts as 20 to 30 tiles from it for the area signs (not moved: the catch throws
+            -- that follow use the tiles next to the tester)
             local there, spot = getCreaturePosition(raikou), nil
             for r = 20, 30 do
                 for _, d in ipairs({ { -r, 0 }, { r, 0 }, { 0, -r }, { 0, r }, { -r, -r }, { r, r }, { -r, r }, { r, -r } }) do
@@ -2621,14 +2622,15 @@ local function testLegendaries(cid, friend, arena)
                     if (not spot and W.isGoodPoint(pos)) then spot = pos end
                 end
             end
-            if (spot) then doTeleportThing(cid, spot, true) end
-            check("Legendary: found a spot 20 to 30 tiles from it for the area signs", spot and
-                getSamePosition(getCreaturePosition(cid), spot), spot and string.format("%d,%d,%d", spot.x, spot.y, spot.z) or "none")
-            if (spot and getSamePosition(getCreaturePosition(cid), spot)) then
-                local shown, effect = {}, doSendMagicEffect
+            check("Legendary: found a spot 20 to 30 tiles from it for the area signs", spot ~= nil)
+            if (spot) then
+                local shown, effect, position, online = {}, doSendMagicEffect, getCreaturePosition, getPlayersOnline
                 doSendMagicEffect = function(pos) shown[#shown + 1] = pos return true end
-                W.guideSigns(raikou, W.getSpecies("Raikou"), os.time() + 3600)
-                doSendMagicEffect = effect
+                getCreaturePosition = function(c) return c == cid and spot or position(c) end
+                getPlayersOnline = function() return { cid } end
+                local ok, err = pcall(W.guideSigns, raikou, W.getSpecies("Raikou"), os.time() + 3600)
+                doSendMagicEffect, getCreaturePosition, getPlayersOnline = effect, position, online
+                check("Legendary: guideSigns runs", ok, err)
                 local s
                 for _, pos in ipairs(shown) do
                     if (getDistanceBetween(pos, spot) <= 7) then s = pos end
@@ -2637,7 +2639,6 @@ local function testLegendaries(cid, friend, arena)
                     getDistanceBetween(s, there) < getDistanceBetween(spot, there),
                     s and (s.x - spot.x .. "," .. s.y - spot.y) or (#shown .. " signs"))
             end
-            doTeleportThing(cid, me, false)
 
             doTeleportThing(raikou, { x = me.x + 3, y = me.y + 3, z = me.z }, false)
             check("Legendary: a trainer in sight sees it", W.seenBy(getCreaturePosition(raikou)) == getCreatureName(cid))
