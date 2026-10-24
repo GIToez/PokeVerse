@@ -1,0 +1,176 @@
+NewsBannerPart < UIWidget
+  phantom: true
+  focusable: false
+
+NewsBannerLabel < UILabel
+  phantom: true
+  focusable: false
+  text-auto-resize: true
+  ttf-font: pixelify-sans
+  ttf-font-size: 13
+  color: #ffffff
+
+NewsBanner < UIWidget
+  focusable: false
+  anchors.top: parent.top
+  anchors.horizontalCenter: parent.horizontalCenter
+
+  NewsBannerPart
+    id: glow
+    size: 96 96
+    anchors.centerIn: parent
+    image-source: /modules/game_newsbanner/images/glow
+    opacity: 0
+
+  NewsBannerPart
+    id: ring
+    size: 60 60
+    anchors.centerIn: parent
+    image-source: /modules/game_newsbanner/images/ring
+    opacity: 0
+
+  NewsBannerPart
+    id: shadow
+    anchors.centerIn: parent
+    image-source: /modules/game_newsbanner/images/shadow
+    image-border: 20
+    margin-top: 2
+    visible: false
+
+  NewsBannerPart
+    id: body
+    anchors.centerIn: parent
+    clipping: true
+    width: 0
+
+    NewsBannerPart
+      id: inner
+      anchors.centerIn: parent
+
+      NewsBannerPart
+        id: fill
+        anchors.fill: parent
+        image-source: /modules/game_newsbanner/images/fill
+        image-border: 12
+
+      NewsBannerPart
+        id: shine
+        size: 56 60
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        image-source: /modules/game_newsbanner/images/shimmer
+        opacity: 0
+
+      NewsBannerPart
+        id: edge
+        anchors.fill: parent
+        image-source: /modules/game_newsbanner/images/edge
+        image-border: 12
+
+      NewsBannerPart
+        id: railLeft
+        width: 6
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        margin: 10 0 10 9
+        image-source: /modules/game_newsbanner/images/rail
+        image-border: 3
+
+      NewsBannerPart
+        id: railRight
+        width: 6
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        margin: 10 9 10 0
+        image-source: /modules/game_newsbanner/images/rail
+        image-border: 3
+
+      NewsBannerPart
+        id: badge
+        size: 38 38
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 24
+        image-source: /modules/game_newsbanner/images/badge
+
+        NewsBannerPart
+          id: icon
+          size: 22 22
+          anchors.centerIn: parent
+
+      NewsBannerLabel
+        id: category
+        anchors.left: badge.right
+        anchors.top: parent.top
+        margin-left: 12
+        margin-top: 11
+        ttf-font-size: 11
+
+      NewsBannerLabel
+        id: title
+        anchors.left: category.right
+        anchors.bottom: category.bottom
+        margin-left: 8
+        margin-bottom: -2
+        ttf-font-size: 17
+        ttf-stroke-width: 1
+        ttf-stroke-color: #0a0e1a
+
+      NewsBannerLabel
+        id: text
+        anchors.left: badge.right
+        anchors.top: category.bottom
+        margin-left: 12
+        margin-top: 7
+        text-auto-resize: false
+        text-wrap: true
+        color: #dfe4f0
+
+      UIWidget
+        id: tipOff
+        height: 20
+        anchors.right: parent.right
+        anchors.top: parent.top
+        margin-right: 24
+        margin-top: 8
+        image-source: /modules/game_newsbanner/images/button
+        image-border: 10
+        focusable: false
+        visible: false
+        !tooltip: tr('No more tips. Options > Interface > Show tips turns them back on.')
+
+        NewsBannerLabel
+          id: label
+          anchors.centerIn: parent
+          ttf-font-size: 11
+          color: #e6eaf4
+          !text: tr('Turn off tips  x')
+
+  NewsBannerPart
+    id: halfLeft
+    size: 23 46
+    anchors.centerIn: parent
+    image-source: /modules/game_newsbanner/images/half_left
+    visible: false
+
+  NewsBannerPart
+    id: halfRight
+    size: 23 46
+    anchors.centerIn: parent
+    image-source: /modules/game_newsbanner/images/half_right
+    visible: false
+
+  NewsBannerPart
+    id: ball
+    size: 46 46
+    anchors.centerIn: parent
+    image-source: /modules/game_newsbanner/images/ball
+
+NewsBannerSparkle < UIWidget
+  phantom: true
+  focusable: false
+  size: 14 14
+  anchors.centerIn: parent
+  image-source: /modules/game_newsbanner/images/sparkle

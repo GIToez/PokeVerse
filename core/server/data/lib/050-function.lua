@@ -382,7 +382,9 @@ function doPlayerResetIdleTime(cid)
 	return doPlayerSetIdleTime(cid, 0)
 end
 
-function doBroadcastMessage(text, class)
+-- announcement (optional): {category = ..., title = ..., text = ...} for the news banner (092-announcements.lua);
+-- without one the category is guessed from the calling script
+function doBroadcastMessage(text, class, announcement)
 	local class = class or MESSAGE_STATUS_WARNING
 	if(type(class) == 'string') then
 		local className = MESSAGE_TYPES[class]
@@ -396,6 +398,9 @@ function doBroadcastMessage(text, class)
 	end
 
 	local players = getPlayersOnline()
+	if(Announcements) then
+		Announcements.send(players, text, announcement, debug and debug.getinfo(2, "S"))
+	end
 	for _, pid in ipairs(players) do
 		doPlayerSendTextMessage(pid, class, text)
 	end

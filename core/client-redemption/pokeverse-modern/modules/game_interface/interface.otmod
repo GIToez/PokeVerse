@@ -72,6 +72,7 @@ Module
     - game_eventcards
     - game_legendaryflight
     - game_battletext
+    - game_newsbanner
     - game_hints
     - game_ping
     - game_sounds

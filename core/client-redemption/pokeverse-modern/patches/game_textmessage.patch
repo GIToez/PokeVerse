@@ -1,0 +1,16 @@
+diff -ruN pristine/modules/game_textmessage/textmessage.lua modules/game_textmessage/textmessage.lua
+--- a/modules/game_textmessage/textmessage.lua
++++ b/modules/game_textmessage/textmessage.lua
+@@ -265,6 +265,12 @@
+         end
+     end
+ 
++    -- PokeVerse: a server-wide message the news banner already shows (game_newsbanner) stays in the console only
++    local newsBanner = modules.game_newsbanner
++    if msgtype.screenTarget and newsBanner and newsBanner.takeScreenText and newsBanner.takeScreenText(mode, text) then
++        return
++    end
++
+     if msgtype.screenTarget then
+         local label = messagesPanel:recursiveGetChildById(msgtype.screenTarget)
+         if msgtype == MessageSettings.loot and not modules.client_options.getOption('showLootMessagesOnScreen') then

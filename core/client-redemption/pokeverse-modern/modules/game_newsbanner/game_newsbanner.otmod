@@ -1,0 +1,8 @@
+Module
+  name: game_newsbanner
+  description: PokeVerse news banner: server-wide announcements and the rotating tips, opened from a Poke Ball at the top of the screen (Options > Interface, Show news banner and Show tips)
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ newsbanner ]
+  @onLoad: init()
+  @onUnload: terminate()
