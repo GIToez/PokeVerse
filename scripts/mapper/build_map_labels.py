@@ -98,6 +98,8 @@ LANDMARKS = {
     'Forest North': None, 'Great Beach': None, 'Beach Tarroco': None, 'Beach Tangelo': None,
     'Rind Island': None, 'Meadow': None, 'Desert Mandarin': None, 'Forgotten Temple': None,
     'Cave of Fear': None, 'Mountain Living Stone': None,
+    'Petalburg Woods': None, 'Meteor Falls': None, 'Mt. Chimney': None, 'Jagged Pass': None,
+    'Route 111 Desert': 'Desert', 'Mt. Pyre': None, 'Ever Grande': None,
 }
 
 # name: (kind, x, y): moves a name, or adds one the areas don't have
@@ -119,7 +121,7 @@ PLACES = {
     'Route 108': ('route', 635, 1960),  # sea, Route 107 - Route 109
     'Route 109': ('route', 720, 1900),  # Slateport's beach and sea
     'Route 110': ('route', 745, 1600),  # Slateport - Mauville - Route 103
-    'Route 111': ('route', 800, 1290),  # Mauville - Route 112 - Route 113, the desert
+    'Route 111': ('route', 795, 1105),  # Mauville - the desert - Route 112 - Route 113; north of the desert
     'Route 112': ('route', 680, 1375),  # Route 111 - Lavaridge - Mt. Chimney
     'Route 113': ('route', 620, 1150),  # Route 111 - Fallarbor
     'Route 114': ('route', 320, 1130),  # Fallarbor - Meteor Falls
@@ -147,17 +149,22 @@ PLACES = {
 
 
 def read_hidden(path):
-    boxes = []
+    """The hidden regions' boxes, and the "bounds" box (None: no bounds)."""
+    boxes, bounds = [], None
     if not os.path.exists(path):
-        return boxes
+        return boxes, bounds
     pattern = re.compile(r'^(.*?):\s*(\d+)\s*,\s*(\d+)\s*-\s*(\d+)\s*,\s*(\d+)$')
     for line in open(path):
         line = line.split('#', 1)[0].strip()
         m = pattern.match(line)
         if m:
             x1, y1, x2, y2 = (int(v) for v in m.groups()[1:])
-            boxes.append((min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2)))
-    return boxes
+            box = (min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2))
+            if m.group(1).strip().lower() == 'bounds':
+                bounds = box
+            else:
+                boxes.append(box)
+    return boxes, bounds
 
 
 def region_at(x, y):
@@ -188,12 +195,17 @@ dofile(JOHTO)
 for _, a in ipairs(AREAS_JOHTO) do
     out(a[7], a[1], a[2], a[3], a[4], a[5], a[6])
 end
+dofile(HOENN)
+for _, a in ipairs(AREAS_HOENN) do
+    out(a[7], a[1], a[2], a[3], a[4], a[5], a[6])
+end
 '''
 
 
 def read_areas():
-    script = 'LEGACY = %r; JOHTO = %r; OFFSET = %d\n%s' % (
-        LEGACY, os.path.join(MODERN, 'game_environment/areas_johto.lua'), LEGACY_OFFSET_X, DUMP)
+    script = 'LEGACY = %r; JOHTO = %r; HOENN = %r; OFFSET = %d\n%s' % (
+        LEGACY, os.path.join(MODERN, 'game_environment/areas_johto.lua'),
+        os.path.join(MODERN, 'game_environment/areas_hoenn.lua'), LEGACY_OFFSET_X, DUMP)
     try:
         text = subprocess.run(['lua', '-e', script], check=True, capture_output=True, text=True).stdout
     except FileNotFoundError:
@@ -218,6 +230,17 @@ def spot(rects):
     return (x0 + x1) // 2, (y0 + y1) // 2
 
 
+def snap(rects, x, y):
+    """(x, y), or the nearest spot in `rects` when it lies outside them."""
+    best = None
+    for x0, y0, x1, y1 in rects:
+        sx, sy = min(max(x, x0), x1), min(max(y, y0), y1)
+        d = (sx - x) ** 2 + (sy - y) ** 2
+        if best is None or d < best[0]:
+            best = (d, sx, sy)
+    return (x, y) if best is None else best[1:]
+
+
 def lua_string(text):
     return '"%s"' % text.replace('\\', '\\\\').replace('"', '\\"')
 
@@ -227,15 +250,18 @@ def main():
     parser.add_argument('--out', default=OUT)
     args = parser.parse_args()
 
-    hidden = read_hidden(HIDDEN)
+    hidden, bounds = read_hidden(HIDDEN)
 
     def shown(x, y):
+        if bounds and not (bounds[0] <= x <= bounds[2] and bounds[1] <= y <= bounds[3]):
+            return False
         return not any(b[0] <= x <= b[2] and b[1] <= y <= b[3] for b in hidden)
 
     labels = []
     for name, x, y in CITIES:
         labels.append(('city', name, x, y))
-    for name, rects in read_areas().items():
+    areas = read_areas()
+    for name, rects in areas.items():
         route = ROUTE.match(name)
         if route:
             labels.append(('route', 'Route %s' % route.group(1)) + spot(rects))
@@ -243,6 +269,7 @@ def main():
             labels.append(('landmark', LANDMARKS[name] or name) + spot(rects))
     for name, (kind, x, y) in PLACES.items():
         labels = [label for label in labels if label[1] != name]
+        x, y = snap(areas.get(name, []), x, y)
         labels.append((kind, name, x, y))
     labels = [label for label in labels if label[2] < OTHER_X and shown(label[2], label[3])]
 
