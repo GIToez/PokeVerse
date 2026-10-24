@@ -495,8 +495,11 @@ def boost_tests(b, args):
           "+5% catch rate and +10% shiny spawn rate." in text, text[-300:])
     r = level(3, 15)
     trainer.collect(1)
+    # the news banner's ANNOUNCEMENT JSON repeats the text twice ("f" and "x"); only the text messages count here
+    said = sum(pk.count(b"reached Server Boost Level 3!") - 2 * pk.count(b'"f":"The PokeVerse Discord reached Server Boost Level 3!')
+               for pk in trainer.packets)
     check("the same level again is answered but not broadcast", r and r["ok"] and r["result"]["level"] == 3
-          and sum(pk.count(b"reached Server Boost Level 3!") for pk in trainer.packets) == 1, str(r))
+          and said == 1, str(r))
 
     r = level(2, 9)
     trainer.collect(1)
