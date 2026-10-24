@@ -1105,14 +1105,27 @@ function setPlayerOrangeArchipelagoAccess(cid, value)
     end
 end
 
+-- The rare candy limit is per Halloween: the count belongs to the year of the last October
+local function rareCandyYear()
+    local d = os.date("*t")
+    return d.month >= 10 and d.year or d.year - 1
+end
+
 function getPlayerBoughtRareCandy(cid)
-    local v = getAccountStorage(getPlayerAccountId(cid), ACCOUNT_STORAGES.BOUGHT_RARE_CANDY) --getCreatureStorage(cid, playersStorages.boughtRareCandy)
+    local account = getPlayerAccountId(cid)
+    -- counts saved before the year was kept are from the first Halloween
+    local year = getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR)
+    if ((year ~= 0 and year or EventCalendar.LAUNCH_YEAR) ~= rareCandyYear()) then
+        return 0
+    end
+    local v = getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY)
     return v > -1 and v or 0
 end
 
 function setPlayerBoughtRareCandy(cid, value)
-    --doCreatureSetStorage(cid, playersStorages.boughtRareCandy, value)
-    setAccountStorage(getPlayerAccountId(cid), ACCOUNT_STORAGES.BOUGHT_RARE_CANDY, value)
+    local account = getPlayerAccountId(cid)
+    setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR, rareCandyYear())
+    setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY, value)
 end
 
 function getPlayerLastDexedTmItemId(cid)
