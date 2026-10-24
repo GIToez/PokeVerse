@@ -93,34 +93,34 @@ for chestItemId, chestConfig in pairs(CHESTS_REWARDS) do
     end
 end
 
-local STAMINA_CHANGE_CACHE = {}
-local STAMINA_RECEIVED_REWARDS_CACHE = {}
+-- The hunting time and the chests already given are kept on the character for the year, so a
+-- restart doesn't hand the chests out again
+JulyVacationEvent.getHunting = function(cid)
+    local year, spent, received = tostring(getCreatureStorage(cid, playersStorages.summerHunting)):match("^(%d+):(%-?%d+):(%d+)$")
+    if (tonumber(year) ~= tonumber(os.date("%Y"))) then
+        return 0, 0
+    end
+    return tonumber(spent), tonumber(received)
+end
+
 JulyVacationEvent.onStaminaChange = function(cid, stamina, change)
     if (change > 0) then
         return
     end
 
-    local guid = getPlayerGUID(cid)
-    if (not STAMINA_CHANGE_CACHE[guid]) then
-        STAMINA_CHANGE_CACHE[guid] = change
-    else
-        STAMINA_CHANGE_CACHE[guid] = STAMINA_CHANGE_CACHE[guid] + change
-    end
+    local spent, received = JulyVacationEvent.getHunting(cid)
+    spent = spent + change
 
-    for k, v in pairs(STAMINA_REWARDS) do
-        if (STAMINA_CHANGE_CACHE[guid] <= v.requiredStaminaChange) then
-            if (not STAMINA_RECEIVED_REWARDS_CACHE[guid] or not STAMINA_RECEIVED_REWARDS_CACHE[guid][v.reward.itemId]) then
-                if (not STAMINA_RECEIVED_REWARDS_CACHE[guid]) then
-                    STAMINA_RECEIVED_REWARDS_CACHE[guid] = {}
-                end
-
-                doPlayerSafeAddItem(cid, v.reward.itemId, v.reward.count, v.reward.unique, true)
-                STAMINA_RECEIVED_REWARDS_CACHE[guid][v.reward.itemId] = true
-                doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "You completed %s of hunting and received your reward."), table.concat(string.timediff(-(v.requiredStaminaChange) / 1000, cid))))
-                doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_RED)
-            end
+    for k, v in ipairs(STAMINA_REWARDS) do
+        local bit = 2 ^ (k - 1)
+        if (spent <= v.requiredStaminaChange and math.floor(received / bit) % 2 == 0) then
+            received = received + bit
+            doPlayerSafeAddItem(cid, v.reward.itemId, v.reward.count, v.reward.unique, true)
+            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "You completed %s of hunting and received your reward."), table.concat(string.timediff(-(v.requiredStaminaChange) / 1000, cid))))
+            doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_RED)
         end
     end
+    doCreatureSetStorage(cid, playersStorages.summerHunting, string.format("%d:%d:%d", tonumber(os.date("%Y")), spent, received))
 end
 
 JulyVacationEvent.onPlayerUseRewardChest = function(cid, item)
@@ -142,7 +142,7 @@ JulyVacationEvent.onPlayerUseRewardChest = function(cid, item)
     if (reward) then
         doRemoveItem(item.uid, 1)
         doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
-        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, getItemNameById(item.itemId) .. __L(cid, " contains: "))
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, getItemNameById(item.itemid) .. __L(cid, " contains: "))
 
         doPlayerSafeAddItem(cid, reward.itemId, reward.count, true, reward.unique)
         doDatalogJulyVacationDrops(getPlayerGUID(cid), reward.itemId, reward.count, os.time())
