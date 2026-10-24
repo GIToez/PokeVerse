@@ -42,6 +42,14 @@ the outline. Two gaps:
   (`PMDCollab/SpriteCollab`, `portrait/<dex>/Normal.png`, 40x40), which are square painted busts
   and do not match.
 
+**Swap bar faces for #387–718: ready in `art/sprites/faces/<dex>.png`.** They are from the Pokémon
+Battle Trozei "Small Pokémon Icons" sheet (spriters-resource.com, 3DS, asset 64891), made by
+`scripts/art/trozei_faces.py`: shrunk to 32x32, cut to 18 flat colours and given a solid dark outline so
+they stay crisp. Our own faces for #1–386 stay; the Trozei ones only fill the gap. A new Pokémon's
+face can be added as an item with `scripts/dat-add-items.py` or drawn from the PNG: copy it to
+`data/images/faces/<dex>/0.png` and give the face item an `image-frames: /images/faces/<dex> 1` line in
+`things.otml` (face items have 4 frames and `image:` only replaces the first). Gen 7–9 are not on the sheet.
+
 **In-game walk sprites: Mystery Dungeon sprites are the best fit.** After Gen 5 the games are 3D,
 so there are no official top-down sprites. `PMDCollab/SpriteCollab` has hand-made pixel walk
 animations for every Pokémon through Gen 9, in 8 directions:
@@ -50,9 +58,12 @@ animations for every Pokémon through Gen 9, in 8 directions:
 in size and outline. They have more walk frames than our 3, so frames would be picked or the
 outfit given more frames. Licence: credit the listed contributors (see the repo's credits files).
 
+In use: Deoxys (look 1565) is the SpriteCollab #0386 walk animation, frames 0, 2, 4 and 6, at
+2x on a 96 pixel sheet (credited to Chunsoft in SpriteCollab), until it gets its own art.
+
 ## Open decisions
 
 - Whether to apply the Gen 7 stat buffs and the other fixes from the stats audit before importing
   stats for new Pokémon from PokéAPI.
-- Shuffle faces for #387–809 plus a placeholder for Gen 8–9, or commission faces.
+- Faces for Gen 7–9 (not on the Trozei sheet): Shuffle conversions or commissioned.
 - Pixel-doubled Mystery Dungeon sprites for every new Pokémon, or redraw at our native size.
