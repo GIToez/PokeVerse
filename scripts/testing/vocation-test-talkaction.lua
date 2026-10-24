@@ -28,7 +28,10 @@ local function check(name, ok, detail)
         say("PASS " .. name)
     else
         failed = failed + 1
-        say("FAIL " .. name .. (detail and (" (" .. tostring(detail):sub(1, 300) .. ")") or ""))
+        local text = "FAIL " .. name .. (detail and (" (" .. tostring(detail):sub(1, 300) .. ")") or "")
+        -- the client can miss some of the messages, the server log keeps every failure
+        print("vocationtest: " .. text)
+        say(text)
     end
 end
 
@@ -2069,13 +2072,21 @@ local function testHalloween(cid)
         date(halloween.endsAt) == "2026-11-02 06:00", halloween and date(halloween.startsAt) .. " - " .. date(halloween.endsAt))
 
     local raids = read("data/raids/raids.xml") or ""
-    for _, name in ipairs(EventCalendar.RAIDS.halloween.names) do
+    -- the raids that come to the Kanto towns (the others have their own arenas)
+    local townRaids = { ["Halloween"] = true, ["christmasStolenPresent"] = true, ["christmasRocketBots"] = true,
+                        ["christmasRunawayStantler"] = true }
+    local names = {}
+    for _, id in ipairs({ "halloween", "christmas" }) do
+        for _, name in ipairs(EventCalendar.RAIDS[id].names) do names[#names + 1] = name end
+    end
+    names[#names + 1] = "Anniversary"
+    for _, name in ipairs(names) do
         local line = raids:match('<raid name="' .. name .. '"[^>]*>')
-        check("Halloween: raid " .. name .. " is in raids.xml, off on its own", line and line:find('enabled="no"') ~= nil, line)
+        check("Holiday raids: " .. name .. " is in raids.xml, off on its own", line and line:find('enabled="no"') ~= nil, line)
         -- reftype block would hold every raid up until its last ghost or cauldron is gone
-        check("Halloween: raid " .. name .. " doesn't block the others", line and line:find('reftype="single"') ~= nil, line)
+        check("Holiday raids: " .. name .. " doesn't block the others", line and line:find('reftype="single"') ~= nil, line)
         local text = line and read("data/raids/" .. line:match('file="([^"]+)"'))
-        check("Halloween: raid " .. name .. " has its file", text ~= nil, line)
+        check("Holiday raids: " .. name .. " has its file", text ~= nil, line)
         for cx, cy, cz, r, body in (text or ""):gmatch('<areaspawn[^>]-centerx="(%d+)" centery="(%d+)" centerz="(%d+)" radius="(%d+)">(.-)</areaspawn>') do
             local center, radius, amount = { x = tonumber(cx), y = tonumber(cy), z = tonumber(cz) }, tonumber(r), 0
             for count in body:gmatch('amount="(%d+)"') do amount = amount + tonumber(count) end
@@ -2092,12 +2103,12 @@ local function testHalloween(cid)
                 end
             end
             local where = string.format("%d,%d,%d", center.x, center.y, center.z)
-            check("Halloween: " .. name .. " spawn " .. where .. " has room for its " .. amount, free >= math.min(amount, (2 * radius + 1) ^ 2),
+            check("Holiday raids: " .. name .. " spawn " .. where .. " has room for its " .. amount, free >= math.min(amount, (2 * radius + 1) ^ 2),
                 free .. " free")
-            if (name == "Halloween") then
+            if (townRaids[name]) then
                 local zone = Weather.zoneAt(center)
                 local distance = zone and math.max(math.abs(zone.pos.x - center.x), math.abs(zone.pos.y - center.y))
-                check("Halloween: ghost spawn " .. where .. " is by a Kanto town", zone and zone.region.id == "kanto" and distance <= 150,
+                check("Holiday raids: " .. name .. " spawn " .. where .. " is by a Kanto town", zone and zone.region.id == "kanto" and distance <= 150,
                     zone and (zone.name .. " " .. distance))
             end
         end
@@ -2108,9 +2119,35 @@ local function testHalloween(cid)
             grounded = grounded + ((ground and ground.itemid ~= 0) and 1 or 0)
         end
         if (items > 0) then
-            check("Halloween: every cauldron of " .. name .. " is on the map", grounded == items, grounded .. "/" .. items)
+            check("Holiday raids: every item of " .. name .. " is on the map", grounded == items, grounded .. "/" .. items)
         end
     end
+
+    local spots = HalloweenEvent.getNpcSpots()
+    local named = {}
+    for _, spot in ipairs(spots) do named[spot.name] = true end
+    for _, name in ipairs(HalloweenEvent.NPCS) do
+        check("Halloween: " .. name .. " has a spot on the map", named[name] == true)
+    end
+    local function present()
+        local count = 0
+        for _, spot in ipairs(spots) do
+            count = count + (getNpcAtPosition(spot.pos, spot.name) and 1 or 0)
+        end
+        return count
+    end
+    local forced = EventCalendar.getForced("halloween")
+    EventCalendar.setForced("halloween", true)
+    HalloweenEvent.syncNpcs()
+    check("Halloween: its NPCs are there during Halloween", present() == #spots, present() .. "/" .. #spots)
+    EventCalendar.setForced("halloween", false)
+    HalloweenEvent.syncNpcs()
+    check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, present() .. "/" .. #spots)
+    EventCalendar.setForced("halloween", true)
+    HalloweenEvent.syncNpcs()
+    check("Halloween: its NPCs come back when it starts", present() == #spots, present() .. "/" .. #spots)
+    EventCalendar.setForced("halloween", forced)
+    HalloweenEvent.syncNpcs()
 
     local account = getPlayerAccountId(cid)
     local count, year = getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY), getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR)
@@ -2120,6 +2157,25 @@ local function testHalloween(cid)
     check("Halloween: last Halloween's rare candies don't count", getPlayerBoughtRareCandy(cid) == 0, getPlayerBoughtRareCandy(cid))
     setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY, count)
     setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR, year)
+end
+
+local function testSummerChests(cid)
+    local saved = getCreatureStorage(cid, playersStorages.summerHunting)
+    local year = tonumber(os.date("%Y"))
+    doCreatureSetStorage(cid, playersStorages.summerHunting, string.format("y%d:%d:0", year, -3599000))
+    JulyVacationEvent.onStaminaChange(cid, 0, -2000)
+    local spent, received = JulyVacationEvent.getHunting(cid)
+    check("Summer: the 1 hour chest after an hour of hunting", received == 1 and spent == -3601000, spent .. " " .. received)
+    JulyVacationEvent.onStaminaChange(cid, 0, -1000)
+    spent, received = JulyVacationEvent.getHunting(cid)
+    check("Summer: the 1 hour chest only once", received == 1, received)
+    check("Summer: kept on the character (a restart doesn't reset it)",
+        tostring(getCreatureStorage(cid, playersStorages.summerHunting)) == string.format("y%d:%d:1", year, -3602000),
+        tostring(getCreatureStorage(cid, playersStorages.summerHunting)))
+    doCreatureSetStorage(cid, playersStorages.summerHunting, string.format("y%d:%d:7", year - 1, -99999999))
+    spent, received = JulyVacationEvent.getHunting(cid)
+    check("Summer: last year's hunting doesn't count", spent == 0 and received == 0, spent .. " " .. received)
+    doCreatureSetStorage(cid, playersStorages.summerHunting, saved)
 end
 
 local function testSeasons(cid)
@@ -3194,7 +3250,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
