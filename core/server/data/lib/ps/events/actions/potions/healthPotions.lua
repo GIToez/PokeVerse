@@ -34,6 +34,40 @@ local HEALTH_POTIONS = {
 }
 
 local EVENTS = {}
+local MARK_EVENTS = {} -- [target] = the next heal mark refresh
+
+-- The heal mark over the creature's name, for every player who can see it; sent again every tick so
+-- players who come closer see it too
+local MARK_RANGE_X, MARK_RANGE_Y = 9, 7
+local function sendHealMark(target, seconds)
+    if (not EXTENDED_IDS.HEAL_MARK or not isCreature(target)) then
+        return
+    end
+    local payload = JSON.encode({ id = target, s = seconds })
+    for _, spectator in ipairs(getSpectators(getCreaturePosition(target), MARK_RANGE_X, MARK_RANGE_Y, false) or {}) do
+        if (isPlayer(spectator)) then
+            doSendPlayerExtendedOpcode(spectator, EXTENDED_IDS.HEAL_MARK, payload)
+        end
+    end
+end
+
+local function refreshHealMark(target, endsAt)
+    MARK_EVENTS[target] = nil
+    local left = endsAt - os.time()
+    if (not isCreature(target) or left <= 0) then
+        return
+    end
+    sendHealMark(target, left)
+    MARK_EVENTS[target] = addEvent(refreshHealMark, HEALTH_DELAY, target, endsAt)
+end
+
+local function stopHealMark(target)
+    if (MARK_EVENTS[target]) then
+        stopEvent(MARK_EVENTS[target])
+        MARK_EVENTS[target] = nil
+    end
+    sendHealMark(target, 0)
+end
 
 -- The Medic's stronger potions: the same condition with more health per tick, for every potion and
 -- Medic bonus. Conditions can only be created while the script loads.
@@ -75,6 +109,7 @@ local function getOtherTrainerPokemon(cid, position)
 end
 
 local function onHealEnd(cid, msg)
+    stopHealMark(cid)
     if (isCreature(cid)) then
         setIsPokemonUsingHealthPotion(cid, false)
         doSendAnimatedText(getCreaturePosition(cid), "HEAL -" .. msg, COLOR_RED)
@@ -92,6 +127,10 @@ local function onHealStart(cid, target, item, targetPosition, playerPosition, fo
     setIsPokemonUsingHealthPotion(target, true)
     doAddCondition(target, condition)
     EVENTS[target] = addEvent(onHealEnd, HEALTH_DURATION * 1000, target, HEALTH_POTIONS[item.itemid].msg)
+    if (MARK_EVENTS[target]) then
+        stopEvent(MARK_EVENTS[target])
+    end
+    refreshHealMark(target, os.time() + HEALTH_DURATION)
     doSendAnimatedText(targetPosition, "HEAL +" .. HEALTH_POTIONS[item.itemid].msg, COLOR_LIGHTGREEN)
     doSendMagicEffect(targetPosition, EFFECT_GREEN_BUFF)
     Sounds.around(targetPosition, "heal_hp")

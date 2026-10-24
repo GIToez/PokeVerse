@@ -1,0 +1,8 @@
+Module
+  name: game_healmark
+  description: PokeVerse heal mark: a small mark after the name of a Pokemon or trainer a health potion is healing
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ healmark ]
+  @onLoad: init()
+  @onUnload: terminate()
