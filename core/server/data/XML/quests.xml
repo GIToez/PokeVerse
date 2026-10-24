@@ -1191,7 +1191,7 @@
 			<missionstate id="0" description="Meanwhile, go to Cerulean and warn the authorities about this case. When you do this, return."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
-		<mission name="Officer Jeny" storageid="8422" startvalue="0" endvalue="1">
+		<mission name="Officer Jenny" storageid="8422" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Take these 8 posters. I'll mark on your map the locations that need to glue them. Will be 4 in each city."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>

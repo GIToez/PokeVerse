@@ -30204,7 +30204,7 @@
     <monster name="Gloom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3315" centery="277" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3475" centery="277" centerz="7" radius="1">
     <monster name="Pidgey" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -30961,7 +30961,7 @@
     <monster name="Kakuna" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3912" centery="318" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="5179" centery="318" centerz="7" radius="1">
     <monster name="Cloyster" x="1" y="1" z="7" spawntime="60" level="100"/>
@@ -31363,7 +31363,7 @@
     <monster name="Voltorb" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3294" centery="356" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4141" centery="356" centerz="7" radius="1">
     <monster name="Magnemite" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -32167,7 +32167,7 @@
     <monster name="Gloom" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3671" centery="441" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3717" centery="441" centerz="7" radius="1">
     <npc name="Rusty Barret" x="-1" y="0" z="7" spawntime="60" level="0"/>
@@ -32401,7 +32401,7 @@
     <npc name="NPC Skarmory" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3962" centery="469" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3981" centery="469" centerz="7" radius="1">
     <npc name="Lars Hill" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -32852,7 +32852,7 @@
     <monster name="Ponyta" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3289" centery="506" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3399" centery="506" centerz="7" radius="1">
     <monster name="Psyduck" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -33385,7 +33385,7 @@
     <npc name="Manley Bernard" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3279" centery="552" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3606" centery="552" centerz="7" radius="1">
     <monster name="Nidorana" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -33648,7 +33648,7 @@
     <monster name="Metapod" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4200" centery="580" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3148" centery="581" centerz="7" radius="1">
     <monster name="Pidgey" x="1" y="1" z="7" spawntime="60" level="0"/>
@@ -34138,7 +34138,7 @@
     <npc name="Reed" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3948" centery="643" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3178" centery="644" centerz="7" radius="1">
     <monster name="Mankey" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -35590,7 +35590,7 @@
     <monster name="Grimer" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3866" centery="818" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3965" centery="818" centerz="7" radius="1">
     <monster name="Metapod" x="0" y="1" z="7" spawntime="60" level="0"/>
@@ -36274,7 +36274,7 @@
     <monster name="Mightyena" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3353" centery="1039" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="499" centery="1041" centerz="7" radius="1">
     <monster name="Pelipper" x="-1" y="-1" z="7" spawntime="62" level="0"/>

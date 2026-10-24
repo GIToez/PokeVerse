@@ -5608,7 +5608,7 @@
     <npc name="Jack Simps" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1055" centery="377" centerz="6" radius="1">
-    <npc name="Officer Jeny" x="-1" y="0" z="6" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="621" centery="379" centerz="6" radius="1">
     <monster name="Arcanine" x="1" y="1" z="6" spawntime="60" level="0"/>
@@ -10438,7 +10438,7 @@
     <npc name="Jacob" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1043" centery="200" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="-1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1101" centery="200" centerz="7" radius="1">
     <monster name="Caterpie" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -10688,7 +10688,7 @@
     <npc name="Rock Jhonson" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="532" centery="259" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="602" centery="259" centerz="7" radius="1">
     <monster name="Jigglypuff" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -11489,7 +11489,7 @@
     <monster name="Gloom" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="873" centery="412" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="944" centery="413" centerz="7" radius="1">
     <monster name="Gloom" x="1" y="0" z="7" spawntime="60" level="0"/>
@@ -11900,7 +11900,7 @@
     <monster name="Caterpie" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1182" centery="499" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="-1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1067" centery="502" centerz="7" radius="1">
     <monster name="Oddish" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -12167,7 +12167,7 @@
     <monster name="Geodude" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="471" centery="574" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="496" centery="574" centerz="7" radius="1">
     <npc name="Joe Tiff" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -12187,7 +12187,7 @@
     <npc name="Bob Oddish" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1027" centery="575" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1000" centery="577" centerz="7" radius="1">
     <npc name="Guide Ron" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -13041,7 +13041,7 @@
     <npc name="Matthew" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="906" centery="751" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1644" centery="751" centerz="7" radius="1">
     <monster name="Seel" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -13434,7 +13434,7 @@
     <monster name="Oddish" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="431" centery="886" centerz="7" radius="1">
-    <npc name="Officer Jeny" x="-1" y="0" z="7" spawntime="60" level="0"/>
+    <npc name="Officer Jenny" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="380" centery="887" centerz="7" radius="1">
     <npc name="Oscar" x="1" y="0" z="7" spawntime="60" level="0"/>
