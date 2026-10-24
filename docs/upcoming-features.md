@@ -3066,8 +3066,12 @@ trade NPCs that are placed. These parts were never put on this map, so they don'
   Officer Jenny's Christmas quests (radar, cloak, saw) are commented out, but Santa's quest
   needs the radar, and no Officer Jenny stands at the Christmas village (5423,383,7).
   `npc/Santa Claus.xml` and `npc/Santa Claus Old.xml` both use the name "Santa Claus".
+- **Anniversary:** Logan (trades PSoul letters) isn't placed; the cake town has no NPCs. The
+  Cenarion change turns item 10504 into 10506, but neither item exists, so that part never
+  happens.
 - **To decide:** Christmas present #3 always gives 50 Stones of Knowledge, past the cap of 50
   from wild presents.
+- **To decide:** the holiday login gifts are once per character, so alts each get one.
 - **Done:** Trevor, Hermitwo, Selam, Queter Phill and Peter Paul are only there while Halloween
   runs (`HalloweenEvent.syncNpcs`).
 
