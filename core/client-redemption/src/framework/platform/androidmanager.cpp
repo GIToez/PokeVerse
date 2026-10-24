@@ -31,8 +31,10 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <set>
 #include <string_view>
 #include <thread>
+#include <vector>
 
 AndroidManager g_androidManager;
 
@@ -191,6 +193,28 @@ void AndroidManager::unZipAssetData() {
             }
         });
     AAsset_close(dataAsset);
+
+    // The APK leaves out what the release adds later (the Pokepedia's map pictures, about 80 MB),
+    // so the updater would fetch it all again after every new APK. Pictures and data the APK lacks
+    // move over from the old copy; the updater replaces any that changed. Scripts don't, since
+    // a module the release dropped would load before the updater removes it.
+    if (std::filesystem::is_directory(dataDir)) {
+        static const std::set<std::string> scripts = { ".lua", ".otui", ".otmod", ".otml" };
+        std::vector<std::filesystem::path> keep;
+        for (auto it = std::filesystem::recursive_directory_iterator(dataDir, ec);
+             !ec && it != std::filesystem::recursive_directory_iterator(); it.increment(ec)) {
+            if (it->is_regular_file(ec) && !scripts.contains(it->path().extension().string()))
+                keep.push_back(it->path());
+        }
+        for (const auto& path : keep) {
+            const auto target = unpackDir / std::filesystem::relative(path, dataDir, ec);
+            if (ec || std::filesystem::exists(target, ec))
+                continue;
+            std::filesystem::create_directories(target.parent_path(), ec);
+            std::filesystem::rename(path, target, ec);
+        }
+        ec.clear();
+    }
 
     std::filesystem::remove_all(dataDir, ec);
     std::filesystem::rename(unpackDir, dataDir);

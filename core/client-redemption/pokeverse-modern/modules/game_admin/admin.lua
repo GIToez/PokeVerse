@@ -917,6 +917,13 @@ local function fill(data)
         fillRegions(data.world)
         if data.world.legendary then
             fillLegendaries(data.world.legendary)
+        elseif not legendary.built then
+            local status = window.events.legendaries.status
+            status:destroyChildren()
+            local label = g_ui.createWidget('AdminText', status)
+            label:setText(tr('The server sent no legendary controls: it is older than this client. Deploy the server to get them.'))
+            label:setTextAutoResize(true)
+            label:setColor(MUTED_COLOR)
         end
     end
     refreshAccess()
@@ -1083,6 +1090,47 @@ function init()
         end, entry[3])
     end
     player.ban.onClick = onBan
+
+    local lookCount
+    local function pickedLook()
+        local look = tonumber(player.look:getText())
+        lookCount = lookCount or #g_things.getThingTypes(ThingCategoryCreature)
+        if not look or look < 2 or look >= lookCount then
+            return nil
+        end
+        return look
+    end
+    player.look.onTextChange = function()
+        local look = pickedLook()
+        player.lookPreview:setVisible(look ~= nil)
+        if look then
+            player.lookPreview:setOutfit({ type = look })
+            player.lookName:setText(tr('Look %d', look))
+        else
+            player.lookName:setText(trim(player.look:getText()) ~= '' and tr('No such look') or '')
+        end
+    end
+    player.look.onTextChange()
+    local function forced(target)
+        return function()
+            local look = pickedLook()
+            if not look then
+                return nil, tr('Type a look number first.')
+            end
+            if target == 'me' then
+                return '/forceoutfit ' .. look
+            end
+            local name, why = selectedName()
+            return name and string.format('/forceoutfit %d, %s', look, name), why
+        end
+    end
+    commandButton(player.lookButtons, 'AdminSectionButton', 'On the player', '/forceoutfit', forced('player'),
+        'Until they relog or choose an outfit; it is not added to their outfits'):setWidth(110)
+    commandButton(player.lookButtons, 'AdminSectionButton', 'On me', '/forceoutfit', forced('me')):setWidth(80)
+    commandButton(player.lookButtons, 'AdminSectionButton', 'Give theirs back', '/forceoutfit', function()
+        local name, why = selectedName()
+        return name and ('/forceoutfit off, ' .. name), why
+    end, 'Put the player\'s own outfit back now'):setWidth(130)
 
     buildServer()
 
