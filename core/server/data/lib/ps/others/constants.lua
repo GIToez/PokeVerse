@@ -78,7 +78,8 @@ EXTENDED_IDS = {
     POKEDEX_DETAILS = 43, -- JSON Pokedex Details tab, sent just before the Pokedex entry (getDexDetails in 010-pokedex.lua)
     BANK = 44, -- JSON Bank window: balance, money carried, deposit, withdraw, transfer and history (Bank)
     LEGENDARY_FLIGHT = 45, -- JSON {type = "flight"|"shake"|"meteors", ...}: a legendary flying or swimming past, the ground shaking, falling meteors (WildLegendaries)
-    BATTLE_TEXT = 46 -- JSON trainers' call-outs, wild moves, misses and hit kinds for the battle text (BattleText)
+    BATTLE_TEXT = 46, -- JSON trainers' call-outs, wild moves, misses and hit kinds for the battle text (BattleText)
+    ANNOUNCEMENT = 47 -- JSON server-wide news for the news banner: {c = category, h = title, x = text, f = the text message} (Announcements)
 }
 
 TOURNAMENT_TYPES = {}

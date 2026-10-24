@@ -314,6 +314,16 @@ step "Character limit"
 max_characters=$(tr -d '\r' < "$root/core/server/config.lua" | sed -n 's/^\s*maxCharactersPerAccount = \([0-9]*\).*/\1/p')
 python3 "$root/scripts/account-test.py" --slot-limit "$max_characters"
 
+step "News banner"
+news=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk "" \
+  --say "/b Test broadcast" || true)
+echo "$news" | grep "extended opcode 47" || true
+echo "$news" | python3 -c '
+import json, sys
+news = [json.loads(line.split("extended opcode 47: ", 1)[1]) for line in sys.stdin if "extended opcode 47: " in line]
+assert {"c": "staff", "h": "Admin", "x": "Test broadcast", "f": "Admin: Test broadcast"} in news, news'
+echo "News banner: /b is a Staff announcement with the staff name"
+
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true
 if grep -q "MYSQL ERROR" "$work/server.log"; then echo "FAIL: database errors in server log"; exit 1; fi

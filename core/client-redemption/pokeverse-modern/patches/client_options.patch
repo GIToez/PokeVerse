@@ -213,7 +213,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1169,5 +1181,75 @@
+@@ -1169,5 +1181,92 @@
             g_client.setBossAreaCreatureEffectAlpha(value / 100)
          end
      },
@@ -239,6 +239,23 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +    battleTextCritShake               = true,
 +    showEventCards                    = true, -- PokeVerse pop-up cards (game_eventcards)
 +    showHints                         = true, -- PokeVerse first-visit hints (game_hints)
++    -- PokeVerse news banner (game_newsbanner): server-wide announcements, and the rotating tips in it
++    showNewsBanner                    = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_newsbanner and modules.game_newsbanner.refresh then
++                modules.game_newsbanner.refresh()
++            end
++        end
++    },
++    showTips                          = {
++        value = true,
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_newsbanner and modules.game_newsbanner.refresh then
++                modules.game_newsbanner.refresh()
++            end
++        end
++    },
 +    -- PokeVerse weather (game_weather)
 +    weatherEffects                    = {
 +        value = true,
@@ -1083,7 +1100,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
  
    SmallReversedQtPanel
      anchors.left: parent.left
-@@ -71,41 +75,154 @@
+@@ -71,41 +75,178 @@
      anchors.top: prev.bottom
      margin-top: 7
      height: 22
@@ -1092,6 +1109,30 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 -      id: showRightExtraPanel
 -      !text: tr('Show an extra right panel')
 -      
++
++    OptionCheckBoxMarked
++      id: showNewsBanner
++      !text: tr('Show news banner')
++      !tooltip: tr('Server-wide news (events, legendaries, restarts, staff broadcasts) in a banner at the top of the screen. Off: the red text in the middle of the screen.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: showTips
++      !text: tr('Show tips')
++      !tooltip: tr('A tip in the news banner about once an hour, never during a fight.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
 +
 +    OptionCheckBoxMarked
 +      id: showHints
@@ -1146,18 +1187,6 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      !text: tr('Lightning flashes')
 +      !tooltip: tr('The white flash of lightning in thunderstorms.')
 +
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
-+    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
-+      id: pokemonEffects
-+      !text: tr('Shiny and status effects on Pokemon')
-+      !tooltip: tr('Shiny Pokemon shimmer, and burned, frozen, paralysed, poisoned, asleep or confused Pokemon show it.')
-+
    SmallReversedQtPanel
      anchors.left: parent.left
      anchors.right: parent.right
@@ -1170,10 +1199,26 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 -      id: showSpellGroupCooldowns
 -      !text: tr('Show spell group cooldowns')
 -      !tooltip: tr('Can be enabled only in version 8.7x or higher')
++      id: pokemonEffects
++      !text: tr('Shiny and status effects on Pokemon')
++      !tooltip: tr('Shiny Pokemon shimmer, and burned, frozen, paralysed, poisoned, asleep or confused Pokemon show it.')
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
++    margin-top: 7
+     height: 22
+-    margin-top: 5
+ 
+     OptionCheckBoxMarked
+-      id: showInfoBanner
+-      !text: tr('Show Info Banner')
+-      !tooltip: tr('Tick this box to display an info banner for certain in-game events.')
 +      id: areaMoods
 +      !text: tr('Dark caves and Lavender Town haze')
 +      !tooltip: tr('Caves are dark but for a circle around you, wider with the Flashlight or a Pokemon using Flash. Lavender Town is grey and misty.')
-+
+ 
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
@@ -1196,28 +1241,24 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      anchors.left: prev.right
 +      mouse-scroll: false
 +      !tooltip: tr('New: trainers call out their moves in speech bubbles, and hits, misses, dodges and effects each have their own look. Classic: the plain text over the creatures.')
- 
-   SmallReversedQtPanel
-     anchors.left: parent.left
-     anchors.right: parent.right
-     anchors.top: prev.bottom
-+    margin-top: 7
-     height: 22
--    margin-top: 5
- 
-     OptionCheckBoxMarked
--      id: showInfoBanner
--      !text: tr('Show Info Banner')
--      !tooltip: tr('Tick this box to display an info banner for certain in-game events.')
-+      id: battleTextCritShake
-+      !text: tr('Screen shake on critical hits')
-+      !tooltip: tr('A small jolt of the map when a critical hit lands, with the New battle text.')
 +
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
 +    anchors.top: prev.bottom
 +    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: battleTextCritShake
++      !text: tr('Screen shake on critical hits')
++      !tooltip: tr('A small jolt of the map when a critical hit lands, with the New battle text.')
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
+     margin-top: 7
 +    height: 22
 +
 +    $mobile:
@@ -1228,15 +1269,15 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +    OptionCheckBox
 +      id: showLeftPanel
 +      !text: tr('Show left panel')
- 
++
 +      $mobile:
 +        visible: false
- 
-   SmallReversedQtPanel
-     anchors.left: parent.left
-     anchors.right: parent.right
-     anchors.top: prev.bottom
-     margin-top: 7
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
 +    height: 22
 +  
 +    OptionCheckBox
@@ -1251,7 +1292,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
      height: 32
    
      Label
-@@ -117,63 +234,33 @@
+@@ -117,63 +258,33 @@
  
      QtComboBox
        id: crosshair

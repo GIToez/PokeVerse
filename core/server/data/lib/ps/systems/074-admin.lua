@@ -190,7 +190,8 @@ local function broadcast(cid, data)
         return result(cid, false, "Pick where to broadcast.")
     end
     if (target ~= "discord") then
-        doBroadcastMessage(getCreatureName(cid) .. ": " .. text, MESSAGE_STATUS_WARNING)
+        doBroadcastMessage(getCreatureName(cid) .. ": " .. text, MESSAGE_STATUS_WARNING,
+            { category = "staff", title = getCreatureName(cid), text = text })
     end
     if (target ~= "game") then
         DiscordBridge.onBroadcast("gm", getCreatureName(cid), text)

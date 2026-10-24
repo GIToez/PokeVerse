@@ -14,7 +14,7 @@
 	<globalevent name="viridianPikachu" interval="1800" event="script" value="../../lib/ps/events/globalevents/viridianPikachu.lua"/>
 	<globalevent name="sudowoodoTree" interval="3600" event="script" value="../../lib/ps/events/globalevents/sudowoodoTree.lua"/>
 	
-	<globalevent name="globalMessages" interval="2700" event="script" value="../../lib/ps/events/globalevents/globalMessages.lua"/>
+	<globalevent name="globalMessages" interval="3600" event="script" value="../../lib/ps/events/globalevents/globalMessages.lua"/>
 	
 	<globalevent name="anniversary" interval="3600" event="script" value="../../lib/ps/events/globalevents/anniversary.lua"/>
 

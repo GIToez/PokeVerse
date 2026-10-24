@@ -2788,7 +2788,7 @@ stack as separate bubbles that float up and fade (C).
 
 ## 25. Announcements: news banner, call-out bubbles, Discord and the calendar
 
-Plan; the call-out bubbles are built. The aim is that nothing needs adding by hand: a new holiday, weekend event,
+The call-out bubbles, the news banner and the tips are built; Discord and the calendar are planned. The aim is that nothing needs adding by hand: a new holiday, weekend event,
 staff event or legendary shows up in game, on Discord and in Discord's event calendar on its
 own.
 
@@ -2810,83 +2810,73 @@ calling out, recalling and giving orders used plain yellow speech. Now they're b
   console patch takes the overhead text, like a move call-out; Local Chat keeps the line.
   "Battle text: Classic" turns them back to plain text, and old clients see the plain text.
 
-### The news banner
+### The news banner (built)
 
-Today every server-wide message is Tibia's red text in the middle of the screen, and it's gone
-in a few seconds. There are 44 broadcasts: events starting and ending, wild legendaries,
-restarts and saves, the World Boss, the new Champion, a completed Pokédex, staff broadcasts and
-the rotating tips. All of them go through one function, `doBroadcastMessage`
-(`lib/050-function.lua`).
+Every server-wide message used to be Tibia's red text in the middle of the screen, gone in a few
+seconds: events starting and ending, wild legendaries, restarts and saves, the World Boss, the
+new Champion, a completed Pokédex, staff broadcasts and the tips. They all go through
+`doBroadcastMessage` (`lib/050-function.lua`), and now they're a news banner. The pop-up cards
+for spawns (`game_eventcards`) stay as they are; the banner waits while one of their banners
+(or a level-up or evolution banner) is showing.
 
-The banner is for the calendar, events, broadcasts and tips. The pop-up cards for spawns
-(`game_eventcards`, used for legendaries today) stay as they are and aren't touched.
-
-**The look:** a Poké Ball drops in at the top centre of the screen, just under the top bar, and
-pulses twice. It splits open
-with a white flash, the two halves slide left and right, and a news banner unrolls between
-them, with the
-category's icon and colour, a title and the text. It stays about 5 seconds (longer for long
-text), rolls back into the ball, and the ball shrinks away. A soft chime plays (muted with the
-sound effects volume). More announcements queue up, one at a time. Hovering keeps it open, and
-clicking opens the full text in chat. The banner is about 45% of the game window's width (it
-scales with the window, within a smallest and largest size) and about two lines tall, so it
-never covers the middle of the screen where the player is.
+**The look:** a Poké Ball drops in at the top of the game window, just under the trainer's HUD,
+and pulses twice in the category's colour. It turns sideways, opens along its seam with a white
+flash and the ball-opening sound, and the red and white halves slide out to each side as the
+banner spreads between them: the category's icon, name and colour, a title and the text. It
+stays about 5 seconds (up to 9 for long text), folds back in, the ball turns upright and
+sparkles away. More announcements queue up, one at a time. Hovering keeps it open, and clicking
+it opens the Server Log, which has the whole text. The banner is 45% of the map's width (380 to
+620 pixels) and one or two lines of text tall; longer text is cut with "...".
 
 | Category | Colour and icon | For |
 | --- | --- | --- |
-| Event | Gold, star | Holidays, weekend events, bonus events starting and ending |
-| Legendary | Purple, the Pokémon's face | Spawns, sightings, sets, clashes, catches |
+| Event | Gold, star | Holidays, weekend events, bonus events, the World Boss |
+| Legendary | Purple, sparkle | Spawns, sightings, sets, clashes, catches |
 | Server | Red, wrench | Restarts, saves, shutdowns, cleaning |
 | Staff | Blue, megaphone | `/b` and the admin window's broadcast, with the staff name |
-| Milestone | Green, trophy | New Champion, completed Pokédex, World Boss defeated |
+| Milestone | Green, trophy | New Champion, completed Pokédex, player records |
 | Tip | Grey, light bulb | The rotating tips (see below) |
+| News | Teal, page | Anything else |
 
-Every category gets the full banner.
+**How it works:**
 
-**How it stays automatic:**
-
-- **One place:** `doBroadcastMessage` gets an optional category and title. Old calls with no
-  category are guessed from where they're called from (calendar, legendaries, restart, staff),
-  and anything else is "news", so every existing broadcast gets the banner without being
-  touched.
-- **Old clients keep working:** the server sends an `ANNOUNCEMENT` opcode (JSON: category,
-  title, text, icon, how long), and the old text too. The new client hides the text it already
-  showed as a banner, the same way battle text does.
-- **A new module, nothing existing edited:** the banner is its own client module,
-  `game_newsbanner`, with its own queue, art and sound. `game_eventcards` and its "Show event
-  pop-up cards" switch are left alone. The banner gets its own switch in Options > Interface,
-  "Show news banner"; off brings back the red text.
+- **One place:** `doBroadcastMessage(text, class, announcement)` takes an optional
+  `{category, title, text}`. Calls without one get the category from the script that sent them
+  (`Announcements.BY_SOURCE` in `092-announcements.lua`), and the title from the text itself:
+  "Weekend Event has started: Double EXP ..." becomes the title "Weekend Event has started" and
+  the rest. So every existing broadcast got the banner without being touched; the admin
+  window's broadcast and `/b` say they're Staff.
+- **Old clients keep working:** the server sends the `ANNOUNCEMENT` opcode (47) just before the
+  text message. The new client hides the red text it already showed as a banner (a small hook
+  in `game_textmessage`); the console keeps it. Old clients only get the text.
+- **Its own module:** `game_newsbanner`, with its own queue and art
+  (`scripts/art/news_banner.py`). Options > Interface > "Show news banner" turns it off and
+  brings back the red text.
 - **Personal red messages later:** 35 personal messages ("You need level X", quest notices)
   also use the red centre text. They'd become a small card on the right side, as a second step.
+- **Later:** the legendary's own face instead of the sparkle icon.
 
-### Rotating tips
+### Rotating tips (built)
 
-There are 5 tips today, in `lib/ps/events/globalevents/globalMessages.lua`, sent as red,
-white or green text in turn.
+The tips are in `093-tips.lua`: the 5 old ones, shortened, and 26 new ones (the list below).
+Adding a tip is one line.
 
-- **More tips:** a longer list (about 40) in its own file, covering hotkeys, the Poképedia,
-  Day Care, Union Room, the GTS, tasks, fishing, Soul Coins and Discord linking. Adding a tip is
-  one line.
-- **Shown as Tip banners, about once an hour** (a setting), in a shuffled order so the same tip
-  doesn't come back soon. They wait their turn behind other announcements.
-- **Never in combat:** a tip that comes up while the player is in a fight (a wild or trainer
-  battle, a duel, a gym, or hit in the last 30 seconds) waits until they've been out of combat
-  for a while. If an hour goes by it's skipped.
-- **A "Turn off tips" button on the Tip banner** turns them off with one click. They can be
-  turned back on, or off, in Options > Interface ("Show tips"). This doesn't touch the other
-  announcements.
+- **Tip banners once an hour** (`globalMessages` in `globalevents.xml`), in a shuffled order: every
+  tip comes up once before any comes back. Old clients get them as white text.
+- **Never in a fight:** a tip waits until the trainer has been out of a fight for 30 seconds
+  (attacking, or the battle icon), behind any other announcements. After an hour it's dropped.
+- **"Turn off tips"** on the Tip banner turns them off with one click; Options > Interface >
+  "Show tips" turns them back on. With tips off they don't show at all, not even as text. This
+  doesn't touch the other announcements.
 - **Fitting the player, later:** tips can say who they're for (a level range, or players who
   haven't used a feature yet), and each player gets one that fits.
-- **Short:** a tip fits on one line of the banner (about 75 letters).
-
-**Starter list (proposed).** The 5 tips today (account safety, no bots, the Help channel,
-inviting friends, suggestions) stay, shortened to fit.
+- Not posted to Discord.
 
 | Topic | Tip |
 | --- | --- |
 | Pokepedia | Press M to open the Pokepedia and read the Wiki tab. |
 | Selling | Sell Pokémon you don't want to Ron in the Union Room. |
-| Union Room | Every Pokémon Center has a way into the Union Room. Meet other trainers there! |
+| Union Room | Every Pokémon Center has a way into the Union Room. Meet trainers there! |
 | PC | Every locker opens your PC: boxes, stash, inbox and depot. |
 | GTS | Trade Pokémon with other trainers on the GTS. |
 | Day Care | Leave a Pokémon at the Day Care to train it, or to find an egg. |
@@ -2910,7 +2900,6 @@ inviting friends, suggestions) stay, shortened to fit.
 | Legendaries | Strange signs mean a legendary is near. Keep your eyes open! |
 | Visual style | Try the Vibrant or Toon visual style in Options. |
 | Store | Soul Coins buy nicknames and more in the Store. |
-- Not posted to Discord.
 
 ### Discord
 
@@ -2983,8 +2972,8 @@ The game's calendar (`077-eventCalendar.lua`) already knows every event ahead of
 
 1. Call-out and recall bubbles, NPC trainers and orders (built).
 2. `doBroadcastMessage` categories, the `ANNOUNCEMENT` opcode and the new `game_newsbanner`
-   module.
-3. The rotating tips.
+   module (built).
+3. The rotating tips (built).
 4. Discord announcements with the Verified Trainer and @everyone pings, and the `/b` tags.
 5. The legendary Discord updates.
 6. The calendar sync, start and end posts, and reminders.
@@ -2992,11 +2981,6 @@ The game's calendar (`077-eventCalendar.lua`) already knows every event ahead of
 
 Steps 4 to 6 need bot changes in PokeVerse-Discord, sent as patches in
 `integrations/pokeverse-discord/patches/` like the legendary threads.
-
-### To decide
-
-- The banner's colours (a concept is in the PR for this plan).
-- The final tip list (a starter list is above).
 
 ## Going private
 
