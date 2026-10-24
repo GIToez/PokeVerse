@@ -13,7 +13,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
         doRemoveCondition(cid, CONDITION_OUTFIT, CONDITION_SUBID.OUTFITS.CHRISTMAS)
       end
 
-      doSendDistanceShoot(pos, fromPosition, PROJECTILE_ICE_BALL)
+      doSendDistanceShoot(getCreaturePosition(itemEx.uid), fromPosition, PROJECTILE_ICE_BALL)
       doSendMagicEffect(fromPosition, EFFECT_FREEZE)
       doAddCondition(cid, OUTFIT)
       doRemoveItem(item.uid, 1)

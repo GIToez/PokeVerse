@@ -2,7 +2,7 @@ local MONSTERS = {
     ["Mad Big Cake"] = function(cid, killer)
         AnniversaryEvent.onBossKill(cid, killer)
     end,
-    ["Minion Cake"] = function(cid)
+    ["Minion Cake"] = function(cid, killer)
         AnniversaryEvent.onMinionKill(cid, killer)
     end,
     ["Minion Chocolate Cake"] = function(cid, killer)

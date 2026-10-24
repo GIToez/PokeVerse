@@ -197,7 +197,7 @@ EventCalendar.HOLIDAYS = {
           return y and days(y, m, d, 3) or {}
       end },
     { id = "valentines", name = "Valentine's", color = "#f080b0",
-      description = "2x Day Care egg chance, and Luvdisc bite more often while fishing.",
+      description = "2x Day Care egg chance, Luvdisc bite more often while fishing, and a rare candy when you log in.",
       bonuses = { breeding = 2 }, luvdisc = true, gift = { items = { { 14463, 1 } } },
       dates = function(year) return days(year, 2, 13, 3) end },
     { id = "pokemonday", name = "Pokemon Day", color = "#f0c040",
@@ -1016,6 +1016,7 @@ function EventCalendar.onThink()
     end
     running = keys
     AnniversaryEvent.sync()
+    HalloweenEvent.syncNpcs()
 
     for id, raid in pairs(EventCalendar.RAIDS) do
         if (not EventCalendar.isActive(id)) then

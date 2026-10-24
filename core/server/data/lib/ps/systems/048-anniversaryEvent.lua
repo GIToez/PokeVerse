@@ -403,6 +403,7 @@ AnniversaryEvent.doSummonBoss = function()
         end
     end
 
+    AnniversaryEvent.setEventState(AnniversaryEvent.EVENT_STATES.KILLING_BOSS)
     doBroadcastMessage("The Evil Cake has appeared!")
 end
 
@@ -433,7 +434,16 @@ end
 
 AnniversaryEvent.onBossKill = function(cid, killer)
     AnniversaryEvent.undoCenarionTransformation()
-    AnniversaryEvent.setEventState(AnniversaryEvent.EVENT_STATES.UNSTARTED)
+    -- the kill count back to 0 too, or doCheckTempleMinions keeps bringing temple minions back
+    AnniversaryEvent.doResetState()
+    for _, group in pairs(MAGIC_FLAME_POSITIONS) do
+        for _, pos in pairs(group) do
+            local flame = getTileItemById(pos, MAGIC_FLAME_ITEMID)
+            if (isItem(flame)) then
+                doRemoveItem(flame.uid)
+            end
+        end
+    end
     doCreateItem(STATIC_BIG_CAKE_ITEMID, 1, AnniversaryEvent.STATIC_BIG_CAKE_POS)
 end
 
@@ -594,8 +604,9 @@ AnniversaryEvent.onSpawn = function(cid) -- Just an ugly hack to fix the hp
 end
 
 AnniversaryEvent.doStartEvent = function()
-    if (AnniversaryEvent.getEventState() == AnniversaryEvent.EVENT_STATES.UNSTARTED) then
-        executeRaid("anniversary")
+    -- doExecuteRaid refuses while another raid runs: the state stays UNSTARTED so the hourly
+    -- globalevent tries again
+    if (AnniversaryEvent.getEventState() == AnniversaryEvent.EVENT_STATES.UNSTARTED and executeRaid("anniversary")) then
         AnniversaryEvent.setMinionKillCount(0)
         AnniversaryEvent.setEventState(AnniversaryEvent.EVENT_STATES.KILLING_MINIONS)
     end

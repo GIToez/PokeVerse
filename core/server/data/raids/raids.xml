@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <raids>
 	<!-- EVENTS -->
+		<!-- reftype single for every event raid: a raid isn't repeated while its monsters or items are
+		     left, but doesn't hold up the others (with block, one ghost nobody kills would stop every
+		     raid for the rest of the event) -->
 		<!-- ANNIVERSARY -->
-			<raid name="Anniversary" enabled="no" file="events/anniversary.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-		<!-- HALLOWEEN (EventCalendar starts these while Halloween runs). reftype single: a raid isn't
-		     repeated while its ghosts or cauldrons are left, but doesn't hold up the others (with block,
-		     one ghost nobody kills would stop every raid for the rest of the event) -->
+			<raid name="Anniversary" enabled="no" file="events/anniversary.xml" interval2="2" margin="30" reftype="single" ref="yes" />
+		<!-- HALLOWEEN (EventCalendar starts these while Halloween runs) -->
 			<raid name="Halloween Suramoon" enabled="no" file="events/halloweenSuramoon.xml" interval2="35" margin="35" reftype="single" ref="yes" />
 			<raid name="Halloween" enabled="no" file="events/halloween.xml" interval2="30" margin="30" reftype="single" ref="yes" />
 			<raid name="Halloween Caldron" enabled="no" file="events/halloweenPot.xml" interval2="25" margin="25" reftype="single" ref="yes" />
 
 		<!-- CHRISTMAS (EventCalendar starts these while Christmas runs) -->
-			<raid name="christmasGrinchInvasion" enabled="no" file="events/christmasGrinchInvasion.xml" interval2="35" margin="35" reftype="block" ref="yes" />
-			<raid name="christmasStolenPresent" enabled="no" file="events/christmasStolenPresent.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-			<raid name="christmasRocketBots" enabled="no" file="events/christmasRocketBots.xml" interval2="2" margin="30" reftype="block" ref="yes" />
-			<raid name="christmasRunawayStantler" enabled="no" file="events/christmasRunawayStantler.xml" interval2="2" margin="30" reftype="block" ref="yes" />
+			<raid name="christmasGrinchInvasion" enabled="no" file="events/christmasGrinchInvasion.xml" interval2="35" margin="35" reftype="single" ref="yes" />
+			<raid name="christmasStolenPresent" enabled="no" file="events/christmasStolenPresent.xml" interval2="2" margin="30" reftype="single" ref="yes" />
+			<raid name="christmasRocketBots" enabled="no" file="events/christmasRocketBots.xml" interval2="2" margin="30" reftype="single" ref="yes" />
+			<raid name="christmasRunawayStantler" enabled="no" file="events/christmasRunawayStantler.xml" interval2="2" margin="30" reftype="single" ref="yes" />
 		
 	<!--
 		executed on average once every 2 minutes

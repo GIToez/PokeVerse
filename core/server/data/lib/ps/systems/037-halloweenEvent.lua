@@ -593,6 +593,53 @@ HalloweenEvent.onPlayerUseHalloweenBox = function(cid, item)
     end
 end
 
+-- Only there while Halloween runs (EventCalendar.onThink): the map places them at startup, they are
+-- taken away when Halloween isn't on and put back on their spawn spots when it starts
+HalloweenEvent.NPCS = { "Trevor", "Hermitwo", "Selam", "Queter Phill", "Peter Paul" }
+
+local npcSpots = nil
+HalloweenEvent.getNpcSpots = function()
+    if (npcSpots) then
+        return npcSpots
+    end
+    npcSpots = {}
+    local wanted = {}
+    for _, name in ipairs(HalloweenEvent.NPCS) do
+        wanted[name] = true
+    end
+    local file = io.open(string.format("data/world/%s-spawn.xml", getConfigValue("mapName") or "map"), "r")
+    if (not file) then
+        return npcSpots
+    end
+    local text = file:read("*a")
+    file:close()
+    for cx, cy, body in text:gmatch('<spawn centerx="(%d+)" centery="(%d+)"[^>]*>(.-)</spawn>') do
+        for name, x, y, z in body:gmatch('<npc name="([^"]+)" x="(%-?%d+)" y="(%-?%d+)" z="(%d+)"') do
+            if (wanted[name]) then
+                npcSpots[#npcSpots + 1] = { name = name, pos = { x = tonumber(cx) + tonumber(x), y = tonumber(cy) + tonumber(y), z = tonumber(z) } }
+            end
+        end
+    end
+    return npcSpots
+end
+
+local npcsShown = nil
+HalloweenEvent.syncNpcs = function()
+    local active = EventCalendar.isActive("halloween")
+    if (npcsShown == active) then
+        return
+    end
+    npcsShown = active
+    for _, spot in ipairs(HalloweenEvent.getNpcSpots()) do
+        local npc = getNpcAtPosition(spot.pos, spot.name)
+        if (active and not npc) then
+            doCreateNpc(spot.name, spot.pos, false)
+        elseif (not active and npc) then
+            doRemoveCreature(npc)
+        end
+    end
+end
+
 HalloweenEvent.DAMAGE_MINIMUM_RATIO = 0.5
 HalloweenEvent.DROP_CHANCE = 30000 -- 40%
 HalloweenEvent.HALLOWEEN_BOX_ITEMIDS = {28071, 28072, 28073, 28074, 28075}
