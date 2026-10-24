@@ -2788,7 +2788,7 @@ stack as separate bubbles that float up and fade (C).
 
 ## 25. Announcements: news banner, call-out bubbles, Discord and the calendar
 
-The call-out bubbles, the news banner and the tips are built; Discord and the calendar are planned. The aim is that nothing needs adding by hand: a new holiday, weekend event,
+All built: the call-out bubbles, the news banner, the tips, Discord and the calendar. The aim is that nothing needs adding by hand: a new holiday, weekend event,
 staff event or legendary shows up in game, on Discord and in Discord's event calendar on its
 own.
 
@@ -2901,11 +2901,11 @@ Adding a tip is one line.
 | Visual style | Try the Vibrant or Toon visual style in Options. |
 | Store | Soul Coins buy nicknames and more in the Store. |
 
-### Discord
+### Discord (built)
 
-The bot (GIToez/PokeVerse-Discord) posts staff broadcasts and restart warnings to
+Before this, the bot (GIToez/PokeVerse-Discord) posted staff broadcasts and restart warnings to
 `#game-announcements`, and one post with a thread per wild legendary to `#legendary-spawns`.
-Nothing else reaches Discord.
+Nothing else reached Discord.
 
 **Every announcement goes to Discord automatically.** The same `ANNOUNCEMENT` data is sent to
 the bot (`kind = "announcement"`). It posts an embed in the category's colour, with art for
@@ -2943,7 +2943,7 @@ The bridge also has its own hand-written legendary list (`056-discordBridge.lua`
 drift from the revamp's. It would read the revamp's species list, so new legendaries (Gen 4 to
 6) need no Discord change.
 
-### Events on the calendar
+### Events on the calendar (built)
 
 The game's calendar (`077-eventCalendar.lua`) already knows every event ahead of time:
 
@@ -2974,13 +2974,44 @@ The game's calendar (`077-eventCalendar.lua`) already knows every event ahead of
 2. `doBroadcastMessage` categories, the `ANNOUNCEMENT` opcode and the new `game_newsbanner`
    module (built).
 3. The rotating tips (built).
-4. Discord announcements with the Verified Trainer and @everyone pings, and the `/b` tags.
-5. The legendary Discord updates.
-6. The calendar sync, start and end posts, and reminders.
+4. Discord announcements with the Verified Trainer and @everyone pings, and the `/b` tags (built).
+5. The legendary Discord updates (built).
+6. The calendar sync, start and end posts, and reminders (built).
 7. Later: the personal red messages as cards.
 
 Steps 4 to 6 need bot changes in PokeVerse-Discord, sent as patches in
-`integrations/pokeverse-discord/patches/` like the legendary threads.
+`integrations/pokeverse-discord/patches/announcements/` (see its README).
+
+### Steps 4 to 6 as built
+
+- **Game:** `Announcements.send` also hands every announcement but the tips to
+  `DiscordBridge.onAnnouncement` (kind `announcement`, [discord-bridge.md](discord-bridge.md)).
+  The welcome lists the `announcements` and `calendar` features. The old `broadcast` event is
+  still sent, and the new bot ignores it when the game has `announcements`, so either side can
+  be updated first.
+- **`/b` tags:** `/b @everyone text`, `@here`, `@verified` or `@RoleName` (no spaces; the bot
+  ignores case, spaces and punctuation, so `@SeniorTutor` finds "Senior Tutor"). The tag is
+  taken out of the in-game text. Below Gamemaster, @everyone and @here are dropped and the
+  staff member is told.
+- **Admin window:** the broadcast row has a **Ping on Discord** list: none, Verified Trainer,
+  the server's roles (the bot sends up to 25 with `announcements.roles` on connect and every
+  15 minutes; kept in global storage `DISCORD_PING_ROLES`), and @here and @everyone for
+  Gamemasters and up when the bot has Mention Everyone. It is off for game-only broadcasts.
+- **Bot:** posts the categories in `ANNOUNCE_CATEGORIES` (default event, staff, milestone,
+  news; legendaries stay in `#legendary-spawns`, server notices come from the restart
+  warnings). `ANNOUNCE_PINGS` defaults to `event=verified`, which pings only for holiday and
+  weekend (server) calendar events, at their start and end. A change of time or bonuses edits
+  the Discord event without a ping.
+- **Legendaries:** one post and thread per set; Mewtwo's disturbance and quest rewards as
+  channel posts; Regis waking, Mew's reveal (a disguised Mew isn't posted before it), the
+  clashes and Rayquaza's calm in the threads. `bridge.config`'s legendary list adds every
+  `WildLegendaries.SPECIES`.
+- **Calendar:** scheduled events (external, "In game: PokeVerse") with the description and
+  bonuses, no cover image yet. Staff events forced on in game are left out. One already
+  running when first seen starts a minute from then (Discord can't create events in the
+  past). The reminder an hour before has no ping.
+- **Tests:** 252 bot unit tests; `scripts/discord-bridge-test.py` checks the features, the
+  announcement event, the `/b` tags, `announcements.roles` and `calendar.range`.
 
 ## Going private
 

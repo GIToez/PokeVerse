@@ -97,7 +97,8 @@ The client must authenticate within 10 seconds.
 
 The protocol version stays `1`: everything added later is optional. `features` lists the
 optional parts the server has switched on (`playerSessions`, `accountLinking`,
-`boosterRewards`, only when account linking is on too, and `boostPerks`). Servers
+`boosterRewards`, only when account linking is on too, `boostPerks`, `announcements` and
+`calendar`). Servers
 built before these features send no `features` field; clients must treat a missing field
 as an empty list and keep using the rest of the protocol. Clients must ignore event kinds
 and fields they do not know. Unknown request methods are answered with `unknown_method`.
@@ -121,11 +122,12 @@ detect restarts and de-duplicate deliveries.
 | --- | --- | --- |
 | `server_state` | `Game::setGameState` | `state` (`init`, `normal`, `maintain`, `closed`, `closing`, `shutdown`), `players` |
 | `restart_warning` | `Game::prepareGlobalSave`, `/shutdown`, `/restart` and the daily restart | `reason` (`global_save`, `shutdown`, `shutdown_cancelled`), `minutes` (absent when cancelled), `shutdown` |
-| `broadcast` | `/b`, client broadcast (`Game::playerBroadcastMessage`), `/bc` | `source` (`gm`, `staff`), `author` (GM name for `gm`), `text` |
+| `broadcast` | `/b`, client broadcast (`Game::playerBroadcastMessage`), `/bc` | `source` (`gm`, `staff`), `author` (GM name for `gm`), `text`. Still sent with the `announcements` feature, for older bots. |
+| `announcement` | every server-wide announcement but the tips (`092-announcements.lua`) | `category` (`event`, `legendary`, `server`, `staff`, `milestone`, `news`), `title` (optional), `text`, `full` (the message as shown in game), `source` (the script, like `077-eventCalendar`), `author` (staff), `ping` (`everyone`, `here`, `verified` or a role name; staff only), `calendar {key, id, state (started, ended), type (holiday, server, staff)}` |
 | `chat` | `onTalkChannel` on Game-Chat[EN-US] (channel 7) | `channelId`, `author`, `level`, `text` |
 | `catch` | `catchPokemon`, `catchPokemonWithSafariBall`, `catchPokemonWithSoulBall` after the ball was created | `trainer`, `species`, `baseSpecies`, `dexNumber`, `level`, `sex`, `shiny`, `legendary`, `extraPoints`, `ball`, `safari` |
 | `spawn` | shiny or legendary wild monsters only | `species`, `baseSpecies`, `dexNumber`, `level`, `shiny`, `legendary`, `source`, `startup`, `creatureId`, `position {x,y,z}`, `nearestTown` (optional) |
-| `legendary` | wild legendaries (`078-wildLegendaries.lua`) | `event` (`spawn`, `sighting`, `flee`, `end`, `caught`), `encounterId`, `species`, `dexNumber`; spawn: `tier`, `area`, `position {x,y,z}`, `nearestTown`, `endsAt`, `source` (`schedule`, `staff`, `test`), `health`; sighting and flee: `area`, `position`, `nearestTown`, `healthPercent`; end: `reason` (`defeated`, `fled`, `staff`, `restart`, `vanished`), and for `defeated` also `area`, `trainers[]` (10% of the damage or more), `topTrainer`; caught: `trainer` |
+| `legendary` | wild legendaries (`078-wildLegendaries.lua`) | `event` (`spawn`, `sighting`, `flee`, `end`, `caught`, `set`, `sign`, `woke`, `revealed`, `clash`, `calm`, `reward`), `encounterId`, `species`, `dexNumber`, `text` (the in-game message, optional); spawn: `tier`, `area`, `position {x,y,z}`, `nearestTown`, `endsAt` (absent while asleep), `source` (`schedule`, `staff`, `test`), `health`, `level`, `asleep`; set: `setId`, `setName`, `level`, `asleep`, `source`, `members[] {encounterId, species, dexNumber, tier, area, position, endsAt}` (no member `spawn` events); sign (Mewtwo's disturbance, no encounter): `area`, `endsAt`; woke: `trainer`, `area`, `position`, `healthPercent`, `level`; revealed (Mew, who sent no `spawn`): `trainer`, `disguise`, `tier`, `area`, `level`, `endsAt`, `healthPercent`; clash and calm: `other`, `otherEncounterId`, `area`; reward (no encounter): `trainer`; sighting and flee: `area`, `position`, `nearestTown`, `healthPercent`; end: `reason` (`defeated`, `fled`, `staff`, `restart`, `vanished`), and for `defeated` also `area`, `trainers[]` (10% of the damage or more), `topTrainer`; caught: `trainer` |
 | `player_login` | `Player::onPlacedCreature`, after the login scripts accepted the player | `scope` (`admin`), `sessionId`, `character`, `level`, `accountId`, `loginTime`, `ip` (only with `discordBridgeSessionIps`), `clientOs`, `clientVersion`, `playersOnline` |
 | `player_logout` | `Game::removeCreature` for a player with an open session | `scope` (`admin`), `sessionId`, `character`, `level`, `accountId`, `loginTime`, `logoutTime`, `duration` (seconds), `reason` (optional), `playersOnline` |
 | `account_link` | in-game `!discord unlink confirm` | `scope` (`account`), `action` (`unlinked`), `source` (`game`), `discordUserId` |
@@ -135,7 +137,13 @@ detect restarts and de-duplicate deliveries.
 Notes:
 
 - Automatic broadcasts (tips from `globalMessages.lua`, banishment notices) are **not**
-  forwarded. Global save warnings are sent as structured `restart_warning` events.
+  forwarded.
+- Announcement pings: `/b @everyone text`, `/b @verified text` or `/b @RoleName text` (no
+  spaces in the tag) takes the tag out of the in-game text. @everyone and @here need access 3
+  (Gamemaster) or more; otherwise the message goes out without the ping and the staff member
+  is told. The Admin window's **Ping on Discord** offers the Verified role, the bot's roles,
+  and @here/@everyone when the bot may use them. The bot decides the rest (default: holiday and
+  weekend calendar events ping the Verified Trainer role). Global save warnings are sent as structured `restart_warning` events.
 - Chat: only messages that passed the channel's level/mute checks are forwarded. Messages
   written by the bot into the channel do not trigger `onTalkChannel`, so they are never
   echoed back.
@@ -206,7 +214,9 @@ changes that report, `booster.week`, which only adds a ledger row and the Soul C
 | `pokemon.lookup` | `name` | `{found:false}` or `found`, `name`, `baseSpecies`, `dexNumber`, `generation`, `types[]`, `stats {attack,defense,specialAttack,specialDefense,health,energy}`, `description`, `evolutions[] {from,to,level,items}`, `moves[] {name,level}`, `abilities[]`, `specialAbilities[]`, `shiny`, `legendary`, `catchable`, `shinyVariant` |
 | `pokemon.search` | `query`, `limit` (max 25) | `names[]` (prefix matches first) |
 | `server.status` | - | `serverName`, `state`, `playersOnline`, `maxPlayers`, `uptime` (seconds since server start), `bootId` |
-| `bridge.config` | - | `chatChannelId`, `chatAuthorPrefix`, `chatTextMaxLength`, `chatAuthorMaxLength`, `legendary[]` |
+| `bridge.config` | - | `chatChannelId`, `chatAuthorPrefix`, `chatTextMaxLength`, `chatAuthorMaxLength`, `legendary[]` (`CONFIG.legendary` and every wild legendary species) |
+| `announcements.roles` | `roles[]` (Discord role names), `everyone` (the bot may ping @everyone) | `roles` (how many were kept: at most 25, 100 characters each, and as many as fit in 250 characters of JSON). The Admin window lists them under **Ping on Discord** (global storage `DISCORD_PING_ROLES`). |
+| `calendar.range` | `from`, `to` (unix seconds, at most 60 days apart) | `from`, `to`, `events[] {key, id, name, description, color, startsAt, endsAt, bonuses[] {kind, label, value}, holiday, night, forced}` (the calendar's occurrences overlapping the range) |
 | `admin.sessions` | - | `sessions[] {sessionId, character, level}` (open sessions, no IPs), `playersOnline` |
 | `link.redeem` | `discordUserId`, `code` | link summary (below) |
 | `link.account` | `discordUserId` | `{linked:false}` or link summary |
