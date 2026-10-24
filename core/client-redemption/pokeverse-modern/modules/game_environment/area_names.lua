@@ -27,7 +27,7 @@ local THEME_WORDS = {
     { "mountain", { "Mountain", "Mt.", "Mount ", "Canyon", "Hill", "Nest High" } },
     { "sea", { "Island", "Isle", "Beach", "Sea", "Lake", "Coast", "Harbor", "Iceberg", "River",
         "Waterfall", "S. S. Anne", "Ship", "Refuge Cold" } },
-    { "route", { "Route", "Around", "Area", "Field", "Meadow", "Pasture", "Saffari", "Nook",
+    { "route", { "Route", "Around", "Outskirts", "Area", "Field", "Meadow", "Pasture", "Saffari", "Nook",
         "Corner", "Muddy", "Aviary", "Region", "Ten", "Fifteen", "Twenty" } },
 }
 
@@ -61,6 +61,14 @@ local THEME_OVERRIDES = {
     ["Olivine Cliffs"] = "mountain",
     ["Frozen North"] = "mountain",
     ["I.S.S. Raspberry"] = "sea",
+    -- Hoenn
+    ["Petalburg Woods"] = "forest",
+    ["Meteor Falls"] = "cave",
+    ["Mt. Chimney"] = "volcano",
+    ["Jagged Pass"] = "mountain",
+    ["Mt. Pyre"] = "special",
+    ["New Mauville"] = "special",
+    ["Ever Grande"] = "special",
 }
 
 local THEME_SUBTITLES = {
@@ -180,6 +188,34 @@ local SUBTITLES = {
     ["Mt. Silver Cave"] = "Deep in the mountain, the toughest Pokemon wait.",
     ["Safari Zone"] = "Pokemon from far away roam its fields.",
     ["Battle Frontier"] = "Five facilities for trainers who want a real challenge.",
+    -- Hoenn
+    ["Littleroot"] = "A town that can't be shaded any hue.",
+    ["Oldale"] = "Where things happily get together.",
+    ["Petalburg"] = "Where people mingle with nature.",
+    ["Rustboro"] = "The city probing the integration of nature and science.",
+    ["Dewford"] = "A tiny island in the blue sea.",
+    ["Slateport"] = "The port where people and Pokemon cross paths.",
+    ["Mauville"] = "The bright and shiny city of fun.",
+    ["Verdanturf"] = "The windswept highlands with the sweet fragrance of grass.",
+    ["Fallarbor"] = "A farm community with small gardens.",
+    ["Lavaridge"] = "An excellent place for relaxing in the hot springs.",
+    ["Fortree"] = "The treetop city that frolics with nature.",
+    ["Lilycove"] = "Where the land ends and the sea begins.",
+    ["Mossdeep"] = "Our slogan: Cherish Pokemon!",
+    ["Sootopolis"] = "The mystical city where history slumbers.",
+    ["Pacifidlog"] = "Where the morning sun smiles upon the waters.",
+    ["Ever Grande"] = "The paradise of flowers, the sea and Pokemon. The League awaits.",
+    ["Petalburg Woods"] = "A forest of tall trees between Petalburg and Rustboro.",
+    ["Rusturf Tunnel"] = "A tunnel dug by hand between Rustboro and Verdanturf.",
+    ["Granite Cave"] = "A dark cave on Dewford's island, with ancient paintings on its walls.",
+    ["Meteor Falls"] = "Falls and caves where a meteor is said to have struck.",
+    ["Mt. Chimney"] = "A volcano whose smoke never stops rising.",
+    ["Jagged Pass"] = "A rugged trail down the side of Mt. Chimney.",
+    ["Route 111 Desert"] = "Sandstorms rage over the dunes. Some goggles would help.",
+    ["New Mauville"] = "The abandoned power plant under Route 110.",
+    ["Mt. Pyre"] = "A sacred mountain where departed Pokemon rest.",
+    ["Shoal Cave"] = "Tides flood and drain this icy cave twice a day.",
+    ["Hoenn Sea"] = "Open water between Hoenn's islands.",
 }
 
 local function containsWord(name, words)
