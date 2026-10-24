@@ -2703,6 +2703,177 @@ stack as separate bubbles that float up and fade (C).
 - **Immune hits:** a type multiplier of 0 still deals the attack-minus-defense part of the
   damage, so "NO EFFECT" shows as a small grey number with that caption, not a bare tag.
 
+## 25. Announcements: news banner, call-out bubbles, Discord and the calendar
+
+Plan (not started). The aim is that nothing needs adding by hand: a new holiday, weekend event,
+staff event or legendary shows up in game, on Discord and in Discord's event calendar on its
+own.
+
+### Calling out and recalling Pokémon
+
+The [battle text](#24-battle-text-call-out-bubbles-and-hit-numbers) bubbles cover moves only.
+Calling out a Pokémon still uses plain yellow speech: one of 5 random lines like "Pikachu, I
+choose you!" (`doPokemonCall`, `functions/others.lua`). Recalling uses one of 4 lines like
+"Pikachu, back!" (`functions/ball/inUse.lua`).
+
+- **Bubbles:** both become bubbles over the trainer, with the trainer's ball as a small icon on
+  the bubble, the nickname in the Pokémon's type colour, and the same random lines. A swap
+  (recall, then call) stacks as two bubbles, like back-to-back moves.
+- **NPC trainers too:** gym leaders, NPC battles and Team Rocket ("Go, X!" and "Back, X!" in
+  `001-npcBattle.lua` and `050-rocketBattle.lua`).
+- **Orders as bubbles:** "X, push it!", "let's climb!", "headbutt it!", "go there!", "shoot
+  there!", and throwing a ball ("Great ball, go!"), each with a small icon (rock, ladder, tree,
+  arrow, ball).
+- **How:** the same `BATTLE_TEXT` opcode gets `summon`, `recall` and `order` messages. The
+  console patch takes their overhead text, like a move call-out, and Local Chat keeps the
+  line. "Battle text: Classic" turns them back to plain text.
+
+### The news banner
+
+Today every server-wide message is Tibia's red text in the middle of the screen, and it's gone
+in a few seconds. There are 44 broadcasts: events starting and ending, wild legendaries,
+restarts and saves, the World Boss, the new Champion, a completed Pokédex, staff broadcasts and
+the rotating tips. All of them go through one function, `doBroadcastMessage`
+(`lib/050-function.lua`).
+
+The banner is for the calendar, events, broadcasts and tips. The pop-up cards for spawns
+(`game_eventcards`, used for legendaries today) stay as they are and aren't touched.
+
+**The look:** a Poké Ball drops in at the top of the screen and pulses twice. It splits open
+with a white flash, the two halves slide left and right, and a news banner unrolls between
+them, with the
+category's icon and colour, a title and the text. It stays about 5 seconds (longer for long
+text), rolls back into the ball, and the ball shrinks away. A soft chime plays (muted with the
+sound effects volume). More announcements queue up, one at a time. Hovering keeps it open, and
+clicking opens the full text in chat.
+
+| Category | Colour and icon | For |
+| --- | --- | --- |
+| Event | Gold, star | Holidays, weekend events, bonus events starting and ending |
+| Legendary | Purple, the Pokémon's face | Spawns, sightings, sets, clashes, catches |
+| Server | Red, wrench | Restarts, saves, shutdowns, cleaning |
+| Staff | Blue, megaphone | `/b` and the admin window's broadcast, with the staff name |
+| Milestone | Green, trophy | New Champion, completed Pokédex, World Boss defeated |
+| Tip | Grey, light bulb | The rotating tips (see below) |
+
+Every category gets the full banner.
+
+**How it stays automatic:**
+
+- **One place:** `doBroadcastMessage` gets an optional category and title. Old calls with no
+  category are guessed from where they're called from (calendar, legendaries, restart, staff),
+  and anything else is "news", so every existing broadcast gets the banner without being
+  touched.
+- **Old clients keep working:** the server sends an `ANNOUNCEMENT` opcode (JSON: category,
+  title, text, icon, how long), and the old text too. The new client hides the text it already
+  showed as a banner, the same way battle text does.
+- **A new module, nothing existing edited:** the banner is its own client module,
+  `game_newsbanner`, with its own queue, art and sound. `game_eventcards` and its "Show event
+  pop-up cards" switch are left alone. The banner gets its own switch in Options > Interface,
+  "Show news banner"; off brings back the red text.
+- **Personal red messages later:** 35 personal messages ("You need level X", quest notices)
+  also use the red centre text. They'd become a small card on the right side, as a second step.
+
+### Rotating tips
+
+There are 5 tips today, in `lib/ps/events/globalevents/globalMessages.lua`, sent as red,
+white or green text in turn.
+
+- **More tips:** a longer list (about 40) in its own file, covering hotkeys, the Poképedia,
+  Day Care, Union Room, the GTS, tasks, fishing, Soul Coins and Discord linking. Adding a tip is
+  one line.
+- **Shown as Tip banners,** one every 15 minutes (a setting), in a shuffled order so the same
+  tip doesn't come back soon. They wait their turn behind other announcements.
+- **Fitting the player, later:** tips can say who they're for (a level range, or players who
+  haven't used a feature yet), and each player gets one that fits.
+- **Can be turned off** in Options ("Show tips"), without turning off the other announcements.
+- Not posted to Discord.
+
+### Discord
+
+The bot (GIToez/PokeVerse-Discord) posts staff broadcasts and restart warnings to
+`#game-announcements`, and one post with a thread per wild legendary to `#legendary-spawns`.
+Nothing else reaches Discord.
+
+**Every announcement goes to Discord automatically.** The same `ANNOUNCEMENT` data is sent to
+the bot (`kind = "announcement"`). It posts an embed in the category's colour, with art for
+legendaries and events, in `#game-announcements` (legendaries stay in `#legendary-spawns`).
+Tips are not posted. A setting per category turns posting on or off.
+
+**Pings: roles and @everyone.**
+
+- **The standard pings are Verified Trainer and @everyone.** Verified Trainer is the role the
+  bot already gives linked players (`config.linking.verifiedRoleName`), so no new roles are
+  needed. An event starting and a wild legendary ping Verified Trainer; big ones (a holiday
+  starting, a mythical) ping @everyone; restarts and milestones ping no one. Each category's
+  ping is a bot setting.
+- **Staff choose the ping:** `/b @everyone Server event tonight!`, `/b @verified ...`, any other
+  role by name (`/b @Premium ...`, checked against the server's roles), or no tag. In game the
+  tag is taken out of the text. The admin window's broadcast gets a "Ping on Discord" picker
+  that lists the server's roles. `@everyone` and `@here` only work for staff in groups allowed
+  to use them (a setting), and the bot only allows those mentions on these posts.
+- **The bot needs** the Mention Everyone permission for `@everyone` (it already has Manage
+  Roles).
+
+**Legendaries, brought up to date with the revamp.** These go in game but not to Discord yet:
+
+- the signs before a spawn ("A strange psychic disturbance is building near ...");
+- a set appearing together (birds, beasts, Regis asleep, Latias and Latios). On Discord this
+  becomes one post for the set, with a line per member;
+- waking a sleeping Regi, and Mew showing its true self;
+- Groudon and Kyogre clashing, and Rayquaza coming down to calm them;
+- the reward messages.
+
+The bridge also has its own hand-written legendary list (`056-discordBridge.lua`) that can
+drift from the revamp's. It would read the revamp's species list, so new legendaries (Gen 4 to
+6) need no Discord change.
+
+### Events on the calendar
+
+The game's calendar (`077-eventCalendar.lua`) already knows every event ahead of time:
+
+- the holidays, by rule;
+- the server events on a schedule, like the double weekends;
+- staff events added with `/calendar`.
+
+`EventCalendar.getEvents(from, to)` lists them, and `onThink` sees each one start and end.
+
+- **Discord's event calendar:** the bot asks the game for the next 30 days every 15 minutes (a
+  new `calendar.range` bridge request, read-only like the others). It creates a Discord
+  scheduled event for each one, with name, start, end, description, bonuses and a cover image.
+  Each is keyed by the game's event id, so the bot updates an event when its time or text
+  changes and deletes it when staff remove it. Adding a holiday to `EventCalendar.HOLIDAYS` or
+  a `/calendar` event is all it takes.
+- **Start and end:** the start and end broadcasts become Event announcements, so they get the
+  banner, the Discord post and the ping on their own.
+- **Reminders:** an hour before an event starts, a short post in `#game-announcements` (a
+  setting). Discord's own "Interested" button also reminds players who clicked it.
+- **Staff bonus events too:** `/doubleexp`, `/bonusshiny` and the Day Care event announce the
+  same way. Planned ones go on the calendar; ones started on the spot only get the
+  announcement.
+- **The bot needs** the Manage Events permission (shown as Create Events and Manage Events).
+
+### Order of work
+
+1. Call-out and recall bubbles, NPC trainers and orders (game and client only).
+2. `doBroadcastMessage` categories, the `ANNOUNCEMENT` opcode and the new `game_newsbanner`
+   module.
+3. The rotating tips.
+4. Discord announcements with the Verified Trainer and @everyone pings, and the `/b` tags.
+5. The legendary Discord updates.
+6. The calendar sync, start and end posts, and reminders.
+7. Later: the personal red messages as cards.
+
+Steps 4 to 6 need bot changes in PokeVerse-Discord, sent as patches in
+`integrations/pokeverse-discord/patches/` like the legendary threads.
+
+### To decide
+
+- The banner's colours (a concept is in the PR for this plan).
+- Which events are big enough to ping @everyone.
+- Which staff groups may use `@everyone`.
+- The tip list itself.
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
