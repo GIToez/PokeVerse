@@ -3067,8 +3067,9 @@ trade NPCs that are placed. These parts were never put on this map, so they don'
   needs the radar, and no Officer Jenny stands at the Christmas village (5423,383,7).
   `npc/Santa Claus.xml` and `npc/Santa Claus Old.xml` both use the name "Santa Claus".
 - **To decide:** Christmas present #3 always gives 50 Stones of Knowledge, past the cap of 50
-  from wild presents. Hermitwo's potions and Trevor's token shop work all year, not only
-  during Halloween.
+  from wild presents.
+- **Done:** Trevor, Hermitwo, Selam, Queter Phill and Peter Paul are only there while Halloween
+  runs (`HalloweenEvent.syncNpcs`).
 
 ## Going private
 
