@@ -90,3 +90,12 @@ round buttons on the right. A title that doesn't fit switches to the narrower fo
   Pokemon that's out, "FNT" when fainted
 - [x] Moves bar (`game_pokemoves`): rounded slots with the move's type edge (the server sends the
   element with the energy costs), key chip, energy cost chip, cooldown sweep
+
+### Still to redo
+- [ ] TVs (`lib/ps/events/actions/tv/`, `talkactions/tv/`): recording, watching, the channel list,
+  names and passwords are all chat text and commands; give them a window (channel list with who
+  is live, watch and record buttons, name and password fields)
+- [ ] Token exchanges: Trevor (Halloween tokens), Murray Aaron, Timothy Kelvin and Logan
+  (Anniversary tokens and PSoul letters), the Summer, Christmas and casino merchants and the
+  mastery and Frontier Island token shops trade through NPC chat keywords; show what each token
+  buys in one window, with the token count and the price on each offer
