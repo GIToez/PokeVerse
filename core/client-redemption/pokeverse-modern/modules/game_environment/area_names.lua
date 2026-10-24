@@ -26,7 +26,7 @@ local THEME_WORDS = {
     { "forest", { "Forest", "Jungle", "Woodland", "Rainforest", "Leaf", "Nature" } },
     { "mountain", { "Mountain", "Mt.", "Mount ", "Canyon", "Hill", "Nest High" } },
     { "sea", { "Island", "Isle", "Beach", "Sea", "Lake", "Coast", "Harbor", "Iceberg", "River",
-        "Waterfall", "S. S. Anne", "Ship", "Refuge Cold" } },
+        "Waterfall", "S. S. Anne", "Ship", "Refuge Cold", "Waters", "Archipelago" } },
     { "route", { "Route", "Around", "Outskirts", "Area", "Field", "Meadow", "Pasture", "Saffari", "Nook",
         "Corner", "Muddy", "Aviary", "Region", "Ten", "Fifteen", "Twenty" } },
 }
@@ -116,7 +116,11 @@ local SUBTITLES = {
     ["Route 15"] = "A road of trainers on the way to Fuchsia.",
     ["Route 16"] = "A road where a sleeping Pokemon may block the way.",
     ["Route 17 - Cycling Road"] = "A long downhill slope. Hold on to your bike!",
+    ["Route 18"] = "A road west of Fuchsia to the foot of the Cycling Road.",
     ["Route 19"] = "Calm waters south of Fuchsia.",
+    ["Route 20"] = "Strong currents between Fuchsia, the Seafoam Islands and Cinnabar.",
+    ["Route 21"] = "A long stretch of sea between Pallet and Cinnabar.",
+    ["Kanto Sea"] = "Open water off the coast of Kanto.",
     ["Route 22"] = "The old road toward the Pokemon League.",
     ["Route 23"] = "The final road to the Indigo Plateau.",
     ["Route 24"] = "A bridge where trainers test newcomers.",
@@ -188,6 +192,9 @@ local SUBTITLES = {
     ["Mt. Silver Cave"] = "Deep in the mountain, the toughest Pokemon wait.",
     ["Safari Zone"] = "Pokemon from far away roam its fields.",
     ["Battle Frontier"] = "Five facilities for trainers who want a real challenge.",
+    ["Johto Sea"] = "Open water off the coast of Johto.",
+    -- Orange Islands
+    ["Orange Archipelago"] = "Warm seas dotted with the islands of the Orange Crew.",
     -- Hoenn
     ["Littleroot"] = "A town that can't be shaded any hue.",
     ["Oldale"] = "Where things happily get together.",
@@ -232,8 +239,16 @@ local NOT_BUILDINGS = {
     ["New Bark"] = true,
 }
 
+-- The regions' names (sounds_pokeverse.lua's fallback, where no area is) only update the label.
+local LABEL_ONLY = {
+    ["Kanto"] = true,
+    ["Johto"] = true,
+    ["Orange Islands"] = true,
+    ["Hoenn"] = true,
+}
+
 function AREA_BANNER.isBuilding(name)
-    return not NOT_BUILDINGS[name] and containsWord(name, BUILDING_WORDS)
+    return LABEL_ONLY[name] or (not NOT_BUILDINGS[name] and containsWord(name, BUILDING_WORDS))
 end
 
 function AREA_BANNER.theme(name)

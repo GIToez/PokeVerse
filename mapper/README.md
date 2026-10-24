@@ -180,7 +180,10 @@ again also throws away hand edits in `map/`. Once hand editing starts, edit in R
   route's line), then the hunting grounds, sites and towns over it, cut into rectangles; before
   those the buildings (Pokemon Centers, Marts and houses only change the label, gyms and towers
   pop the banner), the caves and floors below and the wreck. Each has the music of its Kanto
-  mirror (`AREA_TRACKS`); the banner's themes and lines are in `area_names.lua`.
+  mirror (`AREA_TRACKS`); the banner's themes and lines are in `area_names.lua`. Johto's
+  coasts and the strip east of x 3048 by Routes 26-28 are named after the nearest Johto area by
+  `scripts/mapper/build_world_areas.py` (`areas_world.lua`, also the seas' names): run it again
+  after a build.
 - **Kanto edits:** Kanto's unfinished, undecorated grass south of the Elite Four building; the
   pass through Kanto's mountain from the west gate to the building (including a broken ramp on
   that road that led up to nothing); the counters that closed the building's west and south

@@ -11,7 +11,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  local SHADER_FADE = 0.5
  
  local DATA_INDEX = {}
-@@ -166,37 +163,132 @@
+@@ -166,37 +163,147 @@
  table.merge(SOUNDS, SOUNDS1)
  table.merge(SOUNDS, SOUNDS2)
  
@@ -35,10 +35,25 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +end
 +shiftedAreas = nil
 +
-+-- PokeVerse: our own areas (sounds_pokeverse.lua) win over the legacy ones and are checked on
-+-- every step; area_names.lua decides how the area name banner looks
++-- PokeVerse: our own areas (sounds_pokeverse.lua) win over the legacy ones, SOUNDS_FALLBACK
++-- names what neither covers; area_names.lua decides how the area name banner looks
 +dofile("sounds_pokeverse.lua")
 +dofile("area_names.lua")
++
++local function renameArea(area)
++    for _, rename in ipairs(LEGACY_RENAMES) do
++        if (area[DATA_INDEX.MESSAGE] == rename.from and Position.isIn(area.fromPos, rename.fromPos, rename.toPos)
++            and Position.isIn(area.toPos, rename.fromPos, rename.toPos)) then
++            area[DATA_INDEX.MESSAGE] = rename.to
++        end
++    end
++    for _, closeArea in ipairs(area.closePriorities or {}) do
++        renameArea(closeArea)
++    end
++end
++for i = 1, #SOUNDS do
++    renameArea(SOUNDS[i])
++end
 +
  --local SOUNDS = loadstring("/modules/game_environment/new_sounds.lua")()--table.load("/modules/game_environment/sounds.lua")
 -local EFFECTS = table.load("/modules/game_environment/effects.lua")
@@ -47,7 +62,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  
  -- Vars
  local rcSoundChannel, playingSound, playingEffect, effectsEnabled, labelWindow, labelEvent, locationLabel
-+local customArea, bannerAnimation
++local currentArea, bannerAnimation
 +local areaName = '' -- untranslated, for game_weather's area moods
 +local bannerShownAt = {}
  local environmentEnabled = true
@@ -124,7 +139,13 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
          end)
 +    end, BANNER_FADE_IN + BANNER_DURATION)
 +end
-+
+ 
+-        labelEvent = scheduleEvent(function()
+-            g_effects.fadeOut(labelWindow, MESSAGE_LABEL_FADE_DURATION)
+-            labelEvent = scheduleEvent(function()
+-                labelWindow:hide()
+-            end, MESSAGE_LABEL_FADE_DURATION + 1)
+-        end, MESSAGE_LABEL_DURATION)
 +local function hideBanner()
 +    if (labelEvent) then
 +        removeEvent(labelEvent)
@@ -136,16 +157,10 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +    end
 +    labelWindow:hide()
 +end
- 
--        labelEvent = scheduleEvent(function()
--            g_effects.fadeOut(labelWindow, MESSAGE_LABEL_FADE_DURATION)
--            labelEvent = scheduleEvent(function()
--                labelWindow:hide()
--            end, MESSAGE_LABEL_FADE_DURATION + 1)
--        end, MESSAGE_LABEL_DURATION)
++
 +local function checkMessage(data)
-+    -- inside one of our areas its name stays up, the legacy area around it stays quiet
-+    if (customArea and data ~= customArea) then
++    -- the area the player is in keeps its name up
++    if (currentArea and data ~= currentArea) then
 +        return
 +    end
  
@@ -160,7 +175,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      end
  end
  
-@@ -225,18 +317,88 @@
+@@ -225,49 +332,110 @@
  local function playEffect(effect)
      if (playingEffect ~= effect) then
          local map = modules.game_interface.getMapPanel()
@@ -177,34 +192,52 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      playingEffect = nil
  end
  
-+-- SOUNDS_POKEVERSE by AREA_BUCKET x AREA_BUCKET tile squares, each list in the file's order
+-local function checkSound(newPos)
+-    local checkList, stop
+-    if (playingSound and isInPos(newPos, playingSound.fromPos, playingSound.toPos)) then
+-        if (playingSound.closePriorities) then
+-            checkList = playingSound.closePriorities
+-        else
+-            return
++-- Areas by AREA_BUCKET x AREA_BUCKET tile squares, each list in its table's order
 +local AREA_BUCKET = 64
-+local areaBuckets
++local areaTiers
 +
 +local function bucketKey(bx, by)
 +    return by * 65536 + bx
 +end
 +
-+local function findCustomArea(pos)
-+    if (not areaBuckets) then
-+        areaBuckets = {}
-+        for i = 1, #SOUNDS_POKEVERSE do
-+            local area = SOUNDS_POKEVERSE[i]
-+            for by = math.floor(area.fromPos.y / AREA_BUCKET), math.floor(area.toPos.y / AREA_BUCKET) do
-+                for bx = math.floor(area.fromPos.x / AREA_BUCKET), math.floor(area.toPos.x / AREA_BUCKET) do
-+                    local key = bucketKey(bx, by)
-+                    local list = areaBuckets[key]
-+                    if (not list) then
-+                        list = {}
-+                        areaBuckets[key] = list
-+                    end
-+                    list[#list + 1] = area
++local function bucketAreas(areas)
++    local buckets = {}
++    for i = 1, #areas do
++        local area = areas[i]
++        for by = math.floor(area.fromPos.y / AREA_BUCKET), math.floor(area.toPos.y / AREA_BUCKET) do
++            for bx = math.floor(area.fromPos.x / AREA_BUCKET), math.floor(area.toPos.x / AREA_BUCKET) do
++                local key = bucketKey(bx, by)
++                local list = buckets[key]
++                if (not list) then
++                    list = {}
++                    buckets[key] = list
 +                end
++                list[#list + 1] = area
 +            end
-+        end
-+    end
-+
-+    local list = areaBuckets[bucketKey(math.floor(pos.x / AREA_BUCKET), math.floor(pos.y / AREA_BUCKET))]
+         end
+-
+-    else
+-        stop = true
+-        checkList = SOUNDS
+     end
++    return buckets
++end
+ 
+-    for i = 1, #checkList do
+-        local sound = checkList[i]
+-        if (isInPos(newPos, sound.fromPos, sound.toPos)) then
+-            if (not playingSound or sound[DATA_INDEX.NAME] ~= playingSound[DATA_INDEX.NAME]) then
+-                playSound(sound)
+-                checkMessage(sound)
++local function firstArea(buckets, pos)
++    local list = buckets[bucketKey(math.floor(pos.x / AREA_BUCKET), math.floor(pos.y / AREA_BUCKET))]
 +    if (not list) then
 +        return
 +    end
@@ -215,43 +248,70 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +        end
 +    end
 +end
-+
-+-- Our areas with a track take over the music; areas without one only change the name.
-+local function checkCustomArea(newPos)
-+    local area = findCustomArea(newPos)
-+    if (area == customArea) then
+ 
+-            elseif (sound[DATA_INDEX.MESSAGE] ~= playingSound[DATA_INDEX.MESSAGE]) then
+-                checkMessage(sound)
++-- The first area containing pos: ours (SOUNDS_POKEVERSE), then the legacy ones (inside one, the
++-- smaller areas it lists in closePriorities come first), then SOUNDS_FALLBACK (the seas, the
++-- regions). Looked up afresh on every step, so walking into a smaller area always shows it.
++local function findArea(pos)
++    if (not areaTiers) then
++        areaTiers = { bucketAreas(SOUNDS_POKEVERSE), bucketAreas(SOUNDS), bucketAreas(SOUNDS_FALLBACK) }
++    end
++    local area = firstArea(areaTiers[1], pos)
++    if (area) then
 +        return area
 +    end
-+
-+    local left = customArea
-+    customArea = area
++    area = firstArea(areaTiers[2], pos)
 +    if (area) then
-+        if (area[DATA_INDEX.NAME]) then
-+            if (not playingSound or playingSound[DATA_INDEX.NAME] ~= area[DATA_INDEX.NAME]) then
-+                playSound(area)
++        for _ = 1, 8 do
++            local inner
++            for _, closeArea in ipairs(area.closePriorities or {}) do
++                if (isInPos(pos, closeArea.fromPos, closeArea.toPos)) then
++                    inner = closeArea
++                    break
++                end
+             end
+-
+-            playingSound = sound
+-            return
++            if (not inner) then
++                break
 +            end
-+            playingSound = area
-+        end
-+        -- an area is cut into many rectangles: stepping between two of them is not arriving
-+        if (not left or left[DATA_INDEX.MESSAGE] ~= area[DATA_INDEX.MESSAGE]) then
-+            checkMessage(area)
-+        end
-+    elseif (left and playingSound and playingSound ~= left) then
-+        checkMessage(playingSound)
-+    end
-+    return area
++            area = inner
+         end
++        return area
+     end
++    return firstArea(areaTiers[3], pos)
 +end
-+
- local function checkSound(newPos)
-+    local custom = checkCustomArea(newPos)
-+    if (custom and custom[DATA_INDEX.NAME]) then
+ 
+-    if (stop) then
++-- Areas with a track take over the music; areas without one only change the name.
++local function checkSound(newPos)
++    local area = findArea(newPos)
++    if (area == currentArea) then
 +        return
 +    end
 +
-     local checkList, stop
-     if (playingSound and isInPos(newPos, playingSound.fromPos, playingSound.toPos)) then
-         if (playingSound.closePriorities) then
-@@ -306,6 +468,10 @@
++    local left = currentArea
++    currentArea = area
++    if (not area) then
+         stopSound() -- There is no sound to play here
++        return
++    end
++    if (area[DATA_INDEX.NAME]) then
++        if (not playingSound or playingSound[DATA_INDEX.NAME] ~= area[DATA_INDEX.NAME]) then
++            playSound(area)
++        end
++        playingSound = area
++    end
++    -- an area is cut into many rectangles: stepping between two of them is not arriving
++    if (not left or left[DATA_INDEX.MESSAGE] ~= area[DATA_INDEX.MESSAGE]) then
++        checkMessage(area)
+     end
+ end
+ 
+@@ -306,6 +474,10 @@
      end
  end
  
@@ -262,24 +322,24 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  function setDisplay(v)
      environmentEnabled = v
      if (environmentEnabled) then
-@@ -322,12 +488,15 @@
+@@ -322,12 +494,15 @@
  -- Hooks
  function onOnline()
      stopSound()
-+    customArea = nil
++    currentArea = nil
  end
  
  function onOffline()
      stopSound()
      resetEffect()
 -    labelWindow:hide()
-+    customArea = nil
++    currentArea = nil
 +    areaName = ''
 +    hideBanner()
  end
  
  function onPositionChange(cid, newPos, oldPos)
-@@ -345,23 +514,9 @@
+@@ -345,23 +520,9 @@
  function onInit()
      rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
  
@@ -305,7 +365,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      labelWindow:hide()
  
      connect(g_game, {
-@@ -388,5 +543,6 @@
+@@ -388,5 +549,6 @@
          onPositionChange = onPositionChange
      })
  
