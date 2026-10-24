@@ -1111,6 +1111,11 @@ From the `#notes` channel:
   cross after its name, for everyone who can see it, until the heal ends
   (`game_healmark`, sent from `potions/healthPotions.lua`). Potions stay heal-over-time:
   flat heals would undo the Medic perks and make potions a full refill in wild fights.
+- **Pokémon cries (done):** when a Pokémon says one of its voice lines ("PIKACHU!") its cry
+  plays (`/sounds/cries/<number>.ogg`), quieter with distance, up to 8 tiles, on the Battle
+  Sounds volume. At most one cry each 1.2 s, and each species name once every 8 s. The line
+  picks the cry, so nicknamed summons work; a line several species share uses the name.
+  After changing voices or `pokemonsNumbers.lua`, run `scripts/make-cry-voices.py`.
 - **Nurse Chansey (to do):** Nurse Joy's Chansey only says "Chansey!" (`npc/Nurse Joy's
   Chansey.xml`, look type 639). Update its look, and decide what it does, for example
   healing like Nurse Joy, a short line about the Pokémon Center, or a cheer when a team is

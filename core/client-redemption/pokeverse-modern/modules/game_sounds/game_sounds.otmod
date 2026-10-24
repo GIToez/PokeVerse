@@ -1,8 +1,8 @@
 Module
   name: game_sounds
-  description: PokeVerse battle, catch, jingle and menu sounds from /sounds/effects
+  description: PokeVerse battle, catch, jingle and menu sounds from /sounds/effects, and Pokemon cries
   author: PokeVerse
   sandboxed: true
-  scripts: [ sounds ]
+  scripts: [ cry_voices, sounds ]
   @onLoad: init()
   @onUnload: terminate()
