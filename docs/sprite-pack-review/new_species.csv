@@ -1,0 +1,242 @@
+Dex,Gen,Name,Confidence,Uses,Codes
+387,4,Turtwig,medium,walk,P11-45
+388,4,Grotle,medium,ride walk,P11-40 P20-32 P21-6 P55-38 P55-39
+389,4,Torterra,high,surf walk,P20-36 P21-18 P42-25 P46-9 P46-42
+390,4,Chimchar,medium,walk,P11-41
+391,4,Monferno,medium,walk,P11-42 P39-30
+392,4,Infernape,medium,walk,P19-43 P42-22 P42-23
+393,4,Piplup,medium,walk,P11-43 P20-29 P25-4
+394,4,Prinplup,medium,walk,P11-44 P42-17
+395,4,Empoleon,high,surf walk,P20-27 P20-28 P42-18 P46-31 P46-41
+396,4,Starly,low,walk,P21-1 P58-36 P58-37
+397,4,Staravia,medium,walk,P20-44 P58-38
+398,4,Staraptor,medium,fly walk,P20-45 P43-18 P58-39
+399,4,Bidoof,low,walk,P19-22
+400,4,Bibarel,low,walk,P19-23
+401,4,Kricketot,low,walk,P24-31 P44-25 P44-26
+403,4,Shinx,medium,walk,P20-8 P20-37 P57-24
+404,4,Luxio,low,walk,P20-38
+405,4,Luxray,medium,ride walk,P11-5 P20-21 P34-43 P42-28 P42-29 P46-23 P46-24 P57-23
+407,4,Roserade,medium,walk,P23-2
+411,4,Bastiodon,low,ride walk,P21-11 P21-17
+417,4,Pachirisu,medium,walk,P20-22 P44-30
+418,4,Buizel,medium,walk,P20-34
+419,4,Floatzel,low,surf,P20-35
+420,4,Cherubi,medium,walk,P19-40
+425,4,Drifloon,medium,walk,P20-3
+426,4,Drifblim,medium,fly walk,P20-4 P20-5
+428,4,Lopunny,medium,ride walk,P19-31 P32-46 P32-47 P32-48 P44-10 P44-11 P56-5
+429,4,Mismagius,low,walk,P13-21 P15-5 P38-37 P57-3
+430,4,Honchkrow,medium,fly ride walk,P9-12 P20-17 P20-20 P40-25 P40-26 P49-1 P53-25 P53-26
+431,4,Glameow,low,walk,P20-14
+432,4,Purugly,medium,walk,P20-15
+437,4,Bronzong,low,walk,P38-41
+441,4,Chatot,medium,walk,P21-22
+443,4,Gible,low,walk,P20-11
+444,4,Gabite,medium,walk,P20-12
+445,4,Garchomp,high,walk,P20-13 P51-45 P52-28
+446,4,Munchlax,low,walk,P21-16 P52-23
+447,4,Riolu,low,walk,P20-16
+448,4,Lucario,high,walk,P1-5 P9-1 P11-33 P55-16
+449,4,Hippopotas,low,walk,P25-29
+450,4,Hippowdon,high,walk,P21-25 P49-41
+451,4,Skorupi,medium,walk,P20-7 P20-39 P57-19 P57-20
+452,4,Drapion,medium,walk,P20-40 P49-18 P49-19 P57-17
+459,4,Snover,medium,walk,P21-7 P24-8
+460,4,Abomasnow,high,walk,P20-43 P24-26 P24-29 P48-41 P49-33 P61-4
+461,4,Weavile,medium,walk,P12-3 P21-32
+462,4,Magnezone,high,ride walk,P9-10 P21-34 P47-1
+463,4,Lickilicky,medium,walk,P21-13
+464,4,Rhyperior,medium,walk,P8-8 P8-48 P20-48 P21-28 P21-35 P60-27
+465,4,Tangrowth,medium,walk,P20-47
+466,4,Electivire,medium,walk,P8-13
+467,4,Magmortar,medium,walk,P8-18 P9-11
+468,4,Togekiss,medium,fly walk,P20-41 P20-42 P26-9 P26-10 P34-7 P34-8 P34-9 P34-10 P34-11 P34-12 P34-13 P34-14 P34-15 P41-37
+470,4,Leafeon,medium,walk,P20-18 P45-32
+471,4,Glaceon,medium,walk,P20-19 P42-12
+472,4,Gliscor,medium,fly walk,P9-25 P9-26 P19-4 P43-2 P44-16 P44-35 P44-37 P44-38 P44-39 P61-7 P61-8 P61-9 P61-11
+473,4,Mamoswine,high,ride walk,P21-12 P52-34 P64-35 P64-36
+475,4,Gallade,high,walk,P9-40 P13-7 P13-9 P21-30 P22-3 P39-48 P46-32 P51-15 P51-16 P61-22
+476,4,Probopass,low,walk,P45-43
+477,4,Dusknoir,low,walk,P8-46
+479,4,Rotom,medium,walk,P9-2 P9-3 P9-4 P9-5 P9-6
+481,4,Mesprit,low,walk,P21-4
+482,4,Azelf,low,walk,P21-5
+483,4,Dialga,medium,walk,P24-33 P46-16
+484,4,Palkia,medium,walk,P24-10
+485,4,Heatran,low,walk,P20-6 P61-26 P61-27
+486,4,Regigigas,high,walk,P24-12 P26-2 P38-44 P56-48
+487,4,Giratina,high,walk,P24-13 P41-47
+488,4,Cresselia,medium,walk,P19-48 P51-7 P51-8
+489,4,Phione,low,walk,P9-8 P20-23
+490,4,Manaphy,low,walk,P20-24
+491,4,Darkrai,high,walk,P20-2 P51-12 P51-13 P51-14 P51-21 P51-33 P54-42
+492,4,Shaymin,medium,walk,P21-23
+493,4,Arceus,high,walk,P14-2 P14-3 P24-27 P25-7 P58-22 P58-23
+494,5,Victini,medium,walk,P58-33
+495,5,Snivy,high,walk,P27-5 P30-22
+496,5,Servine,medium,walk,P30-23
+497,5,Serperior,high,ride walk,P30-24 P33-7
+498,5,Tepig,high,walk,P27-8 P30-19
+499,5,Pignite,high,walk,P27-9 P30-25
+500,5,Emboar,high,walk,P27-10 P27-11 P30-26 P30-27
+501,5,Oshawott,high,walk,P27-2 P30-28
+502,5,Dewott,medium,walk,P30-29
+503,5,Samurott,high,surf walk,P27-4 P27-12 P30-30 P32-24 P49-20 P49-21
+504,5,Patrat,medium,walk,P30-31
+506,5,Lillipup,medium,walk,P30-33
+507,5,Herdier,medium,walk,P30-32
+508,5,Stoutland,medium,ride walk,P30-34 P32-44 P33-6
+509,5,Purrloin,medium,walk,P30-35
+510,5,Liepard,medium,ride walk,P30-36 P32-36 P32-37
+511,5,Pansage,medium,walk,P30-37
+512,5,Simisage,medium,walk,P30-38 P45-36
+513,5,Pansear,medium,walk,P30-39
+514,5,Simisear,medium,walk,P30-40
+515,5,Panpour,medium,walk,P30-41
+516,5,Simipour,medium,ride walk,P30-42 P30-43
+517,5,Munna,low,walk,P46-28
+521,5,Unfezant,low,fly,P60-6 P60-7
+522,5,Blitzle,medium,walk,P25-8 P30-44
+523,5,Zebstrika,high,ride walk,P7-10 P30-45 P30-46 P35-43 P35-44 P45-27 P45-33 P46-3 P49-30 P49-31 P53-3 P53-4 P53-5 P53-43 P58-40
+524,5,Roggenrola,medium,walk,P30-47 P39-24
+525,5,Boldore,medium,walk,P30-48
+526,5,Gigalith,high,ride walk,P31-1 P31-2
+527,5,Woobat,medium,walk,P31-3
+528,5,Swoobat,medium,fly walk,P31-4 P32-30 P32-31
+529,5,Drilbur,medium,walk,P31-5
+530,5,Excadrill,high,walk,P31-6 P45-30
+531,5,Audino,high,walk,P24-45 P31-7
+532,5,Timburr,low,walk,P24-42 P45-45 P58-6
+533,5,Gurdurr,medium,walk,P45-42 P58-7
+534,5,Conkeldurr,medium,walk,P43-9 P43-10
+535,5,Tympole,medium,surf walk,P31-8 P32-40
+536,5,Palpitoad,medium,surf walk,P31-10 P31-11 P32-38
+537,5,Seismitoad,high,surf walk,P31-12 P31-13 P32-41 P45-10
+538,5,Throh,high,walk,P31-14
+539,5,Sawk,high,walk,P31-15
+540,5,Sewaddle,medium,walk,P31-17
+541,5,Swadloon,medium,walk,P31-16
+542,5,Leavanny,medium,walk,P31-18
+547,5,Whimsicott,low,walk,P58-46
+548,5,Petilil,medium,walk,P31-19
+549,5,Lilligant,high,walk,P31-20
+552,5,Krokorok,medium,walk,P59-2
+553,5,Krookodile,medium,walk,P59-1
+554,5,Darumaka,medium,walk,P25-23 P31-21 P45-40
+555,5,Darmanitan,high,ride walk,P31-22 P32-42 P45-48
+556,5,Maractus,medium,walk,P59-3
+557,5,Dwebble,medium,walk,P43-13 P59-5
+558,5,Crustle,high,ride walk,P43-11 P43-12 P59-4 P60-9
+559,5,Scraggy,low,walk,P31-23
+560,5,Scrafty,medium,walk,P31-25
+561,5,Sigilyph,high,fly walk,P31-24 P32-27 P32-28
+563,5,Cofagrigus,medium,walk,P30-20
+564,5,Tirtouga,medium,walk,P31-27
+565,5,Carracosta,high,walk,P31-28
+566,5,Archen,medium,walk,P31-29
+567,5,Archeops,medium,walk,P31-30 P33-3
+568,5,Trubbish,medium,walk,P31-31
+569,5,Garbodor,high,walk,P31-32
+570,5,Zorua,high,walk,P25-19 P31-33
+571,5,Zoroark,high,ride walk,P25-13 P31-34 P33-8 P40-29 P42-33 P51-4 P55-21 P56-21 P64-4 P64-5 P66-30 P66-31 P66-32 P66-33 P66-35 P66-36 P66-37
+572,5,Minccino,medium,walk,P59-6
+573,5,Cinccino,medium,walk,P59-7
+574,5,Gothita,medium,walk,P31-35
+575,5,Gothorita,medium,walk,P31-36
+576,5,Gothitelle,medium,walk,P31-37
+577,5,Solosis,medium,walk,P31-38
+578,5,Duosion,medium,walk,P31-39
+580,5,Ducklett,low,walk,P59-8
+581,5,Swanna,medium,fly surf walk,P58-8 P60-3 P60-15
+582,5,Vanillite,medium,walk,P59-11
+583,5,Vanillish,medium,walk,P59-10
+584,5,Vanilluxe,medium,walk,P59-12
+585,5,Deerling,high,ride walk,P31-40 P31-41 P31-42 P31-43 P32-32 P32-33 P32-34 P32-35 P33-2
+586,5,Sawsbuck,high,ride walk,P31-44 P31-45 P31-46 P31-47 P33-1 P33-4 P33-5
+587,5,Emolga,medium,walk,P59-13
+588,5,Karrablast,medium,walk,P59-14
+589,5,Escavalier,medium,walk,P59-15
+590,5,Foongus,medium,walk,P25-21 P59-16
+591,5,Amoonguss,high,walk,P59-17
+592,5,Frillish,medium,walk,P24-14 P59-18 P59-19
+593,5,Jellicent,high,surf walk,P59-20 P59-21 P59-22 P59-23 P60-10 P60-11
+594,5,Alomomola,medium,walk,P59-24
+595,5,Joltik,medium,walk,P25-17 P31-48
+596,5,Galvantula,medium,ride walk,P32-1 P32-2 P43-14 P43-15
+597,5,Ferroseed,medium,walk,P32-3
+598,5,Ferrothorn,medium,ride walk,P32-4 P32-5 P43-8
+599,5,Klink,medium,walk,P24-1 P59-25
+600,5,Klang,medium,walk,P59-26
+601,5,Klinklang,medium,walk,P43-17 P51-40 P51-41 P59-27
+602,5,Tynamo,medium,walk,P32-6 P59-28
+603,5,Eelektrik,medium,walk,P32-7
+605,5,Elgyem,medium,walk,P59-29
+606,5,Beheeyem,medium,walk,P59-30
+607,5,Litwick,medium,walk,P32-8
+609,5,Chandelure,medium,walk,P30-16 P49-14 P49-15 P56-4
+610,5,Axew,low,walk,P59-32
+611,5,Fraxure,low,walk,P59-31
+612,5,Haxorus,low,walk,P46-6 P50-41 P50-42
+613,5,Cubchoo,medium,walk,P32-10 P45-39
+614,5,Beartic,high,walk,P32-11 P45-34 P59-33
+615,5,Cryogonal,medium,walk,P32-12
+616,5,Shelmet,medium,walk,P59-34
+617,5,Accelgor,medium,walk,P59-35
+618,5,Stunfisk,medium,surf walk,P59-36 P59-37
+619,5,Mienfoo,medium,walk,P59-38
+620,5,Mienshao,medium,walk,P59-39
+621,5,Druddigon,low,walk,P32-13
+622,5,Golett,medium,walk,P32-14
+623,5,Golurk,high,fly ride walk,P24-20 P32-15 P32-26 P39-45 P43-16 P43-19 P43-20 P55-12 P55-13
+624,5,Pawniard,medium,walk,P59-40
+625,5,Bisharp,medium,walk,P59-41
+626,5,Bouffalant,high,ride walk,P32-16 P32-17
+627,5,Rufflet,medium,walk,P59-42
+628,5,Braviary,medium,fly walk,P13-40 P13-41 P13-42 P39-8 P59-43 P59-44
+629,5,Vullaby,medium,walk,P59-45
+630,5,Mandibuzz,medium,walk,P59-46
+631,5,Heatmor,low,walk,P59-47
+632,5,Durant,medium,walk,P59-48
+633,5,Deino,low,walk,P32-18
+634,5,Zweilous,low,walk,P32-19
+636,5,Larvesta,medium,walk,P32-22
+637,5,Volcarona,medium,fly walk,P32-23 P32-25 P32-29 P60-1 P60-2 P60-4 P60-5
+638,5,Cobalion,high,ride walk,P1-45 P1-47
+639,5,Terrakion,high,ride walk,P1-44 P1-46
+640,5,Virizion,high,ride walk,P1-42 P1-43
+643,5,Reshiram,low,walk,P42-8
+644,5,Zekrom,medium,walk,P8-24 P44-36
+646,5,Kyurem,medium,walk,P24-36
+647,5,Keldeo,medium,walk,P58-9
+649,5,Genesect,low,walk,P43-22
+658,6,Greninja,medium,walk,P57-43 P57-44
+660,6,Diggersby,low,walk,P40-46
+662,6,Fletchinder,low,walk,P34-46
+668,6,Pyroar,low,ride walk,P41-43 P41-44 P41-45 P41-46 P52-37 P53-28 P53-29 P60-17
+673,6,Gogoat,low,ride walk,P42-19 P42-20 P51-10 P52-33 P52-38
+675,6,Pangoro,low,walk,P16-28
+700,6,Sylveon,medium,walk,P42-16
+708,6,Phantump,low,walk,P25-27
+709,6,Trevenant,low,walk,P13-43 P15-25
+713,6,Avalugg,low,ride walk,P1-14 P1-15
+715,6,Noivern,low,fly walk,P1-9 P1-10
+716,6,Xerneas,medium,walk,P56-42
+717,6,Yveltal,low,fly walk,P13-27 P13-28 P34-44 P49-3 P57-18
+718,6,Zygarde,low,walk,P25-16
+719,6,Diancie,low,walk,P8-40 P58-3
+720,6,Hoopa,low,walk,P53-48 P54-2
+721,6,Volcanion,high,walk,P1-40 P1-41
+723,7,Dartrix,medium,walk,P57-39
+724,7,Decidueye,medium,walk,P57-40
+742,7,Cutiefly,low,walk,P25-33
+764,7,Comfey,low,walk,P24-6
+773,7,Silvally,medium,walk,P57-28
+776,7,Turtonator,low,ride walk,P39-37 P39-38
+791,7,Solgaleo,high,walk,P54-1
+798,7,Kartana,low,walk,P41-4
+799,7,Guzzlord,low,walk,P25-43 P25-44 P26-17 P26-19
+800,7,Necrozma,low,walk,P35-17
+813,8,Scorbunny,medium,walk,P62-14
+815,8,Cinderace,medium,walk,P57-42
+904,8,Overqwil,low,walk,P44-1

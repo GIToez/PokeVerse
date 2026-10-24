@@ -19,6 +19,19 @@ and shinies of the same sprite share a shape) into 3,186 codes like `P12-30`, sh
   columns are left blank for corrections.
 - `master_full.csv`: every pack file with its status, code and name.
 - `names/page_NN.json`: the first-pass names per page.
+- `new_species.csv`: one row per Pokémon past #386 found in the pack, with its best confidence,
+  the uses seen (walk, ride, fly, ...) and the codes to look at.
+
+Pokémon past #386 in the pack (`?` names in `new_species.csv` are low-confidence guesses):
+
+| Gen | Species | In the pack | Low confidence | Not in the pack |
+| --- | --- | --- | --- | --- |
+| 4 | 107 | 53 | 21 | 33 |
+| 5 | 156 | 122 | 15 | 19 |
+| 6 | 72 | 4 | 13 | 55 |
+| 7 | 88 | 4 | 6 | 78 |
+| 8 | 96 | 2 | 1 | 93 |
+| 9 | 120 | 0 | 0 | 120 |
 
 Sheet layout in the pack: 4 directions (N, E, S, W) across, animation frames down. Sheets that
 are twice as wide have the colour mask column next to each direction; it goes in as the
