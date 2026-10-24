@@ -2803,19 +2803,20 @@ inviting friends, suggestions) stay, shortened to fit.
 | Topic | Tip |
 | --- | --- |
 | Pokepedia | Press M to open the Pokepedia and read the Wiki tab. |
-| Selling | Sell Pokémon you don't want to Ron and Joel Morris. |
+| Selling | Sell Pokémon you don't want to Ron in the Union Room. |
+| Selling | In the Orange Islands? Joel Morris on Mandarin Island North buys Pokémon too. |
 | Union Room | Every Pokémon Center has a way into the Union Room. Meet other trainers there! |
 | PC | Every locker opens your PC: boxes, stash, inbox and depot. |
 | GTS | Trade Pokémon with other trainers on the GTS. |
 | Day Care | Leave a Pokémon at the Day Care to train it, or to find an egg. |
 | Held items | Drag a held item onto a Pokémon to give it to them. |
 | Energy | Moves use energy: watch the bar under your Pokémon's health. |
-| Pokédex | Press X to see a Pokémon's Pokédex entry. |
+| Pokédex | Press X, then click a Pokémon (or yourself) to open the Pokédex. |
 | Orders | Press E to order your Pokémon: push rocks, cut trees, climb and more. |
 | Flying | Flying or levitating? Press Q to go up a floor and Z to go down. |
 | Targeting | Press Tab to attack the next target. |
 | Keys | Every key can be changed in Settings > Controls. |
-| Tasks | Press T for Tasks: rewards for hunting and catching. |
+| Tasks | Press T for Tasks: daily and hunting tasks with rewards. |
 | Quests | Press L for your Quest Log. |
 | Calendar | Press C for the calendar: holidays, weekend events and more. |
 | Trainer Card | Press P for your Trainer Card. Show it on Discord with /trainer. |
@@ -2914,7 +2915,7 @@ Steps 4 to 6 need bot changes in PokeVerse-Discord, sent as patches in
 ### To decide
 
 - The banner's colours (a concept is in the PR for this plan).
-- The tip list itself.
+- The final tip list (a starter list is above).
 
 ## Going private
 
