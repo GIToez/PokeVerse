@@ -596,6 +596,12 @@ end
 -- Only there while Halloween runs (EventCalendar.onThink): the map places them at startup, they are
 -- taken away when Halloween isn't on and put back on their spawn spots when it starts
 HalloweenEvent.NPCS = { "Trevor", "Hermitwo", "Selam", "Queter Phill", "Peter Paul" }
+-- The map has these in two copies of the Union Room hall nobody can reach (the old Halloween and
+-- event versions of it); they stand in the real hall instead, among its Halloween decorations
+HalloweenEvent.NPC_MOVED = {
+    ["Trevor"] = { x = 4722, y = 141, z = 7 },
+    ["Peter Paul"] = { x = 4719, y = 133, z = 7 },
+}
 
 local npcSpots = nil
 HalloweenEvent.getNpcSpots = function()
@@ -616,9 +622,13 @@ HalloweenEvent.getNpcSpots = function()
     for cx, cy, body in text:gmatch('<spawn centerx="(%d+)" centery="(%d+)"[^>]*>(.-)</spawn>') do
         for name, x, y, z in body:gmatch('<npc name="([^"]+)" x="(%-?%d+)" y="(%-?%d+)" z="(%d+)"') do
             if (wanted[name]) then
-                npcSpots[#npcSpots + 1] = { name = name, pos = { x = tonumber(cx) + tonumber(x), y = tonumber(cy) + tonumber(y), z = tonumber(z) } }
+                npcSpots[#npcSpots + 1] = { name = name, pos = { x = tonumber(cx) + tonumber(x), y = tonumber(cy) + tonumber(y), z = tonumber(z) },
+                                            moved = HalloweenEvent.NPC_MOVED[name] ~= nil }
             end
         end
+    end
+    for name, pos in pairs(HalloweenEvent.NPC_MOVED) do
+        npcSpots[#npcSpots + 1] = { name = name, pos = pos }
     end
     return npcSpots
 end
@@ -632,7 +642,11 @@ HalloweenEvent.syncNpcs = function()
     npcsShown = active
     for _, spot in ipairs(HalloweenEvent.getNpcSpots()) do
         local npc = getNpcAtPosition(spot.pos, spot.name)
-        if (active and not npc) then
+        if (spot.moved) then
+            if (npc) then
+                doRemoveCreature(npc)
+            end
+        elseif (active and not npc) then
             doCreateNpc(spot.name, spot.pos, false)
         elseif (not active and npc) then
             doRemoveCreature(npc)
