@@ -172,18 +172,6 @@ PC.boxesFull = function(cid)
     return firstFree(getPlayerGUID(cid)) == nil
 end
 
--- boxes shown: up to the last one in use, plus a new empty one when that is full
-local function shownBoxes(counts)
-    local last = 0
-    for box in pairs(counts) do
-        last = math.max(last, box)
-    end
-    if (last == 0 or (counts[last] or 0) >= PC.BOX_SIZE) then
-        last = last + 1
-    end
-    return math.min(math.max(last, 1), PC.BOXES)
-end
-
 local function boxNames(guid)
     local names = {}
     each(string.format("SELECT `box`, `name` FROM `pc_box_names` WHERE `player_id` = %d", guid),
@@ -559,11 +547,10 @@ end
 PC.sendBox = function(cid, box)
     local guid = getPlayerGUID(cid)
     local counts, names = boxCounts(guid), boxNames(guid)
-    local shown = shownBoxes(counts)
-    box = math.min(math.max(box or 1, 1), shown)
+    box = math.min(math.max(box or 1, 1), PC.BOXES)
 
     local boxes = {}
-    for n = 1, shown do
+    for n = 1, PC.BOXES do
         boxes[n] = { box = n, name = names[n] or string.format(__L(cid, "Box %d"), n), count = counts[n] or 0 }
     end
     local list = {}
