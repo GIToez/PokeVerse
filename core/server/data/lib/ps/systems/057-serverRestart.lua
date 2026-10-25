@@ -94,6 +94,27 @@ function ServerRestart.getScheduled()
     return at, getNumber(KEY_REASON)
 end
 
+local REASON_NAMES = { [REASON_DAILY] = "daily", [REASON_STAFF] = "staff", [REASON_UPDATE] = "update" }
+
+-- The next restart Discord #server-status should show: an already scheduled one, or the
+-- coming daily time (the day after if /restart cancel skipped today). Nil when nothing is planned.
+function ServerRestart.next(now)
+    now = now or os.time()
+    local at, reason = ServerRestart.getScheduled()
+    if (at) then
+        return at, REASON_NAMES[reason] or "staff"
+    end
+    local minutes = ServerRestart.getDaily()
+    if (not minutes) then
+        return nil
+    end
+    local nextAt = ServerRestart.nextDaily(minutes, now)
+    if (getNumber(KEY_SKIP) == nextAt) then
+        nextAt = ServerRestart.nextDaily(minutes, nextAt)
+    end
+    return nextAt, "daily"
+end
+
 function ServerRestart.schedule(at, reason)
     doSetStorage(KEY_REASON, reason)
     doSetStorage(KEY_AT, at)

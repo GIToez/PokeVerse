@@ -628,9 +628,9 @@ local GAME_STATE_NAMES = {
     [GAMESTATE_SHUTDOWN] = "shutdown",
 }
 
-local function handleServerStatus()
+function DiscordBridge.serverStatus()
     local info = getDiscordBridgeInfo()
-    return {
+    local status = {
         serverName = getConfigValue("serverName"),
         state = GAME_STATE_NAMES[getGameState()] or "unknown",
         playersOnline = #getPlayersOnline(),
@@ -638,6 +638,15 @@ local function handleServerStatus()
         uptime = getWorldUpTime(),
         bootId = info.bootId,
     }
+    local at, reason = ServerRestart.next()
+    if (at) then
+        status.restart = { at = at, reason = reason }
+    end
+    return status
+end
+
+local function handleServerStatus()
+    return DiscordBridge.serverStatus()
 end
 
 local function handleBridgeConfig()
