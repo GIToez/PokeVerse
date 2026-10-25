@@ -205,6 +205,7 @@ function doPokemonEvolve(cid, toPokemon)
                 doSendPlayerExtendedOpcode(pokemonMaster, EXTENDED_IDS.EVOLUTION, JSON.encode({state = "done"}))
                 doCreatureSetStorage(pokemonMaster, playersStorages.isEvolving, -1)
                 doPokemonUpdate(toPokemon, pokemonMaster, pokemonPosition)
+                doPokedexObtained(pokemonMaster, toPokemon)
             end
         end, POKEMON_EVOLVE_DURATION, pokemonMaster, getCreatureName(cid), toPokemon, pokemonPosition)
 
