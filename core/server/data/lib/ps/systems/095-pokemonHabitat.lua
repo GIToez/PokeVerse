@@ -245,27 +245,21 @@ function PokemonHabitat.attach(cid, ball, stand, standPos)
 end
 
 function PokemonHabitat.useEmpty(cid, item, fromPosition, itemEx, toPosition)
+    -- Use-with: the stand on a charged ball in the bag (same result as dropping the ball on it)
     if (PokemonHabitat.isChargedBall(itemEx)) then
-        if (toPosition.x ~= CONTAINER_POSITION and fromPosition.x == CONTAINER_POSITION) then
-            doPlayerSendCancel(cid, "You must pick up this item first.")
+        if (fromPosition.x == CONTAINER_POSITION) then
+            doPlayerSendCancel(cid, "Put the habitat on the floor of your house first.")
             return true
         end
-        local standPos = fromPosition
-        if (fromPosition.x == CONTAINER_POSITION) then
-            standPos = getPositionAdjacent(cid, getCreaturePosition(cid))
-            if (not standPos or not PokemonHabitat.ownsHouseTile(cid, standPos)) then
-                doPlayerSendCancel(cid, "You can only place a Pokemon habitat in your own house.")
-                return true
-            end
-            if (not doMoveItem(item.uid, standPos)) then
-                doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTENOUGHROOM)
-                return true
-            end
-        elseif (not PokemonHabitat.ownsHouseTile(cid, fromPosition)) then
+        if (toPosition.x ~= CONTAINER_POSITION) then
+            doPlayerSendCancel(cid, "Pick up the Poke Ball first, or drop it on the habitat.")
+            return true
+        end
+        if (not PokemonHabitat.ownsHouseTile(cid, fromPosition)) then
             doPlayerSendCancel(cid, "You can only use a Pokemon habitat in your own house.")
             return true
         end
-        return PokemonHabitat.attach(cid, itemEx, item, standPos)
+        return PokemonHabitat.attach(cid, itemEx, item, fromPosition)
     end
     if (fromPosition.x ~= CONTAINER_POSITION) then
         local sitting = PokemonHabitat.ballOn(fromPosition)

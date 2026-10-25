@@ -65,8 +65,9 @@ so. Items marked **To decide** need an answer before work starts.
 - Android: the map keeps 23x13 tiles and the game stays in landscape; the APK is signed with
   the release key.
 - The pokemon habitat (the old ball pillar): a stand you place only in your own house, then
-  drop a real Poke Ball on. That Pokemon walks the house and is still there after a restart.
-  The ball on the stand is the same item as in your bag.
+  drop a real Poke Ball on or use the stand on a charged ball in your bag. That Pokemon walks
+  the house and is still there after a restart. The ball on the stand is the same item as in
+  your bag.
 - Stage 1 of the [legendary revamp](#22-legendary-revamp-stages-1-to-3-built): habitats in all four
   regions, a way of moving per species, the sets, trails of signs, Mew's disguise, Mewtwo's
   warning, the sleeping Regis, the radar by rank, and the new Admin Events tab. Stages 2 and 3:

@@ -2946,6 +2946,31 @@ local function testPokemonHabitat(cid)
     PokemonHabitat.takeBack(cid, sitting or ball, tile)
     check("Habitat: taking the ball back recalls the Pokemon",
         not PokemonHabitat.hasRow(tile) and (not walker or not isCreature(walker)))
+    check("Habitat: the stand stays after take-back", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+
+    local bagBall = newBall(cid, "Pikachu", 10, POKEMON_SEX_FEMALE)
+    if (bagBall and bagBall.uid) then
+        setBallPokemonNickname(bagBall.uid, "HabitatTest", false)
+    end
+    PokemonHabitat.useEmpty(cid, getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile, bagBall,
+        { x = CONTAINER_POSITION, y = 0, z = 0 })
+    sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: use-with the stand puts the bag ball on it",
+        sitting and sitting.itemid == balls["poke"].charged and PokemonHabitat.hasRow(tile),
+        sitting and sitting.itemid)
+    PokemonHabitat.takeBack(cid, sitting or bagBall, tile)
+
+    local usedBall = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    if (usedBall and usedBall.uid) then
+        setBallPokemonNickname(usedBall.uid, "HabitatTest", false)
+    end
+    PokemonHabitat.useBall(cid, usedBall, { x = CONTAINER_POSITION, y = 0, z = 0 },
+        getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile)
+    sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: use-with the ball on the stand attaches it",
+        sitting and sitting.itemid == balls["poke"].charged and PokemonHabitat.hasRow(tile),
+        sitting and sitting.itemid)
+    PokemonHabitat.takeBack(cid, sitting or usedBall, tile)
 
     cleanup()
 end

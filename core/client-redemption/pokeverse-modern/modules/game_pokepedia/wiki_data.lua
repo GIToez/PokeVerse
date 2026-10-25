@@ -557,7 +557,7 @@ WikiData = {
                 "Rent is paid every week from your bank, or the money in your depot. After 3 warnings you lose the house, and also after 45 days without logging in or when your Premium runs out.",
             } },
             { 'p', "From the Houses tab you can also set guests and sub-owners, leave (your things go to your depot, no refund) or offer the house to an online trainer for a price." },
-            { 'p', "A Pokemon habitat (the furniture shops sell it as a ball pillar too) can only stand in your own house. Put a charged ball on it: that Pokemon walks the rooms and is still there after a restart. The ball on the stand is the same one as in your bag, so a Great Ball still looks like a Great Ball. Use the stand or pick the ball up to take it back." },,
+            { 'p', "A Pokemon habitat (the furniture shops sell it as a ball pillar too) can only stand in your own house. Drop a charged ball on it, or use the stand on a ball in your bag: that Pokemon walks the rooms and is still there after a restart. The ball on the stand is the same one as in your bag, so a Great Ball still looks like a Great Ball. Use the stand or pick the ball up to take it back." },
             { 'p', "Guild halls are bought by the guild leader, one per guild, with no level or Premium check. They can't be transferred." },
             { 'commands', { "/house buy", "/house leave" } },
         } },

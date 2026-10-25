@@ -24758,7 +24758,7 @@
 		<attribute key="weight" value="090" />
 	</item>
 	<item id="18650" article="a" name="pokemon habitat">
-		<attribute key="description" value="Place this in your house, then put a Poke Ball on it. That Pokemon walks around the house. The ball looks the same as in your bag." />
+		<attribute key="description" value="Place this in your house. Drop a charged Poke Ball on it, or use the stand on a ball in your bag. That Pokemon walks the house. The ball looks the same as in your bag." />
 		<attribute key="forceSerialize" value="1" />
 		<attribute key="forceTransferToDepot" value="1" />
 	</item>
