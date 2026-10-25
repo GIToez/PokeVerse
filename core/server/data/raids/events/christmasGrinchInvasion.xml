@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <raid>
-	<announce delay="0" type="warning" message="Grinch is coming!"/>
+	<announce delay="0" type="warning" message="Christmas raid: The Grinch is coming for the presents! Grab them before he does."/>
 		<script file="christmasGrinchInvasion.lua"/>
 </raid>

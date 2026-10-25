@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <raid>
-	<announce delay="0" type="warning" message="Cake Minions"/>
+	<announce delay="0" type="warning" message="Anniversary raid: Cake Minions are invading! Defeat them to bring out the Evil Cake."/>
 		<areaspawn ref="yes" centerx="5289" centery="300" centerz="7" radius="5">
 			<monster name="Minion Cake" amount="1"/>
 			<monster name="Minion Chocolate Cake" amount="1"/>

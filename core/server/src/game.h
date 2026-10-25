@@ -543,6 +543,8 @@ class Game
 
 		void kickPlayer(uint32_t playerId, bool displayEffect);
 		bool broadcastMessage(const std::string& text, MessageClasses type);
+		// broadcastMessage that also gets the news banner and Discord (Announcements.fromEngine, 092-announcements.lua)
+		bool broadcastAnnouncement(const std::string& text, MessageClasses type, const std::string& source);
 		void showHotkeyUseMessage(Player* player, Item* item);
 
 		int32_t getMotdId();

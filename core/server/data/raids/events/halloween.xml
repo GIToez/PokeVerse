@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <raid>
-	<announce delay="0" type="warning" message="Trick-or-treat!"/>
+	<announce delay="0" type="warning" message="Halloween raid: Haunted Gastly, Haunter and Gengar are loose in every Kanto city!"/>
 	<!-- Viridian -->
 		<areaspawn ref="yes" centerx="3295" centery="605" centerz="7" radius="4">
 			<monster name="Halloween Gastly" amount="2"/>

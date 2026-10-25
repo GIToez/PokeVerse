@@ -515,7 +515,7 @@ void Tournament::broadcastGlobalMessage(const std::string& text)
 #ifdef __DEBUG_TOURNAMENT__
     std::cout << "[Tournament::broadcastGlobalMessage]text: " << text << " (" << m_name << ")" << std::endl;
 #endif
-    g_game.broadcastMessage(text, MSG_STATUS_WARNING);
+    g_game.broadcastAnnouncement(text, MSG_STATUS_WARNING, "tournament");
 }
 
 void Tournament::preparePlayer(Player* player)
