@@ -112,6 +112,7 @@ WikiData = {
                 { "Call Pokemon 1-6", "F1 - F6" },
                 { "Moves", "1 - 0, -, = (Ctrl + key while chatting)" },
                 { "Order", "E" },
+                { "Turn your Pokemon", "Shift+W, A, S, D or Shift+arrows (chat off)" },
                 { "Pokedex on your target", "X" },
                 { "Pokepedia map", "M" },
                 { "Trainer Card", "P" },
@@ -143,6 +144,7 @@ WikiData = {
         } },
         { key = 'rotate', title = 'Turning your Pokemon', portrait = 7, body = {
             { 'p', "With your Pokemon out, say t1 to face it north, t2 east, t3 south and t4 west." },
+            { 'p', "With the chat off (WASD), Shift+W, A, S or D (or Shift+arrows) turns it. Change those keys in Settings > Controls > Key bindings, under Pokemon." },
             { 'commands', { "t1", "t2", "t3", "t4" } },
         } },
         { key = 'screen', title = 'Screen options', item = 3484, body = {

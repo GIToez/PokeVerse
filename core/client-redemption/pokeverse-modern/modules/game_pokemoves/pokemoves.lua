@@ -29,6 +29,14 @@ local ORDER_ACTION = 'Order'
 local DEX_ACTION = 'Use Pokedex on target'
 local EVOLVE_ACTION = 'Evolve Pokemon'
 
+-- the server's t1-t4 (turn.lua), in WASD mode only: with the chat on, Shift+arrows select text and Shift+Up/Down browse the chat history
+local TURNS = {
+    { action = 'Turn Pokemon north', words = 't1', wasd = 'W', arrow = 'Up' },
+    { action = 'Turn Pokemon east', words = 't2', wasd = 'D', arrow = 'Right' },
+    { action = 'Turn Pokemon south', words = 't3', wasd = 'S', arrow = 'Down' },
+    { action = 'Turn Pokemon west', words = 't4', wasd = 'A', arrow = 'Left' },
+}
+
 local function moveAction(index)
     return 'Use move ' .. index
 end
@@ -512,6 +520,16 @@ local function bindKeys()
     Keybind.bind(KEYBIND_CATEGORY, DEX_ACTION, { { type = KEY_DOWN, callback = useDexOnTarget } })
     Keybind.new(KEYBIND_CATEGORY, EVOLVE_ACTION, '', '')
     Keybind.bind(KEYBIND_CATEGORY, EVOLVE_ACTION, { { type = KEY_DOWN, callback = g_game.evolvePokemon } })
+    for _, turn in ipairs(TURNS) do
+        Keybind.new(KEYBIND_CATEGORY, turn.action,
+            { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'Shift+' .. turn.wasd },
+            { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'Shift+' .. turn.arrow })
+        Keybind.bind(KEYBIND_CATEGORY, turn.action, { { type = KEY_DOWN, callback = function()
+            if g_game.isOnline() then
+                g_game.talkChannel(MessageModes.Say, 0, turn.words)
+            end
+        end } })
+    end
 end
 
 local function unbindKeys()
@@ -521,6 +539,9 @@ local function unbindKeys()
     Keybind.delete(KEYBIND_CATEGORY, ORDER_ACTION)
     Keybind.delete(KEYBIND_CATEGORY, DEX_ACTION)
     Keybind.delete(KEYBIND_CATEGORY, EVOLVE_ACTION)
+    for _, turn in ipairs(TURNS) do
+        Keybind.delete(KEYBIND_CATEGORY, turn.action)
+    end
 end
 
 local function delegateDrag(slot)
