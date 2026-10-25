@@ -54,20 +54,65 @@ local function onSound(protocol, opcode, buffer)
     end
 end
 
+-- A Pokemon's voice line ("PIKACHU!") plays its cry, quieter with distance. Crowds of wild
+-- Pokemon talk a lot, so cries are spaced out overall and per species name.
+local CRY_DIR = '/sounds/cries/'
+local CRY_RANGE = 8
+local CRY_GAP_MS = 1200
+local CRY_SPEAKER_GAP_MS = 8000
+local lastCry = -CRY_GAP_MS
+local lastCryBy = {}
+
+local function cryNumber(name, text)
+    local number = CryVoices[text]
+    if number == nil then
+        return nil
+    end
+    return number or CryNames[name:lower()]
+end
+
+local function onTalk(name, level, mode, text, channelId, creaturePos)
+    if mode ~= MessageModes.MonsterSay and mode ~= MessageModes.MonsterYell or not creaturePos then
+        return
+    end
+    local player = g_game.getLocalPlayer()
+    local here = player and player:getPosition()
+    if not here or here.z ~= creaturePos.z then
+        return
+    end
+    local distance = math.max(math.abs(here.x - creaturePos.x), math.abs(here.y - creaturePos.y))
+    local number = distance <= CRY_RANGE and cryNumber(name, text)
+    if not number then
+        return
+    end
+    local now = g_clock.millis()
+    if now - lastCry < CRY_GAP_MS or now - (lastCryBy[name] or -CRY_SPEAKER_GAP_MS) < CRY_SPEAKER_GAP_MS then
+        return
+    end
+    local channel = g_sounds and g_sounds.getChannel(SoundChannels.Item)
+    if not channel or not channel:isEnabled() or channel:getGain() <= 0 then
+        return
+    end
+    lastCry = now
+    lastCryBy[name] = now
+    g_sounds.play(CRY_DIR .. number .. '.ogg', 0, channel:getGain() * (1 - distance / (CRY_RANGE + 2)))
+end
+
 local function cancelPending()
     for event in pairs(pending) do
         removeEvent(event)
     end
     pending = {}
+    lastCryBy = {}
 end
 
 function init()
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Sound, onSound)
-    connect(g_game, { onGameEnd = cancelPending })
+    connect(g_game, { onGameEnd = cancelPending, onTalk = onTalk })
 end
 
 function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Sound)
-    disconnect(g_game, { onGameEnd = cancelPending })
+    disconnect(g_game, { onGameEnd = cancelPending, onTalk = onTalk })
     cancelPending()
 end

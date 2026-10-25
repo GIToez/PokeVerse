@@ -1809,7 +1809,14 @@ local function testAnglerSpot(cid, arena)
 end
 
 local function testMedic(cid, friend, arena)
-    local env = sandbox(SCRIPTS .. "potions/healthPotions.lua")
+    local marks = {}
+    local env = sandbox(SCRIPTS .. "potions/healthPotions.lua", {
+        doSendPlayerExtendedOpcode = function(pid, opcode, payload)
+            if (opcode == EXTENDED_IDS.HEAL_MARK) then
+                marks[#marks + 1] = { to = pid, data = JSON.decode(payload) }
+            end
+            return doSendPlayerExtendedOpcode(pid, opcode, payload)
+        end })
     local pos = { x = arena.x + 2, y = arena.y, z = arena.z }
     doTeleportThing(friend, { x = arena.x, y = arena.y + 1, z = arena.z }, false)
     local m = doCreateMonster("Snorlax", pos, false)
@@ -1839,7 +1846,27 @@ local function testMedic(cid, friend, arena)
     become(cid, "medic", 1)
     healed = heal()
     check("Medic rank 1 heals +3%", healed == math.min(math.floor(base * 1.03), getCreatureMaxHealth(m) - 1), healed)
-    doRemoveCreature(m)
+    local function markedFor(pid, from)
+        for index = from or 1, #marks do
+            if (marks[index].to == pid and marks[index].data.id == m) then
+                return marks[index].data.s
+            end
+        end
+        return nil
+    end
+    check("Heal mark: the healer and the owner see it on the Pokemon, for 60 seconds",
+        markedFor(cid) == 60 and markedFor(friend) == 60, tostring(markedFor(cid)) .. " " .. tostring(markedFor(friend)))
+    local sent = #marks
+    healed = heal()
+    check("Heal mark: a second potion sends it again", markedFor(cid, sent + 1) == 60, tostring(markedFor(cid, sent + 1)))
+    sent = #marks
+    addEvent(function()
+        local left = markedFor(cid, sent + 1)
+        check("Heal mark: sent again each tick, so trainers who come closer see it", left and left >= 50 and left <= 56, tostring(left))
+        if (isCreature(m)) then
+            doRemoveCreature(m)
+        end
+    end, 5500)
 end
 
 -- Runs fn without sending the game's messages and window updates: the outfit checks choose every

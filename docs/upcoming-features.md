@@ -1085,6 +1085,7 @@ From the `#notes` channel:
   | Key | Action |
   | --- | --- |
   | W A S D | Walk (Movement). The diagonals (Q E Z C before) have no key; players can add them |
+  | Numpad | Walk, the second key of each walk entry (Numpad 7 9 1 3 the diagonals), so it can be changed or cleared for hotkeys |
   | Ctrl + W A S D | Turn (Ctrl + arrows too). Clear All Texts keeps Ctrl+W only with the chat open |
   | Q / Z | Fly or levitate up / down a floor (`/up`, `/down`) |
   | E | Order (was R) |
@@ -1100,8 +1101,25 @@ From the `#notes` channel:
   The daily login reward, tracker, Pokepedia (other than M), minimap, inventory, options,
   store and admin panel have an entry under Windows with no default key. Tab attacks the next
   target: the battle list's next entry, or with the battle list closed the nearest attackable
-  creature on screen. Arrows, numpad and Ctrl + arrows stay
-  fixed. R is free.
+  creature on screen. Arrows and Ctrl + arrows stay fixed. R is free.
+- **Numpad hotkeys (fixed):** the numpad walked on its own, outside Settings > Controls, so it
+  couldn't be cleared and a hotkey on a numpad key also walked. The numpad keys are now the
+  walk entries' second keys (`patches/game_walk.patch`); clear one there, or let the hotkey
+  window swap it. A walk key someone changed before keeps its numpad key once, unless a
+  hotkey already uses it.
+- **Heal mark (done):** a Pokémon or trainer a health potion is healing shows a small green
+  cross after its name, for everyone who can see it, until the heal ends
+  (`game_healmark`, sent from `potions/healthPotions.lua`). Potions stay heal-over-time:
+  flat heals would undo the Medic perks and make potions a full refill in wild fights.
+- **Pokémon cries (done):** when a Pokémon says one of its voice lines ("PIKACHU!") its cry
+  plays (`/sounds/cries/<number>.ogg`), quieter with distance, up to 8 tiles, on the Battle
+  Sounds volume. At most one cry each 1.2 s, and each species name once every 8 s. The line
+  picks the cry, so nicknamed summons work; a line several species share uses the name.
+  After changing voices or `pokemonsNumbers.lua`, run `scripts/make-cry-voices.py`.
+- **Nurse Chansey (to do):** Nurse Joy's Chansey only says "Chansey!" (`npc/Nurse Joy's
+  Chansey.xml`, look type 639). Update its look, and decide what it does, for example
+  healing like Nurse Joy, a short line about the Pokémon Center, or a cheer when a team is
+  healed.
 - **Switching Pokémon (done):** the trainer is protected until the next Pokémon is out (at
   most 1.5 seconds), not in duels or trainer battles.
 - **Bugged stairs (fixed, check on live):** stairs that land on more stairs sent two full map
