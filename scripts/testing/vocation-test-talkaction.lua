@@ -2354,6 +2354,60 @@ local function testEventShop(cid)
 
     local locker, lockerText = EventShop.exchange(cid, "anniversary_gifts", "kangaskhan locker", 1)
     check("Event shop: a locker needs the PSoul letters", not locker, lockerText)
+
+    local christmas = EventShop.get("christmas_santa")
+    local grinch = EventShop.get("christmas_grinch")
+    local easter = EventShop.get("easter_ralp")
+    local july = EventShop.get("july_walter")
+    check("Event shop: Santa, Ralp and Walter John have catalogs",
+        christmas and grinch and easter and july
+            and christmas.tokenId == 14632 and grinch.tokenId == 25270
+            and easter.tokenId == 24549 and july.tokenId == 29132
+            and christmas.uniqueToken and grinch.uniqueToken and not easter.uniqueToken and july.uniqueToken)
+    local present = EventShop.findOffer("christmas_santa", "santa claus present")
+    local grinchPresent = EventShop.findOffer("christmas_grinch", "santa claus present")
+    check("Event shop: Old Santa's present is 30 CT and Grinch Santa's is 5 TB",
+        present and present.price == 30 and grinchPresent and grinchPresent.price == 5)
+    check("Event shop: Christmas FYI still lists CT", EventShop.fyi("christmas_santa"):find("christmas kit 1", 1, true)
+        and EventShop.fyi("christmas_santa"):find("CT", 1, true))
+    check("Event shop: Token Box FYI still lists TB", EventShop.fyi("christmas_grinch"):find("elfin clothes kit", 1, true)
+        and EventShop.fyi("christmas_grinch"):find("TB", 1, true))
+    check("Event shop: Easter FYI still lists GEE", EventShop.fyi("easter_ralp"):find("blue easter ticket", 1, true)
+        and EventShop.fyi("easter_ralp"):find("GEE", 1, true))
+    check("Event shop: July FYI still lists F", EventShop.fyi("july_walter"):find("common seal box", 1, true)
+        and EventShop.fyi("july_walter"):find("F", 1, true))
+
+    doPlayerSafeAddItem(cid, 14632, 50, false, true)
+    local lamps = getPlayerItemCount(cid, 18052)
+    local boughtLamp = EventShop.exchange(cid, "christmas_santa", "chinchou lamp", 1)
+    check("Event shop: 50 CT buy a chinchou lamp", boughtLamp and getPlayerItemCount(cid, 18052) == lamps + 1,
+        tostring(boughtLamp) .. " " .. getPlayerItemCount(cid, 18052))
+
+    doPlayerSafeAddItem(cid, 25270, 5, false, true)
+    local presents = getPlayerItemCount(cid, 14639)
+    local boughtPresent = EventShop.exchange(cid, "christmas_grinch", "santa claus present", 1)
+    check("Event shop: 5 TB buy a santa claus present", boughtPresent and getPlayerItemCount(cid, 14639) == presents + 1,
+        tostring(boughtPresent) .. " " .. getPlayerItemCount(cid, 14639))
+
+    doPlayerSafeAddItem(cid, 24549, 20, false, false)
+    local tickets = getPlayerItemCount(cid, 24563)
+    local boughtTicket = EventShop.exchange(cid, "easter_ralp", "blue easter ticket", 1)
+    check("Event shop: 20 GEE buy a blue easter ticket", boughtTicket and getPlayerItemCount(cid, 24563) == tickets + 1,
+        tostring(boughtTicket) .. " " .. getPlayerItemCount(cid, 24563))
+
+    local easterBought = getPlayerBoughtRareCandy(cid)
+    setPlayerBoughtRareCandy(cid, 15)
+    doPlayerSafeAddItem(cid, 24549, 75, false, false)
+    local easterRefused, easterErr = EventShop.exchange(cid, "easter_ralp", "rare candy", 1)
+    check("Event shop: Easter rare candy stays at the account cap",
+        not easterRefused and type(easterErr) == "string" and easterErr:find("15", 1, true), easterErr)
+    setPlayerBoughtRareCandy(cid, easterBought)
+
+    doPlayerSafeAddItem(cid, 29132, 1, false, true)
+    local seals = getPlayerItemCount(cid, 29125)
+    local boughtSeal = EventShop.exchange(cid, "july_walter", "common seal box", 1)
+    check("Event shop: 1 fragment buys a common seal box", boughtSeal and getPlayerItemCount(cid, 29125) == seals + 1,
+        tostring(boughtSeal) .. " " .. getPlayerItemCount(cid, 29125))
 end
 
 local function testDecorationItems(cid)

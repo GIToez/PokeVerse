@@ -1,5 +1,5 @@
--- Event Token Shop: holiday catalogs (Halloween Tokens, Anniversary Tokens / letters). The NPCs open
--- the window for clients that have it; their name+yes/no talk still works for old clients.
+-- Event Token Shop: holiday catalogs (Halloween, Anniversary, Christmas, Easter, July). The NPCs
+-- open the window for clients that have it; their name+yes/no talk still works for old clients.
 --
 -- The client talks JSON on EXTENDED_IDS.EVENT_SHOP:
 --   client -> server  {action = "hello"} at login; {action = "buy", offer, count}; {action = "close"}
@@ -22,6 +22,10 @@ local SHOP = playersStorages.eventShopId
 local TOKEN = {
     HALLOWEEN = 14461,
     ANNIVERSARY = 27935,
+    CHRISTMAS = 14632,
+    TOKEN_BOX = 25270,
+    EASTER = 24549,
+    JULY = 29132,
 }
 local LETTERS_PSOUL = { 14438, 14439, 14440, 14441, 14442 }
 
@@ -38,6 +42,7 @@ local CATEGORY_NAMES = {
     letters = "Letters",
     psoul = "PSoul",
     lockers = "Lockers",
+    boxes = "Boxes",
 }
 
 local function inferCategory(offer)
@@ -72,11 +77,18 @@ local function inferCategory(offer)
     if (n:find("doll", 1, true)) then
         return "dolls"
     end
-    if (n:find("candy", 1, true) or n:find("ball", 1, true) or n:find("wand", 1, true) or n:find("staff", 1, true)) then
-        return "consumables"
-    end
     if (n:find("ticket", 1, true)) then
         return "tickets"
+    end
+    if (n:find("box", 1, true)) then
+        return "boxes"
+    end
+    if (n:find("candy", 1, true) or n:find("ball", 1, true) or n:find("wand", 1, true) or n:find("staff", 1, true)
+            or n:find("lollipop", 1, true) or n:find("present", 1, true)) then
+        return "consumables"
+    end
+    if (n:find("shoe", 1, true)) then
+        return "outfits"
     end
     return "decorations"
 end
@@ -273,6 +285,154 @@ EventShop.SHOPS = {
             { name = "feraligatr locker", itemId = 26189, price = 0, costItems = LETTERS_PSOUL, description = "P, S, O, U and L letters" },
             { name = "infernape locker", itemId = 26190, price = 0, costItems = LETTERS_PSOUL, description = "P, S, O, U and L letters" },
             { name = "dragonair locker", itemId = 26191, price = 0, costItems = LETTERS_PSOUL, description = "P, S, O, U and L letters" },
+        },
+    },
+    christmas_santa = {
+        npc = "Santa Claus",
+        title = "Christmas Tokens",
+        tokenId = TOKEN.CHRISTMAS,
+        tokenShort = "CT",
+        tokenName = "Christmas Token",
+        uniqueToken = true,
+        mode = "buy",
+        thanks = "Here it is, thanks!",
+        notEnough = "You do not have enough christmas tokens for it.",
+        offers = {
+            { name = "christmas kit 1", itemId = 18748, price = 50, description = "outfit" },
+            { name = "christmas kit 2", itemId = 18749, price = 50, description = "outfit" },
+            { name = "christmas kit 3", itemId = 18750, price = 100, description = "outfit" },
+            { name = "santa claus present", itemId = 14639, price = 30 },
+            { name = "chinchou lamp", itemId = 18052, price = 50 },
+            { name = "pikachu lamp", itemId = 18054, price = 50 },
+            { name = "poke table", itemId = 18752, price = 50, description = "package for houses" },
+            { name = "pichu carpet", itemId = 18061, price = 50 },
+            { name = "aipom carpet", itemId = 18062, price = 50 },
+            { name = "noctowl carpet", itemId = 18063, price = 50 },
+        },
+    },
+    christmas_grinch = {
+        npc = "Santa Claus",
+        title = "Token Boxes",
+        tokenId = TOKEN.TOKEN_BOX,
+        tokenShort = "TB",
+        tokenName = "Token Box",
+        uniqueToken = true,
+        mode = "buy",
+        thanks = "Here it is, thanks!",
+        notEnough = "You do not have enough token boxes for it.",
+        offers = {
+            { name = "christmas kit 1", itemId = 18748, price = 50, description = "outfit" },
+            { name = "christmas kit 2", itemId = 18749, price = 50, description = "outfit" },
+            { name = "christmas kit 3", itemId = 18750, price = 100, description = "outfit" },
+            { name = "santa claus present", itemId = 14639, price = 5 },
+            { name = "chinchou lamp", itemId = 18052, price = 50 },
+            { name = "pikachu lamp", itemId = 18054, price = 50 },
+            { name = "poke table", itemId = 18752, price = 50, description = "package for houses" },
+            { name = "pichu carpet", itemId = 18061, price = 50 },
+            { name = "aipom carpet", itemId = 18062, price = 50 },
+            { name = "noctowl carpet", itemId = 18063, price = 50 },
+            { name = "elfin clothes kit", itemId = 25316, price = 100, description = "outfit" },
+            { name = "helper grinch clothes kit", itemId = 25317, price = 100, description = "outfit" },
+            { name = "blue present paint ticket", itemId = 25349, price = 30 },
+            { name = "christmas night paint ticket", itemId = 25350, price = 30 },
+            { name = "christmas tree paint ticket", itemId = 25351, price = 30 },
+            { name = "ginger paint ticket", itemId = 25352, price = 30 },
+            { name = "green present paint ticket", itemId = 25353, price = 30 },
+            { name = "north pole paint ticket", itemId = 25354, price = 30 },
+            { name = "purple present paint ticket", itemId = 25355, price = 30 },
+            { name = "red present paint ticket", itemId = 25356, price = 30 },
+            { name = "yellow present paint ticket", itemId = 25357, price = 30 },
+            { name = "bg jester paint ticket", itemId = 28173, price = 30 },
+            { name = "blue christmas light paint ticket", itemId = 28177, price = 30 },
+            { name = "blue christmas present paint ticket", itemId = 28181, price = 30 },
+            { name = "christmas chimney paint ticket", itemId = 28185, price = 30 },
+            { name = "garland paint ticket", itemId = 28189, price = 30 },
+            { name = "golden christmas paint ticket", itemId = 28193, price = 30 },
+            { name = "green christmas light paint ticket", itemId = 28197, price = 30 },
+            { name = "green christmas present paint ticket", itemId = 28201, price = 30 },
+            { name = "grinch christmas paint ticket", itemId = 28205, price = 30 },
+            { name = "noel paint ticket", itemId = 28209, price = 30 },
+            { name = "orange christmas light paint ticket", itemId = 28213, price = 30 },
+            { name = "pine tree paint ticket", itemId = 28217, price = 30 },
+            { name = "pink christmas light paint ticket", itemId = 28221, price = 30 },
+            { name = "purple christmas light paint ticket", itemId = 28225, price = 30 },
+            { name = "red christmas light paint ticket", itemId = 28229, price = 30 },
+            { name = "reindeer paint ticket", itemId = 28233, price = 30 },
+            { name = "rgb present paint ticket", itemId = 28237, price = 30 },
+            { name = "silver christmas paint ticket", itemId = 28245, price = 30 },
+            { name = "sky blue christmas light paint ticket", itemId = 28249, price = 30 },
+            { name = "snowman paint ticket", itemId = 28253, price = 30 },
+            { name = "yellow christmas light paint ticket", itemId = 28257, price = 30 },
+            { name = "yellow christmas present paint ticket", itemId = 28261, price = 30 },
+            { name = "bygone snow doll", itemId = 28262, price = 50 },
+            { name = "nowaday snow doll", itemId = 28263, price = 50 },
+            { name = "to be snow doll", itemId = 28264, price = 50 },
+        },
+    },
+    easter_ralp = {
+        npc = "Ralp",
+        title = "Golden Easter Eggs",
+        tokenId = TOKEN.EASTER,
+        tokenShort = "GEE",
+        tokenName = "Golden Easter Egg",
+        uniqueToken = false,
+        mode = "buy",
+        thanks = "Oh, thanks!",
+        notEnough = "You do not have enough golden easter egg for it.",
+        offers = {
+            { name = "100 empty white easter ball", itemId = 24568, price = 500, count = 100 },
+            { name = "10 empty white easter ball", itemId = 24568, price = 50, count = 10 },
+            { name = "empty white easter ball", itemId = 24568, price = 5 },
+            { name = "blue easter ticket", itemId = 24563, price = 20 },
+            { name = "green easter ticket", itemId = 24564, price = 20 },
+            { name = "red easter ticket", itemId = 24565, price = 20 },
+            { name = "blue delicious machine", itemId = 25425, price = 100, unique = true },
+            { name = "green delicious machine", itemId = 25426, price = 100, unique = true },
+            { name = "red delicious machine", itemId = 25427, price = 100, unique = true },
+            { name = "yellow delicious machine", itemId = 25428, price = 100, unique = true },
+            { name = "decoration easter", itemId = 25430, price = 50, description = "decoration easter eggs" },
+            { name = "black easter shoes", itemId = 25429, price = 100 },
+            { name = "white easter shoes", itemId = 25432, price = 100 },
+            {
+                name = "rare candy",
+                itemId = 14463,
+                price = 75,
+                unique = true,
+                onBuy = function(cid)
+                    setPlayerBoughtRareCandy(cid, getPlayerBoughtRareCandy(cid) + 1)
+                end,
+                canBuy = function(cid) return getPlayerBoughtRareCandy(cid) < 15 end,
+                onBuyError = "You can only buy 15 Rare Candys during this event, your account already bought all!",
+            },
+        },
+    },
+    july_walter = {
+        npc = "Walter John",
+        title = "Fragments of The Choosen One",
+        tokenId = TOKEN.JULY,
+        tokenShort = "F",
+        tokenName = "Fragment of the Choosen One",
+        uniqueToken = true,
+        mode = "buy",
+        thanks = "Here it is, thanks!",
+        notEnough = "You do not have enough tokens for it.",
+        offers = {
+            { name = "common seal box", itemId = 29125, price = 1 },
+            { name = "vitamin box", itemId = 23949, price = 5 },
+            { name = "mastery ball box", itemId = 29129, price = 5 },
+            {
+                name = "rare lollipop",
+                itemId = 24632,
+                price = 3,
+                onCreate = function(item, cid)
+                    doItemSetAttribute(item, 1000, getPlayerLevel(cid))
+                end,
+            },
+            { name = "common TM box", itemId = 27764, price = 10 },
+            { name = "rare paint ticket box", itemId = 29127, price = 10 },
+            { name = "rare candy", itemId = 14463, price = 15, count = 3 },
+            { name = "rare TM box", itemId = 27767, price = 20 },
+            { name = "legendary TM box", itemId = 27768, price = 25 },
         },
     },
 }
@@ -478,7 +638,7 @@ end
 
 local function giveReward(cid, offer, amount)
     local count = (offer.count or 1) * (amount or 1)
-    return doPlayerSafeAddItem(cid, offer.itemId, count, true, offer.unique)
+    return doPlayerSafeAddItem(cid, offer.itemId, count, true, offer.unique, true, offer.onCreate)
 end
 
 -- Buy with tokens, turn letters into tokens, or spend the PSoul letters on a locker.
