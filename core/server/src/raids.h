@@ -246,7 +246,13 @@ class ScriptEvent : public RaidEvent, public Event
 {
 	public:
 		ScriptEvent(Raid* raid, bool ref): RaidEvent(raid, ref),
-			Event(&m_interface) {m_interface.initState();}
+			Event(&m_interface)
+		{
+			// one state for every raid script: a new state per script restarts the script ids, and the
+			// earlier raids' ids would then run the last script loaded
+			if(!m_interface.getState())
+				m_interface.initState();
+		}
 		virtual ~ScriptEvent() {}
 
 		virtual bool configureRaidEvent(xmlNodePtr eventNode);
