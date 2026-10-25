@@ -1,0 +1,51 @@
+BuffSlot < UIWidget
+  size: 32 32
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  image-color: #ffffffcc
+  $hover:
+    image-color: #ffffff
+
+  UIItem
+    id: item
+    size: 26 26
+    virtual: true
+    phantom: true
+    anchors.centerIn: parent
+
+  UIWidget
+    id: shade
+    background-color: #0a1220a0
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 3
+    height: 0
+    phantom: true
+
+  Label
+    id: time
+    font: Verdana Bold-11px-outline
+    color: #ffffff
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 3
+    margin-bottom: 1
+    phantom: true
+
+UIWindow
+  id: statusbar
+  focusable: false
+  draggable: true
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  padding: 4
+  height: 40
+  anchors.top: gameMapPanel.top
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter
+  margin-top: 146
+  layout:
+    type: horizontalBox
+    spacing: 3
+    fit-children: true
