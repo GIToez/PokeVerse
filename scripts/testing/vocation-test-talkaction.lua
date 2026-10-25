@@ -2861,6 +2861,120 @@ local function testHandDecorations(cid)
     end, 3000)
 end
 
+local function testPokemonHabitat(cid)
+    check("Habitat: the empty stand is a habitat",
+        getItemNameById(PokemonHabitat.EMPTY_ID):lower():find("habitat", 1, true) ~= nil)
+    check("Habitat: an empty poke ball is not charged",
+        not PokemonHabitat.isChargedBall({ uid = 0, itemid = balls["poke"].empty }))
+
+    local houseId, tile, prev
+    for _, id in pairs(getTownHouses()) do
+        local info = getHouseInfo(id, false)
+        if (info and not info.guildHall and info.owner == 0 and info.tiles <= 50) then
+            houseId, prev = id, 0
+            break
+        end
+    end
+    if (houseId) then
+        setHouseOwner(houseId, getPlayerGUID(cid), false)
+        for _, pos in ipairs(getHouseTiles(houseId) or {}) do
+            local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+            local tileInfo = getTileInfo(pos)
+            if (ground and ground.itemid ~= 0 and tileInfo and tileInfo.house and not tileInfo.bed) then
+                tile = pos
+                break
+            end
+        end
+        if (not tile) then
+            setHouseOwner(houseId, prev, false)
+            houseId = nil
+        end
+    end
+    check("Habitat: a vacant house tile", houseId and tile ~= nil, houseId)
+    if (not houseId or not tile) then
+        return
+    end
+
+    local back = getCreaturePosition(cid)
+    local function cleanup()
+        PokemonHabitat.recall(tile)
+        local stand = getTileItemById(tile, PokemonHabitat.EMPTY_ID)
+        if (isItem(stand)) then
+            doRemoveItem(stand.uid)
+        end
+        local sitting = PokemonHabitat.ballOn(tile)
+        if (sitting) then
+            doRemoveItem(sitting.uid)
+        end
+        for _, b in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+            if (getBallPokemonNickname(b.uid) == "HabitatTest") then
+                doRemoveItem(b.uid)
+            end
+        end
+        setHouseOwner(houseId, prev, false)
+        doTeleportThing(cid, back, false)
+    end
+
+    doTeleportThing(cid, tile, false)
+    check("Habitat: the owner can use their house tile", PokemonHabitat.ownsHouseTile(cid, tile))
+
+    doCreateItem(PokemonHabitat.EMPTY_ID, 1, tile)
+    check("Habitat: the stand goes down in the house", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+
+    local ball = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    if (ball and ball.uid) then
+        setBallPokemonNickname(ball.uid, "HabitatTest", false)
+    end
+    check("Habitat: a charged poke ball looks like the inventory ball",
+        PokemonHabitat.isChargedBall(ball) and ball.itemid == balls["poke"].charged, ball and ball.itemid)
+
+    PokemonHabitat.attach(cid, ball, getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile)
+    local sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: the ball on the stand is still the poke ball", sitting and sitting.itemid == balls["poke"].charged,
+        sitting and sitting.itemid)
+    check("Habitat: the stand stays under it", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+    check("Habitat: the house remembers the walker", PokemonHabitat.hasRow(tile))
+
+    local walker
+    for _, spec in ipairs(getSpectators(tile, 10, 10, true) or {}) do
+        if (isNpc(spec) and tostring(getCreatureNickname(spec) or ""):find("HabitatTest", 1, true)) then
+            walker = spec
+        end
+    end
+    check("Habitat: the Pokemon walks the house", walker and getHouseFromPos(getCreaturePosition(walker)) == houseId)
+
+    PokemonHabitat.takeBack(cid, sitting or ball, tile)
+    check("Habitat: taking the ball back recalls the Pokemon",
+        not PokemonHabitat.hasRow(tile) and (not walker or not isCreature(walker)))
+    check("Habitat: the stand stays after take-back", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+
+    local bagBall = newBall(cid, "Pikachu", 10, POKEMON_SEX_FEMALE)
+    if (bagBall and bagBall.uid) then
+        setBallPokemonNickname(bagBall.uid, "HabitatTest", false)
+    end
+    PokemonHabitat.useEmpty(cid, getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile, bagBall,
+        { x = CONTAINER_POSITION, y = 0, z = 0 })
+    sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: use-with the stand puts the bag ball on it",
+        sitting and sitting.itemid == balls["poke"].charged and PokemonHabitat.hasRow(tile),
+        sitting and sitting.itemid)
+    PokemonHabitat.takeBack(cid, sitting or bagBall, tile)
+
+    local usedBall = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    if (usedBall and usedBall.uid) then
+        setBallPokemonNickname(usedBall.uid, "HabitatTest", false)
+    end
+    PokemonHabitat.useBall(cid, usedBall, { x = CONTAINER_POSITION, y = 0, z = 0 },
+        getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile)
+    sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: use-with the ball on the stand attaches it",
+        sitting and sitting.itemid == balls["poke"].charged and PokemonHabitat.hasRow(tile),
+        sitting and sitting.itemid)
+    PokemonHabitat.takeBack(cid, sitting or usedBall, tile)
+
+    cleanup()
+end
+
 local function testLegendaries(cid, friend, arena)
     local W = WildLegendaries
     local MON, KEY = W.MON, W.KEY
@@ -3621,7 +3735,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
