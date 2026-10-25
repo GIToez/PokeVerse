@@ -66,9 +66,33 @@ end
 -- Characters of an account on this world, oldest (lowest id) first. The schema has no
 -- creation date; ids are AUTO_INCREMENT, so the lowest id is the first one created.
 function DiscordAccounts.getCharacters(accountId)
-    return queryRows(string.concat("SELECT `id`, `name`, `level`, `vocation` FROM `players` WHERE `account_id` = ",
-        tonumber(accountId) or 0, " AND `deleted` = 0 AND `world_id` = ", worldId(), " ORDER BY `id` ASC;"),
-        {id = "number", name = "string", level = "number", vocation = "number"})
+    return queryRows(string.concat("SELECT `id`, `name`, `level`, `vocation`, `group_id` FROM `players` WHERE ",
+        "`account_id` = ", tonumber(accountId) or 0, " AND `deleted` = 0 AND `world_id` = ", worldId(),
+        " ORDER BY `id` ASC;"),
+        {id = "number", name = "string", level = "number", vocation = "number", group_id = "number"})
+end
+
+-- Distinct group ids of the account's characters (groups.xml), lowest first. Online
+-- characters use the live group; others use players.group_id. Not accounts.group_id:
+-- pokeverse_set_group never lowers that, so a demoted player would keep the role.
+local function characterGroups(characters)
+    local seen, ids = {}, JSON.array()
+    for _, character in ipairs(characters) do
+        local cid = getPlayerByGUID(character.id)
+        local groupId
+        if (cid and isPlayer(cid)) then
+            groupId = getPlayerGroupId(cid)
+        else
+            groupId = character.group_id
+        end
+        groupId = tonumber(groupId)
+        if (groupId and not seen[groupId]) then
+            seen[groupId] = true
+            ids[#ids + 1] = groupId
+        end
+    end
+    table.sort(ids)
+    return ids
 end
 
 local function setMainPlayer(accountId, playerId)
@@ -128,6 +152,7 @@ local function linkSummary(link)
     summary.discordUserId = link.discord_user_id
     summary.linkedAt = link.linked_at
     summary.characterCount = #characters
+    summary.groupIds = characterGroups(characters)
     summary.mainChanged = mainChanged
     if (main) then
         local level = liveLevel(main)

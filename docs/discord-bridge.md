@@ -246,10 +246,14 @@ types}`), `playTime`, `dex {seen, total}`, `badges[] {region, earned[] (badge na
 `hidden[]`: what the trainer's privacy settings keep off other trainers' view (`playTime`, `stats`,
 `trophies`); the matching fields are left out and the bot leaves out the statistics.
 
-Link summary: `linked`, `discordUserId`, `linkedAt`, `characterCount`, `main {name, level,
+Link summary: `linked`, `discordUserId`, `linkedAt`, `characterCount`, `groupIds[]` (the
+distinct `players.group_id` values of the account's characters, lowest first; an online
+character uses its live group, not `accounts.group_id`), `main {name, level,
 vocation}` (absent when the account has no characters), `mainChanged`, `premium`,
-`premiumUnlimited`, `premiumDays` (absent when unlimited). Results never contain account
-ids, account names or IP addresses.
+`premiumUnlimited`, `premiumDays` (absent when unlimited). The bot gives the linked member
+the Discord role of their highest staff group (Tutor, Senior Tutor, Gamemaster, Community
+Manager, God). Group changes reach Discord at the 15-minute `link.list` resync or `/sync`.
+Results never contain account ids, account names or IP addresses.
 
 Linking error codes: `disabled`, `invalid_code`, `expired`, `locked`, `already_linked` (the
 Discord user already has a link), `account_linked` (the game account already has a link),
