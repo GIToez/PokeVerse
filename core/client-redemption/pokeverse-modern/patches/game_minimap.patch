@@ -36,15 +36,53 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      self.ui.minimapBorder.minimap:getChildById('floorUpButton'):hide()
      self.ui.minimapBorder.minimap:getChildById('floorDownButton'):hide()
      self.ui.minimapBorder.minimap:getChildById('zoomInButton'):hide()
-@@ -131,6 +158,7 @@
+@@ -103,11 +130,28 @@
+     self.ui.minimapBorder.minimap:getChildById('resetButton'):hide()
+ end
+ 
++local SAVE_EVERY_MS = 3 * 60 * 1000
++
++local function saveMinimap()
++    if otmm then
++        g_minimap.saveOtmm('/minimap.otmm')
++    else
++        g_map.saveOtcm('/minimap_' .. g_game.getClientVersion() .. '.otcm')
++    end
++    mapController.ui.minimapBorder.minimap:save()
++    g_settings.save()
++end
++
+ function mapController:onGameStart()
+     mapController:registerEvents(g_game, {
+         onChangeWorldTime = onChangeWorldTime
+     })
+ 
++    -- the game end save is missed when the client crashes or Android kills it in the background
++    mapController:registerEvents(g_app, {
++        onPause = saveMinimap
++    })
++
+     mapController:registerEvents(LocalPlayer, {
+         onPositionChange = onPositionChange
+     }):execute()
+@@ -131,20 +175,16 @@
      end
  
      self.ui.minimapBorder.minimap:load()
 +    PokeverseMap.load(self.ui.minimapBorder.minimap)
++    self:cycleEvent(saveMinimap, SAVE_EVERY_MS)
  end
  
  function mapController:onGameEnd()
-@@ -145,6 +173,7 @@
+-    -- Save Map
+-    if otmm then
+-        g_minimap.saveOtmm('/minimap.otmm')
+-    else
+-        g_map.saveOtcm('/minimap_' .. g_game.getClientVersion() .. '.otcm')
+-    end
+-
+-    self.ui.minimapBorder.minimap:save()
++    saveMinimap()
  end
  
  function mapController:onTerminate()
@@ -52,7 +90,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      if iconTopMenu then
          iconTopMenu:destroy()
          iconTopMenu = nil
-@@ -200,6 +229,7 @@
+@@ -200,6 +240,7 @@
      oldPos = minimapWidget:getCameraPosition()
      minimapWidget:setZoom(zoom)
      minimapWidget:setCameraPosition(pos)
