@@ -3039,6 +3039,49 @@ local function testPokemonHabitat(cid)
     cleanup()
 end
 
+local function testAnalyser(cid)
+    local function near(a, b)
+        return a and b and math.abs(a - b) < 0.0001
+    end
+
+    check("Analyser: a quarter of the tries or less can't catch", getCatchRollMaxFor(10, false, 2, 0) == nil)
+    local max = getCatchRollMaxFor(200, false, 90, 12)
+    check("Analyser: 90 tries of 200 with catching 12 rolls 1-199", max == 199, max)
+    check("Analyser: an ultra ball against 1-199 is 3/199", near(Analyser.throwChance(3, max, 0, 1), 3 / 199))
+    check("Analyser: the Catcher perk and the boost multiply the chance",
+        near(Analyser.throwChance(3, max, 0.5, 1.5), 3 / 199 * 1.5 * 1.5))
+    check("Analyser: a coloured ball rolls as 2", near(Analyser.throwChance(2.5, 100, 0, 1), 0.02))
+    check("Analyser: species without the ball counter keep their chance", getCatchRollMaxFor(7.5, true, 0, 0) == 7.5)
+
+    local first, expected, half, unlock = Analyser.simulate({ catchChance = 10, tries = 0, skill = 0, step = 1, rate = 1 })
+    check("Analyser: a fresh 10-chance Pokemon needs two throws to open", first == 0 and unlock == 2, unlock)
+    check("Analyser: it catches in the end", expected and expected > 2 and half and half > 2, expected)
+    first, expected = Analyser.simulate({ catchChance = 10, tries = 0, skill = 0, step = 1, rate = 1, guaranteed = true })
+    check("Analyser: a sure ball catches with the first throw", first == 1 and expected == 1, expected)
+
+    check("Analyser: level 1 needs 100 EXP for level 2",
+        Analyser.pokemonExpFor(0) == 0 and Analyser.pokemonExpFor(1) == 100 and Analyser.pokemonExpFor(2) == 200)
+    check("Analyser: no Pokemon, no chances", Analyser.catchAudit(cid, "Nothing At All").name == nil)
+
+    local audit = Analyser.catchAudit(cid, "Pidgey", 5)
+    local poke = audit.balls and audit.balls[1]
+    check("Analyser: Pidgey lists the poke ball first", poke and poke.name == "poke" and poke.item == getItemInfo(balls["poke"].charged).clientId,
+        poke and poke.name)
+    local roll = getCatchRollMaxFor(getPlayerPokemonCatchChance(cid, "Pidgey"), getPokemonIgnoreBallCounter("Pidgey"),
+        getPlayerCatchTries(cid, getPokemonNumberByName("Pidgey")) + 1, getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING))
+    local wanted = Analyser.throwChance(1, roll, Vocations.perk(cid, "catcher", "catchChance") or 0,
+        DiscordBoostPerks.catchMultiplier() or 1)
+    check("Analyser: the poke ball's chance is the next throw's roll", poke and near(poke.chance, math.floor(wanted * 10000 + 0.5) / 10000),
+        poke and poke.chance)
+
+    local state = Analyser.pokemonState(cid, 12)
+    check("Analyser: the Pokemon EXP state carries the gain", state.type == "pokemon" and state.amount == 12)
+    if (state.level) then
+        check("Analyser: the Pokemon's EXP sits between its levels", state.exp >= state.prev and state.next > state.prev,
+            string.format("%s %s %s", state.prev, state.exp, state.next))
+    end
+end
+
 local function testLegendaries(cid, friend, arena)
     local W = WildLegendaries
     local MON, KEY = W.MON, W.KEY
@@ -3799,7 +3842,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

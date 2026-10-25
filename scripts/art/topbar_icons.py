@@ -26,6 +26,7 @@ RADAR = ROOT / 'modules/game_radar/images'
 FISHING = ROOT / 'modules/game_fishing/images'
 VOCATION = ROOT / 'modules/game_vocation/images'
 TRAINERCARD = ROOT / 'modules/game_trainercard/images'
+ANALYSER = ROOT / 'modules/game_analyser/images'
 
 SCALE = 4
 CREAM = '#efe6cf'
@@ -112,6 +113,10 @@ ICONS = {
         '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/>'
         '<circle class="a" cx="8.3" cy="10.6" r="2.2"/><path class="a" d="M5 16.2a3.4 3.4 0 0 1 6.6 0"/>'
         '<path d="M14 10h4.5M14 13.5h3"/>'),
+    'analyser': ('#ffd75a',
+        '<path d="M3.5 20.5h17"/><path d="M6.5 20.5v-4.5M10.5 20.5v-7"/>'
+        '<circle cx="15.2" cy="8.6" r="5"/><path d="M10.2 8.6h10"/><circle cx="15.2" cy="8.6" r="1.5" class="bg"/>'
+        '<path class="a" d="M18.8 12.2 21 14.4"/>'),
     'store': ('#c0392b',
         '<path d="M5 8.5h14l-1.1 12H6.1z"/><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7"/>'
         '<circle class="af" cx="12" cy="14.6" r="2.2"/>'),
@@ -132,6 +137,12 @@ SHEETS = {
     FISHING / 'button_fishing.png': 'fishing',
     VOCATION / 'button_vocation.png': 'vocation',
     TRAINERCARD / 'button_trainercard.png': 'trainercard',
+    ANALYSER / 'button_analyser.png': 'analyser',
+}
+
+# 30x30 window header icons: the glyph on its own
+HEADERS = {
+    ANALYSER / 'icon_analyser.png': 'analyser',
 }
 
 # glyphs the icon buttons draw over button_empty
@@ -202,13 +213,15 @@ def badge_dot():
 
 
 def main():
-    for d in (OPTIONS, TOPBUTTONS, POKEPEDIA, RADAR, FISHING, VOCATION, TRAINERCARD):
+    for d in (OPTIONS, TOPBUTTONS, POKEPEDIA, RADAR, FISHING, VOCATION, TRAINERCARD, ANALYSER):
         d.mkdir(parents=True, exist_ok=True)
     for path, key in SHEETS.items():
         sheet(key).save(path)
     sheet().save(OPTIONS / 'button_empty.png')
     for name, key in GLYPHS.items():
         render(svg_doc(GLYPH, GLYPH, glyph(key, 0, 0, GLYPH)), GLYPH, GLYPH).save(TOPBUTTONS / f'{name}.png')
+    for path, key in HEADERS.items():
+        render(svg_doc(30, 30, glyph(key, 1, 1, 28, stroke=CREAM)), 30, 30).save(path)
     store().save(OPTIONS / 'store_large.png')
     badge_dot().save(OPTIONS / 'badge_dot.png')
 

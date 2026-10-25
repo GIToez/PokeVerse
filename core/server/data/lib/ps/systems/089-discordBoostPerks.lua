@@ -101,6 +101,10 @@ function DiscordBoostPerks.shinyMultiplier()
     return getDiscordBoostPerks().shiny
 end
 
+function DiscordBoostPerks.catchMultiplier()
+    return getDiscordBoostPerks().catch
+end
+
 -- The catch chance after the perk: chance (0 to 1) times the multiplier, at most a sure catch.
 function DiscordBoostPerks.catchChance(chance)
     if (chance <= 0 or chance >= 1) then

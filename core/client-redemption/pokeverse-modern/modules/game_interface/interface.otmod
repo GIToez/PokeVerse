@@ -73,6 +73,7 @@ Module
     - game_eventcards
     - game_legendaryflight
     - game_battletext
+    - game_analyser
     - game_healmark
     - game_newsbanner
     - game_hints
