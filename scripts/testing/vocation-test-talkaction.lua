@@ -2410,6 +2410,55 @@ local function testEventShop(cid)
         tostring(boughtSeal) .. " " .. getPlayerItemCount(cid, 29125))
 end
 
+local function testServerRestart()
+    local keys = {
+        GLOBAL_STORAGES.SERVER_RESTART_AT, GLOBAL_STORAGES.SERVER_RESTART_REASON,
+        GLOBAL_STORAGES.SERVER_RESTART_DAILY, GLOBAL_STORAGES.SERVER_RESTART_SKIP,
+    }
+    local saved = {}
+    for i, key in ipairs(keys) do
+        saved[i] = getStorage(key)
+    end
+    local function restore()
+        for i, key in ipairs(keys) do
+            doSetStorage(key, saved[i])
+        end
+    end
+
+    local now = os.time()
+    local staffAt = now + 600
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, 0)
+    ServerRestart.schedule(staffAt, 2)
+    local at, reason = ServerRestart.next(now)
+    check("Restart: a staff restart is next", at == staffAt and reason == "staff", tostring(at) .. " " .. tostring(reason))
+
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_AT, 0)
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, 0)
+    ServerRestart.setDaily(5 * 60)
+    local dailyAt = ServerRestart.nextDaily(5 * 60, now)
+    at, reason = ServerRestart.next(now)
+    check("Restart: the daily restart is next when nothing is scheduled", at == dailyAt and reason == "daily",
+        tostring(at) .. " " .. tostring(reason))
+    check("Restart: server.status names that daily restart",
+        DiscordBridge.serverStatus().restart and DiscordBridge.serverStatus().restart.at == dailyAt
+            and DiscordBridge.serverStatus().restart.reason == "daily")
+
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, dailyAt)
+    at, reason = ServerRestart.next(now)
+    local following = ServerRestart.nextDaily(5 * 60, dailyAt)
+    check("Restart: a skipped daily comes back the next day", at == following and reason == "daily",
+        tostring(at) .. " " .. tostring(following))
+
+    ServerRestart.disableDaily()
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_AT, 0)
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, 0)
+    at, reason = ServerRestart.next(now)
+    check("Restart: daily off and nothing scheduled has no field", at == nil and reason == nil
+        and DiscordBridge.serverStatus().restart == nil, tostring(at))
+
+    restore()
+end
+
 local function testDecorationItems(cid)
     local saved = getStorage(GLOBAL_STORAGES.DECORATIONS_ITEMS)
     local ok = Decorations.addCustomItem("halloween", 25130)
@@ -3572,7 +3621,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
