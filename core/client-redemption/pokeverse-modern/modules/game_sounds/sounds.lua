@@ -62,6 +62,10 @@ local CRY_DIR = '/sounds/cries/'
 local CRY_RANGE = 8
 local CRY_GAP_MS = 1200
 local CRY_SPEAKER_GAP_MS = 8000
+-- the cry files are about 6 dB quieter than the battle sounds (peaks near -6 dB), which made them
+-- inaudible on phone speakers at the default 25% master volume
+local CRY_GAIN = 2
+local CRY_FAR_GAIN = 0.6 -- at CRY_RANGE tiles
 local lastCry = -CRY_GAP_MS
 local lastCryBy = {}
 
@@ -99,7 +103,7 @@ function playVoiceCry(number, gain)
     if not path then
         return nil
     end
-    return g_sounds.play(path, 0, channel:getGain() * (gain or 1))
+    return g_sounds.play(path, 0, math.min(1, channel:getGain() * CRY_GAIN * (gain or 1)))
 end
 
 local function onTalk(name, level, mode, text, channelId, creaturePos)
@@ -122,7 +126,7 @@ local function onTalk(name, level, mode, text, channelId, creaturePos)
     end
     lastCry = now
     lastCryBy[name] = now
-    playVoiceCry(number, 1 - distance / (CRY_RANGE + 2))
+    playVoiceCry(number, 1 - (1 - CRY_FAR_GAIN) * distance / CRY_RANGE)
 end
 
 local function cancelPending()
