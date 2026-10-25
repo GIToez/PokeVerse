@@ -1643,6 +1643,70 @@ local function testMoveInfo(cid, arena)
     end
 end
 
+local function testDuelWilds(cid, arena)
+    local allowed = 1 -- RET_NOERROR
+    local pet = doCreateMonster("Snorlax", { x = arena.x + 1, y = arena.y, z = arena.z }, false)
+    local wild = doCreateMonster("Snorlax", { x = arena.x + 2, y = arena.y, z = arena.z }, false)
+    if (not isMonster(pet) or not isMonster(wild)) then
+        check("Duel wilds: room for the test Pokemon", false)
+        return
+    end
+    doConvinceCreature(cid, pet)
+    local savedDuel, savedBattle = getPlayerDueling(cid), getPlayerBattleing(cid)
+    local ok, err = pcall(function()
+        check("Duel wilds: a pet and a wild", isPokemonOfPlayer(pet) and isPokemonWild(wild))
+
+        local function hit(fromCid, toCid)
+            local before = getCreatureHealth(toCid)
+            doTargetCombatHealth(fromCid, toCid, COMBAT_PHYSICALDAMAGE, -200, -200, CONST_ME_NONE)
+            return before - getCreatureHealth(toCid)
+        end
+
+        local lost = hit(pet, wild)
+        check("Duel wilds: a pet can hit a wild", canDoCombat(pet, wild) == allowed and lost > 0, lost)
+
+        setPlayerDueling(cid, true)
+        local health = getCreatureHealth(wild)
+        lost = hit(pet, wild)
+        check("Duel wilds: a duel pet cannot hit a wild", canDoCombat(pet, wild) ~= allowed and lost == 0
+            and getCreatureHealth(wild) == health, tostring(canDoCombat(pet, wild)) .. " " .. lost)
+        check("Duel wilds: a wild cannot hit a duel pet", canDoCombat(wild, pet) ~= allowed)
+
+        local targeting = sandbox("data/lib/ps/events/creaturescripts/onTarget.lua")
+        local text = captureMessages(function()
+            check("Duel wilds: click-targeting a wild is cancelled", targeting.onTarget(cid, wild) == false)
+        end)
+        check("Duel wilds: the cancel names the duel", text:find("wild Pokemon", 1, true) ~= nil, text)
+
+        setPlayerDueling(cid, false)
+        setPlayerBattleing(cid, true)
+        health = getCreatureHealth(wild)
+        lost = hit(pet, wild)
+        check("Duel wilds: an NPC-battle pet cannot hit a wild", canDoCombat(pet, wild) ~= allowed and lost == 0
+            and getCreatureHealth(wild) == health, tostring(canDoCombat(pet, wild)) .. " " .. lost)
+        check("Duel wilds: a wild cannot hit an NPC-battle pet", canDoCombat(wild, pet) ~= allowed)
+        text = captureMessages(function()
+            check("Duel wilds: click-targeting a wild during an NPC battle is cancelled", targeting.onTarget(cid, wild) == false)
+        end)
+        check("Duel wilds: the battle cancel names the duel", text:find("wild Pokemon", 1, true) ~= nil, text)
+
+        setPlayerBattleing(cid, false)
+        lost = hit(pet, wild)
+        check("Duel wilds: after the fight a pet can hit a wild again", canDoCombat(pet, wild) == allowed and lost > 0, lost)
+    end)
+    setPlayerDueling(cid, savedDuel)
+    setPlayerBattleing(cid, savedBattle)
+    if (isMonster(pet)) then
+        doRemoveCreature(pet)
+    end
+    if (isMonster(wild)) then
+        doRemoveCreature(wild)
+    end
+    if (not ok) then
+        check("Duel wilds: ran without errors", false, err)
+    end
+end
+
 -- The JSON messages fn sends on EXTENDED_IDS.FISHING
 local function captureFishing(fn)
     local original, sent = doSendPlayerExtendedOpcode, {}
@@ -3735,7 +3799,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
