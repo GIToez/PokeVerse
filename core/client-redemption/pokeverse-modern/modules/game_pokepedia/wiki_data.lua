@@ -159,7 +159,7 @@ WikiData = {
             { 'p', "Settings > Controls > General > Show connection ping shows your ping to the server at the top left of the game screen, with a green, yellow or red mark: under 250 ms is fine, and over 500 ms you will feel the lag." },
             { 'p', "Settings > Interface has the target marker, the mouse-over crosshair, battle text (New bubbles or Classic) and the screen shake on critical hits, the news banner and its tips, event pop-up cards, the first-visit hints, the weather options, shiny and status effects on Pokemon, and dark caves. Settings > Graphics has the visual style: Off, Vibrant or Toon." },
             { 'p', "Buffs and status effects (burn, sleep, a potion healing...) show in a bar under the trainer HUD with their time left. Drag it anywhere; right-click it and pick Reset position to put it back." },
-            { 'p', "Pokemon play their cry when they say a voice line near you. The Battle Sounds volume in Settings > Sound sets how loud." },
+            { 'p', "Pokemon play their cry when they say a voice line near you. The blue button on the Pokedex plays that same cry for the species you are reading. The Battle Sounds volume in Settings > Sound sets how loud." },
             { 'see', { 'hotkeys', 'weather', 'hints' } },
         } },
     } },

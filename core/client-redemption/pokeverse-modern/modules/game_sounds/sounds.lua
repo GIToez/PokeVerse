@@ -54,8 +54,10 @@ local function onSound(protocol, opcode, buffer)
     end
 end
 
--- A Pokemon's voice line ("PIKACHU!") plays its cry, quieter with distance. Crowds of wild
--- Pokemon talk a lot, so cries are spaced out overall and per species name.
+-- A Pokemon's voice line ("PIKACHU!") plays its overworld cry, quieter with distance. Crowds of
+-- wild Pokemon talk a lot, so cries are spaced out overall and per species name. X/Y overworld
+-- cries live in /sounds/voice_cries/; the Pokedex auto-play set stays in /sounds/cries/.
+local VOICE_CRY_DIR = '/sounds/voice_cries/'
 local CRY_DIR = '/sounds/cries/'
 local CRY_RANGE = 8
 local CRY_GAP_MS = 1200
@@ -69,6 +71,35 @@ local function cryNumber(name, text)
         return nil
     end
     return number or CryNames[name:lower()]
+end
+
+local function cryPath(number)
+    local voice = VOICE_CRY_DIR .. number .. '.ogg'
+    if not g_resources or g_resources.fileExists(voice) then
+        return voice
+    end
+    local fallback = CRY_DIR .. number .. '.ogg'
+    if g_resources.fileExists(fallback) then
+        return fallback
+    end
+    return nil
+end
+
+-- Overworld cry (X/Y when present). The Pokedex entry still plays /sounds/cries/ on its own.
+function playVoiceCry(number, gain)
+    number = tonumber(number)
+    if not number or not g_sounds then
+        return nil
+    end
+    local channel = g_sounds.getChannel(SoundChannels.Item)
+    if not channel or not channel:isEnabled() or channel:getGain() <= 0 then
+        return nil
+    end
+    local path = cryPath(number)
+    if not path then
+        return nil
+    end
+    return g_sounds.play(path, 0, channel:getGain() * (gain or 1))
 end
 
 local function onTalk(name, level, mode, text, channelId, creaturePos)
@@ -89,13 +120,9 @@ local function onTalk(name, level, mode, text, channelId, creaturePos)
     if now - lastCry < CRY_GAP_MS or now - (lastCryBy[name] or -CRY_SPEAKER_GAP_MS) < CRY_SPEAKER_GAP_MS then
         return
     end
-    local channel = g_sounds and g_sounds.getChannel(SoundChannels.Item)
-    if not channel or not channel:isEnabled() or channel:getGain() <= 0 then
-        return
-    end
     lastCry = now
     lastCryBy[name] = now
-    g_sounds.play(CRY_DIR .. number .. '.ogg', 0, channel:getGain() * (1 - distance / (CRY_RANGE + 2)))
+    playVoiceCry(number, 1 - distance / (CRY_RANGE + 2))
 end
 
 local function cancelPending()
