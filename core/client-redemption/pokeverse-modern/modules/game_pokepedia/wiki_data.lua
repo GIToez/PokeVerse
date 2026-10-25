@@ -838,7 +838,7 @@ WikiData = {
         } },
         { key = 'voc_ranger', title = 'Ranger and the radar', portrait = 59, body = {
             { 'image', '/modules/game_vocation/images/banner_ranger', 214, 96 },
-            { 'p', "Rangers carry a radar that finds wild Pokemon that have spawned around them, also off screen. Open it with U, the radar button in the top bar or !radar, and press Scan." },
+            { 'p', "Rangers carry a radar that finds wild Pokemon that have spawned around them, also off screen. Open it with U, the radar button in the top bar or !radar, and press Scan. Overlay on the window keeps just the disc on the map after you close the window; drag it, and right-click to hide it or reset its place." },
             { 'keys', { "U" } },
             { 'commands', { "!radar" } },
             { 'table', {
