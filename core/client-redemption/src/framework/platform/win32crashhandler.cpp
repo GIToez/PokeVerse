@@ -53,6 +53,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <exception>
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
@@ -190,11 +191,47 @@ std::string crashReportDir()
     return dir;
 }
 
+// one stamp per crash, shared by the log and the dump so a pair is easy to match
+std::string crashStamp()
+{
+    static std::string stamp;
+    if (stamp.empty())
+        stamp = stdext::date_time_string("%Y-%m-%d_%H-%M-%S");
+    return stamp;
+}
+
+// crashes/crash-YYYY-MM-DD_HH-MM-SS.ext, kept forever. crashreport.log and crashreport.dmp stay the latest pair,
+// which the next start offers to copy.
+std::string crashArchiveFile(const std::string& ext)
+{
+    const std::string dir = crashReportDir() + "crashes\\";
+    std::error_code ec;
+    std::filesystem::create_directories(stdext::utf8_to_latin1(dir), ec);
+
+    std::string path = dir + "crash-" + crashStamp() + ext;
+    for (int n = 2; std::filesystem::exists(stdext::utf8_to_latin1(path), ec); ++n)
+        path = dir + "crash-" + crashStamp() + "-" + std::to_string(n) + ext;
+    return path;
+}
+
+bool writeFile(const std::string& fileName, const std::string& contents)
+{
+    std::ofstream fout(stdext::utf8_to_latin1(fileName), std::ios::out | std::ios::trunc | std::ios::binary);
+    if (!fout.is_open())
+        return false;
+    fout << contents;
+    return fout.good();
+}
+
 // crashreport.dmp: the threads' stacks and the memory they point at, for the debugger with the build's .pdb
 void saveMiniDump(const LPEXCEPTION_POINTERS e)
 {
+    const std::string archived = crashArchiveFile(".dmp");
     const std::string fileName = crashReportDir() + "crashreport.dmp";
-    const HANDLE file = CreateFileA(stdext::utf8_to_latin1(fileName).c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    HANDLE file = CreateFileA(stdext::utf8_to_latin1(archived).c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    const bool archivedOk = file != INVALID_HANDLE_VALUE;
+    if (!archivedOk)
+        file = CreateFileA(stdext::utf8_to_latin1(fileName).c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (file == INVALID_HANDLE_VALUE)
         return;
 
@@ -205,29 +242,29 @@ void saveMiniDump(const LPEXCEPTION_POINTERS e)
     const auto type = static_cast<MINIDUMP_TYPE>(MiniDumpWithIndirectlyReferencedMemory | MiniDumpScanMemory | MiniDumpWithThreadInfo);
     MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, type, &info, nullptr, nullptr);
     CloseHandle(file);
+
+    if (archivedOk) {
+        std::error_code ec;
+        std::filesystem::copy_file(stdext::utf8_to_latin1(archived), stdext::utf8_to_latin1(fileName),
+            std::filesystem::copy_options::overwrite_existing, ec);
+    }
 }
 
 void saveCrashReport(const std::string& report, const bool showBox = true)
 {
     g_logger.flush();
 
-    std::string fileName = crashReportDir() + "crashreport.log";
-
+    const std::string archived = crashArchiveFile(".log");
+    const std::string fileName = crashReportDir() + "crashreport.log";
     const std::string contents = fmt::format("{}\n== last log lines\n{}", report, g_logger.getRecentLog(200));
 
-    bool saved = false;
-    {
-        std::ofstream fout(stdext::utf8_to_latin1(fileName), std::ios::out | std::ios::trunc);
-        if (fout.is_open()) {
-            fout << contents;
-            saved = fout.good();
-        }
-    }
+    const bool archivedOk = writeFile(archived, contents);
+    const bool saved = writeFile(fileName, contents) || archivedOk;
 
     if (!showBox)
         return;
     const std::string msg = saved
-        ? fmt::format("PokeVerse has crashed.\n\nA crash report was saved to:\n{}\n\nWhen you open PokeVerse again it will offer to copy the report so you can post it. Please post crashreport.dmp from the same folder too.", fileName)
+        ? fmt::format("PokeVerse has crashed.\n\nA crash report was saved to:\n{}\n\nEvery crash is kept in the crashes folder, named with the date and time. When you open PokeVerse again it will offer to copy this one. Please post the crash-*.dmp from that folder too.", archivedOk ? archived : fileName)
         : std::string("PokeVerse has crashed.\n\nThe crash report could not be saved.");
     MessageBoxA(nullptr, msg.c_str(), "PokeVerse crashed", MB_OK | MB_ICONERROR);
 }

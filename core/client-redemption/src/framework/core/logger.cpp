@@ -24,6 +24,7 @@
 
 #include "eventdispatcher.h"
 #include "framework/platform/platform.h"
+#include "framework/stdext/string.h"
 
 #include <filesystem>
 #include <iostream>
@@ -129,7 +130,8 @@ namespace
         return s_fileSink;
     }
 
-    // pokeverse.log -> pokeverse-previous.log
+    // The session that just ended is kept twice: pokeverse-previous.log, so the next start can offer its tail
+    // after a crash, and pokeverse-YYYY-MM-DD_HH-MM-SS.log, which is never overwritten.
     void keepPreviousLog(const std::string& file)
     {
         std::error_code ec;
@@ -140,6 +142,15 @@ namespace
         auto previous = path;
         previous.replace_filename(path.stem().string() + "-previous" + path.extension().string());
         std::filesystem::copy_file(path, previous, std::filesystem::copy_options::overwrite_existing, ec);
+
+        const std::string stamp = stdext::date_time_string("%Y-%m-%d_%H-%M-%S");
+        auto dated = path;
+        dated.replace_filename(path.stem().string() + "-" + stamp + path.extension().string());
+        for (int n = 2; std::filesystem::exists(dated, ec); ++n) {
+            dated = path;
+            dated.replace_filename(path.stem().string() + "-" + stamp + "-" + std::to_string(n) + path.extension().string());
+        }
+        std::filesystem::copy_file(path, dated, ec);
     }
 }
 

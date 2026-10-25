@@ -1,9 +1,10 @@
 -- When the Windows client crashes it saves crashreport.log in the client's folder (win32crashhandler.cpp),
--- with the backtrace and the last log lines, and a minidump crashreport.dmp; every start keeps the last session's log as
--- pokeverse-previous.log. On the next start this offers to copy the report. A session that ended without
--- terminate() running (a crash the handler didn't catch, a freeze that was killed) is spotted by the marker
--- it leaves behind, and then the end of the previous log is offered instead. Not on mobile, where the system
--- kills the app all the time.
+-- with the backtrace and the last log lines, and a minidump crashreport.dmp. Those two are only the latest crash:
+-- every crash is also kept in the crashes folder as crash-YYYY-MM-DD_HH-MM-SS.log and .dmp, and every start keeps
+-- the session log as pokeverse-previous.log plus pokeverse-YYYY-MM-DD_HH-MM-SS.log. On the next start this offers to
+-- copy the latest report. A session that ended without terminate() running (a crash the handler didn't catch, a freeze
+-- that was killed) is spotted by the marker it leaves behind, and then the end of the previous log is offered instead.
+-- Not on mobile, where the system kills the app all the time.
 local REPORT = '/crashreport.log'
 local SHOWN = '/crashreport-previous.log'
 local DUMP = '/crashreport.dmp'
