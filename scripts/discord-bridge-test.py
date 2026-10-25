@@ -221,6 +221,8 @@ def link_tests(b, args, boot, listener, speaker, trainer, speaker_name):
           r and r["ok"] and res.get("linked") and res.get("discordUserId") == DISCORD_A
           and res.get("main", {}).get("name") == first and res.get("characterCount") == 2
           and isinstance(res.get("premium"), bool), str(r))
+    check("link.redeem groupIds includes Tutor (group 2)",
+          isinstance(res.get("groupIds"), list) and 2 in res.get("groupIds", []), str(r))
     check("link results never contain account ids or names",
           "accountId" not in res and account not in json.dumps(res), str(res))
     linker.collect(1)
@@ -281,6 +283,8 @@ def link_tests(b, args, boot, listener, speaker, trainer, speaker_name):
     check("deleted main falls back to the first character", r and r["ok"]
           and r["result"]["main"]["name"] == first and r["result"]["mainChanged"] is True
           and r["result"]["characterCount"] == 1, str(r))
+    check("groupIds after deleting the second character is still Tutor",
+          r["result"].get("groupIds") == [2], str(r))
     r = b.request("link.account", {"discordUserId": DISCORD_A})
     check("the fallback main is saved", r and r["ok"] and r["result"]["mainChanged"] is False, str(r))
 
