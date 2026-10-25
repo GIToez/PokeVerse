@@ -2898,13 +2898,17 @@ local function testLegendaries(cid, friend, arena)
                 doSendMagicEffect = function(pos) shown[#shown + 1] = pos return true end
                 getCreaturePosition = function(c) return c == cid and spot or position(c) end
                 getPlayersOnline = function() return { cid } end
-                local ok, err = pcall(W.guideSigns, raikou, W.getSpecies("Raikou"), os.time() + 3600)
+                -- the sign goes on a random tile near the point toward it, and none when that tile has no ground
+                local ok, err, s = true, nil, nil
+                for try = 1, 10 do
+                    if (s or not ok) then break end
+                    ok, err = pcall(W.guideSigns, raikou, W.getSpecies("Raikou"), os.time() + 3600 * try)
+                    for _, pos in ipairs(shown) do
+                        if (getDistanceBetween(pos, spot) <= 7) then s = pos end
+                    end
+                end
                 doSendMagicEffect, getCreaturePosition, getPlayersOnline = effect, position, online
                 check("Legendary: guideSigns runs", ok, err)
-                local s
-                for _, pos in ipairs(shown) do
-                    if (getDistanceBetween(pos, spot) <= 7) then s = pos end
-                end
                 check("Legendary: a trainer in its area sees a sign a few tiles toward it", s and
                     getDistanceBetween(s, there) < getDistanceBetween(spot, there),
                     s and (s.x - spot.x .. "," .. s.y - spot.y) or (#shown .. " signs"))
