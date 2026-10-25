@@ -1,0 +1,74 @@
+PokeverseMarkCheckBox < CheckBox
+  size: 20 20
+  image-source: /images/game/minimap/flagcheckbox
+  image-size: 20 20
+  image-border: 3
+  icon-size: 14 14
+  icon-offset: 3 3
+  $!checked:
+    image-clip: 26 0 26 26
+  $hover !checked:
+    image-clip: 78 0 26 26
+  $checked:
+    image-clip: 0 0 26 26
+  $hover checked:
+    image-clip: 52 0 26 26
+
+PokeverseMarkWindow < MainWindow
+  !text: tr('Create Map Mark')
+  size: 252 258
+
+  Label
+    !text: tr('Position') .. ':'
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 2
+
+  Label
+    id: position
+    text-auto-resize: true
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+
+  Label
+    !text: tr('Description') .. ':'
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 7
+
+  TextEdit
+    id: description
+    margin-top: 3
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    anchors.right: parent.right
+
+  Panel
+    id: marks
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 8
+    height: 110
+    layout:
+      type: grid
+      cell-size: 20 20
+      cell-spacing: 2
+      flow: true
+
+  Button
+    id: okButton
+    !text: tr('Ok')
+    width: 64
+    anchors.right: next.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+
+  Button
+    id: cancelButton
+    !text: tr('Cancel')
+    width: 64
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom

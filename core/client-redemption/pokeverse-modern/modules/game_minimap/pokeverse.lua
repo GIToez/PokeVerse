@@ -234,6 +234,80 @@ for town, marks in pairs(GUIDES) do
     end
 end
 
+-- Create Map Mark offers the guide marks' icons first, then the classic flags (0-19, saved as numbers)
+local PLAYER_MARKS = {
+    { 'center', 'Pokemon Center' }, { 'mart', 'Poke Mart' }, { 'gym', 'Gym' }, { 'gym_boulder', 'Boulder Badge' },
+    { 'gym_cascade', 'Cascade Badge' }, { 'gym_thunder', 'Thunder Badge' }, { 'gym_rainbow', 'Rainbow Badge' },
+    { 'gym_soul', 'Soul Badge' }, { 'gym_marsh', 'Marsh Badge' }, { 'gym_volcano', 'Volcano Badge' },
+    { 'gym_earth', 'Earth Badge' }, { 'lab', 'Lab' }, { 'daycare', 'Day Care' }, { 'ranger', 'Ranger Club' },
+    { 'guild', 'Guild' }, { 'food', 'Food' }, { 'berry', 'Berries' }, { 'shopping', 'Shopping' },
+    { 'furniture', 'Furniture' }, { 'bike', 'Bike Shop' }, { 'casino', 'Casino' }, { 'museum', 'Museum' },
+    { 'safari', 'Safari Zone' }, { 'silph', 'Silph Co.' }, { 'ship', 'Boat' }, { 'fly', 'Flying taxi' },
+    { 'train', 'Train' }, { 'balloon', 'Balloon' }, { 'place', 'Place' },
+}
+local CLASSIC_FLAGS = { 'Tick', 'Question', 'Exclamation', 'Star', 'Cross', 'Temple', 'Kiss', 'Shovel', 'Sword',
+    'Flag', 'Lock', 'Bag', 'Skull', 'Dollar', 'Red north', 'Red south', 'Red east', 'Red west', 'Green north',
+    'Green south' }
+local markStyleLoaded = false
+
+local baseAddFlag = UIMinimap.addFlag
+function UIMinimap:addFlag(pos, icon, description, temporary)
+    baseAddFlag(self, pos, icon, description, temporary)
+    local flag = pos and self:getFlag(pos)
+    if flag and type(icon) == 'string' and flag.icon == icon and icon:find(MARKS, 1, true) == 1 then
+        flag:setSize(MARK_SIZE)
+    end
+end
+
+function UIMinimap:createFlagWindow(pos)
+    if self.flagWindow or not pos then
+        return
+    end
+    if not markStyleLoaded then
+        g_ui.importStyle('/modules/game_minimap/marks')
+        markStyleLoaded = true
+    end
+    local window = g_ui.createWidget('PokeverseMarkWindow', rootWidget)
+    self.flagWindow = window
+    window:getChildById('position'):setText(string.format('%i, %i, %i', pos.x, pos.y, pos.z))
+    local description = window:getChildById('description')
+    local grid = window:getChildById('marks')
+
+    local group = UIRadioGroup.create()
+    local function addChoice(icon, image, size, tooltip)
+        local box = g_ui.createWidget('PokeverseMarkCheckBox', grid)
+        box.icon = icon
+        box:setIcon(image)
+        box:setIconSize(size)
+        box:setIconOffset({ x = math.floor((20 - size.width) / 2), y = math.floor((20 - size.height) / 2) })
+        box:setTooltip(tr(tooltip))
+        group:addWidget(box)
+    end
+    for _, mark in ipairs(PLAYER_MARKS) do
+        addChoice(MARKS .. mark[1], MARKS .. mark[1], MARK_SIZE, mark[2])
+    end
+    for i, name in ipairs(CLASSIC_FLAGS) do
+        addChoice(i - 1, '/images/game/minimap/flag' .. (i - 1), { width = 11, height = 11 }, name)
+    end
+    group:selectWidget(group:getFirstWidget())
+
+    local function accept()
+        self:addFlag(pos, group:getSelectedWidget().icon, description:getText())
+        self:destroyFlagWindow()
+    end
+    local function cancel()
+        self:destroyFlagWindow()
+    end
+    window:getChildById('okButton').onClick = accept
+    window:getChildById('cancelButton').onClick = cancel
+    window.onEnter = accept
+    window.onEscape = cancel
+    window.onDestroy = function()
+        group:destroy()
+    end
+    description:focus()
+end
+
 local cityLabels = {}
 local guidesEnabled = true
 
