@@ -4,13 +4,20 @@
 -- one scan (total counts the Pokemon past the blips cap too) and {type = "error", text, wait} a refused one. The popup sends {action = "hello"} and
 -- {action = "scan"}. Blips stay where the scan saw them, except from the live rank (scan.live): then exact
 -- blips follow their Pokemon, from the game map while they are on screen and from the server's
--- {type = "live", blips, gone} otherwise, while the popup is open or tracking ({action = "live", on}).
+-- {type = "live", blips, gone} otherwise, while the popup or overlay is open or tracking ({action = "live", on}).
 -- Filtering happens here. A tracked target gets the cone on the radar, an arrow beside the trainer on the
 -- game map and a flag on the minimap. From the prints rank the popup also sends {action = "track", id} (or
 -- {action = "track"} to stop), and the server sends {type = "print", id, x, y, z, way} for each step the
 -- Pokemon takes on soft ground, which shows as a glowing footprint on the game map.
+-- Overlay on the window keeps just the disc on the map after the window closes; drag it, right-click to
+-- hide it or reset its place.
 local IMAGES = '/modules/game_radar/images/'
-local RADIUS = 176 -- pixels from the middle of the radar image to its edge (scripts/art/radar_ui.py)
+local DISC = 400 -- the disc in the window; the overlay hosts the same widget at OVERLAY_SIZE
+local RADIUS = 176 -- pixels from the middle of the 400px radar image to its edge (scripts/art/radar_ui.py)
+local OVERLAY_SIZE = 240
+local OVERLAY_OPACITY = 0.45
+local POSITION_SETTING = 'pokeverse-radar-overlay-pos'
+local ENABLED_SETTING = 'pokeverse-radar-overlay'
 local TICK_MS = 150
 local ARROW_TILES = 1.7 -- how far from the middle of the trainer's sprite the map arrow sits
 local SPRITE_LIFT = 0.45 -- tiles: trainer sprites stand on their tile and reach up into the one above
@@ -45,7 +52,9 @@ local FILTERS = { 'all', 'species', 'type', 'rarity', 'shiny', 'legendary' }
 local FILTER_NAMES = { all = 'All', species = 'Species', type = 'Type', rarity = 'Rarity', shiny = 'Shiny Only',
                        legendary = 'Legendaries Only' }
 
-local window, button, mapArrow
+local window, button, overlay, radar, mapArrow
+local overlayOn = false -- the Overlay button; the HUD is up when this is on and the window is closed
+local overlayInited = false
 local arrowOwner -- the map panel the map arrow is on
 local arrowRect -- the trainer's tile on the map panel, from when they last stood still
 local layoutKey -- what the blips were last laid out for
@@ -311,7 +320,9 @@ local function refreshTarget()
         info.distance:setText(tr('Click a blip on the radar'))
         info.direction:setText(tr('to track it.'))
         info.stop:setVisible(false)
-        window.radar.cone:hide()
+        if radar then
+            radar.cone:hide()
+        end
         return
     end
     if target.look then
@@ -361,12 +372,20 @@ local function markTarget()
     end
 end
 
+local function discVisible()
+    return (window and window:isVisible()) or (overlayOn and overlay and overlay:isVisible())
+end
+
 local function setLive(on)
     on = on and status.live == true
     if liveWanted ~= on then
         liveWanted = on
         send({ action = 'live', on = on })
     end
+end
+
+local function refreshLive()
+    setLive(discVisible() or target ~= nil)
 end
 
 local function stopTracking()
@@ -380,11 +399,11 @@ local function stopTracking()
         blip.widget:setChecked(false)
     end
     if window then
-        window.radar.selected:hide()
-        refreshTarget()
-        if not window:isVisible() then
-            setLive(false)
+        if radar then
+            radar.selected:hide()
         end
+        refreshTarget()
+        refreshLive()
     end
 end
 
@@ -421,22 +440,26 @@ end
 
 -- puts each blip where it is from the trainer now, so walking moves the radar under the blips
 local function layoutBlips(from)
-    local key = string.format('%d,%d,%d,%d,%s', from.x, from.y, from.z, status.range or 0,
-        target and (target.x .. ',' .. target.y) or '')
+    if not radar then
+        return
+    end
+    local width = radar:getWidth()
+    local key = string.format('%d,%d,%d,%d,%s,%d', from.x, from.y, from.z, status.range or 0,
+        target and (target.x .. ',' .. target.y) or '', width)
     if key == layoutKey then
         return
     end
     layoutKey = key
     local range = math.max(1, status.range or 1)
-    local radar = window.radar
-    local half = radar:getWidth() / 2
+    local half = width / 2
+    local radius = RADIUS * width / DISC
     for _, blip in ipairs(blips) do
         local dx, dy = blip.x - from.x, blip.y - from.y
-        local px, py = dx / range * RADIUS, dy / range * RADIUS
+        local px, py = dx / range * radius, dy / range * radius
         local length = math.sqrt(px * px + py * py)
         -- the scan covers a square: its corners go on the rim
-        if length > RADIUS then
-            px, py = px * RADIUS / length, py * RADIUS / length
+        if length > radius then
+            px, py = px * radius / length, py * radius / length
         end
         local visible = matches(blip) and blip.z == from.z and math.max(math.abs(dx), math.abs(dy)) <= range
         blip.widget:setVisible(visible)
@@ -508,15 +531,19 @@ local function tick()
     end
     local from = playerPos()
     followOnScreen()
-    if window:isVisible() then
-        refreshScanButton()
+    if discVisible() then
+        if window:isVisible() then
+            refreshScanButton()
+        end
         if from then
             layoutBlips(from)
         end
     end
     if not target or not from then
         hideArrow()
-        window.radar.cone:hide()
+        if radar then
+            radar.cone:hide()
+        end
         return
     end
     local to = targetPos()
@@ -529,9 +556,11 @@ local function tick()
     end
     updateArrow(from, to)
     placeFlag(to)
-    if window:isVisible() then
-        refreshTargetDistance(from, to)
-        local cone = window.radar.cone
+    if discVisible() then
+        if window:isVisible() then
+            refreshTargetDistance(from, to)
+        end
+        local cone = radar.cone
         if to.z == from.z and (dx ~= 0 or dy ~= 0) then
             cone:setRotation(math.deg(math.atan2(dy, dx)))
             cone:show()
@@ -573,7 +602,7 @@ local function buildBlips(list)
     target = nil
     clearBlips()
     clearFlag()
-    local layer = window.radar.blips
+    local layer = radar.blips
     for _, data in ipairs(list or {}) do
         local kind = KIND_NAMES[data.kind] and data.kind or 'unknown'
         local blip = { id = tonumber(data.id), x = tonumber(data.x) or 0, y = tonumber(data.y) or 0,
@@ -698,12 +727,105 @@ local function setupFilters()
     end
 end
 
+-- Overlay HUD -------------------------------------------------------------------------------------
+
+local function placeOverlayDefault()
+    overlay:breakAnchors()
+    overlay:addAnchor(AnchorLeft, 'gameMapPanel', AnchorLeft)
+    overlay:addAnchor(AnchorVerticalCenter, 'gameMapPanel', AnchorVerticalCenter)
+    overlay:setMarginLeft(16)
+    overlay:setMarginTop(0)
+end
+
+local function applyOverlayPosition()
+    local saved = g_settings.getPoint(POSITION_SETTING)
+    if saved and saved.x > 0 and saved.y > 0 then
+        overlay:breakAnchors()
+        overlay:setPosition(saved)
+        overlay:bindRectToParent()
+    else
+        placeOverlayDefault()
+    end
+end
+
+local function resetOverlayPosition()
+    g_settings.remove(POSITION_SETTING)
+    if overlay then
+        placeOverlayDefault()
+    end
+end
+
+local function attachDisc(toOverlay)
+    if not radar or not window then
+        return
+    end
+    layoutKey = nil
+    if toOverlay then
+        radar:setParent(overlay)
+        radar:fill('parent')
+        if radar.field then
+            radar.field:setOpacity(OVERLAY_OPACITY)
+        end
+        applyOverlayPosition()
+        overlay:show()
+        overlay:raise()
+    else
+        if overlay then
+            overlay:hide()
+        end
+        radar:setParent(window.radarSlot)
+        radar:fill('parent')
+        if radar.field then
+            radar.field:setOpacity(1)
+        end
+    end
+end
+
+local function syncOverlay()
+    if window and window.overlay then
+        window.overlay:setOn(overlayOn)
+    end
+    if not radar then
+        return
+    end
+    attachDisc(overlayOn and status.enabled and not (window and window:isVisible()))
+    refreshLive()
+end
+
+function hideOverlay()
+    if not overlayOn then
+        return
+    end
+    overlayOn = false
+    g_settings.set(ENABLED_SETTING, false)
+    syncOverlay()
+end
+
+local function openOverlayMenu(mousePos)
+    local menu = g_ui.createWidget('PopupMenu')
+    menu:setGameMenu(true)
+    menu:addOption(tr('Open radar'), show)
+    menu:addOption(tr('Hide overlay'), hideOverlay)
+    menu:addOption(tr('Reset position'), resetOverlayPosition)
+    menu:display(mousePos)
+end
+
+function toggleOverlay()
+    if not status.enabled then
+        modules.game_textmessage.displayFailureMessage(tr('Only Rangers can use the radar.'))
+        return
+    end
+    overlayOn = not overlayOn
+    g_settings.set(ENABLED_SETTING, overlayOn)
+    syncOverlay()
+end
+
 -- Window ------------------------------------------------------------------------------------------
 
 local function refreshPlayer()
     local player = g_game.getLocalPlayer()
-    if player then
-        window.radar.center.creature:setOutfit(player:getOutfit())
+    if player and radar then
+        radar.center.creature:setOutfit(player:getOutfit())
     end
 end
 
@@ -730,7 +852,7 @@ function show()
     if not status.scanned and readyAt <= g_clock.seconds() then
         send({ action = 'scan' })
     end
-    setLive(true)
+    syncOverlay()
     tick()
 end
 
@@ -738,12 +860,10 @@ function hide()
     if window then
         window:hide()
     end
-    if not target then
-        setLive(false)
-    end
     if button then
         button:setOn(false)
     end
+    syncOverlay()
 end
 
 function toggle()
@@ -777,14 +897,21 @@ local function applyStatus(data)
         stopTracking()
         clearBlips()
         status.scanned = nil
+        overlayOn = false
+        overlayInited = false
         hide()
         return
+    end
+    if not overlayInited then
+        overlayInited = true
+        overlayOn = g_settings.getBoolean(ENABLED_SETTING)
     end
     if not unlocked(filter.mode) then
         filter = { mode = 'all' }
     end
     refreshFilters()
     refreshStatusLine()
+    syncOverlay()
 end
 
 local function onLive(data)
@@ -836,7 +963,7 @@ local function onRadar(protocol, opcode, buffer)
         liveWanted = status.live or nil
         buildBlips(type(data.blips) == 'table' and data.blips or {})
         refreshStatusLine()
-        if not window:isVisible() then
+        if not window:isVisible() and not overlayOn then
             show()
         end
         tick()
@@ -876,6 +1003,7 @@ local function onGameEnd()
     liveWanted = nil
     filter = { mode = 'all' }
     readyAt = 0
+    overlayOn, overlayInited = false, false
     if button then
         button:setVisible(false)
     end
@@ -887,7 +1015,24 @@ function init()
     g_ui.importStyle('radar')
     window = g_ui.createWidget('RadarWindow', rootWidget)
     window:hide()
+    radar = window.radarSlot:getChildById('radar')
     setupFilters()
+
+    overlay = g_ui.createWidget('RadarOverlay', modules.game_interface.getRootPanel())
+    overlay:setSize({ width = OVERLAY_SIZE, height = OVERLAY_SIZE })
+    overlay:hide()
+    overlay.onDragLeave = function(self)
+        self:bindRectToParent()
+        g_settings.set(POSITION_SETTING, self:getPosition())
+        return true
+    end
+    overlay.onMouseRelease = function(self, mousePos, mouseButton)
+        if mouseButton ~= MouseRightButton then
+            return false
+        end
+        openOverlayMenu(mousePos)
+        return true
+    end
 
     button = modules.client_topmenu.addRightGameToggleButton('radarButton', tr('Ranger radar (U)'),
         IMAGES .. 'button_radar', toggle)
@@ -914,10 +1059,14 @@ function terminate()
     clearFlag()
     clearBlips()
     destroyArrow()
-    for _, widget in ipairs({ button, window }) do
+    if radar and window and window.radarSlot then
+        radar:setParent(window.radarSlot)
+    end
+    for _, widget in ipairs({ button, overlay, window }) do
         if widget then
             widget:destroy()
         end
     end
-    button, window = nil, nil
+    button, overlay, radar, window = nil, nil, nil, nil
+    overlayOn, overlayInited = false, false
 end
