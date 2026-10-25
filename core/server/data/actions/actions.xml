@@ -86,7 +86,7 @@
 	<action itemid="24724-25048" event="script" value="../../lib/ps/events/actions/elementalStone.lua" />
 	<action itemid="23563" event="script" value="../../lib/ps/events/actions/activationTile.lua" />
 	<action itemid="25057" event="script" value="../../lib/ps/events/actions/rocketSurpriseBox.lua" />
-	<!-- Ball Pillar -->
+	<!-- Pokemon Habitat (ball pillar) -->
 	<action itemid="18649" event="script" value="../../lib/ps/events/actions/ballPillar/detach.lua" />
 	<action itemid="18650" event="script" value="../../lib/ps/events/actions/ballPillar/attach.lua" />
 	<!-- Balls -->
