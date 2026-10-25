@@ -1,0 +1,15 @@
+--- a/ixwebsocket/IXSocketMbedTLS.cpp
++++ b/ixwebsocket/IXSocketMbedTLS.cpp
+@@ -328,9 +328,9 @@
+         mbedtls_x509_crt_free(&_cacert);
+         mbedtls_x509_crt_free(&_cert);
+         mbedtls_pk_free(&_pkey);
+-#if MBEDTLS_VERSION_MAJOR >= 4 || (MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 6)
+-        mbedtls_psa_crypto_free();
+-#endif
++        // mbedtls_psa_crypto_free() would wipe the PSA key slots every other open TLS socket is
++        // still using (parallel downloads crash in psa_wipe_all_key_slots); psa_crypto_init() is
++        // idempotent, so the PSA state stays up for the life of the process.
+ 
+         Socket::close();
+     }
