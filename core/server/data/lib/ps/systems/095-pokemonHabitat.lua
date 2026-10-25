@@ -53,8 +53,9 @@ function PokemonHabitat.itemOn(pos, pred)
 end
 
 function PokemonHabitat.standOn(pos)
-    return PokemonHabitat.itemOn(pos, function(item) return item.itemid == PokemonHabitat.EMPTY_ID end)
+    local stand = PokemonHabitat.itemOn(pos, function(item) return item.itemid == PokemonHabitat.EMPTY_ID end)
         or getTileItemById(pos, PokemonHabitat.EMPTY_ID)
+    return isItem(stand) and stand or nil
 end
 
 function PokemonHabitat.ballOn(pos)
@@ -271,7 +272,10 @@ function PokemonHabitat.useEmpty(cid, item, fromPosition, itemEx, toPosition)
 end
 
 function PokemonHabitat.useBall(cid, item, fromPosition, itemEx, toPosition)
-    if (fromPosition.x ~= CONTAINER_POSITION and (PokemonHabitat.standOn(fromPosition) or PokemonHabitat.legacyOn(fromPosition))) then
+    -- doPlayerUseItem (quick call, the swap bar) passes the trainer's tile even for the ball in the ball slot
+    local onFloor = fromPosition.x ~= CONTAINER_POSITION
+        and PokemonHabitat.itemOn(fromPosition, function(thing) return thing.uid == item.uid end)
+    if (onFloor and (PokemonHabitat.standOn(fromPosition) or PokemonHabitat.legacyOn(fromPosition))) then
         return PokemonHabitat.takeBack(cid, item, fromPosition)
     end
     if (isItem(itemEx) and itemEx.itemid == PokemonHabitat.EMPTY_ID) then

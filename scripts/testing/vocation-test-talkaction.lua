@@ -2972,11 +2972,35 @@ local function testHandDecorations(cid)
     end, 3000)
 end
 
+local function testBallSlotUse(cid)
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("Ball slot: free for the test", false)
+        return
+    end
+    local ball = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+    local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+    check("Ball slot: the ball goes in", isItem(slot) and isBallWithPokemon(slot.uid), slot and slot.itemid)
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    check("Ball slot: using it like quick call calls the Pokemon", isPokemonOnline(cid))
+    check("Ball slot: the ball stays in the slot", isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL)))
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    check("Ball slot: using it again calls the Pokemon back", not isPokemonOnline(cid))
+    doRemoveConditions(cid, false)
+    slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+    if (isItem(slot)) then
+        doRemoveItem(slot.uid)
+    end
+end
+
 local function testPokemonHabitat(cid)
     check("Habitat: the empty stand is a habitat",
         getItemNameById(PokemonHabitat.EMPTY_ID):lower():find("habitat", 1, true) ~= nil)
     check("Habitat: an empty poke ball is not charged",
         not PokemonHabitat.isChargedBall({ uid = 0, itemid = balls["poke"].empty }))
+    check("Habitat: no stand under the trainer", PokemonHabitat.standOn(getCreaturePosition(cid)) == nil)
 
     local houseId, tile, prev
     for _, id in pairs(getTownHouses()) do
@@ -3038,6 +3062,10 @@ local function testPokemonHabitat(cid)
     end
     check("Habitat: a charged poke ball looks like the inventory ball",
         PokemonHabitat.isChargedBall(ball) and ball.itemid == balls["poke"].charged, ball and ball.itemid)
+    -- quick call and the swap bar use the slot ball through doPlayerUseItem, which passes the trainer's tile
+    check("Habitat: a bag ball used while standing on the stand is not taken off it",
+        ball and not PokemonHabitat.useBall(cid, ball, tile, { uid = 0, itemid = 0 }, tile)
+            and not PokemonHabitat.ballOn(tile))
 
     PokemonHabitat.attach(cid, ball, getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile)
     local sitting = PokemonHabitat.ballOn(tile)
@@ -3889,7 +3917,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
