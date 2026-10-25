@@ -160,6 +160,20 @@ class Player:
         self.collect(seconds)
         return b"\n".join(self.packets[start:]).decode("latin-1")
 
+    def text_reply(self, text, prefix, seconds=1.5):
+        """Says a talkaction and returns the first server text starting with prefix. A packet can hold
+        several messages back to back, so the text ends where its length prefix says."""
+        start = len(self.packets)
+        self.say(text)
+        self.collect(seconds)
+        needle = prefix.encode("latin-1")
+        for packet in self.packets[start:]:
+            at = packet.find(needle)
+            if at >= 2:
+                length = struct.unpack_from("<H", packet, at - 2)[0]
+                return packet[at:at + length].decode("latin-1")
+        return ""
+
     def link_code(self):
         text = self.command("!discord link")
         m = re.search(r"link code is ([0-9A-Z]{4}-[0-9A-Z]{4})", text)
@@ -438,7 +452,7 @@ def boost_tests(b, args):
         return json.JSONDecoder().raw_decode(text, start + len("bridgetest perks "))[0] if start >= 0 else {}
 
     def kill_exp():
-        m = re.search(r"bridgetest killexp (\d+)", trainer.command("/bridgetest killexp Rattata", 2.5))
+        m = re.fullmatch(r"bridgetest killexp (\d+)", trainer.text_reply("/bridgetest killexp Rattata", "bridgetest killexp ", 2.5))
         return int(m.group(1)) if m else 0
 
     check("welcome lists boostPerks", "boostPerks" in b.welcome.get("features", []), str(b.welcome))
