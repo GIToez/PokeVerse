@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-"""Turns the stray patches of mountain top ground left in grass and dirt paths into dirt.
+"""Repaints the stray dark patches of mountain top ground on the surface as the lighter rocky ground.
 
     scripts/mapper/fix_rock_borders.py <map.otbm> [--out map.otbm] [--max-size 12]
 
-Mountain top ground (rocks, 4405-4421) is the grey floor of mountain tops. Small patches of it were
-painted into dirt paths on the surface floor away from any mountain (Viridian Forest has several),
-where it shows as hard grey squares under the grass border. A patch (4-connected rock ground on
-floor 7) of at most --max-size tiles, with only grass and dirt beside it (some of it dirt) and no
-mountain item on or next to it, gets dirt (103) as its ground; its stone border comes off the tiles
-around it that no other rock ground is next to. Bigger patches set in grass, and rock in stone or
-sand areas, are left as they are. The grass border on it stays right: grass borders dirt and rock
-with the same border. Without --out it only counts and lists the patches.
+Mountain top ground (rocks, 4405-4421) is the dark grey floor of mountain tops. Small patches of it
+were painted on the surface floor where the grey around them is the lighter rocky ground (4570-4579)
+and its stone border, so they show as hard dark squares (Viridian Forest has several). A patch
+(4-connected rock ground on floor 7) of at most --max-size tiles gets rocky ground when it touches
+rocky ground, or when it sits in grass and dirt (some of it dirt) with no mountain item on or next
+to it. The stone border (RME border 20) stays: the map draws it round rocky ground as well. Bigger
+patches, and mountain tops, are left as they are. Without --out it only counts and lists the patches.
 """
 import argparse
 import os
@@ -20,15 +19,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import autoborder  # noqa: E402
 import pvmap  # noqa: E402
 
-DIRT = 103
+ROCKY = list(range(4570, 4580))
 SURFACE = 7  # above it the rock ground is the top of a mountain
-STONE_BORDER = set(range(4514, 4526))  # the rock ground's own border (RME border 20)
 MOUNTAIN_ITEMS = set(range(903, 914)) | {918, 919} | set(range(4468, 4514))
 SIDES = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
 
 def stray_patches(tiles, brushes, max_size):
     rock = brushes['mountain top ground']
+    rocky = brushes['rocky ground']
     dirt = brushes['dirt']
     open_ground = {dirt, brushes['grass']}
 
@@ -52,7 +51,7 @@ def stray_patches(tiles, brushes, max_size):
                     todo.append(q)
         if len(patch) > max_size:
             continue
-        touches_dirt, near_mountain, other = False, False, False
+        touches_dirt, touches_rocky, near_mountain, other = False, False, False, False
         for x, y, z in patch:
             for dx, dy in autoborder.NEIGHBOURS + ((0, 0),):
                 ids = tiles.get((x + dx, y + dy, z))
@@ -63,8 +62,9 @@ def stray_patches(tiles, brushes, max_size):
                 if (dx, dy) in SIDES and not is_rock((x + dx, y + dy, z)):
                     ground = brushes.by_item.get(ids[0])
                     touches_dirt = touches_dirt or ground is dirt
+                    touches_rocky = touches_rocky or ground is rocky
                     other = other or ground not in open_ground
-        if touches_dirt and not near_mountain and not other:
+        if touches_rocky or (touches_dirt and not near_mountain and not other):
             yield patch
 
 
@@ -86,32 +86,15 @@ def main():
         print('  %d,%d,%d  %d tiles' % (x, y, z, len(patch)))
     if not args.out:
         return
-    converted = set(positions)
-    rock = brushes['mountain top ground']
-
-    def rock_left_near(x, y, z):
-        for dx, dy in autoborder.NEIGHBOURS + ((0, 0),):
-            q = (x + dx, y + dy, z)
-            ids = tiles.get(q)
-            if q not in converted and ids and brushes.by_item.get(ids[0]) is rock:
-                return True
-        return False
-
-    around = {(x + dx, y + dy, z) for x, y, z in converted for dx, dy in autoborder.NEIGHBOURS + ((0, 0),)}
-    unbordered = {q for q in around if q in tiles and not rock_left_near(*q)
-                  and any(i in STONE_BORDER for i in tiles[q][1:])}
-    raw = pvmap.read_tiles_raw(args.map, converted | unbordered, data=data)
-    for pos, tile in raw.items():
-        items = pvmap.split_items(tile.children)
-        if pos in converted:
-            if tile.ground is not None:
-                tile.ground = DIRT
-            else:
-                items[0] = pvmap.item_node(DIRT)
-        if pos in unbordered:
-            items = [blob for blob in items if pvmap.child_item_ids(blob)[0] not in STONE_BORDER]
-        tile.children = b''.join(items)
-    print('stone border taken off %d tiles' % len(unbordered))
+    raw = pvmap.read_tiles_raw(args.map, set(positions), data=data)
+    for (x, y, z), tile in raw.items():
+        ground = ROCKY[(x * 7 + y * 13) % len(ROCKY)]
+        if tile.ground is not None:
+            tile.ground = ground
+        else:
+            items = pvmap.split_items(tile.children)
+            items[0] = pvmap.item_node(ground)
+            tile.children = b''.join(items)
     pvmap.write_map(data, args.out, raw)
     print('wrote', args.out)
 
