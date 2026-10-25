@@ -80,7 +80,8 @@ EXTENDED_IDS = {
     LEGENDARY_FLIGHT = 45, -- JSON {type = "flight"|"shake"|"meteors", ...}: a legendary flying or swimming past, the ground shaking, falling meteors (WildLegendaries)
     BATTLE_TEXT = 46, -- JSON trainers' call-outs, wild moves, misses and hit kinds for the battle text (BattleText)
     ANNOUNCEMENT = 47, -- JSON server-wide news for the news banner: {c = category, h = title, x = text, f = the text message} (Announcements)
-    HEAL_MARK = 48 -- JSON {id = creature, s = seconds left, 0 when it ends}: a health potion healing a Pokemon or trainer, to the players who can see it
+    HEAL_MARK = 48, -- JSON {id = creature, s = seconds left, 0 when it ends}: a health potion healing a Pokemon or trainer, to the players who can see it
+    EVENT_SHOP = 49 -- JSON Event Token Shop: holiday token catalogs (EventShop)
 }
 
 TOURNAMENT_TYPES = {}

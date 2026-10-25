@@ -1,0 +1,8 @@
+Module
+  name: game_eventshop
+  description: PokeVerse Event Token Shop: holiday token catalogs, not the Poke Mart
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ eventshop ]
+  @onLoad: init()
+  @onUnload: terminate()

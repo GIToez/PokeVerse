@@ -1,5 +1,5 @@
 -- /anniversary                 whether the Anniversary runs, the Union Room entrance and the cake invasion
--- /anniversary show [minutes]  show the entrance sign and teleport for a while (default 30, 0: until hidden)
+-- /anniversary show [minutes]  show the entrance sign, teleport and shop NPCs for a while (default 30, 0: until hidden)
 --                              without the holiday, to test the cake town
 -- /anniversary hide            end the preview (players in the town are sent back to the Union Room)
 -- /anniversary on | off        force the whole holiday on or off (bonuses, gifts, the invasion and the town)

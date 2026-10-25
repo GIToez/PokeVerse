@@ -2286,6 +2286,76 @@ local function testAnniversaryBoss(cid)
     AnniversaryEvent.setEventState(state)
 end
 
+local function testAnniversaryNpcs()
+    local spots = AnniversaryEvent.getNpcSpots()
+    local named = {}
+    for _, spot in ipairs(spots) do
+        named[spot.name] = true
+    end
+    for _, name in ipairs(AnniversaryEvent.NPCS) do
+        check("Anniversary: " .. name .. " has a spot in the Union Room", named[name] == true)
+    end
+    local function present()
+        local count = 0
+        for _, spot in ipairs(spots) do
+            count = count + (getNpcAtPosition(spot.pos, spot.name) and 1 or 0)
+        end
+        return count
+    end
+    local forced = EventCalendar.getForced("anniversary")
+    AnniversaryEvent.setPreview(nil)
+    EventCalendar.setForced("anniversary", true)
+    AnniversaryEvent.syncNpcs()
+    check("Anniversary: its shop NPCs are there during the event", present() == #spots, present() .. "/" .. #spots)
+    EventCalendar.setForced("anniversary", false)
+    AnniversaryEvent.syncNpcs()
+    check("Anniversary: its shop NPCs leave when it isn't the event", present() == 0, present() .. "/" .. #spots)
+    EventCalendar.setForced("anniversary", true)
+    AnniversaryEvent.syncNpcs()
+    check("Anniversary: its shop NPCs come back when it starts", present() == #spots, present() .. "/" .. #spots)
+    EventCalendar.setForced("anniversary", forced)
+    AnniversaryEvent.syncNpcs()
+    for name, pos in pairs(AnniversaryEvent.NPC_SPOTS) do
+        local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+        check("Anniversary: " .. name .. " stands on the map", ground and ground.itemid ~= 0, pos.x .. "," .. pos.y .. "," .. pos.z)
+    end
+end
+
+local function testEventShop(cid)
+    local halloween = EventShop.get("halloween_trevor")
+    local letters = EventShop.get("anniversary_letters")
+    local gifts = EventShop.get("anniversary_gifts")
+    check("Event shop: Trevor, Timothy Kelvin and Murray Aaron have catalogs",
+        halloween and letters and gifts and halloween.tokenId == 14461 and letters.mode == "sell" and gifts.tokenId == 27935)
+    local chair = EventShop.findOffer("halloween_trevor", "pumpkin chair kit")
+    check("Event shop: the pumpkin chair kit costs 100 HT", chair and chair.price == 100 and chair.itemId == 25148)
+    check("Event shop: old clients still get a text list", EventShop.fyi("halloween_trevor"):find("pumpkin chair kit", 1, true) and
+        EventShop.fyi("halloween_trevor"):find("HT", 1, true))
+    check("Event shop: a client that never said hello does not get the window",
+        EventShop.open(cid, "halloween_trevor", cid) == false)
+
+    doPlayerSafeAddItem(cid, 14461, 100, false, true)
+    local chairs = getPlayerItemCount(cid, 25148)
+    local ok = EventShop.exchange(cid, "halloween_trevor", "pumpkin chair kit", 1)
+    check("Event shop: 100 HT buy a pumpkin chair kit", ok and getPlayerItemCount(cid, 25148) == chairs + 1,
+        tostring(ok) .. " " .. getPlayerItemCount(cid, 25148))
+
+    local bought = getPlayerBoughtRareCandy(cid)
+    setPlayerBoughtRareCandy(cid, 15)
+    doPlayerSafeAddItem(cid, 14461, 100, false, true)
+    local refused, err = EventShop.exchange(cid, "halloween_trevor", "rare candy", 1)
+    check("Event shop: rare candy stays at the account cap", not refused and type(err) == "string" and err:find("15", 1, true), err)
+    setPlayerBoughtRareCandy(cid, bought)
+
+    doPlayerSafeAddItem(cid, 27819, 2, false, false)
+    local tokens = getPlayerItemCount(cid, 27935)
+    local sold = EventShop.exchange(cid, "anniversary_letters", "letter a", 2)
+    check("Event shop: two letter A become 2 AT", sold and getPlayerItemCount(cid, 27935) >= tokens + 2)
+
+    local locker, lockerText = EventShop.exchange(cid, "anniversary_gifts", "kangaskhan locker", 1)
+    check("Event shop: a locker needs the PSoul letters", not locker, lockerText)
+end
+
 local function testDecorationItems(cid)
     local saved = getStorage(GLOBAL_STORAGES.DECORATIONS_ITEMS)
     local ok = Decorations.addCustomItem("halloween", 25130)
@@ -3400,7 +3470,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

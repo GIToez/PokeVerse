@@ -763,6 +763,65 @@ AnniversaryEvent.mode = function()
     return AnniversaryEvent.getPreview() and "preview" or "off"
 end
 
+-- Timothy Kelvin and Murray Aaron stand in the Union Room only while the holiday (or a staff
+-- preview) is on. The map spawn puts them there year-round; this takes them away afterwards.
+AnniversaryEvent.NPCS = { "Timothy Kelvin", "Murray Aaron" }
+AnniversaryEvent.NPC_SPOTS = {
+    ["Timothy Kelvin"] = { x = 4720, y = 141, z = 7 },
+    ["Murray Aaron"] = { x = 4722, y = 132, z = 7 },
+}
+
+local npcSpots = nil
+AnniversaryEvent.getNpcSpots = function()
+    if (npcSpots) then
+        return npcSpots
+    end
+    npcSpots = {}
+    local wanted, found = {}, {}
+    for _, name in ipairs(AnniversaryEvent.NPCS) do
+        wanted[name] = true
+    end
+    local file = io.open(string.format("data/world/%s-spawn.xml", getConfigValue("mapName") or "map"), "r")
+    if (file) then
+        local text = file:read("*a")
+        file:close()
+        for cx, cy, body in text:gmatch('<spawn centerx="(%d+)" centery="(%d+)"[^>]*>(.-)</spawn>') do
+            for name, x, y, z in body:gmatch('<npc name="([^"]+)" x="(%-?%d+)" y="(%-?%d+)" z="(%d+)"') do
+                if (wanted[name]) then
+                    found[name] = true
+                    npcSpots[#npcSpots + 1] = {
+                        name = name,
+                        pos = { x = tonumber(cx) + tonumber(x), y = tonumber(cy) + tonumber(y), z = tonumber(z) },
+                    }
+                end
+            end
+        end
+    end
+    for _, name in ipairs(AnniversaryEvent.NPCS) do
+        if (not found[name] and AnniversaryEvent.NPC_SPOTS[name]) then
+            npcSpots[#npcSpots + 1] = { name = name, pos = AnniversaryEvent.NPC_SPOTS[name] }
+        end
+    end
+    return npcSpots
+end
+
+local npcsShown = nil
+AnniversaryEvent.syncNpcs = function()
+    local active = AnniversaryEvent.mode() ~= "off"
+    if (npcsShown == active) then
+        return
+    end
+    npcsShown = active
+    for _, spot in ipairs(AnniversaryEvent.getNpcSpots()) do
+        local npc = getNpcAtPosition(spot.pos, spot.name)
+        if (active and not npc) then
+            doCreateNpc(spot.name, spot.pos, false)
+        elseif (not active and npc) then
+            doRemoveCreature(npc)
+        end
+    end
+end
+
 -- Called every second by EventCalendar.onThink, and by /anniversary with now = true. Every Lua
 -- state keeps its own `synced`; open and close are safe to repeat, so the states agree.
 local synced = nil
@@ -784,7 +843,9 @@ AnniversaryEvent.sync = function(now)
     elseif (startup) then
         AnniversaryEvent.setEntrance(false)
     else
+        AnniversaryEvent.syncNpcs()
         return mode, AnniversaryEvent.close()
     end
+    AnniversaryEvent.syncNpcs()
     return mode
 end
