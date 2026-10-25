@@ -2036,9 +2036,8 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
      - Epic: needs storage 7065, which nothing sets.
      - Poke Maniac: the reward of Snap's quest, and Snap is not placed on the map.
      - Wak Lady / Wak Lord: the quest that gave it is commented out.
-     - Pirate #1, #3 and #4: rewards of Calico, Javy Dones and Ed Blackhood, none of them
-       placed on the map. Pirate #2 (Nagumo Harbor, who appears during the pirate quest)
-       can still be earned.
+     - Pirate #1 to #4: rewards of Calico, Nagumo Harbor, Javy Dones and Ed Blackhood,
+       placed on the ships while Halloween runs.
    - **Holiday outfits for Featured** (earned today with event tokens, drops or event
      rewards, only while the event runs): Halloween #1 to #7, Phantomaniac, Halloween
      Monster, Christmas #1 to #3, Santa Grinch, Elfin, Helper Grinch, Easter #1, Explorer
@@ -3063,17 +3062,11 @@ From the holiday audit (October 2026). Most of every holiday works: the calendar
 bonuses, the wild drops and spawns, the raids (moved onto today's map) and the token and
 trade NPCs that are placed. These parts were never put on this map, so they don't run yet:
 
-- **Halloween pirate factions:** Peter Paul tells the story and sends players to the four
-  factions, but the faction NPCs aren't placed.
-  - Entrances: Sea Dragon Ori near 3403,506,7 (north-east of Viridian), Serah Nil near
-    3856,930,7 (south of Fuchsia), Kired near 4009,191,7 (by Bill's, north of Cerulean).
-    Cold Waters (4214,331,7) has no entrance NPC or teleport at all.
-  - On the ships: Barba Roja (Guns, 5749,123,6), Javy Dones (Roses, 5825,218,6), Jack
-    Spearow and Calico (Shadow, 5851,140,6), Nagumo and Sotashi (Sea Dragon, 5798,168,6),
-    Ed Blackhood in his cabin (about 5764,188,6). Ed starts Will Kid's battles and the magic
-    mask reward.
-  - Hector Angel gives the faction rewards (1.5 hours of extra EXP, loot, catch or egg
-    chance once a day); his place is unknown.
+- **Done:** Halloween pirate factions: Peter Paul, Hector Angel and the four faction
+  entrances (Sea Dragon Ori, Serah Nil, Kired, Cold Waters Sailor) plus the captains,
+  mates and sailors on the ships stand only while Halloween runs (`HalloweenEvent.syncNpcs`).
+  Calico, Javy Dones and Ed Blackhood award Pirate #1, #3 and #4; Nagumo Harbor awards
+  Pirate #2.
 - **Easter:** Snap (starts the Easter quests), the Easter Rabbit and Ralp (golden egg shop)
   aren't placed. Their old spots, 1520,265,6 and 2001,17,7, are from the old map. The Easter
   Rabbit Shadow the quest asks for is never spawned. Ralp no longer takes colored eggs.

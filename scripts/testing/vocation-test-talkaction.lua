@@ -2208,6 +2208,48 @@ local function testHalloween(cid)
     EventCalendar.setForced("halloween", forced)
     HalloweenEvent.syncNpcs()
 
+    for name, pos in pairs(HalloweenEvent.NPC_MOVED) do
+        local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+        check("Halloween: " .. name .. " stands on the map", ground and ground.itemid ~= 0, pos.x .. "," .. pos.y .. "," .. pos.z)
+    end
+    for _, ship in ipairs(HalloweenEvent.PIRATE_SHIPS) do
+        local dest = getTileThingByPos({ x = ship.dest.x, y = ship.dest.y, z = ship.dest.z, stackpos = 0 })
+        local shore = getTileThingByPos({ x = ship.shore.x, y = ship.shore.y, z = ship.shore.z, stackpos = 0 })
+        check("Halloween: " .. ship.name .. " ship tile exists", dest and dest.itemid ~= 0)
+        check("Halloween: " .. ship.name .. " shore tile exists", shore and shore.itemid ~= 0)
+        check("Halloween: " .. ship.name .. " stands at the shore", HalloweenEvent.NPC_MOVED[ship.name] ~= nil)
+    end
+    local here = getCreaturePosition(cid)
+    for _, ship in ipairs(HalloweenEvent.PIRATE_SHIPS) do
+        doCreatureSetStorage(cid, ship.storage, QUEST_STATUS.UNSTARTED)
+        local refused = not HalloweenEvent.tryEnterShip(cid, ship.storage, ship.dest)
+        check("Halloween: " .. ship.name .. " refuses without the faction", refused and doComparePositions(getCreaturePosition(cid), here))
+        doCreatureSetStorage(cid, ship.storage, QUEST_STATUS.STARTED)
+        check("Halloween: " .. ship.name .. " takes a started player",
+            HalloweenEvent.tryEnterShip(cid, ship.storage, ship.dest) and doComparePositions(getCreaturePosition(cid), ship.dest))
+        if (ship.dest2) then
+            check("Halloween: " .. ship.name .. " takes a started player to the other ship",
+                HalloweenEvent.tryEnterShip(cid, ship.storage, ship.dest2) and doComparePositions(getCreaturePosition(cid), ship.dest2))
+        end
+        doTeleportThing(cid, here)
+        doCreatureSetStorage(cid, ship.storage, QUEST_STATUS.UNSTARTED)
+    end
+    for _, outfit in ipairs(HalloweenEvent.PIRATE_OUTFITS) do
+        local found
+        for _, quest in ipairs(QUESTS_CONFIG[outfit.npc] or {}) do
+            if (quest.storage == outfit.storage) then
+                for _, reward in ipairs(quest.rewardItems or {}) do
+                    if (reward.type == 3 and reward.female and reward.female.looktype == outfit.female
+                            and reward.male and reward.male.looktype == outfit.male) then
+                        found = true
+                    end
+                end
+            end
+        end
+        check("Halloween: " .. outfit.npc .. " awards " .. outfit.name, found == true)
+        check("Halloween: " .. outfit.npc .. " is placed during Halloween", HalloweenEvent.NPC_MOVED[outfit.npc] ~= nil)
+    end
+
     local account = getPlayerAccountId(cid)
     local count, year = getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY), getAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR)
     setPlayerBoughtRareCandy(cid, 15)

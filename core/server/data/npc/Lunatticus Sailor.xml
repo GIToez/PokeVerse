@@ -3,6 +3,6 @@
 	<health now="100" max="100"/>
 	<look type="1721"/>
 	<parameters>
-		<parameter key="message_greet" value="Hello friend! I am recruiting {volunteers} to help me in the fight against evil and darkness!"/>
+		<parameter key="message_greet" value="Welcome aboard the Shadow. Captain Jack Spearow likes to be called Captain."/>
 	</parameters>
 </npc>

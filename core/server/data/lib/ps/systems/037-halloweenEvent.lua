@@ -595,13 +595,67 @@ end
 
 -- Only there while Halloween runs (EventCalendar.onThink): the map places them at startup, they are
 -- taken away when Halloween isn't on and put back on their spawn spots when it starts
-HalloweenEvent.NPCS = { "Trevor", "Hermitwo", "Selam", "Queter Phill", "Peter Paul" }
--- The map has these in two copies of the Union Room hall nobody can reach (the old Halloween and
--- event versions of it); they stand in the real hall instead, among its Halloween decorations
+HalloweenEvent.NPCS = {
+    "Trevor", "Hermitwo", "Selam", "Queter Phill", "Peter Paul", "Hector Angel",
+    "Sea Dragon Ori", "Guns And Roses Serah Nil", "Lunatticous Kired", "Cold Waters Sailor",
+    "Nagumo Harbor", "Sotashi", "Sea Dragon Exiep", "Sea Dragons Sailor",
+    "Barba Roja", "Javy Dones", "Guns And Roses Amodos", "Guns And Roses Arromog", "Guns and Roses Sailor",
+    "Jack Spearow", "Calico", "Lunatticous Ubilam", "Lunatticus Sailor",
+    "Ed Blackhood", "Cold Waters Mate",
+}
+-- The map has Trevor and Peter Paul in two copies of the Union Room hall nobody can reach (the old
+-- Halloween and event versions of it); they stand in the real hall instead. The pirate faction NPCs
+-- are not on the map at all: these are the only spots they stand (while Halloween runs).
 HalloweenEvent.NPC_MOVED = {
     ["Trevor"] = { x = 4722, y = 141, z = 7 },
     ["Peter Paul"] = { x = 4719, y = 133, z = 7 },
+    ["Hector Angel"] = { x = 4721, y = 133, z = 7 },
+    ["Sea Dragon Ori"] = { x = 3404, y = 506, z = 7 },
+    ["Guns And Roses Serah Nil"] = { x = 3857, y = 930, z = 7 },
+    ["Lunatticous Kired"] = { x = 4010, y = 191, z = 7 },
+    ["Cold Waters Sailor"] = { x = 4215, y = 331, z = 7 },
+    ["Nagumo Harbor"] = { x = 5799, y = 168, z = 6 },
+    ["Sotashi"] = { x = 5796, y = 168, z = 6 },
+    ["Sea Dragon Exiep"] = { x = 5797, y = 168, z = 6 },
+    ["Sea Dragons Sailor"] = { x = 5800, y = 168, z = 6 },
+    ["Barba Roja"] = { x = 5750, y = 123, z = 6 },
+    ["Guns And Roses Amodos"] = { x = 5748, y = 123, z = 6 },
+    ["Javy Dones"] = { x = 5826, y = 218, z = 6 },
+    ["Guns And Roses Arromog"] = { x = 5824, y = 218, z = 6 },
+    ["Guns and Roses Sailor"] = { x = 5827, y = 218, z = 6 },
+    ["Jack Spearow"] = { x = 5852, y = 140, z = 6 },
+    ["Calico"] = { x = 5853, y = 140, z = 6 },
+    ["Lunatticous Ubilam"] = { x = 5850, y = 140, z = 6 },
+    ["Lunatticus Sailor"] = { x = 5849, y = 140, z = 6 },
+    ["Ed Blackhood"] = { x = 5765, y = 188, z = 6 },
+    ["Cold Waters Mate"] = { x = 5763, y = 188, z = 6 },
 }
+
+-- Peter Paul starts these (8694-8697). The entrance NPCs teleport a player who has started that
+-- faction to the ship; without it they stay on the shore.
+HalloweenEvent.PIRATE_SHIPS = {
+    { name = "Sea Dragon Ori", storage = 8694, dest = { x = 5798, y = 168, z = 6 }, shore = { x = 3403, y = 506, z = 7 } },
+    { name = "Guns And Roses Serah Nil", storage = 8695, dest = { x = 5749, y = 123, z = 6 },
+      dest2 = { x = 5825, y = 218, z = 6 }, shore = { x = 3856, y = 930, z = 7 } },
+    { name = "Lunatticous Kired", storage = 8696, dest = { x = 5851, y = 140, z = 6 }, shore = { x = 4009, y = 191, z = 7 } },
+    { name = "Cold Waters Sailor", storage = 8697, dest = { x = 5764, y = 188, z = 6 }, shore = { x = 4214, y = 330, z = 7 } },
+}
+
+-- Calico, Javy Dones and Ed Blackhood give these outfits; Nagumo Harbor gives Pirate #2
+HalloweenEvent.PIRATE_OUTFITS = {
+    { npc = "Calico", storage = 8693, female = 1707, male = 1708, name = "Pirate #1" },
+    { npc = "Nagumo Harbor", storage = 8676, female = 1709, male = 1710, name = "Pirate #2" },
+    { npc = "Javy Dones", storage = 8687, female = 1737, male = 1738, name = "Pirate #3" },
+    { npc = "Ed Blackhood", storage = 8683, female = 1739, male = 1740, name = "Pirate #4" },
+}
+
+function HalloweenEvent.tryEnterShip(cid, storage, dest)
+    if (not isPlayer(cid) or getCreatureStorage(cid, storage) == QUEST_STATUS.UNSTARTED) then
+        return false
+    end
+    doTeleportThing(cid, dest)
+    return true
+end
 
 local npcSpots = nil
 HalloweenEvent.getNpcSpots = function()
@@ -614,16 +668,15 @@ HalloweenEvent.getNpcSpots = function()
         wanted[name] = true
     end
     local file = io.open(string.format("data/world/%s-spawn.xml", getConfigValue("mapName") or "map"), "r")
-    if (not file) then
-        return npcSpots
-    end
-    local text = file:read("*a")
-    file:close()
-    for cx, cy, body in text:gmatch('<spawn centerx="(%d+)" centery="(%d+)"[^>]*>(.-)</spawn>') do
-        for name, x, y, z in body:gmatch('<npc name="([^"]+)" x="(%-?%d+)" y="(%-?%d+)" z="(%d+)"') do
-            if (wanted[name]) then
-                npcSpots[#npcSpots + 1] = { name = name, pos = { x = tonumber(cx) + tonumber(x), y = tonumber(cy) + tonumber(y), z = tonumber(z) },
-                                            moved = HalloweenEvent.NPC_MOVED[name] ~= nil }
+    if (file) then
+        local text = file:read("*a")
+        file:close()
+        for cx, cy, body in text:gmatch('<spawn centerx="(%d+)" centery="(%d+)"[^>]*>(.-)</spawn>') do
+            for name, x, y, z in body:gmatch('<npc name="([^"]+)" x="(%-?%d+)" y="(%-?%d+)" z="(%d+)"') do
+                if (wanted[name]) then
+                    npcSpots[#npcSpots + 1] = { name = name, pos = { x = tonumber(cx) + tonumber(x), y = tonumber(cy) + tonumber(y), z = tonumber(z) },
+                                                moved = HalloweenEvent.NPC_MOVED[name] ~= nil }
+                end
             end
         end
     end
