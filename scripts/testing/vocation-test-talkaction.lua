@@ -3497,6 +3497,54 @@ local function testHints(cid)
     setPlayerStorageValue(cid, playersStorages.hintsClient, savedClient)
 end
 
+local function testWorldBoss()
+    check("World Boss: The A. Mesmer is Hypno, not the shared template",
+        WorldBoss.get("The A. Mesmer") ~= nil and WorldBoss.get("Blastertoise") ~= nil)
+
+    local seen, count = {}, 0
+    WorldBoss.each(function(name, boss)
+        count = count + 1
+        check("World Boss: " .. name .. " has a Seek-it hint",
+            type(boss.hint) == "string" and boss.hint:find("Seek it", 1, true), boss.hint)
+        for _, line in ipairs(boss.messages) do
+            check("World Boss: flavor is unique — " .. line:sub(1, 48), not seen[line],
+                seen[line] and (seen[line] .. " and " .. name) or name)
+            seen[line] = name
+        end
+    end)
+    check("World Boss: twenty catalogs", count == 20, tostring(count))
+
+    local mesmer = WorldBoss.get("The A. Mesmer")
+    local flavor = mesmer.messages[1]
+    local text = WorldBoss.announceText("The A. Mesmer", flavor)
+    check("World Boss: Mesmer announce names Hill of Confusion",
+        text:find("World Boss", 1, true) and text:find("Hill of Confusion", 1, true)
+            and text:find("Lavender", 1, true) and text:find("Hypnosis", 1, true), text)
+    check("World Boss: Mesmer announce has no coordinates",
+        not text:find("4226", 1, true) and not text:find("272", 1, true), text)
+    check("World Boss: Mesmer announce is not a generic HARD line",
+        not text:find("sea was very choppy", 1, true) and not text:find("What's that in the sky", 1, true), text)
+
+    local captured, original = {}, doBroadcastMessage
+    doBroadcastMessage = function(msg, class, announcement)
+        captured[#captured + 1] = { text = msg, announcement = announcement }
+        captured.last = captured[#captured]
+        return true
+    end
+    WorldBoss.announce("The A. Mesmer", false, flavor)
+    check("World Boss: spawn goes to Discord",
+        captured.last and captured.last.announcement and captured.last.announcement.discord ~= false
+            and captured.last.announcement.title == "World Boss")
+    WorldBoss.announce("The A. Mesmer", true, flavor)
+    check("World Boss: 10-minute reminder stays in game",
+        captured.last and captured.last.announcement and captured.last.announcement.discord == false)
+    WorldBoss.defeated()
+    check("World Boss: defeat goes to Discord",
+        captured.last and captured.last.text:find("defeated", 1, true)
+            and captured.last.announcement and captured.last.announcement.discord ~= false)
+    doBroadcastMessage = original
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -3524,7 +3572,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

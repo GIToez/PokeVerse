@@ -215,5 +215,8 @@ function onPrepareDeath(cid, deathList)
     end
 
     doRemoveCreature(cid)
+    if (WorldBoss and WorldBoss.defeated) then
+        WorldBoss.defeated()
+    end
     return false
 end
