@@ -1114,24 +1114,56 @@ AdminWindow < UIWindow
 
     AdminMuted
       id: itemsLabel
-      !text: tr('Prop: wall props hang on the wall you face, the others stand on the tile you face')
+      !text: tr('Prop: wall props hang on the wall you face')
       text-auto-resize: true
       anchors.top: sets.bottom
       anchors.left: parent.left
-      margin-top: 10
+      margin-top: 14
 
-    UIWidget
+    AdminTab
+      id: itemRemove
+      !text: tr('Remove from list')
+      width: 118
+      anchors.right: parent.right
+      anchors.verticalCenter: itemsLabel.verticalCenter
+
+    AdminTab
+      id: itemAdd
+      !text: tr('Add to list')
+      width: 84
+      anchors.right: itemRemove.left
+      anchors.verticalCenter: itemsLabel.verticalCenter
+      margin-right: 4
+
+    PVField
+      id: itemId
+      !placeholder: tr('Item id')
+      size: 90 26
+      anchors.right: itemAdd.left
+      anchors.verticalCenter: itemsLabel.verticalCenter
+      margin-right: 4
+      padding-left: 8
+      max-length: 6
+
+    ScrollablePanel
       id: items
       height: 132
+      vertical-scrollbar: itemsScroll
       anchors.top: itemsLabel.bottom
       anchors.left: parent.left
-      anchors.right: parent.right
-      margin-top: 5
+      anchors.right: itemsScroll.left
+      margin-top: 9
       layout:
         type: grid
         cell-size: 132 40
         cell-spacing: 6
         flow: true
+
+    AdminScrollBar
+      id: itemsScroll
+      anchors.top: items.top
+      anchors.bottom: items.bottom
+      anchors.right: parent.right
 
     PVGreenButton
       id: place

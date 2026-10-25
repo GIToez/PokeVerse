@@ -2150,7 +2150,14 @@ local function testHalloween(cid)
         end
     end
 
-    local spots = HalloweenEvent.getNpcSpots()
+    local spots, moved = {}, {}
+    for _, spot in ipairs(HalloweenEvent.getNpcSpots()) do
+        if (spot.moved) then
+            moved[#moved + 1] = spot
+        else
+            spots[#spots + 1] = spot
+        end
+    end
     local named = {}
     for _, spot in ipairs(spots) do named[spot.name] = true end
     for _, name in ipairs(HalloweenEvent.NPCS) do
@@ -2167,6 +2174,13 @@ local function testHalloween(cid)
     EventCalendar.setForced("halloween", true)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs are there during Halloween", present() == #spots, present() .. "/" .. #spots)
+    local left = 0
+    for _, spot in ipairs(moved) do
+        left = left + (getNpcAtPosition(spot.pos, spot.name) and 1 or 0)
+    end
+    check("Halloween: Trevor and Peter Paul stand in the Union Room, not in the hall copies", #moved >= 2 and left == 0 and
+        getNpcAtPosition(HalloweenEvent.NPC_MOVED["Trevor"], "Trevor") and getNpcAtPosition(HalloweenEvent.NPC_MOVED["Peter Paul"], "Peter Paul"),
+        #moved .. " " .. left)
     EventCalendar.setForced("halloween", false)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, present() .. "/" .. #spots)
@@ -2226,6 +2240,40 @@ local function testAnniversaryBoss(cid)
     check("Anniversary: no more temple minions after the boss", #(getSpectators(cakePos, 30, 30) or {}) == before)
     AnniversaryEvent.setMinionKillCount(count)
     AnniversaryEvent.setEventState(state)
+end
+
+local function testDecorationItems(cid)
+    local saved = getStorage(GLOBAL_STORAGES.DECORATIONS_ITEMS)
+    local ok = Decorations.addCustomItem("halloween", 25130)
+    local found = nil
+    for _, item in ipairs(Decorations.catalog("halloween")) do
+        found = item.id == 25130 and item or found
+    end
+    check("Decorations: an item id added to a set's list is offered with it", ok and found and found.custom == true)
+    check("Decorations: the same item can't be added twice", not Decorations.addCustomItem("halloween", 25130))
+    check("Decorations: an item that doesn't exist can't be added", not Decorations.addCustomItem("halloween", 65000))
+    check("Decorations: a set's own props can't be taken off the list", not Decorations.removeCustomItem("halloween", 2097))
+    check("Decorations: an added item comes off the list", Decorations.removeCustomItem("halloween", 25130))
+    found = false
+    for _, item in ipairs(Decorations.catalog("halloween")) do
+        found = found or item.id == 25130
+    end
+    check("Decorations: and isn't offered any more", not found)
+    doSetStorage(GLOBAL_STORAGES.DECORATIONS_ITEMS, saved)
+
+    local fits, total = 0, 0
+    for _, spot in ipairs(Decorations.DEFAULT_SPOTS.halloween) do
+        total = total + 1
+        local pos = { x = spot[1], y = spot[2], z = spot[3] }
+        local saved = false
+        for _, row in ipairs(Decorations.getSpots()) do
+            saved = saved or (row.set == "halloween" and row.pos.x == pos.x and row.pos.y == pos.y and row.pos.z == pos.z)
+        end
+        if (saved and (Decorations.checkSpot(pos, spot[4]) or isItem(getTileItemById(pos, spot[4])))) then
+            fits = fits + 1
+        end
+    end
+    check("Decorations: the Union Room's Halloween props are saved and fit", fits == total, fits .. "/" .. total)
 end
 
 local function testSeasons(cid)
@@ -3300,7 +3348,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

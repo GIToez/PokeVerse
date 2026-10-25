@@ -15,7 +15,9 @@ end
 -- Staff also place props by hand (/deco, the Admin window's Decorations tab): each is a row in
 -- decoration_spots (set, tile, item) and goes up with its set like the automatic ones. Wall props
 -- (wreaths, garlands, tapestries) hang on walls with a hook. A town can be left to hand-placed
--- props only (/deco auto off), and a set can be previewed for a while (/deco preview).
+-- props only (/deco auto off), and a set can be previewed for a while (/deco preview). Staff can add
+-- any item to a set's list of props (/deco items <set> add <id>), and DEFAULT_SPOTS are hand-placed
+-- props that come with the game.
 
 Decorations = {}
 
@@ -309,13 +311,85 @@ function Decorations.itemName(itemid)
     return info and info.name ~= "" and info.name or ("item " .. itemid)
 end
 
--- The props offered for a set: its own, then the wall props ({ id, name, wall })
+---------------------------------------------------------------------------------------------------
+-- Props staff add to a set's list (/deco items <set> add, the Admin window): offered like its own
+---------------------------------------------------------------------------------------------------
+
+Decorations.MAX_CUSTOM_ITEMS = 40 -- per set
+local KEY_ITEMS = GLOBAL_STORAGES.DECORATIONS_ITEMS
+
+-- { [set id] = { item ids in the order they were added } }
+function Decorations.getCustomItems()
+    local sets = {}
+    for setId, ids in (tostring(getStorage(KEY_ITEMS) or ""):match("^m;(.*)$") or ""):gmatch("(%w+):([%d,]*)") do
+        if (Decorations.SETS[setId]) then
+            local list = {}
+            for id in ids:gmatch("%d+") do
+                list[#list + 1] = tonumber(id)
+            end
+            sets[setId] = list
+        end
+    end
+    return sets
+end
+
+local function saveCustomItems(sets)
+    local parts = {}
+    for _, setId in ipairs(Decorations.setIds()) do
+        if (sets[setId] and #sets[setId] > 0) then
+            parts[#parts + 1] = setId .. ":" .. table.concat(sets[setId], ",")
+        end
+    end
+    persist(KEY_ITEMS, "m;" .. table.concat(parts, ";"))
+end
+
+-- Add an item to a set's list; true, or false and why
+function Decorations.addCustomItem(setId, itemid)
+    if (not Decorations.SETS[setId]) then
+        return false, "There is no decoration set " .. tostring(setId) .. "."
+    elseif (not itemid or not getItemInfo(itemid)) then
+        return false, "There is no item " .. tostring(itemid) .. "."
+    end
+    for _, item in ipairs(Decorations.catalog(setId)) do
+        if (item.id == itemid) then
+            return false, string.format("%s (%d) is already in %s's list.", item.name, itemid, Decorations.SETS[setId].name)
+        end
+    end
+    local sets = Decorations.getCustomItems()
+    sets[setId] = sets[setId] or {}
+    if (#sets[setId] >= Decorations.MAX_CUSTOM_ITEMS) then
+        return false, string.format("%s already has %d added props; remove some first.", Decorations.SETS[setId].name, #sets[setId])
+    end
+    table.insert(sets[setId], itemid)
+    saveCustomItems(sets)
+    return true
+end
+
+-- Take an added item off a set's list (its own props stay); true, or false and why
+function Decorations.removeCustomItem(setId, itemid)
+    local sets = Decorations.getCustomItems()
+    for index, id in ipairs(sets[setId] or {}) do
+        if (id == itemid) then
+            table.remove(sets[setId], index)
+            saveCustomItems(sets)
+            return true
+        end
+    end
+    return false, string.format("Item %s wasn't added to %s's list.", tostring(itemid),
+        Decorations.SETS[setId] and Decorations.SETS[setId].name or tostring(setId))
+end
+
+-- The props offered for a set: its own, the ones staff added, then the wall props ({ id, name, wall, custom })
 function Decorations.catalog(setId)
     local set, seen, list = Decorations.SETS[setId], {}, {}
-    local function add(itemid, wall)
+    local function add(itemid, wall, custom)
         if (itemid and not seen[itemid]) then
             seen[itemid] = true
-            list[#list + 1] = { id = itemid, name = Decorations.itemName(itemid), wall = wall }
+            if (wall == nil) then
+                local info = getItemInfo(itemid)
+                wall = info and info.hangable or false
+            end
+            list[#list + 1] = { id = itemid, name = Decorations.itemName(itemid), wall = wall, custom = custom or nil }
         end
     end
     add(set and set.first, false)
@@ -324,6 +398,9 @@ function Decorations.catalog(setId)
     end
     for _, itemid in ipairs(set and set.noSnow or {}) do
         add(itemid, false)
+    end
+    for _, itemid in ipairs(Decorations.getCustomItems()[setId] or {}) do
+        add(itemid, nil, true)
     end
     for _, itemid in ipairs(Decorations.WALL_ITEMS) do
         add(itemid, true)
@@ -484,6 +561,40 @@ function Decorations.spotsNear(pos, radius)
     return list
 end
 
+-- Hand-placed props that come with the game: saved into decoration_spots once (a higher version
+-- saves the list again), so staff move or remove them like their own. A tile staff already used
+-- for the set keeps their prop.
+Decorations.DEFAULT_SPOTS_VERSION = 1
+Decorations.DEFAULT_SPOTS = {
+    -- The Union Room hall, as the Halloween copy of it on the map (4653-4669, 100-115) has it
+    halloween = {
+        { 4719, 135, 7, 25093 }, { 4723, 135, 7, 25093 }, { 4718, 136, 7, 25093 }, { 4724, 136, 7, 25093 }, -- pumpkinheads
+        { 4718, 140, 7, 25093 }, { 4724, 140, 7, 25093 }, { 4719, 141, 7, 25093 }, { 4723, 141, 7, 25093 },
+        { 4721, 135, 7, 25118 }, { 4722, 135, 7, 25119 }, -- pumpkin juice machine
+        { 4714, 139, 7, 25116 }, { 4714, 140, 7, 25117 }, { 4728, 139, 7, 25116 }, { 4728, 140, 7, 25117 }, -- skull tables
+        { 4715, 132, 7, 25122 }, { 4715, 133, 7, 25123 }, { 4728, 132, 7, 25122 }, { 4728, 133, 7, 25123 }, -- pumpkin tables
+        { 4713, 132, 7, 25130 }, -- pumpkin tree
+    },
+}
+
+function Decorations.seedDefaults()
+    if ((tonumber(getStorage(GLOBAL_STORAGES.DECORATIONS_SEEDED)) or 0) >= Decorations.DEFAULT_SPOTS_VERSION) then
+        return 0
+    end
+    local count = 0
+    for setId, spots in pairs(Decorations.DEFAULT_SPOTS) do
+        for _, spot in ipairs(spots) do
+            db.executeQuery(string.format("INSERT IGNORE INTO `decoration_spots` (`world_id`, `set_id`, `x`, `y`, `z`, `itemid`, " ..
+                "`added_by`, `added_at`) VALUES (%d, %s, %d, %d, %d, %d, 'map', %d);", getConfigValue("worldId") or 0,
+                db.escapeString(setId), spot[1], spot[2], spot[3], spot[4], os.time()))
+            count = count + 1
+        end
+    end
+    persist(GLOBAL_STORAGES.DECORATIONS_SEEDED, tostring(Decorations.DEFAULT_SPOTS_VERSION))
+    Decorations.changed()
+    return count
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Putting them down and taking them away
 ---------------------------------------------------------------------------------------------------
@@ -617,6 +728,10 @@ function Decorations.onThink()
         return
     end
     lastCheck = now
+    if (not started) then
+        Decorations.seedDefaults()
+        changes = version()
+    end
     local noAuto = tostring(getStorage(KEY_NO_AUTO) or "") .. "|" .. tostring(getStorage(GLOBAL_STORAGES.WEATHER_REGIONS_OFF) or "")
     local theme = Decorations.theme()
     if (not started or theme ~= current or noAuto ~= seenNoAuto) then

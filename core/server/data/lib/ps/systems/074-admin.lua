@@ -11,6 +11,7 @@
 --                     {action = "clean"},
 --                     {action = "decorations", catalog}, {action = "deco_add", set, item}, {action = "deco_remove", set},
 --                     {action = "deco_preview", set, minutes} (no set: end the preview), {action = "deco_auto", on},
+--                     {action = "deco_item_add", set, item}, {action = "deco_item_remove", set, item} (a set's prop list),
 --                     {action = "command", text} (a talkaction, run with the staff member's own access),
 --                     {action = "players", filter}, {action = "ban", name, days (0: for good), reason, comment},
 --                     {action = "bans"}, {action = "commands"}
@@ -22,7 +23,8 @@
 --                     {type = "decorations", sets = {{id, name}}, theme, preview = {set, left}, town = {name, auto},
 --                      radius, total, spots = {{set, item, client, name, x, y, z, by, valid, why}}} (the nearest
 --                      Admin.DECO_ROWS), and with catalog one {type = "deco_items", set, items = {{id, client, name,
---                      wall}}} per set first (a message over 8 KB is dropped)
+--                      wall, custom}}} per set first (a message over 8 KB is dropped); a change to a set's list
+--                      sends that set's again
 --                     {type = "players", total, players = {{name, level, access, place, x, y, z}}, towns = {{id, name}}}
 --                     {type = "bans", bans = {{account, names, reason, comment, by, left}}} (left -1: for good)
 --                     {type = "commands", part, parts, commands = {{words, access, group, usage, help}}}
@@ -221,15 +223,17 @@ end
 
 Admin.DECO_ROWS = 7
 
+-- catalog: true for every set's prop list, or a set id for that one's
 Admin.sendDecorations = function(cid, catalog)
     local sets = {}
     for _, id in ipairs(Decorations.setIds()) do
         sets[#sets + 1] = { id = id, name = Decorations.SETS[id].name }
-        if (catalog) then
+        if (catalog == true or catalog == id) then
             local items = {}
             for _, item in ipairs(Decorations.catalog(id)) do
                 local info = getItemInfo(item.id)
-                items[#items + 1] = { id = item.id, client = info and info.clientId or 0, name = item.name, wall = item.wall }
+                items[#items + 1] = { id = item.id, client = info and info.clientId or 0, name = item.name, wall = item.wall,
+                                     custom = item.custom }
             end
             send(cid, { type = "deco_items", set = id, items = items })
         end
@@ -310,8 +314,33 @@ local function decoAuto(cid, data)
     result(cid, true, string.format("%s's automatic props are %s.", zone.name, data.on == true and "on" or "off"))
 end
 
+-- Returns the set whose list changed, so its list is sent again
+local function decoItem(cid, data, add)
+    local setId, itemid = Decorations.findSet(data.set), tonumber(data.item)
+    if (not setId or not itemid) then
+        result(cid, false, "Pick a set and enter an item id.")
+        return nil
+    end
+    local ok, why
+    if (add) then
+        ok, why = Decorations.addCustomItem(setId, itemid)
+    else
+        ok, why = Decorations.removeCustomItem(setId, itemid)
+    end
+    if (not ok) then
+        result(cid, false, why)
+        return nil
+    end
+    log(cid, string.format("%s item %d %s %s's decoration list", add and "added" or "removed", itemid, add and "to" or "from", setId))
+    result(cid, true, string.format("%s %s (%d) %s %s's list.", add and "Added" or "Removed", Decorations.itemName(itemid), itemid,
+        add and "to" or "from", Decorations.SETS[setId].name))
+    return setId
+end
+
 local DECORATION_ACTIONS = { decorations = function() end, deco_add = decoAdd, deco_remove = decoRemove,
-                             deco_preview = decoPreview, deco_auto = decoAuto }
+                             deco_preview = decoPreview, deco_auto = decoAuto,
+                             deco_item_add = function(cid, data) return decoItem(cid, data, true) end,
+                             deco_item_remove = function(cid, data) return decoItem(cid, data, false) end }
 
 -- The Commands tab: every talkaction from access 1 up, with its group, usage and what it does
 Admin.COMMAND_HELP = {
@@ -564,8 +593,8 @@ Admin.onClientMessage = function(cid, buffer)
         if (not hasAccess(cid, Admin.ACCESS)) then
             return result(cid, false, "Decorations need access " .. Admin.ACCESS .. ".")
         end
-        DECORATION_ACTIONS[action](cid, data)
-        return Admin.sendDecorations(cid, action == "decorations" and data.catalog == true)
+        local changed = DECORATION_ACTIONS[action](cid, data)
+        return Admin.sendDecorations(cid, (action == "decorations" and data.catalog == true) or changed)
     elseif (action == "command") then
         return runCommand(cid, data)
     elseif (action == "players") then
