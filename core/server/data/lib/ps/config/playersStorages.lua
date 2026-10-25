@@ -125,5 +125,8 @@ playersStorages = {
     forcedOutfit = base + 122, -- "o<forced look>;<type>,<head>,<body>,<legs>,<feet>,<addons>" the trainer's own outfit under a /forceoutfit look
     summerHunting = base + 123, -- "y<year>:<stamina ms spent>:<chests received, a sum of 2^(index in STAMINA_REWARDS - 1)>" (JulyVacationEvent)
     dexOwnedCredited = base + 124, -- 1 once the Pokemon the trainer owned before evolutions and starters counted as caught are credited (doPokedexCreditOwned)
+    eventShopClient = base + 125, -- 1 while the trainer's client has the Event Token Shop (it says hello at login)
+    eventShopNpc = base + 126, -- the name of the token NPC whose window the trainer has open (EventShop)
+    eventShopId = base + 127, -- the EventShop id last opened for that trainer
     -- tournamentWeekWinnerStorage = base + 65
 }

@@ -2286,6 +2286,130 @@ local function testAnniversaryBoss(cid)
     AnniversaryEvent.setEventState(state)
 end
 
+local function testAnniversaryNpcs()
+    local spots = AnniversaryEvent.getNpcSpots()
+    local named = {}
+    for _, spot in ipairs(spots) do
+        named[spot.name] = true
+    end
+    for _, name in ipairs(AnniversaryEvent.NPCS) do
+        check("Anniversary: " .. name .. " has a spot in the Union Room", named[name] == true)
+    end
+    local function present()
+        local count = 0
+        for _, spot in ipairs(spots) do
+            count = count + (getNpcAtPosition(spot.pos, spot.name) and 1 or 0)
+        end
+        return count
+    end
+    local forced = EventCalendar.getForced("anniversary")
+    AnniversaryEvent.setPreview(nil)
+    EventCalendar.setForced("anniversary", true)
+    AnniversaryEvent.syncNpcs()
+    check("Anniversary: its shop NPCs are there during the event", present() == #spots, present() .. "/" .. #spots)
+    EventCalendar.setForced("anniversary", false)
+    AnniversaryEvent.syncNpcs()
+    check("Anniversary: its shop NPCs leave when it isn't the event", present() == 0, present() .. "/" .. #spots)
+    EventCalendar.setForced("anniversary", true)
+    AnniversaryEvent.syncNpcs()
+    check("Anniversary: its shop NPCs come back when it starts", present() == #spots, present() .. "/" .. #spots)
+    EventCalendar.setForced("anniversary", forced)
+    AnniversaryEvent.syncNpcs()
+    for name, pos in pairs(AnniversaryEvent.NPC_SPOTS) do
+        local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+        check("Anniversary: " .. name .. " stands on the map", ground and ground.itemid ~= 0, pos.x .. "," .. pos.y .. "," .. pos.z)
+    end
+end
+
+local function testEventShop(cid)
+    local halloween = EventShop.get("halloween_trevor")
+    local letters = EventShop.get("anniversary_letters")
+    local gifts = EventShop.get("anniversary_gifts")
+    check("Event shop: Trevor, Timothy Kelvin and Murray Aaron have catalogs",
+        halloween and letters and gifts and halloween.tokenId == 14461 and letters.mode == "sell" and gifts.tokenId == 27935)
+    local chair = EventShop.findOffer("halloween_trevor", "pumpkin chair kit")
+    check("Event shop: the pumpkin chair kit costs 100 HT", chair and chair.price == 100 and chair.itemId == 25148)
+    check("Event shop: old clients still get a text list", EventShop.fyi("halloween_trevor"):find("pumpkin chair kit", 1, true) and
+        EventShop.fyi("halloween_trevor"):find("HT", 1, true))
+    check("Event shop: a client that never said hello does not get the window",
+        EventShop.open(cid, "halloween_trevor", cid) == false)
+
+    doPlayerSafeAddItem(cid, 14461, 100, false, true)
+    local chairs = getPlayerItemCount(cid, 25148)
+    local ok = EventShop.exchange(cid, "halloween_trevor", "pumpkin chair kit", 1)
+    check("Event shop: 100 HT buy a pumpkin chair kit", ok and getPlayerItemCount(cid, 25148) == chairs + 1,
+        tostring(ok) .. " " .. getPlayerItemCount(cid, 25148))
+
+    local bought = getPlayerBoughtRareCandy(cid)
+    setPlayerBoughtRareCandy(cid, 15)
+    doPlayerSafeAddItem(cid, 14461, 100, false, true)
+    local refused, err = EventShop.exchange(cid, "halloween_trevor", "rare candy", 1)
+    check("Event shop: rare candy stays at the account cap", not refused and type(err) == "string" and err:find("15", 1, true), err)
+    setPlayerBoughtRareCandy(cid, bought)
+
+    doPlayerSafeAddItem(cid, 27819, 2, false, false)
+    local tokens = getPlayerItemCount(cid, 27935)
+    local sold = EventShop.exchange(cid, "anniversary_letters", "letter a", 2)
+    check("Event shop: two letter A become 2 AT", sold and getPlayerItemCount(cid, 27935) >= tokens + 2)
+
+    local locker, lockerText = EventShop.exchange(cid, "anniversary_gifts", "kangaskhan locker", 1)
+    check("Event shop: a locker needs the PSoul letters", not locker, lockerText)
+
+    local christmas = EventShop.get("christmas_santa")
+    local grinch = EventShop.get("christmas_grinch")
+    local easter = EventShop.get("easter_ralp")
+    local july = EventShop.get("july_walter")
+    check("Event shop: Santa, Ralp and Walter John have catalogs",
+        christmas and grinch and easter and july
+            and christmas.tokenId == 14632 and grinch.tokenId == 25270
+            and easter.tokenId == 24549 and july.tokenId == 29132
+            and christmas.uniqueToken and grinch.uniqueToken and not easter.uniqueToken and july.uniqueToken)
+    local present = EventShop.findOffer("christmas_santa", "santa claus present")
+    local grinchPresent = EventShop.findOffer("christmas_grinch", "santa claus present")
+    check("Event shop: Old Santa's present is 30 CT and Grinch Santa's is 5 TB",
+        present and present.price == 30 and grinchPresent and grinchPresent.price == 5)
+    check("Event shop: Christmas FYI still lists CT", EventShop.fyi("christmas_santa"):find("christmas kit 1", 1, true)
+        and EventShop.fyi("christmas_santa"):find("CT", 1, true))
+    check("Event shop: Token Box FYI still lists TB", EventShop.fyi("christmas_grinch"):find("elfin clothes kit", 1, true)
+        and EventShop.fyi("christmas_grinch"):find("TB", 1, true))
+    check("Event shop: Easter FYI still lists GEE", EventShop.fyi("easter_ralp"):find("blue easter ticket", 1, true)
+        and EventShop.fyi("easter_ralp"):find("GEE", 1, true))
+    check("Event shop: July FYI still lists F", EventShop.fyi("july_walter"):find("common seal box", 1, true)
+        and EventShop.fyi("july_walter"):find("F", 1, true))
+
+    doPlayerSafeAddItem(cid, 14632, 50, false, true)
+    local lamps = getPlayerItemCount(cid, 18052)
+    local boughtLamp = EventShop.exchange(cid, "christmas_santa", "chinchou lamp", 1)
+    check("Event shop: 50 CT buy a chinchou lamp", boughtLamp and getPlayerItemCount(cid, 18052) == lamps + 1,
+        tostring(boughtLamp) .. " " .. getPlayerItemCount(cid, 18052))
+
+    doPlayerSafeAddItem(cid, 25270, 5, false, true)
+    local presents = getPlayerItemCount(cid, 14639)
+    local boughtPresent = EventShop.exchange(cid, "christmas_grinch", "santa claus present", 1)
+    check("Event shop: 5 TB buy a santa claus present", boughtPresent and getPlayerItemCount(cid, 14639) == presents + 1,
+        tostring(boughtPresent) .. " " .. getPlayerItemCount(cid, 14639))
+
+    doPlayerSafeAddItem(cid, 24549, 20, false, false)
+    local tickets = getPlayerItemCount(cid, 24563)
+    local boughtTicket = EventShop.exchange(cid, "easter_ralp", "blue easter ticket", 1)
+    check("Event shop: 20 GEE buy a blue easter ticket", boughtTicket and getPlayerItemCount(cid, 24563) == tickets + 1,
+        tostring(boughtTicket) .. " " .. getPlayerItemCount(cid, 24563))
+
+    local easterBought = getPlayerBoughtRareCandy(cid)
+    setPlayerBoughtRareCandy(cid, 15)
+    doPlayerSafeAddItem(cid, 24549, 75, false, false)
+    local easterRefused, easterErr = EventShop.exchange(cid, "easter_ralp", "rare candy", 1)
+    check("Event shop: Easter rare candy stays at the account cap",
+        not easterRefused and type(easterErr) == "string" and easterErr:find("15", 1, true), easterErr)
+    setPlayerBoughtRareCandy(cid, easterBought)
+
+    doPlayerSafeAddItem(cid, 29132, 1, false, true)
+    local seals = getPlayerItemCount(cid, 29125)
+    local boughtSeal = EventShop.exchange(cid, "july_walter", "common seal box", 1)
+    check("Event shop: 1 fragment buys a common seal box", boughtSeal and getPlayerItemCount(cid, 29125) == seals + 1,
+        tostring(boughtSeal) .. " " .. getPlayerItemCount(cid, 29125))
+end
+
 local function testDecorationItems(cid)
     local saved = getStorage(GLOBAL_STORAGES.DECORATIONS_ITEMS)
     local ok = Decorations.addCustomItem("halloween", 25130)
@@ -3400,7 +3524,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
