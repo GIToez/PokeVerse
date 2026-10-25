@@ -62,6 +62,14 @@ local SERVER_SECTIONS = {
                        { 'Event auto', '/anniversary auto', 'Back to its dates' },
                        { 'Start invasion', '/anniversary start' }, { 'Boss', '/anniversary boss', 'Bring out the Mad Big Cake' },
                        { 'Reset', '/anniversary reset', 'Clear the invasion' } } },
+    -- data/raids/raids.xml; the calendar starts these by itself while their holiday runs, one raid at a time
+    { 'Holiday raids', { { 'Ghosts', '/raid Halloween', 'Halloween Gastly, Haunter and Gengar in every Kanto city' },
+                         { 'Treat pots', '/raid Halloween Caldron', 'Halloween pots full of treats in every Kanto city' },
+                         { 'Suramoon', '/raid Halloween Suramoon', 'The Halloween Suramoon simulator' },
+                         { 'Grinch', '/raid christmasGrinchInvasion', 'The Grinch invasion: presents to grab before he does' },
+                         { 'Stolen presents', '/raid christmasStolenPresent', 'Team Rocket and stolen presents in every Kanto city' },
+                         { 'Rocket Bots', '/raid christmasRocketBots', 'Rocket Bots in every Kanto city' },
+                         { 'Stantler', '/raid christmasRunawayStantler', 'Runaway Stantler in every Kanto city' } } },
 }
 for _, name in ipairs({ 'talkactions', 'actions', 'creaturescripts', 'globalevents', 'movements', 'npcs', 'monsters',
                         'items', 'spells', 'raids', 'quests', 'outfits', 'vocations', 'stages', 'groups', 'chat',
