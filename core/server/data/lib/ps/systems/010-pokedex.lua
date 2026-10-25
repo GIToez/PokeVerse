@@ -106,7 +106,9 @@ function hasPlayerDexedPokemon(cid, pokemonName)
 end
 
 local function canRegister(cid, pokemonName)
-  return getPokemonNumberByName(pokemonName) <= DEX_BY_ITEMID[getPlayerPokedex(cid).itemid].pokemonIdMax
+  local item = getPlayerPokedex(cid)
+  local dex = item and DEX_BY_ITEMID[item.itemid]
+  return getPokemonNumberByName(pokemonName) <= (dex and dex.pokemonIdMax or POKEMON_NUMBER)
 end
 
 function doPokedexTryRegister(cid, pokemonName)
@@ -126,6 +128,46 @@ function doPokedexTryRegister(cid, pokemonName)
     updatePokedexItemStatus(cid, pokemonName, POKEDEXSTATUS_DEXED)
     doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.DEX_1, getPlayerTotalDexedPokemons(cid))
   end
+end
+
+-- A Pokemon the trainer gets without a ball (the starter, an evolution) counts as caught for the
+-- Pokedex and the Pokepedia, like a catch does in onCaughtPokemon: its face, and knowledge level 1
+function doPokedexObtained(cid, pokemonName)
+  if (not isPlayer(cid) or not getPokemonNumberByName(pokemonName)) then
+    return
+  end
+  local shiny = string.find(string.lower(pokemonName), "shiny") ~= nil
+  updatePokedexItemStatus(cid, pokemonName, shiny and POKEDEXSTATUS_SHINYCATCHED or POKEDEXSTATUS_CATCHED)
+  doPokedexTryRegister(cid, pokemonName)
+  local knowledge = Pokepedia.getKnowledge(cid, pokemonName)
+  if (knowledge and knowledge.catches == 0) then
+    Pokepedia.onCaught(cid, pokemonName)
+  end
+end
+
+-- Once per character: the species it owns (carried or in the Poke boxes) from before doPokedexObtained
+function doPokedexCreditOwned(cid)
+  if (not isPlayer(cid) or getCreatureStorage(cid, playersStorages.dexOwnedCredited) == 1) then
+    return
+  end
+  local names = {}
+  for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+    names[getBallPokemonName(ball.uid)] = true
+  end
+  local result = db.getResult(string.format("SELECT DISTINCT `pokemon_name` FROM `pc_boxes` WHERE `player_id` = %d", getPlayerGUID(cid)))
+  if (result:getID() ~= -1) then
+    repeat
+      names[result:getDataString("pokemon_name")] = true
+    until (not result:next())
+    result:free()
+  end
+  for name in pairs(names) do
+    local ok, err = pcall(doPokedexObtained, cid, name)
+    if (not ok) then
+      log(LOG_TYPES.ERROR, "doPokedexCreditOwned: " .. tostring(err), getCreatureName(cid), name)
+    end
+  end
+  doCreatureSetStorage(cid, playersStorages.dexOwnedCredited, 1)
 end
 
 local function getTypesText(pokemonName, pokemon, pid)
@@ -649,13 +691,11 @@ end
 function doPokedexStatusSend(pid)
   local pokemonMax = DEX_BY_ITEMID[getPlayerPokedex(pid).itemid].pokemonIdMax
 
+  -- by number, the species itself: variants (Christmas Rattata, Bulmander) share its number, and the
+  -- statuses go to the client in order without their numbers
   local status = {}
-  for i, pokemonName in pairs(pokemonNamesWithoutShiny) do
-    local pn = getPokemonNumberByName(pokemonName)
-    if (pn > pokemonMax) then
-      break
-    end
-    status[pn] = getPokedexItemStatus(pid, pokemonName)
+  for pn = 1, pokemonMax do
+    status[pn] = getPokemonNameByNumber(pn) and getPokedexItemStatus(pid, pn) or POKEDEXSTATUS_UNKNOWN
   end
   doPlayerSendPokedexStatus(pid, status)
 end

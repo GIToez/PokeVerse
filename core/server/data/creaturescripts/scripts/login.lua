@@ -198,6 +198,7 @@ function onLogin(cid)
 
 		PC.onLogin(cid)
 		Pokepedia.onLogin(cid)
+		addEvent(doPokedexCreditOwned, 2000, cid)
 		Vocations.onLogin(cid)
 		TrainerCard.onLogin(cid)
 		Admin.onLogin(cid)
