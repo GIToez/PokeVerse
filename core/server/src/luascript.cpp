@@ -6271,6 +6271,7 @@ int32_t LuaScriptInterface::luaGetDiscordBridgeInfo(lua_State* L)
 	setFieldBool(L, "accountLinking", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING));
 	setFieldBool(L, "boosterRewards", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING)
 		&& g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOSTER_REWARDS));
+	setFieldBool(L, "staffChat", g_config.getBool(ConfigManager::DISCORD_BRIDGE_STAFF_CHAT));
 	createTable(L, "booster");
 	setField(L, "weekly", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_WEEKLY));
 	setField(L, "loyaltyEvery", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY_EVERY));

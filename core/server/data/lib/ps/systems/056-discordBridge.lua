@@ -18,6 +18,8 @@ local CONFIG = {
     chatAuthorPrefix = "[Discord] ",
     chatAuthorMaxLength = 24,
     chatTextMaxLength = 255, -- Game client limit for a single message.
+    -- Staff rooms (same talkEvent). tutors = Counselor (Tutor+), gamemasters = Staff (Gamemaster+).
+    staffChannels = {tutors = 4, gamemasters = 2},
 
     -- The game data has no legendary flag. This list is the audited set of legendary
     -- species defined in data/lib/ps/config/pokemon (plus their boss/quest variants);
@@ -155,8 +157,42 @@ end
 
 -- Chat: game -> Discord ---------------------------------------------------------
 
+local function staffChatEnabled()
+    local info = getDiscordBridgeInfo and getDiscordBridgeInfo()
+    return info ~= nil and info.staffChat == true
+end
+
+local function staffRoomOf(channelId)
+    for room, id in pairs(CONFIG.staffChannels) do
+        if (id == channelId) then
+            return room
+        end
+    end
+    return nil
+end
+
 local function onChat(cid, channelId, message)
-    if (channelId ~= CONFIG.chatChannelId or not isPlayer(cid)) then
+    if (not isPlayer(cid)) then
+        return
+    end
+
+    local room = staffRoomOf(channelId)
+    if (room) then
+        if (staffChatEnabled()) then
+            DiscordBridge.emit({
+                kind = "staff_chat",
+                scope = "admin",
+                room = room,
+                channelId = channelId,
+                author = getCreatureName(cid),
+                level = getPlayerLevel(cid),
+                text = message,
+            })
+        end
+        return
+    end
+
+    if (channelId ~= CONFIG.chatChannelId) then
         return
     end
 
@@ -343,6 +379,36 @@ local function handleChatSend(params)
         for _, uid in ipairs(users) do
             if (isPlayer(uid) and doPlayerSendChannelMessage(uid, CONFIG.chatAuthorPrefix .. author, text,
                     CONFIG.chatSpeakClass, CONFIG.chatChannelId)) then
+                delivered = delivered + 1
+            end
+        end
+    end
+    return {delivered = delivered, text = text}
+end
+
+local function handleChatStaff(params)
+    if (not staffChatEnabled()) then
+        fail("unsupported", "staff chat is disabled on this server")
+    end
+
+    -- Room name only; never accept a channel id from the bot.
+    local channelId = type(params.room) == "string" and CONFIG.staffChannels[params.room] or nil
+    if (not channelId) then
+        fail("invalid_params", "invalid staff room")
+    end
+
+    local author = sanitizeText(params.author, CONFIG.chatAuthorMaxLength)
+    local text = sanitizeText(params.text, CONFIG.chatTextMaxLength)
+    if (author == "" or text == "") then
+        fail("invalid_params", "author and text are required")
+    end
+
+    local delivered = 0
+    local users = getChannelUsers(channelId)
+    if (type(users) == "table") then
+        for _, uid in ipairs(users) do
+            if (isPlayer(uid) and doPlayerSendChannelMessage(uid, CONFIG.chatAuthorPrefix .. author, text,
+                    CONFIG.chatSpeakClass, channelId)) then
                 delivered = delivered + 1
             end
         end
@@ -665,6 +731,7 @@ end
 
 local HANDLERS = {
     ["chat.send"] = handleChatSend,
+    ["chat.staff"] = handleChatStaff,
     ["trainer.lookup"] = handleTrainerLookup,
     ["pokemon.lookup"] = handlePokemonLookup,
     ["pokemon.search"] = handlePokemonSearch,
