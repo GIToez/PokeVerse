@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Checks an OTBM map the way the server's loader would see it.
 
-    scripts/mapper/verify.py [mapper/map/johto-wip.otbm] [--items core/server/data/items/items.otb]
+    scripts/mapper/verify.py [mapper/map/dev.otbm] [--items core/server/data/items/items.otb]
 
 Reports broken node structure, tiles stored twice, item ids missing from items.otb, house tiles
 whose house is not in the house file, and spawns placed on missing or blocked tiles.
@@ -21,7 +21,7 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('map', nargs='?', default=os.path.join(ROOT, 'mapper', 'map', 'johto-wip.otbm'))
+    ap.add_argument('map', nargs='?', default=os.path.join(ROOT, 'mapper', 'map', 'dev.otbm'))
     ap.add_argument('--items', default=os.path.join(ROOT, 'core', 'server', 'data', 'items', 'items.otb'))
     args = ap.parse_args()
     folder = os.path.dirname(os.path.abspath(args.map))

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Builds or refreshes the mapper/ folder: RME set up for PokeVerse plus a work copy of the map.
+"""Builds or refreshes the mapper/ folder: RME set up for PokeVerse plus the dev map.
 
     scripts/mapper/sync.py             refresh RME, items, creatures and client art
-    scripts/mapper/sync.py --reset-map also replace mapper/map/ with a fresh copy of the live map
+    scripts/mapper/sync.py --reset-map also replace the dev map (mapper/map/) with a fresh copy of the live map
 
-mapper/map/ is never overwritten unless --reset-map is given, so hand edits in RME are safe.
+mapper/map/ is never overwritten unless --reset-map is given, so edits in progress are safe.
 """
 import argparse
 import os
@@ -20,7 +20,7 @@ MAPPER = os.path.join(ROOT, 'mapper')
 RME = os.path.join(MAPPER, 'RME')
 DATA = os.path.join(RME, 'data', '854')
 WORLD_FILES = ('map.otbm', 'map-spawn.xml', 'map-house.xml')
-WIP_MAP = 'johto-wip.otbm'
+DEV_MAP = 'dev.otbm'
 
 
 def copy(src, dst):
@@ -109,7 +109,7 @@ def copy_client():
 def copy_map():
     world = os.path.join(SERVER, 'world')
     for name in WORLD_FILES:
-        dst = WIP_MAP if name == 'map.otbm' else name
+        dst = DEV_MAP if name == 'map.otbm' else name
         copy(os.path.join(world, name), os.path.join(MAPPER, 'map', dst))
 
 
@@ -121,9 +121,9 @@ def main():
     copy_items()
     n = creatures_xml()
     copy_client()
-    if args.reset_map or not os.path.isfile(os.path.join(MAPPER, 'map', WIP_MAP)):
+    if args.reset_map or not os.path.isfile(os.path.join(MAPPER, 'map', DEV_MAP)):
         copy_map()
-        print('copied the live map to mapper/map/%s' % WIP_MAP)
+        print('copied the live map to mapper/map/%s' % DEV_MAP)
     print('mapper/ ready: RME 8.54 data, server items, %d creatures, client art' % n)
 
 

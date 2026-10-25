@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Dresses Hoenn's bare grass the way its games' routes look, on top of the terrain as it is.
 
-    scripts/mapper/build_hoenn_deco.py [--map core/server/data/world/map.otbm] [--out <same>]
+    scripts/mapper/build_hoenn_deco.py [--map mapper/map/dev.otbm] [--out <same>]
 
 Only grass tiles holding nothing but their ground are touched, and only on the topmost floor seen
 at that spot, in Hoenn's routes, their Around/Outskirts filler and its outdoor landmarks
@@ -17,8 +17,7 @@ heights stay as they are.
 
 Nothing that blocks splits a floor's walkable ground: where it would, the trees and bushes either
 side of the cut are left out until every part that was joined still is. Seeded, so the same map
-gives the same result; run it on a map without it (after publishing Johto, which starts from the
-backup, run it again).
+gives the same result; run it only on a map without it (the live map and the dev map have it).
 """
 import argparse
 import os
@@ -36,7 +35,7 @@ import build_johto as B  # noqa: E402
 import pvmap  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(HERE))
-WORLD = os.path.join(ROOT, 'core', 'server', 'data', 'world')
+DEV = os.path.join(ROOT, 'mapper', 'map')
 AREAS = os.path.join(ROOT, 'core', 'client-redemption', 'pokeverse-modern', 'modules', 'game_environment',
                      'areas_hoenn.lua')
 ITEMS = os.path.join(ROOT, 'core', 'server', 'data', 'items', 'items.otb')
@@ -123,8 +122,8 @@ def creature_spots(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--map', default=os.path.join(WORLD, 'map.otbm'))
-    ap.add_argument('--spawns', default=os.path.join(WORLD, 'map-spawn.xml'))
+    ap.add_argument('--map', default=os.path.join(DEV, 'dev.otbm'))
+    ap.add_argument('--spawns', default=os.path.join(DEV, 'map-spawn.xml'))
     ap.add_argument('--out', default=None)
     args = ap.parse_args()
     out = args.out or args.map

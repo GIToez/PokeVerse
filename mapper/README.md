@@ -7,32 +7,38 @@ live map so work in progress never reaches the server by accident.
 | --- | --- |
 | `RME/` | RME 8.54 (Windows). `data/854/` holds the server's `items.otb` and `items.xml`, and a `creatures.xml` generated from the server's monsters and NPCs. |
 | `client/` | `Tibia.dat` / `Tibia.spr`: the game's sprites (copies of `core/client-legacy/data/things`). |
-| `map/` | `johto-wip.otbm` with its `map-spawn.xml` and `map-house.xml`: the work copy. |
-| `backup/live-2026-10-15/` | The live map, spawns and houses as they were before Johto was published. `build_johto.py` builds on these. To go back, copy the three files over `core/server/data/world/`. |
+| `map/` | The dev map: `dev.otbm` with its `map-spawn.xml` and `map-house.xml`. |
+| `backup/live-2026-10-15/` | The live map, spawns and houses as they were before Johto was published, which `build_johto.py` builds on. |
 
-The live map in `core/server/data/world/` is only changed by `scripts/mapper/publish.py`.
+All map changes, by hand in RME or by script, are made on the dev map. Once they are approved,
+`scripts/mapper/publish.py` copies it over the live map in `core/server/data/world/`, the only way
+the live map changes, so the two are the same except for work waiting for approval. Never edit the
+live map straight, or the next publish undoes it.
 
 ## Opening the map in RME
 
 1. Run `mapper/RME/RME.exe`.
 2. On first start (or in *File > Preferences > Client Version*), pick client **8.54** and set its
    folder to `mapper/client`.
-3. *File > Open* `mapper/map/johto-wip.otbm`. Spawns and houses load from the same folder.
+3. *File > Open* `mapper/map/dev.otbm`. Spawns and houses load from the same folder.
 
 ## Scripts (`scripts/mapper/`)
 
 | Script | Use |
 | --- | --- |
-| `sync.py` | Refreshes `RME/` (items, creatures) and `client/` from the server and client. `--reset-map` replaces `map/` with a fresh copy of the live map. |
-| `build_johto.py` | Generates the Johto pieces built so far on top of the pre-Johto backup and writes `map/`. |
+| `sync.py` | Refreshes `RME/` (items, creatures) and `client/` from the server and client. `--reset-map` replaces the dev map with a fresh copy of the live map (throwing away unpublished work). |
+| `build_johto.py` | Generates Johto from scratch on the pre-Johto backup, to the `--out` given. Not for changes now (see below). |
 | `render.py` | Renders part of a map with the real sprites: `render.py <map> x0 y0 x1 y1 out.png [--floor 7] [--scale 0.5]`. |
 | `verify.py` | Checks a map the way the server loads it (node tree, duplicate tiles, unknown items, houses, spawns). |
-| `publish.py` | Verifies `map/` and copies it over the live map files. |
+| `publish.py` | Verifies the dev map and copies it over the live map files. |
 | `fetch_encounters.py` | Re-downloads the HeartGold/SoulSilver encounter tables into `johto_encounters.json` (only needed if the tables change). |
+| `build_hoenn_deco.py` | Dresses Hoenn's bare outdoor grass on the dev map like its games' routes (tufts, round-tree groves, tall-grass patches, denser where the map is already wooded), keeping towns, houses, spawns and every walkable area's connections as they are. |
 
-`build_johto.py` always starts from the pre-Johto backup, so changes made straight to the live map
-outside Johto are lost at the next publish unless they are made to the backup too. Running it
-again also throws away hand edits in `map/`. Once hand editing starts, edit in RME only.
+Johto is published and on the dev map. `build_johto.py` starts from the pre-Johto backup, so a
+rebuild has none of what was changed since (the Union Room, Hoenn's decoration, any hand edit); it
+only writes where `--out` says. Change Johto on the dev map like any other region. Scripts that
+change the map, like `build_hoenn_deco.py`, run on the dev map, once each (it already has Hoenn's
+decoration).
 
 ## How the Johto generator works
 
