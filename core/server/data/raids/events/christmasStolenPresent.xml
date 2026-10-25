@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <raid>
-	<announce delay="0" type="warning" message="X-Mas!"/>
+	<announce delay="0" type="warning" message="Christmas raid: Team Rocket stole the presents! Get them back in every Kanto city."/>
 	<!-- Viridian -->
 		<itemspawn ref="yes" id="18747" x="3292" y="538" z="7" />
 		<itemspawn ref="yes" id="18747" x="3311" y="547" z="7" />

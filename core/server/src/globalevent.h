@@ -48,6 +48,7 @@ class GlobalEvents : public BaseEvents
 		void timer();
 		void think(uint32_t interval);
 		void execute(GlobalEvent_t type);
+		LuaScriptInterface& getScriptInterface() {return m_interface;}
 
 		GlobalEventMap getEventMap(GlobalEvent_t type);
 		void clearMap(GlobalEventMap& map);

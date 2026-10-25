@@ -581,6 +581,14 @@ def announcement_tests(b, listener, speaker, speaker_name):
     e = b.wait_event(lambda ev: ev["kind"] == "announcement" and ev.get("text") == marker, 10)
     check("/b without a tag pings nobody", e is not None and "ping" not in e["event"], str(e))
 
+    # the raid's <announce> is broadcast by the engine (Game::broadcastAnnouncement)
+    speaker.say("/raid Halloween Suramoon")
+    listener.collect(2)
+    check("a raid's announce gets the news banner", listener.received(b'"h":"Halloween raid"')
+          and listener.received(b"Halloween raid: The Suramoon simulator has started!"))
+    e = b.wait_event(lambda ev: ev["kind"] == "announcement" and ev.get("title") == "Halloween raid", 3)
+    check("raids stay out of Discord", e is None, str(e))
+
 
 def account_request(args, action, account, password, name):
     spec = importlib.util.spec_from_file_location("account_test", os.path.join(here, "account-test.py"))

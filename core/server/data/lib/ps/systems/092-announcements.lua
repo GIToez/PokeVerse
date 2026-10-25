@@ -1,5 +1,6 @@
 -- Server-wide announcements for the modern client's news banner (game_newsbanner). doBroadcastMessage sends
--- EXTENDED_IDS.ANNOUNCEMENT to every player just before its text message:
+-- EXTENDED_IDS.ANNOUNCEMENT to every player just before its text message (the engine's raids and tournaments go
+-- through Announcements.fromEngine):
 --   {c = category, h = title, x = text, f = the text message as sent}
 -- The client shows the banner and hides the red text it already showed; old clients only see the text.
 -- Categories: event, legendary, server, staff, milestone, tip and news. A broadcast that doesn't say its
@@ -126,6 +127,42 @@ function Announcements.send(players, text, announcement, caller)
     if (not sent) then
         print("> Announcements: " .. tostring(err))
     end
+end
+
+-- The tournament countdown (every hour from 3 hours, then 45, 30, 15, 10 and every minute from 5) gets a banner
+-- on the hours and at 30, 15, 5 and 1 minutes, and Discord at 1 hour; the winner gets both.
+local TOURNAMENT_BANNER_MINUTES = { [30] = true, [15] = true, [5] = true, [1] = true }
+
+function Announcements.tournament(text)
+    local name, levels, count, unit = text:match("^The (.-) tournament %((.-)%) will begin in (%d+) (%a+)")
+    if (name) then
+        count = tonumber(count)
+        local hours = unit:find("^hour") ~= nil
+        if (not hours and not TOURNAMENT_BANNER_MINUTES[count]) then
+            return nil
+        end
+        return { category = "event", title = name .. " Tournament", discord = hours and count == 1,
+                 text = string.format("Starts in %d %s (%s). Sign up with Joey at the PvP area.", count, unit, levels) }
+    end
+    local winner, tournament = text:match("^(.-) won the (.-) tournament!$")
+    if (winner) then
+        return { category = "event", title = tournament .. " Tournament", text = winner .. " won the tournament!" }
+    end
+    return { category = "event", title = "Tournament" }
+end
+
+-- Broadcasts from the engine (Game::broadcastAnnouncement), which sends the text message itself: the raids'
+-- <announce> (source "raids/<raid name>", in game only: a holiday raid comes every 35-45 minutes) and the
+-- tournaments' countdown and winner ("tournament").
+function Announcements.fromEngine(text, source)
+    local announcement = { category = "event", discord = false }
+    if (source == "tournament") then
+        announcement = Announcements.tournament(text)
+        if (not announcement) then
+            return
+        end
+    end
+    Announcements.send(getPlayersOnline(), text, announcement, { source = source })
 end
 
 -- @everyone and @here: Gamemasters and up

@@ -427,7 +427,7 @@ bool AnnounceEvent::configureRaidEvent(xmlNodePtr eventNode)
 
 bool AnnounceEvent::executeEvent() const
 {
-	g_game.broadcastMessage(m_message, m_messageType);
+	g_game.broadcastAnnouncement(m_message, m_messageType, "raids/" + m_raid->getName());
 	return true;
 }
 

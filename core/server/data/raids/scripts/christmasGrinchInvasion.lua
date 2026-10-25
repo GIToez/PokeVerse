@@ -61,7 +61,11 @@ function onRaid()
     doBroadcastEvent = function()
         local remaing = deployedPresents - (getGlobalStorageValue(GLOBAL_STORAGES.EVENT_CHRISTMAS_PRESENT_COUNT) + removedPresents)
         if (remaing > 0) then
-            doBroadcastMessage(string.format("Grinch Invasion - Remaing %s present%s.", remaing, (remaing > 1 and "s" or "")))
+            -- every minute: the text only, not a banner
+            local text = string.format("Grinch Invasion - %s present%s left.", remaing, (remaing > 1 and "s" or ""))
+            for _, pid in ipairs(getPlayersOnline()) do
+                doPlayerSendTextMessage(pid, MESSAGE_STATUS_WARNING, text)
+            end
             addEvent(doBroadcastEvent, 60 * 1000)
         end
     end

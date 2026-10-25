@@ -5811,6 +5811,38 @@ bool Game::broadcastMessage(const std::string& text, MessageClasses type)
 	return true;
 }
 
+bool Game::broadcastAnnouncement(const std::string& text, MessageClasses type, const std::string& source)
+{
+	// the banner goes out before the text message, which the client then hides
+	LuaScriptInterface& interface = g_globalEvents->getScriptInterface();
+	lua_State* L = interface.getState();
+	if(L && interface.reserveEnv())
+	{
+		lua_getglobal(L, "Announcements");
+		if(lua_istable(L, -1))
+		{
+			lua_getfield(L, -1, "fromEngine");
+			if(lua_isfunction(L, -1))
+			{
+				lua_pushstring(L, text.c_str());
+				lua_pushstring(L, source.c_str());
+				if(lua_pcall(L, 2, 0, 0))
+				{
+					std::cout << "[Error - Game::broadcastAnnouncement] " << lua_tostring(L, -1) << std::endl;
+					lua_pop(L, 1);
+				}
+			}
+			else
+				lua_pop(L, 1);
+		}
+
+		lua_pop(L, 1);
+		interface.releaseEnv();
+	}
+
+	return broadcastMessage(text, type);
+}
+
 Position Game::getClosestFreeTile(Creature* creature, Position pos, bool extended/* = false*/, bool ignoreHouse/* = true*/)
 {
 	PairVector relList;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <raid>
-	<announce delay="0" type="warning" message="Trick-or-treat!"/>
+	<announce delay="0" type="warning" message="Halloween raid: Pots full of treats have appeared in every Kanto city. First come, first served!"/>
 	<itemspawn ref="yes" id="18724" x="3292" y="538" z="7" />
 	<itemspawn ref="yes" id="18724" x="3311" y="547" z="7" />
 	<itemspawn ref="yes" id="18724" x="3314" y="557" z="7" />
