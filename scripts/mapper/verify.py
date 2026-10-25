@@ -101,7 +101,7 @@ def main():
     n_spawns = 0
     if os.path.exists(spawn_file):
         src = open(spawn_file, encoding='latin-1').read()
-        for m in re.finditer(r'<spawn centerx="(\d+)" centery="(\d+)" centerz="(\d+)"[^>]*>(.*?)</spawn>', src, re.S):
+        for m in re.finditer(r'<spawn centerx="(\d+)" centery="(\d+)" centerz="(\d+)"[^>/]*>(.*?)</spawn>', src, re.S):
             cx, cy, cz = int(m.group(1)), int(m.group(2)), int(m.group(3))
             for c in re.finditer(r'<(monster|npc) name="([^"]+)" x="(-?\d+)" y="(-?\d+)"', m.group(4)):
                 n_spawns += 1
