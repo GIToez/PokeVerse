@@ -3355,12 +3355,29 @@ local function testLegendaries(cid, friend, arena)
             -- the tester counts as 20 to 30 tiles from it for the area signs (not moved: the catch throws
             -- that follow use the tiles next to the tester)
             local there, spot = getCreaturePosition(raikou), nil
+            -- the sign lands 3 to 5 tiles toward it, 2 either way, and only on a tile with ground
+            local function groundToward(pos)
+                local r = math.max(math.abs(there.x - pos.x), math.abs(there.y - pos.y))
+                for along = 3, 5 do
+                    local cx = math.floor(pos.x + (there.x - pos.x) * along / r + 0.5)
+                    local cy = math.floor(pos.y + (there.y - pos.y) * along / r + 0.5)
+                    for dx = -2, 2 do
+                        for dy = -2, 2 do
+                            local g = getTileThingByPos({ x = cx + dx, y = cy + dy, z = pos.z, stackpos = STACKPOS_GROUND })
+                            if (not g or not g.itemid or g.itemid == 0) then
+                                return false
+                            end
+                        end
+                    end
+                end
+                return true
+            end
             -- every tile of the square ring r tiles out (it spawns anywhere: some rings are mostly water)
             for r = 20, 30 do
                 for i = -r, r do
                     for _, d in ipairs({ { i, -r }, { i, r }, { -r, i }, { r, i } }) do
                         local pos = { x = there.x + d[1], y = there.y + d[2], z = there.z }
-                        if (not spot and W.isGoodPoint(pos)) then spot = pos end
+                        if (not spot and W.isGoodPoint(pos) and groundToward(pos)) then spot = pos end
                     end
                 end
                 if (spot) then break end
