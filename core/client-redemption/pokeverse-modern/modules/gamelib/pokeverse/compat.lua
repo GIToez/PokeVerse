@@ -237,6 +237,7 @@ ExtendedIds.BattleText = 46
 ExtendedIds.Announcement = 47
 ExtendedIds.HealMark = 48
 ExtendedIds.EventShop = 49
+ExtendedIds.Analyser = 50
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

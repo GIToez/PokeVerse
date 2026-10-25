@@ -1,0 +1,431 @@
+// The Analyser window, in the Tasks window's style (its artwork lives in game_dailytasks/images)
+
+AnText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  text-auto-resize: true
+  phantom: true
+
+AnMuted < AnText
+  color: #96aacd
+
+AnBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+AnGold < AnBold
+  color: #ffd75a
+
+AnCard < UIWidget
+  image-source: /modules/game_dailytasks/images/card
+  image-border: 10
+  padding: 8
+
+AnSection < UIWidget
+  image-source: /modules/game_dailytasks/images/section
+  image-border: 10
+  padding: 8
+
+AnTrack < UIWidget
+  height: 10
+  image-source: /modules/game_dailytasks/images/track
+  image-border: 5
+  phantom: true
+
+  UIWidget
+    id: fill
+    image-source: /modules/game_dailytasks/images/fill_blue
+    image-border: 5
+    width: 0
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    phantom: true
+
+AnTab < UIButton
+  height: 34
+  width: 128
+  image-source: /modules/game_dailytasks/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 14
+  color: #c8d4ee
+  $hover !checked:
+    image-source: /modules/game_dailytasks/images/tab_hover
+  $checked:
+    image-source: /modules/game_dailytasks/images/tab_on
+    color: #ffffff
+
+// a "label ... value" line
+AnStat < UIWidget
+  height: 18
+  phantom: true
+
+  AnMuted
+    id: label
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  AnText
+    id: value
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+AnXpCard < AnCard
+  height: 134
+
+  AnBold
+    id: title
+    text-auto-resize: false
+    anchors.left: parent.left
+    anchors.right: level.left
+    anchors.top: parent.top
+    margin-right: 6
+    height: 16
+
+  AnGold
+    id: level
+    anchors.right: parent.right
+    anchors.top: parent.top
+
+  AnStat
+    id: gain
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: title.bottom
+    margin-top: 6
+
+  AnStat
+    id: hour
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: gain.bottom
+
+  AnStat
+    id: eta
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: hour.bottom
+
+  AnMuted
+    id: toLevel
+    anchors.left: parent.left
+    anchors.top: eta.bottom
+    margin-top: 8
+
+  AnText
+    id: percent
+    anchors.right: parent.right
+    anchors.top: eta.bottom
+    margin-top: 8
+
+  AnTrack
+    id: track
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: toLevel.bottom
+    margin-top: 4
+
+AnBallRow < UIWidget
+  height: 34
+  margin-top: 4
+  phantom: true
+  $first:
+    margin-top: 0
+
+  UIItem
+    id: item
+    size: 18 18
+    virtual: true
+    anchors.left: parent.left
+    anchors.top: parent.top
+    phantom: true
+
+  AnText
+    id: name
+    anchors.left: item.right
+    anchors.verticalCenter: item.verticalCenter
+    margin-left: 6
+
+  AnMuted
+    id: expected
+    anchors.left: name.right
+    anchors.verticalCenter: item.verticalCenter
+    margin-left: 8
+
+  AnGold
+    id: percent
+    anchors.right: parent.right
+    anchors.verticalCenter: item.verticalCenter
+
+  AnMuted
+    id: roll
+    anchors.right: percent.left
+    anchors.verticalCenter: item.verticalCenter
+    margin-right: 12
+
+  AnTrack
+    id: track
+    anchors.left: name.left
+    anchors.right: parent.right
+    anchors.top: item.bottom
+    margin-top: 4
+
+SessionBoard < UIWidget
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 12
+
+  AnCard
+    id: timeCard
+    height: 36
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+    UIWidget
+      id: clock
+      size: 12 12
+      image-source: /modules/game_dailytasks/images/icon_clock
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 4
+      phantom: true
+
+    AnMuted
+      !text: tr('Session')
+      anchors.left: clock.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+
+    AnBold
+      id: time
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+
+  AnSection
+    id: stats
+    anchors.top: timeCard.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    layout:
+      type: verticalBox
+      fit-children: true
+
+    AnStat
+      id: kills
+    AnStat
+      id: killsHour
+    AnStat
+      id: trainerXp
+    AnStat
+      id: trainerHour
+    AnStat
+      id: pokemonXp
+    AnStat
+      id: pokemonHour
+
+  PVBlueButton
+    id: reset
+    !text: tr('Reset session')
+    ttf-font-size: 12
+    width: 140
+    height: 24
+    anchors.top: stats.bottom
+    anchors.right: parent.right
+    margin-top: 10
+
+XpBoard < UIWidget
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 12
+
+  AnXpCard
+    id: trainer
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.horizontalCenter
+    margin-right: 5
+
+  AnXpCard
+    id: pokemon
+    anchors.top: parent.top
+    anchors.left: parent.horizontalCenter
+    anchors.right: parent.right
+    margin-left: 5
+
+  AnMuted
+    id: note
+    text-auto-resize: false
+    text-wrap: true
+    height: 30
+    anchors.top: trainer.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+CatchBoard < UIWidget
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.bottom: parent.bottom
+  margin-top: 12
+
+  AnCard
+    id: levelBox
+    size: 46 46
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+    AnGold
+      id: level
+      anchors.centerIn: parent
+
+  AnBold
+    id: name
+    ttf-font-size: 15
+    anchors.left: levelBox.right
+    anchors.top: levelBox.top
+    margin: 5 0 0 12
+
+  AnMuted
+    id: sub
+    anchors.left: name.left
+    anchors.top: name.bottom
+    margin-top: 4
+
+  AnStat
+    id: throws
+    anchors.top: levelBox.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+
+  AnStat
+    id: skill
+    anchors.top: throws.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+  AnSection
+    id: balls
+    anchors.top: skill.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    padding: 10
+    layout:
+      type: verticalBox
+      fit-children: true
+
+  UIWidget
+    id: details
+    anchors.top: balls.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    phantom: true
+    layout:
+      type: verticalBox
+      fit-children: true
+
+  AnMuted
+    id: empty
+    text-auto-resize: false
+    text-wrap: true
+    text-align: center
+    height: 60
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 40
+    visible: false
+
+AnalyserWindow < UIWindow
+  size: 470 400
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 22 26 22 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_analyser.hide()
+
+  UIWidget
+    id: headerIcon
+    size: 30 30
+    image-source: /modules/game_analyser/images/icon_analyser
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('Analyser')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -4 0 0 10
+    phantom: true
+
+  AnMuted
+    id: subtitle
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 1
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_analyser.hide()
+
+  UIWidget
+    id: tabs
+    height: 34
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 14
+
+    AnTab
+      id: session
+      !text: tr('Session')
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    AnTab
+      id: xp
+      !text: tr('XP')
+      anchors.top: parent.top
+      anchors.left: session.right
+      margin-left: 8
+
+    AnTab
+      id: catch
+      !text: tr('Catch')
+      anchors.top: parent.top
+      anchors.left: xp.right
+      margin-left: 8
+
+  SessionBoard
+    id: sessionBoard
+
+  XpBoard
+    id: xpBoard
+    visible: false
+
+  CatchBoard
+    id: catchBoard
+    visible: false

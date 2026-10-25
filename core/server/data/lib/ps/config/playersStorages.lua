@@ -128,5 +128,7 @@ playersStorages = {
     eventShopClient = base + 125, -- 1 while the trainer's client has the Event Token Shop (it says hello at login)
     eventShopNpc = base + 126, -- the name of the token NPC whose window the trainer has open (EventShop)
     eventShopId = base + 127, -- the EventShop id last opened for that trainer
+    analyserClient = base + 128, -- 1 while the trainer's client has the Analyser window (it asks at login)
+    analyserLastKill = base + 129, -- "<level>|<name>" of the last wild Pokemon the trainer defeated (Analyser)
     -- tournamentWeekWinnerStorage = base + 65
 }

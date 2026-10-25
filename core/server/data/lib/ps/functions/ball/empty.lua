@@ -52,30 +52,36 @@ local function onCaughtPokemon(cid, attributes, tries)
     end
 end
 
--- The catch roll is getRandom(1, max): a ball catches when the roll is at most its catch rate.
--- nil when the Pokemon can't be caught yet.
-function getCatchRollMax(cid, pokemonName, ballId, pokemonLevel)
-    local catchChance = getPokemonCatchChance(pokemonName) / (RATE_CATCH + getPlayerExtraCatchRateValue(cid))
-    if (getPokemonIgnoreBallCounter(pokemonName)) then
+-- The species' catch chance for this trainer: the config chance over the server rate and the trainer's catch bonus
+function getPlayerPokemonCatchChance(cid, pokemonName)
+    return getPokemonCatchChance(pokemonName) / (RATE_CATCH + getPlayerExtraCatchRateValue(cid))
+end
+
+-- getCatchRollMax without the trainer: tries are the ball counter (getPlayerCatchTries), skill the catching skill
+function getCatchRollMaxFor(catchChance, ignoreBallCounter, tries, skill)
+    if (ignoreBallCounter) then
         return catchChance
     end
 
-    local triesFactor = getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName)) / catchChance
+    local triesFactor = tries / catchChance
     if (triesFactor <= 0.25) then -- Never catch with equal or less 25% of tries
         return nil
     end
 
-    local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING)
-    if (skill > PLAYER_SKILL_CATCHING_MAX) then
-        skill = PLAYER_SKILL_CATCHING_MAX
-    end
-
+    skill = math.min(skill, PLAYER_SKILL_CATCHING_MAX)
 	local chanceMax = math.ceil((catchChance - skill / 10) -
             (triesFactor > 1.0 and ((triesFactor - 1.0) * catchChance) or 0)) -- After 100% tries, each new % will be discounted to favor the catch, Ex: 100 tries to caught Bulbasaur, on 150 tries the player will receive 50% of favor
 	if (chanceMax < 5) then
         chanceMax = ((catchChance < 5 and catchChance > 0) and catchChance or 5)
     end
 	return chanceMax
+end
+
+-- The catch roll is getRandom(1, max): a ball catches when the roll is at most its catch rate.
+-- nil when the Pokemon can't be caught yet.
+function getCatchRollMax(cid, pokemonName, ballId, pokemonLevel)
+    return getCatchRollMaxFor(getPlayerPokemonCatchChance(cid, pokemonName), getPokemonIgnoreBallCounter(pokemonName),
+        getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName)), getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING))
 end
 
 function getCatchChance(cid, pokemonName, ballId, pokemonLevel)
@@ -295,6 +301,7 @@ function emptyBall(cid, item, fromPosition, itemEx, toPosition)
                             string.format(__L(cid, "%s trying to catch %s."), getPlayerWastedBallsMessage(cid, getPokemonNumberByName(pokemonName)), pokemonName))
 					end
 				end
+				Analyser.onThrow(cid, pokemonName)
 			else
 				doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
 			end

@@ -4,6 +4,7 @@ function onKill(cid, target, lastHit)
         doQuestDefeat(cid, name)
         if (lastHit) then
             Sounds.onFaint(getCreaturePosition(target))
+            Analyser.onKill(cid, target)
             RangerClub.onPlayerKill(cid, name)
             EventCalendar.onPlayerKill(cid, target)
             if (EventCalendar.isActive("halloween")) then

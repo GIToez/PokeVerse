@@ -537,6 +537,9 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
             setBallPokemonExp(ball.uid, newExperience)
             doSendAnimatedText(getCreaturePosition(pokemon and pokemon or player), string.concat("+", expAmount, " EXP"), COLOR_GREEN)
             doPlayerSendTextMessage(player, MESSAGE_EVENT_DEFAULT, string.format(__L(player, "Your %s received %s experience point%s."), pokemonName, expAmount, (expAmount > 0 and "s" or "")))
+            if (not isItem(referenceItem)) then
+                addEvent(Analyser.onPokemonExp, 0, player, expAmount) -- after the level ups below
+            end
 
             while (newExperience >= nextLevelExp) do
                 gainLevel = gainLevel + 1

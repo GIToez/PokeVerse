@@ -1,0 +1,8 @@
+Module
+  name: game_analyser
+  description: PokeVerse Analyser window: the hunt session, trainer and Pokemon EXP with their next level, and the catch chances of the last Pokemon defeated
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ analyser ]
+  @onLoad: init()
+  @onUnload: terminate()

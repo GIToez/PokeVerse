@@ -145,6 +145,7 @@ function onLogin(cid)
         end
 
         ExpBoost.onLogin(cid)
+        Analyser.onLogin(cid)
         doExtraExpRateCheck(cid)
         ServerExpEvent.onLogin(cid)
         Daycare.onLogin(cid)

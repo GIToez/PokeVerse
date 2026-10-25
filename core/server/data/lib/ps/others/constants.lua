@@ -81,7 +81,8 @@ EXTENDED_IDS = {
     BATTLE_TEXT = 46, -- JSON trainers' call-outs, wild moves, misses and hit kinds for the battle text (BattleText)
     ANNOUNCEMENT = 47, -- JSON server-wide news for the news banner: {c = category, h = title, x = text, f = the text message} (Announcements)
     HEAL_MARK = 48, -- JSON {id = creature, s = seconds left, 0 when it ends}: a health potion healing a Pokemon or trainer, to the players who can see it
-    EVENT_SHOP = 49 -- JSON Event Token Shop: holiday token catalogs (EventShop)
+    EVENT_SHOP = 49, -- JSON Event Token Shop: holiday token catalogs (EventShop)
+    ANALYSER = 50 -- JSON Analyser window: the catch chances of the last Pokemon defeated and the Pokemon's EXP (Analyser)
 }
 
 TOURNAMENT_TYPES = {}

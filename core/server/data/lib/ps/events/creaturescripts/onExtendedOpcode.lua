@@ -40,6 +40,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Bank.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.EVENT_SHOP) then
         EventShop.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.ANALYSER) then
+        Analyser.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.AUTO_LOOT) then
         local enabled = buffer == "1"
         setPlayerAutoLoot(cid, enabled)
