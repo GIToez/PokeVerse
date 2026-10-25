@@ -31,6 +31,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             doCreatePokemonBall(cid, "soul", msg, 5, nil, nil, 0, cid, false, 999999, nil, nil, nil, nil, nil, nil, nil,
                 nil, nil, function(ball) setBallOriginalTrainer(ball, cid) end)
             setPlayerGotStarterPokemon(cid, true)
+            doPokedexObtained(cid, msg)
             selfSay("Here is, congratulations!", cid)
             return true
         end

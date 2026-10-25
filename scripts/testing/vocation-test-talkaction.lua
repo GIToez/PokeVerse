@@ -2177,6 +2177,32 @@ local function testHalloween(cid)
     setAccountStorage(account, ACCOUNT_STORAGES.BOUGHT_RARE_CANDY_YEAR, year)
 end
 
+local function testPokedexObtained(cid)
+    local function storage(name) return getPokemonDexStorage(name) end
+    local saved = {}
+    for _, name in ipairs({ "Tauros", "Bulbasaur", "Bulmander" }) do saved[name] = getCreatureStorage(cid, storage(name)) end
+
+    local knowledge = Pokepedia.getKnowledge(cid, "Tauros")
+    if (knowledge and knowledge.catches == 0) then
+        doCreatureSetStorage(cid, storage("Tauros"), POKEDEXSTATUS_DEXED)
+        doPokedexObtained(cid, "Tauros")
+        knowledge = Pokepedia.getKnowledge(cid, "Tauros")
+        check("Pokedex: an evolution or starter counts as caught", getCreatureStorage(cid, storage("Tauros")) == POKEDEXSTATUS_DEXED_CATCHED and
+            knowledge.level >= 1, getCreatureStorage(cid, storage("Tauros")) .. " " .. knowledge.level)
+    end
+
+    doCreatureSetStorage(cid, storage("Bulbasaur"), POKEDEXSTATUS_DEXED_CATCHED)
+    doCreatureSetStorage(cid, storage("Bulmander"), POKEDEXSTATUS_UNKNOWN)
+    local sent, original = nil, doPlayerSendPokedexStatus
+    doPlayerSendPokedexStatus = function(to, status) if (to == cid) then sent = status end return true end
+    doPokedexStatusSend(cid)
+    doPlayerSendPokedexStatus = original
+    check("Pokedex: each number shows its own species, not a variant sharing it", sent and sent[1] == POKEDEXSTATUS_DEXED_CATCHED and
+        #sent == POKEMON_NUMBER, sent and (tostring(sent[1]) .. " of " .. #sent))
+
+    for name, value in pairs(saved) do doCreatureSetStorage(cid, storage(name), value) end
+end
+
 local function testSummerChests(cid)
     local saved = getCreatureStorage(cid, playersStorages.summerHunting)
     local year = tonumber(os.date("%Y"))
