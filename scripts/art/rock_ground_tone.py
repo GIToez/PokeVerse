@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Mountain top ground (server 4405-4421) in the lighter grey of rocky ground (4570-4579).
+"""Mountain top ground (server 4405-4421) drawn as rocky ground (4570-4579).
 
 The dark mountain top ground shows as hard squares where it was painted beside rocky ground and
-the light stone border. Each pixel keeps its place in the texture and takes the rocky ground
-color of the same brightness rank, so the stones stay where they are and the palette matches.
+the light stone border. Its sprites get the rocky ground tiles, so the two read as one ground.
 
     rock_ground_tone.py --mockup out.png X0 Y0 X1 Y1   floor 7 of the map with the new paint
     rock_ground_tone.py --write-spr                     puts the new sprites into data.spr
@@ -58,26 +57,12 @@ def originals(ids, spr):
     return art
 
 
-def lum(rgb):
-    return rgb[..., 0] * 0.299 + rgb[..., 1] * 0.587 + rgb[..., 2] * 0.114
-
-
 def repaint(art, light):
-    """Every opaque pixel of a sprite gets the light color at its brightness rank in that sprite
-    (ranked per sprite: some dark variants are darker all over than the rest)."""
-    ref = np.concatenate([light[s].reshape(-1, 4) for s in light])
-    ref = ref[ref[:, 3] > 0, :3].astype(np.float64)
-    ref = ref[np.argsort(lum(ref), kind='stable')]
-    new = {}
-    for sid, img in art.items():
-        src = img.reshape(-1, 4)
-        opaque = np.flatnonzero(src[:, 3] > 0)
-        order = opaque[np.argsort(lum(src[opaque, :3].astype(np.float64)), kind='stable')]
-        pick = (np.arange(len(order)) * len(ref) + len(ref) // 2) // max(len(order), 1)
-        out = src.copy()
-        out[order, :3] = ref[pick].round().astype(np.uint8)
-        new[sid] = out.reshape(32, 32, 4)
-    return new
+    """Every dark sprite becomes one of the rocky ground tiles. A recolor of the dark texture keeps
+    its cracks and tile seams and does not read as the same ground, so the tiles are copied whole;
+    neighbouring sprites of a 3x3 pattern get different ones."""
+    tiles = [light[s] for s in sorted(light)]
+    return {sid: tiles[(i * 3 + i // 9) % len(tiles)].copy() for i, sid in enumerate(sorted(art))}
 
 
 def write_spr(new):
