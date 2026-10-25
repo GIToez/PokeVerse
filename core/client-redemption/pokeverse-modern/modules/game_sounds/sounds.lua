@@ -62,9 +62,10 @@ local CRY_DIR = '/sounds/cries/'
 local CRY_RANGE = 8
 local CRY_GAP_MS = 1200
 local CRY_SPEAKER_GAP_MS = 8000
--- the cry files are about 6 dB quieter than the battle sounds (peaks near -6 dB), which made them
--- inaudible on phone speakers at the default 25% master volume
-local CRY_GAIN = 2
+-- the /sounds/cries/ files are about 6 dB quieter than the battle sounds (peaks near -6 dB), which
+-- made them inaudible on phone speakers at the default 25% master volume; convert-xy-voice-cries.py
+-- levels the X/Y files already
+local FALLBACK_CRY_GAIN = 2
 local CRY_FAR_GAIN = 0.6 -- at CRY_RANGE tiles
 local lastCry = -CRY_GAP_MS
 local lastCryBy = {}
@@ -80,11 +81,11 @@ end
 local function cryPath(number)
     local voice = VOICE_CRY_DIR .. number .. '.ogg'
     if not g_resources or g_resources.fileExists(voice) then
-        return voice
+        return voice, 1
     end
     local fallback = CRY_DIR .. number .. '.ogg'
     if g_resources.fileExists(fallback) then
-        return fallback
+        return fallback, FALLBACK_CRY_GAIN
     end
     return nil
 end
@@ -99,11 +100,11 @@ function playVoiceCry(number, gain)
     if not channel or not channel:isEnabled() or channel:getGain() <= 0 then
         return nil
     end
-    local path = cryPath(number)
+    local path, fileGain = cryPath(number)
     if not path then
         return nil
     end
-    return g_sounds.play(path, 0, math.min(1, channel:getGain() * CRY_GAIN * (gain or 1)))
+    return g_sounds.play(path, 0, math.min(1, channel:getGain() * fileGain * (gain or 1)))
 end
 
 local function onTalk(name, level, mode, text, channelId, creaturePos)

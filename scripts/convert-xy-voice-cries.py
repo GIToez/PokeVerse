@@ -101,6 +101,8 @@ def convert(src, dest):
         [
             "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
             "-i", src,
+            # about as loud as the battle sounds in /sounds/effects
+            "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
             "-ac", "2", "-ar", "44100", "-c:a", "libvorbis", "-b:a", "64k",
             dest,
         ]
