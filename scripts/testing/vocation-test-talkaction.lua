@@ -2234,9 +2234,10 @@ local function testHalloween(cid)
         doTeleportThing(cid, here)
         doCreatureSetStorage(cid, ship.storage, QUEST_STATUS.UNSTARTED)
     end
+    local quests = sandbox(PS_LIB_CONFIG_DIR .. "003-quest.lua").QUESTS_CONFIG
     for _, outfit in ipairs(HalloweenEvent.PIRATE_OUTFITS) do
         local found
-        for _, quest in ipairs(QUESTS_CONFIG[outfit.npc] or {}) do
+        for _, quest in ipairs(quests[outfit.npc] or {}) do
             if (quest.storage == outfit.storage) then
                 for _, reward in ipairs(quest.rewardItems or {}) do
                     if (reward.type == 3 and reward.female and reward.female.looktype == outfit.female
