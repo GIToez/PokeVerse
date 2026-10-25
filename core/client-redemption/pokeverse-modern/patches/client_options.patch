@@ -307,6 +307,23 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +        end
 +    },
  }
+diff -ruN pristine/modules/client_options/keybins.lua modules/client_options/keybins.lua
+--- a/modules/client_options/keybins.lua
++++ b/modules/client_options/keybins.lua
+@@ -649,6 +649,13 @@
+     updateKeybinds()
+ end
+ 
++-- The keys of each chat mode are separate (the numpad walks in both), so the list opens on the
++-- mode the player is in: clearing a key there is what stops it.
++function selectCurrentChatMode()
++    local chatMode = panels.keybindsPanel.panel.chatMode
++    chatModeGroup:selectWidget(Keybind.chatMode == CHAT_MODE.OFF and chatMode.off or chatMode.on)
++end
++
+ function getChatMode()
+     if chatModeGroup:getSelectedWidget() == panels.keybindsPanel.panel.chatMode.on then
+         return CHAT_MODE.ON
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
 +++ b/modules/client_options/options.lua
@@ -560,7 +577,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      controller.ui:hide()
      if extraWidgets.optionsButton then
          extraWidgets.optionsButton:setOn(false)
-@@ -646,15 +727,8 @@
+@@ -646,16 +727,10 @@
          hide()
          return
      end
@@ -576,9 +593,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    if not selectedTab then
 +        selectTab(1)
      end
++    selectCurrentChatMode()
      show()
      updateKeybinds()
-@@ -672,182 +746,166 @@
+ end
+@@ -672,182 +747,166 @@
      -- TODO: Implement Show Advanced Options functionality in the near future
  end
  
@@ -896,7 +915,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function createCategory(text, icon, openPanel, subCategories)
-@@ -930,13 +988,17 @@
+@@ -930,13 +989,17 @@
      end
  end
  
@@ -915,7 +934,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-@@ -951,19 +1013,15 @@
+@@ -951,19 +1014,15 @@
      if not controller.ui:isVisible() then
          show()
      end
