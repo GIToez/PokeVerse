@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Cold Waters Sailor" script="quest_halloween_cold_waters_entrance.lua" walkinterval="0" floorchange="0">
+	<health now="100" max="100"/>
+	<look type="1711"/>
+	<parameters>
+		<parameter key="message_greet" value="Ed Blackhood does not like visitors. If Peter Paul sent you, I can take you to his {cabin}."/>
+	</parameters>
+</npc>
