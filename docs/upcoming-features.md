@@ -64,6 +64,10 @@ so. Items marked **To decide** need an answer before work starts.
   held item icons that no longer flicker.
 - Android: the map keeps 23x13 tiles and the game stays in landscape; the APK is signed with
   the release key.
+- The pokemon habitat (the old ball pillar): a stand you place only in your own house, then
+  drop a real Poke Ball on or use the stand on a charged ball in your bag. That Pokemon walks
+  the house and is still there after a restart. The ball on the stand is the same item as in
+  your bag.
 - Stage 1 of the [legendary revamp](#22-legendary-revamp-stages-1-to-3-built): habitats in all four
   regions, a way of moving per species, the sets, trails of signs, Mew's disguise, Mewtwo's
   warning, the sleeping Regis, the radar by rank, and the new Admin Events tab. Stages 2 and 3:
@@ -1111,11 +1115,15 @@ From the `#notes` channel:
   cross after its name, for everyone who can see it, until the heal ends
   (`game_healmark`, sent from `potions/healthPotions.lua`). Potions stay heal-over-time:
   flat heals would undo the Medic perks and make potions a full refill in wild fights.
-- **Pokémon cries (done):** when a Pokémon says one of its voice lines ("PIKACHU!") its cry
-  plays (`/sounds/cries/<number>.ogg`), quieter with distance, up to 8 tiles, on the Battle
-  Sounds volume. At most one cry each 1.2 s, and each species name once every 8 s. The line
-  picks the cry, so nicknamed summons work; a line several species share uses the name.
-  After changing voices or `pokemonsNumbers.lua`, run `scripts/make-cry-voices.py`.
+- **Pokémon cries (done):** when a Pokémon says one of its voice lines ("PIKACHU!") its
+  overworld cry plays (`/sounds/voice_cries/<number>.ogg`, falling back to `/sounds/cries/`
+  until that file is converted), quieter with distance, up to 8 tiles, on the Battle Sounds
+  volume. At most one cry each 1.2 s, and each species name once every 8 s. The line picks
+  the cry, so nicknamed summons work; a line several species share uses the name. Opening a
+  Pokédex entry still plays the Showdown set (`/sounds/cries/<number>.ogg`). The blue RGB
+  button on the dex plays the overworld cry for the species on screen. After changing voices
+  or `pokemonsNumbers.lua`, run `scripts/make-cry-voices.py`. To fill the overworld set from
+  a local X/Y cries dump, run `scripts/convert-xy-voice-cries.py`.
 - **Nurse Chansey (to do):** Nurse Joy's Chansey only says "Chansey!" (`npc/Nurse Joy's
   Chansey.xml`, look type 639). Update its look, and decide what it does, for example
   healing like Nurse Joy, a short line about the Pokémon Center, or a cheer when a team is
@@ -1465,7 +1473,7 @@ is changed yet.
 | Travel | $50 to $300 a trip | captain NPCs (`travel_destinations`) |
 | Safari Zone | $1,000 | `saffariZoneEnter.lua` |
 | Slot machine | $100 a spin, at most 90 a day; pays casino coins, not money | `044-slotMachine.lua` |
-| Late game buys | berry pot $150,000; egg move remover $100,000; Bill's assistant quest $100,000; ball pillar $100,000; destiny knot $50,000; power items $25,000; egg move regenerator $25,000 | NPC shops and scripts |
+| Late game buys | berry pot $150,000; egg move remover $100,000; Bill's assistant quest $100,000; pokemon habitat (ball pillar) $100,000; destiny knot $50,000; power items $25,000; egg move regenerator $25,000 | NPC shops and scripts |
 
 **What looks wrong**
 

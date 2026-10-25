@@ -726,6 +726,7 @@ class LuaScriptInterface
 		static int32_t luaDoTVChannelBan(lua_State* L);
 		static int32_t luaDoTVChannelUnban(lua_State* L);
 		static int32_t luaGetPlayerDueling(lua_State* L);
+		static int32_t luaSetPlayerDueling(lua_State* L);
 		static int32_t luaGetPlayerDuelPokemonRemaing(lua_State* L);
 		static int32_t luaSetPlayerDuelPokemonRemaing(lua_State* L);
 		static int32_t luaGetPlayerPartyDuel(lua_State* L);

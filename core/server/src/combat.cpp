@@ -330,11 +330,24 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
                 }
                 return RET_YOUMAYNOTATTACKTHISCREATURE;
 			}
+			// wilds are not part of a trainer duel or NPC battle; area moves must skip them
+			else if(attackerPlayer->getDueling() || attackerPlayer->getBattleing())
+				return RET_YOUMAYNOTATTACKTHISCREATURE;
 		}
 		else if(!target->isSummon() && !attacker->isSummon())
 		    return RET_YOUMAYNOTATTACKTHISCREATURE;
+        else if(!target->getMaster())
+        {
+            const Npc* attackerNpc = attacker->getNpcMaster();
+            if(attackerNpc && attackerNpc->getOpponent())
+                return RET_YOUMAYNOTATTACKTHISCREATURE;
+        }
         else if(target->isSummon() && target->getPlayerMaster())
         {
+            const Player* targetMaster = target->getPlayerMaster();
+            if(!attacker->isSummon() && (targetMaster->getDueling() || targetMaster->getBattleing()))
+                return RET_YOUMAYNOTATTACKTHISCREATURE;
+
             const Npc* attackerNpc = NULL;
             if((attackerNpc = attacker->getNpc()) || (attacker->getMaster()
                 && (attackerNpc = attacker->getMaster()->getNpc())))
@@ -342,6 +355,13 @@ ReturnValue Combat::canDoCombat(const Creature* attacker, const Creature* target
                 if(attackerNpc->getOpponent() && attackerNpc->getOpponent() != target->getPlayerMaster())
                     return RET_YOUMAYNOTATTACKTHISCREATURE;
             }
+        }
+        else if(target->isSummon() && !attacker->isSummon())
+        {
+            const Creature* top = target->getTopMaster();
+            const Npc* targetNpc = top ? top->getNpc() : NULL;
+            if(targetNpc && targetNpc->getOpponent())
+                return RET_YOUMAYNOTATTACKTHISCREATURE;
         }
 	}
 	else if(target->getNpc())

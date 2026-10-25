@@ -1643,6 +1643,70 @@ local function testMoveInfo(cid, arena)
     end
 end
 
+local function testDuelWilds(cid, arena)
+    local allowed = 1 -- RET_NOERROR
+    local pet = doCreateMonster("Snorlax", { x = arena.x + 1, y = arena.y, z = arena.z }, false)
+    local wild = doCreateMonster("Snorlax", { x = arena.x + 2, y = arena.y, z = arena.z }, false)
+    if (not isMonster(pet) or not isMonster(wild)) then
+        check("Duel wilds: room for the test Pokemon", false)
+        return
+    end
+    doConvinceCreature(cid, pet)
+    local savedDuel, savedBattle = getPlayerDueling(cid), getPlayerBattleing(cid)
+    local ok, err = pcall(function()
+        check("Duel wilds: a pet and a wild", isPokemonOfPlayer(pet) and isPokemonWild(wild))
+
+        local function hit(fromCid, toCid)
+            local before = getCreatureHealth(toCid)
+            doTargetCombatHealth(fromCid, toCid, COMBAT_PHYSICALDAMAGE, -200, -200, CONST_ME_NONE)
+            return before - getCreatureHealth(toCid)
+        end
+
+        local lost = hit(pet, wild)
+        check("Duel wilds: a pet can hit a wild", canDoCombat(pet, wild) == allowed and lost > 0, lost)
+
+        setPlayerDueling(cid, true)
+        local health = getCreatureHealth(wild)
+        lost = hit(pet, wild)
+        check("Duel wilds: a duel pet cannot hit a wild", canDoCombat(pet, wild) ~= allowed and lost == 0
+            and getCreatureHealth(wild) == health, tostring(canDoCombat(pet, wild)) .. " " .. lost)
+        check("Duel wilds: a wild cannot hit a duel pet", canDoCombat(wild, pet) ~= allowed)
+
+        local targeting = sandbox("data/lib/ps/events/creaturescripts/onTarget.lua")
+        local text = captureMessages(function()
+            check("Duel wilds: click-targeting a wild is cancelled", targeting.onTarget(cid, wild) == false)
+        end)
+        check("Duel wilds: the cancel names the duel", text:find("wild Pokemon", 1, true) ~= nil, text)
+
+        setPlayerDueling(cid, false)
+        setPlayerBattleing(cid, true)
+        health = getCreatureHealth(wild)
+        lost = hit(pet, wild)
+        check("Duel wilds: an NPC-battle pet cannot hit a wild", canDoCombat(pet, wild) ~= allowed and lost == 0
+            and getCreatureHealth(wild) == health, tostring(canDoCombat(pet, wild)) .. " " .. lost)
+        check("Duel wilds: a wild cannot hit an NPC-battle pet", canDoCombat(wild, pet) ~= allowed)
+        text = captureMessages(function()
+            check("Duel wilds: click-targeting a wild during an NPC battle is cancelled", targeting.onTarget(cid, wild) == false)
+        end)
+        check("Duel wilds: the battle cancel names the duel", text:find("wild Pokemon", 1, true) ~= nil, text)
+
+        setPlayerBattleing(cid, false)
+        lost = hit(pet, wild)
+        check("Duel wilds: after the fight a pet can hit a wild again", canDoCombat(pet, wild) == allowed and lost > 0, lost)
+    end)
+    setPlayerDueling(cid, savedDuel)
+    setPlayerBattleing(cid, savedBattle)
+    if (isMonster(pet)) then
+        doRemoveCreature(pet)
+    end
+    if (isMonster(wild)) then
+        doRemoveCreature(wild)
+    end
+    if (not ok) then
+        check("Duel wilds: ran without errors", false, err)
+    end
+end
+
 -- The JSON messages fn sends on EXTENDED_IDS.FISHING
 local function captureFishing(fn)
     local original, sent = doSendPlayerExtendedOpcode, {}
@@ -2457,6 +2521,55 @@ local function testEventShop(cid)
         tostring(boughtSeal) .. " " .. getPlayerItemCount(cid, 29125))
 end
 
+local function testServerRestart()
+    local keys = {
+        GLOBAL_STORAGES.SERVER_RESTART_AT, GLOBAL_STORAGES.SERVER_RESTART_REASON,
+        GLOBAL_STORAGES.SERVER_RESTART_DAILY, GLOBAL_STORAGES.SERVER_RESTART_SKIP,
+    }
+    local saved = {}
+    for i, key in ipairs(keys) do
+        saved[i] = getStorage(key)
+    end
+    local function restore()
+        for i, key in ipairs(keys) do
+            doSetStorage(key, saved[i])
+        end
+    end
+
+    local now = os.time()
+    local staffAt = now + 600
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, 0)
+    ServerRestart.schedule(staffAt, 2)
+    local at, reason = ServerRestart.next(now)
+    check("Restart: a staff restart is next", at == staffAt and reason == "staff", tostring(at) .. " " .. tostring(reason))
+
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_AT, 0)
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, 0)
+    ServerRestart.setDaily(5 * 60)
+    local dailyAt = ServerRestart.nextDaily(5 * 60, now)
+    at, reason = ServerRestart.next(now)
+    check("Restart: the daily restart is next when nothing is scheduled", at == dailyAt and reason == "daily",
+        tostring(at) .. " " .. tostring(reason))
+    check("Restart: server.status names that daily restart",
+        DiscordBridge.serverStatus().restart and DiscordBridge.serverStatus().restart.at == dailyAt
+            and DiscordBridge.serverStatus().restart.reason == "daily")
+
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, dailyAt)
+    at, reason = ServerRestart.next(now)
+    local following = ServerRestart.nextDaily(5 * 60, dailyAt)
+    check("Restart: a skipped daily comes back the next day", at == following and reason == "daily",
+        tostring(at) .. " " .. tostring(following))
+
+    ServerRestart.disableDaily()
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_AT, 0)
+    doSetStorage(GLOBAL_STORAGES.SERVER_RESTART_SKIP, 0)
+    at, reason = ServerRestart.next(now)
+    check("Restart: daily off and nothing scheduled has no field", at == nil and reason == nil
+        and DiscordBridge.serverStatus().restart == nil, tostring(at))
+
+    restore()
+end
+
 local function testDecorationItems(cid)
     local saved = getStorage(GLOBAL_STORAGES.DECORATIONS_ITEMS)
     local ok = Decorations.addCustomItem("halloween", 25130)
@@ -2857,6 +2970,120 @@ local function testHandDecorations(cid)
             check("Decorations: the automatic props come back", autoProps() >= 3, autoProps())
         end, 4000)
     end, 3000)
+end
+
+local function testPokemonHabitat(cid)
+    check("Habitat: the empty stand is a habitat",
+        getItemNameById(PokemonHabitat.EMPTY_ID):lower():find("habitat", 1, true) ~= nil)
+    check("Habitat: an empty poke ball is not charged",
+        not PokemonHabitat.isChargedBall({ uid = 0, itemid = balls["poke"].empty }))
+
+    local houseId, tile, prev
+    for _, id in pairs(getTownHouses()) do
+        local info = getHouseInfo(id, false)
+        if (info and not info.guildHall and info.owner == 0 and info.tiles <= 50) then
+            houseId, prev = id, 0
+            break
+        end
+    end
+    if (houseId) then
+        setHouseOwner(houseId, getPlayerGUID(cid), false)
+        for _, pos in ipairs(getHouseTiles(houseId) or {}) do
+            local ground = getTileThingByPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = 0 })
+            local tileInfo = getTileInfo(pos)
+            if (ground and ground.itemid ~= 0 and tileInfo and tileInfo.house and not tileInfo.bed) then
+                tile = pos
+                break
+            end
+        end
+        if (not tile) then
+            setHouseOwner(houseId, prev, false)
+            houseId = nil
+        end
+    end
+    check("Habitat: a vacant house tile", houseId and tile ~= nil, houseId)
+    if (not houseId or not tile) then
+        return
+    end
+
+    local back = getCreaturePosition(cid)
+    local function cleanup()
+        PokemonHabitat.recall(tile)
+        local stand = getTileItemById(tile, PokemonHabitat.EMPTY_ID)
+        if (isItem(stand)) then
+            doRemoveItem(stand.uid)
+        end
+        local sitting = PokemonHabitat.ballOn(tile)
+        if (sitting) then
+            doRemoveItem(sitting.uid)
+        end
+        for _, b in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+            if (getBallPokemonNickname(b.uid) == "HabitatTest") then
+                doRemoveItem(b.uid)
+            end
+        end
+        setHouseOwner(houseId, prev, false)
+        doTeleportThing(cid, back, false)
+    end
+
+    doTeleportThing(cid, tile, false)
+    check("Habitat: the owner can use their house tile", PokemonHabitat.ownsHouseTile(cid, tile))
+
+    doCreateItem(PokemonHabitat.EMPTY_ID, 1, tile)
+    check("Habitat: the stand goes down in the house", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+
+    local ball = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    if (ball and ball.uid) then
+        setBallPokemonNickname(ball.uid, "HabitatTest", false)
+    end
+    check("Habitat: a charged poke ball looks like the inventory ball",
+        PokemonHabitat.isChargedBall(ball) and ball.itemid == balls["poke"].charged, ball and ball.itemid)
+
+    PokemonHabitat.attach(cid, ball, getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile)
+    local sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: the ball on the stand is still the poke ball", sitting and sitting.itemid == balls["poke"].charged,
+        sitting and sitting.itemid)
+    check("Habitat: the stand stays under it", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+    check("Habitat: the house remembers the walker", PokemonHabitat.hasRow(tile))
+
+    local walker
+    for _, spec in ipairs(getSpectators(tile, 10, 10, true) or {}) do
+        if (isNpc(spec) and tostring(getCreatureNickname(spec) or ""):find("HabitatTest", 1, true)) then
+            walker = spec
+        end
+    end
+    check("Habitat: the Pokemon walks the house", walker and getHouseFromPos(getCreaturePosition(walker)) == houseId)
+
+    PokemonHabitat.takeBack(cid, sitting or ball, tile)
+    check("Habitat: taking the ball back recalls the Pokemon",
+        not PokemonHabitat.hasRow(tile) and (not walker or not isCreature(walker)))
+    check("Habitat: the stand stays after take-back", isItem(getTileItemById(tile, PokemonHabitat.EMPTY_ID)))
+
+    local bagBall = newBall(cid, "Pikachu", 10, POKEMON_SEX_FEMALE)
+    if (bagBall and bagBall.uid) then
+        setBallPokemonNickname(bagBall.uid, "HabitatTest", false)
+    end
+    PokemonHabitat.useEmpty(cid, getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile, bagBall,
+        { x = CONTAINER_POSITION, y = 0, z = 0 })
+    sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: use-with the stand puts the bag ball on it",
+        sitting and sitting.itemid == balls["poke"].charged and PokemonHabitat.hasRow(tile),
+        sitting and sitting.itemid)
+    PokemonHabitat.takeBack(cid, sitting or bagBall, tile)
+
+    local usedBall = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    if (usedBall and usedBall.uid) then
+        setBallPokemonNickname(usedBall.uid, "HabitatTest", false)
+    end
+    PokemonHabitat.useBall(cid, usedBall, { x = CONTAINER_POSITION, y = 0, z = 0 },
+        getTileItemById(tile, PokemonHabitat.EMPTY_ID), tile)
+    sitting = PokemonHabitat.ballOn(tile)
+    check("Habitat: use-with the ball on the stand attaches it",
+        sitting and sitting.itemid == balls["poke"].charged and PokemonHabitat.hasRow(tile),
+        sitting and sitting.itemid)
+    PokemonHabitat.takeBack(cid, sitting or usedBall, tile)
+
+    cleanup()
 end
 
 local function testLegendaries(cid, friend, arena)
@@ -3544,6 +3771,54 @@ local function testHints(cid)
     setPlayerStorageValue(cid, playersStorages.hintsClient, savedClient)
 end
 
+local function testWorldBoss()
+    check("World Boss: The A. Mesmer is Hypno, not the shared template",
+        WorldBoss.get("The A. Mesmer") ~= nil and WorldBoss.get("Blastertoise") ~= nil)
+
+    local seen, count = {}, 0
+    WorldBoss.each(function(name, boss)
+        count = count + 1
+        check("World Boss: " .. name .. " has a Seek-it hint",
+            type(boss.hint) == "string" and boss.hint:find("Seek it", 1, true), boss.hint)
+        for _, line in ipairs(boss.messages) do
+            check("World Boss: flavor is unique — " .. line:sub(1, 48), not seen[line],
+                seen[line] and (seen[line] .. " and " .. name) or name)
+            seen[line] = name
+        end
+    end)
+    check("World Boss: twenty catalogs", count == 20, tostring(count))
+
+    local mesmer = WorldBoss.get("The A. Mesmer")
+    local flavor = mesmer.messages[1]
+    local text = WorldBoss.announceText("The A. Mesmer", flavor)
+    check("World Boss: Mesmer announce names Hill of Confusion",
+        text:find("World Boss", 1, true) and text:find("Hill of Confusion", 1, true)
+            and text:find("Lavender", 1, true) and text:find("Hypnosis", 1, true), text)
+    check("World Boss: Mesmer announce has no coordinates",
+        not text:find("4226", 1, true) and not text:find("272", 1, true), text)
+    check("World Boss: Mesmer announce is not a generic HARD line",
+        not text:find("sea was very choppy", 1, true) and not text:find("What's that in the sky", 1, true), text)
+
+    local captured, original = {}, doBroadcastMessage
+    doBroadcastMessage = function(msg, class, announcement)
+        captured[#captured + 1] = { text = msg, announcement = announcement }
+        captured.last = captured[#captured]
+        return true
+    end
+    WorldBoss.announce("The A. Mesmer", false, flavor)
+    check("World Boss: spawn goes to Discord",
+        captured.last and captured.last.announcement and captured.last.announcement.discord ~= false
+            and captured.last.announcement.title == "World Boss")
+    WorldBoss.announce("The A. Mesmer", true, flavor)
+    check("World Boss: 10-minute reminder stays in game",
+        captured.last and captured.last.announcement and captured.last.announcement.discord == false)
+    WorldBoss.defeated()
+    check("World Boss: defeat goes to Discord",
+        captured.last and captured.last.text:find("defeated", 1, true)
+            and captured.last.announcement and captured.last.announcement.discord ~= false)
+    doBroadcastMessage = original
+end
+
 function onSay(cid, words, param, channel)
     tester, passed, failed = cid, 0, 0
     local friend = getPlayerByName(param ~= "" and param or "-")
@@ -3571,7 +3846,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "habitat", testPokemonHabitat }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

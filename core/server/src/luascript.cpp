@@ -2599,6 +2599,9 @@ void LuaScriptInterface::registerFunctions()
 	//getPlayerDueling(cid)
 	lua_register(m_luaState, "getPlayerDueling", LuaScriptInterface::luaGetPlayerDueling);
 
+	//setPlayerDueling(cid, dueling)
+	lua_register(m_luaState, "setPlayerDueling", LuaScriptInterface::luaSetPlayerDueling);
+
 	//getPlayerDuelPokemonRemaing(cid)
 	lua_register(m_luaState, "getPlayerDuelPokemonRemaing", LuaScriptInterface::luaGetPlayerDuelPokemonRemaing);
 
@@ -6271,6 +6274,7 @@ int32_t LuaScriptInterface::luaGetDiscordBridgeInfo(lua_State* L)
 	setFieldBool(L, "accountLinking", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING));
 	setFieldBool(L, "boosterRewards", g_config.getBool(ConfigManager::DISCORD_BRIDGE_ACCOUNT_LINKING)
 		&& g_config.getBool(ConfigManager::DISCORD_BRIDGE_BOOSTER_REWARDS));
+	setFieldBool(L, "staffChat", g_config.getBool(ConfigManager::DISCORD_BRIDGE_STAFF_CHAT));
 	createTable(L, "booster");
 	setField(L, "weekly", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_WEEKLY));
 	setField(L, "loyaltyEvery", g_config.getNumber(ConfigManager::DISCORD_BRIDGE_BOOSTER_LOYALTY_EVERY));
@@ -12613,6 +12617,24 @@ int32_t LuaScriptInterface::luaGetPlayerDueling(lua_State* L)
 	ScriptEnviroment* env = getEnv();
 	if(const Player* player = env->getPlayerByUID(popNumber(L)))
 	    lua_pushboolean(L, player->getDueling());
+    else
+    {
+        errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
+        lua_pushboolean(L, false);
+    }
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetPlayerDueling(lua_State* L)
+{
+	//setPlayerDueling(cid, dueling)
+	bool dueling = popBoolean(L);
+	ScriptEnviroment* env = getEnv();
+	if(Player* player = env->getPlayerByUID(popNumber(L)))
+	{
+	    player->setDueling(dueling);
+	    lua_pushboolean(L, true);
+    }
     else
     {
         errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));

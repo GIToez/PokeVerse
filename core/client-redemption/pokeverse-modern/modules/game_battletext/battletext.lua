@@ -385,12 +385,13 @@ end
 local function addBubble(cid, text, ms)
     local map = mapPanel()
     local creature = g_map.getCreatureById(cid)
-    if not map or not creature then
+    local pos = creature and creature:getPosition()
+    if not map or not creature or not pos then
         return
     end
     local trainer = bubbles[cid]
     if not trainer then
-        trainer = { list = {}, pos = creature:getPosition() }
+        trainer = { list = {}, pos = pos }
         bubbles[cid] = trainer
     end
     local bubble = {
@@ -419,6 +420,9 @@ end
 -- where the trainer's sprite is drawn this frame: its tile, eased back toward the one it is walking from
 local function trainerOffset(trainer, creature)
     local pos = creature:getPosition()
+    if not pos then
+        return 0, 0
+    end
     if not samePos(pos, trainer.pos) then
         trainer.from, trainer.pos = trainer.pos, pos
     end
@@ -442,7 +446,8 @@ local function updateBubbles(map, now, z)
         if #list == 0 then
             bubbles[cid] = nil
         else
-            local rect = creature and creature:getPosition().z == z and map:getTileRect(creature:getPosition())
+            local pos = creature and creature:getPosition()
+            local rect = pos and pos.z == z and map:getTileRect(pos)
             if not rect or rect.width <= 0 then
                 for _, bubble in ipairs(list) do
                     bubble.widget:hide()
@@ -505,7 +510,11 @@ local function update()
         return
     end
     local now = g_clock.millis()
-    local z = player:getPosition().z
+    local playerPos = player:getPosition()
+    if not playerPos then
+        return
+    end
+    local z = playerPos.z
     updateFloaters(map, now, z)
     updateBubbles(map, now, z)
     if #floaters == 0 and next(bubbles) == nil then

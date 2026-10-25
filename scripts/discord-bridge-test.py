@@ -649,6 +649,7 @@ def main():
     if args.link_test:
         check("welcome lists playerSessions and accountLinking features",
               {"playerSessions", "accountLinking"} <= set(b.welcome.get("features", [])), str(b.welcome))
+    check("welcome lists staffChat", "staffChat" in b.welcome.get("features", []), str(b.welcome))
     boot = b.welcome["bootId"]
     b.pump(2)
     states = [e["event"]["state"] for e in b.events if e["event"]["kind"] == "server_state"]
@@ -716,6 +717,39 @@ def main():
     speaker.say_channel(7, marker)
     e = b.wait_event(lambda ev: ev["kind"] == "chat" and ev.get("text") == marker, 10)
     check("game chat -> bridge event", e is not None and e["event"]["author"] == speaker_name and e["event"]["channelId"] == 7)
+    check("Global EN stays a plain chat event", e is not None and e["event"].get("kind") == "chat"
+          and e["event"].get("room") is None, str(e))
+
+    speaker.open_channel(4)
+    speaker.open_channel(2)
+    speaker.collect(0.5)
+    tutor_marker = "tutor room %d" % int(time.time())
+    speaker.say_channel(4, tutor_marker)
+    e = b.wait_event(lambda ev: ev["kind"] == "staff_chat" and ev.get("text") == tutor_marker, 10)
+    check("Counselor line is staff_chat tutors", e is not None and e["event"].get("room") == "tutors"
+          and e["event"].get("scope") == "admin" and e["event"].get("channelId") == 4
+          and e["event"].get("author") == speaker_name, str(e))
+    check("Counselor line is not a public chat event",
+          not [x for x in b.events if x["event"]["kind"] == "chat" and x["event"].get("text") == tutor_marker])
+    gm_marker = "gm room %d" % int(time.time())
+    speaker.say_channel(2, gm_marker)
+    e = b.wait_event(lambda ev: ev["kind"] == "staff_chat" and ev.get("text") == gm_marker, 10)
+    check("Staff line is staff_chat gamemasters", e is not None and e["event"].get("room") == "gamemasters"
+          and e["event"].get("scope") == "admin" and e["event"].get("channelId") == 2
+          and e["event"].get("author") == speaker_name, str(e))
+
+    r = b.request("chat.staff", {"room": "tutors", "author": "Pat", "text": "tutor from discord"})
+    check("chat.staff tutors delivered", r and r["ok"] and r["result"]["delivered"] >= 1, str(r))
+    speaker.collect(2)
+    check("chat.staff tutors shown in Counselor",
+          speaker.received(pt.pstr("[Discord] Pat") + struct.pack("<HBH", 0, 7, 4) + pt.pstr("tutor from discord")))
+    r = b.request("chat.staff", {"room": "gamemasters", "author": "Pat", "text": "gm from discord"})
+    check("chat.staff gamemasters delivered", r and r["ok"] and r["result"]["delivered"] >= 1, str(r))
+    speaker.collect(2)
+    check("chat.staff gamemasters shown in Staff",
+          speaker.received(pt.pstr("[Discord] Pat") + struct.pack("<HBH", 0, 7, 2) + pt.pstr("gm from discord")))
+    r = b.request("chat.staff", {"room": "help", "author": "Pat", "text": "nope"})
+    check("chat.staff rejects a bad room", r and not r["ok"] and r["error"]["code"] == "invalid_params", str(r))
 
     r = b.request("chat.send", {"author": "Jim", "text": "hello from discord \u00e9 \U0001F600 @everyone"})
     check("chat.send delivered", r and r["ok"] and r["result"]["delivered"] >= 2, str(r))

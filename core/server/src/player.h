@@ -931,7 +931,7 @@ class Player : public Creature, public Cylinder
 		bool isPartyDuelInviting(const Player* player) const;
 		bool isOpponentPartyDuel(const Player* player) const;
 		
-		bool getBattleing() {return battleing;}
+		bool getBattleing() const {return battleing;}
 		void setBattleing(bool _battleing) {battleing = _battleing;}
 		
 		bool canAcceptTradeItem(Item* item);

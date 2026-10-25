@@ -24751,12 +24751,14 @@
 	<item id="18645" article="a" name="great golden bug" />
 	<item id="18646" article="an" name="old respect box" />
 	<item id="18648" article="a" name="tree" />
-	<item id="18649" article="a" name="ball pillar">
+	<item id="18649" article="a" name="pokemon habitat">
+		<attribute key="description" value="An older habitat that still holds a Pokemon. Use it to take the ball back." />
 		<attribute key="forceSerialize" value="1" />
 		<attribute key="forceTransferToDepot" value="1" />
 		<attribute key="weight" value="090" />
 	</item>
-	<item id="18650" article="a" name="ball pillar">
+	<item id="18650" article="a" name="pokemon habitat">
+		<attribute key="description" value="Place this in your house. Drop a charged Poke Ball on it, or use the stand on a ball in your bag. That Pokemon walks the house. The ball looks the same as in your bag." />
 		<attribute key="forceSerialize" value="1" />
 		<attribute key="forceTransferToDepot" value="1" />
 	</item>

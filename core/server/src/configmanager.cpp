@@ -328,6 +328,7 @@ bool ConfigManager::load()
 	m_confBool[DISCORD_BRIDGE_ACCOUNT_LINKING] = getGlobalBool("discordBridgeAccountLinking", true);
 	m_confBool[DISCORD_BRIDGE_BOOSTER_REWARDS] = getGlobalBool("discordBridgeBoosterRewards", false);
 	m_confBool[DISCORD_BRIDGE_BOOST_PERKS] = getGlobalBool("discordBridgeBoostPerks", false);
+	m_confBool[DISCORD_BRIDGE_STAFF_CHAT] = getGlobalBool("discordBridgeStaffChat", true);
 	m_confString[DISCORD_BRIDGE_HOST] = getGlobalString("discordBridgeHost", "127.0.0.1");
 	m_confString[DISCORD_BRIDGE_SECRET] = getGlobalString("discordBridgeSecret", "");
 	m_confNumber[DISCORD_BRIDGE_PORT] = getGlobalNumber("discordBridgePort", 7199);

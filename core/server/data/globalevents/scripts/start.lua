@@ -163,67 +163,8 @@ STARTUP[#STARTUP + 1] = { -- Quest Stuff
 }
 
 STARTUP[#STARTUP + 1] = {
-    msg = "Loading Ball Pillars...",
-    action = function()
-        local r = db.getResult("SELECT `positionx`, `positiony`, `positionz`, `attributes`, `ball_id`, `creature_name`, `creature_sex` FROM `ball_pillars` WHERE `world_id` = ".. getConfigValue("worldId") ..";")
-        if (r:getID() ~= -1) then
-            repeat
-                local pos = {x = r:getDataInt("positionx"), y = r:getDataInt("positiony"),
-                    z = r:getDataInt("positionz")}
-
-                if (getTileItemById(pos, 18649) and isItem(getTileItemById(pos, 18649))) then
-                    local ball = doCreateItemEx(r:getDataInt("ball_id"), 1)
-                    if (ball) then
-                        doItemLoadAttributes(ball, "attributes", r)
-
-                        local npc = doCreateNpc(table.random({"Pillar Model", "Pillar Model Slow", "Pillar Model Fast"}), pos)
-                        
-                        if (npc) then
-                            pos = getPositionAdjacent(npc, pos)
-                            if (pos and getHouseFromPos(pos)) then -- Just to spawn at another position, diff from the Pillar
-                                npc = doCreateNpc(table.random({"Pillar Model", "Pillar Model Slow", "Pillar Model Fast"}), pos)
-                            end
-                        end
-                        
-                        if (npc) then
-                            setNpcHouser(npc, true)
-                            setCreatureNickname(npc, r:getDataString("creature_name"))
-
-                            local outfit = getBallCurrentAddon(ball)
-                            if (outfit) then
-                                doSetCreatureOutfit(npc, outfit, -1)
-                            else
-                                doCreatureChangeOutfit(npc, getMonsterInfo(getBallPokemonName(ball)).outfit)
-                            end
-
-                            local sex = r:getDataInt("creature_sex")
-                            if (sex == POKEMON_SEX_MALE) then
-                                doCreatureSetSkullType(npc, SKULL_BLACK)
-                            elseif (sex == POKEMON_SEX_FEMALE) then
-                                doCreatureSetSkullType(npc, SKULL_RED)
-                            else
-                                doCreatureSetSkullType(npc, SKULL_YELLOW)
-                            end
-                            
-                        else
-                            log(LOG_TYPES.ERROR, "onStartup::LoadBallPillars - Can't create NPC.", pos)
-                        end
-                    else
-                        log(LOG_TYPES.ERROR, "onStartup::LoadBallPillars - Can't create ball.", pos)
-                    end
-
-                    if (ball) then
-                        doRemoveItem(ball)
-                    end
-
-                else
-                    db.executeQuery("DELETE FROM `ball_pillars` WHERE positionx='".. pos.x .. "' and positiony='" ..
-                            pos.y .."' and positionz='".. pos.z .."' and world_id='" .. getConfigValue("worldId") .. "';")
-                end
-            until not r:next()
-            r:free()
-        end
-    end
+    msg = "Loading Pokemon Habitats...",
+    action = PokemonHabitat.onStartup
 }
 
 STARTUP[#STARTUP + 1] = {

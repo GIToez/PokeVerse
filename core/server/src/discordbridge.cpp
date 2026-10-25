@@ -404,6 +404,11 @@ void DiscordBridge::onAuthenticated(DiscordBridgeSession_ptr session)
 		welcome << (first ? "" : ",") << "\"boostPerks\"";
 		first = false;
 	}
+	if(g_config.getBool(ConfigManager::DISCORD_BRIDGE_STAFF_CHAT))
+	{
+		welcome << (first ? "" : ",") << "\"staffChat\"";
+		first = false;
+	}
 	// every broadcast as an "announcement" event, and the calendar.range request
 	welcome << (first ? "" : ",") << "\"announcements\",\"calendar\"";
 

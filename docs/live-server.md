@@ -208,7 +208,8 @@ The health check account is always marked verified. To let someone in by hand:
 - The game server runs as the systemd service `pokeverse-server`. systemd restarts it after
   a crash or a restart. The machine and the database are never restarted.
 - Daily restart at `LIVE_DAILY_RESTART_TIME` (server time zone `LIVE_TIMEZONE`). Players
-  are warned 30, 15, 10, 5 and 1 minutes and 30 and 10 seconds before.
+  are warned 30, 15, 10, 5 and 1 minutes and 30 and 10 seconds before. Discord `#server-status`
+  reads the next restart from `server.status` (`restart.at` / `restart.reason`).
 - Before stopping, the server kicks and saves every player (character, Pokémon, items,
   storages) and saves the houses and global data.
 

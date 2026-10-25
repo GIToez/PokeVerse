@@ -3,7 +3,8 @@
 
 Every monster in core/server/data/monster/monsters.xml with <voice sentence="..."/> lines gives
 its dex number (from the server's config/pokemonsNumbers.lua). When a Pokemon says one of
-those lines the client plays /sounds/cries/<number>.ogg. Summons can have nicknames, so the
+those lines the client plays /sounds/voice_cries/<number>.ogg (falling back to /sounds/cries/).
+Summons can have nicknames, so the
 line itself is the key; a line used by more than one species is false and the client falls
 back to the speaker's name (CryNames).
 
