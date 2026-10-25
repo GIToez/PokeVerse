@@ -125,7 +125,8 @@ so. Items marked **To decide** need an answer before work starts.
 Items 1 to 5 and 7 are done.
 
 Alongside, as small separate changes: what's left of the
-[bug fixes and small ideas](#11-bug-fixes-and-small-ideas) (hunting task time limit),
+[bug fixes and small ideas](#11-bug-fixes-and-small-ideas) (hunting task time limit, Discord
+catches and evolutions),
 [switching off the old PSoul and anniversary content](#13-switch-off-the-old-psoul-and-anniversary-content),
 the [event calendar and double shiny](#15-daily-login-rewards-and-events),
 [reports to Discord forums](#16-reports-and-feature-requests-to-discord-forums), the website's
@@ -1062,6 +1063,12 @@ Team Rocket and other factions, separate from vocations:
 
 From the `#notes` channel:
 
+- **Discord catches (to do):** stop posting common catches. Shiny catches still get a post
+  in `#pokemon-catches`. The bot already has catch modes `all`, `rare_only`,
+  `shiny_legendary_only` and `off`; this drops the ordinary ones and keeps the shinies.
+- **Evolutions on Discord (to do):** an evolution must not be announced. The Pokédex counts
+  an evolution as a caught Pokémon (`doPokedexObtained` in `010-pokedex.lua`), and that
+  must not show up in Discord at all.
 - **Look text for field moves (done):** looking at an object a field move works on says
   so, for example "You see a stone. It looks like it can be smashed." for the Rock Smash
   stone (item 1285), and the same for holes, grass, nest trees, waterfalls, big rocks and
