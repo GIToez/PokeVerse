@@ -2886,11 +2886,15 @@ local function testLegendaries(cid, friend, arena)
             -- the tester counts as 20 to 30 tiles from it for the area signs (not moved: the catch throws
             -- that follow use the tiles next to the tester)
             local there, spot = getCreaturePosition(raikou), nil
+            -- every tile of the square ring r tiles out (it spawns anywhere: some rings are mostly water)
             for r = 20, 30 do
-                for _, d in ipairs({ { -r, 0 }, { r, 0 }, { 0, -r }, { 0, r }, { -r, -r }, { r, r }, { -r, r }, { r, -r } }) do
-                    local pos = { x = there.x + d[1], y = there.y + d[2], z = there.z }
-                    if (not spot and W.isGoodPoint(pos)) then spot = pos end
+                for i = -r, r do
+                    for _, d in ipairs({ { i, -r }, { i, r }, { -r, i }, { r, i } }) do
+                        local pos = { x = there.x + d[1], y = there.y + d[2], z = there.z }
+                        if (not spot and W.isGoodPoint(pos)) then spot = pos end
+                    end
                 end
+                if (spot) then break end
             end
             check("Legendary: found a spot 20 to 30 tiles from it for the area signs", spot ~= nil)
             if (spot) then
