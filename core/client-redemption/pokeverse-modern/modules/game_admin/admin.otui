@@ -1161,9 +1161,10 @@ AdminWindow < UIWindow
 
     AdminScrollBar
       id: itemsScroll
-      anchors.top: items.top
-      anchors.bottom: items.bottom
+      height: 132
+      anchors.top: itemsLabel.bottom
       anchors.right: parent.right
+      margin-top: 9
 
     PVGreenButton
       id: place
