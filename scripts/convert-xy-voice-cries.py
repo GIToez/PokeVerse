@@ -13,7 +13,7 @@ This script does not download anything. Point it at a folder you already have
 
 Tracks named like "001 Kanto - Bulbasaur.mp3" or "Kanto - Tornadus (Therian).flac"
 map to a dex number. The first / base form for a number wins; later form extras
-are skipped. Needs ffmpeg.
+are skipped. Each cry is peak-normalized to the battle sounds' level. Needs ffmpeg.
 """
 import argparse
 import os
@@ -96,11 +96,22 @@ def dex_for(number, species, names):
     return names.get(folded)
 
 
+PEAK_DB = -1.0  # the battle sounds in /sounds/effects peak at about -1 dB
+
+
+def peak_db(src):
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-i", src, "-af", "volumedetect", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    match = re.search(r"max_volume: (-?[\d.]+) dB", out)
+    return float(match.group(1)) if match else PEAK_DB
+
+
 def convert(src, dest):
     subprocess.check_call(
         [
             "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
             "-i", src,
+            "-af", "volume=%.1fdB" % (PEAK_DB - peak_db(src)),
             "-ac", "2", "-ar", "44100", "-c:a", "libvorbis", "-b:a", "64k",
             dest,
         ]

@@ -106,9 +106,13 @@ def main():
         shutil.copyfile(src, dest)
 
     binary = args.binary.strip("/")
+    # GitHub Pages answers 404 for dotfiles and dot folders, and one missing file stops the whole
+    # update before the engine and the updater's own files are written
     for root, dirs, names in os.walk(package):
-        dirs.sort()
+        dirs[:] = sorted(d for d in dirs if not d.startswith("."))
         for name in sorted(names):
+            if name.startswith("."):
+                continue
             src = os.path.join(root, name)
             rel = os.path.relpath(src, package).replace(os.sep, "/")
             if rel == binary or rel in skip:

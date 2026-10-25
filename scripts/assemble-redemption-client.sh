@@ -162,6 +162,8 @@ if [ "$classic" = 0 ] && [ -d "$root/build/map-pictures" ]; then
 fi
 # Photoshop sources: the client cannot load them, and background.psd alone is 16 MB
 find "$out/data" -name '*.psd' -delete
+# .gitkeep, .gitignore, editor projects: the updater site (GitHub Pages) can't serve dotfiles
+find "$out/data" "$out/modules" -mindepth 1 -name '.*' -prune -exec rm -rf {} +
 
 # small changes to Redemption's own modules, kept as patches so they stay reviewable
 if [ "$classic" = 0 ]; then
