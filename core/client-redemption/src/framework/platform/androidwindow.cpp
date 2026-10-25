@@ -27,6 +27,7 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 #include "framework/core/clock.h"
 #include <framework/core/eventdispatcher.h>
+#include <framework/luaengine/luainterface.h>
 #include <android/keycodes.h>
 #include <android/log.h>
 #define ALOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "OTClientMobile", __VA_ARGS__)
@@ -489,6 +490,11 @@ void AndroidWindow::handleCmd(int32_t cmd) {
             ALOGD("LOW_MEMORY: ignoring surface destruction to keep rendering alive");
             // Do NOT destroy the surface on low memory - it prevents recovery
             // since APP_CMD_INIT_WINDOW won't be sent again.
+            break;
+        case APP_CMD_PAUSE:
+            // Lua stops running while the app is in the background, and Android may kill it there
+            // without a word, so this is the last chance to save what the player has
+            g_lua.callGlobalField("g_app", "onPause");
             break;
         case APP_CMD_TERM_WINDOW:
             ALOGD("TERM_WINDOW: setting visible=false");

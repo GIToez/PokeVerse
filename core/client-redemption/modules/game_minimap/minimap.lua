@@ -103,9 +103,26 @@ function mapController:onInit()
     self.ui.minimapBorder.minimap:getChildById('resetButton'):hide()
 end
 
+local SAVE_EVERY_MS = 3 * 60 * 1000
+
+local function saveMinimap()
+    if otmm then
+        g_minimap.saveOtmm('/minimap.otmm')
+    else
+        g_map.saveOtcm('/minimap_' .. g_game.getClientVersion() .. '.otcm')
+    end
+    mapController.ui.minimapBorder.minimap:save()
+    g_settings.save()
+end
+
 function mapController:onGameStart()
     mapController:registerEvents(g_game, {
         onChangeWorldTime = onChangeWorldTime
+    })
+
+    -- the game end save is missed when the client crashes or Android kills it in the background
+    mapController:registerEvents(g_app, {
+        onPause = saveMinimap
     })
 
     mapController:registerEvents(LocalPlayer, {
@@ -131,17 +148,11 @@ function mapController:onGameStart()
     end
 
     self.ui.minimapBorder.minimap:load()
+    self:cycleEvent(saveMinimap, SAVE_EVERY_MS)
 end
 
 function mapController:onGameEnd()
-    -- Save Map
-    if otmm then
-        g_minimap.saveOtmm('/minimap.otmm')
-    else
-        g_map.saveOtcm('/minimap_' .. g_game.getClientVersion() .. '.otcm')
-    end
-
-    self.ui.minimapBorder.minimap:save()
+    saveMinimap()
 end
 
 function mapController:onTerminate()
