@@ -8,6 +8,7 @@
 --   {k = "miss", c = attacker, t = target}                       then "MISS!" over the attacker
 --   {k = "say", c = speaker, s = kind, x = text, n = nickname, t = type}  then the speaker says x: calling out or
 --     recalling a Pokemon, an order, or throwing a ball, drawn as a bubble like a call-out
+-- NPCs' public lines (their idle voices) are bubbles too, wrapped and kept up longer the longer they are.
 -- In New, g_game.onAnimatedText (protocolgameparse.cpp) swallows the battle words and numbers and draws them
 -- again here; takeOverhead (game_console) swallows the call-outs and wild yells, which stay in Local Chat.
 -- Numbers and outcomes float over the Pokemon, stat changes beside it and statuses under its feet. Back to
@@ -381,7 +382,7 @@ local function sayText(text, nick, element)
     return segment(text:sub(1, at - 1), INK) .. segment(nick, typeColor(element)) .. segment(text:sub(at + #nick), INK)
 end
 
-local function addBubble(cid, text)
+local function addBubble(cid, text, ms)
     local map = mapPanel()
     local creature = g_map.getCreatureById(cid)
     if not map or not creature then
@@ -397,6 +398,7 @@ local function addBubble(cid, text)
         tail = g_ui.createWidget('BattleTextTail', map),
         text = text,
         born = g_clock.millis(),
+        ms = ms or BUBBLE_MS,
         rise = -6,
     }
     bubble.widget:hide()
@@ -432,7 +434,7 @@ local function updateBubbles(map, now, z)
     for cid, trainer in pairs(bubbles) do
         local list = trainer.list
         for i = #list, 1, -1 do
-            if now - list[i].born >= BUBBLE_MS then
+            if now - list[i].born >= list[i].ms then
                 destroyBubble(table.remove(list, i))
             end
         end
@@ -461,8 +463,8 @@ local function updateBubbles(map, now, z)
                     local age = now - bubble.born
                     bubble.rise = bubble.rise + (above - bubble.rise) * 0.35
                     local alpha = BUBBLE_ALPHA[slot] * math.min(1, age / 120)
-                    if age > BUBBLE_MS - 300 then
-                        alpha = alpha * math.max(0, (BUBBLE_MS - age) / 300)
+                    if age > bubble.ms - 300 then
+                        alpha = alpha * math.max(0, (bubble.ms - age) / 300)
                     end
                     local w, h = bubble.widget:getWidth(), bubble.widget:getHeight()
                     local y = math.floor(bottom - h - bubble.rise)
@@ -587,10 +589,58 @@ local function onAnimatedText(text, color, pos)
     return false
 end
 
--- game_console: true when a creature's overhead line is a call-out or wild yell drawn (or hidden) here.
+local NPC_LINE = 32 -- characters per line in an NPC's bubble
+
+local function wrap(text)
+    local lines, line = {}, ''
+    for word in text:gmatch('%S+') do
+        if line ~= '' and #line + 1 + #word > NPC_LINE then
+            table.insert(lines, line)
+            line = word
+        else
+            line = line == '' and word or line .. ' ' .. word
+        end
+    end
+    if line ~= '' then
+        table.insert(lines, line)
+    end
+    return table.concat(lines, '\n')
+end
+
+local function npcAt(name, pos)
+    local tile = g_map.getTile(pos)
+    for _, creature in ipairs(tile and tile:getCreatures() or {}) do
+        if creature:isNpc() and creature:getName() == name then
+            return creature
+        end
+    end
+end
+
+-- an NPC's public lines (its idle voices and anything it says aloud) as a bubble; its dialogue stays in the NPC window
+local function takeNpcSay(name, mode, message, pos)
+    if mode ~= MessageModes.Say and mode ~= MessageModes.Yell or not pos then
+        return false
+    end
+    local npc = npcAt(name, pos)
+    local text = npc and wrap(clean(message))
+    if not text or text == '' then
+        return false
+    end
+    addBubble(npc:getId(), segment(text, INK), math.min(6000, 2000 + #text * 40))
+    wake()
+    return true
+end
+
+-- game_console: true when a creature's overhead line is a call-out, wild yell or NPC line drawn (or hidden) here.
 -- The speaker is found by where it stands: the names on the map carry the level, the chat's do not.
 function takeOverhead(name, mode, message, pos)
-    if #says == 0 or not enabled() or type(message) ~= 'string' then
+    if not enabled() or type(message) ~= 'string' then
+        return false
+    end
+    if takeNpcSay(name, mode, message, pos) then
+        return true
+    end
+    if #says == 0 then
         return false
     end
     local now = g_clock.millis()
