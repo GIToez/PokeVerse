@@ -402,6 +402,8 @@
 	discordBridgeBoostPerkExpPercent = 5 -- level 1 and up: kill experience
 	discordBridgeBoostPerkCatchPercent = 5 -- level 2 and up: catch chance (a multiplier, 40% becomes 42%)
 	discordBridgeBoostPerkShinyPercent = 10 -- level 3: shiny chance (1 in 4,096 becomes about 1 in 3,724)
+	-- In-game Counselor (Tutor+) and Staff (Gamemaster+) channels with the bot's private rooms.
+	discordBridgeStaffChat = true
 
 	-- Daily game server restart with in-game warnings (30, 15, 10, 5 and 1 minutes, then 30 and
 	-- 10 seconds). Players, Pokemon, items and the world are saved before the server stops;

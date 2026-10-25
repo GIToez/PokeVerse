@@ -43,6 +43,7 @@ All settings (defaults in `config.lua`):
 | `discordBridgeBoostPerkExpPercent` | `5` | Level 1 and up: kill experience +this % (`0` = no perk). |
 | `discordBridgeBoostPerkCatchPercent` | `5` | Level 2 and up: catch chance x(1 + this/100) (`0` = no perk). |
 | `discordBridgeBoostPerkShinyPercent` | `10` | Level 3: shiny chance x(1 + this/100) (`0` = no perk). |
+| `discordBridgeStaffChat` | `true` | Relay the in-game Counselor (Tutor+) and Staff (Gamemaster+) channels with the bot's private `#tutor-room` and `#gm-room`. |
 
 On startup the server prints either `>> Discord bridge listening on 127.0.0.1:7199 ...` or
 the reason it is disabled.
@@ -87,7 +88,7 @@ display become `?`.
 server -> {"type":"hello","protocol":1,"nonce":"<64 hex chars>"}
 client -> {"type":"auth","hmac":"<hex HMAC-SHA256(secret, nonce)>"}
 server -> {"type":"welcome","protocol":1,"bootId":"<id>","serverName":"PokeVerse","queued":N,
-           "features":["playerSessions","accountLinking","boosterRewards","boostPerks"]}
+           "features":["playerSessions","accountLinking","boosterRewards","boostPerks","staffChat"]}
        or {"type":"error","code":"auth_failed"} and the connection is closed
 ```
 
@@ -97,8 +98,8 @@ The client must authenticate within 10 seconds.
 
 The protocol version stays `1`: everything added later is optional. `features` lists the
 optional parts the server has switched on (`playerSessions`, `accountLinking`,
-`boosterRewards`, only when account linking is on too, `boostPerks`, `announcements` and
-`calendar`). Servers
+`boosterRewards`, only when account linking is on too, `boostPerks`, `staffChat`,
+`announcements` and `calendar`). Servers
 built before these features send no `features` field; clients must treat a missing field
 as an empty list and keep using the rest of the protocol. Clients must ignore event kinds
 and fields they do not know. Unknown request methods are answered with `unknown_method`.
@@ -125,6 +126,7 @@ detect restarts and de-duplicate deliveries.
 | `broadcast` | `/b`, client broadcast (`Game::playerBroadcastMessage`), `/bc` | `source` (`gm`, `staff`), `author` (GM name for `gm`), `text`. Still sent with the `announcements` feature, for older bots. |
 | `announcement` | every server-wide announcement but the tips (`092-announcements.lua`) | `category` (`event`, `legendary`, `server`, `staff`, `milestone`, `news`), `title` (optional), `text`, `full` (the message as shown in game), `source` (the script, like `077-eventCalendar`), `author` (staff), `ping` (`everyone`, `here`, `verified` or a role name; staff only), `calendar {key, id, state (started, ended), type (holiday, server, staff)}` |
 | `chat` | `onTalkChannel` on Game-Chat[EN-US] (channel 7) | `channelId`, `author`, `level`, `text` |
+| `staff_chat` | `onTalkChannel` on Counselor (4) or Staff (2) | `scope` (`admin`), `room` (`tutors`, `gamemasters`), `channelId`, `author`, `level`, `text` |
 | `catch` | `catchPokemon`, `catchPokemonWithSafariBall`, `catchPokemonWithSoulBall` after the ball was created | `trainer`, `species`, `baseSpecies`, `dexNumber`, `level`, `sex`, `shiny`, `legendary`, `extraPoints`, `ball`, `safari` |
 | `spawn` | shiny or legendary wild monsters only | `species`, `baseSpecies`, `dexNumber`, `level`, `shiny`, `legendary`, `source`, `startup`, `creatureId`, `position {x,y,z}`, `nearestTown` (optional) |
 | `legendary` | wild legendaries (`078-wildLegendaries.lua`) | `event` (`spawn`, `sighting`, `flee`, `end`, `caught`, `set`, `sign`, `woke`, `revealed`, `clash`, `calm`, `reward`), `encounterId`, `species`, `dexNumber`, `text` (the in-game message, optional); spawn: `tier`, `area`, `position {x,y,z}`, `nearestTown`, `endsAt` (absent while asleep), `source` (`schedule`, `staff`, `test`), `health`, `level`, `asleep`; set: `setId`, `setName`, `level`, `asleep`, `source`, `members[] {encounterId, species, dexNumber, tier, area, position, endsAt}` (no member `spawn` events); sign (Mewtwo's disturbance, no encounter): `area`, `endsAt`; woke: `trainer`, `area`, `position`, `healthPercent`, `level`; revealed (Mew, who sent no `spawn`): `trainer`, `disguise`, `tier`, `area`, `level`, `endsAt`, `healthPercent`; clash and calm: `other`, `otherEncounterId`, `area`; reward (no encounter): `trainer`; sighting and flee: `area`, `position`, `nearestTown`, `healthPercent`; end: `reason` (`defeated`, `fled`, `staff`, `restart`, `vanished`), and for `defeated` also `area`, `trainers[]` (10% of the damage or more), `topTrainer`; caught: `trainer` |
@@ -146,7 +148,9 @@ Notes:
   weekend calendar events ping the Verified Trainer role). Global save warnings are sent as structured `restart_warning` events.
 - Chat: only messages that passed the channel's level/mute checks are forwarded. Messages
   written by the bot into the channel do not trigger `onTalkChannel`, so they are never
-  echoed back.
+  echoed back. Staff rooms use a separate `staff_chat` event (`tutors` = Counselor / Tutor
+  and up, `gamemasters` = Staff / Gamemaster and up). The bot never sends a channel id;
+  `chat.staff` takes `room` only.
 - Catch: failed throws never produce an event. If a caught Pokemon could not be delivered
   (no ball created) there is no event either. `extraPoints` is the ball's "+N" value at
   catch time, which the game always sets to 0.
@@ -198,11 +202,11 @@ server -> {"type":"response","requestId":"...","ok":true,"result":{...}}
        or {"type":"response","requestId":"...","ok":false,"error":{"code":"...","message":"..."}}
 ```
 
-Error codes: `invalid_params`, `unknown_method`, `internal`, plus the linking, booster and
-boost perk codes below.
+Error codes: `invalid_params`, `unknown_method`, `internal`, `unsupported` (`chat.staff`
+when `discordBridgeStaffChat` is off), plus the linking, booster and boost perk codes below.
 Requests that are not valid JSON objects are logged and ignored.
 
-All handlers are read-only except `chat.send`, which only displays a message, the
+All handlers are read-only except `chat.send` and `chat.staff`, which only display a message, the
 `link.*` requests, which only change `discord_account_links`, `report.setStatus`, which only
 changes that report, `booster.week`, which only adds a ledger row and the Soul Coins it pays, and
 `boost.level`, which only stores the server boost level.
@@ -210,6 +214,7 @@ changes that report, `booster.week`, which only adds a ledger row and the Soul C
 | Method | Params | Result |
 | --- | --- | --- |
 | `chat.send` | `author`, `text` | `delivered` (players who received it), `text` (as shown). Shown in channel 7 as `[Discord] <author>: <text>` (yellow). Control characters are removed, author max 24, text max 255 characters (client limit). |
+| `chat.staff` | `room` (`tutors`, `gamemasters`), `author`, `text` | `delivered`, `text`. Same prefix and limits as `chat.send`, in Counselor (4) or Staff (2). Never takes a channel id. `unsupported` when `discordBridgeStaffChat` is off. |
 | `trainer.lookup` | `name` | `{found:false}` or `found`, `name`, `level`, `vocation`, `guild` (optional), `online`, `caught`, `uniqueCaught`, `shinyCaught`, `duelWins`, `duelLosses`, `playersDefeated`, `tournamentsWon`, `achievements {earned,total,recent[]}`, `mastery` (optional), `card` (below) |
 | `pokemon.lookup` | `name` | `{found:false}` or `found`, `name`, `baseSpecies`, `dexNumber`, `generation`, `types[]`, `stats {attack,defense,specialAttack,specialDefense,health,energy}`, `description`, `evolutions[] {from,to,level,items}`, `moves[] {name,level}`, `abilities[]`, `specialAbilities[]`, `shiny`, `legendary`, `catchable`, `shinyVariant` |
 | `pokemon.search` | `query`, `limit` (max 25) | `names[]` (prefix matches first) |
