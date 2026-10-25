@@ -54,6 +54,10 @@ function onPokedexUpdate(pokemonNumber, status)
 end
 local shownNumber
 local pokepediaButton
+local voiceCryButton
+
+-- Blue RGB dot on /images/ui/dex.png (754x429), rightmost of the three painted buttons.
+local CRY_BUTTON = { left = 55, top = 107, size = 22 }
 
 local function bringToFront()
     addEvent(function()
@@ -70,14 +74,25 @@ local function bringToFront()
         end
         pokedexWindow:bindRectToParent()
         pokedexWindow:raise()
+        if voiceCryButton then
+            voiceCryButton:raise()
+        end
     end)
 end
 
-local function onInfo(pokemonId)
-    shownNumber = tonumber(pokemonId)
+local function setShown(number)
+    shownNumber = tonumber(number)
+    local known = shownNumber ~= nil
     if pokepediaButton then
-        pokepediaButton:setVisible(shownNumber ~= nil and modules.game_pokepedia ~= nil)
+        pokepediaButton:setVisible(known and modules.game_pokepedia ~= nil)
     end
+    if voiceCryButton then
+        voiceCryButton:setVisible(known)
+    end
+end
+
+local function onInfo(pokemonId)
+    setShown(pokemonId)
     bringToFront()
 end
 
@@ -102,9 +117,37 @@ local function createPokepediaButton()
     end
 end
 
+local function createVoiceCryButton()
+    if not pokedexWindow then
+        return
+    end
+    voiceCryButton = g_ui.createWidget('UIWidget', pokedexWindow)
+    voiceCryButton:setId('voiceCryButton')
+    voiceCryButton:setSize({ width = CRY_BUTTON.size, height = CRY_BUTTON.size })
+    voiceCryButton:addAnchor(AnchorTop, 'parent', AnchorTop)
+    voiceCryButton:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    voiceCryButton:setMarginTop(CRY_BUTTON.top)
+    voiceCryButton:setMarginLeft(CRY_BUTTON.left)
+    voiceCryButton:setTooltip(tr('Play cry'))
+    voiceCryButton:setFocusable(false)
+    voiceCryButton:hide()
+    voiceCryButton:raise()
+    voiceCryButton.onClick = function()
+        if shownNumber and modules.game_sounds and modules.game_sounds.playVoiceCry then
+            modules.game_sounds.playVoiceCry(shownNumber)
+        end
+    end
+end
+
 function onInit()
     legacyInit()
     createPokepediaButton()
+    createVoiceCryButton()
+    local previousUnknown = onPokedexInfoUnknown
+    function onPokedexInfoUnknown(...)
+        setShown(nil)
+        return previousUnknown(...)
+    end
     connect(g_game, { onPokedexOpen = bringToFront, onPokedexInfo = onInfo })
 end
 
@@ -113,6 +156,10 @@ function onTerminate()
     if pokepediaButton then
         pokepediaButton:destroy()
         pokepediaButton = nil
+    end
+    if voiceCryButton then
+        voiceCryButton:destroy()
+        voiceCryButton = nil
     end
     legacyTerminate()
 end
