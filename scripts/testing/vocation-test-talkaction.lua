@@ -2192,13 +2192,17 @@ local function testHalloween(cid)
     EventCalendar.setForced("halloween", true)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs are there during Halloween", present() == #spots, present() .. "/" .. #spots)
-    local left = 0
+    -- moved spots include pirates shifted one tile onto a ship. getNpcAtPosition looks one tile
+    -- around, so those still show from the old tile. Only the unreachable hall copies must be empty.
+    local halls = 0
     for _, spot in ipairs(moved) do
-        left = left + (getNpcAtPosition(spot.pos, spot.name) and 1 or 0)
+        if (spot.name == "Trevor" or spot.name == "Peter Paul") then
+            halls = halls + (getNpcAtPosition(spot.pos, spot.name) and 1 or 0)
+        end
     end
-    check("Halloween: Trevor and Peter Paul stand in the Union Room, not in the hall copies", #moved >= 2 and left == 0 and
+    check("Halloween: Trevor and Peter Paul stand in the Union Room, not in the hall copies", #moved >= 2 and halls == 0 and
         getNpcAtPosition(HalloweenEvent.NPC_MOVED["Trevor"], "Trevor") and getNpcAtPosition(HalloweenEvent.NPC_MOVED["Peter Paul"], "Peter Paul"),
-        #moved .. " " .. left)
+        halls)
     EventCalendar.setForced("halloween", false)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, present() .. "/" .. #spots)
