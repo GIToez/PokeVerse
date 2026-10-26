@@ -392,6 +392,7 @@ EV_YIELDS = {
     ["Ancient Charizard"] = { 0, 0, 0, 3, 0, 0 }, -- Charizard
     ["Ancient Venusaur"] = { 0, 0, 0, 2, 1, 0 }, -- Venusaur
     ["Angry Beedrill"] = { 0, 2, 0, 0, 1, 0 }, -- Beedrill
+    ["Guardian Alakazam"] = { 0, 0, 0, 3, 0, 0 }, -- Alakazam
     ["Angry Cubone"] = { 0, 0, 1, 0, 0, 0 }, -- Cubone
     ["Angry Diglett"] = { 0, 0, 0, 0, 0, 1 }, -- Diglett
     ["Angry Sandshrew"] = { 0, 0, 1, 0, 0, 0 }, -- Sandshrew

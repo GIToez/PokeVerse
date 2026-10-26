@@ -42,3 +42,12 @@ POKEMON["Mega Alakazam"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TRACE 
 POKEMON["Mega Alakazam"].portrait = 30284
 POKEMON["Mega Alakazam"].fastcallPortrait = 28927
 POKEMON["Mega Alakazam"].blockTransform = true
+
+-- Professor Oak's Key Stone quest (097-megaEvolution.lua): comes out of the crystal in Cerulean Cave
+POKEMON["Guardian Alakazam"] = table.deepcopy(POKEMON["Alakazam"])
+POKEMON["Guardian Alakazam"].atk = 100
+POKEMON["Guardian Alakazam"].def = 90
+POKEMON["Guardian Alakazam"].spAtk = 250
+POKEMON["Guardian Alakazam"].spDef = 180
+POKEMON["Guardian Alakazam"].evolutions = {}
+POKEMON["Guardian Alakazam"].blockTransform = true

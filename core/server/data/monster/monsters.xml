@@ -847,6 +847,7 @@
 	<monster name="Guardian Kabutops" file="Quest/guardian kabutops.xml"/>
 	<monster name="Pristine Kabutops" file="Quest/pristine kabutops.xml"/>
 	<monster name="Angry Beedrill" file="Quest/angry beedrill.xml"/>
+	<monster name="Guardian Alakazam" file="Quest/guardian alakazam.xml"/>
 	<monster name="Thief Aipom" file="Quest/thief aipom.xml"/>
 	<monster name="Thief Fearow" file="Quest/thief fearow.xml"/>
 	<monster name="Gluttonous Raticate" file="Quest/gluttonous raticate.xml"/>
