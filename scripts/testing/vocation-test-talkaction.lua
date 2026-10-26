@@ -3558,6 +3558,134 @@ local function testMegaDrops(cid)
     doPlayerRemoveItem(cid, y, getPlayerItemCount(cid, y))
 end
 
+local function testMegaQuest(cid)
+    local M = MegaEvolution
+    local quests = {}
+    for _, quest in ipairs(getNpcQuests("Professor Oak")) do
+        quests[quest.storage] = quest
+    end
+    local research, keyStone = quests[M.RESEARCH_QUEST], quests[M.KEY_STONE_QUEST]
+    check("mega quest: Professor Oak has the research and the Key Stone quests", research and keyStone
+        and research.requiredLevel == 60 and keyStone.blockStart)
+    if (not research or not keyStone) then
+        return
+    end
+    local stoneOf = {}
+    for _, stone in ipairs(MEGA_STONES) do
+        stoneOf[stone.name] = stone.itemId
+    end
+    local function names(list)
+        local out = {}
+        for _, stone in ipairs(list) do
+            out[#out + 1] = stone.name
+        end
+        table.sort(out)
+        return table.concat(out, ",")
+    end
+    local storages = { M.RESEARCH_QUEST, M.KEY_STONE_QUEST, M.KEY_STONE_FOUND, M.STONE_CHOICE,
+        playersStorages.megaResearch, playersStorages.megaStarter }
+    local saved = {}
+    for i, storage in ipairs(storages) do
+        saved[i] = getPlayerStorageValue(cid, storage)
+        setPlayerStorageValue(cid, storage, -1)
+    end
+
+    -- the starter's stone
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Squirtle")
+    local squirtle = names(M.starterStones(cid))
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Charmander")
+    local charmander = names(M.starterStones(cid))
+    check("mega quest: the stones of the starter Oak wrote down", squirtle == "Blastoisinite"
+        and charmander == "Charizardite X,Charizardite Y", squirtle .. " / " .. charmander)
+    setPlayerStorageValue(cid, playersStorages.megaStarter, -1)
+    local unknown = names(M.starterStones(cid))
+    local ball = newBall(cid, "Ivysaur", 30, POKEMON_SEX_MALE)
+    setBallOriginalTrainer(ball.uid, cid)
+    local older = names(M.starterStones(cid))
+    doRemoveItem(ball.uid)
+    check("mega quest: an older trainer's starter is the Pokemon with their own trainer mark, even evolved",
+        older == "Venusaurite" and (unknown == "Blastoisinite,Charizardite X,Charizardite Y,Venusaurite"
+        or M.STARTER_LINES[getPlayerStorageValue(cid, playersStorages.megaStarter)] == nil), older .. " / " .. unknown)
+
+    -- the research
+    setPlayerStorageValue(cid, M.RESEARCH_QUEST, QUEST_STATUS.STARTED)
+    quietly(function()
+        for _ = 1, 60 do M.onResearchDefeat(cid, "Charmander") end
+        for _ = 1, 50 do M.onResearchDefeat(cid, "Shiny Ivysaur") end
+        for _ = 1, 5 do M.onResearchDefeat(cid, "Rattata") end
+        M.onResearchDefeat(cid, "Groudon")
+        for _ = 1, 49 do M.onResearchDefeat(cid, "Gastly") end
+    end)
+    local have, need = M.researchProgress(cid)
+    local early = research.questRequest(cid)
+    quietly(function() M.onResearchDefeat(cid, "Haunter") end)
+    local done = research.questRequest(cid)
+    check("mega quest: 50 defeats from each of three Mega Stone lines, shinies count, others don't",
+        have == 149 and need == 150 and not early and done, have .. "/" .. need)
+    local logHave, logNeed = Quests.progress(cid, research)
+    check("mega quest: the quest log shows the research", logHave == 150 and logNeed == 150
+        and Quests.objective(research):find("three Mega Stone") ~= nil)
+
+    -- the crystal and its guardian
+    local crystal = getTileItemById(M.CRYSTAL, M.CRYSTAL_ITEM)
+    check("mega quest: the glowing crystal is in Cerulean Cave", isItem(crystal) and crystal.actionid == M.CRYSTAL_ACTION,
+        isItem(crystal) and crystal.actionid)
+    if (isItem(crystal)) then
+        local idle, after
+        quietly(function() idle = M.onCrystalUse(cid, crystal) end)
+        setPlayerStorageValue(cid, M.KEY_STONE_QUEST, QUEST_STATUS.STARTED)
+        local guardian
+        quietly(function() guardian = M.onCrystalUse(cid, crystal) end)
+        local second
+        quietly(function() second = M.onCrystalUse(cid, crystal) end)
+        check("mega quest: on the quest the crystal calls the Guardian Alakazam, once", idle == nil and isCreature(guardian)
+            and getCreatureName(guardian) == "Guardian Alakazam" and second == nil)
+        local keys = getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE)
+        if (isCreature(guardian)) then
+            quietly(function() M.onGuardianDeath(guardian, { cid }) end)
+        end
+        quietly(function() after = M.onCrystalUse(cid, crystal) end)
+        check("mega quest: defeating the guardian gives the Key Stone, once", not isCreature(guardian)
+            and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == keys + 1
+            and getPlayerStorageValue(cid, M.KEY_STONE_FOUND) == QUEST_STATUS.FINISHED
+            and after == nil)
+        doPlayerRemoveItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1)
+    end
+
+    -- the Mega Ring and the stone
+    local hadRing = M.ownsRing(cid)
+    local ring = not hadRing and doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1)
+    check("mega quest: showing Oak the Mega Ring ends the Key Stone quest", keyStone.questRequest(cid))
+    local said, say = {}, selfSay
+    selfSay = function(text) said[#said + 1] = text end
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Squirtle")
+    local before = getPlayerItemCount(cid, stoneOf["Blastoisinite"])
+    pcall(M.onKeyStoneQuestEnd, cid)
+    check("mega quest: a Squirtle starter gets Blastoisinite at once", getPlayerItemCount(cid, stoneOf["Blastoisinite"]) == before + 1
+        and getPlayerStorageValue(cid, M.STONE_CHOICE) == QUEST_STATUS.FINISHED)
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Charmander")
+    setPlayerStorageValue(cid, M.STONE_CHOICE, -1)
+    local x, y = getPlayerItemCount(cid, stoneOf["Charizardite X"]), getPlayerItemCount(cid, stoneOf["Charizardite Y"])
+    pcall(M.onKeyStoneQuestEnd, cid)
+    local asked = getPlayerStorageValue(cid, M.STONE_CHOICE) == QUEST_STATUS.STARTED and (said[#said] or ""):find("Charizardite X") ~= nil
+    local _, other = pcall(M.onStoneChoiceTalk, cid, "banana")
+    local _, picked = pcall(M.onStoneChoiceTalk, cid, "y")
+    selfSay = say
+    check("mega quest: a Charmander starter picks Charizardite X or Y", asked and other and picked
+        and getPlayerItemCount(cid, stoneOf["Charizardite Y"]) == y + 1 and getPlayerItemCount(cid, stoneOf["Charizardite X"]) == x
+        and getPlayerStorageValue(cid, M.STONE_CHOICE) == QUEST_STATUS.FINISHED and not M.onStoneChoiceTalk(cid, "y"))
+
+    doPlayerRemoveItem(cid, stoneOf["Blastoisinite"], 1)
+    doPlayerRemoveItem(cid, stoneOf["Charizardite Y"], 1)
+    if (ring) then
+        doRemoveItem(ring)
+    end
+    check("mega quest: the test's ring is gone again", M.ownsRing(cid) == hadRing)
+    for i, storage in ipairs(storages) do
+        setPlayerStorageValue(cid, storage, saved[i])
+    end
+end
+
 local function testMegaGauge(cid)
     if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
             or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
@@ -4680,7 +4808,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
