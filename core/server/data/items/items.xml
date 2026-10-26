@@ -24855,6 +24855,7 @@
 	</item>
 	<item id="18753" article="a" name="trainer card" />
 	<item id="18754" article="a" name="running shoes">
+		<attribute key="description" value="Worn in the key item slot, they make you a little faster. Unlike the bike, you can still call your Pokemon and battle." />
 		<attribute key="slotType" value="ring" />
 		<attribute key="speed" value="60" />
 		<attribute key="showattributes" value="1" />
@@ -35997,5 +35998,297 @@
 	<item id="30174" name="sand floor">
 		<attribute key="decayTo" value="231" />
 		<attribute key="duration" value="30" />
+	</item>
+	<item id="30175" article="an" name="empty mega ring">
+		<attribute key="description" value="A Mega Ring without its Key Stone. Use the Key Stone on it (or it on the Key Stone) to complete the ring." />
+	</item>
+	<item id="30176" article="a" name="key stone">
+		<attribute key="description" value="A stone filled with a mysterious power. Use it on an empty Mega Ring (or the ring on it) to complete the ring." />
+	</item>
+	<item id="30177" article="a" name="mega ring">
+		<attribute key="slotType" value="ring" />
+		<attribute key="description" value="Worn in the key item slot, it lets a Pokemon holding its Mega Stone Mega Evolve. It takes the place of the bike, running shoes and other key items." />
+	</item>
+	<item id="30178" article="a" name="venusaurite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Venusaur, it lets it Mega Evolve into Mega Venusaur." />
+	</item>
+	<item id="30179" article="a" name="charizardite x">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Charizard, it lets it Mega Evolve into Mega Charizard X." />
+	</item>
+	<item id="30180" article="a" name="charizardite y">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Charizard, it lets it Mega Evolve into Mega Charizard Y." />
+	</item>
+	<item id="30181" article="a" name="blastoisinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Blastoise, it lets it Mega Evolve into Mega Blastoise." />
+	</item>
+	<item id="30182" article="a" name="beedrillite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Beedrill, it lets it Mega Evolve into Mega Beedrill." />
+	</item>
+	<item id="30183" article="a" name="pidgeotite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Pidgeot, it lets it Mega Evolve into Mega Pidgeot." />
+	</item>
+	<item id="30184" article="an" name="alakazite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Alakazam, it lets it Mega Evolve into Mega Alakazam." />
+	</item>
+	<item id="30185" article="a" name="slowbronite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Slowbro, it lets it Mega Evolve into Mega Slowbro." />
+	</item>
+	<item id="30186" article="a" name="gengarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gengar, it lets it Mega Evolve into Mega Gengar." />
+	</item>
+	<item id="30187" article="a" name="kangaskhanite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Kangaskhan, it lets it Mega Evolve into Mega Kangaskhan." />
+	</item>
+	<item id="30188" article="a" name="pinsirite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Pinsir, it lets it Mega Evolve into Mega Pinsir." />
+	</item>
+	<item id="30189" article="a" name="gyaradosite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gyarados, it lets it Mega Evolve into Mega Gyarados." />
+	</item>
+	<item id="30190" article="an" name="aerodactylite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Aerodactyl, it lets it Mega Evolve into Mega Aerodactyl." />
+	</item>
+	<item id="30191" article="a" name="mewtwonite x">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Mewtwo, it lets it Mega Evolve into Mega Mewtwo X." />
+	</item>
+	<item id="30192" article="a" name="mewtwonite y">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Mewtwo, it lets it Mega Evolve into Mega Mewtwo Y." />
+	</item>
+	<item id="30193" article="an" name="ampharosite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Ampharos, it lets it Mega Evolve into Mega Ampharos." />
+	</item>
+	<item id="30194" article="a" name="steelixite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Steelix, it lets it Mega Evolve into Mega Steelix." />
+	</item>
+	<item id="30195" article="a" name="scizorite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scizor, it lets it Mega Evolve into Mega Scizor." />
+	</item>
+	<item id="30196" article="a" name="heracronite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Heracross, it lets it Mega Evolve into Mega Heracross." />
+	</item>
+	<item id="30197" article="a" name="houndoominite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Houndoom, it lets it Mega Evolve into Mega Houndoom." />
+	</item>
+	<item id="30198" article="a" name="tyranitarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Tyranitar, it lets it Mega Evolve into Mega Tyranitar." />
+	</item>
+	<item id="30199" article="a" name="sceptilite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Sceptile, it lets it Mega Evolve into Mega Sceptile." />
+	</item>
+	<item id="30200" article="a" name="blazikenite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Blaziken, it lets it Mega Evolve into Mega Blaziken." />
+	</item>
+	<item id="30201" article="a" name="swampertite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Swampert, it lets it Mega Evolve into Mega Swampert." />
+	</item>
+	<item id="30202" article="a" name="gardevoirite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gardevoir, it lets it Mega Evolve into Mega Gardevoir." />
+	</item>
+	<item id="30203" article="a" name="sablenite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Sableye, it lets it Mega Evolve into Mega Sableye." />
+	</item>
+	<item id="30204" article="a" name="mawilite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Mawile, it lets it Mega Evolve into Mega Mawile." />
+	</item>
+	<item id="30205" article="an" name="aggronite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Aggron, it lets it Mega Evolve into Mega Aggron." />
+	</item>
+	<item id="30206" article="a" name="medichamite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Medicham, it lets it Mega Evolve into Mega Medicham." />
+	</item>
+	<item id="30207" article="a" name="manectite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Manectric, it lets it Mega Evolve into Mega Manectric." />
+	</item>
+	<item id="30208" article="a" name="sharpedonite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Sharpedo, it lets it Mega Evolve into Mega Sharpedo." />
+	</item>
+	<item id="30209" article="a" name="cameruptite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Camerupt, it lets it Mega Evolve into Mega Camerupt." />
+	</item>
+	<item id="30210" article="an" name="altarianite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Altaria, it lets it Mega Evolve into Mega Altaria." />
+	</item>
+	<item id="30211" article="a" name="banettite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Banette, it lets it Mega Evolve into Mega Banette." />
+	</item>
+	<item id="30212" article="an" name="absolite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Absol, it lets it Mega Evolve into Mega Absol." />
+	</item>
+	<item id="30213" article="a" name="glalitite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Glalie, it lets it Mega Evolve into Mega Glalie." />
+	</item>
+	<item id="30214" article="a" name="salamencite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Salamence, it lets it Mega Evolve into Mega Salamence." />
+	</item>
+	<item id="30215" article="a" name="metagrossite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Metagross, it lets it Mega Evolve into Mega Metagross." />
+	</item>
+	<item id="30216" article="a" name="latiasite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Latias, it lets it Mega Evolve into Mega Latias." />
+	</item>
+	<item id="30217" article="a" name="latiosite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Latios, it lets it Mega Evolve into Mega Latios." />
+	</item>
+	<item id="30218" article="a" name="lopunnite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Lopunny, it lets it Mega Evolve into Mega Lopunny." />
+	</item>
+	<item id="30219" article="a" name="garchompite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Garchomp, it lets it Mega Evolve into Mega Garchomp." />
+	</item>
+	<item id="30220" article="a" name="lucarionite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Lucario, it lets it Mega Evolve into Mega Lucario." />
+	</item>
+	<item id="30221" article="an" name="abomasite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Abomasnow, it lets it Mega Evolve into Mega Abomasnow." />
+	</item>
+	<item id="30222" article="a" name="galladite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gallade, it lets it Mega Evolve into Mega Gallade." />
+	</item>
+	<item id="30223" article="an" name="audinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Audino, it lets it Mega Evolve into Mega Audino." />
+	</item>
+	<item id="30224" article="a" name="diancite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Diancie, it lets it Mega Evolve into Mega Diancie." />
+	</item>
+	<item id="30225" article="a" name="clefablite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Clefable, it lets it Mega Evolve into Mega Clefable." />
+	</item>
+	<item id="30226" article="a" name="victreebelite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Victreebel, it lets it Mega Evolve into Mega Victreebel." />
+	</item>
+	<item id="30227" article="a" name="starminite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Starmie, it lets it Mega Evolve into Mega Starmie." />
+	</item>
+	<item id="30228" article="a" name="dragoninite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Dragonite, it lets it Mega Evolve into Mega Dragonite." />
+	</item>
+	<item id="30229" article="a" name="meganiumite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Meganium, it lets it Mega Evolve into Mega Meganium." />
+	</item>
+	<item id="30230" article="a" name="feraligite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Feraligatr, it lets it Mega Evolve into Mega Feraligatr." />
+	</item>
+	<item id="30231" article="a" name="skarmorite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Skarmory, it lets it Mega Evolve into Mega Skarmory." />
+	</item>
+	<item id="30232" article="a" name="froslassite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Froslass, it lets it Mega Evolve into Mega Froslass." />
+	</item>
+	<item id="30233" article="an" name="emboarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Emboar, it lets it Mega Evolve into Mega Emboar." />
+	</item>
+	<item id="30234" article="an" name="excadrite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Excadrill, it lets it Mega Evolve into Mega Excadrill." />
+	</item>
+	<item id="30235" article="a" name="scolipite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scolipede, it lets it Mega Evolve into Mega Scolipede." />
+	</item>
+	<item id="30236" article="a" name="scraftinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scrafty, it lets it Mega Evolve into Mega Scrafty." />
+	</item>
+	<item id="30237" article="an" name="eelektrossite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Eelektross, it lets it Mega Evolve into Mega Eelektross." />
+	</item>
+	<item id="30238" article="a" name="chandelurite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Chandelure, it lets it Mega Evolve into Mega Chandelure." />
+	</item>
+	<item id="30239" article="a" name="chesnaughtite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Chesnaught, it lets it Mega Evolve into Mega Chesnaught." />
+	</item>
+	<item id="30240" article="a" name="delphoxite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Delphox, it lets it Mega Evolve into Mega Delphox." />
+	</item>
+	<item id="30241" article="a" name="greninjite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Greninja, it lets it Mega Evolve into Mega Greninja." />
+	</item>
+	<item id="30242" article="a" name="pyroarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Pyroar, it lets it Mega Evolve into Mega Pyroar." />
+	</item>
+	<item id="30243" article="a" name="floettite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Floette, it lets it Mega Evolve into Mega Floette." />
+	</item>
+	<item id="30244" article="a" name="malamarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Malamar, it lets it Mega Evolve into Mega Malamar." />
+	</item>
+	<item id="30245" article="a" name="barbaracite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Barbaracle, it lets it Mega Evolve into Mega Barbaracle." />
+	</item>
+	<item id="30246" article="a" name="dragalgite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Dragalge, it lets it Mega Evolve into Mega Dragalge." />
+	</item>
+	<item id="30247" article="a" name="hawluchanite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Hawlucha, it lets it Mega Evolve into Mega Hawlucha." />
+	</item>
+	<item id="30248" article="a" name="zygardite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Zygarde, it lets it Mega Evolve into Mega Zygarde." />
+	</item>
+	<item id="30249" article="a" name="drampanite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Drampa, it lets it Mega Evolve into Mega Drampa." />
+	</item>
+	<item id="30250" article="a" name="falinksite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Falinks, it lets it Mega Evolve into Mega Falinks." />
+	</item>
+	<item id="30251" article="a" name="raichunite x">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Raichu, it lets it Mega Evolve into Mega Raichu X." />
+	</item>
+	<item id="30252" article="a" name="raichunite y">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Raichu, it lets it Mega Evolve into Mega Raichu Y." />
+	</item>
+	<item id="30253" article="a" name="chimechite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Chimecho, it lets it Mega Evolve into Mega Chimecho." />
+	</item>
+	<item id="30254" article="an" name="absolite z">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Absol, it lets it Mega Evolve into Mega Absol Z." />
+	</item>
+	<item id="30255" article="a" name="staraptite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Staraptor, it lets it Mega Evolve into Mega Staraptor." />
+	</item>
+	<item id="30256" article="a" name="garchompite z">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Garchomp, it lets it Mega Evolve into Mega Garchomp Z." />
+	</item>
+	<item id="30257" article="a" name="lucarionite z">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Lucario, it lets it Mega Evolve into Mega Lucario Z." />
+	</item>
+	<item id="30258" article="a" name="heatranite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Heatran, it lets it Mega Evolve into Mega Heatran." />
+	</item>
+	<item id="30259" article="a" name="darkranite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Darkrai, it lets it Mega Evolve into Mega Darkrai." />
+	</item>
+	<item id="30260" article="a" name="golurkite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Golurk, it lets it Mega Evolve into Mega Golurk." />
+	</item>
+	<item id="30261" article="a" name="meowsticite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Meowstic, it lets it Mega Evolve into Mega Meowstic." />
+	</item>
+	<item id="30262" article="a" name="crabominite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Crabominable, it lets it Mega Evolve into Mega Crabominable." />
+	</item>
+	<item id="30263" article="a" name="golisopite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Golisopod, it lets it Mega Evolve into Mega Golisopod." />
+	</item>
+	<item id="30264" article="a" name="magearnite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Magearna, it lets it Mega Evolve into Mega Magearna." />
+	</item>
+	<item id="30265" article="a" name="zeraorite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Zeraora, it lets it Mega Evolve into Mega Zeraora." />
+	</item>
+	<item id="30266" article="a" name="scovillainite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scovillain, it lets it Mega Evolve into Mega Scovillain." />
+	</item>
+	<item id="30267" article="a" name="baxcalibrite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Baxcalibur, it lets it Mega Evolve into Mega Baxcalibur." />
+	</item>
+	<item id="30268" article="a" name="tatsugirinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Tatsugiri, it lets it Mega Evolve into Mega Tatsugiri." />
+	</item>
+	<item id="30269" article="a" name="glimmoranite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Glimmora, it lets it Mega Evolve into Mega Glimmora." />
+	</item>
+	<item id="30270" article="a" name="red orb">
+		<attribute key="description" value="An orb said to hold an ancient power. Held by Groudon, it lets it undergo Primal Reversion." />
+	</item>
+	<item id="30271" article="a" name="blue orb">
+		<attribute key="description" value="An orb said to hold an ancient power. Held by Kyogre, it lets it undergo Primal Reversion." />
 	</item>
 </items>

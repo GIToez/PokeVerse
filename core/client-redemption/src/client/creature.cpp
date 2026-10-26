@@ -160,10 +160,12 @@ void Creature::draw(const Rect& destRect, const uint8_t size, const bool center)
     const int tileCount = 2;
     const int fbSize = tileCount * baseSprite;
 
+    // widgets draw the outfit's whole frame, without the map's negative offset
+    const Point displacement = m_outfit.isCreature() ? Thing::getDisplacement() : getDisplacement();
     g_drawPool.bindFrameBuffer(fbSize); {
         Point p = center
-            ? Point((fbSize - nativeSize) / 2 + (nativeSize - baseSprite)) + getDisplacement()
-            : Point(fbSize - baseSprite) + getDisplacement();
+            ? Point((fbSize - nativeSize) / 2 + (nativeSize - baseSprite)) + displacement
+            : Point(fbSize - baseSprite) + displacement;
 
         internalDraw(p);
         if (isMarked())           internalDraw(p, getMarkedColor());
@@ -189,7 +191,7 @@ void Creature::drawOutfitPokeVerse(const Rect& destRect, const bool resize)
     const int fbSize = std::max(2 * baseSprite, (exactSize + baseSprite - 1) / baseSprite * baseSprite);
 
     g_drawPool.bindFrameBuffer(fbSize); {
-        const Point p = Point(fbSize - baseSprite) + getDisplacement();
+        const Point p = Point(fbSize - baseSprite) + (m_outfit.isCreature() ? Thing::getDisplacement() : getDisplacement());
         internalDraw(p);
         if (isMarked())           internalDraw(p, getMarkedColor());
         else if (isHighlighted()) internalDraw(p, getHighlightColor());
@@ -1213,7 +1215,9 @@ Point Creature::getDisplacement() const
     if (m_outfit.isItem())
         return {};
 
-    return Thing::getDisplacement();
+    // a negative outfit offset only moves the sprite: name bars, squares and the walking tile stay on the tile
+    const auto& displacement = Thing::getDisplacement();
+    return { std::max(0, displacement.x), std::max(0, displacement.y) };
 }
 
 int Creature::getDisplacementX() const
@@ -1227,7 +1231,7 @@ int Creature::getDisplacementX() const
     if (const auto mountType = getMountThingType(); mountType)
         return mountType->getDisplacementX();
 
-    return Thing::getDisplacementX();
+    return std::max(0, Thing::getDisplacementX());
 }
 
 int Creature::getDisplacementY() const
@@ -1241,7 +1245,7 @@ int Creature::getDisplacementY() const
     if (const auto mountType = getMountThingType(); mountType)
         return mountType->getDisplacementY();
 
-    return Thing::getDisplacementY();
+    return std::max(0, Thing::getDisplacementY());
 }
 
 const Light& Creature::getLight() const

@@ -1,5 +1,6 @@
 MOVES["Nuzzle"] = {
     description = "Nuzzle inflicts damage and paralyzes its target when it hits.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 27585,
     iconId = 0,

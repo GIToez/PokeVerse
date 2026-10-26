@@ -42,6 +42,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         EventShop.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.ANALYSER) then
         Analyser.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.MEGA_EVOLVE) then
+        MegaEvolution.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.AUTO_LOOT) then
         local enabled = buffer == "1"
         setPlayerAutoLoot(cid, enabled)

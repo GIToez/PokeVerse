@@ -1,5 +1,6 @@
 MOVES["Crunch"] = {
     description = "Crunch deals damage and has a 20% chance of lowering the target's Defense by one stage.",
+    bite = true,
     makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 11705,

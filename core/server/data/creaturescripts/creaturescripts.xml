@@ -37,6 +37,7 @@
 	<event type="statschange" name="bossGuardianKabutopsHealthChange" event="script" value="../../lib/ps/events/creaturescripts/quests/bossGuardianKabutopsHealthChange.lua" />
 	<event type="prepareDeath" name="guardianKabutopsDeath" event="script" value="../../lib/ps/events/creaturescripts/quests/guardianKabutopsDeath.lua" />
 	<event type="prepareDeath" name="angryBeedrillDeath" event="script" value="../../lib/ps/events/creaturescripts/quests/angryBeedrillDeath.lua" />
+	<event type="prepareDeath" name="guardianAlakazamDeath" event="script" value="../../lib/ps/events/creaturescripts/quests/guardianAlakazamDeath.lua" />
 	<event type="prepareDeath" name="thiefFearowDeath" event="script" value="../../lib/ps/events/creaturescripts/quests/thiefFearowDeath.lua" />
 	<event type="prepareDeath" name="oilySeakingDeath" event="script" value="../../lib/ps/events/creaturescripts/quests/oilySeakingDeath.lua" />
 	<event type="prepareDeath" name="darknessAlakazamDeath" event="script" value="../../lib/ps/events/creaturescripts/quests/darknessAlakazamDeath.lua" />

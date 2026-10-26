@@ -13,6 +13,7 @@ local orientation = HORIZONTAL
 local moveEnergy = {} -- move icon item id -> energy cost (ExtendedIds.MoveEnergy)
 local moveElement = {} -- move icon item id -> element (ELEMENTS index), for the slot's type edge
 local moveInfo = {} -- move icon item id -> { power, final, multiplier } (ExtendedIds.MoveInfo)
+local boostedMoves = {} -- lower-case move name -> true while the Mega ability boosts it (game_pokehud/mega.lua)
 local moveCard
 local closeCard
 
@@ -57,6 +58,28 @@ local function slots()
         end
     end
     return list
+end
+
+local GLOW_FRAMES, GLOW_SIZE = 24, 48 -- mega-glow.png (scripts/art/mega_hud_art.py)
+local glowEvent, glowFrame = nil, 0
+
+local function stopGlow()
+    removeEvent(glowEvent)
+    glowEvent = nil
+end
+
+local function animateGlow()
+    glowFrame = (glowFrame + 1) % GLOW_FRAMES
+    local any = false
+    for _, slot in ipairs(slots()) do
+        if slot.megaGlow:isVisible() then
+            any = true
+            slot.megaGlow:setImageClip({ x = glowFrame * GLOW_SIZE, y = 0, width = GLOW_SIZE, height = GLOW_SIZE })
+        end
+    end
+    if not any then
+        stopGlow()
+    end
 end
 
 local function updateKeyLabels()
@@ -152,6 +175,7 @@ end
 
 function reset()
     closeCard()
+    stopGlow()
     for _, slot in ipairs(slots()) do
         stopCooldown(slot)
         slot:destroy()
@@ -233,6 +257,7 @@ local function updateEnergy()
     local player = g_game.getLocalPlayer()
     local energy = player and player:getMana() or 0
     local target = g_game.getAttackingCreature()
+    local anyBoosted = false
     for _, slot in ipairs(slots()) do
         local cost = moveEnergy[slot.icon:getItemId()]
         local element = ELEMENTS[moveElement[slot.icon:getItemId()]]
@@ -257,7 +282,13 @@ local function updateEnergy()
             slot.weather.icon:setImageSource('/modules/game_weather/images/weather_' .. weather.kind .. '_small')
         end
 
+        local boosted = slot.moveName ~= nil and boostedMoves[slot.moveName:lower()] == true
+        slot.megaGlow:setVisible(boosted)
+
         local lines = { slot.moveName }
+        if boosted then
+            lines[#lines + 1] = tr('Boosted by the Mega Evolution')
+        end
         if info.power then
             if info.final and info.final ~= info.power then
                 lines[#lines + 1] = tr('Power: %d (%d with boosts)', info.power, info.final)
@@ -278,6 +309,10 @@ local function updateEnergy()
         end
         lines[#lines + 1] = tr('Click to use, Shift+click for the move card')
         slot:setTooltip(table.concat(lines, '\n'))
+        anyBoosted = anyBoosted or boosted
+    end
+    if anyBoosted and not glowEvent then
+        glowEvent = cycleEvent(animateGlow, 50)
     end
 end
 
@@ -292,6 +327,15 @@ local function requestMoveInfo()
     if #icons > 0 then
         send({ action = 'matchup', target = attackedId(), icons = icons })
     end
+end
+
+-- the Mega Evolution's ability boosts these moves (game_pokehud/mega.lua): they glow green
+function setBoostedMoves(moves)
+    boostedMoves = {}
+    for _, name in ipairs(moves or {}) do
+        boostedMoves[tostring(name):lower()] = true
+    end
+    updateEnergy()
 end
 
 -- the weather changed (game_weather): the boosts with it
@@ -621,6 +665,7 @@ function onOffline()
     reset()
     moveEnergy = {}
     moveInfo = {}
+    boostedMoves = {}
 end
 
 function onInit()
@@ -673,6 +718,7 @@ function onInit()
 end
 
 function onTerminate()
+    stopGlow()
     disconnect(g_game, {
         onGameStart = onOnline,
         onGameEnd = onOffline,

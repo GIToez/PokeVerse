@@ -3114,6 +3114,961 @@ local function testPokemonHabitat(cid)
     cleanup()
 end
 
+local function testMegaItems(cid)
+    check("mega: 97 item ids in order", MEGA_ITEM_IDS.EMPTY_RING == 30175 and MEGA_FIRST_STONE_ID == 30178 and
+        MEGA_LAST_STONE_ID == 30271 and #MEGA_STONES == 94, MEGA_LAST_STONE_ID)
+    check("mega: every stone has an item type", getItemNameById(MEGA_LAST_STONE_ID):lower() == "blue orb" and
+        getItemNameById(MEGA_ITEM_IDS.RING):lower() == "mega ring", getItemNameById(MEGA_LAST_STONE_ID))
+
+    local BAG = { x = CONTAINER_POSITION, y = 64, z = 0 }
+    local function craft(useRing)
+        local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1))
+        local key = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1))
+        local used, target = key, ring
+        if (useRing) then
+            used, target = ring, key
+        end
+        local rings = getPlayerItemCount(cid, MEGA_ITEM_IDS.RING)
+        local ok = MegaEvolution.onRingPartUse(cid, used, BAG, target, BAG)
+        return ok and getPlayerItemCount(cid, MEGA_ITEM_IDS.RING) == rings + 1
+            and getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING) == 0 and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 0,
+            string.format("%s on %s, rings %d", tostring(used.itemid), tostring(target.itemid),
+                getPlayerItemCount(cid, MEGA_ITEM_IDS.RING))
+    end
+    check("mega: the Key Stone on the empty ring makes the Mega Ring", craft(false))
+    check("mega: the empty ring on the Key Stone makes the Mega Ring", craft(true))
+    doPlayerRemoveItem(cid, MEGA_ITEM_IDS.RING, 2)
+
+    local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1))
+    local key = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1))
+    local floor = getCreaturePosition(cid)
+    check("mega: both parts must be in the bag", not MegaEvolution.onRingPartUse(cid, key, floor, ring, BAG)
+        and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 1, getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE))
+    check("mega: the Key Stone only goes on the empty ring", not MegaEvolution.onRingPartUse(cid, key, BAG,
+        getThing(doPlayerAddItem(cid, 2148, 1)), BAG))
+    doPlayerRemoveItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1)
+    doPlayerRemoveItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1)
+    doPlayerRemoveItem(cid, 2148, 1)
+
+    local VENUSAURITE = MEGA_FIRST_STONE_ID
+    local ball = newBall(cid, "Bulbasaur", 30)
+    check("mega: Venusaurite is a held item", PokemonHeldItem.isHeldItem(VENUSAURITE))
+    local name = PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, VENUSAURITE, 1)))
+    local stone = PokemonHeldItem.getMegaStone(ball.uid)
+    check("mega: giving Venusaurite", name == "Venusaurite" and stone and stone.form == "Mega Venusaur" and
+        getPlayerItemCount(cid, VENUSAURITE) == 0, name)
+    check("mega: the stone's description", (PokemonHeldItem.getBallDescription(ball.uid) or ""):find("Venusaurite", 1, true),
+        PokemonHeldItem.getBallDescription(ball.uid))
+    check("mega: the GTS refuses a ball holding a Mega Stone", GTS.ballProblem(cid, ball) == "Take its Mega Stone off first.",
+        GTS.ballProblem(cid, ball))
+    local locked = MegaEvolution.isStoneLocked
+    MegaEvolution.isStoneLocked = function() return true end
+    local taken, why = PokemonHeldItem.take(cid, ball.uid)
+    MegaEvolution.isStoneLocked = locked
+    check("mega: a locked stone stays on", not taken and why and getBallHeld(ball.uid) ~= nil, why)
+    name = PokemonHeldItem.take(cid, ball.uid)
+    check("mega: taking the stone back", name == "Venusaurite" and getPlayerItemCount(cid, VENUSAURITE) == 1, name)
+    check("mega: the GTS takes the ball again", GTS.ballProblem(cid, ball) == nil, GTS.ballProblem(cid, ball))
+    doPlayerRemoveItem(cid, VENUSAURITE, 1)
+    doRemoveItem(ball.uid)
+
+    local stones = 0
+    for _, category in ipairs(GTS.CATEGORIES) do
+        if (category.name == "Mega Stones") then
+            stones = #category.items
+        end
+    end
+    check("mega: the GTS lists the stones", stones == 94, stones)
+
+    local given = getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING)
+    quietly(function() MegaEvolution.giveTestItems(cid) end)
+    check("mega: /megaitems gives the ring parts and stones", getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING) == given + 1
+        and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 1 and getPlayerItemCount(cid, MEGA_LAST_STONE_ID) == 1,
+        string.format("%d rings, %d key stones, %d blue orbs", getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING),
+            getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE), getPlayerItemCount(cid, MEGA_LAST_STONE_ID)))
+    for id = MEGA_ITEM_IDS.EMPTY_RING, MEGA_LAST_STONE_ID do
+        doPlayerRemoveItem(cid, id, getPlayerItemCount(cid, id))
+    end
+end
+
+-- The Mega animation's wait before the burst is off, so the checks see the form at once
+local function withoutMegaBurst(fn)
+    return function(...)
+        local burst = MegaEvolution.BURST_MS
+        MegaEvolution.BURST_MS = 0
+        local ok, err = pcall(fn, ...)
+        MegaEvolution.BURST_MS = burst
+        if (not ok) then
+            error(err, 0)
+        end
+    end
+end
+
+local function testMegaForms(cid)
+    local function hasTypes(pokemon, expected)
+        local types = getPokemonTypes(pokemon)
+        if (#types ~= #expected) then
+            return false
+        end
+        for i, element in ipairs(expected) do
+            if (types[i] ~= element) then
+                return false
+            end
+        end
+        return true
+    end
+
+    local looks = { ["Mega Venusaur"] = 2595, ["Mega Charizard X"] = 2596, ["Mega Charizard Y"] = 2597,
+        ["Mega Blastoise"] = 2598, ["Shiny Mega Venusaur"] = 2630, ["Shiny Mega Charizard X"] = 2631,
+        ["Shiny Mega Charizard Y"] = 2632, ["Shiny Mega Blastoise"] = 2633 }
+    for form, look in pairs(looks) do
+        local definition = getPokemonDefinition(form)
+        local info = getMonsterInfo(form)
+        check("mega forms: " .. form .. " has a config, a look and a portrait", MegaEvolution.hasForm(form) and
+            info and info.outfit.lookType == look and definition.portrait ~= 0 and definition.fastcallPortrait ~= 0,
+            info and info.outfit.lookType)
+    end
+    check("mega forms: the base Pokemon is not a form", not MegaEvolution.hasForm("Charizard"))
+
+    local charizardX, charizardY = MEGA_STONES[2], MEGA_STONES[3]
+    check("mega forms: the stones map to forms", MegaEvolution.formFor("Charizard", charizardX) == "Mega Charizard X"
+        and MegaEvolution.formFor("Shiny Charizard", charizardY) == "Shiny Mega Charizard Y"
+        and MegaEvolution.formFor("Blastoise", charizardX) == nil,
+        tostring(MegaEvolution.formFor("Shiny Charizard", charizardY)))
+
+    check("mega forms: Dragon Claw makes contact, Water Pulse is a pulse", getPokemonSkillMakeContact("Dragon Claw")
+        and getPokemonSkillIsPulse("Water Pulse") and not getPokemonSkillIsPulse("Dragon Claw")
+        and not getPokemonSkillMakeContact("Camouflage"))
+    local ids, moveCheck = POKEMON_SPECIAL_ABILITY_IDS, getPokemonSpecialAbilityMoveCheck
+    check("mega forms: Drought, Tough Claws and Mega Launcher pick their moves",
+        moveCheck(ids.DROUGHT, "Flamethrower") and not moveCheck(ids.DROUGHT, "Water Pulse")
+        and moveCheck(ids.TOUGH_CLAWS, "Dragon Claw") and not moveCheck(ids.TOUGH_CLAWS, "Flamethrower")
+        and moveCheck(ids.MEGA_LAUNCHER, "Dragon Pulse") and not moveCheck(ids.MEGA_LAUNCHER, "Hydro Pump"))
+
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("mega forms: ball slot free for the test", false)
+        return
+    end
+    local function callOut(name)
+        local ball = newBall(cid, name, 50, POKEMON_SEX_MALE)
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        return getPlayerPokemon(cid)
+    end
+    local function callBack()
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+        if (isItem(slot)) then
+            doRemoveItem(slot.uid)
+        end
+    end
+
+    local pokemon = callOut("Charizard")
+    if (not isCreature(pokemon)) then
+        check("mega forms: Charizard comes out", false)
+        callBack()
+        return
+    end
+    local ability, look = getMonsterSpecialAbility(pokemon), getCreatureOutfit(pokemon).lookType
+    local atk, spAtk = getPokemonAtk(pokemon, 50), getPokemonSpAtk(pokemon, 50)
+    quietly(function() MegaEvolution.onStaffCommand(cid, "x") end)
+    check("mega forms: /mega x makes Mega Charizard X", MegaEvolution.isMega(pokemon)
+        and getPokemonReferenceName(pokemon) == "Mega Charizard X", getPokemonReferenceName(pokemon))
+    check("mega forms: Mega Charizard X is Fire/Dragon", hasTypes(pokemon, { ELEMENT_FIRE, ELEMENT_DRAGON }))
+    check("mega forms: Mega Charizard X hits harder", getPokemonAtk(pokemon, 50) > atk
+        and getPokemonSpAtk(pokemon, 50) > spAtk, string.format("%.1f > %.1f", getPokemonAtk(pokemon, 50), atk))
+    check("mega forms: Mega Charizard X has Tough Claws",
+        getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS, getMonsterSpecialAbility(pokemon))
+    check("mega forms: Mega Charizard X's look", getCreatureOutfit(pokemon).lookType == 2596,
+        getCreatureOutfit(pokemon).lookType)
+    local again
+    quietly(function() again = MegaEvolution.onStaffCommand(cid, "y") end)
+    check("mega forms: a second /mega is refused", not again and getPokemonReferenceName(pokemon) == "Mega Charizard X")
+
+    quietly(function() MegaEvolution.onStaffCommand(cid, "off") end)
+    check("mega forms: /mega off turns it back", not MegaEvolution.isMega(pokemon)
+        and hasTypes(pokemon, { ELEMENT_FIRE, ELEMENT_FLYING }) and getMonsterSpecialAbility(pokemon) == ability
+        and getCreatureOutfit(pokemon).lookType == look and math.abs(getPokemonAtk(pokemon, 50) - atk) < 0.01,
+        string.format("%s, ability %s, look %d", getPokemonReferenceName(pokemon), tostring(getMonsterSpecialAbility(pokemon)),
+            getCreatureOutfit(pokemon).lookType))
+
+    quietly(function() MegaEvolution.onStaffCommand(cid, "y") end)
+    check("mega forms: Mega Charizard Y keeps Fire/Flying and has Drought", getPokemonReferenceName(pokemon) == "Mega Charizard Y"
+        and hasTypes(pokemon, { ELEMENT_FIRE, ELEMENT_FLYING })
+        and getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.DROUGHT
+        and getCreatureOutfit(pokemon).lookType == 2597, getCreatureOutfit(pokemon).lookType)
+    check("mega forms: Drought boosts its own Fire moves", doPokemonSpecialAbilityCheck(pokemon,
+        POKEMON_SPECIAL_ABILITY_IDS.DROUGHT, nil, "Flamethrower"))
+    callBack()
+
+    pokemon = callOut("Shiny Charizard")
+    if (isCreature(pokemon)) then
+        quietly(function() MegaEvolution.onStaffCommand(cid, "x") end)
+        check("mega forms: a Shiny Charizard becomes Shiny Mega Charizard X",
+            getPokemonReferenceName(pokemon) == "Shiny Mega Charizard X" and getCreatureOutfit(pokemon).lookType == 2631,
+            getPokemonReferenceName(pokemon))
+    else
+        check("mega forms: Shiny Charizard comes out", false)
+    end
+    callBack()
+
+    pokemon = callOut("Blastoise")
+    if (isCreature(pokemon)) then
+        local ball = getPlayerBall(cid)
+        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, MEGA_STONES[4].itemId, 1)))
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        check("mega forms: /mega uses the held Blastoisinite", getPokemonReferenceName(pokemon) == "Mega Blastoise"
+            and getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER,
+            getPokemonReferenceName(pokemon))
+    else
+        check("mega forms: Blastoise comes out", false)
+    end
+    callBack()
+    doPlayerRemoveItem(cid, MEGA_STONES[4].itemId, getPlayerItemCount(cid, MEGA_STONES[4].itemId))
+end
+
+-- The Megas after the starters, and Primal Groudon and Kyogre
+local function testMoreMegas(cid)
+    local E = function(...) return { ... } end
+    local forms = {
+        { "Mega Beedrill", 2607, 2634, E(ELEMENT_BUG, ELEMENT_POISON), "ADAPTABILITY" },
+        { "Mega Pidgeot", 2608, 2635, E(ELEMENT_NORMAL, ELEMENT_FLYING), "NO_GUARD" },
+        { "Mega Alakazam", 2599, 2636, E(ELEMENT_PSYCHIC), "TRACE" },
+        { "Mega Slowbro", 2609, 2637, E(ELEMENT_WATER, ELEMENT_PSYCHIC), "SHELL_ARMOR" },
+        { "Mega Gengar", 2600, 2638, E(ELEMENT_GHOST, ELEMENT_POISON), "SHADOW_TAG" },
+        { "Mega Kangaskhan", 2601, 2639, E(ELEMENT_NORMAL), "PARENTAL_BOND" },
+        { "Mega Gyarados", 2610, 2611, E(ELEMENT_WATER, ELEMENT_DARK), "MOLD_BREAKER" },
+        { "Mega Aerodactyl", 2612, 2640, E(ELEMENT_ROCK, ELEMENT_FLYING), "TOUGH_CLAWS" },
+        { "Mega Ampharos", 2602, 2603, E(ELEMENT_ELECTRIC, ELEMENT_DRAGON), "MOLD_BREAKER" },
+        { "Mega Steelix", 2613, 2641, E(ELEMENT_STEEL, ELEMENT_GROUND), "SAND_FORCE" },
+        { "Mega Scizor", 2614, 2642, E(ELEMENT_BUG, ELEMENT_STEEL), "TECHNICIAN" },
+        { "Mega Tyranitar", 2604, 2643, E(ELEMENT_ROCK, ELEMENT_DARK), "SAND_STREAM" },
+        { "Mega Sceptile", 2615, 2644, E(ELEMENT_GRASS, ELEMENT_DRAGON), "LIGHTNINGROD" },
+        { "Mega Blaziken", 2605, 2645, E(ELEMENT_FIRE, ELEMENT_FIGHT), "SPEED_BOOST" },
+        { "Mega Swampert", 2616, 2646, E(ELEMENT_WATER, ELEMENT_GROUND), "SWIFT_SWIM" },
+        { "Mega Sableye", 2617, 2647, E(ELEMENT_DARK, ELEMENT_GHOST), "MAGIC_BOUNCE" },
+        { "Mega Mawile", 2625, 2648, E(ELEMENT_STEEL, ELEMENT_FAIRY), "HUGE_POWER" },
+        { "Mega Sharpedo", 2618, 2649, E(ELEMENT_WATER, ELEMENT_DARK), "STRONG_JAW" },
+        { "Mega Camerupt", 2619, 2650, E(ELEMENT_FIRE, ELEMENT_GROUND), "SHEER_FORCE" },
+        { "Mega Altaria", 2620, 2651, E(ELEMENT_DRAGON, ELEMENT_FAIRY), "PIXILATE" },
+        { "Mega Absol", 2621, 2652, E(ELEMENT_DARK), "MAGIC_BOUNCE" },
+        { "Mega Glalie", 2622, 2653, E(ELEMENT_ICE), "REFRIGERATE" },
+        { "Mega Latias", 2626, nil, E(ELEMENT_DRAGON, ELEMENT_PSYCHIC), "LEVITATE" },
+        { "Primal Kyogre", 2628, nil, E(ELEMENT_WATER), "PRIMORDIAL_SEA" },
+        { "Primal Groudon", 2627, nil, E(ELEMENT_GROUND, ELEMENT_FIRE), "DESOLATE_LAND" },
+    }
+    local function sameTypes(types, expected)
+        if (#types ~= #expected) then
+            return false
+        end
+        for i, element in ipairs(expected) do
+            if (types[i] ~= element) then
+                return false
+            end
+        end
+        return true
+    end
+    for _, f in ipairs(forms) do
+        local name, look, shinyLook, types, ability = f[1], f[2], f[3], f[4], f[5]
+        local definition, info = getPokemonDefinition(name), getMonsterInfo(name)
+        local shiny, shinyInfo = getPokemonDefinition("Shiny " .. name), getMonsterInfo("Shiny " .. name)
+        local problem = (not MegaEvolution.hasForm(name) and "no form")
+                or ((not info or info.outfit.lookType ~= look) and "look " .. tostring(info and info.outfit.lookType))
+                or ((definition.portrait == 0 or definition.fastcallPortrait == 0) and "no face")
+                or (not sameTypes(definition.pTypes, types) and "types")
+                or ((definition.specialAbilities[1] ~= POKEMON_SPECIAL_ABILITY_IDS[ability]) and "ability")
+                or (shinyLook and (not shiny or shiny.portrait == 0 or not shinyInfo or shinyInfo.outfit.lookType ~= shinyLook)
+                    and "shiny " .. tostring(shinyInfo and shinyInfo.outfit.lookType))
+                or (not shinyLook and shiny and "a shiny that can't be caught")
+        check("more megas: " .. name .. " has its look, face, types and ability", not problem, problem)
+    end
+    local inGame = 0
+    for _, stone in ipairs(MEGA_STONES) do
+        if (MegaEvolution.hasForm(stone.form)) then
+            inGame = inGame + 1
+        end
+    end
+    check("more megas: 29 stones and orbs work", inGame == 29, inGame)
+
+    local ids, moveCheck = POKEMON_SPECIAL_ABILITY_IDS, getPokemonSpecialAbilityMoveCheck
+    check("more megas: Strong Jaw, Sand Force and Sheer Force pick their moves",
+        moveCheck(ids.STRONG_JAW, "Crunch") and moveCheck(ids.STRONG_JAW, "Fire Fang") and not moveCheck(ids.STRONG_JAW, "Tackle")
+        and moveCheck(ids.SAND_FORCE, "Rock Slide") and not moveCheck(ids.SAND_FORCE, "Flamethrower")
+        and moveCheck(ids.SHEER_FORCE, "Flamethrower") and not moveCheck(ids.SHEER_FORCE, "Earthquake")
+        and not moveCheck(ids.SHEER_FORCE, "Tackle"))
+    check("more megas: Desolate Land boosts Fire, Primordial Sea boosts Water",
+        moveCheck(ids.DESOLATE_LAND, "Flamethrower") and not moveCheck(ids.DESOLATE_LAND, "Water Pulse")
+        and moveCheck(ids.PRIMORDIAL_SEA, "Water Pulse") and not moveCheck(ids.PRIMORDIAL_SEA, "Flamethrower"))
+
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("more megas: ball slot free for the test", false)
+        return
+    end
+    local function callOut(name, level)
+        local ball = newBall(cid, name, level or 50, POKEMON_SEX_MALE)
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        return getPlayerPokemon(cid)
+    end
+    local function callBack()
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+        if (isItem(slot)) then
+            doRemoveItem(slot.uid)
+        end
+    end
+
+    local pokemon = callOut("Altaria")
+    if (isCreature(pokemon)) then
+        local before = getPokemonSkillDamageTypeOf(pokemon, "Tackle")
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        check("more megas: Mega Altaria's Pixilate makes Tackle a Fairy move", before == ELEMENT_NORMAL
+            and getPokemonReferenceName(pokemon) == "Mega Altaria"
+            and getPokemonSkillDamageTypeOf(pokemon, "Tackle") == ELEMENT_FAIRY
+            and getPokemonSkillDamageTypeOf(pokemon, "Dragon Pulse") == ELEMENT_DRAGON, getPokemonReferenceName(pokemon))
+    else
+        check("more megas: Altaria comes out", false)
+    end
+    callBack()
+
+    local stoneOf = {}
+    for _, stone in ipairs(MEGA_STONES) do
+        stoneOf[stone.form] = stone.itemId
+    end
+    pokemon = callOut("Groudon", 70)
+    if (isCreature(pokemon)) then
+        local orb = getThing(doPlayerAddItem(cid, stoneOf["Primal Groudon"], 1))
+        PokemonHeldItem.give(cid, getPlayerBall(cid).uid, orb)
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        check("more megas: Groudon with the Red Orb becomes Primal Groudon, Ground/Fire with Desolate Land",
+            getPokemonReferenceName(pokemon) == "Primal Groudon" and sameTypes(getPokemonTypes(pokemon), { ELEMENT_GROUND, ELEMENT_FIRE })
+            and getMonsterSpecialAbility(pokemon) == ids.DESOLATE_LAND and getCreatureOutfit(pokemon).lookType == 2627,
+            getPokemonReferenceName(pokemon))
+        PokemonHeldItem.take(cid, getPlayerBall(cid).uid)
+    else
+        check("more megas: Groudon comes out", false)
+    end
+    callBack()
+    doPlayerRemoveItem(cid, stoneOf["Primal Groudon"], getPlayerItemCount(cid, stoneOf["Primal Groudon"]))
+
+    pokemon = callOut("Gyarados")
+    local wild
+    if (isCreature(pokemon)) then
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        local here = getCreaturePosition(cid)
+        for dx = -2, 2 do
+            for dy = -2, 2 do
+                if (not isMonster(wild) and (dx ~= 0 or dy ~= 0)) then
+                    wild = doCreateMonster("Rattata", { x = here.x + dx, y = here.y + dy, z = here.z }, false)
+                end
+            end
+        end
+    end
+    if (isMonster(wild) and MegaEvolution.isMega(pokemon)) then
+        doCreatureSetNoMove(wild, true)
+        setMonsterSpecialAbility(wild, ids.LEVITATE)
+        local alone = doPokemonSpecialAbilityCheck(wild, ids.LEVITATE, nil, "Earthquake")
+        local broken = doWithMoldBreaker(pokemon, doPokemonSpecialAbilityCheck, wild, ids.LEVITATE, nil, "Earthquake")
+        local plain = doWithMoldBreaker(wild, doPokemonSpecialAbilityCheck, wild, ids.LEVITATE, nil, "Earthquake")
+        check("more megas: Mega Gyarados' Mold Breaker gets past Levitate, only while it attacks",
+            alone and not broken and plain and doPokemonSpecialAbilityCheck(wild, ids.LEVITATE, nil, "Earthquake"))
+
+        setMonsterSpecialAbility(wild, ids.MAGIC_BOUNCE)
+        quietly(function() doCreatureAddStatus(wild, CREATURE_STATUS_CONFUSION, nil, pokemon) end)
+        check("more megas: Magic Bounce sends a confusion back", getCreatureStatus(pokemon, CREATURE_STATUS_CONFUSION)
+            and not getCreatureStatus(wild, CREATURE_STATUS_CONFUSION))
+        doCreatureRemoveStatus(pokemon, CREATURE_STATUS_CONFUSION)
+
+        setMonsterSpecialAbility(wild, ids.DESOLATE_LAND)
+        local health = getCreatureHealth(wild)
+        quietly(function() doSkillDamage(pokemon, wild, "Water Pulse") end)
+        check("more megas: Water moves evaporate on Desolate Land", isCreature(wild)
+            and health - getCreatureHealth(wild) <= 1, isCreature(wild) and health - getCreatureHealth(wild))
+        local result
+        quietly(function() result = { doWithMoldBreaker(pokemon, function() return 1, nil, 3 end) } end)
+        check("more megas: a hit's results come back through the Mold Breaker wrapper", result[1] == 1
+            and result[2] == nil and result[3] == 3)
+        doRemoveCreature(wild)
+    else
+        check("more megas: Mega Gyarados and a wild Rattata for the ability checks", false)
+    end
+    callBack()
+end
+
+local function testMegaDrops(cid)
+    local function names(drops)
+        local out = {}
+        for _, stone in ipairs(drops or {}) do
+            out[#out + 1] = stone.name
+        end
+        table.sort(out)
+        return table.concat(out, ",")
+    end
+    check("mega drops: 1 in 250,000 for stones and orbs", MegaEvolution.DROP_CHANCE == 250000
+        and MegaEvolution.ORB_DROP_CHANCE == 250000)
+    check("mega drops: the whole line drops the stone, shinies too", names(MegaEvolution.getDrops("Bulbasaur")) == "Venusaurite"
+        and names(MegaEvolution.getDrops("Shiny Ivysaur")) == "Venusaurite" and names(MegaEvolution.getDrops("Venusaur")) == "Venusaurite",
+        names(MegaEvolution.getDrops("Shiny Ivysaur")))
+    check("mega drops: Charmander's line drops either Charizardite", names(MegaEvolution.getDrops("Charmander")) == "Charizardite X,Charizardite Y",
+        names(MegaEvolution.getDrops("Charmander")))
+    check("mega drops: Groudon and Kyogre drop their orbs", names(MegaEvolution.getDrops("Groudon")) == "Red Orb"
+        and names(MegaEvolution.getDrops("Kyogre")) == "Blue Orb")
+    check("mega drops: a Pokemon with no Mega line drops nothing", MegaEvolution.getDrops("Rattata") == nil
+        and MegaEvolution.getDrops("Slowking") == nil and names(MegaEvolution.getDrops("Slowpoke")) == "Slowbronite")
+
+    local x, y
+    for _, stone in ipairs(MEGA_STONES) do
+        x = stone.name == "Charizardite X" and stone.itemId or x
+        y = stone.name == "Charizardite Y" and stone.itemId or y
+    end
+    local function stones()
+        return getPlayerItemCount(cid, x) + getPlayerItemCount(cid, y)
+    end
+    local here = getCreaturePosition(cid)
+    local wild
+    for dx = -2, 2 do
+        for dy = -2, 2 do
+            if (not isMonster(wild) and (dx ~= 0 or dy ~= 0)) then
+                wild = doCreateMonster("Charmander", { x = here.x + dx, y = here.y + dy, z = here.z }, false)
+            end
+        end
+    end
+    if (not isMonster(wild)) then
+        check("mega drops: a wild Charmander", false)
+        return
+    end
+    doCreatureSetNoMove(wild, true)
+    local chance, before = MegaEvolution.DROP_CHANCE, stones()
+    MegaEvolution.DROP_CHANCE = 1
+    quietly(function() MegaEvolution.onKill(cid, wild) end)
+    local dropped = stones() - before
+    MegaEvolution.DROP_CHANCE = 1000000000
+    quietly(function() MegaEvolution.onKill(cid, wild) end)
+    MegaEvolution.DROP_CHANCE = chance
+    check("mega drops: a defeated wild Charmander drops a Charizardite", dropped == 1, dropped)
+    check("mega drops: the roll uses DROP_CHANCE", stones() - before == 1, stones() - before)
+    doRemoveCreature(wild)
+    doPlayerRemoveItem(cid, x, getPlayerItemCount(cid, x))
+    doPlayerRemoveItem(cid, y, getPlayerItemCount(cid, y))
+end
+
+local function testMegaQuest(cid)
+    local M = MegaEvolution
+    local quests = {}
+    for _, quest in ipairs(getNpcQuests("Professor Oak")) do
+        quests[quest.storage] = quest
+    end
+    local research, keyStone = quests[M.RESEARCH_QUEST], quests[M.KEY_STONE_QUEST]
+    check("mega quest: Professor Oak has the research and the Key Stone quests", research and keyStone
+        and research.requiredLevel == 60 and keyStone.blockStart)
+    if (not research or not keyStone) then
+        return
+    end
+    local stoneOf = {}
+    for _, stone in ipairs(MEGA_STONES) do
+        stoneOf[stone.name] = stone.itemId
+    end
+    local function names(list)
+        local out = {}
+        for _, stone in ipairs(list) do
+            out[#out + 1] = stone.name
+        end
+        table.sort(out)
+        return table.concat(out, ",")
+    end
+    local storages = { M.RESEARCH_QUEST, M.KEY_STONE_QUEST, M.KEY_STONE_FOUND, M.STONE_CHOICE,
+        playersStorages.megaResearch, playersStorages.megaStarter }
+    local saved = {}
+    for i, storage in ipairs(storages) do
+        saved[i] = getPlayerStorageValue(cid, storage)
+        setPlayerStorageValue(cid, storage, -1)
+    end
+
+    -- the starter's stone
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Squirtle")
+    local squirtle = names(M.starterStones(cid))
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Charmander")
+    local charmander = names(M.starterStones(cid))
+    check("mega quest: the stones of the starter Oak wrote down", squirtle == "Blastoisinite"
+        and charmander == "Charizardite X,Charizardite Y", squirtle .. " / " .. charmander)
+    setPlayerStorageValue(cid, playersStorages.megaStarter, -1)
+    local unknown = names(M.starterStones(cid))
+    local ball = newBall(cid, "Ivysaur", 30, POKEMON_SEX_MALE)
+    setBallOriginalTrainer(ball.uid, cid)
+    local older = names(M.starterStones(cid))
+    doRemoveItem(ball.uid)
+    check("mega quest: an older trainer's starter is the Pokemon with their own trainer mark, even evolved",
+        older == "Venusaurite" and (unknown == "Blastoisinite,Charizardite X,Charizardite Y,Venusaurite"
+        or M.STARTER_LINES[getPlayerStorageValue(cid, playersStorages.megaStarter)] == nil), older .. " / " .. unknown)
+
+    -- the research
+    setPlayerStorageValue(cid, M.RESEARCH_QUEST, QUEST_STATUS.STARTED)
+    quietly(function()
+        for _ = 1, 60 do M.onResearchDefeat(cid, "Charmander") end
+        for _ = 1, 50 do M.onResearchDefeat(cid, "Shiny Ivysaur") end
+        for _ = 1, 5 do M.onResearchDefeat(cid, "Rattata") end
+        M.onResearchDefeat(cid, "Groudon")
+        for _ = 1, 49 do M.onResearchDefeat(cid, "Gastly") end
+    end)
+    local have, need = M.researchProgress(cid)
+    local early = research.questRequest(cid)
+    quietly(function() M.onResearchDefeat(cid, "Haunter") end)
+    local done = research.questRequest(cid)
+    check("mega quest: 50 defeats from each of three Mega Stone lines, shinies count, others don't",
+        have == 149 and need == 150 and not early and done, have .. "/" .. need)
+    local logHave, logNeed = Quests.progress(cid, research)
+    check("mega quest: the quest log shows the research", logHave == 150 and logNeed == 150
+        and Quests.objective(research):find("three Mega Stone") ~= nil)
+
+    -- the crystal and its guardian
+    local crystal = getTileItemById(M.CRYSTAL, M.CRYSTAL_ITEM)
+    check("mega quest: the glowing crystal is in Cerulean Cave", isItem(crystal) and crystal.actionid == M.CRYSTAL_ACTION,
+        isItem(crystal) and crystal.actionid)
+    if (isItem(crystal)) then
+        local idle, after
+        quietly(function() idle = M.onCrystalUse(cid, crystal) end)
+        setPlayerStorageValue(cid, M.KEY_STONE_QUEST, QUEST_STATUS.STARTED)
+        local guardian
+        quietly(function() guardian = M.onCrystalUse(cid, crystal) end)
+        local second
+        quietly(function() second = M.onCrystalUse(cid, crystal) end)
+        check("mega quest: on the quest the crystal calls the Guardian Alakazam, once", idle == nil and isCreature(guardian)
+            and getCreatureName(guardian) == "Guardian Alakazam" and second == nil)
+        local keys = getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE)
+        if (isCreature(guardian)) then
+            quietly(function() M.onGuardianDeath(guardian, { cid }) end)
+        end
+        quietly(function() after = M.onCrystalUse(cid, crystal) end)
+        check("mega quest: defeating the guardian gives the Key Stone, once", not isCreature(guardian)
+            and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == keys + 1
+            and getPlayerStorageValue(cid, M.KEY_STONE_FOUND) == QUEST_STATUS.FINISHED
+            and after == nil)
+        doPlayerRemoveItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1)
+    end
+
+    -- the Mega Ring and the stone
+    local hadRing = M.ownsRing(cid)
+    local ring = not hadRing and doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1)
+    check("mega quest: showing Oak the Mega Ring ends the Key Stone quest", keyStone.questRequest(cid))
+    local said, say = {}, selfSay
+    selfSay = function(text) said[#said + 1] = text end
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Squirtle")
+    local before = getPlayerItemCount(cid, stoneOf["Blastoisinite"])
+    pcall(M.onKeyStoneQuestEnd, cid)
+    check("mega quest: a Squirtle starter gets Blastoisinite at once", getPlayerItemCount(cid, stoneOf["Blastoisinite"]) == before + 1
+        and getPlayerStorageValue(cid, M.STONE_CHOICE) == QUEST_STATUS.FINISHED)
+    setPlayerStorageValue(cid, playersStorages.megaStarter, "Charmander")
+    setPlayerStorageValue(cid, M.STONE_CHOICE, -1)
+    local x, y = getPlayerItemCount(cid, stoneOf["Charizardite X"]), getPlayerItemCount(cid, stoneOf["Charizardite Y"])
+    pcall(M.onKeyStoneQuestEnd, cid)
+    local asked = getPlayerStorageValue(cid, M.STONE_CHOICE) == QUEST_STATUS.STARTED and (said[#said] or ""):find("Charizardite X") ~= nil
+    local _, other = pcall(M.onStoneChoiceTalk, cid, "banana")
+    local _, picked = pcall(M.onStoneChoiceTalk, cid, "y")
+    selfSay = say
+    check("mega quest: a Charmander starter picks Charizardite X or Y", asked and other and picked
+        and getPlayerItemCount(cid, stoneOf["Charizardite Y"]) == y + 1 and getPlayerItemCount(cid, stoneOf["Charizardite X"]) == x
+        and getPlayerStorageValue(cid, M.STONE_CHOICE) == QUEST_STATUS.FINISHED and not M.onStoneChoiceTalk(cid, "y"))
+
+    doPlayerRemoveItem(cid, stoneOf["Blastoisinite"], 1)
+    doPlayerRemoveItem(cid, stoneOf["Charizardite Y"], 1)
+    if (ring) then
+        doRemoveItem(ring)
+    end
+    check("mega quest: the test's ring is gone again", M.ownsRing(cid) == hadRing)
+    for i, storage in ipairs(storages) do
+        setPlayerStorageValue(cid, storage, saved[i])
+    end
+end
+
+-- The whole way through the gauge, as a trainer plays it: a shiny, a Primal and a stone with no form yet
+local function testMegaCheck(cid)
+    if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
+            or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("mega check: key item and ball slots free for the test", false)
+        return
+    end
+    local M, ids = MegaEvolution, POKEMON_SPECIAL_ABILITY_IDS
+    local realPz = getTilePzInfo
+    getTilePzInfo = function() return false end
+    local stoneOf = {}
+    for _, stone in ipairs(MEGA_STONES) do
+        stoneOf[stone.name] = stone.itemId
+    end
+    local function sameTypes(types, expected)
+        if (#types ~= #expected) then
+            return false
+        end
+        for i = 1, #types do
+            if (types[i] ~= expected[i]) then
+                return false
+            end
+        end
+        return true
+    end
+    local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1))
+    doMovePlayerItem(cid, ring.uid, { y = PLAYER_SLOT_KEY_ITEM, z = 0 })
+
+    -- out with its stone, gauge full, R: the form; then the drain turns it back
+    local function megaEvolve(name, level, stoneName)
+        local ball = newBall(cid, name, level, POKEMON_SEX_MALE)
+        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, stoneOf[stoneName], 1)))
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        local pokemon = getPlayerPokemon(cid)
+        local result = { pokemon = pokemon, out = isCreature(pokemon) }
+        if (result.out) then
+            result.baseSpAtk = getPokemonSpAtk(pokemon, level)
+            setPlayerStorageValue(cid, playersStorages.megaGauge, M.MAX)
+            quietly(function() result.pressed = M.onPress(cid) end)
+            result.form = getPokemonReferenceName(pokemon)
+            result.types = getPokemonTypes(pokemon)
+            result.ability = getMonsterSpecialAbility(pokemon)
+            result.spAtk = getPokemonSpAtk(pokemon, level)
+            result.active = M.isActive(cid)
+            quietly(function()
+                for _ = 1, M.DURATION do M.step(cid) end
+            end)
+            result.after = getPokemonReferenceName(pokemon)
+            result.over = not M.isActive(cid) and M.getGauge(cid) == 0
+        end
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+        if (isItem(slot)) then
+            PokemonHeldItem.take(cid, slot.uid)
+            doRemoveItem(slot.uid)
+        end
+        doPlayerRemoveItem(cid, stoneOf[stoneName], getPlayerItemCount(cid, stoneOf[stoneName]))
+        return result
+    end
+
+    local ok, err = pcall(function()
+        local venusaur = megaEvolve("Shiny Venusaur", 50, "Venusaurite")
+        check("mega check: a Shiny Venusaur with Venusaurite Mega Evolves through the gauge", venusaur.out and venusaur.pressed
+            and venusaur.active and venusaur.form == "Shiny Mega Venusaur", venusaur.form)
+        check("mega check: Shiny Mega Venusaur is Grass/Poison with Thick Fat and more Sp. Atk",
+            venusaur.types and sameTypes(venusaur.types, { ELEMENT_GRASS, ELEMENT_POISON }) and venusaur.ability == ids.THICK_FAT
+            and (venusaur.spAtk or 0) > (venusaur.baseSpAtk or 0), tostring(venusaur.spAtk) .. " / " .. tostring(venusaur.baseSpAtk))
+        check("mega check: after 60 seconds it is a Shiny Venusaur again", venusaur.after == "Shiny Venusaur" and venusaur.over,
+            venusaur.after)
+
+        local kyogre = megaEvolve("Kyogre", 70, "Blue Orb")
+        check("mega check: Kyogre with the Blue Orb undergoes Primal Reversion through the gauge", kyogre.out and kyogre.active
+            and kyogre.form == "Primal Kyogre" and kyogre.ability == ids.PRIMORDIAL_SEA
+            and sameTypes(kyogre.types, { ELEMENT_WATER }) and kyogre.after == "Kyogre", kyogre.form)
+
+        local pinsir = megaEvolve("Pinsir", 50, "Pinsirite")
+        check("mega check: Pinsirite has no form yet, so Pinsir doesn't Mega Evolve", pinsir.out and not pinsir.pressed
+            and not pinsir.active and pinsir.form == "Pinsir" and M.formFor("Pinsir", MEGA_STONE_BY_ITEMID[stoneOf["Pinsirite"]]) == nil,
+            pinsir.form)
+    end)
+    getTilePzInfo = realPz
+    setPlayerStorageValue(cid, playersStorages.megaGauge, 0)
+    local worn = getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)
+    if (isItem(worn) and worn.itemid == MEGA_ITEM_IDS.RING) then
+        doRemoveItem(worn.uid)
+    end
+    if (not ok) then
+        check("mega check: ran without errors", false, err)
+    end
+end
+
+local function testMegaGauge(cid)
+    if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
+            or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("mega gauge: key item and ball slots free for the test", false)
+        return
+    end
+    local GAUGE = playersStorages.megaGauge
+    local realTime, realPz, realDueling, realTournament = os.time, getTilePzInfo, isDueling, getPlayerTournamentReady
+    local now = realTime()
+    os.time = function(...) if (select("#", ...) > 0) then return realTime(...) end return now end
+    getTilePzInfo = function() return false end
+    local sent = {}
+    local realSend = doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(to, opcode, buffer)
+        if (opcode == EXTENDED_IDS.MEGA) then
+            sent[#sent + 1] = buffer
+            return true
+        end
+        return realSend(to, opcode, buffer)
+    end
+    local function restore()
+        os.time, getTilePzInfo, isDueling, getPlayerTournamentReady = realTime, realPz, realDueling, realTournament
+        doSendPlayerExtendedOpcode = realSend
+    end
+    local function gauge()
+        return MegaEvolution.getGauge(cid)
+    end
+    local function setGauge(value)
+        setPlayerStorageValue(cid, GAUGE, value)
+    end
+    local function why()
+        return MegaEvolution.problem(cid) or ""
+    end
+    -- the stone back in the bag after a take, or a new one (the bag may be too full for one)
+    local function stone(index)
+        local found = getPlayerItemById(cid, true, MEGA_STONES[index].itemId)
+        return isItem(found) and found or getThing(doPlayerAddItem(cid, MEGA_STONES[index].itemId, 1))
+    end
+
+    local ok, err = pcall(function()
+        setGauge(0)
+        setPlayerStorageValue(cid, playersStorages.megaCharges, -1)
+        setPlayerStorageValue(cid, playersStorages.megaPvp, -1)
+        MegaEvolution.onClientMessage(cid, '{"action":"hello"}')
+        local hello = sent[#sent] and JSON.decode(sent[#sent])
+        check("mega gauge: the client's hello gets the HUD state", hello and hello.type == "state" and hello.ring == false
+            and hello.gauge == 0 and hello.active == false, sent[#sent])
+
+        check("mega gauge: no ring, no Mega", why():find("Mega Ring", 1, true) ~= nil, why())
+        local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1))
+        doMovePlayerItem(cid, ring.uid, { y = PLAYER_SLOT_KEY_ITEM, z = 0 })
+        ring = getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)
+        check("mega gauge: the Mega Ring goes in the key item slot", MegaEvolution.hasRing(cid), ring.itemid)
+
+        local ball = newBall(cid, "Charizard", 50, POKEMON_SEX_MALE)
+        PokemonHeldItem.give(cid, ball.uid, stone(2))
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        local pokemon = getPlayerPokemon(cid)
+        ball = getPlayerBall(cid)
+        if (not isCreature(pokemon)) then
+            check("mega gauge: Charizard comes out", false)
+            return
+        end
+
+        local pos = getCreaturePosition(cid)
+        local rattata = doCreateMonster("Rattata", { x = pos.x + 2, y = pos.y, z = pos.z }, false)
+        local oddish = doCreateMonster("Oddish", { x = pos.x - 2, y = pos.y, z = pos.z }, false)
+        MegaEvolution.onHit(pokemon, rattata, "Ember")
+        check("mega gauge: a damaging hit charges 2", gauge() == 2, gauge())
+        MegaEvolution.onHit(pokemon, rattata, "Ember")
+        check("mega gauge: one charged hit a second", gauge() == 2, gauge())
+        now = now + 1
+        MegaEvolution.onHit(pokemon, oddish, "Ember")
+        check("mega gauge: a super-effective hit charges 3", gauge() == 5, gauge())
+        MegaEvolution.onHit(oddish, pokemon, "Tackle")
+        check("mega gauge: taking a hit charges 1", gauge() == 6, gauge())
+        MegaEvolution.onHit(oddish, pokemon, "Tackle")
+        check("mega gauge: hits taken charge at most every 2 seconds", gauge() == 6, gauge())
+        MegaEvolution.onKill(cid, rattata)
+        check("mega gauge: defeating a wild Pokemon charges 5", gauge() == 11, gauge())
+        setGauge(0)
+        for i = 1, MegaEvolution.SAME_TARGET + 2 do
+            now = now + 1
+            MegaEvolution.onHit(pokemon, rattata, "Ember")
+        end
+        check("mega gauge: hitting the same target again and again gives less", gauge() == MegaEvolution.SAME_TARGET * 2 + 2,
+            gauge())
+        local wildCount = #sent
+        check("mega gauge: every charge updates the HUD", wildCount > 0 and JSON.decode(sent[#sent]).gauge == gauge(),
+            sent[#sent])
+
+        setGauge(98)
+        now = now + 1
+        MegaEvolution.onHit(pokemon, oddish, "Ember")
+        check("mega gauge: it stops at 100", gauge() == 100, gauge())
+        check("mega gauge: full, the button lights up", MegaEvolution.state(cid).ready == true)
+        doRemoveCreature(rattata)
+        doRemoveCreature(oddish)
+
+        getTilePzInfo = function() return true end
+        check("mega gauge: no Mega in a protection zone", why():find("protection zone", 1, true) ~= nil, why())
+        getTilePzInfo = function() return false end
+        getPlayerTournamentReady = function() return true end
+        check("mega gauge: off in tournaments", why():find("tournament", 1, true) ~= nil, why())
+        getPlayerTournamentReady = realTournament
+        check("mega gauge: entering a tournament emptied the gauge", gauge() == 0, gauge())
+        MegaEvolution.sync(cid)
+
+        setGauge(100)
+        PokemonHeldItem.take(cid, ball.uid)
+        quietly(function() MegaEvolution.onPress(cid) end)
+        check("mega gauge: no stone, no Mega", not MegaEvolution.isActive(cid) and gauge() == 100)
+        PokemonHeldItem.give(cid, ball.uid, stone(4))
+        quietly(function() MegaEvolution.onPress(cid) end)
+        check("mega gauge: another Pokemon's stone, no Mega", not MegaEvolution.isActive(cid)
+            and MegaEvolution.state(cid).ready == false)
+        PokemonHeldItem.take(cid, ball.uid)
+        local gave, gaveWhy = PokemonHeldItem.give(cid, ball.uid, stone(2))
+        check("mega gauge: Charizard holds its Charizardite X again", gave ~= nil, gaveWhy)
+
+        local pressed
+        quietly(function() pressed = MegaEvolution.onPress(cid) end)
+        check("mega gauge: R Mega Evolves Charizard into Mega Charizard X", pressed and MegaEvolution.isActive(cid)
+            and getPokemonReferenceName(pokemon) == "Mega Charizard X" and getCreatureOutfit(pokemon).lookType == 2596,
+            getPokemonReferenceName(pokemon))
+        local state = MegaEvolution.state(cid)
+        local contact = #(state.boosted or {}) > 0
+        for _, move in ipairs(state.boosted or {}) do
+            contact = contact and getPokemonSkillMakeContact(move)
+        end
+        check("mega gauge: the HUD gets the form and the boosted contact moves", state.active and state.form == "Mega Charizard X"
+            and state.left == MegaEvolution.DURATION and contact, table.concat(state.boosted or {}, ", "))
+        check("mega gauge: the stone is locked", MegaEvolution.isStoneLocked(cid, ball.uid)
+            and not PokemonHeldItem.take(cid, ball.uid))
+        check("mega gauge: the ring is locked", getItemAttribute(ring.uid, "scriptprotected") == true)
+        check("mega gauge: no charging while Mega", not MegaEvolution.charge(cid, 5))
+        quietly(function() pressed = MegaEvolution.onPress(cid) end)
+        check("mega gauge: one Mega at a time", not pressed)
+
+        for i = 1, MegaEvolution.DURATION / 2 do
+            MegaEvolution.step(cid)
+        end
+        check("mega gauge: it drains over 60 seconds", MegaEvolution.isActive(cid) and gauge() == 50, gauge())
+        for i = 1, MegaEvolution.DURATION / 2 do
+            MegaEvolution.step(cid)
+        end
+        check("mega gauge: at zero it turns back", not MegaEvolution.isActive(cid) and gauge() == 0
+            and getPokemonReferenceName(pokemon) == "Charizard" and getCreatureOutfit(pokemon).lookType ~= 2596,
+            getPokemonReferenceName(pokemon))
+        check("mega gauge: the ring and stone are free again", not MegaEvolution.isStoneLocked(cid, ball.uid)
+            and getItemAttribute(ring.uid, "scriptprotected") ~= true)
+
+        setGauge(100)
+        quietly(function() MegaEvolution.onPress(cid) end)
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        check("mega gauge: calling the Pokemon back ends it and empties the gauge", not MegaEvolution.isActive(cid)
+            and gauge() == 0 and not isPokemonOnline(cid), gauge())
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        pokemon = getPlayerPokemon(cid)
+        check("mega gauge: called again it is Charizard", isCreature(pokemon) and not MegaEvolution.isMega(pokemon))
+
+        setGauge(100)
+        quietly(function() MegaEvolution.onPress(cid) end)
+        isDueling = function() return true end
+        MegaEvolution.sync(cid)
+        check("mega gauge: a duel ends it and starts from 0", not MegaEvolution.isActive(cid) and gauge() == 0
+            and not MegaEvolution.isMega(pokemon), gauge())
+        isDueling = realDueling
+        MegaEvolution.sync(cid)
+
+        setGauge(100)
+        quietly(function() MegaEvolution.onPress(cid) end)
+        MegaEvolution.onLogout(cid)
+        check("mega gauge: logging out ends it", not MegaEvolution.isActive(cid) and gauge() == 0
+            and not MegaEvolution.isMega(pokemon), gauge())
+
+        setGauge(80)
+        setPlayerStorageValue(cid, playersStorages.megaActive, string.format("M1|%d|30", pokemon))
+        setItemScriptProtected(ring.uid, true)
+        MegaEvolution.onLogin(cid)
+        check("mega gauge: a login after a crash mid-Mega empties the gauge and frees the ring", gauge() == 0
+            and getItemAttribute(ring.uid, "scriptprotected") ~= true, gauge())
+        setGauge(40)
+        MegaEvolution.onLogin(cid)
+        check("mega gauge: the charge is kept across logins", gauge() == 40, gauge())
+        MegaEvolution.onClientMessage(cid, '{"action":"hello"}')
+
+        MegaEvolution.BURST_MS = 1800
+        setGauge(100)
+        local before = #sent
+        MegaEvolution.onPress(cid)
+        local fx
+        for i = before + 1, #sent do
+            local message = JSON.decode(sent[i])
+            if (message.type == "fx" and message.phase == "evolve") then
+                fx = message
+            end
+        end
+        check("mega gauge: nearby clients get the animation with the form and its look", fx ~= nil
+            and fx.pokemon == pokemon and fx.trainer == cid and fx.form == "Mega Charizard X" and fx.look == 2596
+            and fx.ms == 1800, sent[#sent])
+        check("mega gauge: until the burst it is not the form yet", MegaEvolution.isActive(cid)
+            and not MegaEvolution.isMega(pokemon) and MegaEvolution.state(cid).form == "Mega Charizard X"
+            and MegaEvolution.isStoneLocked(cid, ball.uid))
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        check("mega gauge: called back before the burst, there is no Mega", not MegaEvolution.isActive(cid)
+            and gauge() == 0 and not MegaEvolution.burst(cid))
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        pokemon = getPlayerPokemon(cid)
+        setGauge(100)
+        quietly(function() MegaEvolution.onPress(cid) end)
+        quietly(function() MegaEvolution.burst(cid) end)
+        check("mega gauge: at the burst it becomes Mega Charizard X", MegaEvolution.isMega(pokemon)
+            and getPokemonReferenceName(pokemon) == "Mega Charizard X")
+        before = #sent
+        MegaEvolution.finish(cid)
+        local ended = false
+        for i = before + 1, #sent do
+            ended = ended or sent[i]:find('"phase":"end"', 1, true) ~= nil
+        end
+        check("mega gauge: the end goes out too", ended, sent[#sent])
+        MegaEvolution.BURST_MS = 0
+
+        setGauge(100)
+        MegaEvolution.onClientMessage(cid, '{"action":"evolve"}')
+        check("mega gauge: the client's evolve message Mega Evolves", MegaEvolution.isActive(cid))
+        MegaEvolution.finish(cid)
+
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        PokemonHeldItem.take(cid, ball.uid)
+        doRemoveItem(ball.uid)
+        doMovePlayerItem(cid, ring.uid, { y = PLAYER_SLOT_BACKPACK, z = 0 })
+        setGauge(0)
+        check("mega gauge: without the ring nothing charges", not MegaEvolution.charge(cid, 5) and gauge() == 0)
+    end)
+    restore()
+    if (not ok) then
+        error(err, 0)
+    end
+    for _, id in ipairs({ MEGA_ITEM_IDS.RING, MEGA_STONES[2].itemId, MEGA_STONES[4].itemId }) do
+        doPlayerRemoveItem(cid, id, getPlayerItemCount(cid, id))
+    end
+    for _, key in ipairs({ "megaGauge", "megaClient", "megaCharges", "megaPvp", "megaActive" }) do
+        setPlayerStorageValue(cid, playersStorages[key], -1)
+    end
+end
+
+local function testRunningShoes(cid)
+    local RUNNING_SHOES = 18754
+    if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
+            or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("running shoes: key item and ball slots free for the test", false)
+        return
+    end
+    local before = getCreatureSpeed(cid)
+    local shoes = getThing(doPlayerAddItem(cid, RUNNING_SHOES, 1))
+    doMovePlayerItem(cid, shoes.uid, { y = PLAYER_SLOT_KEY_ITEM, z = 0 })
+    local worn = getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)
+    check("running shoes: they go in the key item slot", isItem(worn) and worn.itemid == RUNNING_SHOES, worn and worn.itemid)
+    check("running shoes: +60 speed", getCreatureSpeed(cid) == before + 60, getCreatureSpeed(cid) - before)
+
+    local ball = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    check("running shoes: a Pokemon can be called while wearing them", isPokemonOnline(cid))
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    doRemoveConditions(cid, false)
+    local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+    if (isItem(slot)) then
+        doRemoveItem(slot.uid)
+    end
+
+    doMovePlayerItem(cid, worn.uid, { y = PLAYER_SLOT_BACKPACK, z = 0 })
+    check("running shoes: taking them off puts the speed back", getCreatureSpeed(cid) == before,
+        getCreatureSpeed(cid) - before)
+    doPlayerRemoveItem(cid, RUNNING_SHOES, 1)
+end
+
 local function testAnalyser(cid)
     local function near(a, b)
         return a and b and math.abs(a - b) < 0.0001
@@ -3948,7 +4903,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

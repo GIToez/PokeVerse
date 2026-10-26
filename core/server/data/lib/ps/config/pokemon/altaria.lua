@@ -22,3 +22,16 @@ POKEMON["Altaria"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.ICE_BEAM, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.SOLAR_BEAM, TM_IDS.EARTHQUAKE, TM_IDS.DOUBLE_TEAM, TM_IDS.FLAMETHROWER, TM_IDS.FIRE_BLAST, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.STEEL_WING, TM_IDS.DREAM_EATER, TM_IDS.SUBSTITUTE, TM_IDS.DRAGON_CLAW, TM_IDS.ROAR, TM_IDS.SAFEGUARD },
     eggMoves = { "Agility", "Dragon Rush", "Feather Dance", "Haze", "Hyper Voice",  "Pursuit", "Rage", "Roost", "Steel Wing" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Altaria"] = table.deepcopy(POKEMON["Altaria"])
+POKEMON["Mega Altaria"].megaOf = "Altaria"
+POKEMON["Mega Altaria"].pTypes = { ELEMENT_DRAGON, ELEMENT_FAIRY }
+POKEMON["Mega Altaria"].atk = 110
+POKEMON["Mega Altaria"].def = 110
+POKEMON["Mega Altaria"].spAtk = 110
+POKEMON["Mega Altaria"].spDef = 105
+POKEMON["Mega Altaria"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.PIXILATE }
+POKEMON["Mega Altaria"].portrait = 30318
+POKEMON["Mega Altaria"].fastcallPortrait = 28961
+POKEMON["Mega Altaria"].blockTransform = true

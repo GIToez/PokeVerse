@@ -54,6 +54,7 @@ GTS.CATEGORIES = {
     { name = "Medicine", items = { 12244, 12247, 12245, 12246, 12248, 12249, 12250, 13653, 13819 } },
     { name = "Evolution Stones", items = range(18083, 18088) },
     { name = "Held Items", items = join(range(23513, 23531), range(30137, 30144), range(30152, 30153)) },
+    { name = "Mega Stones", items = range(MEGA_FIRST_STONE_ID, MEGA_LAST_STONE_ID) },
     { name = "Berries", items = join(range(13182, 13186), range(14766, 14770), range(30145, 30150)) },
     { name = "Berry Seeds", items = join(range(13176, 13180), range(14791, 14795)) },
     { name = "Vitamins", items = range(23450, 23457, { [23454] = true }) },
@@ -231,6 +232,8 @@ local function ballProblem(cid, ball)
         return "Pokemon with a seal can't be traded."
     elseif (getBallTm(ball.uid, 1) ~= TM_IDS.NONE or getBallTm(ball.uid, 2) ~= TM_IDS.NONE) then
         return "Pokemon with TMs can't be traded."
+    elseif (PokemonHeldItem.getMegaStone(ball.uid)) then
+        return "Take its Mega Stone off first."
     elseif (ball.uid == getPlayerSlotItem(cid, PLAYER_SLOT_BALL).uid
             and (isPokemonOnline(cid) or getPlayerMounted(cid) or isEvolving(cid))) then
         return "Put your Pokemon back in its ball first."
@@ -284,6 +287,7 @@ GTS.describe = function(data, uid, name, level)
 end
 
 GTS.summary = pokemonSummary
+GTS.ballProblem = ballProblem
 GTS.faceOf = faceOf
 
 -- database

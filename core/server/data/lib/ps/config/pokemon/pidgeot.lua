@@ -29,3 +29,16 @@ POKEMON["RC Pidgeot"].blockTransform = true
 
 POKEMON["Cloned Pidgeot"] = table.deepcopy(POKEMON["Pidgeot"])
 POKEMON["Cloned Pidgeot"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Pidgeot"] = table.deepcopy(POKEMON["Pidgeot"])
+POKEMON["Mega Pidgeot"].megaOf = "Pidgeot"
+POKEMON["Mega Pidgeot"].pTypes = { ELEMENT_NORMAL, ELEMENT_FLYING }
+POKEMON["Mega Pidgeot"].atk = 80
+POKEMON["Mega Pidgeot"].def = 80
+POKEMON["Mega Pidgeot"].spAtk = 135
+POKEMON["Mega Pidgeot"].spDef = 80
+POKEMON["Mega Pidgeot"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.NO_GUARD }
+POKEMON["Mega Pidgeot"].portrait = 30282
+POKEMON["Mega Pidgeot"].fastcallPortrait = 28925
+POKEMON["Mega Pidgeot"].blockTransform = true

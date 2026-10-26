@@ -1,5 +1,6 @@
 MOVES["Origin Pulse"] = {
     description = "Origin Pulse deals damage to all adjacent opponents. Its power is boosted by 50% when used by a Pokemon with the Ability Mega Launcher.",
+    pulse = true,
     category = MOVE_CATEGORY.SPECIAL,
     clientIconId = 27625,
     iconId = 0,

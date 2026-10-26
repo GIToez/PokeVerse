@@ -1,5 +1,6 @@
 MOVES["Hyper Fang"] = {
     description = "Hyper Fang deals damage and has a 10% chance of causing the target to flinch.",
+    bite = true,
     makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 11726,

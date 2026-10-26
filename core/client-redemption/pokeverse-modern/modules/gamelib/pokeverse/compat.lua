@@ -238,6 +238,8 @@ ExtendedIds.Announcement = 47
 ExtendedIds.HealMark = 48
 ExtendedIds.EventShop = 49
 ExtendedIds.Analyser = 50
+ExtendedIds.Mega = 51
+ExtendedIds.MegaEvolve = 52
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

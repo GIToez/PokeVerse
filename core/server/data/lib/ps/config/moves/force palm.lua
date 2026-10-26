@@ -1,5 +1,6 @@
 MOVES["Force Palm"] = {
     description = "Force Palm inflicts damage and has a 30% chance of paralyzing the target.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 27587,
     iconId = 0,

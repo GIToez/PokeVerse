@@ -1,5 +1,6 @@
 MOVES["Waterfall"] = {
     description = "Waterfall does damage and has a 20% chance of causing the target to flinch.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 27622,
     iconId = 0,

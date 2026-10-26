@@ -22,3 +22,16 @@ POKEMON["Camerupt"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.PROTECT, TM_IDS.EARTHQUAKE, TM_IDS.DOUBLE_TEAM, TM_IDS.FLAMETHROWER, TM_IDS.FIRE_BLAST, TM_IDS.ROCK_TOMB, TM_IDS.REST, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.HYPER_BEAM, TM_IDS.SOLAR_BEAM, TM_IDS.REST, TM_IDS.EXPLOSION, TM_IDS.ROAR, TM_IDS.SANDSTORM, TM_IDS.OVERHEAT },
     eggMoves = { "Ancient Power", "Body Slam", "Defense Curl", "Endure", "Heat Wave", "Iron Head", "Mud Bomb", "Rollout", "Scary Face", "Stomp", "Yawn" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Camerupt"] = table.deepcopy(POKEMON["Camerupt"])
+POKEMON["Mega Camerupt"].megaOf = "Camerupt"
+POKEMON["Mega Camerupt"].pTypes = { ELEMENT_FIRE, ELEMENT_GROUND }
+POKEMON["Mega Camerupt"].atk = 120
+POKEMON["Mega Camerupt"].def = 100
+POKEMON["Mega Camerupt"].spAtk = 145
+POKEMON["Mega Camerupt"].spDef = 105
+POKEMON["Mega Camerupt"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SHEER_FORCE }
+POKEMON["Mega Camerupt"].portrait = 30316
+POKEMON["Mega Camerupt"].fastcallPortrait = 28959
+POKEMON["Mega Camerupt"].blockTransform = true

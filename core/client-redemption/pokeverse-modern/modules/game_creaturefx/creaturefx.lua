@@ -1,12 +1,13 @@
--- Shaders on Pokemon: shiny ones shimmer, and burn, freeze, paralysis, poison, sleep and confusion
--- show on the Pokemon itself. Shinies are known by their sprites (ShinyLooks, from the server's
--- monsters). The statuses come from the server (008-conditions.lua) as ExtendedIds.CreatureStatus
+-- Shaders on Pokemon: shiny ones shimmer, Mega Evolved ones have a rainbow aura, and burn, freeze,
+-- paralysis, poison, sleep and confusion show on the Pokemon itself. Shinies and Megas are known by their
+-- sprites (ShinyLooks and MegaLooks, from the server's monsters). game_megafx turns a Pokemon into a white
+-- cocoon for a moment with setCocoon; that wins over everything. The statuses come from the server (008-conditions.lua) as ExtendedIds.CreatureStatus
 -- "creatureId,status,ms", ms 0 when one ends early. A creature has one shader, so a status shows
 -- over the shimmer until it ends. Every effect is compiled VARIANTS times at different points in its
 -- cycle, picked by creature id, so Pokemon side by side don't pulse together. Option: pokemonEffects.
 local DIR = '/modules/game_creaturefx/shaders/'
 local VARIANTS = 6
-local EFFECTS = { 'shiny', 'burn', 'freeze', 'paralysis', 'poison', 'sleep', 'confusion' }
+local EFFECTS = { 'shiny', 'mega', 'megacocoon', 'burn', 'freeze', 'paralysis', 'poison', 'sleep', 'confusion' }
 -- the server's CREATURE_STATUS_* ids
 local STATUS_EFFECTS = { [0] = 'burn', [1] = 'freeze', [2] = 'paralysis', [3] = 'poison', [4] = 'sleep', [5] = 'confusion',
                          [14] = 'poison' }
@@ -14,6 +15,7 @@ local STATUS_EFFECTS = { [0] = 'burn', [1] = 'freeze', [2] = 'paralysis', [3] = 
 local PRIORITY = { freeze = 6, sleep = 5, paralysis = 4, burn = 3, poison = 2, confusion = 1 }
 
 local statuses = {} -- [creatureId] = { [effect] = ends at (g_clock.millis) }
+local cocoons = {} -- [creatureId] = ends at (g_clock.millis)
 local shaded = {} -- [creatureId] = true while this module has a shader on it
 local tickEvent
 
@@ -45,6 +47,11 @@ function isShiny(creature)
     return outfit ~= nil and ShinyLooks[outfit.type] == true
 end
 
+function isMega(creature)
+    local outfit = creature:getOutfit()
+    return outfit ~= nil and MegaLooks[outfit.type] == true
+end
+
 local function wantedShader(creature)
     if not enabled() then
         return ''
@@ -52,12 +59,17 @@ local function wantedShader(creature)
     local id = creature:getId()
     local best
     local now = g_clock.millis()
+    if (cocoons[id] or 0) > now then
+        return shaderName('megacocoon', id % VARIANTS)
+    end
     for effect, endsAt in pairs(statuses[id] or {}) do
         if endsAt > now and (not best or PRIORITY[effect] > PRIORITY[best]) then
             best = effect
         end
     end
-    if not best and isShiny(creature) then
+    if not best and isMega(creature) then
+        best = 'mega'
+    elseif not best and isShiny(creature) then
         best = 'shiny'
     end
     return best and shaderName(best, id % VARIANTS) or ''
@@ -86,6 +98,12 @@ end
 -- statuses run out on their own: drop them and put the shimmer (or nothing) back
 local function tick()
     local now = g_clock.millis()
+    for id, endsAt in pairs(cocoons) do
+        if endsAt <= now then
+            cocoons[id] = nil
+            refresh(g_map.getCreatureById(id))
+        end
+    end
     for id, list in pairs(statuses) do
         local changed = false
         for effect, endsAt in pairs(list) do
@@ -101,9 +119,22 @@ local function tick()
             refresh(g_map.getCreatureById(id))
         end
     end
-    if next(statuses) == nil then
+    if next(statuses) == nil and next(cocoons) == nil then
         stopTick()
     end
+end
+
+local function startTick()
+    if not tickEvent then
+        tickEvent = cycleEvent(tick, 50)
+    end
+end
+
+-- The Pokemon shows as a white shape for ms (the Mega Evolution's cocoon, or its flash when it ends)
+function setCocoon(creatureId, ms)
+    cocoons[creatureId] = g_clock.millis() + math.max(0, tonumber(ms) or 0)
+    refresh(g_map.getCreatureById(creatureId))
+    startTick()
 end
 
 local function onCreatureStatus(protocol, opcode, buffer)
@@ -117,8 +148,8 @@ local function onCreatureStatus(protocol, opcode, buffer)
     list[effect] = ms > 0 and g_clock.millis() + ms or nil
     statuses[id] = next(list) and list or nil
     refresh(g_map.getCreatureById(id))
-    if statuses[id] and not tickEvent then
-        tickEvent = cycleEvent(tick, 250)
+    if statuses[id] then
+        startTick()
     end
 end
 
@@ -138,6 +169,7 @@ end
 local function onGameEnd()
     stopTick()
     statuses = {}
+    cocoons = {}
     shaded = {}
 end
 
@@ -163,5 +195,6 @@ function terminate()
         end
     end
     statuses = {}
+    cocoons = {}
     shaded = {}
 end

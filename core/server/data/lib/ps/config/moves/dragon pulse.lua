@@ -1,5 +1,6 @@
 MOVES["Dragon Pulse"] = {
     description = "Dragon Pulse deals damage and has no secondary effect.",
+    pulse = true,
     category = MOVE_CATEGORY.SPECIAL,
     clientIconId = 16306,
     iconId = 0,

@@ -22,3 +22,16 @@ POKEMON["Aerodactyl"] = {
     learnableTms = { TM_IDS.SOFTBOILED, TM_IDS.FLAMETHROWER, TM_IDS.AERIAL_ACE, TM_IDS.ROCK_TOMB, TM_IDS.STEEL_WING, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ROCK_SLIDE, TM_IDS.RAZOR_WIND, TM_IDS.WHIRLWIND, TM_IDS.TOXIC, TM_IDS.TAKE_DOWN, TM_IDS.DOUBLE_EDGE, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.DRAGON_RAGE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REFLECT, TM_IDS.BIDE, TM_IDS.FIRE_BLAST, TM_IDS.SWIFT, TM_IDS.SKY_ATTACK, TM_IDS.REST, TM_IDS.SUBSTITUTE, TM_IDS.EARTHQUAKE, TM_IDS.DRAGON_CLAW, TM_IDS.ROAR, TM_IDS.TAUNT, TM_IDS.SANDSTORM },
     eggMoves = { "Assurance", "Curse", "Dragon Breath", "Foresight", "Pursuit", "Roost", "Steel Wing", "Tailwind", "Whirlwind", "Wide Guard" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Aerodactyl"] = table.deepcopy(POKEMON["Aerodactyl"])
+POKEMON["Mega Aerodactyl"].megaOf = "Aerodactyl"
+POKEMON["Mega Aerodactyl"].pTypes = { ELEMENT_ROCK, ELEMENT_FLYING }
+POKEMON["Mega Aerodactyl"].atk = 135
+POKEMON["Mega Aerodactyl"].def = 85
+POKEMON["Mega Aerodactyl"].spAtk = 70
+POKEMON["Mega Aerodactyl"].spDef = 95
+POKEMON["Mega Aerodactyl"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS }
+POKEMON["Mega Aerodactyl"].portrait = 30294
+POKEMON["Mega Aerodactyl"].fastcallPortrait = 28937
+POKEMON["Mega Aerodactyl"].blockTransform = true

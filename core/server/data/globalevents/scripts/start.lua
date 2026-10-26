@@ -47,6 +47,11 @@ STARTUP[#STARTUP + 1] = {
     action = doHighscoreTextUpdate
 }
 
+STARTUP[#STARTUP + 1] = {
+    msg = "Placing the Key Stone crystal...",
+    action = MegaEvolution.placeCrystal
+}
+
 STARTUP[#STARTUP + 1] = { -- Quest Stuff
     action = function()
         doCreateItem(18170, 1, table.random({{x = 3932, y = 1953, z = 1}, {x = 3484, y = 1611, z = 5},

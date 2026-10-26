@@ -1046,6 +1046,10 @@ function doCreatureAddStatus(cid, status, var, caster)
             (var == CREATURE_STATUS_VAR_BAD or var == CREATURE_STATUS_VAR_BADMEDIUM))
 
     if (badStatus) then
+        if (doPokemonSpecialAbilityCheck(cid, POKEMON_SPECIAL_ABILITY_IDS.MAGIC_BOUNCE, nil, caster)) then
+            doSendAnimatedText(getCreaturePosition(cid), "BOUNCED", TEXTCOLOR_PINK)
+            return doCreatureAddStatus(caster, status, var, cid)
+        end
         if (doPokemonSpecialAbilityCheck(cid, POKEMON_SPECIAL_ABILITY_IDS.RUN_AWAY, nil, status) or
                 doPokemonSpecialAbilityCheck(cid, POKEMON_SPECIAL_ABILITY_IDS.COMPOUNDEYES, nil, status) or
                 doPokemonSpecialAbilityCheck(cid, POKEMON_SPECIAL_ABILITY_IDS.KEEN_EYE, nil, status) or

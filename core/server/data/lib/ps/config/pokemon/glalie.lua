@@ -22,3 +22,16 @@ POKEMON["Glalie"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.ICE_BEAM, TM_IDS.BLIZZARD, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.EARTHQUAKE, TM_IDS.SHADOW_BALL, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.EXPLOSION, TM_IDS.SUBSTITUTE, TM_IDS.HAIL, TM_IDS.LIGHT_SCREEN, TM_IDS.SAFEGUARD },
     eggMoves = { "Avalanche", "Bide", "Block", "Disable", "Fake Tears", "Hex", "Rollout", "Spikes" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Glalie"] = table.deepcopy(POKEMON["Glalie"])
+POKEMON["Mega Glalie"].megaOf = "Glalie"
+POKEMON["Mega Glalie"].pTypes = { ELEMENT_ICE }
+POKEMON["Mega Glalie"].atk = 120
+POKEMON["Mega Glalie"].def = 80
+POKEMON["Mega Glalie"].spAtk = 120
+POKEMON["Mega Glalie"].spDef = 80
+POKEMON["Mega Glalie"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE }
+POKEMON["Mega Glalie"].portrait = 30322
+POKEMON["Mega Glalie"].fastcallPortrait = 28965
+POKEMON["Mega Glalie"].blockTransform = true

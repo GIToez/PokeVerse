@@ -1,5 +1,6 @@
 MOVES["Triple Kick"] = {
     description = "Triple Kick deals damage and has no secondary effect.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 16333,
     iconId = 0,

@@ -337,6 +337,48 @@ QUESTS_CONFIG = {
             requiredLevel = 70,
             canStart = function(cid) return getCreatureStorage(cid, 8368) == QUEST_STATUS.STARTED end
         },
+        -- Mega Evolution (097-megaEvolution.lua): also started and ended by saying "mega" to Oak
+        {
+            storage = 8760,
+            talk_questStarting = "A colleague of mine in Kalos sent me something remarkable: an empty Mega Ring. Some Pokemon can Mega Evolve, if they hold the right stone and their trainer wears a Mega Ring. Would you help me study them?",
+            talk_questStarted = "Wonderful! Defeat wild Pokemon from three families that have a Mega Stone, fifty of each. Bulbasaur, Charmander, Squirtle, Abra, Gastly, Gyarados... any you like. Then come back to me.",
+            talk_questFinishing = "How is the Mega research going?",
+            talk_questFinished = "Splendid work! This empty Mega Ring is yours. It still needs a Key Stone, though... Deep in Cerulean Cave, at the very bottom, a crystal has been glowing with the same light. Go and see what it is, and be careful.",
+            talk_questFinishFail = "Not yet. Fifty wild Pokemon from each of three Mega Stone families.",
+            talk_questDone = "Thanks, but, I have no missions for you now.",
+            questType = QUEST_TYPE.CUSTOM,
+            questRequest = function(cid)
+                local have, need = MegaEvolution.researchProgress(cid)
+                return have >= need
+            end,
+            objective = "Defeat 50 wild Pokemon from each of three Mega Stone families",
+            category = "Side quests",
+            progress = function(cid) return MegaEvolution.researchProgress(cid) end,
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = MEGA_ITEM_IDS.EMPTY_RING, count = 1, unique = true } },
+            rewardExp = 0,
+            requiredLevel = 60,
+            onStart = function(cid) doCreatureSetStorage(cid, playersStorages.megaResearch, -1) end,
+            onEnd = function(cid) doPlayerStartQuest(cid, nil, "Professor Oak", 8761) end
+        },
+        {
+            storage = 8761,
+            talk_questStarting = "",
+            talk_questStarted = "Find that crystal at the bottom of Cerulean Cave. If it really holds a Key Stone, put it on the empty ring and show me the Mega Ring.",
+            talk_questFinishing = "Did you make the Mega Ring?",
+            talk_questFinished = "A real Mega Ring! Wear it in your key item slot. Fighting alongside your Pokemon fills its Mega gauge.",
+            talk_questFinishFail = "Not yet. Find the Key Stone in Cerulean Cave and use it on the empty Mega Ring.",
+            talk_questDone = "Thanks, but, I have no missions for you now.",
+            questType = QUEST_TYPE.CUSTOM,
+            questRequest = function(cid) return MegaEvolution.ownsRing(cid) end,
+            objective = "Find the Key Stone at the bottom of Cerulean Cave and put it on the empty Mega Ring",
+            category = "Side quests",
+            progress = function(cid) return MegaEvolution.ownsRing(cid) and 1 or 0, 1 end,
+            rewardItems = {},
+            rewardExp = 0,
+            requiredLevel = 60,
+            blockStart = true, -- started by 8760
+            onEnd = function(cid) MegaEvolution.onKeyStoneQuestEnd(cid) end
+        },
     },
     ["Zazi"] = {
         {

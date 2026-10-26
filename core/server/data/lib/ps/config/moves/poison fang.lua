@@ -1,5 +1,6 @@
 MOVES["Poison Fang"] = {
     description = "Poison Fang inflicts damage and has a 30% chance of badly poisoning the target.",
+    bite = true,
     makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 11745,

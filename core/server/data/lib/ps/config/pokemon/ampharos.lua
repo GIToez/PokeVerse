@@ -22,3 +22,16 @@ POKEMON["Ampharos"] = {
     learnableTms = { TM_IDS.FIRE_PUNCH, TM_IDS.THUNDER_PUNCH, TM_IDS.DEFENSE_CURL, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ZAP_CANNON, TM_IDS.ZAP_CANNON, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.THUNDER_WAVE, TM_IDS.SWIFT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.LIGHT_SCREEN, TM_IDS.SAFEGUARD, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE },
     eggMoves = { "After You", "Agility", "Body Slam", "Charge", "Eerie Impulse", "Electric Terrain", "Flatter", "Iron Tail", "Odor Sleuth", "Sand-Attack", "Screech", "Take Down" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Ampharos"] = table.deepcopy(POKEMON["Ampharos"])
+POKEMON["Mega Ampharos"].megaOf = "Ampharos"
+POKEMON["Mega Ampharos"].pTypes = { ELEMENT_ELECTRIC, ELEMENT_DRAGON }
+POKEMON["Mega Ampharos"].atk = 95
+POKEMON["Mega Ampharos"].def = 105
+POKEMON["Mega Ampharos"].spAtk = 165
+POKEMON["Mega Ampharos"].spDef = 110
+POKEMON["Mega Ampharos"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.MOLD_BREAKER }
+POKEMON["Mega Ampharos"].portrait = 30296
+POKEMON["Mega Ampharos"].fastcallPortrait = 28939
+POKEMON["Mega Ampharos"].blockTransform = true

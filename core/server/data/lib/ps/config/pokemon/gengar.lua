@@ -29,3 +29,16 @@ POKEMON["RC Gengar"].blockTransform = true
 
 POKEMON["Cloned Gengar"] = table.deepcopy(POKEMON["Gengar"])
 POKEMON["Cloned Gengar"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Gengar"] = table.deepcopy(POKEMON["Gengar"])
+POKEMON["Mega Gengar"].megaOf = "Gengar"
+POKEMON["Mega Gengar"].pTypes = { ELEMENT_GHOST, ELEMENT_POISON }
+POKEMON["Mega Gengar"].atk = 65
+POKEMON["Mega Gengar"].def = 80
+POKEMON["Mega Gengar"].spAtk = 170
+POKEMON["Mega Gengar"].spDef = 95
+POKEMON["Mega Gengar"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SHADOW_TAG }
+POKEMON["Mega Gengar"].portrait = 30288
+POKEMON["Mega Gengar"].fastcallPortrait = 28931
+POKEMON["Mega Gengar"].blockTransform = true

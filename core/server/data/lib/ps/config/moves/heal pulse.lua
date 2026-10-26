@@ -1,5 +1,6 @@
 MOVES["Heal Pulse"] = {
     description = "Heal Pulse recover party members HP.",
+    pulse = true,
     makeHeal = true,
     wildBlock = true,
     category = MOVE_CATEGORY.SPECIAL,

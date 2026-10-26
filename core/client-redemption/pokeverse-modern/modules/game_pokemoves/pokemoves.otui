@@ -11,6 +11,17 @@ MoveSlot < UIWidget
     phantom: true
     anchors.centerIn: parent
 
+  // the Mega ability boosts the move (game_pokehud/mega.lua); mega-glow.png holds 24 frames of 48x48,
+  // a softly pulsing halo with a spark running round the slot (scripts/art/mega_hud_art.py)
+  UIWidget
+    id: megaGlow
+    size: 48 48
+    phantom: true
+    visible: false
+    image-source: /modules/game_pokemoves/images/mega-glow
+    image-clip: 0 0 48 48
+    anchors.centerIn: parent
+
   // cooldown.png holds 24 frames of 40x40, from just used to almost ready
   UIWidget
     id: cooldown
