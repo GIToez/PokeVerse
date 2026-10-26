@@ -130,5 +130,8 @@ playersStorages = {
     eventShopId = base + 127, -- the EventShop id last opened for that trainer
     analyserClient = base + 128, -- 1 while the trainer's client has the Analyser window (it asks at login)
     analyserLastKill = base + 129, -- "<level>|<name>" of the last wild Pokemon the trainer defeated (Analyser)
+    megaGauge = base + 130, -- the Mega gauge, 0 to 100, kept across logins (MegaEvolution)
+    megaActive = base + 131, -- 1 while a Mega Evolution lasts, so a login after a crash empties the gauge and unlocks the ring
+    megaClient = base + 132, -- 1 while the trainer's client has the Mega HUD (it says hello at login)
     -- tournamentWeekWinnerStorage = base + 65
 }

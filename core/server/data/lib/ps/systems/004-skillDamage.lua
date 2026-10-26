@@ -434,6 +434,9 @@ function doSkillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
 
         doSendMagicEffect(toCidPos, getPokemonSkillEffect(skillName))
         BattleText.hit(toCid)
+        if (finalDamage < 0) then
+            MegaEvolution.onHit(fromCid, toCid, skillName)
+        end
         doTargetCombatHealth(fromCid, toCid, getPokemonSkillDType(skillName), finalDamage, finalDamage, CONST_ME_NONE)
 
         if (not isCreature(toCid)) then -- The damage killed him?

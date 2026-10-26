@@ -82,7 +82,9 @@ EXTENDED_IDS = {
     ANNOUNCEMENT = 47, -- JSON server-wide news for the news banner: {c = category, h = title, x = text, f = the text message} (Announcements)
     HEAL_MARK = 48, -- JSON {id = creature, s = seconds left, 0 when it ends}: a health potion healing a Pokemon or trainer, to the players who can see it
     EVENT_SHOP = 49, -- JSON Event Token Shop: holiday token catalogs (EventShop)
-    ANALYSER = 50 -- JSON Analyser window: the catch chances of the last Pokemon defeated and the Pokemon's EXP (Analyser)
+    ANALYSER = 50, -- JSON Analyser window: the catch chances of the last Pokemon defeated and the Pokemon's EXP (Analyser)
+    MEGA = 51, -- JSON Mega HUD state: the ring, the gauge, whether the button is lit, the Mega form, its seconds left and boosted moves (MegaEvolution.state)
+    MEGA_EVOLVE = 52 -- JSON from the client: {action = "hello"} at login, {action = "evolve"} for the R key and the Mega button (MegaEvolution)
 }
 
 TOURNAMENT_TYPES = {}
