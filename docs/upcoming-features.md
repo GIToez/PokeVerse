@@ -3272,7 +3272,7 @@ starters (they need walk sprites like the Megas).
 - HP and speed stay the same (100 and 90).
 - In the main games it happens by itself when the Pokémon is sent out holding its orb and lasts
   the whole battle. PokeVerse has no turns or battle ends, so here it works **like a Mega
-  Evolution** (proposed): the Mega Ring, a full gauge, the button or R, 60 seconds, the same
+  Evolution** (decided): the Mega Ring, a full gauge, the button or R, 60 seconds, the same
   animation in red or blue, and it counts as the trainer's one Mega.
 - Abilities, the same way as Drought on Mega Charizard Y (on the Pokémon itself, since there is
   no battle weather), following Bulbapedia:
@@ -3442,8 +3442,6 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
   either can be traded before they are put together.
 - Where the stones come from (a quest reward, world bosses, an event shop?), including the
   ones that don't work yet.
-- Primal Reversion working like a Mega (proposed above), or by itself whenever Groudon or
-  Kyogre is out holding its orb, as in the games.
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
