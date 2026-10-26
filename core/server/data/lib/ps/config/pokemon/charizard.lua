@@ -45,3 +45,27 @@ POKEMON["Clone Charizard"].spDef = 70 * 3
 
 POKEMON["Cloned Charizard"] = table.deepcopy(POKEMON["Charizard"])
 POKEMON["Cloned Charizard"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Charizard X"] = table.deepcopy(POKEMON["Charizard"])
+POKEMON["Mega Charizard X"].megaOf = "Charizard"
+POKEMON["Mega Charizard X"].pTypes = { ELEMENT_FIRE, ELEMENT_DRAGON }
+POKEMON["Mega Charizard X"].atk = 130
+POKEMON["Mega Charizard X"].def = 111
+POKEMON["Mega Charizard X"].spAtk = 131
+POKEMON["Mega Charizard X"].spDef = 85
+POKEMON["Mega Charizard X"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS }
+POKEMON["Mega Charizard X"].portrait = 30274
+POKEMON["Mega Charizard X"].fastcallPortrait = 28917
+POKEMON["Mega Charizard X"].blockTransform = true
+
+POKEMON["Mega Charizard Y"] = table.deepcopy(POKEMON["Charizard"])
+POKEMON["Mega Charizard Y"].megaOf = "Charizard"
+POKEMON["Mega Charizard Y"].atk = 104
+POKEMON["Mega Charizard Y"].def = 78
+POKEMON["Mega Charizard Y"].spAtk = 160
+POKEMON["Mega Charizard Y"].spDef = 115
+POKEMON["Mega Charizard Y"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.DROUGHT }
+POKEMON["Mega Charizard Y"].portrait = 30276
+POKEMON["Mega Charizard Y"].fastcallPortrait = 28919
+POKEMON["Mega Charizard Y"].blockTransform = true

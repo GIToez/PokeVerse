@@ -1053,6 +1053,15 @@ POKEMONS["Shiny Crawdaunt"].fastcallPortrait = 28145
 POKEMONS["Shiny Milotic"].portrait = 29397
 POKEMONS["Shiny Milotic"].fastcallPortrait = 28153
 
+POKEMONS["Shiny Mega Venusaur"].portrait = 30273
+POKEMONS["Shiny Mega Venusaur"].fastcallPortrait = 28916
+POKEMONS["Shiny Mega Charizard X"].portrait = 30275
+POKEMONS["Shiny Mega Charizard X"].fastcallPortrait = 28918
+POKEMONS["Shiny Mega Charizard Y"].portrait = 30277
+POKEMONS["Shiny Mega Charizard Y"].fastcallPortrait = 28920
+POKEMONS["Shiny Mega Blastoise"].portrait = 30279
+POKEMONS["Shiny Mega Blastoise"].fastcallPortrait = 28922
+
 for name, pokemon in pairs(POKEMONS) do
     if (pokemon.portrait == 0 and pokemon.fastcallPortrait == 0 and string.find(string.lower(name), "shiny")) then -- This shiny doenst exists yet
         POKEMONS[name] = nil

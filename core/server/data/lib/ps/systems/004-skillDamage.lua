@@ -262,10 +262,16 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
 
         elseif (doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.THICK_FAT, nil, skillName)) then
             skillDamage = skillDamage * 0.5
+        end
 
-        elseif (doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.DROUGHT, nil, skillName) or
-                doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.DRIZZLE, nil, skillName)) then
+        -- the attacker's own moves, so these stack with the target's abilities above
+        if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.DROUGHT, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.DRIZZLE, nil, skillName)) then
             skillDamage = skillDamage * 1.2
+        elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS, nil, skillName)) then
+            skillDamage = skillDamage * 1.3
+        elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER, nil, skillName)) then
+            skillDamage = skillDamage * 1.5
         end
 
         if (getCreatureStatus(fromCid, CREATURE_STATUS_CHARGE) and getPokemonSkillDamageType(skillName) == ELEMENT_ELECTRIC) then

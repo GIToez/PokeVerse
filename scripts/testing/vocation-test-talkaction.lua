@@ -3191,6 +3191,133 @@ local function testMegaItems(cid)
     end
 end
 
+local function testMegaForms(cid)
+    local function hasTypes(pokemon, expected)
+        local types = getPokemonTypes(pokemon)
+        if (#types ~= #expected) then
+            return false
+        end
+        for i, element in ipairs(expected) do
+            if (types[i] ~= element) then
+                return false
+            end
+        end
+        return true
+    end
+
+    local looks = { ["Mega Venusaur"] = 2595, ["Mega Charizard X"] = 2596, ["Mega Charizard Y"] = 2597,
+        ["Mega Blastoise"] = 2598, ["Shiny Mega Venusaur"] = 2630, ["Shiny Mega Charizard X"] = 2631,
+        ["Shiny Mega Charizard Y"] = 2632, ["Shiny Mega Blastoise"] = 2633 }
+    for form, look in pairs(looks) do
+        local definition = getPokemonDefinition(form)
+        local info = getMonsterInfo(form)
+        check("mega forms: " .. form .. " has a config, a look and a portrait", MegaEvolution.hasForm(form) and
+            info and info.outfit.lookType == look and definition.portrait ~= 0 and definition.fastcallPortrait ~= 0,
+            info and info.outfit.lookType)
+    end
+    check("mega forms: the base Pokemon is not a form", not MegaEvolution.hasForm("Charizard"))
+
+    local charizardX, charizardY = MEGA_STONES[2], MEGA_STONES[3]
+    check("mega forms: the stones map to forms", MegaEvolution.formFor("Charizard", charizardX) == "Mega Charizard X"
+        and MegaEvolution.formFor("Shiny Charizard", charizardY) == "Shiny Mega Charizard Y"
+        and MegaEvolution.formFor("Blastoise", charizardX) == nil,
+        tostring(MegaEvolution.formFor("Shiny Charizard", charizardY)))
+
+    check("mega forms: Dragon Claw makes contact, Water Pulse is a pulse", getPokemonSkillMakeContact("Dragon Claw")
+        and getPokemonSkillIsPulse("Water Pulse") and not getPokemonSkillIsPulse("Dragon Claw")
+        and not getPokemonSkillMakeContact("Camouflage"))
+    local abilities = SPECIAL_ABILITIES
+    check("mega forms: Drought, Tough Claws and Mega Launcher pick their moves",
+        abilities[POKEMON_SPECIAL_ABILITY_IDS.DROUGHT].onCheck(nil, nil, "Flamethrower")
+        and not abilities[POKEMON_SPECIAL_ABILITY_IDS.DROUGHT].onCheck(nil, nil, "Water Pulse")
+        and abilities[POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS].onCheck(nil, nil, "Dragon Claw")
+        and abilities[POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER].onCheck(nil, nil, "Dragon Pulse"))
+
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("mega forms: ball slot free for the test", false)
+        return
+    end
+    local function callOut(name)
+        local ball = newBall(cid, name, 50, POKEMON_SEX_MALE)
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        return getPlayerPokemon(cid)
+    end
+    local function callBack()
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+        if (isItem(slot)) then
+            doRemoveItem(slot.uid)
+        end
+    end
+
+    local pokemon = callOut("Charizard")
+    if (not isCreature(pokemon)) then
+        check("mega forms: Charizard comes out", false)
+        callBack()
+        return
+    end
+    local ability, look = getMonsterSpecialAbility(pokemon), getCreatureOutfit(pokemon).lookType
+    local atk, spAtk = getPokemonAtk(pokemon, 50), getPokemonSpAtk(pokemon, 50)
+    quietly(function() MegaEvolution.onStaffCommand(cid, "x") end)
+    check("mega forms: /mega x makes Mega Charizard X", MegaEvolution.isMega(pokemon)
+        and getPokemonReferenceName(pokemon) == "Mega Charizard X", getPokemonReferenceName(pokemon))
+    check("mega forms: Mega Charizard X is Fire/Dragon", hasTypes(pokemon, { ELEMENT_FIRE, ELEMENT_DRAGON }))
+    check("mega forms: Mega Charizard X hits harder", getPokemonAtk(pokemon, 50) > atk
+        and getPokemonSpAtk(pokemon, 50) > spAtk, string.format("%.1f > %.1f", getPokemonAtk(pokemon, 50), atk))
+    check("mega forms: Mega Charizard X has Tough Claws",
+        getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS, getMonsterSpecialAbility(pokemon))
+    check("mega forms: Mega Charizard X's look", getCreatureOutfit(pokemon).lookType == 2596,
+        getCreatureOutfit(pokemon).lookType)
+    local again
+    quietly(function() again = MegaEvolution.onStaffCommand(cid, "y") end)
+    check("mega forms: a second /mega is refused", not again and getPokemonReferenceName(pokemon) == "Mega Charizard X")
+
+    quietly(function() MegaEvolution.onStaffCommand(cid, "off") end)
+    check("mega forms: /mega off turns it back", not MegaEvolution.isMega(pokemon)
+        and hasTypes(pokemon, { ELEMENT_FIRE, ELEMENT_FLYING }) and getMonsterSpecialAbility(pokemon) == ability
+        and getCreatureOutfit(pokemon).lookType == look and math.abs(getPokemonAtk(pokemon, 50) - atk) < 0.01,
+        string.format("%s, ability %s, look %d", getPokemonReferenceName(pokemon), tostring(getMonsterSpecialAbility(pokemon)),
+            getCreatureOutfit(pokemon).lookType))
+
+    quietly(function() MegaEvolution.onStaffCommand(cid, "y") end)
+    check("mega forms: Mega Charizard Y keeps Fire/Flying and has Drought", getPokemonReferenceName(pokemon) == "Mega Charizard Y"
+        and hasTypes(pokemon, { ELEMENT_FIRE, ELEMENT_FLYING })
+        and getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.DROUGHT
+        and getCreatureOutfit(pokemon).lookType == 2597, getCreatureOutfit(pokemon).lookType)
+    check("mega forms: Drought boosts its own Fire moves", doPokemonSpecialAbilityCheck(pokemon,
+        POKEMON_SPECIAL_ABILITY_IDS.DROUGHT, nil, "Flamethrower"))
+    callBack()
+
+    pokemon = callOut("Shiny Charizard")
+    if (isCreature(pokemon)) then
+        quietly(function() MegaEvolution.onStaffCommand(cid, "x") end)
+        check("mega forms: a Shiny Charizard becomes Shiny Mega Charizard X",
+            getPokemonReferenceName(pokemon) == "Shiny Mega Charizard X" and getCreatureOutfit(pokemon).lookType == 2631,
+            getPokemonReferenceName(pokemon))
+    else
+        check("mega forms: Shiny Charizard comes out", false)
+    end
+    callBack()
+
+    pokemon = callOut("Blastoise")
+    if (isCreature(pokemon)) then
+        local ball = getPlayerBall(cid)
+        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, MEGA_STONES[4].itemId, 1)))
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        check("mega forms: /mega uses the held Blastoisinite", getPokemonReferenceName(pokemon) == "Mega Blastoise"
+            and getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER,
+            getPokemonReferenceName(pokemon))
+    else
+        check("mega forms: Blastoise comes out", false)
+    end
+    callBack()
+    doPlayerRemoveItem(cid, MEGA_STONES[4].itemId, getPlayerItemCount(cid, MEGA_STONES[4].itemId))
+end
+
 local function testRunningShoes(cid)
     local RUNNING_SHOES = 18754
     if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)

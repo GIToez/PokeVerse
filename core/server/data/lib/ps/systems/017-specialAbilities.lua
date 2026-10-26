@@ -622,7 +622,7 @@ local SPECIAL_ABILITIES = {
     },
     [POKEMON_SPECIAL_ABILITY_IDS.DROUGHT] = {
         name = "Drought",
-        description = "Drought boosts Fire-type moves power by 20%.",
+        description = "Drought boosts the power of the Pokemon's Fire-type moves by 20%.",
         onCheck = function(cid, target, move)
             return getPokemonSkillDamageType(move) == ELEMENT_FIRE
         end
@@ -652,7 +652,7 @@ local SPECIAL_ABILITIES = {
     },
     [POKEMON_SPECIAL_ABILITY_IDS.DRIZZLE] = {
         name = "Drizzle",
-        description = "Drizzle boosts Water-type moves power by 20%.",
+        description = "Drizzle boosts the power of the Pokemon's Water-type moves by 20%.",
         onCheck = function(cid, target, move)
             return getPokemonSkillDamageType(move) == ELEMENT_WATER
         end
@@ -702,6 +702,20 @@ local SPECIAL_ABILITIES = {
         description = "Truant has a 10% chance of leaving the user tired after using some move.",
         onCheck = function(cid, target)
             return getRandom(1, 100) <= 10
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS] = {
+        name = "Tough Claws",
+        description = "Tough Claws boosts the power of moves that make contact by 30%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillMakeContact(move)
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER] = {
+        name = "Mega Launcher",
+        description = "Mega Launcher boosts the power of aura and pulse moves by 50%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillIsPulse(move)
         end
     },
 }

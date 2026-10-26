@@ -1226,4 +1226,13 @@
 	<monster name="Cloned Muk" file="Cloned/muk.xml"/>
 	<monster name="Cloned Marowak" file="Cloned/marowak.xml"/>
 	<monster name="Cloned Piloswine" file="Cloned/piloswine.xml"/>
+	<!-- Mega forms (097-megaEvolution.lua): never spawned, a Pokemon becomes one while Mega Evolved -->
+	<monster name="Mega Venusaur" file="Mega/mega venusaur.xml"/>
+	<monster name="Shiny Mega Venusaur" file="Mega/shiny mega venusaur.xml"/>
+	<monster name="Mega Charizard X" file="Mega/mega charizard x.xml"/>
+	<monster name="Shiny Mega Charizard X" file="Mega/shiny mega charizard x.xml"/>
+	<monster name="Mega Charizard Y" file="Mega/mega charizard y.xml"/>
+	<monster name="Shiny Mega Charizard Y" file="Mega/shiny mega charizard y.xml"/>
+	<monster name="Mega Blastoise" file="Mega/mega blastoise.xml"/>
+	<monster name="Shiny Mega Blastoise" file="Mega/shiny mega blastoise.xml"/>
 </monsters>

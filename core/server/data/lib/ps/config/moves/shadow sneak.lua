@@ -1,5 +1,6 @@
 MOVES["Shadow Sneak"] = {
     description = "Shadow Sneak deals damage and has no secondary effect.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 16323,
     iconId = 0,

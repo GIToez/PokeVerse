@@ -96,3 +96,24 @@ The icons are PokéAPI's `sprites/items/<name>.png`.
   by hand if they look off in the bag.
 - PokéAPI's Mega Ring is a bare ring, so it is the **Empty Mega Ring** here. The **Mega Ring** is
   that ring with a shrunk Key Stone set on top; redraw it if it looks pasted on.
+
+## The first four forms
+
+Mega Venusaur, Mega Charizard X and Y and Mega Blastoise are playable (staff `/mega` for now).
+`scripts/art/mega_forms_art.py` makes their art from the pack sheets, Pokémon Showdown and pokesprite.
+
+| Form | Look | Shiny look | Face (server / client) | Shiny face (server / client) |
+| --- | --- | --- | --- | --- |
+| Mega Venusaur | 2595 | 2630 | 30272 / 28915 | 30273 / 28916 |
+| Mega Charizard X | 2596 | 2631 | 30274 / 28917 | 30275 / 28918 |
+| Mega Charizard Y | 2597 | 2632 | 30276 / 28919 | 30277 / 28920 |
+| Mega Blastoise | 2598 | 2633 | 30278 / 28921 | 30279 / 28922 |
+
+- **Shiny looks** are recolours of the normal sheet, not drawn art. Venusaur and Blastoise use a
+  colour map learned from Showdown's normal and shiny sprites; the Charizards use hand-picked hue
+  rules. Mega Charizard Y's tail flame turns purple with its body and should stay orange: rework it.
+- **Faces** (the 4-frame portrait in the Pokemon bar) are pokesprite's box icons with a small bob,
+  smaller and plainer than our other faces. Redraw them when the Megas get their own art.
+- **Client images:** `staticPortraits/<dex>-<form>.png` (Showdown gen 5),
+  `pictures/<dex>-<form>.png` (Showdown 3D still) and `pokeicons/<dex>-<form>.png` (pokesprite), for
+  example `6-mega-x.png`. Nothing reads them yet; the Mega HUD and the Pokedex will.

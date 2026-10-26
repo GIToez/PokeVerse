@@ -169,6 +169,10 @@ function getPokemonSkillMakeContact(skillName)
     return SKILLS_CONFIG[skillName].makeContact or false
 end
 
+function getPokemonSkillIsPulse(skillName)
+    return SKILLS_CONFIG[skillName].pulse or false
+end
+
 function getPokemonSkillMakeRecoil(skillName)
     return SKILLS_CONFIG[skillName].makeRecoil or false
 end

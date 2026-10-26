@@ -36,5 +36,6 @@ ShinyLooks = {
     [1897] = true, [1898] = true, [1899] = true, [1900] = true, [1901] = true, [1902] = true, [1903] = true, [1904] = true, [1905] = true, [1906] = true,
     [1907] = true, [1908] = true, [1909] = true, [1910] = true, [1911] = true, [1912] = true, [1913] = true, [1914] = true, [1915] = true, [1916] = true,
     [1917] = true, [1918] = true, [1919] = true, [1920] = true, [1921] = true, [1922] = true, [1923] = true, [1924] = true, [1925] = true, [1926] = true,
-    [1927] = true, [1928] = true, [1929] = true, [1930] = true, [1931] = true, [1932] = true, [1933] = true, [1934] = true, [1935] = true,
+    [1927] = true, [1928] = true, [1929] = true, [1930] = true, [1931] = true, [1932] = true, [1933] = true, [1934] = true, [1935] = true, [2630] = true,
+    [2631] = true, [2632] = true, [2633] = true,
 }

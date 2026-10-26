@@ -1,5 +1,6 @@
 MOVES["Dark Pulse"] = {
     description = "Dark Pulse deals damage and has a 20% chance of causing the target to flinch.",
+    pulse = true,
     category = MOVE_CATEGORY.SPECIAL,
     clientIconId = 12112,
     iconId = 0,

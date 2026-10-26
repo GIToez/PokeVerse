@@ -21,7 +21,8 @@ pokemonsStorages = {
     pokemonSummon = base + 18,
     heldMovePowerModifier = base + 19,
     heldMovePowerType = base + 20,
-    heldMovePowerType2 = base + 21
+    heldMovePowerType2 = base + 21,
+    megaAbility = base + 22 -- the special ability it had before Mega Evolving (097-megaEvolution.lua)
     --[[, Isnt used
     customType2 = base + 18,]]
 }
