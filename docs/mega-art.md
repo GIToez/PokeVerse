@@ -117,6 +117,10 @@ Mega Venusaur, Mega Charizard X and Y and Mega Blastoise are playable (staff `/m
 - **Client images:** `staticPortraits/<dex>-<form>.png` (Showdown gen 5),
   `pictures/<dex>-<form>.png` (Showdown 3D still) and `pokeicons/<dex>-<form>.png` (pokesprite), for
   example `6-mega-x.png`. Nothing reads them yet; the Mega HUD and the Pokedex will.
+- **Standing on the tile:** the pack draws a Pokemon centred in its frame, our outfits stand on the
+  bottom right tile. `scripts/art/mega_align.py` lines each Mega's feet up with its base form: a
+  signed outfit offset (dat attribute 25; the client reads it signed and only moves the sprite, not
+  the name bar) plus small per-direction shifts. Run it again after drawing in a Mega sheet.
 
 ## The other Megas and the Primals
 

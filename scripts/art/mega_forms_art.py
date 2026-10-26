@@ -182,7 +182,8 @@ def outfit_sheet(look):
     i += 3 + (1 if w > 1 or h > 1 else 0)
     layers, px, py, pz, frames = data[i:i + 5]
     ids = np.frombuffer(data, '<u4', w * h * layers * px * py * pz * frames, i + 5)
-    size = 32 * w
+    # square frames standing on their bottom right tile, also for outfits wider than tall (Sharpedo)
+    size = 32 * max(w, h)
     sheet = np.zeros((frames * size, px * size, 4), np.uint8)
     for f in range(frames):
         for d in range(px):
@@ -191,8 +192,8 @@ def outfit_sheet(look):
                     sid = int(ids[((f * pz * py * px + d) * layers) * h * w + y * w + x])
                     raw = sid and spr.rgba(sid)
                     if raw:
-                        sheet[f * size + 32 * (h - 1 - y):f * size + 32 * (h - y),
-                              d * size + 32 * (w - 1 - x):d * size + 32 * (w - x)] = \
+                        sheet[f * size + size - 32 * (y + 1):f * size + size - 32 * y,
+                              d * size + size - 32 * (x + 1):d * size + size - 32 * x] = \
                             np.frombuffer(raw, np.uint8).reshape(32, 32, 4)
     return Image.fromarray(sheet)
 
