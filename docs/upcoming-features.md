@@ -3118,7 +3118,8 @@ gauge** by fighting, like Pokémon Legends: Z-A.
 ### Requirements
 
 - **Mega Ring with its Key Stone:** a trainer item from a dedicated questline (no Soul Coins,
-  no premium). It is unlocked for good, but the Mega gauge only shows, and Mega Evolution only
+  no premium). The trainer gets an **empty Mega Ring** and a **Key Stone** separately and
+  puts them together (see Items). It is unlocked for good, but the Mega gauge only shows, and Mega Evolution only
   works, **while the ring is equipped**. It goes in the key item slot, which holds one item
   at a time: wearing the Mega Ring means no bike, sandboard, oxygen mask, flashlight or running
   shoes (decided).
@@ -3189,28 +3190,57 @@ gauge** by fighting, like Pokémon Legends: Z-A.
 
 - HP and speed stay the same as the base form for all four (as in the main games).
 - One Charizard can hold either stone; the stone picks X or Y.
-- The stones also work on Shiny Venusaur, Shiny Charizard and Shiny Blastoise.
+- The stones also work on Shiny Venusaur, Shiny Charizard and Shiny Blastoise, which turn into
+  **Shiny Mega** forms (decided). Their entries and looks are set up now, with copies of the
+  normal Mega sprites. The shiny sprites will overwrite those files later. Their portraits and
+  Pokédex pictures can be the real shiny ones from the start (see Art).
 - Moves stay the same; a Mega keeps its moves and cooldowns.
-- Abilities:
-  - **Thick Fat** is already in the game: it halves the Fire and Ice damage taken.
-  - **Drought** is already in the game (Groudon), but today it checks the wrong side: it
-    boosts the Fire moves that **hit** the holder by 20% instead of the ones it uses
-    (`004-skillDamage.lua`, the same line handles Drizzle for Kyogre). It gets fixed with this
-    work, which also changes Groudon and Kyogre.
-  - **Tough Claws** is new: +30% power for physical moves (PokeVerse moves have no contact
-    flag, so physical stands in for contact).
-  - **Mega Launcher** is new: +50% power for pulse and aura moves. Of Blastoise's moves only
-    Water Pulse counts officially; adding Hydro Cannon and Flash Cannon is a PokeVerse choice
-    (to decide).
+- Abilities. The boosted moves follow Bulbapedia's lists (decided):
+  - **Thick Fat** (Mega Venusaur) is already in the game: it halves the Fire and Ice damage
+    taken. It boosts none of its own moves.
+  - **Tough Claws** (Mega Charizard X) is new: +30% power for moves that make contact, as
+    listed on Bulbapedia. PokeVerse moves have no contact flag yet, so each move in the game
+    gets one from the official data (Showdown's move list has the same flag). For Charizard
+    that is Tackle, Scratch, Fire Fang, Slash and Wing Attack, plus TMs such as Dragon Claw,
+    Fire Punch and Steel Wing.
+  - **Drought** (Mega Charizard Y): Bulbapedia's harsh sunlight boosts Fire moves by 50% and
+    weakens Water moves by 50%. PokeVerse has no battle weather, so on Mega Charizard Y it works
+    on the Pokémon itself: +50% for its Fire moves, -50% for Water moves that hit it.
+    - Groudon also has Drought; its +20% stays as it is.
+    - Today Drought checks the wrong side: it boosts the Fire moves that **hit** the holder
+      instead of the ones it uses (`004-skillDamage.lua`; the same line handles Drizzle for
+      Kyogre). It gets fixed with this work, which also changes Groudon and Kyogre.
+  - **Mega Launcher** (Mega Blastoise) is new: +50% power for Aura Sphere, Dark Pulse, Dragon
+    Pulse, Origin Pulse, Terrain Pulse and Water Pulse, and Heal Pulse heals 75% (Bulbapedia).
+    Of Blastoise's own moves that is Water Pulse; Hydro Cannon and Flash Cannon are not boosted
+    (decided).
+- **Boosted moves glow:** while a Mega is active, the moves its ability boosts get a **green
+  glow** around their slot on the moves bar, so the trainer sees which ones to use. The server
+  sends the list of boosted moves with the Mega state; it goes away when the Mega ends.
 
 ### Items
 
 All new items, each with its own 32 px icon, shown in the Pokepedia:
 
-- **Mega Ring** (with its Key Stone), key item slot, not tradable (it is the questline
-  reward). Locked while a Mega is active, like the bike while riding.
-- **Venusaurite, Charizardite X, Charizardite Y, Blastoisinite**: held items, tradable when
-  not held (decided). A held stone can't be taken while its Pokémon is Mega.
+- **Empty Mega Ring** and **Key Stone:** neither does anything alone. The trainer **uses one on
+  the other** ("Use with", either way round) and they become the **Mega Ring** (decided). It
+  can't be taken apart.
+- **Mega Ring:** key item slot, not tradable (it is the questline reward). Locked while a Mega
+  is active, like the bike while riding.
+- **Every Mega Stone, from the start** (decided), even the ones no Pokémon can use yet. They
+  are held items, tradable when not held (decided); a held stone can't be taken while its
+  Pokémon is Mega. Only the four starter stones work for now. The others say so in their
+  description, and holding one does nothing until its Mega form is added.
+
+The 47 Mega Stones from X/Y and Omega Ruby/Alpha Sapphire:
+
+| Kanto | Johto | Hoenn | Sinnoh and later |
+| --- | --- | --- | --- |
+| Venusaurite, Charizardite X, Charizardite Y, Blastoisinite, Beedrillite, Pidgeotite, Alakazite, Slowbronite, Gengarite, Kangaskhanite, Pinsirite, Gyaradosite, Aerodactylite, Mewtwonite X, Mewtwonite Y | Ampharosite, Steelixite, Scizorite, Heracronite, Houndoominite, Tyranitarite | Sceptilite, Blazikenite, Swampertite, Gardevoirite, Sablenite, Mawilite, Aggronite, Medichamite, Manectite, Sharpedonite, Cameruptite, Altarianite, Banettite, Absolite, Glalitite, Salamencite, Metagrossite, Latiasite, Latiosite | Lopunnite, Garchompite, Lucarionite, Abomasite, Galladite, Audinite, Diancite |
+
+- Mega Rayquaza needs no stone (it needs Dragon Ascent), so it is not on the list.
+- The Red and Blue Orbs (Primal Groudon and Kyogre) are not Mega Stones and are left out.
+- The stones added in Legends: Z-A are left out for now (to decide).
 
 ### The animation
 
@@ -3262,6 +3292,8 @@ How it stays out of the way:
   when the Pokémon out holds its own Mega Stone**; otherwise it stays grey and R does
   nothing (decided). Switching to a Pokémon with its stone lights it up, since the charge is
   kept.
+- While a Mega is active, the moves its ability boosts glow green on the moves bar (decided;
+  see "The first Mega forms").
 
 ### Server side
 
@@ -3280,7 +3312,13 @@ How it fits the code today:
 - **The ability:** the Pokémon's own ability is swapped for the Mega's and given back when it
   ends.
 - **The stones** are held items (`046-heldItem.lua`), next to the Lucky Egg and Exp Share. They
-  don't boost anything themselves.
+  don't boost anything themselves. Each one names its Mega forms; a stone with none is held
+  like any other item.
+- **The Mega Ring** is made by an action on the empty ring and the Key Stone (either one used
+  on the other), which removes both and gives the ring.
+- **Shiny Megas** get their own config entries and monster files, like the shiny Pokémon do.
+  Their looks are listed with the shiny looks so they shimmer.
+- **Contact moves:** the move config gets a contact flag for Tough Claws.
 - **The gauge** is a new system, `097-megaEvolution.lua`. It charges from the damage code
   (`004-skillDamage.lua`, which already knows when a move is super effective), the kill
   event the Analyser uses, and the boss and elite checks. It sends the HUD state to the client
@@ -3289,36 +3327,50 @@ How it fits the code today:
 
 ### Art needed
 
-- **Mega sprites:** Mega Venusaur, Mega Charizard X, Mega Charizard Y and Mega Blastoise,
-  in four directions with walking frames. They go in with `scripts/dat-set-outfit.py`: a sheet
-  with the four directions (north, east, south, west) across and the frames down, every frame
-  a square of 32 to 192 pixels. Megas are big, so 96 or 128 px suits them.
-- **Shiny Mega sprites:** if there are none, a shiny Mega shows the normal Mega sprite and
-  loses its shimmer for the 60 seconds (to decide).
-- **Portraits and Pokédex pictures** for the four forms (the HUD portrait shows the Mega
-  while it lasts).
-- **Icons:** the Mega Ring and the four stones.
-- **The animation:** the orb, streams, shards and the Mega symbol. These can be drawn here like
-  the legendary effects.
+The trainer has the Mega walk sprites (outfits); everything else comes from the same places as
+the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 25:
+
+| Art | Source | Have |
+| --- | --- | --- |
+| Walk sprites, four Megas | the trainer's own artwork, imported with `scripts/dat-set-outfit.py` | to upload |
+| Shiny walk sprites | copies of the normal Mega sprites for now, overwritten later (decided) | copies |
+| Portrait and shiny portrait | Showdown Gen 5 style, `sprites/gen5/<name>.png` and `gen5-shiny/` (`venusaur-mega`, `charizard-megax`, `charizard-megay`, `blastoise-mega`) | all 8 found |
+| 3D Pokédex picture and shiny | Showdown `sprites/ani/<name>.gif` and `ani-shiny/`, a still taken like ours | all 8 found |
+| Box icon and shiny | [pokesprite](https://github.com/msikma/pokesprite) `pokemon-gen8/regular/` and `shiny/` (`venusaur-mega`, `charizard-mega-x`, ...) | found |
+| Swap bar and Pokédex face | to find: Pokémon Shuffle and Battle Trozei both have Mega icons; otherwise drawn from the box icon | to do |
+| Item icons: Mega Ring, Key Stone, all 47 stones | PokéAPI `sprites/items/<name>.png` (`mega-ring`, `key-stone`, `venusaurite`, `charizardite-x`, ...), 30x30, put on 32x32 | all found |
+| Empty Mega Ring icon | the Mega Ring icon with the stone painted out | to draw |
+| Animation (orb, streams, shards, Mega symbol, aura) | drawn here like the legendary effects | to draw |
+
+- The walk sprite sheets have the four directions (north, east, south, west) across and the
+  frames down, every frame a square of 32 to 192 pixels. Megas are big, so 96 or 128 px suits
+  them.
+- The Gen 6 Showdown sprites are from the Smogon sprite project, which asks for credit.
 
 ### Building order
 
 1. **Running shoes** (below): small and separate, can ship first.
-2. **Items:** the Mega Ring and the four stones with icons, the held-item entries, and the
-   GTS block. A staff command gives them for testing until the questline exists.
-3. **Mega forms:** the four config entries and monster files. Drought gets fixed; Tough Claws
-   and Mega Launcher are added.
+2. **Items:** the empty Mega Ring, the Key Stone, the Mega Ring and all 47 stones with icons.
+   This step also covers putting the ring together, the held-item entries and the GTS block.
+   A staff command gives them for testing until the questline exists.
+3. **Mega forms:** the four forms and their shiny copies (config entries and monster files)
+   with portraits, Pokédex pictures and box icons. Drought gets fixed. Tough Claws (with the
+   contact flag on moves) and Mega Launcher are added.
 4. **Gauge and activation** (server): charging and its limits, the R press, the 60 second
    drain, ending it on switch, faint and logout, locking the ring and stone, the safe zone
    and duel rules.
-5. **HUD:** the bar, the button, the R key and the colours, from the concept.
+5. **HUD:** the bar, the button, the R key and the colours from the concept, and the green
+   glow on boosted moves.
 6. **Animation:** the on-map effect and the aura.
 7. **Sprites:** imported as soon as the artwork is here. Until then the forms use the base
    sprite, so steps 2 to 6 can be built and tested first.
 8. **Questline** for the Mega Ring and how the stones are found.
 9. **Tests and docs:** the in-game test script gets a Mega check covering several cases:
-   - give the ring and a stone, fill the gauge and Mega Evolve;
-   - check the typing, stats and ability, then that the drain turns it back;
+   - put the ring together from the empty ring and the Key Stone;
+   - give a stone, fill the gauge and Mega Evolve, normal and shiny;
+   - check the typing, stats and ability, and which moves are boosted, then that the drain
+     turns it back;
+   - a stone with no Mega form does nothing;
    - no Mega without the stone, in a safe zone, or with a second Pokémon;
    - switching out ends it;
    - a duel starts at 0;
@@ -3343,10 +3395,11 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 
 ### To decide before building
 
-- The Mega Ring questline, and where the four stones come from (a quest reward, world bosses,
-  an event shop?).
-- Whether Mega Launcher also boosts Hydro Cannon and Flash Cannon.
-- Shiny Mega sprites, or the normal Mega sprite for shinies.
+- The Mega Ring questline: where the empty ring and the Key Stone are found, and whether
+  either can be traded before they are put together.
+- Where the stones come from (a quest reward, world bosses, an event shop?), including the
+  ones that don't work yet.
+- Whether the Legends: Z-A stones are added too.
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
