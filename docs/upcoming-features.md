@@ -3117,7 +3117,8 @@ gauge** by fighting, like Pokémon Legends: Z-A.
 
 - **Mega Ring with its Key Stone:** a trainer item from a dedicated questline (no Soul Coins,
   no premium). It is unlocked for good, but the Mega gauge only shows, and Mega Evolution only
-  works, **while the ring is equipped**.
+  works, **while the ring is equipped**. It goes in the key item slot, which holds one item
+  at a time: wearing the Mega Ring means no bike or sandboard (decided).
 - **Mega Stone:** one per eligible species, worn in the Pokémon's existing held-item slot.
   Reusable, never used up. No extra level requirement.
 - Only one Mega Evolution at a time per trainer.
@@ -3163,6 +3164,7 @@ Blastoise (Blastoisinite), Venusaur (Venusaurite), Mewtwo (Mewtwonite X or Y).
   differently; HP usually stays the same), with the normal PokeVerse stat formulas.
 - Level, IVs, EVs, nature, experience and extra points all carry over. No flat percentage
   bonus.
+- Pokémon stay capped at level 100 for now (decided); levelling past 100 may come later.
 
 ### Where it works
 
@@ -3178,8 +3180,9 @@ Blastoise (Blastoisinite), Venusaur (Venusaurite), Mewtwo (Mewtwonite X or Y).
 - The Mega bar sits under the trainer's HP, mirroring the Pokémon's energy bar under its HP
   ([concept](concepts/mega-gauge-hud.png)). It only shows while the Mega Ring is equipped.
 - What it shows without a Mega Stone (the concept's greyed-out "No Mega Stone") is designed later.
-- 0 to 100; the Mega Evolution button turns on at 100 and is off when the Pokémon out can't
-  Mega Evolve. Transforming plays an effect, the HUD names the Mega form, and the bar drains
+- 0 to 100. A **Mega Evolution button** sits on the HUD next to the Mega bar, and a
+  **hotkey** does the same (decided). Both turn on at 100 and are off when the Pokémon out
+  can't Mega Evolve. Transforming plays an effect, the HUD names the Mega form, and the bar drains
   while it lasts.
 - Colours: purple while charging, a full-gauge shine when ready, green while active, empty
   when used up.
