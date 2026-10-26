@@ -258,6 +258,8 @@ endstep
 
 if [ -n "$bot_pkg" ]; then
   step "Discord bot deployment (fake token: must not affect the game server)"
+  # a fresh database file: the deployment skips the DB-IP download (no real download in CI)
+  sudo -u pokeverse sh -c 'mkdir -p /opt/pokeverse/discord/shared/geoip && echo stub > /opt/pokeverse/discord/shared/geoip/dbip-city-lite.mmdb'
   set +e
   PV_BOT_PACKAGE=$bot_pkg PV_BOT_RELEASE=$bot_release DISCORD_TOKEN="MTAwMDAwMDAwMDAwMDAwMDAwMQ.GabcDE.fake-token-for-ci-tests-only-xxxxxxxxx" \
     DISCORD_APPLICATION_ID=100000000000000002 DISCORD_GUILD_ID=100000000000000001 deploy discord-deploy
@@ -267,6 +269,9 @@ if [ -n "$bot_pkg" ]; then
   [ "$(sudo stat -c %a /opt/pokeverse/discord/shared/.env.production)" = 600 ] || fail "bot settings are not private"
   sudo grep -q "^BRIDGE_SECRET=$(sudo sed -n 's/^discordBridgeSecret = "\(.*\)"/\1/p' /opt/pokeverse/shared/config.local.lua)$" \
     /opt/pokeverse/discord/shared/.env.production || fail "bridge secret not shared with the bot"
+  sudo grep -qx "GEOIP_DATABASE=/opt/pokeverse/discord/shared/geoip/dbip-city-lite.mmdb" \
+    /opt/pokeverse/discord/shared/.env.production || fail "GEOIP_DATABASE not set for the bot"
+  systemctl is-enabled --quiet pokeverse-geoip.timer || fail "the GeoIP timer is not enabled"
   ctl health
   endstep
 fi

@@ -236,6 +236,10 @@ jobs:
           name: PokeVerse-Discord-Linux-Live
           path: packages
 
+      - name: GeoIP download (fake downloads)
+        if: env.NEEDS_PACKAGES == 'true'
+        run: scripts/live/test-geoip.sh
+
       - name: Rehearse install, restarts, update, rollback, backup and restore
         if: env.NEEDS_PACKAGES == 'true'
         run: |
