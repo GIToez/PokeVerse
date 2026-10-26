@@ -267,11 +267,16 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
         -- the attacker's own moves, so these stack with the target's abilities above
         if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.DROUGHT, nil, skillName) or
                 doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.DRIZZLE, nil, skillName)) then
-            skillDamage = skillDamage * 1.2
+            -- a Mega's Drought is the main games' harsh sunlight; Groudon's stays +20%
+            skillDamage = skillDamage * (MegaEvolution.isMega(fromCid) and 1.5 or 1.2)
         elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS, nil, skillName)) then
             skillDamage = skillDamage * 1.3
         elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER, nil, skillName)) then
             skillDamage = skillDamage * 1.5
+        end
+        if (isMonster(toCid) and getMonsterSpecialAbility(toCid) == POKEMON_SPECIAL_ABILITY_IDS.DROUGHT
+                and MegaEvolution.isMega(toCid) and getPokemonSkillDamageType(skillName) == ELEMENT_WATER) then
+            skillDamage = skillDamage * 0.5
         end
 
         if (getCreatureStatus(fromCid, CREATURE_STATUS_CHARGE) and getPokemonSkillDamageType(skillName) == ELEMENT_ELECTRIC) then

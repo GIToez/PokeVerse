@@ -622,7 +622,7 @@ local SPECIAL_ABILITIES = {
     },
     [POKEMON_SPECIAL_ABILITY_IDS.DROUGHT] = {
         name = "Drought",
-        description = "Drought boosts the power of the Pokemon's Fire-type moves by 20%.",
+        description = "Drought boosts the power of the Pokemon's Fire-type moves by 20%. On a Mega Evolved Pokemon it boosts them by 50% and halves the damage of Water-type moves that hit it.",
         onCheck = function(cid, target, move)
             return getPokemonSkillDamageType(move) == ELEMENT_FIRE
         end
