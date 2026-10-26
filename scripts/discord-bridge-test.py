@@ -773,13 +773,19 @@ def main():
         check("failed catch produces no catch event", not [x for x in b.events if x["event"]["kind"] == "catch"])
 
         listener.say("/bridgetest catch Rattata")
-        e = b.wait_event(lambda ev: ev["kind"] == "catch", 15)
-        check("successful catch event", e is not None and e["event"]["trainer"] == trainer
-              and e["event"]["species"] == "Rattata" and e["event"]["ball"] == "ultra"
-              and e["event"]["shiny"] is False and e["event"]["legendary"] is False, str(e))
-        listener.collect(1)
+        listener.collect(7)
         after = b.request("trainer.lookup", {"name": trainer})["result"]["caught"]
         check("catch is registered in game data", after == before + 1, "%s -> %s" % (before, after))
+        b.pump(1)
+        check("a common catch produces no catch event", not [x for x in b.events if x["event"]["kind"] == "catch"])
+
+        listener.say("/bridgetest catch Shiny Rattata")
+        e = b.wait_event(lambda ev: ev["kind"] == "catch", 15)
+        check("shiny catch event", e is not None and e["event"]["trainer"] == trainer
+              and e["event"]["species"] == "Shiny Rattata" and e["event"]["baseSpecies"] == "Rattata"
+              and e["event"]["ball"] == "ultra" and e["event"]["shiny"] is True
+              and e["event"]["legendary"] is False, str(e))
+        listener.collect(1)
         catches = [x for x in b.events if x["event"]["kind"] == "catch"]
         check("exactly one catch event", len(catches) == 1, str(len(catches)))
 

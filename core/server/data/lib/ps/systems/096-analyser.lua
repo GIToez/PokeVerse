@@ -162,14 +162,16 @@ Analyser.catchAudit = function(cid, pokemonName, level)
              catcher = catcher > 0 and round(catcher) or nil, boost = boost > 1 and round(boost) or nil, balls = rows }
 end
 
+-- The name goes first: a storage value that starts with digits reads back as a number.
 local function lastKill(cid)
     local value = getPlayerStorageValue(cid, LAST_KILL)
     if (type(value) ~= "string") then
         return nil
     end
-    local level, name = value:match("^(%d+)|(.+)$")
+    local name, level = value:match("^(.+)|(%d+)$")
     return name, tonumber(level)
 end
+Analyser.lastKill = lastKill
 
 Analyser.sendCatch = function(cid, kill)
     if (Analyser.enabled(cid)) then
@@ -209,7 +211,7 @@ Analyser.onKill = function(cid, target)
     if (not isPokemonName(name)) then
         return
     end
-    setPlayerStorageValue(cid, LAST_KILL, string.format("%d|%s", getMonsterLevel(target) or 0, name))
+    setPlayerStorageValue(cid, LAST_KILL, string.format("%s|%d", name, getMonsterLevel(target) or 0))
     Analyser.sendCatch(cid, true)
 end
 

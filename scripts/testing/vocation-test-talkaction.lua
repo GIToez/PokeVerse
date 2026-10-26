@@ -3138,6 +3138,20 @@ local function testAnalyser(cid)
         Analyser.pokemonExpFor(0) == 0 and Analyser.pokemonExpFor(1) == 100 and Analyser.pokemonExpFor(2) == 200)
     check("Analyser: no Pokemon, no chances", Analyser.catchAudit(cid, "Nothing At All").name == nil)
 
+    local wild = doCreateMonster("Caterpie", getThingPos(cid), true)
+    check("Analyser: a wild Caterpie to defeat", isMonster(wild))
+    if (isMonster(wild)) then
+        Analyser.onKill(cid, wild)
+        local name, level = Analyser.lastKill(cid)
+        check("Analyser: the defeated Pokemon reads back from storage", name == "Caterpie" and level == (getMonsterLevel(wild) or 0),
+            tostring(getPlayerStorageValue(cid, playersStorages.analyserLastKill)))
+        doRemoveCreature(wild)
+    end
+
+    check("Discord: a common catch is not announced", not DiscordBridge.announcesCatch("Caterpie"))
+    check("Discord: a shiny catch is announced", DiscordBridge.announcesCatch("Shiny Caterpie"))
+    check("Discord: a legendary catch is announced", DiscordBridge.announcesCatch("Mewtwo"))
+
     local audit = Analyser.catchAudit(cid, "Pidgey", 5)
     local poke = audit.balls and audit.balls[1]
     check("Analyser: Pidgey lists the poke ball first", poke and poke.name == "poke" and poke.item == getItemInfo(balls["poke"].charged).clientId,

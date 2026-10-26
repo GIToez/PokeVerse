@@ -1063,12 +1063,15 @@ Team Rocket and other factions, separate from vocations:
 
 From the `#notes` channel:
 
-- **Discord catches (to do):** stop posting common catches. Shiny catches still get a post
-  in `#pokemon-catches`. The bot already has catch modes `all`, `rare_only`,
-  `shiny_legendary_only` and `off`; this drops the ordinary ones and keeps the shinies.
-- **Evolutions on Discord (to do):** an evolution must not be announced. The Pokédex counts
-  an evolution as a caught Pokémon (`doPokedexObtained` in `010-pokedex.lua`), and that
-  must not show up in Discord at all.
+- **Discord catches (done):** the game only sends shiny and legendary catches to the bot
+  (`DiscordBridge.announcesCatch`), so common catches are never posted in
+  `#pokemon-catches`, whatever catch mode the bot is set to. `off` still turns them all off.
+- **Evolutions on Discord (done):** an evolution is never announced. The Pokédex counts an
+  evolution as a caught Pokémon (`doPokedexObtained` in `010-pokedex.lua`), but the bridge
+  only hears about catches made with a ball.
+- **Analyser catch tab (fixed):** it stayed on "Defeat a wild Pokémon" after a defeat. The
+  last defeated Pokémon was saved as "level|name", and a storage value starting with digits
+  reads back as a number; it is saved as "name|level" now.
 - **Look text for field moves (done):** looking at an object a field move works on says
   so, for example "You see a stone. It looks like it can be smashed." for the Rock Smash
   stone (item 1285), and the same for holes, grass, nest trees, waterfalls, big rocks and

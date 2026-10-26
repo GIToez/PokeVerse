@@ -214,8 +214,13 @@ end
 -- Called only after a catch is confirmed: the ball was created and the caught
 -- Pokemon was registered for the player.
 -- info = {name, level, sex, ball, ballUid, extraPoints, safari}
+-- Only shiny and legendary catches go to Discord, whatever catch mode the bot is set to.
+function DiscordBridge.announcesCatch(name)
+    return DiscordBridge.isShiny(name) or DiscordBridge.isLegendary(name)
+end
+
 local function onCatch(cid, info)
-    if (not isPlayer(cid) or not info.ballUid) then
+    if (not isPlayer(cid) or not info.ballUid or not DiscordBridge.announcesCatch(info.name)) then
         return
     end
 
