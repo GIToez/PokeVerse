@@ -3350,22 +3350,29 @@ local function testMegaGauge(cid)
     local function why()
         return MegaEvolution.problem(cid) or ""
     end
+    -- the stone back in the bag after a take, or a new one (the bag may be too full for one)
+    local function stone(index)
+        local found = getPlayerItemById(cid, true, MEGA_STONES[index].itemId)
+        return isItem(found) and found or getThing(doPlayerAddItem(cid, MEGA_STONES[index].itemId, 1))
+    end
 
     local ok, err = pcall(function()
         setGauge(0)
+        setPlayerStorageValue(cid, playersStorages.megaCharges, -1)
+        setPlayerStorageValue(cid, playersStorages.megaPvp, -1)
         MegaEvolution.onClientMessage(cid, '{"action":"hello"}')
         local hello = sent[#sent] and JSON.decode(sent[#sent])
         check("mega gauge: the client's hello gets the HUD state", hello and hello.type == "state" and hello.ring == false
             and hello.gauge == 0 and hello.active == false, sent[#sent])
 
-        local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1))
         check("mega gauge: no ring, no Mega", why():find("Mega Ring", 1, true) ~= nil, why())
+        local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1))
         doMovePlayerItem(cid, ring.uid, { y = PLAYER_SLOT_KEY_ITEM, z = 0 })
         ring = getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)
         check("mega gauge: the Mega Ring goes in the key item slot", MegaEvolution.hasRing(cid), ring.itemid)
 
         local ball = newBall(cid, "Charizard", 50, POKEMON_SEX_MALE)
-        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, MEGA_STONES[2].itemId, 1)))
+        PokemonHeldItem.give(cid, ball.uid, stone(2))
         doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
         doRemoveConditions(cid, false)
         doPlayerUseBallOnSlot(cid)
@@ -3424,12 +3431,13 @@ local function testMegaGauge(cid)
         PokemonHeldItem.take(cid, ball.uid)
         quietly(function() MegaEvolution.onPress(cid) end)
         check("mega gauge: no stone, no Mega", not MegaEvolution.isActive(cid) and gauge() == 100)
-        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, MEGA_STONES[4].itemId, 1)))
+        PokemonHeldItem.give(cid, ball.uid, stone(4))
         quietly(function() MegaEvolution.onPress(cid) end)
         check("mega gauge: another Pokemon's stone, no Mega", not MegaEvolution.isActive(cid)
             and MegaEvolution.state(cid).ready == false)
         PokemonHeldItem.take(cid, ball.uid)
-        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, MEGA_STONES[2].itemId, 1)))
+        local gave, gaveWhy = PokemonHeldItem.give(cid, ball.uid, stone(2))
+        check("mega gauge: Charizard holds its Charizardite X again", gave ~= nil, gaveWhy)
 
         local pressed
         quietly(function() pressed = MegaEvolution.onPress(cid) end)
@@ -3437,12 +3445,12 @@ local function testMegaGauge(cid)
             and getPokemonReferenceName(pokemon) == "Mega Charizard X" and getCreatureOutfit(pokemon).lookType == 2596,
             getPokemonReferenceName(pokemon))
         local state = MegaEvolution.state(cid)
-        local contact = #state.boosted > 0
-        for _, move in ipairs(state.boosted) do
+        local contact = #(state.boosted or {}) > 0
+        for _, move in ipairs(state.boosted or {}) do
             contact = contact and getPokemonSkillMakeContact(move)
         end
         check("mega gauge: the HUD gets the form and the boosted contact moves", state.active and state.form == "Mega Charizard X"
-            and state.left == MegaEvolution.DURATION and contact, table.concat(state.boosted, ", "))
+            and state.left == MegaEvolution.DURATION and contact, table.concat(state.boosted or {}, ", "))
         check("mega gauge: the stone is locked", MegaEvolution.isStoneLocked(cid, ball.uid)
             and not PokemonHeldItem.take(cid, ball.uid))
         check("mega gauge: the ring is locked", getItemAttribute(ring.uid, "scriptprotected") == true)
@@ -3490,7 +3498,7 @@ local function testMegaGauge(cid)
             and not MegaEvolution.isMega(pokemon), gauge())
 
         setGauge(80)
-        setPlayerStorageValue(cid, playersStorages.megaActive, 1)
+        setPlayerStorageValue(cid, playersStorages.megaActive, string.format("M1|%d|30", pokemon))
         setItemScriptProtected(ring.uid, true)
         MegaEvolution.onLogin(cid)
         check("mega gauge: a login after a crash mid-Mega empties the gauge and frees the ring", gauge() == 0
@@ -3520,8 +3528,9 @@ local function testMegaGauge(cid)
     for _, id in ipairs({ MEGA_ITEM_IDS.RING, MEGA_STONES[2].itemId, MEGA_STONES[4].itemId }) do
         doPlayerRemoveItem(cid, id, getPlayerItemCount(cid, id))
     end
-    setPlayerStorageValue(cid, playersStorages.megaGauge, -1)
-    setPlayerStorageValue(cid, playersStorages.megaClient, -1)
+    for _, key in ipairs({ "megaGauge", "megaClient", "megaCharges", "megaPvp", "megaActive" }) do
+        setPlayerStorageValue(cid, playersStorages[key], -1)
+    end
 end
 
 local function testRunningShoes(cid)

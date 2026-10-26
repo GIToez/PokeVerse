@@ -33,9 +33,14 @@ MegaEvolution.HIT_DELAY = 1
 MegaEvolution.TAKEN_DELAY = 2
 MegaEvolution.SAME_TARGET = 15
 
+-- Every script interface (actions, talkactions, creature scripts...) has its own copy of this file, so the
+-- state lives in storages, never in Lua tables. A storage string starting with a digit reads back as that
+-- number, so the packed values start with a letter.
 local GAUGE = playersStorages.megaGauge
 local ACTIVE = playersStorages.megaActive
 local CLIENT = playersStorages.megaClient
+local CHARGES = playersStorages.megaCharges
+local PVP = playersStorages.megaPvp
 
 -- The abilities that boost the Pokemon's own moves, so those moves glow on the moves bar
 local BOOSTING = {
@@ -45,9 +50,19 @@ local BOOSTING = {
     [POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER] = true
 }
 
-local actives = {} -- [cid] = { pokemon, ball, form, left }
-local charging = {} -- [cid] = { hit, taken, boss, target, streak }
-local contexts = {} -- [cid] = the restricted PvP the trainer was last seen in
+-- The trainer's Mega while it lasts: { token, pokemon, left }, or nil
+local function readActive(cid)
+    local value = isPlayer(cid) and getPlayerStorageValue(cid, ACTIVE)
+    local token, pokemon, left = tostring(value or ""):match("^M(%d+)|(%d+)|(%-?%d+)$")
+    if (not token) then
+        return nil
+    end
+    return { token = token, pokemon = tonumber(pokemon), left = tonumber(left) }
+end
+
+local function writeActive(cid, active)
+    setPlayerStorageValue(cid, ACTIVE, active and string.format("M%s|%d|%d", active.token, active.pokemon, active.left) or -1)
+end
 
 MegaEvolution.hasForm = function(formName)
     local definition = getPokemonDefinition(formName)
@@ -69,13 +84,12 @@ MegaEvolution.isMega = function(pokemon)
 end
 
 MegaEvolution.isActive = function(cid)
-    return actives[cid] ~= nil
+    return readActive(cid) ~= nil
 end
 
 -- True while the Pokemon of this ball is Mega Evolved, so its stone stays on
 MegaEvolution.isStoneLocked = function(cid, ballUid)
-    local active = actives[cid]
-    return active ~= nil and active.ball == ballUid
+    return readActive(cid) ~= nil and getPlayerBall(cid).uid == ballUid
 end
 
 MegaEvolution.hasRing = function(cid)
@@ -101,14 +115,15 @@ end
 
 -- The moves of the Pokemon out that its Mega ability boosts
 MegaEvolution.boostedMoves = function(cid)
-    local active = actives[cid]
-    local ability = active and getPokemonRandomSpecialAbility(active.form)
+    local active = readActive(cid)
+    local form = active and isCreature(active.pokemon) and getPokemonCurrentTransformation(active.pokemon)
+    local ability = MegaEvolution.hasForm(tostring(form)) and getPokemonRandomSpecialAbility(form)
     local moves = {}
     if (not ability or not BOOSTING[ability]) then
         return moves
     end
     local ball = getPlayerBall(cid)
-    for _, move in ipairs(getPokemonSkills(active.form, ball.uid)) do
+    for _, move in ipairs(getPokemonSkills(form, ball.uid)) do
         if (getPokemonSkillExists(move) and getPokemonSpecialAbilityMoveCheck(ability, move)) then
             moves[#moves + 1] = move
         end
@@ -118,11 +133,12 @@ end
 
 -- The HUD: whether the ring is worn, the gauge, whether the button is lit, and the Mega while it lasts
 MegaEvolution.state = function(cid)
-    local active = actives[cid]
+    local active = readActive(cid)
     local state = { type = "state", ring = MegaEvolution.hasRing(cid), gauge = MegaEvolution.getGauge(cid),
                     max = MegaEvolution.MAX, active = active ~= nil }
     if (active) then
-        state.form, state.left, state.duration = active.form, active.left, MegaEvolution.DURATION
+        state.form = isCreature(active.pokemon) and getPokemonCurrentTransformation(active.pokemon) or nil
+        state.left, state.duration = active.left, MegaEvolution.DURATION
         state.boosted = MegaEvolution.boostedMoves(cid)
     else
         state.ready = state.ring and state.gauge >= MegaEvolution.MAX and MegaEvolution.readyForm(cid) ~= nil
@@ -182,16 +198,15 @@ end
 
 -- Ends the trainer's Mega Evolution: the Pokemon turns back if it is still out, and the gauge is empty
 MegaEvolution.finish = function(cid, quiet)
-    local active = actives[cid]
+    local active = readActive(cid)
     if (not active) then
         return false
     end
-    actives[cid] = nil
+    writeActive(cid, nil)
     if (isCreature(active.pokemon)) then
         MegaEvolution.revert(cid, active.pokemon)
     end
     if (isPlayer(cid)) then
-        setPlayerStorageValue(cid, ACTIVE, -1)
         setGauge(cid, 0)
         lockRing(cid, false)
         if (not quiet) then
@@ -202,15 +217,14 @@ MegaEvolution.finish = function(cid, quiet)
 end
 
 local function stillOn(cid, active)
-    local ball = getPlayerBall(cid)
     return isPlayer(cid) and isCreature(active.pokemon) and getPlayerPokemon(cid) == active.pokemon
-        and MegaEvolution.isMega(active.pokemon) and isItem(ball) and ball.uid == active.ball
-        and MegaEvolution.hasRing(cid)
+        and MegaEvolution.isMega(active.pokemon) and MegaEvolution.hasRing(cid)
 end
 
 -- One second of the drain; false once the Mega is over
-local function step(cid, active)
-    if (not active or actives[cid] ~= active) then
+local function step(cid, token)
+    local active = readActive(cid)
+    if (not active or (token and active.token ~= token)) then
         return false
     elseif (not stillOn(cid, active)) then
         MegaEvolution.finish(cid)
@@ -221,18 +235,19 @@ local function step(cid, active)
         MegaEvolution.finish(cid)
         return false
     end
+    writeActive(cid, active)
     setGauge(cid, MegaEvolution.MAX * active.left / MegaEvolution.DURATION)
     MegaEvolution.send(cid)
     return true
 end
 
 MegaEvolution.step = function(cid)
-    return step(cid, actives[cid])
+    return step(cid, nil)
 end
 
-local function tick(cid, active)
-    if (step(cid, active)) then
-        addEvent(tick, 1000, cid, active)
+local function tick(cid, token)
+    if (step(cid, token)) then
+        addEvent(tick, 1000, cid, token)
     end
 end
 
@@ -251,8 +266,9 @@ end
 
 MegaEvolution.sync = function(cid)
     local context = pvpContext(cid)
-    if (context ~= contexts[cid]) then
-        contexts[cid] = context
+    local last = getPlayerStorageValue(cid, PVP)
+    if ((context or -1) ~= last) then
+        setPlayerStorageValue(cid, PVP, context or -1)
         if (context) then
             MegaEvolution.finish(cid, true)
             setGauge(cid, 0)
@@ -270,7 +286,7 @@ MegaEvolution.problem = function(cid, staff)
         return "Wear the Mega Ring to Mega Evolve."
     elseif (not isCreature(pokemon)) then
         return "Call your Pokemon first."
-    elseif (actives[cid] or MegaEvolution.isMega(pokemon)) then
+    elseif (readActive(cid) or MegaEvolution.isMega(pokemon)) then
         return "Your Pokemon is already Mega Evolved."
     elseif (isPokemonTransformed(pokemon)) then
         return "A transformed Pokemon can't Mega Evolve."
@@ -292,17 +308,16 @@ MegaEvolution.start = function(cid, form, staff)
     if (why) then
         return false, why
     end
-    local pokemon, ball = getPlayerPokemon(cid), getPlayerBall(cid)
+    local pokemon = getPlayerPokemon(cid)
     if (not MegaEvolution.apply(cid, pokemon, form)) then
         return false, "Your Pokemon can't Mega Evolve."
     end
-    local active = { pokemon = pokemon, ball = ball.uid, form = form, left = MegaEvolution.DURATION }
-    actives[cid] = active
-    setPlayerStorageValue(cid, ACTIVE, 1)
+    local active = { token = os.time() .. math.random(1000, 9999), pokemon = pokemon, left = MegaEvolution.DURATION }
+    writeActive(cid, active)
     setGauge(cid, MegaEvolution.MAX)
     lockRing(cid, true)
     MegaEvolution.send(cid)
-    addEvent(tick, 1000, cid, active)
+    addEvent(tick, 1000, cid, active.token)
     return true
 end
 
@@ -334,7 +349,7 @@ MegaEvolution.onPress = function(cid)
 end
 
 local function charge(cid, amount)
-    if (amount <= 0 or not isPlayer(cid) or actives[cid] or not MegaEvolution.hasRing(cid)) then
+    if (amount <= 0 or not isPlayer(cid) or readActive(cid) or not MegaEvolution.hasRing(cid)) then
         return false
     end
     MegaEvolution.sync(cid)
@@ -358,9 +373,16 @@ local function isBoss(target)
     return WorldBoss.get(getCreatureName(target)) ~= nil or LEGENDARIES[name] == true
 end
 
+-- When the trainer last charged from a hit, a hit taken and a boss hit, and the target of its last hits
 local function chargesOf(cid)
-    charging[cid] = charging[cid] or { hit = 0, taken = 0, boss = 0, streak = 0 }
-    return charging[cid]
+    local hit, taken, boss, target, streak = tostring(getPlayerStorageValue(cid, CHARGES)):match("^C(%d+)|(%d+)|(%d+)|(%d+)|(%d+)$")
+    return { hit = tonumber(hit) or 0, taken = tonumber(taken) or 0, boss = tonumber(boss) or 0,
+             target = tonumber(target) or 0, streak = tonumber(streak) or 0 }
+end
+
+local function saveCharges(cid, state)
+    setPlayerStorageValue(cid, CHARGES, string.format("C%d|%d|%d|%d|%d", state.hit, state.taken, state.boss, state.target,
+        state.streak))
 end
 
 -- A damaging move hit (004-skillDamage.lua): the attacker's trainer charges, and so does the target's
@@ -375,6 +397,7 @@ MegaEvolution.onHit = function(fromCid, toCid, skillName)
         if (isBoss(toCid)) then
             if (now - state.boss >= MegaEvolution.TAKEN_DELAY) then
                 state.boss = now
+                saveCharges(attacker, state)
                 charge(attacker, MegaEvolution.CHARGE.BOSS_HIT)
             end
         elseif (now - state.hit >= MegaEvolution.HIT_DELAY) then
@@ -386,6 +409,7 @@ MegaEvolution.onHit = function(fromCid, toCid, skillName)
             if (state.streak > MegaEvolution.SAME_TARGET) then
                 amount = 1
             end
+            saveCharges(attacker, state)
             charge(attacker, amount)
         end
     end
@@ -393,6 +417,7 @@ MegaEvolution.onHit = function(fromCid, toCid, skillName)
         local state = chargesOf(defender)
         if (now - state.taken >= MegaEvolution.TAKEN_DELAY) then
             state.taken = now
+            saveCharges(defender, state)
             charge(defender, MegaEvolution.CHARGE.TAKEN)
         end
     end
@@ -412,20 +437,10 @@ MegaEvolution.onRingChange = function(cid)
     MegaEvolution.send(cid)
 end
 
--- The trainer's Pokemon came out or went back: the button may light up or go grey
-MegaEvolution.onPokemonChange = function(cid)
-    local active = actives[cid]
-    if (active and not stillOn(cid, active)) then
-        MegaEvolution.finish(cid)
-    else
-        MegaEvolution.send(cid)
-    end
-end
-
 MegaEvolution.onLogin = function(cid)
     setPlayerStorageValue(cid, CLIENT, -1)
-    if (getPlayerStorageValue(cid, ACTIVE) == 1) then -- the server stopped during a Mega
-        setPlayerStorageValue(cid, ACTIVE, -1)
+    if (readActive(cid)) then -- the server stopped during a Mega
+        writeActive(cid, nil)
         setGauge(cid, 0)
         lockRing(cid, false)
     end
@@ -433,7 +448,8 @@ end
 
 MegaEvolution.onLogout = function(cid)
     MegaEvolution.finish(cid, true)
-    actives[cid], charging[cid], contexts[cid] = nil, nil, nil
+    setPlayerStorageValue(cid, CHARGES, -1)
+    setPlayerStorageValue(cid, PVP, -1)
 end
 
 MegaEvolution.onClientMessage = function(cid, buffer)
