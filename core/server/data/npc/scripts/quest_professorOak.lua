@@ -24,6 +24,20 @@ local TUTORIAL_OAK_POSITION = { x = 5020, y = 788, z = 7 }
 --local FIRSTY_CITY_STORAGE = 8507
 
 local lastChoice = {}
+local megaTalk = {} -- the Mega quest a "mega" talk is about, until it is accepted or ended
+
+-- the Mega quest Oak offers or takes back now (config/003-quest.lua, 8760 and 8761)
+local function megaQuest(cid)
+    for _, quest in ipairs(getNpcQuests("Professor Oak")) do
+        if (quest.storage == MegaEvolution.RESEARCH_QUEST or quest.storage == MegaEvolution.KEY_STONE_QUEST) then
+            local status = getCreatureStorage(cid, quest.storage)
+            if (status == QUEST_STATUS.STARTED or (status == QUEST_STATUS.UNSTARTED and not quest.blockStart)) then
+                return quest
+            end
+        end
+    end
+    return nil
+end
 local TALKSTATE_CONFIRM = 200
 local TALKSTATE_CONFIRM_SEX = 201
 local TALKSTATE_FIX_ASK = 202
@@ -110,6 +124,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
             if (sex) then
                 doCreatePokemonBall(cid, "soul", lastChoice[cid], 5, sex, nil, 14, cid, false, 999999, nil, nil, nil, nil, nil, nil, nil, nil, nil, function(ball) setBallOriginalTrainer(ball, cid) end)
                 setPlayerGotStarterPokemon(cid, true)
+                setPlayerStorageValue(cid, playersStorages.megaStarter, lastChoice[cid])
                 doPlayerAddMainItems(cid)
                 doPokedexObtained(cid, lastChoice[cid])
                 doCreatureSetStorage(cid, FIRST_POKEMON_STORAGE, QUEST_STATUS.FINISHED)
@@ -148,6 +163,19 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
     elseif (getSamePosition(getNpcPos(), TUTORIAL_OAK_POSITION) and getCreatureStorage(cid, 8753) == QUEST_STATUS.FINISHED) then
         selfSay("Now you must head to the north to find Red and complete your initial mission.", cid)
+
+    elseif (MegaEvolution.onStoneChoiceTalk(cid, msg)) then
+        megaTalk[cid] = nil
+
+    elseif (megaTalk[cid] or msgcontains(msg, 'mega') or msgcontains(msg, 'key stone')) then
+        local quest = megaTalk[cid] or megaQuest(cid)
+        if (not quest) then
+            selfSay("I have nothing more about Mega Evolution for you right now.", cid)
+            npcHandler.talkState[talkUser] = nil
+        else
+            npcHandler.talkState[talkUser] = doQuestTalk(cid, "Professor Oak", megaTalk[cid] and msg or "quest", npcHandler.talkState[talkUser], quest)
+            megaTalk[cid] = (npcHandler.talkState[talkUser] and npcHandler.talkState[talkUser] ~= 0) and quest or nil
+        end
 
     else
         npcHandler.talkState[talkUser] = doQuestTalk(cid, "Professor Oak", msg, npcHandler.talkState[talkUser])

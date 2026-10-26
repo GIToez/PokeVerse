@@ -120,7 +120,9 @@ local function containsAny(text, words)
 end
 
 local function categoryOf(group, npcName, quest)
-    if (quest.daily) then
+    if (quest.category) then
+        return quest.category
+    elseif (quest.daily) then
         return "Daily"
     end
     local text = (group or "") .. " " .. npcName
@@ -205,7 +207,9 @@ end
 
 Quests.objective = function(quest)
     local request = quest.questRequest
-    if (quest.questType == BRING_ITEMS) then
+    if (quest.objective) then
+        return quest.objective
+    elseif (quest.questType == BRING_ITEMS) then
         local list = {}
         for i = 1, #request, 2 do
             list[#list + 1] = request[i + 1] .. " " .. itemName(request[i], request[i + 1])
@@ -223,10 +227,12 @@ Quests.objective = function(quest)
     return nil
 end
 
--- have, need; nil for the custom quests, whose checks only the NPC knows
+-- have, need; nil for the custom quests, whose checks only the NPC knows, unless they give progress(cid)
 Quests.progress = function(cid, quest)
     local request = quest.questRequest
-    if (quest.questType == BRING_ITEMS) then
+    if (quest.progress) then
+        return quest.progress(cid)
+    elseif (quest.questType == BRING_ITEMS) then
         local have, need = 0, 0
         for i = 1, #request, 2 do
             need = need + request[i + 1]

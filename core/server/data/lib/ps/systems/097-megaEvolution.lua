@@ -495,6 +495,7 @@ MegaEvolution.onKill = function(cid, target)
     local elite = isBoss(target) or not isPokemonName(getCreatureName(target))
     charge(cid, elite and MegaEvolution.CHARGE.ELITE_KILL or MegaEvolution.CHARGE.WILD_KILL)
     MegaEvolution.rollDrop(cid, getCreatureName(target))
+    MegaEvolution.onResearchDefeat(cid, getCreatureName(target))
 end
 
 local dropsBySpecies
@@ -529,6 +530,232 @@ MegaEvolution.rollDrop = function(cid, name)
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "The %s dropped %s!"),
         __L(cid, name), __L(cid, stone.name)))
     return stone
+end
+
+---------------------------------------------------------------------------------------------------
+-- Professor Oak's Mega Ring quests (config/003-quest.lua, Professor Oak). The research: defeat
+-- RESEARCH_EACH wild Pokemon from each of RESEARCH_LINES Mega Stone lines, for the empty Mega Ring.
+-- Then the Key Stone: use the glowing crystal deep in Cerulean Cave, defeat the Guardian Alakazam
+-- that comes out of it, put the Key Stone on the ring and show Oak the Mega Ring, for the stone of
+-- the trainer's starter.
+---------------------------------------------------------------------------------------------------
+
+MegaEvolution.RESEARCH_QUEST = 8760
+MegaEvolution.KEY_STONE_QUEST = 8761
+MegaEvolution.KEY_STONE_FOUND = 8762 -- finished once the guardian gave the trainer the Key Stone
+MegaEvolution.STONE_CHOICE = 8763 -- started while Oak waits for the trainer to pick a stone
+MegaEvolution.RESEARCH_LINES = 3
+MegaEvolution.RESEARCH_EACH = 50
+MegaEvolution.CRYSTAL = { x = 3825, y = 166, z = 11 }
+MegaEvolution.CRYSTAL_ITEM = 8636
+MegaEvolution.CRYSTAL_ACTION = 30761
+MegaEvolution.GUARDIAN = "Guardian Alakazam"
+MegaEvolution.GUARDIAN_TIME = 10 * 60
+MegaEvolution.STARTER_LINES = { Bulbasaur = "Venusaur", Charmander = "Charizard", Squirtle = "Blastoise" }
+
+local RESEARCH = playersStorages.megaResearch
+local STARTER = playersStorages.megaStarter
+
+local function readResearch(cid)
+    local counts, value = {}, getPlayerStorageValue(cid, RESEARCH)
+    if (type(value) == "string" and value:sub(1, 1) == "R") then
+        for line, count in value:sub(2):gmatch("([^=,]+)=(%d+)") do
+            counts[line] = tonumber(count)
+        end
+    end
+    return counts
+end
+
+-- have and need: the best RESEARCH_LINES lines count up to RESEARCH_EACH each
+MegaEvolution.researchProgress = function(cid)
+    local list = {}
+    for _, count in pairs(readResearch(cid)) do
+        list[#list + 1] = math.min(count, MegaEvolution.RESEARCH_EACH)
+    end
+    table.sort(list, function(a, b) return a > b end)
+    local have = 0
+    for i = 1, math.min(#list, MegaEvolution.RESEARCH_LINES) do
+        have = have + list[i]
+    end
+    return have, MegaEvolution.RESEARCH_LINES * MegaEvolution.RESEARCH_EACH
+end
+
+local function oakQuest(storage)
+    for _, quest in ipairs(getNpcQuests("Professor Oak") or {}) do
+        if (quest.storage == storage) then
+            return quest
+        end
+    end
+end
+
+MegaEvolution.onResearchDefeat = function(cid, name)
+    if (getPlayerStorageValue(cid, MegaEvolution.RESEARCH_QUEST) ~= QUEST_STATUS.STARTED) then
+        return
+    end
+    local drops = MegaEvolution.getDrops(name)
+    if (not drops or drops[1].form:find("^Primal")) then
+        return
+    end
+    local line = drops[1].pokemon
+    local counts = readResearch(cid)
+    if ((counts[line] or 0) >= MegaEvolution.RESEARCH_EACH) then
+        return
+    end
+    counts[line] = (counts[line] or 0) + 1
+    local parts = {}
+    for key, count in pairs(counts) do
+        parts[#parts + 1] = key .. "=" .. count
+    end
+    setPlayerStorageValue(cid, RESEARCH, "R" .. table.concat(parts, ","))
+
+    local have, need = MegaEvolution.researchProgress(cid)
+    local quest = oakQuest(MegaEvolution.RESEARCH_QUEST)
+    if (not quest or not Quests.onProgress(cid, quest, have, need)) then
+        doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "Mega research: %s line %d/%d [%d/%d]."),
+            __L(cid, line), counts[line], MegaEvolution.RESEARCH_EACH, have, need))
+    end
+end
+
+-- Worn or in the bag (hasRing is only the worn one)
+MegaEvolution.ownsRing = function(cid)
+    return MegaEvolution.hasRing(cid) or getPlayerItemCount(cid, MEGA_ITEM_IDS.RING) > 0
+end
+
+-- The starter's line ("Charizard"), from what Oak wrote down or, for trainers from before that, the
+-- one Pokemon they carry with their own original trainer mark (only starters get it); nil if unknown
+MegaEvolution.starterLine = function(cid)
+    local starter = getPlayerStorageValue(cid, STARTER)
+    if (MegaEvolution.STARTER_LINES[starter]) then
+        return MegaEvolution.STARTER_LINES[starter]
+    end
+    local guid, found = getPlayerGUID(cid), nil
+    for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+        if (getBallOriginalTrainer(ball.uid) == guid) then
+            local species, steps = getBallPokemonName(ball.uid), 0
+            while (getPokemonPreEvolution(species) and steps < 5) do
+                species, steps = getPokemonPreEvolution(species), steps + 1
+            end
+            local line = MegaEvolution.STARTER_LINES[species]
+            if (line and found and found ~= line) then
+                return nil
+            end
+            found = line or found
+        end
+    end
+    return found
+end
+
+-- The stones Oak can give: the starter's (Charizard has two), or all four if he can't tell
+MegaEvolution.starterStones = function(cid)
+    local line, list = MegaEvolution.starterLine(cid), {}
+    for _, stone in ipairs(MEGA_STONES) do
+        if ((line and stone.pokemon == line) or (not line and table.find({ "Venusaur", "Charizard", "Blastoise" }, stone.pokemon))) then
+            list[#list + 1] = stone
+        end
+    end
+    return list
+end
+
+local function giveStone(cid, stone)
+    doPlayerSafeAddItem(cid, stone.itemId, 1, true, true)
+    doCreatureSetStorage(cid, MegaEvolution.STONE_CHOICE, QUEST_STATUS.FINISHED)
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
+end
+
+-- Key Stone quest's end (said by Oak): one stone is given now; with a choice, Oak asks which
+MegaEvolution.onKeyStoneQuestEnd = function(cid)
+    local stones = MegaEvolution.starterStones(cid)
+    if (#stones == 1) then
+        giveStone(cid, stones[1])
+        selfSay(string.format(__L(cid, "And this is for your partner from the very beginning: %s. Let it hold the stone, and when your Mega gauge is full, Mega Evolve it!"), __L(cid, stones[1].name)), cid)
+        return
+    end
+    doCreatureSetStorage(cid, MegaEvolution.STONE_CHOICE, QUEST_STATUS.STARTED)
+    MegaEvolution.askStone(cid, stones)
+end
+
+MegaEvolution.askStone = function(cid, stones)
+    local names = {}
+    for _, stone in ipairs(stones or MegaEvolution.starterStones(cid)) do
+        names[#names + 1] = "{" .. __L(cid, stone.name) .. "}"
+    end
+    selfSay(string.format(__L(cid, "One more thing: a stone for your first partner. Which one do you want? %s"),
+        table.concat(names, ", ")), cid)
+end
+
+-- Oak's chat while he waits for the pick: true when the message was about it
+MegaEvolution.onStoneChoiceTalk = function(cid, msg)
+    if (getPlayerStorageValue(cid, MegaEvolution.STONE_CHOICE) ~= QUEST_STATUS.STARTED) then
+        return false
+    end
+    local stones, text = MegaEvolution.starterStones(cid), msg:lower()
+    for _, stone in ipairs(stones) do
+        local name = stone.name:lower()
+        local suffix = name:match(" (%a)$")
+        if (text:find(name, 1, true) or (suffix and #stones == 2 and stones[1].pokemon == stones[2].pokemon
+                and (text == suffix or text:find("^" .. suffix .. "[%s%p]*$")))) then
+            giveStone(cid, stone)
+            selfSay(string.format(__L(cid, "Here is %s. Let your partner hold it, and when your Mega gauge is full, Mega Evolve it!"), __L(cid, stone.name)), cid)
+            return true
+        end
+    end
+    MegaEvolution.askStone(cid, stones)
+    return true
+end
+
+-- The crystal in Cerulean Cave (actions.xml, by its action id; placed on the map at startup)
+MegaEvolution.placeCrystal = function()
+    local item = getTileItemById(MegaEvolution.CRYSTAL, MegaEvolution.CRYSTAL_ITEM)
+    if (not isItem(item)) then
+        item = { uid = doCreateItem(MegaEvolution.CRYSTAL_ITEM, 1, MegaEvolution.CRYSTAL) }
+    end
+    if (not item.uid or item.uid == 0) then
+        log(LOG_TYPES.ERROR, "MegaEvolution.placeCrystal - Can't place the Key Stone crystal.")
+        return
+    end
+    doItemSetAttribute(item.uid, "aid", MegaEvolution.CRYSTAL_ACTION)
+end
+
+local guardian
+MegaEvolution.onCrystalUse = function(cid, item)
+    if (getPlayerStorageValue(cid, MegaEvolution.KEY_STONE_QUEST) ~= QUEST_STATUS.STARTED) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, __L(cid, "The crystal glows with a strange light."))
+    elseif (getPlayerStorageValue(cid, MegaEvolution.KEY_STONE_FOUND) == QUEST_STATUS.FINISHED) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, __L(cid, "The crystal is quiet now. You already have its Key Stone."))
+    elseif (isCreature(guardian)) then
+        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, __L(cid, "The Guardian Alakazam is already here!"))
+    else
+        local position = getThingPosition(item.uid)
+        doSendMagicEffect(position, EFFECT_TELEPORT_UP)
+        guardian = doCreateMonster(MegaEvolution.GUARDIAN, { x = position.x - 1, y = position.y + 1, z = position.z }, false)
+        if (isCreature(guardian)) then
+            doCreatureSay(guardian, "ALAKAZAM!", TALKTYPE_MONSTER)
+            addEvent(function(creature) if (isCreature(creature)) then doRemoveCreature(creature) end end,
+                MegaEvolution.GUARDIAN_TIME * 1000, guardian)
+        end
+        return guardian
+    end
+    return nil
+end
+
+-- The guardian falls (creaturescripts, prepareDeath): every trainer on the quest who fought it gets the Key Stone
+MegaEvolution.onGuardianDeath = function(guardianCid, deathList)
+    local position = getCreaturePosition(guardianCid)
+    doSendMagicEffect(position, EFFECT_TELEPORT_UP)
+    doRemoveCreature(guardianCid)
+    local done = {}
+    for _, killer in ipairs(deathList or {}) do
+        local player = isPlayer(killer) and killer or (isCreature(killer) and getCreatureMaster(killer))
+        if (isPlayer(player) and not done[player]
+                and getPlayerStorageValue(player, MegaEvolution.KEY_STONE_QUEST) == QUEST_STATUS.STARTED
+                and getPlayerStorageValue(player, MegaEvolution.KEY_STONE_FOUND) ~= QUEST_STATUS.FINISHED) then
+            done[player] = true
+            doPlayerSafeAddItem(player, MEGA_ITEM_IDS.KEY_STONE, 1, true, true)
+            doCreatureSetStorage(player, MegaEvolution.KEY_STONE_FOUND, QUEST_STATUS.FINISHED)
+            doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE, __L(player, "As the guardian fades, the crystal's light gathers into a small stone: the Key Stone! Use it on your empty Mega Ring."))
+        end
+    end
+    return false
 end
 
 -- The Mega Ring put on or taken off

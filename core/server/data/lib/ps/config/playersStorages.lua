@@ -135,5 +135,7 @@ playersStorages = {
     megaClient = base + 132, -- 1 while the trainer's client has the Mega HUD (it says hello at login)
     megaCharges = base + 133, -- "C<hit>|<hit taken>|<boss hit>|<target id>|<hits in a row on it>": when the gauge last charged (MegaEvolution)
     megaPvp = base + 134, -- the restricted PvP the trainer was last seen in ("duel", "arena", "tournament"), so entering one empties the gauge
+    megaStarter = base + 135, -- the starter Professor Oak (or the beginner NPC) gave: "Bulbasaur", "Charmander" or "Squirtle"
+    megaResearch = base + 136, -- "R<line>=<defeats>,...": Oak's Mega research, wild defeats per Mega Stone line
     -- tournamentWeekWinnerStorage = base + 65
 }
