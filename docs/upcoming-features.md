@@ -3179,7 +3179,7 @@ Blastoise (Blastoisinite), Venusaur (Venusaurite), Mewtwo (Mewtwonite X or Y).
 
 - The Mega bar sits under the trainer's HP, mirroring the Pokémon's energy bar under its HP
   ([concept](concepts/mega-gauge-hud.png)). It only shows while the Mega Ring is equipped.
-- What it shows without a Mega Stone (the concept's greyed-out "No Mega Stone") is designed later.
+- What it shows when the Pokémon out holds no Mega Stone is designed later.
 - 0 to 100. A round **Mega Evolution button** sits between the Mega bar and the portrait,
   and the **R** key does the same (decided). R is free today; like E (order) and X (Pokédex)
   it works with the chat off. F is free too. Both turn on at 100 and are off when the Pokémon
