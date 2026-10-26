@@ -3501,6 +3501,63 @@ local function testMoreMegas(cid)
     callBack()
 end
 
+local function testMegaDrops(cid)
+    local function names(drops)
+        local out = {}
+        for _, stone in ipairs(drops or {}) do
+            out[#out + 1] = stone.name
+        end
+        table.sort(out)
+        return table.concat(out, ",")
+    end
+    check("mega drops: 1 in 250,000 for stones and orbs", MegaEvolution.DROP_CHANCE == 250000
+        and MegaEvolution.ORB_DROP_CHANCE == 250000)
+    check("mega drops: the whole line drops the stone, shinies too", names(MegaEvolution.getDrops("Bulbasaur")) == "Venusaurite"
+        and names(MegaEvolution.getDrops("Shiny Ivysaur")) == "Venusaurite" and names(MegaEvolution.getDrops("Venusaur")) == "Venusaurite",
+        names(MegaEvolution.getDrops("Shiny Ivysaur")))
+    check("mega drops: Charmander's line drops either Charizardite", names(MegaEvolution.getDrops("Charmander")) == "Charizardite X,Charizardite Y",
+        names(MegaEvolution.getDrops("Charmander")))
+    check("mega drops: Groudon and Kyogre drop their orbs", names(MegaEvolution.getDrops("Groudon")) == "Red Orb"
+        and names(MegaEvolution.getDrops("Kyogre")) == "Blue Orb")
+    check("mega drops: a Pokemon with no Mega line drops nothing", MegaEvolution.getDrops("Rattata") == nil
+        and MegaEvolution.getDrops("Slowking") == nil and names(MegaEvolution.getDrops("Slowpoke")) == "Slowbronite")
+
+    local x, y
+    for _, stone in ipairs(MEGA_STONES) do
+        x = stone.name == "Charizardite X" and stone.itemId or x
+        y = stone.name == "Charizardite Y" and stone.itemId or y
+    end
+    local function stones()
+        return getPlayerItemCount(cid, x) + getPlayerItemCount(cid, y)
+    end
+    local here = getCreaturePosition(cid)
+    local wild
+    for dx = -2, 2 do
+        for dy = -2, 2 do
+            if (not isMonster(wild) and (dx ~= 0 or dy ~= 0)) then
+                wild = doCreateMonster("Charmander", { x = here.x + dx, y = here.y + dy, z = here.z }, false)
+            end
+        end
+    end
+    if (not isMonster(wild)) then
+        check("mega drops: a wild Charmander", false)
+        return
+    end
+    doCreatureSetNoMove(wild, true)
+    local chance, before = MegaEvolution.DROP_CHANCE, stones()
+    MegaEvolution.DROP_CHANCE = 1
+    quietly(function() MegaEvolution.onKill(cid, wild) end)
+    local dropped = stones() - before
+    MegaEvolution.DROP_CHANCE = 1000000000
+    quietly(function() MegaEvolution.onKill(cid, wild) end)
+    MegaEvolution.DROP_CHANCE = chance
+    check("mega drops: a defeated wild Charmander drops a Charizardite", dropped == 1, dropped)
+    check("mega drops: the roll uses DROP_CHANCE", stones() - before == 1, stones() - before)
+    doRemoveCreature(wild)
+    doPlayerRemoveItem(cid, x, getPlayerItemCount(cid, x))
+    doPlayerRemoveItem(cid, y, getPlayerItemCount(cid, y))
+end
+
 local function testMegaGauge(cid)
     if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
             or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
@@ -4623,7 +4680,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
