@@ -3330,6 +3330,177 @@ local function testMegaForms(cid)
     doPlayerRemoveItem(cid, MEGA_STONES[4].itemId, getPlayerItemCount(cid, MEGA_STONES[4].itemId))
 end
 
+-- The Megas after the starters, and Primal Groudon and Kyogre
+local function testMoreMegas(cid)
+    local E = function(...) return { ... } end
+    local forms = {
+        { "Mega Beedrill", 2607, 2634, E(ELEMENT_BUG, ELEMENT_POISON), "ADAPTABILITY" },
+        { "Mega Pidgeot", 2608, 2635, E(ELEMENT_NORMAL, ELEMENT_FLYING), "NO_GUARD" },
+        { "Mega Alakazam", 2599, 2636, E(ELEMENT_PSYCHIC), "TRACE" },
+        { "Mega Slowbro", 2609, 2637, E(ELEMENT_WATER, ELEMENT_PSYCHIC), "SHELL_ARMOR" },
+        { "Mega Gengar", 2600, 2638, E(ELEMENT_GHOST, ELEMENT_POISON), "SHADOW_TAG" },
+        { "Mega Kangaskhan", 2601, 2639, E(ELEMENT_NORMAL), "PARENTAL_BOND" },
+        { "Mega Gyarados", 2610, 2611, E(ELEMENT_WATER, ELEMENT_DARK), "MOLD_BREAKER" },
+        { "Mega Aerodactyl", 2612, 2640, E(ELEMENT_ROCK, ELEMENT_FLYING), "TOUGH_CLAWS" },
+        { "Mega Ampharos", 2602, 2603, E(ELEMENT_ELECTRIC, ELEMENT_DRAGON), "MOLD_BREAKER" },
+        { "Mega Steelix", 2613, 2641, E(ELEMENT_STEEL, ELEMENT_GROUND), "SAND_FORCE" },
+        { "Mega Scizor", 2614, 2642, E(ELEMENT_BUG, ELEMENT_STEEL), "TECHNICIAN" },
+        { "Mega Tyranitar", 2604, 2643, E(ELEMENT_ROCK, ELEMENT_DARK), "SAND_STREAM" },
+        { "Mega Sceptile", 2615, 2644, E(ELEMENT_GRASS, ELEMENT_DRAGON), "LIGHTNINGROD" },
+        { "Mega Blaziken", 2605, 2645, E(ELEMENT_FIRE, ELEMENT_FIGHT), "SPEED_BOOST" },
+        { "Mega Swampert", 2616, 2646, E(ELEMENT_WATER, ELEMENT_GROUND), "SWIFT_SWIM" },
+        { "Mega Sableye", 2617, 2647, E(ELEMENT_DARK, ELEMENT_GHOST), "MAGIC_BOUNCE" },
+        { "Mega Mawile", 2625, 2648, E(ELEMENT_STEEL, ELEMENT_FAIRY), "HUGE_POWER" },
+        { "Mega Sharpedo", 2618, 2649, E(ELEMENT_WATER, ELEMENT_DARK), "STRONG_JAW" },
+        { "Mega Camerupt", 2619, 2650, E(ELEMENT_FIRE, ELEMENT_GROUND), "SHEER_FORCE" },
+        { "Mega Altaria", 2620, 2651, E(ELEMENT_DRAGON, ELEMENT_FAIRY), "PIXILATE" },
+        { "Mega Absol", 2621, 2652, E(ELEMENT_DARK), "MAGIC_BOUNCE" },
+        { "Mega Glalie", 2622, 2653, E(ELEMENT_ICE), "REFRIGERATE" },
+        { "Mega Latias", 2626, nil, E(ELEMENT_DRAGON, ELEMENT_PSYCHIC), "LEVITATE" },
+        { "Primal Kyogre", 2628, nil, E(ELEMENT_WATER), "PRIMORDIAL_SEA" },
+        { "Primal Groudon", 2627, nil, E(ELEMENT_GROUND, ELEMENT_FIRE), "DESOLATE_LAND" },
+    }
+    local function sameTypes(types, expected)
+        if (#types ~= #expected) then
+            return false
+        end
+        for i, element in ipairs(expected) do
+            if (types[i] ~= element) then
+                return false
+            end
+        end
+        return true
+    end
+    for _, f in ipairs(forms) do
+        local name, look, shinyLook, types, ability = f[1], f[2], f[3], f[4], f[5]
+        local definition, info = getPokemonDefinition(name), getMonsterInfo(name)
+        local shiny, shinyInfo = getPokemonDefinition("Shiny " .. name), getMonsterInfo("Shiny " .. name)
+        local problem = (not MegaEvolution.hasForm(name) and "no form")
+                or ((not info or info.outfit.lookType ~= look) and "look " .. tostring(info and info.outfit.lookType))
+                or ((definition.portrait == 0 or definition.fastcallPortrait == 0) and "no face")
+                or (not sameTypes(definition.pTypes, types) and "types")
+                or ((definition.specialAbilities[1] ~= POKEMON_SPECIAL_ABILITY_IDS[ability]) and "ability")
+                or (shinyLook and (not shiny or shiny.portrait == 0 or not shinyInfo or shinyInfo.outfit.lookType ~= shinyLook)
+                    and "shiny " .. tostring(shinyInfo and shinyInfo.outfit.lookType))
+                or (not shinyLook and shiny and "a shiny that can't be caught")
+        check("more megas: " .. name .. " has its look, face, types and ability", not problem, problem)
+    end
+    local inGame = 0
+    for _, stone in ipairs(MEGA_STONES) do
+        if (MegaEvolution.hasForm(stone.form)) then
+            inGame = inGame + 1
+        end
+    end
+    check("more megas: 29 stones and orbs work", inGame == 29, inGame)
+
+    local ids, moveCheck = POKEMON_SPECIAL_ABILITY_IDS, getPokemonSpecialAbilityMoveCheck
+    check("more megas: Strong Jaw, Sand Force and Sheer Force pick their moves",
+        moveCheck(ids.STRONG_JAW, "Crunch") and moveCheck(ids.STRONG_JAW, "Fire Fang") and not moveCheck(ids.STRONG_JAW, "Tackle")
+        and moveCheck(ids.SAND_FORCE, "Rock Slide") and not moveCheck(ids.SAND_FORCE, "Flamethrower")
+        and moveCheck(ids.SHEER_FORCE, "Flamethrower") and not moveCheck(ids.SHEER_FORCE, "Earthquake")
+        and not moveCheck(ids.SHEER_FORCE, "Tackle"))
+    check("more megas: Desolate Land boosts Fire, Primordial Sea boosts Water",
+        moveCheck(ids.DESOLATE_LAND, "Flamethrower") and not moveCheck(ids.DESOLATE_LAND, "Water Pulse")
+        and moveCheck(ids.PRIMORDIAL_SEA, "Water Pulse") and not moveCheck(ids.PRIMORDIAL_SEA, "Flamethrower"))
+
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("more megas: ball slot free for the test", false)
+        return
+    end
+    local function callOut(name, level)
+        local ball = newBall(cid, name, level or 50, POKEMON_SEX_MALE)
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        return getPlayerPokemon(cid)
+    end
+    local function callBack()
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+        if (isItem(slot)) then
+            doRemoveItem(slot.uid)
+        end
+    end
+
+    local pokemon = callOut("Altaria")
+    if (isCreature(pokemon)) then
+        local before = getPokemonSkillDamageTypeOf(pokemon, "Tackle")
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        check("more megas: Mega Altaria's Pixilate makes Tackle a Fairy move", before == ELEMENT_NORMAL
+            and getPokemonReferenceName(pokemon) == "Mega Altaria"
+            and getPokemonSkillDamageTypeOf(pokemon, "Tackle") == ELEMENT_FAIRY
+            and getPokemonSkillDamageTypeOf(pokemon, "Dragon Pulse") == ELEMENT_DRAGON, getPokemonReferenceName(pokemon))
+    else
+        check("more megas: Altaria comes out", false)
+    end
+    callBack()
+
+    local stoneOf = {}
+    for _, stone in ipairs(MEGA_STONES) do
+        stoneOf[stone.form] = stone.itemId
+    end
+    pokemon = callOut("Groudon", 70)
+    if (isCreature(pokemon)) then
+        local orb = getThing(doPlayerAddItem(cid, stoneOf["Primal Groudon"], 1))
+        PokemonHeldItem.give(cid, getPlayerBall(cid).uid, orb)
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        check("more megas: Groudon with the Red Orb becomes Primal Groudon, Ground/Fire with Desolate Land",
+            getPokemonReferenceName(pokemon) == "Primal Groudon" and sameTypes(getPokemonTypes(pokemon), { ELEMENT_GROUND, ELEMENT_FIRE })
+            and getMonsterSpecialAbility(pokemon) == ids.DESOLATE_LAND and getCreatureOutfit(pokemon).lookType == 2627,
+            getPokemonReferenceName(pokemon))
+        PokemonHeldItem.take(cid, getPlayerBall(cid).uid)
+    else
+        check("more megas: Groudon comes out", false)
+    end
+    callBack()
+    doPlayerRemoveItem(cid, stoneOf["Primal Groudon"], getPlayerItemCount(cid, stoneOf["Primal Groudon"]))
+
+    pokemon = callOut("Gyarados")
+    local wild
+    if (isCreature(pokemon)) then
+        quietly(function() MegaEvolution.onStaffCommand(cid, "") end)
+        local here = getCreaturePosition(cid)
+        for dx = -2, 2 do
+            for dy = -2, 2 do
+                if (not isMonster(wild) and (dx ~= 0 or dy ~= 0)) then
+                    wild = doCreateMonster("Rattata", { x = here.x + dx, y = here.y + dy, z = here.z }, false)
+                end
+            end
+        end
+    end
+    if (isMonster(wild) and MegaEvolution.isMega(pokemon)) then
+        doCreatureSetNoMove(wild, true)
+        setMonsterSpecialAbility(wild, ids.LEVITATE)
+        local alone = doPokemonSpecialAbilityCheck(wild, ids.LEVITATE, nil, "Earthquake")
+        local broken = doWithMoldBreaker(pokemon, doPokemonSpecialAbilityCheck, wild, ids.LEVITATE, nil, "Earthquake")
+        local plain = doWithMoldBreaker(wild, doPokemonSpecialAbilityCheck, wild, ids.LEVITATE, nil, "Earthquake")
+        check("more megas: Mega Gyarados' Mold Breaker gets past Levitate, only while it attacks",
+            alone and not broken and plain and doPokemonSpecialAbilityCheck(wild, ids.LEVITATE, nil, "Earthquake"))
+
+        setMonsterSpecialAbility(wild, ids.MAGIC_BOUNCE)
+        quietly(function() doCreatureAddStatus(wild, CREATURE_STATUS_CONFUSION, nil, pokemon) end)
+        check("more megas: Magic Bounce sends a confusion back", getCreatureStatus(pokemon, CREATURE_STATUS_CONFUSION)
+            and not getCreatureStatus(wild, CREATURE_STATUS_CONFUSION))
+        doCreatureRemoveStatus(pokemon, CREATURE_STATUS_CONFUSION)
+
+        setMonsterSpecialAbility(wild, ids.DESOLATE_LAND)
+        local health = getCreatureHealth(wild)
+        quietly(function() doSkillDamage(pokemon, wild, "Water Pulse") end)
+        check("more megas: Water moves evaporate on Desolate Land", isCreature(wild)
+            and health - getCreatureHealth(wild) <= 1, isCreature(wild) and health - getCreatureHealth(wild))
+        local result
+        quietly(function() result = { doWithMoldBreaker(pokemon, function() return 1, nil, 3 end) } end)
+        check("more megas: a hit's results come back through the Mold Breaker wrapper", result[1] == 1
+            and result[2] == nil and result[3] == 3)
+        doRemoveCreature(wild)
+    else
+        check("more megas: Mega Gyarados and a wild Rattata for the ability checks", false)
+    end
+    callBack()
+end
+
 local function testMegaGauge(cid)
     if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
             or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
@@ -4452,7 +4623,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
