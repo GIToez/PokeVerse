@@ -3686,6 +3686,101 @@ local function testMegaQuest(cid)
     end
 end
 
+-- The whole way through the gauge, as a trainer plays it: a shiny, a Primal and a stone with no form yet
+local function testMegaCheck(cid)
+    if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
+            or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("mega check: key item and ball slots free for the test", false)
+        return
+    end
+    local M, ids = MegaEvolution, POKEMON_SPECIAL_ABILITY_IDS
+    local realPz = getTilePzInfo
+    getTilePzInfo = function() return false end
+    local stoneOf = {}
+    for _, stone in ipairs(MEGA_STONES) do
+        stoneOf[stone.name] = stone.itemId
+    end
+    local function sameTypes(types, expected)
+        if (#types ~= #expected) then
+            return false
+        end
+        for i = 1, #types do
+            if (types[i] ~= expected[i]) then
+                return false
+            end
+        end
+        return true
+    end
+    local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.RING, 1))
+    doMovePlayerItem(cid, ring.uid, { y = PLAYER_SLOT_KEY_ITEM, z = 0 })
+
+    -- out with its stone, gauge full, R: the form; then the drain turns it back
+    local function megaEvolve(name, level, stoneName)
+        local ball = newBall(cid, name, level, POKEMON_SEX_MALE)
+        PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, stoneOf[stoneName], 1)))
+        doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        local pokemon = getPlayerPokemon(cid)
+        local result = { pokemon = pokemon, out = isCreature(pokemon) }
+        if (result.out) then
+            result.baseSpAtk = getPokemonSpAtk(pokemon, level)
+            setPlayerStorageValue(cid, playersStorages.megaGauge, M.MAX)
+            quietly(function() result.pressed = M.onPress(cid) end)
+            result.form = getPokemonReferenceName(pokemon)
+            result.types = getPokemonTypes(pokemon)
+            result.ability = getMonsterSpecialAbility(pokemon)
+            result.spAtk = getPokemonSpAtk(pokemon, level)
+            result.active = M.isActive(cid)
+            quietly(function()
+                for _ = 1, M.DURATION do M.step(cid) end
+            end)
+            result.after = getPokemonReferenceName(pokemon)
+            result.over = not M.isActive(cid) and M.getGauge(cid) == 0
+        end
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        doRemoveConditions(cid, false)
+        local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+        if (isItem(slot)) then
+            PokemonHeldItem.take(cid, slot.uid)
+            doRemoveItem(slot.uid)
+        end
+        doPlayerRemoveItem(cid, stoneOf[stoneName], getPlayerItemCount(cid, stoneOf[stoneName]))
+        return result
+    end
+
+    local ok, err = pcall(function()
+        local venusaur = megaEvolve("Shiny Venusaur", 50, "Venusaurite")
+        check("mega check: a Shiny Venusaur with Venusaurite Mega Evolves through the gauge", venusaur.out and venusaur.pressed
+            and venusaur.active and venusaur.form == "Shiny Mega Venusaur", venusaur.form)
+        check("mega check: Shiny Mega Venusaur is Grass/Poison with Thick Fat and more Sp. Atk",
+            venusaur.types and sameTypes(venusaur.types, { ELEMENT_GRASS, ELEMENT_POISON }) and venusaur.ability == ids.THICK_FAT
+            and (venusaur.spAtk or 0) > (venusaur.baseSpAtk or 0), tostring(venusaur.spAtk) .. " / " .. tostring(venusaur.baseSpAtk))
+        check("mega check: after 60 seconds it is a Shiny Venusaur again", venusaur.after == "Shiny Venusaur" and venusaur.over,
+            venusaur.after)
+
+        local kyogre = megaEvolve("Kyogre", 70, "Blue Orb")
+        check("mega check: Kyogre with the Blue Orb undergoes Primal Reversion through the gauge", kyogre.out and kyogre.active
+            and kyogre.form == "Primal Kyogre" and kyogre.ability == ids.PRIMORDIAL_SEA
+            and sameTypes(kyogre.types, { ELEMENT_WATER }) and kyogre.after == "Kyogre", kyogre.form)
+
+        local pinsir = megaEvolve("Pinsir", 50, "Pinsirite")
+        check("mega check: Pinsirite has no form yet, so Pinsir doesn't Mega Evolve", pinsir.out and not pinsir.pressed
+            and not pinsir.active and pinsir.form == "Pinsir" and M.formFor("Pinsir", MEGA_STONE_BY_ITEMID[stoneOf["Pinsirite"]]) == nil,
+            pinsir.form)
+    end)
+    getTilePzInfo = realPz
+    setPlayerStorageValue(cid, playersStorages.megaGauge, 0)
+    local worn = getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)
+    if (isItem(worn) and worn.itemid == MEGA_ITEM_IDS.RING) then
+        doRemoveItem(worn.uid)
+    end
+    if (not ok) then
+        check("mega check: ran without errors", false, err)
+    end
+end
+
 local function testMegaGauge(cid)
     if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
             or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
