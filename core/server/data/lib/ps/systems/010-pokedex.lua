@@ -506,6 +506,30 @@ local function namesOf(list, nameOf)
   return names
 end
 
+-- The family's Mega and Primal forms (097-megaEvolution.lua): they have no entry of their own, so every
+-- member of the family shows them with the stone that makes them
+local function getDexMegaForms(pokemonName)
+  local megas = JSON.array()
+  local family = {}
+  for _, member in ipairs(getPokemonFamilies(pokemonName)) do
+    family[(tostring(member):gsub("^Shiny ", ""))] = true
+  end
+  family[(pokemonName:gsub("^Shiny ", ""))] = true
+  for _, stone in ipairs(MEGA_STONES or {}) do
+    local form = family[stone.pokemon] and getPokemonDefinition(stone.form)
+    local base = form and getPokemonDefinition(stone.pokemon)
+    if (form and base and form.megaOf) then
+      local ability = form.specialAbilities and form.specialAbilities[1]
+      megas[#megas + 1] = {from = stone.pokemon, to = stone.form, stone = stone.name,
+        primal = stone.form:find("^Primal") ~= nil, types = namesOf(form.pTypes),
+        ability = ability and getPokemonSpecialAbilityName(ability) or nil,
+        stats = {atk = form.atk, def = form.def, spAtk = form.spAtk, spDef = form.spDef},
+        baseStats = {atk = base.atk, def = base.def, spAtk = base.spAtk, spDef = base.spDef}}
+    end
+  end
+  return megas
+end
+
 -- The Details tab as data for the Redemption client, which lays it out in sections (game_pokedex
 -- entry.lua). Same knowledge rules as the text: what the trainer doesn't know yet is left out.
 local function getDexDetails(pid, pokemonName, pokemon, info)
@@ -514,7 +538,8 @@ local function getDexDetails(pid, pokemonName, pokemon, info)
     name = pokemonName,
     types = namesOf(getPokemonTypes(pokemon, pokemonName)),
     known = info.level,
-    evolutions = getDexEvolutionSteps(pokemonName, pid)
+    evolutions = getDexEvolutionSteps(pokemonName, pid),
+    megas = getDexMegaForms(pokemonName)
   }
   if (info.level >= 1) then
     details.abilities = namesOf(getPokemonAbilities(pokemonName))

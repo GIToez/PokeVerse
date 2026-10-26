@@ -3284,6 +3284,12 @@ local function testMegaForms(cid)
         getMonsterSpecialAbility(pokemon) == POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS, getMonsterSpecialAbility(pokemon))
     check("mega forms: Mega Charizard X's look", getCreatureOutfit(pokemon).lookType == 2596,
         getCreatureOutfit(pokemon).lookType)
+    local portrait = getPlayerSlotItem(cid, PLAYER_SLOT_PORTRAIT)
+    check("mega forms: the Mega's portrait is worn in the portrait slot, not put in the bag",
+        isItem(portrait) and portrait.itemid == getPokemonPortraitId("Mega Charizard X")
+        and getPlayerItemCount(cid, getPokemonPortraitId("Mega Charizard X")) == 1,
+        string.format("slot %s, %d carried", tostring(portrait and portrait.itemid),
+            getPlayerItemCount(cid, getPokemonPortraitId("Mega Charizard X"))))
     local again
     quietly(function() again = MegaEvolution.onStaffCommand(cid, "y") end)
     check("mega forms: a second /mega is refused", not again and getPokemonReferenceName(pokemon) == "Mega Charizard X")

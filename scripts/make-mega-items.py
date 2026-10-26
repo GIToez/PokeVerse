@@ -31,8 +31,7 @@ def main():
                             'to complete the ring.', None),
         ('key stone', 'A stone filled with a mysterious power. Use it on an empty Mega Ring (or the ring on it) '
                       'to complete the ring.', None),
-        ('mega ring', 'Worn in the key item slot, it lets a Pokemon holding its Mega Stone Mega Evolve. '
-                      'It takes the place of the bike, running shoes and other key items.', 'ring'),
+        ('mega ring', 'Worn in the key item slot, it lets a Pokemon holding its Mega Stone Mega Evolve.', 'ring'),
     ]
     for name, pokemon, form in stones:
         if form.startswith('Primal'):

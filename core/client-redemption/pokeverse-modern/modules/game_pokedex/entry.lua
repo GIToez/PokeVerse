@@ -224,6 +224,42 @@ local function drawEvolution(entry)
     end
 end
 
+-- the family's Mega and Primal forms (no entry of their own): which stone, typing, ability and stats
+local function drawMegas(entry)
+    local megas = entry.megas or {}
+    if #megas == 0 then
+        return
+    end
+    local allPrimal = true
+    for _, mega in ipairs(megas) do
+        allPrimal = allPrimal and mega.primal == true
+    end
+    heading(allPrimal and tr('Primal Reversion') or tr('Mega Evolution'), tr('needs the Mega Ring'))
+    local STATS = { { 'atk', tr('Attack') }, { 'def', tr('Defense') }, { 'spAtk', tr('Sp. Atk') }, { 'spDef', tr('Sp. Def') } }
+    for _, mega in ipairs(megas) do
+        local row = add('DexChain')
+        local from = g_ui.createWidget(mega.from == entry.name and 'DexChipCurrent' or 'DexChip', row)
+        from:setText(mega.from)
+        g_ui.createWidget('DexChainStep', row):setText(tr('holding %s >', mega.stone))
+        g_ui.createWidget('DexChipCurrent', row):setText(mega.to)
+        for _, typeId in ipairs(mega.types or {}) do
+            local badge = g_ui.createWidget('DexTypeBadge', row)
+            badge:setMarginTop(2)
+            badge:setImageSource('/images/types/square/' .. typeId)
+            badge:setTooltip(getTypeNameById(typeId))
+        end
+
+        local changes = {}
+        for _, stat in ipairs(STATS) do
+            local value = mega.stats and tonumber(mega.stats[stat[1]]) or 0
+            local before = mega.baseStats and tonumber(mega.baseStats[stat[1]]) or value
+            changes[#changes + 1] = value ~= before and string.format('%s %d (%+d)', stat[2], value, value - before)
+                or string.format('%s %d', stat[2], value)
+        end
+        add('DexMuted', (mega.ability and (tr('Ability: %s', mega.ability) .. '  -  ') or '') .. table.concat(changes, ', '))
+    end
+end
+
 local function drawAbilities(entry)
     heading(tr('Order abilities'), entry.abilities and #entry.abilities > 0 and tr('click to open the Pokepedia') or nil)
     if not entry.abilities then
@@ -380,6 +416,7 @@ local function draw(entry)
     panel:destroyChildren()
     drawHero(entry)
     drawEvolution(entry)
+    drawMegas(entry)
     drawAbilities(entry)
     drawBreeding(entry)
     drawOwn(entry)

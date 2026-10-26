@@ -32,6 +32,7 @@ LEAFLET_JS_SRI = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 
 CONFIG = os.path.join(ROOT, "core/server/data/lib/ps/config")
 MONSTERS = os.path.join(ROOT, "core/server/data/monster/Pokemons")
+MEGA_MONSTERS = os.path.join(ROOT, "core/server/data/monster/Mega")
 ITEMS_XML = os.path.join(ROOT, "core/server/data/items/items.xml")
 ITEMS_OTB = os.path.join(ROOT, "core/server/data/items/items.otb")
 THINGS = os.path.join(ROOT, "core/client-legacy/data/things")
@@ -104,13 +105,13 @@ def load_item_names():
     return names
 
 
-def load_monsters():
-    """Pokémon name -> wild info from its monster file; these files define the species list."""
+def load_monsters(folder=MONSTERS):
+    """Pokémon name -> wild info from its monster file; the Pokemons folder defines the species list."""
     monsters = {}
-    for file in sorted(os.listdir(MONSTERS)):
+    for file in sorted(os.listdir(folder)):
         if not file.endswith(".xml"):
             continue
-        root = ET.parse(os.path.join(MONSTERS, file)).getroot()
+        root = ET.parse(os.path.join(folder, file)).getroot()
         look = root.find("look")
         health = root.find("health")
         loot = []
@@ -260,6 +261,27 @@ class Site:
         for name, number in numbers.items():
             forms.setdefault(number, []).append(name)
 
+        # Mega and Primal forms have no Pokédex number: they show on their family's pages
+        stones = {stone["form"]: stone for stone in data.get("megaStones") or []}
+        mega_looks = {name: wild["look"] for name, wild in load_monsters(MEGA_MONSTERS).items()}
+        megas_of = {}
+        for form in sorted(config):
+            base = config[form].get("megaOf")
+            if base and form in stones:
+                megas_of.setdefault(base, []).append((form, config[form], stones[form], mega_looks.get(form, 0),
+                                                       config.get(base) or {}))
+
+        def family(name):
+            root, guard = name, 0
+            while root in evolves_from and guard < 10:
+                root, guard = evolves_from[root][0], guard + 1
+            members, todo = [], [root]
+            while todo and len(members) < 20:
+                member = todo.pop(0)
+                members.append(member)
+                todo += [evo["name"] for evo in (config.get(member) or {}).get("evolutions") or []]
+            return members
+
         self.copy_assets()
         self.write_moves(moves)
         cards = []
@@ -269,9 +291,10 @@ class Site:
             portrait = self.portrait_image(entry, number)
             sprite = self.outfit_image(wild["look"], name)
             cards.append((number, name, types, gen, portrait or sprite))
+            megas = [mega for member in family(name) for mega in megas_of.get(member, [])]
             self.write_pokemon(number, name, entry, wild, types, gen, region, moves, evolves_from,
-                               [f for f in forms.get(number, []) if f != name and f in config],
-                               portrait, sprite)
+                               [f for f in forms.get(number, []) if f != name and f in config and f not in stones],
+                               portrait, sprite, megas)
         self.write_pokedex(cards)
         self.write_home(len(species), len(moves))
         self.write_map()
@@ -389,8 +412,34 @@ class Site:
             parts.append("as an extra Pokémon")
         return ", ".join(parts)
 
+    def mega_card(self, base_entry, form, entry, stone, look):
+        primal = form.startswith("Primal ")
+        portrait = self.portrait_image(entry, 0)
+        sprite = self.outfit_image(look, form)
+        types = [label(t) for t in entry.get("pTypes") or []]
+        specials = ", ".join(label(a) for a in entry.get("specialAbilities") or []) or "–"
+        rows = ""
+        for label_, key in (("Attack", "atk"), ("Defense", "def"), ("Sp. Atk", "spAtk"), ("Sp. Def", "spDef")):
+            value, before = entry.get(key, 0), base_entry.get(key, 0)
+            change = value - before
+            delta = f' <span class="{"up" if change > 0 else "down"}">{change:+d}</span>' if change else ""
+            rows += f"<tr><th>{label_}</th><td class='n'>{value}{delta}</td></tr>"
+        stone_img = self.item_image(stone["itemId"])
+        stone_icon = f'<img src="../{stone_img}" alt="" width="32" height="32">' if stone_img else ""
+        how = "Primal Reversion" if primal else "Mega Evolution"
+        return f"""<div class="mega">
+      <div class="mega-art">{f'<img class="sprite" src="../{sprite}" alt="{esc(form)} in the game">' if sprite else ''}
+        {f'<img src="../{portrait}" alt="" width="64" height="64">' if portrait else ''}</div>
+      <div>
+        <h3>{esc(form)}</h3>
+        <p class="types">{self.type_badges(types)}</p>
+        <p class="stone">{stone_icon}<span>{how} of {esc(entry["megaOf"])} holding the <b>{esc(stone["name"])}</b></span></p>
+        <table class="kv"><tr><th>Special ability</th><td>{esc(specials)}</td></tr>{rows}</table>
+      </div>
+    </div>"""
+
     def write_pokemon(self, number, name, entry, wild, types, gen, region, moves, evolves_from, forms,
-                      portrait, sprite):
+                      portrait, sprite, megas=()):
         stats = [("Attack", entry.get("atk", 0)), ("Defense", entry.get("def", 0)),
                  ("Sp. Atk", entry.get("spAtk", 0)), ("Sp. Def", entry.get("spDef", 0))]
         stat_rows = "".join(
@@ -403,6 +452,11 @@ class Site:
             evo_lines.append(f'Evolves from <a href="{slug(parent)}.html">{esc(parent)}</a> at {esc(self.evolution_text(evo))}.')
         for evo in entry.get("evolutions") or []:
             evo_lines.append(f'Evolves into <a href="{slug(evo["name"])}.html">{esc(evo["name"])}</a> at {esc(self.evolution_text(evo))}.')
+        for form, _, stone, _, _ in megas:
+            base = stone["pokemon"]
+            who = "It" if base == name else f'<a href="{slug(base)}.html">{esc(base)}</a>'
+            verb = "undergoes Primal Reversion into" if form.startswith("Primal ") else "Mega Evolves into"
+            evo_lines.append(f'{who} {verb} {esc(form)} while holding the {esc(stone["name"])}.')
         evolutions = "".join("<li>%s</li>" % line for line in evo_lines) or "<li>Does not evolve.</li>"
 
         skills = entry.get("skills") or []
@@ -443,6 +497,14 @@ class Site:
         wild_line = ""
         if wild["min_level"] or wild["max_level"]:
             wild_line = f"<tr><th>Wild level</th><td>{wild['min_level']}–{wild['max_level']}</td></tr>"
+        mega_html = ""
+        if megas:
+            title = "Primal Reversion" if all(m[0].startswith("Primal ") for m in megas) else "Mega Evolution"
+            cards = "".join(self.mega_card(base_entry, form, form_entry, stone, look)
+                            for form, form_entry, stone, look, base_entry in megas)
+            mega_html = f"<section class='panel'><h2>{title}</h2><div class='megas'>{cards}</div>" \
+                        "<p class='muted'>Wear the Mega Ring and give the Pokémon its stone to hold; the form lasts " \
+                        "60 seconds. Mega forms have no Pokédex entry of their own.</p></section>"
         forms_html = ""
         if forms:
             forms_html = "<section class='panel'><h2>Other forms</h2><p>%s</p></section>" % chips(sorted(forms))
@@ -474,6 +536,7 @@ class Site:
   </div>
 
   <section class="panel"><h2>Evolution</h2><ul class="links">{evolutions}</ul></section>
+  {mega_html}
   <section class="panel"><h2>Moves</h2>{move_table}</section>
 
   <div class="grid-2">

@@ -73,6 +73,7 @@ end
 for _, path in ipairs(files(configDir .. "/moves")) do
     run(path)
 end
+run(configDir .. "/megaItems.lua")
 
 local numbers = {}
 for name in pairs(POKEMON) do
@@ -136,5 +137,6 @@ local function encode(value, out)
 end
 
 local out = {}
-encode({ pokemon = POKEMON, moves = MOVES, numbers = numbers }, out)
+local megaStones = type(MEGA_STONES) == "table" and getmetatable(MEGA_STONES) ~= Name and MEGA_STONES or {}
+encode({ pokemon = POKEMON, moves = MOVES, numbers = numbers, megaStones = megaStones }, out)
 io.write(table.concat(out), "\n")

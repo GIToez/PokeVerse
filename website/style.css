@@ -111,6 +111,16 @@ main > section.wrap > h2:first-child { margin-top: 2rem; }
 .stats td, .kv td { padding: .3rem 0; }
 .bar { width: 60%; }
 .bar span { display: block; height: .55rem; border-radius: 999px; background: linear-gradient(90deg, var(--gold2), var(--gold)); }
+.megas { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: .6rem; }
+.mega { display: flex; gap: 1rem; align-items: flex-start; padding: .9rem; border-radius: 14px; background: #ffffff08; border: 1px solid #ffffff14; }
+.mega > div:last-child { flex: 1; }
+.mega h3 { margin: 0 0 .3rem; }
+.mega .types { justify-content: flex-start; }
+.mega-art { display: flex; flex-direction: column; align-items: center; gap: .4rem; min-width: 96px; }
+.mega-art .sprite { height: 96px; }
+.mega .stone { display: flex; align-items: center; gap: .4rem; margin: .4rem 0; }
+.mega .up { color: #7dffa8; font-size: .85rem; }
+.mega .down { color: #ff8a8a; font-size: .85rem; }
 .chip { display: inline-block; margin: .15rem .2rem .15rem 0; padding: .15rem .6rem; border-radius: 999px; background: #ffffff12; border: 1px solid #ffffff1f; color: var(--text); font-size: .9rem; }
 a.chip:hover { border-color: var(--gold); text-decoration: none; }
 
