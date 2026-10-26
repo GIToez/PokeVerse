@@ -15,9 +15,9 @@ Whenever a quest is added (or a quest line gets a new part):
 - Add a `<mission>` with the quest's `storage` as `storageid` to `quests.xml`, inside the quest
   line's `<quest>` (or a new `<quest>` with the next free id), with a `missionstate` that says
   what to do and where, and a "This mission is done." state.
-- Holiday and special event quests are the exception: they go under the log's Events category
-  (an NPC in a holiday's NPC list, like `HalloweenEvent.NPCS`, or with a holiday word in its name)
-  and don't need a `quests.xml` mission.
+- Two exceptions don't need a `quests.xml` mission, because the log shows their objective:
+  - holiday and special event quests, under the log's Events category (an NPC in a holiday's NPC
+    list, like `HalloweenEvent.NPCS`, or with a holiday word in its name);
+  - daily quests (`daily = true`), under the Daily category.
 - Run the server test: "quests: every new quest has its mission in quests.xml for the quest log"
-  fails for any quest without one. Its `OLD_UNNAMED` list is only the older quests from before the
-  quest log; don't add new ones to it.
+  fails for any quest without one. There's no exemption list: every live quest has its entry.
