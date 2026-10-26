@@ -9,14 +9,17 @@
 -- game map and a flag on the minimap. From the prints rank the popup also sends {action = "track", id} (or
 -- {action = "track"} to stop), and the server sends {type = "print", id, x, y, z, way} for each step the
 -- Pokemon takes on soft ground, which shows as a glowing footprint on the game map.
--- Overlay on the window keeps just the disc on the map after the window closes; drag it, right-click to
--- hide it or reset its place.
+-- Overlay on the window keeps just the disc on the map after the window closes; drag it, click its middle
+-- to scan again, right-click to hide it, lock it in place or reset its place.
 local IMAGES = '/modules/game_radar/images/'
 local DISC = 400 -- the disc in the window; the overlay hosts the same widget at OVERLAY_SIZE
 local RADIUS = 176 -- pixels from the middle of the 400px radar image to its edge (scripts/art/radar_ui.py)
 local OVERLAY_SIZE = 240
 local OVERLAY_OPACITY = 0.45
 local POSITION_SETTING = 'pokeverse-radar-overlay-pos'
+local LOCK_SETTING = 'pokeverse-radar-overlay-locked'
+local OVERLAY_CENTER_RADIUS = 24 -- clicking within this many pixels of the overlay's middle scans again
+local CLICK_SLOP = 4 -- a press that moves further than this is a drag, not a click
 local ENABLED_SETTING = 'pokeverse-radar-overlay'
 local TICK_MS = 150
 local ARROW_TILES = 1.7 -- how far from the middle of the trainer's sprite the map arrow sits
@@ -570,6 +573,24 @@ local function tick()
     end
 end
 
+local function overlayScan()
+    local wait = math.ceil(readyAt - g_clock.seconds())
+    if wait > 0 then
+        modules.game_textmessage.displayFailureMessage(tr('Radar: you can scan again in %d seconds.', wait))
+        return
+    end
+    send({ action = 'scan' })
+end
+
+local function nearOverlayCenter(mousePos)
+    if not overlay or not overlay:isVisible() or not mousePos then
+        return false
+    end
+    local rect = overlay:getRect()
+    local dx, dy = mousePos.x - (rect.x + rect.width / 2), mousePos.y - (rect.y + rect.height / 2)
+    return dx * dx + dy * dy <= OVERLAY_CENTER_RADIUS * OVERLAY_CENTER_RADIUS
+end
+
 local function selectBlip(blip)
     if target == blip then
         return
@@ -617,7 +638,13 @@ local function buildBlips(list)
         local widget = g_ui.createWidget((kind == 'shiny' or kind == 'legendary') and 'RadarStarBlip' or 'RadarBlip', layer)
         widget:setImageSource(IMAGES .. 'blip_' .. kind)
         widget:setTooltip((blip.name or tr('Unknown Pokemon')) .. (kind ~= 'unknown' and (' (' .. tr(KIND_NAMES[kind]) .. ')') or ''))
-        widget.onClick = function() selectBlip(blip) end
+        widget.onClick = function(_, mousePos)
+            if nearOverlayCenter(mousePos) then
+                overlayScan()
+            else
+                selectBlip(blip)
+            end
+        end
         blip.widget = widget
         blips[#blips + 1] = blip
         if oldId and blip.id == oldId then
@@ -804,8 +831,12 @@ end
 local function openOverlayMenu(mousePos)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
+    menu:addOption(tr('Scan again'), overlayScan)
     menu:addOption(tr('Open radar'), show)
     menu:addOption(tr('Hide overlay'), hideOverlay)
+    local locked = g_settings.getBoolean(LOCK_SETTING)
+    menu:addOption(locked and tr('Unlock position') or tr('Lock position'),
+        function() g_settings.set(LOCK_SETTING, not locked) end)
     menu:addOption(tr('Reset position'), resetOverlayPosition)
     menu:display(mousePos)
 end
@@ -1021,16 +1052,48 @@ function init()
     overlay = g_ui.createWidget('RadarOverlay', modules.game_interface.getRootPanel())
     overlay:setSize({ width = OVERLAY_SIZE, height = OVERLAY_SIZE })
     overlay:hide()
+    overlay.onDragEnter = function(self, mousePos)
+        if g_settings.getBoolean(LOCK_SETTING) then
+            return false
+        end
+        self:breakAnchors()
+        self.movingReference = { x = mousePos.x - self:getX(), y = mousePos.y - self:getY() }
+        return true
+    end
+    overlay.onDragMove = function(self, mousePos)
+        if not self.movingReference then
+            return false
+        end
+        self:setPosition({ x = mousePos.x - self.movingReference.x, y = mousePos.y - self.movingReference.y })
+        self:bindRectToParent()
+        return true
+    end
     overlay.onDragLeave = function(self)
+        if not self.movingReference then
+            return false
+        end
+        self.movingReference = nil
         self:bindRectToParent()
         g_settings.set(POSITION_SETTING, self:getPosition())
         return true
     end
+    overlay.onMousePress = function(self, mousePos, mouseButton)
+        self.pressedAt = mouseButton == MouseLeftButton and mousePos or nil
+        return false
+    end
     overlay.onMouseRelease = function(self, mousePos, mouseButton)
-        if mouseButton ~= MouseRightButton then
+        if mouseButton == MouseRightButton then
+            openOverlayMenu(mousePos)
+            return true
+        end
+        local pressed = self.pressedAt
+        self.pressedAt = nil
+        if mouseButton ~= MouseLeftButton or not pressed or
+            math.abs(mousePos.x - pressed.x) + math.abs(mousePos.y - pressed.y) > CLICK_SLOP or
+            not nearOverlayCenter(mousePos) then
             return false
         end
-        openOverlayMenu(mousePos)
+        overlayScan()
         return true
     end
 
