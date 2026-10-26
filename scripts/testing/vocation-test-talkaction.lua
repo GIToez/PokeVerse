@@ -3226,12 +3226,11 @@ local function testMegaForms(cid)
     check("mega forms: Dragon Claw makes contact, Water Pulse is a pulse", getPokemonSkillMakeContact("Dragon Claw")
         and getPokemonSkillIsPulse("Water Pulse") and not getPokemonSkillIsPulse("Dragon Claw")
         and not getPokemonSkillMakeContact("Camouflage"))
-    local abilities = SPECIAL_ABILITIES
+    local ids, moveCheck = POKEMON_SPECIAL_ABILITY_IDS, getPokemonSpecialAbilityMoveCheck
     check("mega forms: Drought, Tough Claws and Mega Launcher pick their moves",
-        abilities[POKEMON_SPECIAL_ABILITY_IDS.DROUGHT].onCheck(nil, nil, "Flamethrower")
-        and not abilities[POKEMON_SPECIAL_ABILITY_IDS.DROUGHT].onCheck(nil, nil, "Water Pulse")
-        and abilities[POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS].onCheck(nil, nil, "Dragon Claw")
-        and abilities[POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER].onCheck(nil, nil, "Dragon Pulse"))
+        moveCheck(ids.DROUGHT, "Flamethrower") and not moveCheck(ids.DROUGHT, "Water Pulse")
+        and moveCheck(ids.TOUGH_CLAWS, "Dragon Claw") and not moveCheck(ids.TOUGH_CLAWS, "Flamethrower")
+        and moveCheck(ids.MEGA_LAUNCHER, "Dragon Pulse") and not moveCheck(ids.MEGA_LAUNCHER, "Hydro Pump"))
 
     if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
         check("mega forms: ball slot free for the test", false)

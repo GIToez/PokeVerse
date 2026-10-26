@@ -743,4 +743,10 @@ function doPokemonSpecialAbilityCheck(cid, ability, target, ...)
             (not SPECIAL_ABILITIES[ability].onCheck or SPECIAL_ABILITIES[ability].onCheck(cid, target, ...))
 end
 
+-- For the abilities that pick moves by the move alone (Drought, Tough Claws, Mega Launcher, Thick Fat...)
+function getPokemonSpecialAbilityMoveCheck(ability, move)
+    local definition = SPECIAL_ABILITIES[ability]
+    return definition ~= nil and definition.onCheck ~= nil and definition.onCheck(nil, nil, move) and true or false
+end
+
 --doCheckPokemonSpecialAbilities();
