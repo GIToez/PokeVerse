@@ -3114,6 +3114,116 @@ local function testPokemonHabitat(cid)
     cleanup()
 end
 
+local function testMegaItems(cid)
+    check("mega: 97 item ids in order", MEGA_ITEM_IDS.EMPTY_RING == 30175 and MEGA_FIRST_STONE_ID == 30178 and
+        MEGA_LAST_STONE_ID == 30271 and #MEGA_STONES == 94, MEGA_LAST_STONE_ID)
+    check("mega: every stone has an item type", getItemNameById(MEGA_LAST_STONE_ID):lower() == "blue orb" and
+        getItemNameById(MEGA_ITEM_IDS.RING):lower() == "mega ring", getItemNameById(MEGA_LAST_STONE_ID))
+
+    local BAG = { x = CONTAINER_POSITION, y = 64, z = 0 }
+    local function craft(useRing)
+        local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1))
+        local key = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1))
+        local used, target = key, ring
+        if (useRing) then
+            used, target = ring, key
+        end
+        local rings = getPlayerItemCount(cid, MEGA_ITEM_IDS.RING)
+        local ok = MegaEvolution.onRingPartUse(cid, used, BAG, target, BAG)
+        return ok and getPlayerItemCount(cid, MEGA_ITEM_IDS.RING) == rings + 1
+            and getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING) == 0 and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 0,
+            string.format("%s on %s, rings %d", tostring(used.itemid), tostring(target.itemid),
+                getPlayerItemCount(cid, MEGA_ITEM_IDS.RING))
+    end
+    check("mega: the Key Stone on the empty ring makes the Mega Ring", craft(false))
+    check("mega: the empty ring on the Key Stone makes the Mega Ring", craft(true))
+    doPlayerRemoveItem(cid, MEGA_ITEM_IDS.RING, 2)
+
+    local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1))
+    local key = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1))
+    local floor = getCreaturePosition(cid)
+    check("mega: both parts must be in the bag", not MegaEvolution.onRingPartUse(cid, key, floor, ring, BAG)
+        and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 1, getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE))
+    check("mega: the Key Stone only goes on the empty ring", not MegaEvolution.onRingPartUse(cid, key, BAG,
+        getThing(doPlayerAddItem(cid, 2148, 1)), BAG))
+    doPlayerRemoveItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1)
+    doPlayerRemoveItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1)
+    doPlayerRemoveItem(cid, 2148, 1)
+
+    local VENUSAURITE = MEGA_FIRST_STONE_ID
+    local ball = newBall(cid, "Bulbasaur", 30)
+    check("mega: Venusaurite is a held item", PokemonHeldItem.isHeldItem(VENUSAURITE))
+    local name = PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, VENUSAURITE, 1)))
+    local stone = PokemonHeldItem.getMegaStone(ball.uid)
+    check("mega: giving Venusaurite", name == "Venusaurite" and stone and stone.form == "Mega Venusaur" and
+        getPlayerItemCount(cid, VENUSAURITE) == 0, name)
+    check("mega: the stone's description", (PokemonHeldItem.getBallDescription(ball.uid) or ""):find("Venusaurite", 1, true),
+        PokemonHeldItem.getBallDescription(ball.uid))
+    check("mega: the GTS refuses a ball holding a Mega Stone", GTS.ballProblem(cid, ball) == "Take its Mega Stone off first.",
+        GTS.ballProblem(cid, ball))
+    local locked = MegaEvolution.isStoneLocked
+    MegaEvolution.isStoneLocked = function() return true end
+    local taken, why = PokemonHeldItem.take(cid, ball.uid)
+    MegaEvolution.isStoneLocked = locked
+    check("mega: a locked stone stays on", not taken and why and getBallHeld(ball.uid) ~= nil, why)
+    name = PokemonHeldItem.take(cid, ball.uid)
+    check("mega: taking the stone back", name == "Venusaurite" and getPlayerItemCount(cid, VENUSAURITE) == 1, name)
+    check("mega: the GTS takes the ball again", GTS.ballProblem(cid, ball) == nil, GTS.ballProblem(cid, ball))
+    doPlayerRemoveItem(cid, VENUSAURITE, 1)
+    doRemoveItem(ball.uid)
+
+    local stones = 0
+    for _, category in ipairs(GTS.CATEGORIES) do
+        if (category.name == "Mega Stones") then
+            stones = #category.items
+        end
+    end
+    check("mega: the GTS lists the stones", stones == 94, stones)
+
+    local given = getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING)
+    quietly(function() MegaEvolution.giveTestItems(cid) end)
+    check("mega: /megaitems gives the ring parts and stones", getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING) == given + 1
+        and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 1 and getPlayerItemCount(cid, MEGA_LAST_STONE_ID) == 1,
+        string.format("%d rings, %d key stones, %d blue orbs", getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING),
+            getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE), getPlayerItemCount(cid, MEGA_LAST_STONE_ID)))
+    for id = MEGA_ITEM_IDS.EMPTY_RING, MEGA_LAST_STONE_ID do
+        doPlayerRemoveItem(cid, id, getPlayerItemCount(cid, id))
+    end
+end
+
+local function testRunningShoes(cid)
+    local RUNNING_SHOES = 18754
+    if (isItem(getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)) or isPokemonOnline(cid)
+            or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("running shoes: key item and ball slots free for the test", false)
+        return
+    end
+    local before = getCreatureSpeed(cid)
+    local shoes = getThing(doPlayerAddItem(cid, RUNNING_SHOES, 1))
+    doMovePlayerItem(cid, shoes.uid, { y = PLAYER_SLOT_KEY_ITEM, z = 0 })
+    local worn = getPlayerSlotItem(cid, PLAYER_SLOT_KEY_ITEM)
+    check("running shoes: they go in the key item slot", isItem(worn) and worn.itemid == RUNNING_SHOES, worn and worn.itemid)
+    check("running shoes: +60 speed", getCreatureSpeed(cid) == before + 60, getCreatureSpeed(cid) - before)
+
+    local ball = newBall(cid, "Pikachu", 10, POKEMON_SEX_MALE)
+    doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    check("running shoes: a Pokemon can be called while wearing them", isPokemonOnline(cid))
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    doRemoveConditions(cid, false)
+    local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+    if (isItem(slot)) then
+        doRemoveItem(slot.uid)
+    end
+
+    doMovePlayerItem(cid, worn.uid, { y = PLAYER_SLOT_BACKPACK, z = 0 })
+    check("running shoes: taking them off puts the speed back", getCreatureSpeed(cid) == before,
+        getCreatureSpeed(cid) - before)
+    doPlayerRemoveItem(cid, RUNNING_SHOES, 1)
+end
+
 local function testAnalyser(cid)
     local function near(a, b)
         return a and b and math.abs(a - b) < 0.0001
@@ -3948,7 +4058,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

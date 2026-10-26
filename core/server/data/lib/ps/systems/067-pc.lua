@@ -41,7 +41,7 @@ local CATEGORY_OF, HELD = {}, {}
 for _, category in ipairs(GTS.CATEGORIES) do
     for _, id in ipairs(category.items) do
         CATEGORY_OF[id] = category.name
-        if (category.name == "Held Items") then
+        if (category.name == "Held Items" or category.name == "Mega Stones") then
             HELD[id] = true
         end
     end

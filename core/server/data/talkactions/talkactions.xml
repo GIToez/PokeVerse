@@ -85,6 +85,7 @@
 	<talkaction log="yes" words="/r" access="5" event="script" value="remove.lua" description="Remove thing."/>
 	<talkaction log="yes" words="/addoutfit" access="5" event="script" value="../../lib/ps/events/talkactions/addOutfit.lua" description="Add outfit to player."/>
 	<talkaction log="yes" words="/sendplayeruniqueitem" access="5" event="script" value="../../lib/ps/events/talkactions/sendPlayerUniqueItem.lua" description="Send an unique item to player."/>
+	<talkaction log="yes" words="/megaitems" access="5" event="script" value="../../lib/ps/events/talkactions/megaItems.lua" description="Give the Mega Ring parts, the starter Mega Stones and the orbs, for testing."/>
 
 	<!-- Community Managers -->
 	<talkaction log="yes" words="/forceoutfit" access="4" event="script" value="forceoutfit.lua"/>
