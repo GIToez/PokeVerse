@@ -3123,6 +3123,19 @@ gauge** by fighting, like Pokémon Legends: Z-A.
   works, **while the ring is equipped**. It goes in the key item slot, which holds one item
   at a time: wearing the Mega Ring means no bike, sandboard, oxygen mask, flashlight or running
   shoes (decided).
+- **The quest (decided, built):** Professor Oak in Pallet Town, from level 60. Say "mega" (or
+  ask for a quest once his other missions are done).
+  1. **Mega research:** defeat 50 wild Pokémon from each of three Mega Stone families (any
+     three; shinies count). Oak gives the **empty Mega Ring** and sends the trainer to Cerulean
+     Cave.
+  2. **The Key Stone:** at the very bottom of Cerulean Cave (3825, 166, 11) a large crystal
+     glows. Using it calls the **Guardian Alakazam** (level 100, gone after 10 minutes);
+     defeating it gives the **Key Stone**. The trainer puts it on the empty ring and shows Oak
+     the Mega Ring.
+  3. **The reward:** the stone of the trainer's own starter: Venusaurite, Blastoisinite, or
+     Charizardite X or Y (the trainer picks). Oak writes the starter down when he gives it; for
+     older trainers it is the Pokémon carrying their own trainer mark, and if he can't tell, the
+     trainer picks any of the four.
 - **Mega Stone:** one per Mega form, worn in the Pokémon's existing held-item slot (it replaces
   any other held item). Reusable, never used up. No extra level requirement.
 - Only one Mega Evolution at a time per trainer.
@@ -3457,9 +3470,8 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 
 ### To decide before building
 
-- The Mega Ring quest itself: who gives it, the steps, and whether the empty ring and the Key
-  Stone come from the same quest or two parts of it.
-- The exact drop rate (starting at 1 in 250,000), and the orb rate from Groudon and Kyogre.
+- The exact drop rate (built at 1 in 250,000, `MegaEvolution.DROP_CHANCE`), and the orb rate
+  from Groudon and Kyogre (`MegaEvolution.ORB_DROP_CHANCE`, also 1 in 250,000 for now).
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
