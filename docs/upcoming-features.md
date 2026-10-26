@@ -3411,7 +3411,7 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
    orbs, with icons.
    This step also covers putting the ring together, the held-item entries and the GTS block.
    A staff command gives them for testing until the questline exists.
-3. **Mega forms:** the four forms and their shiny copies (config entries and monster files)
+3. **Mega forms:** the four forms and their shiny recolours (config entries and monster files)
    with portraits, Pokédex pictures and box icons. Drought gets fixed. Tough Claws (with the
    contact flag on moves) and Mega Launcher are added.
 4. **Gauge and activation** (server): charging and its limits, the R press, the 60 second
@@ -3436,6 +3436,7 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
    - switching out ends it;
    - a duel starts at 0;
    - the GTS refuses a held stone.
+   - a forced stone drop from a Bulbasaur gives Venusaurite, and a Rattata never drops one.
 
    Then the Pokepedia, the wiki and the player changelog.
 
