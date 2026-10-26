@@ -2269,7 +2269,13 @@ local function testHalloween(cid)
         halls)
     EventCalendar.setForced("halloween", false)
     HalloweenEvent.syncNpcs()
-    check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, present() .. "/" .. #spots)
+    local stayed = {}
+    for _, spot in ipairs(spots) do
+        if (getNpcAtPosition(spot.pos, spot.name)) then
+            stayed[#stayed + 1] = string.format("%s at %d,%d,%d", spot.name, spot.pos.x, spot.pos.y, spot.pos.z)
+        end
+    end
+    check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, table.concat(stayed, "; "))
     EventCalendar.setForced("halloween", true)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs come back when it starts", present() == #spots, present() .. "/" .. #spots)
