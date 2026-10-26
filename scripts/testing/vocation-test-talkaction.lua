@@ -2269,7 +2269,13 @@ local function testHalloween(cid)
         halls)
     EventCalendar.setForced("halloween", false)
     HalloweenEvent.syncNpcs()
-    check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, present() .. "/" .. #spots)
+    local stayed = {}
+    for _, spot in ipairs(spots) do
+        if (getNpcAtPosition(spot.pos, spot.name)) then
+            stayed[#stayed + 1] = string.format("%s at %d,%d,%d", spot.name, spot.pos.x, spot.pos.y, spot.pos.z)
+        end
+    end
+    check("Halloween: its NPCs leave when it isn't Halloween", present() == 0, table.concat(stayed, "; "))
     EventCalendar.setForced("halloween", true)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs come back when it starts", present() == #spots, present() .. "/" .. #spots)
@@ -3527,6 +3533,35 @@ local function testMegaDrops(cid)
         and names(MegaEvolution.getDrops("Kyogre")) == "Blue Orb")
     check("mega drops: a Pokemon with no Mega line drops nothing", MegaEvolution.getDrops("Rattata") == nil
         and MegaEvolution.getDrops("Slowking") == nil and names(MegaEvolution.getDrops("Slowpoke")) == "Slowbronite")
+
+    local text, original, knowledge = "", doSendPlayerExtendedOpcode, Pokepedia.getKnowledge
+    Pokepedia.onClientMessage(cid, '{"action":"hello"}')
+    Pokepedia.getKnowledge = function(player, name)
+        local result = knowledge(player, name)
+        if (result) then
+            result.level = 3
+        end
+        return result
+    end
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (opcode == EXTENDED_IDS.POKEPEDIA) then
+            text = text .. buffer:gsub("^#%d+:%d+:%d+:", "")
+            return true
+        end
+        return original(target, opcode, buffer)
+    end
+    local sentOk, sentErr = pcall(Pokepedia.sendDex, cid, "Charmander")
+    doSendPlayerExtendedOpcode, Pokepedia.getKnowledge = original, knowledge
+    local decoded, dex = pcall(JSON.decode, text)
+    local chances = {}
+    for _, drop in ipairs(decoded and type(dex) == "table" and dex.drops or {}) do
+        if (drop.name == "Charizardite X" or drop.name == "Charizardite Y") then
+            chances[#chances + 1] = tonumber(drop.chance) or 0
+        end
+    end
+    check("mega drops: Charmander's Pokepedia drops list both Charizardites, 1 in 500,000 each",
+        sentOk and #chances == 2 and math.abs(chances[1] - 0.0002) < 1e-9 and math.abs(chances[2] - 0.0002) < 1e-9,
+        tostring(sentErr) .. " " .. text:sub(1, 200))
 
     local x, y
     for _, stone in ipairs(MEGA_STONES) do
