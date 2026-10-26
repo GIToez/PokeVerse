@@ -32,8 +32,8 @@ ssh -t ubuntu@<server address> 'sudo bash pokeverse-live/bootstrap-ovh.sh "ssh-e
 ```
 
 It installs MariaDB (listening on 127.0.0.1 only), creates the `pokeverse` user and the
-production database with a random password, installs the systemd services and the daily
-backup, and prints the value for `OVH_SSH_HOST_KEY`. Running it again is safe: it keeps the
+production database with a random password, installs the systemd services, the daily
+backup and the monthly GeoIP download for the bot, and prints the value for `OVH_SSH_HOST_KEY`. Running it again is safe: it keeps the
 database, passwords, secrets and backups.
 
 The deploy key only works for the `pokeverse` user, which can only manage the PokeVerse
@@ -232,6 +232,34 @@ GM commands (Gamemaster and above):
   They are on the same disk as the server, so also enable OVH's automated VPS backup
   (or take snapshots) to survive a disk loss.
 
+## GeoIP locations (Discord bot)
+
+The bot shows an approximate location for logins in `#player-activity`, looked up in a
+local copy of the free [DB-IP City Lite](https://db-ip.com/db/download/ip-to-city-lite)
+database. Only the database file is downloaded; player IPs never leave the server.
+
+- `pokeverse-ctl discord geoip` downloads this month's
+  `https://download.db-ip.com/free/dbip-city-lite-YYYY-MM.mmdb.gz` (UTC month; early in the
+  month, when it is not out yet, the previous month's). It checks the file (at least 20 MB
+  and a MaxMind-format database) before it replaces
+  `/opt/pokeverse/discord/shared/geoip/dbip-city-lite.mmdb`. A failed or broken download
+  keeps the old database and exits with an error.
+- The timer `pokeverse-geoip.timer` runs it on the 5th of every month at 04:00 server
+  time (up to an hour later; a missed run happens at the next boot). `discord-deploy` also
+  runs it when the file is missing or older than 35 days; a failure there only prints a
+  warning and the deployment goes on.
+- `GEOIP_DATABASE` in the bot's `.env.production` is set to that file, only when it is
+  missing or empty: a database you set yourself is never replaced.
+- The bot reloads a replaced file within an hour, so it is never restarted for an update.
+  When `GEOIP_DATABASE` was only just set, the bot needs one restart to read it (every
+  `discord-deploy` restarts it).
+- The server needs outbound HTTPS (port 443) to `download.db-ip.com`.
+- DB-IP Lite is licensed CC BY 4.0, so DB-IP must be credited wherever its locations are
+  shown. The bot puts "IP geolocation by DB-IP (db-ip.com)" in the `#player-activity` footer.
+
+The timer came with bootstrap version 2: run `bootstrap-ovh.sh` again on a server set up
+before it (`verify` fails until then).
+
 ## Server layout
 
 ```
@@ -244,6 +272,7 @@ GM commands (Gamemaster and above):
   shared/logs/                         game server logs
   backups/                             database backups
   discord/current, discord/shared/     Discord bot release and its settings (.env.production)
+  discord/shared/geoip/                DB-IP City Lite database for the bot (updated monthly)
 ```
 
 `config.local.lua` overrides `config.lua`. Settings between `BEGIN/END DEPLOYMENT SETTINGS`
