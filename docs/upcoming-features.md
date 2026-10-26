@@ -3117,7 +3117,7 @@ gauge** by fighting, like Pokémon Legends: Z-A.
 
 ### Requirements
 
-- **Mega Ring with its Key Stone:** a trainer item from a dedicated questline (no Soul Coins,
+- **Mega Ring with its Key Stone:** a trainer item from a quest (decided; no Soul Coins,
   no premium). The trainer gets an **empty Mega Ring** and a **Key Stone** separately and
   puts them together (see Items). It is unlocked for good, but the Mega gauge only shows, and Mega Evolution only
   works, **while the ring is equipped**. It goes in the key item slot, which holds one item
@@ -3191,9 +3191,11 @@ gauge** by fighting, like Pokémon Legends: Z-A.
 - HP and speed stay the same as the base form for all four (as in the main games).
 - One Charizard can hold either stone; the stone picks X or Y.
 - The stones also work on Shiny Venusaur, Shiny Charizard and Shiny Blastoise, which turn into
-  **Shiny Mega** forms (decided). Their entries and looks are set up now, with copies of the
-  normal Mega sprites. The shiny sprites will overwrite those files later. Their portraits and
-  Pokédex pictures can be the real shiny ones from the start (see Art).
+  **Shiny Mega** forms (decided). Their walk sprites are **recolours of the normal Mega sprites**
+  in the official shiny colours (decided). A script builds a colour map by comparing the
+  normal and shiny Showdown portraits of that form, then applies it to the walk sprite sheet.
+  The files can be overwritten later with hand-made shiny sprites. Their portraits and
+  Pokédex pictures are the real shiny ones from the start (see Art).
 - Moves stay the same; a Mega keeps its moves and cooldowns.
 - Abilities. The boosted moves follow Bulbapedia's lists (decided):
   - **Thick Fat** (Mega Venusaur) is already in the game: it halves the Fire and Ice damage
@@ -3225,7 +3227,8 @@ All new items, each with its own 32 px icon, shown in the Pokepedia:
 - **Empty Mega Ring** and **Key Stone:** neither does anything alone. The trainer **uses one on
   the other** ("Use with", either way round) and they become the **Mega Ring** (decided). It
   can't be taken apart.
-- **Mega Ring:** key item slot, not tradable (it is the questline reward). Locked while a Mega
+- **Mega Ring:** key item slot, not tradable (the empty ring and the Key Stone are both quest
+  rewards, decided). Locked while a Mega
   is active, like the bike while riding.
 - **Every Mega Stone and both Primal orbs, from the start** (decided), even the ones no Pokémon
   can use yet. They
@@ -3251,6 +3254,20 @@ The 19 from its Mega Dimension DLC:
 | Kanto to Sinnoh | Unova and later |
 | --- | --- |
 | Raichunite X, Raichunite Y, Chimechite, Absolite Z, Staraptite, Garchompite Z, Lucarionite Z, Heatranite, Darkranite | Golurkite, Meowsticite, Crabominite, Golisopite, Magearnite, Zeraorite, Scovillainite, Baxcalibrite, Tatsugirinite, Glimmoranite |
+
+**Where the stones come from (decided):** each stone drops, at a very, very low rate, from
+the Pokémon of its own evolution line. Venusaurite drops from Bulbasaur, Ivysaur and Venusaur
+(and their shinies), and both Charizardites from Charmander, Charmeleon and Charizard.
+
+- The rate is far below any other drop. The rarest loot today is the TMs at 1 in 100,000 (the
+  monster files can't go lower), and a shiny is 1 in 8,192. The stones are rolled by a script
+  on each defeat instead, starting at **1 in 250,000** per wild Pokémon of the line. It is one
+  setting, to tune.
+- Only wild Pokémon count; trainer battles, duels and the Elite Four don't.
+- The trainer gets a message when one drops.
+- A stone whose line isn't in the game has no source until that Pokémon is added.
+- Red and Blue Orbs drop the same way from wild Groudon and Kyogre. Those are legendary
+  encounters, so the orbs may need a higher rate (to tune).
 
 - Absol, Garchomp and Lucario have two stones each (Absolite and Absolite Z, and so on); like
   Charizard, the stone picks the form.
@@ -3371,7 +3388,7 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
 | Art | Source | Have |
 | --- | --- | --- |
 | Walk sprites, four Megas | the trainer's own artwork, imported with `scripts/dat-set-outfit.py` | to upload |
-| Shiny walk sprites | copies of the normal Mega sprites for now, overwritten later (decided) | copies |
+| Shiny walk sprites | recolours of the normal Mega sprites with the shiny colours, overwritable later (decided) | from the normal sprites |
 | Portrait and shiny portrait | Showdown Gen 5 style, `sprites/gen5/<name>.png` and `gen5-shiny/` (`venusaur-mega`, `charizard-megax`, `charizard-megay`, `blastoise-mega`) | all 8 found |
 | 3D Pokédex picture and shiny | Showdown `sprites/ani/<name>.gif` and `ani-shiny/`, a still taken like ours | all 8 found |
 | Box icon and shiny | [pokesprite](https://github.com/msikma/pokesprite) `pokemon-gen8/regular/` and `shiny/` (`venusaur-mega`, `charizard-mega-x`, ...) | found |
@@ -3407,7 +3424,8 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
    sprite, so steps 2 to 6 can be built and tested first.
 8. **Primal Groudon and Kyogre:** the same steps as the starters (forms, abilities, sprites)
    once the starters work.
-9. **Questline** for the Mega Ring and how the stones are found.
+9. **Quest and drops:** the quest for the empty Mega Ring and the Key Stone, and the stone and
+   orb drops from their lines.
 10. **Tests and docs:** the in-game test script gets a Mega check covering several cases:
    - put the ring together from the empty ring and the Key Stone;
    - give a stone, fill the gauge and Mega Evolve, normal and shiny;
@@ -3438,10 +3456,9 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 
 ### To decide before building
 
-- The Mega Ring questline: where the empty ring and the Key Stone are found, and whether
-  either can be traded before they are put together.
-- Where the stones come from (a quest reward, world bosses, an event shop?), including the
-  ones that don't work yet.
+- The Mega Ring quest itself: who gives it, the steps, and whether the empty ring and the Key
+  Stone come from the same quest or two parts of it.
+- The exact drop rate (starting at 1 in 250,000), and the orb rate from Groudon and Kyogre.
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
