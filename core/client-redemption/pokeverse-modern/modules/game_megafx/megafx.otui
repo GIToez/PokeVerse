@@ -1,0 +1,4 @@
+// game_megafx: the pieces of the Mega Evolution animation. Images: scripts/art/mega_fx_art.py
+MegaFxImage < UIWidget
+  phantom: true
+  focusable: false

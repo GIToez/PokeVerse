@@ -3,7 +3,7 @@
 -- state on ExtendedIds.Mega after the client's hello and on every change; the R key (Ctrl+R while typing)
 -- and the button send "evolve" on ExtendedIds.MegaEvolve. Purple while charging, gold when full, green while
 -- Mega Evolved; the button is lit only when the Pokemon out can Mega Evolve. The boosted moves glow on the
--- moves bar.
+-- moves bar. The animation messages go on to game_megafx.
 Mega = {}
 
 local IMAGES = '/modules/game_pokehud/images/'
@@ -91,11 +91,18 @@ end
 
 local function onMega(protocol, opcode, buffer)
     local ok, data = pcall(json.decode, buffer)
-    if not ok or type(data) ~= 'table' or data.type ~= 'state' then
+    if not ok or type(data) ~= 'table' then
         return
     end
-    state = data
-    update()
+    if data.type == 'fx' then
+        local fx = modules.game_megafx
+        if fx and fx.play then
+            fx.play(data)
+        end
+    elseif data.type == 'state' then
+        state = data
+        update()
+    end
 end
 
 local function onGameStart()

@@ -69,6 +69,7 @@ Module
     - game_time
     - game_weather
     - game_creaturefx
+    - game_megafx
     - game_calendar
     - game_eventcards
     - game_legendaryflight

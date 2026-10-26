@@ -1,0 +1,8 @@
+Module
+  name: game_megafx
+  description: PokeVerse Mega Evolution on the map: the Key Stone, the streams of light, the cocoon in its orb and the burst
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ megafx ]
+  @onLoad: init()
+  @onUnload: terminate()
