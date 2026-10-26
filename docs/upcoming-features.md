@@ -3227,20 +3227,58 @@ All new items, each with its own 32 px icon, shown in the Pokepedia:
   can't be taken apart.
 - **Mega Ring:** key item slot, not tradable (it is the questline reward). Locked while a Mega
   is active, like the bike while riding.
-- **Every Mega Stone, from the start** (decided), even the ones no Pokémon can use yet. They
+- **Every Mega Stone and both Primal orbs, from the start** (decided), even the ones no Pokémon
+  can use yet. They
   are held items, tradable when not held (decided); a held stone can't be taken while its
   Pokémon is Mega. Only the four starter stones work for now. The others say so in their
   description, and holding one does nothing until its Mega form is added.
 
-The 47 Mega Stones from X/Y and Omega Ruby/Alpha Sapphire:
+All 92 Mega Stones on Bulbapedia (checked October 25), plus the two orbs. The 47 from X/Y and
+Omega Ruby/Alpha Sapphire:
 
 | Kanto | Johto | Hoenn | Sinnoh and later |
 | --- | --- | --- | --- |
 | Venusaurite, Charizardite X, Charizardite Y, Blastoisinite, Beedrillite, Pidgeotite, Alakazite, Slowbronite, Gengarite, Kangaskhanite, Pinsirite, Gyaradosite, Aerodactylite, Mewtwonite X, Mewtwonite Y | Ampharosite, Steelixite, Scizorite, Heracronite, Houndoominite, Tyranitarite | Sceptilite, Blazikenite, Swampertite, Gardevoirite, Sablenite, Mawilite, Aggronite, Medichamite, Manectite, Sharpedonite, Cameruptite, Altarianite, Banettite, Absolite, Glalitite, Salamencite, Metagrossite, Latiasite, Latiosite | Lopunnite, Garchompite, Lucarionite, Abomasite, Galladite, Audinite, Diancite |
 
-- Mega Rayquaza needs no stone (it needs Dragon Ascent), so it is not on the list.
-- The Red and Blue Orbs (Primal Groudon and Kyogre) are not Mega Stones and are left out.
-- The stones added in Legends: Z-A are left out for now (to decide).
+The 26 from Legends: Z-A:
+
+| Kanto and Johto | Sinnoh to Galar |
+| --- | --- |
+| Clefablite, Victreebelite, Starminite, Dragoninite, Meganiumite, Feraligite, Skarmorite | Froslassite, Emboarite, Excadrite, Scolipite, Scraftinite, Eelektrossite, Chandelurite, Chesnaughtite, Delphoxite, Greninjite, Pyroarite, Floettite, Malamarite, Barbaracite, Dragalgite, Hawluchanite, Zygardite, Drampanite, Falinksite |
+
+The 19 from its Mega Dimension DLC:
+
+| Kanto to Sinnoh | Unova and later |
+| --- | --- |
+| Raichunite X, Raichunite Y, Chimechite, Absolite Z, Staraptite, Garchompite Z, Lucarionite Z, Heatranite, Darkranite | Golurkite, Meowsticite, Crabominite, Golisopite, Magearnite, Zeraorite, Scovillainite, Baxcalibrite, Tatsugirinite, Glimmoranite |
+
+- Absol, Garchomp and Lucario have two stones each (Absolite and Absolite Z, and so on); like
+  Charizard, the stone picks the form.
+- Floettite is only for Eternal Flower Floette and Zygardite only for Zygarde Complete Forme.
+- Mega Rayquaza needs no stone (it needs Dragon Ascent), so it has no item. Its form can come
+  later with a rule of its own.
+- **Red Orb** and **Blue Orb**: held items for Groudon and Kyogre (see Primal Reversion).
+
+### Primal Reversion
+
+Groudon and Kyogre are already in the game, so their Primal forms can be built right after the
+starters (they need walk sprites like the Megas).
+
+| Primal form | Orb | Typing | Ability | Atk / Def / Sp. Atk / Sp. Def (base form) |
+| --- | --- | --- | --- | --- |
+| Primal Groudon | Red Orb | Ground / **Fire** | Desolate Land | 180 / 160 / 150 / 90 (150 / 140 / 100 / 90) |
+| Primal Kyogre | Blue Orb | Water | Primordial Sea | 150 / 90 / 180 / 160 (100 / 90 / 150 / 140) |
+
+- HP and speed stay the same (100 and 90).
+- In the main games it happens by itself when the Pokémon is sent out holding its orb and lasts
+  the whole battle. PokeVerse has no turns or battle ends, so here it works **like a Mega
+  Evolution** (proposed): the Mega Ring, a full gauge, the button or R, 60 seconds, the same
+  animation in red or blue, and it counts as the trainer's one Mega.
+- Abilities, the same way as Drought on Mega Charizard Y (on the Pokémon itself, since there is
+  no battle weather), following Bulbapedia:
+  - **Desolate Land:** +50% for its Fire moves; Water moves that hit it do nothing.
+  - **Primordial Sea:** +50% for its Water moves; Fire moves that hit it do nothing.
+  - Their boosted moves glow green like a Mega's.
 
 ### The animation
 
@@ -3338,7 +3376,9 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
 | 3D Pokédex picture and shiny | Showdown `sprites/ani/<name>.gif` and `ani-shiny/`, a still taken like ours | all 8 found |
 | Box icon and shiny | [pokesprite](https://github.com/msikma/pokesprite) `pokemon-gen8/regular/` and `shiny/` (`venusaur-mega`, `charizard-mega-x`, ...) | found |
 | Swap bar and Pokédex face | to find: Pokémon Shuffle and Battle Trozei both have Mega icons; otherwise drawn from the box icon | to do |
-| Item icons: Mega Ring, Key Stone, all 47 stones | PokéAPI `sprites/items/<name>.png` (`mega-ring`, `key-stone`, `venusaurite`, `charizardite-x`, ...), 30x30, put on 32x32 | all found |
+| Item icons: Mega Ring, Key Stone, all 92 stones, Red and Blue Orbs | PokéAPI `sprites/items/<name>.png` (`mega-ring`, `key-stone`, `venusaurite`, `charizardite-x`, `absolite-z`, `red-orb`, ...), 30x30, put on 32x32 | all found |
+| Primal portraits and Pokédex pictures | Showdown `groudon-primal`, `kyogre-primal` (and shiny) | found |
+| Primal walk sprites | needed, like the Megas | to find |
 | Empty Mega Ring icon | the Mega Ring icon with the stone painted out | to draw |
 | Animation (orb, streams, shards, Mega symbol, aura) | drawn here like the legendary effects | to draw |
 
@@ -3350,7 +3390,8 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
 ### Building order
 
 1. **Running shoes** (below): small and separate, can ship first.
-2. **Items:** the empty Mega Ring, the Key Stone, the Mega Ring and all 47 stones with icons.
+2. **Items:** the empty Mega Ring, the Key Stone, the Mega Ring, all 92 stones and the two
+   orbs, with icons.
    This step also covers putting the ring together, the held-item entries and the GTS block.
    A staff command gives them for testing until the questline exists.
 3. **Mega forms:** the four forms and their shiny copies (config entries and monster files)
@@ -3364,8 +3405,10 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
 6. **Animation:** the on-map effect and the aura.
 7. **Sprites:** imported as soon as the artwork is here. Until then the forms use the base
    sprite, so steps 2 to 6 can be built and tested first.
-8. **Questline** for the Mega Ring and how the stones are found.
-9. **Tests and docs:** the in-game test script gets a Mega check covering several cases:
+8. **Primal Groudon and Kyogre:** the same steps as the starters (forms, abilities, sprites)
+   once the starters work.
+9. **Questline** for the Mega Ring and how the stones are found.
+10. **Tests and docs:** the in-game test script gets a Mega check covering several cases:
    - put the ring together from the empty ring and the Key Stone;
    - give a stone, fill the gauge and Mega Evolve, normal and shiny;
    - check the typing, stats and ability, and which moves are boosted, then that the drain
@@ -3399,7 +3442,8 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
   either can be traded before they are put together.
 - Where the stones come from (a quest reward, world bosses, an event shop?), including the
   ones that don't work yet.
-- Whether the Legends: Z-A stones are added too.
+- Primal Reversion working like a Mega (proposed above), or by itself whenever Groudon or
+  Kyogre is out holding its orb, as in the games.
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
