@@ -803,27 +803,15 @@ local function testQuests(cid)
             entry.category == "Main story", tostring(entry.name) .. " / " .. tostring(entry.step))
         check("quests: braces are left out", not tostring(entry.text):find("[{}]"), entry.text)
 
-        -- quests from before the quest log that still show as "<NPC>'s request"; every quest added
-        -- since needs its mission in XML/quests.xml, so the log shows its name and what to do.
-        -- Holiday and event quests (the Events category) don't need one.
-        local OLD_UNNAMED = { { 8019, 8019 }, { 8050, 8052 }, { 8080, 8080 }, { 8085, 8200 }, { 8230, 8230 },
-            { 8364, 8364 }, { 8367, 8367 }, { 8373, 8373 }, { 8375, 8375 }, { 8378, 8378 }, { 8500, 8500 },
-            { 8508, 8508 }, { 8519, 8519 }, { 8523, 8523 }, { 8548, 8548 }, { 8551, 8551 }, { 8553, 8553 },
-            { 8659, 8665 }, { 8670, 8670 }, { 8751, 8753 } }
-        local function oldUnnamed(storage)
-            for _, range in ipairs(OLD_UNNAMED) do
-                if (storage >= range[1] and storage <= range[2]) then
-                    return true
-                end
-            end
-            return false
-        end
+        -- every quest needs its mission in XML/quests.xml, so the log shows its name and what to do.
+        -- Daily and holiday or event quests (the Daily and Events categories) don't need one: the
+        -- log shows their objective.
         local unnamed = {}
         for npcName, quests in pairs(getAllNpcQuests()) do
             for _, quest in ipairs(quests) do
                 local logged = quest.storage and Quests.getEntry(quest.storage)
-                if (quest.storage and not oldUnnamed(quest.storage) and not (logged and logged.text)
-                        and not (logged and logged.category == "Events")) then
+                if (quest.storage and not quest.daily and not (logged and logged.text)
+                        and not (logged and (logged.category == "Events" or logged.category == "Daily"))) then
                     unnamed[#unnamed + 1] = npcName .. " " .. quest.storage
                 end
             end
@@ -834,6 +822,12 @@ local function testQuests(cid)
             and sotashi and sotashi.category == "Events", tostring(pirate and pirate.category))
         check("quests: every new quest has its mission in quests.xml for the quest log", #unnamed == 0,
             table.concat(unnamed, ", "))
+        local stolen, lessons, rock = Quests.getEntry(8659), Quests.getEntry(8753), Quests.getEntry(8019)
+        check("quests: a line given by several NPCs takes the line's name", stolen and stolen.name == "The stolen Pokemon"
+            and stolen.step == "Part 1 of 6", tostring(stolen and stolen.name) .. " / " .. tostring(stolen and stolen.step))
+        check("quests: Professor Oak's tutorial is in Getting started", lessons and lessons.step == "Part 3 of 3"
+            and lessons.category == "Getting started", tostring(lessons and lessons.category))
+        check("quests: older quests show their own mission name", rock and rock.name == "Rock #02", tostring(rock and rock.name))
         check("quests: defeat objective", Quests.objective(defeat):find("^Defeat %d+ ") ~= nil, Quests.objective(defeat))
 
         doCreatureSetStorage(cid, first.storage, QUEST_STATUS.STARTED)

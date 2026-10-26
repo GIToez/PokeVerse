@@ -442,6 +442,10 @@
 			<missionstate id="0" description="Look for a hole in the mines of Mt Moon, there you will find a door and some paths. You should explore the area and find the Moon Stone fragment!"/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
+		<mission name="George Carter's gift" storageid="8665" startvalue="0" endvalue="1">
+			<missionstate id="0" description="George Carter has a present for your help with his research. Talk to him in Pewter to take it (from level 40)."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
 	</quest>
 	
 	<quest id="7" name="Gary Oak tests" startstorageid="8030" startstoragevalue="0">
@@ -675,6 +679,10 @@
 		</mission>
 		<mission name="Merv Kelley #02" storageid="8227" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Bring to Merv Kelley a Lichi Fruit. Located with the Wayne family on Ascorbi Island."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Jeana Maxene's Heracross" storageid="8230" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Jeana Maxene dreams of being a trainer. Bring her a Heracross and she will give you a Lichi Fruit (from level 70)."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Merv Kelley #03" storageid="8228" startvalue="0" endvalue="1">
@@ -1002,6 +1010,10 @@
 			<missionstate id="0" description="Go to the PokeMart and ask for Ray Fitz order."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
+		<mission name="Ray's order" storageid="8367" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Tell the PokeMart seller you came to take Ray's order, then bring it back to Ray Fitz."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
 		<mission name="Ray Fitz #03" storageid="8360" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Go to the sewers and defeat 1x Rattata."/>
 			<missionstate id="1" description="This mission is done."/>
@@ -1044,6 +1056,10 @@
 			<missionstate id="0" description="My Ash need this honey pot to save sick Pokemon, please take it up. You will find him next to the boat S.S. Anne in Vermilion."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
+		<mission name="Ash's honey pot" storageid="8378" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Give Delia's honey pot to Ash Ketchum next to the S.S. Anne in Vermilion."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
 		<mission name="Angry Beedrill" storageid="8379" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Go to east of Fuchsia at route 15, on top of a mountain you will find a special tree. Use this honey on the tree and take good care, a hungry Beedrill will go behind you. Defeat this Beedrill and bring a special mushroom for us."/>
 			<missionstate id="1" description="This mission is done."/>
@@ -1055,7 +1071,7 @@
 			<missionstate id="0" description="Now I'm a little hungry, bring me a burger I'll tell you something."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
-		<mission name="Rock #02" storageid="8319" startvalue="0" endvalue="1">
+		<mission name="Rock #02" storageid="8019" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Bring me 50 stone orbs and 4 fist plates."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
@@ -1137,6 +1153,10 @@
 	<quest id="54" name="Aldo Vumblevore" startstorageid="8406" startstoragevalue="0">
 		<mission name="Suramoon Relics" storageid="8406" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Defeat these evil creatures and bring me the seven relics. You will find the creatures at the invasions that he send to the towns."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Sinister cloth" storageid="8670" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Bring Aldo Vumblevore 50 Cursed Hand, 30 Cutting Fang, 50 Sharp Beak, 30 Spider Silk and 15 Shadow Orb for the sinister cloth outfit."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 	</quest>
@@ -1385,6 +1405,10 @@
 			<missionstate id="0" description="I made an order with the Pallet PokeMart. Please take it for me, his name is Patton."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
+		<mission name="Oak's order" storageid="8500" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Tell Patton at the Pallet PokeMart that you are Professor Oak's pupil and take the order."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
 		<mission name="Jofrey #1" storageid="8501" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Fish and defeat five (5) Magikarps."/>
 			<missionstate id="1" description="This mission is done."/>
@@ -1426,11 +1450,19 @@
 			<missionstate id="0" description="Meet Briscoe Len at his room downstairs."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
+		<mission name="Briscoe Len's son" storageid="8519" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Team Rocket kidnapped Briscoe Len's son to keep him quiet. Find his son, defeat his captor and bring the news back."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
 	</quest>
 	
 	<quest id="76" name="Kanto Main #08 - Silph Co." startstorageid="8520" startstoragevalue="0">
 		<mission name="Gary Oak" storageid="8520" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Investigate Silph Co and look for Ash Ketchum."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Rescue Ash Ketchum" storageid="8523" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Team Rocket held Ash Ketchum for days. Get him out safely, then tell Bill and Gary he will be in the usual place."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Bill" storageid="8526" startvalue="0" endvalue="1">
@@ -1512,12 +1544,16 @@
 			<missionstate id="0" description="Bill is analyzing the HD, come back after 1 hour."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
-		<mission name="Bill #2" storageid="8550" startvalue="0" endvalue="1">
-			<missionstate id="0" description="Go to Silph Co. and ask Charley Aden about the Master Ball."/>
+		<mission name="Bill #2" storageid="8551" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Go to Silph Co. and ask Charley Aden about the Master Ball, then bring the prototype to Bill."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Charley Aden" storageid="8552" startvalue="0" endvalue="1">
-			<missionstate id="0" description="Charley is creating a Master Ball prototype, come back after 1 hour."/>
+			<missionstate id="0" description="Help Silph Co. fund a new Master Ball prototype with 130k."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="The Master Ball prototype" storageid="8553" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Charley Aden is building the prototype. Come back to him after 2 hours to collect it."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Bill #3" storageid="8555" startvalue="0" endvalue="1">
@@ -1824,6 +1860,46 @@
 		</mission>
 		<mission name="The Key Stone" storageid="8761" startvalue="0" endvalue="1">
 			<missionstate id="0" description="Find the glowing crystal at the bottom of Cerulean Cave, put its Key Stone on the empty Mega Ring and show Professor Oak the Mega Ring."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+	</quest>
+	<quest id="92" name="Professor Oak's first lessons" startstorageid="8751" startstoragevalue="0">
+		<mission name="Professor Oak" storageid="8751" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Call your Pokemon out of its Poke Ball, then talk to Professor Oak."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Professor Oak" storageid="8752" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Press X and left-click your Pokemon to open its Pokedex entry, then say hi to Professor Oak again."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Professor Oak" storageid="8753" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Defeat 5 Rattata in Professor Oak's basement, under the sewer grate east of him, then report back. Sell his reward at the PokeMart north of the lab."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+	</quest>
+	<quest id="93" name="The stolen Pokemon" startstorageid="8659" startstoragevalue="0">
+		<mission name="Ash Ketchum" storageid="8659" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Mewtwo took Pikachu and the others. Find Ash's Pokemon belt and bring it back to him. The nurse's body must have a key."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Corey" storageid="8660" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Find Corey's Pokemon belt and bring it back to him."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Neesha" storageid="8661" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Find Neesha's Pokemon belt and bring it back to her."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Misty" storageid="8662" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Togepi is still a baby. Find Misty's Pokemon belt and bring it back to her."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Brock" storageid="8663" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Find Brock's Pokemon belt and bring it back to him."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="Fergus" storageid="8664" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Find Fergus's Pokemon belt and bring it back to him. Once every belt is back, Mewtwo waits for you in its battle arena."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 	</quest>
