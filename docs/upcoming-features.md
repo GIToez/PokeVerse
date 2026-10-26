@@ -3387,16 +3387,16 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
 
 | Art | Source | Have |
 | --- | --- | --- |
-| Walk sprites, four Megas | the trainer's own artwork, imported with `scripts/dat-set-outfit.py` | to upload |
+| Walk sprites | 33 Megas and 2 shinies from the sprite pack, chosen by the trainer, in the client as looks 2595-2629 ([mega-art.md](mega-art.md), with what needs rework) | placeholders in |
 | Shiny walk sprites | recolours of the normal Mega sprites with the shiny colours, overwritable later (decided) | from the normal sprites |
 | Portrait and shiny portrait | Showdown Gen 5 style, `sprites/gen5/<name>.png` and `gen5-shiny/` (`venusaur-mega`, `charizard-megax`, `charizard-megay`, `blastoise-mega`) | all 8 found |
 | 3D Pokédex picture and shiny | Showdown `sprites/ani/<name>.gif` and `ani-shiny/`, a still taken like ours | all 8 found |
 | Box icon and shiny | [pokesprite](https://github.com/msikma/pokesprite) `pokemon-gen8/regular/` and `shiny/` (`venusaur-mega`, `charizard-mega-x`, ...) | found |
 | Swap bar and Pokédex face | to find: Pokémon Shuffle and Battle Trozei both have Mega icons; otherwise drawn from the box icon | to do |
-| Item icons: Mega Ring, Key Stone, all 92 stones, Red and Blue Orbs | PokéAPI `sprites/items/<name>.png` (`mega-ring`, `key-stone`, `venusaurite`, `charizardite-x`, `absolite-z`, `red-orb`, ...), 30x30, put on 32x32 | all found |
+| Item icons: Mega Ring, Key Stone, all 92 stones, Red and Blue Orbs | PokéAPI `sprites/items/<name>.png` (`mega-ring`, `key-stone`, `venusaurite`, `charizardite-x`, `absolite-z`, `red-orb`, ...), 30x30, put on 32x32 | in the client as items 28818-28914 ([mega-art.md](mega-art.md)) |
 | Primal portraits and Pokédex pictures | Showdown `groudon-primal`, `kyogre-primal` (and shiny) | found |
-| Primal walk sprites | needed, like the Megas | to find |
-| Empty Mega Ring icon | the Mega Ring icon with the stone painted out | to draw |
+| Primal walk sprites | looks 2627 and 2628 from the sprite pack, too small (64 px, Groudon and Kyogre are 96 px) | placeholders in |
+| Empty Mega Ring icon | PokéAPI's Mega Ring is already a bare ring; the Mega Ring icon is that ring with a Key Stone on top | in |
 | Animation (orb, streams, shards, Mega symbol, aura) | drawn here like the legendary effects | to draw |
 
 - The walk sprite sheets have the four directions (north, east, south, west) across and the

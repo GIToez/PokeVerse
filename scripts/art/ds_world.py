@@ -1083,7 +1083,7 @@ def build():
     custom = custom_art(pvmap.Otb(h.ITEMS))
     keep, tibia = set(), set()
     for cid, t in dat.things.items():
-        (keep if cid in REFERENCE or cid in custom else tibia).update(s for s in t[8] if s)
+        (keep if cid in REFERENCE or cid in custom or PICKUPABLE in t[0] else tibia).update(s for s in t[8] if s)
     keep -= tibia - {s for c in REFERENCE if c in dat.things for s in dat.things[c][8]}
     keep |= {s for c in ARENA if c in dat.things for s in dat.things[c][8] if s}
     raw = {}
