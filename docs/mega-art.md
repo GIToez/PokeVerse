@@ -117,3 +117,51 @@ Mega Venusaur, Mega Charizard X and Y and Mega Blastoise are playable (staff `/m
 - **Client images:** `staticPortraits/<dex>-<form>.png` (Showdown gen 5),
   `pictures/<dex>-<form>.png` (Showdown 3D still) and `pokeicons/<dex>-<form>.png` (pokesprite), for
   example `6-mega-x.png`. Nothing reads them yet; the Mega HUD and the Pokedex will.
+
+## The other Megas and the Primals
+
+Every Mega with a walk sprite above whose Pokemon is in the game, and Primal Groudon and Kyogre,
+built the same way (`scripts/art/mega_forms_art.py`). Faces are server items 30280-30326 drawing
+client items 28923-28969, normal then shiny for each form in this order.
+
+| Form | Look | Shiny look | Ability |
+| --- | --- | --- | --- |
+| Mega Beedrill | 2607 | 2634 | Adaptability |
+| Mega Pidgeot | 2608 | 2635 | No Guard |
+| Mega Alakazam | 2599 | 2636 | Trace |
+| Mega Slowbro | 2609 | 2637 | Shell Armor |
+| Mega Gengar | 2600 | 2638 | Shadow Tag |
+| Mega Kangaskhan | 2601 | 2639 | Parental Bond (new) |
+| Mega Gyarados | 2610 | 2611 (pack sheet) | Mold Breaker (new) |
+| Mega Aerodactyl | 2612 | 2640 | Tough Claws |
+| Mega Ampharos | 2602 | 2603 (now a recolour) | Mold Breaker (new) |
+| Mega Steelix | 2613 | 2641 | Sand Force (new) |
+| Mega Scizor | 2614 | 2642 | Technician |
+| Mega Tyranitar | 2604 | 2643 | Sand Stream |
+| Mega Sceptile | 2615 | 2644 | Lightning Rod |
+| Mega Blaziken | 2605 | 2645 | Speed Boost |
+| Mega Swampert | 2616 | 2646 | Swift Swim |
+| Mega Sableye | 2617 | 2647 | Magic Bounce (new) |
+| Mega Mawile | 2625 | 2648 | Huge Power |
+| Mega Sharpedo | 2618 | 2649 | Strong Jaw (new) |
+| Mega Camerupt | 2619 | 2650 | Sheer Force (new) |
+| Mega Altaria | 2620 | 2651 | Pixilate (new) |
+| Mega Absol | 2621 | 2652 | Magic Bounce (new) |
+| Mega Glalie | 2622 | 2653 | Refrigerate (new) |
+| Mega Latias | 2626 | none | Levitate |
+| Primal Kyogre | 2628 | none | Primordial Sea (new) |
+| Primal Groudon | 2627 | none | Desolate Land (new) |
+
+Shiny Latias, Groudon and Kyogre aren't in the game, so their forms have no shiny.
+
+- **The Primals** are our own 96 px Groudon (1562) and Kyogre (1561) repainted in the Primal
+  colours from Showdown, replacing the 64 px pack placeholders on 2627 and 2628. Groudon's glowing
+  lines are only the thin seams between its plates, far fewer than the official design: paint the
+  magma lines in by hand. Kyogre's red markings became the glowing cyan lines; its mouth is cyan
+  too and should stay dark.
+- **Shiny recolours to rework:** Mega Alakazam and Mega Blaziken barely change, and Mega Altaria's
+  cloud gets an orange rim (its shiny is a yellow-tinted cloud). The colours come from Showdown's
+  normal and shiny sprites, so a pack sheet drawn in other colours picks up odd ones.
+- **Not built:** Mega Lucario, Abomasnow and Audino (the Pokemon aren't in the game), Mega Dragonite
+  (no box icon for its face yet) and every Mega in "Still to find". Mega Latias is still the small
+  64 px sheet, and the faces are still pokesprite box icons.
