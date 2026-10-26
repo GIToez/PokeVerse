@@ -10,13 +10,14 @@
 -- {action = "track"} to stop), and the server sends {type = "print", id, x, y, z, way} for each step the
 -- Pokemon takes on soft ground, which shows as a glowing footprint on the game map.
 -- Overlay on the window keeps just the disc on the map after the window closes; drag it, right-click to
--- hide it or reset its place.
+-- hide it, lock it in place or reset its place.
 local IMAGES = '/modules/game_radar/images/'
 local DISC = 400 -- the disc in the window; the overlay hosts the same widget at OVERLAY_SIZE
 local RADIUS = 176 -- pixels from the middle of the 400px radar image to its edge (scripts/art/radar_ui.py)
 local OVERLAY_SIZE = 240
 local OVERLAY_OPACITY = 0.45
 local POSITION_SETTING = 'pokeverse-radar-overlay-pos'
+local LOCK_SETTING = 'pokeverse-radar-overlay-locked'
 local ENABLED_SETTING = 'pokeverse-radar-overlay'
 local TICK_MS = 150
 local ARROW_TILES = 1.7 -- how far from the middle of the trainer's sprite the map arrow sits
@@ -806,6 +807,9 @@ local function openOverlayMenu(mousePos)
     menu:setGameMenu(true)
     menu:addOption(tr('Open radar'), show)
     menu:addOption(tr('Hide overlay'), hideOverlay)
+    local locked = g_settings.getBoolean(LOCK_SETTING)
+    menu:addOption(locked and tr('Unlock position') or tr('Lock position'),
+        function() g_settings.set(LOCK_SETTING, not locked) end)
     menu:addOption(tr('Reset position'), resetOverlayPosition)
     menu:display(mousePos)
 end
@@ -1021,7 +1025,27 @@ function init()
     overlay = g_ui.createWidget('RadarOverlay', modules.game_interface.getRootPanel())
     overlay:setSize({ width = OVERLAY_SIZE, height = OVERLAY_SIZE })
     overlay:hide()
+    overlay.onDragEnter = function(self, mousePos)
+        if g_settings.getBoolean(LOCK_SETTING) then
+            return false
+        end
+        self:breakAnchors()
+        self.movingReference = { x = mousePos.x - self:getX(), y = mousePos.y - self:getY() }
+        return true
+    end
+    overlay.onDragMove = function(self, mousePos)
+        if not self.movingReference then
+            return false
+        end
+        self:setPosition({ x = mousePos.x - self.movingReference.x, y = mousePos.y - self.movingReference.y })
+        self:bindRectToParent()
+        return true
+    end
     overlay.onDragLeave = function(self)
+        if not self.movingReference then
+            return false
+        end
+        self.movingReference = nil
         self:bindRectToParent()
         g_settings.set(POSITION_SETTING, self:getPosition())
         return true
