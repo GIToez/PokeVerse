@@ -1,5 +1,6 @@
 MOVES["Ice Fang"] = {
     description = "Ice Fang deals damage and has a 10% chance of freezing the target, plus a 10% chance of causing the target to flinch.",
+    bite = true,
     makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 12142,

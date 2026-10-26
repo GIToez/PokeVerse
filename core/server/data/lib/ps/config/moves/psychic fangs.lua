@@ -1,5 +1,6 @@
 MOVES["Psychic Fangs"] = {
     description = "The user bites the target with its psychic capabilities. This can also destroy Light Screen and Reflect.",
+    bite = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 27667,
     iconId = 0,

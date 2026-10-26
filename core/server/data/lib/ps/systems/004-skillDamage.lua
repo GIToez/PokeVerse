@@ -188,11 +188,26 @@ end
 
 SKILL_ELEMENT_MULTIPLIER_MAX = 2.5
 
+local NORMAL_MOVES_BECOME = {
+    [POKEMON_SPECIAL_ABILITY_IDS.PIXILATE] = ELEMENT_FAIRY,
+    [POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE] = ELEMENT_ICE
+}
+
+-- The move's type when this attacker uses it: Pixilate and Refrigerate turn Normal moves Fairy and Ice
+function getPokemonSkillDamageTypeOf(fromCid, skillName)
+    local skillType = getPokemonSkillDamageType(skillName)
+    if (skillType == ELEMENT_NORMAL and isMonster(fromCid)) then
+        return NORMAL_MOVES_BECOME[getMonsterSpecialAbility(fromCid)] or skillType
+    end
+    return skillType
+end
+
 -- The move's type against both of the defender's types, capped (a double weakness is 2.5x, not 4x)
 function getSkillElementMultiplier(fromCid, toCid, skillName)
     local multiplier = 1
+    local skillType = getPokemonSkillDamageTypeOf(fromCid, skillName)
     for _, pType in pairs(getPokemonTypes(toCid)) do
-        multiplier = multiplier * getElementMultipler(getPokemonSkillDamageType(skillName), pType, toCid)
+        multiplier = multiplier * getElementMultipler(skillType, pType, toCid)
     end
 
     if (multiplier > SKILL_ELEMENT_MULTIPLIER_MAX) then
@@ -210,13 +225,14 @@ end
 	return ((((((((2*attackerLevel/5+2)*attackerAttackStat*attackPower)/defenderDefenseStat)/50)+2)*stab)*typeModifiers/10)*randomNumber)--/255
 end]]
 
-local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
+local function finalDamage(fromCid, toCid, skillName, skillBasePower)
     local skillDamage = skillBasePower or getPokemonSkillDamage(skillName)
     if (skillDamage == 0) then
         return 0
     end
 
     local resultDamage = 0
+    local skillType = getPokemonSkillDamageTypeOf(fromCid, skillName)
     if (not isMonster(toCid)) then
         resultDamage = skillDamage + (getMonsterLevel(fromCid) * 2)
 
@@ -224,7 +240,9 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
         if (doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.LEVITATE, nil, skillName) or
                 doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.MAGIC_GUARD, nil, skillName) or
                 doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.LIGHTNINGROD, nil, skillName) or
-                doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.DAMAGEONE, nil)) then
+                doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.DAMAGEONE, nil) or
+                (skillType == ELEMENT_WATER and getMonsterSpecialAbility(toCid) == POKEMON_SPECIAL_ABILITY_IDS.DESOLATE_LAND) or
+                (skillType == ELEMENT_FIRE and getMonsterSpecialAbility(toCid) == POKEMON_SPECIAL_ABILITY_IDS.PRIMORDIAL_SEA)) then
             return -1
         end
 
@@ -271,8 +289,17 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
             skillDamage = skillDamage * (MegaEvolution.isMega(fromCid) and 1.5 or 1.2)
         elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS, nil, skillName)) then
             skillDamage = skillDamage * 1.3
-        elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER, nil, skillName)) then
+        elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.STRONG_JAW, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.DESOLATE_LAND, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.PRIMORDIAL_SEA, nil, skillName)) then
             skillDamage = skillDamage * 1.5
+        elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.SAND_FORCE, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.SHEER_FORCE, nil, skillName)) then
+            skillDamage = skillDamage * 1.3
+        elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.PIXILATE, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE, nil, skillName)) then
+            skillDamage = skillDamage * 1.2
         end
         if (isMonster(toCid) and getMonsterSpecialAbility(toCid) == POKEMON_SPECIAL_ABILITY_IDS.DROUGHT
                 and MegaEvolution.isMega(toCid) and getPokemonSkillDamageType(skillName) == ELEMENT_WATER) then
@@ -284,15 +311,15 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
             doCreatureRemoveStatus(fromCid, CREATURE_STATUS_CHARGE)
         end
 
-        if (table.find(getPokemonTypes(fromCid), getPokemonSkillDamageType(skillName))) then -- STAB +10%
+        if (table.find(getPokemonTypes(fromCid), skillType)) then -- STAB +10%
             skillDamage = skillDamage * 1.1
         end
 
         if (not doPokemonSpecialAbilityCheck(toCid, POKEMON_SPECIAL_ABILITY_IDS.FRISK, nil)) then
-            skillDamage = skillDamage * PokemonHeldItem.getMovePowerModifier(fromCid, getPokemonSkillDamageType(skillName))
+            skillDamage = skillDamage * PokemonHeldItem.getMovePowerModifier(fromCid, skillType)
         end
 
-        skillDamage = skillDamage * Weather.getMovePowerModifier(fromCid, getPokemonSkillDamageType(skillName))
+        skillDamage = skillDamage * Weather.getMovePowerModifier(fromCid, skillType)
 
         if (getPokemonSkillCategory(skillName) == MOVE_CATEGORY.PHYSICAL) then
             resultDamage = ((skillDamage * elementMultipler) * ((fromCidLevel + 10) * 0.2)) + (getPokemonAtk(fromCid, fromCidLevel) - getPokemonDef(toCid, toCidLevel))
@@ -342,6 +369,10 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
         elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.ILLUMINATE, toCid)) then
             resultDamage = resultDamage * 1.3
         end
+
+        if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.PARENTAL_BOND, nil, skillName)) then
+            resultDamage = resultDamage * 1.25
+        end
     end
 
     if (resultDamage < 1) then
@@ -354,14 +385,17 @@ local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
     return -(math.ceil(resultDamage))
 end
 
+local function getFinalDamage(fromCid, toCid, skillName, skillBasePower)
+    return doWithMoldBreaker(fromCid, finalDamage, fromCid, toCid, skillName, skillBasePower)
+end
 
-function doSkillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
+local function skillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
     if (not type) then
         if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.NORMALIZE, nil)) then
             type = ELEMENT_NORMAL
             skillBasePower = (skillBasePower and skillBasePower or getPokemonSkillDamage(skillName)) * 1.2 -- 20%
         else
-            type = getPokemonSkillDamageType(skillName)
+            type = getPokemonSkillDamageTypeOf(fromCid, skillName)
         end
     end
 
@@ -566,6 +600,10 @@ function doSkillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
     if (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.TRUANT, toCid)) then
         doCreatureAddStatus(fromCid, CREATURE_STATUS_RECHARGE, nil, fromCid)
     end
+end
+
+function doSkillDamage(fromCid, toCid, skillName, skillBasePower, damage, type)
+    return doWithMoldBreaker(fromCid, skillDamage, fromCid, toCid, skillName, skillBasePower, damage, type)
 end
 
 function doSkillMultipleDamages(fromCid, skillName, remaingRounds, skillBasePower, toCid)

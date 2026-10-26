@@ -173,6 +173,15 @@ function getPokemonSkillIsPulse(skillName)
     return SKILLS_CONFIG[skillName].pulse or false
 end
 
+function getPokemonSkillIsBite(skillName)
+    return SKILLS_CONFIG[skillName].bite or false
+end
+
+-- A move with a chance of an added effect ("...has a 10% chance of burning the target"), for Sheer Force
+function getPokemonSkillHasAddedEffect(skillName)
+    return tostring(SKILLS_CONFIG[skillName].description):find("%d+%% chance") ~= nil
+end
+
 function getPokemonSkillMakeRecoil(skillName)
     return SKILLS_CONFIG[skillName].makeRecoil or false
 end

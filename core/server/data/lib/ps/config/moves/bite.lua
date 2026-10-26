@@ -1,5 +1,6 @@
 MOVES["Bite"] = {
     description = "Bite deals damage and has a 30% chance of causing the target to flinch.",
+    bite = true,
     makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 11695,
