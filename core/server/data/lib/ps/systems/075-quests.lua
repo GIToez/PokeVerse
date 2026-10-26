@@ -119,6 +119,18 @@ local function containsAny(text, words)
     return false
 end
 
+-- NPCs that are only out while their holiday runs (HalloweenEvent.NPCS, AnniversaryEvent.NPCS)
+local function isHolidayNpc(npcName)
+    for _, list in ipairs({ HalloweenEvent and HalloweenEvent.NPCS, AnniversaryEvent and AnniversaryEvent.NPCS }) do
+        for _, name in ipairs(list or {}) do
+            if (name == npcName) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 local function categoryOf(group, npcName, quest)
     if (quest.category) then
         return quest.category
@@ -126,7 +138,7 @@ local function categoryOf(group, npcName, quest)
         return "Daily"
     end
     local text = (group or "") .. " " .. npcName
-    if (containsAny(text, EVENT_WORDS)) then
+    if (containsAny(text, EVENT_WORDS) or isHolidayNpc(npcName)) then
         return "Events"
     elseif (containsAny(group or "", { "main" })) then
         return "Main story"
