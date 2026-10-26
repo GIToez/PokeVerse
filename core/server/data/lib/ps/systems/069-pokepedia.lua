@@ -808,6 +808,14 @@ Pokepedia.sendDex = function(cid, name)
                     chance = math.max(0.01, math.floor((loot.chance or 0) / 1000 + 0.5) / 100) }
             end
         end
+        local stones = MegaEvolution.getDrops(knowledge.species) or {}
+        for _, stone in ipairs(stones) do
+            local info = getItemInfo(stone.itemId)
+            local rate = stone.form:find("^Primal") and MegaEvolution.ORB_DROP_CHANCE or MegaEvolution.DROP_CHANCE
+            if (info) then
+                drops[#drops + 1] = { client = info.clientId, name = stone.name, chance = 100 / rate / #stones }
+            end
+        end
         data.drops = JSON.array(drops)
     end
     if (knowledge.level >= 3) then

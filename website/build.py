@@ -33,6 +33,7 @@ LEAFLET_JS_SRI = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 CONFIG = os.path.join(ROOT, "core/server/data/lib/ps/config")
 MONSTERS = os.path.join(ROOT, "core/server/data/monster/Pokemons")
 MEGA_MONSTERS = os.path.join(ROOT, "core/server/data/monster/Mega")
+MEGA_SCRIPT = os.path.join(ROOT, "core/server/data/lib/ps/systems/097-megaEvolution.lua")
 ITEMS_XML = os.path.join(ROOT, "core/server/data/items/items.xml")
 ITEMS_OTB = os.path.join(ROOT, "core/server/data/items/items.otb")
 THINGS = os.path.join(ROOT, "core/client-legacy/data/things")
@@ -271,6 +272,23 @@ class Site:
                 megas_of.setdefault(base, []).append((form, config[form], stones[form], mega_looks.get(form, 0),
                                                        config.get(base) or {}))
 
+        # MegaEvolution.rollDrop: one roll a defeat for the stone's Pokemon and its pre-evolutions,
+        # shared between the stones of a line (Charizardite X and Y)
+        with open(MEGA_SCRIPT, encoding="utf-8") as f:
+            script = f.read()
+        rates = {key: int(value) for key, value in
+                 re.findall(r"^MegaEvolution\.(DROP_CHANCE|ORB_DROP_CHANCE) = (\d+)", script, re.M)}
+        stone_drops = {}
+        for stone in data.get("megaStones") or []:
+            member, steps = stone["pokemon"], 0
+            while member and steps < 5:
+                stone_drops.setdefault(member, []).append(stone)
+                member, steps = (evolves_from.get(member) or (None,))[0], steps + 1
+        mega_loot = {}
+        for member, line in stone_drops.items():
+            rate = rates["ORB_DROP_CHANCE" if line[0]["form"].startswith("Primal") else "DROP_CHANCE"]
+            mega_loot[member] = [(stone["itemId"], 1, 100000 / rate / len(line)) for stone in line]
+
         def family(name):
             root, guard = name, 0
             while root in evolves_from and guard < 10:
@@ -294,7 +312,7 @@ class Site:
             megas = [mega for member in family(name) for mega in megas_of.get(member, [])]
             self.write_pokemon(number, name, entry, wild, types, gen, region, moves, evolves_from,
                                [f for f in forms.get(number, []) if f != name and f in config and f not in stones],
-                               portrait, sprite, megas)
+                               portrait, sprite, megas, mega_loot.get(re.sub(r"^Shiny ", "", name), []))
         self.write_pokedex(cards)
         self.write_home(len(species), len(moves))
         self.write_map()
@@ -439,7 +457,7 @@ class Site:
     </div>"""
 
     def write_pokemon(self, number, name, entry, wild, types, gen, region, moves, evolves_from, forms,
-                      portrait, sprite, megas=()):
+                      portrait, sprite, megas=(), mega_loot=()):
         stats = [("Attack", entry.get("atk", 0)), ("Defense", entry.get("def", 0)),
                  ("Sp. Atk", entry.get("spAtk", 0)), ("Sp. Def", entry.get("spDef", 0))]
         stat_rows = "".join(
@@ -483,7 +501,7 @@ class Site:
         egg_groups = [label(g) for g in entry.get("eggGroup") or []]
 
         loot_rows = []
-        for item_id, count, chance in wild["loot"]:
+        for item_id, count, chance in list(wild["loot"]) + list(mega_loot):
             item_name = self.item_names.get(item_id, "item %d" % item_id)
             img = self.item_image(item_id)
             icon = '<img src="../%s" alt="" width="32" height="32" loading="lazy">' % img if img else ""
