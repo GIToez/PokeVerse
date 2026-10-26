@@ -80,7 +80,69 @@ def button(name, ring, dim):
     img.resize((size, size), Image.LANCZOS).save(os.path.join(OUT, name + '.png'))
 
 
+GLOW_OUT = 'core/client-redemption/pokeverse-modern/modules/game_pokemoves/images/mega-glow.png'
+GLOW_FRAMES = 24
+GLOW_SIZE = 48  # the 40 px move slot with 4 px around it for the halo
+GREEN = (125, 255, 168)
+
+
+def slot_edge(points):
+    """Evenly spaced points around the move slot's rounded edge (40 px, radius 9), clockwise from the top."""
+    lo, hi, r = 4 * S, 44 * S, 9 * S
+    straight = hi - lo - 2 * r
+    arc = math.pi * r / 2
+    length = 4 * (straight + arc)
+    corners = [((hi - r, lo + r), -90), ((hi - r, hi - r), 0), ((lo + r, hi - r), 90), ((lo + r, lo + r), 180)]
+    starts = [((lo + r, lo), (1, 0)), ((hi, lo + r), (0, 1)), ((hi - r, hi), (-1, 0)), ((lo, hi - r), (0, -1))]
+    out = []
+    for i in range(points):
+        d = (i / points * length + straight / 2) % length
+        side = int(d // (straight + arc))
+        d -= side * (straight + arc)
+        if d < straight:
+            (x, y), (dx, dy) = starts[side]
+            out.append((x + dx * d, y + dy * d))
+        else:
+            (cx, cy), a0 = corners[side]
+            a = math.radians(a0 + (d - straight) / arc * 90)
+            out.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    return out
+
+
+def mega_glow():
+    """The boosted move: a soft green edge that pulses a little and a spark running around it."""
+    from PIL import ImageFilter
+    big = GLOW_SIZE * S
+    path = slot_edge(240)
+    strip = Image.new('RGBA', (GLOW_SIZE * GLOW_FRAMES, GLOW_SIZE), (0, 0, 0, 0))
+    for frame in range(GLOW_FRAMES):
+        pulse = 0.5 - 0.5 * math.cos(2 * math.pi * frame / GLOW_FRAMES)
+        halo = Image.new('RGBA', (big, big), (0, 0, 0, 0))
+        ImageDraw.Draw(halo).rounded_rectangle((4 * S, 4 * S, 44 * S, 44 * S), 9 * S,
+                                               outline=GREEN + (round(150 + 70 * pulse),), width=3 * S)
+        halo = halo.filter(ImageFilter.GaussianBlur(2.2 * S))
+        img = halo.copy()
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle((4 * S, 4 * S, 44 * S, 44 * S), 9 * S,
+                            outline=GREEN + (round(170 + 60 * pulse),), width=round(1.5 * S))
+        spark = Image.new('RGBA', (big, big), (0, 0, 0, 0))
+        sd = ImageDraw.Draw(spark)
+        head = int(frame / GLOW_FRAMES * len(path))
+        tail = 60
+        for k in range(tail, -1, -1):
+            x, y = path[(head - k) % len(path)]
+            t = 1 - k / tail
+            radius = (0.8 + 1.6 * t) * S
+            colour = tuple(round(g + (255 - g) * t) for g in GREEN)
+            sd.ellipse((x - radius, y - radius, x + radius, y + radius), fill=colour + (round(255 * t ** 1.5),))
+        img.alpha_composite(spark.filter(ImageFilter.GaussianBlur(1.6 * S)))
+        img.alpha_composite(spark)
+        strip.alpha_composite(img.resize((GLOW_SIZE, GLOW_SIZE), Image.LANCZOS), (frame * GLOW_SIZE, 0))
+    strip.save(GLOW_OUT)
+
+
 def main():
+    mega_glow()
     for name, (top, bottom) in FILLS.items():
         fill(name, top, bottom)
     symbol(11).resize((11, 11), Image.LANCZOS).save(os.path.join(OUT, 'mega.png'))

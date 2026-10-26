@@ -60,6 +60,28 @@ local function slots()
     return list
 end
 
+local GLOW_FRAMES, GLOW_SIZE = 24, 48 -- mega-glow.png (scripts/art/mega_hud_art.py)
+local glowEvent, glowFrame = nil, 0
+
+local function stopGlow()
+    removeEvent(glowEvent)
+    glowEvent = nil
+end
+
+local function animateGlow()
+    glowFrame = (glowFrame + 1) % GLOW_FRAMES
+    local any = false
+    for _, slot in ipairs(slots()) do
+        if slot.megaGlow:isVisible() then
+            any = true
+            slot.megaGlow:setImageClip({ x = glowFrame * GLOW_SIZE, y = 0, width = GLOW_SIZE, height = GLOW_SIZE })
+        end
+    end
+    if not any then
+        stopGlow()
+    end
+end
+
 local function updateKeyLabels()
     if not pokemonMovesWindow then
         return
@@ -153,6 +175,7 @@ end
 
 function reset()
     closeCard()
+    stopGlow()
     for _, slot in ipairs(slots()) do
         stopCooldown(slot)
         slot:destroy()
@@ -234,6 +257,7 @@ local function updateEnergy()
     local player = g_game.getLocalPlayer()
     local energy = player and player:getMana() or 0
     local target = g_game.getAttackingCreature()
+    local anyBoosted = false
     for _, slot in ipairs(slots()) do
         local cost = moveEnergy[slot.icon:getItemId()]
         local element = ELEMENTS[moveElement[slot.icon:getItemId()]]
@@ -285,6 +309,10 @@ local function updateEnergy()
         end
         lines[#lines + 1] = tr('Click to use, Shift+click for the move card')
         slot:setTooltip(table.concat(lines, '\n'))
+        anyBoosted = anyBoosted or boosted
+    end
+    if anyBoosted and not glowEvent then
+        glowEvent = cycleEvent(animateGlow, 50)
     end
 end
 
@@ -690,6 +718,7 @@ function onInit()
 end
 
 function onTerminate()
+    stopGlow()
     disconnect(g_game, {
         onGameStart = onOnline,
         onGameEnd = onOffline,
