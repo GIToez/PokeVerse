@@ -802,6 +802,33 @@ local function testQuests(cid)
         check("quests: names come from quests.xml", entry.name == "Kanto Main #01 - A new mystery!" and entry.step == "Part 1 of 5" and
             entry.category == "Main story", tostring(entry.name) .. " / " .. tostring(entry.step))
         check("quests: braces are left out", not tostring(entry.text):find("[{}]"), entry.text)
+
+        -- quests from before the quest log that still show as "<NPC>'s request"; every quest added
+        -- since needs its mission in XML/quests.xml, so the log shows its name and what to do
+        local OLD_UNNAMED = { { 8019, 8019 }, { 8050, 8052 }, { 8080, 8080 }, { 8085, 8200 }, { 8230, 8230 },
+            { 8364, 8364 }, { 8367, 8367 }, { 8373, 8373 }, { 8375, 8375 }, { 8378, 8378 }, { 8500, 8500 },
+            { 8508, 8508 }, { 8519, 8519 }, { 8523, 8523 }, { 8548, 8548 }, { 8551, 8551 }, { 8553, 8553 },
+            { 8659, 8665 }, { 8667, 8670 }, { 8679, 8679 }, { 8699, 8701 }, { 8717, 8717 }, { 8751, 8753 } }
+        local function oldUnnamed(storage)
+            for _, range in ipairs(OLD_UNNAMED) do
+                if (storage >= range[1] and storage <= range[2]) then
+                    return true
+                end
+            end
+            return false
+        end
+        local unnamed = {}
+        for npcName, quests in pairs(getAllNpcQuests()) do
+            for _, quest in ipairs(quests) do
+                local logged = quest.storage and Quests.getEntry(quest.storage)
+                if (quest.storage and not oldUnnamed(quest.storage) and not (logged and logged.text)) then
+                    unnamed[#unnamed + 1] = npcName .. " " .. quest.storage
+                end
+            end
+        end
+        table.sort(unnamed)
+        check("quests: every new quest has its mission in quests.xml for the quest log", #unnamed == 0,
+            table.concat(unnamed, ", "))
         check("quests: defeat objective", Quests.objective(defeat):find("^Defeat %d+ ") ~= nil, Quests.objective(defeat))
 
         doCreatureSetStorage(cid, first.storage, QUEST_STATUS.STARTED)

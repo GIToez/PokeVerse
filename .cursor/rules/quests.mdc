@@ -1,0 +1,20 @@
+---
+description: Every new quest goes in the quest log
+globs: core/server/data/lib/ps/config/003-quest.lua,core/server/data/XML/quests.xml,core/server/data/npc/**,core/server/data/lib/ps/systems/075-quests.lua
+alwaysApply: false
+---
+
+# New quests go in the quest log
+
+The quest log (`lib/ps/systems/075-quests.lua`, client `game_quests`) lists every NPC quest in
+`lib/ps/config/003-quest.lua` on its own, but its name and description come from
+`data/XML/quests.xml`. A quest without a mission there shows as "<NPC>'s request" with no text.
+
+Whenever a quest is added (or a quest line gets a new part):
+
+- Add a `<mission>` with the quest's `storage` as `storageid` to `quests.xml`, inside the quest
+  line's `<quest>` (or a new `<quest>` with the next free id), with a `missionstate` that says
+  what to do and where, and a "This mission is done." state.
+- Run the server test: "quests: every new quest has its mission in quests.xml for the quest log"
+  fails for any quest without one. Its `OLD_UNNAMED` list is only the older quests from before the
+  quest log; don't add new ones to it.
