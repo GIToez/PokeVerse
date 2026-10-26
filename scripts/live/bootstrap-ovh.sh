@@ -13,12 +13,13 @@
 #     GitHub Actions logs in as this user with the deploy key (no password, no shell tricks)
 #   - creates the production database and its user with a random password
 #   - writes /opt/pokeverse/shared/config.local.lua (database password, Discord bridge secret)
-#   - installs the systemd services (game server, Discord bot, daily backup) and allows the
-#     pokeverse user to start/stop/restart only these services
+#   - installs the systemd services (game server, Discord bot, daily backup, monthly GeoIP
+#     database for the bot) and allows the pokeverse user to start/stop/restart only these
+#     services
 #   - opens the game ports 7564 and 8548 if the ufw firewall is active
 set -euo pipefail
 
-BOOTSTRAP_VERSION=1
+BOOTSTRAP_VERSION=2
 PV_USER=pokeverse
 PV_HOME=/opt/pokeverse
 DB_NAME=pokeverse
@@ -48,7 +49,8 @@ if [ ! -f "$units_dir/pokeverse-server.service" ]; then
   # Running from a single downloaded file: fetch the service files from the same commit.
   ref=${POKEVERSE_REF:-main}
   units_dir=$(mktemp -d)
-  for f in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer; do
+  for f in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer \
+    pokeverse-geoip.service pokeverse-geoip.timer; do
     curl -fsSL "https://raw.githubusercontent.com/GIToez/PokeVerse/$ref/scripts/live/systemd/$f" -o "$units_dir/$f" \
       || die "could not download $f"
   done
@@ -87,7 +89,7 @@ usermod -p '*' "$PV_USER"
 install -d -m 750 -o "$PV_USER" -g "$PV_USER" "$PV_HOME"
 install -d -m 750 -o "$PV_USER" -g "$PV_USER" "$PV_HOME/releases" "$PV_HOME/shared" "$PV_HOME/shared/logs" \
   "$PV_HOME/discord" "$PV_HOME/discord/releases" "$PV_HOME/discord/shared" "$PV_HOME/discord/shared/data" \
-  "$PV_HOME/discord/shared/logs"
+  "$PV_HOME/discord/shared/logs" "$PV_HOME/discord/shared/geoip"
 install -d -m 700 -o "$PV_USER" -g "$PV_USER" "$PV_HOME/backups" "$PV_HOME/.ssh"
 for d in server chat bots; do install -d -m 750 -o "$PV_USER" -g "$PV_USER" "$PV_HOME/shared/logs/$d"; done
 
@@ -161,12 +163,14 @@ chmod 600 "$PV_HOME/.my.cnf"
 mariadb --defaults-file="$PV_HOME/.my.cnf" "$DB_NAME" -e "SELECT 1" >/dev/null || die "the $PV_USER database login does not work"
 
 step "Installing the systemd services"
-for f in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer; do
+for f in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer \
+    pokeverse-geoip.service pokeverse-geoip.timer; do
   install -m 644 "$units_dir/$f" "/etc/systemd/system/$f"
 done
 systemctl daemon-reload
 systemctl enable pokeverse-server.service >/dev/null
 systemctl enable --now pokeverse-backup.timer >/dev/null
+systemctl enable --now pokeverse-geoip.timer >/dev/null
 
 cat > /etc/sudoers.d/pokeverse <<'SUDO'
 # The pokeverse user (GitHub Actions deployments) may only control the PokeVerse services.

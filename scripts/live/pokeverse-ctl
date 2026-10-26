@@ -23,6 +23,7 @@
 #   pokeverse-ctl logs                       last lines of the game server log
 #   pokeverse-ctl discord-deploy <release>   install the Discord bot (settings on stdin, KEY=VALUE)
 #   pokeverse-ctl discord <check-config|check-bridge|setup|invite|status|logs>
+#   pokeverse-ctl discord geoip              download this month's DB-IP City Lite database for the bot
 set -euo pipefail
 umask 027
 
@@ -44,7 +45,13 @@ CHECK_DB=${DB_NAME}_restore_check
 SERVICE=pokeverse-server.service
 BOT_SERVICE=pokeverse-discord.service
 BOT_HOME=$PV_HOME/discord
-REQUIRED_BOOTSTRAP=1
+BOT_ENV=$BOT_HOME/shared/.env.production
+GEOIP_DIR=$BOT_HOME/shared/geoip
+GEOIP_DB=$GEOIP_DIR/dbip-city-lite.mmdb
+GEOIP_URL=${GEOIP_URL:-https://download.db-ip.com/free}
+GEOIP_MIN_BYTES=$((20 * 1024 * 1024))
+GEOIP_MAX_AGE_DAYS=35
+REQUIRED_BOOTSTRAP=2
 KEEP_RELEASES=5
 KEEP_DAILY_BACKUPS=14
 KEEP_OTHER_BACKUPS=20
@@ -78,7 +85,8 @@ cmd_verify() {
   bv=$(cat "$SHARED/bootstrap-version" 2>/dev/null || echo 0)
   if [ "$bv" -ge "$REQUIRED_BOOTSTRAP" ]; then ok "bootstrap version $bv"; else bad "bootstrap-ovh.sh has not been run (or is outdated: $bv < $REQUIRED_BOOTSTRAP)"; fi
 
-  for unit in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer; do
+  for unit in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer \
+    pokeverse-geoip.service pokeverse-geoip.timer; do
     if [ ! -f "/etc/systemd/system/$unit" ]; then
       bad "$unit is not installed (run bootstrap-ovh.sh)"
     elif [ -n "$release" ] && ! cmp -s "/etc/systemd/system/$unit" "$RELEASES/$release/tools/systemd/$unit"; then
@@ -744,6 +752,58 @@ set_env_value() {
 
 bot_run() { (cd "$BOT_HOME/current" && ./start-discord.sh "$@"); }
 
+# Sets GEOIP_DATABASE only when it is missing or empty, so a database the operator chose is
+# kept. Returns 0 when it was set now (the bot reads the setting at start).
+geoip_set_env() {
+  [ -f "$BOT_ENV" ] && [ -f "$GEOIP_DB" ] || return 1
+  [ -z "$(sed -n 's/^GEOIP_DATABASE=//p' "$BOT_ENV" | tail -1)" ] || return 1
+  set_env_value "$BOT_ENV" GEOIP_DATABASE "$GEOIP_DB"
+}
+
+# DB-IP City Lite (CC BY 4.0, no account): only the database is downloaded, no player IP is
+# sent. The bot reloads a replaced file within an hour by itself, so it is not restarted.
+# Fails (non-zero) without touching the installed database; callers decide if that is fatal.
+cmd_discord_geoip() {
+  local month prev m tmp_gz="" tmp_db="" got=""
+  geoip_fail() {
+    rm -f -- "$tmp_gz" "$tmp_db"
+    echo "WARNING: GeoIP database not updated: $*; the existing database is kept" >&2
+  }
+  mkdir -p "$GEOIP_DIR" && chmod 750 "$GEOIP_DIR" || { geoip_fail "cannot create $GEOIP_DIR"; return 1; }
+  tmp_gz=$(mktemp "$GEOIP_DIR/.download.XXXXXX") || { geoip_fail "cannot create a temporary file"; return 1; }
+  tmp_db=$(mktemp "$GEOIP_DIR/.mmdb.XXXXXX") || { geoip_fail "cannot create a temporary file"; return 1; }
+
+  month=$(date -u +%Y-%m)
+  prev=$(date -u -d "$(date -u +%Y-%m-01) -1 month" +%Y-%m)
+  # early in the month the new file may not be published yet
+  for m in "$month" "$prev"; do
+    log "Downloading DB-IP City Lite $m"
+    if curl -fsSL --max-time 300 --retry 2 -o "$tmp_gz" "$GEOIP_URL/dbip-city-lite-$m.mmdb.gz"; then
+      got=$m
+      break
+    fi
+  done
+  [ -n "$got" ] || { geoip_fail "download of $month and $prev failed"; return 1; }
+  gunzip -c "$tmp_gz" > "$tmp_db" 2>/dev/null || { geoip_fail "the $got download is not a valid gzip file"; return 1; }
+  rm -f -- "$tmp_gz"
+
+  local size
+  size=$(stat -c %s "$tmp_db")
+  [ "$size" -ge "$GEOIP_MIN_BYTES" ] || { geoip_fail "the $got database is only $size bytes"; return 1; }
+  LC_ALL=C grep -aqF $'\xab\xcd\xefMaxMind.com' "$tmp_db" || { geoip_fail "the $got file is not a MaxMind database"; return 1; }
+
+  chmod 640 "$tmp_db" && mv -f -- "$tmp_db" "$GEOIP_DB" || { geoip_fail "cannot move it to $GEOIP_DB"; return 1; }
+  log "Installed DB-IP City Lite $got ($((size / 1024 / 1024)) MB) at $GEOIP_DB"
+
+  if geoip_set_env; then
+    log "Set GEOIP_DATABASE=$GEOIP_DB; the bot reads it at start, so restart the bot once (discord-deploy does)"
+  elif [ ! -f "$BOT_ENV" ]; then
+    log "The bot has no settings yet; discord-deploy sets GEOIP_DATABASE"
+  else
+    log "The bot loads the new database within an hour"
+  fi
+}
+
 cmd_discord_deploy() {
   local id=${1:?release id}
   valid_id "$id"
@@ -775,6 +835,11 @@ cmd_discord_deploy() {
   rm -rf "$dir/data" "$dir/logs"
   ln -sfn "$BOT_HOME/shared/data" "$dir/data"
   ln -sfn "$BOT_HOME/shared/logs" "$dir/logs"
+
+  if [ -z "$(find "$GEOIP_DB" -mtime "-$GEOIP_MAX_AGE_DAYS" 2>/dev/null)" ]; then
+    cmd_discord_geoip || log "WARNING: continuing without a new GeoIP database"
+  fi
+  geoip_set_env && log "Set GEOIP_DATABASE=$GEOIP_DB" || true
 
   log "Checking the bot configuration"
   (cd "$dir" && ./start-discord.sh check-config) || die "the bot configuration is invalid; the bot was not changed"
@@ -815,6 +880,7 @@ cmd_discord() {
   local what=${1:-status}
   case "$what" in
     check-config|check-bridge|setup|invite) bot_run "$what" ;;
+    geoip) cmd_discord_geoip ;;
     status) systemctl status "$BOT_SERVICE" --no-pager -n 0 || true ;;
     logs) sudo -n /usr/bin/journalctl -u "$BOT_SERVICE" -n 300 --no-pager ;;
     *) die "unknown discord command: $what" ;;
@@ -843,5 +909,5 @@ case "$command" in
   logs) show_server_log ;;
   discord-deploy) cmd_discord_deploy "$@" ;;
   discord) cmd_discord "$@" ;;
-  *) sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+  *) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
 esac

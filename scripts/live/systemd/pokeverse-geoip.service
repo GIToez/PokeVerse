@@ -1,0 +1,26 @@
+# Monthly DB-IP City Lite download for the Discord bot's #player-activity locations (see
+# pokeverse-geoip.timer). Only the database file is downloaded; no player IP is sent. The bot
+# reloads the replaced file within an hour, so it is not restarted.
+[Unit]
+Description=PokeVerse GeoIP database update (DB-IP City Lite)
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/opt/pokeverse/current/tools/pokeverse-ctl
+
+[Service]
+Type=oneshot
+User=pokeverse
+Group=pokeverse
+ExecStart=/opt/pokeverse/current/tools/pokeverse-ctl discord geoip
+Nice=10
+IOSchedulingClass=idle
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/opt/pokeverse/discord/shared
