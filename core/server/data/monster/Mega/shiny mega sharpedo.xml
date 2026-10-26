@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Sharpedo" nickname="Mega Sharpedo" nameDescription="a Shiny Sharpedo" race="blood" experience="10" speed="295" manacost="0" minLevel="40" maxLevel="50">
+<monster name="Shiny Mega Sharpedo" nickname="Mega Sharpedo" nameDescription="a Shiny Mega Sharpedo" race="blood" experience="10" speed="295" manacost="0" minLevel="40" maxLevel="50">
 	<health now="70" max="70"/>
 	<look type="2649" corpse="29500"/>
 	<targetchange interval="5000" chance="8"/>

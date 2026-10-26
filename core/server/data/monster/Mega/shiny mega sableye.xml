@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Sableye" nickname="Mega Sableye" nameDescription="a Shiny Sableye" race="blood" experience="10" speed="250" manacost="0" minLevel="40" maxLevel="50">
+<monster name="Shiny Mega Sableye" nickname="Mega Sableye" nameDescription="a Shiny Mega Sableye" race="blood" experience="10" speed="250" manacost="0" minLevel="40" maxLevel="50">
 	<health now="50" max="50"/>
 	<look type="2647" corpse="29483"/>
 	<targetchange interval="5000" chance="8"/>

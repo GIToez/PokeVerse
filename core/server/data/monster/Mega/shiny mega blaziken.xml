@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Blaziken" nickname="Mega Blaziken" nameDescription="a Shiny Blaziken" race="blood" experience="15" speed="280" manacost="0" minLevel="85" maxLevel="95">
+<monster name="Shiny Mega Blaziken" nickname="Mega Blaziken" nameDescription="a Shiny Mega Blaziken" race="blood" experience="15" speed="280" manacost="0" minLevel="85" maxLevel="95">
 	<health now="80" max="80"/>
 	<look type="2645" corpse="29438"/>
 	<targetchange interval="5000" chance="8"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Mawile" nickname="Mega Mawile" nameDescription="a Shiny Mawile" race="blood" experience="10" speed="250" manacost="0" minLevel="40" maxLevel="50">
+<monster name="Shiny Mega Mawile" nickname="Mega Mawile" nameDescription="a Shiny Mega Mawile" race="blood" experience="10" speed="250" manacost="0" minLevel="40" maxLevel="50">
 	<health now="50" max="50"/>
 	<look type="2648" corpse="29484"/>
 	<targetchange interval="5000" chance="8"/>

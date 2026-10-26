@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Sceptile" nickname="Mega Sceptile" nameDescription="a Shiny Sceptile" race="blood" experience="15" speed="320" manacost="0" minLevel="85" maxLevel="95">
+<monster name="Shiny Mega Sceptile" nickname="Mega Sceptile" nameDescription="a Shiny Mega Sceptile" race="blood" experience="15" speed="320" manacost="0" minLevel="85" maxLevel="95">
 	<health now="70" max="70"/>
 	<look type="2644" corpse="29435"/>
 	<targetchange interval="5000" chance="8"/>

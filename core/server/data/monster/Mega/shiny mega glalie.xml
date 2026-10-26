@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Glalie" nickname="Mega Glalie" nameDescription="a Shiny Glalie" race="blood" experience="10" speed="280" manacost="0" minLevel="40" maxLevel="50">
+<monster name="Shiny Mega Glalie" nickname="Mega Glalie" nameDescription="a Shiny Mega Glalie" race="blood" experience="10" speed="280" manacost="0" minLevel="40" maxLevel="50">
 	<health now="80" max="80"/>
 	<look type="2653" corpse="29543"/>
 	<targetchange interval="5000" chance="8"/>
