@@ -265,7 +265,7 @@ function init()
     hud:addAnchor(AnchorHorizontalCenter, 'gameMapPanel', AnchorHorizontalCenter)
     hud:setMarginTop(4)
     for _, track in ipairs({ hud.experiencePanel.experience, hud.mainPanel.health, hud.mainPanel.pokemonHealth,
-                                  hud.mainPanel.pokemonEnergy }) do
+                                  hud.mainPanel.pokemonEnergy, hud.mainPanel.megaBar }) do
         track.onGeometryChange = resizeFill
     end
     for i = 1, PARTY_SIZE do
@@ -301,6 +301,7 @@ function init()
     Wallet.init(onWalletChange)
     Nameplates.init()
     Belt.init()
+    Mega.init(hud.mainPanel, setBar)
 
     hud:hide()
     if g_game.isOnline() then
@@ -332,6 +333,7 @@ function terminate()
     Wallet.terminate()
     Nameplates.terminate()
     Belt.terminate()
+    Mega.terminate()
     removeEvent(summonEvent)
     hud:destroy()
     hud = nil

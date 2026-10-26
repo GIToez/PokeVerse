@@ -11,6 +11,17 @@ MoveSlot < UIWidget
     phantom: true
     anchors.centerIn: parent
 
+  // the Mega ability boosts the move (game_pokehud/mega.lua)
+  UIWidget
+    id: megaGlow
+    phantom: true
+    visible: false
+    border-width: 2
+    border-color: #7dffa8
+    background-color: #5cf08a22
+    anchors.fill: parent
+    margin: -2
+
   // cooldown.png holds 24 frames of 40x40, from just used to almost ready
   UIWidget
     id: cooldown
