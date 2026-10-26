@@ -60,6 +60,22 @@ Gallade, Lopunny, Diancie (the one found looks unfinished), Feraligatr, Meganium
 close but not right) and Mega Latios. Nothing was found for Mewtwo X and Y, Heracross, Medicham,
 Banette, Pinsir, Rayquaza or Salamence, nor for the other Legends: Z-A Megas.
 
+### Repainting our own sprites (proposed)
+
+Where a Mega is too small, its normal form in our game can be painted into the Mega instead.
+It keeps our size and art style, and changes only what the Mega changes:
+
+- **Primal Groudon and Kyogre:** our 96 px Groudon (look 1562) and Kyogre (1561). The Primals keep
+  the same body and add glowing lines: yellow and orange magma lines on Groudon, cyan lines on
+  Kyogre, with the darker body colours. A good fit.
+- **Mega Latias and Latios:** our 96 px Latias (1559) and Latios (1560), recoloured purple
+  with the Mega's swept-back jet shape on the wings. Mega Latias has yellow eyes, Mega Latios red.
+- **Alakazam, Slowbro and the same-size ones:** harder, because their Megas change shape
+  (Mega Alakazam's beard and floating spoons, Mega Slowbro's shell over the body). These need a
+  real redraw on top of our sprite, larger than the normal one.
+
+Each is drawn here, shown to the trainer, and swapped onto its look with `scripts/dat-set-outfit.py`.
+
 ### Things to watch when reworking
 
 - **Too small:** a Mega that isn't clearly bigger than its normal form reads as the same

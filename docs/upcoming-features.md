@@ -3440,6 +3440,79 @@ the rest of our art ([new-pokemon-art.md](new-pokemon-art.md)). Checked October 
 
    Then the Pokepedia, the wiki and the player changelog.
 
+### Build plan (one PR per step)
+
+The art is in the client already ([mega-art.md](mega-art.md)): the walk sprites are looks
+2595-2629 and the items are client ids 28818-28914. Each step below is its own PR, tested
+before the next one starts. Nothing reaches players until a client release and a server
+deploy, which the owner starts.
+
+**PR 1: Running shoes.** Server item 18754 (client 17403, art already in) from the Ash
+Ketchum quest.
+- Check in game that the equip events in `movements.xml` really give the speed. They run
+  `onEquipItem`; the bike uses its own condition instead.
+- Set the speed to about half the bike's, and add a description saying it.
+- Make sure nothing that refuses bikers refuses the shoes, and that calling a Pokémon, fishing
+  and duels work while wearing them.
+- Test: `scripts/vocation-test.py`-style protocol test that equips them, checks the speed,
+  calls a Pokémon and takes them off.
+
+**PR 2: The items on the server.**
+- 97 server items, 30175-30271 (the last item today is 30174), added with
+  `scripts/otb-add-item.py` and pointed at client ids 28818-28914 in the same order. Names,
+  descriptions ("Only works once its Mega form is in the game" on the unused ones) and
+  weights go in `items.xml`.
+- The empty Mega Ring and the Key Stone: an action in `actions.xml` on both, so using either
+  on the other removes them and gives the Mega Ring. The Mega Ring goes in the key item slot
+  (`slotType` ring) with no speed.
+- The stones and orbs: held items in `046-heldItem.lua`, each naming its Mega form (or
+  none yet). They can be given on the swap bar like the other held items.
+- The GTS (`066-gts.lua`) refuses a ball whose Pokémon holds a stone, and the Pokepedia lists
+  the items.
+- A staff command `/megaitems` gives a set for testing.
+- Test: the protocol test puts the ring together both ways and gives and takes a stone.
+
+**PR 3: The forms.**
+- Config entries for Mega Venusaur, Mega Charizard X and Y and Mega Blastoise and their
+  shinies, built from the base forms like the Ranger Club Charizard, with the Mega stats,
+  typing and ability. Monster files that never spawn, pointing at looks 2595-2598 (the shinies
+  use recoloured copies until their own sheets exist).
+- Portraits, Pokédex pictures and box icons from Showdown and pokesprite.
+- Abilities: fix Drought (it checks the target, `004-skillDamage.lua`), add Tough Claws (and
+  a contact flag on the move config) and Mega Launcher, per Bulbapedia.
+- Test: a staff command turns a Pokémon into its Mega, and the test checks its typing, stats,
+  ability and look.
+
+**PR 4: The gauge and Mega Evolving (server).**
+- New `097-megaEvolution.lua`. The gauge charges from the damage code, the kill event the
+  Analyser uses and the boss and elite checks, within the limits in "Mega Power gauge". It is
+  kept on logout.
+- Two new extended ids, 51 (server to client: gauge and button state) and 52 (client to
+  server: the R press), in `others/constants.lua` and the client's `ExtendedIds`.
+- Mega Evolving uses the Transform mechanism. It drains over 60 seconds and ends on
+  switching, fainting and logout. It locks the ring and the stone, and follows the safe zone
+  and duel rules.
+- Test: fill the gauge, Mega Evolve, check it ends each way, and no Mega without the ring or
+  the stone or in a safe zone, and a duel starts the gauge at 0.
+
+**PR 5: HUD.** The Mega bar and button from the concept, the R key, the purple charging,
+gold ready and the button lighting only with a stone, plus the green glow on boosted moves in
+the move bar (`game_pokemoves`).
+
+**PR 6: The animation.** The on-map Key Stone sparkle, streams, cocoon, burst and aura
+(`game_creaturefx` shaders and overlay widgets, like `game_legendaryflight`), about 2.4 s,
+with the plain fallback when effects are off.
+
+**PR 7: The other Megas.** The rest of the 33 Megas with art, a few at a time, the same way
+as PR 3: config, monster file, ability, stone. Then Primal Groudon and Kyogre (Desolate Land
+and Primordial Sea) with the orbs.
+
+**PR 8: Quest and drops.** The quest for the empty Mega Ring and the Key Stone. The stone and
+orb drops from their lines, rolled on each wild defeat at 1 in 250,000 (one setting).
+
+**PR 9: Tests and docs.** The full in-game Mega check (the list in "Building order"), the
+Pokepedia, the wiki and the player changelog.
+
 ### Running shoes in the key item slot
 
 Running shoes (item 18754, from the Ash Ketchum quest) become a light alternative to the bike:
