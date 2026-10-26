@@ -37,6 +37,10 @@ MegaEvolution.CHARGE = {
 MegaEvolution.HIT_DELAY = 1
 MegaEvolution.TAKEN_DELAY = 2
 MegaEvolution.SAME_TARGET = 15
+-- Each wild Pokemon of a stone's evolution line drops it at 1 in DROP_CHANCE (one roll a defeat; a line with
+-- two stones, like Charizard's, gives either). Wild Groudon and Kyogre drop their orbs at 1 in ORB_DROP_CHANCE.
+MegaEvolution.DROP_CHANCE = 250000
+MegaEvolution.ORB_DROP_CHANCE = 250000
 
 -- Every script interface (actions, talkactions, creature scripts...) has its own copy of this file, so the
 -- state lives in storages, never in Lua tables. A storage string starting with a digit reads back as that
@@ -490,6 +494,41 @@ MegaEvolution.onKill = function(cid, target)
     end
     local elite = isBoss(target) or not isPokemonName(getCreatureName(target))
     charge(cid, elite and MegaEvolution.CHARGE.ELITE_KILL or MegaEvolution.CHARGE.WILD_KILL)
+    MegaEvolution.rollDrop(cid, getCreatureName(target))
+end
+
+local dropsBySpecies
+-- The stones a wild Pokemon of this name can drop (its shiny counts as the same species), or nil
+MegaEvolution.getDrops = function(name)
+    if (not dropsBySpecies) then
+        dropsBySpecies = {}
+        for _, stone in ipairs(MEGA_STONES) do
+            local species, steps = stone.pokemon, 0
+            while (species and steps < 5) do
+                dropsBySpecies[species] = dropsBySpecies[species] or {}
+                table.insert(dropsBySpecies[species], stone)
+                species, steps = getPokemonPreEvolution(species), steps + 1
+            end
+        end
+    end
+    return dropsBySpecies[(name:gsub("^Shiny ", ""))]
+end
+
+MegaEvolution.rollDrop = function(cid, name)
+    local drops = MegaEvolution.getDrops(name)
+    if (not drops) then
+        return nil
+    end
+    local orb = drops[1].form:find("^Primal") ~= nil
+    if (math.random(orb and MegaEvolution.ORB_DROP_CHANCE or MegaEvolution.DROP_CHANCE) ~= 1) then
+        return nil
+    end
+    local stone = drops[math.random(#drops)]
+    doPlayerSafeAddItem(cid, stone.itemId, 1, false)
+    doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
+    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "The %s dropped %s!"),
+        __L(cid, name), __L(cid, stone.name)))
+    return stone
 end
 
 -- The Mega Ring put on or taken off
