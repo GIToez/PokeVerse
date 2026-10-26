@@ -37,15 +37,21 @@ def rounded(out, name, w, h, radius, fill, outline=None):
     save(im, out, name)
 
 
-def bar_fill(out, name, top, bottom):
-    w, h = 12, 8
+def bar_width(h):
+    """A pill as tall as its bar: the client tiles bordered images, so each bar height needs its own.
+    The caps are the image borders (half the height, pokehud.lua); 2 pixels between them stretch."""
+    return 2 * math.ceil(h / 2) + 2
+
+
+def bar_fill(out, name, top, bottom, h):
+    w = bar_width(h)
     im = canvas(w, h)
     grad = Image.new('RGBA', im.size)
     for y in range(im.height):
         t = y / (im.height - 1)
         grad.paste(tuple(round(a + (b - a) * t) for a, b in zip(top, bottom)) + (255,), (0, y, im.width, y + 1))
     mask = Image.new('L', im.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle((0, 0, im.width - 1, im.height - 1), 4 * SCALE, fill=255)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, im.width - 1, im.height - 1), h / 2 * SCALE, fill=255)
     im.paste(grad, (0, 0), mask)
     save(im, out, name)
 
@@ -169,12 +175,14 @@ def main():
     if len(sys.argv) > 2:
         popups(Path(sys.argv[2]))
     rounded(out, 'panel', 24, 24, 9, PANEL, PANEL_EDGE)
-    rounded(out, 'track', 12, 8, 4, TRACK)
-    bar_fill(out, 'fill-health', (96, 226, 140), (44, 170, 92))
-    bar_fill(out, 'fill-pokemon', (110, 180, 245), (52, 116, 200))
-    bar_fill(out, 'fill-experience', (250, 204, 82), (214, 150, 30))
-    bar_fill(out, 'fill-energy', (184, 140, 255), (118, 72, 222))
-    bar_fill(out, 'fill-energy-low', (255, 132, 146), (200, 52, 74))
+    # the bar heights in pokehud.otui: experience 6, health 13, energy and the Mega bar 11
+    for h in (6, 11, 13):
+        rounded(out, 'track-%d' % h, bar_width(h), h, h / 2, TRACK)
+    bar_fill(out, 'fill-health', (96, 226, 140), (44, 170, 92), 13)
+    bar_fill(out, 'fill-pokemon', (110, 180, 245), (52, 116, 200), 13)
+    bar_fill(out, 'fill-experience', (250, 204, 82), (214, 150, 30), 6)
+    bar_fill(out, 'fill-energy', (184, 140, 255), (118, 72, 222), 11)
+    bar_fill(out, 'fill-energy-low', (255, 132, 146), (200, 52, 74), 11)
     portrait(out)
     ball(out, 'ball', (222, 44, 52), (240, 240, 240))
     ball(out, 'ball-fainted', (96, 70, 72), (130, 130, 130), button=(150, 150, 150))

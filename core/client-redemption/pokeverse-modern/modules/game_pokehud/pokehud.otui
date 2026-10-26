@@ -3,16 +3,12 @@ HudPanel < UIWidget
   image-border: 9
   phantom: true
 
+// the track image and the caps come from the height (pokehud.lua, initTrack)
 HudTrack < UIWidget
-  image-source: /modules/game_pokehud/images/track
-  image-border-left: 4
-  image-border-right: 4
-  height: 10
+  height: 11
 
   UIWidget
     id: fill
-    image-border-left: 4
-    image-border-right: 4
     anchors.left: parent.left
     anchors.top: parent.top
     anchors.bottom: parent.bottom

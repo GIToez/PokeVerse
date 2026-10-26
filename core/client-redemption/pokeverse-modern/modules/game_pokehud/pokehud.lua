@@ -11,7 +11,20 @@ local summonEvent
 local function resizeFill(track)
     local width = math.floor((track:getWidth() * (track.percent or 0)) / 100)
     track.fill:setVisible(width > 0)
-    track.fill:setWidth(math.max(width, 8))
+    track.fill:setWidth(math.max(width, 2 * (track.cap or 4)))
+end
+
+-- The client tiles a bordered image rather than stretching it, so every bar height has its own
+-- track and fill images (scripts/pokeverse-hud-images.py) with round caps of half the height.
+local function initTrack(track)
+    local height = track:getHeight()
+    track.cap = math.ceil(height / 2)
+    track:setImageSource(IMAGES .. 'track-' .. height)
+    for _, widget in ipairs({ track, track.fill }) do
+        widget:setImageBorderLeft(track.cap)
+        widget:setImageBorderRight(track.cap)
+    end
+    track.onGeometryChange = resizeFill
 end
 
 local function setBar(track, percent, fillImage, text, tooltip)
@@ -266,7 +279,7 @@ function init()
     hud:setMarginTop(4)
     for _, track in ipairs({ hud.experiencePanel.experience, hud.mainPanel.health, hud.mainPanel.pokemonHealth,
                                   hud.mainPanel.pokemonEnergy, hud.mainPanel.megaBar }) do
-        track.onGeometryChange = resizeFill
+        initTrack(track)
     end
     for i = 1, PARTY_SIZE do
         local ball = g_ui.createWidget('HudBall', hud.party)
