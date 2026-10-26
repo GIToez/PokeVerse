@@ -3104,6 +3104,111 @@ trade NPCs that are placed. These parts were never put on this map, so they don'
 - **Done:** Trevor, Hermitwo, Selam, Queter Phill and Peter Paul are only there while Halloween
   runs (`HalloweenEvent.syncNpcs`).
 
+## 27. Mega Evolution (proposed, not built)
+
+Proposed design (October 25). Nothing is built yet; the HUD layout has a
+[concept](concepts/mega-gauge-hud.png).
+
+Mega Evolution is a temporary transformation: the Pokémon gets stronger, changes its look,
+and may change its typing and ability. Instead of a cooldown, trainers charge a **Mega Power
+gauge** by fighting, like Pokémon Legends: Z-A.
+
+### Requirements
+
+- **Mega Ring with its Key Stone:** a trainer item from a dedicated questline (no Soul Coins,
+  no premium). It is unlocked for good, but the Mega gauge only shows, and Mega Evolution only
+  works, **while the ring is equipped**.
+- **Mega Stone:** one per eligible species, worn in the Pokémon's existing held-item slot.
+  Reusable, never used up. No extra level requirement.
+- Only one Mega Evolution at a time per trainer.
+
+Example stones: Lucario (Lucarionite), Gengar (Gengarite), Charizard (Charizardite X or Y),
+Blastoise (Blastoisinite), Venusaur (Venusaurite), Mewtwo (Mewtwonite X or Y).
+
+### Mega Power gauge
+
+- 0 to 100, one gauge per trainer, shared by all six Pokémon.
+- Earned in combat only:
+
+| Action | Mega Power |
+| --- | --- |
+| Damaging move that hits | +2 |
+| Super-effective damaging move | +3 in total |
+| Defeating a wild Pokémon | +5 |
+| Defeating an elite Pokémon | +10 |
+| A qualifying hit on a boss | +1 |
+| Taking a qualifying hit | +1 |
+
+- Switching Pokémon keeps the charge. Nothing charges outside combat.
+- Limits on rapid and multi-hit moves, less for hitting the same target again and again,
+  separate limits for bosses. Five seconds without combat stops the charging until the
+  trainer fights again.
+
+### Mega Evolving
+
+1. Fill the gauge to 100.
+2. Have a Pokémon out that holds its matching Mega Stone.
+3. Press the Mega Evolution button.
+4. The Pokémon turns into its Mega form, with that form's stats, typing and ability at once.
+5. The gauge drains over **60 seconds**; at zero the Pokémon turns back and the gauge is 0.
+
+- No cooldown; the next one needs another 100 Mega Power from combat. The gauge does not
+  charge while a Mega Evolution is active.
+- It ends at once (and the rest of the gauge is lost) when the Pokémon is switched out or
+  faints, or the trainer logs out. Rotating Pokémon can't keep two Megas going.
+
+### Stats
+
+- Each Mega form uses its official base stats (most add 100 points in total, spread
+  differently; HP usually stays the same), with the normal PokeVerse stat formulas.
+- Level, IVs, EVs, nature, experience and extra points all carry over. No flat percentage
+  bonus.
+
+### Where it works
+
+- Wild Pokémon, legendary encounters and world bosses: allowed, normal duration. World
+  bosses limit how much Mega Power they give.
+- Duels: both trainers start at 0; no charged gauge can be brought in. Entering restricted
+  PvP resets the gauge.
+- Tournaments: organisers switch it on or off in the event rules.
+- Safe zones: it can't be started.
+
+### HUD
+
+- The Mega bar sits under the trainer's HP, mirroring the Pokémon's energy bar under its HP
+  ([concept](concepts/mega-gauge-hud.png)). It only shows while the Mega Ring is equipped.
+- What it shows without a Mega Stone (the concept's greyed-out "No Mega Stone") is designed later.
+- 0 to 100; the Mega Evolution button turns on at 100 and is off when the Pokémon out can't
+  Mega Evolve. Transforming plays an effect, the HUD names the Mega form, and the bar drains
+  while it lasts.
+- Colours: purple while charging, a full-gauge shine when ready, green while active, empty
+  when used up.
+
+### Server side
+
+The server does all of it: the gauge, the ring and stone checks, the duration, the Mega
+stats, one Mega per trainer, the multi-hit, boss and same-target limits, ending it on
+fainting and logout, and the reset for restricted PvP. The client only shows what the server
+sends.
+
+### Trading
+
+- A Mega Stone can't go on the GTS while a Pokémon holds it.
+- **To decide:** whether unequipped Mega Stones can be traded.
+
+### To decide before building
+
+- **Ring slot:** the trainer's ring slot is the key item slot today (bike, sandboard). Is the
+  Mega Ring its own slot, or does wearing it mean no bike?
+- **Level cap:** this design expects Pokémon to level past 100 with smaller gains after it.
+  Today `POKEMON_LEVEL_MAX` is 100, and the legendary revamp kept that cap.
+- **Charizard:** Charizard is not installed, so Charizardite X and Y wait until it is.
+- **Art:** every Mega form needs its own outfit (four directions, walking), portrait and
+  Pokédex picture. Mega forms are Gen 6 art, and the Gen 4 to 6 plan leaves Megas out.
+- **Colour:** the Pokémon's energy bar is already purple. The charging colour may need to
+  differ so the two bars don't look the same.
+- Which species get a Mega first, and the Mega Ring questline.
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
