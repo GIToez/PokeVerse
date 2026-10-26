@@ -151,6 +151,31 @@ def learned_rule(normal, shiny):
     return rule
 
 
+def keep_flame(normal, shiny, grow=4):
+    """The shiny sheet with the tail flame back in the normal sheet's colours: the orange around
+    each yellow flame core. Thin yellow body lines vanish when the cores are shaved by a pixel."""
+    a, out = np.array(normal.convert('RGBA')), np.array(shiny.convert('RGBA'))
+    rgb, opaque = a[..., :3].astype(float) / 255, a[..., 3] > 0
+    hi, lo = rgb.max(-1), rgb.min(-1)
+    spread = np.maximum(hi - lo, 1e-6)
+    sat = np.where(hi > 0, (hi - lo) / np.maximum(hi, 1e-6), 0)
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    hue = np.where(hi == r, ((g - b) / spread) % 6, np.where(hi == g, (b - r) / spread + 2, (r - g) / spread + 4)) * 60
+    core = opaque & (hue >= 40) & (hue <= 62) & (sat > 0.55) & (hi > 0.85)
+    pad = np.pad(core, 1)
+    near = core & pad[:-2, 1:-1] & pad[2:, 1:-1] & pad[1:-1, :-2] & pad[1:-1, 2:]
+    for _ in range(grow + 1):
+        pad = np.pad(near, 1)
+        near = near | pad[:-2, 1:-1] | pad[2:, 1:-1] | pad[1:-1, :-2] | pad[1:-1, 2:]
+    flame = near & opaque & ((hue <= 40) | (hue >= 345)) & (sat >= 0.5)
+    out[flame, :3] = a[flame, :3]
+    return Image.fromarray(out)
+
+
+# forms whose shiny keeps the normal tail flame (keep_flame)
+KEEP_FLAME = {'charizard-megay'}
+
+
 def recolour(sheet, rule):
     px = np.array(sheet.convert('RGBA'))
     out, opaque = px.copy(), px[..., 3] > 0
@@ -267,7 +292,10 @@ def main():
             shiny = Image.open(fetch('%s/gen5-shiny/%s.png' % (SHOWDOWN, showdown),
                                      'gen5-shiny-%s.png' % showdown)).convert('RGBA')
             pack_sheet = Image.open(os.path.join(pack, 'outfit_%d_.png' % sheet))
-            recolour(pack_sheet, rule or learned_rule(normal, shiny)).save(os.path.join(out, 'shiny', name + '.png'))
+            shiny_sheet = recolour(pack_sheet, rule or learned_rule(normal, shiny))
+            if name in KEEP_FLAME:
+                shiny_sheet = keep_flame(pack_sheet, shiny_sheet)
+            shiny_sheet.save(os.path.join(out, 'shiny', name + '.png'))
         for kind in ('regular', 'shiny') if rule is not False else ('regular',):
             icon = Image.open(fetch('%s/%s/%s.png' % (POKESPRITE, kind, pokesprite), 'box-%s-%s.png' % (kind, pokesprite)))
             still = face(icon)

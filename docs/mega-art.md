@@ -111,7 +111,7 @@ Mega Venusaur, Mega Charizard X and Y and Mega Blastoise are playable (staff `/m
 
 - **Shiny looks** are recolours of the normal sheet, not drawn art. Venusaur and Blastoise use a
   colour map learned from Showdown's normal and shiny sprites; the Charizards use hand-picked hue
-  rules. Mega Charizard Y's tail flame turns purple with its body and should stay orange: rework it.
+  rules. Shiny Mega Charizard Y keeps the normal orange tail flame (`keep_flame`).
 - **Faces** (the 4-frame portrait in the Pokemon bar) are pokesprite's box icons with a small bob,
   smaller and plainer than our other faces. Redraw them when the Megas get their own art.
 - **Client images:** `staticPortraits/<dex>-<form>.png` (Showdown gen 5),
