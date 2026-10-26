@@ -573,6 +573,24 @@ local function tick()
     end
 end
 
+local function overlayScan()
+    local wait = math.ceil(readyAt - g_clock.seconds())
+    if wait > 0 then
+        modules.game_textmessage.displayFailureMessage(tr('Radar: you can scan again in %d seconds.', wait))
+        return
+    end
+    send({ action = 'scan' })
+end
+
+local function nearOverlayCenter(mousePos)
+    if not overlay or not overlay:isVisible() or not mousePos then
+        return false
+    end
+    local rect = overlay:getRect()
+    local dx, dy = mousePos.x - (rect.x + rect.width / 2), mousePos.y - (rect.y + rect.height / 2)
+    return dx * dx + dy * dy <= OVERLAY_CENTER_RADIUS * OVERLAY_CENTER_RADIUS
+end
+
 local function selectBlip(blip)
     if target == blip then
         return
@@ -620,7 +638,13 @@ local function buildBlips(list)
         local widget = g_ui.createWidget((kind == 'shiny' or kind == 'legendary') and 'RadarStarBlip' or 'RadarBlip', layer)
         widget:setImageSource(IMAGES .. 'blip_' .. kind)
         widget:setTooltip((blip.name or tr('Unknown Pokemon')) .. (kind ~= 'unknown' and (' (' .. tr(KIND_NAMES[kind]) .. ')') or ''))
-        widget.onClick = function() selectBlip(blip) end
+        widget.onClick = function(_, mousePos)
+            if nearOverlayCenter(mousePos) then
+                overlayScan()
+            else
+                selectBlip(blip)
+            end
+        end
         blip.widget = widget
         blips[#blips + 1] = blip
         if oldId and blip.id == oldId then
@@ -802,15 +826,6 @@ function hideOverlay()
     overlayOn = false
     g_settings.set(ENABLED_SETTING, false)
     syncOverlay()
-end
-
-local function overlayScan()
-    local wait = math.ceil(readyAt - g_clock.seconds())
-    if wait > 0 then
-        modules.game_textmessage.displayFailureMessage(tr('Radar: you can scan again in %d seconds.', wait))
-        return
-    end
-    send({ action = 'scan' })
 end
 
 local function openOverlayMenu(mousePos)
@@ -1074,12 +1089,8 @@ function init()
         local pressed = self.pressedAt
         self.pressedAt = nil
         if mouseButton ~= MouseLeftButton or not pressed or
-            math.abs(mousePos.x - pressed.x) + math.abs(mousePos.y - pressed.y) > CLICK_SLOP then
-            return false
-        end
-        local rect = self:getRect()
-        local dx, dy = mousePos.x - (rect.x + rect.width / 2), mousePos.y - (rect.y + rect.height / 2)
-        if dx * dx + dy * dy > OVERLAY_CENTER_RADIUS * OVERLAY_CENTER_RADIUS then
+            math.abs(mousePos.x - pressed.x) + math.abs(mousePos.y - pressed.y) > CLICK_SLOP or
+            not nearOverlayCenter(mousePos) then
             return false
         end
         overlayScan()
