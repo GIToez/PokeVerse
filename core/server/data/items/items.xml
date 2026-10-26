@@ -36291,4 +36291,8 @@
 	<item id="30271" article="a" name="blue orb">
 		<attribute key="description" value="An orb said to hold an ancient power. Held by Kyogre, it lets it undergo Primal Reversion." />
 	</item>
+	<!-- Mega and Primal forms' portraits (config/pokemon portrait), worn in the portrait slot like 12702-12853 -->
+	<item fromid="30272" toid="30326" article="a" name="pokemon portrait">
+		<attribute key="slotType" value="legs" />
+	</item>
 </items>
