@@ -3180,12 +3180,14 @@ Blastoise (Blastoisinite), Venusaur (Venusaurite), Mewtwo (Mewtwonite X or Y).
 - The Mega bar sits under the trainer's HP, mirroring the Pokémon's energy bar under its HP
   ([concept](concepts/mega-gauge-hud.png)). It only shows while the Mega Ring is equipped.
 - What it shows without a Mega Stone (the concept's greyed-out "No Mega Stone") is designed later.
-- 0 to 100. A **Mega Evolution button** sits on the HUD next to the Mega bar, and a
-  **hotkey** does the same (decided). Both turn on at 100 and are off when the Pokémon out
-  can't Mega Evolve. Transforming plays an effect, the HUD names the Mega form, and the bar drains
-  while it lasts.
-- Colours: purple while charging, a full-gauge shine when ready, green while active, empty
-  when used up.
+- 0 to 100. A round **Mega Evolution button** sits between the Mega bar and the portrait,
+  and the **R** key does the same (decided). R is free today; like E (order) and X (Pokédex)
+  it works with the chat off. F is free too. Both turn on at 100 and are off when the Pokémon
+  out can't Mega Evolve. Transforming plays an effect, the HUD names the Mega form, and the
+  bar drains while it lasts.
+- Colours (decided): **purple** while charging (a deeper purple than the energy bar's),
+  **gold** when ready to activate, with the button lit, **green** while active, empty when
+  used up.
 
 ### Server side
 
@@ -3197,20 +3199,19 @@ sends.
 ### Trading
 
 - A Mega Stone can't go on the GTS while a Pokémon holds it.
-- **To decide:** whether unequipped Mega Stones can be traded.
+- Unequipped Mega Stones can be traded, on the GTS and between players (decided).
+
+### Mega forms
+
+The game has no Mega forms yet. They are added **one at a time**, each with its stone, its
+official stats, typing and ability, and its own art (outfit in four directions with walking,
+portrait and Pokédex picture). Mega forms are Gen 6 art, and the Gen 4 to 6 plan leaves Megas
+out. Charizard is not installed, so Charizardite X and Y wait until it is.
 
 ### To decide before building
 
-- **Ring slot:** the trainer's ring slot is the key item slot today (bike, sandboard). Is the
-  Mega Ring its own slot, or does wearing it mean no bike?
-- **Level cap:** this design expects Pokémon to level past 100 with smaller gains after it.
-  Today `POKEMON_LEVEL_MAX` is 100, and the legendary revamp kept that cap.
-- **Charizard:** Charizard is not installed, so Charizardite X and Y wait until it is.
-- **Art:** every Mega form needs its own outfit (four directions, walking), portrait and
-  Pokédex picture. Mega forms are Gen 6 art, and the Gen 4 to 6 plan leaves Megas out.
-- **Colour:** the Pokémon's energy bar is already purple. The charging colour may need to
-  differ so the two bars don't look the same.
 - Which species get a Mega first, and the Mega Ring questline.
+- What the bar shows without a Mega Stone.
 
 ## Going private
 
