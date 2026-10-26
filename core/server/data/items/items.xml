@@ -36007,7 +36007,7 @@
 	</item>
 	<item id="30177" article="a" name="mega ring">
 		<attribute key="slotType" value="ring" />
-		<attribute key="description" value="Worn in the key item slot, it lets a Pokemon holding its Mega Stone Mega Evolve. It takes the place of the bike, running shoes and other key items." />
+		<attribute key="description" value="Worn in the key item slot, it lets a Pokemon holding its Mega Stone Mega Evolve." />
 	</item>
 	<item id="30178" article="a" name="venusaurite">
 		<attribute key="description" value="One of the mysterious Mega Stones. Held by Venusaur, it lets it Mega Evolve into Mega Venusaur." />
