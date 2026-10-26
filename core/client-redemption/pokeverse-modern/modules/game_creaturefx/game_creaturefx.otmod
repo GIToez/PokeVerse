@@ -1,8 +1,8 @@
 Module
   name: game_creaturefx
-  description: PokeVerse shaders on Pokemon: the shiny shimmer, and burn, freeze, paralysis, poison, sleep and confusion
+  description: PokeVerse shaders on Pokemon: the shiny shimmer, the Mega aura, and burn, freeze, paralysis, poison, sleep and confusion
   author: PokeVerse
   sandboxed: true
-  scripts: [ shiny_looks, creaturefx ]
+  scripts: [ shiny_looks, mega_looks, creaturefx ]
   @onLoad: init()
   @onUnload: terminate()

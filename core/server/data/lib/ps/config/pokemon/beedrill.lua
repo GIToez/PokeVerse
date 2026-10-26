@@ -25,3 +25,16 @@ POKEMON["Beedrill"] = {
 POKEMON["RC Beedrill"] = table.deepcopy(POKEMON["Beedrill"])
 POKEMON["RC Beedrill"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Beedrill"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Beedrill"] = table.deepcopy(POKEMON["Beedrill"])
+POKEMON["Mega Beedrill"].megaOf = "Beedrill"
+POKEMON["Mega Beedrill"].pTypes = { ELEMENT_BUG, ELEMENT_POISON }
+POKEMON["Mega Beedrill"].atk = 150
+POKEMON["Mega Beedrill"].def = 40
+POKEMON["Mega Beedrill"].spAtk = 15
+POKEMON["Mega Beedrill"].spDef = 80
+POKEMON["Mega Beedrill"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.ADAPTABILITY }
+POKEMON["Mega Beedrill"].portrait = 30280
+POKEMON["Mega Beedrill"].fastcallPortrait = 28923
+POKEMON["Mega Beedrill"].blockTransform = true

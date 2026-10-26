@@ -808,6 +808,7 @@ function doPokemonCall(cid, ball)
         end
         doCreatureSetStorage(cid, playersStorages.switchProtectionUntil, -1)
         addEvent(checkPokemonHungry, 60 * 1000, pokemon)
+        MegaEvolution.send(cid)
 
         if (getPlayerMastery(cid) and not getPlayerTournamentReady(cid)) then
             local mastery = getPlayerMastery(cid)

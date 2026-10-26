@@ -592,13 +592,10 @@ void ThingType::unserialize(const uint16_t clientId, const ThingCategory categor
             case ThingAttrDisplacement:
             {
                 if (g_game.getClientVersion() >= 755) {
-                    if (g_game.getFeature(Otc::GameNegativeOffset)) {
-                        m_displacement.x = fin->get16();
-                        m_displacement.y = fin->get16();
-                    } else {
-                        m_displacement.x = fin->getU16();
-                        m_displacement.y = fin->getU16();
-                    }
+                    // always signed: PokeVerse outfits drawn in from centred sprite sheets shift right/down
+                    // to stand on their tile, and the data loads before the game features are set
+                    m_displacement.x = static_cast<int16_t>(fin->getU16());
+                    m_displacement.y = static_cast<int16_t>(fin->getU16());
                 } else {
                     m_displacement.x = 8;
                     m_displacement.y = 8;

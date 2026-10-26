@@ -26,3 +26,16 @@ POKEMON["Kangaskhan"] = {
 POKEMON["RC Kangaskhan"] = table.deepcopy(POKEMON["Kangaskhan"])
 POKEMON["RC Kangaskhan"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Kangaskhan"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Kangaskhan"] = table.deepcopy(POKEMON["Kangaskhan"])
+POKEMON["Mega Kangaskhan"].megaOf = "Kangaskhan"
+POKEMON["Mega Kangaskhan"].pTypes = { ELEMENT_NORMAL }
+POKEMON["Mega Kangaskhan"].atk = 125
+POKEMON["Mega Kangaskhan"].def = 100
+POKEMON["Mega Kangaskhan"].spAtk = 60
+POKEMON["Mega Kangaskhan"].spDef = 100
+POKEMON["Mega Kangaskhan"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.PARENTAL_BOND }
+POKEMON["Mega Kangaskhan"].portrait = 30290
+POKEMON["Mega Kangaskhan"].fastcallPortrait = 28933
+POKEMON["Mega Kangaskhan"].blockTransform = true

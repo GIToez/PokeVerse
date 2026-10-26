@@ -22,3 +22,16 @@ POKEMON["Kyogre"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.BLIZZARD, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.BIDE, TM_IDS.SWIFT, TM_IDS.REST, TM_IDS.THUNDER_WAVE, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.CALM_MIND, TM_IDS.ROAR, TM_IDS.HAIL, TM_IDS.SAFEGUARD, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE },
     eggMoves = { --[[ TODO ]] }
 }
+
+-- Primal form (097-megaEvolution.lua): only while in Primal Reversion, never wild or caught
+POKEMON["Primal Kyogre"] = table.deepcopy(POKEMON["Kyogre"])
+POKEMON["Primal Kyogre"].megaOf = "Kyogre"
+POKEMON["Primal Kyogre"].pTypes = { ELEMENT_WATER }
+POKEMON["Primal Kyogre"].atk = 150
+POKEMON["Primal Kyogre"].def = 90
+POKEMON["Primal Kyogre"].spAtk = 180
+POKEMON["Primal Kyogre"].spDef = 160
+POKEMON["Primal Kyogre"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.PRIMORDIAL_SEA }
+POKEMON["Primal Kyogre"].portrait = 30325
+POKEMON["Primal Kyogre"].fastcallPortrait = 28968
+POKEMON["Primal Kyogre"].blockTransform = true

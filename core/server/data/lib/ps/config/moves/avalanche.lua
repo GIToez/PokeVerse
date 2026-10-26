@@ -1,5 +1,6 @@
 MOVES["Avalanche"] = {
     description = "Avalanche deals damage and has no secondary effect.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 23372,
     iconId = 0,

@@ -146,6 +146,7 @@ function onLogin(cid)
 
         ExpBoost.onLogin(cid)
         Analyser.onLogin(cid)
+        MegaEvolution.onLogin(cid)
         doExtraExpRateCheck(cid)
         ServerExpEvent.onLogin(cid)
         Daycare.onLogin(cid)

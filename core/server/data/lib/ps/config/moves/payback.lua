@@ -1,5 +1,6 @@
 MOVES["Payback"] = {
     description = "Any move is reflected back to the attacker.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 12115,
     iconId = 0,

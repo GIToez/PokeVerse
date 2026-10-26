@@ -67,6 +67,7 @@ function onLogout(cid, forceLogout)
         end
     end
 
+    MegaEvolution.onLogout(cid)
     if (isPokemonOnline(cid)) then
         local pokemon = getPlayerPokemon(cid)
         if (isCreature(pokemon)) then

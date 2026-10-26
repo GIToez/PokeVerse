@@ -13,5 +13,4 @@ MOVES["Camouflage"] = {
     maxDistance = 1,
     cooldownTime = 60,
     cooldownStorage = 15414,
-    makeContact = true,
 }

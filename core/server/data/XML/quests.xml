@@ -1817,4 +1817,14 @@
 			<missionstate id="1" description="This mission is done."/>
 		</mission>							
 	</quest>
+	<quest id="91" name="Mega Evolution" startstorageid="8760" startstoragevalue="0">
+		<mission name="Professor Oak's Mega research" storageid="8760" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Defeat 50 wild Pokemon from each of three Mega Stone families, then return to Professor Oak."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+		<mission name="The Key Stone" storageid="8761" startvalue="0" endvalue="1">
+			<missionstate id="0" description="Find the glowing crystal at the bottom of Cerulean Cave, put its Key Stone on the empty Mega Ring and show Professor Oak the Mega Ring."/>
+			<missionstate id="1" description="This mission is done."/>
+		</mission>
+	</quest>
 </quests>

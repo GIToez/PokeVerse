@@ -22,3 +22,16 @@ POKEMON["Sableye"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.PSYCHIC, TM_IDS.SHADOW_BALL, TM_IDS.DOUBLE_TEAM, TM_IDS.ROCK_TOMB, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.POISON_JAB, TM_IDS.DREAM_EATER, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.CALM_MIND, TM_IDS.TAUNT, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE },
     eggMoves = { "Metal Burst", "Nasty Plot", "Recover", "Sucker Punch" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Sableye"] = table.deepcopy(POKEMON["Sableye"])
+POKEMON["Mega Sableye"].megaOf = "Sableye"
+POKEMON["Mega Sableye"].pTypes = { ELEMENT_DARK, ELEMENT_GHOST }
+POKEMON["Mega Sableye"].atk = 85
+POKEMON["Mega Sableye"].def = 125
+POKEMON["Mega Sableye"].spAtk = 85
+POKEMON["Mega Sableye"].spDef = 115
+POKEMON["Mega Sableye"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.MAGIC_BOUNCE }
+POKEMON["Mega Sableye"].portrait = 30310
+POKEMON["Mega Sableye"].fastcallPortrait = 28953
+POKEMON["Mega Sableye"].blockTransform = true

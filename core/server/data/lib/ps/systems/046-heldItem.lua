@@ -190,6 +190,33 @@ addStatHeld(HELD_IDS.LUCKY_EGG, "Lucky Egg", 30152,
 addStatHeld(HELD_IDS.EXP_SHARE, "Exp Share", 30153,
     { expShare = true, summary = "Exp Share (shares the experience of the Pokemon out while on the belt)" })
 
+-- Mega Stones and the Primal orbs (config/megaItems.lua) boost nothing themselves; MegaEvolution
+-- reads them. Their held ids are kept on balls, so MEGA_STONES only ever grows at the end.
+MEGA_STONE_HELD_BASE = 100
+for i, stone in ipairs(MEGA_STONES) do
+    HELDS[MEGA_STONE_HELD_BASE + i] = {
+        name = stone.name,
+        itemId = stone.itemId,
+        megaStone = stone,
+        onApply = function(pokemon, ballUid)
+            setBoost(pokemon, {})
+        end,
+        getDescription = function(uid)
+            local change = stone.form:find("^Primal") and "undergo Primal Reversion" or "Mega Evolve"
+            if (MegaEvolution and MegaEvolution.hasForm(stone.form)) then
+                return string.format("%s (lets %s %s)", stone.name, stone.pokemon, change)
+            end
+            return string.format("%s (%s isn't in the game yet)", stone.name, stone.form)
+        end,
+        canTake = function(cid, ballUid)
+            if (MegaEvolution and MegaEvolution.isStoneLocked(cid, ballUid)) then
+                return false, "Wait until your Pokemon is no longer Mega Evolved."
+            end
+            return true
+        end
+    }
+end
+
 local HELD_BY_ITEMID = {}
 for id, held in pairs(HELDS) do
     HELD_BY_ITEMID[held.itemId] = id
@@ -246,6 +273,12 @@ PokemonHeldItem.take = function(cid, ballUid)
     end
 
     local held = HELDS[heldId]
+    if (held and held.canTake) then
+        local ok, why = held.canTake(cid, ballUid)
+        if (not ok) then
+            return nil, why
+        end
+    end
     local name = PokemonHeldItem.getHeldName(heldId, ballUid) or "held item"
     if (held and held.onTake) then
         held.onTake(cid, ballUid)
@@ -280,7 +313,10 @@ PokemonHeldItem.give = function(cid, ballUid, item)
     end
 
     if (getBallHeld(ballUid)) then
-        PokemonHeldItem.take(cid, ballUid)
+        local taken, why = PokemonHeldItem.take(cid, ballUid)
+        if (not taken) then
+            return nil, why
+        end
     end
 
     setBallHeld(ballUid, heldId)
@@ -348,6 +384,12 @@ end
 PokemonHeldItem.getExpRate = function(ballUid)
     local held = getBallHeldDefinition(ballUid)
     return held and held.expRate or 1
+end
+
+-- The MEGA_STONES entry the ball's Pokemon holds, nil otherwise
+PokemonHeldItem.getMegaStone = function(ballUid)
+    local held = getBallHeldDefinition(ballUid)
+    return held and held.megaStone or nil
 end
 
 PokemonHeldItem.hasExpShare = function(ballUid)

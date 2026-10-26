@@ -29,3 +29,16 @@ POKEMON["RC Scizor"].blockTransform = true
 
 POKEMON["Cloned Scizor"] = table.deepcopy(POKEMON["Scizor"])
 POKEMON["Cloned Scizor"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Scizor"] = table.deepcopy(POKEMON["Scizor"])
+POKEMON["Mega Scizor"].megaOf = "Scizor"
+POKEMON["Mega Scizor"].pTypes = { ELEMENT_BUG, ELEMENT_STEEL }
+POKEMON["Mega Scizor"].atk = 150
+POKEMON["Mega Scizor"].def = 140
+POKEMON["Mega Scizor"].spAtk = 65
+POKEMON["Mega Scizor"].spDef = 100
+POKEMON["Mega Scizor"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TECHNICIAN }
+POKEMON["Mega Scizor"].portrait = 30300
+POKEMON["Mega Scizor"].fastcallPortrait = 28943
+POKEMON["Mega Scizor"].blockTransform = true

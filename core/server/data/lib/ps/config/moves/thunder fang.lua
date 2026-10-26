@@ -1,5 +1,6 @@
 MOVES["Thunder Fang"] = {
     description = "Thunder Fang deals damage and has a 10% chance of paralyzing the target, plus a 10% chance of causing the target to flinch.",
+    bite = true,
     makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 12143,

@@ -1,5 +1,6 @@
 MOVES["Aura Sphere"] = {
     description = "The user lets loose a blast of aura power from deep within its body at the target. This attack never misses.",
+    pulse = true,
     category = MOVE_CATEGORY.SPECIAL,
     clientIconId = 26899,
     iconId = 0,

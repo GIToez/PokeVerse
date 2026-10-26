@@ -22,3 +22,16 @@ POKEMON["Mawile"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.ICE_BEAM, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.SOLAR_BEAM, TM_IDS.SHADOW_BALL, TM_IDS.DOUBLE_TEAM, TM_IDS.FLAMETHROWER, TM_IDS.SLUDGE_BOMB, TM_IDS.FIRE_BLAST, TM_IDS.ROCK_TOMB, TM_IDS.REST, TM_IDS.SWORDS_DANCE, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.TAUNT, TM_IDS.BRICK_BREAK, TM_IDS.SANDSTORM },
     eggMoves = { "Ancient Power", "Fire Fang", "Ice Fang", "Metal Burst", "Misty Terrain", "Poison Fang", "Punishment", "Seismic Toss", "Slam", "Thunder Fang" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Mawile"] = table.deepcopy(POKEMON["Mawile"])
+POKEMON["Mega Mawile"].megaOf = "Mawile"
+POKEMON["Mega Mawile"].pTypes = { ELEMENT_STEEL, ELEMENT_FAIRY }
+POKEMON["Mega Mawile"].atk = 105
+POKEMON["Mega Mawile"].def = 125
+POKEMON["Mega Mawile"].spAtk = 55
+POKEMON["Mega Mawile"].spDef = 95
+POKEMON["Mega Mawile"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.HUGE_POWER }
+POKEMON["Mega Mawile"].portrait = 30312
+POKEMON["Mega Mawile"].fastcallPortrait = 28955
+POKEMON["Mega Mawile"].blockTransform = true

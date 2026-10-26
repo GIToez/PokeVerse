@@ -1,5 +1,6 @@
 MOVES["Brutal Swing"] = {
     description = "Brutal Swing does damage and has no secondary effect.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 27580,
     iconId = 0,

@@ -130,5 +130,12 @@ playersStorages = {
     eventShopId = base + 127, -- the EventShop id last opened for that trainer
     analyserClient = base + 128, -- 1 while the trainer's client has the Analyser window (it asks at login)
     analyserLastKill = base + 129, -- "<level>|<name>" of the last wild Pokemon the trainer defeated (Analyser)
+    megaGauge = base + 130, -- the Mega gauge, 0 to 100, kept across logins (MegaEvolution)
+    megaActive = base + 131, -- "M<token>|<Pokemon creature id>|<seconds left>" while a Mega Evolution lasts (MegaEvolution)
+    megaClient = base + 132, -- 1 while the trainer's client has the Mega HUD (it says hello at login)
+    megaCharges = base + 133, -- "C<hit>|<hit taken>|<boss hit>|<target id>|<hits in a row on it>": when the gauge last charged (MegaEvolution)
+    megaPvp = base + 134, -- the restricted PvP the trainer was last seen in ("duel", "arena", "tournament"), so entering one empties the gauge
+    megaStarter = base + 135, -- the starter Professor Oak (or the beginner NPC) gave: "Bulbasaur", "Charmander" or "Squirtle"
+    megaResearch = base + 136, -- "R<line>=<defeats>,...": Oak's Mega research, wild defeats per Mega Stone line
     -- tournamentWeekWinnerStorage = base + 65
 }

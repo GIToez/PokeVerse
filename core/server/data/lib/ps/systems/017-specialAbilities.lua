@@ -485,10 +485,10 @@ local SPECIAL_ABILITIES = {
             return getPokemonSkillMakeContact(move) and getRandom(0, 100) <= 30
         end
     },
-    --[[[POKEMON_SPECIAL_ABILITY_IDS.MOLD_BREAKER] = {
+    [POKEMON_SPECIAL_ABILITY_IDS.MOLD_BREAKER] = {
         name = "Mold Breaker",
-        description = "Mold Breaker negates the effects of Abilities that could potentially weaken or negate moves or the side-effects of moves that the Mold Breaker Pokemon use (Mold Breaker will allow the user's Earthquake to hit a Pokemon with Levitate, but has no effect on the player's ally's Earthquake).",
-    },]]
+        description = "Mold Breaker's moves ignore the target's Abilities that would weaken or stop them, such as Levitate, Sturdy, Thick Fat or Water Absorb.",
+    },
     [POKEMON_SPECIAL_ABILITY_IDS.ADAPTABILITY] = {
         name = "Adaptability",
         description = "Adaptability double moves power that type equal user type.",
@@ -622,7 +622,7 @@ local SPECIAL_ABILITIES = {
     },
     [POKEMON_SPECIAL_ABILITY_IDS.DROUGHT] = {
         name = "Drought",
-        description = "Drought boosts Fire-type moves power by 20%.",
+        description = "Drought boosts the power of the Pokemon's Fire-type moves by 20%. On a Mega Evolved Pokemon it boosts them by 50% and halves the damage of Water-type moves that hit it.",
         onCheck = function(cid, target, move)
             return getPokemonSkillDamageType(move) == ELEMENT_FIRE
         end
@@ -652,7 +652,7 @@ local SPECIAL_ABILITIES = {
     },
     [POKEMON_SPECIAL_ABILITY_IDS.DRIZZLE] = {
         name = "Drizzle",
-        description = "Drizzle boosts Water-type moves power by 20%.",
+        description = "Drizzle boosts the power of the Pokemon's Water-type moves by 20%.",
         onCheck = function(cid, target, move)
             return getPokemonSkillDamageType(move) == ELEMENT_WATER
         end
@@ -704,7 +704,108 @@ local SPECIAL_ABILITIES = {
             return getRandom(1, 100) <= 10
         end
     },
+    [POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS] = {
+        name = "Tough Claws",
+        description = "Tough Claws boosts the power of moves that make contact by 30%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillMakeContact(move)
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER] = {
+        name = "Mega Launcher",
+        description = "Mega Launcher boosts the power of aura and pulse moves by 50%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillIsPulse(move)
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.PARENTAL_BOND] = {
+        name = "Parental Bond",
+        description = "Parental Bond makes the parent and its child both attack: every damaging move hits a second time at a quarter of the power, added to the hit.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamage(move) > 0
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.SAND_FORCE] = {
+        name = "Sand Force",
+        description = "Sand Force boosts the power of Rock, Ground and Steel moves by 30%.",
+        onCheck = function(cid, target, move)
+            return table.find({ ELEMENT_ROCK, ELEMENT_GROUND, ELEMENT_STEEL }, getPokemonSkillDamageType(move)) ~= nil
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.MAGIC_BOUNCE] = {
+        name = "Magic Bounce",
+        description = "Magic Bounce sends the bad statuses a foe gives it back at the foe.",
+        onCheck = function(cid, target, caster)
+            return isCreature(caster) and caster ~= cid and not isFriend(cid, caster)
+                    and getMonsterSpecialAbility(caster) ~= POKEMON_SPECIAL_ABILITY_IDS.MAGIC_BOUNCE
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.STRONG_JAW] = {
+        name = "Strong Jaw",
+        description = "Strong Jaw boosts the power of biting moves, such as Bite, Crunch and the Fang moves, by 50%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillIsBite(move)
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.SHEER_FORCE] = {
+        name = "Sheer Force",
+        description = "Sheer Force boosts the power of moves that have a chance of an added effect, such as Flamethrower or Earth Power, by 30%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamage(move) > 0 and getPokemonSkillHasAddedEffect(move)
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.PIXILATE] = {
+        name = "Pixilate",
+        description = "Pixilate turns Normal-type moves into Fairy-type moves and boosts their power by 20%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamageType(move) == ELEMENT_NORMAL
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE] = {
+        name = "Refrigerate",
+        description = "Refrigerate turns Normal-type moves into Ice-type moves and boosts their power by 20%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamageType(move) == ELEMENT_NORMAL
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.DESOLATE_LAND] = {
+        name = "Desolate Land",
+        description = "Desolate Land brings extremely harsh sunlight around the Pokemon: its Fire moves are 50% stronger, and Water moves aimed at it evaporate.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamageType(move) == ELEMENT_FIRE
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.PRIMORDIAL_SEA] = {
+        name = "Primordial Sea",
+        description = "Primordial Sea brings heavy rain around the Pokemon: its Water moves are 50% stronger, and Fire moves aimed at it fizzle out.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamageType(move) == ELEMENT_WATER
+        end
+    },
 }
+
+-- The target's Abilities a Mold Breaker's moves ignore
+local MOLD_BREAKABLE = {}
+for _, ability in ipairs({ "LEVITATE", "LIGHTNINGROD", "WONDER_GUARD", "FILTER", "THICK_FAT", "SHELL_ARMOR",
+                           "BATTLE_ARMOR", "STURDY", "TANGLED_FEET", "SNOW_CLOAK", "WATER_ABSORB", "VOLT_ABSORB",
+                           "DRY_SKIN", "MAGIC_BOUNCE" }) do
+    MOLD_BREAKABLE[POKEMON_SPECIAL_ABILITY_IDS[ability]] = true
+end
+local moldBreaker = nil
+
+-- Runs fn(...) as the attacker's hit: while it runs, a Mold Breaker attacker's targets lose the
+-- abilities in MOLD_BREAKABLE. Nested hits (a reflected move) use their own attacker.
+function doWithMoldBreaker(attacker, fn, ...)
+    local previous = moldBreaker
+    moldBreaker = (isMonster(attacker) and getMonsterSpecialAbility(attacker) == POKEMON_SPECIAL_ABILITY_IDS.MOLD_BREAKER)
+            and attacker or nil
+    local result = { pcall(fn, ...) }
+    moldBreaker = previous
+    if (not result[1]) then
+        error(result[2], 0)
+    end
+    return unpack(result, 2, table.maxn(result))
+end
 
 function getPokemonSpecialAbilityName(ability)
     if (not SPECIAL_ABILITIES[ability]) then
@@ -723,10 +824,18 @@ function doPokemonSpecialAbilityCheck(cid, ability, target, ...)
     if (not ability) then
         log(LOG_TYPES.ERROR, "doPokemonSpecialAbilityCheck - Nil ability", getCreatureName(cid), ability, ...)
         return false
+    elseif (moldBreaker and cid ~= moldBreaker and MOLD_BREAKABLE[ability]) then
+        return false
     end
 
     return isMonster(cid) and getMonsterSpecialAbility(cid) == ability and (not target or isMonster(target)) and
             (not SPECIAL_ABILITIES[ability].onCheck or SPECIAL_ABILITIES[ability].onCheck(cid, target, ...))
+end
+
+-- For the abilities that pick moves by the move alone (Drought, Tough Claws, Mega Launcher, Thick Fat...)
+function getPokemonSpecialAbilityMoveCheck(ability, move)
+    local definition = SPECIAL_ABILITIES[ability]
+    return definition ~= nil and definition.onCheck ~= nil and definition.onCheck(nil, nil, move) and true or false
 end
 
 --doCheckPokemonSpecialAbilities();

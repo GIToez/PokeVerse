@@ -1,5 +1,6 @@
 MOVES["Water Pulse"] = {
     description = "Water Pulse deals damage and has a 20% chance of confusing the target.",
+    pulse = true,
     category = MOVE_CATEGORY.SPECIAL,
     clientIconId = 12055,
     iconId = 0,

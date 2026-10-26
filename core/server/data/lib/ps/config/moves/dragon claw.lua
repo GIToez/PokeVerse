@@ -1,5 +1,6 @@
 MOVES["Dragon Claw"] = {
     description = "Dragon Claw inflicts damage and has no secondary effect.",
+    makeContact = true,
     category = MOVE_CATEGORY.PHYSICAL,
     clientIconId = 27584,
     iconId = 0,

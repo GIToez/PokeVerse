@@ -37,8 +37,10 @@ function onPrepareDeath(cid)
     BattleText.say(pokemonMaster, "recall", string.format(__L(pokemonMaster, "%s, back!"), getCreatureNickname(cid)), { pokemon = cid })
     doPlayerSendPokemonWindowUpdatePokemonIcon(pokemonMaster, getFastcallNumber(ball.uid), 2, "FNT")
     setBallPokemonLastHpPercent(ball.uid, 0)
+    MegaEvolution.finish(pokemonMaster)
     doRemoveCreature(cid)
     doCreatureSetStorage(pokemonMaster, playersStorages.isPokemonOnline, 0)
+    MegaEvolution.send(pokemonMaster)
     doPlayerSendPokemonStatusClear(pokemonMaster)
     return false
 end

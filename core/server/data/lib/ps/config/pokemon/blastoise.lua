@@ -45,3 +45,15 @@ POKEMON["Clone Blastoise"].spDef = 70 * 3
 
 POKEMON["Cloned Blastoise"] = table.deepcopy(POKEMON["Blastoise"])
 POKEMON["Cloned Blastoise"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Blastoise"] = table.deepcopy(POKEMON["Blastoise"])
+POKEMON["Mega Blastoise"].megaOf = "Blastoise"
+POKEMON["Mega Blastoise"].atk = 103
+POKEMON["Mega Blastoise"].def = 120
+POKEMON["Mega Blastoise"].spAtk = 135
+POKEMON["Mega Blastoise"].spDef = 115
+POKEMON["Mega Blastoise"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER }
+POKEMON["Mega Blastoise"].portrait = 30278
+POKEMON["Mega Blastoise"].fastcallPortrait = 28921
+POKEMON["Mega Blastoise"].blockTransform = true

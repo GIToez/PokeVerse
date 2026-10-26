@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Adds client items that draw their own 32x32 picture from data.spr.
 
-    scripts/dat-add-sprite-items.py <template client id> <icon.png> [<icon.png> ...]
+    scripts/dat-add-sprite-items.py [--frames N] <template client id> <icon.png> [<icon.png> ...]
 
 Every icon becomes a new client item after the last one, with the template's attributes
 (pickupable, movable and so on) and one still sprite. The sprites go on ids no thing uses, so
 nothing else changes, and every client draws them (no `image:` entry in things.otml needed).
-Prints the client id each icon got.
+With --frames N, every N icons in a row are the animation frames of one item (like the swap
+bar faces, 4 frames). Prints the client id each item got.
 """
 import importlib.util
 import os
@@ -45,21 +46,32 @@ def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
     import house_reskin
-    template_id, icons = int(sys.argv[1]), sys.argv[2:]
+    args = sys.argv[1:]
+    frames = 1
+    if args[0] == '--frames':
+        frames, args = int(args[1]), args[2:]
+    template_id, icons = int(args[0]), args[1:]
+    if frames < 1 or len(icons) % frames:
+        sys.exit('%d icons do not make items of %d frames' % (len(icons), frames))
     data = open(DAT, 'rb').read()
     signature, items, outfits, effects, missiles, offsets, items_end = dat_tool.parse(data)
     if template_id not in offsets:
         sys.exit('template client id %d not found (items are 100-%d)' % (template_id, items))
     still = dat_tool.make_still(data, *offsets[template_id])[:-4]
+    # make_still ends with width, height, layers, pattern x, y, z and frames (all 1)
+    head = still[:-1] + bytes([frames])
     used = footprints.used_sprites(data)
     free = (s for s in range(1, max(used)) if s not in used)
     new_sprites, things = {}, []
-    for n, path in enumerate(icons, 1):
-        sid = next(free)
-        new_sprites[sid] = icon(path)
-        things.append(still + struct.pack('<I', sid))
-        print('client item %d: %s (sprite %d)' % (items + n, os.path.basename(path), sid))
-    header = struct.pack('<IHHHH', signature, items + len(icons), outfits, effects, missiles)
+    for n in range(len(icons) // frames):
+        group = icons[n * frames:(n + 1) * frames]
+        sids = [next(free) for _ in group]
+        for sid, path in zip(sids, group):
+            new_sprites[sid] = icon(path)
+        things.append(head + struct.pack('<%dI' % frames, *sids))
+        print('client item %d: %s (sprites %s)' % (items + n + 1, os.path.basename(group[0]),
+                                                   ', '.join(map(str, sids))))
+    header = struct.pack('<IHHHH', signature, items + len(things), outfits, effects, missiles)
     out = header + data[12:items_end] + b''.join(things) + data[items_end:]
     dat_tool.parse(out)
     open(DAT, 'wb').write(out)

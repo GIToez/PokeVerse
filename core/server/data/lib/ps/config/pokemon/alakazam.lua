@@ -29,3 +29,25 @@ POKEMON["RC Alakazam"].blockTransform = true
 
 POKEMON["Cloned Alakazam"] = table.deepcopy(POKEMON["Alakazam"])
 POKEMON["Cloned Alakazam"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Alakazam"] = table.deepcopy(POKEMON["Alakazam"])
+POKEMON["Mega Alakazam"].megaOf = "Alakazam"
+POKEMON["Mega Alakazam"].pTypes = { ELEMENT_PSYCHIC }
+POKEMON["Mega Alakazam"].atk = 50
+POKEMON["Mega Alakazam"].def = 65
+POKEMON["Mega Alakazam"].spAtk = 175
+POKEMON["Mega Alakazam"].spDef = 105
+POKEMON["Mega Alakazam"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TRACE }
+POKEMON["Mega Alakazam"].portrait = 30284
+POKEMON["Mega Alakazam"].fastcallPortrait = 28927
+POKEMON["Mega Alakazam"].blockTransform = true
+
+-- Professor Oak's Key Stone quest (097-megaEvolution.lua): comes out of the crystal in Cerulean Cave
+POKEMON["Guardian Alakazam"] = table.deepcopy(POKEMON["Alakazam"])
+POKEMON["Guardian Alakazam"].atk = 100
+POKEMON["Guardian Alakazam"].def = 90
+POKEMON["Guardian Alakazam"].spAtk = 250
+POKEMON["Guardian Alakazam"].spDef = 180
+POKEMON["Guardian Alakazam"].evolutions = {}
+POKEMON["Guardian Alakazam"].blockTransform = true

@@ -3,16 +3,12 @@ HudPanel < UIWidget
   image-border: 9
   phantom: true
 
+// the track image and the caps come from the height (pokehud.lua, initTrack)
 HudTrack < UIWidget
-  image-source: /modules/game_pokehud/images/track
-  image-border-left: 4
-  image-border-right: 4
-  height: 10
+  height: 11
 
   UIWidget
     id: fill
-    image-border-left: 4
-    image-border-right: 4
     anchors.left: parent.left
     anchors.top: parent.top
     anchors.bottom: parent.bottom
@@ -125,6 +121,49 @@ UIWidget
       margin-left: 6
       margin-right: 44
       phantom: false
+
+    // Mega Evolution (mega.lua): only with the Mega Ring worn. Images: scripts/art/mega_hud_art.py
+    UIWidget
+      id: megaIcon
+      image-source: /modules/game_pokehud/images/mega
+      size: 11 11
+      anchors.horizontalCenter: heart.horizontalCenter
+      anchors.verticalCenter: megaBar.verticalCenter
+      phantom: true
+      visible: false
+
+    HudTrack
+      id: megaBar
+      height: 11
+      anchors.left: health.left
+      anchors.right: health.right
+      anchors.top: health.bottom
+      margin-top: 4
+      margin-right: 22
+      phantom: false
+      visible: false
+
+    UIWidget
+      id: megaButton
+      image-source: /modules/game_pokehud/images/mega-button-off
+      size: 18 18
+      anchors.left: megaBar.right
+      anchors.verticalCenter: megaBar.verticalCenter
+      margin-left: 4
+      visible: false
+
+      Label
+        id: key
+        font: small-9px
+        color: #c8d0dc
+        text-auto-resize: true
+        phantom: true
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-right: -4
+        margin-bottom: -3
+        $on:
+          color: #ffe27a
 
     HudText
       id: pokemonName

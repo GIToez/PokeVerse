@@ -45,3 +45,15 @@ POKEMON["Clone Venusaur"].spDef = 70 * 3
 
 POKEMON["Cloned Venusaur"] = table.deepcopy(POKEMON["Venusaur"])
 POKEMON["Cloned Venusaur"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Venusaur"] = table.deepcopy(POKEMON["Venusaur"])
+POKEMON["Mega Venusaur"].megaOf = "Venusaur"
+POKEMON["Mega Venusaur"].atk = 100
+POKEMON["Mega Venusaur"].def = 123
+POKEMON["Mega Venusaur"].spAtk = 122
+POKEMON["Mega Venusaur"].spDef = 120
+POKEMON["Mega Venusaur"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.THICK_FAT }
+POKEMON["Mega Venusaur"].portrait = 30272
+POKEMON["Mega Venusaur"].fastcallPortrait = 28915
+POKEMON["Mega Venusaur"].blockTransform = true

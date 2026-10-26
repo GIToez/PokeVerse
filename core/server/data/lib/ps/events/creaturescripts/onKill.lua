@@ -5,6 +5,7 @@ function onKill(cid, target, lastHit)
         if (lastHit) then
             Sounds.onFaint(getCreaturePosition(target))
             Analyser.onKill(cid, target)
+            MegaEvolution.onKill(cid, target)
             RangerClub.onPlayerKill(cid, name)
             EventCalendar.onPlayerKill(cid, target)
             if (EventCalendar.isActive("halloween")) then

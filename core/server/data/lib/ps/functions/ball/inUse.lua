@@ -43,6 +43,7 @@ function inUseBall(cid, item)
 
 		doSendDistanceShoot(fromPosition, toPosition, balls[ballName].projectile)
 		addEvent(doSendProjectile, 500, toPosition, cid, balls[ballName].projectile)
+		MegaEvolution.finish(cid)
 		doBallSaveStats(pokemon, item.uid)
 		BattleText.say(cid, "recall", getCreatureNickname(pokemon) .. ", " .. __L(cid, POKEMON_BACK_MESSAGES[math.random(1, #POKEMON_BACK_MESSAGES)]), { pokemon = pokemon })
 		doTransformItem(item.uid, balls[ballName].charged)
@@ -60,6 +61,7 @@ function inUseBall(cid, item)
 		doRemoveCreature(pokemon)
         doCreatureSetStorage(cid, playersStorages.isPokemonOnline, 0)
         doPlayerSendPokemonStatusClear(cid)
+        MegaEvolution.send(cid)
 
         if (getPlayerDueling(cid) or getPlayerBattleing(cid)) then
             doAddCondition(cid, duelRunAwayCondition)
