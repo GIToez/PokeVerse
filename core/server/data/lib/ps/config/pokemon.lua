@@ -23,19 +23,21 @@ dodirectory(PS_LIB_CONFIG_DIR .. "pokemon/")
 
 local POKEMONS = {}
 for name, pokemon in pairs(POKEMON) do
+    local number = getPokemonNumberByName(pokemon.megaOf or name) -- a Mega form shares its Pokemon's number
+
     -- Automatic set
     if (pokemon.catchStorage == -1) then
-        pokemon.catchStorage = 16000 + getPokemonNumberByName(name)
+        pokemon.catchStorage = 16000 + number
     end
 
     -- Automatic set
     if (pokemon.portrait == -1) then
-        pokemon.portrait = 28149 + getPokemonNumberByName(name)
+        pokemon.portrait = 28149 + number
     end
 
     -- Automatic set
     if (pokemon.dexPortrait == -1) then
-        pokemon.dexPortrait = 28013 + getPokemonNumberByName(name)
+        pokemon.dexPortrait = 28013 + number
     end
 
     POKEMONS[name] = pokemon
@@ -1061,6 +1063,50 @@ POKEMONS["Shiny Mega Charizard Y"].portrait = 30277
 POKEMONS["Shiny Mega Charizard Y"].fastcallPortrait = 28920
 POKEMONS["Shiny Mega Blastoise"].portrait = 30279
 POKEMONS["Shiny Mega Blastoise"].fastcallPortrait = 28922
+POKEMONS["Shiny Mega Beedrill"].portrait = 30281
+POKEMONS["Shiny Mega Beedrill"].fastcallPortrait = 28924
+POKEMONS["Shiny Mega Pidgeot"].portrait = 30283
+POKEMONS["Shiny Mega Pidgeot"].fastcallPortrait = 28926
+POKEMONS["Shiny Mega Alakazam"].portrait = 30285
+POKEMONS["Shiny Mega Alakazam"].fastcallPortrait = 28928
+POKEMONS["Shiny Mega Slowbro"].portrait = 30287
+POKEMONS["Shiny Mega Slowbro"].fastcallPortrait = 28930
+POKEMONS["Shiny Mega Gengar"].portrait = 30289
+POKEMONS["Shiny Mega Gengar"].fastcallPortrait = 28932
+POKEMONS["Shiny Mega Kangaskhan"].portrait = 30291
+POKEMONS["Shiny Mega Kangaskhan"].fastcallPortrait = 28934
+POKEMONS["Shiny Mega Gyarados"].portrait = 30293
+POKEMONS["Shiny Mega Gyarados"].fastcallPortrait = 28936
+POKEMONS["Shiny Mega Aerodactyl"].portrait = 30295
+POKEMONS["Shiny Mega Aerodactyl"].fastcallPortrait = 28938
+POKEMONS["Shiny Mega Ampharos"].portrait = 30297
+POKEMONS["Shiny Mega Ampharos"].fastcallPortrait = 28940
+POKEMONS["Shiny Mega Steelix"].portrait = 30299
+POKEMONS["Shiny Mega Steelix"].fastcallPortrait = 28942
+POKEMONS["Shiny Mega Scizor"].portrait = 30301
+POKEMONS["Shiny Mega Scizor"].fastcallPortrait = 28944
+POKEMONS["Shiny Mega Tyranitar"].portrait = 30303
+POKEMONS["Shiny Mega Tyranitar"].fastcallPortrait = 28946
+POKEMONS["Shiny Mega Sceptile"].portrait = 30305
+POKEMONS["Shiny Mega Sceptile"].fastcallPortrait = 28948
+POKEMONS["Shiny Mega Blaziken"].portrait = 30307
+POKEMONS["Shiny Mega Blaziken"].fastcallPortrait = 28950
+POKEMONS["Shiny Mega Swampert"].portrait = 30309
+POKEMONS["Shiny Mega Swampert"].fastcallPortrait = 28952
+POKEMONS["Shiny Mega Sableye"].portrait = 30311
+POKEMONS["Shiny Mega Sableye"].fastcallPortrait = 28954
+POKEMONS["Shiny Mega Mawile"].portrait = 30313
+POKEMONS["Shiny Mega Mawile"].fastcallPortrait = 28956
+POKEMONS["Shiny Mega Sharpedo"].portrait = 30315
+POKEMONS["Shiny Mega Sharpedo"].fastcallPortrait = 28958
+POKEMONS["Shiny Mega Camerupt"].portrait = 30317
+POKEMONS["Shiny Mega Camerupt"].fastcallPortrait = 28960
+POKEMONS["Shiny Mega Altaria"].portrait = 30319
+POKEMONS["Shiny Mega Altaria"].fastcallPortrait = 28962
+POKEMONS["Shiny Mega Absol"].portrait = 30321
+POKEMONS["Shiny Mega Absol"].fastcallPortrait = 28964
+POKEMONS["Shiny Mega Glalie"].portrait = 30323
+POKEMONS["Shiny Mega Glalie"].fastcallPortrait = 28966
 
 for name, pokemon in pairs(POKEMONS) do
     if (pokemon.portrait == 0 and pokemon.fastcallPortrait == 0 and string.find(string.lower(name), "shiny")) then -- This shiny doenst exists yet

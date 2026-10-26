@@ -22,3 +22,16 @@ POKEMON["Tyranitar"] = {
     learnableTms = { TM_IDS.AVALANCHE, TM_IDS.FLAMETHROWER, TM_IDS.AERIAL_ACE, TM_IDS.ROCK_TOMB, TM_IDS.WATER_PULSE, TM_IDS.NIGHTMARE, TM_IDS.FURY_CUTTER, TM_IDS.FIRE_PUNCH, TM_IDS.MUD_SLAP, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.BLIZZARD, TM_IDS.ROCK_SLIDE, TM_IDS.THUNDER_WAVE, TM_IDS.FIRE_BLAST, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.DRAGON_CLAW, TM_IDS.ROAR, TM_IDS.TAUNT, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE, TM_IDS.SANDSTORM },
     eggMoves = { "Ancient Power", "Assurance", "Curse", "Dragon Dance", "Focus Energy", "Iron Defense", "Iron Head", "Iron Tail", "Outrage", "Pursuit", "Stealth Rock", "Stomp" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Tyranitar"] = table.deepcopy(POKEMON["Tyranitar"])
+POKEMON["Mega Tyranitar"].megaOf = "Tyranitar"
+POKEMON["Mega Tyranitar"].pTypes = { ELEMENT_ROCK, ELEMENT_DARK }
+POKEMON["Mega Tyranitar"].atk = 164
+POKEMON["Mega Tyranitar"].def = 150
+POKEMON["Mega Tyranitar"].spAtk = 95
+POKEMON["Mega Tyranitar"].spDef = 120
+POKEMON["Mega Tyranitar"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SAND_STREAM }
+POKEMON["Mega Tyranitar"].portrait = 30302
+POKEMON["Mega Tyranitar"].fastcallPortrait = 28945
+POKEMON["Mega Tyranitar"].blockTransform = true

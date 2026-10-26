@@ -325,6 +325,11 @@ MegaEvolution.problem = function(cid, staff)
     return nil
 end
 
+-- Primal Groudon and Kyogre: Primal Reversion, a Mega in all but name
+local function isPrimal(form)
+    return tostring(form):find("Primal ") ~= nil
+end
+
 -- The burst: the Pokemon becomes the form and the drain starts. False if the Mega was called off before it
 local function burst(cid, token)
     local active = readActive(cid)
@@ -339,8 +344,9 @@ local function burst(cid, token)
     end
     MegaEvolution.send(cid)
     addEvent(tick, 1000, cid, active.token)
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE,
-        string.format(__L(cid, "%s Mega Evolved into %s!"), getCreatureNickname(pokemon), active.form))
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, isPrimal(active.form)
+            and "%s underwent Primal Reversion into %s!" or "%s Mega Evolved into %s!"), getCreatureNickname(pokemon),
+        active.form))
     return true
 end
 
@@ -368,7 +374,8 @@ MegaEvolution.start = function(cid, form, staff)
     local base = getCreatureName(pokemon):gsub("^Shiny ", "")
     sendFx(pokemon, { phase = "evolve", trainer = cid, form = form, look = getMonsterInfo(form).outfit.lookType,
                       number = getPokemonNumberByName(base), ms = MegaEvolution.BURST_MS })
-    BattleText.say(cid, "order", string.format("%s, Mega Evolve!", getCreatureNickname(pokemon)), { pokemon = pokemon })
+    BattleText.say(cid, "order", string.format(isPrimal(form) and "%s, Primal Reversion!" or "%s, Mega Evolve!",
+        getCreatureNickname(pokemon)), { pokemon = pokemon })
     if (MegaEvolution.BURST_MS > 0) then
         addEvent(burst, MegaEvolution.BURST_MS, cid, active.token)
         return true

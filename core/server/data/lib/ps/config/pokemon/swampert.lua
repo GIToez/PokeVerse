@@ -22,3 +22,16 @@ POKEMON["Swampert"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.ICE_BEAM, TM_IDS.BLIZZARD, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.DOUBLE_TEAM, TM_IDS.ROCK_TOMB, TM_IDS.REST, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.EARTHQUAKE, TM_IDS.HYPER_BEAM, TM_IDS.EARTHQUAKE, TM_IDS.ROCK_SLIDE, TM_IDS.FOCUS_PUNCH, TM_IDS.ROAR, TM_IDS.BRICK_BREAK, TM_IDS.HAIL },
     eggMoves = { "Ancient Power", "Avalanche", "Barrier", "Bite", "Counter", "Curse", "Double-Edge", "Ice Ball", "Mirror Coat", "Mud Bomb", "Refresh", "Sludge", "Stomp", "Uproar", "Yawn" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Swampert"] = table.deepcopy(POKEMON["Swampert"])
+POKEMON["Mega Swampert"].megaOf = "Swampert"
+POKEMON["Mega Swampert"].pTypes = { ELEMENT_WATER, ELEMENT_GROUND }
+POKEMON["Mega Swampert"].atk = 150
+POKEMON["Mega Swampert"].def = 110
+POKEMON["Mega Swampert"].spAtk = 95
+POKEMON["Mega Swampert"].spDef = 110
+POKEMON["Mega Swampert"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SWIFT_SWIM }
+POKEMON["Mega Swampert"].portrait = 30308
+POKEMON["Mega Swampert"].fastcallPortrait = 28951
+POKEMON["Mega Swampert"].blockTransform = true

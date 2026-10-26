@@ -22,3 +22,16 @@ POKEMON["Groudon"] = {
     learnableTms = { TM_IDS.SWORDS_DANCE, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.BIDE, TM_IDS.FIRE_BLAST, TM_IDS.SWIFT, TM_IDS.REST, TM_IDS.THUNDER_WAVE, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.DRAGON_CLAW, TM_IDS.BULK_UP, TM_IDS.ROAR, TM_IDS.SAFEGUARD, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE, TM_IDS.SANDSTORM, TM_IDS.OVERHEAT },
     eggMoves = { --[[ TODO ]] }
 }
+
+-- Primal form (097-megaEvolution.lua): only while in Primal Reversion, never wild or caught
+POKEMON["Primal Groudon"] = table.deepcopy(POKEMON["Groudon"])
+POKEMON["Primal Groudon"].megaOf = "Groudon"
+POKEMON["Primal Groudon"].pTypes = { ELEMENT_GROUND, ELEMENT_FIRE }
+POKEMON["Primal Groudon"].atk = 180
+POKEMON["Primal Groudon"].def = 160
+POKEMON["Primal Groudon"].spAtk = 150
+POKEMON["Primal Groudon"].spDef = 90
+POKEMON["Primal Groudon"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.DESOLATE_LAND }
+POKEMON["Primal Groudon"].portrait = 30326
+POKEMON["Primal Groudon"].fastcallPortrait = 28969
+POKEMON["Primal Groudon"].blockTransform = true

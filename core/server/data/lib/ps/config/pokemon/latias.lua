@@ -22,3 +22,16 @@ POKEMON["Latias"] = {
     learnableTms = { --[[ TODO ]] },
     eggMoves = { --[[ TODO ]] }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Latias"] = table.deepcopy(POKEMON["Latias"])
+POKEMON["Mega Latias"].megaOf = "Latias"
+POKEMON["Mega Latias"].pTypes = { ELEMENT_DRAGON, ELEMENT_PSYCHIC }
+POKEMON["Mega Latias"].atk = 100
+POKEMON["Mega Latias"].def = 120
+POKEMON["Mega Latias"].spAtk = 140
+POKEMON["Mega Latias"].spDef = 150
+POKEMON["Mega Latias"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.LEVITATE }
+POKEMON["Mega Latias"].portrait = 30324
+POKEMON["Mega Latias"].fastcallPortrait = 28967
+POKEMON["Mega Latias"].blockTransform = true

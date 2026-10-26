@@ -22,3 +22,16 @@ POKEMON["Blaziken"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.PROTECT, TM_IDS.DOUBLE_TEAM, TM_IDS.FLAMETHROWER, TM_IDS.FIRE_BLAST, TM_IDS.ROCK_TOMB, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.SWORDS_DANCE, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.POISON_JAB, TM_IDS.HYPER_BEAM, TM_IDS.SOLAR_BEAM, TM_IDS.EARTHQUAKE, TM_IDS.FOCUS_PUNCH, TM_IDS.ROAR, TM_IDS.BULK_UP, TM_IDS.BRICK_BREAK },
     eggMoves = { "Agility", "Counter", "Crush Claw", "Curse", "Endure", "Feather Dance", "Last Resort", "Night Slash", "Reversal", "Smelling Salts" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Blaziken"] = table.deepcopy(POKEMON["Blaziken"])
+POKEMON["Mega Blaziken"].megaOf = "Blaziken"
+POKEMON["Mega Blaziken"].pTypes = { ELEMENT_FIRE, ELEMENT_FIGHT }
+POKEMON["Mega Blaziken"].atk = 160
+POKEMON["Mega Blaziken"].def = 80
+POKEMON["Mega Blaziken"].spAtk = 130
+POKEMON["Mega Blaziken"].spDef = 80
+POKEMON["Mega Blaziken"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SPEED_BOOST }
+POKEMON["Mega Blaziken"].portrait = 30306
+POKEMON["Mega Blaziken"].fastcallPortrait = 28949
+POKEMON["Mega Blaziken"].blockTransform = true

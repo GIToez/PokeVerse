@@ -1235,4 +1235,51 @@
 	<monster name="Shiny Mega Charizard Y" file="Mega/shiny mega charizard y.xml"/>
 	<monster name="Mega Blastoise" file="Mega/mega blastoise.xml"/>
 	<monster name="Shiny Mega Blastoise" file="Mega/shiny mega blastoise.xml"/>
+	<monster name="Mega Beedrill" file="Mega/mega beedrill.xml"/>
+	<monster name="Shiny Mega Beedrill" file="Mega/shiny mega beedrill.xml"/>
+	<monster name="Mega Pidgeot" file="Mega/mega pidgeot.xml"/>
+	<monster name="Shiny Mega Pidgeot" file="Mega/shiny mega pidgeot.xml"/>
+	<monster name="Mega Alakazam" file="Mega/mega alakazam.xml"/>
+	<monster name="Shiny Mega Alakazam" file="Mega/shiny mega alakazam.xml"/>
+	<monster name="Mega Slowbro" file="Mega/mega slowbro.xml"/>
+	<monster name="Shiny Mega Slowbro" file="Mega/shiny mega slowbro.xml"/>
+	<monster name="Mega Gengar" file="Mega/mega gengar.xml"/>
+	<monster name="Shiny Mega Gengar" file="Mega/shiny mega gengar.xml"/>
+	<monster name="Mega Kangaskhan" file="Mega/mega kangaskhan.xml"/>
+	<monster name="Shiny Mega Kangaskhan" file="Mega/shiny mega kangaskhan.xml"/>
+	<monster name="Mega Gyarados" file="Mega/mega gyarados.xml"/>
+	<monster name="Shiny Mega Gyarados" file="Mega/shiny mega gyarados.xml"/>
+	<monster name="Mega Aerodactyl" file="Mega/mega aerodactyl.xml"/>
+	<monster name="Shiny Mega Aerodactyl" file="Mega/shiny mega aerodactyl.xml"/>
+	<monster name="Mega Ampharos" file="Mega/mega ampharos.xml"/>
+	<monster name="Shiny Mega Ampharos" file="Mega/shiny mega ampharos.xml"/>
+	<monster name="Mega Steelix" file="Mega/mega steelix.xml"/>
+	<monster name="Shiny Mega Steelix" file="Mega/shiny mega steelix.xml"/>
+	<monster name="Mega Scizor" file="Mega/mega scizor.xml"/>
+	<monster name="Shiny Mega Scizor" file="Mega/shiny mega scizor.xml"/>
+	<monster name="Mega Tyranitar" file="Mega/mega tyranitar.xml"/>
+	<monster name="Shiny Mega Tyranitar" file="Mega/shiny mega tyranitar.xml"/>
+	<monster name="Mega Sceptile" file="Mega/mega sceptile.xml"/>
+	<monster name="Shiny Mega Sceptile" file="Mega/shiny mega sceptile.xml"/>
+	<monster name="Mega Blaziken" file="Mega/mega blaziken.xml"/>
+	<monster name="Shiny Mega Blaziken" file="Mega/shiny mega blaziken.xml"/>
+	<monster name="Mega Swampert" file="Mega/mega swampert.xml"/>
+	<monster name="Shiny Mega Swampert" file="Mega/shiny mega swampert.xml"/>
+	<monster name="Mega Sableye" file="Mega/mega sableye.xml"/>
+	<monster name="Shiny Mega Sableye" file="Mega/shiny mega sableye.xml"/>
+	<monster name="Mega Mawile" file="Mega/mega mawile.xml"/>
+	<monster name="Shiny Mega Mawile" file="Mega/shiny mega mawile.xml"/>
+	<monster name="Mega Sharpedo" file="Mega/mega sharpedo.xml"/>
+	<monster name="Shiny Mega Sharpedo" file="Mega/shiny mega sharpedo.xml"/>
+	<monster name="Mega Camerupt" file="Mega/mega camerupt.xml"/>
+	<monster name="Shiny Mega Camerupt" file="Mega/shiny mega camerupt.xml"/>
+	<monster name="Mega Altaria" file="Mega/mega altaria.xml"/>
+	<monster name="Shiny Mega Altaria" file="Mega/shiny mega altaria.xml"/>
+	<monster name="Mega Absol" file="Mega/mega absol.xml"/>
+	<monster name="Shiny Mega Absol" file="Mega/shiny mega absol.xml"/>
+	<monster name="Mega Glalie" file="Mega/mega glalie.xml"/>
+	<monster name="Shiny Mega Glalie" file="Mega/shiny mega glalie.xml"/>
+	<monster name="Mega Latias" file="Mega/mega latias.xml"/>
+	<monster name="Primal Kyogre" file="Mega/primal kyogre.xml"/>
+	<monster name="Primal Groudon" file="Mega/primal groudon.xml"/>
 </monsters>

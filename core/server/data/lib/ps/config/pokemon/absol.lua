@@ -22,3 +22,16 @@ POKEMON["Absol"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.ICE_BEAM, TM_IDS.BLIZZARD, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.SHADOW_BALL, TM_IDS.DOUBLE_TEAM, TM_IDS.FLAMETHROWER, TM_IDS.FIRE_BLAST, TM_IDS.ROCK_TOMB, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.THUNDER_WAVE, TM_IDS.SWORDS_DANCE, TM_IDS.ROCK_SLIDE, TM_IDS.DREAM_EATER, TM_IDS.SUBSTITUTE, TM_IDS.CALM_MIND, TM_IDS.HAIL, TM_IDS.TAUNT, TM_IDS.SHOCK_WAVE, TM_IDS.SANDSTORM},
     eggMoves = { "Assurance", "Curse", "Double-Edge", "Faint Attack", "Hex", "Magic Coat", "Me First", "Megahorn", "Play Rough", "Punishment", "Zen Headbutt" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Absol"] = table.deepcopy(POKEMON["Absol"])
+POKEMON["Mega Absol"].megaOf = "Absol"
+POKEMON["Mega Absol"].pTypes = { ELEMENT_DARK }
+POKEMON["Mega Absol"].atk = 150
+POKEMON["Mega Absol"].def = 60
+POKEMON["Mega Absol"].spAtk = 115
+POKEMON["Mega Absol"].spDef = 60
+POKEMON["Mega Absol"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.MAGIC_BOUNCE }
+POKEMON["Mega Absol"].portrait = 30320
+POKEMON["Mega Absol"].fastcallPortrait = 28963
+POKEMON["Mega Absol"].blockTransform = true

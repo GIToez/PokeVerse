@@ -22,3 +22,16 @@ POKEMON["Sceptile"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.PROTECT, TM_IDS.SOLAR_BEAM, TM_IDS.DOUBLE_TEAM, TM_IDS.ROCK_TOMB, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.ENERGY_BALL, TM_IDS.SWORDS_DANCE, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.SUBSTITUTE, TM_IDS.HYPER_BEAM, TM_IDS.EARTHQUAKE, TM_IDS.FOCUS_PUNCH, TM_IDS.BULLET_SEED, TM_IDS.SAFEGUARD, TM_IDS.BRICK_BREAK, TM_IDS.FOCUS_PUNCH, TM_IDS.BULLET_SEED, TM_IDS.SAFEGUARD, TM_IDS.ROAR, TM_IDS.DRAGON_CLAW },
     eggMoves = { "Bullet Seed", "Crunch", "Crush Claw", "Double Kick", "Dragon Breath", "Endeavor", "Grass Whistle", "Grassy Terrain", "Magical Leaf", "Mud Sport", "Razor Wind", "Synthesis", "Worry Seed" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Sceptile"] = table.deepcopy(POKEMON["Sceptile"])
+POKEMON["Mega Sceptile"].megaOf = "Sceptile"
+POKEMON["Mega Sceptile"].pTypes = { ELEMENT_GRASS, ELEMENT_DRAGON }
+POKEMON["Mega Sceptile"].atk = 110
+POKEMON["Mega Sceptile"].def = 75
+POKEMON["Mega Sceptile"].spAtk = 145
+POKEMON["Mega Sceptile"].spDef = 85
+POKEMON["Mega Sceptile"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.LIGHTNINGROD }
+POKEMON["Mega Sceptile"].portrait = 30304
+POKEMON["Mega Sceptile"].fastcallPortrait = 28947
+POKEMON["Mega Sceptile"].blockTransform = true

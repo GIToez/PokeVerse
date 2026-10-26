@@ -25,3 +25,16 @@ POKEMON["Steelix"] = {
 
 POKEMON["Cloned Steelix"] = table.deepcopy(POKEMON["Steelix"])
 POKEMON["Cloned Steelix"].blockTransform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Steelix"] = table.deepcopy(POKEMON["Steelix"])
+POKEMON["Mega Steelix"].megaOf = "Steelix"
+POKEMON["Mega Steelix"].pTypes = { ELEMENT_STEEL, ELEMENT_GROUND }
+POKEMON["Mega Steelix"].atk = 125
+POKEMON["Mega Steelix"].def = 230
+POKEMON["Mega Steelix"].spAtk = 55
+POKEMON["Mega Steelix"].spDef = 95
+POKEMON["Mega Steelix"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SAND_FORCE }
+POKEMON["Mega Steelix"].portrait = 30298
+POKEMON["Mega Steelix"].fastcallPortrait = 28941
+POKEMON["Mega Steelix"].blockTransform = true

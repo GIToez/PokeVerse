@@ -33,3 +33,16 @@ POKEMON["Suramoon Gyarados"].atk = 105 * 6
 POKEMON["Suramoon Gyarados"].def = 60 * 3
 POKEMON["Suramoon Gyarados"].spAtk = 60 * 6
 POKEMON["Suramoon Gyarados"].spDef = 70 * 3
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Gyarados"] = table.deepcopy(POKEMON["Gyarados"])
+POKEMON["Mega Gyarados"].megaOf = "Gyarados"
+POKEMON["Mega Gyarados"].pTypes = { ELEMENT_WATER, ELEMENT_DARK }
+POKEMON["Mega Gyarados"].atk = 155
+POKEMON["Mega Gyarados"].def = 109
+POKEMON["Mega Gyarados"].spAtk = 70
+POKEMON["Mega Gyarados"].spDef = 130
+POKEMON["Mega Gyarados"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.MOLD_BREAKER }
+POKEMON["Mega Gyarados"].portrait = 30292
+POKEMON["Mega Gyarados"].fastcallPortrait = 28935
+POKEMON["Mega Gyarados"].blockTransform = true
