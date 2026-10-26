@@ -3179,15 +3179,16 @@ Blastoise (Blastoisinite), Venusaur (Venusaurite), Mewtwo (Mewtwonite X or Y).
 
 - The Mega bar sits under the trainer's HP, mirroring the Pokémon's energy bar under its HP
   ([concept](concepts/mega-gauge-hud.png)). It only shows while the Mega Ring is equipped.
-- What it shows when the Pokémon out holds no Mega Stone is designed later.
 - 0 to 100. A round **Mega Evolution button** sits between the Mega bar and the portrait,
   and the **R** key does the same (decided). R is free today; like E (order) and X (Pokédex)
-  it works with the chat off. F is free too. Both turn on at 100 and are off when the Pokémon
-  out can't Mega Evolve. Transforming plays an effect, the HUD names the Mega form, and the
-  bar drains while it lasts.
+  it works with the chat off. F is free too. Transforming plays an effect, the HUD names the
+  Mega form, and the bar drains while it lasts.
 - Colours (decided): **purple** while charging (a deeper purple than the energy bar's),
-  **gold** when ready to activate, with the button lit, **green** while active, empty when
-  used up.
+  **gold** when the bar is full, **green** while active, empty when used up.
+- The bar fills to gold at 100 whatever Pokémon is out. The **button only lights up (gold)
+  when the Pokémon out holds its own Mega Stone**; otherwise it stays grey and R does
+  nothing (decided). Switching to a Pokémon with its stone lights it up, since the charge is
+  kept.
 
 ### Server side
 
@@ -3211,7 +3212,6 @@ out. Charizard is not installed, so Charizardite X and Y wait until it is.
 ### To decide before building
 
 - Which species get a Mega first, and the Mega Ring questline.
-- What the bar shows without a Mega Stone.
 
 ## Going private
 
