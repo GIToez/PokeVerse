@@ -3191,6 +3191,19 @@ local function testMegaItems(cid)
     end
 end
 
+-- The Mega animation's wait before the burst is off, so the checks see the form at once
+local function withoutMegaBurst(fn)
+    return function(...)
+        local burst = MegaEvolution.BURST_MS
+        MegaEvolution.BURST_MS = 0
+        local ok, err = pcall(fn, ...)
+        MegaEvolution.BURST_MS = burst
+        if (not ok) then
+            error(err, 0)
+        end
+    end
+end
+
 local function testMegaForms(cid)
     local function hasTypes(pokemon, expected)
         local types = getPokemonTypes(pokemon)
@@ -3506,6 +3519,45 @@ local function testMegaGauge(cid)
         setGauge(40)
         MegaEvolution.onLogin(cid)
         check("mega gauge: the charge is kept across logins", gauge() == 40, gauge())
+        MegaEvolution.onClientMessage(cid, '{"action":"hello"}')
+
+        MegaEvolution.BURST_MS = 1800
+        setGauge(100)
+        local before = #sent
+        MegaEvolution.onPress(cid)
+        local fx
+        for i = before + 1, #sent do
+            local message = JSON.decode(sent[i])
+            if (message.type == "fx" and message.phase == "evolve") then
+                fx = message
+            end
+        end
+        check("mega gauge: nearby clients get the animation with the form and its look", fx ~= nil
+            and fx.pokemon == pokemon and fx.trainer == cid and fx.form == "Mega Charizard X" and fx.look == 2596
+            and fx.ms == 1800, sent[#sent])
+        check("mega gauge: until the burst it is not the form yet", MegaEvolution.isActive(cid)
+            and not MegaEvolution.isMega(pokemon) and MegaEvolution.state(cid).form == "Mega Charizard X"
+            and MegaEvolution.isStoneLocked(cid, ball.uid))
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        check("mega gauge: called back before the burst, there is no Mega", not MegaEvolution.isActive(cid)
+            and gauge() == 0 and not MegaEvolution.burst(cid))
+        doRemoveConditions(cid, false)
+        doPlayerUseBallOnSlot(cid)
+        pokemon = getPlayerPokemon(cid)
+        setGauge(100)
+        quietly(function() MegaEvolution.onPress(cid) end)
+        quietly(function() MegaEvolution.burst(cid) end)
+        check("mega gauge: at the burst it becomes Mega Charizard X", MegaEvolution.isMega(pokemon)
+            and getPokemonReferenceName(pokemon) == "Mega Charizard X")
+        before = #sent
+        MegaEvolution.finish(cid)
+        local ended = false
+        for i = before + 1, #sent do
+            ended = ended or sent[i]:find('"phase":"end"', 1, true) ~= nil
+        end
+        check("mega gauge: the end goes out too", ended, sent[#sent])
+        MegaEvolution.BURST_MS = 0
 
         setGauge(100)
         MegaEvolution.onClientMessage(cid, '{"action":"evolve"}')
@@ -4400,7 +4452,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", testMegaForms }, { "mega gauge", testMegaGauge }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

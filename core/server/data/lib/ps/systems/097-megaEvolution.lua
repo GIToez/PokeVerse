@@ -16,6 +16,11 @@ MegaEvolution = {}
 
 MegaEvolution.MAX = 100
 MegaEvolution.DURATION = 60
+-- The animation (game_megafx) runs this long before the burst, when the form, its stats and the drain start
+MegaEvolution.BURST_MS = 1800
+-- The players this far away see the animation
+MegaEvolution.FX_RANGE_X = 9
+MegaEvolution.FX_RANGE_Y = 7
 -- Tournaments: the organisers' switch for every tournament until the event rules have one of their own
 MegaEvolution.TOURNAMENTS = false
 
@@ -50,18 +55,35 @@ local BOOSTING = {
     [POKEMON_SPECIAL_ABILITY_IDS.MEGA_LAUNCHER] = true
 }
 
--- The trainer's Mega while it lasts: { token, pokemon, left }, or nil
+-- The trainer's Mega while it lasts: { token, pokemon, left, form }, or nil. Before the burst the
+-- Pokemon is not the form yet.
 local function readActive(cid)
     local value = isPlayer(cid) and getPlayerStorageValue(cid, ACTIVE)
-    local token, pokemon, left = tostring(value or ""):match("^M(%d+)|(%d+)|(%-?%d+)$")
+    local token, pokemon, left, form = tostring(value or ""):match("^M(%d+)|(%d+)|(%-?%d+)|?(.*)$")
     if (not token) then
         return nil
     end
-    return { token = token, pokemon = tonumber(pokemon), left = tonumber(left) }
+    return { token = token, pokemon = tonumber(pokemon), left = tonumber(left), form = form ~= "" and form or nil }
 end
 
 local function writeActive(cid, active)
-    setPlayerStorageValue(cid, ACTIVE, active and string.format("M%s|%d|%d", active.token, active.pokemon, active.left) or -1)
+    setPlayerStorageValue(cid, ACTIVE, active and string.format("M%s|%d|%d|%s", active.token, active.pokemon, active.left,
+        active.form or "") or -1)
+end
+
+-- The animation for the players around the Pokemon whose client has the Mega HUD (game_megafx)
+local function sendFx(pokemon, data)
+    if (not isCreature(pokemon)) then
+        return
+    end
+    data.type, data.pokemon = "fx", pokemon
+    local payload = JSON.encode(data)
+    for _, spectator in ipairs(getSpectators(getCreaturePosition(pokemon), MegaEvolution.FX_RANGE_X,
+            MegaEvolution.FX_RANGE_Y, false) or {}) do
+        if (isPlayer(spectator) and getPlayerStorageValue(spectator, CLIENT) == 1) then
+            doSendPlayerExtendedOpcode(spectator, EXTENDED_IDS.MEGA, payload)
+        end
+    end
 end
 
 MegaEvolution.hasForm = function(formName)
@@ -137,7 +159,7 @@ MegaEvolution.state = function(cid)
     local state = { type = "state", ring = MegaEvolution.hasRing(cid), gauge = MegaEvolution.getGauge(cid),
                     max = MegaEvolution.MAX, active = active ~= nil }
     if (active) then
-        state.form = isCreature(active.pokemon) and getPokemonCurrentTransformation(active.pokemon) or nil
+        state.form = active.form or (isCreature(active.pokemon) and getPokemonCurrentTransformation(active.pokemon)) or nil
         state.left, state.duration = active.left, MegaEvolution.DURATION
         state.boosted = MegaEvolution.boostedMoves(cid)
     else
@@ -170,7 +192,7 @@ MegaEvolution.apply = function(cid, pokemon, formName)
     doCreatureSetStorage(pokemon, pokemonsStorages.transform, formName)
     setMonsterSpecialAbility(pokemon, getPokemonRandomSpecialAbility(formName))
     showForm(cid, pokemon, formName)
-    doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_DITTO_TRANSFORM)
+    doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_TRIPLE_SPARK)
     return true
 end
 
@@ -185,7 +207,7 @@ MegaEvolution.revert = function(cid, pokemon)
     end
     doCreatureSetStorage(pokemon, pokemonsStorages.megaAbility, EMPTY_STORAGE)
     showForm(cid, pokemon, getCreatureName(pokemon))
-    doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_DITTO_TRANSFORM)
+    doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_TRIPLE_SPARK)
     return true
 end
 
@@ -205,6 +227,7 @@ MegaEvolution.finish = function(cid, quiet)
     writeActive(cid, nil)
     if (isCreature(active.pokemon)) then
         MegaEvolution.revert(cid, active.pokemon)
+        sendFx(active.pokemon, { phase = "end" })
     end
     if (isPlayer(cid)) then
         setGauge(cid, 0)
@@ -302,23 +325,55 @@ MegaEvolution.problem = function(cid, staff)
     return nil
 end
 
--- Mega Evolves the trainer's Pokemon out into the form; the gauge drains from now
+-- The burst: the Pokemon becomes the form and the drain starts. False if the Mega was called off before it
+local function burst(cid, token)
+    local active = readActive(cid)
+    if (not active or (token and active.token ~= token)) then
+        return false
+    end
+    local pokemon = active.pokemon
+    if (not isPlayer(cid) or not isCreature(pokemon) or getPlayerPokemon(cid) ~= pokemon or not active.form
+            or not MegaEvolution.apply(cid, pokemon, active.form)) then
+        MegaEvolution.finish(cid)
+        return false
+    end
+    MegaEvolution.send(cid)
+    addEvent(tick, 1000, cid, active.token)
+    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE,
+        string.format(__L(cid, "%s Mega Evolved into %s!"), getCreatureNickname(pokemon), active.form))
+    return true
+end
+
+MegaEvolution.burst = function(cid)
+    return burst(cid, nil)
+end
+
+-- Mega Evolves the trainer's Pokemon out into the form: the animation plays, and at its burst
+-- (BURST_MS later) the form applies and the gauge starts draining. The ring and the stone lock at once.
 MegaEvolution.start = function(cid, form, staff)
     local why = MegaEvolution.problem(cid, staff)
     if (why) then
         return false, why
     end
     local pokemon = getPlayerPokemon(cid)
-    if (not MegaEvolution.apply(cid, pokemon, form)) then
+    if (not MegaEvolution.hasForm(form) or isPokemonTransformed(pokemon)) then
         return false, "Your Pokemon can't Mega Evolve."
     end
-    local active = { token = os.time() .. math.random(1000, 9999), pokemon = pokemon, left = MegaEvolution.DURATION }
+    local active = { token = os.time() .. math.random(1000, 9999), pokemon = pokemon, left = MegaEvolution.DURATION,
+                     form = form }
     writeActive(cid, active)
     setGauge(cid, MegaEvolution.MAX)
     lockRing(cid, true)
     MegaEvolution.send(cid)
-    addEvent(tick, 1000, cid, active.token)
-    return true
+    local base = getCreatureName(pokemon):gsub("^Shiny ", "")
+    sendFx(pokemon, { phase = "evolve", trainer = cid, form = form, look = getMonsterInfo(form).outfit.lookType,
+                      number = getPokemonNumberByName(base), ms = MegaEvolution.BURST_MS })
+    BattleText.say(cid, "order", string.format("%s, Mega Evolve!", getCreatureNickname(pokemon)), { pokemon = pokemon })
+    if (MegaEvolution.BURST_MS > 0) then
+        addEvent(burst, MegaEvolution.BURST_MS, cid, active.token)
+        return true
+    end
+    return burst(cid, active.token)
 end
 
 -- The R key and the HUD button
@@ -343,8 +398,6 @@ MegaEvolution.onPress = function(cid)
         doPlayerSendCancel(cid, __L(cid, problem))
         return false
     end
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE,
-        string.format(__L(cid, "%s Mega Evolved into %s!"), getCreatureNickname(getPlayerPokemon(cid)), form))
     return true
 end
 
@@ -511,7 +564,6 @@ MegaEvolution.onStaffCommand = function(cid, param)
         doPlayerSendCancel(cid, __L(cid, why))
         return false
     end
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "%s became %s."), name, form))
     return true
 end
 
