@@ -190,6 +190,11 @@ local function openMenu(mousePos, slot)
     menu:display(mousePos)
 end
 
+-- the slot of the Pokemon that's out (nil when none is)
+function getActiveSlot()
+    return activeSlot
+end
+
 local function show()
     pokemonBar:show()
     pokemonBar:raise()

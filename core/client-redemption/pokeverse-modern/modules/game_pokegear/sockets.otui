@@ -1,0 +1,32 @@
+// The Inventory box's slots Pokegear keeps: the key item and Pokedex sockets either side of the HUD,
+// and the Order button beside the Pokemon that's out. Placed by sockets.lua.
+PokegearSocket < UIButton
+  size: 54 54
+  image-source: /modules/game_pokegear/images/orb
+  image-smooth: true
+  $pressed:
+    opacity: 0.8
+
+  UIItem
+    id: item
+    size: 40 40
+    anchors.centerIn: parent
+    virtual: true
+    phantom: true
+
+  UIWidget
+    id: icon
+    anchors.centerIn: parent
+    image-smooth: true
+    phantom: true
+    visible: false
+
+  PokegearChip
+    id: chip
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 2
+    margin-bottom: 0
+
+PokegearOrderButton < PokegearSocket
+  size: 38 38

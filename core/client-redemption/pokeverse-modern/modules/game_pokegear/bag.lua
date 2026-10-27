@@ -42,6 +42,7 @@ local beltId
 local categories = {} -- { name, icon } from the server, in rail order
 local categoryOf = {} -- client item id -> index in categories
 local otherCategory -- where an item in no category goes
+local equipNames = {} -- client item id -> name, for the items that go in the equipment slot
 local filter -- index in categories; nil shows everything
 local beltNumbers -- { ball = number, slots = { number, ... } }, 0 for none
 local beltRequest
@@ -247,6 +248,12 @@ end
 
 local function categoryIndex(item)
     return categoryOf[item:getId()] or otherCategory
+end
+
+-- the name the server gave an item that goes in the equipment slot (bikes, running shoes, the
+-- flashlight...); nil for any other item
+function Bag.equipmentName(itemId)
+    return equipNames[itemId]
 end
 
 local function matches(item)
@@ -819,7 +826,12 @@ local function onBagMessage(protocol, opcode, buffer)
         return
     end
     if data.type == 'categories' and type(data.list) == 'table' then
-        categories, categoryOf, otherCategory = {}, {}, nil
+        categories, categoryOf, otherCategory, equipNames = {}, {}, nil, {}
+        for _, entry in ipairs(type(data.equipment) == 'table' and data.equipment or {}) do
+            if type(entry) == 'table' and tonumber(entry.id) then
+                equipNames[tonumber(entry.id)] = tostring(entry.name or '')
+            end
+        end
         for index, category in ipairs(data.list) do
             categories[index] = { name = tostring(category.name), icon = tonumber(category.icon) or 0 }
             if category.name == 'Other' then

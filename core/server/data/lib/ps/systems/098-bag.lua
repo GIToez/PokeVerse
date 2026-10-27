@@ -11,7 +11,8 @@
 --                     {action = "sort"}: "Sort my bags now"
 --                     {action = "switches", defense, autoSwap}: the belt switches (099-beltSwitches.lua)
 --   server -> client  {type = "categories", list = {{name, icon, items = {client ids}}, ...}} (in fragments,
---                       doSendPlayerLongExtendedOpcode)
+--                       doSendPlayerLongExtendedOpcode), with equipment = {{id = client id, name}, ...}: the
+--                       items that go in the equipment slot, for the Pokegear equipment socket
 --                     {type = "belt", ball = number, slots = {number, ...}}: the quick call number of the ball
 --                       slot's ball and of each belt ball in slot order, 0 for none
 --                     {type = "renamed", slot, name} or {type = "error", text}
@@ -29,6 +30,26 @@ local function clientId(id)
     if (info and info.clientId and info.clientId > 0) then
         return info.clientId
     end
+end
+
+local SLOTP_RING = 256
+
+-- the items that go in the equipment slot (PLAYER_SLOT_KEY_ITEM, the ring slot: bikes, running shoes,
+-- the flashlight...), with their names: the client only knows market items' names, and the Pokegear
+-- equipment socket lists them by name
+local function equipmentItems()
+    local list, taken = {}, {}
+    for _, category in ipairs(ItemCategories.LIST) do
+        for _, id in ipairs(category.items) do
+            local info = getItemInfo(id)
+            local client = clientId(id)
+            if (info and client and not taken[client] and math.floor((info.slotPosition or 0) / SLOTP_RING) % 2 == 1) then
+                taken[client] = true
+                list[#list + 1] = { id = client, name = getItemNameById(id) or "" }
+            end
+        end
+    end
+    return list
 end
 
 local function build()
@@ -52,7 +73,8 @@ local function build()
 end
 
 Bag.CATEGORIES = build()
-Bag.MESSAGE = JSON.encode({ type = "categories", list = Bag.CATEGORIES })
+Bag.EQUIPMENT = equipmentItems()
+Bag.MESSAGE = JSON.encode({ type = "categories", list = Bag.CATEGORIES, equipment = Bag.EQUIPMENT })
 
 Bag.sendCategories = function(cid)
     doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.BAG, Bag.MESSAGE)

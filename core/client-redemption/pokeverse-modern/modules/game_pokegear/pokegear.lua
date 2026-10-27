@@ -103,6 +103,7 @@ local function apply()
     Hub.apply(active)
     Nearby.apply(active)
     Bag.apply(active)
+    Sockets.apply(active)
     Pokegear.layoutColumn()
 end
 
@@ -110,8 +111,14 @@ function toggleNearby()
     Nearby.toggle()
 end
 
+-- the badge case shows in its own window (game_badgecase), so in Pokegear it gets no container window
+local function isBadgeCase(container)
+    local badgeCase = modules.game_badgecase
+    return active and badgeCase ~= nil and badgeCase.isDexContainer ~= nil and badgeCase.isDexContainer(container)
+end
+
 function claimsContainer(container)
-    return Bag.claimsContainer(container)
+    return Bag.claimsContainer(container) or isBadgeCase(container)
 end
 
 function refresh()
@@ -134,6 +141,7 @@ local function onGameEnd()
     Hub.apply(false)
     Nearby.apply(false)
     Bag.reset()
+    Sockets.apply(false)
     Pokegear.layoutColumn()
 end
 
@@ -141,6 +149,7 @@ function init()
     g_ui.importStyle('hub')
     g_ui.importStyle('nearby')
     Bag.init()
+    Sockets.init()
     active = isActive()
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
@@ -157,4 +166,5 @@ function terminate()
     Hub.terminate()
     Nearby.terminate()
     Bag.terminate()
+    Sockets.terminate()
 end
