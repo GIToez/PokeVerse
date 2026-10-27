@@ -9,12 +9,14 @@
 --                     {action = "rules", slot, item}: that bag's sort rules
 --                     {action = "setRules", slot, item, categories = {names}, pins = {client ids}}
 --                     {action = "sort"}: "Sort my bags now"
+--                     {action = "switches", defense, autoSwap}: the belt switches (099-beltSwitches.lua)
 --   server -> client  {type = "categories", list = {{name, icon, items = {client ids}}, ...}} (in fragments,
 --                       doSendPlayerLongExtendedOpcode)
 --                     {type = "belt", ball = number, slots = {number, ...}}: the quick call number of the ball
 --                       slot's ball and of each belt ball in slot order, 0 for none
 --                     {type = "renamed", slot, name} or {type = "error", text}
 --                     {type = "rules", slot, categories, pins, saved}, {type = "sorted", moved}
+--                     {type = "switches", defense, autoSwap} (after hello and every change)
 --
 -- Sort rules are kept on the bag item ("sortrules", read by Player::getSortDestination): a new item
 -- goes to a stack of the same item, then a bag that pins it, then the first bag taking its category,
@@ -216,6 +218,7 @@ Bag.onClientMessage = function(cid, buffer)
     end
     if (data.action == "hello") then
         Bag.sendCategories(cid)
+        BeltSwitches.send(cid)
     elseif (data.action == "belt") then
         Bag.sendBelt(cid)
     elseif (data.action == "rename") then
@@ -226,5 +229,7 @@ Bag.onClientMessage = function(cid, buffer)
         Bag.onSetRules(cid, data.slot, data.item, data.categories, data.pins)
     elseif (data.action == "sort") then
         Bag.onSort(cid)
+    elseif (data.action == "switches") then
+        BeltSwitches.set(cid, data.defense, data.autoSwap)
     end
 end

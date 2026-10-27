@@ -145,8 +145,8 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   - **Auto swap** (on by default): when the Pokemon that's out faints, the next living one down the
     belt comes out after the normal faint delay and becomes the gold one. Only while you're still in
     a fight. With nobody left: one "No Pokemon left to call" message.
-  - Both use the normal call cooldown. Duels, gyms and events can switch them off where their rules
-    need you to choose by hand.
+  - Both use the normal call cooldown, and stay off in duels and NPC battles, where you choose by hand.
+    Both settings are kept with your character.
   - While one is on, the gold ball shows a small mark.
 - **Bags as tabs.**
   - Your starting bag is the first tab. It can't be taken off.

@@ -137,5 +137,7 @@ playersStorages = {
     megaPvp = base + 134, -- the restricted PvP the trainer was last seen in ("duel", "arena", "tournament"), so entering one empties the gauge
     megaStarter = base + 135, -- the starter Professor Oak (or the beginner NPC) gave: "Bulbasaur", "Charmander" or "Squirtle"
     megaResearch = base + 136, -- "R<line>=<defeats>,...": Oak's Mega research, wild defeats per Mega Stone line
+    beltDefense = base + 137, -- 1 while the Bag's Defense mode switch is on (BeltSwitches)
+    beltAutoSwapOff = base + 138, -- 1 while the Bag's Auto swap switch is off; it starts on (BeltSwitches)
     -- tournamentWeekWinnerStorage = base + 65
 }

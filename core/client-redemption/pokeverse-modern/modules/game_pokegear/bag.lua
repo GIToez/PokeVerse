@@ -45,6 +45,7 @@ local otherCategory -- where an item in no category goes
 local filter -- index in categories; nil shows everything
 local beltNumbers -- { ball = number, slots = { number, ... } }, 0 for none
 local beltRequest
+local switches = { defense = false, autoSwap = true } -- the belt switches; the server keeps them and does both
 local fillGrid, requestBelt, sendBag
 
 local function slotItem(slot)
@@ -329,7 +330,7 @@ fillGrid = function()
     local height = math.min(rows, MAX_VISIBLE_ROWS) * (CELL + CELL_SPACING) - CELL_SPACING
     grid:setHeight(height)
     window.gridScroll:setHeight(height)
-    window:setHeight(8 + 24 + 16 + 36 + 10 + 24 + 8 + 16 + 4 + math.max(height, window.rail:getHeight()) + 10)
+    window:setHeight(8 + 24 + 16 + 36 + 10 + 18 + 8 + 24 + 8 + 16 + 4 + math.max(height, window.rail:getHeight()) + 10)
 end
 
 local fillTabs, layoutTabs
@@ -777,6 +778,19 @@ local function beltSlot(item, position)
     return slot
 end
 
+-- while either switch is on, the gold ball shows a mark
+local function refreshSwitches()
+    if not window then
+        return
+    end
+    window.switches.defense:setOn(switches.defense)
+    window.switches.autoSwap:setOn(switches.autoSwap)
+    local first = window.belt:getChildren()[1]
+    if first and first.mark then
+        first.mark:setVisible(first:getItem() ~= nil and (switches.defense or switches.autoSwap))
+    end
+end
+
 -- the ball slot first, in gold, then the belt's balls
 local function fillBelt()
     local belt = window.belt
@@ -792,6 +806,7 @@ local function fillBelt()
     end
     refreshFaces()
     refreshOut()
+    refreshSwitches()
 end
 
 local function onBagMessage(protocol, opcode, buffer)
@@ -824,6 +839,10 @@ local function onBagMessage(protocol, opcode, buffer)
         end
         beltNumbers = { ball = tonumber(data.ball) or 0, slots = slots }
         refreshFaces()
+    elseif data.type == 'switches' then
+        switches.defense = data.defense == true
+        switches.autoSwap = data.autoSwap ~= false
+        refreshSwitches()
     elseif data.type == 'renamed' then
         for id in pairs(tabSlot) do
             if bagSlot(id) == tonumber(data.slot) then
@@ -846,6 +865,7 @@ end
 
 local function onGameStart()
     categories, categoryOf, otherCategory, filter, beltNumbers = {}, {}, nil, nil, nil
+    switches = { defense = false, autoSwap = true }
     sendBag({ action = 'hello' })
 end
 
@@ -881,6 +901,13 @@ local function build()
     end
     window.header.sort.onClick = function()
         sendBag({ action = 'sort' })
+    end
+    for _, name in ipairs({ 'defense', 'autoSwap' }) do
+        window.switches[name].onClick = function()
+            switches[name] = not switches[name]
+            refreshSwitches()
+            sendBag({ action = 'switches', [name] = switches[name] })
+        end
     end
     window.tabs.onMouseWheel = function(widget, mousePos, direction)
         scrollTabs(direction == MouseWheelUp and -1 or 1)

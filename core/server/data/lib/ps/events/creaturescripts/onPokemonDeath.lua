@@ -3,7 +3,7 @@ local function doSendProjectile(fromPosition, toCid, projectile)
     doSendDistanceShoot(fromPosition, getCreaturePosition(toCid), projectile)
 end
 
-function onPrepareDeath(cid)
+function onPrepareDeath(cid, deathList)
     if (getCreatureStatus(cid, CREATURE_STATUS_SUBSTITUTE)) then
         doCreatureChangeHealth(cid, getPokemonHealthBeforeSubstitute(cid))
         doCreatureRemoveStatus(cid, CREATURE_STATUS_SUBSTITUTE)
@@ -42,5 +42,6 @@ function onPrepareDeath(cid)
     doCreatureSetStorage(pokemonMaster, playersStorages.isPokemonOnline, 0)
     MegaEvolution.send(pokemonMaster)
     doPlayerSendPokemonStatusClear(pokemonMaster)
+    BeltSwitches.onFaint(pokemonMaster, deathList and deathList[1])
     return false
 end
