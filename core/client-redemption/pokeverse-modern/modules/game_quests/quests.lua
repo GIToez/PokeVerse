@@ -229,6 +229,17 @@ local function drawDetails()
             hide()
         end
     end
+    local pokepedia = modules.game_pokepedia
+    local canMap = canGo and pokepedia and pokepedia.MapTab and pokepedia.MapTab.showPosition ~= nil
+    details.actions.viewMap:setEnabled(canMap and true or false)
+    details.actions.viewMap:setTooltip(canMap and tr('Show where %s is on the world map', row.npc) or
+        tr('Nowhere to go for this one.'))
+    details.actions.viewMap.onClick = function()
+        if canMap then
+            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+            hide()
+        end
+    end
     local track = details.actions.track
     track:setVisible(row.state == 'active')
     track:setText(tracked[row.id] and tr('Untrack') or tr('Track'))
