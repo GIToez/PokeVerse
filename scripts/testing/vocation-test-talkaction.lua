@@ -3315,11 +3315,83 @@ local function testBag(cid)
         for _, category in ipairs(Bag.CATEGORIES) do
             total = total + #category.items
         end
-        check("bag: hello sends the categories with every item", #sent == 1 and sent[1].type == "categories"
+        check("bag: hello sends the categories with every item", #sent == 2 and sent[1].type == "categories"
             and #sent[1].list == #Bag.CATEGORIES and items == total and #Bag.MESSAGE > 8192,
             string.format("%d messages, %d of %d items", #sent, items, total))
         check("bag: every fragment fits in a network message string (8 KB)", longest <= 8192, longest)
         local parts = #sent
+
+        -- belt switches: Defense mode starts off, Auto swap on; the client's switch only sends the setting
+        local defenseWas = getCreatureStorage(cid, playersStorages.beltDefense)
+        local swapWas = getCreatureStorage(cid, playersStorages.beltAutoSwapOff)
+        doCreatureSetStorage(cid, playersStorages.beltDefense, -1)
+        doCreatureSetStorage(cid, playersStorages.beltAutoSwapOff, -1)
+        check("bag: hello sends the belt switches, Defense mode off and Auto swap on", sent[2] and sent[2].type == "switches"
+            and BeltSwitches.isDefense(cid) == false and BeltSwitches.isAutoSwap(cid) == true, JSON.encode(sent[2] or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "switches", defense = true, autoSwap = false }))
+        local switches = sent[#sent]
+        check("bag: the switches are kept and sent back", BeltSwitches.isDefense(cid) and not BeltSwitches.isAutoSwap(cid)
+            and switches.type == "switches" and switches.defense == true and switches.autoSwap == false, JSON.encode(switches))
+        Bag.onClientMessage(cid, JSON.encode({ action = "switches", autoSwap = true }))
+        check("bag: a switch left out stays as it was", BeltSwitches.isDefense(cid) and BeltSwitches.isAutoSwap(cid),
+            JSON.encode(sent[#sent]))
+        parts = #sent
+
+        -- the next living Pokemon: the ball slot's, else the first one down the belt that hasn't fainted
+        local gold, fainted, living = newBall(cid, "Bulbasaur", 10), newBall(cid, "Charmander", 10), newBall(cid, "Squirtle", 10)
+        local function faint(item)
+            doTransformItem(item.uid, balls[ballsNames[getThing(item.uid).itemid]].discharged)
+        end
+        local BELT = -7
+        local beltBalls = { fainted }
+        local stubs = { getPlayerSlotItem = getPlayerSlotItem, getPlayerBelt = getPlayerBelt, getContainerSize = getContainerSize,
+            getContainerItem = getContainerItem, doPlayerUseBallOnSlot = doPlayerUseBallOnSlot, doSwapItems = doSwapItems }
+        local used, swapped = 0, nil
+        local done, problem = pcall(function()
+            faint(fainted)
+            getPlayerSlotItem = function(who, slot)
+                if (who == cid and slot == PLAYER_SLOT_BALL) then
+                    return getThing(gold.uid)
+                end
+                return stubs.getPlayerSlotItem(who, slot)
+            end
+            getPlayerBelt = function(who) return who == cid and BELT or stubs.getPlayerBelt(who) end
+            getContainerSize = function(uid) return uid == BELT and #beltBalls or stubs.getContainerSize(uid) end
+            getContainerItem = function(uid, slot)
+                if (uid == BELT) then
+                    return getThing(beltBalls[slot + 1].uid)
+                end
+                return stubs.getContainerItem(uid, slot)
+            end
+            doPlayerUseBallOnSlot = function(who) used = used + 1 end
+            doSwapItems = function(a, b) swapped = { a, b } return true end
+
+            local next, fromBelt = BeltSwitches.nextBall(cid)
+            check("bag: a living ball slot Pokemon is the one that comes out", next and next.uid == gold.uid and not fromBelt,
+                next and next.uid)
+            check("bag: calling it uses the ball slot", BeltSwitches.callNext(cid) and used == 1 and swapped == nil, used)
+
+            faint(gold)
+            next = BeltSwitches.nextBall(cid)
+            check("bag: no living Pokemon left: nobody to call", next == nil and not BeltSwitches.callNext(cid) and used == 1,
+                next and next.uid)
+
+            beltBalls[2] = living
+            next, fromBelt = BeltSwitches.nextBall(cid)
+            check("bag: a fainted ball slot Pokemon: the next living one down the belt, past the fainted ones",
+                next and next.uid == living.uid and fromBelt, next and next.uid)
+            check("bag: it swaps into the ball slot and comes out", BeltSwitches.callNext(cid) and used == 2 and swapped
+                and swapped[1] == living.uid and swapped[2] == gold.uid, JSON.encode(swapped or {}))
+        end)
+        for name, fn in pairs(stubs) do
+            _G[name] = fn
+        end
+        doRemoveItem(gold.uid)
+        doRemoveItem(fainted.uid)
+        doRemoveItem(living.uid)
+        doCreatureSetStorage(cid, playersStorages.beltDefense, defenseWas)
+        doCreatureSetStorage(cid, playersStorages.beltAutoSwapOff, swapWas)
+        check("bag: the belt switch checks ran", done, problem)
 
         local ball = newBall(cid, "Bulbasaur", 10)
         doItemSetAttribute(ball.uid, 1000, 777)

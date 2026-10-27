@@ -11,6 +11,7 @@
 	<event type="removeContainerItem" name="onRemoveContainerItem" event="script" value="../../lib/ps/events/creaturescripts/onRemoveContainerItem.lua" />
 	<event type="prepareDeath" name="onPrepareDeath" event="script" value="../../lib/ps/events/creaturescripts/onPrepareDeath.lua" />
 	<event type="target" name="onTarget" event="script" value="../../lib/ps/events/creaturescripts/onTarget.lua" />
+	<event type="statschange" name="beltDefense" event="script" value="../../lib/ps/events/creaturescripts/beltDefense.lua" />
 	<event type="joinChannel" name="onJoinChannel" event="script" value="../../lib/ps/events/creaturescripts/onJoinChannel.lua" />
 	<event type="reportBug" name="onReportBug" event="script" value="../../lib/ps/events/creaturescripts/onReportBug.lua" />
 	<event type="death" name="onDeath_Remove" event="script" value="../../lib/ps/events/creaturescripts/onDeath_Remove.lua" />

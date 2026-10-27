@@ -11,5 +11,6 @@ function onTarget(cid, target)
             return false
         end
     end
+	BeltSwitches.onThreat(cid)
 	return true
 end
