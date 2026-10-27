@@ -155,7 +155,7 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   - Every bag you put inside it gets a tab of its own, with its sprite (a Halloween backpack shows as
     one). The open tab shows its name; the others only their sprite. When they don't all fit,
     ◀ ▶ arrows and the mouse wheel scroll them.
-  - Up to 10 bags open as tabs at once, because the server keeps 16 open containers per trainer and
+  - Up to 5 bags open as tabs at once, because the server keeps 16 open containers per trainer and
     the belt, corpses and the PC need some. Further bags show in the grid; right-click one to open it
     once a tab is closed.
   - Right-click a tab to rename it, open it as its own window, or close it. Drag its sprite out to

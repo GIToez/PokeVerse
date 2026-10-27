@@ -17,7 +17,7 @@ local CELL, CELL_SPACING = 42, 3
 local PENDING_TIMEOUT = 3000
 -- bags opened as tabs on their own; the server keeps 16 open containers per trainer, and the belt,
 -- corpses and the PC need some of them. Right-clicking another bag opens it once a tab is closed.
-local MAX_TABS = 10
+local MAX_TABS = 5
 local ARROW_WIDTH, TAB_SPACING = 18, 4
 local NAME_LENGTH = 20
 local NAME_WIDTH = 120 -- the open tab's name, in pixels
