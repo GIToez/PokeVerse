@@ -7,11 +7,8 @@ PopupMenuButton < PopupMenuButton
   ttf-font: /fonts/ttf/arialb.ttf
   ttf-font-size: 11
   color: #eef2ff
-  image-source: none
-  image-border: 6
   $hover !disabled:
-    background-color: alpha
-    image-source: /modules/game_pokegear/images/pill_on
+    background-color: #22355bff
     color: #ffcb05
   $disabled:
     color: #5d6a86
@@ -39,7 +36,7 @@ PopupMenuCheckBox < PopupMenuCheckBox
   ttf-font-size: 11
   color: #eef2ff
   $hover:
-    background-color: #ffcb0518
+    background-color: #22355bff
     color: #ffcb05
   $disabled:
     color: #5d6a86
@@ -50,11 +47,8 @@ PopupScrollMenuButton < PopupScrollMenuButton
   ttf-font: /fonts/ttf/arialb.ttf
   ttf-font-size: 11
   color: #eef2ff
-  image-source: none
-  image-border: 6
   $hover !disabled:
-    background-color: alpha
-    image-source: /modules/game_pokegear/images/pill_on
+    background-color: #22355bff
     color: #ffcb05
   $disabled:
     color: #5d6a86

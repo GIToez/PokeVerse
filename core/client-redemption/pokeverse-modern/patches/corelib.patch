@@ -481,6 +481,24 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
  local currentHoveredWidget
  
  -- private functions
+@@ -13,7 +20,7 @@
+     end
+ 
+     local pos = g_window.getMousePosition()
+-    local windowSize = g_window.getSize()
++    local windowSize = rootWidget:getSize()
+     local labelSize = toolTipLabel:getSize()
+ 
+     pos.x = pos.x + 1
+@@ -39,7 +46,7 @@
+     end
+ 
+     local pos = g_window.getMousePosition()
+-    local windowSize = g_window.getSize()
++    local windowSize = rootWidget:getSize()
+     local labelSize = SpecialToolTipLabel:getSize()
+ 
+     pos.x = pos.x + 1
 @@ -72,7 +79,69 @@
      end
  end
