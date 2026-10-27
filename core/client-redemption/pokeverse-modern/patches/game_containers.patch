@@ -1,0 +1,18 @@
+diff -ruN pristine/modules/game_containers/containers.lua modules/game_containers/containers.lua
+--- a/modules/game_containers/containers.lua
++++ b/modules/game_containers/containers.lua
+@@ -922,6 +922,14 @@
+ end
+ 
+ function onContainerOpen(container, previousContainer)
++    -- PokeVerse: in the Pokegear layout the Bag window shows the bag and the bags in it
++    local pokegear = modules.game_pokegear
++    if pokegear and pokegear.claimsContainer and pokegear.claimsContainer(container) then
++        if previousContainer then
++            destroy(previousContainer)
++        end
++        return
++    end
+     local containerWindow
+     if previousContainer then
+         containerWindow = previousContainer.window

@@ -54,10 +54,15 @@ local function apply()
     end
     Hub.apply(active)
     Nearby.apply(active)
+    Bag.apply(active)
 end
 
 function toggleNearby()
     Nearby.toggle()
+end
+
+function claimsContainer(container)
+    return Bag.claimsContainer(container)
 end
 
 function refresh()
@@ -79,11 +84,13 @@ end
 local function onGameEnd()
     Hub.apply(false)
     Nearby.apply(false)
+    Bag.reset()
 end
 
 function init()
     g_ui.importStyle('hub')
     g_ui.importStyle('nearby')
+    Bag.init()
     active = isActive()
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
@@ -99,4 +106,5 @@ function terminate()
     end
     Hub.terminate()
     Nearby.terminate()
+    Bag.terminate()
 end
