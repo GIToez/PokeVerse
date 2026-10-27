@@ -53,6 +53,24 @@ PokegearBeltSlot < Item
     phantom: true
     visible: false
 
+  UIWidget
+    id: mark
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -3
+    margin-right: -3
+    size: 10 10
+    image-source: /modules/game_pokegear/images/chip_gold
+    image-border: 4
+    image-smooth: true
+    phantom: true
+    visible: false
+
+PokegearBeltSwitch < PokegearPill
+  height: 18
+  ttf-font-size: 10
+  padding: 0 8
+
 PokegearBagTab < UIButton
   height: 24
   image-source: /modules/game_pokegear/images/pill
@@ -353,11 +371,32 @@ PokegearBag < UIWidget
       spacing: 3
 
   UIWidget
-    id: tabs
+    id: switches
     anchors.top: belt.bottom
-    anchors.left: parent.left
+    anchors.left: belt.left
     anchors.right: parent.right
     margin-top: 10
+    height: 18
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+    PokegearBeltSwitch
+      id: defense
+      !text: tr('Defense mode')
+      !tooltip: tr('Defense mode: your Pokemon comes out when something attacks you, or you target something with none out. Not in safe zones, or while surfing, flying or riding.')
+
+    PokegearBeltSwitch
+      id: autoSwap
+      !text: tr('Auto swap')
+      !tooltip: tr('Auto swap: when your Pokemon faints in a fight, the next one down the belt comes out.')
+
+  UIWidget
+    id: tabs
+    anchors.top: switches.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
     height: 24
     layout:
       type: horizontalBox
