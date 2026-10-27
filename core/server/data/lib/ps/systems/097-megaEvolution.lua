@@ -232,6 +232,12 @@ MegaEvolution.finish = function(cid, quiet)
     if (isCreature(active.pokemon)) then
         MegaEvolution.revert(cid, active.pokemon)
         sendFx(active.pokemon, { phase = "end" })
+    elseif (isPlayer(cid) and getPlayerMounted(cid)) then
+        -- ridden, flown, surfed or dived: the creature is gone, but the portrait slot still shows the Mega
+        local ball = getPlayerBall(cid)
+        if (isItem(ball) and isBallWithPokemon(ball.uid)) then
+            doPlayerUpdatePokemonIcons(cid, getBallPokemonName(ball.uid), true)
+        end
     end
     if (isPlayer(cid)) then
         setGauge(cid, 0)

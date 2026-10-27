@@ -3506,6 +3506,18 @@ local function testMegaForms(cid)
         and getCreatureOutfit(pokemon).lookType == 2597, getCreatureOutfit(pokemon).lookType)
     check("mega forms: Drought boosts its own Fire moves", doPokemonSpecialAbilityCheck(pokemon,
         POKEMON_SPECIAL_ABILITY_IDS.DROUGHT, nil, "Flamethrower"))
+
+    -- riding, flying, surfing and diving take the creature away before the Mega ends
+    local realMounted = getPlayerMounted
+    setPlayerStorageValue(cid, playersStorages.megaActive, "M1|268435455|30")
+    getPlayerMounted = function(who) return who == cid or realMounted(who) end
+    local ended, problem = pcall(MegaEvolution.finish, cid, true)
+    getPlayerMounted = realMounted
+    local worn = getPlayerSlotItem(cid, PLAYER_SLOT_PORTRAIT)
+    local normal = getPokemonPortraitId(getBallPokemonName(getPlayerBall(cid).uid))
+    check("mega forms: a Mega ending while riding or surfing puts the normal portrait back", ended and isItem(worn)
+        and worn.itemid == normal, problem or string.format("%s, want %d", tostring(worn and worn.itemid), normal))
+    MegaEvolution.revert(cid, pokemon)
     callBack()
 
     pokemon = callOut("Shiny Charizard")
