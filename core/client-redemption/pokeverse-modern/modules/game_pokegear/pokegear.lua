@@ -39,6 +39,7 @@ local function apply()
     if g_game.isOnline() then
         applyWalkLock()
     end
+    Hub.apply(active)
 end
 
 function refresh()
@@ -57,18 +58,24 @@ local function onGameStart()
     scheduleEvent(apply, 100)
 end
 
+local function onGameEnd()
+    Hub.apply(false)
+end
+
 function init()
+    g_ui.importStyle('hub')
     active = isActive()
-    connect(g_game, { onGameStart = onGameStart })
+    connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
         onGameStart()
     end
 end
 
 function terminate()
-    disconnect(g_game, { onGameStart = onGameStart })
+    disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if active then
         active = false
         apply()
     end
+    Hub.terminate()
 end

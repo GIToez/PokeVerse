@@ -29,6 +29,7 @@ class UIMinimap final : public UIWidget
 {
 public:
     void drawSelf(DrawPoolType drawPane) override;
+    void drawChildren(const Rect& visibleRect, DrawPoolType drawPane) override;
 
     bool zoomIn() { return setZoom(m_zoom + 1); }
     bool zoomOut() { return setZoom(m_zoom - 1); }
@@ -90,6 +91,16 @@ public:
     }
     bool isUseStaticMinimap() const { return m_useStaticMinimap; }
 
+    // Circular mode: the map and its marks inside the circle that fits the widget (the Pokegear ring)
+    void setCircular(bool circular)
+    {
+        if (m_circular == circular)
+            return;
+        m_circular = circular;
+        repaint();
+    }
+    bool isCircular() const { return m_circular; }
+
 protected:
     virtual void onZoomChange(int zoom, int oldZoom);
     virtual void onCameraPositionChange(const Position& position, const Position& oldPosition);
@@ -104,5 +115,6 @@ private:
     int8_t m_maxZoom{ 5 };
     bool m_satelliteMode{ false };
     bool m_useStaticMinimap{ false };
+    bool m_circular{ false };
     float m_floorSeparatorOpacity{ 1.0f };
 };

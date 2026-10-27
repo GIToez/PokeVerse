@@ -27,6 +27,7 @@
 #include "satellitemap.h"
 #include "uimapanchorlayout.h"
 #include "framework/otml/otmlnode.h"
+#include "framework/graphics/drawpoolmanager.h"
 #include "framework/ui/uilayout.h"
 
 void UIMinimap::drawSelf(const DrawPoolType drawPane)
@@ -42,8 +43,41 @@ void UIMinimap::drawSelf(const DrawPoolType drawPane)
         g_satelliteMap.draw(getPaddingRect(), m_cameraPosition, m_scale, m_color, m_floorSeparatorOpacity);
     else if (m_useStaticMinimap && g_satelliteMap.hasMinimapChunksForFloor(m_cameraPosition.z))
         g_satelliteMap.drawStaticMinimap(getPaddingRect(), m_cameraPosition, m_scale, m_color);
+    else if (m_circular)
+        g_minimap.drawCircle(getPaddingRect(), m_cameraPosition, m_scale, m_color);
     else
         g_minimap.draw(getPaddingRect(), m_cameraPosition, m_scale, m_color);
+}
+
+void UIMinimap::drawChildren(const Rect& visibleRect, const DrawPoolType drawPane)
+{
+    if (!m_circular)
+        return UIWidget::drawChildren(visibleRect, drawPane);
+
+    // marks whose centre is outside the circle would float in the widget's corners
+    const auto& area = getPaddingRect();
+    const float radius = std::min(area.width(), area.height()) / 2.f;
+    const auto& center = area.center();
+    for (const auto& child : m_children) {
+        if (!child || !child->isExplicitlyVisible() || child->getOpacity() <= Fw::MIN_ALPHA || !child->getRect().isValid())
+            continue;
+
+        const auto& childCenter = child->getRect().center();
+        const float dx = childCenter.x - center.x;
+        const float dy = childCenter.y - center.y;
+        if (dx * dx + dy * dy > radius * radius)
+            continue;
+
+        const auto& childVisibleRect = visibleRect.intersection(child->getRect());
+        if (!childVisibleRect.isValid())
+            continue;
+
+        const float oldOpacity = g_drawPool.getOpacity();
+        if (child->getOpacity() < oldOpacity)
+            g_drawPool.setOpacity(child->getOpacity());
+        child->draw(childVisibleRect, drawPane);
+        g_drawPool.setOpacity(oldOpacity);
+    }
 }
 
 bool UIMinimap::setZoom(const int8_t zoom)
@@ -163,5 +197,7 @@ void UIMinimap::onStyleApply(const std::string_view styleName, const OTMLNodePtr
             setMaxZoom(node->value<int>());
         else if (node->tag() == "min-zoom")
             setMinZoom(node->value<int>());
+        else if (node->tag() == "circular")
+            setCircular(node->value<bool>());
     }
 }

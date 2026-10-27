@@ -1,0 +1,163 @@
+// The Pokegear ring: the round minimap, the app orbs on its left, zoom and floor on its right and the
+// place under it. Laid out by hub.lua around the ring's centre.
+PokegearOrb < UIButton
+  size: 70 70
+  image-source: /modules/game_pokegear/images/orb
+  image-smooth: true
+  $on:
+    image-source: /modules/game_pokegear/images/orb_on
+  $pressed:
+    opacity: 0.8
+
+  UIWidget
+    id: icon
+    size: 28 28
+    anchors.centerIn: parent
+    image-smooth: true
+    phantom: true
+
+  PokegearChip
+    id: chip
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 4
+    margin-bottom: 2
+
+  UILabel
+    id: badge
+    size: 18 18
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 4
+    margin-right: 6
+    image-source: /modules/game_pokegear/images/badge
+    image-smooth: true
+    text-align: center
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #ffffff
+    phantom: true
+    visible: false
+
+PokegearChip < UILabel
+  height: 16
+  text-auto-resize: true
+  text-offset: 0 0
+  padding: 0 4
+  image-source: /modules/game_pokegear/images/chip
+  image-border: 6
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #ffcb05
+  text-align: center
+  phantom: true
+
+PokegearButton < UIButton
+  size: 42 42
+  image-source: /modules/game_pokegear/images/button
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 18
+  color: #eef2ff
+  text-align: center
+  $hover:
+    image-source: /modules/game_pokegear/images/button_hover
+  $pressed:
+    opacity: 0.8
+
+PokegearHub < UIWidget
+  id: pokegearHub
+  size: 380 400
+  focusable: false
+  phantom: true
+
+  UIWidget
+    id: ring
+    size: 320 320
+    image-source: /modules/game_pokegear/images/ring
+    image-smooth: true
+    phantom: true
+
+  UIWidget
+    id: mapSlot
+    size: 256 256
+    phantom: false
+
+  UIWidget
+    id: sun
+    size: 20 20
+    image-source: /modules/game_pokegear/images/sun
+    image-smooth: true
+    phantom: true
+
+  UILabel
+    id: north
+    text: N
+    ttf-font: /fonts/ttf/pixelify-sans.ttf
+    ttf-font-size: 16
+    color: #eef2ff
+    text-auto-resize: true
+    phantom: true
+
+  UILabel
+    id: floorLabel
+    height: 18
+    text-auto-resize: true
+    padding: 0 5
+    image-source: /modules/game_pokegear/images/plate
+    image-border: 8
+    image-smooth: true
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8ef0a2
+    text-align: center
+    phantom: true
+
+  UIWidget
+    id: grip
+    size: 36 22
+    image-source: /modules/game_pokegear/images/plate
+    image-border: 11
+    image-smooth: true
+    draggable: true
+    !tooltip: tr('Drag to move the map')
+
+    UIWidget
+      size: 16 16
+      anchors.centerIn: parent
+      image-source: /modules/game_pokegear/images/grip
+      image-smooth: true
+      phantom: true
+
+  UIWidget
+    id: ribbon
+    size: 260 46
+    image-source: /modules/game_pokegear/images/plate
+    image-border: 11
+    image-smooth: true
+    phantom: true
+
+    UILabel
+      id: place
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 4
+      text-align: center
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 19
+      color: #ffcb05
+      phantom: true
+
+    UILabel
+      id: detail
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 2
+      text-align: center
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #b4c2dc
+      phantom: true

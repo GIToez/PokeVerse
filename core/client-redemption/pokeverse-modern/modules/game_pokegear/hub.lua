@@ -1,0 +1,316 @@
+-- The Pokegear ring (docs/concepts/side-panel): the game's minimap, made round, with the app orbs
+-- on its left, zoom and floor buttons on its right, the time of day on its rim and the place under
+-- it. The minimap widget itself is game_minimap's, moved in here while Pokegear is on.
+local HUB_CENTER = { x = 205, y = 182 }
+local MAP_RADIUS = 128
+local ORB_RADIUS = 168
+local BUTTON_RADIUS = 142
+local SUN_RADIUS = 139
+local RIBBON_TOP = 352
+local POSITION_SETTING = 'pokegearHubPosition'
+
+-- the orbs, top to bottom down the left of the ring; each one presses a top bar button, so it
+-- opens the same window and keeps the same key
+local ORBS = {
+    { id = 'friends', button = 'vipListButton', tooltip = 'Friends', key = { 'Windows', 'Show/hide VIP list' } },
+    { id = 'trainer', button = 'trainerCardButton', tooltip = 'Trainer card' },
+    { id = 'quests', button = 'questLogButton', tooltip = 'Quests', key = { 'Windows', 'Show/hide the Quest Log' } },
+    { id = 'pokepedia', button = 'pokepediaButton', tooltip = 'Pokepedia', key = { 'Minimap', 'Open full map' } },
+    { id = 'bag', image = '/modules/game_pokegear/images/button_bag', tooltip = 'Bag', open = 'bag' },
+}
+local ORB_FIRST_ANGLE, ORB_STEP = 237, -28
+local BUTTONS = {
+    { id = 'zoomIn', text = '+', angle = -38, tooltip = 'Zoom in' },
+    { id = 'zoomOut', text = '-', angle = -14, tooltip = 'Zoom out' },
+    { id = 'floorUp', text = '^', angle = 14, tooltip = 'Floor up' },
+    { id = 'floorDown', text = 'v', angle = 38, tooltip = 'Floor down' },
+}
+
+local hub, minimap, orbs, buttons = nil, nil, {}, {}
+local refreshEvent
+
+local function at(angle, radius, size)
+    local r = math.rad(angle)
+    return HUB_CENTER.x + radius * math.cos(r) - size / 2, HUB_CENTER.y + radius * math.sin(r) - size / 2
+end
+
+local function place(widget, x, y)
+    widget:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    widget:addAnchor(AnchorTop, 'parent', AnchorTop)
+    widget:setMarginLeft(math.floor(x + 0.5))
+    widget:setMarginTop(math.floor(y + 0.5))
+end
+
+-- the top bar's own panel: other widgets share some of these ids
+local function topButton(id)
+    local mainPanel = modules.game_mainpanel
+    return (mainPanel and mainPanel.getButton and mainPanel.getButton(id))
+        or (modules.client_topmenu and modules.client_topmenu.getButton(id))
+end
+
+local function pressTopButton(id)
+    local button = topButton(id)
+    if button and button.onMouseRelease then
+        local pos = button:getPosition()
+        button.onMouseRelease(button, { x = pos.x + 1, y = pos.y + 1 }, MouseLeftButton)
+    end
+end
+
+local function openBag()
+    local player = g_game.getLocalPlayer()
+    local bag = player and player:getInventoryItem(InventorySlotBack)
+    if bag then
+        g_game.open(bag)
+    end
+end
+
+-- the key shown is the one bound now, in the current preset (empty when nothing is bound)
+local function boundKey(key)
+    if not key or not Keybind.getKeybindKeys then
+        return ''
+    end
+    local ok, keys = pcall(Keybind.getKeybindKeys, key[1], key[2], Keybind.chatMode, Keybind.currentPreset)
+    if not ok or type(keys) ~= 'table' then
+        return ''
+    end
+    return keys.primary ~= '' and keys.primary or (keys.secondary or '')
+end
+
+local function floorName(z)
+    if z == 7 then
+        return tr('Ground')
+    elseif z < 7 then
+        return (8 - z) .. 'F'
+    end
+    return 'B' .. (z - 7)
+end
+
+local function refreshOrbs()
+    for _, def in ipairs(ORBS) do
+        local orb = orbs[def.id]
+        local button = def.button and topButton(def.button)
+        if def.image then
+            orb.icon:setImageSource(def.image)
+            orb.icon:setImageClip({ x = 0, y = 0, width = 20, height = 20 })
+        elseif button then
+            orb.icon:setImageSource(button:getImageSource())
+            orb.icon:setImageClip(button:getImageClip())
+        end
+        local key = boundKey(def.key)
+        orb.chip:setText(key)
+        orb.chip:setVisible(key ~= '')
+        orb:setOn(button ~= nil and button.isOn ~= nil and button:isOn())
+    end
+end
+
+local function refreshFloor()
+    if minimap then
+        hub.floorLabel:setText(floorName(minimap:getCameraPosition().z))
+    end
+end
+
+-- the sun (or the moon at night) runs round the rim: midnight at the bottom, noon at the top
+local function refreshTime()
+    local clock = modules.game_minimap.getDayTime and modules.game_minimap.getDayTime()
+    local hour, minute = 12, 0
+    if clock then
+        hour, minute = clock.h, clock.m
+    end
+    local angle = 90 + (hour * 60 + minute) / (24 * 60) * 360
+    local x, y = at(angle, SUN_RADIUS, hub.sun:getWidth())
+    hub.sun:setMarginLeft(math.floor(x + 0.5))
+    hub.sun:setMarginTop(math.floor(y + 0.5))
+    local day = hour >= 6 and hour < 18
+    hub.sun:setImageSource('/modules/game_pokegear/images/' .. (day and 'sun' or 'moon'))
+    return hour, minute, day
+end
+
+local function refreshRibbon()
+    local hour, minute, day = refreshTime()
+    local placeName = modules.game_time and modules.game_time.getLocation and modules.game_time.getLocation() or ''
+    local region = ''
+    local player = g_game.getLocalPlayer()
+    local map = modules.game_minimap and modules.game_minimap.PokeverseMap
+    if player and map and map.regionAt then
+        region = map.regionAt(player:getPosition()) or ''
+        region = region:gsub('^%l', string.upper)
+    end
+    if placeName == '' then
+        placeName = region
+    end
+    hub.ribbon.place:setText(placeName)
+    local suffix = hour >= 12 and 'PM' or 'AM'
+    local h12 = hour % 12 == 0 and 12 or hour % 12
+    local parts = {}
+    if region ~= '' and region ~= placeName then
+        parts[#parts + 1] = region
+    end
+    parts[#parts + 1] = string.format('%d:%02d %s', h12, minute, suffix)
+    parts[#parts + 1] = day and tr('Day') or tr('Night')
+    hub.ribbon.detail:setText(table.concat(parts, ' - '))
+end
+
+local function refresh()
+    if not hub or not hub:isVisible() then
+        return
+    end
+    refreshOrbs()
+    refreshFloor()
+    refreshRibbon()
+end
+
+local function clampToScreen(pos)
+    local root = modules.game_interface.getRootPanel()
+    local rect = root:getRect()
+    pos.x = math.max(rect.x - 40, math.min(pos.x, rect.x + rect.width - hub:getWidth() + 40))
+    pos.y = math.max(rect.y - 20, math.min(pos.y, rect.y + rect.height - hub:getHeight() + 40))
+    return pos
+end
+
+local function placeDefault()
+    hub:breakAnchors()
+    hub:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
+    hub:addAnchor(AnchorRight, 'gameMainRightPanel', AnchorLeft)
+    hub:setMarginTop(0)
+    hub:setMarginRight(4)
+end
+
+local function restorePosition()
+    local saved = g_settings.getPoint(POSITION_SETTING)
+    if saved and (saved.x ~= 0 or saved.y ~= 0) then
+        hub:breakAnchors()
+        hub:setPosition(clampToScreen(saved))
+    else
+        placeDefault()
+    end
+end
+
+local function setupDragging()
+    local grip = hub.grip
+    grip.onDragEnter = function(widget, mousePos)
+        local pos = hub:getPosition()
+        widget.dragOffset = { x = mousePos.x - pos.x, y = mousePos.y - pos.y }
+        hub:breakAnchors()
+        return true
+    end
+    grip.onDragMove = function(widget, mousePos)
+        hub:setPosition(clampToScreen({ x = mousePos.x - widget.dragOffset.x, y = mousePos.y - widget.dragOffset.y }))
+        return true
+    end
+    grip.onDragLeave = function()
+        g_settings.set(POSITION_SETTING, hub:getPosition())
+        return true
+    end
+    -- a double click puts it back in the corner
+    grip.onDoubleClick = function()
+        g_settings.set(POSITION_SETTING, { x = 0, y = 0 })
+        placeDefault()
+        return true
+    end
+end
+
+local function build()
+    hub = g_ui.createWidget('PokegearHub', modules.game_interface.getRootPanel())
+    hub:hide()
+
+    place(hub.ring, HUB_CENTER.x - 160, HUB_CENTER.y - 160)
+    place(hub.mapSlot, HUB_CENTER.x - MAP_RADIUS, HUB_CENTER.y - MAP_RADIUS)
+    hub.sun:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    hub.sun:addAnchor(AnchorTop, 'parent', AnchorTop)
+    place(hub.north, HUB_CENTER.x - 5, HUB_CENTER.y - 178)
+    place(hub.grip, HUB_CENTER.x - 18, HUB_CENTER.y + 150)
+    place(hub.ribbon, HUB_CENTER.x - 130, RIBBON_TOP)
+    local fx, fy = at(26, MAP_RADIUS - 30, 0)
+    place(hub.floorLabel, fx - 24, fy - 9)
+
+    for i, def in ipairs(ORBS) do
+        local orb = g_ui.createWidget('PokegearOrb', hub)
+        orb:setId(def.id .. 'Orb')
+        orb:setTooltip(tr(def.tooltip))
+        place(orb, at(ORB_FIRST_ANGLE + (i - 1) * ORB_STEP, ORB_RADIUS, 70))
+        orb.onClick = function()
+            if def.open == 'bag' then
+                openBag()
+            else
+                pressTopButton(def.button)
+            end
+            scheduleEvent(refreshOrbs, 50)
+        end
+        orbs[def.id] = orb
+    end
+
+    for _, def in ipairs(BUTTONS) do
+        local button = g_ui.createWidget('PokegearButton', hub)
+        button:setId(def.id .. 'Button')
+        button:setText(def.text)
+        button:setTooltip(tr(def.tooltip))
+        place(button, at(def.angle, BUTTON_RADIUS, 42))
+        buttons[def.id] = button
+    end
+    buttons.zoomIn.onClick = function() if minimap then minimap:zoomIn() end end
+    buttons.zoomOut.onClick = function() if minimap then minimap:zoomOut() end end
+    buttons.floorUp.onClick = function() modules.game_minimap.upLayer() refreshFloor() end
+    buttons.floorDown.onClick = function() modules.game_minimap.downLayer() refreshFloor() end
+
+    setupDragging()
+end
+
+local function onCameraPositionChange()
+    refreshFloor()
+end
+
+local function show()
+    if not hub then
+        build()
+    end
+    if minimap then
+        refresh()
+        return
+    end
+    minimap = modules.game_minimap.getMiniMapUi()
+    modules.game_minimap.setHome(hub.mapSlot)
+    minimap:setCircular(true)
+    connect(minimap, { onCameraPositionChange = onCameraPositionChange })
+    restorePosition()
+    hub:show()
+    hub:raise()
+    refresh()
+    if not refreshEvent then
+        refreshEvent = cycleEvent(refresh, 1000)
+    end
+end
+
+local function hide()
+    if refreshEvent then
+        removeEvent(refreshEvent)
+        refreshEvent = nil
+    end
+    if minimap then
+        disconnect(minimap, { onCameraPositionChange = onCameraPositionChange })
+        minimap:setCircular(false)
+        modules.game_minimap.setHome(nil)
+        minimap = nil
+    end
+    if hub then
+        hub:hide()
+    end
+end
+
+Hub = {}
+
+function Hub.apply(active)
+    if active and g_game.isOnline() then
+        show()
+    else
+        hide()
+    end
+end
+
+function Hub.terminate()
+    hide()
+    if hub then
+        hub:destroy()
+        hub = nil
+    end
+    orbs, buttons = {}, {}
+end
