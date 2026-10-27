@@ -263,13 +263,14 @@ and the full map. The new map shows the time on its frame, has floor arrows and 
 mouse wheel; M still opens the full map. That leaves the top bar with status on the left and the
 bell, the gear and the Store on the right.
 
-**Tracking, Social and Stats (mock-ups, waiting for a yes).**
+**Tracking, Social and the Skills window (mock-ups, waiting for a yes).**
 
 | | |
 | --- | --- |
 | Tracking card | ![Tracking card](tracking-card.jpg) |
 | Social window | ![Social window](social-window.jpg) |
-| Trainer card, Stats tab | ![Stats tab](stats-tab.jpg) |
+| Experience on the HUD | ![Experience on the HUD](hud-xp.jpg) |
+| Trainer card with Skills | ![Trainer card with Skills](trainercard-skills.jpg) |
 
 - **Every box is its own window.** Drag it anywhere by its header (the dots); it snaps to the screen
   edges and to other windows, and the layout is saved per character. A tab can be dragged out into
@@ -281,19 +282,27 @@ bell, the gear and the Store on the right.
     or the quest.
   - It grows with its lines, then scrolls. Folded, it's a chip under the map's name; a green dot and
     a count show something is ready to claim.
-- **Social window** (replaces the VIP box).
+- **Social window** (replaces the VIP box): one window with Friends, Guild, Party and Blocked tabs.
   - Friends: today's VIP list, online first, with where they are and message, trade and duel.
   - Guild: members by rank, guild chat, leave. Party: invite, shared experience, leave. Blocked: the
     ignore list.
+  - A tab can still be dragged out as its own window, but doesn't have to be.
   - Right-clicking a player anywhere still adds or blocks them.
-- **Stats tab** on the Trainer card (P), replacing the Skills window in Pokegear.
-  - Trainer: level, experience, XP gain rate, hit points, energy, speed, regeneration, offline
-    training. Balls and respect, with the badges. Battles: duels and NPC battles won and lost. Skills:
-    Catching, Fishing and Headbutting with their progress.
-  - Each group can be dragged out as its own small window.
-  - A switch shows Battles and Skills to other trainers; experience is never shown.
+- **The Skills window goes away in Pokegear.** Its lines are split up:
+  - **Next to the XP bar:** Trainer Spirit (its hours and a bar) on the left, and a boost chip with the
+    total rate on the right while any XP boost runs.
+  - **Hovering your XP:** level, experience, what's left to the next level, XP gained this hour, the
+    XP gain rate and every boost with its time left (Trainer Spirit, XP Boost, voucher, low level
+    bonus, Lucky Egg, events, the Ace Trainer perk).
+  - **The ball row** under the HUD shows how many balls you carry, out of 6 (Free Ball Slots is the
+    carrying capacity, and balls and eggs are the only items with weight).
+  - **The Trainer card's Overview** gets a Skills box next to Trophy Pokemon: Catching, Fishing and
+    Headbutting with their level and progress. Trainer level, Duels and Respect are already in its
+    Trainer Information; NPC battles won and lost join the Duels line.
+  - Not shown in Pokegear: Hit Points and Energy as numbers (the HUD has their bars), Offline
+    Training and Regeneration.
 - Classic keeps the tracker window, the VIP box and the Skills window.
 
 ## To decide
 
-- Tracking, Social and Stats: the mock-ups above.
+- Tracking, Social and the Skills window split: the mock-ups above.
