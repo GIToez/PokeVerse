@@ -11,6 +11,7 @@ local places
 local waypoints = {} -- { name, icon, x, y, z }
 local route = {} -- { name, x, y, z, reached }
 local playerMark, focusMark
+local pointer, pointerEvent
 local waypointMarks, stopMarks, dots, shownMarks = {}, {}, {}, {}
 local dialog
 local placesEvent
@@ -138,6 +139,9 @@ local function refreshVisibility()
     end
     if focusMark and focusMark.pos then
         focusMark:setVisible(focusMark.pos.z == z)
+    end
+    if pointer and pointer.pos then
+        pointer:setVisible(pointer.pos.z == z)
     end
     local player = g_game.getLocalPlayer()
     if playerMark and player then
@@ -686,7 +690,48 @@ local function drawPlaces()
     end
 end
 
+local function clearPointer()
+    removeEvent(pointerEvent)
+    pointerEvent = nil
+    if pointer then
+        pointer:destroy()
+        pointer = nil
+    end
+end
+
+local function animatePointer()
+    if not pointer or not pointer:isVisible() then
+        return
+    end
+    local t = g_clock.millis() / 1000
+    pointer.arrow:setMarginBottom(math.floor(math.abs(math.sin(t * math.pi / 0.9)) * 12 + 0.5))
+    local phase = (t % 1.4) / 1.4
+    local size = math.floor(12 + 50 * phase)
+    pointer.ring:setSize({ width = size, height = size })
+    pointer.ring:setOpacity(1 - phase)
+end
+
+-- a bigger, animated mark for one spot (a quest's NPC); left-click walks there
+local function showPointer(pos, text)
+    clearPointer()
+    if focusMark then
+        focusMark:setVisible(false)
+        focusMark.pos = nil
+    end
+    pointer = g_ui.createWidget('PpMapPointer', minimap)
+    pointer.arrow:setTooltip(text or '')
+    pointer.arrow.onMouseRelease = function(widget, mousePos, mouseButton)
+        if mouseButton == MouseLeftButton then
+            Navigation.goTo(pos, text)
+        end
+        return true
+    end
+    placeMark(pointer, pos)
+    pointerEvent = cycleEvent(animatePointer, 33)
+end
+
 local function setFocus(pos, text)
+    clearPointer()
     if not focusMark then
         focusMark = newMark(Pp.IMAGES .. 'mark_spawn', 16, true)
     end
@@ -714,9 +759,14 @@ local function showSub(name)
     end
 end
 
-function MapTab.showPosition(pos, text)
+-- animated: the bigger animated mark instead of the flag
+function MapTab.showPosition(pos, text, animated)
     show('map')
-    setFocus(pos, text)
+    if animated then
+        showPointer(pos, text)
+    else
+        setFocus(pos, text)
+    end
     centerOn(pos)
 end
 
@@ -725,6 +775,7 @@ end
 function MapTab.showPositions(list, text)
     show('map')
     clearList(shownMarks)
+    clearPointer()
     local player = g_game.getLocalPlayer()
     local here = player and player:getPosition()
     local best, bestDistance
@@ -1016,6 +1067,7 @@ end
 
 function MapTab.onGameEnd()
     clearList(shownMarks)
+    clearPointer()
     if focusMark then
         focusMark:destroy()
         focusMark = nil
@@ -1037,6 +1089,7 @@ end
 function MapTab.terminate()
     disconnect(LocalPlayer, { onPositionChange = onPositionChange })
     removeEvent(placesEvent)
+    clearPointer()
     if dialog then
         dialog:destroy()
         dialog = nil
