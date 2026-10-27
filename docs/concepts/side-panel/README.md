@@ -294,8 +294,9 @@ bell, the gear and the Store on the right.
   - **Hovering your XP:** level, experience, what's left to the next level, XP gained this hour, the
     XP gain rate and every boost with its time left (Trainer Spirit, XP Boost, voucher, low level
     bonus, Lucky Egg, events, the Ace Trainer perk).
-  - **The ball row** under the HUD shows how many balls you carry, out of 6 (Free Ball Slots is the
-    carrying capacity, and balls and eggs are the only items with weight).
+  - **Free Ball Slots** isn't shown: the belt already shows how many slots are left. Hovering the
+    Bag's Poke Balls tab lists each catching ball you carry with its count. There's no ball chip on
+    the HUD; catching balls go on hotkeys from the Bag, like any item.
   - **The Trainer card's Overview** gets a Skills box next to Trophy Pokemon: Catching, Fishing and
     Headbutting with their level and progress. Trainer level, Duels and Respect are already in its
     Trainer Information; NPC battles won and lost join the Duels line.
