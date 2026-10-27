@@ -84,7 +84,8 @@ EXTENDED_IDS = {
     EVENT_SHOP = 49, -- JSON Event Token Shop: holiday token catalogs (EventShop)
     ANALYSER = 50, -- JSON Analyser window: the catch chances of the last Pokemon defeated and the Pokemon's EXP (Analyser)
     MEGA = 51, -- JSON Mega HUD state: the ring, the gauge, whether the button is lit, the Mega form, its seconds left and boosted moves (MegaEvolution.state)
-    MEGA_EVOLVE = 52 -- JSON from the client: {action = "hello"} at login, {action = "evolve"} for the R key and the Mega button (MegaEvolution)
+    MEGA_EVOLVE = 52, -- JSON from the client: {action = "hello"} at login, {action = "evolve"} for the R key and the Mega button (MegaEvolution)
+    BAG = 53 -- JSON Pokegear Bag: the client sends {action = "hello"} at login, the server answers with the item categories (Bag)
 }
 
 TOURNAMENT_TYPES = {}

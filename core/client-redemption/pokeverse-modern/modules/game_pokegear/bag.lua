@@ -3,6 +3,8 @@
 -- belt container (the armor slot), which game_pokehud opens with the backpack. The squares are the containers' own item slots, so using,
 -- dragging and dropping work as in the backpack windows; game_containers leaves these containers
 -- to this window (claimsContainer) while Pokegear is on.
+-- The server (systems/098-bag.lua, ExtendedIds.Bag) sends the item categories the rail filters by,
+-- and the quick call number of every belt ball, so the belt shows the quick call bar's faces and keys.
 Bag = {}
 
 local POSITION_SETTING = 'pokegearBagPosition'
@@ -22,6 +24,13 @@ local pending = {} -- { itemId, untilTime, select }
 local queued = {}
 local active = false
 local beltId
+local categories = {} -- { name, icon } from the server, in rail order
+local categoryOf = {} -- client item id -> index in categories
+local otherCategory -- where an item in no category goes
+local filter -- index in categories; nil shows everything
+local beltNumbers -- { ball = number, slots = { number, ... } }, 0 for none
+local beltRequest
+local fillGrid, requestBelt
 
 local function slotItem(slot)
     local player = g_game.getLocalPlayer()
@@ -120,29 +129,105 @@ local function onGridItemRelease(widget, mousePos, button)
     return UIItem.onMouseRelease(widget, mousePos, button)
 end
 
-local function refreshCount(container)
-    window.header.count:setText(container and string.format('%d / %d', container:getItemsCount(),
-        container:getCapacity()) or '')
+-- the space used across every bag
+local function refreshCount()
+    local used, capacity = 0, 0
+    for _, id in ipairs(tabs) do
+        local container = containerById(id)
+        if container then
+            used = used + container:getItemsCount()
+            capacity = capacity + container:getCapacity()
+        end
+    end
+    window.header.count:setText(capacity > 0 and string.format('%d / %d', used, capacity) or '')
 end
 
-local function fillGrid()
+local function categoryIndex(item)
+    return categoryOf[item:getId()] or otherCategory
+end
+
+local function matches(item)
+    return filter == nil or (item ~= nil and categoryIndex(item) == filter)
+end
+
+local function setFilter(index)
+    filter = index
+    fillGrid()
+end
+
+local function railButton(index, count)
+    local button = g_ui.createWidget('PokegearBagRailButton', window.rail)
+    button:setOn(filter == index)
+    if index and index ~= otherCategory then
+        local category = categories[index]
+        button.icon:setItemId(category.icon or 0)
+        button:setTooltip(string.format('%s (%d)', tr(category.name), count or 0))
+    elseif index then
+        button.icon:hide()
+        button:setText(tr('Etc'))
+        button:setTooltip(string.format('%s (%d)', tr(categories[index].name), count or 0))
+    else
+        button.icon:hide()
+        button:setText(tr('All'))
+        button:setTooltip(tr('Everything in this bag'))
+    end
+    button.onClick = function()
+        setFilter(index)
+    end
+end
+
+-- All, then each category with something in the open bag (and the one picked, even when empty)
+local function fillRail(container)
+    local rail = window.rail
+    rail:destroyChildren()
+    local counts = {}
+    if container and #categories > 0 then
+        for _, item in ipairs(container:getItems()) do
+            local index = categoryIndex(item)
+            if index then
+                counts[index] = (counts[index] or 0) + 1
+            end
+        end
+    end
+    railButton(nil)
+    for index in ipairs(categories) do
+        if counts[index] or filter == index then
+            railButton(index, counts[index])
+        end
+    end
+    local buttons = #rail:getChildren()
+    rail:setHeight(buttons * 24 + (buttons - 1) * 2)
+end
+
+fillGrid = function()
     local container = containerById(selected)
     local grid = window.grid
     grid:destroyChildren()
-    refreshCount(container)
-    if not container then
-        return
+    refreshCount()
+    if filter and not categories[filter] then
+        filter = nil
     end
-    for slot = 0, container:getCapacity() - 1 do
-        local widget = g_ui.createWidget('PokegearBagItem', grid)
-        widget:setId('item' .. slot)
-        widget:setItem(container:getItem(slot))
-        widget.position = container:getSlotPosition(slot)
-        widget.onMouseRelease = onGridItemRelease
+    fillRail(container)
+    window.gridTitle:setText(filter and tr(categories[filter].name) or tr('All'))
+    local shown = 0
+    if container then
+        for slot = 0, container:getCapacity() - 1 do
+            local item = container:getItem(slot)
+            if matches(item) then
+                local widget = g_ui.createWidget('PokegearBagItem', grid)
+                widget:setId('item' .. slot)
+                widget:setItem(item)
+                widget.position = container:getSlotPosition(slot)
+                widget.onMouseRelease = onGridItemRelease
+                shown = shown + 1
+            end
+        end
     end
-    local rows = math.max(1, math.ceil(container:getCapacity() / COLUMNS))
-    grid:setHeight(math.min(rows, MAX_VISIBLE_ROWS) * (CELL + CELL_SPACING) - CELL_SPACING)
-    window:setHeight(8 + 24 + 6 + 14 + 4 + 36 + 10 + 24 + 8 + grid:getHeight() + 10)
+    local rows = math.max(1, math.ceil(shown / COLUMNS))
+    local height = math.min(rows, MAX_VISIBLE_ROWS) * (CELL + CELL_SPACING) - CELL_SPACING
+    grid:setHeight(height)
+    window.gridScroll:setHeight(height)
+    window:setHeight(8 + 24 + 16 + 36 + 10 + 24 + 8 + 16 + 4 + math.max(height, window.rail:getHeight()) + 10)
 end
 
 local function fillTabs()
@@ -154,7 +239,8 @@ local function fillTabs()
             local tab = g_ui.createWidget('PokegearBagTab', bar)
             tab:setText(index == 1 and tr('Bag') or titleOf(container))
             tab:setOn(id == selected)
-            tab:setTooltip(index == 1 and tr('Your bag') or tr('Right-click to close this tab'))
+            local space = string.format('%d / %d', container:getItemsCount(), container:getCapacity())
+            tab:setTooltip((index == 1 and tr('Your bag') or tr('Right-click to close this tab')) .. '\n' .. space)
             tab.onClick = function()
                 selected = id
                 fillTabs()
@@ -187,11 +273,67 @@ local function refreshOut()
     end
 end
 
-local function beltSlot(item, position, key)
+local function sendBag(data)
+    local protocol = g_game.getProtocolGame()
+    if protocol and g_game.isOnline() then
+        protocol:sendExtendedJSONOpcode(ExtendedIds.Bag, data)
+    end
+end
+
+-- the belt moved: ask for its quick call numbers once things settle
+requestBelt = function()
+    if beltRequest or not active then
+        return
+    end
+    beltRequest = scheduleEvent(function()
+        beltRequest = nil
+        sendBag({ action = 'belt' })
+    end, 300)
+end
+
+-- the quick call bar's slot for that number: its face, and its key (F1 to F6 by position)
+local function quickCall(number)
+    local bar = modules.game_pokebar and modules.game_pokebar.pokemonBar
+    if not number or number == 0 or not bar then
+        return
+    end
+    local position = 0
+    for _, child in ipairs(bar:getChildren()) do
+        if child:getStyleName() == 'QuickCallSlot' then
+            position = position + 1
+            if child.number == number then
+                local face = child.portrait and child.portrait:getItemId() or 0
+                return face, Keybind.getShortLabel('Pokemon', 'Call Pokemon ' .. position)
+            end
+        end
+    end
+end
+
+local function showQuickCall(slot, number)
+    local face, key = quickCall(slot:getItem() and number)
+    slot.face:setItemId(face or 0)
+    slot.face:setVisible(face ~= nil and face > 0)
+    slot.key:setText(key or '')
+end
+
+local function refreshFaces()
+    if not window then
+        return
+    end
+    local children = window.belt:getChildren()
+    for index, slot in ipairs(children) do
+        local number
+        if beltNumbers then
+            number = index == 1 and beltNumbers.ball or beltNumbers.slots[index - 1]
+        end
+        showQuickCall(slot, number)
+    end
+end
+
+local function beltSlot(item, position)
     local slot = g_ui.createWidget('PokegearBeltSlot', window.belt)
     slot:setItem(item)
     slot.position = position
-    slot.key:setText(key or '')
     slot.onMouseRelease = onGridItemRelease
     return slot
 end
@@ -209,7 +351,51 @@ local function fillBelt()
             beltSlot(container:getItem(slot), container:getSlotPosition(slot))
         end
     end
+    refreshFaces()
     refreshOut()
+end
+
+local function onBagMessage(protocol, opcode, buffer)
+    local ok, data = pcall(json.decode, buffer)
+    if not ok or type(data) ~= 'table' then
+        return
+    end
+    if data.type == 'categories' and type(data.list) == 'table' then
+        categories, categoryOf, otherCategory = {}, {}, nil
+        for index, category in ipairs(data.list) do
+            categories[index] = { name = tostring(category.name), icon = tonumber(category.icon) or 0 }
+            if category.name == 'Other' then
+                otherCategory = index
+            end
+        end
+        if window and window:isVisible() then
+            fillGrid()
+        end
+    elseif data.type == 'items' and categories[data.category] and type(data.items) == 'table' then
+        for _, id in ipairs(data.items) do
+            categoryOf[id] = categoryOf[id] or data.category
+        end
+        if window and window:isVisible() then
+            fillGrid()
+        end
+    elseif data.type == 'belt' then
+        local slots = {}
+        for index, number in ipairs(type(data.slots) == 'table' and data.slots or {}) do
+            slots[index] = tonumber(number) or 0
+        end
+        beltNumbers = { ball = tonumber(data.ball) or 0, slots = slots }
+        refreshFaces()
+    end
+end
+
+local function onGameStart()
+    categories, categoryOf, otherCategory, filter, beltNumbers = {}, {}, nil, nil, nil
+    sendBag({ action = 'hello' })
+end
+
+-- the quick call bar changes after the belt does, so the faces and keys follow it
+local function onQuickCallChange()
+    scheduleEvent(refreshFaces, 50)
 end
 
 local function refreshKey()
@@ -256,6 +442,7 @@ local function showWindow()
     end
     window:raise()
     refresh()
+    requestBelt()
     if not beltEvent then
         beltEvent = cycleEvent(function() if window and window:isVisible() then refreshOut() end end, 1000)
     end
@@ -375,6 +562,7 @@ end
 local function onContainerChange(container)
     if window and window:isVisible() and container:getId() == beltId then
         fillBelt()
+        requestBelt()
         return
     end
     if not window or not window:isVisible() or not isTab(container:getId()) then
@@ -382,20 +570,26 @@ local function onContainerChange(container)
     end
     if container:getId() == selected then
         fillGrid()
+    else
+        refreshCount()
     end
 end
 
 local function onContainerUpdateItem(container, slot, item)
     if window and container:getId() == beltId then
         fillBelt()
+        requestBelt()
         return
     end
     if not window or container:getId() ~= selected then
         return
     end
     local widget = window.grid:getChildById('item' .. slot)
-    if widget then
+    if filter or not widget then
+        fillGrid()
+    else
         widget:setItem(item)
+        fillRail(container)
     end
 end
 
@@ -450,6 +644,7 @@ end
 local function onInventoryChange(player, slot)
     if slot == InventorySlotFeet and window and window:isVisible() then
         fillBelt()
+        requestBelt()
     end
 end
 
@@ -477,6 +672,13 @@ function Bag.init()
         onAddItem = onContainerAddItem,
     })
     connect(LocalPlayer, { onInventoryChange = onInventoryChange })
+    connect(g_game, { onGameStart = onGameStart, onPokemonBarAdd = onQuickCallChange,
+        onPokemonBarRemove = onQuickCallChange })
+    connect(Keybind, { onBind = onQuickCallChange })
+    ProtocolGame.registerExtendedOpcode(ExtendedIds.Bag, onBagMessage)
+    if g_game.isOnline() then
+        onGameStart()
+    end
 end
 
 -- switching layouts moves the open backpack, its bags and the belt between the backpack windows and
@@ -551,6 +753,7 @@ end
 function Bag.reset()
     active = false
     tabs, selected, beltId, pending, queued = {}, nil, nil, {}, {}
+    filter, beltNumbers = nil, nil
     hideWindow()
 end
 
@@ -563,6 +766,14 @@ function Bag.terminate()
         onAddItem = onContainerAddItem,
     })
     disconnect(LocalPlayer, { onInventoryChange = onInventoryChange })
+    disconnect(g_game, { onGameStart = onGameStart, onPokemonBarAdd = onQuickCallChange,
+        onPokemonBarRemove = onQuickCallChange })
+    disconnect(Keybind, { onBind = onQuickCallChange })
+    ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Bag)
+    if beltRequest then
+        removeEvent(beltRequest)
+        beltRequest = nil
+    end
     Keybind.delete(KEY[1], KEY[2])
     active = false
     if window then

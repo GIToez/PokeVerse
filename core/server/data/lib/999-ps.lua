@@ -29,6 +29,7 @@ dofile(PS_LIB_CONFIG_DIR .. "pokepedia.lua")
 dofile(PS_LIB_CONFIG_DIR .. "legendaryAnchors.lua")
 dofile(PS_LIB_CONFIG_DIR .. "footprints.lua")
 dofile(PS_LIB_CONFIG_DIR .. "megaItems.lua")
+dofile(PS_LIB_CONFIG_DIR .. "itemCategories.lua")
 
 -- Functions
 	-- Balls

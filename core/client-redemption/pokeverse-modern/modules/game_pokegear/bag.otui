@@ -1,4 +1,5 @@
-// The Pokegear Bag: the trainer belt, a tab per bag and the open bag as a grid. Built by bag.lua.
+// The Pokegear Bag: the trainer belt, a tab per bag, the category rail and the open bag as a grid.
+// Built by bag.lua.
 PokegearBagItem < Item
   image-source: /modules/game_pokegear/images/tile
   image-border: 6
@@ -15,15 +16,25 @@ PokegearBeltSlot < Item
 
   UILabel
     id: key
-    anchors.top: parent.top
+    anchors.bottom: parent.top
     anchors.left: parent.left
-    margin-top: -6
-    margin-left: -4
+    margin-bottom: 1
     text-auto-resize: true
     ttf-font: /fonts/ttf/arialb.ttf
     ttf-font-size: 10
     color: #ffcb05
     phantom: true
+
+  UIItem
+    id: face
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: -5
+    margin-right: -5
+    size: 20 20
+    virtual: true
+    phantom: true
+    visible: false
 
   UILabel
     id: out
@@ -59,9 +70,30 @@ PokegearBagTab < UIButton
   $hover:
     color: #eef2ff
 
+PokegearBagRailButton < UIButton
+  size: 26 24
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #8fa0c4
+  $on:
+    image-source: /modules/game_pokegear/images/pill_on
+    color: #eef2ff
+  $hover:
+    color: #eef2ff
+
+  UIItem
+    id: icon
+    anchors.centerIn: parent
+    size: 20 20
+    virtual: true
+    phantom: true
+
 PokegearBag < UIWidget
   id: pokegearBag
-  width: 300
+  width: 334
   height: 300
   image-source: /modules/game_pokegear/images/card
   image-border: 12
@@ -116,9 +148,9 @@ PokegearBag < UIWidget
     id: beltLabel
     anchors.top: header.bottom
     anchors.left: parent.left
-    anchors.right: parent.right
-    margin-top: 6
-    height: 14
+    margin-top: 16
+    size: 28 36
+    text-align: left
     !text: tr('Belt')
     ttf-font: /fonts/ttf/arialb.ttf
     ttf-font-size: 11
@@ -126,10 +158,11 @@ PokegearBag < UIWidget
 
   UIWidget
     id: belt
-    anchors.top: beltLabel.bottom
-    anchors.left: parent.left
+    anchors.top: header.bottom
+    anchors.left: beltLabel.right
     anchors.right: parent.right
-    margin-top: 4
+    margin-top: 16
+    margin-left: 8
     height: 36
     layout:
       type: horizontalBox
@@ -146,12 +179,51 @@ PokegearBag < UIWidget
       type: horizontalBox
       spacing: 4
 
-  UIScrollArea
-    id: grid
+  UIWidget
+    id: rail
     anchors.top: tabs.bottom
     anchors.left: parent.left
-    anchors.right: gridScroll.left
     margin-top: 8
+    width: 26
+    height: 24
+    layout:
+      type: verticalBox
+      spacing: 2
+
+  UILabel
+    id: gridTitle
+    anchors.top: tabs.bottom
+    anchors.left: rail.right
+    margin-top: 8
+    margin-left: 6
+    height: 16
+    text-auto-resize: true
+    !text: tr('All')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+    phantom: true
+
+  UILabel
+    id: gridHint
+    anchors.top: tabs.bottom
+    anchors.right: parent.right
+    margin-top: 9
+    height: 16
+    text-auto-resize: true
+    !text: tr('right-click to use')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #8fa0c4
+    phantom: true
+
+  UIScrollArea
+    id: grid
+    anchors.top: gridTitle.bottom
+    anchors.left: rail.right
+    anchors.right: gridScroll.left
+    margin-top: 4
+    margin-left: 6
     margin-right: 2
     height: 200
     vertical-scrollbar: gridScroll
@@ -163,9 +235,9 @@ PokegearBag < UIWidget
 
   VerticalScrollBar
     id: gridScroll
-    anchors.top: tabs.bottom
+    anchors.top: gridTitle.bottom
     anchors.right: parent.right
-    margin-top: 8
+    margin-top: 4
     height: 200
     step: 45
     pixels-scroll: true

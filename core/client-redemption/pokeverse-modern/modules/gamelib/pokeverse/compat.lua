@@ -240,6 +240,7 @@ ExtendedIds.EventShop = 49
 ExtendedIds.Analyser = 50
 ExtendedIds.Mega = 51
 ExtendedIds.MegaEvolve = 52
+ExtendedIds.Bag = 53
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v
