@@ -687,8 +687,9 @@ HalloweenEvent.getNpcSpots = function()
 end
 
 local npcsShown = nil
--- spot -> the NPC placed there. They walk around, so one can be further than the one tile
--- getNpcAtPosition looks; it would stay after Halloween and get a twin the next time.
+-- They stay this close to their spot, like the map's NPCs, so players find them and
+-- getNpcAtPosition (one tile around) does too. Each lib copy also keeps what it placed.
+local NPC_RADIUS = 1
 local npcsPlaced = {}
 HalloweenEvent.syncNpcs = function()
     local active = EventCalendar.isActive("halloween")
@@ -708,7 +709,7 @@ HalloweenEvent.syncNpcs = function()
             end
             npcsPlaced[spot] = nil
         elseif (not npc) then
-            local cid = doCreateNpc(spot.name, spot.pos, false)
+            local cid = doCreateNpc(spot.name, spot.pos, false, NPC_RADIUS)
             npcsPlaced[spot] = type(cid) == "number" and cid or nil
         else
             npcsPlaced[spot] = npc
