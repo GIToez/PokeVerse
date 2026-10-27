@@ -16,7 +16,7 @@ local ORBS = {
     { id = 'trainer', button = 'trainerCardButton', tooltip = 'Trainer card' },
     { id = 'quests', button = 'questLogButton', tooltip = 'Quests', key = { 'Windows', 'Show/hide the Quest Log' } },
     { id = 'pokepedia', button = 'pokepediaButton', tooltip = 'Pokepedia', key = { 'Minimap', 'Open full map' } },
-    { id = 'bag', image = '/modules/game_pokegear/images/button_bag', tooltip = 'Bag', open = 'bag' },
+    { id = 'bag', image = '/modules/game_pokegear/images/button_bag', tooltip = 'Bag', open = 'bag', key = { 'Windows', 'Show/hide the Bag' } },
 }
 local ORB_FIRST_ANGLE, ORB_STEP = 237, -28
 local BUTTONS = {
@@ -39,14 +39,6 @@ local function place(widget, x, y)
     widget:addAnchor(AnchorTop, 'parent', AnchorTop)
     widget:setMarginLeft(math.floor(x + 0.5))
     widget:setMarginTop(math.floor(y + 0.5))
-end
-
-local function openBag()
-    local player = g_game.getLocalPlayer()
-    local bag = player and player:getInventoryItem(InventorySlotBack)
-    if bag then
-        g_game.open(bag)
-    end
 end
 
 local function floorName(z)
@@ -72,7 +64,11 @@ local function refreshOrbs()
         local key = Pokegear.boundKey(def.key)
         orb.chip:setText(key)
         orb.chip:setVisible(key ~= '')
-        orb:setOn(button ~= nil and button.isOn ~= nil and button:isOn())
+        if def.open == 'bag' then
+            orb:setOn(Bag.isOpen())
+        else
+            orb:setOn(button ~= nil and button.isOn ~= nil and button:isOn())
+        end
     end
 end
 
@@ -153,7 +149,7 @@ local function build()
         place(orb, at(ORB_FIRST_ANGLE + (i - 1) * ORB_STEP, ORB_RADIUS, 70))
         orb.onClick = function()
             if def.open == 'bag' then
-                openBag()
+                Bag.toggle()
             else
                 Pokegear.pressTopButton(def.button)
             end

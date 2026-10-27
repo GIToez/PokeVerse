@@ -1,0 +1,171 @@
+// The Pokegear Bag: the trainer belt, a tab per bag and the open bag as a grid. Built by bag.lua.
+PokegearBagItem < Item
+  image-source: /modules/game_pokegear/images/tile
+  image-border: 6
+  padding: 4
+  font: verdana-11px-rounded
+
+PokegearBeltSlot < Item
+  size: 36 36
+  image-source: /modules/game_pokegear/images/tile
+  image-border: 6
+  padding: 3
+  $on:
+    image-source: /modules/game_pokegear/images/tile_out
+
+  UILabel
+    id: key
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: -6
+    margin-left: -4
+    text-auto-resize: true
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #ffcb05
+    phantom: true
+
+  UILabel
+    id: out
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: -7
+    height: 13
+    text-auto-resize: true
+    padding: 0 4
+    !text: tr('OUT')
+    image-source: /modules/game_pokegear/images/chip_gold
+    image-border: 5
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 9
+    color: #1a1a1a
+    phantom: true
+    visible: false
+
+PokegearBagTab < UIButton
+  height: 24
+  text-auto-resize: true
+  padding: 0 12
+  text-offset: 0 1
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #8fa0c4
+  $on:
+    image-source: /modules/game_pokegear/images/pill_on
+    color: #eef2ff
+  $hover:
+    color: #eef2ff
+
+PokegearBag < UIWidget
+  id: pokegearBag
+  width: 300
+  height: 300
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+  focusable: false
+
+  UIWidget
+    id: header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 24
+    draggable: true
+    !tooltip: tr('Drag to move')
+
+    UILabel
+      id: title
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      !text: tr('Bag')
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 18
+      color: #ffcb05
+      phantom: true
+
+    PVCloseButton
+      id: close
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      !tooltip: tr('Close')
+
+    PokegearChip
+      id: keyChip
+      anchors.right: close.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+
+    UILabel
+      id: count
+      anchors.right: keyChip.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #8fa0c4
+      phantom: true
+
+  UILabel
+    id: beltLabel
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 14
+    !text: tr('Belt')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+
+  UIWidget
+    id: belt
+    anchors.top: beltLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+    height: 36
+    layout:
+      type: horizontalBox
+      spacing: 3
+
+  UIWidget
+    id: tabs
+    anchors.top: belt.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    height: 24
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+  UIScrollArea
+    id: grid
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: gridScroll.left
+    margin-top: 8
+    margin-right: 2
+    height: 200
+    vertical-scrollbar: gridScroll
+    layout:
+      type: grid
+      cell-size: 42 42
+      cell-spacing: 3
+      flow: true
+
+  VerticalScrollBar
+    id: gridScroll
+    anchors.top: tabs.bottom
+    anchors.right: parent.right
+    margin-top: 8
+    height: 200
+    step: 45
+    pixels-scroll: true
