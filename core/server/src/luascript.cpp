@@ -1785,7 +1785,7 @@ void LuaScriptInterface::registerFunctions()
 	//doCreateMonster(name, pos[, displayError = true])
 	lua_register(m_luaState, "doCreateMonster", LuaScriptInterface::luaDoCreateMonster);
 
-	//doCreateNpc(name, pos[, displayError = true])
+	//doCreateNpc(name, pos[, displayError = true[, radius]])
 	lua_register(m_luaState, "doCreateNpc", LuaScriptInterface::luaDoCreateNpc);
 
 	//doSummonMonster(cid, name[, forced])
@@ -5747,7 +5747,11 @@ int32_t LuaScriptInterface::luaDoCreateMonster(lua_State* L)
 
 int32_t LuaScriptInterface::luaDoCreateNpc(lua_State* L)
 {
-	//doCreateNpc(name, pos[, displayError = true])
+	//doCreateNpc(name, pos[, displayError = true[, radius]])
+	int32_t radius = -1;
+	if(lua_gettop(L) > 3)
+		radius = popNumber(L);
+
 	bool displayError = true;
 	if(lua_gettop(L) > 2)
 		displayError = popNumber(L);
@@ -5765,6 +5769,10 @@ int32_t LuaScriptInterface::luaDoCreateNpc(lua_State* L)
 		lua_pushboolean(L, false);
 		return 1;
 	}
+
+	// without a radius it can walk anywhere, like a monster without a spawn
+	if(radius >= 0)
+		npc->setMasterPosition(pos, radius);
 
 	if(!g_game.placeCreature(npc, pos, false, true))
 	{

@@ -687,6 +687,10 @@ HalloweenEvent.getNpcSpots = function()
 end
 
 local npcsShown = nil
+-- They stay this close to their spot, like the map's NPCs, so players find them and
+-- getNpcAtPosition (one tile around) does too. Each lib copy also keeps what it placed.
+local NPC_RADIUS = 1
+local npcsPlaced = {}
 HalloweenEvent.syncNpcs = function()
     local active = EventCalendar.isActive("halloween")
     if (npcsShown == active) then
@@ -694,15 +698,21 @@ HalloweenEvent.syncNpcs = function()
     end
     npcsShown = active
     for _, spot in ipairs(HalloweenEvent.getNpcSpots()) do
-        local npc = getNpcAtPosition(spot.pos, spot.name)
-        if (spot.moved) then
+        local placed = npcsPlaced[spot]
+        if (placed and not (isCreature(placed) and getCreatureName(placed) == spot.name)) then
+            placed = nil
+        end
+        local npc = placed or getNpcAtPosition(spot.pos, spot.name)
+        if (spot.moved or not active) then
             if (npc) then
                 doRemoveCreature(npc)
             end
-        elseif (active and not npc) then
-            doCreateNpc(spot.name, spot.pos, false)
-        elseif (not active and npc) then
-            doRemoveCreature(npc)
+            npcsPlaced[spot] = nil
+        elseif (not npc) then
+            local cid = doCreateNpc(spot.name, spot.pos, false, NPC_RADIUS)
+            npcsPlaced[spot] = type(cid) == "number" and cid or nil
+        else
+            npcsPlaced[spot] = npc
         end
     end
 end
