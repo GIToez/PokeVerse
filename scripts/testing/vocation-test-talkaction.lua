@@ -810,7 +810,7 @@ local function testQuests(cid)
         for npcName, quests in pairs(getAllNpcQuests()) do
             for _, quest in ipairs(quests) do
                 local logged = quest.storage and Quests.getEntry(quest.storage)
-                if (quest.storage and not quest.daily and not (logged and logged.text)
+                if (quest.storage and not quest.daily and not Quests.RETIRED_NPCS[npcName] and not (logged and logged.text)
                         and not (logged and (logged.category == "Events" or logged.category == "Daily"))) then
                     unnamed[#unnamed + 1] = npcName .. " " .. quest.storage
                 end
@@ -828,6 +828,11 @@ local function testQuests(cid)
         check("quests: Professor Oak's tutorial is in Getting started", lessons and lessons.step == "Part 3 of 3"
             and lessons.category == "Getting started", tostring(lessons and lessons.category))
         check("quests: older quests show their own mission name", rock and rock.name == "Rock #02", tostring(rock and rock.name))
+        local flanagan = getAllNpcQuests()["Flanagan"]
+        check("quests: the old Tutorial Island quests are left out of the log", Quests.getEntry(8489) == nil
+            and Quests.getEntry(8493) == nil and Quests.getEntry(8495) == nil and flanagan ~= nil
+            and Quests.isRetired(flanagan[1]) and not Quests.isRetired(rock and rock.quest),
+            tostring(Quests.getEntry(8489) and Quests.getEntry(8489).name))
         check("quests: defeat objective", Quests.objective(defeat):find("^Defeat %d+ ") ~= nil, Quests.objective(defeat))
 
         doCreatureSetStorage(cid, first.storage, QUEST_STATUS.STARTED)
