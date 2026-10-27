@@ -150,10 +150,16 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   - While one is on, the gold ball shows a small mark.
 - **Bags as tabs.**
   - Your starting bag is the first tab. It can't be taken off.
-  - Up to 5 more bags. Each holds as many slots as that bag does, so bigger bags give more room.
+  - Any number of bags fit inside it, one slot each. Each holds as many slots as that bag does, so
+    bigger bags give more room.
   - Every bag you put inside it gets a tab of its own, with its sprite (a Halloween backpack shows as
-    one).
-  - Right-click a tab to rename it, open it as its own window, or take the bag out.
+    one). The open tab shows its name; the others only their sprite. When they don't all fit,
+    ◀ ▶ arrows and the mouse wheel scroll them.
+  - Up to 10 bags open as tabs at once, because the server keeps 16 open containers per trainer and
+    the belt, corpses and the PC need some. Further bags show in the grid; right-click one to open it
+    once a tab is closed.
+  - Right-click a tab to rename it, open it as its own window, or close it. Drag its sprite out to
+    take the bag out. Drop an item on a tab to put it in that bag, or on "+" for the starting bag.
   - The name is stored on the bag item, so it keeps the name in the PC or after a trade.
 - **The category rail** filters whichever tab is open: All, the GTS and PC categories, plus the new
   ones below.
