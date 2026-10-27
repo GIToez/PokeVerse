@@ -3377,6 +3377,75 @@ local function testBag(cid)
         check("bag: the starting bag can be renamed too", getItemAttribute(backpack.uid, "name") == "Main",
             tostring(getItemAttribute(backpack.uid, "name")))
         doItemEraseAttribute(backpack.uid, "name")
+
+        -- sort rules: a Drops bag gets the Feather, a bag pinning the Shovel gets it
+        local function slotOf(uid)
+            for slot = 0, getContainerSize(backpack.uid) - 1 do
+                if (getContainerItem(backpack.uid, slot).uid == uid) then
+                    return slot
+                end
+            end
+        end
+        local function inBag(uid, id)
+            local count, stacks = 0, 0
+            for slot = 0, getContainerSize(uid) - 1 do
+                local thing = getContainerItem(uid, slot)
+                if (thing.itemid == id) then
+                    count, stacks = count + math.max(1, thing.type), stacks + 1
+                end
+            end
+            return count, stacks
+        end
+        local dropsBag, toolBag = added[1], added[2]
+        local feather, shovel = 12142, 18195
+        doPlayerRemoveItem(cid, feather, getPlayerItemCount(cid, feather))
+        from = #sent
+        Bag.onClientMessage(cid, JSON.encode({ action = "setRules", slot = slotOf(dropsBag), item = bagClient,
+            categories = { "Drops", "Not a category" }, pins = {} }))
+        local reply = sent[from + 1]
+        check("bag: sort rules are kept on the bag, unknown categories dropped",
+            getItemAttribute(dropsBag, "sortrules") == "Drops;" and reply and reply.type == "rules" and reply.saved
+            and #reply.categories == 1, tostring(getItemAttribute(dropsBag, "sortrules")) .. " " .. JSON.encode(reply or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "setRules", slot = slotOf(toolBag), item = bagClient,
+            categories = {}, pins = { getItemInfo(shovel).clientId } }))
+        check("bag: a pinned item is kept by its server id", getItemAttribute(toolBag, "sortrules") == ";" .. shovel,
+            tostring(getItemAttribute(toolBag, "sortrules")))
+        Bag.onClientMessage(cid, JSON.encode({ action = "rules", slot = slotOf(toolBag), item = bagClient }))
+        reply = sent[#sent]
+        check("bag: rules sends the pins back in client ids", reply and reply.type == "rules" and reply.pins
+            and reply.pins[1] == getItemInfo(shovel).clientId, JSON.encode(reply or {}))
+
+        doPlayerAddItem(cid, feather, 1)
+        check("bag: a new Feather goes to the bag that takes Drops", inBag(dropsBag, feather) == 1, inBag(dropsBag, feather))
+        local shovelUid = doPlayerAddItem(cid, shovel, 1)
+        check("bag: a new Shovel goes to the bag that pins it", inBag(toolBag, shovel) == 1, inBag(toolBag, shovel))
+        -- a stack anywhere wins over the rules, so the same items stay together
+        local plainBag = added[3]
+        doPlayerRemoveItem(cid, feather, getPlayerItemCount(cid, feather))
+        doAddContainerItem(plainBag, feather, 1)
+        doPlayerAddItem(cid, feather, 1)
+        local count, stacks = inBag(plainBag, feather)
+        check("bag: a new item joins its stack first", count == 2 and stacks == 1 and inBag(dropsBag, feather) == 0,
+            string.format("%d in %d stacks, %d in the Drops bag", count, stacks, inBag(dropsBag, feather)))
+
+        doAddContainerItem(dropsBag, 2148, 1)
+        local moved = doPlayerSortBags(cid)
+        count, stacks = inBag(dropsBag, feather)
+        check("bag: sorting brings the Feathers to their bag and takes the dollar out of it", moved >= 2 and count == 2
+            and inBag(plainBag, feather) == 0 and inBag(dropsBag, 2148) == 0,
+            string.format("moved %s, %d feathers in the bag, %d dollars left in it", tostring(moved), count, inBag(dropsBag, 2148)))
+        doPlayerRemoveItem(cid, 2148, 1)
+        from = #sent
+        Bag.onClientMessage(cid, JSON.encode({ action = "sort" }))
+        check("bag: sort answers with how many items moved", sent[from + 1] and sent[from + 1].type == "sorted"
+            and sent[from + 1].moved == 0, JSON.encode(sent[from + 1] or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "setRules", slot = slotOf(dropsBag), item = bagClient,
+            categories = {}, pins = {} }))
+        check("bag: no rules clears them from the bag", getItemAttribute(dropsBag, "sortrules") == nil,
+            tostring(getItemAttribute(dropsBag, "sortrules")))
+        if (isItem(getThing(shovelUid or 0))) then
+            doRemoveItem(shovelUid)
+        end
         for _, uid in ipairs(added) do
             if (isContainer(uid)) then
                 doRemoveItem(uid)

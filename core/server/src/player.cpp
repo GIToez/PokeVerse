@@ -16,6 +16,8 @@
 ////////////////////////////////////////////////////////////////////////
 #include "otpch.h"
 #include <iostream>
+#include <set>
+#include <sstream>
 
 #include "player.h"
 #include "iologindata.h"
@@ -3001,6 +3003,9 @@ Cylinder* Player::__queryDestination(int32_t& index, const Thing* thing, Item** 
 			}
 		}
 
+		if(Container* bag = getSortDestination(item, index, destItem))
+			return bag;
+
 		//try containers
 		std::list<std::pair<Container*, int32_t> > deepList;
 		for(int32_t i = SLOT_FIRST; i < SLOT_LAST; ++i)
@@ -5584,4 +5589,200 @@ void Player::setWeatherLight(int32_t percent, int32_t color)
 	LightInfo lightInfo;
 	g_game.getWorldLightInfo(lightInfo);
 	sendWorldLight(lightInfo);
+}
+
+namespace
+{
+	// "sortrules" on a bag: category names split by |, then ; and the pinned item ids split by ,
+	struct BagRules
+	{
+		std::set<std::string> categories;
+		std::set<uint16_t> pins;
+
+		bool empty() const {return categories.empty() && pins.empty();}
+		bool takes(const Item* item) const
+		{
+			return pins.count(item->getID()) || categories.count(g_game.getItemCategory(item->getID()));
+		}
+	};
+
+	BagRules bagRules(const Item* bag)
+	{
+		BagRules rules;
+		const std::string* text = bag->getStringAttribute("sortrules");
+		if(!text)
+			return rules;
+
+		std::string::size_type split = text->find(';');
+		std::stringstream categories(text->substr(0, split));
+		std::string part;
+		while(std::getline(categories, part, '|'))
+		{
+			if(!part.empty())
+				rules.categories.insert(part);
+		}
+
+		if(split != std::string::npos)
+		{
+			std::stringstream pins(text->substr(split + 1));
+			while(std::getline(pins, part, ','))
+			{
+				int32_t id = atoi(part.c_str());
+				if(id > 0 && id <= 0xFFFF)
+					rules.pins.insert((uint16_t)id);
+			}
+		}
+		return rules;
+	}
+
+	// room for all of it: a free slot, or a stack that takes the whole count
+	bool hasRoomFor(const Container* bag, const Item* item)
+	{
+		if(bag->__queryAdd(INDEX_WHEREEVER, item, item->getItemCount(), 0) != RET_NOERROR)
+			return false;
+
+		if(!bag->full())
+			return true;
+
+		int32_t index = 0;
+		const Item* stack = bag->canAutoGroup(item, index);
+		return stack && stack->getItemCount() + item->getItemCount() <= 100;
+	}
+}
+
+Container* Player::getStartingBag() const
+{
+	Item* item = inventory[SLOT_AMMO];
+	if(!item || item == tradeItem)
+		return NULL;
+
+	return item->getContainer();
+}
+
+// a bag that pins the item, or else the first bag (in slot order) that takes its category
+Container* Player::getRuleBag(const Item* item) const
+{
+	Container* start = getStartingBag();
+	if(!start || item->getContainer())
+		return NULL;
+
+	std::string category = g_game.getItemCategory(item->getID());
+	Container* byCategory = NULL;
+	for(ItemList::const_iterator it = start->getItems(); it != start->getEnd(); ++it)
+	{
+		Container* bag = (*it)->getContainer();
+		if(!bag || *it == tradeItem || *it == item)
+			continue;
+
+		BagRules rules = bagRules(bag);
+		if(rules.pins.count(item->getID()))
+		{
+			if(hasRoomFor(bag, item))
+				return bag;
+		}
+		else if(!byCategory && !category.empty() && rules.categories.count(category) && hasRoomFor(bag, item))
+			byCategory = bag;
+	}
+	return byCategory;
+}
+
+// where a new item goes before the usual search: a stack of the same item in any bag, then the
+// bag its rules send it to. NULL leaves it to the usual search (the starting bag first).
+Container* Player::getSortDestination(const Item* item, int32_t& index, Item** destItem) const
+{
+	Container* start = getStartingBag();
+	if(!start)
+		return NULL;
+
+	if(item->isStackable())
+	{
+		std::vector<Container*> bags(1, start);
+		for(ItemList::const_iterator it = start->getItems(); it != start->getEnd(); ++it)
+		{
+			if(Container* bag = (*it)->getContainer())
+			{
+				if(*it != tradeItem)
+					bags.push_back(bag);
+			}
+		}
+
+		for(std::vector<Container*>::iterator it = bags.begin(); it != bags.end(); ++it)
+		{
+			int32_t slot = 0;
+			if(Item* stack = (*it)->canAutoGroup(item, slot))
+			{
+				if(hasRoomFor(*it, item))
+				{
+					index = slot;
+					*destItem = stack;
+					return *it;
+				}
+			}
+		}
+	}
+
+	if(Container* bag = getRuleBag(item))
+	{
+		index = INDEX_WHEREEVER;
+		*destItem = NULL;
+		return bag;
+	}
+	return NULL;
+}
+
+// "Sort my bags now": what a bag's rules don't take goes where the rules send it; what no rule
+// takes leaves a bag with rules for the starting bag. Returns how many items moved.
+uint32_t Player::sortBags()
+{
+	Container* start = getStartingBag();
+	if(!start)
+		return 0;
+
+	std::vector<Item*> items;
+	std::vector<Container*> bags;
+	for(ItemList::const_iterator it = start->getItems(); it != start->getEnd(); ++it)
+	{
+		if(Container* bag = (*it)->getContainer())
+		{
+			if(*it != tradeItem)
+				bags.push_back(bag);
+		}
+		else
+			items.push_back(*it);
+	}
+
+	for(std::vector<Container*>::iterator bit = bags.begin(); bit != bags.end(); ++bit)
+	{
+		for(ItemList::const_iterator it = (*bit)->getItems(); it != (*bit)->getEnd(); ++it)
+		{
+			if(!(*it)->getContainer())
+				items.push_back(*it);
+		}
+	}
+
+	// an item only goes away by its own move (merged into a stack), so the rest stay valid
+	uint32_t moved = 0;
+	for(std::vector<Item*>::iterator it = items.begin(); it != items.end(); ++it)
+	{
+		Item* item = *it;
+		Container* from = dynamic_cast<Container*>(item->getParent());
+		if(!from)
+			continue;
+
+		BagRules rules;
+		if(from != start)
+			rules = bagRules(from);
+
+		if(rules.takes(item))
+			continue;
+
+		Container* to = getRuleBag(item);
+		if(!to && from != start && !rules.empty() && hasRoomFor(start, item))
+			to = start;
+
+		if(to && to != from && g_game.internalMoveItem(this, from, to, INDEX_WHEREEVER, item,
+			item->getItemCount(), NULL) == RET_NOERROR)
+			++moved;
+	}
+	return moved;
 }

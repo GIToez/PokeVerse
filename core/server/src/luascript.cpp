@@ -1788,6 +1788,12 @@ void LuaScriptInterface::registerFunctions()
 	//doCreateNpc(name, pos[, displayError = true])
 	lua_register(m_luaState, "doCreateNpc", LuaScriptInterface::luaDoCreateNpc);
 
+	//setItemCategory(itemid, name)
+	lua_register(m_luaState, "setItemCategory", LuaScriptInterface::luaSetItemCategory);
+
+	//doPlayerSortBags(cid)
+	lua_register(m_luaState, "doPlayerSortBags", LuaScriptInterface::luaDoPlayerSortBags);
+
 	//doSummonMonster(cid, name[, forced])
 	lua_register(m_luaState, "doSummonMonster", LuaScriptInterface::luaDoSummonMonster);
 
@@ -5778,6 +5784,29 @@ int32_t LuaScriptInterface::luaDoCreateNpc(lua_State* L)
 
 	ScriptEnviroment* env = getEnv();
 	lua_pushnumber(L, env->addThing((Thing*)npc));
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaSetItemCategory(lua_State* L)
+{
+	//setItemCategory(itemid, name)
+	std::string name = popString(L);
+	g_game.setItemCategory((uint16_t)popNumber(L), name);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaDoPlayerSortBags(lua_State* L)
+{
+	//doPlayerSortBags(cid)
+	ScriptEnviroment* env = getEnv();
+	if(Player* player = env->getPlayerByUID(popNumber(L)))
+		lua_pushnumber(L, player->sortBags());
+	else
+	{
+		errorEx(getError(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushboolean(L, false);
+	}
 	return 1;
 }
 

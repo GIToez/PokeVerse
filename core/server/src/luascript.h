@@ -352,6 +352,8 @@ class LuaScriptInterface
 		static int32_t luaDoCreateTeleport(lua_State* L);
 		static int32_t luaDoCreateMonster(lua_State* L);
 		static int32_t luaDoCreateNpc(lua_State* L);
+		static int32_t luaSetItemCategory(lua_State* L);
+		static int32_t luaDoPlayerSortBags(lua_State* L);
 		static int32_t luaDoSummonMonster(lua_State* L);
 		static int32_t luaDoConvinceCreature(lua_State* L);
 		static int32_t luaGetMonsterTargetList(lua_State* L);

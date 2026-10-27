@@ -684,8 +684,18 @@ class Game
         void playerReceivePingBack(uint32_t playerId);
         
         void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
-        
+
+		// the Bag's item categories (ItemCategories in Lua), for the sort rules on bags
+		void setItemCategory(uint16_t itemId, const std::string& name) {itemCategories[itemId] = name;}
+		std::string getItemCategory(uint16_t itemId) const
+		{
+			std::map<uint16_t, std::string>::const_iterator it = itemCategories.find(itemId);
+			return it != itemCategories.end() ? it->second : std::string();
+		}
+
 	protected:
+		std::map<uint16_t, std::string> itemCategories;
+
 		bool playerWhisper(Player* player, const std::string& text);
 		bool playerYell(Player* player, const std::string& text);
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
