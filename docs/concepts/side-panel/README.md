@@ -87,45 +87,77 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
   the most Tibia part. Then the map frame, then the app buttons, then Nearby.
 - **Android.** All three fit on a phone. C needs the least change there.
 
-## The rest of the screen
+## Picked so far
 
-These work with any of the three directions.
+- **Pokegear (B)** for the map and the Bag.
+- **The swap bar stays**, with its first slot redesigned (see Equipment).
+- **Nearby** is its own window, separate from your Pokemon, and keeps the Battle List's filters.
+- **Every window can be dragged.**
+- **Default keys:** E Order, F key item, X Pokedex, R Mega Evolution.
 
 | | |
 | --- | --- |
+| Pokegear, all together | ![Pokegear layout](pokegear-layout.jpg) |
 | Chat, folded | ![Chat folded](chat-folded.jpg) |
 | Chat, open | ![Chat open](chat-open.jpg) |
 | Equipment | ![Equipment](equipment.jpg) |
-| Team + Nearby | ![Team and Nearby](party-merged.jpg) |
 | Top bar | ![Top bar](topbar.jpg) |
 
+**Pokegear, all together.** The ring map with its app buttons, Nearby and the Bag are separate windows.
+- Drag a window by its header; the hub has a tab under the ring for this. Windows snap to the
+  screen edges and to each other.
+- The layout is saved per character. Lock windows and Reset layout go in the gear menu.
+- **Nearby** keeps the PokeVerse Battle List's filters and sorts:
+  - filters: Wild, Trainers, NPCs, Party (`hideMonsters`, `hidePlayers`, `hideNPCs`, `hideParty`);
+  - sorts: distance, HP, name, level;
+  - Ctrl+B still toggles it.
+- **The Bag** is the Pokegear bag: All plus the PC's and the GTS's pockets on the rail, a list, and the
+  selected item's description.
+
 **Chat.** No docked box with tabs along the bottom.
-- Folded, which is the default: the last few lines float over the bottom left of the map and fade
-  after a few seconds. Each line starts with its channel's colour tag. An input pill shows the
-  channel and "Press Enter to chat". A friend who messages you shows up as a face with a count.
-- Open: a rounded card. Channels are chips (Local, Global EN, Help, NPCs, and + to join more).
-  DMs are faces on the right of the header. Shift-click an item or a Pokemon to put a link chip in
-  the message. Staff get a badge.
-- The Server Log turns into toasts that slide away (catches, loot), plus an Activity list behind a
+- **Folded (the default).**
+  - The last few lines float over the bottom left of the map and fade after a few seconds. Each line
+    starts with its channel's tag.
+  - An input pill shows the channel and "Press Enter to chat".
+  - A friend who messages you shows up as a face with a count.
+- **Open.**
+  - A rounded card. Channels are chips: Local, Global EN, Help, NPCs, and + to join more.
+  - DMs are faces on the right of the header.
+  - Shift-click an item or a Pokemon to put a link chip in the message. Staff get a badge.
+- **NPCs** get an NPC tag and their own colour, teal (#42e0c4), which no player channel uses. NPC lines
+  stay apart from players even in Local. The colours:
+
+  | Channel | Colour |
+  | --- | --- |
+  | Local | White |
+  | Global | Blue |
+  | Help | Green |
+  | NPC | Teal |
+  | DM | Purple |
+  | You | Gold |
+  | Staff | Red badge |
+
+- **The Server Log** turns into toasts that slide away (catches, loot), plus an Activity list behind a
   bell in the top bar.
 
 **Equipment.** There is no equipment window. Each slot moves to where it is used:
 
 | Slot today | Goes to |
 | --- | --- |
-| Pokemon (the one that's out) | The HUD portrait and its ball row; click a ball to call or recall |
-| Key item | A Key Item socket by the HUD: click to use, right-click to pick another key item. The Ranger radar and the Fishing guide go here too |
-| Order (helmet) | A round button next to the moves bar, with its own key |
-| Pokedex (sword) | The Dex app, and a key item you can socket for use-with |
+| Pokemon (the one that's out) | Slot 1 of the swap bar: big, with its portrait, name, level and HP. Swapping puts the new one in slot 1 and sends the old one back to its slot, so no slot sits empty |
+| Order (helmet) | A button on slot 1, since it commands that Pokemon (E) |
+| Key item | A socket left of the HUD (F): click to use, right-click to pick another key item. The Ranger radar and the Fishing guide go here too |
+| Pokedex (sword) | Its own socket right of the HUD (X). Not a key item |
 | Badges (shield), Balls, Respect | The Trainer card |
-| Belt | The swap bar |
-| Bag | The Bag app |
+| Bag | The Bag |
 | Evolve, Duel | Unused, so they go |
 
-**Team + Nearby.** The swap bar moves to the right side and becomes the team list, so the left edge
-is free. Each Pokemon shows an HP ring, level, type, its F1-F6 key, gold when it's out and grey when
-it has fainted. Nearby sits right under it, with a red ring on the target and a Poke Ball when you've
-caught that species before. A shows it in the Party app, B as these capsules, C folds it into the pill.
+**Key chips show the key that is bound now, not the default.**
+- Each chip reads `Keybind.getKeybindKeys(category, action)`, which uses the current preset and chat
+  mode.
+- With chat on, letter keys are unbound, so their chips hide.
+- `keybind.lua` has no event when a key changes. `setPrimaryActionKey`, `setSecondaryActionKey`,
+  `selectPreset` and `setChatMode` need to send one, so the chips can refresh.
 
 **Top bar.** The buttons in the top-right row, left to right, in the groups that
 `sortTopBar` (patches/game_mainpanel.patch) puts them in:
@@ -146,9 +178,7 @@ bell, the gear and the Store on the right.
 
 ## To decide
 
-1. Which direction, or which mix. For example: B's ring map and Nearby, with C's drawers for the Bag.
-2. Bag as a list (A, B) or a tile grid (C).
-3. Whether Nearby shows only wild Pokemon, or trainers and NPCs too.
-4. Whether items like the Mega Ring, rods, the Pokedex and the Badge Case get a Key Items tab.
-   Today they fall under Other in the PC and the GTS too. The Key Item socket argues for one.
-5. Whether the chat starts folded or open for new players.
+1. Bag as a list (as drawn) or a tile grid.
+2. Whether items like the Mega Ring, rods and the Badge Case get a Key Items tab in the Bag, the PC
+   and the GTS. Today they fall under Other. The Key Item socket argues for one.
+3. Whether the chat starts folded or open for new players.
