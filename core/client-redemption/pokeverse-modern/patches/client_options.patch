@@ -317,23 +317,6 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +        end
 +    },
  }
-diff -ruN pristine/modules/client_options/keybins.lua modules/client_options/keybins.lua
---- a/modules/client_options/keybins.lua
-+++ b/modules/client_options/keybins.lua
-@@ -649,6 +649,13 @@
-     updateKeybinds()
- end
- 
-+-- The keys of each chat mode are separate (the numpad walks in both), so the list opens on the
-+-- mode the player is in: clearing a key there is what stops it.
-+function selectCurrentChatMode()
-+    local chatMode = panels.keybindsPanel.panel.chatMode
-+    chatModeGroup:selectWidget(Keybind.chatMode == CHAT_MODE.OFF and chatMode.off or chatMode.on)
-+end
-+
- function getChatMode()
-     if chatModeGroup:getSelectedWidget() == panels.keybindsPanel.panel.chatMode.on then
-         return CHAT_MODE.ON
 diff -ruN pristine/modules/client_options/options.lua modules/client_options/options.lua
 --- a/modules/client_options/options.lua
 +++ b/modules/client_options/options.lua

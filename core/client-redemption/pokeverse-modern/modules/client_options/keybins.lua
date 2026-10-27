@@ -503,6 +503,15 @@ local function setChatMode(mode)
     updateKeybinds()
 end
 
+-- The keys of each chat mode are separate (the numpad walks in both), so the list opens on the
+-- mode the player is in: clearing a key there is what stops it. toggle() refreshes the list after.
+function selectCurrentChatMode()
+    chatMode = Keybind.chatMode == CHAT_MODE.OFF and CHAT_MODE.OFF or CHAT_MODE.ON
+    local panel = page()
+    panel.presets.on:setChecked(chatMode == CHAT_MODE.ON)
+    panel.presets.off:setChecked(chatMode == CHAT_MODE.OFF)
+end
+
 function resetActions()
     local preset = currentPreset()
     local box
