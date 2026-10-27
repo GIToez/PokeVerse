@@ -840,6 +840,14 @@ MegaEvolution.onStaffCommand = function(cid, param)
     return true
 end
 
+-- The ring and its parts are unique items (they can't be dropped, traded or sold); one given
+-- before they were becomes the trainer's when it is used or worn
+MegaEvolution.claim = function(cid, uid)
+    if (isPlayer(cid) and getItemUniqueOwner(uid) == ITEM_UNIQUE_OWNER_NONE) then
+        setItemUniqueOwner(uid, cid)
+    end
+end
+
 -- The empty Mega Ring and the Key Stone: either used on the other, both in the trainer's bag,
 -- become the Mega Ring
 MegaEvolution.onRingPartUse = function(cid, item, fromPosition, itemEx, toPosition)
@@ -857,6 +865,7 @@ MegaEvolution.onRingPartUse = function(cid, item, fromPosition, itemEx, toPositi
     local stone = item.itemid == MEGA_ITEM_IDS.KEY_STONE and item or itemEx
     doRemoveItem(stone.uid, 1)
     doTransformItem(ring.uid, MEGA_ITEM_IDS.RING)
+    MegaEvolution.claim(cid, ring.uid)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_BLUE)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE,
         __L(cid, "The Key Stone clicks into place: you made a Mega Ring. Wear it in the key item slot."))
@@ -873,7 +882,7 @@ MegaEvolution.giveTestItems = function(cid)
         end
     end
     for _, id in ipairs(ids) do
-        doPlayerSafeAddItem(cid, id, 1, true)
+        doPlayerSafeAddItem(cid, id, 1, true, id == MEGA_ITEM_IDS.EMPTY_RING or id == MEGA_ITEM_IDS.KEY_STONE)
     end
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format("You got %d Mega items.", #ids))
 end

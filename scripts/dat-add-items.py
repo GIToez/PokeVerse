@@ -4,6 +4,7 @@
     scripts/dat-add-items.py <data.dat> <template client id> <count>
     scripts/dat-add-items.py <data.dat> --check
     scripts/dat-add-items.py <data.dat> --still <client id> [<client id> ...]
+    scripts/dat-add-items.py <data.dat> --unstack <client id> [<client id> ...]
 
 The new items get the next client ids after the last item and draw the template's sprites,
 so data.spr does not change. Give them their own art with an `image:` entry under `items:`
@@ -13,6 +14,8 @@ in things.otml (the Redemption client draws that PNG instead of the sprites).
 sprite), keeping their attributes. The client draws an `image:` PNG only on the first
 animation frame, so an item copied from an animated template flickers between its PNG and
 the template's sprites until it is made still.
+--unstack drops the stackable attribute. The client reads a count byte for every stackable
+item, so it must match the server's items.otb or the client misreads the rest of the packet.
 
 The format is the 8.54 one with u32 sprite ids: raw attribute 8 has no data and the ones
 above it are one lower than in 8.6, and raw 33 is the PokeVerse market block.
@@ -21,6 +24,7 @@ import struct
 import sys
 
 LAST_ATTR = 0xFF
+STACKABLE_ATTR = 5
 # raw attribute -> size of its data; attributes not listed have none
 U16_ATTRS = {0, 9, 10, 26, 29, 30}
 U16X2_ATTRS = {22, 25}
@@ -76,6 +80,24 @@ def make_still(data, start, end):
     return data[start:i] + bytes([1, 1, 1, 1, 1, 1, 1]) + first_sprite
 
 
+def unstack(data, start, end):
+    """The thing at data[start:end] without the stackable attribute."""
+    out = bytearray()
+    i = start
+    while True:
+        attr = data[i]
+        size = 2 if attr in U16_ATTRS else 4 if attr in U16X2_ATTRS else 0
+        if attr == MARKET_ATTR:
+            name_length = struct.unpack_from('<H', data, i + 7)[0]
+            size = 6 + 2 + name_length + 4
+        if attr != STACKABLE_ATTR:
+            out += data[i:i + 1 + size]
+        i += 1 + size
+        if attr == LAST_ATTR:
+            break
+    return bytes(out) + data[i:end]
+
+
 def parse(data):
     signature, items, outfits, effects, missiles = struct.unpack_from('<IHHHH', data, 0)
     offsets = {}
@@ -98,8 +120,9 @@ def main():
         _, items, outfits, effects, missiles, _, _ = parse(data)
         print('items 100-%d, %d outfits, %d effects, %d missiles' % (items, outfits, effects, missiles))
         return
-    if len(sys.argv) >= 4 and sys.argv[2] == '--still':
+    if len(sys.argv) >= 4 and sys.argv[2] in ('--still', '--unstack'):
         path, ids = sys.argv[1], [int(v) for v in sys.argv[3:]]
+        change = make_still if sys.argv[2] == '--still' else unstack
         data = open(path, 'rb').read()
         _, _, _, _, _, offsets, _ = parse(data)
         out, last = [], 0
@@ -107,13 +130,14 @@ def main():
             if client_id not in offsets:
                 sys.exit('client id %d not found' % client_id)
             start, end = offsets[client_id]
-            out += [data[last:start], make_still(data, start, end)]
+            out += [data[last:start], change(data, start, end)]
             last = end
         out.append(data[last:])
         out = b''.join(out)
         parse(out)
         open(path, 'wb').write(out)
-        print('made %d items still: %s' % (len(ids), ' '.join(str(v) for v in sorted(ids))))
+        print('made %d items %s: %s' % (len(ids), 'still' if change is make_still else 'not stackable',
+                                         ' '.join(str(v) for v in sorted(ids))))
         return
     if len(sys.argv) != 4:
         sys.exit(__doc__)

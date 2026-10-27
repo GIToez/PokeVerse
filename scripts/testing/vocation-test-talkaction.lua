@@ -3174,7 +3174,17 @@ local function testMegaItems(cid)
     end
     check("mega: the Key Stone on the empty ring makes the Mega Ring", craft(false))
     check("mega: the empty ring on the Key Stone makes the Mega Ring", craft(true))
+    local made = getPlayerItemById(cid, true, MEGA_ITEM_IDS.RING)
+    check("mega: the Mega Ring made is the trainer's unique item", isItem(made)
+        and getItemUniqueOwner(made.uid) == getPlayerGUID(cid), isItem(made) and getItemUniqueOwner(made.uid))
     doPlayerRemoveItem(cid, MEGA_ITEM_IDS.RING, 2)
+
+    local stacks = {}
+    for _, id in ipairs({ MEGA_ITEM_IDS.EMPTY_RING, MEGA_ITEM_IDS.KEY_STONE, MEGA_ITEM_IDS.RING, MEGA_FIRST_STONE_ID }) do
+        stacks[#stacks + 1] = getItemInfo(id).stackable and "stacks" or "single"
+    end
+    check("mega: the ring and its parts don't stack, the stones do (like the Lucky Egg)",
+        table.concat(stacks, " ") == "single single single stacks", table.concat(stacks, " "))
 
     local ring = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.EMPTY_RING, 1))
     local key = getThing(doPlayerAddItem(cid, MEGA_ITEM_IDS.KEY_STONE, 1))
@@ -3190,10 +3200,11 @@ local function testMegaItems(cid)
     local VENUSAURITE = MEGA_FIRST_STONE_ID
     local ball = newBall(cid, "Bulbasaur", 30)
     check("mega: Venusaurite is a held item", PokemonHeldItem.isHeldItem(VENUSAURITE))
-    local name = PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, VENUSAURITE, 1)))
+    local name = PokemonHeldItem.give(cid, ball.uid, getThing(doPlayerAddItem(cid, VENUSAURITE, 3)))
     local stone = PokemonHeldItem.getMegaStone(ball.uid)
-    check("mega: giving Venusaurite", name == "Venusaurite" and stone and stone.form == "Mega Venusaur" and
-        getPlayerItemCount(cid, VENUSAURITE) == 0, name)
+    check("mega: giving Venusaurite from a stack of 3 takes one", name == "Venusaurite" and stone
+        and stone.form == "Mega Venusaur" and getPlayerItemCount(cid, VENUSAURITE) == 2,
+        string.format("%s, %d left", tostring(name), getPlayerItemCount(cid, VENUSAURITE)))
     check("mega: the stone's description", (PokemonHeldItem.getBallDescription(ball.uid) or ""):find("Venusaurite", 1, true),
         PokemonHeldItem.getBallDescription(ball.uid))
     check("mega: the GTS refuses a ball holding a Mega Stone", GTS.ballProblem(cid, ball) == "Take its Mega Stone off first.",
@@ -3204,9 +3215,9 @@ local function testMegaItems(cid)
     MegaEvolution.isStoneLocked = locked
     check("mega: a locked stone stays on", not taken and why and getBallHeld(ball.uid) ~= nil, why)
     name = PokemonHeldItem.take(cid, ball.uid)
-    check("mega: taking the stone back", name == "Venusaurite" and getPlayerItemCount(cid, VENUSAURITE) == 1, name)
+    check("mega: taking the stone back", name == "Venusaurite" and getPlayerItemCount(cid, VENUSAURITE) == 3, name)
     check("mega: the GTS takes the ball again", GTS.ballProblem(cid, ball) == nil, GTS.ballProblem(cid, ball))
-    doPlayerRemoveItem(cid, VENUSAURITE, 1)
+    doPlayerRemoveItem(cid, VENUSAURITE, 3)
     doRemoveItem(ball.uid)
 
     local stones = 0
@@ -3223,6 +3234,9 @@ local function testMegaItems(cid)
         and getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE) == 1 and getPlayerItemCount(cid, MEGA_LAST_STONE_ID) == 1,
         string.format("%d rings, %d key stones, %d blue orbs", getPlayerItemCount(cid, MEGA_ITEM_IDS.EMPTY_RING),
             getPlayerItemCount(cid, MEGA_ITEM_IDS.KEY_STONE), getPlayerItemCount(cid, MEGA_LAST_STONE_ID)))
+    local keyStone = getPlayerItemById(cid, true, MEGA_ITEM_IDS.KEY_STONE)
+    check("mega: /megaitems gives the Key Stone as a unique item", isItem(keyStone)
+        and getItemUniqueOwner(keyStone.uid) == getPlayerGUID(cid), isItem(keyStone) and getItemUniqueOwner(keyStone.uid))
     for id = MEGA_ITEM_IDS.EMPTY_RING, MEGA_LAST_STONE_ID do
         doPlayerRemoveItem(cid, id, getPlayerItemCount(cid, id))
     end
