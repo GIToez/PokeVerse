@@ -93,10 +93,11 @@ Each item has its own 32x32 picture in data.spr, added by `scripts/dat-add-sprit
 copies of the Everstone (client 28780: still, pickupable). The server items (items.otb and
 items.xml) are still to add.
 
-The Mega Ring (28820) is not stackable, unlike the Everstone: its server item copies the running
-shoes, and the client reads a count byte for every stackable item, so a stackable client entry
-made the client misread the login packet for anyone wearing the ring (the backpack and
-everything after it never arrived).
+The Empty Mega Ring, Key Stone and Mega Ring (28818-28820) don't stack, unlike the Everstone:
+they are unique items (they can't be dropped, traded or sold). The stones stack like the Lucky
+Egg, and a Pokemon takes one from the stack. The client reads a count byte for every stackable
+item, so data.dat and items.otb must agree: a stackable client Mega Ring made the client misread
+the login packet for anyone wearing it (the backpack and everything after it never arrived).
 
 | Client ids | Items |
 | --- | --- |
