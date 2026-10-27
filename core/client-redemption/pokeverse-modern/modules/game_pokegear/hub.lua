@@ -129,6 +129,7 @@ local function refresh()
     refreshOrbs()
     refreshFloor()
     refreshRibbon()
+    Pokegear.fitColumn()
 end
 
 local function build()
@@ -176,9 +177,9 @@ local function build()
 
     restorePosition = Pokegear.makeMovable(hub, hub.grip, POSITION_SETTING, function()
         hub:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
-        hub:addAnchor(AnchorRight, 'gameMainRightPanel', AnchorLeft)
+        hub:addAnchor(AnchorRight, 'parent', AnchorRight)
         hub:setMarginTop(0)
-        hub:setMarginRight(4)
+        hub:setMarginRight(0)
     end)
 end
 
@@ -231,6 +232,10 @@ function Hub.apply(active)
     else
         hide()
     end
+end
+
+function Hub.docked()
+    return Pokegear.isDocked(hub, POSITION_SETTING) and hub or nil
 end
 
 function Hub.terminate()

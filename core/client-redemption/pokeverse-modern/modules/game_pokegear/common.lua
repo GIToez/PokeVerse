@@ -35,6 +35,15 @@ local function clampToScreen(window, pos)
     return pos
 end
 
+-- whether window is showing in its own spot: never dragged, or put back with a double click
+function Pokegear.isDocked(window, setting)
+    if not window or not window:isVisible() or window.pokegearDragging then
+        return false
+    end
+    local saved = g_settings.getPoint(setting)
+    return not saved or (saved.x == 0 and saved.y == 0)
+end
+
 -- Dragging handle moves window; the spot is saved under setting. A double click on the handle, or
 -- no saved spot, puts it back with placeDefault().
 function Pokegear.makeMovable(window, handle, setting, placeDefault)
@@ -52,6 +61,8 @@ function Pokegear.makeMovable(window, handle, setting, placeDefault)
         local pos = window:getPosition()
         widget.dragOffset = { x = mousePos.x - pos.x, y = mousePos.y - pos.y }
         window:breakAnchors()
+        window.pokegearDragging = true
+        Pokegear.layoutColumn()
         return true
     end
     handle.onDragMove = function(widget, mousePos)
@@ -61,12 +72,15 @@ function Pokegear.makeMovable(window, handle, setting, placeDefault)
     end
     handle.onDragLeave = function()
         g_settings.set(setting, window:getPosition())
+        window.pokegearDragging = nil
+        Pokegear.layoutColumn()
         return true
     end
     handle.onDoubleClick = function()
         g_settings.set(setting, { x = 0, y = 0 })
         window:breakAnchors()
         placeDefault()
+        Pokegear.layoutColumn()
         return true
     end
     return restore

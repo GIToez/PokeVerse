@@ -326,6 +326,12 @@ function Nearby.toggle()
     else
         openWindow()
     end
+    Pokegear.layoutColumn()
+end
+
+-- its own spot is under the ring, so it only counts while the ring is in its spot too
+function Nearby.docked()
+    return Hub.docked() and Pokegear.isDocked(window, POSITION_SETTING) and window or nil
 end
 
 function Nearby.terminate()
