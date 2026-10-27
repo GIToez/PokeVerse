@@ -90,10 +90,12 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 ## Picked so far
 
 - **Pokegear (B)** for the map and the Bag.
-- **The swap bar stays**, with its first slot redesigned (see Equipment).
+- **The swap bar stays exactly as it is.** The only addition is the Order button next to the Pokemon that's out.
 - **Nearby** is its own window, separate from your Pokemon, and keeps the Battle List's filters.
 - **Every window can be dragged.**
-- **Default keys:** E Order, F key item, X Pokedex, R Mega Evolution.
+- **Default keys:** B Bag, E Order, F key item, X Pokedex, R Mega Evolution.
+- **The Bag, the PC stash and the GTS share the same categories**, each in its own look. The categories
+  get filled in properly, so far less ends up in Other.
 
 | | |
 | --- | --- |
@@ -103,7 +105,7 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 | Equipment | ![Equipment](equipment.jpg) |
 | Top bar | ![Top bar](topbar.jpg) |
 
-**Pokegear, all together.** The ring map with its app buttons, Nearby and the Bag are separate windows.
+**Pokegear, all together.** The ring map with its app buttons, Nearby, the Bag and loot are separate windows.
 - Drag a window by its header; the hub has a tab under the ring for this. Windows snap to the
   screen edges and to each other.
 - The layout is saved per character. Lock windows and Reset layout go in the gear menu.
@@ -111,16 +113,54 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
   - filters: Wild, Trainers, NPCs, Party (`hideMonsters`, `hidePlayers`, `hideNPCs`, `hideParty`);
   - sorts: distance, HP, name, level;
   - Ctrl+B still toggles it.
-- **The Bag** is the Pokegear bag: All plus the PC's and the GTS's pockets on the rail, a list, and the
-  selected item's description.
+- **Loot** from a fainted Pokemon opens as a small grid with Take all.
 
-**Chat.** No docked box with tabs along the bottom.
-- **Folded (the default).**
+**The Bag** works like today's backpack: a grid of squares. Right-click an item to use it, and drag
+items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
+- **Trainer belt.** A row along the top with your six balls in swap bar order, each showing its
+  Pokemon. The one that's out is gold. Drag a ball to reorder the swap bar, onto the Bag or the PC to
+  put it away, or from the Bag onto the belt to carry it.
+- **Bags as tabs.**
+  - Your starting bag is the first tab. It can't be taken off.
+  - Every bag you put inside it gets a tab of its own, with its sprite (a Halloween backpack shows as
+    one).
+  - Right-click a tab to rename it, open it as its own window, or take the bag out.
+  - The name is stored on the bag item, so it keeps the name in the PC or after a trade.
+- **The category rail** filters whichever tab is open: All, the GTS and PC categories, plus the new
+  ones below.
+- **Sort rules per bag.** Each extra bag says which categories it takes, and can pin exact items (for
+  example, the Loot bag takes Drops, Event and Dolls & Decor, and always Feathers). A new item, from
+  loot, a shop or a trade, lands in the first of these that fits:
+  1. a stack of the same item, wherever it is, so potions stay together;
+  2. a bag that pins that item;
+  3. the first bag, in tab order, that takes its category;
+  4. the starting bag;
+  5. any bag with room;
+  6. if everything is full, it stays in the loot window (or the NPC doesn't sell it), with a toast.
+
+  Rules only decide where a *new* item goes; dragging by hand always wins. "Sort my bags now" applies
+  the rules to what you already carry. The server does the routing when the item is added, so it also
+  works for NPC shops and the Store.
+- **Categories for everything.** Today anything not on a list falls under Other. New categories fill
+  the gaps:
+  - Key Items: rods, the Mega Ring, the Badge Case.
+  - Drops: the items Pokemon drop and NPCs buy, like Feather and Bottle of Poison.
+  - Event: Halloween tokens and the like.
+  - Dolls & Decor.
+
+  Other is kept for what's left. They go into `GTS.CATEGORIES`, so the PC and the GTS pick them up too.
+
+**Chat.**
+- **Folded by default, remembered.** A new character starts with the chat open, so it's easy to find.
+  Folding or opening it is saved per character and comes back the same at the next login.
+- **New messages while folded.** The lines float in as usual. The pill shows an unread count, and
+  pulses once for a DM or when someone says your name, instead of blinking all the time.
+- **Folded state.**
   - The last few lines float over the bottom left of the map and fade after a few seconds. Each line
     starts with its channel's tag.
   - An input pill shows the channel and "Press Enter to chat".
   - A friend who messages you shows up as a face with a count.
-- **Open.**
+- **Open state.**
   - A rounded card. Channels are chips: Local, Global EN, Help, NPCs, and + to join more.
   - DMs are faces on the right of the header.
   - Shift-click an item or a Pokemon to put a link chip in the message. Staff get a badge.
@@ -144,12 +184,13 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 
 | Slot today | Goes to |
 | --- | --- |
-| Pokemon (the one that's out) | Slot 1 of the swap bar: big, with its portrait, name, level and HP. Swapping puts the new one in slot 1 and sends the old one back to its slot, so no slot sits empty |
-| Order (helmet) | A button on slot 1, since it commands that Pokemon (E) |
+| Pokemon (the one that's out) | The swap bar, as it is today: the gold ring marks the one that's out |
+| Order (helmet) | A button next to the Pokemon that's out (E). It follows whichever one that is |
 | Key item | A socket left of the HUD (F): click to use, right-click to pick another key item. The Ranger radar and the Fishing guide go here too |
 | Pokedex (sword) | Its own socket right of the HUD (X). Not a key item |
 | Badges (shield), Balls, Respect | The Trainer card |
-| Bag | The Bag |
+| Belt | The Trainer belt at the top of the Bag |
+| Bag | The Bag (B, also on the Pokegear ring) |
 | Evolve, Duel | Unused, so they go |
 
 **Key chips show the key that is bound now, not the default.**
@@ -178,7 +219,6 @@ bell, the gear and the Store on the right.
 
 ## To decide
 
-1. Bag as a list (as drawn) or a tile grid.
-2. Whether items like the Mega Ring, rods and the Badge Case get a Key Items tab in the Bag, the PC
-   and the GTS. Today they fall under Other. The Key Item socket argues for one.
-3. Whether the chat starts folded or open for new players.
+1. What happens when every bag is full: keep the item in the loot window (as drawn), or send it to the
+   PC stash.
+2. How many extra bags you can carry, and whether bigger bags (event backpacks) hold more.
