@@ -5,6 +5,7 @@ local function update(cid)
 end
 
 function onEquip(cid, item, slot)
+    MegaEvolution.claim(cid, item.uid)
     addEvent(update, 100, cid)
     return true
 end
