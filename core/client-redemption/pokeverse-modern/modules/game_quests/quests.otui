@@ -299,21 +299,28 @@ QuestLogWindow < UIWindow
       anchors.top: giver.bottom
       anchors.horizontalCenter: parent.horizontalCenter
       margin-top: 8
-      size: 268 30
+      height: 30
       layout:
         type: horizontalBox
         spacing: 8
+        fit-children: true
 
       PVBlueButton
         id: goThere
         !text: tr('Go there')
-        size: 130 30
+        size: 120 30
+        ttf-font-size: 12
+
+      PVYellowButton
+        id: viewMap
+        !text: tr('View on map')
+        size: 120 30
         ttf-font-size: 12
 
       PVGreenButton
         id: track
         !text: tr('Track')
-        size: 130 30
+        size: 120 30
         ttf-font-size: 12
 
     FishingPanel
