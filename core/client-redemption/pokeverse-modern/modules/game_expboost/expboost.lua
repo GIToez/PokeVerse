@@ -69,7 +69,7 @@ end
 
 -- the value shown next to "Trainer Spirit": the time and its bonus
 function staminaText(stamina, timeText)
-    local rate = staminaRate(stamina)
+    local rate = currentStaminaRate(stamina)
     return rate > 1 and string.format('%s  %s', timeText, percent(rate)) or timeText
 end
 
@@ -100,11 +100,11 @@ end
 
 function staminaTooltip(stamina)
     local hours, minutes = math.floor(stamina / 60), stamina % 60
-    local rate = staminaRate(stamina)
+    local rate = currentStaminaRate(stamina)
     local lines = { tr('Trainer Spirit: %s, %d hours and %d minutes left.', staminaName(stamina), hours, minutes) }
     lines[#lines + 1] = rate > 1 and tr('It gives your trainer and Pokemon %s EXP now.', percent(rate))
         or tr('No bonus right now.')
-    if hours >= 41 and not premium() then
+    if hours >= 41 and not premium() and rate < 1.5 then
         lines[#lines + 1] = tr('Premium trainers get +50%% here instead of +25%%.')
     end
     lines[#lines + 1] = ''
@@ -175,6 +175,38 @@ local function onBoost(protocol, opcode, buffer)
     state = data
     received = os.time()
     refreshSkills()
+    signalcall(onBoostChange, state)
+end
+
+-- the last answer and the os.time() it came at (Pokegear's experience on the HUD reads it too)
+function getState()
+    return state, received
+end
+
+-- the server's own stamina rate while it still matches the stamina tier the client sees
+function currentStaminaRate(stamina)
+    local sent = state and state.stamina
+    if sent and sent.rate and tierOf(sent.minutes) == tierOf(stamina) then
+        return sent.rate
+    end
+    return staminaRate(stamina)
+end
+
+-- what multiplies the trainer's kill experience: the same product as the server's trainer value
+function trainerRate(stamina)
+    local personal = state and state.personal and state.personal.rate or 0
+    local event = state and state.event or 1
+    local discord = state and state.discordBoost or 1
+    return currentStaminaRate(stamina) * (1 + personal) * event * discord
+end
+
+function personalSecondsLeft()
+    local left = ((state and state.personal and state.personal.left) or 0) - (os.time() - received)
+    return math.max(0, left)
+end
+
+function askNow()
+    ask()
 end
 
 local function onGameStart()

@@ -104,6 +104,7 @@ local function apply()
     Nearby.apply(active)
     Bag.apply(active)
     Sockets.apply(active)
+    Experience.apply(active)
     Pokegear.layoutColumn()
 end
 
@@ -142,6 +143,7 @@ local function onGameEnd()
     Nearby.apply(false)
     Bag.reset()
     Sockets.apply(false)
+    Experience.apply(false)
     Pokegear.layoutColumn()
 end
 
@@ -150,6 +152,7 @@ function init()
     g_ui.importStyle('nearby')
     Bag.init()
     Sockets.init()
+    Experience.init()
     active = isActive()
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
@@ -167,4 +170,5 @@ function terminate()
     Nearby.terminate()
     Bag.terminate()
     Sockets.terminate()
+    Experience.terminate()
 end
