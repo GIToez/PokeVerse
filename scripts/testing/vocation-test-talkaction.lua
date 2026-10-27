@@ -2310,6 +2310,32 @@ local function testHalloween(cid)
     EventCalendar.setForced("halloween", true)
     HalloweenEvent.syncNpcs()
     check("Halloween: its NPCs come back when it starts", present() == #spots, present() .. "/" .. #spots)
+    -- every second the calendar syncs again: an NPC that walked off its spot is not placed a second time
+    local walker
+    for _, spot in ipairs(spots) do
+        walker = walker or getNpcAtPosition(spot.pos, spot.name)
+    end
+    if (walker) then
+        local from = getCreaturePosition(walker)
+        doTeleportThing(walker, { x = from.x + 3, y = from.y, z = from.z }, false)
+    end
+    for _ = 1, 3 do
+        HalloweenEvent.syncNpcs()
+    end
+    local copies, extra = 0, {}
+    for _, spot in ipairs(spots) do
+        local here = 0
+        for _, creature in ipairs(getSpectators(spot.pos, 5, 5, false) or {}) do
+            if (isNpc(creature) and getCreatureName(creature) == spot.name) then
+                here = here + 1
+            end
+        end
+        copies = copies + here
+        if (here > 1) then
+            extra[#extra + 1] = spot.name .. " x" .. here
+        end
+    end
+    check("Halloween: syncing again places no second copy", walker ~= nil and copies == #spots, table.concat(extra, ", "))
     EventCalendar.setForced("halloween", forced)
     HalloweenEvent.syncNpcs()
 
