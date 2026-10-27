@@ -89,6 +89,9 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 
 ## Picked so far
 
+- **Two layouts.** Today's layout is kept as **Classic** and keeps working exactly as it does now. The new
+  one is **Pokegear** and becomes the default. Settings › Interface gets a Layout dropdown to switch
+  between them.
 - **Pokegear (B)** for the map and the Bag.
 - **The swap bar stays exactly as it is.** The only addition is the Order button next to the Pokemon that's out.
 - **Nearby** is its own window, separate from your Pokemon, and keeps the Battle List's filters.
@@ -113,15 +116,41 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
   - filters: Wild, Trainers, NPCs, Party (`hideMonsters`, `hidePlayers`, `hideNPCs`, `hideParty`);
   - sorts: distance, HP, name, level;
   - Ctrl+B still toggles it.
-- **Loot** from a fainted Pokemon opens as a small grid with Take all.
+- **Minimap ring.** Weather is left to the top bar. On the right of the ring: + and − to zoom, and
+  ▲ and ▼ to go up or down a floor, with the floor shown between them. Around the left: Bag (B),
+  Pokepedia (M), Quests (L, the badge counts updates), Trainer card (P, with Vocation and Stats tabs)
+  and Friends. The tab under the ring drags the whole map.
+- **Loot.**
+  - Auto loot stays on by default. What it picks up is listed right under the HUD, where the loot
+    messages go today in the middle of the screen.
+  - If every bag is full or it can't loot something, the item stays on the body and the list says
+    "Nothing looted, your bags are full".
+  - Opening a body yourself shows a small window with the Pokemon's portrait, the items, Take all and
+    an **Auto loot** switch.
+  - That switch is the same setting as the Auto loot checkbox in Settings › Controls › General
+    (`autoLoot`, which sends `ExtendedIds.AutoLoot` to the server). Today `/autoloot` only flips it on the
+    server, and the checkbox sends its own value again at the next login. The server should send the
+    new value back after `/autoloot`, so the switch, the checkbox and the command always agree.
 
 **The Bag** works like today's backpack: a grid of squares. Right-click an item to use it, and drag
 items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
 - **Trainer belt.** A row along the top with your six balls in swap bar order, each showing its
   Pokemon. The one that's out is gold. Drag a ball to reorder the swap bar, onto the Bag or the PC to
   put it away, or from the Bag onto the belt to carry it.
+- **Belt switches.** Two small switches under the belt. The server does both, so they work the same
+  on any connection; the switch only sends the setting.
+  - **Defense mode** (off by default): when something attacks you, or you target something with no
+    Pokemon out, your gold ball comes out. If that one has fainted, the next one down the belt does.
+    Not in safe zones, and not while surfing, flying or riding.
+  - **Auto swap** (on by default): when the Pokemon that's out faints, the next living one down the
+    belt comes out after the normal faint delay and becomes the gold one. Only while you're still in
+    a fight. With nobody left: one "No Pokemon left to call" message.
+  - Both use the normal call cooldown. Duels, gyms and events can switch them off where their rules
+    need you to choose by hand.
+  - While one is on, the gold ball shows a small mark.
 - **Bags as tabs.**
   - Your starting bag is the first tab. It can't be taken off.
+  - Up to 5 more bags. Each holds as many slots as that bag does, so bigger bags give more room.
   - Every bag you put inside it gets a tab of its own, with its sprite (a Halloween backpack shows as
     one).
   - Right-click a tab to rename it, open it as its own window, or take the bag out.
@@ -136,7 +165,7 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   3. the first bag, in tab order, that takes its category;
   4. the starting bag;
   5. any bag with room;
-  6. if everything is full, it stays in the loot window (or the NPC doesn't sell it), with a toast.
+  6. if everything is full, it stays on the body (or the NPC doesn't sell it), with a message.
 
   Rules only decide where a *new* item goes; dragging by hand always wins. "Sort my bags now" applies
   the rules to what you already carry. The server does the routing when the item is added, so it also
@@ -219,6 +248,4 @@ bell, the gear and the Store on the right.
 
 ## To decide
 
-1. What happens when every bag is full: keep the item in the loot window (as drawn), or send it to the
-   PC stash.
-2. How many extra bags you can carry, and whether bigger bags (event backpacks) hold more.
+Nothing open right now.
