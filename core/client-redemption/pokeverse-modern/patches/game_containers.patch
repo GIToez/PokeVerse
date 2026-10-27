@@ -1,7 +1,7 @@
 diff -ruN pristine/modules/game_containers/containers.lua modules/game_containers/containers.lua
 --- a/modules/game_containers/containers.lua
 +++ b/modules/game_containers/containers.lua
-@@ -922,6 +922,14 @@
+@@ -922,6 +922,18 @@
  end
  
  function onContainerOpen(container, previousContainer)
@@ -12,6 +12,10 @@ diff -ruN pristine/modules/game_containers/containers.lua modules/game_container
 +            destroy(previousContainer)
 +        end
 +        return
++    end
++    -- a container the Bag had shown, now opened here, has no window to reuse
++    if previousContainer and not previousContainer.window then
++        previousContainer = nil
 +    end
      local containerWindow
      if previousContainer then

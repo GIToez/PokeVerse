@@ -55,20 +55,66 @@ PokegearBeltSlot < Item
 
 PokegearBagTab < UIButton
   height: 24
-  text-auto-resize: true
-  padding: 0 12
-  text-offset: 0 1
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  $on:
+    image-source: /modules/game_pokegear/images/pill_on
+
+  UIItem
+    id: icon
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    size: 18 18
+    draggable: true
+
+  UILabel
+    id: name
+    anchors.left: icon.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 4
+    text-auto-resize: true
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #eef2ff
+    phantom: true
+
+PokegearBagAddTab < UIButton
+  size: 26 24
+  !text: '+'
   image-source: /modules/game_pokegear/images/pill
   image-border: 9
   image-smooth: true
   ttf-font: /fonts/ttf/arialb.ttf
-  ttf-font-size: 11
+  ttf-font-size: 14
   color: #8fa0c4
-  $on:
-    image-source: /modules/game_pokegear/images/pill_on
-    color: #eef2ff
   $hover:
-    color: #eef2ff
+    color: #ffcb05
+
+PokegearBagArrow < UIButton
+  size: 18 24
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #eef2ff
+  $hover:
+    color: #ffcb05
+  $disabled:
+    color: #4a5675
+
+PokegearBagNameEdit < UITextEdit
+  size: 120 24
+  padding: 0 10
+  text-align: left
+  image-source: /modules/game_pokegear/images/pill_on
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
 
 PokegearBagRailButton < UIButton
   size: 26 24
