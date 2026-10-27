@@ -213,7 +213,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1169,5 +1181,92 @@
+@@ -1169,5 +1181,102 @@
             g_client.setBossAreaCreatureEffectAlpha(value / 100)
          end
      },
@@ -224,6 +224,16 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +            if modules.game_minimap and modules.game_minimap.setGuidesDisplay then
 +                modules.game_minimap.setGuidesDisplay(value)
 +            end
++        end
++    },
++    -- PokeVerse layout (game_pokegear): 'pokegear' or the 'classic' side panels
++    uiLayout                          = {
++        value = 'classic',
++        action = function(value, options, controller, panels, extraWidgets)
++            if modules.game_pokegear and modules.game_pokegear.refresh then
++                modules.game_pokegear.refresh()
++            end
++            panels.interface:recursiveGetChildById('uiLayout'):setCurrentOptionByData(value, true)
 +        end
 +    },
 +    -- PokeVerse battle text (game_battletext): 'new' call-out bubbles and styled hits, or the 'classic' text
@@ -421,7 +431,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -184,20 +172,36 @@
+@@ -184,20 +172,44 @@
      local crosshairCombo = panels.interface:recursiveGetChildById('crosshair')
      local antialiasingModeCombobox = panels.graphicsPanel:recursiveGetChildById('antialiasingMode')
      local floorViewModeCombobox = panels.graphicsEffectsPanel:recursiveGetChildById('floorViewMode')
@@ -450,6 +460,14 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +        setOption('targetMarker', comboBox:getCurrentOption().data)
 +    end
 +
++    local layoutCombo = panels.interface:recursiveGetChildById('uiLayout')
++    for _, v in ipairs({ { 'Classic', 'classic' }, { 'Pokegear (preview)', 'pokegear' } }) do
++        layoutCombo:addOption(tr(v[1]), v[2])
++    end
++    layoutCombo.onOptionChange = function(comboBox, option)
++        setOption('uiLayout', comboBox:getCurrentOption().data)
++    end
++
 +    local battleTextCombo = panels.interface:recursiveGetChildById('battleText')
 +    for _, v in ipairs({ { 'New', 'new' }, { 'Classic', 'classic' } }) do
 +        battleTextCombo:addOption(tr(v[1]), v[2])
@@ -461,7 +479,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      mouseControlModeCombobox:addOption('Regular Controls', 0)
      mouseControlModeCombobox:addOption('Classic Controls', 1)
      mouseControlModeCombobox:addOption('Left Smart-Click', 2)
-@@ -235,12 +239,12 @@
+@@ -235,12 +247,12 @@
          setOption('floorViewMode', comboBox:getCurrentOption().data)
      end
  
@@ -479,7 +497,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      end
  
      local profileCombobox = panels.misc:recursiveGetChildById('profile')
-@@ -293,6 +297,81 @@
+@@ -293,6 +305,81 @@
  
      setupComboBox()
  
@@ -561,7 +579,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +601,7 @@
+@@ -522,6 +609,7 @@
  end
  
  function controller:onGameStart()
@@ -569,7 +587,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -631,6 +711,7 @@
+@@ -631,6 +719,7 @@
  end
  
  function hide()
@@ -577,7 +595,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      controller.ui:hide()
      if extraWidgets.optionsButton then
          extraWidgets.optionsButton:setOn(false)
-@@ -646,16 +727,10 @@
+@@ -646,16 +735,10 @@
          hide()
          return
      end
@@ -597,7 +615,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      show()
      updateKeybinds()
  end
-@@ -672,182 +747,166 @@
+@@ -672,182 +755,166 @@
      -- TODO: Implement Show Advanced Options functionality in the near future
  end
  
@@ -745,11 +763,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local pages = button and pagesOf(button) or {}
 +    if not pages[index] then
 +        return
-     end
++    end
 +    selectedPage = index
 +    for i, widget in ipairs(controller.ui.optionsSubTabBar:getChildren()) do
 +        widget:setChecked(i == index)
-+    end
+     end
 +    showPage(pages[index])
 +end
  
@@ -915,7 +933,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function createCategory(text, icon, openPanel, subCategories)
-@@ -930,13 +989,17 @@
+@@ -930,13 +997,17 @@
      end
  end
  
@@ -934,7 +952,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-@@ -951,19 +1014,15 @@
+@@ -951,19 +1022,15 @@
      if not controller.ui:isVisible() then
          show()
      end
@@ -1087,7 +1105,37 @@ diff -ruN pristine/modules/client_options/styles/interface/HUD.otui modules/clie
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -53,17 +53,21 @@
+@@ -5,6 +5,29 @@
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: parent.top
++    height: 32
++
++    Label
++      !text: tr('Layout:')
++      anchors.left: parent.left
++      margin-left: 18
++      color: #c0c0c0ff
++      anchors.verticalCenter: parent.verticalCenter
++
++    QtComboBox
++      id: uiLayout
++      width: 140
++      margin-left: 10
++      anchors.verticalCenter: prev.verticalCenter
++      anchors.left: prev.right
++      mouse-scroll: false
++      !tooltip: tr('Pokegear: the ring map, the Bag and windows you drag anywhere; WASD always walks and Enter opens the chat. Classic: the side panels and the chat as before.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
+     height: 22
+ 
+     OptionCheckBox
+@@ -53,17 +76,21 @@
      margin-top: 7
      height: 22
  
@@ -1119,7 +1167,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
  
    SmallReversedQtPanel
      anchors.left: parent.left
-@@ -71,41 +75,178 @@
+@@ -71,41 +98,178 @@
      anchors.top: prev.bottom
      margin-top: 7
      height: 22
@@ -1134,30 +1182,38 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      !text: tr('Show news banner')
 +      !tooltip: tr('Server-wide news (events, legendaries, restarts, staff broadcasts) in a banner at the top of the screen. Off: the red text in the middle of the screen.')
 +
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
 +    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
+     height: 22
+-    margin-top: 5
+ 
+     OptionCheckBoxMarked
+-      id: showSpellGroupCooldowns
+-      !text: tr('Show spell group cooldowns')
+-      !tooltip: tr('Can be enabled only in version 8.7x or higher')
 +      id: showTips
 +      !text: tr('Show tips')
 +      !tooltip: tr('A tip in the news banner about once an hour, never during a fight.')
-+
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
 +    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
+     height: 22
+-    margin-top: 5
+ 
+     OptionCheckBoxMarked
+-      id: showInfoBanner
+-      !text: tr('Show Info Banner')
+-      !tooltip: tr('Tick this box to display an info banner for certain in-game events.')
 +      id: showHints
 +      !text: tr('Show first-visit hints')
 +      !tooltip: tr('A card with what a place is for the first time you walk into a Pokemon Center, a Mart, the Day Care and more. The Wiki tab of the Pokepedia shows them again.')
-+
+ 
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
@@ -1205,39 +1261,31 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: weatherLightning
 +      !text: tr('Lightning flashes')
 +      !tooltip: tr('The white flash of lightning in thunderstorms.')
-+
+ 
    SmallReversedQtPanel
      anchors.left: parent.left
      anchors.right: parent.right
      anchors.top: prev.bottom
-+    margin-top: 7
-     height: 22
--    margin-top: 5
- 
-     OptionCheckBoxMarked
--      id: showSpellGroupCooldowns
--      !text: tr('Show spell group cooldowns')
--      !tooltip: tr('Can be enabled only in version 8.7x or higher')
+     margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
 +      id: pokemonEffects
 +      !text: tr('Shiny and status effects on Pokemon')
 +      !tooltip: tr('Shiny Pokemon shimmer, and burned, frozen, paralysed, poisoned, asleep or confused Pokemon show it.')
- 
-   SmallReversedQtPanel
-     anchors.left: parent.left
-     anchors.right: parent.right
-     anchors.top: prev.bottom
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
 +    margin-top: 7
-     height: 22
--    margin-top: 5
- 
-     OptionCheckBoxMarked
--      id: showInfoBanner
--      !text: tr('Show Info Banner')
--      !tooltip: tr('Tick this box to display an info banner for certain in-game events.')
++    height: 22
++
++    OptionCheckBoxMarked
 +      id: areaMoods
 +      !text: tr('Dark caves and Lavender Town haze')
 +      !tooltip: tr('Caves are dark but for a circle around you, wider with the Flashlight or a Pokemon using Flash. Lavender Town is grey and misty.')
- 
++
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
@@ -1272,12 +1320,12 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: battleTextCritShake
 +      !text: tr('Screen shake on critical hits')
 +      !tooltip: tr('A small jolt of the map when a critical hit lands, with the New battle text.')
- 
-   SmallReversedQtPanel
-     anchors.left: parent.left
-     anchors.right: parent.right
-     anchors.top: prev.bottom
-     margin-top: 7
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
 +    height: 22
 +
 +    $mobile:
@@ -1311,7 +1359,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
      height: 32
    
      Label
-@@ -117,63 +258,33 @@
+@@ -117,63 +281,33 @@
  
      QtComboBox
        id: crosshair

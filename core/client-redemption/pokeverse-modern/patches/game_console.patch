@@ -69,7 +69,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function switchChat(enabled)
      -- enabled should be true if we enabling the chat and false if disabling it
      -- consoleToggleChat:setChecked(not consoleToggleChat.isChecked)
-@@ -417,12 +381,10 @@
+@@ -417,17 +381,21 @@
      end
  
      if enabled then
@@ -82,7 +82,32 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          consoleToggleChat:setTooltip(tr('Enable chat mode'))
          Keybind.setChatMode(CHAT_MODE.OFF)
      end
-@@ -592,16 +554,15 @@
+ end
+ 
++-- Pokegear has no Chat On / Chat Off: Enter always opens one line and sends you back to walking
++local function returnsToWalk()
++    local pokegear = modules.game_pokegear
++    return modules.client_options.getOption('returnDisablesChat') or (pokegear and pokegear.isActive())
++end
++
+ function switchChatOnCall()
+     if not g_game.isOnline() or modules.game_hotkeys.areHotkeysDisabled() then
+         return
+@@ -441,11 +409,11 @@
+             if not isChatEnabled() then
+                 -- opening chat from walk mode: make it temporary ('*') when returnDisablesChat is on,
+                 -- so a single Enter later sends the message and returns to WASD (Tibia-like)
+-                if modules.client_options.getOption('returnDisablesChat') then
++                if returnsToWalk() then
+                     walkAfterSend = true
+                 end
+                 toggleChat()
+-            elseif walkAfterSend or modules.client_options.getOption('returnDisablesChat') then
++            elseif walkAfterSend or returnsToWalk() then
+                 -- empty Enter: cancel temporary chat / disable chat -> back to WASD
+                 walkAfterSend = false
+                 toggleChat()
+@@ -592,16 +560,15 @@
      local player = g_game.getLocalPlayer()
      local message = consoleTextEdit:getText()
      if tab == defaultTab or tab == serverTab then
@@ -100,7 +125,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  
      if tab.isOnRedMessage then
          tab:setColor('#dfdfdfff')
-@@ -672,10 +633,6 @@
+@@ -672,10 +639,6 @@
  
      destroyOwnChannelNameWindows()
  
@@ -111,7 +136,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      if readOnlyModeEnabled then
          toggleReadOnlyMode()
      end
-@@ -779,29 +736,6 @@
+@@ -779,29 +742,6 @@
      g_game.joinChannel(helpChannel)
  end
  
@@ -141,7 +166,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function addTab(name, focus)
      local tab = getTab(name)
      if tab then -- is channel already open
-@@ -829,12 +763,17 @@
+@@ -829,12 +769,17 @@
      return tab
  end
  
@@ -160,7 +185,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          return
      end
  
-@@ -895,11 +834,20 @@
+@@ -895,11 +840,20 @@
      return consoleTabBar:getCurrentTab()
  end
  
@@ -182,7 +207,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      return tab
  end
  
-@@ -1459,7 +1407,7 @@
+@@ -1459,7 +1413,7 @@
          menu:addSeparator()
      end
  
@@ -191,7 +216,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          menu:addOption(tr('Close'), function()
              removeTab(channelName)
          end)
-@@ -1519,12 +1467,12 @@
+@@ -1519,12 +1473,12 @@
                          addIgnoredPlayer(creatureName)
                      end)
                  end
@@ -210,7 +235,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
                  menu:addSeparator()
              end
  
-@@ -1733,6 +1681,9 @@
+@@ -1733,6 +1687,9 @@
          local speaktype = SpeakTypesSettings[speaktypedesc]
          local player = g_game.getLocalPlayer()
          g_game.talkPrivate(speaktype.speakType, name, message)
@@ -220,7 +245,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          if not dontAdd then
              message = applyMessagePrefixies(g_game.getCharacterName(), player:getLevel(), message)
              addPrivateText(message, speaktype, tabname, isPrivateCommand, g_game.getCharacterName())
-@@ -1796,6 +1747,8 @@
+@@ -1796,6 +1753,8 @@
      return message
  end
  
@@ -229,7 +254,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function onTalk(name, level, mode, message, channelId, creaturePos)
      if mode == MessageModes.GamemasterBroadcast then
          modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
-@@ -1837,25 +1790,25 @@
+@@ -1837,25 +1796,25 @@
          local staticText = StaticText.create()
          local staticMessage = message
          if isNpcMode then
@@ -271,7 +296,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      end
  
      local defaultMessage = mode <= 3 and true or false
-@@ -2337,20 +2290,37 @@
+@@ -2337,20 +2296,37 @@
      end
  end
  
@@ -319,7 +344,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      if clientVersion > 1100 then
          local active = g_game.canExivaOptions()
          local widget = consolePanel:getChildById('exivaOption')
-@@ -2504,8 +2474,8 @@
+@@ -2504,8 +2480,8 @@
          end
      end
      consoleTabBar:getCurrentTab().tabPanel:getChildById('consoleBuffer'):setImageSource(
@@ -330,7 +355,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      gameBottomPanel:setPhantom(false)
  end
  
-@@ -2530,19 +2500,22 @@
+@@ -2530,19 +2506,22 @@
      if extendedViewButtonToggleChat then
          return
      end
@@ -363,7 +388,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      else
          extendedViewButtonToggleChat:setIcon("/images/game/npcicons/icon_chat")
          extendedViewButtonToggleChat:setMarginBottom(10)
-@@ -2553,19 +2526,22 @@
+@@ -2553,19 +2532,22 @@
      extendedViewButtonToggleChat.onClick = function(a, b)
          extendedViewHide(modules.game_interface.currentViewMode ~= 2)
      end
@@ -394,7 +419,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      extendedViewButtonShowAlphaChat.onClick = function(a, b)
          if extendedViewButtonShowAlphaChat:isOn() then
              extendedViewButtonShowAlphaChat:setOn(false)
-@@ -2574,6 +2550,10 @@
+@@ -2574,6 +2556,10 @@
          end
          extendedViewCanSee(extendedViewButtonShowAlphaChat:isOn())
      end

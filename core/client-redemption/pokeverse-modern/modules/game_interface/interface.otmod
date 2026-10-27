@@ -89,5 +89,6 @@ Module
     - game_poll
     - game_lootlist
     - game_menukeys
+    - game_pokegear
   @onLoad: init()
   @onUnload: terminate()

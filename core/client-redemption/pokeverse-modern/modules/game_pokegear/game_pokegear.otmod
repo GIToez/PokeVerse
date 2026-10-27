@@ -1,0 +1,8 @@
+Module
+  name: game_pokegear
+  description: PokeVerse layouts: Pokegear (the ring map, the Bag and windows you drag anywhere) or Classic (the side panels), Options > Interface > Layout
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ pokegear ]
+  @onLoad: init()
+  @onUnload: terminate()
