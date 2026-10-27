@@ -25,57 +25,24 @@ GTS.HISTORY_LIMIT = 30
 
 local KIND_ITEM, KIND_POKEMON = 0, 1
 local STATE_DONE, STATE_CANCELLED, STATE_EXPIRED = 1, 2, 3
--- extended opcodes are one network message (NETWORKMESSAGE_MAXSIZE 15360)
-local MESSAGE_LIMIT = 14000
+-- long messages go in fragments (doSendPlayerLongExtendedOpcode); a list past this loses its last rows
+local MESSAGE_LIMIT = 60000
 
-local function range(first, last, except)
-    local ret = {}
-    for id = first, last do
-        if (not except or not except[id]) then
-            ret[#ret + 1] = id
-        end
+-- the shared categories (065-itemCategories.lua), without the ones that can't be traded or are empty
+GTS.CATEGORIES = {}
+for _, category in ipairs(ItemCategories.LIST) do
+    if (category.trade and #category.items > 0) then
+        GTS.CATEGORIES[#GTS.CATEGORIES + 1] = category
     end
-    return ret
 end
 
-local function join(...)
-    local ret = {}
-    for _, list in ipairs({ ... }) do
-        for _, id in ipairs(list) do
-            ret[#ret + 1] = id
-        end
-    end
-    return ret
-end
-
-GTS.CATEGORIES = {
-    { name = "Poke Balls", items = { 12157, 12161, 12165, 30136, 19029, 19033, 19037, 19041, 19045, 19049, 19053,
-        19057, 19061 } },
-    { name = "Medicine", items = { 12244, 12247, 12245, 12246, 12248, 12249, 12250, 13653, 13819 } },
-    { name = "Evolution Stones", items = range(18083, 18088) },
-    { name = "Held Items", items = join(range(23513, 23531), range(30137, 30144), range(30152, 30153)) },
-    { name = "Mega Stones", items = range(MEGA_FIRST_STONE_ID, MEGA_LAST_STONE_ID) },
-    { name = "Berries", items = join(range(13182, 13186), range(14766, 14770), range(30145, 30150)) },
-    { name = "Berry Seeds", items = join(range(13176, 13180), range(14791, 14795)) },
-    { name = "Vitamins", items = range(23450, 23457, { [23454] = true }) },
-    { name = "Technical Machines", items = join(range(17337, 17383), range(18912, 18931), range(24716, 24723),
-        range(29157, 29172)) },
-    { name = "Other", items = { 14463 } },
-}
-
--- only ids of a real item with that name are kept (the ball range has gaps)
 local CATALOG = {}
 for index, category in ipairs(GTS.CATEGORIES) do
-    local items = {}
     for _, id in ipairs(category.items) do
         local info = getItemInfo(id)
-        if (info and info.name ~= "" and not CATALOG[id]) then
-            items[#items + 1] = id
-            CATALOG[id] = { category = index, stackable = info.stackable, clientId = info.clientId,
-                name = string.capitalise(info.name) }
-        end
+        CATALOG[id] = { category = index, stackable = info.stackable, clientId = info.clientId,
+            name = string.capitalise(info.name) }
     end
-    category.items = items
 end
 
 local function send(cid, data, list)
@@ -86,7 +53,7 @@ local function send(cid, data, list)
         data.more = true
         text = JSON.encode(data)
     end
-    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GTS, text)
+    doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.GTS, text)
 end
 
 local function result(cid, ok, text)

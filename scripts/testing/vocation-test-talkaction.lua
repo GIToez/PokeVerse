@@ -3249,9 +3249,10 @@ local function testBag(cid)
         names[#names + 1] = category.name
         at[category.name] = index
     end
-    check("bag: the GTS categories first, then Key Items, Dolls & Decor, Event and Drops, Other last",
-        names[1] == "Poke Balls" and at["Key Items"] == at["Technical Machines"] + 1 and at["Drops"] == at["Event"] + 1
-        and names[#names] == "Other", table.concat(names, ", "))
+    check("bag: the hand-made categories first, then Pokemon to Drops, Other last",
+        names[1] == "Poke Balls" and at["Pokemon"] == at["Technical Machines"] + 1 and at["Drops"] == at["Event"] + 1
+        and at["Key Items"] and at["Dolls & Decor"] and at["Valuables"] and names[#names] == "Other",
+        table.concat(names, ", "))
 
     local seen, twice = {}, nil
     for _, category in ipairs(Bag.CATEGORIES) do
@@ -3270,29 +3271,54 @@ local function testBag(cid)
             tostring(categoryOf(MEGA_FIRST_STONE_ID)), tostring(categoryOf(12142))))
     check("bag: a Super Potion stays in Medicine", categoryOf(12245) == "Medicine", categoryOf(12245))
 
-    local sent = {}
+    local gtsNames = {}
+    for _, category in ipairs(GTS.CATEGORIES) do
+        gtsNames[category.name] = true
+    end
+    check("bag: a Shovel is a Tool, a Poke Coin a Valuable, a Red Postman Bag an Outfit",
+        ItemCategories.nameOf(18195) == "Tools" and ItemCategories.nameOf(23497) == "Valuables"
+        and ItemCategories.nameOf(29754) == "Outfits", string.format("%s, %s, %s", ItemCategories.nameOf(18195),
+            ItemCategories.nameOf(23497), ItemCategories.nameOf(29754)))
+    local other = Bag.CATEGORIES[#Bag.CATEGORIES]
+    check("bag: no generated item is left for Other", #other.items == 0, #other.items)
+    -- Key Items, Quest Items, Pokemon and Bags aren't traded, and Other is empty
+    check("bag: the GTS has every shared category but the untraded ones", #GTS.CATEGORIES == #ItemCategories.LIST - 5
+        and not gtsNames["Key Items"] and not gtsNames["Bags"] and gtsNames["Drops"] and gtsNames["Dolls & Decor"],
+        #GTS.CATEGORIES)
+    check("bag: the PC stash files a Feather under Drops", ItemCategories.nameOf(12142) == "Drops",
+        ItemCategories.nameOf(12142))
+
+    -- what the client gets: fragments joined back together, each one under the 8 KB string limit
+    local sent, pieces, longest = {}, {}, 0
     local original = doSendPlayerExtendedOpcode
     doSendPlayerExtendedOpcode = function(target, opcode, buffer)
         if (target == cid and opcode == EXTENDED_IDS.BAG) then
-            sent[#sent + 1] = JSON.decode(buffer)
+            longest = math.max(longest, #buffer)
+            local id, index, count, piece = buffer:match("^#(%d+):(%d+):(%d+):(.*)$")
+            if (not id) then
+                sent[#sent + 1] = JSON.decode(buffer)
+            else
+                pieces[tonumber(index)] = piece
+                if (tonumber(index) == tonumber(count)) then
+                    sent[#sent + 1] = JSON.decode(table.concat(pieces))
+                    pieces = {}
+                end
+            end
         end
     end
     local ok, err = pcall(function()
         Bag.onClientMessage(cid, JSON.encode({ action = "hello" }))
-        local items, longest = 0, 0
-        for _, message in ipairs(sent) do
-            items = items + (message.type == "items" and #message.items or 0)
+        local items, total = 0, 0
+        for _, category in ipairs(sent[1] and sent[1].list or {}) do
+            items = items + #category.items
         end
-        for _, text in ipairs(Bag.MESSAGES) do
-            longest = math.max(longest, #text)
-        end
-        local total = 0
         for _, category in ipairs(Bag.CATEGORIES) do
             total = total + #category.items
         end
-        check("bag: hello sends the categories, then every item in parts", sent[1] and sent[1].type == "categories"
-            and #sent[1].list == #Bag.CATEGORIES and items == total, string.format("%d of %d items", items, total))
-        check("bag: every part fits in a network message string (8 KB)", longest <= 8192, longest)
+        check("bag: hello sends the categories with every item", #sent == 1 and sent[1].type == "categories"
+            and #sent[1].list == #Bag.CATEGORIES and items == total and #Bag.MESSAGE > 8192,
+            string.format("%d messages, %d of %d items", #sent, items, total))
+        check("bag: every fragment fits in a network message string (8 KB)", longest <= 8192, longest)
         local parts = #sent
 
         local ball = newBall(cid, "Bulbasaur", 10)

@@ -24,7 +24,7 @@ PC.LIST_LIMIT = 80
 PC.SEARCH_LIMIT = 40
 PC.NAME_LENGTH = 16
 
-local MESSAGE_LIMIT = 14000
+local MESSAGE_LIMIT = 60000
 local SESSION = playersStorages.pcSession
 local CLIENT = playersStorages.pcClient
 local MIGRATED = playersStorages.pcMigrated
@@ -35,10 +35,10 @@ local DEPOT_CHEST = 2594 -- ITEM_DEPOT in the server, the chest every locker hol
 local LOCKERS = { [2589] = true, [2590] = true, [2591] = true, [2592] = true, [13015] = true }
 PC.LOCKERS = LOCKERS
 
--- stash categories follow the GTS; held items don't stack but keep nothing of their own (their
--- level and experience are on the Pokemon's ball)
+-- stash categories are the shared ones (065-itemCategories.lua); held items don't stack but keep
+-- nothing of their own (their level and experience are on the Pokemon's ball)
 local CATEGORY_OF, HELD = {}, {}
-for _, category in ipairs(GTS.CATEGORIES) do
+for _, category in ipairs(ItemCategories.LIST) do
     for _, id in ipairs(category.items) do
         CATEGORY_OF[id] = category.name
         if (category.name == "Held Items" or category.name == "Mega Stones") then
@@ -54,7 +54,7 @@ local function send(cid, data, list)
         data.more = true
         text = JSON.encode(data)
     end
-    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.PC, text)
+    doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.PC, text)
 end
 
 local function result(cid, ok, text, ...)

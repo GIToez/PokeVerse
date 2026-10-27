@@ -3,8 +3,9 @@
 -- belt container (the armor slot), which game_pokehud opens with the backpack. The squares are the containers' own item slots, so using,
 -- dragging and dropping work as in the backpack windows; game_containers leaves these containers
 -- to this window (claimsContainer) while Pokegear is on.
--- The server (systems/098-bag.lua, ExtendedIds.Bag) sends the item categories the rail filters by,
--- and the quick call number of every belt ball, so the belt shows the quick call bar's faces and keys.
+-- The server (systems/098-bag.lua, ExtendedIds.Bag) sends the item categories the rail filters by (the
+-- same as the PC's and the GTS's), and the quick call number of every belt ball, so the belt shows the
+-- quick call bar's faces and keys.
 Bag = {}
 
 local POSITION_SETTING = 'pokegearBagPosition'
@@ -356,6 +357,10 @@ local function fillBelt()
 end
 
 local function onBagMessage(protocol, opcode, buffer)
+    buffer = ProtocolGame.joinFragments(opcode, buffer)
+    if not buffer then
+        return
+    end
     local ok, data = pcall(json.decode, buffer)
     if not ok or type(data) ~= 'table' then
         return
@@ -367,13 +372,9 @@ local function onBagMessage(protocol, opcode, buffer)
             if category.name == 'Other' then
                 otherCategory = index
             end
-        end
-        if window and window:isVisible() then
-            fillGrid()
-        end
-    elseif data.type == 'items' and categories[data.category] and type(data.items) == 'table' then
-        for _, id in ipairs(data.items) do
-            categoryOf[id] = categoryOf[id] or data.category
+            for _, id in ipairs(type(category.items) == 'table' and category.items or {}) do
+                categoryOf[id] = categoryOf[id] or index
+            end
         end
         if window and window:isVisible() then
             fillGrid()
