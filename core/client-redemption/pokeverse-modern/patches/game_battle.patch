@@ -340,7 +340,30 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onCreatureAppear(creature) -- Update battleButton once a creature appear (add)
      if creature:isLocalPlayer() then
          addEvent(updateStaticSquare)
-@@ -2609,6 +2751,7 @@
+@@ -2540,7 +2682,22 @@
+ end
+ 
+ 
++-- PokeVerse: for the Pokegear layout's Nearby window, which uses this window's filters and clicks
++function getBattleWindow()
++    return battleWindow
++end
++
++function onNearbyRowRelease(row, mousePosition, mouseButton)
++    return onBattleButtonMouseRelease(row, mousePosition, mouseButton)
++end
++
+ function toggle() -- Close/Open the battle window or Pressing Ctrl + B
++    -- PokeVerse: the Pokegear layout shows Nearby instead of this window
++    local pokegear = modules.game_pokegear
++    if pokegear and pokegear.isActive() then
++        pokegear.toggleNearby()
++        return
++    end
+     if battleButton:isOn() then
+         battleWindow:close()
+     else
+@@ -2609,6 +2766,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")

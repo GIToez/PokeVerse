@@ -27,7 +27,7 @@ local BUTTONS = {
 }
 
 local hub, minimap, orbs, buttons = nil, nil, {}, {}
-local refreshEvent
+local refreshEvent, restorePosition
 
 local function at(angle, radius, size)
     local r = math.rad(angle)
@@ -41,39 +41,12 @@ local function place(widget, x, y)
     widget:setMarginTop(math.floor(y + 0.5))
 end
 
--- the top bar's own panel: other widgets share some of these ids
-local function topButton(id)
-    local mainPanel = modules.game_mainpanel
-    return (mainPanel and mainPanel.getButton and mainPanel.getButton(id))
-        or (modules.client_topmenu and modules.client_topmenu.getButton(id))
-end
-
-local function pressTopButton(id)
-    local button = topButton(id)
-    if button and button.onMouseRelease then
-        local pos = button:getPosition()
-        button.onMouseRelease(button, { x = pos.x + 1, y = pos.y + 1 }, MouseLeftButton)
-    end
-end
-
 local function openBag()
     local player = g_game.getLocalPlayer()
     local bag = player and player:getInventoryItem(InventorySlotBack)
     if bag then
         g_game.open(bag)
     end
-end
-
--- the key shown is the one bound now, in the current preset (empty when nothing is bound)
-local function boundKey(key)
-    if not key or not Keybind.getKeybindKeys then
-        return ''
-    end
-    local ok, keys = pcall(Keybind.getKeybindKeys, key[1], key[2], Keybind.chatMode, Keybind.currentPreset)
-    if not ok or type(keys) ~= 'table' then
-        return ''
-    end
-    return keys.primary ~= '' and keys.primary or (keys.secondary or '')
 end
 
 local function floorName(z)
@@ -88,7 +61,7 @@ end
 local function refreshOrbs()
     for _, def in ipairs(ORBS) do
         local orb = orbs[def.id]
-        local button = def.button and topButton(def.button)
+        local button = def.button and Pokegear.topButton(def.button)
         if def.image then
             orb.icon:setImageSource(def.image)
             orb.icon:setImageClip({ x = 0, y = 0, width = 20, height = 20 })
@@ -96,7 +69,7 @@ local function refreshOrbs()
             orb.icon:setImageSource(button:getImageSource())
             orb.icon:setImageClip(button:getImageClip())
         end
-        local key = boundKey(def.key)
+        local key = Pokegear.boundKey(def.key)
         orb.chip:setText(key)
         orb.chip:setVisible(key ~= '')
         orb:setOn(button ~= nil and button.isOn ~= nil and button:isOn())
@@ -159,56 +132,6 @@ local function refresh()
     refreshRibbon()
 end
 
-local function clampToScreen(pos)
-    local root = modules.game_interface.getRootPanel()
-    local rect = root:getRect()
-    pos.x = math.max(rect.x - 40, math.min(pos.x, rect.x + rect.width - hub:getWidth() + 40))
-    pos.y = math.max(rect.y - 20, math.min(pos.y, rect.y + rect.height - hub:getHeight() + 40))
-    return pos
-end
-
-local function placeDefault()
-    hub:breakAnchors()
-    hub:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
-    hub:addAnchor(AnchorRight, 'gameMainRightPanel', AnchorLeft)
-    hub:setMarginTop(0)
-    hub:setMarginRight(4)
-end
-
-local function restorePosition()
-    local saved = g_settings.getPoint(POSITION_SETTING)
-    if saved and (saved.x ~= 0 or saved.y ~= 0) then
-        hub:breakAnchors()
-        hub:setPosition(clampToScreen(saved))
-    else
-        placeDefault()
-    end
-end
-
-local function setupDragging()
-    local grip = hub.grip
-    grip.onDragEnter = function(widget, mousePos)
-        local pos = hub:getPosition()
-        widget.dragOffset = { x = mousePos.x - pos.x, y = mousePos.y - pos.y }
-        hub:breakAnchors()
-        return true
-    end
-    grip.onDragMove = function(widget, mousePos)
-        hub:setPosition(clampToScreen({ x = mousePos.x - widget.dragOffset.x, y = mousePos.y - widget.dragOffset.y }))
-        return true
-    end
-    grip.onDragLeave = function()
-        g_settings.set(POSITION_SETTING, hub:getPosition())
-        return true
-    end
-    -- a double click puts it back in the corner
-    grip.onDoubleClick = function()
-        g_settings.set(POSITION_SETTING, { x = 0, y = 0 })
-        placeDefault()
-        return true
-    end
-end
-
 local function build()
     hub = g_ui.createWidget('PokegearHub', modules.game_interface.getRootPanel())
     hub:hide()
@@ -232,7 +155,7 @@ local function build()
             if def.open == 'bag' then
                 openBag()
             else
-                pressTopButton(def.button)
+                Pokegear.pressTopButton(def.button)
             end
             scheduleEvent(refreshOrbs, 50)
         end
@@ -252,7 +175,12 @@ local function build()
     buttons.floorUp.onClick = function() modules.game_minimap.upLayer() refreshFloor() end
     buttons.floorDown.onClick = function() modules.game_minimap.downLayer() refreshFloor() end
 
-    setupDragging()
+    restorePosition = Pokegear.makeMovable(hub, hub.grip, POSITION_SETTING, function()
+        hub:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
+        hub:addAnchor(AnchorRight, 'gameMainRightPanel', AnchorLeft)
+        hub:setMarginTop(0)
+        hub:setMarginRight(4)
+    end)
 end
 
 local function onCameraPositionChange()

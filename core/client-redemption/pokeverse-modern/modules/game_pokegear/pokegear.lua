@@ -35,11 +35,29 @@ local function applyWalkLock()
     end
 end
 
+-- the top bar buttons for the side windows Pokegear replaces
+local REPLACED_BUTTONS = { 'miniMap', 'battleButton' }
+
+local function applyTopBar()
+    for _, id in ipairs(REPLACED_BUTTONS) do
+        local button = Pokegear.topButton(id)
+        if button then
+            button:setVisible(not active)
+        end
+    end
+end
+
 local function apply()
     if g_game.isOnline() then
         applyWalkLock()
+        applyTopBar()
     end
     Hub.apply(active)
+    Nearby.apply(active)
+end
+
+function toggleNearby()
+    Nearby.toggle()
 end
 
 function refresh()
@@ -60,10 +78,12 @@ end
 
 local function onGameEnd()
     Hub.apply(false)
+    Nearby.apply(false)
 end
 
 function init()
     g_ui.importStyle('hub')
+    g_ui.importStyle('nearby')
     active = isActive()
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
@@ -78,4 +98,5 @@ function terminate()
         apply()
     end
     Hub.terminate()
+    Nearby.terminate()
 end
