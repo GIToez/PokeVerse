@@ -4,10 +4,13 @@
 --
 -- The client talks JSON on EXTENDED_IDS.BAG:
 --   client -> server  {action = "hello"} (at login), {action = "belt"} (when the belt changes)
+--                     {action = "rename", slot, item = client id, name}: the bag in that slot of the starting bag
+--                       (-1 for the starting bag itself); an empty name gives it back its own
 --   server -> client  {type = "categories", list = {{name, icon, items = {client ids}}, ...}} (in fragments,
 --                       doSendPlayerLongExtendedOpcode)
 --                     {type = "belt", ball = number, slots = {number, ...}}: the quick call number of the ball
 --                       slot's ball and of each belt ball in slot order, 0 for none
+--                     {type = "renamed", slot, name} or {type = "error", text}
 
 Bag = {}
 
@@ -61,6 +64,37 @@ Bag.sendBelt = function(cid)
         ball = fastcallOf(getPlayerSlotItem(cid, PLAYER_SLOT_BALL)), slots = slots }))
 end
 
+local NAME_LENGTH = 20
+
+local function sendError(cid, text)
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.BAG, JSON.encode({ type = "error", text = text }))
+end
+
+-- the name is kept on the bag item, so it goes with the bag to the PC, a trade or the ground
+Bag.rename = function(cid, slot, item, name)
+    name = tostring(name or ""):gsub("[^%w %-'&]", ""):gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
+    if (#name > NAME_LENGTH) then
+        return sendError(cid, string.format("A bag name can be up to %d letters.", NAME_LENGTH))
+    end
+    local backpack = getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK)
+    slot = tonumber(slot)
+    if (not isItem(backpack) or not isContainer(backpack.uid) or not slot or slot < -1
+            or slot >= getContainerSize(backpack.uid)) then
+        return sendError(cid, "That bag isn't in your bag anymore.")
+    end
+    local bag = slot == -1 and backpack or getContainerItem(backpack.uid, slot)
+    if (not isItem(bag) or not isContainer(bag.uid) or clientId(bag.itemid) ~= tonumber(item)) then
+        return sendError(cid, "That bag isn't in your bag anymore.")
+    end
+    if (name == "") then
+        doItemEraseAttribute(bag.uid, "name")
+        name = getItemInfo(bag.itemid).name
+    else
+        doItemSetAttribute(bag.uid, "name", name)
+    end
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.BAG, JSON.encode({ type = "renamed", slot = slot, name = name }))
+end
+
 Bag.onClientMessage = function(cid, buffer)
     local ok, data = pcall(JSON.decode, buffer)
     if (not ok or type(data) ~= "table") then
@@ -70,5 +104,7 @@ Bag.onClientMessage = function(cid, buffer)
         Bag.sendCategories(cid)
     elseif (data.action == "belt") then
         Bag.sendBelt(cid)
+    elseif (data.action == "rename") then
+        Bag.rename(cid, data.slot, data.item, data.name)
     end
 end

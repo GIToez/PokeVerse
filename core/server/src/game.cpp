@@ -1324,6 +1324,13 @@ bool Game::playerMoveItem(uint32_t playerId, const Position& fromPos,
 		return false;
 	}
 
+	if(fromCylinder == player && item == player->getInventoryItem(SLOT_AMMO) && item->getContainer()
+		&& !player->hasCustomFlag(PlayerCustomFlag_CanPushAllItems))
+	{
+		player->sendCancelMessage(RET_STARTINGBAGSTAYS);
+		return false;
+	}
+
 	const Position& mapFromPos = fromCylinder->getTile()->getPosition();
 	const Position& mapToPos = toCylinder->getTile()->getPosition();
 
