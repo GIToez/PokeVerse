@@ -87,10 +87,68 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
   the most Tibia part. Then the map frame, then the app buttons, then Nearby.
 - **Android.** All three fit on a phone. C needs the least change there.
 
+## The rest of the screen
+
+These work with any of the three directions.
+
+| | |
+| --- | --- |
+| Chat, folded | ![Chat folded](chat-folded.jpg) |
+| Chat, open | ![Chat open](chat-open.jpg) |
+| Equipment | ![Equipment](equipment.jpg) |
+| Team + Nearby | ![Team and Nearby](party-merged.jpg) |
+| Top bar | ![Top bar](topbar.jpg) |
+
+**Chat.** No docked box with tabs along the bottom.
+- Folded, which is the default: the last few lines float over the bottom left of the map and fade
+  after a few seconds. Each line starts with its channel's colour tag. An input pill shows the
+  channel and "Press Enter to chat". A friend who messages you shows up as a face with a count.
+- Open: a rounded card. Channels are chips (Local, Global EN, Help, NPCs, and + to join more).
+  DMs are faces on the right of the header. Shift-click an item or a Pokemon to put a link chip in
+  the message. Staff get a badge.
+- The Server Log turns into toasts that slide away (catches, loot), plus an Activity list behind a
+  bell in the top bar.
+
+**Equipment.** There is no equipment window. Each slot moves to where it is used:
+
+| Slot today | Goes to |
+| --- | --- |
+| Pokemon (the one that's out) | The HUD portrait and its ball row; click a ball to call or recall |
+| Key item | A Key Item socket by the HUD: click to use, right-click to pick another key item. The Ranger radar and the Fishing guide go here too |
+| Order (helmet) | A round button next to the moves bar, with its own key |
+| Pokedex (sword) | The Dex app, and a key item you can socket for use-with |
+| Badges (shield), Balls, Respect | The Trainer card |
+| Belt | The swap bar |
+| Bag | The Bag app |
+| Evolve, Duel | Unused, so they go |
+
+**Team + Nearby.** The swap bar moves to the right side and becomes the team list, so the left edge
+is free. Each Pokemon shows an HP ring, level, type, its F1-F6 key, gold when it's out and grey when
+it has fainted. Nearby sits right under it, with a red ring on the target and a Poke Ball when you've
+caught that species before. A shows it in the Party app, B as these capsules, C folds it into the pill.
+
+**Top bar.** The buttons in the top-right row, left to right, in the groups that
+`sortTopBar` (patches/game_mainpanel.patch) puts them in:
+
+| Group | Buttons (key) | Goes to |
+| --- | --- | --- |
+| Adventure | Pokepedia (M), Tasks (T), Quest Log (L), Daily login reward, Pokepedia tracker | Dex app, Quests app (with a Tasks tab), a popup at login, a Tracking chip under the map |
+| Side windows | Minimap, Inventory, Skills, Battle List, VIP | Gone: these are the windows the redesign replaces |
+| System | Item hotkeys (Ctrl+K), Audio, Options, Exit (Ctrl+L) | One gear button with a menu |
+| Other windows | Trainer Card (P), Vocation (V), Admin (staff), Reports, Analyser | Trainer app (with a Vocation tab), the gear menu, Activity |
+| | Store | Stays |
+
+The Ranger radar (U) and the Fishing guide (U) are hidden until unlocked. The minimap has its own
+buttons too: a dial with the time of day (a click on its rim walks that way), a floor ladder, zoom
+and the full map. The new map shows the time on its frame, has floor arrows and zooms with the
+mouse wheel; M still opens the full map. That leaves the top bar with status on the left and the
+bell, the gear and the Store on the right.
+
 ## To decide
 
 1. Which direction, or which mix. For example: B's ring map and Nearby, with C's drawers for the Bag.
 2. Bag as a list (A, B) or a tile grid (C).
 3. Whether Nearby shows only wild Pokemon, or trainers and NPCs too.
 4. Whether items like the Mega Ring, rods, the Pokedex and the Badge Case get a Key Items tab.
-   Today they fall under Other in the PC and the GTS too.
+   Today they fall under Other in the PC and the GTS too. The Key Item socket argues for one.
+5. Whether the chat starts folded or open for new players.
