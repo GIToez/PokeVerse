@@ -4457,8 +4457,9 @@ local function testLegendaries(cid, friend, arena)
             check("Legendary radar: rank 3 the zones it may run to", hint[3]:find("may run to") ~= nil or
                 hint[3]:find("stays on this island") ~= nil, hint[3])
             check("Legendary radar: rank 4 the direction and how fresh", hint[4]:find("south%-east of here, signs") ~= nil, hint[4])
+            -- on an island with no way out (Cianwood) there is no trail or next zone to give
             check("Legendary radar: rank 5 where it came from or is heading", hint[5]:find("heading for") ~= nil or
-                hint[5]:find("came by") ~= nil, hint[5])
+                hint[5]:find("came by") ~= nil or hint[5]:find("stays on this island") ~= nil, hint[5])
             check("Legendary radar: never the spot", not hint[5]:find("%d+, %d+"), hint[5])
         end
         if (entei) then
