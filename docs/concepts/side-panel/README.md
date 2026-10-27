@@ -95,7 +95,7 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 - **Pokegear (B)** for the map and the Bag.
 - **The swap bar stays exactly as it is.** The only addition is the Order button next to the Pokemon that's out.
 - **Nearby** is its own window, separate from your Pokemon, and keeps the Battle List's filters.
-- **Every window can be dragged.**
+- **Every window can be dragged**, and every box can be split out into its own window and moved anywhere.
 - **Default keys:** B Bag, E Order, F key item, X Pokedex, R Mega Evolution.
 - **The Bag, the PC stash and the GTS share the same categories**, each in its own look. The categories
   get filled in properly, so far less ends up in Other.
@@ -263,6 +263,47 @@ and the full map. The new map shows the time on its frame, has floor arrows and 
 mouse wheel; M still opens the full map. That leaves the top bar with status on the left and the
 bell, the gear and the Store on the right.
 
+**Tracking, Social and the Skills window (mock-ups, waiting for a yes).**
+
+| | |
+| --- | --- |
+| Tracking card | ![Tracking card](tracking-card.jpg) |
+| Social window | ![Social window](social-window.jpg) |
+| Experience on the HUD | ![Experience on the HUD](hud-xp.jpg) |
+| Trainer card with Skills | ![Trainer card with Skills](trainercard-skills.jpg) |
+
+- **Every box is its own window.** Drag it anywhere by its header (the dots); it snaps to the screen
+  edges and to other windows, and the layout is saved per character. A tab can be dragged out into
+  its own window and dropped back onto another to join them, like the Bag tabs.
+- **Tracking card** (replaces the Pokepedia tracker window in Pokegear, Stage 4b).
+  - The same lines as today: the route while it runs, open daily, weekly and hunting tasks, tracked
+    quests and tracked Pokemon, grouped in that order, each with a bar and its count.
+  - Claim and Go buttons, pin to the top, remove, and a click opens the Pokedex entry, the task tab
+    or the quest.
+  - It grows with its lines, then scrolls. Folded, it's a chip under the map's name; a green dot and
+    a count show something is ready to claim.
+- **Social window** (replaces the VIP box): one window with Friends, Guild, Party and Blocked tabs.
+  - Friends: today's VIP list, online first, with where they are and message, trade and duel.
+  - Guild: members by rank, guild chat, leave. Party: invite, shared experience, leave. Blocked: the
+    ignore list.
+  - A tab can still be dragged out as its own window, but doesn't have to be.
+  - Right-clicking a player anywhere still adds or blocks them.
+- **The Skills window goes away in Pokegear.** Its lines are split up:
+  - **Next to the XP bar:** Trainer Spirit (its hours and a bar) on the left, and a boost chip with the
+    total rate on the right while any XP boost runs.
+  - **Hovering your XP:** level, experience, what's left to the next level, XP gained this hour, the
+    XP gain rate and every boost with its time left (Trainer Spirit, XP Boost, voucher, low level
+    bonus, Lucky Egg, events, the Ace Trainer perk).
+  - **Free Ball Slots** isn't shown: the belt already shows how many slots are left. Hovering the
+    Bag's Poke Balls tab lists each catching ball you carry with its count. There's no ball chip on
+    the HUD; catching balls go on hotkeys from the Bag, like any item.
+  - **The Trainer card's Overview** gets a Skills box next to Trophy Pokemon: Catching, Fishing and
+    Headbutting with their level and progress. Trainer level, Duels and Respect are already in its
+    Trainer Information; NPC battles won and lost join the Duels line.
+  - Not shown in Pokegear: Hit Points and Energy as numbers (the HUD has their bars), Offline
+    Training and Regeneration.
+- Classic keeps the tracker window, the VIP box and the Skills window.
+
 ## To decide
 
-Nothing open right now.
+- Tracking, Social and the Skills window split: the mock-ups above.
