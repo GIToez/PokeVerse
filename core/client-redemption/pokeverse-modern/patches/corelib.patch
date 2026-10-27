@@ -464,6 +464,178 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
      local allowedMask = requiredMask
      local _, primaryIsCtrl = getPlatformFlags()
      if primaryIsCtrl then
+diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
+--- a/modules/corelib/ui/tooltip.lua
++++ b/modules/corelib/ui/tooltip.lua
+@@ -4,6 +4,13 @@
+ -- private variables
+ local toolTipLabel
+ local SpecialToolTipLabel
++
++-- Pokegear look (docs/concepts/side-panel/README.md), in every layout
++local TOOLTIP_BACKGROUND = '#0f182bf2'
++local TOOLTIP_BORDER = '#314a77ff'
++local TOOLTIP_TEXT = '#eef2ffff'
++local TOOLTIP_TITLE = '#ffcb05ff'
++local TOOLTIP_FONT = '/fonts/ttf/arialb.ttf'
+ local currentHoveredWidget
+ 
+ -- private functions
+@@ -72,7 +79,69 @@
+     end
+ end
+ 
++-- PokeVerse: a touch is a hover, so on mobile a tap showed the tooltip and left it up; there it shows
++-- after the finger is held on the widget and goes when it is lifted
++local TOUCH_HOLD_MS = 500
++local touchEvent
++
++local function hasTooltip(widget)
++    return widget.tooltip or widget.specialtooltip or widget.parseColoreDisplay
++end
++
++local function hideCurrent()
++    local widget = currentHoveredWidget
++    if not widget then
++        return
++    end
++    if widget.tooltip or widget.parseColoreDisplay then
++        g_tooltip.hide()
++    end
++    if widget.specialtooltip then
++        g_tooltip.hideSpecial()
++    end
++    currentHoveredWidget = nil
++end
++
++local function watchTouchRelease()
++    touchEvent = scheduleEvent(function()
++        touchEvent = nil
++        if g_mouse.isPressed() and currentHoveredWidget then
++            watchTouchRelease()
++        else
++            hideCurrent()
++        end
++    end, 100)
++end
++
++local function onTouchHoverChange(widget, hovered)
++    removeEvent(touchEvent)
++    touchEvent = nil
++    hideCurrent()
++    if not hovered or not hasTooltip(widget) then
++        return
++    end
++    touchEvent = scheduleEvent(function()
++        touchEvent = nil
++        if widget:isDestroyed() or not widget:isHovered() or not g_mouse.isPressed() then
++            return
++        end
++        if widget.tooltip then
++            g_tooltip.display(widget.tooltip)
++        elseif widget.specialtooltip then
++            g_tooltip.displaySpecial(widget.specialtooltip)
++        else
++            g_tooltip.parseColoreDisplay(widget.parseColoreDisplay)
++        end
++        currentHoveredWidget = widget
++        watchTouchRelease()
++    end, TOUCH_HOLD_MS)
++end
++
+ local function onWidgetHoverChange(widget, hovered)
++    if g_platform.isMobile() then
++        onTouchHoverChange(widget, hovered)
++        return
++    end
+     if hovered then
+         if widget.tooltip and not g_mouse.isPressed() then
+             g_tooltip.display(widget.tooltip)
+@@ -142,23 +211,24 @@
+     addEvent(function()
+         toolTipLabel = g_ui.createWidget('UILabel', rootWidget)
+         toolTipLabel:setId('toolTip')
+-        toolTipLabel:setBackgroundColor('#c0c0c0ff')
++        toolTipLabel:setBackgroundColor(TOOLTIP_BACKGROUND)
+         toolTipLabel:setTextAlign(AlignLeft)
+-        toolTipLabel:setColor('#3f3f3fff')
+-        toolTipLabel:setBorderColor("#4c4c4cff")
++        toolTipLabel:setColor(TOOLTIP_TEXT)
++        toolTipLabel:setBorderColor(TOOLTIP_BORDER)
+         toolTipLabel:setBorderWidth(1)
+-        toolTipLabel:setTextOffset(topoint('5 3'))
++        toolTipLabel:setTTFFont(TOOLTIP_FONT, 11, 0, '#00000000')
++        toolTipLabel:setTextOffset(topoint('7 4'))
+         toolTipLabel:hide()
+         toolTipLabel:setPhantom(true)
+     end)
+ 
+     addEvent(function()
+         SpecialToolTipLabel = g_ui.createWidget('UIWidget', rootWidget)
+-        SpecialToolTipLabel:setBackgroundColor('#c0c0c0ff')
+-        SpecialToolTipLabel:setBorderColor("#4c4c4cff")
++        SpecialToolTipLabel:setBackgroundColor(TOOLTIP_BACKGROUND)
++        SpecialToolTipLabel:setBorderColor(TOOLTIP_BORDER)
+         SpecialToolTipLabel:setBorderWidth(1)
+         SpecialToolTipLabel:setWidth(455)
+-        SpecialToolTipLabel:setPaddingTop(2)
++        SpecialToolTipLabel:setPaddingTop(4)
+         SpecialToolTipLabel:hide()
+         SpecialToolTipLabel:setPhantom(true)
+     end)
+@@ -198,7 +268,7 @@
+ 
+     toolTipLabel:setText(text)
+     toolTipLabel:resizeToText()
+-    toolTipLabel:resize(toolTipLabel:getWidth() + 4, toolTipLabel:getHeight() + 4)
++    toolTipLabel:resize(toolTipLabel:getWidth() + 10, toolTipLabel:getHeight() + 8)
+     toolTipLabel:show()
+     toolTipLabel:raise()
+     toolTipLabel:enable()
+@@ -220,7 +290,7 @@
+ 
+     toolTipLabel:parseColoredText(text)
+     toolTipLabel:resizeToText()
+-    toolTipLabel:resize(toolTipLabel:getWidth() + 4, toolTipLabel:getHeight() + 4)
++    toolTipLabel:resize(toolTipLabel:getWidth() + 10, toolTipLabel:getHeight() + 8)
+     toolTipLabel:show()
+     toolTipLabel:raise()
+     toolTipLabel:enable()
+@@ -237,8 +307,8 @@
+         return
+     end
+ 
+-    local width = 4
+-    local height = 4
++    local width = 8
++    local height = 10
+     SpecialToolTipLabel:destroyChildren()
+     for index, data in ipairs(special) do
+         local headerW = 0
+@@ -253,9 +323,9 @@
+             header:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+             header:setText(data.header)
+             header:setTextAlign(AlignLeft)
+-            header:setColor("#4c4c4cff")
+-            header:setFont('verdana-11px-monochrome-underline')
+-            header:setTextOffset(topoint('5 0'))
++            header:setColor(TOOLTIP_TITLE)
++            header:setTTFFont(TOOLTIP_FONT, 12, 0, '#00000000')
++            header:setTextOffset(topoint('7 0'))
+             header:resizeToText()
+             header:resize(header:getWidth(), header:getHeight())
+             headerW = header:getWidth()
+@@ -271,8 +341,8 @@
+         info:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+         info:setText(data.info:wrap(445))
+         info:setTextAlign(AlignLeft)
+-        info:setColor("#4c4c4cff")
+-        info:setTextOffset(topoint('5 0'))
++        info:setColor(TOOLTIP_TEXT)
++        info:setTextOffset(topoint('7 0'))
+         info:resizeToText()
+         info:resize(info:getWidth(), info:getHeight())
+         width = width + math.max(headerW, info:getWidth())
 diff -ruN pristine/modules/corelib/ui/uimessagebox.lua modules/corelib/ui/uimessagebox.lua
 --- a/modules/corelib/ui/uimessagebox.lua
 +++ b/modules/corelib/ui/uimessagebox.lua
@@ -625,6 +797,18 @@ diff -ruN pristine/modules/corelib/ui/uiminiwindow.lua modules/corelib/ui/uimini
      self:fitOnParent()
  end
  
+diff -ruN pristine/modules/corelib/ui/uipopupmenu.lua modules/corelib/ui/uipopupmenu.lua
+--- a/modules/corelib/ui/uipopupmenu.lua
++++ b/modules/corelib/ui/uipopupmenu.lua
+@@ -82,7 +82,7 @@
+ end
+ 
+ function UIPopupMenu:addSeparator()
+-    g_ui.createWidget('HorizontalSeparator', self)
++    g_ui.createWidget('PopupMenuSeparator', self)
+ end
+ 
+ function UIPopupMenu:addText(text)
 diff -ruN pristine/modules/corelib/ui/uistatsbar.lua modules/corelib/ui/uistatsbar.lua
 --- a/modules/corelib/ui/uistatsbar.lua
 +++ b/modules/corelib/ui/uistatsbar.lua
@@ -670,76 +854,3 @@ diff -ruN pristine/modules/corelib/ui/uiwidget.lua modules/corelib/ui/uiwidget.l
      if not focusedWidgets or table.empty(focusedWidgets) then
          return true
      end
-diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
---- a/modules/corelib/ui/tooltip.lua
-+++ b/modules/corelib/ui/tooltip.lua
-@@ -72,7 +72,69 @@
-     end
- end
- 
-+-- PokeVerse: a touch is a hover, so on mobile a tap showed the tooltip and left it up; there it shows
-+-- after the finger is held on the widget and goes when it is lifted
-+local TOUCH_HOLD_MS = 500
-+local touchEvent
-+
-+local function hasTooltip(widget)
-+    return widget.tooltip or widget.specialtooltip or widget.parseColoreDisplay
-+end
-+
-+local function hideCurrent()
-+    local widget = currentHoveredWidget
-+    if not widget then
-+        return
-+    end
-+    if widget.tooltip or widget.parseColoreDisplay then
-+        g_tooltip.hide()
-+    end
-+    if widget.specialtooltip then
-+        g_tooltip.hideSpecial()
-+    end
-+    currentHoveredWidget = nil
-+end
-+
-+local function watchTouchRelease()
-+    touchEvent = scheduleEvent(function()
-+        touchEvent = nil
-+        if g_mouse.isPressed() and currentHoveredWidget then
-+            watchTouchRelease()
-+        else
-+            hideCurrent()
-+        end
-+    end, 100)
-+end
-+
-+local function onTouchHoverChange(widget, hovered)
-+    removeEvent(touchEvent)
-+    touchEvent = nil
-+    hideCurrent()
-+    if not hovered or not hasTooltip(widget) then
-+        return
-+    end
-+    touchEvent = scheduleEvent(function()
-+        touchEvent = nil
-+        if widget:isDestroyed() or not widget:isHovered() or not g_mouse.isPressed() then
-+            return
-+        end
-+        if widget.tooltip then
-+            g_tooltip.display(widget.tooltip)
-+        elseif widget.specialtooltip then
-+            g_tooltip.displaySpecial(widget.specialtooltip)
-+        else
-+            g_tooltip.parseColoreDisplay(widget.parseColoreDisplay)
-+        end
-+        currentHoveredWidget = widget
-+        watchTouchRelease()
-+    end, TOUCH_HOLD_MS)
-+end
-+
- local function onWidgetHoverChange(widget, hovered)
-+    if g_platform.isMobile() then
-+        onTouchHoverChange(widget, hovered)
-+        return
-+    end
-     if hovered then
-         if widget.tooltip and not g_mouse.isPressed() then
-             g_tooltip.display(widget.tooltip)

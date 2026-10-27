@@ -1,0 +1,76 @@
+// Right-click menus in the Pokegear look (docs/concepts/side-panel/README.md), in every layout.
+// Menus derived from PopupMenu in modules (BattleListSubMenu, SkillsListSubMenu) pick these up too.
+
+PopupMenuButton < PopupMenuButton
+  height: 22
+  text-offset: 8 0
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+  image-source: none
+  image-border: 6
+  $hover !disabled:
+    background-color: alpha
+    image-source: /modules/game_pokegear/images/pill_on
+    color: #ffcb05
+  $disabled:
+    color: #5d6a86
+
+PopupMenuShortcutLabel < PopupMenuShortcutLabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #8fa0c4
+  margin-right: 8
+
+PopupMenuSeparator < PopupMenuSeparator
+  margin: 3 6 3 6
+  image-source: none
+  background-color: #314a7780
+
+PopupMenu < PopupMenu
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 6
+
+PopupMenuCheckBox < PopupMenuCheckBox
+  height: 22
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+  $hover:
+    background-color: #ffcb0518
+    color: #ffcb05
+  $disabled:
+    color: #5d6a86
+
+PopupScrollMenuButton < PopupScrollMenuButton
+  height: 22
+  text-offset: 8 0
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+  image-source: none
+  image-border: 6
+  $hover !disabled:
+    background-color: alpha
+    image-source: /modules/game_pokegear/images/pill_on
+    color: #ffcb05
+  $disabled:
+    color: #5d6a86
+
+PopupScrollMenuShortcutLabel < PopupScrollMenuShortcutLabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #8fa0c4
+
+PopupScrollMenuSeparator < PopupScrollMenuSeparator
+  margin: 3 6 3 6
+  image-source: none
+  background-color: #314a7780
+
+PopupScrollMenu < PopupScrollMenu
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 6
