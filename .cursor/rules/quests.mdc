@@ -21,3 +21,7 @@ Whenever a quest is added (or a quest line gets a new part):
   - daily quests (`daily = true`), under the Daily category.
 - Run the server test: "quests: every new quest has its mission in quests.xml for the quest log"
   fails for any quest without one. There's no exemption list: every live quest has its entry.
+
+Retired quest givers (`Quests.RETIRED_NPCS` in `075-quests.lua`, now the old Tutorial Island chain:
+Flanagan, Gosse and Shelley) are left out of the log, its NPC marks and its notices. Add an NPC
+there only when its quests are no longer part of the game.

@@ -31,6 +31,8 @@ Quests.CATEGORIES = { "Main story", "Gyms", "Getting started", "Side quests", "D
 
 local EVENT_WORDS = { "easter", "grinch", "christmas", "halloween", "santa", "anniversary", "birthday" }
 local START_WORDS = { "tutorial", "beginner", "professor oak" }
+-- the old Tutorial Island chain, replaced by Professor Oak's first lessons: kept out of the quest log and its marks
+Quests.RETIRED_NPCS = { ["Flanagan"] = true, ["Gosse"] = true, ["Shelley"] = true }
 
 local FRAGMENT_SIZE = 3500
 local fragmentId = math.random(1, 900000)
@@ -107,7 +109,7 @@ end
 -- The catalog: every NPC quest, in a stable order
 ---------------------------------------------------------------------------------------------------
 
-local catalog, byStorage
+local catalog, byStorage, retired
 
 local function containsAny(text, words)
     text = text:lower()
@@ -182,8 +184,17 @@ local function getCatalog()
     catalog, byStorage = {}, {}
     local all = getAllNpcQuests()
     local npcNames = {}
+    retired = {}
     for npcName in pairs(all) do
-        npcNames[#npcNames + 1] = npcName
+        if (Quests.RETIRED_NPCS[npcName]) then
+            for _, quest in ipairs(all[npcName]) do
+                if (quest.storage) then
+                    retired[quest.storage] = true
+                end
+            end
+        else
+            npcNames[#npcNames + 1] = npcName
+        end
     end
     table.sort(npcNames)
     for _, npcName in ipairs(npcNames) do
@@ -202,6 +213,11 @@ end
 Quests.getEntry = function(storage)
     getCatalog()
     return byStorage[storage]
+end
+
+Quests.isRetired = function(quest)
+    getCatalog()
+    return quest ~= nil and quest.storage ~= nil and retired[quest.storage] == true
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -468,7 +484,9 @@ Quests.sendMarks = function(cid)
     end
     local marks = {}
     for npcName in pairs(getAllNpcQuests()) do
-        marks[npcName] = Quests.markOf(cid, npcName)
+        if (not Quests.RETIRED_NPCS[npcName]) then
+            marks[npcName] = Quests.markOf(cid, npcName)
+        end
     end
     send(cid, { type = "marks", npcs = marks })
 end
@@ -489,7 +507,7 @@ local function notice(cid, kind, quest, extra)
 end
 
 Quests.onStart = function(cid, quest, npcName)
-    if (not Quests.isClient(cid)) then
+    if (not Quests.isClient(cid) or Quests.isRetired(quest)) then
         return
     end
     local have, need = Quests.progress(cid, quest)
@@ -508,7 +526,7 @@ end
 
 -- true when the client shows it, so the old chat line is left out
 Quests.onProgress = function(cid, quest, count, need)
-    if (not Quests.isClient(cid)) then
+    if (not Quests.isClient(cid) or Quests.isRetired(quest)) then
         return false
     end
     if (count >= need) then
@@ -521,7 +539,7 @@ Quests.onProgress = function(cid, quest, count, need)
 end
 
 Quests.onFinish = function(cid, quest)
-    if (not Quests.isClient(cid)) then
+    if (not Quests.isClient(cid) or Quests.isRetired(quest)) then
         return
     end
     notice(cid, "complete", quest, { exp = quest.rewardExp, rewards = rewardsOf(quest), daily = quest.daily and true or nil })
