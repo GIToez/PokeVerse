@@ -931,6 +931,10 @@ function handlers.useLocker()
 end
 
 local function onPc(protocol, opcode, buffer)
+    buffer = ProtocolGame.joinFragments(opcode, buffer)
+    if not buffer then
+        return
+    end
     local ok, data = pcall(json.decode, buffer)
     if not ok or type(data) ~= 'table' or not handlers[data.type] then
         g_logger.warning('PC: invalid message')

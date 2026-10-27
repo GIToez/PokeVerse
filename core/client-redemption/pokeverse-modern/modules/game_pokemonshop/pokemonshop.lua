@@ -421,6 +421,10 @@ local function fillHeader()
 end
 
 local function onShop(protocol, opcode, buffer)
+    buffer = ProtocolGame.joinFragments(opcode, buffer)
+    if not buffer then
+        return
+    end
     local ok, data = pcall(json.decode, buffer)
     if not ok or type(data) ~= 'table' then
         g_logger.warning('Pokemon shop: invalid message')

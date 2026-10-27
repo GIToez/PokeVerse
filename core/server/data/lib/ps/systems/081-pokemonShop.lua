@@ -34,7 +34,7 @@ local function send(cid, data, list)
         data.more = true
         text = JSON.encode(data)
     end
-    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEMON_SHOP, text)
+    doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.POKEMON_SHOP, text)
 end
 
 local function result(cid, ok, text, ...)
