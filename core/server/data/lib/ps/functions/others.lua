@@ -962,3 +962,22 @@ function WindowSession.inRange(cid, key, range)
     return pos.z == session.pos.z and math.max(math.abs(pos.x - session.pos.x),
         math.abs(pos.y - session.pos.y)) <= range, true
 end
+
+-- AddString drops a string over 8 KB, and the rest of the packet with it: a longer message goes as
+-- "#id:index:count:" fragments the client joins back together (ProtocolGame.joinFragments). Every
+-- script environment has its own counter, so it starts at random.
+local FRAGMENT_SIZE = 3500
+local fragmentId = math.random(1, 1000000)
+
+function doSendPlayerLongExtendedOpcode(cid, opcode, text)
+    if (#text <= FRAGMENT_SIZE) then
+        return doSendPlayerExtendedOpcode(cid, opcode, text)
+    end
+    fragmentId = fragmentId % 1000000 + 1
+    local count = math.ceil(#text / FRAGMENT_SIZE)
+    for index = 1, count do
+        doSendPlayerExtendedOpcode(cid, opcode, string.format("#%d:%d:%d:", fragmentId, index, count)
+            .. text:sub((index - 1) * FRAGMENT_SIZE + 1, index * FRAGMENT_SIZE))
+    end
+    return true
+end

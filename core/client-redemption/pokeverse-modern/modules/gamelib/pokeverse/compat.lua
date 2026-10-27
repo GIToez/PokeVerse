@@ -240,6 +240,43 @@ ExtendedIds.EventShop = 49
 ExtendedIds.Analyser = 50
 ExtendedIds.Mega = 51
 ExtendedIds.MegaEvolve = 52
+ExtendedIds.Bag = 53
+
+-- Long extended opcode messages arrive as "#id:index:count:" fragments (doSendPlayerLongExtendedOpcode
+-- on the server), and the server's output pool can deliver them out of order. Gives back the whole
+-- message once every piece is in, nil until then.
+local fragments, fragmentKeys = {}, {}
+function ProtocolGame.joinFragments(opcode, buffer)
+  if buffer:sub(1, 1) ~= '#' then
+    return buffer
+  end
+  local id, index, count, piece = buffer:match('^#(%d+):(%d+):(%d+):(.*)$')
+  if not id then
+    g_logger.warning('Invalid message fragment on extended opcode ' .. tostring(opcode))
+    return nil
+  end
+  index, count = tonumber(index), tonumber(count)
+  local key = opcode .. ':' .. id
+  local entry = fragments[key]
+  if not entry then
+    entry = { count = count, got = 0, pieces = {} }
+    fragments[key] = entry
+    table.insert(fragmentKeys, key)
+    if #fragmentKeys > 16 then
+      fragments[table.remove(fragmentKeys, 1)] = nil
+    end
+  end
+  if not entry.pieces[index] then
+    entry.pieces[index] = piece
+    entry.got = entry.got + 1
+  end
+  if entry.got < entry.count then
+    return nil
+  end
+  fragments[key] = nil
+  table.removevalue(fragmentKeys, key)
+  return table.concat(entry.pieces)
+end
 
 function UIMiniWindow:setDroppable(v)
   self.droppable = v

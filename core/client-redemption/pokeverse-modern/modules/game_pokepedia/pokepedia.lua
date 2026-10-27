@@ -394,37 +394,10 @@ function Handlers.transferOffer(data)
     }, function() answer(true) end, function() answer(false) end)
 end
 
--- messages over 8 KB arrive as "#id:index:count:" fragments, and the server's output pool can
--- deliver them out of order
-local fragments, fragmentIds = {}, {}
-
 local function onPokepedia(protocol, opcode, buffer)
-    if buffer:sub(1, 1) == '#' then
-        local id, index, count, piece = buffer:match('^#(%d+):(%d+):(%d+):(.*)$')
-        if not id then
-            g_logger.warning('Pokepedia: invalid fragment')
-            return
-        end
-        index, count = tonumber(index), tonumber(count)
-        local entry = fragments[id]
-        if not entry then
-            entry = { count = count, got = 0, pieces = {} }
-            fragments[id] = entry
-            table.insert(fragmentIds, id)
-            if #fragmentIds > 8 then
-                fragments[table.remove(fragmentIds, 1)] = nil
-            end
-        end
-        if not entry.pieces[index] then
-            entry.pieces[index] = piece
-            entry.got = entry.got + 1
-        end
-        if entry.got < entry.count then
-            return
-        end
-        fragments[id] = nil
-        table.removevalue(fragmentIds, id)
-        buffer = table.concat(entry.pieces)
+    buffer = ProtocolGame.joinFragments(opcode, buffer)
+    if not buffer then
+        return
     end
     local ok, data = pcall(json.decode, buffer)
     if not ok or type(data) ~= 'table' or not Handlers[data.type] then

@@ -30,11 +30,6 @@ local dex = {} -- guid -> { [species] = { kills, catches } }
 local offers = {} -- house id -> { from, to, price, expires }
 local requests = {} -- cid -> { second, count }
 
--- AddString drops strings over 8 KB: longer messages go as "#id:index:count:" fragments the
--- client joins back together
-local FRAGMENT_SIZE = 3500
-local fragmentId = 0
-
 local function send(cid, data, list)
     local text = JSON.encode(data)
     while (#text > MESSAGE_LIMIT and list and #list > 0) do
@@ -42,16 +37,7 @@ local function send(cid, data, list)
         data.more = true
         text = JSON.encode(data)
     end
-    if (#text <= FRAGMENT_SIZE) then
-        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEPEDIA, text)
-        return
-    end
-    fragmentId = fragmentId % 1000000 + 1
-    local count = math.ceil(#text / FRAGMENT_SIZE)
-    for index = 1, count do
-        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEPEDIA, string.format("#%d:%d:%d:", fragmentId, index, count)
-            .. text:sub((index - 1) * FRAGMENT_SIZE + 1, index * FRAGMENT_SIZE))
-    end
+    doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.POKEPEDIA, text)
 end
 
 local function result(cid, ok, text, ...)
@@ -504,8 +490,9 @@ local function getCatalog()
             categories[#categories + 1] = category
         end
     end
-    for _, category in ipairs(GTS.CATEGORIES) do
-        if (category.name ~= "Other") then
+    -- the hand-made categories; its own lists below stand in for the generated ones
+    for _, category in ipairs(ItemCategories.LIST) do
+        if (category.name ~= "Other" and not category.generated) then
             add(category.name, category.items)
         end
     end

@@ -3242,6 +3242,113 @@ local function testMegaItems(cid)
     end
 end
 
+-- The Pokegear Bag's categories (systems/098-bag.lua): the GTS ones, then the Bag-only ones, Other last
+local function testBag(cid)
+    local names, at = {}, {}
+    for index, category in ipairs(Bag.CATEGORIES) do
+        names[#names + 1] = category.name
+        at[category.name] = index
+    end
+    check("bag: the hand-made categories first, then Pokemon to Drops, Other last",
+        names[1] == "Poke Balls" and at["Pokemon"] == at["Technical Machines"] + 1 and at["Drops"] == at["Event"] + 1
+        and at["Key Items"] and at["Dolls & Decor"] and at["Valuables"] and names[#names] == "Other",
+        table.concat(names, ", "))
+
+    local seen, twice = {}, nil
+    for _, category in ipairs(Bag.CATEGORIES) do
+        for _, id in ipairs(category.items) do
+            twice = twice or (seen[id] and id)
+            seen[id] = category.name
+        end
+    end
+    check("bag: no item is in two categories", twice == nil, twice)
+    local function categoryOf(id)
+        return seen[getItemInfo(id).clientId]
+    end
+    check("bag: the Mega Ring is a Key Item, Venusaurite a Mega Stone, Feather a Drop",
+        categoryOf(MEGA_ITEM_IDS.RING) == "Key Items" and categoryOf(MEGA_FIRST_STONE_ID) == "Mega Stones"
+        and categoryOf(12142) == "Drops", string.format("%s, %s, %s", tostring(categoryOf(MEGA_ITEM_IDS.RING)),
+            tostring(categoryOf(MEGA_FIRST_STONE_ID)), tostring(categoryOf(12142))))
+    check("bag: a Super Potion stays in Medicine", categoryOf(12245) == "Medicine", categoryOf(12245))
+
+    local gtsNames = {}
+    for _, category in ipairs(GTS.CATEGORIES) do
+        gtsNames[category.name] = true
+    end
+    check("bag: a Shovel is a Tool, a Poke Coin a Valuable, a Red Postman Bag an Outfit",
+        ItemCategories.nameOf(18195) == "Tools" and ItemCategories.nameOf(23497) == "Valuables"
+        and ItemCategories.nameOf(29754) == "Outfits", string.format("%s, %s, %s", ItemCategories.nameOf(18195),
+            ItemCategories.nameOf(23497), ItemCategories.nameOf(29754)))
+    local other = Bag.CATEGORIES[#Bag.CATEGORIES]
+    check("bag: no generated item is left for Other", #other.items == 0, #other.items)
+    -- Key Items, Quest Items, Pokemon and Bags aren't traded, and Other is empty
+    check("bag: the GTS has every shared category but the untraded ones", #GTS.CATEGORIES == #ItemCategories.LIST - 5
+        and not gtsNames["Key Items"] and not gtsNames["Bags"] and gtsNames["Drops"] and gtsNames["Dolls & Decor"],
+        #GTS.CATEGORIES)
+    check("bag: the PC stash files a Feather under Drops", ItemCategories.nameOf(12142) == "Drops",
+        ItemCategories.nameOf(12142))
+
+    -- what the client gets: fragments joined back together, each one under the 8 KB string limit
+    local sent, pieces, longest = {}, {}, 0
+    local original = doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (target == cid and opcode == EXTENDED_IDS.BAG) then
+            longest = math.max(longest, #buffer)
+            local id, index, count, piece = buffer:match("^#(%d+):(%d+):(%d+):(.*)$")
+            if (not id) then
+                sent[#sent + 1] = JSON.decode(buffer)
+            else
+                pieces[tonumber(index)] = piece
+                if (tonumber(index) == tonumber(count)) then
+                    sent[#sent + 1] = JSON.decode(table.concat(pieces))
+                    pieces = {}
+                end
+            end
+        end
+    end
+    local ok, err = pcall(function()
+        Bag.onClientMessage(cid, JSON.encode({ action = "hello" }))
+        local items, total = 0, 0
+        for _, category in ipairs(sent[1] and sent[1].list or {}) do
+            items = items + #category.items
+        end
+        for _, category in ipairs(Bag.CATEGORIES) do
+            total = total + #category.items
+        end
+        check("bag: hello sends the categories with every item", #sent == 1 and sent[1].type == "categories"
+            and #sent[1].list == #Bag.CATEGORIES and items == total and #Bag.MESSAGE > 8192,
+            string.format("%d messages, %d of %d items", #sent, items, total))
+        check("bag: every fragment fits in a network message string (8 KB)", longest <= 8192, longest)
+        local parts = #sent
+
+        local ball = newBall(cid, "Bulbasaur", 10)
+        doItemSetAttribute(ball.uid, 1000, 777)
+        local belt = getThing(doPlayerAddItem(cid, 12282, 1))
+        doAddContainerItem(belt.uid, 2148, 1)
+        local slotItem = getPlayerSlotItem
+        getPlayerSlotItem = function(who, slot)
+            if (who == cid and slot == PLAYER_SLOT_BALL) then
+                return ball
+            elseif (who == cid and slot == PLAYER_SLOT_BELT) then
+                return belt
+            end
+            return slotItem(who, slot)
+        end
+        local done, problem = pcall(Bag.onClientMessage, cid, JSON.encode({ action = "belt" }))
+        getPlayerSlotItem = slotItem
+        local belts = sent[parts + 1]
+        check("bag: belt sends the quick call numbers, 0 for what isn't a Pokemon", done and belts
+            and belts.type == "belt" and belts.ball == 777 and #belts.slots == 1 and belts.slots[1] == 0,
+            problem or (belts and JSON.encode(belts)))
+        doRemoveItem(belt.uid)
+        doRemoveItem(ball.uid)
+    end)
+    doSendPlayerExtendedOpcode = original
+    if (not ok) then
+        error(err, 0)
+    end
+end
+
 -- The Mega animation's wait before the burst is off, so the checks see the form at once
 local function withoutMegaBurst(fn)
     return function(...)
@@ -4990,7 +5097,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

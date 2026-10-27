@@ -73,8 +73,10 @@ local function refreshOrbs()
 end
 
 local function refreshFloor()
-    if minimap then
-        hub.floorLabel:setText(floorName(minimap:getCameraPosition().z))
+    -- no camera yet while logging in with Pokegear already on
+    local position = minimap and minimap:getCameraPosition()
+    if position then
+        hub.floorLabel:setText(floorName(position.z))
     end
 end
 
@@ -100,8 +102,9 @@ local function refreshRibbon()
     local region = ''
     local player = g_game.getLocalPlayer()
     local map = modules.game_minimap and modules.game_minimap.PokeverseMap
-    if player and map and map.regionAt then
-        region = map.regionAt(player:getPosition()) or ''
+    local position = player and player:getPosition()
+    if position and map and map.regionAt then
+        region = map.regionAt(position) or ''
         region = region:gsub('^%l', string.upper)
     end
     if placeName == '' then

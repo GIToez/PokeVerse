@@ -115,7 +115,8 @@ sleep 3
 
 # Before the bridge tests: those leave a server boost level on for the restart check.
 step "Vocation tests"
-python3 "$root/scripts/vocation-test.py" --tester "voctester:secret:Vocation Tester" --friend "vocfriend:secret:Vocation Friend"
+python3 "$root/scripts/vocation-test.py" --tester "voctester:secret:Vocation Tester" --friend "vocfriend:secret:Vocation Friend" \
+  || { grep "vocationtest: FAIL" "$work/server.log"; exit 1; }
 sleep 3
 
 step "Discord bridge tests"
