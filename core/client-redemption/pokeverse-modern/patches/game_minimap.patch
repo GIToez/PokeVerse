@@ -1,7 +1,27 @@
 diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap.lua
 --- a/modules/game_minimap/minimap.lua
 +++ b/modules/game_minimap/minimap.lua
-@@ -95,7 +95,34 @@
+@@ -5,6 +5,10 @@
+ local oldPos = nil
+ local fullscreenWidget
+ local virtualFloor = 7
++-- the minimap widget, wherever it is: its side panel window, the Pokegear ring (setHome) or the full map
++local minimapRef
++-- where it lives outside the full map: nil for its side panel window
++local minimapHome
+ local currentDayTime = {
+     h = 12,
+     m = 0
+@@ -26,7 +30,7 @@
+         return
+     end
+ 
+-    local minimapWidget = mapController.ui.minimapBorder.minimap
++    local minimapWidget = getMiniMapUi()
+     if not (minimapWidget) or minimapWidget:isDragging() then
+         return
+     end
+@@ -95,12 +99,52 @@
      end
  end
  
@@ -29,17 +49,23 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
 +end
 +
  function mapController:onInit()
+-    self.ui.minimapBorder.minimap:getChildById('floorUpButton'):hide()
+-    self.ui.minimapBorder.minimap:getChildById('floorDownButton'):hide()
+-    self.ui.minimapBorder.minimap:getChildById('zoomInButton'):hide()
+-    self.ui.minimapBorder.minimap:getChildById('zoomOutButton'):hide()
+-    self.ui.minimapBorder.minimap:getChildById('resetButton'):hide()
++    minimapRef = self.ui.minimapBorder.minimap
 +    connect(self.ui, { onGeometryChange = updateMinimapSize })
 +    addEvent(updateMinimapSize)
 +    Keybind.new("Minimap", "Open full map", { [CHAT_MODE.ON] = '', [CHAT_MODE.OFF] = 'M' }, '')
 +    Keybind.bind("Minimap", "Open full map", { { type = KEY_DOWN, callback = function() if modules.game_pokepedia and modules.game_pokepedia.openMap then modules.game_pokepedia.openMap() else fullscreen() end end } })
-     self.ui.minimapBorder.minimap:getChildById('floorUpButton'):hide()
-     self.ui.minimapBorder.minimap:getChildById('floorDownButton'):hide()
-     self.ui.minimapBorder.minimap:getChildById('zoomInButton'):hide()
-@@ -103,11 +130,28 @@
-     self.ui.minimapBorder.minimap:getChildById('resetButton'):hide()
- end
- 
++    getMiniMapUi():getChildById('floorUpButton'):hide()
++    getMiniMapUi():getChildById('floorDownButton'):hide()
++    getMiniMapUi():getChildById('zoomInButton'):hide()
++    getMiniMapUi():getChildById('zoomOutButton'):hide()
++    getMiniMapUi():getChildById('resetButton'):hide()
++end
++
 +local SAVE_EVERY_MS = 3 * 60 * 1000
 +
 +local function saveMinimap()
@@ -48,12 +74,12 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
 +    else
 +        g_map.saveOtcm('/minimap_' .. g_game.getClientVersion() .. '.otcm')
 +    end
-+    mapController.ui.minimapBorder.minimap:save()
++    getMiniMapUi():save()
 +    g_settings.save()
-+end
-+
+ end
+ 
  function mapController:onGameStart()
-     mapController:registerEvents(g_game, {
+@@ -108,6 +152,11 @@
          onChangeWorldTime = onChangeWorldTime
      })
  
@@ -65,11 +91,13 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      mapController:registerEvents(LocalPlayer, {
          onPositionChange = onPositionChange
      }):execute()
-@@ -131,20 +175,16 @@
+@@ -130,21 +179,17 @@
+         loadFnc(minimapFile)
      end
  
-     self.ui.minimapBorder.minimap:load()
-+    PokeverseMap.load(self.ui.minimapBorder.minimap)
+-    self.ui.minimapBorder.minimap:load()
++    getMiniMapUi():load()
++    PokeverseMap.load(getMiniMapUi())
 +    self:cycleEvent(saveMinimap, SAVE_EVERY_MS)
  end
  
@@ -90,7 +118,44 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      if iconTopMenu then
          iconTopMenu:destroy()
          iconTopMenu = nil
-@@ -200,6 +240,7 @@
+@@ -152,11 +197,11 @@
+ end
+ 
+ function zoomIn()
+-    mapController.ui.minimapBorder.minimap:zoomIn()
++    getMiniMapUi():zoomIn()
+ end
+ 
+ function zoomOut()
+-    mapController.ui.minimapBorder.minimap:zoomOut()
++    getMiniMapUi():zoomOut()
+ end
+ 
+ function openCyclopediaMap()
+@@ -168,7 +213,7 @@
+ end
+ 
+ function fullscreen()
+-    local minimapWidget = mapController.ui.minimapBorder.minimap
++    local minimapWidget = getMiniMapUi()
+     if not minimapWidget then
+         minimapWidget = fullscreenWidget
+     end
+@@ -180,9 +225,11 @@
+ 
+     if minimapWidget.fullMapView then
+         fullscreenWidget = nil
+-        minimapWidget:setParent(mapController.ui.minimapBorder)
++        minimapWidget:setParent(minimapHome or mapController.ui.minimapBorder)
+         minimapWidget:fill('parent')
+-        mapController.ui:show()
++        if not minimapHome then
++            mapController.ui:show()
++        end
+         zoom = minimapWidget.zoomMinimap
+         g_keyboard.unbindKeyDown('Escape')
+         minimapWidget.fullMapView = false
+@@ -200,6 +247,7 @@
      oldPos = minimapWidget:getCameraPosition()
      minimapWidget:setZoom(zoom)
      minimapWidget:setCameraPosition(pos)
@@ -98,6 +163,99 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function upLayer()
+@@ -207,7 +255,7 @@
+         return
+     end
+ 
+-    mapController.ui.minimapBorder.minimap:floorUp(1)
++    getMiniMapUi():floorUp(1)
+     virtualFloor = virtualFloor - 1
+     refreshVirtualFloors()
+ end
+@@ -217,33 +265,33 @@
+         return
+     end
+ 
+-    mapController.ui.minimapBorder.minimap:floorDown(1)
++    getMiniMapUi():floorDown(1)
+     virtualFloor = virtualFloor + 1
+     refreshVirtualFloors()
+ end
+ 
+ function onClickRoseButton(dir)
+     if dir == 'north' then
+-        mapController.ui.minimapBorder.minimap:move(0, 1)
++        getMiniMapUi():move(0, 1)
+     elseif dir == 'north-east' then
+-        mapController.ui.minimapBorder.minimap:move(-1, 1)
++        getMiniMapUi():move(-1, 1)
+     elseif dir == 'east' then
+-        mapController.ui.minimapBorder.minimap:move(-1, 0)
++        getMiniMapUi():move(-1, 0)
+     elseif dir == 'south-east' then
+-        mapController.ui.minimapBorder.minimap:move(-1, -1)
++        getMiniMapUi():move(-1, -1)
+     elseif dir == 'south' then
+-        mapController.ui.minimapBorder.minimap:move(0, -1)
++        getMiniMapUi():move(0, -1)
+     elseif dir == 'south-west' then
+-        mapController.ui.minimapBorder.minimap:move(1, -1)
++        getMiniMapUi():move(1, -1)
+     elseif dir == 'west' then
+-        mapController.ui.minimapBorder.minimap:move(1, 0)
++        getMiniMapUi():move(1, 0)
+     elseif dir == 'north-west' then
+-        mapController.ui.minimapBorder.minimap:move(1, 1)
++        getMiniMapUi():move(1, 1)
+     end
+ end
+ 
+ function resetMap()
+-    mapController.ui.minimapBorder.minimap:reset()
++    getMiniMapUi():reset()
+     local player = g_game.getLocalPlayer()
+     if player then
+         virtualFloor = player:getPosition().z
+@@ -252,7 +300,27 @@
+ end
+ 
+ function getMiniMapUi()
+-    return mapController.ui.minimapBorder.minimap
++    return minimapRef
++end
++
++function getDayTime()
++    return currentDayTime
++end
++
++-- Pokegear moves the minimap into its ring; nil puts it back in the side panel window
++function setHome(parent)
++    minimapHome = parent
++    local widget = getMiniMapUi()
++    if widget.fullMapView then
++        return
++    end
++    widget:setParent(parent or mapController.ui.minimapBorder)
++    widget:fill('parent')
++    if parent then
++        mapController.ui:hide()
++    else
++        mapController.ui:show()
++    end
+ end
+ 
+ function extendedView(extendedView)
+@@ -275,7 +343,9 @@
+         if not mainRightPanel:hasChild(mapController.ui) then
+             mainRightPanel:insertChild(1, mapController.ui)
+         end
+-        mapController.ui:show()
++        if not minimapHome then
++            mapController.ui:show()
++        end
+ 
+     end
+     mapController.ui.moveOnlyToMain = not extendedView
 diff -ruN pristine/modules/game_minimap/minimap.otmod modules/game_minimap/minimap.otmod
 --- a/modules/game_minimap/minimap.otmod
 +++ b/modules/game_minimap/minimap.otmod

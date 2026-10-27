@@ -89,6 +89,8 @@ public:
     void clean();
 
     void draw(const Rect& screenRect, const Position& mapCenter, float scale, const Color& color);
+    // the same map inside the circle that fits screenRect, drawn as clipped horizontal strips
+    void drawCircle(const Rect& screenRect, const Position& mapCenter, float scale, const Color& color);
     Point getTilePoint(const Position& pos, const Rect& screenRect, const Position& mapCenter, float scale);
     Position getTilePosition(const Point& point, const Rect& screenRect, const Position& mapCenter, float scale);
     Rect getTileRect(const Position& pos, const Rect& screenRect, const Position& mapCenter, float scale);
@@ -103,6 +105,7 @@ public:
     void saveOtmm(const std::string& fileName);
 
 private:
+    void drawArea(const Rect& screenRect, const Rect& clipRect, const Position& mapCenter, float scale, const Color& color);
     Rect calcMapRect(const Rect& screenRect, const Position& mapCenter, float scale) const;
     bool hasBlock(const Position& pos) { return m_tileBlocks[pos.z].contains(getBlockIndex(pos)); }
     MinimapBlock& getBlock(const Position& pos)
