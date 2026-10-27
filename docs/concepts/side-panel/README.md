@@ -66,14 +66,18 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 
 ## How it would be built
 
-- **Bag.** Items stay in the server's backpacks; the pockets are only a different view of them.
-  - The client sorts what is in the bag and the bags inside it into pockets: Medicine, Poke Balls,
-    Berries, Items and Key Items.
+- **Classic and new.** Today's side windows stay as a **Classic** layout in Options. The new one is
+  the default and is built on top of the same modules, so both keep working.
+- **Bag.** Items stay in the server's backpacks; the tabs are only a different view of them.
+  - The Bag uses the same tabs as the PC stash and the GTS, in the same order. All three read the
+    server's `GTS.CATEGORIES`: Poke Balls, Medicine, Evolution Stones, Held Items, Mega Stones,
+    Berries, Berry Seeds, Vitamins, Technical Machines and Other, plus All.
   - It uses an item by its id (`g_game.useInventoryItem`, the call the hotkeys use), so no backpack
     has to be shown.
   - What it can't open locally (bags inside bags) comes from the server on an extended opcode, the
     way the PC and the GTS already do.
-  - Pockets come from a small table by item id, like `mart_items.lua` in the Poke Mart.
+  - The server sends the category list with the bag, so a new category shows up in all three windows
+    at once.
 - **Map.** The same minimap widget, with a round or rounded mask and new buttons, then the Pokepedia
   map behind a click. The real map pictures already exist (`scripts/mapper/render_pokepedia.py`).
 - **Apps** reuse windows that are already built: the Trainer Card, the Pokedex, the Quest log,
@@ -88,4 +92,5 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 1. Which direction, or which mix. For example: B's ring map and Nearby, with C's drawers for the Bag.
 2. Bag as a list (A, B) or a tile grid (C).
 3. Whether Nearby shows only wild Pokemon, or trainers and NPCs too.
-4. Whether to keep a way back to the old windows for players who want them.
+4. Whether items like the Mega Ring, rods, the Pokedex and the Badge Case get a Key Items tab.
+   Today they fall under Other in the PC and the GTS too.
