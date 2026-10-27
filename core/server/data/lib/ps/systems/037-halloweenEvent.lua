@@ -692,7 +692,8 @@ local npcsShown = nil
 local NPC_RADIUS = 1
 local npcsPlaced = {}
 HalloweenEvent.syncNpcs = function()
-    local active = EventCalendar.isActive("halloween")
+    -- isActive gives a new event table each call, so only true or false can be compared with the last one
+    local active = EventCalendar.isActive("halloween") ~= nil
     if (npcsShown == active) then
         return
     end
