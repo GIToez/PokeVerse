@@ -180,12 +180,12 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   Other is kept for what's left. They go into `GTS.CATEGORIES`, so the PC and the GTS pick them up too.
 
 **Chat.**
-- **WASD walks by default (Chat Off).** Enter opens one line, sends it, and you're back to walking
-  (`returnDisablesChat`, already on). The single-letter defaults (B, E, F, X, R) only work this way.
-  - Today a new install starts with Chat On (`wasdMode` in `game_console` defaults to false), so WASD
-    types instead of walking. Pokegear starts with `wasdMode` on. Classic keeps today's default.
-  - The Chat On / Chat Off choice stays, as a small WASD chip on the open chat card and in Settings,
-    for players who'd rather type all the time. It's still saved.
+- **WASD always walks.** Enter opens the chat line, you type, Enter sends it, and you're straight back
+  to walking (`returnDisablesChat`, already on). The single-letter keys (B, E, F, X, R) work because of
+  this.
+  - Pokegear has no Chat On / Chat Off button or setting: it always runs with `wasdMode` on.
+  - Today a new install starts with Chat On (`wasdMode` in `game_console` defaults to false). Classic
+    keeps that, and keeps its Chat On / Chat Off button.
 - **Folded by default, remembered.** A new character starts with the chat open, so it's easy to find.
   Folding or opening it is saved per character and comes back the same at the next login.
 - **New messages while folded.** The lines float in as usual. The pill shows an unread count, and
@@ -231,7 +231,8 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
 **Key chips show the key that is bound now, not the default.**
 - Each chip reads `Keybind.getKeybindKeys(category, action)`, which uses the current preset and chat
   mode.
-- With chat on, letter keys are unbound, so their chips hide.
+- Pokegear never turns chat mode on, so letter keys stay bound. In Classic with Chat On they are
+  unbound, so their chips hide.
 - `keybind.lua` has no event when a key changes. `setPrimaryActionKey`, `setSecondaryActionKey`,
   `selectPreset` and `setChatMode` need to send one, so the chips can refresh.
 
