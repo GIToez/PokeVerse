@@ -137,6 +137,136 @@ PokegearBagRailButton < UIButton
     virtual: true
     phantom: true
 
+PokegearBagPin < Item
+  size: 24 24
+  image-source: /modules/game_pokegear/images/tile
+  image-border: 6
+  padding: 2
+  virtual: true
+
+PokegearBagRulePill < PokegearPill
+  width: 104
+  text-auto-resize: false
+
+// a bag's sort rules: the categories it takes and the items pinned to it
+PokegearBagRules < UIWidget
+  id: pokegearBagRules
+  width: 352
+  height: 200
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+
+  UILabel
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: close.left
+    height: 24
+    text-align: left
+    ttf-font: /fonts/ttf/pixelify-sans.ttf
+    ttf-font-size: 18
+    color: #ffcb05
+
+  PVCloseButton
+    id: close
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    !tooltip: tr('Cancel')
+
+  UILabel
+    id: hint
+    anchors.top: title.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+    text-wrap: true
+    text-auto-resize: true
+    !text: tr('New items go to the first bag that takes them, unless a stack of the same item is already in a bag. What you drag by hand stays where you put it.')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #8fa0c4
+
+  UILabel
+    id: takesLabel
+    anchors.top: hint.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    text-auto-resize: true
+    !text: tr('Takes')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+
+  UIWidget
+    id: categories
+    anchors.top: takesLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+    height: 20
+    layout:
+      type: grid
+      cell-size: 108 20
+      cell-spacing: 3
+      flow: true
+      fit-children: true
+
+  UILabel
+    id: pinsLabel
+    anchors.top: categories.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    text-auto-resize: true
+    !text: tr('Always here')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+
+  UILabel
+    id: pinsHint
+    anchors.verticalCenter: pinsLabel.verticalCenter
+    anchors.right: parent.right
+    text-auto-resize: true
+    !text: tr('drop an item to pin it, right-click to unpin')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #8fa0c4
+
+  UIWidget
+    id: pins
+    anchors.top: pinsLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+    height: 24
+    layout:
+      type: horizontalBox
+      spacing: 3
+
+  PokegearPill
+    id: save
+    anchors.top: pins.bottom
+    anchors.right: parent.right
+    margin-top: 10
+    !text: tr('Save')
+
+  PokegearPill
+    id: cancel
+    anchors.top: save.top
+    anchors.right: save.left
+    margin-right: 4
+    !text: tr('Cancel')
+
+  PokegearPill
+    id: clear
+    anchors.top: save.top
+    anchors.left: parent.left
+    !text: tr('Clear')
+    !tooltip: tr('Take every category and pin off this bag')
+
 PokegearBag < UIWidget
   id: pokegearBag
   width: 334
@@ -178,6 +308,14 @@ PokegearBag < UIWidget
       anchors.right: close.left
       anchors.verticalCenter: parent.verticalCenter
       margin-right: 6
+
+    PokegearPill
+      id: sort
+      anchors.right: count.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+      !text: tr('Sort')
+      !tooltip: tr('Sort my bags now: move what you carry to the bags whose rules take it')
 
     UILabel
       id: count
