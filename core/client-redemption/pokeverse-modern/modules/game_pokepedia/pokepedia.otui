@@ -178,6 +178,29 @@ PpMapMark < UIWidget
   size: 16 16
   focusable: false
 
+// a quest's spot (map.lua showPointer): a bouncing arrow over a pulsing ring, the tip on the spot
+PpMapPointer < UIWidget
+  size: 64 64
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: ring
+    image-source: /modules/game_pokepedia/images/quest_ring
+    image-smooth: true
+    size: 12 12
+    anchors.centerIn: parent
+    phantom: true
+    focusable: false
+
+  UIWidget
+    id: arrow
+    image-source: /modules/game_pokepedia/images/quest_pointer
+    size: 32 40
+    anchors.bottom: parent.verticalCenter
+    anchors.horizontalCenter: parent.horizontalCenter
+    focusable: false
+
 // the map's names (map.lua drawLabels): regions, cities, routes and landmarks
 PpMapLabel < UILabel
   phantom: true
